@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 0.1.0\n"
-"POT-Creation-Date: 2001-06-10 18:32+0200\n"
+"POT-Creation-Date: 2001-07-18 15:25-0400\n"
 "PO-Revision-Date: 2001-06-09 23:40GMT +0200\n"
 "Last-Translator: Vasif İsmayıloğlu MD <azerb_linux@hotmail.com>\n"
 "Language-Team: Azerbaijani Turkish <linuxaz@azerimal.net>\n"
@@ -31,7 +31,7 @@ msgid "Smooth Graphics"
 msgstr "Daha Düzgün Qrafikalar"
 
 #: applets/preferences-applet/nautilus-preferences-applet.c:243
-#: src/nautilus-application.c:737
+#: src/nautilus-application.c:763
 msgid "Quit"
 msgstr "Çıx"
 
@@ -43,27 +43,17 @@ msgstr "Başlat"
 msgid "Restart"
 msgstr "Yenidən Başlat"
 
-#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:1
-msgid "Factory for Nautilus component adapter factories"
-msgstr "Nautilus əlavələri adapteri mərkəzi e'malatxanası"
+#: components/hardware/nautilus-hardware-view.c:180
+#, fuzzy
+msgid "name of icon for the hardware view"
+msgstr "Texniki tə'minat nümayişi e'malatxanası"
 
-#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:2
-msgid "Factory for Nautilus component adapter factories "
-msgstr "Nautilus əlavələri adapteri mərkəzi e'malatxanası"
+#: components/hardware/nautilus-hardware-view.c:182
+#, fuzzy
+msgid "summary of hardware info"
+msgstr "Texniki tə'minat nümayişi e'malatxanası"
 
-#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:3
-msgid ""
-"Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
-"look like Nautilus Views"
-msgstr ""
-"Sıravi Bonobo İdarələrini və ya Hopdurulmuş elementlərini Nautilus "
-"Nümayişlərinə çevirən mərkəz"
-
-#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:4
-msgid "Nautilus component adapter factory"
-msgstr "Nautilus əlavələri adapteri mərkəzi"
-
-#: components/hardware/nautilus-hardware-view.c:230
+#: components/hardware/nautilus-hardware-view.c:305
 #, c-format
 msgid ""
 "%s CPU\n"
@@ -74,68 +64,51 @@ msgstr ""
 "%s MHz\n"
 "%s ara yaddaş böyüklüyü"
 
-#: components/hardware/nautilus-hardware-view.c:264
+#: components/hardware/nautilus-hardware-view.c:339
 #, c-format
 msgid "%lu GB RAM"
 msgstr "%lu GB RAM"
 
-#: components/hardware/nautilus-hardware-view.c:266
+#: components/hardware/nautilus-hardware-view.c:341
 #, c-format
 msgid "%lu MB RAM"
 msgstr "%lu MB RAM"
 
-#: components/hardware/nautilus-hardware-view.c:324
+#: components/hardware/nautilus-hardware-view.c:399
 #, c-format
 msgid "%lu GB"
 msgstr "%lu GB"
 
-#: components/hardware/nautilus-hardware-view.c:326
+#: components/hardware/nautilus-hardware-view.c:401
 #, c-format
 msgid "%lu MB"
 msgstr "%lu MB"
 
+#: components/hardware/nautilus-hardware-view.c:479
+#, c-format
+msgid "Uptime is %d days, %d hours, %d minutes"
+msgstr ""
+
 #. set up the title
-#: components/hardware/nautilus-hardware-view.c:407
+#: components/hardware/nautilus-hardware-view.c:505
 msgid "Hardware Overview"
 msgstr "Texniki Tə'minat Nümayişi"
 
-#: components/hardware/nautilus-hardware-view.c:520
+#: components/hardware/nautilus-hardware-view.c:628
 msgid "This is a placeholder for the CPU page."
 msgstr "Bura, CPU səhifəsi yeridir."
 
-#: components/hardware/nautilus-hardware-view.c:545
+#: components/hardware/nautilus-hardware-view.c:653
 msgid "This is a placeholder for the RAM page."
 msgstr "Bura, RAM səhifəsi yeridir."
 
-#: components/hardware/nautilus-hardware-view.c:570
+#: components/hardware/nautilus-hardware-view.c:678
 msgid "This is a placeholder for the IDE page."
 msgstr "Bura, IDE səhifəsi yeridir."
 
-#: components/hardware/Nautilus_View_hardware.oaf.in.h:2
-#: components/hardware/nautilus-hardware-view.c:631
-#: data/static_bookmarks.xml.h:16
+#: components/hardware/nautilus-hardware-view.c:750
 msgid "Hardware"
 msgstr "Texniki Tə'minat"
-
-#: components/hardware/Nautilus_View_hardware.oaf.in.h:1
-msgid "Factory for hardware view"
-msgstr "Texniki tə'minat nümayişi e'malatxanası"
-
-#: components/hardware/Nautilus_View_hardware.oaf.in.h:3
-msgid "Hardware Viewer"
-msgstr "Texniki Tə'minat Nümayişiçisi"
-
-#: components/hardware/Nautilus_View_hardware.oaf.in.h:4
-msgid "Hardware view"
-msgstr "Texniki tə'minat nümayişi"
-
-#: components/hardware/Nautilus_View_hardware.oaf.in.h:5
-msgid "View as Hardware"
-msgstr "Texniki Tə'minat olaraq Göstər"
-
-#: components/hardware/Nautilus_View_hardware.oaf.in.h:6
-msgid "hardware view"
-msgstr "texniki tə'minat nümayişi"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:712
 #: components/music/nautilus-music-view.c:1530
@@ -143,7 +116,7 @@ msgid "Previous"
 msgstr "Əvvəlki"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:721
-#: src/nautilus-preferences-dialog.c:291 src/nautilus-shell-ui.xml.h:36
+#: src/nautilus-preferences-dialog.c:291
 msgid "Home"
 msgstr "Ev"
 
@@ -153,7 +126,6 @@ msgid "Next"
 msgstr "Sonrakı"
 
 #: components/help/converters/gnome-db2html2/sect-elements.c:260
-#: components/notes/Nautilus_View_notes.oaf.in.h:2
 msgid "Notes"
 msgstr "Qeydlər"
 
@@ -288,7 +260,7 @@ msgid "Manual"
 msgstr "Bələdçilər"
 
 #: components/help/hyperbola-filefmt.c:528
-#: components/help/hyperbola-filefmt.c:859 data/linksets/apps.xml.h:1
+#: components/help/hyperbola-filefmt.c:859
 msgid "Applications"
 msgstr "Proqramlar"
 
@@ -363,85 +335,9 @@ msgstr " ( baxın \" "
 msgid " (see also \""
 msgstr " ( buna da baxın \""
 
-#: components/help/Nautilus_View_help.oaf.in.h:1
-msgid "Help"
-msgstr "Yardım"
-
-#: components/help/Nautilus_View_help.oaf.in.h:2
-msgid "Help Index"
-msgstr "Yardım İndeksi"
-
-#: components/help/Nautilus_View_help.oaf.in.h:3
-msgid "Help Index sidebar panel"
-msgstr "Yardım İndeksi yan çubuğu"
-
-#: components/help/Nautilus_View_help.oaf.in.h:4
-msgid "Help Navigation Tree"
-msgstr "Yardım Naviqasiyası Ağacı"
-
-#: components/help/Nautilus_View_help.oaf.in.h:5
-msgid "Help Search"
-msgstr "Köməkdə axtar"
-
-#: components/help/Nautilus_View_help.oaf.in.h:6
-msgid "Help Search sidebar panel"
-msgstr "Köməkdə Axtarış yan çubuğu"
-
-#: components/help/Nautilus_View_help.oaf.in.h:7
-msgid "Help sidebar panel"
-msgstr "Yardım yan çubuğu"
-
-#: components/help/Nautilus_View_help.oaf.in.h:8
-msgid "Internal use only"
-msgstr "Sadəcə olaraq daxili istifadə üçün"
-
-#: components/history/Nautilus_View_history.oaf.in.h:1
-msgid "Factory for history views"
-msgstr "Keçmiş nümayişi e'malatxanası"
-
-#: components/history/Nautilus_View_history.oaf.in.h:2
-msgid "History"
-msgstr "Keçmiş"
-
-#: components/history/Nautilus_View_history.oaf.in.h:3
-msgid "History sidebar panel"
-msgstr "Keçmiş yan çubuğu"
-
-#: components/history/Nautilus_View_history.oaf.in.h:4
-msgid "History sidebar panel for Nautilus"
-msgstr "Nautilusun Keçmiş yan çubuğu"
-
 #: components/image-viewer/nautilus-image-view.c:834
 msgid "I could not initialize Bonobo"
 msgstr "Bonobo'yu başlada bilmədim"
-
-#: components/image-viewer/Nautilus_View_image.oaf.in.h:1
-msgid "Generic Image Viewer"
-msgstr "Ümumi Rəsm Nümayişçisi"
-
-#: components/image-viewer/Nautilus_View_image.oaf.in.h:2
-msgid "Generic image control factory"
-msgstr "Ümumi rəsm idrə e'malatxanası"
-
-#: components/image-viewer/Nautilus_View_image.oaf.in.h:3
-msgid "Image"
-msgstr "Rəsm"
-
-#: components/image-viewer/Nautilus_View_image.oaf.in.h:4
-msgid "Image Viewer"
-msgstr "Rəsm Nümayişçisi"
-
-#: components/image-viewer/Nautilus_View_image.oaf.in.h:5
-msgid "Nautilus Image Viewer"
-msgstr "Nautilus Rəsm Nümayişçisi"
-
-#: components/image-viewer/Nautilus_View_image.oaf.in.h:6
-msgid "Nautilus Image viewer factory"
-msgstr "Nautilus Rəsm nümayişçisi e'malatxanası"
-
-#: components/image-viewer/Nautilus_View_image.oaf.in.h:7
-msgid "View as Image"
-msgstr "Rəsm olaraq göstər"
 
 #: components/loser/content/nautilus-content-loser.c:140
 #, c-format
@@ -458,54 +354,6 @@ msgstr ""
 msgid "You have tried to kill the Content Loser"
 msgstr "İçindəkilər Nümayşçisini dayandırmaq istədiniz"
 
-#: components/loser/content/nautilus-content-loser-ui.xml.h:1
-msgid "Kill Content Loser"
-msgstr "İçindəkilər Nümayişçisini Dayandır"
-
-#: components/loser/content/nautilus-content-loser-ui.xml.h:2
-msgid "Kill the Loser content view"
-msgstr "Loser içindəkilər nümayişini dayandır"
-
-#: components/loser/content/nautilus-content-loser-ui.xml.h:3
-#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
-#: components/sample/nautilus-sample-content-view-ui.xml.h:4
-#: src/nautilus-shell-ui.xml.h:82
-msgid "_File"
-msgstr "_Fayl"
-
-#: components/loser/content/nautilus-content-loser-ui.xml.h:4
-msgid "_Kill Content Loser"
-msgstr "Içindəkilər  Nümayişini _Dayandır"
-
-#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:1
-msgid "Content Loser"
-msgstr "İçindəkilər Nümaiyşi"
-
-#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:2
-msgid "Content Loser Viewer"
-msgstr "İçindəkilər Nümaiyşiçisi"
-
-#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:3
-msgid "Nautilus Content Loser"
-msgstr "Nautilus İçindəkilər Nümayişi"
-
-#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:4
-msgid "Nautilus content loser component's factory"
-msgstr "Nautilus içindəkilər nümayişi əlavələri e'malatxanası"
-
-#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:5
-msgid "Nautilus content loser factory"
-msgstr "Nautilus içindəkilər nümayişi e'malatxanası"
-
-#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:6
-msgid "Nautilus content view that fails on command"
-msgstr ""
-"Bu bir nümunəvi Nautilus möhtəviyyatı nümayişidir və tələb edildiyində itir."
-
-#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:7
-msgid "View as Content Loser"
-msgstr "İçindəkilər Nümayişçisi olaraq Göstər"
-
 #: components/loser/sidebar/nautilus-sidebar-loser.c:143
 #, c-format
 msgid ""
@@ -520,39 +368,6 @@ msgstr ""
 #: components/loser/sidebar/nautilus-sidebar-loser.c:192
 msgid "You have tried to kill the Sidebar Loser"
 msgstr "Yan Çubuq Nümayişçisini dayandırmaq istədiniz"
-
-#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:1
-msgid "Kill Sidebar Loser"
-msgstr "Yan Çubuq Nümayişini Dayandır"
-
-#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:2
-msgid "Kill the Loser sidebar panel"
-msgstr "Loser Yan Çubuğu Panelini Dayandır"
-
-#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:4
-msgid "_Kill Sidebar Loser"
-msgstr "Yan Çubuq Loserini _Dayandır"
-
-#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:1
-msgid "Nautilus Sidebar Loser"
-msgstr "Nautilus Yan Çubuq Loseri"
-
-#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:2
-msgid "Nautilus sidebar loser component's factory"
-msgstr "Nautilus yan çubuq loseri əlavələri e'malatxanası"
-
-#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:3
-msgid "Nautilus sidebar loser factory"
-msgstr "Nautilus yan çubuq loseri e'malatxanası"
-
-#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:4
-msgid "Nautilus sidebar view that fails on command"
-msgstr ""
-"Bu bir nümunəvi Nautilus möhtəviyyatı nümayişidir və taləb edildiyində itir."
-
-#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:5
-msgid "Sidebar Loser"
-msgstr "Yan Çubuq Loseri"
 
 #: components/mozilla/mozilla-preferences.cpp:126
 #, c-format
@@ -909,7 +724,15 @@ msgstr "x-imap4-modified-utf7"
 msgid "x-u-escaped"
 msgstr "x-u-escaped"
 
-#: components/mozilla/nautilus-mozilla-content-view.c:764
+#: components/mozilla/nautilus-mozilla-content-view.c:395
+msgid "name of icon for the mozilla view"
+msgstr ""
+
+#: components/mozilla/nautilus-mozilla-content-view.c:397
+msgid "mozilla summary info"
+msgstr ""
+
+#: components/mozilla/nautilus-mozilla-content-view.c:832
 msgid ""
 "A JavaScript function (small software program) on this page tried to open a "
 "new window, but Nautilus does not support the opening new windows by "
@@ -923,41 +746,9 @@ msgstr ""
 "Bu səhifəyə başqa səyyah ilə (məsələn Netscape ya da Mozilla) baxmaǧa "
 "çalışın."
 
-#: components/mozilla/nautilus-mozilla-content-view.c:768
+#: components/mozilla/nautilus-mozilla-content-view.c:836
 msgid "Nautilus JavaScript Warning"
 msgstr "Nautilus JavaScript Xəbərdarlığı"
-
-#: components/mozilla/nautilus-mozilla-ui.xml.h:1
-msgid "Charset Encoding"
-msgstr "Hərf Dəstəsi Kodlama"
-
-#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:1
-msgid "Mozilla Nautilus view"
-msgstr "Mozilla Nautilus Nümaiyişi"
-
-#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:2
-msgid "Mozilla Nautilus view factory"
-msgstr "Mozilla Nautilus nümayişi e'malatxanası"
-
-#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:3
-msgid "Mozilla content view component"
-msgstr "Mozilla içindəkilər nümayişi əlavəsi"
-
-#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:4
-msgid "Mozilla content view component's factory"
-msgstr "Mozilla içindəkilər nümayişi əlavəsləri e'malatxanası"
-
-#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
-msgid "View as Web Page"
-msgstr "Veb Səhifəsi olaraq Göstər"
-
-#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:6
-msgid "Web Page"
-msgstr "Veb Səhifəsi"
-
-#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:7
-msgid "Web Page Viewer"
-msgstr "Veb Səhifəsi Nümayişçisi"
 
 #: components/music/mpg123.c:29
 msgid "Blues"
@@ -1601,7 +1392,7 @@ msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Təəssüf ki `%s' istifadəli bir rəsm deyildir."
 
 #: components/music/nautilus-music-view.c:699
-#: src/nautilus-property-browser.c:1058 src/nautilus-property-browser.c:1310
+#: src/nautilus-property-browser.c:1058 src/nautilus-property-browser.c:1311
 msgid "Not an Image"
 msgstr "Rəsm deyildir"
 
@@ -1660,7 +1451,6 @@ msgstr "Dayandır"
 #: libnautilus-private/nautilus-file-operations.c:964
 #: libnautilus-private/nautilus-file-operations.c:979
 #: libnautilus-private/nautilus-file-operations.c:998
-#: src/nautilus-shell-ui.xml.h:55
 msgid "Stop"
 msgstr "Dayan"
 
@@ -1686,116 +1476,92 @@ msgstr "Mono"
 msgid "%s - %s"
 msgstr "%s - %s"
 
-#: components/music/Nautilus_View_music.oaf.in.h:1
-msgid "Factory for music view"
-msgstr "Musiqi nümayişi e'malatxanası"
-
-#: components/music/Nautilus_View_music.oaf.in.h:2
-msgid "Music"
-msgstr "Musiqi"
-
-#: components/music/Nautilus_View_music.oaf.in.h:3
-msgid "Music Viewer"
-msgstr "Musiqi Nümayişiçisi"
-
-#: components/music/Nautilus_View_music.oaf.in.h:4
-msgid "Music view"
-msgstr "Musiqi Nümayişi"
-
-#: components/music/Nautilus_View_music.oaf.in.h:5
-msgid "Music view factory"
-msgstr "Musiqi nümayişi e'malatxanası"
-
-#: components/music/Nautilus_View_music.oaf.in.h:6
-msgid "View as Music"
-msgstr "Musqi olaraq göstər"
-
-#: components/news/nautilus-news.c:1322
+#: components/news/nautilus-news.c:1327
 #, c-format
 msgid "Couldn't load %s"
 msgstr "%s yüklənə bilmir"
 
 #. put up a title that's displayed while we wait
-#: components/news/nautilus-news.c:1562
+#: components/news/nautilus-news.c:1567
 #, c-format
 msgid "Loading %s"
 msgstr "%s Yüklənir"
 
-#: components/news/nautilus-news.c:1899
+#: components/news/nautilus-news.c:1904
 msgid "Sorry, but you have not specified a name for the site!"
 msgstr "Təəsüf ki, saytın adını müəyyənləşdirmədiniz!"
 
-#: components/news/nautilus-news.c:1899
+#: components/news/nautilus-news.c:1904
 msgid "Missing Site Name Error"
 msgstr "Əksik Sayt Adı Xətası"
 
-#: components/news/nautilus-news.c:1903
+#: components/news/nautilus-news.c:1908
 msgid "Sorry, but you have not specified a URL for the site!"
 msgstr "Təəsüf ki, saytın URLsini müəyyənləşdirmədiniz!"
 
-#: components/news/nautilus-news.c:1903
+#: components/news/nautilus-news.c:1908
 msgid "Missing URL Error"
 msgstr "Əksik URL Xətası"
 
-#: components/news/nautilus-news.c:1920
+#: components/news/nautilus-news.c:1925
 msgid "Sorry, but the specified url doesn't seem to be a valid RSS file!"
 msgstr "Bağışlayın, göstərdiyiniz url hökmlü RSS faylı deyildir!"
 
-#: components/news/nautilus-news.c:1920
+#: components/news/nautilus-news.c:1925
 msgid "Invalid RSS URL"
 msgstr "Hökmsüz RSS URLsi"
 
-#: components/news/nautilus-news.c:2002
+#: components/news/nautilus-news.c:2007
 #: libnautilus-private/nautilus-undo-signal-handlers.c:175
 msgid "Edit"
 msgstr "Düzəlt"
 
-#: components/news/nautilus-news.c:2265
+#: components/news/nautilus-news.c:2270
 msgid "Remove Site"
 msgstr "Saytı Çıxart"
 
 #. allocate the name field
-#: components/news/nautilus-news.c:2284
+#: components/news/nautilus-news.c:2289
 msgid "Site Name:"
 msgstr "Sayt adı :"
 
-#: components/news/nautilus-news.c:2295
+#: components/news/nautilus-news.c:2300
 msgid "Site RSS URL:"
 msgstr "Saytın RSS URLsi:"
 
-#: components/news/nautilus-news.c:2310
+#: components/news/nautilus-news.c:2315
 msgid "Add New Site"
 msgstr "Yeni Sayt Əlavə Et"
 
 #. make the add new site label
-#: components/news/nautilus-news.c:2333
+#: components/news/nautilus-news.c:2338
 msgid "Add a New Site:"
 msgstr "Yeni Sayt Əlavə Et:"
 
-#: components/news/nautilus-news.c:2342
+#: components/news/nautilus-news.c:2347
 msgid "Remove a Site:"
 msgstr "Saytı Sil:"
 
 #. add the button box at the bottom with a cancel button
-#: components/news/nautilus-news.c:2350
-#: src/file-manager/fm-directory-view.c:4366
+#: components/news/nautilus-news.c:2355
+#: src/file-manager/fm-directory-view.c:4383
 msgid "Cancel"
 msgstr "Ləğv Et"
 
 #. add a descriptive label
-#: components/news/nautilus-news.c:2367
+#: components/news/nautilus-news.c:2372
 msgid "Select Sites:"
 msgstr "Saytları Seç:"
 
 #. allocate the button box for the done button
-#: components/news/nautilus-news.c:2382
+#: components/news/nautilus-news.c:2387
 #: libnautilus-private/nautilus-program-chooser.c:1280
 #: src/nautilus-bookmarks-window.c:123 src/nautilus-property-browser.c:358
 msgid "Done"
 msgstr "Oldu"
 
 #. add the empty message
-#: components/news/nautilus-news.c:2410
+#: components/news/nautilus-news.c:2415
 msgid ""
 "The News panel displays current headlines from your favorite websites.  "
 "Click the 'Select Sites' button to select the sites to display."
@@ -1804,37 +1570,13 @@ msgstr ""
 "Nümayiş etdiriləcək sayti seçmək üçün 'Saytlari Seç' düyməsinə tıqlayın."
 
 #. create a button box to hold the command buttons
-#: components/news/nautilus-news.c:2438
+#: components/news/nautilus-news.c:2443
 msgid "Select Sites"
 msgstr "Saytları Seç"
 
-#: components/news/Nautilus_View_news.oaf.in.h:1
-msgid "Factory for news view"
-msgstr "Xəbərlər nümayişi e'malatxanası"
-
-#: components/news/Nautilus_View_news.oaf.in.h:2
-msgid "News"
-msgstr "Xəbərlər"
-
-#: components/news/Nautilus_View_news.oaf.in.h:3
-msgid "News sidebar panel"
-msgstr "Xəbərlər yan çubuğu"
-
-#: components/news/Nautilus_View_news.oaf.in.h:4
-msgid "News sidebar panel fetches and displays RSS feeds"
-msgstr "Xəbərlər kənar paneli RSSləri alar və nümayiş etdirər"
-
-#: components/notes/Nautilus_View_notes.oaf.in.h:1
-msgid "Factory for annotation view"
-msgstr "Not nümayişi e'malatxanası"
-
-#: components/notes/Nautilus_View_notes.oaf.in.h:3
-msgid "Notes sidebar panel"
-msgstr "Not yan çubuğu"
-
-#: components/notes/Nautilus_View_notes.oaf.in.h:4
-msgid "Notes sidebar panel for Nautilus"
-msgstr "Nautilusun not yan çubuğu"
+#: components/news/nautilus-news.c:2503
+msgid "image indicating that the news has changed"
+msgstr ""
 
 #: components/sample/nautilus-sample-content-view.c:136
 msgid "(none)"
@@ -1862,47 +1604,6 @@ msgstr ""
 "\n"
 "Nümunə idarə çubuğu düyməsinə tıqladın ."
 
-#: components/sample/Nautilus_View_sample.oaf.in.h:3
-#: components/sample/nautilus-sample-content-view-ui.xml.h:1
-msgid "Sample"
-msgstr "Nümunə"
-
-#: components/sample/nautilus-sample-content-view-ui.xml.h:2
-msgid "This is a sample merged menu item"
-msgstr "Bu bir nümunəvi birleştirilmiş menyu üzvüdür"
-
-#: components/sample/nautilus-sample-content-view-ui.xml.h:3
-msgid "This is a sample merged toolbar button"
-msgstr "Bu bir nümunəvi birleştirilmiş vasitə çubuğu düyməsidir"
-
-#: components/sample/nautilus-sample-content-view-ui.xml.h:5
-msgid "_Sample"
-msgstr "N_ümunə"
-
-#: components/sample/Nautilus_View_sample.oaf.in.h:1
-msgid "Nautilus Sample view"
-msgstr "Nautilus Nümunə nümayişi"
-
-#: components/sample/Nautilus_View_sample.oaf.in.h:2
-msgid "Nautilus Sample view factory"
-msgstr "Nautilus Nümunə nümayişi e'malatxanası"
-
-#: components/sample/Nautilus_View_sample.oaf.in.h:4
-msgid "Sample Viewer"
-msgstr "Nümunə Nümayişçisi"
-
-#: components/sample/Nautilus_View_sample.oaf.in.h:5
-msgid "Sample content view component"
-msgstr "Nautilus Nümunə nümayişi əlavəsi"
-
-#: components/sample/Nautilus_View_sample.oaf.in.h:6
-msgid "Sample content view component's factory"
-msgstr "Nautilus Nümunə nümayişi əlavəsi e'malatxanası"
-
-#: components/sample/Nautilus_View_sample.oaf.in.h:7
-msgid "View as Sample"
-msgstr "Nümunə olaraq göstər"
-
 #: components/text/nautilus-text-view.c:332
 #, c-format
 msgid "Sorry, but %s is too large for Nautilus to load all of it."
@@ -1911,728 +1612,6 @@ msgstr "Bağışlayın, %s Nautilusun yükləməsi üçün çox böyükdür."
 #: components/text/nautilus-text-view.c:335
 msgid "File too large"
 msgstr "Fayl çox böyükdür"
-
-#: components/text/nautilus-text-view-ui.xml.h:1
-msgid "F_onts"
-msgstr "Ya_zı növləri"
-
-#: components/text/nautilus-text-view-ui.xml.h:2
-msgid "Lucida"
-msgstr "Lusida"
-
-#: components/text/nautilus-text-view-ui.xml.h:3
-msgid "Use the Courier Font"
-msgstr "Kuriyer Yazı Növünü İşlət"
-
-#: components/text/nautilus-text-view-ui.xml.h:4
-msgid "Use the Fixed Font"
-msgstr "Sabit Yazı Növünü İşlət"
-
-#: components/text/nautilus-text-view-ui.xml.h:5
-msgid "Use the GTK System Font"
-msgstr "GTK Sİstem Yazı Növünü İşlət"
-
-#: components/text/nautilus-text-view-ui.xml.h:6
-msgid "Use the Helvetica Font"
-msgstr "Helvetika Yazı Növünü İşlət"
-
-#: components/text/nautilus-text-view-ui.xml.h:7
-msgid "Use the Lucida Font"
-msgstr "Lusida Yazı Növünü İşlət"
-
-#: components/text/nautilus-text-view-ui.xml.h:8
-msgid "Use the Times Font"
-msgstr "Tayms Yazı Növünü İşlət"
-
-#: components/text/nautilus-text-view-ui.xml.h:9
-msgid "_Courier"
-msgstr "_Kuriyer"
-
-#: components/text/nautilus-text-view-ui.xml.h:10
-msgid "_Fixed"
-msgstr "_Sabit"
-
-#: components/text/nautilus-text-view-ui.xml.h:11
-msgid "_GTK System Font"
-msgstr "_GTK Sistem Yazı Növü"
-
-#: components/text/nautilus-text-view-ui.xml.h:12
-msgid "_Helvetica"
-msgstr "_Helvetika"
-
-#: components/text/nautilus-text-view-ui.xml.h:13
-msgid "_Times"
-msgstr "_Tayms"
-
-#: components/text/Nautilus_View_text.oaf.in.h:1
-msgid "Factory for text view"
-msgstr "Mətn nümayişi e'malatxanası"
-
-#: components/text/Nautilus_View_text.oaf.in.h:2
-msgid "Text"
-msgstr "Mətn"
-
-#: components/text/Nautilus_View_text.oaf.in.h:3
-msgid "Text Viewer"
-msgstr "Mətn Nümayişçisi"
-
-#: components/text/Nautilus_View_text.oaf.in.h:4
-msgid "Text view"
-msgstr "Mətn Nümayişi"
-
-#: components/text/Nautilus_View_text.oaf.in.h:5
-msgid "Text view factory"
-msgstr "Mətn nümayişi e'malatxanası"
-
-#: components/text/Nautilus_View_text.oaf.in.h:6
-msgid "View as Text"
-msgstr "Mətn olaraq göstər"
-
-#: components/text/services/google.xml.h:1
-msgid "Search Google for Selected Text"
-msgstr "Seçili Kəliməyi \"Google\"də Axtar"
-
-#: components/text/services/google.xml.h:2
-msgid "Use Google to search the web for the selected text"
-msgstr "Seçili mətni vebdə axtarmaq üçün \"Google\"dən istifadə et"
-
-#: components/text/services/webster.xml.h:1
-msgid "Look Up Selected Text in Dictionary"
-msgstr "Seçili Mətni Sözlükdə Axtar"
-
-#: components/text/services/webster.xml.h:2
-msgid "Look up the selected text in the Merriam-Webster dictionary"
-msgstr "Seçili mətni Meriyem-Vebster sözlüyündə axtar"
-
-#: components/throbber/Nautilus_Control_throbber.oaf.in.h:1
-msgid "animation to indicate on-going activity"
-msgstr "fəaliyyəti göstərən animasiya"
-
-#: components/throbber/Nautilus_Control_throbber.oaf.in.h:2
-msgid "throbber"
-msgstr "zonquldayıcı"
-
-#: components/throbber/Nautilus_Control_throbber.oaf.in.h:3
-msgid "throbber factory"
-msgstr "zonquldayıcı e'malatxanası"
-
-#: components/throbber/Nautilus_Control_throbber.oaf.in.h:4
-msgid "throbber object factory"
-msgstr "zonquldayıcı cism e'malatxanası"
-
-#: components/tree/Nautilus_View_tree.oaf.in.h:1
-msgid "Nautilus Tree sidebar panel"
-msgstr "Nautilus Ağac yan çubuq paneli"
-
-#: components/tree/Nautilus_View_tree.oaf.in.h:2
-msgid "Nautilus Tree view"
-msgstr "Nautilus Ağac nümayişi"
-
-#: components/tree/Nautilus_View_tree.oaf.in.h:3
-#: src/nautilus-preferences-dialog.c:386
-msgid "Tree"
-msgstr "Ağac"
-
-#: data/browser.xml.h:1
-msgid "Apparition"
-msgstr "Aparatlar"
-
-#: data/browser.xml.h:2
-msgid "Azul"
-msgstr "Azul"
-
-#: data/browser.xml.h:3
-msgid "Black"
-msgstr "Qara"
-
-#: data/browser.xml.h:4
-msgid "Blue Ridge"
-msgstr "Göy Təpə"
-
-#: data/browser.xml.h:5
-msgid "Blue Rough"
-msgstr "Qaba Göy"
-
-#: data/browser.xml.h:6
-msgid "Blue Type"
-msgstr "Göysayağı"
-
-#: data/browser.xml.h:7
-msgid "Brushed Metal"
-msgstr "Fırçalanmış Metal"
-
-#: data/browser.xml.h:8
-msgid "Bubble Gum"
-msgstr "Bubli Qum"
-
-#: data/browser.xml.h:9
-msgid "Burlap"
-msgstr "Çuval Beiz"
-
-#: data/browser.xml.h:10
-msgid "Camouflage"
-msgstr "Kamuflyaj"
-
-#: data/browser.xml.h:11
-msgid "Certified"
-msgstr "Vəsiqəli"
-
-#: data/browser.xml.h:12
-msgid "Chalk"
-msgstr "Təbaşir"
-
-#: data/browser.xml.h:13
-msgid "Charcoal"
-msgstr "Manqal Kömürü"
-
-#: data/browser.xml.h:14
-msgid "Colors"
-msgstr "Rənglər"
-
-#: data/browser.xml.h:15
-msgid "Concrete"
-msgstr "Beton"
-
-#: data/browser.xml.h:16
-msgid "Cool"
-msgstr "Serin"
-
-#: data/browser.xml.h:17
-msgid "Cork"
-msgstr "Tıxac"
-
-#: data/browser.xml.h:18
-msgid "Countertop"
-msgstr "Piştaxta"
-
-#: data/browser.xml.h:19
-msgid "Danger"
-msgstr "Təhlükə"
-
-#: data/browser.xml.h:20
-msgid "Danube"
-msgstr "Don Çayı"
-
-#: data/browser.xml.h:21
-msgid "Dark Cork"
-msgstr "Tünd Manqal Kömürü"
-
-#: data/browser.xml.h:22
-msgid "Dark GNOME"
-msgstr "Tünd GNOME"
-
-#: data/browser.xml.h:23
-msgid "Deep Teal"
-msgstr "Dərin Til"
-
-#: data/browser.xml.h:24
-msgid "Distinguished"
-msgstr "Ayrılmış"
-
-#: data/browser.xml.h:25
-msgid "Dots"
-msgstr "Nöqtələr"
-
-#: data/browser.xml.h:26
-msgid "Draft"
-msgstr "Damla"
-
-#: data/browser.xml.h:27
-msgid "Drag a color to an object to change it to that color"
-msgstr "Rəngini dəyişdirmək üçün rəngi üstünə sürükləyin"
-
-#: data/browser.xml.h:28
-msgid "Drag a pattern tile to an object to change it"
-msgstr "Cismin üstünə alması üçün patern kürəmiti sürükləyin"
-
-#: data/browser.xml.h:29
-msgid "Drag an emblem to an object to add it to the object"
-msgstr "Cismin alması üçün üstünə emblem sürükləyin"
-
-#: data/browser.xml.h:30
-msgid "Eclipse"
-msgstr "Qaranlıqlaşma"
-
-#: data/browser.xml.h:31 src/file-manager/fm-list-view.c:2285
-#: src/file-manager/fm-properties-window.c:1620
-#: src/file-manager/fm-search-list-view.c:499
-msgid "Emblems"
-msgstr "Emblemlər"
-
-#: data/browser.xml.h:32
-msgid "Envy"
-msgstr "Qısqanclıq"
-
-#: data/browser.xml.h:33
-msgid "Erase"
-msgstr "Poz"
-
-#: data/browser.xml.h:34
-msgid "Favorite"
-msgstr "Pərəstiş Etdiyim"
-
-#: data/browser.xml.h:35
-msgid "Fibers"
-msgstr "Tellər"
-
-#: data/browser.xml.h:36
-msgid "Fire Engine"
-msgstr "Alov Mühərriki"
-
-#: data/browser.xml.h:37
-msgid "Fleur De Lis"
-msgstr "Fleur De Lis"
-
-#: data/browser.xml.h:38
-msgid "Floral"
-msgstr "Flora"
-
-#: data/browser.xml.h:39
-msgid "Fossil"
-msgstr "Fosil"
-
-#: data/browser.xml.h:40 icons/gnome/gnome.xml.h:2
-msgid "GNOME"
-msgstr "GNOME"
-
-#: data/browser.xml.h:41
-msgid "Granite"
-msgstr "Qranit"
-
-#: data/browser.xml.h:42
-msgid "Grapefruit"
-msgstr "Üzüm"
-
-#: data/browser.xml.h:43
-msgid "Green Weave"
-msgstr "Yaşıl Toxuma"
-
-#: data/browser.xml.h:44
-msgid "Ice"
-msgstr "Buz"
-
-#: data/browser.xml.h:45
-msgid "Important"
-msgstr "Vacib"
-
-#: data/browser.xml.h:46
-msgid "Indigo"
-msgstr "İndiqo"
-
-#: data/browser.xml.h:47
-msgid "Leaf"
-msgstr "Yarpaq"
-
-#: data/browser.xml.h:48
-msgid "Lemon"
-msgstr "Limon"
-
-#: data/browser.xml.h:49
-msgid "Mango"
-msgstr "Manqo"
-
-#: data/browser.xml.h:50
-msgid "Manila Paper"
-msgstr "Manila Kağızı"
-
-#: data/browser.xml.h:51
-msgid "Moss Ridge"
-msgstr "Yosun Təpəsi"
-
-#: data/browser.xml.h:52
-msgid "Mud"
-msgstr "Palçıq"
-
-#: data/browser.xml.h:53
-msgid "New"
-msgstr "Yeni"
-
-#: data/browser.xml.h:54
-msgid "Numbers"
-msgstr "Rəqəmlər"
-
-#: data/browser.xml.h:55 libnautilus-private/nautilus-file-operations.c:1087
-msgid "OK"
-msgstr "Oldu"
-
-#: data/browser.xml.h:56
-msgid "Ocean Strips"
-msgstr "Okean Zolağı"
-
-#: data/browser.xml.h:57
-msgid "Oh No"
-msgstr "Xeyr Xeyr"
-
-#: data/browser.xml.h:58
-msgid "Onyx"
-msgstr "Oniks"
-
-#: data/browser.xml.h:59
-msgid "Orange"
-msgstr "Narıncı"
-
-#: data/browser.xml.h:60
-msgid "Pale Blue"
-msgstr "Solğun Göy"
-
-#: data/browser.xml.h:61
-msgid "Patterns"
-msgstr "Patern"
-
-#: data/browser.xml.h:62
-msgid "Personal"
-msgstr "Şəxsi"
-
-#: data/browser.xml.h:63
-msgid "Purple Marble"
-msgstr "Əflatun Mərmər"
-
-#: data/browser.xml.h:64
-msgid "Ridged Paper"
-msgstr "Qırışıq Kağız"
-
-#: data/browser.xml.h:65
-msgid "Rough Paper"
-msgstr "Qaba Kağız"
-
-#: data/browser.xml.h:66
-msgid "Ruby"
-msgstr "Yaqut"
-
-#: data/browser.xml.h:67
-msgid "Sea Foam"
-msgstr "Dəniz Köpüyü"
-
-#: data/browser.xml.h:68
-msgid "Shale"
-msgstr "Gil"
-
-#: data/browser.xml.h:69
-msgid "Silver"
-msgstr "Gümüş"
-
-#: data/browser.xml.h:70
-msgid "Sky"
-msgstr "Göy üzü"
-
-#: data/browser.xml.h:71
-msgid "Sky Ridge"
-msgstr "Göy Üzü Təpəsi"
-
-#: data/browser.xml.h:72
-msgid "Snow Ridge"
-msgstr "Qar Təpəsi"
-
-#: data/browser.xml.h:73
-msgid "Special"
-msgstr "Xüsusi"
-
-#: data/browser.xml.h:74
-msgid "Stucco"
-msgstr "Stukko"
-
-#: data/browser.xml.h:75
-msgid "Tangerine"
-msgstr "Mandalin"
-
-#: data/browser.xml.h:76
-msgid "Terracotta"
-msgstr "Şüşəbənd"
-
-#: data/browser.xml.h:77
-msgid "Urgent"
-msgstr "İsrarlı"
-
-#: data/browser.xml.h:78
-msgid "Violet"
-msgstr "Bənövşə"
-
-#: data/browser.xml.h:79
-msgid "Wavy White"
-msgstr "Dalğalı Ağ"
-
-#: data/browser.xml.h:80
-msgid "White"
-msgstr "Ağ"
-
-#: data/browser.xml.h:81
-msgid "White Ribs"
-msgstr "Ağ Damarlanma"
-
-#: data/linksets/apps.xml.h:2
-msgid "Gnumeric"
-msgstr "Gnumerik"
-
-#: data/linksets/apps.xml.h:3
-msgid "Netscape"
-msgstr "Netscape"
-
-#: data/linksets/apps.xml.h:4
-msgid "The Gimp"
-msgstr "GİMP"
-
-#: data/linksets/desktop.xml.h:1 src/nautilus-preferences-dialog.c:80
-#: src/nautilus-preferences-dialog.c:85
-msgid "Desktop"
-msgstr "Masa Üstü"
-
-#: data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:5169
-#: libnautilus-private/nautilus-trash-directory.c:383
-#: src/file-manager/fm-desktop-icon-view.c:71
-msgid "Trash"
-msgstr "Zibil"
-
-#: data/linksets/home.xml.h:1
-msgid "Computer"
-msgstr "Kompüter"
-
-#: data/linksets/home.xml.h:2
-msgid "Home Directory"
-msgstr "Ev Qovluğu"
-
-#: data/linksets/home.xml.h:3 src/nautilus-service-ui.xml.h:4
-msgid "Services"
-msgstr "Xidmətlər"
-
-#: data/linksets/portals.xml.h:1
-msgid "Excite"
-msgstr "Həyəcan"
-
-#: data/linksets/portals.xml.h:2
-msgid "Portals"
-msgstr "Portallar"
-
-#: data/linksets/portals.xml.h:3
-msgid "Yahoo"
-msgstr "Yahoo"
-
-#: data/linksets/search_engines.xml.h:1
-msgid "Alta Vista"
-msgstr "Alta Vista"
-
-#: data/linksets/search_engines.xml.h:2
-msgid "Google"
-msgstr "Google"
-
-#: data/linksets/search_engines.xml.h:3 src/nautilus-preferences-dialog.c:282
-msgid "Search Engines"
-msgstr "Axtarış Mühərrikləri"
-
-#: data/static_bookmarks.xml.h:1
-msgid "Allaire"
-msgstr "Allaire"
-
-#: data/static_bookmarks.xml.h:2
-msgid "Binary Freedom"
-msgstr "Binary Freedom"
-
-#: data/static_bookmarks.xml.h:3
-msgid "Borland"
-msgstr "Borland"
-
-#: data/static_bookmarks.xml.h:4
-msgid "CNET Computers.com"
-msgstr "CNET Computers.com"
-
-#: data/static_bookmarks.xml.h:5
-msgid "CNET Linux Center"
-msgstr "CNET Linuks Mərkəzi"
-
-#: data/static_bookmarks.xml.h:6
-msgid "CollabNet"
-msgstr "CollabNet"
-
-#: data/static_bookmarks.xml.h:7
-msgid "Compaq"
-msgstr "Compaq"
-
-#: data/static_bookmarks.xml.h:8
-msgid "Conectiva"
-msgstr "Conectiva"
-
-#: data/static_bookmarks.xml.h:9
-msgid "Covalent"
-msgstr "Covalent"
-
-#: data/static_bookmarks.xml.h:10
-msgid "Debian.org"
-msgstr "Debian.org"
-
-#: data/static_bookmarks.xml.h:11
-msgid "Dell"
-msgstr "Dell"
-
-#: data/static_bookmarks.xml.h:12
-msgid "Eazel"
-msgstr "Eazel"
-
-#: data/static_bookmarks.xml.h:13
-msgid "Freshmeat.net"
-msgstr "Freshmeat.net"
-
-#: data/static_bookmarks.xml.h:14
-msgid "GNOME.org"
-msgstr "GNOME.org"
-
-#: data/static_bookmarks.xml.h:15
-msgid "GNU.org"
-msgstr "GNU.org"
-
-#: data/static_bookmarks.xml.h:17
-msgid "International"
-msgstr "Beynəlmiləl"
-
-#: data/static_bookmarks.xml.h:18
-msgid "Linux Documentation Project"
-msgstr "Linuks Sənədləri Lahiyəsi"
-
-#: data/static_bookmarks.xml.h:19
-msgid "Linux One"
-msgstr "Linux One"
-
-#: data/static_bookmarks.xml.h:20
-msgid "Linux Online"
-msgstr "Linuks Onlayn"
-
-#: data/static_bookmarks.xml.h:21
-msgid "Linux Resources"
-msgstr "Linuks Mənbələri"
-
-#: data/static_bookmarks.xml.h:22
-msgid "Linux Weekly News"
-msgstr "Linuks Həftəlik Xəbərlər"
-
-#: data/static_bookmarks.xml.h:23
-msgid "LinuxNewbie.org"
-msgstr "LinuxNewbie.org"
-
-#: data/static_bookmarks.xml.h:24
-msgid "LinuxOrbit.com"
-msgstr "LinuxOrbit.com"
-
-#: data/static_bookmarks.xml.h:25
-msgid "MandrakeSoft"
-msgstr "MandrakeSoft"
-
-#: data/static_bookmarks.xml.h:26
-msgid "Netraverse"
-msgstr "Netraverse"
-
-#: data/static_bookmarks.xml.h:27
-msgid "News and Media"
-msgstr "Xəbərlər və Medya"
-
-#: data/static_bookmarks.xml.h:28
-msgid "O'Reilly"
-msgstr "O'Reilly"
-
-#: data/static_bookmarks.xml.h:29
-msgid "OSDN"
-msgstr "OSDN"
-
-#: data/static_bookmarks.xml.h:30
-msgid "Open Source Asia"
-msgstr "Açıq Mənbə Asiya"
-
-#: data/static_bookmarks.xml.h:31
-msgid "OpenOffice"
-msgstr "OpenOffice"
-
-#: data/static_bookmarks.xml.h:32
-msgid "Penguin Computing"
-msgstr "Penguin Computing"
-
-#: data/static_bookmarks.xml.h:33
-msgid "Rackspace"
-msgstr "Rackspace"
-
-#: data/static_bookmarks.xml.h:34
-msgid "Red Hat"
-msgstr "Red Hat"
-
-#: data/static_bookmarks.xml.h:35
-msgid "Red Hat Network"
-msgstr "\"Red Hat\" Şəbəkəsi"
-
-#: data/static_bookmarks.xml.h:36
-msgid "RedFlag Linux"
-msgstr "RedFlag Linux"
-
-#: data/static_bookmarks.xml.h:37
-msgid "Software"
-msgstr "Proqramlar"
-
-#: data/static_bookmarks.xml.h:38
-msgid "SourceForge"
-msgstr "SourceForge"
-
-#: data/static_bookmarks.xml.h:39
-msgid "Sun StarOffice"
-msgstr "Sun StarOffice"
-
-#: data/static_bookmarks.xml.h:40
-msgid "Sun Wah Linux"
-msgstr "Sun Wah Linux"
-
-#: data/static_bookmarks.xml.h:41
-msgid "Web Services"
-msgstr "Veb Xidmətləri"
-
-#: data/static_bookmarks.xml.h:42
-msgid "ZDNet Linux Hardware Database"
-msgstr "ZDNet Linuks Texniki Tə'minat Databeyzi"
-
-#: data/static_bookmarks.xml.h:43
-msgid "ZDNet Linux Resource Center"
-msgstr "ZDNet Linuks Mənbəyi Mərkəzi"
-
-#: data/static_bookmarks.xml.h:44
-msgid "Zero-Knowledge"
-msgstr "Zero-Knowledge"
-
-#: icons/crux_eggplant/crux_eggplant.xml.h:1
-msgid "An Eggplant variation of the Crux theme."
-msgstr "Crux örtüsünün Eggplanet variasiyası."
-
-#: icons/crux_eggplant/crux_eggplant.xml.h:2
-msgid "Crux-Eggplant"
-msgstr "Crux-Eggplant"
-
-#: icons/crux_teal/crux_teal.xml.h:1
-msgid "A Teal variation of the Crux theme."
-msgstr "Crux örtüsünün variasiyası."
-
-#: icons/crux_teal/crux_teal.xml.h:2
-msgid "Crux-Teal"
-msgstr "Crux-Teal"
-
-#: icons/default.xml.h:1
-msgid "Default"
-msgstr "Əsas"
-
-#: icons/default.xml.h:2
-msgid "This is the default theme for Nautilus."
-msgstr "Nautilusun əsas örtüsü."
-
-#: icons/gnome/gnome.xml.h:1
-msgid "A theme designed to fit well with the classic GNOME environment"
-msgstr "Bu örtü klassik GNOME örtülərinə əntiqə uyğun gəlir"
-
-#: icons/sierra/sierra.xml.h:1
-msgid "Sierra"
-msgstr "Sierra"
-
-#: icons/sierra/sierra.xml.h:2
-msgid "Uses manila folders and gray-green backgrounds."
-msgstr "Manila qovluqlar və boz-yaşıl arxa planlardan istifadə edir."
-
-#: icons/tahoe/tahoe.xml.h:1
-msgid "Tahoe"
-msgstr "Tahoe"
-
-#: icons/tahoe/tahoe.xml.h:2
-msgid "This theme uses photo-realistic folders."
-msgstr "Bu örtü fotoqrafik həqiqətdə qovluqlar işlədər."
 
 #. Note to localizers: this font is used for text items in Druid pages
 #: libnautilus-private/nautilus-druid-page-eazel.c:381
@@ -2659,64 +1638,64 @@ msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2412
+#: libnautilus-private/nautilus-file.c:2432
 msgid "today at 00:00:00 PM"
 msgstr "bugün 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2413
+#: libnautilus-private/nautilus-file.c:2433
 msgid "today at %-I:%M:%S %p"
 msgstr "bugün %-I:%M %S %p da(də)"
 
-#: libnautilus-private/nautilus-file.c:2415
+#: libnautilus-private/nautilus-file.c:2435
 msgid "today at 00:00 PM"
 msgstr "bugün 00:00 PM də"
 
-#: libnautilus-private/nautilus-file.c:2416
+#: libnautilus-private/nautilus-file.c:2436
 msgid "today at %-I:%M %p"
 msgstr "bugün %-I:%M %p da(də)"
 
-#: libnautilus-private/nautilus-file.c:2418
+#: libnautilus-private/nautilus-file.c:2438
 msgid "today, 00:00 PM"
 msgstr "bugün, 00:00 PMdə"
 
-#: libnautilus-private/nautilus-file.c:2419
+#: libnautilus-private/nautilus-file.c:2439
 msgid "today, %-I:%M %p"
 msgstr "bugün %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2421
-#: libnautilus-private/nautilus-file.c:2422
+#: libnautilus-private/nautilus-file.c:2441
+#: libnautilus-private/nautilus-file.c:2442
 msgid "today"
 msgstr "bugün"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2431
+#: libnautilus-private/nautilus-file.c:2451
 msgid "yesterday at 00:00:00 PM"
 msgstr "dünən saat 00:00:00 da(də)"
 
-#: libnautilus-private/nautilus-file.c:2432
+#: libnautilus-private/nautilus-file.c:2452
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "dünən saat %-H:%M :%S %p da(də)"
 
-#: libnautilus-private/nautilus-file.c:2434
+#: libnautilus-private/nautilus-file.c:2454
 msgid "yesterday at 00:00 PM"
 msgstr "dünən saat 00:00 PMdə"
 
-#: libnautilus-private/nautilus-file.c:2435
+#: libnautilus-private/nautilus-file.c:2455
 msgid "yesterday at %-I:%M %p"
 msgstr "dünən saat %-H:%M %p da(də)"
 
-#: libnautilus-private/nautilus-file.c:2437
+#: libnautilus-private/nautilus-file.c:2457
 msgid "yesterday, 00:00 PM"
 msgstr "dünən, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2438
+#: libnautilus-private/nautilus-file.c:2458
 msgid "yesterday, %-I:%M %p"
 msgstr "dünən saat %-I:%M %p da(də)"
 
-#: libnautilus-private/nautilus-file.c:2440
-#: libnautilus-private/nautilus-file.c:2441
+#: libnautilus-private/nautilus-file.c:2460
+#: libnautilus-private/nautilus-file.c:2461
 msgid "yesterday"
 msgstr "dünən"
 
@@ -2725,132 +1704,132 @@ msgstr "dünən"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2452
+#: libnautilus-private/nautilus-file.c:2472
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Çərşənbə, Sentyabr 00 0000 saat 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2453
+#: libnautilus-private/nautilus-file.c:2473
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %B %-d %Y  %-I:%M:%S %p da(də)"
 
-#: libnautilus-private/nautilus-file.c:2455
+#: libnautilus-private/nautilus-file.c:2475
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Be, Okt 00 0000 saat 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2456
+#: libnautilus-private/nautilus-file.c:2476
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %b %-d %Y saat %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2458
+#: libnautilus-private/nautilus-file.c:2478
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Be, Okt 00 0000 saat 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2459
+#: libnautilus-private/nautilus-file.c:2479
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %b %-d %Y saat %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2461
+#: libnautilus-private/nautilus-file.c:2481
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "Okt 00 0000 saat 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2462
+#: libnautilus-private/nautilus-file.c:2482
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%b %-d %Y saat %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2464
+#: libnautilus-private/nautilus-file.c:2484
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "Okt 00 0000, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2465
+#: libnautilus-private/nautilus-file.c:2485
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b %-d %Y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2467
+#: libnautilus-private/nautilus-file.c:2487
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 001:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2468
+#: libnautilus-private/nautilus-file.c:2488
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%m/%-d/%y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2470
+#: libnautilus-private/nautilus-file.c:2490
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2471
+#: libnautilus-private/nautilus-file.c:2491
 msgid "%m/%d/%y"
 msgstr "%m/%d/%y"
 
-#: libnautilus-private/nautilus-file.c:3742
+#: libnautilus-private/nautilus-file.c:3762
 msgid "0 items"
 msgstr "0 üzv"
 
-#: libnautilus-private/nautilus-file.c:3742
+#: libnautilus-private/nautilus-file.c:3762
 msgid "0 folders"
 msgstr "0 qovluq"
 
-#: libnautilus-private/nautilus-file.c:3743
+#: libnautilus-private/nautilus-file.c:3763
 msgid "0 files"
 msgstr "0 fayl"
 
-#: libnautilus-private/nautilus-file.c:3747
+#: libnautilus-private/nautilus-file.c:3767
 msgid "1 item"
 msgstr "1 üzv"
 
-#: libnautilus-private/nautilus-file.c:3747
+#: libnautilus-private/nautilus-file.c:3767
 msgid "1 folder"
 msgstr "1 qovluq"
 
-#: libnautilus-private/nautilus-file.c:3748
+#: libnautilus-private/nautilus-file.c:3768
 msgid "1 file"
 msgstr "1 fayl"
 
-#: libnautilus-private/nautilus-file.c:3751
+#: libnautilus-private/nautilus-file.c:3771
 #, c-format
 msgid "%u items"
 msgstr "%u üzv"
 
-#: libnautilus-private/nautilus-file.c:3751
+#: libnautilus-private/nautilus-file.c:3771
 #, c-format
 msgid "%u folders"
 msgstr "%u qovluq"
 
-#: libnautilus-private/nautilus-file.c:3752
+#: libnautilus-private/nautilus-file.c:3772
 #, c-format
 msgid "%u files"
 msgstr "%u fayl"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4059
-#: libnautilus-private/nautilus-file.c:4075
+#: libnautilus-private/nautilus-file.c:4079
+#: libnautilus-private/nautilus-file.c:4095
 msgid "? items"
 msgstr "? üzv"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4065
+#: libnautilus-private/nautilus-file.c:4085
 msgid "? bytes"
 msgstr "? bayt"
 
-#: libnautilus-private/nautilus-file.c:4080
+#: libnautilus-private/nautilus-file.c:4100
 msgid "unknown type"
 msgstr "namə'lum növ"
 
-#: libnautilus-private/nautilus-file.c:4083
+#: libnautilus-private/nautilus-file.c:4103
 msgid "unknown MIME type"
 msgstr "namə'lum MIME növü"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4089
+#: libnautilus-private/nautilus-file.c:4109
 msgid "unknown"
 msgstr "namə'lum"
 
-#: libnautilus-private/nautilus-file.c:4121
+#: libnautilus-private/nautilus-file.c:4141
 msgid "program"
 msgstr "proqram"
 
-#: libnautilus-private/nautilus-file.c:4133
+#: libnautilus-private/nautilus-file.c:4153
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2859,16 +1838,16 @@ msgstr ""
 "\"x-qovluq/normal\" üçün izahat tapa bilmirəm. Bu sizin gnome-vfs.keys "
 "faylınızın səhv yerdə olduğunu ya da nədənsə tapıla bilmədiyini göstərir."
 
-#: libnautilus-private/nautilus-file.c:4137
-#, c-format
+#: libnautilus-private/nautilus-file.c:4157
+#, fuzzy, c-format
 msgid ""
-"No description found for mime type \"%s\" (file is \"%s\"), tell aaron@eazel."
-"com"
+"No description found for mime type \"%s\" (file is \"%s\"), please tell the "
+"gnome-vfs mailing list."
 msgstr ""
 "\"%s\" maym növü üçün izahat (\"%s\" faylı) tapıla bilmədi, \"aaron@eazel.com"
 "\"a söylə."
 
-#: libnautilus-private/nautilus-file.c:4151
+#: libnautilus-private/nautilus-file.c:4171
 msgid "link"
 msgstr "bağla"
 
@@ -2877,14 +1856,20 @@ msgstr "bağla"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #: libnautilus-private/nautilus-file-operations.c:1172
-#: libnautilus-private/nautilus-file.c:4157
+#: libnautilus-private/nautilus-file.c:4177
 #, c-format
 msgid "link to %s"
 msgstr "\"%s\"a(ə) bağla"
 
-#: libnautilus-private/nautilus-file.c:4171
+#: libnautilus-private/nautilus-file.c:4191
 msgid "link (broken)"
 msgstr "körpü qopuqdur"
+
+#: libnautilus-private/nautilus-file.c:5189
+#: libnautilus-private/nautilus-trash-directory.c:383
+#: src/file-manager/fm-desktop-icon-view.c:71
+msgid "Trash"
+msgstr "Zibil"
 
 #. "From" dialog label, source path gets placed next to it in the dialog
 #: libnautilus-private/nautilus-file-operations.c:414
@@ -3210,6 +2195,10 @@ msgstr ""
 #: libnautilus-private/nautilus-file-operations.c:1087
 msgid "Unable to replace file."
 msgstr "Fayl dəyişdirilə bilmir"
+
+#: libnautilus-private/nautilus-file-operations.c:1087
+msgid "OK"
+msgstr "Oldu"
 
 #: libnautilus-private/nautilus-file-operations.c:1097
 #, c-format
@@ -3828,225 +2817,219 @@ msgstr "Sadəcə olaraq yerli dosyelərdə"
 msgid "Never"
 msgstr "Qətiyyən"
 
-#: libnautilus-private/nautilus-global-preferences.c:82
-#, c-format
+#: libnautilus-private/nautilus-global-preferences.c:83
+#, no-c-format
 msgid "25%"
 msgstr "25%"
 
-#: libnautilus-private/nautilus-global-preferences.c:83
-#, c-format
+#: libnautilus-private/nautilus-global-preferences.c:85
+#, no-c-format
 msgid "50%"
 msgstr "50%"
 
-#: libnautilus-private/nautilus-global-preferences.c:84
-#, c-format
+#: libnautilus-private/nautilus-global-preferences.c:87
+#, no-c-format
 msgid "75%"
 msgstr "75%"
 
-#: libnautilus-private/nautilus-global-preferences.c:85
-#, c-format
+#: libnautilus-private/nautilus-global-preferences.c:89
+#, no-c-format
 msgid "100%"
 msgstr "100%"
 
-#: libnautilus-private/nautilus-global-preferences.c:86
-#, c-format
+#: libnautilus-private/nautilus-global-preferences.c:91
+#, no-c-format
 msgid "150%"
 msgstr "150%"
 
-#: libnautilus-private/nautilus-global-preferences.c:87
-#, c-format
+#: libnautilus-private/nautilus-global-preferences.c:93
+#, no-c-format
 msgid "200%"
 msgstr "200%"
 
-#: libnautilus-private/nautilus-global-preferences.c:88
-#, c-format
+#: libnautilus-private/nautilus-global-preferences.c:95
+#, no-c-format
 msgid "400%"
 msgstr "400%"
 
-#: libnautilus-private/nautilus-global-preferences.c:93
+#: libnautilus-private/nautilus-global-preferences.c:100
 msgid "100 K"
 msgstr "100 K"
 
-#: libnautilus-private/nautilus-global-preferences.c:94
+#: libnautilus-private/nautilus-global-preferences.c:101
 msgid "500 K"
 msgstr "500 K"
 
-#: libnautilus-private/nautilus-global-preferences.c:95
+#: libnautilus-private/nautilus-global-preferences.c:102
 msgid "1 MB"
 msgstr "1 MB"
 
-#: libnautilus-private/nautilus-global-preferences.c:96
+#: libnautilus-private/nautilus-global-preferences.c:103
 msgid "3 MB"
 msgstr "3 MB"
 
-#: libnautilus-private/nautilus-global-preferences.c:97
+#: libnautilus-private/nautilus-global-preferences.c:104
 msgid "5 MB"
 msgstr "5 MB"
 
-#: libnautilus-private/nautilus-global-preferences.c:98
+#: libnautilus-private/nautilus-global-preferences.c:105
 msgid "10 MB"
 msgstr "10 MB"
 
-#: libnautilus-private/nautilus-global-preferences.c:99
+#: libnautilus-private/nautilus-global-preferences.c:106
 msgid "100 MB"
 msgstr "100 MB"
 
-#: libnautilus-private/nautilus-global-preferences.c:105
+#: libnautilus-private/nautilus-global-preferences.c:112
 msgid "Activate items with a single click"
 msgstr "Üzvləri tək tıqlamayla seç"
 
-#: libnautilus-private/nautilus-global-preferences.c:109
+#: libnautilus-private/nautilus-global-preferences.c:116
 msgid "Activate items with a double click"
 msgstr "Üzvləri cüt tıqlamayla seç"
 
-#: libnautilus-private/nautilus-global-preferences.c:117
+#: libnautilus-private/nautilus-global-preferences.c:124
 msgid "Execute files when they are clicked"
 msgstr "Faylları tıqlandıqlarında işə sal"
 
-#: libnautilus-private/nautilus-global-preferences.c:121
+#: libnautilus-private/nautilus-global-preferences.c:128
 msgid "Display files when they are clicked"
 msgstr "Faylları tıqlandıqlarında göstər"
 
-#: libnautilus-private/nautilus-global-preferences.c:125
+#: libnautilus-private/nautilus-global-preferences.c:132
 msgid "Ask each time"
 msgstr "Hamişə soruş"
 
-#: libnautilus-private/nautilus-global-preferences.c:132
+#: libnautilus-private/nautilus-global-preferences.c:139
 msgid "search by text"
 msgstr "mətndən axtar"
 
-#: libnautilus-private/nautilus-global-preferences.c:133
+#: libnautilus-private/nautilus-global-preferences.c:140
 msgid "Search for files by file name only"
 msgstr "Faylları sadəcə olaraq fayl adına görə axtar"
 
-#: libnautilus-private/nautilus-global-preferences.c:136
+#: libnautilus-private/nautilus-global-preferences.c:143
 msgid "search by text and properties"
 msgstr "mətn və xüsusiyyətləre görə axtar"
 
-#: libnautilus-private/nautilus-global-preferences.c:137
+#: libnautilus-private/nautilus-global-preferences.c:144
 msgid "Search for files by file name and file properties"
 msgstr "Faylları fayl adı və xüsusiyyətləre görə axtar"
 
-#: libnautilus-private/nautilus-global-preferences.c:144
+#: libnautilus-private/nautilus-global-preferences.c:151
 msgid "Icon View"
 msgstr "Timsal Görünüşü"
 
-#: libnautilus-private/nautilus-global-preferences.c:145
+#: libnautilus-private/nautilus-global-preferences.c:152
 msgid "List View"
 msgstr "Sıra Görünüşü"
 
-#: libnautilus-private/nautilus-global-preferences.c:150
-#: src/file-manager/nautilus-icon-view-ui.xml.h:21
+#: libnautilus-private/nautilus-global-preferences.c:157
 msgid "Manually"
 msgstr "Əllə"
 
-#: libnautilus-private/nautilus-global-preferences.c:152
-#: libnautilus-private/nautilus-global-preferences.c:161
-#: src/file-manager/nautilus-icon-view-ui.xml.h:4
+#: libnautilus-private/nautilus-global-preferences.c:159
+#: libnautilus-private/nautilus-global-preferences.c:168
 msgid "By Name"
 msgstr "Ada Görə"
 
-#: libnautilus-private/nautilus-global-preferences.c:153
-#: libnautilus-private/nautilus-global-preferences.c:162
-#: src/file-manager/nautilus-icon-view-ui.xml.h:5
+#: libnautilus-private/nautilus-global-preferences.c:160
+#: libnautilus-private/nautilus-global-preferences.c:169
 msgid "By Size"
 msgstr "Böyüklüyə Görə"
 
-#: libnautilus-private/nautilus-global-preferences.c:154
-#: libnautilus-private/nautilus-global-preferences.c:163
-#: src/file-manager/nautilus-icon-view-ui.xml.h:6
+#: libnautilus-private/nautilus-global-preferences.c:161
+#: libnautilus-private/nautilus-global-preferences.c:170
 msgid "By Type"
 msgstr "Növə Görə"
 
-#: libnautilus-private/nautilus-global-preferences.c:155
-#: libnautilus-private/nautilus-global-preferences.c:164
-#: src/file-manager/nautilus-icon-view-ui.xml.h:2
+#: libnautilus-private/nautilus-global-preferences.c:162
+#: libnautilus-private/nautilus-global-preferences.c:171
 msgid "By Modification Date"
 msgstr "Təkmilləşdirmə Tarixine Görə"
 
-#: libnautilus-private/nautilus-global-preferences.c:156
-#: libnautilus-private/nautilus-global-preferences.c:165
-#: src/file-manager/nautilus-icon-view-ui.xml.h:1
+#: libnautilus-private/nautilus-global-preferences.c:163
+#: libnautilus-private/nautilus-global-preferences.c:172
 msgid "By Emblems"
 msgstr "Emblemlərə Görə"
 
-#: libnautilus-private/nautilus-global-preferences.c:170
+#: libnautilus-private/nautilus-global-preferences.c:177
 msgid "8"
 msgstr "8"
 
-#: libnautilus-private/nautilus-global-preferences.c:171
+#: libnautilus-private/nautilus-global-preferences.c:178
 msgid "10"
 msgstr "10"
 
-#: libnautilus-private/nautilus-global-preferences.c:172
+#: libnautilus-private/nautilus-global-preferences.c:179
 msgid "12"
 msgstr "12"
 
-#: libnautilus-private/nautilus-global-preferences.c:173
+#: libnautilus-private/nautilus-global-preferences.c:180
 msgid "14"
 msgstr "14"
 
-#: libnautilus-private/nautilus-global-preferences.c:174
+#: libnautilus-private/nautilus-global-preferences.c:181
 msgid "16"
 msgstr "16"
 
-#: libnautilus-private/nautilus-global-preferences.c:175
+#: libnautilus-private/nautilus-global-preferences.c:182
 msgid "18"
 msgstr "18"
 
-#: libnautilus-private/nautilus-global-preferences.c:176
+#: libnautilus-private/nautilus-global-preferences.c:183
 msgid "20"
 msgstr "20"
 
-#: libnautilus-private/nautilus-global-preferences.c:177
+#: libnautilus-private/nautilus-global-preferences.c:184
 msgid "22"
 msgstr "22"
 
-#: libnautilus-private/nautilus-global-preferences.c:178
+#: libnautilus-private/nautilus-global-preferences.c:185
 msgid "24"
 msgstr "24"
 
-#: libnautilus-private/nautilus-global-preferences.c:183
+#: libnautilus-private/nautilus-global-preferences.c:190
 msgid "size"
 msgstr "böyüklük"
 
-#: libnautilus-private/nautilus-global-preferences.c:184
+#: libnautilus-private/nautilus-global-preferences.c:191
 msgid "type"
 msgstr "növ"
 
-#: libnautilus-private/nautilus-global-preferences.c:185
+#: libnautilus-private/nautilus-global-preferences.c:192
 msgid "date modified"
 msgstr "təkmilləşdirmə tarixi"
 
-#: libnautilus-private/nautilus-global-preferences.c:186
+#: libnautilus-private/nautilus-global-preferences.c:193
 msgid "date changed"
 msgstr "dəyişiklik tarixi"
 
-#: libnautilus-private/nautilus-global-preferences.c:187
+#: libnautilus-private/nautilus-global-preferences.c:194
 msgid "date accessed"
 msgstr "istifadə tarixi"
 
-#: libnautilus-private/nautilus-global-preferences.c:188
+#: libnautilus-private/nautilus-global-preferences.c:195
 msgid "owner"
 msgstr "yiye"
 
-#: libnautilus-private/nautilus-global-preferences.c:189
+#: libnautilus-private/nautilus-global-preferences.c:196
 msgid "group"
 msgstr "qrup"
 
-#: libnautilus-private/nautilus-global-preferences.c:190
+#: libnautilus-private/nautilus-global-preferences.c:197
 msgid "permissions"
 msgstr "səlahiyyətlər"
 
-#: libnautilus-private/nautilus-global-preferences.c:191
+#: libnautilus-private/nautilus-global-preferences.c:198
 msgid "octal permissions"
 msgstr "onluq səlahiyyətlər"
 
-#: libnautilus-private/nautilus-global-preferences.c:192
+#: libnautilus-private/nautilus-global-preferences.c:199
 msgid "MIME type"
 msgstr "MIME növü"
 
-#: libnautilus-private/nautilus-global-preferences.c:193
+#: libnautilus-private/nautilus-global-preferences.c:200
 msgid "none"
 msgstr "yoxdur"
 
@@ -4100,7 +3083,6 @@ msgid "Switch"
 msgstr "Keç"
 
 #: libnautilus-private/nautilus-icon-text-item.c:1584
-#: src/file-manager/nautilus-icon-view-ui.xml.h:23
 msgid "Rename"
 msgstr "Təzədən adlandır"
 
@@ -4657,83 +3639,88 @@ msgstr "%s olaraq göstər"
 msgid "%s Viewer"
 msgstr "%s Göstərici"
 
-#: libnautilus-private/nautilus-volume-monitor.c:562
-#: libnautilus-private/nautilus-volume-monitor.c:581
+#: libnautilus-private/nautilus-volume-monitor.c:564
+#: libnautilus-private/nautilus-volume-monitor.c:583
 msgid "Unknown"
 msgstr "Namə'lum"
 
 #. Populate table with items we know localized names for.
-#: libnautilus-private/nautilus-volume-monitor.c:707
+#: libnautilus-private/nautilus-volume-monitor.c:713
 msgid "Floppy"
 msgstr "Floppi"
 
-#: libnautilus-private/nautilus-volume-monitor.c:708
+#: libnautilus-private/nautilus-volume-monitor.c:714
 msgid "CD-ROM"
 msgstr "CD-ROM"
 
-#: libnautilus-private/nautilus-volume-monitor.c:709
+#: libnautilus-private/nautilus-volume-monitor.c:715
 msgid "Zip Drive"
 msgstr "Zip Sürücüsü"
 
-#: libnautilus-private/nautilus-volume-monitor.c:724
-#: libnautilus-private/nautilus-volume-monitor.c:766
+#: libnautilus-private/nautilus-volume-monitor.c:730
+#: libnautilus-private/nautilus-volume-monitor.c:772
 msgid "Audio CD"
 msgstr "Audio CD"
 
-#: libnautilus-private/nautilus-volume-monitor.c:756
+#: libnautilus-private/nautilus-volume-monitor.c:762
 msgid "Root"
 msgstr "Kök"
 
-#: libnautilus-private/nautilus-volume-monitor.c:773
+#: libnautilus-private/nautilus-volume-monitor.c:779
 msgid "Ext2 Volume"
 msgstr "Ext2 Cildi"
 
-#: libnautilus-private/nautilus-volume-monitor.c:778
+#: libnautilus-private/nautilus-volume-monitor.c:782
+#, fuzzy
+msgid "Ext3 Volume"
+msgstr "Ext2 Cildi"
+
+#: libnautilus-private/nautilus-volume-monitor.c:787
 msgid "MSDOS Volume"
 msgstr "MSDOS Cildi"
 
-#: libnautilus-private/nautilus-volume-monitor.c:781
+#: libnautilus-private/nautilus-volume-monitor.c:790
 msgid "NFS Volume"
 msgstr "NFS Cildi"
 
-#: libnautilus-private/nautilus-volume-monitor.c:784
+#: libnautilus-private/nautilus-volume-monitor.c:793
 msgid "ReiserFS Volume"
 msgstr "ReiserFS Cildi"
 
-#: libnautilus-private/nautilus-volume-monitor.c:787
+#: libnautilus-private/nautilus-volume-monitor.c:796
 msgid "UFS Volume"
 msgstr "UFS Cildi"
 
-#: libnautilus-private/nautilus-volume-monitor.c:790
+#: libnautilus-private/nautilus-volume-monitor.c:799
 msgid "XFS Volume"
 msgstr "XFS Cildi"
 
-#: libnautilus-private/nautilus-volume-monitor.c:802
+#: libnautilus-private/nautilus-volume-monitor.c:812
 msgid "Unknown Volume"
 msgstr "Namə'lum Cild"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1522
+#: libnautilus-private/nautilus-volume-monitor.c:1541
 msgid "Mount Error"
 msgstr "Bağlama Xətası"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1522
+#: libnautilus-private/nautilus-volume-monitor.c:1541
 msgid "Unmount Error"
 msgstr "Ayırma Xətası"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1589
+#: libnautilus-private/nautilus-volume-monitor.c:1608
 msgid "is write-protected, mounting read-only"
 msgstr "yazma qorumalıdır, sırf oxunmaq üzəra bağlayıram"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1592
+#: libnautilus-private/nautilus-volume-monitor.c:1611
 msgid "is not a valid block device"
 msgstr "hökmlü blok avadanlığı deyil"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1593
+#: libnautilus-private/nautilus-volume-monitor.c:1612
 msgid "No medium found"
 msgstr "Heç bir medya tapılmadı"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1597
+#: libnautilus-private/nautilus-volume-monitor.c:1616
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4741,17 +3728,17 @@ msgstr ""
 "Nautilus disket sürücüsünü bağlaya bilmədi. Dəyəsən sürücüdə disket yoxdur."
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1601
+#: libnautilus-private/nautilus-volume-monitor.c:1620
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
 msgstr "Nautilus cildi bağlaya bilmədi. Dəyəsən avadanlıqda medya yoxdur."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1604
+#: libnautilus-private/nautilus-volume-monitor.c:1623
 msgid "wrong fs type, bad option, bad superblock on"
 msgstr "səhv fs növü, səhv seçənək, səhv üst bloklu"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1607
+#: libnautilus-private/nautilus-volume-monitor.c:1626
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4759,7 +3746,7 @@ msgstr ""
 "Nautilus disket sürücüsünü bağlaya bilmədi. Dəyəsən disket bağlanması mümkün "
 "olmayan şəkildədir."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1610
+#: libnautilus-private/nautilus-volume-monitor.c:1629
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4767,181 +3754,22 @@ msgstr ""
 "Nautilus cildi bağlaya bilmədi. Dəyəsən cild bağlanması mümkün olmayan "
 "şakildədir."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1615
+#: libnautilus-private/nautilus-volume-monitor.c:1634
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilus seçili disketi bağlaya bilmədi."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1617
+#: libnautilus-private/nautilus-volume-monitor.c:1636
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilus seçili cildi bağlaya bilmədi."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1622
+#: libnautilus-private/nautilus-volume-monitor.c:1641
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilıs seçili cildi ayıra bilmədi."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1789
+#: libnautilus-private/nautilus-volume-monitor.c:1808
 msgid "ISO 9660 Volume"
 msgstr "ISO 9660 Cildi"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:1 src/nautilus-shell-ui.xml.h:5
-msgid "C_lear Text"
-msgstr "Mətni _təmizlə"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:2
-msgid "Clear Text"
-msgstr "Mətni Təmizlə"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:3
-msgid "Copy Text"
-msgstr "Mətni Köçürt"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:4
-msgid "Copy the selected text to the clipboard"
-msgstr "Seçili mətni ara yaddaşa köçürt"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:5
-msgid "Cut Text"
-msgstr "Mətni Kəs"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:15
-msgid "Cut _Text"
-msgstr "_Mətni Kəs"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:7
-msgid "Cut the selected text to the clipboard"
-msgstr "Seçili mətni ara yaddaşa kəs"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:8
-msgid "Paste Text"
-msgstr "Mətni Yapışdır"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:9
-msgid "Paste the text stored on the clipboard"
-msgstr "Seçili mətni ara yaddaşa yapışdır"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:10
-msgid "Remove the selected text without putting it on the clipboard"
-msgstr "Seçili mətni ara yaddaşa qoymadan sil"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:11
-msgid "Select All"
-msgstr "Hamısını Seç"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:49
-msgid "Select _All"
-msgstr "_Hamısını Seç"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:13
-msgid "Select all the text in a text field"
-msgstr "Mətn girişindəki bütün mətni seç"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:14 src/nautilus-shell-ui.xml.h:77
-msgid "_Copy Text"
-msgstr "Mətni K_öçürt"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:15 src/nautilus-shell-ui.xml.h:90
-msgid "_Paste Text"
-msgstr "Mətni Y_apışdır"
-
-#: nautilus.desktop.in.h:1 src/nautilus-window-manage-views.c:255
-#: src/nautilus-window-menus.c:647
-msgid "Nautilus"
-msgstr "Nautilus"
-
-#: nautilus.desktop.in.h:2
-msgid "Nautilus File Manager and Graphic Shell"
-msgstr "Nautilus Fayl İdarəcisi və Qrafiki Qabıq"
-
-#: src/Nautilus_shell.oaf.in.h:1
-msgid "Factory for Nautilus shell and file manager"
-msgstr "Nautilus qabıq və fayl idarəcisi e'malatxanası"
-
-#: src/Nautilus_shell.oaf.in.h:2
-msgid "Icons"
-msgstr "Timsallar"
-
-#: src/Nautilus_shell.oaf.in.h:3
-msgid "Icons Viewer"
-msgstr "Timsal Nümayişçisi"
-
-#: src/Nautilus_shell.oaf.in.h:4
-msgid "List"
-msgstr "Sıralı"
-
-#: src/Nautilus_shell.oaf.in.h:5
-msgid "List Viewer"
-msgstr "Sıra Nümayişçisi"
-
-#: src/Nautilus_shell.oaf.in.h:6
-msgid "Nautilus factory"
-msgstr "Nautilus e'malatxanası"
-
-#: src/Nautilus_shell.oaf.in.h:7
-msgid "Nautilus file manager component that shows a scrollable list"
-msgstr "Sürüşgən siyahını göstərən Nautilus fayl idarəcisi əlavəsi"
-
-#: src/Nautilus_shell.oaf.in.h:8
-msgid ""
-"Nautilus file manager component that shows a scrollable list for search "
-"results"
-msgstr ""
-"Axtarış nəticələrini sürüşgən siyahıda göstərən Nautilus fayl idarəcisi "
-"əlavəsi"
-
-#: src/Nautilus_shell.oaf.in.h:9
-msgid "Nautilus file manager component that shows a two-dimensional icon space"
-msgstr "2 ölçülü timsal sahəsi göstərən Nautilus fayl idarəcisi əlavəsi"
-
-#: src/Nautilus_shell.oaf.in.h:10
-msgid "Nautilus file manager component that shows icons on the desktop"
-msgstr "Masa üstündə timsallar göstərən Nautilus fayl idarəcisi əlavəsi"
-
-#: src/Nautilus_shell.oaf.in.h:11
-msgid "Nautilus file manager desktop icon view"
-msgstr "Nautilus fayl idarəcisi masa üstü timsal nümayişi"
-
-#: src/Nautilus_shell.oaf.in.h:12
-msgid "Nautilus file manager icon view"
-msgstr "Nautilus fayl idarəcisi timsal nümayişi"
-
-#: src/Nautilus_shell.oaf.in.h:13
-msgid "Nautilus file manager list view"
-msgstr "Nautilus fayl idarəcisi siyahı nümayişi"
-
-#: src/Nautilus_shell.oaf.in.h:14
-msgid "Nautilus file manager search results list view"
-msgstr "Nautilus fayl idarəcisi axtarış nəticələri nümayişi"
-
-#: src/Nautilus_shell.oaf.in.h:15
-msgid "Nautilus metafile factory"
-msgstr "Nautilus metafayl e'malatxanası"
-
-#: src/Nautilus_shell.oaf.in.h:16
-msgid "Nautilus shell"
-msgstr "Nautilus qabığı"
-
-#: src/Nautilus_shell.oaf.in.h:17
-msgid ""
-"Nautilus shell operations that can be done from subsequent command-line "
-"invocations"
-msgstr "Nautilus qabıq əmrləri altdakı əmr sətirindən verilə bilər"
-
-#: src/Nautilus_shell.oaf.in.h:18
-msgid "Produces metafile objects for accessing Nautilus metadata"
-msgstr "Nautilus metadatası üçün metafayllar e'mal edir"
-
-#: src/Nautilus_shell.oaf.in.h:19
-msgid "Search List"
-msgstr "Axtarış Siyahısu"
-
-#: src/Nautilus_shell.oaf.in.h:20
-msgid "View as Icons"
-msgstr "Timsal olaraq Göstər"
-
-#: src/Nautilus_shell.oaf.in.h:21
-msgid "View as List"
-msgstr "Sıra olaraq Göstər"
 
 #: src/file-manager/fm-desktop-icon-view.c:670
 msgid "Background"
@@ -4960,14 +3788,11 @@ msgstr "Arxa Plan"
 msgid "%s's Home"
 msgstr " \"%s\"in(ın)  Evi"
 
-#: src/file-manager/fm-desktop-icon-view.c:1266 src/nautilus-sidebar.c:1465
+#: src/file-manager/fm-desktop-icon-view.c:1266 src/nautilus-sidebar.c:1484
 msgid "Empty Trash..."
 msgstr "Zibili Boşalt..."
 
-#: src/file-manager/fm-desktop-icon-view.c:1268
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
-#: src/file-manager/nautilus-directory-view-ui.xml.h:15
-#: src/nautilus-sidebar.c:1466
+#: src/file-manager/fm-desktop-icon-view.c:1268 src/nautilus-sidebar.c:1485
 msgid "Empty Trash"
 msgstr "Zibili Boşalt"
 
@@ -4975,56 +3800,48 @@ msgstr "Zibili Boşalt"
 msgid "Unmount Volume"
 msgstr "Cildi Ayır"
 
-#: src/file-manager/fm-directory-view.c:450
+#: src/file-manager/fm-directory-view.c:453
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
 msgstr ""
 "Bu, %d qədər müxtalif pəncərə açacaqdır. Həqiqətən də bunu etmək "
 "istəyirsiniz?"
 
-#: src/file-manager/fm-directory-view.c:452
+#: src/file-manager/fm-directory-view.c:455
 #, c-format
 msgid "Open %d Windows?"
 msgstr "%d Pəncərə Aç"
 
-#: src/file-manager/fm-directory-view.c:759
+#: src/file-manager/fm-directory-view.c:762
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "\"%s\"i(ı) həmişəlik silmək istəyirsən?"
 
-#: src/file-manager/fm-directory-view.c:763
+#: src/file-manager/fm-directory-view.c:766
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected items?"
 msgstr "%d seçili üzvü həmişəlik silmək istəyirsən?"
 
-#: src/file-manager/fm-directory-view.c:769
+#: src/file-manager/fm-directory-view.c:772
 msgid "Delete?"
 msgstr "Silim?"
 
-#: src/file-manager/fm-directory-view.c:770
-#: src/file-manager/fm-directory-view.c:2833
-#: src/file-manager/fm-directory-view.c:2873
-#: src/file-manager/nautilus-directory-view-ui.xml.h:10
+#: src/file-manager/fm-directory-view.c:773
+#: src/file-manager/fm-directory-view.c:2846
+#: src/file-manager/fm-directory-view.c:2886
 msgid "Delete"
 msgstr "Sil"
 
-#. Localizers: This is the name of a directory that's created in ~/Nautilus, and
-#. * stores the scripts that appear in the Scripts submenu.
-#.
-#: src/file-manager/fm-directory-view.c:1080
-msgid "scripts"
-msgstr "skriptlər"
-
-#: src/file-manager/fm-directory-view.c:1387
+#: src/file-manager/fm-directory-view.c:1386
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" seçilidir"
 
-#: src/file-manager/fm-directory-view.c:1389
+#: src/file-manager/fm-directory-view.c:1388
 msgid "1 folder selected"
 msgstr "1 qovluq seçilidir"
 
-#: src/file-manager/fm-directory-view.c:1392
+#: src/file-manager/fm-directory-view.c:1391
 #, c-format
 msgid "%d folders selected"
 msgstr "%d qovluq seçilidir"
@@ -5042,22 +3859,37 @@ msgstr "( 1 üzv daxil edir )"
 msgid " (containing %d items)"
 msgstr "( %d üzv daxil edir )"
 
+#: src/file-manager/fm-directory-view.c:1409
+#, fuzzy
+msgid " (containing a total of 0 items)"
+msgstr "( 0 üzv daxil edir )"
+
+#: src/file-manager/fm-directory-view.c:1411
+#, fuzzy
+msgid " (containing a total of 1 item)"
+msgstr "( 1 üzv daxil edir )"
+
 #: src/file-manager/fm-directory-view.c:1413
+#, fuzzy, c-format
+msgid " (containing a total of %d items)"
+msgstr "( %d üzv daxil edir )"
+
+#: src/file-manager/fm-directory-view.c:1426
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" seçilidir (%s)"
 
-#: src/file-manager/fm-directory-view.c:1417
+#: src/file-manager/fm-directory-view.c:1430
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d üzv seçilidir (%s)"
 
-#: src/file-manager/fm-directory-view.c:1424
+#: src/file-manager/fm-directory-view.c:1437
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 başqa üzv seçilidir (%s)"
 
-#: src/file-manager/fm-directory-view.c:1427
+#: src/file-manager/fm-directory-view.c:1440
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d başqa üzv seçilidir (%s)"
@@ -5069,7 +3901,7 @@ msgstr "%d başqa üzv seçilidir (%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1456
+#: src/file-manager/fm-directory-view.c:1469
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -5078,7 +3910,7 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1582
+#: src/file-manager/fm-directory-view.c:1595
 #, c-format
 msgid ""
 "The folder \"%s\" contains more files than Nautilus can handle. Some files "
@@ -5087,17 +3919,17 @@ msgstr ""
 "Bu, \"%s\" qovluğu Nautilisun icazə verdiyi miqdardan artıq fayl daxil edir. "
 "Bə'zi fayllar göstərilməyəcəkdir."
 
-#: src/file-manager/fm-directory-view.c:1589
+#: src/file-manager/fm-directory-view.c:1602
 msgid "Too Many Files"
 msgstr "Həddindən Artıq Fayl"
 
-#: src/file-manager/fm-directory-view.c:2815
+#: src/file-manager/fm-directory-view.c:2828
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr "\"%s\" zibilə atıla bilmədi. Bunu elə hal hazırda silmək istəyirsiniz?"
 
-#: src/file-manager/fm-directory-view.c:2820
+#: src/file-manager/fm-directory-view.c:2833
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
@@ -5106,7 +3938,7 @@ msgstr ""
 "%d qədər seçili üzv zibilə atıla bilmir. Bunları elə hal hazırda silmək "
 "istəyirsiniz?"
 
-#: src/file-manager/fm-directory-view.c:2824
+#: src/file-manager/fm-directory-view.c:2837
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
@@ -5115,56 +3947,54 @@ msgstr ""
 "Seçili üzvlərdən %d qədəri zibilə atıla bilmir. Bu, %d üzvlərini elə hal "
 "hazırda silmək istəyirsiniz?"
 
-#: src/file-manager/fm-directory-view.c:2832
+#: src/file-manager/fm-directory-view.c:2845
 msgid "Delete Immediately?"
 msgstr "Həmən Silim?"
 
-#: src/file-manager/fm-directory-view.c:2862
+#: src/file-manager/fm-directory-view.c:2875
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
 msgstr "\"%s\"i(ı) zibil qutusunda həmişəlik silmək istəyirsən?"
 
-#: src/file-manager/fm-directory-view.c:2866
+#: src/file-manager/fm-directory-view.c:2879
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "Trash?"
 msgstr "%d seçili üzvü zibil qutusundan həmişəlik silmək istəyirsən?"
 
-#: src/file-manager/fm-directory-view.c:2872
+#: src/file-manager/fm-directory-view.c:2885
 msgid "Delete From Trash?"
 msgstr "Zibil Qutusundan Sillimmi?"
 
-#: src/file-manager/fm-directory-view.c:3168
-#: src/file-manager/fm-directory-view.c:3210
+#: src/file-manager/fm-directory-view.c:3181
+#: src/file-manager/fm-directory-view.c:3223
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Seçili üzvü açmaq üçün \"%s\"dan(dən) istifadə et"
 
-#: src/file-manager/fm-directory-view.c:3292
-#: src/file-manager/nautilus-directory-view-ui.xml.h:32
+#: src/file-manager/fm-directory-view.c:3305
 msgid "Other _Application..."
 msgstr "Başqa _Proqram..."
 
-#: src/file-manager/fm-directory-view.c:3292
+#: src/file-manager/fm-directory-view.c:3305
 msgid "An _Application..."
 msgstr "_Proqram..."
 
-#: src/file-manager/fm-directory-view.c:3298
-#: src/file-manager/nautilus-directory-view-ui.xml.h:33
+#: src/file-manager/fm-directory-view.c:3311
 msgid "Other _Viewer..."
 msgstr "Başqa _Nümayişçi..."
 
-#: src/file-manager/fm-directory-view.c:3298
+#: src/file-manager/fm-directory-view.c:3311
 msgid "A _Viewer..."
 msgstr "_Nümayişçi..."
 
-#: src/file-manager/fm-directory-view.c:3513
+#: src/file-manager/fm-directory-view.c:3526
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "\"%s\"i hər hansı seçili üzv üstündə icra et"
 
-#: src/file-manager/fm-directory-view.c:3645
+#: src/file-manager/fm-directory-view.c:3658
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
@@ -5174,11 +4004,11 @@ msgstr ""
 "görünəcəklərdir. Menyudan skriptin tıqlanması ilə skript seçili üzvü giriş "
 "olaraq alıb icra ediləcəkdir."
 
-#: src/file-manager/fm-directory-view.c:3648
+#: src/file-manager/fm-directory-view.c:3661
 msgid "About Scripts"
 msgstr "Skriptlər Haqqında"
 
-#: src/file-manager/fm-directory-view.c:3649
+#: src/file-manager/fm-directory-view.c:3662
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -5220,131 +4050,124 @@ msgstr ""
 #. This shouldn't happen. If it does, get_scripts_directory was unable to
 #. * mkdir the scripts directory, and this case should be debugged.
 #.
-#: src/file-manager/fm-directory-view.c:3667
+#: src/file-manager/fm-directory-view.c:3680
 #, c-format
 msgid "Nautilus was unable to create the directory %s."
 msgstr "Nautilus %s cərgəsini yarada bilmədi."
 
-#: src/file-manager/fm-directory-view.c:3668
+#: src/file-manager/fm-directory-view.c:3681
 msgid "No Scripts Folder"
 msgstr "Skript Qovluğu Yoxdur"
 
-#: src/file-manager/fm-directory-view.c:3723
+#: src/file-manager/fm-directory-view.c:3736
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "Əgər Əmrləri Yapışdır əmrini seçərsəniz, \"%s\" daşınacaqdır"
 
-#: src/file-manager/fm-directory-view.c:3727
+#: src/file-manager/fm-directory-view.c:3740
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "Əgər Əmrləri Yapışdır əmrini seçərsəniz, \"%s\" köçürüləcəkdir"
 
-#: src/file-manager/fm-directory-view.c:3734
+#: src/file-manager/fm-directory-view.c:3747
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
 msgstr "%d qədər seçili üzv Əmrləri Yapışdır əmrini seçərsəniz daşınacaqlardır"
 
-#: src/file-manager/fm-directory-view.c:3738
+#: src/file-manager/fm-directory-view.c:3751
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
 msgstr ""
 "%d qədər seçili üzv Əmrləri Yapışdır əmrini seçərsəniz köçürüləcəklərdir"
 
-#: src/file-manager/fm-directory-view.c:3884
+#: src/file-manager/fm-directory-view.c:3897
 msgid "There is nothing on the clipboard to paste."
 msgstr "Ara yaddaşda yapışdırılacaq bir şey yoxdur."
 
-#: src/file-manager/fm-directory-view.c:3999
+#: src/file-manager/fm-directory-view.c:4012
 msgid "Open _in This Window"
 msgstr "Bu Pəncərə _içində Aç"
 
-#: src/file-manager/fm-directory-view.c:4002
-#: src/file-manager/nautilus-directory-view-ui.xml.h:26
+#: src/file-manager/fm-directory-view.c:4015
 msgid "Open _in New Window"
 msgstr "Yeni Pəncərə _içində Aç"
 
-#: src/file-manager/fm-directory-view.c:4004
+#: src/file-manager/fm-directory-view.c:4017
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "\"%d\" _Yeni Pəncərə _içində Aç"
 
-#: src/file-manager/fm-directory-view.c:4022
+#: src/file-manager/fm-directory-view.c:4035
 msgid "Delete from _Trash..."
 msgstr "_Zibil Qutusundan Sil..."
 
-#: src/file-manager/fm-directory-view.c:4022
+#: src/file-manager/fm-directory-view.c:4035
 msgid "Delete from _Trash"
 msgstr "_Zibil Qutusundan Sil"
 
-#: src/file-manager/fm-directory-view.c:4024
+#: src/file-manager/fm-directory-view.c:4037
 msgid "Delete all selected items permanently"
 msgstr "Bütün seçili üzvləri həmişəlik sil"
 
-#: src/file-manager/fm-directory-view.c:4027
-#: src/file-manager/nautilus-directory-view-ui.xml.h:20
+#: src/file-manager/fm-directory-view.c:4040
 msgid "Move to _Trash"
 msgstr "Zi_bilə Daşı"
 
-#: src/file-manager/fm-directory-view.c:4029
+#: src/file-manager/fm-directory-view.c:4042
 msgid "Move all selected items to the Trash"
 msgstr "Bütün seçili üzvləri zibil qutusuna daşı"
 
-#: src/file-manager/fm-directory-view.c:4056
+#: src/file-manager/fm-directory-view.c:4069
 msgid "De_lete..."
 msgstr "Si_l ..."
 
-#: src/file-manager/fm-directory-view.c:4056
-#: src/file-manager/nautilus-directory-view-ui.xml.h:9
+#: src/file-manager/fm-directory-view.c:4069
 msgid "De_lete"
 msgstr "Si_l"
 
-#: src/file-manager/fm-directory-view.c:4077
+#: src/file-manager/fm-directory-view.c:4090
 msgid "Make _Links"
 msgstr "_Körpüləri Yarat"
 
-#: src/file-manager/fm-directory-view.c:4078
+#: src/file-manager/fm-directory-view.c:4091
 msgid "Make _Link"
 msgstr "_Körpü Yarat"
 
-#: src/file-manager/fm-directory-view.c:4093
+#: src/file-manager/fm-directory-view.c:4106
 msgid "_Empty Trash..."
 msgstr "Zibil Qutusunu _Boşalt..."
 
-#: src/file-manager/fm-directory-view.c:4094
-#: src/file-manager/nautilus-directory-view-ui.xml.h:58
+#: src/file-manager/fm-directory-view.c:4107
 msgid "_Empty Trash"
 msgstr "Zibil Qutusunu _Boşalt"
 
-#: src/file-manager/fm-directory-view.c:4105
-#: src/file-manager/nautilus-directory-view-ui.xml.h:37
+#: src/file-manager/fm-directory-view.c:4118
 msgid "R_emove Custom Images"
 msgstr "Xüsusi _Rəsmləri sil"
 
-#: src/file-manager/fm-directory-view.c:4106
+#: src/file-manager/fm-directory-view.c:4119
 msgid "R_emove Custom Image"
 msgstr "Xüsusi _Rəsmi sil"
 
-#: src/file-manager/fm-directory-view.c:4120
+#: src/file-manager/fm-directory-view.c:4133
 msgid "Cu_t File"
 msgstr "Faylı Kə_s"
 
-#: src/file-manager/fm-directory-view.c:4121
-#: src/file-manager/nautilus-directory-view-ui.xml.h:7
+#: src/file-manager/fm-directory-view.c:4134
 msgid "Cu_t Files"
 msgstr "Fayllları Kə_s"
 
-#: src/file-manager/fm-directory-view.c:4131
+#: src/file-manager/fm-directory-view.c:4144
 msgid "_Copy File"
 msgstr "Faylı K_öçürt"
 
-#: src/file-manager/fm-directory-view.c:4132
-#: src/file-manager/nautilus-directory-view-ui.xml.h:56
+#: src/file-manager/fm-directory-view.c:4145
 msgid "_Copy Files"
 msgstr "Faylları K_çürt"
 
-#: src/file-manager/fm-directory-view.c:4292
+#: src/file-manager/fm-directory-view.c:4309
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
@@ -5352,7 +4175,7 @@ msgstr ""
 "Bu körpü hədəfi olmadığı üçün işlədilə bilməz. Bu körpünü zibilə atmaq "
 "istəyirsiniz?"
 
-#: src/file-manager/fm-directory-view.c:4295
+#: src/file-manager/fm-directory-view.c:4312
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -5361,15 +4184,15 @@ msgstr ""
 "Bu körpü hədəfi \"%s\" növcud olmadığı üçün işlədilə bilməz. Bu körpünü "
 "zibilə atmaq istəyirsiniz?"
 
-#: src/file-manager/fm-directory-view.c:4301
+#: src/file-manager/fm-directory-view.c:4318
 msgid "Broken Link"
 msgstr "Qırıq Körpü"
 
-#: src/file-manager/fm-directory-view.c:4302
+#: src/file-manager/fm-directory-view.c:4319
 msgid "Throw Away"
 msgstr "At Getsin"
 
-#: src/file-manager/fm-directory-view.c:4355
+#: src/file-manager/fm-directory-view.c:4372
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -5378,35 +4201,35 @@ msgstr ""
 "\"%s\" işə salına bilən mətn faylıdır. Bunu işə salmaq yoxsa içindəkiləri "
 "görmək istəyirsiniz*"
 
-#: src/file-manager/fm-directory-view.c:4361
+#: src/file-manager/fm-directory-view.c:4378
 msgid "Run or Display?"
 msgstr "İşə salımmı yoxsa Göstərimmi?"
 
-#: src/file-manager/fm-directory-view.c:4362
+#: src/file-manager/fm-directory-view.c:4379
 msgid "Run"
 msgstr "İşə Sal"
 
-#: src/file-manager/fm-directory-view.c:4363
+#: src/file-manager/fm-directory-view.c:4380
 msgid "Display"
 msgstr "Göstər"
 
-#: src/file-manager/fm-directory-view.c:4415
+#: src/file-manager/fm-directory-view.c:4431
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
 msgstr ""
 "Təhlükəsizlik tədbiri olaraq uzaq sistemlərdə əmr işə sala bilməzsiniz."
 
-#: src/file-manager/fm-directory-view.c:4417
+#: src/file-manager/fm-directory-view.c:4433
 msgid "Can't execute remote links"
 msgstr "Uzaqdakı körpünü işə sala bilmirəm"
 
-#: src/file-manager/fm-directory-view.c:4563
+#: src/file-manager/fm-directory-view.c:4571
 #, c-format
 msgid "Opening \"%s\""
 msgstr "\"%s\" açılır"
 
-#: src/file-manager/fm-directory-view.c:4569
+#: src/file-manager/fm-directory-view.c:4577
 msgid "Cancel Open?"
 msgstr "Açmayı Ləğv Edimmi ?"
 
@@ -5540,64 +4363,64 @@ msgstr "\"%s\"nin(nın) adı \"%s\"a(ə) dəyişdirildi ."
 msgid "Cancel Rename?"
 msgstr "Təzədən Adlandırmayı Ləğv Edimmi?"
 
-#: src/file-manager/fm-icon-view.c:176
+#: src/file-manager/fm-icon-view.c:177
 msgid "by _Name"
 msgstr "_Ada görə"
 
-#: src/file-manager/fm-icon-view.c:177
-#: src/file-manager/nautilus-icon-view-ui.xml.h:15
+#: src/file-manager/fm-icon-view.c:178
 msgid "Keep icons sorted by name in rows"
 msgstr "Timsalları adlarına görə sırala"
 
-#: src/file-manager/fm-icon-view.c:183
+#: src/file-manager/fm-icon-view.c:184
 msgid "by _Size"
 msgstr "_Böyüklüyə görə"
 
-#: src/file-manager/fm-icon-view.c:184
-#: src/file-manager/nautilus-icon-view-ui.xml.h:16
+#: src/file-manager/fm-icon-view.c:185
 msgid "Keep icons sorted by size in rows"
 msgstr "Timsalları böyüklüklərinə görə sırala"
 
-#: src/file-manager/fm-icon-view.c:190
+#: src/file-manager/fm-icon-view.c:191
 msgid "by _Type"
 msgstr "_Növə görə"
 
-#: src/file-manager/fm-icon-view.c:191
-#: src/file-manager/nautilus-icon-view-ui.xml.h:17
+#: src/file-manager/fm-icon-view.c:192
 msgid "Keep icons sorted by type in rows"
 msgstr "Timsalları növlərinə görə sırala"
 
-#: src/file-manager/fm-icon-view.c:197
+#: src/file-manager/fm-icon-view.c:198
 msgid "by Modification _Date"
 msgstr "_Təkmilləşdirmə Tarixine görə"
 
-#: src/file-manager/fm-icon-view.c:198
-#: src/file-manager/nautilus-icon-view-ui.xml.h:14
+#: src/file-manager/fm-icon-view.c:199
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Timsalları düzəliş tarixlərinə görə sırala"
 
-#: src/file-manager/fm-icon-view.c:204
+#: src/file-manager/fm-icon-view.c:205
 msgid "by _Emblems"
 msgstr "_Emblemlərə görə"
 
-#: src/file-manager/fm-icon-view.c:205
-#: src/file-manager/nautilus-icon-view-ui.xml.h:13
+#: src/file-manager/fm-icon-view.c:206
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Timsalları emblemlərə görə sırala"
 
-#: src/file-manager/fm-icon-view.c:1415
-#: src/file-manager/nautilus-icon-view-ui.xml.h:37
+#: src/file-manager/fm-icon-view.c:1416
 msgid "_Restore Icons' Original Sizes"
 msgstr "Timsalları Original Böyüklüklərinə _Gətir"
 
-#: src/file-manager/fm-icon-view.c:1416
+#: src/file-manager/fm-icon-view.c:1417
 msgid "_Restore Icon's Original Size"
 msgstr "Timsalları Original Böyüklüklərinə G_ətir"
 
-#: src/file-manager/fm-icon-view.c:1707
+#: src/file-manager/fm-icon-view.c:1709
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "\"%s\" göstərilər"
+
+#: src/file-manager/fm-list-view.c:2285
+#: src/file-manager/fm-properties-window.c:1620
+#: src/file-manager/fm-search-list-view.c:499
+msgid "Emblems"
+msgstr "Emblemlər"
 
 #: src/file-manager/fm-list-view.c:2291
 #: src/file-manager/fm-search-list-view.c:511
@@ -5978,7 +4801,6 @@ msgstr "Harda"
 #. * is to inform translators of this tricky concept).
 #.
 #: src/file-manager/fm-search-list-view.c:557
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
 msgid "_Reveal in New Window"
 msgstr "Yeni Pəncərəde _Açığa Çıxart"
 
@@ -6008,361 +4830,6 @@ msgstr ""
 #: src/file-manager/fm-search-list-view.c:679
 msgid "Too Many Matches"
 msgstr "Həddindən Artıq Oxşarlar"
-
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:1
-msgid "Change Desktop Background"
-msgstr "Masa Üstü Arxa Planını Dəyişdir"
-
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:2
-#: src/file-manager/nautilus-directory-view-ui.xml.h:11
-msgid "Delete all items in the Trash"
-msgstr "Zibil qutusundakı bütün üzvləri sil"
-
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:3
-msgid "Disks"
-msgstr "Disklər"
-
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
-msgid "Mount or unmount disks"
-msgstr "Diskləri bağla və ya ayır"
-
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
-msgid "New Terminal"
-msgstr "Yeni Terminal"
-
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:7
-msgid "Open a new GNOME terminal window"
-msgstr "Yeni GNOME terminal pəncərəsi aç"
-
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
-msgid "Remove any custom pattern or color from the desktop background"
-msgstr "Masa üstü arxa planından bütün rəng və naxışları təmizlə"
-
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
-msgid "Reset Desktop Background"
-msgstr "Masa Üstü Arxa Planını Sıfırla"
-
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
-msgid ""
-"Show a window that lets you set your desktop background's pattern or color"
-msgstr ""
-"Masa üstü arxaplanındakı rang və ya naxışları çıxarda biləcəyiniz pəncərəni "
-"göstər"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:1
-msgid "Choose a program with which to open the selected item"
-msgstr "Seçili üzvü açacaq proqram tə'minatını seç"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:2
-msgid "Choose another application with which to open the selected item"
-msgstr "Seçili üzvü açacaq başqa bir proqram tə'minatını seç"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:3
-msgid "Choose another viewer with which to view the selected item"
-msgstr "Seçili üzvü göstərəcək başqa bir göstəriciyi seç"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:4
-msgid "Copy Files"
-msgstr "Faylları Köçür"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:5
-msgid "Create a new empty folder inside this folder"
-msgstr "Bu qovluq içində yeni boş bir qovluq yarat"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:6
-msgid "Create a symbolic link for each selected item"
-msgstr "Bütün seçili üzvlərə yumşaq körpü yarat"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:8
-msgid "Cut Files"
-msgstr "Faylları Kəs"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:12
-msgid "Delete each selected item, without moving to the Trash"
-msgstr "Hər seçili üzvü zibil qutusuna daşımadan sil"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:13
-msgid "Duplicate"
-msgstr "Cütləşdir"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:14
-msgid "Duplicate each selected item"
-msgstr "Bütün seçili üzvləri cütləşdir"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:16
-msgid "Make Link"
-msgstr "Körpü Yarat"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:17
-msgid "Move each selected item to the Trash"
-msgstr "Hər seçili üzvü zibil qutusuna daşı"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:18
-msgid ""
-"Move or copy files previously selected by a Cut Files or Copy Files command"
-msgstr ""
-"Faylları Kəs ya da Faylları Köçür əmrləri tərəfindən seçili faylları daşı ya "
-"da köçür"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:19
-msgid "Move to Trash"
-msgstr "Zibilə Daşı"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:21
-msgid "New Folder"
-msgstr "Yeni Qovluq"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:22
-msgid "Open"
-msgstr "Aç"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:23
-msgid "Open Scripts Folder"
-msgstr "Skriplər Qovluğunu Aç"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:24
-msgid "Open Wit_h"
-msgstr "_Fərqli aç"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:25
-msgid "Open With"
-msgstr "Fərqli aç"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:27
-msgid "Open each selected item in a new window"
-msgstr "Hər bir seçili üzvü yeni bir pəncərəde aç"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:28
-msgid "Open in New Window"
-msgstr "Yeni Pəncərəde Aç"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:29
-msgid "Open the selected item in this window"
-msgstr "Seçili üzvü bu pəncərəde aç"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:30
-msgid "Other Application..."
-msgstr "Başqa Proqramla Aç ..."
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:31
-msgid "Other Viewer..."
-msgstr "Başqa Nümayişçi İlə Aç ..."
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:34
-msgid "Paste Files"
-msgstr "Mətni Yapışdır"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:35
-msgid "Prepare the selected files to be copied with a Paste Files command"
-msgstr "Faylları Yapışdır əmri ilə seçili faylları köçürməyə hazırla"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:36
-msgid "Prepare the selected files to be moved with a Paste Files command"
-msgstr "Faylları Yapışdır əmri ilə seçili faylları daşımağa hazırla"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:38
-msgid "Remove Custom Images"
-msgstr "Xüsusi Rəsmləri Sil"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:39
-msgid "Remove any custom images from selected icons"
-msgstr "Seçili timsaldan bütün xüsusi rəsmlərii sil"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:40
-msgid "Remove any custom pattern or color from the background of this location"
-msgstr "Seçili timsaldan bütün xüsusi rəngləri və ya naxışları sil"
-
-#. add the reset background item, possibly disabled
-#: src/file-manager/nautilus-directory-view-ui.xml.h:41
-#: src/nautilus-sidebar.c:534
-msgid "Reset Background"
-msgstr "Arxa Planı Sıfırla"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:42
-msgid "Reset View to Match Preferences"
-msgstr "Görünüşü Oxşar Seçənəklərə Sıfırla"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:43
-msgid "Reset View to Match _Preferences"
-msgstr "Görünüşü Oxşar _Seçənəklərə Sıfırla"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:44
-msgid "Reset sorting order and zoom level to match preferences for this view"
-msgstr ""
-"Sıralama düzülüşü və yaxınlıq dərəcəsini bu görünüş üçün seşənəklərə görə "
-"sıfırla"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:45
-msgid "Run or manage scripts from ~/Nautilus/scripts"
-msgstr "~/Nautilus/scripts qovluğundaku skriptləri icra et ya da düzəlt"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:46
-msgid "Scripts"
-msgstr "Skriptlər"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:47
-msgid "Select All Files"
-msgstr "Bütün Faylları Seç"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:48
-msgid "Select _All Files"
-msgstr "_Bütün Faylları Seç"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:49
-msgid "Select all items in this window"
-msgstr "Bu pəncərədeki bütün üzvləri seç"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:50
-msgid "Show Properties"
-msgstr "Xüsusiyyətləri Göstər"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:51
-msgid "Show Trash"
-msgstr "Zibil Qutusunu Göstər"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:52
-msgid "Show _Properties"
-msgstr "_Xüsusiyyətləri göstər"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:53
-msgid "Show the contents of the Trash"
-msgstr "Zibil qutusu içindəkiləri göstər"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:54
-msgid "Show the folder containing the scripts that appear in this menu"
-msgstr "Bu menyuda görünən skrriptlərin qovluqlarını göstər"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:55
-msgid "View or modify the properties of each selected item"
-msgstr "Hər seçili üzvün xüsusiyyətlərini göstər ya da dəyişdir"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:57
-msgid "_Duplicate"
-msgstr "_Cütləşdir"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:59
-msgid "_Make Link"
-msgstr "Körpü _Yarat"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:60
-msgid "_New Folder"
-msgstr "_Yeni Qovluq"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:61
-msgid "_Open"
-msgstr "_Aç"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:62
-msgid "_Open Scripts Folder"
-msgstr "Skritplər Qovluğunu _Aç"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:63
-msgid "_Paste Files"
-msgstr "Faylları Y_apışdır"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:64
-msgid "_Show Trash"
-msgstr "Zibil Qutusunu Göstər"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:3
-msgid "By Modification _Date"
-msgstr "Təkmilləşdirmə _Tarixine Görə"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:7
-msgid "By _Emblems"
-msgstr "_Emblemlərə Görə"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:8
-msgid "By _Name"
-msgstr "_Ada Görə"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:9
-msgid "By _Size"
-msgstr "_Böyüklüyə Görə"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:10
-msgid "By _Type"
-msgstr "_Növə Görə"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:11
-msgid "Clean Up by Name"
-msgstr "Ada Görə Təmizlə"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:12
-msgid "Display icons in the opposite order"
-msgstr "Timsalları qarşı qarşıya düz"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:18
-msgid "Lay Out Items"
-msgstr "Üzvləri Çölə Düz"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:19
-msgid "Leave icons wherever they are dropped"
-msgstr "Timsalları buraxıldıqları yerlərdə burax"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:20
-msgid "Make the selected icon stretchable"
-msgstr "Seçili timsalı oynana bilən hala gətir"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:22
-msgid "Re_versed Order"
-msgstr "Tə_rs Düzülüş"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:24
-msgid "Rename selected icon"
-msgstr "Seçili timsalı yenidən adlandır"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:25
-msgid "Reposition icons to better fit in the window and avoid overlapping"
-msgstr "Timsalların pəncərə quruluşuna görə optimal düzülüşü"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:26
-msgid "Restore Icons' Original Sizes"
-msgstr "Timsalları Normal Böyüklüklərinə Gətir"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:27
-msgid "Restore each selected icon to its original size"
-msgstr "Hər bir seçili timsalı normal böyüklüyünə gətir"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:28
-msgid "Reversed Order"
-msgstr "Tərs Düzülüş"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:29
-msgid "Stretch Icon"
-msgstr "Timsallı Çəkişdir"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:30
-msgid "Tighter Layout"
-msgstr "Gərgin Düzülüş"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:31
-msgid "Tighter _Layout"
-msgstr "Gərgin _Düzülüş"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:32
-msgid "Toggle using a tighter layout scheme"
-msgstr "Gərgin düzülüşü aç/qapat"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:33
-msgid "_Clean Up by Name"
-msgstr "Ada Görə _Təmizlə"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:34
-msgid "_Lay Out Items"
-msgstr "ÜZvləri _Çölə Düz"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:35
-msgid "_Manually"
-msgstr "_Əllə"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:36
-msgid "_Rename"
-msgstr "Tə_zədən Adlandır"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:38
-msgid "_Stretch Icon"
-msgstr "Timsalı Çə_kişdir"
 
 #: src/file-manager/nautilus-indexing-info.c:88
 #, c-format
@@ -6416,26 +4883,6 @@ msgstr "Bağışlayın, Medusa axtarış xidməti fəal deyil."
 msgid "%I:%M %p, %x"
 msgstr "%I:%M %p, %x"
 
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
-msgid "Reveal each selected item in its original folder"
-msgstr "Hər bir seçili üzvü öz qovluğuna apar"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
-msgid "Reveal in New Window"
-msgstr "Yeni Pəncərədə Açığa Çıxart"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
-msgid "Show Indexing Status"
-msgstr "İndeksləmə Vəziyyətini Göstər"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
-msgid "Show _Indexing Status"
-msgstr "İndeksləmə _Vəziyyətini Göstər"
-
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
-msgid "Show status of indexing used when searching"
-msgstr "Axtarışlarda işlətdiyin indeksləmənin vəziyyəti göstər"
-
 #. set the window title and standard close key accelerator
 #: src/nautilus-about.c:141
 msgid "About Nautilus"
@@ -6446,11 +4893,11 @@ msgstr "Nautilus Haqqında"
 msgid "Authors"
 msgstr "Müəlliflər"
 
-#: src/nautilus-application.c:279
+#: src/nautilus-application.c:272
 msgid "Couldn't Create Required Folder"
 msgstr "Lazımi Qovluq Yaradıla Bilmir"
 
-#: src/nautilus-application.c:280
+#: src/nautilus-application.c:273
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -6461,11 +4908,11 @@ msgstr ""
 "əvvəl ,lütfən, bu qovluğu yaradın. Ya da Nautilusun özünün yarada bilməsi "
 "üçün səlahiyyətləri dəyişdirin."
 
-#: src/nautilus-application.c:285
+#: src/nautilus-application.c:278
 msgid "Couldn't Create Required Folders"
 msgstr "Lazımi Qovluqlar Yaradıla Bilmir"
 
-#: src/nautilus-application.c:286
+#: src/nautilus-application.c:279
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -6492,7 +4939,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:498
+#: src/nautilus-application.c:524
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
 "from the console may fix the problem. If not, you can try rebooting the "
@@ -6503,7 +4950,7 @@ msgstr ""
 "Nautilusu yenidən qura bilərsiniz."
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:504
+#: src/nautilus-application.c:530
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
 "from the console may fix the problem. If not, you can try rebooting the "
@@ -6542,12 +4989,12 @@ msgstr ""
 #. * wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:535 src/nautilus-application.c:553
-#: src/nautilus-application.c:560
+#: src/nautilus-application.c:561 src/nautilus-application.c:579
+#: src/nautilus-application.c:586
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus indi gözlənilməz bir xətadan ötrü istifadə edilməz ."
 
-#: src/nautilus-application.c:536
+#: src/nautilus-application.c:562
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to register the file manager view server."
@@ -6555,7 +5002,7 @@ msgstr ""
 "Nautilus indi gözlənilməz bir OAF xətasından ötrü istifadə edilməz .OAF'a "
 "fayl idarəcisi görünüşlər vericisini başladarkən xəta oldu ."
 
-#: src/nautilus-application.c:554
+#: src/nautilus-application.c:580
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the factory.Killing oafd and restarting Nautilus may "
@@ -6565,7 +5012,7 @@ msgstr ""
 "gözlənilməz bir xəta oldu. \"Oafd\"nin dayandırılması və \"Nautilus\" "
 "yenidən başladılması problemi həll edə bilər."
 
-#: src/nautilus-application.c:561
+#: src/nautilus-application.c:587
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the shell object. Killing oafd and restarting Nautilus "
@@ -6575,7 +5022,7 @@ msgstr ""
 "gözlənilməz bir xəta oldu. \"Oafd\"nin dayandırılması və \"Nautilus\" "
 "yenidən başladılması problemi həll edə bilər."
 
-#: src/nautilus-application.c:733
+#: src/nautilus-application.c:759
 msgid ""
 "You are about to run Nautilus as root.\n"
 "\n"
@@ -6595,7 +5042,7 @@ msgstr "Nişanlar"
 msgid "Location"
 msgstr "Yer"
 
-#: src/nautilus-bookmarks-window.c:191 src/nautilus-window-menus.c:818
+#: src/nautilus-bookmarks-window.c:191 src/nautilus-window-menus.c:819
 msgid "Remove"
 msgstr "Çıxart"
 
@@ -6612,7 +5059,7 @@ msgstr "Daha Qısa"
 msgid "Find Them!"
 msgstr "Onları Axtar!"
 
-#: src/nautilus-first-time-druid.c:187
+#: src/nautilus-first-time-druid.c:183
 msgid ""
 "Existence of this file indicates that the Nautilus configuration druid\n"
 "has been presented.\n"
@@ -6626,11 +5073,7 @@ msgstr ""
 "Sehirbazı yenidən ortaya çıxartmaq üçün bu faylı silə bilərsən.\n"
 "\n"
 
-#: src/nautilus-first-time-druid.c:205
-msgid "Eazel Services"
-msgstr "Eazel Xidmətləri"
-
-#: src/nautilus-first-time-druid.c:503
+#: src/nautilus-first-time-druid.c:470
 #, c-format
 msgid ""
 "Your user level adjusts Nautilus to your degree of experience\n"
@@ -6643,7 +5086,7 @@ msgstr ""
 
 #. Make the user level radio buttons and fill the radio_buttons
 #. * array
-#: src/nautilus-first-time-druid.c:517
+#: src/nautilus-first-time-druid.c:484
 #, c-format
 msgid ""
 "For users who have no previous experience with GNOME\n"
@@ -6652,7 +5095,7 @@ msgstr ""
 "Əvvəllər heç GNOME və %s işlətməmiş \n"
 "istifadəçilər üçün."
 
-#: src/nautilus-first-time-druid.c:525
+#: src/nautilus-first-time-druid.c:492
 #, c-format
 msgid ""
 "For users who are comfortable with GNOME and %s,\n"
@@ -6661,7 +5104,7 @@ msgstr ""
 "\"Texniki biliyi\" az olduğunu söyləyən və hal hazırkı GNOME və %s\n"
 "məmnun olan istifadəçilər üçün."
 
-#: src/nautilus-first-time-druid.c:535
+#: src/nautilus-first-time-druid.c:502
 #, c-format
 msgid ""
 "For users who have GNOME and %s experience, and\n"
@@ -6670,7 +5113,7 @@ msgstr ""
 "GNOME və %s dərinliklərini kəşf etmiş \n"
 "istifadəçilər üçün."
 
-#: src/nautilus-first-time-druid.c:580
+#: src/nautilus-first-time-druid.c:547
 msgid ""
 "To verify your Internet connection and make sure you have\n"
 "the latest Nautilus updates, Nautilus will now connect to\n"
@@ -6690,15 +5133,15 @@ msgstr ""
 "Əgər kompüteriniz vakil verici istifadə edirsə  Nautilusun \n"
 "bunu bilməsi üçün Yoxla düyməsinə basın.\n"
 
-#: src/nautilus-first-time-druid.c:594
+#: src/nautilus-first-time-druid.c:561
 msgid "Verify my connection and check for updates"
 msgstr "Bağlantımı yoxla və Nautilusu indi güncəlləşdir."
 
-#: src/nautilus-first-time-druid.c:595
+#: src/nautilus-first-time-druid.c:562
 msgid "Don't verify my connection or check for updates"
 msgstr "Bağlantımı yoxlama və Nautilusu indi güncəlləşdirmə."
 
-#: src/nautilus-first-time-druid.c:660
+#: src/nautilus-first-time-druid.c:627
 msgid ""
 "We are having trouble making an external web connection.\n"
 "Sometimes, firewalls require you to specify a web proxy server.\n"
@@ -6708,33 +5151,33 @@ msgstr ""
 "Bəzən \"firewall\" sizdən vəkil verici bildirməyinizi tələb edir.Varsa, "
 "vəkil vericinizin qapı nömrəsini aşağıda doldurun."
 
-#: src/nautilus-first-time-druid.c:672
+#: src/nautilus-first-time-druid.c:639
 msgid "No proxy server required."
 msgstr "Vəkil vericiyə ehtiyac yoxdur."
 
-#: src/nautilus-first-time-druid.c:673
+#: src/nautilus-first-time-druid.c:640
 msgid "Use this proxy server:"
 msgstr "Bu vəkil vericini işlət:"
 
 #. allocate the proxy label, followed by the entry
-#: src/nautilus-first-time-druid.c:698
+#: src/nautilus-first-time-druid.c:665
 msgid "Proxy address:"
 msgstr "Vəkil verici ünvanları:"
 
 #. allocate the proxy label, followed by the entry
-#: src/nautilus-first-time-druid.c:715 src/nautilus-preferences-dialog.c:308
+#: src/nautilus-first-time-druid.c:682 src/nautilus-preferences-dialog.c:308
 msgid "Port:"
 msgstr "Qapı:"
 
-#: src/nautilus-first-time-druid.c:760
+#: src/nautilus-first-time-druid.c:727
 msgid "Verifying your Internet connection and checking for updates..."
 msgstr "İnternet bağlantısı yoxlaması və Nautilus güncəlləməsi..."
 
-#: src/nautilus-first-time-druid.c:768
+#: src/nautilus-first-time-druid.c:735
 msgid "Downloading Nautilus updates..."
 msgstr "Nautilus güncəlləmələri endirilir..."
 
-#: src/nautilus-first-time-druid.c:912
+#: src/nautilus-first-time-druid.c:879
 msgid ""
 "If you have been using the GNOME Midnight Commander\n"
 "these settings move your desktop icons to Nautilus and\n"
@@ -6744,20 +5187,20 @@ msgstr ""
 "bu seçənək masa üstü timsallarını Nautilusa daşıyacaq və\n"
 "Nautilusu əsas masa üstü edəcəkdir.\n"
 
-#: src/nautilus-first-time-druid.c:919
+#: src/nautilus-first-time-druid.c:886
 msgid "Use Nautilus to draw the desktop."
 msgstr "Masa Üstü olaraq Nautilusdan istifadə et"
 
-#: src/nautilus-first-time-druid.c:925
+#: src/nautilus-first-time-druid.c:892
 msgid "Move existing desktop icons to the Nautilus desktop."
 msgstr "Mövcud masa üstü timsallarını Nautilus masa üstünə daşı."
 
 #. This option is currently disabled, per bugzilla.eazel.com 7557
-#: src/nautilus-first-time-druid.c:933
+#: src/nautilus-first-time-druid.c:900
 msgid "Launch Nautilus when GNOME starts up."
 msgstr "Nautilusu Gnome başladığında başlat."
 
-#: src/nautilus-first-time-druid.c:1019
+#: src/nautilus-first-time-druid.c:986
 #, c-format
 msgid ""
 "Click Finish to launch Nautilus. You'll start with two\n"
@@ -6775,7 +5218,7 @@ msgstr ""
 "\n"
 "Ümidvarıq ki, Nautilusu çox sevəcəksiniz!"
 
-#: src/nautilus-first-time-druid.c:1026
+#: src/nautilus-first-time-druid.c:993
 msgid ""
 "Click Finish to launch Nautilus. You'll start with a\n"
 "window showing your home folder.\n"
@@ -6787,15 +5230,15 @@ msgstr ""
 "\n"
 "Ümidvarıq ki, Nautilusu çox sevəcəksiniz!"
 
-#: src/nautilus-first-time-druid.c:1052
+#: src/nautilus-first-time-druid.c:1019
 msgid "Nautilus First Time Setup"
 msgstr "Nautilus İlk Səfər Qurğuları"
 
-#: src/nautilus-first-time-druid.c:1082
+#: src/nautilus-first-time-druid.c:1049
 msgid "Welcome to Nautilus"
 msgstr "Nautilus'a Xoş Gəldin !"
 
-#: src/nautilus-first-time-druid.c:1084
+#: src/nautilus-first-time-druid.c:1051
 msgid ""
 "Nautilus...\n"
 "    Is a great file manager for the GNOME desktop.\n"
@@ -6814,41 +5257,41 @@ msgstr ""
 "Nautilusu işlətmək üçün Sonrakı düyməsinə basın."
 
 #. set up the final page
-#: src/nautilus-first-time-druid.c:1095
+#: src/nautilus-first-time-druid.c:1062
 msgid "Finished"
 msgstr "Qurtardı"
 
 #. set up the user level page
-#: src/nautilus-first-time-druid.c:1108
+#: src/nautilus-first-time-druid.c:1075
 msgid "Choose Your User Level"
 msgstr "İstifadəçi Səviyyənizi Seçin"
 
 #. set up the GMC transition page
-#: src/nautilus-first-time-druid.c:1113
+#: src/nautilus-first-time-druid.c:1080
 msgid "GMC to Nautilus Transition"
 msgstr "GMCdən Nautilusa Keçiş"
 
 #. set up the update page
-#: src/nautilus-first-time-druid.c:1118
+#: src/nautilus-first-time-druid.c:1085
 msgid "Checking Your Internet Connection"
 msgstr "İnternet Bağlantınız Yoxlanır"
 
 #. set up the update feedback page
-#: src/nautilus-first-time-druid.c:1126
+#: src/nautilus-first-time-druid.c:1093
 msgid "Updating Nautilus..."
 msgstr "Nautilus Güncəllənir..."
 
 #. set up the (optional) proxy configuration page
-#: src/nautilus-first-time-druid.c:1134
+#: src/nautilus-first-time-druid.c:1101
 msgid "Web Proxy Configuration"
 msgstr "Ven Vəkil Verici Quraşdırması"
 
 #. change the message to expanding file
-#: src/nautilus-first-time-druid.c:1207
+#: src/nautilus-first-time-druid.c:1174
 msgid "Decoding Update..."
 msgstr "Kod Həlli Güncəlləməsi..."
 
-#: src/nautilus-first-time-druid.c:1224
+#: src/nautilus-first-time-druid.c:1191
 msgid "Update Complete. Click Next to Continue."
 msgstr "Güncəlləmə Qurtarıldı... Davam etmək üçün Sonrakı düyməsinə basın."
 
@@ -6856,7 +5299,7 @@ msgstr "Güncəlləmə Qurtarıldı... Davam etmək üçün Sonrakı düyməsin�
 #. * doesn't exist. Arlo and I (jsh) and decided that the
 #. * best thing to do is silently fail
 #.
-#: src/nautilus-first-time-druid.c:1239
+#: src/nautilus-first-time-druid.c:1206
 msgid "No Update Available... Press Next to Continue."
 msgstr ""
 "Güncəlləməyə Ehtiyac Yoxdur... Davam etmək üçün Sonrakı düyməsinə basın."
@@ -6961,6 +5404,10 @@ msgstr "Əsas hamar olmayan yazı növü:"
 #: src/nautilus-preferences-dialog.c:67
 msgid "Nautilus Themes"
 msgstr "Nautilus Örtüləri"
+
+#: src/nautilus-preferences-dialog.c:80 src/nautilus-preferences-dialog.c:85
+msgid "Desktop"
+msgstr "Masa Üstü"
 
 #: src/nautilus-preferences-dialog.c:82
 msgid "Use Nautilus to draw the desktop"
@@ -7121,6 +5568,10 @@ msgstr "Axtarış Seçənəkləri"
 msgid "search type to do by default"
 msgstr "əsas axtarış növü"
 
+#: src/nautilus-preferences-dialog.c:282
+msgid "Search Engines"
+msgstr "Axtarış Mühərrikləri"
+
 #: src/nautilus-preferences-dialog.c:284
 msgid "Search Engine Location"
 msgstr "Axtarış MÜhərriki Məkanı"
@@ -7183,6 +5634,10 @@ msgstr "Qovluq Görünüşünün Ətraflı Mə'lumatlarını Ümumi Et"
 #: src/nautilus-preferences-dialog.c:377
 msgid "Tabs"
 msgstr "Təblər"
+
+#: src/nautilus-preferences-dialog.c:386
+msgid "Tree"
+msgstr "Ağac"
 
 #: src/nautilus-preferences-dialog.c:388
 msgid "Show only folders (no files) in the tree"
@@ -7346,28 +5801,28 @@ msgstr "Rəng qurula bilmir"
 msgid "Select a color to add:"
 msgstr "Əlavə Ediləcək bir rəngi seç:"
 
-#: src/nautilus-property-browser.c:1309
+#: src/nautilus-property-browser.c:1310
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Təəssüf ki `%s' hökmlü bir rəsm deyildir!"
 
-#: src/nautilus-property-browser.c:1327
+#: src/nautilus-property-browser.c:1328
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Təəsüf ki yeni emblem üçün boş olmayan bir açar kəlimə seçməlisiniz."
 
-#: src/nautilus-property-browser.c:1328 src/nautilus-property-browser.c:1331
-#: src/nautilus-property-browser.c:1335 src/nautilus-property-browser.c:1364
+#: src/nautilus-property-browser.c:1329 src/nautilus-property-browser.c:1332
+#: src/nautilus-property-browser.c:1336 src/nautilus-property-browser.c:1365
 msgid "Couldn't install emblem"
 msgstr "Emblem qurula bilmir"
 
-#: src/nautilus-property-browser.c:1330
+#: src/nautilus-property-browser.c:1331
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Təəsüf ki emblem aça kalimələri təkcə hərf, fasilə və rəqəmlərdən ibarət "
 "olmalıdır."
 
-#: src/nautilus-property-browser.c:1333
+#: src/nautilus-property-browser.c:1334
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
@@ -7375,64 +5830,64 @@ msgid ""
 msgstr ""
 "Təəsüf ki \"%s\" onsuz da istifadə edilməkdədir. lütfən başqa ad seçin."
 
-#: src/nautilus-property-browser.c:1363
+#: src/nautilus-property-browser.c:1364
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Təəsüf ki %s rəsmi emblem olaraq qurula bilmir."
 
-#: src/nautilus-property-browser.c:2022
+#: src/nautilus-property-browser.c:2023
 msgid "Select A Category:"
 msgstr "Bir Kateqoriya Seç:"
 
-#: src/nautilus-property-browser.c:2030 src/nautilus-theme-selector.c:193
+#: src/nautilus-property-browser.c:2031 src/nautilus-theme-selector.c:193
 msgid "Cancel Remove"
 msgstr "Silməyi Ləğv Et"
 
-#: src/nautilus-property-browser.c:2035
+#: src/nautilus-property-browser.c:2036
 msgid "Add a New Pattern..."
 msgstr "Yeni bir Naxış Əlavə Et..."
 
-#: src/nautilus-property-browser.c:2038
+#: src/nautilus-property-browser.c:2039
 msgid "Add a New Color..."
 msgstr "Yeni Bir Rəng Əlavə Et..."
 
-#: src/nautilus-property-browser.c:2041
+#: src/nautilus-property-browser.c:2042
 msgid "Add a New Emblem..."
 msgstr "Yeni bir Emblem Əlavə Et..."
 
-#: src/nautilus-property-browser.c:2064
+#: src/nautilus-property-browser.c:2065
 msgid "Click on a pattern to remove it"
 msgstr "Silmək üçün naxışa tıqla"
 
-#: src/nautilus-property-browser.c:2067
+#: src/nautilus-property-browser.c:2068
 msgid "Click on a color to remove it"
 msgstr "Silmək üçün rəngə tıqla"
 
-#: src/nautilus-property-browser.c:2070
+#: src/nautilus-property-browser.c:2071
 msgid "Click on an emblem to remove it"
 msgstr "Silmək üçün emblemə tıqla"
 
-#: src/nautilus-property-browser.c:2079
+#: src/nautilus-property-browser.c:2080
 msgid "Patterns:"
 msgstr "Naxışlar:"
 
-#: src/nautilus-property-browser.c:2082
+#: src/nautilus-property-browser.c:2083
 msgid "Colors:"
 msgstr "Rənglər:"
 
-#: src/nautilus-property-browser.c:2085
+#: src/nautilus-property-browser.c:2086
 msgid "Emblems:"
 msgstr "Emblemlər:"
 
-#: src/nautilus-property-browser.c:2104
+#: src/nautilus-property-browser.c:2105
 msgid "Remove a Pattern..."
 msgstr "Naxışı Sil..."
 
-#: src/nautilus-property-browser.c:2107
+#: src/nautilus-property-browser.c:2108
 msgid "Remove a Color..."
 msgstr "Rəngi Sil..."
 
-#: src/nautilus-property-browser.c:2110
+#: src/nautilus-property-browser.c:2111
 msgid "Remove an Emblem..."
 msgstr "Emblemi Sil..."
 
@@ -7591,413 +6046,6 @@ msgstr "[File owner] [root] dır(dir, dur, dür)"
 msgid "[File owner] is not [root]"
 msgstr "[File owner] [root] deyildir"
 
-#: src/nautilus-service-ui.xml.h:1
-msgid "Go to the Eazel Services Summary Page"
-msgstr "Eazel Xidmətləri Mündəricat Səhifəsinə Get"
-
-#: src/nautilus-service-ui.xml.h:2
-msgid "Go to the Eazel Software Catalog"
-msgstr "Eazel Proqram Tə'minatı Kataloquna Get"
-
-#: src/nautilus-service-ui.xml.h:3
-msgid "Go to your online storage repository"
-msgstr "Xətdəki ambar nüsxəsinə get"
-
-#: src/nautilus-service-ui.xml.h:5
-msgid "Software _Catalog"
-msgstr "Proqram Tə'minatı _Kataloqu"
-
-#: src/nautilus-service-ui.xml.h:6
-msgid "_Eazel Services Home"
-msgstr "_Eazel Xidmətləri Ana Səhifəsi"
-
-#: src/nautilus-service-ui.xml.h:7
-msgid "_Online Storage"
-msgstr "_Xətdəki Ambar"
-
-#: src/nautilus-service-ui.xml.h:8
-msgid "_Services"
-msgstr "_Xidmətlər"
-
-#: src/nautilus-shell-ui.xml.h:1
-msgid " _Advanced"
-msgstr " _Təfsilatlı"
-
-#: src/nautilus-shell-ui.xml.h:2
-msgid " _Beginner"
-msgstr "_Yeni Başlayan"
-
-#: src/nautilus-shell-ui.xml.h:3
-msgid " _Intermediate"
-msgstr "_Ortabab"
-
-#: src/nautilus-shell-ui.xml.h:4
-msgid "Add a bookmark for the current location to this menu"
-msgstr "Bura üçün bir nişan əlavə et"
-
-#: src/nautilus-shell-ui.xml.h:6
-msgid "Change the visibility of this window's location bar"
-msgstr "Bu pəncərənin yer çubuğunun görünmə qabiliyyətini dəyişdir"
-
-#: src/nautilus-shell-ui.xml.h:7
-msgid "Change the visibility of this window's sidebar"
-msgstr "Bu pəncərənin yan çubuğunun görünmə qabiliyyətini dəyişdir"
-
-#: src/nautilus-shell-ui.xml.h:8
-msgid "Change the visibility of this window's status bar"
-msgstr "Bu pəncərənin hal çubuğunun görünmə qabiliyyətini dəyişdir"
-
-#: src/nautilus-shell-ui.xml.h:9
-msgid "Change the visibility of this window's toolbar"
-msgstr "Bu pəncərənin vasitə çubuğunun görünmə qabiliyyətini dəyişdir"
-
-#: src/nautilus-shell-ui.xml.h:10
-msgid "Choose a view for the current location, or modify the set of views"
-msgstr "Bura üçün bir görünüç seçin ya da təkmillşdirin"
-
-#: src/nautilus-shell-ui.xml.h:11
-msgid "Clear contents of Go menu and Back/Forward lists"
-msgstr "Get və Arxaya/İrəli menyusunun içindəkiləri sil"
-
-#: src/nautilus-shell-ui.xml.h:12
-msgid "Close _All Windows"
-msgstr "_Bütün Pəncərəleri Qapat"
-
-#: src/nautilus-shell-ui.xml.h:13
-msgid "Close all Nautilus windows"
-msgstr "Bütün Nautilus pəncərələri qapat"
-
-#: src/nautilus-shell-ui.xml.h:14
-msgid "Close this window"
-msgstr "Bu pəncərəni qapat"
-
-#: src/nautilus-shell-ui.xml.h:16
-msgid "Display a window that allows editing the bookmarks in this menu"
-msgstr ""
-"Bu menyunun içində nişanların dəyişdirilməsinə icazə verən pəncərəni göstər"
-
-#: src/nautilus-shell-ui.xml.h:17
-msgid "Display credits for the creators of Nautilus"
-msgstr "Nautilusun Yaradıcılarını göstər"
-
-#: src/nautilus-shell-ui.xml.h:18
-msgid "Display on-line help for Nautilus"
-msgstr "Nautilus üçün xətdəki yardımı göstər"
-
-#: src/nautilus-shell-ui.xml.h:19
-msgid ""
-"Display patterns, colors, and emblems that can be used to customize "
-"appearance"
-msgstr "Xüsusiyyətleri dəyişdirə biləcək naxış, rəng və emblemləri göstər"
-
-#: src/nautilus-shell-ui.xml.h:20
-msgid "Display quick reference pages for Nautilus"
-msgstr "Nautilusun cəld referens səhifələrini göstər"
-
-#: src/nautilus-shell-ui.xml.h:21
-msgid "Display release notes for Nautilus"
-msgstr "Nautilusun buraxılış qeydlərini göstər"
-
-#: src/nautilus-shell-ui.xml.h:22
-msgid "Display support information for Nautilus and Eazel Services"
-msgstr "Eazel Xidmətləri və Nautilus dəstək mə'lumatını göstər"
-
-#: src/nautilus-shell-ui.xml.h:23
-msgid "Display the latest contents of the current location"
-msgstr "Hal hazırkı yerin ən son möhtəviyyatını göstər"
-
-#: src/nautilus-shell-ui.xml.h:24
-msgid "Edit various Nautilus preferences"
-msgstr "Müxtəlif Nautilus Xüsusiyyətlərini Düzəlt"
-
-#: src/nautilus-shell-ui.xml.h:25
-msgid "Find"
-msgstr "Axtar"
-
-#: src/nautilus-shell-ui.xml.h:26
-msgid "For_get History"
-msgstr "Keçmişi U_nut"
-
-#: src/nautilus-shell-ui.xml.h:27
-msgid "Go to Eazel Services"
-msgstr "Eazel Xidmətlərinə Get"
-
-#: src/nautilus-shell-ui.xml.h:28
-msgid "Go to the home location"
-msgstr "Evimə get"
-
-#: src/nautilus-shell-ui.xml.h:29
-msgid "Go to the next visited location"
-msgstr "Sonrakı yerə get"
-
-#: src/nautilus-shell-ui.xml.h:30
-msgid "Go to the previous visited location"
-msgstr "Əvvəlki yerə get"
-
-#: src/nautilus-shell-ui.xml.h:31
-msgid "Go up to the location that contains the displayed location"
-msgstr "Bunu göstərən yerə get"
-
-#: src/nautilus-shell-ui.xml.h:32 src/nautilus-window-menus.c:492
-msgid "Hide Location _Bar"
-msgstr "Yer _Çubuğunu Gizlət"
-
-#: src/nautilus-shell-ui.xml.h:33 src/nautilus-window-menus.c:474
-msgid "Hide St_atus Bar"
-msgstr "_Vəziyyət Çubuğunu Gizlət"
-
-#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:480
-msgid "Hide _Sidebar"
-msgstr "_Yan Çubuğu Gizlət"
-
-#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:486
-msgid "Hide _Toolbar"
-msgstr "_Vasitə Çubuğunu Gizlət"
-
-#: src/nautilus-shell-ui.xml.h:37
-msgid "Nautilus Quick _Reference"
-msgstr "Nautilus Cəld _Referens"
-
-#: src/nautilus-shell-ui.xml.h:38
-msgid "Nautilus Release _Notes"
-msgstr "Nautilus Buraxılış _Qeydləri"
-
-#: src/nautilus-shell-ui.xml.h:39
-msgid "Nautilus User _Manual"
-msgstr "Nautilus İstifadəçi _Bələdçisi"
-
-#: src/nautilus-shell-ui.xml.h:40
-msgid "New Window"
-msgstr "Yeni Pəncərə"
-
-#: src/nautilus-shell-ui.xml.h:41
-msgid "New _Window"
-msgstr "Yeni _Pəncərə"
-
-#: src/nautilus-shell-ui.xml.h:42
-msgid "Normal Size"
-msgstr "Normal Böyüklük"
-
-#: src/nautilus-shell-ui.xml.h:43
-msgid "Open another Nautilus window for the displayed location"
-msgstr "Yeri göstərmək üçün yeni bir Nautilus pəncərəsi aç"
-
-#: src/nautilus-shell-ui.xml.h:44
-msgid "Refresh"
-msgstr "Yenilə"
-
-#: src/nautilus-shell-ui.xml.h:45
-msgid "Report Profiling"
-msgstr "Profilləşdirməyi Raport Et"
-
-#: src/nautilus-shell-ui.xml.h:46
-msgid "Reset Profiling"
-msgstr "Profilləşdirməyi Sıfırla"
-
-#: src/nautilus-shell-ui.xml.h:47
-msgid "Search the World Wide Web"
-msgstr "Vebdə Axtar"
-
-#: src/nautilus-shell-ui.xml.h:48
-msgid "Search this computer for files"
-msgstr "Faylları bu kompüterdə axtar"
-
-#: src/nautilus-shell-ui.xml.h:50
-msgid ""
-"Show a page from which you can send feedback about Nautilus and Eazel "
-"Services"
-msgstr "Nautilus və Eazel ila əlaqə qura biləcəyiniz səhifəni göstər"
-
-#: src/nautilus-shell-ui.xml.h:51
-msgid "Show the contents at the normal size"
-msgstr "İçindəkiləri normal böyüklükdə göstər"
-
-#: src/nautilus-shell-ui.xml.h:52
-msgid "Show the contents in less detail"
-msgstr "İçindəkiləri azaldılmış olaraq göstər"
-
-#: src/nautilus-shell-ui.xml.h:53
-msgid "Show the contents in more detail"
-msgstr "İçindəkiləri ətraflı göstər"
-
-#: src/nautilus-shell-ui.xml.h:54
-msgid "Start Profiling"
-msgstr "Profilləşdirməni Başlat"
-
-#: src/nautilus-shell-ui.xml.h:56
-msgid "Stop Profiling"
-msgstr "Profilləşdirməni Qurtar"
-
-#: src/nautilus-shell-ui.xml.h:57
-msgid "Stop loading this location"
-msgstr "Bu yeri yükləməni dayandır"
-
-#: src/nautilus-shell-ui.xml.h:58
-msgid "Undo the last text change"
-msgstr "Axırıncı mətn dəyişikliyini geri al"
-
-#: src/nautilus-shell-ui.xml.h:59
-msgid "Up"
-msgstr "Yuxarı"
-
-#: src/nautilus-shell-ui.xml.h:60
-msgid "Use preferences appropriate for beginners"
-msgstr "Seçənəkləri yeni başlayanlara uyğunlaşdır"
-
-#: src/nautilus-shell-ui.xml.h:61
-msgid "Use preferences appropriate for experts"
-msgstr "Seçənəkləri ustalara uyğunlaşdır"
-
-#: src/nautilus-shell-ui.xml.h:62
-msgid "Use preferences appropriate for most people"
-msgstr "Seçənəkləri bir çox insan üçün uyğunlaşdır"
-
-#. Add "View as..." extra bonus choice.
-#: src/nautilus-shell-ui.xml.h:63 src/nautilus-window.c:647
-#: src/nautilus-window.c:1545
-msgid "View as..."
-msgstr "Fərqli göstər ..."
-
-#: src/nautilus-shell-ui.xml.h:64
-msgid "We_b Search"
-msgstr "_Vebdə axtar"
-
-#: src/nautilus-shell-ui.xml.h:65
-msgid "Web Search"
-msgstr "Vebdə axtar"
-
-#: src/nautilus-shell-ui.xml.h:66
-msgid "Zoom In"
-msgstr "Yaxınlaş"
-
-#: src/nautilus-shell-ui.xml.h:67
-msgid "Zoom Out"
-msgstr "Uzaqlaş"
-
-#: src/nautilus-shell-ui.xml.h:68
-msgid "Zoom _In"
-msgstr "_Yaxınlaş"
-
-#: src/nautilus-shell-ui.xml.h:69
-msgid "Zoom _Out"
-msgstr "_Uzaqlaş"
-
-#: src/nautilus-shell-ui.xml.h:70
-msgid "_About Nautilus..."
-msgstr "_Nautilus haqqında ..."
-
-#: src/nautilus-shell-ui.xml.h:71
-msgid "_Add Bookmark"
-msgstr "_Nişan əlavə et"
-
-#: src/nautilus-shell-ui.xml.h:72
-msgid "_Back"
-msgstr "_Geri"
-
-#: src/nautilus-shell-ui.xml.h:73
-msgid "_Backgrounds and Emblems..."
-msgstr "Ar_xaplan və Emblemlər"
-
-#: src/nautilus-shell-ui.xml.h:74
-msgid "_Bookmarks"
-msgstr "_Nişanlar"
-
-#: src/nautilus-shell-ui.xml.h:75
-msgid "_Close Window"
-msgstr "Pəncərəyi _bağla"
-
-#: src/nautilus-shell-ui.xml.h:76
-msgid "_Community Support"
-msgstr "_Satıcı Dəstəyi"
-
-#: src/nautilus-shell-ui.xml.h:78
-msgid "_Edit"
-msgstr "_Düzəlt"
-
-#: src/nautilus-shell-ui.xml.h:79
-msgid "_Edit Bookmarks..."
-msgstr "Nişanları _Düzəlt..."
-
-#: src/nautilus-shell-ui.xml.h:80
-msgid "_Edit Preferences..."
-msgstr "Seçənəkləri _Düzəlt..."
-
-#: src/nautilus-shell-ui.xml.h:81
-msgid "_Feedback"
-msgstr "Əla_qə"
-
-#: src/nautilus-shell-ui.xml.h:83
-msgid "_Find"
-msgstr "Axta_r"
-
-#: src/nautilus-shell-ui.xml.h:84
-msgid "_Forward"
-msgstr "_İrəii"
-
-#: src/nautilus-shell-ui.xml.h:85
-msgid "_Go"
-msgstr "G_et"
-
-#: src/nautilus-shell-ui.xml.h:86
-msgid "_Help"
-msgstr "_Yardım"
-
-#: src/nautilus-shell-ui.xml.h:87
-msgid "_Home"
-msgstr "_Ev"
-
-#: src/nautilus-shell-ui.xml.h:88
-msgid "_Location..."
-msgstr "_Yer..."
-
-#: src/nautilus-shell-ui.xml.h:89
-msgid "_Normal Size"
-msgstr "_Normal Böyüklükdə"
-
-#: src/nautilus-shell-ui.xml.h:91
-msgid "_Preferences"
-msgstr "_Seçənəklər"
-
-#: src/nautilus-shell-ui.xml.h:92
-msgid "_Profiler"
-msgstr "_Profilləşdirici"
-
-#: src/nautilus-shell-ui.xml.h:93
-msgid "_Refresh"
-msgstr "_Yenilə"
-
-#: src/nautilus-shell-ui.xml.h:94
-msgid "_Report Profiling"
-msgstr "Profilləşdirməni _Bildir"
-
-#: src/nautilus-shell-ui.xml.h:95
-msgid "_Reset Profiling"
-msgstr "Profilləşdirməni _Sıfırla"
-
-#: src/nautilus-shell-ui.xml.h:96
-msgid "_Start Profiling"
-msgstr "Profilləşdirməni _Başlat"
-
-#: src/nautilus-shell-ui.xml.h:97
-msgid "_Stop Profiling"
-msgstr "Profilləşdirməni _Dayandır"
-
-#: src/nautilus-shell-ui.xml.h:98
-msgid "_Undo"
-msgstr "_Geriyə Get"
-
-#: src/nautilus-shell-ui.xml.h:99
-msgid "_Up a Level"
-msgstr "Bir Səviyyə _Yuxarı"
-
-#: src/nautilus-shell-ui.xml.h:100
-msgid "_View"
-msgstr "_Nümayişlər"
-
-#: src/nautilus-shell-ui.xml.h:101
-msgid "_View as..."
-msgstr "_Fərqli göstər ..."
-
 #: src/nautilus-shell.c:188
 msgid "Caveat"
 msgstr "Caveat"
@@ -8024,7 +6072,12 @@ msgstr ""
 "Please visit http://www.eazel.com/feedback.html to provide feedback, "
 "comments, and suggestions."
 
-#: src/nautilus-sidebar.c:703
+#. add the reset background item, possibly disabled
+#: src/nautilus-sidebar.c:542
+msgid "Reset Background"
+msgstr "Arxa Planı Sıfırla"
+
+#: src/nautilus-sidebar.c:722
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
 "image to set a custom icon."
@@ -8032,11 +6085,11 @@ msgstr ""
 "Eyni vaxtda bir neçə timsal işlədə bilərsiniz! Əsad timsal üçün lütfən "
 "birini sürükləyin."
 
-#: src/nautilus-sidebar.c:705
+#: src/nautilus-sidebar.c:724
 msgid "More Than One Image"
 msgstr "Bir Rəsmdən Daha Çox"
 
-#: src/nautilus-sidebar.c:724
+#: src/nautilus-sidebar.c:743
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
 "custom icons."
@@ -8044,11 +6097,11 @@ msgstr ""
 "Sürüklənən fayl yerli deyil. Əsas rəsmlər üçün takcə yerli rəsmləri işlədə "
 "bilərsiniz."
 
-#: src/nautilus-sidebar.c:726
+#: src/nautilus-sidebar.c:745
 msgid "Local Images Only"
 msgstr "Təkcə Yerli Rəsmlər"
 
-#: src/nautilus-sidebar.c:731
+#: src/nautilus-sidebar.c:750
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
 "custom icons."
@@ -8056,17 +6109,17 @@ msgstr ""
 "Sürüklədiyiniz fayl rəsm deyildir. Əsas rəsmlər üçün takcə yerli rəsmləri "
 "işlədə bilərsiniz."
 
-#: src/nautilus-sidebar.c:733
+#: src/nautilus-sidebar.c:752
 msgid "Images Only"
 msgstr "Təkcə Rəsmlər"
 
-#: src/nautilus-sidebar.c:1321
+#: src/nautilus-sidebar.c:1340
 #, c-format
 msgid "Open with %s"
 msgstr "%s ilə aç"
 
 #. Catch-all button after all the others.
-#: src/nautilus-sidebar.c:1357
+#: src/nautilus-sidebar.c:1376
 msgid "Open with..."
 msgstr "Fərqli aç ..."
 
@@ -8137,16 +6190,20 @@ msgstr "Örtü silinə  bilmir."
 #. * time stamps really best described as "preview
 #. * release"?.
 #.
-#: src/nautilus-window-manage-views.c:217
+#: src/nautilus-window-manage-views.c:218
 #, c-format
 msgid "Preview Release %s: %s"
 msgstr "Nümayiş Buraxılışı %s: %s"
 
-#: src/nautilus-window-manage-views.c:812
+#: src/nautilus-window-manage-views.c:256 src/nautilus-window-menus.c:657
+msgid "Nautilus"
+msgstr "Nautilus"
+
+#: src/nautilus-window-manage-views.c:813
 msgid "View Failed"
 msgstr "Nümayiş Bacarılmadı"
 
-#: src/nautilus-window-manage-views.c:823
+#: src/nautilus-window-manage-views.c:824
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -8155,12 +6212,12 @@ msgstr ""
 "%s nümayişində xəta oldu. Davam edə bilmirəm. Başqa yerdən başqa birini seçə "
 "bilərsiniz."
 
-#: src/nautilus-window-manage-views.c:834
+#: src/nautilus-window-manage-views.c:835
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "%s nümayişində başlaqkən xəta oldu."
 
-#: src/nautilus-window-manage-views.c:999
+#: src/nautilus-window-manage-views.c:1000
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -8168,7 +6225,7 @@ msgstr ""
 "Yan çubuqlardan birində xəta oldu və davam edə bilmədi. Amma hansı olduğunu "
 "təəsüf ki bilmirəm."
 
-#: src/nautilus-window-manage-views.c:1003
+#: src/nautilus-window-manage-views.c:1004
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -8177,18 +6234,18 @@ msgstr ""
 "%s yan çubuğunda xəta oldu və davam edə bilmədi. Belə davam edərsə paneli "
 "qapatsanız daha yaxşı olar."
 
-#: src/nautilus-window-manage-views.c:1008
+#: src/nautilus-window-manage-views.c:1009
 msgid "Sidebar Panel Failed"
 msgstr "Yan Çubuğu Paneli İflas Etdi"
 
-#: src/nautilus-window-manage-views.c:1213
+#: src/nautilus-window-manage-views.c:1214
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "\"%s\"i(ı) tapa bilmədim. Lütfən yazmaq istədiyini doğru yazıb yazmadığını "
 "yoxla "
 
-#: src/nautilus-window-manage-views.c:1219
+#: src/nautilus-window-manage-views.c:1220
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
@@ -8196,7 +6253,7 @@ msgstr ""
 "\"%s\" hökmlü bir yer deyildir. Lütfən, yazmaq istədiyini doğru yazıb "
 "yazmadığını yoxla."
 
-#: src/nautilus-window-manage-views.c:1233
+#: src/nautilus-window-manage-views.c:1234
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -8205,7 +6262,7 @@ msgstr ""
 "\"%s\"i(ı) göstərə bilmədim, çünkü \"Nautilus\" hansı növdən olduğunu tapa "
 "bilmədi."
 
-#: src/nautilus-window-manage-views.c:1241
+#: src/nautilus-window-manage-views.c:1242
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr ""
@@ -8213,26 +6270,26 @@ msgstr ""
 "bilmir."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1253
+#: src/nautilus-window-manage-views.c:1254
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "\"%s\"i(ı) göstərə bilmədim, çünkü \"Nautilus\"un %s: məkanları üçün bir "
 "idarəcisi yoxdur."
 
-#: src/nautilus-window-manage-views.c:1259
+#: src/nautilus-window-manage-views.c:1260
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "\"%s\"i(ı) göstərə bilmədim, çünkü giriş qadağan edildi."
 
-#: src/nautilus-window-manage-views.c:1264
+#: src/nautilus-window-manage-views.c:1265
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr ""
 "\"%s\"i(ı) göstərə bilmədim, çünkü \"Nautilus\"un qeyd etmə cəhdi "
 "müvəffəqiyyətsiz oldu."
 
-#: src/nautilus-window-manage-views.c:1275
+#: src/nautilus-window-manage-views.c:1276
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -8241,7 +6298,7 @@ msgstr ""
 "\"%s\"i(ı) göstərə bilmədim, çünkü \"%s\" yuvası tapılmadı. Vəkil verici "
 "qurğularınızı  və imla xətası edib etmədiyinizi yoxlayın."
 
-#: src/nautilus-window-manage-views.c:1283
+#: src/nautilus-window-manage-views.c:1284
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -8250,7 +6307,7 @@ msgstr ""
 "\"%s\"i(ı) göstərə bilmədim, çünkü yuva adı bş idi. Vəkil verici "
 "qurğularınızı yoxlayın."
 
-#: src/nautilus-window-manage-views.c:1295
+#: src/nautilus-window-manage-views.c:1296
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -8261,23 +6318,23 @@ msgstr ""
 "açıq deyildir. \"Medusa\" axtarış sisteminizin açıq olub olmadığını bir "
 "yoxlayın. İndeksiniz yoxsa \"Medusa\" indeksləyicinizi də bir yoxlayın."
 
-#: src/nautilus-window-manage-views.c:1299
+#: src/nautilus-window-manage-views.c:1300
 msgid "Searching Unavailable"
 msgstr "Axtarış Aparıla Bilmir"
 
-#: src/nautilus-window-manage-views.c:1303
+#: src/nautilus-window-manage-views.c:1304
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "\"%s\" Nautilus tərəfindən göstərilə bilmir ."
 
-#: src/nautilus-window-manage-views.c:1308
+#: src/nautilus-window-manage-views.c:1309
 msgid "Can't Display Location"
 msgstr "Bu Yeri Göstərə Bilmirəm"
 
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:363
+#: src/nautilus-window-menus.c:373
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
@@ -8286,34 +6343,50 @@ msgstr ""
 "istəyirsinizsə bu vəziyyətə bir də məhkum olacaqsınız. (Heç xoş gün görmədim "
 "bu həyatda mən: hüngür hüngür!:))) Vasif"
 
-#: src/nautilus-window-menus.c:366
+#: src/nautilus-window-menus.c:376
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr ""
 "Həqiqətən də Nautilusdan indiyə qədər getdiyiniz yerlərin unudulmasını "
 "istəyirsiniz?"
 
-#: src/nautilus-window-menus.c:371
+#: src/nautilus-window-menus.c:381
 msgid "Forget History?"
 msgstr "Keçmişi Unudummu?"
 
-#: src/nautilus-window-menus.c:372
+#: src/nautilus-window-menus.c:382
 msgid "Forget"
 msgstr "Unut Getsin"
 
-#: src/nautilus-window-menus.c:475
+#: src/nautilus-window-menus.c:484
+msgid "Hide St_atus Bar"
+msgstr "_Vəziyyət Çubuğunu Gizlət"
+
+#: src/nautilus-window-menus.c:485
 msgid "Show St_atus Bar"
 msgstr "_Vəziyyət Çubuğunu Göstər"
 
-#: src/nautilus-window-menus.c:481
+#: src/nautilus-window-menus.c:490
+msgid "Hide _Sidebar"
+msgstr "_Yan Çubuğu Gizlət"
+
+#: src/nautilus-window-menus.c:491
 msgid "Show _Sidebar"
 msgstr "_Yan Çubuğunu Göstər"
 
-#: src/nautilus-window-menus.c:487
+#: src/nautilus-window-menus.c:496
+msgid "Hide _Toolbar"
+msgstr "_Vasitə Çubuğunu Gizlət"
+
+#: src/nautilus-window-menus.c:497
 msgid "Show _Toolbar"
 msgstr "_Vasitə Çubuğunu Göstər"
 
-#: src/nautilus-window-menus.c:493
+#: src/nautilus-window-menus.c:502
+msgid "Hide Location _Bar"
+msgstr "Yer _Çubuğunu Gizlət"
+
+#: src/nautilus-window-menus.c:503
 msgid "Show Location _Bar"
 msgstr "_Yer Çubuğunu Göstər"
 
@@ -8321,7 +6394,7 @@ msgstr "_Yer Çubuğunu Göstər"
 #. * symbol characters -- do not translate the company
 #. * name, please.
 #.
-#: src/nautilus-window-menus.c:638
+#: src/nautilus-window-menus.c:648
 msgid "Copyright (C) 1999-2001 Eazel, Inc."
 msgstr "Copyright (c) 1999-2001 Eazel, İnc."
 
@@ -8329,11 +6402,11 @@ msgstr "Copyright (c) 1999-2001 Eazel, İnc."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window-menus.c:645
+#: src/nautilus-window-menus.c:655
 msgid "Translator Credits"
 msgstr "Tərcüməçilər"
 
-#: src/nautilus-window-menus.c:651
+#: src/nautilus-window-menus.c:661
 msgid ""
 "Nautilus is a graphical shell\n"
 "for GNOME that makes it\n"
@@ -8345,7 +6418,7 @@ msgstr ""
 "asand idarə edə bilmək məqsədilə\n"
 "Gnome üçün hazırlanmış bir qabıqdır."
 
-#: src/nautilus-window-menus.c:813
+#: src/nautilus-window-menus.c:814
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -8354,20 +6427,20 @@ msgstr ""
 "\"%s\" yeri yoxdur. Bu yerlə əlaqəli bütün nişanlarını siyahıdan silmək "
 "istəyirsən?"
 
-#: src/nautilus-window-menus.c:817
+#: src/nautilus-window-menus.c:818
 msgid "Bookmark for Nonexistent Location"
 msgstr "Xətalı Yer üçün Nişan"
 
-#: src/nautilus-window-menus.c:831
+#: src/nautilus-window-menus.c:832
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "\"%s\" yeri yox olmuşdur."
 
-#: src/nautilus-window-menus.c:832
+#: src/nautilus-window-menus.c:833
 msgid "Go to Nonexistent Location"
 msgstr "Mövcud Olmayan Yerə Get"
 
-#: src/nautilus-window-menus.c:901
+#: src/nautilus-window-menus.c:902
 msgid "Go to the location specified by this bookmark"
 msgstr "Nişanın göstərdiyi yerə get"
 
@@ -8378,6 +6451,11 @@ msgstr "Geri"
 #: src/nautilus-window-toolbars.c:430
 msgid "Forward"
 msgstr "Qabağa"
+
+#. Add "View as..." extra bonus choice.
+#: src/nautilus-window.c:647 src/nautilus-window.c:1545
+msgid "View as..."
+msgstr "Fərqli göstər ..."
 
 #: src/nautilus-window.c:1251
 #, c-format
@@ -8399,3 +6477,1457 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 #, c-format
 msgid "%d%%"
 msgstr "%d%%"
+
+#~ msgid "Factory for Nautilus component adapter factories"
+#~ msgstr "Nautilus əlavələri adapteri mərkəzi e'malatxanası"
+
+#~ msgid "Factory for Nautilus component adapter factories "
+#~ msgstr "Nautilus əlavələri adapteri mərkəzi e'malatxanası"
+
+#~ msgid ""
+#~ "Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
+#~ "look like Nautilus Views"
+#~ msgstr ""
+#~ "Sıravi Bonobo İdarələrini və ya Hopdurulmuş elementlərini Nautilus "
+#~ "Nümayişlərinə çevirən mərkəz"
+
+#~ msgid "Nautilus component adapter factory"
+#~ msgstr "Nautilus əlavələri adapteri mərkəzi"
+
+#~ msgid "Hardware Viewer"
+#~ msgstr "Texniki Tə'minat Nümayişiçisi"
+
+#~ msgid "Hardware view"
+#~ msgstr "Texniki tə'minat nümayişi"
+
+#~ msgid "View as Hardware"
+#~ msgstr "Texniki Tə'minat olaraq Göstər"
+
+#~ msgid "hardware view"
+#~ msgstr "texniki tə'minat nümayişi"
+
+#~ msgid "Help"
+#~ msgstr "Yardım"
+
+#~ msgid "Help Index"
+#~ msgstr "Yardım İndeksi"
+
+#~ msgid "Help Index sidebar panel"
+#~ msgstr "Yardım İndeksi yan çubuğu"
+
+#~ msgid "Help Navigation Tree"
+#~ msgstr "Yardım Naviqasiyası Ağacı"
+
+#~ msgid "Help Search"
+#~ msgstr "Köməkdə axtar"
+
+#~ msgid "Help Search sidebar panel"
+#~ msgstr "Köməkdə Axtarış yan çubuğu"
+
+#~ msgid "Help sidebar panel"
+#~ msgstr "Yardım yan çubuğu"
+
+#~ msgid "Internal use only"
+#~ msgstr "Sadəcə olaraq daxili istifadə üçün"
+
+#~ msgid "Factory for history views"
+#~ msgstr "Keçmiş nümayişi e'malatxanası"
+
+#~ msgid "History"
+#~ msgstr "Keçmiş"
+
+#~ msgid "History sidebar panel"
+#~ msgstr "Keçmiş yan çubuğu"
+
+#~ msgid "History sidebar panel for Nautilus"
+#~ msgstr "Nautilusun Keçmiş yan çubuğu"
+
+#~ msgid "Generic Image Viewer"
+#~ msgstr "Ümumi Rəsm Nümayişçisi"
+
+#~ msgid "Generic image control factory"
+#~ msgstr "Ümumi rəsm idrə e'malatxanası"
+
+#~ msgid "Image"
+#~ msgstr "Rəsm"
+
+#~ msgid "Image Viewer"
+#~ msgstr "Rəsm Nümayişçisi"
+
+#~ msgid "Nautilus Image Viewer"
+#~ msgstr "Nautilus Rəsm Nümayişçisi"
+
+#~ msgid "Nautilus Image viewer factory"
+#~ msgstr "Nautilus Rəsm nümayişçisi e'malatxanası"
+
+#~ msgid "View as Image"
+#~ msgstr "Rəsm olaraq göstər"
+
+#~ msgid "Kill Content Loser"
+#~ msgstr "İçindəkilər Nümayişçisini Dayandır"
+
+#~ msgid "Kill the Loser content view"
+#~ msgstr "Loser içindəkilər nümayişini dayandır"
+
+#~ msgid "_File"
+#~ msgstr "_Fayl"
+
+#~ msgid "_Kill Content Loser"
+#~ msgstr "Içindəkilər  Nümayişini _Dayandır"
+
+#~ msgid "Content Loser"
+#~ msgstr "İçindəkilər Nümaiyşi"
+
+#~ msgid "Content Loser Viewer"
+#~ msgstr "İçindəkilər Nümaiyşiçisi"
+
+#~ msgid "Nautilus Content Loser"
+#~ msgstr "Nautilus İçindəkilər Nümayişi"
+
+#~ msgid "Nautilus content loser component's factory"
+#~ msgstr "Nautilus içindəkilər nümayişi əlavələri e'malatxanası"
+
+#~ msgid "Nautilus content loser factory"
+#~ msgstr "Nautilus içindəkilər nümayişi e'malatxanası"
+
+#~ msgid "Nautilus content view that fails on command"
+#~ msgstr ""
+#~ "Bu bir nümunəvi Nautilus möhtəviyyatı nümayişidir və tələb edildiyində "
+#~ "itir."
+
+#~ msgid "View as Content Loser"
+#~ msgstr "İçindəkilər Nümayişçisi olaraq Göstər"
+
+#~ msgid "Kill Sidebar Loser"
+#~ msgstr "Yan Çubuq Nümayişini Dayandır"
+
+#~ msgid "Kill the Loser sidebar panel"
+#~ msgstr "Loser Yan Çubuğu Panelini Dayandır"
+
+#~ msgid "_Kill Sidebar Loser"
+#~ msgstr "Yan Çubuq Loserini _Dayandır"
+
+#~ msgid "Nautilus Sidebar Loser"
+#~ msgstr "Nautilus Yan Çubuq Loseri"
+
+#~ msgid "Nautilus sidebar loser component's factory"
+#~ msgstr "Nautilus yan çubuq loseri əlavələri e'malatxanası"
+
+#~ msgid "Nautilus sidebar loser factory"
+#~ msgstr "Nautilus yan çubuq loseri e'malatxanası"
+
+#~ msgid "Nautilus sidebar view that fails on command"
+#~ msgstr ""
+#~ "Bu bir nümunəvi Nautilus möhtəviyyatı nümayişidir və taləb edildiyində "
+#~ "itir."
+
+#~ msgid "Sidebar Loser"
+#~ msgstr "Yan Çubuq Loseri"
+
+#~ msgid "Charset Encoding"
+#~ msgstr "Hərf Dəstəsi Kodlama"
+
+#~ msgid "Mozilla Nautilus view"
+#~ msgstr "Mozilla Nautilus Nümaiyişi"
+
+#~ msgid "Mozilla Nautilus view factory"
+#~ msgstr "Mozilla Nautilus nümayişi e'malatxanası"
+
+#~ msgid "Mozilla content view component"
+#~ msgstr "Mozilla içindəkilər nümayişi əlavəsi"
+
+#~ msgid "Mozilla content view component's factory"
+#~ msgstr "Mozilla içindəkilər nümayişi əlavəsləri e'malatxanası"
+
+#~ msgid "View as Web Page"
+#~ msgstr "Veb Səhifəsi olaraq Göstər"
+
+#~ msgid "Web Page"
+#~ msgstr "Veb Səhifəsi"
+
+#~ msgid "Web Page Viewer"
+#~ msgstr "Veb Səhifəsi Nümayişçisi"
+
+#~ msgid "Factory for music view"
+#~ msgstr "Musiqi nümayişi e'malatxanası"
+
+#~ msgid "Music"
+#~ msgstr "Musiqi"
+
+#~ msgid "Music Viewer"
+#~ msgstr "Musiqi Nümayişiçisi"
+
+#~ msgid "Music view"
+#~ msgstr "Musiqi Nümayişi"
+
+#~ msgid "Music view factory"
+#~ msgstr "Musiqi nümayişi e'malatxanası"
+
+#~ msgid "View as Music"
+#~ msgstr "Musqi olaraq göstər"
+
+#~ msgid "Factory for news view"
+#~ msgstr "Xəbərlər nümayişi e'malatxanası"
+
+#~ msgid "News"
+#~ msgstr "Xəbərlər"
+
+#~ msgid "News sidebar panel"
+#~ msgstr "Xəbərlər yan çubuğu"
+
+#~ msgid "News sidebar panel fetches and displays RSS feeds"
+#~ msgstr "Xəbərlər kənar paneli RSSləri alar və nümayiş etdirər"
+
+#~ msgid "Factory for annotation view"
+#~ msgstr "Not nümayişi e'malatxanası"
+
+#~ msgid "Notes sidebar panel"
+#~ msgstr "Not yan çubuğu"
+
+#~ msgid "Notes sidebar panel for Nautilus"
+#~ msgstr "Nautilusun not yan çubuğu"
+
+#~ msgid "Sample"
+#~ msgstr "Nümunə"
+
+#~ msgid "This is a sample merged menu item"
+#~ msgstr "Bu bir nümunəvi birleştirilmiş menyu üzvüdür"
+
+#~ msgid "This is a sample merged toolbar button"
+#~ msgstr "Bu bir nümunəvi birleştirilmiş vasitə çubuğu düyməsidir"
+
+#~ msgid "_Sample"
+#~ msgstr "N_ümunə"
+
+#~ msgid "Nautilus Sample view"
+#~ msgstr "Nautilus Nümunə nümayişi"
+
+#~ msgid "Nautilus Sample view factory"
+#~ msgstr "Nautilus Nümunə nümayişi e'malatxanası"
+
+#~ msgid "Sample Viewer"
+#~ msgstr "Nümunə Nümayişçisi"
+
+#~ msgid "Sample content view component"
+#~ msgstr "Nautilus Nümunə nümayişi əlavəsi"
+
+#~ msgid "Sample content view component's factory"
+#~ msgstr "Nautilus Nümunə nümayişi əlavəsi e'malatxanası"
+
+#~ msgid "View as Sample"
+#~ msgstr "Nümunə olaraq göstər"
+
+#~ msgid "F_onts"
+#~ msgstr "Ya_zı növləri"
+
+#~ msgid "Lucida"
+#~ msgstr "Lusida"
+
+#~ msgid "Use the Courier Font"
+#~ msgstr "Kuriyer Yazı Növünü İşlət"
+
+#~ msgid "Use the Fixed Font"
+#~ msgstr "Sabit Yazı Növünü İşlət"
+
+#~ msgid "Use the GTK System Font"
+#~ msgstr "GTK Sİstem Yazı Növünü İşlət"
+
+#~ msgid "Use the Helvetica Font"
+#~ msgstr "Helvetika Yazı Növünü İşlət"
+
+#~ msgid "Use the Lucida Font"
+#~ msgstr "Lusida Yazı Növünü İşlət"
+
+#~ msgid "Use the Times Font"
+#~ msgstr "Tayms Yazı Növünü İşlət"
+
+#~ msgid "_Courier"
+#~ msgstr "_Kuriyer"
+
+#~ msgid "_Fixed"
+#~ msgstr "_Sabit"
+
+#~ msgid "_GTK System Font"
+#~ msgstr "_GTK Sistem Yazı Növü"
+
+#~ msgid "_Helvetica"
+#~ msgstr "_Helvetika"
+
+#~ msgid "_Times"
+#~ msgstr "_Tayms"
+
+#~ msgid "Factory for text view"
+#~ msgstr "Mətn nümayişi e'malatxanası"
+
+#~ msgid "Text"
+#~ msgstr "Mətn"
+
+#~ msgid "Text Viewer"
+#~ msgstr "Mətn Nümayişçisi"
+
+#~ msgid "Text view"
+#~ msgstr "Mətn Nümayişi"
+
+#~ msgid "Text view factory"
+#~ msgstr "Mətn nümayişi e'malatxanası"
+
+#~ msgid "View as Text"
+#~ msgstr "Mətn olaraq göstər"
+
+#~ msgid "Search Google for Selected Text"
+#~ msgstr "Seçili Kəliməyi \"Google\"də Axtar"
+
+#~ msgid "Use Google to search the web for the selected text"
+#~ msgstr "Seçili mətni vebdə axtarmaq üçün \"Google\"dən istifadə et"
+
+#~ msgid "Look Up Selected Text in Dictionary"
+#~ msgstr "Seçili Mətni Sözlükdə Axtar"
+
+#~ msgid "Look up the selected text in the Merriam-Webster dictionary"
+#~ msgstr "Seçili mətni Meriyem-Vebster sözlüyündə axtar"
+
+#~ msgid "animation to indicate on-going activity"
+#~ msgstr "fəaliyyəti göstərən animasiya"
+
+#~ msgid "throbber"
+#~ msgstr "zonquldayıcı"
+
+#~ msgid "throbber factory"
+#~ msgstr "zonquldayıcı e'malatxanası"
+
+#~ msgid "throbber object factory"
+#~ msgstr "zonquldayıcı cism e'malatxanası"
+
+#~ msgid "Nautilus Tree sidebar panel"
+#~ msgstr "Nautilus Ağac yan çubuq paneli"
+
+#~ msgid "Nautilus Tree view"
+#~ msgstr "Nautilus Ağac nümayişi"
+
+#~ msgid "Apparition"
+#~ msgstr "Aparatlar"
+
+#~ msgid "Azul"
+#~ msgstr "Azul"
+
+#~ msgid "Black"
+#~ msgstr "Qara"
+
+#~ msgid "Blue Ridge"
+#~ msgstr "Göy Təpə"
+
+#~ msgid "Blue Rough"
+#~ msgstr "Qaba Göy"
+
+#~ msgid "Blue Type"
+#~ msgstr "Göysayağı"
+
+#~ msgid "Brushed Metal"
+#~ msgstr "Fırçalanmış Metal"
+
+#~ msgid "Bubble Gum"
+#~ msgstr "Bubli Qum"
+
+#~ msgid "Burlap"
+#~ msgstr "Çuval Beiz"
+
+#~ msgid "Camouflage"
+#~ msgstr "Kamuflyaj"
+
+#~ msgid "Certified"
+#~ msgstr "Vəsiqəli"
+
+#~ msgid "Chalk"
+#~ msgstr "Təbaşir"
+
+#~ msgid "Charcoal"
+#~ msgstr "Manqal Kömürü"
+
+#~ msgid "Colors"
+#~ msgstr "Rənglər"
+
+#~ msgid "Concrete"
+#~ msgstr "Beton"
+
+#~ msgid "Cool"
+#~ msgstr "Serin"
+
+#~ msgid "Cork"
+#~ msgstr "Tıxac"
+
+#~ msgid "Countertop"
+#~ msgstr "Piştaxta"
+
+#~ msgid "Danger"
+#~ msgstr "Təhlükə"
+
+#~ msgid "Danube"
+#~ msgstr "Don Çayı"
+
+#~ msgid "Dark Cork"
+#~ msgstr "Tünd Manqal Kömürü"
+
+#~ msgid "Dark GNOME"
+#~ msgstr "Tünd GNOME"
+
+#~ msgid "Deep Teal"
+#~ msgstr "Dərin Til"
+
+#~ msgid "Distinguished"
+#~ msgstr "Ayrılmış"
+
+#~ msgid "Dots"
+#~ msgstr "Nöqtələr"
+
+#~ msgid "Draft"
+#~ msgstr "Damla"
+
+#~ msgid "Drag a color to an object to change it to that color"
+#~ msgstr "Rəngini dəyişdirmək üçün rəngi üstünə sürükləyin"
+
+#~ msgid "Drag a pattern tile to an object to change it"
+#~ msgstr "Cismin üstünə alması üçün patern kürəmiti sürükləyin"
+
+#~ msgid "Drag an emblem to an object to add it to the object"
+#~ msgstr "Cismin alması üçün üstünə emblem sürükləyin"
+
+#~ msgid "Eclipse"
+#~ msgstr "Qaranlıqlaşma"
+
+#~ msgid "Envy"
+#~ msgstr "Qısqanclıq"
+
+#~ msgid "Erase"
+#~ msgstr "Poz"
+
+#~ msgid "Favorite"
+#~ msgstr "Pərəstiş Etdiyim"
+
+#~ msgid "Fibers"
+#~ msgstr "Tellər"
+
+#~ msgid "Fire Engine"
+#~ msgstr "Alov Mühərriki"
+
+#~ msgid "Fleur De Lis"
+#~ msgstr "Fleur De Lis"
+
+#~ msgid "Floral"
+#~ msgstr "Flora"
+
+#~ msgid "Fossil"
+#~ msgstr "Fosil"
+
+#~ msgid "GNOME"
+#~ msgstr "GNOME"
+
+#~ msgid "Granite"
+#~ msgstr "Qranit"
+
+#~ msgid "Grapefruit"
+#~ msgstr "Üzüm"
+
+#~ msgid "Green Weave"
+#~ msgstr "Yaşıl Toxuma"
+
+#~ msgid "Ice"
+#~ msgstr "Buz"
+
+#~ msgid "Important"
+#~ msgstr "Vacib"
+
+#~ msgid "Indigo"
+#~ msgstr "İndiqo"
+
+#~ msgid "Leaf"
+#~ msgstr "Yarpaq"
+
+#~ msgid "Lemon"
+#~ msgstr "Limon"
+
+#~ msgid "Mango"
+#~ msgstr "Manqo"
+
+#~ msgid "Manila Paper"
+#~ msgstr "Manila Kağızı"
+
+#~ msgid "Moss Ridge"
+#~ msgstr "Yosun Təpəsi"
+
+#~ msgid "Mud"
+#~ msgstr "Palçıq"
+
+#~ msgid "New"
+#~ msgstr "Yeni"
+
+#~ msgid "Numbers"
+#~ msgstr "Rəqəmlər"
+
+#~ msgid "Ocean Strips"
+#~ msgstr "Okean Zolağı"
+
+#~ msgid "Oh No"
+#~ msgstr "Xeyr Xeyr"
+
+#~ msgid "Onyx"
+#~ msgstr "Oniks"
+
+#~ msgid "Orange"
+#~ msgstr "Narıncı"
+
+#~ msgid "Pale Blue"
+#~ msgstr "Solğun Göy"
+
+#~ msgid "Patterns"
+#~ msgstr "Patern"
+
+#~ msgid "Personal"
+#~ msgstr "Şəxsi"
+
+#~ msgid "Purple Marble"
+#~ msgstr "Əflatun Mərmər"
+
+#~ msgid "Ridged Paper"
+#~ msgstr "Qırışıq Kağız"
+
+#~ msgid "Rough Paper"
+#~ msgstr "Qaba Kağız"
+
+#~ msgid "Ruby"
+#~ msgstr "Yaqut"
+
+#~ msgid "Sea Foam"
+#~ msgstr "Dəniz Köpüyü"
+
+#~ msgid "Shale"
+#~ msgstr "Gil"
+
+#~ msgid "Silver"
+#~ msgstr "Gümüş"
+
+#~ msgid "Sky"
+#~ msgstr "Göy üzü"
+
+#~ msgid "Sky Ridge"
+#~ msgstr "Göy Üzü Təpəsi"
+
+#~ msgid "Snow Ridge"
+#~ msgstr "Qar Təpəsi"
+
+#~ msgid "Special"
+#~ msgstr "Xüsusi"
+
+#~ msgid "Stucco"
+#~ msgstr "Stukko"
+
+#~ msgid "Tangerine"
+#~ msgstr "Mandalin"
+
+#~ msgid "Terracotta"
+#~ msgstr "Şüşəbənd"
+
+#~ msgid "Urgent"
+#~ msgstr "İsrarlı"
+
+#~ msgid "Violet"
+#~ msgstr "Bənövşə"
+
+#~ msgid "Wavy White"
+#~ msgstr "Dalğalı Ağ"
+
+#~ msgid "White"
+#~ msgstr "Ağ"
+
+#~ msgid "White Ribs"
+#~ msgstr "Ağ Damarlanma"
+
+#~ msgid "Gnumeric"
+#~ msgstr "Gnumerik"
+
+#~ msgid "Netscape"
+#~ msgstr "Netscape"
+
+#~ msgid "The Gimp"
+#~ msgstr "GİMP"
+
+#~ msgid "Computer"
+#~ msgstr "Kompüter"
+
+#~ msgid "Home Directory"
+#~ msgstr "Ev Qovluğu"
+
+#~ msgid "Services"
+#~ msgstr "Xidmətlər"
+
+#~ msgid "Excite"
+#~ msgstr "Həyəcan"
+
+#~ msgid "Portals"
+#~ msgstr "Portallar"
+
+#~ msgid "Yahoo"
+#~ msgstr "Yahoo"
+
+#~ msgid "Alta Vista"
+#~ msgstr "Alta Vista"
+
+#~ msgid "Google"
+#~ msgstr "Google"
+
+#~ msgid "Allaire"
+#~ msgstr "Allaire"
+
+#~ msgid "Binary Freedom"
+#~ msgstr "Binary Freedom"
+
+#~ msgid "Borland"
+#~ msgstr "Borland"
+
+#~ msgid "CNET Computers.com"
+#~ msgstr "CNET Computers.com"
+
+#~ msgid "CNET Linux Center"
+#~ msgstr "CNET Linuks Mərkəzi"
+
+#~ msgid "CollabNet"
+#~ msgstr "CollabNet"
+
+#~ msgid "Compaq"
+#~ msgstr "Compaq"
+
+#~ msgid "Conectiva"
+#~ msgstr "Conectiva"
+
+#~ msgid "Covalent"
+#~ msgstr "Covalent"
+
+#~ msgid "Debian.org"
+#~ msgstr "Debian.org"
+
+#~ msgid "Dell"
+#~ msgstr "Dell"
+
+#~ msgid "Eazel"
+#~ msgstr "Eazel"
+
+#~ msgid "Freshmeat.net"
+#~ msgstr "Freshmeat.net"
+
+#~ msgid "GNOME.org"
+#~ msgstr "GNOME.org"
+
+#~ msgid "GNU.org"
+#~ msgstr "GNU.org"
+
+#~ msgid "International"
+#~ msgstr "Beynəlmiləl"
+
+#~ msgid "Linux Documentation Project"
+#~ msgstr "Linuks Sənədləri Lahiyəsi"
+
+#~ msgid "Linux One"
+#~ msgstr "Linux One"
+
+#~ msgid "Linux Online"
+#~ msgstr "Linuks Onlayn"
+
+#~ msgid "Linux Resources"
+#~ msgstr "Linuks Mənbələri"
+
+#~ msgid "Linux Weekly News"
+#~ msgstr "Linuks Həftəlik Xəbərlər"
+
+#~ msgid "LinuxNewbie.org"
+#~ msgstr "LinuxNewbie.org"
+
+#~ msgid "LinuxOrbit.com"
+#~ msgstr "LinuxOrbit.com"
+
+#~ msgid "MandrakeSoft"
+#~ msgstr "MandrakeSoft"
+
+#~ msgid "Netraverse"
+#~ msgstr "Netraverse"
+
+#~ msgid "News and Media"
+#~ msgstr "Xəbərlər və Medya"
+
+#~ msgid "O'Reilly"
+#~ msgstr "O'Reilly"
+
+#~ msgid "OSDN"
+#~ msgstr "OSDN"
+
+#~ msgid "Open Source Asia"
+#~ msgstr "Açıq Mənbə Asiya"
+
+#~ msgid "OpenOffice"
+#~ msgstr "OpenOffice"
+
+#~ msgid "Penguin Computing"
+#~ msgstr "Penguin Computing"
+
+#~ msgid "Rackspace"
+#~ msgstr "Rackspace"
+
+#~ msgid "Red Hat"
+#~ msgstr "Red Hat"
+
+#~ msgid "Red Hat Network"
+#~ msgstr "\"Red Hat\" Şəbəkəsi"
+
+#~ msgid "RedFlag Linux"
+#~ msgstr "RedFlag Linux"
+
+#~ msgid "Software"
+#~ msgstr "Proqramlar"
+
+#~ msgid "SourceForge"
+#~ msgstr "SourceForge"
+
+#~ msgid "Sun StarOffice"
+#~ msgstr "Sun StarOffice"
+
+#~ msgid "Sun Wah Linux"
+#~ msgstr "Sun Wah Linux"
+
+#~ msgid "Web Services"
+#~ msgstr "Veb Xidmətləri"
+
+#~ msgid "ZDNet Linux Hardware Database"
+#~ msgstr "ZDNet Linuks Texniki Tə'minat Databeyzi"
+
+#~ msgid "ZDNet Linux Resource Center"
+#~ msgstr "ZDNet Linuks Mənbəyi Mərkəzi"
+
+#~ msgid "Zero-Knowledge"
+#~ msgstr "Zero-Knowledge"
+
+#~ msgid "An Eggplant variation of the Crux theme."
+#~ msgstr "Crux örtüsünün Eggplanet variasiyası."
+
+#~ msgid "Crux-Eggplant"
+#~ msgstr "Crux-Eggplant"
+
+#~ msgid "A Teal variation of the Crux theme."
+#~ msgstr "Crux örtüsünün variasiyası."
+
+#~ msgid "Crux-Teal"
+#~ msgstr "Crux-Teal"
+
+#~ msgid "Default"
+#~ msgstr "Əsas"
+
+#~ msgid "This is the default theme for Nautilus."
+#~ msgstr "Nautilusun əsas örtüsü."
+
+#~ msgid "A theme designed to fit well with the classic GNOME environment"
+#~ msgstr "Bu örtü klassik GNOME örtülərinə əntiqə uyğun gəlir"
+
+#~ msgid "Sierra"
+#~ msgstr "Sierra"
+
+#~ msgid "Uses manila folders and gray-green backgrounds."
+#~ msgstr "Manila qovluqlar və boz-yaşıl arxa planlardan istifadə edir."
+
+#~ msgid "Tahoe"
+#~ msgstr "Tahoe"
+
+#~ msgid "This theme uses photo-realistic folders."
+#~ msgstr "Bu örtü fotoqrafik həqiqətdə qovluqlar işlədər."
+
+#~ msgid "C_lear Text"
+#~ msgstr "Mətni _təmizlə"
+
+#~ msgid "Clear Text"
+#~ msgstr "Mətni Təmizlə"
+
+#~ msgid "Copy Text"
+#~ msgstr "Mətni Köçürt"
+
+#~ msgid "Copy the selected text to the clipboard"
+#~ msgstr "Seçili mətni ara yaddaşa köçürt"
+
+#~ msgid "Cut Text"
+#~ msgstr "Mətni Kəs"
+
+#~ msgid "Cut _Text"
+#~ msgstr "_Mətni Kəs"
+
+#~ msgid "Cut the selected text to the clipboard"
+#~ msgstr "Seçili mətni ara yaddaşa kəs"
+
+#~ msgid "Paste Text"
+#~ msgstr "Mətni Yapışdır"
+
+#~ msgid "Paste the text stored on the clipboard"
+#~ msgstr "Seçili mətni ara yaddaşa yapışdır"
+
+#~ msgid "Remove the selected text without putting it on the clipboard"
+#~ msgstr "Seçili mətni ara yaddaşa qoymadan sil"
+
+#~ msgid "Select All"
+#~ msgstr "Hamısını Seç"
+
+#~ msgid "Select _All"
+#~ msgstr "_Hamısını Seç"
+
+#~ msgid "Select all the text in a text field"
+#~ msgstr "Mətn girişindəki bütün mətni seç"
+
+#~ msgid "_Copy Text"
+#~ msgstr "Mətni K_öçürt"
+
+#~ msgid "_Paste Text"
+#~ msgstr "Mətni Y_apışdır"
+
+#~ msgid "Nautilus File Manager and Graphic Shell"
+#~ msgstr "Nautilus Fayl İdarəcisi və Qrafiki Qabıq"
+
+#~ msgid "Factory for Nautilus shell and file manager"
+#~ msgstr "Nautilus qabıq və fayl idarəcisi e'malatxanası"
+
+#~ msgid "Icons"
+#~ msgstr "Timsallar"
+
+#~ msgid "Icons Viewer"
+#~ msgstr "Timsal Nümayişçisi"
+
+#~ msgid "List"
+#~ msgstr "Sıralı"
+
+#~ msgid "List Viewer"
+#~ msgstr "Sıra Nümayişçisi"
+
+#~ msgid "Nautilus factory"
+#~ msgstr "Nautilus e'malatxanası"
+
+#~ msgid "Nautilus file manager component that shows a scrollable list"
+#~ msgstr "Sürüşgən siyahını göstərən Nautilus fayl idarəcisi əlavəsi"
+
+#~ msgid ""
+#~ "Nautilus file manager component that shows a scrollable list for search "
+#~ "results"
+#~ msgstr ""
+#~ "Axtarış nəticələrini sürüşgən siyahıda göstərən Nautilus fayl idarəcisi "
+#~ "əlavəsi"
+
+#~ msgid ""
+#~ "Nautilus file manager component that shows a two-dimensional icon space"
+#~ msgstr "2 ölçülü timsal sahəsi göstərən Nautilus fayl idarəcisi əlavəsi"
+
+#~ msgid "Nautilus file manager component that shows icons on the desktop"
+#~ msgstr "Masa üstündə timsallar göstərən Nautilus fayl idarəcisi əlavəsi"
+
+#~ msgid "Nautilus file manager desktop icon view"
+#~ msgstr "Nautilus fayl idarəcisi masa üstü timsal nümayişi"
+
+#~ msgid "Nautilus file manager icon view"
+#~ msgstr "Nautilus fayl idarəcisi timsal nümayişi"
+
+#~ msgid "Nautilus file manager list view"
+#~ msgstr "Nautilus fayl idarəcisi siyahı nümayişi"
+
+#~ msgid "Nautilus file manager search results list view"
+#~ msgstr "Nautilus fayl idarəcisi axtarış nəticələri nümayişi"
+
+#~ msgid "Nautilus metafile factory"
+#~ msgstr "Nautilus metafayl e'malatxanası"
+
+#~ msgid "Nautilus shell"
+#~ msgstr "Nautilus qabığı"
+
+#~ msgid ""
+#~ "Nautilus shell operations that can be done from subsequent command-line "
+#~ "invocations"
+#~ msgstr "Nautilus qabıq əmrləri altdakı əmr sətirindən verilə bilər"
+
+#~ msgid "Produces metafile objects for accessing Nautilus metadata"
+#~ msgstr "Nautilus metadatası üçün metafayllar e'mal edir"
+
+#~ msgid "Search List"
+#~ msgstr "Axtarış Siyahısu"
+
+#~ msgid "View as Icons"
+#~ msgstr "Timsal olaraq Göstər"
+
+#~ msgid "View as List"
+#~ msgstr "Sıra olaraq Göstər"
+
+#~ msgid "scripts"
+#~ msgstr "skriptlər"
+
+#~ msgid "Change Desktop Background"
+#~ msgstr "Masa Üstü Arxa Planını Dəyişdir"
+
+#~ msgid "Delete all items in the Trash"
+#~ msgstr "Zibil qutusundakı bütün üzvləri sil"
+
+#~ msgid "Disks"
+#~ msgstr "Disklər"
+
+#~ msgid "Mount or unmount disks"
+#~ msgstr "Diskləri bağla və ya ayır"
+
+#~ msgid "New Terminal"
+#~ msgstr "Yeni Terminal"
+
+#~ msgid "Open a new GNOME terminal window"
+#~ msgstr "Yeni GNOME terminal pəncərəsi aç"
+
+#~ msgid "Remove any custom pattern or color from the desktop background"
+#~ msgstr "Masa üstü arxa planından bütün rəng və naxışları təmizlə"
+
+#~ msgid "Reset Desktop Background"
+#~ msgstr "Masa Üstü Arxa Planını Sıfırla"
+
+#~ msgid ""
+#~ "Show a window that lets you set your desktop background's pattern or color"
+#~ msgstr ""
+#~ "Masa üstü arxaplanındakı rang və ya naxışları çıxarda biləcəyiniz "
+#~ "pəncərəni göstər"
+
+#~ msgid "Choose a program with which to open the selected item"
+#~ msgstr "Seçili üzvü açacaq proqram tə'minatını seç"
+
+#~ msgid "Choose another application with which to open the selected item"
+#~ msgstr "Seçili üzvü açacaq başqa bir proqram tə'minatını seç"
+
+#~ msgid "Choose another viewer with which to view the selected item"
+#~ msgstr "Seçili üzvü göstərəcək başqa bir göstəriciyi seç"
+
+#~ msgid "Copy Files"
+#~ msgstr "Faylları Köçür"
+
+#~ msgid "Create a new empty folder inside this folder"
+#~ msgstr "Bu qovluq içində yeni boş bir qovluq yarat"
+
+#~ msgid "Create a symbolic link for each selected item"
+#~ msgstr "Bütün seçili üzvlərə yumşaq körpü yarat"
+
+#~ msgid "Cut Files"
+#~ msgstr "Faylları Kəs"
+
+#~ msgid "Delete each selected item, without moving to the Trash"
+#~ msgstr "Hər seçili üzvü zibil qutusuna daşımadan sil"
+
+#~ msgid "Duplicate"
+#~ msgstr "Cütləşdir"
+
+#~ msgid "Duplicate each selected item"
+#~ msgstr "Bütün seçili üzvləri cütləşdir"
+
+#~ msgid "Make Link"
+#~ msgstr "Körpü Yarat"
+
+#~ msgid "Move each selected item to the Trash"
+#~ msgstr "Hər seçili üzvü zibil qutusuna daşı"
+
+#~ msgid ""
+#~ "Move or copy files previously selected by a Cut Files or Copy Files "
+#~ "command"
+#~ msgstr ""
+#~ "Faylları Kəs ya da Faylları Köçür əmrləri tərəfindən seçili faylları daşı "
+#~ "ya da köçür"
+
+#~ msgid "Move to Trash"
+#~ msgstr "Zibilə Daşı"
+
+#~ msgid "New Folder"
+#~ msgstr "Yeni Qovluq"
+
+#~ msgid "Open"
+#~ msgstr "Aç"
+
+#~ msgid "Open Scripts Folder"
+#~ msgstr "Skriplər Qovluğunu Aç"
+
+#~ msgid "Open Wit_h"
+#~ msgstr "_Fərqli aç"
+
+#~ msgid "Open With"
+#~ msgstr "Fərqli aç"
+
+#~ msgid "Open each selected item in a new window"
+#~ msgstr "Hər bir seçili üzvü yeni bir pəncərəde aç"
+
+#~ msgid "Open in New Window"
+#~ msgstr "Yeni Pəncərəde Aç"
+
+#~ msgid "Open the selected item in this window"
+#~ msgstr "Seçili üzvü bu pəncərəde aç"
+
+#~ msgid "Other Application..."
+#~ msgstr "Başqa Proqramla Aç ..."
+
+#~ msgid "Other Viewer..."
+#~ msgstr "Başqa Nümayişçi İlə Aç ..."
+
+#~ msgid "Paste Files"
+#~ msgstr "Mətni Yapışdır"
+
+#~ msgid "Prepare the selected files to be copied with a Paste Files command"
+#~ msgstr "Faylları Yapışdır əmri ilə seçili faylları köçürməyə hazırla"
+
+#~ msgid "Prepare the selected files to be moved with a Paste Files command"
+#~ msgstr "Faylları Yapışdır əmri ilə seçili faylları daşımağa hazırla"
+
+#~ msgid "Remove Custom Images"
+#~ msgstr "Xüsusi Rəsmləri Sil"
+
+#~ msgid "Remove any custom images from selected icons"
+#~ msgstr "Seçili timsaldan bütün xüsusi rəsmlərii sil"
+
+#~ msgid ""
+#~ "Remove any custom pattern or color from the background of this location"
+#~ msgstr "Seçili timsaldan bütün xüsusi rəngləri və ya naxışları sil"
+
+#~ msgid "Reset View to Match Preferences"
+#~ msgstr "Görünüşü Oxşar Seçənəklərə Sıfırla"
+
+#~ msgid "Reset View to Match _Preferences"
+#~ msgstr "Görünüşü Oxşar _Seçənəklərə Sıfırla"
+
+#~ msgid ""
+#~ "Reset sorting order and zoom level to match preferences for this view"
+#~ msgstr ""
+#~ "Sıralama düzülüşü və yaxınlıq dərəcəsini bu görünüş üçün seşənəklərə görə "
+#~ "sıfırla"
+
+#~ msgid "Run or manage scripts from ~/Nautilus/scripts"
+#~ msgstr "~/Nautilus/scripts qovluğundaku skriptləri icra et ya da düzəlt"
+
+#~ msgid "Scripts"
+#~ msgstr "Skriptlər"
+
+#~ msgid "Select All Files"
+#~ msgstr "Bütün Faylları Seç"
+
+#~ msgid "Select _All Files"
+#~ msgstr "_Bütün Faylları Seç"
+
+#~ msgid "Select all items in this window"
+#~ msgstr "Bu pəncərədeki bütün üzvləri seç"
+
+#~ msgid "Show Properties"
+#~ msgstr "Xüsusiyyətləri Göstər"
+
+#~ msgid "Show Trash"
+#~ msgstr "Zibil Qutusunu Göstər"
+
+#~ msgid "Show _Properties"
+#~ msgstr "_Xüsusiyyətləri göstər"
+
+#~ msgid "Show the contents of the Trash"
+#~ msgstr "Zibil qutusu içindəkiləri göstər"
+
+#~ msgid "Show the folder containing the scripts that appear in this menu"
+#~ msgstr "Bu menyuda görünən skrriptlərin qovluqlarını göstər"
+
+#~ msgid "View or modify the properties of each selected item"
+#~ msgstr "Hər seçili üzvün xüsusiyyətlərini göstər ya da dəyişdir"
+
+#~ msgid "_Duplicate"
+#~ msgstr "_Cütləşdir"
+
+#~ msgid "_Make Link"
+#~ msgstr "Körpü _Yarat"
+
+#~ msgid "_New Folder"
+#~ msgstr "_Yeni Qovluq"
+
+#~ msgid "_Open"
+#~ msgstr "_Aç"
+
+#~ msgid "_Open Scripts Folder"
+#~ msgstr "Skritplər Qovluğunu _Aç"
+
+#~ msgid "_Paste Files"
+#~ msgstr "Faylları Y_apışdır"
+
+#~ msgid "_Show Trash"
+#~ msgstr "Zibil Qutusunu Göstər"
+
+#~ msgid "By Modification _Date"
+#~ msgstr "Təkmilləşdirmə _Tarixine Görə"
+
+#~ msgid "By _Emblems"
+#~ msgstr "_Emblemlərə Görə"
+
+#~ msgid "By _Name"
+#~ msgstr "_Ada Görə"
+
+#~ msgid "By _Size"
+#~ msgstr "_Böyüklüyə Görə"
+
+#~ msgid "By _Type"
+#~ msgstr "_Növə Görə"
+
+#~ msgid "Clean Up by Name"
+#~ msgstr "Ada Görə Təmizlə"
+
+#~ msgid "Display icons in the opposite order"
+#~ msgstr "Timsalları qarşı qarşıya düz"
+
+#~ msgid "Lay Out Items"
+#~ msgstr "Üzvləri Çölə Düz"
+
+#~ msgid "Leave icons wherever they are dropped"
+#~ msgstr "Timsalları buraxıldıqları yerlərdə burax"
+
+#~ msgid "Make the selected icon stretchable"
+#~ msgstr "Seçili timsalı oynana bilən hala gətir"
+
+#~ msgid "Re_versed Order"
+#~ msgstr "Tə_rs Düzülüş"
+
+#~ msgid "Rename selected icon"
+#~ msgstr "Seçili timsalı yenidən adlandır"
+
+#~ msgid "Reposition icons to better fit in the window and avoid overlapping"
+#~ msgstr "Timsalların pəncərə quruluşuna görə optimal düzülüşü"
+
+#~ msgid "Restore Icons' Original Sizes"
+#~ msgstr "Timsalları Normal Böyüklüklərinə Gətir"
+
+#~ msgid "Restore each selected icon to its original size"
+#~ msgstr "Hər bir seçili timsalı normal böyüklüyünə gətir"
+
+#~ msgid "Reversed Order"
+#~ msgstr "Tərs Düzülüş"
+
+#~ msgid "Stretch Icon"
+#~ msgstr "Timsallı Çəkişdir"
+
+#~ msgid "Tighter Layout"
+#~ msgstr "Gərgin Düzülüş"
+
+#~ msgid "Tighter _Layout"
+#~ msgstr "Gərgin _Düzülüş"
+
+#~ msgid "Toggle using a tighter layout scheme"
+#~ msgstr "Gərgin düzülüşü aç/qapat"
+
+#~ msgid "_Clean Up by Name"
+#~ msgstr "Ada Görə _Təmizlə"
+
+#~ msgid "_Lay Out Items"
+#~ msgstr "ÜZvləri _Çölə Düz"
+
+#~ msgid "_Manually"
+#~ msgstr "_Əllə"
+
+#~ msgid "_Rename"
+#~ msgstr "Tə_zədən Adlandır"
+
+#~ msgid "_Stretch Icon"
+#~ msgstr "Timsalı Çə_kişdir"
+
+#~ msgid "Reveal each selected item in its original folder"
+#~ msgstr "Hər bir seçili üzvü öz qovluğuna apar"
+
+#~ msgid "Reveal in New Window"
+#~ msgstr "Yeni Pəncərədə Açığa Çıxart"
+
+#~ msgid "Show Indexing Status"
+#~ msgstr "İndeksləmə Vəziyyətini Göstər"
+
+#~ msgid "Show _Indexing Status"
+#~ msgstr "İndeksləmə _Vəziyyətini Göstər"
+
+#~ msgid "Show status of indexing used when searching"
+#~ msgstr "Axtarışlarda işlətdiyin indeksləmənin vəziyyəti göstər"
+
+#~ msgid "Eazel Services"
+#~ msgstr "Eazel Xidmətləri"
+
+#~ msgid "Go to the Eazel Services Summary Page"
+#~ msgstr "Eazel Xidmətləri Mündəricat Səhifəsinə Get"
+
+#~ msgid "Go to the Eazel Software Catalog"
+#~ msgstr "Eazel Proqram Tə'minatı Kataloquna Get"
+
+#~ msgid "Go to your online storage repository"
+#~ msgstr "Xətdəki ambar nüsxəsinə get"
+
+#~ msgid "Software _Catalog"
+#~ msgstr "Proqram Tə'minatı _Kataloqu"
+
+#~ msgid "_Eazel Services Home"
+#~ msgstr "_Eazel Xidmətləri Ana Səhifəsi"
+
+#~ msgid "_Online Storage"
+#~ msgstr "_Xətdəki Ambar"
+
+#~ msgid "_Services"
+#~ msgstr "_Xidmətlər"
+
+#~ msgid " _Advanced"
+#~ msgstr " _Təfsilatlı"
+
+#~ msgid " _Beginner"
+#~ msgstr "_Yeni Başlayan"
+
+#~ msgid " _Intermediate"
+#~ msgstr "_Ortabab"
+
+#~ msgid "Add a bookmark for the current location to this menu"
+#~ msgstr "Bura üçün bir nişan əlavə et"
+
+#~ msgid "Change the visibility of this window's location bar"
+#~ msgstr "Bu pəncərənin yer çubuğunun görünmə qabiliyyətini dəyişdir"
+
+#~ msgid "Change the visibility of this window's sidebar"
+#~ msgstr "Bu pəncərənin yan çubuğunun görünmə qabiliyyətini dəyişdir"
+
+#~ msgid "Change the visibility of this window's status bar"
+#~ msgstr "Bu pəncərənin hal çubuğunun görünmə qabiliyyətini dəyişdir"
+
+#~ msgid "Change the visibility of this window's toolbar"
+#~ msgstr "Bu pəncərənin vasitə çubuğunun görünmə qabiliyyətini dəyişdir"
+
+#~ msgid "Choose a view for the current location, or modify the set of views"
+#~ msgstr "Bura üçün bir görünüç seçin ya da təkmillşdirin"
+
+#~ msgid "Clear contents of Go menu and Back/Forward lists"
+#~ msgstr "Get və Arxaya/İrəli menyusunun içindəkiləri sil"
+
+#~ msgid "Close _All Windows"
+#~ msgstr "_Bütün Pəncərəleri Qapat"
+
+#~ msgid "Close all Nautilus windows"
+#~ msgstr "Bütün Nautilus pəncərələri qapat"
+
+#~ msgid "Close this window"
+#~ msgstr "Bu pəncərəni qapat"
+
+#~ msgid "Display a window that allows editing the bookmarks in this menu"
+#~ msgstr ""
+#~ "Bu menyunun içində nişanların dəyişdirilməsinə icazə verən pəncərəni "
+#~ "göstər"
+
+#~ msgid "Display credits for the creators of Nautilus"
+#~ msgstr "Nautilusun Yaradıcılarını göstər"
+
+#~ msgid "Display on-line help for Nautilus"
+#~ msgstr "Nautilus üçün xətdəki yardımı göstər"
+
+#~ msgid ""
+#~ "Display patterns, colors, and emblems that can be used to customize "
+#~ "appearance"
+#~ msgstr "Xüsusiyyətleri dəyişdirə biləcək naxış, rəng və emblemləri göstər"
+
+#~ msgid "Display quick reference pages for Nautilus"
+#~ msgstr "Nautilusun cəld referens səhifələrini göstər"
+
+#~ msgid "Display release notes for Nautilus"
+#~ msgstr "Nautilusun buraxılış qeydlərini göstər"
+
+#~ msgid "Display support information for Nautilus and Eazel Services"
+#~ msgstr "Eazel Xidmətləri və Nautilus dəstək mə'lumatını göstər"
+
+#~ msgid "Display the latest contents of the current location"
+#~ msgstr "Hal hazırkı yerin ən son möhtəviyyatını göstər"
+
+#~ msgid "Edit various Nautilus preferences"
+#~ msgstr "Müxtəlif Nautilus Xüsusiyyətlərini Düzəlt"
+
+#~ msgid "Find"
+#~ msgstr "Axtar"
+
+#~ msgid "For_get History"
+#~ msgstr "Keçmişi U_nut"
+
+#~ msgid "Go to Eazel Services"
+#~ msgstr "Eazel Xidmətlərinə Get"
+
+#~ msgid "Go to the home location"
+#~ msgstr "Evimə get"
+
+#~ msgid "Go to the next visited location"
+#~ msgstr "Sonrakı yerə get"
+
+#~ msgid "Go to the previous visited location"
+#~ msgstr "Əvvəlki yerə get"
+
+#~ msgid "Go up to the location that contains the displayed location"
+#~ msgstr "Bunu göstərən yerə get"
+
+#~ msgid "Nautilus Quick _Reference"
+#~ msgstr "Nautilus Cəld _Referens"
+
+#~ msgid "Nautilus Release _Notes"
+#~ msgstr "Nautilus Buraxılış _Qeydləri"
+
+#~ msgid "Nautilus User _Manual"
+#~ msgstr "Nautilus İstifadəçi _Bələdçisi"
+
+#~ msgid "New Window"
+#~ msgstr "Yeni Pəncərə"
+
+#~ msgid "New _Window"
+#~ msgstr "Yeni _Pəncərə"
+
+#~ msgid "Normal Size"
+#~ msgstr "Normal Böyüklük"
+
+#~ msgid "Open another Nautilus window for the displayed location"
+#~ msgstr "Yeri göstərmək üçün yeni bir Nautilus pəncərəsi aç"
+
+#~ msgid "Refresh"
+#~ msgstr "Yenilə"
+
+#~ msgid "Report Profiling"
+#~ msgstr "Profilləşdirməyi Raport Et"
+
+#~ msgid "Reset Profiling"
+#~ msgstr "Profilləşdirməyi Sıfırla"
+
+#~ msgid "Search the World Wide Web"
+#~ msgstr "Vebdə Axtar"
+
+#~ msgid "Search this computer for files"
+#~ msgstr "Faylları bu kompüterdə axtar"
+
+#~ msgid ""
+#~ "Show a page from which you can send feedback about Nautilus and Eazel "
+#~ "Services"
+#~ msgstr "Nautilus və Eazel ila əlaqə qura biləcəyiniz səhifəni göstər"
+
+#~ msgid "Show the contents at the normal size"
+#~ msgstr "İçindəkiləri normal böyüklükdə göstər"
+
+#~ msgid "Show the contents in less detail"
+#~ msgstr "İçindəkiləri azaldılmış olaraq göstər"
+
+#~ msgid "Show the contents in more detail"
+#~ msgstr "İçindəkiləri ətraflı göstər"
+
+#~ msgid "Start Profiling"
+#~ msgstr "Profilləşdirməni Başlat"
+
+#~ msgid "Stop Profiling"
+#~ msgstr "Profilləşdirməni Qurtar"
+
+#~ msgid "Stop loading this location"
+#~ msgstr "Bu yeri yükləməni dayandır"
+
+#~ msgid "Undo the last text change"
+#~ msgstr "Axırıncı mətn dəyişikliyini geri al"
+
+#~ msgid "Up"
+#~ msgstr "Yuxarı"
+
+#~ msgid "Use preferences appropriate for beginners"
+#~ msgstr "Seçənəkləri yeni başlayanlara uyğunlaşdır"
+
+#~ msgid "Use preferences appropriate for experts"
+#~ msgstr "Seçənəkləri ustalara uyğunlaşdır"
+
+#~ msgid "Use preferences appropriate for most people"
+#~ msgstr "Seçənəkləri bir çox insan üçün uyğunlaşdır"
+
+#~ msgid "We_b Search"
+#~ msgstr "_Vebdə axtar"
+
+#~ msgid "Web Search"
+#~ msgstr "Vebdə axtar"
+
+#~ msgid "Zoom In"
+#~ msgstr "Yaxınlaş"
+
+#~ msgid "Zoom Out"
+#~ msgstr "Uzaqlaş"
+
+#~ msgid "Zoom _In"
+#~ msgstr "_Yaxınlaş"
+
+#~ msgid "Zoom _Out"
+#~ msgstr "_Uzaqlaş"
+
+#~ msgid "_About Nautilus..."
+#~ msgstr "_Nautilus haqqında ..."
+
+#~ msgid "_Add Bookmark"
+#~ msgstr "_Nişan əlavə et"
+
+#~ msgid "_Back"
+#~ msgstr "_Geri"
+
+#~ msgid "_Backgrounds and Emblems..."
+#~ msgstr "Ar_xaplan və Emblemlər"
+
+#~ msgid "_Bookmarks"
+#~ msgstr "_Nişanlar"
+
+#~ msgid "_Close Window"
+#~ msgstr "Pəncərəyi _bağla"
+
+#~ msgid "_Community Support"
+#~ msgstr "_Satıcı Dəstəyi"
+
+#~ msgid "_Edit"
+#~ msgstr "_Düzəlt"
+
+#~ msgid "_Edit Bookmarks..."
+#~ msgstr "Nişanları _Düzəlt..."
+
+#~ msgid "_Edit Preferences..."
+#~ msgstr "Seçənəkləri _Düzəlt..."
+
+#~ msgid "_Feedback"
+#~ msgstr "Əla_qə"
+
+#~ msgid "_Find"
+#~ msgstr "Axta_r"
+
+#~ msgid "_Forward"
+#~ msgstr "_İrəii"
+
+#~ msgid "_Go"
+#~ msgstr "G_et"
+
+#~ msgid "_Help"
+#~ msgstr "_Yardım"
+
+#~ msgid "_Home"
+#~ msgstr "_Ev"
+
+#~ msgid "_Location..."
+#~ msgstr "_Yer..."
+
+#~ msgid "_Normal Size"
+#~ msgstr "_Normal Böyüklükdə"
+
+#~ msgid "_Preferences"
+#~ msgstr "_Seçənəklər"
+
+#~ msgid "_Profiler"
+#~ msgstr "_Profilləşdirici"
+
+#~ msgid "_Refresh"
+#~ msgstr "_Yenilə"
+
+#~ msgid "_Report Profiling"
+#~ msgstr "Profilləşdirməni _Bildir"
+
+#~ msgid "_Reset Profiling"
+#~ msgstr "Profilləşdirməni _Sıfırla"
+
+#~ msgid "_Start Profiling"
+#~ msgstr "Profilləşdirməni _Başlat"
+
+#~ msgid "_Stop Profiling"
+#~ msgstr "Profilləşdirməni _Dayandır"
+
+#~ msgid "_Undo"
+#~ msgstr "_Geriyə Get"
+
+#~ msgid "_Up a Level"
+#~ msgstr "Bir Səviyyə _Yuxarı"
+
+#~ msgid "_View"
+#~ msgstr "_Nümayişlər"
+
+#~ msgid "_View as..."
+#~ msgstr "_Fərqli göstər ..."
