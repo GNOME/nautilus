@@ -51,16 +51,15 @@
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-dialog-util.h>
 
-#if (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES
+#ifdef EAZEL_SERVICES
 #include <libtrilobite/libammonite-gtk.h>
 /* for bonobo_poa() */
 #include <bonobo/bonobo-main.h>
 #endif
 
-
 #define NUM_ELEMENTS_IN_ARRAY(_a) (sizeof (_a) / sizeof ((_a)[0]))
 
-#if (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES
+#ifdef EAZEL_SERVICES
 EazelProxy_UserControl		  gl_user_control = CORBA_OBJECT_NIL;
 #endif
 
@@ -78,29 +77,15 @@ static void     nautilus_mozilla_content_view_destroy          (GtkObject       
 static void     mozilla_load_location_callback                 (NautilusView                    *nautilus_view,
 								const char                      *location,
 								NautilusMozillaContentView      *view);
-static void     mozilla_merge_bonobo_items_callback            (BonoboObject                    *control,
-								gboolean                         state,
-								gpointer                         user_data);
-
 /* Mozilla embed widget callbacks */
 static void     mozilla_title_changed_callback                 (GtkMozEmbed                     *mozilla,
 								gpointer                         user_data);
 static void     mozilla_location_changed_callback              (GtkMozEmbed                     *mozilla,
 								gpointer                         user_data);
-
-/*
- * The name of these callbacks changed at M17
- */
-#if (MOZILLA_MILESTONE >= 17)
 static void     mozilla_net_state_callback                     (GtkMozEmbed                     *mozilla,
 								gint                             state,
 								guint                            status,
 								gpointer                         user_data);
-#else
-static void     mozilla_net_status_callback                    (GtkMozEmbed                     *mozilla,
-								gint                             flags,
-								gpointer                         user_data);
-#endif
 static void     mozilla_link_message_callback                  (GtkMozEmbed                     *mozilla,
 								gpointer                         user_data);
 static void     mozilla_progress_callback                      (GtkMozEmbed                     *mozilla,
@@ -110,17 +95,9 @@ static void     mozilla_progress_callback                      (GtkMozEmbed     
 static  gint    mozilla_open_uri_callback                      (GtkMozEmbed                     *mozilla,
 								const char                      *uri,
 								gpointer                         user_data);
-
-
-/*
- * For M18, we peek dom events to deal with eazel: uris (and all other special uris)
- */
-#if (MOZILLA_MILESTONE >= 18)
 static  gint    mozilla_dom_mouse_click_callback               (GtkMozEmbed                     *mozilla,
 								gpointer                         dom_event,
 								gpointer                         user_data);
-#endif /* MOZILLA_MILESTONE >= 18 */
-
 
 /* Other mozilla content view functions */
 static void     mozilla_content_view_set_busy_cursor           (NautilusMozillaContentView      *view);
@@ -134,7 +111,7 @@ static char *   mozilla_translate_uri_if_needed                (NautilusMozillaC
 static char *   mozilla_untranslate_uri_if_needed              (NautilusMozillaContentView	*view,
 								const char                      *uri);
 
-#if (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES
+#ifdef EAZEL_SERVICES
 
 /*
  * URL scheme hack for the eazel-services: scheme
@@ -304,7 +281,7 @@ mozilla_content_view_one_time_happenings (NautilusMozillaContentView *view)
 	mozilla_content_view_set_proxy_preferences (view);
 
 
-#if (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES
+#ifdef EAZEL_SERVICES
 	if (ammonite_init ((PortableServer_POA) bonobo_poa)) {
 		gl_user_control = ammonite_get_user_control ();
 	}
@@ -339,23 +316,12 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 					GTK_SIGNAL_FUNC (mozilla_location_changed_callback),
 					view,
 					GTK_OBJECT (view->details->mozilla));
-	
-/*
- * The name of these callbacks changed at M17
- */
-#if (MOZILLA_MILESTONE >= 17)
+
 	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
 					"net_state",
 					GTK_SIGNAL_FUNC (mozilla_net_state_callback),
 					view,
 					GTK_OBJECT (view->details->mozilla));
-#else
-	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
-					"net_status",
-					GTK_SIGNAL_FUNC (mozilla_net_status_callback),
-					view,
-					GTK_OBJECT (view->details->mozilla));
-#endif
 	
 	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
 					"link_message",
@@ -375,16 +341,11 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 					view,
 					GTK_OBJECT (view->details->mozilla));
 	
-/*
- * For M18, we peek dom events to deal with eazel: uris (and all other special uris)
- */
-#if (MOZILLA_MILESTONE >= 18)
 	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
 					"dom_mouse_click",
 					GTK_SIGNAL_FUNC (mozilla_dom_mouse_click_callback),
 					view,
 					GTK_OBJECT (view->details->mozilla));
-#endif /* MOZILLA_MILESTONE >= 18 */
 	
 	gtk_box_pack_start (GTK_BOX (view), view->details->mozilla, TRUE, TRUE, 1);
 	
@@ -398,17 +359,6 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 					view,
 					GTK_OBJECT (view->details->mozilla));
 
-	/* 
-	 * Get notified when our bonobo control is activated so we
-	 * can merge menu & toolbar items into Nautilus's UI.
-	 */
-        gtk_signal_connect_while_alive (
-		GTK_OBJECT (nautilus_view_get_bonobo_control (view->details->nautilus_view)),
-		"activate",
-		mozilla_merge_bonobo_items_callback,
-		view,
-		GTK_OBJECT (view->details->mozilla));
-	
 	gtk_widget_show_all (GTK_WIDGET (view));
 }
 
@@ -429,7 +379,7 @@ nautilus_mozilla_content_view_destroy (GtkObject *object)
 		gdk_cursor_destroy (view->details->busy_cursor);
 	}
 
-#if (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES
+#ifdef EAZEL_SERVICES
 	ammonite_shutdown ();
 #endif /*EAZEL_SERVICES*/
 
@@ -592,7 +542,9 @@ mozilla_load_location_callback (NautilusView *nautilus_view,
 	translated_location = mozilla_translate_uri_if_needed (view, location);
 
 	if (translated_location) {
+#ifdef DEBUG_ramiro
 		g_print ("%s(%s,%s)\n", __FUNCTION__, location, translated_location);
+#endif
 		
 		nautilus_view_report_load_underway (nautilus_view);
 		nautilus_mozilla_content_view_load_uri (view, translated_location);
@@ -600,100 +552,6 @@ mozilla_load_location_callback (NautilusView *nautilus_view,
 	} else {
 		nautilus_view_report_load_failed ( nautilus_view);
 	}
-}
-
-static void
-bonobo_mozilla_callback (BonoboUIComponent *ui, gpointer user_data, const char *verb)
-{
- 	NautilusMozillaContentView *view;
-
-	g_assert (BONOBO_IS_UI_COMPONENT (ui));
-        g_assert (verb != NULL);
-
-	g_message ("called bonobo_mozilla_callback");
-
-	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
-
-	/* FIXME bugzilla.eazel.com 2281:
-	 * All this code is just here as a sample placeholder, and needs to
-	 * go soon. The following code in particular does nothing at all. It
-	 * started life as a copy/paste remnant from nautilus-sample-view.
-	 */
-	if (strcmp (verb, "Mozilla Test Menu Item") == 0) {
-		g_message ("%s\n\nYou selected the Mozilla menu item.", view->details->uri);
-	} else {
-		g_assert (strcmp (verb, "Mozilla Test Dock Item") == 0);
-		g_message ("%s\n\nYou clicked the Mozilla toolbar button.", view->details->uri);
-	}
-
-#if 0
-	/*
-	 * This is an example of how you could redirect Nautilus to a component:
-	 */
-	nautilus_view_open_location (view->details->nautilus_view, "eazel-summary:");
-#endif
-
-
-#if 0
-	/*
-	 * This is an example of how you could stream stuff into the current mozilla widget:
-	 */
-	{
-		char *text1 = "<html>";
-		char *text2 = "<a href=\"http://www.gnome.org\">http://www.gnome.org</a>";
-		char *text3 = "</html>";
-		
-		gtk_moz_embed_open_stream (GTK_MOZ_EMBED(view->details->mozilla), "file://", "text/html");
-
-		gtk_moz_embed_append_data (GTK_MOZ_EMBED(view->details->mozilla), text1, strlen (text1));
-		gtk_moz_embed_append_data (GTK_MOZ_EMBED(view->details->mozilla), text2, strlen (text2));
-		gtk_moz_embed_append_data (GTK_MOZ_EMBED(view->details->mozilla), text3, strlen (text3));
-
-		gtk_moz_embed_close_stream (GTK_MOZ_EMBED(view->details->mozilla));
-	}
-#endif
-
-
-#if 0
-	/*
-	 * This is an example of how you could make the current mozilla widget load a url:
-	 */
-
-	gtk_moz_embed_load_url (GTK_MOZ_EMBED (view->details->mozilla), "http://www.gnome.org/");
-#endif
-}
-
-static void
-mozilla_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpointer user_data)
-{
- 	NautilusMozillaContentView *view;
-        BonoboUIComponent *ui_component;
-	BonoboUIVerb verbs [] = {
-		BONOBO_UI_VERB ("Mozilla Test Menu Item", bonobo_mozilla_callback),
-		BONOBO_UI_VERB ("Mozilla Test Dock Item", bonobo_mozilla_callback),
-		BONOBO_UI_VERB_END
-	};
-
-	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
-
-        if (state) {
-		/* Load the UI from the XML file. */
-		ui_component = nautilus_view_set_up_ui (view->details->nautilus_view,
-							DATADIR,
-							"nautilus-mozilla-ui.xml",
-							"nautilus-mozilla");
-
-		bonobo_ui_component_add_verb_list_with_data (ui_component, verbs, view);
-	} else {
-		/* Do nothing. */
-	}
-
-        /* 
-         * Note that we do nothing if state is FALSE. Nautilus content views are activated
-         * when installed, but never explicitly deactivated. When the view changes to another,
-         * the content view object is destroyed, which ends up calling bonobo_ui_handler_unset_container,
-         * which removes its merged menu & toolbar items.
-         */
 }
 
 /* Mozilla embed widget callbacks */
@@ -793,7 +651,7 @@ mozilla_location_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 	view->details->uri = new_location;
 }
 
-#if defined(DEBUG_ramiro) && (MOZILLA_MILESTONE >= 17)
+#if defined(DEBUG_ramiro)
 
 #define PRINT_FLAG(bits, mask, message)		\
 G_STMT_START {					\
@@ -833,7 +691,6 @@ debug_print_status_flags (guint status_flags)
 #endif
 
 
-#if (MOZILLA_MILESTONE >= 17)
 static void
 mozilla_net_state_callback (GtkMozEmbed	*mozilla,
 			    gint	state_flags,
@@ -846,7 +703,7 @@ mozilla_net_state_callback (GtkMozEmbed	*mozilla,
 
 	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
 
-#if defined(DEBUG_ramiro) && (MOZILLA_MILESTONE >= 17)
+#if defined(DEBUG_ramiro)
 	g_print ("%s\n", __FUNCTION__);
 	debug_print_state_flags (state_flags);
 	debug_print_status_flags (status_flags);
@@ -863,27 +720,6 @@ mozilla_net_state_callback (GtkMozEmbed	*mozilla,
 		mozilla_content_view_clear_busy_cursor (view);
 	}
 }
-#else
-static void
-mozilla_net_status_callback (GtkMozEmbed *mozilla, gint flags, gpointer user_data)
-{
- 	NautilusMozillaContentView	*view;
-
-	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
-
-	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
-
-	/* win_start */
-	if (flags & GTK_MOZ_EMBED_FLAG_WIN_START) {
-		mozilla_content_view_set_busy_cursor (view);
-	}
-
-	/* win_stop */
-	if (flags & GTK_MOZ_EMBED_FLAG_WIN_STOP) {
-		mozilla_content_view_clear_busy_cursor (view);
-	}
-}
-#endif
 
 static void
 mozilla_link_message_callback (GtkMozEmbed *mozilla, gpointer user_data)
@@ -971,11 +807,6 @@ mozilla_open_uri_callback (GtkMozEmbed *mozilla,
 
 	return abort_uri_open;
 }
-
-/*
- * For M18, we peek dom events to deal with eazel: uris (and all other special uris)
- */
-#if (MOZILLA_MILESTONE >= 18)
 
 static gboolean
 is_uri_partial (const char *uri)
@@ -1107,7 +938,6 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 	
 	return TRUE;
 }
-#endif /* MOZILLA_MILESTONE >= 18 */
 
 #define STRING_LIST_NOT_FOUND -1
 static gint
@@ -1192,7 +1022,7 @@ mozilla_translate_uri_if_needed (NautilusMozillaContentView *view, const char *u
 	g_return_val_if_fail (uri != NULL, NULL);
 
 
-#if (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES
+#ifdef EAZEL_SERVICES
 	if (0 == strncmp (uri, "eazel-services:", strlen ("eazel-services:"))) {
 		ret = eazel_services_scheme_translate (view, uri, FALSE);
 
@@ -1201,7 +1031,7 @@ mozilla_translate_uri_if_needed (NautilusMozillaContentView *view, const char *u
 #endif
 
 	} else
-#endif /* (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES */
+#endif /* EAZEL_SERVICES */
 		{
 		ret = g_strdup (uri);
 	}
@@ -1213,11 +1043,11 @@ mozilla_translate_uri_if_needed (NautilusMozillaContentView *view, const char *u
 static char *
 mozilla_untranslate_uri_if_needed (NautilusMozillaContentView *view, const char *uri)
 {
-#if (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES
+#ifdef EAZEL_SERVICES
 	return eazel_services_scheme_untranslate (view, uri);
 #else
 	return g_strdup (uri);
-#endif /* (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES */
+#endif /* EAZEL_SERVICES */
 }
 
 GtkType
@@ -1246,8 +1076,7 @@ nautilus_mozilla_content_view_get_type (void)
 }
 
 
-#if (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES
-
+#ifdef EAZEL_SERVICES
 /* A NULL return from this function must trigger a nautilus load error */
 static char *
 eazel_services_scheme_translate	(NautilusMozillaContentView	*view,

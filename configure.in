@@ -339,7 +339,19 @@ dnl EVIL2:
 	fi
 
 	AC_SUBST(MOZILLA_COMPONENT_DEBUG_FLAGS)
+
+	if test "$MOZILLA_MILESTONE" != "18"
+	then
+
+	AC_MSG_ERROR([
+*** Mozilla M18 is required to build the Nautilus Mozilla component.
+*** A package for M18 is available here:
+*** http://developer.eazel.com/eazel-hacking/updates/mozilla/.])
+
+	fi
+
 fi
+
 
 dnl ====================================
 dnl = End mozilla hacks

@@ -1,5 +1,29 @@
 2000-10-16  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* README:
+	Update docs for the fact that we now require Mozilla-M18.
+	
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_content_view_one_time_happenings),
+	(nautilus_mozilla_content_view_initialize),
+	(nautilus_mozilla_content_view_destroy),
+	(mozilla_load_location_callback), (mozilla_net_state_callback),
+	(mozilla_dom_mouse_click_callback),
+	(mozilla_translate_uri_if_needed),
+	(mozilla_untranslate_uri_if_needed):
+	Cleanup a bunch of pre Mozilla M18 code.  Turn of a rogue printf.
+	Remove the cut-n-pasted Bonobo merging code.  We can add it back
+	if we ever have something we really need to merge.
+	
+	* configure.in:
+	Update for new Mozilla M18 requirement.  Bail of detected Mozilla
+	is not M18.
+	
+	* nautilus.spec.in:
+	Add mozilla-m18 dependency to the nautilus-mozilla package.
+	
+2000-10-16  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-label.c:
 	(nautilus_label_set_line_wrap_separators):
 	Fix memory leak.
