@@ -1,3 +1,11 @@
+2001-01-24  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* src/nautilus-window-menus.c: (get_static_bookmarks_file_path):
+	fixed bug 5985, we should use timestamps to determine which
+	static bookmarks file to use; now it does.
+	
 2001-01-24  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Eskil Olsen  <eskil@eazel.com>
