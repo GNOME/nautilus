@@ -78,8 +78,12 @@ toolbar_home_callback (GtkWidget *widget, NautilusWindow *window)
 static void
 toolbar_search_callback (GtkWidget *widget, NautilusWindow *window)
 {
-	nautilus_window_start_search (window);
+	nautilus_window_set_search_mode (window, GTK_TOGGLE_BUTTON (widget)->active);
 }
+
+#define NAUTILUS_GNOMEUIINFO_TOGGLEITEM_STOCK(label, tooltip, callback, stock_id) \
+	{ GNOME_APP_UI_TOGGLEITEM, label, tooltip, (gpointer)callback, NULL, NULL, \
+		GNOME_APP_PIXMAP_STOCK, stock_id, 0, (GdkModifierType) 0, NULL }
 
 
 static GnomeUIInfo toolbar_info[] = {
@@ -99,7 +103,7 @@ static GnomeUIInfo toolbar_info[] = {
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Home"), N_("Go to your home directory"),
 	 toolbar_home_callback, "nautilus/eazel/Home.png"),
-	GNOMEUIINFO_ITEM_STOCK
+	NAUTILUS_GNOMEUIINFO_TOGGLEITEM_STOCK
 	(N_("Search"), N_("Search for files"),
 	 toolbar_search_callback, "nautilus/eazel/Search.png"),
 	GNOMEUIINFO_SEPARATOR,

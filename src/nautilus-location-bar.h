@@ -26,19 +26,21 @@
 #ifndef NAUTILUS_LOCATION_BAR_H
 #define NAUTILUS_LOCATION_BAR_H
 
+#include "nautilus-navigation-bar.h"
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkentry.h>
 
+#define NAUTILUS_TYPE_LOCATION_BAR (nautilus_location_bar_get_type ())
 #define NAUTILUS_LOCATION_BAR(obj) \
-	GTK_CHECK_CAST (obj, nautilus_location_bar_get_type (), NautilusLocationBar)
+	GTK_CHECK_CAST (obj, NAUTILUS_TYPE_LOCATION_BAR, NautilusLocationBar)
 #define NAUTILUS_LOCATION_BAR_CLASS(klass) \
-	GTK_CHECK_CLASS_CAST (klass, nautilus_location_bar_get_type (), NautilusLocationBarClass)
+	GTK_CHECK_CLASS_CAST (klass, NAUTILUS_TYPE_LOCATION_BAR, NautilusLocationBarClass)
 #define NAUTILUS_IS_LOCATION_BAR(obj) \
-	GTK_CHECK_TYPE (obj, nautilus_location_bar_get_type ())
+	GTK_CHECK_TYPE (obj, NAUTILUS_TYPE_LOCATION_BAR)
 
 typedef struct NautilusLocationBar {
-	GtkHBox hbox;
+	NautilusNavigationBar parent;
 
 	GtkLabel *label;
 	GtkEntry *entry;
@@ -48,16 +50,10 @@ typedef struct NautilusLocationBar {
 } NautilusLocationBar;
 
 typedef struct {
-	GtkHBoxClass parent_class;
-
-	void         (*location_changed) (NautilusLocationBar *location_bar,
-					  const char *location);
+	NautilusNavigationBarClass parent_class;
 } NautilusLocationBarClass;
 
 GtkType    nautilus_location_bar_get_type     	(void);
 GtkWidget* nautilus_location_bar_new          	(void);
-void       nautilus_location_bar_set_location 	(NautilusLocationBar *bar,
-					       	 const char          *location);
-gchar *    nautilus_location_bar_get_location   (NautilusLocationBar *bar);
 
 #endif /* NAUTILUS_LOCATION_BAR_H */

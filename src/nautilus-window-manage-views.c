@@ -432,8 +432,8 @@ nautilus_window_update_internals (NautilusWindow *window)
         nautilus_window_allow_forward (window, window->forward_list != NULL);
         
         /* Change the location bar to match the current location. */
-        nautilus_location_bar_set_location (NAUTILUS_LOCATION_BAR (window->ent_uri),
-                                            window->location);
+        nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (window->navigation_bar),
+                                              window->location);
         
         /* Notify the sidebar of the location change. */
         /* FIXME bugzilla.eazel.com 211:
@@ -1198,8 +1198,8 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                  * dragged to the location bar, we might need to reset
                  * the URI.
                  */
-                nautilus_location_bar_set_location (NAUTILUS_LOCATION_BAR (window->ent_uri),
-                                                    window->location);
+                nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (window->navigation_bar),
+                                                      window->location);
         }
         
         g_free (error_message);

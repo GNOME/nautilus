@@ -1,3 +1,48 @@
+2000-06-16  Maciej Stachowiak  <mjs@eazel.com>
+
+	Task 1351: implement controllers to allow location bar and the
+	search/browse button
+
+	* src/nautilus-location-bar.h, src/nautilus-location-bar.c:
+	Factored this into two classes, NautilusNavigationBar, a class
+	that defines the abstract interface (the set_location function and
+	the location_changed signal), and NautilusLocationBar, a concrete
+	implementation that works like the previous location bar.
+	(nautilus_location_bar_set_location,
+	nautilus_location_bar_get_location): Made static. Made
+	`nautilus_location_bar_set_location' the handler for the
+	set_location virtual method.
+	* src/nautilus-navigation-bar.h, src/nautilus-navigation-bar.c:
+	Abstract superclass for navigation bars.
+	* src/nautilus-search-bar.h, src/nautilus-search-bar.c: New
+	subclass of NautilusNavigationBar. Contains placeholder widgets
+	for now, will eventually be the search bar.
+	* src/nautilus-switchable-navigation-bar.h,
+	src/nautilus-switchable-navigation-bar.c: New subclass of
+	NautilusNavigationBar that allows switching between the location
+	bar and the search bar.
+	* src/nautilus-window.h: Rename `ent_uri' member of the window
+	struct to `navigation_bar'.
+	* src/nautilus-window.c
+	(nautilus_window_navigation_bar_mode_changed_callback): Callback
+	to sync the "search" toggle button to the mode of the switchable
+	navigation bar.
+	(nautilus_window_constructed): Create a
+	NautilusSwitchableNavigationBar instead of a NautilusLocationBar.
+	(nautilus_window_set_search_mode): New function to be used by the
+	search toggle button callback; simply sets the mode of the
+	switchable navigation bar appropriately.
+	* src/nautilus-window-toolbars.c: Made Search button a toggle
+	button.
+	(toolbar_search_callback): Call `nautilus_window_set_search_mode'.
+	* src/nautilus-window-manage-views.c
+	(nautilus_window_update_internals,
+	nautilus_window_end_location_change_callback): Use
+	NautlusNavigationBar calls instead of NautilusLocationBar ones.
+	* src/Makefile.am: Add new files to the build, and split all
+	headers into noinst_HEADERS out from the nautilus_SOURCES
+	variable.
+
 2000-06-16  Seth Nickell  <seth@eazel.com>
 
 	* src/nautilus-location-bar.h:

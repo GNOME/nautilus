@@ -37,7 +37,7 @@
 #include <math.h>
 #include "nautilus-bookmarks-window.h"
 #include "nautilus-signaller.h"
-#include "nautilus-location-bar.h"
+#include "nautilus-switchable-navigation-bar.h"
 #include "nautilus-sidebar.h"
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -86,6 +86,10 @@ static void               nautilus_window_get_arg                       (GtkObje
 									 guint                   arg_id);
 static void               nautilus_window_goto_uri_callback             (GtkWidget              *widget,
 									 const char             *uri,
+									 GtkWidget              *window);
+
+static void               nautilus_window_navigation_bar_mode_changed_callback (GtkWidget              *widget,
+									 NautilusSwitchableNavigationBarMode mode,
 									 GtkWidget              *window);
 static void               zoom_in_callback                              (NautilusZoomControl    *zoom_control,
 									 NautilusWindow         *window);
@@ -214,6 +218,23 @@ nautilus_window_goto_uri_callback (GtkWidget *widget,
 }
 
 static void
+nautilus_window_navigation_bar_mode_changed_callback (GtkWidget *widget,
+						      NautilusSwitchableNavigationBarMode mode,
+						      GtkWidget *window)
+{
+	switch (mode) {
+	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION:
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (NAUTILUS_WINDOW (window)->search_button), FALSE);
+		break;
+	case NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH:
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (NAUTILUS_WINDOW (window)->search_button), TRUE);
+		break;
+	default:
+	}
+}
+
+
+static void
 zoom_in_callback (NautilusZoomControl *zoom_control,
             NautilusWindow      *window)
 {
@@ -262,13 +283,18 @@ nautilus_window_constructed (NautilusWindow *window)
 
 	/* set up location bar */
 	location_bar_box = gtk_hbox_new (FALSE, GNOME_PAD);
-	gtk_container_set_border_width (GTK_CONTAINER(location_bar_box), GNOME_PAD_SMALL);
+	gtk_container_set_border_width (GTK_CONTAINER (location_bar_box), GNOME_PAD_SMALL);
 	
-	window->ent_uri = nautilus_location_bar_new ();
-	
-	gtk_signal_connect (GTK_OBJECT (window->ent_uri), "location_changed",
+	window->navigation_bar = nautilus_switchable_navigation_bar_new ();
+	gtk_widget_show (GTK_WIDGET (window->navigation_bar));
+
+	gtk_signal_connect (GTK_OBJECT (window->navigation_bar), "location_changed",
 			    nautilus_window_goto_uri_callback, window);
-	gtk_box_pack_start (GTK_BOX (location_bar_box), window->ent_uri,
+
+	gtk_signal_connect (GTK_OBJECT (window->navigation_bar), "mode_changed",
+			     nautilus_window_navigation_bar_mode_changed_callback, window);
+
+	gtk_box_pack_start (GTK_BOX (location_bar_box), window->navigation_bar,
 			    TRUE, TRUE, GNOME_PAD_SMALL);
 	behavior = GNOME_DOCK_ITEM_BEH_EXCLUSIVE
 		| GNOME_DOCK_ITEM_BEH_NEVER_VERTICAL;
@@ -294,7 +320,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_default", zoom_default_callback, window);
 	gtk_box_pack_end (GTK_BOX (location_bar_box), window->zoom_control, FALSE, FALSE, 0);
 	
-	gtk_widget_show_all (location_bar_box);
+	gtk_widget_show (location_bar_box);
 	
 	/* set up status bar */
 	statusbar = gtk_statusbar_new ();
@@ -915,10 +941,16 @@ nautilus_window_go_up (NautilusWindow *window)
 }
 
 void
-nautilus_window_start_search (NautilusWindow *window)
+nautilus_window_set_search_mode (NautilusWindow *window,
+				 gboolean        search_mode)
 {
-	/* Just change the navigation info for now */
-	nautilus_window_goto_uri (window, "search:");
+	if (search_mode) {
+		nautilus_switchable_navigation_bar_set_mode (NAUTILUS_SWITCHABLE_NAVIGATION_BAR (window->navigation_bar),
+							     NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_SEARCH);
+	} else {
+		nautilus_switchable_navigation_bar_set_mode (NAUTILUS_SWITCHABLE_NAVIGATION_BAR (window->navigation_bar),
+							     NAUTILUS_SWITCHABLE_NAVIGATION_BAR_MODE_LOCATION);
+	}
 }
 
 void

@@ -36,51 +36,60 @@ LDADD =\
 	$(XML_LIBS) \
 	$(NULL)
 
+noinst_HEADERS = \
+	nautilus-bookmark-list.h		\
+	nautilus-bookmarks-window.h		\
+	nautilus-desktop-window.h		\
+	nautilus-sidebar-tabs.h			\
+	nautilus-sidebar-title.h		\
+	nautilus-link-set-window.h		\
+	nautilus-location-bar.h			\
+	nautilus-navigation-bar.h		\
+	nautilus-property-browser.h		\
+	nautilus-self-check-functions.h 	\
+	nautilus-signaller.h			\
+	nautilus-zoom-control.h			\
+	nautilus-application.h			\
+	nautilus-search-bar.h			\
+	nautilus-switchable-navigation-bar.h	\
+	nautilus-sidebar.h			\
+	nautilus-applicable-views.h		\
+	nautilus-view-frame-private.h		\
+	nautilus-view-frame.h			\
+	nautilus-window-manage-views.h		\
+	nautilus-window-private.h		\
+	nautilus-window.h			\
+	$(NULL)
+
 nautilus_SOURCES =\
 	nautilus-bookmark-list.c		\
-	nautilus-bookmark-list.h		\
 	nautilus-bookmarks-window.c		\
-	nautilus-bookmarks-window.h		\
 	nautilus-desktop-window.c		\
-	nautilus-desktop-window.h		\
 	nautilus-sidebar-tabs.c			\
-	nautilus-sidebar-tabs.h			\
 	nautilus-sidebar-title.c		\
-	nautilus-sidebar-title.h		\
 	nautilus-link-set-window.c		\
-	nautilus-link-set-window.h		\
 	nautilus-location-bar.c         	\
-	nautilus-location-bar.h			\
+	nautilus-navigation-bar.c         	\
 	nautilus-property-browser.c     	\
-	nautilus-property-browser.h		\
 	nautilus-self-check-functions.c 	\
-	nautilus-self-check-functions.h 	\
 	nautilus-signaller.c			\
-	nautilus-signaller.h			\
 	nautilus-window-menus.c         	\
 	nautilus-window-toolbars.c      	\
 	nautilus-zoom-control.c			\
-	nautilus-zoom-control.h			\
 	nautilus-zoomable-frame-corba.c		\
 	nautilus-application.c			\
-	nautilus-application.h			\
+	nautilus-search-bar.c         		\
 	nautilus-sidebar.c			\
-	nautilus-sidebar.h			\
+	nautilus-switchable-navigation-bar.c	\
 	nautilus-main.c 			\
 	nautilus-applicable-views.c		\
-	nautilus-applicable-views.h		\
 	nautilus-view-frame-bonobo-control.c	\
 	nautilus-view-frame-bonobo-embeddable.c	\
 	nautilus-view-frame-corba.c		\
 	nautilus-view-frame-nautilus-view.c	\
-	nautilus-view-frame-private.h		\
 	nautilus-view-frame.c			\
-	nautilus-view-frame.h			\
 	nautilus-window-manage-views.c		\
-	nautilus-window-manage-views.h		\
-	nautilus-window-private.h		\
 	nautilus-window.c			\
-	nautilus-window.h			\
 	$(NULL)
 
 TESTS=check-nautilus
