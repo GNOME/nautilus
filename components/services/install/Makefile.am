@@ -8,6 +8,7 @@ INCLUDES = \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
 	-I/usr/include/rpm \
+	$(GNET_CFLAGS) \
 	$(GCONF_CFLAGS) \
 	$(GNOMEUI_CFLAGS) \
 	$(OAF_CFLAGS) \
@@ -28,11 +29,11 @@ eazel_install_SOURCES =		        \
 	$(NULL)
 
 eazel_install_LDFLAGS =	\
-	-lpopt \
 	-lgnet \
 	$(GCONF_LIBS) \
 	$(GNOMEUI_LIBS)	\
 	$(OAF_LIBS) \
 	$(XML_LIBS) \
+	$(GNET_LIBS) \
 	$(RPM_LIBS) \
 	$(NULL)
