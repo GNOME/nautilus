@@ -1,11 +1,20 @@
 2000-09-14  John Sullivan  <sullivan@eazel.com>
 
-Fixed bug 3071 (zoom control right-click menu doesn't work)
+	Fixed bug 3072 (crash right-clicking in icon view background)
 
-The recent change from doubles to floats broke this, because
-some function pointers had been cast to gpointer so that the
-compiler didn't notice that they were casting CORBA_float to 
-CORBA_double.
+	* src/file-manager/fm-icon-view.c: (compute_menu_item_info):
+	Fixed mistake in assert. *return_name != NULL should have
+	been return_name != NULL. This caused an intermittent assertion
+	failure (reproducible for some people).
+
+2000-09-14  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3071 (zoom control right-click menu doesn't work)
+
+	The recent change from doubles to floats broke this, because
+	some function pointers had been cast to gpointer so that the
+	compiler didn't notice that they were casting CORBA_float to 
+	CORBA_double.
 
 	* libnautilus/nautilus-zoomable.c:
 	(impl_Nautilus_Zoomable__get_zoom_level),

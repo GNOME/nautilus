@@ -422,7 +422,7 @@ compute_menu_item_info (FMIconView *view,
 
 	g_assert (FM_IS_ICON_VIEW (view));
 	g_assert (menu_path != NULL);
-	g_assert (*return_name != NULL);
+	g_assert (return_name != NULL);
 
 	icon_container = get_icon_container (view);
 	sensitive = TRUE;
