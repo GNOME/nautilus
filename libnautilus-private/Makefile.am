@@ -8,15 +8,16 @@ INCLUDES = 						\
 	-I$(top_builddir) 				\
 	-I$(top_builddir)/libnautilus 			\
 	-I$(top_srcdir)/cut-n-paste-code 		\
-	$(GNOME_CFLAGS) 				\
-	$(BONOBOX_CFLAGS) 				\
 	$(BONOBO_PRINT_CFLAGS) 				\
-	$(OAF_CFLAGS) 					\
-	$(GHTTP_CFLAGS) 				\
-	$(VFS_CFLAGS) 					\
+	$(BONOBOX_CFLAGS) 				\
+	$(ESD_CFLAGS)					\
 	$(GCONF_CFLAGS) 				\
-	$(XML_CFLAGS) 					\
+	$(GHTTP_CFLAGS) 				\
+	$(GNOME_CFLAGS) 				\
 	$(MEDUSA_CFLAGS) 				\
+	$(OAF_CFLAGS) 					\
+	$(VFS_CFLAGS) 					\
+	$(XML_CFLAGS) 					\
 	-D_REENTRANT 					\
 	-DDATADIR=\""$(datadir)"\" 			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
@@ -31,17 +32,19 @@ dependency_static_libs = \
 
 libnautilus_extensions_la_LDFLAGS =	\
 	$(dependency_static_libs)	\
-	$(GNOME_LIBS) 			\
-	$(GNOMECANVASPIXBUF_LIBS)	\
-	$(OAF_LIBS) 			\
-	$(BONOBOX_LIBS) 		\
 	$(BONOBO_PRINT_LIBS) 		\
+	$(BONOBOX_LIBS) 		\
+	$(ESD_LIBS)			\
+	$(FREETYPE2_LIBS)		\
+	$(GCONF_LIBS)			\
 	$(GHTTP_LIBS) 			\
+	$(GNOMECANVASPIXBUF_LIBS)	\
+	$(GNOME_LIBS) 			\
+	$(LIBPNG) 			\
+	$(MEDUSA_LIBS) 			\
+	$(OAF_LIBS) 			\
 	$(VFS_LIBS) 			\
 	$(XML_LIBS) 			\
-	$(MEDUSA_LIBS) 			\
-	$(LIBPNG) 			\
-	$(FREETYPE2_LIBS)		\
 	$(NULL)
 
 libnautilus_extensions_la_SOURCES = 		\

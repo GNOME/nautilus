@@ -344,14 +344,14 @@ menu_bar_no_resize_hack_menu_bar_finder (GtkWidget *child, gpointer data)
 }
 
 /* Since there's only one desktop at a time, we can keep track
- * of our faux-klass with a single static.
+ * of our faux-class with a single static.
  */
-static GtkObjectClass *menu_bar_no_resize_hack_klass;
+static GtkObjectClass *menu_bar_no_resize_hack_class;
 
 static void
-menu_bar_no_resize_hack_atexit (void)
+menu_bar_no_resize_hack_class_free (void)
 {
-	g_free (menu_bar_no_resize_hack_klass);
+	g_free (menu_bar_no_resize_hack_class);
 }
 
 /* This fn is used to keep the desktop menu bar from resizing.
@@ -366,22 +366,25 @@ menu_bar_no_resize_hack (NautilusWindow *window)
 	
 	menu_bar = NULL;
 	
-	nautilus_gtk_container_foreach_deep (GTK_CONTAINER (window), menu_bar_no_resize_hack_menu_bar_finder, &menu_bar);
+	nautilus_gtk_container_foreach_deep (GTK_CONTAINER (window),
+					     menu_bar_no_resize_hack_menu_bar_finder,
+					     &menu_bar);
 
 	g_return_if_fail (menu_bar != NULL);
 
-	if (menu_bar_no_resize_hack_klass == NULL) {
-		g_atexit (menu_bar_no_resize_hack_atexit);
+	if (menu_bar_no_resize_hack_class == NULL) {
+		g_atexit (menu_bar_no_resize_hack_class_free);
 	}
 	
 	type_query = gtk_type_query (menu_bar->klass->type);
-	g_free (menu_bar_no_resize_hack_klass);
-	menu_bar_no_resize_hack_klass = g_memdup (menu_bar->klass, type_query->class_size);
+	g_free (menu_bar_no_resize_hack_class);
+	menu_bar_no_resize_hack_class = g_memdup (menu_bar->klass, type_query->class_size);
 	g_free (type_query);
 	
-	((GtkWidgetClass *) menu_bar_no_resize_hack_klass)->size_allocate = menu_bar_no_resize_hack_size_allocate;
+	((GtkWidgetClass *) menu_bar_no_resize_hack_class)->size_allocate
+		= menu_bar_no_resize_hack_size_allocate;
 
-	menu_bar->klass = menu_bar_no_resize_hack_klass;
+	menu_bar->klass = menu_bar_no_resize_hack_class;
 }
 
 static void
@@ -391,6 +394,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	GtkWidget *view_as_menu_vbox;
   	int sidebar_width;
 	BonoboControl *location_bar_wrapper;
+	EPaned *panel;
 
 	/* CORBA and Bonobo setup, which must be done before the location bar setup */
 	window->details->ui_container = bonobo_ui_container_new ();
@@ -464,7 +468,6 @@ nautilus_window_constructed (NautilusWindow *window)
         if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		window->content_hbox = gtk_widget_new (NAUTILUS_TYPE_GENEROUS_BIN, NULL);
 	} else {
-		EPaned *panel;
 		set_initial_window_geometry (window);
 	
 		window->content_hbox = nautilus_horizontal_splitter_new ();
@@ -480,19 +483,20 @@ nautilus_window_constructed (NautilusWindow *window)
 	gtk_widget_show (window->content_hbox);
 	bonobo_window_set_contents (BONOBO_WINDOW (window), window->content_hbox);
 	
-	/* set up the index panel */
-	
+	/* set up the sidebar */
 	window->sidebar = nautilus_sidebar_new ();
-	gtk_widget_show (GTK_WIDGET (window->sidebar));
-	gtk_signal_connect (GTK_OBJECT (window->sidebar), "location_changed",
-			    goto_uri_callback, window);
 	
 	/* FIXME bugzilla.eazel.com 1243: 
 	 * We should use inheritance instead of these special cases
 	 * for the desktop window.
 	 */
         if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-		e_paned_pack1 (E_PANED(window->content_hbox), GTK_WIDGET(window->sidebar), FALSE, FALSE);
+		gtk_widget_show (GTK_WIDGET (window->sidebar));
+		gtk_signal_connect (GTK_OBJECT (window->sidebar), "location_changed",
+				    goto_uri_callback, window);
+		e_paned_pack1 (E_PANED (window->content_hbox),
+			       GTK_WIDGET (window->sidebar),
+			       FALSE, FALSE);
 	}
 	
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);

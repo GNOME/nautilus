@@ -1,3 +1,39 @@
+2000-12-04  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	* libnautilus-extensions/Makefile.am: Add ESD flags and library
+	since we are now using it. Without this change, I couldn't link.
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(redo_layout_internal), (redo_layout_callback),
+	(unschedule_redo_layout), (schedule_redo_layout), (relayout): Get
+	rid of some circular logic in relayout (now called redo_layout)
+	and made nice calls to cleanly schedule the idle function to redo
+	layout.
+	(size_allocate): Make sure we redo layout if this is the first
+	allocate, since we have inhibited them up to this point.
+	(nautilus_icon_container_initialize): Get rid of unnecessary
+	initialization of things that are already 0, NULL, FALSE.
+	(finish_adding_new_icons): Remove unnecessary check for NULL.
+	(nautilus_icon_container_add): Use the new schedule_redo_layout.
+	(nautilus_icon_container_remove): Use schedule_redo_layout instead
+	of redoing the layout right away, since this can be called for
+	many icons at a time and we want to bunch up the layout work.
+	(nautilus_icon_container_request_update): Schedule a redo_layout
+	any time an icon changes. We could get fancy and detect changes
+	that are substantive if this does too much extra layout work.
+	(nautilus_icon_container_set_zoom_level): Removed extraneous
+	direct call to redo_layout after the request_update_all call.
+
+	* src/nautilus-window.c: (menu_bar_no_resize_hack_class_free),
+	(menu_bar_no_resize_hack): Tweak function name and formatting.
+	(nautilus_window_constructed): Do a little bit less sidebar setup
+	when making a desktop window.
+
+	* libnautilus-extensions/nautilus-sound.c: Tweak (has nice side
+	effect of forcing recompile).
+
 2000-12-04  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/command-line/eazel-test-softcat.c:

@@ -1074,7 +1074,7 @@ lay_down_icons (NautilusIconContainer *container, GList *icons, double start_y)
 }
 
 static void
-relayout (NautilusIconContainer *container)
+redo_layout_internal (NautilusIconContainer *container)
 {
 	finish_adding_new_icons (container);
 
@@ -1093,6 +1093,44 @@ relayout (NautilusIconContainer *container)
 
 	process_pending_icon_to_reveal (container);
 	process_pending_icon_to_rename (container);
+}
+
+static gboolean
+redo_layout_callback (gpointer callback_data)
+{
+	NautilusIconContainer *container;
+
+	container = NAUTILUS_ICON_CONTAINER (callback_data);
+	redo_layout_internal (container);
+	container->details->idle_id = 0;
+
+	return FALSE;
+}
+
+static void
+unschedule_redo_layout (NautilusIconContainer *container)
+{
+        if (container->details->idle_id != 0) {
+		gtk_idle_remove (container->details->idle_id);
+		container->details->idle_id = 0;
+	}
+}
+
+static void
+schedule_redo_layout (NautilusIconContainer *container)
+{
+	if (container->details->idle_id == 0
+	    && container->details->has_been_allocated) {
+		container->details->idle_id = gtk_idle_add
+			(redo_layout_callback, container);
+	}
+}
+
+static void
+redo_layout (NautilusIconContainer *container)
+{
+	unschedule_redo_layout (container);
+	redo_layout_internal (container);
 }
 
 static void
@@ -1202,7 +1240,7 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 		icon->scale_y = scale_y;
 		nautilus_icon_container_update_icon (container, icon);
 		if (update_position) {
-			relayout (container); 
+			redo_layout (container); 
 			emit_signal = TRUE;
 		}
 
@@ -1224,7 +1262,7 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 
 	/* FIXME bugzilla.eazel.com 2474: 
 	 * Handling of the scroll region is inconsistent here. In
-	 * the scale-changing case, relayout is called, which updates the
+	 * the scale-changing case, redo_layout is called, which updates the
 	 * scroll region appropriately. In other cases, it's up to the
 	 * caller to make sure the scroll region is updated. This could
 	 * lead to hard-to-track-down bugs.
@@ -2196,16 +2234,25 @@ static void
 size_allocate (GtkWidget *widget,
 	       GtkAllocation *allocation)
 {
-	NAUTILUS_ICON_CONTAINER (widget)->details->has_been_allocated = TRUE;
+	NautilusIconContainer *container;
+	gboolean need_layout_redone;
 
-	if (allocation->x != widget->allocation.x || 
-	    allocation->width != widget->allocation.width ||
-	    allocation->y != widget->allocation.y ||
-	    allocation->height != widget->allocation.height) {
-	    
-		NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	container = NAUTILUS_ICON_CONTAINER (widget);
 
-		relayout (NAUTILUS_ICON_CONTAINER (widget));
+	need_layout_redone = !container->details->has_been_allocated;
+	if (allocation->x != widget->allocation.x
+	    || allocation->width != widget->allocation.width
+	    || allocation->y != widget->allocation.y
+	    || allocation->height != widget->allocation.height) {
+		need_layout_redone = TRUE;
+	}
+	
+	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+
+	container->details->has_been_allocated = TRUE;
+
+	if (need_layout_redone) {
+		redo_layout (NAUTILUS_ICON_CONTAINER (widget));
 	}
 }
 
@@ -2488,10 +2535,10 @@ end_stretching (NautilusIconContainer *container,
 			 signals[ICON_POSITION_CHANGED],
 			 icon->data, &position);
 	
-	/* We must do a relayout after indicating we are done stretching. */
+	/* We must do a redo_layout after indicating we are done stretching. */
 	container->details->drag_icon = NULL;
 	container->details->drag_state = DRAG_STATE_INITIAL;
-	relayout (container);
+	redo_layout (container);
 }
 
 static void
@@ -2783,7 +2830,7 @@ key_press_event (GtkWidget *widget,
 					       container->details->initial_stretch_size, FALSE);
 				
 				container->details->stretch_icon = NULL;				
-				relayout (container);
+				redo_layout (container);
 			}
 			
 			handled = TRUE;
@@ -3163,11 +3210,6 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 	/* read in theme-dependent data */
 	nautilus_icon_container_theme_changed (container);
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_icon_container_theme_changed, container);	
-	
-	container->details->rename_widget = NULL;
-	container->details->original_text = NULL;
-	container->details->type_select_state = NULL;
-	container->details->has_been_allocated = FALSE;
 }
 
 typedef struct {
@@ -3495,9 +3537,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	GList *emblem_scalable_icons, *emblem_pixbufs, *p;
 	char *editable_text, *additional_text;
 	GdkFont *font;
-	
 	guint smooth_font_size;
-	NautilusScalableFont *smooth_font;
 
 	if (icon == NULL) {
 		return;
@@ -3517,7 +3557,6 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	max_image_size = MAXIMUM_IMAGE_SIZE * GNOME_CANVAS (container)->pixels_per_unit;
 	max_emblem_size = MAXIMUM_EMBLEM_SIZE * GNOME_CANVAS (container)->pixels_per_unit;
 	
-	
 	/* Get the appropriate images for the file. */
 	icon_get_size (container, icon, &icon_size_x, &icon_size_y);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
@@ -3532,13 +3571,16 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	
 	emblem_pixbufs = NULL;
 	
-	/* since the natural emblem sizes are too large, scale them down some.  Perhaps
-	   the scale amount should be user settable */	
+	/* Since the natural emblem sizes are too large, scale them
+	 * down some. Perhaps the scale amount should be user
+	 * settable.
+	 */
 	icon_size_x = MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
-			       * icon->scale_x * EMBLEM_SCALE_FACTOR, NAUTILUS_ICON_SIZE_SMALLEST);
+			   * icon->scale_x * EMBLEM_SCALE_FACTOR,
+			   NAUTILUS_ICON_SIZE_SMALLEST);
 	icon_size_y = MAX (nautilus_get_icon_size_for_zoom_level (container->details->zoom_level)
-			       * icon->scale_y * EMBLEM_SCALE_FACTOR, NAUTILUS_ICON_SIZE_SMALLEST);
-	
+			   * icon->scale_y * EMBLEM_SCALE_FACTOR,
+			   NAUTILUS_ICON_SIZE_SMALLEST);
 	for (p = emblem_scalable_icons; p != NULL; p = p->next) {
 		emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 			(p->data,
@@ -3571,13 +3613,11 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	    nautilus_strcmp (editable_text, 
 	    		     nautilus_icon_canvas_item_get_editable_text (icon->item)) != 0) {
 		end_renaming_mode (container, FALSE);
-	    		     
 	}
 	
 	font = details->label_font[details->zoom_level];
 
 	smooth_font_size = details->smooth_font_size[details->zoom_level];
-	smooth_font = details->smooth_label_font;
         
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
 			       "editable_text", editable_text,
@@ -3585,7 +3625,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 			       "font", font,
 			       "highlighted_for_drop", icon == details->drop_target,
 			       "smooth_font_size", smooth_font_size,
-			       "smooth_font", smooth_font,
+			       "smooth_font", details->smooth_label_font,
 			       NULL);
 	
 	nautilus_icon_canvas_item_set_image (icon->item, pixbuf);
@@ -3647,9 +3687,6 @@ finish_adding_new_icons (NautilusIconContainer *container)
 	double bottom;
 
 	new_icons = container->details->new_icons;
-	if (new_icons == NULL) {
-		return;
-	}
 	container->details->new_icons = NULL;
 
 	/* Position most icons (not unpositioned manual-layout icons). */
@@ -3673,21 +3710,6 @@ finish_adding_new_icons (NautilusIconContainer *container)
 		lay_down_icons (container, no_position_icons, bottom + ICON_PAD_BOTTOM);
 		g_list_free (no_position_icons);
 	}
-
-	/* Now the rest of the housekeeping. */
-	relayout (container);
-}
-
-static gboolean
-finish_adding_new_icons_callback (gpointer data)
-{
-	NautilusIconContainer *container;
-
-	container = NAUTILUS_ICON_CONTAINER (data);
-	finish_adding_new_icons (container);
-	container->details->idle_id = 0;
-
-	return FALSE;
 }
 
 /**
@@ -3740,10 +3762,7 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 	details->new_icons = g_list_prepend (details->new_icons, icon);
 
 	/* Run an idle function to add the icons. */
-	if (container->details->idle_id == 0 && container->details->has_been_allocated) {
-		container->details->idle_id = gtk_idle_add
-			(finish_adding_new_icons_callback, container);
-	}
+	schedule_redo_layout (container);
 	
 	return TRUE;
 }
@@ -3774,7 +3793,7 @@ nautilus_icon_container_remove (NautilusIconContainer *container,
 		icon = p->data;
 		if (icon->data == data) {
 			icon_destroy (container, icon);
-			relayout (container);
+			schedule_redo_layout (container);
 			return TRUE;
 		}
 	}
@@ -3803,6 +3822,7 @@ nautilus_icon_container_request_update (NautilusIconContainer *container,
 		icon = p->data;
 		if (icon->data == data) {
 			nautilus_icon_container_update_icon (container, icon);
+			schedule_redo_layout (container);
 			return;
 		}
 	}
@@ -3845,8 +3865,6 @@ nautilus_icon_container_set_zoom_level (NautilusIconContainer *container, int ne
 	gnome_canvas_set_pixels_per_unit (GNOME_CANVAS (container), pixels_per_unit);
 
 	nautilus_icon_container_request_update_all (container);
-
-	relayout (container);
 }
 
 /**
@@ -3866,7 +3884,7 @@ nautilus_icon_container_request_update_all (NautilusIconContainer *container)
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		nautilus_icon_container_update_icon (container, p->data);
 	}
-	relayout (container);
+	redo_layout (container);
 }
 
 /**
@@ -4393,7 +4411,7 @@ nautilus_icon_container_set_auto_layout (NautilusIconContainer *container,
 		nautilus_icon_container_freeze_icon_positions (container);
 	}
 
-	relayout (container);
+	redo_layout (container);
 
 	gtk_signal_emit (GTK_OBJECT (container), signals[LAYOUT_CHANGED]);
 }
@@ -4413,7 +4431,7 @@ nautilus_icon_container_set_tighter_layout (NautilusIconContainer *container,
 
 	container->details->tighter_layout = tighter_layout;
 
-	relayout (container);
+	redo_layout (container);
 
 	gtk_signal_emit (GTK_OBJECT (container), signals[LAYOUT_CHANGED]);
 }
@@ -4427,7 +4445,7 @@ nautilus_icon_container_set_layout_mode (NautilusIconContainer *container,
 
 	container->details->layout_mode = mode;
 
-	relayout (container);
+	redo_layout (container);
 
 	gtk_signal_emit (GTK_OBJECT (container), signals[LAYOUT_CHANGED]);
 }
@@ -4473,7 +4491,7 @@ nautilus_icon_container_sort (NautilusIconContainer *container)
 	changed = !container->details->auto_layout;
 	container->details->auto_layout = TRUE;
 
-	relayout (container);
+	redo_layout (container);
 
 	if (changed) {
 		gtk_signal_emit (GTK_OBJECT (container), signals[LAYOUT_CHANGED]);

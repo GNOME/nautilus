@@ -90,7 +90,7 @@ nautilus_sound_can_play_sound (void)
 		return TRUE;
 	}
 	
-	open_result = esd_audio_open();
+	open_result = esd_audio_open ();
 	if (open_result < 0) {
 		return FALSE;
 	}
