@@ -347,11 +347,6 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
    	button = gtk_button_new ();
 	gtk_box_pack_end (GTK_BOX (music_view->details->image_box), button, FALSE, FALSE, 2);
 
-	/* FIXME
-	 * Using gtk_widget_set_usize should be avoided.
-	 */
-	gtk_widget_set_usize (button, -1, 20);
-	
 	label = gtk_label_new (_("Set Cover Image"));
 	gtk_container_add (GTK_CONTAINER(button), label);
 	gtk_box_pack_end (GTK_BOX(music_view->details->control_box), music_view->details->image_box, FALSE, FALSE, 4);  

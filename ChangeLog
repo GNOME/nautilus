@@ -1,3 +1,12 @@
+2001-02-07  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 6363, "Set Cover Image" button assumes
+	fixed font height.
+	
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize):
+	Remove call to get_widget_set_usize
+	
 2001-02-07  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>
