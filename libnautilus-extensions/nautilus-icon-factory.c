@@ -222,6 +222,23 @@ nautilus_get_current_icon_factory (void)
 			= nautilus_preferences_get_string (nautilus_preferences_get_global_preferences (),
 					       	 	   NAUTILUS_PREFERENCES_ICON_THEME);
 
+		if (theme_preference == NULL) {
+			/* Set the default icon theme.
+			 *
+			 * We might want to change things such that no default has to be installed
+			 * for this preference.  If so, then the code that fetches the preference
+			 * would have to deal with either a NULL return value (or "").
+			 */
+			nautilus_preferences_set_info (nautilus_preferences_get_global_preferences (),
+						       NAUTILUS_PREFERENCES_ICON_THEME,
+						       NULL,
+						       NAUTILUS_PREFERENCE_STRING,
+						       "default",
+						       NULL);
+			theme_preference
+				= nautilus_preferences_get_string (nautilus_preferences_get_global_preferences (),
+						       	 	   NAUTILUS_PREFERENCES_ICON_THEME);
+		}
 		g_assert (theme_preference != NULL);
 
                 global_icon_factory = nautilus_icon_factory_new (theme_preference);
@@ -284,19 +301,6 @@ nautilus_icon_factory_initialize_class (NautilusIconFactoryClass *class)
 				  GTK_TYPE_NONE, 0);
 
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
-
-	/* Set the default icon theme.
-	 *
-	 * We might want to change things such that no default has to be installed
-	 * for this preference.  If so, then the code that fetches the preference
-	 * would have to deal with either a NULL return value (or "").
-	 */
-	nautilus_preferences_set_info (nautilus_preferences_get_global_preferences (),
-				       NAUTILUS_PREFERENCES_ICON_THEME,
-				       NULL,
-				       NAUTILUS_PREFERENCE_STRING,
-				       "default",
-				       NULL);
 }
 
 /* Destroy one image in the cache. */

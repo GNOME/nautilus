@@ -1,3 +1,14 @@
+2000-04-05  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug in Ramiro's recent checkin that broke booting
+	if the icon theme had never been set.
+
+	* libnautilus/nautilus-icon-factory.c:
+	(nautilus_icon_factory_initialize_class),
+	(nautilus_get_current_icon_factory): Moved theme initialization
+	from the former to the latter, because theme needs to be non-NULL
+	before initialize_class is called.
+
 2000-04-05  Darin Adler  <darin@eazel.com>
 
 	* components/services/startup/eazel-register.c:
