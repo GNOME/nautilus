@@ -1,3 +1,15 @@
+2000-08-07  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1906 (text size under icons is not always correct)
+
+	* libnautilus-extensions/nautilus-font-factory.c:
+	(font_hash_node_lookup_with_insertion): Inserting a font into
+	the font cache hashtable was passing the wrong pointer for the
+	font name: name (which is reused each time in this routine) instead
+	of node->name (which is part of the hash table node and won't change).
+	Also took off unnecessary gpointer and gconstpointer casts. Darin
+	spotted the problem after I aimed him at this function.
+
 Mon Aug 07 05:00:55 2000  George Lebl <jirka@5z.com>
 
 	* libnautilus-extentions/nautilus-list.c (nautilus_list_draw):

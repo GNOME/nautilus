@@ -186,7 +186,7 @@ font_hash_node_lookup_with_insertion (const char *name)
 			
 			gdk_font_ref (node->font);
 
-			g_hash_table_insert (factory->fonts, (gpointer) name, (gpointer) node);
+			g_hash_table_insert (factory->fonts, node->name, node);
 		}
 	}
 	
