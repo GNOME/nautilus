@@ -1,3 +1,12 @@
+2000-08-07  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* src/nautilus-zoom-control.c:
+	* src/nautilus-zoom-control.h:
+
+	Revert the subclass change i made.  Turns out its not needed.  The
+	fix was to make the Eazel theme grok the "GtkEventBox" style
+	class - as all other "nice" themes do.
+
 2000-08-07  John Sullivan  <sullivan@eazel.com>
 
 	Made preview bug 2017 no longer crash. That's the "Up button

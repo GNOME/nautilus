@@ -91,7 +91,7 @@ void            draw_number		                 (GtkWidget *widget,
 /* button assignments */
 #define CONTEXTUAL_MENU_BUTTON 3
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusZoomControl, nautilus_zoom_control, GTK_TYPE_MISC)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusZoomControl, nautilus_zoom_control, GTK_TYPE_EVENT_BOX)
 
 static void
 nautilus_zoom_control_initialize_class (NautilusZoomControlClass *zoom_control_class)
