@@ -1220,7 +1220,7 @@ static void
 add_color_to_browser (GtkWidget *widget, int which_button, gpointer *data)
 {
 	char *color_spec;
-	char *color_name;
+	char *color_name, *stripped_color_name;
 	
 	gdouble color[4];
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER (data);
@@ -1234,8 +1234,16 @@ add_color_to_browser (GtkWidget *widget, int which_button, gpointer *data)
 		 	(gushort) (color[2] * 65535.0 + 0.5));
 
 		color_name = gtk_entry_get_text (GTK_ENTRY (property_browser->details->color_name));
-		add_color_to_file (property_browser, color_spec, color_name);
-		nautilus_property_browser_update_contents(property_browser);
+		stripped_color_name = g_strstrip (g_strdup (color_name));
+		if (strlen (stripped_color_name) == 0) {
+			nautilus_error_dialog (_("Sorry, but you must specify a non-blank name for the new color."), 
+						_("Couldn't install color"), GTK_WINDOW (property_browser));
+		
+		} else {
+			add_color_to_file (property_browser, color_spec, stripped_color_name);
+			nautilus_property_browser_update_contents(property_browser);
+		}
+		g_free (stripped_color_name);
 		g_free(color_spec);	
 	} 
 	
@@ -1339,10 +1347,6 @@ is_reserved_keyword (NautilusPropertyBrowser *property_browser, const char *keyw
 	}
 	
 	/* see if the keyword already exists */
-	/* FIXME: This claims that existing keywords are
-	 * "reserved". The caller then reports the wrong error message
-	 * to the user.
-	 */
 	return g_list_find_custom (property_browser->details->keywords,
 				   (char *) keyword,
 				   (GCompareFunc) nautilus_strcasecmp) != NULL;				
@@ -1357,18 +1361,25 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 	
 	if (which_button == GNOME_OK) {
 		char *destination_name, *extension;
-		char* new_keyword = gtk_entry_get_text(GTK_ENTRY(property_browser->details->keyword));
+		char *new_keyword, *stripped_keyword;
 		char *user_directory;	
 		char *directory_path;
 
-		if (new_keyword == NULL || strlen (new_keyword) == 0) {
-			nautilus_error_dialog (_("Sorry, but you must specify a keyword for the new emblem."), 
+		new_keyword = gtk_entry_get_text(GTK_ENTRY(property_browser->details->keyword));		
+		if (new_keyword == NULL) {
+			stripped_keyword = NULL;
+		} else {
+			stripped_keyword = g_strstrip (g_strdup (new_keyword));
+		}
+		
+		if (stripped_keyword == NULL || strlen (stripped_keyword) == 0) {
+			nautilus_error_dialog (_("Sorry, but you must specify a non-blank keyword for the new emblem."), 
 						_("Couldn't install emblem"), GTK_WINDOW (property_browser));
-		} else if (!emblem_keyword_valid (new_keyword)) {
-			nautilus_error_dialog (_("Sorry, but emblem keywords can only contain letters and numbers."), 
+		} else if (!emblem_keyword_valid (stripped_keyword)) {
+			nautilus_error_dialog (_("Sorry, but emblem keywords can only contain letters, spaces and numbers."), 
 						_("Couldn't install emblem"), GTK_WINDOW (property_browser));
-		} else if (is_reserved_keyword (property_browser, new_keyword)) {
-			error_string = g_strdup_printf (_("Sorry, but \"%s\" is a reserved keyword"), new_keyword);
+		} else if (is_reserved_keyword (property_browser, stripped_keyword)) {
+			error_string = g_strdup_printf (_("Sorry, but \"%s\" is an existing keyword.  Please choose a different name for it."), stripped_keyword);
 			nautilus_error_dialog (error_string, 
 						_("Couldn't install emblem"), GTK_WINDOW (property_browser));
 			g_free (error_string);
@@ -1391,7 +1402,7 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 
 			/* formulate the destination file name */
 			extension = strrchr(property_browser->details->image_path, '.');
-			destination_name = g_strdup_printf("%s/%s.%s", directory_path, new_keyword, extension + 1);
+			destination_name = g_strdup_printf("%s/%s.%s", directory_path, stripped_keyword, extension + 1);
 			g_free(directory_path);
 				
 			/* perform the actual copy */
@@ -1409,6 +1420,7 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 				
 			nautilus_property_browser_update_contents(property_browser);
 		}
+		g_free (stripped_keyword);
 	}
 	
 	gtk_widget_destroy(dialog);
@@ -1421,7 +1433,7 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 /* here's the routine to add a new emblem, by putting up an emblem dialog */
 
 static void
-add_new_emblem(NautilusPropertyBrowser *property_browser)
+add_new_emblem (NautilusPropertyBrowser *property_browser)
 {
 	if (property_browser->details->dialog) {
 		gtk_widget_show (property_browser->details->dialog);
@@ -1680,7 +1692,8 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 	int index, object_position = 0;
 
 	/* make room for the reset property if necessary */
-	if (property_browser->details->category_type == NAUTILUS_PROPERTY_BACKGROUND) {
+	if (property_browser->details->category_type == NAUTILUS_PROPERTY_BACKGROUND &&
+	    !property_browser->details->remove_mode) {
 		index = 1;
 	} else {
 		index = 0;
@@ -1796,9 +1809,10 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser,
 	/* add a reset property in the first slot */
 	if (!property_browser->details->remove_mode) {
 		add_reset_property (property_browser);
-	}
+		index = 1;
+	} else
+		index = 0;
 	
-	index = 1;
 	property_browser->details->has_local = FALSE;
 	
 	for (child_node = nautilus_xml_get_children (node);

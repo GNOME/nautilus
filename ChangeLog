@@ -1,3 +1,14 @@
+2000-11-28  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bugs 4864, 4865, 4866 abd 4868, involving adding and removing
+	items from the property browser, by rewording error messages and
+	tweaking some logic.
+
+	* src/nautilus-property-browser.c: (add_color_to_browser),
+	(is_reserved_keyword), (emblem_dialog_clicked), (add_new_emblem),
+	(make_properties_from_directories),
+	(make_properties_from_xml_node):
+
 2000-11-28  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/trilobite/libtrilobite/Makefile.am:
