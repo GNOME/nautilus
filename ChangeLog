@@ -1,3 +1,12 @@
+2000-08-25  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1934 ("View as" menu gets ludicrously tall when
+	you add search criteria)
+
+	* src/nautilus-window.c: (nautilus_window_constructed):
+	Put "View as" option menu into a GtkVBox so it doesn't
+	insist on filling the available space vertically.
+
 Fri Aug 25 18:13:09 2000  George Lebl <jirka@5z.com>
 
 	* cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-eazel.c,

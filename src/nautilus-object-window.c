@@ -244,6 +244,7 @@ nautilus_window_constructed (NautilusWindow *window)
 {
 	GnomeApp *app;
 	GtkWidget *location_bar_box, *status_bar;
+	GtkWidget *view_as_menu_vbox;
   	GnomeDockItemBehavior behavior;
   	int sidebar_width;
 
@@ -274,10 +275,16 @@ nautilus_window_constructed (NautilusWindow *window)
 			      URI_ENTRY_DOCK_ITEM, behavior,
 			      GNOME_DOCK_TOP, 2, 0, 0);
 
-	/* Option menu for content view types; it's empty here, filled in when a uri is set. */
+	/* Option menu for content view types; it's empty here, filled in when a uri is set.
+	 * Pack it into vbox so it doesn't grow vertically when location bar does. 
+	 */
+	view_as_menu_vbox = gtk_vbox_new (FALSE, GNOME_PAD_SMALL);
+	gtk_widget_show (view_as_menu_vbox);
+	gtk_box_pack_end (GTK_BOX (location_bar_box), view_as_menu_vbox, FALSE, FALSE, 0);
+	
 	window->view_as_option_menu = gtk_option_menu_new();
-	gtk_box_pack_end (GTK_BOX (location_bar_box), window->view_as_option_menu, FALSE, FALSE, GNOME_PAD_SMALL);
-	gtk_widget_show(window->view_as_option_menu);
+	gtk_box_pack_end (GTK_BOX (view_as_menu_vbox), window->view_as_option_menu, TRUE, FALSE, 0);
+	gtk_widget_show (window->view_as_option_menu);
 	
 	/* Allocate the zoom control and place on the right next to the menu.
 	 * It gets shown later, if the view-frame contains something zoomable.
