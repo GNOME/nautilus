@@ -13,13 +13,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2000-12-12 02:21+0100\n"
-"PO-Revision-Date: 2000-12-12 02:46+0100\n"
+"POT-Creation-Date: 2000-12-13 02:37+0100\n"
+"PO-Revision-Date: 2000-12-13 02:39+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: applets/launcher/nautilus-launcher-applet.c:279
+msgid "Can't create nautilus-launcher-applet!"
+msgstr "Kan inte skapa nautilus-startar-applet!"
 
 #. * From 'man(7)':
 #.
@@ -63,7 +67,7 @@ msgstr ""
 #. **
 #: components/help/hyperbola-filefmt.c:396
 msgid "Manual"
-msgstr "Manual"
+msgstr "Manuell"
 
 #: components/help/hyperbola-filefmt.c:397
 msgid "System"
@@ -98,7 +102,7 @@ msgstr "Programmeringsgränssnitt"
 
 #: components/help/hyperbola-filefmt.c:399
 msgid "Miscellaneous"
-msgstr "Övrigt"
+msgstr "Diverse"
 
 #: components/help/hyperbola-filefmt.c:400
 msgid "System Calls"
@@ -193,6 +197,28 @@ msgstr ""
 msgid "You have tried to kill the Sidebar Loser"
 msgstr "Du försökte döda sidoradsförloraren"
 
+#: components/mozilla/mozilla-preferences.cpp:117
+#: libnautilus-extensions/nautilus-preferences.c:1086
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
+msgstr ""
+"GConf-fel:\n"
+"  %s"
+
+#: components/mozilla/mozilla-preferences.cpp:124
+#: libnautilus-extensions/nautilus-preferences.c:1093
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s\n"
+"All further errors shown only on terminal"
+msgstr ""
+"Gconf-fel:\n"
+"  %s\n"
+"Alla återstående fel kommer bara att visas i terminal"
+
 #: po/tmp/nautilus-mozilla-ui.xml.h:1
 msgid "Mozilla Test"
 msgstr "Mozilla-test"
@@ -209,91 +235,696 @@ msgstr "Det här är en Mozilla-sammanslagen verktygsradsknapp"
 msgid "_Mozilla Test"
 msgstr "_Mozilla-test"
 
+#: components/music/mpg123.c:29
+msgid "Blues"
+msgstr "Blues"
+
+#: components/music/mpg123.c:29
+msgid "Classic Rock"
+msgstr "Klassisk rock"
+
+#: components/music/mpg123.c:29
+msgid "Country"
+msgstr "Country"
+
+#: components/music/mpg123.c:29
+msgid "Dance"
+msgstr "Dance"
+
+#: components/music/mpg123.c:30
+msgid "Disco"
+msgstr "Disco"
+
+#: components/music/mpg123.c:30
+msgid "Funk"
+msgstr "Funk"
+
+#: components/music/mpg123.c:30
+msgid "Grunge"
+msgstr "Grunge"
+
+#: components/music/mpg123.c:30
+msgid "Hip-Hop"
+msgstr "Hip-Hop"
+
+#: components/music/mpg123.c:31
+msgid "Jazz"
+msgstr "Jazz"
+
+#: components/music/mpg123.c:31
+msgid "Metal"
+msgstr "Metal"
+
+#: components/music/mpg123.c:31
+msgid "New Age"
+msgstr "New Age"
+
+#: components/music/mpg123.c:31
+msgid "Oldies"
+msgstr "Oldies"
+
+#: components/music/mpg123.c:32
+msgid "Other"
+msgstr "Annat"
+
+#: components/music/mpg123.c:32
+msgid "Pop"
+msgstr "Pop"
+
+#: components/music/mpg123.c:32
+msgid "R&B"
+msgstr "R&B"
+
+#: components/music/mpg123.c:32
+msgid "Rap"
+msgstr "Rap"
+
+#: components/music/mpg123.c:32
+msgid "Reggae"
+msgstr "Reggae"
+
+#: components/music/mpg123.c:33
+msgid "Rock"
+msgstr "Rock"
+
+#: components/music/mpg123.c:33
+msgid "Techno"
+msgstr "Techno"
+
+#: components/music/mpg123.c:33
+msgid "Industrial"
+msgstr "Industrial"
+
+#: components/music/mpg123.c:33
+msgid "Alternative"
+msgstr "Alternative"
+
+#: components/music/mpg123.c:34
+msgid "Ska"
+msgstr "Ska"
+
+#: components/music/mpg123.c:34
+msgid "Death Metal"
+msgstr "Death Metal"
+
+#: components/music/mpg123.c:34
+msgid "Pranks"
+msgstr "Pranks"
+
+#: components/music/mpg123.c:34
+msgid "Soundtrack"
+msgstr "Soundtrack"
+
+#: components/music/mpg123.c:35
+msgid "Euro-Techno"
+msgstr "Euro-Techno"
+
+#: components/music/mpg123.c:35
+msgid "Ambient"
+msgstr "Ambient"
+
+#: components/music/mpg123.c:35
+msgid "Trip-Hop"
+msgstr "Trip-Hop"
+
+#: components/music/mpg123.c:35
+msgid "Vocal"
+msgstr "Vocal"
+
+#: components/music/mpg123.c:36
+msgid "Jazz+Funk"
+msgstr "Jazz+Funk"
+
+#: components/music/mpg123.c:36
+msgid "Fusion"
+msgstr "Fusion"
+
+#: components/music/mpg123.c:36
+msgid "Trance"
+msgstr "Trance"
+
+#: components/music/mpg123.c:36
+msgid "Classical"
+msgstr "Klassiskt"
+
+#: components/music/mpg123.c:37
+msgid "Instrumental"
+msgstr "Instrumentellt"
+
+#: components/music/mpg123.c:37
+msgid "Acid"
+msgstr "Acid"
+
+#: components/music/mpg123.c:37
+msgid "House"
+msgstr "House"
+
+#: components/music/mpg123.c:37
+msgid "Game"
+msgstr "Spel"
+
+#: components/music/mpg123.c:38
+msgid "Sound Clip"
+msgstr "Ljudklipp"
+
+#: components/music/mpg123.c:38
+msgid "Gospel"
+msgstr "Gospel"
+
+#: components/music/mpg123.c:38
+msgid "Noise"
+msgstr "Brus"
+
+#: components/music/mpg123.c:38
+msgid "Alt"
+msgstr "Alt"
+
+#: components/music/mpg123.c:39
+msgid "Bass"
+msgstr "Bass"
+
+#: components/music/mpg123.c:39
+msgid "Soul"
+msgstr "Soul"
+
+#: components/music/mpg123.c:39
+msgid "Punk"
+msgstr "Punk"
+
+#: components/music/mpg123.c:39
+msgid "Space"
+msgstr "Rymd"
+
+#: components/music/mpg123.c:40
+msgid "Meditative"
+msgstr "Meditativt"
+
+#: components/music/mpg123.c:40
+msgid "Instrumental Pop"
+msgstr "Instrumentell pop"
+
+#: components/music/mpg123.c:41
+msgid "Instrumental Rock"
+msgstr "Instrumentell rock"
+
+#: components/music/mpg123.c:41
+msgid "Ethnic"
+msgstr "Folkmusik"
+
+#: components/music/mpg123.c:41
+msgid "Gothic"
+msgstr "Gotiskt"
+
+#: components/music/mpg123.c:42
+msgid "Darkwave"
+msgstr "Darkwave"
+
+#: components/music/mpg123.c:42
+msgid "Techno-Industrial"
+msgstr "Techno-Industrial"
+
+#: components/music/mpg123.c:42
+msgid "Electronic"
+msgstr "Electroniskt"
+
+#: components/music/mpg123.c:43
+msgid "Pop-Folk"
+msgstr "Pop-Folk"
+
+#: components/music/mpg123.c:43
+msgid "Eurodance"
+msgstr "Eurodance"
+
+#: components/music/mpg123.c:43
+msgid "Dream"
+msgstr "Dream"
+
+#: components/music/mpg123.c:44
+msgid "Southern Rock"
+msgstr "Southern Rock"
+
+#: components/music/mpg123.c:44
+msgid "Comedy"
+msgstr "Komedi"
+
+#: components/music/mpg123.c:44
+msgid "Cult"
+msgstr "Kult"
+
+#: components/music/mpg123.c:45
+msgid "Gangsta Rap"
+msgstr "Gangsta Rap"
+
+#: components/music/mpg123.c:45
+msgid "Top 40"
+msgstr "Topp 40"
+
+#: components/music/mpg123.c:45
+msgid "Christian Rap"
+msgstr "Kristen rap"
+
+#: components/music/mpg123.c:46
+msgid "Pop/Funk"
+msgstr "Pop/Funk"
+
+#: components/music/mpg123.c:46
+msgid "Jungle"
+msgstr "Jungle"
+
+#: components/music/mpg123.c:46
+msgid "Native American"
+msgstr "Amerikansk urbefolkning"
+
+#: components/music/mpg123.c:47
+msgid "Cabaret"
+msgstr "Cabaret"
+
+#: components/music/mpg123.c:47
+msgid "New Wave"
+msgstr "New Wave"
+
+#: components/music/mpg123.c:47
+msgid "Psychedelic"
+msgstr "Psykadeliskt"
+
+#: components/music/mpg123.c:47
+msgid "Rave"
+msgstr "Rejv"
+
+#: components/music/mpg123.c:48
+msgid "Showtunes"
+msgstr "Showtunes"
+
+#: components/music/mpg123.c:48
+msgid "Trailer"
+msgstr "Trailer"
+
+#: components/music/mpg123.c:48
+msgid "Lo-Fi"
+msgstr "Lo-Fi"
+
+#: components/music/mpg123.c:48
+msgid "Tribal"
+msgstr "Tribal"
+
+#: components/music/mpg123.c:49
+msgid "Acid Punk"
+msgstr "Acid Punk"
+
+#: components/music/mpg123.c:49
+msgid "Acid Jazz"
+msgstr "Acid Jazz"
+
+#: components/music/mpg123.c:49
+msgid "Polka"
+msgstr "Polka"
+
+#: components/music/mpg123.c:49
+msgid "Retro"
+msgstr "Retro"
+
+#: components/music/mpg123.c:50
+msgid "Musical"
+msgstr "Musikal"
+
+#: components/music/mpg123.c:50
+msgid "Rock & Roll"
+msgstr "Rock & Roll"
+
+#: components/music/mpg123.c:50
+msgid "Hard Rock"
+msgstr "Hårdrock"
+
+#: components/music/mpg123.c:50
+msgid "Folk"
+msgstr "Folk"
+
+#: components/music/mpg123.c:51
+msgid "Folk/Rock"
+msgstr "Folk/Rock"
+
+#: components/music/mpg123.c:51
+msgid "National Folk"
+msgstr "Nationell Folk"
+
+#: components/music/mpg123.c:51
+msgid "Swing"
+msgstr "Swing"
+
+#: components/music/mpg123.c:52
+msgid "Fast-Fusion"
+msgstr "Fast-Fusion"
+
+#: components/music/mpg123.c:52
+msgid "Bebob"
+msgstr "Bebob"
+
+#: components/music/mpg123.c:52
+msgid "Latin"
+msgstr "Latinskt"
+
+#: components/music/mpg123.c:52
+msgid "Revival"
+msgstr "Uppväckelse"
+
+#: components/music/mpg123.c:53
+msgid "Celtic"
+msgstr "Keltiskt"
+
+#: components/music/mpg123.c:53
+msgid "Bluegrass"
+msgstr "Bluegrass"
+
+#: components/music/mpg123.c:53
+msgid "Avantgarde"
+msgstr "Avantgarde"
+
+#: components/music/mpg123.c:54
+msgid "Gothic Rock"
+msgstr "Gotisk rock"
+
+#: components/music/mpg123.c:54
+msgid "Progressive Rock"
+msgstr "Progressiv Rock"
+
+#: components/music/mpg123.c:55
+msgid "Psychedelic Rock"
+msgstr "Psykadelisk rock"
+
+#: components/music/mpg123.c:55
+msgid "Symphonic Rock"
+msgstr "Symfonisk rock"
+
+#: components/music/mpg123.c:55
+msgid "Slow Rock"
+msgstr "Slow Rock"
+
+#: components/music/mpg123.c:56
+msgid "Big Band"
+msgstr "Storband"
+
+#: components/music/mpg123.c:56
+msgid "Chorus"
+msgstr "Kör"
+
+#: components/music/mpg123.c:56
+msgid "Easy Listening"
+msgstr "Lättlyssnat"
+
+#: components/music/mpg123.c:57
+msgid "Acoustic"
+msgstr "Akustiskt"
+
+#: components/music/mpg123.c:57
+msgid "Humour"
+msgstr "Humor"
+
+#: components/music/mpg123.c:57
+msgid "Speech"
+msgstr "Tal"
+
+#: components/music/mpg123.c:57
+msgid "Chanson"
+msgstr "Chanson"
+
+#: components/music/mpg123.c:58
+msgid "Opera"
+msgstr "Opera"
+
+#: components/music/mpg123.c:58
+msgid "Chamber Music"
+msgstr "Kammarmusik"
+
+#: components/music/mpg123.c:58
+msgid "Sonata"
+msgstr "Sonata"
+
+#: components/music/mpg123.c:58
+msgid "Symphony"
+msgstr "Symfoni"
+
+#: components/music/mpg123.c:59
+msgid "Booty Bass"
+msgstr "Booty Bass"
+
+#: components/music/mpg123.c:59
+msgid "Primus"
+msgstr "Primus"
+
+#: components/music/mpg123.c:59
+msgid "Porn Groove"
+msgstr "Porn Groove"
+
+#: components/music/mpg123.c:60
+msgid "Satire"
+msgstr "Satir"
+
+#: components/music/mpg123.c:60
+msgid "Slow Jam"
+msgstr "Slow Jam"
+
+#: components/music/mpg123.c:60
+msgid "Club"
+msgstr "Klubb"
+
+#: components/music/mpg123.c:60
+msgid "Tango"
+msgstr "Tango"
+
+#: components/music/mpg123.c:61
+msgid "Samba"
+msgstr "Samba"
+
+#: components/music/mpg123.c:61
+msgid "Folklore"
+msgstr "Folklore"
+
+#: components/music/mpg123.c:61
+msgid "Ballad"
+msgstr "Ballad"
+
+#: components/music/mpg123.c:61
+msgid "Power Ballad"
+msgstr "Power Ballad"
+
+#: components/music/mpg123.c:62
+msgid "Rhythmic Soul"
+msgstr "Rhythmic Soul"
+
+#: components/music/mpg123.c:62
+msgid "Freestyle"
+msgstr "Freestyle"
+
+#: components/music/mpg123.c:62
+msgid "Duet"
+msgstr "Duett"
+
+#: components/music/mpg123.c:63
+msgid "Punk Rock"
+msgstr "Punkrock"
+
+#: components/music/mpg123.c:63
+msgid "Drum Solo"
+msgstr "Trumsolo"
+
+#: components/music/mpg123.c:63
+msgid "A Cappella"
+msgstr "A cappella"
+
+#: components/music/mpg123.c:64
+msgid "Euro-House"
+msgstr "Euro-House"
+
+#: components/music/mpg123.c:64
+msgid "Dance Hall"
+msgstr "Dance Hall"
+
+#: components/music/mpg123.c:64
+msgid "Goa"
+msgstr "Goa"
+
+#: components/music/mpg123.c:65
+msgid "Drum & Bass"
+msgstr "Drum & Bass"
+
+#: components/music/mpg123.c:65
+msgid "Club-House"
+msgstr "Club-House"
+
+#: components/music/mpg123.c:65
+msgid "Hardcore"
+msgstr "Hardcore"
+
+#: components/music/mpg123.c:66
+msgid "Terror"
+msgstr "Terror"
+
+#: components/music/mpg123.c:66
+msgid "Indie"
+msgstr "Indie"
+
+#: components/music/mpg123.c:66
+msgid "BritPop"
+msgstr "BritPop"
+
+#: components/music/mpg123.c:66
+msgid "Negerpunk"
+msgstr "Negerpunk"
+
+#: components/music/mpg123.c:67
+msgid "Polsk Punk"
+msgstr "Polsk Punk"
+
+#: components/music/mpg123.c:67
+msgid "Beat"
+msgstr "Beat"
+
+#: components/music/mpg123.c:67
+msgid "Christian Gangsta Rap"
+msgstr "Kristen gangsta rap"
+
+#: components/music/mpg123.c:68
+msgid "Heavy Metal"
+msgstr "Heavy Metal"
+
+#: components/music/mpg123.c:68
+msgid "Black Metal"
+msgstr "Black Metal"
+
+#: components/music/mpg123.c:68
+msgid "Crossover"
+msgstr "Crossover"
+
+#: components/music/mpg123.c:69
+msgid "Contemporary Christian"
+msgstr "Modern kristen"
+
+#: components/music/mpg123.c:69
+msgid "Christian Rock"
+msgstr "Kristen rock"
+
+#: components/music/mpg123.c:70
+msgid "Merengue"
+msgstr "Merengue"
+
+#: components/music/mpg123.c:70
+msgid "Salsa"
+msgstr "Salsa"
+
+#: components/music/mpg123.c:70
+msgid "Thrash Metal"
+msgstr "Thrash Metal"
+
+#: components/music/mpg123.c:71
+msgid "Anime"
+msgstr "Anime"
+
+#: components/music/mpg123.c:71
+msgid "JPop"
+msgstr "JPop"
+
+#: components/music/mpg123.c:71
+msgid "Synthpop"
+msgstr "Synthpop"
+
 #. FIXME: I think this is not portable. It works in gcc, but not other C compilers.
-#: components/music/nautilus-music-view.c:234
+#: components/music/nautilus-music-view.c:233
 msgid "Track "
 msgstr "Spår "
 
-#: components/music/nautilus-music-view.c:234
+#: components/music/nautilus-music-view.c:233
 msgid "Title"
 msgstr "Titel"
 
-#: components/music/nautilus-music-view.c:234
+#: components/music/nautilus-music-view.c:233
 msgid "Artist"
 msgstr "Artist"
 
-#: components/music/nautilus-music-view.c:234
+#: components/music/nautilus-music-view.c:233
 msgid "Year"
 msgstr "År"
 
-#: components/music/nautilus-music-view.c:234
+#: components/music/nautilus-music-view.c:233
 msgid "Bitrate "
 msgstr "Bithastighet "
 
-#: components/music/nautilus-music-view.c:234
+#: components/music/nautilus-music-view.c:233
 msgid "Time "
 msgstr "Tid "
 
-#: components/music/nautilus-music-view.c:234
+#: components/music/nautilus-music-view.c:233
 msgid "Album"
 msgstr "Album"
 
-#: components/music/nautilus-music-view.c:234
+#: components/music/nautilus-music-view.c:233
 msgid "Comment"
 msgstr "Kommentar"
 
-#: components/music/nautilus-music-view.c:234
+#: components/music/nautilus-music-view.c:233
 msgid "Channels"
 msgstr "Kanaler"
 
-#: components/music/nautilus-music-view.c:234
+#: components/music/nautilus-music-view.c:233
 msgid "Sample Rate"
 msgstr "Samplingsfrekvens"
 
-#: components/music/nautilus-music-view.c:333
+#: components/music/nautilus-music-view.c:330
 msgid "Set Cover Image"
 msgstr "Ställ in framsidesbild"
 
-#: components/music/nautilus-music-view.c:510
+#: components/music/nautilus-music-view.c:509
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil."
 
-#: components/music/nautilus-music-view.c:512
-#: src/file-manager/fm-properties-window.c:2065
+#: components/music/nautilus-music-view.c:511
+#: src/file-manager/fm-properties-window.c:2051
 #: src/nautilus-property-browser.c:993 src/nautilus-property-browser.c:1129
 msgid "Not an Image"
 msgstr "Inte en bild"
 
-#: components/music/nautilus-music-view.c:560
+#: components/music/nautilus-music-view.c:559
 msgid "Select an image file for the album cover:"
 msgstr "Välj en bildfil för skivomslaget:"
 
-#: components/music/nautilus-music-view.c:1057
+#: components/music/nautilus-music-view.c:1049
+msgid ""
+"Sorry, but the music view is unable to play back sound right now. Either "
+"another program is using or blocking the soundcard or your soundcard is not "
+"configured properly. "
+msgstr ""
+"Tyvärr, men musikvyn kan inte spela ljud just nu. Ett annat program använder "
+"eller blockerar ljudkortet eller så är ditt ljudkort inte konfigurerat rätt."
+
+#: components/music/nautilus-music-view.c:1052
+msgid "Unable to Play File"
+msgstr "Kan inte spela fil"
+
+#: components/music/nautilus-music-view.c:1070
 msgid "Sorry, but the music view can't play non-local files yet."
 msgstr "Tyvärr, musikvyn kan inte spela icke-lokala filer än."
 
-#: components/music/nautilus-music-view.c:1058
+#: components/music/nautilus-music-view.c:1071
 msgid "Can't Play Remote Files"
 msgstr "Kan inte spela fjärrfiler"
 
-#: components/music/nautilus-music-view.c:1374
+#: components/music/nautilus-music-view.c:1387
 msgid "Drag to seek within track"
 msgstr "Dra för att spola inom spåret"
 
-#: components/music/nautilus-music-view.c:1396
+#: components/music/nautilus-music-view.c:1409
 msgid "Previous"
 msgstr "Föregående"
 
-#: components/music/nautilus-music-view.c:1411
+#: components/music/nautilus-music-view.c:1424
 msgid "Play"
-msgstr "Spela upp"
+msgstr "Spela"
 
-#: components/music/nautilus-music-view.c:1426
+#: components/music/nautilus-music-view.c:1439
 msgid "Pause"
-msgstr "Pausa"
+msgstr "Paus"
 
-#: components/music/nautilus-music-view.c:1440
+#: components/music/nautilus-music-view.c:1453
 #: libnautilus-extensions/nautilus-file-operations.c:658
 #: libnautilus-extensions/nautilus-file-operations.c:715
 #: libnautilus-extensions/nautilus-file-operations.c:786
@@ -301,32 +932,32 @@ msgstr "Pausa"
 msgid "Stop"
 msgstr "Stopp"
 
-#: components/music/nautilus-music-view.c:1454
+#: components/music/nautilus-music-view.c:1467
 msgid "Next"
 msgstr "Nästa"
 
-#: components/music/nautilus-music-view.c:1467
+#: components/music/nautilus-music-view.c:1480
 msgid "Sound hardware missing or busy!"
 msgstr "Ljudhårdvara saknas eller är upptaget!"
 
-#: components/music/nautilus-music-view.c:1571
+#: components/music/nautilus-music-view.c:1584
 #, c-format
 msgid "Sorry, but there was an error reading %s."
 msgstr "Tyvärr, det inträffade ett fel vid läsning av %s."
 
-#: components/music/nautilus-music-view.c:1572
+#: components/music/nautilus-music-view.c:1585
 msgid "Can't Read Folder"
 msgstr "Kan inte läsa mapp"
 
-#: components/music/nautilus-music-view.c:1645
+#: components/music/nautilus-music-view.c:1658
 msgid "Stereo"
 msgstr "Stereo"
 
-#: components/music/nautilus-music-view.c:1645
+#: components/music/nautilus-music-view.c:1658
 msgid "Mono"
 msgstr "Mono"
 
-#: components/music/nautilus-music-view.c:1687
+#: components/music/nautilus-music-view.c:1700
 #, c-format
 msgid "%s by %s"
 msgstr "%s av %s"
@@ -475,19 +1106,19 @@ msgstr "Gå till markerad fil"
 msgid "Description"
 msgstr "Beskrivning"
 
-#: components/rpmview/nautilus-rpm-view.c:491
+#: components/rpmview/nautilus-rpm-view.c:492
 #, c-format
 msgid "Package Contents: %d files"
 msgstr "Paketinnehåll: %d filer"
 
-#: components/rpmview/nautilus-rpm-view.c:498
+#: components/rpmview/nautilus-rpm-view.c:499
 #, c-format
 msgid "Package \"%s\" "
 msgstr "Paket \"%s\" "
 
 #: po/tmp/nautilus-sample-content-view-ui.xml.h:1
 msgid "Sample"
-msgstr "Prov"
+msgstr "Exempel"
 
 #: po/tmp/nautilus-sample-content-view-ui.xml.h:2
 msgid "This is a sample merged menu item"
@@ -761,6 +1392,107 @@ msgstr "Installationen misslyckades"
 msgid "Uninstall failed"
 msgstr "Avinstallationen misslyckades"
 
+#: components/services/install/lib/eazel-install-problem.c:88
+#: components/services/install/lib/eazel-install-problem.c:229
+#, c-format
+msgid "%s is a source package, which is not yet supported"
+msgstr "%s är ett källkodspaket, som inte stöds än"
+
+#: components/services/install/lib/eazel-install-problem.c:93
+#, c-format
+msgid "%s had a file conflict with %s which %s required"
+msgstr "%s hade en filkonflikt med %s som %s krävde"
+
+#: components/services/install/lib/eazel-install-problem.c:98
+#, c-format
+msgid "%s had a file conflict with %s"
+msgstr "%s hade en filkonflikt med %s"
+
+#: components/services/install/lib/eazel-install-problem.c:110
+#: components/services/install/lib/eazel-install-problem.c:121
+#, c-format
+msgid "%s would break other packages"
+msgstr "%s skulle ha sönder andra paket"
+
+#: components/services/install/lib/eazel-install-problem.c:113
+#, c-format
+msgid "%s would break"
+msgstr "%s skulle gå sönder"
+
+#: components/services/install/lib/eazel-install-problem.c:119
+#, c-format
+msgid "%s would break %s"
+msgstr "%s skulle ha sönder %s"
+
+#: components/services/install/lib/eazel-install-problem.c:129
+#, c-format
+msgid "%s requires %s, which could not be found on the server"
+msgstr "%s kräver %s, som inte kunde hittas på servern"
+
+#: components/services/install/lib/eazel-install-problem.c:133
+#, c-format
+msgid "%s could not be found on the server"
+msgstr "%s kunde inte hittas på servern"
+
+#: components/services/install/lib/eazel-install-problem.c:140
+#: components/services/install/lib/eazel-install-problem.c:254
+#, c-format
+msgid "%s is already installed"
+msgstr "%s är redan installerat"
+
+#: components/services/install/lib/eazel-install-problem.c:172
+#, c-format
+msgid "%s, which is newer, is already installed"
+msgstr "%s, som är nyare, är redan installerat"
+
+#. Possibly the implest case, we're installing package A, which requires
+#. B that is not installed.
+#: components/services/install/lib/eazel-install-problem.c:237
+#: components/services/install/lib/eazel-install-problem.c:240
+#: components/services/install/lib/eazel-install-rpm-glue.c:311
+#, c-format
+msgid "%s requires %s"
+msgstr "%s kräver %s"
+
+#: components/services/install/lib/eazel-install-problem.c:248
+#, c-format
+msgid "%s is not installed"
+msgstr "%s är inte installerat"
+
+#. TRANSLATORS : This string is a solution to a dependency problem,
+#. %s is a package name or filename
+#: components/services/install/lib/eazel-install-problem.c:726
+#, c-format
+msgid "Check for a new version of %s"
+msgstr "Kontrollera om det finns en ny version av %s"
+
+#. TRANSLATORS : This string is a solution to a dependency problem,
+#. both %s's are package names or filenames
+#: components/services/install/lib/eazel-install-problem.c:737
+#, c-format
+msgid "Install both %s and %s"
+msgstr "Installera både %s och %s"
+
+#. TRANSLATORS : This string is a solution to a dependency problem,
+#. %s is a package name or filename
+#: components/services/install/lib/eazel-install-problem.c:752
+#, c-format
+msgid "Remove %s from your system"
+msgstr "Ta bort %s från ditt system"
+
+#. TRANSLATORS : This string is a solution to a dependency problem,
+#. %s is a package name or filename. "Force" is in the rpm sense of force,
+#. meaning that no dependency checking etc will be done
+#: components/services/install/lib/eazel-install-problem.c:765
+#, c-format
+msgid "Force the removal of %s from your system"
+msgstr "Tvinga borttagning av %s från ditt system"
+
+#. TRANSLATORS : This string is a solution to a dependency problem
+#: components/services/install/lib/eazel-install-problem.c:773
+msgid "Package database has an inconsistency"
+msgstr "Paketdatabasen har en inkonsistens"
+
 #: components/services/install/lib/eazel-install-protocols.c:102
 #: components/services/install/lib/eazel-install-protocols.c:221
 #, c-format
@@ -870,13 +1602,6 @@ msgstr "Behandlar beroenden för %s, kräver paket %s"
 msgid "package %s is already in requirements, whew!"
 msgstr "paketet %s finns redan med i kraven, puh!"
 
-#. Possibly the implest case, we're installing package A, which requires
-#. B that is not installed.
-#: components/services/install/lib/eazel-install-rpm-glue.c:311
-#, c-format
-msgid "%s requires %s"
-msgstr "%s kräver %s"
-
 #. If we end here, it's a conflict is going to break something
 #: components/services/install/lib/eazel-install-rpm-glue.c:447
 #, c-format
@@ -970,7 +1695,7 @@ msgstr "*** Okänd nod %s"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:468
 msgid "*** Error generating xml package list! ***\n"
-msgstr "*** Fel vid skapande av xml-paketlista! ***\n"
+msgstr "*** Fel vid skapning av xml-paketlista! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:515
 msgid "*** Error reading package list! ***\n"
@@ -989,27 +1714,27 @@ msgstr "*** Hoppar ur osd-tolkningen! ***\n"
 msgid "Could not parse the xml (length %d)"
 msgstr "Kunde inte tolka xml:en (längd %d)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:411
+#: components/services/install/lib/eazel-package-system-rpm3.c:403
 #, c-format
 msgid "Opened packages database in %s"
 msgstr "Öppnade paketdatabasen i %s"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:416
+#: components/services/install/lib/eazel-package-system-rpm3.c:408
 #, c-format
 msgid "Opening packages database in %s failed"
 msgstr "Öppning av paketdatabasen i %s misslyckades"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:439
+#: components/services/install/lib/eazel-package-system-rpm3.c:431
 #, c-format
 msgid "Closing db for %s (open)"
 msgstr "Stänger databas för %s (öppen)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:444
+#: components/services/install/lib/eazel-package-system-rpm3.c:436
 #, c-format
 msgid "Closing db for %s (not open)"
 msgstr "Stänger databas för %s (inte öppen)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:608
+#: components/services/install/lib/eazel-package-system-rpm3.c:602
 #, c-format
 msgid "Cannot open %s"
 msgstr "Kan inte öppna %s"
@@ -1197,7 +1922,7 @@ msgstr "Hämtar något paket"
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:1261
 msgid "Contacting install server ..."
-msgstr "Kontaktar installationsservern..."
+msgstr "Kontaktar installationsserver ..."
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:1313
 msgid "Package download aborted."
@@ -1208,39 +1933,39 @@ msgid "Aborted."
 msgstr "Avbruten."
 
 #. Setup the title
-#: components/services/login/nautilus-view/nautilus-change-password-view.c:149
+#: components/services/login/nautilus-view/nautilus-change-password-view.c:150
 msgid "Change your Eazel password..."
 msgstr "Byt ditt Eazel-lösenord..."
 
 #. username
-#: components/services/login/nautilus-view/nautilus-change-password-view.c:163
+#: components/services/login/nautilus-view/nautilus-change-password-view.c:164
 msgid "User Name: "
 msgstr "Användarnamn: "
 
 #. old password
-#: components/services/login/nautilus-view/nautilus-change-password-view.c:182
+#: components/services/login/nautilus-view/nautilus-change-password-view.c:183
 msgid "Current password: "
 msgstr "Nuvarande lösenord: "
 
 #. new password
-#: components/services/login/nautilus-view/nautilus-change-password-view.c:193
+#: components/services/login/nautilus-view/nautilus-change-password-view.c:194
 msgid "New password: "
 msgstr "Nytt lösenord: "
 
 #. repeat password
-#: components/services/login/nautilus-view/nautilus-change-password-view.c:204
+#: components/services/login/nautilus-view/nautilus-change-password-view.c:205
 msgid "New password (again): "
 msgstr "Nytt lösenord (igen): "
 
-#: components/services/login/nautilus-view/nautilus-change-password-view.c:227
+#: components/services/login/nautilus-view/nautilus-change-password-view.c:228
 msgid " Change my password! "
 msgstr " Byt mitt lösenord! "
 
-#: components/services/login/nautilus-view/nautilus-change-password-view.c:249
+#: components/services/login/nautilus-view/nautilus-change-password-view.c:250
 msgid "  I need some help!  "
 msgstr "  Jag behöver hjälp!  "
 
-#: components/services/login/nautilus-view/nautilus-change-password-view.c:309
+#: components/services/login/nautilus-view/nautilus-change-password-view.c:310
 msgid "Password changed!"
 msgstr "Lösenordet ändrades!"
 
@@ -1281,7 +2006,49 @@ msgstr "Kunde inte hitta någon sammanfattning över konfigurationsdata!\n"
 msgid "Bailing from summary configuration parse!\n"
 msgstr "Hoppar ur tolkningen av konfigurationssammanfattningen!\n"
 
-#. parse_summary_xml_file
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:70
+msgid "Service Error"
+msgstr "Tjänstfel"
+
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:94
+msgid "Register Now"
+msgstr "Anmäl nu"
+
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:96
+msgid "Help"
+msgstr "Hjälp"
+
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:99
+msgid "Services Login"
+msgstr "Tjänstinloggning"
+
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:111
+msgid "Username:"
+msgstr "Användarnamn:"
+
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:118
+msgid "Password:"
+msgstr "Lösenord:"
+
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:126
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:138
+msgid "Please log in to Eazel services"
+msgstr "Var vänlig och logga in på Eazel Services"
+
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:130
+msgid ""
+"Your user name or password were not correct, or you have not activated your "
+"account.  Please try again, or check your email for an account activation "
+"notice."
+msgstr ""
+"Ditt användarnamn eller lösenord var inte korrekt, eller så har du inte "
+"aktiverat ditt konto. Var vänlig och försök igen eller kontrollera om du har "
+"fått kontoaktiveringsinformation i din e-post."
+
+#: components/services/summary/nautilus-view/nautilus-summary-dialogs.c:134
+msgid "We're sorry, but your name and password are still not recognized."
+msgstr "Tyvärr, men ditt namn och lösenord känns fortfarande inte igen."
+
 #: po/tmp/nautilus-summary-view-ui.xml.h:1
 msgid "Configure your service preferences"
 msgstr "Konfigurera dina tjänstinställningar"
@@ -1526,7 +2293,7 @@ msgstr "Dra ett emblem till ett objekt för att lägga till det till objektet"
 msgid "Eclipse"
 msgstr "Förmörkelse"
 
-#: po/tmp/browser.xml.h:15 src/file-manager/fm-properties-window.c:1390
+#: po/tmp/browser.xml.h:15 src/file-manager/fm-properties-window.c:1376
 msgid "Emblems"
 msgstr "Emblem"
 
@@ -1631,7 +2398,7 @@ msgstr "Gimp"
 msgid "Desktop"
 msgstr "Skrivbord"
 
-#: libnautilus-extensions/nautilus-file.c:4641
+#: libnautilus-extensions/nautilus-file.c:4623
 #: libnautilus-extensions/nautilus-trash-directory.c:286
 #: po/tmp/desktop.xml.h:2
 msgid "Trash"
@@ -1671,7 +2438,7 @@ msgstr "CNET Linux Center"
 
 #: po/tmp/static_bookmarks.xml.h:3
 msgid "Caldera"
-msgstr "Caldera"
+msgstr "Cladera"
 
 #: po/tmp/static_bookmarks.xml.h:4
 msgid "Collab.net"
@@ -1757,8 +2524,8 @@ msgstr "Linuxcare"
 msgid "Myplay"
 msgstr "Myplay"
 
-#: po/tmp/static_bookmarks.xml.h:25 src/nautilus-window-manage-views.c:222
-#: src/nautilus-window-menus.c:629
+#: po/tmp/static_bookmarks.xml.h:25 src/nautilus-window-manage-views.c:227
+#: src/nautilus-window-menus.c:619
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -2152,7 +2919,7 @@ msgstr "Ersätt alla"
 
 #. appended to new link file
 #: libnautilus-extensions/nautilus-file-operations.c:901
-#: libnautilus-extensions/nautilus-file.c:3673
+#: libnautilus-extensions/nautilus-file.c:3675
 #, c-format
 msgid "link to %s"
 msgstr "länk till %s"
@@ -2379,7 +3146,7 @@ msgstr "Filer som tagits bort:"
 #: libnautilus-extensions/nautilus-file-operations.c:1928
 #: libnautilus-extensions/nautilus-file-operations.c:1978
 msgid "Deleting"
-msgstr "Ta bort"
+msgstr "Raderar"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1929
 msgid "Preparing to Delete files..."
@@ -2603,100 +3370,100 @@ msgstr "test test (kopia nummer 100000000000000).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-extensions/nautilus-file.c:2216
+#: libnautilus-extensions/nautilus-file.c:2218
 msgid "today at %-I:%M %p"
 msgstr "idag klockan %H.%M"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2221
+#: libnautilus-extensions/nautilus-file.c:2223
 msgid "yesterday at %-I:%M %p"
 msgstr "igår klockan %H.%M"
 
 #. Current week, include day of week.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2226
+#: libnautilus-extensions/nautilus-file.c:2228
 msgid "%A %-m/%-d/%y at %-I:%M %p"
 msgstr "%A %y-%m-%d klockan %H.%M"
 
 #. Other dates.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2231
+#: libnautilus-extensions/nautilus-file.c:2233
 msgid "%-m/%-d/%y at %-I:%M %p"
 msgstr "%y-%m-%d klockan %H.%M"
 
-#: libnautilus-extensions/nautilus-file.c:3268
+#: libnautilus-extensions/nautilus-file.c:3270
 msgid "0 items"
 msgstr "0 objekt"
 
-#: libnautilus-extensions/nautilus-file.c:3268
+#: libnautilus-extensions/nautilus-file.c:3270
 msgid "0 folders"
 msgstr "0 mappar"
 
-#: libnautilus-extensions/nautilus-file.c:3269
+#: libnautilus-extensions/nautilus-file.c:3271
 msgid "0 files"
 msgstr "0 filer"
 
-#: libnautilus-extensions/nautilus-file.c:3273
+#: libnautilus-extensions/nautilus-file.c:3275
 msgid "1 item"
 msgstr "1 objekt"
 
-#: libnautilus-extensions/nautilus-file.c:3273
+#: libnautilus-extensions/nautilus-file.c:3275
 msgid "1 folder"
 msgstr "1 mapp"
 
-#: libnautilus-extensions/nautilus-file.c:3274
+#: libnautilus-extensions/nautilus-file.c:3276
 msgid "1 file"
 msgstr "1 fil"
 
-#: libnautilus-extensions/nautilus-file.c:3277
+#: libnautilus-extensions/nautilus-file.c:3279
 #, c-format
 msgid "%u items"
 msgstr "%u objekt"
 
-#: libnautilus-extensions/nautilus-file.c:3277
+#: libnautilus-extensions/nautilus-file.c:3279
 #, c-format
 msgid "%u folders"
 msgstr "%u mappar"
 
-#: libnautilus-extensions/nautilus-file.c:3278
+#: libnautilus-extensions/nautilus-file.c:3280
 #, c-format
 msgid "%u files"
 msgstr "%u filer"
 
 #. This means no contents at all were readable
-#: libnautilus-extensions/nautilus-file.c:3578
-#: libnautilus-extensions/nautilus-file.c:3592
+#: libnautilus-extensions/nautilus-file.c:3580
+#: libnautilus-extensions/nautilus-file.c:3594
 msgid "? items"
 msgstr "? objekt"
 
-#: libnautilus-extensions/nautilus-file.c:3596
+#: libnautilus-extensions/nautilus-file.c:3598
 msgid "unknown type"
 msgstr "okänd typ"
 
-#: libnautilus-extensions/nautilus-file.c:3598
+#: libnautilus-extensions/nautilus-file.c:3600
 msgid "unknown MIME type"
 msgstr "okänd MIME-typ"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-extensions/nautilus-file.c:3603
+#: libnautilus-extensions/nautilus-file.c:3605
 msgid "unknown"
 msgstr "okänd"
 
-#: libnautilus-extensions/nautilus-file.c:3638
+#: libnautilus-extensions/nautilus-file.c:3640
 msgid "program"
 msgstr "program"
 
-#: libnautilus-extensions/nautilus-file.c:3667
+#: libnautilus-extensions/nautilus-file.c:3669
 msgid "link"
 msgstr "länk"
 
-#: libnautilus-extensions/nautilus-file.c:3687
+#: libnautilus-extensions/nautilus-file.c:3689
 msgid "link (broken)"
 msgstr "länk (trasig)"
 
@@ -2730,7 +3497,7 @@ msgstr "Papperskorgsbeteende"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:142
 msgid "Display"
-msgstr "Visning"
+msgstr "Utseende"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:168
 msgid "Sidebar Panels"
@@ -2787,7 +3554,7 @@ msgstr "Förhandsgranskar ljudfiler"
 #. FIXME bugzilla.eazel.com 2560: This title phrase needs improvement.
 #: libnautilus-extensions/nautilus-global-preferences.c:280
 msgid "Make Folder Appearance Details Public"
-msgstr "Gör detaljer i mapputseende offentliga"
+msgstr "Gör detaljer i katalogutseende offentliga"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:292
 msgid "Search"
@@ -3034,14 +3801,14 @@ msgid "Switch to Manual Layout?"
 msgstr "Byt till manuell layout?"
 
 #: libnautilus-extensions/nautilus-icon-dnd.c:738
-#: src/nautilus-window-menus.c:543
+#: src/nautilus-window-menus.c:533
 msgid "Switch"
 msgstr "Byt"
 
 #. FIXME bugzilla.eazel.com 1102: Embedded text should use preferences to determine
 #. * the font it uses
 #.
-#: libnautilus-extensions/nautilus-icon-factory.c:2315
+#: libnautilus-extensions/nautilus-icon-factory.c:2331
 msgid "-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*"
 msgstr "-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*"
 
@@ -3074,28 +3841,8 @@ msgstr " -_,;.?/&"
 msgid "Prefs Box"
 msgstr "Inställningsfönster"
 
-#: libnautilus-extensions/nautilus-preferences.c:1086
-#, c-format
-msgid ""
-"GConf error:\n"
-"  %s"
-msgstr ""
-"GConf-fel:\n"
-"  %s"
-
-#: libnautilus-extensions/nautilus-preferences.c:1093
-#, c-format
-msgid ""
-"GConf error:\n"
-"  %s\n"
-"All further errors shown only on terminal"
-msgstr ""
-"Gconf-fel:\n"
-"  %s\n"
-"Alla återstående fel kommer bara att visas i terminal"
-
 #: libnautilus-extensions/nautilus-program-chooser.c:186
-#: src/nautilus-window.c:863
+#: src/nautilus-window.c:866 src/nautilus-window.c:1102
 #, c-format
 msgid "View as %s"
 msgstr "Visa som %s"
@@ -3197,7 +3944,7 @@ msgstr "Inkludera inte i menyn för \"%s\"-objekt"
 #: libnautilus-extensions/nautilus-program-chooser.c:1164
 #: src/file-manager/fm-list-view.c:1909
 #: src/file-manager/fm-search-list-view.c:330
-#: src/nautilus-bookmarks-window.c:166 src/nautilus-search-bar-criterion.c:67
+#: src/nautilus-bookmarks-window.c:163 src/nautilus-search-bar-criterion.c:67
 msgid "Name"
 msgstr "Namn"
 
@@ -3305,7 +4052,7 @@ msgstr "passar filmönstret \"%s\""
 
 #: libnautilus-extensions/nautilus-search-uri.c:233
 msgid "regular files"
-msgstr "vanliga filer"
+msgstr "reguljära filer"
 
 #: libnautilus-extensions/nautilus-search-uri.c:236
 msgid "text files"
@@ -3367,7 +4114,7 @@ msgstr "mindre än %s byte"
 #: libnautilus-extensions/nautilus-search-uri.c:294
 #, c-format
 msgid "%s bytes"
-msgstr "%s byte"
+msgstr "%s bytes"
 
 #: libnautilus-extensions/nautilus-search-uri.c:305
 msgid "modified today"
@@ -3526,7 +4273,7 @@ msgstr "Mellan"
 
 #: libnautilus-extensions/nautilus-user-level-manager.c:58
 msgid "Advanced"
-msgstr "Avancerad"
+msgstr "Avancerat"
 
 #: libnautilus-extensions/nautilus-volume-monitor.c:474
 msgid "Unknown Volume"
@@ -3546,7 +4293,7 @@ msgstr "Diskett"
 
 #: po/tmp/nautilus-clipboard-ui.xml.h:1 po/tmp/nautilus-shell-ui.xml.h:6
 msgid "C_lear Text"
-msgstr "T_öm text"
+msgstr "_Rensa text"
 
 #: po/tmp/nautilus-clipboard-ui.xml.h:2 po/tmp/nautilus-shell-ui.xml.h:15
 msgid "Copy the selected text to the clipboard"
@@ -3576,80 +4323,80 @@ msgstr "_Klipp ut text"
 msgid "_Paste Text"
 msgstr "K_listra in text"
 
-#: src/file-manager/fm-desktop-icon-view.c:583
-#: src/file-manager/fm-desktop-icon-view.c:588
+#: src/file-manager/fm-desktop-icon-view.c:587
+#: src/file-manager/fm-desktop-icon-view.c:592
 msgid "Link to"
 msgstr "Länk till"
 
-#: src/file-manager/fm-desktop-icon-view.c:585
+#: src/file-manager/fm-desktop-icon-view.c:589
 msgid "Link to Unknown"
 msgstr "Länk till okänd"
 
-#: src/file-manager/fm-desktop-icon-view.c:1082
+#: src/file-manager/fm-desktop-icon-view.c:1086
 msgid "Empty Trash..."
 msgstr "Töm papperskorgen..."
 
 #: po/tmp/nautilus-desktop-icon-view-ui.xml.h:4
 #: po/tmp/nautilus-directory-view-ui.xml.h:11
-#: src/file-manager/fm-desktop-icon-view.c:1084
+#: src/file-manager/fm-desktop-icon-view.c:1088
 msgid "Empty Trash"
 msgstr "Töm papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:420
+#: src/file-manager/fm-directory-view.c:432
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
 msgstr ""
 "Det här kommer att öppna %d separata fönster. Är du säker på att du vill "
 "göra detta?"
 
-#: src/file-manager/fm-directory-view.c:422
+#: src/file-manager/fm-directory-view.c:434
 #, c-format
 msgid "Open %d Windows?"
 msgstr "Öppna %d fönster?"
 
-#: src/file-manager/fm-directory-view.c:1179
+#: src/file-manager/fm-directory-view.c:1205
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" markerad"
 
-#: src/file-manager/fm-directory-view.c:1181
+#: src/file-manager/fm-directory-view.c:1207
 msgid "1 folder selected"
 msgstr "1 mapp markerad"
 
-#: src/file-manager/fm-directory-view.c:1184
+#: src/file-manager/fm-directory-view.c:1210
 #, c-format
 msgid "%d folders selected"
 msgstr "%d mappar markerade"
 
-#: src/file-manager/fm-directory-view.c:1190
+#: src/file-manager/fm-directory-view.c:1216
 msgid " (containing 0 items)"
 msgstr " (innehåller 0 objekt)"
 
-#: src/file-manager/fm-directory-view.c:1192
+#: src/file-manager/fm-directory-view.c:1218
 msgid " (containing 1 item)"
 msgstr " (innehåller 1 objekt)"
 
-#: src/file-manager/fm-directory-view.c:1194
+#: src/file-manager/fm-directory-view.c:1220
 #, c-format
 msgid " (containing %d items)"
 msgstr " (innehåller %d objekt)"
 
-#: src/file-manager/fm-directory-view.c:1205
+#: src/file-manager/fm-directory-view.c:1231
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" markerad (%s)"
 
-#: src/file-manager/fm-directory-view.c:1209
+#: src/file-manager/fm-directory-view.c:1235
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d objekt markerade (%s)"
 
-#: src/file-manager/fm-directory-view.c:1216
+#: src/file-manager/fm-directory-view.c:1242
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 annat objekt markerat (%s)"
 
-#: src/file-manager/fm-directory-view.c:1219
+#: src/file-manager/fm-directory-view.c:1245
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d andra objekt markerade (%s)"
@@ -3661,13 +4408,13 @@ msgstr "%d andra objekt markerade (%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1248
+#: src/file-manager/fm-directory-view.c:1274
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
 
 #. FIXME bugzilla.eazel.com 5037: This says Preview Release explicitly. Must remove for real thing.
-#: src/file-manager/fm-directory-view.c:1360
+#: src/file-manager/fm-directory-view.c:1386
 msgid ""
 "We're sorry, but the folder you're viewing has more files than we're able to "
 "display. As a result, we are only able to show you the first 4000 files it "
@@ -3675,23 +4422,23 @@ msgid ""
 "This is a temporary limitation in this Preview Release of Nautilus, and will "
 "not be present in the final version."
 msgstr ""
-"Tyvärr, mappen du tittar i har fler filer än vi kan visa. Därför kan "
-"vi bara visa de första 4000 filerna som den innehåller.\n"
+"Tyvärr, mappen du tittar i har fler filer än vi kan visa. Därför kan vi bara "
+"visa de första 4000 filerna som den innehåller.\n"
 "Det här är en temporär begränsning i denna förhandsversion av Nautilus och "
 "den kommer inte att finnas i den slutgiltiga versionen."
 
-#: src/file-manager/fm-directory-view.c:1366
+#: src/file-manager/fm-directory-view.c:1392
 msgid "Too many Files"
 msgstr "För många filer"
 
-#: src/file-manager/fm-directory-view.c:2468
+#: src/file-manager/fm-directory-view.c:2494
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the trash. Do you want to delete it immediately?"
 msgstr ""
 "\"%s\" kan inte flyttas till papperskorgen. Vill du ta bort det omedelbart?"
 
-#: src/file-manager/fm-directory-view.c:2473
+#: src/file-manager/fm-directory-view.c:2499
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the trash. Do you want to delete "
@@ -3700,7 +4447,7 @@ msgstr ""
 "De %d markerade objekten kan inte flyttas till papperskorgen. Vill du ta "
 "bort dem omedelbart?"
 
-#: src/file-manager/fm-directory-view.c:2477
+#: src/file-manager/fm-directory-view.c:2503
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the trash. Do you want to delete "
@@ -3709,21 +4456,21 @@ msgstr ""
 "%d av de markerade objekten kan inte flyttas till papperskorgen. Vill du ta "
 "bort de %d objekten omedelbart?"
 
-#: src/file-manager/fm-directory-view.c:2485
+#: src/file-manager/fm-directory-view.c:2511
 msgid "Delete Immediately?"
 msgstr "Ta bort omedelbart?"
 
-#: src/file-manager/fm-directory-view.c:2486
-#: src/file-manager/fm-directory-view.c:2527
+#: src/file-manager/fm-directory-view.c:2512
+#: src/file-manager/fm-directory-view.c:2553
 msgid "Delete"
 msgstr "Ta bort"
 
-#: src/file-manager/fm-directory-view.c:2516
+#: src/file-manager/fm-directory-view.c:2542
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Är du säker att du vill ta bort \"%s\" permanent från papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:2520
+#: src/file-manager/fm-directory-view.c:2546
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
@@ -3731,79 +4478,79 @@ msgid ""
 msgstr ""
 "Är du säker att du vill ta bort de %d objekten i papperskorgen permanent?"
 
-#: src/file-manager/fm-directory-view.c:2526
+#: src/file-manager/fm-directory-view.c:2552
 msgid "Delete From Trash?"
 msgstr "Ta bort från papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:2797
-#: src/file-manager/fm-directory-view.c:2838
+#: src/file-manager/fm-directory-view.c:2825
+#: src/file-manager/fm-directory-view.c:2866
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Använd \"%s\" för att öppna det markerade objektet"
 
-#: src/file-manager/fm-directory-view.c:2836
+#: src/file-manager/fm-directory-view.c:2864
 #, c-format
 msgid "%s Viewer"
 msgstr "%s-visare"
 
-#: src/file-manager/fm-directory-view.c:3024
+#: src/file-manager/fm-directory-view.c:3052
 msgid "Open in _New Window"
 msgstr "Öppna i _nytt fönster"
 
-#: src/file-manager/fm-directory-view.c:3026
+#: src/file-manager/fm-directory-view.c:3054
 #, c-format
 msgid "Open in %d _New Windows"
 msgstr "Öppna i %d _nya fönster"
 
-#: src/file-manager/fm-directory-view.c:3052
+#: src/file-manager/fm-directory-view.c:3080
 msgid "Delete all selected items permanently"
 msgstr "Ta bort alla markerade objekt permanent"
 
-#: src/file-manager/fm-directory-view.c:3057
+#: src/file-manager/fm-directory-view.c:3085
 msgid "Delete from _Trash..."
 msgstr "Ta bort från _papperskorgen..."
 
-#: src/file-manager/fm-directory-view.c:3058
+#: src/file-manager/fm-directory-view.c:3086
 msgid "Delete from _Trash"
 msgstr "Ta bort från _papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:3062
+#: src/file-manager/fm-directory-view.c:3090
 msgid "Move all selected items to the Trash"
 msgstr "Flytta alla markerade objekt till papperskorgen"
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:14
-#: src/file-manager/fm-directory-view.c:3066
+#: src/file-manager/fm-directory-view.c:3094
 msgid "Move to _Trash"
 msgstr "Flytta till _papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:3095
+#: src/file-manager/fm-directory-view.c:3123
 msgid "Create _Links"
 msgstr "Skapa _länkar"
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:5
-#: src/file-manager/fm-directory-view.c:3096
+#: src/file-manager/fm-directory-view.c:3124
 msgid "Create _Link"
 msgstr "Skapa _länk"
 
-#: src/file-manager/fm-directory-view.c:3114
+#: src/file-manager/fm-directory-view.c:3142
 msgid "_Empty Trash..."
 msgstr "_Töm papperskorgen..."
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:39
-#: src/file-manager/fm-directory-view.c:3115
+#: src/file-manager/fm-directory-view.c:3143
 msgid "_Empty Trash"
 msgstr "_Töm papperskorgen"
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:26
-#: src/file-manager/fm-directory-view.c:3126
+#: src/file-manager/fm-directory-view.c:3154
 msgid "R_emove Custom Images"
 msgstr "_Ta bort anpassade bilder"
 
-#: src/file-manager/fm-directory-view.c:3127
+#: src/file-manager/fm-directory-view.c:3155
 msgid "R_emove Custom Image"
 msgstr "_Ta bort anpassad bild"
 
-#: src/file-manager/fm-directory-view.c:3258
+#: src/file-manager/fm-directory-view.c:3286
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the trash?"
@@ -3811,7 +4558,7 @@ msgstr ""
 "Den här länken kan inte användas eftersom den inte har något mål. Vill du "
 "kasta den här länken i papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:3261
+#: src/file-manager/fm-directory-view.c:3289
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -3820,15 +4567,15 @@ msgstr ""
 "Den här länken kan inte användas eftersom dess mål \"%s\" inte finns. Vill "
 "du kasta den här länken i papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:3267
+#: src/file-manager/fm-directory-view.c:3295
 msgid "Broken Link"
 msgstr "Trasig länk"
 
-#: src/file-manager/fm-directory-view.c:3268
+#: src/file-manager/fm-directory-view.c:3296
 msgid "Throw Away"
 msgstr "Kasta"
 
-#: src/file-manager/fm-directory-view.c:3330
+#: src/file-manager/fm-directory-view.c:3350
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -3836,7 +4583,7 @@ msgstr ""
 "Tyvärr, men du kan inte köra kommandon från en fjärrplats på grund av "
 "säkerhetsskäl."
 
-#: src/file-manager/fm-directory-view.c:3331
+#: src/file-manager/fm-directory-view.c:3351
 msgid "Can't execute remote links"
 msgstr "Kunde inte köra fjärrlänkar"
 
@@ -3877,7 +4624,7 @@ msgstr "Namnet \"%s\" är inte giltigt. Var vänlig och välj ett annat namn."
 #: src/file-manager/fm-error-reporting.c:83
 #, c-format
 msgid "Sorry, couldn't rename \"%s\" to \"%s\"."
-msgstr "Tyvärr, kunde inte byta namn på \"%s\" till \"%s\"."
+msgstr "Tyvärr, kunde byta namn på \"%s\" till \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:89
 msgid "Renaming Error"
@@ -3923,7 +4670,7 @@ msgstr "Byter namn på \"%s\" till \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:230
 msgid "Cancel Rename?"
-msgstr "Avbryt namnbyte?"
+msgstr "Avbryt namnbytning?"
 
 #: src/file-manager/fm-icon-text-window.c:77
 msgid "size"
@@ -3967,7 +4714,7 @@ msgstr "MIME-typ"
 
 #: src/file-manager/fm-icon-text-window.c:87
 msgid "none"
-msgstr "ingen "
+msgstr "inget"
 
 #: src/file-manager/fm-icon-text-window.c:263
 msgid "Icon Captions"
@@ -4051,46 +4798,46 @@ msgstr "Typ"
 msgid "Date Modified"
 msgstr "Modifieringsdatum"
 
-#: src/file-manager/fm-properties-window.c:508
+#: src/file-manager/fm-properties-window.c:496
 #, c-format
 msgid "%s Properties"
 msgstr "Egenskaper för %s"
 
-#: src/file-manager/fm-properties-window.c:635
+#: src/file-manager/fm-properties-window.c:623
 msgid "Cancel Group Change?"
 msgstr "Avbryt ändring av grupp?"
 
-#: src/file-manager/fm-properties-window.c:636
+#: src/file-manager/fm-properties-window.c:624
 msgid "Changing group"
 msgstr "Ändrar grupp"
 
-#: src/file-manager/fm-properties-window.c:795
+#: src/file-manager/fm-properties-window.c:783
 msgid "Cancel Owner Change?"
 msgstr "Avbryt ändring av ägare?"
 
-#: src/file-manager/fm-properties-window.c:796
+#: src/file-manager/fm-properties-window.c:784
 msgid "Changing owner"
 msgstr "Ändrar ägare"
 
-#: src/file-manager/fm-properties-window.c:955
+#: src/file-manager/fm-properties-window.c:943
 msgid "nothing"
 msgstr "inget"
 
-#: src/file-manager/fm-properties-window.c:957
+#: src/file-manager/fm-properties-window.c:945
 msgid "unreadable"
 msgstr "oläsbar"
 
-#: src/file-manager/fm-properties-window.c:966
+#: src/file-manager/fm-properties-window.c:954
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 objekt, med storleken %s"
 
-#: src/file-manager/fm-properties-window.c:968
+#: src/file-manager/fm-properties-window.c:956
 #, c-format
 msgid "%d items, totalling %s"
 msgstr "%d objekt, totalt %s"
 
-#: src/file-manager/fm-properties-window.c:974
+#: src/file-manager/fm-properties-window.c:962
 msgid "(some contents unreadable)"
 msgstr "(en del innehåll är oläsbart)"
 
@@ -4099,126 +4846,126 @@ msgstr "(en del innehåll är oläsbart)"
 #. * "Contents:" title to line up with the first line of the 2-line value.
 #. * Maybe there's a better way to do this, but I couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:988
+#: src/file-manager/fm-properties-window.c:976
 msgid "Contents:"
 msgstr "Innehåll:"
 
-#: src/file-manager/fm-properties-window.c:1132
+#: src/file-manager/fm-properties-window.c:1120
 msgid "Basic"
 msgstr "Grundläggande"
 
-#: src/file-manager/fm-properties-window.c:1209
+#: src/file-manager/fm-properties-window.c:1195
 msgid "Where:"
 msgstr "Var:"
 
-#: src/file-manager/fm-properties-window.c:1211
+#: src/file-manager/fm-properties-window.c:1197
 msgid "Type:"
 msgstr "Typ:"
 
-#: src/file-manager/fm-properties-window.c:1217
+#: src/file-manager/fm-properties-window.c:1203
 msgid "Size:"
 msgstr "Storlek:"
 
-#: src/file-manager/fm-properties-window.c:1224
+#: src/file-manager/fm-properties-window.c:1210
 msgid "Modified:"
-msgstr "Modifierad:"
+msgstr "Ändrad:"
 
-#: src/file-manager/fm-properties-window.c:1226
+#: src/file-manager/fm-properties-window.c:1212
 msgid "Accessed:"
 msgstr "Åtkommen:"
 
-#: src/file-manager/fm-properties-window.c:1229
+#: src/file-manager/fm-properties-window.c:1215
 msgid "MIME type:"
 msgstr "MIME-typ:"
 
-#: src/file-manager/fm-properties-window.c:1237
+#: src/file-manager/fm-properties-window.c:1223
 msgid "Select Custom Icon..."
 msgstr "Välj anpassad ikon..."
 
-#: src/file-manager/fm-properties-window.c:1243
+#: src/file-manager/fm-properties-window.c:1229
 msgid "Remove Custom Icon"
 msgstr "Ta bort anpassad ikon"
 
-#: src/file-manager/fm-properties-window.c:1622
+#: src/file-manager/fm-properties-window.c:1608
 msgid "Special Flags:"
 msgstr "Specialflaggor:"
 
-#: src/file-manager/fm-properties-window.c:1626
+#: src/file-manager/fm-properties-window.c:1612
 msgid "Set User ID"
 msgstr "Ställ in användar-ID"
 
-#: src/file-manager/fm-properties-window.c:1630
+#: src/file-manager/fm-properties-window.c:1616
 msgid "Set Group ID"
 msgstr "Ställ in grupp-ID"
 
-#: src/file-manager/fm-properties-window.c:1634
+#: src/file-manager/fm-properties-window.c:1620
 msgid "Sticky"
 msgstr "Klistrig"
 
-#: src/file-manager/fm-properties-window.c:1663
+#: src/file-manager/fm-properties-window.c:1649
 msgid "Permissions"
 msgstr "Rättigheter"
 
-#: src/file-manager/fm-properties-window.c:1669
+#: src/file-manager/fm-properties-window.c:1655
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Du är inte ägaren, så du kan inte ändra dessa rättigheter."
 
-#: src/file-manager/fm-properties-window.c:1703
+#: src/file-manager/fm-properties-window.c:1689
 msgid "File Owner:"
 msgstr "Filägare:"
 
-#: src/file-manager/fm-properties-window.c:1718
+#: src/file-manager/fm-properties-window.c:1704
 msgid "File Group:"
 msgstr "Filgrupp:"
 
-#: src/file-manager/fm-properties-window.c:1745
+#: src/file-manager/fm-properties-window.c:1731
 msgid "Owner:"
 msgstr "Ägare:"
 
-#: src/file-manager/fm-properties-window.c:1749
+#: src/file-manager/fm-properties-window.c:1735
 msgid "Group:"
 msgstr "Grupp:"
 
-#: src/file-manager/fm-properties-window.c:1753
+#: src/file-manager/fm-properties-window.c:1739
 msgid "Others:"
 msgstr "Andra:"
 
-#: src/file-manager/fm-properties-window.c:1760
+#: src/file-manager/fm-properties-window.c:1746
 msgid "Text View:"
 msgstr "Textvy:"
 
-#: src/file-manager/fm-properties-window.c:1764
+#: src/file-manager/fm-properties-window.c:1750
 msgid "Number View:"
 msgstr "Siffervy:"
 
-#: src/file-manager/fm-properties-window.c:1768
+#: src/file-manager/fm-properties-window.c:1754
 msgid "Last Changed:"
 msgstr "Senast ändrad:"
 
-#: src/file-manager/fm-properties-window.c:1772
+#: src/file-manager/fm-properties-window.c:1758
 msgid "Read"
 msgstr "Läs"
 
-#: src/file-manager/fm-properties-window.c:1776
+#: src/file-manager/fm-properties-window.c:1762
 msgid "Write"
 msgstr "Skriv"
 
-#: src/file-manager/fm-properties-window.c:1780
+#: src/file-manager/fm-properties-window.c:1766
 msgid "Execute"
-msgstr "Kör"
+msgstr "Kör program"
 
-#: src/file-manager/fm-properties-window.c:1837
+#: src/file-manager/fm-properties-window.c:1823
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Rättigheterna för \"%s\" kunde int avgöras."
 
-#: src/file-manager/fm-properties-window.c:2064
+#: src/file-manager/fm-properties-window.c:2050
 #: src/nautilus-property-browser.c:991 src/nautilus-property-browser.c:1128
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil!"
 
-#: src/file-manager/fm-properties-window.c:2094
+#: src/file-manager/fm-properties-window.c:2080
 msgid "Select an image to represent the file:"
 msgstr "Välj en bild som ska representera filen:"
 
@@ -4563,7 +5310,7 @@ msgstr "_Kompakt layout"
 
 #: po/tmp/nautilus-icon-view-ui.xml.h:30
 msgid "_manually"
-msgstr "_manuellt"
+msgstr "_manuell"
 
 #: po/tmp/nautilus-icon-view-ui.xml.h:31
 msgid "by Emblems"
@@ -4608,7 +5355,7 @@ msgstr "Fel vid försök att återindexera: %s"
 
 #: src/file-manager/nautilus-indexing-info.c:163
 msgid "%I:%M %p, %x"
-msgstr "%H.%M, %x"
+msgstr "%H:%M, %x"
 
 #: src/file-manager/nautilus-indexing-info.c:179
 #, c-format
@@ -4776,15 +5523,15 @@ msgstr ""
 "Som root kan du skada ditt system om du inte är försiktig, och Nautilus\n"
 "kommer inte att hindra dig från att göra det."
 
-#: src/nautilus-bookmarks-window.c:130
+#: src/nautilus-bookmarks-window.c:127
 msgid "Bookmarks"
 msgstr "Bokmärken"
 
-#: src/nautilus-bookmarks-window.c:179
+#: src/nautilus-bookmarks-window.c:176
 msgid "Location"
 msgstr "Plats"
 
-#: src/nautilus-bookmarks-window.c:192 src/nautilus-window-menus.c:789
+#: src/nautilus-bookmarks-window.c:189 src/nautilus-window-menus.c:779
 msgid "Remove"
 msgstr "Ta bort"
 
@@ -4853,7 +5600,7 @@ msgstr ""
 
 #: src/nautilus-first-time-druid.c:478
 msgid "Eazel Services"
-msgstr "Eazel Services"
+msgstr "Eazel-tjänster"
 
 #: src/nautilus-first-time-druid.c:487
 msgid "I want to learn more about Eazel services."
@@ -4967,7 +5714,7 @@ msgstr "Tryck på nästa-knappen för att fortsätta."
 #. set up the final page
 #: src/nautilus-first-time-druid.c:810
 msgid "Finished"
-msgstr "Slutförd"
+msgstr "Klar"
 
 #: src/nautilus-first-time-druid.c:817
 msgid ""
@@ -5022,25 +5769,14 @@ msgid "Add or remove sets of links by clicking on the checkboxes below."
 msgstr ""
 "Lägg till eller ta bort länksamlingar genom att klicka i kryssrutorna nedan."
 
-#: src/nautilus-location-bar.c:134
+#: src/nautilus-location-bar.c:137
 #, c-format
 msgid "Do you want to view these %d locations in separate windows?"
 msgstr "Vill du se dessa %d platser i separata fönster?"
 
-#: src/nautilus-location-bar.c:141
+#: src/nautilus-location-bar.c:144
 msgid "View in Multiple Windows?"
 msgstr "Visa i flera fönster?"
-
-#: src/nautilus-location-bar.c:447 src/nautilus-location-bar.c:585
-msgid "Location:"
-msgstr "   Plats:"
-
-#. FIXME bugzilla.eazel.com 5047: Use of spaces here to line up Go To with
-#. * Location is fragile and hard to translate.
-#.
-#: src/nautilus-location-bar.c:590
-msgid "   Go To:"
-msgstr " Gå till:"
 
 #: src/nautilus-main.c:140
 msgid "Perform high-speed self-check tests."
@@ -5241,7 +5977,7 @@ msgstr "Ta bort ett emblem"
 
 #: src/nautilus-search-bar-criterion.c:68
 msgid "Content"
-msgstr "Innehållet"
+msgstr "Innehåll"
 
 #: src/nautilus-search-bar-criterion.c:71
 msgid "With Emblem"
@@ -5253,7 +5989,7 @@ msgstr "Senast ändrad"
 
 #: src/nautilus-search-bar-criterion.c:73
 msgid "Owner"
-msgstr "Ägaren"
+msgstr "Ägare"
 
 #: src/nautilus-search-bar-criterion.c:79
 msgid "contains"
@@ -5261,7 +5997,7 @@ msgstr "innehåller"
 
 #: src/nautilus-search-bar-criterion.c:80
 msgid "starts with"
-msgstr "startar med"
+msgstr "börjar med"
 
 #: src/nautilus-search-bar-criterion.c:81
 msgid "ends with"
@@ -5269,11 +6005,11 @@ msgstr "slutar med"
 
 #: src/nautilus-search-bar-criterion.c:82
 msgid "matches glob"
-msgstr "passar skalmönstret"
+msgstr "passar skalmönster"
 
 #: src/nautilus-search-bar-criterion.c:83
 msgid "matches regexp"
-msgstr "passar det reguljära uttrycket"
+msgstr "passar reguljärt uttryck"
 
 #: src/nautilus-search-bar-criterion.c:88
 msgid "includes all of"
@@ -5305,7 +6041,7 @@ msgstr "är inte"
 
 #: src/nautilus-search-bar-criterion.c:103
 msgid "regular file"
-msgstr "vanlig fil"
+msgstr "reguljär fil"
 
 #: src/nautilus-search-bar-criterion.c:104
 msgid "text file"
@@ -5519,19 +6255,19 @@ msgstr "Gå till nästa besökta plats"
 msgid "Go to the previous visited location"
 msgstr "Gå till föregående besökta plats"
 
-#: po/tmp/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:444
+#: po/tmp/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:434
 msgid "Hide Location Bar"
 msgstr "Göm platsrad"
 
-#: po/tmp/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:432
+#: po/tmp/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:422
 msgid "Hide Sidebar"
 msgstr "Göm sidorad"
 
-#: po/tmp/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:426
+#: po/tmp/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:416
 msgid "Hide Status Bar"
 msgstr "Göm statusrad"
 
-#: po/tmp/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:438
+#: po/tmp/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:428
 msgid "Hide Tool Bar"
 msgstr "Göm verktygsrad"
 
@@ -5557,7 +6293,7 @@ msgstr "Öppna ytterligare ett Nautilus-fönster för den visade platsen"
 
 #: po/tmp/nautilus-shell-ui.xml.h:44
 msgid "Refresh"
-msgstr "Läs om"
+msgstr "Ladda om"
 
 #: po/tmp/nautilus-shell-ui.xml.h:45
 msgid "Removes the selected text without putting it on the clipboard"
@@ -5606,7 +6342,7 @@ msgstr "Stoppa profilering"
 
 #: po/tmp/nautilus-shell-ui.xml.h:57
 msgid "Stop loading this location"
-msgstr "Sluta läsa in denna plats"
+msgstr "Sluta ladda denna plats"
 
 #: po/tmp/nautilus-shell-ui.xml.h:58
 msgid "Undo the last text change"
@@ -5658,7 +6394,7 @@ msgstr "_Lägg till bokmärke"
 
 #: po/tmp/nautilus-shell-ui.xml.h:70
 msgid "_Back"
-msgstr "_Föregående"
+msgstr "_Bakåt"
 
 #: po/tmp/nautilus-shell-ui.xml.h:71
 msgid "_Backgrounds and Emblems..."
@@ -5670,27 +6406,27 @@ msgstr "_Bokmärken"
 
 #: po/tmp/nautilus-shell-ui.xml.h:73
 msgid "_Close Window"
-msgstr "_Stäng fönster"
+msgstr "S_täng fönster"
 
 #: po/tmp/nautilus-shell-ui.xml.h:75
 msgid "_Edit"
-msgstr "_Redigera"
+msgstr "R_edigera"
 
 #: po/tmp/nautilus-shell-ui.xml.h:76
 msgid "_Edit Bookmarks..."
 msgstr "_Redigera bokmärken..."
 
-#: po/tmp/nautilus-shell-ui.xml.h:78 src/nautilus-window-menus.c:1351
+#: po/tmp/nautilus-shell-ui.xml.h:78 src/nautilus-window-menus.c:1311
 msgid "_Find"
 msgstr "_Sök"
 
 #: po/tmp/nautilus-shell-ui.xml.h:79
 msgid "_Forward"
-msgstr "_Nästa"
+msgstr "Vidarebe_fordra"
 
 #: po/tmp/nautilus-shell-ui.xml.h:80
 msgid "_Go"
-msgstr "_Gå"
+msgstr "_Gå till"
 
 #: po/tmp/nautilus-shell-ui.xml.h:81
 msgid "_Help"
@@ -5722,7 +6458,7 @@ msgstr "_Profilerare"
 
 #: po/tmp/nautilus-shell-ui.xml.h:89
 msgid "_Refresh"
-msgstr "_Läs om"
+msgstr "_Ladda om"
 
 #: po/tmp/nautilus-shell-ui.xml.h:90
 msgid "_Report Profiling"
@@ -5734,7 +6470,7 @@ msgstr "_Återställ profilering"
 
 #: po/tmp/nautilus-shell-ui.xml.h:92
 msgid "_Select All"
-msgstr "_Markera allt"
+msgstr "Markera _allt"
 
 #: po/tmp/nautilus-shell-ui.xml.h:93
 msgid "_Start Profiling"
@@ -5923,20 +6659,20 @@ msgstr "Kunde inte ta bort tema"
 msgid "No information available for the \"%s\" theme"
 msgstr "Ingen information tillgänglig för temat \"%s\""
 
-#: src/nautilus-window-manage-views.c:588
+#: src/nautilus-window-manage-views.c:600
 #, c-format
 msgid "You do not have the permissions necessary to view \"%s\"."
 msgstr "Du har inte de rättigheter som krävs för att se \"%s\"."
 
-#: src/nautilus-window-manage-views.c:590
+#: src/nautilus-window-manage-views.c:602
 msgid "Inadequate Permissions"
 msgstr "Otillräckliga rättigheter"
 
-#: src/nautilus-window-manage-views.c:682
+#: src/nautilus-window-manage-views.c:665
 msgid "View Failed"
 msgstr "Vy misslyckades"
 
-#: src/nautilus-window-manage-views.c:771
+#: src/nautilus-window-manage-views.c:754
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -5944,7 +6680,7 @@ msgstr ""
 "En av sidoradspanelerna råkade ut för ett fel och kan inte fortsätta. Tyvärr "
 "kan jag inte säga vilken."
 
-#: src/nautilus-window-manage-views.c:775
+#: src/nautilus-window-manage-views.c:758
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -5953,18 +6689,18 @@ msgstr ""
 "Sidoradspanelen %s råkade ut för ett fel och kan inte fortsätta. Om det här "
 "fortsätter att hända kanske du vill stänga av den här panelen."
 
-#: src/nautilus-window-manage-views.c:780
+#: src/nautilus-window-manage-views.c:763
 msgid "Sidebar Panel Failed"
 msgstr "Sidoradspanel misslyckades"
 
-#: src/nautilus-window-manage-views.c:1185
+#: src/nautilus-window-manage-views.c:1168
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "Kunde inte hitta \"%s\". Var vänlig och kontrollera stavningen och försök "
 "igen."
 
-#: src/nautilus-window-manage-views.c:1191
+#: src/nautilus-window-manage-views.c:1174
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
@@ -5972,7 +6708,7 @@ msgstr ""
 "\"%s\" är ingen giltig plats. Var vänlig och kontrollera stavningen och "
 "försök igen."
 
-#: src/nautilus-window-manage-views.c:1205
+#: src/nautilus-window-manage-views.c:1188
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -5981,29 +6717,29 @@ msgstr ""
 "Kunde inte visa \"%s\", eftersom Nautilus inte kan bestämma vilken filtyp "
 "det är."
 
-#: src/nautilus-window-manage-views.c:1213
+#: src/nautilus-window-manage-views.c:1196
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Nautilus har ingen installerad visare som kan visa \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1225
+#: src/nautilus-window-manage-views.c:1208
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Kunde inte visa \"%s\", eftersom Nautilus inte kan hantera %s:-platser."
 
-#: src/nautilus-window-manage-views.c:1231
+#: src/nautilus-window-manage-views.c:1214
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "Kunde inte visa \"%s\", eftersom inloggningsförsöket misslyckades."
 
-#: src/nautilus-window-manage-views.c:1236
+#: src/nautilus-window-manage-views.c:1219
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Kunde inte visa \"%s\", eftersom åtkomst nekades."
 
-#: src/nautilus-window-manage-views.c:1241
+#: src/nautilus-window-manage-views.c:1224
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host couldn't be found. Check that your "
@@ -6012,7 +6748,7 @@ msgstr ""
 "Kunde inte visa \"%s\", eftersom värden inte kunde hittas. Kontrollera att "
 "dina proxyserverinställningar stämmer."
 
-#: src/nautilus-window-manage-views.c:1247
+#: src/nautilus-window-manage-views.c:1230
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -6021,7 +6757,7 @@ msgstr ""
 "Kunde inte visa \"%s\", eftersom värdnamnet var tomt. Kontrollera att dina "
 "proxyserverinställningar stämmer."
 
-#: src/nautilus-window-manage-views.c:1259
+#: src/nautilus-window-manage-views.c:1242
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -6033,23 +6769,23 @@ msgstr ""
 "startat Medusa-söktjänsten och att Medusa-indexeraren kör om du inte har ett "
 "index."
 
-#: src/nautilus-window-manage-views.c:1263
+#: src/nautilus-window-manage-views.c:1246
 msgid "Searching Unavailable"
 msgstr "Sökning är inte tillgänglig"
 
-#: src/nautilus-window-manage-views.c:1267
+#: src/nautilus-window-manage-views.c:1250
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kan inte visa \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1280
+#: src/nautilus-window-manage-views.c:1263
 msgid "Can't Display Location"
 msgstr "Kan inte visa plats"
 
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:317
+#: src/nautilus-window-menus.c:307
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
@@ -6057,34 +6793,34 @@ msgstr ""
 "Är du säker på att du vill glömma historien? I så fall kommer du att vara "
 "dömd att återuppleva den."
 
-#: src/nautilus-window-menus.c:320
+#: src/nautilus-window-menus.c:310
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr ""
 "Är du säker på att du vill att Nautilus ska glömma de platser som du har "
 "besökt?"
 
-#: src/nautilus-window-menus.c:325
+#: src/nautilus-window-menus.c:315
 msgid "Forget History?"
 msgstr "Glöm historik?"
 
-#: src/nautilus-window-menus.c:326
+#: src/nautilus-window-menus.c:316
 msgid "Forget"
 msgstr "Glöm"
 
-#: src/nautilus-window-menus.c:427
+#: src/nautilus-window-menus.c:417
 msgid "Show Status Bar"
 msgstr "Visa statusrad"
 
-#: src/nautilus-window-menus.c:433
+#: src/nautilus-window-menus.c:423
 msgid "Show Sidebar"
 msgstr "Visa sidorad"
 
-#: src/nautilus-window-menus.c:439
+#: src/nautilus-window-menus.c:429
 msgid "Show Tool Bar"
 msgstr "Visa verktygsrad"
 
-#: src/nautilus-window-menus.c:445
+#: src/nautilus-window-menus.c:435
 msgid "Show Location Bar"
 msgstr "Visa platsrad"
 
@@ -6093,7 +6829,7 @@ msgstr "Visa platsrad"
 #. * names of the middle user level ("Intermediate"). The 3rd %s is the name of the highest user
 #. * level ("Advanced").
 #.
-#: src/nautilus-window-menus.c:528
+#: src/nautilus-window-menus.c:518
 #, c-format
 msgid ""
 "None of the settings for the %s level can be edited. If you want to edit the "
@@ -6107,12 +6843,12 @@ msgstr ""
 #. Localizers: This is the title of the dialog that appears if the user chooses "Edit Beginner Settings".
 #. * The %s is the name of the middle user level ("Intermediate").
 #.
-#: src/nautilus-window-menus.c:540
+#: src/nautilus-window-menus.c:530
 #, c-format
 msgid "Switch to %s Level?"
 msgstr "Byta till användarnivån %s?"
 
-#: src/nautilus-window-menus.c:633
+#: src/nautilus-window-menus.c:623
 msgid ""
 "Nautilus is a graphical shell \n"
 "for GNOME that makes it \n"
@@ -6124,7 +6860,7 @@ msgstr ""
 "att hantera dina filer och \n"
 "resten av ditt system."
 
-#: src/nautilus-window-menus.c:784
+#: src/nautilus-window-menus.c:774
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -6133,24 +6869,24 @@ msgstr ""
 "Platsen \"%s\" finns inte. Vill du ta bort alla bokmärken med denna plats "
 "från din lista?"
 
-#: src/nautilus-window-menus.c:788
+#: src/nautilus-window-menus.c:778
 msgid "Bookmark for Nonexistent Location"
 msgstr "Bokmärke för icke-existerande plats"
 
-#: src/nautilus-window-menus.c:802
+#: src/nautilus-window-menus.c:792
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Platsen \"%s\" finns inte längre."
 
-#: src/nautilus-window-menus.c:803
+#: src/nautilus-window-menus.c:793
 msgid "Go to Nonexistent Location"
 msgstr "Gå till ickeexisterande plats"
 
-#: src/nautilus-window-menus.c:870
+#: src/nautilus-window-menus.c:860
 msgid "Go to the location specified by this bookmark"
 msgstr "Gå till platsen som detta bokmärke anger"
 
-#: src/nautilus-window-menus.c:1350
+#: src/nautilus-window-menus.c:1310
 msgid "_Browse"
 msgstr "_Bläddra"
 
@@ -6158,7 +6894,7 @@ msgstr "_Bläddra"
 #. * dialog. %s will be replaced with the name of a user level
 #. * ("Beginner", "Intermediate", or "Advanced").
 #.
-#: src/nautilus-window-menus.c:1542
+#: src/nautilus-window-menus.c:1502
 #, c-format
 msgid "Edit %s Settings"
 msgstr "Ändra inställningar för %s..."
@@ -6168,30 +6904,25 @@ msgstr "Ändra inställningar för %s..."
 #. * the name of a user level ("Beginner", "Intermediate", or
 #. * "Advanced").
 #.
-#: src/nautilus-window-menus.c:1564
+#: src/nautilus-window-menus.c:1524
 #, c-format
 msgid "Edit %s Settings..."
 msgstr "Ändra inställningar för %s..."
 
 #: src/nautilus-window-toolbars.c:421
 msgid "Back"
-msgstr "Föregående"
+msgstr "Bakåt"
 
 #: src/nautilus-window-toolbars.c:423
 msgid "Forward"
-msgstr "Nästa"
-
-#: src/nautilus-window.c:1096
-#, c-format
-msgid "View as %s..."
-msgstr "Visa som %s..."
+msgstr "Vidarebefordra"
 
 #. Add "View as Other..." extra bonus choice.
-#: src/nautilus-window.c:1118
+#: src/nautilus-window.c:1124
 msgid "View as Other..."
 msgstr "Visa som annat...."
 
-#: src/nautilus-window.c:1478
+#: src/nautilus-window.c:1484
 msgid "Close"
 msgstr "Stäng"
 
@@ -6206,262 +6937,8 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 msgid "%.0f%%"
 msgstr "%.0f%%"
 
-#~ msgid "version %s-%s"
-#~ msgstr "version %s-%s"
-
-#~ msgid "checking %s..."
-#~ msgstr "kontrollerar %s..."
-
-#~ msgid "file %s has an error!"
-#~ msgstr "filen %s har ett fel!"
-
-#~ msgid "Verification completed."
-#~ msgstr "Verifieringen färdig!"
-
-#~ msgid "Preflight (%ld bytes, %ld packages)"
-#~ msgstr "Förbereder (%ld byte, %ld paket)"
-
-#~ msgid "Preparing package system"
-#~ msgstr "Förbereder paketsystem"
-
-#~ msgid "Dry Run Mode Activated.  Packages will not actually be installed ..."
-#~ msgstr ""
-#~ "Torrkörningsläge aktiverat. Paketen kommer egentligen inte att installeras..."
-
-#~ msgid "Service Error"
-#~ msgstr "Tjänstfel"
-
-#~ msgid "Register Now"
-#~ msgstr "Anmäl nu"
-
-#~ msgid "Help"
-#~ msgstr "Hjälp"
-
-#~ msgid "Services Login"
-#~ msgstr "Tjänstinloggning"
-
-#~ msgid "Username:"
-#~ msgstr "Användarnamn:"
-
-#~ msgid "Password:"
-#~ msgstr "Lösenord:"
-
-#~ msgid "Please log in to Eazel services"
-#~ msgstr "Var vänlig och logga in på Eazel Services"
-
-#~ msgid ""
-#~ "Your user name or password were not correct, or you have not activated your "
-#~ "account.  Please try again, or check your email for an account activation "
-#~ "notice."
-#~ msgstr ""
-#~ "Ditt användarnamn eller lösenord var inte korrekt, eller så har du inte "
-#~ "aktiverat ditt konto. Var vänlig och försök igen eller kontrollera om du har "
-#~ "fått kontoaktiveringsinformation i din e-post."
-
-#~ msgid "We're sorry, but your name and password are still not recognized."
-#~ msgstr "Tyvärr, men ditt namn och lösenord känns fortfarande inte igen."
-
-#~ msgid "directories"
-#~ msgstr "kataloger"
-
-#~ msgid "are directories"
-#~ msgstr "är kataloger"
-
-#~ msgid "Items %s %s%s"
-#~ msgstr "Objekt %s %s%s"
-
-#~ msgid "Quit Nautilus Desktop"
-#~ msgstr "Avsluta Nautilusskrivbordet"
-
-#~ msgid "Stop letting Nautilus draw the desktop"
-#~ msgstr "Sluta låta Nautilus rita skrivbordet"
-
-#~ msgid "Don't draw background and icons on desktop."
-#~ msgstr "Rita inte bakgrund och ikoner på skrivbordet."
-
-#~ msgid "Draw background and icons on desktop."
-#~ msgstr "Rita bakgrund och ikoner på skrivbordet."
-
-#~ msgid "nautilus: --quit and --start-desktop cannot be used together.\n"
-#~ msgstr ""
-#~ "nautilus: --quit och --start-desktop kan inte användas tillsammans.\n"
-
-#~ msgid "nautilus: --restart and --start-desktop cannot be used together.\n"
-#~ msgstr ""
-#~ "nautilus: --restart och --start-desktop kan inte användas tillsammans.\n"
-
-#~ msgid ""
-#~ "nautilus: --stop-desktop and --start-desktop cannot be used together.\n"
-#~ msgstr ""
-#~ "nautilus: --stop-desktop och --start-desktop kan inte användas tillsammans.\n"
-
-#~ msgid "Customization Options"
-#~ msgstr "Anpassningsalternativ"
-
-#~ msgid "Sorry, but the background %s couldn't be installed."
-#~ msgstr "Tyvärr, bakgrunden %s kunde inte installeras."
-
-#~ msgid "Couldn't install background"
-#~ msgstr "Kunde inte installera bakgrund"
-
-#~ msgid "Click on a background to remove it"
-#~ msgstr "Klicka på en bakgrund för att ta bort den"
-
-#~ msgid "directory"
-#~ msgstr "katalog"
-
-#~ msgid "Custo_mization..."
-#~ msgstr "Anpassnin_g..."
-
-#~ msgid ""
-#~ "Couldn't display \"%s\", because Nautilus cannot handle items of this "
-#~ "unknown type."
-#~ msgstr ""
-#~ "Kunde inte visa \"%s\", eftersom Nautilus inte kan hantera objekt av den här "
-#~ "okända typen."
-
-#~ msgid "Could not retrieve a URL for %s"
-#~ msgstr "Kunde inte ta emot en URL för %s"
-
-#~ msgid "Could not retrieve a URL for id %s"
-#~ msgstr "Kunde inte ta emot en URL för id %s"
-
-#~ msgid "moved"
-#~ msgstr "flyttad"
-
-#~ msgid "linked"
-#~ msgstr "länkad"
-
-#~ msgid "copied"
-#~ msgstr "kopierad"
-
-#~ msgid "Sorry, but \"%s\" is a reserved keyword"
-#~ msgstr "Tyvärr, \"%s\" är ett reserverat nyckelord"
-
-#~ msgid "Owned By"
-#~ msgstr "Ägd av"
-
-#~ msgid "that end with %s"
-#~ msgstr "slutar med %s"
-
-#~ msgid "that don't contain \"%s\""
-#~ msgstr "inte innehåller \"%s\""
-
-#~ msgid "that are %s bytes"
-#~ msgstr "är %s byte"
-
-#~ msgid "Reset _Background"
-#~ msgstr "Återställ _bakgrunden"
-
-#~ msgid "_New Folder"
-#~ msgstr "_Ny mapp"
-
-#~ msgid "*Control*t"
-#~ msgstr "*Control*t"
-
-#~ msgid "_Use Tighter Layout"
-#~ msgstr "_Använd mer kompakt layout"
-
-#~ msgid "Use \"%s\" to view the selected item"
-#~ msgstr "Använd \"%s\" för att visa det markerade objektet"
-
-#~ msgid "Go to the specified location"
-#~ msgstr "Gå till den angivna platsen"
-
-#~ msgid "Should I delete the leftover RPM files?"
-#~ msgstr "Ska jag ta bort de RPM-filer som blev över?"
-
-#~ msgid "Initial Preferences"
-#~ msgstr "Startinställningar"
-
-#~ msgid " · %s in somewhere...\n"
-#~ msgstr " · %s finns någonstans...\n"
-
-#~ msgid "Nautilus updated"
-#~ msgstr "Nautilus uppdaterat"
-
-#~ msgid "%s %s: would not work anymore\n"
-#~ msgstr "%s %s: skulle inte fungera längre\n"
-
-#~ msgid "%s %s: couldn't find this package\n"
-#~ msgstr "%s %s: kunde inte hitta det här paketet\n"
-
-#~ msgid "%s %s: source package (not supported)\n"
-#~ msgstr "%s %s: källkodspaket (stöds inte)\n"
-
-#~ msgid "%s %s: would break other installed packages\n"
-#~ msgstr "%s %s: skulle ha sönder andra installerade paket\n"
-
-#~ msgid "%s %s: conflicts with installed files\n"
-#~ msgstr "%s %s: är i konflikt med installerade filer\n"
-
-#~ msgid "%s %s: already installed\n"
-#~ msgstr "%s %s: redan installerat\n"
-
-#~ msgid "Oops! Your user name or password were not correct. Please try again:"
-#~ msgstr ""
-#~ "Hoppsan! Ditt användarnamn och lösenord stämde inte. Var vänlig och försök "
-#~ "igen:"
-
-#~ msgid "rpm running..."
-#~ msgstr "rpm kör..."
-
-#~ msgid "RPM package database query failed !"
-#~ msgstr "RPM-databasfråga misslyckades!"
-
-#~ msgid "Cannot create temporary directory"
-#~ msgstr "Kunde inte skapa temporär katalog"
-
-#~ msgid "Login failed! Please try again."
-#~ msgstr "Inloggning misslyckades! Var vänlig och försök igen."
-
-#~ msgid "Using local protocol cannot fetch by id"
-#~ msgstr "Använder lokalt protokoll, kan inte hämta med id"
-
-#~ msgid "Could not get a URL for package id %s"
-#~ msgstr "Kunde inte få en URL för paket-id %s"
-
-#~ msgid "Cuts the selected text to the clipboard"
-#~ msgstr "Klipper ut den markerade texten till urklipp"
-
-#~ msgid "Copies the selected text to the clipboard"
-#~ msgstr "Kopierar den markerade texten till urklipp"
-
-#~ msgid "Pastes the text stored on the clipboard"
-#~ msgstr "Klistrar in texten som är sparad i urklipp"
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "You clicked the Kill Content View toolbar button."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Du klickade på knappen Döda innehållsvy i verktygsraden."
-
-#~ msgid "Kill the Loser content view."
-#~ msgstr "Döda förlorar-innehållsvyn."
-
-#~ msgid "%s would be deleted but is needed\n"
-#~ msgstr "%s skulle tagits bort men behövs\n"
-
-#~ msgid "User Level"
-#~ msgstr "Användarnivå"
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "You clicked the Kill Sidebar View toolbar button."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Du klickade på knappen Döda sidoradsvy i verktygsraden."
-
-#~ msgid "Loser"
-#~ msgstr "Förlorare"
-
-#~ msgid "Kill the Loser sidebar view."
-#~ msgstr "Döda sidoradsvyn."
-
-#~ msgid "Use %s settings"
-#~ msgstr "Använd %s-inställningarna"
+#~ msgid "Location:"
+#~ msgstr "Adress:"
+
+#~ msgid "   Go To:"
+#~ msgstr " Gå till:"
