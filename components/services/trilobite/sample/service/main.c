@@ -32,8 +32,8 @@
 #include "sample-service.h"
 #include <sample-service-public.h>
 
-#define OAF_ID_FACTORY "OAFIID:nautilus_eazel_sample_service_factory:134276"
-#define OAF_ID "OAFIID:nautilus_eazel_sample_service:134276"
+#define OAF_ID_FACTORY "OAFIID:trilobite_eazel_sample_service_factory:134276"
+#define OAF_ID "OAFIID:trilobite_eazel_sample_service:134276"
 
 /*
   These are some generally needed objects to get CORBA connectivity
@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
 	textdomain (PACKAGE);
 #endif
 
-	gnome_init_with_popt_table ("nautilus-service", "0.1", argc, argv, oaf_popt_options, 0, NULL);
+	gnome_init_with_popt_table ("trilobite-sample-service", "0.1", argc, argv, oaf_popt_options, 0, NULL);
 	orb = oaf_init (argc, argv);
 
 	if (bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL) == FALSE) {

@@ -403,12 +403,10 @@ trilobite_service_initialize (TrilobiteService *trilobite)
 {
 	Trilobite_Service corba_trilobite;
 
-	g_message ("in trilobite_service_initialize");
+	/* g_message ("in trilobite_service_initialize"); */
 
 	g_return_if_fail (trilobite != NULL);
 	g_return_if_fail (TRILOBITE_IS_SERVICE (trilobite));
-
-	g_message ("hest");
 
 	corba_trilobite = trilobite_service_create_corba_object (BONOBO_OBJECT (trilobite));
 	
@@ -468,7 +466,7 @@ trilobite_service_new()
 {
 	TrilobiteService *trilobite;
 
-	g_message ("in trilobite_service_new");
+	/* g_message ("in trilobite_service_new"); */
 
 	trilobite = TRILOBITE_SERVICE (gtk_type_new (TRILOBITE_TYPE_SERVICE));
 

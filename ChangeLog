@@ -1,3 +1,21 @@
+2000-05-18  Eskil Heyn Olsen  <eskil@eazel.om>
+
+	* components/services/trilobite/src/trilobite-service.c: 
+	removed some g_messages
+
+	* components/services/trilobite/sample/service/sample-service-public.h (struct _SampleService): 
+	removed superflous element servant;
+
+	* components/services/trilobite/sample/service/sample-service-impl.c: 
+	Added a lot of comments for educational purpose. Also changed
+	the parent class pointer to be of type BonoboObjectClass.
+
+	* components/services/trilobite/sample/service/main.c: 
+	Did some nautilus to trilobte renaming.
+
+	* components/services/trilobite/sample/service/Makefile.am:
+	Did some nautilus to trilobte renaming.
+
 2000-05-19  Yukihiro Nakai <nakai@gnome.gr.jp>
 
 	* configure.in: Add Japanese from Akira Tagoh.

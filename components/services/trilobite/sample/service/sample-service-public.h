@@ -43,6 +43,7 @@ typedef struct _SampleServiceClass SampleServiceClass;
 struct _SampleServiceClass 
 {
 	BonoboObjectClass parent_class;
+
 	void (*remember) (SampleService *service, const char *something);
 	void (*say_it)   (SampleService *service);
 
@@ -55,7 +56,6 @@ struct _SampleService
 {
 	BonoboObject parent;
 	char *my_string;
-	PortableServer_Servant servant;
 };
 
 GtkType                       sample_service_get_type   (void);
