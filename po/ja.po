@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus CVS-20010409\n"
-"POT-Creation-Date: 2001-08-05 17:22+0900\n"
+"POT-Creation-Date: 2001-08-07 18:00+0900\n"
 "PO-Revision-Date: 2001-04-09 22:41+0900\n"
 "Last-Translator: Akira TAGOH <tagoh@gnome.gr.jp>\n"
 "Language-Team: Japanese <translation@gnome.gr.jp>\n"
@@ -44,6 +44,24 @@ msgstr "開始"
 #: applets/preferences-applet/nautilus-preferences-applet.c:259
 msgid "Restart"
 msgstr "再開"
+
+#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:1
+msgid "Factory for Nautilus component adapter factories"
+msgstr ""
+
+#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:2
+msgid "Factory for Nautilus component adapter factories "
+msgstr ""
+
+#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:3
+msgid ""
+"Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
+"look like Nautilus Views"
+msgstr ""
+
+#: components/adapter/Nautilus_ComponentAdapterFactory_std.oaf.in.h:4
+msgid "Nautilus component adapter factory"
+msgstr ""
 
 #: components/hardware/nautilus-hardware-view.c:180
 msgid "name of icon for the hardware view"
@@ -106,9 +124,31 @@ msgstr "これはRAMページ用プレースホルダです"
 msgid "This is a placeholder for the IDE page."
 msgstr "これはIDEページ用プレースホルダです"
 
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:2
 #: components/hardware/nautilus-hardware-view.c:750
+#: data/static_bookmarks.xml.h:16
 msgid "Hardware"
 msgstr "ハードウェア"
+
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:1
+msgid "Factory for hardware view"
+msgstr "ハードウェアビューのファクトリ"
+
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:3
+msgid "Hardware Viewer"
+msgstr "ハードウェアビューア"
+
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:4
+msgid "Hardware view"
+msgstr "ハードウェア概要"
+
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:5
+msgid "View as Hardware"
+msgstr "ハードウェアとして表示"
+
+#: components/hardware/Nautilus_View_hardware.oaf.in.h:6
+msgid "hardware view"
+msgstr "ハードウェアビュー"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:712
 #: components/music/nautilus-music-view.c:1576
@@ -116,7 +156,7 @@ msgid "Previous"
 msgstr "戻る"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:721
-#: src/nautilus-preferences-dialog.c:291
+#: src/nautilus-preferences-dialog.c:291 src/nautilus-shell-ui.xml.h:36
 msgid "Home"
 msgstr "ホーム"
 
@@ -126,6 +166,7 @@ msgid "Next"
 msgstr "次"
 
 #: components/help/converters/gnome-db2html2/sect-elements.c:260
+#: components/notes/Nautilus_View_notes.oaf.in.h:2
 msgid "Notes"
 msgstr "ノート"
 
@@ -260,7 +301,7 @@ msgid "Manual"
 msgstr "マニュアル"
 
 #: components/help/hyperbola-filefmt.c:528
-#: components/help/hyperbola-filefmt.c:859
+#: components/help/hyperbola-filefmt.c:859 data/linksets/apps.xml.h:1
 msgid "Applications"
 msgstr "アプリケーション"
 
@@ -335,9 +376,85 @@ msgstr " (参照 \""
 msgid " (see also \""
 msgstr "(関連項目 \""
 
+#: components/help/Nautilus_View_help.oaf.in.h:1
+msgid "Help"
+msgstr ""
+
+#: components/help/Nautilus_View_help.oaf.in.h:2
+msgid "Help Index"
+msgstr ""
+
+#: components/help/Nautilus_View_help.oaf.in.h:3
+msgid "Help Index sidebar panel"
+msgstr ""
+
+#: components/help/Nautilus_View_help.oaf.in.h:4
+msgid "Help Navigation Tree"
+msgstr "ヘルプナビゲーションツリー"
+
+#: components/help/Nautilus_View_help.oaf.in.h:5
+msgid "Help Search"
+msgstr "ヘルプ検索"
+
+#: components/help/Nautilus_View_help.oaf.in.h:6
+msgid "Help Search sidebar panel"
+msgstr "ヘルプ検索サイドバーパネル"
+
+#: components/help/Nautilus_View_help.oaf.in.h:7
+msgid "Help sidebar panel"
+msgstr "ヘルプサイドバーパネル"
+
+#: components/help/Nautilus_View_help.oaf.in.h:8
+msgid "Internal use only"
+msgstr "内部用途のみ"
+
+#: components/history/Nautilus_View_history.oaf.in.h:1
+msgid "Factory for history views"
+msgstr "履歴ビューのファクトリ"
+
+#: components/history/Nautilus_View_history.oaf.in.h:2
+msgid "History"
+msgstr "履歴"
+
+#: components/history/Nautilus_View_history.oaf.in.h:3
+msgid "History sidebar panel"
+msgstr "履歴サイドバーパネル"
+
+#: components/history/Nautilus_View_history.oaf.in.h:4
+msgid "History sidebar panel for Nautilus"
+msgstr "Nautilusの履歴サイドバーパネル"
+
 #: components/image-viewer/nautilus-image-view.c:834
 msgid "I could not initialize Bonobo"
 msgstr "Bonobo を初期化することが出来ませんでした"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:1
+msgid "Generic Image Viewer"
+msgstr "一般のイメージビューア"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:2
+msgid "Generic image control factory"
+msgstr "一般イメージビューアファクトリ"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:3
+msgid "Image"
+msgstr "画像"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:4
+msgid "Image Viewer"
+msgstr "イメージビューア"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:5
+msgid "Nautilus Image Viewer"
+msgstr "Nautilus イメージビューア"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:6
+msgid "Nautilus Image viewer factory"
+msgstr "Nautilusイメージビューアファクトリ"
+
+#: components/image-viewer/Nautilus_View_image.oaf.in.h:7
+msgid "View as Image"
+msgstr "画像として表示"
 
 #: components/loser/content/nautilus-content-loser.c:140
 #, c-format
@@ -352,7 +469,54 @@ msgstr ""
 
 #: components/loser/content/nautilus-content-loser.c:189
 msgid "You have tried to kill the Content Loser"
-msgstr "コンテンツルーザーをKILLしようとしました"
+msgstr "コンテンツルーザーを強制終了しようとしました"
+
+#: components/loser/content/nautilus-content-loser-ui.xml.h:1
+msgid "Kill Content Loser"
+msgstr "コンテンツルーザーの強制終了"
+
+#: components/loser/content/nautilus-content-loser-ui.xml.h:2
+msgid "Kill the Loser content view"
+msgstr "コンテンツルーザービューの強制終了"
+
+#: components/loser/content/nautilus-content-loser-ui.xml.h:3
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
+#: components/sample/nautilus-sample-content-view-ui.xml.h:4
+#: src/nautilus-shell-ui.xml.h:82
+msgid "_File"
+msgstr "ファイル(_F)"
+
+#: components/loser/content/nautilus-content-loser-ui.xml.h:4
+msgid "_Kill Content Loser"
+msgstr "コンテンツルーザーの強制終了(_K)"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:1
+msgid "Content Loser"
+msgstr "コンテンツルーザー"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:2
+msgid "Content Loser Viewer"
+msgstr "コンテンツルーザービューア"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:3
+msgid "Nautilus Content Loser"
+msgstr "Nautilusコンテンツルーザー"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:4
+msgid "Nautilus content loser component's factory"
+msgstr "Nautilusコンテンツルーザーコンポーネントのファクトリ"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:5
+msgid "Nautilus content loser factory"
+msgstr "Nautilusコンテンツルーザーファクトリ"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:6
+msgid "Nautilus content view that fails on command"
+msgstr "要求に失敗した Nautilus コンテンツビュー"
+
+#: components/loser/content/Nautilus_View_content-loser.oaf.in.h:7
+msgid "View as Content Loser"
+msgstr "コンテンツルーザーとして表示"
 
 #: components/loser/sidebar/nautilus-sidebar-loser.c:143
 #, c-format
@@ -368,6 +532,41 @@ msgstr ""
 #: components/loser/sidebar/nautilus-sidebar-loser.c:192
 msgid "You have tried to kill the Sidebar Loser"
 msgstr "サイドバールーザーを KILL しようとしました"
+
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:1
+msgid "Kill Sidebar Loser"
+msgstr ""
+
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:2
+msgid "Kill the Loser sidebar panel"
+msgstr ""
+
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:4
+msgid "_Kill Sidebar Loser"
+msgstr ""
+
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:1
+msgid "Nautilus Sidebar Loser"
+msgstr ""
+
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:2
+msgid "Nautilus sidebar loser component's factory"
+msgstr ""
+
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:3
+msgid "Nautilus sidebar loser factory"
+msgstr "Nautilusサイドバールーザーファクトリ"
+
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:4
+msgid "Nautilus sidebar view that fails on command"
+msgstr ""
+"%s\n"
+"\n"
+"これは要求に失敗した Nautilus サイドバービューです"
+
+#: components/loser/sidebar/Nautilus_View_sidebar-loser.oaf.in.h:5
+msgid "Sidebar Loser"
+msgstr "サイドバールーザー"
 
 #: components/mozilla/mozilla-preferences.cpp:126
 #, c-format
@@ -750,6 +949,38 @@ msgstr ""
 #: components/mozilla/nautilus-mozilla-content-view.c:836
 msgid "Nautilus JavaScript Warning"
 msgstr "Nautilus Mozilla ビューア警告"
+
+#: components/mozilla/nautilus-mozilla-ui.xml.h:1
+msgid "Charset Encoding"
+msgstr "エンコーディング"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:1
+msgid "Mozilla Nautilus view"
+msgstr "Mozilla Nautilusビュー"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:2
+msgid "Mozilla Nautilus view factory"
+msgstr "Mozilla Nautilusビューファクトリ"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:3
+msgid "Mozilla content view component"
+msgstr "Mozillaコンテンツビューコンポーネント"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:4
+msgid "Mozilla content view component's factory"
+msgstr "Mozillaコンテンツビューコンポーネントファクトリ"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:5
+msgid "View as Web Page"
+msgstr "Webページとして表示"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:6
+msgid "Web Page"
+msgstr "Webページ"
+
+#: components/mozilla/Nautilus_View_mozilla.oaf.in.h:7
+msgid "Web Page Viewer"
+msgstr "Webページビューア"
 
 #: components/music/mpg123.c:29
 msgid "Blues"
@@ -1408,8 +1639,8 @@ msgid ""
 "Control Center is turned off."
 msgstr ""
 "すいませんが, ミュージックビューでバックサウンドを演奏することはできません。"
-"これはGNOMEコントロールセンタの[サウンド]セクションにあるサウンドサーバの"
-"スタートアップ設定がオフになっているからです。"
+"これはGNOMEコントロールセンタの[サウンド]セクションにあるサウンドサーバのス"
+"タートアップ設定がオフになっているからです。"
 
 #: components/music/nautilus-music-view.c:1230
 #: components/music/nautilus-music-view.c:1242
@@ -1453,6 +1684,7 @@ msgstr "一時停止"
 #: libnautilus-private/nautilus-file-operations.c:964
 #: libnautilus-private/nautilus-file-operations.c:979
 #: libnautilus-private/nautilus-file-operations.c:998
+#: src/nautilus-shell-ui.xml.h:55
 msgid "Stop"
 msgstr "停止"
 
@@ -1478,19 +1710,44 @@ msgstr "モノラル"
 msgid "%s - %s"
 msgstr "%s - %s"
 
+#: components/music/Nautilus_View_music.oaf.in.h:1
+msgid "Factory for music view"
+msgstr "ミュージックビューのファクトリ"
+
+#: components/music/Nautilus_View_music.oaf.in.h:2
+msgid "Music"
+msgstr "ミュージック"
+
+#: components/music/Nautilus_View_music.oaf.in.h:3
+msgid "Music Viewer"
+msgstr "ミュージックビューア"
+
+#: components/music/Nautilus_View_music.oaf.in.h:4
+msgid "Music view"
+msgstr "ミュージックビュー"
+
+#: components/music/Nautilus_View_music.oaf.in.h:5
+msgid "Music view factory"
+msgstr "ミュージックビューファクトリ"
+
+#: components/music/Nautilus_View_music.oaf.in.h:6
+msgid "View as Music"
+msgstr "ミュージックとして表示"
+
 #: components/news/nautilus-news.c:1327
+#, c-format
 msgid "Couldn't load %s"
 msgstr "%sを読み込めませんでした"
 
 #. put up a title that's displayed while we wait
 #: components/news/nautilus-news.c:1567
+#, c-format
 msgid "Loading %s"
 msgstr "%sを読み込んでいます"
 
 #: components/news/nautilus-news.c:1904
 msgid "Sorry, but you have not specified a name for the site!"
-msgstr ""
-"すみません、サイトの名前が指定されていません!"
+msgstr "すみません、サイトの名前が指定されていません!"
 
 #: components/news/nautilus-news.c:1904
 msgid "Missing Site Name Error"
@@ -1498,8 +1755,7 @@ msgstr "サイト名不明エラー"
 
 #: components/news/nautilus-news.c:1908
 msgid "Sorry, but you have not specified a URL for the site!"
-msgstr ""
-"すみません、サイトのURLが指定されていません!"
+msgstr "すみません、サイトのURLが指定されていません!"
 
 #: components/news/nautilus-news.c:1908
 msgid "Missing URL Error"
@@ -1568,8 +1824,8 @@ msgid ""
 "The News panel displays current headlines from your favorite websites.  "
 "Click the 'Select Sites' button to select the sites to display."
 msgstr ""
-"ニュースパネルはお気に入りWebサイトにある現在のヘッドラインを表示します。"
-"'サイトの選択'ボタンをクリックして表示したいサイトを選択してください。"
+"ニュースパネルはお気に入りWebサイトにある現在のヘッドラインを表示します。'サ"
+"イトの選択'ボタンをクリックして表示したいサイトを選択してください。"
 
 #. create a button box to hold the command buttons
 #: components/news/nautilus-news.c:2443
@@ -1579,6 +1835,34 @@ msgstr "サイトの選択"
 #: components/news/nautilus-news.c:2503
 msgid "image indicating that the news has changed"
 msgstr "ニュースが更新されたことを示す画像"
+
+#: components/news/Nautilus_View_news.oaf.in.h:1
+msgid "Factory for news view"
+msgstr "ニュースビューのファクトリ"
+
+#: components/news/Nautilus_View_news.oaf.in.h:2
+msgid "News"
+msgstr "ニュース"
+
+#: components/news/Nautilus_View_news.oaf.in.h:3
+msgid "News sidebar panel"
+msgstr "ニュースサイドバーパネル"
+
+#: components/news/Nautilus_View_news.oaf.in.h:4
+msgid "News sidebar panel fetches and displays RSS feeds"
+msgstr "ニューサイドバーパネルはRSSフィードを取得して表示します"
+
+#: components/notes/Nautilus_View_notes.oaf.in.h:1
+msgid "Factory for annotation view"
+msgstr "注釈ビューのファクトリ"
+
+#: components/notes/Nautilus_View_notes.oaf.in.h:3
+msgid "Notes sidebar panel"
+msgstr "ノートサイドバーパネル"
+
+#: components/notes/Nautilus_View_notes.oaf.in.h:4
+msgid "Notes sidebar panel for Nautilus"
+msgstr "Nautilusのノートサイドバーパネル"
 
 #: components/sample/nautilus-sample-content-view.c:136
 msgid "(none)"
@@ -1606,6 +1890,50 @@ msgstr ""
 "\n"
 "サンプルのツールバーボタンをクリックしました"
 
+#: components/sample/Nautilus_View_sample.oaf.in.h:3
+#: components/sample/nautilus-sample-content-view-ui.xml.h:1
+msgid "Sample"
+msgstr "サンプル"
+
+#: components/sample/nautilus-sample-content-view-ui.xml.h:2
+msgid "This is a sample merged menu item"
+msgstr "これは複合メニューアイテムの例です"
+
+#: components/sample/nautilus-sample-content-view-ui.xml.h:3
+msgid "This is a sample merged toolbar button"
+msgstr "これは複合ツールバーボタンの例です"
+"%s\n"
+"\n"
+"サンプルのツールバーボタンをクリックしました"
+
+#: components/sample/nautilus-sample-content-view-ui.xml.h:5
+msgid "Sample"
+msgstr "サンプル"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:1
+msgid "Nautilus Sample view"
+msgstr "Nautilus サンプルビュー"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:2
+msgid "Nautilus Sample view factory"
+msgstr "Nautilusサンプルビューファクトリ"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:4
+msgid "Sample Viewer"
+msgstr "サンプルビューア"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:5
+msgid "Sample content view component"
+msgstr "サンプルコンテンツビューコンポーネント"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:6
+msgid "Sample content view component's factory"
+msgstr "サンプルコンテンツビューコンポーネントのファクトリ"
+
+#: components/sample/Nautilus_View_sample.oaf.in.h:7
+msgid "View as Sample"
+msgstr "サンプルとして表示"
+
 #: components/text/nautilus-text-view.c:332
 #, c-format
 msgid "Sorry, but %s is too large for Nautilus to load all of it."
@@ -1614,6 +1942,805 @@ msgstr "申し分けありませんが、%s はNautilusですべてを読み込むには大きすぎます"
 #: components/text/nautilus-text-view.c:335
 msgid "File too large"
 msgstr "ファイルが大きすぎます"
+
+#: components/text/nautilus-text-view-ui.xml.h:1
+#, fuzzy
+msgid "F_onts"
+msgstr "フォント"
+
+#: components/text/nautilus-text-view-ui.xml.h:2
+#, fuzzy
+msgid "Lucida"
+msgstr "アシッド"
+
+#: components/text/nautilus-text-view-ui.xml.h:3 data/linksets/home.xml.h:3
+#: src/nautilus-service-ui.xml.h:4
+#, fuzzy
+msgid "Services"
+msgstr "デバイス"
+
+#: components/text/Nautilus_View_text.oaf.in.h:4
+#: components/text/nautilus-text-view-ui.xml.h:4
+#, fuzzy
+msgid "Text view"
+msgstr "テキスト表記:"
+
+#: components/text/nautilus-text-view-ui.xml.h:5
+msgid "Use the Courier Font"
+msgstr ""
+
+#: components/text/nautilus-text-view-ui.xml.h:6
+msgid "Use the Fixed Font"
+msgstr ""
+
+#: components/text/nautilus-text-view-ui.xml.h:7
+msgid "Use the GTK System Font"
+msgstr ""
+
+#: components/text/nautilus-text-view-ui.xml.h:8
+#, fuzzy
+msgid "Use the Helvetica Font"
+msgstr "詰めて表示する"
+
+#: components/text/nautilus-text-view-ui.xml.h:9
+msgid "Use the Lucida Font"
+msgstr ""
+
+#: components/text/nautilus-text-view-ui.xml.h:10
+msgid "Use the Times Font"
+msgstr ""
+
+#: components/text/nautilus-text-view-ui.xml.h:11
+msgid "_Courier"
+msgstr ""
+
+#: components/text/nautilus-text-view-ui.xml.h:12
+msgid "_Fixed"
+msgstr ""
+
+#: components/text/nautilus-text-view-ui.xml.h:13
+msgid "_GTK System Font"
+msgstr ""
+
+#: components/text/nautilus-text-view-ui.xml.h:14
+#, fuzzy
+msgid "_Helvetica"
+msgstr "ケルト"
+
+#: components/text/nautilus-text-view-ui.xml.h:15
+#, fuzzy
+msgid "_Times"
+msgstr "時間"
+
+#: components/text/Nautilus_View_text.oaf.in.h:1
+msgid "Factory for text view"
+msgstr ""
+
+#: components/text/Nautilus_View_text.oaf.in.h:2
+#, fuzzy
+msgid "Text"
+msgstr "次"
+
+#: components/text/Nautilus_View_text.oaf.in.h:3
+msgid "Text Viewer"
+msgstr "テキストビューア"
+
+#: components/text/Nautilus_View_text.oaf.in.h:5
+msgid "Text view factory"
+msgstr "テキストビューファクトリ"
+
+#: components/text/Nautilus_View_text.oaf.in.h:6
+msgid "View as Text"
+msgstr "テキストとして表示"
+
+#: components/text/services/google.xml.h:1
+msgid "Search Google for Selected Text"
+msgstr "選択したテキストをGoogleで検索"
+
+#: components/text/services/google.xml.h:2
+msgid "Use Google to search the web for the selected text"
+msgstr "選択したテキストをGoogleでWeb検索"
+
+#: components/text/services/webster.xml.h:1
+msgid "Look Up Selected Text in Dictionary"
+msgstr "選択したテキストを辞書で検索"
+
+#: components/text/services/webster.xml.h:2
+msgid "Look up the selected text in the Merriam-Webster dictionary"
+msgstr ""
+
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:1
+msgid "animation to indicate on-going activity"
+msgstr ""
+
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:2
+#, fuzzy
+msgid "throbber"
+msgstr "その他"
+
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:3
+msgid "throbber factory"
+msgstr ""
+
+#: components/throbber/Nautilus_Control_throbber.oaf.in.h:4
+msgid "throbber object factory"
+msgstr ""
+
+#: components/tree/Nautilus_View_tree.oaf.in.h:1
+#, fuzzy
+msgid "Nautilus Tree sidebar panel"
+msgstr "Nautilus テーマ"
+
+#: components/tree/Nautilus_View_tree.oaf.in.h:2
+#, fuzzy
+msgid "Nautilus Tree view"
+msgstr "Nautilus テーマ"
+
+#: components/tree/Nautilus_View_tree.oaf.in.h:3
+#: src/nautilus-preferences-dialog.c:386
+msgid "Tree"
+msgstr "ツリー"
+
+#: data/browser.xml.h:1
+#, fuzzy
+msgid "Apparition"
+msgstr "アプリケーション"
+
+#: data/browser.xml.h:2
+msgid "Azul"
+msgstr ""
+
+#: data/browser.xml.h:3
+#, fuzzy
+msgid "Black"
+msgstr "戻る"
+
+#: data/browser.xml.h:4
+msgid "Blue Ridge"
+msgstr ""
+
+#: data/browser.xml.h:5
+msgid "Blue Rough"
+msgstr ""
+
+#: data/browser.xml.h:6
+#, fuzzy
+msgid "Blue Type"
+msgstr "種類別"
+
+#: data/browser.xml.h:7
+#, fuzzy
+msgid "Brushed Metal"
+msgstr "スラッシュメタル"
+
+#: data/browser.xml.h:8
+msgid "Bubble Gum"
+msgstr ""
+
+#: data/browser.xml.h:9
+msgid "Burlap"
+msgstr ""
+
+#: data/browser.xml.h:10
+msgid "Camouflage"
+msgstr ""
+
+#: data/browser.xml.h:11
+msgid "Certified"
+msgstr ""
+
+#: data/browser.xml.h:12
+#, fuzzy
+msgid "Chalk"
+msgstr "チャンネル"
+
+#: data/browser.xml.h:13
+msgid "Charcoal"
+msgstr ""
+
+#: data/browser.xml.h:14
+#, fuzzy
+msgid "Colors"
+msgstr "カラー:"
+
+#: data/browser.xml.h:15
+msgid "Concrete"
+msgstr ""
+
+#: data/browser.xml.h:16
+#, fuzzy
+msgid "Cool"
+msgstr "選択"
+
+#: data/browser.xml.h:17
+#, fuzzy
+msgid "Cork"
+msgstr "コーラス"
+
+#: data/browser.xml.h:18
+#, fuzzy
+msgid "Countertop"
+msgstr "カントリー"
+
+#: data/browser.xml.h:19
+#, fuzzy
+msgid "Danger"
+msgstr "ダンス"
+
+#: data/browser.xml.h:20
+#, fuzzy
+msgid "Danube"
+msgstr "ダンス"
+
+#: data/browser.xml.h:21
+msgid "Dark Cork"
+msgstr ""
+
+#: data/browser.xml.h:22
+msgid "Dark GNOME"
+msgstr ""
+
+#: data/browser.xml.h:23
+#, fuzzy
+msgid "Deep Teal"
+msgstr "デスメタル"
+
+#: data/browser.xml.h:24
+#, fuzzy
+msgid "Distinguished"
+msgstr "完了"
+
+#: data/browser.xml.h:25
+#, fuzzy
+msgid "Dots"
+msgstr "フォント"
+
+#: data/browser.xml.h:26
+#, fuzzy
+msgid "Draft"
+msgstr "ドリーム"
+
+#: data/browser.xml.h:27
+msgid "Drag a color to an object to change it to that color"
+msgstr ""
+
+#: data/browser.xml.h:28
+msgid "Drag a pattern tile to an object to change it"
+msgstr ""
+
+#: data/browser.xml.h:29
+msgid "Drag an emblem to an object to add it to the object"
+msgstr ""
+
+#: data/browser.xml.h:30
+msgid "Eclipse"
+msgstr ""
+
+#: data/browser.xml.h:31 src/file-manager/fm-list-view.c:2285
+#: src/file-manager/fm-properties-window.c:1620
+#: src/file-manager/fm-search-list-view.c:499
+msgid "Emblems"
+msgstr "エンブレム"
+
+#: data/browser.xml.h:32
+msgid "Envy"
+msgstr ""
+
+#: data/browser.xml.h:33
+#, fuzzy
+msgid "Erase"
+msgstr "ゴミ箱"
+
+#: data/browser.xml.h:34
+#, fuzzy
+msgid "Favorite"
+msgstr "書き込み"
+
+#: data/browser.xml.h:35
+msgid "Fibers"
+msgstr ""
+
+#: data/browser.xml.h:36
+#, fuzzy
+msgid "Fire Engine"
+msgstr "検索エンジン"
+
+#: data/browser.xml.h:37
+msgid "Fleur De Lis"
+msgstr ""
+
+#: data/browser.xml.h:38
+#, fuzzy
+msgid "Floral"
+msgstr "前"
+
+#: data/browser.xml.h:39
+#, fuzzy
+msgid "Fossil"
+msgstr "フォーク"
+
+#: data/browser.xml.h:40 icons/gnome/gnome.xml.h:2
+#, fuzzy
+msgid "GNOME"
+msgstr "大きさ"
+
+#: data/browser.xml.h:41
+#, fuzzy
+msgid "Granite"
+msgstr "書き込み"
+
+#: data/browser.xml.h:42
+msgid "Grapefruit"
+msgstr ""
+
+#: data/browser.xml.h:43
+#, fuzzy
+msgid "Green Weave"
+msgstr "ニューウェーブ"
+
+#: data/browser.xml.h:44
+msgid "Ice"
+msgstr ""
+
+#: data/browser.xml.h:45
+msgid "Important"
+msgstr ""
+
+#: data/browser.xml.h:46
+#, fuzzy
+msgid "Indigo"
+msgstr "インディ"
+
+#: data/browser.xml.h:47
+msgid "Leaf"
+msgstr ""
+
+#: data/browser.xml.h:48
+msgid "Lemon"
+msgstr ""
+
+#: data/browser.xml.h:49
+#, fuzzy
+msgid "Mango"
+msgstr "タンゴ"
+
+#: data/browser.xml.h:50
+msgid "Manila Paper"
+msgstr ""
+
+#: data/browser.xml.h:51
+msgid "Moss Ridge"
+msgstr ""
+
+#: data/browser.xml.h:52
+msgid "Mud"
+msgstr ""
+
+#: data/browser.xml.h:53
+#, fuzzy
+msgid "New"
+msgstr "ニューエイジ"
+
+#: data/browser.xml.h:54
+#, fuzzy
+msgid "Numbers"
+msgstr "数字表記:"
+
+#: data/browser.xml.h:55 libnautilus-private/nautilus-file-operations.c:1087
+msgid "OK"
+msgstr "OK"
+
+#: data/browser.xml.h:56
+msgid "Ocean Strips"
+msgstr ""
+
+#: data/browser.xml.h:57
+msgid "Oh No"
+msgstr ""
+
+#: data/browser.xml.h:58
+msgid "Onyx"
+msgstr ""
+
+#: data/browser.xml.h:59
+#, fuzzy
+msgid "Orange"
+msgstr "トランス"
+
+#: data/browser.xml.h:60
+msgid "Pale Blue"
+msgstr ""
+
+#: data/browser.xml.h:61
+#, fuzzy
+msgid "Patterns"
+msgstr "パターン:"
+
+#: data/browser.xml.h:62
+#, fuzzy
+msgid "Personal"
+msgstr "アクセス権"
+
+#: data/browser.xml.h:63
+#, fuzzy
+msgid "Purple Marble"
+msgstr "読み込んでいない"
+
+#: data/browser.xml.h:64
+msgid "Ridged Paper"
+msgstr ""
+
+#: data/browser.xml.h:65
+msgid "Rough Paper"
+msgstr ""
+
+#: data/browser.xml.h:66
+#, fuzzy
+msgid "Ruby"
+msgstr "by"
+
+#: data/browser.xml.h:67
+msgid "Sea Foam"
+msgstr ""
+
+#: data/browser.xml.h:68
+#, fuzzy
+msgid "Shale"
+msgstr "サルサ"
+
+#: data/browser.xml.h:69
+#, fuzzy
+msgid "Silver"
+msgstr "トレーラー"
+
+#: data/browser.xml.h:70
+#, fuzzy
+msgid "Sky"
+msgstr "Sticky"
+
+#: data/browser.xml.h:71
+msgid "Sky Ridge"
+msgstr ""
+
+#: data/browser.xml.h:72
+#, fuzzy
+msgid "Snow Ridge"
+msgstr "サイドバーを表示(_S)"
+
+#: data/browser.xml.h:73
+#, fuzzy
+msgid "Special"
+msgstr "特殊なフラグ:"
+
+#: data/browser.xml.h:74
+#, fuzzy
+msgid "Stucco"
+msgstr "停止"
+
+#: data/browser.xml.h:75
+msgid "Tangerine"
+msgstr ""
+
+#: data/browser.xml.h:76
+#, fuzzy
+msgid "Terracotta"
+msgstr "テロ"
+
+#: data/browser.xml.h:77
+#, fuzzy
+msgid "Urgent"
+msgstr "忘れる"
+
+#: data/browser.xml.h:78
+msgid "Violet"
+msgstr ""
+
+#: data/browser.xml.h:79
+msgid "Wavy White"
+msgstr ""
+
+#: data/browser.xml.h:80
+#, fuzzy
+msgid "White"
+msgstr "書き込み"
+
+#: data/browser.xml.h:81
+msgid "White Ribs"
+msgstr ""
+
+#: data/linksets/apps.xml.h:2
+msgid "Gnumeric"
+msgstr ""
+
+#: data/linksets/apps.xml.h:3
+#, fuzzy
+msgid "Netscape"
+msgstr "x-u-escaped"
+
+#: data/linksets/apps.xml.h:4
+msgid "The Gimp"
+msgstr ""
+
+#: data/linksets/desktop.xml.h:1 src/nautilus-preferences-dialog.c:80
+#: src/nautilus-preferences-dialog.c:85
+msgid "Desktop"
+msgstr "デスクトップ"
+
+#: data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:5169
+#: libnautilus-private/nautilus-trash-directory.c:383
+#: src/file-manager/fm-desktop-icon-view.c:71
+msgid "Trash"
+msgstr "ゴミ箱"
+
+#: data/linksets/home.xml.h:1
+#, fuzzy
+msgid "Computer"
+msgstr "カントリー"
+
+#: data/linksets/home.xml.h:2
+msgid "Home Directory"
+msgstr ""
+
+#: data/linksets/portals.xml.h:1
+#, fuzzy
+msgid "Excite"
+msgstr "実行"
+
+#: data/linksets/portals.xml.h:2
+#, fuzzy
+msgid "Portals"
+msgstr "ポート:"
+
+#: data/linksets/portals.xml.h:3
+msgid "Yahoo"
+msgstr ""
+
+#: data/linksets/search_engines.xml.h:1
+#, fuzzy
+msgid "Alta Vista"
+msgstr "アーティスト"
+
+#: data/linksets/search_engines.xml.h:2
+msgid "Google"
+msgstr ""
+
+#: data/linksets/search_engines.xml.h:3 src/nautilus-preferences-dialog.c:282
+msgid "Search Engines"
+msgstr "検索エンジン"
+
+#: data/static_bookmarks.xml.h:1
+#, fuzzy
+msgid "Allaire"
+msgstr "風刺作品"
+
+#: data/static_bookmarks.xml.h:2
+msgid "Binary Freedom"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:3
+#, fuzzy
+msgid "Borland"
+msgstr "民謡"
+
+#: data/static_bookmarks.xml.h:4
+msgid "CNET Computers.com"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:5
+msgid "CNET Linux Center"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:6
+#, fuzzy
+msgid "CollabNet"
+msgstr "キャバレー"
+
+#: data/static_bookmarks.xml.h:7
+msgid "Compaq"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:8
+#, fuzzy
+msgid "Conectiva"
+msgstr "会議"
+
+#: data/static_bookmarks.xml.h:9
+#, fuzzy
+msgid "Covalent"
+msgstr "コメント"
+
+#: data/static_bookmarks.xml.h:10
+msgid "Debian.org"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:11
+#, fuzzy
+msgid "Dell"
+msgstr "削除"
+
+#: data/static_bookmarks.xml.h:12
+msgid "Eazel"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:13
+msgid "Freshmeat.net"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:14
+msgid "GNOME.org"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:15
+msgid "GNU.org"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:17
+#, fuzzy
+msgid "International"
+msgstr "インストルメンタル"
+
+#: data/static_bookmarks.xml.h:18
+#, fuzzy
+msgid "Linux Documentation Project"
+msgstr "GNOME 文書"
+
+#: data/static_bookmarks.xml.h:19
+msgid "Linux One"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:20
+msgid "Linux Online"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:21
+msgid "Linux Resources"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:22
+msgid "Linux Weekly News"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:23
+msgid "LinuxNewbie.org"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:24
+msgid "LinuxOrbit.com"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:25
+msgid "MandrakeSoft"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:26
+#, fuzzy
+msgid "Netraverse"
+msgstr "しない"
+
+#: data/static_bookmarks.xml.h:27
+#, fuzzy
+msgid "News and Media"
+msgstr "ニュースパネル"
+
+#: data/static_bookmarks.xml.h:28
+msgid "O'Reilly"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:29
+msgid "OSDN"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:30
+msgid "Open Source Asia"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:31
+msgid "OpenOffice"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:32
+msgid "Penguin Computing"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:33
+#, fuzzy
+msgid "Rackspace"
+msgstr "置換"
+
+#: data/static_bookmarks.xml.h:34
+#, fuzzy
+msgid "Red Hat"
+msgstr "編集を繰り返す"
+
+#: data/static_bookmarks.xml.h:35
+msgid "Red Hat Network"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:36
+msgid "RedFlag Linux"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:37
+#, fuzzy
+msgid "Software"
+msgstr "開始"
+
+#: data/static_bookmarks.xml.h:38
+msgid "SourceForge"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:39
+msgid "Sun StarOffice"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:40
+msgid "Sun Wah Linux"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:41
+#, fuzzy
+msgid "Web Services"
+msgstr "デバイス"
+
+#: data/static_bookmarks.xml.h:42
+msgid "ZDNet Linux Hardware Database"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:43
+msgid "ZDNet Linux Resource Center"
+msgstr ""
+
+#: data/static_bookmarks.xml.h:44
+msgid "Zero-Knowledge"
+msgstr ""
+
+#: icons/crux_eggplant/crux_eggplant.xml.h:1
+msgid "An Eggplant variation of the Crux theme."
+msgstr ""
+
+#: icons/crux_eggplant/crux_eggplant.xml.h:2
+msgid "Crux-Eggplant"
+msgstr ""
+
+#: icons/crux_teal/crux_teal.xml.h:1
+msgid "A Teal variation of the Crux theme."
+msgstr ""
+
+#: icons/crux_teal/crux_teal.xml.h:2
+msgid "Crux-Teal"
+msgstr ""
+
+#: icons/default.xml.h:1
+#, fuzzy
+msgid "Default"
+msgstr "デフォルトの表示"
+
+#: icons/default.xml.h:2
+#, fuzzy
+msgid "This is the default theme for Nautilus."
+msgstr "\"%s\" のデフォルトです"
+
+#: icons/gnome/gnome.xml.h:1
+msgid "A theme designed to fit well with the classic GNOME environment"
+msgstr ""
+
+#: icons/sierra/sierra.xml.h:1
+#, fuzzy
+msgid "Sierra"
+msgstr "サイズ"
+
+#: icons/sierra/sierra.xml.h:2
+msgid "Uses manila folders and gray-green backgrounds."
+msgstr ""
+
+#: icons/tahoe/tahoe.xml.h:1
+#, fuzzy
+msgid "Tahoe"
+msgstr "ゴミ箱"
+
+#: icons/tahoe/tahoe.xml.h:2
+msgid "This theme uses photo-realistic folders."
+msgstr ""
 
 #: libnautilus-private/nautilus-customization-data.c:356
 msgid "reset"
@@ -1846,12 +2973,13 @@ msgstr ""
 "です"
 
 #: libnautilus-private/nautilus-file.c:4137
+#, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
 "gnome-vfs mailing list."
 msgstr ""
-"MIMEタイプ %s (ファイルは %s)についての説明がみつかりません。gnome-vfs"
-"メーリングリストに連絡してください。"
+"MIMEタイプ %s (ファイルは %s)についての説明がみつかりません。gnome-vfsメーリ"
+"ングリストに連絡してください。"
 
 #: libnautilus-private/nautilus-file.c:4151
 msgid "link"
@@ -1870,12 +2998,6 @@ msgstr "%s にリンク"
 #: libnautilus-private/nautilus-file.c:4171
 msgid "link (broken)"
 msgstr "リンク (切れています)"
-
-#: libnautilus-private/nautilus-file.c:5169
-#: libnautilus-private/nautilus-trash-directory.c:383
-#: src/file-manager/fm-desktop-icon-view.c:71
-msgid "Trash"
-msgstr "ゴミ箱"
 
 #. "From" dialog label, source path gets placed next to it in the dialog
 #: libnautilus-private/nautilus-file-operations.c:414
@@ -2199,10 +3321,6 @@ msgstr ""
 #: libnautilus-private/nautilus-file-operations.c:1087
 msgid "Unable to replace file."
 msgstr "ファイルを置き換えることができません"
-
-#: libnautilus-private/nautilus-file-operations.c:1087
-msgid "OK"
-msgstr "OK"
 
 #: libnautilus-private/nautilus-file-operations.c:1097
 #, c-format
@@ -2929,31 +4047,37 @@ msgid "List View"
 msgstr "リスト表示"
 
 #: libnautilus-private/nautilus-global-preferences.c:157
+#: src/file-manager/nautilus-icon-view-ui.xml.h:21
 msgid "Manually"
 msgstr "手動"
 
 #: libnautilus-private/nautilus-global-preferences.c:159
 #: libnautilus-private/nautilus-global-preferences.c:168
+#: src/file-manager/nautilus-icon-view-ui.xml.h:4
 msgid "By Name"
 msgstr "名前"
 
 #: libnautilus-private/nautilus-global-preferences.c:160
 #: libnautilus-private/nautilus-global-preferences.c:169
+#: src/file-manager/nautilus-icon-view-ui.xml.h:5
 msgid "By Size"
 msgstr "サイズ"
 
 #: libnautilus-private/nautilus-global-preferences.c:161
 #: libnautilus-private/nautilus-global-preferences.c:170
+#: src/file-manager/nautilus-icon-view-ui.xml.h:6
 msgid "By Type"
 msgstr "種類別"
 
 #: libnautilus-private/nautilus-global-preferences.c:162
 #: libnautilus-private/nautilus-global-preferences.c:171
+#: src/file-manager/nautilus-icon-view-ui.xml.h:2
 msgid "By Modification Date"
 msgstr "更新日時"
 
 #: libnautilus-private/nautilus-global-preferences.c:163
 #: libnautilus-private/nautilus-global-preferences.c:172
+#: src/file-manager/nautilus-icon-view-ui.xml.h:1
 msgid "By Emblems"
 msgstr "エンブレム"
 
@@ -3087,6 +4211,7 @@ msgid "Switch"
 msgstr "切替え"
 
 #: libnautilus-private/nautilus-icon-text-item.c:1584
+#: src/file-manager/nautilus-icon-view-ui.xml.h:23
 msgid "Rename"
 msgstr "名前変更"
 
@@ -3120,15 +4245,15 @@ msgid ""
 "Fast searches will not be available until an initial index of your files has "
 "been created.  This may take a long time."
 msgstr ""
-"もし高速検索を有効にしたい場合は、ファイル%sをrootになって編集できます。"
-"有効フラグを「はい」に設定してMedusaサービスをオンにします。\n"
+"もし高速検索を有効にしたい場合は、ファイル%sをrootになって編集できます。有効"
+"フラグを「はい」に設定してMedusaサービスをオンにします。\n"
 "インデクス作成と検索サービスを開始するには次のコマンドを実行してください:\n"
 "\n"
 "medusa-indexd\n"
 "medusa-searchd\n"
 "\n"
-"高速検索はインデクスを最初に作るまでは有効になりません。インデクス作成"
-"には長時間かかります。"
+"高速検索はインデクスを最初に作るまでは有効になりません。インデクス作成には長"
+"時間かかります。"
 
 #: libnautilus-private/nautilus-medusa-support.c:139
 msgid ""
@@ -3140,9 +4265,9 @@ msgid ""
 "available.\n"
 msgstr ""
 "検索を実行するアプリケーションMedusaが、システムに見つかりません。もし"
-"Nautilusをご自分でコンパイルしていたら、Medusaをインストールしてから"
-"Nautilusをコンパイルしなおしてください。(Medusaのコピーは"
-"ftp://ftp.gnome.org/にあります)\n"
+"Nautilusをご自分でコンパイルしていたら、MedusaをインストールしてからNautilus"
+"をコンパイルしなおしてください。(Medusaのコピーはftp://ftp.gnome.org/にありま"
+"す)\n"
 "パッケージ済みのNautilusをお使いの場合は、高速検索は使用できません。\n"
 
 #: libnautilus-private/nautilus-program-chooser.c:227
@@ -3261,7 +4386,7 @@ msgstr "どのアプリケーションから \"%s\" を開くか選択"
 
 #: libnautilus-private/nautilus-program-chooser.c:1270
 msgid "View as Other"
-msgstr "他で表示"
+msgstr "他として表示"
 
 #: libnautilus-private/nautilus-program-chooser.c:1271
 #, c-format
@@ -3773,6 +4898,168 @@ msgstr "Nautilusは選択ボリュームをマウント解除できませんでした"
 msgid "ISO 9660 Volume"
 msgstr "ISO 9660 ボリューム"
 
+#: libnautilus/nautilus-clipboard-ui.xml.h:1 src/nautilus-shell-ui.xml.h:5
+msgid "C_lear Text"
+msgstr "テキストを消去(_L)"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:2
+msgid "Clear Text"
+msgstr "テキストを消去"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:3
+msgid "Copy Text"
+msgstr "テキストをコピー"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:4
+msgid "Copy the selected text to the clipboard"
+msgstr "選択されたアイテムをクリップボードへコピーします"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:5
+msgid "Cut Text"
+msgstr "テキストのカット"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:15
+msgid "Cut _Text"
+msgstr "テキストのカット(_T)"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:7
+msgid "Cut the selected text to the clipboard"
+msgstr "選択されたアイテムをカットしてクリップボードに移動します"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:8
+msgid "Paste Text"
+msgstr "テキストの貼り付け"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:9
+msgid "Paste the text stored on the clipboard"
+msgstr "クリップボードに保存されたテキストを貼り付け"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:10
+msgid "Remove the selected text without putting it on the clipboard"
+msgstr "選択したテキストをクリップボードに置かずに削除"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:11
+msgid "Select All"
+msgstr "すべて選択"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:49
+msgid "Select _All"
+msgstr "すべて選択(_A)"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:13
+msgid "Select all the text in a text field"
+msgstr "テキストフィールドのテキストをすべて選択"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:14 src/nautilus-shell-ui.xml.h:77
+msgid "_Copy Text"
+msgstr "テキストをコピー(_C)"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:15 src/nautilus-shell-ui.xml.h:90
+msgid "_Paste Text"
+msgstr "テキストを貼り付け(_C)"
+
+#: nautilus.desktop.in.h:1 src/nautilus-window-manage-views.c:256
+#: src/nautilus-window-menus.c:648
+msgid "Nautilus"
+msgstr "Nautilus"
+
+#: nautilus.desktop.in.h:2
+msgid "Nautilus File Manager and Graphic Shell"
+msgstr "Nautilusファイルマネージャ&グラフィカルシェル"
+
+#: src/Nautilus_shell.oaf.in.h:1
+msgid "Factory for Nautilus shell and file manager"
+msgstr "Nautilusシェルとファイルマネージャのファクトリ"
+
+#: src/Nautilus_shell.oaf.in.h:2
+msgid "Icons"
+msgstr "アイコン"
+
+#: src/Nautilus_shell.oaf.in.h:3
+msgid "Icons Viewer"
+msgstr "アイコン表示"
+
+#: src/Nautilus_shell.oaf.in.h:4
+msgid "List"
+msgstr "リスト"
+
+#: src/Nautilus_shell.oaf.in.h:5
+msgid "List Viewer"
+msgstr "リスト表示"
+
+#: src/Nautilus_shell.oaf.in.h:6
+msgid "Nautilus factory"
+msgstr "Nautilusファクトリ"
+
+#: src/Nautilus_shell.oaf.in.h:7
+msgid "Nautilus file manager component that shows a scrollable list"
+msgstr "Nautilusファイルマネージャコンポーネント"
+
+#: src/Nautilus_shell.oaf.in.h:8
+msgid ""
+"Nautilus file manager component that shows a scrollable list for search "
+"results"
+msgstr ""
+"Nautilusファイルマネージャコンポーネントは検索結果をスクロール可能な"
+"リストで表示します"
+
+#: src/Nautilus_shell.oaf.in.h:9
+msgid "Nautilus file manager component that shows a two-dimensional icon space"
+msgstr "Nautilusファイルマネージャコンポーネントは2次元のアイコンスペース"
+"を表示します"
+
+#: src/Nautilus_shell.oaf.in.h:10
+msgid "Nautilus file manager component that shows icons on the desktop"
+msgstr "Nautilusファイルマネージャコンポーネントはデスクトップのアイコンを表示します"
+
+#: src/Nautilus_shell.oaf.in.h:11
+msgid "Nautilus file manager desktop icon view"
+msgstr "Nautilusファイルマネージャデスクトップアイコン表示"
+
+#: src/Nautilus_shell.oaf.in.h:12
+msgid "Nautilus file manager icon view"
+msgstr "Nautilusファイルマネージャアイコン表示"
+
+#: src/Nautilus_shell.oaf.in.h:13
+msgid "Nautilus file manager list view"
+msgstr "Nautilusファイルマネージャリスト表示"
+
+#: src/Nautilus_shell.oaf.in.h:14
+msgid "Nautilus file manager search results list view"
+msgstr "Nautilusファイルマネージャ検索結果リスト表示"
+
+#: src/Nautilus_shell.oaf.in.h:15
+msgid "Nautilus metafile factory"
+msgstr "Nautilusメタファイルファクトリ"
+
+#: src/Nautilus_shell.oaf.in.h:16
+msgid "Nautilus shell"
+msgstr "Nautilusシェル"
+
+#: src/Nautilus_shell.oaf.in.h:17
+msgid ""
+"Nautilus shell operations that can be done from subsequent command-line "
+"invocations"
+msgstr ""
+"Nautilusシェル操作はサブシェルからのコマンド実行ができます"
+
+#: src/Nautilus_shell.oaf.in.h:18
+msgid "Produces metafile objects for accessing Nautilus metadata"
+msgstr "Nautilusメタデータにアクセスするメタファイルオブジェクト"
+"を生成します"
+
+#: src/Nautilus_shell.oaf.in.h:19
+msgid "Search List"
+msgstr "検索リスト"
+
+#: src/Nautilus_shell.oaf.in.h:20
+msgid "View as Icons"
+msgstr "アイコンで表示"
+
+#: src/Nautilus_shell.oaf.in.h:21
+msgid "View as List"
+msgstr "リストで表示"
+
 #: src/file-manager/fm-desktop-icon-view.c:692
 msgid "Background"
 msgstr "背景"
@@ -3794,7 +5081,10 @@ msgstr "%s のホーム"
 msgid "Empty Trash..."
 msgstr "ゴミ箱を空にする..."
 
-#: src/file-manager/fm-desktop-icon-view.c:1288 src/nautilus-sidebar.c:1494
+#: src/file-manager/fm-desktop-icon-view.c:1288
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
+#: src/file-manager/nautilus-directory-view-ui.xml.h:15
+#: src/nautilus-sidebar.c:1494
 msgid "Empty Trash"
 msgstr "ゴミ箱を空にする"
 
@@ -3830,6 +5120,7 @@ msgstr "削除しますか?"
 #: src/file-manager/fm-directory-view.c:772
 #: src/file-manager/fm-directory-view.c:2850
 #: src/file-manager/fm-directory-view.c:2890
+#: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Delete"
 msgstr "削除"
 
@@ -3876,6 +5167,7 @@ msgid " (containing a total of 1 item)"
 msgstr "(1 個のアイテムすべてを含む)"
 
 #: src/file-manager/fm-directory-view.c:1417
+#, c-format
 msgid " (containing a total of %d items)"
 msgstr "(%d 個のアイテムすべてを含む)"
 
@@ -3979,6 +5271,7 @@ msgid "Use \"%s\" to open the selected item"
 msgstr "選択されたアイテムを \"%s\" を使って開く"
 
 #: src/file-manager/fm-directory-view.c:3309
+#: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Other _Application..."
 msgstr "他のアプリケーション(_A)..."
 
@@ -3987,6 +5280,7 @@ msgid "An _Application..."
 msgstr "アプリケーション(_A)..."
 
 #: src/file-manager/fm-directory-view.c:3315
+#: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Other _Viewer..."
 msgstr "他のビューア(_V)..."
 
@@ -4005,9 +5299,9 @@ msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr ""
-"このフォルダから実行できるファイルはすべて[スクリプト]メニューに表示"
-"されます。メニューからスクリプトを選択すると、選択されているどのアイテム"
-"もスクリプトに入力されて実行されます。"
+"このフォルダから実行できるファイルはすべて[スクリプト]メニューに表示されま"
+"す。メニューからスクリプトを選択すると、選択されているどのアイテムもスクリプ"
+"トに入力されて実行されます。"
 
 #: src/file-manager/fm-directory-view.c:3665
 msgid "About Scripts"
@@ -4034,19 +5328,18 @@ msgid ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position and size of current window"
 msgstr ""
-"このフォルダから実行可能なファイルはすべて[スクリプト]メニューに"
-"表示されます。"
-"メニューからスクリプトを選択するとスクリプトが実行されます。\n"
+"このフォルダから実行可能なファイルはすべて[スクリプト]メニューに表示されま"
+"す。メニューからスクリプトを選択するとスクリプトが実行されます。\n"
 "\n"
-"ローカルフォルダから実行されると、選択されているファイル名がスクリプト"
-"に渡されます。リモートフォルダ(つまりWebやftpのコンテンツを表示している"
-"フォルダ)から実行されると、スクリプトには何も渡されません。\n"
+"ローカルフォルダから実行されると、選択されているファイル名がスクリプトに渡さ"
+"れます。リモートフォルダ(つまりWebやftpのコンテンツを表示しているフォルダ)か"
+"ら実行されると、スクリプトには何も渡されません。\n"
 "\n"
-"どの場合でも、スクリプトが使用する次の環境変数がNautilusによってセット"
-"されます:\n"
+"どの場合でも、スクリプトが使用する次の環境変数がNautilusによってセットされま"
+"す:\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: 選択されているファイルが改行で"
-"区切られているリスト(ローカルのみ)\n"
+"NAUTILUS_SCRIPT_SELECTED_FILE_PATHS: 選択されているファイルが改行で区切られて"
+"いるリスト(ローカルのみ)\n"
 "\n"
 "NAUTILUS_SCRIPT_CURRENT_URI: 現在位置を示すURI\n"
 "\n"
@@ -4079,16 +5372,16 @@ msgstr "[ファイルの貼り付け]コマンドを選択すると、\"%s\"をコピーします"
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
 msgstr ""
-"[ファイルの貼り付け]コマンドを選択すると、選択された%d個のアイテムを"
-"移動します。"
+"[ファイルの貼り付け]コマンドを選択すると、選択された%d個のアイテムを移動しま"
+"す。"
 
 #: src/file-manager/fm-directory-view.c:3755
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
 msgstr ""
-"[ファイルの貼り付け]コマンドを選択すると、選択された%d個のアイテムを"
-"コピーします。"
+"[ファイルの貼り付け]コマンドを選択すると、選択された%d個のアイテムをコピーし"
+"ます。"
 
 #: src/file-manager/fm-directory-view.c:3901
 msgid "There is nothing on the clipboard to paste."
@@ -4099,6 +5392,7 @@ msgid "Open _in This Window"
 msgstr "このウィンドウで開く(_i)"
 
 #: src/file-manager/fm-directory-view.c:4019
+#: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Open _in New Window"
 msgstr "新規ウィンドウで開く(_i)"
 
@@ -4120,10 +5414,12 @@ msgid "Delete all selected items permanently"
 msgstr "すべての選択されたアイテムを永久的に削除する"
 
 #: src/file-manager/fm-directory-view.c:4044
+#: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Move to _Trash"
 msgstr "ゴミ箱へ移動(_T)"
 
 #: src/file-manager/fm-directory-view.c:4046
+#: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Move each selected item to the Trash"
 msgstr "選択されたアイテムをゴミ箱へ移動します"
 
@@ -4132,6 +5428,7 @@ msgid "De_lete..."
 msgstr "削除(_l)..."
 
 #: src/file-manager/fm-directory-view.c:4073
+#: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "De_lete"
 msgstr "削除(_l)"
 
@@ -4148,10 +5445,12 @@ msgid "_Empty Trash..."
 msgstr "ゴミ箱を空にする(_E)..."
 
 #: src/file-manager/fm-directory-view.c:4111
+#: src/file-manager/nautilus-directory-view-ui.xml.h:58
 msgid "_Empty Trash"
 msgstr "ゴミ箱を空にする(_E)"
 
 #: src/file-manager/fm-directory-view.c:4122
+#: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "R_emove Custom Images"
 msgstr "カスタムイメージを削除する(_e)"
 
@@ -4164,6 +5463,7 @@ msgid "Cu_t File"
 msgstr "ファイルの切り取り(_t)"
 
 #: src/file-manager/fm-directory-view.c:4138
+#: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "ファイルの切り取り(_t)"
 
@@ -4172,6 +5472,7 @@ msgid "_Copy File"
 msgstr "ファイルをコピー(_C)"
 
 #: src/file-manager/fm-directory-view.c:4149
+#: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "_Copy Files"
 msgstr "ファイルをコピー(_C)"
 
@@ -4371,6 +5672,7 @@ msgid "by _Name"
 msgstr "名前(_N)"
 
 #: src/file-manager/fm-icon-view.c:177
+#: src/file-manager/nautilus-icon-view-ui.xml.h:15
 msgid "Keep icons sorted by name in rows"
 msgstr "列のアイコンを名前順でソート"
 
@@ -4379,6 +5681,7 @@ msgid "by _Size"
 msgstr "サイズ(_S)"
 
 #: src/file-manager/fm-icon-view.c:184
+#: src/file-manager/nautilus-icon-view-ui.xml.h:16
 msgid "Keep icons sorted by size in rows"
 msgstr "列のアイコンをサイズ順でソート"
 
@@ -4387,6 +5690,7 @@ msgid "by _Type"
 msgstr "種類別(_T)"
 
 #: src/file-manager/fm-icon-view.c:191
+#: src/file-manager/nautilus-icon-view-ui.xml.h:17
 msgid "Keep icons sorted by type in rows"
 msgstr "列のアイコンを種類順にソート"
 
@@ -4395,6 +5699,7 @@ msgid "by Modification _Date"
 msgstr "更新日時(_D)"
 
 #: src/file-manager/fm-icon-view.c:198
+#: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by modification date in rows"
 msgstr "列のアイコンを更新日時順にソート"
 
@@ -4403,10 +5708,12 @@ msgid "by _Emblems"
 msgstr "エンブレム(_E)"
 
 #: src/file-manager/fm-icon-view.c:205
+#: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by emblems in rows"
 msgstr "列のアイコンをエンブレム順にでソート"
 
 #: src/file-manager/fm-icon-view.c:1417
+#: src/file-manager/nautilus-icon-view-ui.xml.h:37
 msgid "_Restore Icons' Original Sizes"
 msgstr "アイコンを元のサイズに戻す(_R)"
 
@@ -4418,12 +5725,6 @@ msgstr "アイコンを元のサイズに戻す(_R)"
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "%s を指しています"
-
-#: src/file-manager/fm-list-view.c:2285
-#: src/file-manager/fm-properties-window.c:1620
-#: src/file-manager/fm-search-list-view.c:499
-msgid "Emblems"
-msgstr "エンブレム"
 
 #: src/file-manager/fm-list-view.c:2291
 #: src/file-manager/fm-search-list-view.c:511
@@ -4652,8 +5953,8 @@ msgid ""
 "running \"medusa-indexd\" as root on the command line."
 msgstr ""
 "選択した検索はシステムのインデックスよりも新しいものです. すぐ検索しても何も"
-"結果は出ません. rootでコマンドラインから\"medusa-indexd\"を実行すると"
-"新規インデックスを作成することができます。"
+"結果は出ません. rootでコマンドラインから\"medusa-indexd\"を実行すると新規イン"
+"デックスを作成することができます。"
 
 #: src/file-manager/fm-search-list-view.c:195
 msgid "Search for items that are too new"
@@ -4681,9 +5982,9 @@ msgid ""
 "corrupt.  You can create a new index by running \"medusa-indexd\" as root on "
 "the command line."
 msgstr ""
-"システムのファイルのインデクスを開けません。インデクスが見つからないか"
-"壊れています。rootになってコマンドラインから\"medusa-indexd\"を実行すると"
-"新規にインデクスを作成できます。"
+"システムのファイルのインデクスを開けません。インデクスが見つからないか壊れて"
+"います。rootになってコマンドラインから\"medusa-indexd\"を実行すると新規にイン"
+"デクスを作成できます。"
 
 #: src/file-manager/fm-search-list-view.c:213
 msgid "Error reading file index"
@@ -4730,9 +6031,9 @@ msgid ""
 "\n"
 "medusa-searchd"
 msgstr ""
-"インデクスファイルは利用可能ですが, インデクス要求を処理するMedusa検索"
-"デーモンが実行されていません. このプログラムを実行するには root でログイン"
-"し, 次のコマンドを入力してください:\n"
+"インデクスファイルは利用可能ですが, インデクス要求を処理するMedusa検索デーモ"
+"ンが実行されていません. このプログラムを実行するには root でログインし, 次の"
+"コマンドを入力してください:\n"
 "\n"
 "medusa-searchd"
 
@@ -4766,10 +6067,10 @@ msgid ""
 "indexd\" as root on the command line.  Until a complete index is available, "
 "searches will take several minutes."
 msgstr ""
-"高速検索をするには、システムのファイルのインデクスが必要になります。"
-"現在インデクスはありません。rootになってコマンドラインで\"medusa-indexd\""
-"を実行するとインデクスを作成できます。完全なインデクスが出来るまでは"
-"検索に5,6分かかります。"
+"高速検索をするには、システムのファイルのインデクスが必要になります。現在イン"
+"デクスはありません。rootになってコマンドラインで\"medusa-indexd\"を実行すると"
+"インデクスを作成できます。完全なインデクスが出来るまでは検索に5,6分かかりま"
+"す。"
 
 #: src/file-manager/fm-search-list-view.c:297
 msgid ""
@@ -4778,10 +6079,10 @@ msgid ""
 "running \"medusa-indexd\" as root on the command line.  Until a complete "
 "index is available, content searches cannot be performed."
 msgstr ""
-"コンテンツ検索をするには、システム上にあるコンテンツのインデクスが必要に"
-"なります。現在インデクスはありません。rootになってコマンドラインで"
-"\"medusa-indexd\"を実行するとインデクスを作成できます。完全なインデクス"
-"が出来るまではコンテンツ検索は実行できません。"
+"コンテンツ検索をするには、システム上にあるコンテンツのインデクスが必要になり"
+"ます。現在インデクスはありません。rootになってコマンドラインで\"medusa-indexd"
+"\"を実行するとインデクスを作成できます。完全なインデクスが出来るまではコンテ"
+"ンツ検索は実行できません。"
 
 #: src/file-manager/fm-search-list-view.c:322
 msgid ""
@@ -4806,6 +6107,7 @@ msgstr "どこ"
 #. * is to inform translators of this tricky concept).
 #.
 #: src/file-manager/fm-search-list-view.c:557
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
 msgid "_Reveal in New Window"
 msgstr "新規ウィンドウに表示する(_R)"
 
@@ -4835,6 +6137,386 @@ msgstr ""
 #: src/file-manager/fm-search-list-view.c:679
 msgid "Too Many Matches"
 msgstr "一致が多すぎます"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:1
+msgid "Change Desktop Background"
+msgstr "デスクトップ背景を変更"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:2
+#: src/file-manager/nautilus-directory-view-ui.xml.h:11
+msgid "Delete all items in the Trash"
+msgstr "ゴミ箱のすべてのアイテムを削除"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:3
+msgid "Disks"
+msgstr "ディスク"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
+msgid "Mount or unmount disks"
+msgstr "ディスクのマウントまたはマウント解除"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
+msgid "New Terminal"
+msgstr "新規ターミナル"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:7
+msgid "Open a new GNOME terminal window"
+msgstr "新規GNOMEターミナルウィンドウを開く"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
+msgid "Remove any custom pattern or color from the desktop background"
+msgstr "デスクトップ背景のカスタムパターンやカラーを削除"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
+msgid "Reset Desktop Background"
+msgstr "デスクトップ背景をリセット"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
+msgid ""
+"Show a window that lets you set your desktop background's pattern or color"
+msgstr ""
+"デスクトップ背景のパターンやカラーを設定するウィンドウを表示します"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:1
+msgid "Choose a program with which to open the selected item"
+msgstr "選択したアイテムを開くプログラムを選択"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:2
+msgid "Choose another application with which to open the selected item"
+msgstr "選択したアイテムを開く、他のアプリケーションを選択"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:3
+msgid "Choose another viewer with which to view the selected item"
+msgstr "選択したアイテムを表示する、他のビューアを選択"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:4
+msgid "Copy Files"
+msgstr "ファイルをコピー"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:5
+msgid "Create a new empty folder inside this folder"
+msgstr "このフォルダに新規に空のフォルダを作成"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:6
+msgid "Create a symbolic link for each selected item"
+msgstr "選択したアイテムそれぞれにシンボリックリンクを作成"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:8
+msgid "Cut Files"
+msgstr "ファイルのカット"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:12
+msgid "Delete each selected item, without moving to the Trash"
+msgstr "選択したアイテムを、ゴミ箱に移動しないで削除"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:13
+msgid "Duplicate"
+msgstr "複製"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:14
+msgid "Duplicate each selected item"
+msgstr "選択したアイテムをその場で複製します"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:16
+msgid "Make Link"
+msgstr "リンクを作成"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:18
+msgid ""
+"Move or copy files previously selected by a Cut Files or Copy Files command"
+msgstr ""
+"[ファイルをカット]または[ファイルをコピー]で以前選択したファイルを移動"
+"またはコピー"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:19
+msgid "Move to Trash"
+msgstr "ゴミ箱へ移動"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:21
+msgid "New Folder"
+msgstr "新規フォルダ"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:22
+msgid "Open"
+msgstr "開く"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:23
+msgid "Open Scripts Folder"
+msgstr "スクリプトフォルダを開く"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:24
+msgid "Open Wit_h"
+msgstr "他のアプリケーションから開く(_H)"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:25
+msgid "Open With"
+msgstr "他のアプリケーションから開く"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:27
+msgid "Open each selected item in a new window"
+msgstr "選択したアイテムをそれぞれ新規ウィンドウで開く"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:28
+msgid "Open in New Window"
+msgstr "新規ウィンドウで開く"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:29
+msgid "Open the selected item in this window"
+msgstr "選択したアイテムをこのウィンドウで開く"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:30
+msgid "Other Application..."
+msgstr "他のアプリケーション..."
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:31
+msgid "Other Viewer..."
+msgstr "他のビューア..."
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:34
+msgid "Paste Files"
+msgstr "ファイルの貼り付け"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:35
+msgid "Prepare the selected files to be copied with a Paste Files command"
+msgstr "[ファイルの貼り付け]コマンドで選択したファイルをコピーする準備をします"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:36
+msgid "Prepare the selected files to be moved with a Paste Files command"
+msgstr "[ファイルの貼り付け]コマンドで選択したファイルを移動する準備をします"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:38
+msgid "Remove Custom Images"
+msgstr "カスタムイメージを削除する"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:39
+msgid "Remove any custom images from selected icons"
+msgstr "選択したアイコンからカスタムイメージを削除します"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:40
+msgid "Remove any custom pattern or color from the background of this location"
+msgstr "この場所の背景からカスタムパターンまたはカラーを削除"
+
+#. add the reset background item, possibly disabled
+#: src/file-manager/nautilus-directory-view-ui.xml.h:41
+#: src/nautilus-sidebar.c:544
+msgid "Reset Background"
+msgstr "背景をリセット"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:42
+#, fuzzy
+msgid "Reset View to Match Preferences"
+msgstr "表示設定"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:43
+#, fuzzy
+msgid "Reset View to Match _Preferences"
+msgstr "表示設定"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:44
+msgid "Reset sorting order and zoom level to match preferences for this view"
+msgstr ""
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:45
+msgid "Run or manage scripts from ~/Nautilus/scripts"
+msgstr ""
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:46
+#, fuzzy
+msgid "Scripts"
+msgstr "スクリプト"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:47
+#, fuzzy
+msgid "Select All Files"
+msgstr "サイトの選択"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:48
+#, fuzzy
+msgid "Select _All Files"
+msgstr "サイトの選択"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:49
+#, fuzzy
+msgid "Select all items in this window"
+msgstr "プロパティウィンドウに特殊なフラグを表示する"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:50
+#, fuzzy
+msgid "Show Properties"
+msgstr "%s のプロパティ"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:51
+#, fuzzy
+msgid "Show Trash"
+msgstr "ゴミ箱"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:52
+#, fuzzy
+msgid "Show _Properties"
+msgstr "%s のプロパティ"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:53
+#, fuzzy
+msgid "Show the contents of the Trash"
+msgstr "ゴミ箱をコピーできません"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:54
+msgid "Show the folder containing the scripts that appear in this menu"
+msgstr ""
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:55
+msgid "View or modify the properties of each selected item"
+msgstr ""
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:57
+msgid "_Duplicate"
+msgstr ""
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:59
+#, fuzzy
+msgid "_Make Link"
+msgstr "リンクを作成(_L)"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:60
+#, fuzzy
+msgid "_New Folder"
+msgstr "1 個のフォルダ"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:61
+#, fuzzy
+msgid "_Open"
+msgstr "オペラ"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:62
+#, fuzzy
+msgid "_Open Scripts Folder"
+msgstr "スクリプトフォルダがありません"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:63
+#, fuzzy
+msgid "_Paste Files"
+msgstr "ファイルの切り取り(_t)"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:64
+#, fuzzy
+msgid "_Show Trash"
+msgstr "ゴミ箱"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:3
+#, fuzzy
+msgid "By Modification _Date"
+msgstr "更新日時"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:7
+#, fuzzy
+msgid "By _Emblems"
+msgstr "エンブレム"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:8
+#, fuzzy
+msgid "By _Name"
+msgstr "名前"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:9
+#, fuzzy
+msgid "By _Size"
+msgstr "サイズ"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:10
+#, fuzzy
+msgid "By _Type"
+msgstr "種類別"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:11
+msgid "Clean Up by Name"
+msgstr ""
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:12
+#, fuzzy
+msgid "Display icons in the opposite order"
+msgstr "%sタブをサイドバーに表示"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:18
+#, fuzzy
+msgid "Lay Out Items"
+msgstr "アイテムのレイアウト:"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:19
+msgid "Leave icons wherever they are dropped"
+msgstr ""
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:20
+msgid "Make the selected icon stretchable"
+msgstr ""
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:22
+#, fuzzy
+msgid "Re_versed Order"
+msgstr "順逆でソートする"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:24
+msgid "Rename selected icon"
+msgstr ""
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:25
+msgid "Reposition icons to better fit in the window and avoid overlapping"
+msgstr ""
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:26
+#, fuzzy
+msgid "Restore Icons' Original Sizes"
+msgstr "アイコンを元のサイズに戻す(_R)"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:27
+#, fuzzy
+msgid "Restore each selected icon to its original size"
+msgstr "選択されたアイテムをゴミ箱へ移動します"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:28
+#, fuzzy
+msgid "Reversed Order"
+msgstr "順逆でソートする"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:29
+msgid "Stretch Icon"
+msgstr ""
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:30
+#, fuzzy
+msgid "Tighter Layout"
+msgstr "詰めて表示する"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:31
+#, fuzzy
+msgid "Tighter _Layout"
+msgstr "詰めて表示する"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:32
+msgid "Toggle using a tighter layout scheme"
+msgstr ""
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:33
+msgid "_Clean Up by Name"
+msgstr ""
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:34
+#, fuzzy
+msgid "_Lay Out Items"
+msgstr "アイテムのレイアウト:"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:35
+#, fuzzy
+msgid "_Manually"
+msgstr "手動"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:36
+#, fuzzy
+msgid "_Rename"
+msgstr "名前変更"
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:38
+msgid "_Stretch Icon"
+msgstr ""
 
 #: src/file-manager/nautilus-indexing-info.c:88
 #, c-format
@@ -4887,6 +6569,30 @@ msgstr "申し訳ありませんが、medusa検索サービスは利用できません"
 #: src/file-manager/nautilus-indexing-info.c:316
 msgid "%I:%M %p, %x"
 msgstr "%p %I:%M, %x"
+
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:1
+#, fuzzy
+msgid "Reveal each selected item in its original folder"
+msgstr "選択されたアイテムをゴミ箱へ移動します"
+
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:2
+#, fuzzy
+msgid "Reveal in New Window"
+msgstr "新規ウィンドウに表示する(_R)"
+
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:3
+#, fuzzy
+msgid "Show Indexing Status"
+msgstr "インデクス作成ステータス"
+
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:4
+#, fuzzy
+msgid "Show _Indexing Status"
+msgstr "インデクス作成ステータス"
+
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:5
+msgid "Show status of indexing used when searching"
+msgstr ""
 
 #. set the window title and standard close key accelerator
 #: src/nautilus-about.c:141
@@ -5085,6 +6791,7 @@ msgstr ""
 "\n"
 
 #: src/nautilus-first-time-druid.c:475
+#, c-format
 msgid ""
 "Your user level adjusts Nautilus to your degree of experience\n"
 "using GNOME and %s. Choose a level that's comfortable for\n"
@@ -5097,12 +6804,14 @@ msgstr ""
 #. Make the user level radio buttons and fill the radio_buttons
 #. * array
 #: src/nautilus-first-time-druid.c:489
+#, c-format
 msgid ""
 "For users who have no previous experience with GNOME\n"
 "and %s."
 msgstr "GNOME や %s の初心者向け。"
 
 #: src/nautilus-first-time-druid.c:497
+#, c-format
 msgid ""
 "For users who are comfortable with GNOME and %s,\n"
 "but don't describe themselves as ``technical.''"
@@ -5111,6 +6820,7 @@ msgstr ""
 "「技術指向」ではないユーザ向け。"
 
 #: src/nautilus-first-time-druid.c:507
+#, c-format
 msgid ""
 "For users who have GNOME and %s experience, and\n"
 "like to see every detail of the operating system."
@@ -5205,6 +6915,7 @@ msgid "Launch Nautilus when GNOME starts up."
 msgstr "Nautilus を GNOME スタートアップ時に起動する"
 
 #: src/nautilus-first-time-druid.c:991
+#, c-format
 msgid ""
 "Click Finish to launch Nautilus. You'll start with two\n"
 "Nautilus windows: one shows your home folder, and the\n"
@@ -5350,8 +7061,7 @@ msgstr "明示的に指定されたURLのウィンドウだけを作成"
 msgid ""
 "Do not manage the desktop (ignore the preference set in the preferences "
 "dialog)."
-msgstr ""
-"デスクトップを管理しません(設定ダイアログの設定を無視します)。"
+msgstr "デスクトップを管理しません(設定ダイアログの設定を無視します)。"
 
 #: src/nautilus-main.c:153
 msgid "Quit Nautilus."
@@ -5404,10 +7114,6 @@ msgstr "デフォルトの滑らかでないフォント:"
 #: src/nautilus-preferences-dialog.c:67
 msgid "Nautilus Themes"
 msgstr "Nautilus テーマ"
-
-#: src/nautilus-preferences-dialog.c:80 src/nautilus-preferences-dialog.c:85
-msgid "Desktop"
-msgstr "デスクトップ"
 
 #: src/nautilus-preferences-dialog.c:82
 msgid "Use Nautilus to draw the desktop"
@@ -5568,10 +7274,6 @@ msgstr "検索の複雑なオプション"
 msgid "search type to do by default"
 msgstr "デフォルトの検索タイプ"
 
-#: src/nautilus-preferences-dialog.c:282
-msgid "Search Engines"
-msgstr "検索エンジン"
-
 #: src/nautilus-preferences-dialog.c:284
 msgid "Search Engine Location"
 msgstr "検索エンジンの場所"
@@ -5634,10 +7336,6 @@ msgstr "フォルダの外観詳細を公開する"
 #: src/nautilus-preferences-dialog.c:377
 msgid "Tabs"
 msgstr "タブ"
-
-#: src/nautilus-preferences-dialog.c:386
-msgid "Tree"
-msgstr "ツリー"
 
 #: src/nautilus-preferences-dialog.c:388
 msgid "Show only folders (no files) in the tree"
@@ -6050,6 +7748,440 @@ msgstr "[ファイル所有者] [root]"
 msgid "[File owner] is not [root]"
 msgstr "[ファイル所有者] [root]以外"
 
+#: src/nautilus-service-ui.xml.h:1
+msgid "Go to the Eazel Services Summary Page"
+msgstr ""
+
+#: src/nautilus-service-ui.xml.h:2
+msgid "Go to the Eazel Software Catalog"
+msgstr ""
+
+#: src/nautilus-service-ui.xml.h:3
+msgid "Go to your online storage repository"
+msgstr ""
+
+#: src/nautilus-service-ui.xml.h:5
+msgid "Software _Catalog"
+msgstr ""
+
+#: src/nautilus-service-ui.xml.h:6
+msgid "_Eazel Services Home"
+msgstr ""
+
+#: src/nautilus-service-ui.xml.h:7
+msgid "_Online Storage"
+msgstr ""
+
+#: src/nautilus-service-ui.xml.h:8
+#, fuzzy
+msgid "_Services"
+msgstr "デバイス"
+
+#: src/nautilus-shell-ui.xml.h:1
+msgid " _Advanced"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:2
+msgid " _Beginner"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:3
+msgid " _Intermediate"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:4
+msgid "Add a bookmark for the current location to this menu"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:6
+msgid "Change the visibility of this window's location bar"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:7
+msgid "Change the visibility of this window's sidebar"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:8
+msgid "Change the visibility of this window's status bar"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:9
+msgid "Change the visibility of this window's toolbar"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:10
+msgid "Choose a view for the current location, or modify the set of views"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:11
+msgid "Clear contents of Go menu and Back/Forward lists"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:12
+msgid "Close _All Windows"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:13
+msgid "Close all Nautilus windows"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:14
+#, fuzzy
+msgid "Close this window"
+msgstr "プロパティウィンドウを作成中"
+
+#: src/nautilus-shell-ui.xml.h:16
+msgid "Display a window that allows editing the bookmarks in this menu"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:17
+msgid "Display credits for the creators of Nautilus"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:18
+msgid "Display on-line help for Nautilus"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:19
+msgid ""
+"Display patterns, colors, and emblems that can be used to customize "
+"appearance"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:20
+msgid "Display quick reference pages for Nautilus"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:21
+msgid "Display release notes for Nautilus"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:22
+msgid "Display support information for Nautilus and Eazel Services"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:23
+msgid "Display the latest contents of the current location"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:24
+msgid "Edit various Nautilus preferences"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:25
+#, fuzzy
+msgid "Find"
+msgstr "検索:"
+
+#: src/nautilus-shell-ui.xml.h:26
+#, fuzzy
+msgid "For_get History"
+msgstr "履歴を削除しますか?"
+
+#: src/nautilus-shell-ui.xml.h:27
+msgid "Go to Eazel Services"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:28
+#, fuzzy
+msgid "Go to the home location"
+msgstr "存在しない場所へ移動する"
+
+#: src/nautilus-shell-ui.xml.h:29
+#, fuzzy
+msgid "Go to the next visited location"
+msgstr "存在しない場所へ移動する"
+
+#: src/nautilus-shell-ui.xml.h:30
+#, fuzzy
+msgid "Go to the previous visited location"
+msgstr "存在しない場所へ移動する"
+
+#: src/nautilus-shell-ui.xml.h:31
+msgid "Go up to the location that contains the displayed location"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:32 src/nautilus-window-menus.c:493
+msgid "Hide Location _Bar"
+msgstr "ロケーションバーを非表示(_B)"
+
+#: src/nautilus-shell-ui.xml.h:33 src/nautilus-window-menus.c:475
+msgid "Hide St_atus Bar"
+msgstr "ステータスバーを非表示(_a)"
+
+#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:481
+msgid "Hide _Sidebar"
+msgstr "サイドバーを非表示(_S)"
+
+#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:487
+msgid "Hide _Toolbar"
+msgstr "ツールバーを隠す(_T)"
+
+#: src/nautilus-shell-ui.xml.h:37
+msgid "Nautilus Quick _Reference"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:38
+#, fuzzy
+msgid "Nautilus Release _Notes"
+msgstr "Nautilus テーマ"
+
+#: src/nautilus-shell-ui.xml.h:39
+msgid "Nautilus User _Manual"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:40
+#, fuzzy
+msgid "New Window"
+msgstr "新規ウィンドウで開く(_i)"
+
+#: src/nautilus-shell-ui.xml.h:41
+#, fuzzy
+msgid "New _Window"
+msgstr "新規ウィンドウを開いています"
+
+#: src/nautilus-shell-ui.xml.h:42
+msgid "Normal Size"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:43
+msgid "Open another Nautilus window for the displayed location"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:44
+msgid "Refresh"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:45
+msgid "Report Profiling"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:46
+msgid "Reset Profiling"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:47
+msgid "Search the World Wide Web"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:48
+msgid "Search this computer for files"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:50
+msgid ""
+"Show a page from which you can send feedback about Nautilus and Eazel "
+"Services"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:51
+msgid "Show the contents at the normal size"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:52
+msgid "Show the contents in less detail"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:53
+#, fuzzy
+msgid "Show the contents in more detail"
+msgstr "(いくつかのコンテンツは読み込んでいません)"
+
+#: src/nautilus-shell-ui.xml.h:54
+msgid "Start Profiling"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:56
+msgid "Stop Profiling"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:57
+msgid "Stop loading this location"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:58
+msgid "Undo the last text change"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:59
+msgid "Up"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:60
+msgid "Use preferences appropriate for beginners"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:61
+msgid "Use preferences appropriate for experts"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:62
+msgid "Use preferences appropriate for most people"
+msgstr ""
+
+#. Add "View as..." extra bonus choice.
+#: src/nautilus-shell-ui.xml.h:63 src/nautilus-window.c:647
+#: src/nautilus-window.c:1545
+msgid "View as..."
+msgstr "表示..."
+
+#: src/nautilus-shell-ui.xml.h:64
+#, fuzzy
+msgid "We_b Search"
+msgstr "検索"
+
+#: src/nautilus-shell-ui.xml.h:65
+#, fuzzy
+msgid "Web Search"
+msgstr "検索"
+
+#: src/nautilus-shell-ui.xml.h:66
+msgid "Zoom In"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:67
+msgid "Zoom Out"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:68
+msgid "Zoom _In"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:69
+msgid "Zoom _Out"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:70
+#, fuzzy
+msgid "_About Nautilus..."
+msgstr "Nautilus について"
+
+#: src/nautilus-shell-ui.xml.h:71
+#, fuzzy
+msgid "_Add Bookmark"
+msgstr "ブックマーク"
+
+#: src/nautilus-shell-ui.xml.h:72
+#, fuzzy
+msgid "_Back"
+msgstr "戻る"
+
+#: src/nautilus-shell-ui.xml.h:73
+#, fuzzy
+msgid "_Backgrounds and Emblems..."
+msgstr "背景とエンブレム"
+
+#: src/nautilus-shell-ui.xml.h:74
+#, fuzzy
+msgid "_Bookmarks"
+msgstr "ブックマーク"
+
+#: src/nautilus-shell-ui.xml.h:75
+msgid "_Close Window"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:76
+msgid "_Community Support"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:78
+#, fuzzy
+msgid "_Edit"
+msgstr "編集"
+
+#: src/nautilus-shell-ui.xml.h:79
+#, fuzzy
+msgid "_Edit Bookmarks..."
+msgstr "内蔵ブックマーク"
+
+#: src/nautilus-shell-ui.xml.h:80
+#, fuzzy
+msgid "_Edit Preferences..."
+msgstr "表示設定"
+
+#: src/nautilus-shell-ui.xml.h:81
+msgid "_Feedback"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:83
+#, fuzzy
+msgid "_Find"
+msgstr "検索:"
+
+#: src/nautilus-shell-ui.xml.h:84
+#, fuzzy
+msgid "_Forward"
+msgstr "前"
+
+#: src/nautilus-shell-ui.xml.h:85
+#, fuzzy
+msgid "_Go"
+msgstr "ゴア"
+
+#: src/nautilus-shell-ui.xml.h:86
+msgid "_Help"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:87
+#, fuzzy
+msgid "_Home"
+msgstr "ホーム"
+
+#: src/nautilus-shell-ui.xml.h:88
+#, fuzzy
+msgid "_Location..."
+msgstr "場所"
+
+#: src/nautilus-shell-ui.xml.h:89
+msgid "_Normal Size"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:91
+#, fuzzy
+msgid "_Preferences"
+msgstr "設定"
+
+#: src/nautilus-shell-ui.xml.h:92
+#, fuzzy
+msgid "_Profiler"
+msgstr "トレーラー"
+
+#: src/nautilus-shell-ui.xml.h:93
+msgid "_Refresh"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:94
+msgid "_Report Profiling"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:95
+msgid "_Reset Profiling"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:96
+msgid "_Start Profiling"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:97
+msgid "_Stop Profiling"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:98
+msgid "_Undo"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:99
+msgid "_Up a Level"
+msgstr ""
+
+#: src/nautilus-shell-ui.xml.h:100
+msgid "_View"
+msgstr "表示(_V)"
+
+#: src/nautilus-shell-ui.xml.h:101
+msgid "_View as..."
+msgstr "別のビューで表示(_V)..."
+
 #: src/nautilus-shell.c:188
 msgid "Caveat"
 msgstr "警告"
@@ -6072,11 +8204,6 @@ msgstr ""
 "なたの自己責任において使用して下さい\n"
 "http://www.eazel.com/feedback.html を訪問してフィードバックや, コメント, 提案"
 "をしてください"
-
-#. add the reset background item, possibly disabled
-#: src/nautilus-sidebar.c:544
-msgid "Reset Background"
-msgstr "背景をリセット"
 
 #: src/nautilus-sidebar.c:724
 msgid ""
@@ -6195,10 +8322,6 @@ msgstr "テーマを削除することができませんでした"
 #, c-format
 msgid "Preview Release %s: %s"
 msgstr "プレビューリリース %s: %s"
-
-#: src/nautilus-window-manage-views.c:256 src/nautilus-window-menus.c:648
-msgid "Nautilus"
-msgstr "Nautilus"
 
 #: src/nautilus-window-manage-views.c:813
 msgid "View Failed"
@@ -6347,33 +8470,17 @@ msgstr "履歴を削除しますか?"
 msgid "Forget"
 msgstr "忘れる"
 
-#: src/nautilus-window-menus.c:475
-msgid "Hide St_atus Bar"
-msgstr "ステータスバーを非表示(_a)"
-
 #: src/nautilus-window-menus.c:476
 msgid "Show St_atus Bar"
 msgstr "ステータスバーを表示(_a)"
-
-#: src/nautilus-window-menus.c:481
-msgid "Hide _Sidebar"
-msgstr "サイドバーを非表示(_S)"
 
 #: src/nautilus-window-menus.c:482
 msgid "Show _Sidebar"
 msgstr "サイドバーを表示(_S)"
 
-#: src/nautilus-window-menus.c:487
-msgid "Hide _Toolbar"
-msgstr "ツールバーを隠す(_T)"
-
 #: src/nautilus-window-menus.c:488
 msgid "Show _Toolbar"
 msgstr "ツールバーを表示(_T)"
-
-#: src/nautilus-window-menus.c:493
-msgid "Hide Location _Bar"
-msgstr "ロケーションバーを非表示(_B)"
 
 #: src/nautilus-window-menus.c:494
 msgid "Show Location _Bar"
@@ -6442,12 +8549,8 @@ msgstr "戻る"
 msgid "Forward"
 msgstr "前"
 
-#. Add "View as..." extra bonus choice.
-#: src/nautilus-window.c:647 src/nautilus-window.c:1545
-msgid "View as..."
-msgstr "表示..."
-
 #: src/nautilus-window.c:1251
+#, c-format
 msgid "Display this location with \"%s\""
 msgstr "「%s」でこの場所を表示"
 
