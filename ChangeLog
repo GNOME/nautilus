@@ -1,5 +1,16 @@
 2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/mozilla/.cvsignore: Ignore built binary
+
+	* components/mozilla/Makefile.am: Link with the right stuff.  Link
+	only against libnautilus to be legit.
+
+	* components/mozilla/nautilus-mozilla-content-view.h,
+	  components/mozilla/nautilus-mozilla-content-view.c: Dont use
+	code from libnautilus-extensions.  Fix struct tag names.  
+
+2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* nautilus-widgets/nautilus-preferences.c,
 	  nautilus-widgets/nautilus-preferences.h:
 

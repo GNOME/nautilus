@@ -26,11 +26,11 @@
 #ifndef NAUTILUS_MOZILLA_CONTENT_VIEW_H
 #define NAUTILUS_MOZILLA_CONTENT_VIEW_H
 
-#include <libnautilus/ntl-content-view-frame.h>
+#include <libnautilus/nautilus-content-view-frame.h>
 #include <gtk/gtkvbox.h>
 
-typedef struct NautilusMozillaContentView      NautilusMozillaContentView;
-typedef struct NautilusMozillaContentViewClass NautilusMozillaContentViewClass;
+typedef struct _NautilusMozillaContentView      NautilusMozillaContentView;
+typedef struct _NautilusMozillaContentViewClass NautilusMozillaContentViewClass;
 
 #define NAUTILUS_TYPE_MOZILLA_CONTENT_VIEW	      (nautilus_mozilla_content_view_get_type ())
 #define NAUTILUS_MOZILLA_CONTENT_VIEW(obj)	      (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_MOZILLA_CONTENT_VIEW, NautilusMozillaContentView))
@@ -52,11 +52,13 @@ struct _NautilusMozillaContentViewClass {
 /* GtkObject support */
 GtkType                   nautilus_mozilla_content_view_get_type       (void);
 
+
 /* Component embedding support */
 NautilusContentViewFrame *nautilus_mozilla_content_view_get_view_frame (NautilusMozillaContentView *view);
 
+
 /* URI handling */
 void                      nautilus_mozilla_content_view_load_uri       (NautilusMozillaContentView *view,
-								       const char                *uri);
+									const char                 *uri);
 
 #endif /* NAUTILUS_MOZILLA_CONTENT_VIEW_H */

@@ -38,10 +38,9 @@
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
-#include <libnautilus/nautilus-gtk-macros.h>
 
 /* A NautilusContentViewFrame's private information. */
-struct NautilusMozillaContentViewDetail {
+struct _NautilusMozillaContentViewDetail {
 	char				 *uri;
 	GtkWidget			 *mozilla;
 	NautilusContentViewFrame	 *view_frame;
@@ -57,14 +56,17 @@ static void mozilla_merge_bonobo_items_callback            (BonoboObject        
 							    gboolean                         state,
 							    gpointer                         user_data);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMozillaContentView, nautilus_mozilla_content_view, GTK_TYPE_VBOX)
-     
+
+static GtkVBoxClass *parent_class = NULL;
+
 static void
 nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass *klass)
 {
 	GtkObjectClass *object_class;
 	
 	object_class = GTK_OBJECT_CLASS (klass);
+
+	parent_class = gtk_type_class (GTK_TYPE_VBOX);
 	
 	object_class->destroy = nautilus_mozilla_content_view_destroy;
 }
@@ -116,8 +118,9 @@ nautilus_mozilla_content_view_destroy (GtkObject *object)
 		g_free (view->detail->uri);
 
 	g_free (view->detail);
-	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+
+	if (GTK_OBJECT_CLASS (parent_class)->destroy)
+		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
 /**
@@ -285,4 +288,29 @@ mozilla_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoi
          * the content view object is destroyed, which ends up calling bonobo_ui_handler_unset_container,
          * which removes its merged menu & toolbar items.
          */
+}
+
+GtkType
+nautilus_mozilla_content_view_get_type (void)
+{
+	static GtkType mozilla_content_view_type = 0;
+	
+	if (!mozilla_content_view_type)
+	{
+		static const GtkTypeInfo mozilla_content_view_info =
+		{
+			"NautilusMozillaContentView",
+			sizeof (NautilusMozillaContentView),
+			sizeof (NautilusMozillaContentViewClass),
+			(GtkClassInitFunc) nautilus_mozilla_content_view_initialize_class,
+			(GtkObjectInitFunc) nautilus_mozilla_content_view_initialize,
+			/* reserved_1 */ NULL,
+			/* reserved_2 */ NULL,
+			(GtkClassInitFunc) NULL,
+		};
+		
+		mozilla_content_view_type = gtk_type_unique (GTK_TYPE_VBOX, &mozilla_content_view_info);
+	}
+	
+	return mozilla_content_view_type;
 }

@@ -5,7 +5,7 @@ CPPFLAGS =					\
 	-DG_LOG_DOMAIN=\"Nautilus-Mozilla\"
 
 INCLUDES =					\
-	-I/builds/ramiro/s/mozilla/dist/include \
+	-I/home/ramiro/b/sekhmet/s/mozilla/dist/include \
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
 	$(GNOMEUI_CFLAGS)                       \
@@ -25,15 +25,17 @@ nautilus_mozilla_content_view_SOURCES =		\
 	main.c
 
 nautilus_mozilla_content_view_LDFLAGS =			\
-	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la \
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(BONOBO_LIBS)					\
 	$(GNOMEUI_LIBS)					\
 	$(VFS_LIBS)					\
 	$(GNORBA_LIBS) \
-	-L/builds/ramiro/s/mozilla/dist/bin \
+	-L/home/ramiro/b/sekhmet/s/mozilla/dist/bin \
 	-lgtkembedmoz \
-	-lgtksuperwin
-
+	-lgtksuperwin \
+	-lxpcom \
+	-lnspr4 \
+	-lplc4 \
+	-lplds4 
 
 EXTRA_DIST = nautilus-mozilla-content-view.goad
