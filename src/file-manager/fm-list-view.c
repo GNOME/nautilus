@@ -1276,9 +1276,21 @@ static void
 fm_list_view_clear (FMDirectoryView *view)
 {
 	FMListView *list_view;
+	GtkTreeViewColumn *column;
 
 	list_view = FM_LIST_VIEW (view);
-	
+
+	/* Stop an ongoing rename to commit the name changes when the user
+	 * changes directories without exiting cell edit mode. It also prevents
+	 * the edited handler from being called on the cleared list model.
+	 */
+
+	column = list_view->details->file_name_column;
+	if (column != NULL && column->editable_widget != NULL &&
+		GTK_IS_CELL_EDITABLE (column->editable_widget)) {
+		gtk_cell_editable_editing_done (column->editable_widget);
+	}
+
 	if (list_view->details->model != NULL) {
 		fm_list_model_clear (list_view->details->model);
 	}
