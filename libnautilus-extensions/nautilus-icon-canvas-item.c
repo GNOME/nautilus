@@ -658,6 +658,13 @@ in_single_click_mode ()
 
 }
 
+/* Keep these for a bit while we work on performance of draw_or_measure_label_text. */
+
+/*
+#define PERFORMANCE_TEST_DRAW_DISABLE
+#define PERFORMANCE_TEST_MEASURE_DISABLE
+*/
+
 /* Draw the text in a box, using gnomelib routines. */
 static void
 draw_or_measure_label_text (NautilusIconCanvasItem *item,
@@ -691,12 +698,35 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	have_additional = details->additional_text != NULL
 		&& details->additional_text[0] != '\0';
 
+
 	/* No font or no text, then do no work. */
 	if (details->font == NULL || (!have_editable && !have_additional)) {
 		details->text_height = 0;
 		details->text_width = 0;			
 		return;
 	}
+
+#if (defined PERFORMANCE_TEST_MEASURE_DISABLE && defined PERFORMANCE_TEST_DRAW_DISABLE)
+	/* don't do any drawing and fake out the width */
+	details->text_width = 80;
+	details->text_height = 20;
+	return;
+#endif
+
+#ifdef PERFORMANCE_TEST_MEASURE_DISABLE
+	if (drawable == NULL) {
+		/* fake out the width */
+		details->text_width = 80;
+		details->text_height = 20;
+		return;
+	}
+#endif
+
+#ifdef PERFORMANCE_TEST_DRAW_DISABLE
+	if (drawable != NULL) {
+		return;
+	}
+#endif
 
 	/* Combine editable and additional text for processing */
 	combined_text = g_strconcat
@@ -802,8 +832,10 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		 * before the call to draw. We might later decide to use this function
 		 * differently and change these asserts.
 		 */
+#if (defined PERFORMANCE_TEST_MEASURE_DISABLE || defined PERFORMANCE_TEST_DRAW_DISABLE)
 		g_assert ((int) height_so_far == details->text_height);
 		g_assert ((int) width_so_far == details->text_width);
+#endif
 
 		gdk_gc_set_foreground (gc, &save_gc.foreground);
 	
@@ -1325,6 +1357,28 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 		return;
 	}
 	
+#if (defined PERFORMANCE_TEST_MEASURE_DISABLE && defined PERFORMANCE_TEST_DRAW_DISABLE)
+	/* don't do any drawing and fake out the width */
+	details->text_width = 80;
+	details->text_height = 20;
+	return;
+#endif
+
+#ifdef PERFORMANCE_TEST_MEASURE_DISABLE
+	if (destination_pixbuf == NULL) {
+		/* fake out the width */
+		details->text_width = 80;
+		details->text_height = 20;
+		return;
+	}
+#endif
+
+#ifdef PERFORMANCE_TEST_DRAW_DISABLE
+	if (destination_pixbuf != NULL) {
+		return;
+	}
+#endif
+
 	/* Combine editable and additional text for processing */
 	combined_text = g_strconcat
 		(have_editable ? details->editable_text : "",
@@ -1448,8 +1502,10 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 		 * before the call to draw. We might later decide to use this function
 		 * differently and change these asserts.
 		 */
+#if (defined PERFORMANCE_TEST_MEASURE_DISABLE || defined PERFORMANCE_TEST_DRAW_DISABLE)
 		g_assert ((int) height_so_far == details->text_height);
 		g_assert ((int) width_so_far == details->text_width);
+#endif
 	
 		box_left = icon_left + (icon_width - width_so_far) / 2;
 
