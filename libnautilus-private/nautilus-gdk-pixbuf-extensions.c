@@ -988,13 +988,66 @@ nautilus_gdk_pixbuf_new_from_pixbuf_sub_area (GdkPixbuf *pixbuf,
 					       GDK_COLORSPACE_RGB,
 					       gdk_pixbuf_get_has_alpha (pixbuf),
 					       8,
-					       target.x1 - target.x0,
-					       target.y1 - target.y0,
+					       nautilus_art_irect_get_width (&target),
+					       nautilus_art_irect_get_height (&target),
 					       gdk_pixbuf_get_rowstride (pixbuf),
 					       pixbuf_destroy_callback,
 					       pixbuf);
 
 	return sub_pixbuf;
+}
+
+/**
+ * nautilus_gdk_pixbuf_new_from_existing_buffer:
+ * @buffer: The existing buffer.
+ * @buffer_rowstride: The existing buffer's rowstride.
+ * @buffer_has_alpha: A boolean value indicating whether the buffer has alpha.
+ * @area: The area within the existing buffer to use for the pixbuf.
+ *        This area needs to be contained within the bounds of the 
+ *        buffer, otherwise memory will be trashed.
+ *
+ * Return value: A newly allocated pixbuf that uses the existing buffer
+ *               for its pixel data.
+ *
+ * Create a pixbuf from an existing buffer.
+ *
+ * The resulting pixbuf is only valid for as long as &buffer is valid.  It is
+ * up to the caller to make sure they both exist in the same scope.
+ * Also, it is up to the caller to make sure that the given area is fully 
+ * contained in the buffer, otherwise memory trashing will happen.
+ */
+GdkPixbuf *
+nautilus_gdk_pixbuf_new_from_existing_buffer (guchar *buffer,
+					      int buffer_rowstride,
+					      gboolean buffer_has_alpha,
+					      const ArtIRect *area)
+{
+	GdkPixbuf *pixbuf;
+	guchar *pixels;
+	
+	g_return_val_if_fail (buffer != NULL, NULL);
+	g_return_val_if_fail (buffer_rowstride > 0, NULL);
+	g_return_val_if_fail (area != NULL, NULL);
+	g_return_val_if_fail (area->x1 > area->x0, NULL);
+	g_return_val_if_fail (area->y1 > area->y0, NULL);
+	
+	/* Compute the offset into the buffer */
+	pixels = 
+		buffer
+		+ (area->y0 * buffer_rowstride)
+		+ (area->x0 * (buffer_has_alpha ? 4 : 3));
+	
+	pixbuf = gdk_pixbuf_new_from_data (pixels,
+					   GDK_COLORSPACE_RGB,
+					   buffer_has_alpha,
+					   8,
+					   nautilus_art_irect_get_width (area),
+					   nautilus_art_irect_get_height (area),
+					   buffer_rowstride,
+					   NULL,
+					   NULL);
+
+	return pixbuf;
 }
 
 /* The tile algorithm is identical whether the destination is 
