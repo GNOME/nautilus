@@ -1,3 +1,17 @@
+2000-09-14  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 1984, Crash when closing a window after undo operation
+	Fixed bug 2151, Segfault in undo manager during quit
+
+	* libnautilus/nautilus-undo-transaction.c:
+	(remove_transaction_from_atom_targets)
+	New function that removes transaction list from target
+	object and frees contents.
+	
+	(nautilus_undo_transaction_destroy),
+	(nautilus_undo_transaction_undo):
+	Call new function in these places.
+	
 2000-09-14  Darin Adler  <darin@eazel.com>
 
 	Another cut at getting the tinderbox to be happy.

@@ -199,6 +199,7 @@ nautilus_undo_transaction_initialize (NautilusUndoTransaction *transaction)
   	CORBA_exception_free (&ev);
 }
 
+
 static void
 remove_transaction_from_object (gpointer list_data, gpointer callback_data)
 {
@@ -220,6 +221,15 @@ remove_transaction_from_object (gpointer list_data, gpointer callback_data)
 }
 
 static void
+remove_transaction_from_atom_targets (NautilusUndoTransaction *transaction)
+{
+
+	g_list_foreach (transaction->atom_list,
+			remove_transaction_from_object,
+			transaction);	
+}
+
+static void
 nautilus_undo_transaction_destroy (GtkObject *object)
 {
 	NautilusUndoTransaction *transaction;
@@ -227,9 +237,7 @@ nautilus_undo_transaction_destroy (GtkObject *object)
 
 	transaction = NAUTILUS_UNDO_TRANSACTION (object);
 	
-	g_list_foreach (transaction->atom_list,
-			remove_transaction_from_object,
-			transaction);
+	remove_transaction_from_atom_targets (transaction);
 	undo_atom_list_free (transaction->atom_list);
 
 	g_free (transaction->operation_name);
@@ -288,7 +296,9 @@ nautilus_undo_transaction_undo (NautilusUndoTransaction *transaction)
 {
 	g_return_if_fail (NAUTILUS_IS_UNDO_TRANSACTION (transaction));
 
+	remove_transaction_from_atom_targets (transaction);
 	undo_atom_list_undo_and_free (transaction->atom_list);
+	
 	transaction->atom_list = NULL;
 }
 
