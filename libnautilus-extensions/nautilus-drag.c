@@ -314,7 +314,7 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 	dropped_uri = gnome_vfs_uri_new (((DragSelectionItem *)items->data)->uri);
 	same_fs = TRUE;
 
-	gnome_vfs_check_same_fs_uris (target_uri, dropped_uri, &same_fs);
+	gnome_vfs_check_same_fs_uris (dropped_uri, target_uri, &same_fs);
 	gnome_vfs_uri_unref (dropped_uri);
 	gnome_vfs_uri_unref (target_uri);
 	
