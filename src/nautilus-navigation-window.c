@@ -473,6 +473,7 @@ nautilus_window_constructed(NautilusWindow *window)
   window->content_hbox = gtk_hbox_new(FALSE, 0);
 #else
   window->content_hbox = gtk_hpaned_new();
+  gtk_paned_set_position(GTK_PANED(window->content_hbox), 275);
 #endif
   gnome_app_set_contents(app, window->content_hbox);
 

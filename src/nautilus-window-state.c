@@ -65,15 +65,18 @@ nautilus_window_load_state(NautilusWindow *window, const char *config_path)
       GtkWidget *w;
 
       w = gtk_widget_new(nautilus_content_view_get_type(), "main_window", window, NULL);
-      nautilus_window_set_content_view(window, NAUTILUS_VIEW(w));
-      nautilus_view_load_client(NAUTILUS_VIEW(w), vtype);
+      if(nautilus_view_load_client(NAUTILUS_VIEW(w), vtype))
+        {
+          nautilus_window_set_content_view(window, NAUTILUS_VIEW(w));
+          g_snprintf(cbuf, sizeof(cbuf), "%s/Content_View/", config_path);
+          gnome_config_push_prefix(cbuf);
+          nautilus_view_load_state(NAUTILUS_VIEW(w), cbuf);
+          gnome_config_pop_prefix();
 
-      g_snprintf(cbuf, sizeof(cbuf), "%s/Content_View/", config_path);
-      gnome_config_push_prefix(cbuf);
-      nautilus_view_load_state(NAUTILUS_VIEW(w), cbuf);
-      gnome_config_pop_prefix();
-
-      gtk_widget_show(w);
+          gtk_widget_show(w);
+        }
+      else
+        gtk_widget_destroy(w);
     }
   g_free(vtype);
 
@@ -86,7 +89,11 @@ nautilus_window_load_state(NautilusWindow *window, const char *config_path)
       vtype = gnome_config_get_string(cbuf);
 
       nvw = gtk_widget_new(nautilus_meta_view_get_type(), "main_window", window, NULL);
-      nautilus_view_load_client(NAUTILUS_VIEW(nvw), vtype);
+      if(!nautilus_view_load_client(NAUTILUS_VIEW(nvw), vtype))
+        {
+          gtk_widget_destroy(nvw);
+          continue;
+        }
 
       g_snprintf(cbuf, sizeof(cbuf), "%s/Meta_View_%d/", config_path, i);
 

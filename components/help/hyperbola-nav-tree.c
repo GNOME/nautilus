@@ -11,8 +11,6 @@ typedef struct {
   gint notify_count;
 } HyperbolaNavigationTree;
 
-/* Temporary prototypes until hyperbola-nav-tree.h compiles. */
-GtkType hyperbola_navigation_tree_get_type(void);
 BonoboObject *hyperbola_navigation_tree_new(void);
 
 static void hyperbola_navigation_tree_select_row(GtkCTree *ctree,

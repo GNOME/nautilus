@@ -11,7 +11,8 @@ hyperbola_SOURCES=		\
 	hyperbola-nav-tree.c 	\
 	hyperbola-main.c	\
 	hyperbola-filefmt.c	\
-	hyperbola-filefmt.h
+	hyperbola-filefmt.h	\
+	hyperbola-nav-index.c
 
 EXTRA_DIST=pages.map hyperbola.goad
 
