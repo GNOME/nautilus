@@ -1118,6 +1118,8 @@ static gint play_file(NautilusFile *file)
 		
 	mp3_pid = fork ();
 	if (mp3_pid == (pid_t) 0) {
+		/* set the group (session) id to this process for future killing */
+		setsid();
 		execlp (player, player, file_uri + 7, NULL);
 		_exit (0);
 	}
@@ -1142,7 +1144,7 @@ preview_sound(NautilusFile *file, gboolean start_flag)
 	} else {
 		
 		if (mp3_pid) {
-			kill (mp3_pid, SIGTERM);
+			kill (-mp3_pid, SIGTERM);
 			mp3_pid = 0;
 		}
 		if (timeout >= 0) {

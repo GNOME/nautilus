@@ -1,3 +1,13 @@
+2000-05-30  Andy Hertzfeld  <andy@eazel.com>
+
+	* icons/Makefile.am:
+	* icons/audio.png:
+	new icon for audio preview feedback; I'm sure Susan will want to improve this.
+	* libnautilus-extensions/nautilus-icon-canvas-item.c: (map_pixbuf):
+	finished off audio preview task 259 by showing an image to indicate previewing audio.
+	* src/file-manager/fm-icon-view.c: (play_file), (preview_sound):
+	fixed problem with aborting sound previews by calling setsid() and killing the entire group
+
 2000-05-30  John Sullivan  <sullivan@eazel.com>
 
 	* src/file-manager/fm-directory-view.c:

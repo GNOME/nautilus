@@ -63,13 +63,15 @@ struct NautilusIconCanvasItemDetails {
 	int text_width;
 	int text_height;
 	
+	/* preview state */
+	int is_active;
+
     	/* Highlight state. */
    	guint is_highlighted_for_selection : 1;
 	guint is_highlighted_as_keyboard_focus: 1;
    	guint is_highlighted_for_drop : 1;
 	guint show_stretch_handles : 1;
 	guint is_prelit : 1;
-	guint is_active : 1;
 	
 	gboolean is_renaming;
 };
@@ -1018,11 +1020,38 @@ draw_pixbuf_aa (GdkPixbuf *pixbuf, GnomeCanvasBuf *buf, double affine[6], int x_
 static GdkPixbuf *
 map_pixbuf(NautilusIconCanvasItem *icon_item)
 {
-	GdkPixbuf *temp_pixbuf, *old_pixbuf;
+	GnomeCanvas *canvas;
+	char *audio_filename;
+	GdkPixbuf *temp_pixbuf, *old_pixbuf, *audio_pixbuf;
+	
 	temp_pixbuf = icon_item->details->pixbuf;
+	canvas = GNOME_CANVAS_ITEM(icon_item)->canvas;
 	
 	if (icon_item->details->is_prelit) {
 		temp_pixbuf = nautilus_create_spotlight_pixbuf (icon_item->details->pixbuf);
+		
+		/* if the icon is currently being previewed, superimpose an image to indicate that */
+		/* audio is the only kind of previewing right now, so this code isn't as general as it could be */
+		if (icon_item->details->is_active == 1) {
+			/* load the audio symbol */
+			audio_filename = gnome_pixmap_file ("nautilus/audio.png");
+			audio_pixbuf = gdk_pixbuf_new_from_file(audio_filename);
+			
+			/* composite it onto the icon */
+			if (audio_pixbuf) {
+				gdk_pixbuf_composite (audio_pixbuf,
+			      		temp_pixbuf,
+			      		0, 0,
+			      		gdk_pixbuf_get_width(temp_pixbuf), gdk_pixbuf_get_height(temp_pixbuf),
+			     		0, 4,
+			      		canvas->pixels_per_unit, canvas->pixels_per_unit,
+			      		GDK_INTERP_BILINEAR, 0xFF);
+
+				gdk_pixbuf_unref(audio_pixbuf);
+			}
+			
+			g_free(audio_filename);
+		}
 	}
 	
 	if (icon_item->details->is_highlighted_for_selection || icon_item->details->is_highlighted_for_drop) {
