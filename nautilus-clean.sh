@@ -44,8 +44,28 @@ hack_echo ()
 }
 
 # Add any new auxiliary programs here.
-AUX_PROGS="hyperbola ntl-history-view ntl-notes ntl-web-search ntl-web-browser nautilus-sample-content-view nautilus-hardware-view
-bonobo-text-plain bonobo-image-generic gnome-vfs-slave nautilus-rpm-view nautilus-service-startup-view nautilus-mozilla-content-view bonobo-application-x-pdf nautilus-sidebar-loser nautilus-content-loser"
+AUX_PROGS="\
+bonobo-application-x-pdf \
+bonobo-image-generic \
+bonobo-text-plain \
+gnome-vfs-slave \
+hyperbola \
+nautilus-history-view \
+nautilus-content-loser \
+nautilus-hardware-view \
+nautilus-mozilla-content-view \
+nautilus-notes \
+nautilus-rpm-view \
+nautilus-sample-content-view \
+nautilus-service-startup-view \
+nautilus-sidebar-loser \
+nautilus-web-browser \
+nautilus-web-search \
+ntl-history-view \
+ntl-notes \
+ntl-web-search \
+ntl-web-browser \
+"
 
 if [ "$extreme" = "yes" ]
 then
