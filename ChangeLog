@@ -1,3 +1,19 @@
+2002-08-02  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-factory.c
+	(path_represents_svg_image): don't do a synchronous mime
+	sniff on every icon we load.
+
+2002-08-02  Thomas Meeks  <thomas@imaginator.com>
+
+	* libnautilus-private/nautilus-icon-factory.c
+	(nautilus_gdk_pixbuf_supported): impl. we need
+	this to detect small, local image files that gdk-pixbuf
+	can't render.
+	(nautilus_icon_factory_get_icon_for_file): fix logic
+	bug, so that we do get_thumbnail_uri for small, local
+	images that may be tractable to 'convert'.
+
 2002-08-01  Dave Camp  <dave@ximian.com>
 
 	* libnautilus-private/nautilus-icon-container.c:

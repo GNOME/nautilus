@@ -1154,6 +1154,31 @@ image_uri_to_name_or_uri (const char *image_uri,
 		*icon_name = nautilus_remove_icon_file_name_suffix (image_uri);
 	}
 }
+static gboolean
+nautilus_gdk_pixbuf_supported (char *mime_type)
+{
+	guint i;
+	static GHashTable *formats = NULL;
+	static const char *types [] = {
+		"image/x-bmp", "image/x-ico", "image/jpeg",
+		"image/png", "image/pnm", "image/ras", "image/tga",
+		"image/tiff", "image/wbmp", "image/x-xbitmap",
+		"image/x-xpixmap"
+	};
+
+	formats = eel_g_hash_table_new_free_at_exit (
+		g_str_hash, g_str_equal, "nautilus-icon-factory.c: formats");
+
+	for (i = 0; i < G_N_ELEMENTS (types); i++)
+		g_hash_table_insert (formats,
+				     (gpointer) types [i],
+				     GUINT_TO_POINTER (1));	
+
+	if (g_hash_table_lookup (formats, mime_type))
+		return TRUE;
+
+	return FALSE;
+}
 
 /* key routine to get the scalable icon for a file */
 NautilusScalableIcon *
@@ -1191,10 +1216,11 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 		if (eel_istr_has_prefix (mime_type, "image/")
 		    && is_supported_mime_type (mime_type)
 		    && should_display_image_file_as_itself (file)) {
-			if (file_size < SELF_THUMBNAIL_SIZE_THRESHOLD && is_local) {
+			if (file_size < SELF_THUMBNAIL_SIZE_THRESHOLD && is_local
+			    && nautilus_gdk_pixbuf_supported (mime_type))
 				uri = nautilus_file_get_uri (file);
-			} else if (strstr (file_uri, "/.thumbnails/") == NULL
-				   && file_size < cached_thumbnail_limit) {
+			if (uri == NULL && strstr (file_uri, "/.thumbnails/") == NULL
+			    && file_size < cached_thumbnail_limit) {
 				uri = nautilus_get_thumbnail_uri (file);
 				if (uri == NULL) {
 					icon_name = g_strdup (ICON_NAME_THUMBNAIL_LOADING);
@@ -1499,25 +1525,12 @@ load_pixbuf_svg (const char *path, guint size_in_pixels, guint max_size_in_pixel
 static gboolean
 path_represents_svg_image (const char *path) 
 {
-	char *uri;
-	GnomeVFSFileInfo *file_info;
-	gboolean is_svg;
-
-	/* Sync. file I/O is OK here because this is used only for installed
-	 * icons, not for the general case which could include icons on devices
-	 * other than the local hard disk.
+	/* Synchronous mime sniffing is a really bad idea here
+	 * since it's only useful for people adding custom icons,
+	 * and if they're doing that, they can behave themselves
+	 * and use a .svg extension.
 	 */
-
-	uri = gnome_vfs_get_uri_from_local_path (path);
-	file_info = gnome_vfs_file_info_new ();
-	gnome_vfs_get_file_info (uri, file_info,
-				 GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-				 | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-	g_free (uri);
-	is_svg = eel_strcmp (file_info->mime_type, "image/svg") == 0;
-	gnome_vfs_file_info_unref (file_info);
-
-	return is_svg;
+	return path != NULL && strstr (path, ".svg") != NULL;
 }
 
 /* Returns GNOME_VFS_ERROR_NOT_SUPPORTED for icons that are not files. */
@@ -1587,7 +1600,7 @@ load_icon_from_path (const char *path,
 	if (strstr (path, "/.nautilus/thumbnails/") != NULL) {
 		return nautilus_thumbnail_load_framed_image (path);
 	}
-	
+
 	return gdk_pixbuf_new_from_file (path, NULL);
 }
 
