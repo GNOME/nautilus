@@ -51,7 +51,7 @@
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
 #endif
 
-#define NOTES_DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/BBBB"
+#define NOTES_DEFAULT_BACKGROUND_COLOR "#FFFFBB"
 
 #define SAVE_TIMEOUT (3 * 1000)
 

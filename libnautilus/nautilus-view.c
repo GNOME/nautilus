@@ -39,8 +39,8 @@
 #include <bonobo/bonobo-ui-util.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+#include <libgnome/gnome-macros.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
-#include <eel/eel-gtk-macros.h>
 
 enum {
 	HISTORY_CHANGED,
@@ -69,13 +69,8 @@ typedef struct {
 	char *title;
 } LocationPlus;
 
-static void nautilus_view_init             (NautilusView           *view);
-static void nautilus_view_class_init       (NautilusViewClass      *klass);
-
-EEL_BONOBO_BOILERPLATE_FULL (NautilusView,
-			     Nautilus_View,
-			     nautilus_view,
-			     BONOBO_OBJECT_TYPE)
+BONOBO_CLASS_BOILERPLATE_FULL (NautilusView, nautilus_view, Nautilus_View,
+			       BonoboObject, BONOBO_OBJECT_TYPE)
 
 static void
 queue_incoming_call (PortableServer_Servant servant,
@@ -274,7 +269,7 @@ impl_Nautilus_View_history_changed (PortableServer_Servant servant,
 }
 
 static void
-nautilus_view_init (NautilusView *view)
+nautilus_view_instance_init (NautilusView *view)
 {
 	view->details = g_new0 (NautilusViewDetails, 1);
 	
@@ -331,7 +326,7 @@ nautilus_view_finalize (GObject *object)
 
 	g_free (view->details);
 	
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	GNOME_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static Nautilus_ViewFrame
@@ -345,8 +340,7 @@ view_frame_call_begin (NautilusView *view, CORBA_Environment *ev)
 	CORBA_exception_init (ev);
 
 	control_frame = bonobo_control_get_control_frame (nautilus_view_get_bonobo_control (view), ev);
-	if (ev->_major != CORBA_NO_EXCEPTION ||
-	    control_frame == CORBA_OBJECT_NIL) {
+	if (ev->_major != CORBA_NO_EXCEPTION || control_frame == CORBA_OBJECT_NIL) {
 		return CORBA_OBJECT_NIL;
 	}
 
@@ -368,7 +362,7 @@ view_frame_call_end (Nautilus_ViewFrame frame, CORBA_Environment *ev)
 	CORBA_exception_free (ev);
 }
 
-/* Can't use the one in libnautilus-private. */
+/* don't use the one in eel to avoid creating a dependency on eel */
 static GList *
 str_list_copy (GList *original)
 {

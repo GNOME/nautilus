@@ -49,8 +49,8 @@ struct NautilusSampleContentViewDetails {
 	GtkWidget *label;
 };
 
-GNOME_CLASS_BOILERPLATE (NautilusSampleContentView, nautilus_sample_content_view,
-			 NautilusView, nautilus_view, NAUTILUS_TYPE_VIEW)
+BONOBO_CLASS_BOILERPLATE (NautilusSampleContentView, nautilus_sample_content_view,
+			  NautilusView, NAUTILUS_TYPE_VIEW)
 
 static void
 nautilus_sample_content_view_finalize (GObject *object)
@@ -62,7 +62,7 @@ nautilus_sample_content_view_finalize (GObject *object)
 	g_free (view->details->location);
 	g_free (view->details);
 
-	GNOME_CALL_PARENT_HANDLER (G_OBJECT_CLASS, finalize, (object));
+	GNOME_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 static void

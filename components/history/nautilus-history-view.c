@@ -30,9 +30,9 @@
 #include <bonobo/bonobo-ui-util.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <gtk/gtkclist.h>
 #include <gtk/gtkscrolledwindow.h>
+#include <libgnome/gnome-macros.h>
 #include <libnautilus-private/nautilus-bookmark.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-view-standard-main.h>
@@ -62,14 +62,10 @@ typedef struct {
 #define HISTORY_VIEW_COLUMN_NAME	1
 #define HISTORY_VIEW_COLUMN_COUNT	2
 
-static GtkType nautilus_history_view_get_type         (void);
-static void    nautilus_history_view_class_init (NautilusHistoryViewClass *klass);
-static void    nautilus_history_view_init       (NautilusHistoryView      *view);
-static void    nautilus_history_view_destroy          (GtkObject                *object);
+static GtkType nautilus_history_view_get_type   (void);
 
-EEL_CLASS_BOILERPLATE (NautilusHistoryView,
-				   nautilus_history_view,
-				   NAUTILUS_TYPE_VIEW)
+BONOBO_CLASS_BOILERPLATE (NautilusHistoryView, nautilus_history_view,
+			  NautilusView, NAUTILUS_TYPE_VIEW)
 
 static NautilusBookmark *
 get_bookmark_from_row (GtkCList *list, int row)
@@ -129,10 +125,6 @@ update_history (NautilusHistoryView *view,
 
 	list = view->list;
 
-	if (GTK_OBJECT_DESTROYED (list)) {
-		return;
-	}
-
 	/* Set up a local boolean so we can detect that the view has
 	 * been destroyed. We can't ask the view itself because once
 	 * it's destroyed it's pointer is a pointer to freed storage.
@@ -173,7 +165,7 @@ update_history (NautilusHistoryView *view,
 		new_row = gtk_clist_append (list, cols);
 		
 		gtk_clist_set_row_data_full (list, new_row, bookmark,
-					     (GtkDestroyNotify) gtk_object_unref);
+					     (GtkDestroyNotify) g_object_unref);
 
 		pixbuf = bonobo_ui_util_xml_to_pixbuf (item->icon);
 		install_icon (list, new_row, pixbuf);
@@ -265,17 +257,7 @@ history_changed_callback (NautilusHistoryView *view,
 }
 
 static void
-nautilus_history_view_class_init (NautilusHistoryViewClass *klass)
-{
-	GtkObjectClass *object_class;
-	
-	object_class = GTK_OBJECT_CLASS (klass);
-	
-	object_class->destroy = nautilus_history_view_destroy;
-}
-
-static void
-nautilus_history_view_init (NautilusHistoryView *view)
+nautilus_history_view_instance_init (NautilusHistoryView *view)
 {
 	GtkCList *list;
 	GtkWidget *window;
@@ -316,21 +298,25 @@ nautilus_history_view_init (NautilusHistoryView *view)
 }
 
 static void
-nautilus_history_view_destroy (GtkObject *object)
+nautilus_history_view_finalize (GObject *object)
 {
 	NautilusHistoryView *view;
 	
 	view = NAUTILUS_HISTORY_VIEW (object);
 
-#ifdef GNOME2_CONVERSION_COMPLETE
 	if (view->external_destroyed_flag != NULL) {
 		*view->external_destroyed_flag = TRUE;
 	}
 
 	g_object_unref (G_OBJECT (view->list));
-#endif
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	GNOME_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+}
+
+static void
+nautilus_history_view_class_init (NautilusHistoryViewClass *klass)
+{
+	G_OBJECT_CLASS (klass)->finalize = nautilus_history_view_finalize;
 }
 
 int
