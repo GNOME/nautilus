@@ -121,7 +121,7 @@ static void           fm_directory_view_delete_with_confirm                     
 #endif
 static void           fm_directory_view_duplicate_selection                       (FMDirectoryView          *view,
 										   GList                    *files);
-static void           fm_directory_view_trash_selection                           (FMDirectoryView          *view,
+static void           fm_directory_view_trash_or_delete_selection                 (FMDirectoryView          *view,
 										   GList                    *files);
 static void	      fm_directory_view_new_folder				  (FMDirectoryView          *view);
 static void           fm_directory_view_destroy                                   (GtkObject                *object);
@@ -414,7 +414,7 @@ bonobo_menu_move_to_trash_callback (BonoboUIHandler *ui_handler,
 
         view = FM_DIRECTORY_VIEW (user_data);
 	selection = fm_directory_view_get_selection (view);
-        fm_directory_view_trash_selection (view, selection);
+        fm_directory_view_trash_or_delete_selection (view, selection);
 
         nautilus_file_list_free (selection);
 }
@@ -1446,8 +1446,36 @@ fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files)
 	nautilus_g_list_free_deep (uris);
 }
 
+static gboolean
+fm_directory_can_move_to_trash (FMDirectoryView *view)
+{
+	/* Return TRUE if we can get a trash directory on the same volume */
+	char *directory;
+	GnomeVFSURI *directory_uri;
+	GnomeVFSURI *trash_dir_uri;
+	gboolean result;
+
+	trash_dir_uri = NULL;
+	directory = fm_directory_view_get_uri (view);
+	directory_uri = gnome_vfs_uri_new (directory);
+
+	result = gnome_vfs_find_directory (directory_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
+		&trash_dir_uri, TRUE, 0777) == GNOME_VFS_OK;
+
+	if (result && (gnome_vfs_uri_equal (trash_dir_uri, directory_uri)
+		|| gnome_vfs_uri_is_parent (trash_dir_uri, directory_uri, TRUE))) {
+		/* don't allow trashing items already in the Trash */
+		result = FALSE;
+	}
+	gnome_vfs_uri_unref (trash_dir_uri);
+	gnome_vfs_uri_unref (directory_uri);
+	g_free (directory);
+
+	return result;
+}
+
 static void
-fm_directory_view_trash_selection (FMDirectoryView *view, GList *files)
+fm_directory_view_trash_or_delete_selection (FMDirectoryView *view, GList *files)
 {
 	GList *uris;
 
@@ -1459,8 +1487,12 @@ fm_directory_view_trash_selection (FMDirectoryView *view, GList *files)
 	g_list_foreach (files, append_uri_one, &uris);    
 
         g_assert (g_list_length (uris) == g_list_length (files));
-        
-	fs_move_to_trash (uris, GTK_WIDGET (view));
+
+        if (fm_directory_can_move_to_trash (view))
+		fs_move_to_trash (uris, GTK_WIDGET (view));
+	else
+		fs_delete (uris, GTK_WIDGET (view));
+
 	nautilus_g_list_free_deep (uris);
 }
 
@@ -1475,7 +1507,7 @@ duplicate_callback (GtkMenuItem *item, GList *files)
 static void
 trash_callback (GtkMenuItem *item, GList *files)
 {
-        fm_directory_view_trash_selection
+        fm_directory_view_trash_or_delete_selection
 		(FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view")), 
 		 files);
 }
@@ -1691,14 +1723,9 @@ compute_menu_item_info (const char *path,
 		*return_sensitivity = selection != NULL;
         } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER) == 0) {
 		name = g_strdup (_("New Folder"));
-#if 0
-/* FIXME bugzilla.eazel.com 634, 635:
- * Delete should be used in directories that don't support moving to Trash
- */
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_DELETE) == 0) {
 		name = g_strdup (_("_Delete..."));
 		*return_sensitivity = selection != NULL;
-#endif
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_TRASH) == 0) {
 		name = g_strdup (_("_Move to Trash"));
 		*return_sensitivity = selection != NULL;
@@ -2136,6 +2163,33 @@ add_open_with_bonobo_menu_item (BonoboUIHandler *ui_handler,
 }				
 
 static void
+reset_bonobo_trash_delete_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler, GList *selection)
+{
+	bonobo_ui_handler_menu_remove (ui_handler, 
+		 FM_DIRECTORY_VIEW_MENU_PATH_TRASH);
+	bonobo_ui_handler_menu_remove (ui_handler, 
+		 FM_DIRECTORY_VIEW_MENU_PATH_DELETE);
+
+	if (fm_directory_can_move_to_trash (view)) {
+		insert_bonobo_menu_item 
+			(ui_handler, selection,
+			 FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
+			 _("Move all selected items to the Trash"),
+			 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 3,
+			  'T', GDK_CONTROL_MASK,
+			 bonobo_menu_move_to_trash_callback, view);
+	} else {
+		insert_bonobo_menu_item 
+			(ui_handler, selection,
+			 FM_DIRECTORY_VIEW_MENU_PATH_DELETE,
+			 _("Delete all selected items"),
+			 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 3,
+			 0, 0,
+			 bonobo_menu_move_to_trash_callback, view);
+	}
+}
+
+static void
 reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler, GList *selection)
 {
 	char *item_name;
@@ -2232,25 +2286,9 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 2,
 		 0, 0,
 		 bonobo_menu_open_properties_window_callback, view);
-#if 0
-/* FIXME bugzilla.eazel.com 634, 635:
- * Delete should be used in directories that don't support moving to Trash
- */
-	insert_bonobo_menu_item 
-		(ui_handler, selection,
-		 FM_DIRECTORY_VIEW_MENU_PATH_DELETE,
-		 _("Delete all selected items"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 3,
-		 0, 0,
-		 bonobo_menu_delete_callback, view);
-#endif
-	insert_bonobo_menu_item 
-		(ui_handler, selection,
-		 FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
-		 _("Move all selected items to the Trash"),
-		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 3,
-		  'T', GDK_CONTROL_MASK,
-		 bonobo_menu_move_to_trash_callback, view);
+
+	reset_bonobo_trash_delete_menu (view, ui_handler, selection);
+
 	insert_bonobo_menu_item 
 		(ui_handler, selection,
 		 FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE,
@@ -2318,15 +2356,7 @@ fm_directory_view_real_update_menus (FMDirectoryView *view)
 			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW);
 
 	reset_bonobo_open_with_menu (view, handler, selection);
-#if 0
-/* FIXME bugzilla.eazel.com 634, 635:
- * Delete should be used in directories that don't support moving to Trash
- */
-	update_one_menu_item (handler, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_DELETE);
-#endif
-	update_one_menu_item (handler, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_TRASH);
+	reset_bonobo_trash_delete_menu (view, handler, selection);
 	update_one_menu_item (handler, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE);
 	update_one_menu_item (handler, selection,
@@ -2826,13 +2856,8 @@ fm_directory_view_get_context_menu_index(const char *menu_name)
 		return 1;
 	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH, menu_name) == 0) {
 		return 2;
-#if 0
-/* FIXME bugzilla.eazel.com 634, 635:
- * Delete should be used in directories that don't support moving to Trash
- */
 	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_DELETE, menu_name) == 0) {
 		return 3;
-#endif
 	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_TRASH, menu_name) == 0) {
 		return 3;
 	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE, menu_name) == 0) {

@@ -1,3 +1,38 @@
+2000-05-30  Pavel Cisler  <pavel@eazel.com>
+
+	* src/file-manager/dfos-xfer.h:
+	* src/file-manager/dfos-xfer.c: (handle_xfer_ok), 
+	(fs_delete):
+	Added delete calls that set up a gnome-vfs delete operation.
+
+	* src/file-manager/dfos-xfer.c:
+	(fs_xfer), (fs_move_to_trash), (fs_empty_trash):
+	Changed to use new xfer options making it a little
+	clearer which copy engine operation gets to run.
+
+	* src/file-manager/dfos-xfer.c:
+	(fs_xfer), (fs_move_to_trash):
+	Fixed a leak of the item_names list.
+	
+	* src/file-manager/dfos-xfer.c: 
+	(fs_new_folder):
+	Changed to use "untitled folder".
+	
+	* src/file-manager/fm-directory-view.c:
+	(bonobo_menu_move_to_trash_callback),
+	(fm_directory_can_move_to_trash),
+	(fm_directory_view_trash_or_delete_selection), (trash_callback),
+	(compute_menu_item_info), (reset_bonobo_trash_delete_menu),
+	(fm_directory_view_real_merge_menus),
+	(fm_directory_view_real_update_menus),
+	(fm_directory_view_get_context_menu_index):
+	Add logic that picks the Delete/Move To Trash menu items depending
+	on whether selected items can be moved to Trash or not. Added code
+	that decides if items can be moved to Trash from a given folder.  
+
+	* src/file-manager/dfos-corba.c: (convert_options):
+	Disabled some dead code.
+	
 2000-05-30  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/eazel-alt-install.c:

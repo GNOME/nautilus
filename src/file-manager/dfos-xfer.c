@@ -38,7 +38,8 @@ typedef enum {
 	XFER_MOVE,
 	XFER_COPY,
 	XFER_MOVE_TO_TRASH,
-	XFER_EMPTY_TRASH
+	XFER_EMPTY_TRASH,
+	XFER_DELETE
 } XferKind;
 
 
@@ -158,11 +159,13 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 					 (xfer_info->progress_dialog),
 					 progress_info->source_name,
 					 progress_info->target_name,
-					 xfer_info->kind != XFER_MOVE_TO_TRASH &&
-					 xfer_info->kind != XFER_EMPTY_TRASH
+					 xfer_info->kind != XFER_MOVE_TO_TRASH 
+					 && xfer_info->kind != XFER_EMPTY_TRASH 
+					 && xfer_info->kind != XFER_DELETE
 					 ? _("From:") : "",
-					 xfer_info->kind != XFER_MOVE_TO_TRASH &&
-					 xfer_info->kind != XFER_EMPTY_TRASH
+					 xfer_info->kind != XFER_MOVE_TO_TRASH 
+					 && xfer_info->kind != XFER_EMPTY_TRASH 
+					 && xfer_info->kind != XFER_DELETE
 					 ? _("To:") : NULL,
 					 progress_info->file_index,
 					 progress_info->file_size);
@@ -566,6 +569,7 @@ fs_xfer (const GList *item_uris,
 	gnome_vfs_uri_unref (trash_dir_uri);
 	gnome_vfs_uri_unref (target_dir_uri);
 	gnome_vfs_uri_unref (source_dir_uri);
+	nautilus_g_list_free_deep (item_names);
 	g_free (source_dir);
 }
 
@@ -619,10 +623,10 @@ fs_new_folder (GtkWidget *parent_view, const char *parent_dir,
 	state->done_callback = done_callback;
 	state->data = data;
 
-	dest_names = g_list_append (NULL, "New Folder");
+	dest_names = g_list_append (NULL, "untitled folder");
 	gnome_vfs_async_xfer (&state->handle, NULL, NULL,
 	      		      parent_dir, dest_names,
-	      		      GNOME_VFS_XFER_USE_UNIQUE_NAMES,
+	      		      GNOME_VFS_XFER_NEW_UNIQUE_DIRECTORY,
 	      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 	      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
 	      		      &new_folder_xfer_callback, state,
@@ -726,6 +730,43 @@ fs_move_to_trash (const GList *item_uris, GtkWidget *parent_view)
 
 	gnome_vfs_uri_unref (trash_dir_uri);
 	gnome_vfs_uri_unref (source_dir_uri);
+	nautilus_g_list_free_deep (item_names);
+	g_free (source_dir);
+}
+
+void 
+fs_delete (const GList *item_uris, GtkWidget *parent_view)
+{
+	GnomeVFSURI *source_dir_uri;
+	char *source_dir;
+	GList *item_names;
+	XferInfo *xfer_info;
+
+	item_names = NULL;
+	source_dir_uri = NULL;
+	get_parent_make_name_list (item_uris, &source_dir_uri, &item_names);
+	source_dir = gnome_vfs_uri_to_string (source_dir_uri, GNOME_VFS_URI_HIDE_NONE);
+
+	xfer_info = g_new (XferInfo, 1);
+	xfer_info->parent_view = parent_view;
+	xfer_info->progress_dialog = NULL;
+	xfer_info->show_progress_dialog = TRUE;
+	xfer_info->operation_name = _("Deleting");
+	xfer_info->preparation_name =_("Preparing to Delete...");
+	xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
+	xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
+	xfer_info->kind = XFER_DELETE;
+	
+	gnome_vfs_async_xfer (&xfer_info->handle, source_dir, item_names,
+	      		      NULL, NULL,
+	      		      GNOME_VFS_XFER_DELETE_ITEMS | GNOME_VFS_XFER_RECURSIVE,
+	      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
+	      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
+	      		      &update_xfer_callback, xfer_info,
+	      		      &sync_xfer_callback, NULL);
+
+	gnome_vfs_uri_unref (source_dir_uri);
+	nautilus_g_list_free_deep (item_names);
 	g_free (source_dir);
 }
 
@@ -767,7 +808,7 @@ fs_empty_trash (GtkWidget *parent_view)
 
 		gnome_vfs_async_xfer (&xfer_info->handle, NULL, trash_dir_list,
 		      		      NULL, NULL,
-		      		      GNOME_VFS_XFER_REMOVESOURCE,
+		      		      GNOME_VFS_XFER_EMPTY_DIRECTORIES,
 		      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
 		      		      &update_xfer_callback, xfer_info,

@@ -72,6 +72,7 @@ convert_options (GNOME_Desktop_FileOperationService_XferOptions options)
 
 	returned_options = 0;
 
+#if 0
 	if (options & GNOME_Desktop_FileOperationService_XferOptionPreserve) 
 		returned_options |= GNOME_VFS_XFER_PRESERVE;
 	if (options & GNOME_Desktop_FileOperationService_XferOptionFollowLinks) 
@@ -90,6 +91,7 @@ convert_options (GNOME_Desktop_FileOperationService_XferOptions options)
 		returned_options |= GNOME_VFS_XFER_UPDATEMODE;
 	if (options & GNOME_Desktop_FileOperationService_XferOptionRemoveSource) 
 		returned_options |= GNOME_VFS_XFER_REMOVESOURCE;
+#endif
 
 	return returned_options;
 }

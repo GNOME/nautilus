@@ -27,28 +27,29 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include "dfos.h"
 
-void dfos_xfer (DFOS *dfos,
-		const gchar *source_directory_uri,
-		GList *source_file_name_list,
-		const gchar *target_directory_uri,
-		GList *target_file_name_list,
-		GnomeVFSXferOptions options,
-		GnomeVFSXferErrorMode error_mode,
-		GnomeVFSXferOverwriteMode overwrite_mode);
+void 	dfos_xfer 	(DFOS *dfos,
+			 const gchar *source_directory_uri,
+			 GList *source_file_name_list,
+			 const gchar *target_directory_uri,
+			 GList *target_file_name_list,
+			 GnomeVFSXferOptions options,
+			 GnomeVFSXferErrorMode error_mode,
+			 GnomeVFSXferOverwriteMode overwrite_mode);
 
-void fs_xfer   (const GList *item_uris,
-		const GdkPoint *target_item_points,
-		const char *target_dir,
-		int copy_action,
-		GtkWidget *parent_view);
+void 	fs_xfer   	(const GList *item_uris,
+			 const GdkPoint *target_item_points,
+			 const char *target_dir,
+			 int copy_action,
+			 GtkWidget *parent_view);
 
-void fs_move_to_trash (const GList *item_uris,
-		       GtkWidget *parent_view);
+void 	fs_move_to_trash (const GList *item_uris,
+			 GtkWidget *parent_view);
 
-void fs_empty_trash 	(GtkWidget *parent_view);
-void fs_new_folder 	(GtkWidget *parent_view,
+void 	fs_empty_trash 	(GtkWidget *parent_view);
+void 	fs_new_folder 	(GtkWidget *parent_view,
 			 const char *parent_dir,
 			 void (*done_callback)(const char *new_folder_uri, gpointer data),
 			 gpointer data);
+void	fs_delete 	(const GList *item_uris, GtkWidget *parent_view);
 
 #endif /* DFOS_XFER_H */
