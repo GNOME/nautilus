@@ -1,0 +1,70 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* dfos.h - Desktop File Operation Service.
+
+   Copyright (C) 1999 Free Software Foundation
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation; either version 2 of the
+   License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+
+   You should have received a copy of the GNU General Public
+   License along with this program; see the file COPYING.  If not,
+   write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+   Boston, MA 02111-1307, USA.
+
+   Author: Ettore Perazzoli <ettore@gnu.org>
+*/
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <gnome.h>
+#include <libgnorba/gnorba.h>
+#include <orb/orbit.h>
+
+#include "dfos.h"
+
+
+struct _DFOS {
+	GNOME_Desktop_FileOperationService corba_objref;
+};
+
+
+DFOS *
+dfos_new (void)
+{
+	GNOME_Desktop_FileOperationService corba_objref;
+	DFOS *new;
+
+	new = g_new (DFOS, 1);
+	corba_objref = dfos_corba_init (new);
+	if (corba_objref == CORBA_OBJECT_NIL) {
+		g_free (new);
+		return NULL;
+	}
+
+	new->corba_objref = corba_objref;
+
+	return new;
+}
+
+void
+dfos_destroy (DFOS *dfos)
+{
+	CORBA_Environment ev;
+
+	g_return_if_fail (dfos != NULL);
+
+	CORBA_exception_init (&ev);
+	CORBA_Object_release (dfos->corba_objref, &ev);
+	CORBA_exception_free (&ev);
+
+	g_free (dfos);
+}
