@@ -762,10 +762,13 @@ get_duplicate_name (const char *name, int count_increment)
 static char *
 get_next_duplicate_name (char *name, int count_increment)
 {
+	char *unescaped_name;
 	char *result;
 
-	result = get_duplicate_name (name, count_increment);
+	unescaped_name = gnome_vfs_unescape_string (name, "/");
 	g_free (name);
+	result = get_duplicate_name (unescaped_name, count_increment);
+	g_free (unescaped_name);
 	
 	return result;
 }

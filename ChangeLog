@@ -1,3 +1,10 @@
+2000-10-10  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(get_next_duplicate_name):
+	Fix to do proper unescaping. This was breaking the duplicate name
+	generating algorithm.
+
 2000-10-10  Josh Barrow  <josh@eazel.com>
 
 	* src/nautilus-shell-ui.xml:
