@@ -1,3 +1,49 @@
+2001-03-19  John Sullivan  <sullivan@eazel.com>
+	
+	More work on bug 4875 (design for running arbitrary
+	scripts on selected items). 
+
+	Mostly done with this first pass. I still need to 
+	set a few environment variables for the scripts' sake, 
+	and I still need to add	code to create the scripts folder 
+	if it's missing. (To test at this point, create your own 
+	directory named "scripts" in ~/Nautilus.)
+
+	* src/file-manager/nautilus-directory-view-ui.xml: Renamed
+	Run Script submenu to Scripts; added Open Scripts Folder to
+	Scripts submenu.
+
+	* src/file-manager/fm-directory-view.c:
+	(get_scripts_directory): returns NULL if directory doesn't exist.
+	(scripts_added_or_changed_callback): New function, marks
+	scripts menu invalid and schedules menu update.
+	(connect_script_handlers): new function, monitor scripts
+	directory and connect to files_added and files_changed signals
+	so we can notice when scripts have changed.
+	(fm_directory_view_initialize): Call connect_script_handlers.
+	(get_selected_file_names_as_parameter_string): New function,
+	returns string of selected file names, each shell-quoted.
+	(run_script_callback): Pass selected file names if directory
+	is local (else pass nothing); add FIXMEs
+	(reset_scripts_menu): Don't change sensitivity based on script
+	non-zero count since there's always the Open Scripts Folder item.
+	(any_valid_scripts): New helper routine to see if scripts folder
+	contains any executables.
+	(notify_user_if_no_scripts_callback): New function, puts up
+	informative message if there are no executables in scripts folder.
+	(call_when_ready_on_scripts_directory): New helper function,
+	slightly generalized from schedule_reset_scripts_menu.
+	(schedule_reset_scripts_menu): Now calls new helper function.
+	(open_scripts_folder_callback): New function, displays the contents
+	of the scripts folder and also presents informative message if
+	it contains no executables.
+	(real_merge_menus): Add open_scripts_folder_callback for verb; mark
+	scripts submenu invalid rather than updating it here.
+	(real_update_menus): reset scripts menu if it's marked invalid.
+	(disconnect_scripts_directory_handler): New helper function to
+	disconnect a signal handler on the scripts directory.
+	(disconnect_script_handlers): disconnect all the stuff we connected.
+	
 2001-03-19  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Gene Z. Ragan  <gzr@eazel.com>

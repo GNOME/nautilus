@@ -18,6 +18,9 @@
 	<cmd name="OpenNew"
          _label="Open in New Window"
 	 _tip="Open each selected item in a new window"/>
+	<cmd name="Open Scripts Folder"
+         _label="Open Scripts Folder"
+	 _tip="Show the folder containing the scripts that appear in this menu"/>
 	<cmd name="OtherApplication"
          _label="Other Application..."
 	 _tip="Choose another application with which to open the selected item"/>
@@ -73,10 +76,12 @@
 					  _label="Other _Viewer..."
 					  verb="OtherViewer"/>
 			</submenu>
-			<submenu name="Run Script"
-				 _label="R_un Script"
-				 _tip="Run a script from ~/Nautilus/scripts">
+			<submenu name="Scripts"
+				 _label="Scripts"
+				 _tip="Run or manage scripts from ~/Nautilus/scripts">
 				 <placeholder name="Scripts Placeholder" delimit="none"/>
+				 <separator/>
+				 <menuitem name="_Open Scripts Folder" verb="Open Scripts Folder"/>
 			</submenu>
 		</placeholder>
 
@@ -152,11 +157,13 @@
 				<placeholder name="Viewers Placeholder" delimit="none"/>
 				<menuitem name="OtherViewer" verb="OtherViewer"/>
 			</submenu>
-			<submenu name="Run Script"
-				 _label="Run Script"
-				 _tip="Run a script from ~/Nautilus/scripts"
+			<submenu name="Scripts"
+				 _label="Scripts"
+				 _tip="Run or manage scripts from ~/Nautilus/scripts"
 				 tearoff="0">
 				 <placeholder name="Scripts Placeholder" delimit="none"/>
+				 <separator/>
+				 <menuitem name="Open Scripts Folder" verb="Open Scripts Folder"/>
 			</submenu>
 
 		</placeholder>
