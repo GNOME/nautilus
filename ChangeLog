@@ -1,3 +1,60 @@
+2000-08-07  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1969 enough for now (search bar buttons should
+	become sensitive & insensitive appropriately). Will write
+	up bug reports about remaining issues.
+
+	Made the "Find" button only be sensitive if all text-entry
+	fields are non-empty. (Did this for both simple & complex
+	search bar). Cleaned up some other code that I couldn't
+	avoid in there too.
+
+	* src/nautilus-simple-search-bar.c:
+	Define Details struct.
+	(nautilus_simple_search_bar_initialize_class): Wire up
+	destroy handler.
+	(search_text_is_invalid): New function, returns TRUE if the
+	text is empty.
+	(update_simple_find_button_state): New function, sets the
+	sensitivity of the find button based on search_text_is_invalid.
+	(activated_search_field): New function, calls location_changed
+	only if text is valid.
+	(nautilus_simple_search_bar_initialize): Initialize Details field;
+	change "activate" signal on text field to call 
+	activated_search_field instead of calling location_changed directly
+	so it can handle the text-invalid case; wired "change" signal of
+	text field to update_simple_find_button_state; call update_simple_
+	find_button_state once after setting up widgets; simplify
+	widget-creation code.
+	(nautilus_simple_search_bar_destroy): Free details field.
+	(nautilus_simple_search_bar_set_location),
+	(nautilus_simple_search_bar_get_location): Updated to use Details.
+
+	* src/nautilus-complex-search-bar.c:
+	(criteria_invalid): Walks through the list of criteria, checking
+	whether any of the text-field ones have empty text. Later we
+	could add other types of checks in here.
+	(update_options_buttons_state): Just added FIXME comment.
+	(update_find_button_state): New function, sets sensitivity
+	of find button based on criteria_invalid.
+	(update_dynamic_buttons_state): New function, calls the other
+	two button-updating functions.
+	(nautilus_complex_search_bar_initialize_class): Wire up destroy 
+	handler.
+	(more_options_callback), (fewer_options_callback), 
+	(nautilus_complex_search_bar_initialize): 
+	Call update_dynamic_buttons_state instead of just 
+	update_options_buttons_state.
+	(nautilus_complex_search_bar_destroy): free Details struct. This
+	was leaking before.
+	(attach_criterion_to_search_bar): Attach update_find_button_state
+	to "changed" signal of any new text-entry field.
+
+	* src/nautilus-simple-search-bar.h: Replaced several fields in 
+	NautilusSimpleSearchBar struct with new Details field. Among
+	the replaced fields were some undo-related ones that were not
+	yet used anywhere, so I left them out of Details.
+	
 2000-08-07  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar-title.c:

@@ -41,14 +41,11 @@
 #define NAUTILUS_IS_SIMPLE_SEARCH_BAR(obj) \
 	GTK_CHECK_TYPE (obj, NAUTILUS_TYPE_SIMPLE_SEARCH_BAR)
 
+typedef struct NautilusSimpleSearchBarDetails  NautilusSimpleSearchBarDetails;
+
 typedef struct NautilusSimpleSearchBar {
 	NautilusSearchBar parent;
-
-	GtkLabel *label;
-	GtkEntry *entry;
-
-	gchar *undo_text;
-	gboolean undo_registered;
+	NautilusSimpleSearchBarDetails *details;
 } NautilusSimpleSearchBar;
 
 typedef struct {
