@@ -721,15 +721,15 @@ nautilus_self_check_search_uri (void)
 
         /* make sure all the code paths work */
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff"), 
-                                      _("Items that have \"stuff\" in the name."));
+                                      _("Items with \"stuff\" in the name."));
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"), 
-                                      _("Items that have \"stuff\" in the name and are regular files."));
+                                      _("Items with \"stuff\" in the name and are regular files."));
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains stuff & file_type is file"
                                                                     " & size smaller_than 2000"), 
-                                      _("Items that have \"stuff\" in the name, are regular files and that are "
+                                      _("Items with \"stuff\" in the name, are regular files and "
                                         "smaller than 2000 bytes."));
         NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains medusa & file_type is directory"), 
-                                      _("Items that have \"medusa\" in the name and are "
+                                      _("Items with \"medusa\" in the name and are "
                                         "directories."));
         
         /* is_search_uri */
