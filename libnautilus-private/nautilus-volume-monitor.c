@@ -973,17 +973,17 @@ get_mount_list (void)
 static GList *
 get_mount_list (void) 
 {
-        GList *volumes;
+	static FILE *fh = NULL;
+	static time_t last_mtime = 0;
+	GList *volumes = NULL;
         NautilusVolume *volume;
-        static FILE *fh = NULL;
         const char *file_name;
 	const char *separator;
 	char line[PATH_MAX * 3];
 	char device_name[sizeof (line)];
 	EelStringList *list;
 	char *device_path, *mount_path, *filesystem;
-
-	volumes = NULL;
+	struct stat sb;
         
 	if (mnttab_exists) { 
 		file_name = "/etc/mnttab";
@@ -992,6 +992,26 @@ get_mount_list (void)
 		file_name = "/proc/mounts";
 		separator = " ";
 	}
+
+	/* Returning NULL from this function oddly enough keeps the current
+	 * mount list. Go figure.
+	 */
+
+
+	/* /proc/mounts mtime never changes, so stat /etc/mtab.
+	 * Isn't this lame?
+	 */
+	if (stat ("/etc/mtab", &sb) < 0) {
+		g_warning ("Unable to stat %s: %s", file_name,
+			   g_strerror (errno));
+		return NULL;
+	}
+	
+	if (sb.st_mtime <= last_mtime) {
+		return NULL;
+	}
+
+	last_mtime = sb.st_mtime;
 	
 	if (fh == NULL) {
                 fh = fopen (file_name, "r");
@@ -999,7 +1019,7 @@ get_mount_list (void)
                         g_warning ("Unable to open %s: %s", file_name, strerror (errno));
                         return NULL;
                 }
-        } else {
+        } else {		
                 rewind (fh);
         }
 

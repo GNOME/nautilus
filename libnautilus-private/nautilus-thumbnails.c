@@ -84,12 +84,42 @@ vfs_file_exists (const char *file_uri)
 	return result;
 }
 
+/* FIXME Unportable Linux-specific hack-o-rama */
+#include <sys/vfs.h>
+#include <errno.h>
+#define NFS_SUPER_MAGIC       0x6969
+static gboolean
+is_nfs_filesystem (const char *uri)
+{
+	char *local_path;
+	gboolean retval;
+	struct statfs sb;
+
+	retval = FALSE;
+	
+	local_path = gnome_vfs_get_local_path_from_uri (uri);
+
+	if (statfs (local_path, &sb) < 0) {
+		g_warning ("Could not statfs %s: %s",
+			   local_path, strerror (errno));
+	} else {
+		retval = (sb.f_type == NFS_SUPER_MAGIC);
+	}
+	
+	g_free (local_path);
+
+	return retval;
+}
+
 static gboolean
 uri_is_local (const char *uri)
 {
 	gboolean is_local;
 	GnomeVFSURI *vfs_uri;
 
+	if (is_nfs_filesystem (uri))
+		return FALSE;
+	
 	vfs_uri = gnome_vfs_uri_new (uri);
 	is_local = gnome_vfs_uri_is_local (vfs_uri);
 	gnome_vfs_uri_unref (vfs_uri);

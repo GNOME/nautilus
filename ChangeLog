@@ -1,3 +1,19 @@
+2001-07-31  Havoc Pennington  <hp@redhat.com>
+
+	* libnautilus-private/nautilus-volume-monitor.c (get_mount_list):
+	/proc/mounts mtime never changes, so stat /etc/mtab.
+
+2001-07-30  Havoc Pennington  <hp@redhat.com>
+
+	* libnautilus-private/nautilus-thumbnails.c: 
+	Hack so we don't look at NFS filesystems in "local only" mode.
+	Didn't change VFS to return !is_local, because I'm assuming we 
+	normally want to treat NFS as local.
+
+	* libnautilus-private/nautilus-volume-monitor.c (get_mount_list): 
+	Stat /proc/mounts and check mtime before we decide to reparse it.
+	Keeps the disk from spinning up.
+
 2001-07-30  Alex Larsson  <alexl@redhat.com>
 
 	* src/nautilus-complex-search-bar.c (load_find_them_pixmap_widget):
