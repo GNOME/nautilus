@@ -1,6 +1,12 @@
+2001-09-07  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(verify_current_mount_state): Remove unused variable.
+
 2001-09-06  Owen Taylor  <otaylor@redhat.com>
 
-	* libnautilus-private/nautilus-volume-monitor.c (verify_current_mount_state): 
+	* libnautilus-private/nautilus-volume-monitor.c
+	(verify_current_mount_state): 
 	Fix bug where the mount list was stored without full mount
 	names. Don't call mount_volume_make_name() on volumes that
 	might not be on the system any more. Remove code that 

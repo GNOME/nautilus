@@ -986,8 +986,7 @@ mount_lists_are_identical (GList *list_a, GList *list_b)
 static void
 verify_current_mount_state (NautilusVolumeMonitor *monitor)
 {
-	GList *new_mounts, *old_mounts, *current_mounts;
-	GList *saved_mount_list, *node;
+	GList *current_mounts, *new_mounts, *old_mounts, *node;
 	
 	/* Get all current mounts */
 	current_mounts = get_current_mount_list (monitor);
