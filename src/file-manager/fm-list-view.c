@@ -90,7 +90,6 @@ static gboolean			default_sort_reversed_auto_value;
  */
 #define LIST_VIEW_COLUMN_NONE		(-1)
 #define LIST_VIEW_COLUMN_ICON		0
-#define LIST_VIEW_COLUMN_EMBLEMS	2
 
 
 
@@ -164,6 +163,7 @@ static int                  get_sort_column_from_attribute            (FMListVie
 static EelList *       get_list                                  (FMListView         *list_view);
 static void                 update_icons                              (FMListView         *list_view);
 static int                  get_number_of_columns                     (FMListView         *list_view);
+static int                  get_emblems_column                        (FMListView         *list_view);
 static int                  get_link_column                           (FMListView         *list_view);
 static char *               get_default_sort_attribute                (FMListView         *list_view);
 static void                 get_column_specification                  (FMListView         *list_view,
@@ -181,6 +181,7 @@ static void                 real_removing_file                        (FMListVie
 static gboolean             real_file_still_belongs                   (FMListView         *view,
 								       NautilusFile       *file);
 static int                  real_get_number_of_columns                (FMListView         *list_view);
+static int                  real_get_emblems_column                   (FMListView         *list_view);
 static int                  real_get_link_column                      (FMListView         *list_view);
 static char *               real_get_default_sort_attribute           (FMListView         *list_view);
 static void                 real_get_column_specification             (FMListView         *list_view,
@@ -243,6 +244,7 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_list_view_class->adding_file = real_adding_file;
 	fm_list_view_class->removing_file = real_removing_file;
 	fm_list_view_class->get_number_of_columns = real_get_number_of_columns;
+	fm_list_view_class->get_emblems_column = real_get_emblems_column;
 	fm_list_view_class->get_link_column = real_get_link_column;
 	fm_list_view_class->get_column_specification = real_get_column_specification;
 	fm_list_view_class->get_default_sort_attribute = real_get_default_sort_attribute;
@@ -1270,6 +1272,7 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 	int number_of_columns;
 	int new_row;
 	int column;
+	int emblems_column;
 
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (list_view), -1);
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), -1);
@@ -1279,10 +1282,11 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 	/* One extra slot so it's NULL-terminated */
 	number_of_columns = get_number_of_columns (list_view);
 	text = g_new0 (char *, number_of_columns);
+	emblems_column = get_emblems_column (list_view);
 	for (column = 0; column < number_of_columns; ++column) {
 		/* No text in icon and emblem columns. */
 		if (column != LIST_VIEW_COLUMN_ICON
-		    && column != LIST_VIEW_COLUMN_EMBLEMS) {
+		    && column != emblems_column) {
 			text[column] = nautilus_file_get_string_attribute_with_default 
 				(file, get_column_attribute (list_view, column));
 		}
@@ -2138,7 +2142,7 @@ install_row_images (FMListView *list_view, guint row)
 	eel_list_set_pixbuf (list, row, LIST_VIEW_COLUMN_ICON, icon);
 
 	/* Install any emblems for this file. */
-	eel_list_set_pixbuf_list (list, row, LIST_VIEW_COLUMN_EMBLEMS, 
+	eel_list_set_pixbuf_list (list, row, get_emblems_column (list_view), 
 				       fm_list_view_get_emblem_pixbufs_for_file (list_view, file));
 }
 
@@ -2195,6 +2199,14 @@ get_link_column (FMListView *list_view)
 	return EEL_CALL_METHOD_WITH_RETURN_VALUE
 		(FM_LIST_VIEW_CLASS, list_view,
 		 get_link_column, (list_view));
+}
+
+static int
+get_emblems_column (FMListView *list_view)
+{
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_LIST_VIEW_CLASS, list_view,
+		 get_emblems_column, (list_view));
 }
 
 static char *
@@ -2320,6 +2332,12 @@ static int
 real_get_number_of_columns (FMListView *view)
 {
 	return 6;
+}
+
+static int
+real_get_emblems_column (FMListView *view)
+{
+	return 2;
 }
 
 static int

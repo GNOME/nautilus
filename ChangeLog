@@ -1,5 +1,24 @@
 2001-04-26  John Sullivan  <sullivan@eazel.com>
 
+	Search results view has been broken for awhile without anyone
+	noticing. Between these changes and a NULL-handling fix I
+	checked into eel-list.c, it works again. (Soon I will move the
+	Emblems column for search list view also, but first I wanted
+	to make it work.)
+
+	* src/file-manager/fm-list-view.h:
+	* src/file-manager/fm-list-view.c: (fm_list_view_initialize_class),
+	(add_to_list), (install_row_images), (get_emblems_column),
+	(real_get_emblems_column): Replaced #define for emblems column
+	with overridable function.
+	
+	* src/file-manager/fm-search-list-view.c:
+	(fm_search_list_view_initialize_class),
+	(real_get_emblem_names_to_exclude), (real_get_emblems_column):
+	Override get_emblems_column to return correct value.
+
+2001-04-26  John Sullivan  <sullivan@eazel.com>
+
 	Moved over a few changes from the nautilus-1 branch. 
 	I've reviewed all the changes in the branch ChangeLog now,
 	so I think we can kiss it goodbye.

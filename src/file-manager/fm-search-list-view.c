@@ -83,6 +83,7 @@ static void	real_removing_file 			 (FMListView 	   *view,
 static gboolean real_file_still_belongs 		 (FMListView 	   *view, 
 							  NautilusFile 	   *file);
 static int  	real_get_number_of_columns           	 (FMListView       *list_view);
+static int  	real_get_emblems_column                	 (FMListView       *list_view);
 static int  	real_get_link_column                 	 (FMListView       *list_view);
 static char *   real_get_default_sort_attribute      	 (FMListView       *view);
 static void 	real_get_column_specification        	 (FMListView       *list_view,
@@ -402,6 +403,7 @@ fm_search_list_view_initialize_class (gpointer klass)
 	fm_list_view_class->adding_file = real_adding_file;
 	fm_list_view_class->removing_file = real_removing_file;
 	fm_list_view_class->get_number_of_columns = real_get_number_of_columns;
+	fm_list_view_class->get_emblems_column = real_get_emblems_column;
 	fm_list_view_class->get_link_column = real_get_link_column;
 	fm_list_view_class->get_column_specification = real_get_column_specification;
 	fm_list_view_class->get_default_sort_attribute = real_get_default_sort_attribute;
@@ -502,6 +504,12 @@ real_get_emblem_names_to_exclude (FMDirectoryView *view)
 
 	/* Overridden to show even the trash emblem here */
 	return NULL;
+}
+
+static int
+real_get_emblems_column (FMListView *view)
+{
+	return 1;
 }
 
 static int
