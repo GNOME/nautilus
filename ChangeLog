@@ -1,5 +1,17 @@
 2001-03-19  Andy Hertzfeld  <andy@eazel.com>
 
+	made it draw annotation text in aa mode;
+	made it parse non-emblem annotations
+	
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(get_display_text), (draw_item_aa_text),
+	(nautilus_canvas_note_item_render),
+	(nautilus_canvas_note_item_draw):
+	* src/file-manager/fm-icon-view.c: (get_icon_text_callback),
+	(get_icon_annotation_callback):
+
+2001-03-19  Andy Hertzfeld  <andy@eazel.com>
+
 	* src/file-manager/fm-icon-view.c: (get_icon_annotation_callback):
 	made it support intrinsic property emblems as well as keywords
 	

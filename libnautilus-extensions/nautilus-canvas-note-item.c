@@ -29,6 +29,9 @@
 #include <libgnomeui/gnome-canvas.h>
 #include <libgnomeui/gnome-canvas-util.h>
 
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
+
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_svp_vpath.h>
@@ -36,6 +39,11 @@
 
 #include "nautilus-canvas-note-item.h"
 #include "nautilus-font-factory.h"
+#include "nautilus-gdk-extensions.h"
+#include "nautilus-gdk-pixbuf-extensions.h"
+#include "nautilus-gnome-extensions.h"
+#include "nautilus-scalable-font.h"
+#include "nautilus-string.h"
 
 enum {
 	ARG_0,
@@ -613,16 +621,110 @@ nautilus_canvas_note_item_bounds (GnomeCanvasItem *item, double *x1, double *y1,
 	*y2 = note_item->y2 + hwidth;
 }
 
+/* utility routine to map raw annotation text into text to be displayed */
+/* for now this is pretty naive and only handles free-form text, just returning
+ * the first suitable annotation it can find
+ */
+static char *
+get_display_text (const char *note_text)
+{
+	char *display_text;
+	xmlChar *xml_text;
+	xmlDocPtr annotations;
+	xmlNodePtr next_annotation, item;	
+	
+	/* if its an xml file, parse it to extract the display text */
+	if (nautilus_istr_has_prefix (note_text, "<?xml")) {
+		display_text = NULL;
+		annotations = xmlParseMemory ((char*) note_text, strlen (note_text));
+		if (annotations != NULL) {
+			next_annotation = xmlDocGetRootElement (annotations)->childs;
+
+			while (next_annotation != NULL) {
+				if (nautilus_strcmp (next_annotation->name, "annotations") == 0) {
+					item = next_annotation->childs;
+					while (item != NULL) {
+						if (nautilus_strcmp (item->name, "annotation") == 0) {
+							xml_text = xmlNodeGetContent (item);
+							display_text = g_strdup (xml_text);
+							xmlFree (xml_text);
+							break;
+						}
+						item = item->next;
+					}
+				}
+				next_annotation = next_annotation->next;
+				if (display_text != NULL) {
+					break;
+				}
+			}
+			xmlFreeDoc (annotations);
+		}
+	} else {
+		display_text = g_strdup (note_text);
+	}
+	
+	return display_text;
+}
+
+/* utility routine to draw a text string into the passed-in item */
+static void
+draw_item_aa_text (GnomeCanvasBuf *buf, GnomeCanvasItem *item, const char *note_text)
+{
+	NautilusScalableFont *font;
+	NautilusDimensions text_dimensions;
+	GdkPixbuf *text_pixbuf;	
+	ArtIRect item_bounds;
+	int font_size = 12;
+	
+	font = nautilus_scalable_font_get_default_font ();
+
+	nautilus_gnome_canvas_item_get_canvas_bounds (item, &item_bounds);
+	text_dimensions = nautilus_scalable_font_measure_text (font, 
+				font_size,
+				note_text,
+				strlen (note_text));
+
+ 	text_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+ 				      TRUE,
+ 				      8,
+ 				      text_dimensions.width + 8,
+ 				      text_dimensions.height + 8);
+	nautilus_gdk_pixbuf_fill_rectangle_with_color (text_pixbuf, NULL,
+						       NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 0));
+		
+	nautilus_scalable_font_draw_text (font, text_pixbuf, 
+				0, font_size - 4,
+				NULL,
+				font_size,
+				note_text, strlen (note_text),
+				NAUTILUS_RGBA_COLOR_OPAQUE_BLACK,
+				NAUTILUS_OPACITY_FULLY_OPAQUE);
+
+	nautilus_gnome_canvas_draw_pixbuf (buf, text_pixbuf, item_bounds.x0 + 4, item_bounds.y0 - 4);
+	
+	gdk_pixbuf_unref (text_pixbuf);	
+	gtk_object_unref (GTK_OBJECT (font));
+}
+
 static void
 nautilus_canvas_note_item_render (GnomeCanvasItem *item,
 			GnomeCanvasBuf *buf)
 {
 	NautilusCanvasNoteItem *note_item;
-
+	char *display_text;
+	
 	note_item = NAUTILUS_CANVAS_NOTE_ITEM (item);
 
 	if (note_item->fill_svp != NULL) {
 		gnome_canvas_render_svp (buf, note_item->fill_svp, note_item->fill_color);
+	}
+
+	/* draw the annotation text, if necessary */
+	if (note_item->note_text) {
+		display_text = get_display_text (note_item->note_text);
+		draw_item_aa_text (buf, item, note_item->note_text);
+		g_free (display_text);
 	}
 
 	if (note_item->outline_svp != NULL) {
@@ -635,6 +737,7 @@ nautilus_canvas_note_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable, in
 {
 	NautilusCanvasNoteItem *note_item;
 	GdkFont *font;
+	char* display_text;
 	double i2w[6], w2c[6], i2c[6];
 	int x1, y1, x2, y2;
 	ArtPoint i1, i2;
@@ -674,6 +777,7 @@ nautilus_canvas_note_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable, in
 	/* draw the annotation text */
 	if (note_item->note_text) {
 		font = nautilus_font_factory_get_font_from_preferences (12);		
+		display_text = get_display_text (note_item->note_text);
 		gdk_draw_string (drawable,
 			  font,
 			  note_item->outline_gc,
@@ -681,6 +785,7 @@ nautilus_canvas_note_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable, in
 			  y1 - y + 15,
 			  note_item->note_text);
 		gdk_font_unref (font);
+		g_free (display_text);
 	}
 		
 	if (note_item->outline_set) {

@@ -1765,7 +1765,6 @@ get_icon_text_callback (NautilusIconContainer *container,
 {
 	char *actual_uri, *path;
 	char *attribute_names;
-	char *annotations;
 	char **text_array;
 	int i , slot_index;
 	char *attribute_string;
@@ -1776,9 +1775,6 @@ get_icon_text_callback (NautilusIconContainer *container,
 	g_assert (additional_text != NULL);
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
-	/* fetch the annotations */
-	annotations = nautilus_annotation_get_annotation (file);
-	g_free (annotations);
 
 	/* In the smallest zoom mode, no text is drawn. */
 	if (fm_icon_view_get_zoom_level (icon_view) == NAUTILUS_ZOOM_LEVEL_SMALLEST) {
@@ -1861,6 +1857,13 @@ get_icon_annotation_callback (NautilusIconContainer *container,
 	
 	keyword = g_strdup (selected_keyword->data);	
 	nautilus_g_list_free_deep (keyword_list);
+	
+	/* if the keyword is "note", return the file annotation instead */
+	if (nautilus_strcmp (keyword, "note") == 0) {
+		g_free (keyword);
+		keyword = nautilus_annotation_get_annotation (file);
+	}
+	
 	return keyword;
 }
 
