@@ -3405,11 +3405,6 @@ nautilus_file_is_in_trash (NautilusFile *file)
 		return FALSE;
 	}
 
-	/* FIXME bugzilla.eazel.com 2428: 
-	 * Is it OK to do I/O here? Don't we need to keep a
-	 * cached list of trash directories somewhere to guarantee we
-	 * don't do sync. I/O in this case?
-	 */
 	result = gnome_vfs_find_directory
 		(file_vfs_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
 		 &trash_vfs_uri, FALSE, FALSE, 0777)

@@ -1,3 +1,13 @@
+2000-08-28  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_is_in_trash):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_can_move_file_to_trash):
+	Fix FIXME 2428 and 2389.
+	Made it so that the respective gnome_vfs_find_directory calls
+	won't do any I/O.
+
 2000-08-28  John Sullivan  <sullivan@eazel.com>
 
 	Added more bug numbers to FIXMEs. 187 to go. This time I

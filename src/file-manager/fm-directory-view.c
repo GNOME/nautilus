@@ -1965,13 +1965,8 @@ fm_directory_view_can_move_file_to_trash (FMDirectoryView *view, NautilusFile *f
 	}
 	directory_uri = gnome_vfs_uri_new (directory);
 	
-	/* FIXME bugzilla.eazel.com 2389: 
-	 * Does this do I/O? If so we might need to find a way
-	 * of doing this based on a list of known trash directories
-	 * instead.
-	 */
 	result = gnome_vfs_find_directory (directory_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-					   &trash_dir_uri, TRUE, FALSE, 0777) == GNOME_VFS_OK;
+					   &trash_dir_uri, FALSE, FALSE, 0777) == GNOME_VFS_OK;
 	if (result) {
 		if (gnome_vfs_uri_equal (trash_dir_uri, directory_uri)
 		    || gnome_vfs_uri_is_parent (trash_dir_uri, directory_uri, TRUE)) {
