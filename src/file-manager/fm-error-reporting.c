@@ -41,7 +41,7 @@ fm_report_error_renaming_file (const char *original_name,
 
 	switch (error) {
 		case GNOME_VFS_ERROR_FILEEXISTS:
-			message = g_strdup_printf ("The name \"%s\" is already used in this folder.\nPlease use a different name.", 
+			message = g_strdup_printf ("The name \"%s\" is already used in this directory.\nPlease use a different name.", 
 						   new_name);
 			break;
 		default:

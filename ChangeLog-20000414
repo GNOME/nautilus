@@ -1,3 +1,42 @@
+2000-04-11  John Sullivan  <sullivan@eazel.com>
+
+	Addressed most of task 148 (Better type-as-string for
+	directory views). Added new directory to CVS, so make
+	sure you do a "cvs update -d" and not just "cvs update".
+
+	"make install" now installs a file of mime-type-to-English
+	descriptions in the gnome-mime directory.
+
+	* data/mime/nautilus.keys: The actual mapping between
+	MIME types and English descriptions. Read these and send
+	me your abuse.
+	* data/mime/Makefile.am: New file, copies nautilus.keys to
+	gnome-mime directory.
+	* data/Makefile.am: includes "mime" subdirectory
+	* configure.in: configures "data/mime" directory
+
+	* libnautilus/nautilus-file.c:
+	(nautilus_file_get_mime_type_as_string_attribute):
+	New function, returns the raw MIME type as a string,
+	and handles the no-MIME-type case.
+	(nautilus_file_get_string_attribute): handle attribute
+	"mime_type", distinct from "type" which is now the 
+	human-language one.
+	(nautilus_file_get_type_as_string): Use gnome-mime
+	to get human-language descriptions based on the MIME
+	type.
+	(nautilus_file_is_executable): Fixed this function which
+	was reading info->flags instead of info->permissions. Now
+	the special executable icon appears much more often (though
+	we still don't know what it's supposed to be).
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_renaming_file): Use "directory" instead of
+	"folder" to match our terminology elsewhere.
+	* src/file-manager/fm-icon-text-window.c:
+	add "mime type" to list of choices of text that can appear
+	beneath icons (in addition to just plain "type", which is
+	the human-language one).
+
 2000-04-11  Darin Adler  <darin@eazel.com>
 
 	Finished task 226 (Read metadata asynchronously instead of

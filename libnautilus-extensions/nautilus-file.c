@@ -32,6 +32,8 @@
 
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-mime-info.h>
+#include <libgnome/gnome-mime.h>
 
 #include <stdlib.h>
 #include <xmlmemory.h>
@@ -925,6 +927,30 @@ nautilus_file_get_group_as_string (NautilusFile *file)
 	return g_strdup (group_info->gr_name);
 }
 
+/**
+ * nautilus_file_get_mime_type_as_string_attribute:
+ * 
+ * Get a user-displayable string representing a file's MIME type.
+ * This string will be displayed in file manager views and thus
+ * will not be blank even if the MIME type is unknown. The caller
+ * is responsible for g_free-ing this string.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: Newly allocated string ready to display to the user.
+ * 
+ **/
+static char *
+nautilus_file_get_mime_type_as_string_attribute (NautilusFile *file)
+{
+	const char *mime_string;
+
+	mime_string = nautilus_file_get_mime_type (file);
+	if (nautilus_strlen (mime_string) > 0) {
+		return g_strdup (mime_string);
+	}
+
+	return g_strdup ("unknown MIME type");
+}
 
 /* This #include is part of the following hack, and should be removed with it */
 #include <dirent.h>
@@ -1021,7 +1047,7 @@ nautilus_file_get_size_as_string (NautilusFile *file)
  * 
  * @file: NautilusFile representing the file in question.
  * @attribute_name: The name of the desired attribute. The currently supported
- * set includes "name", "type", "size", "date_modified", "date_changed",
+ * set includes "name", "type", "mime_type", "size", "date_modified", "date_changed",
  * "date_accessed", "owner", "group", "permissions".
  * 
  * Returns: Newly allocated string ready to display to the user, or NULL
@@ -1041,6 +1067,10 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 
 	if (strcmp (attribute_name, "type") == 0) {
 		return nautilus_file_get_type_as_string (file);
+	}
+
+	if (strcmp (attribute_name, "mime_type") == 0) {
+		return nautilus_file_get_mime_type_as_string_attribute (file);
 	}
 
 	if (strcmp (attribute_name, "size") == 0) {
@@ -1090,20 +1120,36 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 static char *
 nautilus_file_get_type_as_string (NautilusFile *file)
 {
+	const char *mime_type;
+	const char *description;
+
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	if (nautilus_file_is_directory (file)) {
-		/* Special-case this so it isn't "special/directory".
-		 * FIXME: Should this be "folder" instead?
-		 */		
-		return g_strdup (_("directory"));
-	}
+	mime_type = (file->details->info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0 ?
+		file->details->info->mime_type :
+		NULL;
 
-	if (nautilus_strlen (file->details->info->mime_type) == 0) {
+	if (nautilus_strlen (mime_type) == 0) {
+		/* No mime type, anything else interesting we can say about this? */
+		if (nautilus_file_is_executable (file)) {
+			return g_strdup (_("program"));
+		}
+
 		return g_strdup (_("unknown type"));
 	}
 
-	return g_strdup (file->details->info->mime_type);
+	description = gnome_mime_description (mime_type);
+	if (nautilus_strlen (description) > 0) {
+		return g_strdup (description);
+	}
+
+	/* We want to update nautilus/data/nautilus.keys to include 
+	 * English (& localizable) versions of every mime type anyone ever sees.
+	 */
+	g_warning ("No description found for mime type \"%s\" (file is \"%s\"), tell sullivan@eazel.com", 
+		    mime_type,
+		    file->details->info->name);
+	return g_strdup (mime_type);
 }
 
 /**
@@ -1342,7 +1388,8 @@ nautilus_file_is_directory (NautilusFile *file)
  * Check if this file is executable at all.
  * @file: NautilusFile representing the file in question.
  * 
- * Returns: True if any of the execute bits are set.
+ * Returns: TRUE if any of the execute bits are set. FALSE if
+ * not, or if the permissions are unknown.
  * 
  **/
 gboolean
@@ -1350,7 +1397,15 @@ nautilus_file_is_executable (NautilusFile *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	return (file->details->info->flags & (GNOME_VFS_PERM_USER_EXEC
+	if ((file->details->info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS) == 0){
+		/* 
+		 * Permissions field is not valid.
+		 * Can't tell whether this file is executable, so return FALSE.
+		 */
+		return FALSE;
+	}
+
+	return (file->details->info->permissions & (GNOME_VFS_PERM_USER_EXEC
 				     | GNOME_VFS_PERM_GROUP_EXEC
 				     | GNOME_VFS_PERM_OTHER_EXEC)) != 0;
 }

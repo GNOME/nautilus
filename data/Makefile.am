@@ -1,1 +1,6 @@
-SUBDIRS = top
+NULL=
+
+SUBDIRS =\
+	top \
+	mime \
+	$(NULL)

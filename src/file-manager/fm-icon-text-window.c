@@ -64,6 +64,7 @@ static char * attribute_names[] = {
 	"owner",
 	"group",
 	"permissions",
+	"mime_type",
 	NULL
 };
 
@@ -76,6 +77,7 @@ static char * attribute_labels[] = {
 	_("owner"),
 	_("group"),
 	_("permissions"),
+	_("MIME type"),
 	NULL
 };
 
