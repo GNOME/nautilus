@@ -32,7 +32,7 @@
 #define AUTOSCROLL_TIMEOUT_INTERVAL 100
 	/* in milliseconds */
 
-#define AUTOSCROLL_INITIAL_DELAY 600000
+#define AUTOSCROLL_INITIAL_DELAY 750000
 	/* in microseconds */
 
 

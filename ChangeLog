@@ -1,3 +1,21 @@
+2000-10-04  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-drag.h:
+	Bug 2943.
+	Set the auto-scroll delay to 750 ms per Arlo's recommendation.
+
+	* libnautilus-extensions/nautilus-list.c: (rectangle_intersect),
+	(nautilus_list_clear_from_row):
+	Finish up 2036 - rectangular sections of list view sometimes 
+	get erased. Fix up all the other list view drawing glitches that
+	were showing up when invalidating the list view with other windows,
+	resizing columns, etc.
+	gdk_rectangle_intersect is ultra-lame and returns undefined rectangles
+	when doing an intersection of two disjoint rectangles, instead of returning
+	an empty rectangle with zero width/height.
+	For now replaced places that relied on this behavior to be correct with a 
+	call to rectangle_intersect that handles the result properly.
+
 2000-10-04  Michael Engber  <engber@eazel.com>
 
 	Changed the background code so that updates occuring

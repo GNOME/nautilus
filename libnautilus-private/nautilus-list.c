@@ -2292,6 +2292,16 @@ draw_row (NautilusCList *clist, GdkRectangle *area, int row_index, NautilusCList
 }
 
 static void
+rectangle_intersect (const GdkRectangle *source1, const GdkRectangle *source2, GdkRectangle *result)
+{
+	/* convenience call that returns result with defined values even if sources are disjucnt */
+	if (!gdk_rectangle_intersect ((GdkRectangle *)source1, (GdkRectangle *)source2, result)) {
+		result->width = 0;
+		result->height = 0;
+	}
+}
+
+static void
 nautilus_list_clear_from_row (NautilusList *list, int row_index,
 	GdkRectangle *area)
 {
@@ -2327,18 +2337,18 @@ nautilus_list_clear_from_row (NautilusList *list, int row_index,
 	tmp.y = clip_area.y;
 	tmp.height = clip_area.height;
 
-	gdk_rectangle_intersect (&clip_area, &tmp, &selected_column_rectangle);
+	rectangle_intersect (&clip_area, &tmp, &selected_column_rectangle);
 
 	/* calculate the first rectangle */
 	tmp = clip_area;
 	tmp.width = selected_column_rectangle.x - tmp.x;
-	gdk_rectangle_intersect (&clip_area, &tmp, &first_column_plain_rectangle);
+	rectangle_intersect (&clip_area, &tmp, &first_column_plain_rectangle);
 
 
 	/* calculate the last rectangle */
 	tmp = clip_area;
 	tmp.x = selected_column_rectangle.x + selected_column_rectangle.width;
-	gdk_rectangle_intersect (&clip_area, &tmp, &second_column_plain_rectangle);
+	rectangle_intersect (&clip_area, &tmp, &second_column_plain_rectangle);
 
 	/* get the colors for drawing */
 	get_column_background (list, &selected_column_gc, &plain_column_gc);
