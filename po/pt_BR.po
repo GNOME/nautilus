@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.0.5\n"
-"POT-Creation-Date: 2003-03-08 14:00-0300\n"
+"POT-Creation-Date: 2003-03-10 19:46+0100\n"
 "PO-Revision-Date: 2003-03-08 14:00-0300\n"
 "Last-Translator: Evandro Fernandes Giovanini <evandrofg@ig.com.br>\n"
 "Language-Team: GNOME-BR <gnome-l10n-br@listas.cipsga.org.br>\n"
@@ -325,12 +325,14 @@ msgid "View as Text"
 msgstr "Ver como texto"
 
 #: components/text/nautilus-text-view-ui.xml.h:1
-msgid "Copy Text"
-msgstr "Copiar Texto"
+#: libnautilus/nautilus-clipboard-ui.xml.h:2
+msgid "Copy the selected text to the clipboard"
+msgstr "Copia o texto selecionado para a área de transferência"
 
 #: components/text/nautilus-text-view-ui.xml.h:2
-msgid "Copy selected text to the clipboard"
-msgstr "Copiar o texto selecionado para a área de transferência"
+#: libnautilus/nautilus-clipboard-ui.xml.h:10 src/nautilus-shell-ui.xml.h:60
+msgid "_Copy Text"
+msgstr "_Copiar texto"
 
 #: components/text/services/google.xml.h:1
 msgid "Search Google for Selected Text"
@@ -1166,7 +1168,7 @@ msgstr "Sua mensagem será transmitida com criptografia."
 msgid "Authentication Required"
 msgstr "Autenticação Requerida"
 
-#: libnautilus-private/nautilus-customization-data.c:374
+#: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "reconfigurar"
 
@@ -3549,10 +3551,6 @@ msgstr "Volume ISO 9660"
 msgid "C_lear Text"
 msgstr "_Limpar Texto"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:2
-msgid "Copy the selected text to the clipboard"
-msgstr "Copia o texto selecionado para a área de transferência"
-
 #: libnautilus/nautilus-clipboard-ui.xml.h:3
 msgid "Cut Text"
 msgstr "Cortar texto"
@@ -3580,10 +3578,6 @@ msgstr "Selecionar _todos"
 #: libnautilus/nautilus-clipboard-ui.xml.h:9
 msgid "Select all the text in a text field"
 msgstr "Selecionar todo o texto em um campo de texto"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:10 src/nautilus-shell-ui.xml.h:60
-msgid "_Copy Text"
-msgstr "_Copiar texto"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:11 src/nautilus-shell-ui.xml.h:70
 msgid "_Paste Text"
@@ -4289,92 +4283,92 @@ msgstr "Renomeando \"%s\" para \"%s\"."
 msgid "Cancel Rename?"
 msgstr "Cancelar mudança de nome?"
 
-#: src/file-manager/fm-icon-view.c:151
+#: src/file-manager/fm-icon-view.c:154
 msgid "by _Name"
 msgstr "por _nome"
 
-#: src/file-manager/fm-icon-view.c:152
+#: src/file-manager/fm-icon-view.c:155
 #: src/file-manager/nautilus-icon-view-ui.xml.h:12
 msgid "Keep icons sorted by name in rows"
 msgstr "Mantém ícones ordenados por nome nas linhas"
 
-#: src/file-manager/fm-icon-view.c:158
+#: src/file-manager/fm-icon-view.c:161
 msgid "by _Size"
 msgstr "por _tamanho"
 
-#: src/file-manager/fm-icon-view.c:159
+#: src/file-manager/fm-icon-view.c:162
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by size in rows"
 msgstr "Mantém ícones ordenados por tamanho nas linhas"
 
-#: src/file-manager/fm-icon-view.c:165
+#: src/file-manager/fm-icon-view.c:168
 msgid "by _Type"
 msgstr "por t_ipo"
 
-#: src/file-manager/fm-icon-view.c:166
+#: src/file-manager/fm-icon-view.c:169
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by type in rows"
 msgstr "Mantém ícones ordenados por tipo nas linhas"
 
-#: src/file-manager/fm-icon-view.c:172
+#: src/file-manager/fm-icon-view.c:175
 msgid "by Modification _Date"
 msgstr "por _data de modificação"
 
-#: src/file-manager/fm-icon-view.c:173
+#: src/file-manager/fm-icon-view.c:176
 #: src/file-manager/nautilus-icon-view-ui.xml.h:11
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Mantém ícones ordenados por data de modificação nas linhas"
 
-#: src/file-manager/fm-icon-view.c:179
+#: src/file-manager/fm-icon-view.c:182
 msgid "by _Emblems"
 msgstr "por _emblemas"
 
-#: src/file-manager/fm-icon-view.c:180
+#: src/file-manager/fm-icon-view.c:183
 #: src/file-manager/nautilus-icon-view-ui.xml.h:10
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Mantém ícones ordenados por emblemas nas linhas"
 
-#: src/file-manager/fm-icon-view.c:1453
+#: src/file-manager/fm-icon-view.c:1456
 #: src/file-manager/nautilus-icon-view-ui.xml.h:19
 msgid "Restore Icons' Original Si_zes"
 msgstr "Restaurar _Tamanho Original dos Ícones"
 
-#: src/file-manager/fm-icon-view.c:1454
+#: src/file-manager/fm-icon-view.c:1457
 msgid "Restore Icon's Original Si_ze"
 msgstr "Rest_aurar Tamanho Original do Ícone"
 
-#: src/file-manager/fm-icon-view.c:1789
+#: src/file-manager/fm-icon-view.c:1792
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "apontando para \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2317
+#: src/file-manager/fm-icon-view.c:2320
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Arrastar e soltar só é suportado em sistemas de arquivos locais."
 
-#: src/file-manager/fm-icon-view.c:2318 src/file-manager/fm-icon-view.c:2337
+#: src/file-manager/fm-icon-view.c:2321 src/file-manager/fm-icon-view.c:2340
 msgid "Drag and Drop error"
 msgstr "Erro de arrastar e soltar"
 
-#: src/file-manager/fm-icon-view.c:2336
+#: src/file-manager/fm-icon-view.c:2339
 msgid "An invalid drag type was used."
 msgstr "Um tipo de arraste inválido foi usado."
 
-#: src/file-manager/fm-list-view.c:409
+#: src/file-manager/fm-list-view.c:412
 msgid "File name"
 msgstr "Nome do arquivo"
 
-#: src/file-manager/fm-list-view.c:433
+#: src/file-manager/fm-list-view.c:436
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Tamanho"
 
-#: src/file-manager/fm-list-view.c:444
+#: src/file-manager/fm-list-view.c:447
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Tipo"
 
-#: src/file-manager/fm-list-view.c:455
+#: src/file-manager/fm-list-view.c:458
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Data de modificação"
@@ -5635,7 +5629,7 @@ msgid "Restart Nautilus."
 msgstr "Reiniciar o Nautilus."
 
 #. Set initial window title
-#: src/nautilus-main.c:184 src/nautilus-window-manage-views.c:231
+#: src/nautilus-main.c:184 src/nautilus-window-manage-views.c:232
 #: src/nautilus-window-menus.c:674 src/nautilus-window.c:181
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -6366,28 +6360,28 @@ msgstr "Exibir %s"
 msgid "Find:"
 msgstr "Localizar:"
 
-#: src/nautilus-view-frame.c:549
+#: src/nautilus-view-frame.c:557
 msgid "a title"
 msgstr "um título"
 
-#: src/nautilus-view-frame.c:558
+#: src/nautilus-view-frame.c:566
 msgid "the browse history"
 msgstr "o histórico de navegação"
 
-#: src/nautilus-view-frame.c:567
+#: src/nautilus-view-frame.c:575
 msgid "the current selection"
 msgstr "a seleção atual"
 
 #. Special Desktop window title (displayed in the Ctrl-Alt-Tab window)
-#: src/nautilus-window-manage-views.c:191
+#: src/nautilus-window-manage-views.c:192
 msgid "Desktop"
 msgstr "Área de Trabalho"
 
-#: src/nautilus-window-manage-views.c:849
+#: src/nautilus-window-manage-views.c:850
 msgid "View Failed"
 msgstr "Falhou a visão"
 
-#: src/nautilus-window-manage-views.c:860
+#: src/nautilus-window-manage-views.c:861
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -6396,20 +6390,20 @@ msgstr ""
 "A visão de %s encontrou um erro e não pode continuar. Você pode escolher "
 "outra visão ou ir para um local diferente."
 
-#: src/nautilus-window-manage-views.c:871
+#: src/nautilus-window-manage-views.c:872
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "A visão %s encontrou um erro ao iniciar."
 
-#: src/nautilus-window-manage-views.c:1028
+#: src/nautilus-window-manage-views.c:1029
 msgid "Content View"
 msgstr "Visualização do Conteúdo"
 
-#: src/nautilus-window-manage-views.c:1029
+#: src/nautilus-window-manage-views.c:1030
 msgid "View of the current file or folder"
 msgstr "Visualização da pasta ou arquivo atual"
 
-#: src/nautilus-window-manage-views.c:1052
+#: src/nautilus-window-manage-views.c:1053
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -6417,7 +6411,7 @@ msgstr ""
 "Um dos painéis da barra lateral encontrou um erro e não pode continuar. "
 "Infelizmente, não é possível dizer qual deles."
 
-#: src/nautilus-window-manage-views.c:1056
+#: src/nautilus-window-manage-views.c:1057
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -6426,25 +6420,25 @@ msgstr ""
 "O painel da barra lateral %s encontrou um erro e não pode continuar. Se isto "
 "continuar a ocorrer, você pode querer desligá-lo."
 
-#: src/nautilus-window-manage-views.c:1061
+#: src/nautilus-window-manage-views.c:1062
 msgid "Sidebar Panel Failed"
 msgstr "Falha do painel da barra lateral"
 
-#: src/nautilus-window-manage-views.c:1304
+#: src/nautilus-window-manage-views.c:1316
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "Não foi possível localizar \"%s\". Por favor verifique a grafia e tente "
 "novamente."
 
-#: src/nautilus-window-manage-views.c:1310
+#: src/nautilus-window-manage-views.c:1322
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
 "\"%s\" não é um local válido. Por favor verifique a grafia e tente novamente."
 
-#: src/nautilus-window-manage-views.c:1324
+#: src/nautilus-window-manage-views.c:1336
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -6453,13 +6447,13 @@ msgstr ""
 "Não foi possível exibir \"%s\", pois o Nautilus não pode determinar o seu "
 "tipo de arquivo."
 
-#: src/nautilus-window-manage-views.c:1332
+#: src/nautilus-window-manage-views.c:1344
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Nautilus não possui um visualizador instalado capaz de exibir \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1344
+#: src/nautilus-window-manage-views.c:1356
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
@@ -6468,17 +6462,17 @@ msgstr ""
 # Eh, vou colocar um comentário.
 # Log in aqui parece ser ao tentar acessar uma URI, estou supondo que
 # é um problema de conexão à uma máquina remota.
-#: src/nautilus-window-manage-views.c:1350
+#: src/nautilus-window-manage-views.c:1362
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "Não foi possível exibir \"%s\", pois falhou a tentativa de conexão."
 
-#: src/nautilus-window-manage-views.c:1355
+#: src/nautilus-window-manage-views.c:1367
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Não foi possível exibir \"%s\", pois o acesso foi negado."
 
-#: src/nautilus-window-manage-views.c:1366
+#: src/nautilus-window-manage-views.c:1378
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -6488,7 +6482,7 @@ msgstr ""
 "localizada. Verifique se a grafia do nome está correta ou se as suas "
 "configurações de proxy estão corretas."
 
-#: src/nautilus-window-manage-views.c:1374
+#: src/nautilus-window-manage-views.c:1386
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -6497,7 +6491,7 @@ msgstr ""
 "Não foi possível exibir \"%s\", pois o nome da máquina estava vazio. "
 "Verifique se as suas configurações de proxy estão corretas."
 
-#: src/nautilus-window-manage-views.c:1381
+#: src/nautilus-window-manage-views.c:1393
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -6508,7 +6502,7 @@ msgstr ""
 "navegador SMB master.\n"
 "Verifique se um servidor SMB está rodando na rede local."
 
-#: src/nautilus-window-manage-views.c:1393
+#: src/nautilus-window-manage-views.c:1405
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -6520,24 +6514,24 @@ msgstr ""
 "serviço de busca Medusa e, caso não possua um índice, que o indexador do "
 "Medusa esteja sendo executado."
 
-#: src/nautilus-window-manage-views.c:1397
+#: src/nautilus-window-manage-views.c:1409
 msgid "Searching Unavailable"
 msgstr "Busca não está disponível"
 
-#: src/nautilus-window-manage-views.c:1402
+#: src/nautilus-window-manage-views.c:1414
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus não pode exibir \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1407
+#: src/nautilus-window-manage-views.c:1419
 msgid "Can't Display Location"
 msgstr "Não é possível exibir local"
 
-#: src/nautilus-window-manage-views.c:1643
+#: src/nautilus-window-manage-views.c:1673
 msgid "Side Pane"
 msgstr "Painel Lateral"
 
-#: src/nautilus-window-manage-views.c:1645
+#: src/nautilus-window-manage-views.c:1675
 msgid "Contains a side pane view"
 msgstr "Contem uma visão de painel lateral"
 
@@ -6680,6 +6674,12 @@ msgstr "Servidores de Rede"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Visualizar seus servidores de rede no gerenciador de arquivos Nautilus"
+
+#~ msgid "Copy Text"
+#~ msgstr "Copiar Texto"
+
+#~ msgid "Copy selected text to the clipboard"
+#~ msgstr "Copiar o texto selecionado para a área de transferência"
 
 #~ msgid "F_onts"
 #~ msgstr "F_ontes"

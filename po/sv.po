@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2003-03-08 14:55+0100\n"
+"POT-Creation-Date: 2003-03-10 19:46+0100\n"
 "PO-Revision-Date: 2003-03-08 14:56+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -329,12 +329,14 @@ msgid "View as Text"
 msgstr "Visa som text"
 
 #: components/text/nautilus-text-view-ui.xml.h:1
-msgid "Copy Text"
-msgstr "Kopiera text"
+#: libnautilus/nautilus-clipboard-ui.xml.h:2
+msgid "Copy the selected text to the clipboard"
+msgstr "Kopiera den markerade texten till urklipp"
 
 #: components/text/nautilus-text-view-ui.xml.h:2
-msgid "Copy selected text to the clipboard"
-msgstr "Kopiera den markerade texten till urklipp"
+#: libnautilus/nautilus-clipboard-ui.xml.h:10 src/nautilus-shell-ui.xml.h:60
+msgid "_Copy Text"
+msgstr "K_opiera text"
 
 #: components/text/services/google.xml.h:1
 msgid "Search Google for Selected Text"
@@ -1172,7 +1174,7 @@ msgstr "Ditt lösenord kommer att skickas krypterat."
 msgid "Authentication Required"
 msgstr "Autentisering krävs"
 
-#: libnautilus-private/nautilus-customization-data.c:374
+#: libnautilus-private/nautilus-customization-data.c:406
 msgid "reset"
 msgstr "återst."
 
@@ -3550,10 +3552,6 @@ msgstr "ISO9660-volym"
 msgid "C_lear Text"
 msgstr "T_öm text"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:2
-msgid "Copy the selected text to the clipboard"
-msgstr "Kopiera den markerade texten till urklipp"
-
 #: libnautilus/nautilus-clipboard-ui.xml.h:3
 msgid "Cut Text"
 msgstr "Klipp ut text"
@@ -3581,10 +3579,6 @@ msgstr "Markera _allt"
 #: libnautilus/nautilus-clipboard-ui.xml.h:9
 msgid "Select all the text in a text field"
 msgstr "Markera all text i ett textfält"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:10 src/nautilus-shell-ui.xml.h:60
-msgid "_Copy Text"
-msgstr "K_opiera text"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:11 src/nautilus-shell-ui.xml.h:70
 msgid "_Paste Text"
@@ -4272,92 +4266,92 @@ msgstr "Byter namn på \"%s\" till \"%s\"."
 msgid "Cancel Rename?"
 msgstr "Avbryt namnbyte?"
 
-#: src/file-manager/fm-icon-view.c:151
+#: src/file-manager/fm-icon-view.c:154
 msgid "by _Name"
 msgstr "efter _namn"
 
-#: src/file-manager/fm-icon-view.c:152
+#: src/file-manager/fm-icon-view.c:155
 #: src/file-manager/nautilus-icon-view-ui.xml.h:12
 msgid "Keep icons sorted by name in rows"
 msgstr "Sortera ikoner i rader efter namn"
 
-#: src/file-manager/fm-icon-view.c:158
+#: src/file-manager/fm-icon-view.c:161
 msgid "by _Size"
 msgstr "efter _storlek"
 
-#: src/file-manager/fm-icon-view.c:159
+#: src/file-manager/fm-icon-view.c:162
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by size in rows"
 msgstr "Sortera ikoner i rader efter storlek"
 
-#: src/file-manager/fm-icon-view.c:165
+#: src/file-manager/fm-icon-view.c:168
 msgid "by _Type"
 msgstr "efter _typ"
 
-#: src/file-manager/fm-icon-view.c:166
+#: src/file-manager/fm-icon-view.c:169
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by type in rows"
 msgstr "Sortera ikoner i rader efter typ"
 
-#: src/file-manager/fm-icon-view.c:172
+#: src/file-manager/fm-icon-view.c:175
 msgid "by Modification _Date"
 msgstr "efter modifierings_datum"
 
-#: src/file-manager/fm-icon-view.c:173
+#: src/file-manager/fm-icon-view.c:176
 #: src/file-manager/nautilus-icon-view-ui.xml.h:11
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Sortera ikoner i rader efter modifieringsdatum"
 
-#: src/file-manager/fm-icon-view.c:179
+#: src/file-manager/fm-icon-view.c:182
 msgid "by _Emblems"
 msgstr "efter _emblem"
 
-#: src/file-manager/fm-icon-view.c:180
+#: src/file-manager/fm-icon-view.c:183
 #: src/file-manager/nautilus-icon-view-ui.xml.h:10
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Sortera ikoner i rader efter emblem"
 
-#: src/file-manager/fm-icon-view.c:1453
+#: src/file-manager/fm-icon-view.c:1456
 #: src/file-manager/nautilus-icon-view-ui.xml.h:19
 msgid "Restore Icons' Original Si_zes"
 msgstr "_Återställ ikonernas originalstorlekar"
 
-#: src/file-manager/fm-icon-view.c:1454
+#: src/file-manager/fm-icon-view.c:1457
 msgid "Restore Icon's Original Si_ze"
 msgstr "_Återställ ikonens originalstorlek"
 
-#: src/file-manager/fm-icon-view.c:1789
+#: src/file-manager/fm-icon-view.c:1792
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "pekar på \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2317
+#: src/file-manager/fm-icon-view.c:2320
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Dra och släpp stöds endast på lokala filsystem."
 
-#: src/file-manager/fm-icon-view.c:2318 src/file-manager/fm-icon-view.c:2337
+#: src/file-manager/fm-icon-view.c:2321 src/file-manager/fm-icon-view.c:2340
 msgid "Drag and Drop error"
 msgstr "Fel med dra och släpp"
 
-#: src/file-manager/fm-icon-view.c:2336
+#: src/file-manager/fm-icon-view.c:2339
 msgid "An invalid drag type was used."
 msgstr "En ogiltig dragtyp användes."
 
-#: src/file-manager/fm-list-view.c:409
+#: src/file-manager/fm-list-view.c:412
 msgid "File name"
 msgstr "Filnamn"
 
-#: src/file-manager/fm-list-view.c:433
+#: src/file-manager/fm-list-view.c:436
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Storlek"
 
-#: src/file-manager/fm-list-view.c:444
+#: src/file-manager/fm-list-view.c:447
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Typ"
 
-#: src/file-manager/fm-list-view.c:455
+#: src/file-manager/fm-list-view.c:458
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Modifieringsdatum"
@@ -5614,7 +5608,7 @@ msgid "Restart Nautilus."
 msgstr "Starta om Nautilus."
 
 #. Set initial window title
-#: src/nautilus-main.c:184 src/nautilus-window-manage-views.c:231
+#: src/nautilus-main.c:184 src/nautilus-window-manage-views.c:232
 #: src/nautilus-window-menus.c:674 src/nautilus-window.c:181
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -6356,28 +6350,28 @@ msgstr "Visa %s"
 msgid "Find:"
 msgstr "Sök:"
 
-#: src/nautilus-view-frame.c:549
+#: src/nautilus-view-frame.c:557
 msgid "a title"
 msgstr "en titel"
 
-#: src/nautilus-view-frame.c:558
+#: src/nautilus-view-frame.c:566
 msgid "the browse history"
 msgstr "bläddringshistoriken"
 
-#: src/nautilus-view-frame.c:567
+#: src/nautilus-view-frame.c:575
 msgid "the current selection"
 msgstr "den aktuella markeringen"
 
 #. Special Desktop window title (displayed in the Ctrl-Alt-Tab window)
-#: src/nautilus-window-manage-views.c:191
+#: src/nautilus-window-manage-views.c:192
 msgid "Desktop"
 msgstr "Skrivbord"
 
-#: src/nautilus-window-manage-views.c:849
+#: src/nautilus-window-manage-views.c:850
 msgid "View Failed"
 msgstr "Vy misslyckades"
 
-#: src/nautilus-window-manage-views.c:860
+#: src/nautilus-window-manage-views.c:861
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -6386,20 +6380,20 @@ msgstr ""
 "%s-vyn råkade ut för ett fel och kan inte fortsätta. Du kan välja en annan "
 "vy eller gå till en annan plats."
 
-#: src/nautilus-window-manage-views.c:871
+#: src/nautilus-window-manage-views.c:872
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "%s-vyn råkade ut för ett fel vid uppstarten."
 
-#: src/nautilus-window-manage-views.c:1028
+#: src/nautilus-window-manage-views.c:1029
 msgid "Content View"
 msgstr "Innehållsvy"
 
-#: src/nautilus-window-manage-views.c:1029
+#: src/nautilus-window-manage-views.c:1030
 msgid "View of the current file or folder"
 msgstr "Vy med aktuell fil eller mapp"
 
-#: src/nautilus-window-manage-views.c:1052
+#: src/nautilus-window-manage-views.c:1053
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -6407,7 +6401,7 @@ msgstr ""
 "En av sidopanelerna råkade ut för ett fel och kan inte fortsätta. Tyvärr kan "
 "jag inte avgöra vilken."
 
-#: src/nautilus-window-manage-views.c:1056
+#: src/nautilus-window-manage-views.c:1057
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -6416,22 +6410,22 @@ msgstr ""
 "Sidopanelen %s råkade ut för ett fel och kan inte fortsätta. Om detta "
 "fortsätter att hända kanske du vill stänga av denna panel."
 
-#: src/nautilus-window-manage-views.c:1061
+#: src/nautilus-window-manage-views.c:1062
 msgid "Sidebar Panel Failed"
 msgstr "Sidopanel misslyckades"
 
-#: src/nautilus-window-manage-views.c:1304
+#: src/nautilus-window-manage-views.c:1316
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr "Kunde inte hitta \"%s\". Kontrollera stavningen och försök igen."
 
-#: src/nautilus-window-manage-views.c:1310
+#: src/nautilus-window-manage-views.c:1322
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr "\"%s\" är ingen giltig plats. Kontrollera stavningen och försök igen."
 
-#: src/nautilus-window-manage-views.c:1324
+#: src/nautilus-window-manage-views.c:1336
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -6440,29 +6434,29 @@ msgstr ""
 "Kunde inte visa \"%s\", eftersom Nautilus inte kan bestämma vilken typ av "
 "fil det är."
 
-#: src/nautilus-window-manage-views.c:1332
+#: src/nautilus-window-manage-views.c:1344
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Nautilus har ingen installerad visare som kan visa \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1344
+#: src/nautilus-window-manage-views.c:1356
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Kunde inte visa \"%s\", eftersom Nautilus inte kan hantera %s:-platser."
 
-#: src/nautilus-window-manage-views.c:1350
+#: src/nautilus-window-manage-views.c:1362
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "Kunde inte visa \"%s\", eftersom inloggningsförsöket misslyckades."
 
-#: src/nautilus-window-manage-views.c:1355
+#: src/nautilus-window-manage-views.c:1367
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Kunde inte visa \"%s\", eftersom åtkomst nekades."
 
-#: src/nautilus-window-manage-views.c:1366
+#: src/nautilus-window-manage-views.c:1378
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -6472,7 +6466,7 @@ msgstr ""
 "Kontrollera att du stavat namnet rätt och att dina proxyserverinställningar "
 "stämmer."
 
-#: src/nautilus-window-manage-views.c:1374
+#: src/nautilus-window-manage-views.c:1386
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -6481,7 +6475,7 @@ msgstr ""
 "Kunde inte visa \"%s\", eftersom värdnamnet var tomt. Kontrollera att dina "
 "proxyserverinställningar stämmer."
 
-#: src/nautilus-window-manage-views.c:1381
+#: src/nautilus-window-manage-views.c:1393
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -6492,7 +6486,7 @@ msgstr ""
 "huvudbläddraren.\n"
 "Kontrollera att det finns en SMB-server körande på det lokala nätverket."
 
-#: src/nautilus-window-manage-views.c:1393
+#: src/nautilus-window-manage-views.c:1405
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -6504,24 +6498,24 @@ msgstr ""
 "startat Medusa-söktjänsten och att Medusa-indexeraren kör om du inte har ett "
 "index."
 
-#: src/nautilus-window-manage-views.c:1397
+#: src/nautilus-window-manage-views.c:1409
 msgid "Searching Unavailable"
 msgstr "Sökning är inte tillgänglig"
 
-#: src/nautilus-window-manage-views.c:1402
+#: src/nautilus-window-manage-views.c:1414
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kan inte visa \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1407
+#: src/nautilus-window-manage-views.c:1419
 msgid "Can't Display Location"
 msgstr "Kan inte visa plats"
 
-#: src/nautilus-window-manage-views.c:1643
+#: src/nautilus-window-manage-views.c:1673
 msgid "Side Pane"
 msgstr "Sidopanel"
 
-#: src/nautilus-window-manage-views.c:1645
+#: src/nautilus-window-manage-views.c:1675
 msgid "Contains a side pane view"
 msgstr "Innehåller en sidopanelsvy"
 
@@ -6667,6 +6661,12 @@ msgstr "Nätverksservrar"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Visa dina nätverksservrar i filhanteraren Nautilus"
+
+#~ msgid "Copy Text"
+#~ msgstr "Kopiera text"
+
+#~ msgid "Copy selected text to the clipboard"
+#~ msgstr "Kopiera den markerade texten till urklipp"
 
 #~ msgid "F_onts"
 #~ msgstr "T_ypsnitt"

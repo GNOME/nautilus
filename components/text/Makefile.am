@@ -33,5 +33,5 @@ $(server_in_files:.server.in.in=.server.in): $(server_in_files)
 	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
 @INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST = $(server_in_files) $(nautilus_text_view_SOURCES)
+EXTRA_DIST = $(server_in_files) $(nautilus_text_view_SOURCES) $(ui_DATA)
 CLEANFILES = $(server_DATA) $(server_DATA).in
