@@ -1,5 +1,13 @@
 2005-03-25  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/file-manager/fm-directory-view.c: (real_merge_menus):
+	Remove hard coded script directory path from tooltip message.
+	Fixes bug #161905.
+	
+	Patch from Michael Terry <mike@mterry.name>
+	
+2005-03-25  Martin Wehner  <martin.wehner@gmail.com>
+
 	* src/nautilus-connect-server-dialog.c: (connect_to_server):
 	* src/nautilus-location-bar.c:
 	(nautilus_location_bar_get_location),

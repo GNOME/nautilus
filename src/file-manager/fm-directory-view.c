@@ -5716,8 +5716,6 @@ static GtkActionEntry directory_view_entries[] = {
   { "New Documents", NULL, N_("Create _Document") },               /* name, stock id, label */
   { "Open With", NULL, N_("Open Wit_h"),               /* name, stock id, label */
     NULL, N_("Choose a program with which to open the selected item") },
-  { "Scripts", NULL, N_("_Scripts"),               /* name, stock id, label */
-    NULL, N_("Run or manage scripts from ~/.gnome2/nautilus-scripts") },
   { "Properties", GTK_STOCK_PROPERTIES,                  /* name, stock id */
     N_("_Properties"), "<alt>Return",                /* label, accelerator */
     N_("View or modify the properties of each selected item"),                   /* tooltip */ 
@@ -5854,6 +5852,7 @@ real_merge_menus (FMDirectoryView *view)
 	GtkUIManager *ui_manager;
 	GtkAction *action;
 	const char *ui;
+	char *tooltip;
 
 	ui_manager = nautilus_window_info_get_ui_manager (view->details->window);
 
@@ -5866,6 +5865,13 @@ real_merge_menus (FMDirectoryView *view)
 	gtk_action_group_add_toggle_actions (action_group, 
 					     directory_view_toggle_entries, G_N_ELEMENTS (directory_view_toggle_entries),
 					     view);
+	/* Translators: %s is a directory */
+	tooltip = g_strdup_printf (_("Run or manage scripts from %s"), "~/.gnome2/nautilus-scripts");
+	/* Create a script action here specially because its tooltip is dynamic */
+	action = gtk_action_new ("Scripts", N_("_Scripts"), tooltip, NULL);
+	gtk_action_group_add_action (action_group, action);
+	g_object_unref (action);
+	g_free (tooltip);
 
 	action = gtk_action_group_get_action (action_group, FM_ACTION_NO_TEMPLATES);
 	gtk_action_set_sensitive (action, FALSE);
