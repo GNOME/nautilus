@@ -1,3 +1,18 @@
+2000-12-11  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 3767, Click through MP3s, multiple MP3s often selected
+	Fixed bug 2263, Scroll in music view, text redrawn on top
+	of self
+	
+	Both of these bugs are caused by a bug in GtkCList.  There
+	is a case where the gcs are set to invalid. I work around
+	this by queueing redraws when a new item is selected and
+	when the adjustment is changed during scrolling.
+	
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (selection_callback),
+	(value_changed_callback):
+
 2000-12-11  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

@@ -36,6 +36,7 @@
 #include <fcntl.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gnome.h>
+#include <gtk/gtkadjustment.h>
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnorba/gnorba.h>
@@ -185,6 +186,8 @@ static void selection_callback                                (GtkCList         
                                                                int                     column,
                                                                GdkEventButton         *event,
                                                                NautilusMusicView      *music_view);
+static void value_changed_callback                            (GtkAdjustment          *adjustment,
+							       GtkCList      	      *clist);
 static void nautilus_music_view_set_album_image               (NautilusMusicView      *music_view,
                                                                const char             *image_path_uri);
 static void click_column_callback                             (GtkCList               *clist,
@@ -295,7 +298,7 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	gtk_clist_set_column_justification(GTK_CLIST(music_view->details->song_list), 5, GTK_JUSTIFY_RIGHT);
  	
  	gtk_signal_connect (GTK_OBJECT (music_view->details->song_list),
-                            "select_row", selection_callback, music_view);
+                            "select-row", selection_callback, music_view);
  
 	scrollwindow = gtk_scrolled_window_new (NULL, gtk_clist_get_vadjustment (GTK_CLIST (music_view->details->song_list)));
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
@@ -306,6 +309,10 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	gtk_widget_show (music_view->details->song_list);
 	gtk_widget_show (scrollwindow);
 
+	/* We have to know when we the adjustment is changed to cause a redraw due to a lame CList bug */
+	gtk_signal_connect (GTK_OBJECT (gtk_clist_get_vadjustment (GTK_CLIST (music_view->details->song_list))),
+			    "value-changed", value_changed_callback, music_view->details->song_list);
+	
 	/* connect a signal to let us know when the column titles are clicked */
 	gtk_signal_connect (GTK_OBJECT (music_view->details->song_list), "click_column",
                             click_column_callback, music_view);
@@ -416,7 +423,7 @@ selection_callback (GtkCList *clist, int row, int column, GdkEventButton *event,
 {
 	gboolean is_playing;
 	char *song_name;
-	
+		
 	is_playing = get_player_state (music_view) == PLAYER_PLAYING;
 
 	/* Exit if we are playing and clicked on the row that represents the playing song */
@@ -439,7 +446,18 @@ selection_callback (GtkCList *clist, int row, int column, GdkEventButton *event,
 	if ((is_playing) || (event != NULL && event->type == GDK_2BUTTON_PRESS)) {
 		play_current_file (music_view, FALSE);
         }
+        
+        /* Redraw to fix lame bug GtkCList has with setting the wrong GC */
+        gtk_widget_queue_draw (GTK_WIDGET (clist));
 } 
+
+
+static void
+value_changed_callback (GtkAdjustment *adjustment, GtkCList *clist)
+{
+        /* Redraw to fix lame bug GtkCList has with setting the wrong GC */
+        gtk_widget_queue_draw (GTK_WIDGET (clist));
+}
 
 
 /* handle clicks in the songlist columns */
