@@ -32,8 +32,6 @@
 
 #include "nautilus-file.h"
 
-#define METADATA_NODE_NAME_FOR_FILE_NAME "NAME"
-
 typedef struct MetafileReadState MetafileReadState;
 typedef struct MetafileWriteState MetafileWriteState;
 typedef struct TopLeftTextReadState TopLeftTextReadState;

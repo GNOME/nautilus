@@ -1,3 +1,55 @@
+2000-05-16  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(metafile_read_done), (metafile_read_failed),
+	(metafile_read_complete): Factored out code that's common to failure
+	and success and made it call the new
+	nautilus_directory_metafile_apply_pending_changes function to take
+	care of changes made while reading the metafile.
+	
+	* libnautilus-extensions/nautilus-directory-metafile.h:
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(get_metadata_list_from_node), (get_file_node),
+	(get_metadata_string_from_metafile),
+	(get_metadata_list_from_metafile),
+	(set_metadata_string_in_metafile), (set_metadata_list_in_metafile),
+	(set_metadata_in_metafile), (get_metadata_string_from_table),
+	(get_metadata_list_from_table), (str_or_null_hash),
+	(str_or_null_equal), (set_metadata_eat_value),
+	(free_file_table_entry), (free_directory_table_entry),
+	(destroy_metadata_changes_hash_table),
+	(nautilus_directory_get_metadata),
+	(nautilus_directory_get_file_metadata),
+	(nautilus_directory_get_metadata_list),
+	(nautilus_directory_get_file_metadata_list),
+	(nautilus_directory_set_metadata),
+	(nautilus_directory_set_file_metadata),
+	(nautilus_directory_set_file_metadata_list),
+	(nautilus_directory_update_file_metadata), (apply_one_change),
+	(apply_file_changes),
+	(nautilus_directory_metafile_apply_pending_changes),
+	(nautilus_directory_get_boolean_metadata),
+	(nautilus_directory_set_boolean_metadata),
+	(nautilus_directory_get_integer_metadata),
+	(nautilus_directory_set_integer_metadata):
+	Redid everything to use two hash tables to hold metadata before the
+	metafile is read in.
+	
+	* libnautilus-extensions/nautilus-directory-private.h:
+	Made the "NAME" XML tag be private again. It's now only used inside
+	the nautilus-directory-metafile.c code.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(rename_update_info_and_metafile): Moved the code for this inside the
+	nautilus-directory-metafile.c code.
+	
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_g_ptr_array_sort): Took out a FIXME comment now that my
+	question about the code is answered. We can't use qsort because it
+	does not take a context pointer.
+	
+	* libnautilus-extensions/nautilus-string.h: Formatting.
+
 2000-05-16  Eskil Heyn Olsen  <eskil@eazel.om>
 
     	* components/services/trilobite/src/trilobite-service-public.h: 

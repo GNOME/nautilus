@@ -520,20 +520,10 @@ file_operation_state_complete (FileOperationState *state,
 static void
 rename_update_info_and_metafile (FileOperationState *state)
 {
-	xmlNode *file_node;
-
-	file_node = nautilus_directory_get_file_metadata_node 
+	nautilus_directory_update_file_metadata
 		(state->file->details->directory,
 		 state->file->details->info->name,
-		 FALSE);
-	
-	if (file_node != NULL) {
-		xmlSetProp (file_node,
-			    METADATA_NODE_NAME_FOR_FILE_NAME,
-			    state->new_name);
-		nautilus_directory_request_write_metafile
-			(state->file->details->directory);
-	}
+		 state->new_name);
 	
 	g_free (state->file->details->info->name);
 	state->file->details->info->name = g_strdup (state->new_name);

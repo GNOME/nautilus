@@ -25,6 +25,7 @@
 #include <config.h>
 
 #include "nautilus-directory-private.h"
+#include "nautilus-directory-metafile.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-attributes.h"
 
@@ -140,8 +141,26 @@ nautilus_metafile_read_cancel (NautilusDirectory *directory)
 }
 
 static void
+metafile_read_done (NautilusDirectory *directory)
+{
+	g_free (directory->details->metafile_read_state);
+
+	directory->details->metafile_read = TRUE;
+	directory->details->metafile_read_state = NULL;
+
+	/* Move over the changes to the metafile that were in the hash table. */
+	nautilus_directory_metafile_apply_pending_changes (directory);
+
+	/* Let the callers that were waiting for the metafile know. */
+	state_changed (directory);
+}
+
+static void
 metafile_read_failed (NautilusDirectory *directory)
 {
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	g_assert (directory->details->metafile == NULL);
+
 	g_free (directory->details->metafile_read_state->buffer);
 
 	if (directory->details->use_alternate_metafile) {
@@ -153,13 +172,7 @@ metafile_read_failed (NautilusDirectory *directory)
 		return;
 	}
 
-	g_free (directory->details->metafile_read_state);
-
-	directory->details->metafile_read = TRUE;
-	directory->details->metafile_read_state = NULL;
-
-	/* Let the callers that were waiting for the metafile know. */
-	state_changed (directory);
+	metafile_read_done (directory);
 }
 
 static void
@@ -169,16 +182,7 @@ metafile_read_complete (NautilusDirectory *directory)
 	int size;
 
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-	
-	/* FIXME bugzilla.eazel.com 720: 
-	 * The following assertion shouldn't be disabled, but
-	 * it gets in the way when you set metadata before the
-	 * metafile is completely read. Currently, the old metadata
-	 * in the file will be lost. One way to test this is to
-	 * remove the metafile from your home directory and the
-	 * ~/Nautilus directory and then start the program.
-	 */
-	/* g_assert (directory->details->metafile == NULL); */
+	g_assert (directory->details->metafile == NULL);
 	
 	/* The gnome-xml parser requires a zero-terminated array. */
 	size = directory->details->metafile_read_state->bytes_read;
@@ -187,13 +191,7 @@ metafile_read_complete (NautilusDirectory *directory)
 	directory->details->metafile = xmlParseMemory (buffer, size);
 	g_free (buffer);
 
-	g_free (directory->details->metafile_read_state);
-
-	directory->details->metafile_read = TRUE;
-	directory->details->metafile_read_state = NULL;
-
-	/* Let the callers that were waiting for the metafile know. */
-	state_changed (directory);
+	metafile_read_done (directory);
 }
 
 static void

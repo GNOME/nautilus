@@ -302,8 +302,6 @@ nautilus_g_ptr_array_sort (GPtrArray *array,
 			   NautilusCompareFunction sort_function,
 			   void *context)
 {
-	/* FIXME: Is there a good reason this doesn't use qsort? */
-
 	size_t count, r, l, j;
 	void **base, **lp, **rp, **ip, **jp, **tmpp;
 	void *tmp;

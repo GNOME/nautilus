@@ -25,25 +25,29 @@
 #include "nautilus-directory.h"
 #include <tree.h>
 
-char *   nautilus_directory_get_file_metadata      (NautilusDirectory *directory,
-						    const char        *file_name,
-						    const char        *key,
-						    const char        *default_metadata);
-GList *  nautilus_directory_get_file_metadata_list (NautilusDirectory *directory,
-						    const char        *file_name,
-						    const char        *list_key,
-						    const char        *list_subkey);
-gboolean nautilus_directory_set_file_metadata      (NautilusDirectory *directory,
-						    const char        *file_name,
-						    const char        *key,
-						    const char        *default_metadata,
-						    const char        *metadata);
-gboolean nautilus_directory_set_file_metadata_list (NautilusDirectory *directory,
-						    const char        *file_name,
-						    const char        *list_key,
-						    const char        *list_subkey,
-						    GList             *list);
-xmlNode *nautilus_directory_get_file_metadata_node (NautilusDirectory *directory,
-						    const char        *file_name,
-						    gboolean           create);
-void     nautilus_directory_metafile_destroy       (NautilusDirectory *directory);
+/* Interface for file metadata. */
+char *   nautilus_directory_get_file_metadata              (NautilusDirectory *directory,
+							    const char        *file_name,
+							    const char        *key,
+							    const char        *default_metadata);
+GList *  nautilus_directory_get_file_metadata_list         (NautilusDirectory *directory,
+							    const char        *file_name,
+							    const char        *list_key,
+							    const char        *list_subkey);
+gboolean nautilus_directory_set_file_metadata              (NautilusDirectory *directory,
+							    const char        *file_name,
+							    const char        *key,
+							    const char        *default_metadata,
+							    const char        *metadata);
+gboolean nautilus_directory_set_file_metadata_list         (NautilusDirectory *directory,
+							    const char        *file_name,
+							    const char        *list_key,
+							    const char        *list_subkey,
+							    GList             *list);
+void     nautilus_directory_update_file_metadata           (NautilusDirectory *directory,
+							    const char        *old_file_name,
+							    const char        *new_file_name);
+
+/* Interface for housekeeping. */
+void     nautilus_directory_metafile_apply_pending_changes (NautilusDirectory *directory);
+void     nautilus_directory_metafile_destroy               (NautilusDirectory *directory);
