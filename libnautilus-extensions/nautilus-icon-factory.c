@@ -20,7 +20,8 @@
    Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
   
-   Authors: John Sullivan <sullivan@eazel.com>, Darin Adler <darin@eazel.com>
+   Authors: John Sullivan <sullivan@eazel.com>, Darin Adler <darin@eazel.com>,
+	    Andy Hertzfeld <andy@eazel.com>
 */
 
 #include <config.h>
@@ -185,6 +186,14 @@ typedef struct {
 	guint maximum_height;
 } IconSizeRequest;
 
+/* A structure to hold the icon meta-info, like the text rectangle and emblem attach points */
+
+typedef struct {
+	ArtIRect text_rect;
+	gboolean has_attach_points;
+	GdkPoint attach_points[8];		
+} IconInfo;
+
 /* The key to a hash table that holds the scaled icons as pixbufs.
  * In a way, it's not really completely a key, because part of the
  * data is stored in here, including the LRU chain.
@@ -198,7 +207,7 @@ typedef struct {
 	gboolean aa_mode;
 	gboolean custom;
 	gboolean scaled;
-	ArtIRect text_rect;
+	IconInfo icon_info;
 } IconCacheKey;
 
 #define MINIMUM_EMBEDDED_TEXT_RECT_WIDTH	20.0
@@ -227,7 +236,7 @@ static GdkPixbuf *           get_image_from_cache                    (NautilusSc
 								      const IconSizeRequest    *size,
 								      gboolean                  picky,
 								      gboolean                  custom,
-								      ArtIRect                 *text_rect);
+								      IconInfo                 *icon_info);
 static gboolean              check_for_thumbnails                    (NautilusIconFactory      *factory);
 static int                   nautilus_icon_factory_make_thumbnails   (gpointer                  data);
 static GdkPixbuf *           load_image_with_embedded_text           (NautilusScalableIcon     *scalable_icon,
@@ -565,6 +574,29 @@ make_full_icon_path (const char *path, const char *suffix)
 	return full_path;
 }
 
+/* utility routine to parse the attach points string to set up the array in icon_info */
+static void
+parse_attach_points (IconInfo *icon_info, const char* attach_point_string)
+{
+	char *text_piece;
+	char **point_array;
+	int index, x_offset, y_offset;
+				
+	/* split the attach point string into a string array, then process
+	   each point with sscanf in a loop */	
+	point_array = g_strsplit (attach_point_string, "|", 8); 
+	
+	for (index = 0; (text_piece = point_array[index]) != NULL; index++) {
+		if (sscanf (text_piece, " %d , %d , %*s", &x_offset, &y_offset) == 2) {
+			icon_info->attach_points[index].x = x_offset;
+			icon_info->attach_points[index].y = y_offset;
+		} else {
+			g_warning ("bad attach point specification: %s", text_piece);
+		}	
+	}
+	g_strfreev (point_array);
+}
+
 /* Pick a particular icon to use, trying all the various suffixes.
  * Return the path of the icon or NULL if no icon is found.
  */
@@ -572,7 +604,7 @@ static char *
 get_themed_icon_file_path (const char *theme_name,
 			   const char *icon_name,
 			   guint icon_size,
-			   ArtIRect *text_rect,
+			   IconInfo *icon_info,
 			   gboolean aa_mode)
 {
 	int i;
@@ -635,9 +667,9 @@ get_themed_icon_file_path (const char *theme_name,
 		path = NULL;
 	}
 
-	/* Open the XML file to get the text rectangle. */
-	if (path != NULL && text_rect != NULL) {
-		memset (text_rect, 0, sizeof (*text_rect));
+	/* Open the XML file to get the text rectangle and emblem attach points */
+	if (path != NULL && icon_info != NULL) {
+		memset (&icon_info->text_rect, 0, sizeof (icon_info->text_rect));
 
 		xml_path = make_full_icon_path (themed_icon_name, ".xml");
 
@@ -649,6 +681,8 @@ get_themed_icon_file_path (const char *theme_name,
 			(doc, "ICON", "SIZE", size_as_string);
 		g_free (size_as_string);
 
+		icon_info->has_attach_points = FALSE;
+		
 		property = xmlGetProp (node, "EMBEDDED_TEXT_RECTANGLE");		
 		if (property != NULL) {
 			
@@ -658,11 +692,17 @@ get_themed_icon_file_path (const char *theme_name,
 				    &parsed_rect.y0,
 				    &parsed_rect.x1,
 				    &parsed_rect.y1) == 4) {
-				*text_rect = parsed_rect;
+				icon_info->text_rect = parsed_rect;
 			}
 			xmlFree (property);
 		}
 
+		property = xmlGetProp (node, "ATTACH_POINTS");
+		if (property != NULL) {			
+			icon_info->has_attach_points = TRUE;
+			parse_attach_points (icon_info, property);	
+			xmlFree (property);
+		}		
 		xmlFreeDoc (doc);
 	}
 
@@ -698,7 +738,7 @@ static char *
 get_icon_file_path (const char *name,
 		    const char* modifier,
 		    guint size_in_pixels,
-		    ArtIRect *text_rect,
+		    IconInfo *icon_info,
 		    gboolean aa_mode)
 {
 	gboolean use_theme_icon;
@@ -736,7 +776,7 @@ get_icon_file_path (const char *name,
 		path = get_themed_icon_file_path (use_theme_icon ? theme_name : NULL,
 						  modified_name,
 						  size_in_pixels, 
-						  text_rect,
+						  icon_info,
 						  aa_mode);
 		g_free (modified_name);
 		if (path != NULL) {
@@ -747,7 +787,7 @@ get_icon_file_path (const char *name,
 	return get_themed_icon_file_path (use_theme_icon ? theme_name : NULL,
 					  name,
 					  size_in_pixels,
-					  text_rect,
+					  icon_info,
 					  aa_mode);
 }
 
@@ -1508,17 +1548,17 @@ static GdkPixbuf *
 load_specific_image (NautilusScalableIcon *scalable_icon,
 		     guint size_in_pixels,
 		     gboolean custom,
-		     ArtIRect *text_rect)
+		     IconInfo *icon_info)
 {
 	char *image_path;
 	GdkPixbuf *pixbuf;
 	
-	g_assert (text_rect != NULL);
+	g_assert (icon_info != NULL);
 
 	if (custom) {
 		/* Custom icon. */
 
-		memset (text_rect, 0, sizeof (*text_rect));
+		memset (&icon_info->text_rect, 0, sizeof (icon_info->text_rect));
 
 		/* FIXME bugzilla.eazel.com 643: we can't load svgs asynchronously, so this
 		 *  only works for local files
@@ -1545,7 +1585,7 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 		path = get_icon_file_path (scalable_icon->name,
 					   scalable_icon->modifier,
 					   size_in_pixels,
-					   text_rect,
+					   icon_info,
 					   scalable_icon->aa_mode);
 					   		
 		if (path == NULL) {
@@ -1569,7 +1609,7 @@ load_image_for_scaling (NautilusScalableIcon *scalable_icon,
 			guint requested_size,
 			guint *actual_size_result,
 			gboolean *custom,
-			ArtIRect *text_rect)
+			IconInfo *icon_info)
 {
         GdkPixbuf *image;
 	guint actual_size;
@@ -1589,7 +1629,7 @@ load_image_for_scaling (NautilusScalableIcon *scalable_icon,
 					      &size_request,
 					      TRUE,
 					      TRUE,
-					      text_rect);
+					      icon_info);
 		if (image != NULL) {
 			*actual_size_result = actual_size;
 			*custom = TRUE;
@@ -1607,7 +1647,7 @@ load_image_for_scaling (NautilusScalableIcon *scalable_icon,
 					      &size_request,
 					      TRUE,
 					      FALSE,
-					      text_rect);
+					      icon_info);
 		if (image != NULL) {
 			*actual_size_result = actual_size;
 			*custom = FALSE;
@@ -1630,7 +1670,7 @@ load_image_for_scaling (NautilusScalableIcon *scalable_icon,
 	}
 	gdk_pixbuf_ref (fallback_image);
 
-	memset (text_rect, 0, sizeof (*text_rect));
+	memset (&icon_info->text_rect, 0, sizeof (icon_info->text_rect));
 	*actual_size_result = NAUTILUS_ICON_SIZE_STANDARD;
 	*custom = FALSE;
         return fallback_image;
@@ -1712,14 +1752,14 @@ revise_scale_factors_if_too_big (GdkPixbuf *image,
 static GdkPixbuf *
 scale_image_down_if_too_big (GdkPixbuf *image,
 			     const IconSizeRequest *size,
-			     ArtIRect *text_rect)
+			     IconInfo *icon_info)
 {
 	double scale_x, scale_y;
 
 	scale_x = 1.0;
 	scale_y = 1.0;
 	revise_scale_factors_if_too_big (image, size, &scale_x, &scale_y);
-	return scale_image_and_rectangle (image, text_rect, scale_x, scale_y);
+	return scale_image_and_rectangle (image, &icon_info->text_rect, scale_x, scale_y);
 }
 
 /* This load function is not allowed to return NULL. */
@@ -1728,7 +1768,7 @@ load_image_scale_if_necessary (NautilusScalableIcon *scalable_icon,
 			       const IconSizeRequest *size,
 			       gboolean *scaled,
 			       gboolean *custom,
-			       ArtIRect *text_rect)
+			       IconInfo *icon_info)
 {
         GdkPixbuf *image;
 	guint nominal_actual_size;
@@ -1736,11 +1776,11 @@ load_image_scale_if_necessary (NautilusScalableIcon *scalable_icon,
 	
 	/* Load the image for the icon that's closest in size to what we want. */
 	image = load_image_for_scaling (scalable_icon, size->nominal_width,
-					&nominal_actual_size, custom, text_rect);
+					&nominal_actual_size, custom, icon_info);
         if (size->nominal_width == nominal_actual_size
 	    && size->nominal_height == nominal_actual_size) {
 		*scaled = FALSE;
-		return scale_image_down_if_too_big (image, size, text_rect);
+		return scale_image_down_if_too_big (image, size, icon_info);
 	}
 	
 	/* Scale the image to the size we want. */
@@ -1748,7 +1788,7 @@ load_image_scale_if_necessary (NautilusScalableIcon *scalable_icon,
 	scale_x = (double) size->nominal_width / nominal_actual_size;
 	scale_y = (double) size->nominal_height / nominal_actual_size;
 	revise_scale_factors_if_too_big (image, size, &scale_x, &scale_y);
-	return scale_image_and_rectangle (image, text_rect, scale_x, scale_y);
+	return scale_image_and_rectangle (image, &icon_info->text_rect, scale_x, scale_y);
 }
 
 /* Move this item to the head of the recently-used list,
@@ -1845,7 +1885,7 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 		      const IconSizeRequest *size,
 		      gboolean picky,
 		      gboolean custom,
-		      ArtIRect *text_rect)
+		      IconInfo *icon_info)
 {
 	NautilusIconFactory *factory;
 	GHashTable *hash_table;
@@ -1885,7 +1925,7 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 		{
 		gboolean got_scaled_image;
 		gboolean got_custom_image;
-		ArtIRect key_text_rect;
+		IconInfo key_icon_info;
 		
 		/* Not in the table, so load the image. */
 		/* If we're picky, then we want the image only if this exact
@@ -1904,7 +1944,7 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 			image = load_specific_image (scalable_icon,
 						     size->nominal_width,
 						     custom,
-						     &key_text_rect);
+						     &key_icon_info);
 			if (image == NULL) {
 				return NULL;
 			}
@@ -1913,7 +1953,7 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 			 * the maximum size? If so we scale it, even but we don't
 			 * call it "scaled" for caching purposese.
 			 */
-			image = scale_image_down_if_too_big (image, size, &key_text_rect);
+			image = scale_image_down_if_too_big (image, size, &key_icon_info);
 
 			got_scaled_image = FALSE;
 			got_custom_image = custom;
@@ -1926,14 +1966,14 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 				 */
 				got_scaled_image = FALSE;
 				got_custom_image = FALSE;
-				memset (&key_text_rect, 0, sizeof (key_text_rect));
+				memset (&key_icon_info.text_rect, 0, sizeof (key_icon_info.text_rect));
 			} else {
 				image = load_image_scale_if_necessary
 					(scalable_icon,
 					 size,
 					 &got_scaled_image,
 					 &got_custom_image,
-					 &key_text_rect);
+					 &key_icon_info);
 			}
 			g_assert (image != NULL);
 		}
@@ -1947,7 +1987,7 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 		key->size = *size;
 		key->scaled = got_scaled_image;
 		key->custom = got_custom_image;
-		key->text_rect = key_text_rect;
+		key->icon_info = key_icon_info;
 		key->cache_time = time(NULL);
 		
 		/* Add the item to the hash table. */
@@ -1955,8 +1995,8 @@ get_image_from_cache (NautilusScalableIcon *scalable_icon,
 	}
 
 	/* Return the text rect if the caller asked for it. */
-	if (text_rect != NULL) {
-		*text_rect = key->text_rect;
+	if (icon_info != NULL) {
+		*icon_info = key->icon_info;
 	}
 
 	/* Since this item was used, keep it in the cache longer. */
@@ -1975,17 +2015,31 @@ nautilus_icon_factory_get_pixbuf_for_icon (NautilusScalableIcon *scalable_icon,
 					   guint nominal_width,
 					   guint nominal_height,
 					   guint maximum_width,
-					   guint maximum_height)
+					   guint maximum_height,
+					   EmblemAttachPoints *attach_data)
 {
 	IconSizeRequest size;
-
+	IconInfo icon_info;
+	GdkPixbuf *pixbuf;
+	int index;
+	
 	size.nominal_width = nominal_width;
 	size.nominal_height = nominal_width;
 	size.maximum_width = maximum_width;
 	size.maximum_height = maximum_height;
-	return get_image_from_cache (scalable_icon, &size,
-				     FALSE, scalable_icon->uri != NULL, NULL);
+	pixbuf = get_image_from_cache (scalable_icon, &size,
+				     FALSE, scalable_icon->uri != NULL,
+				     &icon_info);
+	if (attach_data != NULL) {
+		attach_data->has_attach_points = icon_info.has_attach_points;
+		for (index = 0; index < 8; index++) {
+			attach_data->attach_points[index] = icon_info.attach_points[index];
+		}
+	}
+	
+	return pixbuf;
 }
+
 
 static void
 icon_cache_key_destroy (IconCacheKey *key)
@@ -2071,7 +2125,7 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 		(icon,
 		 size_in_pixels, size_in_pixels,
-		 size_in_pixels, size_in_pixels);
+		 size_in_pixels, size_in_pixels, NULL);
 	nautilus_scalable_icon_unref (icon);
 
 	return pixbuf;
@@ -2167,7 +2221,7 @@ load_image_with_embedded_text (NautilusScalableIcon *scalable_icon,
 {
 	NautilusScalableIcon *scalable_icon_without_text;
 	GdkPixbuf *pixbuf_without_text, *pixbuf;
-	ArtIRect text_rect;
+	IconInfo icon_info;
 
 	g_assert (scalable_icon->embedded_text != NULL);
 
@@ -2180,11 +2234,11 @@ load_image_with_embedded_text (NautilusScalableIcon *scalable_icon,
 	
 	pixbuf_without_text = get_image_from_cache
 		(scalable_icon_without_text, size,
-		 FALSE, FALSE, &text_rect);
+		 FALSE, FALSE, &icon_info);
 	nautilus_scalable_icon_unref (scalable_icon_without_text);
 	
 	pixbuf = embed_text (pixbuf_without_text,
-			     &text_rect,
+			     &icon_info. text_rect,
 			     scalable_icon->embedded_text);
 	gdk_pixbuf_unref (pixbuf_without_text);
 

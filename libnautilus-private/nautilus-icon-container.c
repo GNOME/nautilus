@@ -2742,6 +2742,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	NautilusIconContainerDetails *details;
 	guint icon_size_x, icon_size_y, max_image_size, max_emblem_size;
 	NautilusScalableIcon *scalable_icon;
+	EmblemAttachPoints attach_points;
 	GdkPixbuf *pixbuf, *emblem_pixbuf;
 	GList *emblem_scalable_icons, *emblem_pixbufs, *p;
 	char *editable_text, *additional_text;
@@ -2781,8 +2782,11 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 		 icon_size_x,
 		 icon_size_y,
 		 max_image_size * icon->scale_x,
-		 max_image_size * icon->scale_y);
+		 max_image_size * icon->scale_y,
+		 &attach_points);
+		
 	nautilus_scalable_icon_unref (scalable_icon);
+	
 	emblem_pixbufs = NULL;
 	for (p = emblem_scalable_icons; p != NULL; p = p->next) {
 		emblem_pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
@@ -2790,7 +2794,8 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 			 icon_size_x,
 			 icon_size_y,
 			 max_emblem_size * icon->scale_x,
-			 max_emblem_size * icon->scale_y);
+			 max_emblem_size * icon->scale_y,
+			 NULL);
 		if (emblem_pixbuf != NULL) {
 			emblem_pixbufs = g_list_prepend
 				(emblem_pixbufs, emblem_pixbuf);

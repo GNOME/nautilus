@@ -205,7 +205,7 @@ nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
 	}
 	
 	return nautilus_icon_factory_get_pixbuf_for_icon
-		(bookmark->details->icon, icon_size, icon_size, icon_size, icon_size);
+		(bookmark->details->icon, icon_size, icon_size, icon_size, icon_size, NULL);
 }
 
 NautilusScalableIcon *

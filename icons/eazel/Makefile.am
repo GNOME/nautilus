@@ -36,6 +36,7 @@ eazel_DATA =					\
 	i-directory-accept-aa.png		\
 	i-directory.png				\
 	i-directory-aa.png			\
+	i-directory.xml				\
 	i-regular-12.png			\
 	i-regular-12-aa.png			\
 	i-regular-24.png			\

@@ -76,6 +76,12 @@ typedef enum {
 
 typedef struct NautilusScalableIcon NautilusScalableIcon;
 
+/* here's a structure to hold the emblem attach points */
+typedef struct {
+	gboolean has_attach_points;
+	GdkPoint attach_points[8];		
+} EmblemAttachPoints;
+
 /* Instead of a class declaration here, I will just document
  * the signals.
  *
@@ -104,15 +110,15 @@ NautilusScalableIcon *nautilus_icon_factory_get_emblem_icon_by_name 	 (const cha
 /* Render an icon to a particular size.
  * Ownership of a ref. count in this pixbuf comes with the deal.
  * This allows scaling in both dimensions. All other calls assume
- * that X and Y scaling are the same. The text rectangle tells where
- * this icon can accomodate text. If the icon can't accomodate any
- * text, then the rectangle is (0, 0, 0, 0).
+ * that X and Y scaling are the same. Optionally, we also pass
+ * back an array of emblem attach points, if the pointer is non-null
  */
 GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (NautilusScalableIcon  *scalable_icon,
 									  guint                  nominal_size_in_pixels_x,
 									  guint                  nominal_size_in_pixels_y,
 									  guint                  maximum_size_in_pixels_x,
-									  guint                  maximum_size_in_pixels_y);
+									  guint                  maximum_size_in_pixels_y, 
+									  EmblemAttachPoints	*attach_points);
 									  
 /* Convenience functions for the common case where you want to choose
  * and render the icon into a pixbuf all at once.

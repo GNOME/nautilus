@@ -362,7 +362,8 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 		pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
 			(p->data,
 			 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD,
-			 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD);
+			 NAUTILUS_ICON_SIZE_STANDARD, NAUTILUS_ICON_SIZE_STANDARD,
+			 NULL);
 		if (pixbuf != NULL) {
 			add_emblem (sidebar_title, pixbuf);
 			gdk_pixbuf_unref (pixbuf);

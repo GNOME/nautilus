@@ -1,3 +1,44 @@
+2000-08-01  Andy Hertzfeld  <andy@eazel.com>
+
+	lots of work towards task 1741, which is to have emblem attach points
+	optionally associated with an icon, but no payoff quite yet.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c,h:
+	(parse_attach_points), (get_themed_icon_file_path),
+	(get_icon_file_path), (load_specific_image),
+	(load_image_for_scaling), (scale_image_down_if_too_big),
+	(load_image_scale_if_necessary), (get_image_from_cache),
+	(nautilus_icon_factory_get_pixbuf_for_icon),
+	(nautilus_icon_factory_get_pixbuf_for_file),
+	(load_image_with_embedded_text):
+	changed the text_rect structure to an internal IconInfo structure
+	that includes the text_rect and an array of emblem attach points.
+	also, define an EmblemAttachPoints structure for external use.
+	Read in the attach points from an xml file if present.
+	added a parameter to get_pixbuf_for_icon to optionally return
+	an EmblemAttachPoints structure.
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_update_icon):
+	ask for emblem attach points when fetching an icons's pixbuf
+		
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_get_pixbuf):
+	added NULL parameter to get_pixbuf_for_icon_call
+	* src/file-manager/fm-list-view.c:
+	(fm_list_view_get_emblem_pixbufs_for_file):
+	added NULL parameter to get_pixbuf_for_icon_call
+	* src/file-manager/fm-properties-window.c:
+	(create_image_widget_for_emblem):
+	added NULL parameter to get_pixbuf_for_icon_call
+	* src/nautilus-sidebar-title.c: (update_emblems):
+	added NULL parameter to get_pixbuf_for_icon_call
+	
+	* icons/eazel/Makefile.am:
+	* icons/eazel/i-directory.xml:
+	added an xml file for the directory in the eazel theme to specify
+	its emblem attach points
+	
 2000-08-01  Darin Adler  <darin@eazel.com>
 
 	* src/nautilus-sidebar-tabs.c: (draw_or_hit_test_all_tabs):
