@@ -662,14 +662,20 @@ mozilla_link_message_callback (GtkMozEmbed *mozilla, gpointer user_data)
 {
  	NautilusMozillaContentView	*view;
 	char				*link_message;
+	char				*translated_link_message;
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
 	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
 
 	link_message = gtk_moz_embed_get_link_message (GTK_MOZ_EMBED (view->details->mozilla));
+
+	/* This is actually not that efficient */
+	translated_link_message = mozilla_untranslate_uri_if_needed (view, link_message);
+
 	nautilus_view_report_status (view->details->nautilus_view,
-				     link_message);
+				     translated_link_message);
+	g_free (translated_link_message);
 	g_free (link_message);
 }
 
@@ -780,7 +786,88 @@ is_uri_partial (const char *uri)
 	return  !(':' == *current);
 }
 
+/*
+ * Remove "./" segments
+ * Compact "../" segments inside the URI
+ * Remove "." at the end of the URL 
+ * Leave any ".."'s at the beginning of the URI
+ */
 
+/* in case if you were wondering, this is probably one of the least time-efficient ways to do this*/
+static void
+remove_internal_relative_components (char *uri_current)
+{
+	char *segment_prev, *segment_cur;
+	size_t len_prev, len_cur;
+
+	len_prev = len_cur = 0;
+	segment_prev = NULL;
+
+	segment_cur = uri_current;
+
+	while (*segment_cur) {
+		len_cur = strcspn (segment_cur, "/");
+
+		if (len_cur == 1 && segment_cur[0] == '.') {
+			/* Remove "." 's */
+			if (segment_cur[1] == '\0') {
+				segment_cur[0] = '\0';
+				break;
+			} else {
+				memmove (segment_cur, segment_cur + 2, strlen (segment_cur + 2) + 1);
+				continue;
+			}
+		} else if (len_cur == 2 && segment_cur[0] == '.' && segment_cur[1] == '.' ) {
+			/* Remove ".."'s (and the component to the left of it) that aren't at the
+			 * beginning or to the right of other ..'s
+			 */
+			if (segment_prev) {
+				if (! (len_prev == 2
+				       && segment_prev[0] == '.'
+				       && segment_prev[1] == '.')) {
+				       	if (segment_cur[2] == '\0') {
+						segment_prev[0] = '\0';
+						break;
+				       	} else {
+						memmove (segment_prev, segment_cur + 3, strlen (segment_cur + 3) + 1);
+
+						segment_cur = segment_prev;
+						len_cur = len_prev;
+
+						/* now we find the previous segment_prev */
+						if (segment_prev == uri_current) {
+							segment_prev = NULL;
+						} else if (segment_prev - uri_current >= 2) {
+							segment_prev -= 2;
+							for ( ; segment_prev > uri_current && segment_prev[0] != '/' 
+							      ; segment_prev-- );
+							if (segment_prev[0] == '/') {
+								segment_prev++;
+							}
+						}
+						continue;
+					}
+				}
+			}
+		}
+
+		/*Forward to next segment */
+
+		if (segment_cur [len_cur] == '\0') {
+			break;
+		}
+		 
+		segment_prev = segment_cur;
+		len_prev = len_cur;
+		segment_cur += len_cur + 1;	
+	}
+	
+}
+
+
+/* If I had known this relative uri code would have ended up this long, I would
+ * have done it a different way
+ */
 static char *
 make_full_uri_from_relative (const char *base_uri, const char *uri)
 {
@@ -795,13 +882,14 @@ make_full_uri_from_relative (const char *base_uri, const char *uri)
 
 	if (is_uri_partial (uri)) {
 		char *mutable_base_uri;
+		char *mutable_uri;
 
-		const char *uri_current;
+		char *uri_current;
 		size_t base_uri_length;
 		char *separator;
 
 		mutable_base_uri = g_strdup (base_uri);
-		uri_current = uri;
+		uri_current = mutable_uri = g_strdup (uri);
 
 		/* Chew off Fragment and Query from the base_url */
 
@@ -817,10 +905,21 @@ make_full_uri_from_relative (const char *base_uri, const char *uri)
 			*separator = '\0';
 		}
 
-		/* Relative URI's beginning with '/' absolute-path based
-		 * at the root of the base uri
-		 */
-		if ('/' == uri_current[0]) {
+		if ('/' == uri_current[0] && '/' == uri_current [1]) {
+			/* Relative URI's beginning with the authority
+			 * component inherit only the scheme from their parents
+			 */
+
+			separator = strchr (mutable_base_uri, ':');
+
+			if (separator) {
+				separator[1] = '\0';
+			}			  
+		} else if ('/' == uri_current[0]) {
+			/* Relative URI's beginning with '/' absolute-path based
+			 * at the root of the base uri
+			 */
+
 			separator = strchr (mutable_base_uri, ':');
 
 			/* g_assert (separator), really */
@@ -855,11 +954,9 @@ make_full_uri_from_relative (const char *base_uri, const char *uri)
 				}
 			}
 
-			/* (the following are all rarely seen cases */
-			/* FIXME remove './' segments */
-			/* FIXME Remove . at the end of a URL (that is, if the URL ends in /. */   
-			/* FIXME Remove "../" inside the uri current */
+			remove_internal_relative_components (uri_current);
 
+			/* handle the "../"'s at the beginning of the relative URI */
 			while (0 == strncmp ("../", uri_current, 3)) {
 				uri_current += 3;
 				separator = strrchr (mutable_base_uri, '/');
@@ -871,6 +968,17 @@ make_full_uri_from_relative (const char *base_uri, const char *uri)
 				}
 			}
 
+			/* handle a ".." at the end */
+			if (uri_current[0] == '.' && uri_current[1] == '.' 
+			    && uri_current[2] == '\0') {
+
+			    	uri_current += 2;
+				separator = strrchr (mutable_base_uri, '/');
+				if (separator) {
+					*separator = '\0';
+				}
+			}
+
 			/* Re-append the '/' */
 			mutable_base_uri [strlen(mutable_base_uri)+1] = '\0';
 			mutable_base_uri [strlen(mutable_base_uri)] = '/';
@@ -878,6 +986,7 @@ make_full_uri_from_relative (const char *base_uri, const char *uri)
 
 		result = g_strconcat (mutable_base_uri, uri_current, NULL);
 		g_free (mutable_base_uri); 
+		g_free (mutable_uri); 
 
 #ifdef DEBUG_mfleming
 		g_print ("Relative URI converted base '%s' uri '%s' to '%s'", base_uri, uri, result);
@@ -945,7 +1054,7 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 
 #if 0
 /* FIXME mfleming I think I should do this here, but I'm not sure */
-			href_full = mozilla_untranslate_uri_if_needed (href);
+			href_full = mozilla_untranslate_uri_if_needed (view, href);
 			g_free (href);
 			href = href_full;
 			href_full = NULL;
@@ -1247,12 +1356,14 @@ test_make_full_uri_from_relative (void)
 	 * as fixmes
 	 */
 
+	/* From the RFC */
+
 	TEST_PARTIAL ("g", "http://a/b/c/g");
-	TEST_PARTIAL ("./g", "http://a/b/c/g");		/* FAILS */
+	TEST_PARTIAL ("./g", "http://a/b/c/g");
 	TEST_PARTIAL ("g/", "http://a/b/c/g/");
 	TEST_PARTIAL ("/g", "http://a/g");
 
-	TEST_PARTIAL ("//g", "http://g");		/* FAILS */
+	TEST_PARTIAL ("//g", "http://g");
 	
 	TEST_PARTIAL ("?y", "http://a/b/c/?y");
 	TEST_PARTIAL ("g?y", "http://a/b/c/g?y");
@@ -1263,14 +1374,19 @@ test_make_full_uri_from_relative (void)
 	TEST_PARTIAL ("g;x", "http://a/b/c/g;x");
 	TEST_PARTIAL ("g;x?y#s", "http://a/b/c/g;x?y#s");
 
-	TEST_PARTIAL (".", "http://a/b/c/");  		/* FAILS */
-	TEST_PARTIAL ("./", "http://a/b/c/");  		/* FAILS */
+	TEST_PARTIAL (".", "http://a/b/c/");
+	TEST_PARTIAL ("./", "http://a/b/c/");
 
-	TEST_PARTIAL ("..", "http://a/b/");		/* FAILS */
+	TEST_PARTIAL ("..", "http://a/b/");
 	TEST_PARTIAL ("../g", "http://a/b/g");
-	TEST_PARTIAL ("../..", "http://a/");		/* FAILS */
+	TEST_PARTIAL ("../..", "http://a/");
 	TEST_PARTIAL ("../../", "http://a/");
 	TEST_PARTIAL ("../../g", "http://a/g");
+
+	/* Others */
+	TEST_PARTIAL ("g/..", "http://a/b/c/");
+	TEST_PARTIAL ("g/../", "http://a/b/c/");
+	TEST_PARTIAL ("g/../g", "http://a/b/c/g");
 
 	return success;
 }

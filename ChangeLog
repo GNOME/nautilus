@@ -1,3 +1,14 @@
+2000-11-08  Mike Fleming  <mfleming@eazel.com>
+
+	Fix relative URI bugs 4415, 4416, 4417.
+	Do eazel-services untranslate for link messages
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_link_message_callback),
+	(remove_internal_relative_components),
+	(make_full_uri_from_relative), (mozilla_dom_mouse_click_callback),
+	(test_make_full_uri_from_relative):
+
 2000-11-07  Josh Barrow  <josh@eazel.com>
 
 	* icons/eazel/eazel.xml:
