@@ -1,3 +1,17 @@
+2000-03-07  Maciej Stachowiak  <mjs@eazel.com>
+
+	* src/ntl-view-bonobo-subdoc.c (bonobo_subdoc_try_load_client):
+	Change a few things in the code so that embeddables get activated
+	properly; this makes scrolling and editing work in
+	bonobo-text-plain for instance.
+	
+	* src/ntl-content-view.c, src/ntl-content-view.h
+	(nautilus_content_view_set_active): Neew function; intended to be
+	called when a content view becomes active, which should activate
+	the controls and merge its menu and toolbar items.
+	* ntl-window.c (nautilus_window_real_set_content_view): Call
+	`nautilus_content_view_set_active' on the new content view.
+
 2000-03-07  Darin Adler  <darin@eazel.com>
 
 	* nautilus-icons-view-icon-item.c (nautilus_icons_view_icon_item_bounds):
@@ -44,6 +58,7 @@
 	icons/new.gif, icons/personal.gif, icons/remote.gif:
 	Changed all emblem icons to have names that start with "emblem-".
 
+>>>>>>> 1.405
 2000-03-06  Andy Hertzfeld <andy@eazel.com>
 
 	* icons/Makefile.am:  added 8 new images for emblems in icons directory;
