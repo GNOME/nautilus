@@ -2,7 +2,7 @@ NULL =
 
 CPPFLAGS = \
 	-DPREFIX=\"$(prefix)\" 			\
-	-DG_LOG_DOMAIN=\"eazel-install\"	\
+	-DG_LOG_DOMAIN=\"trilobite-eazel-install-service\"	\
 	$(NULL)
 
 INCLUDES = \

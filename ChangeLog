@@ -1,5 +1,15 @@
 2000-10-17  Robey Pointer  <robey@eazel.com>
 
+	* components/services/install/lib/Makefile.am:
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (create_package),
+	(nautilus_service_install_view_update_from_uri):
+
+	Fix "id=" stuff to "rpm_id=" to match new softcat format, and use
+	special pack->eazel_id field now that libeazelinstall provides it.
+	
+2000-10-17  Robey Pointer  <robey@eazel.com>
+
 	* nautilus-installer/src/callbacks.c: (prep_retry):
 	* nautilus-installer/src/callbacks.h:
 	* nautilus-installer/src/installer.c: (start_over),

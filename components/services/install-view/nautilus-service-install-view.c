@@ -302,8 +302,8 @@ create_package (char *name, int local_file)
 	pack = packagedata_new ();
 	if (local_file) {
 		pack->filename = g_strdup (name);
-	} else if (strncmp (name, "id%3D", 5)==0) {
-		pack->eazel_id = g_strdup (name+5);
+	} else if (strncmp (name, "rpm_id%3D", 9)==0) {
+		pack->eazel_id = g_strdup (name+9);
 	} else {
 		pack->name = g_strdup (name);
 	}
@@ -1039,10 +1039,12 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 
 	gtk_object_set_data (GTK_OBJECT (view), "packagedata", pack);
 
-	if (strncmp (pack->name, "id%3D", 5) == 0) {
+	if (pack->eazel_id != NULL) {
 		out = g_strdup_printf (_("Downloading remote package"));
-	} else {
+	} else if (pack->name != NULL) {
 		out = g_strdup_printf (_("Downloading \"%s\""), pack->name);
+	} else {
+		out = g_strdup_printf (_("Downloading some package"));
 	}
 	gtk_label_set_text (GTK_LABEL (view->details->package_name), out);
 	g_free (out);
