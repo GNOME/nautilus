@@ -13,6 +13,7 @@ SUBDIRS =\
 	components \
 	po \
 	src \
+	test \
 	$(NULL)
 
 EXTRA_DIST=\

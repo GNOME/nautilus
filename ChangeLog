@@ -1,5 +1,10 @@
 2000-05-31  Maciej Stachowiak  <mjs@eazel.com>
 
+	* test/test-nautilus-mime-actions.c: Simple test program to check
+	_for_uri nautilus metadata calls in nautilus.
+	* test/Makefile.am: Build test-nautilus-mime-actions
+	* Makefile.am, configure.in: add test directory to the build.
+
 	* libnautilus-extensions/nautilus-mime-actions.c
 	(nautilus_mime_get_default_action_for_uri,
 	nautilus_mime_get_default_application_for_uri,
