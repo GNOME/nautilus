@@ -463,7 +463,7 @@ create_mount_link (FMDesktopIconView *icon_view,
 		break;
 	
 	case NAUTILUS_DEVICE_ZIP_DRIVE:
-		icon_name = "gome-fs-zipdisk";
+		icon_name = "gnome-dev-zipdisk";
 		break;
 
 	case NAUTILUS_DEVICE_APPLE:
