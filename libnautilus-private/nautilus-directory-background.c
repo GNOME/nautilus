@@ -116,6 +116,15 @@ directory_changed_callback (NautilusDirectory *directory,
                                             directory);
 }
 
+static void
+background_destroyed_callback (NautilusBackground *background,
+                               NautilusDirectory *directory)
+{
+        gtk_signal_disconnect_by_func (GTK_OBJECT (directory),
+                                       GTK_SIGNAL_FUNC (directory_changed_callback),
+                                       background);
+}
+
 void
 nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
                                                    NautilusDirectory *directory)
@@ -139,6 +148,9 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
                 gtk_signal_disconnect_by_func (GTK_OBJECT (background),
                                                GTK_SIGNAL_FUNC (background_changed_callback),
                                                old_directory);
+                gtk_signal_disconnect_by_func (GTK_OBJECT (background),
+                                               GTK_SIGNAL_FUNC (background_destroyed_callback),
+                                               old_directory);
                 gtk_signal_disconnect_by_func (GTK_OBJECT (old_directory),
                                                GTK_SIGNAL_FUNC (directory_changed_callback),
                                                background);
@@ -153,18 +165,18 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
 
         /* Connect new signal handlers. */
         if (directory != NULL) {
-                /* Directory can't go away without us knowing. */
                 gtk_signal_connect (GTK_OBJECT (background),
                                     "changed",
                                     GTK_SIGNAL_FUNC (background_changed_callback),
                                     directory);
-
-                /* But the background can. */
-                gtk_signal_connect_while_alive (GTK_OBJECT (directory),
-                                                "metadata_changed",
-                                                GTK_SIGNAL_FUNC (directory_changed_callback),
-                                                background,
-                                                GTK_OBJECT (background));
+                gtk_signal_connect (GTK_OBJECT (background),
+                                    "destroy",
+                                    GTK_SIGNAL_FUNC (background_destroyed_callback),
+                                    directory);
+                gtk_signal_connect (GTK_OBJECT (directory),
+                                    "metadata_changed",
+                                    GTK_SIGNAL_FUNC (directory_changed_callback),
+                                    background);
         }
 
         /* Update the background based on the directory metadata. */

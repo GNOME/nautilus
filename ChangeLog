@@ -1,3 +1,11 @@
+2000-04-28  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-background.c
+	(background_destroyed_callback),
+	(nautilus_connect_background_to_directory):
+	gtk_signal_connect_while_alive wasn't quite up to the task,
+	so I had to redo the fix from my last check-in.
+
 2000-04-28  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/Makefile.am:
