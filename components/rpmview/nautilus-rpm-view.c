@@ -62,10 +62,15 @@ struct _NautilusRPMViewDetails {
         GtkWidget *package_license;
         GtkWidget *package_bdate;
         GtkWidget *package_distribution;
-        GtkWidget *package_vendor;
-        
+        GtkWidget *package_vendor;      
         GtkWidget *package_description;    
-        GtkVBox   *package_container;
+        
+	GtkWidget *package_installed_message;
+	GtkWidget *package_install_button;
+	GtkWidget *package_update_button;
+	GtkWidget *package_uninstall_button;
+	
+	GtkVBox   *package_container;
 	
 	GtkWidget *package_file_list;
         int background_connection;
@@ -186,6 +191,8 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	
 	rpm_view->details->package_summary = gtk_label_new ("");
 	gtk_box_pack_start (GTK_BOX (temp_title_box), rpm_view->details->package_summary, 0, 0, 0);	
+  	gtk_label_set_line_wrap(GTK_LABEL(rpm_view->details->package_summary), TRUE);
+	
 	gtk_widget_show (rpm_view->details->package_summary);
 	
 	/* allocate an hbox to hold the optional package logo and the song list */
@@ -271,6 +278,40 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	
 	gtk_box_pack_start (GTK_BOX (temp_title_box), GTK_WIDGET(table), 0, 0, 2);	
 	gtk_widget_show (GTK_WIDGET(table));
+	
+	/* make the install message and button area  */
+	
+	temp_box = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX (temp_title_box), temp_box, 0, 0, 8);	
+	gtk_widget_show(temp_box);
+	
+	rpm_view->details->package_installed_message = gtk_label_new("");
+	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_installed_message, 0, 0, 2);		
+	gtk_widget_show(rpm_view->details->package_installed_message);
+	
+	/* install button */
+	rpm_view->details->package_install_button = gtk_button_new();		    
+	temp_widget = gtk_label_new ("Install");
+	gtk_widget_show (temp_widget);
+	gtk_container_add (GTK_CONTAINER (rpm_view->details->package_install_button), temp_widget); 	
+	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_install_button, 0, 0, 2);		
+	gtk_widget_show(rpm_view->details->package_install_button);
+	
+	/* update button */
+	rpm_view->details->package_update_button = gtk_button_new();		    
+	temp_widget = gtk_label_new ("Update");
+	gtk_widget_show (temp_widget);
+	gtk_container_add (GTK_CONTAINER (rpm_view->details->package_update_button), temp_widget); 	
+	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_update_button, 0, 0, 2);		
+	gtk_widget_show(rpm_view->details->package_update_button);
+	
+	/* uninstall button */
+	rpm_view->details->package_uninstall_button = gtk_button_new();		    
+	temp_widget = gtk_label_new ("Uninstall");
+	gtk_widget_show (temp_widget);
+	gtk_container_add (GTK_CONTAINER (rpm_view->details->package_uninstall_button), temp_widget); 	
+	gtk_box_pack_start(GTK_BOX (temp_box), rpm_view->details->package_uninstall_button, 0, 0, 2);		
+	gtk_widget_show(rpm_view->details->package_uninstall_button);
 	
 	/* add the list of files contained in the package */
 
@@ -388,6 +429,7 @@ check_installed(gchar *package_name, gchar *package_version, gchar *package_rele
 	  	headerGetEntry(header, RPMTAG_VERSION, NULL, (void **) &version_ptr, NULL);
 	  	headerGetEntry(header, RPMTAG_RELEASE, NULL, (void **) &release_ptr, NULL);
 	  	
+		g_message("name %s, version %s, release %s", package_name, version_ptr, release_ptr);
 	  	if (!strcmp(version_ptr, package_version) && !strcmp(release_ptr, package_release))
 	  		result = 1;
 	  	headerFree(header);
@@ -413,7 +455,6 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	/* open the package */
 	HeaderIterator iterator;
 	Header header_info, signature;
-	GtkWidget *temp_widget;
 	char buffer[512];
 	gint iterator_tag, type, data_size, result, index, file_count;
 	gchar *data_ptr, *temp_str;
@@ -508,18 +549,30 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	}
 	
 	/* determine if the package is installed */
-	
 	is_installed = check_installed(package_name, temp_version, temp_release);
 			
-	/* generate a message with the appropriate action buttons describing the install state */
+	/* set up the install message and buttons */
 
 	if (is_installed)
-		temp_widget = gtk_label_new("This package is currently installed");
+		gtk_label_set(GTK_LABEL(rpm_view->details->package_installed_message), "This package is currently installed");	
+	else 
+		gtk_label_set(GTK_LABEL(rpm_view->details->package_installed_message), "This package is currently not installed");
+	
+	if (is_installed == 0)
+		gtk_widget_show(rpm_view->details->package_install_button);
 	else
-		temp_widget = gtk_label_new("This package is not installed");
-	gtk_box_pack_start (GTK_BOX (rpm_view->details->package_container), temp_widget, 0, 0, 8);	
-  	gtk_widget_show(temp_widget);
-
+		gtk_widget_hide(rpm_view->details->package_install_button);
+	
+	if (is_installed == 255)
+		gtk_widget_show(rpm_view->details->package_update_button);
+	else
+		gtk_widget_hide(rpm_view->details->package_update_button);
+	
+	if (is_installed != 0)
+		gtk_widget_show(rpm_view->details->package_uninstall_button);
+	else
+		gtk_widget_hide(rpm_view->details->package_uninstall_button);
+		
 	/* add the files in the package to the list */
 
   	gtk_clist_freeze(GTK_CLIST(rpm_view->details->package_file_list));
