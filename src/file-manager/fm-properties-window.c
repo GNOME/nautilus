@@ -122,7 +122,6 @@ enum {
 };
 
 #define ERASE_EMBLEM_FILENAME	"erase.png"
-#define EMBLEM_COLUMN_COUNT 2
 
 #define DIRECTORY_CONTENTS_UPDATE_INTERVAL	200 /* milliseconds */
 
@@ -1553,7 +1552,6 @@ create_emblems_page (FMPropertiesWindow *window)
 	char *emblem_name, *dot_pos;
 	GdkPixbuf *pixbuf;
 	char *label;
-	int row, column;
 	NautilusFile *file;
 
 	file = window->details->file;
@@ -1587,9 +1585,6 @@ create_emblems_page (FMPropertiesWindow *window)
 				  scroller, gtk_label_new (_("Emblems")));
 	
 	/* Use nautilus_customization to make the emblem widgets */
-	row = 0;
-	column = 0;
-	
 	customization_data = nautilus_customization_data_new ("emblems", TRUE, TRUE,
 							      NAUTILUS_ICON_SIZE_SMALL, 
 							      NAUTILUS_ICON_SIZE_SMALL);
@@ -1643,12 +1638,6 @@ create_emblems_page (FMPropertiesWindow *window)
 						       GTK_OBJECT (button));
 
 		gtk_container_add (GTK_CONTAINER (emblems_table), button);
-		
-		if (++column == EMBLEM_COLUMN_COUNT) {
-			column = 0;
-			++row;
-		}
-
 	}
 	gtk_widget_show_all (emblems_table);
 }

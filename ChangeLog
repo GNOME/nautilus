@@ -1,3 +1,14 @@
+2001-02-11  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-customization-data.h:
+	Add comment clarifying API changes I made in my last checkin.
+	* src/file-manager/fm-properties-window.c: (create_emblems_page):
+	Remove some left over code from when the emblems table was hard
+	coded to 2 columns.
+	* src/nautilus-property-browser.c:
+	(make_properties_from_directories):
+	Fix a small memory leak.
+
 2001-02-11 John Fleck <jfleck@inkstain.net>
 
 	reviewed by: Ali Abdin <aliabdin@aucegypt.edu>

@@ -1627,6 +1627,7 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 
 		property_image = labeled_image_new (object_label, object_pixbuf, object_name, 2, TRUE);
 
+		g_free (object_name);
 		g_free (object_label);
 		gdk_pixbuf_unref (object_pixbuf);
 		

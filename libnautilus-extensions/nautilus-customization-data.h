@@ -48,13 +48,16 @@ NautilusCustomizationData* nautilus_customization_data_new                      
 										     int maximum_icon_height,
 										     int maximum_icon_width);
 
-/* Fills the pixmap_widget and label_widget with widgets ready to display,
-   and fills in the name of the emblem and well
+/* Returns the following attrbiutes for a customization object (pattern, emblem)
+ *
+ * object_name   - The name of the object.  Usually what is used to represent it in storage.
+ * object_pixbuf - Pixbuf for graphical display of the object. 
+ * object_label  - Textual label display of the object. 
  */
 GnomeVFSResult             nautilus_customization_data_get_next_element_for_display (NautilusCustomizationData *data,
-										     char **emblem_name,
-										     GdkPixbuf **pixbuf_out,
-										     char **label);
+										     char **object_name,
+										     GdkPixbuf **object_pixbuf,
+										     char **object_label);
 gboolean                   nautilus_customization_data_private_data_was_displayed   (NautilusCustomizationData *data);
 
 void                       nautilus_customization_data_destroy                      (NautilusCustomizationData *data);
