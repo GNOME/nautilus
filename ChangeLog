@@ -1,3 +1,19 @@
+2000-12-06  Mike Fleming  <mfleming@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(handle_new_folder_vfs_error), (new_folder_xfer_callback),
+	(nautilus_file_operations_new_folder):
+
+	bugzilla.eazel.com 3940
+	"DAV: Creating folder in read-only directory does not produce error feedback"
+
+	Added an error dialog for the case where gnome-vfs-xfer reports an error
+	during directory creation.  This case is only commonly encountered in
+	remote filesystems where Nautilus can't check permissions before operations.
+	(Similar behaviour to 3940 applied to FTP as well).
+
 2000-12-06  Gene Z. Ragan  <gzr@eazel.com>
 
 	Changes in the music view to use a threaded file reader

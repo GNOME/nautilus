@@ -1672,7 +1672,34 @@ typedef struct {
 	GnomeVFSAsyncHandle *handle;
 	void (* done_callback)(const char *new_folder_uri, gpointer data);
 	gpointer data;
+	GtkWidget *parent_view;
 } NewFolderXferState;
+
+static int
+handle_new_folder_vfs_error (const GnomeVFSXferProgressInfo *progress_info, NewFolderXferState *state)
+{
+	const char *error_string;
+	char *error_string_to_free;
+
+	error_string_to_free = NULL;
+
+	if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
+		error_string = _("Error creating new folder.\n"
+				"You do not have permissions to write to the destination.");
+	} else if (progress_info->vfs_status == GNOME_VFS_ERROR_NO_SPACE) {
+		error_string = _("Error creating new folder.\n"
+				"There is no space on the destination.");
+	} else {
+		error_string = g_strdup_printf (_("Error \"%s\" creating new folder."), 
+			gnome_vfs_result_to_string(progress_info->vfs_status));
+	}
+
+	nautilus_error_dialog (error_string, _("Error creating new folder"), GTK_WINDOW (state->parent_view));
+
+	g_free (error_string_to_free);
+
+	return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
+}
 
 static int
 new_folder_xfer_callback (GnomeVFSAsyncHandle *handle,
@@ -1711,6 +1738,9 @@ new_folder_xfer_callback (GnomeVFSAsyncHandle *handle,
 		g_free (temp_string);
 		return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
 
+	case GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR:
+		return handle_new_folder_vfs_error (progress_info, state);
+
 	default:
 		g_warning (_("Unknown GnomeVFSXferProgressStatus %d"),
 			   progress_info->status);
@@ -1732,6 +1762,7 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 	state = g_new (NewFolderXferState, 1);
 	state->done_callback = done_callback;
 	state->data = data;
+	state->parent_view = parent_view;
 
 	/* pass in the target directory and the new folder name as a destination URI */
 	parent_uri = gnome_vfs_uri_new (parent_dir);
