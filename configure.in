@@ -94,10 +94,16 @@ _found_freetype2_lib="no"
 _found_freetype2_header="no"
 _found_freetype2="no"
 
+dnl FIXME
 _freetype2_place="/usr"
 
+_freetype2_include_dir="$_freetype2_place/include/freetype2"
+
+_save_cpp="$CPP"
+CPP="$_save_cpp -I$_freetype2_include_dir"
 AC_CHECK_HEADER(freetype/freetype.h, _found_freetype2_header="yes")
 AC_CHECK_LIB(freetype, FT_Init_FreeType, [_found_freetype2_lib="yes"])
+CPP="$_save_cpp"
 
 if test "$_found_freetype2_lib" = "yes" -a \
 	"$_found_freetype2_header" = "yes"
@@ -112,10 +118,7 @@ AC_MSG_ERROR([
 *** over here: http://developer.eazel.com/eazel-hacking/updates/freetype2])
 fi
 
-dnl FIXME
-_freetype2_place="/usr"
-
-FREETYPE2_CFLAGS="-I$_freetype2_place/include"
+FREETYPE2_CFLAGS="-I$_freetype2_include_dir"
 FREETYPE2_LIBS="-L$_freetype2_place/lib -lfreetype"
 
 AC_SUBST(FREETYPE2_CFLAGS)
