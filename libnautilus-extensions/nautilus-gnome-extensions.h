@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-gmp,e-extensions.h - interface for new functions that operate on
+/* nautilus-gnome-extensions.h - interface for new functions that operate on
                                  gnome classes. Perhaps some of these should be
   			         rolled into gnome someday.
 

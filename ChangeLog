@@ -1,3 +1,49 @@
+2000-11-11  Maciej Stachowiak  <mjs@eazel.com>
+
+	Fixed bugzilla.eazel.com bugs 4051 (applications which require
+	terminals don't get them) and 4072 (mime types: command= string
+	can't take args?).
+
+	* libnautilus-extensions/nautilus-gnome-extensions.c
+	(nautilus_gnome_terminal_shell_execute): Don't take the shell as
+	an argument, just use "/bin/sh", there's no reason to use any
+	other shell for the purpose of launching a terminal like this.
+
+	(nautilus_gnome_open_terminal): Don't pass user shell to
+	`nautilus_gnome_terminal_shell_execute'; handle `gnome-terminal'
+	properly by passing it "-x" instead of incorrectly trying to quote
+	the command.
+	
+	* libnautilus-extensions/nautilus-gnome-extensions.h: Fix minor
+	typo.
+	
+	* libnautilus-extensions/nautilus-program-choosing.h,
+	libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_launch_application_from_command): Add a use_termial
+	argument and if passed, launch the program in a terminal; minor
+	fixes to the way non-terminal-requiring programs are launched as
+	well, including not quoting the command, so that it can include
+	command line arguments (if the command name includes a space, it
+	had better be quoted already).
+
+	(nautilus_launch_application): Use the new `use_terminal' argument
+	when calling `nautilus_launch_application_from_command'.
+	
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(launch_mime_capplet): Use the new `use_terminal' argument
+	when calling `nautilus_launch_application_from_command'.
+
+	* src/file-manager/fm-desktop-icon-view.c
+	(change_desktop_background_menu_item_callback): Use the new
+	`use_terminal' argument when calling
+	`nautilus_launch_application_from_command'.
+	
+	* src/file-manager/fm-directory-view.c (activate_callback): Use
+	the new `use_terminal' argument when calling
+	`nautilus_launch_application_from_command'. Also, shell-quote the
+	command, since nautilus_application_launch_from_command won't do
+	that for you any more.
+
 2000-11-10  Maciej Stachowiak  <mjs@eazel.com>
 
 	* icons/gnome/Makefile.am, icons/i-executable.png: Restored

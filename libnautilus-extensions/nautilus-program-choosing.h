@@ -54,6 +54,7 @@ void nautilus_launch_application                 (GnomeVFSMimeApplication       
 						  const char                        *uri,
 						  GtkWindow                         *parent_window);
 void nautilus_launch_application_from_command    (const char                        *command_string,
-						  const char                        *parameter);
+						  const char                        *parameter,
+						  gboolean                           use_terminal);
 
 #endif /* NAUTILUS_PROGRAM_CHOOSING_H */

@@ -478,7 +478,7 @@ max_open_files (void)
 }
 
 static int 
-nautilus_gnome_terminal_shell_execute (const char *shell, const char *command)
+nautilus_gnome_terminal_shell_execute (const char *command)
 {
 	struct sigaction ignore, save_intr, save_quit, save_stop;
 	int status, i;
@@ -530,7 +530,7 @@ nautilus_gnome_terminal_shell_execute (const char *shell, const char *command)
 		
 		pid = fork ();
 		if (pid == 0){
-			execl (shell, shell, "-c", command, (char *) 0);
+			execl ("/bin/sh", "/bin/sh", "-c", command, (char *) 0);
 			/* See note below for why we use _exit () */
 			_exit (127);		/* Exec error */
 		}
@@ -553,24 +553,19 @@ nautilus_gnome_open_terminal (const char *command)
 {
 	char *terminal_path;
 	char *terminal_path_with_flags;
-	char *shell;
 	char *terminal_flags;
-	gboolean quote_all;
+	gboolean using_gnome_terminal;
 	char *command_line;
 
 
-	quote_all = FALSE;
-
-	/* figure out whichever shell we are using */
-    	shell = gnome_util_user_shell ();
+	using_gnome_terminal = FALSE;
 
 	/* Look up a well-known terminal app */
 	terminal_path = gnome_is_program_in_path ("gnome-terminal");
 	if (terminal_path != NULL) {
-		/* apparently gnome-terminal needs it's input nicely quoted and the other
-		 * terminals don't
+		/* gnome-terminal has different command-line options than the others
 		 */
-		quote_all = TRUE;
+		using_gnome_terminal = TRUE;
 	}
 	
 	if (terminal_path == NULL) {
@@ -596,29 +591,29 @@ nautilus_gnome_open_terminal (const char *command)
 	
 	if (terminal_path == NULL){
 		g_message (" Could not start a terminal ");
-	} else if (command){
-		if (quote_all) {
-			command_line = g_strconcat (terminal_path, " -e '", command, "'", NULL);
+	} else if (command) {
+		if (using_gnome_terminal) {
+			command_line = g_strconcat (terminal_path, " -x ", command, NULL);
 		} else {
 			command_line = g_strconcat (terminal_path, " -e ", command, NULL);
 		}
-		nautilus_gnome_terminal_shell_execute (shell, command_line);
+		
+		nautilus_gnome_terminal_shell_execute (command_line);
 		g_free (command_line);
 	} else {
-	        if (quote_all) {
+	        if (using_gnome_terminal) {
 			terminal_flags = " --login";
 			terminal_path_with_flags = g_strconcat (terminal_path, terminal_flags,  NULL);
-		        nautilus_gnome_terminal_shell_execute (shell, terminal_path_with_flags);
+		        nautilus_gnome_terminal_shell_execute (terminal_path_with_flags);
 		        g_free (terminal_path_with_flags);
 		} else {
 			terminal_flags = " -ls";
 			terminal_path_with_flags = g_strconcat (terminal_path, terminal_flags, NULL);
-			nautilus_gnome_terminal_shell_execute (shell, terminal_path_with_flags);
+			nautilus_gnome_terminal_shell_execute (terminal_path_with_flags);
 		}
 	}
 
 
-	g_free (shell);
 	g_free (terminal_path);
 }
 

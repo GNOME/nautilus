@@ -893,7 +893,7 @@ launch_mime_capplet (GtkWidget *button, gpointer ignored)
 {
 	g_assert (GTK_IS_WIDGET (button));
 
-	nautilus_launch_application_from_command ("nautilus-mime-type-capplet", NULL);
+	nautilus_launch_application_from_command ("nautilus-mime-type-capplet", NULL, FALSE);
 }
 
 static void

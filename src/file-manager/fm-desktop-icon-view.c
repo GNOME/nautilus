@@ -361,7 +361,7 @@ reset_desktop_background_menu_item_callback (GtkMenuItem *item, FMDirectoryView 
 static void
 change_desktop_background_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
 {
-	nautilus_launch_application_from_command ("background-properties-capplet", NULL);
+	nautilus_launch_application_from_command ("background-properties-capplet", NULL, FALSE);
 }
 
 static void

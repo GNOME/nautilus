@@ -27,6 +27,7 @@
 #include "nautilus-program-choosing.h"
 
 #include "nautilus-glib-extensions.h"
+#include "nautilus-gnome-extensions.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-chooser.h"
 #include "nautilus-stock-dialogs.h"
@@ -390,7 +391,6 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 			     GtkWindow *parent_window)
 {
 	GnomeDialog *dialog;
-	char *command_string;
 	char *parameter;
 	char *prompt;
 
@@ -420,16 +420,11 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 		}
 	}
 	
-	if (application->requires_terminal) {
-		command_string = g_strconcat ("gnome-terminal -x ", application->command, NULL);
-	} else {
-		command_string = g_strdup (application->command);
-	}
-	
-	nautilus_launch_application_from_command (command_string, parameter);
+	nautilus_launch_application_from_command (application->command,
+						  parameter, 
+						  application->requires_terminal);
 	
 	g_free (parameter);
-	g_free (command_string);
 }
 
 /**
@@ -443,23 +438,35 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
  * @parameter: Passed as a parameter to the application as is.
  */
 void
-nautilus_launch_application_from_command (const char *command_string, const char *parameter)
+nautilus_launch_application_from_command (const char *command_string, 
+					  const char *parameter, 
+					  gboolean    use_terminal)
 {
-	char *full_command, *quoted_parameter, *quoted_command;
+	char *full_command;
+	char *quoted_parameter; 
+	char *quoted_full_command;
+	char *final_command;
 
 	if (parameter != NULL) {
 		quoted_parameter = nautilus_shell_quote (parameter);
-		quoted_command = nautilus_shell_quote (command_string);
-		full_command = g_strconcat (quoted_command, " ", quoted_parameter, " &", NULL);
-		g_free (quoted_command);
+		full_command = g_strconcat (command_string, " ", quoted_parameter, NULL);
 		g_free (quoted_parameter);
 	} else {
-		quoted_command = nautilus_shell_quote (command_string);
-		full_command = g_strconcat (quoted_command, " &", NULL);
-		g_free (quoted_command);
+		full_command = g_strdup (command_string);
 	}
 
-	system (full_command);
 
+	if (use_terminal) {
+		quoted_full_command = nautilus_shell_quote (full_command);
+		final_command = g_strconcat ("/bin/sh -c ", quoted_full_command, NULL);
+		nautilus_gnome_open_terminal (final_command);
+		g_free (quoted_full_command);
+	} else {
+		final_command = g_strconcat (full_command, " &", NULL);
+		printf ("XXX - final_command: %s\n", final_command);
+		system (final_command);
+	}
+
+	g_free (final_command);
 	g_free (full_command);
 }

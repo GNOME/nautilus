@@ -3790,7 +3790,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 {
 	ActivateParameters *parameters;
 	FMDirectoryView *view;
-	char *uri, *command, *executable_path;
+	char *uri, *command, *executable_path, *quoted_path;
 	GnomeVFSMimeActionType action_type;
 	GnomeVFSMimeApplication *application;
 	gboolean performed_special_handling;
@@ -3844,8 +3844,10 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		 * and act like non-executables.
 		 */
 		if (executable_path != NULL) {
-			nautilus_launch_application_from_command (executable_path, NULL);
+			quoted_path = nautilus_shell_quote (executable_path);
+			nautilus_launch_application_from_command (quoted_path, NULL, FALSE);
 			g_free (executable_path);
+			g_free (quoted_path);
 			performed_special_handling = TRUE;
 		}
 	}
