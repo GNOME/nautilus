@@ -1,5 +1,19 @@
 2002-10-04  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-emblem-utils.[ch]:
+	New common utils for emblems
+
+	* components/emblem/nautilus-emblem-view.c:
+	* libnautilus-private/nautilus-icon-factory.c:
+	* src/file-manager/fm-properties-window.c:
+	* src/nautilus-property-browser.c:
+	Use the common emblem utils.
+
+	REQUIRES libgnomeui HEAD
+	
+2002-10-04  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-factory.[ch]:
 	Add display_name argument to nautilus_icon_factory_get_pixbuf_for_icon
 	and nautilus_icon_factory_get_pixbuf_from_name.

@@ -76,6 +76,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-dnd.h \
 	nautilus-drag-window.c \
 	nautilus-drag-window.h \
+	nautilus-emblem-utils.c \
+	nautilus-emblem-utils.h \
 	nautilus-entry.c \
 	nautilus-entry.h \
 	nautilus-file-attributes.h \

@@ -31,6 +31,7 @@
 
 #include <stdio.h>
 #include <eel/eel-gtk-macros.h>
+#include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-wrap-table.h>
 #include <eel/eel-labeled-image.h>
@@ -50,15 +51,14 @@
 #include <gtk/gtkentry.h>
 #include <librsvg/rsvg.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-icon-theme.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <gconf/gconf-client.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-icon-dnd.h>
+#include <libnautilus-private/nautilus-emblem-utils.h>
 
 struct NautilusEmblemViewDetails {
-	GnomeIconTheme *theme;
 	GConfClient *client;
 	GtkWidget *emblems_table;
 };
@@ -66,11 +66,6 @@ struct NautilusEmblemViewDetails {
 #define ERASE_EMBLEM_KEYWORD			"erase"
 #define STANDARD_EMBLEM_HEIGHT			52
 #define EMBLEM_LABEL_SPACING			2
-
-#define EMBLEM_NAME_TRASH   "emblem-trash"
-#define EMBLEM_NAME_SYMLINK "emblem-symbolic-link"
-#define EMBLEM_NAME_NOREAD  "emblem-noread"
-#define EMBLEM_NAME_NOWRITE "emblem-nowrite"
 
 static void     nautilus_emblem_view_class_init      (NautilusEmblemViewClass *object_klass);
 static void     nautilus_emblem_view_instance_init   (NautilusEmblemView *object);
@@ -145,52 +140,6 @@ nautilus_emblem_view_leave_notify_cb (GtkWidget *widget,
 	eel_labeled_image_set_pixbuf (EEL_LABELED_IMAGE (image), pixbuf);
 }
 
-static char *
-strip_emblem_prefix (const char *name)
-{
-	g_return_val_if_fail (name != NULL, NULL);
-
-	if (eel_str_has_prefix (name, "emblem-")) {
-		return g_strdup (&name[7]);
-	} else {
-		return g_strdup (name);
-	}
-}
-
-/* utility routine to strip the extension from the passed in string */
-static char*
-strip_extension (const char* string_to_strip)
-{
-	char *result_str, *temp_str;
-	if (string_to_strip == NULL) {
-		return NULL;
-	}
-	
-	result_str = g_strdup(string_to_strip);
-	temp_str = strrchr(result_str, '.');
-	if (temp_str) {
-		*temp_str = '\0';
-	}
-
-	return result_str;
-}
-
-static gboolean
-should_show_icon (const char *name)
-{
-	if (strcmp (name, EMBLEM_NAME_TRASH) == 0) {
-		return FALSE;
-	} else if (strcmp (name, EMBLEM_NAME_SYMLINK) == 0) {
-		return FALSE;
-	} else if (strcmp (name, EMBLEM_NAME_NOREAD) == 0) {
-		return FALSE;
-	} else if (strcmp (name, EMBLEM_NAME_NOWRITE) == 0) {
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
 static GtkWidget *
 create_emblem_widget (NautilusEmblemView *emblem_view,
 		      const char *name)
@@ -204,7 +153,7 @@ create_emblem_widget (NautilusEmblemView *emblem_view,
 							     NAUTILUS_ICON_SIZE_STANDARD,
 							     &display_name);
 
-	keyword = strip_emblem_prefix (name);
+	keyword = nautilus_emblem_get_keyword_from_icon_name (name);
 	if (display_name == NULL) {
 		display_name = g_strdup (keyword);
 	}
@@ -265,23 +214,6 @@ emblem_name_entry_changed_cb (GtkWidget *entry, Emblem *emblem)
 	emblem->name = g_strdup (text);
 }
 
-static GdkPixbuf *
-create_pixbuf_for_emblem (const char *uri)
-{
-	GdkPixbuf *pixbuf;
-	GdkPixbuf *scaled;
-
-	pixbuf = eel_gdk_pixbuf_load (uri);
-
-	g_return_val_if_fail (pixbuf != NULL, NULL);
-
-	scaled = eel_gdk_pixbuf_scale_down_to_fit (pixbuf,
-				NAUTILUS_ICON_SIZE_STANDARD,
-				NAUTILUS_ICON_SIZE_STANDARD);
-	g_object_unref (G_OBJECT (pixbuf));
-
-	return scaled;
-}
 
 static void
 destroy_emblem (Emblem *emblem, gpointer user_data)
@@ -398,68 +330,6 @@ create_add_emblems_dialog (NautilusEmblemView *emblem_view,
 }
 
 static void
-nautilus_emblem_view_add_emblem (NautilusEmblemView *emblem_view,
-				 Emblem *emblem)
-{
-	GnomeVFSURI *vfs_uri;
-	char *path, *base, *theme, *dir, *name;
-	FILE *file;
-	
-	g_return_if_fail (emblem->uri != NULL);
-	g_return_if_fail (emblem->name != NULL);
-
-	theme = gconf_client_get_string (emblem_view->details->client,
-				"/desktop/gnome/interface/icon_theme",
-				NULL);
-
-	g_return_if_fail (theme != NULL);
-
-	dir = g_strdup_printf ("%s/.icons/%s/48x48/emblems",
-				g_get_home_dir (), theme);
-	g_free (theme);
-
-	vfs_uri = gnome_vfs_uri_new (dir);
-
-	g_return_if_fail (vfs_uri != NULL);
-	
-	eel_make_directory_and_parents (vfs_uri, 0755);
-	gnome_vfs_uri_unref (vfs_uri);
-	
-	base = g_path_get_basename (emblem->uri);
-	name = strip_extension (base);
-	g_free (base);
-
-	path = g_strdup_printf ("%s/emblem-%s.png", dir, name);
-
-	/* save the image */
-	if (eel_gdk_pixbuf_save_to_file (emblem->pixbuf, path) != TRUE) {
-		g_warning ("Couldn't save emblem.");
-		g_free (dir);
-		g_free (name);
-		return;
-	}
-
-	g_free (path);
-	path = g_strdup_printf ("%s/emblem-%s.icon", dir, name);
-	file = fopen (path, "w+");
-
-	if (file == NULL) {
-		g_warning ("Couldn't write icon description.");
-		g_free (path);
-		g_free (dir);
-		g_free (name);
-		return;
-	}
-	
-	/* write the icon description */
-	fprintf (file, "\n[Icon Data]\n\nDisplayName=%s\n", emblem->name);
-	fflush (file);
-	fclose (file);
-
-	g_free (dir);
-}
-
-static void
 remove_widget (GtkWidget *widget, GtkContainer *container)
 {
 	gtk_container_remove (container, widget);
@@ -468,8 +338,7 @@ remove_widget (GtkWidget *widget, GtkContainer *container)
 static void
 nautilus_emblem_view_refresh (NautilusEmblemView *emblem_view)
 {
-	gnome_icon_theme_rescan_if_needed (emblem_view->details->theme);
-
+	nautilus_emblem_refresh_list ();
 
 	gtk_container_foreach (GTK_CONTAINER (emblem_view->details->emblems_table),
 			       (GtkCallback)remove_widget,
@@ -501,7 +370,10 @@ add_emblems_dialog_response_cb (GtkWidget *dialog, int response,
 		while (emblems != NULL) {
 			emblem = (Emblem *)emblems->data;
 
-			nautilus_emblem_view_add_emblem (emblem_view, emblem);
+			nautilus_emblem_install_custom_emblem (emblem->pixbuf,
+							       emblem->name,
+							       emblem->name,
+							       GTK_WINDOW (dialog));
 		
 			emblems = emblems->next;
 		}
@@ -567,7 +439,7 @@ nautilus_emblem_view_drag_received_cb (GtkWidget *widget,
 			uri = l->data;
 			l = l->next;
 
-			pixbuf = create_pixbuf_for_emblem (uri);
+			pixbuf = nautilus_emblem_load_pixbuf_for_emblem (uri);
 
 			if (pixbuf == NULL) {
 				/* this one apparently isn't an image, or
@@ -606,7 +478,7 @@ nautilus_emblem_view_drag_received_cb (GtkWidget *widget,
 
 		uri = g_strndup (data->data, data->length);
 		
-		pixbuf = create_pixbuf_for_emblem (uri);
+		pixbuf = nautilus_emblem_load_pixbuf_for_emblem (uri);
 
 		if (pixbuf != NULL) {
 			emblem = g_new (Emblem, 1);
@@ -662,15 +534,14 @@ nautilus_emblem_view_populate (NautilusEmblemView *emblem_view)
 	gtk_container_add (GTK_CONTAINER (emblems_table), emblem_widget);
 	*/
 
-	icons = gnome_icon_theme_list_icons (emblem_view->details->theme,
-					     "Emblems");
+	icons = nautilus_emblem_list_availible ();
 
 	l = icons;
 	while (l != NULL) {
 		name = (char *)l->data;
 		l = l->next;
 
-		if (!should_show_icon (name)) {
+		if (!nautilus_emblem_should_show_in_list (name)) {
 			continue;
 		}
 
@@ -680,7 +551,7 @@ nautilus_emblem_view_populate (NautilusEmblemView *emblem_view)
 			(GTK_CONTAINER (emblem_view->details->emblems_table),
 			 emblem_widget);
 	}
-	g_list_free (icons);
+	eel_g_list_free_deep (icons);
 
 	gtk_widget_show_all (emblem_view->details->emblems_table);
 }
@@ -692,7 +563,6 @@ nautilus_emblem_view_instance_init (NautilusEmblemView *emblem_view)
 	GtkWidget *widget;
 	
 	emblem_view->details = g_new0 (NautilusEmblemViewDetails, 1);
-	emblem_view->details->theme = nautilus_icon_factory_get_icon_theme ();
 
 	emblem_view->details->client = gconf_client_get_default ();
 
@@ -714,10 +584,6 @@ nautilus_emblem_view_finalize (GObject *object)
 	emblem_view = NAUTILUS_EMBLEM_VIEW (object);
 
 	if (emblem_view->details != NULL) {
-		if (emblem_view->details->theme != NULL) {
-			g_object_unref (emblem_view->details->theme);
-		}
-
 		if (emblem_view->details->client != NULL) {
 			g_object_unref (emblem_view->details->client);
 		}

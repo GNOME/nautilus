@@ -64,6 +64,7 @@
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
+#include <libnautilus-private/nautilus-emblem-utils.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-undo-signal-handlers.h>
@@ -141,8 +142,6 @@ static GtkTargetEntry target_table[] = {
 	{ "x-special/gnome-icon-list",  0, TARGET_GNOME_URI_LIST },
 	{ "x-special/gnome-reset-background", 0, TARGET_RESET_BACKGROUND }
 };
-
-#define ERASE_EMBLEM_FILENAME	"erase.png"
 
 #define DIRECTORY_CONTENTS_UPDATE_INTERVAL	200 /* milliseconds */
 #define STANDARD_EMBLEM_HEIGHT			52
@@ -1678,13 +1677,14 @@ create_basic_page (FMPropertiesWindow *window)
 static void
 create_emblems_page (FMPropertiesWindow *window)
 {
-	NautilusCustomizationData *customization_data;
 	GtkWidget *emblems_table, *button, *scroller;
-	char *emblem_name, *dot_pos;
+	char *emblem_name;
 	GdkPixbuf *pixbuf;
 	char *label;
 	NautilusFile *file;
+	GList *icons, *l;
 
+	
 	file = window->details->target_file;
 
 	/* The emblems wrapped table */
@@ -1696,28 +1696,28 @@ create_emblems_page (FMPropertiesWindow *window)
 
 	gtk_notebook_append_page (window->details->notebook, 
 				  scroller, gtk_label_new (_("Emblems")));
-	
-	/* Use nautilus_customization to make the emblem widgets */
-	customization_data = nautilus_customization_data_new ("emblems", TRUE, TRUE,
-							      NAUTILUS_ICON_SIZE_SMALL, 
-							      NAUTILUS_ICON_SIZE_SMALL);
-	
-	while (nautilus_customization_data_get_next_element_for_display (customization_data,
-									 &emblem_name,
-									 &pixbuf,
-									 &label) == GNOME_VFS_OK) {	
 
-		/* strip the suffix, if any */
-		dot_pos = strrchr(emblem_name, '.');
-		if (dot_pos) {
-			*dot_pos = '\0';
+	icons = nautilus_emblem_list_availible ();
+
+	l = icons;
+	while (l != NULL) {
+		emblem_name = l->data;
+		l = l->next;
+		
+		if (!nautilus_emblem_should_show_in_list (emblem_name)) {
+			continue;
 		}
 		
-		if (strcmp (emblem_name, "erase") == 0) {
-			g_object_unref (pixbuf);
-			g_free (label);
-			g_free (emblem_name);
+		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (emblem_name, NULL,
+								     NAUTILUS_ICON_SIZE_SMALL,
+								     &label);
+
+		if (pixbuf == NULL) {
 			continue;
+		}
+
+		if (label == NULL) {
+			label = nautilus_emblem_get_keyword_from_icon_name (emblem_name);
 		}
 		
 		button = eel_labeled_image_check_button_new (label, pixbuf);
@@ -1729,7 +1729,7 @@ create_emblems_page (FMPropertiesWindow *window)
 
 		/* Attach parameters and signal handler. */
 		g_object_set_data_full (G_OBJECT (button), "nautilus_property_name",
-					emblem_name, g_free);
+					nautilus_emblem_get_keyword_from_icon_name (emblem_name), g_free);
 				     
 		nautilus_file_ref (file);
 		g_object_set_data_full (G_OBJECT (button), "nautilus_file",
@@ -1748,6 +1748,8 @@ create_emblems_page (FMPropertiesWindow *window)
 
 		gtk_container_add (GTK_CONTAINER (emblems_table), button);
 	}
+	eel_g_list_free_deep (icons);
+	
 	gtk_widget_show_all (emblems_table);
 }
 

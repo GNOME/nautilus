@@ -1,0 +1,260 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
+
+   nautilus-emblem-utils.c: Utilities for handling emblems
+ 
+   Copyright (C) 2002 Red Hat, Inc.
+  
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation; either version 2 of the
+   License, or (at your option) any later version.
+  
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+  
+   You should have received a copy of the GNU General Public
+   License along with this program; if not, write to the
+   Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+   Boston, MA 02111-1307, USA.
+  
+   Author: Alexander Larsson <alexl@redhat.com>
+*/
+
+#include <config.h>
+#include "nautilus-emblem-utils.h"
+
+#include "nautilus-icon-factory.h"
+#include <eel/eel-string.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gdk-pixbuf-extensions.h>
+#include <eel/eel-stock-dialogs.h>
+#include <eel/eel-vfs-extensions.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-icon-theme.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
+#include <gconf/gconf-client.h>
+#include <stdio.h>
+
+#define EMBLEM_NAME_TRASH   "emblem-trash"
+#define EMBLEM_NAME_SYMLINK "emblem-symbolic-link"
+#define EMBLEM_NAME_NOREAD  "emblem-noread"
+#define EMBLEM_NAME_NOWRITE "emblem-nowrite"
+
+GList *
+nautilus_emblem_list_availible (void)
+{
+	GnomeIconTheme *icon_theme;
+	GList *list;
+	
+	icon_theme = nautilus_icon_factory_get_icon_theme ();
+	list = gnome_icon_theme_list_icons (icon_theme, "Emblems");
+	g_object_unref (icon_theme);
+	return list;
+}
+
+void
+nautilus_emblem_refresh_list (void)
+{
+	GnomeIconTheme *icon_theme;
+	
+	icon_theme = nautilus_icon_factory_get_icon_theme ();
+	gnome_icon_theme_rescan_if_needed (icon_theme);
+	g_object_unref (icon_theme);
+}
+
+char *
+nautilus_emblem_get_icon_name_from_keyword (const char *keyword)
+{
+	return g_strconcat ("emblem-", keyword, NULL);
+}
+
+
+/* check for reserved keywords */
+static gboolean
+is_reserved_keyword (const char *keyword)
+{
+	GList *availible;
+	char *icon_name;
+	gboolean result;
+
+	/* check intrinsic emblems */
+	if (eel_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_TRASH) == 0) {
+		return TRUE;
+	}
+	if (eel_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_CANT_READ) == 0) {
+		return TRUE;
+	}
+	if (eel_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE) == 0) {
+		return TRUE;
+	}
+	if (eel_strcasecmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK) == 0) {
+		return TRUE;
+	}
+
+	availible = nautilus_emblem_list_availible ();
+	icon_name = nautilus_emblem_get_icon_name_from_keyword (keyword);
+	/* see if the keyword already exists */
+	result = g_list_find_custom (availible,
+				     (char *) icon_name,
+				     (GCompareFunc) eel_strcasecmp) != NULL;
+	eel_g_list_free_deep (availible);	
+	g_free (icon_name);
+	return result;
+}
+
+gboolean
+nautilus_emblem_should_show_in_list (const char *emblem)
+{
+	if (strcmp (emblem, EMBLEM_NAME_TRASH) == 0) {
+		return FALSE;
+	}
+	if (strcmp (emblem, EMBLEM_NAME_SYMLINK) == 0) {
+		return FALSE;
+	}
+	if (strcmp (emblem, EMBLEM_NAME_NOREAD) == 0) {
+		return FALSE;
+	}
+	if (strcmp (emblem, EMBLEM_NAME_NOWRITE) == 0) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+char *
+nautilus_emblem_get_keyword_from_icon_name (const char *emblem)
+{
+	g_return_val_if_fail (emblem != NULL, NULL);
+
+	if (eel_str_has_prefix (emblem, "emblem-")) {
+		return g_strdup (&emblem[7]);
+	} else {
+		return g_strdup (emblem);
+	}
+}
+
+GdkPixbuf *
+nautilus_emblem_load_pixbuf_for_emblem (const char *uri)
+{
+	GdkPixbuf *pixbuf;
+	GdkPixbuf *scaled;
+
+	pixbuf = eel_gdk_pixbuf_load (uri);
+
+	g_return_val_if_fail (pixbuf != NULL, NULL);
+
+	scaled = eel_gdk_pixbuf_scale_down_to_fit (pixbuf,
+						   NAUTILUS_ICON_SIZE_STANDARD,
+						   NAUTILUS_ICON_SIZE_STANDARD);
+	g_object_unref (G_OBJECT (pixbuf));
+
+	return scaled;
+}
+
+/* utility to make sure the passed-in keyword only contains alphanumeric characters */
+static gboolean
+emblem_keyword_valid (const char *keyword)
+{
+	const char *p;
+	gunichar c;
+	
+	for (p = keyword; *p; p = g_utf8_next_char (p)) {
+		c = g_utf8_get_char (p);
+
+		if (!g_unichar_isalnum (c) &&
+		    !g_unichar_isspace (c)) {
+			return FALSE;
+		}
+	}
+	
+	return TRUE;
+}
+
+
+void
+nautilus_emblem_install_custom_emblem (GdkPixbuf *pixbuf,
+				       const char *keyword,
+				       const char *display_name,
+				       GtkWindow *parent_window)
+{
+	GnomeVFSURI *vfs_uri;
+	char *path, *theme, *dir;
+	FILE *file;
+	GConfClient *client;
+	char *error_string;
+	
+	g_return_if_fail (pixbuf != NULL);
+
+	if (keyword == NULL || strlen (keyword) == 0) {
+		eel_show_error_dialog (_("Sorry, but you must specify a non-blank keyword for the new emblem."), 
+				       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
+		return;
+	} else if (!emblem_keyword_valid (keyword)) {
+		eel_show_error_dialog (_("Sorry, but emblem keywords can only contain letters, spaces and numbers."), 
+				       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
+		return;
+	} else if (is_reserved_keyword (keyword)) {
+		error_string = g_strdup_printf (_("Sorry, but \"%s\" is an existing keyword.  Please choose a different name for it."), keyword);
+		eel_show_error_dialog (error_string, 
+				       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
+		g_free (error_string);
+		return;
+	} 
+
+	client = gconf_client_get_default ();
+	 
+	theme = gconf_client_get_string (client,
+					 "/desktop/gnome/interface/icon_theme",
+					 NULL);
+
+	g_object_unref (client);
+
+	g_return_if_fail (theme != NULL);
+
+	dir = g_strdup_printf ("%s/.icons/%s/48x48/emblems",
+			       g_get_home_dir (), theme);
+	g_free (theme);
+
+	vfs_uri = gnome_vfs_uri_new (dir);
+
+	g_return_if_fail (vfs_uri != NULL);
+	
+	eel_make_directory_and_parents (vfs_uri, 0755);
+	gnome_vfs_uri_unref (vfs_uri);
+	
+	path = g_strdup_printf ("%s/emblem-%s.png", dir, keyword);
+
+	/* save the image */
+	if (eel_gdk_pixbuf_save_to_file (pixbuf, path) != TRUE) {
+		eel_show_error_dialog (_("Sorry, unable to save custom emblem."), 
+				       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
+		g_free (dir);
+		g_free (path);
+		return;
+	}
+
+	g_free (path);
+
+	if (display_name != NULL) {
+		path = g_strdup_printf ("%s/emblem-%s.icon", dir, keyword);
+		file = fopen (path, "w+");
+		
+		if (file == NULL) {
+			eel_show_error_dialog (_("Sorry, unable to save custom emblem name."), 
+					       _("Couldn't install emblem"), GTK_WINDOW (parent_window));
+			g_free (dir);
+			return;
+		}
+		
+		/* write the icon description */
+		fprintf (file, "\n[Icon Data]\n\nDisplayName=%s\n", display_name);
+		fflush (file);
+		fclose (file);
+	}
+	
+	g_free (dir);
+
+	return;
+}
