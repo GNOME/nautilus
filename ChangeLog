@@ -1,3 +1,13 @@
+2001-02-07  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: John Sullivan  <sullivan@eazel.com>
+
+	Fix 6380 (** ERROR ** in trash_callback_destroy when
+	          navigating to trash)
+	* libnautilus-extensions/nautilus-trash-file.c:
+	(trash_callback_destroy), (trash_file_call_when_ready):
+	Add a missing ref and unref.
+
 2001-02-07  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 5967, Music View slider is narrow in Eazel GTK theme

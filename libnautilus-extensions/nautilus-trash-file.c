@@ -101,6 +101,7 @@ trash_callback_destroy (TrashCallback *trash_callback)
 	g_assert (trash_callback != NULL);
 	g_assert (NAUTILUS_IS_TRASH_FILE (trash_callback->trash));
 
+	nautilus_file_unref (NAUTILUS_FILE (trash_callback->trash));
 	nautilus_g_list_free_deep (trash_callback->attributes);
 	g_list_free (trash_callback->non_ready_files);
 	g_free (trash_callback);
@@ -312,6 +313,7 @@ trash_file_call_when_ready (NautilusFile *file,
 
 	/* Create a trash_callback record. */
 	trash_callback = g_new0 (TrashCallback, 1);
+	nautilus_file_ref (file);
 	trash_callback->trash = trash;
 	trash_callback->callback = callback;
 	trash_callback->callback_data = callback_data;
