@@ -1,3 +1,13 @@
+2000-12-09  Andy Hertzfeld  <and@eazel.com>
+
+	* src/file-manager/fm-properties-window.c: (create_basic_page),
+	(create_properties_window), (ensure_uri_is_image),
+	(set_custom_image), (select_image_button_callback),
+	(remove_image_button_callback):
+	fixed bug 2167, no way to add custom icons for files without a viewer,
+	by adding buttons for adding and removing custom icons to the
+	properties window.
+	
 2000-12-09  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/Makefile.am:

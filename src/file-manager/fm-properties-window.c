@@ -28,6 +28,7 @@
 #include "fm-error-reporting.h"
 #include <gtk/gtkcheckbutton.h>
 #include <gtk/gtkentry.h>
+#include <gtk/gtkfilesel.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkhseparator.h>
 #include <gtk/gtklabel.h>
@@ -53,6 +54,7 @@
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-link.h>
+#include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
@@ -63,6 +65,7 @@ static GHashTable *windows;
 
 struct FMPropertiesWindowDetails {
 	NautilusFile *file;
+	GtkWidget *remove_image_button;
 	guint file_changed_handler_id;
 };
 
@@ -130,6 +133,10 @@ static void       fm_properties_window_initialize_class      (FMPropertiesWindow
 static void       fm_properties_window_initialize            (FMPropertiesWindow      *window);
 static void 	  cancel_group_change_callback 		     (gpointer 		       callback_data);
 static void 	  cancel_owner_change_callback 		     (gpointer 		       callback_data);
+static void	  select_image_button_callback		     (GtkWidget 	      *widget,
+							      NautilusFile 	      *file);
+static void	  remove_image_button_callback		     (GtkWidget 	      *widget,
+							      NautilusFile 	      *file);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMPropertiesWindow, fm_properties_window, GTK_TYPE_WINDOW)
 
@@ -1111,10 +1118,12 @@ create_page_with_table_in_vbox (GtkNotebook *notebook,
 }		
 
 static void
-create_basic_page (GtkNotebook *notebook, NautilusFile *file)
+create_basic_page (FMPropertiesWindow *window, GtkNotebook *notebook, NautilusFile *file)
 {
-	GtkWidget *table;
+	GtkWidget *table, *container;
 	GtkWidget *icon_pixmap_widget, *icon_aligner, *name_field;
+	GtkWidget *button_box, *temp_button;
+	char *image_uri;
 	gboolean is_directory;
 
 	is_directory = nautilus_file_is_directory (file);
@@ -1123,7 +1132,7 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 					_("Basic"), 
 					is_directory ? BASIC_PAGE_ROW_COUNT - 1 : BASIC_PAGE_ROW_COUNT, 
 					&table, 
-					NULL);
+					&container);
 
 	/* Icon pixmap */
 	icon_pixmap_widget = create_image_widget_for_file (file);
@@ -1219,6 +1228,30 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 		attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_MIME_TYPE_ROW,
 					  _("MIME type:"), file, "mime_type");
 	}				  
+
+	/* add command buttons for setting and clearing custom icons */
+	button_box = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (button_box);
+	gtk_box_pack_end (GTK_BOX(container), button_box, FALSE, FALSE, 4);  
+	
+ 	temp_button = gtk_button_new_with_label (_("Select Custom Icon..."));
+	gtk_widget_show (temp_button);
+	gtk_box_pack_start (GTK_BOX (button_box), temp_button, FALSE, FALSE, 4);  
+ 	gtk_widget_set_usize (temp_button, -1, 24);
+	gtk_signal_connect(GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (select_image_button_callback), file);
+ 	
+ 	temp_button = gtk_button_new_with_label (_("Remove Custom Icon"));
+	gtk_widget_show (temp_button);
+	gtk_box_pack_start (GTK_BOX(button_box), temp_button, FALSE, FALSE, 4);  
+	gtk_widget_set_usize (temp_button, -1, 24);
+ 	gtk_signal_connect (GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (remove_image_button_callback), file);		
+
+	window->details->remove_image_button = temp_button;
+	
+	/* de-sensitize the remove button if there isn't a custom image */
+	image_uri = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
+	gtk_widget_set_sensitive (temp_button, image_uri != NULL);
+	g_free (image_uri);
 }
 
 static GtkWidget *
@@ -1852,7 +1885,7 @@ create_properties_window (NautilusFile *file)
 	gtk_container_add (GTK_CONTAINER (window), notebook);
 
 	/* Create the pages. */
-	create_basic_page (GTK_NOTEBOOK (notebook), window->details->file);
+	create_basic_page (window, GTK_NOTEBOOK (notebook), window->details->file);
 	create_emblems_page (GTK_NOTEBOOK (notebook), window->details->file);
 	create_permissions_page (GTK_NOTEBOOK (notebook), window->details->file);
 
@@ -1989,3 +2022,105 @@ real_destroy (GtkObject *object)
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
+
+/* callbacks to handle adding and removing custom icons */
+
+/* utility routine to check if the passed-in uri is an image file */
+static gboolean
+ensure_uri_is_image(const char *uri)
+{	
+	gboolean is_image;
+	GnomeVFSResult result;
+	GnomeVFSFileInfo *file_info;
+
+	file_info = gnome_vfs_file_info_new ();
+	result = gnome_vfs_get_file_info
+		(uri, file_info,
+		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+		 | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
+        is_image = nautilus_istr_has_prefix (file_info->mime_type, "image/") && (nautilus_strcmp (file_info->mime_type, "image/svg") != 0);
+	gnome_vfs_file_info_unref (file_info);
+	return is_image;
+}
+
+/* set the image of the file object to the selected file */
+static void
+set_custom_image (GtkWidget *widget, NautilusFile *file)
+{
+	char *path_name, *path_uri;
+	GtkWidget *button;
+	GtkFileSelection *file_dialog;
+	gboolean is_image;
+	
+	file_dialog = GTK_FILE_SELECTION (gtk_widget_get_toplevel (widget));
+	path_name = g_strdup(gtk_file_selection_get_filename (GTK_FILE_SELECTION (file_dialog)));
+
+	/* ensure that the path name is an image */
+	path_uri = gnome_vfs_get_uri_from_local_path (path_name);
+	is_image = ensure_uri_is_image(path_uri);
+	g_free(path_uri);	
+	
+	if (!is_image) {
+		char *message = g_strdup_printf (_("Sorry, but '%s' is not a usable image file!"), path_name);
+		nautilus_error_dialog (message, _("Not an Image"), NULL);
+		g_free (message);
+		g_free (path_name);
+		return;
+	}
+
+	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, path_name);
+	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_ICON_SCALE, NULL, NULL);
+	
+	g_free (path_name);
+
+	/* re- enable the property window's clear image button */ 
+	button = GTK_WIDGET (gtk_object_get_user_data (GTK_OBJECT (file_dialog)));
+	gtk_widget_set_sensitive (button, TRUE);
+	
+	/* we're done with the file dialog */
+	gtk_widget_destroy (GTK_WIDGET (file_dialog));
+}
+
+/* handle the "select" button */
+static void
+select_image_button_callback (GtkWidget *widget, NautilusFile *file)
+{
+	GtkFileSelection *file_dialog;
+	FMPropertiesWindow *window;
+
+	window = FM_PROPERTIES_WINDOW (gtk_widget_get_toplevel (widget));
+
+	file_dialog = GTK_FILE_SELECTION (gtk_file_selection_new
+		(_("Select an image to represent the file:")));
+	
+	gtk_object_set_user_data (GTK_OBJECT (file_dialog), window->details->remove_image_button);
+	
+	gtk_signal_connect (GTK_OBJECT (file_dialog->ok_button),
+				"clicked",
+				set_custom_image,
+				file);
+	gtk_signal_connect_object (GTK_OBJECT (file_dialog->cancel_button),
+				"clicked",
+				gtk_widget_destroy,
+				GTK_OBJECT (file_dialog));
+
+	gtk_window_set_position (GTK_WINDOW (file_dialog), GTK_WIN_POS_MOUSE);
+	gtk_widget_show (GTK_WIDGET (file_dialog));
+}
+
+static void
+remove_image_button_callback (GtkWidget *widget, NautilusFile *file)
+{
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	nautilus_file_set_metadata (NAUTILUS_FILE (file),
+				    NAUTILUS_METADATA_KEY_ICON_SCALE,
+				    NULL, NULL);
+	nautilus_file_set_metadata (NAUTILUS_FILE (file),
+				    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
+				    NULL, NULL);
+	
+	gtk_widget_set_sensitive (widget, FALSE);
+}
+
+
