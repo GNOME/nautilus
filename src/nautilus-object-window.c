@@ -20,7 +20,8 @@
  *  License along with this library; if not, write to the Free
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Author: Elliot Lee <sopwith@redhat.com>
+ *  Authors: Elliot Lee <sopwith@redhat.com>
+ *  	     John Sullivan <sullivan@eazel.com>
  *
  */
 /* ntl-window.c: Implementation of the main window object */
@@ -37,7 +38,7 @@
 #include <libnautilus/nautilus-gtk-extensions.h>
 
 static void nautilus_window_realize (GtkWidget *widget);
-static void real_nautilus_window_set_content_view (NautilusWindow *window, NautilusView *new_view);
+static void nautilus_window_real_set_content_view (NautilusWindow *window, NautilusView *new_view);
 
 static GnomeAppClass *parent_class = NULL;
 
@@ -530,7 +531,7 @@ nautilus_window_set_arg (GtkObject      *object,
       nautilus_window_constructed(NAUTILUS_WINDOW(object));
     break;
   case ARG_CONTENT_VIEW:
-    real_nautilus_window_set_content_view (window, (NautilusView *)GTK_VALUE_OBJECT(*arg));
+    nautilus_window_real_set_content_view (window, (NautilusView *)GTK_VALUE_OBJECT(*arg));
     break;
   }
 }
@@ -693,7 +694,7 @@ nautilus_window_send_show_properties(GtkWidget *dockitem, GdkEventButton *event,
 void
 nautilus_window_set_content_view(NautilusWindow *window, NautilusView *content_view)
 {
-  real_nautilus_window_set_content_view (window, content_view);
+  nautilus_window_real_set_content_view (window, content_view);
 }
 
 void
@@ -946,7 +947,7 @@ nautilus_window_display_error(NautilusWindow *window, const char *error_msg)
 }
 
 static void
-real_nautilus_window_set_content_view (NautilusWindow *window, NautilusView *new_view)
+nautilus_window_real_set_content_view (NautilusWindow *window, NautilusView *new_view)
 {
   g_return_if_fail (NAUTILUS_IS_WINDOW (window));
   g_return_if_fail (new_view == NULL || NAUTILUS_IS_VIEW (new_view));

@@ -49,7 +49,7 @@ static GtkScrolledWindowClass *parent_class = NULL;
 */
 static FMIconCache *icm = NULL;
 
-static void
+void
 display_selection_info (FMDirectoryView *view,
 			GList *selection)
 {
@@ -134,7 +134,7 @@ view_has_icon_container (FMDirectoryView *view)
 	return mode_uses_icon_container (view->mode);
 }
 
-static GnomeIconContainer *
+GnomeIconContainer *
 get_icon_container (FMDirectoryView *view)
 {
 	GtkBin *bin;
@@ -147,63 +147,6 @@ get_icon_container (FMDirectoryView *view)
 		return NULL;	/* Avoid GTK+ complaints.  */
 	else
 		return GNOME_ICON_CONTAINER (bin->child);
-}
-
-static gint
-display_icon_container_selection_info_idle_cb (gpointer data)
-{
-	FMDirectoryView *view;
-	GnomeIconContainer *icon_container;
-	GList *selection;
-
-	view = FM_DIRECTORY_VIEW (data);
-	icon_container = get_icon_container (view);
-
-	selection = gnome_icon_container_get_selection (icon_container);
-	display_selection_info (view, selection);
-	g_list_free (selection);
-
-	view->display_selection_idle_id = 0;
-
-	return FALSE;
-}
-
-static void
-icon_container_selection_changed_cb (GnomeIconContainer *container,
-				     gpointer data)
-{
-	FMDirectoryView *view;
-
-	view = FM_DIRECTORY_VIEW (data);
-	if (view->display_selection_idle_id == 0)
-		view->display_selection_idle_id = gtk_idle_add
-			(display_icon_container_selection_info_idle_cb,
-			 view);
-}
-
-static void
-icon_container_activate_cb (GnomeIconContainer *icon_container,
-			    const gchar *name,
-			    gpointer icon_data,
-			    gpointer data)
-{
-	FMDirectoryView *directory_view;
-	GnomeVFSURI *new_uri;
-	GnomeVFSFileInfo *info;
-	Nautilus_NavigationRequestInfo nri;
-
-	info = (GnomeVFSFileInfo *) icon_data;
-	directory_view = FM_DIRECTORY_VIEW (data);
-
-	new_uri = gnome_vfs_uri_append_path (directory_view->uri, name);
-
-	nri.requested_uri = gnome_vfs_uri_to_string(new_uri, 0);
-	nri.new_window_default = nri.new_window_suggested = Nautilus_V_FALSE;
-	nri.new_window_enforced = Nautilus_V_UNKNOWN;
-	nautilus_view_frame_request_location_change(NAUTILUS_VIEW_FRAME(directory_view->view_frame),
-						     &nri);
-	g_free(nri.requested_uri);
-	gnome_vfs_uri_unref (new_uri);
 }
 
 static void
@@ -236,7 +179,7 @@ add_to_icon_container (FMDirectoryView *view,
 	}
 }
 
-static void
+void
 load_icon_container (FMDirectoryView *view,
 		     GnomeIconContainer *icon_container)
 {
@@ -268,57 +211,6 @@ load_icon_container (FMDirectoryView *view,
 
 }
 
-static GnomeIconContainer *
-create_icon_container (FMDirectoryView *view)
-{
-	GnomeIconContainer *icon_container;
-
-	icon_container = GNOME_ICON_CONTAINER (gnome_icon_container_new ());
-	GTK_WIDGET_SET_FLAGS (icon_container, GTK_CAN_FOCUS);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "activate",
-			    GTK_SIGNAL_FUNC (icon_container_activate_cb),
-			    view);
-	gtk_signal_connect (GTK_OBJECT (icon_container),
-			    "selection_changed",
-			    GTK_SIGNAL_FUNC (icon_container_selection_changed_cb),
-			    view);
-
-	gtk_container_add (GTK_CONTAINER (view), GTK_WIDGET (icon_container));
-
-	gtk_widget_show (GTK_WIDGET (icon_container));
-	load_icon_container (view, icon_container);
-
-	return icon_container;
-}
-
-static void
-setup_icon_container (FMDirectoryView *view,
-		      FMDirectoryViewMode mode)
-{
-	GnomeIconContainer *icon_container;
-
-	g_return_if_fail (mode_uses_icon_container (mode));
-
-	if (! view_has_icon_container (view)) {
-		GtkWidget *child;
-
-		child = GTK_BIN (view)->child;
-		if (child != NULL)
-			gtk_widget_destroy (GTK_BIN (view)->child);
-		icon_container = create_icon_container (view);
-	} else {
-		icon_container = get_icon_container (view);
-	}
-
-	if (mode == FM_DIRECTORY_VIEW_MODE_ICONS)
-		gnome_icon_container_set_icon_mode
-			(icon_container, GNOME_ICON_CONTAINER_NORMAL_ICONS);
-	else
-		gnome_icon_container_set_icon_mode
-			(icon_container, GNOME_ICON_CONTAINER_SMALL_ICONS);
-}
-
 
 /* GtkFList handling.  */
 
@@ -335,7 +227,7 @@ view_has_flist (FMDirectoryView *view)
 	return mode_uses_flist (view->mode);
 }
 
-static GtkFList *
+GtkFList *
 get_flist (FMDirectoryView *view)
 {
 	GtkBin *bin;
@@ -350,62 +242,7 @@ get_flist (FMDirectoryView *view)
 		return GTK_FLIST (bin->child);
 }
 
-static gint
-display_flist_selection_info_idle_cb (gpointer data)
-{
-	FMDirectoryView *view;
-	GtkFList *flist;
-	GList *selection;
-
-	view = FM_DIRECTORY_VIEW (data);
-	flist = get_flist (view);
-
-	selection = gtk_flist_get_selection (flist);
-	display_selection_info (view, selection);
-	g_list_free (selection);
-
-	view->display_selection_idle_id = 0;
-
-	return FALSE;
-}
-
-static void
-flist_selection_changed_cb (GtkFList *flist,
-			    gpointer data)
-{
-	FMDirectoryView *view;
-
-	view = FM_DIRECTORY_VIEW (data);
-	if (view->display_selection_idle_id == 0)
-		view->display_selection_idle_id
-			= gtk_idle_add (display_flist_selection_info_idle_cb,
-					view);
-}
-
-static void
-flist_activate_cb (GtkFList *flist,
-		   gpointer entry_data,
-		   gpointer data)
-{
-	FMDirectoryView *directory_view;
-	GnomeVFSURI *new_uri;
-	GnomeVFSFileInfo *info;
-	Nautilus_NavigationRequestInfo nri;
-
-	info = (GnomeVFSFileInfo *) entry_data;
-	directory_view = FM_DIRECTORY_VIEW (data);
-
-	new_uri = gnome_vfs_uri_append_path (directory_view->uri, info->name);
-	nri.requested_uri = gnome_vfs_uri_to_string(new_uri, 0);
-	nri.new_window_default = nri.new_window_suggested = Nautilus_V_FALSE;
-	nri.new_window_enforced = Nautilus_V_UNKNOWN;
-	nautilus_view_frame_request_location_change(NAUTILUS_VIEW_FRAME(directory_view->view_frame),
-						     &nri);
-	g_free(nri.requested_uri);
-	gnome_vfs_uri_unref (new_uri);
-}
-
-static void
+void
 add_to_flist (FMIconCache *icon_manager,
 	      GtkFList *flist,
 	      GnomeVFSFileInfo *info)
@@ -419,80 +256,6 @@ add_to_flist (FMIconCache *icon_manager,
 	clist = GTK_CLIST (flist);
 	gtk_clist_append (clist, text);
 	gtk_clist_set_row_data (clist, clist->rows - 1, info);
-}
-
-static GtkFList *
-create_flist (FMDirectoryView *view)
-{
-	GtkFList *flist;
-	gchar *titles[] = {
-		"Name",
-		NULL
-	};
-
-	flist = GTK_FLIST (gtk_flist_new_with_titles (2, titles));
-	gtk_clist_set_column_width (GTK_CLIST (flist), 0, 150); /* FIXME */
-	GTK_WIDGET_SET_FLAGS (flist, GTK_CAN_FOCUS);
-
-	gtk_signal_connect (GTK_OBJECT (flist),
-			    "activate",
-			    GTK_SIGNAL_FUNC (flist_activate_cb),
-			    view);
-	gtk_signal_connect (GTK_OBJECT (flist),
-			    "selection_changed",
-			    GTK_SIGNAL_FUNC (flist_selection_changed_cb),
-			    view);
-
-	gtk_container_add (GTK_CONTAINER (view), GTK_WIDGET (flist));
-
-	gtk_widget_show (GTK_WIDGET (flist));
-
-	if (view->directory_list != NULL) {
-		GnomeVFSDirectoryListPosition *position;
-		FMIconCache *icon_manager;
-
-		if(!icm)
-			icm = fm_get_current_icon_cache();
-		icon_manager = icm;
-
-		position = gnome_vfs_directory_list_get_first_position
-			(view->directory_list);
-
-		gtk_clist_freeze (GTK_CLIST (flist));
-
-		while (position != view->current_position) {
-			GnomeVFSFileInfo *info;
-
-			info = gnome_vfs_directory_list_get
-				(view->directory_list, position);
-			add_to_flist (icon_manager, flist, info);
-
-			position = gnome_vfs_directory_list_position_next
-				(position);
-		}
-
-		gtk_clist_thaw (GTK_CLIST (flist));
-	}
-
-	return flist;
-}
-
-static void
-setup_flist (FMDirectoryView *view,
-		      FMDirectoryViewMode mode)
-{
-	GtkFList *flist;
-
-	g_return_if_fail (mode_uses_flist (mode));
-
-	if (! view_has_flist (view)) {
-		GtkWidget *child;
-
-		child = GTK_BIN (view)->child;
-		if (child != NULL)
-			gtk_widget_destroy (GTK_BIN (view)->child);
-		flist = create_flist (view);
-	}
 }
 
 static void
@@ -886,28 +649,15 @@ fm_directory_view_get_mode (FMDirectoryView *view)
 
 void
 fm_directory_view_set_mode (FMDirectoryView *view,
-			    FMDirectoryViewMode mode)
+			    FMDirectoryViewMode new_mode)
 {
 	g_return_if_fail (view != NULL);
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	if (view->mode == mode)
+	if (view->mode == new_mode)
 		return;
 
-	switch (mode) {
-	case FM_DIRECTORY_VIEW_MODE_ICONS:
-	case FM_DIRECTORY_VIEW_MODE_SMALLICONS:
-		setup_icon_container (view, mode);
-		break;
-	case FM_DIRECTORY_VIEW_MODE_DETAILED:
-	case FM_DIRECTORY_VIEW_MODE_CUSTOM:
-		setup_flist (view, mode);
-		break;
-	case FM_DIRECTORY_VIEW_MODE_NONE:
-		break;
-	}
-
-	view->mode = mode;
+	view->mode = new_mode;
 }
 
 

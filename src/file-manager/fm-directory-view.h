@@ -116,4 +116,24 @@ void	   fm_directory_view_sort     (FMDirectoryView *view,
 NautilusContentViewFrame *
            fm_directory_view_get_view_frame (FMDirectoryView *view);
 
+
+
+/* Private transition section: These are here only while I'm in the process
+ * of moving code into the subclasses.  sullivan@eazel.com 1/11/2000
+ */
+
+#include <libnautilus/gtkflist.h>
+#include "fm-icon-cache.h"
+
+void add_to_flist (FMIconCache *icon_manager,
+	      GtkFList *flist,
+	      GnomeVFSFileInfo *info);
+void display_selection_info (FMDirectoryView *view, GList *selection);
+GtkFList *get_flist (FMDirectoryView *view);
+GnomeIconContainer *get_icon_container (FMDirectoryView *view);
+void load_icon_container (FMDirectoryView *view, GnomeIconContainer *icon_container);
+
+/* End of private transition section */
+
+
 #endif /* __FM_DIRECTORY_VIEW_H__ */

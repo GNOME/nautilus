@@ -1,3 +1,40 @@
+2000-01-11  John Sullivan  <sullivan@eazel.com>
+
+	Started moving icon-specific and list-specific code
+	into the subclasses. As a transition step, added some
+	private prototypes to the .h file (clearly marked).	
+	
+	* src/file-manager/fm-directory-view.c:
+	(setup_flist), (setup_icon_container): eliminated completely.
+	(display_icon_container_selection_info_idle_cb), 
+	(icon_container_selection_changed_cb), (icon_container_activate_cb),
+	(create_icon_container), (display_flist_selection_info_idle_cb),
+	(flist_activate_cb), (flist_selection_changed_cb), 
+	(create_flist): moved out.
+	(fm_directory_view_set_mode): removed the guts, which are now
+	in the init functions for the subclasses; now just sets the
+	field (which will go away eventually).
+	* src/file-manager/fm-directory-view.h:
+	(add_to_flist), (display_selection_info), (get_flist),
+	(get_icon_container), (load_icon_container): temporarily
+	added to .h file.
+	* src/file-manager/fm-directory-view-icons.c:
+	(display_icon_container_selection_info_idle_cb), 
+	(icon_container_selection_changed_cb), (icon_container_activate_cb),
+	(create_icon_container): moved in.
+	(fm_directory_view_icons_init): Now creates icon_container here instead of
+	in fm_directory_view_set_mode (which will eventually go away).
+	* src/file-manager/fm-directory-view-list.c:
+	(display_flist_selection_info_idle_cb),	(flist_activate_cb), 
+	(flist_selection_changed_cb), (create_flist): moved in.
+	(fm_directory_view_list_init): Now creates flist here instead of
+	in fm_directory_view_set_mode (which will eventually go away).
+
+	* src/ntl-window.c:
+	(real_nautilus_window_set_content_view): Renamed to
+	nautilus_window_real_set_content_view. Also added
+	self as an author.
+
 2000-01-11  Darin Adler  <darin@eazel.com>
 
 	NautilusBackground is now used for the index panel background.
