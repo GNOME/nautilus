@@ -236,7 +236,8 @@ icon_set_position (NautilusIcon *icon,
 	int left, top, right, bottom;
 	int width, height;
 	int x1, y1, x2, y2;
-	
+	int container_x, container_y, container_width, container_height;
+
 	if (icon->x == x && icon->y == y) {
 		return;
 	}
@@ -248,12 +249,30 @@ icon_set_position (NautilusIcon *icon,
 	}
 
 	if (nautilus_icon_container_get_is_fixed_size (container)) {
+		/*  FIXME: This should be:
+		    
+		container_x = GTK_WIDGET (container)->allocation.x;
+		container_y = GTK_WIDGET (container)->allocation.y;
+		container_width = GTK_WIDGET (container)->allocation.width;
+		container_height = GTK_WIDGET (container)->allocation.height;
+
+		But for some reason the widget allocation is sometimes not done
+		at startup, and the allocation is then only 45x60. which is
+		really bad.
+
+		For now, we have a cheesy workaround:
+		*/
+		container_x = 0;
+		container_y = 0;
+		container_width = gdk_screen_width ();
+		container_height = gdk_screen_height ();
+		
 		pixels_per_unit = GNOME_CANVAS (container)->pixels_per_unit;
 		/* Clip the position of the icon within our desktop bounds */
-		left = GTK_WIDGET (container)->allocation.x / pixels_per_unit;
-		top = GTK_WIDGET (container)->allocation.y / pixels_per_unit;
-		right = left + GTK_WIDGET (container)->allocation.width / pixels_per_unit;
-		bottom = top + GTK_WIDGET (container)->allocation.height / pixels_per_unit;
+		left = container_x / pixels_per_unit;
+		top =  container_y / pixels_per_unit;
+		right = left + container_width / pixels_per_unit;
+		bottom = top + container_height / pixels_per_unit;
 
 		icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
 		width = x2 - x1;
