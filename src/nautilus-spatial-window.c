@@ -499,7 +499,7 @@ location_button_clicked_callback (GtkWidget *widget, NautilusSpatialWindow *wind
 		name = nautilus_get_uri_shortname_for_display (uri);
 		menu_item = gtk_image_menu_item_new_with_label (name);
 		if (first_item == NULL) {
-			GtkWidget *open_icon = gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_BUTTON);
+			GtkWidget *open_icon = gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
 
 			gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (menu_item), open_icon);
 
@@ -629,7 +629,7 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 			   hbox);
 	gtk_widget_show (hbox);
 
-	folder_icon = gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_BUTTON);
+	folder_icon = gtk_image_new_from_stock (GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
 	gtk_box_pack_start (GTK_BOX (hbox), folder_icon, FALSE, FALSE, 0);
 	gtk_widget_show (folder_icon);
 	
