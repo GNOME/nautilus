@@ -85,7 +85,7 @@ static GHashTable *pending_lists;
 struct FMPropertiesWindowDetails {	
 	GList *original_files;
 	GList *target_files;
-
+	
 	GtkNotebook *notebook;
 	GtkWidget *remove_image_button;
 	
@@ -119,6 +119,9 @@ struct FMPropertiesWindowDetails {
 	GList *mime_list;
 
 	gboolean deep_count_finished;
+
+	guint total_count;
+	GnomeVFSFileSize total_size;
 };
 
 enum {
@@ -291,8 +294,6 @@ get_target_file_for_original_file (NautilusFile *file)
 static NautilusFile *
 get_target_file (FMPropertiesWindow *window)
 {
-	g_return_val_if_fail (!is_multi_file_window (window), NULL);
-
 	return NAUTILUS_FILE (window->details->target_files->data);
 }
 
@@ -534,7 +535,7 @@ update_name_field (FMPropertiesWindow *window)
 
 		first = TRUE;
 
-		for (l = window->details->original_files; l != NULL; l = l->next) {
+		for (l = window->details->target_files; l != NULL; l = l->next) {
 			file = NAUTILUS_FILE (l->data);
 
 			if (!nautilus_file_is_gone (file)) {
@@ -1661,46 +1662,63 @@ append_separator (GtkTable *table)
 static void
 directory_contents_value_field_update (FMPropertiesWindow *window)
 {
-	NautilusRequestStatus status;
+	NautilusRequestStatus file_status, status;
 	char *text, *temp;
 	guint directory_count;
 	guint file_count;
 	guint total_count;
 	guint unreadable_directory_count;
 	GnomeVFSFileSize total_size;
-	char *size_string;
 	gboolean used_two_lines;
 	NautilusFile *file;
+	GList *l;
+	guint file_unreadable;
+	GnomeVFSFileSize file_size;
 
 	g_assert (FM_IS_PROPERTIES_WINDOW (window));
 
-	/* For right now this will only work on single-file property
-	 * dialogs */
-	if (is_multi_file_window (window)) {
-		return ;
+	status = NAUTILUS_REQUEST_DONE;
+	file_status = NAUTILUS_REQUEST_NOT_STARTED;
+	total_count = window->details->total_count;
+	total_size = window->details->total_size;
+	unreadable_directory_count = FALSE;
+
+	for (l = window->details->target_files; l; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+		if (nautilus_file_is_directory (file)) {
+			file_status = nautilus_file_get_deep_counts (file, 
+					 &directory_count,
+					 &file_count, 
+					 &file_unreadable,
+					 &file_size);
+			total_count += (file_count + directory_count);
+			total_size += file_size;
+			
+			if (file_unreadable) {
+				unreadable_directory_count = TRUE;
+			}
+			
+			if (file_status != NAUTILUS_REQUEST_DONE) {
+				status = file_status;
+			}
+		} else {
+			++total_count;
+			total_size += nautilus_file_get_size (file);
+		}
 	}
-
-	file = get_target_file (window);
-	g_assert (nautilus_file_is_directory (file) || nautilus_file_is_gone (file));
-
-	status = nautilus_file_get_deep_counts (file, 
-						&directory_count, 
-						&file_count, 
-						&unreadable_directory_count, 
-						&total_size);
-
+	
 	/* If we've already displayed the total once, don't do another visible
-	 * count-up if the deep_count happens to get invalidated. But still display
-	 * the new total, since it might have changed.
+	 * count-up if the deep_count happens to get invalidated.
+	 * But still display the new total, since it might have changed.
 	 */
-	if (window->details->deep_count_finished && status != NAUTILUS_REQUEST_DONE) {
+	if (window->details->deep_count_finished &&
+	    status != NAUTILUS_REQUEST_DONE) {
 		return;
 	}
 
 	text = NULL;
-	total_count = file_count + directory_count;
 	used_two_lines = FALSE;
-
+	
 	if (total_count == 0) {
 		switch (status) {
 		case NAUTILUS_REQUEST_DONE:
@@ -1709,34 +1727,42 @@ directory_contents_value_field_update (FMPropertiesWindow *window)
 			} else {
 				text = g_strdup (_("unreadable"));
 			}
+			
 			break;
 		default:
 			text = g_strdup ("...");
 		}
 	} else {
-		size_string = gnome_vfs_format_file_size_for_display (total_size);
+		char *size_str;
+		size_str = gnome_vfs_format_file_size_for_display (total_size);
 		if (total_count == 1) {
-				text = g_strdup_printf (_("1 item, with size %s"), size_string);
+			text = g_strdup_printf (_("1 item, with size %s"),
+						size_str);
 		} else {
-			text = g_strdup_printf (_("%d items, totalling %s"), total_count, size_string);
+			text = g_strdup_printf (_("%d items, totalling %s"),
+						total_count, size_str);
 		}
-		g_free (size_string);
+		g_free (size_str);
 
 		if (unreadable_directory_count != 0) {
 			temp = text;
-			text = g_strconcat (temp, "\n", _("(some contents unreadable)"), NULL);
+			text = g_strconcat (temp, "\n",
+					    _("(some contents unreadable)"),
+					    NULL);
 			g_free (temp);
 			used_two_lines = TRUE;
 		}
 	}
 
-	gtk_label_set_text (window->details->directory_contents_value_field, text);
+	gtk_label_set_text (window->details->directory_contents_value_field,
+			    text);
 	g_free (text);
 
-	/* Also set the title field here, with a trailing carriage return & space
-	 * if the value field has two lines. This is a hack to get the
-	 * "Contents:" title to line up with the first line of the 2-line value.
-	 * Maybe there's a better way to do this, but I couldn't think of one.
+	/* Also set the title field here, with a trailing carriage return &
+	 * space if the value field has two lines. This is a hack to get the
+	 * "Contents:" title to line up with the first line of the
+	 * 2-line value. Maybe there's a better way to do this, but I
+	 * couldn't think of one.
 	 */
 	text = g_strdup (_("Contents:"));
 	if (used_two_lines) {
@@ -1744,7 +1770,8 @@ directory_contents_value_field_update (FMPropertiesWindow *window)
 		text = g_strconcat (temp, "\n ", NULL);
 		g_free (temp);
 	}
-	gtk_label_set_text (window->details->directory_contents_title_field, text);
+	gtk_label_set_text (window->details->directory_contents_title_field,
+			    text);
 	g_free (text);
 
 	if (status == NAUTILUS_REQUEST_DONE) {
@@ -1784,6 +1811,8 @@ attach_directory_contents_value_field (FMPropertiesWindow *window,
 				       int row)
 {
 	GtkLabel *value_field;
+	GList *l;
+	NautilusFile *file;
 
 	value_field = attach_value_label (table, row, VALUE_COLUMN, "");
 
@@ -1791,23 +1820,20 @@ attach_directory_contents_value_field (FMPropertiesWindow *window,
 	window->details->directory_contents_value_field = value_field;
 
 	gtk_label_set_line_wrap (value_field, TRUE);
-
-
-	/* For right now, this will only be called for single-file 
-	 * property dialogs */
-	g_return_val_if_fail (!is_multi_file_window (window), value_field);
-
-	/* Always recompute from scratch when the window is shown. */
-	nautilus_file_recompute_deep_counts (get_target_file (window));
-
+	
 	/* Fill in the initial value. */
 	directory_contents_value_field_update (window);
-
-	/* Connect to signal to update value when file changes. */
-	g_signal_connect_object (get_target_file (window),
-				 "updated_deep_count_in_progress",
-				 G_CALLBACK (schedule_directory_contents_update),
-				 window, G_CONNECT_SWAPPED);
+ 
+	       
+	for (l = window->details->original_files; l; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+		nautilus_file_recompute_deep_counts (file);
+		
+		g_signal_connect_object (file,
+					 "updated_deep_count_in_progress",
+					 G_CALLBACK (schedule_directory_contents_update),
+					 window, G_CONNECT_SWAPPED);
+	}
 	
 	return value_field;	
 }
@@ -1901,12 +1927,15 @@ static void
 update_visibility_of_item_count_fields (FMPropertiesWindow *window)
 {
 	gboolean should_show_count;
-	
-	if (is_multi_file_window (window)) {
-		should_show_count = FALSE;
-	} else {
-		should_show_count = nautilus_file_should_show_directory_item_count (get_target_file (window));
+	GList *l;
+	guint count = 0;
+	NautilusFile *file;
+               
+	for (l = window->details->target_files; l; l = l->next) {
+		file = NAUTILUS_FILE (l->data);
+		count += nautilus_file_should_show_directory_item_count (file);
 	}
+	should_show_count = count;
 
 	update_visibility_of_table_rows
 		(window->details->basic_table,
@@ -2211,12 +2240,8 @@ create_basic_page (FMPropertiesWindow *window)
 					 FALSE);
 	}
 
-	if (is_multi_file_window (window)) {
-		/* FIXME: append a total size field here */
-#if 0
-		append_total_size_field (window, table);
-#endif
-	} else if (nautilus_file_is_directory (get_target_file (window))) {
+	if (is_multi_file_window (window) ||
+	    nautilus_file_is_directory (get_target_file (window))) {
 		append_directory_contents_fields (window, table);
 	} else {
 		append_title_value_pair (window, table, _("Size:"), 
