@@ -335,10 +335,27 @@ static void
 realized_callback (GtkWidget *widget, FMDesktopIconView *desktop_icon_view)
 {
 	GdkWindow *root_window;
+	GdkScreen *screen;
+	GtkAllocation allocation;
 
 	g_return_if_fail (desktop_icon_view->details->root_window == NULL);
 
-	root_window = gdk_screen_get_root_window (gtk_widget_get_screen (widget));
+	screen = gtk_widget_get_screen (widget);
+
+	/* Ugly HACK for the problem that the views realize at the
+	 * wrong size and then get resized. (This is a problem with
+	 * BonoboPlug.) This was leading to problems where initial
+	 * layout was done at 60x60 stacking all desktop icons in
+	 * the top left corner.
+	 */
+	allocation.x = 0;
+	allocation.y = 0;
+	allocation.width = gdk_screen_get_width (screen);
+	allocation.height = gdk_screen_get_height (screen);
+	gtk_widget_size_allocate (GTK_WIDGET(get_icon_container(desktop_icon_view)),
+				  &allocation);
+	
+	root_window = gdk_screen_get_root_window (screen);
 
 	desktop_icon_view->details->root_window = root_window;
 
