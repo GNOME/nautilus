@@ -225,11 +225,11 @@ display_caveat (GtkWindow *parent_window)
 		(_("Thank you for your interest in Nautilus.\n "
 		   "\n"
 		   "As with any software under development, you should exercise caution when "
-		   "using Nautilus.  Eazel does not provide any guarantee that it will work "
+		   "using Nautilus. We do not provide any guarantee that it will work "
 		   "properly, or assume any liability for your use of it.  Please use it at your "
 		   "own risk.\n"
 		   "\n"
-		   "Please visit http://www.eazel.com/feedback.html to provide feedback, "
+		   "Please write a mail to <nautilus-list@eazel.com> to provide feedback, "
 		   "comments, and suggestions."));
 	eel_label_make_larger (EEL_LABEL (text), 1);
 	eel_label_set_justify (EEL_LABEL (text), GTK_JUSTIFY_LEFT);
@@ -393,16 +393,6 @@ save_window_states (void)
 		gdk_window_get_root_origin (gdk_window, &x, &y);
 
 		location = nautilus_window_get_location (window);
-
-		/* FIXME bugzilla.eazel.com 4375
-		   This hardcoded subst should be parameterized
-		   at some point. This ensures that when eazel-install:nautilus
-		   restarts nautilus, it doesn't go to eazel-install:nautilus but
-		   to eazel: instead */
-		if (eel_istr_has_prefix (location, "eazel-install:")) {
-			g_free (location);
-			location = g_strdup ("eazel:");
-		}
 
 		window_attributes = g_strdup_printf ("%d,%d,%d,%d,%s", 
 						     width, height, 

@@ -1,3 +1,13 @@
+2001-08-22  Christian Meyer  <chrisime@gnome.org>
+
+	* src/nautilus-shell-ui.xml: Removed "Community Support"
+	entry from file. Removed "Eazel" from feedback tip.
+
+	* src/nautilus-shell.c: In function display_caveat():
+	s/"http://www.eazel.com/feedback.html"/<nautilus-list@eazel.com>
+	s/Eazel does not/We do not
+	Removed eazel-install stuff in function save_window_states.
+
 2001-08-21  Darin Adler  <darin@bentspoon.com>
 
 	* docs/nautilus-io.txt: Add a new document.
