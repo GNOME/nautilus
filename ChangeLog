@@ -1,3 +1,19 @@
+2002-05-27  Chris Lyttle  <chris@wilddev.net>
+
+	* Makefile.am: remove omf-install dir
+	* configure.in: remove nautilus-quick-reference,
+	nautilus-release-notes, nautilus-screenshot-guidelines from
+	makefiles section.
+	* help/omf.make: Added new file for changed omf build system
+	* help/xmldocs.make: Updated for new omf build system
+	* help/Makefile.am: remove nautilus-quick-reference,
+	nautilus-release-notes, nautilus-screenshot-guidelines from subdirs
+	and htmldocs.make, sgmldocs.make from EXTRA_DIST
+	* help/nautilus-user-manual/C/Makefile.am: Change figs to figdir, add
+	legal.xml
+	* help/nautilus-user-manual/C/nautilus-user-manual-C.omf: Changed to
+	conform to new omf format
+	
 2002-05-24  Anders Carlsson  <andersca@gnu.org>
 
 	* src/file-manager/fm-desktop-icon-view.c: (volume_ops_callback):

@@ -19,7 +19,6 @@ SUBDIRS =			\
 	icons 			\
 	user-guide		\
 	help			\
-	omf-install		\
 	docs			\
 	$(NULL)
 

@@ -1,86 +1,95 @@
-# To use this template:
-#     1) Define: figs, docname, lang, omffile, entities although figs, 
-#        omffile, and entities may be empty in your Makefile.am which 
-#        will "include" this one 
-#     2) Figures must go under figures/ and be in PNG format
-#     3) You should only have one document per directory 
 #
-#        Note that this makefile forces the directory name under
-#        $prefix/share/gnome/help/ to be the same as the XML filename
-#        of the document.  This is required by GNOME. eg:
-#        $prefix/share/gnome/help/fish_applet/C/fish_applet.xml
-#                                 ^^^^^^^^^^^   ^^^^^^^^^^^
-# Definitions:
-#   figs         A list of screenshots which will be included in EXTRA_DIST
-#                Note that these should reside in figures/ and should be .png
-#                files, or you will have to make modifications below.
-#   docname      This is the name of the XML file: <docname>.xml
-#   lang         This is the document locale
-#   omffile      This is the name of the OMF file.  Convention is to name
-#                it <docname>-<locale>.omf.
-#   entities     This is a list of XML entities which must be installed 
-#                with the main XML file and included in EXTRA_DIST. 
-# eg:
-#   figs = \
-#          figures/fig1.png            \
-#          figures/fig2.png
+# No modifications of this Makefile should be necessary.
+#
+# To use this template:
+#     1) Define: figdir, docname, lang, omffile, and entities in
+#        your Makefile.am file for each document directory,
+#        although figdir, omffile, and entities may be empty
+#     2) Make sure the Makefile in (1) also includes 
+#	 "include $(top_srcdir)/xmldocs.make" and
+#	 "dist-hook: app-dist-hook".
+#     3) Optionally define 'entities' to hold xml entities which
+#        you would also like installed
+#     4) Figures must go under $(figdir)/ and be in PNG format
+#     5) You should only have one document per directory 
+#     6) Note that the figure directory, $(figdir)/, should not have its
+#        own Makefile since this Makefile installs those figures.
+#
+# example Makefile.am:
+#   figdir = figures
 #   docname = scrollkeeper-manual
 #   lang = C
 #   omffile=scrollkeeper-manual-C.omf
 #   entities = fdl.xml
-#   include $(top_srcdir)/help/xmldocs.make
+#   include $(top_srcdir)/xmldocs.make
 #   dist-hook: app-dist-hook
 #
+# About this file:
+#	This file was taken from scrollkeeper_example2, a package illustrating
+#	how to install documentation and OMF files for use with ScrollKeeper 
+#	0.3.x and 0.4.x.  For more information, see:
+#		http://scrollkeeper.sourceforge.net/
+#	Version: 0.1.2 (last updated: March 20, 2002)
+#
 
+
+# ************* Begin of section some packagers may need to modify  **************
+# This variable (docdir) specifies where the documents should be installed.
+# This default value should work for most packages.
+# docdir = $(datadir)/@PACKAGE@/doc/$(docname)/$(lang)
 docdir = $(datadir)/gnome/help/$(docname)/$(lang)
 
+# **************  You should not have to edit below this line  *******************
 xml_files = $(entities) $(docname).xml
 
-omf_dir=$(top_srcdir)/omf-install
-
-EXTRA_DIST = $(xml_files) $(omffile) $(figs)
-
+EXTRA_DIST = $(xml_files) $(omffile)
 CLEANFILES = omf_timestamp
+
+include $(top_srcdir)/help/omf.make
 
 all: omf
 
-omf: omf_timestamp
-
-omf_timestamp: $(omffile)
-	-for file in $(omffile); do \
-	  scrollkeeper-preinstall $(docdir)/`awk 'BEGIN {RS = ">" } /identifier/ {print $$0}' $${file} | awk 'BEGIN {FS="\""} /url/ {print $$2}'` $${file} $(omf_dir)/$${file}; \
-	done
-	touch omf_timestamp
-
 $(docname).xml: $(entities)
-        -ourdir=`pwd`;  \
-        cd $(srcdir);   \
-        cp $(entities) $$ourdir
+	-ourdir=`pwd`;  \
+	cd $(srcdir);   \
+	cp $(entities) $$ourdir
 
-app-dist-hook: 
-	-$(mkinstalldirs) $(distdir)/figures
-	-if [ -e topic.dat ]; then \
-		cp $(srcdir)/topic.dat $(distdir); \
-	 fi
+app-dist-hook:
+	if test "$(figdir)"; then \
+	  $(mkinstalldirs) $(distdir)/$(figdir); \
+	  for file in $(srcdir)/$(figdir)/*.png; do \
+	    basefile=`echo $$file | sed -e  's,^.*/,,'`; \
+	    $(INSTALL_DATA) $$file $(distdir)/$(figdir)/$$basefile; \
+	  done \
+	fi
 
-install-data-am: omf
-	-$(mkinstalldirs) $(DESTDIR)$(docdir)/figures
-	-cp $(srcdir)/$(xml_files) $(DESTDIR)$(docdir)
-	-for file in $(srcdir)/figures/*.png; do \
-	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
-	  $(INSTALL_DATA) $$file $(DESTDIR)$(docdir)/figures/$$basefile; \
+install-data-local: omf
+	$(mkinstalldirs) $(DESTDIR)$(docdir)
+	for file in $(xml_files); do \
+	  cp $(srcdir)/$$file $(DESTDIR)$(docdir); \
 	done
-	-if [ -e $(srcdir)/topic.dat ]; then \
-		$(INSTALL_DATA) $(srcdir)/topic.dat $(DESTDIR)$(docdir); \
-	 fi
+	if test "$(figdir)"; then \
+	  $(mkinstalldirs) $(DESTDIR)$(docdir)/$(figdir); \
+	  for file in $(srcdir)/$(figdir)/*.png; do \
+	    basefile=`echo $$file | sed -e  's,^.*/,,'`; \
+	    $(INSTALL_DATA) $$file $(DESTDIR)$(docdir)/$(figdir)/$$basefile; \
+	  done \
+	fi
 
-uninstall-local:
-	-for file in $(srcdir)/figures/*.png; do \
-	  basefile=`echo $$file | sed -e  's,^.*/,,'`; \
-	  rm -f $(docdir)/figures/$$basefile; \
-	done
+install-data-hook: install-data-hook-omf
+
+uninstall-local: uninstall-local-doc uninstall-local-omf
+
+uninstall-local-doc:
+	-if test "$(figdir)"; then \
+	  for file in $(srcdir)/$(figdir)/*.png; do \
+	    basefile=`echo $$file | sed -e  's,^.*/,,'`; \
+	    rm -f $(docdir)/$(figdir)/$$basefile; \
+	  done; \
+	  rmdir $(DESTDIR)$(docdir)/$(figdir); \
+	fi
 	-for file in $(xml_files); do \
 	  rm -f $(DESTDIR)$(docdir)/$$file; \
 	done
-	-rmdir $(DESTDIR)$(docdir)/figures
 	-rmdir $(DESTDIR)$(docdir)
+
