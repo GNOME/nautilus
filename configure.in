@@ -1,4 +1,4 @@
-AC_INIT(src)
+INIT(src)
 
 dnl ==========================================================================
 dnl
@@ -110,7 +110,15 @@ if test -n "$GNOME2_PATH"; then
 	export PATH
 fi
 
+<<<<<<< configure.in
+<<<<<<< configure.in
+AM_INIT_AUTOMAKE(nautilus, 1.0.0)
+=======
+AM_INIT_AUTOMAKE(nautilus, 1.0.1.1)
+>>>>>>> 1.316
+=======
 AM_INIT_AUTOMAKE(nautilus, 1.0.2.1)
+>>>>>>> 1.319
 AM_CONFIG_HEADER(config.h)
 
 AM_MAINTAINER_MODE
@@ -676,10 +684,10 @@ dnl ====================================
 if test -d eazel-logos
 then
 	HAVE_EAZEL_LOGOS=yes
-	EAZEL_LOGOS_PNG='%{prefix}/share/pixmaps/nautilus/eazel-logos/*.png'
-	EAZEL_LOGOS_XML='%{prefix}/share/pixmaps/nautilus/eazel-logos/*.xml'
-	EAZEL_LOGOS_LICENSE='%{prefix}/share/pixmaps/nautilus/eazel-logos/LICENSE'
-	EAZEL_LOGOS_THROB='%{prefix}/share/pixmaps/nautilus/eazel-logos/throbber/*.png'
+	EAZEL_LOGOS_PNG='%{_datadir}/share/pixmaps/nautilus/eazel-logos/*.png'
+	EAZEL_LOGOS_XML='%{_datadir}/share/pixmaps/nautilus/eazel-logos/*.xml'
+	EAZEL_LOGOS_LICENSE='%{_datadir}/share/pixmaps/nautilus/eazel-logos/LICENSE'
+	EAZEL_LOGOS_THROB='%{_datadir}/share/pixmaps/nautilus/eazel-logos/throbber/*.png'
 fi
 
 AM_CONDITIONAL(HAVE_EAZEL_LOGOS, test "x$HAVE_EAZEL_LOGOS" = "xyes")
