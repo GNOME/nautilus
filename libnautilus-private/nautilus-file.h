@@ -298,6 +298,10 @@ char *                  nautilus_file_get_drop_target_uri               (Nautilu
 /* Get custom icon (if specified by metadata or link contents) */
 char *                  nautilus_file_get_custom_icon                   (NautilusFile                   *file);
 
+
+/* Thumbnailing handling */
+gboolean                nautilus_file_is_thumbnailing                   (NautilusFile                   *file);
+
 /* Convenience functions for dealing with a list of NautilusFile objects that each have a ref.
  * These are just convenient names for functions that work on lists of GtkObject *.
  */

@@ -36,6 +36,7 @@
 #include "nautilus-link.h"
 #include "nautilus-link-desktop-file.h"
 #include "nautilus-metadata.h"
+#include "nautilus-thumbnails.h"
 #include "nautilus-trash-directory.h"
 #include "nautilus-trash-file.h"
 #include "nautilus-vfs-file.h"
@@ -391,11 +392,18 @@ finalize (GObject *object)
 {
 	NautilusDirectory *directory;
 	NautilusFile *file;
+	char *uri;
 
 	file = NAUTILUS_FILE (object);
 
 	g_assert (file->details->operations_in_progress == NULL);
 
+	if (file->details->is_thumbnailing) {
+		uri = nautilus_file_get_uri (file);
+		nautilus_thumbnail_remove_from_queue (uri);
+		g_free (uri);
+	}
+	
 	if (file->details->monitor != NULL) {
 		nautilus_monitor_cancel (file->details->monitor);
 	}
@@ -5055,6 +5063,23 @@ nautilus_file_invalidate_attributes_internal (NautilusFile *file,
 	}
 
 	/* FIXME bugzilla.gnome.org 45075: implement invalidating metadata */
+}
+
+gboolean
+nautilus_file_is_thumbnailing (NautilusFile *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+	
+	return file->details->is_thumbnailing;
+}
+
+void
+nautilus_file_set_is_thumbnailing (NautilusFile *file,
+				   gboolean is_thumbnailing)
+{
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	
+	file->details->is_thumbnailing = is_thumbnailing;
 }
 
 

@@ -35,4 +35,10 @@ void       nautilus_update_thumbnail_file_renamed   (const char   *old_file_uri,
 						     const char   *new_file_uri);
 void       nautilus_remove_thumbnail_for_file       (const char   *old_file_uri);
 
+/* Queue handling: */
+void       nautilus_thumbnail_remove_from_queue     (const char   *file_uri);
+void       nautilus_thumbnail_remove_all_from_queue (void);
+void       nautilus_thumbnail_prioritize            (const char   *file_uri);
+
+
 #endif /* NAUTILUS_THUMBNAILS_H */

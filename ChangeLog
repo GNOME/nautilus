@@ -1,3 +1,41 @@
+2003-03-12  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file-private.h:
+	* libnautilus-private/nautilus-file.c: (finalize),
+	(nautilus_file_invalidate_attributes_internal),
+	(nautilus_file_is_thumbnailing),
+	(nautilus_file_set_is_thumbnailing):
+	* libnautilus-private/nautilus-file.h:
+	Keep track of whether the file is being thumbnailed.
+	If it is at finalization, remove from the thumbnail queue.
+	
+	* libnautilus-private/nautilus-icon-container.h:
+	* libnautilus-private/nautilus-icon-container.c:
+	(redo_layout_internal), (realize),
+	(nautilus_icon_container_instance_init),
+	(nautilus_icon_container_prioritize_thumbnailing),
+	(nautilus_icon_container_prioritize_thumbnailing_for_visible_icons)
+	, (handle_vadjustment_changed):
+	Prioritize thumbnailing for icons visibile on the screen.
+	
+	* libnautilus-private/nautilus-icon-factory.c:
+	(show_thumbnails_changed_callback):
+	Remove all thumbnails from queue when thumbnails are disabled.
+	
+	* libnautilus-private/nautilus-thumbnails.h:
+	* libnautilus-private/nautilus-thumbnails.c: (free_thumbnail_info),
+	(nautilus_thumbnail_remove_from_queue),
+	(nautilus_thumbnail_remove_all_from_queue),
+	(nautilus_thumbnail_prioritize),
+	(thumbnail_thread_notify_file_changed),
+	(nautilus_create_thumbnail), (thumbnail_thread_start):
+	New functions to remove thumbnails from the queue and to prioritize them.
+	
+	* src/file-manager/fm-icon-container.c:
+	(fm_icon_container_prioritize_thumbnailing),
+	(fm_icon_container_class_init):
+	Implement prioritize_thumbnailing.
+
 2003-03-11  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-window.c (nautilus_window_save_geometry):

@@ -650,6 +650,10 @@ show_thumbnails_changed_callback (gpointer user_data)
 	show_image_thumbs = eel_preferences_get_enum (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS);
 
 	nautilus_icon_factory_clear ();
+	/* If the user disabled thumbnailing, remove all outstanding thumbnails */ 
+	if (show_image_thumbs == NAUTILUS_SPEED_TRADEOFF_NEVER) {
+		nautilus_thumbnail_remove_all_from_queue ();
+	}
 	g_signal_emit (global_icon_factory,
 		       signals[ICONS_CHANGED], 0);
 }

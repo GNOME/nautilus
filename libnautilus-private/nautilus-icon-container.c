@@ -4,6 +4,7 @@
 
    Copyright (C) 1999, 2000 Free Software Foundation
    Copyright (C) 2000, 2001 Eazel, Inc.
+   Copyright (C) 2002, 2003 Red Hat, Inc.
    
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -166,6 +167,9 @@ static void          nautilus_icon_container_stop_monitor_top_left  (NautilusIco
 static void          nautilus_icon_container_start_monitor_top_left (NautilusIconContainer *container,
 								     NautilusIconData      *data,
 								     gconstpointer          client);
+static void          handle_vadjustment_changed                     (GtkAdjustment         *adjustment,
+								     NautilusIconContainer *container);
+static void          nautilus_icon_container_prioritize_thumbnailing_for_visible_icons (NautilusIconContainer *container);
 
 
 static int click_policy_auto_value;
@@ -1302,6 +1306,7 @@ redo_layout_internal (NautilusIconContainer *container)
 
 	process_pending_icon_to_reveal (container);
 	process_pending_icon_to_rename (container);
+	nautilus_icon_container_prioritize_thumbnailing_for_visible_icons (container);
 }
 
 static gboolean
@@ -2490,6 +2495,7 @@ realize (GtkWidget *widget)
 {
 	GtkWindow *window;
 	GdkBitmap *stipple;
+	GtkAdjustment *vadj;
 
 	GTK_WIDGET_CLASS (parent_class)->realize (widget);
 
@@ -2507,6 +2513,11 @@ realize (GtkWidget *widget)
 			gdk_drawable_get_screen (GDK_DRAWABLE (widget->window)));
 
 	nautilus_icon_dnd_set_stipple (NAUTILUS_ICON_CONTAINER (widget), stipple);
+
+	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (widget));
+	g_signal_connect (vadj, "value_changed",
+			  G_CALLBACK (handle_vadjustment_changed), widget);
+
 }
 
 static void
@@ -3633,7 +3644,7 @@ nautilus_icon_container_instance_init (NautilusIconContainer *container)
 			  G_CALLBACK (handle_focus_out_event), NULL);
 
 	eel_background_set_use_base (background, TRUE);
-
+	
 	/* read in theme-dependent data */
 	nautilus_icon_container_theme_changed (container);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
@@ -4070,6 +4081,70 @@ nautilus_icon_container_stop_monitor_top_left (NautilusIconContainer *container,
 	klass->stop_monitor_top_left (container, data, client);
 }
 
+
+static void
+nautilus_icon_container_prioritize_thumbnailing (NautilusIconContainer *container,
+						 NautilusIcon *icon)
+{
+	NautilusIconContainerClass *klass;
+
+	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
+	g_return_if_fail (klass->prioritize_thumbnailing != NULL);
+
+	klass->prioritize_thumbnailing (container, icon->data);
+}
+
+static void
+nautilus_icon_container_prioritize_thumbnailing_for_visible_icons (NautilusIconContainer *container)
+{
+	GtkAdjustment *vadj;
+	double min_y, max_y;
+	double x0, y0, x1, y1;
+	GList *node;
+	NautilusIcon *icon;
+
+
+	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
+	
+	min_y = vadj->value;
+	max_y = min_y + GTK_WIDGET (container)->allocation.height;
+
+	eel_canvas_c2w (EEL_CANVAS (container),
+			0, min_y, NULL, &min_y);
+	eel_canvas_c2w (EEL_CANVAS (container),
+			0, max_y, NULL, &max_y);
+	
+	/* Do the iteration in reverse to get the render-order from top to bottom */
+	for (node = g_list_last (container->details->icons); node != NULL; node = node->prev) {
+		icon = node->data;
+
+		if (icon_is_positioned (icon)) {
+			eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (icon->item),
+						    &x0,
+						    &y0,
+						    &x1,
+						    &y1);
+			eel_canvas_item_i2w (EEL_CANVAS_ITEM (icon->item)->parent,
+					     &x0,
+					     &y0);
+			eel_canvas_item_i2w (EEL_CANVAS_ITEM (icon->item)->parent,
+					     &x1,
+					     &y1);
+			if (y1 >= min_y && y0 <= max_y) {
+				nautilus_icon_container_prioritize_thumbnailing (container,
+										 icon);
+			}
+			
+		}
+	}
+}
+
+static void
+handle_vadjustment_changed (GtkAdjustment *adjustment,
+			    NautilusIconContainer *container)
+{
+	nautilus_icon_container_prioritize_thumbnailing_for_visible_icons (container);
+}
 
 void 
 nautilus_icon_container_update_icon (NautilusIconContainer *container,

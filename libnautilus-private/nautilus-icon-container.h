@@ -126,6 +126,8 @@ typedef struct {
 	void         (* stop_monitor_top_left)    (NautilusIconContainer *container,
 						   NautilusIconData *data,
 						   gconstpointer client);
+	void         (* prioritize_thumbnailing)  (NautilusIconContainer *container,
+						   NautilusIconData *data);
 
 	/* Queries on icons for subclass/client.
 	 * These must be implemented => These are signals !

@@ -30,6 +30,7 @@
 #include <eel/eel-string.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
+#include <libnautilus-private/nautilus-thumbnails.h>
 
 #include "fm-icon-container.h"
 
@@ -112,6 +113,24 @@ fm_icon_container_stop_monitor_top_left (NautilusIconContainer *container,
 	g_assert (NAUTILUS_IS_FILE (file));
 
 	nautilus_file_monitor_remove (file, client);
+}
+
+static void
+fm_icon_container_prioritize_thumbnailing (NautilusIconContainer *container,
+					   NautilusIconData      *data)
+{
+	NautilusFile *file;
+	char *uri;
+
+	file = (NautilusFile *) data;
+
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	if (nautilus_file_is_thumbnailing (file)) {
+		uri = nautilus_file_get_uri (file);
+		nautilus_thumbnail_prioritize (uri);
+		g_free (uri);
+	}
 }
 
 
@@ -427,6 +446,7 @@ fm_icon_container_class_init (FMIconContainerClass *klass)
 	ic_class->get_icon_images = fm_icon_container_get_icon_images;
 	ic_class->start_monitor_top_left = fm_icon_container_start_monitor_top_left;
 	ic_class->stop_monitor_top_left = fm_icon_container_stop_monitor_top_left;
+	ic_class->prioritize_thumbnailing = fm_icon_container_prioritize_thumbnailing;
 
 	ic_class->compare_icons = fm_icon_container_compare_icons;
 	ic_class->compare_icons_by_name = fm_icon_container_compare_icons_by_name;

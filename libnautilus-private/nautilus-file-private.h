@@ -125,6 +125,8 @@ struct NautilusFileDetails
 
 	eel_boolean_bit got_link_info                 : 1;
 	eel_boolean_bit link_info_is_up_to_date       : 1;
+
+	eel_boolean_bit is_thumbnailing             : 1;
 };
 
 NautilusFile *nautilus_file_new_from_info                  (NautilusDirectory      *directory,
@@ -173,5 +175,10 @@ void          nautilus_file_invalidate_count_and_mime_list (NautilusFile        
 gboolean      nautilus_file_rename_in_progress             (NautilusFile           *file);
 
 GnomeVFSFileInfo *nautilus_file_peek_vfs_file_info         (NautilusFile           *file);
+
+/* Thumbnailing: */
+void          nautilus_file_set_is_thumbnailing            (NautilusFile           *file,
+							    gboolean                is_thumbnailing);
+
 
 #endif
