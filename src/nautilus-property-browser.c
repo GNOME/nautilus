@@ -558,12 +558,13 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 			
 			/* handle the "reset" case as an image */
 			if (eel_strcmp (property_browser->details->dragged_file, RESET_IMAGE_NAME) != 0) {
-				gdk_color_parse(property_browser->details->dragged_file, &color);
+				eel_gdk_color_parse (property_browser->details->dragged_file, &color);
+
 				colorArray[0] = color.red;
 				colorArray[1] = color.green;
 				colorArray[2] = color.blue;
 				colorArray[3] = 0xffff;
-				
+
 				gtk_selection_data_set(selection_data,
 				selection_data->target, 16, (const char *) &colorArray[0], 8);
 				return;	
@@ -689,7 +690,7 @@ make_color_drag_image (NautilusPropertyBrowser *property_browser, const char *co
 
 	color_square = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, COLOR_SQUARE_SIZE, COLOR_SQUARE_SIZE);
 	
-	gdk_color_parse(color_spec, &color);
+	eel_gdk_color_parse (color_spec, &color);
 	color.red >>= 8;
 	color.green >>= 8;
 	color.blue >>= 8;

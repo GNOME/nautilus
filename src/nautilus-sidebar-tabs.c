@@ -1606,8 +1606,8 @@ nautilus_sidebar_tabs_set_color (NautilusSidebarTabs *sidebar_tabs,
 {
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 	g_return_if_fail (color_spec != NULL);
-	
-	gdk_color_parse (color_spec, &sidebar_tabs->details->tab_color);
+
+	eel_gdk_color_parse (color_spec, &sidebar_tabs->details->tab_color);
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (sidebar_tabs)), 
 				  &sidebar_tabs->details->tab_color, FALSE, TRUE);
 

@@ -1,3 +1,15 @@
+2002-02-15  David Emory Watson <dwatson@cs.ucr.edu>
+
+	* configure.in: Require eel 1.1.5.
+	
+	* src/nautilus-sidebar-tabs.c
+	(nautilus_sidebar_tabs_set_color): Use eel_gdk_color_parse () for
+	backward compatible color spec. parsing.
+
+	* src/nautilus-property-browser.c:
+	(make_color_drag_image): Same as above.
+	(nautilus_property_browser_drag_data_get): Same as above.
+
 2002-02-15  jacob berkman  <jacob@ximian.com>
 
 	* src/Makefile.am (EXTRA_DIST): remove nautilus-shell-marshal.list
