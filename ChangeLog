@@ -1,3 +1,14 @@
+2001-04-25  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/news/nautilus-news.c:
+	(nautilus_news_button_release_event)
+	fixed bug 8153, scroll wheel crashes news panel, by only
+	taking action when button 1 is clicked.
+		
+	(add_site_from_fields):
+	added error handling for when the fields are empty; also, use
+	http as the protocol if no protocol is specified.
+	
 2001-04-25  Darin Adler  <darin@eazel.com>
 
 	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):

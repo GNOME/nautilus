@@ -44,6 +44,7 @@
 #include <eel/eel-label.h>
 #include <eel/eel-scalable-font.h>
 #include <eel/eel-smooth-text-layout.h>
+#include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
@@ -746,6 +747,11 @@ nautilus_news_button_release_event (GtkWidget *widget, GdkEventButton *event, Ne
 	RSSChannelData *channel_data;
 	RSSItemData *item_data;
 	int which_item;
+
+	/* we only respond to the first button */
+	if (event->button != 1) {
+		return FALSE;
+	}
 	
 	/* loop through all of the channels */
 	current_channel = news_data->channel_list;
@@ -1539,12 +1545,30 @@ static void
 add_site_from_fields (GtkWidget *widget, News *news)
 {
 	char *site_name, *site_location;
+	char *temp_str;
 	RSSChannelData *channel_data;
 	int channel_count;
 	
 	site_name = gtk_entry_get_text (GTK_ENTRY (news->item_name_field));
 	site_location = gtk_entry_get_text (GTK_ENTRY (news->item_location_field));
 
+	/* make sure there's something in the fields */
+	if (site_name == NULL || strlen(site_name) == 0) {
+		eel_show_error_dialog (_("Sorry, but you have not specified a name for the site!"), _("Missing Site Name Error"), NULL);
+		return;
+	}
+	if (site_location == NULL || strlen(site_location) == 0) {
+		eel_show_error_dialog (_("Sorry, but you have not specified a location for the site!"), _("Missing Location Name Error"), NULL);
+		return;
+	}
+	
+	/* if there isn't a protocol specified for the location, use http */
+	if (strchr (site_location, ':') == NULL) {
+		temp_str = g_strconcat ("http://", site_location, NULL);
+		g_free (site_location);
+		site_location = temp_str;
+	}
+	
 	channel_data = nautilus_news_make_new_channel (news, site_name, site_location, TRUE, TRUE);
 	if (channel_data != NULL) {
 		news->channel_list = g_list_insert_sorted (news->channel_list,
