@@ -29,6 +29,9 @@
 #include <unistd.h>
 #include <string.h>
 #include <ctype.h>
+#include <netdb.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #include <gnome.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -64,9 +67,16 @@
 /* Preference for http proxy settings */
 #define GNOME_VFS_PREFERENCES_HTTP_PROXY "/system/gnome-vfs/http-proxy"
 
+/* The number of seconds we'll wait for our experimental DNS resolution */
+#define NETWORK_CHECK_TIMEOUT_SECONDS 15
+#define DEFAULT_DNS_CHECK_HOST "services.eazel.com"
+
+
 static void     initiate_file_download           (GnomeDruid *druid);
 static gboolean set_http_proxy                   (const char *proxy_url);
 static gboolean attempt_http_proxy_autoconfigure (void);
+static gboolean check_network_connectivity	 (void);
+
 
 /* globals */
 static NautilusApplication *save_application;
@@ -84,6 +94,17 @@ static int last_proxy_choice = 1;
 
 static GtkWidget *port_number_entry;
 static GtkWidget *proxy_address_entry;
+
+/* Set by set_http_proxy; used by check_network_connectivity */
+/* NULL indicates no HTTP proxy */
+static char *http_proxy_host = NULL;
+/* The result of the last check_network_connectivity call */
+static enum {
+	Untested,
+	Success,
+	Fail
+} network_status = Untested;
+
 
 static void
 druid_cancel (GtkWidget *druid)
@@ -142,6 +163,22 @@ druid_finished (GtkWidget *druid_page)
 	/* write out the first time file to indicate that we've successfully traversed the druid */
 	druid_set_first_time_file_flag ();
 	signup_uris[1] = NULL;
+
+	/* FIXME Here we check to see if we can resolve hostnames in a timely
+	 * fashion.  If we can't then we silently tell nautilus to start up
+	 * pointing to the home directory and not any of the HTTP addresses--
+	 * we don't want Nautilus to hang indefinitely trying to resolve
+	 * an HTTP address 
+	 */
+
+	if ( Untested == network_status
+		&& (last_signup_choice == 0 || last_signup_choice == 1 )) {
+		check_network_connectivity ();
+	}
+
+	if ( Fail == network_status ) {
+		last_signup_choice = 3;
+	}
 	
 	switch (last_signup_choice) {
 		case 0:
@@ -863,7 +900,7 @@ download_callback (GnomeVFSResult result,
 			initiate_file_download (druid);
 		} else {
 			/* Autoconfiguration didn't work; prompt the user */
-			gnome_druid_set_page (druid, GNOME_DRUID_PAGE (pages[PROXY_CONFIGURATION_PAGE]));	
+			gnome_druid_set_page (druid, GNOME_DRUID_PAGE (pages[PROXY_CONFIGURATION_PAGE]));
 		}
 	}
 }
@@ -880,9 +917,23 @@ initiate_file_download (GnomeDruid *druid)
 	/* disable the next and previous buttons during the  file loading process */
 	gtk_widget_set_sensitive (druid->next, FALSE);
 	gtk_widget_set_sensitive (druid->back, FALSE);
-			
+
+	/* FIXME We might hang here for a while; if we do, we don't want
+	 * the user to get forced through the druid again
+	 */
+	druid_set_first_time_file_flag();
+
+#if 0
 	/* initiate the file transfer */
 	file_handle = nautilus_read_entire_file_async (file_uri, download_callback, druid);
+#else
+	if (check_network_connectivity()) {
+		/* initiate the file transfer */
+		file_handle = nautilus_read_entire_file_async (file_uri, download_callback, druid);
+	} else {
+		download_callback (GNOME_VFS_ERROR_GENERIC, 0, NULL, druid);
+	}
+#endif /* 0 */
 }
 
 /**
@@ -897,6 +948,7 @@ set_http_proxy (const char *proxy_url)
 	const char *proxy_url_port_part;
 	size_t proxy_len;
 	char *proxy_host_port;
+	char *colon;
 
 	/* set the "http_proxy" environment variable */
 
@@ -922,7 +974,17 @@ set_http_proxy (const char *proxy_url)
 
 	nautilus_preferences_set (GNOME_VFS_PREFERENCES_HTTP_PROXY, proxy_host_port);
 
-	g_free (proxy_host_port);
+	/* Keep it around for check_network_connectivity, trimming off the :port */
+	if (http_proxy_host) {
+		g_free (http_proxy_host);
+	}
+
+	http_proxy_host = proxy_host_port;
+	proxy_host_port = NULL;
+
+	if ( NULL != ( colon = strchr (http_proxy_host, (unsigned char)':'))) {
+		*colon = '\0';
+	}
 
 	return TRUE;
 }
@@ -1151,3 +1213,72 @@ done:
 	autoconfigure_attempted = TRUE;
 	return success;
 }
+
+static gboolean sigalrm_occurred = FALSE;
+static pid_t child_pid;
+
+static void my_sigalrm_handler (int sig)
+{
+	sigalrm_occurred = TRUE;
+	kill (child_pid, SIGKILL);
+
+	return;
+}
+
+/* Do a simple DNS lookup wrapped in sigalrm to check the presense of the network
+ * The purpose of this check is to ensure that the DNS resolution doesn't hang
+ * indefinitely, not that the host was actually resolved.  If the sigalrm handler
+ * gets called, then it's looking like we were hanging indefinitely, so elsewhere
+ * first-time-druid we're going to avoid DNS calls
+ */
+ 
+static gboolean
+check_dns_resolution (const char *host)
+{
+	struct hostent *my_hostent;
+	int child_status;
+
+	sigalrm_occurred = FALSE;
+
+	if ( 0 == (child_pid = fork())) {
+		my_hostent = gethostbyname (host);
+		_exit (0);
+	}
+
+	if (child_pid > 0 ) {
+		void *sigalrm_old;
+		sigalrm_old = signal (SIGALRM, my_sigalrm_handler);
+
+		alarm (NETWORK_CHECK_TIMEOUT_SECONDS);
+
+		waitpid (child_pid, &child_status, 0);
+		
+		alarm (0);
+
+		signal (SIGALRM, sigalrm_old);	
+	}
+
+	return ! sigalrm_occurred;
+}
+
+
+static gboolean
+check_network_connectivity (void) 
+{
+	gboolean ret;
+	
+	/* If there's an HTTP proxy, then we want to try to resolve the HTTP proxy
+	 * because we may not have DNS to the outside world
+	 */
+
+	if (NULL != http_proxy_host) {
+		ret = check_dns_resolution (http_proxy_host);
+	} else {
+		ret = check_dns_resolution (DEFAULT_DNS_CHECK_HOST);
+	}
+
+	network_status = ret ? Success : Fail ;
+
+	return ret;
+}
+
