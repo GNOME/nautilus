@@ -1,3 +1,10 @@
+2002-12-04  James Willcox  <jwillcox@gnome.org>
+
+	* libnautilus-private/nautilus-icon-factory.c:
+	(icon_theme_changed_callback), (nautilus_icon_factory_clear):
+
+	Clear the cache when the icon theme changes so we get the new icons.
+
 2002-12-05  Glynn Foster  <glynn.foster@sun.com>
 
 	* libnautilus/nautilus-clipboard-ui.xml: Add missing mnemonics.

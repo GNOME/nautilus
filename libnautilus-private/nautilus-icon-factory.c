@@ -188,6 +188,7 @@ static CacheIcon *get_icon_from_cache                    (const char            
 static GdkPixbuf *embed_text                             (GdkPixbuf                *pixbuf_without_text,
 							  GnomeIconData            *icon_data,
 							  const char               *text);
+static void nautilus_icon_factory_clear                  (void);
 
 GNOME_CLASS_BOILERPLATE (NautilusIconFactory,
 			 nautilus_icon_factory,
@@ -240,6 +241,8 @@ icon_theme_changed_callback (GnomeIconTheme *icon_theme,
 			     gpointer user_data)
 {
 	NautilusIconFactory *factory;
+
+	nautilus_icon_factory_clear ();
 
 	factory = user_data;
 
@@ -591,9 +594,19 @@ nautilus_icon_factory_clear (void)
 	
 	/* Empty out the recently-used list. */
 	head = &factory->recently_used_dummy_head;
-	g_assert (factory->recently_used_count == 0);
-	g_assert (head->next == head);
-	g_assert (head->prev == head);
+
+	/* fallback_icon hangs around, but we don't know if it
+	 * was ever inserted in the list
+	 */
+	g_assert (factory->recently_used_count == 0 ||
+		  factory->recently_used_count == 1);
+
+	if (factory->recently_used_count == 1) {
+		/* make sure this one is the fallback_icon */
+		g_assert (head->next == head->prev);
+		g_assert (&factory->fallback_icon->recently_used_node == head->next);
+	}
+
 }
 
 static void
@@ -630,6 +643,7 @@ thumbnail_limit_changed_callback (gpointer user_data)
 	 * signal to mean only "thumbnails might have changed" if this ends up being slow
 	 * for some reason.
 	 */
+	nautilus_icon_factory_clear ();
 	g_signal_emit (global_icon_factory,
 			 signals[ICONS_CHANGED], 0);
 }
@@ -643,6 +657,7 @@ mime_type_data_changed_callback (GnomeVFSMIMEMonitor *monitor, gpointer user_dat
 	/* We don't know which data changed, so we have to assume that
 	 * any or all icons might have changed.
 	 */
+	nautilus_icon_factory_clear ();
 	g_signal_emit (get_icon_factory (), 
 			 signals[ICONS_CHANGED], 0);
 }				 
