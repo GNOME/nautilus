@@ -28,11 +28,8 @@ uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = nautilus-text-view-ui.xml
 
 serverdir = $(libdir)/bonobo/servers
-server_in_files =				\
-	Nautilus_View_text.server.in		\
-	$(NULL)
+server_in_files = Nautilus_View_text.server.in
 # server_DATA = $(server_in_files:.server.in=.server)
-
 @INTLTOOL_SERVER_RULE@
 
 EXTRA_DIST = $(server_in_files) $(ui_DATA) $(nautilus_text_view_SOURCES) # $(server_DATA)

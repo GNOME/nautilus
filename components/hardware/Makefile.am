@@ -10,28 +10,21 @@ INCLUDES =						\
 	$(NULL)
 
 serverdir = $(libdir)/bonobo/servers
-
-server_in_files =					\
-	Nautilus_View_hardware.server.in		\
-	$(NULL)
-
+server_in_files = Nautilus_View_hardware.server.in
 server_DATA = $(server_in_files:.server.in=.server)
-
 @INTLTOOL_SERVER_RULE@
 
-bin_PROGRAMS =					\
-	nautilus-hardware-view
+bin_PROGRAMS =nautilus-hardware-view
 
 nautilus_hardware_view_SOURCES =		        \
 	nautilus-hardware-view.c			\
 	nautilus-hardware-view.h			\
 	main.c
 
-nautilus_hardware_view_LDADD =			\
+nautilus_hardware_view_LDADD =				\
 	$(top_builddir)/libnautilus/libnautilus.la	\
 	$(top_builddir)/libnautilus-private/libnautilus-private.la	\
-	$(COMPONENT_LIBS) 	\
+	$(COMPONENT_LIBS) 				\
 	$(NULL)
 
 EXTRA_DIST = $(server_DATA) $(server_in_files)
-

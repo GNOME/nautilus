@@ -3,17 +3,17 @@ NULL =
 bin_PROGRAMS=nautilus-news
 
 INCLUDES=\
-	-I$(top_srcdir)		\
+	-I$(top_srcdir)	\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	-DNAUTILUS_PIXMAPDIR=\""$(datadir)/pixmaps/nautilus"\" \
-	-DDATADIR=\""$(datadir)"\" 		\
+	-DDATADIR=\""$(datadir)"\" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	$(COMPONENT_CFLAGS) \
 	$(NULL)
 
 LDADD=\
 	$(top_builddir)/libnautilus/libnautilus.la \
-	$(top_builddir)/libnautilus-private/libnautilus-private.la	\
+	$(top_builddir)/libnautilus-private/libnautilus-private.la \
 	$(COMPONENT_LIBS) \
 	$(NULL)
 
@@ -27,11 +27,8 @@ nautiluspixmap_DATA = news_bullet.png		\
 		      changed_bullet.png
 
 serverdir = $(libdir)/bonobo/servers
-server_in_files =					\
-	Nautilus_View_news.server.in		\
-	$(NULL)
+server_in_files = Nautilus_View_news.server.in
 server_DATA = $(server_in_files:.server.in=.server)
-
 @INTLTOOL_SERVER_RULE@
 
 EXTRA_DIST= \

@@ -16,7 +16,7 @@ dependency_static_libs = \
 
 libnautilus_private_la_LDFLAGS =	\
 	$(dependency_static_libs)	\
-	$(LIBNAUTILUS_PRIVATE_LIBS)	\
+	$(CORE_LIBS)			\
 	$(NULL)
 
 nautilus_metafile_server_idl_sources = \

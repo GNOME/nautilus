@@ -3,7 +3,6 @@ NULL=
 INCLUDES =\
 	-I$(top_srcdir) \
 	$(CORE_CFLAGS) \
-	$(NAUTILUS_PRIVATE_CFLAGS) \
 	-DVERSION="\"$(VERSION)\"" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
@@ -12,7 +11,7 @@ INCLUDES =\
 LDADD =\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la \
-	$(LIBNAUTILUS_PRIVATE_LIBS) \
+	$(CORE_LIBS) \
 	$(NULL)
 
 noinst_PROGRAMS =\

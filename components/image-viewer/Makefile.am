@@ -7,10 +7,10 @@ nautilus_image_view_SOURCES =	\
 	io-png.c		\
 	io-png.h
 
-INCLUDES =	\
+INCLUDES =			\
 	-I$(top_srcdir)		\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	$(COMPONENT_CFLAGS) \
+	$(COMPONENT_CFLAGS)	\
 	$(NULL)
 
 nautilus_image_view_LDADD = 			\
@@ -19,13 +19,8 @@ nautilus_image_view_LDADD = 			\
 	$(NULL)
 
 serverdir = $(libdir)/bonobo/servers
-
-server_in_files =					\
-	Nautilus_View_image.server.in		\
-	$(NULL)
-
+server_in_files = Nautilus_View_image.server.in
 server_DATA = $(server_in_files:.server.in=.server)
-
 @INTLTOOL_SERVER_RULE@
 
 EXTRA_DIST=$(server_DATA) $(server_in_files)

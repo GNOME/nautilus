@@ -19,11 +19,8 @@ LDADD=\
 nautilus_notes_SOURCES=nautilus-notes.c
 
 serverdir = $(libdir)/bonobo/servers
-server_in_files =					\
-	Nautilus_View_notes.server.in		\
-	$(NULL)
+server_in_files = Nautilus_View_notes.server.in
 server_DATA = $(server_in_files:.server.in=.server)
-
 @INTLTOOL_SERVER_RULE@
 
 EXTRA_DIST= \

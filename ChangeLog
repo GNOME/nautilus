@@ -1,3 +1,37 @@
+2002-01-21  Darin Adler  <darin@bentspoon.com>
+
+	* check-signals.pl: Remove.
+	* components/adapter/bonobo-stream-vfs.c: Remove.
+	* components/adapter/bonobo-stream-vfs.h: Remove.
+	* components/adapter/nautilus-adapter-progressive-load-strategy.c: Remove.
+	* components/adapter/nautilus-adapter-progressive-load-strategy.h: Remove.
+
+	* components/adapter/Makefile.am:
+	* components/hardware/Makefile.am:
+	* components/history/Makefile.am:
+	* components/image-viewer/Makefile.am:
+	* components/music/Makefile.am:
+	* components/news/Makefile.am:
+	* components/notes/Makefile.am:
+	* components/text/Makefile.am:
+	* components/throbber/Makefile.am:
+	* components/tree/Makefile.am:
+	* libnautilus-private/Makefile.am:
+	* test/Makefile.am:
+	General cleanups, mostly formatting.
+
+	* configure.in: Remove libiconv stuff, since we don't use it
+	any more. Do esound stuff in the main call to pkg-config, not
+	a separate set of variables.
+
+	* components/image-viewer/nautilus-image-view.c: Remove unused
+	libart includes.
+
+	* cut-n-paste-code/widgets/gimphwrapbox/gtkwrapbox.h: Remove
+	the use of "decrement" as a synonym for "remove".
+
+	* test/test.c: Remove unused libart include.
+
 2002-01-21  Anders Carlsson  <andersca@gnu.org>
 
 	* configure.in:

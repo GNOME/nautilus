@@ -46,7 +46,7 @@ typedef struct _GtkWrapBoxClass GtkWrapBoxClass;
 typedef struct _GtkWrapBoxChild GtkWrapBoxChild;
 
 
-  /* For nautilus usage, we should decrement the 
+  /* For nautilus usage, we should remove the 
      aspect ratio capability */
 /* --- GtkWrapBox --- */
 struct _GtkWrapBox

@@ -1,6 +1,5 @@
 #include "test.h"
 
-#include <libart_lgpl/art_rgb.h>
 #include <eel/eel-preferences.h>
 
 void

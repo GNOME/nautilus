@@ -8,17 +8,11 @@ INCLUDES =					\
 	$(NULL)
 
 serverdir = $(libdir)/bonobo/servers
-server_in_files =						\
-	Nautilus_ComponentAdapterFactory_std.server.in	\
-	$(NULL)
-
+server_in_files = Nautilus_ComponentAdapterFactory_std.server.in
 server_DATA = $(server_in_files:.server.in=.server)
-
 @INTLTOOL_SERVER_RULE@
 
-bin_PROGRAMS =					\
-	nautilus-adapter			\
-	$(NULL)
+bin_PROGRAMS = nautilus-adapter $(NULL)
 
 nautilus_adapter_SOURCES =				\
 	main.c						\
@@ -44,10 +38,10 @@ nautilus_adapter_SOURCES =				\
 	nautilus-adapter.h				\
 	$(NULL)
 
-nautilus_adapter_LDADD =							\
-	$(top_builddir)/libnautilus/libnautilus.la				\
-	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la		\
-	$(COMPONENT_LIBS)						\
+nautilus_adapter_LDADD =				\
+	$(top_builddir)/libnautilus/libnautilus.la	\
+	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la	\
+	$(COMPONENT_LIBS)				\
 	$(NULL)
 
 EXTRA_DIST = $(server_in_files) $(server_DATA)

@@ -122,35 +122,6 @@ AC_SUBST(FAM_LIBS)
 
 dnl ==========================================================================
 
-AC_ARG_WITH(libiconv, [ --with-libiconv     Use the libiconv library ],,with_libiconv=maybe)
-
-found_iconv=no
-
-if test "x$with_libiconv" != "xyes" ; then
-   # 
-   # Check in the C library 
-   #
-   AC_CHECK_FUNC(iconv_open, with_libiconv=no; found_iconv=yes)
-fi
-
-if test "x$with_libiconv" != "xno" ; then
-   #
-   # Check for libiconv
-   #
-   AC_CHECK_LIB(iconv, libiconv_open, with_libiconv=yes; found_iconv=yes)
-fi
-
-if test "x$found_iconv" = "xno" ; then
-   AC_MSG_ERROR([*** No iconv() implementation found in C library or libiconv])
-fi
-
-if test "x$with_libiconv" = "xyes" ; then
-  ICONV_LIBS="-liconv"
-fi
-AC_SUBST(ICONV_LIBS)
-
-dnl ==========================================================================
-
 dnl x86 checks (used by audio routines in music component)
 
 _system_is_x86="no"
@@ -241,15 +212,6 @@ AC_SUBST(LIBJPEG)
 
 dnl ==========================================================================
 
-dnl Work out Esound paths
-
-ESD_CFLAGS="`$PKG_CONFIG --cflags esound`"
-AC_SUBST(ESD_CFLAGS)
-ESD_LIBS="`$PKG_CONFIG --libs esound`"
-AC_SUBST(ESD_LIBS)
-
-dnl ==========================================================================
-
 dnl Turn on the additional warnings last, so -Werror doesn't affect other tests.
 
 AC_ARG_ENABLE(more-warnings,
@@ -312,14 +274,10 @@ dnl core nautilus (must list bonobo-activation and libbonobo because idldir does
 CORE_MODULES="eel-2.0 librsvg-2.0 bonobo-activation-2.0 libbonobo-2.0 libbonoboui-2.0 esound"
 CORE_CFLAGS="`$PKG_CONFIG --cflags $CORE_MODULES`"
 AC_SUBST(CORE_CFLAGS)
-CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES` $CDDA_LIBS $ESD_LIBS $FAM_LIBS $ICONV_LIBS $LIBJPEG $MEDUSA_LIBS"
+CORE_LIBS="`$PKG_CONFIG --libs $CORE_MODULES` $CDDA_LIBS $FAM_LIBS $LIBJPEG $MEDUSA_LIBS"
 AC_SUBST(CORE_LIBS)
 CORE_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $CORE_MODULES | $srcdir/add-include-prefix`"
 AC_SUBST(CORE_IDL_INCLUDES)
-
-dnl libnautilus-private
-LIBNAUTILUS_PRIVATE_LIBS="$CORE_LIBS $CDDA_LIBS $ESD_LIBS $FAM_LIBS $ICONV_LIBS $LIBJPEG $MEDUSA_LIBS"
-AC_SUBST(LIBNAUTILUS_PRIVATE_LIBS)
 
 dnl typical components
 COMPONENT_MODULES="eel-2.0 libbonoboui-2.0 gnome-vfs-module-2.0"
@@ -327,6 +285,13 @@ COMPONENT_CFLAGS="`$PKG_CONFIG --cflags $COMPONENT_MODULES`"
 AC_SUBST(COMPONENT_CFLAGS)
 COMPONENT_LIBS="`$PKG_CONFIG --libs $COMPONENT_MODULES`"
 AC_SUBST(COMPONENT_LIBS)
+
+dnl music component
+MUSIC_COMPONENT_MODULES="$COMPONENT_MODULES esound"
+MUSIC_COMPONENT_CFLAGS="`$PKG_CONFIG --cflags $MUSIC_COMPONENT_MODULES`"
+AC_SUBST(MUSIC_COMPONENT_CFLAGS)
+MUSIC_COMPONENT_LIBS="`$PKG_CONFIG --libs $MUSIC_COMPONENT_MODULES`"
+AC_SUBST(MUSIC_COMPONENT_LIBS)
 
 dnl ==========================================================================
 
