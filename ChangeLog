@@ -1,3 +1,26 @@
+2002-04-30  Alex Larsson  <alexl@redhat.com>
+
+	* src/nautilus-shell-ui.xml:
+	Removed ellipsis from items that are meant brings up dialog and
+	nothing more. IE: About, Preferences and Edit Bookmarks.
+	Change Back/Forward/Up keyboard shortcuts to be Alt-<cursor-key>
+
+	* libnautilus-private/nautilus-icon-container.c (key_press_event):
+	Don't eat alt-down key events.
+
+2002-04-29 David Bordoley <bordoley@msu.edu>
+
+       * src/nautilus-shell-ui.xml:
+       Changed tooltip for up arrow
+
+       * file-manager/fm-directory-view.c
+       * file-manager/nautilus-directory-view-ui.xml:
+	Changed "Show Properties" to "Properties"
+	
+       * src/file-manager/nautilus-desktop-icon-view-ui.xml:
+       * src/file-manager/nautilus-directory-view-ui.xml:
+       Change "Reset Background" to "Use Default Background".
+
 === nautilus 1.1.14 ===
  
 2002-04-28  Alexander Larsson  <alla@lysator.liu.se>

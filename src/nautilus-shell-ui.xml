@@ -8,10 +8,12 @@
 	 than one item (usually 1 menuitem and 1 toolitem.
 	-->
 	 
-	<cmd name="Back" accel="*Control*bracketleft"
+	<cmd name="Back" accel="*Alt*Left"
 	 _tip="Go to the previous visited location"/>
-	<cmd name="Forward" accel="*Control*bracketright"
+	<cmd name="Forward" accel="*Alt*Right"
 	 _tip="Go to the next visited location"/>
+	<cmd name="Up"
+	 _tip="Go up one level"/>
 	<cmd name="Find" accel="*Control*f"
 	 _tip="Search this computer for files"/>
 	<cmd name="Toggle Find Mode" 
@@ -29,8 +31,6 @@
         <cmd name="Copy" accel="*Control*c" sensitive="0"/>
         <cmd name="Paste" accel="*Control*v" sensitive="0"/>
         <cmd name="Clear" sensitive="0"/>
-	<cmd name="Up"
-	 _tip="Go up to the location that contains the displayed location"/>
 	<cmd name="Reload"
 	 _tip="Display the latest contents of the current location"/>
 	<cmd name="Zoom In" _label="Zoom In"
@@ -137,7 +137,7 @@
 			  verb="Customize"/>
 		
 		<menuitem name="User Level Customization" 
-			  _label="P_references..." 
+			  _label="P_references" 
 			  _tip="Edit Nautilus preferences"
 			  pixtype="stock" pixname="gtk-preferences" 
 			  verb="User Level Customization"/>
@@ -205,7 +205,7 @@
 			  verb="Forward"/>
 		<menuitem name="Up" 
 			  _label="_Up a Level" 
-			  accel="*Control*u"
+			  accel="*Alt*Up"
 			  pixtype="stock" pixname="gtk-go-up"
 			  verb="Up"/>
 		<menuitem name="Home" 
@@ -240,7 +240,7 @@
 			  pixtype="stock" pixname="gtk-add"
 			  verb="Add Bookmark"/>
 		<menuitem name="Edit Bookmarks" 
-			  _label="_Edit Bookmarks..." 
+			  _label="_Edit Bookmarks" 
 			  _tip="Display a window that allows editing the bookmarks in this menu"
 			  verb="Edit Bookmarks"/>
 
@@ -280,7 +280,7 @@
 			  verb="Nautilus Quick Reference"/>
 		<separator/>
 		<menuitem name="About Nautilus"
-			  _label="_About Nautilus..."
+			  _label="_About Nautilus"
 			  _tip="Display credits for the creators of Nautilus"
 			  pixtype="stock" pixname="about"
 			  verb="About Nautilus"/>

@@ -3015,8 +3015,11 @@ key_press_event (GtkWidget *widget,
 			handled = TRUE;
 			break;
 		case GDK_Down:
-			keyboard_down (container, event);
-			handled = TRUE;
+			/* Don't eat Alt-Down, as that is used for Open */
+			if ((event->state & GDK_MOD1_MASK) == 0) {
+				keyboard_down (container, event);
+				handled = TRUE;
+			}
 			break;
 		case GDK_space:
 			keyboard_space (container, event);

@@ -40,8 +40,8 @@
          _label="Reset View to Default"
 	 _tip="Reset sorting order and zoom level to match preferences for this view"/>
 	<cmd name="Reset Background"
-         _label="Reset Background"
-	 _tip="Remove any custom pattern or color from the background of this location"/>
+         _label="Use Default Background"
+	 _tip="Use the default background for this location"/>
 	<cmd name="Cut Files"
          _label="Cut Files"
 	 _tip="Prepare the selected files to be moved with a Paste Files command"/>
@@ -70,6 +70,7 @@
 	<accel name="KP_Delete" verb="Trash"/>
 	<accel name="*Shift*Delete" verb="Delete"/>
 	<accel name="*Shift*KP_Delete" verb="Delete"/>
+        <accel name="*Alt*Down" verb="Open"/>
 </keybindings>
 <menu>
 	<submenu name="File">
@@ -83,7 +84,7 @@
 		<placeholder name="Open Placeholder">
 			<menuitem name="Open"
 				  _label="_Open"
-				  accel="*Control*o"
+                                  accel="*Control*o"
 				  pixtype="stock" pixname="gtk-open"
 				  verb="Open"/>
 			<menuitem name="OpenAlternate"
@@ -217,7 +218,7 @@
 		</placeholder>
 		<placeholder name="After Zoom Items">
 			<placeholder name="Background Items" delimit="none">
-				<menuitem name="Reset Background" verb="Reset Background"/>
+				<menuitem name="Use Default Background" verb="Reset Background"/>
 			</placeholder>
 		</placeholder>
 	</popup>

@@ -364,6 +364,7 @@ static EelPreferencesItemDescription sidebar_items[] = {
 	{ NULL }
 };
 
+#ifdef NEWS_SIDEBAR_ENABLED
 static EelPreferencesItemDescription news_panel_items[] = {
 	{ N_("Maximum items per site"),
 	  NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS,
@@ -378,6 +379,7 @@ static EelPreferencesItemDescription news_panel_items[] = {
 	},
 	{ NULL }
 };
+#endif
 
 
 static EelPreferencesPaneDescription panes[] = {
@@ -393,7 +395,9 @@ static EelPreferencesPaneDescription panes[] = {
 #endif
 	{ N_("Navigation"),		  navigation_items },
 	{ N_("Speed Tradeoffs"),	  tradeoffs_items },
+#ifdef NEWS_SIDEBAR_ENABLED
 	{ N_("News Panel"),		  news_panel_items },
+#endif
 	{ NULL }
 };
 
