@@ -1,5 +1,10 @@
 2003-09-18  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-property-browser.c (make_properties_from_directories):
+	Only add eraser for emblems browser.
+
+2003-09-18  Alexander Larsson  <alexl@redhat.com>
+	
 	* src/nautilus-window-manage-views.c (begin_location_change):
 	Check for content_view != NULL before saving current location
 	the old view might have failed. Fixes bug #119407.
