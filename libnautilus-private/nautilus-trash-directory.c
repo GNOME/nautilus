@@ -29,9 +29,11 @@
 #include "nautilus-directory-private.h"
 #include "nautilus-file.h"
 #include "nautilus-glib-extensions.h"
+#include "nautilus-stock-dialogs.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-volume-monitor.h"
 #include <gtk/gtksignal.h>
+#include <gtk/gtkmain.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
@@ -50,10 +52,14 @@ typedef struct {
 static void     nautilus_trash_directory_initialize       (gpointer                object,
 							   gpointer                klass);
 static void     nautilus_trash_directory_initialize_class (gpointer                klass);
+static void	add_volume				  (NautilusTrashDirectory *trash,
+							   NautilusVolume	  *volume);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusTrashDirectory,
 				   nautilus_trash_directory,
 				   NAUTILUS_TYPE_MERGED_DIRECTORY)
+
+static gint pending_find_directory_count = 0;
 
 static void
 find_directory_callback (GnomeVFSAsyncHandle *handle,
@@ -66,6 +72,12 @@ find_directory_callback (GnomeVFSAsyncHandle *handle,
 	NautilusDirectory *directory;
 
 	trash_volume = callback_data;
+
+	--pending_find_directory_count;
+
+	if (pending_find_directory_count == 0) {
+		nautilus_timed_wait_stop (NULL, &add_volume);
+	}
 
 	g_assert (nautilus_g_list_exactly_one_item (results));
 	g_assert (trash_volume != NULL);
@@ -135,6 +147,16 @@ add_volume (NautilusTrashDirectory *trash,
 		(&trash_volume->handle, &vfs_uri_as_list, 
 		 GNOME_VFS_DIRECTORY_KIND_TRASH, FALSE, TRUE, 0777,
 		 find_directory_callback, trash_volume);
+
+	if (pending_find_directory_count == 0) {
+		nautilus_timed_wait_start (NULL,
+					   &add_volume,
+					   _("Searching Disks"),
+					   _("Nautilus is searching for trash folders."),
+					   NULL);
+	}
+
+	++pending_find_directory_count;
 }
 
 static void

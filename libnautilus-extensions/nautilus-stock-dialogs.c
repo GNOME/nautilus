@@ -25,6 +25,7 @@
 #include <config.h>
 #include "nautilus-stock-dialogs.h"
 
+#include "nautilus-glib-extensions.h"
 #include "nautilus-gnome-extensions.h"
 #include "nautilus-string.h"
 #include <gtk/gtkbox.h>
@@ -37,6 +38,7 @@
 #include <libgnomeui/gnome-uidefs.h>
 
 #define TIMED_WAIT_DURATION 5000
+#define TIMED_WAIT_MIN_TIME_UP 3000
 
 typedef struct {
 	NautilusCancelCallback cancel_callback;
@@ -49,9 +51,13 @@ typedef struct {
 
 	/* Timer to determine when we need to create the window. */
 	guint timeout_handler_id;
-
+	
 	/* Window, once it's created. */
 	GnomeDialog *dialog;
+	
+	/* system time (microseconds) when dialog was created */
+	gint64 dialog_creation_time;
+
 } TimedWait;
 
 static GHashTable *timed_wait_hash_table;
@@ -103,9 +109,19 @@ add_label_to_dialog (GnomeDialog *dialog, const char *message)
 			    TRUE, TRUE, GNOME_PAD);
 }
 
+static gboolean
+timed_wait_delayed_destroy_dialog_callback (gpointer callback_data)
+{	
+	gtk_object_destroy (GTK_OBJECT (callback_data));
+
+	return FALSE;
+}
+
 static void
-timed_wait_free (TimedWait *wait)
+timed_wait_free (TimedWait *wait, gboolean do_min_time_up_test)
 {
+	guint32 time_up;
+
 	g_assert (g_hash_table_lookup (timed_wait_hash_table, wait) != NULL);
 
 	g_hash_table_remove (timed_wait_hash_table, wait);
@@ -127,9 +143,17 @@ timed_wait_free (TimedWait *wait)
 		gtk_signal_disconnect_by_func (GTK_OBJECT (wait->dialog),
 				    timed_wait_cancel_callback, wait);
 
-		gtk_object_destroy (GTK_OBJECT (wait->dialog));
+		/* compute time up in milliseconds
+		 */
+		time_up = (nautilus_get_system_time () - wait->dialog_creation_time) / 1000;
+		
+		if (do_min_time_up_test && time_up < TIMED_WAIT_MIN_TIME_UP) {
+			gtk_timeout_add (TIMED_WAIT_MIN_TIME_UP - time_up, timed_wait_delayed_destroy_dialog_callback, wait->dialog);
+		} else {
+			gtk_object_destroy (GTK_OBJECT (wait->dialog));
+		}
 	}
-	
+
 	/* And the wait object itself. */
 	g_free (wait);
 }
@@ -143,8 +167,11 @@ timed_wait_cancel_callback (GtkObject *object, gpointer callback_data)
 
 	g_assert (GNOME_DIALOG (object) == wait->dialog);
 
-	(* wait->cancel_callback) (wait->callback_data);
-	timed_wait_free (wait);
+	if (wait->cancel_callback != NULL) {
+		(* wait->cancel_callback) (wait->callback_data);
+	}
+	
+	timed_wait_free (wait, FALSE);
 }
 
 static gboolean
@@ -157,11 +184,12 @@ timed_wait_callback (gpointer callback_data)
 
 	/* Put up the timed wait window. */
 	dialog = GNOME_DIALOG (gnome_dialog_new (wait->window_title,
-						 GNOME_STOCK_BUTTON_CANCEL,
+						 wait->cancel_callback != NULL ? GNOME_STOCK_BUTTON_CANCEL : NULL,
 						 NULL));
 	gtk_window_set_wmclass (GTK_WINDOW (dialog), "dialog", "Nautilus");
 	add_label_to_dialog (dialog, wait->wait_message);
 	gnome_dialog_set_close (dialog, TRUE);
+	wait->dialog_creation_time = nautilus_get_system_time ();
 	gtk_widget_show_all (GTK_WIDGET (dialog));
 
 	/* FIXME bugzilla.eazel.com 2441: 
@@ -192,7 +220,6 @@ nautilus_timed_wait_start (NautilusCancelCallback cancel_callback,
 {
 	TimedWait *wait;
 	
-	g_return_if_fail (cancel_callback != NULL);
 	g_return_if_fail (callback_data != NULL);
 	g_return_if_fail (window_title != NULL);
 	g_return_if_fail (wait_message != NULL);
@@ -232,7 +259,6 @@ nautilus_timed_wait_stop (NautilusCancelCallback cancel_callback,
 	TimedWait key;
 	TimedWait *wait;
 
-	g_return_if_fail (cancel_callback != NULL);
 	g_return_if_fail (callback_data != NULL);
 	
 	key.cancel_callback = cancel_callback;
@@ -241,7 +267,7 @@ nautilus_timed_wait_stop (NautilusCancelCallback cancel_callback,
 
 	g_return_if_fail (wait != NULL);
 
-	timed_wait_free (wait);
+	timed_wait_free (wait, TRUE);
 }
 
 static const char **

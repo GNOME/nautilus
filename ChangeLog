@@ -1,5 +1,21 @@
 2001-01-11  Michael Engber  <engber@eazel.com>
 
+	reviewed by: John Sullivan
+
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	(timed_wait_delayed_destroy_dialog_callback), (timed_wait_free),
+	(timed_wait_cancel_callback), (timed_wait_callback),
+	(nautilus_timed_wait_start), (nautilus_timed_wait_stop):
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(find_directory_callback), (add_volume):
+	We now put up a dialog when searching for trash is slow - bug 3990.
+	Also added a minimum time up to nautilus_timed_wait dialogs
+	so they don't disappear before the user has a chance to read them.
+	Also, nautilus_timed_wait_start will now accept NULL for the
+	cancel_callback, resulting in a dialog without a cancel button.
+
+2001-01-11  Michael Engber  <engber@eazel.com>
+
 	* configure.in:
 	Missed configure.in in prior check in.
 
