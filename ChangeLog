@@ -1,3 +1,9 @@
+2000-07-06  Michael Engber  <engber@eazel.com>
+
+	* src/nautilus-zoom-control.c: (nautilus_zoom_control_destroy):
+	NULL out preferred_zoom_levels in the destroy method (after
+	freeing them) in case someone looks at them before finalize.
+
 2000-07-05  Robin * Slomkowski <rslomkow@eazel.com>
 
 	* nautilus.spec.in: removed refernce to some *.svg files

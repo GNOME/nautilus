@@ -156,6 +156,7 @@ static void
 nautilus_zoom_control_destroy (GtkObject *object)
 {
 	nautilus_g_list_free_deep (NAUTILUS_ZOOM_CONTROL (object)->preferred_zoom_levels);
+	NAUTILUS_ZOOM_CONTROL (object)->preferred_zoom_levels = NULL;
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
