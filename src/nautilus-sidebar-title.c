@@ -26,6 +26,7 @@
 #include <config.h>
 #include <ctype.h>
 #include <string.h>
+#include <math.h>
 
 #include "nautilus-index-title.h"
 
@@ -64,6 +65,11 @@ struct _NautilusIndexTitleDetails {
 	GtkWidget *more_info;
 	GtkWidget *notes;
 };
+
+/* constants */
+
+#define MAX_ICON_WIDTH 100.0
+#define MAX_ICON_HEIGHT 120.0
 
 /* button assignments */
 
@@ -109,20 +115,50 @@ nautilus_index_title_new (void)
 }
 
 /* set up the icon image */
-
 void
 nautilus_index_title_set_up_icon (NautilusIndexTitle *index_title, NautilusFile *file_object)
 {
+	gint width, height;
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
-
+	GdkPixbuf *pixbuf;
+	double scale_factor;
+	double h_scale = 1.0;
+	double v_scale = 1.0;
+	
 	if (file_object == NULL)
 		return;
 	
-	nautilus_icon_factory_get_pixmap_and_mask_for_file
-		(file_object, NAUTILUS_ICON_SIZE_STANDARD,
-		 &pixmap, &mask);
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_file(file_object, NAUTILUS_ICON_SIZE_STANDARD);
 
+	/* even though we asked for standard size, it might still be really huge, if it's not
+	   part of the standard set, so scale it down if necessary */
+	
+	width  = gdk_pixbuf_get_width(pixbuf);
+	height = gdk_pixbuf_get_height(pixbuf);
+	if (width > MAX_ICON_WIDTH)
+		h_scale = MAX_ICON_WIDTH / (double) width;
+	if (height > MAX_ICON_HEIGHT)
+		v_scale = MAX_ICON_HEIGHT  / (double) height;
+	if (h_scale < v_scale)
+		scale_factor = h_scale;
+	else
+		scale_factor = v_scale;
+	
+	if (scale_factor < 1.0) {
+		GdkPixbuf *scaled_pixbuf;
+		gint scaled_width  =  floor(width * scale_factor + .5);
+		gint scaled_height =  floor(height * scale_factor + .5);
+				
+		scaled_pixbuf = gdk_pixbuf_scale_simple(pixbuf, scaled_width, scaled_height, ART_FILTER_BILINEAR);	
+		gdk_pixbuf_unref(pixbuf);
+		pixbuf = scaled_pixbuf;
+	}
+	
+	/* make a pixmap and mask to pass to the widget */
+        gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
+	gdk_pixbuf_unref(pixbuf);
+	
 	/* if there's no pixmap so far, so allocate one */
 	if (index_title->details->icon)
 		gtk_pixmap_set (GTK_PIXMAP (index_title->details->icon),
