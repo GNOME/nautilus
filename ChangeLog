@@ -1,3 +1,14 @@
+2002-03-04  Darin Adler  <darin@bentspoon.com>
+
+	* src/file-manager/fm-directory-view.c: Formatting tweaks.
+
+	* src/file-manager/fm-list-model.c: (remove_link_saving_prev):
+	Fix bug where it would skip every other node.
+
+	* src/file-manager/fm-list-view.c: (fm_list_view_select_all): New.
+	(fm_list_view_class_init): Add placeholders for things we need to
+	implement to satisfy FMDirectoryView. Implement one: select all.
+
 === nautilus 1.1.7 ===
 
 2002-03-04  Darin Adler  <darin@bentspoon.com>

@@ -591,16 +591,16 @@ fm_list_model_is_empty (FMListModel *model)
 	return model->details->length == 0;
 }
 
-static GSList*
+static GSList *
 remove_link_saving_prev (GSList *list, GSList *link, GSList **prevp)
 {
-	GSList *tmp;
+	GSList *node;
 	GSList *prev;
 	
 	prev = NULL;
 
-	for (tmp = list; tmp; tmp = tmp->next) {
-		if (tmp == link) {
+	for (node = list; node; node = node->next) {
+		if (node == link) {
 			if (prev != NULL) {
 				prev->next = link->next;
 			}
@@ -613,8 +613,7 @@ remove_link_saving_prev (GSList *list, GSList *link, GSList **prevp)
 			break;
 		}
 
-		prev = tmp;
-		tmp = tmp->next;
+		prev = node;
 	}
 
 	*prevp = prev;
@@ -628,15 +627,13 @@ fm_list_model_remove (FMListModel *model, GtkTreeIter *iter)
 	GtkTreePath *path;
 	GSList *prev;
 
-	prev = NULL;
-
 	path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), iter);
 	nautilus_file_unref (NAUTILUS_FILE (G_SLIST (iter->user_data)->data));
 	
+	prev = NULL;
 	model->details->files = remove_link_saving_prev (model->details->files,
 							 iter->user_data,
 							 &prev);
-
 	model->details->length -= 1;
 
 	if (iter->user_data == model->details->tail) {
@@ -658,8 +655,7 @@ fm_list_model_remove_file (FMListModel *model, NautilusFile *file)
 	gboolean found;
 
 	found = fm_list_model_get_tree_iter_from_file (model, file, &iter);
-
-	if (found == FALSE) {
+	if (!found) {
 		g_warning ("trying to remove NautilusFile that isn't there");
 		return;
 	}
@@ -672,7 +668,6 @@ fm_list_model_clear (FMListModel *model)
 {
 	GtkTreeIter iter;
 
-	/* FIXME: Is this too slow? */
 	while (model->details->files != NULL) {
 		iter.stamp = model->details->stamp;
 		iter.user_data = model->details->files;

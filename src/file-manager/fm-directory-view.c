@@ -329,19 +329,19 @@ static void     monitor_file_for_open_with                     (FMDirectoryView 
 EEL_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_file)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, bump_zoom_level)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, zoom_to_level)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, restore_default_zoom_level)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, can_zoom_in)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, can_zoom_out)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_background_widget)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, file_changed)
+EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_background_widget)
+EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selected_icon_locations)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, is_empty)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, reset_to_defaults)
+EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, restore_default_zoom_level)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, select_all)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, set_selection)
-EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selected_icon_locations)
+EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, zoom_to_level)
 
 typedef struct {
 	GnomeVFSMimeApplication *application;
@@ -2089,15 +2089,15 @@ process_old_files (FMDirectoryView *view)
 		for (node = files_added; node != NULL; node = node->next) {
 			file = NAUTILUS_FILE (node->data);
 			g_signal_emit (view,
-					 signals[ADD_FILE], 0, file);
+				       signals[ADD_FILE], 0, file);
 		}
 
 		for (node = files_changed; node != NULL; node = node->next) {
 			file = NAUTILUS_FILE (node->data);
 			g_signal_emit (view,
-					 signals[still_should_show_file (view, file)
-						 ? FILE_CHANGED : REMOVE_FILE], 0,
-					 file);
+				       signals[still_should_show_file (view, file)
+					       ? FILE_CHANGED : REMOVE_FILE], 0,
+				       file);
 		}
 
 		g_signal_emit (view, signals[END_FILE_CHANGES], 0);

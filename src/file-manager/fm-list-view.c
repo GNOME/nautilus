@@ -284,21 +284,28 @@ fm_list_view_remove_file (FMDirectoryView *view, NautilusFile *file)
 static void
 fm_list_view_set_selection (FMDirectoryView *view, GList *selection)
 {
-	GList *list;
-	GtkTreeIter iter;
 	FMListView *list_view;
+	GtkTreeSelection *tree_selection;
+	GList *node;
+	GtkTreeIter iter;
 	NautilusFile *file;
 	
 	list_view = FM_LIST_VIEW (view);
+	tree_selection = gtk_tree_view_get_selection (list_view->details->tree_view);
 
-	gtk_tree_selection_unselect_all (gtk_tree_view_get_selection (list_view->details->tree_view));
-
-	for (list = selection; list; list = list->next) {
-		file = list->data;
+	gtk_tree_selection_unselect_all (tree_selection);
+	for (node = selection; node != NULL; node = node->next) {
+		file = node->data;
 		if (fm_list_model_get_tree_iter_from_file (list_view->details->model, file, &iter)) {
-			gtk_tree_selection_select_iter (gtk_tree_view_get_selection (list_view->details->tree_view), &iter);
+			gtk_tree_selection_select_iter (tree_selection, &iter);
 		}
 	}
+}
+
+static void
+fm_list_view_select_all (FMDirectoryView *view)
+{
+	gtk_tree_selection_select_all (gtk_tree_view_get_selection (FM_LIST_VIEW (view)->details->tree_view));
 }
 
 #if 0
@@ -367,12 +374,25 @@ fm_list_view_class_init (FMListViewClass *klass)
 	
 	fm_directory_view_class->add_file = fm_list_view_add_file;
 	fm_directory_view_class->begin_loading = fm_list_view_begin_loading;
+#if GNOME2_CONVERSION_COMPLETE
+	fm_directory_view_class->bump_zoom_level = xxx;
+	fm_directory_view_class->can_zoom_in = xxx;
+	fm_directory_view_class->can_zoom_out = xxx;
+#endif
 	fm_directory_view_class->clear = fm_list_view_clear;
 	fm_directory_view_class->file_changed = fm_list_view_file_changed;
 	fm_directory_view_class->get_background_widget = fm_list_view_get_background_widget;
+#if GNOME2_CONVERSION_COMPLETE
+	fm_directory_view_class->get_selected_icon_locations = xxx;
+#endif
 	fm_directory_view_class->get_selection = fm_list_view_get_selection;
 	fm_directory_view_class->is_empty = fm_list_view_is_empty;
+#if GNOME2_CONVERSION_COMPLETE
+	fm_directory_view_class->reset_to_defaults = xxx;
+	fm_directory_view_class->restore_default_zoom_level = xxx;
+#endif
 	fm_directory_view_class->remove_file = fm_list_view_remove_file;
+	fm_directory_view_class->select_all = fm_list_view_select_all;
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
 	fm_directory_view_class->sort_directories_first_changed = fm_list_view_sort_directories_first_changed;
 	
