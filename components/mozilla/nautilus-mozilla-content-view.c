@@ -110,7 +110,16 @@ struct NautilusMozillaContentViewDetails {
 	gboolean	user_initiated_navigation;
 
 	BonoboUIComponent *ui;
+
+	GSList            *chrome_list;
+
 };
+
+typedef struct NautilusMozillaContentViewChrome {
+	GtkWidget                   *toplevel_window;
+	GtkMozEmbed                 *mozilla;
+	NautilusMozillaContentView  *view;
+} NautilusMozillaContentViewChrome;
 
 /* GTK Type System */
 static void     nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass *klass);
@@ -173,7 +182,27 @@ static gint	mozilla_dom_mouse_click_callback		(GtkMozEmbed			*mozilla,
 								 gpointer			dom_event,
 								 gpointer			user_data);
 
-static void	mozilla_new_window_callback			(GtkMozEmbed			*mozilla);
+static void	mozilla_new_window_callback			(GtkMozEmbed			*mozilla,
+								 GtkMozEmbed                    **new_mozilla,
+								 guint                          chromemask,
+								 NautilusMozillaContentView     *view);
+
+/* Chrome callback functions */
+
+static void     mozilla_chrome_visibility_callback             (GtkMozEmbed                      *mozilla,
+								gboolean                         visibility,
+								NautilusMozillaContentViewChrome *chrome);
+
+static void     mozilla_chrome_destroy_brsr_callback           (GtkMozEmbed                      *mozilla,
+								NautilusMozillaContentViewChrome *chrome);
+
+static void     mozilla_chrome_size_to_callback                (GtkMozEmbed                      *mozilla,
+								gint                              width,
+								gint                              height,
+								NautilusMozillaContentViewChrome *chrome);
+
+static void     mozilla_chrome_title_callback                  (GtkMozEmbed                      *mozilla,
+								NautilusMozillaContentViewChrome *chrome);
 
 /* Private NautilusMozillaContentView functions */ 
 
@@ -423,6 +452,24 @@ nautilus_mozilla_content_view_destroy (GtkObject *object)
 	/* free the property bag */
 	if (view->details->property_bag != NULL) {
 		bonobo_object_unref (BONOBO_OBJECT (view->details->property_bag));
+	}
+
+	/* make sure to destroy any pending dialogs */
+	while (view->details->chrome_list) {
+		NautilusMozillaContentViewChrome *chrome;
+		GSList *tmp_list;
+
+		/* save the list and advance to the next element */
+		tmp_list = view->details->chrome_list;
+		view->details->chrome_list = view->details->chrome_list->next;
+
+		/* get the chrome and destroy it */
+		chrome = (NautilusMozillaContentViewChrome *)tmp_list->data;
+		gtk_widget_destroy (chrome->toplevel_window);
+
+		/* and free everything */
+		g_free (tmp_list->data);
+		g_slist_free (tmp_list);
 	}
 
 	g_free (view->details);
@@ -824,9 +871,51 @@ mozilla_title_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 }
 
 static void
-mozilla_new_window_callback (GtkMozEmbed *mozilla)
+mozilla_new_window_callback (GtkMozEmbed *mozilla, GtkMozEmbed **new_mozilla, guint chromemask, NautilusMozillaContentView *view)
 {
 	static GnomeDialog *dialog;
+	NautilusMozillaContentViewChrome *chrome;
+
+	/* it's a chrome window so just create a simple shell to play with. */
+	if (chromemask & GTK_MOZ_EMBED_FLAG_OPENASCHROME) {
+
+		chrome = g_new0 (NautilusMozillaContentViewChrome, 1);
+		if (!chrome) {
+			return;
+		}
+
+		/* save this in this view's chrome list */
+		view->details->chrome_list = g_slist_append (view->details->chrome_list, chrome);
+
+		chrome->view = view;
+
+		chrome->toplevel_window = gtk_window_new (GTK_WINDOW_DIALOG);
+		chrome->mozilla = GTK_MOZ_EMBED (gtk_moz_embed_new());
+
+		gtk_container_add (GTK_CONTAINER (chrome->toplevel_window), GTK_WIDGET (chrome->mozilla));
+
+		/* set up all the signals that we care about for chrome windows. */
+		gtk_signal_connect (GTK_OBJECT (chrome->mozilla), "visibility",
+				    GTK_SIGNAL_FUNC (mozilla_chrome_visibility_callback),
+				    chrome);
+		gtk_signal_connect (GTK_OBJECT (chrome->mozilla), "destroy_browser",
+				    GTK_SIGNAL_FUNC (mozilla_chrome_destroy_brsr_callback),
+				    chrome);
+		gtk_signal_connect (GTK_OBJECT (chrome->mozilla), "size_to",
+				    GTK_SIGNAL_FUNC (mozilla_chrome_size_to_callback),
+				    chrome);
+		gtk_signal_connect (GTK_OBJECT (chrome->mozilla), "title",
+				    GTK_SIGNAL_FUNC (mozilla_chrome_title_callback),
+				    chrome);
+
+		/* and realize the widgets */
+		gtk_widget_realize (chrome->toplevel_window);
+		gtk_widget_realize (GTK_WIDGET(chrome->mozilla));
+
+		/* save the new embed object */
+		*new_mozilla = chrome->mozilla;
+		return;
+	}
 
 	if (dialog == NULL) {
 		dialog = eel_show_warning_dialog (_("A JavaScript function (small software program) on this page "
@@ -836,6 +925,51 @@ mozilla_new_window_callback (GtkMozEmbed *mozilla)
 						  _("Nautilus JavaScript Warning"),
 						  NULL);
 		eel_nullify_when_destroyed (&dialog);
+	}
+}
+
+static void
+mozilla_chrome_visibility_callback (GtkMozEmbed *mozilla, gboolean visibility, NautilusMozillaContentViewChrome *chrome)
+{
+	/* hide? */
+	if (!visibility) {
+		gtk_widget_hide (chrome->toplevel_window);
+		return;
+	}
+	/* else show */
+	gtk_widget_show (GTK_WIDGET(chrome->mozilla));
+	gtk_widget_show (chrome->toplevel_window);
+}
+
+static void
+mozilla_chrome_destroy_brsr_callback (GtkMozEmbed *mozilla, NautilusMozillaContentViewChrome *chrome)
+{
+	GSList *tmp_list;
+	gtk_widget_destroy (chrome->toplevel_window);
+	tmp_list = g_slist_find (chrome->view->details->chrome_list, chrome);
+	chrome->view->details->chrome_list = g_slist_remove_link (chrome->view->details->chrome_list, tmp_list);
+	g_free (tmp_list->data);
+	g_slist_free (tmp_list);
+}
+
+static void
+mozilla_chrome_size_to_callback (GtkMozEmbed *mozilla, gint width, gint height,	NautilusMozillaContentViewChrome *chrome)
+{
+	gtk_widget_set_usize (GTK_WIDGET (chrome->mozilla), width, height);
+}
+
+static void
+mozilla_chrome_title_callback (GtkMozEmbed *mozilla, NautilusMozillaContentViewChrome *chrome)
+{
+	char *new_title;
+
+	new_title = gtk_moz_embed_get_title (chrome->mozilla);
+
+	if (new_title) {
+		if (strcmp (new_title, "") != 0) {
+			gtk_window_set_title (GTK_WINDOW (chrome->toplevel_window), new_title);
+		}
+		g_free (new_title);
 	}
 }
 
