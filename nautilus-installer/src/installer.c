@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* 
- * Copyright (C) 2000 Eazel, Inc
+ * Copyright (C) 2000, 2001  Eazel, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -40,10 +40,6 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <sys/utsname.h>
-
-#if 0
-#include <rpm/misc.h>
-#endif
 
 #include <nautilus-druid.h>
 #include <nautilus-druid-page-eazel.h>
@@ -371,7 +367,7 @@ create_install_page (EazelInstaller *installer)
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox,  FALSE, FALSE, 3);
 
-	label_single = gtk_label_new (_("Poking about for packages  "));
+	label_single = gtk_label_new (_("Contacting the install server..."));
 	gtk_widget_set_name (label_single, "download_label");
 	gtk_label_set_justify (GTK_LABEL (label_single), GTK_JUSTIFY_LEFT);
 	gtk_widget_ref (label_single);
@@ -420,7 +416,11 @@ create_install_page (EazelInstaller *installer)
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox,  FALSE, FALSE, 3);
 
+#if 0
 	label_overall = gtk_label_new (_("Downloading packages required to install Nautilus"));
+#else
+	label_overall = gtk_label_new (" ");
+#endif
 	gtk_widget_set_name (label_overall, "label_overall");
 	gtk_label_set_justify (GTK_LABEL (label_overall), GTK_JUSTIFY_LEFT);
 	gtk_widget_ref (label_overall);
@@ -811,7 +811,7 @@ eazel_install_progress (EazelInstall *service,
 		g_free (temp);
 		gtk_progress_configure (GTK_PROGRESS (progressbar), 0, 0, (float)(total/1024));		
 
-		log_debug ("begin installing %s", package->name);
+		g_message ("Installing: %s", package->name);
 	}
 
 	gtk_progress_set_value (GTK_PROGRESS (progressbar), 
@@ -819,6 +819,10 @@ eazel_install_progress (EazelInstall *service,
 	percent = (double)(total_size_completed * 50.0) / (total_size ? total_size : 0.1);
 	percent += 50.0;
 	gtk_progress_set_value (GTK_PROGRESS (progress_overall), percent);
+
+	temp = g_strdup_printf (_("Installing %d packages (%d MB)"), installer->total_packages, installer->total_mb);
+	gtk_label_set_text (GTK_LABEL (label_overall), temp);
+	g_free (temp);
 
 	while (gtk_events_pending ()) {
 		gtk_main_iteration ();
@@ -828,7 +832,7 @@ eazel_install_progress (EazelInstall *service,
 
 static void 
 eazel_download_progress (EazelInstall *service, 
-			 const char *name,
+			 const PackageData *package,
 			 int amount, 
 			 int total,
 			 EazelInstaller *installer) 
@@ -837,10 +841,12 @@ eazel_download_progress (EazelInstall *service,
 	GtkWidget *progress_overall;
 	GtkWidget *label_single;
 	GtkWidget *label_single_2;
+	GtkWidget *label_overall;
 	char *temp;
 	int amount_KB = (amount+512)/1024;
 	int total_KB = (total+512)/1024;
 
+	label_overall = gtk_object_get_data (GTK_OBJECT (installer->window), "label_overall");
 	label_single = gtk_object_get_data (GTK_OBJECT (installer->window), "download_label");
 	label_single_2 = gtk_object_get_data (GTK_OBJECT (installer->window), "download_label_2");
 	progress_single = gtk_object_get_data (GTK_OBJECT (installer->window), "progressbar_single");
@@ -849,7 +855,7 @@ eazel_download_progress (EazelInstall *service,
 	if (amount == 0) {
 		gtk_progress_configure (GTK_PROGRESS (progress_single), 0, 0, (float)total);
 		gtk_progress_configure (GTK_PROGRESS (progress_overall), 0, 0, (float)ASSUMED_MAX_DOWNLOAD);
-		temp = g_strdup_printf ("Getting package \"%s\"  ", name);
+		temp = g_strdup_printf ("Getting package \"%s\"  ", package->name);
 		gtk_label_set_text (GTK_LABEL (label_single), temp); 
 		g_free (temp);
 		installer->last_KB = 0;
@@ -913,6 +919,8 @@ get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 		previous_pack = (PackageData*)(data->path->data);
 	}
 
+	log_debug ("pack->name = %s, pack->status = %d", pack->name, pack->status);
+
 	/* is this the right place for this check anymore? */
 	if (pack->status == PACKAGE_CANNOT_OPEN) {
 		/* check if the package we could not open was in categories, since
@@ -967,8 +975,11 @@ get_detailed_errors (const PackageData *pack, EazelInstaller *installer)
 {
 	GetErrorsForEachData data;
 	PackageData *non_const_pack;
+	char *name;
 
-	log_debug ("error tree traversal begins.");
+	name = packagedata_get_readable_name (pack);
+	log_debug ("error tree traversal begins: errant package %s", name);
+	g_free (name);
 
 	if (eazel_install_failed_because_of_disk_full (installer->service)) {
 		installer->failure_info = g_list_prepend (installer->failure_info,
@@ -1036,16 +1047,16 @@ uninstall_failed (EazelInstall *service,
 
 static void
 download_failed (EazelInstall *service,
-		 const char *name,
+		 const PackageData *package,
 		 EazelInstaller *installer)
 {
 	char *temp;
 
 	if (! eazel_install_failed_because_of_disk_full (service)) {
-		temp = g_strdup_printf (_("Download of %s failed"), name);
+		temp = g_strdup_printf (_("Download of %s failed"), package->name);
 		installer->failure_info = g_list_append (installer->failure_info, temp);
 	}
-	g_message ("Download FAILED for %s", name);
+	g_message ("Download FAILED for %s", package->name);
 }
 
 static gboolean
@@ -1065,10 +1076,12 @@ eazel_install_preflight (EazelInstall *service,
 	char *temp;
 	int total_mb;
 
+#if 0
 	if (strcmp (((PackageData *)(packages->data))->name, "eazel-hacking") != 0) {
 		jump_to_package_tree_page (installer, (GList *)packages);
 		while (1) { while (gtk_events_pending ()) { gtk_main_iteration (); } }
 	}
+#endif
 
 	label_single = gtk_object_get_data (GTK_OBJECT (installer->window), "download_label");
 	label_single_2 = gtk_object_get_data (GTK_OBJECT (installer->window), "download_label_2");
@@ -1100,7 +1113,7 @@ eazel_install_preflight (EazelInstall *service,
 		if (installer->uninstalling) {
 			temp = g_strdup_printf (_("Uninstalling 1 package"));
 		} else {
-			temp = g_strdup_printf (_("Installing 1 package (%d MB)"), total_mb);
+			temp = g_strdup_printf (_("Downloading 1 package (%d MB)"), total_mb);
 			/* surprise!  we're 50% done now! */
 			gtk_progress_configure (GTK_PROGRESS (progress_overall), 50.0, 0.0, 100.0);
 		}
@@ -1109,7 +1122,7 @@ eazel_install_preflight (EazelInstall *service,
 			temp = g_strdup_printf (_("Uninstalling %d packages"), num_packages);
 			gtk_progress_configure (GTK_PROGRESS (progress_overall), 0.0, 0.0, 100.0);
 		} else {
-			temp = g_strdup_printf (_("Installing %d packages (%d MB)"), num_packages, total_mb);
+			temp = g_strdup_printf (_("Downloading %d packages (%d MB)"), num_packages, total_mb);
 			/* surprise!  we're 50% done now! */
 			gtk_progress_configure (GTK_PROGRESS (progress_overall), 50.0, 0.0, 100.0);
 		}
@@ -1117,6 +1130,9 @@ eazel_install_preflight (EazelInstall *service,
 	gtk_label_set_text (GTK_LABEL (label_overall), temp);
 	log_debug ("PREFLIGHT: %s", temp);
 	g_free (temp);
+
+	installer->total_packages = num_packages;
+	installer->total_mb = total_mb;
 
 	while (gtk_events_pending ()) {
 		gtk_main_iteration ();
@@ -1131,20 +1147,22 @@ eazel_install_dep_check (EazelInstall *service,
 			 const PackageData *needs,
 			 EazelInstaller *installer)
 {
-	GtkWidget *label_overall;
+	GtkWidget *label_single;
 	char *temp;
+	char *original = packagedata_get_readable_name (pack);
 	char *required = packagedata_get_readable_name (needs);
 
-	label_overall = gtk_object_get_data (GTK_OBJECT (installer->window), "label_overall");
+	label_single = gtk_object_get_data (GTK_OBJECT (installer->window), "download_label");
 	/* careful: this needs->name is not always a package name (sometimes it's a filename) */
-	temp = g_strdup_printf ("%s is required by %s", required, pack->name);
-	gtk_label_set_text (GTK_LABEL (label_overall), temp);
+	temp = g_strdup_printf ("Getting information about %s ...", original);
+	gtk_label_set_text (GTK_LABEL (label_single), temp);
+	g_free (temp);
 
-	log_debug ("DEP CHECK : %s", temp);
+	log_debug ("Dependency: %s needs %s", original, required);
 	installer->got_dep_check = TRUE;
 
-	g_free (temp);
 	g_free (required);
+	g_free (original);
 
 	while (gtk_events_pending ()) {
 		gtk_main_iteration ();

@@ -227,6 +227,7 @@ packagedata_initialize (PackageData *package) {
 	package->summary = NULL;
 	package->description = NULL;
 	package->bytesize = 0;
+	package->filesize = 0;
 	package->distribution = trilobite_get_distribution ();
 	package->filename = NULL;
 	package->eazel_id = NULL;
@@ -287,6 +288,7 @@ packagedata_finalize (GtkObject *obj)
 	g_free (pack->description);
 	pack->description = NULL;
 	pack->bytesize = 0;
+	pack->filesize = 0;
 	g_free (pack->filename);
 	pack->filename = NULL;
 	g_free (pack->eazel_id);
@@ -469,6 +471,7 @@ packagedata_copy (const PackageData *pack, gboolean deep)
 
 	result->distribution = pack->distribution;
 	result->bytesize = pack->bytesize;
+	result->filesize = pack->filesize;
 
 	if (deep) {
 		result->soft_depends = packagedata_list_copy (pack->soft_depends, TRUE);
@@ -513,6 +516,7 @@ packagedata_fill_in_missing (PackageData *package, const PackageData *full_packa
 	COPY_STRING (minor);
 	COPY_STRING (archtype);
 	package->bytesize = full_package->bytesize;
+	package->filesize = full_package->filesize;
 	package->distribution = full_package->distribution;
 	COPY_STRING (filename);
 	COPY_STRING (eazel_id);
@@ -1331,7 +1335,10 @@ packagedata_dump_int (const PackageData *package, gboolean deep, int indent)
 		g_string_sprintfa (out, ", EID %s", package->eazel_id);
 	}
 	if (package->bytesize > 0) {
-		g_string_sprintfa (out, ", %d bytes", package->bytesize);
+		g_string_sprintfa (out, ", %d bytes installed", package->bytesize);
+	}
+	if (package->filesize > 0) {
+		g_string_sprintfa (out, ", %d bytes file", package->filesize);
 	}
 	if (package->toplevel) {
 		g_string_sprintfa (out, ", TOPLEVEL");

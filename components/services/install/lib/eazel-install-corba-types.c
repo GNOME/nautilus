@@ -100,6 +100,7 @@ corba_packagedatastruct_from_packagedata (const PackageData *pack)
 	corbapack->summary = pack->summary ? CORBA_string_dup (pack->summary) : CORBA_string_dup ("");
 	corbapack->description = pack->description ? CORBA_string_dup (pack->description) : CORBA_string_dup ("");
 	corbapack->bytesize = pack->bytesize;
+	corbapack->filesize = pack->filesize;
 	corbapack->toplevel = pack->toplevel;
 
 	switch (pack->status) {
@@ -198,6 +199,7 @@ packagedata_from_corba_packagedatastruct (const GNOME_Trilobite_Eazel_PackageDat
 	pack->description = strlen (corbapack.description) ? g_strdup (corbapack.description) : NULL;
 	pack->toplevel = corbapack.toplevel;
 	pack->bytesize = corbapack.bytesize;
+	pack->filesize = corbapack.filesize;
 
 	pack->install_root = strlen (corbapack.install_root) ? g_strdup (corbapack.install_root) : NULL;
 	pack->md5 = strlen (corbapack.md5) ? g_strdup (corbapack.md5) : NULL;

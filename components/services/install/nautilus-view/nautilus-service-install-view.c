@@ -45,6 +45,7 @@
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-password-dialog.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
+#include <libnautilus-extensions/nautilus-viewport.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <dirent.h>
@@ -179,7 +180,7 @@ install_message_new (NautilusServiceInstallView *view, const char *package_name)
 	gtk_widget_set_usize (im->progress_bar, -2, PROGRESS_BAR_HEIGHT);
 	gtk_widget_show (im->progress_bar);
 
-	im->progress_label = eazel_services_label_new (NULL, 0, 0.0, 0.0, 0, 2,
+	im->progress_label = eazel_services_label_new (NULL, 0, 0.0, 0.0, 0, 0,
 						       EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
 						       EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
 						       NULL, -2, TRUE);
@@ -335,7 +336,7 @@ generate_install_form (NautilusServiceInstallView	*view)
 
 	view->details->pane = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view->details->pane), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	viewport = gtk_viewport_new (NULL, NULL);
+	viewport = nautilus_viewport_new (NULL, NULL);
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
 	gtk_container_add (GTK_CONTAINER (view->details->pane), viewport);
 	gtk_widget_show (viewport);

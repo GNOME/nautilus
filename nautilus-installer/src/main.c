@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* 
- * Copyright (C) 2000 Eazel, Inc
+ * Copyright (C) 2000, 2001  Eazel, Inc
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -18,6 +18,7 @@
  * Boston, MA 02111-1307, USA.
  *
  * Authors: Eskil Heyn Olsen  <eskil@eazel.com>
+ *          Robey Poiner  <robey@eazel.com>
  */
 
 #ifdef HAVE_CONFIG_H
@@ -33,6 +34,7 @@
 #include <pwd.h>
 #include <sys/types.h>
 #include <sys/vfs.h>
+#include <signal.h>
 #include <gnome.h>
 
 #include "installer.h"
@@ -117,6 +119,15 @@ check_disk_space (void)
 	}
 }
 
+static void
+segv_handler (int unused)
+{
+	fprintf (stderr, "\n\nSEGV -- CRASH BOOM, THE INSTALLER IS HOSED.\n\n");
+	while (1) {
+		sleep (1);
+	}
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -142,6 +153,8 @@ main (int argc, char *argv[])
 	}
 
 	gnome_init_with_popt_table ("eazel-installer", VERSION, argc, argv, options, 0, NULL);
+
+	signal (SIGSEGV, segv_handler);
 	gdk_rgb_init ();
 
 	if (installer_show_build) {

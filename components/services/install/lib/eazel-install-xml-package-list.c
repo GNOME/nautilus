@@ -795,11 +795,18 @@ osd_parse_implementation (PackageData *pack,
 			char *tmp;
 			pack->remote_url = trilobite_xml_get_string (child, "HREF");
 			tmp = trilobite_xml_get_string (child, "SIZE");
-			if (tmp) {
-				pack->bytesize = atoi (tmp);
+			if (tmp != NULL) {
+				pack->bytesize = strtoul (tmp, NULL, 10);
 				g_free (tmp);
 			} else {
 				pack->bytesize = 0;
+			}
+			tmp = trilobite_xml_get_string (child, "RPM-SIZE");
+			if (tmp != NULL) {
+				pack->filesize = strtoul (tmp, NULL, 10);
+				g_free (tmp);
+			} else {
+				pack->filesize = 0;
 			}
 		} else if (g_strcasecmp (child->name, "FILES") == 0) {
 			/* oh boy... exhaustive file list */

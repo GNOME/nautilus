@@ -179,7 +179,9 @@ struct _PackageData {
 	char* minor;
 	char* archtype;
 	DistributionInfo distribution;
-	int bytesize;
+	guint32 bytesize;
+	guint32 filesize;
+
 	char* summary;
 	char* description;	
 	GList* soft_depends;

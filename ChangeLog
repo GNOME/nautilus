@@ -1,3 +1,53 @@
+2001-01-25  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/command-line/.cvsignore:
+
+	Remove cruft.
+	
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagedatastruct_from_packagedata),
+	(packagedata_from_corba_packagedatastruct):
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(osd_parse_implementation):
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedata_initialize), (packagedata_finalize),
+	(packagedata_copy), (packagedata_fill_in_missing),
+	(packagedata_dump_int):
+	* components/services/install/lib/eazel-package-system-types.h:
+
+	Add "filesize" item to the PackageData struct, and the corba one,
+	and parse it out of the softcat XML.
+	
+	* components/services/install/lib/eazel-install-logic2.c:
+	(eazel_install_check_existing_packages), (dedupe_foreach_depends),
+	(is_satisfied):
+	* components/services/install/lib/eazel-softcat.c:
+	(remove_directories_from_provides_list):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (install_message_new), (generate_install_form):
+
+	Retrofit some PR3 patches to the trunk.
+	
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_matches_versioning):
+
+	Compress Eskil's package version comparison function into
+	something a bit smaller and easier to follow for mere mortals like
+	myself. :)
+	
+	* nautilus-installer/src/installer.c: (create_install_page),
+	(eazel_install_progress), (eazel_download_progress),
+	(get_detailed_errors_foreach), (get_detailed_errors),
+	(download_failed), (eazel_install_preflight),
+	(eazel_install_dep_check):
+	* nautilus-installer/src/installer.h:
+	* nautilus-installer/src/main.c: (segv_handler), (main):
+	* nautilus-installer/src/prescript:
+
+	First bit of 1.0 installer fixes: Bring it up to speed with
+	changes in the install library.
+
 2001-01-25  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Michael Engber  <engber@eazel.com>

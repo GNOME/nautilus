@@ -88,6 +88,9 @@ struct _EazelInstaller
 	gboolean got_dep_check;
 
 	GList *packages_possible_broken;
+
+	int total_packages;
+	int total_mb;
 };
 
 GtkType            eazel_installer_get_type(void);

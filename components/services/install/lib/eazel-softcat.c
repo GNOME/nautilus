@@ -529,13 +529,18 @@ is_filename_probably_a_directory (const char *filename, const GList *provides)
 static void
 remove_directories_from_provides_list (PackageData *pack)
 {
-	GList *iter;
+	GList *iter, *next_iter;
 
 	for (iter = g_list_first (pack->provides); iter != NULL; ) {
 		if (is_filename_probably_a_directory ((char *)(iter->data), pack->provides)) {
+			next_iter = iter->prev;
+
 			g_free (iter->data);
 			pack->provides = g_list_remove (pack->provides, iter->data);
-			iter = g_list_first (pack->provides);
+			iter = next_iter;
+			if (iter == NULL) {
+				iter = g_list_first (pack->provides);
+			}
 		} else {
 			iter = g_list_next (iter);
 		}

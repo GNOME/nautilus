@@ -123,70 +123,49 @@ eazel_package_system_load_implementation (EazelPackageSystemId id, GList *roots)
 
 static gboolean
 eazel_package_system_matches_versioning (EazelPackageSystem *package_system,
-					 PackageData *a, 
+					 PackageData *pack,
 					 const char *version,
 					 const char *minor,
 					 EazelSoftCatSense sense)
 {
-	int version_result = 0, minor_result = 0;
+	gboolean version_result = FALSE;
+	gboolean minor_result = FALSE;
+	int result;
 
-	g_assert (!((version==NULL) && minor));
+	g_assert (!((version == NULL) && (minor != NULL)));
 
-	if (version) {
-		if (sense & EAZEL_SOFTCAT_SENSE_EQ) {
-			if (eazel_package_system_compare_version (package_system, a->version, version)==0) {
-				version_result = 1;
-			}
+	if (version != NULL) {
+		result = eazel_package_system_compare_version (package_system, pack->version, version);
+		if ((sense & EAZEL_SOFTCAT_SENSE_EQ) && (result == 0)) {
+			version_result = TRUE;
 		}
-		if ((version_result==0) && (sense & EAZEL_SOFTCAT_SENSE_GT)) {
-			if (sense & EAZEL_SOFTCAT_SENSE_EQ) {
-				if (eazel_package_system_compare_version (package_system, a->version, version)>=0) {
-					version_result = 1;
-				}
-			} else {
-				if (eazel_package_system_compare_version (package_system, a->version, version)>0) {
-					version_result = 1;
-				}
-			}			
+		if ((sense & EAZEL_SOFTCAT_SENSE_GT) && (result > 0)) {
+			version_result = TRUE;
 		}
-		if ((version_result==0) && (sense & EAZEL_SOFTCAT_SENSE_LT)) {
-			if (sense & EAZEL_SOFTCAT_SENSE_EQ) {
-				if (eazel_package_system_compare_version (package_system, a->version, version)<=0) {
-					version_result = 1;
-				}
-			} else {
-				if (eazel_package_system_compare_version (package_system, a->version, version)<0) {
-					version_result = 1;
-				}
-			}			
+		if ((sense & EAZEL_SOFTCAT_SENSE_LT) && (result < 0)) {
+			version_result = TRUE;
 		}
 	} else {
-		version_result = 1;
+		version_result = TRUE;
 	}
 
-	if (minor) {
-		if (sense & EAZEL_SOFTCAT_SENSE_EQ) {
-			if (eazel_package_system_compare_version (package_system, a->minor, minor)==0) {
-				minor_result = 1;
-			}
+	if (minor != NULL) {
+		result = eazel_package_system_compare_version (package_system, pack->minor, minor);
+		if ((sense & EAZEL_SOFTCAT_SENSE_EQ) && (result == 0)) {
+			minor_result = TRUE;
 		}
-		if ((minor_result==0) && (sense & EAZEL_SOFTCAT_SENSE_GT)) {
-			if (version_result) {
-				minor_result = 1;
-			}			
-		}
-		if ((minor_result==0) && (sense & EAZEL_SOFTCAT_SENSE_LT)) {
-			if (version_result) {
-				minor_result = 1;
-			}			
-		}
+		if ((sense & EAZEL_SOFTCAT_SENSE_GT) && (result > 0)) {
+			minor_result = TRUE;
+		}			
+		if ((sense & EAZEL_SOFTCAT_SENSE_LT) && (result < 0)) {
+			minor_result = TRUE;
+		}			
 	} else {
-		minor_result = 1;
+		minor_result = TRUE;
 	}
 
-	return version_result && minor_result;
+	return (version_result && minor_result);
 }
-
 
 gboolean             
 eazel_package_system_is_installed (EazelPackageSystem *package_system,

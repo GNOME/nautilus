@@ -387,7 +387,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 				trilobite_debug ("%p %s modifies %p %s",
 						 pack, pack->name,
 						 existing_package, existing_package->name);
-#endif		
+#endif
 
 				packagedata_add_pack_to_modifies (pack, existing_package);
 				existing_package->status = PACKAGE_RESOLVED;
@@ -572,6 +572,11 @@ dedupe_foreach_depends (PackageDependency *d,
 	
 	p1 = d->package;
 
+	if (p1->eazel_id == NULL) {
+		/* softcat didn't have this package */
+		return;
+	}
+
 	if (~p1->fillflag & MUST_HAVE) {
 		PackageData *p11;
 		p11 = g_hash_table_lookup (service->private->dedupe_hash, p1->eazel_id);
@@ -660,6 +665,11 @@ is_satisfied (EazelInstall *service,
 		trilobite_debug ("is_satisfied? %p %s", dep->package, dep->package->name);
 #endif
 		key = g_strdup (dep->package->eazel_id);
+	}
+
+	if (key == NULL) {
+		/* softcat didn't find it */
+		return FALSE;
 	}
 
 	previous_check_state = GPOINTER_TO_INT (g_hash_table_lookup (service->private->dep_ok_hash, key));
