@@ -133,6 +133,16 @@ finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
+/* Disable this code for the time being, since its:
+ * a) not working
+ * b) crashes nautilus if the root window has a different
+ *    depth than the nautilus window
+ *
+ * The idea behind the code is to grab the old background pixmap
+ * and temporarily set it as the background for the nautilus window
+ * to avoid flashing before the correct background has been set.
+ */
+#if 0
 static void
 set_gdk_window_background (GdkWindow *window,
 			   gboolean   have_pixel,
@@ -239,6 +249,16 @@ set_window_background (GtkWidget *widget,
 }
 
 static void
+map (GtkWidget *widget)
+{
+	set_window_background (widget, FALSE, FALSE, None, 0);
+	
+	/* Chain up to realize our children */
+	GTK_WIDGET_CLASS (parent_class)->map (widget);
+}
+#endif
+
+static void
 set_wmspec_desktop_hint (GdkWindow *window)
 {
         Atom atom;
@@ -255,6 +275,7 @@ set_wmspec_desktop_hint (GdkWindow *window)
                          XA_ATOM, 32, PropModeReplace,
                          (guchar *) &atom, 1);
 }
+
 
 static void
 realize (GtkWidget *widget)
@@ -275,15 +296,6 @@ realize (GtkWidget *widget)
 }
 
 static void
-map (GtkWidget *widget)
-{
-	set_window_background (widget, FALSE, FALSE, None, 0);
-	
-	/* Chain up to realize our children */
-	GTK_WIDGET_CLASS (parent_class)->map (widget);
-}
-
-static void
 real_add_current_location_to_history_list (NautilusWindow *window)
 {
 	/* Do nothing. The desktop window's location should not
@@ -296,7 +308,10 @@ nautilus_desktop_window_class_init (NautilusDesktopWindowClass *class)
 {
 	G_OBJECT_CLASS (class)->finalize = finalize;
 	GTK_WIDGET_CLASS (class)->realize = realize;
+	/* Disable for now, see above for comments */
+#if 0	
 	GTK_WIDGET_CLASS (class)->map = map;
+#endif
 	NAUTILUS_WINDOW_CLASS (class)->add_current_location_to_history_list 
 		= real_add_current_location_to_history_list;
 }

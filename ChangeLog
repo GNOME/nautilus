@@ -1,5 +1,11 @@
 2002-04-21  Alexander Larsson  <alla@lysator.liu.se>
 
+	* src/nautilus-desktop-window.c (nautilus_desktop_window_class_init):
+	Disable the whole flash-workaround hack since it doesn't work
+	and is causing crashes on solaris.
+
+2002-04-21  Alexander Larsson  <alla@lysator.liu.se>
+
 	* src/nautilus-window.h:
 	* src/nautilus-window-manage-views.c:
 	Only display toplevel window when it's fully constructed.
