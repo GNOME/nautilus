@@ -194,7 +194,7 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
 		/* Strip the suffix for nautilus object xml files. */
 		*editable_text = nautilus_file_get_display_name (file);
 	}
-	
+
 	/* Handle link files specially. */
 	if (nautilus_file_is_nautilus_link (file)) {
 		/* FIXME bugzilla.gnome.org 42531: Does sync. I/O and works only locally. */
@@ -208,8 +208,10 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
 			if (description)
 				*additional_text = g_strdup_printf (" \n%s\n ", description);
 			g_free (description);
-			return;
 		}
+		/* Don't show the normal extra information for desktop files, it doesn't
+		 * make sense. */
+		return;
 	}
 	
 	/* Find out what attributes go below each icon. */
