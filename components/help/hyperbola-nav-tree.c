@@ -3,6 +3,8 @@
 #include "hyperbola-filefmt.h"
 #include <gtk/gtk.h>
 
+#include "hyperbola-nav.h"
+
 typedef struct {
   NautilusView *view_frame;
 
@@ -11,8 +13,6 @@ typedef struct {
 
   gint notify_count;
 } HyperbolaNavigationTree;
-
-BonoboObject *hyperbola_navigation_tree_new(void);
 
 static void hyperbola_navigation_tree_select_row(GtkCTree *ctree,
 						 GtkCTreeNode *node,

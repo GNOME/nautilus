@@ -328,12 +328,12 @@ file_in_info_path (const char *file)
 
                 for (i = 0; info_path_strv [i] != NULL; i++) {
                         if (strncmp (file, info_path_strv[i], strlen (info_path_strv[i])) == 0) {
-                                g_str_freev (info_path_strv);
+                                g_strfreev (info_path_strv);
                                 return TRUE;
                         }
                 }
 
-                g_str_freev (info_path_strv);
+                g_strfreev (info_path_strv);
         }
 
         return FALSE;

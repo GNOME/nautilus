@@ -5,12 +5,7 @@
 #include <gnome.h>
 #include <liboaf/liboaf.h>
 
-/* In hyperbola-nav-tree.c */
-extern BonoboObject *hyperbola_navigation_tree_new(void);
-/* in hyperbola-nav-index.c */
-extern BonoboObject *hyperbola_navigation_index_new(void);
-/* in hyperbola-nav-search.c */
-extern BonoboObject *hyperbola_navigation_search_new(void);
+#include "hyperbola-nav.h"
 
 static int object_count = 0;
 

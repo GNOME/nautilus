@@ -9,6 +9,8 @@
 #include <dirent.h>
 #include <ctype.h>
 
+#include "hyperbola-nav.h"
+
 typedef struct {
   NautilusView*view_frame;
 

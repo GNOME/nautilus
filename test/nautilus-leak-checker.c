@@ -31,6 +31,7 @@
 #include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "nautilus-leak-checker-stubs.h"
 #include "nautilus-leak-hash-table.h"
@@ -255,13 +256,13 @@ nautilus_leak_record_malloc (void *ptr, size_t size)
 	if (hash_table == NULL) {
 		hash_table = nautilus_leak_hash_table_new (10 * 1024);
 	}
-	if (nautilus_leak_hash_table_find (hash_table, (guint)ptr) != NULL) {
+	if (nautilus_leak_hash_table_find (hash_table, (gulong)ptr) != NULL) {
 		printf("*** block %p appears to already be allocated "
 			"- someone must have sneaked a free past us\n", ptr);
-		nautilus_leak_hash_table_remove (hash_table, (guint)ptr);
+		nautilus_leak_hash_table_remove (hash_table, (gulong)ptr);
 	}
 	/* insert a new item into the hash table, using the block address as the key */
-	element = nautilus_leak_hash_table_add (hash_table, (guint)ptr);
+	element = nautilus_leak_hash_table_add (hash_table, (gulong)ptr);
 	
 	/* fill out the new allocated element */
 	nautilus_leak_allocation_record_init (&element->data, ptr, size, trace_array, TRACE_ARRAY_MAX);
@@ -287,22 +288,22 @@ nautilus_leak_record_realloc (void *old_ptr, void *new_ptr, size_t size)
 	/* must have hash table by now */
 	g_assert (hash_table != NULL);
 	/* must have seen the block already */
-	if (nautilus_leak_hash_table_find (hash_table, (guint)old_ptr) == NULL) {
+	if (nautilus_leak_hash_table_find (hash_table, (gulong)old_ptr) == NULL) {
 		printf("*** we haven't seen block %p yet "
 			"- someone must have sneaked a malloc past us\n", old_ptr);
 	} else {
-		nautilus_leak_hash_table_remove (hash_table, (guint)old_ptr);
+		nautilus_leak_hash_table_remove (hash_table, (gulong)old_ptr);
 	}
 
 	/* shouldn't have this block yet */
-	if (nautilus_leak_hash_table_find (hash_table, (guint)new_ptr) != NULL) {
+	if (nautilus_leak_hash_table_find (hash_table, (gulong)new_ptr) != NULL) {
 		printf("*** block %p appears to already be allocated "
 			"- someone must have sneaked a free past us\n", new_ptr);
-		nautilus_leak_hash_table_remove (hash_table, (guint)new_ptr);
+		nautilus_leak_hash_table_remove (hash_table, (gulong)new_ptr);
 	}
 
 	/* insert a new item into the hash table, using the block address as the key */
-	element = nautilus_leak_hash_table_add (hash_table, (guint)new_ptr);
+	element = nautilus_leak_hash_table_add (hash_table, (gulong)new_ptr);
 	
 	/* Fill out the new allocated element.
 	 * This way the last call to relloc will be the stack crawl that shows up in the
@@ -327,11 +328,11 @@ nautilus_leak_record_free (void *ptr)
 	/* must have hash table by now */
 	g_assert (hash_table != NULL);
 	/* must have seen the block already */
-	if (nautilus_leak_hash_table_find (hash_table, (guint)ptr) == NULL) {
+	if (nautilus_leak_hash_table_find (hash_table, (gulong)ptr) == NULL) {
 		printf("*** we haven't seen block %p yet "
 			"- someone must have sneaked a malloc past us\n", ptr);
 	} else {
-		nautilus_leak_hash_table_remove (hash_table, (guint)ptr);
+		nautilus_leak_hash_table_remove (hash_table, (gulong)ptr);
 	}
 	pthread_mutex_unlock (&nautilus_leak_hash_table_mutex);
 
@@ -513,8 +514,8 @@ print_one_leak (NautilusLeakTableEntry *entry, void *context)
 	int index;
 	PrintOneLeakParams *params = (PrintOneLeakParams *)context;
 
-	printf("block %p total_size %d count %d\n", entry->sample_allocation->block,
-		entry->total_size, entry->count);
+	printf("block %p total_size %ld count %d\n", entry->sample_allocation->block,
+		(long)entry->total_size, entry->count);
 
 	for (index = 0; index < params->stack_print_depth; index++) {
 		/* only print stack_grouping worth of stack crawl -

@@ -333,7 +333,7 @@ preferences_hash_node_check_changes_func (gpointer key,
 	g_assert (value != NULL);
 	
 	node = (PreferencesHashNode *) value;
-	old_user_level = (guint) user_data;
+	old_user_level = GPOINTER_TO_UINT (user_data);
 	new_user_level = nautilus_user_level_manager_get_user_level ();
 
 	/* FIXME bugzilla.eazel.com 1273: 
@@ -579,7 +579,7 @@ user_level_changed_callback (GtkObject	*user_level_manager,
 
 	g_hash_table_foreach (GLOBAL.preference_table,
 			      preferences_hash_node_check_changes_func,
-			      (gpointer) GLOBAL.old_user_level);
+			      GUINT_TO_POINTER (GLOBAL.old_user_level));
 
 	GLOBAL.old_user_level = new_user_level;
 }

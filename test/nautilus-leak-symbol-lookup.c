@@ -103,8 +103,14 @@ nautilus_leak_symbol_map_get_offsets (NautilusLeakSymbolLookupMap *map)
 	
 	while (fgets(buffer, 1023, in)) {
 
+/* if long is in fact the int64 type */
+#if G_MAXLONG == 9223372036854775807
+		count = sscanf (buffer, "%lx-%lx %15s %*x %u:%u %lu %255s",
+				&start, &end, perms, &major, &minor, &inode, file);
+#else
 		count = sscanf (buffer, "%Lx-%Lx %15s %*x %u:%u %Lu %255s",
 				&start, &end, perms, &major, &minor, &inode, file);
+#endif
 				
 		if (count >= 6 && strcmp (perms, "r-xp") == 0) {
 			if (stat (file, &entry_stat) != 0) {

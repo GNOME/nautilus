@@ -1,3 +1,38 @@
+Sun Jun 18 02:50:47 2000  George Lebl <jirka@5z.com>
+
+	* components/help/help-method.c (file_in_info_path):
+	  s/g_str_freev/g_strfreev/ as that's the correct glib name
+
+	* components/help/hyperbola-main.c,
+	  components/help/hyperbola-nav-index.c,
+	  components/help/hyperbola-nav-search.c
+	  components/help/hyperbola-nav-tree.c,
+	  components/help/hyperbola-nav.h:  Use hyperbola-nav.h as a header
+	  to put the prototypes from the hyperbola-nav-*.c files.  And
+	  include this file in hyperbola-main.c and hyperbola-nav-*.c
+
+	* libnautilus-extensions/nautilus-global-preferences.c
+	  (global_preferences_register_boolean_with_defaults)
+	  (global_preferences_register_enum_with_defaults),
+	  libnautilus-extensions/nautilus-preferences.c
+	  (preferences_hash_node_check_changes_func)
+	  (user_level_changed_callback):
+	  use GU?INT_TO_POINTER and GPOINTER_TO_U?INT macros to get and pass
+	  ints and uints as pointers.
+
+	* librsvg/rsvg-bpath-util.c, test/nautilus-leak-checker.c:
+	  include <string.h>
+	
+	* test/nautilus-leak-checker.c (nautilus_leak_record_malloc)
+	  (nautilus_leak_record_realloc) (nautilus_leak_record_free)
+	  (print_one_leak):  Store pointers in gulongs not guints and
+	  when printing size_t, cast to long and use %ld.
+
+	* test/nautilus-leak-symbol-lookup.c
+	  (nautilus_leak_symbol_map_get_offsets): When reading in gint64,
+	  check if long is actually 64bit, in which case use %lx otherwise
+	  use %Lx for sscanf.
+
 2000-06-18  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/login/.cvsignore:

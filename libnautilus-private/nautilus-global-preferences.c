@@ -446,9 +446,9 @@ global_preferences_register_boolean_with_defaults (const char	*name,
 	global_preferences_register_with_defaults (name,
 						   description,
 						   NAUTILUS_PREFERENCE_BOOLEAN,
-						   (gconstpointer) novice_default,
-						   (gconstpointer) intermediate_default,
-						   (gconstpointer) hacker_default);
+						   (gconstpointer) GINT_TO_POINTER (novice_default),
+						   (gconstpointer) GINT_TO_POINTER (intermediate_default),
+						   (gconstpointer) GINT_TO_POINTER (hacker_default));
 }
 
 static void
@@ -476,9 +476,9 @@ global_preferences_register_enum_with_defaults (const char	*name,
 	global_preferences_register_with_defaults (name,
 						   description,
 						   NAUTILUS_PREFERENCE_ENUM,
-						   (gconstpointer) novice_default,
-						   (gconstpointer) intermediate_default,
-						   (gconstpointer) hacker_default);
+						   (gconstpointer) GINT_TO_POINTER (novice_default),
+						   (gconstpointer) GINT_TO_POINTER (intermediate_default),
+						   (gconstpointer) GINT_TO_POINTER (hacker_default));
 }
 
 static void
