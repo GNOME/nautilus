@@ -1,5 +1,20 @@
 2000-09-05  Ramiro Estrugo  <ramiro@eazel.com>
 
+	Complete task 1733 - need mozilla component support for grokking
+	eazel: uris.
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize),
+	(nautilus_mozilla_content_view_destroy), (bonobo_mozilla_callback),
+	(mozilla_net_state_callback), (mozilla_open_uri_callback),
+	(mozilla_dom_mouse_click_callback):
+	For mozilla M17, add support for registering the eazel protocol
+	handler.  For mozilla M18, add support for peeking dom events -
+	this is the preffered way to deal with these special uris, however
+	we cant turn this on until mozilla M18 is released.
+
+2000-09-05  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/mozilla/eazel-protocol-handler/eazel-protocol-channel.cpp:
 	Damn, some of this code only builds with mozilla M18.  Updating
 	for that.
