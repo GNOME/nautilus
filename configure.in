@@ -471,6 +471,12 @@ AC_MSG_ERROR([
 
 AM_PATH_GNOME(1.2.8,,AC_MSG_ERROR([*** GNOME 1.2.8 or better is required.]), gnomecanvaspixbuf bonobo bonobox bonobox_print vfs idl)
 
+dnl check for gnome_canvas_set_dither existence
+_libs="$LIBS"
+LIBS=$GNOMEUI_LIBS
+AC_CHECK_FUNCS(gnome_canvas_set_dither)
+LIBS="$_libs"
+
 dnl
 dnl We need the right version of bonobo because
 dnl the IDLs have changed.
