@@ -1,3 +1,12 @@
+2000-09-18  Mathieu Lacage  <mathieu@eazel.com>
+
+	* libnautilus-extensions/nautilus-search-uri.c:
+	(nautilus_self_check_search_uri): fix bug 2378.
+	This was waaaay tougher than I expected: the translation 
+	strings were actually good. The code did an evil cast between 
+	2 slightly different structures which ended in strange 
+	behaviour. Added a test for this. Thanks a lot Rebecca.
+
 2000-09-18  Josh Barrow  <linuxfan@ionet.net>
 
 	* README:

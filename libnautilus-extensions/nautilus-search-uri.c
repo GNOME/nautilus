@@ -190,6 +190,10 @@ struct _operand_criterion_item {
 struct _value_criterion_item {
 	char *id;
 	char *translation;
+        /* this field is there only to make the 3 structures similar enough 
+           so that you can safely cast between them it is a kind of evil hack 
+           but i like it. It is waranteed to be always NULL. */
+	value_criterion_table items; 
 };
 
 
@@ -228,16 +232,21 @@ static operand_criterion_item file_name2_table [] = {
 */
 static value_criterion_item file_type_options3_table [] = {
         {"file",
-         N_("regular files")},
+         N_("regular files"),
+         NULL},
         {"text_file",
-         N_("text files")},
+         N_("text files"),
+         NULL},
         {"application",
-         N_("applications")},
+         N_("applications"),
+         NULL},
         {"directory",
-         N_("directories")},
+         N_("directories"),
+         NULL},
         {"music",
-         N_("music")},
-        {NULL, NULL}
+         N_("music"),
+         NULL},
+        {NULL, NULL, NULL}
 };
 static operand_criterion_item file_type2_table [] = {
         /* this one is not yet implemented in medusa */
@@ -701,6 +710,9 @@ nautilus_self_check_search_uri (void)
                                                                     " & size smaller_than 2000"), 
                                       _("Items that have \"stuff\" in the name, are regular files and that are "
                                         "smaller than 2000 bytes."));
+        NAUTILUS_CHECK_STRING_RESULT (nautilus_search_uri_to_human ("search:[][]file_name contains medusa & file_type is directory"), 
+                                      _("Items that have \"medusa\" in the name and are "
+                                        "directories."));
         
         /* is_search_uri */
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_is_search_uri (""), FALSE);
