@@ -1,3 +1,76 @@
+2000-02-18  John Sullivan  <sullivan@eazel.com>
+
+	Made bookmarks (including in history list) for file system
+	items display just the name of the file or directory instead
+	of the entire path. Made history list appear in Go menu.
+	Still need to muck with CORBA so that history metaview is
+	getting the history list from Nautilus rather than 
+	maintaining its own parallel copy.
+
+	* libnautilus/nautilus-bookmark.h:
+	(nautilus_bookmark_new_with_name): Renamed this function, which
+	takes both a uri and a display name, from nautilus_bookmark_new.
+	(nautilus_bookmark_new): New function, takes just a uri.
+	
+	* libnautilus/nautilus-bookmark.c:
+	(nautilus_boookmark_new_with_name): Renamed.
+	(nautilus_bookmark_new): New function, determines what initial
+	name to use for a bookmark given its uri. Right now the only rule
+	it knows is to use just the leaf file/directory name for file
+	system uris. (Someday it should also know to get the page title
+	for web uris.)
+
+	* libnautilus/nautilus-bookmark.c,
+	* components/history/ntl-history-view.c,
+	* src/nautilus-bookmarklist.c,
+	* src/nautilus-bookmarks-menu.c,
+	* src/nautilus-bookmarks-window.c,
+	* src/ntl-window-msgs.c:
+	Updated callers of old nautilus_bookmark_new to either use new
+	one-parameter version or to use nautilus_bookmark_new_with_name.
+	
+	* libnautilus/nautilus-directory.c: (nautilus_self_check_directory):
+	Added new test that catches gnome-vfs bug I ran into where the name
+	computed for uris with a trailing slash is "". Maciej plans to fix
+	this in gnome-vfs; for now, make check catches it.
+
+	* src/nautilus-signaller.c,
+	* src/nautilus-signaller.h: New files for an object that manages
+	nautilus-wide signals (not associated with a particular window, e.g.).
+	The initial nautilus-wide signal is "history_list_changed".
+	* src/Makefile.am: Build these two new files.
+	
+	* src/ntl-window.h:
+	Removed window_signals from NautilusWindowClass struct, made it a static
+	variable in the file to better hide it and match existing practice;
+	Added go_menu and go_menu_separator_item widgets to the set maintained
+	for each window. (This will have to change when I convert the menus
+	to using BonoboUIHandler, but that's for another day.)
+	* src/ntl-window.c:
+	I added then later removed a signal to this class. In the process, I
+	cleaned up some of the signal-handling details: Added an enum for
+	signal names (currently only LAST_SIGNAL); moved array of signals to
+	a static variable instead of field in Class struct; used LAST_SIGNAL
+	instead of 0 in (nautilus_window_class_init).
+	Added static history_list variable. Perhaps this and related functions
+	belong in their own file.
+	(nautilus_add_to_history_list): New function, updates global history
+	list and emits "history_list_changed" signal.
+	(clear_go_menu_history): New function, erase all the bookmark menu
+	items from the Go menu.
+	(activate_bookmark_in_menu_item): New function, go to the uri in the
+	bookmark stored as user data in the given menu item.
+	(history_list_changed_cb): New function, updates history section of 
+	Go menu.
+	(nautilus_window_init): Connect history_list_changed_cb to 
+	"history_list_changed" signal of nautilus_signaller object.
+	(nautilus_window_constructed): Stores away pointers to Go menu and
+	separator between static & dynamic parts of this menu.	
+	* src/ntl-window-private.h: (nautilus_add_to_history_list): Prototype
+	for new function.
+	* src/ntl-window-msgs.c: (nautilus_window_update_internals): Call
+	nautilus_add_to_history_list with the new uri.
+
 2000-02-17  Andy Hertzfeld <andy@eazel.com>
 
 	improved index panel command buttons.  There's still a problem with the button box removal, though.

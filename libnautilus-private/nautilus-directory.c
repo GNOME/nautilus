@@ -1922,6 +1922,14 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("%25"), "%2525");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_escape_slashes ("%2F"), "%252F");
 
+	file_1 = nautilus_file_get ("file:///home/");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "home");
+	nautilus_file_unref (file_1);
+
+	file_1 = nautilus_file_get ("file:///home");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "home");
+	nautilus_file_unref (file_1);
+
 	/* sorting */
 	file_1 = nautilus_file_get ("file:///etc");
 	file_2 = nautilus_file_get ("file:///usr");
@@ -1932,6 +1940,9 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_2, NAUTILUS_FILE_SORT_BY_NAME) < 0, TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort_reversed (file_1, file_2, NAUTILUS_FILE_SORT_BY_NAME) > 0, TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME) == 0, TRUE);
+
+	nautilus_file_unref (file_1);
+	nautilus_file_unref (file_2);
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

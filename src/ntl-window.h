@@ -43,10 +43,7 @@ typedef struct _NautilusWindow NautilusWindow;
 
 typedef struct {
   GnomeAppClass parent_spot;
-
   GnomeAppClass *parent_class;
-
-  guint window_signals[0];
 } NautilusWindowClass;
 
 typedef struct _NautilusWindowStateInfo NautilusWindowStateInfo;
@@ -71,7 +68,9 @@ struct _NautilusWindow {
   Nautilus_NavigationInfo *ni;
   Nautilus_SelectionInfo *si;
   
-  /* Back/Forward chain stuff. The data in these lists are NautilusBookmark pointers. */
+  /* Back/Forward chain, and history list. 
+   * The data in these lists are NautilusBookmark pointers. 
+   */
   GSList *back_list, *forward_list;
 
   /* Current views stuff */
@@ -87,6 +86,8 @@ struct _NautilusWindow {
   GtkWidget *back_menu_item;
   GtkWidget *forward_menu_item;
   GtkWidget *up_menu_item;
+  GtkWidget *go_menu;
+  GtkWidget *go_menu_separator_item;
 
   /* Pending changes */
   NautilusNavigationInfo *pending_ni;

@@ -31,19 +31,32 @@
 #include <math.h>
 #include "nautilus.h"
 #include "nautilus-bookmarks-menu.h"
+#include "nautilus-signaller.h"
 #include "explorer-location-bar.h"
 #include "ntl-index-panel.h"
 #include "ntl-window-private.h"
 #include "ntl-miniicon.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libnautilus/nautilus-gtk-extensions.h>
+#include <libnautilus/nautilus-string.h>
 #include "nautilus-zoom-control.h"
 #include <ctype.h>
+
+enum
+{
+	LAST_SIGNAL
+};
 
 static void nautilus_window_realize (GtkWidget *widget);
 static void nautilus_window_real_set_content_view (NautilusWindow *window, NautilusView *new_view);
 
+/* Object framework static variables */
 static GnomeAppClass *parent_class = NULL;
+static guint window_signals[LAST_SIGNAL];
+
+/* Other static variables */
+static GSList *history_list = NULL;
+
 
 /* Stuff for handling the CORBA interface */
 typedef struct {
@@ -224,6 +237,7 @@ static GnomeUIInfo edit_menu_info[] = {
 #define GO_MENU_FORWARD_ITEM_INDEX	1
 #define GO_MENU_UP_ITEM_INDEX		2
 #define GO_MENU_HOME_ITEM_INDEX		3
+#define GO_MENU_SEPARATOR_ITEM_INDEX	4
 static GnomeUIInfo go_menu_info[] = {
   {
     GNOME_APP_UI_ITEM,
@@ -253,7 +267,7 @@ static GnomeUIInfo go_menu_info[] = {
     GNOME_APP_PIXMAP_NONE, NULL,
     'H', GDK_CONTROL_MASK, NULL
   },
-/*  GNOMEUIINFO_SEPARATOR, */ /* FIXME: Uncomment separator when history list added. */
+  GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_END
 };
 
@@ -278,6 +292,7 @@ static GnomeUIInfo debug_menu_info [] = {
 };
 
 
+#define GO_MENU_INDEX		2
 #define BOOKMARKS_MENU_INDEX	3
 static GnomeUIInfo main_menu[] = {
   GNOMEUIINFO_MENU_FILE_TREE (file_menu_info),
@@ -322,6 +337,89 @@ static GnomeUIInfo toolbar_info[] = {
    nautilus_window_stop, GNOME_STOCK_PIXMAP_STOP),
   GNOMEUIINFO_END
 };
+
+static void
+clear_go_menu_history (NautilusWindow *window)
+{
+	GList *children;
+	GList *iterator;
+	GtkMenu *go_menu;
+	gboolean found_dynamic_items;
+
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	go_menu = GTK_MENU (window->go_menu);
+
+	/* Remove all the old history items */
+	children = gtk_container_children (GTK_CONTAINER (go_menu));
+	iterator = children;
+	found_dynamic_items = FALSE;
+
+	while (iterator != NULL)
+	{
+		if (found_dynamic_items)
+		{
+			gtk_container_remove (GTK_CONTAINER (go_menu), iterator->data);
+		}
+		else if (iterator->data == window->go_menu_separator_item)
+		{
+			found_dynamic_items = TRUE;
+		}
+		iterator = g_list_next (iterator);
+	}
+
+	g_assert (found_dynamic_items);
+	g_list_free (children);
+}
+
+static void
+activate_bookmark_in_menu_item (GtkMenuItem *menu_item, NautilusWindow *window)
+{
+	g_assert (GTK_IS_MENU_ITEM (menu_item));
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (NAUTILUS_IS_BOOKMARK (gtk_object_get_user_data (GTK_OBJECT (menu_item))));
+
+	nautilus_window_goto_uri (window, nautilus_bookmark_get_uri (
+		NAUTILUS_BOOKMARK (gtk_object_get_user_data (GTK_OBJECT (menu_item)))));
+}
+
+static void
+history_list_changed_cb (NautilusSignaller *signaller,
+			 NautilusWindow *window)
+{
+	GSList *iterator;
+	GtkMenu *go_menu;
+
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	/* Remove old set of history items. */
+	clear_go_menu_history (window);
+
+	go_menu = GTK_MENU (window->go_menu);
+
+	/* Add in a new set of history items. */
+	for (iterator = history_list; iterator != NULL; iterator = g_slist_next (iterator))
+	{
+		NautilusBookmark *bookmark;
+		GtkWidget *menu_item;
+
+		bookmark = NAUTILUS_BOOKMARK (iterator->data);
+		menu_item = nautilus_bookmark_menu_item_new (bookmark);
+		/* Store the history list's bookmark in the menu item's data.
+		 * The menu item holds no ref, but that's OK because the
+		 * history list owns the bookmark and the menu item will be
+		 * destroyed when the history list changes.
+		 */
+		gtk_object_set_user_data (GTK_OBJECT (menu_item), bookmark);
+		gtk_widget_show (GTK_WIDGET (menu_item));
+  		gtk_signal_connect(GTK_OBJECT(menu_item), 
+  			"activate",
+                     	activate_bookmark_in_menu_item, 
+                     	window);
+		
+		gtk_menu_append (go_menu, menu_item);
+	}	
+}
 
 	
 GtkType
@@ -380,7 +478,6 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 {
   GtkObjectClass *object_class;
   GtkWidgetClass *widget_class;
-  int i;
 
   parent_class = gtk_type_class(gnome_app_get_type());
   
@@ -392,8 +489,7 @@ nautilus_window_class_init (NautilusWindowClass *klass)
   widget_class = (GtkWidgetClass*) klass;
   klass->parent_class = gtk_type_class (gtk_type_parent (object_class->type));
 
-  i = 0;
-  gtk_object_class_add_signals (object_class, klass->window_signals, i);
+  gtk_object_class_add_signals (object_class, window_signals, LAST_SIGNAL);
 
   gtk_object_add_arg_type ("NautilusWindow::app_id",
 			   GTK_TYPE_STRING,
@@ -412,6 +508,12 @@ static void
 nautilus_window_init (NautilusWindow *window)
 {
   gtk_quit_add_destroy (1, GTK_OBJECT (window));
+
+  gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_signaller_get_current ()),
+  				  "history_list_changed",
+  				  history_list_changed_cb,
+  				  window,
+  				  GTK_OBJECT (window));
 }
 
 static gboolean
@@ -676,9 +778,12 @@ nautilus_window_constructed(NautilusWindow *window)
   window->reload_button = toolbar_info[TOOLBAR_RELOAD_BUTTON_INDEX].widget;
   window->stop_button = toolbar_info[TOOLBAR_STOP_BUTTON_INDEX].widget;
 
+  window->go_menu = GTK_MENU_ITEM (main_menu[GO_MENU_INDEX].widget)->submenu;
+
   window->back_menu_item = go_menu_info[GO_MENU_BACK_ITEM_INDEX].widget;
   window->forward_menu_item = go_menu_info[GO_MENU_FORWARD_ITEM_INDEX].widget;
   window->up_menu_item = go_menu_info[GO_MENU_UP_ITEM_INDEX].widget;
+  window->go_menu_separator_item = go_menu_info[GO_MENU_SEPARATOR_ITEM_INDEX].widget;
 
   gtk_signal_connect (GTK_OBJECT (window->back_button),
 		      "button_press_event",
@@ -1102,6 +1207,43 @@ nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 {
   gtk_widget_set_sensitive(window->stop_button, allow); 
 }
+
+void
+nautilus_add_to_history_list (const char *uri)
+{
+	/* Note that the history is shared amongst all windows so
+	 * this is not a NautilusWindow function. Perhaps it belongs
+	 * in its own file.
+	 */
+	NautilusBookmark *bookmark;
+	GSList *found_link;
+
+	g_return_if_fail (nautilus_strlen(uri) > 0);
+
+	bookmark = nautilus_bookmark_new (uri);
+
+	found_link = g_slist_find_custom (history_list, 
+					  bookmark,
+					  nautilus_bookmark_compare_with);
+	
+	/* Remove any older entry for this same item. There can be at most 1. */
+	if (found_link != NULL)
+	{
+		gtk_object_unref (found_link->data);
+		history_list = g_slist_remove_link (history_list, found_link);
+	}
+
+	/* New item goes first. */
+	history_list = g_slist_prepend(history_list, bookmark);
+
+	/* Tell world that history list has changed. At least all the
+	 * NautilusWindows (not just this one) are listening.
+	 */
+	gtk_signal_emit_by_name (GTK_OBJECT (nautilus_signaller_get_current ()),
+			 	 "history_list_changed");
+}
+
+
 
 
 static void

@@ -34,6 +34,8 @@ nautilus_SOURCES=			\
         nautilus-index-title.h		\
         nautilus-self-check-functions.c \
         nautilus-self-check-functions.h \
+	nautilus-signaller.c		\
+	nautilus-signaller.h		\
 	nautilus-zoom-control.c		\
 	nautilus-zoom-control.h		\
 	ntl-app.c			\

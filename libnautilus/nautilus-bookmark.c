@@ -24,6 +24,10 @@
 
 #include "nautilus-bookmark.h"
 #include "nautilus-icon-factory.h"
+#include "nautilus-string.h"
+
+#include <libgnomevfs/gnome-vfs-types.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
 
 struct _NautilusBookmarkDetails
 {
@@ -153,9 +157,9 @@ nautilus_bookmark_copy (const NautilusBookmark *bookmark)
 {
 	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
-	return nautilus_bookmark_new(
-			nautilus_bookmark_get_name(bookmark),
-			nautilus_bookmark_get_uri(bookmark));
+	return nautilus_bookmark_new_with_name(
+			nautilus_bookmark_get_uri(bookmark),
+			nautilus_bookmark_get_name(bookmark));
 }
 
 const gchar *
@@ -207,8 +211,18 @@ nautilus_bookmark_get_uri (const NautilusBookmark *bookmark)
 	return bookmark->details->uri;
 }
 
+/**
+ * nautilus_bookmark_new_with_name:
+ *
+ * Create a new NautilusBookmark from a text uri and a display name.
+ * @uri: Any uri, even a malformed or non-existent one.
+ * @name: A string to display to the user as the bookmark's name.
+ * 
+ * Return value: A newly allocated NautilusBookmark.
+ * 
+ **/
 NautilusBookmark *
-nautilus_bookmark_new (const gchar *name, const gchar *uri)
+nautilus_bookmark_new_with_name (const gchar *uri, const gchar *name)
 {
 	NautilusBookmark *new_bookmark;
 
@@ -218,6 +232,55 @@ nautilus_bookmark_new (const gchar *name, const gchar *uri)
 	new_bookmark->details->uri = g_strdup(uri);
 
 	return new_bookmark;
+}
+
+/**
+ * nautilus_bookmark_new:
+ *
+ * Create a new NautilusBookmark from just a text uri.
+ * @uri: Any uri, even a malformed or non-existent one.
+ * 
+ * Return value: A newly allocated NautilusBookmark, whose display
+ * name is chosen using default rules based on the uri.
+ * 
+ **/
+NautilusBookmark *
+nautilus_bookmark_new (const gchar *uri)
+{
+	/* Use default rules to determine the displayed name */
+
+	NautilusBookmark *result;
+	GnomeVFSURI *vfs_uri;
+
+	result = NULL;
+	
+	/* For now, the only default rule is to use the file/directory name
+	 * rather than the whole path. */
+	/* FIXME: This needs to do better (use just file names for file:// urls,
+	 * use page names for http://, etc.)
+	 */
+
+	vfs_uri = gnome_vfs_uri_new (uri);
+	if (vfs_uri != NULL)
+	{
+		if (strcmp (vfs_uri->method_string, "file") == 0)
+		{
+			gchar *short_name;
+
+			short_name = gnome_vfs_uri_extract_short_name (vfs_uri);
+			result = nautilus_bookmark_new_with_name (uri, short_name);
+			g_free (short_name);
+		}
+		
+		gnome_vfs_uri_unref (vfs_uri);
+	}
+
+	if (result == NULL)
+	{
+		result = nautilus_bookmark_new_with_name (uri, uri);
+	}
+
+	return result;
 }
 
 static GtkWidget *
@@ -242,7 +305,7 @@ create_pixmap_widget_for_bookmark (const NautilusBookmark *bookmark)
  * 
  * Return a menu item representing a bookmark.
  * @bookmark: The bookmark the menu item represents.
- * Return value: A newly-created bookmark.
+ * Return value: A newly-created bookmark, not yet shown.
  **/ 
 GtkWidget *
 nautilus_bookmark_menu_item_new (const NautilusBookmark *bookmark)

@@ -108,8 +108,7 @@ add_bookmark_cb(GtkMenuItem* item, gpointer func_data)
 
 	current_uri = nautilus_window_get_requested_uri(bookmarks_menu->window);
 
-	/* FIXME: initial name should be extracted from http document title (e.g.) */
-	bookmark = nautilus_bookmark_new(current_uri, current_uri);
+	bookmark = nautilus_bookmark_new(current_uri);
 
 	if (!nautilus_bookmarklist_contains(bookmarks, bookmark))
 	{

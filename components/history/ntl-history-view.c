@@ -99,7 +99,7 @@ hyperbola_navigation_history_notify_location_change (NautilusViewFrame *view,
   clist = hview->clist;
   gtk_clist_freeze(clist);
 
-  bookmark = nautilus_bookmark_new (loci->requested_uri, loci->requested_uri);
+  bookmark = nautilus_bookmark_new (loci->requested_uri);
 
   /* If a bookmark for this location was already in list, remove it
    * (no duplicates in list, new one goes at top)

@@ -468,9 +468,9 @@ on_text_field_focus_out_event (GtkWidget     *widget,
 		g_assert(GTK_IS_ENTRY(name_field));
 		g_assert(GTK_IS_ENTRY(uri_field));
 
-		bookmark = nautilus_bookmark_new(
-			gtk_entry_get_text(GTK_ENTRY(name_field)),
-			gtk_entry_get_text(GTK_ENTRY(uri_field)));
+		bookmark = nautilus_bookmark_new_with_name (
+			gtk_entry_get_text(GTK_ENTRY(uri_field)),
+			gtk_entry_get_text(GTK_ENTRY(name_field)));
 		selected_row = get_selected_row();
 
 		/* turn off list updating 'cuz otherwise the list-reordering code runs

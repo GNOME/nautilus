@@ -190,26 +190,27 @@ nautilus_window_update_internals(NautilusWindow *window, NautilusNavigationInfo 
       /* Maintain history lists. */
       if(!window->is_reload)
         {
+	  nautilus_add_to_history_list (loci->navinfo.requested_uri);
+        
           if (window->is_back)
             {
-              /* Going back. Remove one item from the prev list and add the current item to the next list. */
-
+              /* Going back. Remove one item from the back list and 
+               * add the current item to the forward list. 
+               */
               g_assert(window->back_list);
               g_assert(!strcmp(nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (window->back_list->data)), loci->navinfo.requested_uri));
               g_assert(window->ni);
 
-	      /* FIXME: should get the title for the document a better way, so it is web page title, e.g. */		
               window->forward_list = g_slist_prepend(window->forward_list, 
-						     nautilus_bookmark_new (window->ni->requested_uri,
-									    window->ni->requested_uri));
+						     nautilus_bookmark_new (window->ni->requested_uri));
               gtk_object_unref(window->back_list->data);
               window->back_list = g_slist_remove_link(window->back_list, window->back_list);
             }
           else
             {
               /* Not going back. Could be an arbitrary new uri, or could be going forward in the forward list. 
-               * Remove one item from the next if it's the same as the the request.
-               * Otherwise, clobber the entire next list. FIXME: This is not quite correct behavior (doesn't
+               * Remove one item from the forward list if it's the same as the request.
+               * Otherwise, clobber the entire forward list. FIXME: This is not quite correct behavior (doesn't
                * match web browsers) because it doesn't distinguish between using the Forward button or list
                * to move in the Forward chain and coincidentally visiting a site that happens to be in the
                * Forward chain.
@@ -229,11 +230,12 @@ nautilus_window_update_internals(NautilusWindow *window, NautilusNavigationInfo 
                     }
                 }
 
-	      /* FIXME: should get the title for the document a better way, so it is web page title, e.g. */		
               if (window->ni)
+                {
+                  /* Store bookmark for current location in back list, unless there is no current location */
                   window->back_list = g_slist_prepend(window->back_list, 
-						       nautilus_bookmark_new (window->ni->requested_uri,
-						       			      window->ni->requested_uri));
+						      nautilus_bookmark_new (window->ni->requested_uri));
+		}
             }
         }
 
