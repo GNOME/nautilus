@@ -73,7 +73,8 @@
 #define ERROR_SYMBOL_X	67
 #define ERROR_SYMBOL_Y  59
 
-#define ASSUMED_MAX_DOWNLOAD	(50*1024*1024)		/* 50MB assumed to be the max downloaded */
+#define ASSUMED_MAX_DOWNLOAD	(75*1024*1024)		/* 75MB assumed to be the max downloaded */
+			 	/* yes, virginia, people actually broke the 50MB limit! */
 
 #define ERROR_NEED_TO_SET_PROXY _("I can't reach the Eazel servers.  This could be because the\n" \
 				  "Eazel servers are down, or more likely, because you need to\n" \
@@ -687,19 +688,20 @@ eazel_download_progress (EazelInstall *service,
 }
 
 static void
-get_detailed_errors_foreach (const PackageData *pack, GList **error_list)
+get_detailed_errors_foreach (const PackageData *pack, EazelInstaller *installer)
 {
 	char *message = NULL;
 	char *required;
+	gboolean recoverable_error = FALSE;
 
-	required = g_strdup_printf ("%s v. %s", pack->name, pack->version);
-	if (required == NULL) {
+	if (pack->name != NULL) {
+		required = g_strdup_printf ("%s v. %s", pack->name, pack->version);
+	} else if (pack->eazel_id != NULL) {
 		required = g_strdup (pack->eazel_id);
-	}
-	if (required == NULL) {
+	} else if (pack->provides->data != NULL) {
 		required = g_strdup (pack->provides->data);
-	}
-	if (required == NULL) {
+	} else {
+		/* what the--?!  WHO ARE YOU! */
 		required = g_strdup ("another package");
 	}
 
@@ -710,12 +712,17 @@ get_detailed_errors_foreach (const PackageData *pack, GList **error_list)
 		break;
 	case PACKAGE_FILE_CONFLICT:
 		message = g_strdup_printf (_("%s had a file conflict"), required);
+		if (pack->name != NULL) {
+			recoverable_error = TRUE;
+			installer->additional_packages = g_list_prepend (installer->additional_packages, pack->name);
+		}
 		break;
 	case PACKAGE_DEPENDENCY_FAIL:
 		if (pack->soft_depends || pack->hard_depends) {
 			/* only add this message if it's not going to be explained by a lower dependency */
 			/* (avoids redundant info like "nautilus would not work anymore" -- DUH) */
 			message = g_strdup_printf (_("%s requires the following :"), pack->name);
+			recoverable_error = TRUE;
 		}
 		break;
 	case PACKAGE_BREAKS_DEPENDENCY:
@@ -724,7 +731,7 @@ get_detailed_errors_foreach (const PackageData *pack, GList **error_list)
 	case PACKAGE_INVALID:
 		break;
 	case PACKAGE_CANNOT_OPEN:
-		message = g_strdup_printf (_("%s is needed, but could not be found"), required);
+		message = g_strdup_printf (_("%s is needed, but could not be found on Eazel's servers"), required);
 		break;
 	case PACKAGE_PARTLY_RESOLVED:
 		break;
@@ -732,21 +739,25 @@ get_detailed_errors_foreach (const PackageData *pack, GList **error_list)
 		message = g_strdup_printf (_("%s was already installed"), required);
 		break;
 	case PACKAGE_CIRCULAR_DEPENDENCY:
-		message = g_strdup_printf (_("%s causes a circular dependency problem\n"), required);
+		message = g_strdup_printf (_("%s causes a circular dependency problem"), required);
 		break;
 	case PACKAGE_RESOLVED:
 		break;
 	}
 
 	g_free (required);
+
+	if (! recoverable_error) {
+		installer->all_errors_are_recoverable = FALSE;
+	}
 	
 	if (message != NULL) {
-		*error_list = g_list_append (*error_list, message);
+		installer->failure_info = g_list_append (installer->failure_info, message);
 	}
-	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_errors_foreach, error_list);
-	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_errors_foreach, error_list);
-	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, error_list);
-	g_list_foreach (pack->breaks, (GFunc)get_detailed_errors_foreach, error_list);
+	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_errors_foreach, installer);
+	g_list_foreach (pack->hard_depends, (GFunc)get_detailed_errors_foreach, installer);
+	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, installer);
+	g_list_foreach (pack->breaks, (GFunc)get_detailed_errors_foreach, installer);
 }
 
 static void
@@ -754,6 +765,9 @@ get_detailed_errors (const PackageData *pack, EazelInstaller *installer)
 {
 	GtkLabel *label_single;
 	char *temp;
+
+	installer->all_errors_are_recoverable = TRUE;
+	installer->additional_packages = NULL;
 
 	/* if a top-level package is already installed, it isn't really an "error" -- just a bug in the
 	 * libeazelinstall impl. */
@@ -765,7 +779,7 @@ get_detailed_errors (const PackageData *pack, EazelInstaller *installer)
 		return;
 	}
 
-	get_detailed_errors_foreach (pack, &(installer->failure_info));
+	get_detailed_errors_foreach (pack, installer);
 }
 
 static void
@@ -1159,6 +1173,19 @@ eazel_installer_do_install (EazelInstaller *installer, GList *install_categories
 			for (iter = g_list_first (installer->failure_info); iter != NULL; iter = g_list_next (iter)) {
 				LOG_DEBUG (("ERROR : %s\n", (char *)(iter->data)));
 			}
+		}
+		if (installer->all_errors_are_recoverable) {
+			/* FIXME robey */
+			installer->failure_info = g_list_prepend (installer->failure_info,
+								  "Hey, I think we could recover from these errors!");
+			while (installer->additional_packages) {
+				installer->failure_info = g_list_prepend (installer->failure_info,
+									  installer->additional_packages->data);
+				installer->additional_packages = g_list_remove (installer->additional_packages,
+										installer->additional_packages->data);
+			}
+			installer->failure_info = g_list_prepend (installer->failure_info,
+								  "Hey, I think we could recover from these errors!");
 		}
 		jump_to_error_page (installer, installer->failure_info, ERROR_LABEL);
 	}

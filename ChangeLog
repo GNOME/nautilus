@@ -1,3 +1,16 @@
+2000-10-11  Robey Pointer  <robey@eazel.com>
+
+	* nautilus-installer/src/installer.c:
+	(get_detailed_errors_foreach), (get_detailed_errors),
+	(eazel_installer_do_install):
+	* nautilus-installer/src/installer.h:
+	* nautilus-installer/src/link.sh:
+
+	Increase the assumed max download to 75MB so the progressbar
+	doesn't overflow (yes, some people are downloading over 50MB!).
+	Add preliminary support for recoverable install errors (we notice
+	it but don't do anything yet).  Add "push" command to linker.
+
 2000-10-11  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/sample/Makefile.am:

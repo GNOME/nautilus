@@ -71,6 +71,12 @@ struct _EazelInstaller
 
 	unsigned long total_bytes_downloaded;
 	unsigned long last_KB;
+
+	/* if all errors during an install are because we would break other packages, we
+	 * can try upgrading those packages.  this is the list of packages to try.
+	 */
+	gboolean all_errors_are_recoverable;
+	GList *additional_packages;
 };
 
 GtkType            eazel_installer_get_type(void);
