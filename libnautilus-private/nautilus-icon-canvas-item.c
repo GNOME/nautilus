@@ -134,6 +134,16 @@ typedef enum {
 	TOP_SIDE
 } RectangleSide;
 
+enum {
+	ACTION_OPEN,
+	ACTION_MENU,
+	LAST_ACTION
+};
+
+typedef struct {
+        char *action_descriptions[LAST_ACTION];
+} NautilusIconCanvasItemAccessiblePrivate;
+
 typedef struct {
 	NautilusIconCanvasItem *icon_item;
 	ArtIRect icon_rect;
@@ -196,6 +206,21 @@ static void      draw_embedded_text                  (NautilusIconCanvasItem    
 
 static NautilusIconCanvasItemClass *parent_class = NULL;
 static gpointer accessible_parent_class = NULL;
+
+static GQuark accessible_private_data_quark = 0;
+
+static const char *nautilus_icon_canvas_item_accessible_action_names[] = {
+        "open",
+        "menu",
+        NULL
+};
+
+static const char *nautilus_icon_canvas_item_accessible_action_descriptions[] = {
+        "Open item",
+        "Popup context menu",
+        NULL
+};
+
 
 /* Object initialization function for the icon item. */
 static void
@@ -2009,6 +2034,134 @@ nautilus_icon_canvas_item_get_max_text_width (NautilusIconCanvasItem *item)
 
 }
 
+/* NautilusIconCanvasItemAccessible */
+
+static NautilusIconCanvasItemAccessiblePrivate *
+accessible_get_priv (AtkObject *accessible)
+{
+        NautilusIconCanvasItemAccessiblePrivate *priv;
+
+        priv = g_object_get_qdata (G_OBJECT (accessible),
+                                   accessible_private_data_quark);
+
+        return priv;
+}
+
+/* AtkAction interface */
+
+static gboolean
+nautilus_icon_canvas_item_accessible_do_action (AtkAction *accessible, int i)
+{
+	NautilusIconCanvasItem *item;
+	NautilusIcon *icon;
+	NautilusIconContainer *container;
+	GList* selection;
+	GList file_list;
+        GdkEventButton button_event = { 0 };
+
+	g_return_val_if_fail (i < LAST_ACTION, FALSE);
+
+	item = eel_accessibility_get_gobject (ATK_OBJECT (accessible));
+	if (!item) {
+		return FALSE;
+	}
+	icon = item->user_data;
+	container = NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
+	switch (i) {
+	case ACTION_OPEN:
+		file_list.data = icon->data;
+		file_list.next = NULL;
+		file_list.prev = NULL;
+        	g_signal_emit_by_name (container, "activate", &file_list);
+		break;
+	case ACTION_MENU:
+		selection = nautilus_icon_container_get_selection (container);
+		if (selection == NULL ||
+		    g_list_length (selection) != 1 ||
+ 		    selection->data != icon->data)  {
+			g_list_free (selection);
+			return FALSE;
+		}
+		g_list_free (selection);
+        	g_signal_emit_by_name (container, "context_click_selection", &button_event);
+		break;
+        default :
+                g_warning ("Invalid action passed to NautilusIconCanvasItemAccessible::do_action");
+                return FALSE;
+        }
+
+	return TRUE;
+}
+
+static int
+nautilus_icon_canvas_item_accessible_get_n_actions (AtkAction *accessible)
+{
+	return LAST_ACTION;
+}
+
+static const char *
+nautilus_icon_canvas_item_accessible_action_get_description (AtkAction *accessible,
+                                                             int i)
+{
+	NautilusIconCanvasItemAccessiblePrivate *priv;
+
+	g_return_val_if_fail (i < LAST_ACTION, NULL);
+
+	priv = accessible_get_priv (ATK_OBJECT (accessible));
+	if (priv->action_descriptions[i]) {
+		return priv->action_descriptions[i];
+	} else {
+		return nautilus_icon_canvas_item_accessible_action_descriptions[i];
+	}
+}
+
+static const char *
+nautilus_icon_canvas_item_accessible_action_get_name (AtkAction *accessible, int i)
+{
+	g_return_val_if_fail (i < LAST_ACTION, NULL);
+
+	return nautilus_icon_canvas_item_accessible_action_names[i];
+}
+
+static const char *
+nautilus_icon_canvas_item_accessible_action_get_keybinding (AtkAction *accessible,
+                                                          int i)
+{
+	g_return_val_if_fail (i < LAST_ACTION, NULL);
+
+	return NULL;
+}
+
+static gboolean
+nautilus_icon_canvas_item_accessible_action_set_description (AtkAction *accessible,
+                                                           int i,
+                                                           const char *description)
+{
+	NautilusIconCanvasItemAccessiblePrivate *priv;
+
+	g_return_val_if_fail (i < LAST_ACTION, FALSE);
+
+	priv = accessible_get_priv (ATK_OBJECT (accessible));
+
+	if (priv->action_descriptions[i]) {
+		g_free (priv->action_descriptions[i]);
+	}
+	priv->action_descriptions[i] = g_strdup (description);
+
+	return FALSE;
+}
+
+static void
+nautilus_icon_canvas_item_accessible_action_interface_init (AtkActionIface *iface)
+{
+	iface->do_action = nautilus_icon_canvas_item_accessible_do_action;
+	iface->get_n_actions = nautilus_icon_canvas_item_accessible_get_n_actions;
+	iface->get_description = nautilus_icon_canvas_item_accessible_action_get_description;
+	iface->get_keybinding = nautilus_icon_canvas_item_accessible_action_get_keybinding;
+	iface->get_name = nautilus_icon_canvas_item_accessible_action_get_name;
+	iface->set_description = nautilus_icon_canvas_item_accessible_action_set_description;
+}
+
 static G_CONST_RETURN gchar *
 nautilus_icon_canvas_item_accessible_get_name (AtkObject *accessible)
 {
@@ -2130,15 +2283,57 @@ nautilus_icon_canvas_item_accessible_ref_state_set (AtkObject *accessible)
 }
 
 static void
+nautilus_icon_canvas_item_accessible_initialize (AtkObject *accessible,
+                                                 gpointer data)
+{
+	NautilusIconCanvasItem *item;
+        NautilusIconCanvasItemAccessiblePrivate *priv;
+
+        if (ATK_OBJECT_CLASS (accessible_parent_class)->initialize) {
+                ATK_OBJECT_CLASS (accessible_parent_class)->initialize (accessible, data);
+        }
+
+        priv = g_new0 (NautilusIconCanvasItemAccessiblePrivate, 1);
+        g_object_set_qdata (G_OBJECT (accessible),
+                            accessible_private_data_quark,
+                            priv);
+}
+
+static void
+nautilus_icon_canvas_item_accessible_finalize (GObject *object)
+{
+        NautilusIconCanvasItemAccessiblePrivate *priv;
+        int i;
+
+        priv = accessible_get_priv (ATK_OBJECT (object));
+
+        for (i = 0; i < LAST_ACTION; i++) {
+                if (priv->action_descriptions[i]) {
+                        g_free (priv->action_descriptions[i]);
+                }
+        }
+
+        g_free (priv);
+
+        G_OBJECT_CLASS (accessible_parent_class)->finalize (object);
+}
+
+static void
 nautilus_icon_canvas_item_accessible_class_init (AtkObjectClass *klass)
 {
+	GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+
 	accessible_parent_class = g_type_class_peek_parent (klass);
+
+	gobject_class->finalize = nautilus_icon_canvas_item_accessible_finalize;
 
 	klass->get_name = nautilus_icon_canvas_item_accessible_get_name;
 	klass->get_description = nautilus_icon_canvas_item_accessible_get_description;
 	klass->get_parent = nautilus_icon_canvas_item_accessible_get_parent;
 	klass->get_index_in_parent = nautilus_icon_canvas_item_accessible_get_index_in_parent;
 	klass->ref_state_set = nautilus_icon_canvas_item_accessible_ref_state_set;
+	klass->initialize = nautilus_icon_canvas_item_accessible_initialize;
+	accessible_private_data_quark = g_quark_from_static_string ("icon-canvas-item-accessible-private-data");
 }
 
 
@@ -2427,6 +2622,13 @@ nautilus_icon_canvas_item_accessible_get_type (void)
 			NULL
 		};
 
+		static const GInterfaceInfo atk_action_info = {
+			(GInterfaceInitFunc)
+			nautilus_icon_canvas_item_accessible_action_interface_init,
+			(GInterfaceFinalizeFunc) NULL,
+			NULL
+		};
+
 		type = eel_accessibility_create_derived_type (
 			"NautilusIconCanvasItemAccessibility",
 			EEL_TYPE_CANVAS_ITEM,
@@ -2438,6 +2640,9 @@ nautilus_icon_canvas_item_accessible_get_type (void)
 
 			g_type_add_interface_static (
 				type, ATK_TYPE_TEXT, &atk_text_info);
+
+			g_type_add_interface_static (
+				type, ATK_TYPE_ACTION, &atk_action_info);
 
 		}
 	}
