@@ -1,3 +1,10 @@
+2001-07-09  Darin Adler  <darin@bentspoon.com>
+
+	* cut-n-paste-code/widgets/gimphwrapbox/gtkwrapbox.c:
+	(gtk_wrap_box_expose): Fix a cast so that 64-bit systems
+	won't warn. This is similar to the e-paned.c fix I did
+	already.
+
 2001-07-08  John Gotts  <jgotts@linuxsavvy.com>
 
 	* data/static_bookmarks.xml:
@@ -10,7 +17,7 @@
 	* libnautilus-private/nautilus-thumbnails.c:
 	* src/nautilus-window-menus.c:
 
-	Add includes that were inadevertantly pulled in
+	Add includes that were inadevertently pulled in
 	by the older kinder GnomeVFS include heirarchy but
 	aren't anymore (people forgot to include some headers 
 	because the compiler never complained).

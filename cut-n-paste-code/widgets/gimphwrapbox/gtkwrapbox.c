@@ -771,16 +771,17 @@ gtk_wrap_box_expose (GtkWidget      *widget,
 {
   GtkWrapBox *wbox = GTK_WRAP_BOX (widget);
   GtkWrapBoxChild *child;
-  GdkEventExpose child_event = *event;
+  GdkEvent child_event;
   
   g_return_val_if_fail (event != NULL, FALSE);
-  
+ 
+  child_event.expose = *event; 
   if (GTK_WIDGET_DRAWABLE (widget))
     for (child = wbox->children; child; child = child->next)
       if (GTK_WIDGET_DRAWABLE (child->widget) &&
 	  GTK_WIDGET_NO_WINDOW (child->widget) &&
-	  gtk_widget_intersect (child->widget, &event->area, &child_event.area))
-	gtk_widget_event (child->widget, (GdkEvent*) &child_event);
+	  gtk_widget_intersect (child->widget, &event->area, &child_event.expose.area))
+	gtk_widget_event (child->widget, &child_event);
   
   return TRUE;
 }
