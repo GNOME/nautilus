@@ -63,7 +63,7 @@ libnautilus_la_SOURCES=					\
 
 $(nautilus_view_component_idl_sources): nautilus_view_component_idl_stamp
 nautilus_view_component_idl_stamp: nautilus-view-component.idl
-	$(ORBIT_IDL) $(IDL_CFLAGS) -DNAUTILUS_VIEW_COMPONENT_COMPILATION=1 $(srcdir)/nautilus-view-component.idl
+	$(ORBIT_IDL) $(IDL_CFLAGS) --define=NAUTILUS_VIEW_COMPONENT_COMPILATION $(srcdir)/nautilus-view-component.idl
 	touch nautilus_view_component_idl_stamp
 
 $(nautilus_distributed_undo_idl_sources): nautilus_distributed_undo_idl_stamp
@@ -81,4 +81,5 @@ EXTRA_DIST = \
 	nautilus-view-component.idl	\
 	nautilus-distributed-undo.idl	\
 	$(NULL)
+
 
