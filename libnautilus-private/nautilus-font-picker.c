@@ -64,10 +64,13 @@ static const char *black_listed_font_families[] = {
 	"Wingdings",
 	"OCR",
 	"Zapf Dingbats",
+	"Dingbats",
 	"Symbol",
 	"cursor",
 	"mincho",
-	"gothic"
+	"gothic",
+	"MS Reference 2",
+	"MS Reference 1"
 };
 
 static const char *black_listed_font_foundries[] = {
