@@ -244,16 +244,22 @@ nautilus_location_bar_new (void)
 	return gtk_widget_new (nautilus_location_bar_get_type (), NULL);
 }
 
+/**
+ * nautilus_location_bar_set_location
+ * 
+ * Change the text displayed in the location bar.
+ * 
+ * @bar: A NautilusLocationBar.
+ * @location: The uri that should be displayed.
+ */
 void
 nautilus_location_bar_set_location (NautilusLocationBar *bar,
 				    const char *location)
 {
 	g_return_if_fail (NAUTILUS_IS_LOCATION_BAR (bar));
 
+	/* Note: This is called in reaction to external changes, and 
+	 * thus should not emit the LOCATION_CHANGED signal.*/
 	gtk_entry_set_text (bar->entry,
 			    location == NULL ? "" : location);
-
-	gtk_signal_emit (GTK_OBJECT (bar),
-			 signals[LOCATION_CHANGED],
-			 location);
 }

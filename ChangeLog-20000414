@@ -1,5 +1,25 @@
 2000-03-17  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 322 (going Back goes wacko).
+
+	* src/nautilus-location-bar.c:
+	(nautilus_location_bar_set_location): This function should
+	not emit the location_changed signal; it's intended only to
+	update the displayed text. This was causing a location-changing
+	loop, which for reasons I did not investigate was not infinite.
+	Added comments to clarify this function's purpose.
+
+	Moved some more toolbar-related code into
+	nautilus_window_toolbars.c.
+
+	* src/nautilus-window-toolbars.c,
+	* src/ntl-window.c: (activate_back_or_forward_menu_item),
+	(activate_back_menu_item_cb), (activate_forward_menu_item_cb),
+	(create_back_or_forward_menu), (back_or_forward_button_clicked_cb):
+	Moved these functions from ntl-window.c to nautilus-window-toolbars.c.
+
+2000-03-17  John Sullivan  <sullivan@eazel.com>
+
 	Separate out toolbar code as first step towards
 	bonobo-izing it.
 
