@@ -1633,39 +1633,36 @@ wants_mime_list (const Request *request)
 static gboolean
 should_look_for_dot_directory_file (NautilusFile *file)
 {
-	char *uri_scheme;
+	char *uri;
 	guint i;
 
 	const char *schemes [] = {
-		"preferences",
-		"all-preferences",
-		"system-settings",
-		"server-settings",
-		"favorites",
-		"start-here",
-		"applications",
-		"all-applications",
+		"preferences:",
+		"all-preferences:",
+		"system-settings:",
+		"server-settings:",
+		"favorites:",
+		"start-here:",
+		"applications:",
+		"all-applications:",
 		NULL
 	};
-	
-	uri_scheme = nautilus_file_get_uri_scheme (file);
+
+	uri = file->details->directory->details->uri;
 
 	/* We special-case the file shcme so we won't have
 	 * to go through the list every time
 	 */
-	if (eel_strcmp (uri_scheme, "file") == 0) {
-		g_free (uri_scheme);
+	if (eel_str_has_prefix (uri, "file:")) {
 		return FALSE;
 	}
 
 	for (i = 0; i < G_N_ELEMENTS (schemes); i++) {
-		if (eel_strcmp (uri_scheme, schemes[i]) == 0) {
-			g_free (uri_scheme);
+		if (eel_str_has_prefix (uri, schemes[i])) {
 			return TRUE;
 		}
 	}
 
-	g_free (uri_scheme);
 	return FALSE;
 }
 
