@@ -256,7 +256,9 @@ nautilus_gnome_canvas_fill_with_gradient (GnomeCanvasBuf *buffer,
 			fraction = (double) *position / (double) entire_height;
 		if (fraction > 1.0)
 			fraction = 1.0;
-						
+		else if (fraction < 0.0)
+			fraction = 0.0;
+							
 		band_rgb = nautilus_interpolate_color (fraction, start_rgb, end_rgb);
 		red_value = band_rgb >> 16;
 		green_value = (band_rgb >> 8) & 0xff;

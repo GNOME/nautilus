@@ -1,3 +1,11 @@
+2000-06-07  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	(nautilus_gnome_canvas_fill_with_gradient):
+	fixed problem with the anti-aliased gradient draw at
+	small scale factors by pinning the interpolation ratio
+	between 0.0 and 1.0
+	
 2000-06-07  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-file.c: (destroy):
