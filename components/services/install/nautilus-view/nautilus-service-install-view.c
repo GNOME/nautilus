@@ -824,7 +824,7 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 		for (iter = g_list_first (package->hard_depends); iter; iter = g_list_next (iter)) {
 			package_list = g_list_prepend (package_list, iter->data);
 		}
-		if (package->toplevel && package->modify_status == PACKAGE_MOD_INSTALLED) {
+		if (package->toplevel) {
 			nautilus_service_install_check_for_desktop_files (view,
 									  cb,
 									  package);
@@ -993,6 +993,80 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 	}
 }
 
+/* Get a description of the application pointed to by a given dentry and path fragment */
+static char*
+nautilus_install_service_describe_menu_entry (GnomeDesktopEntry *dentry,
+                                              const char        *path_prefix,
+                                              const char        *path_fragment)
+{
+	char *slash;
+	char *addition = NULL, *addition_tmp;
+	char *fragment_tmp;
+
+	char **pieces;
+	char *so_far;
+	int i;
+	char *dir, *file, *menu;
+	GnomeDesktopEntry *dir_dentry;
+
+	fragment_tmp = g_strdup (path_fragment);
+	slash = strrchr (fragment_tmp, G_DIR_SEPARATOR);
+	if (slash != NULL) {
+		*slash = '\0';
+	}
+	pieces = g_strsplit (fragment_tmp, "/", 128); /* FIXME "/" -> G_DIR_SEPARATOR */
+	g_free (fragment_tmp);
+	so_far = g_strdup (path_prefix);
+
+	for (i=0; pieces[i] != NULL; i++) {
+
+		dir = g_strconcat (so_far, pieces[i], "/", NULL);
+		file = g_strconcat (dir, ".directory", NULL);
+
+		g_free (so_far);
+		so_far = dir;
+
+		dir_dentry = gnome_desktop_entry_load (file);
+		g_free (file);
+
+		menu = NULL;
+		if (dir_dentry != NULL) {
+			menu = dir_dentry->name;
+		} else {
+			menu = pieces[i];
+		}
+
+		if (addition == NULL) {
+			addition = g_strdup_printf 
+					(_(" \xB7 %s is in the Gnome menu under %s"),
+					dentry->name, menu);
+		} else {
+			addition_tmp = g_strconcat (addition, " / ", dir_dentry->name, NULL);
+			g_free (addition);
+			addition = addition_tmp;
+		}
+
+		/* menu doesn't need to be freed, because it points into another structure */
+
+		if (dir_dentry != NULL) {
+			gnome_desktop_entry_free (dir_dentry);
+		}
+	}	
+	g_free (so_far);
+	g_strfreev (pieces);
+
+	if (addition == NULL) {
+		addition = g_strdup_printf (_(" \xB7 %s is in the Gnome menu.\n"), dentry->name);
+	} else {
+		addition_tmp = g_strconcat (addition, ".\n", NULL);
+		g_free (addition);
+		addition = addition_tmp;
+	}
+
+	return addition;
+	
+}
+
 /* Get the toplevel menu name for the desktop file installed */
 static char*
 nautilus_install_service_locate_menu_entries (NautilusServiceInstallView *view) 
@@ -1011,28 +1085,28 @@ nautilus_install_service_locate_menu_entries (NautilusServiceInstallView *view)
 		if (dentry->is_kde) {
 			addition = g_strdup_printf (_(" \xB7 %s is in the KDE menu.\n"), dentry->name);
 		} else {
-			char *gnomeapp = "gnome/apps/";
-			char *apps_ptr = strstr (fname, gnomeapp);
-			if (apps_ptr) {
-				char *slash;
-				char *menu;
-				apps_ptr += strlen (gnomeapp);
-				slash = strrchr (apps_ptr, G_DIR_SEPARATOR);
-				if (slash) {
-					menu = g_strndup (apps_ptr, strlen (apps_ptr) - strlen (slash));
-					addition = g_strdup_printf (_(" \xB7 %s is in the Gnome menu under %s.\n"), 
-								    dentry->name, menu);
-					g_free (menu);
-				} else {
-					addition = g_strdup_printf (_(" \xB7 %s is in the Gnome menu.\n"), 
-								    dentry->name);
+			/* match desktop files against a set of paths that the panel is known to
+			 * put in the menu. */
+			char *desktop_prefixes[] = {
+				"/gnome/apps/",
+				"/applnk/"
+			};
+			int num_prefixes = 2;
+			int i;
+
+			for (i=0; i<num_prefixes; i++) {
+				char *gnomeapp = desktop_prefixes[i];
+				char *apps_ptr = strstr (fname, gnomeapp);
+				if (apps_ptr) {
+					char *full_prefix = g_strndup (fname, (apps_ptr)-fname + 
+							strlen (gnomeapp));
+					addition = nautilus_install_service_describe_menu_entry
+							(dentry, full_prefix, apps_ptr+strlen (gnomeapp));
+					g_free (full_prefix);
+					if (addition != NULL) {
+						break;
+					}
 				}
-			} else {			       
-				addition = NULL;
-				/*
-				addition = g_strdup_printf (_(" \xB7 %s in somewhere...\n"), 
-							    dentry->name);
-				*/
 			}
 		}
 		if (addition) {
@@ -1041,6 +1115,7 @@ nautilus_install_service_locate_menu_entries (NautilusServiceInstallView *view)
 			result = tmp;
 			g_free (addition);
 		}
+		gnome_desktop_entry_free (dentry);
 	}
 	return result;
 }
@@ -1133,7 +1208,9 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 						    NULL,
 						    NULL);
 	} else {
-		if (success && view->details->desktop_files) {
+		if (success && view->details->desktop_files &&
+				!view->details->cancelled &&
+				!view->details->already_installed) {
 			real_message = g_strdup_printf (_("%s\n%s\nErase the leftover RPM files?"), 
 							message,
 							nautilus_install_service_locate_menu_entries (view));
@@ -1436,6 +1513,17 @@ nautilus_service_install_view_load_uri (NautilusServiceInstallView	*view,
 		g_list_free (view->details->message);
 		view->details->message = NULL;
 	}
+	if (view->details->desktop_files) {
+		g_list_foreach (view->details->desktop_files, (GFunc)g_free, NULL);
+		g_list_free (view->details->desktop_files);
+		view->details->desktop_files = NULL;
+	}
+
+	/* clear some variables */
+	view->details->already_installed = FALSE;
+	view->details->cancelled = FALSE;
+	view->details->failure = FALSE;
+	
 
 	generate_install_form (view);
 	nautilus_service_install_view_update_from_uri (view, uri);

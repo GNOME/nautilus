@@ -1,3 +1,29 @@
+2001-01-16  Ian McKellar  <ian@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_preflight_check):
+	Removed check that package has been installed in preflight check 
+	because this will never occur.
+
+	(nautilus_install_service_describe_menu_entry),
+	Added this function which is used to generate a text description
+	of a menu item.
+
+	(nautilus_install_service_locate_menu_entries),
+	Check for files in an /applnk/ directories as well as in /gnome/apps/
+	directories. Closed GnomeDesktopEntry leak.
+
+	(nautilus_service_install_done),
+	Implement the equivalent of the preflight check that I removed,
+	but at a point where we know whether the install has succeed, failed,
+	been cancelled or been struck by lightning.
+
+	(nautilus_service_install_view_load_uri):
+	Reset some state variables, so that some weird random things 
+	don't happen.
+
 2001-01-16  Mike Fleming  <mfleming@eazel.com>
 
 	Dialog re-wording suggested by Vera.
