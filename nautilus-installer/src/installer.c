@@ -139,13 +139,13 @@ typedef struct {
 #define D_ERROR_RED_HAT_7_NOT_SUPPORTED _("Sorry, but this preview installer won't work for Red Hat\n" \
 					  "Linux 7.x systems.")
 
-#define D_EVIL_RETRY_TITLE	_("Update not found")
+#define D_EVIL_RETRY_TITLE	_("Update not found...")
 #define D_EVIL_RETRY_LABEL	_("There doesn't appear to be a new version of any of the following\n" \
-				  "packages.  Your current versions may still work, but if you would\n" \
-				  "like us to remove these packages for you, we can.")
-#define D_EVIL_RETRY_LABEL_S	_("There doesn't appear to be a new version of this package.  Your\n" \
-				  "current version may still work, but if you would like us to remove this\n" \
-				  "package for you, we can.")
+				  "packages in Eazel's software catalog.  Your current versions may still\n" \
+				  "work, but if you would like us to remove these packages for you, we can.")
+#define D_EVIL_RETRY_LABEL_S	_("There doesn't appear to be a new version of this package in Eazel's\n" \
+				  "software catalog.  Your current version may still work, but if you would\n" \
+				  "like us to remove this package for you, we can.")
 
 
 #define NAUTILUS_INSTALLER_RELEASE
@@ -183,6 +183,7 @@ enum {
 char *text_labels[LAST_LABEL];
 
 int installer_debug = 0;
+int installer_spam = 0;		/* dump logging stuff to stderr (automatically adds --debug) */
 int installer_test = 0;
 int installer_force = 0;
 int installer_local = 0;
@@ -2099,7 +2100,7 @@ start_logging (EazelInstaller *installer)
 	struct stat statbuf, lstatbuf;
 	char *filename;
 
-	eazel_install_log_to_stderr (installer->service, installer_debug ? TRUE : FALSE);
+	eazel_install_log_to_stderr (installer->service, installer_spam ? TRUE : FALSE);
 
 	/* try opening our favorite logfile */
 	flags = O_WRONLY | O_CREAT | O_APPEND;

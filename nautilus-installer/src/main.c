@@ -39,6 +39,7 @@
 #include <libtrilobite/helixcode-utils.h>
 
 extern int installer_debug;
+extern int installer_spam;
 extern int installer_output;
 extern int installer_test;
 extern int installer_force;
@@ -61,6 +62,7 @@ static int installer_ignore_disk_space = 0;
 
 static const struct poptOption options[] = {
 	{"debug", 'd', POPT_ARG_NONE, &installer_debug, 0 , N_("Show debug output"), NULL},
+	{"spam", 'x', POPT_ARG_NONE | POPT_ARGFLAG_DOC_HIDDEN, &installer_spam, 0, "", NULL},
 	{"test", 't', POPT_ARG_NONE, &installer_test, 0, N_("Test the installer without actually installing packages"), NULL},
 	{"force", 'f', POPT_ARG_NONE, &installer_force, 0, N_("Forced install"), NULL},
 	{"local", '\0', POPT_ARG_STRING, &installer_local, 0, N_("Use local RPMs instead of HTTP server"), "XML-file"},
@@ -145,6 +147,10 @@ main (int argc, char *argv[])
 	if (installer_user == NULL) {
 		printf ("\nThe --user flag is mandatory.\n");
 		exit (0);
+	}
+
+	if (installer_spam) {
+		installer_debug = 1;
 	}
 
 	if (installer_homedir == NULL) {

@@ -828,16 +828,18 @@ eazel_install_log (const char *domain,
 		format = "?: %s\n";
 	}
 
+	if ((flags & G_LOG_LEVEL_DEBUG) && ! service->private->iopts->mode_debug) {
+		/* don't log debug stuff to stderr unless debug mode is on */
+		return;
+	}
+
 	if (service->private->logfile != NULL) {
 		fprintf (service->private->logfile, format, message);
 		fflush (service->private->logfile);
 	}
 	if (service->private->log_to_stderr || (service->private->logfile == NULL)) {
-		if ((flags & G_LOG_LEVEL_DEBUG) && ! service->private->iopts->mode_debug) {
-			/* don't log debug stuff to stderr unless debug mode is on */
-			return;
-		}
 		fprintf (stderr, format, message);
+		fflush (stderr);
 	}
 }
 #endif

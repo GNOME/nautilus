@@ -1,3 +1,18 @@
+2000-11-28  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_log):
+
+	Only log debug messages if debug flag is set.
+	
+	* nautilus-installer/src/installer.c: (start_logging):
+	* nautilus-installer/src/main.c: (main):
+
+	Add --spam/-x flag to the installer to cause debug logging to go
+	to stderr in addition to the logfile.  Make --debug/-d flag not do
+	that spamming anymore, and make it turn off debugging logs when
+	this flag isn't used.
+
 2000-11-28  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-user-level-manager.c:
