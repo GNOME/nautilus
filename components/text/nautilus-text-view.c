@@ -148,6 +148,7 @@ static void
 nautilus_text_view_initialize (NautilusTextView *text_view)
 {
 	GtkWidget *scrolled_window;
+	GtkWidget *disclaimer;
 	
 	text_view->details = g_new0 (NautilusTextViewDetails, 1);
 
@@ -186,6 +187,12 @@ nautilus_text_view_initialize (NautilusTextView *text_view)
 	text_view->details->container = gtk_vbox_new (FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (text_view->details->container), 0);
 	gtk_container_add (GTK_CONTAINER (text_view->details->event_box), GTK_WIDGET (text_view->details->container));
+	
+	/* create label, add formating changes, and place it in frame */
+    disclaimer = gtk_label_new (_("This text is read only\nTo edit it, choose an option from the sidebar"));
+    eel_gtk_label_make_larger (GTK_LABEL (disclaimer), 1);
+    eel_gtk_label_make_bold (GTK_LABEL (disclaimer));
+    gtk_box_pack_start (GTK_BOX (text_view->details->container), GTK_WIDGET (disclaimer), FALSE, FALSE, FALSE);
 	
 	/* allocate the text object */
 	text_view->details->text_display = gtk_text_new (NULL, NULL);

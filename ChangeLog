@@ -1,4 +1,13 @@
 2001-11-08  Darin Adler  <darin@bentspoon.com>
+	
+	Patch from Peter Snyder <kafer77a@ameritech.net> to add a
+	disclaimer to the text view to make it clear that it's a read-only
+	view of the text.
+
+	* components/text/nautilus-text-view.c:
+	(nautilus_text_view_initialize): Add a label with a disclaimer.
+
+2001-11-08  Darin Adler  <darin@bentspoon.com>
 
 	* src/file-manager/fm-error-reporting.c:
 	(fm_report_error_loading_directory),
