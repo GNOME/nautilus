@@ -642,7 +642,7 @@ nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item,
 	/* queue a redraw. */
 	eel_canvas_request_redraw (canvas_item->canvas,
 				   before.x0, before.y0,
-				   before.x1, before.y1);
+				   before.x1 + 1, before.y1 + 1);
 }
 
 /* Update handler for the icon canvas item. */
