@@ -1076,27 +1076,15 @@ static float fm_directory_view_preferred_zoom_levels[] = {
 static void
 set_up_scripts_directory_global (void)
 {
-	char *main_directory_path, *scripts_directory_path;
+	char *scripts_directory_path;
 
 	if (scripts_directory_uri != NULL) {
 		return;
 	}
 
-	main_directory_path = nautilus_get_user_main_directory ();
-	
-	/* FIXME: We've discussed that we don't want names of
-	 * directories to be localized, and we also don't think that
-	 * this should be in ~/Nautilus, since we want to get rid of
-	 * the novice home directory, so this should be changed.
-	 */
-	/* Localizers: This is the name of a directory that's created
-	 * in ~/Nautilus, and stores the scripts that appear in the
-	 * Scripts submenu.
-	 */
-	scripts_directory_path = nautilus_make_path (main_directory_path, _("scripts"));
-	
-	g_free (main_directory_path);
-	
+	scripts_directory_path = nautilus_make_path (g_get_home_dir (),
+						     ".gnome/nautilus-scripts");
+
 	scripts_directory_uri = gnome_vfs_get_uri_from_local_path (scripts_directory_path);
 	scripts_directory_uri_length = strlen (scripts_directory_uri);
 	

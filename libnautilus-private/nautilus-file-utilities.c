@@ -43,8 +43,6 @@
 #define DESKTOP_DIRECTORY_NAME ".gnome-desktop"
 #define DEFAULT_DESKTOP_DIRECTORY_MODE (0755)
 
-#define NAUTILUS_USER_MAIN_DIRECTORY_NAME "Nautilus"
-
 gboolean
 nautilus_file_name_matches_hidden_pattern (const char *name_or_relative_uri)
 {
@@ -169,83 +167,6 @@ char *
 nautilus_get_gmc_desktop_directory (void)
 {
 	return nautilus_make_path (g_get_home_dir (), DESKTOP_DIRECTORY_NAME);
-}
-
-/**
-  * nautilus_user_main_directory_exists:
-  *
-  * returns true if the user directory exists.  This must be called
-  * before nautilus_get_user_main_directory, which creates it if necessary
-  *
-  **/
-gboolean
-nautilus_user_main_directory_exists(void)
-{
-	gboolean directory_exists;
-	char *main_directory;
-	
-	main_directory = g_strdup_printf ("%s/%s",
-					g_get_home_dir(),
-					NAUTILUS_USER_MAIN_DIRECTORY_NAME);
-	directory_exists = g_file_exists(main_directory);
-	g_free(main_directory);
-	return directory_exists;
-}
-
-
-/**
- * nautilus_get_user_main_directory:
- * 
- * Get the path for the user's main Nautilus directory.  
- * Usually ~/Nautilus
- *
- * Return value: the directory path.
- **/
-char *
-nautilus_get_user_main_directory (void)
-{
-	char *user_main_directory = NULL;
-	GnomeVFSResult result;
-	char *destination_directory_uri_text;
-	GnomeVFSURI *destination_directory_uri;
-	GnomeVFSURI *destination_uri;
-	
-	user_main_directory = g_strdup_printf ("%s/%s",
-					       g_get_home_dir(),
-					       NAUTILUS_USER_MAIN_DIRECTORY_NAME);
-												
-	if (!g_file_exists (user_main_directory)) {			
-		destination_directory_uri_text = gnome_vfs_get_uri_from_local_path (g_get_home_dir());
-		destination_directory_uri = gnome_vfs_uri_new (destination_directory_uri_text);
-		g_free (destination_directory_uri_text);
-		destination_uri = gnome_vfs_uri_append_file_name (destination_directory_uri, 
-								  NAUTILUS_USER_MAIN_DIRECTORY_NAME);
-		gnome_vfs_uri_unref (destination_directory_uri);
-		
-		result = gnome_vfs_make_directory_for_uri (destination_uri,
-						 GNOME_VFS_PERM_USER_ALL
-						 | GNOME_VFS_PERM_GROUP_ALL
-						 | GNOME_VFS_PERM_OTHER_READ);
-
-		/* FIXME bugzilla.eazel.com 1286: 
-		 * How should we handle error codes returned from gnome_vfs_xfer_uri? 
-		 * Note that nautilus_application_startup will refuse to launch if this 
-		 * directory doesn't get created, so that case is OK. But the directory 
-		 * could be deleted after Nautilus was launched, and perhaps
-		 * there is some bad side-effect of not handling that case.
-		 */
-		gnome_vfs_uri_unref (destination_uri);
-
-		/* If this fails to create the directory, nautilus_application_startup will
-		 * notice and refuse to launch.
-		 */
-							
-		/* install the default link sets */
-		nautilus_link_set_install (user_main_directory, "apps");
-		nautilus_link_set_install (user_main_directory, "home");
-	}
-
-	return user_main_directory;
 }
 
 /**

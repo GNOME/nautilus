@@ -2,6 +2,46 @@
 	
 	Merge some stuff from the redhat-outstanding-patches branch
 
+	* libnautilus-private/nautilus-file-utilities.[ch]
+	(nautilus_user_main_directory_exists, nautilus_get_user_main_directory):
+	Get rid of these. No more ~/Nautilus
+
+	* libnautilus-private/nautilus-global-preferences.c:
+	(default_home_location_callback): Always use your normal homedir
+	as the home dir.
+
+	* src/nautilus-application.c (check_required_directories): Don't
+	create ~/Nautilus.
+	(create_starthere_link_callback, nautilus_application_startup):
+	Create a start here icon on the desktop.
+	Turn of first time druid (by setting first time flag).
+	(nautilus_application_startup, check_for_kdesktop, look_for_kdesktop_recursive,
+	has_wm_state, get_self_typed_prop)
+	Don't manage the desktop if kdesktop is running.
+
+	* src/nautilus-first-time-druid.[ch]:
+	Remove ~/Nautilus handling.
+	s/druid_set_first_time_file_flag/nautilus_set_first_time_file_flag/
+
+	* src/nautilus-shell-ui.xml:
+	* src/nautilus-window-menus.c:
+	Add start here to the go menu. Remove leftovers of the "support" menuimem.
+
+	* src/file-manager/fm-directory-view.c:
+	Move scripts to ~/.gnome/nautilus-scripts
+
+	* Makefile.am:
+	Add starthere icons
+
+	* data/Makefile.am:
+	* data/*.desktop.in:
+	* data/*.directory.in:
+	Add starthere desktop files.
+	
+2001-09-04  Alex Larsson  <alexl@redhat.com>
+	
+	Merge some stuff from the redhat-outstanding-patches branch
+
 	* libnautilus-private/nautilus-icon-container.c:
 	* libnautilus-private/nautilus-icon-dnd.c:
 	Change signature of the "handle_uri_list" callback to include the

@@ -66,6 +66,10 @@
 #include <libnautilus-private/nautilus-authn-manager.h>
 #include <liboaf/liboaf.h>
 
+/* Needed for the is_kdesktop_present check */
+#include <gdk/gdkx.h>
+#include <X11/Xlib.h>
+
 #define FACTORY_IID	     "OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3"
 #define SEARCH_LIST_VIEW_IID "OAFIID:nautilus_file_manager_search_list_view:b186e381-198e-43cf-9c46-60b6bb35db0b"
 #define SHELL_IID	     "OAFIID:nautilus_shell:cd5183b2-3913-4b74-9b8e-10528b0de08d"
@@ -98,6 +102,7 @@ static void          volume_unmounted_callback             (NautilusVolumeMonito
 							    NautilusApplication      *application);
 static void	     update_session			    (gpointer		      callback_data);
 static void	     init_session 			    (void);
+static gboolean      is_kdesktop_present                    (void);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusApplication, nautilus_application, BONOBO_OBJECT_TYPE)
 
@@ -239,7 +244,6 @@ static gboolean
 check_required_directories (NautilusApplication *application)
 {
 	char *user_directory;
-	char *user_main_directory;
 	char *desktop_directory;
 	EelStringList *directories;
 	char *directories_as_string;
@@ -251,7 +255,6 @@ check_required_directories (NautilusApplication *application)
 	g_assert (NAUTILUS_IS_APPLICATION (application));
 
 	user_directory = nautilus_get_user_directory ();
-	user_main_directory = nautilus_get_user_main_directory ();
 	desktop_directory = nautilus_get_desktop_directory ();
 
 	directories = eel_string_list_new (TRUE);
@@ -259,12 +262,7 @@ check_required_directories (NautilusApplication *application)
 	if (!g_file_test (user_directory, G_FILE_TEST_ISDIR)) {
 		eel_string_list_insert (directories, user_directory);
 	}
-	g_free (user_directory);
-	    
-	if (!g_file_test (user_main_directory, G_FILE_TEST_ISDIR)) {
-		eel_string_list_insert (directories, user_main_directory);
-	}
-	g_free (user_main_directory);
+	g_free (user_directory);	    
 	    
 	if (!g_file_test (desktop_directory, G_FILE_TEST_ISDIR)) {
 		eel_string_list_insert (directories, desktop_directory);
@@ -416,6 +414,35 @@ migrate_old_nautilus_files (void)
 	g_free (old_desktop_dir);
 }
 
+static gint
+create_starthere_link_callback (gpointer data)
+{
+	char *desktop_path;
+	char *desktop_link_file;
+	char *cmd;
+	
+	/* Create default services icon on the desktop */
+	desktop_path = nautilus_get_desktop_directory ();
+	desktop_link_file = nautilus_make_path (desktop_path,
+						"starthere.desktop");
+
+	cmd = g_strconcat ("/bin/cp ",
+			   NAUTILUS_DATADIR,
+			   "/starthere-link.desktop ",
+			   desktop_link_file,
+			   NULL);
+
+	if (system (cmd) != 0) {
+		g_warning ("Failed to execute command '%s'\n", cmd);
+	}
+	
+	g_free (desktop_path);
+	g_free (desktop_link_file);
+	g_free (cmd);
+	
+	return FALSE;
+}
+
 static void
 finish_startup (NautilusApplication *application)
 {
@@ -467,8 +494,12 @@ nautilus_application_startup (NautilusApplication *application,
 
 	/* Run the first time startup druid if needed. */
 	if (do_first_time_druid_check && need_to_show_first_time_druid ()) {
-		nautilus_first_time_druid_show (application, urls);
-		return;
+		/* Do this at idle time, once nautilus has initialized
+		 * itself. Otherwise we may spawn a second nautilus
+		 * process when looking for a metadata factory..
+		 */
+		g_idle_add (create_starthere_link_callback, NULL);
+		nautilus_set_first_time_file_flag ();
 	}
 
 	CORBA_exception_init (&ev);
@@ -583,6 +614,10 @@ nautilus_application_startup (NautilusApplication *application,
 	} else if (restart_shell) {
 		Nautilus_Shell_restart (shell, &ev);
 	} else {
+		/* If KDE desktop is running, then force no_desktop */
+		if (is_kdesktop_present ())
+			no_desktop = TRUE;
+		
 		if (!no_desktop && eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP)) {
 			Nautilus_Shell_start_desktop (shell, &ev);
 		}
@@ -974,4 +1009,129 @@ init_session (void)
 		 update_session, client);
 
 	update_session (client);
+}
+
+static gboolean
+get_self_typed_prop (Window      xwindow,
+                     Atom        atom,
+                     gulong     *val)
+{  
+	Atom type;
+	int format;
+	gulong nitems;
+	gulong bytes_after;
+	gulong *num;
+	int err;
+  
+	gdk_error_trap_push ();
+	type = None;
+	XGetWindowProperty (gdk_display,
+			    xwindow,
+			    atom,
+			    0, G_MAXLONG,
+			    False, atom, &type, &format, &nitems,
+			    &bytes_after, (guchar **)&num);  
+
+	err = gdk_error_trap_pop ();
+	if (err != Success) {
+		return FALSE;
+	}
+  
+	if (type != atom) {
+		return FALSE;
+	}
+
+	if (val)
+		*val = *num;
+  
+	XFree (num);
+
+	return TRUE;
+}
+
+static gboolean
+has_wm_state (Window xwindow)
+{
+	return get_self_typed_prop (xwindow,
+				    XInternAtom (gdk_display, "WM_STATE", False),
+				    NULL);
+}
+
+static gboolean
+look_for_kdesktop_recursive (Window xwindow)
+{
+  
+	Window ignored1, ignored2;
+	Window *children;
+	unsigned int n_children;
+	unsigned int i;
+	gboolean retval;
+  
+	/* If WM_STATE is set, this is a managed client, so look
+	 * for the class hint and end recursion. Otherwise,
+	 * this is probably just a WM frame, so keep recursing.
+	 */
+	if (has_wm_state (xwindow)) {      
+		XClassHint ch;
+      
+		gdk_error_trap_push ();
+		ch.res_name = NULL;
+		ch.res_class = NULL;
+      
+		XGetClassHint (gdk_display, xwindow, &ch);
+      
+		gdk_error_trap_pop ();
+      
+		if (ch.res_name)
+			XFree (ch.res_name);
+      
+		if (ch.res_class) {
+			if (strcmp (ch.res_class, "kdesktop") == 0) {
+				XFree (ch.res_class);
+				return TRUE;
+			}
+			else
+				XFree (ch.res_class);
+		}
+
+		return FALSE;
+	}
+  
+	retval = FALSE;
+  
+	gdk_error_trap_push ();
+  
+	XQueryTree (gdk_display,
+		    xwindow,
+		    &ignored1, &ignored2, &children, &n_children);
+
+	if (gdk_error_trap_pop ()) {
+		return FALSE;
+	}
+
+	i = 0;
+	while (i < n_children) {
+		if (look_for_kdesktop_recursive (children[i])) {
+			retval = TRUE;
+			break;
+		}
+      
+		++i;
+	}
+  
+	if (children)
+		XFree (children);
+
+	return retval;
+}
+
+static gboolean
+is_kdesktop_present (void)
+{
+	/* FIXME this is a pretty lame hack, should be replaced
+	 * eventually with e.g. a requirement that desktop managers
+	 * support a manager selection, ICCCM sec 2.8
+	 */
+
+	return look_for_kdesktop_recursive (GDK_ROOT_WINDOW ());
 }

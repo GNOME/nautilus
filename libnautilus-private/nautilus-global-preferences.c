@@ -902,23 +902,8 @@ default_default_folder_viewer_callback (int user_level)
 static gpointer
 default_home_location_callback (int user_level)
 {
-	char *default_home_location;
-	char *user_main_directory;		
-
 	g_return_val_if_fail (eel_preferences_user_level_is_valid (user_level), NULL);
-
-	if (user_level == EEL_USER_LEVEL_NOVICE) {
-		user_main_directory = nautilus_get_user_main_directory ();
-		default_home_location = gnome_vfs_get_uri_from_local_path (user_main_directory);
-		g_free (user_main_directory);
-		return default_home_location;
-	}
-
-	if (user_level == EEL_USER_LEVEL_INTERMEDIATE) {
-		return gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
-	}
-	
-	return NULL;
+	return gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
 }
 
 /*
