@@ -1,3 +1,12 @@
+2000-10-01  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_stretch_handles_aa), (draw_dashed_rectangle_aa),
+	(draw_focus_rect), (draw_or_measure_label_text_aa):
+	fishished bug 3239, stretchable icon needs bounding box
+	in aa-mode, by adapting the routine that was used to draw
+	the focus rectangle.
+	
 2000-09-30  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-operations.c:

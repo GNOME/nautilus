@@ -211,8 +211,7 @@ static void     draw_pixbuf_aa                             (GdkPixbuf           
 static gboolean icon_canvas_item_is_smooth                 (const NautilusIconCanvasItem  *icon_item);
 
 static void draw_dashed_rectangle_aa 			   (guchar *pixels, int rowstride, gboolean has_alpha,
-		   					    int width, int height,
-		   					    int left, int right, int top, int bottom);
+		   					    int widt, int height, int left, int right, int top, int bottom);
 
 
 
@@ -896,17 +895,18 @@ draw_stretch_handles_aa (NautilusIconCanvasItem *item, GnomeCanvasBuf *buf,
 		      const ArtIRect *rect)
 {
 	int knob_width, knob_height;
-	ArtIRect icon_rect;
+	GnomeCanvasItem *canvas_item;
 	char *knob_filename;
 	GdkPixbuf *knob_pixbuf;
+	ArtIRect box_rect, draw_rect;
 	double affine[6];
 	
 	if (!item->details->show_stretch_handles) {
 		return;
 	}
 
-	get_icon_canvas_rectangle (item, &icon_rect);
-
+	canvas_item = GNOME_CANVAS_ITEM (item);
+	
 	knob_filename = nautilus_theme_get_image_path ("knob.png");
 	knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename);
 	knob_width = gdk_pixbuf_get_width (knob_pixbuf);
@@ -914,20 +914,29 @@ draw_stretch_handles_aa (NautilusIconCanvasItem *item, GnomeCanvasBuf *buf,
 	
 	art_affine_identity (affine);
 	
-	draw_pixbuf_aa (knob_pixbuf, buf, affine, icon_rect.x0, icon_rect.y0);
-	draw_pixbuf_aa (knob_pixbuf, buf, affine, icon_rect.x0,  icon_rect.y1 - knob_height);
-	draw_pixbuf_aa (knob_pixbuf, buf, affine, icon_rect.x1 - knob_width, icon_rect.y0);
-	draw_pixbuf_aa (knob_pixbuf, buf, affine, icon_rect.x1 - knob_width, icon_rect.y1 - knob_height);
+	draw_pixbuf_aa (knob_pixbuf, buf, affine, rect->x0, rect->y0);
+	draw_pixbuf_aa (knob_pixbuf, buf, affine, rect->x0,  rect->y1 - knob_height);
+	draw_pixbuf_aa (knob_pixbuf, buf, affine, rect->x1 - knob_width, rect->y0);
+	draw_pixbuf_aa (knob_pixbuf, buf, affine, rect->x1 - knob_width, rect->y1 - knob_height);
 
 	/* now draw a box to connect the dots */
-        /* 
-	draw_dashed_rectangle_aa (buf->buf, buf->buf_rowstride, TRUE, 
-				  buf->rect.x1 - buf->rect.x0, buf->rect.y1 - buf->rect.y0,
-				  icon_rect.x0 + (knob_width  - 1) / 2,
-				  icon_rect.y0 + (knob_height - 1) / 2,
-				  icon_rect.x1 - knob_width - 1,
-				  icon_rect.y1 - knob_height - 1);
-	*/		
+ 	
+ 	box_rect.x0 = rect->x0  + (knob_width  - 1) / 2;
+  	box_rect.y0 = rect->y0  + (knob_height - 1) / 2;
+ 	box_rect.x1 = rect->x1  - (knob_width  - 1) / 2;
+ 	box_rect.y1 = rect->y1  - (knob_height - 1) / 2;
+
+	art_irect_intersect (&draw_rect, &box_rect, &buf->rect);
+	if (!art_irect_empty (&draw_rect)) {
+ 		draw_dashed_rectangle_aa (buf->buf, buf->buf_rowstride, FALSE, 
+				  buf->rect.x1 - buf->rect.x0,
+				  buf->rect.y1 - buf->rect.y0,
+				  box_rect.x0 -  buf->rect.x0,
+				  box_rect.y0 -  buf->rect.y0,
+				  box_rect.x1 -  buf->rect.x0,
+				  box_rect.y1 -  buf->rect.y0);
+	}
+	
 	g_free(knob_filename);
 	gdk_pixbuf_unref(knob_pixbuf);	
 }
@@ -1236,13 +1245,9 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 	draw_label_text (icon_item, drawable, icon_rect.x0, icon_rect.y1);
 }
 
-static void
-draw_dashed_rectangle_aa (guchar *pixels, int rowstride, gboolean has_alpha,
-		   int width, int height,
-		   int left, int top, int right, int bottom)
+static void draw_dashed_rectangle_aa (guchar *pixels, int rowstride, gboolean has_alpha,
+		   int width, int height, int left, int top, int right, int bottom)
 {
-	GdkRectangle	area;
-	guint32		color, color_dash;
 	guchar		red, green, blue, alpha, dash_color, dash_alpha;
 	guint		pixel_offset;
 	int		x, y, x1, y1, x2, y2;
@@ -1250,90 +1255,106 @@ draw_dashed_rectangle_aa (guchar *pixels, int rowstride, gboolean has_alpha,
 	int 		index, dash_width;
 	
 	dash_width = 1;
-
-	color = NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 255);
-	color_dash = NAUTILUS_RGBA_COLOR_PACK (255, 255, 255, 0);
-
 	pixel_offset = has_alpha ? 4 : 3;
 
-	area.x = 0;
-	area.y = 0;
-	area.width = width;
-	area.height = height;
-
-	red = NAUTILUS_RGBA_COLOR_GET_R (color);
-	green = NAUTILUS_RGBA_COLOR_GET_G (color);
-	blue = NAUTILUS_RGBA_COLOR_GET_B (color);
-	alpha = NAUTILUS_RGBA_COLOR_GET_A (color);
-	dash_color = NAUTILUS_RGBA_COLOR_GET_R (color_dash);
-	dash_alpha = NAUTILUS_RGBA_COLOR_GET_A (color_dash);
+	/* main color is black */
+	red = 0;
+	green = 0;
+	blue = 0;
+	alpha = 255;
 	
-	x1 = area.x;
-	y1 = area.y;
-	x2 = area.x + area.width;
-	y2 = area.y + area.height;
-
-	/* Draw top line */
-	row_offset = pixels + y1 * rowstride;
-	offset = row_offset + (x1 * pixel_offset);
-	index = 0;
-	for (x = x1; x < x2; x++)
-	{
-		if (index < dash_width) {
-			*(offset++) = red;
-			*(offset++) = green;
-			*(offset++) = blue;
-		} else {
-			*(offset++) = dash_color;
-			*(offset++) = dash_color;
-			*(offset++) = dash_color;
-		}		
-		
-		if (has_alpha) {
-			if (index < dash_width) {
-				*(offset++) = alpha;
-			} else {
-				*(offset++) = dash_alpha;
-			}				
-		}
-
-		index++;
-		if (index > dash_width) {
-			index = 0;
-		}
+	/* dask color is white/transparent */
+	dash_color = 255;
+	dash_alpha = 0;
+	
+	/* clip to the buffer bounds */	
+	if (left < 0)
+		x1 = 0;
+	else
+		x1 = left;
+	if (top < 0)
+		y1 = 0;
+	else
+		y1 = top;
+			
+	if (right < width) {
+		x2 = right;
+	} else {
+		x2 = width - 1;
 	}
 
-	/* Draw bottom line */
-	row_offset = pixels + (y2 -1) * rowstride;
-	offset = row_offset + (x1 * pixel_offset);
-	index = 0;
-	for (x = x1; x < x2; x++)
-	{
-		if (index < dash_width) {
-			*(offset++) = red;
-			*(offset++) = green;
-			*(offset++) = blue;
-		} else {
-			*(offset++) = dash_color;
-			*(offset++) = dash_color;
-			*(offset++) = dash_color;
-		}
-		
-		if (has_alpha) {
+	if (bottom < height) {
+		y2 = bottom;
+	} else {
+		y2 = height - 1;
+	}
+	
+	/* Draw top line */
+	if (top >= 0) {
+		row_offset = pixels + y1 * rowstride;
+		offset = row_offset + (x1 * pixel_offset);
+		index = 0;
+		for (x = x1; x < x2; x++)
+		{
 			if (index < dash_width) {
-				*(offset++) = alpha;
+				*(offset++) = red;
+				*(offset++) = green;
+				*(offset++) = blue;
 			} else {
-				*(offset++) = dash_alpha;
-			}				
-		}
+				*(offset++) = dash_color;
+				*(offset++) = dash_color;
+				*(offset++) = dash_color;
+			}		
+		
+			if (has_alpha) {
+				if (index < dash_width) {
+					*(offset++) = alpha;
+				} else {
+					*(offset++) = dash_alpha;
+				}				
+			}
 
-		index++;
-		if (index > dash_width) {
-			index = 0;
+			index++;
+			if (index > dash_width) {
+				index = 0;
+			}
+		}
+	}
+	
+	/* Draw bottom line */
+	if (bottom < height) {
+		row_offset = pixels + (y2 -1) * rowstride;
+		offset = row_offset + (x1 * pixel_offset);
+		index = 0;
+		for (x = x1; x < x2; x++)
+		{
+			if (index < dash_width) {
+				*(offset++) = red;
+				*(offset++) = green;
+				*(offset++) = blue;
+			} else {
+				*(offset++) = dash_color;
+				*(offset++) = dash_color;
+				*(offset++) = dash_color;
+			}
+		
+			if (has_alpha) {
+				if (index < dash_width) {
+					*(offset++) = alpha;
+				} else {
+					*(offset++) = dash_alpha;
+				}				
+			}
+
+			index++;
+			if (index > dash_width) {
+				index = 0;
+			}
 		}
 	}
 	
 	/* Draw left line */
+	
 	row_offset = pixels + y1 * rowstride;
 	index = 0;
 	for (y = y1; y < y2; y++)
@@ -1352,9 +1373,9 @@ draw_dashed_rectangle_aa (guchar *pixels, int rowstride, gboolean has_alpha,
 
 		if (has_alpha) {
 			if (index < dash_width) {
-				*(offset++) = alpha;
+				*offset = alpha;
 			} else {
-				*(offset++) = dash_alpha;
+				*offset = dash_alpha;
 			}				
 		}
 		row_offset += rowstride;
@@ -1366,6 +1387,7 @@ draw_dashed_rectangle_aa (guchar *pixels, int rowstride, gboolean has_alpha,
 	}
 
 	/* Draw right line */
+	
 	row_offset = pixels + y1 * rowstride;
 	index = 0;
 	for (y = y1; y < y2; y++)
@@ -1384,9 +1406,9 @@ draw_dashed_rectangle_aa (guchar *pixels, int rowstride, gboolean has_alpha,
 						
 		if (has_alpha) {
 			if (index < dash_width) {
-				*(offset++) = alpha;
+				*offset = alpha;
 			} else {
-				*(offset++) = dash_alpha;
+				*offset = dash_alpha;
 			}				
 		}
 		row_offset += rowstride;
@@ -1401,20 +1423,20 @@ draw_dashed_rectangle_aa (guchar *pixels, int rowstride, gboolean has_alpha,
 static void
 draw_focus_rect (GdkPixbuf *pixbuf, int left, int top, int right, int bottom)
 {
-	int width, height, rowstride;
+	int rowstride, width, height;
 	guchar *pixels;
 	gboolean has_alpha;
 
 	g_return_if_fail (pixbuf != NULL);
 	
+	pixels = gdk_pixbuf_get_pixels (pixbuf);
 	width = gdk_pixbuf_get_width (pixbuf);
 	height = gdk_pixbuf_get_height (pixbuf);
-	pixels = gdk_pixbuf_get_pixels (pixbuf);
 	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
 	has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
 
-	draw_dashed_rectangle_aa (pixels, rowstride, has_alpha, width, height, 
-			   left, top, right, bottom);
+	draw_dashed_rectangle_aa (pixels, rowstride, has_alpha,
+			   width, height, left, top, right, bottom);
 }
 
 static void
@@ -1580,7 +1602,7 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 
 		/* Indicate keyboard selection by framing the text with a gray-stippled rectangle */
 		if (details->is_highlighted_as_keyboard_focus) {
-			draw_focus_rect (destination_pixbuf, box_left, icon_bottom - 2, width_so_far, 2 + height_so_far);
+			draw_focus_rect (destination_pixbuf, 0, 0, width_so_far - 1, height_so_far - 1);
 		}
 	} else {
 		/* If measuring, remember the width & height. */
