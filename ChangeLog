@@ -1,5 +1,13 @@
 2000-10-25  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* components/mozilla/Makefile.am:
+	Fix bug 4031.  Mozilla component wont run cause of unresolved
+	symbols.  Link in the standard location of Mozilla
+	(/usr/lib/mozilla) to make it always work without having to mess
+	with environment stuff.
+	
+2000-10-25  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/services/nautilus-dependent-shared/eazel-services-extensions.h:
 	* components/services/nautilus-dependent-shared/eazel-services-footer.c:
 	(footer_item_new), (eazel_services_footer_update):

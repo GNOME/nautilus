@@ -46,6 +46,10 @@ nautilus_mozilla_content_view_LDADD = \
 	$(AMMONITE_LIBS) \
 	$(NULL)
 
+nautilus_mozilla_content_view_LDFLAGS = \
+	-Wl,-rpath=/usr/lib/mozilla \
+	$(NULL)
+
 oafdir = $(datadir)/oaf
 oaf_DATA = \
 	nautilus-mozilla-content-view.oafinfo \
