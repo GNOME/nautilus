@@ -1,5 +1,25 @@
 2000-05-19  John Sullivan  <sullivan@eazel.com>
 
+	Finished task 174 (make "Open in new window" preference
+	sensible)
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog), 
+	(global_preferences_register_for_ui): Consolidated "Window
+	Options" pane & "Click Policy" pane into new "Directory 
+	Views" pane, to make it clear that these preferences apply 
+	just to directory views. Also removed unimplemented "use 
+	existing window for same location" preference that is not 
+	in our plans. Tweaked wording a little.
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(in_single_click_mode): New function, checks preference.
+	(draw_or_measure_label_text): Don't draw underlines on icons
+	if we're not in single-click mode.
+
+2000-05-19  John Sullivan  <sullivan@eazel.com>
+
 	A few tweaks to this new class inspired by Darin's
 	review.
 

@@ -60,9 +60,8 @@ global_preferences_create_dialog (void)
 	GtkWidget		*prefs_dialog;
 	NautilusPreferencesBox	*preference_box;
 	GtkWidget		*user_level_pane;
-	GtkWidget		*window_options_pane;
+	GtkWidget		*directory_views_pane;
 	GtkWidget		*meta_view_pane;
-	GtkWidget		*icon_view_pane;
 
 	/*
 	 * In the soon to come star trek future, the following widgetry
@@ -89,24 +88,27 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_USER_LEVEL,
 							 NAUTILUS_PREFERENCE_ITEM_ENUM);
 	/*
-	 * Window options pane
+	 * Directory Views pane
 	 */
-	window_options_pane = nautilus_preferences_box_add_pane (preference_box,
-								 "Window Options",
-								 "Window Options Something");
+	directory_views_pane = nautilus_preferences_box_add_pane (preference_box,
+								 "Directory Views",
+								 "Directory Views Something");
 	
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (window_options_pane), "Basic window options");
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), "Window Behavior");
 	
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (window_options_pane),
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
 							 0,
 							 NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (window_options_pane),
-							 0,
-							 NAUTILUS_PREFERENCES_WINDOW_SEARCH_EXISTING,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), "Click Behavior");
 	
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
+							 1,
+							 NAUTILUS_PREFERENCES_CLICK_POLICY,
+							 NAUTILUS_PREFERENCE_ITEM_ENUM);
+
+
 	/*
 	 * Meta view pane
 	 */
@@ -145,20 +147,6 @@ global_preferences_create_dialog (void)
 							 0,
 							 NAUTILUS_PREFERENCES_META_VIEWS_SHOW_WEB_SEARCH,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-
-	/*
-	 * Clicking pane
-	 */
-	icon_view_pane = nautilus_preferences_box_add_pane (preference_box,
-							    "Click Policy",
-							    "Click Policy something");
-	
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (icon_view_pane), "Click Policy");
-	
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (icon_view_pane),
-							 0,
-							 NAUTILUS_PREFERENCES_CLICK_POLICY,
-							 NAUTILUS_PREFERENCE_ITEM_ENUM);
 
 	return prefs_dialog;
 }
@@ -232,16 +220,10 @@ global_preferences_register_for_ui ()
 
 	/* Window create new */
 	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-				       "Create new window for each new page",
+				       "Open each item in a new window",
 				       NAUTILUS_PREFERENCE_BOOLEAN,
 				       (gconstpointer) FALSE);
 	
-	/* Window seatch existing */
-	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_WINDOW_SEARCH_EXISTING,
-				       "Do not open more than one window with the same page",
-				       NAUTILUS_PREFERENCE_BOOLEAN,
-				       (gconstpointer) FALSE);
-
 	/* Click activation type */
 	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_CLICK_POLICY,
 				       "Click policy",
@@ -250,12 +232,12 @@ global_preferences_register_for_ui ()
 
 	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES_CLICK_POLICY,
 					     "single",
-					     "Single Click",
+					     "Activate items with a single click",
 					     NAUTILUS_CLICK_POLICY_SINGLE);
 
 	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES_CLICK_POLICY,
 					     "double",
-					     "Double Click",
+					     "Activate items with a double click",
 					     NAUTILUS_CLICK_POLICY_DOUBLE);
 
 	/* User level */

@@ -38,6 +38,7 @@
 #include "nautilus-glib-extensions.h"
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
+#include "nautilus-global-preferences.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-gnome-extensions.h"
 #include "nautilus-graphic-effects.h"
@@ -560,6 +561,16 @@ gnome_icon_underline_text (GnomeIconTextInfo *text_info,
 	}
 }
 
+static gboolean
+in_single_click_mode ()
+{
+	/* Perhaps this should be computed elsewhere and passed in. */
+	return nautilus_preferences_get_enum 
+		(NAUTILUS_PREFERENCES_CLICK_POLICY, NAUTILUS_CLICK_POLICY_SINGLE) == 
+			NAUTILUS_CLICK_POLICY_SINGLE;
+
+}
+
 /* Draw the text in a box, using gnomelib routines. */
 static void
 draw_or_measure_label_text (NautilusIconCanvasItem *item,
@@ -666,8 +677,8 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 					 GTK_JUSTIFY_CENTER);
 			}
 			
-			/* if it's prelit, underline the text */
-			if (details->is_prelit) {
+			/* if it's prelit, and we're in click-to-activate mode, underline the text */
+			if (details->is_prelit && in_single_click_mode ()) {
 				gnome_icon_underline_text
 					(icon_text_info, drawable, gc,
 					 text_left + 1, icon_bottom + height_so_far);

@@ -33,7 +33,6 @@ BEGIN_GNOME_DECLS
 
 /* Window options */
 #define NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW			"/nautilus/preferences/window_always_new"
-#define NAUTILUS_PREFERENCES_WINDOW_SEARCH_EXISTING		"/nautilus/preferences/window_search_existing"
 
 /* Show hidden files  */
 #define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"/nautilus/preferences/show_hidden_files"
