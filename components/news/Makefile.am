@@ -27,7 +27,7 @@ LDADD=\
 	$(GCONF_LIBS) \
 	$(GNOMEUI_LIBS)
 
-nautilus_news_SOURCES=nautilus-news.c
+nautilus_news_SOURCES=nautilus-news.c nautilus-news-pixmaps.h
 
 nautilusdir = $(datadir)/nautilus
 nautilus_DATA = news_channels.xml
