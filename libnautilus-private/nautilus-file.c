@@ -1819,6 +1819,33 @@ nautilus_file_get_uri (NautilusFile *file)
 			    NULL);
 }
 
+
+
+
+char *
+nautilus_file_get_uri_scheme (NautilusFile *file)
+{
+	char *colon;
+
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	if (file->details->directory == NULL || 
+	    file->details->directory->details->uri == NULL) {
+		return NULL;
+	}
+
+	colon = strchr (file->details->directory->details->uri, ':');
+
+	if (colon == NULL) {
+		return NULL;
+	}
+
+	return g_strndup (file->details->directory->details->uri, 
+			  colon - file->details->directory->details->uri);
+}
+
+
+
 /**
  * nautilus_file_get_date_as_string:
  * 
@@ -4289,3 +4316,4 @@ nautilus_self_check_file (void)
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */
+

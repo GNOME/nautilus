@@ -1470,7 +1470,7 @@ nautilus_window_set_content_view (NautilusWindow *window, NautilusViewIdentifier
 
 	file = nautilus_file_get (window->location);
 	g_assert (file != NULL);
-        nautilus_mime_set_default_component_for_uri
+        nautilus_mime_set_default_component_for_file
 		(file, id->iid);
         nautilus_file_unref (file);
         

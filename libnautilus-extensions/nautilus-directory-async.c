@@ -2443,8 +2443,10 @@ mime_list_callback (GnomeVFSAsyncHandle *handle,
 		file->details->directory_count_failed = TRUE;
 		nautilus_g_list_free_deep (file->details->mime_list);
 		file->details->mime_list = NULL;
+		file->details->mime_list_status = NAUTILUS_REQUEST_NOT_STARTED;
 	} else {
 		file->details->got_mime_list = TRUE;
+		file->details->mime_list_status = NAUTILUS_REQUEST_DONE;
 	}
 
 	g_free (directory->details->mime_list_uri);

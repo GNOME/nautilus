@@ -77,10 +77,11 @@ struct NautilusSidebarDetails {
 	GtkVBox *button_box;
 	gboolean has_buttons;
 	char *uri;
+	NautilusFile *file;
+	guint file_changed_connection;
 	char *default_background_color;
 	char *default_background_image;
 	int selected_index;
-	NautilusFile *file;
 	gboolean background_connected;
 	int old_width;
 };
@@ -285,7 +286,12 @@ nautilus_sidebar_destroy (GtkObject *object)
 
 	gtk_object_unref (GTK_OBJECT (sidebar->details->notebook));
 
-	nautilus_file_unref (sidebar->details->file);
+	if (sidebar->details->file != NULL) {
+		gtk_signal_disconnect (GTK_OBJECT (sidebar->details->file), 
+				       sidebar->details->file_changed_connection);
+		nautilus_file_monitor_remove (sidebar->details->file, sidebar);
+		nautilus_file_unref (sidebar->details->file);
+	}
 
 	g_free (sidebar->details->uri);
 	g_free (sidebar->details->default_background_color);
@@ -296,6 +302,7 @@ nautilus_sidebar_destroy (GtkObject *object)
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					      nautilus_sidebar_theme_changed,
 					      sidebar);
+
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -714,10 +721,6 @@ receive_dropped_keyword (NautilusSidebar *sidebar,
 			 int x, int y,
 			 GtkSelectionData *selection_data)
 {
-	/* FIXME bugzilla.eazel.com 866: Can't expect to read the
-	 * keywords list instantly here. We might need to read the
-	 * metafile first.
-	 */
 	nautilus_drag_file_receive_dropped_keyword (sidebar->details->file, selection_data->data);
 	
 	/* regenerate the display */
@@ -1150,10 +1153,6 @@ open_with_callback (GtkWidget *button, gpointer ignored)
 	
 	sidebar = NAUTILUS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (button)));
 	
-	/* FIXME bugzilla.eazel.com 866: Can't expect to put this
-	 * window up instantly. We might need to read the metafile
-	 * first.
-	 */
 	g_return_if_fail (sidebar->details->file != NULL);
 
 	nautilus_choose_application_for_file
@@ -1271,7 +1270,7 @@ add_buttons_from_metadata (NautilusSidebar *sidebar, const char *button_data)
  * 
  * Update the list of program-launching buttons based on the current uri.
  */
-void
+static void
 nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 {
 	char *button_data;
@@ -1290,7 +1289,7 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 						  NAUTILUS_METADATA_KEY_SIDEBAR_BUTTONS,
 						  NULL);
 	if (button_data) {
-		add_buttons_from_metadata(sidebar, button_data);
+		add_buttons_from_metadata (sidebar, button_data);
 		g_free(button_data);
 	}
 
@@ -1298,9 +1297,9 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 	 * unless there aren't any applications at all in complete list. 
 	 */
 
-	if (nautilus_mime_has_any_applications_for_uri (sidebar->details->file)) {
+	if (nautilus_mime_has_any_applications_for_file (sidebar->details->file)) {
 		short_application_list = 
-			nautilus_mime_get_short_list_applications_for_uri (sidebar->details->file);
+			nautilus_mime_get_short_list_applications_for_file (sidebar->details->file);
 		add_command_buttons (sidebar, short_application_list);
 		gnome_vfs_mime_application_list_free (short_application_list);
 
@@ -1314,7 +1313,7 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 	}
 }
 
-void
+static void
 nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 {
 	NautilusBackground *background;
@@ -1388,6 +1387,25 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 					    sidebar);
 }
 
+
+static void
+nautilus_sidebar_update_all (NautilusSidebar *sidebar)
+{
+	GList *attributes;
+	gboolean ready;
+
+	attributes = nautilus_mime_actions_get_required_file_attributes ();
+	ready = nautilus_file_check_if_ready (sidebar->details->file, attributes);
+	g_list_free (attributes);
+
+	if (ready) {
+		nautilus_sidebar_update_appearance (sidebar);
+		
+		/* set up the command buttons */
+		nautilus_sidebar_update_buttons (sidebar);
+	}
+}
+
 /* here is the key routine that populates the sidebar with the appropriate information when the uri changes */
 
 void
@@ -1396,6 +1414,7 @@ nautilus_sidebar_set_uri (NautilusSidebar *sidebar,
 			  const char* initial_title)
 {       
 	NautilusFile *file;
+	GList *attributes;
 
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR (sidebar));
 	g_return_if_fail (new_uri != NULL);
@@ -1409,22 +1428,36 @@ nautilus_sidebar_set_uri (NautilusSidebar *sidebar,
 	g_free (sidebar->details->uri);
 	sidebar->details->uri = g_strdup (new_uri);
 		
-	/* FIXME: we should monitor this file's metadata, and avoid
-           doing any metadata getting until it's ready. */
+	if (sidebar->details->file != NULL) {
+		gtk_signal_disconnect (GTK_OBJECT (sidebar->details->file), 
+				       sidebar->details->file_changed_connection);
+
+		nautilus_file_monitor_remove (sidebar->details->file, sidebar);
+	}
+
 
 	file = nautilus_file_get (sidebar->details->uri);
+
 	nautilus_file_unref (sidebar->details->file);
+
 	sidebar->details->file = file;
-		
-	nautilus_sidebar_update_appearance (sidebar);
+	
+	sidebar->details->file_changed_connection =
+		gtk_signal_connect_object (GTK_OBJECT (sidebar->details->file),
+					   "changed",
+					   nautilus_sidebar_update_all,
+					   GTK_OBJECT (sidebar));
+
+	attributes = nautilus_mime_actions_get_required_file_attributes ();
+	nautilus_file_monitor_add (sidebar->details->file, sidebar, attributes);
+	g_list_free (attributes);
+
+	nautilus_sidebar_update_all (sidebar);
 
 	/* tell the title widget about it */
 	nautilus_sidebar_title_set_file (sidebar->details->title,
 					 sidebar->details->file,
 					 initial_title);
-	
-	/* set up the command buttons */
-	nautilus_sidebar_update_buttons (sidebar);
 }
 
 void

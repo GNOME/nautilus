@@ -573,6 +573,8 @@ switch_location_and_view (NautilusViewIdentifier *identifier,
 
 	file = nautilus_file_get (new_uri);
 
+	nautilus_mime_actions_wait_for_required_file_attributes (file);
+
 	/* User has explicitly chosen a viewer other than the default, so
 	 * make it the default and then switch locations.
 	 */
@@ -580,7 +582,7 @@ switch_location_and_view (NautilusViewIdentifier *identifier,
 	 * for switching location and viewer together, so we don't have to
 	 * rely on metadata for holding the default location.
 	 */
-	nautilus_mime_set_default_component_for_uri (file, identifier->iid);
+	nautilus_mime_set_default_component_for_file (file, identifier->iid);
 
 	nautilus_file_unref (file);
 
@@ -2921,7 +2923,9 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 	if (nautilus_g_list_exactly_one_item (files)) {
 		uri = nautilus_file_get_uri (NAUTILUS_FILE (files->data));
 
-		applications = nautilus_mime_get_short_list_applications_for_uri (NAUTILUS_FILE (files->data));
+		nautilus_mime_actions_wait_for_required_file_attributes (NAUTILUS_FILE (files->data));
+
+		applications = nautilus_mime_get_short_list_applications_for_file (NAUTILUS_FILE (files->data));
 		for (node = applications; node != NULL; node = node->next) {
 			add_application_to_gtk_menu (view, open_with_menu, node->data, uri);
 		}
@@ -2936,7 +2940,7 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 
 		nautilus_gtk_menu_append_separator (open_with_menu);
 
-		components = nautilus_mime_get_short_list_components_for_uri (NAUTILUS_FILE (files->data));
+		components = nautilus_mime_get_short_list_components_for_file (NAUTILUS_FILE (files->data));
 		for (node = components; node != NULL; node = node->next) {
 			add_component_to_gtk_menu (view, open_with_menu, node->data, uri);
 		}
@@ -3187,7 +3191,9 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 	if (nautilus_g_list_exactly_one_item (selection)) {
 		uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
 
-		applications = nautilus_mime_get_short_list_applications_for_uri (NAUTILUS_FILE (selection->data));
+		nautilus_mime_actions_wait_for_required_file_attributes (NAUTILUS_FILE (selection->data));
+
+		applications = nautilus_mime_get_short_list_applications_for_file (NAUTILUS_FILE (selection->data));
 
 		for (node = applications, index = 0; node != NULL; node = node->next, index++) {
 			add_application_to_bonobo_menu (view, node->data, uri, index);
@@ -3195,7 +3201,7 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 
 		gnome_vfs_mime_application_list_free (applications); 
 
-		components = nautilus_mime_get_short_list_components_for_uri (NAUTILUS_FILE (selection->data));
+		components = nautilus_mime_get_short_list_components_for_file (NAUTILUS_FILE (selection->data));
 
 		for (node = components, index = 0; node != NULL; node = node->next, index++) {
 			add_component_to_bonobo_menu (view, node->data, uri, index);
@@ -3573,8 +3579,10 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	}
 
 	if (!performed_special_handling) {
-		action_type = nautilus_mime_get_default_action_type_for_uri (file);
-		application = nautilus_mime_get_default_application_for_uri (file);
+		nautilus_mime_actions_wait_for_required_file_attributes (file);
+
+		action_type = nautilus_mime_get_default_action_type_for_file (file);
+		application = nautilus_mime_get_default_application_for_file (file);
 
 		/* We need to check for the case of having
 		 * GNOME_VFS_MIME_ACTION_TYPE_APPLICATION as the

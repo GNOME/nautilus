@@ -1,3 +1,100 @@
+2000-10-17  Maciej Stachowiak  <mjs@eazel.com>
+
+	Fixed bugzilla.eazel.com bugs 2222, 3177, 3468, 3650, 3788
+	(some vestiges of wait_until_ready remain in the farther reaches
+	of the UI).
+	
+	* libnautilus-extensions/nautilus-mime-actions.h,
+	libnautilus-extensions/nautilus-mime-actions.c
+	(nautilus_mime_actions_check_if_required_attributes_ready,
+	nautilus_mime_actions_get_required_file_attributes,
+	nautilus_mime_actions_wait_for_required_file_attributes): New
+	functions to help with monitoring or waiting for required
+	attributes for the nautilus mime API.
+	(nautilus_mime_get_default_action_type_for_file,
+	nautilus_mime_get_default_action_for_file,
+	nautilus_mime_get_default_application_for_file_internal,
+	nautilus_mime_get_default_application_for_file,
+	nautilus_mime_is_default_application_for_file_user_chosen,
+	nautilus_mime_get_default_component_for_file_internal,
+	nautilus_mime_get_default_component_for_file,
+	nautilus_mime_is_default_component_for_file_user_chosen,
+	nautilus_mime_get_short_list_applications_for_file,
+	nautilus_mime_get_short_list_components_for_file,
+	nautilus_mime_get_short_list_methods_for_file,
+	nautilus_mime_get_all_applications_for_file,
+	nautilus_mime_has_any_applications_for_file,
+	nautilus_mime_get_all_components_for_file,
+	nautilus_mime_has_any_components_for_file,
+	nautilus_mime_set_default_action_type_for_file,
+	nautilus_mime_set_default_application_for_file,
+	nautilus_mime_set_default_component_for_file,
+	nautilus_mime_set_short_list_applications_for_file,
+	nautilus_mime_set_short_list_components_for_file,
+	nautilus_mime_add_application_to_short_list_for_file,
+	nautilus_mime_remove_application_from_short_list_for_file,
+	nautilus_mime_add_component_to_short_list_for_file,
+	nautilus_mime_remove_component_from_short_list_for_file,
+	nautilus_mime_extend_all_applications_for_file,
+	nautilus_mime_remove_from_all_applications_for_file,
+	mime_type_get_supertype): Don't `nautilus_file_wait_until_ready'
+	for the required attributes; instead assert (Well, return_if_fail)
+	that they are available using
+	`nautilus_file_check_if_ready'. Also, use
+	`nautilus_file_get_uri_scheme' where possible.
+
+	* libnautilus-extensions/nautilus-directory-async.c
+	(mime_list_callback): Correct some coding mistakes.
+
+	* libnautilus-extensions/nautilus-wait-until-ready.h,
+	libnautilus-extensions/nautilus-directory.c: Remove
+	`nautilus_directory_wait_until_ready'.
+
+	* libnautilus-extensions/nautilus-file.h,
+	libnautilus-extensions/nautilus-file.c
+	(nautilus_file_get_uri_scheme): new convenience function.
+	
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(repopulate_program_list, is_application_default_for_file,
+	is_component_default_for_file,
+	is_component_in_short_list_for_file,
+	is_application_in_short_list_for_file,
+	program_file_pair_is_default_for_file,
+	program_file_pair_is_in_short_list_for_file,
+	add_to_short_list_for_file, remove_from_short_list_for_file,
+	remove_default_for_item, set_default_for_item): wait_until_ready
+	for required file attributes.
+
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(any_programs_available_for_file): wait_until_ready for required
+	file attributes.
+
+	* src/file-manager/fm-directory-view.c: (switch_location_and_view,
+	create_open_with_gtk_menu, reset_bonobo_open_with_menu,
+	activate_callback): Wait for the right file attributes.
+
+	* src/nautilus-applicable-views.c: (got_file_info_callback),
+	(nautilus_navigation_info_new): Wait for the right file
+	attributes. (no wait_until_ready).
+	
+	* src/nautilus-sidebar.c: (nautilus_sidebar_destroy,
+	nautilus_sidebar_update_buttons, nautilus_sidebar_update_all),
+	nautilus_sidebar_set_uri): Monitor the file the sidebar is
+	displaying, and update when it's attributes change.
+	
+	* src/nautilus-window-manage-views.c
+	(nautilus_window_set_content_view): Wait for the right file
+	attributes. (no wait_until_ready).
+
+	* src/nautilus-window.c: (nautilus_window_destroy,
+	view_menu_choose_view_callback, view_menu_vfs_method_callback,
+	nautilus_window_real_load_content_view_menu,
+	nautilus_window_load_content_view_menu): Wait for the right
+	attributes. (no wait_until_ready in this chain).
+	
+	* test/test-nautilus-mime-actions-set.c (main): Wait for the right attributes.
+	* test/test-nautilus-mime-actions.c (main): Wait for the right attributes.
+
 2000-10-18  Darin Adler  <darin@eazel.com>
 
 	* components/notes/nautilus-notes.c: (make_notes_view):

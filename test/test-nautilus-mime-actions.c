@@ -130,38 +130,40 @@ main (int argc, char **argv)
 
 	uri = argv[1];
 	file = nautilus_file_get (uri);
+
+	nautilus_mime_actions_wait_for_required_file_attributes (file);
 	
-	default_action = nautilus_mime_get_default_action_for_uri (file);
+	default_action = nautilus_mime_get_default_action_for_file (file);
 	puts ("Default Action");
 	print_action (default_action);
 	puts ("");
 
-	default_application = nautilus_mime_get_default_application_for_uri (file);
+	default_application = nautilus_mime_get_default_application_for_file (file);
 	puts("Default Application");
 	print_application (default_application);
 	puts ("");
 		
-	default_component = nautilus_mime_get_default_component_for_uri (file);
+	default_component = nautilus_mime_get_default_component_for_file (file);
 	puts("Default Component");
 	print_component (default_component);
 	puts ("");
 
-	short_list_applications = nautilus_mime_get_short_list_applications_for_uri (file); 
+	short_list_applications = nautilus_mime_get_short_list_applications_for_file (file); 
 	puts("Short List Applications");
 	print_application_list (short_list_applications);
 	puts ("");
 
-	short_list_components = nautilus_mime_get_short_list_components_for_uri (file); 
+	short_list_components = nautilus_mime_get_short_list_components_for_file (file); 
 	puts("Short List Components");
 	print_component_list (short_list_components);
 	puts ("");
 
-	all_applications = nautilus_mime_get_all_applications_for_uri (file); 
+	all_applications = nautilus_mime_get_all_applications_for_file (file); 
 	puts("All Applications");
 	print_application_list (all_applications);
 	puts ("");
 
-	all_components = nautilus_mime_get_all_components_for_uri (file); 
+	all_components = nautilus_mime_get_all_components_for_file (file); 
 	puts("All Components");
 	print_component_list (all_components);
 	puts ("");

@@ -40,18 +40,15 @@ static gboolean
 any_programs_available_for_file (GnomeVFSMimeActionType action_type, NautilusFile *file)
 {
 	gboolean result;
-	char *uri;
-	
-	uri = nautilus_file_get_uri (file);
+
+	nautilus_mime_actions_wait_for_required_file_attributes (file);
 
 	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
-		result = nautilus_mime_has_any_components_for_uri (file);
+		result = nautilus_mime_has_any_components_for_file (file);
 	} else {
 		g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
-		result = nautilus_mime_has_any_applications_for_uri (file);
+		result = nautilus_mime_has_any_applications_for_file (file);
 	}
-
-	g_free (uri);
 
 	return result;
 }

@@ -120,6 +120,8 @@ static void nautilus_window_realize                 (GtkWidget           *widget
 static void update_sidebar_panels_from_preferences  (NautilusWindow      *window);
 static void sidebar_panels_changed_callback         (gpointer             user_data);
 static void nautilus_window_show                    (GtkWidget           *widget);
+static void nautilus_window_real_load_content_view_menu (NautilusFile    *file, 
+							 gpointer        callback_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusWindow,
 				   nautilus_window,
@@ -550,6 +552,11 @@ nautilus_window_destroy (GtkObject *object)
 		bonobo_object_unref (BONOBO_OBJECT (window->details->shell_ui));
 	}
 
+	/* Cancel the callback for the View As menu update, if any */
+	nautilus_file_cancel_call_when_ready (window->details->viewed_file, 
+					      nautilus_window_real_load_content_view_menu,
+					      window);
+
 	/* Let go of the file for the current location */
 	nautilus_file_unref (window->details->viewed_file);
 
@@ -871,7 +878,6 @@ static void
 view_menu_choose_view_callback (GtkWidget *widget, gpointer data)
 {
         NautilusWindow *window;
-        NautilusFile *file;
         
         g_return_if_fail (GTK_IS_MENU_ITEM (widget));
         g_return_if_fail (NAUTILUS_IS_WINDOW (gtk_object_get_data (GTK_OBJECT (widget), "window")));
@@ -886,19 +892,10 @@ view_menu_choose_view_callback (GtkWidget *widget, gpointer data)
 	 */
 	nautilus_window_synch_content_view_menu (window);
 
-	/* FIXME bugzilla.eazel.com 866: Can't expect to put this
-	 * window up instantly. We might need to read the metafile
-	 * first.
-	 */
-        file = nautilus_file_get (window->location);
-        g_return_if_fail (NAUTILUS_IS_FILE (file));
-
-	nautilus_choose_component_for_file (file, 
+	nautilus_choose_component_for_file (window->details->viewed_file, 
 					    GTK_WINDOW (window), 
 					    chose_component_callback, 
 					    window);
-
-	nautilus_file_unref (file);
 }
 
 static void
@@ -912,17 +909,18 @@ view_menu_vfs_method_callback (GtkWidget *widget, gpointer data)
         g_return_if_fail (NAUTILUS_IS_WINDOW (gtk_object_get_data (GTK_OBJECT (widget), "window")));
         
         window = NAUTILUS_WINDOW (gtk_object_get_data (GTK_OBJECT (widget), "window"));
-        method = (char *)(gtk_object_get_data (GTK_OBJECT (widget), "method"));
+        method = (char *) (gtk_object_get_data (GTK_OBJECT (widget), "method"));
 	g_return_if_fail (method);
 
-	new_location = g_strdup_printf("%s#%s:/",window->location,method);
-	nautilus_window_goto_uri(window, new_location);
-	g_free(new_location);
+	new_location = g_strdup_printf ("%s#%s:/",window->location,method);
+	nautilus_window_goto_uri (window, new_location);
+	g_free (new_location);
 
 }
 
-void
-nautilus_window_load_content_view_menu (NautilusWindow *window)
+static void
+nautilus_window_real_load_content_view_menu (NautilusFile *file, 
+					     gpointer      callback_data)
 {	
 	GList *components;
 	char *method;
@@ -930,16 +928,16 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
         GtkWidget *new_menu;
         GtkWidget *menu_item;
 	char *label;
-	NautilusFile *file;
+	NautilusWindow *window;
 
-        g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+	window = NAUTILUS_WINDOW (callback_data);
+
         g_return_if_fail (GTK_IS_OPTION_MENU (window->view_as_option_menu));
         
         new_menu = gtk_menu_new ();
-        
-	file = nautilus_file_get (window->location);
+	
         /* Add a menu item for each view in the preferred list for this location. */
-        components = nautilus_mime_get_short_list_components_for_uri (file);
+        components = nautilus_mime_get_short_list_components_for_file (window->details->viewed_file);
         for (p = components; p != NULL; p = p->next) {
                 menu_item = create_content_view_menu_item 
                 	(window, nautilus_view_identifier_new_from_content_view (p->data));
@@ -952,7 +950,7 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
 	 * one way trip if you choose one of these view menu items, but
 	 * it's better than nothing.
 	 */
-	method = nautilus_mime_get_short_list_methods_for_uri (file);
+	method = nautilus_mime_get_short_list_methods_for_file (window->details->viewed_file);
 	/* FIXME bugzilla.eazel.com 2466: Name of the function is plural, but it returns only
 	 * one item. That must be fixed.
 	 */
@@ -995,9 +993,23 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
                                   new_menu);
 
 
-	nautilus_file_unref (file);
-
 	nautilus_window_synch_content_view_menu (window);
+}
+
+void
+nautilus_window_load_content_view_menu (NautilusWindow *window)
+{
+	GList *attributes;
+
+        g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
+	attributes = nautilus_mime_actions_get_required_file_attributes ();
+
+	/* FIXME: need to cancel this when appropriate... */
+	nautilus_file_call_when_ready (window->details->viewed_file, attributes, 
+				       nautilus_window_real_load_content_view_menu, window);
+
+	g_list_free (attributes);
 }
 
 void

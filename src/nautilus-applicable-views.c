@@ -116,7 +116,7 @@ got_file_info_callback (NautilusFile *file,
                 goto out;
         }
 
-        default_component = nautilus_mime_get_default_component_for_uri (navinfo->file);
+        default_component = nautilus_mime_get_default_component_for_file (navinfo->file);
         if (default_component != NULL) {
         	default_id = nautilus_view_identifier_new_from_content_view (default_component);
                 CORBA_free (default_component);
@@ -134,7 +134,7 @@ got_file_info_callback (NautilusFile *file,
                 /* Map GnomeVFSResult to one of the types that Nautilus knows how to handle. */
                 if (vfs_result_code == GNOME_VFS_OK && default_id == NULL) {
                 	/* If the complete list is non-empty, the default shouldn't have been NULL */
-                    	g_assert (!nautilus_mime_has_any_components_for_uri (navinfo->file));
+                    	g_assert (!nautilus_mime_has_any_components_for_file (navinfo->file));
                         result_code = NAUTILUS_NAVIGATION_RESULT_NO_HANDLER_FOR_TYPE;
                 }
 
@@ -179,9 +179,7 @@ nautilus_navigation_info_new (const char *location,
         info->file = nautilus_file_get (location);
 
         /* Arrange for all the file attributes we will need. */
-        attributes = NULL;
-        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE);
-        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+        attributes = nautilus_mime_actions_get_required_file_attributes ();
         
         nautilus_file_call_when_ready
                 (info->file,

@@ -33,9 +33,5 @@
  * is deprecated! Do not use these calls in new code! 
  */
 
-GList *            nautilus_directory_wait_until_ready     (NautilusDirectory         *directory,
-							    GList                     *file_attributes);
-
-
 void               nautilus_file_wait_until_ready          (NautilusFile                  *file,
 							    GList                         *attributes);
