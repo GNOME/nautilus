@@ -92,14 +92,6 @@ If you need to get a copy of popt from source:
         CVSROOT=:pserver:anonymous@cvs.rpm.org:/cvs/devel
         The default password is a carriage return.  You should do a cvs co popt
 
-Which RPM version you need depends on your distribution. If you have
-Red Hat 6.2, you need at least 3.0.4. If you have Red Hat 7.0, you
-need 4.0. Unfortunately, the released rpms from RedHat have bug (a
-header file is missing), so for Red Hat 7.0 you will need the Eazel
-Hacking rpm's for RPM, available from:
-
-        http://developer.eazel.com/eazel-hacking/updates/redhat70/rpm/
-
 =====================
 4: Compiling from cvs
 =====================
@@ -119,29 +111,24 @@ packages by trying to execute "package-config --version" (ie:
 gnome-config --version will report gnome-libs version, gconf-config
 --version will report gconf's version).
 
-The following lists the packages and the versions that are required.
+The requirement is basically "the GNOME2 platform". Any differences
+from that will be listed here in this table.
 
     module             branch             configure options
     ------             ------             -----------------
     popt:              <1.5, not from GNOME CVS, see above>
-    rpm                <see above>
-    glib:              glib-1-2
-    gtk+:              gtk-1-2
+    glib:              HEAD
+    gtk+:              HEAD
     imlib:             HEAD
-    gnome-xml:         LIB_XML_1_BRANCH
-    ORBit:             orbit-stable-0-5
-    gnome-libs:        gnome-libs-1-0     --enable-prefer-db1
-    gnome-http:        HEAD
+    gnome-xml:         HEAD
+    ORBit:             HEAD
     intltool:          HEAD
-    oaf:               HEAD
-    gconf:             gconf-1-0          --disable-debug
-    gdk-pixbuf:        HEAD               --enable-canvas-pixbuf
-    gnome-print:       gnome-1-4-branch
-    gnome-vfs:         gnome-vfs-1
-    control-center     control-center-1-0
-    bonobo:            HEAD
-    librsvg:	       librsvg-1-0
-    eel:	       eel-1-0
+    bonobo-activation: HEAD
+    gconf:             HEAD
+    gnome-vfs:         HEAD
+    libbonobo:         HEAD
+    librsvg:	       HEAD
+    eel:	       HEAD
     nautilus:          HEAD
 
 One difference between tarball and cvs compilation is that when you
@@ -154,8 +141,8 @@ following packages:
 
         package         version       command
         -------         -------       -------
-        automake        1.4           automake --version
-        autoconf        2.13          autoconf --version
+        automake        1.4p4         automake --version
+        autoconf        2.52          autoconf --version
 
 Earlier versions might work but no one has tested them.
 
@@ -199,9 +186,9 @@ Then get root and:
 ===============================
 
 There's a script named nautilus-clean.sh, at the top level of the
-Nautilus sources. If OAF or GConf changes, you may need to run this
-script to get Nautilus to work properly. One way to invoke it is like
-this:
+Nautilus sources. If bonobo-activation or GConf changes, you may need
+to run this script to get Nautilus to work properly. One way to invoke
+it is like this:
 
         nautilus-clean.sh -x
 

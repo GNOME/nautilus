@@ -537,8 +537,8 @@ fi
 
 dnl ==========================================================================
 
-dnl libnautilus
-LIBNAUTILUS_MODULES="eel-2.0 libbonoboui-2.0"
+dnl libnautilus (must list bonobo-activation and libbonobo because idldir does not respect "requires")
+LIBNAUTILUS_MODULES="eel-2.0 bonobo-activation-2.0 libbonobo-2.0 libbonoboui-2.0"
 LIBNAUTILUS_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_MODULES`"
 AC_SUBST(LIBNAUTILUS_CFLAGS)
 LIBNAUTILUS_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_MODULES`"
@@ -556,8 +556,8 @@ GIMPHWRAPBOX_MODULES="gtk+-2.0"
 GIMPHWRAPBOX_CFLAGS="`$PKG_CONFIG --cflags $GIMPHWRAPBOX_MODULES`"
 AC_SUBST(GIMPHWRAPBOX_CFLAGS)
 
-dnl libnautilus-private
-LIBNAUTILUS_PRIVATE_MODULES="eel-2.0 libbonoboui-2.0"
+dnl libnautilus-private (must list bonobo-activation and libbonobo because idldir does not respect "requires")
+LIBNAUTILUS_PRIVATE_MODULES="eel-2.0 bonobo-activation-2.0 libbonobo-2.0 libbonoboui-2.0"
 LIBNAUTILUS_PRIVATE_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_PRIVATE_MODULES`"
 AC_SUBST(LIBNAUTILUS_PRIVATE_CFLAGS)
 LIBNAUTILUS_PRIVATE_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_PRIVATE_MODULES` $CDDA_LIBS $ESD_LIBS $FAM_LIBS $ICONV_LIBS $LIBJPEG $MEDUSA_LIBS"
@@ -565,8 +565,8 @@ AC_SUBST(LIBNAUTILUS_PRIVATE_LIBS)
 LIBNAUTILUS_PRIVATE_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $LIBNAUTILUS_PRIVATE_MODULES | $srcdir/add-include-prefix`"
 AC_SUBST(LIBNAUTILUS_PRIVATE_IDL_INCLUDES)
 
-dnl libnautilus-adapter
-LIBNAUTILUS_ADAPTER_MODULES="eel-2.0 libbonoboui-2.0"
+dnl libnautilus-adapter (must list bonobo-activation and libbonobo because idldir does not respect "requires")
+LIBNAUTILUS_ADAPTER_MODULES="eel-2.0 bonobo-activation-2.0 libbonobo-2.0 libbonoboui-2.0"
 LIBNAUTILUS_ADAPTER_CFLAGS="`$PKG_CONFIG --cflags $LIBNAUTILUS_ADAPTER_MODULES`"
 AC_SUBST(LIBNAUTILUS_ADAPTER_CFLAGS)
 LIBNAUTILUS_ADAPTER_LIBS="`$PKG_CONFIG --libs $LIBNAUTILUS_ADAPTER_MODULES`"
@@ -574,8 +574,8 @@ AC_SUBST(LIBNAUTILUS_ADAPTER_LIBS)
 LIBNAUTILUS_ADAPTER_IDL_INCLUDES="`$PKG_CONFIG --variable=idldir $LIBNAUTILUS_ADAPTER_MODULES | $srcdir/add-include-prefix`"
 AC_SUBST(LIBNAUTILUS_ADAPTER_IDL_INCLUDES)
 
-dnl nautilus-src
-NAUTILUS_SRC_MODULES="eel-2.0 libbonoboui-2.0"
+dnl nautilus-src (must list bonobo-activation and libbonobo because idldir does not respect "requires")
+NAUTILUS_SRC_MODULES="eel-2.0 bonobo-activation-2.0 libbonobo-2.0 libbonoboui-2.0"
 NAUTILUS_SRC_CFLAGS="`$PKG_CONFIG --cflags $NAUTILUS_SRC_MODULES`"
 AC_SUBST(NAUTILUS_SRC_CFLAGS)
 NAUTILUS_SRC_LIBS="`$PKG_CONFIG --libs $NAUTILUS_SRC_MODULES`"
