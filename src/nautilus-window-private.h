@@ -62,8 +62,8 @@ struct NautilusWindowDetails
 
 	/* Toolbar. */
         GtkTooltips *tooltips;
-	BonoboUIToolbarItem *back_button_item;
-	BonoboUIToolbarItem *forward_button_item;
+	GtkWidget *back_button_item;
+	GtkWidget *forward_button_item;
 
         /* Current location. */
         char *location;

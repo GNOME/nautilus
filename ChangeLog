@@ -1,3 +1,13 @@
+2003-03-01  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-toolbars.c: (get_back_button),
+	(get_forward_button), (menu_position_under_widget),
+	(create_back_or_forward_toolbar_item): Use 	
+	bonobo_ui_component_widget_set for the back and forward dropdowns.
+
+	This is the nautilus end of a fix for bug #106457.
+
 2003-02-28  Dave Camp  <dave@ximian.com>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c: (hit_test):

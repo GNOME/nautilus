@@ -126,15 +126,13 @@ create_back_or_forward_menu (NautilusWindow *window, gboolean back)
 static GtkWidget *
 get_back_button (NautilusWindow *window)
 {
-	return GTK_WIDGET (GTK_BIN 
-		(window->details->back_button_item)->child);
+	return window->details->back_button_item;
 }
 
 static GtkWidget *
 get_forward_button (NautilusWindow *window)
 {
-	return GTK_WIDGET (GTK_BIN
-		(window->details->forward_button_item)->child);
+	return window->details->forward_button_item;
 }
 
 static void
@@ -142,15 +140,14 @@ menu_position_under_widget (GtkMenu *menu, int *x, int *y,
 			    gboolean *push_in, gpointer user_data)
 {
 	GtkWidget *w;
-	int width, height;
 	int screen_width, screen_height;
 	GtkRequisition requisition;
 
 	w = GTK_WIDGET (user_data);
 	
-	gdk_drawable_get_size (w->window, &width, &height);
 	gdk_window_get_origin (w->window, x, y);
-	*y = *y + height;
+	*x += w->allocation.x;
+	*y += w->allocation.y + w->allocation.height;
 
 	gtk_widget_size_request (GTK_WIDGET (menu), &requisition);
 
@@ -202,62 +199,26 @@ back_or_forward_key_pressed_callback (GtkWidget *widget,
 	return FALSE;
 }
 
-static void
-back_or_forward_toolbar_item_property_set_cb (BonoboPropertyBag *bag,
-					      const BonoboArg   *arg,
-					      guint              arg_id,
-					      CORBA_Environment *ev,
-					      gpointer           user_data)
-{
-	BonoboControl *control;
-	BonoboUIToolbarItem *item;
-	GtkOrientation orientation;
-	BonoboUIToolbarItemStyle style;
-
-	control = BONOBO_CONTROL (user_data);
-	item = BONOBO_UI_TOOLBAR_ITEM (bonobo_control_get_widget (control));
-
-	switch (arg_id) {
-	case TOOLBAR_ITEM_ORIENTATION_PROP:
-		orientation = BONOBO_ARG_GET_INT (arg);
-		bonobo_ui_toolbar_item_set_orientation (item, orientation);
-
-		if (GTK_WIDGET (item)->parent) {
-			gtk_widget_queue_resize (GTK_WIDGET (item)->parent);
-		}
-		break;
-	case TOOLBAR_ITEM_STYLE_PROP:
-		style = BONOBO_ARG_GET_INT (arg);
-		bonobo_ui_toolbar_item_set_style (item, style);
-		break;
-	}
-}
-
-static BonoboUIToolbarItem *
+static GtkWidget *
 create_back_or_forward_toolbar_item (NautilusWindow *window, 
 				     const char     *tooltip,
 				     const char     *control_path)
 {
-	BonoboUIToolbarItem *item;
-	BonoboPropertyBag *pb;
-	BonoboControl *wrapper;
 	GtkWidget *button;
 
-	item = BONOBO_UI_TOOLBAR_ITEM (bonobo_ui_toolbar_item_new ());
-
 	button = gtk_toggle_button_new ();
+
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
 
 	gtk_container_add (GTK_CONTAINER (button),
 			   gtk_arrow_new (GTK_ARROW_DOWN, GTK_SHADOW_OUT));
 
-	gtk_container_add (GTK_CONTAINER (item), button);
-
-	gtk_widget_show_all (GTK_WIDGET (item));
+	gtk_widget_show_all (GTK_WIDGET (button));
 
 	gtk_tooltips_set_tip (window->details->tooltips,
 			      GTK_WIDGET (button),
 			      tooltip, NULL);
+
 	g_signal_connect_object (button, "key_press_event",
 				 G_CALLBACK (back_or_forward_key_pressed_callback),
 				 window, 0);
@@ -265,28 +226,12 @@ create_back_or_forward_toolbar_item (NautilusWindow *window,
 				 G_CALLBACK (back_or_forward_button_pressed_callback),
 				 window, 0);
 
-	wrapper = bonobo_control_new (GTK_WIDGET (item));
-	pb = bonobo_property_bag_new
-		(NULL, back_or_forward_toolbar_item_property_set_cb, wrapper);
-	bonobo_property_bag_add (pb, "style",
-				 TOOLBAR_ITEM_STYLE_PROP,
-				 BONOBO_ARG_INT, NULL, NULL,
-				 Bonobo_PROPERTY_WRITEABLE);
-	bonobo_property_bag_add (pb, "orientation",
-				 TOOLBAR_ITEM_ORIENTATION_PROP,
-				 BONOBO_ARG_INT, NULL, NULL,
-				 Bonobo_PROPERTY_WRITEABLE);
-	bonobo_control_set_properties (wrapper, BONOBO_OBJREF (pb), NULL);
-	bonobo_object_unref (pb);
-
-	bonobo_ui_component_object_set (window->details->shell_ui,
+	bonobo_ui_component_widget_set (window->details->shell_ui,
 					control_path,
-					BONOBO_OBJREF (wrapper),
+					button,
 					NULL);
 
-	bonobo_object_unref (wrapper);
-
-	return item;
+	return button;
 }
 
 static void
