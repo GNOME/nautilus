@@ -1902,18 +1902,20 @@ add_open_with_gtk_menu_item (GtkMenu *menu, const char *label)
 static void
 launch_application_from_menu_item (GtkMenuItem *menu_item, gpointer user_data)
 {
-	char *uri, *command;
+	GnomeVFSMimeApplication *application;
+	char *uri;
 
 	g_assert (GTK_IS_MENU_ITEM (menu_item));
 	g_assert (user_data == NULL);
 
-	command = (char *)gtk_object_get_data (GTK_OBJECT (menu_item), "command");
-	g_assert (command != NULL);
+	application = (GnomeVFSMimeApplication *)gtk_object_get_data (GTK_OBJECT (menu_item), 
+								      "application");
+	g_assert (application != NULL);
 
 	uri = (char *)gtk_object_get_data (GTK_OBJECT (menu_item), "uri");
 	g_assert (uri != NULL);
 
-	nautilus_launch_application (command, uri);
+	nautilus_launch_application (application->command, uri);
 }
 
 static void
@@ -1953,9 +1955,9 @@ add_application_to_gtk_menu (GtkMenu *menu,
 	g_free (label_string);
 
 	gtk_object_set_data_full (GTK_OBJECT (menu_item),
-				  "command",
-				  g_strdup (application->command),
-				  g_free);
+				  "application",
+				  application,
+				  (GtkDestroyNotify)gnome_vfs_mime_application_free);
 
 	gtk_object_set_data_full (GTK_OBJECT (menu_item),
 				  "uri",
@@ -1988,7 +1990,7 @@ add_component_to_gtk_menu (GtkMenu *menu,
 	gtk_object_set_data_full (GTK_OBJECT (menu_item),
 				  "identifier",
 				  identifier,
-				  (GtkDestroyNotify) nautilus_view_identifier_free);
+				  (GtkDestroyNotify)nautilus_view_identifier_free);
 
 	gtk_object_set_data_full (GTK_OBJECT (menu_item),
 				  "uri",
@@ -2026,9 +2028,13 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 			add_application_to_gtk_menu (open_with_menu, node->data, uri);
 		}
 
-		/* FIXME: Need to free list, but API not yet existent:
-		 * gnome_vfs_mime_application_list_free (applications); 
+		/* The list data is stored in menu items, and will be destroyed there. */
+		/* FIXME: Would be cleaner for add_application_to_gtk_menu to use
+		 * (currently nonexistent) gnome_vfs_mime_application_copy to make a
+		 * copy of data and destroy original here with (currently nonexistent)
+		 * gnome_vfs_mime_application_list_free.
 		 */
+		g_list_free (applications); 
 
 		append_gtk_menu_item_with_view (view,
 						open_with_menu,
@@ -2043,11 +2049,14 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 
 		for (node = components; node != NULL; node = node->next) {
 			add_component_to_gtk_menu (open_with_menu, node->data, uri);
+			/* Destroy the OAF_ServerInfo that we're finished with. */
+			CORBA_free (node->data);
 		}
 
-		/* FIXME: Need to free list, but API not yet existent:
-		 * gnome_vfs_mime_component_list_free (components); 
+		/* FIXME: Would be cleaner to destroy data here with (currently nonexistent)
+		 * gnome_vfs_mime_component_list_free instead of using CORBA_free above.
 		 */
+		g_list_free (components); 
 
 		g_free (uri);
 
@@ -2158,9 +2167,27 @@ add_open_with_bonobo_menu_item (BonoboUIHandler *ui_handler,
 		 -1, BONOBO_UI_HANDLER_PIXMAP_NONE, NULL,
 		 0, 0,
 		 NULL, NULL);
-	bonobo_ui_handler_menu_set_sensitivity (ui_handler, path, FALSE);
 	g_free (path);
 }				
+
+static void
+add_application_to_bonobo_menu (BonoboUIHandler *ui_handler, 
+				GnomeVFSMimeApplication *application, 
+				const char *uri)
+{
+	/* FIXME: Need to pass application and uri somehow to callback */
+	add_open_with_bonobo_menu_item (ui_handler, application->name);
+}
+
+static void
+add_component_to_bonobo_menu (BonoboUIHandler *ui_handler, 
+			      NautilusViewIdentifier *identifier, 
+			      const char *uri)
+{
+	/* FIXME: Need to pass identifier and uri somehow to callback */
+	add_open_with_bonobo_menu_item (ui_handler, identifier->name);
+}
+
 
 static void
 reset_bonobo_trash_delete_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler, GList *selection)
@@ -2192,8 +2219,9 @@ reset_bonobo_trash_delete_menu (FMDirectoryView *view, BonoboUIHandler *ui_handl
 static void
 reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler, GList *selection)
 {
-	char *item_name;
-	int i;
+	GList *applications, *components;
+	GList *node;
+	char *uri;
 
 	/* Remove old copy of this menu (if any) */
 	bonobo_ui_handler_menu_remove 
@@ -2207,39 +2235,53 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler,
 		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_NEW_WINDOW_ITEM) + 4,
 		 0, 0);
 
-	for (i = 0; i < 3; ++i) {
-		item_name = g_strdup_printf ("Application %d", i+1);
-		add_open_with_bonobo_menu_item (ui_handler, item_name);
-		g_free (item_name);
+	/* This menu is only displayed when there's one selected item. */
+	if (nautilus_g_list_exactly_one_item (selection)) {
+		uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
+
+		applications = gnome_vfs_mime_get_short_list_applications_for_uri (uri);
+
+		for (node = applications; node != NULL; node = node->next) {
+			add_application_to_bonobo_menu (ui_handler, node->data, uri);
+		}
+
+		/* FIXME: Need to free list, but API not yet existent:
+		 * gnome_vfs_mime_application_list_free (applications); 
+		 */
+
+		insert_bonobo_menu_item 
+			(ui_handler, selection,
+			 FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION,
+			 _("Choose another application with which to open the selected item"),
+			 -1,
+			 0, 0,
+			 bonobo_menu_other_program_callback, view);
+
+		bonobo_ui_handler_menu_new_separator 
+			(ui_handler, 
+			 FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_VIEWERS, 
+			 -1);
+
+		components = gnome_vfs_mime_get_short_list_components_for_uri (uri);
+
+		for (node = components; node != NULL; node = node->next) {
+			add_component_to_bonobo_menu (ui_handler, node->data, uri);
+		}
+
+		/* FIXME: Need to free list, but API not yet existent:
+		 * gnome_vfs_mime_component_list_free (components); 
+		 */
+
+		insert_bonobo_menu_item 
+			(ui_handler, selection,
+			 FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER,
+			 _("Choose another viewer with which to view the selected item"),
+			 -1,
+			 0, 0,
+			 bonobo_menu_other_program_callback, view);
+
+		g_free (uri);
 	}
-	
-	insert_bonobo_menu_item 
-		(ui_handler, selection,
-		 FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION,
-		 _("Choose another application with which to open the selected item"),
-		 -1,
-		 0, 0,
-		 bonobo_menu_other_program_callback, view);
-
-	bonobo_ui_handler_menu_new_separator 
-		(ui_handler, 
-		 FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_BEFORE_VIEWERS, 
-		 -1);
-
-	for (i = 0; i < 3; ++i) {
-		item_name = g_strdup_printf ("Viewer %d", i+1);
-		add_open_with_bonobo_menu_item (ui_handler, item_name);
-		g_free (item_name);
-	}
-
-	insert_bonobo_menu_item 
-		(ui_handler, selection,
-		 FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER,
-		 _("Choose another viewer with which to view the selected item"),
-		 -1,
-		 0, 0,
-		 bonobo_menu_other_program_callback, view);
-
 }
 
 static void
@@ -2357,6 +2399,9 @@ fm_directory_view_real_update_menus (FMDirectoryView *view)
 
 	reset_bonobo_open_with_menu (view, handler, selection);
 	reset_bonobo_trash_delete_menu (view, handler, selection);
+
+	update_one_menu_item (handler, selection,
+			      FM_DIRECTORY_VIEW_MENU_PATH_TRASH);
 	update_one_menu_item (handler, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE);
 	update_one_menu_item (handler, selection,
