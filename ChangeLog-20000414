@@ -1,3 +1,34 @@
+2000-01-11  John Sullivan  <sullivan@eazel.com>
+
+	Content view menu now works (can switch between List and Icon views).
+
+	* src/ntl-window-msgs.c:
+	(nautilus_window_load_content_view): Made it return the new
+	content view, so callers don't need a load_info structure to
+	determine the new view. Also made it accept NULL for
+	requesting_view.
+	(view_menu_switch_views_cb): New function, callback for when
+	a view is chosen from the list of available content views.
+	Elliot told me that this requires further work, so I checked
+	it in with comments for later fixing by Elliot or someone
+	else who understands the loading process better.
+	(nautilus_view_load_content_view_menu): Added explicit
+	parameter for NautilusNavigationInfo for clarity (had been
+	getting this from deep in window temporary state guts).
+	Connected view_menu_switch_views_cb to menu items.
+	* src/ntl-window.c: 
+	(nautilus_window_set_arg): Fixed bug in ARG_CONTENT_VIEW case where
+	new view was sometimes being added to view hierarchy twice. Then
+	moved this code into...
+	(real_nautilus_window_set_content_view): New function, implements
+	guts of content-view changing so set_arg doesn't have a big block
+	of code in a switch statement.
+	(nautilus_window_set_content_view): Moved the gtk_widget_show call
+	from here to real_nautilus_window_set_content_view so it happens
+	even if set_arg is called from elsewhere.
+	(gtk_option_menu_do_resize): Removed this
+	obsolete function (I removed the callers yesterday but forgot this).
+
 2000-01-11  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/ntl-view-frame.c:	Fixed typos and oversights in

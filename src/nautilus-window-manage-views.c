@@ -69,6 +69,10 @@ static void nautilus_window_notify_selection_change(NautilusWindow *window,
 						    NautilusView *requesting_view);
 
 static void nautilus_window_advance_state(NautilusWindow *window);
+static NautilusView *nautilus_window_load_content_view(NautilusWindow *window,
+            		                      const char *iid,
+                        	              Nautilus_NavigationInfo *navinfo,
+                                	      NautilusView **requesting_view);
 static void nautilus_window_switch_to_new_views(NautilusWindow *window);
 static void nautilus_window_revert_to_old_views(NautilusWindow *window);
 static void nautilus_window_free_load_info(NautilusWindow *window);
@@ -206,7 +210,42 @@ Nautilus_NavigationInfo__copy(Nautilus_NavigationInfo *dest_ni, Nautilus_Navigat
 }
 
 static void
-nautilus_window_load_content_view_menu (NautilusWindow *window)
+view_menu_switch_views_cb (GtkWidget *widget, gpointer data)
+{
+  NautilusWindow *window;
+  NautilusView *view;
+  char *iid;
+
+  g_return_if_fail (GTK_IS_MENU_ITEM (widget));
+  g_return_if_fail (NAUTILUS_IS_WINDOW (gtk_object_get_user_data(GTK_OBJECT(widget))));
+  g_return_if_fail (data != NULL);
+
+  window = NAUTILUS_WINDOW (gtk_object_get_user_data (GTK_OBJECT(widget)));
+  g_assert (window->content_view != NULL);
+  g_assert (window->ni != NULL);
+
+  iid = (char *)data;
+  view = nautilus_window_load_content_view (window, iid, window->ni, NULL);
+  /* FIXME: This is probably too simplistic; might need to clean up after failure analogously
+   * to nautilus_window_end_location_change. Also Elliot says this view-switching
+   * needs to be interruptable by the location-switching code, so the loading state
+   * machine probably needs to get involved somehow.
+   */
+  if (view != NULL)
+  {
+    nautilus_window_set_content_view(window, view);
+  }
+
+  /* FIXME: After switching from one view to another (e.g. Icons to List), then immediately
+   * quitting, get a segmentation fault deep in Bonobo code somewhere.
+   */
+}
+
+/* FIXME: Probably this should be moved to ntl-window.c with the rest of the UI.
+ * I was waiting until we had the framework settled before doing that.
+ */
+static void
+nautilus_window_load_content_view_menu (NautilusWindow *window, NautilusNavigationInfo *ni)
 {
   GList *children; 
   GList *iter_old;
@@ -216,13 +255,12 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
 
   g_return_if_fail (NAUTILUS_IS_WINDOW (window));
   g_return_if_fail (GTK_IS_OPTION_MENU (window->option_cvtype));
-  g_return_if_fail (window->load_info != NULL);
-  g_return_if_fail (window->load_info->ni != NULL);
+  g_return_if_fail (ni != NULL);
 
   new_menu = gtk_menu_new ();
 
   /* Add a menu item for each available content view type */
-  iter_new = window->load_info->ni->content_identifiers;
+  iter_new = ni->content_identifiers;
   index = 0;
   default_view_index = -1;
   while (iter_new != NULL)
@@ -232,11 +270,16 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
 
     identifier = (NautilusViewIdentifier *)iter_new->data;
     menu_item = gtk_menu_item_new_with_label (identifier->name);
-    if (strcmp (identifier->iid, window->load_info->ni->default_content_iid) == 0)
+    if (strcmp (identifier->iid, ni->default_content_iid) == 0)
     {
       default_view_index = index;
     }
-    /* FIXME: Need to connect menu item to signal here */
+    /* FIXME: copy of identifier->iid doesn't get freed */
+    gtk_signal_connect (GTK_OBJECT (menu_item), 
+    		        "activate", 
+    		        GTK_SIGNAL_FUNC (view_menu_switch_views_cb), 
+    		        g_strdup (identifier->iid));
+    gtk_object_set_user_data (GTK_OBJECT (menu_item), window);
     gtk_menu_append (GTK_MENU (new_menu), menu_item);
     gtk_widget_show (menu_item);
     iter_new = g_slist_next (iter_new);
@@ -315,7 +358,7 @@ nautilus_window_change_location_internal(NautilusWindow *window, Nautilus_Naviga
       window->si = NULL;
     }
 
-  nautilus_window_load_content_view_menu (window);
+  nautilus_window_load_content_view_menu (window, window->load_info->ni);
 
   explorer_location_bar_set_uri_string(EXPLORER_LOCATION_BAR(window->ent_uri),
                                        loci->requested_uri);
@@ -369,25 +412,27 @@ nautilus_window_view_destroyed(NautilusView *view, NautilusWindow *window)
     }
 }
 
-static void
+static NautilusView *
 nautilus_window_load_content_view(NautilusWindow *window,
                                   const char *iid,
-                                  NautilusNavigationInfo *loci,
+                                  Nautilus_NavigationInfo *navinfo,
                                   NautilusView **requesting_view)
 {
   NautilusView *content_view = window->content_view;
   NautilusView *new_view;
 
-  g_return_if_fail(iid);
-  g_return_if_fail(loci);
-  g_return_if_fail(requesting_view);
+  g_return_val_if_fail(iid, NULL);
+  g_return_val_if_fail(navinfo, NULL);
 
   if((!content_view || !NAUTILUS_IS_VIEW(content_view)) || strcmp(nautilus_view_get_iid(content_view), iid))
     {
-      if(*requesting_view == window->content_view) /* If we are going to be zapping the old view,
-                                                      we definitely don't want any of the new views
-                                                      thinking they made the request */
-        *requesting_view = NULL;
+      if(requesting_view != NULL && *requesting_view == window->content_view)
+        {
+          /* If we are going to be zapping the old view,
+             we definitely don't want any of the new views
+             thinking they made the request */
+          *requesting_view = NULL;
+        }
 
       new_view = NAUTILUS_VIEW(gtk_widget_new(nautilus_content_view_get_type(), "main_window", window, NULL));
 
@@ -406,13 +451,20 @@ nautilus_window_load_content_view(NautilusWindow *window,
     {
       gtk_object_ref(GTK_OBJECT(new_view));
 
-      loci->navinfo.content_view = nautilus_view_get_client_objref(new_view);
-      window->load_info->new_content_view = new_view;
+      navinfo->content_view = nautilus_view_get_client_objref(new_view);
+      if (window->load_info != NULL)
+        window->load_info->new_content_view = new_view;
 
       nautilus_view_set_active_errors(new_view, TRUE);
 
-      nautilus_window_update_view(window, new_view, &(loci->navinfo), *requesting_view, window->load_info->new_content_view);
+      nautilus_window_update_view(window, 
+      				  new_view, 
+      				  navinfo, 
+      				  requesting_view == NULL ? NULL : *requesting_view, 
+      				  new_view);
     }
+
+  return new_view;
 }
 
 static void
@@ -589,7 +641,8 @@ nautilus_window_change_location_2(NautilusNavigationInfo *ni, gpointer data)
       return;
     }
 
-  nautilus_window_load_content_view(window, ni->default_content_iid, ni, (NautilusView **)&ni->requesting_view);
+  nautilus_window_load_content_view(window, ni->default_content_iid, &ni->navinfo, (NautilusView **)&ni->requesting_view);
+
   if(!window->load_info->new_content_view)
     {
       nautilus_window_display_error

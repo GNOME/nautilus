@@ -37,6 +37,7 @@
 #include <libnautilus/nautilus-gtk-extensions.h>
 
 static void nautilus_window_realize (GtkWidget *widget);
+static void real_nautilus_window_set_content_view (NautilusWindow *window, NautilusView *new_view);
 
 static GnomeAppClass *parent_class = NULL;
 
@@ -401,15 +402,6 @@ nautilus_window_goto_uri_cb (GtkWidget *widget,
 }
 
 static void
-gtk_option_menu_do_resize(GtkWidget *widget, GtkWidget *child, GtkWidget *optmenu)
-{
-  GtkRequisition req;
-  gtk_widget_size_request(widget, &req);
-
-  gtk_widget_set_usize(optmenu, req.width, -1);
-}
-
-static void
 nautilus_window_constructed(NautilusWindow *window)
 {
   GnomeApp *app;
@@ -538,34 +530,7 @@ nautilus_window_set_arg (GtkObject      *object,
       nautilus_window_constructed(NAUTILUS_WINDOW(object));
     break;
   case ARG_CONTENT_VIEW:
-    new_cv = (GtkWidget *)GTK_VALUE_OBJECT(*arg);
-    if(window->content_view)
-      {
-	gtk_widget_ref(GTK_WIDGET(window->content_view));
-	gtk_container_remove(GTK_CONTAINER(window->content_hbox), GTK_WIDGET(window->content_view));
-        if(new_cv)
-          {
-#ifdef CONTENTS_AS_HBOX
-            gtk_box_pack_end(GTK_BOX(window->content_hbox), new_cv, TRUE, TRUE, 0);
-#else
-            gtk_paned_pack2(GTK_PANED(window->content_hbox), new_cv, TRUE, FALSE);
-#endif
-          }
-
-	gtk_widget_unref(GTK_WIDGET(window->content_view));
-      }
-    
-    if (new_cv)
-      {
-#ifdef CONTENTS_AS_HBOX
-        gtk_box_pack_end(GTK_BOX(window->content_hbox), new_cv, TRUE, TRUE, 0);
-#else
-        gtk_paned_pack2(GTK_PANED(window->content_hbox), new_cv, TRUE, FALSE);
-#endif
-      }
-
-    gtk_widget_queue_resize(window->content_hbox);
-    window->content_view = (NautilusView *)new_cv;
+    real_nautilus_window_set_content_view (window, (NautilusView *)GTK_VALUE_OBJECT(*arg));
     break;
   }
 }
@@ -728,10 +693,7 @@ nautilus_window_send_show_properties(GtkWidget *dockitem, GdkEventButton *event,
 void
 nautilus_window_set_content_view(NautilusWindow *window, NautilusView *content_view)
 {
-  gtk_object_set(GTK_OBJECT(window), "content_view", content_view, NULL);
-
-  if(content_view)
-    gtk_widget_show(GTK_WIDGET(content_view));
+  real_nautilus_window_set_content_view (window, content_view);
 }
 
 void
@@ -982,3 +944,34 @@ nautilus_window_display_error(NautilusWindow *window, const char *error_msg)
 
   gtk_widget_show(dialog);
 }
+
+static void
+real_nautilus_window_set_content_view (NautilusWindow *window, NautilusView *new_view)
+{
+  g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+  g_return_if_fail (new_view == NULL || NAUTILUS_IS_VIEW (new_view));
+
+  if (new_view == window->content_view)
+    {
+      return;
+    }
+
+  if (window->content_view != NULL)
+    {
+      gtk_container_remove(GTK_CONTAINER(window->content_hbox), GTK_WIDGET(window->content_view));      
+    }
+
+  if (new_view != NULL)
+    {
+      gtk_widget_show (GTK_WIDGET (new_view));
+#ifdef CONTENTS_AS_HBOX
+      gtk_box_pack_end(GTK_BOX(window->content_hbox), GTK_WIDGET (new_view), TRUE, TRUE, 0);
+#else
+      gtk_paned_pack2(GTK_PANED(window->content_hbox), GTK_WIDGET (new_view), TRUE, FALSE);
+#endif      
+    }
+      
+  gtk_widget_queue_resize(window->content_hbox);
+  window->content_view = new_view;
+}
+
