@@ -20,7 +20,7 @@
  *
  * Authors: 
  *       Maciej Stachowiak <mjs@eazel.com>
- *       Mathieu Lacage <mathieu@eazel.com> (dnd code)
+ *       Mathieu Lacage <mathieu@eazel.com> (evil dnd code)
  */
 
 /* nautilus-tree-view.c - tree content view
@@ -87,7 +87,6 @@ struct _NautilusTreeViewDndDetails {
 
 	/* data used by the drag_motion code */
 	GSList *expanded_nodes;
-	GHashTable *collapsed_nodes;
 
 	/* row being highlighted */
 	NautilusCTreeNode *current_prelighted_node;
@@ -269,6 +268,9 @@ static void  nautilus_tree_view_get_drop_action (NautilusTreeView *tree_view,
 						 int x, int y,
 						 int *default_action,
 						 int *non_default_action);
+static void 
+nautilus_tree_view_collapse_all (NautilusTreeView *tree_view,
+				 NautilusCTreeNode *current_node);
 
 
 static void nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass);
@@ -820,7 +822,6 @@ nautilus_tree_view_init_dnd (NautilusTreeView *view)
 	view->details->dnd = g_new0 (NautilusTreeViewDndDetails, 1);
 	view->details->dnd->motion_queue = nautilus_queue_new ();
 	view->details->dnd->expanded_nodes = NULL;
-	view->details->dnd->collapsed_nodes = g_hash_table_new (g_direct_hash, g_direct_equal);
 	view->details->dnd->target_list = gtk_target_list_new (nautilus_tree_view_dnd_target_table, 
 							       NAUTILUS_N_ELEMENTS (nautilus_tree_view_dnd_target_table));
 
@@ -1451,6 +1452,7 @@ nautilus_tree_view_drag_leave (GtkWidget *widget,
 	
 	/* reinit for next dnd */
 	dnd->drag_info->got_drop_data_type = FALSE;
+
 }
 
 static gboolean 
@@ -1577,11 +1579,6 @@ nautilus_tree_view_drag_data_received (GtkWidget *widget,
 	if (drag_info->drop_occured == TRUE) {
 		switch (info) {
 		case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-			nautilus_tree_view_receive_dropped_icons
-				(NAUTILUS_TREE_VIEW (tree_view),
-				 context, x, y);
-			gtk_drag_finish (context, TRUE, FALSE, time);
-			break;
 		case NAUTILUS_ICON_DND_URI_LIST:
 			nautilus_tree_view_receive_dropped_icons
 				(NAUTILUS_TREE_VIEW (tree_view),
@@ -1596,10 +1593,12 @@ nautilus_tree_view_drag_data_received (GtkWidget *widget,
 		}
 		
 		nautilus_tree_view_free_drag_data (NAUTILUS_TREE_VIEW (tree_view));
-		
+
 		/* reinitialise it for the next dnd */
 		drag_info->drop_occured = FALSE;
 		drag_info->got_drop_data_type = FALSE;
+		g_slist_free (dnd->expanded_nodes);
+		dnd->expanded_nodes = NULL;
 	}
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
 				      "drag_data_received");
@@ -2185,54 +2184,11 @@ struct _NautilusTreeViewExpandHack {
 	int org_y;
 	int refcount;
 };
-typedef struct _NautilusTreeViewCollapseHack NautilusTreeViewCollapseHack;
-struct _NautilusTreeViewCollapseHack {
-	NautilusCTree *ctree;
-	NautilusTreeView *tree_view;
-	NautilusCTreeNode *collapsed_node;
-	gboolean is_inside;
-	int refcount;
-};
 
 
 static int    expand_time_callback (gpointer data);
 static void   expand_hack_unref (NautilusTreeViewExpandHack * expand_hack); 
 static NautilusTreeViewExpandHack    *expand_hack_new (int x, int y, NautilusTreeView *tree_view);
-
-static int    collapse_time_callback (gpointer data);
-static void   collapse_hack_unref (NautilusTreeViewCollapseHack * collapse_hack); 
-static NautilusTreeViewCollapseHack    *collapse_hack_new (NautilusTreeView *tree_view, 
-							   NautilusCTreeNode *collapsed_node);
-
-
-static void
-collapse_hack_unref (NautilusTreeViewCollapseHack * collapse_hack) 
-{
-	collapse_hack->refcount--;
-
-	if (collapse_hack->refcount == 0) {
-		g_free (collapse_hack);
-	}
-
-}
-
-static NautilusTreeViewCollapseHack * 
-collapse_hack_new (NautilusTreeView *tree_view, NautilusCTreeNode *collapsed_node)
-{
-	NautilusTreeViewCollapseHack *collapse_hack;
-
-	collapse_hack = g_new0 (NautilusTreeViewCollapseHack, 1);
-	collapse_hack->is_inside = FALSE;
-	collapse_hack->collapsed_node = collapsed_node;
-	collapse_hack->refcount = 1;
-	collapse_hack->ctree = NAUTILUS_CTREE (tree_view->details->tree);
-	collapse_hack->tree_view = tree_view;
-
-	g_timeout_add (COLLAPSE_TIMEOUT, collapse_time_callback, collapse_hack);
-
-	return collapse_hack;
-}
-
 
 static char *
 nautilus_dump_info (NautilusTreeView *tree_view)
@@ -2255,50 +2211,6 @@ nautilus_dump_info (NautilusTreeView *tree_view)
 
 	return retval;
 }
-
-
-
-
-static gint
-collapse_time_callback (gpointer data)
-{
-	NautilusTreeViewCollapseHack *collapse_hack;
-	gboolean was_expanded;
-
-	collapse_hack = (NautilusTreeViewCollapseHack *) data;
-
-	if (collapse_hack->is_inside == FALSE) {
-		was_expanded  = nautilus_tree_view_collapse_node (NAUTILUS_CTREE (collapse_hack->ctree), 
-								   collapse_hack->collapsed_node);
-		if (was_expanded == TRUE) {
-			GHashTable *hash_table;
-
-			/* remove this expanded node form the expanded nodes list */
-			collapse_hack->tree_view->details->dnd->expanded_nodes = 
-				g_slist_remove (collapse_hack->tree_view->details->dnd->expanded_nodes,
-						collapse_hack->collapsed_node);
-
-			/* remove this collapse timeout from the general timeout hash table */
-			hash_table = collapse_hack->tree_view->details->dnd->collapsed_nodes;
-			g_hash_table_remove (hash_table, collapse_hack->collapsed_node);
-
-			{
-				const char *uri;
-				uri = view_node_to_uri (collapse_hack->tree_view, 
-							collapse_hack->collapsed_node);
-				g_print ("collapsing %s in %s\n", uri, nautilus_dump_info (collapse_hack->tree_view));
-			}
-		}
-
-	}
-	collapse_hack_unref (collapse_hack);
-
-	
-	/* never be called again. EVER */
-	return FALSE;
-}
-
-
 
 static void
 expand_hack_unref (NautilusTreeViewExpandHack * expand_hack) 
@@ -2338,7 +2250,6 @@ expand_time_callback (gpointer data)
 
 	if (expand_hack->is_valid == TRUE) {
 		NautilusCTreeNode *current_node;
-		GSList *list;
 		gboolean was_expanded;
 
 		current_node = nautilus_tree_view_tree_node_at (expand_hack->tree_view, 
@@ -2351,22 +2262,16 @@ expand_time_callback (gpointer data)
 		was_expanded = nautilus_tree_view_expand_node (NAUTILUS_CTREE (expand_hack->ctree), 
 							       current_node);
 		if (was_expanded == FALSE) {
+			GSList *list;
 			list = expand_hack->tree_view->details->dnd->expanded_nodes;
 			expand_hack->tree_view->details->dnd->expanded_nodes = 
 				g_slist_prepend (list, current_node);
-			
-			{
-				const char *uri;
-				uri = view_node_to_uri (expand_hack->tree_view, 
-							current_node);
-				g_print ("expanding %s in %s\n", uri, nautilus_dump_info (expand_hack->tree_view));
-			}
+			nautilus_dump_info (expand_hack->tree_view);
 		}
 
 	}
 	expand_hack_unref (expand_hack);
 
-	
 	/* never be called again. EVER */
 	return FALSE;
 }
@@ -2383,11 +2288,8 @@ nautilus_tree_view_expand_maybe_later (NautilusTreeView *tree_view,
 				       int x, int y, gpointer user_data)
 {
 	static NautilusTreeViewExpandHack *expand_hack = NULL;
-	NautilusTreeViewCollapseHack *collapse_hack;
-
-	NautilusCTreeNode *current_node, *expanded_node;
-	gboolean is_directory, is_expanded, is_ancestor;
-	GSList *expanded_list, *temp_list;
+	NautilusCTreeNode *current_node;
+	gboolean is_directory, is_expanded;
 	
 	current_node = nautilus_tree_view_tree_node_at (tree_view, 
 							x, y);
@@ -2410,48 +2312,6 @@ nautilus_tree_view_expand_maybe_later (NautilusTreeView *tree_view,
 			expand_hack->is_valid = FALSE;
 			expand_hack_unref (expand_hack);
 			expand_hack = expand_hack_new (x, y, tree_view);
-		}
-	}
-
-	/* try to collapse */
-	expanded_list = tree_view->details->dnd->expanded_nodes;
-	if (expanded_list == NULL) {
-		return;
-	}
-	
-	for (temp_list = expanded_list; temp_list != NULL; temp_list = temp_list->next) {
-		GHashTable *hash_table;
-
-		expanded_node = (NautilusCTreeNode *) (temp_list->data);
-		is_ancestor = nautilus_ctree_is_ancestor (NAUTILUS_CTREE (tree_view->details->tree),
-							  expanded_node,
-							  current_node);
-
-		if (is_ancestor == TRUE || current_node == expanded_node) {
-			/* do not try to collapse */
-			hash_table = tree_view->details->dnd->collapsed_nodes;
-			collapse_hack = (NautilusTreeViewCollapseHack *)g_hash_table_lookup (hash_table, 
-											     expanded_node);
-			if (collapse_hack == NULL) {
-				return;
-			}
-			/* forget about this collapse timeout. */
-			collapse_hack->is_inside = TRUE;
-			g_hash_table_remove (hash_table, collapse_hack->collapsed_node);
-		} else {
-			/* try to collapse */
-			hash_table = tree_view->details->dnd->collapsed_nodes;
-			collapse_hack = (NautilusTreeViewCollapseHack *)g_hash_table_lookup (hash_table, 
-											     expanded_node);
-			/* should we start a new collapse timeout for this precise expanded node ? */
-			if (collapse_hack == NULL) {
-				/* yes, a new collpase timeout */
-				g_print ("new collpase\n");
-				collapse_hack = collapse_hack_new (tree_view, expanded_node);
-				g_hash_table_insert (hash_table, expanded_node, collapse_hack);
-			}
-
-			collapse_hack->is_inside = FALSE;
 		}
 	}
 }
@@ -2642,6 +2502,31 @@ nautilus_tree_view_get_drop_action (NautilusTreeView *tree_view,
 
 }			       
 
+static void 
+nautilus_tree_view_collapse_all (NautilusTreeView *tree_view,
+				 NautilusCTreeNode *current_node)
+{
+	GSList *list, *temp_list;
+
+	list = tree_view->details->dnd->expanded_nodes;
+
+	for (temp_list = list; temp_list != NULL; temp_list = temp_list->next) {
+		NautilusCTreeNode *expanded_node;
+		expanded_node = (NautilusCTreeNode *) temp_list->data;
+		if (nautilus_ctree_is_ancestor (NAUTILUS_CTREE (tree_view->details->tree), 
+						expanded_node, current_node) == FALSE) {
+			{
+				const char *expanded_uri, *current_uri;
+				expanded_uri = view_node_to_uri (tree_view, expanded_node);
+				current_uri = view_node_to_uri (tree_view, current_node);
+
+				g_print ("collapsing %s in %s\n", expanded_uri, current_uri);
+			}
+			nautilus_tree_view_collapse_node (NAUTILUS_CTREE (tree_view->details->tree), 
+							  expanded_node);
+		}
+	}
+}
 
 
 static void
@@ -2653,6 +2538,7 @@ nautilus_tree_view_receive_dropped_icons (NautilusTreeView *view,
 	NautilusTreeView *tree_view;
 	gboolean local_move_only;
 	char *drop_target_uri;
+	NautilusCTreeNode *dropped_node;
 
 	tree_view = NAUTILUS_TREE_VIEW (view);
 	drag_info = tree_view->details->dnd->drag_info;
@@ -2706,9 +2592,16 @@ nautilus_tree_view_receive_dropped_icons (NautilusTreeView *view,
 			}
 			nautilus_tree_view_move_copy_files (tree_view, drag_info->selection_list, 
 							    context, drop_target_uri);
+			/* collapse all expanded directories during drag except the one we 
+			   droped into */
+			dropped_node = nautilus_tree_view_tree_node_at (view, x, y);
+			nautilus_tree_view_collapse_all (view, dropped_node);
+
 		}
 		g_free (drop_target_uri);
 		nautilus_drag_destroy_selection_list (drag_info->selection_list);
 		drag_info->selection_list = NULL;
 	}
 }
+
+
