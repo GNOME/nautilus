@@ -1,3 +1,22 @@
+2000-10-26  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c: (relayout),
+	(button_press_event), (key_press_event), (get_icon_being_renamed),
+	(pending_icon_to_rename_destroy_callback),
+	(get_pending_icon_to_rename), (set_pending_icon_to_rename),
+	(process_pending_icon_to_rename), (is_renaming_pending),
+	(is_renaming),
+	(nautilus_icon_container_start_renaming_selected_item),
+	(end_renaming_mode):
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-private.h:
+	* src/file-manager/fm-directory-view.c:
+	(reveal_newly_added_folder), (new_folder_done):
+	Folder renaming now starts when the icon is added rather than
+	at some arbitrary timeout after the new folder command is
+	issued. Fixed icon container to handle a request to rename an
+	unpositioned icon.
+
 2000-10-26  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* src/Makefile.am:

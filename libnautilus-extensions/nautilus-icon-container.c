@@ -132,6 +132,10 @@ static void	     icon_get_bounding_box 		      (NautilusIcon 		  *icon,
 							       int 			  *y1_return,
 		       					       int 			  *x2_return, 
 		       					       int 			  *y2_return);
+static gboolean	     is_renaming	      		      (NautilusIconContainer	  *container);
+static gboolean	     is_renaming_pending		      (NautilusIconContainer	  *container);
+static void	     process_pending_icon_to_rename	      (NautilusIconContainer	  *container);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer,
 				   nautilus_icon_container,
@@ -1077,6 +1081,7 @@ relayout (NautilusIconContainer *container)
 	}
 
 	process_pending_icon_to_reveal (container);
+	process_pending_icon_to_rename (container);
 	
 	nautilus_icon_container_update_scroll_region (container);
 }
@@ -2275,7 +2280,7 @@ button_press_event (GtkWidget *widget,
 	/* Move focus to icon container, unless we're still renaming (to avoid exiting
 	 * renaming mode)
 	 */
-  	if (!GTK_WIDGET_HAS_FOCUS (widget) && !nautilus_icon_container_is_renaming (container)) {
+  	if (!GTK_WIDGET_HAS_FOCUS (widget) && !(is_renaming (container) || is_renaming_pending (container))) {
     		gtk_widget_grab_focus (widget);
     	}
 
@@ -2694,7 +2699,7 @@ key_press_event (GtkWidget *widget,
 	handled = FALSE;
 	flush_typeahead = TRUE;
 
-	if (nautilus_icon_container_is_renaming (container)) {
+	if ((is_renaming (container) || is_renaming_pending (container))) {
 		switch (event->keyval) {
 		case GDK_Return:
 		case GDK_KP_Enter:
@@ -3418,7 +3423,7 @@ get_icon_being_renamed (NautilusIconContainer *container)
 {
 	NautilusIcon *rename_icon;
 
-	if (!nautilus_icon_container_is_renaming (container)) {
+	if (!is_renaming (container)) {
 		return NULL;
 	}
 
@@ -4391,14 +4396,68 @@ nautilus_icon_container_is_tighter_layout (NautilusIconContainer *container)
 	return container->details->tighter_layout;
 }
 
-/**
- * nautilus_icon_container_is_renaming
- * @container: An icon container widget.
- * 
- * Returns true if container is in renaming mode
- **/
+static void
+pending_icon_to_rename_destroy_callback (NautilusIconCanvasItem *item, NautilusIconContainer *container)
+{
+	g_assert (container->details->pending_icon_to_rename != NULL);
+	g_assert (container->details->pending_icon_to_rename->item == item);
+	container->details->pending_icon_to_rename = NULL;
+}
+
+static NautilusIcon*
+get_pending_icon_to_rename (NautilusIconContainer *container)
+{
+	return container->details->pending_icon_to_rename;
+}
+
+static void
+set_pending_icon_to_rename (NautilusIconContainer *container, NautilusIcon *icon)
+{
+	NautilusIcon *cur_pending;
+	
+	cur_pending = container->details->pending_icon_to_rename;
+	
+	if (icon == cur_pending) {
+		return;
+	}
+	
+	if (cur_pending != NULL) {
+		gtk_signal_disconnect_by_func (GTK_OBJECT (cur_pending->item),
+					       &pending_icon_to_rename_destroy_callback,
+					       container);
+	}
+	
+	if (icon != NULL) {
+		gtk_signal_connect (GTK_OBJECT (icon->item), "destroy", &pending_icon_to_rename_destroy_callback, container);
+	}
+	
+	container->details->pending_icon_to_rename = icon;
+}
+
+static void
+process_pending_icon_to_rename (NautilusIconContainer *container)
+{
+	NautilusIcon *pending_icon_to_rename;
+	
+	pending_icon_to_rename = get_pending_icon_to_rename (container);
+	
+	if (pending_icon_to_rename != NULL) {
+		if (pending_icon_to_rename->is_selected && !has_multiple_selection (container)) {
+			nautilus_icon_container_start_renaming_selected_item (container);
+		} else {
+			set_pending_icon_to_rename (container, NULL);
+		}
+	}
+}
+
 gboolean
-nautilus_icon_container_is_renaming (NautilusIconContainer *container)
+is_renaming_pending (NautilusIconContainer *container)
+{
+	return get_pending_icon_to_rename (container) != NULL;
+}
+
+gboolean
+is_renaming (NautilusIconContainer *container)
 {
 	return container->details->renaming;
 }
@@ -4432,6 +4491,15 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	if (icon == NULL) {
 		return;
 	}
+
+	g_assert (!has_multiple_selection (container));
+
+	if (!icon_is_positioned (icon)) {
+		set_pending_icon_to_rename (container, icon);
+		return;
+	}
+	
+	set_pending_icon_to_rename (container, NULL);
 
 	/* Make a copy of the original editable text for a later compare */
 	editable_text = nautilus_icon_canvas_item_get_editable_text (icon->item);
@@ -4489,6 +4557,8 @@ end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 {
 	NautilusIcon *icon;
 	char *changed_text;
+
+	set_pending_icon_to_rename (container, NULL);
 
 	icon = get_icon_being_renamed (container);
 	if (icon == NULL) {

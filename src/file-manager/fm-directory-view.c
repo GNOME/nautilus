@@ -2575,34 +2575,15 @@ start_renaming_item (FMDirectoryView *view, const char *uri)
 	}
 }
 
-typedef struct {
-	FMDirectoryView *view;
-	char *uri;
-} RenameLaterParameters;
-
-static gboolean
-new_folder_rename_later (void *callback_data)
-{
-	RenameLaterParameters *parameters;
-
-	parameters = callback_data;
-
-	NAUTILUS_CALL_VIRTUAL
-		(FM_DIRECTORY_VIEW_CLASS, parameters->view,
-		 start_renaming_item, (parameters->view, parameters->uri));
-
-	g_free (parameters->uri);
-	g_free (parameters);
-
-	return FALSE;
-}
-
 static void
 reveal_newly_added_folder (FMDirectoryView *view, NautilusFile *new_file, char* target_uri)
 {
 	if (nautilus_file_matches_uri (new_file, target_uri)) {
 		gtk_signal_disconnect_by_func (GTK_OBJECT (view), &reveal_newly_added_folder, target_uri);
-		fm_directory_view_select_file (view, new_file);
+		/* no need to select because start_renaming_item selects
+		 * fm_directory_view_select_file (view, new_file);
+		 */
+		NAUTILUS_CALL_VIRTUAL (FM_DIRECTORY_VIEW_CLASS, view, start_renaming_item, (view, target_uri));
 		fm_directory_view_reveal_selection (view);
 	}
 }
@@ -2611,7 +2592,6 @@ static void
 new_folder_done (const char *new_folder_uri, gpointer data)
 {
 	FMDirectoryView *directory_view;
-	RenameLaterParameters *parameters;
 
 	directory_view = (FMDirectoryView *) data;
 	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
@@ -2628,29 +2608,6 @@ new_folder_done (const char *new_folder_uri, gpointer data)
 				 g_free,
 				 FALSE,
 				 TRUE);
-	
-	/* FIXME bugzilla.eazel.com 1260:
-	 * runing the start_renaming_item with a delay because at this point
-	 * it's not in the icon container's icon list. 
-	 * There are two problems with this besides clunkiness - by the time the 
-	 * timeout expires, the directory view could be dead and the delay value 
-	 * is arbitrary, if the machine is loaded up, it may not be enough.
-	 * Need to add a mechanism here that ensures synchronously that the item
-	 * is added to the icon container instead.
-	 * 
-	 * You might think we can fix this by simply moving this call into
-	 * the "add_file" signal handler, but you'd be wrong. When "add_file"
-	 * is emitted the icon will have been added, but not placed. Reveal
-	 * (in nautilus_icon-container.c) had to be modified to handle
-	 * this case (all the pending_icon_to_reveal stuff). A similar change
-	 * will have to be done for renaming. Then, this can be fixed by doing
-	 * it at "add_file" time.
-	 */
-	parameters = g_new0 (RenameLaterParameters, 1);
-	parameters->uri = g_strdup (new_folder_uri);
-	parameters->view = directory_view;
-
-	gtk_timeout_add (100, new_folder_rename_later, parameters);
 }
 
 void
