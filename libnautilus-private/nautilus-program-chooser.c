@@ -1295,7 +1295,10 @@ nautilus_program_chooser_instance_init (NautilusProgramChooser *program_chooser)
 	gtk_window_set_default_size (GTK_WINDOW (program_chooser), -1, PROGRAM_CHOOSER_DEFAULT_HEIGHT);
 	gtk_window_set_wmclass (GTK_WINDOW (program_chooser), "program_chooser", "Nautilus");
 
-	dialog_vbox = GTK_DIALOG (program_chooser)->vbox;
+	dialog_vbox = gtk_vbox_new (FALSE, 5);
+	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (program_chooser)->vbox),
+			    dialog_vbox, TRUE, TRUE, 5);
+	gtk_widget_show (dialog_vbox);
 
 	/* Prompt at top of dialog. */
 	program_chooser->details->prompt_label = gtk_label_new (NULL);
