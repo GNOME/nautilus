@@ -98,6 +98,8 @@ struct _NautilusWindow {
   GtkWidget *up_button;
   GtkWidget *reload_button;
   GtkWidget *stop_button;
+  GtkWidget *home_button;
+  
   GtkWidget *zoom_control;
 
   /* Pending changes */

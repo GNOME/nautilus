@@ -26,6 +26,8 @@
 #include <liboaf/liboaf.h>
 #include "nautilus-global-preferences.h"
 
+#include <gtk/gtkbox.h>
+
 #include <nautilus-widgets/nautilus-preferences-group.h>
 #include <nautilus-widgets/nautilus-preferences-item.h>
 #include <nautilus-widgets/nautilus-preferences-dialog.h>
@@ -72,7 +74,6 @@ global_preferences_create_dialog (void)
 	GtkWidget		*directory_views_pane;
 	GtkWidget		*sidebar_panels_pane;
 	GtkWidget		*appearance_pane;
-
 
 	/*
 	 * In the soon to come star trek future, the following widgetry
@@ -172,13 +173,22 @@ global_preferences_create_dialog (void)
 							     "Appearance",
 							     "Appearance Options");
 	
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), "Appearance");
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), "Smoother Graphics");
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
 							 0,
 							 NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
+	
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), "Toolbar Icons");
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
+							 1,
+							 NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+	
+	/* all done */
+	
 	return prefs_dialog;
 }
 
@@ -380,13 +390,7 @@ global_preferences_register_for_ui (void)
 			               "Display text in icons even for remote text files",
 				       NAUTILUS_PREFERENCE_BOOLEAN,
 				       (gconstpointer) FALSE);
-
-	/* Anti-aliased canvas */
-	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
-				       "Use smoother (but slower) graphics",
-				       NAUTILUS_PREFERENCE_BOOLEAN,
-				       (gconstpointer) FALSE);
-
+	
 	/* User level */
 	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_USER_LEVEL_KEY,
 				       "User Level",
@@ -417,7 +421,13 @@ global_preferences_register_for_ui (void)
 				       "Use smoother (but slower) graohics",
 				       NAUTILUS_PREFERENCE_BOOLEAN,
 				       (gconstpointer) FALSE);
-	 
+	 	
+	/* toolbar icons */
+	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS,
+				       "Use Eazel's toolbar icons",
+				       NAUTILUS_PREFERENCE_BOOLEAN,
+				       (gconstpointer) FALSE);
+	
 	/* miscellaneous */
 	
 	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME,

@@ -1,3 +1,34 @@
+2000-05-28  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+
+	added a preference for alternative toolbar icons, which defaults to the
+	standard Gnome icons.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog),
+	(global_preferences_register_for_ui):
+	added a checkbox for alternative toolbar icons in appearance pane	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	added NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS
+	
+	* src/nautilus-window-private.h:
+	added field to remember home button	
+	* src/nautilus-window-toolbars.c: (remember_buttons),
+	(setup_button), (setup_toolbar_images),
+	added code to change the button images according to the preference
+	(nautilus_window_initialize_toolbars),
+	restructured to choose proper icons, and added a callback to watch the preference
+	(nautilus_window_toolbar_remove_theme_callback):
+	* src/nautilus-window.c: (nautilus_window_destroy):
+	* src/nautilus-window.h:
+	made it remove the preference callback when the window is destroyed
+	
+	* icons/eazel/Makefile.am:
+	* icons/eazel/Back.png:
+ 	* icons/eazel/Forward.png:
+	* icons/eazel/Up.png:
+	* icons/eazel/Home.png:
+ 	added Susan's icons to eazel images folder
+
 2000-05-28  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/nautilus-sidebar-tabs.c: (nautilus_index_tabs_add_view),

@@ -48,7 +48,6 @@ BEGIN_GNOME_DECLS
 
 /* Preferences not (currently?) displayed in dialog */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES	"/nautilus/icon_view/text_attribute_names"
-#define NAUTILUS_PREFERENCES_ICON_THEME				"/nautilus/preferences/icon_theme"
 #define NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME		"/nautilus/preferences/show_real_file_name"
 
 /* Single/Double click preference  */
@@ -59,6 +58,10 @@ BEGIN_GNOME_DECLS
 
 /* Sidebar panels */
 #define NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE		"/nautilus/sidebar-panels"
+
+/* themes */
+#define NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS		"/nautilus/preferences/eazel_toolbar_icons"
+#define NAUTILUS_PREFERENCES_ICON_THEME				"/nautilus/preferences/icon_theme"
 
 enum
 {

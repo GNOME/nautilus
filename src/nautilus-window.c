@@ -536,7 +536,8 @@ nautilus_window_destroy (NautilusWindow *window)
   nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE,
 					sidebar_panels_changed_callback,
 					NULL);
-
+  
+  nautilus_window_toolbar_remove_theme_callback();
   g_list_free (window->meta_views);
 
   CORBA_free(window->ni);

@@ -1,6 +1,9 @@
 eazeldir = $(datadir)/pixmaps/nautilus/eazel
 
 eazel_DATA =					\
+	Back.png				\
+	Forward.png				\
+	Home.png				\
 	i-directory.png				\
 	i-directory-24.png			\
 	i-directory-36.png			\
@@ -14,6 +17,7 @@ eazel_DATA =					\
 	i-regular.xml				\
 	i-regular-36.png			\
 	i-regular-72.png			\
-	i-regular-96.png
-
+	i-regular-96.png			\
+	Up.png
+	
 EXTRA_DIST = $(eazel_DATA)

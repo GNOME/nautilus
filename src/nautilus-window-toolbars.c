@@ -29,12 +29,12 @@
 
 #include <gnome.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 
 /* forward declarations */
 static void toolbar_reload_callback (GtkWidget *widget, NautilusWindow *window);
 static void toolbar_stop_callback (GtkWidget *widget, NautilusWindow *window);
-
 
 /* toolbar definitions */
 
@@ -76,20 +76,20 @@ toolbar_home_callback (GtkWidget *widget, NautilusWindow *window)
 static GnomeUIInfo toolbar_info[] = {
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Back"), N_("Go to the previously visited directory"),
-	 toolbar_back_callback, GNOME_STOCK_PIXMAP_BACK),
+	 toolbar_back_callback, "nautilus/eazel/Back.png"),
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Forward"), N_("Go to the next directory"),
-	 toolbar_forward_callback, GNOME_STOCK_PIXMAP_FORWARD),
+	 toolbar_forward_callback, "nautilus/eazel/Forward.png"),
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Up"), N_("Go up a level in the directory heirarchy"),
-	 toolbar_up_callback, GNOME_STOCK_PIXMAP_UP),
+	 toolbar_up_callback, "nautilus/eazel/Up.png"),
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Reload"), N_("Reload this view"),
 	 toolbar_reload_callback, GNOME_STOCK_PIXMAP_REFRESH),
 	GNOMEUIINFO_SEPARATOR,
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Home"), N_("Go to your home directory"),
-	 toolbar_home_callback, GNOME_STOCK_PIXMAP_HOME),
+	 toolbar_home_callback, "nautilus/eazel/Home.png"),
 	GNOMEUIINFO_SEPARATOR,
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Stop"), N_("Interrupt loading"),
@@ -184,26 +184,66 @@ back_or_forward_button_clicked_callback (GtkWidget *widget,
 	
 }
 
+/* utility to remember newly allocated toolbar buttons for later enabling/disabling */
+static void
+remember_buttons(NautilusWindow *window, GnomeUIInfo current_toolbar_info[])
+{
+	window->back_button = current_toolbar_info[TOOLBAR_BACK_BUTTON_INDEX].widget;
+	window->forward_button = current_toolbar_info[TOOLBAR_FORWARD_BUTTON_INDEX].widget;
+	window->up_button = current_toolbar_info[TOOLBAR_UP_BUTTON_INDEX].widget;
+	window->reload_button = current_toolbar_info[TOOLBAR_RELOAD_BUTTON_INDEX].widget;
+	window->stop_button = current_toolbar_info[TOOLBAR_STOP_BUTTON_INDEX].widget;	
+	window->home_button = current_toolbar_info[TOOLBAR_HOME_BUTTON_INDEX].widget;	
+}
+
+
+/* set up the toolbar info based on the current theme selection from preferences */
+
+static void
+setup_button(GtkWidget* button,  const char *icon_name)
+{
+	GList *list;
+	GtkWidget *widget;
+	
+	list = gtk_container_children(GTK_CONTAINER(GTK_BIN(button)->child));
+	widget = GTK_WIDGET(list->data);
+	g_list_free(list);
+			
+	gnome_stock_set_icon(GNOME_STOCK(widget), icon_name);
+	gtk_widget_queue_resize(button); 
+}
+
+
+static void
+setup_toolbar_images(NautilusWindow *window)
+{
+	gboolean use_eazel_theme;
+	
+	use_eazel_theme = nautilus_preferences_get_boolean(NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS, FALSE);
+	
+	setup_button (window->back_button, use_eazel_theme ?  "nautilus/eazel/Back.png" : GNOME_STOCK_PIXMAP_BACK);
+	setup_button (window->forward_button, use_eazel_theme ? "nautilus/eazel/Forward.png" : GNOME_STOCK_PIXMAP_FORWARD);
+	setup_button (window->up_button, use_eazel_theme ? "nautilus/eazel/Up.png" : GNOME_STOCK_PIXMAP_UP);
+	setup_button (window->home_button, use_eazel_theme ? "nautilus/eazel/Home.png" : GNOME_STOCK_PIXMAP_HOME);
+}
+
+/* allocate a new toolbar */
 void
 nautilus_window_initialize_toolbars (NautilusWindow *window)
 {
 	GnomeApp *app;
 	GtkWidget *toolbar;
+	
+	app = GNOME_APP (window);	
+	
+	toolbar = gtk_toolbar_new (GTK_ORIENTATION_HORIZONTAL, GTK_TOOLBAR_BOTH);	
+        gnome_app_fill_toolbar_with_data (GTK_TOOLBAR (toolbar), toolbar_info, app->accel_group, app);	
+	remember_buttons(window, toolbar_info);
+	setup_toolbar_images(window);
 
-	app = GNOME_APP (window);
-
-	toolbar = gtk_toolbar_new (GTK_ORIENTATION_HORIZONTAL, GTK_TOOLBAR_BOTH);
-	gnome_app_fill_toolbar_with_data (GTK_TOOLBAR (toolbar), toolbar_info, app->accel_group, app);
 	gnome_app_set_toolbar (app, GTK_TOOLBAR (toolbar));
-
+			
 	bonobo_ui_handler_set_toolbar (window->uih, "Main", toolbar);
-
-	/* Remember some widgets now so their state can be changed later */
-	window->back_button = toolbar_info[TOOLBAR_BACK_BUTTON_INDEX].widget;
-	window->forward_button = toolbar_info[TOOLBAR_FORWARD_BUTTON_INDEX].widget;
-	window->up_button = toolbar_info[TOOLBAR_UP_BUTTON_INDEX].widget;
-	window->reload_button = toolbar_info[TOOLBAR_RELOAD_BUTTON_INDEX].widget;
-	window->stop_button = toolbar_info[TOOLBAR_STOP_BUTTON_INDEX].widget;
 
 	gtk_signal_connect (GTK_OBJECT (window->back_button),
 	      "button_press_event",
@@ -214,8 +254,21 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 	      "button_press_event",
 	      GTK_SIGNAL_FUNC (back_or_forward_button_clicked_callback), 
 	      window);
-}
 
+	/* add callback for preference changes */
+	nautilus_preferences_add_callback(NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS, 
+						(NautilusPreferencesCallback) setup_toolbar_images, 
+						window);
+}
+ 
+void
+nautilus_window_toolbar_remove_theme_callback()
+{
+nautilus_preferences_remove_callback(NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS,
+				     (NautilusPreferencesCallback) setup_toolbar_images, NULL);
+}
+ 
+ 
 static void
 toolbar_reload_callback (GtkWidget *widget, NautilusWindow *window)
 {
