@@ -61,7 +61,8 @@ static void	generate_summary_form			(NautilusSummaryView	*view);
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, GTK_TYPE_EVENT_BOX)
 
 static void
-generate_summary_form (NautilusSummaryView	*view) {
+generate_summary_form (NautilusSummaryView	*view)
+{
 
 	GtkWidget	*temp_widget;
 	GtkWidget	*title;
@@ -84,7 +85,8 @@ generate_summary_form (NautilusSummaryView	*view) {
 }
 
 static void
-nautilus_summary_view_initialize_class (NautilusSummaryViewClass *klass) {
+nautilus_summary_view_initialize_class (NautilusSummaryViewClass *klass)
+{
 
 	GtkObjectClass	*object_class;
 	GtkWidgetClass	*widget_class;
@@ -93,10 +95,12 @@ nautilus_summary_view_initialize_class (NautilusSummaryViewClass *klass) {
 	widget_class = GTK_WIDGET_CLASS (klass);
 	parent_class = gtk_type_class (gtk_event_box_get_type ());
 	object_class->destroy = nautilus_summary_view_destroy;
+
 }
 
 static void
-nautilus_summary_view_initialize (NautilusSummaryView *view) {
+nautilus_summary_view_initialize (NautilusSummaryView *view)
+{
 
 	NautilusBackground	*background;
 
@@ -111,10 +115,12 @@ nautilus_summary_view_initialize (NautilusSummaryView *view) {
 	nautilus_background_set_color (background, SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
 
 	gtk_widget_show (GTK_WIDGET (view));
+
 }
 
 static void
-nautilus_summary_view_destroy (GtkObject *object) {
+nautilus_summary_view_destroy (GtkObject *object)
+{
 
 	NautilusSummaryView	*view;
 	
@@ -130,14 +136,17 @@ nautilus_summary_view_destroy (GtkObject *object) {
 }
 
 NautilusView *
-nautilus_summary_view_get_nautilus_view (NautilusSummaryView *view) {
+nautilus_summary_view_get_nautilus_view (NautilusSummaryView *view)
+{
 
 	return view->details->nautilus_view;
+
 }
 
 void
 nautilus_summary_view_load_uri (NautilusSummaryView	*view,
-			        const char		*uri) {
+			        const char		*uri)
+{
 
 	/* dispose of any old uri and copy in the new one */	
 	g_free (view->details->uri);
@@ -150,12 +159,14 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 	}
 
 	generate_summary_form (view);
+
 }
 
 static void
 summary_load_location_callback (NautilusView		*nautilus_view, 
 			        const char		*location,
-			        NautilusSummaryView	*view) {
+			        NautilusSummaryView	*view)
+{
 
 	g_assert (nautilus_view == view->details->nautilus_view);
 	
@@ -164,5 +175,6 @@ summary_load_location_callback (NautilusView		*nautilus_view,
 	nautilus_summary_view_load_uri (view, location);
 	
 	nautilus_view_report_load_complete (nautilus_view);
+
 }
 

@@ -182,7 +182,8 @@ generate_login_form (NautilusLoginView	*view)
 
 /* callback to enable/disable the login button when something is typed in the field */
 static void
-entry_changed_cb (GtkWidget	*entry, NautilusLoginView	*view) {
+entry_changed_cb (GtkWidget	*entry, NautilusLoginView	*view)
+{
 
 	char		*user_name;
 	char		*password;
@@ -197,7 +198,8 @@ entry_changed_cb (GtkWidget	*entry, NautilusLoginView	*view) {
 
 /* callback to handle the login button.  Right now only dumps a simple feedback message. */
 static void
-login_button_cb (GtkWidget	*button, NautilusLoginView	*view) {
+login_button_cb (GtkWidget	*button, NautilusLoginView	*view)
+{
 
 	char		*user_name;
 	char		*password;
@@ -223,15 +225,18 @@ login_button_cb (GtkWidget	*button, NautilusLoginView	*view) {
 
 /* callback to point account maintenance button to webpage */
 static void
-maintenance_button_cb (GtkWidget	*button, NautilusLoginView	*view) {
+maintenance_button_cb (GtkWidget	*button, NautilusLoginView	*view)
+{
 
 	go_to_uri (view->details->nautilus_view, SERVICE_HELP_LOCATION);
+
 }
 
 /* utility routine to go to another uri */
 
 static void
-nautilus_login_view_initialize_class (NautilusLoginViewClass *klass) {
+nautilus_login_view_initialize_class (NautilusLoginViewClass *klass)
+{
 
 	GtkObjectClass	*object_class;
 	GtkWidgetClass	*widget_class;
@@ -243,7 +248,8 @@ nautilus_login_view_initialize_class (NautilusLoginViewClass *klass) {
 }
 
 static void
-nautilus_login_view_initialize (NautilusLoginView *view) {
+nautilus_login_view_initialize (NautilusLoginView *view)
+{
 
 	NautilusBackground	*background;
 
@@ -261,7 +267,8 @@ nautilus_login_view_initialize (NautilusLoginView *view) {
 }
 
 static void
-nautilus_login_view_destroy (GtkObject *object) {
+nautilus_login_view_destroy (GtkObject *object)
+{
 
 	NautilusLoginView	*view;
 	
@@ -277,14 +284,17 @@ nautilus_login_view_destroy (GtkObject *object) {
 }
 
 NautilusView *
-nautilus_login_view_get_nautilus_view (NautilusLoginView *view) {
+nautilus_login_view_get_nautilus_view (NautilusLoginView *view)
+{
 
 	return view->details->nautilus_view;
+
 }
 
 void
 nautilus_login_view_load_uri (NautilusLoginView	*view,
-			      const char	*uri) {
+			      const char	*uri)
+{
 
 	/* dispose of any old uri and copy in the new one */	
 	g_free (view->details->uri);
@@ -302,7 +312,8 @@ nautilus_login_view_load_uri (NautilusLoginView	*view,
 static void
 login_load_location_callback (NautilusView	*nautilus_view, 
 			      const char	*location,
-			      NautilusLoginView	*view) {
+			      NautilusLoginView	*view)
+{
 
 	g_assert (nautilus_view == view->details->nautilus_view);
 	

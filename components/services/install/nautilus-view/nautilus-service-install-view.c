@@ -322,7 +322,8 @@ generate_current_progress (NautilusServiceInstallView	*view, char	*progress_mess
 
 /* utility routine to show an error message */
 static void
-show_overall_feedback (NautilusServiceInstallView	*view, char	*progress_message) {
+show_overall_feedback (NautilusServiceInstallView	*view, char	*progress_message)
+{
 
 	gtk_label_set_text (GTK_LABEL (view->details->overall_feedback_text), progress_message);
 	gtk_widget_show (view->details->overall_feedback_text);
@@ -330,7 +331,8 @@ show_overall_feedback (NautilusServiceInstallView	*view, char	*progress_message)
 }
 
 static void
-nautilus_service_install_view_initialize_class (NautilusServiceInstallViewClass *klass) {
+nautilus_service_install_view_initialize_class (NautilusServiceInstallViewClass *klass)
+{
 
 	GtkObjectClass	*object_class;
 	GtkWidgetClass	*widget_class;
@@ -342,7 +344,8 @@ nautilus_service_install_view_initialize_class (NautilusServiceInstallViewClass 
 }
 
 static void
-nautilus_service_install_view_initialize (NautilusServiceInstallView *view) {
+nautilus_service_install_view_initialize (NautilusServiceInstallView *view)
+{
 
 	NautilusBackground	*background;
 
@@ -357,10 +360,12 @@ nautilus_service_install_view_initialize (NautilusServiceInstallView *view) {
 	nautilus_background_set_color (background, SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
 
 	gtk_widget_show (GTK_WIDGET (view));
+
 }
 
 static void
-nautilus_service_install_view_destroy (GtkObject *object) {
+nautilus_service_install_view_destroy (GtkObject *object)
+{
 
 	NautilusServiceInstallView	*view;
 	
@@ -376,7 +381,8 @@ nautilus_service_install_view_destroy (GtkObject *object) {
 }
 
 NautilusView *
-nautilus_service_install_view_get_nautilus_view (NautilusServiceInstallView *view) {
+nautilus_service_install_view_get_nautilus_view (NautilusServiceInstallView *view)
+{
 
 	return view->details->nautilus_view;
 
@@ -623,7 +629,7 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const char *name
 		root_name = tmp+1;
 	}
 
-usleep (25000);
+	usleep (25000);
 
 	if (total < 0) {
 		/* weird bug */
@@ -737,7 +743,7 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 	gfloat overall_complete, complete;
 	char *out;
 
-usleep (25000);
+	usleep (25000);
 	if (current_package != view->details->current_package) {
 		/* starting a new package -- create new progress indicator */
 		out = g_strdup_printf ("Installing package %d of %d", current_package, total_packages);
@@ -805,7 +811,8 @@ set_root_client (BonoboObjectClient *service)
 
 
 static void
-nautilus_service_install_view_update_from_uri (NautilusServiceInstallView	*view, const char	*uri) {
+nautilus_service_install_view_update_from_uri (NautilusServiceInstallView	*view, const char	*uri)
+{
 
 	/* open the package */
 	PackageData		*pack;
@@ -892,7 +899,8 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView	*view,
 
 void
 nautilus_service_install_view_load_uri (NautilusServiceInstallView	*view,
-			     	        const char			*uri) {
+			     	        const char			*uri)
+{
 
 	/* dispose of any old uri and copy in the new one */	
 	g_free (view->details->uri);
@@ -906,12 +914,14 @@ nautilus_service_install_view_load_uri (NautilusServiceInstallView	*view,
 
 	generate_install_form (view);
 	nautilus_service_install_view_update_from_uri (view, uri);
+
 }
 
 static void
 service_install_load_location_callback (NautilusView			*nautilus_view, 
 			  	        const char			*location,
-			       		NautilusServiceInstallView	*view) {
+			       		NautilusServiceInstallView	*view)
+{
 
 	g_assert (nautilus_view == view->details->nautilus_view);
 	

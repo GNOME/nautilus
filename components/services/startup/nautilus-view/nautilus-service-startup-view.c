@@ -163,7 +163,8 @@ generate_startup_form (NautilusServiceStartupView	*view)
 }
 
 static void 
-generate_form_logo (NautilusServiceStartupView	*view) {
+generate_form_logo (NautilusServiceStartupView	*view)
+{
 
 	GtkWidget	*logo_container;
 	GtkWidget	*logo_widget;
@@ -178,10 +179,12 @@ generate_form_logo (NautilusServiceStartupView	*view) {
 
 	gtk_box_pack_start (GTK_BOX(logo_container), logo_widget, 0, 0, 4);
 	gtk_widget_show_all (logo_container);
+
 }
 
 static void
-nautilus_service_startup_view_initialize_class (NautilusServiceStartupViewClass	*klass) {
+nautilus_service_startup_view_initialize_class (NautilusServiceStartupViewClass	*klass)
+{
 
 	GtkObjectClass	*object_class;
 	GtkWidgetClass	*widget_class;
@@ -190,10 +193,12 @@ nautilus_service_startup_view_initialize_class (NautilusServiceStartupViewClass	
 	widget_class = GTK_WIDGET_CLASS (klass);
  	parent_class = gtk_type_class (gtk_event_box_get_type ());
 	object_class->destroy = nautilus_service_startup_view_destroy;
+
 }
 
 static void
-nautilus_service_startup_view_initialize (NautilusServiceStartupView	*view) {
+nautilus_service_startup_view_initialize (NautilusServiceStartupView	*view)
+{
 
   	NautilusBackground	*background;
 
@@ -208,10 +213,12 @@ nautilus_service_startup_view_initialize (NautilusServiceStartupView	*view) {
   	nautilus_background_set_color (background, STARTUP_VIEW_DEFAULT_BACKGROUND_COLOR);
 
 	gtk_widget_show_all (GTK_WIDGET (view));
+
 }
 
 static void
-nautilus_service_startup_view_destroy (GtkObject	*object) {
+nautilus_service_startup_view_destroy (GtkObject	*object)
+{
 
 	NautilusServiceStartupView	*view;
 
@@ -221,11 +228,13 @@ nautilus_service_startup_view_destroy (GtkObject	*object) {
 	g_free (view->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+
 }
 
 /* Component embedding support */
 NautilusView *
-nautilus_service_startup_view_get_nautilus_view (NautilusServiceStartupView	*view) {
+nautilus_service_startup_view_get_nautilus_view (NautilusServiceStartupView	*view)
+{
 
 	return view->details->nautilus_view;
 
@@ -234,7 +243,8 @@ nautilus_service_startup_view_get_nautilus_view (NautilusServiceStartupView	*vie
 /* URI handling */
 void
 nautilus_service_startup_view_load_uri (NautilusServiceStartupView	*view,
-				        const char			*uri) {
+				        const char			*uri)
+{
 
 	char	*document_name;
 	
@@ -282,16 +292,19 @@ nautilus_service_startup_view_load_uri (NautilusServiceStartupView	*view,
 	else {
 		generate_startup_form (view); /* eventually, this should be setup_bad_location_form */
 	}
+
 }
 
 static void
 service_load_location_callback (NautilusView			*view,
 				const char			*location,
-				NautilusServiceStartupView	*services) {
+				NautilusServiceStartupView	*services)
+{
 
 	nautilus_view_report_load_underway (services->details->nautilus_view);
 	nautilus_service_startup_view_load_uri (services, location);
 	nautilus_view_report_load_complete (services->details->nautilus_view);
 	go_to_uri (view, services->details->redirect_location);
+
 }
 

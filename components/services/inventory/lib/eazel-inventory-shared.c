@@ -51,7 +51,8 @@ void	add_io_info		(xmlNodePtr	node_ptr,
 /* add package data from the package database to the passed in xml document */
 
 void
-add_package_info (xmlDocPtr	configuration_metafile) {
+add_package_info (xmlDocPtr	configuration_metafile)
+{
 
 	char		package_count_str[32];
 	char		*package_name;
@@ -121,7 +122,8 @@ add_package_info (xmlDocPtr	configuration_metafile) {
 /* utility routine to read a proc file into a string */
 
 char*
-read_proc_info	(const char	*proc_filename) {
+read_proc_info	(const char	*proc_filename)
+{
 
 	FILE	*thisFile;
 	char	*result;
@@ -148,7 +150,8 @@ read_proc_info	(const char	*proc_filename) {
 /* utility routine to extract information from a string and add it to an XML node */
 
 void
-add_info (xmlNodePtr	node_ptr, char	*data, const char	*tag, const char	*field_name) {
+add_info (xmlNodePtr	node_ptr, char	*data, const char	*tag, const char	*field_name)
+{
 
 	int	index;
 	char	**info_array;
@@ -182,7 +185,8 @@ add_info (xmlNodePtr	node_ptr, char	*data, const char	*tag, const char	*field_na
 /* utility routine to process io info */
 
 void
-add_io_info (xmlNodePtr	node_ptr, char	*io_data) {
+add_io_info (xmlNodePtr	node_ptr, char	*io_data)
+{
 
 	int		index;
 	char		*temp_str;
@@ -211,7 +215,8 @@ add_io_info (xmlNodePtr	node_ptr, char	*io_data) {
 /* add hardware info from the /proc directory to the passed in xml document */
 
 void
-add_hardware_info (xmlDocPtr	configuration_metafile) {
+add_hardware_info (xmlDocPtr	configuration_metafile)
+{
 
     	xmlNodePtr	cpu_node;
 	xmlNodePtr	this_node;
@@ -251,23 +256,28 @@ add_hardware_info (xmlDocPtr	configuration_metafile) {
 
 /* synchronize an existing metafile with the rpm database */
 xmlDocPtr
-synchronize_configuration_metafile () {
+synchronize_configuration_metafile ()
+{
 
 	return NULL;
+
 }
 
 /* update_package_metafile is called during initialization time to create or
    synchronize the packages metafile */
 
 xmlDocPtr
-update_configuration_metafile () {
+update_configuration_metafile ()
+{
 
 	return NULL;
+
 }
 
 /* create the configuration metafile and add package and hardware configuration info to it */
 xmlDocPtr
-create_configuration_metafile (void) {
+create_configuration_metafile (void)
+{
 
 	/* create a new xml document */
 	time_t		current_time;

@@ -81,7 +81,8 @@ static void		generate_form_title				(NautilusInventoryView		*view,
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusInventoryView, nautilus_inventory_view, GTK_TYPE_EVENT_BOX)
 
 static void
-generate_inventory_form (NautilusInventoryView	*view) {
+generate_inventory_form (NautilusInventoryView	*view)
+{
 
 	char		*message;
 	char		*file_name;
@@ -170,7 +171,8 @@ generate_inventory_form (NautilusInventoryView	*view) {
 /* FIXME bugzilla.eazel.com 727: text strings should be gotten from a file */
 
 static void
-gather_config_button_cb (GtkWidget	*button, NautilusInventoryView	*view) {
+gather_config_button_cb (GtkWidget	*button, NautilusInventoryView	*view)
+{
 
 	FILE		*config_file;
 	char		buffer[256];
@@ -256,7 +258,8 @@ gather_config_button_cb (GtkWidget	*button, NautilusInventoryView	*view) {
 
 /* callback to handle the register later button */
 static void
-register_later_cb (GtkWidget	*button, NautilusInventoryView	*view) {
+register_later_cb (GtkWidget	*button, NautilusInventoryView	*view)
+{
 
 	char	*home_path;
 
@@ -268,7 +271,8 @@ register_later_cb (GtkWidget	*button, NautilusInventoryView	*view) {
 
 /* utility routine to show an error message */
 static void
-show_feedback (NautilusInventoryView	*view, char	*error_message) {
+show_feedback (NautilusInventoryView	*view, char	*error_message)
+{
 
         gtk_label_set_text (GTK_LABEL (view->details->feedback_text), error_message);
         gtk_widget_show (view->details->feedback_text);
@@ -278,7 +282,8 @@ show_feedback (NautilusInventoryView	*view, char	*error_message) {
  *    it will optionally work asynchronously.  Return NULL if we get an error */
 
 static ghttp_request*
-make_http_post_request (char	*uri, char	*post_body, char	*auth_token) {
+make_http_post_request (char	*uri, char	*post_body, char	*auth_token)
+{
 
 	ghttp_request* request;
 	char* proxy;
@@ -335,7 +340,8 @@ make_http_post_request (char	*uri, char	*post_body, char	*auth_token) {
 /* utility routine to go to another uri */
 
 static void
-go_to_uri (NautilusInventoryView	*view, char	*uri) {
+go_to_uri (NautilusInventoryView	*view, char	*uri)
+{
 
 	nautilus_view_open_location (view->details->nautilus_view, uri);
 
@@ -346,7 +352,8 @@ go_to_uri (NautilusInventoryView	*view, char	*uri) {
  */
 
 static char*
-get_home_uri () {
+get_home_uri ()
+{
 
 	return g_strdup_printf ("file://%s", g_get_home_dir ());
 
@@ -354,7 +361,8 @@ get_home_uri () {
 
 /* utility to force updating to happen */
 static void
-update_now () {
+update_now ()
+{
 
 	while (gtk_events_pending ()) {
 		gtk_main_iteration ();
@@ -365,7 +373,8 @@ update_now () {
 /* generate the standard eazel services header */
 static void
 generate_form_title (NautilusInventoryView	*view,
-		     const char			*title_text) {
+		     const char			*title_text)
+{
 
         GtkWidget	*temp_widget;
         char		*file_name;
@@ -394,7 +403,8 @@ generate_form_title (NautilusInventoryView	*view,
 }
 
 static void
-nautilus_inventory_view_initialize_class (NautilusInventoryViewClass *klass) {
+nautilus_inventory_view_initialize_class (NautilusInventoryViewClass *klass)
+{
 
 	GtkObjectClass	*object_class;
 	GtkWidgetClass	*widget_class;
@@ -406,7 +416,8 @@ nautilus_inventory_view_initialize_class (NautilusInventoryViewClass *klass) {
 }
 
 static void
-nautilus_inventory_view_initialize (NautilusInventoryView *view) {
+nautilus_inventory_view_initialize (NautilusInventoryView *view)
+{
 
 	NautilusBackground	*background;
 
@@ -424,7 +435,8 @@ nautilus_inventory_view_initialize (NautilusInventoryView *view) {
 }
 
 static void
-nautilus_inventory_view_destroy (GtkObject *object) {
+nautilus_inventory_view_destroy (GtkObject *object)
+{
 
 	NautilusInventoryView	*view;
 	
@@ -440,14 +452,17 @@ nautilus_inventory_view_destroy (GtkObject *object) {
 }
 
 NautilusView *
-nautilus_inventory_view_get_nautilus_view (NautilusInventoryView *view) {
+nautilus_inventory_view_get_nautilus_view (NautilusInventoryView *view)
+{
 
 	return view->details->nautilus_view;
+
 }
 
 void
 nautilus_inventory_view_load_uri (NautilusInventoryView	*view,
-			     	  const char		*uri) {
+			     	  const char		*uri)
+{
 
 	/* dispose of any old uri and copy in the new one */	
 	g_free (view->details->uri);
@@ -465,7 +480,8 @@ nautilus_inventory_view_load_uri (NautilusInventoryView	*view,
 static void
 inventory_load_location_callback (NautilusView		*nautilus_view, 
 			      const char		*location,
-			      NautilusInventoryView	*view) {
+			      NautilusInventoryView	*view)
+{
 
 	g_assert (nautilus_view == view->details->nautilus_view);
 	

@@ -32,7 +32,8 @@
 static int object_count =0;
 
 static void
-service_object_destroyed (GtkObject *obj) {
+service_object_destroyed (GtkObject *obj)
+{
 	object_count--;
 	if (object_count <= 0) {
 		gtk_main_quit ();
@@ -42,7 +43,8 @@ service_object_destroyed (GtkObject *obj) {
 static BonoboObject*
 service_make_object (BonoboGenericFactory* factory, 
                       const char* iid,
-                      void* closure) {
+                      void* closure)
+{
 
 	NautilusServiceStartupView	*view;
 	NautilusView			*nautilus_view;
@@ -65,7 +67,8 @@ service_make_object (BonoboGenericFactory* factory,
 }
 
 int
-main (int argc, char *argv[]) {
+main (int argc, char *argv[])
+{
 
 	BonoboGenericFactory* factory;
 	CORBA_ORB orb;

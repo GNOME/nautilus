@@ -31,7 +31,8 @@
 /* utility routine to go to another uri */
 
 void
-go_to_uri (NautilusView	*nautilus_view, char	*uri) {
+go_to_uri (NautilusView	*nautilus_view, char	*uri)
+{
 
 	nautilus_view_open_location (nautilus_view, uri);
 
@@ -40,7 +41,8 @@ go_to_uri (NautilusView	*nautilus_view, char	*uri) {
 /* utility for checking a uri */
 
 gboolean
-is_location (char	*document_string,	const char	*place_string) {
+is_location (char	*document_string,	const char	*place_string)
+{
 
 	return document_string && !strncmp (document_string + 1, place_string, strlen (place_string));
 
