@@ -1,15 +1,11 @@
 NULL = 
 
-SUBDIRS = eazel-protocol-handler
-
 CPPFLAGS = \
 	-DPREFIX=\"$(prefix)\" \
 	-DG_LOG_DOMAIN=\"Nautilus-Mozilla\" \
 	-DDATADIR=\"$(datadir)\" \
 	$(MOZILLA_COMPONENT_DEBUG_FLAGS) \
 	$(NULL)
-
-component_path=$(prefix)/share/nautilus/mozilla-components/libeazel-protocol-handler.so
 
 INCLUDES = \
 	-I$(top_srcdir) \
@@ -19,7 +15,6 @@ INCLUDES = \
 	$(GNOMEUI_CFLAGS) \
 	$(MOZILLA_COMPONENT_CFLAGS) \
 	-DMOZILLA_MILESTONE=$(MOZILLA_MILESTONE) \
-	-DMOZILLA_EAZEL_PROTOCOL_HANDLER_COMPONENT_PATH="\"$(component_path)\""
 	$(NULL)
 
 bin_PROGRAMS =\

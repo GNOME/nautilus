@@ -189,40 +189,6 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 				gtk_object_unref (GTK_OBJECT (gconf_client));
 			}
 		}
-/*
- * For M17, we register a necko protocol handler to deal with eazel: uris
- */
-#if (MOZILLA_MILESTONE <= 17)
-		/*
-		 * Register some mozilla xpcom components
-		 */
-		{
-			gboolean	result;
-			const char	*class_uuid = "{fb21b992-1dd1-11b2-aab4-906384831dd4}";
-			
-#ifdef MOZILLA_EAZEL_PROTOCOL_HANDLER_COMPONENT_PATH
-			const char	*library_file_name = MOZILLA_EAZEL_PROTOCOL_HANDLER_COMPONENT_PATH;
-#else
-			const char	*library_file_name = "you lose";
-#endif
-			const char	*class_name = "The Eazel Protocol Handler";
-			const char	*prog_id = "component://netscape/network/protocol?name=eazel";
-			
-			result = mozilla_components_register_library (class_uuid,
-								      library_file_name,
-								      class_name,
-								      prog_id);
-			
-			result = mozilla_components_register_library (class_uuid,
-								      library_file_name,
-								      class_name,
-								      "component://netscape/network/protocol?name=eazel-summary");
-			
-			if (!result) {
-				g_warning ("Unable to register the eazel protocol handler.\n");
-			}
-		}
-#endif /* MOZILLA_MILESTONE <= 17 */
 	}
 	
 	/* Add callbacks to the beast */

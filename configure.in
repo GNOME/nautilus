@@ -177,7 +177,6 @@ BUILD_MOZILLA_COMPONENT=
 MOZILLA_COMPONENT_CFLAGS=
 MOZILLA_COMPONENT_LDFLAGS=
 MOZILLA_COMPONENT_LIBS=
-MOZILLA_EAZEL_PROTOCOL_HANDLER_LIBS=
 
 _mozilla_lib_place=/usr/lib/mozilla
 _mozilla_include_place=/usr/include/mozilla
@@ -272,14 +271,9 @@ then
 				$_mozilla_nspr_libs \
 				$_mozilla_plc_libs \
 				$_mozilla_plds_libs"
-	MOZILLA_PROTOCOL_HANDLER_LIBS="$_mozilla_xpcom_libs \
-				       $_mozilla_nspr_libs \
-				       $_mozilla_plc_libs \
-				       $_mozilla_plds_libs"
 	AC_SUBST(MOZILLA_COMPONENT_CFLAGS)
 	AC_SUBST(MOZILLA_COMPONENT_LDFLAGS)
 	AC_SUBST(MOZILLA_COMPONENT_LIBS)
-	AC_SUBST(MOZILLA_EAZEL_PROTOCOL_HANDLER_LIBS)
 else
 	AC_MSG_RESULT(no)
 	found_mozilla=false
@@ -649,7 +643,6 @@ components/notes/Makefile
 components/rpmview/Makefile
 components/sample/Makefile
 components/mozilla/Makefile
-components/mozilla/eazel-protocol-handler/Makefile
 components/services/Makefile
 components/services/trilobite/Makefile
 components/services/trilobite/idl/Makefile
