@@ -577,7 +577,11 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 
   	gtk_clist_freeze(GTK_CLIST(rpm_view->details->package_file_list));
   	gtk_clist_clear(GTK_CLIST(rpm_view->details->package_file_list));
-  	
+
+#ifndef RPMTAG_FILENAMES
+#define RPMTAG_FILENAMES RPMTAG_OLDFILENAMES  	
+#endif
+
 	headerGetEntry(header_info, RPMTAG_FILENAMES, NULL, (void **)&path, &file_count);
   	headerGetEntry(header_info, RPMTAG_FILELINKTOS, NULL, (void **)&links, NULL);
 	

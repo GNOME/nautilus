@@ -1,3 +1,15 @@
+2000-04-14  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* components/rpmview/nautilus-rpm-view.c:
+
+	Did not build on redhat 5.2 because RPMTAG_FILENAMES has been
+	obseleted in the version of rpm that ships with 5.2 apparently.
+	I added a dumb hack to define RPMTAG_FILENAMES to
+	RPMTAG_OLDFILENAMES which is almost surely the wrong thing to do,
+	but i really need to have nautilus building while i do the
+	nautilus view changes.  I gave myself a bug to properly address
+	this soon (472).
+	
 2000-04-14  Maciej Stachowiak  <mjs@eazel.com>
 
 	* ChangeLog-20000414: rolled over from ChangeLog.
