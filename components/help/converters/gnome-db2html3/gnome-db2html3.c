@@ -4,6 +4,20 @@
  * 
  * Copyright (C) John Fleck, 2001
  *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc.,  59 Temple Place - Suite 330, Cambridge, MA 02139, USA.
+ *
  */
 
 #ifdef USE_GNOME_DB2HTML3
@@ -93,13 +107,13 @@ main(int argc, char **argv) {
 	 * FIXME - we need to be more sophisticated about this
 	 * then parse as either xml or sgml */
 	gdb_split_docname = g_strsplit(gdb_docname, ".", 2);
-	if (!strcmp(gdb_split_docname[1], "xml")) {
-		gdb_doc = xmlParseFile(gdb_docname);
-	}
-	else if (!strcmp(gdb_split_docname[1], "sgml")) {
+	if (!strcmp(gdb_split_docname[1], "sgml")) {
 			gdb_doc = docbParseFile(gdb_docname, "UTF-8"); 
+	} else {
+		(gdb_doc = xmlParseFile(gdb_docname));
 	}
-	else if (gdb_doc == NULL) {
+
+	if (gdb_doc == NULL) {
 		g_printerr ("Document not parsed successfully. \n");
 		return (0);
 	}
