@@ -92,9 +92,20 @@ list_activate_callback (GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewCo
 static void
 event_after_callback (GtkWidget *widget, GdkEventAny *event, gpointer callback_data)
 {
+
 	if (event->type == GDK_BUTTON_PRESS && ((GdkEventButton *) event)->button == 3) {
-		fm_directory_view_pop_up_selection_context_menu
-			(FM_DIRECTORY_VIEW (callback_data), (GdkEventButton *) event);
+
+		if (gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (widget),
+						   ((GdkEventButton *) event)->x,
+						   ((GdkEventButton *) event)->y,
+						   NULL, NULL, NULL, NULL) == TRUE) {
+			fm_directory_view_pop_up_selection_context_menu
+				(FM_DIRECTORY_VIEW (callback_data), (GdkEventButton *) event);
+		}
+		else {
+			fm_directory_view_pop_up_background_context_menu
+				(FM_DIRECTORY_VIEW (callback_data), (GdkEventButton *) event);
+		}
 	}
 }
 
