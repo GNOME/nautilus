@@ -1504,7 +1504,7 @@ get_icon_text_callback (NautilusIconContainer *container,
 	char *actual_uri;
 	char *attribute_names;
 	char **text_array;
-	int i;
+	int i , slot_index;
 	char *attribute_string;
 
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
@@ -1535,11 +1535,28 @@ get_icon_text_callback (NautilusIconContainer *container,
 	
 	/* Find out what attributes go below each icon. */
 	attribute_names = fm_icon_view_get_icon_text_attribute_names (icon_view);
+	
 	text_array = g_strsplit (attribute_names, "|", 0);
 	g_free (attribute_names);
 
 	/* Get the attributes. */
 	for (i = 0; text_array[i] != NULL; i++)	{
+		/* if the attribute is "none", delete the array slot */
+		while (!nautilus_strcmp (text_array[i], "none")) {
+			g_free (text_array[i]);
+			text_array[i] = NULL;
+			slot_index = i + 1;			
+			while (text_array[slot_index] != NULL) {
+				text_array[slot_index - 1] = text_array[slot_index];
+				text_array[slot_index++] = NULL;
+			}
+			if (text_array[i] == NULL)
+				break;
+		} 
+		
+		if (text_array[i] == NULL)
+			break;
+			
 		attribute_string = nautilus_file_get_string_attribute_with_default
 			(file, text_array[i]);
 				

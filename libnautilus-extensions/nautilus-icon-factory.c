@@ -501,8 +501,10 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
         const char *icon_name;
 	gboolean is_text_file;
 	
+	/* force plain text files to use the generic document icon so we can have the text-in-icons feature;
+	  eventually, we want to force other types of text files as well */
         mime_type = nautilus_file_get_mime_type (file);
-        is_text_file = mime_type != NULL && nautilus_str_has_prefix (mime_type, "text/");
+        is_text_file = mime_type != NULL && !nautilus_strcasecmp (mime_type, "text/plain");
 	
 	if (mime_type != NULL && !is_text_file) {
                 icon_name = gnome_vfs_mime_get_value (mime_type, "icon-filename");

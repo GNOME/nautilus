@@ -1,3 +1,22 @@
+2000-07-17  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 1506: we need a way to specify "none" for icon captions
+	
+	* src/file-manager/fm-icon-text-window.c:
+	(attribute_names_string_is_good),
+	(changed_attributes_option_menu_callback),
+	(ensure_unique_attributes):
+	added the "none" option and changed some tests to allow
+	"none" to be selected for all 3 captions
+	* src/file-manager/fm-icon-view.c: (get_icon_text_callback):
+	handle the "none" attribute properly
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_name_for_regular_file):
+	at Darin's suggestion, I made the code to force the generic
+	document for text files only trigger for "text/plain"; I also
+	commented it better.
+	
 2000-07-17  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 1021, Should be able to hide toolbar, sidebar

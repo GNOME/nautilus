@@ -41,6 +41,7 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-string.h>
 
 static void     ensure_unique_attributes                  (int        menu_index);
 static gboolean fm_icon_text_window_delete_event_callback (GtkWidget *widget,
@@ -66,6 +67,7 @@ static char * attribute_names[] = {
 	"permissions",
 	"octal_permissions",
 	"mime_type",
+	"none",
 	NULL
 };
 
@@ -80,6 +82,7 @@ static const char * attribute_labels[] = {
 	N_("permissions"),
 	N_("octal permissions"),
 	N_("MIME type"),
+	N_("none"),
 	NULL
 };
 
@@ -112,13 +115,15 @@ attribute_names_string_is_good (const char *string)
 			break;
 		}
 
-		/* Check for repeated attributes. */
-		for (j = 0; j < i; j++) {
-			if (index_array[j] == string_index) {
-				goto bad;
+		/* Check for repeated attributes (except for none, which is allowed to repeat. */
+		if (nautilus_strcmp (text_array[i], "none")) {
+			for (j = 0; j < i; j++) {
+				if (index_array[j] == string_index) {
+					goto bad;
+				}
 			}
 		}
-
+		
 		/* Remember this one for later. */
 		index_array[i] = string_index;
 	}
@@ -176,6 +181,7 @@ changed_attributes_option_menu_callback (GtkMenuItem *menu_item, gpointer user_d
 	/* Check whether just-changed item matches any others. If so,
 	 * change the other one to the first unused attribute.
 	 */
+	
 	ensure_unique_attributes (which_menu);
 	
 	for (index = 0; index < MENU_COUNT; ++index) {
@@ -190,6 +196,8 @@ changed_attributes_option_menu_callback (GtkMenuItem *menu_item, gpointer user_d
 
 	g_free (attribute_names_string);
 	g_strfreev (attribute_names_array);
+
+	return;
 }
 
 static GtkOptionMenu *
@@ -320,12 +328,17 @@ ensure_unique_attributes (int chosen_menu)
 
 	chosen_value = get_attribute_index_from_option_menu (option_menus[chosen_menu]);
 	
+	/* allow the "none" value to be chosen multiple times */
+	if (!nautilus_strcmp (attribute_names[chosen_value], "none")) {
+		return;
+	}	
+	
 	for (i = 0; i < MENU_COUNT; ++i) {
 		if (i == chosen_menu) {
 			continue;
 		}
 		
-		if (chosen_value == get_attribute_index_from_option_menu (option_menus[i])) {
+		if (chosen_value == get_attribute_index_from_option_menu (option_menus[i]))  {
 			/* Another item already had this value; change that other item */
 			for (new_value = 0; is_in_chosen_values (new_value); ++new_value) {
 			}
