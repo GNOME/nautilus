@@ -527,10 +527,10 @@ font_family_string_map_new (void)
 	 * Of course, specifying the font by its exact name will continue to work.
 	 */
 	if (font_family_lookup (global_font_family_table, "nimbus sans l")) {
-		nautilus_string_map_add (map, "nimbus sans l", "helvetica");
+		nautilus_string_map_add (map, "nimbus sans l", "helvetica default");
 	}
-	else if (font_family_lookup (global_font_family_table, "helvetica")) {
-		nautilus_string_map_add (map, "helvetica", "nimbus sans l");
+	else if (font_family_lookup (global_font_family_table, "helvetica default")) {
+		nautilus_string_map_add (map, "helvetica default", "nimbus sans l");
 	}
 
 	return map;
@@ -607,6 +607,34 @@ nautilus_scalable_font_new (const char *family,
 	font->detail->font_handle = font_entry->font_handle;
 	font->detail->font_family_entry = font_family_entry;
 	font->detail->font_entry = font_entry;
+
+	return font;
+}
+
+/**
+ * nautilus_scalable_font_new_from_file_name:
+ * @file_name: Postscript or TrueType font file name.
+ *
+ * Returns a font for the given font file name.
+ *
+ */
+NautilusScalableFont *
+nautilus_scalable_font_new_from_file_name (const char *file_name)
+{
+	NautilusScalableFont *font;
+
+	g_return_val_if_fail (nautilus_strlen (file_name) > 0, NULL);
+	g_return_val_if_fail (g_file_exists (file_name), NULL);
+
+	initialize_global_stuff_if_needed ();
+
+	font = NAUTILUS_SCALABLE_FONT (gtk_object_new (nautilus_scalable_font_get_type (), NULL));
+	gtk_object_ref (GTK_OBJECT (font));
+	gtk_object_sink (GTK_OBJECT (font));
+	
+	font->detail->font_handle = rsvg_ft_intern (global_rsvg_ft_context, file_name);
+	font->detail->font_family_entry = NULL;
+	font->detail->font_entry = NULL;
 
 	return font;
 }
@@ -792,7 +820,7 @@ NautilusScalableFont *
 nautilus_scalable_font_get_default_font (void)
 {
 	if (global_default_font == NULL) {
-		global_default_font = nautilus_scalable_font_new ("helvetica", NULL, NULL, NULL);
+		global_default_font = nautilus_scalable_font_new ("helvetica default", NULL, NULL, NULL);
 		g_assert (global_default_font != NULL);
 		g_atexit (default_font_at_exit_destructor);
 	}
@@ -800,6 +828,19 @@ nautilus_scalable_font_get_default_font (void)
 	gtk_object_ref (GTK_OBJECT (global_default_font));
 
 	return global_default_font;
+}
+
+NautilusScalableFont *
+nautilus_scalable_font_get_default_bold_font (void)
+{
+	NautilusScalableFont *default_font;
+	NautilusScalableFont *default_bold_font;
+
+	default_font = nautilus_scalable_font_get_default_font ();
+	default_bold_font = nautilus_scalable_font_make_bold (default_font);
+	gtk_object_unref (GTK_OBJECT (default_font));
+
+	return default_bold_font;
 }
 
 static void
@@ -924,14 +965,6 @@ nautilus_scalable_font_query_font (const char *family,
 	return TRUE;
 }
 
-#if 0
-static const char * global_default_font_path[] = 
-{
-	"/usr/lib/X11/fonts/Type1",
-	"/usr/share/fonts/default/Type1"
-};
-#endif
-
 /* 'atexit' destructors for global stuff */
 static void
 destroy_global_rsvg_ft_context (void)
@@ -972,13 +1005,7 @@ initialize_global_stuff_if_needed (void)
 	if (!fonts_initialized) {
 		fonts_initialized = TRUE;
 		global_font_family_table = g_hash_table_new (g_str_hash, g_str_equal);
-
-#if TYPE1_FONT_DIR_EXISTS
-		font_family_table_add_fonts (global_font_family_table, "/usr/share/fonts/default/Type1");
-#else
 		font_family_table_add_fonts (global_font_family_table, NAUTILUS_DATADIR "/fonts/urw");
-#endif
-
 		g_atexit (font_family_table_at_exit_destructor);
 	}
 
@@ -987,31 +1014,6 @@ initialize_global_stuff_if_needed (void)
 
 		g_atexit (font_family_string_map_at_exit_destructor);
 	}
-}
-
-int
-nautilus_scalable_font_get_underline_height (const NautilusScalableFont *font,
-					     int font_size)
-{
-	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (font), 0);
-	g_return_val_if_fail (font_size > 0, 0);
-
-	/* FIXME bugzilla.eazel.com 2865: This underlining code should
-	 * take into account the baseline for the rendered string rather
-	 * that doing the '1' nonsense.
-	 */
-	return 1;
-}
-
-int
-nautilus_scalable_font_get_baseline (const NautilusScalableFont *font,
-				     int font_size)
-{
-	/* FIXME bugzilla.eazel.com 2865: This underlining code should
-	 * take into account the baseline for the rendered string rather
-	 * that doing the '-2' nonsense.
-	 */
-	return -2;
 }
 
 /* Private NautilusScalableFont things */

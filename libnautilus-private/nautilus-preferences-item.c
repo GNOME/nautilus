@@ -39,6 +39,7 @@
 
 #include "nautilus-radio-button-group.h"
 #include "nautilus-string-picker.h"
+#include "nautilus-font-picker.h"
 #include "nautilus-text-caption.h"
 
 #include "nautilus-global-preferences.h"
@@ -55,6 +56,8 @@ struct _NautilusPreferencesItemDetails
 	NautilusPreferencesItemType item_type;
 	GtkWidget *child;
 	guint change_signal_ID;
+	char *control_preference_name;
+	NautilusPreferencesItemControlAction control_action;
 };
 
 /* GtkObjectClass methods */
@@ -77,6 +80,8 @@ static void preferences_item_create_editable_string          (NautilusPreference
 static void preferences_item_create_integer                  (NautilusPreferencesItem      *item,
 							      const char                   *preference_name);
 static void preferences_item_create_font_family              (NautilusPreferencesItem      *item,
+							      const char                   *preference_name);
+static void preferences_item_create_smooth_font              (NautilusPreferencesItem      *item,
 							      const char                   *preference_name);
 static void preferences_item_update_text_settings_at_idle    (NautilusPreferencesItem      *preferences_item);
 static void preferences_item_update_integer_settings_at_idle (NautilusPreferencesItem      *preferences_item);
@@ -128,6 +133,7 @@ preferences_item_destroy (GtkObject *object)
 	item = NAUTILUS_PREFERENCES_ITEM (object);
 
 	g_free (item->details->preference_name);
+	g_free (item->details->control_preference_name);
 	g_free (item->details);
 	
 	/* Chain destroy */
@@ -171,6 +177,10 @@ preferences_item_construct (NautilusPreferencesItem	*item,
 
 	case NAUTILUS_PREFERENCE_ITEM_FONT_FAMILY:
 		preferences_item_create_font_family (item, preference_name);
+		break;
+	
+	case NAUTILUS_PREFERENCE_ITEM_SMOOTH_FONT:
+		preferences_item_create_smooth_font (item, preference_name);
 		break;
 	
 	case NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING:
@@ -450,7 +460,7 @@ preferences_item_update_font_family (const NautilusPreferencesItem *item)
 
 static void
 preferences_item_create_font_family (NautilusPreferencesItem *item,
-				  const char *preference_name)
+				     const char *preference_name)
 {
 	char *description;
 	NautilusStringList *font_list;
@@ -481,6 +491,64 @@ preferences_item_create_font_family (NautilusPreferencesItem *item,
 							      "changed",
 							      GTK_SIGNAL_FUNC (text_item_changed_callback),
 							      (gpointer) item);
+}
+
+
+static void
+preferences_item_update_smooth_font (const NautilusPreferencesItem *item)
+{
+ 	char *current_value;
+
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
+	g_return_if_fail (item->details->item_type == NAUTILUS_PREFERENCE_ITEM_SMOOTH_FONT);
+
+ 	current_value = nautilus_preferences_get (item->details->preference_name);
+ 	g_assert (current_value != NULL);
+
+ 	nautilus_font_picker_set_selected_font (NAUTILUS_FONT_PICKER (item->details->child),
+						current_value);
+ 	g_free (current_value);
+}
+
+static void
+preferences_smooth_font_changed_callback (NautilusFontPicker *font_picker,
+					  gpointer callback_data)
+{
+	NautilusPreferencesItem *item;
+ 	char *new_value;
+
+	g_return_if_fail (NAUTILUS_IS_FONT_PICKER (font_picker));
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (callback_data));
+
+	item = NAUTILUS_PREFERENCES_ITEM (callback_data);
+ 	new_value = nautilus_font_picker_get_selected_font (NAUTILUS_FONT_PICKER (item->details->child));
+ 	g_assert (new_value != NULL);
+	nautilus_preferences_set (item->details->preference_name, new_value);
+ 	g_free (new_value);
+}
+
+static void
+preferences_item_create_smooth_font (NautilusPreferencesItem *item,
+				     const char *preference_name)
+{
+	char *description = NULL;
+
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
+	g_return_if_fail (nautilus_strlen (preference_name) > 0);
+
+	description = nautilus_preferences_get_description (preference_name);
+	g_return_if_fail (description != NULL);
+	
+	item->details->child = nautilus_font_picker_new ();
+	nautilus_font_picker_set_title_label (NAUTILUS_FONT_PICKER (item->details->child),
+					      description);
+	
+	g_free (description);
+
+	item->details->change_signal_ID = gtk_signal_connect (GTK_OBJECT (item->details->child),
+							      "changed",
+							      GTK_SIGNAL_FUNC (preferences_smooth_font_changed_callback),
+							      item);
 }
 
 /* NautilusPreferencesItem public methods */
@@ -629,6 +697,10 @@ nautilus_preferences_item_update_displayed_value (const NautilusPreferencesItem 
 		preferences_item_update_font_family (item);
 		break;
 	
+	case NAUTILUS_PREFERENCE_ITEM_SMOOTH_FONT:
+		preferences_item_update_smooth_font (item);
+		break;
+	
 	case NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING:
 		preferences_item_update_editable_string (item);
 		break;	
@@ -700,4 +772,58 @@ preferences_item_update_integer_settings_at_idle (NautilusPreferencesItem *prefe
 		gtk_idle_add ((GtkFunction) update_integer_settings_at_idle, preferences_item);
 		integer_idle_handler = TRUE;
 	}
+}
+
+void
+nautilus_preferences_item_set_control_preference (NautilusPreferencesItem *preferences_item,
+						  const char *control_preference_name)
+{
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (preferences_item));
+
+	if (nautilus_str_is_equal (preferences_item->details->control_preference_name,
+				   control_preference_name)) {
+		return;
+	}
+
+	g_free (preferences_item->details->control_preference_name);
+	preferences_item->details->control_preference_name = g_strdup (control_preference_name);
+}
+
+void
+nautilus_preferences_item_set_control_action (NautilusPreferencesItem *preferences_item,
+					      NautilusPreferencesItemControlAction control_action)
+{
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (preferences_item));
+	g_return_if_fail (control_action >= NAUTILUS_PREFERENCE_ITEM_SHOW);
+	g_return_if_fail (control_action <= NAUTILUS_PREFERENCE_ITEM_HIDE);
+
+	if (preferences_item->details->control_action == control_action) {
+		return;
+	}
+
+	preferences_item->details->control_action = control_action;
+}
+
+gboolean
+nautilus_preferences_item_get_control_showing (const NautilusPreferencesItem *preferences_item)
+{
+	gboolean value;
+
+	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (preferences_item), FALSE);
+
+	if (preferences_item->details->control_preference_name == NULL) {
+		return TRUE;
+	}
+
+	value = nautilus_preferences_get_boolean (preferences_item->details->control_preference_name);
+
+	if (preferences_item->details->control_action == NAUTILUS_PREFERENCE_ITEM_SHOW) {
+		return value;
+	}
+
+	if (preferences_item->details->control_action == NAUTILUS_PREFERENCE_ITEM_HIDE) {
+		return !value;
+	}
+
+	return !value;
 }

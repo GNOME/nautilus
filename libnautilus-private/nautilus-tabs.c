@@ -179,9 +179,9 @@ nautilus_tabs_initialize (NautilusTabs *tabs)
 	tabs->details->selected_tab = -1;
 		
 	/* FIXME bugzilla.eazel.com 5456: 
-	 * Hard coded font family and size.
+	 * Hard coded font size.
 	 */
-	tabs->details->tab_font = nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL);
+	tabs->details->tab_font = nautilus_scalable_font_get_default_bold_font ();
 	tabs->details->font_size = 14;
 	
 	gray_tab_directory_path = nautilus_theme_get_image_path ("gray_tab_pieces");

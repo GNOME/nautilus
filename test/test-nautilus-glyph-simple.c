@@ -105,16 +105,10 @@ main (int argc, char* argv[])
 
 	{
 		NautilusScalableFont *font;
-		int underline_height;
-		int baseline;
 		ArtIRect glyph_rect;
 		ArtIRect underline_rect;
 
 		font = nautilus_scalable_font_get_default_font ();
-		underline_height = nautilus_scalable_font_get_underline_height (font, underlined_font_size);
-		baseline = nautilus_scalable_font_get_baseline (font, underlined_font_size);
-		gtk_object_unref (GTK_OBJECT (font));
-
 		glyph_rect = nautilus_glyph_intersect (glyph, x, y, NULL);
 
 		if (0) nautilus_debug_pixbuf_draw_rectangle (pixbuf,
@@ -126,10 +120,7 @@ main (int argc, char* argv[])
 							     0xFF0000,
 							     NAUTILUS_OPACITY_FULLY_OPAQUE);
 		
-		underline_rect = glyph_rect;
-		
-		underline_rect.y1 -= ABS (baseline);
-		underline_rect.y0 = underline_rect.y1 - underline_height;
+		nautilus_glyph_get_underline_rectangle (glyph, &underline_rect);
 		
 		nautilus_debug_pixbuf_draw_rectangle (pixbuf,
 						      TRUE,
@@ -139,9 +130,6 @@ main (int argc, char* argv[])
 						      underline_rect.y1,
 						      NAUTILUS_RGBA_COLOR_OPAQUE_BLUE,
 						      NAUTILUS_OPACITY_FULLY_OPAQUE);
-		
-		g_print ("underline_height = %d\n", underline_height);
-		g_print ("baseline = %d\n", baseline);
 	}		
 	nautilus_glyph_free (glyph);
 

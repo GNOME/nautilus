@@ -1,3 +1,140 @@
+2001-03-02  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	Bug 2673 - Need to hook up the new font picker to nautilus .
+	
+	* configure.in:
+	Remove an old font setup hack that never really worked.
+
+	* data/fonts/urw/fonts.dir:
+	Rename the fonts to "Helvetica Default" in order not to clash with
+	system fonts.
+
+	* libnautilus-extensions/nautilus-font-manager.h:
+	* libnautilus-extensions/nautilus-font-manager.c:
+	(font_description_new): Add a font type parameter.
+	(font_lists_total_num_fonts): New function to count the total
+	number of scalable fonts detetected.
+	(font_description_table_add): Pass in the detected font lists to
+	do reality checks.
+	(font_get_font_type): New function.
+	(font_description_table_get_length),
+	(font_description_table_peek_nth),
+	(font_description_table_get_nth_file_name): Name the parameters
+	more consistently.
+	(font_description_table_for_each): Add font type parameter
+	(font_description_table_new): Rework to not require storing the
+	detected font list.  We now use that only for the duration of the
+	constructor.  Lost the install_font_lists dumbness.
+	(font_server_for_each_font_directory_internal): Use g_warning
+	instead of g_print.
+	(font_ignore_directory): New function to determine whether we
+	should ignore a directory - makes things much faster. 
+	(font_manager_collect_font_tables): New function to handle all the
+	work of collecting font directories into tables.
+	(font_server_for_each_callback), (font_table_list_free),
+	(font_table_list_for_each), (free_font_tables),
+	(ensure_at_exit_handler), (ensure_fallback_font_table),
+	(ensure_user_font_table), (ensure_system_font_tables): Add 3
+	tables for fallback, system and users fonts.  These are populated
+	as needed.
+	(nautilus_font_manager_for_each_font): Iterate the 3 font talbles.
+	(nautilus_font_manager_get_fallback_font) : New function to obtain
+	a fallback font quickly without having to check the system.
+	(call_chop_off_comments), (nautilus_self_check_font_manager):
+	Rework the checks to not create a temp directory.  Unfortunately
+	they now only run for me.
+
+	* libnautilus-extensions/nautilus-font-picker.h:
+	* libnautilus-extensions/nautilus-font-picker.c:
+	(nautilus_font_picker_initialize_class),
+	(nautilus_font_picker_initialize), (nautilus_font_picker_destroy),
+	(font_entry_list_find), (font_picker_update),
+	(font_name_picker_changed_callback),
+	(style_picker_changed_callback), (ignore_font),
+	(font_manager_callback), (style_list_for_each_callback),
+	(font_entry_list_for_each_callback),
+	(nautilus_font_picker_get_selected_font),
+	(nautilus_font_picker_set_selected_font),
+	(nautilus_font_picker_set_title_label):
+	Use the new font manager.
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_descriptions),
+	(global_preferences_install_defaults),
+	(global_preferences_create_dialog), (appearnace_pane_update),
+	(global_preferences_create_font_group),
+	(global_preferences_install_home_location_defaults),
+	(global_preferences_install_font_defaults):
+	Add a new preference for the smooth font.
+	Factor our the default font code to its own function.  Setup the
+	font pickers items to be mutually exclusive according to the
+	smooth graphics mode preference value.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_widget_set_shown):
+	New function to show or hide a widget in one go.
+	
+	* libnautilus-extensions/nautilus-preferences-group.c:
+	(nautilus_preferences_group_update):
+	Dont show the widget if a controlling preference prevents it.
+	
+	* libnautilus-extensions/nautilus-preferences-item.h:
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(preferences_item_update_smooth_font),
+	(preferences_smooth_font_changed_callback),
+	(preferences_item_create_smooth_font): Add support for a smooth
+	font picker.
+	(preferences_item_destroy), (preferences_item_construct),
+	(nautilus_preferences_item_set_control_preference),
+	(nautilus_preferences_item_set_control_action),
+	(nautilus_preferences_item_get_control_showing): Add support for
+	using a controlling preference which can force the widget to be
+	shown or hidden depending on its value.
+
+	* libnautilus-extensions/nautilus-preferences-pane.c:
+	(nautilus_preferences_pane_update):
+	Use new gtk extension to show or hide the widget in one go.
+
+	* libnautilus-extensions/nautilus-scalable-font.h:
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(font_family_string_map_new): Update fallback font name.
+	(nautilus_scalable_font_new_from_file_name): New function to
+	create a font directly from a font file name.
+	(nautilus_scalable_font_get_default_font): Update fallback font name.
+	(nautilus_scalable_font_get_default_bold_font): New function to
+	get a fallback bold font.
+	Remove some unsed functions.  Remove the font setup hack, the font
+	manager takes care of that now.
+	
+	* libnautilus-extensions/nautilus-string-picker.h:
+	* libnautilus-extensions/nautilus-string-picker.c:
+	(nautilus_string_picker_clear):
+	New function to clear the string picker.
+	
+	* libnautilus-extensions/nautilus-tabs.c:
+	(nautilus_tabs_initialize):
+	Fix the hard coded font name.
+
+	* src/nautilus-first-time-druid.c: (new_title_label):
+	Fix the hard coded font name.
+
+	* src/nautilus-sidebar-tabs.c:
+	(nautilus_sidebar_tabs_load_theme_data):
+	Fix the hard coded font name.
+
+	* test/Makefile.am:
+	* test/test-nautilus-font-manager.c: (font_type_to_string),
+	(font_iterator_callback), (font_table_for_each_callback), (main):
+	* test/test-nautilus-font-picker.c: (font_picker_changed_callback),
+	(main):
+	* test/test-nautilus-glyph-simple.c: (main):
+	* test/test-nautilus-label.c: (main):
+	Update for new font picker and font manager changes.
+
 2001-03-02  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Arik Devens <arik@eazel.com>

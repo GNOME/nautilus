@@ -199,56 +199,6 @@ alpha_background_color_value_changed_callback (GtkAdjustment *adjustment, gpoint
 }
 
 static void
-font_size_changed_callback (NautilusStringPicker *string_picker, gpointer client_data)
-{
- 	char *string;
-	int   size;
-
-	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
-	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
-
- 	string = nautilus_string_picker_get_selected_string (string_picker);
-
-	if (nautilus_eat_str_to_int (string, &size)) {
-		nautilus_label_set_smooth_font_size (NAUTILUS_LABEL (client_data), (guint) size);
-	}
-
-	g_free (string);
-}
-
-static void
-font_changed_callback (NautilusFontPicker *font_picker, gpointer client_data)
-{
-	NautilusScalableFont *font;
-	char *family;
-	char *weight;
-	char *slant;
-	char *set_width;
-
-	g_return_if_fail (NAUTILUS_IS_FONT_PICKER (font_picker));
-	g_return_if_fail (NAUTILUS_IS_LABEL (client_data));
-
-	family = nautilus_font_picker_get_selected_family (NAUTILUS_FONT_PICKER (font_picker));
-	weight = nautilus_font_picker_get_selected_weight (NAUTILUS_FONT_PICKER (font_picker));
-	slant = nautilus_font_picker_get_selected_slant (NAUTILUS_FONT_PICKER (font_picker));
-	set_width = nautilus_font_picker_get_selected_set_width (NAUTILUS_FONT_PICKER (font_picker));
-
-	g_print ("%s (%s,%s,%s,%s)\n", __FUNCTION__, family, weight, slant, set_width);
-
-	font = nautilus_scalable_font_new (family, weight, slant, set_width);
-	g_assert (font != NULL);
-
-	nautilus_label_set_smooth_font (NAUTILUS_LABEL (client_data), font);
-
-	g_free (family);
-	g_free (weight);
-	g_free (slant);
-	g_free (set_width);
-
-	gtk_object_unref (GTK_OBJECT (font));
-}
-
-static void
 text_caption_changed_callback (NautilusTextCaption *text_caption, gpointer client_data)
 {
 	NautilusLabel *label;
@@ -395,53 +345,6 @@ create_color_picker_frame (const char		*title,
 	gtk_box_pack_end (GTK_BOX (vbox), alpha_scale, TRUE, TRUE, 2);
 
 	gtk_widget_show_all (vbox);
-
-	return frame;
-}
-
-static GtkWidget*
-create_font_picker_frame (const char		*title,
-			  GtkSignalFunc		changed_callback,
-			  GtkSignalFunc		size_changed_callback,
-			  gpointer		callback_data)
-{
-	GtkWidget *frame;
-	GtkWidget *hbox;
-	GtkWidget		*font_picker;
-	GtkWidget		*font_size_picker;
-	NautilusStringList	*font_size_list;
-
-	g_return_val_if_fail (title != NULL, NULL);
-	g_return_val_if_fail (changed_callback != NULL, NULL);
-	g_return_val_if_fail (size_changed_callback != NULL, NULL);
-	
-	frame = gtk_frame_new (title);
-
-	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (hbox), 6);
-
-	gtk_container_add (GTK_CONTAINER (frame), hbox);
-
-	font_size_picker = nautilus_string_picker_new ();
-	nautilus_caption_set_show_title (NAUTILUS_CAPTION (font_size_picker), FALSE);
-	nautilus_caption_set_title_label (NAUTILUS_CAPTION (font_size_picker), "Size");
-
-	gtk_signal_connect (GTK_OBJECT (font_size_picker), "changed", size_changed_callback, callback_data);
-
-	font_size_list = nautilus_string_list_new_from_tokens ("5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,"
-							       "30,40,50,60,70,80,90,100,110,120,130,140,"
-							       "200,400,800", ",", TRUE);
-
-	nautilus_string_picker_set_string_list (NAUTILUS_STRING_PICKER (font_size_picker), font_size_list);
-	nautilus_string_list_free (font_size_list);
-
-	font_picker = nautilus_font_picker_new ();
-	gtk_signal_connect (GTK_OBJECT (font_picker), "selected_font_changed", changed_callback, callback_data);
-	
-	gtk_box_pack_start (GTK_BOX (hbox), font_picker, TRUE, TRUE, 0);
-	gtk_box_pack_end (GTK_BOX (hbox), font_size_picker, FALSE, FALSE, 5);
-
-	gtk_widget_show_all (hbox);
 
 	return frame;
 }
@@ -732,12 +635,10 @@ main (int argc, char* argv[])
 	GtkWidget		*bottom_box;
 	GtkWidget		*tool_box1;
 	GtkWidget		*tool_box2;
-	GtkWidget		*tool_box3;
 	GtkWidget		*color_tool_box;
 	GtkWidget		*label;
 	GtkWidget		*label_color_picker_frame;
 	GtkWidget		*background_color_picker_frame;
-	GtkWidget		*font_picker_frame;
 	GtkWidget		*text_caption_frame;
 	GtkWidget		*background_frame;
 	GtkWidget		*justification_frame;
@@ -763,13 +664,11 @@ main (int argc, char* argv[])
 
 	tool_box1 = gtk_hbox_new (FALSE, 0);
 	tool_box2 = gtk_hbox_new (FALSE, 0);
-	tool_box3 = gtk_hbox_new (FALSE, 0);
 
 	color_tool_box = gtk_hbox_new (FALSE, 0);
 
 	gtk_box_pack_start (GTK_BOX (bottom_box), tool_box1, TRUE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (bottom_box), tool_box2, TRUE, TRUE, 0);
-	gtk_box_pack_end (GTK_BOX (bottom_box), tool_box3, TRUE, TRUE, 10);
 
 	gtk_box_pack_start (GTK_BOX (main_box), label, TRUE, TRUE, 10);
 	gtk_box_pack_end (GTK_BOX (main_box), bottom_box, TRUE, TRUE, 10);
@@ -791,11 +690,6 @@ main (int argc, char* argv[])
 								   alpha_background_color_value_changed_callback,
 								   label,
 								   nautilus_label_get_text_color (NAUTILUS_LABEL (label)));
-
-	font_picker_frame = create_font_picker_frame ("Font",
-						      font_changed_callback,
-						      font_size_changed_callback,
-						      label);
 
 	text_caption_frame = create_text_caption_frame ("Text",
 							text_caption_changed_callback,
@@ -823,8 +717,7 @@ main (int argc, char* argv[])
 	gtk_box_pack_end (GTK_BOX (color_tool_box), background_color_picker_frame, FALSE, FALSE, 0);
 
 	gtk_box_pack_start (GTK_BOX (tool_box1), color_tool_box, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (tool_box2), font_picker_frame, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (tool_box3), text_caption_frame, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (tool_box2), text_caption_frame, TRUE, TRUE, 0);
 
 	gtk_widget_show_all (window);
 

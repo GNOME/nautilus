@@ -229,11 +229,11 @@ nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 	}
 
 	/* FIXME bugzilla.eazel.com 5456: 
-	 * Hard coded font family and size.
+	 * Hard coded font size.
 	 */
 	
 	/* use the default font.  In the future, it should fetch the font name and properties from the theme */
-	sidebar_tabs->details->tab_font = nautilus_scalable_font_new ("helvetica", "bold", NULL, NULL);
+	sidebar_tabs->details->tab_font = nautilus_scalable_font_get_default_bold_font ();
 	sidebar_tabs->details->font_size = 12;
 }
 

@@ -34,6 +34,7 @@
 #include "nautilus-string.h"
 #include "nautilus-medusa-support.h"
 #include "nautilus-view-identifier.h"
+#include "nautilus-font-manager.h"
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 #include <gtk/gtkbox.h>
@@ -65,11 +66,13 @@ static void       global_preferences_install_speed_tradeoff_descriptions (const 
 									  const char             *description);
 static void       global_preferences_install_home_location_defaults      (void);
 static void       global_preferences_install_medusa_defaults             (void);
+static void       global_preferences_install_font_defaults               (void);
 static void       global_preferences_install_descriptions                (void);
 static int        compare_view_identifiers                               (gconstpointer           a,
 									  gconstpointer           b);
 static GtkWidget *global_preferences_create_dialog                       (void);
 static GtkWidget *global_preferences_create_search_pane                  (NautilusPreferencesBox *preference_box);
+static GtkWidget *global_preferences_create_font_group                   (NautilusPreferencesPane *appearance_pane);
 
 static GtkWidget *global_prefs_dialog = NULL;
 
@@ -153,6 +156,8 @@ global_preferences_install_descriptions (void)
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
 					      _("Use this font family to display file names:"));
 
+	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT,
+					      _("Use this font family to display file names:"));
 	
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,
 					      _("Display toolbar in new windows"));
@@ -262,10 +267,6 @@ global_preferences_install_defaults (void)
 						  NAUTILUS_USER_LEVEL_INTERMEDIATE,
 						  NAUTILUS_SPEED_TRADEOFF_ALWAYS);
 	
-	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
-						 NAUTILUS_USER_LEVEL_NOVICE,
-						 _("helvetica"));
-
 	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_CLICK_POLICY,
 						  NAUTILUS_USER_LEVEL_NOVICE,
 						  NAUTILUS_CLICK_POLICY_DOUBLE);
@@ -373,6 +374,9 @@ global_preferences_install_defaults (void)
 
 	/* Home location */
 	global_preferences_install_home_location_defaults ();
+
+	/* Fonts */
+	global_preferences_install_font_defaults ();
 
 	/* Medusa */
 	global_preferences_install_medusa_defaults ();
@@ -530,12 +534,11 @@ global_preferences_create_dialog (void)
 							 0,
 							 NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-	
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), _("Fonts"));
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
-							 1,
-							 NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
-							 NAUTILUS_PREFERENCE_ITEM_FONT_FAMILY);
+
+	/*
+	 * Fonts
+	 */
+	global_preferences_create_font_group (NAUTILUS_PREFERENCES_PANE (appearance_pane));
 
 
 	/*
@@ -816,6 +819,56 @@ global_preferences_create_search_pane (NautilusPreferencesBox *preference_box)
 	return search_pane;
 }
 
+/*
+ * We have 2 font picker items, but we only show one depending on 
+ * the value of the SMOOTH_GRAPHICS preference.
+ */
+static void
+appearnace_pane_update (gpointer callback_data)
+{
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_PANE (callback_data));
+
+	nautilus_preferences_pane_update (NAUTILUS_PREFERENCES_PANE (callback_data));
+}
+
+static GtkWidget *
+global_preferences_create_font_group (NautilusPreferencesPane *appearance_pane)
+{
+	GtkWidget *font_group;
+	GtkWidget *font_picker_smooth_item;
+	GtkWidget *font_picker_gdk_item;
+
+	font_group =
+		nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), _("Fonts"));
+
+	font_picker_gdk_item = 
+		nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
+								 1,
+								 NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
+								 NAUTILUS_PREFERENCE_ITEM_FONT_FAMILY);
+	nautilus_preferences_item_set_control_preference (NAUTILUS_PREFERENCES_ITEM (font_picker_gdk_item),
+							  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
+	nautilus_preferences_item_set_control_action (NAUTILUS_PREFERENCES_ITEM (font_picker_gdk_item),
+						      NAUTILUS_PREFERENCE_ITEM_HIDE);
+
+	font_picker_smooth_item =
+		nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
+								 1,
+								 NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT,
+								 NAUTILUS_PREFERENCE_ITEM_SMOOTH_FONT);
+	
+	nautilus_preferences_item_set_control_preference (NAUTILUS_PREFERENCES_ITEM (font_picker_gdk_item),
+							  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
+	nautilus_preferences_item_set_control_action (NAUTILUS_PREFERENCES_ITEM (font_picker_smooth_item),
+						      NAUTILUS_PREFERENCE_ITEM_SHOW);
+
+ 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
+ 					   appearnace_pane_update,
+ 					   appearance_pane);
+	
+	return font_group;
+}
+
 /* Make a query to find out what sidebar panels are available. */
 static GList *
 global_preferences_get_sidebar_panel_view_identifiers (void)
@@ -1048,6 +1101,24 @@ global_preferences_install_home_location_defaults (void)
 	g_free (user_main_directory);
 	g_free (default_novice_home_uri);
 	g_free (default_intermediate_home_uri);
+}
+
+static void
+global_preferences_install_font_defaults (void)
+{
+	char *fallback_smooth_font;
+
+	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
+						 NAUTILUS_USER_LEVEL_NOVICE,
+						 _("helvetica"));
+
+	/* The default smooth font */
+	fallback_smooth_font = nautilus_font_manager_get_fallback_font ();
+	
+	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT,
+						 NAUTILUS_USER_LEVEL_NOVICE,
+						 fallback_smooth_font);
+	g_free (fallback_smooth_font);
 }
 
 static void

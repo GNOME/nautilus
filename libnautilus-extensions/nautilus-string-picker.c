@@ -362,3 +362,27 @@ nautilus_string_picker_get_index_for_string (const NautilusStringPicker *string_
 
 	return nautilus_string_list_get_index_for_string (string_picker->detail->string_list, string);
 }
+
+/**
+ * nautilus_string_picker_clear:
+
+ * @string_picker: A NautilusStringPicker
+ *
+ * Remove all entries from the string picker.
+ */
+void
+nautilus_string_picker_clear (NautilusStringPicker *string_picker)
+{
+	NautilusStringList *empty_list;
+
+	g_return_if_fail (NAUTILUS_IS_STRING_PICKER (string_picker));
+
+	/* Already empty */
+	if (nautilus_string_list_get_length (string_picker->detail->string_list) == 0) {
+		return;
+	}
+
+	empty_list = nautilus_string_list_new (TRUE);
+	nautilus_string_picker_set_string_list (string_picker, empty_list);
+	nautilus_string_list_free (empty_list);
+}

@@ -26,6 +26,7 @@
 #include <config.h>
 #include "nautilus-preferences-pane.h"
 #include "nautilus-gtk-macros.h"
+#include "nautilus-gtk-extensions.h"
 
 #include <gtk/gtkhbox.h>
 
@@ -184,14 +185,9 @@ nautilus_preferences_pane_update (NautilusPreferencesPane *preferences_pane)
 
 	for (iterator = preferences_pane->details->groups; iterator != NULL; iterator = iterator->next) {
 		NautilusPreferencesGroup *group = NAUTILUS_PREFERENCES_GROUP (iterator->data);
-
 		nautilus_preferences_group_update (group);
-		
-		if (nautilus_preferences_group_get_num_visible_items (group) == 0) {
-			gtk_widget_hide (GTK_WIDGET (group));
-		} else {
-			gtk_widget_show (GTK_WIDGET (group));
-		}
+		nautilus_gtk_widget_set_shown (GTK_WIDGET (group),
+					       nautilus_preferences_group_get_num_visible_items (group) > 0);
 	}
 }
 

@@ -91,6 +91,7 @@ BEGIN_GNOME_DECLS
 
 /* Directory view */
 #define NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY		"directory-view/font_family"
+#define NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT		"directory-view/smooth_font"
 
 /* File Indexing */
 #define NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE			"preferences/search_bar_type"

@@ -78,6 +78,7 @@ NautilusScalableFont  *nautilus_scalable_font_new                       (const c
 									 const char                  *weight,
 									 const char                  *slant,
 									 const char                  *set_width);
+NautilusScalableFont * nautilus_scalable_font_new_from_file_name (const char *file_name);
 NautilusDimensions     nautilus_scalable_font_measure_text              (const NautilusScalableFont  *font,
 									 int                          font_size,
 									 const char                  *text,
@@ -102,16 +103,14 @@ int                    nautilus_scalable_font_largest_fitting_font_size (const N
 									 int                          minimum_acceptable_font_size,
 									 int                          maximum_acceptable_font_size);
 NautilusScalableFont  *nautilus_scalable_font_get_default_font          (void);
+NautilusScalableFont  *nautilus_scalable_font_get_default_bold_font     (void);
 NautilusStringList *   nautilus_scalable_font_get_font_family_list      (void);
 gboolean               nautilus_scalable_font_query_font                (const char                  *family,
 									 NautilusStringList         **weights,
 									 NautilusStringList         **slants,
 									 NautilusStringList         **set_widths);
 NautilusScalableFont  *nautilus_scalable_font_make_bold                 (NautilusScalableFont        *font);
-int                    nautilus_scalable_font_get_underline_height      (const NautilusScalableFont  *font,
-									 int                          font_size);
-int                    nautilus_scalable_font_get_baseline              (const NautilusScalableFont  *font,
-									 int                          font_size);
+
 END_GNOME_DECLS
 
 #endif /* NAUTILUS_SCALABLE_FONT_H */

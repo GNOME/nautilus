@@ -19,7 +19,8 @@
    write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
    Boston, MA 02111-1307, USA.
 
-   Authors: Ramiro Estrugo <ramiro@eazel.com>
+   Authors: Pavel Cisler <pavel@eazel.com>,
+            Ramiro Estrugo <ramiro@eazel.com>
 */
 
 #ifndef NAUTILUS_FONT_MANAGER_H
@@ -30,20 +31,28 @@
 
 BEGIN_GNOME_DECLS
 
+typedef enum {
+	NAUTILUS_FONT_POSTSCRIPT = 1,
+	NAUTILUS_FONT_TRUE_TYPE
+} NautilusFontType;
+
 /*
  * A callback which can be invoked for each font available in the system.
  */
-typedef void (*NautilusFontManagerIterationCallback) (const char *foundry,
-						      const char *family,
-						      const char *weight,
-						      const char *slant,
-						      const char *set_width,
-						      const char *char_set_registry,
-						      const char *char_set_encoding,
-						      gpointer callback_data);
+typedef void (*NautilusFontManagerCallback) (const char *font_file_name,
+					     NautilusFontType font_type,
+					     const char *foundry,
+					     const char *family,
+					     const char *weight,
+					     const char *slant,
+					     const char *set_width,
+					     const char *char_set_registry,
+					     const char *char_set_encoding,
+					     gpointer callback_data);
 
-void nautilus_font_manager_for_each_font (NautilusFontManagerIterationCallback callback,
-					  gpointer callback_data);
+void  nautilus_font_manager_for_each_font     (NautilusFontManagerCallback callback,
+					       gpointer                    callback_data);
+char *nautilus_font_manager_get_fallback_font (void);
 
 END_GNOME_DECLS
 

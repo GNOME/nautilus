@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_FONT_PICKER_H
 #define NAUTILUS_FONT_PICKER_H
 
-#include <gtk/gtkhbox.h>
+#include <gtk/gtkvbox.h>
 #include <libnautilus-extensions/nautilus-scalable-font.h>
 
 BEGIN_GNOME_DECLS
@@ -35,42 +35,31 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_FONT_PICKER_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_FONT_PICKER, NautilusFontPickerClass))
 #define NAUTILUS_IS_FONT_PICKER(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_FONT_PICKER))
 
-typedef struct _NautilusFontPicker		 NautilusFontPicker;
-typedef struct _NautilusFontPickerClass		 NautilusFontPickerClass;
-typedef struct _NautilusFontPickerDetail	 NautilusFontPickerDetail;
+typedef struct NautilusFontPicker	     NautilusFontPicker;
+typedef struct NautilusFontPickerClass	     NautilusFontPickerClass;
+typedef struct NautilusFontPickerDetails     NautilusFontPickerDetails;
 
-struct _NautilusFontPicker
+struct NautilusFontPicker
 {
 	/* Super Class */
-	GtkHBox			hbox;
+	GtkVBox vbox;
 	
 	/* Private stuff */
-	NautilusFontPickerDetail	*detail;
+	NautilusFontPickerDetails *details;
 };
 
-struct _NautilusFontPickerClass
+struct NautilusFontPickerClass
 {
-	GtkHBoxClass		parent_class;
+	GtkVBoxClass parent_class;
 };
 
-GtkType    nautilus_font_picker_get_type               (void);
-GtkWidget* nautilus_font_picker_new                    (void);
-void       nautilus_font_picker_set_show_weights       (NautilusFontPicker       *font_picker);
-void       nautilus_font_picker_set_show_slants        (NautilusFontPicker       *font_picker);
-void       nautilus_font_picker_set_show_set_widths    (NautilusFontPicker       *font_picker);
-void       nautilus_font_picker_set_selected_family    (NautilusFontPicker       *font_picker,
-							const char               *family);
-void       nautilus_font_picker_set_selected_weight    (NautilusFontPicker       *font_picker,
-							const char               *weight);
-void       nautilus_font_picker_set_selected_slant     (NautilusFontPicker       *font_picker,
-							const char               *slant);
-void       nautilus_font_picker_set_selected_set_width (NautilusFontPicker       *font_picker,
-							const char               *set_width);
-char *     nautilus_font_picker_get_selected_family    (const NautilusFontPicker *font_picker);
-char *     nautilus_font_picker_get_selected_weight    (const NautilusFontPicker *font_picker);
-char *     nautilus_font_picker_get_selected_slant     (const NautilusFontPicker *font_picker);
-char *     nautilus_font_picker_get_selected_set_width (const NautilusFontPicker *font_picker);
-
+GtkType    nautilus_font_picker_get_type                    (void);
+GtkWidget* nautilus_font_picker_new                         (void);
+char *     nautilus_font_picker_get_selected_font           (const NautilusFontPicker *font_picker);
+void       nautilus_font_picker_set_selected_font           (NautilusFontPicker       *font_picker,
+							     const char               *font);
+void       nautilus_font_picker_set_title_label             (NautilusFontPicker       *font_picker,
+							     const char               *title_label);
 END_GNOME_DECLS
 
 #endif /* NAUTILUS_FONT_PICKER_H */

@@ -337,9 +337,7 @@ new_title_label (const char *text)
 
 	label = label_new_left_justified (text);
 
-	/* Note to localizers: this font is used for title text in
-	 * the first time druid */
-	font = nautilus_scalable_font_new (_("helvetica"), _("medium"), NULL, NULL);
+	font = nautilus_scalable_font_get_default_font ();
 	nautilus_label_set_is_smooth (NAUTILUS_LABEL (label), TRUE);
 	nautilus_label_set_smooth_font (NAUTILUS_LABEL (label), font);
 	nautilus_label_make_larger (NAUTILUS_LABEL (label), 10);

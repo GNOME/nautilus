@@ -86,6 +86,8 @@ void              nautilus_gtk_object_list_free                        (GList   
 GList *           nautilus_gtk_object_list_copy                        (GList                    *list);
 
 /* GtkWidget */
+void              nautilus_gtk_widget_set_shown                        (GtkWidget                *widget,
+									gboolean                 shown);
 gboolean          nautilus_point_in_allocation                         (const GtkAllocation      *allocation,
 									int                       x,
 									int                       y);

@@ -1185,6 +1185,25 @@ nautilus_gtk_widget_set_font (GtkWidget *widget, GdkFont *font)
 }
 
 /**
+ * nautilus_gtk_widget_set_shown
+ *
+ * Show or hide a widget.
+ * @widget: The widget.
+ * @shown: Boolean value indicating whether the widget should be shown or hidden.
+ **/
+void
+nautilus_gtk_widget_set_shown (GtkWidget *widget, gboolean shown)
+{
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+
+	if (shown) {
+		gtk_widget_show (widget);
+	} else {
+		gtk_widget_hide (widget);
+	}
+}
+
+/**
  * nautilus_gtk_widget_set_font_by_name
  *
  * Sets the font for a widget, managing the font and style objects.
