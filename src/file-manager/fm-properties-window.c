@@ -44,6 +44,7 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extensions/nautilus-customization-data.h>
+#include <libnautilus-extensions/nautilus-ellipsizing-label.h>
 #include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
@@ -505,18 +506,39 @@ properties_window_file_changed_callback (GtkWindow *window, NautilusFile *file)
 }
 
 static void
-value_field_update (GtkLabel *label, NautilusFile *file)
+value_field_update_internal (GtkLabel *label, 
+			     NautilusFile *file, 
+			     gboolean ellipsize_text)
 {
 	const char *attribute_name;
 	char *attribute_value;
 
 	g_assert (GTK_IS_LABEL (label));
 	g_assert (NAUTILUS_IS_FILE (file));
+	g_assert (!ellipsize_text || NAUTILUS_IS_ELLIPSIZING_LABEL (label));
 
 	attribute_name = gtk_object_get_data (GTK_OBJECT (label), "file_attribute");
 	attribute_value = nautilus_file_get_string_attribute_with_default (file, attribute_name);
-	gtk_label_set_text (label, attribute_value);
-	g_free (attribute_value);
+
+	if (ellipsize_text) {
+		nautilus_ellipsizing_label_set_text (NAUTILUS_ELLIPSIZING_LABEL (label), 
+						     attribute_value);
+	} else {
+		gtk_label_set_text (label, attribute_value);
+	}
+	g_free (attribute_value);	
+}
+
+static void
+value_field_update (GtkLabel *label, NautilusFile *file)
+{
+	value_field_update_internal (label, file, FALSE);
+}
+
+static void
+ellipsizing_value_field_update (GtkLabel *label, NautilusFile *file)
+{
+	value_field_update_internal (label, file, TRUE);
 }
 
 static GtkLabel *
@@ -525,11 +547,15 @@ attach_label (GtkTable *table,
 	      int column,
 	      const char *initial_text,
 	      gboolean right_aligned,
-	      gboolean bold)
+	      gboolean bold,
+	      gboolean ellipsize_text)
 {
 	GtkWidget *label_field;
 
-	label_field = gtk_label_new (initial_text);
+	label_field = ellipsize_text
+		? nautilus_ellipsizing_label_new (initial_text)
+		: gtk_label_new (initial_text);	
+
 	if (bold) {
 		nautilus_gtk_label_make_bold (GTK_LABEL (label_field));
 	}
@@ -538,7 +564,10 @@ attach_label (GtkTable *table,
 	gtk_table_attach (table, label_field,
 			  column, column + 1,
 			  row, row + 1,
-			  GTK_FILL, 0,
+			  ellipsize_text
+			    ? GTK_FILL | GTK_EXPAND
+			    : GTK_FILL,
+			  0,
 			  0, 0);
 
 	return GTK_LABEL (label_field);
@@ -550,19 +579,33 @@ attach_value_label (GtkTable *table,
 	      		  int column,
 	      		  const char *initial_text)
 {
-	return attach_label (table, row, column, initial_text, FALSE, FALSE);
+	return attach_label (table, row, column, initial_text, FALSE, FALSE, FALSE);
+}
+
+static GtkLabel *
+attach_ellipsizing_value_label (GtkTable *table,
+				int row,
+				int column,
+				const char *initial_text)
+{
+	return attach_label (table, row, column, initial_text, FALSE, FALSE, TRUE);
 }
 
 static void
-attach_value_field (GtkTable *table,
-		    int row,
-		    int column,
-		    NautilusFile *file,
-		    const char *file_attribute_name)
+attach_value_field_internal (GtkTable *table,
+			     int row,
+			     int column,
+			     NautilusFile *file,
+			     const char *file_attribute_name,
+			     gboolean ellipsize_text)
 {
 	GtkLabel *value_field;
 
-	value_field = attach_value_label (table, row, column, "");
+	if (ellipsize_text) {
+		value_field = attach_ellipsizing_value_label (table, row, column, "");
+	} else {
+		value_field = attach_value_label (table, row, column, "");
+	}
 
 	/* Stash a copy of the file attribute name in this field for the callback's sake. */
 	gtk_object_set_data_full (GTK_OBJECT (value_field),
@@ -571,13 +614,39 @@ attach_value_field (GtkTable *table,
 				  g_free);
 
 	/* Fill in the value. */
-	value_field_update (value_field, file);
+	if (ellipsize_text) {
+		ellipsizing_value_field_update (value_field, file);
+	} else {
+		value_field_update (value_field, file);
+	}
 
 	/* Connect to signal to update value when file changes. */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
 					       "changed",
-					       value_field_update,
+					       ellipsize_text
+					           ? ellipsizing_value_field_update
+					           : value_field_update,
 					       GTK_OBJECT (value_field));	
+}			     
+
+static void
+attach_value_field (GtkTable *table,
+		    int row,
+		    int column,
+		    NautilusFile *file,
+		    const char *file_attribute_name)
+{
+	attach_value_field_internal (table, row, column, file, file_attribute_name, FALSE);
+}
+
+static void
+attach_ellipsizing_value_field (GtkTable *table,
+		    	  	int row,
+		    		int column,
+		    		NautilusFile *file,
+		    		const char *file_attribute_name)
+{
+	attach_value_field_internal (table, row, column, file, file_attribute_name, TRUE);
 }
 
 static void
@@ -712,9 +781,11 @@ attach_option_menu (GtkTable *table,
 	gtk_widget_show (aligner);
 
 	gtk_container_add (GTK_CONTAINER (aligner), option_menu);
-	gtk_table_attach_defaults (table, aligner,
-			  	   VALUE_COLUMN, VALUE_COLUMN + 1,
-			  	   row, row + 1);
+	gtk_table_attach (table, aligner,
+			  VALUE_COLUMN, VALUE_COLUMN + 1,
+			  row, row + 1,
+			  GTK_FILL, 0,
+			  0, 0);
 
 	return GTK_OPTION_MENU (option_menu);
 }		    	
@@ -906,9 +977,11 @@ append_separator (GtkTable *table)
 	last_row = append_row (table);
 	separator = gtk_hseparator_new ();
 	gtk_widget_show (separator);
-	gtk_table_attach_defaults (table, separator,
-				   TITLE_COLUMN, COLUMN_COUNT,
-				   last_row, last_row+1);
+	gtk_table_attach (table, separator,
+			  TITLE_COLUMN, COLUMN_COUNT,
+			  last_row, last_row+1,
+			  GTK_FILL, 0,
+			  0, 0);
 	return last_row;				   
 }		  	
  
@@ -1026,7 +1099,7 @@ attach_title_field (GtkTable *table,
 		     int row,
 		     const char *title)
 {
-	return attach_label (table, row, TITLE_COLUMN, title, TRUE, TRUE);
+	return attach_label (table, row, TITLE_COLUMN, title, TRUE, TRUE, FALSE);
 }		      
 
 static guint
@@ -1053,6 +1126,20 @@ append_title_value_pair (GtkTable *table,
 
 	return last_row;
 }
+
+static guint
+append_title_and_ellipsizing_value (GtkTable *table,
+				    const char *title,
+				    NautilusFile *file,
+				    const char *file_attribute_name)
+{
+	guint last_row;
+
+	last_row = append_title_field (table, title);
+	attach_ellipsizing_value_field (table, last_row, VALUE_COLUMN, file, file_attribute_name);
+
+	return last_row;
+}				    
 
 static guint
 append_directory_contents_fields (GtkTable *table,
@@ -1223,21 +1310,25 @@ create_basic_page (FMPropertiesWindow *window)
 	gtk_widget_show (icon_aligner);
 
 	gtk_container_add (GTK_CONTAINER (icon_aligner), icon_pixmap_widget);
-	gtk_table_attach_defaults (table,
-			  	   icon_aligner,
-			  	   TITLE_COLUMN, 
-			  	   TITLE_COLUMN + 1,
-			  	   0, 1);
+	gtk_table_attach (table,
+			  icon_aligner,
+			  TITLE_COLUMN, 
+			  TITLE_COLUMN + 1,
+			  0, 1,
+			  0, 0,
+			  0, 0);
 
 	/* Name field */
 	name_field = nautilus_entry_new ();
 	window->details->name_field = NAUTILUS_ENTRY (name_field);
 	gtk_widget_show (name_field);
-	gtk_table_attach_defaults (table,
-				   name_field,
-				   VALUE_COLUMN, 
-				   VALUE_COLUMN + 1,
-			  	   0, 1);
+	gtk_table_attach (table,
+			  name_field,
+			  VALUE_COLUMN, 
+			  VALUE_COLUMN + 1,
+			  0, 1,
+			  GTK_FILL, 0,
+			  0, 0);
 				   
 	/* Attach parameters and signal handler. */
 	nautilus_file_ref (file);
@@ -1291,7 +1382,7 @@ create_basic_page (FMPropertiesWindow *window)
 	} else {
 		append_title_value_pair (table, _("Size:"), file, "size");
 	}
-	append_title_value_pair (table, _("Where:"), file, "where");
+	append_title_and_ellipsizing_value (table, _("Where:"), file, "where");
 	if (should_show_mime_type (window)) {
 		append_title_value_pair (table, _("MIME type:"), file, "mime_type");
 	}				  

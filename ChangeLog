@@ -1,3 +1,56 @@
+2001-01-25  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 5506 (Show Properties always shows full path,
+	making window ludicrously wide)
+
+	Also made some other contents of the properties
+	window handle window-stretching more attractively.
+
+	* libnautilus-extensions/nautilus-ellipsizing-label.h:
+	* libnautilus-extensions/nautilus-ellipsizing-label.c:
+	(nautilus_ellipsizing_label_initialize_class),
+	(nautilus_ellipsizing_label_initialize), (real_destroy),
+	(nautilus_ellipsizing_label_new), (recompute_ellipsized_text),
+	(nautilus_ellipsizing_label_set_text), (real_size_request),
+	(real_size_allocate), (real_style_set): New files. This is
+	a subclass of GtkLabel that requests no specific width, and
+	ellipsizes the text to fit whatever width it is given.
+
+	* libnautilus-extensions/Makefile.am: Add new files to build.
+
+	* src/file-manager/fm-properties-window.c:
+	(value_field_update_internal): New function, contains code
+	formerly in value_field_update but takes boolean to handle
+	ellipsized case.
+	(value_field_update): Now just a simple wrapper for
+	value_field_update_internal for the non-ellipsized case.
+	(ellipsizing_value_field_update): New function, simple wrapper
+	for value_field_update_internal for the ellipsized case.
+	(attach_label): added an ellipsize_text boolean to this
+	bottleneck function.
+	(attach_value_label), (attach_title_field): pass FALSE for 
+	ellipsize_text to attach_label
+	(attach_ellipsizing_value_label): new function, pass TRUE for
+	ellipsize_text to attach_label
+	(attach_value_field_internal): New function, contains code
+	formerly in attach_value_field but takes boolean to handle
+	ellipsized case.
+	(attach_value_field): Now just a simple wrapper for
+	attach_value_field_internal for the non-ellipsized case.
+	(attach_ellipsizing_value_field): New function, simple wrapper for
+	attach_value_field_internal for the ellipsized case.
+	(attach_option_menu): Don't use GTK_EXPAND, so option menu gets no
+	wider than it needs to be.
+	(append_separator): Don't use GTK_EXPAND, so the presence of
+	separators doesn't cause table columns to stretch.
+	(append_title_and_ellipsizing_value): New function, like
+	append_title_value_pair but uses ellipsizing label.
+	(create_basic_page): Change gtk_table_attach options for icon
+	and name field so that they don't cause table columns
+	to stretch.
+
 2001-01-25  Arik Devens  <arik@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

@@ -74,6 +74,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-druid-page-eazel.c		\
 	nautilus-druid.c			\
 	nautilus-entry.c			\
+	nautilus-ellipsizing-label.c		\
 	nautilus-enumeration.c			\
 	nautilus-file-changes-queue.c		\
 	nautilus-file-operations-progress.c	\
@@ -174,6 +175,7 @@ noinst_HEADERS =				\
 	nautilus-drag.h				\
 	nautilus-druid-page-eazel.h		\
 	nautilus-druid.h			\
+	nautilus-ellipsizing-label.h		\
 	nautilus-entry.h			\
 	nautilus-enumeration.h			\
 	nautilus-file-attributes.h		\
