@@ -73,6 +73,7 @@
 
 #define SUMMARY_TERMS_OF_USE_URI		"eazel-services://anonymous/aboutus/terms_of_use"
 #define SUMMARY_PRIVACY_STATEMENT_URI		"eazel-services://anonymous/aboutus/privacy"
+#define SUMMARY_CHANGE_PWD_FORM			"eazel-services://anonymous/account/login/lost_pwd_form"
 
 #define SUMMARY_XML_KEY				"eazel_summary_xml"
 #define URL_REDIRECT_TABLE			"eazel_url_table_xml"
@@ -1120,15 +1121,8 @@ preferences_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 static void
 forgot_password_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 {
-	char	*url;
-	url = "eazel-services://anonymous/account/login/lost_pwd_form";
 
-	if (!url) {
-		g_assert ("Failed to load Registration url!\n");
-	}
-
-	nautilus_view_open_location (view->details->nautilus_view, url);
-	g_free (url);
+	nautilus_view_open_location (view->details->nautilus_view, SUMMARY_CHANGE_PWD_FORM);
 
 }
 
