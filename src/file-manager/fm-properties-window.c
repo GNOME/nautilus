@@ -104,6 +104,7 @@ struct FMPropertiesWindowDetails {
 	GtkLabel *directory_contents_title_field;
 	GtkLabel *directory_contents_value_field;
 	guint update_directory_contents_timeout_id;
+	guint update_files_timeout_id;
 
 	GList *directory_contents_widgets;
 	int directory_contents_row;
@@ -128,6 +129,8 @@ struct FMPropertiesWindowDetails {
 	GnomeVFSFileSize total_size;
 
 	guint long_operation_underway;
+
+ 	GList *changed_files;
 };
 
 enum {
@@ -173,32 +176,35 @@ static GtkTargetEntry target_table[] = {
 };
 
 #define DIRECTORY_CONTENTS_UPDATE_INTERVAL	200 /* milliseconds */
+#define FILES_UPDATE_INTERVAL			200 /* milliseconds */
 #define STANDARD_EMBLEM_HEIGHT			52
 #define EMBLEM_LABEL_SPACING			2
 
-static void permission_button_update (FMPropertiesWindow *window,
-				      GtkToggleButton *button);
-static void value_field_update (FMPropertiesWindow *window,
-				GtkLabel *field);
-static void properties_window_update (FMPropertiesWindow *window, 
-				      NautilusFile *changed_file);
-
-static void is_directory_ready_callback (NautilusFile *file,
-					 gpointer data);
-static void cancel_group_change_callback          (gpointer                 callback_data);
-static void cancel_owner_change_callback          (gpointer                 callback_data);
-static void parent_widget_destroyed_callback      (GtkWidget                *widget,
-						   gpointer                 callback_data);
-static void select_image_button_callback          (GtkWidget               *widget,
-						   FMPropertiesWindow      *properties_window);
-static void set_icon_callback                     (const char* icon_path, 
+static void directory_contents_value_field_update (FMPropertiesWindow *window);
+static void file_changed_callback                 (NautilusFile       *file,
+						   gpointer            user_data);
+static void permission_button_update              (FMPropertiesWindow *window,
+						   GtkToggleButton    *button);
+static void value_field_update                    (FMPropertiesWindow *window,
+						   GtkLabel           *field);
+static void properties_window_update              (FMPropertiesWindow *window,
+						   GList              *files);
+static void is_directory_ready_callback           (NautilusFile       *file,
+						   gpointer            data);
+static void cancel_group_change_callback          (gpointer            callback_data);
+static void cancel_owner_change_callback          (gpointer            callback_data);
+static void parent_widget_destroyed_callback      (GtkWidget          *widget,
+						   gpointer            callback_data);
+static void select_image_button_callback          (GtkWidget          *widget,
 						   FMPropertiesWindow *properties_window);
-static void remove_image_button_callback          (GtkWidget               *widget,
-						   FMPropertiesWindow      *properties_window);
-static void remove_pending                        (StartupData             *data,
-						   gboolean                 cancel_call_when_ready,
-						   gboolean                 cancel_timed_wait,
-						   gboolean                 cancel_destroy_handler);
+static void set_icon_callback                     (const char         *icon_path,
+						   FMPropertiesWindow *properties_window);
+static void remove_image_button_callback          (GtkWidget          *widget,
+						   FMPropertiesWindow *properties_window);
+static void remove_pending                        (StartupData        *data,
+						   gboolean            cancel_call_when_ready,
+						   gboolean            cancel_timed_wait,
+						   gboolean            cancel_destroy_handler);
 static void append_extension_pages                (FMPropertiesWindow *window);
 
 GNOME_CLASS_BOILERPLATE (FMPropertiesWindow, fm_properties_window,
@@ -985,10 +991,10 @@ remove_from_dialog (FMPropertiesWindow *window,
 	g_hash_table_remove (window->details->initial_permissions, target_file);
 
 	g_signal_handlers_disconnect_by_func (original_file,
-					      G_CALLBACK (properties_window_update),
+					      G_CALLBACK (file_changed_callback),
 					      window);
 	g_signal_handlers_disconnect_by_func (target_file,
-					      G_CALLBACK (properties_window_update),
+					      G_CALLBACK (file_changed_callback),
 					      window);
 
 	nautilus_file_monitor_remove (original_file, &window->details->original_files);
@@ -1029,26 +1035,45 @@ get_mime_list (FMPropertiesWindow *window)
 
 static void
 properties_window_update (FMPropertiesWindow *window, 
-			  NautilusFile *changed_file)
+			  GList *files)
 {
 	GList *l;
 	GList *mime_list;
+	GList *tmp;
+	NautilusFile *changed_file;
+	gboolean dirty_original = FALSE;
+	gboolean dirty_target = FALSE;
 
-	if (changed_file && nautilus_file_is_gone (changed_file)) {
-		remove_from_dialog (window, changed_file);
-		changed_file = NULL;
-		
-                /* Remove the file from the property dialog */
-		if (window->details->original_files == NULL) {
-			gtk_widget_destroy (GTK_WIDGET (window));
-			return;
+	if (files == NULL) {
+		dirty_original = TRUE;
+		dirty_target = TRUE;
+	}
+
+	for (tmp = files; tmp != NULL; tmp = tmp->next) {
+		changed_file = NAUTILUS_FILE (tmp->data);
+
+		if (changed_file && nautilus_file_is_gone (changed_file)) {
+			remove_from_dialog (window, changed_file);
+			changed_file = NULL;
+			
+			/* Remove the file from the property dialog */
+			if (window->details->original_files == NULL) {
+				gtk_widget_destroy (GTK_WIDGET (window));
+				return;
+			}
+		}		
+		if (changed_file == NULL ||
+		    g_list_find (window->details->original_files, changed_file)) {
+			dirty_original = TRUE;
+		}
+		if (changed_file == NULL ||
+		    g_list_find (window->details->target_files, changed_file)) {
+			dirty_target = TRUE;
 		}
 
 	}
 
-	if (!changed_file 
-	    || g_list_find (window->details->original_files, changed_file)) {
-		
+	if (dirty_original) {
 		update_properties_window_title (window);
 		update_properties_window_icon (GTK_IMAGE (window->details->icon_image));
 
@@ -1062,8 +1087,7 @@ properties_window_update (FMPropertiesWindow *window,
 		 * value, value_field_updates should be added here */
 	}
 
-	if (!changed_file 
-	    || g_list_find (window->details->target_files, changed_file)) {
+	if (dirty_target) {
 		for (l = window->details->permission_buttons; l != NULL; l = l->next) {
 			permission_button_update (window, GTK_TOGGLE_BUTTON (l->data));
 		}
@@ -1086,6 +1110,35 @@ properties_window_update (FMPropertiesWindow *window,
 		window->details->mime_list = mime_list;
 	}
 }
+
+static gboolean
+update_files_callback (gpointer data)
+{
+ 	FMPropertiesWindow *window;
+ 
+ 	window = FM_PROPERTIES_WINDOW (data);
+ 
+	window->details->update_files_timeout_id = 0;
+
+	properties_window_update (window, window->details->changed_files);
+	nautilus_file_list_free (window->details->changed_files);
+	window->details->changed_files = NULL;
+	
+ 	return FALSE;
+ }
+
+static void
+schedule_files_update (FMPropertiesWindow *window)
+ {
+ 	g_assert (FM_IS_PROPERTIES_WINDOW (window));
+ 
+	if (window->details->update_files_timeout_id == 0) {
+		window->details->update_files_timeout_id
+			= g_timeout_add (FILES_UPDATE_INTERVAL,
+					 update_files_callback,
+ 					 window);
+ 	}
+ }
 
 static gboolean
 file_list_attributes_identical (GList *file_list, const char *attribute_name)
@@ -2455,7 +2508,8 @@ permission_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer 
 	g_assert (callback_data != NULL);
 
 	window = FM_PROPERTIES_WINDOW (callback_data);
-	if (window->details->long_operation_underway == 1) {
+	if (GTK_WIDGET (window)->window != NULL &&
+	    window->details->long_operation_underway == 1) {
 		/* finished !! */
 		gdk_window_set_cursor (GTK_WIDGET (window)->window, NULL);
 	}
@@ -2463,6 +2517,8 @@ permission_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer 
 	
 	/* Report the error if it's an error. */
 	fm_report_error_setting_permissions (file, result, NULL);
+
+	g_object_unref (window);
 }
 
 static void
@@ -2558,6 +2614,8 @@ permission_button_toggled (GtkToggleButton *button,
 
 			permissions = nautilus_file_get_permissions (file);
 			permissions |= permission_mask;
+			
+			g_object_ref (window);
 			nautilus_file_set_permissions
 				(file, permissions,
 				 permission_change_callback,
@@ -2577,6 +2635,7 @@ permission_button_toggled (GtkToggleButton *button,
 			permissions = nautilus_file_get_permissions (file);
 			permissions &= ~permission_mask;
 
+			g_object_ref (window);
 			nautilus_file_set_permissions
 				(file, permissions,
 				 permission_change_callback,
@@ -3187,6 +3246,19 @@ help_button_callback (GtkWidget *widget, GtkWidget *property_window)
 	}
 }
 
+static void
+file_changed_callback (NautilusFile *file, gpointer user_data)
+{
+	FMPropertiesWindow *window = FM_PROPERTIES_WINDOW (user_data);
+
+	if (!g_list_find (window->details->changed_files, file)) {
+		nautilus_file_ref (file);
+		window->details->changed_files = g_list_prepend (window->details->changed_files, file);
+		
+		schedule_files_update (window);
+	}
+}
+
 static FMPropertiesWindow *
 create_properties_window (StartupData *startup_data)
 {
@@ -3248,17 +3320,17 @@ create_properties_window (StartupData *startup_data)
 	for (l = window->details->target_files; l != NULL; l = l->next) {
 		g_signal_connect_object (NAUTILUS_FILE (l->data),
 					 "changed",
-					 G_CALLBACK (properties_window_update),
+					 G_CALLBACK (file_changed_callback),
 					 G_OBJECT (window),
-					 G_CONNECT_SWAPPED);
+					 0);
 	}
 
 	for (l = window->details->original_files; l != NULL; l = l->next) {
 		g_signal_connect_object (NAUTILUS_FILE (l->data),
 					 "changed",
-					 G_CALLBACK (properties_window_update),
+					 G_CALLBACK (file_changed_callback),
 					 G_OBJECT (window),
-					 G_CONNECT_SWAPPED);
+					 0);
 	}
 
 	/* Create box for notebook and button box. */
@@ -3555,6 +3627,9 @@ real_destroy (GtkObject *object)
 	nautilus_file_list_free (window->details->target_files);
 	window->details->target_files = NULL;
 
+	nautilus_file_list_free (window->details->changed_files);
+	window->details->changed_files = NULL;
+ 
 	window->details->name_field = NULL;
 	
 	g_list_free (window->details->directory_contents_widgets);
@@ -3586,6 +3661,12 @@ real_destroy (GtkObject *object)
 		g_source_remove (window->details->update_directory_contents_timeout_id);
 		window->details->update_directory_contents_timeout_id = 0;
 	}
+
+	if (window->details->update_files_timeout_id != 0) {
+		g_source_remove (window->details->update_files_timeout_id);
+		window->details->update_files_timeout_id = 0;
+	}
+
 	GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
 

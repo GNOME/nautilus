@@ -1,5 +1,12 @@
 2004-03-30  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-properties-window.c:
+	Ref window during permission callout (#123691)
+	Collect file changes and apply after timeout, makes
+	e.g. permission changes for many items faster.
+
+2004-03-30  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-container.c: (match_best_name),
 	(select_matching_name), (handle_typeahead), (key_press_event):
 	* src/file-manager/fm-list-view.c: (select_matching_name),
