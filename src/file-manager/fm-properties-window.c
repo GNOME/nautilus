@@ -1636,7 +1636,7 @@ synch_user_menu (GtkOptionMenu *option_menu, NautilusFile *file)
 	eel_g_list_free_deep (users);
 }	
 
-static void
+static GtkOptionMenu*
 attach_owner_menu (GtkTable *table,
 		   int row,
 		   NautilusFile *file)
@@ -1651,6 +1651,7 @@ attach_owner_menu (GtkTable *table,
 	g_signal_connect_object (file, "changed",
 				 G_CALLBACK (synch_user_menu),
 				 option_menu, G_CONNECT_SWAPPED);	
+	return option_menu;
 }
 
 static guint
@@ -2848,7 +2849,9 @@ create_permissions_page (FMPropertiesWindow *window)
 	guint last_row;
 	guint checkbox_titles_row;
 	GtkLabel *group_label;
+	GtkLabel *owner_label;
 	GtkOptionMenu *group_menu;
+	GtkOptionMenu *owner_menu;
 	GList *file_list;
 
 	vbox = create_page_with_vbox (window->details->notebook,
@@ -2875,13 +2878,14 @@ create_permissions_page (FMPropertiesWindow *window)
 				    GTK_WIDGET (page_table), 
 				    TRUE, TRUE, 0);
 
-		attach_title_field (page_table, last_row, _("File owner:"));
-
-			
 		if (!is_multi_file_window (window) && nautilus_file_can_set_owner (get_target_file (window))) {
+			owner_label = attach_title_field (page_table, last_row, _("File _owner:"));
 			/* Option menu in this case. */
-			attach_owner_menu (page_table, last_row, get_target_file (window));
+			owner_menu = attach_owner_menu (page_table, last_row, get_target_file (window));
+			gtk_label_set_mnemonic_widget (GTK_LABEL (owner_label),
+						       GTK_WIDGET (owner_menu));
 		} else {
+			attach_title_field (page_table, last_row, _("File owner:"));
 			/* Static text in this case. */
 			attach_value_field (window, 
 					    page_table, last_row, VALUE_COLUMN,

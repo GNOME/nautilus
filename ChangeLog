@@ -1,5 +1,12 @@
 2003-11-19  Padraig O'Briain  <padraig.obriain@sun.com>
 
+	* src/file-manger/fm-properties-window.c:
+	(attach_owner_menu): Return option_menu created in this function.
+	(create_permissions_page): Set mnemonic widget for owner_label.
+	Fixes bug #126637.
+
+2003-11-19  Padraig O'Briain  <padraig.obriain@sun.com>
+
 	* libnautilus-private/nautilus-link.c 
 	(nautilus_link_get_link_info_given_file_contents): Do not return value
 	in function returing void. Fixes build problem.
