@@ -46,10 +46,12 @@
 # (un)mount        = ein-/aushängen
 # Backup           = Sicherung
 # 
+#: libnautilus-private/nautilus-authn-manager.c:70
+#: libnautilus-private/nautilus-authn-manager.c:71
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.0.6cvs\n"
-"POT-Creation-Date: 2001-12-01 16:25+0100\n"
+"POT-Creation-Date: 2002-01-06 19:36+0100\n"
 "PO-Revision-Date: 2001-12-01 15:25+0100\n"
 "Last-Translator: chrisime <chrisime@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -461,14 +463,14 @@ msgid "Select _None"
 msgstr "_Nichts auswählen"
 
 #: components/help/hyperbola-nav-index.c:2040 data/browser.xml.h:55
-#: libnautilus-private/nautilus-file-operations.c:1087
+#: libnautilus-private/nautilus-file-operations.c:1088
 msgid "OK"
 msgstr "OK"
 
 #. add the button box at the bottom with a cancel button
 #: components/help/hyperbola-nav-index.c:2041
 #: components/news/nautilus-news.c:2358
-#: src/file-manager/fm-directory-view.c:4576
+#: src/file-manager/fm-directory-view.c:4580
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -1804,9 +1806,9 @@ msgid "Pause"
 msgstr "Pause"
 
 #: components/music/nautilus-music-view.c:1659
-#: libnautilus-private/nautilus-file-operations.c:964
-#: libnautilus-private/nautilus-file-operations.c:979
-#: libnautilus-private/nautilus-file-operations.c:998
+#: libnautilus-private/nautilus-file-operations.c:965
+#: libnautilus-private/nautilus-file-operations.c:980
+#: libnautilus-private/nautilus-file-operations.c:999
 #: src/nautilus-shell-ui.xml.h:54
 msgid "Stop"
 msgstr "Stopp"
@@ -2021,6 +2023,10 @@ msgstr ""
 "%s\n"
 "\n"
 "Sie haben den Knopf für die Beispiel-Werkzeugliste gedrückt"
+
+#: components/shell/shell.c:68
+msgid "Could not initialize Bonobo"
+msgstr "Bonobo konnte nicht initialisiert werden"
 
 #: components/text/Nautilus_View_text.oaf.in.h:1
 msgid "Factory for text view"
@@ -2765,6 +2771,38 @@ msgstr "Systemweite Einstellungen ändern (betrifft alle Benutzer)"
 msgid "System Settings"
 msgstr "Systemeinstellungen"
 
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:147
+msgid "Error"
+msgstr "Fehler"
+
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:170
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:206
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:207
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:213
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:214
+msgid "Question"
+msgstr "Frage"
+
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:187
+msgid "Message."
+msgstr "Nachricht."
+
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:188
+msgid "Title."
+msgstr "Titel."
+
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:189
+msgid "Button one label."
+msgstr ""
+
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:190
+msgid "Button two label."
+msgstr ""
+
+#: helper-utilities/error-dialog/nautilus-error-dialog.c:208
+msgid "Ok"
+msgstr "Ok"
+
 #: icons/crux_eggplant/crux_eggplant.xml.h:1
 msgid "An Eggplant variation of the Crux theme."
 msgstr "Eine auberginefarbene Abwandlung des Crux-Themas."
@@ -2907,6 +2945,33 @@ msgstr "XIAFS-Partition"
 msgid "Xenix Volume"
 msgstr "Xenix-Partition"
 
+#: libnautilus-private/nautilus-authn-manager.c:60
+msgid "Your HTTP Proxy requires you to log in.\n"
+msgstr "Sie müssen sich bei Ihrem HTTP-Prixy anmelden.\n"
+
+#: libnautilus-private/nautilus-authn-manager.c:61
+#, c-format
+msgid ""
+"You must log in to access \"%s\".\n"
+"\n"
+"%s"
+msgstr ""
+"Sie müssen sich anmelden, um auf \"%s\" zugreifen zu können.\n"
+"\n"
+"%s"
+
+#: libnautilus-private/nautilus-authn-manager.c:64
+msgid "Your password will be transmitted unencrypted."
+msgstr "Ihr Passwort wird unverschlüsselt übermittelt."
+
+#: libnautilus-private/nautilus-authn-manager.c:65
+msgid "Your password will be transmitted encrypted."
+msgstr "Ihr Passwort wird verschlüsselt übermittelt."
+
+#: libnautilus-private/nautilus-authn-manager.c:68
+msgid "Authentication Required"
+msgstr "Legitimation wird benötigt"
+
 #: libnautilus-private/nautilus-customization-data.c:356
 msgid "reset"
 msgstr "zurücksetzen"
@@ -2936,7 +3001,7 @@ msgstr "Von:"
 msgid "To:"
 msgstr "Nach:"
 
-#: libnautilus-private/nautilus-file-operations.c:607
+#: libnautilus-private/nautilus-file-operations.c:608
 #, c-format
 msgid ""
 "Error while moving.\n"
@@ -2948,7 +3013,7 @@ msgstr ""
 "\"%s\" kann nicht verschoben werden, da es sich auf einer schreibgeschützten "
 "Platte befindet."
 
-#: libnautilus-private/nautilus-file-operations.c:618
+#: libnautilus-private/nautilus-file-operations.c:619
 #, c-format
 msgid ""
 "Error while deleting.\n"
@@ -2961,7 +3026,7 @@ msgstr ""
 "\"%s\" kann nicht gelöscht werden, da Sie nicht die Berechtigungen haben, um "
 "seinen Elternordner zu verändern."
 
-#: libnautilus-private/nautilus-file-operations.c:624
+#: libnautilus-private/nautilus-file-operations.c:625
 #, c-format
 msgid ""
 "Error while deleting.\n"
@@ -2973,7 +3038,7 @@ msgstr ""
 "\"%s\" kann nicht gelöscht werden, da es sich auf einer schreibgeschützten "
 "Platte befindet."
 
-#: libnautilus-private/nautilus-file-operations.c:655
+#: libnautilus-private/nautilus-file-operations.c:656
 #, c-format
 msgid ""
 "Error while moving.\n"
@@ -2986,7 +3051,7 @@ msgstr ""
 "\"%s\" kann nicht verschoben werden, da Sie nicht die Berechtigungen haben, "
 "es oder seinen Elternordner zu verändern."
 
-#: libnautilus-private/nautilus-file-operations.c:662
+#: libnautilus-private/nautilus-file-operations.c:663
 #, c-format
 msgid ""
 "Error while moving.\n"
@@ -2999,7 +3064,7 @@ msgstr ""
 "\"%s\" kann nicht in den Müll verschoben werden, da Sie nicht die "
 "Berechtigungen haben, es oder seinen Elternordner zu verändern."
 
-#: libnautilus-private/nautilus-file-operations.c:686
+#: libnautilus-private/nautilus-file-operations.c:687
 #, c-format
 msgid ""
 "Error while copying.\n"
@@ -3011,7 +3076,7 @@ msgstr ""
 "\"%s\" kann nicht verschoben werden, da Sie nicht die Berechtigungen haben, "
 "um es zu lesen."
 
-#: libnautilus-private/nautilus-file-operations.c:708
+#: libnautilus-private/nautilus-file-operations.c:709
 #, c-format
 msgid ""
 "Error while copying to \"%s\".\n"
@@ -3022,7 +3087,7 @@ msgstr ""
 "\n"
 "Am Ziel ist kein Platz."
 
-#: libnautilus-private/nautilus-file-operations.c:713
+#: libnautilus-private/nautilus-file-operations.c:714
 #, c-format
 msgid ""
 "Error while moving to \"%s\".\n"
@@ -3033,7 +3098,7 @@ msgstr ""
 "\n"
 "Am Ziel ist kein Platz."
 
-#: libnautilus-private/nautilus-file-operations.c:717
+#: libnautilus-private/nautilus-file-operations.c:718
 #, c-format
 msgid ""
 "Error while creating link in \"%s\".\n"
@@ -3044,7 +3109,7 @@ msgstr ""
 "\n"
 "Am Ziel ist kein Platz."
 
-#: libnautilus-private/nautilus-file-operations.c:729
+#: libnautilus-private/nautilus-file-operations.c:730
 #, c-format
 msgid ""
 "Error while copying to \"%s\".\n"
@@ -3055,7 +3120,7 @@ msgstr ""
 "\n"
 "Sie haben keine Berechtigung, in diesen Ordner zu schreiben."
 
-#: libnautilus-private/nautilus-file-operations.c:733
+#: libnautilus-private/nautilus-file-operations.c:734
 #, c-format
 msgid ""
 "Error while copying to \"%s\".\n"
@@ -3066,7 +3131,7 @@ msgstr ""
 "\n"
 "Die Zielplatte ist schreibgeschützt."
 
-#: libnautilus-private/nautilus-file-operations.c:740
+#: libnautilus-private/nautilus-file-operations.c:741
 #, c-format
 msgid ""
 "Error while moving items to \"%s\".\n"
@@ -3077,7 +3142,7 @@ msgstr ""
 "\n"
 "Sie haben keine Berechtigung, in diesen Ordner zu schreiben."
 
-#: libnautilus-private/nautilus-file-operations.c:744
+#: libnautilus-private/nautilus-file-operations.c:745
 #, c-format
 msgid ""
 "Error while moving items to \"%s\".\n"
@@ -3088,7 +3153,7 @@ msgstr ""
 "\n"
 "Die Zielplatte ist schreibgeschützt."
 
-#: libnautilus-private/nautilus-file-operations.c:751
+#: libnautilus-private/nautilus-file-operations.c:752
 #, c-format
 msgid ""
 "Error while creating links in \"%s\".\n"
@@ -3099,7 +3164,7 @@ msgstr ""
 "\n"
 "Sie haben keine Berechtigung, in diesen Ordner zu schreiben."
 
-#: libnautilus-private/nautilus-file-operations.c:755
+#: libnautilus-private/nautilus-file-operations.c:756
 #, c-format
 msgid ""
 "Error while creating links in \"%s\".\n"
@@ -3110,7 +3175,7 @@ msgstr ""
 "\n"
 "Die Zielplatte ist schreibgeschützt."
 
-#: libnautilus-private/nautilus-file-operations.c:784
+#: libnautilus-private/nautilus-file-operations.c:785
 #, c-format
 msgid ""
 "Error \"%s\" while copying \"%s\".\n"
@@ -3121,7 +3186,7 @@ msgstr ""
 "\n"
 "Wollen Sie fortfahren?"
 
-#: libnautilus-private/nautilus-file-operations.c:788
+#: libnautilus-private/nautilus-file-operations.c:789
 #, c-format
 msgid ""
 "Error \"%s\" while moving \"%s\".\n"
@@ -3132,7 +3197,7 @@ msgstr ""
 "\n"
 "Wollen Sie fortfahren?"
 
-#: libnautilus-private/nautilus-file-operations.c:792
+#: libnautilus-private/nautilus-file-operations.c:793
 #, c-format
 msgid ""
 "Error \"%s\" while creating a link to \"%s\".\n"
@@ -3143,7 +3208,7 @@ msgstr ""
 "\n"
 "Wollen Sie fortfahren?"
 
-#: libnautilus-private/nautilus-file-operations.c:798
+#: libnautilus-private/nautilus-file-operations.c:799
 #, c-format
 msgid ""
 "Error \"%s\" while deleting \"%s\".\n"
@@ -3154,7 +3219,7 @@ msgstr ""
 "\n"
 "Wollen Sie fortfahren?"
 
-#: libnautilus-private/nautilus-file-operations.c:813
+#: libnautilus-private/nautilus-file-operations.c:814
 #, c-format
 msgid ""
 "Error \"%s\" while copying.\n"
@@ -3165,7 +3230,7 @@ msgstr ""
 "\n"
 "Wollen Sie fortfahren?"
 
-#: libnautilus-private/nautilus-file-operations.c:817
+#: libnautilus-private/nautilus-file-operations.c:818
 #, c-format
 msgid ""
 "Error \"%s\" while moving.\n"
@@ -3176,7 +3241,7 @@ msgstr ""
 "\n"
 "Wollen Sie fortfahren?"
 
-#: libnautilus-private/nautilus-file-operations.c:821
+#: libnautilus-private/nautilus-file-operations.c:822
 #, c-format
 msgid ""
 "Error \"%s\" while linking.\n"
@@ -3187,7 +3252,7 @@ msgstr ""
 "\n"
 "Wollen Sie fortfahren?"
 
-#: libnautilus-private/nautilus-file-operations.c:827
+#: libnautilus-private/nautilus-file-operations.c:828
 #, c-format
 msgid ""
 "Error \"%s\" while deleting.\n"
@@ -3198,34 +3263,34 @@ msgstr ""
 "\n"
 "Wollen Sie fortfahren?"
 
-#: libnautilus-private/nautilus-file-operations.c:943
+#: libnautilus-private/nautilus-file-operations.c:944
 msgid "Error while copying."
 msgstr "Fehler beim Kopieren."
 
-#: libnautilus-private/nautilus-file-operations.c:946
+#: libnautilus-private/nautilus-file-operations.c:947
 msgid "Error while moving."
 msgstr "Fehler beim Verschieben."
 
-#: libnautilus-private/nautilus-file-operations.c:949
+#: libnautilus-private/nautilus-file-operations.c:950
 msgid "Error while linking."
 msgstr "Fehler beim Linken."
 
-#: libnautilus-private/nautilus-file-operations.c:954
+#: libnautilus-private/nautilus-file-operations.c:955
 msgid "Error while deleting."
 msgstr "Fehler beim Löschen."
 
-#: libnautilus-private/nautilus-file-operations.c:979
-#: libnautilus-private/nautilus-file-operations.c:998
-#: libnautilus-private/nautilus-file-operations.c:1109
-#: libnautilus-private/nautilus-file-operations.c:1123
+#: libnautilus-private/nautilus-file-operations.c:980
+#: libnautilus-private/nautilus-file-operations.c:999
+#: libnautilus-private/nautilus-file-operations.c:1110
+#: libnautilus-private/nautilus-file-operations.c:1124
 msgid "Skip"
 msgstr "Überspringen"
 
-#: libnautilus-private/nautilus-file-operations.c:998
+#: libnautilus-private/nautilus-file-operations.c:999
 msgid "Retry"
 msgstr "Wiederholen"
 
-#: libnautilus-private/nautilus-file-operations.c:1073
+#: libnautilus-private/nautilus-file-operations.c:1074
 #, c-format
 msgid ""
 "\"%s\" could not be moved to the new location, because its name is already "
@@ -3240,7 +3305,7 @@ msgstr ""
 "Wenn Sie \"%s\" immer noch verschieben wollen, benennen Sie es um und "
 "versuchen Sie es noch einmal."
 
-#: libnautilus-private/nautilus-file-operations.c:1079
+#: libnautilus-private/nautilus-file-operations.c:1080
 #, c-format
 msgid ""
 "\"%s\" could not be copied to the new location, because its name is already "
@@ -3255,11 +3320,11 @@ msgstr ""
 "Wenn Sie \"%s\" immer noch kopieren wollen, benennen Sie es um und versuchen "
 "Sie es noch einmal."
 
-#: libnautilus-private/nautilus-file-operations.c:1087
+#: libnautilus-private/nautilus-file-operations.c:1088
 msgid "Unable to replace file."
 msgstr "Datei kann nicht ersetzt werden."
 
-#: libnautilus-private/nautilus-file-operations.c:1097
+#: libnautilus-private/nautilus-file-operations.c:1098
 #, c-format
 msgid ""
 "File \"%s\" already exists.\n"
@@ -3270,29 +3335,29 @@ msgstr ""
 "\n"
 "Wollen Sie sie ersetzen?"
 
-#: libnautilus-private/nautilus-file-operations.c:1108
-#: libnautilus-private/nautilus-file-operations.c:1122
+#: libnautilus-private/nautilus-file-operations.c:1109
+#: libnautilus-private/nautilus-file-operations.c:1123
 msgid "Conflict while copying"
 msgstr "Konflikt beim Kopieren"
 
-#: libnautilus-private/nautilus-file-operations.c:1109
-#: libnautilus-private/nautilus-file-operations.c:1123
+#: libnautilus-private/nautilus-file-operations.c:1110
+#: libnautilus-private/nautilus-file-operations.c:1124
 msgid "Replace"
 msgstr "Ersetzen"
 
-#: libnautilus-private/nautilus-file-operations.c:1123
+#: libnautilus-private/nautilus-file-operations.c:1124
 msgid "Replace All"
 msgstr "Alle ersetzen"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1172
+#: libnautilus-private/nautilus-file-operations.c:1173
 #: libnautilus-private/nautilus-file.c:4199
 #, c-format
 msgid "link to %s"
 msgstr "Link auf %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1176
+#: libnautilus-private/nautilus-file-operations.c:1177
 #, c-format
 msgid "another link to %s"
 msgstr "noch ein Link auf %s"
@@ -3301,25 +3366,25 @@ msgstr "noch ein Link auf %s"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: libnautilus-private/nautilus-file-operations.c:1192
+#: libnautilus-private/nautilus-file-operations.c:1193
 #, c-format
 msgid "%dst link to %s"
 msgstr "%d. link auf %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1196
+#: libnautilus-private/nautilus-file-operations.c:1197
 #, c-format
 msgid "%dnd link to %s"
 msgstr "%d. Link auf %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1200
+#: libnautilus-private/nautilus-file-operations.c:1201
 #, c-format
 msgid "%drd link to %s"
 msgstr "%d. Link auf %s"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1204
+#: libnautilus-private/nautilus-file-operations.c:1205
 #, c-format
 msgid "%dth link to %s"
 msgstr "%d. link auf %s"
@@ -3329,233 +3394,233 @@ msgstr "%d. link auf %s"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1224
-#: libnautilus-private/nautilus-file-operations.c:2318
+#: libnautilus-private/nautilus-file-operations.c:1225
+#: libnautilus-private/nautilus-file-operations.c:2319
 msgid " (copy)"
 msgstr " (Kopie)"
 
 #. localizers: tag used to detect the second copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1226
-#: libnautilus-private/nautilus-file-operations.c:2318
+#: libnautilus-private/nautilus-file-operations.c:1227
+#: libnautilus-private/nautilus-file-operations.c:2319
 msgid " (another copy)"
 msgstr " (noch eine Kopie)"
 
 #. localizers: tag used to detect the x11th copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1229
-#: libnautilus-private/nautilus-file-operations.c:1231
-#: libnautilus-private/nautilus-file-operations.c:1233
-#: libnautilus-private/nautilus-file-operations.c:1243
+#: libnautilus-private/nautilus-file-operations.c:1230
+#: libnautilus-private/nautilus-file-operations.c:1232
+#: libnautilus-private/nautilus-file-operations.c:1234
+#: libnautilus-private/nautilus-file-operations.c:1244
 msgid "th copy)"
 msgstr ". Kopie)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1236
+#: libnautilus-private/nautilus-file-operations.c:1237
 msgid "st copy)"
 msgstr ". Kopie)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1238
+#: libnautilus-private/nautilus-file-operations.c:1239
 msgid "nd copy)"
 msgstr ". Kopie)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1240
+#: libnautilus-private/nautilus-file-operations.c:1241
 msgid "rd copy)"
 msgstr ". Kopie)"
 
 #. localizers: appended to first file copy
-#: libnautilus-private/nautilus-file-operations.c:1257
+#: libnautilus-private/nautilus-file-operations.c:1258
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (Kopie)%s"
 
 #. localizers: appended to second file copy
-#: libnautilus-private/nautilus-file-operations.c:1259
+#: libnautilus-private/nautilus-file-operations.c:1260
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (noch eine Kopie)%s"
 
 #. localizers: appended to x11th file copy
-#: libnautilus-private/nautilus-file-operations.c:1262
-#: libnautilus-private/nautilus-file-operations.c:1264
-#: libnautilus-private/nautilus-file-operations.c:1266
-#: libnautilus-private/nautilus-file-operations.c:1275
+#: libnautilus-private/nautilus-file-operations.c:1263
+#: libnautilus-private/nautilus-file-operations.c:1265
+#: libnautilus-private/nautilus-file-operations.c:1267
+#: libnautilus-private/nautilus-file-operations.c:1276
 #, c-format
 msgid "%s (%dth copy)%s"
 msgstr "%s (%d. Kopie)%s"
 
 #. localizers: appended to x1st file copy
-#: libnautilus-private/nautilus-file-operations.c:1269
+#: libnautilus-private/nautilus-file-operations.c:1270
 #, c-format
 msgid "%s (%dst copy)%s"
 msgstr "%s (%d. Kopie)%s"
 
 #. localizers: appended to x2nd file copy
-#: libnautilus-private/nautilus-file-operations.c:1271
+#: libnautilus-private/nautilus-file-operations.c:1272
 #, c-format
 msgid "%s (%dnd copy)%s"
 msgstr "%s (%d. Kopie)%s"
 
 #. localizers: appended to x3rd file copy
-#: libnautilus-private/nautilus-file-operations.c:1273
+#: libnautilus-private/nautilus-file-operations.c:1274
 #, c-format
 msgid "%s (%drd copy)%s"
 msgstr "%s (%d. Kopie)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: libnautilus-private/nautilus-file-operations.c:1373
+#: libnautilus-private/nautilus-file-operations.c:1374
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: libnautilus-private/nautilus-file-operations.c:1381
+#: libnautilus-private/nautilus-file-operations.c:1382
 #, c-format
 msgid " (%d"
 msgstr " (%d"
 
-#: libnautilus-private/nautilus-file-operations.c:1559
-#: libnautilus-private/nautilus-file-operations.c:2148
+#: libnautilus-private/nautilus-file-operations.c:1560
+#: libnautilus-private/nautilus-file-operations.c:2149
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Unbekannter GnomeVFSXferProgressStatus %d"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1880
+#: libnautilus-private/nautilus-file-operations.c:1881
 msgid "Moving files to the Trash"
 msgstr "Dateien werden in den Müll verschoben"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1882
+#: libnautilus-private/nautilus-file-operations.c:1883
 msgid "Files thrown out:"
 msgstr "Weggeworfene Dateien:"
 
 #. localizers: label prepended to the name of the current file moved
-#: libnautilus-private/nautilus-file-operations.c:1884
-#: libnautilus-private/nautilus-file-operations.c:1900
+#: libnautilus-private/nautilus-file-operations.c:1885
+#: libnautilus-private/nautilus-file-operations.c:1901
 msgid "Moving"
 msgstr "Verschieben"
 
-#: libnautilus-private/nautilus-file-operations.c:1885
+#: libnautilus-private/nautilus-file-operations.c:1886
 msgid "Preparing to Move to Trash..."
 msgstr "Verschieben in den Müll wird vorbereitet..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1896
+#: libnautilus-private/nautilus-file-operations.c:1897
 msgid "Moving files"
 msgstr "Dateien werden verschoben"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1898
+#: libnautilus-private/nautilus-file-operations.c:1899
 msgid "Files moved:"
 msgstr "Verschobene Dateien:"
 
-#: libnautilus-private/nautilus-file-operations.c:1901
+#: libnautilus-private/nautilus-file-operations.c:1902
 msgid "Preparing To Move..."
 msgstr "Verschieben wird vorbereitet..."
 
-#: libnautilus-private/nautilus-file-operations.c:1902
+#: libnautilus-private/nautilus-file-operations.c:1903
 msgid "Finishing Move..."
 msgstr "Verschieben wird beendet..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1915
+#: libnautilus-private/nautilus-file-operations.c:1916
 msgid "Creating links to files"
 msgstr "Links auf Dateien werden erzeugt"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1917
+#: libnautilus-private/nautilus-file-operations.c:1918
 msgid "Files linked:"
 msgstr "Verlinkte Dateien:"
 
 #. localizers: label prepended to the name of the current file linked
-#: libnautilus-private/nautilus-file-operations.c:1919
+#: libnautilus-private/nautilus-file-operations.c:1920
 msgid "Linking"
 msgstr "Linken"
 
-#: libnautilus-private/nautilus-file-operations.c:1920
+#: libnautilus-private/nautilus-file-operations.c:1921
 msgid "Preparing to Create Links..."
 msgstr "Erzeugen von Links wird vorbereitet..."
 
-#: libnautilus-private/nautilus-file-operations.c:1921
+#: libnautilus-private/nautilus-file-operations.c:1922
 msgid "Finishing Creating Links..."
 msgstr "Erzeugen von Links wird beendet..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1928
+#: libnautilus-private/nautilus-file-operations.c:1929
 msgid "Copying files"
 msgstr "Dateien werden kopiert"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1930
+#: libnautilus-private/nautilus-file-operations.c:1931
 msgid "Files copied:"
 msgstr "Kopierte Dateien:"
 
 #. localizers: label prepended to the name of the current file copied
-#: libnautilus-private/nautilus-file-operations.c:1932
+#: libnautilus-private/nautilus-file-operations.c:1933
 msgid "Copying"
 msgstr "Kopieren"
 
-#: libnautilus-private/nautilus-file-operations.c:1933
+#: libnautilus-private/nautilus-file-operations.c:1934
 msgid "Preparing To Copy..."
 msgstr "Kopieren wird vorbereitet..."
 
-#: libnautilus-private/nautilus-file-operations.c:1951
+#: libnautilus-private/nautilus-file-operations.c:1952
 msgid "You cannot copy items into the Trash."
 msgstr "Sie können Dateien nicht in den Müll kopieren."
 
-#: libnautilus-private/nautilus-file-operations.c:1952
+#: libnautilus-private/nautilus-file-operations.c:1953
 msgid "Can't Copy to Trash"
 msgstr "In Müll kann nicht kopiert werden"
 
-#: libnautilus-private/nautilus-file-operations.c:1979
+#: libnautilus-private/nautilus-file-operations.c:1980
 msgid "The Trash must remain on the desktop."
 msgstr "Der Müll muss auf dem Desktop verbleiben."
 
-#: libnautilus-private/nautilus-file-operations.c:1980
+#: libnautilus-private/nautilus-file-operations.c:1981
 msgid "You cannot move this trash folder."
 msgstr "Sie können diesen Müllordner nicht verschieben."
 
-#: libnautilus-private/nautilus-file-operations.c:1982
+#: libnautilus-private/nautilus-file-operations.c:1983
 msgid "You cannot copy the Trash."
 msgstr "Sie können den Müll nicht kopieren."
 
-#: libnautilus-private/nautilus-file-operations.c:1983
+#: libnautilus-private/nautilus-file-operations.c:1984
 msgid "You cannot copy this trash folder."
 msgstr "Sie können diesen Müllordner nicht kopieren."
 
-#: libnautilus-private/nautilus-file-operations.c:1985
+#: libnautilus-private/nautilus-file-operations.c:1986
 msgid "Can't Change Trash Location"
 msgstr "Ort des Mülls kann nicht geändert werden"
 
-#: libnautilus-private/nautilus-file-operations.c:1986
+#: libnautilus-private/nautilus-file-operations.c:1987
 msgid "Can't Copy Trash"
 msgstr "Müll kann nicht kopiert werden"
 
-#: libnautilus-private/nautilus-file-operations.c:2009
+#: libnautilus-private/nautilus-file-operations.c:2010
 msgid "You cannot move a folder into itself."
 msgstr "Sie können einen Ordner nicht in sich selbst verschieben."
 
-#: libnautilus-private/nautilus-file-operations.c:2010
+#: libnautilus-private/nautilus-file-operations.c:2011
 msgid "You cannot copy a folder into itself."
 msgstr "Sie können einen Ordner nicht in sich selbst kopieren."
 
-#: libnautilus-private/nautilus-file-operations.c:2012
+#: libnautilus-private/nautilus-file-operations.c:2013
 msgid "Can't Move Into Self"
 msgstr "Kann nicht auf sich selbst verschoben werden"
 
-#: libnautilus-private/nautilus-file-operations.c:2013
+#: libnautilus-private/nautilus-file-operations.c:2014
 msgid "Can't Copy Into Self"
 msgstr "Kann nicht auf sich selbst kopiert werden"
 
-#: libnautilus-private/nautilus-file-operations.c:2025
+#: libnautilus-private/nautilus-file-operations.c:2026
 msgid "You cannot copy a file over itself."
 msgstr "Sie können eine Datei nicht über sich selbst kopieren."
 
-#: libnautilus-private/nautilus-file-operations.c:2026
+#: libnautilus-private/nautilus-file-operations.c:2027
 msgid "Can't Copy Over Self"
 msgstr "Kann nicht über sich selbst kopiert werden"
 
-#: libnautilus-private/nautilus-file-operations.c:2077
+#: libnautilus-private/nautilus-file-operations.c:2078
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -3565,7 +3630,7 @@ msgstr ""
 "\n"
 "Sie haben nicht die Berechtigung, auf das Ziel zu schreiben."
 
-#: libnautilus-private/nautilus-file-operations.c:2080
+#: libnautilus-private/nautilus-file-operations.c:2081
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -3575,324 +3640,324 @@ msgstr ""
 "\n"
 "Am Ziel ist kein Platz."
 
-#: libnautilus-private/nautilus-file-operations.c:2083
+#: libnautilus-private/nautilus-file-operations.c:2084
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Fehler \"%s\" beim Anlegen eines neuen Ordners."
 
-#: libnautilus-private/nautilus-file-operations.c:2087
+#: libnautilus-private/nautilus-file-operations.c:2088
 msgid "Error creating new folder"
 msgstr "Fehler beim Anlegen eines neuen Ordners"
 
 #. localizers: the initial name of a new folder
-#: libnautilus-private/nautilus-file-operations.c:2174
+#: libnautilus-private/nautilus-file-operations.c:2175
 msgid "untitled folder"
 msgstr "unbenannter Ordner"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2207
+#: libnautilus-private/nautilus-file-operations.c:2208
 msgid "Deleting files"
 msgstr "Dateien werden gelöscht"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2209
-#: libnautilus-private/nautilus-file-operations.c:2244
+#: libnautilus-private/nautilus-file-operations.c:2210
+#: libnautilus-private/nautilus-file-operations.c:2245
 msgid "Files deleted:"
 msgstr "Gelöschte Dateien:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-private/nautilus-file-operations.c:2211
-#: libnautilus-private/nautilus-file-operations.c:2246
+#: libnautilus-private/nautilus-file-operations.c:2212
+#: libnautilus-private/nautilus-file-operations.c:2247
 msgid "Deleting"
 msgstr "Löschen"
 
-#: libnautilus-private/nautilus-file-operations.c:2212
+#: libnautilus-private/nautilus-file-operations.c:2213
 msgid "Preparing to Delete files..."
 msgstr "Löschen von Dateien wird vorbereitet..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2242
+#: libnautilus-private/nautilus-file-operations.c:2243
 msgid "Emptying the Trash"
 msgstr "Müll wird geleert"
 
-#: libnautilus-private/nautilus-file-operations.c:2247
+#: libnautilus-private/nautilus-file-operations.c:2248
 msgid "Preparing to Empty the Trash..."
 msgstr "Leeren des Mülls wird vorbereitet..."
 
-#: libnautilus-private/nautilus-file-operations.c:2278
+#: libnautilus-private/nautilus-file-operations.c:2279
 msgid ""
 "Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr ""
 "Sind sie sicher, dass Sie alle Objekte im Müll auf Dauer löschen wollen?"
 
-#: libnautilus-private/nautilus-file-operations.c:2280
+#: libnautilus-private/nautilus-file-operations.c:2281
 msgid "Delete Trash Contents?"
 msgstr "Müll-Inhalt löschen?"
 
-#: libnautilus-private/nautilus-file-operations.c:2281
+#: libnautilus-private/nautilus-file-operations.c:2282
 msgid "Empty"
 msgstr "Leeren"
 
-#: libnautilus-private/nautilus-file-operations.c:2319
+#: libnautilus-private/nautilus-file-operations.c:2320
 msgid "foo"
 msgstr "foo"
 
-#: libnautilus-private/nautilus-file-operations.c:2319
-#: libnautilus-private/nautilus-file-operations.c:2329
+#: libnautilus-private/nautilus-file-operations.c:2320
+#: libnautilus-private/nautilus-file-operations.c:2330
 msgid "foo (copy)"
 msgstr "foo (Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2320
+#: libnautilus-private/nautilus-file-operations.c:2321
 msgid ".bashrc"
 msgstr ".bashrc"
 
-#: libnautilus-private/nautilus-file-operations.c:2320
+#: libnautilus-private/nautilus-file-operations.c:2321
 msgid ".bashrc (copy)"
 msgstr ".bashrc (Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2321
+#: libnautilus-private/nautilus-file-operations.c:2322
 msgid ".foo.txt"
 msgstr ".foo.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2321
+#: libnautilus-private/nautilus-file-operations.c:2322
 msgid ".foo (copy).txt"
 msgstr ".foo (Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2322
+#: libnautilus-private/nautilus-file-operations.c:2323
 msgid "foo foo"
 msgstr "foo foo"
 
-#: libnautilus-private/nautilus-file-operations.c:2322
+#: libnautilus-private/nautilus-file-operations.c:2323
 msgid "foo foo (copy)"
 msgstr "foo foo (Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2323
+#: libnautilus-private/nautilus-file-operations.c:2324
 msgid "foo.txt"
 msgstr "foo.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2323
-#: libnautilus-private/nautilus-file-operations.c:2330
+#: libnautilus-private/nautilus-file-operations.c:2324
+#: libnautilus-private/nautilus-file-operations.c:2331
 msgid "foo (copy).txt"
 msgstr "foo (Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2324
+#: libnautilus-private/nautilus-file-operations.c:2325
 msgid "foo foo.txt"
 msgstr "foo foo.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2324
-#: libnautilus-private/nautilus-file-operations.c:2346
+#: libnautilus-private/nautilus-file-operations.c:2325
+#: libnautilus-private/nautilus-file-operations.c:2347
 msgid "foo foo (copy).txt"
 msgstr "foo foo (Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2325
+#: libnautilus-private/nautilus-file-operations.c:2326
 msgid "foo foo.txt txt"
 msgstr "foo foo.txt txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2325
+#: libnautilus-private/nautilus-file-operations.c:2326
 msgid "foo foo (copy).txt txt"
 msgstr "foo foo (Kopie).txt txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2326
+#: libnautilus-private/nautilus-file-operations.c:2327
 msgid "foo...txt"
 msgstr "foo...txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2326
+#: libnautilus-private/nautilus-file-operations.c:2327
 msgid "foo.. (copy).txt"
 msgstr "foo.. (Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2327
+#: libnautilus-private/nautilus-file-operations.c:2328
 msgid "foo..."
 msgstr "foo..."
 
-#: libnautilus-private/nautilus-file-operations.c:2327
+#: libnautilus-private/nautilus-file-operations.c:2328
 msgid "foo... (copy)"
 msgstr "foo... (Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2328
+#: libnautilus-private/nautilus-file-operations.c:2329
 msgid "foo. (copy)"
 msgstr "foo. (Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2328
+#: libnautilus-private/nautilus-file-operations.c:2329
 msgid "foo. (another copy)"
 msgstr "foo. (noch eine Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2329
-#: libnautilus-private/nautilus-file-operations.c:2331
+#: libnautilus-private/nautilus-file-operations.c:2330
+#: libnautilus-private/nautilus-file-operations.c:2332
 msgid "foo (another copy)"
 msgstr "foo (noch eine Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2330
-#: libnautilus-private/nautilus-file-operations.c:2332
+#: libnautilus-private/nautilus-file-operations.c:2331
+#: libnautilus-private/nautilus-file-operations.c:2333
 msgid "foo (another copy).txt"
 msgstr "foo (noch eine Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2331
+#: libnautilus-private/nautilus-file-operations.c:2332
 msgid "foo (3rd copy)"
 msgstr "foo (3. Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2332
+#: libnautilus-private/nautilus-file-operations.c:2333
 msgid "foo (3rd copy).txt"
 msgstr "foo (3. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2333
+#: libnautilus-private/nautilus-file-operations.c:2334
 msgid "foo foo (another copy).txt"
 msgstr "foo foo (noch eine Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2333
+#: libnautilus-private/nautilus-file-operations.c:2334
 msgid "foo foo (3rd copy).txt"
 msgstr "foo foo (3. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2334
-#: libnautilus-private/nautilus-file-operations.c:2351
+#: libnautilus-private/nautilus-file-operations.c:2335
+#: libnautilus-private/nautilus-file-operations.c:2352
 msgid "foo (13th copy)"
 msgstr "foo (13. Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2334
+#: libnautilus-private/nautilus-file-operations.c:2335
 msgid "foo (14th copy)"
 msgstr "foo (14. Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2335
-#: libnautilus-private/nautilus-file-operations.c:2352
+#: libnautilus-private/nautilus-file-operations.c:2336
+#: libnautilus-private/nautilus-file-operations.c:2353
 msgid "foo (13th copy).txt"
 msgstr "foo (13. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2335
+#: libnautilus-private/nautilus-file-operations.c:2336
 msgid "foo (14th copy).txt"
 msgstr "foo (14. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2336
+#: libnautilus-private/nautilus-file-operations.c:2337
 msgid "foo (21st copy)"
 msgstr "foo (21. Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2336
-#: libnautilus-private/nautilus-file-operations.c:2338
+#: libnautilus-private/nautilus-file-operations.c:2337
+#: libnautilus-private/nautilus-file-operations.c:2339
 msgid "foo (22nd copy)"
 msgstr "foo (22. Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2337
+#: libnautilus-private/nautilus-file-operations.c:2338
 msgid "foo (21st copy).txt"
 msgstr "foo (21. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2337
-#: libnautilus-private/nautilus-file-operations.c:2339
+#: libnautilus-private/nautilus-file-operations.c:2338
+#: libnautilus-private/nautilus-file-operations.c:2340
 msgid "foo (22nd copy).txt"
 msgstr "foo (22. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2338
-#: libnautilus-private/nautilus-file-operations.c:2340
+#: libnautilus-private/nautilus-file-operations.c:2339
+#: libnautilus-private/nautilus-file-operations.c:2341
 msgid "foo (23rd copy)"
 msgstr "foo (23. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2339
-#: libnautilus-private/nautilus-file-operations.c:2341
+#: libnautilus-private/nautilus-file-operations.c:2340
+#: libnautilus-private/nautilus-file-operations.c:2342
 msgid "foo (23rd copy).txt"
 msgstr "foo (23. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2340
-#: libnautilus-private/nautilus-file-operations.c:2342
+#: libnautilus-private/nautilus-file-operations.c:2341
+#: libnautilus-private/nautilus-file-operations.c:2343
 msgid "foo (24th copy)"
 msgstr "foo (24. Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2341
-#: libnautilus-private/nautilus-file-operations.c:2343
+#: libnautilus-private/nautilus-file-operations.c:2342
+#: libnautilus-private/nautilus-file-operations.c:2344
 msgid "foo (24th copy).txt"
 msgstr "foo (24. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2342
+#: libnautilus-private/nautilus-file-operations.c:2343
 msgid "foo (25th copy)"
 msgstr "foo (25. Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2343
+#: libnautilus-private/nautilus-file-operations.c:2344
 msgid "foo (25th copy).txt"
 msgstr "foo (25. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2344
+#: libnautilus-private/nautilus-file-operations.c:2345
 msgid "foo foo (24th copy)"
 msgstr "foo foo (24. Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2344
+#: libnautilus-private/nautilus-file-operations.c:2345
 msgid "foo foo (25th copy)"
 msgstr "foo foo (25. Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2345
+#: libnautilus-private/nautilus-file-operations.c:2346
 msgid "foo foo (24th copy).txt"
 msgstr "foo foo (24. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2345
+#: libnautilus-private/nautilus-file-operations.c:2346
 msgid "foo foo (25th copy).txt"
 msgstr "foo foo (25. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2346
+#: libnautilus-private/nautilus-file-operations.c:2347
 msgid "foo foo (100000000000000th copy).txt"
 msgstr "foo foo (100000000000000. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2347
+#: libnautilus-private/nautilus-file-operations.c:2348
 msgid "foo (10th copy)"
 msgstr "foo (10. Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2347
-#: libnautilus-private/nautilus-file-operations.c:2349
+#: libnautilus-private/nautilus-file-operations.c:2348
+#: libnautilus-private/nautilus-file-operations.c:2350
 msgid "foo (11th copy)"
 msgstr "foo (11. Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2348
+#: libnautilus-private/nautilus-file-operations.c:2349
 msgid "foo (10th copy).txt"
 msgstr "foo (10. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2348
-#: libnautilus-private/nautilus-file-operations.c:2350
+#: libnautilus-private/nautilus-file-operations.c:2349
+#: libnautilus-private/nautilus-file-operations.c:2351
 msgid "foo (11th copy).txt"
 msgstr "foo (11. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2349
-#: libnautilus-private/nautilus-file-operations.c:2351
+#: libnautilus-private/nautilus-file-operations.c:2350
+#: libnautilus-private/nautilus-file-operations.c:2352
 msgid "foo (12th copy)"
 msgstr "foo (12. Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2350
-#: libnautilus-private/nautilus-file-operations.c:2352
+#: libnautilus-private/nautilus-file-operations.c:2351
+#: libnautilus-private/nautilus-file-operations.c:2353
 msgid "foo (12th copy).txt"
 msgstr "foo (12. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2353
+#: libnautilus-private/nautilus-file-operations.c:2354
 msgid "foo (110th copy)"
 msgstr "foo (110. Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2353
+#: libnautilus-private/nautilus-file-operations.c:2354
 msgid "foo (111th copy)"
 msgstr "foo (111. Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2354
+#: libnautilus-private/nautilus-file-operations.c:2355
 msgid "foo (110th copy).txt"
 msgstr "foo (111. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2354
+#: libnautilus-private/nautilus-file-operations.c:2355
 msgid "foo (111th copy).txt"
 msgstr "foo (111. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2355
+#: libnautilus-private/nautilus-file-operations.c:2356
 msgid "foo (122nd copy)"
 msgstr "foo (122. Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2355
-#: libnautilus-private/nautilus-file-operations.c:2357
+#: libnautilus-private/nautilus-file-operations.c:2356
+#: libnautilus-private/nautilus-file-operations.c:2358
 msgid "foo (123rd copy)"
 msgstr "foo (123. Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2356
+#: libnautilus-private/nautilus-file-operations.c:2357
 msgid "foo (122nd copy).txt"
 msgstr "foo (122. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2356
-#: libnautilus-private/nautilus-file-operations.c:2358
+#: libnautilus-private/nautilus-file-operations.c:2357
+#: libnautilus-private/nautilus-file-operations.c:2359
 msgid "foo (123rd copy).txt"
 msgstr "foo (123. Kopie).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2357
+#: libnautilus-private/nautilus-file-operations.c:2358
 msgid "foo (124th copy)"
 msgstr "foo (124. Kopie)"
 
-#: libnautilus-private/nautilus-file-operations.c:2358
+#: libnautilus-private/nautilus-file-operations.c:2359
 msgid "foo (124th copy).txt"
 msgstr "foo (124. Kopie).txt"
 
@@ -5121,6 +5186,10 @@ msgstr "Text _kopieren"
 msgid "_Paste Text"
 msgstr "Text e_infügen"
 
+#: nautilus-help.desktop.in.h:1
+msgid "Documentation"
+msgstr "Dokumentation"
+
 #: nautilus.desktop.in.h:1 src/nautilus-window-manage-views.c:256
 #: src/nautilus-window-menus.c:645
 msgid "Nautilus"
@@ -5129,10 +5198,6 @@ msgstr "Nautilus"
 #: nautilus.desktop.in.h:2
 msgid "Nautilus File Manager and Graphic Shell"
 msgstr "Nautilus: Dateimanager und grafische Shell"
-
-#: nautilus-help.desktop.in.h:1
-msgid "Documentation"
-msgstr "Dokumentation"
 
 #: src/Nautilus_shell.oaf.in.h:1
 msgid "Factory for Nautilus shell and file manager"
@@ -5546,96 +5611,96 @@ msgstr ""
 msgid "There is nothing on the clipboard to paste."
 msgstr "In der Zwischenablage ist nichts zum Einfügen."
 
-#: src/file-manager/fm-directory-view.c:4205
+#: src/file-manager/fm-directory-view.c:4209
 msgid "Open _in This Window"
 msgstr "_In diesem Fenster öffnen"
 
-#: src/file-manager/fm-directory-view.c:4208
+#: src/file-manager/fm-directory-view.c:4212
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Open _in New Window"
 msgstr "_In neuem Fenster öffnen"
 
-#: src/file-manager/fm-directory-view.c:4210
+#: src/file-manager/fm-directory-view.c:4214
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "_In %d neuen Fenstern öffnen"
 
-#: src/file-manager/fm-directory-view.c:4228
+#: src/file-manager/fm-directory-view.c:4232
 msgid "Delete from _Trash..."
 msgstr "Aus Müll _löschen..."
 
-#: src/file-manager/fm-directory-view.c:4228
+#: src/file-manager/fm-directory-view.c:4232
 msgid "Delete from _Trash"
 msgstr "Aus Müll löschen"
 
-#: src/file-manager/fm-directory-view.c:4230
+#: src/file-manager/fm-directory-view.c:4234
 msgid "Delete all selected items permanently"
 msgstr "Alle gewählten Objekte auf Dauer löschen"
 
-#: src/file-manager/fm-directory-view.c:4233
+#: src/file-manager/fm-directory-view.c:4237
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Move to _Trash"
 msgstr "In den _Müll verschieben"
 
-#: src/file-manager/fm-directory-view.c:4235
+#: src/file-manager/fm-directory-view.c:4239
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Move each selected item to the Trash"
 msgstr "Jedes gewählte Objekt in den Müll verschieben"
 
-#: src/file-manager/fm-directory-view.c:4262
+#: src/file-manager/fm-directory-view.c:4266
 msgid "De_lete..."
 msgstr "_Löschen..."
 
-#: src/file-manager/fm-directory-view.c:4262
+#: src/file-manager/fm-directory-view.c:4266
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "De_lete"
 msgstr "_Löschen"
 
-#: src/file-manager/fm-directory-view.c:4283
+#: src/file-manager/fm-directory-view.c:4287
 msgid "Make _Links"
 msgstr "_Links anlegen"
 
-#: src/file-manager/fm-directory-view.c:4284
+#: src/file-manager/fm-directory-view.c:4288
 msgid "Make _Link"
 msgstr "Link anlegen"
 
-#: src/file-manager/fm-directory-view.c:4299
+#: src/file-manager/fm-directory-view.c:4303
 msgid "_Empty Trash..."
 msgstr "Müll _leeren..."
 
-#: src/file-manager/fm-directory-view.c:4300
+#: src/file-manager/fm-directory-view.c:4304
 #: src/file-manager/nautilus-directory-view-ui.xml.h:58
 msgid "_Empty Trash"
 msgstr "Müll _leeren"
 
-#: src/file-manager/fm-directory-view.c:4311
+#: src/file-manager/fm-directory-view.c:4315
 #: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "R_emove Custom Images"
 msgstr "Eigene Bilder entfernen"
 
-#: src/file-manager/fm-directory-view.c:4312
+#: src/file-manager/fm-directory-view.c:4316
 msgid "R_emove Custom Image"
 msgstr "Eigenes _Bild entfernen"
 
-#: src/file-manager/fm-directory-view.c:4326
+#: src/file-manager/fm-directory-view.c:4330
 msgid "Cu_t File"
 msgstr "Datei _ausschneiden"
 
-#: src/file-manager/fm-directory-view.c:4327
+#: src/file-manager/fm-directory-view.c:4331
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "Dateien _ausschneiden"
 
-#: src/file-manager/fm-directory-view.c:4337
+#: src/file-manager/fm-directory-view.c:4341
 msgid "_Copy File"
 msgstr "Datei _kopieren"
 
-#: src/file-manager/fm-directory-view.c:4338
+#: src/file-manager/fm-directory-view.c:4342
 #: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "_Copy Files"
 msgstr "Dateien _kopieren"
 
-#: src/file-manager/fm-directory-view.c:4502
+#: src/file-manager/fm-directory-view.c:4506
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
@@ -5643,7 +5708,7 @@ msgstr ""
 "Dieser Link kann nicht verwendet werden, da er kein Ziel hat. Wollen Sie ihn "
 "in den Müll werfen?"
 
-#: src/file-manager/fm-directory-view.c:4505
+#: src/file-manager/fm-directory-view.c:4509
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -5652,15 +5717,15 @@ msgstr ""
 "Dieser Link kann nicht verwendet werden, da sein Ziel \"%s\" nicht "
 "existiert. Wollen ihn in den Müll werfen?"
 
-#: src/file-manager/fm-directory-view.c:4511
+#: src/file-manager/fm-directory-view.c:4515
 msgid "Broken Link"
 msgstr "Defekter Link"
 
-#: src/file-manager/fm-directory-view.c:4512
+#: src/file-manager/fm-directory-view.c:4516
 msgid "Throw Away"
 msgstr "Wegwerfen"
 
-#: src/file-manager/fm-directory-view.c:4565
+#: src/file-manager/fm-directory-view.c:4569
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -5669,19 +5734,19 @@ msgstr ""
 "\"%s\" ist eine ausführbare Textdatei. Wollen Sie sie ausführen oder Ihren "
 "Inhalt anzeigen lassen?"
 
-#: src/file-manager/fm-directory-view.c:4571
+#: src/file-manager/fm-directory-view.c:4575
 msgid "Run or Display?"
 msgstr "Ausführen oder anzeigen?"
 
-#: src/file-manager/fm-directory-view.c:4572
+#: src/file-manager/fm-directory-view.c:4576
 msgid "Run"
 msgstr "Ausführen"
 
-#: src/file-manager/fm-directory-view.c:4573
+#: src/file-manager/fm-directory-view.c:4577
 msgid "Display"
 msgstr "Anzeigen"
 
-#: src/file-manager/fm-directory-view.c:4624
+#: src/file-manager/fm-directory-view.c:4628
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -5689,16 +5754,16 @@ msgstr ""
 "Entschuldigung, aber Sie dürfen aus Sicherheitsgründen keine Befehle von "
 "einen fernen Rechner ausführen."
 
-#: src/file-manager/fm-directory-view.c:4626
+#: src/file-manager/fm-directory-view.c:4630
 msgid "Can't execute remote links"
 msgstr "Ferne Links können nicht ausgeführt werden"
 
-#: src/file-manager/fm-directory-view.c:4754
+#: src/file-manager/fm-directory-view.c:4758
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Öffnen von \"%s\""
 
-#: src/file-manager/fm-directory-view.c:4760
+#: src/file-manager/fm-directory-view.c:4764
 msgid "Cancel Open?"
 msgstr "Öffnen abbrechen?"
 
@@ -5842,74 +5907,74 @@ msgstr "\"%s\" wird in \"%s\" umbenannt."
 msgid "Cancel Rename?"
 msgstr "Umbenennen abbrechen`"
 
-#: src/file-manager/fm-icon-view.c:186
+#: src/file-manager/fm-icon-view.c:187
 msgid "by _Name"
 msgstr "nach _Name"
 
-#: src/file-manager/fm-icon-view.c:187
+#: src/file-manager/fm-icon-view.c:188
 #: src/file-manager/nautilus-icon-view-ui.xml.h:15
 msgid "Keep icons sorted by name in rows"
 msgstr "Icons nach Name in Zeilen sortieren"
 
-#: src/file-manager/fm-icon-view.c:193
+#: src/file-manager/fm-icon-view.c:194
 msgid "by _Size"
 msgstr "nach _Größe"
 
-#: src/file-manager/fm-icon-view.c:194
+#: src/file-manager/fm-icon-view.c:195
 #: src/file-manager/nautilus-icon-view-ui.xml.h:16
 msgid "Keep icons sorted by size in rows"
 msgstr "Icons nach Größe in Zeilen sortieren"
 
-#: src/file-manager/fm-icon-view.c:200
+#: src/file-manager/fm-icon-view.c:201
 msgid "by _Type"
 msgstr "nach _Typ"
 
-#: src/file-manager/fm-icon-view.c:201
+#: src/file-manager/fm-icon-view.c:202
 #: src/file-manager/nautilus-icon-view-ui.xml.h:17
 msgid "Keep icons sorted by type in rows"
 msgstr "Icons nach Typ in Zeilen sortieren"
 
-#: src/file-manager/fm-icon-view.c:207
+#: src/file-manager/fm-icon-view.c:208
 msgid "by Modification _Date"
 msgstr "nach Modifikations_datum"
 
-#: src/file-manager/fm-icon-view.c:208
+#: src/file-manager/fm-icon-view.c:209
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Icons nach Modifikationsdatum in Zeilen sortieren"
 
-#: src/file-manager/fm-icon-view.c:214
+#: src/file-manager/fm-icon-view.c:215
 msgid "by _Emblems"
 msgstr "nach _Emblemen"
 
-#: src/file-manager/fm-icon-view.c:215
+#: src/file-manager/fm-icon-view.c:216
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Icons nach Emblemen in Zeilen sortieren"
 
-#: src/file-manager/fm-icon-view.c:1395
+#: src/file-manager/fm-icon-view.c:1396
 #: src/file-manager/nautilus-icon-view-ui.xml.h:37
 msgid "_Restore Icons' Original Sizes"
 msgstr "Originalgrößen der Icons _wiederherstellen"
 
-#: src/file-manager/fm-icon-view.c:1396
+#: src/file-manager/fm-icon-view.c:1397
 msgid "_Restore Icon's Original Size"
 msgstr "Originalgröße des Icons _wiederherstellen"
 
-#: src/file-manager/fm-icon-view.c:1688
+#: src/file-manager/fm-icon-view.c:1738
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "zeigt auf \"%s\""
 
-#: src/file-manager/fm-icon-view.c:2577
+#: src/file-manager/fm-icon-view.c:2628
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Drag und Drop wird nur auf lokalen Laufwerken unterstützt"
 
-#: src/file-manager/fm-icon-view.c:2578 src/file-manager/fm-icon-view.c:2597
+#: src/file-manager/fm-icon-view.c:2629 src/file-manager/fm-icon-view.c:2648
 msgid "Drag and Drop error"
 msgstr "Fehler bei Drag und Drop"
 
-#: src/file-manager/fm-icon-view.c:2596
+#: src/file-manager/fm-icon-view.c:2647
 msgid "An invalid drag type was used."
 msgstr "Ein ungültiger Drag-Typ wurde benutzt."
 
@@ -7624,6 +7689,20 @@ msgstr "Neues-Panel"
 #, c-format
 msgid "Display %s tab in sidebar"
 msgstr "Reiter %s in Seitenleiste anzeigen"
+
+#: src/nautilus-profiler.c:198
+msgid "Print"
+msgstr "Drucken"
+
+#: src/nautilus-profiler.c:199
+msgid "Save"
+msgstr "Speichern"
+
+# This is not really translated. 2002-01-06 -cm-
+# Although, I just think it won't appear very often.
+#: src/nautilus-profiler.c:239
+msgid "Profile Dump"
+msgstr "Profile Dump"
 
 #. set the title and standard close accelerator
 #: src/nautilus-property-browser.c:265
