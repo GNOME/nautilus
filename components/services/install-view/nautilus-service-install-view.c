@@ -106,13 +106,10 @@ generate_install_form (NautilusServiceInstallView	*view) {
 	gtk_widget_show (view->details->package_name);
 
 	/* Package Description */
-	temp_box = gtk_alignment_new (0.1, 0.9, 0, 0);
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 0);
-	gtk_widget_show (temp_box);
 	view->details->package_details = gtk_label_new ("Description: The GIMP is the GNU Image Manipulation Program.  It is a freely distributed piece of software suitable for such tasks as photo retouching, image composition, and image authoring.");
-	gtk_container_add (GTK_CONTAINER (temp_box), view->details->package_details);
+	gtk_misc_set_alignment (GTK_MISC (view->details->package_details), 0.25, 0.6);
 	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->package_details, FALSE, FALSE, 0);
-	font = nautilus_font_factory_get_font_from_preferences (14);
+	font = nautilus_font_factory_get_font_from_preferences (13);
 	nautilus_gtk_widget_set_font (view->details->package_details, font);
 	gdk_font_unref (font);
 	gtk_label_set_line_wrap (GTK_LABEL (view->details->package_details), TRUE);
@@ -146,11 +143,11 @@ generate_install_form (NautilusServiceInstallView	*view) {
 	gtk_container_add (GTK_CONTAINER (temp_box), view->details->overall_feedback_text);
 	font = nautilus_font_factory_get_font_from_preferences (12);
 	nautilus_gtk_widget_set_font (view->details->overall_feedback_text, font);
-	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->overall_feedback_text, 0, 0, 8);
+	gtk_box_pack_start (GTK_BOX (view->details->form), view->details->overall_feedback_text, FALSE, FALSE, 8);
 
 	/* add an hbox at the bottom of the screen to hold current progress but don't show it yet */
         view->details->message_box = gtk_vbox_new (FALSE, 0);
-        gtk_box_pack_end (GTK_BOX (view->details->form), view->details->message_box, 0, 0, 4);
+        gtk_box_pack_end (GTK_BOX (view->details->form), view->details->message_box, FALSE, FALSE, 4);
 	gtk_widget_show (view->details->message_box);
 
 }
