@@ -88,12 +88,13 @@ struct _NautilusView
 
   GnomeObject *view_frame;
 
-  guint construct_arg_count;
-
   NautilusViewComponentType *component_class;
   gpointer component_data;
 
+  guint construct_arg_count;
+
   guint timer_id;
+  guint checking;
 };
 
 GtkType nautilus_view_get_type                  (void);

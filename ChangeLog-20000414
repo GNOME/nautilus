@@ -1,3 +1,16 @@
+2000-01-20  Elliot Lee  <sopwith@redhat.com>
+
+	* src/ntl-uri-map.c: Async notification of navinfo - now we just need an async get_file_info call.
+	* src/ntl-view.[ch]: Better error handling.
+	* src/file-manager/fm-directory-view.c (display_selection_info): Send a 'selection change' request.
+
+2000-01-19  Elliot Lee  <sopwith@redhat.com>
+
+	* src/ntl-window-msgs.c: Totally rewrite the state changing machine. Now handles things slightly better.
+	* src/ntl-types.h: Remove requesting_view from the navigation info.
+	* src/ntl-window.h: Move all the state machine stuff into NautilusWindow itself.
+	* src/ntl-window.c: Update for new 'stop doing stuff' API.
+
 2000-01-20  Darin Adler  <darin@eazel.com>
 
 	Store icon positions as "x,y" in ICON_POSITION instead of

@@ -5,6 +5,19 @@
 #include <libnautilus/libnautilus.h>
 #include <gtk/gtk.h>
 
+typedef enum {
+  CV_PROGRESS_INITIAL = 1,
+  CV_PROGRESS_DONE,
+  CV_PROGRESS_ERROR,
+  VIEW_ERROR,
+  RESET_TO_IDLE,
+  NAVINFO_RECEIVED,
+  NEW_CONTENT_VIEW_ACTIVATED,
+  NEW_META_VIEW_ACTIVATED
+} NautilusWindowStateItem;
+
+void nautilus_window_set_state_info(NautilusWindow *window, ... /* things to set, plus optional params */);
+
 void nautilus_window_real_request_selection_change(NautilusWindow *window,
 						   Nautilus_SelectionRequestInfo *loc,
 						   NautilusView *requesting_view);

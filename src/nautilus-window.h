@@ -49,36 +49,54 @@ typedef struct {
   guint window_signals[0];
 } NautilusWindowClass;
 
-typedef struct _NautilusWindowLoadInfo NautilusWindowLoadInfo;
-typedef struct _NautilusContentViewLoadInfo NautilusContentViewLoadInfo;
+typedef struct _NautilusWindowStateInfo NautilusWindowStateInfo;
 
 struct _NautilusWindow {
   GnomeApp parent_object;
 
-  /* Views stuff */
-  NautilusView *content_view;
-  GSList *meta_views;
-
-  /* UI stuff */
+  /** UI stuff **/
   NautilusIndexPanel *index_panel;
   GtkWidget *content_hbox, *btn_back, *btn_fwd;
   GtkWidget *option_cvtype, *ent_uri;
 
   guint statusbar_ctx, statusbar_clear_id;
 
-  /* History stuff */
-  GSList *uris_prev, *uris_next;
-
-  /* CORBA stuff */
+  /** CORBA-related elements **/
   GnomeObject *ntl_viewwindow;
   GnomeUIHandler *uih;
+
+  /** State information **/
 
   /* Information about current location/selection */
   Nautilus_NavigationInfo *ni;
   Nautilus_SelectionInfo *si;
+  /* History stuff */
+  GSList *uris_prev, *uris_next;
 
-  NautilusWindowLoadInfo *load_info;
-  NautilusContentViewLoadInfo *content_view_info;
+  /* Current views stuff */
+  NautilusView *content_view;
+  GSList *meta_views;
+
+  /* Pending changes */
+  NautilusNavigationInfo *pending_ni;
+  NautilusView *new_content_view, *new_requesting_view;
+  GSList *new_meta_views, *error_views;
+
+  enum { NW_LOADING_INFO, NW_LOADING_VIEWS, NW_IDLE } state;
+
+  guint cancel_tag;
+  guint action_tag;
+  guint16 made_changes, making_changes;
+
+  gboolean changes_pending : 1;
+  gboolean is_back : 1;
+  gboolean views_shown : 1;
+  gboolean view_bombed_out : 1;
+  gboolean view_activation_complete : 1;
+  gboolean cv_progress_initial : 1;
+  gboolean cv_progress_done : 1;
+  gboolean cv_progress_error : 1;
+  gboolean reset_to_idle : 1;
 };
 
 GtkType nautilus_window_get_type(void);

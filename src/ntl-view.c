@@ -243,8 +243,13 @@ nautilus_view_destroy(GtkObject      *view)
   NautilusViewClass *klass = NAUTILUS_VIEW_CLASS(view->klass);
   NautilusView *nview = NAUTILUS_VIEW(view);
 
+  g_message("-------------------- nautilus_view_destroy(%p): %u", view, nview->timer_id);
+
   if(nview->timer_id)
-    g_source_remove(nview->timer_id);
+    {
+      g_source_remove(nview->timer_id);
+      nview->timer_id = 0;
+    }
 
   nautilus_view_destroy_client(nview);
 
@@ -414,6 +419,7 @@ nautilus_view_notify_location_change(NautilusView *view,
 
   g_return_if_fail(view);
   g_return_if_fail(view->component_class);
+  g_return_if_fail(NAUTILUS_VIEW(view));
 
   real_nav_ctx = *nav_context;
   g_assert(real_nav_ctx.requested_uri);
@@ -439,6 +445,7 @@ nautilus_view_notify_selection_change(NautilusView *view,
 
   g_return_if_fail(view);
   g_return_if_fail(view->component_class);
+  g_return_if_fail(NAUTILUS_VIEW(view));
 
   CORBA_exception_init(&ev);
 
@@ -455,6 +462,7 @@ nautilus_view_load_state(NautilusView *view, const char *config_path)
 
   g_return_if_fail(view);
   g_return_if_fail(view->component_class);
+  g_return_if_fail(NAUTILUS_VIEW(view));
 
   CORBA_exception_init(&ev);
 
@@ -567,6 +575,10 @@ check_object(NautilusView *view)
   gboolean retval = TRUE;
   CORBA_exception_init(&ev);
 
+  g_assert(!view->checking);
+
+  view->checking++;
+
   if(CORBA_Object_non_existent(gnome_object_corba_objref(GNOME_OBJECT(view->client_object)), &ev))
     {
       view->timer_id = 0;
@@ -575,6 +587,8 @@ check_object(NautilusView *view)
     }
 
   CORBA_exception_free(&ev);
+  view->checking--;
+
   return retval;
 }
 

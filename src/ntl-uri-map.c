@@ -156,6 +156,17 @@ navinfo_load_mappings(char *dir)
   g_free(dir);
 }
 
+static gboolean
+my_notify_when_ready(gpointer data)
+{
+  NautilusNavigationInfo *navi = data;
+
+  navi->notify_tag = 0;
+  navi->notify_ready(navi, navi->data);
+
+  return FALSE;
+}
+
 void
 nautilus_navinfo_init(void)
 {
@@ -228,7 +239,6 @@ nautilus_navinfo_append_globals(gpointer value, gpointer data)
 guint
 nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
                      Nautilus_NavigationInfo *old_navinfo,
-		     NautilusView *requesting_view,
                      NautilusNavigationInfoFunc notify_when_ready,
                      gpointer notify_data)
 {
@@ -246,8 +256,6 @@ nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
       navinfo->navinfo.actual_referring_uri = old_navinfo->actual_uri;
       navinfo->navinfo.referring_content_type = old_navinfo->content_type;
     }
-
-  navinfo->requesting_view = requesting_view;
 
   navinfo->navinfo.requested_uri = g_strdup(nri->requested_uri);
 
@@ -337,23 +345,17 @@ nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
   g_slist_foreach(nautilus_prefs.global_meta_views, nautilus_navinfo_append_globals, &navinfo->meta_iids);
 
   if(notify_when_ready)
-    {
-      navinfo->notify_tag = 0;
-      notify_when_ready(navinfo, notify_data);
-    }
+    navinfo->notify_tag = g_idle_add(my_notify_when_ready, navinfo);
 
  out:
-
-  return 0;
+  return navinfo?navinfo->notify_tag:0;
 }
 
 void
 nautilus_navinfo_free(NautilusNavigationInfo *navinfo)
 {
   if(navinfo->notify_tag)
-    {
-    /* XXX remove_notification */
-    }
+    g_source_remove(navinfo->notify_tag);
 
   g_slist_foreach(navinfo->content_identifiers, (GFunc)nautilus_view_identifier_free, NULL);
   g_slist_free(navinfo->content_identifiers);

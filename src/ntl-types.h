@@ -46,8 +46,6 @@ struct _NautilusViewIdentifier {
 struct _NautilusNavigationInfo {
   Nautilus_NavigationInfo navinfo;
 
-  gpointer requesting_view;
-
   const char *default_content_iid;
   GSList *content_identifiers;	/* list of NautilusViewIdentifiers */
   GSList *meta_iids;	/* list of iid strings */

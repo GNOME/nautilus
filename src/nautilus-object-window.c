@@ -825,7 +825,7 @@ static void nautilus_window_show_color_picker (GtkWidget *btn, NautilusWindow *w
 static void
 nautilus_window_stop (GtkWidget *btn, NautilusWindow *window)
 {
-  nautilus_window_end_location_change(window);
+  nautilus_window_set_state_info(window, RESET_TO_IDLE, 0);
 }
 
 

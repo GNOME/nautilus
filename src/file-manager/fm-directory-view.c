@@ -38,6 +38,11 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 
+#ifndef g_alloca
+#include <alloca.h>
+#define g_alloca alloca
+#endif
+
 #define DISPLAY_TIMEOUT_INTERVAL 500
 #define ENTRIES_PER_CB 1
 
@@ -219,7 +224,7 @@ fm_directory_view_destroy (GtkObject *object)
 /**
  * display_selection_info:
  *
- * Display textual information about the current selection.
+ * Display information about the current selection, and notify the view frame of the changed selection.
  * @view: FMDirectoryView for which to display selection info.
  * 
  **/
@@ -232,6 +237,7 @@ display_selection_info (FMDirectoryView *view)
 	NautilusFileList *p;
 	char *first_item_name;
 	Nautilus_StatusRequestInfo sri;
+	Nautilus_SelectionRequestInfo selri;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
@@ -240,16 +246,20 @@ display_selection_info (FMDirectoryView *view)
 	count = 0;
 	size = 0;
 	first_item_name = NULL;
+	memset(&selri, 0, sizeof(selri));
+	selri.selected_uris._buffer = g_alloca(g_list_length(selection) * sizeof(char *));
 	for (p = selection; p != NULL; p = p->next) {
 		NautilusFile *file;
+		char *fn;
 
 		file = p->data;
 		count++;
 		size += nautilus_file_get_info (file)->size;
+		fn = nautilus_file_get_name (file);
 		if (first_item_name == NULL)
-			first_item_name = nautilus_file_get_name (file);
+			first_item_name = fn;
+		selri.selected_uris._buffer[selri.selected_uris._length++] = fn;
 	}
-
 	g_list_free (selection);
 
 	memset(&sri, 0, sizeof(sri));
@@ -284,6 +294,8 @@ display_selection_info (FMDirectoryView *view)
 
 	nautilus_view_frame_request_status_change
 		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &sri);
+	nautilus_view_frame_request_selection_change
+		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &selri);
 }
 
 

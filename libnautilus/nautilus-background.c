@@ -285,8 +285,6 @@ nautilus_background_set_widget_style (NautilusBackground *background,
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 	
 	style = gtk_widget_get_style (widget);
-	g_return_if_fail(style->klass == nautilus_gtk_style_get_default_class ()
-			 || style->klass == nautilus_background_get_gtk_style_class ());
 	
 	/* Make a copy of the style. */
 	style = gtk_style_copy (style);
