@@ -911,15 +911,21 @@ g_sequence_node_remove        (GSequenceNode *node)
 
     if (right)
     {
-	right->parent = node->parent;
+	right->parent = NULL;
+	
+	right = g_sequence_node_find_first (right);
+	g_assert (right->left == NULL);
+	
 	right->left = left;
 	if (left)
+	{
 	    left->parent = right;
+	    g_sequence_node_update_fields (right);
+	}
     }
     else if (left)
-	left->parent = node->parent;
+	left->parent = NULL;
 }
-
 
 #if 0
 /* debug func */
