@@ -4,26 +4,35 @@
 #include "explorer-location-bar.h"
 
 struct _NautilusWindowLoadInfo {
+  /* These are the three states of loading in process.
+     When the state is GETTING_URI_INFO, it's too early to
+     pay attention to changes in the content view.
+     Once the content view is done, we discard the load info
+     structure, so there's no state for being done.
+  */
   enum {
     GETTING_URI_INFO,
-    WAITING_FOR_VIEWS,
-    PROCESSING,
-    DONE
+    WAITING_FOR_FIRST_PROGRESS_FROM_CONTENT_VIEW,
+    WAITING_FOR_CONTENT_VIEW_TO_BE_DONE
   } state;
 
-  union {
-    struct {
-      guint cancel_tag;
-    } getting_uri_info;
-  } u;
+  /* These are the states that the content view can be in.
+     Since the content view callback can occur when the window
+     is not yet ready, this is kept separate from the window
+     state until nautilus_window_advance_state is called
+     and state is not GETTING_URI_INFO.
+  */
+  enum {
+    CONTENT_VIEW_NOTHING_YET,
+    CONTENT_VIEW_LOADING,
+    CONTENT_VIEW_DONE
+  } content_view_state;
 
-  /* Valid in the WAITING_FOR_VIEWS or PROCESSING states */
+  guint cancel_tag;
   NautilusNavigationInfo *ni;
 
-  GSList *new_meta_views;
   NautilusView *new_content_view;
-
-  gboolean got_content_progress;
+  GSList *new_meta_views;
 
   gboolean is_back;
 };
@@ -32,6 +41,11 @@ static void nautilus_window_notify_selection_change(NautilusWindow *window,
 						    NautilusView *view,
 						    Nautilus_SelectionInfo *loc,
 						    NautilusView *requesting_view);
+
+static void nautilus_window_advance_state(NautilusWindow *window);
+static void nautilus_window_switch_to_new_views(NautilusWindow *window);
+static void nautilus_window_revert_to_old_views(NautilusWindow *window);
+static void nautilus_window_free_load_info(NautilusWindow *window);
 
 static void
 Nautilus_SelectionInfo__copy(Nautilus_SelectionInfo *dest_si, Nautilus_SelectionInfo *src_si)
@@ -99,23 +113,54 @@ nautilus_window_notify_selection_change(NautilusWindow *window,
   nautilus_view_notify_selection_change(view, loc);
 }
 
+/* Since this is can be called while the window is still getting set up, it
+   doesn't do any work directly.
+*/
 void
 nautilus_window_request_progress_change(NautilusWindow *window,
 					Nautilus_ProgressRequestInfo *loc,
 					NautilusView *requesting_view)
 {
-  if (window->load_info)
+  if (window->load_info == NULL)
+    return;
+  
+  if (requesting_view != window->load_info->new_content_view)
+    return; /* Only pay attention to progress information from the content view, for now */
+  
+  /* If the progress indicates we are done, record that, otherwise
+     just record the fact that we have at least begun loading.
+  */
+  if (loc->type == Nautilus_PROGRESS_DONE_OK || loc->type == Nautilus_PROGRESS_DONE_ERROR)
+    window->load_info->content_view_state = CONTENT_VIEW_DONE;
+  else
+    window->load_info->content_view_state = CONTENT_VIEW_LOADING;
+  
+  /* If we are past the setup state, we can reflect this change in the window. */
+  nautilus_window_advance_state(window);
+}
+
+/* Called to advance the state once we are done setting up the window. */
+static void
+nautilus_window_advance_state(NautilusWindow *window)
+{
+  /* We have gotten something from the content view, which means it is safe to do the "switchover" to the new page */
+  if (window->load_info->content_view_state != CONTENT_VIEW_NOTHING_YET
+      && window->load_info->state == WAITING_FOR_FIRST_PROGRESS_FROM_CONTENT_VIEW)
     {
-      if(requesting_view != window->load_info->new_content_view)
-	return; /* Only pay attention to progress information from the main view, for now */
+      nautilus_window_switch_to_new_views(window);
+      window->load_info->state = WAITING_FOR_CONTENT_VIEW_TO_BE_DONE;
+    }
 
-      /* We have gotten something from the content view, which means it is safe to do the "switchover" to the new page */
-      window->load_info->got_content_progress = TRUE;
-      nautilus_window_end_location_change(window);
-      nautilus_window_allow_stop (window, !(loc->type == Nautilus_PROGRESS_DONE_OK
-					    || loc->type == Nautilus_PROGRESS_DONE_ERROR));
+  /* Check if we are completely done. */
+  if (window->load_info->content_view_state == CONTENT_VIEW_DONE
+      && window->load_info->state == WAITING_FOR_CONTENT_VIEW_TO_BE_DONE)
+    {
+      nautilus_window_free_load_info(window);
 
-      g_message("Progress is %f", loc->amount);
+      /* This says that once the content view is loaded, we shouldn't have a stop button.
+	 An alternative design would keep the stop button up until all views are loaded,
+      */
+      nautilus_window_allow_stop(window, FALSE);
     }
 }
 
@@ -206,8 +251,8 @@ nautilus_window_change_location_internal(NautilusWindow *window, Nautilus_Naviga
   else
     {
       /* Going forward. Remove one item from the next if it's the same as the the request.
-       * Otherwise, clobber the entire next list.
-       */
+         Otherwise, clobber the entire next list.
+      */
 
       if (window->uris_next && !strcmp(loci->requested_uri, (const gchar*)window->uris_next->data))
 	{
@@ -231,7 +276,7 @@ nautilus_window_change_location_internal(NautilusWindow *window, Nautilus_Naviga
 			   gnome_vfs_uri_has_parent(new_uri));
   gnome_vfs_uri_destroy(new_uri);
 
-  if(window->ni != loci)
+  if (window->ni != loci)
     {
       Nautilus_NavigationInfo *newni;
 
@@ -383,88 +428,99 @@ nautilus_window_load_meta_view(NautilusWindow *window,
     }
 }
 
+/* This is called when we have decided we can actually change to the new location. */
+static void
+nautilus_window_switch_to_new_views(NautilusWindow *window)
+{
+  GSList *cur, *discard_views;
+  
+  /* Do lots of shuffling to make sure we don't remove views that were already there, but add new views */
+  for(cur = window->load_info->new_meta_views; cur; cur = cur->next)
+    {
+      if(!GTK_WIDGET(cur->data)->parent)
+	nautilus_window_add_meta_view(window, cur->data);
+      gtk_object_unref(cur->data);
+      /* nautilus_view_set_active_errors(cur->data, FALSE); */
+    }
+  for(discard_views = NULL, cur = window->meta_views; cur; cur = cur->next)
+    if(!g_slist_find(window->load_info->new_meta_views, cur->data))
+      discard_views = g_slist_prepend(discard_views, cur->data);
+  
+  for(cur = discard_views; cur; cur = cur->next)
+    nautilus_window_remove_meta_view(window, cur->data);
+  g_slist_free(discard_views);
+
+  if(!GTK_WIDGET(window->load_info->new_content_view)->parent)
+    nautilus_window_set_content_view(window, window->load_info->new_content_view);
+  gtk_object_unref(GTK_OBJECT(window->load_info->new_content_view));
+  /* nautilus_view_set_active_errors(window->load_info->new_content_view, FALSE); */
+  
+  nautilus_window_change_location_internal(window, &window->load_info->ni->navinfo, window->load_info->is_back);
+}
+
+/* This is called when we have started switching and discover the the new
+   location is no good.
+*/
+static void
+nautilus_window_revert_to_old_views(NautilusWindow *window)
+{
+  GSList *cur;
+
+  for(cur = window->load_info->new_meta_views; cur; cur = cur->next)
+    {
+      gtk_widget_unref(cur->data);
+      /* nautilus_view_set_active_errors(cur->data, FALSE); */
+    }
+  if(window->load_info->new_content_view)
+    {
+      gtk_widget_unref(GTK_WIDGET(window->load_info->new_content_view));
+      /* nautilus_view_set_active_errors(window->load_info->new_content_view, FALSE); */
+    }
+  
+  /* Tell previously-notified views to go back to the old page */
+  for(cur = window->meta_views; cur; cur = cur->next)
+    {
+      if(g_slist_find(window->load_info->new_meta_views, cur->data))
+	nautilus_window_update_view(window, cur->data, window->ni, NULL, window->content_view);
+    }
+  if(window->load_info->new_content_view == window->content_view)
+    nautilus_window_update_view(window, window->content_view, window->ni, NULL, window->content_view);
+  explorer_location_bar_set_uri_string(EXPLORER_LOCATION_BAR(window->ent_uri),
+				       window->ni->requested_uri);
+}
+
+/* This is called when we are done loading to get rid of the load_info structure. */
+static void
+nautilus_window_free_load_info(NautilusWindow *window)
+{
+  if (window->load_info->ni)
+    nautilus_navinfo_free(window->load_info->ni);
+  g_slist_free(window->load_info->new_meta_views);
+  g_free(window->load_info);
+  window->load_info = NULL;
+}
+
+/* This is called when we want to abort the loading process.
+   It was formerly used for successful loading too, but that's handled
+   in nautilus_window_advance_state now instead.
+*/
 void
 nautilus_window_end_location_change(NautilusWindow *window)
 {
-  GSList *cur, *discard_views;
-
-  if (!window->load_info)
-    {
-      if(window->content_view)
-	nautilus_view_stop_location_change (window->content_view);
-
-      g_slist_foreach(window->meta_views, (GFunc) nautilus_view_stop_location_change, NULL);
-
-      nautilus_window_allow_stop(window, FALSE);
-
-      return;
-    }
-
-  switch (window->load_info->state)
-    {
-    case DONE: /* The normal case - the page has finished loading successfully */
-      /* Do lots of shuffling to make sure we don't remove views that were already there, but add new views */
-      for(cur = window->load_info->new_meta_views; cur; cur = cur->next)
-	{
-	  if(!GTK_WIDGET(cur->data)->parent)
-	    nautilus_window_add_meta_view(window, cur->data);
-	  gtk_object_unref(cur->data);
-	  /* nautilus_view_set_active_errors(cur->data, FALSE); */
-	}
-      for(discard_views = NULL, cur = window->meta_views; cur; cur = cur->next)
-	if(!g_slist_find(window->load_info->new_meta_views, cur->data))
-	  discard_views = g_slist_prepend(discard_views, cur->data);
-
-      for(cur = discard_views; cur; cur = cur->next)
-	nautilus_window_remove_meta_view(window, cur->data);
-      g_slist_free(discard_views);
-
-      if(!GTK_WIDGET(window->load_info->new_content_view)->parent)
-	nautilus_window_set_content_view(window, window->load_info->new_content_view);
-      gtk_object_unref(GTK_OBJECT(window->load_info->new_content_view));
-      /* nautilus_view_set_active_errors(window->load_info->new_content_view, FALSE); */
-
-      nautilus_window_change_location_internal(window, &window->load_info->ni->navinfo, window->load_info->is_back);
-      break;
-
-      /* all of the following are error cases - we try to recover as best we can */
-    case WAITING_FOR_VIEWS:
-      for(cur = window->load_info->new_meta_views; cur; cur = cur->next)
-	{
-	  gtk_widget_unref(cur->data);
-	  /* nautilus_view_set_active_errors(cur->data, FALSE); */
-	}
-      if(window->load_info->new_content_view)
-	{
-	  gtk_widget_unref(GTK_WIDGET(window->load_info->new_content_view));
-	  /* nautilus_view_set_active_errors(window->load_info->new_content_view, FALSE); */
-	}
-
-      /* Tell previously-notified views to go back to the old page */
-      for(cur = window->meta_views; cur; cur = cur->next)
-	{
-	  if(g_slist_find(window->load_info->new_meta_views, cur->data))
-	    nautilus_window_update_view(window, cur->data, window->ni, NULL, window->content_view);
-	}
-      if(window->load_info->new_content_view == window->content_view)
-	nautilus_window_update_view(window, window->content_view, window->ni, NULL, window->content_view);
-      explorer_location_bar_set_uri_string(EXPLORER_LOCATION_BAR(window->ent_uri),
-					   window->ni->requested_uri);
-
-    case GETTING_URI_INFO:
-    default:
-      break;
-
-    case PROCESSING:
-      return; /* We don't want to do anything in the processing state - someone else is already busy manipulating things */
-    }
-
-  nautilus_navinfo_free(window->load_info->ni);
-
-  g_slist_free(window->load_info->new_meta_views);
-  g_free(window->load_info); window->load_info = NULL;
-
   nautilus_window_allow_stop(window, FALSE);
+  
+  if (window->load_info != NULL)
+    {
+      if (window->load_info->state == WAITING_FOR_FIRST_PROGRESS_FROM_CONTENT_VIEW)
+	nautilus_window_revert_to_old_views(window);
+
+      nautilus_window_free_load_info(window);
+    }
+  
+  if (window->content_view)
+    nautilus_view_stop_location_change (window->content_view);
+  
+  g_slist_foreach(window->meta_views, (GFunc) nautilus_view_stop_location_change, NULL);
 }
 
 /* This is the most complicated routine in Nautilus. Steps include:
@@ -483,7 +539,6 @@ nautilus_window_change_location_2(NautilusNavigationInfo *ni, gpointer data)
 
   NautilusWindow *window = data;
 
-  window->load_info->state = PROCESSING;
   window->load_info->ni = ni;
 
   if(!ni)
@@ -549,13 +604,8 @@ nautilus_window_change_location_2(NautilusNavigationInfo *ni, gpointer data)
     nautilus_window_remove_meta_view(window, cur->data);
   g_slist_free(discard_views);
 
-  if(window->load_info->got_content_progress)
-    {
-      window->load_info->state = DONE;
-      nautilus_window_end_location_change(window);
-    }
-  else
-    window->load_info->state = WAITING_FOR_VIEWS;
+  window->load_info->state = WAITING_FOR_FIRST_PROGRESS_FROM_CONTENT_VIEW;
+  nautilus_window_advance_state(window);
 }
 
 /* Step 1 */
@@ -569,19 +619,18 @@ nautilus_window_change_location(NautilusWindow *window,
 
   nautilus_window_end_location_change(window); /* End any previous location change that was pending. */
 
-  while(gdk_events_pending())
+  while (gdk_events_pending())
     gtk_main_iteration();
 
   nautilus_window_allow_stop(window, TRUE);
 
   /* Init load_info */
   window->load_info = g_new0(NautilusWindowLoadInfo, 1);
-  window->load_info->state = GETTING_URI_INFO;
   window->load_info->is_back = is_back;
 
   cancel_tag =
     nautilus_navinfo_new(loc, window->ni, requesting_view, nautilus_window_change_location_2, window);
 
-  if(window->load_info)
-    window->load_info->u.getting_uri_info.cancel_tag = cancel_tag;
+  if (window->load_info)
+    window->load_info->cancel_tag = cancel_tag;
 }

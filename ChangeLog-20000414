@@ -1,3 +1,17 @@
+2000-01-10  Darin Adler  <darin@eazel.com>
+
+	* ntl-window-msgs.c: (nautilus_window_request_progress_change):
+	(nautilus_window_advance_state):
+	(nautilus_window_switch_to_new_views):
+	(nautilus_window_revert_to_old_views):
+	(nautilus_window_free_load_info):
+	(nautilus_window_end_location_change):
+	(nautilus_window_change_location_2):
+	(nautilus_window_change_location): Got rid of the race condition
+	in the existing code and cleaned up the state machine a bit. The
+	new code separates the state of the nautilus window from the state
+	of the content view, which makes things a bit simpler.
+
 2000-01-10  John Sullivan  <sullivan@eazel.com>
 
 	Added some of the framework for supporting multiple
