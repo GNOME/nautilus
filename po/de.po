@@ -44,8 +44,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.0.x\n"
-"POT-Creation-Date: 2001-05-24 23:09+0200\n"
-"PO-Revision-Date: 2001-05-24 23:09+02:00\n"
+"POT-Creation-Date: 2001-06-07 20:37+0200\n"
+"PO-Revision-Date: 2001-06-07 20:39+02:00\n"
 "Last-Translator: Matthias Warkus <mawarkus@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -2235,7 +2235,7 @@ msgstr "Blumen"
 msgid "Fossil"
 msgstr "Fossil"
 
-#: data/browser.xml.h:40 icons/gnome/gnome.xml.h:1
+#: data/browser.xml.h:40 icons/gnome/gnome.xml.h:2
 msgid "GNOME"
 msgstr "GNOME"
 
@@ -2658,9 +2658,9 @@ msgstr "Normal"
 msgid "This is the default theme for Nautilus."
 msgstr "Dies ist das normale Thema für Nautilus."
 
-#: icons/gnome/gnome.xml.h:2
-msgid "This theme uses the classic GNOME icons."
-msgstr "Dieses Thema benutzt klassische GNOME-Icons."
+#: icons/gnome/gnome.xml.h:1
+msgid "A theme designed to fit well with the classic GNOME environment"
+msgstr "Ein Thema, das entworfen wurde, um sich gut in die klassische GNOME-Umgebung einzufügen."
 
 #: icons/sierra/sierra.xml.h:1
 msgid "Sierra"
@@ -4717,51 +4717,83 @@ msgstr "Als %s betrachten"
 msgid "%s Viewer"
 msgstr "%s-Betrachter"
 
-#: libnautilus-private/nautilus-volume-monitor.c:567
-#: libnautilus-private/nautilus-volume-monitor.c:586
+#: libnautilus-private/nautilus-volume-monitor.c:562
+#: libnautilus-private/nautilus-volume-monitor.c:581
 msgid "Unknown"
 msgstr "Unbekannt"
 
 #. Populate table with items we know localized names for.
-#: libnautilus-private/nautilus-volume-monitor.c:673
+#: libnautilus-private/nautilus-volume-monitor.c:707
 msgid "Floppy"
 msgstr "Diskette"
 
-#: libnautilus-private/nautilus-volume-monitor.c:674
+#: libnautilus-private/nautilus-volume-monitor.c:708
 msgid "CD-ROM"
 msgstr "CD-ROM"
 
-#: libnautilus-private/nautilus-volume-monitor.c:675
+#: libnautilus-private/nautilus-volume-monitor.c:709
 msgid "Zip Drive"
 msgstr "Zip-Laufwerk"
 
-#: libnautilus-private/nautilus-volume-monitor.c:689
-#: libnautilus-private/nautilus-volume-monitor.c:711
+#: libnautilus-private/nautilus-volume-monitor.c:724
+#: libnautilus-private/nautilus-volume-monitor.c:766
 msgid "Audio CD"
 msgstr "Audio-CD"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1598
+#: libnautilus-private/nautilus-volume-monitor.c:756
+msgid "Root"
+msgstr "Wurzel"
+
+#: libnautilus-private/nautilus-volume-monitor.c:773
+msgid "Ext2 Volume"
+msgstr "Ext2-Partition"
+
+#: libnautilus-private/nautilus-volume-monitor.c:778
+msgid "MSDOS Volume"
+msgstr "MS-DOS-Partition"
+
+#: libnautilus-private/nautilus-volume-monitor.c:781
+msgid "NFS Volume"
+msgstr "NFS-Partition"
+
+#: libnautilus-private/nautilus-volume-monitor.c:784
+msgid "ReiserFS Volume"
+msgstr "ReiserFS-Partition"
+
+#: libnautilus-private/nautilus-volume-monitor.c:787
+msgid "UFS Volume"
+msgstr "UFS-Partition"
+
+#: libnautilus-private/nautilus-volume-monitor.c:790
+msgid "XFS Volume"
+msgstr "XFS-Partition"
+
+#: libnautilus-private/nautilus-volume-monitor.c:802
+msgid "Unknown Volume"
+msgstr "Unbekannte Partition"
+
+#: libnautilus-private/nautilus-volume-monitor.c:1522
 msgid "Mount Error"
 msgstr "Fehler beim Mounten"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1598
+#: libnautilus-private/nautilus-volume-monitor.c:1522
 msgid "Unmount Error"
 msgstr "Fehler beim Unmounten"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1665
+#: libnautilus-private/nautilus-volume-monitor.c:1589
 msgid "is write-protected, mounting read-only"
 msgstr "ist schreibgeschützt; wird nur mit Lesezugriff gemountet"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1668
+#: libnautilus-private/nautilus-volume-monitor.c:1592
 msgid "is not a valid block device"
 msgstr "ist kein gültiges Blockgerät"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1669
+#: libnautilus-private/nautilus-volume-monitor.c:1593
 msgid "No medium found"
 msgstr "Kein Medium gefunden"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1673
+#: libnautilus-private/nautilus-volume-monitor.c:1597
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4770,7 +4802,7 @@ msgstr ""
 "keine Diskette im Laufwerk."
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1677
+#: libnautilus-private/nautilus-volume-monitor.c:1601
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
@@ -4778,11 +4810,11 @@ msgstr ""
 "Nautilus konnte die Partition nicht mounten. Wahrscheinlich ist kein Medium "
 "im Laufwerk."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1680
+#: libnautilus-private/nautilus-volume-monitor.c:1604
 msgid "wrong fs type, bad option, bad superblock on"
 msgstr "Falscher Dateisystemtyp, ungültige Option, defekter Superblock auf"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1683
+#: libnautilus-private/nautilus-volume-monitor.c:1607
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4790,7 +4822,7 @@ msgstr ""
 "Nautilus konnte das Diskettenlaufwerk nicht mounten. Die Diskette hat "
 "wahrscheinlich ein Format, das nicht gemountet werden kann."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1686
+#: libnautilus-private/nautilus-volume-monitor.c:1610
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4798,50 +4830,22 @@ msgstr ""
 "Nautilus konnte die ausgewählte Partition nicht mounten. Sie hat "
 "wahrscheinlich ein Format, das nicht gemountet werden kann."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1691
+#: libnautilus-private/nautilus-volume-monitor.c:1615
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilus konnte das ausgewählte Diskettenlaufwerk nicht mounten."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1693
+#: libnautilus-private/nautilus-volume-monitor.c:1617
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilus konnte die ausgewählte Partition nicht mounten."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1698
+#: libnautilus-private/nautilus-volume-monitor.c:1622
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilus konnte die ausgewählte Partition nicht unmounten."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1868
+#: libnautilus-private/nautilus-volume-monitor.c:1789
 msgid "ISO 9660 Volume"
 msgstr "ISO-9660-Datenträger"
-
-#: libnautilus-private/nautilus-volume-monitor.c:1883
-msgid "Root"
-msgstr "Wurzel"
-
-#: libnautilus-private/nautilus-volume-monitor.c:1890
-msgid "Ext2 Volume"
-msgstr "Ext2-Partition"
-
-#: libnautilus-private/nautilus-volume-monitor.c:1905
-msgid "MSDOS Volume"
-msgstr "MS-DOS-Partition"
-
-#: libnautilus-private/nautilus-volume-monitor.c:1920
-msgid "NFS Volume"
-msgstr "NFS-Partition"
-
-#: libnautilus-private/nautilus-volume-monitor.c:1935
-msgid "ReiserFS Volume"
-msgstr "ReiserFS-Partition"
-
-#: libnautilus-private/nautilus-volume-monitor.c:1951
-msgid "UFS Volume"
-msgstr "UFS-Partition"
-
-#: libnautilus-private/nautilus-volume-monitor.c:1966
-msgid "Unknown Volume"
-msgstr "Unbekannte Partition"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:1 src/nautilus-shell-ui.xml.h:5
 msgid "C_lear Text"
@@ -5679,6 +5683,7 @@ msgstr "Originalgrößen der Icons _wiederherstellen"
 msgid "_Restore Icon's Original Size"
 msgstr "Originalgröße des Icons _wiederherstellen"
 
+#: src/file-manager/fm-icon-view.c:1707
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "zeigt auf \"%s\""
@@ -7995,6 +8000,8 @@ msgid "Use preferences appropriate for most people"
 msgstr "Für die meisten Leute angebrachte Vorlieben verwenden"
 
 #. Add "View as..." extra bonus choice.
+#: src/nautilus-shell-ui.xml.h:63 src/nautilus-window.c:647
+#: src/nautilus-window.c:1545
 msgid "View as..."
 msgstr "Betrachten als..."
 
@@ -8284,11 +8291,11 @@ msgstr "Thema konnte nicht entfernt werden"
 msgid "Preview Release %s: %s"
 msgstr "Vorschauversion %s: %s"
 
-#: src/nautilus-window-manage-views.c:808
+#: src/nautilus-window-manage-views.c:812
 msgid "View Failed"
 msgstr "Ansicht fehlgeschlagen"
 
-#: src/nautilus-window-manage-views.c:819
+#: src/nautilus-window-manage-views.c:823
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -8297,12 +8304,12 @@ msgstr ""
 "Die Ansicht %s stieß auf einen Fehler und kann nicht weitermachen. Sie "
 "können eine andere Ansicht wählen oder an einen anderen Ort gehen."
 
-#: src/nautilus-window-manage-views.c:830
+#: src/nautilus-window-manage-views.c:834
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "Die Ansicht %s stieß beim Starten auf einen Fehler."
 
-#: src/nautilus-window-manage-views.c:995
+#: src/nautilus-window-manage-views.c:999
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -8310,7 +8317,7 @@ msgstr ""
 "Eines der Seitenleisten-Paneele stieß auf einen Fehler und kann nicht "
 "weitermachen. Leider kann ich Ihnen nicht sagen, welches."
 
-#: src/nautilus-window-manage-views.c:999
+#: src/nautilus-window-manage-views.c:1003
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -8320,18 +8327,18 @@ msgstr ""
 "weitermachen. Wenn dies öfter vorkommt, werden Sie es vielleicht abschalten "
 "wollen."
 
-#: src/nautilus-window-manage-views.c:1004
+#: src/nautilus-window-manage-views.c:1008
 msgid "Sidebar Panel Failed"
 msgstr "Seitenleisten-Paneel fehlgeschlagen"
 
-#: src/nautilus-window-manage-views.c:1207
+#: src/nautilus-window-manage-views.c:1213
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "\"%s\" konnte nicht gefunden werden. Bitte prüfen Sie die Rechtschreibung "
 "und versuchen Sie es noch einmal."
 
-#: src/nautilus-window-manage-views.c:1213
+#: src/nautilus-window-manage-views.c:1219
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
@@ -8339,7 +8346,7 @@ msgstr ""
 "\"%s\" ist kein gültiger Ort. Bitte prüfen Sie die Rechtschreibung und "
 "versuchen Sie es noch einmal."
 
-#: src/nautilus-window-manage-views.c:1227
+#: src/nautilus-window-manage-views.c:1233
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -8348,32 +8355,32 @@ msgstr ""
 "\"%s\" konnte nicht dargestellt werden, da Nautilus seinen Dateityp nicht "
 "bestimmen konnte."
 
-#: src/nautilus-window-manage-views.c:1235
+#: src/nautilus-window-manage-views.c:1241
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Nautilus hat keinen Viewer installiert, der \"%s\" anzeigen kann."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1247
+#: src/nautilus-window-manage-views.c:1253
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "\"%s\" konnte nicht angezeigt werden, da Nautilus nicht mit %s:-Orten "
 "umgehen kann."
 
-#: src/nautilus-window-manage-views.c:1253
+#: src/nautilus-window-manage-views.c:1259
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr ""
 "\"%s\" konnte nicht angezeigt werden, da der Versuch, sich anzumelden, "
 "fehlgeschlagen ist."
 
-#: src/nautilus-window-manage-views.c:1258
+#: src/nautilus-window-manage-views.c:1264
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "\"%s\" konnte nicht angezeigt werden, da der Zugriff verweigert wurde."
 
-#: src/nautilus-window-manage-views.c:1269
+#: src/nautilus-window-manage-views.c:1275
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -8383,7 +8390,7 @@ msgstr ""
 "werden konnte. Überprüfen Sie, ob der Rechnername richtig geschrieben wurde "
 "und ob Ihre Proxy-Einstellungen richtig sind."
 
-#: src/nautilus-window-manage-views.c:1277
+#: src/nautilus-window-manage-views.c:1283
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -8392,7 +8399,7 @@ msgstr ""
 "\"%s\" konnte nicht angezeigt werden, da der Rechnername leer war. "
 "Überprüfen Sie, ob Ihre Proxy-Einstellungen richtig sind."
 
-#: src/nautilus-window-manage-views.c:1289
+#: src/nautilus-window-manage-views.c:1295
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -8404,16 +8411,16 @@ msgstr ""
 "Medusa-Suchdienst gestartet haben, bzw., falls Sie noch keinen Index haben, "
 "dass der Medusa-Indizierer läuft."
 
-#: src/nautilus-window-manage-views.c:1293
+#: src/nautilus-window-manage-views.c:1299
 msgid "Searching Unavailable"
 msgstr "Suche nicht verfügbar"
 
-#: src/nautilus-window-manage-views.c:1297
+#: src/nautilus-window-manage-views.c:1303
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kann \"%s\" nicht anzeigen."
 
-#: src/nautilus-window-manage-views.c:1302
+#: src/nautilus-window-manage-views.c:1308
 msgid "Can't Display Location"
 msgstr "Ort kann nicht angezeigt werden"
 
@@ -8526,10 +8533,12 @@ msgstr "Zurück"
 msgid "Forward"
 msgstr "Vor"
 
+#: src/nautilus-window.c:1251
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Diesen Ort mit \"%s\" anzeigen"
 
+#: src/nautilus-window.c:1958
 msgid "Close"
 msgstr "Schließen"
 
