@@ -5,15 +5,15 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 2.3.90\n"
-"POT-Creation-Date: 2003-10-13 11:59+0200\n"
-"PO-Revision-Date: 2003-05-30 10:22+0800\n"
+"Project-Id-Version: nautilus 2.4.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-11-10 03:52+0800\n"
+"PO-Revision-Date: 2003-11-10 07:42+0800\n"
 "Last-Translator: Abel Cheung <maddog@linux.org.hk>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -110,7 +110,7 @@ msgstr "請在該圖章旁輸入適當的名稱。該名稱會在其它地方作
 msgid ""
 "Some of the files could not be added as emblems because they did not appear "
 "to be valid images."
-msgstr "一部份檔案無法新增作為圖章使用，因為它們可能不是有效的圖像。"
+msgstr "一部份檔案無法新增作為圖章使用，因為這些圖像可能無法使用。"
 
 #: components/emblem/nautilus-emblem-view.c:739
 #: components/emblem/nautilus-emblem-view.c:741
@@ -121,7 +121,7 @@ msgstr "無法加入圖章"
 msgid ""
 "None of the files could be added as emblems because they did not appear to "
 "be valid images."
-msgstr "沒有任何檔案可以新增作為圖章使用，因為它們可能不是有效的圖像。"
+msgstr "沒有任何檔案可以新增作為圖章使用，因為這些圖像可能無法使用。"
 
 #: components/emblem/nautilus-emblem-view.c:762
 msgid "The dragged text was not a valid file location."
@@ -141,7 +141,7 @@ msgstr "檔案‘%s’不像是有效的圖像。"
 
 #: components/emblem/nautilus-emblem-view.c:784
 msgid "The dragged file does not appear to be a valid image."
-msgstr "拖曳的檔案不像是有效的圖像。"
+msgstr "您正在拖曳的檔案不像是有效的圖像。"
 
 #: components/emblem/nautilus-emblem-view.c:899 data/browser.xml.h:35
 #: src/nautilus-property-browser.c:1731
@@ -269,8 +269,8 @@ msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
 msgstr ""
-"<u>圖像類型</u>： %s (%s)\n"
-"<u>　解析度</u>： %d×%d 像素\n"
+"<b>圖像格式</b>： %s (%s)\n"
+"<b>　解析度</b>： %d×%d 像素\n"
 
 #: components/image_properties/nautilus-image-properties-view.c:255
 msgid "loading..."
@@ -319,7 +319,7 @@ msgstr "以文字方式顯示"
 #: components/text/nautilus-text-view-ui.xml.h:1
 #: libnautilus/nautilus-clipboard-ui.xml.h:2
 msgid "Copy the selected text to the clipboard"
-msgstr "將已選取的文字複製至剪貼簿"
+msgstr "將選定的文字複製至剪貼簿"
 
 #: components/text/nautilus-text-view-ui.xml.h:2
 #: libnautilus/nautilus-clipboard-ui.xml.h:10 src/nautilus-shell-ui.xml.h:64
@@ -328,19 +328,19 @@ msgstr "複製文字(_C)"
 
 #: components/text/services/google.xml.h:1
 msgid "Search Google for Selected Text"
-msgstr "在 Google 裡搜尋已選取的文字"
+msgstr "在 Google 裡搜尋選定的文字"
 
 #: components/text/services/google.xml.h:2
 msgid "Use Google to search the web for the selected text"
-msgstr "使用 Google 來在網上搜尋已選取的文字"
+msgstr "使用 Google 來在網上搜尋選定的文字"
 
 #: components/text/services/webster.xml.h:1
 msgid "Look Up Selected Text in Dictionary"
-msgstr "在字典裡檢索已選取的文字"
+msgstr "在字典裡檢索選定的文字"
 
 #: components/text/services/webster.xml.h:2
 msgid "Look up the selected text in the Merriam-Webster dictionary"
-msgstr "在 Merriam-Webster 字典裡檢索已選取的文字"
+msgstr "在 Merriam-Webster 字典裡檢索選定的文字"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.in.h:1
 msgid "animation to indicate on-going activity"
@@ -375,11 +375,11 @@ msgstr "Nautilus 目錄樹顯示模式"
 msgid "Tree"
 msgstr "目錄樹"
 
-#: components/tree/nautilus-tree-model.c:1135
+#: components/tree/nautilus-tree-model.c:1136
 msgid "(Empty)"
 msgstr "(空白)"
 
-#: components/tree/nautilus-tree-model.c:1135
+#: components/tree/nautilus-tree-model.c:1136
 msgid "Loading..."
 msgstr "載入中..."
 
@@ -1128,7 +1128,7 @@ msgstr "桌面中個人目錄圖示的名稱"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:21
 msgid "Desktop trash icon name"
-msgstr "桌面中垃圾桶圖示的名稱"
+msgstr "桌面中垃圾筒圖示的名稱"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
 msgid ""
@@ -1211,7 +1211,7 @@ msgstr ""
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "put files in the trash."
-msgstr "如選用本選項，Nautilus 會在您將檔案丟進垃圾桶時先進行確認。"
+msgstr "如選用本選項，Nautilus 會在您將檔案丟進垃圾筒時先進行確認。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
 msgid ""
@@ -1281,7 +1281,7 @@ msgstr "如選用本選項，則桌面上會有一個圖示連結至個人目錄
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
-msgstr "如選用本選項，則桌面上會有一個圖示連結至垃圾桶。"
+msgstr "如選用本選項，則桌面上會有一個圖示連結至垃圾筒。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
@@ -1363,8 +1363,8 @@ msgid ""
 "\" to launch them on a double click."
 msgstr ""
 "如何啟動檔案。可接受的值為：\n"
-"“single”，按一下滑鼠按鈕\n"
-"“double”，雙擊滑鼠按鈕"
+"“single”：按一下滑鼠按鈕\n"
+"“double”：連按兩下滑鼠按鈕"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid "Put labels beside icons"
@@ -1405,7 +1405,7 @@ msgid ""
 "on a remote server. If set to \"local_only\" then only plays previews on "
 "local filesystems. If set to \"never\" then it never previews sound."
 msgstr ""
-"當鼠標移動至音效檔時決定是否試聽音效檔。如果設定為“always”，即使是遠端檔案仍"
+"當滑鼠指標移動至音效檔時決定是否試聽音效檔。如果設定為“always”，即使是遠端檔案仍"
 "然必定會播放。如果設定為“local_only”則只會播放本機的音效檔。如果設定"
 "為“never”則一定不會播放。"
 
@@ -1482,11 +1482,11 @@ msgstr "如果您想為桌面上的個人目錄圖示命名，可以在這裡指
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
-msgstr "如果您想為桌面上的垃圾桶圖示命名，可以在這裡指定。"
+msgstr "如果您想為桌面上的垃圾筒圖示命名，可以在這裡指定。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid "Trash icon visible on desktop"
-msgstr "在桌面上顯示垃圾桶圖示"
+msgstr "在桌面上顯示垃圾筒圖示"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid "Type of click used to launch/open files"
@@ -1511,8 +1511,8 @@ msgid ""
 "\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
 "text files."
 msgstr ""
-"當啟用(點選或雙擊)可執行的文字檔時，會以哪一種方式處理。可接受的值為：\n"
-"“launch”會當它們作為程式來啟動\n"
+"當開啟(點選或連按兩下)可執行的文字檔時，會以哪一種方式處理。可接受的值為：\n"
+"“launch”會將它們當作程式來啟動\n"
 "“ask”會顯示對話方塊詢問使用者\n"
 "“display”會以文字檔方式顯示內容"
 
@@ -1547,7 +1547,7 @@ msgstr "是否自行設定了預設的側面窗格背景。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
 msgid "Whether to ask for confirmation when moving files to trash"
-msgstr "將檔案丟進垃圾桶時是否需要確認"
+msgstr "將檔案丟進垃圾筒時是否需要確認"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
 msgid "Whether to enable immediate deletion"
@@ -1555,7 +1555,7 @@ msgstr "是否啟用即時刪除的功能"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
 msgid "Whether to preview sounds when mousing over an icon"
-msgstr "在鼠標移至圖示的時候是否試聽音樂"
+msgstr "在滑鼠指標移至圖示的時候是否試聽音樂"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
 msgid "Whether to show backup files"
@@ -1708,11 +1708,11 @@ msgid "Can't delete volume"
 msgstr "不可刪除檔案系統"
 
 #: libnautilus-private/nautilus-desktop-link.c:139
-#: libnautilus-private/nautilus-file.c:5611
+#: libnautilus-private/nautilus-file.c:5616
 #: libnautilus-private/nautilus-global-preferences.c:545
 #: libnautilus-private/nautilus-trash-directory.c:383
 msgid "Trash"
-msgstr "垃圾桶"
+msgstr "垃圾筒"
 
 #: libnautilus-private/nautilus-dnd.c:617
 msgid "_Move here"
@@ -1862,7 +1862,7 @@ msgid ""
 msgstr ""
 "移動時發生錯誤。\n"
 "\n"
-"無法將“%s”丟進垃圾桶，因為沒有權限修改它或上一層的資料夾。"
+"無法將“%s”丟進垃圾筒，因為沒有權限修改它或上一層的資料夾。"
 
 #: libnautilus-private/nautilus-file-operations.c:631
 #, c-format
@@ -2081,7 +2081,7 @@ msgstr "刪除時發生錯誤。"
 #: libnautilus-private/nautilus-file-operations.c:932
 #: libnautilus-private/nautilus-file-operations.c:952
 #: libnautilus-private/nautilus-file-operations.c:1056
-#: libnautilus-private/nautilus-file-operations.c:1073
+#: libnautilus-private/nautilus-file-operations.c:1074
 msgid "Skip"
 msgstr "略過"
 
@@ -2131,28 +2131,28 @@ msgstr ""
 "要取代它嗎？"
 
 #: libnautilus-private/nautilus-file-operations.c:1055
-#: libnautilus-private/nautilus-file-operations.c:1072
+#: libnautilus-private/nautilus-file-operations.c:1073
 msgid "Conflict while copying"
 msgstr "複製時發生衝突"
 
 #: libnautilus-private/nautilus-file-operations.c:1056
-#: libnautilus-private/nautilus-file-operations.c:1073
+#: libnautilus-private/nautilus-file-operations.c:1074
 msgid "Replace"
 msgstr "取代"
 
-#: libnautilus-private/nautilus-file-operations.c:1073
+#: libnautilus-private/nautilus-file-operations.c:1074
 msgid "Replace All"
 msgstr "全部取代"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1130
-#: libnautilus-private/nautilus-file.c:4431
+#: libnautilus-private/nautilus-file-operations.c:1132
+#: libnautilus-private/nautilus-file.c:4436
 #, c-format
 msgid "link to %s"
 msgstr "%s的鏈結"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1134
+#: libnautilus-private/nautilus-file-operations.c:1136
 #, c-format
 msgid "another link to %s"
 msgstr "另一個%s的鏈結"
@@ -2161,25 +2161,25 @@ msgstr "另一個%s的鏈結"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: libnautilus-private/nautilus-file-operations.c:1150
+#: libnautilus-private/nautilus-file-operations.c:1152
 #, c-format
 msgid "%dst link to %s"
 msgstr "第 %d 個連至%s的鏈結"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1154
+#: libnautilus-private/nautilus-file-operations.c:1156
 #, c-format
 msgid "%dnd link to %s"
 msgstr "第 %d 個連至%s的鏈結"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1158
+#: libnautilus-private/nautilus-file-operations.c:1160
 #, c-format
 msgid "%drd link to %s"
 msgstr "第 %d 個連至%s的鏈結"
 
 #. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1162
+#: libnautilus-private/nautilus-file-operations.c:1164
 #, c-format
 msgid "%dth link to %s"
 msgstr "第 %d 個連至%s的鏈結"
@@ -2189,225 +2189,225 @@ msgstr "第 %d 個連至%s的鏈結"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1183
-#: libnautilus-private/nautilus-file-operations.c:2335
+#: libnautilus-private/nautilus-file-operations.c:1185
+#: libnautilus-private/nautilus-file-operations.c:2337
 msgid " (copy)"
 msgstr " (copy)"
 
 #. localizers: tag used to detect the second copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1185
-#: libnautilus-private/nautilus-file-operations.c:2335
+#: libnautilus-private/nautilus-file-operations.c:1187
+#: libnautilus-private/nautilus-file-operations.c:2337
 msgid " (another copy)"
 msgstr " (another copy)"
 
 #. localizers: tag used to detect the x11th copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1188
 #: libnautilus-private/nautilus-file-operations.c:1190
 #: libnautilus-private/nautilus-file-operations.c:1192
-#: libnautilus-private/nautilus-file-operations.c:1202
+#: libnautilus-private/nautilus-file-operations.c:1194
+#: libnautilus-private/nautilus-file-operations.c:1204
 msgid "th copy)"
 msgstr "th copy)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1195
+#: libnautilus-private/nautilus-file-operations.c:1197
 msgid "st copy)"
 msgstr "st copy)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1197
+#: libnautilus-private/nautilus-file-operations.c:1199
 msgid "nd copy)"
 msgstr "nd copy)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: libnautilus-private/nautilus-file-operations.c:1199
+#: libnautilus-private/nautilus-file-operations.c:1201
 msgid "rd copy)"
 msgstr "rd copy)"
 
 #. localizers: appended to first file copy
-#: libnautilus-private/nautilus-file-operations.c:1216
+#: libnautilus-private/nautilus-file-operations.c:1218
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s (copy)%s"
 
 #. localizers: appended to second file copy
-#: libnautilus-private/nautilus-file-operations.c:1218
+#: libnautilus-private/nautilus-file-operations.c:1220
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (another copy)%s"
 
 #. localizers: appended to x11th file copy
-#: libnautilus-private/nautilus-file-operations.c:1221
 #: libnautilus-private/nautilus-file-operations.c:1223
 #: libnautilus-private/nautilus-file-operations.c:1225
-#: libnautilus-private/nautilus-file-operations.c:1234
+#: libnautilus-private/nautilus-file-operations.c:1227
+#: libnautilus-private/nautilus-file-operations.c:1236
 #, c-format
 msgid "%s (%dth copy)%s"
 msgstr "%s (%dth copy)%s"
 
 #. localizers: appended to x1st file copy
-#: libnautilus-private/nautilus-file-operations.c:1228
+#: libnautilus-private/nautilus-file-operations.c:1230
 #, c-format
 msgid "%s (%dst copy)%s"
 msgstr "%s (%dst copy)%s"
 
 #. localizers: appended to x2nd file copy
-#: libnautilus-private/nautilus-file-operations.c:1230
+#: libnautilus-private/nautilus-file-operations.c:1232
 #, c-format
 msgid "%s (%dnd copy)%s"
 msgstr "%s (%dnd copy)%s"
 
 #. localizers: appended to x3rd file copy
-#: libnautilus-private/nautilus-file-operations.c:1232
+#: libnautilus-private/nautilus-file-operations.c:1234
 #, c-format
 msgid "%s (%drd copy)%s"
 msgstr "%s (%drd copy)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: libnautilus-private/nautilus-file-operations.c:1332
+#: libnautilus-private/nautilus-file-operations.c:1334
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: libnautilus-private/nautilus-file-operations.c:1340
+#: libnautilus-private/nautilus-file-operations.c:1342
 #, c-format
 msgid " (%d"
 msgstr " (%d"
 
-#: libnautilus-private/nautilus-file-operations.c:1525
-#: libnautilus-private/nautilus-file-operations.c:2100
+#: libnautilus-private/nautilus-file-operations.c:1527
+#: libnautilus-private/nautilus-file-operations.c:2102
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "不明的 GnomeVFSXferProgressStatus %d"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1852
+#: libnautilus-private/nautilus-file-operations.c:1854
 msgid "Moving files to the Trash"
-msgstr "將檔案丟進垃圾桶"
+msgstr "將檔案丟進垃圾筒"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1854
+#: libnautilus-private/nautilus-file-operations.c:1856
 msgid "Files thrown out:"
 msgstr "已丟棄的檔案："
 
 #. localizers: label prepended to the name of the current file moved
-#: libnautilus-private/nautilus-file-operations.c:1856
-#: libnautilus-private/nautilus-file-operations.c:1867
+#: libnautilus-private/nautilus-file-operations.c:1858
+#: libnautilus-private/nautilus-file-operations.c:1869
 msgid "Moving"
 msgstr "正在移動"
 
-#: libnautilus-private/nautilus-file-operations.c:1857
+#: libnautilus-private/nautilus-file-operations.c:1859
 msgid "Preparing to Move to Trash..."
-msgstr "準備移入垃圾桶..."
+msgstr "準備移入垃圾筒..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1863
+#: libnautilus-private/nautilus-file-operations.c:1865
 msgid "Moving files"
 msgstr "正在移動檔案"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1865
+#: libnautilus-private/nautilus-file-operations.c:1867
 msgid "Files moved:"
 msgstr "已移動的檔案："
 
-#: libnautilus-private/nautilus-file-operations.c:1868
+#: libnautilus-private/nautilus-file-operations.c:1870
 msgid "Preparing To Move..."
 msgstr "準備移動..."
 
-#: libnautilus-private/nautilus-file-operations.c:1869
+#: libnautilus-private/nautilus-file-operations.c:1871
 msgid "Finishing Move..."
 msgstr "完成移動..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1877
+#: libnautilus-private/nautilus-file-operations.c:1879
 msgid "Creating links to files"
 msgstr "正在建立檔案的鏈結"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1879
+#: libnautilus-private/nautilus-file-operations.c:1881
 msgid "Files linked:"
 msgstr "已連結的檔案："
 
 #. localizers: label prepended to the name of the current file linked
-#: libnautilus-private/nautilus-file-operations.c:1881
+#: libnautilus-private/nautilus-file-operations.c:1883
 msgid "Linking"
 msgstr "正在連結"
 
-#: libnautilus-private/nautilus-file-operations.c:1882
+#: libnautilus-private/nautilus-file-operations.c:1884
 msgid "Preparing to Create Links..."
 msgstr "準備建立鏈結..."
 
-#: libnautilus-private/nautilus-file-operations.c:1883
+#: libnautilus-private/nautilus-file-operations.c:1885
 msgid "Finishing Creating Links..."
 msgstr "完成建立鏈結..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:1889
+#: libnautilus-private/nautilus-file-operations.c:1891
 msgid "Copying files"
 msgstr "正在複製檔案"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:1891
+#: libnautilus-private/nautilus-file-operations.c:1893
 msgid "Files copied:"
 msgstr "已複製的檔案："
 
 #. localizers: label prepended to the name of the current file copied
-#: libnautilus-private/nautilus-file-operations.c:1893
+#: libnautilus-private/nautilus-file-operations.c:1895
 msgid "Copying"
 msgstr "正在複製"
 
-#: libnautilus-private/nautilus-file-operations.c:1894
+#: libnautilus-private/nautilus-file-operations.c:1896
 msgid "Preparing To Copy..."
 msgstr "準備複製..."
 
-#: libnautilus-private/nautilus-file-operations.c:1910
+#: libnautilus-private/nautilus-file-operations.c:1912
 msgid "You cannot copy items into the Trash."
-msgstr "不可將項目複製至垃圾桶。"
+msgstr "不可將項目複製至垃圾筒。"
 
-#: libnautilus-private/nautilus-file-operations.c:1911
+#: libnautilus-private/nautilus-file-operations.c:1913
 msgid "Can't Copy to Trash"
-msgstr "不可複製至垃圾桶"
+msgstr "不可複製至垃圾筒"
 
-#: libnautilus-private/nautilus-file-operations.c:1933
+#: libnautilus-private/nautilus-file-operations.c:1935
 msgid "You cannot move this trash folder."
-msgstr "不可移動垃圾桶資料夾。"
-
-#: libnautilus-private/nautilus-file-operations.c:1934
-msgid "You cannot copy this trash folder."
-msgstr "不可複製垃圾桶資料夾。"
+msgstr "不可移動垃圾筒資料夾。"
 
 #: libnautilus-private/nautilus-file-operations.c:1936
+msgid "You cannot copy this trash folder."
+msgstr "不可複製垃圾筒資料夾。"
+
+#: libnautilus-private/nautilus-file-operations.c:1938
 msgid "Can't Change Trash Location"
-msgstr "不可更改垃圾桶位置"
+msgstr "不可更改垃圾筒位置"
 
-#: libnautilus-private/nautilus-file-operations.c:1937
+#: libnautilus-private/nautilus-file-operations.c:1939
 msgid "Can't Copy Trash"
-msgstr "不可複製垃圾桶"
+msgstr "不可複製垃圾筒"
 
-#: libnautilus-private/nautilus-file-operations.c:1960
+#: libnautilus-private/nautilus-file-operations.c:1962
 msgid "You cannot move a folder into itself."
 msgstr "不可將資料夾移至資料夾本身之內。"
 
-#: libnautilus-private/nautilus-file-operations.c:1961
+#: libnautilus-private/nautilus-file-operations.c:1963
 msgid "You cannot copy a folder into itself."
 msgstr "不可將資料夾複製至資料夾本身之內。"
 
-#: libnautilus-private/nautilus-file-operations.c:1963
+#: libnautilus-private/nautilus-file-operations.c:1965
 msgid "Can't Move Into Self"
 msgstr "不可移至自身之內"
 
-#: libnautilus-private/nautilus-file-operations.c:1964
+#: libnautilus-private/nautilus-file-operations.c:1966
 msgid "Can't Copy Into Self"
 msgstr "不可複製至自身之內"
 
-#: libnautilus-private/nautilus-file-operations.c:1976
+#: libnautilus-private/nautilus-file-operations.c:1978
 msgid "You cannot copy a file over itself."
 msgstr "不可將檔案複製至同一位置之上。"
 
-#: libnautilus-private/nautilus-file-operations.c:1977
+#: libnautilus-private/nautilus-file-operations.c:1979
 msgid "Can't Copy Over Self"
 msgstr "不可複製檔案至同一位置"
 
-#: libnautilus-private/nautilus-file-operations.c:2029
+#: libnautilus-private/nautilus-file-operations.c:2031
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -2417,7 +2417,7 @@ msgstr ""
 "\n"
 "沒有寫入目的地的權限。"
 
-#: libnautilus-private/nautilus-file-operations.c:2032
+#: libnautilus-private/nautilus-file-operations.c:2034
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -2427,325 +2427,325 @@ msgstr ""
 "\n"
 "目的地沒有足夠空間。"
 
-#: libnautilus-private/nautilus-file-operations.c:2035
+#: libnautilus-private/nautilus-file-operations.c:2037
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "新增資料夾時發生錯誤“%s”。"
 
-#: libnautilus-private/nautilus-file-operations.c:2039
+#: libnautilus-private/nautilus-file-operations.c:2041
 msgid "Error creating new folder"
 msgstr "新增資料夾時發生錯誤"
 
 #. localizers: the initial name of a new folder
-#: libnautilus-private/nautilus-file-operations.c:2128
+#: libnautilus-private/nautilus-file-operations.c:2130
 msgid "untitled folder"
 msgstr "untitled folder"
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2189
+#: libnautilus-private/nautilus-file-operations.c:2191
 msgid "Deleting files"
 msgstr "正在刪除檔案"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-private/nautilus-file-operations.c:2191
-#: libnautilus-private/nautilus-file-operations.c:2226
+#: libnautilus-private/nautilus-file-operations.c:2193
+#: libnautilus-private/nautilus-file-operations.c:2228
 msgid "Files deleted:"
 msgstr "已刪除的檔案："
 
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-private/nautilus-file-operations.c:2193
-#: libnautilus-private/nautilus-file-operations.c:2228
+#: libnautilus-private/nautilus-file-operations.c:2195
+#: libnautilus-private/nautilus-file-operations.c:2230
 msgid "Deleting"
 msgstr "正在刪除"
 
-#: libnautilus-private/nautilus-file-operations.c:2194
+#: libnautilus-private/nautilus-file-operations.c:2196
 msgid "Preparing to Delete files..."
 msgstr "準備刪除檔案..."
 
 #. localizers: progress dialog title
-#: libnautilus-private/nautilus-file-operations.c:2224
+#: libnautilus-private/nautilus-file-operations.c:2226
 msgid "Emptying the Trash"
-msgstr "清理垃圾桶"
+msgstr "清理垃圾筒"
 
-#: libnautilus-private/nautilus-file-operations.c:2229
+#: libnautilus-private/nautilus-file-operations.c:2231
 msgid "Preparing to Empty the Trash..."
-msgstr "準備清理垃圾桶..."
+msgstr "準備清理垃圾筒..."
 
-#: libnautilus-private/nautilus-file-operations.c:2263
+#: libnautilus-private/nautilus-file-operations.c:2265
 #: src/file-manager/fm-desktop-icon-view.c:1016
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
 msgid "Empty Trash"
-msgstr "清理垃圾桶"
+msgstr "清理垃圾筒"
 
-#: libnautilus-private/nautilus-file-operations.c:2279
+#: libnautilus-private/nautilus-file-operations.c:2281
 msgid ""
 "Are you sure you want to permanently delete all of the items in the Trash?"
-msgstr "確定要永久刪除垃圾桶內的所有項目嗎？"
+msgstr "確定要永久刪除垃圾筒內的所有項目嗎？"
 
-#: libnautilus-private/nautilus-file-operations.c:2289
+#: libnautilus-private/nautilus-file-operations.c:2291
 msgid "_Empty"
 msgstr "清理(_E)"
 
-#: libnautilus-private/nautilus-file-operations.c:2336
+#: libnautilus-private/nautilus-file-operations.c:2338
 msgid "foo"
 msgstr "foo"
 
-#: libnautilus-private/nautilus-file-operations.c:2336
-#: libnautilus-private/nautilus-file-operations.c:2346
+#: libnautilus-private/nautilus-file-operations.c:2338
+#: libnautilus-private/nautilus-file-operations.c:2348
 msgid "foo (copy)"
 msgstr "foo (copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2337
+#: libnautilus-private/nautilus-file-operations.c:2339
 msgid ".bashrc"
 msgstr ".bashrc"
 
-#: libnautilus-private/nautilus-file-operations.c:2337
+#: libnautilus-private/nautilus-file-operations.c:2339
 msgid ".bashrc (copy)"
 msgstr ".bashrc (copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2338
+#: libnautilus-private/nautilus-file-operations.c:2340
 msgid ".foo.txt"
 msgstr ".foo.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2338
+#: libnautilus-private/nautilus-file-operations.c:2340
 msgid ".foo (copy).txt"
 msgstr ".foo (copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2339
+#: libnautilus-private/nautilus-file-operations.c:2341
 msgid "foo foo"
 msgstr "foo foo"
 
-#: libnautilus-private/nautilus-file-operations.c:2339
+#: libnautilus-private/nautilus-file-operations.c:2341
 msgid "foo foo (copy)"
 msgstr "foo foo (copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2340
+#: libnautilus-private/nautilus-file-operations.c:2342
 msgid "foo.txt"
 msgstr "foo.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2340
-#: libnautilus-private/nautilus-file-operations.c:2347
+#: libnautilus-private/nautilus-file-operations.c:2342
+#: libnautilus-private/nautilus-file-operations.c:2349
 msgid "foo (copy).txt"
 msgstr "foo (copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2341
+#: libnautilus-private/nautilus-file-operations.c:2343
 msgid "foo foo.txt"
 msgstr "foo foo.txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2341
-#: libnautilus-private/nautilus-file-operations.c:2363
+#: libnautilus-private/nautilus-file-operations.c:2343
+#: libnautilus-private/nautilus-file-operations.c:2365
 msgid "foo foo (copy).txt"
 msgstr "foo foo (copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2342
+#: libnautilus-private/nautilus-file-operations.c:2344
 msgid "foo foo.txt txt"
 msgstr "foo foo.txt txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2342
+#: libnautilus-private/nautilus-file-operations.c:2344
 msgid "foo foo (copy).txt txt"
 msgstr "foo foo (copy).txt txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2343
+#: libnautilus-private/nautilus-file-operations.c:2345
 msgid "foo...txt"
 msgstr "foo...txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2343
+#: libnautilus-private/nautilus-file-operations.c:2345
 msgid "foo.. (copy).txt"
 msgstr "foo.. (copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2344
+#: libnautilus-private/nautilus-file-operations.c:2346
 msgid "foo..."
 msgstr "foo..."
 
-#: libnautilus-private/nautilus-file-operations.c:2344
+#: libnautilus-private/nautilus-file-operations.c:2346
 msgid "foo... (copy)"
 msgstr "foo... (copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2345
+#: libnautilus-private/nautilus-file-operations.c:2347
 msgid "foo. (copy)"
 msgstr "foo. (copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2345
+#: libnautilus-private/nautilus-file-operations.c:2347
 msgid "foo. (another copy)"
 msgstr "foo. (another copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2346
 #: libnautilus-private/nautilus-file-operations.c:2348
+#: libnautilus-private/nautilus-file-operations.c:2350
 msgid "foo (another copy)"
 msgstr "foo (another copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2347
 #: libnautilus-private/nautilus-file-operations.c:2349
+#: libnautilus-private/nautilus-file-operations.c:2351
 msgid "foo (another copy).txt"
 msgstr "foo (another copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2348
+#: libnautilus-private/nautilus-file-operations.c:2350
 msgid "foo (3rd copy)"
 msgstr "foo (3rd copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2349
+#: libnautilus-private/nautilus-file-operations.c:2351
 msgid "foo (3rd copy).txt"
 msgstr "foo (3rd copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2350
+#: libnautilus-private/nautilus-file-operations.c:2352
 msgid "foo foo (another copy).txt"
 msgstr "foo foo (another copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2350
+#: libnautilus-private/nautilus-file-operations.c:2352
 msgid "foo foo (3rd copy).txt"
 msgstr "foo foo (3rd copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2351
-#: libnautilus-private/nautilus-file-operations.c:2368
+#: libnautilus-private/nautilus-file-operations.c:2353
+#: libnautilus-private/nautilus-file-operations.c:2370
 msgid "foo (13th copy)"
 msgstr "foo (13th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2351
+#: libnautilus-private/nautilus-file-operations.c:2353
 msgid "foo (14th copy)"
 msgstr "foo (14th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2352
-#: libnautilus-private/nautilus-file-operations.c:2369
+#: libnautilus-private/nautilus-file-operations.c:2354
+#: libnautilus-private/nautilus-file-operations.c:2371
 msgid "foo (13th copy).txt"
 msgstr "foo (13th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2352
+#: libnautilus-private/nautilus-file-operations.c:2354
 msgid "foo (14th copy).txt"
 msgstr "foo (14th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2353
+#: libnautilus-private/nautilus-file-operations.c:2355
 msgid "foo (21st copy)"
 msgstr "foo (21st copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2353
 #: libnautilus-private/nautilus-file-operations.c:2355
+#: libnautilus-private/nautilus-file-operations.c:2357
 msgid "foo (22nd copy)"
 msgstr "foo (22nd copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2354
+#: libnautilus-private/nautilus-file-operations.c:2356
 msgid "foo (21st copy).txt"
 msgstr "foo (21st copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2354
 #: libnautilus-private/nautilus-file-operations.c:2356
+#: libnautilus-private/nautilus-file-operations.c:2358
 msgid "foo (22nd copy).txt"
 msgstr "foo (22nd copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2355
 #: libnautilus-private/nautilus-file-operations.c:2357
+#: libnautilus-private/nautilus-file-operations.c:2359
 msgid "foo (23rd copy)"
 msgstr "foo (23rd copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2356
 #: libnautilus-private/nautilus-file-operations.c:2358
+#: libnautilus-private/nautilus-file-operations.c:2360
 msgid "foo (23rd copy).txt"
 msgstr "foo (23rd copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2357
 #: libnautilus-private/nautilus-file-operations.c:2359
+#: libnautilus-private/nautilus-file-operations.c:2361
 msgid "foo (24th copy)"
 msgstr "foo (24th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2358
 #: libnautilus-private/nautilus-file-operations.c:2360
+#: libnautilus-private/nautilus-file-operations.c:2362
 msgid "foo (24th copy).txt"
 msgstr "foo (24th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2359
+#: libnautilus-private/nautilus-file-operations.c:2361
 msgid "foo (25th copy)"
 msgstr "foo (25th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2360
+#: libnautilus-private/nautilus-file-operations.c:2362
 msgid "foo (25th copy).txt"
 msgstr "foo (25th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2361
+#: libnautilus-private/nautilus-file-operations.c:2363
 msgid "foo foo (24th copy)"
 msgstr "foo foo (24th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2361
+#: libnautilus-private/nautilus-file-operations.c:2363
 msgid "foo foo (25th copy)"
 msgstr "foo foo (25th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2362
+#: libnautilus-private/nautilus-file-operations.c:2364
 msgid "foo foo (24th copy).txt"
 msgstr "foo foo (24th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2362
+#: libnautilus-private/nautilus-file-operations.c:2364
 msgid "foo foo (25th copy).txt"
 msgstr "foo foo (25th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2363
+#: libnautilus-private/nautilus-file-operations.c:2365
 msgid "foo foo (100000000000000th copy).txt"
 msgstr "foo foo (100000000000000th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2364
+#: libnautilus-private/nautilus-file-operations.c:2366
 msgid "foo (10th copy)"
 msgstr "foo (10th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2364
 #: libnautilus-private/nautilus-file-operations.c:2366
+#: libnautilus-private/nautilus-file-operations.c:2368
 msgid "foo (11th copy)"
 msgstr "foo (11th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2365
+#: libnautilus-private/nautilus-file-operations.c:2367
 msgid "foo (10th copy).txt"
 msgstr "foo (10th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2365
 #: libnautilus-private/nautilus-file-operations.c:2367
+#: libnautilus-private/nautilus-file-operations.c:2369
 msgid "foo (11th copy).txt"
 msgstr "foo (11th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2366
 #: libnautilus-private/nautilus-file-operations.c:2368
+#: libnautilus-private/nautilus-file-operations.c:2370
 msgid "foo (12th copy)"
 msgstr "foo (12th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2367
 #: libnautilus-private/nautilus-file-operations.c:2369
+#: libnautilus-private/nautilus-file-operations.c:2371
 msgid "foo (12th copy).txt"
 msgstr "foo (12th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2370
+#: libnautilus-private/nautilus-file-operations.c:2372
 msgid "foo (110th copy)"
 msgstr "foo (110th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2370
+#: libnautilus-private/nautilus-file-operations.c:2372
 msgid "foo (111th copy)"
 msgstr "foo (111th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2371
+#: libnautilus-private/nautilus-file-operations.c:2373
 msgid "foo (110th copy).txt"
 msgstr "foo (110th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2371
+#: libnautilus-private/nautilus-file-operations.c:2373
 msgid "foo (111th copy).txt"
 msgstr "foo (111th copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2372
+#: libnautilus-private/nautilus-file-operations.c:2374
 msgid "foo (122nd copy)"
 msgstr "foo (122nd copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2372
 #: libnautilus-private/nautilus-file-operations.c:2374
+#: libnautilus-private/nautilus-file-operations.c:2376
 msgid "foo (123rd copy)"
 msgstr "foo (123rd copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2373
+#: libnautilus-private/nautilus-file-operations.c:2375
 msgid "foo (122nd copy).txt"
 msgstr "foo (122nd copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2373
 #: libnautilus-private/nautilus-file-operations.c:2375
+#: libnautilus-private/nautilus-file-operations.c:2377
 msgid "foo (123rd copy).txt"
 msgstr "foo (123rd copy).txt"
 
-#: libnautilus-private/nautilus-file-operations.c:2374
+#: libnautilus-private/nautilus-file-operations.c:2376
 msgid "foo (124th copy)"
 msgstr "foo (124th copy)"
 
-#: libnautilus-private/nautilus-file-operations.c:2375
+#: libnautilus-private/nautilus-file-operations.c:2377
 msgid "foo (124th copy).txt"
 msgstr "foo (124th copy).txt"
 
@@ -2764,64 +2764,64 @@ msgstr "foo (124th copy).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2657
+#: libnautilus-private/nautilus-file.c:2662
 msgid "today at 00:00:00 PM"
 msgstr "今天凌晨 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2658
+#: libnautilus-private/nautilus-file.c:2663
 msgid "today at %-I:%M:%S %p"
 msgstr "今天%p %-I:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2660
+#: libnautilus-private/nautilus-file.c:2665
 msgid "today at 00:00 PM"
 msgstr "今天凌晨 00:00"
 
-#: libnautilus-private/nautilus-file.c:2661
+#: libnautilus-private/nautilus-file.c:2666
 msgid "today at %-I:%M %p"
 msgstr "今天%p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2663
+#: libnautilus-private/nautilus-file.c:2668
 msgid "today, 00:00 PM"
 msgstr "今天，凌晨 00:00"
 
-#: libnautilus-private/nautilus-file.c:2664
+#: libnautilus-private/nautilus-file.c:2669
 msgid "today, %-I:%M %p"
 msgstr "今天，%p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2666
-#: libnautilus-private/nautilus-file.c:2667
+#: libnautilus-private/nautilus-file.c:2671
+#: libnautilus-private/nautilus-file.c:2672
 msgid "today"
 msgstr "今天"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2676
+#: libnautilus-private/nautilus-file.c:2681
 msgid "yesterday at 00:00:00 PM"
 msgstr "昨天凌晨 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2677
+#: libnautilus-private/nautilus-file.c:2682
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "昨天%p %-I:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2679
+#: libnautilus-private/nautilus-file.c:2684
 msgid "yesterday at 00:00 PM"
 msgstr "昨天凌晨 00:00"
 
-#: libnautilus-private/nautilus-file.c:2680
+#: libnautilus-private/nautilus-file.c:2685
 msgid "yesterday at %-I:%M %p"
 msgstr "昨天%p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2682
+#: libnautilus-private/nautilus-file.c:2687
 msgid "yesterday, 00:00 PM"
 msgstr "昨天，凌晨 00:00"
 
-#: libnautilus-private/nautilus-file.c:2683
+#: libnautilus-private/nautilus-file.c:2688
 msgid "yesterday, %-I:%M %p"
 msgstr "昨天，%p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2685
-#: libnautilus-private/nautilus-file.c:2686
+#: libnautilus-private/nautilus-file.c:2690
+#: libnautilus-private/nautilus-file.c:2691
 msgid "yesterday"
 msgstr "昨天"
 
@@ -2830,133 +2830,133 @@ msgstr "昨天"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2697
+#: libnautilus-private/nautilus-file.c:2702
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "公元0000年00月00日(週三)於下午 00時00分00秒"
 
-#: libnautilus-private/nautilus-file.c:2698
+#: libnautilus-private/nautilus-file.c:2703
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "公元%Y年%m月%-d日(%A)於%p %-I時%M分%S秒"
 
-#: libnautilus-private/nautilus-file.c:2700
+#: libnautilus-private/nautilus-file.c:2705
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "0000年00月00日(一)於下午 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2701
+#: libnautilus-private/nautilus-file.c:2706
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%Y年%m月%-d日(%a)於%p %-I:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2703
+#: libnautilus-private/nautilus-file.c:2708
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "0000年00月00日(週一)於下午 00:00"
 
-#: libnautilus-private/nautilus-file.c:2704
+#: libnautilus-private/nautilus-file.c:2709
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%Y年%m月%-d日(%a)於%p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2706
+#: libnautilus-private/nautilus-file.c:2711
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "0000年00月00日下午 00:00"
 
-#: libnautilus-private/nautilus-file.c:2707
+#: libnautilus-private/nautilus-file.c:2712
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%Y年%m月%-d日%p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2709
+#: libnautilus-private/nautilus-file.c:2714
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "0000年00月00日，下午 00:00"
 
-#: libnautilus-private/nautilus-file.c:2710
+#: libnautilus-private/nautilus-file.c:2715
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%Y年%m月%-d日，%p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2712
+#: libnautilus-private/nautilus-file.c:2717
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00，下午 00:00"
 
-#: libnautilus-private/nautilus-file.c:2713
+#: libnautilus-private/nautilus-file.c:2718
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%y/%m/%-d，%p %-I:%M"
 
-#: libnautilus-private/nautilus-file.c:2715
+#: libnautilus-private/nautilus-file.c:2720
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2716
+#: libnautilus-private/nautilus-file.c:2721
 msgid "%m/%d/%y"
 msgstr "%y/%m/%d"
 
-#: libnautilus-private/nautilus-file.c:4011
+#: libnautilus-private/nautilus-file.c:4016
 msgid "0 items"
 msgstr "沒有項目"
 
-#: libnautilus-private/nautilus-file.c:4011
+#: libnautilus-private/nautilus-file.c:4016
 msgid "0 folders"
 msgstr "沒有資料夾"
 
-#: libnautilus-private/nautilus-file.c:4012
+#: libnautilus-private/nautilus-file.c:4017
 msgid "0 files"
 msgstr "沒有檔案"
 
-#: libnautilus-private/nautilus-file.c:4016
+#: libnautilus-private/nautilus-file.c:4021
 msgid "1 item"
 msgstr "1 個項目"
 
-#: libnautilus-private/nautilus-file.c:4016
+#: libnautilus-private/nautilus-file.c:4021
 msgid "1 folder"
 msgstr "1 個資料夾"
 
-#: libnautilus-private/nautilus-file.c:4017
+#: libnautilus-private/nautilus-file.c:4022
 msgid "1 file"
 msgstr "1 個檔案"
 
-#: libnautilus-private/nautilus-file.c:4020
+#: libnautilus-private/nautilus-file.c:4025
 #, c-format
 msgid "%u items"
 msgstr "%u 個項目"
 
-#: libnautilus-private/nautilus-file.c:4020
+#: libnautilus-private/nautilus-file.c:4025
 #, c-format
 msgid "%u folders"
 msgstr "%u 個資料夾"
 
-#: libnautilus-private/nautilus-file.c:4021
+#: libnautilus-private/nautilus-file.c:4026
 #, c-format
 msgid "%u files"
 msgstr "%u 個檔案"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4333
-#: libnautilus-private/nautilus-file.c:4349
+#: libnautilus-private/nautilus-file.c:4338
+#: libnautilus-private/nautilus-file.c:4354
 msgid "? items"
 msgstr "? 個項目"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4339
+#: libnautilus-private/nautilus-file.c:4344
 msgid "? bytes"
 msgstr "? 個位元組"
 
-#: libnautilus-private/nautilus-file.c:4354
+#: libnautilus-private/nautilus-file.c:4359
 msgid "unknown type"
 msgstr "類型不詳"
 
-#: libnautilus-private/nautilus-file.c:4357
+#: libnautilus-private/nautilus-file.c:4362
 msgid "unknown MIME type"
 msgstr "MIME 類型不詳"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4363
+#: libnautilus-private/nautilus-file.c:4368
 #: src/file-manager/fm-properties-window.c:1128
 msgid "unknown"
 msgstr "不詳"
 
-#: libnautilus-private/nautilus-file.c:4395
+#: libnautilus-private/nautilus-file.c:4400
 msgid "program"
 msgstr "程式"
 
-#: libnautilus-private/nautilus-file.c:4407
+#: libnautilus-private/nautilus-file.c:4412
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2965,7 +2965,7 @@ msgstr ""
 "連“x-directory/normal”的描述也無法找到。這可能表示 gnome-vfs.keys 檔放在錯誤"
 "的位置或是因其它的原因而找不到。"
 
-#: libnautilus-private/nautilus-file.c:4411
+#: libnautilus-private/nautilus-file.c:4416
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2973,11 +2973,11 @@ msgid ""
 msgstr ""
 "沒有任何有關 mime 類型“%s”的說明 (檔案為“%s”)，請回報至 gnome-vfs 電郵論壇。"
 
-#: libnautilus-private/nautilus-file.c:4425
+#: libnautilus-private/nautilus-file.c:4430
 msgid "link"
 msgstr "鏈結"
 
-#: libnautilus-private/nautilus-file.c:4445
+#: libnautilus-private/nautilus-file.c:4450
 msgid "link (broken)"
 msgstr "鏈結 (目標不存在)"
 
@@ -3242,7 +3242,7 @@ msgstr "無"
 #: libnautilus-private/nautilus-global-preferences.c:539
 #, c-format
 msgid "%s's Home"
-msgstr "%s 的個人目錄"
+msgstr "%.0s個人目錄"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2149
 msgid "file icon"
@@ -3292,51 +3292,51 @@ msgstr "是否在拖曳時加強顯示"
 msgid "The selection rectangle"
 msgstr "矩形選擇區域"
 
-#: libnautilus-private/nautilus-icon-container.c:4080
+#: libnautilus-private/nautilus-icon-container.c:4083
 msgid "Frame Text"
 msgstr "文字邊框"
 
-#: libnautilus-private/nautilus-icon-container.c:4081
+#: libnautilus-private/nautilus-icon-container.c:4084
 msgid "Draw a frame around unselected text"
 msgstr "在沒有選取的文字周圍繪畫邊框"
 
-#: libnautilus-private/nautilus-icon-container.c:4087
+#: libnautilus-private/nautilus-icon-container.c:4090
 msgid "Selection Box Color"
 msgstr "選擇區域顏色"
 
-#: libnautilus-private/nautilus-icon-container.c:4088
+#: libnautilus-private/nautilus-icon-container.c:4091
 msgid "Color of the selection box"
 msgstr "選擇區域的顏色"
 
-#: libnautilus-private/nautilus-icon-container.c:4093
+#: libnautilus-private/nautilus-icon-container.c:4096
 msgid "Selection Box Alpha"
 msgstr "選擇區域透明度"
 
-#: libnautilus-private/nautilus-icon-container.c:4094
+#: libnautilus-private/nautilus-icon-container.c:4097
 msgid "Opacity of the selection box"
 msgstr "選擇區域的透明度"
 
-#: libnautilus-private/nautilus-icon-container.c:4101
+#: libnautilus-private/nautilus-icon-container.c:4104
 msgid "Highlight Alpha"
 msgstr "加強顯示時的透明度"
 
-#: libnautilus-private/nautilus-icon-container.c:4102
+#: libnautilus-private/nautilus-icon-container.c:4105
 msgid "Opacity of the highlight for selected icons"
-msgstr "加強顯示已選取的圖示時使用的透明度"
+msgstr "加強顯示選定的圖示時使用的透明度"
 
-#: libnautilus-private/nautilus-icon-container.c:4108
+#: libnautilus-private/nautilus-icon-container.c:4111
 msgid "Light Info Color"
 msgstr "淺色資訊文字顏色"
 
-#: libnautilus-private/nautilus-icon-container.c:4109
+#: libnautilus-private/nautilus-icon-container.c:4112
 msgid "Color used for information text against a dark background"
 msgstr "在較深色的背景中，顯示資訊文字所用的顏色"
 
-#: libnautilus-private/nautilus-icon-container.c:4114
+#: libnautilus-private/nautilus-icon-container.c:4117
 msgid "Dark Info Color"
 msgstr "深色資訊文字顏色"
 
-#: libnautilus-private/nautilus-icon-container.c:4115
+#: libnautilus-private/nautilus-icon-container.c:4118
 msgid "Color used for information text against a light background"
 msgstr "在較淺色的背景中，顯示資訊文字所用的顏色"
 
@@ -3424,62 +3424,62 @@ msgstr "顯示說明文件時發生錯誤：%s"
 
 #: libnautilus-private/nautilus-program-chooser.c:333
 msgid "not in menu"
-msgstr "不在選單內"
+msgstr "不會在選單內出現"
 
 #: libnautilus-private/nautilus-program-chooser.c:336
 msgid "in menu for this file"
-msgstr "在該檔案的選單中"
+msgstr "會在這個檔案的選單中出現"
 
 #: libnautilus-private/nautilus-program-chooser.c:339
 #: libnautilus-private/nautilus-program-chooser.c:342
 #, c-format
 msgid "in menu for \"%s\""
-msgstr "在“%s”的選單中 "
+msgstr "會在“%s”的選單中出現"
 
 #: libnautilus-private/nautilus-program-chooser.c:345
 msgid "default for this file"
-msgstr "該檔案的預設值"
+msgstr "是這個檔案的預設開啟方式"
 
 #: libnautilus-private/nautilus-program-chooser.c:348
 #: libnautilus-private/nautilus-program-chooser.c:351
 #, c-format
 msgid "default for \"%s\""
-msgstr "“%s”的預設值"
+msgstr "是“%s”的預設開啟方式"
 
 #: libnautilus-private/nautilus-program-chooser.c:396
 #, c-format
 msgid "Is not in the menu for \"%s\" items."
-msgstr "不在“%s”項目的選單中。"
+msgstr "不會在“%s”的選單中出現。"
 
 #: libnautilus-private/nautilus-program-chooser.c:399
 #, c-format
 msgid "Is in the menu for \"%s\"."
-msgstr "在“%s”的選單中。"
+msgstr "會在“%s”的選單中出現。"
 
 #: libnautilus-private/nautilus-program-chooser.c:402
 #, c-format
 msgid "Is in the menu for \"%s\" items."
-msgstr "在“%s”選項的選單中。"
+msgstr "會在“%s”的選單中出現。"
 
 #: libnautilus-private/nautilus-program-chooser.c:405
 #, c-format
 msgid "Is in the menu for all \"%s\" items."
-msgstr "在任何「%s」項目的選單中。"
+msgstr "會在任何「%s」的選單中出現。"
 
 #: libnautilus-private/nautilus-program-chooser.c:408
 #, c-format
 msgid "Is the default for \"%s\"."
-msgstr "是“%s”的預設值。"
+msgstr "是“%s”的預設開啟方式。"
 
 #: libnautilus-private/nautilus-program-chooser.c:411
 #, c-format
 msgid "Is the default for \"%s\" items."
-msgstr "是「%s」項目的預設值。"
+msgstr "是「%s」的預設開啟方式。"
 
 #: libnautilus-private/nautilus-program-chooser.c:414
 #, c-format
 msgid "Is the default for all \"%s\" items."
-msgstr "是所有“%s”項目的預設值。"
+msgstr "是所有“%s”的預設開啟方式。"
 
 #: libnautilus-private/nautilus-program-chooser.c:1041
 #, c-format
@@ -3490,13 +3490,13 @@ msgstr "修改“%s”"
 #: libnautilus-private/nautilus-program-chooser.c:1067
 #, c-format
 msgid "Include in the menu for \"%s\" items"
-msgstr "包含在「%s」選項的選單中"
+msgstr "會在「%s」的選單中出現"
 
 #. Radio button for setting default for file type.
 #: libnautilus-private/nautilus-program-chooser.c:1074
 #, c-format
 msgid "Use as default for \"%s\" items"
-msgstr "作為「%s」項目的預設值"
+msgstr "作為「%s」的預設開啟方式"
 
 #. Radio button for adding to short list for specific file.
 #: libnautilus-private/nautilus-program-chooser.c:1081
@@ -3508,13 +3508,13 @@ msgstr "只會在“%s”的選單中出現"
 #: libnautilus-private/nautilus-program-chooser.c:1087
 #, c-format
 msgid "Use as default for \"%s\" only"
-msgstr "只會作為“%s”的預設值"
+msgstr "只會作為“%s”的預設開啟方式"
 
 #. Radio button for not including program in short list for type or file.
 #: libnautilus-private/nautilus-program-chooser.c:1094
 #, c-format
 msgid "Don't include in the menu for \"%s\" items"
-msgstr "不包含在「%s」選項的選單中"
+msgstr "不會在「%s」的選單中出現"
 
 #: libnautilus-private/nautilus-program-chooser.c:1252
 #: src/file-manager/fm-search-list-view.c:494
@@ -4009,7 +4009,7 @@ msgstr "正在搜尋磁碟"
 
 #: libnautilus-private/nautilus-trash-directory.c:70
 msgid "Nautilus is searching your disks for trash folders."
-msgstr "Nautilus 正在各磁碟中搜尋垃圾桶資料夾。"
+msgstr "Nautilus 正在各磁碟中搜尋垃圾筒資料夾。"
 
 #: libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
@@ -4039,7 +4039,7 @@ msgstr "以%s方式顯示"
 #: libnautilus-private/nautilus-view-identifier.c:68
 #, c-format
 msgid "%s Viewer"
-msgstr "%s 顯示模式"
+msgstr "%s顯示模式"
 
 #: libnautilus-private/nautilus-volume-monitor.c:901
 msgid "Unknown"
@@ -4102,21 +4102,21 @@ msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
 msgstr ""
-"Nautilus 無法掛載已選取的檔案系統。可能是因為使用了一種無法掛載的檔案系統格"
+"Nautilus 無法掛載選定的檔案系統。可能是因為使用了一種無法掛載的檔案系統格"
 "式。"
 
 #: libnautilus-private/nautilus-volume-monitor.c:1896
 msgid "Nautilus was unable to mount the selected floppy drive."
-msgstr "Nautilus 無法掛載已選取的軟碟。"
+msgstr "Nautilus 無法掛載選定的軟碟。"
 
 #: libnautilus-private/nautilus-volume-monitor.c:1898
 msgid "Nautilus was unable to mount the selected volume."
-msgstr "Nautilus 無法掛載已選取的檔案系統。"
+msgstr "Nautilus 無法掛載選定的檔案系統。"
 
 #. FIXME: Should we parse this message and report something more meaningful?
 #: libnautilus-private/nautilus-volume-monitor.c:1903
 msgid "Nautilus was unable to unmount the selected volume."
-msgstr "Nautilus 無法卸載已選取的檔案系統。"
+msgstr "Nautilus 無法卸載選定的檔案系統。"
 
 #: libnautilus-private/nautilus-volume-monitor.c:2148
 msgid "ISO 9660 Volume"
@@ -4136,7 +4136,7 @@ msgstr "剪下文字(_T)"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:5
 msgid "Cut the selected text to the clipboard"
-msgstr "將已選取的文字剪下至剪貼簿"
+msgstr "將選定的文字剪下至剪貼簿"
 
 #: libnautilus/nautilus-clipboard-ui.xml.h:6
 msgid "Paste the text stored on the clipboard"
@@ -4400,14 +4400,14 @@ msgstr "檔案太多"
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
-msgstr "無法將“%s”移到垃圾桶。要立刻永久刪除嗎？"
+msgstr "無法將“%s”移到垃圾筒。要立刻永久刪除嗎？"
 
 #: src/file-manager/fm-directory-view.c:2989
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
 "them immediately?"
-msgstr "無法將已選取的 %d 個項目移到垃圾桶。要立刻永久刪除嗎？"
+msgstr "無法將選定的 %d 個項目移到垃圾筒。要立刻永久刪除嗎？"
 
 #: src/file-manager/fm-directory-view.c:2993
 #, c-format
@@ -4415,7 +4415,7 @@ msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
 "those %d items immediately?"
 msgstr ""
-"無法將所選項目中的 %d 個項目移到垃圾桶。要立刻將這 %d 個項目永久刪除嗎？"
+"無法將所選項目中的 %d 個項目移到垃圾筒。要立刻將這 %d 個項目永久刪除嗎？"
 
 #: src/file-manager/fm-directory-view.c:3001
 msgid "Delete Immediately?"
@@ -4424,24 +4424,24 @@ msgstr "立刻刪除？"
 #: src/file-manager/fm-directory-view.c:3033
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
-msgstr "確定要將“%s”從垃圾桶中永久刪除嗎？"
+msgstr "確定要將“%s”從垃圾筒中永久刪除嗎？"
 
 #: src/file-manager/fm-directory-view.c:3037
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "Trash?"
-msgstr "確定要將所選的 %d 個項目從垃圾桶中永久刪除嗎？"
+msgstr "確定要將所選的 %d 個項目從垃圾筒中永久刪除嗎？"
 
 #: src/file-manager/fm-directory-view.c:3043
 msgid "Delete From Trash?"
-msgstr "是否從垃圾桶中刪除？"
+msgstr "是否從垃圾筒中刪除？"
 
 #: src/file-manager/fm-directory-view.c:3321
 #: src/file-manager/fm-directory-view.c:3363
 #, c-format
 msgid "Use \"%s\" to open the selected item"
-msgstr "使用“%s”來開啟已選取的項目"
+msgstr "使用“%s”來開啟選定的項目"
 
 #: src/file-manager/fm-directory-view.c:3444
 #: src/file-manager/nautilus-directory-view-ui.xml.h:25
@@ -4482,7 +4482,7 @@ msgid ""
 "as input."
 msgstr ""
 "所有此資料夾的可執行檔都會在「指令稿」選單中出現。在選單中選取其中一個指令稿"
-"會以所有已選取的項目作為輸入資料來執行該指令稿。"
+"會以所有選定的項目作為輸入資料來執行該指令稿。"
 
 #: src/file-manager/fm-directory-view.c:4284
 msgid "About Scripts"
@@ -4520,7 +4520,7 @@ msgstr ""
 "NAUTILUS_SCRIPT_SELECTED_FILE_PATHS：所選取的檔案，以 newline 字元分隔 (只適"
 "用於本機檔案)\n"
 "\n"
-"NAUTILUS_SCRIPT_SELECTED_URIS：表示已選取的檔案的 URI，以 newline 字元分隔\n"
+"NAUTILUS_SCRIPT_SELECTED_URIS：表示選定的檔案的 URI，以 newline 字元分隔\n"
 "\n"
 "NAUTILUS_SCRIPT_CURRENT_URI：表示目前位置的 URI\n"
 "\n"
@@ -4568,7 +4568,7 @@ msgstr "用 %d 個新視窗開啟(_I)"
 
 #: src/file-manager/fm-directory-view.c:4780
 msgid "_Delete from Trash"
-msgstr "從垃圾桶中刪除(_D)"
+msgstr "從垃圾筒中刪除(_D)"
 
 #: src/file-manager/fm-directory-view.c:4782
 msgid "Delete all selected items permanently"
@@ -4578,12 +4578,12 @@ msgstr "永久刪除選定的項目"
 #: src/file-manager/fm-directory-view.c:5066
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Mo_ve to Trash"
-msgstr "丟進垃圾桶(_V)"
+msgstr "丟進垃圾筒(_V)"
 
 #: src/file-manager/fm-directory-view.c:4787
 #: src/file-manager/nautilus-directory-view-ui.xml.h:18
 msgid "Move each selected item to the Trash"
-msgstr "將指定項目丟進垃圾桶"
+msgstr "將指定項目丟進垃圾筒"
 
 #: src/file-manager/fm-directory-view.c:4811
 #: src/file-manager/nautilus-directory-view-ui.xml.h:40
@@ -4602,7 +4602,7 @@ msgstr "建立鏈結(_K)"
 #: src/file-manager/fm-directory-view.c:4845
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
 msgid "_Empty Trash"
-msgstr "清理垃圾桶(_E)"
+msgstr "清理垃圾筒(_E)"
 
 #: src/file-manager/fm-directory-view.c:4858
 msgid "Cu_t File"
@@ -4626,14 +4626,14 @@ msgstr "複製檔案(_C)"
 msgid ""
 "This link can't be used, because it has no target. Do you want to move this "
 "link to the Trash?"
-msgstr "該鏈結無法使用，因為它沒有任何目標位置。是否將該鏈結丟進垃圾桶？"
+msgstr "該鏈結無法使用，因為它沒有任何目標位置。是否將該鏈結丟進垃圾筒？"
 
 #: src/file-manager/fm-directory-view.c:5060
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
 "want to move this link to the Trash?"
-msgstr "該鏈結無法使用，因為它的目標位置“%s”不存在。是否將該鏈結丟進垃圾桶？"
+msgstr "該鏈結無法使用，因為它的目標位置“%s”不存在。是否將該鏈結丟進垃圾筒？"
 
 #: src/file-manager/fm-directory-view.c:5066
 msgid "Broken Link"
@@ -4904,14 +4904,14 @@ msgstr "所拖放的檔案並非本地的檔案。只許使用本地的圖示作
 #: src/file-manager/fm-properties-window.c:471
 #: src/nautilus-information-panel.c:529
 msgid "Local Images Only"
-msgstr "只可使用本地的圖像"
+msgstr "只可使用本地主機的圖像"
 
 #: src/file-manager/fm-properties-window.c:476
 #: src/nautilus-information-panel.c:534
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
 "custom icons."
-msgstr "所拖放的檔案並非圖像檔。只許使用本地的圖示作為自選圖示。"
+msgstr "所拖放的檔案並非圖像檔案。只許使用本地的圖示作為自選圖示。"
 
 #: src/file-manager/fm-properties-window.c:478
 #: src/nautilus-information-panel.c:536
@@ -5145,15 +5145,15 @@ msgstr ""
 msgid "Couldn't show help"
 msgstr "無法顯示說明文件"
 
-#: src/file-manager/fm-properties-window.c:3626
+#: src/file-manager/fm-properties-window.c:3627
 msgid "Cancel Showing Properties Window?"
 msgstr "是否取消顯示屬性視窗？"
 
-#: src/file-manager/fm-properties-window.c:3627
+#: src/file-manager/fm-properties-window.c:3628
 msgid "Creating Properties window"
 msgstr "正在顯示屬性視窗"
 
-#: src/file-manager/fm-properties-window.c:3753
+#: src/file-manager/fm-properties-window.c:3754
 msgid "Select an icon"
 msgstr "選取圖示"
 
@@ -5382,7 +5382,7 @@ msgstr "新增啟動圖示"
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "Delete all items in the Trash"
-msgstr "清理垃圾桶所有項目"
+msgstr "清理垃圾筒所有項目"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 msgid "Dis_ks"
@@ -5427,7 +5427,7 @@ msgstr "顯示選定的檔案系統的媒體屬性"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:16
 msgid "Unmount the selected volume"
-msgstr "卸載已選取的檔案系統。"
+msgstr "卸載選定的檔案系統"
 
 #. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:17
@@ -5474,7 +5474,7 @@ msgstr "複製(_U)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:12
 msgid "Delete each selected item, without moving to the Trash"
-msgstr "將所有選定的項目直接刪除而不丟進垃圾桶"
+msgstr "將所有選定的項目直接刪除而不丟進垃圾筒"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:13
 msgid "Duplicate each selected item"
@@ -5793,7 +5793,7 @@ msgstr "成功合併舊的桌面"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:486
+#: src/nautilus-application.c:487
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5803,7 +5803,7 @@ msgstr ""
 "請重新啟動電腦或是重新安裝 Nautilus。"
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:492
+#: src/nautilus-application.c:493
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5845,12 +5845,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:522 src/nautilus-application.c:540
-#: src/nautilus-application.c:547
+#: src/nautilus-application.c:523 src/nautilus-application.c:541
+#: src/nautilus-application.c:548
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus 因為預計之外的錯誤而無法使用。"
 
-#: src/nautilus-application.c:523
+#: src/nautilus-application.c:524
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5858,7 +5858,7 @@ msgstr ""
 "目前無法使用 Nautilus，因為當嘗試登記檔案總管顯示模式伺服器時，Bonobo 出現預"
 "計之外的錯誤。"
 
-#: src/nautilus-application.c:541
+#: src/nautilus-application.c:542
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5867,7 +5867,7 @@ msgstr ""
 "Nautilus 目前無法使用，因為當 Bonobo 嘗試尋找工廠時出現預計之外的錯誤。強行中"
 "止 bonobo-activation-server 及重新啟動 Nautilus 或許可以修正問題。"
 
-#: src/nautilus-application.c:548
+#: src/nautilus-application.c:549
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -5967,7 +5967,7 @@ msgstr "<span weight=\"bold\">文字檔</span>"
 
 #: src/nautilus-file-management-properties.glade.h:34
 msgid "<span weight=\"bold\">Trash</span>"
-msgstr "<span weight=\"bold\">垃圾桶</span>"
+msgstr "<span weight=\"bold\">垃圾筒</span>"
 
 #: src/nautilus-file-management-properties.glade.h:35
 msgid "<span weight=\"bold\">Tree View Defaults</span>"
@@ -5979,7 +5979,7 @@ msgstr "一定"
 
 #: src/nautilus-file-management-properties.glade.h:37
 msgid "Ask before _emptying the Trash or deleting files"
-msgstr "清理垃圾桶或刪除檔案前會先詢問(_E)"
+msgstr "清理垃圾筒或刪除檔案前會先詢問(_E)"
 
 #: src/nautilus-file-management-properties.glade.h:38
 msgid "Behavior"
@@ -6007,7 +6007,7 @@ msgstr "檔案管理偏好設定"
 
 #: src/nautilus-file-management-properties.glade.h:48
 msgid "I_nclude a Delete command that bypasses Trash"
-msgstr "在選單中加入不使用垃圾桶的「刪除」指令(_N)"
+msgstr "在選單中加入不使用垃圾筒的「刪除」指令(_N)"
 
 #: src/nautilus-file-management-properties.glade.h:49
 msgid "Icon Captions"
@@ -6071,7 +6071,7 @@ msgstr "僅當檔案小於(_O)："
 
 #: src/nautilus-file-management-properties.glade.h:69
 msgid "_Open activated item in a new window"
-msgstr "在新的視窗中開啟已選取的項目(_O)"
+msgstr "在新的視窗中開啟選定的項目(_O)"
 
 #: src/nautilus-file-management-properties.glade.h:70
 msgid "_Run executable text files when they are clicked"
@@ -6130,7 +6130,7 @@ msgstr "無法啟動光碟燒錄程式"
 #. FIXME: We don't use spaces to pad labels!
 #: src/nautilus-information-panel.c:1042
 msgid "Empty _Trash"
-msgstr "清理垃圾桶(_T)"
+msgstr "清理垃圾筒(_T)"
 
 #. FIXME: We don't use spaces to pad labels!
 #: src/nautilus-information-panel.c:1058
@@ -6682,7 +6682,7 @@ msgstr "前往上一個位置"
 
 #: src/nautilus-shell-ui.xml.h:27
 msgid "Go to the trash folder"
-msgstr "前往垃圾桶資料夾"
+msgstr "前往垃圾筒資料夾"
 
 #: src/nautilus-shell-ui.xml.h:28
 msgid "Go up one level"
@@ -6784,11 +6784,11 @@ msgstr "寫入至光碟"
 
 #: src/nautilus-shell-ui.xml.h:53
 msgid "Zoom _In"
-msgstr "放大(_I)"
+msgstr "拉近(_I)"
 
 #: src/nautilus-shell-ui.xml.h:54
 msgid "Zoom _Out"
-msgstr "縮小(_O)"
+msgstr "拉遠(_O)"
 
 #: src/nautilus-shell-ui.xml.h:55
 msgid "_About"
@@ -6904,7 +6904,7 @@ msgstr "工具列(_T)"
 
 #: src/nautilus-shell-ui.xml.h:85
 msgid "_Trash"
-msgstr "垃圾桶(_T)"
+msgstr "垃圾筒(_T)"
 
 #: src/nautilus-shell-ui.xml.h:86
 msgid "_Undo"
@@ -6949,7 +6949,7 @@ msgstr "瀏覽紀錄"
 
 #: src/nautilus-view-frame.c:575
 msgid "the current selection"
-msgstr "目前已選取的內容"
+msgstr "目前選定的內容"
 
 #. Special Desktop window title (displayed in the Ctrl-Alt-Tab window)
 #: src/nautilus-window-manage-views.c:192
@@ -7119,7 +7119,7 @@ msgstr "清除瀏覽紀錄"
 #.
 #: src/nautilus-window-menus.c:719
 msgid "Copyright (C) 1999-2001 Eazel, Inc."
-msgstr "版權所有 ©1999-2001 Eazel, Inc."
+msgstr "版權所有 © 1999-2001 Eazel, Inc."
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
@@ -7204,11 +7204,11 @@ msgstr "和該視窗有聯繫的 NautilusApplication。"
 
 #: src/nautilus-zoom-control.c:83
 msgid "Zoom In"
-msgstr "放大"
+msgstr "拉近"
 
 #: src/nautilus-zoom-control.c:84
 msgid "Zoom Out"
-msgstr "縮小"
+msgstr "拉遠"
 
 #: src/nautilus-zoom-control.c:85
 msgid "Zoom to Fit"
@@ -7267,7 +7267,7 @@ msgstr "在 Nautilus 檔案總管中瀏覽網路伺服器"
 #~ msgstr "需要認證"
 
 #~ msgid "The Trash must remain on the desktop."
-#~ msgstr "垃圾桶必須留於桌面上。"
+#~ msgstr "垃圾筒必須留於桌面上。"
 
 #~ msgid "You cannot copy the Trash."
-#~ msgstr "不可複製垃圾桶。"
+#~ msgstr "不可複製垃圾筒。"
