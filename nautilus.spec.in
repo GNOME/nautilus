@@ -154,6 +154,7 @@ fi
 %{prefix}/bin/nautilus-sample-content-view
 %{prefix}/bin/nautilus-sidebar-loser
 %{prefix}/bin/run-nautilus
+%{prefix}/bin/eazel-proxy-util
 %{prefix}/idl/*.idl
 %{prefix}/lib/libnautilus-adapter.so.0
 %{prefix}/lib/libnautilus-adapter.so.0.0.0
@@ -224,6 +225,7 @@ fi
 %files devel
 
 %defattr(0555, bin, bin)
+%{prefix}/lib/libammonite-gtk.a
 %{prefix}/lib/*.la
 %{prefix}/lib/vfs/modules/*.la
 

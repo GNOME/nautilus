@@ -1,3 +1,29 @@
+2000-10-12  Mike Fleming  <mfleming@eazel.com>
+
+	Move libammonite-gtk and eazel-proxy-util from ammonite to 
+	nautilus/components/services/trilobite.  libammonite-gtk will
+	soon be dependant on libnautilus-extensions
+
+	* components/mozilla/Makefile.am:
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	* components/services/trilobite/Makefile.am:
+	* components/services/trilobite/eazel-proxy-util/.cvsignore:
+	* components/services/trilobite/eazel-proxy-util/Makefile.am:
+	* components/services/trilobite/eazel-proxy-util/ammonite-methods.c
+	onf.sub:
+	* components/services/trilobite/eazel-proxy-util/eazel-proxy-util.c
+	:
+	* components/services/trilobite/libammonite-gtk/.cvsignore:
+	* components/services/trilobite/libammonite-gtk/Makefile.am:
+	* components/services/trilobite/libammonite-gtk/ammonite-login-dial
+	og.c:
+	* components/services/trilobite/libammonite-gtk/ammonite-login-dial
+	og.h:
+	* components/services/trilobite/libammonite-gtk/libammonite-gtk.c:
+	* components/services/trilobite/libammonite-gtk/libammonite-gtk.h:
+	* configure.in:
+	* nautilus.spec.in:
+
 2000-10-12  Darin Adler  <darin@eazel.com>
 
 	* src/nautilus-window-manage-views.c: (stop_loading),
