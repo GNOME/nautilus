@@ -57,7 +57,7 @@ libeazelinstall_la_SOURCES = \
 	eazel-install-object.c			\
 	$(NULL)
 
-EXTRA_DIST = eazel-install-query-lex.l hest
+EXTRA_DIST = eazel-install-query-lex.l
 
 eazel-install-query-lex.c: $(srcdir)/eazel-install-query-lex.l eazel-install-query-parse.h
 	@rm -f $@
