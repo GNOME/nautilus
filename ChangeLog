@@ -1,3 +1,12 @@
+2001-01-12  Rebecca Schulman  <rebecka@eazel.com>
+
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_get_location):
+	Change "index-only" to "index-if-available"
+	in search uris, to take advantage of the new
+	option in medusa to perform a slow search
+	only if an index is unavailable
+
 2001-01-11  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>
