@@ -698,6 +698,7 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	view->details->services_description_header = NULL;
 	gtk_box_pack_start (GTK_BOX (temp_hbox), view->details->services_description_header_widget, FALSE, FALSE, 2);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 2);
+	
 	/* Body */
 	temp_hbox = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (temp_hbox);
@@ -705,6 +706,7 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->services_description_body_widget), 12);
 	nautilus_label_set_line_wrap (NAUTILUS_LABEL (view->details->services_description_body_widget), TRUE);
 	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->services_description_body_widget), GTK_JUSTIFY_LEFT);
+
 	gtk_widget_show (view->details->services_description_body_widget);
 	g_free (view->details->services_description_body);
 	view->details->services_description_body = NULL;
@@ -785,10 +787,11 @@ generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->news_description_body_widget), 12);
 	nautilus_label_set_line_wrap (NAUTILUS_LABEL (view->details->news_description_body_widget), TRUE);
 	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->news_description_body_widget), GTK_JUSTIFY_LEFT);
-	gtk_box_pack_start (GTK_BOX (item_box), view->details->news_description_body_widget, TRUE, TRUE, 2);
-
+	nautilus_label_set_line_wrap_width (NAUTILUS_LABEL (view->details->news_description_body_widget), -1);
 	
+	gtk_box_pack_start (GTK_BOX (item_box), view->details->news_description_body_widget, TRUE, TRUE, 2);
 	gtk_widget_show (view->details->news_description_body_widget);
+	
 	g_free (view->details->news_description_body);
 	view->details->news_description_body = NULL;
 
@@ -845,6 +848,7 @@ generate_update_news_entry_row  (NautilusSummaryView	*view, int	row)
 	nautilus_label_set_line_wrap (NAUTILUS_LABEL (view->details->update_description_body_widget), TRUE);
 	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->update_description_body_widget), GTK_JUSTIFY_LEFT);
 	gtk_widget_show (view->details->update_description_body_widget);
+
 	g_free (view->details->update_description_body);
 	view->details->update_description_body = NULL;
 	gtk_box_pack_start (GTK_BOX (temp_hbox), view->details->update_description_body_widget, FALSE, FALSE, 6);

@@ -88,6 +88,8 @@ static void  nautilus_label_get_arg                      (GtkObject             
 /* GtkWidgetClass methods */
 static void  nautilus_label_size_request                 (GtkWidget              *widget,
 							  GtkRequisition         *requisition);
+static void  nautilus_label_size_allocate                (GtkWidget              *widget,
+							  GtkAllocation          *allocation);
 /* NautilusBufferedWidgetClass methods */
 static void  render_buffer_pixbuf                        (NautilusBufferedWidget *buffered_widget,
 							  GdkPixbuf              *buffer,
@@ -141,6 +143,7 @@ nautilus_label_initialize_class (NautilusLabelClass *label_class)
 
 	/* GtkWidgetClass */
 	widget_class->size_request = nautilus_label_size_request;
+	widget_class->size_allocate = nautilus_label_size_allocate;
 
 	/* NautilusBufferedWidgetClass */
 	buffered_widget_class->render_buffer_pixbuf = render_buffer_pixbuf;
@@ -320,6 +323,21 @@ nautilus_label_size_request (GtkWidget		*widget,
     	requisition->height += (misc->ypad * 2);
 }
 
+/* recompute the line layout if it's dependent on the size */
+static void
+nautilus_label_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
+{
+	NautilusLabel *label;
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	
+	label = NAUTILUS_LABEL (widget);
+
+	if (label->detail->line_wrap_width == -1) {
+		label_recompute_line_geometries (label);
+	}
+}
+
 /* NautilusBufferedWidgetClass methods */
 static void
 render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
@@ -472,6 +490,28 @@ label_get_total_text_and_line_offset_height (NautilusLabel *label)
 	return total_height;
 }
 
+/* utility routine to get the allocation width of the passed in width, as constrained by the width of its parents */
+static int
+get_clipped_width (GtkWidget *widget)
+{
+	GtkWidget *current_container;
+	int clipped_width, container_offset, effective_width;
+	
+	clipped_width = widget->allocation.width;
+	container_offset = widget->allocation.x;
+	
+	current_container = widget->parent;
+	while (current_container != NULL) {
+		effective_width = current_container->allocation.width - container_offset;
+		if (effective_width < clipped_width) {
+			clipped_width = effective_width;
+		}
+		container_offset = current_container->allocation.x;
+		current_container = current_container->parent;
+	}	
+	return clipped_width;
+}
+
 static void
 label_recompute_line_geometries (NautilusLabel *label)
 {
@@ -509,9 +549,11 @@ label_recompute_line_geometries (NautilusLabel *label)
 	if (label->detail->line_wrap) {
 		char **pieces;
 		guint i;
-
+		int clipped_widget_width, wrap_width;
+		
 		label->detail->text_layouts = g_new (NautilusTextLayout *, label->detail->num_text_lines);
-
+		clipped_widget_width = get_clipped_width (GTK_WIDGET (label));
+		
 		pieces = g_strsplit (label->detail->text, "\n", 0);
 
 		for (i = 0; pieces[i] != NULL; i++) {
@@ -524,11 +566,18 @@ label_recompute_line_geometries (NautilusLabel *label)
 				text_piece = " ";
 			}
 
+			/* determine the width to use for wrapping.  A wrap width of -1 means use all of the available space. */
+			/* Don't use it if the widget is too small, since we won't be able to fit any words in */
+			if (label->detail->line_wrap_width == -1 && clipped_widget_width > 32) {
+				wrap_width = clipped_widget_width;
+			} else {
+				wrap_width = label->detail->line_wrap_width;
+			}
 			label->detail->text_layouts[i] = nautilus_text_layout_new (label->detail->font,
 										   label->detail->font_size,
 										   text_piece,
 										   label->detail->line_wrap_separators,
-										   label->detail->line_wrap_width, 
+										   wrap_width, 
 										   TRUE);
 
 			label->detail->total_text_line_height += label->detail->text_layouts[i]->height;
