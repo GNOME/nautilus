@@ -32,7 +32,7 @@
 static int object_count =0;
 
 static void
-services_object_destroyed (GtkObject *obj) {
+service_object_destroyed (GtkObject *obj) {
 	object_count--;
 	if (object_count <= 0) {
 		gtk_main_quit ();
@@ -40,14 +40,14 @@ services_object_destroyed (GtkObject *obj) {
 }
 
 static BonoboObject*
-services_make_object (BonoboGenericFactory* factory, 
-                      const char* goad_id,
+service_make_object (BonoboGenericFactory* factory, 
+                      const char* iid,
                       void* closure) {
 
-	NautilusServicesContentView* view;
-	NautilusView* nautilus_view;
+	NautilusServiceStartupView	*view;
+	NautilusView			*nautilus_view;
 
-	if (strcmp (goad_id, "OAFIID:nautilus_service_startup_view:a8f1b0ef-a39f-4f92-84bc-1704f0321a82")) {
+	if (strcmp (iid, "OAFIID:nautilus_service_startup_view:a8f1b0ef-a39f-4f92-84bc-1704f0321a82")) {
 		return NULL;
 	}
 
@@ -55,7 +55,7 @@ services_make_object (BonoboGenericFactory* factory,
 
 	object_count++;
 
-	gtk_signal_connect (GTK_OBJECT (view), "destroy", services_object_destroyed, NULL);
+	gtk_signal_connect (GTK_OBJECT (view), "destroy", service_object_destroyed, NULL);
 
 	nautilus_view = nautilus_service_startup_view_get_nautilus_view (view);
 	
@@ -73,14 +73,14 @@ main (int argc, char *argv[]) {
 	
 	CORBA_exception_init (&ev);
 	
-        gnome_init_with_popt_table ("nautilus-service-startup-view", VERSION, 
+        gnome_init_with_popt_table ("nautilus-service-startup-view", VERSION,
                                     argc, argv,
                                     oaf_popt_options, 0, NULL);
 
 	orb = oaf_init (argc, argv);
 	
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_service_startup_view_factory:fafa0f0d-a2d1-41f9-8164-4beb5e34656c", services_make_object, NULL);
+	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_service_startup_view_factory:fafa0f0d-a2d1-41f9-8164-4beb5e34656c", service_make_object, NULL);
 	
 	do {
 		bonobo_main ();

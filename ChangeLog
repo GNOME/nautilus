@@ -1,3 +1,34 @@
+2000-07-02  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/Makefile.am:
+	* components/services/login/nautilus-view/nautilus-login-view.c:
+	(generate_form_title):
+	* components/services/startup/lib/Makefile.am:
+	* components/services/startup/lib/eazel-register.c:
+	* components/services/startup/lib/eazel-register.h:
+	* components/services/startup/nautilus-view/Makefile.am:
+	* components/services/startup/nautilus-view/icons/Makefile.am:
+	* components/services/startup/nautilus-view/main.c:
+	(service_object_destroyed), (service_make_object), (main):
+	*
+	components/services/startup/nautilus-view/nautilus-service-startup-
+	view.c: (generate_startup_form), (go_to_uri),
+	(generate_form_title),
+	(nautilus_service_startup_view_initialize_class),
+	(nautilus_service_startup_view_initialize),
+	(nautilus_service_startup_view_destroy),
+	(nautilus_service_startup_view_get_nautilus_view), (is_location),
+	(nautilus_service_startup_view_load_uri),
+	(service_load_location_callback):
+	*
+	components/services/startup/nautilus-view/nautilus-service-startup-
+	view.h:
+
+	Have all of the eazel: views hooked into the build now.  Most of the
+	backend parsing of eazel:login, eazel:inventory, eazel:summary,
+	eazel:time, eazel:startup.  Most of these views don't look very good.
+	That's the next task.
+
 2000-07-01  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/tree/main.c (main): Remove unnecessary debugging

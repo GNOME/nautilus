@@ -2,12 +2,11 @@ NULL =
 
 CPPFLAGS = \
 	-DPREFIX=\"$(prefix)\" \
-	-DG_LOG_DOMAIN=\"Nautilus-Services\"
+	-DG_LOG_DOMAIN=\"trilobite-eazel-startup\"
 
 INCLUDES = \
 	-I$(top_srcdir)						\
 	-I$(top_builddir)					\
-	-I/usr/include/rpm					\
         -I$(top_srcdir)/components/services/trilobite/libtrilobite	\
 	$(GNOME_CFLAGS)						\
 	$(GCONF_CFLAGS)						\
@@ -18,7 +17,5 @@ INCLUDES = \
 noinst_LIBRARIES = libstartup.a
 
 libstartup_a_SOURCES =		        	\
-	eazel-register.h	 		\
-	eazel-register.c	 		\
 	$(NULL)
 

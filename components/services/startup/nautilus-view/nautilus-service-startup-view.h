@@ -20,45 +20,42 @@
  * Author: Ramiro Estrugo
  */
 
-/* nautilus-services-content-view.h - services content view
-   component. This component just displays a simple label of the URI
-   and does nothing else. It should be a good basis for writing
-   out-of-proc content views.*/
-
+/* nautilus-services-startup-view.h - services bootstrap startup view.
+ */
 #ifndef NAUTILUS_SERVICE_STARTUP_VIEW_H
 #define NAUTILUS_SERVICE_STARTUP_VIEW_H
 
 #include <libnautilus/nautilus-view.h>
 #include <gtk/gtk.h>
 
-typedef struct _NautilusServicesContentView NautilusServicesContentView;
-typedef struct _NautilusServicesContentViewClass NautilusServicesContentViewClass;
+typedef struct _NautilusServiceStartupView NautilusServiceStartupView;
+typedef struct _NautilusServiceStartupViewClass NautilusServiceStartupViewClass;
 
-#define NAUTILUS_TYPE_SERVICE_STARTUP_VIEW (nautilus_service_startup_view_get_type ())
-#define NAUTILUS_SERVICE_STARTUP_VIEW(obj) (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW, NautilusServicesContentView))
-#define NAUTILUS_SERVICE_STARTUP_VIEW_CLASS (klass) (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW, NautilusServicesContentViewClass))
-#define NAUTILUS_IS_SERVICE_STARTUP_VIEW (obj) (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW))
-#define NAUTILUS_IS_SERVICE_STARTUP_VIEW_CLASS (klass) (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW))
+#define NAUTILUS_TYPE_SERVICE_STARTUP_VIEW		(nautilus_service_startup_view_get_type ())
+#define NAUTILUS_SERVICE_STARTUP_VIEW(obj)		(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW, NautilusServiceStartupView))
+#define NAUTILUS_SERVICE_STARTUP_VIEW_CLASS (klass)	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW, NautilusServiceStartupViewClass))
+#define NAUTILUS_IS_SERVICE_STARTUP_VIEW(obj)		(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW))
+#define NAUTILUS_IS_SERVICE_STARTUP_VIEW_CLASS (klass)	(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_SERVICE_STARTUP_VIEW))
 
-typedef struct _NautilusServicesContentViewDetails NautilusServicesContentViewDetails;
+typedef struct _NautilusServiceStartupViewDetails NautilusServiceStartupViewDetails;
 
-struct _NautilusServicesContentView {
-	GtkEventBox parent;
-	NautilusServicesContentViewDetails *details;
+struct _NautilusServiceStartupView {
+	GtkEventBox				parent;
+	NautilusServiceStartupViewDetails	*details;
 };
 
-struct _NautilusServicesContentViewClass {
-	GtkVBoxClass parent_class;
+struct _NautilusServiceStartupViewClass {
+	GtkVBoxClass	parent_class;
 };
 
 /* GtkObject support */
 GtkType       nautilus_service_startup_view_get_type          (void);
 
 /* Component embedding support */
-NautilusView *nautilus_service_startup_view_get_nautilus_view (NautilusServicesContentView *view);
+NautilusView *nautilus_service_startup_view_get_nautilus_view (NautilusServiceStartupView *view);
 
 /* URI handling */
-void          nautilus_service_startup_view_load_uri          (NautilusServicesContentView *view,
-							       const char                  *uri);
+void          nautilus_service_startup_view_load_uri          (NautilusServiceStartupView	*view,
+							       const char			*uri);
 
 #endif /* NAUTILUS_SERVICE_STARTUP_VIEW_H */

@@ -1,2 +1,2 @@
-SUBDIRS = trilobite startup install time
+SUBDIRS = trilobite startup install time login summary inventory vault
 

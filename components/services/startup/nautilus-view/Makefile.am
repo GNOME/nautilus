@@ -4,12 +4,11 @@ SUBDIRS=icons
 
 CPPFLAGS =							\
 	-DPREFIX=\"$(prefix)\"
-	-DG_LOG_DOMAIN=\"Nautilus-Services\"
+	-DG_LOG_DOMAIN=\"trilobite-eazel-startup\"
 
 INCLUDES =							\
 	-I$(top_srcdir)						\
 	-I$(top_srcdir)/components/services/trilobite/libtrilobite\
-	-I$(top_srcdir)/components/services/startup/lib		\
 	-I$(top_builddir)					\
 	$(GNOMEUI_CFLAGS)                       		\
 	$(GCONF_CFLAGS) 					\
@@ -45,7 +44,6 @@ nautilus_service_startup_view_LDADD =                                     \
 	$(VFS_LIBS)                                                       \
 	$(GHTTP_LIBS)                                                     \
 	$(OAF_LIBS)                                                       \
-	$(top_builddir)/components/services/startup/lib/libstartup.a      \
 	$(NULL)
 
 EXTRA_DIST = $(oaf_DATA)

@@ -56,7 +56,7 @@ struct _NautilusLoginViewDetails {
 	GtkWidget	*feedback_text;
 };
 
-#define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR	"rgb:BBBB/DDDD/FFFF"
+#define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR	"rgb:0/6666/6666"
 #define SERVICE_DOMAIN_NAME			"eazel24.eazel.com"
 
 static void	nautilus_login_view_initialize_class	(NautilusLoginViewClass	*klass);
@@ -238,7 +238,7 @@ generate_form_title (NautilusLoginView	*view,
         gtk_box_pack_start (GTK_BOX (view->details->form), temp_container, 0, 0, 4);
         gtk_widget_show (temp_container);
 
-        file_name = nautilus_pixmap_file ("eazel-logo.gif");
+        file_name = nautilus_pixmap_file ("eazel-cloud-logo.png");
         temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
         gtk_box_pack_start (GTK_BOX(temp_container), temp_widget, 0, 0, 8);
         gtk_widget_show (temp_widget);
