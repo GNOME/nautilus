@@ -16,13 +16,15 @@ icon_DATA =\
 	emblem-certified.gif \
 	emblem-changed.gif \
 	emblem-confidential.gif \
+	emblem-draft.svg \
 	emblem-encrypted.gif \
+	emblem-favorite.svg \
 	emblem-generic.png \
 	emblem-important.gif \
 	emblem-new.gif \
 	emblem-noread.png \
 	emblem-nowrite.png \
-	emblem-personal.gif \
+	emblem-personal.svg \
 	emblem-remote.gif \
 	emblem-symbolic-link.png \
 	emblems.png \

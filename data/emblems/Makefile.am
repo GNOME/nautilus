@@ -6,10 +6,12 @@ emblems_DATA = \
 	certified.gif \
 	changed.gif \
 	confidential.gif \
+	draft.png \
 	encrypted.gif \
+	favorite.png \
 	important.gif \
 	new.gif \
-	personal.gif \
+	personal.png \
 	remote.gif \
 	$(NULL)
 
