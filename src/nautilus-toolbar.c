@@ -45,6 +45,8 @@ static void	nautilus_toolbar_initialize_class	(NautilusToolbarClass *class);
 static void	nautilus_toolbar_initialize		(NautilusToolbar      *bar);
 static void	nautilus_toolbar_size_allocate		(GtkWidget     *widget,
 			   				 GtkAllocation *allocation);
+static void	nautilus_toolbar_size_request		(GtkWidget      *widget,
+			  				 GtkRequisition *requisition);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusToolbar, nautilus_toolbar, GTK_TYPE_TOOLBAR)
 
@@ -63,6 +65,8 @@ nautilus_toolbar_initialize_class (NautilusToolbarClass *klass)
  
   	widget_class = (GtkWidgetClass *) klass;	
 	widget_class->size_allocate = nautilus_toolbar_size_allocate;
+	widget_class->size_request = nautilus_toolbar_size_request;
+
 }
 
 static void
@@ -97,6 +101,7 @@ nautilus_toolbar_size_allocate (GtkWidget     *widget,
   int spacing, save_x;
   int item_width, item_height;
   int width_to_use, height_to_use;
+  gboolean is_throbber;
   
   g_return_if_fail (widget != NULL);
   g_return_if_fail (GTK_IS_TOOLBAR (widget));
@@ -192,7 +197,9 @@ nautilus_toolbar_size_allocate (GtkWidget     *widget,
 
 	  /* special case the throbber, so it's positioned at the far right */
 	  
-	  if (child->widget == nautilus_toolbar->throbber) {
+	  is_throbber =  child->widget == nautilus_toolbar->throbber &&
+	  			toolbar->orientation == GTK_ORIENTATION_HORIZONTAL;
+	  if (is_throbber) {
 		save_x = alloc.x;
 		alloc.x = widget->allocation.width - alloc.width;
 	  }
@@ -204,7 +211,7 @@ nautilus_toolbar_size_allocate (GtkWidget     *widget,
 	  else
 	    alloc.y += child_requisition.height;
 
-	  if (child->widget == nautilus_toolbar->throbber) {
+	  if (is_throbber ) {
 		alloc.x = save_x;
 	  }
 
@@ -215,3 +222,101 @@ nautilus_toolbar_size_allocate (GtkWidget     *widget,
 	}
     }
 }
+
+static void
+nautilus_toolbar_size_request (GtkWidget      *widget,
+			       GtkRequisition *requisition)
+{
+  GtkToolbar *toolbar;
+  NautilusToolbar *nautilus_toolbar;
+  
+  GList *children;
+  GtkToolbarChild *child;
+  gint nbuttons, spacing;
+  gint button_maxw, button_maxh;
+  gint widget_maxw, widget_maxh;
+  GtkRequisition child_requisition;
+
+  g_return_if_fail (widget != NULL);
+  g_return_if_fail (GTK_IS_TOOLBAR (widget));
+  g_return_if_fail (requisition != NULL);
+
+  toolbar = GTK_TOOLBAR (widget);
+  nautilus_toolbar = NAUTILUS_TOOLBAR (widget);
+  spacing = nautilus_toolbar->button_spacing;
+
+  requisition->width = GTK_CONTAINER (toolbar)->border_width * 2;
+  requisition->height = GTK_CONTAINER (toolbar)->border_width * 2;
+  nbuttons = 0;
+  button_maxw = 0;
+  button_maxh = 0;
+  widget_maxw = 0;
+  widget_maxh = 0;
+
+  for (children = toolbar->children; children; children = children->next)
+    {
+      child = children->data;
+
+      switch (child->type)
+	{
+	case GTK_TOOLBAR_CHILD_SPACE:
+	  if (toolbar->orientation == GTK_ORIENTATION_HORIZONTAL)
+	    requisition->width += toolbar->space_size;
+	  else
+	    requisition->height += toolbar->space_size;
+
+	  break;
+
+	case GTK_TOOLBAR_CHILD_BUTTON:
+	case GTK_TOOLBAR_CHILD_RADIOBUTTON:
+	case GTK_TOOLBAR_CHILD_TOGGLEBUTTON:
+	  if (GTK_WIDGET_VISIBLE (child->widget))
+	    {
+	      gtk_widget_size_request (child->widget, &child_requisition);
+	 
+	      if (toolbar->orientation == GTK_ORIENTATION_HORIZONTAL) {
+	      		requisition->width += (child_requisition.width > spacing) ? child_requisition.width : spacing;
+	       
+	       } else {
+	  		requisition->height += (child_requisition.height > spacing) ? child_requisition.height : spacing;
+	  	}
+
+	      nbuttons++;
+	      
+	      button_maxw = MAX (button_maxw, child_requisition.width);
+	      button_maxh = MAX (button_maxh, child_requisition.height);
+	    }
+
+	  break;
+
+	case GTK_TOOLBAR_CHILD_WIDGET:
+	  if (GTK_WIDGET_VISIBLE (child->widget))
+	    {
+	      gtk_widget_size_request (child->widget, &child_requisition);
+
+	      if (toolbar->orientation == GTK_ORIENTATION_HORIZONTAL)
+		requisition->width += child_requisition.width + toolbar->space_size ;
+	      else
+		requisition->height += child_requisition.height + toolbar->space_size;
+	    }
+
+	  break;
+
+	default:
+	  g_assert_not_reached ();
+	}
+    }
+
+  if (toolbar->orientation == GTK_ORIENTATION_HORIZONTAL)
+    {
+      requisition->height += MAX (button_maxh, widget_maxh);
+    }
+  else
+    {
+      requisition->width += MAX (button_maxw, widget_maxw);
+    }
+
+  toolbar->button_maxw = button_maxw;
+  toolbar->button_maxh = button_maxh;
+}
+
