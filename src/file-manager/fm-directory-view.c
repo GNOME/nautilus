@@ -1082,7 +1082,7 @@ fm_directory_view_destroy (GtkObject *object)
 	}
 
 	if (view->details->update_menus_idle_id != 0) {
-		gtk_timeout_remove (view->details->update_menus_idle_id);
+		gtk_idle_remove (view->details->update_menus_idle_id);
 	}
 
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,

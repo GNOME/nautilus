@@ -1,3 +1,17 @@
+2000-11-06  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Fix for bug 4480.  Transporting Darin's fix from the HEAD to the
+	pr2 branch.  
+
+	Original ChangeLog:
+
+	* src/nautilus-window.c: (nautilus_window_set_content_view_widget):
+	Remove the idle with gtk_idle_remove, not gtk_timeout_remove.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_destroy): Removed the check since it was giving
+	false alarms and not helping us for real.
+
 2000-11-05  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* nautilus.spec.in:
