@@ -1,5 +1,12 @@
 2000-04-28  Darin Adler  <darin@eazel.com>
 
+	* libnautilus-extensions/nautilus-directory-background.c
+	(nautilus_connect_background_to_directory): 
+	Added code to disconnect when the background is destroyed.
+	This was exposed by our lack of leaking now!
+	
+2000-04-28  Darin Adler  <darin@eazel.com>
+
 	* ntl-window-msgs.c (nautilus_window_has_really_changed):
 	Quick, kinda-hacky fix for the bug you'd see when you
 	switch to "hardware:" and then do go-back.

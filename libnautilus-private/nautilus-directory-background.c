@@ -153,14 +153,18 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
 
         /* Connect new signal handlers. */
         if (directory != NULL) {
+                /* Directory can't go away without us knowing. */
                 gtk_signal_connect (GTK_OBJECT (background),
                                     "changed",
                                     GTK_SIGNAL_FUNC (background_changed_callback),
                                     directory);
-                gtk_signal_connect (GTK_OBJECT (directory),
-                                    "metadata_changed",
-                                    GTK_SIGNAL_FUNC (directory_changed_callback),
-                                    background);
+
+                /* But the background can. */
+                gtk_signal_connect_while_alive (GTK_OBJECT (directory),
+                                                "metadata_changed",
+                                                GTK_SIGNAL_FUNC (directory_changed_callback),
+                                                background,
+                                                GTK_OBJECT (background));
         }
 
         /* Update the background based on the directory metadata. */
