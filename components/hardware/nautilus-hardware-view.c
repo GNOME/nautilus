@@ -95,8 +95,6 @@ static int  update_uptime_text			      (gpointer			 callback_data);
 
 EEL_CLASS_BOILERPLATE (NautilusHardwareView, nautilus_hardware_view, GTK_TYPE_EVENT_BOX)
 
-#define HARDWARE_DEFAULT_BACKGROUND_COLOR "#DDDDBB"
-
 static void
 nautilus_hardware_view_class_init (NautilusHardwareViewClass *klass)
 {
@@ -162,7 +160,6 @@ nautilus_hardware_view_init (NautilusHardwareView *hardware_view)
                                  G_CALLBACK (hardware_view_load_location_callback), hardware_view, 0);
 
   	background = eel_get_widget_background (GTK_WIDGET (hardware_view));
-  	eel_background_set_color (background, HARDWARE_DEFAULT_BACKGROUND_COLOR);
 
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (hardware_view),

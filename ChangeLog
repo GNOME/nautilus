@@ -1,3 +1,28 @@
+2002-07-19  Federico Mena Quintero  <federico@ximian.com>
+
+	Fixes the Nautilus part of #46238; see eel for the other part.
+
+	* components/hardware/nautilus-hardware-view.c
+	(nautilus_hardware_view_init): Do not set a hardcoded background
+	color; just use the color from the GTK+ theme.  We still set up
+	the EelBackground as this handles dragged colors, but it does not
+	save them anywhere.
+
+	* components/notes/nautilus-notes.c (make_notes_view): Do not set
+	up an EelBackground at all for the text view; just let it use the
+	default color from the GTK+ theme.  This code did not handle
+	dragged colors or anything, anyways.
+
+	* src/nautilus-property-browser.c
+	(nautilus_property_browser_init): Do not set a hardcoded
+	background color.
+
+	* src/nautilus-sidebar.c (nautilus_sidebar_style_set):
+	::style_set() handler; we act as if the theme changed.
+
+	* icons/gnome/gnome.xml: Removed hardcoded colors and background
+	images so that we follow the current GTK+ theme.  It's bland but good.
+
 2002-07-17  Frank Worsley  <fworsley@shaw.ca>
 
 	* src/nautilus-application.c: (save_window_geometry_timeout),
