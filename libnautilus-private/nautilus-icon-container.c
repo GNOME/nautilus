@@ -1425,6 +1425,7 @@ rubberband_timeout_callback (gpointer data)
 	GtkWidget *widget;
 	NautilusIconRubberbandInfo *band_info;
 	int x, y;
+	int bin_x, bin_y;
 	double x1, y1, x2, y2;
 	double world_x, world_y;
 	int x_scroll, y_scroll;
@@ -1438,6 +1439,7 @@ rubberband_timeout_callback (gpointer data)
 	g_assert (GNOME_IS_CANVAS_RECT (band_info->selection_rectangle));
 
 	gdk_window_get_pointer (widget->window, &x, &y, NULL);
+	gdk_window_get_pointer (GTK_LAYOUT (widget)->bin_window, &bin_x, &bin_y, NULL);
 
 	if (x < 0) {
 		x_scroll = x;
@@ -1467,7 +1469,7 @@ rubberband_timeout_callback (gpointer data)
 	nautilus_icon_container_scroll (container, x_scroll, y_scroll);
 
 	gnome_canvas_window_to_world (GNOME_CANVAS (container),
-				      x, y, &world_x, &world_y);
+				      bin_x, bin_y, &world_x, &world_y);
 
 	if (world_x < band_info->start_x) {
 		x1 = world_x;
@@ -1510,7 +1512,6 @@ rubberband_timeout_callback (gpointer data)
 	
 	gnome_canvas_item_raise_to_top (band_info->selection_rectangle);
 	
-
 	band_info->prev_x = x;
 	band_info->prev_y = y;
 

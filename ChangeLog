@@ -1,3 +1,15 @@
+2002-01-04  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(rubberband_timeout_callback): Fix rubberband selection when
+	the icon view is scrolled by using the bin_window.
+	
+	* src/nautilus-sidebar.c: (nautilus_sidebar_destroy):
+	Fix one of those "double-destroy" problems.
+
+	* TODO: Formatting tweak.
+	* configure.in: Formatting tweak.
+	
 2002-01-04  Dave Camp  <dave@ximian.com>
 
 	* components/adapter/nautilus-zoomable-proxy.c

@@ -322,16 +322,15 @@ nautilus_sidebar_destroy (GtkObject *object)
 		
 		g_free (sidebar->details);
 		sidebar->details = NULL;
-	}
 		
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-					      nautilus_sidebar_theme_changed,
-					      sidebar);
-
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-					      nautilus_sidebar_confirm_trash_changed,
-					      sidebar);
-
+		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
+						 nautilus_sidebar_theme_changed,
+						 sidebar);
+		
+		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+						 nautilus_sidebar_confirm_trash_changed,
+						 sidebar);
+	}
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
