@@ -834,7 +834,7 @@ attach_owner_menu (GtkTable *table,
 	gtk_widget_show (option_menu);
 
 	/* FIXME bugzilla.eazel.com 1454: 
-	/* for reasons I don't understand, passing
+	 * for reasons I don't understand, passing
 	 * GTK_FILL here is not making the option menu
 	 * minimally-sized horizontally. Might have to pack
 	 * it in an hbox or something.
