@@ -180,6 +180,13 @@ struct FMDirectoryViewClass {
         void     (* set_selection)	 	(FMDirectoryView *view, 
         					 GList *selection);
 
+        /* reveal_selection is a function pointer that subclasses may
+         * override to make sure the selected items are sufficiently
+         * apparent to the user (e.g., scrolled into view). By default,
+         * this does nothing.
+         */
+        void     (* reveal_selection)	 	(FMDirectoryView *view);
+
         /* get_background is a function pointer that subclasses must
          * override to return the NautilusBackground for this view.
          */
@@ -286,6 +293,7 @@ void               fm_directory_view_restore_default_zoom_level     (FMDirectory
 void               fm_directory_view_select_all                     (FMDirectoryView       *view);
 void               fm_directory_view_set_selection                  (FMDirectoryView       *view,
 								     GList                 *selection);
+void               fm_directory_view_reveal_selection               (FMDirectoryView       *view);
 gboolean	   fm_directory_view_is_read_only		    (FMDirectoryView	   *view);
 gboolean	   fm_directory_view_supports_creating_files	    (FMDirectoryView	   *view);
 gboolean	   fm_directory_view_supports_properties	    (FMDirectoryView	   *view);

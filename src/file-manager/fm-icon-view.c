@@ -1644,6 +1644,25 @@ fm_icon_view_select_all (FMDirectoryView *view)
 }
 
 static void
+fm_icon_view_reveal_selection (FMDirectoryView *view)
+{
+	GList *selection;
+
+	g_return_if_fail (FM_IS_ICON_VIEW (view));
+
+        selection = fm_directory_view_get_selection (view);
+
+	/* Make sure at least one of the selected items is scrolled into view */
+	if (selection != NULL) {
+		nautilus_icon_container_reveal 
+			(get_icon_container (FM_ICON_VIEW (view)), 
+			 selection->data);
+	}
+
+        nautilus_file_list_free (selection);
+}
+
+static void
 fm_icon_view_set_selection (FMDirectoryView *view, GList *selection)
 {
 	NautilusIconContainer *icon_container;
@@ -1652,10 +1671,6 @@ fm_icon_view_set_selection (FMDirectoryView *view, GList *selection)
 
 	icon_container = get_icon_container (FM_ICON_VIEW (view));
 	nautilus_icon_container_set_selection (icon_container, selection);
-	/* Make sure at least one of the selected items is scrolled into view */
-	if (selection != NULL) {
-		nautilus_icon_container_reveal (icon_container, selection->data);
-	}
 }
 
 static void
@@ -2154,6 +2169,7 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
 	fm_directory_view_class->get_selection = fm_icon_view_get_selection;
 	fm_directory_view_class->select_all = fm_icon_view_select_all;
 	fm_directory_view_class->set_selection = fm_icon_view_set_selection;
+	fm_directory_view_class->reveal_selection = fm_icon_view_reveal_selection;
         fm_directory_view_class->create_background_context_menu_items =
 		fm_icon_view_create_background_context_menu_items;
         fm_directory_view_class->create_selection_context_menu_items =

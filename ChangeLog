@@ -1,3 +1,34 @@
+2000-09-14  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2373 (Select All Files scrolls to bottom)
+	Fixed bug 2624 (clicking to select a partly-obscured icon
+	auto-scrolls, but shouldn't)
+	Fixed bug 2612 (Part of icon view drawn in black when
+	right-clicking on icon causes scroll)
+
+	The key was separating reveal_selection from set_selection,
+	and only calling reveal_selection when switching/loading
+	views.
+
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_reveal_selection): New function, calls
+	virtual function
+	(fm_directory_view_initialize_class): initialize reveal_selection
+	function to NULL, since it would be OK if a subclass did nothing.
+	(display_pending_files): reveal selection after setting it in
+	this case.
+	* src/file-manager/fm-icon-view.c: 
+	(fm_icon_view_reveal_selection): New function, extracted from 
+	set_selection.
+	(fm_icon_view_set_selection): Took out the reveal code.
+	(fm_icon_view_initialize_class): Wire up reveal_selection.
+	* src/file-manager/fm-list-view.c: 
+	(fm_list_view_reveal_selection): New function, extracted from
+	set_selection.
+	(fm_list_view_set_selection): Took out the reveal code.
+	(fm_list_view_initialize_class): Wire up reveal_selection.
+
 2000-09-14  Mathieu Lacage  <mathieu@eazel.com>
 
 	* components/tree/nautilus-tree-view.c: fix bug 2937.

@@ -286,6 +286,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	klass->supports_creating_files = fm_directory_view_real_supports_creating_files;
 	klass->supports_zooming = fm_directory_view_real_supports_zooming;
 	klass->supports_properties = fm_directory_view_real_supports_properties;
+	klass->reveal_selection = NULL;
 
 	/* Function pointers that subclasses must override */
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, add_file);
@@ -1427,6 +1428,7 @@ display_pending_files (FMDirectoryView *view)
 		nautilus_g_list_free_deep (uris_selected);
 
 		fm_directory_view_set_selection (view, selection);
+		fm_directory_view_reveal_selection (view);
 
 		nautilus_file_list_free (selection);
 	}
@@ -3780,6 +3782,21 @@ fm_directory_view_set_selection (FMDirectoryView *view, GList *selection)
 	NAUTILUS_CALL_VIRTUAL
 		(FM_DIRECTORY_VIEW_CLASS, view,
 		 set_selection, (view, selection));
+}
+
+/**
+ * fm_directory_view_reveal_selection:
+ *
+ * Scroll as necessary to reveal the selected items.
+ **/
+void
+fm_directory_view_reveal_selection (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 reveal_selection, (view));
 }
 
 /**
