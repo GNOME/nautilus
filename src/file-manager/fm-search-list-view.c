@@ -209,7 +209,7 @@ real_get_emblem_names_to_exclude (FMDirectoryView *view)
 static int
 real_get_link_column (FMListView *view)
 {
-	return 3;
+	return 2;
 }
 
 static void
@@ -228,19 +228,19 @@ real_get_column_specification (FMListView *view,
 		fm_list_view_column_set (specification,
 					 "emblems", NULL,
 					 NAUTILUS_FILE_SORT_BY_EMBLEMS,
-					 20, 40, 300, FALSE);
+					 20, 20, 300, FALSE);
 		break;
 	case 2:
 		fm_list_view_column_set (specification,
-					 "parent_uri", _("Where"),
-					 NAUTILUS_FILE_SORT_BY_DIRECTORY,
-					 30, 130, 500, FALSE);
+					 "name", _("Name"),
+					 NAUTILUS_FILE_SORT_BY_NAME,
+					 30, 150, 300, FALSE);
 		break;
 	case 3:
 		fm_list_view_column_set (specification,
-					 "name", _("Name"),
-					 NAUTILUS_FILE_SORT_BY_NAME,
-					 30, 200, 300, FALSE);
+					 "parent_uri", _("Where"),
+					 NAUTILUS_FILE_SORT_BY_DIRECTORY,
+					 30, 120, 500, FALSE);
 		break;
 	case 4:
 		fm_list_view_column_set (specification,
@@ -252,13 +252,13 @@ real_get_column_specification (FMListView *view,
 		fm_list_view_column_set (specification,
 					 "type", _("Type"),
 					 NAUTILUS_FILE_SORT_BY_TYPE,
-					 20, 95, 200, FALSE);
+					 20, 75, 200, FALSE);
 		break;
 	case 6:
 		fm_list_view_column_set (specification,
 					 "date_modified", _("Date Modified"),
 					 NAUTILUS_FILE_SORT_BY_MTIME,
-					 30, 95, 200, FALSE);
+					 30, 75, 200, FALSE);
 		break;
 	default:
 		g_assert_not_reached ();

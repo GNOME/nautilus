@@ -1,3 +1,14 @@
+2000-09-11  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2308 ("Where" column should be after "Name" column)
+	Fixed bug 1931 (Search list columns need better widths)
+
+	* src/file-manager/fm-search-list-view.c: 
+	(real_get_column_specification): Switched order of Where/Name
+	columns, tweaked column widths.
+	(real_get_link_column): Changed link column number to match
+	ordering change.
+
 2000-09-11  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 2447, Check permissions when mounting floppy
