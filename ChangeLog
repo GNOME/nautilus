@@ -1,3 +1,9 @@
+2000-04-29  Christopher Blizzard  <blizzard@redhat.com>
+
+	* components/mozilla/Makefile.am (INCLUDES): Add $(BONOBO_CFLAGS)
+	so that we can pick up the path to the bonobo includes in case
+	they are built somewhere else than the standard location.
+
 2000-04-29  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* configure.in:
