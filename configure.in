@@ -9,7 +9,8 @@ dnl ==========================================================================
 
 ART_REQUIRED=2.3.6
 BONOBO_ACTIVATION_REQUIRED=0.9.3
-BONOBO_REQUIRED=1.106
+BONOBO_REQUIRED=1.108
+BONOBO_UI_REQUIRED=1.108.1
 EEL_REQUIRED=1.0.2
 ESOUND_REQUIRED=0.2.22
 GCONF_REQUIRED=1.1.3
@@ -69,7 +70,7 @@ PKG_CHECK_MODULES(ALL, \
 	gtk+-2.0 >= $GTK_REQUIRED \
 	libart-2.0 >= $ART_REQUIRED \
 	libbonobo-2.0 >= $BONOBO_REQUIRED \
-	libbonoboui-2.0 >= $BONOBO_REQUIRED \
+	libbonoboui-2.0 >= $BONOBO_UI_REQUIRED \
 	libgnome-2.0 >= $GNOME_REQUIRED \
 	libgnomecanvas-2.0 >= $GNOME_CANVAS_REQUIRED \
 	libgnomeui-2.0 >= $GNOME_UI_REQUIRED \

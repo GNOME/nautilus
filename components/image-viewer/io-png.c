@@ -14,6 +14,7 @@ typedef struct {
 	CORBA_Environment *ev;
 } BStreamData;
 
+#ifdef GNOME2_CONVERSION_COMPLETE
 static void
 png_write_data_fn (png_structp png_ptr, png_bytep data, png_size_t len)
 {
@@ -30,11 +31,16 @@ png_flush_fn (png_structp png_ptr)
 {
 	g_warning ("Flush nothing");
 }
+#endif
 
 void
 image_save (Bonobo_Stream stream, GdkPixbuf *pixbuf,
 	    CORBA_Environment *ev)
 {
+	g_warning ("Save image unimplemented");
+#ifdef GNOME2_CONVERSION_COMPLETE
+	/* Use Eog */
+
 	png_structp         png_ptr;
 	png_infop           info_ptr;
 	guint8              *ptr;
@@ -115,5 +121,6 @@ image_save (Bonobo_Stream stream, GdkPixbuf *pixbuf,
 	g_free (data);
 	CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
 			     ex_Bonobo_Stream_IOError, NULL);
+#endif
 	return;
 }
