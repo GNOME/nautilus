@@ -961,13 +961,22 @@ set_default_for_item (ProgramFilePair *pair)
 }
 
 static void
-launch_mime_capplet (const char *mime_type)
+launch_mime_capplet (NautilusFile *file)
 {
-	char *command;
+	char *command, *tmp, *mime_type, *file_name;
 
-	command = g_strconcat (FILE_TYPES_CAPPLET_NAME, " ", mime_type, NULL);
+	tmp = nautilus_file_get_mime_type (file);
+	mime_type = g_shell_quote (tmp);
+	g_free (tmp);
+	tmp = nautilus_file_get_name (file);
+	file_name = g_shell_quote (tmp);
+	g_free (tmp);
+
+	command = g_strconcat (FILE_TYPES_CAPPLET_NAME, " ", mime_type, " ", file_name, NULL);
 	nautilus_launch_application_from_command (FILE_TYPES_CAPPLET_NAME, command, NULL, FALSE);
 	g_free (command);
+	g_free (file_name);
+	g_free (mime_type);
 }
 
 static void
@@ -985,16 +994,11 @@ static void
 launch_mime_capplet_and_close_dialog (GtkButton *button, gpointer callback_data)
 {
 	ProgramFilePair *file_pair;
-	char *mime_type;
-	
+
 	g_assert (GTK_IS_BUTTON (button));
 
 	file_pair = get_selected_program_file_pair (NAUTILUS_PROGRAM_CHOOSER (callback_data));
-	mime_type = nautilus_file_get_mime_type (file_pair->file);
-	launch_mime_capplet (mime_type);
-	
-	g_free (mime_type);
-
+ 	launch_mime_capplet (file_pair->file);
 	gtk_dialog_response (GTK_DIALOG (callback_data),
 		GTK_RESPONSE_DELETE_EVENT);
 }
@@ -1608,9 +1612,9 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 	dialog = eel_show_yes_no_dialog 
 		(prompt, dialog_title, _("Associate Application"), GTK_STOCK_CANCEL, parent_window);
 
-	g_signal_connect (dialog, "response",
-			  G_CALLBACK (launch_mime_capplet_on_ok),
-			  nautilus_file_get_mime_type (file));
+	g_signal_connect_object (dialog, "response",
+		G_CALLBACK (launch_mime_capplet_on_ok),
+		file, 0);
 
 	g_free (unavailable_message);
 	g_free (file_name);
