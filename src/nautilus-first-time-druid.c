@@ -763,6 +763,7 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 	dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (dialog),
 			      _("Nautilus First Time Setup"));
+	gtk_window_set_wmclass (GTK_WINDOW (dialog), "initial_preferences", "Nautilus");
   	gtk_container_set_border_width (GTK_CONTAINER (dialog), 0);
   	gtk_window_set_policy (GTK_WINDOW (dialog), FALSE, FALSE, FALSE);
   	/* Ensure there's a main event loop while the druid is running. */

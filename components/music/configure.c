@@ -278,6 +278,7 @@ void mpg123_configure(void)
 	gtk_signal_connect(GTK_OBJECT(mpg123_configurewin), "destroy", GTK_SIGNAL_FUNC(gtk_widget_destroyed), &mpg123_configurewin);
 	gtk_signal_connect(GTK_OBJECT(mpg123_configurewin), "destroy", GTK_SIGNAL_FUNC(configure_destroy), &mpg123_configurewin);
 	gtk_window_set_title(GTK_WINDOW(mpg123_configurewin), _("MPG123 Configuration"));
+	gtk_window_set_wmclass(GTK_WINDOW(mpg123_configurewin), "mpg123_configuration", "Nautilus");
 	gtk_window_set_policy(GTK_WINDOW(mpg123_configurewin), FALSE, FALSE, FALSE);
 	/*  gtk_window_set_position(GTK_WINDOW(mpg123_configurewin), GTK_WIN_POS_MOUSE); */
 	gtk_container_border_width(GTK_CONTAINER(mpg123_configurewin), 10);

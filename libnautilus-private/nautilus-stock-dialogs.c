@@ -159,6 +159,7 @@ timed_wait_callback (gpointer callback_data)
 	dialog = GNOME_DIALOG (gnome_dialog_new (wait->window_title,
 						 GNOME_STOCK_BUTTON_CANCEL,
 						 NULL));
+	gtk_window_set_wmclass (GTK_WINDOW (dialog), "dialog", "Nautilus");
 	add_label_to_dialog (dialog, wait->wait_message);
 	gnome_dialog_set_close (dialog, TRUE);
 	gtk_widget_show_all (GTK_WIDGET (dialog));
@@ -303,6 +304,7 @@ nautilus_simple_dialog (GtkWidget *parent, gboolean ignore_close_box,
 	
         gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
 
+	gtk_window_set_wmclass (GTK_WINDOW (dialog), "dialog", "Nautilus");
 
 	/* Parent it if asked to. */
         if (parent != NULL) {
@@ -371,6 +373,7 @@ show_message_box (const char *message,
 
 	box = gnome_message_box_new (message, type, button_one, button_two, NULL);
 	gtk_window_set_title (GTK_WINDOW (box), dialog_title);
+	gtk_window_set_wmclass (GTK_WINDOW (box), "stock_dialog", "Nautilus");
 	
 	/* A bit of a hack. We want to use gnome_message_box_new,
 	 * but we want the message to be wrapped. So, we search

@@ -137,6 +137,7 @@ nautilus_about_initialize (NautilusAbout *about)
 
 	/* set the window title and standard close key accelerator */
 	gtk_window_set_title (GTK_WINDOW (about), _("About Nautilus"));
+	gtk_window_set_wmclass (GTK_WINDOW (about), "about", "Nautilus");
 	nautilus_gtk_window_set_up_close_accelerator (GTK_WINDOW (about));
 	
 	/* allocate a frame to hold the drawing area */

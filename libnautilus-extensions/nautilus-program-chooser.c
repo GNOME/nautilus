@@ -953,6 +953,7 @@ run_program_configurator_callback (GtkWidget *button, gpointer callback_data)
 				   GNOME_STOCK_BUTTON_CANCEL,
 				   NULL);
 	g_free (title);
+	gtk_window_set_wmclass (GTK_WINDOW (dialog), "program_chooser", "Nautilus");
 
 	/* Labeled frame to avoid repeating text in each radio button,
 	 * and to look nice.
@@ -1237,6 +1238,7 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
 	gtk_window_set_default_size (GTK_WINDOW (window), 
 				     NO_DEFAULT_MAGIC_NUMBER,
 				     PROGRAM_CHOOSER_DEFAULT_HEIGHT);
+	gtk_window_set_wmclass (GTK_WINDOW (window), "program_chooser", "Nautilus");
 
 	gtk_object_set_data (GTK_OBJECT (window), "type", GINT_TO_POINTER (action_type));
 

@@ -1843,6 +1843,7 @@ create_properties_window (NautilusFile *file)
 	
   	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
   	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
+	gtk_window_set_wmclass (GTK_WINDOW (window), "file_properties", "Nautilus");
 
 	/* Set initial window title */
 	update_properties_window_title (GTK_WINDOW (window), window->details->file);
@@ -2092,6 +2093,7 @@ select_image_button_callback (GtkWidget *widget, NautilusFile *file)
 
 	gtk_window_set_position (GTK_WINDOW (file_dialog), GTK_WIN_POS_MOUSE);
 	gtk_window_set_transient_for (GTK_WINDOW (file_dialog), GTK_WINDOW (window));
+ 	gtk_window_set_wmclass (GTK_WINDOW (file_dialog), "file_selector", "Nautilus");
 	gtk_widget_show (GTK_WIDGET (file_dialog));
 }
 

@@ -362,6 +362,7 @@ void mpg123_file_info_box(char *filename)
 
 	title = g_strdup_printf(_("File Info - %s"), g_basename(filename));
 	gtk_window_set_title(GTK_WINDOW(window), title);
+	gtk_window_set_wmclass(GTK_WINDOW(window), "mpg123_file_info", "Nautilus");
 	g_free(title);
 
 	gtk_entry_set_text(GTK_ENTRY(filename_entry), filename);

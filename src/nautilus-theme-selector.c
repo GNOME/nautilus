@@ -155,6 +155,7 @@ nautilus_theme_selector_initialize (GtkObject *object)
 
 	/* set the title and standard close accelerator */
 	gtk_window_set_title (GTK_WINDOW (widget), _("Nautilus Theme Selector"));
+	gtk_window_set_wmclass(GTK_WINDOW(widget), "theme_selector", "Nautilus");
 	nautilus_gtk_window_set_up_close_accelerator (GTK_WINDOW (widget));
 	
 	/* set up the background */	
@@ -461,6 +462,7 @@ add_new_theme_button_callback(GtkWidget *widget, NautilusThemeSelector *theme_se
 
 		gtk_window_set_position (GTK_WINDOW (file_dialog), GTK_WIN_POS_MOUSE);
 		gtk_window_set_transient_for (GTK_WINDOW (file_dialog), GTK_WINDOW (theme_selector));
+ 		gtk_window_set_wmclass (GTK_WINDOW (file_dialog), "file_selector", "Nautilus");
 		gtk_widget_show (GTK_WIDGET(file_dialog));
 	}
 }

@@ -85,6 +85,7 @@ get_progress(HTRequest *req)
 	if (prog_win == NULL) {
 		prog_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title(GTK_WINDOW(prog_win), _("Transfer Progress"));
+		gtk_window_set_wmclass(GTK_WINDOW(prog_win), "html_progress", "Nautilus");
 		gtk_window_set_policy(GTK_WINDOW(prog_win), FALSE, FALSE, TRUE);
 		gtk_signal_connect(GTK_OBJECT(prog_win), "delete_event",
 				   GTK_SIGNAL_FUNC(hide_win), NULL);
@@ -275,6 +276,7 @@ glibwww_prompt(HTRequest *request, HTAlertOpcode op,
 	}
 
 	dlg = gnome_dialog_new(_("Enter Text"), GNOME_STOCK_BUTTON_OK, NULL);
+	gtk_window_set_wmclass(GTK_WINDOW(dlg), "html_prompt", "Nautilus");
 	if (input) {
 		gchar *tmp = g_strconcat(HTDialogs[msgnum], " (",
 					 (char *)input, ")", NULL);
@@ -316,6 +318,7 @@ glibwww_prompt_password(HTRequest *request, HTAlertOpcode op,
 	gint button;
 
 	dlg = gnome_dialog_new(_("Enter Password"), GNOME_STOCK_BUTTON_OK, NULL);
+	gtk_window_set_wmclass(GTK_WINDOW(dlg), "html_prompt", "Nautilus");
 	if (input) {
 		gchar *tmp = g_strconcat(HTDialogs[msgnum], " (",
 					 (char *)input, ")", NULL);
@@ -358,6 +361,7 @@ glibwww_prompt_username_and_password(HTRequest *request, HTAlertOpcode op,
 
 	dlg = gnome_dialog_new(_("Enter Password"), GNOME_STOCK_BUTTON_OK,
 			       GNOME_STOCK_BUTTON_CANCEL, NULL);
+	gtk_window_set_wmclass(GTK_WINDOW(dlg), "html_prompt", "Nautilus");
 	if (input) {
 		gchar *tmp = g_strconcat(HTDialogs[msgnum], " (",
 					 (char *)input, ")", NULL);

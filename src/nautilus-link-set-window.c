@@ -189,6 +189,7 @@ nautilus_link_set_configure_window (const char *directory_path, GtkWindow *windo
  		
 	/* set the window title */
   	gtk_window_set_title (window, _("Link sets"));
+	gtk_window_set_wmclass (window, "link_sets", "Nautilus");
 	
 	/* fetch the link set names */
 	link_set_names = get_link_set_names();	

@@ -112,6 +112,7 @@ show_message_box (const char *message,
 
 	box = gnome_message_box_new (message, type, button_one, button_two, NULL);
 	gtk_window_set_title (GTK_WINDOW (box), dialog_title);
+	gtk_window_set_wmclass (GTK_WINDOW (box), "error_dialog", "Nautilus");
 	
 	/* A bit of a hack. We want to use gnome_message_box_new,
 	 * but we want the message to be wrapped. So, we search

@@ -1090,6 +1090,7 @@ nautilus_global_preferences_set_dialog_title (const char *title)
 	dialog = global_preferences_get_dialog ();
 
 	gtk_window_set_title (GTK_WINDOW (dialog), title);
+	gtk_window_set_wmclass (GTK_WINDOW (dialog), "global_preferences", "Nautilus");
 }
 
 void

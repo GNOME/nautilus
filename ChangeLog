@@ -1,3 +1,46 @@
+2000-12-15  John Harper  <jsh@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* components/html/gnome-dialogs.c: (get_progress),
+	(glibwww_prompt), (glibwww_prompt_password),
+	(glibwww_prompt_username_and_password):
+	* components/music/configure.c: (mpg123_configure):
+	* components/music/fileinfo.c: (mpg123_file_info_box):
+	* components/music/nautilus-music-view.c: (image_button_callback):
+	* helper-utilities/error-dialog/nautilus-error-dialog.c:
+	(show_message_box):
+	* libnautilus-extensions/nautilus-file-operations-progress.c:
+	(nautilus_file_operations_progress_new):
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(nautilus_global_preferences_set_dialog_title):
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(run_program_configurator_callback),
+	(nautilus_program_chooser_new):
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	(timed_wait_callback), (nautilus_simple_dialog),
+	(show_message_box):
+	* src/file-manager/fm-icon-text-window.c:
+	(create_icon_text_window):
+	* src/file-manager/fm-properties-window.c:
+	(create_properties_window), (select_image_button_callback):
+	* src/nautilus-about.c: (nautilus_about_initialize):
+	* src/nautilus-bookmarks-window.c: (create_bookmarks_window):
+	* src/nautilus-first-time-druid.c:
+	(nautilus_first_time_druid_show):
+	* src/nautilus-link-set-window.c:
+	(nautilus_link_set_configure_window):
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize),
+	(nautilus_emblem_dialog_new), (add_new_pattern):
+	* src/nautilus-shell.c: (display_caveat):
+	* src/nautilus-theme-selector.c:
+	(nautilus_theme_selector_initialize),
+	(add_new_theme_button_callback):
+
+	Added calls to gtk_window_set_wmclass with suitable instance
+	names and `Nautilus' class name
+
 2000-12-15  Andy Hertzfeld  <andy@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

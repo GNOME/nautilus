@@ -579,6 +579,7 @@ image_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
 					   GTK_OBJECT(file_dialog));
 
 		gtk_window_set_position (GTK_WINDOW (file_dialog), GTK_WIN_POS_MOUSE);
+		gtk_window_set_wmclass (GTK_WINDOW (file_dialog), "file_selector", "Nautilus");
 		gtk_widget_show (GTK_WIDGET(file_dialog));
 	}
 }

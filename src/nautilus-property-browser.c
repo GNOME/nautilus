@@ -252,6 +252,7 @@ nautilus_property_browser_initialize (GtkObject *object)
 
 	/* set the title and standard close accelerator */
 	gtk_window_set_title(GTK_WINDOW(widget), _("Backgrounds and Emblems"));
+	gtk_window_set_wmclass(GTK_WINDOW(widget), "property_browser", "Nautilus");
 	nautilus_gtk_window_set_up_close_accelerator (GTK_WINDOW (widget));
 	
 	/* set up the background */
@@ -1054,6 +1055,7 @@ nautilus_emblem_dialog_new(NautilusPropertyBrowser *property_browser)
 	gtk_widget_show(table);	
 	gtk_box_pack_start(GTK_BOX(GNOME_DIALOG(dialog)->vbox), table, TRUE, TRUE, GNOME_PAD);
 	gnome_dialog_set_default(GNOME_DIALOG(dialog), GNOME_OK);
+	gtk_window_set_wmclass(GTK_WINDOW(dialog), "emblem_dialog", "Nautilus");
 	
 	return dialog;
 }
@@ -1198,6 +1200,7 @@ add_new_pattern (NautilusPropertyBrowser *property_browser)
 
 		gtk_window_set_position (GTK_WINDOW (file_dialog), GTK_WIN_POS_MOUSE);
 		gtk_window_set_transient_for (GTK_WINDOW (file_dialog), GTK_WINDOW (property_browser));
+ 		gtk_window_set_wmclass (GTK_WINDOW (file_dialog), "file_selector", "Nautilus");
 		gtk_widget_show (GTK_WIDGET (file_dialog));
 	}
 }

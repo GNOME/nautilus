@@ -169,6 +169,7 @@ display_caveat (GtkWindow *parent_window)
 				   NULL);
   	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);
   	gtk_window_set_policy (GTK_WINDOW (dialog), FALSE, FALSE, FALSE);
+	gtk_window_set_wmclass (GTK_WINDOW (dialog), "caveat", "Nautilus");
 
   	hbox = gtk_hbox_new (FALSE, GNOME_PAD);
   	gtk_container_set_border_width (GTK_CONTAINER (hbox), GNOME_PAD);

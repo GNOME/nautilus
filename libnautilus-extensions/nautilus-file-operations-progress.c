@@ -272,6 +272,7 @@ nautilus_file_operations_progress_new (const char *title,
 	nautilus_file_operations_progress_set_total (dialog, total_files, total_bytes);
 
 	gtk_window_set_title (GTK_WINDOW (widget), title);
+	gtk_window_set_wmclass (GTK_WINDOW (widget), "file_progress", "Nautilus");
 
 	gnome_dialog_append_button (GNOME_DIALOG (widget), GNOME_STOCK_BUTTON_CANCEL);
 

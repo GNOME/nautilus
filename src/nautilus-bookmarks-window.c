@@ -125,6 +125,7 @@ create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_sou
 	nautilus_undo_share_undo_manager (GTK_OBJECT (window), undo_manager_source);
 	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
 	gtk_window_set_title (GTK_WINDOW (window), _("Bookmarks"));
+	gtk_window_set_wmclass (GTK_WINDOW (window), "bookmarks", "Nautilus");
 	gtk_widget_set_usize (window, 
 			      BOOKMARKS_WINDOW_MIN_WIDTH, 
 			      BOOKMARKS_WINDOW_MIN_HEIGHT);

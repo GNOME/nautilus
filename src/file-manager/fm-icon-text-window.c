@@ -261,6 +261,7 @@ create_icon_text_window (void)
 	nautilus_gtk_window_set_up_close_accelerator (GTK_WINDOW (window));
   	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
   	gtk_window_set_title (GTK_WINDOW (window), _("Icon Captions"));
+	gtk_window_set_wmclass (GTK_WINDOW (window), "icon_captions", "Nautilus");
   	gtk_window_set_policy (GTK_WINDOW (window), FALSE, FALSE, FALSE);
 
   	contents_vbox = gtk_vbox_new (FALSE, 0);
