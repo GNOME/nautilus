@@ -93,7 +93,7 @@ struct NautilusIconCanvasItemDetails {
 	guint rendered_is_highlighted_for_drop : 1;
 	guint rendered_is_prelit : 1;
 	
-	gboolean is_renaming;
+	guint is_renaming : 1;
 
 	PangoLayout *editable_text_layout;
 	PangoLayout *additional_text_layout;
@@ -571,7 +571,7 @@ nautilus_icon_canvas_item_update (GnomeCanvasItem *item,
 				  int flags)
 {
 	nautilus_icon_canvas_item_update_bounds (NAUTILUS_ICON_CANVAS_ITEM (item));
-	eel_gnome_canvas_item_request_redraw (item);
+
 	EEL_CALL_PARENT (GNOME_CANVAS_ITEM_CLASS, update,
 			 (item, affine, clip_path, flags));
 }
@@ -1695,7 +1695,7 @@ nautilus_icon_canvas_item_set_renaming (NautilusIconCanvasItem *item, gboolean s
 	g_return_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item));
 	g_return_if_fail (state == FALSE || state == TRUE);
 
-	if (item->details->is_renaming == state) {
+	if (!item->details->is_renaming == !state) {
 		return;
 	}
 

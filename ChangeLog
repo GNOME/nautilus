@@ -10,6 +10,15 @@
 
 2002-07-10  Michael Meeks  <michael@ximian.com>
 
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(nautilus_icon_canvas_item_set_renaming): make is_renaming
+	a bit-field to save ~4+ bytes per canvas item.
+	(nautilus_icon_canvas_item_update): don't request another
+	re-draw on the item immediately after returning, save some uta
+	thrash.
+
+2002-07-10  Michael Meeks  <michael@ximian.com>
+
 	* src/nautilus-sidebar.c (nautilus_sidebar_update_appearance):
 	update the title color only if the background has changed;
 	(nautilus_sidebar_finalize):
