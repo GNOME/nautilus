@@ -1255,15 +1255,12 @@ nautilus_self_check_file_utilities (void)
 
 
 	/* nautilus_make_uri_canonical */
+
 	/* FIXME: this is a bizarre result from an empty string */
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical (""), "file:///");
 	
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:/"), "file:///");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///"), "file:///");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("TRASH:XXX"), "trash:");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("trash:xxx"), "trash:");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("GNOME-TRASH:XXX"), "trash:");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("gnome-trash:xxx"), "trash:");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///home/mathieu/"), "file:///home/mathieu");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///home/mathieu"), "file:///home/mathieu");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("ftp://mathieu:password@le-hackeur.org"), "ftp://mathieu:password@le-hackeur.org");
@@ -1338,17 +1335,38 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("//root"), "file:///root");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("///root"), "file:///root");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("////root"), "file:///root");
-	
+
+	/* Test cases related to escaping. */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///%3F"), "file:///%3F");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///%78"), "file:///%78"); /* FIXME: Should be "file:///x" */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///?"), "file:///?"); /* FIXME: Should be "file:///%3F" */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:///x"), "file:///x");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("glorb:///%3F"), "glorb:///%3F");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("glorb:///%78"), "glorb:///%78"); /* FIXME: Should be "glorb:///x", I think? */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("glorb:///?"), "glorb:///?"); /* FIXME: Should be "glorb:///%3F", I think? */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("glorb:///x"), "glorb:///x");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:///%3F"), "http:///%3F");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:///%78"), "http:///%78"); /* FIXME: Should be "http:///x" */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:///?"), "http:///?");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:///x"), "http:///x");
 
 	/* FIXME bugzilla.eazel.com 4101: Why append a slash in this case, but not in the http://www.eazel.com case? */
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.eazel.com:80"), "http://www.eazel.com:80/");
 
-	/* Note: these cases behave differently than in gnome-vfs */
+	/* Note: these cases behave differently here than in
+	 * gnome-vfs. In some cases because of bugs in gnome-vfs, but
+	 * in other cases because we just want them handled
+	 * differently.
+	 */
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:trash"), "file:///trash");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("//trash"), "file:///trash");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:"), "file:///");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("trash"), "file:///trash");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("glorp:"), "glorp:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("TRASH:XXX"), "trash:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("trash:xxx"), "trash:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("GNOME-TRASH:XXX"), "trash:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("gnome-trash:xxx"), "trash:");
 
 	/* FIXME bugzilla.eazel.com 2802: Is this the correct behavior
 	 * for these cases?
@@ -1357,8 +1375,6 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("file:/"), "file:///");
 
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("pipe:gnome-info2html2 as"), "pipe:gnome-info2html2 as");
-
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */
-
