@@ -1,3 +1,16 @@
+2001-02-28  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 7138, non-ASCII characters in author's names causes
+	the Japanese version to crash.  Fixed by removing the accented
+	'i' from Pavel's name
+	
+	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):
+	replaced the accented 'i' in Pavel's name with a plain one
+	* check-THANKS.pl:
+	fixed mapping in check-THANKS.pl as requested by Darin
+	* AUTHORS:
+	removed from AUTHORS, too, for consistency
+
 2001-02-28  Mike Fleming  <mfleming@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>
