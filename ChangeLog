@@ -1,5 +1,24 @@
 2000-09-05  Ramiro Estrugo  <ramiro@eazel.com>
 
+	More work on task 1733.
+
+	* components/mozilla/eazel-protocol-handler/.cvsignore:
+	* components/mozilla/eazel-protocol-handler/Makefile.am:
+	* components/mozilla/eazel-protocol-handler/eazel-protocol-channel.cpp:
+	* components/mozilla/eazel-protocol-handler/eazel-protocol-channel.h:
+	* components/mozilla/eazel-protocol-handler/eazel-protocol-handler.cpp:
+	* components/mozilla/eazel-protocol-handler/eazel-protocol-handler.h:
+	* components/mozilla/eazel-protocol-handler/eazel-protocol-module.cpp:
+	New files.  A mozilla XPCOM component to grok eazel: protocol uris.
+	
+	* components/mozilla/Makefile.am:
+	Build the eazel-protocol-handler
+	
+	* configure.in:
+	Build the eazel-protocol-handler
+
+2000-09-05  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/tree/.cvsignore:
 	Ignore generated files.
 	
