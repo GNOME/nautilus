@@ -1,5 +1,11 @@
 2003-06-22  Dave Camp  <dave@ximian.com>
 
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_volume_free_space): Handle NULL vfs uris (such
+	as desktop links).
+
+2003-06-22  Dave Camp  <dave@ximian.com>
+
 	* libnautilus-private/nautilus-desktop-link.c:
 	(nautilus_desktop_link_rename): Set the trash gconf key instead of
 	the home key when renaming the trash.
