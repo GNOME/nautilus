@@ -1,3 +1,5 @@
+NULL = 
+
 INCLUDES =					\
 	-DPREFIX=\"$(prefix)\"			\
 	-DG_LOG_DOMAIN=\"Nautilus-Text\"	\
