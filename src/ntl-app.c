@@ -155,8 +155,6 @@ impl_Nautilus_Application_create_object(impl_POA_Nautilus_Application *servant,
     {
       view_frame = fm_directory_view_get_view_frame (dir_view);
 
-      printf ("CREATING content view: 0x%x\n", (unsigned) view_frame);
-        
       retval = CORBA_Object_duplicate(bonobo_object_corba_objref(BONOBO_OBJECT(view_frame)), ev);
     }
 

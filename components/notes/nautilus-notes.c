@@ -132,8 +132,6 @@ do_destroy (GtkObject *obj, Notes *notes)
         g_free (notes->uri);
         g_free (notes);
 
-        puts ("XXX notes: --");
-
         notes_object_count--;
         if (notes_object_count <= 0) {
                 gtk_main_quit();
@@ -179,10 +177,6 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         nautilus_meta_view_frame_set_label (NAUTILUS_META_VIEW_FRAME (notes->view),
                                             _("Notes"));
         
-        puts ("XXX notes: ++");
-
-        printf ("CREATING notes view: 0x%x\n", (unsigned) notes->view);
-
         return BONOBO_OBJECT (notes->view);
 }
 
@@ -192,8 +186,6 @@ main(int argc, char *argv[])
         BonoboGenericFactory *factory;
         CORBA_ORB orb;
 
-        puts ("YYY: notes main");
-        
 	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
 	 * Unfortunately, this has to be done explicitly for each domain.
 	 */
