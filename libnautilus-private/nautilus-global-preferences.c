@@ -802,9 +802,10 @@ global_preferences_install_defaults (void)
 						  NAUTILUS_USER_LEVEL_NOVICE,
 						  FALSE);
 	
+	/* FIXME bugzilla.eazel.com 1245: Saved in pixels instead of in %? */
 	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
-					      NAUTILUS_USER_LEVEL_NOVICE,
-					      148);
+						  NAUTILUS_USER_LEVEL_NOVICE,
+						  148);
 	
 	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
 						 NAUTILUS_USER_LEVEL_NOVICE,
