@@ -63,13 +63,14 @@ egg_recent_item_free (EggRecentItem *item)
 	g_free (item);
 }
 
-void
+EggRecentItem *
 egg_recent_item_ref (EggRecentItem *item)
 {
 	item->refcount++;
+	return item;
 }
 
-void
+EggRecentItem *
 egg_recent_item_unref (EggRecentItem *item)
 {
 	item->refcount--;
@@ -77,6 +78,8 @@ egg_recent_item_unref (EggRecentItem *item)
 	if (item->refcount == 0) {
 		egg_recent_item_free (item);
 	}
+
+	return item;
 }
 
 

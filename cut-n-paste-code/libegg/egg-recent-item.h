@@ -34,8 +34,8 @@ GType		egg_recent_item_get_type (void) G_GNUC_CONST;
 /* constructors */
 EggRecentItem * egg_recent_item_new (void);
 
-void		egg_recent_item_ref (EggRecentItem *item);
-void		egg_recent_item_unref (EggRecentItem *item);
+EggRecentItem *	egg_recent_item_ref (EggRecentItem *item);
+EggRecentItem *	egg_recent_item_unref (EggRecentItem *item);
 
 /* automatically fetches the mime type, etc */
 EggRecentItem * egg_recent_item_new_from_uri (const gchar *uri);

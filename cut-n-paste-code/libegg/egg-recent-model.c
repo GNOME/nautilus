@@ -282,7 +282,7 @@ egg_recent_model_read_raw (EggRecentModel *model, FILE *file)
 
 	rewind (file);
 
-	string = g_string_new ("");
+	string = g_string_new (NULL);
 	while (fgets (buf, EGG_RECENT_MODEL_BUFFER_SIZE, file)) {
 		string = g_string_append (string, buf);
 	}
@@ -875,11 +875,27 @@ static gboolean
 egg_recent_model_lock_file (FILE *file)
 {
 	int fd;
+	gboolean locked = FALSE;
+	gint	try = 4;
 
 	rewind (file);
 	fd = fileno (file);
 
-	return lockf (fd, F_LOCK, 0) == 0 ? TRUE : FALSE;
+	/* Attempt to lock the file 4 times,
+	 * waiting 1 second in between attempts.
+	 * We should really be doing asynchronous
+	 * locking, but requires substantially larger
+	 * changes.
+	 */
+	
+	while (try-- > 0)
+	{
+		if ((locked = lockf (fd, F_TLOCK, 0)) == 0);
+			break;
+		sleep (1);
+	}
+
+	return locked;
 }
 
 static gboolean
