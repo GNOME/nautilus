@@ -27,6 +27,7 @@
 #include <config.h>
 #include "nautilus-drag.h"
 
+#include <libgnomevfs/gnome-vfs-find-directory.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
@@ -293,7 +294,8 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 	GnomeVFSURI *target_uri;
 	GnomeVFSURI *dropped_uri;
 	GdkDragAction actions;
-	
+	GnomeVFSResult result;
+
 	if (target_uri_string == NULL) {
 		*default_action = 0;
 		*non_default_action = 0;
@@ -313,11 +315,21 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 		  */
 		*default_action = context->suggested_action;
 		*non_default_action = context->suggested_action;
-
 		return;
 	}
-	
-	target_uri = gnome_vfs_uri_new (target_uri_string);
+
+	/* Check for trash: URI.  We do a find_directory for any Trash directory. */
+	if (strcmp (target_uri_string, "trash:") == 0) {
+		result = gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH,
+						   &target_uri, FALSE, FALSE, 0777);
+		if (result != GNOME_VFS_OK) {
+			*default_action = 0;
+			*non_default_action = 0;
+			return;
+		}
+	} else {
+		target_uri = gnome_vfs_uri_new (target_uri_string);
+	}
 
 	/* Compare the first dropped uri with the target uri for same fs match. */
 	dropped_uri = gnome_vfs_uri_new (((DragSelectionItem *)items->data)->uri);

@@ -669,10 +669,10 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	GnomeVFSURI *trash_dir_uri;
 	GnomeVFSURI *uri;
 
-	
 	XferInfo *xfer_info;
 	GnomeVFSResult result;
 	gboolean same_fs;
+	gboolean is_trash_move;
 	
 	g_assert (item_uris != NULL);
 
@@ -683,6 +683,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	source_uri_list = NULL;
 	target_uri_list = NULL;
 	same_fs = TRUE;
+	is_trash_move = FALSE;
 
 	move_options = GNOME_VFS_XFER_RECURSIVE;
 
@@ -691,9 +692,12 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		g_assert (copy_action != GDK_ACTION_MOVE);
 		move_options |= GNOME_VFS_XFER_USE_UNIQUE_NAMES;
 	} else {
-		target_dir_uri = new_uri_from_escaped_string (target_dir);
+		if (strcmp (target_dir, "trash:") == 0) {
+			is_trash_move = TRUE;
+		} else {
+			target_dir_uri = new_uri_from_escaped_string (target_dir);
+		}
 	}
-
 
 	/* build the source and target URI lists and figure out if all the files are on the
 	 * same disk
@@ -703,6 +707,10 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		source_uri_list = g_list_prepend (source_uri_list, gnome_vfs_uri_ref (source_uri));
 
 		if (target_dir != NULL) {
+			if (is_trash_move) {
+				gnome_vfs_find_directory (source_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
+						   	  &target_dir_uri, FALSE, FALSE, 0777);				
+			}
 			target_uri = append_basename_unescaped (target_dir_uri, source_uri);
 		} else {
 			/* duplication */

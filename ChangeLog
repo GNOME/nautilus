@@ -1,3 +1,20 @@
+2000-09-07  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 2134, items cannot be dragged from desktop or windows
+	onto Trash icon.
+	
+	* libnautilus-extensions/nautilus-drag.c:
+	(nautilus_drag_default_drop_action_for_icons):
+	Check and see if target is trash: URI. If it is,
+	use find_directory to locate the actual trash directory
+	URI.
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(nautilus_file_operations_copy_move):
+	Check and see if target is trash: URI. If it is,
+	use find_directory to locate the actual trash directory
+	URI for the volume of the source file.
+	
 2000-09-07  Michael Engber  <engber@eazel.com>
 	
 	Added Robin to the about box.
