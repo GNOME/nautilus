@@ -44,7 +44,6 @@
 #include <libgnomevfs/gnome-vfs-directory.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
 #include <stdlib.h>
 #include <string.h>
 

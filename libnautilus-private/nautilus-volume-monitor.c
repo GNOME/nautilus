@@ -43,7 +43,6 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
 #include <libxml/tree.h>
 #include <gtk/gtkmain.h>
 #include <libgnome/gnome-config.h>

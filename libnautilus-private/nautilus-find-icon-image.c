@@ -34,7 +34,6 @@
 #include <eel/eel-xml-extensions.h>
 #include <libgnome/gnome-util.h>
 #include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <string.h>
 

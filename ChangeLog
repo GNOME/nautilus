@@ -1,3 +1,63 @@
+2002-02-11  Darin Adler  <darin@bentspoon.com>
+
+	* configure.in: Require at least libxml 2.4.7, since that's
+	the version where xmlFree and friends were moved out of
+	<libxml/xmlmemory.h>.
+
+	* components/news/nautilus-news.c:
+	* components/text/nautilus-text-view.c:
+	* libnautilus-private/nautilus-customization-data.c:
+	* libnautilus-private/nautilus-directory-async.c:
+	* libnautilus-private/nautilus-find-icon-image.c:
+	* libnautilus-private/nautilus-link-desktop-file.c:
+	* libnautilus-private/nautilus-link-historical.c:
+	* libnautilus-private/nautilus-link.c:
+	* libnautilus-private/nautilus-metafile.c:
+	* libnautilus-private/nautilus-theme.c:
+	* libnautilus-private/nautilus-volume-monitor.c:
+	* src/nautilus-bookmark-list.c:
+	* src/nautilus-property-browser.c:
+	* src/nautilus-window-menus.c:
+	Remove unneeded include of <libxml/xmlmemory.h>.
+
+	* components/tree/nautilus-tree-model.c: (get_node_uri): New,
+	used only for logging ref. counts.
+	(decrement_ref_count): New.
+	(abandon_node_ref_count): New.
+	(abandon_dummy_row_ref_count): New.
+	(report_dummy_row_inserted): Do nothing if the parent is not yet
+	in the inserted state.
+	(report_dummy_row_deleted): Make it abandon any lingering ref
+	count that's still in the dummy row.
+	(report_node_inserted): Make it report that the dummy node is
+	inserted if the node starts with a dummy child. Also, set the new
+	inserted state so we know this node is live.
+	(report_node_contents_changed): Do nothing if the node is not
+	yet in the inserted state.
+	(report_node_has_child_toggled): Do nothing if the node is not yet
+	in the inserted state.
+	(report_dummy_row_contents_changed): Do nothing if the parent is
+	not yet in the inserted state.
+	(stop_monitoring_directory): Set done_loading to FALSE so we'll get
+	a dummy node for directories we are not monitoring.
+	(destroy_node_without_reporting): Abandon any ref count left in the
+	node. Also set the inserted state to FALSE before destroying children.
+	(destroy_node): Report if the parent gains a dummy node as a result
+	of destroying this node.
+	(update_node_without_reporting): Don't clear done_loading any more,
+	since stop_monitoring_directory does it now.
+	(reparent_node): Abandon any ref count that's still in the node
+	before reparenting it.
+	(schedule_destroy_unneeded_children): New.
+	(last_child_unref): Use new schedule_destroy_unneeded_children
+	function so we cna share code with the new abandon ref count functions.
+	(nautilus_tree_model_ref_node), (nautilus_tree_model_unref_node): Add
+	some logging for debugging purposes.
+
+	* components/tree/nautilus-tree-view.c: (compare_rows): Sort function
+	to use when GtkTreeModelSort works.
+	(create_tree): Hook up sort function.
+
 2002-02-08  Michael Meeks  <michael@ximian.com>
 
 	* src/nautilus-window.c

@@ -46,7 +46,6 @@
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
 #include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
 #include <gtk/gtkcolorseldialog.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkentry.h>

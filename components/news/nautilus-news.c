@@ -49,7 +49,6 @@
 #include <libgnome/gnome-util.h>
 
 #include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
 
 #include <libgnomevfs/gnome-vfs-utils.h>
 

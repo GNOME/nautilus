@@ -43,7 +43,6 @@
 
 #include <libxml/parser.h>
 #include <libxml/tree.h>
-#include <libxml/xmlmemory.h>
 
 enum {
 	CONTENTS_CHANGED,

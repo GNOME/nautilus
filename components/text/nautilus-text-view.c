@@ -43,7 +43,6 @@
 #include <ghttp.h>
 #endif
 #include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
 #include <gnome.h>
 #include <gtk/gtkeventbox.h>
 #include <libgnome/gnome-i18n.h>

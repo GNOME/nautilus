@@ -208,6 +208,46 @@ row_activated_callback (GtkTreeView *tree_widget,
 	g_list_free (attrs);
 }
 
+#if SORT_MODEL_WORKS
+
+static int
+compare_rows (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer callback_data)
+{
+	NautilusTreeView *view;
+	NautilusFile *file_a, *file_b;
+	char *uri_a, *uri_b;
+	int result;
+
+	view = NAUTILUS_TREE_VIEW (callback_data);
+
+	file_a = nautilus_tree_model_iter_get_file (NAUTILUS_TREE_MODEL (model), a);
+	file_b = nautilus_tree_model_iter_get_file (NAUTILUS_TREE_MODEL (model), b);
+
+	if (file_a == file_b) {
+		result = 0;
+	} else if (file_a == NULL) {
+		result = -1;
+	} else if (file_b == NULL) {
+		result = +1;
+	} else {
+		uri_a = nautilus_file_get_uri (file_a);
+		uri_b = nautilus_file_get_uri (file_b);
+		g_message ("comparing %s with %s", uri_a, uri_b);
+		g_free (uri_a);
+		g_free (uri_b);
+		result = nautilus_file_compare_for_sort (file_a, file_b,
+							 NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
+							 FALSE, FALSE);
+	}
+
+	nautilus_file_unref (file_a);
+	nautilus_file_unref (file_b);
+
+	return result;
+}
+
+#endif
+
 static void
 create_tree (NautilusTreeView *view)
 {
@@ -225,7 +265,8 @@ create_tree (NautilusTreeView *view)
 	g_object_unref (view->details->sort_model);
 
 #if SORT_MODEL_WORKS
-	/* gtk_tree_sortable_set_default_sort_func (GTK_TREE_SORTABLE (sort_model), func, data); */
+	gtk_tree_sortable_set_default_sort_func (GTK_TREE_SORTABLE (view->details->sort_model),
+						 compare_rows, view, NULL);
 #endif
 
 	gtk_tree_view_set_headers_visible (view->details->tree_widget, FALSE);

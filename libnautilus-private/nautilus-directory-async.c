@@ -37,7 +37,6 @@
 #include <eel/eel-string.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
 #include <gtk/gtkmain.h>
 #include <stdlib.h>
 #include <stdio.h>

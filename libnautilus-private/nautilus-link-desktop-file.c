@@ -38,7 +38,6 @@
 #include <eel/eel-string.h>
 #include <eel/eel-xml-extensions.h>
 #include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-utils.h>

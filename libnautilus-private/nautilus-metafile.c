@@ -37,7 +37,6 @@
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
 #include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
 #include <gtk/gtkmain.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-types.h>
