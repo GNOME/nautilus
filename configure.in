@@ -407,7 +407,7 @@ dnl Ideally I should check for rpm and where it is
   _found_valid_rpm="no"
 
   case $RPM_VERSION in
-    3.0.4|3.0.5)
+    3.0.*)
       _found_valid_rpm="yes"
     ;;
 
@@ -416,12 +416,13 @@ dnl Ideally I should check for rpm and where it is
 
   if test "$_found_valid_rpm" = "yes"
   then
-	AC_MSG_RESULT(yes)
+	AC_MSG_RESULT([found $RPM_VERSION, yes])
 	AC_DEFINE(HAVE_RPM)  	
   	RPM_LIBS="-lrpm -lz $rpm_libs"
   else
 	AC_MSG_ERROR([
 *** RPM 3.0.4 required
+*** $RPM_VERSION found
 ])
   fi
 fi
