@@ -51,7 +51,18 @@
 #include <libgnomeui/gnome-dialog.h>
 #include <libgnomeui/gnome-dialog-util.h>
 
+#if (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES
+#include <libtrilobite/libammonite-gtk.h>
+/* for bonobo_poa() */
+#include <bonobo/bonobo-main.h>
+#endif
+
+
 #define NUM_ELEMENTS_IN_ARRAY(_a) (sizeof (_a) / sizeof ((_a)[0]))
+
+#if (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES
+EazelProxy_UserControl		  gl_user_control = CORBA_OBJECT_NIL;
+#endif
 
 struct NautilusMozillaContentViewDetails {
 	char				 *uri;
@@ -116,11 +127,40 @@ static void     mozilla_content_view_set_busy_cursor           (NautilusMozillaC
 static void     mozilla_content_view_clear_busy_cursor         (NautilusMozillaContentView      *view);
 static gboolean mozilla_is_uri_handled_by_nautilus             (const char                      *uri);
 static gboolean mozilla_is_uri_handled_by_mozilla              (const char                      *uri);
-static char *   mozilla_translate_uri_if_needed                (const char                      *uri);
+static char *   mozilla_translate_uri_if_needed                (NautilusMozillaContentView      *view,
+								const char                      *uri);
 
 #if 0
 static char *   mozilla_untranslate_uri_if_needed              (const char                      *uri);
 #endif
+
+#if (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES
+
+/*
+ * URL scheme hack for the eazel-services: scheme
+ */
+
+static char *
+eazel_services_scheme_translate	(NautilusMozillaContentView	*view,
+				 const char			*uri,
+				 gboolean			is_retry);
+
+#ifdef EAZEL_SERVICES_MOZILLA_MODAL_LOGIN
+typedef struct  {
+	NautilusMozillaContentView *view;
+	char *uri;
+} LoginAsyncState;
+
+static void /* AmmonitePromptLoginCb */
+eazel_services_prompt_login_cb (
+	gpointer user_data, 
+	const EazelProxy_User *user, 
+	const EazelProxy_AuthnFailInfo *fail_info
+);
+#endif /* EAZEL_SERVICES_MOZILLA_MODAL_LOGIN */
+
+#endif /* EAZEL_SERVICES */
+
 
 static GtkVBoxClass *parent_class = NULL;
 
@@ -258,6 +298,14 @@ mozilla_content_view_one_time_happenings (NautilusMozillaContentView *view)
 
 	/* Locate and set proxy preferences */
 	mozilla_content_view_set_proxy_preferences (view);
+
+
+#if (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES
+	if (ammonite_init ((PortableServer_POA) bonobo_poa)) {
+		gl_user_control = ammonite_get_user_control ();
+	}
+#endif 
+
 }
 
 static void
@@ -376,6 +424,10 @@ nautilus_mozilla_content_view_destroy (GtkObject *object)
 	if (view->details->busy_cursor != NULL) {
 		gdk_cursor_destroy (view->details->busy_cursor);
 	}
+
+#if (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES
+	ammonite_shutdown ();
+#endif /*EAZEL_SERVICES*/
 
 	g_free (view->details);
 
@@ -533,13 +585,17 @@ mozilla_load_location_callback (NautilusView *nautilus_view,
 
 	g_assert (nautilus_view == view->details->nautilus_view);
 
-	translated_location = mozilla_translate_uri_if_needed (location);
+	translated_location = mozilla_translate_uri_if_needed (view, location);
 
-	g_print ("%s(%s,%s)\n", __FUNCTION__, location, translated_location);
-	
-	nautilus_view_report_load_underway (nautilus_view);
-	nautilus_mozilla_content_view_load_uri (view, translated_location);
-	g_free (translated_location);
+	if (translated_location) {
+		g_print ("%s(%s,%s)\n", __FUNCTION__, location, translated_location);
+		
+		nautilus_view_report_load_underway (nautilus_view);
+		nautilus_mozilla_content_view_load_uri (view, translated_location);
+		g_free (translated_location);
+	} else {
+		nautilus_view_report_load_failed ( nautilus_view);
+	}
 }
 
 static void
@@ -1040,6 +1096,7 @@ mozilla_is_uri_handled_by_mozilla (const char *uri)
 						uri) != STRING_LIST_NOT_FOUND;
 }
 
+#if 0
 /*
  * And yet another protocol hack.
  */
@@ -1054,14 +1111,30 @@ static const char *to_uri_list[] =
 	"http://localhost:11600",
 	"http://localhost:80"
 };
+#endif /* 0 */
 
+/* A NULL return from this function must trigger a nautilus load error */
 static char *
-mozilla_translate_uri_if_needed (const char *uri)
+mozilla_translate_uri_if_needed (NautilusMozillaContentView *view, const char *uri)
 {
-	gint i;
+	/* gint i; */
+	char *ret;
 
 	g_return_val_if_fail (uri != NULL, NULL);
 
+
+	if (0 == strncmp (uri, "eazel-services:", strlen ("eazel-services:"))) {
+		ret = eazel_services_scheme_translate (view, uri, FALSE);
+
+#ifdef DEBUG_mfleming
+		g_message ("Mozilla: translated uri '%s' to '%s'", uri, ret ? ret : "<no such page>");
+#endif
+
+	} else {
+		ret = g_strdup (uri);
+	}
+
+#if 0
 	i = string_list_get_index_of_string (from_uri_list, NUM_ELEMENTS_IN_ARRAY (from_uri_list), uri);
 
 	if (i == STRING_LIST_NOT_FOUND) {
@@ -1069,6 +1142,10 @@ mozilla_translate_uri_if_needed (const char *uri)
 	}
 
 	return g_strdup_printf ("%s%s", to_uri_list[i], uri + strlen (from_uri_list[i]));
+#endif
+
+	return ret;
+
 }
 
 #if 0
@@ -1113,3 +1190,106 @@ nautilus_mozilla_content_view_get_type (void)
 	
 	return mozilla_content_view_type;
 }
+
+
+#if (MOZILLA_MILESTONE >= 18) && EAZEL_SERVICES
+
+/* A NULL return from this function must trigger a nautilus load error */
+static char *
+eazel_services_scheme_translate	(NautilusMozillaContentView	*view,
+				 const char			*uri,
+				 gboolean			is_retry)
+{
+	const char *uri_minus_scheme;
+	char *new_uri = NULL;
+	char *ret = NULL;
+	AmmoniteError err;
+
+	if (CORBA_OBJECT_NIL == gl_user_control) {
+		return NULL;
+	}
+
+	/* Chew off the the scheme, leave the colon */
+	uri_minus_scheme = strchr (uri, (unsigned char)':');
+
+	g_assert (uri_minus_scheme);
+
+	err = ammonite_http_url_for_eazel_url (uri_minus_scheme, &new_uri);
+
+	switch (err) {
+	case ERR_Success:
+		ret = g_strconcat ("http", new_uri, NULL);
+		g_free (new_uri);
+		new_uri = NULL;
+	break;
+
+#ifdef EAZEL_SERVICES_MOZILLA_MODAL_LOGIN
+	case ERR_UserNotLoggedIn: 
+		if (is_retry) {
+			/* We already tried this once and it didn't work */
+			ret = NULL;
+		} else {
+			AmmoniteParsedURL *parsed = NULL;
+			LoginAsyncState *p_state;
+
+			p_state = g_new0 (LoginAsyncState, 1);
+
+			p_state->uri = strdup (uri);
+			p_state->view = view;
+
+			parsed = ammonite_url_parse (uri);
+			g_assert (parsed);
+			
+			/*FIXME it's possible that "view" will be gone by the time the reponse comes back */
+			if (! ammonite_do_prompt_login_async (parsed->user, NULL, NULL, p_state,  prompt_login_cb) ) {
+				ret = NULL;
+				g_free (p_state->uri);
+				g_free (p_state);
+			}
+
+			ammonite_url_free (parsed);
+		}
+	break;
+#endif /* EAZEL_SERVICES_MOZILLA_MODAL_LOGIN */
+
+	default:
+		ret = NULL;
+	break;
+	
+	}
+
+	return ret;
+}
+
+#ifdef EAZEL_SERVICES_MOZILLA_MODAL_LOGIN
+static void /* AmmonitePromptLoginCb */
+eazel_services_prompt_login_cb (
+	gpointer user_data, 
+	const EazelProxy_User *user, 
+	const EazelProxy_AuthnFailInfo *fail_info
+) {
+	LoginAsyncState *p_state;
+
+	p_state = (LoginAsyncState *) user_data;
+
+	/* Are we still at the same location? If not, forget about it */
+	if ( 0 == strcmp (p_state->uri, p_state->view->details->uri)) {
+		goto error;
+	}
+
+	if (fail_info) {
+		/*fail_info is non-NULL on failure */
+		nautilus_view_report_load_failed (p_state->view->details->nautilus_view);
+		goto error;
+	} else {
+		eazel_services_scheme_translate (p_state->view, p_state->uri, TRUE);
+	}
+
+error:
+	g_free (p_state->uri);
+	g_free (p_state);
+}
+
+#endif /* EAZEL_SERVICES_MOZILLA_MODAL_LOGIN */
+
+#endif /* EAZEL_SERVICES */

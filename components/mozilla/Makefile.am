@@ -15,6 +15,7 @@ INCLUDES = \
 	$(GNOMEUI_CFLAGS) \
 	$(MOZILLA_COMPONENT_CFLAGS) \
 	-DMOZILLA_MILESTONE=$(MOZILLA_MILESTONE) \
+	$(AMMONITE_CFLAGS) \
 	$(NULL)
 
 bin_PROGRAMS =\
@@ -45,6 +46,7 @@ nautilus_mozilla_content_view_LDADD = \
 	$(OAF_LIBS) \
 	$(MOZILLA_COMPONENT_LDFLAGS) \
 	$(MOZILLA_COMPONENT_LIBS) \
+	$(AMMONITE_LIBS) \
 	$(NULL)
 
 oafdir = $(datadir)/oaf
