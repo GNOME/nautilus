@@ -789,11 +789,14 @@ rsvg_text_handler_characters (RsvgSaxHandler *self, const xmlChar *ch, int len)
   if (ctx->ft_ctx == NULL)
     ctx->ft_ctx = rsvg_ft_ctx_new ();
 
-  /* A hack! */
+  /* FIXME bugzilla.eazel.com 3904: We need to make rsvg use the 
+   * Nautilus font mapping stuff in NautilusScalableFont.  See bug
+   * for details.
+   */
   fh = rsvg_ft_intern (ctx->ft_ctx,
-		       "/usr/share/fonts/default/Type1/n021003l.pfb");
+		       NAUTILUS_DATADIR "/fonts/urw/n019003l.pfb");
   rsvg_ft_font_attach (ctx->ft_ctx, fh,
-		       "/usr/share/fonts/default/Type1/n021003l.afm");
+		       NAUTILUS_DATADIR "/fonts/urw/n019003l.afm");
 
   state = &ctx->state[ctx->n_state - 1];
 

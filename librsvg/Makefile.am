@@ -16,6 +16,7 @@ INCLUDES = \
 	$(FREETYPE2_CFLAGS) \
 	$(WERROR) \
 	-D_REENTRANT \
+	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	$(NULL)
 
 librsvg_la_LDFLAGS= -static

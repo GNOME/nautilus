@@ -1,3 +1,11 @@
+2000-10-20  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* librsvg/Makefile.am:
+	* librsvg/rsvg.c: (rsvg_text_handler_characters):
+	Make sure the font used for text is svg icons actually exists.
+	Fix (rather a worksround) for bug 3774.  We will have a better fix
+	later (bug 3904).
+	
 2000-10-22  Andy Hertzfeld  <andy@eazel.com>
 
 	made the images show up again in the summary view by adding
