@@ -1,3 +1,23 @@
+2001-02-16  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 6724 (implement Vera's new text &
+	organization for Preferences)
+
+	There are a few open issues still, but they can be
+	handled one at a time.
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_descriptions),
+	(global_preferences_create_dialog),
+	(global_preferences_install_sidebar_panel_descriptions):
+	Tweak text, rework some comments, reorganize.
+
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(repopulate_program_list): Reinstated a one-line fix
+	that was accidentally merged away earlier.
+
 2001-02-16  Robey Pointer  <set EMAIL_ADDRESS environment variable>
 
 	* nautilus.spec.in:

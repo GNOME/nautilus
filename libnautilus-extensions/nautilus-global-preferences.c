@@ -83,21 +83,17 @@ global_preferences_install_descriptions (void)
 	g_return_if_fail (preferences_registered == FALSE);
 	preferences_registered = TRUE;
 
-	/* Theme */
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_THEME,
 					      _("current theme"));
 
-	/* Window create new */
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-					      _("Open each item in a separate window"));
+					      _("Open each file or folder in a separate window"));
 	
-	/* Trash confirm */
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-					      _("Ask before deleting items from the trash"));
+					      _("Ask before emptying the Trash"));
 	
-	/* Click activation type */
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					      _("Click behavior"));
+					      _("Click Behavior"));
 	
 	nautilus_preferences_enumeration_insert (NAUTILUS_PREFERENCES_CLICK_POLICY,
 						 _("single"),
@@ -109,49 +105,50 @@ global_preferences_install_descriptions (void)
 						 _("Activate items with a double click"),
 						 NAUTILUS_CLICK_POLICY_DOUBLE);
 	
-	/* Click activation type */
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
-					      _("Activating Executable Text Files"));
+					      _("Executable Text Files"));
 	
 	nautilus_preferences_enumeration_insert (NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
 						 _("launch"),
-						 _("Always execute"),
+						 _("Execute files when they are clicked"),
 						 NAUTILUS_EXECUTABLE_TEXT_LAUNCH);
 	
 	nautilus_preferences_enumeration_insert (NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
 						 _("display"),
-						 _("Always display"),
+						 _("Display files when they are clicked"),
 						 NAUTILUS_EXECUTABLE_TEXT_DISPLAY);
 	
 	nautilus_preferences_enumeration_insert (NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
 						 _("ask"),
 						 _("Ask each time"),
 						 NAUTILUS_EXECUTABLE_TEXT_ASK);
-	
-	/*
-	 * Speed tradeoffs
+
+	/* Note that I've changed all these descriptions to match the displayed text.
+	 * The original intention was to use them differently, but currently they aren't
+	 * used at all. By matching the displayed text, at least localizers won't have to
+	 * localize two different strings. If we ever make them appear separately, we will
+	 * have to reword them (as we would have had to anyway).
 	 */
 	global_preferences_install_speed_tradeoff_descriptions (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
-								_("Display text in icons"));
+								_("Show Text in Icons"));
 	
 	global_preferences_install_speed_tradeoff_descriptions (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
-								_("Display item counts for folders"));
+								_("Show Count of Items in Folders"));
 	
 	global_preferences_install_speed_tradeoff_descriptions (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
-								_("Show thumbnails for image files"));
+								_("Show Thumbnails for Image Files"));
 
 	global_preferences_install_speed_tradeoff_descriptions (NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
-								_("Read and write metadata in each folder"));
+								_("Make Folder Appearance Details Public"));
 	
 	global_preferences_install_speed_tradeoff_descriptions (NAUTILUS_PREFERENCES_PREVIEW_SOUND,
-								_("Play a sound file when the mouse is over it"));
+								_("Preview Sound Files"));
 	
-	/* Appearance options */
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
 					      _("Use smoother (but slower) graphics"));
 
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
-					      _("Font family used to display file names"));
+					      _("Use this font family to display file names:"));
 
 	
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_START_WITH_TOOL_BAR,
@@ -169,12 +166,10 @@ global_preferences_install_descriptions (void)
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 					      _("Use Nautilus to draw the desktop"));
 								  
-	/* search tradeoffs */
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SEARCH_METHOD,
 					      _("Do slower but more complete search whenever possible\n"
 						"(slower search is not available when searching by content)"));
 
-	/* search bar type */
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 					      _("search type to do by default"));
 	
@@ -188,42 +183,37 @@ global_preferences_install_descriptions (void)
 						 _("Search for files by text and by their properties"),
 						 NAUTILUS_COMPLEX_SEARCH_BAR);
 	
-	/* web search uri  */
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
 					      _("Search Web Location"));
 
 	
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-					      _("Show hidden files (starting with \".\")"));
+					      _("Show hidden files (file names start with \".\")"));
 	
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
-					      _("Show backup files (ending with \"~\")"));
+					      _("Show backup files (file names end with \"~\")"));
 	
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
 					      _("Show special flags in Properties window"));
 	
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
-					      _("Show only folders (no files) in Tree sidebar panel"));
+					      _("Show only folders (no files) in the Tree"));
 
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_CAN_ADD_CONTENT,
 					      _("Can add Content"));
 
-	/* built-in bookmarks */
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
-					      _("Don't include the built-in bookmarks"));
+					      _("Don't include the built-in bookmarks in the Bookmarks menu"));
 	
 
-	/* Home location */
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_HOME_URI,
-					      _("Home Location"));
+					      _("Home location:"));
 
-	/* Sidebar panel descriptions */
 	global_preferences_install_sidebar_panel_descriptions ();
 	
-	/* Proxy descriptions */
 	nautilus_preferences_set_description (USE_PROXY_KEY, _("Use HTTP Proxy"));
-	nautilus_preferences_set_description (PROXY_HOST_KEY, _("HTTP Proxy"));
-	nautilus_preferences_set_description (PROXY_PORT_KEY, _("HTTP Proxy Port"));
+	nautilus_preferences_set_description (PROXY_HOST_KEY, _("HTTP Proxy:"));
+	nautilus_preferences_set_description (PROXY_PORT_KEY, _("HTTP Proxy Port:"));
 }
 
 /**
@@ -501,6 +491,7 @@ global_preferences_create_dialog (void)
 	GtkWidget		*prefs_dialog;
 	NautilusPreferencesBox	*preference_box;
 	GtkWidget		*directory_views_pane;
+	GtkWidget		*windows_and_desktop_pane;
 	GtkWidget		*sidebar_panels_pane;
 	GtkWidget		*appearance_pane;
 	GtkWidget		*file_indexing_pane;
@@ -546,124 +537,107 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
 							 NAUTILUS_PREFERENCE_ITEM_FONT_FAMILY);
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), _("Views"));
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
-							 2,
-							 NAUTILUS_PREFERENCES_START_WITH_TOOL_BAR,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
-							 2,
-							 NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
-							 2,
-							 NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
-							 2,
-							 NAUTILUS_PREFERENCES_START_WITH_SIDEBAR,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-	
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), _("Desktop"));
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
-							 3,
+
+	/*
+	 * Windows & Desktop pane
+	 */
+	windows_and_desktop_pane = nautilus_preferences_box_add_pane (preference_box,
+								      _("Windows & Desktop"),
+								      _("Windows & Desktop Settings"));
+
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane), _("Desktop"));
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane),
+							 0,
 							 NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane), _("Opening New Windows"));
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane),
+							 1,
+							 NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+	
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane),
+							 1,
+							 NAUTILUS_PREFERENCES_START_WITH_TOOL_BAR,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane),
+							 1,
+							 NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane),
+							 1,
+							 NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane),
+							 1,
+							 NAUTILUS_PREFERENCES_START_WITH_SIDEBAR,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+	
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane), _("Trash Behavior"));
+	
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane),
+							 2,
+							 NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+	
 	
 	/*
 	 * Folder Views pane
 	 */
 	directory_views_pane = nautilus_preferences_box_add_pane (preference_box,
-								 _("Folder Views"),
-								 _("Folder Views Settings"));
+								 _("Icon & List Views"),
+								 _("Icon & List Views Settings"));
 	
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), _("Window Behavior"));
-	
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
-							 0,
-							 NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-	
+
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), _("Click Behavior"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
-							 1,
+							 0,
 							 NAUTILUS_PREFERENCES_CLICK_POLICY,
 							 NAUTILUS_PREFERENCE_ITEM_ENUM);
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), _("Trash Behavior"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), _("Executable Text Files"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
-							 2,
-							 NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-	
+							 1,
+							 NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
+							 NAUTILUS_PREFERENCE_ITEM_ENUM);
+
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), _("Show/Hide Options"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
-							 3,
-							 NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
-							 3,
+							 2,
 							 NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
-							 3,
+							 2,
 							 NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
-							 3,
+							 2,
 							 NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), _("Activating Executable Text Files"));
-	
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
-							 4,
-							 NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
-							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
-
-	/*
-	 * Search Settings 
-	 */
-	file_indexing_pane = nautilus_preferences_box_add_pane (preference_box,
-								_("Search"),
-								_("Search Settings"));
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
-					     _("Search Complexity Options"));
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
-							 0,
-							 NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
-							 NAUTILUS_PREFERENCE_ITEM_ENUM);
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
-					     _("Search Tradeoffs"));
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
-							 1,
-							 NAUTILUS_PREFERENCES_SEARCH_METHOD,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-	
-	
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
-					     _("Search Locations"));
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
-							 2,
-							 NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
-							 NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING);
-					
 	/*
 	 * Sidebar panels pane
 	 */
 	sidebar_panels_pane = nautilus_preferences_box_add_pane (preference_box,
 								 _("Sidebar Panels"),
-								 _("Sidebar Panels Description"));
+								 _("Sidebar Panels Settings"));
 	
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (sidebar_panels_pane), 
-					     _("Choose which panels should appear in the sidebar"));
+					     _("Tabs"));
+
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (sidebar_panels_pane), 
+					     _("Tree"));
+
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (sidebar_panels_pane),
+							 1,
+							 NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
 	{
 		char *preference_key;
@@ -696,13 +670,40 @@ global_preferences_create_dialog (void)
 	}
 
 	/*
+	 * Search Settings 
+	 */
+	file_indexing_pane = nautilus_preferences_box_add_pane (preference_box,
+								_("Search"),
+								_("Search Settings"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
+					     _("Search Complexity Options"));
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
+							 0,
+							 NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
+							 NAUTILUS_PREFERENCE_ITEM_ENUM);
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
+					     _("Search Tradeoffs"));
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
+							 1,
+							 NAUTILUS_PREFERENCES_SEARCH_METHOD,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+	
+	
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
+					     _("Search Locations"));
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (file_indexing_pane),
+							 2,
+							 NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
+							 NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING);
+					
+	/*
 	 * Navigation
 	 */
 	navigation_pane = nautilus_preferences_box_add_pane (preference_box,
 							    _("Navigation"),
 							    _("Navigation Settings"));
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (navigation_pane), _("Home Location"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (navigation_pane), _("Home"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (navigation_pane),
 							 0,
@@ -749,7 +750,7 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
 							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Show Item Counts for Folders"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Show Count of Items in Folders"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
 							 1,
@@ -763,7 +764,7 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Previewing Sound Files"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Preview Sound Files"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
 							 3,
@@ -921,22 +922,24 @@ global_preferences_install_sidebar_panel_descriptions (void)
 {
  	GList *view_identifiers;
  	GList *iterator;
+ 	NautilusViewIdentifier *identifier;
+ 	char *key, *label;
 	
 	/* Install the descriptions for the available sidebar panels */
  	view_identifiers = global_preferences_get_sidebar_panel_view_identifiers ();
 
  	for (iterator = view_identifiers; iterator != NULL; iterator = iterator->next) {
- 		NautilusViewIdentifier *identifier;
- 		char *key;
 
  		identifier = iterator->data;
  		g_return_if_fail (identifier != NULL);
 		
  		key = global_preferences_get_sidebar_panel_key (identifier->iid);
  		g_return_if_fail (key != NULL);
-		
- 		nautilus_preferences_set_description (key, identifier->name);
+
+		label = g_strdup_printf (_("Display %s tab in sidebar"), identifier->name);
+ 		nautilus_preferences_set_description (key, label);
  		g_free (key);
+ 		g_free (label);
  	}
 
  	nautilus_view_identifier_list_free (view_identifiers);
