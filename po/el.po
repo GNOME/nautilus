@@ -22,12 +22,13 @@
 # simos: 1525 messages, 11Nov2002, translation completed.
 # kostas: unfuzzy 60, 40 new, 07Jan 2003, updated translation for Gnome 2.1x
 # kostas: 28Jan2003, updated translation
+# kostas: 13Feb2003, fixed some typos
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.0.7\n"
-"POT-Creation-Date: 2003-02-11 09:31+0100\n"
-"PO-Revision-Date: 2003-01-28 13:59+0200\n"
+"POT-Creation-Date: 2003-02-13 18:14+0200\n"
+"PO-Revision-Date: 2003-02-13 18:13+0200\n"
 "Last-Translator: Kostas Papadimas <pkst@gmx.net>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
@@ -93,7 +94,7 @@ msgid ""
 "Couldn't rename emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one that you added yourself."
 msgstr ""
-"Δεν είναι δυνατή η μετονομασά του εμβλήματος με όνομα '%s'. Αυτό συμβαίνει "
+"Δεν είναι δυνατή η μετονομασία του εμβλήματος με όνομα '%s'. Αυτό συμβαίνει "
 "γιατί είναι πιθανόν το έμβλημα να είναι μόνιμο και όχι έμβλημα που "
 "προσθέσατε εσείς."
 
@@ -112,7 +113,7 @@ msgstr "Επιλέξτε ένα  νέο όνομα για το εμφανιζό�
 #
 #: components/emblem/nautilus-emblem-view.c:330
 msgid "Rename"
-msgstr "Μετανομασία"
+msgstr "Μετονομασία"
 
 #
 #: components/emblem/nautilus-emblem-view.c:497
@@ -1279,7 +1280,7 @@ msgstr "αρχικοποίηση"
 
 #: libnautilus-private/nautilus-dnd.c:567
 msgid "_Move here"
-msgstr "_Πήγαινε εκεί"
+msgstr "_Μετάβαση εδώ"
 
 # # NOTE: Translation of "Create" as "New" to
 # #       keep msg length relatively short...
@@ -1338,7 +1339,7 @@ msgid ""
 "Sorry, but there is already an emblem named \"%s\".  Please choose a "
 "different name for it."
 msgstr ""
-"Συγγνώμη, αλλά τ υπάρχει ήδη ένα έμβλημα που ονομάζεται \"%s\". Παρακαλώ "
+"Συγγνώμη, αλλά υπάρχει ήδη ένα έμβλημα που ονομάζεται \"%s\". Παρακαλώ "
 "επιλέξτε ένα διαφορετικό όνομα για αυτό. "
 
 #: libnautilus-private/nautilus-emblem-utils.c:229
@@ -3154,7 +3155,7 @@ msgstr "Είδη Αρχείων και Εφαρμογές"
 
 #: libnautilus-private/nautilus-program-chooser.c:1449
 msgid "_Go There"
-msgstr "_Πήγαινε Εκεί"
+msgstr "_Μετάβαση εκεί"
 
 #: libnautilus-private/nautilus-program-chooser.c:1456
 msgid ""
@@ -4390,11 +4391,11 @@ msgstr ""
 #: src/file-manager/fm-error-reporting.c:136
 #, c-format
 msgid "Sorry, couldn't rename \"%s\" to \"%s\"."
-msgstr "Συγγνώμη, δεν ήταν δυνατή η μετανομασία του \"%s\" σε \"%s\"."
+msgstr "Συγγνώμη, δεν ήταν δυνατή η μετονομασία του \"%s\" σε \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:143
 msgid "Renaming Error"
-msgstr "Σφάλμα Μετανομασίας"
+msgstr "Σφάλμα Μετονομασίας"
 
 #: src/file-manager/fm-error-reporting.c:163
 #, c-format
@@ -4461,7 +4462,7 @@ msgstr "Μετονομασία του \"%s\" σε \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:314
 msgid "Cancel Rename?"
-msgstr "Ακύρωση Μετανομασίας;"
+msgstr "Ακύρωση Μετονομασίας;"
 
 #: src/file-manager/fm-icon-view.c:151
 msgid "by _Name"
@@ -5206,7 +5207,7 @@ msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:27
 msgid "Rename selected item"
-msgstr "Μετανομασία επιλεγμένου αντικειμένου"
+msgstr "Μετονομασία επιλεγμένου αντικειμένου"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:28
 msgid "Reset View to _Defaults"
@@ -5271,7 +5272,7 @@ msgstr "_Ιδιότητες"
 #
 #: src/file-manager/nautilus-directory-view-ui.xml.h:45
 msgid "_Rename..."
-msgstr "_Μετανομασία..."
+msgstr "_Μετονομασία..."
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:46
 msgid "_Scripts"
@@ -5864,23 +5865,23 @@ msgstr "Επανεκκίνηση του Ναυτίλου."
 msgid "Nautilus"
 msgstr "Ναυτίλος"
 
-#: src/nautilus-main.c:196
+#: src/nautilus-main.c:201
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: το --check δε μπορεί να χρησιμοποιηθεί με URI.\n"
 
-#: src/nautilus-main.c:200
+#: src/nautilus-main.c:205
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: το --check δε μπορεί να χρησιμοποιηθεί με άλλες επιλογές.\n"
 
-#: src/nautilus-main.c:204
+#: src/nautilus-main.c:209
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: το --quit δε μπορεί να χρησιμοποιηθεί με URI.\n"
 
-#: src/nautilus-main.c:208
+#: src/nautilus-main.c:213
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: το --restart δε μπορεί να χρησιμοποιηθεί με URI.\n"
 
-#: src/nautilus-main.c:212
+#: src/nautilus-main.c:217
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr ""
 "nautilus: το --geometry δε μπορεί να χρησιμοποιηθεί με περισσότερα από ένα "
@@ -6224,7 +6225,7 @@ msgstr "[Ιδιοκτήτης αρχείου] να είναι [διαχειρι�
 msgid "[File owner] is not [root]"
 msgstr "[Ιδιοκτήτης αρχείου] να μην είναι [διαχειριστής]"
 
-#: src/nautilus-server-connect.c:129
+#: src/nautilus-server-connect.c:130
 msgid ""
 "Couldn't execute nautilus\n"
 "Make sure nautilus is in your path and correctly installed"
@@ -6232,7 +6233,7 @@ msgstr ""
 "Αδυναμία εκτέλεσης Ναυτίλου\n"
 "Βεβαιωθείτε ότι ο ναυτίλος είναι στην σωστή διαδρομή και σωστά εγκατεστημένος"
 
-#: src/nautilus-server-connect.c:392
+#: src/nautilus-server-connect.c:393
 #, c-format
 msgid ""
 "Couldn't connect to URI %s\n"
@@ -6243,7 +6244,7 @@ msgstr ""
 "Βεβαιωθείτε ότι η διεύθυνση είναι η σωστή και εναλλακτικά, πληκτρολογήστε "
 "την διεύθυνση κατευθείαν στον διαχειριστή αρχείων"
 
-#: src/nautilus-server-connect.c:457
+#: src/nautilus-server-connect.c:458
 msgid ""
 "Glade file for the connect to server program is missing.\n"
 "Please check your installation of nautilus"
@@ -6298,7 +6299,7 @@ msgstr ""
 #: src/nautilus-shell-ui.xml.h:9
 msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr ""
-"Καθαρισμός των περιεχομένων του μενού Πήγαινε και των λιστών Πίσω/Μπροστά"
+"Καθαρισμός των περιεχομένων του μενού Μετάβαση και των λιστών Πίσω/Μπροστά"
 
 #: src/nautilus-shell-ui.xml.h:10
 msgid "Close _All Windows"
@@ -6353,23 +6354,23 @@ msgstr "Μπροστά"
 
 #: src/nautilus-shell-ui.xml.h:22
 msgid "Go to the Start Here folder"
-msgstr "Πήγαινε στο φάκελο Ξεκινήστε Εδώ"
+msgstr "Μετάβαση στο φάκελο Ξεκινήστε Εδώ"
 
 #: src/nautilus-shell-ui.xml.h:23
 msgid "Go to the home location"
-msgstr "Πήγαινε στην αρχική τοποθεσία"
+msgstr "Μετάβαση στην αρχική τοποθεσία"
 
 #: src/nautilus-shell-ui.xml.h:24
 msgid "Go to the next visited location"
-msgstr "Πήγαινε στην επόμενη τοποθεσία της λίστας ιστορικού"
+msgstr "Μετάβαση στην επόμενη τοποθεσία της λίστας ιστορικού"
 
 #: src/nautilus-shell-ui.xml.h:25
 msgid "Go to the previous visited location"
-msgstr "Πήγαινε στην προηγούμενη τοποθεσία της λίστα ιστορικού"
+msgstr "Μετάβαση  στην προηγούμενη τοποθεσία της λίστα ιστορικού"
 
 #: src/nautilus-shell-ui.xml.h:26
 msgid "Go to the trash folder"
-msgstr "Πήγαινε στο φάκελο απορριμμάτων"
+msgstr "Μετάβαση στο φάκελο απορριμμάτων"
 
 #: src/nautilus-shell-ui.xml.h:27
 msgid "Go up one level"
@@ -6524,7 +6525,7 @@ msgstr "_Μπροστά"
 
 #: src/nautilus-shell-ui.xml.h:66
 msgid "_Go"
-msgstr "_Πήγαινε"
+msgstr "_Μετάβαση"
 
 #: src/nautilus-shell-ui.xml.h:67
 msgid "_Help"
@@ -6863,19 +6864,19 @@ msgstr "Η τοποθεσία \"%s\" δεν υπάρχει πια."
 
 #: src/nautilus-window-menus.c:771
 msgid "Go to Nonexistent Location"
-msgstr "Πήγαινε σε Μη Υπαρκτή Τοποθεσία"
+msgstr "Μετάβαση σε Μη Υπαρκτή Τοποθεσία"
 
 #: src/nautilus-window-menus.c:840
 msgid "Go to the location specified by this bookmark"
-msgstr "Πήγαινε στη τοποθεσία που καθορίζετε από το φυλλομετρητή"
+msgstr "Μετάβαση στη τοποθεσία που καθορίζεται από αυτό το σελιδοδείκτη"
 
 #: src/nautilus-window-toolbars.c:422
 msgid "Go back a few pages"
-msgstr "Πήγαινε πίσω μερικές σελίδες"
+msgstr "Μετάβαση πίσω μερικές σελίδες"
 
 #: src/nautilus-window-toolbars.c:425
 msgid "Go forward a number of pages"
-msgstr "Πήγαινε μπροστά μερικές σελίδες"
+msgstr "Μετάβαση μπροστά μερικές σελίδες"
 
 #: src/nautilus-window.c:661
 msgid "Information"
