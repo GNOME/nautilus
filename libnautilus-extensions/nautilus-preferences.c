@@ -282,6 +282,7 @@ preferences_key_make_for_visibility (const char *name)
 
 	visibility_path = preferences_get_visibility_path ();
 	default_key = g_strdup_printf ("%s%s", visibility_path, key);
+	g_free (key);
 	g_free (visibility_path);
 	
 	return default_key;

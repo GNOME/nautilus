@@ -1,3 +1,12 @@
+2001-03-04  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-preferences.c:
+	(preferences_key_make_for_visibility):
+
+	Fix a leak by adding a missing g_free.
+	
 2001-03-02  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
