@@ -662,24 +662,31 @@ sort_by_bitrate (gconstpointer ap, gconstpointer bp)
 
 
 /* utility routine to determine most common attribute in song list.  The passed in boolean selects
-   album or artist. Return NULL if no names or too heterogenous.   This first cut just captures 
-   the first one it can - soon, we'll use a hash table and count them up */
-
+   album or artist. Return NULL if they are heterogenous */
 static char *
 determine_attribute (GList *song_list, gboolean is_artist)
 {
 	SongInfo *info;
 	GList *p;
-
+	char *current_attribute, *this_attribute;
+	
+	current_attribute = NULL;
+	
         for (p = song_list; p != NULL; p = p->next) {
 		info = (SongInfo *) p->data;
-		if (is_artist && info->artist != NULL) {
-			return g_strdup (info->artist);
-                } else if (!is_artist && info->album) {
-			return g_strdup (info->album);
-                }
+		this_attribute = is_artist ? info->artist : info->album;
+		
+		if (this_attribute && nautilus_strcmp (this_attribute, current_attribute)) {
+			if (current_attribute == NULL) {
+				current_attribute = g_strdup (this_attribute);
+			} else {
+				g_free (current_attribute);
+				return NULL;
+			}
+			
+		}
 	}
-                return NULL;
+	return current_attribute;
 }
 
 /* utility routine to sort the song list */
