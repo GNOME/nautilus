@@ -51,8 +51,9 @@
 #define KEY_GCONF_EAZEL_INVENTORY_ENABLED "/apps/eazel-trilobite/inventory/enabled"
 
 #define EAZEL_INVENTORY_UPLOAD_URI "eazel-services:/inventory/upload"
+#define EAZEL_INVENTORY_DELETE_URI "eazel-services:/inventory/delete"
 
-#define UPLOAD_POST_PREFIX "_inventory.xml="
+#define UPLOAD_POST_NAME "_inventory.xml"
 
 /* FIXME: hook gconf signals so that if the values are changed externally we contact the server... */
 
@@ -97,17 +98,107 @@ impl_Trilobite_Eazel_Inventory__get_enabled (PortableServer_Servant servant,
 	return get_enabled (service->object);
 }
 
+static gboolean
+http_post_simple (const char *uri, const char *name, const char *value) {
+        ghttp_request* request;
+	char *ename=NULL, *evalue=NULL, *body=NULL;
+
+	request = ghttp_request_new ();
+	if (!request) {
+		return FALSE;
+	}
+
+	if (ghttp_set_uri (request, (char *)uri) != 0 || 
+			ghttp_set_type (request, ghttp_type_post) != 0) {
+		ghttp_close (request);
+		return FALSE;
+	}
+        ghttp_set_header (request, http_hdr_Connection, "close");
+        ghttp_set_header (request, http_hdr_User_Agent, trilobite_get_useragent_string (NULL));
+        ghttp_set_header (request, http_hdr_Content_Type, "application/x-www-form-urlencoded");
+
+	evalue = gnome_vfs_escape_string (value);
+	if (name) {
+		ename = gnome_vfs_escape_string (name);
+		body = g_strconcat (ename, "=", evalue, NULL);
+		g_free (ename);
+		g_free (evalue);
+	} else {
+		body = evalue;
+	}
+
+	if (ghttp_set_body (request, body, strlen(body)) != 0 || 
+			ghttp_prepare (request) != 0) {
+		ghttp_close (request);
+		return FALSE;
+	}
+
+	if (ghttp_process (request) != ghttp_done) {
+		ghttp_close (request);
+		return FALSE;
+	}
+
+	ghttp_close (request);
+	return TRUE;
+}
+
+
+static gboolean
+http_post_simple_ammonite (const char *uri, const char *name, const char *value) {
+	char *partial_url, *full_url;
+	AmmoniteError error;
+	gboolean result;
+
+	partial_url = NULL;
+	error = ammonite_http_url_for_eazel_url (uri, &partial_url);
+
+	if (error != ERR_Success) {
+		return FALSE;
+	}
+
+	full_url = g_strconcat ("http", partial_url, NULL);
+
+	g_print ("debug: tranlated uri: `%s'\n", full_url);
+
+	result = http_post_simple (full_url, name, value);
+
+	g_free (full_url);
+
+	return result;
+}
+
 static void
 impl_Trilobite_Eazel_Inventory__set_enabled (PortableServer_Servant servant,
 					     CORBA_boolean          enabled,
 					     CORBA_Environment     *ev) 
 {
 	impl_POA_Trilobite_Eazel_Inventory *service; 
+	char *body, *machine_name;
 
 	service = (impl_POA_Trilobite_Eazel_Inventory *) servant;
                                              
 	gconf_client_set_bool (service->object->details->gconf_client, KEY_GCONF_EAZEL_INVENTORY_ENABLED, enabled, NULL);
 	/* FIXME: handle gconf errors */
+
+	if (!enabled) {
+		machine_name = ammonite_get_machine_id ();	
+		if (machine_name == NULL) {
+			/* this shouldn't ever happen */
+			return;
+		}
+
+		body = g_strdup_printf("<?xml version=\"1.0\"?><methodCall>"
+				"<methodName>deleteProfile</methodName>"
+				"<params><param><value><string>%s</string></value>"
+				"</param></params></methodCall>", machine_name);
+		g_free (machine_name);
+
+		http_post_simple_ammonite (EAZEL_INVENTORY_DELETE_URI, NULL, body);
+
+		g_free (body);
+
+		eazel_inventory_clear_md5 ();
+	}
 }
 
 
@@ -137,17 +228,11 @@ impl_Trilobite_Eazel_Inventory_upload (PortableServer_Servant servant,
 				       Trilobite_Eazel_InventoryUploadCallback callback,
 				       CORBA_Environment *caller_ev) 
 {
-	AmmoniteError error;
-	char *url, *partial_url;
 	gboolean do_upload;
-        ghttp_request* request;
-	ghttp_status status;
 	GnomeVFSResult result;
 	int file_size;
 	char *file_contents;
 	char *file_contents_good;
-	char *escaped;
-	char *body;
 	char *path;
 	CORBA_Environment ev;
 	impl_POA_Trilobite_Eazel_Inventory *service; 
@@ -178,72 +263,6 @@ impl_Trilobite_Eazel_Inventory_upload (PortableServer_Servant servant,
 
 	/* TODO: store new MD5 */
 
-	partial_url = NULL;
-	error = ammonite_http_url_for_eazel_url (EAZEL_INVENTORY_UPLOAD_URI, &partial_url);
-
-	/* FIXME: CRAAAAAACK */
-
-	if (error != ERR_Success) {
-#if 0
-		switch (error) {
-		case ERR_UserNotLoggedIn:
-			g_print (_("User isn't logged into ammonite yet.\n"));
-			break;
-		case ERR_BadURL:
-			g_print (_("The supplied URL was bad.\n"));
-			break;
-		case ERR_CORBA:
-			g_print (_("A CORBA error occured.\n"));
-			break;
-		default:
-			g_print (_("Ammonite returned an error translating the url.\n"));
-		}
-#endif
-
-		if (! CORBA_Object_is_nil (callback, &ev)) {
-			Trilobite_Eazel_InventoryUploadCallback_done_uploading (callback, CORBA_FALSE, &ev);
-		}
-		CORBA_exception_free (&ev);
-		return;
-	}
-
-
-	url = g_strconcat ("http", partial_url, NULL);
-	g_print ("the URI is: %s\n", url);
-
-	request = ghttp_request_new();
-	if (!request) {
-                /* g_warning (_("Could not create an http request !")); */
-		if (! CORBA_Object_is_nil (callback, &ev)) {
-			Trilobite_Eazel_InventoryUploadCallback_done_uploading (callback, CORBA_FALSE, &ev);
-		}
-		CORBA_exception_free (&ev);
-		return;
-	}
-
-        if (ghttp_set_uri (request, url) != 0) {
-                /* g_warning (_("Invalid uri !")); */
-		if (! CORBA_Object_is_nil (callback, &ev)) {
-			Trilobite_Eazel_InventoryUploadCallback_done_uploading (callback, CORBA_FALSE, &ev);
-		}
-		CORBA_exception_free (&ev);
-		return;
-        }
-
-	if (ghttp_set_type (request, ghttp_type_post) != 0) {
-		/* g_warning (_("Can't post !")); */
-		if (! CORBA_Object_is_nil (callback, &ev)) {
-			Trilobite_Eazel_InventoryUploadCallback_done_uploading (callback, CORBA_FALSE, &ev);
-		}
-		CORBA_exception_free (&ev);
-		return;
-	}
-
-        ghttp_set_header (request, http_hdr_Connection, "close");
-        ghttp_set_header (request, http_hdr_User_Agent, trilobite_get_useragent_string (NULL));
-        ghttp_set_header (request, http_hdr_Content_Type, "application/x-www-form-urlencoded");
-	g_print("about to read file\n");
-
 	path = eazel_inventory_local_path ();	
 	result = nautilus_read_entire_file (path, &file_size, &file_contents);
 	g_free (path);
@@ -264,52 +283,18 @@ impl_Trilobite_Eazel_Inventory_upload (PortableServer_Servant servant,
 
 	g_print("read file\n");
 
-	escaped = gnome_vfs_escape_string (file_contents);
 
-	body = g_strconcat (UPLOAD_POST_PREFIX, escaped, NULL);
+	if (!http_post_simple_ammonite (EAZEL_INVENTORY_UPLOAD_URI, 
+				UPLOAD_POST_NAME, file_contents)) {
+		g_free (file_contents);
+		if (! CORBA_Object_is_nil (callback, &ev)) {
+			Trilobite_Eazel_InventoryUploadCallback_done_uploading (callback, CORBA_FALSE, &ev);
+		}
+		CORBA_exception_free (&ev);
+		return;
+	}
 
 	g_free (file_contents);
-	g_free (escaped);
-
-	if (ghttp_set_body (request, body, strlen(body)) != 0) {
-		/* g_warning (_("Can't set body !")); */
-		g_free (body);
-		ghttp_close (request);
-		if (! CORBA_Object_is_nil (callback, &ev)) {
-			Trilobite_Eazel_InventoryUploadCallback_done_uploading (callback, CORBA_FALSE, &ev);
-		}
-		CORBA_exception_free (&ev);
-		return;
-	}
-
-	if (ghttp_prepare (request) != 0) {
-                /* g_warning (_("Could not prepare http request !")); */
-		g_free (body);
-		ghttp_close (request);
-		if (! CORBA_Object_is_nil (callback, &ev)) {
-			Trilobite_Eazel_InventoryUploadCallback_done_uploading (callback, CORBA_FALSE, &ev);
-		}
-		CORBA_exception_free (&ev);
-		return;
-        }
-
-	
-	status = ghttp_process (request);
-
-	if (status != ghttp_done) {
-		/* g_print ("an error occured uploading the inventory: %s\n",
-		   ghttp_get_error (request)); */
-		g_free (body);
-		ghttp_close (request);
-		if (! CORBA_Object_is_nil (callback, &ev)) {
-			Trilobite_Eazel_InventoryUploadCallback_done_uploading (callback, CORBA_FALSE, &ev);
-		}
-		CORBA_exception_free (&ev);
-		return;
-	}
-
-	g_free (body);
-	ghttp_close (request);
 
 	/* store the new MD5 */
 	eazel_inventory_update_md5 ();

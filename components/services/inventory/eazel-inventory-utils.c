@@ -47,8 +47,8 @@
 #define DEBUG_pepper		1
 
 #define DIGEST_GCONF_PATH	"/apps/eazel-trilobite/inventory-digest"
-#define DIGEST_GCONF_KEY	"inventory_digest_value"
-#define PACKAGE_DB_MTIME_KEY	"package-db-mtime"
+#define DIGEST_GCONF_KEY	DIGEST_GCONF_PATH "/inventory_digest_value"
+#define PACKAGE_DB_MTIME_KEY	DIGEST_GCONF_PATH "/package-db-mtime"
 
 static GConfEngine *conf_engine = NULL;
 
@@ -98,7 +98,7 @@ get_software_inventory (void)
 	check_gconf_init ();
 
 	previous_mtime = gconf_engine_get_int (conf_engine, 
-			DIGEST_GCONF_PATH PACKAGE_DB_MTIME_KEY, &error);
+			PACKAGE_DB_MTIME_KEY, &error);
 	package_system = eazel_package_system_new (NULL);
 	database_mtime = eazel_package_system_database_mtime (package_system);
 	gtk_object_unref (GTK_OBJECT (package_system));
@@ -118,7 +118,7 @@ get_software_inventory (void)
 	}
 
 	gconf_engine_set_int (conf_engine, 
-			DIGEST_GCONF_PATH PACKAGE_DB_MTIME_KEY, database_mtime,
+			PACKAGE_DB_MTIME_KEY, database_mtime,
 			&error);
 	
 	if (!regenerate) {
@@ -199,27 +199,18 @@ static char *
 get_digest_from_gconf (const char *key)
 {
 	GError	*error;
-	char	*full_key;
-	char	*helper;
 	char	*value;
 
 	error = NULL;
 	value = NULL;
 
 	check_gconf_init ();
-	full_key = g_strdup_printf ("%s/%s", DIGEST_GCONF_PATH, key);
 
-	/* convert all spaces to underscores */
-	while ((helper = strchr (full_key, ' ')) != NULL) {
-		*helper = '_';
-	}
-
-	value = gconf_engine_get_string (conf_engine, full_key, &error);
+	value = gconf_engine_get_string (conf_engine, key, &error);
 	if (error != NULL) {
-		g_warning ("inventory cannot find key: '%s': %s", full_key, error->message);
+		g_warning ("inventory cannot find key: '%s': %s", key, error->message);
 		g_error_free (error);
 	}
-	g_free (full_key);
 	return value;
 }
 
@@ -233,7 +224,6 @@ update_gconf_inventory_digest (unsigned char value[16])
 {
 	GError *error;
 	char *full_key;
-	char *helper;
 	const char *digest_string;
 	gboolean return_val;
 
@@ -243,16 +233,7 @@ update_gconf_inventory_digest (unsigned char value[16])
 
 	digest_string = trilobite_md5_get_string_from_md5_digest (value);
 	check_gconf_init ();
-	full_key = g_strdup_printf ("%s/%s", DIGEST_GCONF_PATH, DIGEST_GCONF_KEY);
-
-	/* convert all spaces to underscores */
-	while ((helper = strchr (full_key, ' ')) != NULL) {
-		*helper = '_';
-	}
-
-#ifdef DEBUG_pepper
-	g_print ("Key: %s Digest: %s\n", full_key, digest_string);
-#endif
+	full_key = DIGEST_GCONF_KEY;
 
 	gconf_engine_unset (conf_engine, full_key, &error);
 	if (error != NULL) {
@@ -267,7 +248,6 @@ update_gconf_inventory_digest (unsigned char value[16])
 		g_error_free (error);
 		return_val = FALSE;
 	}
-	g_free (full_key);
 
 	return return_val;
 }
@@ -348,4 +328,17 @@ void eazel_inventory_update_md5 () {
 	}
 	g_free (inventory_file_name);
 
+}
+
+void eazel_inventory_clear_md5 () {
+	GError *error;
+
+	check_gconf_init ();
+
+	gconf_engine_unset (conf_engine, DIGEST_GCONF_KEY, &error);
+
+	if (error != NULL) {
+		/* What, me worry? */
+		g_error_free (error);
+	}
 }

@@ -36,5 +36,6 @@ gboolean eazel_gather_inventory				(void);
 gboolean update_gconf_inventory_digest			(unsigned char          value[16]);
 gchar *eazel_inventory_local_path			(void);
 void eazel_inventory_update_md5                         (void);
+void eazel_inventory_clear_md5				(void);
 
 #endif /* EAZEL_INVENTORY_UTILS_H */

@@ -1,3 +1,25 @@
+2001-02-24  Ian McKellar  <ian@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	* components/services/inventory/eazel-inventory-service.c:
+	(http_post_simple), (http_post_simple_ammonite),
+	(impl_Trilobite_Eazel_Inventory_upload):
+	Moved the HTTP/ammonite code out into separate functions.
+
+	(impl_Trilobite_Eazel_Inventory__set_enabled):
+	Implemented the delete-inventory server call.
+	This relates to bug 6184.
+
+	* components/services/inventory/eazel-inventory-utils.c:
+	(get_software_inventory), (get_digest_from_gconf),
+	(update_gconf_inventory_digest), (eazel_inventory_update_md5):
+	Cleanups.
+
+	(eazel_inventory_clear_md5):
+	* components/services/inventory/eazel-inventory-utils.h:
+	Added function to clear the md5.
+
 2001-02-24  Arik Devens  <arik@eazel.com>
 
 	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
