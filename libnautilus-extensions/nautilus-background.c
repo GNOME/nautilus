@@ -755,6 +755,19 @@ nautilus_background_draw (NautilusBackground *background,
 
 	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
 
+	/* Combine mode is currently used only by the sidebar. It allocates a pixbuf
+	 * on every draw, so further spread of its use should not be encouraged.
+	 * 
+	 * Combine mode allows the sidebar, regardless of aa mode, to alpha composite
+	 * an image over a color (an effect utilized by the sidebar in some themes)
+	 * and avoid striations in gradients by using dithering.
+	 * 
+	 * FIXME bugzila.eazel.com 5516:
+	 * The whole combine mode concept could be elimintated by some minor refactoring that
+	 * would basically move the code below to a place used only by nautilus_background_draw_flat_box.
+	 * Also, the various pieces of code that manage the combine setting could be elimintated
+	 * from nautilus-sidebar and nautilus-directory-background.
+	 */
 	if (background->details->combine_mode) {
 		GdkPixbuf *pixbuf;
 		GnomeCanvasBuf buffer;
@@ -773,7 +786,7 @@ nautilus_background_draw (NautilusBackground *background,
 					       0, 0,
 					       0, 0,
 					       drawable_width, drawable_height,
-					       GDK_RGB_DITHER_NONE, 0, 0);
+					       GDK_RGB_DITHER_MAX, 0, 0);
 		
 		/* free things up and we're done */
 		gdk_pixbuf_unref (pixbuf);
@@ -1419,7 +1432,7 @@ nautilus_background_is_too_complex_for_gtk_style (NautilusBackground *background
 	if (background->details->image_uri != NULL) {
 		return TRUE;
 	}
-	if (nautilus_gradient_is_gradient (background->details->color)) {
+	if (!background->details->is_solid_color) {
 		return TRUE;
 	}
 	
@@ -1439,8 +1452,9 @@ nautilus_background_is_dark (NautilusBackground *background)
 	
 	if (background->details->image != NULL) {
 		nautilus_gdk_pixbuf_average_value (background->details->image, &color);
-			
-	} else if (nautilus_gradient_is_gradient (background->details->color)) {
+	} else if (background->details->is_solid_color) {
+		nautilus_gdk_color_parse_with_white_default (background->details->color, &color);	
+	} else {
 		start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
 		end_color_spec = nautilus_gradient_get_end_color_spec (background->details->color);
 		
@@ -1453,8 +1467,6 @@ nautilus_background_is_dark (NautilusBackground *background)
 		g_free (end_color_spec);
 		
 		return (intensity + intensity2) < 320;
-	} else {
-		nautilus_gdk_color_parse_with_white_default (background->details->color, &color);	
 	}
 	
 	intensity = (((color.red >> 8) * 77) + ((color.green >> 8) * 150) + ((color.blue >> 8) * 28)) >> 8;		 

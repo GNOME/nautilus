@@ -1072,6 +1072,19 @@ background_settings_changed_callback (NautilusBackground *background, NautilusSi
 				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
 				    NULL,
 				    image);
+				    
+	/* Block so this fn is not reinvoked due to nautilus_background_set_combine_mode */
+	gtk_signal_handler_block_by_func (GTK_OBJECT (background),
+					  background_settings_changed_callback,
+					  sidebar);
+	/* Combine mode uses dithering to avoid striations in gradients.
+	 */
+	nautilus_background_set_combine_mode (background, nautilus_gradient_is_gradient (color));
+	
+	gtk_signal_handler_unblock_by_func (GTK_OBJECT (background),
+					    background_settings_changed_callback,
+					    sidebar);
+
 	g_free (color);
 	g_free (image);
 
@@ -1395,7 +1408,10 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 		background_image = nautilus_file_get_metadata (sidebar->details->file,
 							       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
 							       NULL);
-		combine = FALSE; /* only from theme, at least for now */
+		       
+		/* Combine mode uses dithering to avoid striations in gradients.
+		 */
+		combine = nautilus_gradient_is_gradient (background_color);
 	}
 		
 	/* Block so we don't write these settings out in response to our set calls below */

@@ -1,3 +1,13 @@
+2001-01-08  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_draw),
+	(nautilus_background_is_too_complex_for_gtk_style),
+	(nautilus_background_is_dark):
+	* src/nautilus-sidebar.c: (background_settings_changed_callback),
+	(nautilus_sidebar_update_appearance):
+	Draw sidebar gradients dithered to avoid striation - bug 5458.
+
 2001-01-07  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bugs 5189, 5190 and 5046, pattern and emblem names
