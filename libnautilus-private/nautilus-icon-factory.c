@@ -261,11 +261,11 @@ static void
 destroy_icon_factory (void)
 {
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
-					      icon_theme_changed_callback,
-					      NULL);
+					 icon_theme_changed_callback,
+					 NULL);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
-					      thumbnail_limit_changed_callback,
-					      NULL);
+					 thumbnail_limit_changed_callback,
+					 NULL);
 	gtk_object_unref (GTK_OBJECT (global_icon_factory));
 }
 
@@ -281,13 +281,13 @@ get_icon_factory (void)
 
 		icon_theme_changed_callback (NULL);
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
-						   icon_theme_changed_callback,
-						   NULL);
+					      icon_theme_changed_callback,
+					      NULL);
 						   
 		thumbnail_limit_changed_callback (NULL);
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
-						   thumbnail_limit_changed_callback,
-						   NULL);
+					      thumbnail_limit_changed_callback,
+					      NULL);
 
 		gtk_signal_connect (GTK_OBJECT (gnome_vfs_mime_monitor_get ()),
 				    "data_changed",
@@ -1165,10 +1165,6 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 	/* also, dont make thumbnails for images in the thumbnails directory */  
 	if (uri == NULL) {		
 		file_size = nautilus_file_get_size (file);
-		
-		/* FIXME: This has to be done later, when we know
-		 * whether anti-aliasing is needed or not.
-		 */
 		if (eel_istr_has_prefix (mime_type, "image/")
 		    && is_supported_mime_type (mime_type)
 		    && should_display_image_file_as_itself (file, TRUE)) {
@@ -1209,8 +1205,6 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 	
 	return scalable_icon;
 }
-
-
 
 /**
  * nautilus_icon_factory_get_basic_file_attributes
@@ -1271,8 +1265,6 @@ nautilus_icon_factory_is_icon_ready_for_file (NautilusFile *file)
 	return result;
 }
 
-
-
 /**
  * nautilus_icon_factory_is_basic_icon_ready_for_file
  * 
@@ -1294,7 +1286,6 @@ nautilus_icon_factory_is_basic_icon_ready_for_file (NautilusFile *file)
 
 	return result;
 }
-
 
 NautilusScalableIcon *
 nautilus_icon_factory_get_emblem_icon_by_name (const char *emblem_name)

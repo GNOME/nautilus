@@ -1,5 +1,16 @@
 2001-10-08  Darin Adler  <darin@bentspoon.com>
 
+	* libnautilus-private/nautilus-file.c:
+	(get_automatic_emblems_as_integer),
+	(prepend_automatic_emblem_names): Bend to the forces of
+	practicality and mediocrity and turn of the trash emblem until we
+	can make the "in trash" check fast.
+	
+	* libnautilus-private/nautilus-icon-factory.c:
+	Tweak formatting.
+
+2001-10-08  Darin Adler  <darin@bentspoon.com>
+
 	Separate out the part of the code that locates icons.
 
 	* libnautilus-private/Makefile.am: New source files.
