@@ -44,11 +44,48 @@ ElementInfo toc_elements[] = {
 	{ HOLDER, "holder", NULL, NULL, (charactersSAXFunc) toc_copyright_characters},
 	{ TITLE, "title", (startElementSAXFunc) toc_title_start_element, (endElementSAXFunc) toc_title_end_element, (charactersSAXFunc) toc_title_characters },
 	{ SUBTITLE, "subtitle", (startElementSAXFunc) toc_title_start_element, (endElementSAXFunc) toc_title_end_element, (charactersSAXFunc) toc_title_characters },
-	/* We don't need the rest. */
+	{ ULINK, "ulink", NULL, NULL, NULL},
+	{ XREF, "xref", NULL, NULL, NULL},
+	{ FOOTNOTE, "footnote", NULL, NULL, NULL},
+	{ FIGURE, "figure", NULL, NULL, NULL},
+	{ GRAPHIC, "graphic", NULL, NULL, NULL},
+	{ CITETITLE, "citetitle", NULL, NULL, NULL},
+	{ APPLICATION, "application", NULL, NULL, NULL},
+	{ FILENAME, "filename", NULL, NULL, NULL},
+	{ ITEMIZEDLIST, "itemizedlist", NULL, NULL, NULL},
+	{ ORDEREDLIST, "orderedlist", NULL, NULL, NULL},
+	{ VARIABLELIST, "variablelist", NULL, NULL, NULL},
+	{ LISTITEM, "listitem", NULL, NULL, NULL},
+	{ PROGRAMLISTING, "programlisting", NULL, NULL, NULL},
+	{ SGMLTAG, "sgmltag", NULL, NULL, NULL},
+	{ EMPHASIS, "emphasis", NULL, NULL, NULL},
+	{ TIP, "tip", NULL, NULL, NULL},
+	{ WARNING, "warning", NULL, NULL, NULL},
+	{ IMPORTANT, "important", NULL, NULL, NULL},
+	{ NOTE, "note", NULL, NULL, NULL},
+	{ CDATA, "cdata", NULL, NULL, NULL},
+	{ SCREEN, "screen", NULL, NULL, NULL},
+	{ SCREENSHOT, "screenshot", NULL, NULL, NULL},
+	{ SCREENINFO, "screeninfo", NULL, NULL, NULL},
+	{ COMMAND, "command", NULL, NULL, NULL},
+	{ REPLACEABLE, "replaceable", NULL, NULL, NULL},
+	{ FUNCTION, "function", NULL, NULL, NULL},
+	{ GUIBUTTON, "guibutton", NULL, NULL, NULL},
+	{ GUIICON, "guiicon", NULL, NULL, NULL},
+	{ GUILABEL, "guilabel", NULL, NULL, NULL},
+	{ GUIMENU, "guimenu", NULL, NULL, NULL},
+	{ GUIMENUITEM, "guimenuitem", NULL, NULL, NULL},
+	{ HARDWARE, "hardware", NULL, NULL, NULL},
+	{ KEYCAP, "keycap", NULL, NULL, NULL},
+	{ KEYCAP, "keycode", NULL, NULL, NULL},
+	{ KEYCAP, "keysym", NULL, NULL, NULL},
+	{ LITERAL, "literal", NULL, NULL, NULL},
+	{ PARAMETER, "parameter", NULL, NULL, NULL},
+	{ PROMPT, "prompt", NULL, NULL, NULL},
+	{ SYMBOL, "symbol", NULL, NULL, NULL},
+	{ USERINPUT, "userinput", NULL, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
-
-
 
 gpointer
 toc_init_data (void)
@@ -281,6 +318,10 @@ toc_title_start_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (NOTE));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TIP));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (WARNING));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GRAPHIC));
 	stack_el = find_first_element (context, element_list);
 
 	g_slist_free (element_list);
@@ -317,7 +358,6 @@ toc_title_start_element (Context *context,
 		}
 		g_print ("\">");
 		break;
-	case FORMALPARA:
 	default:
 		break;
 	};
@@ -339,6 +379,10 @@ toc_title_end_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (NOTE));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TIP));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (WARNING));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GRAPHIC));
 
 	index = find_first_parent (context, element_list);
 
@@ -352,8 +396,6 @@ toc_title_end_element (Context *context,
 	case SECT4:
 	case SECT5:
 		g_print ("</A></H3>\n");
-		break;
-	case FORMALPARA:
 		break;
 	default:
 		break;
@@ -378,6 +420,10 @@ toc_title_characters (Context *context, const gchar *chars, int len)
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (ARTHEADER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (NOTE));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TIP));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (WARNING));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GRAPHIC));
 
 	index = find_first_parent (context, element_list);
 
