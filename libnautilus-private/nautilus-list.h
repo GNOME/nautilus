@@ -117,29 +117,29 @@ struct NautilusListClass {
 
 typedef gboolean (* NautilusEachRowFunction) (GtkCListRow *, gpointer);
 
-GtkType    nautilus_list_get_type              (void);
-GtkWidget *nautilus_list_new_with_titles       (int                 columns,
-						const char * const *titles);
-GList *    nautilus_list_get_selection         (NautilusList       *list);
-void       nautilus_list_set_selection         (NautilusList       *list,
-						GList              *selection);
-gboolean   nautilus_list_is_row_selected       (NautilusList       *list,
-						int                 row);
-void       nautilus_list_set_pixbuf_list       (NautilusList       *list,
-						gint                row,
-						gint                column,
-						GList              *pixbufs);
-void       nautilus_list_mark_cell_as_link     (NautilusList       *list,
-						gint                row,
-						gint                column);
-void       nautilus_list_set_single_click_mode (NautilusList       *list,
-						gboolean            single_click_mode);
-void	   nautilus_list_select_row 	       (NautilusList 	   *list, 
-						int 		    row);
-GtkCListRow *nautilus_list_row_at 	       (NautilusList 	   *list, 
-						int 		    y);
-void	   nautilus_list_each_selected_row     (NautilusList	   *list,
-						NautilusEachRowFunction function,
-						gpointer	    data);
+GtkType      nautilus_list_get_type              (void);
+GtkWidget *  nautilus_list_new_with_titles       (int                      columns,
+						  const char * const      *titles);
+GList *      nautilus_list_get_selection         (NautilusList            *list);
+void         nautilus_list_set_selection         (NautilusList            *list,
+						  GList                   *selection);
+gboolean     nautilus_list_is_row_selected       (NautilusList            *list,
+						  int                      row);
+void         nautilus_list_set_pixbuf_list       (NautilusList            *list,
+						  gint                     row,
+						  gint                     column,
+						  GList                   *pixbufs);
+void         nautilus_list_mark_cell_as_link     (NautilusList            *list,
+						  gint                     row,
+						  gint                     column);
+void         nautilus_list_set_single_click_mode (NautilusList            *list,
+						  gboolean                 single_click_mode);
+void         nautilus_list_select_row            (NautilusList            *list,
+						  int                      row);
+GtkCListRow *nautilus_list_row_at                (NautilusList            *list,
+						  int                      y);
+void         nautilus_list_each_selected_row     (NautilusList            *list,
+						  NautilusEachRowFunction  function,
+						  gpointer                 data);
 
 #endif /* NAUTILUS_LIST_H */

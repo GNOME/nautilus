@@ -83,8 +83,16 @@ static void fm_icon_view_set_zoom_level                  (FMIconView        *vie
 							  NautilusZoomLevel  new_level,
 							  gboolean           always_set_level);
 static void fm_icon_view_update_icon_container_fonts     (FMIconView        *icon_view);
+static void fm_icon_view_update_click_mode               (FMIconView        *icon_view);
+static void fm_icon_view_update_anti_aliased_mode        (FMIconView        *icon_view);
+
+
+/* Preferences changed callbacks */
 static void text_attribute_names_changed_callback        (gpointer           user_data);
 static void directory_view_font_familiy_changed_callback (gpointer           user_data);
+static void anti_aliased_mode_changed_callback             (gpointer           user_data);
+static void click_policy_changed_callback                (gpointer           user_data);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconView, fm_icon_view, FM_TYPE_DIRECTORY_VIEW);
 
@@ -171,6 +179,14 @@ fm_icon_view_destroy (GtkObject *object)
 
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
 					      directory_view_font_familiy_changed_callback,
+					      icon_view);
+
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
+					      click_policy_changed_callback,
+					      icon_view);
+	
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
+					      anti_aliased_mode_changed_callback,
 					      icon_view);
 
         if (icon_view->details->react_to_icon_change_idle_id != 0) {
@@ -1505,11 +1521,14 @@ get_icon_text_callback (NautilusIconContainer *container,
 	g_strfreev (text_array);
 }
 
+/* Preferences changed callbacks */
 static void
 text_attribute_names_changed_callback (gpointer user_data)
 {
-	nautilus_icon_container_request_update_all
-		(get_icon_container (FM_ICON_VIEW (user_data)));	
+	g_assert (user_data != NULL);
+	g_assert (FM_IS_ICON_VIEW (user_data));
+
+	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (user_data)));	
 }
 
 static void
@@ -1519,6 +1538,24 @@ directory_view_font_familiy_changed_callback (gpointer user_data)
 	g_assert (FM_IS_ICON_VIEW (user_data));
 
 	fm_icon_view_update_icon_container_fonts (FM_ICON_VIEW (user_data));
+}
+
+static void
+click_policy_changed_callback (gpointer user_data)
+{
+	g_assert (user_data != NULL);
+	g_assert (FM_IS_ICON_VIEW (user_data));
+
+	fm_icon_view_update_click_mode (FM_ICON_VIEW (user_data));
+}
+
+static void
+anti_aliased_mode_changed_callback (gpointer user_data)
+{
+	g_assert (user_data != NULL);
+	g_assert (FM_IS_ICON_VIEW (user_data));
+
+	fm_icon_view_update_anti_aliased_mode (FM_ICON_VIEW (user_data));
 }
 
 /* GtkObject methods. */
@@ -1567,12 +1604,24 @@ fm_icon_view_initialize (FMIconView *icon_view)
 
 	create_icon_container (icon_view);
 
+	/* Keep track of changes in text attribute names */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
 					   text_attribute_names_changed_callback,
 					   icon_view);
-	
+
+	/* Keep track of changes in the font familiy */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
 					   directory_view_font_familiy_changed_callback, 
+					   icon_view);
+
+	/* Keep track of changes in clicking policy */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
+					   click_policy_changed_callback,
+					   icon_view);
+	
+	/* Keep track of changes in graphics trade offs */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS, 
+					   anti_aliased_mode_changed_callback, 
 					   icon_view);
 }
 
@@ -1627,6 +1676,38 @@ fm_icon_view_update_icon_container_fonts (FMIconView *icon_view)
 	}
 
 	nautilus_icon_container_request_update_all (icon_container);
+}
+
+static void
+fm_icon_view_update_click_mode (FMIconView *icon_view)
+{
+	NautilusIconContainer	*icon_container;
+	int			click_mode;
+
+	icon_container = get_icon_container (icon_view);
+	g_assert (icon_container != NULL);
+
+	click_mode = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
+						    NAUTILUS_CLICK_POLICY_SINGLE);
+
+
+	nautilus_icon_container_set_single_click_mode (icon_container,
+						       click_mode == NAUTILUS_CLICK_POLICY_SINGLE);
+}
+
+static void
+fm_icon_view_update_anti_aliased_mode (FMIconView *icon_view)
+{
+	NautilusIconContainer	*icon_container;
+	gboolean		anti_aliased_mode;
+
+	icon_container = get_icon_container (icon_view);
+	g_assert (icon_container != NULL);
+
+	anti_aliased_mode = nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
+							      FALSE);
+
+	nautilus_icon_container_set_anti_aliased_mode (icon_container, anti_aliased_mode);
 }
 
 static void
@@ -1709,6 +1790,8 @@ create_icon_container (FMIconView *icon_view)
 			   GTK_WIDGET (icon_container));
 
 	fm_icon_view_update_icon_container_fonts (icon_view);
+	fm_icon_view_update_click_mode (icon_view);
+	fm_icon_view_update_anti_aliased_mode (icon_view);
 
 	gtk_widget_show (GTK_WIDGET (icon_container));
 }

@@ -167,7 +167,7 @@ gboolean   nautilus_icon_container_is_renaming                   (NautilusIconCo
 int        nautilus_icon_container_get_zoom_level                (NautilusIconContainer *view);
 void       nautilus_icon_container_set_zoom_level                (NautilusIconContainer *view,
 								  int                    new_zoom_level);
-void       nautilus_icon_container_set_single_click_mode         (NautilusIconContainer *view,
+void       nautilus_icon_container_set_single_click_mode         (NautilusIconContainer *container,
 								  gboolean               single_click_mode);
 void       nautilus_icon_container_enable_linger_selection       (NautilusIconContainer *view,
 								  gboolean               enable);

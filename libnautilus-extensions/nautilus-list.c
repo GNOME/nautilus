@@ -42,7 +42,6 @@
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-glib-extensions.h"
-#include "nautilus-global-preferences.h"
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-list-column-title.h"
@@ -56,7 +55,7 @@
 
 struct NautilusListDetails
 {
-	/* Preferences */
+	/* Single click mode ? */
 	gboolean single_click_mode;
 
 	/* The anchor row for range selections */
@@ -260,7 +259,6 @@ static gboolean row_set_selected                        (NautilusList         *l
 							 gboolean              select);
 static gboolean select_row_unselect_others              (NautilusList         *list,
 							 int                   row_to_select);
-static void     click_policy_changed_callback           (gpointer              user_data);
 static void	nautilus_list_flush_typeselect_state 	(NautilusList 	      *container);
 static int      insert_row                              (GtkCList             *list,
 							 int                   row,
@@ -429,27 +427,11 @@ event_state_modifies_selection (guint event_state)
 	return (event_state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) != 0;
 }
 
-static void
-set_single_click_mode (NautilusList *list,
-		       gboolean single_click_mode)
+void
+nautilus_list_set_single_click_mode (NautilusList	*list,
+				     gboolean		single_click_mode)
 {
-	if (list->details->single_click_mode == single_click_mode) {
-		return;
-	}
-
 	list->details->single_click_mode = single_click_mode;
-	gtk_widget_queue_draw (GTK_WIDGET (list));
-}
-
-static void
-update_single_click_mode_from_preferences (NautilusList *list)
-{
-	int click_policy;
-
-	click_policy = nautilus_preferences_get_enum
-		(NAUTILUS_PREFERENCES_CLICK_POLICY,
-		 NAUTILUS_CLICK_POLICY_SINGLE);
-	set_single_click_mode (list, click_policy == NAUTILUS_CLICK_POLICY_SINGLE);
 }
 
 /* Standard object initialization function */
@@ -488,14 +470,6 @@ nautilus_list_initialize (NautilusList *list)
 
 	list->details->type_select_pattern = NULL;
 	list->details->last_typeselect_time = 0LL;
-
-	/* Initialize the single click mode from preferences */
-	update_single_click_mode_from_preferences (list);
-
-	/* Keep track of changes in clicking policy */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					   click_policy_changed_callback,
-					   list);
 }
 
 static void
@@ -508,10 +482,6 @@ nautilus_list_destroy (GtkObject *object)
 	nautilus_drag_finalize (list->details->drag_info);
 
 	unschedule_keyboard_row_reveal (list);
-
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					      click_policy_changed_callback,
-					      list);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 
@@ -2550,12 +2520,6 @@ nautilus_list_clear (GtkCList *clist)
 	list->details->anchor_row = -1;
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_CLIST_CLASS, clear, (clist));
-}
-
-static void
-click_policy_changed_callback (gpointer user_data)
-{
-	update_single_click_mode_from_preferences (NAUTILUS_LIST (user_data));
 }
 
 

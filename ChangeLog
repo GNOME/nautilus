@@ -2,6 +2,46 @@
 
 	* libnautilus-extensions/nautilus-icon-container.c,
 	* libnautilus-extensions/nautilus-icon-container.h:
+	(destroy), (nautilus_icon_container_initialize),
+	(nautilus_icon_container_new),
+	(nautilus_icon_container_set_label_font_for_zoom_level),
+	(nautilus_icon_container_set_single_click_mode):
+	Implement missing set_single_click_mode function.
+
+	Its up to users of this widget to setup click policy and other
+	attributes. We shouldnt peek/poke nautilus specific preferences
+	in the icon container widget.
+	
+	* libnautilus-extensions/nautilus-list.c:
+	* libnautilus-extensions/nautilus-list.h,
+	(nautilus_list_set_single_click_mode), (nautilus_list_initialize),
+	(nautilus_list_destroy), (nautilus_list_clear):
+	Implement missing set_single_click_mode function.
+
+	Its up to users of this widget to setup click policy and other
+	attributes. We shouldnt peek/poke nautilus specific preferences
+	in the list widget.
+	
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_destroy),
+	(text_attribute_names_changed_callback),
+	(click_policy_changed_callback),
+	(anti_aliased_mode_changed_callback), (fm_icon_view_initialize),
+	(fm_icon_view_update_click_mode),
+	(fm_icon_view_update_anti_aliased_mode), (create_icon_container):
+	Keep track of changes in preferences that affect the icon
+	container and update it when needed.
+
+	* src/file-manager/fm-list-view.c: (fm_list_view_initialize_class),
+	(fm_list_view_initialize), (fm_list_view_destroy), (create_list),
+	(update_icons), (fm_list_view_update_click_mode),
+	(click_policy_changed_callback):
+	Keep track of changes in preferences that affect the list and
+	update it when needed.
+
+2000-07-05  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c,
+	* libnautilus-extensions/nautilus-icon-container.h:
 	(nautilus_icon_container_set_label_font_for_zoom_level):
 	New function to set the font for a zoom level.
 

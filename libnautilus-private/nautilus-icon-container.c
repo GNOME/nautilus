@@ -38,7 +38,6 @@
 
 #include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-glib-extensions.h"
-#include "nautilus-global-preferences.h"
 #include "nautilus-gnome-extensions.h"
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-gtk-macros.h"
@@ -101,8 +100,6 @@ static void          end_renaming_mode                        (NautilusIconConta
 							       gboolean                    commit);
 static void          hide_rename_widget                       (NautilusIconContainer      *container,
 							       NautilusIcon               *icon);
-static void          anti_aliased_preferences_changed         (gpointer                    user_data);
-static void          click_policy_changed_callback            (gpointer                    user_data);
 static void          finish_adding_new_icons                  (NautilusIconContainer      *container);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer, nautilus_icon_container, GNOME_TYPE_CANVAS)
@@ -1641,14 +1638,6 @@ destroy (GtkObject *object)
        		if (container->details->label_font[i] != NULL)
         		gdk_font_unref (container->details->label_font[i]);
 	}
-
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					      click_policy_changed_callback,
-					      container);
-	
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
-					      anti_aliased_preferences_changed,
-					      container);
 	
 	nautilus_icon_container_flush_typeselect_state (container);
 	
@@ -2400,7 +2389,6 @@ static void
 nautilus_icon_container_initialize (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
-	int mode;
 
 	details = g_new0 (NautilusIconContainerDetails, 1);
 
@@ -2430,27 +2418,6 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 	container->details->rename_widget = NULL;
 	container->details->original_text = NULL;
 	container->details->type_select_state = NULL;
-
-	/* FIXME: Settings should be supplied by the caller and not
-	 * hard-wired calls from NautilusIconContainer to preferences.
-	 */
-
-	/* Initialize the single click mode from preferences */
-	mode = nautilus_preferences_get_enum
-		(NAUTILUS_PREFERENCES_CLICK_POLICY,
-		 NAUTILUS_CLICK_POLICY_SINGLE);
-	details->single_click_mode =
-		mode == NAUTILUS_CLICK_POLICY_SINGLE;
-
-	/* Keep track of changes in clicking policy */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					   click_policy_changed_callback,
-					   container);
-	
-	/* Keep track of changes in graphics trade offs */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS, 
-					   anti_aliased_preferences_changed, 
-					   container);
 }
 
 /* NautilusIcon event handling.  */
@@ -2571,23 +2538,17 @@ item_event_callback (GnomeCanvasItem *item,
 GtkWidget *
 nautilus_icon_container_new (void)
 {
-	GnomeCanvas *canvas;
-	GtkWidget *new;
+	GtkWidget *container;
 
 	gtk_widget_push_visual (gdk_rgb_get_visual ());
 	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
 
-	new = gtk_type_new (nautilus_icon_container_get_type ());
+	container = gtk_type_new (nautilus_icon_container_get_type ());
 	
 	gtk_widget_pop_visual ();
 	gtk_widget_pop_colormap ();
 
-	canvas = GNOME_CANVAS(new);
-	if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS, FALSE)) {
-		canvas->aa = TRUE;
-	}
-	
-	return new;
+	return container;
 }
 
 /* Clear all of the icons in the container. */
@@ -3650,37 +3611,6 @@ nautilus_icon_container_emit_preview_signal (NautilusIconContainer *icon_contain
 	return result;
 }
 
-/* preferences callbacks */
-static void
-click_policy_changed_callback (gpointer user_data)
-{
-	NautilusIconContainer *container;
-	int mode;
-
-	container = NAUTILUS_ICON_CONTAINER (user_data);
-
-	mode = nautilus_preferences_get_enum
-		(NAUTILUS_PREFERENCES_CLICK_POLICY,
-		 NAUTILUS_CLICK_POLICY_SINGLE);
-	container->details->single_click_mode =
-		mode == NAUTILUS_CLICK_POLICY_SINGLE;
-}
-
-static void
-anti_aliased_preferences_changed (gpointer user_data)
-{
-	NautilusIconContainer *container;
-	gboolean aa_mode;
-
-	container = NAUTILUS_ICON_CONTAINER (user_data);
-
-	aa_mode = nautilus_preferences_get_boolean
-		(NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
-		 FALSE);
-
-	nautilus_icon_container_set_anti_aliased_mode(container, aa_mode);
-}
-
 gboolean
 nautilus_icon_container_has_stored_icon_positions (NautilusIconContainer *container)
 {
@@ -3723,6 +3653,16 @@ nautilus_icon_container_set_label_font_for_zoom_level (NautilusIconContainer *co
 	gdk_font_ref (font);
 	
 	container->details->label_font[zoom_level] = font;
+}
+
+void
+nautilus_icon_container_set_single_click_mode (NautilusIconContainer *container,
+					       gboolean               single_click_mode)
+{
+	g_return_if_fail (container != NULL);
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	container->details->single_click_mode = single_click_mode;
 }
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
