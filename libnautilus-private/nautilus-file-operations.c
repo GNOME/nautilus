@@ -2484,19 +2484,20 @@ static gboolean
 confirm_empty_trash (GtkWidget *parent_view)
 {
 	GtkWidget *dialog;
-	GtkWindow *parent_window;
 	int response;
 	GtkWidget *hbox, *vbox, *image, *label, *button;
 	gchar     *str;
+	GdkScreen *screen;
 
 	/* Just Say Yes if the preference says not to confirm. */
 	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH)) {
 		return TRUE;
 	}
 	
-	parent_window = GTK_WINDOW (gtk_widget_get_toplevel (parent_view));
+	screen = gtk_widget_get_screen (parent_view);
 
 	dialog = gtk_dialog_new ();
+	gtk_window_set_screen (GTK_WINDOW (dialog), screen);
 	atk_object_set_role (gtk_widget_get_accessible (dialog), ATK_ROLE_ALERT);
 	gtk_window_set_title (GTK_WINDOW (dialog), "");
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
@@ -2504,9 +2505,13 @@ confirm_empty_trash (GtkWidget *parent_view)
 	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 	gtk_window_set_wmclass (GTK_WINDOW (dialog), "empty_trash",
 				"Nautilus");
-	gtk_window_set_transient_for (GTK_WINDOW (dialog),
-				      GTK_WINDOW (parent_window));
 
+	/* Make transient for the window group */
+        gtk_widget_realize (dialog);
+	gdk_window_set_transient_for (GTK_WIDGET (dialog)->window,
+				      gdk_screen_get_root_window (screen));
+	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+	
 	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 14);
 
 	hbox = gtk_hbox_new (FALSE, 12);
