@@ -522,8 +522,7 @@ on_text_field_focus_in_event (GtkWidget *widget,
 	g_assert (NAUTILUS_IS_ENTRY (widget));
 
 	nautilus_entry_select_all (NAUTILUS_ENTRY (widget));
-	nautilus_entry_enable_undo_key (NAUTILUS_ENTRY(widget), TRUE);
-	nautilus_entry_enable_undo (NAUTILUS_ENTRY(widget), TRUE);	
+	nautilus_entry_set_undo_key (NAUTILUS_ENTRY(widget), TRUE);
 	return FALSE;
 }
 
@@ -536,7 +535,7 @@ on_text_field_focus_out_event (GtkWidget *widget,
 
 	update_bookmark_from_text ();
 	gtk_editable_select_region (GTK_EDITABLE (widget), -1, -1);
-	nautilus_entry_enable_undo_key (NAUTILUS_ENTRY(widget), FALSE);
+	nautilus_entry_set_undo_key (NAUTILUS_ENTRY(widget), FALSE);
 	return FALSE;
 }
 
@@ -571,8 +570,8 @@ on_window_delete_event (GtkWidget *widget,
 	gtk_widget_hide (widget);
 
 	/* Disable undo for entry widgets */
-	nautilus_entry_enable_undo (NAUTILUS_ENTRY (name_field), FALSE);
-	nautilus_entry_enable_undo (NAUTILUS_ENTRY (uri_field), FALSE);
+	nautilus_undo_unregister (GTK_OBJECT (name_field));
+	nautilus_undo_unregister (GTK_OBJECT (uri_field));
 
 	/* Seems odd to restore the geometry just after saving it,
 	 * and when the window is hidden, but this insures that

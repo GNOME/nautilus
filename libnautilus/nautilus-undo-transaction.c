@@ -220,16 +220,16 @@ nautilus_undo_transaction_add_undoable	(NautilusUndoTransaction *transaction,
 						 NautilusUndoable *undoable)
 {	
 	if (transaction == NULL) {
-		g_warning("Cannot add undoable to a NULL transaction");
+		g_warning ("Cannot add undoable to a NULL transaction");
 		return FALSE;
 	}
 
 	if (undoable == NULL) {
-		g_warning("Cannot add a NULL undoable to a transaction");
+		g_warning ("Cannot add a NULL undoable to a transaction");
 		return FALSE;
 	}
 
-	transaction->transaction_list = g_list_append(transaction->transaction_list, undoable);
+	transaction->transaction_list = g_list_append (transaction->transaction_list, undoable);
 	
 	return TRUE;
 }
@@ -249,15 +249,16 @@ nautilus_undo_transaction_undo (NautilusUndoTransaction *transaction)
 	if (transaction == NULL) {
 		return;
 	}
-		
-	for ( index = 0; index < g_list_length(transaction->transaction_list); index++) {
+
+	for ( index = 0; index < g_list_length (transaction->transaction_list); index++) {
 
 		/* Get pointer to undoable */
-		undoable = g_list_nth_data(transaction->transaction_list, index);
+		undoable = g_list_nth_data (transaction->transaction_list, index);
 
 		/* Send object restore from undo signal */
-		if (undoable != NULL)
+		if (undoable != NULL) {
 			nautilus_undoable_restore_from_undo_snapshot (undoable);
+		}
 	}
 }
 

@@ -391,7 +391,6 @@ nautilus_window_constructed (NautilusWindow *window)
 	gtk_container_set_border_width(GTK_CONTAINER(location_bar_box), GNOME_PAD_SMALL);
 
 	window->ent_uri = nautilus_location_bar_new();	
-	nautilus_location_bar_enable_undo (NAUTILUS_LOCATION_BAR (window->ent_uri), TRUE);
 	
 	gtk_signal_connect(GTK_OBJECT(window->ent_uri), "location_changed",
                      nautilus_window_goto_uri_callback, window);

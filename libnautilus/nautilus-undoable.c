@@ -49,7 +49,6 @@ static guint signals[LAST_SIGNAL];
 static void     nautilus_undoable_initialize_class (NautilusUndoableClass  *class);
 static void     nautilus_undoable_initialize       (NautilusUndoable       *item);
 static void	destroy 			   (GtkObject 		   *object);
-static void	nautilus_undo_unregister 	   (GtkObject 		   *target);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusUndoable, nautilus_undoable, GTK_TYPE_OBJECT)
 
@@ -130,6 +129,7 @@ nautilus_undoable_save_undo_snapshot (NautilusUndoTransaction *transaction, GtkO
 {
 	gboolean result;
 	NautilusUndoable *undoable;
+	GList *transaction_list;
 	
 	/* Init Undoable */
 	undoable = NAUTILUS_UNDOABLE(nautilus_undoable_new());
@@ -143,6 +143,16 @@ nautilus_undoable_save_undo_snapshot (NautilusUndoTransaction *transaction, GtkO
 
 	/* Add undoable to current transaction */
 	result = nautilus_undo_transaction_add_undoable (transaction, undoable);
+
+	/* Add transaction to objects transaction list */
+	transaction_list = gtk_object_get_data (target, NAUTILUS_UNDO_TRANSACTION_LIST_NAME);
+	if (transaction_list == NULL) {
+		/* Create list and add to object */		
+		transaction_list = g_list_alloc();
+		transaction_list = NULL;
+		gtk_object_set_data (target, NAUTILUS_UNDO_TRANSACTION_LIST_NAME, transaction_list);
+	}
+	transaction_list = g_list_append (transaction_list, undoable);
 
 	/* Fire SAVE_UNDO_SNAPSHOT signal */
 	gtk_signal_emit (GTK_OBJECT (undoable),
@@ -315,16 +325,42 @@ nautilus_undo_register_full (GList *atoms,
 }
 
 /* Cover for forgetting about all undo relating to a particular target. */
-static void
+void
 nautilus_undo_unregister (GtkObject *target)
 {
+	Nautilus_Undo_Manager manager;
+	GList *transaction_list;
+	int index;
+	CORBA_Environment ev;
+	Nautilus_Undo_Transaction transaction;
+	
 	g_return_if_fail (GTK_IS_OBJECT (target));
 
-	/* Right now we just call the "real" code over in the undo manager.
-	 * FIXME: We will have to figure out which transactions this affects
-	 * and remove ourselves from them. It's not clear how to do that.
-	 */
+	manager = nautilus_get_undo_manager ( GTK_OBJECT (target));		
+	if (manager != CORBA_OBJECT_NIL) {
+		return;
+	}
 
+	transaction_list = gtk_object_get_data (target, NAUTILUS_UNDO_TRANSACTION_LIST_NAME);
+	if (transaction_list == NULL) {
+		return;
+	}
+	
+	CORBA_exception_init (&ev);
+		
+	for ( index = 0; index < g_list_length (transaction_list); index++) {
+		/* Get pointer to transaction */
+		transaction = g_list_nth_data(transaction_list, index);
+
+		if (transaction != CORBA_OBJECT_NIL) {
+			Nautilus_Undo_Manager_forget (manager, transaction, &ev);
+		}
+	}
+	
+	CORBA_exception_free (&ev);
+
+	g_list_free (transaction_list);
+	
 	/* Perhaps this should also unregister all children if called on a
 	 * GtkContainer? That might be handy.
 	 */

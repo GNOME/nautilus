@@ -29,6 +29,8 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmain.h>
 
+#define NAUTILUS_UNDO_TRANSACTION_LIST_NAME "nautilus_undo_transaction_list"
+
 #define NAUTILUS_TYPE_UNDOABLE \
 	(nautilus_undoable_get_type ())
 #define NAUTILUS_UNDOABLE(obj) \
@@ -100,6 +102,8 @@ void nautilus_undo_register_full (GList                *atoms,
 				  const char           *undo_menu_item_description,
 				  const char           *redo_menu_item_name,
 				  const char           *redo_menu_item_description);
+
+void nautilus_undo_unregister 	  (GtkObject 	       *target);
 
 /* Performing an undo explicitly. Only for use by objects "out in the field".
  * The menu bar itself uses a richer API in the undo manager.

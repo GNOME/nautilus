@@ -43,7 +43,6 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus/nautilus-undo-manager.h>
 
 #define NAUTILUS_DND_URI_LIST_TYPE 	  "text/uri-list"
 #define NAUTILUS_DND_TEXT_PLAIN_TYPE 	  "text/plain"
@@ -267,23 +266,3 @@ nautilus_location_bar_set_location (NautilusLocationBar *bar,
 	gtk_entry_set_text (bar->entry,
 			    location == NULL ? "" : location);	
 }
-
-/**
- * nautilus_location_bar_enable_undo
- * 
- * Set staus of location bar undo functionality.
- * 
- * @bar: A NautilusLocationBar.
- * @manager: A NautilusUndoManager.  Can be NULL.
- * @enable: State to set undo functionality in.
- */
-void
-nautilus_location_bar_enable_undo (NautilusLocationBar *bar,
-				   gboolean value)
-{
-	g_return_if_fail (NAUTILUS_IS_LOCATION_BAR (bar));
-
-	nautilus_entry_enable_undo (NAUTILUS_ENTRY (bar->entry), value);	
-}
-
-

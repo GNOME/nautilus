@@ -36,14 +36,26 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
+#include <libnautilus/nautilus-undo-manager.h>
 #include <libnautilus/nautilus-undoable.h>
+#include <libnautilus/nautilus-undo.h>
+
+#include <orb/orbit.h>
 
 static void nautilus_entry_initialize 	    (NautilusEntry 	*entry);
 static void nautilus_entry_initialize_class (NautilusEntryClass *class);
-static void nautilus_entry_destroy	    (GtkObject 		*object);	
-static void nautilus_entry_changed 	    (GtkEditable 	*entry);
+static void nautilus_entry_destroy	    (GtkObject 		*object);
 static gint nautilus_entry_key_press 	    (GtkWidget   	*widget,
 		     		      	     GdkEventKey 	*event);
+static void nautilus_entry_insert_text      (GtkEditable    	*editable,
+			 		     const gchar    	*text,
+			 		     gint            	length,
+			 		     gint           	*position);
+static void nautilus_entry_delete_text      (GtkEditable    	*editable,
+			 		     gint            	start_pos,
+			 		     gint            	end_pos);
+
+static void update_undo_text 		    (NautilusEntry 	*entry);
 
 /* Undo callbacks */
 static void register_edit_undo (NautilusEntry *entry);
@@ -66,7 +78,10 @@ nautilus_entry_initialize_class (NautilusEntryClass *class)
 	widget_class->key_press_event = nautilus_entry_key_press;
 
 	object_class->destroy = nautilus_entry_destroy;
-	editable_class->changed = nautilus_entry_changed;
+	
+	editable_class->insert_text = nautilus_entry_insert_text;
+	editable_class->delete_text = nautilus_entry_delete_text;
+
 }
 
 static void
@@ -115,7 +130,6 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 		/* Undo */
 		case 'z':
 			if ((event->state & GDK_CONTROL_MASK) != 0
-			    && entry->use_undo
 			    && entry->handle_undo_key) {
 				nautilus_undo (GTK_OBJECT (widget));
 				return FALSE;
@@ -175,29 +189,44 @@ nautilus_entry_select_all_at_idle (NautilusEntry *entry)
 }
 
 
-/**
- * nautilus_entry_changed
- *
- * @entry: A NautilusEntry
- **/
-static void
-nautilus_entry_changed (GtkEditable *editable)
+static void 
+nautilus_entry_insert_text (GtkEditable *editable, const gchar *text,
+			    gint length, gint *position)
 {
 	NautilusEntry *entry;
-	
-	g_assert (GTK_IS_EDITABLE (editable));
-	g_assert (NAUTILUS_IS_ENTRY (editable));
 
 	entry = NAUTILUS_ENTRY(editable);
 
 	/* Register undo transaction */	
-	if (entry->use_undo && !entry->undo_registered) {
+	if (!entry->undo_registered) {
+		update_undo_text (entry);
 		register_edit_undo (entry);
 		entry->undo_registered = TRUE;
 	}
-	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_EDITABLE_CLASS, changed, (editable));	
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_EDITABLE_CLASS, insert_text, 
+				   (editable, text, length, position));
 }
+
+			 		     
+static void 
+nautilus_entry_delete_text (GtkEditable *editable, gint start_pos, gint end_pos)
+{
+	NautilusEntry *entry;
+
+	entry = NAUTILUS_ENTRY(editable);
+
+	/* Register undo transaction */	
+	if (!entry->undo_registered) {
+		update_undo_text (entry);
+		register_edit_undo (entry);
+		entry->undo_registered = TRUE;
+	}
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_EDITABLE_CLASS, delete_text, 
+				   (editable, start_pos, end_pos));
+}			 		     
+
 
 /* save_undo_snapshot_callback
  * 
@@ -206,11 +235,7 @@ nautilus_entry_changed (GtkEditable *editable)
  */
 static void
 register_edit_undo (NautilusEntry *entry)
-{
-	if (!entry->use_undo) {
-		return;
-	}
-
+{	
 	nautilus_undo_register
 		(GTK_OBJECT (entry),
 		 restore_from_undo_snapshot_callback,
@@ -254,34 +279,13 @@ restore_from_undo_snapshot_callback (GtkObject *target, gpointer callback_data)
 	entry->undo_registered = FALSE;
 }
 
-/* nautilus_entry_enable_undo
- *
- * Enable undo mechanism in entry item. 
- */
-void 
-nautilus_entry_enable_undo (NautilusEntry *entry, gboolean value)
-{
-	g_return_if_fail (NAUTILUS_IS_ENTRY (entry));
-
-	entry->use_undo = value;
-
-	if (value) {
-		if (!entry->undo_registered) {		
-			update_undo_text (entry);
-		}
-	} else {
-		/* FIXME */
-		/* nautilus_undo_unregister (GTK_OBJECT (entry)); */
-	}
-}
-
 /* nautilus_entry_enable_undo_key
  *
  * Allow the use of ctrl-z from within widget.  This should only be 
  * set if there is no menu bar to use to undo the widget.
  */
 void 
-nautilus_entry_enable_undo_key (NautilusEntry *entry, gboolean value)
+nautilus_entry_set_undo_key (NautilusEntry *entry, gboolean value)
 {
 	entry->handle_undo_key = value;
 }

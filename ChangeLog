@@ -1,3 +1,43 @@
+2000-05-25  Gene Z. Ragan  <gzr@eazel.com>
+
+	More work on undo.  Note that undo in text entry fields still
+	misbehaves.  More improvements are on the way.
+	
+	* components/websearch/ntl-web-search.c: 
+	(make_obj):
+	Removed obsolete enable undo code.
+	
+	* libnautilus-extensions/nautilus-entry.c:
+	* libnautilus-extensions/nautilus-entry.h:
+	(nautilus_entry_initialize_class), (nautilus_entry_key_press),
+	(nautilus_entry_insert_text), (nautilus_entry_delete_text),
+	(register_edit_undo), (nautilus_entry_set_undo_key):
+	Removed the enable_undo function and made undo functionality
+	a default feature of NautilusEntry.
+	
+	* libnautilus/nautilus-undo-transaction.c:
+	(nautilus_undo_transaction_add_undoable),
+	(nautilus_undo_transaction_undo):
+	
+	* libnautilus/nautilus-undoable.c:
+	* libnautilus/nautilus-undoable.h:
+	(nautilus_undoable_save_undo_snapshot), (nautilus_undo_unregister):
+	
+	* src/file-manager/fm-properties-window.c: (create_basic_page):
+	Removed obsolete enable undo code.
+	
+	* src/nautilus-bookmarks-window.c: (on_text_field_focus_in_event),
+	(on_text_field_focus_out_event), (on_window_delete_event):
+	Removed obsolete enable undo code.
+	
+	* src/nautilus-location-bar.c:
+	* src/nautilus-location-bar.h:
+	(nautilus_location_bar_set_location):
+	Removed obsolete enable undo code.
+	
+	* src/ntl-window.c: (nautilus_window_constructed):
+	Removed obsolete enable undo code.
+
 2000-05-25  Eskil Heyn Olsen  <set EMAIL_ADDRESS environment variable>
 
 	* components/services/install/command-line/Makefile.am:
