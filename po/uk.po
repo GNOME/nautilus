@@ -1,16 +1,21 @@
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # Yuri Syrota <rasta@renome.rovno.ua>, 2000.
 #
-#: libnautilus-extensions/nautilus-search-uri.c:378
-#: libnautilus-extensions/nautilus-search-uri.c:384
-#: libnautilus-extensions/nautilus-search-uri.c:387
-#: libnautilus-extensions/nautilus-search-uri.c:390
-#: libnautilus-extensions/nautilus-search-uri.c:393
-#: libnautilus-extensions/nautilus-search-uri.c:396
+#. Part of a window title for search results: Optional
+#. preposition that precedes the clause describing the file
+#. name attribute matched.  Context is after "files" and
+#. before the translation for "containing xx in the name"
+#: libnautilus-extensions/nautilus-search-uri.c:490
+#: libnautilus-extensions/nautilus-search-uri.c:497
+#: libnautilus-extensions/nautilus-search-uri.c:505
+#: libnautilus-extensions/nautilus-search-uri.c:513
+#: libnautilus-extensions/nautilus-search-uri.c:521
+#: libnautilus-extensions/nautilus-search-uri.c:529
+#: libnautilus-extensions/nautilus-search-uri.c:537
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2000-12-21 12:06+0200\n"
+"POT-Creation-Date: 2001-01-05 11:36+0200\n"
 "PO-Revision-Date: 2000-08-23 16:17+0200\n"
 "Last-Translator: Yuri Syrota <rasta@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -21,6 +26,119 @@ msgstr ""
 #: applets/launcher/nautilus-launcher-applet.c:279
 msgid "Can't create nautilus-launcher-applet!"
 msgstr "Не вдалося створити nautilus-launcher-applet!"
+
+#: components/hardware/nautilus-hardware-view.c:242
+#, c-format
+msgid ""
+"%s CPU\n"
+"%s MHz\n"
+"%s cache size"
+msgstr ""
+
+#: components/hardware/nautilus-hardware-view.c:285
+#, c-format
+msgid "%s RAM"
+msgstr ""
+
+#: components/help/converters/gnome-db2html2/gdb3html.c:708
+#: components/music/nautilus-music-view.c:1563
+msgid "Previous"
+msgstr "Попередня"
+
+#: components/help/converters/gnome-db2html2/gdb3html.c:717
+#: po/tmp/nautilus-shell-ui.xml.h:38
+msgid "Home"
+msgstr "Дом╕вка"
+
+#: components/help/converters/gnome-db2html2/gdb3html.c:726
+#: components/music/nautilus-music-view.c:1621
+msgid "Next"
+msgstr "Наступна"
+
+#: components/help/converters/gnome-db2html2/sect-elements.c:254
+msgid "Notes"
+msgstr "Нотатки"
+
+#: components/help/converters/gnome-db2html2/sect-elements.c:704
+#, c-format
+msgid "Table %d."
+msgstr "Таблиця %d."
+
+#: components/help/converters/gnome-db2html2/sect-elements.c:859
+msgid "Up to Table of Contents"
+msgstr ""
+
+#: components/help/converters/gnome-db2html2/sect-elements.c:1007
+#, c-format
+msgid "Figure %s"
+msgstr "Рисунок %s"
+
+#: components/help/converters/gnome-db2html2/sect-elements.c:1027
+msgid "the section here"
+msgstr ""
+
+#: components/help/converters/gnome-db2html2/sect-elements.c:1029
+#, fuzzy
+msgid "the section"
+msgstr "Опис"
+
+#: components/help/converters/gnome-db2html2/sect-elements.c:1085
+#, c-format
+msgid "Figure %d"
+msgstr "Рисунок %s"
+
+#: components/help/converters/gnome-db2html2/sect-elements.c:1097
+msgid "IMAGE"
+msgstr "ЗОБРАЖЕННЯ"
+
+#: components/help/converters/gnome-db2html2/sect-elements.c:2063
+#: components/help/converters/gnome-db2html2/sect-elements.c:2065
+msgid "Legal Notice"
+msgstr ""
+
+#. This 'Q' is short for 'Question:'
+#: components/help/converters/gnome-db2html2/sect-elements.c:2111
+msgid "Q"
+msgstr ""
+
+#. This 'A' is short for 'Answer'
+#: components/help/converters/gnome-db2html2/sect-elements.c:2123
+msgid "A"
+msgstr ""
+
+#: components/help/converters/gnome-db2html2/sect-elements.c:2146
+#, fuzzy
+msgid "See"
+msgstr "Розмова"
+
+#: components/help/converters/gnome-db2html2/sect-elements.c:2173
+#, fuzzy
+msgid "See also"
+msgstr "Системн╕ виклики"
+
+#: components/help/converters/gnome-db2html2/toc-elements.c:315
+msgid "GNOME Documentation"
+msgstr "Документац╕я GNOME"
+
+#: components/help/converters/gnome-db2html2/toc-elements.c:346
+msgid "Copyright"
+msgstr "Авторське право"
+
+#: components/help/converters/gnome-db2html2/toc-elements.c:346
+msgid "by"
+msgstr ""
+
+#: components/help/converters/gnome-db2html2/toc-elements.c:348
+msgid "Table of Contents"
+msgstr "Зм╕ст"
+
+#: components/help/converters/gnome-db2html2/toc-elements.c:513
+msgid "PREFACE"
+msgstr ""
+
+#: components/help/converters/gnome-db2html2/toc-elements.c:522
+msgid "APPENDIX"
+msgstr "ДОДАТОК"
 
 #. * From 'man(7)':
 #.
@@ -62,50 +180,50 @@ msgstr "Не вдалося створити nautilus-launcher-applet!"
 #. GNU Public  License  and  many  people  are
 #. working on changes to the kernel)
 #. **
-#: components/help/hyperbola-filefmt.c:424
+#: components/help/hyperbola-filefmt.c:468
 msgid "Manual"
 msgstr "╤нструкц╕я"
 
-#: components/help/hyperbola-filefmt.c:425
+#: components/help/hyperbola-filefmt.c:469
 msgid "System"
 msgstr "Система"
 
-#: components/help/hyperbola-filefmt.c:425
+#: components/help/hyperbola-filefmt.c:469
 msgid "Configuration"
 msgstr "Конф╕╜урац╕я"
 
-#: components/help/hyperbola-filefmt.c:425
+#: components/help/hyperbola-filefmt.c:469
 msgid "Config files"
 msgstr "Конф╕╜урац╕йн╕ файли"
 
-#: components/help/hyperbola-filefmt.c:426
-#: components/help/hyperbola-filefmt.c:711 po/tmp/apps.xml.h:1
+#: components/help/hyperbola-filefmt.c:470
+#: components/help/hyperbola-filefmt.c:758 po/tmp/apps.xml.h:1
 msgid "Applications"
 msgstr "Прикладн╕ програми"
 
-#: components/help/hyperbola-filefmt.c:426
+#: components/help/hyperbola-filefmt.c:470
 msgid "Command Line"
 msgstr "Командний рядок"
 
-#: components/help/hyperbola-filefmt.c:427
-#: components/help/hyperbola-filefmt.c:428
+#: components/help/hyperbola-filefmt.c:471
+#: components/help/hyperbola-filefmt.c:472
 msgid "Development"
 msgstr "Розробка"
 
-#: components/help/hyperbola-filefmt.c:427
-#: components/help/hyperbola-filefmt.c:428
+#: components/help/hyperbola-filefmt.c:471
+#: components/help/hyperbola-filefmt.c:472
 msgid "APIs"
 msgstr "╤нтерфейси прикладних програм"
 
-#: components/help/hyperbola-filefmt.c:427
+#: components/help/hyperbola-filefmt.c:471
 msgid "Miscellaneous"
 msgstr "Р╕зне"
 
-#: components/help/hyperbola-filefmt.c:428
+#: components/help/hyperbola-filefmt.c:472
 msgid "System Calls"
 msgstr "Системн╕ виклики"
 
-#: components/help/hyperbola-filefmt.c:584
+#: components/help/hyperbola-filefmt.c:630
 #: libnautilus-extensions/nautilus-stock-dialogs.c:408
 msgid "Info"
 msgstr "╤нформац╕я"
@@ -144,7 +262,7 @@ msgstr ""
 
 #: po/tmp/nautilus-content-loser-ui.xml.h:3 po/tmp/nautilus-mozilla-ui.xml.h:4
 #: po/tmp/nautilus-sample-content-view-ui.xml.h:4
-#: po/tmp/nautilus-shell-ui.xml.h:77 po/tmp/nautilus-sidebar-loser-ui.xml.h:3
+#: po/tmp/nautilus-shell-ui.xml.h:78 po/tmp/nautilus-sidebar-loser-ui.xml.h:3
 msgid "_File"
 msgstr "Файл"
 
@@ -875,7 +993,7 @@ msgid "Sorry, but '%s' is not a usable image file."
 msgstr ""
 
 #: components/music/nautilus-music-view.c:703
-#: src/file-manager/fm-properties-window.c:2131
+#: src/file-manager/fm-properties-window.c:2174
 #: src/nautilus-property-browser.c:998 src/nautilus-property-browser.c:1135
 #: src/nautilus-property-browser.c:1403
 msgid "Not an Image"
@@ -908,10 +1026,6 @@ msgstr "Неможливо програти в╕ддален╕ файли"
 msgid "Drag to seek within track"
 msgstr "Пересуньте для позиц╕онування в дор╕жц╕"
 
-#: components/music/nautilus-music-view.c:1563
-msgid "Previous"
-msgstr "Попередня"
-
 #: components/music/nautilus-music-view.c:1578
 msgid "Play"
 msgstr "В╕дтворення"
@@ -927,10 +1041,6 @@ msgstr "Пауза"
 #: po/tmp/nautilus-shell-ui.xml.h:55
 msgid "Stop"
 msgstr "Зупинка"
-
-#: components/music/nautilus-music-view.c:1621
-msgid "Next"
-msgstr "Наступна"
 
 #: components/music/nautilus-music-view.c:1634
 msgid "Sound hardware missing or busy!"
@@ -1134,11 +1244,11 @@ msgstr ""
 msgid "_Sample"
 msgstr "Частота дискретизац╕╖"
 
-#: components/sample/nautilus-sample-content-view.c:83
+#: components/sample/nautilus-sample-content-view.c:136
 msgid "(none)"
 msgstr ""
 
-#: components/sample/nautilus-sample-content-view.c:145
+#: components/sample/nautilus-sample-content-view.c:189
 #, c-format
 msgid ""
 "%s\n"
@@ -1146,7 +1256,7 @@ msgid ""
 "This is a sample Nautilus content view component."
 msgstr ""
 
-#: components/sample/nautilus-sample-content-view.c:203
+#: components/sample/nautilus-sample-content-view.c:252
 #, c-format
 msgid ""
 "%s\n"
@@ -1884,11 +1994,9 @@ msgid ""
 msgstr ""
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:1068
-#, fuzzy, c-format
+#, c-format
 msgid "Installation failed on %s"
-msgstr ""
-"Встановлення дало зб╕й на %s\n"
-"\n"
+msgstr "Встановлення дало зб╕й на %s"
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:1213
 msgid "Downloading remote package"
@@ -2169,11 +2277,11 @@ msgstr ""
 msgid "Could not read time-service config from %s"
 msgstr ""
 
-#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:192
+#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:195
 msgid "Could not initialize Bonobo"
 msgstr "Не вдалося ╕н╕ц╕ал╕зувати Bonobo"
 
-#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:207
+#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:210
 #, c-format
 msgid "Can't write logfile %s -- using default log handler"
 msgstr ""
@@ -2230,9 +2338,8 @@ msgid "Charcoal"
 msgstr ""
 
 #: po/tmp/browser.xml.h:6
-#, fuzzy
 msgid "Colors"
-msgstr "Закрити"
+msgstr "Кольори"
 
 #: po/tmp/browser.xml.h:7
 #, fuzzy
@@ -2267,7 +2374,7 @@ msgstr ""
 msgid "Eclipse"
 msgstr ""
 
-#: po/tmp/browser.xml.h:15 src/file-manager/fm-properties-window.c:1381
+#: po/tmp/browser.xml.h:15 src/file-manager/fm-properties-window.c:1410
 msgid "Emblems"
 msgstr "Емблеми"
 
@@ -2281,7 +2388,7 @@ msgstr ""
 
 #: po/tmp/browser.xml.h:18
 msgid "Granite"
-msgstr ""
+msgstr "╫ран╕т"
 
 #: po/tmp/browser.xml.h:19
 msgid "Grapefruit"
@@ -2298,12 +2405,11 @@ msgstr ""
 
 #: po/tmp/browser.xml.h:22
 msgid "Lemon"
-msgstr ""
+msgstr "Лимон"
 
 #: po/tmp/browser.xml.h:23
-#, fuzzy
 msgid "Mango"
-msgstr "Моно"
+msgstr "Ман╜о"
 
 #: po/tmp/browser.xml.h:24
 msgid "Mud"
@@ -2338,13 +2444,12 @@ msgid "Shale"
 msgstr ""
 
 #: po/tmp/browser.xml.h:32
-#, fuzzy
 msgid "Silver"
-msgstr "Розм╕р"
+msgstr "Ср╕бний"
 
 #: po/tmp/browser.xml.h:33
 msgid "Sky"
-msgstr ""
+msgstr "Блакитний"
 
 #: po/tmp/browser.xml.h:34
 msgid "Tangerine"
@@ -2352,31 +2457,30 @@ msgstr ""
 
 #: po/tmp/browser.xml.h:35
 msgid "Violet"
-msgstr ""
+msgstr "Ф╕олетовий"
 
 #: po/tmp/browser.xml.h:36
-#, fuzzy
 msgid "White"
-msgstr "Назва"
+msgstr "Б╕лий"
 
 #: po/tmp/apps.xml.h:2
 msgid "Gnumeric"
-msgstr ""
+msgstr "Gnumeric"
 
 #: po/tmp/apps.xml.h:3
 msgid "Netscape"
-msgstr ""
+msgstr "Netscape"
 
 #: po/tmp/apps.xml.h:4
 msgid "The Gimp"
-msgstr ""
+msgstr "GIMP"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:244
 #: po/tmp/desktop.xml.h:1
 msgid "Desktop"
 msgstr "Робочий ст╕л"
 
-#: libnautilus-extensions/nautilus-file.c:4672
+#: libnautilus-extensions/nautilus-file.c:4699
 #: libnautilus-extensions/nautilus-trash-directory.c:261
 #: po/tmp/desktop.xml.h:2 src/file-manager/fm-desktop-icon-view.c:65
 msgid "Trash"
@@ -2503,8 +2607,12 @@ msgstr "Linuxcare"
 msgid "Myplay"
 msgstr "В╕дтворення"
 
-#: po/tmp/static_bookmarks.xml.h:25 src/nautilus-window-manage-views.c:234
-#: src/nautilus-window-menus.c:619
+#. The copyright character in here is correct for
+#. * Latin-1 encoding, but not for UTF-8, so we have
+#. * to change it when we upgrade to GTK 2.0.
+#.
+#: po/tmp/static_bookmarks.xml.h:25 src/nautilus-window-manage-views.c:235
+#: src/nautilus-window-menus.c:618
 msgid "Nautilus"
 msgstr "Наут╕лус"
 
@@ -2786,24 +2894,20 @@ msgid ""
 msgstr ""
 
 #: libnautilus-extensions/nautilus-file-operations.c:842
-#, fuzzy
 msgid "Error while copying."
-msgstr "Помилка п╕дчас %s."
+msgstr "Помилка п╕д час коп╕ювання."
 
 #: libnautilus-extensions/nautilus-file-operations.c:845
-#, fuzzy
 msgid "Error while moving."
-msgstr "Помилка п╕дчас %s."
+msgstr "Помилка п╕д час переносу."
 
 #: libnautilus-extensions/nautilus-file-operations.c:848
-#, fuzzy
 msgid "Error while linking."
-msgstr "Помилка п╕дчас %s."
+msgstr ""
 
 #: libnautilus-extensions/nautilus-file-operations.c:853
-#, fuzzy
 msgid "Error while deleting."
-msgstr "Помилка п╕дчас %s."
+msgstr "Помилка п╕д час стирання."
 
 #: libnautilus-extensions/nautilus-file-operations.c:878
 #: libnautilus-extensions/nautilus-file-operations.c:897
@@ -2840,7 +2944,7 @@ msgstr "Зам╕нити все"
 
 #. appended to new link file
 #: libnautilus-extensions/nautilus-file-operations.c:1016
-#: libnautilus-extensions/nautilus-file.c:3724
+#: libnautilus-extensions/nautilus-file.c:3749
 #, c-format
 msgid "link to %s"
 msgstr ""
@@ -2970,51 +3074,49 @@ msgstr ""
 #. localizers: progress dialog title
 #: libnautilus-extensions/nautilus-file-operations.c:1685
 msgid "Moving files"
-msgstr ""
+msgstr "Перенесення файл╕в"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-extensions/nautilus-file-operations.c:1687
-#, fuzzy
 msgid "Files moved:"
-msgstr "Власник файлу:"
+msgstr "Перенесено файли:"
 
 #. localizers: label prepended to the name of the current file moved
 #: libnautilus-extensions/nautilus-file-operations.c:1689
 #: libnautilus-extensions/nautilus-file-operations.c:2030
 msgid "Moving"
-msgstr ""
+msgstr "Перенесення"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1690
 msgid "Preparing To Move..."
-msgstr ""
+msgstr "П╕дготовка до перенесення..."
 
 #: libnautilus-extensions/nautilus-file-operations.c:1691
 msgid "Finishing Move..."
-msgstr ""
+msgstr "Завершення перенесення..."
 
 #. localizers: progress dialog title
 #: libnautilus-extensions/nautilus-file-operations.c:1701
 msgid "Creating links to files"
-msgstr ""
+msgstr "Створення посилань на файли"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-extensions/nautilus-file-operations.c:1703
-#, fuzzy
 msgid "Files linked:"
-msgstr "Власник файлу:"
+msgstr "Створенно посилапння на файли:"
 
 #. localizers: label prepended to the name of the current file linked
 #: libnautilus-extensions/nautilus-file-operations.c:1705
 msgid "Linking"
-msgstr ""
+msgstr "Створення посилань"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1706
 msgid "Preparing to Create Links..."
-msgstr ""
+msgstr "П╕дготовка до створення посилань..."
 
 #: libnautilus-extensions/nautilus-file-operations.c:1707
 msgid "Finishing Creating Links..."
-msgstr ""
+msgstr "Завершення створення посилань..."
 
 #. localizers: progress dialog title
 #: libnautilus-extensions/nautilus-file-operations.c:1714
@@ -3023,9 +3125,8 @@ msgstr "Коп╕ювання файл╕в"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-extensions/nautilus-file-operations.c:1716
-#, fuzzy
 msgid "Files copied:"
-msgstr "Група файлу:"
+msgstr "Скоп╕йовано файли:"
 
 #. localizers: label prepended to the name of the current file copied
 #: libnautilus-extensions/nautilus-file-operations.c:1718
@@ -3034,15 +3135,15 @@ msgstr "Коп╕ювання"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1719
 msgid "Preparing To Copy..."
-msgstr ""
+msgstr "П╕дготовка до коп╕ювання..."
 
 #: libnautilus-extensions/nautilus-file-operations.c:1738
 msgid "You cannot copy items into the Trash."
-msgstr ""
+msgstr "Ви не можете коп╕ювати у см╕тник"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1739
 msgid "Can't Copy to Trash"
-msgstr ""
+msgstr "Неможливо коп╕ювати у см╕тник"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1761
 #: libnautilus-extensions/nautilus-file-operations.c:1985
@@ -3102,14 +3203,13 @@ msgid "Error \"%s\" creating new folder."
 msgstr "Перегляд властивостей Наут╕лус"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1846
-#, fuzzy
 msgid "Error creating new folder"
-msgstr "Перегляд властивостей Наут╕лус"
+msgstr "Помилка створення ново╖ теки"
 
 #. localizers: the initial name of a new folder
 #: libnautilus-extensions/nautilus-file-operations.c:1923
 msgid "untitled folder"
-msgstr ""
+msgstr "неназвана тека"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1993
 #, c-format
@@ -3133,7 +3233,7 @@ msgstr "Група файлу:"
 
 #: libnautilus-extensions/nautilus-file-operations.c:2031
 msgid "Preparing to Move to Trash..."
-msgstr ""
+msgstr "П╕дготовка до перенесення у см╕тник..."
 
 #. localizers: progress dialog title
 #: libnautilus-extensions/nautilus-file-operations.c:2073
@@ -3143,9 +3243,8 @@ msgstr "Стирання файл╕в"
 #. localizers: label prepended to the progress count
 #: libnautilus-extensions/nautilus-file-operations.c:2075
 #: libnautilus-extensions/nautilus-file-operations.c:2112
-#, fuzzy
 msgid "Files deleted:"
-msgstr "стерто"
+msgstr "Стерто файли:"
 
 #. localizers: label prepended to the name of the current file deleted
 #: libnautilus-extensions/nautilus-file-operations.c:2077
@@ -3155,25 +3254,25 @@ msgstr "Стирання"
 
 #: libnautilus-extensions/nautilus-file-operations.c:2078
 msgid "Preparing to Delete files..."
-msgstr ""
+msgstr "П╕дготовка до стирання файл╕в..."
 
 #. localizers: progress dialog title
 #: libnautilus-extensions/nautilus-file-operations.c:2110
 msgid "Emptying the Trash"
-msgstr ""
+msgstr "Спорожнення см╕тника"
 
 #: libnautilus-extensions/nautilus-file-operations.c:2115
 msgid "Preparing to Empty the Trash..."
-msgstr ""
+msgstr "П╕дготовка до спорожнення см╕тника..."
 
 #: libnautilus-extensions/nautilus-file-operations.c:2146
 msgid ""
 "Are you sure you want to permanently delete all of the items in the trash?"
-msgstr ""
+msgstr "Ви впевнен╕ що хочете пост╕йно стирати все з см╕тника?"
 
 #: libnautilus-extensions/nautilus-file-operations.c:2148
 msgid "Delete Trash Contents?"
-msgstr ""
+msgstr "Стирти вм╕ст см╕тника?"
 
 #: libnautilus-extensions/nautilus-file-operations.c:2149
 msgid "Empty"
@@ -3198,7 +3297,7 @@ msgstr ""
 
 #: libnautilus-extensions/nautilus-file-operations.c:2189
 msgid ".foo.txt"
-msgstr ""
+msgstr ".foo.txt"
 
 #: libnautilus-extensions/nautilus-file-operations.c:2189
 msgid ".foo (copy).txt"
@@ -3206,7 +3305,7 @@ msgstr ""
 
 #: libnautilus-extensions/nautilus-file-operations.c:2190
 msgid "foo foo"
-msgstr ""
+msgstr "foo foo"
 
 #: libnautilus-extensions/nautilus-file-operations.c:2190
 msgid "foo foo (copy)"
@@ -3214,7 +3313,7 @@ msgstr ""
 
 #: libnautilus-extensions/nautilus-file-operations.c:2191
 msgid "foo.txt"
-msgstr ""
+msgstr "foo.txt"
 
 #: libnautilus-extensions/nautilus-file-operations.c:2191
 #: libnautilus-extensions/nautilus-file-operations.c:2198
@@ -3223,7 +3322,7 @@ msgstr ""
 
 #: libnautilus-extensions/nautilus-file-operations.c:2192
 msgid "foo foo.txt"
-msgstr ""
+msgstr "foo foo.txt"
 
 #: libnautilus-extensions/nautilus-file-operations.c:2192
 #: libnautilus-extensions/nautilus-file-operations.c:2212
@@ -3232,7 +3331,7 @@ msgstr ""
 
 #: libnautilus-extensions/nautilus-file-operations.c:2193
 msgid "foo foo.txt txt"
-msgstr ""
+msgstr "foo foo.txt txt"
 
 #: libnautilus-extensions/nautilus-file-operations.c:2193
 msgid "foo foo (copy).txt txt"
@@ -3240,7 +3339,7 @@ msgstr ""
 
 #: libnautilus-extensions/nautilus-file-operations.c:2194
 msgid "foo...txt"
-msgstr ""
+msgstr "foo...txt"
 
 #: libnautilus-extensions/nautilus-file-operations.c:2194
 msgid "foo.. (copy).txt"
@@ -3248,7 +3347,7 @@ msgstr ""
 
 #: libnautilus-extensions/nautilus-file-operations.c:2195
 msgid "foo..."
-msgstr ""
+msgstr "foo..."
 
 #: libnautilus-extensions/nautilus-file-operations.c:2195
 msgid "foo... (copy)"
@@ -3366,100 +3465,100 @@ msgstr ""
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-extensions/nautilus-file.c:2235
+#: libnautilus-extensions/nautilus-file.c:2260
 msgid "today at %-I:%M %p"
 msgstr ""
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2240
+#: libnautilus-extensions/nautilus-file.c:2265
 msgid "yesterday at %-I:%M %p"
 msgstr ""
 
 #. Current week, include day of week.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2245
+#: libnautilus-extensions/nautilus-file.c:2270
 msgid "%A %-m/%-d/%y at %-I:%M %p"
 msgstr ""
 
 #. Other dates.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2250
+#: libnautilus-extensions/nautilus-file.c:2275
 msgid "%-m/%-d/%y at %-I:%M %p"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-file.c:3319
+#: libnautilus-extensions/nautilus-file.c:3344
 msgid "0 items"
 msgstr "0 елемент╕в"
 
-#: libnautilus-extensions/nautilus-file.c:3319
+#: libnautilus-extensions/nautilus-file.c:3344
 msgid "0 folders"
 msgstr "0 тек"
 
-#: libnautilus-extensions/nautilus-file.c:3320
+#: libnautilus-extensions/nautilus-file.c:3345
 msgid "0 files"
 msgstr "0 файл╕в"
 
-#: libnautilus-extensions/nautilus-file.c:3324
+#: libnautilus-extensions/nautilus-file.c:3349
 msgid "1 item"
 msgstr "1 елемент"
 
-#: libnautilus-extensions/nautilus-file.c:3324
+#: libnautilus-extensions/nautilus-file.c:3349
 msgid "1 folder"
 msgstr "1 тека"
 
-#: libnautilus-extensions/nautilus-file.c:3325
+#: libnautilus-extensions/nautilus-file.c:3350
 msgid "1 file"
 msgstr "1 файл"
 
-#: libnautilus-extensions/nautilus-file.c:3328
+#: libnautilus-extensions/nautilus-file.c:3353
 #, c-format
 msgid "%u items"
 msgstr "елемент╕в: %u"
 
-#: libnautilus-extensions/nautilus-file.c:3328
+#: libnautilus-extensions/nautilus-file.c:3353
 #, c-format
 msgid "%u folders"
 msgstr "тек: %u"
 
-#: libnautilus-extensions/nautilus-file.c:3329
+#: libnautilus-extensions/nautilus-file.c:3354
 #, c-format
 msgid "%u files"
 msgstr "файл╕в: %u"
 
 #. This means no contents at all were readable
-#: libnautilus-extensions/nautilus-file.c:3629
-#: libnautilus-extensions/nautilus-file.c:3643
+#: libnautilus-extensions/nautilus-file.c:3654
+#: libnautilus-extensions/nautilus-file.c:3668
 msgid "? items"
 msgstr "? елемент╕в"
 
-#: libnautilus-extensions/nautilus-file.c:3647
+#: libnautilus-extensions/nautilus-file.c:3672
 msgid "unknown type"
 msgstr "нев╕домий тип"
 
-#: libnautilus-extensions/nautilus-file.c:3649
+#: libnautilus-extensions/nautilus-file.c:3674
 msgid "unknown MIME type"
 msgstr "нев╕домий тип MIME"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-extensions/nautilus-file.c:3654
+#: libnautilus-extensions/nautilus-file.c:3679
 msgid "unknown"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-file.c:3689
+#: libnautilus-extensions/nautilus-file.c:3714
 msgid "program"
 msgstr "програма"
 
-#: libnautilus-extensions/nautilus-file.c:3718
+#: libnautilus-extensions/nautilus-file.c:3743
 msgid "link"
 msgstr "посилання"
 
-#: libnautilus-extensions/nautilus-file.c:3738
+#: libnautilus-extensions/nautilus-file.c:3763
 msgid "link (broken)"
 msgstr ""
 
@@ -3473,9 +3572,8 @@ msgstr "Шрифт"
 
 #. Constants
 #: libnautilus-extensions/nautilus-global-preferences.c:44
-#, fuzzy
 msgid "Nautilus Preferences"
-msgstr "Властивост╕ серв╕су"
+msgstr "Параметри Наут╕луса"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:119
 msgid "Folder Views"
@@ -3587,6 +3685,7 @@ msgid "Navigation Settings"
 msgstr "Параметри нав╕╜ац╕╖"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:323
+#: libnautilus-extensions/nautilus-global-preferences.c:1042
 msgid "Home Location"
 msgstr ""
 
@@ -3639,9 +3738,8 @@ msgid "current theme"
 msgstr ""
 
 #: libnautilus-extensions/nautilus-global-preferences.c:860
-#, fuzzy
 msgid "Open each item in a separate window"
-msgstr "Вибрати кожен вибраний елемент у новому в╕кн╕"
+msgstr "В╕дкрити кожен елемент у окремому в╕кн╕"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:867
 msgid "Ask before deleting items from the trash"
@@ -3770,49 +3868,49 @@ msgstr ""
 msgid " -_,;.?/&"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:719
+#: libnautilus-extensions/nautilus-icon-dnd.c:720
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
 "manual layout."
 msgstr ""
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:723
+#: libnautilus-extensions/nautilus-icon-dnd.c:724
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
 "manual layout."
 msgstr ""
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:729
+#: libnautilus-extensions/nautilus-icon-dnd.c:730
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:732
+#: libnautilus-extensions/nautilus-icon-dnd.c:733
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:737
+#: libnautilus-extensions/nautilus-icon-dnd.c:738
 msgid "Switch to Manual Layout?"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:738
-#: src/nautilus-window-menus.c:533
+#: libnautilus-extensions/nautilus-icon-dnd.c:739
+#: src/nautilus-window-menus.c:536
 msgid "Switch"
 msgstr ""
 
 #. FIXME bugzilla.eazel.com 1102: Embedded text should use preferences
 #. * to determine what font it uses instead of this set of constants.
 #.
-#: libnautilus-extensions/nautilus-icon-factory.c:133
+#: libnautilus-extensions/nautilus-icon-factory.c:134
 msgid "helvetica"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-icon-factory.c:134
+#: libnautilus-extensions/nautilus-icon-factory.c:135
 msgid "medium"
 msgstr ""
 
@@ -3941,10 +4039,11 @@ msgstr ""
 msgid "Don't include in the menu for \"%s\" items"
 msgstr ""
 
+#. Menu item to search by file name in e.g. "Name starts with b"
 #: libnautilus-extensions/nautilus-program-chooser.c:1165
 #: src/file-manager/fm-list-view.c:1926
 #: src/file-manager/fm-search-list-view.c:330
-#: src/nautilus-bookmarks-window.c:164 src/nautilus-search-bar-criterion.c:67
+#: src/nautilus-bookmarks-window.c:164 src/nautilus-search-bar-criterion.c:68
 msgid "Name"
 msgstr "Назва"
 
@@ -4018,210 +4117,305 @@ msgstr ""
 msgid "Can't open remote file"
 msgstr "Неможливо в╕дкрити в╕ддалений файл"
 
-#: libnautilus-extensions/nautilus-search-uri.c:205
-#, c-format
-msgid "with \"%s\" in the name"
-msgstr ""
+#. Part of a window title for search results: a
+#. description of the set of files that contains a string
+#: libnautilus-extensions/nautilus-search-uri.c:207
+#: libnautilus-extensions/nautilus-search-uri.c:222
+#, fuzzy, c-format
+msgid "containing \"%s\" in their names"
+msgstr " (м╕стить елемент╕в: %d)"
 
-#: libnautilus-extensions/nautilus-search-uri.c:208
+#. Part of a window title for search results: a
+#. description of the set of files that start with a string
+#: libnautilus-extensions/nautilus-search-uri.c:212
 #, fuzzy, c-format
 msgid "starting with \"%s\""
 msgstr "В╕дкрити у %s"
 
-#: libnautilus-extensions/nautilus-search-uri.c:211
+#. Part of a window title for search results: a
+#. description of the set of files that end with a string
+#: libnautilus-extensions/nautilus-search-uri.c:217
 #, fuzzy, c-format
 msgid "ending with %s"
 msgstr "В╕дкрити за допомогою %s"
 
-#: libnautilus-extensions/nautilus-search-uri.c:214
-#, c-format
-msgid "without \"%s\" in their name"
-msgstr ""
-
-#: libnautilus-extensions/nautilus-search-uri.c:217
+#. Part of a window title for search results: a
+#. description of the set of files that match a regular
+#. expression
+#: libnautilus-extensions/nautilus-search-uri.c:228
 #, c-format
 msgid "matching the regular expression \"%s\""
 msgstr ""
 
-#: libnautilus-extensions/nautilus-search-uri.c:220
+#. Part of a window title for search results: a
+#. description of the set of files that match a glob pattern
+#: libnautilus-extensions/nautilus-search-uri.c:233
 #, c-format
 msgid "matching the file pattern \"%s\""
 msgstr ""
 
-#: libnautilus-extensions/nautilus-search-uri.c:233
+#. Part of a window title for search results: a
+#. description of the set of files that are not directories,
+#. sockets, etc.
+#: libnautilus-extensions/nautilus-search-uri.c:249
 msgid "regular files"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-search-uri.c:236
+#. Part of a window title for search results: a
+#. description of the set of files that are stored as plain
+#. text
+#: libnautilus-extensions/nautilus-search-uri.c:255
 msgid "text files"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-search-uri.c:239
+#. Part of a window title for search results: a
+#. description of the set of files that are binary files or
+#. applications you can run
+#: libnautilus-extensions/nautilus-search-uri.c:261
 msgid "applications"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-search-uri.c:242
+#. Part of a window title for search results: a
+#. description of the set of items that are folders
+#. (directories)
+#: libnautilus-extensions/nautilus-search-uri.c:267
 #, fuzzy
 msgid "folders"
 msgstr "тека"
 
-#: libnautilus-extensions/nautilus-search-uri.c:245
-#: src/nautilus-search-bar-criterion.c:107
+#. Part of a window title for search results: a
+#. description of the set of items that are music files
+#. (mp3s, wavs)
+#: libnautilus-extensions/nautilus-search-uri.c:273
+#: src/nautilus-search-bar-criterion.c:130
 msgid "music"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-search-uri.c:252
+#. Part of a window title for search results: way of
+#. describing the fact that files are not of a certain type
+#. (folder, music, etc).  Context is "files that are [folder,
+#. music]"
+#: libnautilus-extensions/nautilus-search-uri.c:283
+#: libnautilus-extensions/nautilus-search-uri.c:290
 #, c-format
-msgid "are not %s"
+msgid "that are %s"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-search-uri.c:256
-#, c-format
-msgid "are %s"
-msgstr ""
-
-#: libnautilus-extensions/nautilus-search-uri.c:267
+#. Part of a window title for search results: way of
+#. describing the fact that files are not owned by someone,
+#. Context is files not ownd by xxx
+#: libnautilus-extensions/nautilus-search-uri.c:304
 #, fuzzy, c-format
 msgid "not owned by \"%s\""
 msgstr "В╕дкрити у %s"
 
-#: libnautilus-extensions/nautilus-search-uri.c:270
+#. Part of a window title for search results: way of
+#. describing the fact that files are owned by someone.
+#. Context is files owned by root
+#: libnautilus-extensions/nautilus-search-uri.c:310
 #, fuzzy, c-format
 msgid "owned by \"%s\""
 msgstr "Звантажування \"%s\""
 
-#: libnautilus-extensions/nautilus-search-uri.c:274
+#. Part of a window title for search results: way of
+#. describing the fact that files have a specific owner uid.
+#. Context is "files with owner UID xx"
+#: libnautilus-extensions/nautilus-search-uri.c:316
 #, c-format
 msgid "with owner UID \"%s\""
 msgstr ""
 
-#: libnautilus-extensions/nautilus-search-uri.c:277
+#. Part of a window title for search results: way of
+#. describing the fact that files have a specific owner uid
+#. other than this one.  Context is "files with owner uid
+#. other than xx"
+#: libnautilus-extensions/nautilus-search-uri.c:323
 #, c-format
 msgid "with owner UID other than \"%s\""
 msgstr ""
 
-#: libnautilus-extensions/nautilus-search-uri.c:288
+#. Part of a window title for search results: way of
+#. describing that the files are larger than a certain size.
+#. Context is "files larger than %s bytes"
+#: libnautilus-extensions/nautilus-search-uri.c:337
 #, c-format
 msgid "larger than %s bytes"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-search-uri.c:291
+#. Part of a window title for search results: way of
+#. describing that the files are larger than a certain size.
+#. Context is "files smaller than %s bytes"
+#: libnautilus-extensions/nautilus-search-uri.c:343
 #, c-format
 msgid "smaller than %s bytes"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-search-uri.c:294
+#. Part of a window title for search results: way of
+#. describing that the files are larger than a certain size.
+#. Context is "files of %s bytes"
+#: libnautilus-extensions/nautilus-search-uri.c:349
 #, fuzzy, c-format
-msgid "%s bytes"
+msgid "of %s bytes"
 msgstr "елемент╕в: %u"
 
-#: libnautilus-extensions/nautilus-search-uri.c:305
+#. Part of a window title for search results: way of
+#. describing that the files were modified since midnight of
+#. the current day.  Context is "files modified today"
+#: libnautilus-extensions/nautilus-search-uri.c:363
 msgid "modified today"
 msgstr "модиф╕ковано сьогодн╕"
 
-#: libnautilus-extensions/nautilus-search-uri.c:308
+#. Part of a window title for search results: way of
+#. describing that the files were modified since midnight of
+#. the previous day.  Context is "files modified yesterday"
+#: libnautilus-extensions/nautilus-search-uri.c:369
 msgid "modified yesterday"
 msgstr "модиф╕ковано вчора"
 
-#: libnautilus-extensions/nautilus-search-uri.c:311
+#. Part of a window title for search results: way of
+#. describing that the files were modified since midnight of
+#. the date that will replace the %s.  Context is "files
+#. modified on 11/20/00"
+#: libnautilus-extensions/nautilus-search-uri.c:376
 #, c-format
 msgid "modified on %s"
 msgstr "модиф╕ковано %s"
 
-#: libnautilus-extensions/nautilus-search-uri.c:314
+#. Part of a window title for search results: way of
+#. describing that the files were not modified since midnight
+#. of the date that will replace the %s.  Context is "files
+#. not modified on 11/20/00"
+#: libnautilus-extensions/nautilus-search-uri.c:383
 #, c-format
 msgid "not modified on %s"
 msgstr "не модиф╕ковано %s:"
 
-#: libnautilus-extensions/nautilus-search-uri.c:317
+#. Part of a window title for search results: way of
+#. describing that the files were not modified since midnight
+#. of the date that will replace the %s. Context is "files
+#. modified before 11/20/00"
+#: libnautilus-extensions/nautilus-search-uri.c:390
 #, fuzzy, c-format
 msgid "modified before %s"
 msgstr "Модиф╕ковано:"
 
-#: libnautilus-extensions/nautilus-search-uri.c:320
+#. Part of a window title for search results: way of
+#. describing that the files were modified after midnight of
+#. the date field that will replace the %s.  Context is
+#. "files modified after 11/20/00"
+#: libnautilus-extensions/nautilus-search-uri.c:397
 #, fuzzy, c-format
 msgid "modified after %s"
 msgstr "Модиф╕ковано:"
 
-#: libnautilus-extensions/nautilus-search-uri.c:323
+#. Part of a window title for search results: way of
+#. describing that the files were modified within a week of
+#. the date field that will replace the %s.  Context is
+#. "files within a week of 11/20/00"
+#: libnautilus-extensions/nautilus-search-uri.c:404
 #, fuzzy, c-format
 msgid "modified within a week of %s"
 msgstr "Модиф╕ковано:"
 
-#: libnautilus-extensions/nautilus-search-uri.c:326
+#. Part of a window title for search results: way of
+#. describing that the files were modified within a week of
+#. the date field that will replace the %s.  Context is
+#. "files within a month of 11/20/00"
+#: libnautilus-extensions/nautilus-search-uri.c:411
 #, fuzzy, c-format
 msgid "modified within a month of %s"
 msgstr "Модиф╕ковано:"
 
-#: libnautilus-extensions/nautilus-search-uri.c:338
+#. Part of a window title for search results: way of
+#. describing that the files have emblems attached that include
+#. the one that will replace the %s.  Context is "files
+#. marked with Important"
+#: libnautilus-extensions/nautilus-search-uri.c:427
 #, fuzzy, c-format
 msgid "marked with \"%s\""
 msgstr "В╕дкрити у %s"
 
-#: libnautilus-extensions/nautilus-search-uri.c:341
+#. Part of a window title for search results: way of
+#. describing that the files have emblems attached that don't
+#. include the one that will replace the %s.  Context is
+#. "files not marked with Important"
+#: libnautilus-extensions/nautilus-search-uri.c:434
 #, fuzzy, c-format
 msgid "not marked with \"%s\""
 msgstr "В╕дкрити у %s"
 
-#: libnautilus-extensions/nautilus-search-uri.c:355
+#. Part of a window title for search results: way of
+#. describing that the (text) files searched for contain the
+#. word or words that will replace the %s.  Context is "files
+#. with all the word "bob frank"
+#: libnautilus-extensions/nautilus-search-uri.c:452
 #, c-format
 msgid "with all the words \"%s\""
 msgstr ""
 
-#: libnautilus-extensions/nautilus-search-uri.c:358
+#. Part of a window title for search results: way of
+#. describing that the (text) files searched for contain the
+#. word or one or more of the words that will replace the %s.
+#. Context is "files containing one of the words "bob frank"
+#: libnautilus-extensions/nautilus-search-uri.c:459
 #, c-format
 msgid "containing one of the words \"%s\""
 msgstr ""
 
-#: libnautilus-extensions/nautilus-search-uri.c:361
+#. Part of a window title for search results: way of
+#. describing that the (text) files searched for don't
+#. contain the word or all of the words that will replace the
+#. %s.  Context is "files without all the word "bob frank"
+#: libnautilus-extensions/nautilus-search-uri.c:466
 #, c-format
 msgid "without all the words \"%s\""
 msgstr ""
 
-#: libnautilus-extensions/nautilus-search-uri.c:364
+#. Part of a window title for search results: way of
+#. describing that the (text) files searched for contain none of
+#. the word or words that will replace the %s.  Context is "files
+#. with none of the words "bob frank"
+#: libnautilus-extensions/nautilus-search-uri.c:473
 #, c-format
 msgid "without any of the words \"%s\""
 msgstr ""
 
-#: libnautilus-extensions/nautilus-search-uri.c:381
-msgid "that"
-msgstr ""
-
-#: libnautilus-extensions/nautilus-search-uri.c:501
+#: libnautilus-extensions/nautilus-search-uri.c:641
 #, fuzzy
 msgid "are folders"
 msgstr "0 тек"
 
-#: libnautilus-extensions/nautilus-search-uri.c:539
+#: libnautilus-extensions/nautilus-search-uri.c:679
 msgid " and "
 msgstr ""
 
-#: libnautilus-extensions/nautilus-search-uri.c:570
+#: libnautilus-extensions/nautilus-search-uri.c:710
 #, c-format
 msgid "Items %s"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-search-uri.c:573
+#: libnautilus-extensions/nautilus-search-uri.c:713
 #, fuzzy, c-format
 msgid "Items %s %s"
 msgstr "%s%s, %s"
 
-#: libnautilus-extensions/nautilus-search-uri.c:685
-msgid "Items with \"stuff\" in the name"
+#: libnautilus-extensions/nautilus-search-uri.c:825
+#, fuzzy
+msgid "Items containing \"stuff\" in their names"
+msgstr " (м╕стить 0 елемент╕в)"
+
+#: libnautilus-extensions/nautilus-search-uri.c:828
+msgid "Items containing \"stuff\" in their names and that are regular files"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-search-uri.c:688
-msgid "Items with \"stuff\" in the name and are regular files"
-msgstr ""
-
-#: libnautilus-extensions/nautilus-search-uri.c:692
+#: libnautilus-extensions/nautilus-search-uri.c:832
 msgid ""
-"Items with \"stuff\" in the name, are regular files and smaller than 2000 "
-"bytes"
+"Items containing \"stuff\" in their names, that are regular files and "
+"smaller than 2000 bytes"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-search-uri.c:696
-msgid "Items with \"medusa\" in the name and are folders"
+#: libnautilus-extensions/nautilus-search-uri.c:836
+msgid "Items containing \"medusa\" in their names and that are folders"
 msgstr ""
 
 #: libnautilus-extensions/nautilus-stock-dialogs.c:418
@@ -4273,80 +4467,146 @@ msgstr ""
 msgid "Advanced"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:326
+#: libnautilus-extensions/nautilus-volume-monitor.c:330
 msgid "Audio CD"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:430
-msgid "Unknown Volume"
-msgstr "Нев╕домий розд╕л"
+#: libnautilus-extensions/nautilus-volume-monitor.c:997
+msgid "Mount Error"
+msgstr "Помилка монтування"
 
 #: libnautilus-extensions/nautilus-volume-monitor.c:999
+msgid "Unmount Error"
+msgstr "Помилка демонтування"
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1026
+msgid "is not a valid block device"
+msgstr ""
+
+#. Handle floppy case
+#: libnautilus-extensions/nautilus-volume-monitor.c:1030
+msgid ""
+"Nautilus was unable to mount the floppy drive. There is probably no floppy "
+"in the drive."
+msgstr ""
+
+#. All others
+#: libnautilus-extensions/nautilus-volume-monitor.c:1034
+msgid ""
+"Nautilus was unable to mount the volume. There is probably no media in the "
+"device."
+msgstr ""
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1037
+msgid "wrong fs type, bad option, bad superblock on"
+msgstr ""
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1040
+msgid ""
+"Nautilus was unable to mount the floppy drive. The floppy is probably in a "
+"format that cannot be mounted."
+msgstr ""
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1043
+msgid ""
+"Nautilus was unable to mount the selected volume. The volume is probably in "
+"a format that cannot be mounted."
+msgstr ""
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1048
+msgid "Nautilus was unable to mount the selected floppy drive."
+msgstr ""
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1050
+msgid "Nautilus was unable to mount the selected volume."
+msgstr ""
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1054
+msgid "Nautilus was unable to unmount the selected volume."
+msgstr ""
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1140
 msgid "ISO 9660 Volume"
 msgstr "Розд╕л ISO 9660"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1006
+#: libnautilus-extensions/nautilus-volume-monitor.c:1153
+msgid "Root"
+msgstr "Кор╕нь"
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1159
 msgid "Ext2 Volume"
 msgstr "Розд╕л Ext2"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1012
-#, fuzzy
+#: libnautilus-extensions/nautilus-volume-monitor.c:1173
 msgid "MSDOS Volume"
-msgstr "Розд╕л ISO 9660"
+msgstr "Розд╕л MSDOS"
 
-#: libnautilus-extensions/nautilus-volume-monitor.c:1018
+#: libnautilus-extensions/nautilus-volume-monitor.c:1187
+msgid "NFS Volume"
+msgstr "Розд╕л NFS"
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:1201
 msgid "Floppy"
 msgstr "Дискета"
 
+#: libnautilus-extensions/nautilus-volume-monitor.c:1215
+msgid "Unknown Volume"
+msgstr "Нев╕домий розд╕л"
+
 #: po/tmp/nautilus-clipboard-ui.xml.h:1 po/tmp/nautilus-shell-ui.xml.h:6
 msgid "C_lear Text"
-msgstr ""
+msgstr "Стерти текст"
 
 #: po/tmp/nautilus-clipboard-ui.xml.h:2 po/tmp/nautilus-shell-ui.xml.h:15
 msgid "Copy the selected text to the clipboard"
-msgstr ""
+msgstr "Скоп╕ювати вибраний текст у буфер обм╕ну"
 
 #: po/tmp/nautilus-clipboard-ui.xml.h:3 po/tmp/nautilus-shell-ui.xml.h:17
 msgid "Cut the selected text to the clipboard"
-msgstr ""
+msgstr "Вир╕зати вибраний текст у буфер обм╕ну"
 
 #: po/tmp/nautilus-clipboard-ui.xml.h:4 po/tmp/nautilus-shell-ui.xml.h:43
 msgid "Paste the text stored on the clipboard"
-msgstr ""
+msgstr "Вставити текст з буферу обм╕ну"
 
 #: po/tmp/nautilus-clipboard-ui.xml.h:5
 msgid "Remove the selected text without putting it on the clipboard"
-msgstr ""
+msgstr "Видалити вибраний текст без пом╕щення його в буфер обм╕ну"
 
 #: po/tmp/nautilus-clipboard-ui.xml.h:6 po/tmp/nautilus-shell-ui.xml.h:74
 msgid "_Copy Text"
-msgstr ""
+msgstr "Скоп╕ювати текст"
 
 #: po/tmp/nautilus-clipboard-ui.xml.h:7
 msgid "_Cut Text"
-msgstr ""
+msgstr "Вир╕зати текст"
 
 #: po/tmp/nautilus-clipboard-ui.xml.h:8 po/tmp/nautilus-shell-ui.xml.h:87
 msgid "_Paste Text"
+msgstr "Вставити текст"
+
+#: src/file-manager/fm-desktop-icon-view.c:602
+#: src/file-manager/fm-desktop-icon-view.c:607
+#, c-format
+msgid "Link to %s"
 msgstr ""
 
-#: src/file-manager/fm-desktop-icon-view.c:571
-#: src/file-manager/fm-desktop-icon-view.c:576
-msgid "Link to"
-msgstr ""
-
-#: src/file-manager/fm-desktop-icon-view.c:573
+#: src/file-manager/fm-desktop-icon-view.c:604
 msgid "Link to Unknown"
 msgstr ""
 
-#: src/file-manager/fm-desktop-icon-view.c:1064
-#, fuzzy
+#: src/file-manager/fm-desktop-icon-view.c:703
+#, c-format
+msgid "%s's Home"
+msgstr "Дом╕вка користувача %s"
+
+#: src/file-manager/fm-desktop-icon-view.c:991
 msgid "Empty Trash..."
 msgstr "Спорожнити см╕тник..."
 
 #: po/tmp/nautilus-desktop-icon-view-ui.xml.h:4
 #: po/tmp/nautilus-directory-view-ui.xml.h:11
-#: src/file-manager/fm-desktop-icon-view.c:1066
+#: src/file-manager/fm-desktop-icon-view.c:993
 msgid "Empty Trash"
 msgstr "Спорожнити см╕тник"
 
@@ -4419,173 +4679,169 @@ msgstr ""
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
 
-#. FIXME bugzilla.eazel.com 5037: This says Preview Release explicitly. Must remove for real thing.
-#: src/file-manager/fm-directory-view.c:1394
+#: src/file-manager/fm-directory-view.c:1399
+#, c-format
 msgid ""
-"We're sorry, but the folder you're viewing has more files than we're able to "
-"display. As a result, we are only able to show you the first 4000 files it "
-"contains.\n"
-"This is a temporary limitation in this Preview Release of Nautilus, and will "
-"not be present in the final version."
+"The folder \"%s\" contains more files than Nautilus can handle. Only the "
+"first %d files will be displayed."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:1400
-msgid "Too many Files"
+#: src/file-manager/fm-directory-view.c:1407
+msgid "Too Many Files"
 msgstr "Надто багато файл╕в"
 
-#: src/file-manager/fm-directory-view.c:2567
+#: src/file-manager/fm-directory-view.c:2575
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the trash. Do you want to delete it immediately?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:2572
+#: src/file-manager/fm-directory-view.c:2580
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the trash. Do you want to delete "
 "them immediately?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:2576
+#: src/file-manager/fm-directory-view.c:2584
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the trash. Do you want to delete "
 "those %d items immediately?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:2584
+#: src/file-manager/fm-directory-view.c:2592
 msgid "Delete Immediately?"
 msgstr "Стерти негайно?"
 
-#: src/file-manager/fm-directory-view.c:2585
-#: src/file-manager/fm-directory-view.c:2626
+#: src/file-manager/fm-directory-view.c:2593
+#: src/file-manager/fm-directory-view.c:2634
 msgid "Delete"
 msgstr "Стерти"
 
-#: src/file-manager/fm-directory-view.c:2615
+#: src/file-manager/fm-directory-view.c:2623
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:2619
+#: src/file-manager/fm-directory-view.c:2627
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:2625
+#: src/file-manager/fm-directory-view.c:2633
 msgid "Delete From Trash?"
 msgstr "Старти з см╕тника?"
 
-#: src/file-manager/fm-directory-view.c:2898
-#: src/file-manager/fm-directory-view.c:2939
+#: src/file-manager/fm-directory-view.c:2906
+#: src/file-manager/fm-directory-view.c:2947
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:2937
+#: src/file-manager/fm-directory-view.c:2945
 #, c-format
 msgid "%s Viewer"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3125
+#: src/file-manager/fm-directory-view.c:3133
 msgid "Open in _New Window"
 msgstr "В╕дкрити у новому в╕кн╕"
 
-#: src/file-manager/fm-directory-view.c:3127
+#: src/file-manager/fm-directory-view.c:3135
 #, c-format
 msgid "Open in %d _New Windows"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3153
+#: src/file-manager/fm-directory-view.c:3161
 msgid "Delete all selected items permanently"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3158
+#: src/file-manager/fm-directory-view.c:3166
 msgid "Delete from _Trash..."
 msgstr "Стерти з см╕тника..."
 
-#: src/file-manager/fm-directory-view.c:3159
+#: src/file-manager/fm-directory-view.c:3167
 msgid "Delete from _Trash"
 msgstr "Стерти з см╕тника"
 
-#: src/file-manager/fm-directory-view.c:3163
+#: src/file-manager/fm-directory-view.c:3171
 msgid "Move all selected items to the Trash"
 msgstr ""
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:14
-#: src/file-manager/fm-directory-view.c:3167
+#: src/file-manager/fm-directory-view.c:3175
 msgid "Move to _Trash"
 msgstr "Перенести у см╕тник"
 
-#: src/file-manager/fm-directory-view.c:3196
+#: src/file-manager/fm-directory-view.c:3204
 msgid "Create _Links"
 msgstr ""
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:5
-#: src/file-manager/fm-directory-view.c:3197
+#: src/file-manager/fm-directory-view.c:3205
 msgid "Create _Link"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3215
+#: src/file-manager/fm-directory-view.c:3223
 msgid "_Empty Trash..."
 msgstr "Спорожнити см╕тник..."
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:39
-#: src/file-manager/fm-directory-view.c:3216
+#: src/file-manager/fm-directory-view.c:3224
 msgid "_Empty Trash"
 msgstr "Спорожнити см╕тник"
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:26
-#: src/file-manager/fm-directory-view.c:3227
+#: src/file-manager/fm-directory-view.c:3235
 msgid "R_emove Custom Images"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3228
+#: src/file-manager/fm-directory-view.c:3236
 msgid "R_emove Custom Image"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3367
+#: src/file-manager/fm-directory-view.c:3375
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the trash?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3370
+#: src/file-manager/fm-directory-view.c:3378
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
 "want to put this link in the trash?"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3376
+#: src/file-manager/fm-directory-view.c:3384
 msgid "Broken Link"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3377
+#: src/file-manager/fm-directory-view.c:3385
 msgid "Throw Away"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3433
+#: src/file-manager/fm-directory-view.c:3441
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3434
+#: src/file-manager/fm-directory-view.c:3442
 msgid "Can't execute remote links"
 msgstr ""
 
-#: src/file-manager/fm-directory-view.c:3554
-#, fuzzy, c-format
+#: src/file-manager/fm-directory-view.c:3562
+#, c-format
 msgid "Opening \"%s\""
-msgstr "Встановлення \"%s\""
+msgstr "В╕дкривання \"%s\""
 
-#: src/file-manager/fm-directory-view.c:3560
-#, fuzzy
+#: src/file-manager/fm-directory-view.c:3568
 msgid "Cancel Open?"
-msgstr "В╕дм╕нити перейменування"
+msgstr "В╕дм╕нити в╕дкривання?"
 
 #: src/file-manager/fm-error-reporting.c:55
 #, c-format
@@ -4639,7 +4895,7 @@ msgstr ""
 
 #: src/file-manager/fm-error-reporting.c:117
 msgid "Error Setting Group"
-msgstr ""
+msgstr "Помилка встановлення групи"
 
 #: src/file-manager/fm-error-reporting.c:135
 #, c-format
@@ -4647,9 +4903,8 @@ msgid "Sorry, couldn't change the owner of \"%s\"."
 msgstr ""
 
 #: src/file-manager/fm-error-reporting.c:139
-#, fuzzy
 msgid "Error Setting Owner"
-msgstr "Перегляд властивостей Наут╕лус"
+msgstr "Помилка встановлення власника"
 
 #: src/file-manager/fm-error-reporting.c:157
 #, c-format
@@ -4661,9 +4916,9 @@ msgid "Error Setting Permissions"
 msgstr "Помилка встановлення прав"
 
 #: src/file-manager/fm-error-reporting.c:225
-#, fuzzy, c-format
+#, c-format
 msgid "Renaming \"%s\" to \"%s\"."
-msgstr "Перейменування %s на %s."
+msgstr "Перейменування \"%s\" на \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:230
 msgid "Cancel Rename?"
@@ -4776,15 +5031,17 @@ msgstr ""
 msgid "pointing at \"%s\""
 msgstr ""
 
+#. Menu item to search by file size in e.g. "Size larger than 500K"
 #: src/file-manager/fm-list-view.c:1932
 #: src/file-manager/fm-search-list-view.c:342
-#: src/nautilus-search-bar-criterion.c:70
+#: src/nautilus-search-bar-criterion.c:74
 msgid "Size"
 msgstr "Розм╕р"
 
+#. Menu item to search by file type in e.g. "Type is music"
 #: src/file-manager/fm-list-view.c:1938
 #: src/file-manager/fm-search-list-view.c:348
-#: src/nautilus-search-bar-criterion.c:69
+#: src/nautilus-search-bar-criterion.c:72
 msgid "Type"
 msgstr "Тип"
 
@@ -4793,46 +5050,46 @@ msgstr "Тип"
 msgid "Date Modified"
 msgstr "Дата модиф╕кац╕╖"
 
-#: src/file-manager/fm-properties-window.c:501
+#: src/file-manager/fm-properties-window.c:529
 #, c-format
 msgid "%s Properties"
 msgstr "Властивост╕ %s"
 
-#: src/file-manager/fm-properties-window.c:628
+#: src/file-manager/fm-properties-window.c:656
 msgid "Cancel Group Change?"
 msgstr "В╕дм╕нити зм╕ну групи?"
 
-#: src/file-manager/fm-properties-window.c:629
+#: src/file-manager/fm-properties-window.c:657
 msgid "Changing group"
 msgstr "Зм╕на групи"
 
-#: src/file-manager/fm-properties-window.c:788
+#: src/file-manager/fm-properties-window.c:816
 msgid "Cancel Owner Change?"
 msgstr "В╕дм╕нити зм╕ну власника?"
 
-#: src/file-manager/fm-properties-window.c:789
+#: src/file-manager/fm-properties-window.c:817
 msgid "Changing owner"
 msgstr "Зм╕на власника"
 
-#: src/file-manager/fm-properties-window.c:948
+#: src/file-manager/fm-properties-window.c:976
 msgid "nothing"
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:950
+#: src/file-manager/fm-properties-window.c:978
 msgid "unreadable"
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:959
+#: src/file-manager/fm-properties-window.c:987
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 елемент обсягом %s"
 
-#: src/file-manager/fm-properties-window.c:961
+#: src/file-manager/fm-properties-window.c:989
 #, c-format
 msgid "%d items, totalling %s"
 msgstr "%d елемент╕в, загалом %s"
 
-#: src/file-manager/fm-properties-window.c:967
+#: src/file-manager/fm-properties-window.c:995
 msgid "(some contents unreadable)"
 msgstr ""
 
@@ -4841,138 +5098,137 @@ msgstr ""
 #. * "Contents:" title to line up with the first line of the 2-line value.
 #. * Maybe there's a better way to do this, but I couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:981
+#: src/file-manager/fm-properties-window.c:1009
 msgid "Contents:"
 msgstr "Вм╕ст:"
 
-#: src/file-manager/fm-properties-window.c:1125
+#: src/file-manager/fm-properties-window.c:1153
 msgid "Basic"
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:1200
+#: src/file-manager/fm-properties-window.c:1229
 msgid "Where:"
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:1202
+#: src/file-manager/fm-properties-window.c:1231
 msgid "Type:"
 msgstr "Тип:"
 
-#: src/file-manager/fm-properties-window.c:1208
+#: src/file-manager/fm-properties-window.c:1237
 msgid "Size:"
 msgstr "Розм╕р:"
 
-#: src/file-manager/fm-properties-window.c:1215
+#: src/file-manager/fm-properties-window.c:1244
 msgid "Modified:"
 msgstr "Модиф╕ковано:"
 
-#: src/file-manager/fm-properties-window.c:1217
+#: src/file-manager/fm-properties-window.c:1246
 msgid "Accessed:"
 msgstr "Доступ:"
 
-#: src/file-manager/fm-properties-window.c:1220
+#: src/file-manager/fm-properties-window.c:1249
 msgid "MIME type:"
 msgstr "Тип MIME:"
 
-#: src/file-manager/fm-properties-window.c:1228
+#: src/file-manager/fm-properties-window.c:1257
 msgid "Select Custom Icon..."
-msgstr ""
+msgstr "Вибрати нетипову п╕ктограму..."
 
-#: src/file-manager/fm-properties-window.c:1234
-#, fuzzy
+#: src/file-manager/fm-properties-window.c:1263
 msgid "Remove Custom Icon"
-msgstr "Видалити нетипов╕ зображення"
+msgstr "Видалити нетипову п╕ктограму"
 
-#: src/file-manager/fm-properties-window.c:1613
+#: src/file-manager/fm-properties-window.c:1642
 msgid "Special Flags:"
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:1617
+#: src/file-manager/fm-properties-window.c:1646
 msgid "Set User ID"
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:1621
+#: src/file-manager/fm-properties-window.c:1650
 msgid "Set Group ID"
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:1625
+#: src/file-manager/fm-properties-window.c:1654
 msgid "Sticky"
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:1654
+#: src/file-manager/fm-properties-window.c:1683
 msgid "Permissions"
 msgstr "Права"
 
-#: src/file-manager/fm-properties-window.c:1660
+#: src/file-manager/fm-properties-window.c:1689
 msgid "You are not the owner, so you can't change these permissions."
-msgstr ""
+msgstr "Ви не власник, то ж не можете зм╕нювати ц╕ права."
 
-#: src/file-manager/fm-properties-window.c:1694
+#: src/file-manager/fm-properties-window.c:1723
 msgid "File Owner:"
 msgstr "Власник файлу:"
 
-#: src/file-manager/fm-properties-window.c:1709
+#: src/file-manager/fm-properties-window.c:1738
 msgid "File Group:"
 msgstr "Група файлу:"
 
-#: src/file-manager/fm-properties-window.c:1736
+#: src/file-manager/fm-properties-window.c:1765
 msgid "Owner:"
 msgstr "Власник:"
 
-#: src/file-manager/fm-properties-window.c:1740
+#: src/file-manager/fm-properties-window.c:1769
 msgid "Group:"
 msgstr "Група:"
 
-#: src/file-manager/fm-properties-window.c:1744
+#: src/file-manager/fm-properties-window.c:1773
 msgid "Others:"
 msgstr "╤нш╕:"
 
-#: src/file-manager/fm-properties-window.c:1751
+#: src/file-manager/fm-properties-window.c:1780
 msgid "Text View:"
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:1755
+#: src/file-manager/fm-properties-window.c:1784
 msgid "Number View:"
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:1759
+#: src/file-manager/fm-properties-window.c:1788
 msgid "Last Changed:"
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:1763
+#: src/file-manager/fm-properties-window.c:1792
 msgid "Read"
 msgstr "Зчитування"
 
-#: src/file-manager/fm-properties-window.c:1767
+#: src/file-manager/fm-properties-window.c:1796
 msgid "Write"
 msgstr "Запис"
 
-#: src/file-manager/fm-properties-window.c:1771
+#: src/file-manager/fm-properties-window.c:1800
 msgid "Execute"
 msgstr "Виконання"
 
-#: src/file-manager/fm-properties-window.c:1828
+#: src/file-manager/fm-properties-window.c:1857
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:2048
+#: src/file-manager/fm-properties-window.c:2077
 #, fuzzy
 msgid "Cancel Showing Properties Window?"
 msgstr "Показати властивост╕"
 
-#: src/file-manager/fm-properties-window.c:2049
+#: src/file-manager/fm-properties-window.c:2078
 #, fuzzy
 msgid "Creating Properties window"
 msgstr "Закрити це в╕кно"
 
-#: src/file-manager/fm-properties-window.c:2130
+#: src/file-manager/fm-properties-window.c:2173
 #: src/nautilus-property-browser.c:996 src/nautilus-property-browser.c:1134
 #: src/nautilus-property-browser.c:1402
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr ""
 
-#: src/file-manager/fm-properties-window.c:2160
+#: src/file-manager/fm-properties-window.c:2203
 #, fuzzy
 msgid "Select an image to represent the file:"
 msgstr "Вибер╕ть файл зображення для ново╖ емблеми:"
@@ -5415,7 +5671,7 @@ msgid "About Nautilus"
 msgstr "Про Наут╕лус"
 
 #. draw the authors title
-#: src/nautilus-about.c:357
+#: src/nautilus-about.c:356
 msgid "Authors"
 msgstr "Автори"
 
@@ -5437,14 +5693,14 @@ msgstr "Не вдалося створити необх╕дн╕ теки"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:371
+#: src/nautilus-application.c:373
 msgid ""
 "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
 "again may fix the problem."
 msgstr ""
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:375
+#: src/nautilus-application.c:377
 msgid ""
 "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
 "again may fix the problem.\n"
@@ -5468,23 +5724,23 @@ msgstr ""
 #. * wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:400 src/nautilus-application.c:418
+#: src/nautilus-application.c:402 src/nautilus-application.c:420
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr ""
 
-#: src/nautilus-application.c:401
+#: src/nautilus-application.c:403
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to register the file manager view server."
 msgstr ""
 
-#: src/nautilus-application.c:419
+#: src/nautilus-application.c:421
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the factory."
 msgstr ""
 
-#: src/nautilus-application.c:556
+#: src/nautilus-application.c:562
 msgid ""
 "You are running Nautilus as root.\n"
 "\n"
@@ -5500,7 +5756,7 @@ msgstr "Закладки"
 msgid "Location"
 msgstr ""
 
-#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:779
+#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:787
 msgid "Remove"
 msgstr "Видалити"
 
@@ -5726,9 +5982,8 @@ msgid "Location:"
 msgstr ""
 
 #: src/nautilus-location-bar.c:61
-#, fuzzy
 msgid "Go To:"
-msgstr "До:"
+msgstr "Перейти на:"
 
 #: src/nautilus-location-bar.c:139
 #, c-format
@@ -5739,43 +5994,54 @@ msgstr ""
 msgid "View in Multiple Windows?"
 msgstr ""
 
-#: src/nautilus-main.c:140
-msgid "Perform high-speed self-check tests."
+#: src/nautilus-main.c:141
+msgid "Perform a quick set of self-check tests."
 msgstr ""
 
-#: src/nautilus-main.c:142
+#: src/nautilus-main.c:143
+msgid "Create the initial window with the given geometry."
+msgstr ""
+
+#: src/nautilus-main.c:143
+msgid "GEOMETRY"
+msgstr ""
+
+#: src/nautilus-main.c:144
+msgid "Only create Nautilus windows for explicitly specified URIs."
+msgstr ""
+
+#: src/nautilus-main.c:145
 msgid "Quit Nautilus."
 msgstr "Вийти з Наут╕луса."
 
-#: src/nautilus-main.c:143
+#: src/nautilus-main.c:146
 msgid "Restart Nautilus."
 msgstr "Перезапустити Наут╕лус."
 
-#: src/nautilus-main.c:144
-msgid "Only create Nautilus windows for explicity specified URIs."
-msgstr ""
-
-#: src/nautilus-main.c:195
+#: src/nautilus-main.c:197
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check не може використовуватись з URI.\n"
 
-#: src/nautilus-main.c:199
+#: src/nautilus-main.c:201
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check не може використовуватись з ╕ншими параметрами.\n"
 
-#: src/nautilus-main.c:203
+#: src/nautilus-main.c:205
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit не може використовуватись разом з URI.\n"
 
-#: src/nautilus-main.c:207
+#: src/nautilus-main.c:209
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart не може використовуватись з URI.\n"
 
+#: src/nautilus-main.c:213
+msgid "nautilus: --geometry cannot be used with more than one URI.\n"
+msgstr "nautilus: --geometry не може використовуватись з б╕льш н╕ж одним URI.\n"
+
 #. set the title and standard close accelerator
 #: src/nautilus-property-browser.c:258
-#, fuzzy
 msgid "Backgrounds and Emblems"
-msgstr "Обнулити тло"
+msgstr "Тло й емблеми"
 
 #. add the title label
 #: src/nautilus-property-browser.c:329 src/nautilus-property-browser.c:2145
@@ -5853,9 +6119,8 @@ msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Вим необх╕дно вказати ключове слово для ново╖ емблеми."
 
 #: src/nautilus-property-browser.c:1262
-#, fuzzy
 msgid "Couldn't install color"
-msgstr "Не вдалося встановити емблему"
+msgstr "Не вдалося встановити кол╕р"
 
 #: src/nautilus-property-browser.c:1319
 msgid "Select a color to add:"
@@ -5925,14 +6190,12 @@ msgid "Patterns:"
 msgstr "╤нш╕:"
 
 #: src/nautilus-property-browser.c:2204
-#, fuzzy
 msgid "Colors:"
-msgstr "Закрити"
+msgstr "Кольри:"
 
 #: src/nautilus-property-browser.c:2207
-#, fuzzy
 msgid "Emblems:"
-msgstr "Емблеми"
+msgstr "Емблеми:"
 
 #: src/nautilus-property-browser.c:2225
 #, fuzzy
@@ -5947,123 +6210,152 @@ msgstr "Видалити кол╕р"
 msgid "Remove an emblem"
 msgstr "Видалити емблему"
 
-#: src/nautilus-search-bar-criterion.c:68
+#. Menu item to search by file content in e.g. "Contains contains GNU"
+#: src/nautilus-search-bar-criterion.c:70
 msgid "Content"
 msgstr "Вм╕ст"
 
-#: src/nautilus-search-bar-criterion.c:71
+#. Menu item to search for files with an emblem attached in e.g. "With emblem marked with Important"
+#: src/nautilus-search-bar-criterion.c:76
 msgid "With Emblem"
 msgstr ""
 
-#: src/nautilus-search-bar-criterion.c:72
+#. Menu item to search for files by the time they were last modified in e.g. "Last modified before [date]"
+#: src/nautilus-search-bar-criterion.c:78
 msgid "Last Modified"
 msgstr ""
 
-#: src/nautilus-search-bar-criterion.c:73
+#. Menu item to search for files by their owner in e.g. "Owner is root"
+#: src/nautilus-search-bar-criterion.c:80
 msgid "Owner"
 msgstr "Власник"
 
-#: src/nautilus-search-bar-criterion.c:79
+#. The "contains" in a search for items where "file name contains"
+#: src/nautilus-search-bar-criterion.c:87
 msgid "contains"
 msgstr "м╕стить"
 
-#: src/nautilus-search-bar-criterion.c:80
+#. The "starts with" in a search for items where  "file name starts with"
+#: src/nautilus-search-bar-criterion.c:89
 msgid "starts with"
 msgstr "почина╓ться з"
 
-#: src/nautilus-search-bar-criterion.c:81
+#. The "ends with" in a search for items where "file name ends with"
+#: src/nautilus-search-bar-criterion.c:91
 msgid "ends with"
 msgstr "к╕нча╓ться на"
 
-#: src/nautilus-search-bar-criterion.c:82
+#. The "matches glob" (eg *.c) in a search for items where "file name matches glob"
+#: src/nautilus-search-bar-criterion.c:93
 msgid "matches glob"
 msgstr ""
 
-#: src/nautilus-search-bar-criterion.c:83
+#. The "matches regexp" (eg '[a-z]{2}+' in a search for items where "file name matches regexp"
+#: src/nautilus-search-bar-criterion.c:95
 msgid "matches regexp"
 msgstr ""
 
-#: src/nautilus-search-bar-criterion.c:88
+#. The "includes all of" in a search for items where "content includes all of"
+#: src/nautilus-search-bar-criterion.c:101
 msgid "includes all of"
 msgstr ""
 
-#: src/nautilus-search-bar-criterion.c:89
+#. The "includes any of" in a search for items where "content includes any of"
+#: src/nautilus-search-bar-criterion.c:103
 msgid "includes any of"
 msgstr ""
 
-#: src/nautilus-search-bar-criterion.c:90
+#. The "does not include all of" in a search for items where "content does not include all of"
+#: src/nautilus-search-bar-criterion.c:105
 msgid "does not include all of"
 msgstr ""
 
-#: src/nautilus-search-bar-criterion.c:91
+#. The "includes none of" in a search for items where "content includes none of"
+#: src/nautilus-search-bar-criterion.c:107
 msgid "includes none of"
 msgstr ""
 
-#: src/nautilus-search-bar-criterion.c:97
-#: src/nautilus-search-bar-criterion.c:124
+#. The "is" in a search for items where "Type is"
+#: src/nautilus-search-bar-criterion.c:114
 #: src/nautilus-search-bar-criterion.c:152
+#: src/nautilus-search-bar-criterion.c:188
 msgid "is"
 msgstr "це"
 
-#: src/nautilus-search-bar-criterion.c:98
-#: src/nautilus-search-bar-criterion.c:125
-#: src/nautilus-search-bar-criterion.c:153
+#. The "is not" in a search for items where "Type is not"
+#: src/nautilus-search-bar-criterion.c:116
+#: src/nautilus-search-bar-criterion.c:154
+#: src/nautilus-search-bar-criterion.c:190
 msgid "is not"
 msgstr "це не"
 
-#: src/nautilus-search-bar-criterion.c:103
+#. A type of file you can search for; context is "Type is regular file"
+#: src/nautilus-search-bar-criterion.c:122
 msgid "regular file"
 msgstr "звичайний файл"
 
-#: src/nautilus-search-bar-criterion.c:104
+#. A type of file you can search for; context is "Type is text file"
+#: src/nautilus-search-bar-criterion.c:124
 msgid "text file"
 msgstr "текстовий файл"
 
-#: src/nautilus-search-bar-criterion.c:105
+#. A type of file you can search for; context is "Type is application"
+#: src/nautilus-search-bar-criterion.c:126
 msgid "application"
 msgstr "програма"
 
-#: src/nautilus-search-bar-criterion.c:106
+#. A type of file you can search for; context is "Type is folder"
+#: src/nautilus-search-bar-criterion.c:128
 msgid "folder"
 msgstr "тека"
 
-#: src/nautilus-search-bar-criterion.c:112
+#. In relation to file size; context is "Size larger than"
+#: src/nautilus-search-bar-criterion.c:136
 msgid "larger than"
 msgstr "б╕льше"
 
-#: src/nautilus-search-bar-criterion.c:113
+#. In relation to file size; context is "Size smaller than"
+#: src/nautilus-search-bar-criterion.c:138
 msgid "smaller than"
 msgstr "менше"
 
-#: src/nautilus-search-bar-criterion.c:118
+#. In relation to emblems; context is "With emblem marked with"
+#: src/nautilus-search-bar-criterion.c:144
 msgid "marked with"
 msgstr ""
 
-#: src/nautilus-search-bar-criterion.c:119
+#. in relation to emblems; context is "With emblem not marked with"
+#: src/nautilus-search-bar-criterion.c:146
 msgid "not marked with"
 msgstr ""
 
-#: src/nautilus-search-bar-criterion.c:126
+#. In relation to a file's last modfied time; context is "Last modified is after 11/2/00"
+#: src/nautilus-search-bar-criterion.c:156
 msgid "is after"
 msgstr ""
 
-#: src/nautilus-search-bar-criterion.c:127
+#. In relation to a file's last modfied time; context is "Last modified is before 11/2/00"
+#: src/nautilus-search-bar-criterion.c:158
 msgid "is before"
 msgstr ""
 
-#: src/nautilus-search-bar-criterion.c:129
+#. In relation to a file's last modfied time; context is "Last modified is today"
+#: src/nautilus-search-bar-criterion.c:161
 msgid "is today"
 msgstr ""
 
-#: src/nautilus-search-bar-criterion.c:130
+#. In relation to a file's last modfied time; context is "Last modified is yesterdat"
+#: src/nautilus-search-bar-criterion.c:163
 msgid "is yesterday"
 msgstr ""
 
-#: src/nautilus-search-bar-criterion.c:132
+#. In relation to a file's last modfied time; context is "Last modified is within a week of"
+#: src/nautilus-search-bar-criterion.c:166
 msgid "is within a week of"
 msgstr ""
 
-#: src/nautilus-search-bar-criterion.c:133
+#. In relation to a file's last modfied time; context is "Last modified is within a month of"
+#: src/nautilus-search-bar-criterion.c:168
 msgid "is within a month of"
 msgstr ""
 
@@ -6231,29 +6523,25 @@ msgstr ""
 msgid "Go to the previous visited location"
 msgstr ""
 
-#: po/tmp/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:434
+#: po/tmp/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:437
 msgid "Hide Location Bar"
 msgstr ""
 
-#: po/tmp/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:422
+#: po/tmp/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:425
 msgid "Hide Sidebar"
 msgstr "Прибрати б╕чну панель"
 
-#: po/tmp/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:416
+#: po/tmp/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:419
 msgid "Hide Status Bar"
 msgstr "Прибрати панель стану"
 
-#: po/tmp/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:428
+#: po/tmp/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:431
 msgid "Hide Tool Bar"
 msgstr "Прибрати панель ╕нструмент╕в"
 
-#: po/tmp/nautilus-shell-ui.xml.h:38
-msgid "Home"
-msgstr "Дом╕вка"
-
 #: po/tmp/nautilus-shell-ui.xml.h:39
-msgid "Nautilus _Feedback..."
-msgstr ""
+msgid "Nautilus _License"
+msgstr "Л╕ценз╕я Наут╕луса"
 
 #: po/tmp/nautilus-shell-ui.xml.h:40
 msgid "New Window"
@@ -6293,7 +6581,8 @@ msgstr ""
 
 #: po/tmp/nautilus-shell-ui.xml.h:50
 msgid ""
-"Show a page from which you can send feedback about Nautilus to its creators"
+"Show a page from which you can send feedback about Nautilus and Eazel "
+"Services"
 msgstr ""
 
 #: po/tmp/nautilus-shell-ui.xml.h:51
@@ -6393,29 +6682,29 @@ msgstr "Редагування"
 msgid "_Edit Bookmarks..."
 msgstr "Редагування закладок..."
 
-#: po/tmp/nautilus-shell-ui.xml.h:78 src/nautilus-window-menus.c:1311
+#: po/tmp/nautilus-shell-ui.xml.h:77
+msgid "_Feedback..."
+msgstr ""
+
+#: po/tmp/nautilus-shell-ui.xml.h:79 src/nautilus-window-menus.c:1319
 msgid "_Find"
 msgstr "Знайти"
 
-#: po/tmp/nautilus-shell-ui.xml.h:79
+#: po/tmp/nautilus-shell-ui.xml.h:80
 msgid "_Forward"
 msgstr "Вперед"
 
-#: po/tmp/nautilus-shell-ui.xml.h:80
+#: po/tmp/nautilus-shell-ui.xml.h:81
 msgid "_Go"
 msgstr "Перейти"
 
-#: po/tmp/nautilus-shell-ui.xml.h:81
+#: po/tmp/nautilus-shell-ui.xml.h:82
 msgid "_Help"
 msgstr "Дов╕дка"
 
-#: po/tmp/nautilus-shell-ui.xml.h:82
+#: po/tmp/nautilus-shell-ui.xml.h:83
 msgid "_Home"
 msgstr "Дом╕вка"
-
-#: po/tmp/nautilus-shell-ui.xml.h:83
-msgid "_Nautilus License"
-msgstr "Л╕ценз╕я Наут╕луса"
 
 #: po/tmp/nautilus-shell-ui.xml.h:84
 msgid "_Nautilus User Manual"
@@ -6473,11 +6762,11 @@ msgstr ""
 msgid "_Web Search"
 msgstr "Пошук у WWW"
 
-#: src/nautilus-shell.c:167
+#: src/nautilus-shell.c:174
 msgid "Caveat"
 msgstr ""
 
-#: src/nautilus-shell.c:204
+#: src/nautilus-shell.c:211
 msgid ""
 "Thank you for your interest in Nautilus.\n"
 " \n"
@@ -6614,102 +6903,112 @@ msgstr "Не вдалося видалити тему"
 msgid "No description available for the \"%s\" theme"
 msgstr "Нема╓ опису теми %s"
 
-#: src/nautilus-window-manage-views.c:631
+#. FIXME bugzilla.eazel.com 5037: The text Preview
+#. * Release is hardcoded here. Are all builds with
+#. * time stamps really best described as "preview
+#. * release"?.
+#.
+#: src/nautilus-window-manage-views.c:198
+#, c-format
+msgid "Preview Release %s: %s"
+msgstr ""
+
+#: src/nautilus-window-manage-views.c:632
 #, c-format
 msgid "You do not have the permissions necessary to view \"%s\"."
 msgstr "Ви не ма╓те прав необх╕дних для перегляду \"%s\"."
 
-#: src/nautilus-window-manage-views.c:633
+#: src/nautilus-window-manage-views.c:634
 msgid "Inadequate Permissions"
 msgstr "Неадекватн╕ права"
 
-#: src/nautilus-window-manage-views.c:751
+#: src/nautilus-window-manage-views.c:752
 msgid "View Failed"
 msgstr "Зб╕й перегляду"
 
-#: src/nautilus-window-manage-views.c:762
+#: src/nautilus-window-manage-views.c:763
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
 "view or go to a different location."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:773
+#: src/nautilus-window-manage-views.c:774
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:873
+#: src/nautilus-window-manage-views.c:874
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:877
+#: src/nautilus-window-manage-views.c:878
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
 "happening, you might want to turn this panel off."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:882
+#: src/nautilus-window-manage-views.c:883
 msgid "Sidebar Panel Failed"
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1274
+#: src/nautilus-window-manage-views.c:1275
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1280
+#: src/nautilus-window-manage-views.c:1281
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1294
+#: src/nautilus-window-manage-views.c:1295
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
 "it is."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1302
+#: src/nautilus-window-manage-views.c:1303
 #, fuzzy, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Неможливо в╕добразити \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1314
+#: src/nautilus-window-manage-views.c:1315
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1320
+#: src/nautilus-window-manage-views.c:1321
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1325
+#: src/nautilus-window-manage-views.c:1326
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1330
+#: src/nautilus-window-manage-views.c:1331
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host couldn't be found. Check that your "
 "proxy settings are correct."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1336
+#: src/nautilus-window-manage-views.c:1337
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
 "proxy settings are correct."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1348
+#: src/nautilus-window-manage-views.c:1349
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -6717,16 +7016,16 @@ msgid ""
 "running."
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1352
+#: src/nautilus-window-manage-views.c:1353
 msgid "Searching Unavailable"
 msgstr ""
 
-#: src/nautilus-window-manage-views.c:1356
+#: src/nautilus-window-manage-views.c:1357
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Неможливо в╕добразити \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1369
+#: src/nautilus-window-manage-views.c:1370
 #, fuzzy
 msgid "Can't Display Location"
 msgstr "Неможливо в╕добразити \"%s\"."
@@ -6734,38 +7033,38 @@ msgstr "Неможливо в╕добразити \"%s\"."
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:307
+#: src/nautilus-window-menus.c:310
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
 msgstr ""
 
-#: src/nautilus-window-menus.c:310
+#: src/nautilus-window-menus.c:313
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr ""
 
-#: src/nautilus-window-menus.c:315
+#: src/nautilus-window-menus.c:318
 msgid "Forget History?"
 msgstr "Забути ╕стор╕ю?"
 
-#: src/nautilus-window-menus.c:316
+#: src/nautilus-window-menus.c:319
 msgid "Forget"
 msgstr "Забути"
 
-#: src/nautilus-window-menus.c:417
+#: src/nautilus-window-menus.c:420
 msgid "Show Status Bar"
 msgstr "Показати панель стану"
 
-#: src/nautilus-window-menus.c:423
+#: src/nautilus-window-menus.c:426
 msgid "Show Sidebar"
 msgstr "Показати б╕чну панель"
 
-#: src/nautilus-window-menus.c:429
+#: src/nautilus-window-menus.c:432
 msgid "Show Tool Bar"
 msgstr "Показати панель ╕нструмент╕в"
 
-#: src/nautilus-window-menus.c:435
+#: src/nautilus-window-menus.c:438
 msgid "Show Location Bar"
 msgstr ""
 
@@ -6774,7 +7073,7 @@ msgstr ""
 #. * names of the middle user level ("Intermediate"). The 3rd %s is the name of the highest user
 #. * level ("Advanced").
 #.
-#: src/nautilus-window-menus.c:518
+#: src/nautilus-window-menus.c:521
 #, c-format
 msgid ""
 "None of the settings for the %s level can be edited. If you want to edit the "
@@ -6785,45 +7084,55 @@ msgstr ""
 #. Localizers: This is the title of the dialog that appears if the user chooses "Edit Beginner Settings".
 #. * The %s is the name of the middle user level ("Intermediate").
 #.
-#: src/nautilus-window-menus.c:530
+#: src/nautilus-window-menus.c:533
 #, fuzzy, c-format
 msgid "Switch to %s Level?"
 msgstr "Наут╕лус: %s"
 
-#: src/nautilus-window-menus.c:623
+#. Localize to deal with
+#. * issues in the copyright
+#. * symbol characters -- do
+#. * not translate the
+#. * company name, please.
+#.
+#: src/nautilus-window-menus.c:626
+msgid "Copyright ╘ 1999-2001 Eazel, Inc."
+msgstr ""
+
+#: src/nautilus-window-menus.c:628
 msgid ""
-"Nautilus is a graphical shell \n"
-"for GNOME that makes it \n"
-"easy to manage your files \n"
+"Nautilus is a graphical shell\n"
+"for GNOME that makes it\n"
+"easy to manage your files\n"
 "and the rest of your system."
 msgstr ""
 
-#: src/nautilus-window-menus.c:774
+#: src/nautilus-window-menus.c:782
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
 "this location from your list?"
 msgstr ""
 
-#: src/nautilus-window-menus.c:778
+#: src/nautilus-window-menus.c:786
 #, fuzzy
 msgid "Bookmark for Nonexistent Location"
 msgstr "Наут╕лус: Закладки"
 
-#: src/nautilus-window-menus.c:792
+#: src/nautilus-window-menus.c:800
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr ""
 
-#: src/nautilus-window-menus.c:793
+#: src/nautilus-window-menus.c:801
 msgid "Go to Nonexistent Location"
 msgstr ""
 
-#: src/nautilus-window-menus.c:860
+#: src/nautilus-window-menus.c:868
 msgid "Go to the location specified by this bookmark"
 msgstr ""
 
-#: src/nautilus-window-menus.c:1310
+#: src/nautilus-window-menus.c:1318
 msgid "_Browse"
 msgstr "Переглянути"
 
@@ -6831,7 +7140,7 @@ msgstr "Переглянути"
 #. * dialog. %s will be replaced with the name of a user level
 #. * ("Beginner", "Intermediate", or "Advanced").
 #.
-#: src/nautilus-window-menus.c:1502
+#: src/nautilus-window-menus.c:1510
 #, c-format
 msgid "Edit %s Settings"
 msgstr ""
@@ -6841,7 +7150,7 @@ msgstr ""
 #. * the name of a user level ("Beginner", "Intermediate", or
 #. * "Advanced").
 #.
-#: src/nautilus-window-menus.c:1524
+#: src/nautilus-window-menus.c:1532
 #, c-format
 msgid "Edit %s Settings..."
 msgstr ""
