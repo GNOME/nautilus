@@ -28,7 +28,7 @@
  * widget to display and munge html.
  */
 
-/* #define DEBUG_ramiro 1 */
+#define nopeDEBUG_ramiro 1
 
 #include <config.h>
 #include "nautilus-mozilla-content-view.h"
@@ -62,10 +62,18 @@ static void     mozilla_merge_bonobo_items_callback            (BonoboObject    
 static void     mozilla_title_changed_callback                 (GtkMozEmbed                     *mozilla,
 								gpointer                         user_data);
 static void     mozilla_location_changed_callback              (GtkMozEmbed                     *mozilla,
+
 								gpointer                         user_data);
+#if (MOZILLA_MILESTONE == 17)
+static void     mozilla_net_state_callback                     (GtkMozEmbed                     *mozilla,
+								gint                             state,
+								guint                            status,
+								gpointer                         user_data);
+#else
 static void     mozilla_net_status_callback                    (GtkMozEmbed                     *mozilla,
 								gint                             flags,
 								gpointer                         user_data);
+#endif
 static void     mozilla_link_message_callback                  (GtkMozEmbed                     *mozilla,
 								gpointer                         user_data);
 static void     mozilla_progress_callback                      (GtkMozEmbed                     *mozilla,
@@ -132,10 +140,17 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 			    GTK_SIGNAL_FUNC (mozilla_location_changed_callback),
 			    view);
 
+#if (MOZILLA_MILESTONE == 17)
+	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+			    "net_state",
+			    GTK_SIGNAL_FUNC (mozilla_net_state_callback),
+			    view);
+#else
 	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
 			    "net_status",
 			    GTK_SIGNAL_FUNC (mozilla_net_status_callback),
 			    view);
+#endif
 
 	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
 			    "link_message",
@@ -399,6 +414,77 @@ mozilla_location_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 	g_free (new_location);
 }
 
+#if defined(DEBUG_ramiro) && (MOZILLA_MILESTONE == 17)
+
+#define PRINT_FLAG(bits, mask, message)		\
+G_STMT_START {					\
+  if ((bits) & (mask)) {			\
+	  g_print ("%s ", (message));		\
+  }						\
+} G_STMT_END
+
+static void
+debug_print_state_flags (gint state_flags)
+{
+	g_print ("state_flags = ");
+	PRINT_FLAG (state_flags, GTK_MOZ_EMBED_FLAG_START, "start");
+	PRINT_FLAG (state_flags, GTK_MOZ_EMBED_FLAG_REDIRECTING, "redirecting");
+	PRINT_FLAG (state_flags, GTK_MOZ_EMBED_FLAG_TRANSFERRING, "transferring");
+	PRINT_FLAG (state_flags, GTK_MOZ_EMBED_FLAG_NEGOTIATING, "negotiating");
+	PRINT_FLAG (state_flags, GTK_MOZ_EMBED_FLAG_STOP, "stop");
+	PRINT_FLAG (state_flags, GTK_MOZ_EMBED_FLAG_IS_REQUEST, "is_request");
+	PRINT_FLAG (state_flags, GTK_MOZ_EMBED_FLAG_IS_DOCUMENT, "is_document");
+	PRINT_FLAG (state_flags, GTK_MOZ_EMBED_FLAG_IS_NETWORK, "is_network");
+	PRINT_FLAG (state_flags, GTK_MOZ_EMBED_FLAG_IS_WINDOW, "is_window");
+	g_print ("\n");
+}
+
+static void
+debug_print_status_flags (guint status_flags)
+{
+	g_print ("status_flags = ");
+	PRINT_FLAG (status_flags, GTK_MOZ_EMBED_STATUS_FAILED_DNS, "failed_dns");
+	PRINT_FLAG (status_flags, GTK_MOZ_EMBED_STATUS_FAILED_CONNECT, "failed_connect");
+	PRINT_FLAG (status_flags, GTK_MOZ_EMBED_STATUS_FAILED_TIMEOUT, "failed_timeout");
+	PRINT_FLAG (status_flags, GTK_MOZ_EMBED_STATUS_FAILED_USERCANCELED, "failed_usercanceled");
+	g_print ("\n");
+}
+
+
+#endif
+
+
+#if (MOZILLA_MILESTONE == 17)
+static void
+mozilla_net_state_callback (GtkMozEmbed	*mozilla,
+			    gint	state_flags,
+			    guint	status_flags,
+			    gpointer	user_data)
+{
+ 	NautilusMozillaContentView	*view;
+
+	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
+
+	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
+
+#if defined(DEBUG_ramiro) && (MOZILLA_MILESTONE == 17)
+	g_print ("%s\n", __FUNCTION__);
+	debug_print_state_flags (state_flags);
+	debug_print_status_flags (status_flags);
+	g_print ("\n\n");
+#endif
+
+	/* win_start */
+	if (state_flags & GTK_MOZ_EMBED_FLAG_START) {
+		mozilla_content_view_set_busy_cursor (view);
+	}
+
+	/* win_stop */
+	if (state_flags & GTK_MOZ_EMBED_FLAG_STOP) {
+		mozilla_content_view_clear_busy_cursor (view);
+	}
+}
+#else
 static void
 mozilla_net_status_callback (GtkMozEmbed *mozilla, gint flags, gpointer user_data)
 {
@@ -417,83 +503,8 @@ mozilla_net_status_callback (GtkMozEmbed *mozilla, gint flags, gpointer user_dat
 	if (flags & GTK_MOZ_EMBED_FLAG_WIN_STOP) {
 		mozilla_content_view_clear_busy_cursor (view);
 	}
-	
-#ifdef DEBUG_ramiro
- 	g_print ("mozilla_net_status_callback (");
-
-	/* net_start */
-	if (flags & GTK_MOZ_EMBED_FLAG_NET_START) {
-		g_print ("net_start ");
-	}
-
-	/* net_stop */
-	if (flags & GTK_MOZ_EMBED_FLAG_NET_STOP) {
-		g_print ("net_stop ");
-	}
-
-	/* net_dns */
-	if (flags & GTK_MOZ_EMBED_FLAG_NET_DNS) {
-		g_print ("net_dns ");
-	}
-
-	/* net_connecting */
-	if (flags & GTK_MOZ_EMBED_FLAG_NET_CONNECTING) {
-		g_print ("net_connecting ");
-	}
-
-	/* net_redirecting */
-	if (flags & GTK_MOZ_EMBED_FLAG_NET_REDIRECTING) {
-		g_print ("net_redirecting ");
-	}
-
-	/* net_negotiating */
-	if (flags & GTK_MOZ_EMBED_FLAG_NET_NEGOTIATING) {
-		g_print ("net_negotiating ");
-	}
-
-	/* net_transferring */
-	if (flags & GTK_MOZ_EMBED_FLAG_NET_TRANSFERRING) {
-		g_print ("net_transferring ");
-	}
-
-	/* net_failedDNS */
-	if (flags & GTK_MOZ_EMBED_FLAG_NET_FAILEDDNS) {
-		g_print ("net_failedDNS ");
-	}
-
-	/* net_failedConnect */
-	if (flags & GTK_MOZ_EMBED_FLAG_NET_FAILEDCONNECT) {
-		g_print ("net_failedConnect ");
-	}
-
-	/* net_failedTransfer */
-	if (flags & GTK_MOZ_EMBED_FLAG_NET_FAILEDTRANSFER) {
-		g_print ("net_failedTransfer ");
-	}
-
-	/* net_failedTimeout */
-	if (flags & GTK_MOZ_EMBED_FLAG_NET_FAILEDTIMEOUT) {
-		g_print ("net_failedTimeout ");
-	}
-
-	/* net_userCancelled */
-	if (flags & GTK_MOZ_EMBED_FLAG_NET_USERCANCELLED) {
-		g_print ("net_userCancelled ");
-	}
-
-	/* win_start */
-	if (flags & GTK_MOZ_EMBED_FLAG_WIN_START) {
-		g_print ("win_start ");
-	}
-
-	/* win_stop */
-	if (flags & GTK_MOZ_EMBED_FLAG_WIN_STOP) {
-		g_print ("win_stop ");
-	}
-
- 	g_print (")\n");
-#endif
 }
+#endif
 
 static void
 mozilla_link_message_callback (GtkMozEmbed *mozilla, gpointer user_data)
@@ -525,7 +536,6 @@ mozilla_progress_callback (GtkMozEmbed *mozilla,
 #ifdef DEBUG_ramiro
 	g_print ("mozilla_progress_callback (max = %d, current = %d)\n", max_progress, current_progress);
 #endif
-
 
 	if (max_progress == current_progress || max_progress == 0) {
 		nautilus_view_report_load_complete (view->details->nautilus_view);
