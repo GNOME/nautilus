@@ -157,12 +157,13 @@ static void
 fm_list_view_initialize_class (gpointer klass)
 {
 	GtkObjectClass *object_class;
+	GtkWidgetClass *widget_class;
 	FMDirectoryViewClass *fm_directory_view_class;
 
 	object_class = GTK_OBJECT_CLASS (klass);
 	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (klass);
+	widget_class = (GtkWidgetClass *) klass;
 
-	object_class->destroy = fm_list_view_destroy;
 	
 	fm_directory_view_class->add_file = fm_list_view_add_file;
 	fm_directory_view_class->begin_adding_files = fm_list_view_begin_adding_files;
@@ -176,6 +177,9 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_directory_view_class->get_selection = fm_list_view_get_selection;
 	fm_directory_view_class->select_all = fm_list_view_select_all;
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
+
+	object_class->destroy = fm_list_view_destroy;
+
 }
 
 static void
@@ -274,6 +278,37 @@ compare_rows (GtkCList *clist,
 	return nautilus_file_compare_for_sort (file1, file2, sort_criterion);
 }
 
+static int
+compare_rows_by_name (gconstpointer a, gconstpointer b, void *unused)
+{
+	GtkCListRow *row1;
+	GtkCListRow *row2;
+
+	row1 = (GtkCListRow *) a;
+	row2 = (GtkCListRow *) b;
+
+	g_assert ((NautilusFile *)row1->data != NULL);
+	g_assert ((NautilusFile *)row2->data != NULL);
+
+	return nautilus_file_compare_for_sort ((NautilusFile *)row1->data, 
+		(NautilusFile *)row2->data, NAUTILUS_FILE_SORT_BY_NAME);
+}
+
+static int
+match_row_name (gconstpointer a, void *context)
+{
+	GtkCListRow *row;
+	const char *pattern;
+	
+	row = (GtkCListRow *) a;
+	pattern = (const char *)context;
+
+	g_assert ((NautilusFile *)row->data != NULL);
+	
+	return nautilus_file_compare_name ((NautilusFile *)row->data,
+		pattern);
+}
+
 static void 
 context_click_selection_callback (GtkCList *clist, FMListView *list_view)
 {
@@ -289,6 +324,32 @@ context_click_background_callback (GtkCList *clist, FMListView *list_view)
 	g_assert (FM_IS_LIST_VIEW (list_view));
 
 	fm_directory_view_pop_up_background_context_menu (FM_DIRECTORY_VIEW (list_view));
+}
+
+static void
+select_matching_name_callback (GtkWidget *widget, const char *pattern, FMListView *list_view)
+{
+	GPtrArray *array;
+	int row_index;
+
+	g_assert (NAUTILUS_IS_LIST (widget));
+	g_assert (gtk_object_get_data (GTK_OBJECT (widget), PENDING_USER_DATA_KEY) == NULL);
+
+	/* build an array of rows */
+	array = nautilus_g_ptr_array_copy_list (GTK_CLIST (widget)->row_list);
+
+	/* sort the array by the names of the NautilusFile objects */
+	nautilus_g_ptr_array_sort (array, compare_rows_by_name, NULL);
+
+	/* Find the row that matches our search pattern or one after the
+	 * closest match if the pattern does not match exactly.
+	 */
+	row_index = nautilus_g_ptr_array_search (array, match_row_name, 
+		(char *)pattern, FALSE);
+
+	/* select the matching row */
+	nautilus_list_select_row (NAUTILUS_LIST (widget), row_index);
+	g_ptr_array_free (array, TRUE);
 }
 
 static NautilusList *
@@ -346,8 +407,7 @@ create_list (FMListView *list_view)
 	list = NAUTILUS_LIST (nautilus_list_new_with_titles (LIST_VIEW_COLUMN_COUNT, titles));
 	clist = GTK_CLIST (list);
 
-	for (i = 0; i < LIST_VIEW_COLUMN_COUNT; ++i)
-	{
+	for (i = 0; i < LIST_VIEW_COLUMN_COUNT; ++i) {
 		gboolean right_justified;
 
 		right_justified = (i == LIST_VIEW_COLUMN_SIZE);
@@ -401,6 +461,10 @@ create_list (FMListView *list_view)
 			    "context_click_background",
 			    context_click_background_callback,
 			    list_view);
+	gtk_signal_connect (GTK_OBJECT (list),
+			    "select_matching_name",
+			    select_matching_name_callback,
+			    list_view);
 
 	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (list));
 
@@ -451,11 +515,9 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 	/* One extra slot so it's NULL-terminated */
 	text = g_new0 (char *, LIST_VIEW_COLUMN_COUNT+1);
 
-	for (column = 0; column < LIST_VIEW_COLUMN_COUNT; ++column)
-	{
+	for (column = 0; column < LIST_VIEW_COLUMN_COUNT; ++column) {
 		/* No text in icon column */
-		if (column != LIST_VIEW_COLUMN_ICON)
-		{
+		if (column != LIST_VIEW_COLUMN_ICON) {
 			text[column] = 
 				nautilus_file_get_string_attribute (file, 
 								    get_attribute_from_column (column));

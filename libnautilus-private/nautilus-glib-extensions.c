@@ -212,6 +212,185 @@ nautilus_g_list_safe_for_each (GList *list, GFunc function, gpointer user_data)
 	}
 }
 
+/**
+ * nautilus_g_ptr_array_copy_list
+ * 
+ * Copies (shallow) a list of pointers into an array of pointers.
+ * 
+ * @list: List to copy.
+ * 
+ * Return value: GPtrArray containing a copy of all the pointers
+ * from @list
+ */
+GPtrArray *
+nautilus_g_ptr_array_copy_list (const GList *list)
+{
+	GPtrArray *array;
+	int size;
+	int index;
+	const GList *p;
+
+	array = g_ptr_array_new ();
+	size = g_list_length ((GList *)list);
+
+	g_ptr_array_set_size (array, size);
+
+	for (p = list, index = 0; p != NULL; p = p->next, index++) {
+		g_ptr_array_index (array, index) = p->data;
+	}
+
+	return array;
+}
+
+/**
+ * nautilus_g_ptr_array_sort
+ * 
+ * Sorts @array using a qsort algorithm. Allows passing in
+ * a pass-thru context that can be used by the @sort_function
+ * 
+ * @array: pointer array to sort
+ * @sort_function: sort function
+ * @context: sort context passed to the sort_function
+ */
+void
+nautilus_g_ptr_array_sort (GPtrArray *array,
+			   CompareWithContext sort_function,
+			   void *context)
+{
+	size_t count;
+	size_t r;
+	size_t l;
+	void **base;
+	void **lp;
+	void **rp;
+
+	count = array->len;
+
+	if (count < 2)
+		return;
+
+	r = count;
+	l = (r / 2) + 1;
+
+	base = (void **)array->pdata;
+	lp = base + (l - 1);
+	rp = base + (r - 1);
+
+	for (;;) {
+		void **jp;
+		size_t j;
+
+		if (l > 1) {
+			l--;
+			lp--;
+		} else {
+			void *tmp = *lp;
+			*lp = *rp;
+			*rp = tmp;
+
+			if (--r == 1)
+				return;
+
+			rp--;
+		}
+
+		j = l;
+
+		jp = base + (j - 1);
+		
+		while (j * 2 <= r) {
+			void **ip;
+			void *tmp;
+			
+			j *= 2;
+			
+			ip = jp;
+			jp = base + (j - 1);
+			
+			if (j < r) {
+				void **tmp;
+
+				tmp = jp + 1;
+				if (sort_function(*jp, *tmp, context) < 0) {
+					j++;
+					jp = tmp;
+				}
+			}
+			
+			if (sort_function (*ip, *jp, context) >= 0) 
+				break;
+
+			tmp = *ip;
+			*ip = *jp;
+			*jp = tmp;
+		}
+	}
+}
+
+/**
+ * nautilus_g_ptr_array_search
+ * 
+ * Does a binary search through @array looking for an item
+ * that matches a predicate consisting of a @search_function and
+ * @context. May be used to find an insertion point 
+ * 
+ * @array: pointer array to search
+ * @search_function: search function called on elements
+ * @context: search context passed to the @search_function containing
+ * the key or other data we are matching
+ * @match_only: if TRUE, only returns a match if the match is exact,
+ * if FALSE, returns either an index of a match or an index of the
+ * slot a new item should be inserted in
+ * 
+ * Return value: index of the match or -1 if not found
+ */
+int
+nautilus_g_ptr_array_search (GPtrArray *array, 
+			     SearchWithContext search_function,
+			     void *context,
+			     gboolean match_only)
+{
+	int r;
+	int l;
+	int resulting_index;
+	int compare_result;
+	void *item;
+
+	r = array->len - 1;
+	item = NULL;
+	resulting_index = 0;
+	compare_result = 0;
+	
+	
+	for (l = 0; l <= r; ) {
+		resulting_index = (l + r) / 2;
+
+		item = g_ptr_array_index (array, resulting_index);
+
+		compare_result = (search_function) (item, context);
+		
+		if (compare_result > 0)
+			r = resulting_index - 1;
+		else if (compare_result < 0)
+			l = resulting_index + 1;
+		else
+			return resulting_index;
+	}
+
+	if (compare_result < 0)
+		resulting_index++;       
+
+	if (match_only && compare_result != 0)
+		return -1;
+
+	return resulting_index;
+}
+
+/**
+ * nautilus_get_system_time
+ * 
+ * Return value: number of microseconds since the machine was turned on
+ */
 gint64
 nautilus_get_system_time (void)
 {

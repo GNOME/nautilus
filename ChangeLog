@@ -1,3 +1,52 @@
+2000-05-16  Pavel Cisler <pavel@eazel.com>
+
+	Added keyboard type-ahead selection to the list view.
+	
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_initialize_class), (select_matching_name), 
+	(select_next_name), (select_previous_name):
+	Add new signals to allow hooking in keyboard selection callbacks
+	from fm_list_view.
+
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_initialize), (nautilus_list_destroy), 
+	(nautilus_list_button_press), (nautilus_list_flush_typeselect_state),
+	(nautilus_list_handle_typeahead), (nautilus_list_key_press):
+	Setup/flush the typeselect state properly.
+
+	* libnautilus-extensions/nautilus-list.c:
+	* libnautilus-extensions/nautilus-list.h:
+	(nautilus_list_keyboard_move_to), (nautilus_list_select_row):
+	Add a convenience call to allow selecting an indexed row from
+	fm_list_view.
+	
+	* libnautilus-extensions/nautilus-file.c
+	* libnautilus-extensions/nautilus-file.h:
+	(nautilus_file_compare_name):
+	Added a compare function that compares a file's name with a given
+	pattern.
+
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	* libnautilus-extensions/nautilus-glib-extensions.c
+	(nautilus_g_ptr_array_copy_list), (nautilus_g_ptr_array_sort),
+	(nautilus_g_ptr_array_search):
+	Add utility calls to enhance GPtrArray.
+
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_get_system_time):
+	Added more comments.
+	
+	* src/file-manager/fm-list-view.c:
+	(fm_list_view_initialize_class),
+	(compare_rows_by_name), (match_row_name),
+	(select_matching_name_callback), :
+	Connect to new NautilusList signals. Add calls for sorting and 
+	searching a pointer array by NautilusFile name.
+
+	* src/file-manager/fm-list-view.c:
+	(create_list), (add_to_list):
+	Tweak some white space.
+
 2000-05-16  Andy Hertzfeld  <andy@eazel.com>
 
 	started work on cleaning up the music view, but it's still in an interim state.

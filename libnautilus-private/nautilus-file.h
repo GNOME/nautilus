@@ -189,6 +189,8 @@ int                     nautilus_file_compare_for_sort          (NautilusFile   
 int                     nautilus_file_compare_for_sort_reversed (NautilusFile                  *file_1,
 								 NautilusFile                  *file_2,
 								 NautilusFileSortType           sort_type);
+int                     nautilus_file_compare_name		(NautilusFile                  *file_1,
+								 const char		       *pattern);
 
 /* Change notification hack.
  * This is called when code modifies the file and it needs to trigger

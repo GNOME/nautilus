@@ -1001,6 +1001,21 @@ nautilus_file_compare_for_sort_reversed (NautilusFile *file_1,
 	return nautilus_file_compare_for_sort_internal (file_1, file_2, sort_type, TRUE);
 }
 
+/**
+ * nautilus_file_compare_name:
+ * @file: A file object
+ * @pattern: A string we are comparing it with
+ * 
+ * Return value: result of a case-insensitive comparison of the file
+ * name and the given pattern.
+ **/
+int
+nautilus_file_compare_name (NautilusFile *file,
+			    const char *pattern)
+{
+	return g_strcasecmp (file->details->info->name, pattern);
+}
+
 char *
 nautilus_file_get_metadata (NautilusFile *file,
 			    const char *key,

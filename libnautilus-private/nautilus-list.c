@@ -29,6 +29,7 @@
 #include <config.h>
 #include "nautilus-list.h"
 
+#include <ctype.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkbindings.h>
 #include <gtk/gtkdnd.h>
@@ -71,6 +72,10 @@ struct NautilusListDetails
 	 */
 	guint keyboard_row_reveal_timer_id;
 	int keyboard_row_to_reveal;
+
+	/* Typeahead state */
+	char *type_select_pattern;
+	gint64 last_typeselect_time;
 
 	/* Signal IDs that we sometimes want to block. */
 	guint select_row_signal_id;
@@ -134,6 +139,9 @@ enum {
 	ACTIVATE,
 	START_DRAG,
 	SELECTION_CHANGED,
+	SELECT_MATCHING_NAME,
+	SELECT_PREVIOUS_NAME,
+	SELECT_NEXT_NAME,
 	LAST_SIGNAL
 };
 
@@ -243,10 +251,18 @@ static gboolean row_set_selected                        (NautilusList         *l
 static gboolean select_row_unselect_others              (NautilusList         *list,
 							 int                   row_to_select);
 static void     click_policy_changed_callback           (gpointer              user_data);
+static void 	select_matching_name 			(GtkWidget 	      *widget, 
+							 const char 	      *pattern);
+static void 	select_next_name 			(GtkWidget 	      *widget);
+static void 	select_previous_name 			(GtkWidget 	      *widget);
+static void	nautilus_list_flush_typeselect_state 	(NautilusList 	      *container);
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusList, nautilus_list, GTK_TYPE_CLIST)
 
 static guint list_signals[LAST_SIGNAL];
+
+
 
 /* Standard class initialization function */
 static void
@@ -302,6 +318,28 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				GTK_SIGNAL_OFFSET (NautilusListClass, selection_changed),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
+	list_signals[SELECT_MATCHING_NAME] =
+		gtk_signal_new ("select_matching_name",
+				GTK_RUN_FIRST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusListClass, select_matching_name),
+				gtk_marshal_NONE__STRING,
+				GTK_TYPE_NONE, 1,
+				GTK_TYPE_STRING, 0);
+	list_signals[SELECT_PREVIOUS_NAME] =
+		gtk_signal_new ("select_previous_name",
+				GTK_RUN_FIRST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusListClass, select_previous_name),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE, 0);
+	list_signals[SELECT_NEXT_NAME] =
+		gtk_signal_new ("select_next_name",
+				GTK_RUN_FIRST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusListClass, select_next_name),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE, 0);
 
 	gtk_object_class_add_signals (object_class, list_signals, LAST_SIGNAL);
 
@@ -342,6 +380,9 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 	list_class->column_resize_track_start = nautilus_list_column_resize_track_start;
 	list_class->column_resize_track = nautilus_list_column_resize_track;
 	list_class->column_resize_track_end = nautilus_list_column_resize_track_end;
+	list_class->select_matching_name = select_matching_name;
+	list_class->select_previous_name = select_previous_name;
+	list_class->select_next_name = select_next_name;
 
 	clist_class->clear = nautilus_list_clear;
 	clist_class->draw_row = draw_row;
@@ -398,6 +439,9 @@ nautilus_list_initialize (NautilusList *list)
 
 	list->details->title = GTK_WIDGET (nautilus_list_column_title_new());
 
+	list->details->type_select_pattern = NULL;
+	list->details->last_typeselect_time = 0LL;
+
 	/* Initialize the single click mode from preferences */
 	list->details->single_click_mode = 
 		(nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
@@ -424,6 +468,8 @@ nautilus_list_destroy (GtkObject *object)
 					      list);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+
+	g_free (list->details->type_select_pattern);
 
 	/* Must do this after calling the parent, because GtkCList calls
 	 * the clear method, which must have a valid details pointer.
@@ -652,6 +698,9 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 	clist = GTK_CLIST (widget);
 	retval = FALSE;
 
+	/* Forget the typeahead state. */
+	nautilus_list_flush_typeselect_state (list);
+
 	if (event->window != clist->clist_window)
 		return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, button_press_event, (widget, event));
 
@@ -843,7 +892,7 @@ nautilus_list_keyboard_move_to (NautilusList *list, int row, GdkEventKey *event)
 
 	clist = GTK_CLIST (list);
 
-	if ((event->state & GDK_CONTROL_MASK) != 0) {
+	if (event != NULL && (event->state & GDK_CONTROL_MASK) != 0) {
 		/* Move the keyboard focus. */
 		nautilus_list_set_keyboard_focus (list, row);
 	} else {
@@ -855,6 +904,18 @@ nautilus_list_keyboard_move_to (NautilusList *list, int row, GdkEventKey *event)
 	}
 
 	schedule_keyboard_row_reveal (list, row);
+}
+
+void
+nautilus_list_select_row (NautilusList *list, int row)
+{
+	g_assert (NAUTILUS_IS_LIST (list));
+	g_assert (row >= 0);
+
+	if (row >= GTK_CLIST (list)->rows)
+		row = GTK_CLIST (list)->rows - 1;
+
+	nautilus_list_keyboard_move_to (list, row, NULL);
 }
 
 static gboolean
@@ -1058,6 +1119,74 @@ nautilus_list_activate_selected_items (NautilusList *list)
 	}
 }
 
+static void
+nautilus_list_flush_typeselect_state (NautilusList *list)
+{
+	g_free (list->details->type_select_pattern);
+	list->details->type_select_pattern = NULL;
+	list->details->last_typeselect_time = 0LL;
+}
+
+enum {
+	NAUTILUS_TYPESELECT_FLUSH_DELAY = 1000000
+	/* After this time the current typeselect buffer will be
+	 * thrown away and the new pressed character will be made
+	 * the the start of a new pattern.
+	 */
+};
+
+static gboolean
+nautilus_list_handle_typeahead (NautilusList *list, const char *key_string)
+{
+	char *new_pattern;
+	gint64 now;
+	gint64 time_delta;
+	int key_string_length;
+	int index;
+
+	g_assert (key_string != NULL);
+	g_assert (strlen (key_string) < 5);
+
+	key_string_length = strlen (key_string);
+
+	if (key_string_length == 0) {
+		/* can be an empty string if the modifier was held down, etc. */
+		return FALSE;
+	}
+
+	/* only handle if printable keys typed */
+	for (index = 0; index < key_string_length; index++) {
+		if (!isprint (key_string[index])) {
+			return FALSE;
+		}
+	}
+
+	/* find out how long since last character was typed */
+	now = nautilus_get_system_time();
+	time_delta = now - list->details->last_typeselect_time;
+	if (time_delta < 0 || time_delta > NAUTILUS_TYPESELECT_FLUSH_DELAY) {
+		/* the typeselect state is too old, start with a fresh one */
+		g_free (list->details->type_select_pattern);
+		list->details->type_select_pattern = NULL;
+	}
+
+	if (list->details->type_select_pattern != NULL) {
+		new_pattern = g_strconcat
+			(list->details->type_select_pattern,
+			 key_string, NULL);
+		g_free (list->details->type_select_pattern);
+	} else {
+		new_pattern = g_strdup (key_string);
+	}
+
+	list->details->type_select_pattern = new_pattern;
+	list->details->last_typeselect_time = now;
+	
+	gtk_signal_emit (GTK_OBJECT (list), list_signals[SELECT_MATCHING_NAME], new_pattern);
+
+	return TRUE;
+}
+
 static int
 nautilus_list_key_press (GtkWidget *widget,
 		 	 GdkEventKey *event)
@@ -1092,6 +1221,9 @@ nautilus_list_key_press (GtkWidget *widget,
 		nautilus_list_activate_selected_items (list);
 		break;
 	default:
+		if (nautilus_list_handle_typeahead (list, event->string))
+			return TRUE;
+
 		return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, key_press_event, (widget, event));
 	}
 
@@ -2384,3 +2516,19 @@ nautilus_list_set_selection (NautilusList *list, GList *selection)
 		emit_selection_changed (list);
 	}
 }
+
+static void 
+select_matching_name (GtkWidget *widget, const char *pattern)
+{
+}
+
+static void 
+select_next_name (GtkWidget *widget)
+{
+}
+
+static void 
+select_previous_name (GtkWidget *widget)
+{
+}
+
