@@ -123,50 +123,58 @@ struct NautilusIconContainerClass {
 };
 
 /* GtkObject */
-guint      nautilus_icon_container_get_type                     (void);
-GtkWidget *nautilus_icon_container_new                          (void);
+guint      nautilus_icon_container_get_type                      (void);
+GtkWidget *nautilus_icon_container_new                           (void);
+
 
 /* adding, removing, and managing icons */
-void       nautilus_icon_container_clear                        (NautilusIconContainer *view);
-gboolean   nautilus_icon_container_add                          (NautilusIconContainer *view,
-								 NautilusIconData      *data);
-gboolean   nautilus_icon_container_remove                       (NautilusIconContainer *view,
-								 NautilusIconData      *data);
-void       nautilus_icon_container_request_update               (NautilusIconContainer *view,
-								 NautilusIconData      *data);
-void       nautilus_icon_container_request_update_all           (NautilusIconContainer *container);
+void       nautilus_icon_container_clear                         (NautilusIconContainer *view);
+gboolean   nautilus_icon_container_add                           (NautilusIconContainer *view,
+								  NautilusIconData      *data);
+gboolean   nautilus_icon_container_remove                        (NautilusIconContainer *view,
+								  NautilusIconData      *data);
+void       nautilus_icon_container_request_update                (NautilusIconContainer *view,
+								  NautilusIconData      *data);
+void       nautilus_icon_container_request_update_all            (NautilusIconContainer *container);
+
 
 /* control the layout */
-gboolean   nautilus_icon_container_is_auto_layout               (NautilusIconContainer *container);
-void       nautilus_icon_container_set_auto_layout              (NautilusIconContainer *container,
-								 gboolean               auto_layout);
-void       nautilus_icon_container_sort                         (NautilusIconContainer *container);
-void       nautilus_icon_container_freeze_icon_positions        (NautilusIconContainer *container);
+gboolean   nautilus_icon_container_is_auto_layout                (NautilusIconContainer *container);
+void       nautilus_icon_container_set_auto_layout               (NautilusIconContainer *container,
+								  gboolean               auto_layout);
+void       nautilus_icon_container_sort                          (NautilusIconContainer *container);
+void       nautilus_icon_container_freeze_icon_positions         (NautilusIconContainer *container);
+
 
 /* operations on all icons */
-void       nautilus_icon_container_unselect_all                 (NautilusIconContainer *view);
-void       nautilus_icon_container_select_all                   (NautilusIconContainer *view);
+void       nautilus_icon_container_unselect_all                  (NautilusIconContainer *view);
+void       nautilus_icon_container_select_all                    (NautilusIconContainer *view);
+
 
 /* operations on the selection */
-GList     *nautilus_icon_container_get_selection                (NautilusIconContainer *view);
-void       nautilus_icon_container_set_selection                (NautilusIconContainer *view,
-								 GList                 *selection);
-gboolean   nautilus_icon_container_has_stretch_handles          (NautilusIconContainer *container);
-gboolean   nautilus_icon_container_is_stretched                 (NautilusIconContainer *container);
-void       nautilus_icon_container_show_stretch_handles         (NautilusIconContainer *container);
-void       nautilus_icon_container_unstretch                    (NautilusIconContainer *container);
-void       nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *container);
-gboolean   nautilus_icon_container_is_renaming                  (NautilusIconContainer *container);
+GList     *nautilus_icon_container_get_selection                 (NautilusIconContainer *view);
+void       nautilus_icon_container_set_selection                 (NautilusIconContainer *view,
+								  GList                 *selection);
+gboolean   nautilus_icon_container_has_stretch_handles           (NautilusIconContainer *container);
+gboolean   nautilus_icon_container_is_stretched                  (NautilusIconContainer *container);
+void       nautilus_icon_container_show_stretch_handles          (NautilusIconContainer *container);
+void       nautilus_icon_container_unstretch                     (NautilusIconContainer *container);
+void       nautilus_icon_container_start_renaming_selected_item  (NautilusIconContainer *container);
+gboolean   nautilus_icon_container_is_renaming                   (NautilusIconContainer *container);
+
 
 /* options */
-int        nautilus_icon_container_get_zoom_level               (NautilusIconContainer *view);
-void       nautilus_icon_container_set_zoom_level               (NautilusIconContainer *view,
-								 int                    new_zoom_level);
-void       nautilus_icon_container_set_single_click_mode        (NautilusIconContainer *view,
-								 gboolean               single_click_mode);
-void       nautilus_icon_container_enable_linger_selection      (NautilusIconContainer *view,
-								 gboolean               enable);
-void       nautilus_icon_container_set_anti_aliased_mode        (NautilusIconContainer *view,
-								 gboolean               anti_aliased_mode);
+int        nautilus_icon_container_get_zoom_level                (NautilusIconContainer *view);
+void       nautilus_icon_container_set_zoom_level                (NautilusIconContainer *view,
+								  int                    new_zoom_level);
+void       nautilus_icon_container_set_single_click_mode         (NautilusIconContainer *view,
+								  gboolean               single_click_mode);
+void       nautilus_icon_container_enable_linger_selection       (NautilusIconContainer *view,
+								  gboolean               enable);
+void       nautilus_icon_container_set_anti_aliased_mode         (NautilusIconContainer *view,
+								  gboolean               anti_aliased_mode);
+void       nautilus_icon_container_set_label_font_for_zoom_level (NautilusIconContainer *container,
+								  int                    zoom_level,
+								  GdkFont               *font);
 
 #endif

@@ -48,17 +48,18 @@
 #include <libgnomevfs/gnome-vfs-xfer.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
-#include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-directory-background.h>
+#include <libnautilus-extensions/nautilus-directory.h>
+#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-link.h>
-#include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-directory.h>
-#include <libnautilus-extensions/nautilus-directory-background.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-icon-container.h>
+#include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-link.h>
+#include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-string.h>
 
 /* Paths to use when creating & referring to Bonobo menu items */
 #define MENU_PATH_STRETCH_ICON 			"/Settings/Stretch"
@@ -75,13 +76,15 @@
 #define MENU_PATH_RENAME 			"/File/Rename"
 
 /* forward declarations */
-static void		      create_icon_container                 (FMIconView        *icon_view);
-static void                   fm_icon_view_initialize               (FMIconView        *icon_view);
-static void                   fm_icon_view_initialize_class         (FMIconViewClass   *klass);
-static void                   fm_icon_view_set_zoom_level           (FMIconView        *view,
-								     NautilusZoomLevel  new_level,
-								     gboolean		always_set_level);
-static void                   text_attribute_names_changed_callback (gpointer           user_data);
+static void create_icon_container                        (FMIconView        *icon_view);
+static void fm_icon_view_initialize                      (FMIconView        *icon_view);
+static void fm_icon_view_initialize_class                (FMIconViewClass   *klass);
+static void fm_icon_view_set_zoom_level                  (FMIconView        *view,
+							  NautilusZoomLevel  new_level,
+							  gboolean           always_set_level);
+static void fm_icon_view_update_icon_container_fonts     (FMIconView        *icon_view);
+static void text_attribute_names_changed_callback        (gpointer           user_data);
+static void directory_view_font_familiy_changed_callback (gpointer           user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconView, fm_icon_view, FM_TYPE_DIRECTORY_VIEW);
 
@@ -164,6 +167,10 @@ fm_icon_view_destroy (GtkObject *object)
 
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
 					      text_attribute_names_changed_callback,
+					      icon_view);
+
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
+					      directory_view_font_familiy_changed_callback,
 					      icon_view);
 
         if (icon_view->details->react_to_icon_change_idle_id != 0) {
@@ -1505,6 +1512,15 @@ text_attribute_names_changed_callback (gpointer user_data)
 		(get_icon_container (FM_ICON_VIEW (user_data)));	
 }
 
+static void
+directory_view_font_familiy_changed_callback (gpointer user_data)
+{
+	g_assert (user_data != NULL);
+	g_assert (FM_IS_ICON_VIEW (user_data));
+
+	fm_icon_view_update_icon_container_fonts (FM_ICON_VIEW (user_data));
+}
+
 /* GtkObject methods. */
 
 static void
@@ -1549,11 +1565,15 @@ fm_icon_view_initialize (FMIconView *icon_view)
 	icon_view->details->default_zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
 	icon_view->details->sort = &sort_criteria[0];
 
-	nautilus_preferences_add_callback
-		(NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
-		 text_attribute_names_changed_callback, icon_view);
-	
 	create_icon_container (icon_view);
+
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+					   text_attribute_names_changed_callback,
+					   icon_view);
+	
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
+					   directory_view_font_familiy_changed_callback, 
+					   icon_view);
 }
 
 static gboolean
@@ -1583,6 +1603,30 @@ icon_view_move_copy_items (NautilusIconContainer *container,
 {
 	fm_directory_view_move_copy_items (item_uris, relative_item_points, target_dir,
 		copy_action, x, y, view);
+}
+
+static void
+fm_icon_view_update_icon_container_fonts (FMIconView *icon_view)
+{
+ 	/* font size table - this isn't exactly proportional, but it looks better than computed */
+	static guint		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1] = {
+		8, 8, 10, 12, 14, 18, 18 };
+	NautilusIconContainer	*icon_container;
+	guint			i;
+
+	icon_container = get_icon_container (icon_view);
+	g_assert (icon_container != NULL);
+
+	for (i = 0; i <= NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
+		GdkFont *font;
+
+		font = nautilus_font_factory_get_font_from_preferences (font_size_table[i]);
+		g_assert (font != NULL);
+		nautilus_icon_container_set_label_font_for_zoom_level (icon_container, i, font);
+		gdk_font_unref (font);
+	}
+
+	nautilus_icon_container_request_update_all (icon_container);
 }
 
 static void
@@ -1663,6 +1707,8 @@ create_icon_container (FMIconView *icon_view)
 
 	gtk_container_add (GTK_CONTAINER (icon_view),
 			   GTK_WIDGET (icon_container));
+
+	fm_icon_view_update_icon_container_fonts (icon_view);
 
 	gtk_widget_show (GTK_WIDGET (icon_container));
 }

@@ -1,5 +1,32 @@
 2000-07-05  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-icon-container.c,
+	* libnautilus-extensions/nautilus-icon-container.h:
+	(nautilus_icon_container_set_label_font_for_zoom_level):
+	New function to set the font for a zoom level.
+
+	(nautilus_icon_container_initialize),
+	Initialize to fonts to a well known font.  Dont look at font
+	preferences here.  Fonts should be suppied by the icon container
+	user. 
+
+	* src/file-manager/fm-icon-view.c: 
+	(fm_icon_view_update_icon_container_fonts),
+	New function to update the icon container's zoom level specific
+	fonts.
+	
+	(directory_view_font_familiy_changed_callback),
+	(fm_icon_view_initialize),
+	(fm_icon_view_destroy),
+	Keep track of font familiy preference changes and update the icon
+	container fonts as needed.
+	
+	(create_icon_container):
+	Update the fonts for the first time when the icon container is
+	created. 
+	
+2000-07-05  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-string-picker.c:
 	(nautilus_string_picker_initialize_class),
 	(nautilus_string_picker_initialize),

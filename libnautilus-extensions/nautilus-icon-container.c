@@ -2406,17 +2406,14 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
  
-	/* FIXME: Fonts should be supplied by the caller and not
-	 * hard-wired calls from NautilusIconContainer to font factory.
-	 */
  	/* font table - this isn't exactly proportional, but it looks better than computed */
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = nautilus_font_factory_get_font_from_preferences (8);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = nautilus_font_factory_get_font_from_preferences (8);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = nautilus_font_factory_get_font_from_preferences (10);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_STANDARD] = nautilus_font_factory_get_font_from_preferences (12);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGE] = nautilus_font_factory_get_font_from_preferences (14);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = nautilus_font_factory_get_font_from_preferences (18);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = nautilus_font_factory_get_font_from_preferences (18);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = nautilus_font_factory_get_font_by_family ("helvetica", 8);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = nautilus_font_factory_get_font_by_family ("helvetica", 8);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = nautilus_font_factory_get_font_by_family ("helvetica", 10);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_STANDARD] = nautilus_font_factory_get_font_by_family ("helvetica", 12);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGE] = nautilus_font_factory_get_font_by_family ("helvetica", 14);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = nautilus_font_factory_get_font_by_family ("helvetica", 18);
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = nautilus_font_factory_get_font_by_family ("helvetica", 18);
 
 	container->details = details;
 
@@ -3706,6 +3703,26 @@ nautilus_icon_container_has_stored_icon_positions (NautilusIconContainer *contai
 		}
 	}
 	return FALSE;
+}
+
+void
+nautilus_icon_container_set_label_font_for_zoom_level (NautilusIconContainer *container,
+						       int                    zoom_level,
+						       GdkFont               *font)
+{
+	g_return_if_fail (container != NULL);
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+	g_return_if_fail (font != NULL);
+	g_return_if_fail (zoom_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST);
+	g_return_if_fail (zoom_level <= NAUTILUS_ZOOM_LEVEL_LARGEST);
+
+	if (container->details->label_font[zoom_level] != NULL) {
+		gdk_font_unref (container->details->label_font[zoom_level]);
+	}
+
+	gdk_font_ref (font);
+	
+	container->details->label_font[zoom_level] = font;
 }
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
