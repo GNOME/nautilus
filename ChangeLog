@@ -1,5 +1,29 @@
 2000-10-19  John Sullivan  <sullivan@eazel.com>
 
+	Fixed some cases where the error message for why a
+	location couldn't be loaded was misleading or too generic.
+	I ran into some of these while fiddling with the proxy 
+	settings to try out services, so I'm sure other users
+	will too.
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(file_info_start): When you can't make a vfs_uri, use
+	error GNOME_VFS_ERROR_INVALID_URI. It had been leaving
+	this defaulting to GNOME_VFS_OK, which caused locations
+	like "bogus:foo" to have a mysterious error message.
+	
+	* src/nautilus-applicable-views.c:
+	(get_nautilus_navigation_result_from_gnome_vfs_result):
+	* src/nautilus-applicable-views.h:
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_end_location_change_callback): Added
+	separate messages for HOST_NOT_FOUND and HOST_HAS_NO_ADDRESS.
+	You can get the former by specifying a bogus host name in the
+	HTTP Proxy settings, and the latter by not specifying a
+	host name at all in the HTTP Proxy settings.
+
+2000-10-19  John Sullivan  <sullivan@eazel.com>
+
 	* components/help/help-contents.oafinfo:
 	Changed name of sidebar panel from "Help Contents" to "Help"
 	since there is only one Help sidebar panel, and the longer

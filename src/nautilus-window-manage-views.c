@@ -1311,6 +1311,18 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                                                  uri_for_display);
 		break;
 
+	case NAUTILUS_NAVIGATION_RESULT_HOST_NOT_FOUND:
+                error_message = g_strdup_printf (_("Couldn't display \"%s\", because the host couldn't be found. "
+                				   "Check that your proxy settings are correct."),
+                                                 uri_for_display);
+		break;
+
+	case NAUTILUS_NAVIGATION_RESULT_HOST_HAS_NO_ADDRESS:
+                error_message = g_strdup_printf (_("Couldn't display \"%s\", because the host name was empty. "
+                				   "Check that your proxy settings are correct."),
+                                                 uri_for_display);
+		break;
+
 	case NAUTILUS_NAVIGATION_RESULT_SERVICE_NOT_AVAILABLE:
 		if (nautilus_is_search_uri (requested_uri)) {
 			/* FIXME bugzilla.eazel.com 2458: Need to give

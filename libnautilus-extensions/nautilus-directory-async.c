@@ -2731,6 +2731,7 @@ file_info_start (NautilusDirectory *directory)
 		
 		if (vfs_uri == NULL) {
 			file->details->get_info_failed = TRUE;
+			file->details->get_info_error = GNOME_VFS_ERROR_INVALID_URI;
 			nautilus_file_changed (file);
 		}
 	} while (vfs_uri == NULL);

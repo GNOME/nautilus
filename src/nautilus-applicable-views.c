@@ -61,7 +61,6 @@ get_nautilus_navigation_result_from_gnome_vfs_result (GnomeVFSResult gnome_vfs_r
         case GNOME_VFS_OK:
                 return NAUTILUS_NAVIGATION_RESULT_OK;
         case GNOME_VFS_ERROR_NOT_FOUND:
-        case GNOME_VFS_ERROR_HOST_NOT_FOUND:
                 return NAUTILUS_NAVIGATION_RESULT_NOT_FOUND;
         case GNOME_VFS_ERROR_INVALID_URI:
                 return NAUTILUS_NAVIGATION_RESULT_INVALID_URI;
@@ -73,6 +72,10 @@ get_nautilus_navigation_result_from_gnome_vfs_result (GnomeVFSResult gnome_vfs_r
 		return NAUTILUS_NAVIGATION_RESULT_SERVICE_NOT_AVAILABLE;
 	case GNOME_VFS_ERROR_ACCESS_DENIED:	
 		return NAUTILUS_NAVIGATION_RESULT_ACCESS_DENIED;
+        case GNOME_VFS_ERROR_HOST_NOT_FOUND:
+                return NAUTILUS_NAVIGATION_RESULT_HOST_NOT_FOUND;
+	case GNOME_VFS_ERROR_HOST_HAS_NO_ADDRESS:
+		return NAUTILUS_NAVIGATION_RESULT_HOST_HAS_NO_ADDRESS;
         case GNOME_VFS_ERROR_GENERIC:
         case GNOME_VFS_ERROR_INTERNAL:
                 /* These two have occurred at least once in the web browser component */
