@@ -1,3 +1,12 @@
+2001-04-27  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3214 (Confusing how to make bookmark changes "stick")
+	Fixed bug 6277 (Bookmarks window should close with Escape key)
+
+	* src/nautilus-bookmarks-window.c: (create_bookmarks_window):
+	Made bookmarks window a GnomeDialog, giving it the single
+	button "Done".
+
 2001-04-27  Andy Hertzfeld  andy@eazel.com>
 
 	added preferences for the maximum numder of items per site and
