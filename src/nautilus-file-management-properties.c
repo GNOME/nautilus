@@ -243,14 +243,16 @@ nautilus_file_management_properties_dialog_response_cb (GtkDialog *parent,
 			section = "gosnautilus-438";
 			break;
 		case 1:
-			section = "gosnautilus-57";
+			section = "gosnautilus-56";
 			break;
 		case 2:
 			section = "gosnautilus-439";
 			break;
 		case 3:
-			section = "gosnautilus-60";
+			section = "gosnautilus-490";
 			break;
+		case 4:
+			section = "gosnautilus-60";
 		}
 		preferences_show_help (GTK_WINDOW (parent), "user-guide.xml", section);
 	} else if (response_id == GTK_RESPONSE_CLOSE) {
