@@ -752,6 +752,18 @@ nautilus_window_load_content_view (NautilusWindow *window,
         return new_view;
 }
 
+static void
+report_content_view_failure_to_user (NautilusWindow *window)
+{
+	char *message;
+
+	message = g_strdup_printf ("The %s view encountered an error and can't continue. "
+				   "You can choose another view or go to a different location.", 
+				   window->content_view_id->name);
+	nautilus_error_dialog_parented (message, GTK_WINDOW (window));
+	g_free (message);
+}
+
 static gboolean
 nautilus_window_update_state (gpointer data)
 {
@@ -797,6 +809,7 @@ nautilus_window_update_state (gpointer data)
                                         gtk_container_remove (GTK_CONTAINER (GTK_WIDGET (window->content_view)->parent),
                                                               GTK_WIDGET (window->content_view));
                                 }
+                                report_content_view_failure_to_user (window);
                                 window->content_view = NULL;
                                 window->made_changes++;
                                 window->cv_progress_error = TRUE;
