@@ -79,9 +79,6 @@ static const char untranslated_trash_link_name[] = N_("Trash");
 /* Timeout to check the desktop directory for updates */
 #define RESCAN_TIMEOUT 4000
 
-static char *desktop_directory;
-static time_t desktop_dir_modify_time;
-
 struct FMDesktopIconViewDetails
 {
 	BonoboUIComponent *ui;
@@ -132,10 +129,19 @@ static void     update_disks_menu                                 (FMDesktopIcon
 static void     free_volume_black_list                            (FMDesktopIconView      *view);
 static gboolean	volume_link_is_selection 			  (FMDirectoryView 	  *view);
 
-
 EEL_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView,
-				   fm_desktop_icon_view,
-				   FM_TYPE_ICON_VIEW)
+			      fm_desktop_icon_view,
+			      FM_TYPE_ICON_VIEW)
+
+static char *desktop_directory;
+static time_t desktop_dir_modify_time;
+
+static void
+desktop_directory_changed_callback (gpointer callback_data)
+{
+	g_free (desktop_directory);
+	desktop_directory = nautilus_get_desktop_directory ();
+}
 
 static NautilusIconContainer *
 get_icon_container (FMDesktopIconView *icon_view)
@@ -564,7 +570,10 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	GtkAdjustment *hadj, *vadj;
 
 	if (desktop_directory == NULL) {
-		desktop_directory = nautilus_get_desktop_directory ();
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+					      desktop_directory_changed_callback,
+					      NULL);
+		desktop_directory_changed_callback (NULL);
 	}
 
 	icon_container = get_icon_container (desktop_icon_view);

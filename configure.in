@@ -752,14 +752,13 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 
 	for option in -Wsign-promo -Wno-sign-compare; do
 		SAVE_CFLAGS="$CFLAGS"
-		CFLAGS="$CFLAGS $VFS_CFLAGS $option"
+		CFLAGS="$option $CFLAGS"
 		AC_MSG_CHECKING([whether gcc understands $option])
 		AC_TRY_COMPILE([], [],
 			has_option=yes,
 			has_option=no,)
-		CFLAGS="$SAVE_CFLAGS"
-		if test $has_option = yes; then
-		  VFS_CFLAGS="$VFS_CFLAGS $option"
+		if test $has_option = no; then
+			CFLAGS="$SAVE_CFLAGS"
 		fi
 		AC_MSG_RESULT($has_option)
 		unset has_option

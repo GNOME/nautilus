@@ -1,3 +1,17 @@
+2001-07-27  Darin Adler  <darin@bentspoon.com>
+
+	Fixed bug 8438 (changing desktop between $HOME and .gnome-desktop
+	breaks desktop DnD from other apps).
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(desktop_directory_changed_callback): New function to update the
+	local variable when the desktop directory changes.
+	(fm_desktop_icon_view_initialize): Set up the callback rather than
+	just setting up the global variable.
+
+	* configure.in: Fixed code to set up compile-time options. It
+	was putting the options into VFS_CFLAGS.
+
 2001-07-25  Maciej Stachowiak  <mjs@noisehavoc.org>
 
 	Fixed bug 6776 (In-place file rename allowed (but doesn't occur)
