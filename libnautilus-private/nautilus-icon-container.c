@@ -3088,52 +3088,6 @@ nautilus_self_check_compute_stretch (int icon_x, int icon_y, int icon_size,
 }
 
 /**
- * rename_text_dirty
- * @container: An icon container widget.
- * 
- * Check and see if a rename edit has modified the icon tect item text
- **/
-
-static gboolean 
-rename_text_dirty(NautilusIconContainer *container)
-{
-	char *edit_text;
-	
-	if (!container->details->renaming)
-		return FALSE;
-
-	if (container->details->original_text == NULL)
-		return FALSE;
-
-	edit_text = nautilus_icon_text_item_get_text (container->details->rename_widget);	
-	if (g_strcasecmp(container->details->original_text, edit_text) == 0)
-		return FALSE;
-	
-	return TRUE;
-}
-
-
-/**
- * text_edited_callback
- * @container: An icon container widget.
- * 
- * Signal callback connected to icon text widget.  Callback is called
- * on any edit event.  This may be just the movement of the i-beam
- * or an actual change of the text.  If the text has changed, we need 
- * to fire the signal to allow the undo menu to be enabled.
- **/
- 
-static void
-text_edited_callback(NautilusIconTextItem *item, NautilusIconContainer *container)
-{
-	/* Check and see if we need to update our dirty flag */
-	if (rename_text_dirty(container) && !container->details->renaming_is_dirty) {
-		container->details->renaming_is_dirty = TRUE;
-		gtk_signal_emit (GTK_OBJECT (container), signals[ICON_TEXT_EDIT_OCCURRED]);
-	}
-}
-
-/**
  * nautilus_icon_container_is_renaming
  * @container: An icon container widget.
  * 
@@ -3145,23 +3099,6 @@ nautilus_icon_container_is_renaming (NautilusIconContainer *container)
 {
 	return container->details->renaming;
 }
-
-/**
- * nautilus_icon_container_is_renaming_is_dirty
- * @container: An icon container widget.
- * 
- * Returns true if container is in renaming mode
- **/
- 
-gboolean
-nautilus_icon_container_is_renaming_is_dirty (NautilusIconContainer *container)
-{
-	if (!container->details->renaming)
-		return FALSE;
-
-	return container->details->renaming_is_dirty;
-}
-
 
 /**
  * nautilus_icon_container_start_renaming_selected_item
@@ -3230,9 +3167,6 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 					   1);			/* allocate local copy */
 	
 	/* Set up the signals */
-	gtk_signal_connect (GTK_OBJECT (details->rename_widget), "text_edited",
-			    GTK_SIGNAL_FUNC (text_edited_callback),
-			    container);
 	gtk_signal_connect (GTK_OBJECT (details->rename_widget), "editing_started",
 			    GTK_SIGNAL_FUNC (editing_started),
 			    container);
@@ -3246,26 +3180,8 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	
 	/* We are in renaming mode */
 	details->renaming = TRUE;
-
-	/* The text is not dirty yet */
-	details->renaming_is_dirty = FALSE;
 	
 	nautilus_icon_canvas_item_set_renaming (icon->item, details->renaming);
-}
-
-
-/**
- * nautilus_icon_container_undo_renaming_selected_item
- * @container: An icon container widget.
- * 
- * Undo renaming operation on item being renamed
- **/
- 
-void
-nautilus_icon_container_undo_renaming_selected_item (NautilusIconContainer *container)
-{
-	nautilus_icon_text_item_set_text (container->details->rename_widget, 
-					  container->details->original_text);
 }
 
 static void
@@ -3311,7 +3227,6 @@ hide_rename_widget (NautilusIconContainer *container, NautilusIcon *icon)
 	
 	/* We are not in renaming mode */
 	container->details->renaming = FALSE;
-	container->details->renaming_is_dirty = FALSE;
 	nautilus_icon_canvas_item_set_renaming (icon->item, container->details->renaming);		
 }
 

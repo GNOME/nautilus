@@ -34,6 +34,7 @@
 #include <libnautilus-extensions/nautilus-debug.h>
 #include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
 #include <libnautilus-extensions/nautilus-self-checks.h>
+#include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <nautilus-widgets/nautilus-widgets-self-check-functions.h>
 #include <nautilus-widgets/nautilus-preferences.h>
 #include <libgnomevfs/gnome-vfs-init.h>
@@ -62,15 +63,15 @@ main(int argc, char *argv[])
 	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
 	 * Unfortunately, this has to be done explicitly for each domain.
 	 */
-	if (getenv("NAUTILUS_DEBUG") != NULL) {
+	if (getenv ("NAUTILUS_DEBUG") != NULL) {
 		nautilus_make_warnings_and_criticals_stop_in_debugger
 			(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", NULL);
 	}
 	
 	/* Initialize the services that we use. */
-	CORBA_exception_init(&ev);
+	CORBA_exception_init (&ev);
 
-        gnome_init_with_popt_table("nautilus", VERSION, 
+        gnome_init_with_popt_table ("nautilus", VERSION, 
 				   argc, argv,
 				   options, 0, &ctx); 
 	orb = oaf_init (argc, argv);
@@ -84,6 +85,7 @@ main(int argc, char *argv[])
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 	g_thread_init (NULL);
 	gnome_vfs_init ();
+	nautilus_undo_manager_initialize_global_manager ();
 	
 	args = poptGetArgs (ctx);
 

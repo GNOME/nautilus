@@ -58,14 +58,14 @@ typedef struct {
 	GnomeCanvasItemClass parent_class;
 
 	/* Signals we emit */
-	int  (* text_changed)      (NautilusIconTextItem *item);
-	void (* text_edited)       (NautilusIconTextItem *item);
-	void (* height_changed)    (NautilusIconTextItem *item);
-	void (* width_changed)     (NautilusIconTextItem *item);
-	void (* editing_started)   (NautilusIconTextItem *item);
-	void (* editing_stopped)   (NautilusIconTextItem *item);
-	void (* selection_started) (NautilusIconTextItem *item);
-	void (* selection_stopped) (NautilusIconTextItem *item);
+	int  (* text_changed)       (NautilusIconTextItem *item);
+	void (* text_edited)        (NautilusIconTextItem *item);
+	void (* height_changed)     (NautilusIconTextItem *item);
+	void (* width_changed)      (NautilusIconTextItem *item);
+	void (* editing_started)    (NautilusIconTextItem *item);
+	void (* editing_stopped)    (NautilusIconTextItem *item);
+	void (* selection_started)  (NautilusIconTextItem *item);
+	void (* selection_stopped)  (NautilusIconTextItem *item);
 } NautilusIconTextItemClass;
 
 GtkType  nautilus_icon_text_item_get_type      (void);

@@ -64,6 +64,9 @@ libnautilus_extensionsinclude_HEADERS=			\
 	nautilus-self-checks.h			\
 	nautilus-string-list.h			\
 	nautilus-string.h			\
+	nautilus-undo-manager.h			\
+	nautilus-undo-transaction.h		\
+	nautilus-undoable.c			\
 	nautilus-xml-extensions.h		\
 	$(NULL)
 
@@ -110,6 +113,9 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-self-checks.c			\
 	nautilus-string-list.c			\
 	nautilus-string.c			\
+	nautilus-undo-manager.c			\
+	nautilus-undo-transaction.c		\
+	nautilus-undoable.c			\
 	nautilus-xml-extensions.c		\
 	$(fsextension_idl_sources)		\
 	$(NULL)

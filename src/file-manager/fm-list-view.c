@@ -32,10 +32,12 @@
 #include <libgnomeui/gnome-pixmap.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-list.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-string.h>
 
 struct FMListViewDetails
 {
@@ -88,6 +90,11 @@ struct FMListViewDetails
 
 #define LIST_VIEW_DEFAULT_SORTING_ATTRIBUTE	LIST_VIEW_NAME_ATTRIBUTE
 
+/* Paths to use when creating & referring to bonobo menu items */
+#define MENU_PATH_RENAME "/File/Rename"
+#define MENU_PATH_UNDO "/Edit/Undo"
+
+
 /* forward declarations */
 static int               add_to_list                              (FMListView         *list_view,
 								   NautilusFile       *file);
@@ -134,14 +141,33 @@ static void              fm_list_view_set_zoom_level              (FMListView   
 static void              fm_list_view_sort_items                  (FMListView         *list_view,
 								   int                 column,
 								   gboolean            reversed);
-const char *             get_attribute_from_column                (int                 column);
-int                      get_column_from_attribute                (const char         *value);
-int                      get_sort_column_from_attribute           (const char         *value);
-static NautilusList *    get_list                                 (FMListView         *list_view);
-static void              install_row_images                       (FMListView         *list_view,
+static void		fm_list_view_append_background_context_menu_items (FMDirectoryView *view,
+						   			   GtkMenu *menu);
+static void		fm_list_view_append_selection_context_menu_items   (FMDirectoryView *view, 
+									    GtkMenu *menu, 
+									    GList *files);
+static void		fm_list_view_merge_menus 		  (FMDirectoryView *view);
+static void		fm_list_view_update_menus 		  (FMDirectoryView *view);
+
+static void		fm_list_view_compute_menu_item_info 	  (FMListView *view, GList *files, 
+				     				   const char *menu_path,
+								   gboolean include_accelerator_underbars,
+				     				   char **return_name, gboolean *sensitive_return);
+static void		append_one_context_menu_item 		  (FMListView *view, GtkMenu *menu,
+                              					   GList *files, const char *menu_path,
+                              					   GtkSignalFunc callback);
+static void		insert_one_context_menu_item 		  (FMListView *view, GtkMenu *menu,
+                              					   GList *files, const char *menu_path,
+                              					   gint position, GtkSignalFunc callback);
+static void		rename_list_item_callback 		  (gpointer ignored, gpointer view);
+const char *            get_attribute_from_column                 (int                 column);
+int                     get_column_from_attribute                 (const char         *value);
+int                     get_sort_column_from_attribute            (const char         *value);
+static NautilusList *   get_list                                  (FMListView         *list_view);
+static void             install_row_images                        (FMListView         *list_view,
 								   guint               row);
-static int               sort_criterion_from_column               (int                 column);
-static void              update_icons                             (FMListView         *list_view);
+static int              sort_criterion_from_column                (int                 column);
+static void             update_icons                              (FMListView         *list_view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMListView, fm_list_view, FM_TYPE_DIRECTORY_VIEW);
 
@@ -170,6 +196,12 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_directory_view_class->get_selection = fm_list_view_get_selection;
 	fm_directory_view_class->select_all = fm_list_view_select_all;
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
+	fm_directory_view_class->append_background_context_menu_items = 
+		fm_list_view_append_background_context_menu_items;
+        fm_directory_view_class->append_selection_context_menu_items = 
+        	fm_list_view_append_selection_context_menu_items;
+        fm_directory_view_class->merge_menus = fm_list_view_merge_menus;
+        fm_directory_view_class->update_menus = fm_list_view_update_menus;
 }
 
 static void
@@ -811,6 +843,241 @@ fm_list_view_sort_items (FMListView *list_view,
 	gtk_clist_set_sort_column (clist, column);
 	gtk_clist_sort (clist);
 }
+
+
+static void
+fm_list_view_append_background_context_menu_items (FMDirectoryView *view, GtkMenu *menu)
+{
+	//GtkWidget *menu_item;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_assert (GTK_IS_MENU (menu));
+
+	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, 
+				    append_background_context_menu_items, 
+				    (view, menu));
+
+	/* Put a separator before this item, since previous items are
+	 * window-specific and this one is global.
+	 */
+	/*menu_item = gtk_menu_item_new ();
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+
+        append_one_context_menu_item (FM_LIST_VIEW (view), menu, NULL, 
+                                      MENU_PATH_CUSTOMIZE_ICON_TEXT, 
+                                      GTK_SIGNAL_FUNC (customize_icon_text_callback));*/
+}
+
+
+static void
+fm_list_view_append_selection_context_menu_items (FMDirectoryView *view, GtkMenu *menu, GList *files)
+{
+	gint position;
+	
+	g_assert (FM_IS_LIST_VIEW (view));
+	g_assert (GTK_IS_MENU (menu));
+
+	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, 
+				    append_selection_context_menu_items, 
+				    (view, menu, files));
+
+	/* The Rename item is inserted directly after the Duplicate item created by the FMDirectoryView */
+	position = fm_directory_view_get_context_menu_index(FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE);
+
+	if (position == -1) {
+		append_one_context_menu_item (FM_LIST_VIEW (view), menu, files, 
+                                      MENU_PATH_RENAME, 
+                                      GTK_SIGNAL_FUNC (rename_list_item_callback));
+	} else {
+		position++;
+     		insert_one_context_menu_item (FM_LIST_VIEW (view), menu, files, 
+                                      MENU_PATH_RENAME, position,
+                                      GTK_SIGNAL_FUNC (rename_list_item_callback));
+	}
+}
+
+
+static void
+fm_list_view_merge_menus (FMDirectoryView *view)
+{
+        GList *selection;
+        BonoboUIHandler *ui_handler;
+	
+        g_assert (FM_IS_LIST_VIEW (view));
+
+	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
+
+	selection = fm_directory_view_get_selection (view);
+        ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
+
+	/* This menu item needs to go right after the Duplicate item that fm-directory-view places in the File menu */
+	bonobo_ui_handler_menu_new_item (ui_handler,
+                                         MENU_PATH_RENAME,
+                                         _("Rename"),
+                                         _("Rename selected item"),
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) + 1,
+                                         BONOBO_UI_HANDLER_PIXMAP_NONE,
+                                         NULL,
+                                         0,
+                                         0,
+                                         (BonoboUIHandlerCallbackFunc) rename_list_item_callback,
+                                         view);
+
+	/* Add Undo menu item at top of Edit menu */
+	/*bonobo_ui_handler_menu_new_item (ui_handler,
+                                         MENU_PATH_UNDO,
+                                         _("Undo"),
+                                         _("Undo Rename"),
+                                         0,
+                                         BONOBO_UI_HANDLER_PIXMAP_NONE,
+                                         NULL,
+                                         0,
+                                         0,
+                                         (BonoboUIHandlerCallbackFunc) undo_rename_list_item_callback,
+                                         view);*/                                         
+
+        nautilus_file_list_free (selection);
+
+	/*FM_LIST_VIEW (view)->details->menus_ready = TRUE;*/
+}
+
+
+static void
+fm_list_view_update_menus (FMDirectoryView *view)
+{
+        //GList *selection;
+        //BonoboUIHandler *ui_handler;
+	//int count;
+	
+	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
+
+        /*ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
+        selection = fm_directory_view_get_selection (view);
+    	count = g_list_length (selection);
+                
+        update_bonobo_menu_item (FM_LIST_VIEW (view), ui_handler, selection, 
+                                 MENU_PATH_STRETCH_ICON);
+        update_bonobo_menu_item (FM_LIST_VIEW (view), ui_handler, selection, 
+                                 MENU_PATH_RESTORE_STRETCHED_ICONS);
+        update_bonobo_menu_item (FM_LIST_VIEW (view), ui_handler, selection, 
+                                 MENU_PATH_RENAME);
+        update_bonobo_menu_item (FM_LIST_VIEW (view), ui_handler, selection, 
+                                 MENU_PATH_UNDO);
+	
+	nautilus_file_list_free (selection);*/
+}
+
+
+/**
+ * Note that this is used both as a Bonobo menu callback and a signal callback.
+ * The first parameter is different in these cases, but we just ignore it anyway.
+ */
+static void
+rename_list_item_callback (gpointer ignored, gpointer view)
+{
+	g_assert (FM_IS_LIST_VIEW (view));
+  		
+	/*nautilus_icon_container_start_renaming_selected_item (
+				get_icon_container (FM_ICON_VIEW (view)));*/
+
+	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
+}
+
+
+static void
+append_one_context_menu_item (FMListView *view,
+                              GtkMenu *menu,
+                              GList *files,
+                              const char *menu_path,
+                              GtkSignalFunc callback)
+{
+	GtkWidget *menu_item;
+	char *label;
+	gboolean sensitive;
+        
+        fm_list_view_compute_menu_item_info (view, 
+					     files, 
+					     menu_path, 
+					     FALSE, 
+					     &label, 
+					     &sensitive); 
+        menu_item = gtk_menu_item_new_with_label (label);
+        g_free (label);
+        gtk_widget_set_sensitive (menu_item, sensitive);
+	gtk_widget_show (menu_item);
+	gtk_signal_connect (GTK_OBJECT (menu_item), "activate", callback, view);
+	gtk_menu_append (menu, menu_item);
+}
+
+
+static void
+insert_one_context_menu_item (FMListView *view,
+                              GtkMenu *menu,
+                              GList *files,
+                              const char *menu_path,
+                              gint position,
+                              GtkSignalFunc callback)
+{
+	GtkWidget *menu_item;
+	char *label;
+	gboolean sensitive;
+        
+        fm_list_view_compute_menu_item_info (view, 
+					     files, 
+					     menu_path, 
+					     FALSE, 
+					     &label, 
+					     &sensitive); 
+        menu_item = gtk_menu_item_new_with_label (label);
+        g_free (label);
+        gtk_widget_set_sensitive (menu_item, sensitive);
+	gtk_widget_show (menu_item);
+	gtk_signal_connect (GTK_OBJECT (menu_item), "activate", callback, view);
+	gtk_menu_insert (menu, menu_item, position);
+}
+
+
+static void
+fm_list_view_compute_menu_item_info (FMListView *view, 
+				     GList *files, 
+				     const char *menu_path,
+				     gboolean include_accelerator_underbars,
+				     char **return_name,
+				     gboolean *sensitive_return)
+{
+	/*NautilusIconContainer *icon_container;*/
+	char *name, *stripped;
+
+	g_assert (FM_IS_LIST_VIEW (view));
+
+	/*icon_container = get_icon_container (view);*/
+
+	if (strcmp (MENU_PATH_RENAME, menu_path) == 0) {
+		/* Modify file name. We only allow this on a single file selection. */
+		name = g_strdup (_("_Rename"));
+		*sensitive_return = nautilus_g_list_exactly_one_item (files)
+			&& nautilus_file_can_rename (files->data);
+	} else if (strcmp (MENU_PATH_UNDO, menu_path) == 0) {
+		/* Allow undo if text has been edited */
+		name = g_strdup (_("_Undo"));
+		/**sensitive_return = nautilus_icon_container_is_renaming_is_dirty(icon_container);*/
+		*sensitive_return = TRUE;	
+	} else {
+
+		g_assert_not_reached ();
+	}
+
+	if (!include_accelerator_underbars) {
+                stripped = nautilus_str_strip_chr (name, '_');
+		g_free (name);
+		name = stripped;
+        }
+
+	*return_name = name;
+}           
+
+
 
 /**
  * Get the attribute name associated with the column. These are stored in

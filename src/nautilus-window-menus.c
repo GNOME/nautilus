@@ -28,7 +28,7 @@
 #include "nautilus-signaller.h"
 #include "ntl-app.h"
 #include "ntl-window-private.h"
-
+#include "libnautilus-extensions/nautilus-undo-manager.h"
 
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -38,6 +38,8 @@
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 
 
+static void                  edit_menu_undo_callback             (GtkWidget *widget,
+								  gpointer data) ;
 static void                  edit_menu_cut_cb                    (GtkWidget *widget,
 								  gpointer data) ;
 static void                  edit_menu_copy_cb                   (GtkWidget *widget,
@@ -134,9 +136,10 @@ static GnomeUIInfo file_menu_info[] = {
 
 /* These items are always present, but they're insensitive unless
  * a component has merged a sensitive item over them.
+ * Except the undo item...
  */
 static GnomeUIInfo edit_menu_info[] = {
-  GNOMEUIINFO_MENU_UNDO_ITEM(NULL, NULL),
+  GNOMEUIINFO_MENU_UNDO_ITEM(edit_menu_undo_callback, NULL),
   GNOMEUIINFO_SEPARATOR,
   GNOMEUIINFO_MENU_CUT_ITEM(edit_menu_cut_cb, NULL),
   GNOMEUIINFO_MENU_COPY_ITEM(edit_menu_copy_cb, NULL),
@@ -154,6 +157,13 @@ static GnomeUIInfo edit_menu_info[] = {
   GNOMEUIINFO_END
 };
 
+
+static void
+edit_menu_undo_callback (GtkWidget *widget, gpointer data) 
+{
+	if (nautilus_undo_manager_can_undo ())
+		nautilus_undo_manager_undo_last_transaction ();
+}
 
 static void
 edit_menu_cut_cb (GtkWidget *widget,
@@ -668,7 +678,6 @@ nautilus_window_initialize_menus (NautilusWindow *window)
          * Some (hopefully all) will be overridden by implementations by the
          * different content views.
          */
-        bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Undo", FALSE);
         bonobo_ui_handler_menu_set_sensitivity(ui_handler, "/Edit/Select All", FALSE);
 
         /* Set initial toggle state of Eazel theme menu item */

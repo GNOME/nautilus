@@ -11,7 +11,9 @@
 
 #include <config.h>
 #include "nautilus-icon-text-item.h"
+
 #include "nautilus-entry.h"
+#include "nautilus-undo-manager.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -37,6 +39,11 @@
 #define IS_ITI(x)    NAUTILUS_IS_ICON_TEXT_ITEM (x)
 
 typedef NautilusIconTextItem Iti;
+
+/* Signal callbacks */
+static void	save_undo_snapshot_callback (NautilusUndoable *object);
+static void	restore_from_undo_snapshot_callback(NautilusUndoable *object);
+
 
 /* Private part of the NautilusIconTextItem structure */
 typedef struct {
@@ -725,6 +732,88 @@ iti_selection_motion (Iti *iti, int idx)
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 }
 
+/* Position insertion point based on arrow key event */
+static void
+iti_handle_arrow_key_event (NautilusIconTextItem *iti, GdkEvent *event)
+{
+	ItiPrivate *priv;
+	GnomeIconTextInfoRow *row;
+	GList *list;
+	GtkEditable *editable;
+	int index, lines, line;
+	int position, pos_count, new_position;
+	int cur_count, prev_count, next_count;
+	float scale;
+	
+	/* Get number of lines.  Do nothing if we have only one line */
+	lines = g_list_length (iti->ti->rows);
+	if (lines <= 1) {
+		return;
+	}
+
+	/* Figure out which line the current insertion point is on */
+	priv = iti->priv;
+	editable = GTK_EDITABLE (priv->entry);
+	pos_count = position = gtk_editable_get_position (editable);
+	for (list = iti->ti->rows, line = -1, index = 1; index <= lines; index++) {				
+		if (list != NULL) {
+			row = list->data;			
+			if (pos_count > row->text_length) {		
+				list = list->next;
+				pos_count -= row->text_length;
+			}
+			else {
+				line = index;				
+				break;
+			}
+		}
+	}
+	
+	/* Calculate new position of insertion point */
+	switch (event->key.keyval) {
+
+		case GDK_Up:
+			/* Try to set insertion point to previous line */
+			if (line > 1) {
+				list = g_list_nth(iti->ti->rows, line - 1);
+				row = list->data;
+				cur_count = row->text_length;
+				list = g_list_nth(iti->ti->rows, line - 2);
+				row = list->data;				
+				prev_count = row->text_length;
+				scale = (float)prev_count / (float)cur_count;
+				new_position = pos_count * scale;
+				position -= prev_count + pos_count;
+				position += new_position;
+				gtk_editable_set_position (editable, position);
+			}
+			break;
+			
+		case GDK_Down:
+			/* Try to set insertion point to next line */
+			if (line < lines) {
+				int new_position;
+				list = g_list_nth(iti->ti->rows, line - 1);
+				row = list->data;
+				cur_count = row->text_length;
+				list = g_list_nth(iti->ti->rows, line);
+				row = list->data;				
+				next_count = row->text_length;
+				scale = (float)next_count / (float)cur_count;
+				new_position = pos_count * scale;
+				new_position += (position + (cur_count - pos_count));
+				gtk_editable_set_position (editable, new_position);
+			}
+			break;
+
+		default:
+			break;
+
+	}
+
+}
+
+
 /* Event handler for icon text items */
 static gint
 iti_event (GnomeCanvasItem *item, GdkEvent *event)
@@ -750,18 +839,26 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 		case GDK_Return:
 		case GDK_KP_Enter:
 			return FALSE;
-									
+
+		/* Handle up and down arrow keys.  GdkEntry does not know 
+		 * how to handle multi line items */
+		case GDK_Up:		
+		case GDK_Down:
+			iti_handle_arrow_key_event(iti, event);
+			break;
+					
 		default:			
 			/* Check for control key operations */
 			if (event->key.state & GDK_CONTROL_MASK) {
 				return FALSE;
 			}
+
+			/* Handle any events that reach us */
+			gtk_widget_event (GTK_WIDGET (priv->entry), event);
 			break;
 		}
 
-		/* Handle any events that reach us */
-		gtk_widget_event (GTK_WIDGET (priv->entry), event);
-
+		/* Update text item to reflect changes */
 		layout_text (iti);
 		priv->need_text_update = TRUE;
 		gnome_canvas_item_request_update (item);
@@ -941,6 +1038,9 @@ iti_init (NautilusIconTextItem *iti)
 	priv = g_new0 (ItiPrivate, 1);
 	iti->priv = priv;
 }
+
+
+
 
 /**
  * nautilus_icon_text_item_configure:
@@ -1159,6 +1259,8 @@ nautilus_icon_text_item_get_text (NautilusIconTextItem *iti)
 void
 nautilus_icon_text_item_start_editing (NautilusIconTextItem *iti)
 {
+	NautilusUndoable *undoable;
+
 	g_return_if_fail (iti != NULL);
 	g_return_if_fail (IS_ITI (iti));
 
@@ -1168,6 +1270,11 @@ nautilus_icon_text_item_start_editing (NautilusIconTextItem *iti)
 	iti->selected = TRUE; /* Ensure that we are selected */
 	gnome_canvas_item_grab_focus (GNOME_CANVAS_ITEM (iti));
 	iti_start_editing (iti);
+
+	nautilus_undo_manager_begin_transaction ("Text Edit");
+	nautilus_undoable_save_undo_snapshot (undoable, GTK_OBJECT(iti), save_undo_snapshot_callback,
+					      restore_from_undo_snapshot_callback);
+	nautilus_undo_manager_end_transaction ();
 }
 
 /**
@@ -1182,17 +1289,18 @@ nautilus_icon_text_item_start_editing (NautilusIconTextItem *iti)
 void
 nautilus_icon_text_item_stop_editing (NautilusIconTextItem *iti,
 				   gboolean accept)
-{
+{		
 	g_return_if_fail (iti != NULL);
 	g_return_if_fail (IS_ITI (iti));
 
 	if (!iti->editing)
 		return;
 
-	if (accept)
+	if (accept) {
 		iti_edition_accept (iti);
-	else
+	} else {
 		iti_stop_editing (iti);
+	}		
 }
 
 
@@ -1241,4 +1349,45 @@ nautilus_icon_text_item_get_margins (int *x, int *y)
 	*x = MARGIN_X;
 	*y = MARGIN_Y;
 }
+
+
+/* save_undo_snapshot_callback
+ * 
+ * Get text at start of edit operation and store in undo data as 
+ * string with a key of "undo_text".
+ */
+static void
+save_undo_snapshot_callback(NautilusUndoable *undoable)
+{
+	char *undo_text;
+	NautilusIconTextItem *iti;
+
+	iti = NAUTILUS_ICON_TEXT_ITEM(undoable->undo_target_class);
+	
+	/* Add some data to the data list */
+	undo_text = g_strdup(iti->text);
+	g_datalist_set_data(&undoable->undo_data, "undo_text", undo_text);
+}
+
+
+/* restore_from_undo_snapshot_callback
+ * 
+ * Restore edited text to data stored in undoable.  Data is stored as 
+ * a string with a key of "undo_text".
+ */
+static void
+restore_from_undo_snapshot_callback(NautilusUndoable *undoable)
+{
+	char *undo_text;
+	NautilusIconTextItem *iti;
+
+	iti = NAUTILUS_ICON_TEXT_ITEM(undoable->undo_target_class);
+		
+	undo_text = g_datalist_get_data(&undoable->undo_data, "undo_text");
+	if (undo_text != NULL) {
+		printf("undo_text: %s\n", undo_text);
+		nautilus_icon_text_item_set_text (iti, undo_text);
+	}
+}
+
 

@@ -1,0 +1,330 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
+/* NautilusUndoManager - Undo/Redo transaction manager.
+ *
+ * Copyright (C) 2000 Eazel, Inc.
+ *
+ * Author: Gene Z. Ragan <gzr@eazel.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+#include <config.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkmain.h>
+#include <string.h>
+
+#include "nautilus-undo-manager.h"
+#include "nautilus-undo-manager-private.h"
+
+#include "nautilus-gnome-extensions.h"
+#include "nautilus-gtk-extensions.h"
+#include "nautilus-gtk-macros.h"
+#include "nautilus-undo-manager.h"
+
+enum {
+	UNDO_TRANSACTION_OCCURED,
+	LAST_SIGNAL
+};
+static guint signals[LAST_SIGNAL];
+
+/* GtkObject */
+static void     nautilus_undo_manager_initialize_class  (NautilusUndoManagerClass  *class);
+static void     nautilus_undo_manager_initialize        (NautilusUndoManager       *item);
+static void	destroy 			   	(GtkObject *object);
+
+
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusUndoManager, nautilus_undo_manager, GTK_TYPE_OBJECT)
+
+
+/* nautilus_undo_manager_new */
+GtkObject *
+nautilus_undo_manager_new (void)
+{
+	GtkObject *new_object;
+
+	new_object = gtk_type_new (nautilus_undo_manager_get_type ());
+
+	return new_object;
+}
+
+/* Object initialization function for the NautilusUndoManager */
+void 
+nautilus_undo_manager_initialize (NautilusUndoManager *manager)
+{
+	manager->details = g_new0 (NautilusUndoManagerDetails, 1);
+
+	/* Init transaction to none */
+	manager->details->transaction = NULL;
+
+	/* Create empty lists */
+	manager->details->undo_list = NULL;
+	manager->details->redo_list = NULL;
+
+	/* No transaction is in progress */
+	manager->details->transaction_in_progress = FALSE;
+}
+
+
+/* Class initialization function for the NautilusUndoable item. */
+static void
+nautilus_undo_manager_initialize_class (NautilusUndoManagerClass *klass)
+{
+	GtkObjectClass *object_class;
+
+	object_class = GTK_OBJECT_CLASS (klass);
+
+	object_class->destroy = destroy;
+
+	/* Setup signals */
+	signals[UNDO_TRANSACTION_OCCURED]
+		= gtk_signal_new ("undo_transaction_occurred",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusUndoManagerClass,
+						     undo_transaction_occurred),
+				  gtk_marshal_NONE__NONE,
+				  GTK_TYPE_NONE, 0);
+
+	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);	
+}
+
+/* nautilus_undo_manager_transaction_in_progress */
+gboolean nautilus_undo_manager_transaction_in_progress (void)
+{
+	return global_undo_manager->details->transaction_in_progress;
+}
+
+/* nautilus_undo_manager_begin_transaction */
+gboolean nautilus_undo_manager_begin_transaction (const gchar *name)
+{
+	/* We aren't handling nested transactions currently */
+	if (global_undo_manager->details->transaction_in_progress) {
+		g_warning("NautilusUndoManager does not handle nested transactions. End previous transaction first.");
+		return FALSE;
+	}
+
+	/* Create new transaction */
+	global_undo_manager->details->transaction = nautilus_undo_transaction_new(name);
+
+	global_undo_manager->details->transaction_in_progress = TRUE;
+
+	return TRUE;
+}
+
+/* nautilus_undo_manager_end_transaction */
+gboolean nautilus_undo_manager_end_transaction (void)
+{
+	/* Verify a transaction is in progress */
+	if (!global_undo_manager->details->transaction_in_progress) {
+		g_warning("NautilusUndoManager has no current transaction. Begin a transaction first.");
+		return FALSE;
+	}
+
+	/* Commit current transaction to undo list */	
+	global_undo_manager->details->undo_list = g_list_append(global_undo_manager->details->undo_list, 
+								global_undo_manager->details->transaction);
+
+	global_undo_manager->details->transaction_in_progress = FALSE;
+
+	return TRUE;
+}
+
+/* nautilus_undo_manager_undo_last_transaction */
+gboolean nautilus_undo_manager_undo_last_transaction (void)
+{
+	GList *list;
+	NautilusUndoTransaction *undo_transaction;
+	
+	/* Verify we have a transaction to be undone */
+	if (global_undo_manager->details->undo_list == NULL) {
+		g_warning("NautilusUndoManager has no transaction to be undone.");
+		return FALSE;
+	}
+
+	/* Pop last transaction off undo list */
+	list = g_list_last(global_undo_manager->details->undo_list);
+	g_assert(list);
+	undo_transaction = list->data;
+	global_undo_manager->details->undo_list = g_list_remove(global_undo_manager->details->undo_list, list->data);
+
+	/* Undo transaction */
+	nautilus_undo_transaction_undo(undo_transaction);
+	
+	/* Place transaction into redo list */
+	global_undo_manager->details->redo_list = g_list_append(global_undo_manager->details->redo_list, undo_transaction);
+
+	return TRUE;
+}
+
+/* nautilus_undo_manager_redo_last_undone_transaction */
+gboolean nautilus_undo_manager_redo_last_undone_transaction (void)
+{		
+	GList *list;
+	NautilusUndoTransaction *redo_transaction;
+
+	/* Verify we have a transaction to be redone */
+	if (global_undo_manager->details->redo_list == NULL) {
+		g_warning("NautilusUndoManager has no transaction to be redone.");
+		return FALSE;
+	}
+
+	/* Pop last transaction off redo list */
+	list = g_list_last(global_undo_manager->details->redo_list);
+	g_assert(list);
+	redo_transaction = list->data;
+
+	nautilus_undo_transaction_undo(redo_transaction);
+
+	/* Place transaction into undo list */
+	global_undo_manager->details->undo_list = g_list_append(global_undo_manager->details->undo_list, redo_transaction);
+	
+	return TRUE;
+}
+
+/* nautilus_undo_manager_add_undoable_to_transaction */
+gboolean nautilus_undo_manager_add_undoable_to_transaction (NautilusUndoable *undoable)
+{
+	gboolean result;
+
+	/* Verify a transaction is in progress */
+	if (!global_undo_manager->details->transaction_in_progress) {
+		g_warning("NautilusUndoManager has no current transaction. Begin a transaction first.");
+		return FALSE;
+	}
+
+	g_assert(global_undo_manager->details->transaction != NULL);
+
+	result = nautilus_undo_transaction_add_undoable(global_undo_manager->details->transaction, undoable);
+
+	return result;
+}
+
+
+/* nautilus_undo_manager_can_undo */
+gboolean nautilus_undo_manager_can_undo (void)
+{
+	return (g_list_length(global_undo_manager->details->undo_list) > 0);
+}
+
+/* nautilus_undo_manager_can_redo */
+gboolean nautilus_undo_manager_can_redo (void)
+{
+	return (g_list_length(global_undo_manager->details->redo_list) > 0);
+}
+
+/* get_current_transaction_name
+ * 
+ * Return transaction name up to max_length characters in name.  If name is NULL, return 
+ * length of transaction name.  Return -1 if transaction name is NULL or there is no
+ * current undo transaction.
+ */
+
+static gint
+get_current_transaction_name(GList *list, gchar *name, gint max_length)
+{
+	NautilusUndoTransaction *transaction;
+	const gchar *transaction_name;
+	gint name_length;
+	
+	/* Check for NULL list */
+	if (list == NULL) {
+		g_warning("Unable to get current transaction name due to NULL undo list.");
+		return -1;
+	}
+
+	/* Check for empty list */
+	if (g_list_length(list) <= 0) {
+		g_warning("No transaction to get current undo transaction name from.");
+		return -1;
+	}
+
+	/* Get last transaction from list */
+	list = g_list_last(list);
+	transaction = list->data;
+	if (transaction == NULL) {
+		g_warning("Unable to get current transaction name due to NULL transaction in list.");
+		return -1;
+	}
+	
+	/* Check for valid transaction name */
+	transaction_name = nautilus_undo_transaction_get_name(transaction);
+	if ( transaction_name == NULL) {
+		g_warning("Current transaction name is NULL.");
+		return -1;
+	}
+
+	/* Return length of transaction name if name argument is NULL */
+	if (name == NULL) {
+		return strlen(transaction_name);
+	}
+
+	/* Copy over requested amount into return name argument */
+	name_length = strlen(transaction_name);
+	if (name_length > max_length) {
+		strncpy(name, transaction_name, max_length);
+		return max_length;
+	} else {
+		strncpy(name, transaction_name, name_length);
+		return name_length;
+	}
+}
+
+
+/* nautilus_undo_manager_get_current_undo_transaction_name
+ * 
+ * Return transaction name up to max_length characters in name.  If name is NULL, return 
+ * length of transaction name.  Return -1 if transaction name is NULL or there is no
+ * current undo transaction.
+ */
+ 
+gint 
+nautilus_undo_manager_get_current_undo_transaction_name (gchar *name, gint max_length)
+{
+	return get_current_transaction_name(global_undo_manager->details->undo_list, name, max_length);
+}
+
+/* nautilus_undo_manager_get_current_undo_transaction_name
+ * 
+ * Return transaction name up to max_length characters in name.  If name is NULL, return 
+ * length of transaction name.  Return -1 if transaction name is NULL or there is no
+ * current undo transaction.
+ */
+ 
+gint 
+nautilus_undo_manager_get_current_redo_transaction_name (gchar *name, gint max_length)
+{
+	return get_current_transaction_name(global_undo_manager->details->redo_list, name, max_length);
+}
+
+/* destroy */
+static void
+destroy (GtkObject *object)
+{
+	g_return_if_fail (NAUTILUS_IS_UNDO_MANAGER (object));
+
+	/* Clear lists */
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+
+/* Initialize Nautilus global*/
+void nautilus_undo_manager_initialize_global_manager (void)
+{
+	global_undo_manager = NAUTILUS_UNDO_MANAGER(nautilus_undo_manager_new());
+}
+
