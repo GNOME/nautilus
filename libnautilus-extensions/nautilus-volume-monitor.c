@@ -49,8 +49,6 @@
 #include <xmlmemory.h>
 
 
-#define NAUTILUS_MOUNT_LINK_KEY	"NAUTILUS_MOUNT_LINK"
-
 /* FIXME: Remove messages when this code is done. */
 #define MESSAGE g_message
 
@@ -97,7 +95,6 @@ static gboolean	mntent_is_removable_fs					(struct mntent 	  		*ent);
 static void	free_device_info             				(DeviceInfo             	*device,
 						 	 	 	 NautilusVolumeMonitor      	*monitor);
 static gboolean	add_mount_link_property 				(const char 			*path);
-static gboolean	is_volume_link 						(const char 			*path);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusVolumeMonitor, nautilus_volume_monitor, GTK_TYPE_OBJECT)
@@ -145,7 +142,7 @@ static void
 nautilus_volume_monitor_destroy (GtkObject *object)
 {
 	NautilusVolumeMonitor *monitor;
-
+	
 	monitor = NAUTILUS_VOLUME_MONITOR (object);
 
 	/* Remove timer function */
@@ -1020,19 +1017,12 @@ add_mount_link_property (const char *path)
 		    "Nautilus Mount Link");
 	xmlSaveFile (path, document);
 	xmlFreeDoc (document);
-
-	/* Test */
-	{
-		gboolean retval;
-		retval = is_volume_link (path);
-		g_message ("volume link: %d", retval);
-	}
-			
+				
 	return TRUE;
 }
 
-static gboolean
-is_volume_link (const char *path)
+gboolean
+nautilus_volume_monitor_is_volume_link (const char *path)
 {
 	xmlDocPtr document;
 	char *property;

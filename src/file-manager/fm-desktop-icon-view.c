@@ -27,6 +27,8 @@
 #include "fm-desktop-icon-view.h"
 #include "fm-icon-view.h"
 
+#include <ctype.h>
+#include <dirent.h>
 #include <fcntl.h>
 #include <gdk/gdkx.h>
 #include <gnome.h>
@@ -38,7 +40,13 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-volume-monitor.h>
+#include <limits.h>
 #include <mntent.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 #include "nautilus-trash-monitor.h"
@@ -70,7 +78,9 @@ static void	fm_desktop_icon_view_trash_state_changed_callback 	  (NautilusTrashM
 static void	mount_unmount_removable 				  (GtkCheckMenuItem 	   *item, 
 									   FMDesktopIconView 	   *icon_view);
 static void	place_home_directory 					  (FMDesktopIconView 	   *icon_view);
-									   
+static void	remove_old_mount_links 					  (void);
+
+								   
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView, fm_desktop_icon_view, FM_TYPE_ICON_VIEW);
 
 static NautilusIconContainer *
@@ -89,10 +99,13 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 
 	icon_view = FM_DESKTOP_ICON_VIEW (object);
 
-	/* Clean up details */	 
+	/* Clean up details */	
+	gtk_object_destroy (GTK_OBJECT (icon_view->details->volume_monitor));
 	g_free (icon_view->details);
 
-
+	/* Clean up any links that may be left over */
+	remove_old_mount_links ();
+	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
@@ -170,7 +183,8 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	desktop_icon_view->details = g_new0 (FMDesktopIconViewDetails, 1);	
 	desktop_icon_view->details->volume_monitor = nautilus_volume_monitor_get ();
 
-	/* Check for and clean up any old mount links that may have been left behind */	
+	/* Check for and clean up any old mount links that may have been left behind */		
+	remove_old_mount_links ();
 
 	/* Setup home directory link */
 	place_home_directory (desktop_icon_view);
@@ -375,3 +389,49 @@ place_home_directory (FMDesktopIconView *icon_view)
 	g_free (home_link_name);
 	g_free (desktop_path);
 }
+
+static void
+remove_old_mount_links (void)
+{
+	DIR *current_dir;
+	char *desktop_path;		
+	struct dirent *this_entry;
+	struct stat status;
+	char cwd[PATH_MAX + 1];
+	char *link_path;
+
+	desktop_path = nautilus_get_desktop_directory ();
+
+	/* Open directory for reading */
+	current_dir = opendir (desktop_path);
+	if (current_dir == NULL) {
+		return;
+	}
+
+	/* Save working directory and connect to desktop directory */
+	getcwd (cwd, PATH_MAX + 1);
+	chdir (desktop_path);
+
+	/* Look at all the entries */
+	while ((this_entry = readdir (current_dir)) != NULL) {
+		/* Ignore "." and ".." */
+		if ((strcmp (this_entry->d_name, ".") != 0) &&
+		    (strcmp (this_entry->d_name, "..") != 0)) {
+			stat (this_entry->d_name, &status);
+
+			/* Ignore directories.  Mount links are at the top level */
+			if (!S_ISDIR (status.st_mode)) {
+				/* Check and see if this is a link */
+				if (nautilus_volume_monitor_is_volume_link (this_entry->d_name)) {
+					link_path = nautilus_make_path (desktop_path, this_entry->d_name);
+					unlink (this_entry->d_name);
+					g_free (link_path);
+				}
+			}
+		}
+	}
+	
+	closedir (current_dir);
+}
+
+

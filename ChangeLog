@@ -1,3 +1,23 @@
+2000-08-03  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 1927, Need a way to identify mount links as special
+	type of link.
+
+	Fixed bug 1926, Old mount links should be cleaned up
+	when desktop launches.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_destroy), (add_mount_link_property),
+	(nautilus_volume_monitor_is_volume_link):
+	Mount links are now tagged with a special XML attribute
+	when they are created.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_destroy), (fm_desktop_icon_view_initialize),
+	(remove_old_mount_links):
+	Old mount links are now removed when the desktop launches and quits.
+
 2000-08-03  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-search-bar-criterion.c:

@@ -29,6 +29,8 @@
 #include <gtk/gtk.h>
 #include "nautilus-icon-container.h"
 
+#define NAUTILUS_MOUNT_LINK_KEY	"NAUTILUS_MOUNT_LINK"
+
 typedef struct NautilusVolumeMonitor NautilusVolumeMonitor;
 typedef struct NautilusVolumeMonitorClass NautilusVolumeMonitorClass;
 typedef struct NautilusVolumeMonitorDetails NautilusVolumeMonitorDetails;
@@ -102,5 +104,6 @@ gboolean		nautilus_volume_monitor_volume_is_mounted 	(const char		*mount_point);
 void			nautilus_volume_monitor_find_mount_devices 	(NautilusVolumeMonitor 	*icon_view);
 gboolean		nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor 	*monitor, 
 									 const char 		*mount_point);
+gboolean		nautilus_volume_monitor_is_volume_link 		(const char 		*path);
 
 #endif
