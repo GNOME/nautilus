@@ -200,7 +200,12 @@ compute_default_title (const char *text_uri)
                         
                         g_assert (short_name != NULL);
                         return short_name;
-                }
+                } else {
+                	gchar *colon_pos = strchr(text_uri, ':');
+                	if (colon_pos && colon_pos[1])
+                		return g_strdup(colon_pos + 1);
+                	}
+        	
         }
 
         return g_strdup(_("Nautilus"));

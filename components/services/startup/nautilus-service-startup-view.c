@@ -33,6 +33,7 @@
 #include <ghttp.h>
 #include <unistd.h>
 #include <gnome-xml/tree.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus/nautilus-background.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-glib-extensions.h>
@@ -185,6 +186,7 @@ gather_config_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 	FILE* config_file;
 	gchar buffer[256], host_name[512];
 	gchar *config_file_name, *config_string, *uri, *response_str, *cookie_str;
+	gchar *encoded_token, *encoded_host_name;
 	GString* config_data;
 	xmlDocPtr config_doc;
 	ghttp_request *request;	
@@ -223,12 +225,16 @@ gather_config_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 	update_now();
 	
 	/* send the config file to the server via HTTP */
-	/* FIXME: need to url-encode the arguments here */
 	uri = g_strdup_printf("http://%s/profile/set.pl", SERVICE_DOMAIN_NAME);
 	
+	encoded_token = gnome_vfs_escape_string(view->details->auth_token, GNOME_VFS_URI_ENCODING_XALPHAS);
+	encoded_host_name = gnome_vfs_escape_string(host_name, GNOME_VFS_URI_ENCODING_XALPHAS);
+	
 	gethostname(&host_name[0], 511);
-	cookie_str = g_strdup_printf("token=%s; computer=%s", view->details->auth_token, host_name);
+	cookie_str = g_strdup_printf("token=%s; computer=%s", encoded_token, encoded_host_name);
 	request = make_http_post_request(uri, config_string, cookie_str);
+	g_free(encoded_token);
+	g_free(encoded_host_name);
 	g_free(cookie_str);
 	
 	response_str = ghttp_get_body(request);
@@ -257,6 +263,7 @@ register_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 {
 	ghttp_request *request;	
 	gchar *response_str, *body, *uri;
+	gchar *encoded_email, *encoded_password;
 	gchar *email = gtk_entry_get_text(GTK_ENTRY(view->details->account_name));
 	gchar *password = gtk_entry_get_text(GTK_ENTRY(view->details->account_password));
 	gchar *confirm  = gtk_entry_get_text(GTK_ENTRY(view->details->confirm_password));
@@ -284,10 +291,14 @@ register_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 	/* hide the error text and give feedback in the status area during the request */
 	gtk_widget_hide(view->details->feedback_text);
 		
-	/* FIXME: need to url-encode the arguments here */
-	body = g_strdup_printf("email=%s&pwd=%s", email, password);
+	encoded_email = gnome_vfs_escape_string(email, GNOME_VFS_URI_ENCODING_XALPHAS);
+	encoded_password = gnome_vfs_escape_string(password, GNOME_VFS_URI_ENCODING_XALPHAS);
+	
+	body = g_strdup_printf("email=%s&pwd=%s", encoded_email, encoded_password);
 	uri = g_strdup_printf("http://%s/member/new.pl", SERVICE_DOMAIN_NAME);
-	 
+	g_free(encoded_email);
+	g_free(encoded_password);
+	
 	request = make_http_post_request(uri, body, NULL);
 	response_str = ghttp_get_body(request);
 	

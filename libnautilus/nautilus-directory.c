@@ -1456,7 +1456,8 @@ nautilus_directory_cancel_callback (NautilusDirectory *directory,
 		return;
 	}
 
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	/* NULL is OK here for non-vfs protocols */
+	g_return_if_fail (!directory || NAUTILUS_IS_DIRECTORY (directory));
 
         old_callback.file = NULL;
 	old_callback.callback.directory = callback;

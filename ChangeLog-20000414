@@ -1,5 +1,15 @@
 2000-04-12  Andy Hertzfeld <andy@eazel.com>
 
+	* src/ntl-window-msgs.c:
+	improved the title of uri's not handled by gnome-vfs; instead of "Nautilus" use the text
+	after the colon, if there is any
+	* components/services/startup/nautilus-service-startup-view.c:
+	used Gene's escaping routine in gnome-vfs to escape http parameters as necessary
+	* libnautilus/nautilus-directory.c:
+	weakened assert in metadata callback to allow non-vfs uris to continue to work
+	
+2000-04-12  Andy Hertzfeld <andy@eazel.com>
+
 	* icons/eazel/Makefile.am:
 	added more eazel theme open folder icons at different sizes
 	* icons/eazel/i-directory-accept.png:
