@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-05-15 04:34+0200\n"
-"PO-Revision-Date: 2004-05-15 15:39+0200\n"
+"POT-Creation-Date: 2004-05-27 04:24+0200\n"
+"PO-Revision-Date: 2004-05-27 14:10+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -994,6 +994,7 @@ msgid "Label to display in the column"
 msgstr "Popisek, který zobrazovat ve sloupci"
 
 #: libnautilus-extension/nautilus-column.c:196
+#: src/file-manager/fm-ditem-page.c:344 src/file-manager/fm-ditem-page.c:355
 msgid "Description"
 msgstr "Popis"
 
@@ -1389,7 +1390,9 @@ msgstr ""
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
-msgstr "Je-li nastaveno na true, budou ikony odkazující na připojené svazky umístěny na pracovní plochu."
+msgstr ""
+"Je-li nastaveno na true, budou ikony odkazující na připojené svazky umístěny "
+"na pracovní plochu."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
@@ -3039,51 +3042,51 @@ msgstr "jestli jsme zvýrazněni pro D&D puštění"
 msgid "The selection rectangle"
 msgstr "Výběrový obdélník"
 
-#: libnautilus-private/nautilus-icon-container.c:4195
+#: libnautilus-private/nautilus-icon-container.c:4202
 msgid "Frame Text"
 msgstr "Rámec textu"
 
-#: libnautilus-private/nautilus-icon-container.c:4196
+#: libnautilus-private/nautilus-icon-container.c:4203
 msgid "Draw a frame around unselected text"
 msgstr "Kreslit rámec kolem nevybraného textu"
 
-#: libnautilus-private/nautilus-icon-container.c:4202
+#: libnautilus-private/nautilus-icon-container.c:4209
 msgid "Selection Box Color"
 msgstr "Barva výběrového rámečku"
 
-#: libnautilus-private/nautilus-icon-container.c:4203
+#: libnautilus-private/nautilus-icon-container.c:4210
 msgid "Color of the selection box"
 msgstr "Barva výběrového rámečku"
 
-#: libnautilus-private/nautilus-icon-container.c:4208
+#: libnautilus-private/nautilus-icon-container.c:4215
 msgid "Selection Box Alpha"
 msgstr "Alfa výběrového rámečku"
 
-#: libnautilus-private/nautilus-icon-container.c:4209
+#: libnautilus-private/nautilus-icon-container.c:4216
 msgid "Opacity of the selection box"
 msgstr "Průhlednost výběrového rámečku"
 
-#: libnautilus-private/nautilus-icon-container.c:4216
+#: libnautilus-private/nautilus-icon-container.c:4223
 msgid "Highlight Alpha"
 msgstr "Alfa zvýraznění"
 
-#: libnautilus-private/nautilus-icon-container.c:4217
+#: libnautilus-private/nautilus-icon-container.c:4224
 msgid "Opacity of the highlight for selected icons"
 msgstr "Průhlednost zvýraznění vybraných ikon"
 
-#: libnautilus-private/nautilus-icon-container.c:4223
+#: libnautilus-private/nautilus-icon-container.c:4230
 msgid "Light Info Color"
 msgstr "Světlá barva informací"
 
-#: libnautilus-private/nautilus-icon-container.c:4224
+#: libnautilus-private/nautilus-icon-container.c:4231
 msgid "Color used for information text against a dark background"
 msgstr "Barva používaná pro informační text na tmavém pozadí"
 
-#: libnautilus-private/nautilus-icon-container.c:4229
+#: libnautilus-private/nautilus-icon-container.c:4236
 msgid "Dark Info Color"
 msgstr "Tmavá barva informací"
 
-#: libnautilus-private/nautilus-icon-container.c:4230
+#: libnautilus-private/nautilus-icon-container.c:4237
 msgid "Color used for information text against a light background"
 msgstr "Barva používaná pro informační text na světlém pozadí"
 
@@ -4116,7 +4119,7 @@ msgid "There is nothing on the clipboard to paste."
 msgstr "Ve schránce není nic ke vložení"
 
 #: src/file-manager/fm-directory-view.c:5050
-#: src/file-manager/fm-directory-view.c:6123
+#: src/file-manager/fm-directory-view.c:6128
 msgid "Mount Error"
 msgstr "Chyba při připojení"
 
@@ -4254,14 +4257,34 @@ msgstr "_Zobrazit"
 msgid "_Run"
 msgstr "_Spustit"
 
-#: src/file-manager/fm-directory-view.c:6259
+#: src/file-manager/fm-directory-view.c:6264
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Otevírám \"%s\"."
 
-#: src/file-manager/fm-directory-view.c:6266
+#: src/file-manager/fm-directory-view.c:6271
 msgid "Cancel Open?"
 msgstr "Zrušit otevření?"
+
+#: src/file-manager/fm-ditem-page.c:338 src/file-manager/fm-ditem-page.c:349
+msgid "Comment"
+msgstr "Poznámka"
+
+#: src/file-manager/fm-ditem-page.c:341
+msgid "URL"
+msgstr "URL"
+
+#: src/file-manager/fm-ditem-page.c:345
+msgid "Link"
+msgstr "Odkaz"
+
+#: src/file-manager/fm-ditem-page.c:352
+msgid "Command"
+msgstr "Příkaz"
+
+#: src/file-manager/fm-ditem-page.c:356
+msgid "Launcher"
+msgstr "Spouštěč"
 
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
