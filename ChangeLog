@@ -1,3 +1,16 @@
+2000-06-09  John Sullivan  <sullivan@eazel.com>
+
+	* src/nautilus-window.c: (nautilus_window_connect_view):
+	%$#$@! state machine. I discovered that my last attempt
+	to fix the "set_sensitive called on bad GTK_WIDGET" bug
+	introduced a harmless but annoying warning when switching
+	locations in the same window. This change (taking the
+	"while_alive" off a signal handler) gets rid of that
+	warning, but reintroduces the set_sensitive bug in certain
+	cases. The good news is that I know how to reproduce the
+	set_sensitive bug every time. I don't know the best fix
+	for it though, so I'll just write a bug report.
+
 2000-06-09  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-factory.c:
