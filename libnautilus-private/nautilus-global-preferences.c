@@ -1011,7 +1011,7 @@ global_preferences_register (void)
 							   TRUE);
 
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
-							   _("Show only directories in tree sidebar panel"),
+							   _("Show only folders in tree sidebar panel"),
 							   FALSE,
 							   FALSE,
 							   FALSE);

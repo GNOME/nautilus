@@ -1,9 +1,15 @@
+2000-11-13  Josh Barrow  <josh@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_register):
+	Renamed "directory" to "folder"
+
 2000-11-13  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: John Sullivan  <sullivan@eazel.com>
 
 	* src/run-nautilus: Fixed bug 3248 (2nd copy of Nautilus faults)
-	by removing the nautilus-clean.sh calls from run-nautilus (Ramniro
+	by removing the nautilus-clean.sh calls from run-nautilus (Ramiro
 	claims it was fixed already, but there were race conditions, and
 	these calls are masking bugs that we want to fix for release).
 
