@@ -24,16 +24,16 @@
 */
 
 #include <config.h>
-#include <math.h>
-#include "nautilus-file-utilities.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
+
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-string.h"
-
 #include <gdk-pixbuf/gdk-pixbuf-loader.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
+#include <math.h>
 #include <png.h>
 
 #define LOAD_BUFFER_SIZE 4096
@@ -99,13 +99,15 @@ nautilus_gdk_pixbuf_load (const char *uri)
 
 	g_return_val_if_fail (uri != NULL, NULL);
 
-	/* FIXME #1964: unfortunately, there are bugs in the gdk_pixbuf_loader
-	   stuff that make it not work for various image types like .xpms.
-	   Since gdk_pixbuf_new_from_file uses different, bug-free code,
-	   we call that when the file is local.  This should be fixed
-	   (in gdk_pixbuf) eventually, then this hack can be removed */
-	   
-	local_path = nautilus_get_local_path_from_uri (uri);
+	/* FIXME bugzilla.eazel.com 1964: unfortunately, there are
+	 * bugs in the gdk_pixbuf_loader stuff that make it not work
+	 * for various image types like .xpms. Since
+	 * gdk_pixbuf_new_from_file uses different code that does not
+	 * have the same bugs and is better-tested, we call that when
+	 * the file is local. This should be fixed (in gdk_pixbuf)
+	 * eventually, then this hack can be removed.
+	 */
+	local_path = gnome_vfs_get_local_path_from_uri (uri);
 	if (local_path != NULL) {
 		pixbuf = gdk_pixbuf_new_from_file (local_path);
 		g_free (local_path);

@@ -60,14 +60,6 @@ char *                  nautilus_get_pixmap_directory       (void);
  */
 gboolean                nautilus_user_main_directory_exists (void);
 
-/* Turn a "file://" URI into a local path. Returns NULL if it's not a
- * URI that can be converted.
- */
-char *                  nautilus_get_local_path_from_uri    (const char                *uri);
-
-/* Turn a path into a "file://" URI. */
-char *                  nautilus_get_uri_from_local_path    (const char                *local_full_path);
-
 /* Convenience routine to test if a string is a remote URI. */
 gboolean                nautilus_is_remote_uri              (const char                *uri);
 

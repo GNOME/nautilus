@@ -485,7 +485,7 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 			g_free (user_directory);
 		}
 
-		image_file_uri = nautilus_get_uri_from_local_path (image_file_name);
+		image_file_uri = gnome_vfs_get_uri_from_local_path (image_file_name);
 		gtk_selection_data_set (selection_data, selection_data->target, 8, image_file_uri, strlen (image_file_uri));
 		g_free (image_file_name);
 		g_free (image_file_uri);
@@ -694,7 +694,7 @@ remove_background(NautilusPropertyBrowser *property_browser, const char* backgro
 	background_path = g_strdup_printf ("%s/backgrounds/%s",
 					   user_directory,
 					   background_name);
-	background_uri = nautilus_get_uri_from_local_path (background_path);
+	background_uri = gnome_vfs_get_uri_from_local_path (background_path);
 	g_free (background_path);
 
 	g_free (user_directory);	
@@ -724,7 +724,7 @@ remove_emblem(NautilusPropertyBrowser *property_browser, const char* emblem_name
 	emblem_path = g_strdup_printf ("%s/emblems/%s",
 				       user_directory,
 				       emblem_name);
-	emblem_uri = nautilus_get_uri_from_local_path (emblem_path);
+	emblem_uri = gnome_vfs_get_uri_from_local_path (emblem_path);
 	g_free (emblem_path);
 
 	g_free (user_directory);		
@@ -825,7 +825,9 @@ set_emblem_image_from_file(NautilusPropertyBrowser *property_browser)
 static void
 emblem_image_file_changed (GtkWidget *entry, NautilusPropertyBrowser *property_browser)
 {
-	char *new_uri = nautilus_get_uri_from_local_path (gtk_entry_get_text(GTK_ENTRY(entry)));
+	char *new_uri;
+
+	new_uri = gnome_vfs_get_uri_from_local_path (gtk_entry_get_text (GTK_ENTRY(entry)));
 	if (!ensure_uri_is_image (new_uri)) {
 		char *message = g_strdup_printf
 			(_("Sorry, but '%s' is not an image file!"),
@@ -907,6 +909,7 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 	char *directory_path, *source_file_name, *destination_name;
 	char *command_str, *path_uri;
 	char *user_directory;	
+	char *directory_uri;
 
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(data);
 
@@ -917,7 +920,7 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 	property_browser->details->dialog = NULL;
 
 	/* fetch the mime type and make sure that the file is an image */
-	path_uri = nautilus_get_uri_from_local_path (path_name);
+	path_uri = gnome_vfs_get_uri_from_local_path (path_name);
 	is_image = ensure_uri_is_image(path_uri);
 	g_free(path_uri);	
 	
@@ -943,12 +946,12 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 	
 	/* make the directory if it doesn't exist */
 	if (!g_file_exists(directory_path)) {
-		char *directory_uri = nautilus_get_uri_from_local_path (directory_path);
+		directory_uri = gnome_vfs_get_uri_from_local_path (directory_path);
 		gnome_vfs_make_directory (directory_uri,
 					  GNOME_VFS_PERM_USER_ALL
 					  | GNOME_VFS_PERM_GROUP_ALL
 					  | GNOME_VFS_PERM_OTHER_READ);
-		g_free(directory_uri);
+		g_free (directory_uri);
 	}
 		
 	g_free(directory_path);
@@ -1112,6 +1115,8 @@ add_new_color(NautilusPropertyBrowser *property_browser)
 static void
 emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrowser *property_browser)
 {
+	char *directory_uri;
+
 	if (which_button == GNOME_OK) {
 		char *command_str, *destination_name, *extension;
 		char* new_keyword = gtk_entry_get_text(GTK_ENTRY(property_browser->details->keyword));
@@ -1125,9 +1130,12 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 		g_free (user_directory);
 
 		/* make the directory if it doesn't exist */
-		if (!g_file_exists(directory_path)) {
-			char *directory_uri = nautilus_get_uri_from_local_path (directory_path);
-			gnome_vfs_make_directory(directory_uri, GNOME_VFS_PERM_USER_ALL | GNOME_VFS_PERM_GROUP_ALL | GNOME_VFS_PERM_OTHER_READ);
+		if (!g_file_exists (directory_path)) {
+			directory_uri = gnome_vfs_get_uri_from_local_path (directory_path);
+			gnome_vfs_make_directory(directory_uri,
+						 GNOME_VFS_PERM_USER_ALL
+						 | GNOME_VFS_PERM_GROUP_ALL
+						 | GNOME_VFS_PERM_OTHER_READ);
 			g_free(directory_uri);
 		}
 
@@ -1519,7 +1527,7 @@ make_properties_from_directory (NautilusPropertyBrowser *property_browser, const
 	if (!property_browser->details->remove_mode) {
 		directory_path = nautilus_make_path (NAUTILUS_DATADIR,
 						     property_browser->details->category);
-		directory_uri = nautilus_get_uri_from_local_path (directory_path);
+		directory_uri = gnome_vfs_get_uri_from_local_path (directory_path);
 		g_free (directory_path);
 		index = make_properties_from_directory_path (property_browser, directory_uri, index);
 		g_free(directory_uri);
@@ -1531,7 +1539,7 @@ make_properties_from_directory (NautilusPropertyBrowser *property_browser, const
 	directory_path = nautilus_make_path (user_directory,
 					     property_browser->details->category);
 	g_free (user_directory);
-	directory_uri = nautilus_get_uri_from_local_path (directory_path);
+	directory_uri = gnome_vfs_get_uri_from_local_path (directory_path);
 	g_free (directory_path);
 	new_index = make_properties_from_directory_path (property_browser, directory_uri,index);
 	g_free(directory_uri);	

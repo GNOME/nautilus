@@ -30,16 +30,16 @@
 #include <config.h>
 #include "nautilus-sidebar.h"
 
-#include <math.h>
+#include "nautilus-link-set-window.h"
+#include "nautilus-sidebar-tabs.h"
+#include "nautilus-sidebar-title.h"
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-application-registry.h>
+#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <liboaf/liboaf.h>
-#include <parser.h>
-
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file.h>
@@ -50,17 +50,16 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-keep-last-vertical-box.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-mime-actions.h>
+#include <libnautilus-extensions/nautilus-preferences.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-mime-actions.h>
-#include <libnautilus-extensions/nautilus-preferences.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
-
-#include "nautilus-sidebar-tabs.h"
-#include "nautilus-sidebar-title.h"
-#include "nautilus-link-set-window.h"
+#include <liboaf/liboaf.h>
+#include <math.h>
+#include <parser.h>
 
 struct NautilusSidebarDetails {
 	GtkVBox *container;
@@ -463,7 +462,7 @@ map_local_data_file (char *file_name)
 		}
 		
 		g_free (file_name);
-		file_name = nautilus_get_uri_from_local_path (temp_str);
+		file_name = gnome_vfs_get_uri_from_local_path (temp_str);
 		g_free (temp_str);
 	}
 	return file_name;
@@ -547,7 +546,11 @@ uri_is_local_image (const char *uri)
 		return FALSE;
 	}
 	
-	image_path = nautilus_get_local_path_from_uri (uri);
+	image_path = gnome_vfs_get_local_path_from_uri (uri);
+	if (image_path == NULL) {
+		return FALSE;
+	}
+
 	pixbuf = gdk_pixbuf_new_from_file (image_path);
 	g_free (image_path);
 	

@@ -549,7 +549,7 @@ add_icon_themes(NautilusStringList *theme_list, char *required_file)
 	pixmap_directory = nautilus_get_pixmap_directory ();
 
 	/* get the uri for the images directory */
-	directory_uri = nautilus_get_uri_from_local_path (pixmap_directory);
+	directory_uri = gnome_vfs_get_uri_from_local_path (pixmap_directory);
 	g_free (pixmap_directory);
 			
 	result = gnome_vfs_directory_list_load (&list, directory_uri,

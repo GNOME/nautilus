@@ -1756,7 +1756,7 @@ get_and_ref_file_to_display (NautilusFile *file)
 		 */
 		use_linked_file = FALSE;
 		uri = nautilus_file_get_uri (file);
-		local_path = nautilus_get_local_path_from_uri (uri);
+		local_path = gnome_vfs_get_local_path_from_uri (uri);
 		if (local_path != NULL) {
 			type = nautilus_link_get_link_type (local_path);
 			if (strcmp (type, NAUTILUS_LINK_MOUNT_TAG) == 0 ||

@@ -110,7 +110,7 @@ bonobo_subdoc_load_location (NautilusViewFrame *view,
      even it it's not a file:/// URI.
   */
 
-  local_path = nautilus_get_local_path_from_uri (location);
+  local_path = gnome_vfs_get_local_path_from_uri (location);
 
   if (persist_file != NULL
       && !CORBA_Object_is_nil (persist_file, ev)

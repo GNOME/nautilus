@@ -1075,7 +1075,10 @@ layout_changed_callback (NautilusIconContainer *container,
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 	g_assert (container == get_icon_container (icon_view));
 
-	fm_icon_view_set_directory_auto_layout (icon_view, fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)), nautilus_icon_container_is_auto_layout (container));
+	fm_icon_view_set_directory_auto_layout
+		(icon_view,
+		 fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)),
+		 nautilus_icon_container_is_auto_layout (container));
 
 	update_layout_menus (icon_view);
 }
@@ -1307,7 +1310,7 @@ play_file (NautilusFile *file)
 	mp3_pid = fork ();
 	if (mp3_pid == (pid_t) 0) {
 		file_uri = nautilus_file_get_uri (file);
-		file_path = nautilus_get_local_path_from_uri (file_uri);
+		file_path = gnome_vfs_get_local_path_from_uri (file_uri);
 		/* FIXME: This can return NULL for non-local files. */
 
 		mime_type = nautilus_file_get_mime_type (file);

@@ -822,7 +822,7 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 	if (song_uri == NULL) {
 		return;
 	}
-	song_filename = nautilus_get_local_path_from_uri(song_uri);
+	song_filename = gnome_vfs_get_local_path_from_uri(song_uri);
 	
 	/* set up the current bitrate and file size so we can give progress feedback */
         
@@ -1305,7 +1305,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	/* install the album cover */
 		
 	if (image_path_uri != NULL) {
-  		image_path = nautilus_get_local_path_from_uri(image_path_uri);
+  		image_path = gnome_vfs_get_local_path_from_uri(image_path_uri);
   		pixbuf = gdk_pixbuf_new_from_file(image_path);
 		scaled_pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit(pixbuf, 128, 128);
 		gdk_pixbuf_unref (pixbuf);

@@ -63,7 +63,7 @@ get_volume_vfs_uri_if_writable (NautilusVolume *volume)
 		return NULL;
 	}
 
-	uri = nautilus_get_uri_from_local_path (volume->mount_path);
+	uri = gnome_vfs_get_uri_from_local_path (volume->mount_path);
 	vfs_uri = gnome_vfs_uri_new (uri);
 	g_free (uri);
 

@@ -1,25 +1,83 @@
+2000-08-24  Darin Adler  <darin@eazel.com>
+
+	Moved functions to gnome-vfs.
+
+	* components/music/nautilus-music-view.c: (play_current_file),
+	(nautilus_music_view_update_from_uri):
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_uri_known_not_to_exist):
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(theme_image_path_to_uri),
+	(nautilus_directory_background_read_desktop_settings),
+	(nautilus_directory_background_write_desktop_settings):
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_user_main_directory), (nautilus_is_remote_uri):
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_load):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(make_thumbnail_path), (path_represents_svg_image),
+	(load_specific_image), (nautilus_icon_factory_make_thumbnails):
+	* libnautilus-extensions/nautilus-link-set.c: (expand_uri):
+	* libnautilus-extensions/nautilus-link.c: (nautilus_link_create),
+	(nautilus_link_set_icon), (nautilus_link_set_link_uri),
+	(nautilus_link_set_type), (nautilus_link_get_root_property),
+	(make_local_path), (nautilus_link_get_image_uri):
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(add_icon_themes):
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_launch_application_parented):
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(get_volume_vfs_uri_if_writable):
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(mount_volume_mount):
+	* src/file-manager/fm-desktop-icon-view.c:
+	(startup_create_mount_links), (volume_mounted_callback),
+	(place_home_directory), (get_local_path):
+	* src/file-manager/fm-directory-view.c: (activate_callback):
+	* src/file-manager/fm-icon-view.c: (play_file):
+	* src/file-manager/fm-properties-window.c:
+	(get_and_ref_file_to_display):
+	* src/nautilus-desktop-window.c: (nautilus_desktop_window_new):
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_drag_data_get), (remove_background),
+	(remove_emblem), (emblem_image_file_changed),
+	(add_background_to_browser), (emblem_dialog_clicked),
+	(make_properties_from_directory):
+	* src/nautilus-sidebar.c: (map_local_data_file),
+	(uri_is_local_image):
+	* src/nautilus-theme-selector.c: (populate_list_with_themes):
+	* src/nautilus-view-frame-bonobo-embeddable.c:
+	(bonobo_subdoc_load_location):
+	* src/nautilus-window.c: (nautilus_window_go_home):
+	Changed to use local path functions from gnome-vfs now that
+	they are moved there from Nautilus.
+	
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	Removed the local path functions since they are in gnome-vfs
+	now and all callers have been changed to use those.
+
 2000-08-24  Robey Pointer  <robey@eazel.com>
 	 
-	components/services/install/nautilus-view/nautilus-service-install-
-	view.c: (nautilus_service_install_view_destroy),
+	* components/services/install/nautilus-view/nautilus-service-install-view.c:
+	(nautilus_service_install_view_destroy),
 	(nautilus_install_parse_uri), (spin_cylon),
 	(nautilus_service_install_downloading),
 	(nautilus_service_install_download_failed),
 	(nautilus_service_install_done), (nautilus_service_install_failed),
 	(nautilus_service_install_view_update_from_uri):
-	components/services/install/nautilus-view/nautilus-service-install-
-	view.h:
+	* components/services/install/nautilus-view/nautilus-service-install-view.h:
 
 	Hardcode rpm install server host/port (for now), changing the url
 	format to the requested "eazel-install:xfig".  Unref the root
 	client and install service correctly.  Spin a cylon when waiting
 	to contact the remote server.
 	 
-	components/services/nautilus-dependent-shared/shared-service-widget
-	s.c: (create_label_widget), (create_services_title_widget),
+	* components/services/nautilus-dependent-shared/shared-service-widgets.c:
+	(create_label_widget), (create_services_title_widget),
 	(create_services_header_widget):
 	 
-	components/services/trilobite/libtrilobite/trilobite-core-utils.c:
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c:
 	(trilobite_init):
 	* libnautilus/nautilus-view.c: (view_frame_call_end):
 
@@ -37,8 +95,8 @@
 
 2000-08-24  Robey Pointer  <robey@eazel.com>
 
-	components/services/install/nautilus-view/nautilus-service-install-
-	view.c: (generate_install_form),
+	* components/services/install/nautilus-view/nautilus-service-install-view.c:
+	(generate_install_form),
 	(nautilus_service_install_view_destroy),
 	(nautilus_install_parse_uri), (make_new_status),
 	(current_progress_bar_complete),
@@ -47,8 +105,7 @@
 	(nautilus_service_install_failed),
 	(nautilus_service_need_password), (set_root_client),
 	(nautilus_service_install_view_update_from_uri):
-	components/services/install/nautilus-view/nautilus-service-install-
-	view.h:
+	* components/services/install/nautilus-view/nautilus-service-install-view.h:
 
 	More cleanup of the RPM install view: rudimentary password dialog,
 	cleaned out old unused code, and hooked up the RPM package info to
@@ -57,6 +114,7 @@
 	"realtime" now!).
 	 
 2000-08-24  Arlo Rose  <arlo@eazel.com>
+	
 	* icon/search_results.png
 	Added an icon to be used in the search results side bar.
 
@@ -66,8 +124,8 @@
 	(service_install_object_destroyed), (service_install_make_object),
 	(main):
 	 
-	components/services/install/nautilus-view/nautilus-service-install-
-	view.c: (show_overall_feedback),
+	* components/services/install/nautilus-view/nautilus-service-install-view.c:
+	(show_overall_feedback),
 	(nautilus_service_install_view_initialize_class),
 	(nautilus_service_install_view_initialize),
 	(nautilus_service_install_view_destroy),
@@ -84,8 +142,8 @@
 	* components/services/inventory/nautilus-view/main.c:
 	(inventory_object_destroyed), (inventory_make_object), (main):
 	 
-	components/services/inventory/nautilus-view/nautilus-inventory-view
-	.c: (generate_inventory_form), (gather_config_button_cb),
+	* components/services/inventory/nautilus-view/nautilus-inventory-view.c:
+	(generate_inventory_form), (gather_config_button_cb),
 	(register_later_cb), (show_feedback), (make_http_post_request),
 	(go_to_uri), (get_home_uri), (update_now), (generate_form_title),
 	(nautilus_inventory_view_initialize_class),
@@ -103,13 +161,13 @@
 	(nautilus_login_view_get_nautilus_view),
 	(nautilus_login_view_load_uri), (login_load_location_callback):
 	 
-	components/services/nautilus-dependent-shared/shared-service-utilit
-	ies.c: (go_to_uri), (is_location):
+	* components/services/nautilus-dependent-shared/shared-service-utilities.c:
+	(go_to_uri), (is_location):
 	* components/services/startup/nautilus-view/main.c:
 	(service_object_destroyed), (service_make_object), (main):
 	 
-	components/services/startup/nautilus-view/nautilus-service-startup-
-	view.c: (generate_form_logo),
+	* components/services/startup/nautilus-view/nautilus-service-startup-view.c:
+	(generate_form_logo),
 	(nautilus_service_startup_view_initialize_class),
 	(nautilus_service_startup_view_initialize),
 	(nautilus_service_startup_view_destroy),
@@ -119,7 +177,7 @@
 	* components/services/summary/nautilus-view/main.c:
 	(summary_object_destroyed), (summary_make_object), (main):
 	 
-	components/services/summary/nautilus-view/nautilus-summary-view.c:
+	* components/services/summary/nautilus-view/nautilus-summary-view.c:
 	(generate_summary_form), (nautilus_summary_view_initialize_class),
 	(nautilus_summary_view_initialize),
 	(nautilus_summary_view_destroy),

@@ -27,17 +27,16 @@
 #include <config.h>
 #include "nautilus-directory-background.h"
 
-#include <gtk/gtksignal.h>
+#include "libnautilus-extensions/nautilus-gdk-extensions.h"
 #include "nautilus-background.h"
-#include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
 #include "nautilus-string.h"
 #include "nautilus-theme.h"
-#include "libnautilus-extensions/nautilus-gdk-extensions.h"
-
-#include <gdk/gdkx.h>
 #include <X11/Xatom.h>
+#include <gdk/gdkx.h>
+#include <gtk/gtksignal.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 
 static void background_changed_callback     (NautilusBackground *background, NautilusDirectory  *directory);
 static void background_reset_callback       (NautilusBackground *background, NautilusDirectory  *directory);
@@ -90,7 +89,7 @@ theme_image_path_to_uri (char *image_file)
 		
 		g_assert (g_file_exists (image_path));
 		
-		image_uri = nautilus_get_uri_from_local_path (image_path);
+		image_uri = gnome_vfs_get_uri_from_local_path (image_path);
 		g_free (image_path);
 	} else {
 		image_uri = g_strdup (image_file);
@@ -176,7 +175,7 @@ nautilus_directory_background_read_desktop_settings (char **color,
 	image_alignment  = gnome_config_get_int_with_default ("/Background/Default/wallpaperAlign", &no_alignment);
 
 	if (nautilus_strcasecmp (image_local_path, "none")) {
-		*image = nautilus_get_uri_from_local_path (image_local_path);
+		*image = gnome_vfs_get_uri_from_local_path (image_local_path);
 	} else {
 		*image = NULL;
 	}
@@ -257,7 +256,7 @@ nautilus_directory_background_write_desktop_settings (char *color, char *image, 
 	}
 
 	if (image != NULL) {
-		image_local_path = nautilus_get_local_path_from_uri (image);
+		image_local_path = gnome_vfs_get_local_path_from_uri (image);
 		gnome_config_set_string ("/Background/Default/wallpaper", image_local_path);
 		g_free (image_local_path);
 		switch (placement) {

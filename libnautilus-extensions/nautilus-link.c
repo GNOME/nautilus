@@ -109,7 +109,7 @@ nautilus_link_create (const char 	*directory_path,
 	}
 	
 	/* Notify that this new file has been created. */
-	uri = nautilus_get_uri_from_local_path (path);
+	uri = gnome_vfs_get_uri_from_local_path (path);
 	dummy_list.data = uri;
 	dummy_list.next = NULL;
 	dummy_list.prev = NULL;
@@ -142,7 +142,7 @@ nautilus_link_set_icon (const char *path, const char *icon_name)
 	xmlSaveFile (path, document);
 	xmlFreeDoc (document);
 
-	uri = nautilus_get_uri_from_local_path (path);
+	uri = gnome_vfs_get_uri_from_local_path (path);
 	file = nautilus_file_get (uri);
 	if (file != NULL) {
 		nautilus_file_changed (file);
@@ -174,7 +174,7 @@ nautilus_link_set_link_uri (const char *path, const char *link_uri)
 	xmlSaveFile (path, document);
 	xmlFreeDoc (document);
 
-	uri = nautilus_get_uri_from_local_path (path);
+	uri = gnome_vfs_get_uri_from_local_path (path);
 	file = nautilus_file_get (uri);
 	if (file != NULL) {
 		nautilus_file_changed (file);
@@ -204,7 +204,7 @@ nautilus_link_set_type (const char *path, const char *type)
 	xmlSaveFile (path, document);
 	xmlFreeDoc (document);
 
-	uri = nautilus_get_uri_from_local_path (path);
+	uri = gnome_vfs_get_uri_from_local_path (path);
 	file = nautilus_file_get (uri);
 	if (file != NULL) {
 		nautilus_file_changed (file);
@@ -240,7 +240,7 @@ nautilus_link_get_root_property (const char *link_file_uri,
 	}
 	
 	/* FIXME: Works only with local link files. */
-	path = nautilus_get_local_path_from_uri (link_file_uri);
+	path = gnome_vfs_get_local_path_from_uri (link_file_uri);
 	if (path == NULL) {
 		return NULL;
 	}
@@ -269,9 +269,15 @@ make_local_path (const char *image_uri)
 {
 	char *escaped_uri, *unescaped_uri, *local_directory_path, *local_file_path;
 	
-	/* we can't call nautilus_get_local_path_from_uri here, since it will return NULL because
-	   it's not a local uri, but we still should unescape */
+	/* We can't call nautilus_get_local_path_from_uri here, since
+	 * it will return NULL since it's not a local uri, but we
+	 * still should unescape.
+	 */
 	unescaped_uri = gnome_vfs_unescape_string (image_uri, "/");
+	/* FIXME: Why should we unescape? The above can return NULL for
+	 * URIs with slashes in it and other cases like that.
+	 */
+	/* FIXME: Why the +7 below? This seems totally wrong. */
 	escaped_uri = nautilus_str_escape_slashes (unescaped_uri + 7);		
 	g_free (unescaped_uri);
 	
@@ -354,7 +360,7 @@ nautilus_link_get_image_uri (const char *link_file_uri)
 	}
 	
 	/* FIXME: Works only with local URIs. */
-	path = nautilus_get_local_path_from_uri (link_file_uri);
+	path = gnome_vfs_get_local_path_from_uri (link_file_uri);
 	if (path == NULL) {
 		return NULL;
 	}
@@ -369,7 +375,7 @@ nautilus_link_get_image_uri (const char *link_file_uri)
 		local_path = make_local_path (icon_uri);
 		if (g_file_exists (local_path)) {
 			g_free (icon_uri);			
-			local_uri = nautilus_get_uri_from_local_path (local_path);
+			local_uri = gnome_vfs_get_uri_from_local_path (local_path);
 			g_free (local_path);
 			return local_uri;	
 		}

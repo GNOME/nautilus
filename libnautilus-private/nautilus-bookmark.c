@@ -25,21 +25,17 @@
 #include <config.h>
 #include "nautilus-bookmark.h"
 
-#include <gtk/gtkaccellabel.h>
-#include <gtk/gtksignal.h>
-
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-util.h>
-#include <libgnomeui/gtkpixmapmenuitem.h>
-
-#include "nautilus-file-utilities.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-icon-factory.h"
 #include "nautilus-string.h"
-
+#include <gtk/gtkaccellabel.h>
+#include <gtk/gtksignal.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-util.h>
+#include <libgnomeui/gtkpixmapmenuitem.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
-
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 
 enum {
@@ -466,7 +462,7 @@ nautilus_bookmark_uri_known_not_to_exist (NautilusBookmark *bookmark)
 	gboolean exists;
 
 	/* Convert to a path, returning FALSE if not local. */
-	path_name = nautilus_get_local_path_from_uri (bookmark->details->uri);
+	path_name = gnome_vfs_get_local_path_from_uri (bookmark->details->uri);
 	if (path_name == NULL) {
 		return FALSE;
 	}

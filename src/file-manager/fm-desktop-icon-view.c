@@ -218,7 +218,7 @@ startup_create_mount_links (const NautilusVolume *volume, gpointer data)
 	}
 	
 	desktop_path = nautilus_get_desktop_directory ();
-	target_uri = nautilus_get_uri_from_local_path (volume->mount_path);
+	target_uri = gnome_vfs_get_uri_from_local_path (volume->mount_path);
 
 	/* Create link */
 	result = nautilus_link_create (desktop_path, volume->volume_name, icon_name, 
@@ -489,7 +489,7 @@ volume_mounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 	}
 	
 	desktop_path = nautilus_get_desktop_directory ();
-	target_uri = nautilus_get_uri_from_local_path (volume->mount_path);
+	target_uri = gnome_vfs_get_uri_from_local_path (volume->mount_path);
 
 	/* Create link */
 	result = nautilus_link_create (desktop_path, volume->volume_name, icon_name, 
@@ -613,9 +613,9 @@ place_home_directory (FMDesktopIconView *icon_view)
 	desktop_path = nautilus_get_desktop_directory ();
 	home_link_name = g_strdup_printf ("%s's Home", g_get_user_name ());
 	home_link_path = nautilus_make_path (desktop_path, home_link_name);
-	home_link_uri = nautilus_get_uri_from_local_path (home_link_path);
+	home_link_uri = gnome_vfs_get_uri_from_local_path (home_link_path);
 	
-	home_dir_uri = nautilus_get_uri_from_local_path (g_get_home_dir ());
+	home_dir_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
 	made_link = nautilus_link_create (desktop_path, home_link_name, "temp-home.png", 
 					  home_dir_uri, NAUTILUS_LINK_HOME);
 	g_free (home_dir_uri);
@@ -750,7 +750,7 @@ get_local_path (NautilusFile *file)
 	char *uri, *local_path;
 
 	uri = nautilus_file_get_uri (file);
-	local_path = nautilus_get_local_path_from_uri (uri);
+	local_path = gnome_vfs_get_local_path_from_uri (uri);
 	g_free (uri);
 	return local_path;
 }

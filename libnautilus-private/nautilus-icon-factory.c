@@ -1234,7 +1234,7 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean us
 	        	
 	        char *escaped_uri = nautilus_str_escape_slashes (directory_name);		
 		thumbnail_path = g_strdup_printf ("%s/.nautilus/thumbnails/%s", g_get_home_dir(), escaped_uri);
-		thumbnail_uri = nautilus_get_uri_from_local_path (thumbnail_path);
+		thumbnail_uri = gnome_vfs_get_uri_from_local_path (thumbnail_path);
 		g_free (thumbnail_path);
 		g_free(escaped_uri);
 		
@@ -1559,7 +1559,7 @@ path_represents_svg_image (const char *path)
 	 * other than the local hard disk.
 	 */
 
-	uri = nautilus_get_uri_from_local_path (path);
+	uri = gnome_vfs_get_uri_from_local_path (path);
 	gnome_vfs_file_info_init (&file_info);
 	gnome_vfs_get_file_info (uri, &file_info, GNOME_VFS_FILE_INFO_GET_MIME_TYPE);
 	g_free (uri);
@@ -1589,7 +1589,7 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 				
 		/* we use the suffix instead of mime-type here since it may be non-local */	
 		if (nautilus_istr_has_suffix (scalable_icon->uri, ".svg")) {
-			image_path = nautilus_get_local_path_from_uri (scalable_icon->uri);		
+			image_path = gnome_vfs_get_local_path_from_uri (scalable_icon->uri);		
 			pixbuf = load_specific_image_svg (image_path, size_in_pixels);
 			g_free (image_path);
 			return pixbuf;
@@ -2384,7 +2384,7 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 			full_size_image = NULL;
 
 			if (nautilus_file_is_mime_type (file, "image/svg")) {
-				thumbnail_path = nautilus_get_local_path_from_uri (info->thumbnail_uri);
+				thumbnail_path = gnome_vfs_get_local_path_from_uri (info->thumbnail_uri);
 				if (thumbnail_path != NULL) {
 					FILE *f = fopen (thumbnail_path, "rb");
 					if (f != NULL) {
@@ -2412,7 +2412,7 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 				gdk_pixbuf_unref (scaled_image);
 				gdk_pixbuf_unref (thumbnail_image_frame);
 				
-				thumbnail_path = nautilus_get_local_path_from_uri (factory->new_thumbnail_path);			
+				thumbnail_path = gnome_vfs_get_local_path_from_uri (factory->new_thumbnail_path);
 				if (!nautilus_gdk_pixbuf_save_to_file (framed_image, thumbnail_path)) {
 					g_warning ("error saving thumbnail %s", thumbnail_path);
 				}
@@ -2422,11 +2422,11 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 			else {
 				/* gdk-pixbuf couldn't load the image, so trying using ImageMagick */
 				char *temp_str;
-				thumbnail_path = nautilus_get_local_path_from_uri (factory->new_thumbnail_path);
+				thumbnail_path = gnome_vfs_get_local_path_from_uri (factory->new_thumbnail_path);
 				temp_str = g_strdup_printf ("png:%s", thumbnail_path);
 				g_free (thumbnail_path);
 				
-				thumbnail_path = nautilus_get_local_path_from_uri (info->thumbnail_uri);
+				thumbnail_path = gnome_vfs_get_local_path_from_uri (info->thumbnail_uri);
 				
 				/* scale the image */
 				execlp ("convert", "convert", "-geometry",  "96x96", thumbnail_path, temp_str, NULL);

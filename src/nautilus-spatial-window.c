@@ -41,6 +41,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
@@ -1002,7 +1003,7 @@ nautilus_window_go_home (NautilusWindow *window)
 
 	nautilus_window_set_search_mode (window, FALSE);
 
-	default_home_uri = nautilus_get_uri_from_local_path (g_get_home_dir ());
+	default_home_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
 	home_uri = nautilus_preferences_get (NAUTILUS_PREFERENCES_HOME_URI, default_home_uri);
 	g_free (default_home_uri);
 	

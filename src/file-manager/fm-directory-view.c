@@ -3289,7 +3289,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		/* FIXME bugzilla.eazel.com 1773: This is a lame way to
 		 * run command-line tools.
 		 */
-		executable_path = nautilus_get_local_path_from_uri (uri);
+		executable_path = gnome_vfs_get_local_path_from_uri (uri);
 
 		/* Non-local executables don't get launched. They fall through
 		 * and act like non-executables.

@@ -26,14 +26,13 @@
 #include <config.h>
 #include "nautilus-program-choosing.h"
 
-#include "nautilus-file-utilities.h"
-#include "nautilus-stock-dialogs.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-program-chooser.h"
+#include "nautilus-stock-dialogs.h"
 #include "nautilus-string.h"
-
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <stdlib.h>
 
 static gboolean
@@ -236,8 +235,7 @@ nautilus_launch_application_parented (GnomeVFSMimeApplication *application,
 	/* Always use local path if we can get one, even for apps that can
 	 * deal with uris. This is done only for convenience.
 	 */
-	uri_or_path = nautilus_get_local_path_from_uri (uri);
-
+	uri_or_path = gnome_vfs_get_local_path_from_uri (uri);
 	if (uri_or_path == NULL) {
 		if (!application->can_open_uris) {
 			/* This application can't deal with this uri, because it
@@ -250,14 +248,13 @@ nautilus_launch_application_parented (GnomeVFSMimeApplication *application,
 						  application->name, uri, application->name);
 			dialog = nautilus_error_dialog (prompt, parent);
 			gtk_window_set_title (GTK_WINDOW (dialog), _("Can't open remote file"));
-			
 			g_free (prompt);
 			return;
 		}
 		
 		uri_or_path = g_strdup (uri);
-	}		
-
+	}
+	
 	if (application->requires_terminal) {
 		command_string = g_strconcat ("gnome-terminal -x ", application->command, NULL);
 	} else {

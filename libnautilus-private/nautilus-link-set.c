@@ -119,7 +119,7 @@ expand_uri (const char *uri)
 {
 	/* FIXME: This turns "~x" into "HOME", which is bad. */
 	if (uri[0] == '~') {
-		return nautilus_get_uri_from_local_path (g_get_home_dir ());
+		return gnome_vfs_get_uri_from_local_path (g_get_home_dir ());
 	}
 	return g_strdup (uri);
 }

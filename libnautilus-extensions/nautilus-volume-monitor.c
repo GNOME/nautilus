@@ -352,7 +352,7 @@ mount_volume_mount (NautilusVolumeMonitor *view, NautilusVolume *volume)
 	int index;
 
 	desktop_path = nautilus_get_desktop_directory ();
-	target_uri = nautilus_get_uri_from_local_path (volume->mount_path);
+	target_uri = gnome_vfs_get_uri_from_local_path (volume->mount_path);
 
 	/* Make user readable volume name "nice" */
 

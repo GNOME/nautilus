@@ -568,7 +568,7 @@ populate_list_with_themes (NautilusThemeSelector *theme_selector)
 	
 	/* iterate the pixmap directory to find other installed themes */	
 	pixmap_directory = nautilus_get_pixmap_directory ();
-	directory_uri = nautilus_get_uri_from_local_path (pixmap_directory);
+	directory_uri = gnome_vfs_get_uri_from_local_path (pixmap_directory);
 
 	index = 0;
 	selected_index = -1;

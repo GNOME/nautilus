@@ -324,8 +324,8 @@ nautilus_get_user_main_directory (void)
 					       NAUTILUS_USER_MAIN_DIRECTORY_NAME);
 												
 	if (!g_file_exists (user_main_directory)) {			
-		source_directory_uri = nautilus_get_uri_from_local_path (NAUTILUS_DATADIR);
-		destination_directory_uri = nautilus_get_uri_from_local_path (g_get_home_dir());
+		source_directory_uri = gnome_vfs_get_uri_from_local_path (NAUTILUS_DATADIR);
+		destination_directory_uri = gnome_vfs_get_uri_from_local_path (g_get_home_dir());
 		source_name_list = g_list_prepend (NULL, "top");
 		destination_name_list = g_list_prepend (NULL, NAUTILUS_USER_MAIN_DIRECTORY_NAME);
 		
@@ -348,9 +348,9 @@ nautilus_get_user_main_directory (void)
 		}
 					
 		/* assign a custom image for the directory icon */
-		file_uri = nautilus_get_uri_from_local_path (user_main_directory);
+		file_uri = gnome_vfs_get_uri_from_local_path (user_main_directory);
 		temp_str = nautilus_pixmap_file ("nautilus-logo.png");
-		image_uri = nautilus_get_uri_from_local_path (temp_str);
+		image_uri = gnome_vfs_get_uri_from_local_path (temp_str);
 		g_free (temp_str);
 		
 		file = nautilus_file_get (file_uri);
@@ -365,7 +365,7 @@ nautilus_get_user_main_directory (void)
 		
 		/* now do the same for the about file */
 		temp_str = g_strdup_printf ("%s/About.html", user_main_directory);
-		file_uri = nautilus_get_uri_from_local_path (temp_str);
+		file_uri = gnome_vfs_get_uri_from_local_path (temp_str);
 		g_free (temp_str);
 		
 		file = nautilus_file_get (file_uri);
@@ -407,65 +407,6 @@ nautilus_get_pixmap_directory (void)
 	return pixmap_directory;
 }
 
-/**
- * nautilus_get_local_path_from_uri:
- * 
- * Return a local path for a file:// URI.
- *
- * Return value: the local path or NULL on error.
- **/
-char *
-nautilus_get_local_path_from_uri (const char *uri)
-{
-	char *result, *unescaped_uri;
-
-	if (uri == NULL) {
-		return NULL;
-	}
-
-	unescaped_uri = gnome_vfs_unescape_string (uri, "/");
-
-	if (unescaped_uri == NULL) {
-		return NULL;
-	}
-
-	if (nautilus_istr_has_prefix (unescaped_uri, "file://")) {
-		result = g_strdup (unescaped_uri + 7);
-	} else if (unescaped_uri[0] == '/') {
-		result = g_strdup (unescaped_uri);
-	} else {
-		result = NULL;
-	}
-
-	g_free (unescaped_uri);
-
-	return result;
-}
-
-/**
- * nautilus_get_uri_from_local_path:
- * 
- * Return a file:// URI for a local path.
- *
- * Return value: the URI (NULL for some bad errors).
- **/
-char *
-nautilus_get_uri_from_local_path (const char *local_path)
-{
-	char *escaped_path, *result;
-	
-	if (local_path == NULL) {
-		return NULL;
-	}
-
-	g_return_val_if_fail (local_path[0] == '/', NULL);
-
-	escaped_path = gnome_vfs_escape_path_string (local_path);
-	result = g_strconcat ("file://", escaped_path, NULL);
-	g_free (escaped_path);
-	return result;
-}
-
 /* convenience routine to use gnome-vfs to test if a string is a remote uri */
 gboolean
 nautilus_is_remote_uri (const char *uri)
@@ -473,7 +414,7 @@ nautilus_is_remote_uri (const char *uri)
 	gboolean is_local;
 	GnomeVFSURI *vfs_uri;
 	
-	vfs_uri = gnome_vfs_uri_new(uri);
+	vfs_uri = gnome_vfs_uri_new (uri);
 	is_local = gnome_vfs_uri_is_local (vfs_uri);
 	gnome_vfs_uri_unref(vfs_uri);
 	return !is_local;
