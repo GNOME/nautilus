@@ -1,3 +1,13 @@
+2000-12-04  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed broken build.
+	
+	* components/help/converters/gnome-db2html2/sect-preparse.c:
+	(sect_preparse_figure_start_element),
+	(sect_preparse_acronym_characters), (gloss_term_append):
+	File had typos, missing and extra punctuation. The code did not
+	even compile. Now it does.
+
 2000-12-04  Ali Abdin  <aliabdin@aucegypt.edu>
 
         * components/help/converters/gnome-db2html2/sect-preparse.c:

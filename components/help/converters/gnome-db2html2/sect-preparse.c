@@ -106,7 +106,7 @@ ElementInfo sect_preparse[] = {
         { ENTRY, "entry", NULL, NULL, NULL},
         { THEAD, "thead", NULL, NULL, NULL},
         { TBODY, "tbody", NULL, NULL, NULL},
-        { ACRONYM, "acronym", NULL, NULL, (charactersSAXFUNC) sect_preparse_acronym_characters},
+        { ACRONYM, "acronym", NULL, NULL, (charactersSAXFunc) sect_preparse_acronym_characters},
         { MARKUP, "markup", NULL, NULL, NULL},
         { SIMPLELIST, "simplelist", NULL, NULL, NULL},
         { MEMBER, "member", NULL, NULL, NULL},
@@ -296,7 +296,6 @@ sect_preparse_figure_start_element (Context *context,
                 }
                 atrs_ptr += 2;
         }
-
 }
 
 static void
@@ -310,9 +309,9 @@ sect_preparse_glossterm_characters (Context *context,
 static void
 sect_preparse_acronym_characters (Context *context,
 				  const gchar *chars,
-				  int len);
+				  int len)
 {
-	gloss_term_append (context, chars len);
+	gloss_term_append (context, chars, len);
 }
 
 static void
@@ -323,7 +322,7 @@ gloss_term_append (Context *context,
         GList *temp_list;
         char *temp_glossentry;
 	char *temp;
-	char *new_string
+	char *new_string;
 
 	if (context->in_glossterm == TRUE) {
 		temp = g_strndup (chars, len);
