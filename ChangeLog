@@ -1,3 +1,11 @@
+2000-08-21  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_get_current_icon_factory), (icon_theme_changed_callback):
+	made the icon factory ask the current theme for the icon directory
+	to use, so themes can easily use each other's icons without copying
+	them.
+	
 2000-08-21  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-buffered-widget.c:

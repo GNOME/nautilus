@@ -57,6 +57,7 @@
 #include "nautilus-link.h"
 #include "nautilus-metadata.h"
 #include "nautilus-string.h"
+#include "nautilus-theme.h"
 #include "nautilus-xml-extensions.h"
 
 /* List of suffixes to search when looking for an icon file. */
@@ -249,15 +250,24 @@ nautilus_get_current_icon_factory (void)
 {
         static NautilusIconFactory *global_icon_factory = NULL;
         if (global_icon_factory == NULL) {
-		char *theme_preference;
+		char *theme_preference, *icon_theme;
 
 		theme_preference = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME,
 							     DEFAULT_ICON_THEME);
 		g_assert (theme_preference != NULL);
 
-                global_icon_factory = nautilus_icon_factory_new (theme_preference);
-                g_free (theme_preference);
-
+		/* give the theme a chance to redirect the icons */
+		icon_theme = nautilus_theme_get_theme_data ("icons", "ICON_THEME");
+	
+		if (icon_theme != NULL) {
+               		global_icon_factory = nautilus_icon_factory_new (icon_theme);
+ 		} else {		
+               		global_icon_factory = nautilus_icon_factory_new (theme_preference);
+ 		}
+                
+		g_free (theme_preference);
+		g_free (icon_theme);
+		
 		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
 						   icon_theme_changed_callback,
 						   NULL);	
@@ -798,17 +808,24 @@ get_icon_file_path (const char *name,
 static void
 icon_theme_changed_callback (gpointer user_data)
 {
-	char *theme_preference;
+	char *theme_preference, *icon_theme;
 
 	theme_preference = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME,
 						     DEFAULT_ICON_THEME);
 
 	g_assert (theme_preference != NULL);
 
-	nautilus_icon_factory_set_theme (theme_preference);
-
+	/* give the theme a chance to redirect the icons */
+	icon_theme = nautilus_theme_get_theme_data ("icons", "ICON_THEME");
+	
+	if (icon_theme != NULL) {
+		nautilus_icon_factory_set_theme (icon_theme);
+	} else {		
+		nautilus_icon_factory_set_theme (theme_preference);
+	}
+	
 	g_free (theme_preference);
-
+	g_free (icon_theme);
 }
 
 /* Decompose a scalable icon into its text pieces. */
