@@ -1,5 +1,13 @@
 2001-04-25  Andy Hertzfeld  <andy@eazel.com>
 
+	* components/news/nautilus-news.c: (draw_rss_items),
+	(nautilus_news_draw_channel), (nautilus_news_size_allocate):
+	fixed measuring bug caused by the size of the scroll bar
+	affecting the layout.  Fixed by calculating the line width at
+	size_allocate time, instead of on the spur of the moment.
+	
+2001-04-25  Andy Hertzfeld  <andy@eazel.com>
+
 	* components/news/nautilus-news.c: (draw_rss_logo_image),
 	(draw_rss_items), (nautilus_news_configure_event),
 	(nautilus_news_button_release_event), (update_size_and_redraw),

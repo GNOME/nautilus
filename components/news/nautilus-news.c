@@ -101,6 +101,8 @@ typedef struct {
 	GtkWidget *remove_button;
 	int remove_selection_index;
 	
+	int line_width;
+	
 	EelScalableFont *font;	
 	EelScalableFont *bold_font;	
 	
@@ -165,6 +167,7 @@ typedef struct {
 #define DISCLOSURE_RIGHT_POSITION 16
 #define LOGO_LEFT_OFFSET 15
 #define ITEM_POSITION 31
+#define RIGHT_ITEM_MARGIN 4
 #define ITEM_FONT_SIZE 11
 #define TIME_FONT_SIZE 9
 #define TIME_MARGIN_OFFSET 2
@@ -499,7 +502,6 @@ draw_rss_items (RSSChannelData *channel_data,
 	int bullet_width, bullet_height, font_size;
 	int item_index, bullet_alpha;
 	int bullet_x_pos, bullet_y_pos;
-	int line_width;
 	guint32 text_color;
 	ArtIRect dest_bounds;
 	EelSmoothTextLayout *smooth_text_layout;
@@ -541,10 +543,10 @@ draw_rss_items (RSSChannelData *channel_data,
 				item_data->item_title, strlen(item_data->item_title),
 				font, font_size, TRUE);
 
-		line_width = channel_data->owner->news_display->allocation.width - ITEM_POSITION; 
-		if (line_width > 0) {
-			eel_smooth_text_layout_set_line_wrap_width (smooth_text_layout, line_width - 4);
+		if (channel_data->owner->line_width > RIGHT_ITEM_MARGIN) {
+			eel_smooth_text_layout_set_line_wrap_width (smooth_text_layout, channel_data->owner->line_width - RIGHT_ITEM_MARGIN);
 		}
+		
 		text_dimensions = eel_smooth_text_layout_get_dimensions (smooth_text_layout);
 		
 		if (!measure_only) {			
@@ -606,7 +608,6 @@ nautilus_news_draw_channel (News *news_data,
 	if (channel->is_open) {
 		v_offset = draw_rss_items (channel, news_data->pixbuf, v_offset, measure_only);
 	}
-	
 	channel->items_end_y = v_offset;
 	return v_offset;
 }
@@ -1826,10 +1827,8 @@ add_channels_to_lists (News* news_data)
 static void
 nautilus_news_size_allocate (GtkWidget *widget, GtkAllocation *allocation, News *news_data)
 {	
-	int line_width;
-		
-	line_width = news_data->news_display->allocation.width - ITEM_POSITION; 
-	if (line_width > 0) {
+	news_data->line_width = news_data->news_display->allocation.width - ITEM_POSITION; 
+	if (news_data->line_width > 0) {
 		update_size_and_redraw (news_data);
 	}
 }
