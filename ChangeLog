@@ -1,3 +1,35 @@
+2000-06-22  Darin Adler  <darin@eazel.com>
+
+	Finished task 975 (Need API for asynchronously computing a
+	directory's recursive item count). More thorough testing will wait
+	for John to implement the high level feature.
+	
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(directory_count_callback): Used a local variable.
+	(start_monitoring_file_list): Reduced use of GnomeVFSURI a bit.
+	(cancel_deep_count), (nautilus_directory_cancel),
+	(set_up_request_by_file_attributes),
+	(nautilus_async_destroying_file), (lacks_deep_count),
+	(wants_deep_count), (request_is_satisfied),
+	(start_monitoring_file_list), (deep_count_one),
+	(deep_count_callback), (deep_count_load), (deep_count_start),
+	(state_changed): Added the code to compute deep counts.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_self_check_directory): Added a self-check to try out
+	the deep counts.
+	
+	* libnautilus-extensions/nautilus-file-attributes.h:
+	Renamed the attribute now that it's for more than one kind of
+	deep count, not just a directory items count.
+	
+	* libnautilus-extensions/nautilus-file-private.h:
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_deep_counts):
+	Added the high-level interface for getting at the counts.
+	
 2000-06-22  John Sullivan  <sullivan@eazel.com>
 
 	Finished task 877 (SUID/SGID/Sticky bits should be settable
@@ -31,6 +63,7 @@
 	update its inclusion here.
 	
 2000-06-22  Seth Nickell  <seth@eazel.com>
+
 	Changes from Ali Abdin (rak), aliabdin@aucegypt.edu
 	* components/websearch/Makefile.am:
 	Fixed error message on Nautilus startup by correctly setting

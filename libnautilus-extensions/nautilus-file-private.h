@@ -40,6 +40,12 @@ struct NautilusFileDetails
 	gboolean directory_count_failed;
 	guint directory_count;
 
+	NautilusRequestStatus deep_counts_status;
+	guint deep_directory_count;
+	guint deep_file_count;
+	guint deep_unreadable_count;
+	GnomeVFSFileSize deep_size;
+
 	gboolean got_top_left_text;
 	char *top_left_text;
 };

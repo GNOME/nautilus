@@ -59,6 +59,12 @@ typedef enum {
 	NAUTILUS_FILE_SORT_BY_EMBLEMS
 } NautilusFileSortType;	
 
+typedef enum {
+	NAUTILUS_REQUEST_NOT_STARTED,
+	NAUTILUS_REQUEST_IN_PROGRESS,
+	NAUTILUS_REQUEST_DONE
+} NautilusRequestStatus;
+
 typedef void (*NautilusFileCallback)          (NautilusFile  *file,
 				               gpointer       callback_data);
 typedef void (*NautilusFileOperationCallback) (NautilusFile  *file,
@@ -114,10 +120,11 @@ gboolean                nautilus_file_is_directory              (NautilusFile   
 gboolean                nautilus_file_get_directory_item_count  (NautilusFile                  *file,
 								 guint                         *count,
 								 gboolean                      *count_unreadable);
-gboolean                nautilus_file_get_directory_item_deep_count
-								(NautilusFile                  *file,
-								 guint                         *count,
-								 gboolean                      *count_unreadable);
+NautilusRequestStatus   nautilus_file_get_deep_counts           (NautilusFile                  *file,
+								 guint                         *directory_count,
+								 guint                         *file_count,
+								 guint                         *unreadable_directory_count,
+								 GnomeVFSFileSize              *total_size);
 GList *                 nautilus_file_get_keywords              (NautilusFile                  *file);
 void                    nautilus_file_set_keywords              (NautilusFile                  *file,
 								 GList                         *keywords);
@@ -220,16 +227,15 @@ GList *                 nautilus_file_list_copy                 (GList          
 
 typedef struct NautilusFileDetails NautilusFileDetails;
 
-struct NautilusFile
-{
-	GtkObject object;
+struct NautilusFile {
+	GtkObject parent_slot;
 	NautilusFileDetails *details;
 };
 
-typedef struct
-{
-	GtkObjectClass parent_class;
+typedef struct {
+	GtkObjectClass parent_slot;
 	
+	/* Called then the file notices any change. */
 	void (* changed) (NautilusFile *file);
 } NautilusFileClass;
 

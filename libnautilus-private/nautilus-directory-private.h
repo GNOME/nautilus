@@ -77,6 +77,12 @@ struct NautilusDirectoryDetails
 	GnomeVFSAsyncHandle *count_in_progress;
 	NautilusFile *count_file;
 
+	NautilusFile *deep_count_file;
+	GnomeVFSAsyncHandle *deep_count_in_progress;
+	char *deep_count_uri;
+	GnomeVFSDirectoryListPosition deep_count_last_handled;
+	GList *deep_count_subdirectories;
+
 	GnomeVFSAsyncHandle *get_info_in_progress;
 	NautilusFile *get_info_file;
 
@@ -103,9 +109,9 @@ void          nautilus_directory_call_when_ready_internal  (NautilusDirectory   
 							    NautilusDirectoryCallback  directory_callback,
 							    NautilusFileCallback       file_callback,
 							    gpointer                   callback_data);
-gboolean      nautilus_directory_check_if_ready_internal   (NautilusDirectory	      *directory,
-							    NautilusFile	      *file,
-							    GList		      *file_attributes);
+gboolean      nautilus_directory_check_if_ready_internal   (NautilusDirectory         *directory,
+							    NautilusFile              *file,
+							    GList                     *file_attributes);
 void          nautilus_directory_cancel_callback_internal  (NautilusDirectory         *directory,
 							    NautilusFile              *file,
 							    NautilusDirectoryCallback  directory_callback,
@@ -150,4 +156,4 @@ int           nautilus_directory_number_outstanding        (void);
 /* Shared functions not directly related to NautilusDirectory/File. */
 int           nautilus_compare_file_with_name              (gconstpointer              a,
 							    gconstpointer              b);
-gboolean      nautilus_uri_is_search_uri                   (const char *canonical_uri);
+gboolean      nautilus_uri_is_search_uri                   (const char                *canonical_uri);

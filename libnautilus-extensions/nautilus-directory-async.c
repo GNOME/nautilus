@@ -45,8 +45,6 @@
 			      | GNOME_VFS_PERM_OTHER_READ | GNOME_VFS_PERM_OTHER_WRITE)
 
 #define DIRECTORY_LOAD_ITEMS_PER_CALLBACK 32
-
-#define METAFILE_READ_CHUNK_SIZE (4 * 1024)
 #define TOP_LEFT_TEXT_READ_CHUNK_SIZE (4 * 1024)
 
 struct MetafileWriteState {
@@ -70,7 +68,7 @@ typedef struct {
 	gboolean file_list; /* always FALSE if file != NULL */
 	gboolean file_info;
 	gboolean directory_count;
-	gboolean directory_deep_count;
+	gboolean deep_count;
 	gboolean top_left_text;
 } Request;
 
@@ -94,6 +92,8 @@ typedef gboolean (* RequestCheck) (const Request *);
 typedef gboolean (* FileCheck) (NautilusFile *);
 
 /* Forward declarations for functions that need them. */
+static void     deep_count_load      (NautilusDirectory *directory,
+				      const char        *uri);
 static void 	metafile_read_start  (NautilusDirectory *directory);
 static gboolean request_is_satisfied (NautilusDirectory *directory,
 		      		      NautilusFile  	*file,
@@ -119,6 +119,20 @@ cancel_directory_counts (NautilusDirectory *directory)
 		gnome_vfs_async_cancel (directory->details->count_in_progress);
 		directory->details->count_file = NULL;
 		directory->details->count_in_progress = NULL;
+	}
+}
+
+static void
+cancel_deep_count (NautilusDirectory *directory)
+{
+	if (directory->details->deep_count_in_progress != NULL) {
+		gnome_vfs_async_cancel (directory->details->deep_count_in_progress);
+		directory->details->deep_count_file = NULL;
+		directory->details->deep_count_in_progress = NULL;
+		g_free (directory->details->deep_count_uri);
+		directory->details->deep_count_uri = NULL;
+		nautilus_g_list_free_deep (directory->details->deep_count_subdirectories);
+		directory->details->deep_count_subdirectories = NULL;
 	}
 }
 
@@ -169,10 +183,11 @@ cancel_metafile_read (NautilusDirectory *directory)
 void
 nautilus_directory_cancel (NautilusDirectory *directory)
 {
-	cancel_metafile_read (directory);
+	cancel_deep_count (directory);
 	cancel_directory_counts (directory);
-	cancel_top_left_read (directory);
 	cancel_get_info (directory);
+	cancel_metafile_read (directory);
+	cancel_top_left_read (directory);
 }
 
 static void
@@ -519,9 +534,9 @@ set_up_request_by_file_attributes (Request *request,
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
 		 nautilus_str_compare) != NULL;
-	request->directory_deep_count = g_list_find_custom
+	request->deep_count = g_list_find_custom
 		(file_attributes,
-		 NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_DEEP_COUNT,
+		 NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS,
 		 nautilus_str_compare) != NULL;
 	request->top_left_text = g_list_find_custom
 		(file_attributes,
@@ -1028,10 +1043,10 @@ directory_count_callback (GnomeVFSAsyncHandle *handle,
 
 	/* Record either a failure or success. */
 	if (result != GNOME_VFS_ERROR_EOF) {
-		directory->details->count_file->details->directory_count_failed = TRUE;
+		count_file->details->directory_count_failed = TRUE;
 	} else {
-		directory->details->count_file->details->directory_count = entries_read;
-		directory->details->count_file->details->got_directory_count = TRUE;
+		count_file->details->directory_count = entries_read;
+		count_file->details->got_directory_count = TRUE;
 	}
 	directory->details->count_file = NULL;
 	directory->details->count_in_progress = NULL;
@@ -1126,21 +1141,24 @@ nautilus_async_destroying_file (NautilusFile *file)
 		}
 	}
 
-	/* Check if it's the file that's currently being worked on for
-	 * counts or for get_file_info. If so, make that NULL so it gets
-	 * canceled right away.
+	/* Check if it's a file that's currently being worked on.
+	 * If so, make that NULL so it gets canceled right away.
 	 */
 	if (directory->details->count_file == file) {
 		directory->details->count_file = NULL;
 		changed = TRUE;
 	}
-	if (directory->details->top_left_read_state != NULL
-	    && directory->details->top_left_read_state->file == file) {
-		directory->details->top_left_read_state->file = NULL;
+	if (directory->details->deep_count_file == file) {
+		directory->details->deep_count_file = NULL;
 		changed = TRUE;
 	}
 	if (directory->details->get_info_file == file) {
 		directory->details->get_info_file = NULL;
+		changed = TRUE;
+	}
+	if (directory->details->top_left_read_state != NULL
+	    && directory->details->top_left_read_state->file == file) {
+		directory->details->top_left_read_state->file = NULL;
 		changed = TRUE;
 	}
 
@@ -1191,6 +1209,19 @@ wants_info (const Request *request)
 }
 
 static gboolean
+lacks_deep_count (NautilusFile *file)
+{
+	return nautilus_file_is_directory (file)
+		&& file->details->deep_counts_status != NAUTILUS_REQUEST_DONE;
+}
+
+static gboolean
+wants_deep_count (const Request *request)
+{
+	return request->deep_count;
+}
+
+static gboolean
 has_problem (NautilusDirectory *directory, NautilusFile *file, FileCheck problem)
 {
 	GList *p;
@@ -1230,6 +1261,12 @@ request_is_satisfied (NautilusDirectory *directory,
 
 	if (request->file_info) {
 		if (has_problem (directory, file, lacks_info)) {
+			return FALSE;
+		}
+	}
+
+	if (request->deep_count) {
+		if (has_problem (directory, file, lacks_deep_count)) {
 			return FALSE;
 		}
 	}
@@ -1353,15 +1390,10 @@ start_monitoring_file_list (NautilusDirectory *directory)
 
 	mark_all_files_unconfirmed (directory);
 
-	/* The second condition should be true for directories, and
-	 * the first should be true for searches.
-	 */
-	g_assert (nautilus_uri_is_search_uri (directory->details->uri_text) ||
-		  directory->details->uri->text != NULL);
-
+	g_assert (directory->details->uri->text != NULL);
 	directory->details->directory_load_list_last_handled
 		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
-
+	
 	/* Don't use gnome vfs load mechanisms for doing searches. Use
 	 * a separate search call.
 	 */
@@ -1370,11 +1402,10 @@ start_monitoring_file_list (NautilusDirectory *directory)
 					      directory->details->uri_text,
 					      directory_load_callback,
 					      directory);
-	}
-	else {
-		gnome_vfs_async_load_directory_uri
+	} else {
+		gnome_vfs_async_load_directory
 			(&directory->details->directory_load_in_progress, /* handle */
-			 directory->details->uri,                         /* uri */
+			 directory->details->uri_text,                    /* uri */
 			 (GNOME_VFS_FILE_INFO_GETMIMETYPE	          /* options */
 			  | GNOME_VFS_FILE_INFO_FASTMIMETYPE
 			  | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
@@ -1548,6 +1579,166 @@ start_getting_directory_counts (NautilusDirectory *directory)
 		 G_MAXINT,
 		 directory_count_callback,
 		 directory);
+	g_free (uri);
+}
+
+static void
+deep_count_one (NautilusDirectory *directory,
+		GnomeVFSFileInfo *info)
+{
+	NautilusFile *file;
+	char *escaped_name, *uri;
+
+	file = directory->details->deep_count_file;
+
+	if ((info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_TYPE) != 0
+	    && info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
+		/* Count the directory. */
+		file->details->deep_directory_count += 1;
+
+		/* Record the fact that we have to descend into this directory. */
+		escaped_name = gnome_vfs_escape_string (info->name);
+		uri = nautilus_make_path (directory->details->deep_count_uri, escaped_name);
+		g_free (escaped_name);
+		directory->details->deep_count_subdirectories = g_list_prepend
+			(directory->details->deep_count_subdirectories, uri);
+	} else {
+		/* Even non-regular files count as files. */
+		file->details->deep_file_count += 1;
+	}
+
+	/* Count the size. */
+	if ((info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_SIZE) != 0) {
+		file->details->deep_size += info->size;
+	}
+}
+
+static void
+deep_count_callback (GnomeVFSAsyncHandle *handle,
+		     GnomeVFSResult result,
+		     GnomeVFSDirectoryList *list,
+		     guint entries_read,
+		     gpointer callback_data)
+{
+	NautilusDirectory *directory;
+	NautilusFile *file;
+	GnomeVFSDirectoryListPosition last_handled, p;
+	char *uri;
+	gboolean done;
+
+	directory = NAUTILUS_DIRECTORY (callback_data);
+	g_assert (directory->details->deep_count_in_progress == handle);
+	file = directory->details->deep_count_file;
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	/* We can't do this in the most straightforward way, becuse the position
+	 * for a gnome_vfs_directory_list does not have a way of representing one
+	 * past the end. So we must keep a position to the last item we handled
+	 * rather than keeping a position past the last item we handled.
+	 */
+	last_handled = directory->details->deep_count_last_handled;
+        p = last_handled;
+	while ((p = directory_list_get_next_position (list, p))
+	       != GNOME_VFS_DIRECTORY_LIST_POSITION_NONE) {
+		deep_count_one (directory, gnome_vfs_directory_list_get (list, p));
+		last_handled = p;
+	}
+	directory->details->deep_count_last_handled = last_handled;
+
+	done = FALSE;
+	if (result != GNOME_VFS_OK) {
+		if (result != GNOME_VFS_ERROR_EOF) {
+			file->details->deep_unreadable_count += 1;
+		}
+		
+		directory->details->deep_count_in_progress = NULL;
+		g_free (directory->details->deep_count_uri);
+		directory->details->deep_count_uri = NULL;
+
+		if (directory->details->deep_count_subdirectories != NULL) {
+			/* Work on a new directory. */
+			uri = directory->details->deep_count_subdirectories->data;
+			directory->details->deep_count_subdirectories = g_list_remove
+				(directory->details->deep_count_subdirectories, uri);
+			deep_count_load (directory, uri);
+			g_free (uri);
+		} else {
+			file->details->deep_counts_status = NAUTILUS_REQUEST_DONE;
+			directory->details->deep_count_file = NULL;
+			done = TRUE;
+		}
+	}
+
+	nautilus_file_changed (file);
+
+	if (done) {
+		state_changed (directory);
+	}
+}
+
+static void
+deep_count_load (NautilusDirectory *directory, const char *uri)
+{
+	g_assert (directory->details->deep_count_uri == NULL);
+	directory->details->deep_count_uri = g_strdup (uri);
+	directory->details->deep_count_last_handled
+		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
+	gnome_vfs_async_load_directory
+		(&directory->details->deep_count_in_progress,
+		 uri,
+		 GNOME_VFS_FILE_INFO_DEFAULT,
+		 NULL,
+		 NULL,
+		 FALSE,
+		 GNOME_VFS_DIRECTORY_FILTER_NONE,
+		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR
+		  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
+		 NULL,
+		 G_MAXINT,
+		 deep_count_callback,
+		 directory);
+}
+
+static void
+deep_count_start (NautilusDirectory *directory)
+{
+	NautilusFile *file;
+	char *uri;
+
+	/* If there's already a count in progress, check to be sure
+	 * it's still wanted.
+	 */
+	if (directory->details->deep_count_in_progress != NULL) {
+		file = directory->details->deep_count_file;
+		if (file != NULL) {
+			g_assert (NAUTILUS_IS_FILE (file));
+			g_assert (file->details->directory == directory);
+			if (is_wanted (file, wants_deep_count)) {
+				return;
+			}
+		}
+
+		/* The count is not wanted, so stop it. */
+		cancel_deep_count (directory);
+	}
+
+	/* Figure out which file to get a count for. */
+	file = select_needy_file (directory,
+				  lacks_deep_count,
+				  wants_deep_count);
+	if (file == NULL) {
+		return;
+	}
+
+	/* Start counting. */
+	file->details->deep_counts_status = NAUTILUS_REQUEST_IN_PROGRESS;
+	file->details->deep_directory_count = 0;
+	file->details->deep_file_count = 0;
+	file->details->deep_unreadable_count = 0;
+	file->details->deep_size = 0;
+	directory->details->deep_count_file = file;
+	uri = nautilus_file_get_uri (file);
+	deep_count_load (directory, uri);
 	g_free (uri);
 }
 
@@ -1819,9 +2010,10 @@ state_changed (NautilusDirectory *directory)
 
 	/* Start or stop getting directory counts. */
 	start_getting_directory_counts (directory);
+	deep_count_start (directory);
 
 	/* Start or stop getting top left pieces of files. */
-	if (nautilus_directory_is_local(directory)
+	if (nautilus_directory_is_local (directory)
 	    || nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS, FALSE)) {
 		start_getting_top_lefts (directory);
 	}

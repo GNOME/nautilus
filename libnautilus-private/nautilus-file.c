@@ -1471,6 +1471,72 @@ nautilus_file_get_directory_item_count (NautilusFile *file,
 }
 
 /**
+ * nautilus_file_get_deep_counts
+ * 
+ * Get the statistics about items inside a directory.
+ * @file: NautilusFile representing a directory or file.
+ * @directory_count: Place to put count of directories inside.
+ * @files_count: Place to put count of files inside.
+ * @unreadable_directory_count: Set to TRUE (if non-NULL) if permissions prevent
+ * the item count from being read on this directory. Otherwise set to FALSE.
+ * 
+ * Returns: TRUE if count is available.
+ * 
+ **/
+
+NautilusRequestStatus
+nautilus_file_get_deep_counts (NautilusFile *file,
+			       guint *directory_count,
+			       guint *file_count,
+			       guint *unreadable_directory_count,
+			       GnomeVFSFileSize *total_size)
+{
+	GnomeVFSFileType type;
+
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+	g_return_val_if_fail (nautilus_file_is_directory (file), FALSE);
+
+	if (file->details->deep_counts_status != NAUTILUS_REQUEST_NOT_STARTED) {
+		if (directory_count != NULL) {
+			*directory_count = file->details->deep_directory_count;
+		}
+		if (file_count != NULL) {
+			*file_count = file->details->deep_file_count;
+		}
+		if (unreadable_directory_count != NULL) {
+			*unreadable_directory_count = file->details->deep_unreadable_count;
+		}
+		if (total_size != NULL) {
+			*total_size = file->details->deep_size;
+		}
+		return file->details->deep_counts_status;
+	}
+
+	if (directory_count != NULL) {
+		*directory_count = 0;
+	}
+	if (file_count != NULL) {
+		*file_count = 0;
+	}
+	if (unreadable_directory_count != NULL) {
+		*unreadable_directory_count = 0;
+	}
+	if (total_size != NULL) {
+		*total_size = 0;
+	}
+
+	/* For directories, or before we know the type, we haven't started. */
+	type = nautilus_file_get_file_type (file);
+	if (type == GNOME_VFS_FILE_TYPE_UNKNOWN
+	    || type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
+		return NAUTILUS_REQUEST_NOT_STARTED;
+	}
+
+	/* For other types, we are done, and the zeros are permanent. */
+	return NAUTILUS_REQUEST_DONE;
+}
+
+/**
  * nautilus_file_get_size
  * 
  * Get the file size.
@@ -2181,7 +2247,8 @@ nautilus_file_set_keywords (NautilusFile *file, GList *keywords)
 
 	canonical_keywords = sort_keyword_list_and_remove_duplicates
 		(g_list_copy (keywords));
-	nautilus_file_set_metadata_list (file, "KEYWORD", "NAME", canonical_keywords);
+	nautilus_file_set_metadata_list
+		(file, "KEYWORD", "NAME", canonical_keywords);
 	g_list_free (canonical_keywords);
 }
 
