@@ -434,6 +434,7 @@ thumbnail_thread_start (gpointer data)
 								pixbuf,
 								info->image_uri,
 								info->original_file_mtime);
+			g_object_unref (pixbuf);
 		} else {
 			gnome_thumbnail_factory_create_failed_thumbnail (thumbnail_factory, 
 									 info->image_uri,

@@ -1,5 +1,10 @@
 2003-02-13  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-thumbnails.c (thumbnail_thread_start):
+	Free pixbuf when saved.
+
+2003-02-13  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-main.c (main):
 	Set DISPLAY activation env variable to canonical display name, since that is what
 	we register for. Without this, do *not* run e.g. "DISPLAY=:0 nautilus".
