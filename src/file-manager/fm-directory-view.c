@@ -5841,7 +5841,7 @@ static GtkActionEntry directory_view_entries[] = {
 
 static GtkToggleActionEntry directory_view_toggle_entries[] = {
   { "Show Hidden Files", NULL,                  /* name, stock id */
-    N_("Show _Hidden Files"), NULL,                /* label, accelerator */
+    N_("Show _Hidden Files"), "<control>H",                /* label, accelerator */
     N_("Toggles the display of hidden files in the current window"),                   /* tooltip */ 
     G_CALLBACK (action_show_hidden_files_callback),
     TRUE },
