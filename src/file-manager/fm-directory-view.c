@@ -27,6 +27,8 @@
 #include <config.h>
 #include "fm-directory-view.h"
 
+#include <math.h>
+
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenu.h>
@@ -153,13 +155,13 @@ static void           open_one_in_new_window                                    
 										   gpointer                  user_data);
 static void           open_one_properties_window                                  (gpointer                  data,
 										   gpointer                  user_data);
+static void	      zoomable_set_zoom_level_callback				  (NautilusZoomable *zoomable,
+										   double level,
+										   FMDirectoryView *view);
 static void           zoomable_zoom_in_callback                                   (NautilusZoomable         *zoomable,
 										   FMDirectoryView          *directory_view);
 static void           zoomable_zoom_out_callback                                  (NautilusZoomable         *zoomable,
 										   FMDirectoryView          *directory_view);
-static void           zoomable_zoom_to_level_callback                             (NautilusZoomable         *zoomable,
-										   gint			    level,
-										   FMDirectoryView          *directory_view);										   
 static void           zoomable_zoom_default_callback                              (NautilusZoomable         *zoomable,
 										   FMDirectoryView          *directory_view);
 static void           schedule_idle_display_of_pending_files                      (FMDirectoryView          *view);
@@ -719,8 +721,8 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 			    zoomable_zoom_out_callback,
 			    directory_view);
 	gtk_signal_connect (GTK_OBJECT (directory_view->details->zoomable), 
-			    "zoom_to_level", 
-			    zoomable_zoom_to_level_callback,
+			    "set_zoom_level", 
+			    zoomable_set_zoom_level_callback,
 			    directory_view);
 	gtk_signal_connect (GTK_OBJECT (directory_view->details->zoomable), 
 			    "zoom_default", 
@@ -1053,10 +1055,32 @@ zoomable_zoom_out_callback (NautilusZoomable *zoomable, FMDirectoryView *directo
 	fm_directory_view_bump_zoom_level (directory_view, -1);
 }
 
-static void
-zoomable_zoom_to_level_callback (NautilusZoomable *zoomable, gint level, FMDirectoryView *view)
+static NautilusZoomLevel
+nautilus_zoom_level_from_double(double zoom_level)
 {
-	fm_directory_view_zoom_to_level (view, level);
+	int icon_size = floor(zoom_level * NAUTILUS_ICON_SIZE_STANDARD + 0.5);
+	
+	if (icon_size <= NAUTILUS_ICON_SIZE_SMALLEST) {
+		return NAUTILUS_ZOOM_LEVEL_SMALLEST;
+	} else if (icon_size <= NAUTILUS_ICON_SIZE_SMALLER) {
+		return NAUTILUS_ZOOM_LEVEL_SMALLER;
+	} else if (icon_size <= NAUTILUS_ICON_SIZE_SMALL) {
+		return NAUTILUS_ZOOM_LEVEL_SMALL;
+	} else if (icon_size <= NAUTILUS_ICON_SIZE_STANDARD) {
+		return NAUTILUS_ZOOM_LEVEL_STANDARD;
+	} else if (icon_size <= NAUTILUS_ICON_SIZE_LARGE) {
+		return NAUTILUS_ZOOM_LEVEL_LARGE;
+	} else if (icon_size <= NAUTILUS_ICON_SIZE_LARGER) {
+		return NAUTILUS_ZOOM_LEVEL_LARGER;
+	} else {
+		return NAUTILUS_ZOOM_LEVEL_LARGEST;
+	}
+}
+
+static void
+zoomable_set_zoom_level_callback (NautilusZoomable *zoomable, double level, FMDirectoryView *view)
+{
+	fm_directory_view_zoom_to_level (view, nautilus_zoom_level_from_double(level));
 }
 
 static void

@@ -37,6 +37,7 @@
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-pixmap.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 
@@ -130,10 +131,10 @@ nautilus_zoom_control_class_initialize (NautilusZoomControlClass *class)
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusZoomControlClass, 
 						   zoom_to_level),
-				gtk_marshal_NONE__INT,
+				nautilus_gtk_marshal_NONE__DOUBLE,
 				GTK_TYPE_NONE,
 				1,
-				GTK_TYPE_INT);
+				GTK_TYPE_DOUBLE);
 
 	signals[ZOOM_DEFAULT] =
 		gtk_signal_new ("zoom_default",
@@ -248,45 +249,41 @@ nautilus_zoom_control_expose (GtkWidget *widget, GdkEventExpose *event)
 static void
 zoom_menu_callback (GtkMenuItem *item, gpointer callback_data)
 {
-	gboolean changed;
-	gint zoom_level;
+	double zoom_level;
 	NautilusZoomControl *zoom_control;
 		
-	changed = FALSE;
-	zoom_level = GPOINTER_TO_INT (callback_data);
-	zoom_control = NAUTILUS_ZOOM_CONTROL (gtk_object_get_user_data (GTK_OBJECT (item)));
+	zoom_level = *(double*) gtk_object_get_data (GTK_OBJECT (item), "zoom_level");
+	zoom_control = NAUTILUS_ZOOM_CONTROL (callback_data);
 	
-	/* Proceed if there has been a change in the zoom level */
-	if (zoom_control->current_zoom != zoom_level) {
-		/* Check to see if we can zoom out */
-		if (zoom_level < zoom_control->current_zoom && zoom_level >= zoom_control->min_zoom) {
-			gtk_signal_emit (GTK_OBJECT (zoom_control), signals[ZOOM_TO_LEVEL], zoom_level);
-			changed = TRUE;
-		}
-		/* Check to see if we can zoom in */
-		else if (zoom_level > zoom_control->current_zoom && zoom_level <= zoom_control->max_zoom) {
-			gtk_signal_emit (GTK_OBJECT (zoom_control), signals[ZOOM_TO_LEVEL], zoom_level);
-			changed = TRUE;
-		}
-	}
-
-	if (changed) {
-		set_zoom_level (zoom_control, zoom_level);
+	/* Check to see if we can zoom out */
+	if ((zoom_level < zoom_control->current_zoom && zoom_level >= zoom_control->min_zoom) ||
+	    (zoom_level > zoom_control->current_zoom && zoom_level <= zoom_control->max_zoom)) {
+		gtk_signal_emit (GTK_OBJECT (zoom_control), signals[ZOOM_TO_LEVEL], zoom_level);
 	}
 }
 
 static void
+zoom_menu_item_free_zoom_level (gpointer zoom_level_ptr)
+{
+	g_free (zoom_level_ptr);
+}
+
+static void
 create_zoom_menu_item (GtkMenu *menu, GtkWidget *zoom_control,
-		       const char *item_text, int zoom_index)
+		       const char *item_text, double zoom_level)
 {
 	GtkWidget *menu_item;
+	double	  *zoom_level_ptr;
   
 	menu_item = gtk_menu_item_new_with_label (item_text);
 
-	gtk_object_set_user_data (GTK_OBJECT (menu_item), zoom_control);
+	zoom_level_ptr = g_new (double, 1);
+	*zoom_level_ptr = zoom_level;
+
+	gtk_object_set_data_full (GTK_OBJECT (menu_item), "zoom_level", zoom_level_ptr, zoom_menu_item_free_zoom_level);
 	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
 			    GTK_SIGNAL_FUNC (zoom_menu_callback),
-			    GINT_TO_POINTER (zoom_index));
+			    zoom_control);
 
   	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
@@ -297,13 +294,13 @@ create_zoom_menu(GtkWidget *zoom_control)
 {
 	GtkMenu *menu = GTK_MENU (gtk_menu_new ());
 	
-	create_zoom_menu_item(menu, zoom_control, _("25%"),  NAUTILUS_ZOOM_LEVEL_SMALLEST);
-	create_zoom_menu_item(menu, zoom_control, _("50%"),  NAUTILUS_ZOOM_LEVEL_SMALLER);
-	create_zoom_menu_item(menu, zoom_control, _("75%"),  NAUTILUS_ZOOM_LEVEL_SMALL);
-	create_zoom_menu_item(menu, zoom_control, _("100%"), NAUTILUS_ZOOM_LEVEL_STANDARD);
-	create_zoom_menu_item(menu, zoom_control, _("150%"), NAUTILUS_ZOOM_LEVEL_LARGE);
-	create_zoom_menu_item(menu, zoom_control, _("200%"), NAUTILUS_ZOOM_LEVEL_LARGER);
-	create_zoom_menu_item(menu, zoom_control, _("400%"), NAUTILUS_ZOOM_LEVEL_LARGEST);
+	create_zoom_menu_item(menu, zoom_control, _("25%"),  (double) NAUTILUS_ICON_SIZE_SMALLEST / NAUTILUS_ICON_SIZE_STANDARD);
+	create_zoom_menu_item(menu, zoom_control, _("50%"),  (double) NAUTILUS_ICON_SIZE_SMALLER / NAUTILUS_ICON_SIZE_STANDARD);
+	create_zoom_menu_item(menu, zoom_control, _("75%"),  (double) NAUTILUS_ICON_SIZE_SMALL / NAUTILUS_ICON_SIZE_STANDARD);
+	create_zoom_menu_item(menu, zoom_control, _("100%"), (double) NAUTILUS_ICON_SIZE_STANDARD / NAUTILUS_ICON_SIZE_STANDARD);
+	create_zoom_menu_item(menu, zoom_control, _("150%"), (double) NAUTILUS_ICON_SIZE_LARGE / NAUTILUS_ICON_SIZE_STANDARD);
+	create_zoom_menu_item(menu, zoom_control, _("200%"), (double) NAUTILUS_ICON_SIZE_LARGER / NAUTILUS_ICON_SIZE_STANDARD);
+	create_zoom_menu_item(menu, zoom_control, _("400%"), (double) NAUTILUS_ICON_SIZE_LARGEST / NAUTILUS_ICON_SIZE_STANDARD);
 	
 	return menu;  
 }

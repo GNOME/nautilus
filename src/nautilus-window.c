@@ -96,7 +96,7 @@ static void               zoom_in_callback                              (Nautilu
 static void               zoom_out_callback                             (NautilusZoomControl    *zoom_control,
 									 NautilusWindow         *window);
 static void               zoom_to_level_callback                        (NautilusZoomControl    *zoom_control,
-									 gint			level,
+									 double			level,
 									 NautilusWindow         *window);
 static void               zoom_default_callback                         (NautilusZoomControl    *zoom_control,
 									 NautilusWindow         *window);
@@ -246,11 +246,11 @@ zoom_in_callback (NautilusZoomControl *zoom_control,
 }
 
 static void
-zoom_to_level_callback (NautilusZoomControl *zoom_control, gint level,
+zoom_to_level_callback (NautilusZoomControl *zoom_control, double level,
             		NautilusWindow      *window)
 {
 	if (window->content_view != NULL) {
-		nautilus_view_frame_zoom_to_level (window->content_view, level);
+		nautilus_view_frame_set_zoom_level (window->content_view, level);
 	}
 }
 

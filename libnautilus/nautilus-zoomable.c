@@ -50,7 +50,6 @@ enum {
 	SET_ZOOM_LEVEL,
 	ZOOM_IN,
 	ZOOM_OUT,
-	ZOOM_TO_LEVEL,
 	ZOOM_DEFAULT,
 	ZOOM_TO_FIT,
 	LAST_SIGNAL
@@ -91,9 +90,6 @@ static void          impl_Nautilus_Zoomable_zoom_in             (impl_POA_Nautil
 								 CORBA_Environment          *ev);
 static void          impl_Nautilus_Zoomable_zoom_out            (impl_POA_Nautilus_Zoomable *servant,
 								 CORBA_Environment          *ev);
-static void          impl_Nautilus_Zoomable_zoom_to_level       (impl_POA_Nautilus_Zoomable *servant,
-								 const gint	    	    level,
-								 CORBA_Environment          *ev);
 static void          impl_Nautilus_Zoomable_zoom_default        (impl_POA_Nautilus_Zoomable *servant,
 								 CORBA_Environment          *ev);
 static void          impl_Nautilus_Zoomable_zoom_to_fit         (impl_POA_Nautilus_Zoomable *servant,
@@ -109,7 +105,6 @@ POA_Nautilus_Zoomable__epv libnautilus_Nautilus_Zoomable_epv =
 	(gpointer) &impl_Nautilus_Zoomable__get_is_continuous,
 	(gpointer) &impl_Nautilus_Zoomable_zoom_in,
 	(gpointer) &impl_Nautilus_Zoomable_zoom_out,
-	(gpointer) &impl_Nautilus_Zoomable_zoom_to_level,
 	(gpointer) &impl_Nautilus_Zoomable_zoom_default,
 	(gpointer) &impl_Nautilus_Zoomable_zoom_to_fit
 };
@@ -170,14 +165,6 @@ impl_Nautilus_Zoomable_zoom_out (impl_POA_Nautilus_Zoomable *servant,
 				 CORBA_Environment          *ev)
 {
 	gtk_signal_emit (GTK_OBJECT (servant->gtk_object), signals[ZOOM_OUT]);
-}
-
-static void
-impl_Nautilus_Zoomable_zoom_to_level (impl_POA_Nautilus_Zoomable *servant,
-				      const gint 		 level,
-				      CORBA_Environment          *ev)
-{
-	gtk_signal_emit (GTK_OBJECT (servant->gtk_object), signals[ZOOM_TO_LEVEL], level);
 }
 
 static void
@@ -302,16 +289,6 @@ nautilus_zoomable_initialize_class (NautilusZoomableClass *klass)
 				GTK_SIGNAL_OFFSET (NautilusZoomableClass, zoom_out),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
-	signals[ZOOM_TO_LEVEL] = 
-		gtk_signal_new ("zoom_to_level",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusZoomableClass, zoom_to_level),
-				gtk_marshal_NONE__INT,
-				GTK_TYPE_NONE, 
-				1,
-				GTK_TYPE_INT);
-
 	signals[ZOOM_DEFAULT] = 
 		gtk_signal_new ("zoom_default",
 				GTK_RUN_LAST,

@@ -105,7 +105,7 @@ module Nautilus {
 		readonly attribute double max_zoom_level;
 		readonly attribute boolean is_continuous;
 		/* FIXME: Implement "preferred zoom levels" or delete. */
-		// readonly attribute ZoomLevelList preferred_zoom_levels;
+		/* readonly attribute ZoomLevelList preferred_zoom_levels; */
 		
 		/* High level operations.
 		 * These can cause a change in the zoom level.
@@ -114,7 +114,6 @@ module Nautilus {
 		 */
 		oneway void zoom_in ();
 		oneway void zoom_out ();
-		oneway void zoom_to_level (in short zoom_level);
 		oneway void zoom_default ();
 		/* FIXME: Implement "zoom to fit" or delete. */
 		oneway void zoom_to_fit ();

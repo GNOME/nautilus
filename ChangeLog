@@ -1,3 +1,23 @@
+2000-06-22  Michael Engber  <engber@eazel.com>
+
+	* libnautilus/nautilus-view-component.idl:
+	* libnautilus/nautilus-zoomable.c:
+	(nautilus_zoomable_initialize_class):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize), (nautilus_zoom_level_from_double),
+	(zoomable_set_zoom_level_callback):
+	* src/nautilus-view-frame.c:
+	* src/nautilus-view-frame.h:
+	* src/nautilus-window.c: (zoom_to_level_callback):
+	* src/nautilus-zoom-control.c:
+	(nautilus_zoom_control_class_initialize), (zoom_menu_callback),
+	(zoom_menu_item_free_zoom_level), (create_zoom_menu_item),
+	(create_zoom_menu):
+	Removed zoom_to_level from the zoomable interface - starting
+	on the process of removing the zoom control being tied to
+	7 discrete icon sizes. Bug #1425
+	
+
 2000-06-22  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/Makefile.am:
