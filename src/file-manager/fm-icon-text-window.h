@@ -28,6 +28,13 @@
 
 #include <gtk/gtkwindow.h>
 
+/* Interface for creating the window. */
 GtkWindow *fm_icon_text_window_get_or_create (void);
+
+/* Cover for getting the attribute names preference or the default.
+ * This is really not part of icon text window, but putting it here
+ * prevents us from having to abstract what attribute names are legal.
+ */
+char *fm_get_text_attribute_names_preference_or_default (void);
 
 #endif /* FM_ICON_TEXT_WINDOW_H */

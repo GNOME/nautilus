@@ -25,7 +25,6 @@
 
 #include <config.h>
 #include "fm-icon-text-window.h"
-#include "fm-icon-view.h"
 
 #include <gtk/gtkaccellabel.h>
 #include <gtk/gtkhbox.h>
@@ -50,8 +49,9 @@ static gboolean fm_icon_text_window_delete_event_cb (GtkWidget *widget,
 static void     fm_icon_text_window_destroy_cb      (GtkObject *object,
 						     gpointer   user_data);
 
-#define PIECES_COUNT	3
-#define MENU_COUNT	(PIECES_COUNT)
+#define DEFAULT_ATTRIBUTE_NAMES "size|date_modified|type"
+#define PIECES_COUNT            3
+#define MENU_COUNT              (PIECES_COUNT)
 
 static GtkOptionMenu *option_menus[MENU_COUNT];
 
@@ -68,7 +68,7 @@ static char * attribute_names[] = {
 	NULL
 };
 
-static char * attribute_labels[] = {
+static const char * attribute_labels[] = {
 	N_("size"),
 	N_("type"),
 	N_("date modified"),
@@ -128,35 +128,16 @@ attribute_names_string_is_good (const char *string)
 	return i == MENU_COUNT;
 }
 
-static char *attribute_names_preference = NULL;
-
-static void
-set_preference_string (const char *new_value)
-{
-	g_assert (attribute_names_string_is_good (new_value));
-	g_free (attribute_names_preference);
-	attribute_names_preference = g_strdup (new_value);
-}
-
 static void
 synch_menus_with_preference (void)
 {
 	char *preference;
-	int i, string_index;
 	char **text_array;
+	int i, string_index;
 
-	if (attribute_names_preference == NULL) {
-		preference = nautilus_preferences_get (nautilus_preferences_get_global_preferences (),
-						       NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
-						       DEFAULT_ICON_VIEW_TEXT_ATTRIBUTE_NAMES);
-		if (attribute_names_string_is_good (preference)) {
-			set_preference_string (preference);
-		} else {
-			set_preference_string (DEFAULT_ICON_VIEW_TEXT_ATTRIBUTE_NAMES);
-		}
-	}
-
-	text_array = g_strsplit (attribute_names_preference, "|", 0);
+	preference = fm_get_text_attribute_names_preference_or_default ();
+	text_array = g_strsplit (preference, "|", 0);
+	g_free (preference);
 	
 	for (i = 0; i < MENU_COUNT; ++i) {
 		g_assert (text_array[i] != NULL);
@@ -169,27 +150,14 @@ synch_menus_with_preference (void)
 }
 
 static void
-icon_view_text_attribute_changed_callback (NautilusPreferences	*preferences,
-					   const char		*name,
-					   gpointer		user_data)
-
+icon_view_text_attribute_changed_callback (NautilusPreferences *preferences,
+					   const char *name,
+					   gpointer user_data)
 {
-	char *text_attribute_names;
-
 	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
 	g_assert (strcmp (name, NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES) == 0);
 	g_assert (user_data == NULL);
 	
-	text_attribute_names = nautilus_preferences_get (nautilus_preferences_get_global_preferences (),
-							 NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
-							 NULL);
-
-	g_assert (text_attribute_names != NULL);
-
-	set_preference_string (text_attribute_names);
-
-	g_free (text_attribute_names);
-
 	synch_menus_with_preference ();
 }
 
@@ -420,4 +388,19 @@ fm_icon_text_window_get_or_create (void)
 	}
 	
 	return GTK_WINDOW (icon_text_window);
+}
+
+char *
+fm_get_text_attribute_names_preference_or_default (void)
+{
+	char *preference;
+
+	preference = nautilus_preferences_get (nautilus_preferences_get_global_preferences (),
+					       NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+					       DEFAULT_ATTRIBUTE_NAMES);
+	if (attribute_names_string_is_good (preference)) {
+		return preference;
+	}
+	g_free (preference);
+	return g_strdup (DEFAULT_ATTRIBUTE_NAMES);
 }

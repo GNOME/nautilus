@@ -21,7 +21,10 @@
   
 */
 
+#include <config.h>
 #include "nautilus-file-changes-queue-private.h"
+
+#include "nautilus-glib-extensions.h"
 #include "nautilus-directory-private.h"
 
 #ifdef G_THREADS_ENABLED
@@ -176,6 +179,25 @@ enum {
 	CONSUME_CHANGES_MAX_CHUNK = 10
 };
 
+static void
+pairs_list_free (GList *pairs)
+{
+	GList *p;
+	URIPair *pair;
+
+	/* deep delete the list of pairs */
+
+	for (p = pairs; p != NULL; p = p->next) {
+		/* delete the strings in each pair */
+		pair = p->data;
+		g_free (pair->from_uri);
+		g_free (pair->to_uri);
+	}
+
+	/* delete the list and the now empty pair structs */
+	nautilus_g_list_free_deep (pairs);
+}
+
 /* go through changes in the change queue, send ones with the same kind
  * in a list to the different nautilus_directory_notify calls
  */ 
@@ -195,33 +217,37 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 	moves = NULL;
 	kind = CHANGE_FILE_INITIAL;
 
-	if (file_changes_queue == NULL)
-		return;
-
 	for (chunk_count = 0; ; chunk_count++) {
 		change = nautilus_file_changes_queue_get_change (file_changes_queue);
 
-		
-		if (change == NULL 
+		if (change == NULL
 			/* no changes left */
 			|| change->kind != kind
 			/* all the changes we have are different that the new one */
 			|| (!consume_all && chunk_count >= CONSUME_CHANGES_MAX_CHUNK)) {
 			/* we have reached the chunk maximum */
 
-
-			/* send changes we collected off */
-			if (additions != NULL) {
-				nautilus_directory_notify_files_added (additions);
-				additions = NULL;
-			}
+			/* Send changes we collected off.
+			 * Must send deletions first, then moves, then additions, because
+			 * of the possibility of name overlaps.
+			 * FIXME: In fact, we might need to send these out in the order
+			 * we received them to avoid confusion if a file is added and then
+			 * removed, or added and then moved, or moved and then deleted.
+			 */
 			if (deletions != NULL) {
 				nautilus_directory_notify_files_removed (deletions);
+				nautilus_g_list_free_deep (deletions);
 				deletions = NULL;
 			}
 			if (moves != NULL) {
 				nautilus_directory_notify_files_moved (moves);
+				pairs_list_free (moves);
 				moves = NULL;
+			}
+			if (additions != NULL) {
+				nautilus_directory_notify_files_added (additions);
+				nautilus_g_list_free_deep (additions);
+				additions = NULL;
 			}
 		}
 
@@ -259,4 +285,3 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 		change->to_uri = NULL;
 	}	
 }
-

@@ -56,6 +56,12 @@ typedef struct NautilusDirectoryClass NautilusDirectoryClass;
 #define NAUTILUS_IS_DIRECTORY_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DIRECTORY))
 
+/* NautilusFile is defined both here and in nautilus-file.h. */
+#ifndef NAUTILUS_FILE_DEFINED
+#define NAUTILUS_FILE_DEFINED
+typedef struct NautilusFile NautilusFile;
+#endif
+
 typedef void (*NautilusDirectoryCallback) (NautilusDirectory *directory,
 					   gpointer           callback_data);
 typedef void (*NautilusFileListCallback)  (NautilusDirectory *directory,
@@ -78,6 +84,10 @@ void               nautilus_directory_unref                (NautilusDirectory   
 
 /* Access to a URI. */
 char *             nautilus_directory_get_uri              (NautilusDirectory         *directory);
+
+/* Is this file still alive and in this directory? */
+gboolean           nautilus_directory_contains_file        (NautilusDirectory         *directory,
+							    NautilusFile              *file);
 
 /* Waiting for data that's read asynchronously.
  * This interface currently works only for metadata, but could be expanded

@@ -33,7 +33,11 @@
  * to do most of the work.
  */
 
+/* NautilusFile is defined both here and in nautilus-directory.h. */
+#ifndef NAUTILUS_FILE_DEFINED
+#define NAUTILUS_FILE_DEFINED
 typedef struct NautilusFile NautilusFile;
+#endif
 typedef struct NautilusFileClass NautilusFileClass;
 
 #define NAUTILUS_TYPE_FILE \

@@ -36,8 +36,6 @@ typedef struct FMIconViewClass FMIconViewClass;
 #define FM_IS_ICON_VIEW(obj)			(GTK_CHECK_TYPE ((obj), FM_TYPE_ICON_VIEW))
 #define FM_IS_ICON_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), FM_TYPE_ICON_VIEW))
 
-#define DEFAULT_ICON_VIEW_TEXT_ATTRIBUTE_NAMES "size|date_modified|type"
-
 typedef struct FMIconViewDetails FMIconViewDetails;
 
 struct FMIconView {

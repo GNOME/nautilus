@@ -846,10 +846,7 @@ display_pending_files (FMDirectoryView *view)
 		
 		add_nautilus_file_to_uri_map (view, NAUTILUS_FILE (file));
 
-		/* FIXME: We really want to ask if it is gone from this directory,
-		 * not if it has been deleted.
-		 */
-		if (!nautilus_file_is_gone (file)) {
+		if (nautilus_directory_contains_file (view->details->model, file)) {
 			gtk_signal_emit (GTK_OBJECT (view),
 					 signals[ADD_FILE],
 					 file);
@@ -867,10 +864,7 @@ display_pending_files (FMDirectoryView *view)
 		 * always returns the same existing file object. -Darin
 		 */
 
-		/* FIXME: We really want to ask if it is gone from this directory,
-		 * not if it has been deleted.
-		 */
-                if (nautilus_file_is_gone (file)) {
+                if (!nautilus_directory_contains_file (view->details->model, file)) {
 			remove_nautilus_file_from_uri_map (view, NAUTILUS_FILE (file));
                 }
 

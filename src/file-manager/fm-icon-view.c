@@ -151,13 +151,12 @@ struct FMIconViewDetails
 {
 	GList *icons_not_positioned;
 	NautilusZoomLevel default_zoom_level;
-	char *text_attribute_names;
 
 	guint react_to_icon_change_idle_id;
 	gboolean menus_ready;
 };
 
-/* GtkObject methods.  */
+/* GtkObject methods. */
 
 static void
 fm_icon_view_initialize_class (FMIconViewClass *klass)
@@ -181,8 +180,10 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
 	fm_directory_view_class->get_selection = fm_icon_view_get_selection;
 	fm_directory_view_class->select_all = fm_icon_view_select_all;
 	fm_directory_view_class->set_selection = fm_icon_view_set_selection;
-        fm_directory_view_class->append_background_context_menu_items = fm_icon_view_append_background_context_menu_items;
-        fm_directory_view_class->append_selection_context_menu_items = fm_icon_view_append_selection_context_menu_items;
+        fm_directory_view_class->append_background_context_menu_items =
+		fm_icon_view_append_background_context_menu_items;
+        fm_directory_view_class->append_selection_context_menu_items =
+		fm_icon_view_append_selection_context_menu_items;
         fm_directory_view_class->merge_menus = fm_icon_view_merge_menus;
         fm_directory_view_class->update_menus = fm_icon_view_update_menus;
 }
@@ -196,15 +197,11 @@ fm_icon_view_initialize (FMIconView *icon_view)
 
 	icon_view->details = g_new0 (FMIconViewDetails, 1);
 	icon_view->details->default_zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
-	icon_view->details->text_attribute_names 
-		= nautilus_preferences_get (nautilus_preferences_get_global_preferences (),
-					    NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
-					    DEFAULT_ICON_VIEW_TEXT_ATTRIBUTE_NAMES);
 
 	nautilus_preferences_add_string_callback (nautilus_preferences_get_global_preferences (),
 						  NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
 						  text_attribute_names_changed_callback,
-						  icon_view);	
+						  icon_view);
 	
 	icon_container = create_icon_container (icon_view);
 }
@@ -225,7 +222,6 @@ fm_icon_view_destroy (GtkObject *object)
                 gtk_idle_remove (icon_view->details->react_to_icon_change_idle_id);
         }
 
-	g_free (icon_view->details->text_attribute_names);
 	nautilus_file_list_free (icon_view->details->icons_not_positioned);
 	g_free (icon_view->details);
 
@@ -587,10 +583,7 @@ static void
 fm_icon_view_file_changed (FMDirectoryView *view, NautilusFile *file)
 {
 	/* This handles both changes to an existing file and the existing file going away. */
-	/* FIXME: We really want to ask if it is gone from this directory,
-	 * not if it has been deleted.
-	 */
-	if (nautilus_file_is_gone (file)) {
+	if (!nautilus_directory_contains_file (fm_directory_view_get_model (view), file)) {
 		if (nautilus_icon_container_remove (get_icon_container (FM_ICON_VIEW (view)),
 						    NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
 			nautilus_file_unref (file);
@@ -741,11 +734,8 @@ fm_icon_view_can_zoom_out (FMDirectoryView *view)
 static char *
 fm_icon_view_get_icon_text_attribute_names (FMIconView *view)
 {
-	char * all_names;
-	char * result;
-	char * c;
-	int pieces_so_far;
-	int piece_count;
+	char *all_names, *result, *c;
+	int pieces_so_far, piece_count;
 	const int pieces_by_level[] = {
 		0,	/* NAUTILUS_ZOOM_LEVEL_SMALLEST */
 		0,	/* NAUTILUS_ZOOM_LEVEL_SMALLER */
@@ -758,15 +748,13 @@ fm_icon_view_get_icon_text_attribute_names (FMIconView *view)
 
 	piece_count = pieces_by_level[fm_icon_view_get_zoom_level (view)];
 
-	all_names = view->details->text_attribute_names;
+	all_names = fm_get_text_attribute_names_preference_or_default ();
 	pieces_so_far = 0;
 
-	for (c = all_names; *c != '\0'; ++c)
-	{
+	for (c = all_names; *c != '\0'; ++c) {
 		if (pieces_so_far == piece_count) {
 			break;
 		}
-
 		if (*c == '|') {
 			++pieces_so_far;
 		}
@@ -774,6 +762,8 @@ fm_icon_view_get_icon_text_attribute_names (FMIconView *view)
 
 	/* Return an initial substring of the full set */
 	result = g_strndup (all_names, (c - all_names));
+
+	g_free (all_names);
 	
 	return result;
 }
@@ -1101,9 +1091,9 @@ fm_icon_view_icon_changed_callback (NautilusIconContainer *container,
 /* Attempt to change the filename to the new text.  Notify user if operation fails. */
 static void
 fm_icon_view_icon_text_changed_callback (NautilusIconContainer *container,
-				    NautilusFile *file,				    
-					char *new_name,
-					FMIconView *icon_view)
+					 NautilusFile *file,				    
+					 char *new_name,
+					 FMIconView *icon_view)
 {
 	GnomeVFSResult rename_result;
 	char *original_name;
@@ -1250,31 +1240,14 @@ get_icon_property_callback (NautilusIconContainer *container,
 }
 
 static void
-text_attribute_names_changed_callback (NautilusPreferences	*preferences,
-         			       const char		*name,
-         			       gpointer			user_data)
+text_attribute_names_changed_callback (NautilusPreferences *preferences,
+         			       const char *name,
+         			       gpointer user_data)
 
 {
-	FMIconView *icon_view;
-	char *text_attribute_names;
-
 	g_assert (NAUTILUS_IS_PREFERENCES (preferences));
 	g_assert (strcmp (name, NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES) == 0);
 	g_assert (FM_IS_ICON_VIEW (user_data));
 
-	icon_view = FM_ICON_VIEW (user_data);
-
-	g_free (icon_view->details->text_attribute_names);
-
-	text_attribute_names = nautilus_preferences_get (nautilus_preferences_get_global_preferences (),
-							 NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
-							 DEFAULT_ICON_VIEW_TEXT_ATTRIBUTE_NAMES);
-
-	icon_view->details->text_attribute_names = g_strdup (text_attribute_names);
-
-	g_assert (text_attribute_names != NULL);
-
-	g_free (text_attribute_names);
-
-	nautilus_icon_container_request_update_all (get_icon_container (icon_view));	
+	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (user_data)));	
 }

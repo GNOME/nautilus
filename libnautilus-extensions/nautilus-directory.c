@@ -282,6 +282,25 @@ nautilus_directory_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
+#ifndef G_DISABLE_ASSERT
+
+static gboolean
+is_canonical_uri (const char *uri)
+{
+	if (uri == NULL) {
+		return FALSE;
+	}
+	if (nautilus_str_has_suffix (uri, "/")) {
+		if (nautilus_str_has_suffix (uri, ":///")) {
+			return TRUE;
+		}
+		return FALSE;
+	}
+	return TRUE;
+}
+
+#endif /* !G_DISABLE_ASSERT */
+
 /**
  * nautilus_directory_get:
  * @uri: URI of directory to get.
@@ -317,6 +336,7 @@ nautilus_directory_get (const char *uri)
 			canonical_uri = with_slashes;
 		}
 	}
+	g_assert (is_canonical_uri (canonical_uri));
 
 	/* Create the hash table first time through. */
 	if (directory_objects == NULL) {
@@ -1658,84 +1678,155 @@ process_pending_file_attribute_requests (NautilusDirectory *directory)
 	g_free (uri);
 }
 
+/* If a directory object exists for this one's parent, then
+ * return it, otherwise return NULL.
+ */
+static NautilusDirectory *
+parent_directory_if_exists (const char *uri)
+{
+	GnomeVFSURI *vfs_uri, *directory_vfs_uri;
+	char *directory_uri;
+
+	/* Make VFS version of URI. */
+	vfs_uri = gnome_vfs_uri_new (uri);
+	if (vfs_uri == NULL) {
+		return NULL;
+	}
+
+	/* Make VFS version of directory URI. */
+	directory_vfs_uri = gnome_vfs_uri_get_parent (vfs_uri);
+	gnome_vfs_uri_unref (vfs_uri);
+	if (directory_vfs_uri == NULL) {
+		return NULL;
+	}
+
+	/* Make text version of directory URI. */
+	directory_uri = gnome_vfs_uri_to_string (directory_vfs_uri,
+						 GNOME_VFS_URI_HIDE_NONE);
+	gnome_vfs_uri_unref (directory_vfs_uri);
+	g_assert (is_canonical_uri (directory_uri));
+
+	/* Get directory from hash table. */
+	if (directory_objects == NULL) {
+		return NULL;
+	}
+	return g_hash_table_lookup (directory_objects, directory_uri);
+}
+
+static NautilusFile *
+file_if_exists (const char *uri)
+{
+	/* FIXME: Darin will implement this soon. */
+	return NULL;
+}
+
 void
 nautilus_directory_notify_files_added (GList *uris)
 {
 	GList *p;
-	for (p = uris; p != NULL; p = p->next) {
-#ifdef COPY_NOTIFY_TESTING
-		printf("added %s\n", (const char *)p->data);
-#endif
-		/*
-		FIXME:
-		
-		Find the parent directory of uri in directory_objects.
-	 	Create a new NautilusFile and add it to the directory.
-	 	Notify all observers of directory about new NautilusFile.
-	 	*/
+	NautilusDirectory *directory;
+	const char *uri;
 
+	for (p = uris; p != NULL; p = p->next) {
+		uri = (const char *) p->data;
+
+#ifdef COPY_NOTIFY_TESTING
+		g_message ("added %s", uri);
+#endif
+
+		/* See if the directory is already known. */
+		directory = parent_directory_if_exists (uri);
+		if (directory == NULL) {
+			continue;
+		}
+
+		/* If no one is monitoring files in the directory, nothing to do. */
+		/* FIXME: With John's changes this check may no longer be
+		 * correct.
+		 */
+		if (directory->details->file_monitors == NULL) {
+			continue;
+		}
+
+		/* FIXME: Queue up files to have get_file_info called on them.
+		 * We can't just call it synchronously.
+		 * Once the NautilusFile objects are created we can emit
+		 * the files_added signals. Do this in a way that
+		 * results in a single files_added per directory
+		 * instead of many single-file calls.
+		 */
 	}
-	nautilus_g_list_free_deep (uris);
 }
 
 void
 nautilus_directory_notify_files_removed (GList *uris)
 {
 	GList *p;
-	for (p = uris; p != NULL; p = p->next) {
-#ifdef COPY_NOTIFY_TESTING
-		printf("removed %s\n", (const char *)p->data);
-#endif
-		/*
-		FIXME:
-		
-		Find the parent directory of uri in directory_objects.
-	 	Look up NautilusFile for uri.
-	 	Notify all observers of directory that the NautilusFile is 
-	 	being removed.
-	 	Remove the NautilusFile from directory and delete it.
-	 	*/
+	const char *uri;
+	NautilusFile *file;
 
+	for (p = uris; p != NULL; p = p->next) {
+		uri = (const char *) p->data;
+
+#ifdef COPY_NOTIFY_TESTING
+		g_message ("removed %s", p->data);
+#endif
+
+		file = file_if_exists (uri);
+
+		/* FIXME: Set the is_gone flag on the file, remove it
+		 * from the directory, and call
+		 * nautilus_directory_files_changed.  Do this in a way
+		 * that results in a single
+		 * nautilus_directory_files_changed per directory
+		 * instead of many single-file calls (little hash
+		 * table full of lists?).
+		 */
 	}
-	nautilus_g_list_free_deep (uris);
 }
 
 void
 nautilus_directory_notify_files_moved (GList *uri_pairs)
 {
 	GList *p;
+	URIPair *pair;
+	NautilusFile *file;
+	NautilusDirectory *from_directory, *to_directory;
+
 	for (p = uri_pairs; p != NULL; p = p->next) {
+		pair = p->data;
+
 #ifdef COPY_NOTIFY_TESTING
-		URIPair *pair;
-
-		pair = p->data;
-		printf("moved %s to %s \n", pair->from_uri, pair->to_uri);
+		g_message ("moved %s to %s", pair->from_uri, pair->to_uri);
 #endif
-		/*
-		FIXME:
-		
-	 	Find the parent directory of pair->from_uri in directory_objects.
-	 	Find the parent directory of pair->from_to in directory_objects.
-	 	Look up NautilusFile for pair->from_uri.
-	 	??? 
 
-	 	*/
+		file = file_if_exists (pair->from_uri);
+		from_directory = parent_directory_if_exists (pair->from_uri);
+		to_directory = parent_directory_if_exists (pair->to_uri);
 
+		/* FIXME: If both directories are the same, send out a
+		 * files_changed for the file. If the directories are
+		 * different, move the file into the new directory and
+		 * send out a file added. Do this in a way that
+		 * results in a single files_changed or file_added per
+		 * directory instead of many single-file calls (little
+		 * hash table full of lists?).
+		 */
+	}
+}
+
+gboolean
+nautilus_directory_contains_file (NautilusDirectory *directory,
+				  NautilusFile *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	if (nautilus_file_is_gone (file)) {
+		return FALSE;
 	}
 
-	/* deep delete the list of pairs */
-	for (p = uri_pairs; p != NULL; p = p->next) {
-		URIPair *pair;
-
-		/* delete the strings in each pair */
-		pair = p->data;
-		g_free (pair->from_uri);
-		g_free (pair->to_uri);
-	}
-
-	/* delete the list and the now empty pair structs */
-	nautilus_g_list_free_deep (uri_pairs);
-
+	return file->details->directory == directory;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

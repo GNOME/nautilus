@@ -1,3 +1,55 @@
+2000-04-18  Darin Adler  <darin@eazel.com>
+
+	Fixed bug where you'd see the name twice under each icon.
+	Did some work for the new notify hooks that Pavel made.
+	I'll finish those hooks soon.
+	
+	* src/file-manager/fm-icon-view.h:
+	* src/file-manager/fm-icon-text-window.h:
+	* src/file-manager/fm-icon-text-window.c:
+	(set_preference_string), (synch_menus_with_preference),
+	(icon_view_text_attribute_changed_callback),
+	(fm_get_text_attribute_names_preference_or_default):
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_initialize),
+	(fm_icon_view_get_icon_text_attribute_names),
+	(text_attribute_names_changed_callback):
+	Moved attribute names default into FMIconTextWindow and made
+	the callers use a new call that gets either the preference or
+	the default if the preference is invalid. Also simplified the
+	code since we don't need to cache the preference in either the
+	FMIconTextWindow or the FMIconView.
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(is_canonical_uri): Added a function for use in asserts.
+	(nautilus_directory_get): Assert that we successfully
+	made the URI canonical.
+	(parent_directory_if_exists), (file_if_exists): Helper
+	functions for implementing the notify calls.
+	(nautilus_directory_notify_files_added),
+	(nautilus_directory_notify_files_removed),
+	(nautilus_directory_notify_files_moved):
+	Fleshed out the bones of these routines a bit more.
+	They are still not done. Also changed their interfaces
+	so they are not responsible for freeing their parameters.
+	
+	* libnautilus-extensions/nautilus-directory.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	* libnautilus-extensions/nautilus-file.h:
+	(nautilus_directory_contains_file):
+	New call to be used instead of nautilus_file_is_gone
+	for callers that are monitoring a directory.
+
+	* libnautilus-extensions/nautilus-file-changes-queue.c:
+	(pairs_list_free), (nautilus_file_changes_consume_changes):
+	Make the caller free the list instead of the called function
+	Also reordered the changes so deletions come before additions.
+
+	* src/file-manager/fm-directory-view.c: (display_pending_files):
+	* src/file-manager/fm-list-view.c: (fm_list_view_file_changed):
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_file_changed):
+	Changed to use nautilus_directory_contains_file instead of
+	nautilus_file_is_gone.
+	
 2000-04-18  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/services/install/.cvsignore: Ignore more generated
