@@ -1348,17 +1348,23 @@ scale_image_and_rectangle (GdkPixbuf *image,
 		return gdk_pixbuf_ref (image);
 	}
 
+	width *= scale_x;
+	if (width < 1) {
+		width = 1;
+	}
+	height *= scale_y;
+	if (height < 1) {
+		height = 1;
+	}
+
 	scaled_image = gdk_pixbuf_scale_simple
-		(image,
-		 width * scale_x,
-		 height * scale_y,
-		 GDK_INTERP_BILINEAR);
+		(image, width, height, GDK_INTERP_BILINEAR);
 	gdk_pixbuf_unref (image);
 
 	rectangle->x0 *= scale_x;
 	rectangle->y0 *= scale_y;
-	rectangle->x1 *= scale_x;
-	rectangle->y1 *= scale_y;
+	rectangle->x1 = rectangle->x0 + width;
+	rectangle->y1 = rectangle->y0 + height;
 
 	return scaled_image;
 }
@@ -2147,7 +2153,6 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 				}
 
 				/* scale the image, then release the large one */
-				
 				scaled_image = gdk_pixbuf_scale_simple (full_size_image,
 									scaled_width, scaled_height,
 									GDK_INTERP_BILINEAR);				

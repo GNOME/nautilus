@@ -1,4 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /* gnome-icon-container.h - Icon container widget.
 
    Copyright (C) 1999, 2000 Free Software Foundation
@@ -76,10 +77,14 @@ struct NautilusIconContainerClass {
 						   int x,
 						   int y);
 
-	/* Queries on the container for subclass/client. */
+	/* Queries on the container for subclass/client.
+	 * These must be implemented. The default "do nothing" is not good enough.
+	 */
 	char *	     (* get_container_uri)	  (NautilusIconContainer *container);
 
-	/* Queries on icons for subclass/client. */
+	/* Queries on icons for subclass/client.
+	 * These must be implemented. The default "do nothing" is not good enough.
+	 */
 	gboolean     (* can_accept_item)	  (NautilusIconContainer *container,
 						   NautilusIconData *target, 
 						   const char *item_uri);

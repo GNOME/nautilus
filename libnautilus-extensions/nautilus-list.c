@@ -251,11 +251,10 @@ static gboolean row_set_selected                        (NautilusList         *l
 static gboolean select_row_unselect_others              (NautilusList         *list,
 							 int                   row_to_select);
 static void     click_policy_changed_callback           (gpointer              user_data);
-static void 	select_matching_name 			(GtkWidget 	      *widget, 
-							 const char 	      *pattern);
-static void 	select_next_name 			(GtkWidget 	      *widget);
-static void 	select_previous_name 			(GtkWidget 	      *widget);
 static void	nautilus_list_flush_typeselect_state 	(NautilusList 	      *container);
+static int      insert_row                              (GtkCList             *list,
+							 int                   row,
+							 char                 *text[]);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusList, nautilus_list, GTK_TYPE_CLIST)
@@ -380,12 +379,10 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 	list_class->column_resize_track_start = nautilus_list_column_resize_track_start;
 	list_class->column_resize_track = nautilus_list_column_resize_track;
 	list_class->column_resize_track_end = nautilus_list_column_resize_track_end;
-	list_class->select_matching_name = select_matching_name;
-	list_class->select_previous_name = select_previous_name;
-	list_class->select_next_name = select_next_name;
 
 	clist_class->clear = nautilus_list_clear;
 	clist_class->draw_row = draw_row;
+	clist_class->insert_row = insert_row;
   	clist_class->resize_column = nautilus_list_resize_column;
   	clist_class->set_cell_contents = nautilus_list_set_cell_contents;
   	clist_class->select_all = nautilus_list_select_all;
@@ -2525,18 +2522,28 @@ nautilus_list_set_selection (NautilusList *list, GList *selection)
 	}
 }
 
-static void 
-select_matching_name (GtkWidget *widget, const char *pattern)
+/* Workaround for a bug in GtkCList's insert_row.
+ * It sets the focus row to 0 if there is exactly one row,
+ * even if there was no focus on entry.
+ * Although this works for focus, there may still be a problem
+ * with selection.
+ */
+static int
+insert_row (GtkCList *list,
+	    int row,
+	    char *text[])
 {
-}
+	gboolean had_focus;
+	int result;
 
-static void 
-select_next_name (GtkWidget *widget)
-{
-}
+	had_focus = list->focus_row != -1;
 
-static void 
-select_previous_name (GtkWidget *widget)
-{
-}
+	result = NAUTILUS_CALL_PARENT_CLASS
+		(GTK_CLIST_CLASS, insert_row, (list, row, text));
 
+	if (!had_focus) {
+		list->focus_row = -1;
+	}
+
+	return result;
+}

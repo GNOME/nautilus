@@ -1,3 +1,20 @@
+2000-05-17  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.h:
+	Added comments.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(scale_image_and_rectangle): Added a minimum height and width to
+	avoid problems with scaling things down to 0.
+	
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_initialize_class), (insert_row):
+	* src/file-manager/fm-list-view.c: (add_to_list):
+	Moved GtkCList workaround into NautilusList so all clients can get
+	the advantage of it instead of just FMListView. Also eliminated
+	some unneeded empty functions for signals, since NULL works for an
+	empty signal handler.
+
 2000-05-17  John Sullivan  <sullivan@eazel.com>
 
 	Started tweaking with the command buttons in the sidebar
@@ -407,13 +424,14 @@
 	(nautilus_music_view_set_up_background),
 	(nautilus_music_view_update_from_uri),
 	(nautilus_music_view_drag_data_received):
-	made the view sizing more dynamic, made it receive colors and backgrounds
+	made the view sizing more dynamic, made it receive colors and
+	backgrounds
 	
 	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
 	(nautilus_gdk_pixbuf_render_to_drawable_tiled),
 	(nautilus_gdk_pixbuf_scale_to_fit):
-	added new nautilus_gdk_pixbuf_scale_to_fit routine, adapted from the property browser
-	since I need it in the Music view
+	dded new nautilus_gdk_pixbuf_scale_to_fit routine, adapted from
+	the property browser since I need it in the Music view
 	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h:
 	added new routine
 	* src/nautilus-property-browser.c: (make_drag_image),
