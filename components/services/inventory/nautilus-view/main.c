@@ -17,13 +17,75 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Authors:
- *
+ * Author: Maciej Stachowiak <mjs@eazel.com>
+ *         J Shane Culpepper <pepper@eazel.com>
  */
 
-#include <config.h>
+/* main.c - main function and object activation function for services
+   content view component. */
 
-int main (int argc, char *argv[]) {
+#include <config.h>
+#include <gnome.h>
+#include <liboaf/liboaf.h>
+#include <bonobo.h>
+#include "nautilus-inventory-view.h"
+
+static int object_count =0;
+
+static void
+inventory_object_destroyed (GtkObject *obj) {
+	object_count--;
+	if (object_count <= 0) {
+		gtk_main_quit ();
+	}
+}
+
+static BonoboObject*
+inventory_make_object (BonoboGenericFactory	*factory, 
+		       const char		*iid,
+		       void			*closure) {
+
+	NautilusInventoryView* view;
+	NautilusView* nautilus_view;
+
+	if (strcmp (iid, "OAFIID:nautilus_inventory_view:f1032dfd-8075-4105-a9cd-c638b74511f5")) {
+		return NULL;
+	}
+
+	view = NAUTILUS_INVENTORY_VIEW (gtk_object_new (NAUTILUS_TYPE_INVENTORY_VIEW, NULL));
+
+	object_count++;
+
+	gtk_signal_connect (GTK_OBJECT (view), "destroy", inventory_object_destroyed, NULL);
+
+	nautilus_view = nautilus_inventory_view_get_nautilus_view (view);
+	
+	printf ("Returning new object %p\n", nautilus_view);
+
+	return BONOBO_OBJECT (nautilus_view);
+}
+
+int
+main (int argc, char *argv[]) {
+
+	BonoboGenericFactory	*factory;
+	CORBA_ORB		orb;
+	CORBA_Environment	ev;
+	
+	CORBA_exception_init (&ev);
+	
+        gnome_init_with_popt_table ("nautilus-inventory-view", VERSION, 
+                                    argc, argv,
+                                    oaf_popt_options, 0, NULL);
+
+	orb = oaf_init (argc, argv);
+	
+	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+	factory = bonobo_generic_factory_new_multi ("OAFIID:nautilus_inventory_view_factory:400ef0a5-352a-4e98-bf96-83e728c462cf", inventory_make_object, NULL);
+	
+	do {
+		bonobo_main ();
+	} while (object_count > 0);
 
 	return 0;
-};
+}

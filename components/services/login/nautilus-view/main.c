@@ -42,13 +42,13 @@ login_object_destroyed (GtkObject *obj) {
 
 static BonoboObject*
 login_make_object (BonoboGenericFactory	*factory, 
-		   const char		*goad_id,
+		   const char		*iid,
 		   void			*closure) {
 
 	NautilusLoginView* view;
 	NautilusView* nautilus_view;
 
-	if (strcmp (goad_id, "OAFIID:nautilus_login_view:3a6345f0-d78d-4edc-9c3e-0c1be7426c44")) {
+	if (strcmp (iid, "OAFIID:nautilus_login_view:3a6345f0-d78d-4edc-9c3e-0c1be7426c44")) {
 		return NULL;
 	}
 

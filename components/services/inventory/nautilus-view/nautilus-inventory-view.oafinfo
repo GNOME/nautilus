@@ -1,0 +1,29 @@
+<oaf_info>
+
+<oaf_server iid="OAFIID:nautilus_inventory_view_factory:400ef0a5-352a-4e98-bf96-83e728c462cf" type="exe" location="nautilus-inventory-view">
+<oaf_attribute name="repo_ids" type="stringv">
+<item value="IDL:GNOME/GenericFactory:1.0"/>
+</oaf_attribute>
+<oaf_attribute name="name" type="string" value="Nautilus Service Inventory View Factory"/>
+<oaf_attribute name="description" type="string" value="Service Inventory View Component's Factory"/>
+</oaf_server>
+
+<oaf_server iid="OAFIID:nautilus_inventory_view:f1032dfd-8075-4105-a9cd-c638b74511f5" type="factory" location="OAFIID:nautilus_inventory_view_factory:400ef0a5-352a-4e98-bf96-83e728c462cf">
+<oaf_attribute name="repo_ids" type="stringv">
+<item value="IDL:Bonobo/Control:1.0"/>
+<item value="IDL:Bonobo/Unknown:1.0"/>
+<item value="IDL:Nautilus/ContentView:1.0"/>
+<item value="IDL:Nautilus/View:1.0"/>
+</oaf_attribute>
+<oaf_attribute name="name" type="string" value="Nautilus Inventory View"/>
+<oaf_attribute name="description" type="string" value="Service Inventory view component"/>
+<oaf_attribute name="bonobo:additional_uri_schemes" type="stringv">
+<item value="eazel-inventory"/>
+</oaf_attribute>
+<oaf_attribute name="bonobo:supported_mime_types" type="stringv">
+<item value="eazel-inventory"/>
+</oaf_attribute>
+<oaf_attribute name="nautilus:view_as_name" type="string" value="Inventory"/>
+</oaf_server>
+
+</oaf_info>

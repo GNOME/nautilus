@@ -1,3 +1,49 @@
+2000-07-01  J Shane Culpepper  <pepper@eazel.com>
+
+	* components/services/inventory/nautilus-view/Makefile.am:
+	* components/services/inventory/nautilus-view/main.c:
+	(inventory_object_destroyed), (inventory_make_object), (main):
+	*
+	components/services/inventory/nautilus-view/nautilus-inventory-view
+	.c: (generate_inventory_form), (entry_changed_cb),
+	(inventory_button_cb), (maintenance_button_cb), (show_feedback),
+	(generate_form_title), (nautilus_inventory_view_initialize_class),
+	(nautilus_inventory_view_initialize),
+	(nautilus_inventory_view_destroy),
+	(nautilus_inventory_view_get_nautilus_view),
+	(nautilus_inventory_view_load_uri),
+	(inventory_load_location_callback):
+	*
+	components/services/inventory/nautilus-view/nautilus-inventory-view
+	.h:
+	*
+	components/services/inventory/nautilus-view/nautilus-inventory-view
+	.oafinfo:
+	* components/services/login/nautilus-view/Makefile.am:
+	* components/services/login/nautilus-view/main.c:
+	(login_make_object):
+	* components/services/summary/nautilus-view/Makefile.am:
+	* components/services/summary/nautilus-view/main.c:
+	(summary_object_destroyed), (summary_make_object), (main):
+	*
+	components/services/summary/nautilus-view/nautilus-summary-view.c:
+	(generate_summary_form), (entry_changed_cb), (summary_button_cb),
+	(maintenance_button_cb), (show_feedback), (generate_form_title),
+	(nautilus_summary_view_initialize_class),
+	(nautilus_summary_view_initialize),
+	(nautilus_summary_view_destroy),
+	(nautilus_summary_view_get_nautilus_view),
+	(nautilus_summary_view_load_uri), (summary_load_location_callback):
+	*
+	components/services/summary/nautilus-view/nautilus-summary-view.h:
+	*
+	components/services/summary/nautilus-view/nautilus-summary-view.oaf
+	info:
+
+	Simple framework for inventory and summary views.  Minor fixes to
+	login view.  All are clones of the same basic widget right now. I'll
+	be adding the real widgets soon.
+
 2000-06-30  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* src/nautilus-application.c: (display_installation_wizard),

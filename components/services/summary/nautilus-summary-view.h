@@ -17,11 +17,44 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Authors:
+ * Authors: J Shane Culpepper
  */
 
 #ifndef NAUTILUS_SUMMARY_VIEW_H
 #define NAUTILUS_SUMMARY_VIEW_H
+
+#include <libnautilus/nautilus-view.h>
+#include <gtk/gtk.h>
+
+typedef struct _NautilusSummaryView NautilusSummaryView;
+typedef struct _NautilusSummaryViewClass NautilusSummaryViewClass;
+
+#define NAUTILUS_TYPE_SUMMARY_VIEW		(nautilus_summary_view_get_type ())
+#define NAUTILUS_SUMMARY_VIEW(obj)		(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SUMMARY_VIEW, NautilusSummaryView))
+#define NAUTILUS_SUMMARY_VIEW_CLASS (klass)	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SUMMARY_VIEW, NautilusSummaryViewClass))
+#define NAUTILUS_IS_SUMMARY_VIEW(obj)		(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_SUMMARY_VIEW))
+#define NAUTILUS_IS_SUMMARY_VIEW_CLASS (klass)	(GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_SUMMARY_VIEW))
+
+typedef struct _NautilusSummaryViewDetails NautilusSummaryViewDetails;
+
+struct _NautilusSummaryView {
+        GtkEventBox parent;
+        NautilusSummaryViewDetails *details;
+};
+
+struct _NautilusSummaryViewClass {
+        GtkVBoxClass parent_class;
+};
+
+/* GtkObject support */
+GtkType		nautilus_summary_view_get_type			(void);
+
+/* Component embedding support */
+NautilusView 	*nautilus_summary_view_get_nautilus_view	(NautilusSummaryView *view);
+
+/* URI handling */
+void		nautilus_summary_view_load_uri		(NautilusSummaryView	*view,
+							 const char		*uri);
 
 #endif /* NAUTILUS_SUMMARY_VIEW_H */
 
