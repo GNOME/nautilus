@@ -1947,7 +1947,7 @@ nautilus_file_is_directory (NautilusFile *file)
 gboolean
 nautilus_file_contains_text (NautilusFile *file)
 {
-	char *mime_type;
+	char *mime_type, *uri;
 	gboolean contains_text;
 
 	if (file == NULL) {
@@ -1957,11 +1957,17 @@ nautilus_file_contains_text (NautilusFile *file)
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
 	mime_type = nautilus_file_get_mime_type (file);
-	contains_text = nautilus_str_has_prefix (mime_type, "text/")
+	uri = nautilus_file_get_uri (file);
+	
+	/* see if it's a nautilus link xml file - if so, see if we need to handle specially */
+	contains_text = (nautilus_str_has_prefix (mime_type, "text/")
 		|| (mime_type == NULL && nautilus_file_get_file_type (file)
-		    == GNOME_VFS_FILE_TYPE_REGULAR);
+		    == GNOME_VFS_FILE_TYPE_REGULAR)) 
+		&& !nautilus_link_is_link_file (uri);
+		    
 	g_free (mime_type);
-
+	g_free (uri);
+	
 	return contains_text;
 }
 
@@ -2126,6 +2132,42 @@ nautilus_file_is_gone (NautilusFile *file)
 
 	return file->details->is_gone;
 }
+
+/**
+ *  nautilus_file_activate_custom
+ *
+ *  this routine is called when a file is activated to have a chance to do file-type specific 
+ *  activation. If it returns true, the framework won't try to change location.
+ *  
+ *  for now, the only thing we handle specially is link activation, where we special case
+ *  uris with a protocol of "command" to execute shell commands, mainly to launch applications
+ *
+ **/
+gboolean
+nautilus_file_activate_custom (NautilusFile *file, gboolean use_new_window)
+{
+	int result;
+	char *uri, *old_uri, *command_str;
+	uri = nautilus_file_get_uri (file);
+	
+	/* see if it's a nautilus link xml file - if so, see if we need to handle specially */
+	if (nautilus_link_is_link_file (uri)) {
+		old_uri = uri;
+		uri = nautilus_link_get_link_uri (uri);
+		g_free (old_uri);
+	
+		if (nautilus_str_has_prefix(uri, "command:")) {
+			command_str = g_strdup_printf("%s &", uri + 8);
+			result = system(command_str);
+			g_free(command_str);
+			g_free(uri);
+			return TRUE;
+		}
+	}
+	g_free(uri);
+	return FALSE;
+}
+
 
 void
 nautilus_file_call_when_ready (NautilusFile *file,

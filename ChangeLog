@@ -1,3 +1,38 @@
+2000-06-01  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/file-manager/fm-icon-view.c: (play_file):
+	fixed audio previewing, which broke when Darin changed the API to
+	gnome_vfs_unescape_string, which now allocates a new string instead
+	of modifying the old one.
+	* data/linksets/apps.xml:
+	added the gimp to the default linkset and removed abiword
+	* icons/Makefile.am:
+	* icons/netscape.png:
+	* icons/gnome-gimp.png:
+	* icons/gnome-gnumeric.png:
+	added icons for the default linkset
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_user_main_directory):
+	made it install the default linkset when it makes the novice home directory
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_contains_text)
+	added condition so link files don't contain text
+	(nautilus_file_activate_custom):
+	added routine invoked when a file is activated to allow for custom behavior
+	for specific types; used to implement command processing for links.
+	* libnautilus-extensions/nautilus-file.h:
+	added nautilus_file_activate_custom
+	* libnautilus-extensions/nautilus-link-set.c: (create_new_link),
+	(nautilus_link_set_install):
+	made installing linksets work
+	* libnautilus-extensions/nautilus-link.c:
+	(nautilus_link_get_additional_text), (nautilus_link_get_image_uri),
+	(nautilus_link_get_link_uri):
+	made things work when the file name has special characters
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_activate_file_internal):
+	added call to nautilus_file_activate_custom to allow for custom handling
+	
 2000-06-01  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus/nautilus-undo-manager.c:

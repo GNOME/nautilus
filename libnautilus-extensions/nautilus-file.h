@@ -184,6 +184,9 @@ gboolean                nautilus_file_is_local                  (NautilusFile   
  */
 gboolean                nautilus_file_update                    (NautilusFile                  *file,
 								 GnomeVFSFileInfo              *info);
+/* give a file a chance to activate itself instead of letting the location-based framework do it */
+gboolean		nautilus_file_activate_custom		(NautilusFile			*file,
+								 gboolean			use_new_window);
 
 /* Comparing two file objects for sorting */
 int                     nautilus_file_compare_for_sort          (NautilusFile                  *file_1,

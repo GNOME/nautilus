@@ -31,6 +31,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "nautilus-file.h"
+#include "nautilus-link-set.h"
 #include "nautilus-metadata.h"
 
 #define NAUTILUS_USER_DIRECTORY_NAME ".nautilus"
@@ -206,6 +207,8 @@ nautilus_get_user_main_directory (void)
 			g_free (file_uri);
 			g_free (image_uri);
 
+			/* install the default link set */
+			nautilus_link_set_install(user_main_directory, "apps");
 		}
 	}
 

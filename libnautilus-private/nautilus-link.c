@@ -28,6 +28,8 @@
 #include <parser.h>
 #include <xmlmemory.h>
 
+#include <libgnomevfs/gnome-vfs-utils.h>
+
 #include "nautilus-link.h"
 #include "nautilus-metadata.h"
 #include "nautilus-string.h"
@@ -50,16 +52,21 @@ nautilus_link_is_link_file(const char *file_uri)
 char* nautilus_link_get_additional_text(const char *link_file_uri)
 {
 	xmlDoc *doc;
+	char *file_uri;
 	char *extra_text = NULL;
 	
 	if (link_file_uri == NULL)
 		return NULL;
 	
-	doc = xmlParseFile (link_file_uri + 7);
+	file_uri = gnome_vfs_unescape_string(link_file_uri, "/");
+	doc = xmlParseFile (file_uri + 7);
 	if (doc) {
 		extra_text = xmlGetProp (doc->root, NAUTILUS_METADATA_KEY_EXTRA_TEXT);
+		if (extra_text)
+			extra_text = g_strdup(extra_text);
 		xmlFreeDoc (doc);
 	}  
+	g_free(file_uri);
 	return extra_text;
 }
 
@@ -69,16 +76,22 @@ char*
 nautilus_link_get_image_uri(const char *link_file_uri)
 {
 	xmlDoc *doc;
+	char *file_uri;
 	char *icon_str = NULL;
 	
 	if (link_file_uri == NULL)
 		return NULL;
 	
-	doc = xmlParseFile (link_file_uri + 7);
+	file_uri = gnome_vfs_unescape_string(link_file_uri, "/");
+	doc = xmlParseFile (file_uri + 7);
 	if (doc) {
 		icon_str = xmlGetProp (doc->root, NAUTILUS_METADATA_KEY_CUSTOM_ICON);
+		if (icon_str)
+			icon_str = g_strdup(icon_str);
+
 		xmlFreeDoc (doc);
 	}
+	g_free(file_uri);
 	return icon_str;
 }
 
@@ -88,16 +101,18 @@ char*
 nautilus_link_get_link_uri(const char *link_file_uri)
 {
 	xmlDoc *doc;
+	char *file_uri;
 	char* result = NULL;
 	
 	if (link_file_uri == NULL)
 		return NULL;
 		
-	doc = xmlParseFile (link_file_uri + 7);
+	file_uri = gnome_vfs_unescape_string(link_file_uri, "/");
+	doc = xmlParseFile (file_uri + 7);
 	if (doc) {
 		char* link_str = xmlGetProp (doc->root, "LINK");
 		if (link_str) 
-			result = link_str;
+			result = g_strdup(link_str);
 	
 		xmlFreeDoc (doc);
 	} 	
@@ -105,6 +120,7 @@ nautilus_link_get_link_uri(const char *link_file_uri)
 	if (result == NULL)
 		result = g_strdup(link_file_uri);
 	
+	g_free(file_uri);
 	return result;
 }
 

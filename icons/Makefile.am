@@ -60,6 +60,8 @@ icon_DATA =\
 	gnome-font-afm.png \
 	gnome-font-ttf.png \
 	gnome-font-x-pcf.png \
+	gnome-gimp.png \
+	gnome-gnumeric.png \
 	gnome-http-url.png \
 	gnome-image-bmp.png \
 	gnome-image-generic.png \
@@ -134,6 +136,7 @@ icon_DATA =\
 	loading.png \
 	multi-ok.png \
 	nautilus-logo.png \
+	netscape.png \
 	not.png \
 	rightarrow.png \
 	tableft.png \

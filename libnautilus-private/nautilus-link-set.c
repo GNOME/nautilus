@@ -39,28 +39,47 @@
 #include "nautilus-link-set.h"
 
 /* routine to create a new .link file in the specified directory */
-static gboolean
-make_new_link(const char  *directory_uri, const char *name, const char *image, const char *uri)
+static void
+create_new_link(const char *directory_path, const char *name, const char *image, const char *uri)
 {
-	g_message("creating link %s, image %s, uri %s", name, image, uri);
-	return TRUE;
+	xmlDocPtr output_document;
+	xmlNodePtr root_node;
+	char *file_name;
+	int result;
+		
+	/* create a new xml document */
+	output_document =  xmlNewDoc ("1.0");
+	
+	/* add the root node to the output document */
+	root_node = xmlNewDocNode (output_document, NULL, "NAUTILUS_OBJECT", NULL);
+	xmlDocSetRootElement (output_document, root_node);
+	
+	xmlSetProp (root_node, "CUSTOM_ICON", image);
+	xmlSetProp (root_node, "LINK", uri);
+	
+	/* all done , so save the xml document as a link file */
+	file_name = g_strdup_printf("%s/%s.link", directory_path, name);
+	result = xmlSaveFile(file_name, output_document);
+	g_free(file_name);
+	
+	xmlFreeDoc(output_document);	
 }
 
 /* install a link set into the specified directory */
 
 gboolean
-nautilus_link_set_install (const char *directory_uri, const char *link_set_name)
+nautilus_link_set_install (const char *directory_path, const char *link_set_name)
 {
 	NautilusFile *file;
 	xmlDocPtr document;
 	xmlNodePtr cur_node;
 	char *temp_str, *link_set_path;
 	char *link_name, *image_name, *uri_name;	
-	
-	file = nautilus_file_get(directory_uri);
+
+	file = nautilus_file_get(directory_path);
 	if (file == NULL)
 		return FALSE;
-		
+
 	/* make sure the target is a writable directory */
 
 	if (!nautilus_file_is_directory(file) || !nautilus_file_can_write(file)) {
@@ -79,17 +98,17 @@ nautilus_link_set_install (const char *directory_uri, const char *link_set_name)
 	
 	if (document == NULL)
 		return FALSE;
-		
+	
 	/* loop through the entries, generating .link files */
 	for (cur_node = document->root->childs; cur_node != NULL; cur_node = cur_node->next) {
 		if (strcmp(cur_node->name, "link") == 0) {
 			link_name =  xmlGetProp (cur_node, "name");
 			image_name =  xmlGetProp (cur_node, "image");
 			uri_name =  xmlGetProp (cur_node, "uri");
-			make_new_link(directory_uri, link_name, image_name, uri_name);
+			create_new_link(directory_path, link_name, image_name, uri_name);
 		}
 	}
-
+	
 	/* all done so return TRUE */
 	xmlFreeDoc(document);
 	return TRUE;

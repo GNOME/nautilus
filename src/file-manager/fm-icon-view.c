@@ -1107,14 +1107,16 @@ icon_container_activate_callback (NautilusIconContainer *container,
 
 static gint play_file(NautilusFile *file)
 {
-	char *file_uri, *file_path, *mime_type;
+	char *file_uri, *unescaped_file_uri;
+	char *file_path, *mime_type;
 	
 	file_uri = nautilus_file_get_uri(file);
-	gnome_vfs_unescape_string(file_uri, "/");
-	if (nautilus_str_has_prefix(file_uri, "file://"))
-		file_path = file_uri + 7;
+	unescaped_file_uri = gnome_vfs_unescape_string(file_uri, "/");
+	
+	if (nautilus_str_has_prefix(unescaped_file_uri, "file://"))
+		file_path = unescaped_file_uri + 7;
 	else
-		file_path = file_uri;
+		file_path = unescaped_file_uri;
 		
 	mime_type = nautilus_file_get_mime_type(file);
 			
@@ -1130,6 +1132,7 @@ static gint play_file(NautilusFile *file)
 	}
 
 	g_free(file_uri);
+	g_free(unescaped_file_uri);	
 	g_free(mime_type);
 	timeout = -1;
 	
