@@ -1,5 +1,6 @@
 
 #include <nautilus-widgets/nautilus-radio-button-group.h>
+#include <nautilus-widgets/nautilus-caption-table.h>
 #include <nautilus-widgets/nautilus-preferences-group.h>
 #include <nautilus-widgets/nautilus-preferences-item.h>
 #include <nautilus-widgets/nautilus-preferences.h>
@@ -7,14 +8,19 @@
 #include <gtk/gtk.h>
 #include <stdio.h>
 
-static void test_radio_group            (void);
-static void test_preferences_group      (void);
-static void test_preferences_item       (void);
-static void test_radio_changed_signal   (GtkWidget  *button_group,
-					 gpointer    user_data);
-static void register_global_preferences (void);
-GtkWidget * create_enum_item            (const char *preference_name);
-GtkWidget * create_bool_item            (const char *preference_name);
+static void test_radio_group                     (void);
+static void test_caption_table                   (void);
+static void test_preferences_group               (void);
+static void test_preferences_item                (void);
+static void test_radio_changed_callback            (GtkWidget  *button_group,
+						  gpointer    user_data);
+static void test_caption_table_activate_callback (GtkWidget  *button_group,
+						  gint        active_index,
+						  gpointer    user_data);
+static void register_global_preferences          (void);
+GtkWidget * create_enum_item                     (const char *preference_name);
+GtkWidget * create_bool_item                     (const char *preference_name);
+
 
 enum
 {
@@ -35,6 +41,7 @@ main (int argc, char * argv[])
 	register_global_preferences ();
 
 	test_radio_group ();
+	test_caption_table ();
 	test_preferences_group ();
 	test_preferences_item ();
 		
@@ -60,12 +67,62 @@ test_radio_group (void)
 
 	gtk_signal_connect (GTK_OBJECT (buttons),
 			    "changed",
-			    GTK_SIGNAL_FUNC (test_radio_changed_signal),
+			    GTK_SIGNAL_FUNC (test_radio_changed_callback),
 			    (gpointer) NULL);
 
 	gtk_container_add (GTK_CONTAINER (window), buttons);
 
 	gtk_widget_show (buttons);
+
+	gtk_widget_show (window);
+}
+
+static void
+test_caption_table (void)
+{
+	GtkWidget * window;
+	GtkWidget * table;
+
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+
+	table = nautilus_caption_table_new (4);
+
+	nautilus_caption_table_set_row_info (NAUTILUS_CAPTION_TABLE (table),
+					     0,
+					     "Something",
+					     "Text",
+					     TRUE,
+					     FALSE);
+
+	nautilus_caption_table_set_row_info (NAUTILUS_CAPTION_TABLE (table),
+					     1,
+					     "ReadOnly",
+					     "Cant Change Me",
+					     TRUE,
+					     TRUE);
+
+	nautilus_caption_table_set_row_info (NAUTILUS_CAPTION_TABLE (table),
+					     2,
+					     "Password",
+					     "sekret",
+					     FALSE,
+					     FALSE);
+
+	nautilus_caption_table_set_row_info (NAUTILUS_CAPTION_TABLE (table),
+					     3,
+					     "This is a very long label",
+					     "Text",
+					     TRUE,
+					     FALSE);
+
+	gtk_signal_connect (GTK_OBJECT (table),
+			    "activate",
+			    GTK_SIGNAL_FUNC (test_caption_table_activate_callback),
+			    (gpointer) NULL);
+
+	gtk_container_add (GTK_CONTAINER (window), table);
+
+	gtk_widget_show (table);
 
 	gtk_widget_show (window);
 }
@@ -109,13 +166,21 @@ test_preferences_group (void)
 }
 
 static void
-test_radio_changed_signal (GtkWidget *buttons, gpointer user_data)
+test_radio_changed_callback (GtkWidget *buttons, gpointer user_data)
 {
 	gint i;
 
 	i = nautilus_radio_button_group_get_active_index (NAUTILUS_RADIO_BUTTON_GROUP (buttons));
 
-	printf ("test_radio_changed_signal (%d)\n", i);
+	g_print ("test_radio_changed_callback (%d)\n", i);
+}
+
+static void
+test_caption_table_activate_callback (GtkWidget  *button_group,
+				      gint        active_index,
+				      gpointer    user_data)
+{
+	g_print ("test_caption_table_activate_callback (active_index=%d)\n", active_index);
 }
 
 GtkWidget *

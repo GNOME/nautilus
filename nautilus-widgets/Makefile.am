@@ -24,6 +24,7 @@ libnautilus_widgets_la_LDFLAGS=\
 libnautilus_widgetsincludedir=$(includedir)/nautilus-widgets
 
 libnautilus_widgetsinclude_HEADERS =\
+	nautilus-caption-table.h \
 	nautilus-preference.h \
 	nautilus-preferences-box.h \
 	nautilus-preferences-dialog.h \
@@ -35,6 +36,7 @@ libnautilus_widgetsinclude_HEADERS =\
 	$(NULL)
 
 libnautilus_widgets_la_SOURCES =\
+	nautilus-caption-table.c \
 	nautilus-preference.c \
 	nautilus-preferences-box.c \
 	nautilus-preferences-dialog.c \
