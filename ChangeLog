@@ -1,3 +1,9 @@
+2000-09-13  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-sidebar-tabs.c: (draw_tab_piece_aa):
+	fixed bug 2983, sidebar tabs don't handle missing images well, by
+	checking for a null pixbuf in draw_tab_piece_aa.
+	
 2000-09-13  Darin Adler  <darin@eazel.com>
 
 	Fixed uninitialized variable problems found by compiling with -O

@@ -592,6 +592,11 @@ draw_tab_piece_aa (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *dest_pixbuf, in
 	widget = GTK_WIDGET (sidebar_tabs);
 	pixbuf = sidebar_tabs->details->tab_piece_images[which_piece];
 	
+	/* if there's no pixbuf, just exit, returning a nominal size */
+	if (pixbuf == NULL) {
+		return 32;
+	}
+	
 	width = gdk_pixbuf_get_width (pixbuf);
 	height = gdk_pixbuf_get_height (pixbuf);
 	dest_width = gdk_pixbuf_get_width (dest_pixbuf);
