@@ -1,3 +1,11 @@
+2000-12-18  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-property-browser.c: (nautilus_emblem_dialog_new),
+	(emblem_dialog_clicked):
+	fixed bug 4164, "Add New Emblem" file entry can be typed in, but is
+	ignored.  Fixed by reworking logic to read the path from it, instead
+	of relying on activate to set it up.
+	
 2000-12-18  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 2494, Error ignored when making icon directory for link file

@@ -1017,7 +1017,7 @@ emblem_image_file_changed (GtkWidget *entry, NautilusPropertyBrowser *property_b
 /* here's where we create the emblem dialog */
 
 static GtkWidget*
-nautilus_emblem_dialog_new(NautilusPropertyBrowser *property_browser)
+nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 {
 	GtkWidget *widget, *entry;
 	GtkWidget *dialog = gnome_dialog_new(_("Create a New Emblem:"), GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL);
@@ -1384,9 +1384,31 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 	if (which_button == GNOME_OK) {
 		char *destination_name, *extension;
 		char *new_keyword, *stripped_keyword;
+		char *emblem_path, *emblem_uri;
 		char *user_directory;	
 		char *directory_path;
 
+		/* update the image path from the file entry */
+		if (property_browser->details->file_entry) {
+			emblem_path = gnome_file_entry_get_full_path (GNOME_FILE_ENTRY (property_browser->details->file_entry),
+									FALSE);
+			if (emblem_path) {
+				emblem_uri = gnome_vfs_get_uri_from_local_path (emblem_path);
+				if (ensure_uri_is_image (emblem_uri)) {
+					g_free (property_browser->details->image_path);
+					property_browser->details->image_path = emblem_path;				
+				} else {
+					char *message = g_strdup_printf
+						(_("Sorry, but '%s' is not a usable image file!"), emblem_path);
+					nautilus_error_dialog (message, _("Not an Image"), GTK_WINDOW (property_browser));
+					g_free (message);
+					g_free (emblem_path);
+					return;
+				}
+				g_free (emblem_uri);
+			}
+		}
+		
 		new_keyword = gtk_entry_get_text(GTK_ENTRY(property_browser->details->keyword));		
 		if (new_keyword == NULL) {
 			stripped_keyword = NULL;
