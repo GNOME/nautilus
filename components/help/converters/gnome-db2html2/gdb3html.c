@@ -203,7 +203,7 @@ init_entities (xmlDocPtr doc) {
 	xmlAddDocEntity (doc, "hellip", XML_INTERNAL_PREDEFINED_ENTITY,
 		         NULL, NULL, "&hellip;");
 	xmlAddDocEntity (doc, "percnt", XML_INTERNAL_PREDEFINED_ENTITY,
-		         NULL, NULL, "%");
+		         NULL, NULL, "&#37;");
 }
 
 /* our callbacks for the xmlSAXHandler */
