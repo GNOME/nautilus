@@ -262,7 +262,10 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 			eel_g_list_free_deep (emblem_icons);
 	
 			g_value_set_object (value, icon);
-			g_object_unref (icon);
+
+			if (icon != NULL) { 
+				g_object_unref (icon);
+			}
 		}
 		break;
 	case FM_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN:
