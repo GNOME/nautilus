@@ -521,7 +521,11 @@ nautilus_view_frame_get_preferred_zoom_levels (NautilusViewFrame *view)
   if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
     zoom_levels = Nautilus_Zoomable__get_preferred_zoom_levels (view->zoomable, &ev);
     retval = nautilus_g_list_from_ZoomLevelList (zoom_levels);
-    CORBA_free (zoom_levels);
+
+    /* FIXME: bugzilla.eazel.com 1497
+       this free had been commented out, as it caused evilness.
+       CORBA_free (zoom_levels); */
+
   } else {
     retval = NULL;
   }

@@ -150,7 +150,7 @@ nautilus_ZoomLevelList_from_zoom_levels (const double *zoom_levels, int num_leve
 	for (i = 0; i < num_levels; ++i) {
 		list->_buffer[i] = zoom_levels[i];
 	}
-	CORBA_sequence_set_release (list, TRUE);
+	CORBA_sequence_set_release (list, TRUE); 
 
 	return list;
 }

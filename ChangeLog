@@ -1,5 +1,12 @@
 2000-06-27  Eskil Heyn Olsen  <eskil@eazel.com>
 
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_get_preferred_zoom_levels):
+	Commented out a CORBA_free that causes sigsegv (noted by
+	Carbamide). Filed a bug report (1497) on it. 
+	
+2000-06-27  Eskil Heyn Olsen  <eskil@eazel.com>
+
 	* components/services/install/lib/eazel-install-public.h:
 	Eeek, evil.h is no longer there.
 	
