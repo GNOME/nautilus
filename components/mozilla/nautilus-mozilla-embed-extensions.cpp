@@ -115,8 +115,6 @@ encoding_entry_list_find_entry (const char *encoding_title)
 static const Entry *
 encoding_entry_list_peek_nth_entry (guint n)
 {
-	const char *s;
-	
 	if (n >= g_list_length (encoding_entry_list)) {
 		return NULL;
 	}
