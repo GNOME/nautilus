@@ -42,6 +42,7 @@ struct _FMDirectoryViewListDetails
 	gint sort_column;
 	gboolean sort_reversed;
 	guint zoom_level;
+	NautilusZoomLevel default_zoom_level;
 };
 
 #define DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
@@ -203,6 +204,7 @@ fm_directory_view_list_initialize (gpointer object, gpointer klass)
 	 */
 	list_view->details->zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLER;
 	list_view->details->sort_column = LIST_VIEW_COLUMN_NONE;
+	list_view->details->default_zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLER;
 
 	create_flist (list_view);
 }
@@ -588,7 +590,7 @@ fm_directory_view_list_begin_loading (FMDirectoryView *view)
 		nautilus_directory_get_integer_metadata (
 			directory, 
 			LIST_VIEW_ZOOM_LEVEL_METADATA_KEY, 
-			NAUTILUS_ZOOM_LEVEL_SMALLER));
+			list_view->details->default_zoom_level));
 
 	fm_directory_view_list_sort_items (
 		list_view,
@@ -663,8 +665,14 @@ fm_directory_view_list_set_zoom_level (FMDirectoryViewList *list_view,
 	nautilus_directory_set_integer_metadata (
 		fm_directory_view_get_model (FM_DIRECTORY_VIEW (list_view)), 
 		LIST_VIEW_ZOOM_LEVEL_METADATA_KEY, 
-		NAUTILUS_ZOOM_LEVEL_SMALLER,
+		list_view->details->default_zoom_level,
 		new_level);
+
+	/* Reset default to new level; this way any change in zoom level
+	 * will "stick" until the user visits a directory that had its zoom
+	 * level set explicitly earlier.
+	 */
+	list_view->details->default_zoom_level = new_level;	
 
 	clist = GTK_CLIST (get_flist (list_view));
 	

@@ -408,6 +408,9 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 	char *uri, *custom_image;
         gboolean is_symbolic_link;
 	NautilusScalableIcon *scalable_icon;
+
+	if (file == NULL)
+		return NULL;
 	
  	factory = nautilus_get_current_icon_factory ();
 	

@@ -109,6 +109,7 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryViewIcons, fm_directory_view_icons
 struct _FMDirectoryViewIconsDetails
 {
 	NautilusFileList *icons_not_positioned;
+	NautilusZoomLevel default_zoom_level;
 };
 
 
@@ -158,6 +159,7 @@ fm_directory_view_icons_initialize (FMDirectoryViewIcons *icon_view)
         g_return_if_fail (GTK_BIN (icon_view)->child == NULL);
 
 	icon_view->details = g_new0 (FMDirectoryViewIconsDetails, 1);
+	icon_view->details->default_zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
 
 	icon_container = create_icon_container (icon_view);
 
@@ -377,7 +379,7 @@ fm_directory_view_icons_begin_loading (FMDirectoryView *view)
 		nautilus_directory_get_integer_metadata (
 			directory, 
 			ICON_VIEW_ZOOM_LEVEL_METADATA_KEY, 
-			NAUTILUS_ZOOM_LEVEL_STANDARD));
+			icon_view->details->default_zoom_level));
 
 }
 
@@ -387,7 +389,7 @@ fm_directory_view_icons_get_zoom_level (FMDirectoryViewIcons *view)
 	GnomeIconContainer *icon_container;
 
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view), 
-			      NAUTILUS_ZOOM_LEVEL_STANDARD);
+			      view->details->default_zoom_level);
 
 	icon_container = get_icon_container (view);
 	return (gnome_icon_container_get_zoom_level (icon_container));
@@ -410,10 +412,16 @@ fm_directory_view_icons_set_zoom_level (FMDirectoryViewIcons *view,
 	nautilus_directory_set_integer_metadata (
 		fm_directory_view_get_model (FM_DIRECTORY_VIEW (view)), 
 		ICON_VIEW_ZOOM_LEVEL_METADATA_KEY, 
-		NAUTILUS_ZOOM_LEVEL_STANDARD,
+		view->details->default_zoom_level,
 		new_level);
 
 	gnome_icon_container_set_zoom_level (icon_container, new_level);
+
+	/* Reset default to new level; this way any change in zoom level
+	 * will "stick" until the user visits a directory that had its zoom
+	 * level set explicitly earlier.
+	 */
+	view->details->default_zoom_level = new_level;
 }
 
 

@@ -143,8 +143,14 @@ nautilus_index_title_set_up_icon (NautilusIndexTitle *index_title, NautilusFile 
 {  
   GdkPixmap *pixmap_for_dragged_file;
   GdkBitmap *mask_for_dragged_file;
-  NautilusScalableIcon *icon = nautilus_icon_factory_get_icon_for_file(file_object);
-  GdkPixbuf *pixbuf = nautilus_icon_factory_get_pixbuf_for_icon(icon, NAUTILUS_ICON_SIZE_STANDARD); 
+  NautilusScalableIcon *icon;
+  GdkPixbuf *pixbuf; 
+
+  icon = nautilus_icon_factory_get_icon_for_file(file_object);
+  if (icon == NULL)
+  	return;
+  
+  pixbuf = nautilus_icon_factory_get_pixbuf_for_icon(icon, NAUTILUS_ICON_SIZE_STANDARD); 
    
   /* set up the pixmap and mask of the new gtk_pixmap */
 
@@ -250,7 +256,12 @@ nautilus_index_title_set_up_info (NautilusIndexTitle *index_title, NautilusFile 
   GdkFont *label_font;
   gchar *notes_text;
   gchar *temp_string = NULL;
-  gchar *info_string = nautilus_file_get_string_attribute(file_object, "type");
+  gchar *info_string;
+
+  if (file_object == NULL)
+  	return;
+
+  info_string = nautilus_file_get_string_attribute(file_object, "type");
   
    if (info_string == NULL)
   	return;
@@ -321,9 +332,10 @@ nautilus_index_title_set_up_info (NautilusIndexTitle *index_title, NautilusFile 
 void
 nautilus_index_title_set_uri(NautilusIndexTitle *index_title, const gchar* new_uri)
 {
-  NautilusFile *file_object = nautilus_file_get(new_uri);
+  NautilusFile *file_object;
 
-/* For now, just use a fixed folder image */	
+  file_object = nautilus_file_get(new_uri);
+
   nautilus_index_title_set_up_icon (index_title, file_object);
 	
 /* add the name, in a variable-sized label */
@@ -331,8 +343,13 @@ nautilus_index_title_set_uri(NautilusIndexTitle *index_title, const gchar* new_u
 
 /* add various info */
   nautilus_index_title_set_up_info(index_title, file_object);
-  
-  nautilus_file_unref(file_object);
+
+  /* FIXME: file_object can be NULL if this is a bad url, or one that
+   * NautilusFile can't handle (e.g. http). The UI here needs to
+   * be changed to account for that too.
+   */
+  if (file_object != NULL)
+  	nautilus_file_unref(file_object);
 }
 
 /* handle a button press */

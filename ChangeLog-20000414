@@ -1,3 +1,48 @@
+2000-02-14  John Sullivan <sullivan@eazel.com>
+
+	Fixed index title bugs that showed up when visiting http:// url.
+	It's still the case that the wrong text appears; I just made it
+	not drop into the debugger.
+
+	* libnautilus/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file): Made it return NULL
+	for a NULL file. Could have made this a return_val_if_fail
+	instead, wasn't sure which was better in this case.
+
+	* src/nautilus-index-title.c:
+	(nautilus_index_title_set_up_icon): Made it bail out early if
+	NautilusFile parameter is NULL.
+	(nautilus_index_title_set_up_info): Made it bail out early if
+	NautilusFile parameter is NULL.
+	(nautilus_index_title_set_uri): Made it unref file_object only
+	if non-NULL.
+
+
+	Experimental zoom behavior change: Now it resets the default
+	zoom level every time the zoom level is set. This means that
+	zoom level changes stick across locations, until you revisit
+	a location that had its zoom level set explicitly earlier.
+
+	* src/file-manager/fm-directory-view-icons.c:
+	Added default_zoom_level to Details struct.
+	(fm_directory_view_icons_initialize): Initialize default_zoom_level
+	to NAUTILUS_ZOOM_LEVEL_STANDARD.
+	(fm_directory_view_icons_begin_loading),
+	(fm_directory_view_icons_get_zoom_level): Pass default_zoom_level
+	to metadata calls.
+	(fm_directory_view_icons_set_zoom_level): Pass default_zoom_level
+	to metadata call, also reset default_zoom_level to new level.
+	
+	* src/file-manager/fm-directory-view-list.c:
+	Added default_zoom_level to Details struct.
+	(fm_directory_view_icons_initialize): Initialize default_zoom_level
+	to NAUTILUS_ZOOM_LEVEL_SMALLER.
+	(fm_directory_view_list_begin_loading): Pass default_zoom_level
+	to metadata call.
+	(fm_directory_view_list_set_zoom_level): Pass default_zoom_level
+	to metadata call, also reset default_zoom_level to new level.
+	
+
 2000-02-14  Elliot Lee  <sopwith@redhat.com>
 
 	* components/html/ntl-web-browser.c: Send status strings for now,
