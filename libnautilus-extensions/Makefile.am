@@ -39,6 +39,7 @@ libnautilusinclude_HEADERS=			\
 	nautilus-file-utilities.h		\
 	nautilus-file.h				\
 	nautilus-gdk-extensions.h		\
+	nautilus-gdk-pixbuf-extensions.h	\
 	nautilus-glib-extensions.h		\
 	nautilus-global-preferences.h		\
 	nautilus-gnome-extensions.h		\
@@ -75,6 +76,7 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	nautilus-file-utilities.c		\
 	nautilus-file.c				\
 	nautilus-gdk-extensions.c		\
+	nautilus-gdk-pixbuf-extensions.c	\
 	nautilus-glib-extensions.c		\
 	nautilus-global-preferences.c		\
 	nautilus-gnome-extensions.c		\

@@ -63,12 +63,12 @@ void
 nautilus_fill_rectangle_with_color (GdkDrawable *drawable,
 				    GdkGC *gc,
 				    const GdkRectangle *rectangle,
-				    const GdkColor *color)
+				    guint32 rgb)
 {
 	GdkGCValues saved_values;
 	
 	gdk_gc_get_values(gc, &saved_values);
-	gdk_gc_set_foreground (gc, (GdkColor *) color);
+	gdk_rgb_gc_set_foreground (gc, rgb);
 	nautilus_fill_rectangle (drawable, gc, rectangle);
 	gdk_gc_set_foreground (gc, &saved_values.foreground);
 }
@@ -93,8 +93,8 @@ nautilus_fill_rectangle_with_gradient (GdkDrawable *drawable,
 				       GdkGC *gc,
 				       GdkColormap *colormap,
 				       const GdkRectangle *rectangle,
-				       const GdkColor *start_color,
-				       const GdkColor *end_color,
+				       guint32 start_rgb,
+				       guint32 end_rgb,
 				       gboolean horizontal)
 {
 	GdkRectangle band_box;
@@ -104,12 +104,11 @@ nautilus_fill_rectangle_with_gradient (GdkDrawable *drawable,
 	guint16 last_band_size;
 	gdouble multiplier;
 	gint band;
+	guint32 band_rgb;
 
 	g_return_if_fail (drawable != NULL);
 	g_return_if_fail (gc != NULL);
 	g_return_if_fail (rectangle != NULL);
-	g_return_if_fail (start_color != NULL);
-	g_return_if_fail (end_color != NULL);
 	g_return_if_fail (horizontal == FALSE || horizontal == TRUE);
 
 	/* Set up the band box so we can access it the same way for horizontal or vertical. */
@@ -129,21 +128,16 @@ nautilus_fill_rectangle_with_gradient (GdkDrawable *drawable,
 	
 	/* Fill each band with a separate nautilus_draw_rectangle call. */
 	for (band = 0; band < num_bands; band++) {
-		GdkColor band_color;
-
 		/* Compute a new color value for each band. */
-		nautilus_interpolate_color (band * multiplier, start_color, end_color, &band_color);
-		if (!gdk_colormap_alloc_color (colormap, &band_color, FALSE, TRUE))
-			g_warning ("could not allocate color for gradient");
-		else {
-			/* Last band may need to be a bit smaller to avoid writing outside the box.
-			 * This is more efficient than changing and restoring the clip.
-			 */
-			if (band == num_bands - 1)
-				*size = last_band_size;
+		band_rgb = nautilus_interpolate_color (band * multiplier, start_rgb, end_rgb);
 
-			nautilus_fill_rectangle_with_color (drawable, gc, &band_box, &band_color);
-		}
+		/* Last band may need to be a bit smaller to avoid writing outside the box.
+		 * This is more efficient than changing and restoring the clip.
+		 */
+		if (band == num_bands - 1)
+			*size = last_band_size;
+		
+		nautilus_fill_rectangle_with_color (drawable, gc, &band_box, band_rgb);
 		*position += *size;
 	}
 }
@@ -201,21 +195,20 @@ nautilus_rectangle_inset (GdkRectangle *rectangle,
  * instead do the interpolation in the best color space for expressing
  * human perception.
  */
-void
+guint32
 nautilus_interpolate_color (gdouble ratio,
-			    const GdkColor *start_color,
-			    const GdkColor *end_color,
-			    GdkColor *interpolated_color)
+			    guint32 start_rgb,
+			    guint32 end_rgb)
 {
-	g_return_if_fail (ratio >= 0.0);
-	g_return_if_fail (ratio <= 1.0);
-	g_return_if_fail (start_color);
-	g_return_if_fail (end_color);
-	g_return_if_fail (interpolated_color);
+	guchar red, green, blue;
 
-	interpolated_color->red = start_color->red * (1.0 - ratio) + end_color->red * ratio;
-	interpolated_color->green = start_color->green * (1.0 - ratio) + end_color->green * ratio;
-	interpolated_color->blue = start_color->blue * (1.0 - ratio) + end_color->blue * ratio;
+	g_return_val_if_fail (ratio >= 0.0, 0);
+	g_return_val_if_fail (ratio <= 1.0, 0);
+
+	red = ((start_rgb >> 16) & 0xFF) * (1.0 - ratio) + ((end_rgb >> 16) & 0xFF) * ratio;
+	green = ((start_rgb >> 8) & 0xFF) * (1.0 - ratio) + ((end_rgb >> 8) & 0xFF) * ratio;
+	blue = (start_rgb & 0xFF) * (1.0 - ratio) + (end_rgb & 0xFF) * ratio;
+	return (((red << 8) | green) << 8) | blue;
 }
 
 /**
@@ -436,6 +429,28 @@ nautilus_gdk_color_parse_with_white_default (const char *color_spec,
 }
 
 /**
+ * nautilus_parse_rgb_with_white_default
+ * @color_spec: A color spec.
+ * Returns: An rgb value.
+ *
+ * The same as gdk_color_parse, except sets the color to white if
+ * the spec. can't be parsed instead of returning a boolean flag
+ * and returns a guint32 rgb value instead of a GdkColor.
+ */
+guint32
+nautilus_parse_rgb_with_white_default (const char *color_spec)
+{
+	GdkColor color;
+
+	if (color_spec == NULL || !gdk_color_parse (color_spec, &color)) {
+		return 0xFFFFFF;
+	}
+	return ((color.red << 8) & 0xFF0000)
+		| (color.green & 0xFF00)
+		| ((color.blue >> 8) & 0xFF);
+}
+
+/**
  * nautilus_gdk_font_equal
  * @font_a_null_allowed: A font or NULL.
  * @font_b_null_allowed: A font or NULL.
@@ -453,31 +468,6 @@ nautilus_gdk_font_equal (GdkFont *font_a_null_allowed,
 	return gdk_font_equal (font_a_null_allowed, font_b_null_allowed);
 }
 
-/**
- * nautilus_gdk_pixbuf_list_ref
- * @pixbuf_list: A list of GdkPixbuf objects.
- *
- * Refs all the pixbufs.
- **/
-void
-nautilus_gdk_pixbuf_list_ref (GList *pixbuf_list)
-{
-	g_list_foreach (pixbuf_list, (GFunc) gdk_pixbuf_ref, NULL);
-}
-
-/**
- * nautilus_gdk_pixbuf_list_free
- * @pixbuf_list: A list of GdkPixbuf objects.
- *
- * Unrefs all the pixbufs, then frees the list.
- **/
-void
-nautilus_gdk_pixbuf_list_free (GList *pixbuf_list)
-{
-	g_list_foreach (pixbuf_list, (GFunc) gdk_pixbuf_unref, NULL);
-	g_list_free (pixbuf_list);
-}
-
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
 
 static char *
@@ -485,28 +475,6 @@ nautilus_gdk_color_as_hex_string (GdkColor color)
 {
 	return g_strdup_printf("rgb:%04hX/%04hX/%04hX",
 			       color.red, color.green, color.blue);
-}
-
-static char *
-nautilus_self_check_interpolate (gdouble ratio,
-				 gushort r1, gushort g1, gushort b1,
-				 gushort r2, gushort g2, gushort b2)
-{
-	GdkColor start_color;
-	GdkColor end_color;
-	GdkColor interpolated_color;
-
-	start_color.red = r1;
-	start_color.green = g1;
-	start_color.blue = b1;
-
-	end_color.red = r2;
-	end_color.green = g2;
-	end_color.blue = b2;
-
-	nautilus_interpolate_color (ratio, &start_color, &end_color, &interpolated_color);
-
-	return nautilus_gdk_color_as_hex_string (interpolated_color);
 }
 
 static char *
@@ -522,14 +490,10 @@ void
 nautilus_self_check_gdk_extensions (void)
 {
 	/* nautilus_interpolate_color */
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_interpolate (0.0, 0, 0, 0, 0, 0, 0),
-				      "rgb:0000/0000/0000");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_interpolate (0.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF),
-				      "rgb:0000/0000/0000");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_interpolate (0.5, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF),
-				      "rgb:7FFF/7FFF/7FFF");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_self_check_interpolate (1.0, 0, 0, 0, 0xFFFF, 0xFFFF, 0xFFFF),
-				      "rgb:FFFF/FFFF/FFFF");
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_interpolate_color (0.0, 0, 0), 0);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_interpolate_color (0.0, 0, 0xFFFFFF), 0);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_interpolate_color (0.5, 0, 0xFFFFFF), 0x7F7F7F);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_interpolate_color (1.0, 0, 0xFFFFFF), 0xFFFFFF);
 
 	/* nautilus_fill_rectangle */
 	/* Make a GdkImage and fill it, maybe? */

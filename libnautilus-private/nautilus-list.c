@@ -30,8 +30,8 @@
 #include "nautilus-list.h"
 
 #include <gtk/gtkdnd.h>
-#include "nautilus-gdk-extensions.h"
 #include "nautilus-glib-extensions.h"
+#include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-background.h"
 #include "nautilus-list-column-title.h"

@@ -1,5 +1,68 @@
 2000-04-03  Darin Adler  <darin@eazel.com>
 
+	First cut at tiled background images.
+
+	There's no UI for setting them yet, they are only in
+	the icon view, and they don't work properly with scrolling yet.
+
+	* libnautilus/Makefile.am:
+	* libnautilus/nautilus-gdk-extensions.c:
+	* libnautilus/nautilus-gdk-extensions.h:
+	* libnautilus/nautilus-gdk-pixbuf-extensions.c:
+	* libnautilus/nautilus-gdk-pixbuf-extensions.h:
+	Split the GdkPixbuf stuff into its own file.
+
+	* libnautilus/nautilus-background.c:
+	(nautilus_background_destroy): Fixed a bunch of leaks
+	and added new code to stop pixbuf loading.
+	(nautilus_background_draw): Added call to draw tiled
+	background image. Converted gradients to use gdk_rgb
+	instead of gdk_color.
+	(nautilus_background_get_tile_image_uri): Implemented.
+	(nautilus_background_set_color): Added short-circuit
+	for background image case.
+	(load_image_callback),
+	(nautilus_background_set_tile_image_uri): Implemented.
+	Include code to	load in the tiled image when its URI is set.
+	(nautilus_background_receive_dropped_color): Set the
+	tile image to NULL when a color is dropped.
+
+	* libnautilus/nautilus-gdk-extensions.c:
+	* libnautilus/nautilus-gdk-extensions.h:
+	(nautilus_fill_rectangle_with_color),
+	(nautilus_fill_rectangle_with_color),
+	(nautilus_interpolate_color): Changed from gdk_color
+	to gdk_rgb.
+	(nautilus_parse_rgb_with_white_default): Added function
+	for gdk_rgb similar to what we already have for gdk_color.
+
+	* libnautilus/nautilus-icon-canvas-item.c:
+	* libnautilus/nautilus-icon-container.c:
+	* libnautilus/nautilus-list.c:
+	Use gdk-pixbuf extensions in new location.
+
+	* libnautilus/nautilus-metadata.h:
+	Added metadata keys for background images.
+
+	* src/ntl-view.c:
+	Added lots of stronger checks for NAUTILUS_IS_VIEW since
+	this is where we run into trouble with a bug I ran into.
+
+	* src/file-manager/icon-view.c: Added code to handle
+	the new background images.
+	(create_icon_container): Keep around the handler ID when
+	connecting to the "changed" message of the background so
+	we can block the handler as needed.
+	(fm_icon_view_begin_loading): Load the background image
+	as well as the background color. We need to block the
+	background changed signal handler so we don't get
+	confused while the color but not the image is set up.
+	(fm_icon_view_background_changed_callback): Save the
+	background image URI as well as the background color in
+	the metadata.
+
+2000-04-03  Darin Adler  <darin@eazel.com>
+
 	Fix the build. Changes in GtkHtml and Bonobo required us
 	to catch up.
 

@@ -35,7 +35,7 @@
 #include <gdk-pixbuf/gnome-canvas-pixbuf.h>
 
 #include "nautilus-glib-extensions.h"
-#include "nautilus-gdk-extensions.h"
+#include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-gnome-extensions.h"
 #include "nautilus-gtk-macros.h"

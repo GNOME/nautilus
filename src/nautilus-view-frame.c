@@ -363,6 +363,8 @@ nautilus_view_load_client(NautilusView *view, const char *iid)
     NULL
   };
 
+  g_return_val_if_fail (NAUTILUS_IS_VIEW (view), FALSE);
+
   if (iid == NULL)
     return FALSE;
 
@@ -437,9 +439,8 @@ nautilus_view_notify_location_change(NautilusView *view,
   Nautilus_NavigationInfo real_nav_ctx;
   CORBA_Environment ev;
 
-  g_return_if_fail(view);
+  g_return_if_fail (NAUTILUS_IS_VIEW (view));
   g_return_if_fail(view->component_class);
-  g_return_if_fail(NAUTILUS_VIEW(view));
 
   real_nav_ctx = *nav_context;
   g_assert(real_nav_ctx.requested_uri);
@@ -463,9 +464,8 @@ nautilus_view_notify_selection_change(NautilusView *view,
 {
   CORBA_Environment ev;
 
-  g_return_if_fail(view);
+  g_return_if_fail (NAUTILUS_IS_VIEW (view));
   g_return_if_fail(view->component_class);
-  g_return_if_fail(NAUTILUS_VIEW(view));
 
   CORBA_exception_init(&ev);
 
@@ -480,9 +480,8 @@ nautilus_view_load_state(NautilusView *view, const char *config_path)
 {
   CORBA_Environment ev;
 
-  g_return_if_fail(view);
+  g_return_if_fail (NAUTILUS_IS_VIEW (view));
   g_return_if_fail(view->component_class);
-  g_return_if_fail(NAUTILUS_VIEW(view));
 
   CORBA_exception_init(&ev);
 
@@ -497,7 +496,7 @@ nautilus_view_save_state(NautilusView *view, const char *config_path)
 {
   CORBA_Environment ev;
 
-  g_return_if_fail(view);
+  g_return_if_fail (NAUTILUS_IS_VIEW (view));
   g_return_if_fail(view->component_class);
 
   CORBA_exception_init(&ev);
@@ -513,7 +512,7 @@ nautilus_view_show_properties(NautilusView *view)
 {
   CORBA_Environment ev;
 
-  g_return_if_fail(view);
+  g_return_if_fail (NAUTILUS_IS_VIEW (view));
   g_return_if_fail(view->component_class);
 
   CORBA_exception_init(&ev);
@@ -529,7 +528,7 @@ nautilus_view_stop_location_change(NautilusView *view)
 {
   CORBA_Environment ev;
 
-  g_return_if_fail(view);
+  g_return_if_fail (NAUTILUS_IS_VIEW (view));
   g_return_if_fail(view->component_class);
 
   CORBA_exception_init(&ev);
@@ -547,6 +546,8 @@ nautilus_view_is_zoomable (NautilusView *view)
   CORBA_Environment ev;
   gboolean retval;
 
+  g_return_val_if_fail (NAUTILUS_IS_VIEW (view), FALSE);
+
   CORBA_exception_init (&ev);
 
   retval = CORBA_Object_is_nil (view->zoomable, &ev);
@@ -562,7 +563,7 @@ nautilus_view_get_zoom_level (NautilusView *view)
   CORBA_Environment ev;
   gdouble retval;
 
-  g_return_val_if_fail (view, 0);
+  g_return_val_if_fail (NAUTILUS_IS_VIEW (view), 0);
 
   CORBA_exception_init (&ev);
 
@@ -583,7 +584,7 @@ nautilus_view_set_zoom_level (NautilusView *view,
 {
   CORBA_Environment ev;
 
-  g_return_if_fail (view);
+  g_return_if_fail (NAUTILUS_IS_VIEW (view));
 
   CORBA_exception_init (&ev);
 
@@ -602,7 +603,7 @@ nautilus_view_get_min_zoom_level (NautilusView *view)
   CORBA_Environment ev;
   gdouble retval;
 
-  g_return_val_if_fail (view, 0);
+  g_return_val_if_fail (NAUTILUS_IS_VIEW (view), 0);
 
   CORBA_exception_init (&ev);
 
@@ -623,7 +624,7 @@ nautilus_view_get_max_zoom_level (NautilusView *view)
   CORBA_Environment ev;
   gdouble retval;
 
-  g_return_val_if_fail (view, 0);
+  g_return_val_if_fail (NAUTILUS_IS_VIEW (view), 0);
 
   CORBA_exception_init (&ev);
 
@@ -644,7 +645,7 @@ nautilus_view_get_is_continuous (NautilusView *view)
   CORBA_Environment ev;
   gboolean retval;
 
-  g_return_val_if_fail (view, FALSE);
+  g_return_val_if_fail (NAUTILUS_IS_VIEW (view), FALSE);
 
   CORBA_exception_init (&ev);
 
@@ -665,7 +666,7 @@ nautilus_view_zoom_in (NautilusView *view)
 {
   CORBA_Environment ev;
 
-  g_return_if_fail(view);
+  g_return_if_fail (NAUTILUS_IS_VIEW (view));
 
   CORBA_exception_init (&ev);
 
@@ -684,7 +685,7 @@ nautilus_view_zoom_out (NautilusView *view)
 {
   CORBA_Environment ev;
 
-  g_return_if_fail(view);
+  g_return_if_fail (NAUTILUS_IS_VIEW (view));
 
   CORBA_exception_init (&ev);
 
@@ -703,7 +704,7 @@ nautilus_view_zoom_to_fit (NautilusView *view)
 {
   CORBA_Environment ev;
 
-  g_return_if_fail(view);
+  g_return_if_fail (NAUTILUS_IS_VIEW (view));
 
   CORBA_exception_init (&ev);
 
@@ -720,18 +721,21 @@ nautilus_view_zoom_to_fit (NautilusView *view)
 const char *
 nautilus_view_get_iid(NautilusView *view)
 {
+  g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
   return view->iid;
 }
 
 CORBA_Object
 nautilus_view_get_client_objref(NautilusView *view)
 {
+  g_return_val_if_fail (view == NULL || NAUTILUS_IS_VIEW (view), NULL);
   return view?bonobo_object_corba_objref(BONOBO_OBJECT(view->client_object)):NULL;
 }
 
 CORBA_Object
 nautilus_view_get_objref(NautilusView *view)
 {
+  g_return_val_if_fail (view == NULL || NAUTILUS_IS_VIEW (view), NULL);
   return view?bonobo_object_corba_objref(view->view_frame):NULL;
 }
 
@@ -740,6 +744,7 @@ void
 nautilus_view_request_location_change(NautilusView *view,
                                       Nautilus_NavigationRequestInfo *loc)
 {
+  g_return_if_fail (NAUTILUS_IS_VIEW (view));
   gtk_signal_emit(GTK_OBJECT(view), nautilus_view_signals[REQUEST_LOCATION_CHANGE], loc);
 }
 
@@ -747,6 +752,7 @@ void
 nautilus_view_request_selection_change (NautilusView              *view,
                                         Nautilus_SelectionRequestInfo *loc)
 {
+  g_return_if_fail (NAUTILUS_IS_VIEW (view));
   gtk_signal_emit(GTK_OBJECT(view), nautilus_view_signals[REQUEST_SELECTION_CHANGE], loc);
 }
 
@@ -754,6 +760,7 @@ void
 nautilus_view_request_status_change    (NautilusView              *view,
                                         Nautilus_StatusRequestInfo *loc)
 {
+  g_return_if_fail (NAUTILUS_IS_VIEW (view));
   gtk_signal_emit(GTK_OBJECT(view), nautilus_view_signals[REQUEST_STATUS_CHANGE], loc);
 }
 
@@ -761,6 +768,7 @@ void
 nautilus_view_request_progress_change(NautilusView              *view,
                                       Nautilus_ProgressRequestInfo *loc)
 {
+  g_return_if_fail (NAUTILUS_IS_VIEW (view));
   gtk_signal_emit(GTK_OBJECT(view), nautilus_view_signals[REQUEST_PROGRESS_CHANGE], loc);
 }
 
@@ -768,6 +776,7 @@ void
 nautilus_view_notify_zoom_level (NautilusView *view,
                                  gdouble       level)
 {
+  g_return_if_fail (NAUTILUS_IS_VIEW (view));
   gtk_signal_emit (GTK_OBJECT (view), nautilus_view_signals[NOTIFY_ZOOM_LEVEL], level);
 }
 
@@ -799,6 +808,7 @@ check_object(NautilusView *view)
 void
 nautilus_view_set_active_errors(NautilusView *view, gboolean enabled)
 {
+  g_return_if_fail (NAUTILUS_IS_VIEW (view));
   if(enabled)
     {
       if(!view->timer_id)

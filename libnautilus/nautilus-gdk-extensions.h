@@ -35,12 +35,10 @@
 char *   nautilus_gradient_new                       (const char         *start_color,
 						      const char         *end_color,
 						      gboolean            is_horizontal);
-
 gboolean nautilus_gradient_is_gradient               (const char         *gradient_spec);
 char *   nautilus_gradient_get_start_color_spec      (const char         *gradient_spec);
 char *   nautilus_gradient_get_end_color_spec        (const char         *gradient_spec);
 gboolean nautilus_gradient_is_horizontal             (const char         *gradient_spec);
-
 char *   nautilus_gradient_set_left_color_spec       (const char         *gradient_spec,
 						      const char         *left_color);
 char *   nautilus_gradient_set_top_color_spec        (const char         *gradient_spec,
@@ -53,11 +51,14 @@ char *   nautilus_gradient_set_bottom_color_spec     (const char         *gradie
 /* A version of parse_color that substitutes a default color instead of returning
    a boolean to indicate it cannot be parsed.
 */
-void     nautilus_gdk_color_parse_with_default       (const char         *color_spec,
+void     nautilus_gdk_coolor_parse_with_default      (const char         *color_spec,
 						      const GdkColor     *default_color,
-						      GdkColor           *color);
+						      GdkColor           *parsed_color);
 void     nautilus_gdk_color_parse_with_white_default (const char         *color_spec,
-						      GdkColor           *color);
+						      GdkColor           *parsed_color);
+guint32  nautilus_parse_rgb_with_default             (const char         *color_spec,
+						      guint32             default_rgb);
+guint32  nautilus_parse_rgb_with_white_default       (const char         *color_spec);
 
 /* Fill routines that take GdkRectangle parameters instead of four integers. */
 void     nautilus_fill_rectangle                     (GdkDrawable        *drawable,
@@ -66,36 +67,28 @@ void     nautilus_fill_rectangle                     (GdkDrawable        *drawab
 void     nautilus_fill_rectangle_with_color          (GdkDrawable        *drawable,
 						      GdkGC              *gc,
 						      const GdkRectangle *rectangle,
-						      const GdkColor     *color);
+						      guint32             rgb);
 void     nautilus_fill_rectangle_with_gradient       (GdkDrawable        *drawable,
 						      GdkGC              *gc,
 						      GdkColormap        *colormap,
 						      const GdkRectangle *rectangle,
-						      const GdkColor     *start_color,
-						      const GdkColor     *end_color,
+						      guint32             start_rgb,
+						      guint32             end_rgb,
 						      gboolean            horizontal_gradient);
 
 /* Misc GdkRectangle helper functions */
-gboolean nautilus_rectangle_contains 		     (const GdkRectangle *rectangle, 
-						      int 		 x, 
-						      int 		 y);
-
-void	 nautilus_rectangle_inset		     (GdkRectangle 	 *rectangle, 
-						      int 		 x, 
-						      int 		 y);
+gboolean nautilus_rectangle_contains                 (const GdkRectangle *rectangle,
+						      int                 x,
+						      int                 y);
+void     nautilus_rectangle_inset                    (GdkRectangle       *rectangle,
+						      int                 x,
+						      int                 y);
 
 /* A basic operation we use for drawing gradients is interpolating two colors.*/
-void     nautilus_interpolate_color                  (gdouble             ratio,
-						      const GdkColor     *start_color,
-						      const GdkColor     *end_color,
-						      GdkColor           *interpolated_color);
-
+guint32  nautilus_interpolate_color                  (gdouble             ratio,
+						      guint32             start_rgb,
+						      guint32             end_rgb);
 gboolean nautilus_gdk_font_equal                     (GdkFont            *font_a_null_allowed,
 						      GdkFont            *font_b_null_allowed);
-
-/* Convenience functions for lists of GdkPixbuf objects. */
-void     nautilus_gdk_pixbuf_list_ref                (GList              *pixbuf_list);
-void     nautilus_gdk_pixbuf_list_unref              (GList              *pixbuf_list);
-void     nautilus_gdk_pixbuf_list_free               (GList              *pixbuf_list);
 
 #endif /* NAUTILUS_GDK_EXTENSIONS_H */

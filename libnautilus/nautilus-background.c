@@ -27,27 +27,27 @@
 
 #include <gtk/gtksignal.h>
 #include "nautilus-gdk-extensions.h"
+#include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-background-canvas-group.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-string.h"
 
-static void nautilus_background_initialize_class (gpointer       klass);
-static void nautilus_background_initialize       (gpointer       object,
-						  gpointer       klass);
-static void nautilus_background_destroy          (GtkObject     *object);
-
-static void nautilus_background_draw_flat_box    (GtkStyle      *style,
-						  GdkWindow     *window,
-						  GtkStateType   state_type,
-						  GtkShadowType  shadow_type,
-						  GdkRectangle  *area,
-						  GtkWidget     *widget,
-						  gchar         *detail,
-						  gint           x,
-						  gint           y,
-						  gint           width,
-						  gint           height);
+static void nautilus_background_initialize_class (gpointer            klass);
+static void nautilus_background_initialize       (gpointer            object,
+						  gpointer            klass);
+static void nautilus_background_destroy          (GtkObject          *object);
+static void nautilus_background_draw_flat_box    (GtkStyle           *style,
+						  GdkWindow          *window,
+						  GtkStateType        state_type,
+						  GtkShadowType       shadow_type,
+						  GdkRectangle       *area,
+						  GtkWidget          *widget,
+						  char               *detail,
+						  int                 x,
+						  int                 y,
+						  int                 width,
+						  int                 height);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBackground, nautilus_background, GTK_TYPE_OBJECT)
 
@@ -62,6 +62,8 @@ struct NautilusBackgroundDetails
 {
 	char *color;
 	char *tile_image_uri;
+	GdkPixbuf *tile_image;
+	NautilusPixbufLoadHandle *load_tile_image_handle;
 };
 
 static void
@@ -101,6 +103,14 @@ nautilus_background_destroy (GtkObject *object)
 	NautilusBackground *background;
 
 	background = NAUTILUS_BACKGROUND (object);
+
+	nautilus_cancel_gdk_pixbuf_load (background->details->load_tile_image_handle);
+
+	g_free (background->details->color);
+	g_free (background->details->tile_image_uri);
+	if (background->details->tile_image != NULL) {
+		gdk_pixbuf_unref (background->details->tile_image);
+	}
 	g_free (background->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -119,24 +129,36 @@ nautilus_background_draw (NautilusBackground *background,
 			  GdkColormap *colormap,
 			  const GdkRectangle *rectangle)
 {
-	char *start_color_spec;
-	char *end_color_spec;
-	GdkColor start_color;
-	GdkColor end_color;
+	char *start_color_spec, *end_color_spec;
+	guint32 start_rgb, end_rgb;
 	gboolean horizontal_gradient;
 
-	start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
-	end_color_spec = nautilus_gradient_get_end_color_spec (background->details->color);
-	horizontal_gradient = nautilus_gradient_is_horizontal (background->details->color);
+	if (background->details->tile_image != NULL) {
+		nautilus_gdk_pixbuf_render_to_drawable_tiled (background->details->tile_image,
+							      drawable,
+							      gc,
+							      rectangle,
+							      GDK_RGB_DITHER_NORMAL,
+							      0, 0);
+	} else {
+		start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
+		end_color_spec = nautilus_gradient_get_end_color_spec (background->details->color);
+		horizontal_gradient = nautilus_gradient_is_horizontal (background->details->color);
 
-	nautilus_gdk_color_parse_with_white_default (start_color_spec, &start_color);
-	nautilus_gdk_color_parse_with_white_default (end_color_spec, &end_color);
-
-	g_free (start_color_spec);
-	g_free (end_color_spec);
-
-	nautilus_fill_rectangle_with_gradient  (drawable, gc, colormap, rectangle,
-						&start_color, &end_color, horizontal_gradient);
+		start_rgb = nautilus_parse_rgb_with_white_default (start_color_spec);
+		end_rgb = nautilus_parse_rgb_with_white_default (end_color_spec);
+		
+		g_free (start_color_spec);
+		g_free (end_color_spec);
+		
+		nautilus_fill_rectangle_with_gradient (drawable,
+						       gc,
+						       colormap,
+						       rectangle,
+						       start_rgb,
+						       end_rgb,
+						       horizontal_gradient);
+	}
 }
 
 char *
@@ -147,11 +169,23 @@ nautilus_background_get_color (NautilusBackground *background)
 	return g_strdup (background->details->color);
 }
 
+char *
+nautilus_background_get_tile_image_uri (NautilusBackground *background)
+{
+	g_return_val_if_fail (NAUTILUS_IS_BACKGROUND (background), NULL);
+
+	return g_strdup (background->details->tile_image_uri);
+}
+
 void
 nautilus_background_set_color (NautilusBackground *background,
 			       const char *color)
 {
 	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
+
+	if (nautilus_strcmp (background->details->color, color) == 0) {
+		return;
+	}
 
 	g_free (background->details->color);
 	background->details->color = g_strdup (color);
@@ -159,7 +193,43 @@ nautilus_background_set_color (NautilusBackground *background,
 	gtk_signal_emit (GTK_OBJECT (background), signals[CHANGED]);
 }
 
-#if 0
+static void
+load_image_callback (GnomeVFSResult error,
+		     GdkPixbuf *pixbuf,
+		     gpointer callback_data)
+{
+	NautilusBackground *background;
+
+	background = NAUTILUS_BACKGROUND (callback_data);
+
+	g_assert (background->details->tile_image == NULL);
+	g_assert (background->details->load_tile_image_handle != NULL);
+
+	background->details->load_tile_image_handle = NULL;
+
+	/* Just ignore errors. */
+	if (pixbuf == NULL) {
+		return;
+	}
+
+	gdk_pixbuf_ref (pixbuf);
+	background->details->tile_image = pixbuf;
+
+	gtk_signal_emit (GTK_OBJECT (background), signals[CHANGED]);
+}
+
+static void
+start_loading_tile_image (NautilusBackground *background)
+{
+	if (background->details->tile_image_uri == NULL) {
+		return;
+	}
+
+	background->details->load_tile_image_handle =
+		nautilus_gdk_pixbuf_load_async (background->details->tile_image_uri,
+						load_image_callback,
+						background);
+}
 
 void
 nautilus_background_set_tile_image_uri (NautilusBackground *background,
@@ -167,13 +237,23 @@ nautilus_background_set_tile_image_uri (NautilusBackground *background,
 {
 	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
 
-	g_free (background->details->color);
-	background->details->color = g_strdup (color);
+	if (nautilus_strcmp (background->details->tile_image_uri, image_uri) == 0) {
+		return;
+	}
+
+	nautilus_cancel_gdk_pixbuf_load (background->details->load_tile_image_handle);
+	background->details->load_tile_image_handle = NULL;
+
+	g_free (background->details->tile_image_uri);
+	if (background->details->tile_image != NULL) {
+		gdk_pixbuf_unref (background->details->tile_image);
+		background->details->tile_image = NULL;
+	}
+	background->details->tile_image_uri = g_strdup (image_uri);
+	start_loading_tile_image (background);
 
 	gtk_signal_emit (GTK_OBJECT (background), signals[CHANGED]);
 }
-
-#endif
 
 static GtkStyleClass *
 nautilus_gtk_style_get_default_class (void)
@@ -253,7 +333,7 @@ nautilus_background_draw_flat_box (GtkStyle *style,
 	rectangle.height = height;
 	
 	nautilus_background_draw (background, window, gc,
-				  gtk_widget_get_colormap(widget),
+				  gtk_widget_get_colormap (widget),
 				  &rectangle);
 	
 	gdk_gc_unref (gc);
@@ -297,8 +377,7 @@ nautilus_background_set_widget_style (NautilusBackground *background,
 
 	/* Set up the colors in the style. */
 	start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
-	nautilus_gdk_color_parse_with_white_default
-		(start_color_spec, &color);
+	nautilus_gdk_color_parse_with_white_default (start_color_spec, &color);
 	g_free (start_color_spec);
 	style->bg[GTK_STATE_NORMAL] = color;
 	style->base[GTK_STATE_NORMAL] = color;
@@ -436,6 +515,7 @@ nautilus_background_receive_dropped_color (NautilusBackground *background,
 	g_free (color_spec);
 
 	nautilus_background_set_color (background, new_gradient_spec);
+	nautilus_background_set_tile_image_uri (background, NULL);
 	
 	g_free (new_gradient_spec);
 }
