@@ -1,26 +1,39 @@
 NULL=
 
-bin_PROGRAMS=test-rsvg
+bin_PROGRAMS=test-rsvg test-ft
 
 test_rsvg_LDADD =\
+	$(GNOMECANVASPIXBUF_LIBS) \
 	$(GNOMEUI_LIBS) \
-	$(LIBPNG) \
+	$(XML_LIBS) \
+	librsvg.la
+
+test_ft_LDADD =\
+	$(GNOMECANVASPIXBUF_LIBS) \
+	$(GNOMEUI_LIBS) \
+	$(XML_LIBS) \
 	librsvg.la
 
 lib_LTLIBRARIES=librsvg.la
 
-INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/cut-n-paste-code/ \
-	-I$(top_builddir) -I$(top_builddir)/cut-n-paste-code/ \
+INCLUDES = \
+	-I$(top_srcdir)/cut-n-paste-code \
 	$(GNOME_CFLAGS) \
+	$(GNOMECANVASPIXBUF_INCLUDEDIR) \
 	$(GDK_PIXBUF_CFLAGS) \
 	$(XML_CFLAGS) \
-	-D_REENTRANT
+	$(WERROR) \
+	-D_REENTRANT \
+	$(NULL)
 
 librsvg_la_LDFLAGS=\
+	$(top_builddir)/cut-n-paste-code/freetype/libfreetype2.la
 	$(GNOME_LIBS) \
-	$(GDK_PIXBUF_LIBS)		\
+	$(GNOMECANVASPIXBUF_LIBS) \
+	$(GDK_PIXBUF_LIBS) \
 	$(XML_LIBS) \
-	$(LIBPNG)
+	$(LIBPNG) \
+	$(NULL)
 
 librsvgincludedir=$(includedir)/librsvg
 librsvginclude_HEADERS=			\
@@ -53,7 +66,6 @@ librsvg_la_SOURCES=	\
 	$(NULL)
 
 test_rsvg_LIBS =\
-	$(top_builddir)/cut-n-paste-code/freetype2/libfreetype2.la \
 	$(GDK_PIXBUF_LIBS)
 
 test_rsvg_SOURCES =\

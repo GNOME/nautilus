@@ -1,3 +1,13 @@
+2000-07-20  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* cut-n-paste-code/freetype/Makefile.am:
+	Build this beast only as a static library and dont install any of
+	its headers.
+	
+	* librsvg/Makefile.am:
+	Link in the cut-and-pasted freetype lib statically into librsvg to
+	avoid having its clients having a depenency on freetype.
+	
 Thu Jul 20 10:41:26 2000  Raph Levien  <raph@acm.org>
 
 	* librsvg/rsvg-ft.c librsvg/rsvg-ft.h librsvg/art_render_mask.c
