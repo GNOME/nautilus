@@ -31,6 +31,7 @@
 #include "nautilus-global-preferences.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
+#include <eel/eel-vfs-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-preferences.h>
 #include <eel/eel-string.h>
@@ -718,17 +719,16 @@ nautilus_launch_desktop_file (const char	*desktop_file_uri,
 	 * nfs are treated as remote) to partially mitigate the security
 	 * risk of executing arbitrary commands.
 	 */
-	local_path = gnome_vfs_get_local_path_from_uri (desktop_file_uri);
-	if (local_path == NULL) {
+	if (!eel_vfs_has_capability (desktop_file_uri,
+				     EEL_VFS_CAPABILITY_SAFE_TO_EXECUTE)) {
 		eel_show_error_dialog
 			(_("Sorry, but you can't execute commands from "
 			   "a remote site due to security considerations."), 
 			 _("Can't execute remote links"),
 			 parent_window);
-	
+			 
 		return;
 	}
-	g_free (local_path);
 	
 	error = NULL;
 	ditem = gnome_desktop_item_new_from_uri (desktop_file_uri,
