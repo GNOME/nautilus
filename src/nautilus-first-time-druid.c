@@ -55,6 +55,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#define SIZE_BODY_LABEL(l)  nautilus_label_make_smaller (NAUTILUS_LABEL (l), 1)
+
 #define SERVICE_UPDATE_ARCHIVE_PATH "/tmp/nautilus_update.tgz"
 #define WELCOME_PACKAGE_URI "http://services.eazel.com/downloads/eazel/updates.tgz"
 
@@ -67,7 +69,10 @@
 #define PROXY_CONFIGURATION_PAGE 4
 
 /* Preference for http proxy settings */
-#define GNOME_VFS_PREFERENCES_HTTP_PROXY "/system/gnome-vfs/http-proxy"
+#define DEFAULT_HTTP_PROXY_PORT 8080
+#define DEFAULT_HTTP_PROXY_PORT_STRING "8080"
+#define GNOME_VFS_PREFERENCES_HTTP_PROXY_HOST "/system/gnome-vfs/http-proxy-host"
+#define GNOME_VFS_PREFERENCES_HTTP_PROXY_PORT "/system/gnome-vfs/http-proxy-port"
 #define GNOME_VFS_PREFERENCES_USE_HTTP_PROXY "/system/gnome-vfs/use-http-proxy"
 
 #define READ_FILE_HANDLE_TAG "Nautilus first time druid read file handle"
@@ -361,6 +366,7 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 	g_free (user_level_name);
 
 	nautilus_label_make_bold (NAUTILUS_LABEL (label));
+	SIZE_BODY_LABEL (label);
 
 	/* extra vbox to help with alignment */
 	vbox = gtk_vbox_new (FALSE, 0);
@@ -384,6 +390,7 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 
 	/* Make comment label */
 	label = label_new_left_justified (comment);
+	SIZE_BODY_LABEL (label);
 
 	gtk_box_pack_start (GTK_BOX (comment_hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show_all (hbox);
@@ -411,6 +418,9 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 	label = label_new_left_justified (_("User levels provide a way to adjust the software to your\n"
 					   "level of technical expertise. Pick an initial level that you\n"
 					   "feel comfortable with; you can always change it later."));
+
+	SIZE_BODY_LABEL (label);
+
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
@@ -471,6 +481,9 @@ set_up_service_signup_page (NautilusDruidPageEazel *page)
 					   "across the network.  Choose an option below, and the\n"
 					   "information will be presented in Nautilus after you've\n"
 					   "finished setting up."));
+
+	SIZE_BODY_LABEL (label);
+
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
 	
@@ -517,6 +530,8 @@ set_up_update_page (NautilusDruidPageEazel *page)
 	
 	/* allocate a descriptive label */
 	label = label_new_left_justified (_("Nautilus will now contact Eazel services to quickly verify \nyour web connection and download the latest updates. \nClick the Next button to continue."));
+	SIZE_BODY_LABEL (label);
+
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
 	
@@ -541,6 +556,37 @@ set_up_update_page (NautilusDruidPageEazel *page)
 
 }
 
+
+static gint
+proxy_address_entry_key_press (GtkWidget	*widget,
+                 	       GdkEventKey	*event,
+                 	       gpointer		callback_data)
+{
+	char *keysym_name;
+	GtkWidget *focus_target;
+
+	focus_target = GTK_WIDGET (callback_data);
+
+	g_return_val_if_fail (NULL != focus_target, FALSE);
+	
+	keysym_name = gdk_keyval_name (event->keyval);
+
+	if (strcmp (keysym_name, "Tab") == 0) {
+		gtk_signal_emit_stop_by_name (GTK_OBJECT (widget), "key_press_event");
+
+		gtk_widget_grab_focus (focus_target);
+
+		if (GTK_IS_EDITABLE (focus_target)) {
+			gtk_editable_select_region (GTK_EDITABLE (focus_target), 0, -1);
+		}
+
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+
 /* set up the proxy configuration page */
 static void
 set_up_proxy_config_page (NautilusDruidPageEazel *page)
@@ -561,6 +607,7 @@ set_up_proxy_config_page (NautilusDruidPageEazel *page)
 	
 	/* allocate a descriptive label */
 	label = label_new_left_justified (_("We are having troubles making an external web connection.  \nSometimes, firewalls require you to specify a web proxy server.  \n Fill in the name of port of your proxy server, if any, below."));
+	SIZE_BODY_LABEL (label);
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
 	
@@ -604,6 +651,7 @@ set_up_proxy_config_page (NautilusDruidPageEazel *page)
 	/* allocate the proxy label, followed by the entry */
 	label = nautilus_label_new (_("Proxy address:"));
 	gtk_widget_show (label);
+	SIZE_BODY_LABEL (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 2);
 	proxy_label_width = label->allocation.width;
 	proxy_address_entry = gtk_entry_new_with_max_length (24);
@@ -619,10 +667,13 @@ set_up_proxy_config_page (NautilusDruidPageEazel *page)
 	
 	/* allocate the proxy label, followed by the entry */
 	label = nautilus_label_new (_("Port:"));
+	SIZE_BODY_LABEL (label);
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 2);
 
 	port_number_entry = gtk_entry_new_with_max_length (5);
+	gtk_entry_set_text (GTK_ENTRY (port_number_entry), DEFAULT_HTTP_PROXY_PORT_STRING);
+	
 	gtk_widget_set_usize (port_number_entry, 48, -1);
 	gtk_widget_show (port_number_entry);
 	gtk_box_pack_start (GTK_BOX (hbox), port_number_entry, FALSE, FALSE, 2);
@@ -630,6 +681,15 @@ set_up_proxy_config_page (NautilusDruidPageEazel *page)
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 2);
 	gtk_box_pack_start (GTK_BOX (main_box), frame, FALSE, FALSE, 2);
 
+
+	/* Slam it so that the <tab> in "Proxy Address" goes to "Port"
+	 * I have no idea why this doesn't just work
+	 */
+
+	gtk_signal_connect (GTK_OBJECT (proxy_address_entry),
+			    "key_press_event",
+			    GTK_SIGNAL_FUNC (proxy_address_entry_key_press),
+			    port_number_entry);
 
 }
 
@@ -649,6 +709,7 @@ set_up_update_feedback_page (NautilusDruidPageEazel *page)
 	
 	/* allocate a descriptive label */
 	label = label_new_left_justified (_("We are now contacting the Eazel service to test your \nweb connection and update Nautilus."));
+	SIZE_BODY_LABEL (label);
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
 		
@@ -970,6 +1031,17 @@ static void
 initiate_file_download (GnomeDruid *druid)
 {
 	NautilusReadFileHandle *handle;
+	static gboolean prevent_re_entry = FALSE;
+
+	/* We exercise the event loop below, so we need to make sure that 
+	 * we don't get re-entered
+	 */
+
+	if (prevent_re_entry) {
+		return;
+	}
+
+	prevent_re_entry = TRUE;
 
 	/* disable the next and previous buttons during the file loading process */
 	gtk_widget_set_sensitive (druid->next, FALSE);
@@ -982,6 +1054,17 @@ initiate_file_download (GnomeDruid *druid)
 	 * the user to get forced through the druid again
 	 */
 	druid_set_first_time_file_flag ();
+
+	/* We need to exercise the main loop so that gnome-vfs can get its
+	 * gconf callback for the HTTP proxy autoconfiguration case.
+	 * FIXME: note that "druid" can be freed in this event loop
+	 */
+
+	while (gtk_events_pending()) {
+		gtk_main_iteration();
+	}
+
+	prevent_re_entry = FALSE;
 
 	if (check_network_connectivity ()) {
 		/* initiate the file transfer */
@@ -1010,8 +1093,17 @@ set_http_proxy (const char *proxy_url)
 {
 	const char *proxy_url_port_part;
 	size_t proxy_len;
-	char *proxy_host_port;
 	char *colon;
+	int port;
+
+	/* DEBUG */
+	g_print ("set_http_proxy: %s\n", proxy_url);
+
+	/* We reset this later */
+	if (http_proxy_host) {
+		g_free (http_proxy_host);
+		http_proxy_host = NULL;
+	}
 
 	/* set the "http_proxy" environment variable */
 
@@ -1029,26 +1121,31 @@ set_http_proxy (const char *proxy_url)
 		return FALSE;
 	}
 
+	http_proxy_host = g_strdup (proxy_url_port_part);
+
 	/* chew off trailing / */
-	proxy_host_port = g_strdup (proxy_url_port_part);
-	if ('/' == proxy_host_port[proxy_len - 1]) {
-		proxy_host_port[proxy_len - 1] = 0;
+	if ('/' == http_proxy_host[proxy_len - 1]) {
+		http_proxy_host[proxy_len - 1] = 0;
 	}
 
-	nautilus_preferences_set (GNOME_VFS_PREFERENCES_HTTP_PROXY, proxy_host_port);
-	nautilus_preferences_set_boolean (GNOME_VFS_PREFERENCES_USE_HTTP_PROXY, TRUE);
-
-	/* Keep it around for check_network_connectivity, trimming off the :port */
-	if (http_proxy_host) {
-		g_free (http_proxy_host);
-	}
-
-	http_proxy_host = proxy_host_port;
-	proxy_host_port = NULL;
-
+	/* Scan for port */
 	if ( NULL != ( colon = strchr (http_proxy_host, (unsigned char)':'))) {
+		char *endptr;
+		
 		*colon = '\0';
+		port = strtoul (colon+1, &endptr, 10);
+
+		/*no integer here*/
+		if ('\0' == *(colon+1) || endptr == colon+1) {
+			port = DEFAULT_HTTP_PROXY_PORT;
+		}
+	} else {
+		port = DEFAULT_HTTP_PROXY_PORT;
 	}
+
+	nautilus_preferences_set (GNOME_VFS_PREFERENCES_HTTP_PROXY_HOST, http_proxy_host);
+	nautilus_preferences_set_integer (GNOME_VFS_PREFERENCES_HTTP_PROXY_PORT, port);
+	nautilus_preferences_set_boolean (GNOME_VFS_PREFERENCES_USE_HTTP_PROXY, TRUE);
 
 	return TRUE;
 }

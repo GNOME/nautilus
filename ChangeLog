@@ -1,3 +1,18 @@
+2001-01-21  Michael K. Fleming  <mfleming@eazel.com>
+
+	reviewed by: <arik@gnome.org> (Wincing)
+	
+	Bug 5625: Fonts were incorrect size.
+	Bug 5872: HTTP proxy setting and auto-detect broken due to preference
+	changes.
+
+	* src/nautilus-first-time-druid.c:
+	(make_hbox_user_level_radio_button), (set_up_user_level_page),
+	(set_up_service_signup_page), (set_up_update_page),
+	(proxy_address_entry_key_press), (set_up_proxy_config_page),
+	(set_up_update_feedback_page), (initiate_file_download),
+	(set_http_proxy):
+
 2001-01-21  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
