@@ -1,3 +1,17 @@
+2000-09-21  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 2090, Sidebar panel shrinks when back from text
+	or image view to directory view.
+		
+	* src/nautilus-sidebar.c: (make_button_box),
+	(nautilus_sidebar_update_buttons):
+	Fixed logic where button centering was being shown
+	at the wrong time, messing up spacing of sidebar panels.
+	
+	* components/image-viewer/nautilus-image-view.c: (redraw_view),
+	(configure_size), (view_factory_common):
+	Fixed cases where image data might be NULL.
+
 2000-09-21  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-rpm-glue.c:

@@ -199,7 +199,9 @@ redraw_view (view_data_t *view_data, GdkRectangle *rect)
 {
 	GdkPixbuf *buf = get_pixbuf (view_data);
 
-	g_return_if_fail (buf != NULL);
+	if (buf == NULL) {
+		return;
+	}
 
 	/*
 	 * Don't actually render unless our size has been allocated,
@@ -216,8 +218,9 @@ configure_size (view_data_t *view_data, GdkRectangle *rect)
 {
 	GdkPixbuf *buf = get_pixbuf (view_data);
 
-	g_return_if_fail (buf != NULL);
-	g_return_if_fail (view_data != NULL);
+	if (buf == NULL) {
+		return;
+	}
 
 	/*
 	 * Don't configure the size if it hasn't gotten allocated, to
@@ -379,6 +382,7 @@ destroy_view (BonoboView *view, view_data_t *view_data)
 	g_free (view_data);
 }
 
+#if 0
 static void
 zoomable_zoom_in_callback (BonoboView *view, view_data_t *view_data)
 {
@@ -398,6 +402,7 @@ static void
 zoomable_zoom_to_fit_callback (BonoboView *view, view_data_t *view_data)
 {
 }
+#endif
 			    
 static int
 drawing_area_exposed (GtkWidget *widget, GdkEventExpose *event, view_data_t *view_data)
@@ -538,6 +543,7 @@ view_factory_common (BonoboEmbeddable *bonobo_object,
 	gtk_signal_connect (GTK_OBJECT (view), "destroy",
 			    GTK_SIGNAL_FUNC (destroy_view), view_data);
 
+#if 0
 	gtk_signal_connect (GTK_OBJECT (view), 
 			    "zoom_in",
 			    zoomable_zoom_in_callback,
@@ -554,6 +560,7 @@ view_factory_common (BonoboEmbeddable *bonobo_object,
 			    "zoom_to_fit", 
 			    zoomable_zoom_to_fit_callback,
 			    view_data);
+#endif
 			    
 	running_objects++;
 

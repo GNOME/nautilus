@@ -187,7 +187,6 @@ static void
 make_button_box (NautilusSidebar *sidebar)
 {
 	sidebar->details->button_box_centerer = GTK_HBOX (gtk_hbox_new (FALSE, 0));
-	gtk_widget_show (GTK_WIDGET (sidebar->details->button_box_centerer));
 	gtk_box_pack_start_defaults (GTK_BOX (sidebar->details->container),
 			    	     GTK_WIDGET (sidebar->details->button_box_centerer));
 
@@ -1311,10 +1310,12 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 		add_command_buttons (sidebar, short_application_list);
 		gnome_vfs_mime_application_list_free (short_application_list);
 
-		/* Hide button box if a sidebar panel is showing. */
+		/* Hide button box if a sidebar panel is showing. Otherwise, show it! */
 		if (sidebar->details->selected_index != -1) {
 			gtk_widget_hide (GTK_WIDGET (sidebar->details->button_box_centerer));
 			gtk_widget_hide (GTK_WIDGET (sidebar->details->title));
+		} else {
+			gtk_widget_show (GTK_WIDGET (sidebar->details->button_box_centerer));
 		}
 	}
 }
