@@ -62,8 +62,14 @@ bonobo_subdoc_notify_location_change(NautilusViewFrame *view, Nautilus_Navigatio
       nautilus_view_frame_request_progress_change(view, &pri);
       if(stream)
         {
+          /* FIXME: I (John) added the NULL parameter below to fix the build when the Bonobo
+           * API changed on 5/26/00. I have no idea whether it is the correct fix, but with it
+           * I can build and run Nautilus, so I'm checking it in. Somebody who knows better should
+           * review this.
+           */
           Bonobo_PersistStream_load (persist,
                                      (Bonobo_Stream) bonobo_object_corba_objref (BONOBO_OBJECT (stream)),
+                                     NULL,
                                      ev);
           Bonobo_Unknown_unref(persist, ev);
           CORBA_Object_release(persist, ev);

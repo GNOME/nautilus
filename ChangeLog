@@ -1,5 +1,15 @@
-2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
+2000-05-26  John Sullivan  <sullivan@eazel.com>
 
+	* src/ntl-view-bonobo-subdoc.c:
+	(bonobo_subdoc_notify_location_change):
+	Added a NULL parameter to a Bonobo_PersistStream_load call
+	to get the build to finish. The API for this call changed.
+	I have no idea whether this is the correct change, but with it
+	I can build and run Nautilus. I noticed clicking on a text file
+	crashes, which might be related (maybe no Bonobo components will
+	work until we fix this properly)?
+
+2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
 	* src/ntl-window.c: (nautilus_window_init),
 	(nautilus_window_destroy), (nautilus_window_real_set_content_view),
 	(sidebar_panels_changed_callback):
