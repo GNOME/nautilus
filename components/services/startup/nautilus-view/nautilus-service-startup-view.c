@@ -19,8 +19,8 @@
  * Boston, MA 02111-1307, USA.
  *
  * Authors: Ramiro Estrugo <ramiro@eazel.com>
- *           Andy Hertzfeld <andy@eazel.com>
- *           J Shane Culpepper <pepper@eazel.com>
+ *          Andy Hertzfeld <andy@eazel.com>
+ *          J Shane Culpepper <pepper@eazel.com>
  */
 
 /* nautilus-service-startup-view.c - The bootstrap controller for

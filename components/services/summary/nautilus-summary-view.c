@@ -46,16 +46,11 @@ struct _NautilusSummaryViewDetails {
 	NautilusView	*nautilus_view;
 	GtkWidget	*form;
 	GtkWidget	*form_title;
-	GtkWidget	*account_name;
-	GtkWidget	*account_password;
-	GtkWidget	*confirm_password;
-	GtkWidget	*summary_button;
-	GtkWidget	*maintenance_button;
 	GtkWidget	*feedback_text;
 };
 
-#define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR	"rgb:BBBB/DDDD/FFFF"
-#define SERVICE_DOMAIN_NAME			"eazel24.eazel.com"
+#define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR	"rgb:0000/6666/6666"
+#define SERVICE_DOMAIN_NAME			"testmachine.eazel.com"
 
 static void	nautilus_summary_view_initialize_class	(NautilusSummaryViewClass	*klass);
 static void	nautilus_summary_view_initialize	(NautilusSummaryView		*view);
@@ -63,15 +58,7 @@ static void	nautilus_summary_view_destroy		(GtkObject			*object);
 static void	summary_load_location_callback		(NautilusView		*nautilus_view,
 							 const char		*location,
 	 						 NautilusSummaryView	*view);
-static void	show_feedback				(NautilusSummaryView	*view,
-							 char			*error_message);
 static void	generate_summary_form			(NautilusSummaryView	*view);
-static void 	entry_changed_cb			(GtkWidget		*entry,
-							 NautilusSummaryView	*view);
-static void	summary_button_cb			(GtkWidget		*button,
-							 NautilusSummaryView	*view);
-static void	maintenance_button_cb			(GtkWidget		*button,
-							 NautilusSummaryView	*view);
 static void	generate_form_title			(NautilusSummaryView	*view,
 							 const char		*title_text);
 
@@ -80,14 +67,9 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSummaryView, nautilus_summary_view, G
 static void
 generate_summary_form (NautilusSummaryView	*view) {
 
-	GtkTable	*table;
 	GtkWidget	*temp_widget;
-	GtkWidget	*temp_box;
-	GtkWidget	*summary_label;
-	GtkWidget	*maintenance_button;
-	GtkWidget	*maintenance_label;
 
-	/* allocate a box to hold everything */
+	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (view), view->details->form);
 	gtk_widget_show (view->details->form);
@@ -95,131 +77,11 @@ generate_summary_form (NautilusSummaryView	*view) {
 	/* setup the title */
 	generate_form_title (view, "Eazel Services Summary");
 
-	/* initialize the parent form */
-	temp_box = gtk_hbox_new (FALSE, 4);
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, 0, 0, 12);
-	gtk_widget_show (temp_box);
-
-	/* allocate a table to hold the summary form */
-	table = GTK_TABLE (gtk_table_new (2, 2, FALSE));
-
-	/* username */
-	temp_widget = gtk_label_new ("User Name: ");
-	gtk_misc_set_alignment (GTK_MISC (temp_widget), 1.0, 0.5);
-	gtk_table_attach (table, temp_widget, 0,1, 0,1, GTK_FILL, GTK_FILL, 2,2);
+	/* put a mystery label here as a placeholder. */
+	temp_widget = gtk_label_new ("I am just a view.  One day I will be gone.");
+	gtk_box_pack_start (GTK_BOX (view->details->form), temp_widget, 0, 0, 0);
 	gtk_widget_show (temp_widget);
-	view->details->account_name = gtk_entry_new_with_max_length (36);
-	gtk_table_attach (table, view->details->account_name, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 4,4);
-	gtk_widget_show (view->details->account_name);
 
-	/* password */
-	temp_widget = gtk_label_new ("Password: ");
-	gtk_misc_set_alignment (GTK_MISC (temp_widget), 1.0, 0.5);
-	gtk_table_attach (table, temp_widget, 0,1, 1,2, GTK_FILL, GTK_FILL, 2,2);
-	gtk_widget_show (temp_widget);
-	view->details->account_password = gtk_entry_new_with_max_length (36);
-	gtk_table_attach (table, view->details->account_password, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4,4);
-	gtk_entry_set_visibility (GTK_ENTRY (view->details->account_password), FALSE);
-	gtk_widget_show (view->details->account_password);
-
-	/* insert the table */
-	gtk_box_pack_start (GTK_BOX (view->details->form), GTK_WIDGET(table), 0, 0, 4);
-	gtk_widget_show (GTK_WIDGET(table));
-
-	/* attach a changed signal to the 2 entry fields, so we can enable the button when something is typed into both fields */
-	gtk_signal_connect (GTK_OBJECT (view->details->account_name),		"changed",	GTK_SIGNAL_FUNC (entry_changed_cb),	view);
-	gtk_signal_connect (GTK_OBJECT (view->details->account_password),	"changed",	GTK_SIGNAL_FUNC (entry_changed_cb),	view);
-
-	/* allocate the command buttons - first the summary button */
-
-	view->details->summary_button = gtk_button_new ();
-	summary_label = gtk_label_new (" Summary ");
-	gtk_widget_show (summary_label);
-	gtk_container_add (GTK_CONTAINER (view->details->summary_button), summary_label);
-
-	temp_box = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (temp_box), view->details->summary_button, FALSE, FALSE, 21);
-
-	gtk_signal_connect (GTK_OBJECT (view->details->summary_button),
-			    "clicked",
-			    GTK_SIGNAL_FUNC (summary_button_cb), view);
-	gtk_widget_set_sensitive (view->details->summary_button, FALSE);
-	gtk_widget_show (view->details->summary_button);
-
-        /* now allocate the account maintenance button */
-
-        maintenance_button = gtk_button_new ();
-        maintenance_label = gtk_label_new (" Account Maintenance ");
-        gtk_widget_show (maintenance_label);
-        gtk_container_add (GTK_CONTAINER (maintenance_button), maintenance_label);
-        gtk_box_pack_start (GTK_BOX (temp_box), maintenance_button, FALSE, FALSE, 21);
-        gtk_signal_connect (GTK_OBJECT (maintenance_button), "clicked",
-			    GTK_SIGNAL_FUNC (maintenance_button_cb), view);
-        gtk_widget_show (maintenance_button);
-
-	/* show the buttons */
-	gtk_widget_show (temp_box);
-	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, FALSE, FALSE, 21);
-
-        /* add a label for error messages, but don't show it until there's an error */
-        view->details->feedback_text = gtk_label_new ("");
-        gtk_box_pack_start (GTK_BOX (view->details->form), view->details->feedback_text, 0, 0, 8);
-}
-
-/* callback to enable/disable the summary button when something is typed in the field */
-static void
-entry_changed_cb (GtkWidget	*entry, NautilusSummaryView	*view) {
-
-	char		*user_name;
-	char		*password;
-	gboolean	button_enabled;
-
-	user_name = gtk_entry_get_text (GTK_ENTRY (view->details->account_name));
-	password = gtk_entry_get_text (GTK_ENTRY (view->details->account_password));
-
-	button_enabled = user_name && strlen (user_name) && password && strlen (password);
-	gtk_widget_set_sensitive (view->details->summary_button, button_enabled);
-}
-
-/* callback to handle the service button.  Right now only dumps a simple feedback message. */
-static void
-summary_button_cb (GtkWidget	*button, NautilusSummaryView	*view) {
-
-	char		*user_name;
-	char		*password;
-	gboolean	registered_ok;
-
-	user_name = gtk_entry_get_text (GTK_ENTRY (view->details->account_name));
-	password = gtk_entry_get_text (GTK_ENTRY (view->details->account_password));
-	registered_ok = FALSE;
-
-	gtk_widget_hide (view->details->feedback_text);
-
-	/* Do Nothing right now just return an ok response */
-	registered_ok = TRUE;
-
-	if (registered_ok == FALSE) {
-		show_feedback (view, "Sorry I don't do anything right now!");
-	}
-
-	if (registered_ok) {
-		show_feedback (view, "Sorry I don't do anything right now!");
-	}
-}
-
-/* callback to point account maintenance button to webpage */
-static void
-maintenance_button_cb (GtkWidget	*button, NautilusSummaryView	*view) {
-
-	show_feedback (view, "http://www.eazel.com");
-}
-
-/* utility routine to show an error message */
-static void
-show_feedback (NautilusSummaryView	*view, char	*error_message) {
-
-        gtk_label_set_text (GTK_LABEL (view->details->feedback_text), error_message);
-        gtk_widget_show (view->details->feedback_text);
 }
 
 static void
@@ -236,7 +98,7 @@ generate_form_title (NautilusSummaryView	*view,
         gtk_box_pack_start (GTK_BOX (view->details->form), temp_container, 0, 0, 4);
         gtk_widget_show (temp_container);
 
-        file_name = nautilus_pixmap_file ("eazel-logo.gif");
+        file_name = nautilus_pixmap_file ("eazel-cloud-logo.png");
         temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
         gtk_box_pack_start (GTK_BOX(temp_container), temp_widget, 0, 0, 8);
         gtk_widget_show (temp_widget);
