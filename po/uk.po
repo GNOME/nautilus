@@ -1608,16 +1608,13 @@ msgid "Select an image file for the album cover:"
 msgstr "Вибер╕ть файл зображення для обгортки альбому:"
 
 #: components/music/nautilus-music-view.c:1181
-#, fuzzy
 msgid ""
 "Sorry, but the music view is unable to play back sound right now. This is "
 "because the Enable sound server startup setting in the Sound section of the "
 "Control Center is turned off."
 msgstr ""
-"Вибачте, але в╕дображення музики не може в╕дтворювати звук зараз. Або ╕нша "
-"програма використову╓ чи блоку╓ звукову плату, або вашу звукову плату не "
-"сконф╕╜уровано належним чином. Спробойте завершити виконання програм, що "
-"могли б блокувати використання звуково╖ плати."
+"Вибачте, але в╕дображення музики не може в╕дтворювати звук зараз через те, "
+"що заборонено використання сервера звуку в секц╕╖ \"Звук\" Центру керування."
 
 #: components/music/nautilus-music-view.c:1184
 #: components/music/nautilus-music-view.c:1196
@@ -5179,26 +5176,26 @@ msgstr "Нема╓ теки скрипт╕в"
 #: src/file-manager/fm-directory-view.c:3745
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
-msgstr ""
+msgstr "\"%s\" буде перенесено, якщо ви виберете команду \"Вставити файли\""
 
 #: src/file-manager/fm-directory-view.c:3749
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
-msgstr ""
+msgstr "\"%s\" буде скоп╕йовано, якщо ви виберете команду \"Вставити файли\""
 
 #: src/file-manager/fm-directory-view.c:3756
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
 msgstr ""
-"%d вибраних елемент╕в не можуть бути перенесен╕ у см╕тник. Хочете стерти ╖х "
-"негайно?"
+"%d вибраних елемент╕в буде перенесено, якщо ви виберете команду \"Вставити файли\""
 
 #: src/file-manager/fm-directory-view.c:3760
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
 msgstr ""
+"%d вибраних елемент╕в буде скоп╕йовано, якщо ви виберете команду \"Вставити файли\""
 
 #: src/file-manager/fm-directory-view.c:3906
 msgid "There is nothing on the clipboard to paste."
@@ -5841,7 +5838,6 @@ msgid "Content searches are not available"
 msgstr "Пошук вм╕сту не доступний"
 
 #: src/file-manager/fm-search-list-view.c:256
-#, fuzzy
 msgid ""
 "Your index files are available but the Medusa search daemon, which handles "
 "index requests, isn't running.  To start this program, log in as root and "
@@ -5851,7 +5847,9 @@ msgid ""
 msgstr ""
 "Ваш╕ ╕ндексн╕ файли доступн╕, але демона пошуку Medusa, що оперу╓ ╕ндексними "
 "запитами, не запущено.  Для запуску ц╕╓╖ програми, заре╓струйтесь користучем "
-"root ╕ введ╕ть цю команду в командному рядку: medusa-searchd"
+"root ╕ введ╕ть цю команду в командному рядку:\n"
+"\n"
+"medusa-searchd"
 
 #: src/file-manager/fm-search-list-view.c:270
 msgid ""
@@ -6999,7 +6997,7 @@ msgstr "Порядок сортування"
 
 #: src/nautilus-preferences-dialog.c:165
 msgid "Always list folders before files"
-msgstr ""
+msgstr "Завжди розм╕щувати теки перед файлами"
 
 #: src/nautilus-preferences-dialog.c:172 src/nautilus-preferences-dialog.c:415
 msgid "Icon Captions"
