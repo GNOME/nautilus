@@ -1,5 +1,10 @@
 2005-01-27  Martin Wehner  <martin.wehner@epost.de>
 
+	* src/nautilus-main.c: (register_icons):
+	Don't try to free NULL icon info.
+
+2005-01-27  Martin Wehner  <martin.wehner@epost.de>
+
 	* libnautilus-private/nautilus-file.c:
 	(nautilus_file_compare_for_sort_by_attribute):
 	Don't compare NULL values from files we can't get permissions for.

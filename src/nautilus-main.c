@@ -173,7 +173,9 @@ register_icons (void)
 				}
 				gtk_icon_set_add_source (set, source);
 			}
-			gtk_icon_info_free (info);
+			if (info != NULL) {
+				gtk_icon_info_free (info);
+			}
 		}
 
 		gtk_icon_source_free (source);
