@@ -29,14 +29,17 @@
 #include <gnome.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include "nautilus-file-operations-progress.h"
+#include "libnautilus-extensions/nautilus-ellipsizing-label.h"
 #include "libnautilus-extensions/nautilus-gtk-extensions.h"
 #include "libnautilus-extensions/nautilus-gdk-font-extensions.h"
 #include "libnautilus-extensions/nautilus-gtk-macros.h"
 
 
-#define LABEL_BOX_WIDTH 350	/* FIXME bugzilla.eazel.com 675: ? */
-#define OPERATION_LABEL_WIDTH 65
-#define PATH_TRIM_WIDTH LABEL_BOX_WIDTH - OPERATION_LABEL_WIDTH - 2 * 20
+/* The width of the progress bar determines the minimum width of the
+ * window. It will be wider only if the font is really huge and the
+ * fixed labels don't fit in the window otherwise.
+ */
+#define PROGRESS_BAR_WIDTH 350
 
 static void nautilus_file_operations_progress_initialize_class 	(NautilusFileOperationsProgressClass *klass);
 static void nautilus_file_operations_progress_initialize 	(NautilusFileOperationsProgress *dialog);
@@ -89,22 +92,17 @@ nautilus_file_operations_progress_update (NautilusFileOperationsProgress *dialog
 }
 
 static void
-set_text_unescaped_trimmed (GtkLabel *label, const char *text, guint max_width)
+set_text_unescaped_trimmed (NautilusEllipsizingLabel *label, const char *text)
 {
 	char *unescaped_text;
-	char *trimmed_text;
 	
 	if (text == NULL || text[0] == '\0') {
-		gtk_label_set_text (GTK_LABEL (label), "");
+		nautilus_ellipsizing_label_set_text (label, "");
 		return;
 	}
 	
 	unescaped_text = gnome_vfs_unescape_string_for_display (text);
-	trimmed_text = nautilus_string_ellipsize_start (unescaped_text, 
-		GTK_WIDGET (label)->style->font, max_width);
-	gtk_label_set_text (GTK_LABEL (label), trimmed_text);
-	
-	g_free (trimmed_text);
+	nautilus_ellipsizing_label_set_text (label, unescaped_text);
 	g_free (unescaped_text);
 }
 
@@ -136,30 +134,25 @@ nautilus_file_operations_progress_destroy (GtkObject *object)
 /* Initialization.  */
 
 static void
-create_titled_label (GtkBox *vbox, GtkWidget **title_widget, GtkWidget **label_text_widget)
+create_titled_label (GtkTable *table, int row, GtkWidget **title_widget, GtkWidget **label_text_widget)
 {
-	GtkWidget *hbox;
-	
-	hbox = gtk_hbox_new (FALSE, 0);
-	/* There might be a cleaner way of packing the text labels closer together
-	 * than using -2 here. The default is too far appart.
-	 */
-	gtk_box_pack_start (vbox, hbox, FALSE, FALSE, -2);
-	gtk_widget_show (hbox);
-	gtk_widget_set_usize (hbox, LABEL_BOX_WIDTH, 0);
-
 	*title_widget = gtk_label_new ("");
-	gtk_box_pack_start (GTK_BOX (hbox), *title_widget, FALSE, FALSE, 2);
-	gtk_widget_show (*title_widget);
-	gtk_widget_set_usize (*title_widget, OPERATION_LABEL_WIDTH, 0);
-	gtk_label_set_justify (GTK_LABEL (*title_widget), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment (GTK_MISC (*title_widget), 1, 0);
 	nautilus_gtk_label_make_bold (GTK_LABEL (*title_widget));
+	gtk_misc_set_alignment (GTK_MISC (*title_widget), 1, 0);
+	gtk_table_attach (table, *title_widget,
+			  0, 1,
+			  row, row + 1,
+			  GTK_FILL, 0,
+			  0, 0);
+	gtk_widget_show (*title_widget);
 
-	*label_text_widget = gtk_label_new ("");
-	gtk_box_pack_start (GTK_BOX (hbox), *label_text_widget, FALSE, FALSE, 2);
+	*label_text_widget = nautilus_ellipsizing_label_new ("");
+	gtk_table_attach (table, *label_text_widget,
+			  1, 2,
+			  row, row + 1,
+			  GTK_FILL | GTK_EXPAND, 0,
+			  0, 0);
 	gtk_widget_show (*label_text_widget);
-	gtk_label_set_justify (GTK_LABEL (*label_text_widget), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment (GTK_MISC (*label_text_widget), 0, 0);
 }
 
@@ -178,6 +171,7 @@ nautilus_file_operations_progress_initialize (NautilusFileOperationsProgress *di
 	GnomeDialog *gnome_dialog;
 	GtkBox *vbox;
 	GtkWidget *hbox;
+	GtkTable *titled_label_table;
 
 	dialog->details = g_new0 (NautilusFileOperationsProgressDetails, 1);
 
@@ -215,17 +209,24 @@ nautilus_file_operations_progress_initialize (NautilusFileOperationsProgress *di
 					GTK_PROGRESS_CONTINUOUS);
 	gtk_progress_bar_set_orientation (GTK_PROGRESS_BAR (dialog->details->progress_bar),
 					  GTK_PROGRESS_LEFT_TO_RIGHT);
-	gtk_widget_set_usize (GTK_WIDGET (dialog->details->progress_bar), LABEL_BOX_WIDTH,
+	gtk_widget_set_usize (GTK_WIDGET (dialog->details->progress_bar), PROGRESS_BAR_WIDTH,
 			      -1);
 	gtk_box_pack_start (vbox, dialog->details->progress_bar, FALSE, TRUE, 0);
 	gtk_widget_show (dialog->details->progress_bar);
 
-	create_titled_label (vbox, &dialog->details->operation_name_label, 
+	titled_label_table = GTK_TABLE (gtk_table_new (3, 2, FALSE));
+	gtk_table_set_row_spacings (titled_label_table, 4);
+	gtk_table_set_col_spacings (titled_label_table, 4);
+	gtk_widget_show (GTK_WIDGET (titled_label_table));
+
+	create_titled_label (titled_label_table, 0, &dialog->details->operation_name_label, 
 		&dialog->details->item_name);
-	create_titled_label (vbox, &dialog->details->from_label, 
+	create_titled_label (titled_label_table, 1, &dialog->details->from_label, 
 		&dialog->details->from_path_label);
-	create_titled_label (vbox, &dialog->details->to_label, 
+	create_titled_label (titled_label_table, 2, &dialog->details->to_label, 
 		&dialog->details->to_path_label);
+
+	gtk_box_pack_start (vbox, GTK_WIDGET (titled_label_table), FALSE, FALSE, 0);
 
 
 	dialog->details->file_index = 0;
@@ -339,8 +340,8 @@ nautilus_file_operations_progress_new_file (NautilusFileOperationsProgress *dial
 		 * count until we do
 		 */
 		gtk_label_set_text (GTK_LABEL (dialog->details->operation_name_label), progress_verb);
-		set_text_unescaped_trimmed (GTK_LABEL (dialog->details->item_name),
-			item_name, PATH_TRIM_WIDTH);
+		set_text_unescaped_trimmed 
+			(NAUTILUS_ELLIPSIZING_LABEL (dialog->details->item_name), item_name);
 
 		progress_count = g_strdup_printf (_("%ld of %ld"), dialog->details->file_index, 
 			dialog->details->files_total);
@@ -348,13 +349,13 @@ nautilus_file_operations_progress_new_file (NautilusFileOperationsProgress *dial
 		g_free (progress_count);
 
 		gtk_label_set_text (GTK_LABEL (dialog->details->from_label), from_prefix);
-		set_text_unescaped_trimmed (GTK_LABEL (dialog->details->from_path_label),
-			from_path, PATH_TRIM_WIDTH);
+		set_text_unescaped_trimmed 
+			(NAUTILUS_ELLIPSIZING_LABEL (dialog->details->from_path_label), from_path);
 	
 		if (dialog->details->to_prefix != NULL && dialog->details->to_path_label != NULL) {
 			gtk_label_set_text (GTK_LABEL (dialog->details->to_label), to_prefix);
-			set_text_unescaped_trimmed (GTK_LABEL (dialog->details->to_path_label),
-				to_path, PATH_TRIM_WIDTH);
+			set_text_unescaped_trimmed 
+				(NAUTILUS_ELLIPSIZING_LABEL (dialog->details->to_path_label), to_path);
 		}
 	}
 

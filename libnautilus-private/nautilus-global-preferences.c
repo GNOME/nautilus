@@ -171,25 +171,23 @@ global_preferences_install_descriptions (void)
 								  
 	/* search tradeoffs */
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
-					      _("Enable fast search (indexes your hard drive)\n"
-						"Turns on the Medusa daemon, which indexes your hard disk\n"
-						"when your computer is idle."));
+					      _("Enable fast search (indexes your hard drive)"));
 
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 					      _("search type to do by default"));
 	
 	nautilus_preferences_enumeration_insert (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 						 _("search by text"),
-						 _("Search for files by text only"),
+						 _("Search for files by file name only"),
 						 NAUTILUS_SIMPLE_SEARCH_BAR);
 	
 	nautilus_preferences_enumeration_insert (NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 						 _("search by text and properties"),
-						 _("Search for files by text and by their properties"),
+						 _("Search for files by file name and file properties"),
 						 NAUTILUS_COMPLEX_SEARCH_BAR);
 	
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
-					      _("Search Web Location"));
+					      _("Search Engine Location"));
 
 	
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
@@ -202,7 +200,7 @@ global_preferences_install_descriptions (void)
 					      _("Show special flags in Properties window"));
 	
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
-					      _("Show only folders (no files) in the Tree"));
+					      _("Show only folders (no files) in the tree"));
 
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_CAN_ADD_CONTENT,
 					      _("Can add Content"));
@@ -212,13 +210,13 @@ global_preferences_install_descriptions (void)
 	
 
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_HOME_URI,
-					      _("Home location:"));
+					      _("Location:"));
 
 	global_preferences_install_sidebar_panel_descriptions ();
 	
 	nautilus_preferences_set_description (USE_PROXY_KEY, _("Use HTTP Proxy"));
-	nautilus_preferences_set_description (PROXY_HOST_KEY, _("HTTP Proxy:"));
-	nautilus_preferences_set_description (PROXY_PORT_KEY, _("HTTP Proxy Port:"));
+	nautilus_preferences_set_description (PROXY_HOST_KEY, _("Location:"));
+	nautilus_preferences_set_description (PROXY_PORT_KEY, _("Port:"));
 }
 
 /**
@@ -690,7 +688,7 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_HOME_URI,
 							 NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING);
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (navigation_pane), _("Proxy Settings"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (navigation_pane), _("HTTP Proxy Settings"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (navigation_pane),
 							 1,
@@ -807,7 +805,7 @@ global_preferences_create_search_pane (NautilusPreferencesBox *preference_box)
 							 NAUTILUS_PREFERENCES_USE_FAST_SEARCH,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (search_pane),
-					     _("Search Locations"));
+					     _("Search Engines"));
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (search_pane),
 							 2,
 							 NAUTILUS_PREFERENCES_SEARCH_WEB_URI,

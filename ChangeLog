@@ -1,3 +1,40 @@
+2001-02-22  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 5729 ("Copying" label in progress dialog can be
+	clipped if font is biggish)
+
+	Fixed bug 5741 (File progress dialog uses fixed font for
+	labels, slight clipping)
+
+	* libnautilus-extensions/nautilus-file-operations-progress.c:
+	Eliminated two hardwired widths; changed FIXME to comment for
+	the third, legitimate, one.
+	(set_text_unescaped_trimmed): Now uses nautilus_ellipsizing_label
+	instead of a fixed width.
+	(create_titled_label): Now use nautilus_ellipsizing_label and
+	puts title & label in a table (with Clark Gable)
+	(nautilus_file_operations_progress_initialize): Use table for
+	titles & labels so they can line up without a hardwired width,
+	set up spacings, change callers of create_titled_label.
+	(nautilus_file_operations_progress_new_file): Change callers
+	of set_text_unescaped_trimmed to not pass in a width.
+	
+	Fixed bug 6872 (Wording suggetions for preferences)
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_descriptions),
+	(global_preferences_create_dialog),
+	(global_preferences_create_search_pane): A few more
+	wording tweaks in Preferences, some from Vera and some
+	from this bug report and Vera-approved
+
+	Fixed bug 6553 ("Where" in Properties Window is inconsistent)
+
+	* src/file-manager/fm-properties-window.c: (create_basic_page):
+	Changed "Where:" to "Location:" with Vera's approval.
+
 2001-02-22  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Gene Z. Ragan <gzr@eazel.com>

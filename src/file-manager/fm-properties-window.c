@@ -1501,7 +1501,7 @@ create_basic_page (FMPropertiesWindow *window)
 	} else {
 		append_title_value_pair (table, _("Size:"), target_file, "size");
 	}
-	append_title_and_ellipsizing_value (table, _("Where:"), target_file, "where");
+	append_title_and_ellipsizing_value (table, _("Location:"), target_file, "where");
 	if (should_show_mime_type (window)) {
 		append_title_value_pair (table, _("MIME type:"), target_file, "mime_type");
 	}				  
