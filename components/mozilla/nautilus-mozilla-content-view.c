@@ -44,6 +44,7 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
+#include <eel/eel-string.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dialog-util.h>
@@ -86,10 +87,19 @@ enum nsEventStatus {
 /* Menu Path for charset encoding submenu */
 #define MENU_VIEW_CHARSET_ENCODING_PATH "/menu/View/Encoding"
 
+/* property bag properties */
+enum {
+	ICON_NAME,
+	COMPONENT_INFO
+};
+
+
 struct NautilusMozillaContentViewDetails {
 	char 		*uri;			/* The URI stored here is nautilus's idea of the URI */
 	GtkMozEmbed 	*mozilla;		/* If this is NULL, the mozilla widget has not yet been initialized */ 
 	NautilusView 	*nautilus_view;
+	BonoboPropertyBag *property_bag;
+	
 	GdkCursor 	*busy_cursor;
 	char		*vfs_read_buffer;
 	GnomeVFSAsyncHandle *vfs_handle;
@@ -242,6 +252,51 @@ nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass 
 	pre_widget_initialize ();
 }
 
+
+/* property bag property access routines to return sidebar icon */
+static void
+get_bonobo_properties (BonoboPropertyBag *bag,
+			BonoboArg *arg,
+			guint arg_id,
+			CORBA_Environment *ev,
+			gpointer callback_data)
+{
+	NautilusMozillaContentView *content_view;
+	
+	content_view = (NautilusMozillaContentView*) callback_data;
+
+	switch (arg_id) {
+        	case ICON_NAME:	
+			if (eel_istr_has_prefix (content_view->details->uri, "man:")) {
+                   		BONOBO_ARG_SET_STRING (arg, "manual");					
+			} else if (eel_istr_has_prefix (content_view->details->uri, "http:")) {
+                		BONOBO_ARG_SET_STRING (arg, "i-web");					
+			} else {
+                		BONOBO_ARG_SET_STRING (arg, "");					
+                	}
+                	break;
+
+        	case COMPONENT_INFO:
+               		BONOBO_ARG_SET_STRING (arg, "");					
+                 	break;
+        		
+        	default:
+                	g_warning ("Unhandled arg %d", arg_id);
+                	break;
+	}
+}
+
+/* there are no settable properties, so complain if someone tries to set one */
+static void
+set_bonobo_properties (BonoboPropertyBag *bag,
+			const BonoboArg *arg,
+			guint arg_id,
+			CORBA_Environment *ev,
+			gpointer callback_data)
+{
+                g_warning ("Bad Property set on mozilla view: property ID %d", arg_id);
+}
+
 static void
 nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 {
@@ -333,6 +388,14 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
                             bonobo_control_activate_callback,
                             view);
 
+ 	/* allocate a property bag to specify the name of the icon for this component */
+	view->details->property_bag = bonobo_property_bag_new (get_bonobo_properties,  set_bonobo_properties, view);
+	bonobo_control_set_properties (nautilus_view_get_bonobo_control (view->details->nautilus_view), view->details->property_bag);
+	bonobo_property_bag_add (view->details->property_bag, "icon_name", ICON_NAME, BONOBO_ARG_STRING, NULL,
+				 _("name of icon for the mozilla view"), 0);
+	bonobo_property_bag_add (view->details->property_bag, "summary_info", COMPONENT_INFO, BONOBO_ARG_STRING, NULL,
+				 _("mozilla summary info"), 0);
+
 	gtk_widget_show_all (GTK_WIDGET (view));
 
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
@@ -356,6 +419,11 @@ nautilus_mozilla_content_view_destroy (GtkObject *object)
 	}
 
 	cancel_pending_vfs_operation (view);
+
+	/* free the property bag */
+	if (view->details->property_bag != NULL) {
+		bonobo_object_unref (BONOBO_OBJECT (view->details->property_bag));
+	}
 
 	g_free (view->details);
 

@@ -86,14 +86,12 @@ static const char *icon_file_name_suffixes[] =
 #define ICON_NAME_DIRECTORY             "i-directory"
 #define ICON_NAME_EXECUTABLE            "i-executable"
 #define ICON_NAME_FIFO                  "i-fifo"
-#define ICON_NAME_INSTALL		"services-rpm"
 #define ICON_NAME_REGULAR               "i-regular"
 #define ICON_NAME_SEARCH_RESULTS        "i-search"
 #define ICON_NAME_SOCKET                "i-sock"
 #define ICON_NAME_THUMBNAIL_LOADING     "loading"
 #define ICON_NAME_TRASH_EMPTY           "trash-empty"
 #define ICON_NAME_TRASH_NOT_EMPTY       "trash-full"
-#define ICON_NAME_WEB			"i-web"
 
 #define EMBLEM_NAME_PREFIX              "emblem-"
 #define EMBLEM_SCALE_FACTOR		0.75
@@ -791,22 +789,13 @@ get_icon_name_for_regular_file (NautilusFile *file)
 	mime_type = nautilus_file_get_mime_type (file);
 	uri = nautilus_file_get_uri (file);
 
-	/* Special-case icons based on the uri scheme. Eventually we
-	 * should generalize this or at least have a way for others to
-	 * extend it.
+	/* don't use the executable icon for text files, since it's more useful to display
+	 *embedded text
 	 */
-	if (eel_istr_has_prefix (uri, "http:")
-	    && eel_strcmp (mime_type, "text/html") == 0) {
-		icon_name = ICON_NAME_WEB;
-	} else if (eel_istr_has_prefix (uri, "eazel-install:")) {
-		icon_name = ICON_NAME_INSTALL;
+	if (nautilus_file_is_executable (file) && eel_strcasecmp (mime_type, "text/plain") != 0) {
+		icon_name = ICON_NAME_EXECUTABLE;
 	} else {
-		if (nautilus_file_is_executable (file)
-		    && eel_strcasecmp (mime_type, "text/plain") != 0) {
-			icon_name = ICON_NAME_EXECUTABLE;
-		} else {
-			icon_name = ICON_NAME_REGULAR;
-		}
+		icon_name = ICON_NAME_REGULAR;
 	}
 	
         g_free (uri);

@@ -1,3 +1,54 @@
+2001-07-15  Andy Hertzfeld  <andy@differnet.com>
+
+	allowed components to specify their sidebar icons and text info
+	through the property bag interface.  Removed the special cases from
+	the sidebar and icon factory, and added the relevant properties to the
+	hardware and mozilla views.
+	
+	made the modification date in the sidebar adapt itself gracefully
+	to the available space like the list view does, by calling
+	nautilus_file_fit_modified_data_as_string.
+	
+	added an "uptime" display to the hardware view.
+	
+	* components/hardware/nautilus-hardware-view.c:
+	(get_bonobo_properties), (set_bonobo_properties),
+	(nautilus_hardware_view_initialize),
+	(nautilus_hardware_view_destroy), (update_uptime_text),
+	(setup_overview_form), (nautilus_hardware_view_load_uri),
+	(make_summary_string):
+	
+	added a property bag interface for the icon_name and summary_info properties.
+	added a field to display the update, and periodically updated it.
+	
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(get_bonobo_properties), (set_bonobo_properties),
+	(nautilus_mozilla_content_view_initialize),
+	(nautilus_mozilla_content_view_destroy):
+	
+	added a property bag inteface for the icon_name and summary_info properties
+	made it handle the "man:" protocol with a custom icon
+	made it use the file icon for local files.
+
+	* src/nautilus-sidebar-title.c: (get_property_from_component),
+	(update_icon), (measure_width_callback), (update_more_info),
+	(nautilus_sidebar_title_size_allocate),
+	(sidebar_title_create_more_info_label):
+	
+	made it ask the components for custom icons and info text (through the
+	property bags) and use them if available.
+	
+	made it call nautilus_file_filt modified_data_as_string for an optimal
+	modification date format, and made it reconsider when the sidebar size
+	changes.
+		
+	* libnautilus-private/nautilus-icon-factory.c:
+	(get_icon_name_for_regular_file):
+	removed special cases, since they're handled by the components now
+	
+	* components/news/nautilus-news.c: (do_destroy), (make_news_view):
+	fixed leak where it wasn't releasing the property bag
+		 
 2001-07-14 John Fleck <jfleck@inkstain.net>
 
 	reviewed by Laszlo Kovacs <laszlo.kovacs@sun.com>

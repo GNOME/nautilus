@@ -52,11 +52,26 @@
 
 struct _NautilusHardwareViewDetails {
         NautilusView *nautilus_view;
+	BonoboPropertyBag *property_bag;
+	        
         GtkWidget *form;
+	
+	EelLabel  *uptime_label;
+	int timer_task;
+	
+	int cpu_count;
+	int mem_size;
 };
 
+/* drag and drop properties */
 enum {
-	TARGET_COLOR,
+	TARGET_COLOR
+};
+
+/* property bag properties */
+enum {
+	ICON_NAME,
+	COMPONENT_INFO
 };
 
 static GtkTargetEntry hardware_dnd_target_table[] = {
@@ -76,6 +91,8 @@ static void nautilus_hardware_view_destroy            (GtkObject                
 static void hardware_view_load_location_callback      (NautilusView              *view,
                                                        const char                *location,
                                                        NautilusHardwareView      *hardware_view);
+static char* make_summary_string		      (NautilusHardwareView	 *hardware_view);
+static int  update_uptime_text			      (gpointer			 callback_data);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusHardwareView, nautilus_hardware_view, GTK_TYPE_EVENT_BOX)
 
@@ -94,8 +111,45 @@ nautilus_hardware_view_initialize_class (NautilusHardwareViewClass *klass)
 	widget_class->drag_data_received  = nautilus_hardware_view_drag_data_received;
 }
 
-/* initialize ourselves by connecting to the location change signal and allocating our subviews */
+/* property bag property access routines */
+static void
+get_bonobo_properties (BonoboPropertyBag *bag,
+			BonoboArg *arg,
+			guint arg_id,
+			CORBA_Environment *ev,
+			gpointer callback_data)
+{
+	char *hardware_summary;
+	
+	switch (arg_id) {
+        	case ICON_NAME:
+                	BONOBO_ARG_SET_STRING (arg, "computer");					
+                	break;
+        	
+        	case COMPONENT_INFO:
+                	hardware_summary = make_summary_string ((NautilusHardwareView*) callback_data);
+                	BONOBO_ARG_SET_STRING (arg, hardware_summary);					
+                	g_free (hardware_summary);
+                	break;
+	
+        	default:
+                	g_warning ("Unhandled arg %d", arg_id);
+                	break;
+	}
+}
 
+/* there are no settable properties, so complain if someone tries to set one */
+static void
+set_bonobo_properties (BonoboPropertyBag *bag,
+			const BonoboArg *arg,
+			guint arg_id,
+			CORBA_Environment *ev,
+			gpointer callback_data)
+{
+                g_warning ("Bad Property set on hardware view: property ID %d", arg_id);
+}
+
+/* initialize ourselves by connecting to the load_location signal and allocating our subviews */
 static void
 nautilus_hardware_view_initialize (NautilusHardwareView *hardware_view)
 {
@@ -118,7 +172,18 @@ nautilus_hardware_view_initialize (NautilusHardwareView *hardware_view)
 	gtk_drag_dest_set (GTK_WIDGET (hardware_view),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
 			   hardware_dnd_target_table, EEL_N_ELEMENTS (hardware_dnd_target_table), GDK_ACTION_COPY);
-  		
+ 
+ 	/* allocate a property bag to specify the name of the icon for this component */
+	hardware_view->details->property_bag = bonobo_property_bag_new (get_bonobo_properties,  set_bonobo_properties, hardware_view);
+	bonobo_control_set_properties (nautilus_view_get_bonobo_control (hardware_view->details->nautilus_view), hardware_view->details->property_bag);
+	bonobo_property_bag_add (hardware_view->details->property_bag, "icon_name", ICON_NAME, BONOBO_ARG_STRING, NULL,
+				 _("name of icon for the hardware view"), 0);
+	bonobo_property_bag_add (hardware_view->details->property_bag, "summary_info", COMPONENT_INFO, BONOBO_ARG_STRING, NULL,
+				 _("summary of hardware info"), 0);
+
+	/* add the timer task to update the uptime */
+	hardware_view->details->timer_task = gtk_timeout_add (60000, update_uptime_text, hardware_view); 
+
 	gtk_widget_show_all (GTK_WIDGET (hardware_view));
 }
 
@@ -128,6 +193,16 @@ nautilus_hardware_view_destroy (GtkObject *object)
 	NautilusHardwareView *hardware_view;
 
         hardware_view = NAUTILUS_HARDWARE_VIEW (object);
+
+	/* free the property bag */
+	if (hardware_view->details->property_bag != NULL) {
+		bonobo_object_unref (BONOBO_OBJECT (hardware_view->details->property_bag));
+	}
+	
+	/* remove the timer task */
+	if (hardware_view->details->timer_task != 0) {
+		gtk_timeout_remove (hardware_view->details->timer_task);
+	}
 
 	g_free (hardware_view->details);
 
@@ -386,6 +461,29 @@ add_element_to_table (GtkWidget *table, GtkWidget *element, int element_index)
 			  GTK_FILL, GTK_FILL, 12, 12);
 }
 
+/* uptime the uptime label with the current uptime */
+static int
+update_uptime_text (gpointer callback_data)
+{
+	char *uptime_data, *uptime_text;
+	double uptime_seconds;
+	int uptime_days, uptime_hours, uptime_minutes;
+	
+	uptime_data = read_proc_info ("uptime");
+	uptime_seconds = atof (uptime_data);
+	
+	uptime_days = uptime_seconds / 86400;
+	uptime_hours = (uptime_seconds - (uptime_days * 86400)) / 3600;
+	uptime_minutes = (uptime_seconds - (uptime_days * 86400) - (uptime_hours * 3600)) / 60;
+	
+	uptime_text = g_strdup_printf (_("Uptime is %d days, %d hours, %d minutes"), uptime_days, uptime_hours, uptime_minutes);
+	eel_label_set_text (NAUTILUS_HARDWARE_VIEW (callback_data)->details->uptime_label, uptime_text);
+	g_free (uptime_text);
+	
+	g_free (uptime_data);
+	return TRUE;
+}
+
 /* set up the widgetry for the overview page */
 static void
 setup_overview_form (NautilusHardwareView *view)
@@ -393,7 +491,7 @@ setup_overview_form (NautilusHardwareView *view)
 	char  *file_name, *temp_text;
 	GtkWidget *temp_widget, *pixmap_widget, *temp_box;
 	GtkWidget *table;
-	int cpunum, element_index;
+	int element_index;
 	DIR *directory;
         struct dirent* entry;
         char *device, *proc_file, *ide_media;
@@ -412,8 +510,8 @@ setup_overview_form (NautilusHardwareView *view)
 	gtk_widget_show (GTK_WIDGET(table));
    	element_index = 0;
 	
-   	cpunum = 0;
-	while( (temp_text = get_CPU_description(cpunum)) != NULL ) {
+   	view->details->cpu_count = 0;
+	while( (temp_text = get_CPU_description (view->details->cpu_count)) != NULL ) {
 		temp_box = gtk_vbox_new(FALSE, 4);
 		add_element_to_table (table, temp_box, element_index++);
 		gtk_widget_show (temp_box);
@@ -430,7 +528,7 @@ setup_overview_form (NautilusHardwareView *view)
 		gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0 );			
 		gtk_widget_show (temp_widget);
 
-		cpunum++;
+		view->details->cpu_count++;
 	}
 
 	/* set up the memory info */
@@ -497,6 +595,16 @@ setup_overview_form (NautilusHardwareView *view)
                 }
                 closedir(directory);
         }
+
+	/* allocate the uptime label */
+	view->details->uptime_label = EEL_LABEL (eel_label_new (""));
+	eel_label_make_larger (view->details->uptime_label, 2);
+	eel_label_set_justify (view->details->uptime_label, GTK_JUSTIFY_LEFT);
+
+	gtk_box_pack_end (GTK_BOX (view->details->form), GTK_WIDGET (view->details->uptime_label), 0, 0, GNOME_PAD);
+	update_uptime_text (view);
+	gtk_widget_show(GTK_WIDGET (view->details->uptime_label));
+	
 }
 
 #ifdef ENABLE_SUBVIEWS
@@ -620,6 +728,17 @@ nautilus_hardware_view_load_uri (NautilusHardwareView *view, const char *uri)
 		setup_overview_form (view); /* if we don't understand it, go to the overview */
         }
 #endif
+}
+
+/* Create a string summarizing the most important hardware attributes */
+static char *
+make_summary_string (NautilusHardwareView *hardware_view)
+{
+	if (hardware_view->details->cpu_count == 1) {
+		return g_strdup ("1 CPU");
+	} else {
+		return g_strdup_printf ("%d CPUs", hardware_view->details->cpu_count);
+	}
 }
 
 static void

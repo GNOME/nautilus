@@ -28,11 +28,16 @@
 #include "nautilus-sidebar-title.h"
 
 #include "nautilus-sidebar.h"
+#include "nautilus-window.h"
+
 #include <ctype.h>
+#include <bonobo/bonobo-property-bag-client.h>
+#include <bonobo/bonobo-exception.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkpixmap.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkwidget.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
@@ -58,6 +63,8 @@
 
 /* maximum allowable size to be displayed as the title */
 #define MAX_TITLE_SIZE 		256
+#define MINIMUM_INFO_WIDTH	32
+#define SIDEBAR_INFO_MARGIN	4
 
 #define MORE_INFO_FONT_SIZE 	 12
 #define MIN_TITLE_FONT_SIZE 	 12
@@ -248,7 +255,6 @@ nautilus_sidebar_title_initialize (NautilusSidebarTitle *sidebar_title)
 }
 
 /* destroy by throwing away private storage */
-
 static void
 release_file (NautilusSidebarTitle *sidebar_title)
 {
@@ -281,7 +287,6 @@ nautilus_sidebar_title_destroy (GtkObject *object)
 }
 
 /* return a new index title object */
-
 GtkWidget *
 nautilus_sidebar_title_new (void)
 {
@@ -429,40 +434,67 @@ nautilus_sidebar_title_theme_changed (gpointer user_data)
 	nautilus_sidebar_title_select_text_color (sidebar_title);
 }
 
+/* get a property from the current content view's property bag if we can */
+static char*
+get_property_from_component (NautilusSidebarTitle *sidebar_title, const char *property)
+{
+	GtkWidget *window;
+	Bonobo_Control control;
+	CORBA_Environment ev;
+	Bonobo_PropertyBag property_bag;
+	char* icon_name;
+		
+	window = gtk_widget_get_ancestor (GTK_WIDGET (sidebar_title), NAUTILUS_TYPE_WINDOW);
+
+	if (window == NULL || NAUTILUS_WINDOW (window)->content_view == NULL) {
+		return NULL;
+	}
+
+	
+	control = nautilus_view_frame_get_control (NAUTILUS_VIEW_FRAME (NAUTILUS_WINDOW (window)->content_view));	
+	if (control == NULL) {
+		return NULL;	
+	}
+
+	CORBA_exception_init (&ev);
+	property_bag = Bonobo_Control_getProperties (control, &ev);
+	if (BONOBO_EX (&ev)) {
+		property_bag = CORBA_OBJECT_NIL;
+	}
+	CORBA_exception_free (&ev);
+
+	if (property_bag == CORBA_OBJECT_NIL) {
+		return NULL;
+	}	
+	
+	icon_name = bonobo_property_bag_client_get_value_string
+		(property_bag, property, NULL);
+	bonobo_object_release_unref (property_bag, NULL);
+
+	return icon_name;
+}
+
 /* set up the icon image */
 static void
 update_icon (NautilusSidebarTitle *sidebar_title)
 {
 	GdkPixbuf *pixbuf;
 	char *uri;
-	const char *icon_name;
+	char *icon_name;
 	gboolean leave_pixbuf_unchanged;
 	
-	/* FIXME bugzilla.eazel.com 5043: Currently, components can't
-	 * specify their own sidebar icon. This needs to be added to
-	 * the framework, but for now we special-case some important
-	 * ones here.
-	 */
-
 	leave_pixbuf_unchanged = FALSE;
 	uri = NULL;
 	icon_name = NULL;
 	if (sidebar_title->details->file) {
 		uri = nautilus_file_get_uri (sidebar_title->details->file);
 	}	
-	
-	if (eel_istr_has_prefix (uri, "eazel:") || eel_istr_has_prefix (uri, "eazel-services:")) {
-		icon_name = "big_services_icon";
-	} else if (eel_istr_has_prefix (uri, "http:")) {
-		icon_name = "i-web";
-	} else if (eel_istr_has_prefix (uri, "man:")) {
-		icon_name = "manual";
-	} else if (eel_istr_has_prefix (uri, "hardware:")) {
-		icon_name = "computer";
-	}
+
+	/* see if the current content view is specifying an icon */
+	icon_name = get_property_from_component (sidebar_title, "icon_name");
 
 	pixbuf = NULL;
-	if (icon_name != NULL) {
+	if (icon_name != NULL && strlen (icon_name) > 0) {
 		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_name, NULL, NAUTILUS_ICON_SIZE_LARGE, TRUE);
 	} else if (nautilus_icon_factory_is_icon_ready_for_file (sidebar_title->details->file)) {
 		pixbuf = nautilus_icon_factory_get_pixbuf_for_file (sidebar_title->details->file,
@@ -480,7 +512,8 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 	}
 	
 	g_free (uri);	
-
+	g_free (icon_name);
+	
 	if (pixbuf != NULL) {
 		sidebar_title->details->determined_icon = TRUE;
 	}
@@ -585,42 +618,70 @@ file_is_search_location (NautilusFile *file)
 	return is_search_uri;
 }
 
+static int
+measure_width_callback (const char *string, void *context)
+{
+	EelLabel *label;
+	EelScalableFont *smooth_font;
+	int smooth_font_size;
+	
+	label = (EelLabel*) context;
+	smooth_font = eel_label_get_smooth_font (label); 
+	smooth_font_size = eel_label_get_smooth_font_size (label);
+	return eel_scalable_font_text_width (smooth_font, smooth_font_size, string, strlen (string));
+}
+
 static void
 update_more_info (NautilusSidebarTitle *sidebar_title)
 {
 	NautilusFile *file;
 	GString *info_string;
-	char *type_string, *search_string, *search_uri;
+	char *type_string, *component_info;
+	char *search_string, *search_uri;
+	char *date_modified_str;
+	int sidebar_width;
 	
 	file = sidebar_title->details->file;
-	
-	/* FIXME bugzilla.eazel.com 2500: We could defer showing info until the icon is ready. */
-	/* Adding this special case for search results to 
-	   correspond to the fix for bug 2341.  */
-	if (file != NULL && file_is_search_location (file)) {
-		search_uri = nautilus_file_get_uri (file);
-		search_string = nautilus_search_uri_to_human (search_uri);
-		g_free (search_uri);
-		info_string = g_string_new (search_string);
-		g_free (search_string);
-		append_and_eat (info_string, "\n ",
-				nautilus_file_get_string_attribute (file, "size"));
+
+	/* allow components to specify the info if they wish to */
+	component_info = get_property_from_component (sidebar_title, "summary_info");
+	if (component_info != NULL && strlen (component_info) > 0) {
+		info_string = g_string_new (component_info);
+		g_free (component_info);
 	} else {
-		info_string = g_string_new (NULL);
-		type_string = nautilus_file_get_string_attribute (file, "type");
-		if (type_string != NULL) {
-			append_and_eat (info_string, NULL, type_string);
-			append_and_eat (info_string, ", ",
+		/* FIXME bugzilla.eazel.com 2500: We could defer showing info until the icon is ready. */
+		/* Adding this special case for search results to 
+		   correspond to the fix for bug 2341.  */
+		if (file != NULL && file_is_search_location (file)) {
+			search_uri = nautilus_file_get_uri (file);
+			search_string = nautilus_search_uri_to_human (search_uri);
+			g_free (search_uri);
+			info_string = g_string_new (search_string);
+			g_free (search_string);
+			append_and_eat (info_string, "\n ",
 					nautilus_file_get_string_attribute (file, "size"));
 		} else {
-			append_and_eat (info_string, NULL,
-					nautilus_file_get_string_attribute (file, "size"));
+			info_string = g_string_new (NULL);
+			type_string = nautilus_file_get_string_attribute (file, "type");
+			if (type_string != NULL) {
+				append_and_eat (info_string, NULL, type_string);
+				append_and_eat (info_string, ", ",
+						nautilus_file_get_string_attribute (file, "size"));
+			} else {
+				append_and_eat (info_string, NULL,
+						nautilus_file_get_string_attribute (file, "size"));
+			}
+			
+			sidebar_width = GTK_WIDGET (sidebar_title)->allocation.width - 2 * SIDEBAR_INFO_MARGIN;
+			if (sidebar_width > MINIMUM_INFO_WIDTH) {
+				date_modified_str = nautilus_file_fit_modified_date_as_string (file, sidebar_width,
+											measure_width_callback, NULL,
+											sidebar_title->details->more_info_label);
+				append_and_eat (info_string, "\n", date_modified_str);
+				g_string_append_c (info_string, '\0');
+			}
 		}
-		append_and_eat (info_string, "\n",
-				nautilus_file_get_string_attribute (file, "date_modified"));
-		g_string_append_c (info_string, '\0');
 	}
-
 	eel_label_set_text (EEL_LABEL (sidebar_title->details->more_info_label),
 			    info_string->str);
 
@@ -780,8 +841,9 @@ nautilus_sidebar_title_size_allocate (GtkWidget *widget,
 	EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 
 	if (old_width != widget->allocation.width) {
-		/* Need to update the font if the width changes. */
+		/* update the title font and info format as the size changes. */
 		update_title_font (NAUTILUS_SIDEBAR_TITLE (widget));
+		update_more_info (NAUTILUS_SIDEBAR_TITLE (widget));	
 	}
 }
 
@@ -813,6 +875,7 @@ sidebar_title_create_more_info_label (void)
 
 	more_info_label = eel_label_new_with_background ("");
 	eel_label_make_smaller (EEL_LABEL (more_info_label), 2);
+	eel_label_set_justify (EEL_LABEL (more_info_label), GTK_JUSTIFY_CENTER);
 	eel_label_set_justify (EEL_LABEL (more_info_label), GTK_JUSTIFY_CENTER);
 	
 	return more_info_label;

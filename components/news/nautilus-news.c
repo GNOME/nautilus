@@ -347,6 +347,11 @@ do_destroy (GtkObject *obj, News *news)
 	
 	/* free all the channel data */
 	nautilus_news_free_channel_list (news);
+
+	/* free the property bag */
+	if (news->property_bag != NULL) {
+		bonobo_object_unref (BONOBO_OBJECT (news->property_bag));
+	}
 	
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS,
                                          max_items_changed,
@@ -2495,7 +2500,7 @@ make_news_view (const char *iid, gpointer callback_data)
 	news->property_bag = bonobo_property_bag_new (get_bonobo_properties,  set_bonobo_properties, news);
 	bonobo_control_set_properties (nautilus_view_get_bonobo_control (news->view), news->property_bag);
 	bonobo_property_bag_add (news->property_bag, "tab_image", TAB_IMAGE, BONOBO_ARG_STRING, NULL,
-				 "image indicating that the news has changed", 0);
+				 _("image indicating that the news has changed"), 0);
 	bonobo_property_bag_add (news->property_bag, "close", CLOSE_NOTIFY,
 				 BONOBO_ARG_BOOLEAN, NULL, "close notification", 0);
  	
