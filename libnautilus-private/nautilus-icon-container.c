@@ -325,6 +325,13 @@ icon_set_position (NautilusIcon *icon,
 		}		
 	}
 
+	if (icon->x == ICON_UNPOSITIONED_VALUE) {
+		icon->x = 0;
+	}
+	if (icon->y == ICON_UNPOSITIONED_VALUE) {
+		icon->y = 0;
+	}
+	
 	eel_canvas_item_move (EEL_CANVAS_ITEM (icon->item),
 				x - icon->x,
 				y - icon->y);

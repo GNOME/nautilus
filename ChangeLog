@@ -1,3 +1,9 @@
+2004-10-22  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.c (icon_set_position):
+	Fix moving of unpositioned icons, the canvas items start at
+	<0, 0>, not <-1,-1>
+
 2004-10-21  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-spatial-window.c:
