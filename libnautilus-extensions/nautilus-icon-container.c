@@ -1911,8 +1911,10 @@ keyboard_move_to (NautilusIconContainer *container,
 		return;
 	}
 
-	if ((event->state & GDK_CONTROL_MASK) != 0) {
-		/* Move the keyboard focus. */
+	if ((event->state & GDK_MOD1_MASK) != 0) {
+		/* Move the keyboard focus. Use Alt modifier
+		 * rather than Control to avoid Sawfish conflict.
+		 */
 		set_keyboard_focus (container, icon);
 	} else {
 		/* Select icons and get rid of the special keyboard focus. */
@@ -2089,9 +2091,9 @@ static void
 keyboard_space (NautilusIconContainer *container,
 		GdkEventKey *event)
 {
-	/* Control-space toggles the selection state of the current icon. */
+	/* Alt-space toggles the selection state of the current icon. */
 	if (container->details->keyboard_focus != NULL &&
-	    (event->state & GDK_CONTROL_MASK) != 0) {
+	    (event->state & GDK_MOD1_MASK) != 0) {
 		icon_toggle_selected (container, container->details->keyboard_focus);
 		gtk_signal_emit (GTK_OBJECT (container), signals[SELECTION_CHANGED]);
 	}

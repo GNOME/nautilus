@@ -1,3 +1,13 @@
+2001-02-13  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 5647 (Control-left/right for keyboard focus
+	movement conflicts with Sawfish keyboard shortcuts)
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(keyboard_move_to), (keyboard_space): Use Alt instead
+	of Control for keyboard focus movement and selection
+	toggling, per Don.
+
 2001-02-13  Robin * Slomkowski  <rslomkow@rslomkow.org>
 
 	* nautilus.spec.in: took make check out of here
