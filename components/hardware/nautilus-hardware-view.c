@@ -381,7 +381,7 @@ add_element_to_table (GtkWidget *table, GtkWidget *element, int element_index)
 static void setup_overview_form (NautilusHardwareView *view)
 {
 	char  *file_name, *temp_text;
-	GtkWidget *temp_widget, *temp_box;
+	GtkWidget *temp_widget, *pixmap_widget, *temp_box;
 	GtkWidget *table;
 	int cpunum, element_index;
 	DIR *directory;
@@ -466,19 +466,24 @@ static void setup_overview_form (NautilusHardwareView *view)
                                         /* some other device ... still set an icon */
                                         file_name = nautilus_pixmap_file("i-blockdev.png");
                                 }
-                                temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file(file_name));
-                                gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);
-                                gtk_widget_show(temp_widget);
+                                
+				pixmap_widget = GTK_WIDGET (gnome_pixmap_new_from_file(file_name));
+                                gtk_box_pack_start (GTK_BOX(temp_box), pixmap_widget, 0, 0, 0);
+				gtk_widget_show(pixmap_widget);
                                 g_free(file_name);
                                 g_free(ide_media);
                                 
                                 temp_text = get_IDE_description (device);
-                                temp_widget = nautilus_label_new(temp_text);
-				nautilus_label_set_font_size(NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
-                                g_free(temp_text);
+                                temp_widget = nautilus_label_new (temp_text);
+				nautilus_label_set_font_size (NAUTILUS_LABEL (temp_widget), HARDWARE_FONT_SIZE);
+				nautilus_label_set_text_justification (NAUTILUS_LABEL (temp_widget), GTK_JUSTIFY_CENTER);
+				nautilus_label_set_line_wrap (NAUTILUS_LABEL (temp_widget), TRUE);
+				nautilus_label_set_line_wrap_width (NAUTILUS_LABEL (temp_widget), 120);
+                                
+				g_free(temp_text);
                                 gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);
                                 gtk_widget_show(temp_widget);
-                                
+   
                                 g_free(device);
                         }
                 }
