@@ -1138,13 +1138,25 @@ add_force_remove (EazelInstaller *installer,
 							 rcase);
 }
 
+static gboolean
+did_we_already_try (EazelInstaller *installer, 
+		    const PackageData *pack) 
+{
+	GList *already_tried = NULL;
+
+	already_tried = g_list_find_custom (installer->attempted_updates,
+					    pack->name,
+					    (GCompareFunc)g_strcasecmp);
+
+	return already_tried ? TRUE : FALSE;
+}
+
 static void
 add_update_package (EazelInstaller *installer, 
 		   const PackageData *pack)
 {
 	PackageData *copy;
 	RepairCase *rcase;
-	GList *already_tried;	
 
 	log_debug ("add_update_package");
 	
@@ -1157,10 +1169,7 @@ add_update_package (EazelInstaller *installer,
 	rcase->u.in_the_way.pack = copy;
 	rcase->t = MUST_UPDATE;
 
-	already_tried = g_list_find_custom (installer->attempted_updates,
-					    copy->name,
-					    (GCompareFunc)g_strcasecmp);
-	if (already_tried) {
+	if (did_we_already_try (installer, copy)) {
 		packagedata_destroy (copy, FALSE);
 		g_free (rcase);
 		add_force_remove (installer, pack);
@@ -1247,6 +1256,14 @@ get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 				message = g_strdup_printf (_("%s requires %s, which could not be found on Eazel's servers"), 
 							   required_by, required);
 			}
+		} else {
+			message = g_strdup_printf (_("Download of %s failed"), 
+						   required);
+			if (did_we_already_try (installer, pack)) {
+				add_force_remove (installer, pack);
+				recoverable_error = TRUE;
+			} 
+			
 		}
 		break;
 	case PACKAGE_PARTLY_RESOLVED:
@@ -1354,10 +1371,8 @@ download_failed (EazelInstall *service,
 		 EazelInstaller *installer)
 {
 	char *temp;
-
 	temp = g_strdup_printf (_("Download of %s failed"), name);
 	installer->failure_info = g_list_append (installer->failure_info, temp);
-
 	log_debug ("Download FAILED for %s", name);
 }
 
@@ -1854,7 +1869,7 @@ eazel_installer_do_install (EazelInstaller *installer,
 
 	for (iter = installer->install_categories; iter; iter=iter->next) {
 		CategoryData *cat = (CategoryData*)iter->data;
-		log_debug ("HESTEOST %d", g_list_length (cat->packages));
+		log_debug ("category.packages.length = %d", g_list_length (cat->packages));
 	}
 	
 	eazel_install_set_force (installer->service, force);

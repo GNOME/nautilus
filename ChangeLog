@@ -1,3 +1,11 @@
+2000-11-07  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* nautilus-installer/src/installer.c: (did_we_already_try),
+	(add_update_package), (get_detailed_errors_foreach),
+	(download_failed), (eazel_installer_do_install):
+	Fixed some case where we 1) try and update a package 2) not on
+	softcat 3) didn't offer to remove it...
+	
 2000-11-07  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-logic.c:
