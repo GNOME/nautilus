@@ -137,6 +137,7 @@ column_clicked_cb (GtkCList *ignored, gint column, gpointer user_data)
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (user_data));
 
 	list_view = FM_DIRECTORY_VIEW_LIST (user_data);
+	sort_type = FM_DIRECTORY_VIEW_SORT_NONE;
 	
 	switch (column)
 	{
