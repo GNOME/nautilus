@@ -595,7 +595,7 @@ int main(int argc, char *argv[])
 {
   BonoboGenericFactory *factory;
   CORBA_ORB orb;
-  GConfError *error;
+  GConfError *error = NULL;
 
   if (g_getenv("NAUTILUS_DEBUG") != NULL)
     nautilus_make_warnings_and_criticals_stop_in_debugger
@@ -616,6 +616,12 @@ int main(int argc, char *argv[])
   orb = oaf_init (argc, argv);
   /* Init the GConf library.*/
   gconf_init (argc, argv, &error);
+  if (error != NULL) {
+	g_warning(_("GConf init failed:\n  %s"), error->str);
+	gconf_error_destroy(error);
+	error = NULL;
+  }
+
   gnome_vfs_init();
   gdk_rgb_init();
   glibwww_init("ntl-web-browser", _VERSION);

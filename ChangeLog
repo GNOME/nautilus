@@ -1,3 +1,37 @@
+Mon Aug 21 23:35:18 2000  George Lebl <jirka@5z.com>
+
+	* components/html/ntl-web-browser.c (main): properly handle
+	  gconf error, and init it to NULL first.  This will avoid
+	  crashes on error.
+
+	* libnautilus-extentions/Makefile.am,
+	  libnautilus-extentions/nautilus-preferences-private.h,
+	  libnautilus-extentions/nautilus-preferences.c:  Add a
+	  nautilus_preferences_handle_error functions for use in
+	  nautilus-preferences and user level manager to handle and reset
+	  GConf exceptions.  The reason a new "private" header was added is
+	  to preserve the gconf encapsulation outside libnautilus-extentions,
+	  plus it's only useful there.
+
+	* libnautilus-extentions/nautilus-preferences.c
+	  (preferences_hash_node_add_callback)
+	  (preferences_hash_node_remove_callback)
+	  (preferences_gconf_callback) (preferences_initialize_if_needed)
+	  (nautilus_preferences_set_boolean) (nautilus_preferences_get_boolean)
+	  (nautilus_preferences_set_string_list)
+	  (nautilus_preferences_get_string_list)
+	  (nautilus_preferences_set_enum) (nautilus_preferences_get_enum)
+	  (nautilus_preferences_set) (nautilus_preferences_get)
+	  libnautilus-extensions/nautilus-user-level-manager.c
+	  (user_level_manager_new) (user_level_manager_ensure_global_manager)
+	  (nautilus_user_level_manager_set_user_level)
+	  (nautilus_user_level_manager_get_user_level_as_string)
+	  (nautilus_user_level_manager_set_default_value_if_needed)
+	  (nautilus_user_level_manager_compare_preference_between_user_levels):
+	  Handle GConf exceptions.  Try to revert to sane behaviour on
+	  errors, such as using defaults.  Remove all the asserts for
+	  conditions that arise from gconf errors.  Fixes bug 672
+
 2000-08-21  Darin Adler  <darin@eazel.com>
 
 	Finished task 571 (Make a Trash "virtual directory" with trash

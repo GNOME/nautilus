@@ -27,6 +27,9 @@
 #include "nautilus-gtk-macros.h"
 #include "nautilus-glib-extensions.h"
 
+#include "nautilus-preferences.h"
+#include "nautilus-preferences-private.h"
+
 #include <gtk/gtksignal.h>
 
 #include <gconf/gconf.h>
@@ -105,22 +108,17 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusUserLevelManager, nautilus_user_level
 static NautilusUserLevelManager *
 user_level_manager_new (void)
 {
+	GConfError	  	 *error = NULL;
         NautilusUserLevelManager *manager;
         guint			 i;
 
 	if (!gconf_is_initialized ()) {
-		GConfError	  *error = NULL;
 		char		  *argv[] = { "nautilus", NULL };
 		
 		if (!gconf_init (1, argv, &error)) {
 			g_assert (error != NULL);
-			
-			/* FIXME bugzilla.eazel.com 672: Need better error reporting here */
-			g_warning ("GConf init failed:\n  %s", error->str);
-			
-			gconf_error_destroy (error);
-			
-			error = NULL;
+
+			nautilus_preferences_handle_error (&error);
 			
 			return NULL;
 		}
@@ -134,7 +132,8 @@ user_level_manager_new (void)
 	gconf_client_add_dir (manager->gconf_client,
 			      USER_LEVEL_PATH,
 			      GCONF_CLIENT_PRELOAD_RECURSIVE,
-			      NULL);
+			      &error);
+	nautilus_preferences_handle_error (&error);
 	
 	manager->num_user_levels = DEFAULT_NUM_USER_LEVELS;
 	manager->user_level_names = nautilus_string_list_new (TRUE);
@@ -153,7 +152,8 @@ user_level_manager_new (void)
 									  gconf_user_level_changed_callback,
 									  NULL,
 									  NULL,
-									  NULL);
+									  &error);
+	nautilus_preferences_handle_error (&error);
 	
         return manager;
 }
@@ -224,21 +224,30 @@ user_level_manager_ensure_global_manager (void)
 static void
 user_level_set_default_if_needed (NautilusUserLevelManager *manager)
 {
+	GConfError *error = NULL;
 	GConfValue *value;
 
 	g_assert (manager != NULL);
 	g_assert (manager->gconf_client != NULL);
 	
-	value = gconf_client_get_without_default (manager->gconf_client, USER_LEVEL_KEY, NULL);
+	value = gconf_client_get_without_default (manager->gconf_client, USER_LEVEL_KEY, &error);
+	if (nautilus_preferences_handle_error (&error)) {
+		if (value != NULL) {
+			gconf_value_destroy (value);
+			value = NULL;
+		}
+	}
 	
 	if (!value) {
 		value = gconf_value_new (GCONF_VALUE_STRING);
 		
 		gconf_value_set_string (value, DEFAULT_USER_LEVEL_NAMES[DEFAULT_USER_LEVEL]);
 		
-		gconf_client_set (manager->gconf_client, USER_LEVEL_KEY, value, NULL);
+		gconf_client_set (manager->gconf_client, USER_LEVEL_KEY, value, &error);
+		nautilus_preferences_handle_error (&error);
 
-		gconf_client_suggest_sync (manager->gconf_client, NULL);
+		gconf_client_suggest_sync (manager->gconf_client, &error);
+		nautilus_preferences_handle_error (&error);
 	}
 
 	g_assert (value != NULL);
@@ -274,9 +283,9 @@ nautilus_user_level_manager_get (void)
 void
 nautilus_user_level_manager_set_user_level (guint user_level)
 {
+	GConfError		 *error = NULL;
 	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
 	char			 *user_level_string;
-	gboolean		 result;
 	guint			 old_user_level;
 
 	g_return_if_fail (user_level < manager->num_user_levels);
@@ -292,14 +301,14 @@ nautilus_user_level_manager_set_user_level (guint user_level)
 	
 	g_assert (user_level_string != NULL);
 
-	result = gconf_client_set_string (manager->gconf_client,
-					  USER_LEVEL_KEY,
-					  user_level_string,
-					  NULL);
+	gconf_client_set_string (manager->gconf_client,
+				 USER_LEVEL_KEY,
+				 user_level_string,
+				 &error);
+	nautilus_preferences_handle_error (&error);
 
-	g_assert (result);
-
-	gconf_client_suggest_sync (manager->gconf_client, NULL);
+	gconf_client_suggest_sync (manager->gconf_client, &error);
+	nautilus_preferences_handle_error (&error);
 }
 
 guint
@@ -384,12 +393,17 @@ nautilus_user_level_manager_make_current_gconf_key (const char *preference_name)
 char *
 nautilus_user_level_manager_get_user_level_as_string (void)
 {
+	GConfError		 *error = NULL;
 	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
-	char			 *user_level_string;
+	char			 *user_level_string = NULL;
 
 	g_assert (manager->gconf_client != NULL);
 	
-	user_level_string = gconf_client_get_string (manager->gconf_client, USER_LEVEL_KEY, NULL);
+	user_level_string = gconf_client_get_string (manager->gconf_client, USER_LEVEL_KEY, &error);
+	if (nautilus_preferences_handle_error (&error)) {
+		g_free (user_level_string);
+		user_level_string = NULL;
+	}
 
 	if (!user_level_string)
 		user_level_string = g_strdup ("novice");
@@ -420,6 +434,7 @@ nautilus_user_level_manager_set_default_value_if_needed (const char		*preference
 							 gconstpointer		default_value)
 {
 	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
+	GConfError      *error = NULL;
 	GConfValue	*value = NULL;
 	char		*key;
 
@@ -429,7 +444,13 @@ nautilus_user_level_manager_set_default_value_if_needed (const char		*preference
 	g_assert (key != NULL);
 
 	/* Find out if the preference exists at all */
-	value = gconf_client_get_without_default (manager->gconf_client, key, NULL);
+	value = gconf_client_get_without_default (manager->gconf_client, key, &error);
+	if (nautilus_preferences_handle_error (&error)) {
+		if (value != NULL) {
+			gconf_value_destroy (value);
+			value = NULL;
+		}
+	}
 	
 	/* The value does not exist, so create one */
 	if (!value) {
@@ -453,7 +474,8 @@ nautilus_user_level_manager_set_default_value_if_needed (const char		*preference
 		}
 		
 		if (value) {
-			gconf_client_set (manager->gconf_client, key, value, NULL);
+			gconf_client_set (manager->gconf_client, key, value, &error);
+			nautilus_preferences_handle_error (&error);
 		}
 	}
 	
@@ -475,6 +497,7 @@ nautilus_user_level_manager_compare_preference_between_user_levels (const char *
 	char		*key_b;
 	GConfValue	*value_a;
 	GConfValue	*value_b;
+	GConfError	*error = NULL;
 
 	g_return_val_if_fail (preference_name != NULL, FALSE);
 
@@ -484,8 +507,20 @@ nautilus_user_level_manager_compare_preference_between_user_levels (const char *
 	key_b = nautilus_user_level_manager_make_gconf_key (preference_name, user_level_b);
 	g_assert (key_b != NULL);
 
-	value_a = gconf_client_get (manager->gconf_client, key_a, NULL);
-	value_b = gconf_client_get (manager->gconf_client, key_b, NULL);
+	value_a = gconf_client_get (manager->gconf_client, key_a, &error);
+	if (nautilus_preferences_handle_error (&error)) {
+		if (value_a != NULL) {
+			gconf_value_destroy (value_a);
+			value_a = NULL;
+		}
+	}
+	value_b = gconf_client_get (manager->gconf_client, key_b, &error);
+	if (nautilus_preferences_handle_error (&error)) {
+		if (value_b != NULL) {
+			gconf_value_destroy (value_b);
+			value_b = NULL;
+		}
+	}
 
 	g_free (key_a);
 	g_free (key_b);
