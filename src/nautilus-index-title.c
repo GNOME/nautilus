@@ -291,7 +291,7 @@ nautilus_index_title_update_label (NautilusIndexTitle *index_title)
 			if (split_offset != 0) {
 				char *buffer = g_malloc(strlen(displayed_text) + 2);
 				
-				/* build the new string, with a CR inserted, also remembering them separately for measuring */
+				/* build the new string, with a blank inserted, also remembering them separately for measuring */
 				memcpy(buffer, displayed_text, split_offset);
 				buffer[split_offset] = '\n';
 				strcpy(&buffer[split_offset + 1], &displayed_text[split_offset]);
@@ -300,6 +300,7 @@ nautilus_index_title_update_label (NautilusIndexTitle *index_title)
 				
 				g_free(displayed_text);
 				displayed_text = buffer;
+				break;
 			}
 		}
 	}
@@ -309,7 +310,6 @@ nautilus_index_title_update_label (NautilusIndexTitle *index_title)
 	} else {
 		index_title->details->title = GTK_WIDGET (gtk_label_new (displayed_text));
 		gtk_label_set_line_wrap (GTK_LABEL (index_title->details->title), TRUE);
-		gtk_label_set_justify(GTK_LABEL(index_title->details->title), GTK_JUSTIFY_CENTER);
 		gtk_widget_show (index_title->details->title);
 		gtk_box_pack_start (GTK_BOX (index_title), index_title->details->title, 0, 0, 0);
 		gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->title, 1);

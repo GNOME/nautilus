@@ -1,5 +1,12 @@
 2000-04-10	Andy Hertzfeld <andy@eazel.com>
 
+	* src/nautilus-index-title.c:
+	fixed bug where multi-line titles in index panel would have a big
+	vertical gap.  Fixed by breaking out of the loop after it finds a
+	split point.  Also, removed an unneccesary justification call.
+	
+2000-04-10	Andy Hertzfeld <andy@eazel.com>
+
 	* components/services/startup/eazel-register.c:
 	added io ports to hardware configuration synopsis
 	 
