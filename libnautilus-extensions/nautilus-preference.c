@@ -32,6 +32,21 @@
 #include <libnautilus-extensions/nautilus-string-list.h>
 #include "nautilus-widgets-self-check-functions.h"
 
+#include <nautilus-widgets/nautilus-user-level-manager.h>
+
+/*
+ * PreferenceHashNode:
+ *
+ * A structure to manage preference hash table nodes.
+ * Preferences are hash tables.  The hash key is the preference name
+ * (a string).  The  hash value is a pointer of the following struct:
+ */
+typedef struct {
+	NautilusPreference	*preference;
+} PreferenceHashNode;
+
+static GHashTable *global_preference_table = NULL;
+
 static const char PREFERENCE_NO_DESCRIPTION[] = "No Description";
 /*
  * NautilusPreferenceDetail:
@@ -61,6 +76,43 @@ static void nautilus_preference_destroy          (GtkObject               *objec
 
 /* Type info functions */
 static void preference_free_type_info            (NautilusPreference      *preference);
+
+static gboolean                 preference_initialize_if_needed               (void);
+
+void nautilus_preference_shutdown (void);
+
+/* PreferenceHashNode functions */
+static PreferenceHashNode *    preference_hash_node_alloc                    (char                        *name,
+									      char                        *description,
+									      NautilusPreferenceType       type);
+static void                     preference_hash_node_free                     (PreferenceHashNode         *node);
+static void                     preference_hash_node_free_func                (gpointer                     key,
+										gpointer                     value,
+									       gpointer user_data);
+
+/* Private stuff */
+static PreferenceHashNode *    preference_hash_node_lookup                   (const char                  *name);
+static PreferenceHashNode *    preference_hash_node_lookup_with_registration (const char                  *pref_name,
+										NautilusPreferenceType       pref_type);
+static void                     preference_register                           (char                        *name,
+										char                        *description,
+										NautilusPreferenceType       type);
+static gboolean
+preference_initialize_if_needed (void)
+{
+	if (global_preference_table) {
+		return TRUE;
+	}
+	
+	g_assert (global_preference_table == NULL);
+
+	global_preference_table = g_hash_table_new (g_str_hash, g_str_equal);
+
+	g_assert (global_preference_table != NULL);
+
+	return TRUE;
+}
+
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreference, nautilus_preference, GTK_TYPE_OBJECT)
 
@@ -480,6 +532,261 @@ nautilus_preference_enum_get_num_entries (const NautilusPreference *preference)
 
 	return 0;
 }
+
+
+
+
+
+/**
+ * preference_hash_node_alloc
+ *
+ * Allocate a preference hash node.
+ * @info: Pointer to info structure to use for the node memebers.
+ *
+ * Return value: A newly allocated node.
+ **/
+static PreferenceHashNode *
+preference_hash_node_alloc (char			*name,
+			     char			*description,
+			     NautilusPreferenceType	type)
+{
+	PreferenceHashNode * node;
+	
+	g_assert (name != NULL);
+
+	node = g_new (PreferenceHashNode, 1);
+
+ 	node->preference = NAUTILUS_PREFERENCE (nautilus_preference_new_from_type (name, type));
+
+ 	g_assert (node->preference != NULL);
+
+	if (description) {
+		nautilus_preference_set_description (node->preference, description);
+	}
+
+	return node;
+}
+
+/**
+ * preference_hash_node_free_func
+ *
+ * A function that frees a pref hash node.  It is meant to be fed to 
+ * g_hash_table_foreach ()
+ * @key: The hash key privately maintained by the GHashTable.
+ * @value: The hash value privately maintained by the GHashTable.
+ * @callback_data: The callback_data privately maintained by the GHashTable.
+ **/
+static void
+preference_hash_node_free_func (gpointer key,
+				 gpointer value,
+				 gpointer user_data)
+{
+	g_assert (value != NULL);
+
+	preference_hash_node_free ((PreferenceHashNode *) value);
+}
+
+/**
+ * preference_hash_node_free
+ *
+ * Free a preference hash node members along with the node itself.
+ * @preference_hash_node: The node to free.
+ **/
+static void
+preference_hash_node_free (PreferenceHashNode *node)
+{
+	g_assert (node != NULL);
+
+	g_assert (node->preference != NULL);
+
+	gtk_object_unref (GTK_OBJECT (node->preference));
+	node->preference = NULL;
+
+	g_free (node);
+}
+
+static void
+preference_register (char			*name,
+		      char			*description,
+		      NautilusPreferenceType	type)
+{
+	PreferenceHashNode *node;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (description != NULL);
+
+	preference_initialize_if_needed ();
+	
+	node = preference_hash_node_lookup (name);
+
+	if (node) {
+		g_warning ("the '%s' preference is already registered", name);
+		return;
+	}
+
+	node = preference_hash_node_alloc (name, description, type);
+
+	g_hash_table_insert (global_preference_table, (gpointer) name, (gpointer) node);
+
+	g_assert (node->preference != NULL);
+}
+
+static PreferenceHashNode *
+preference_hash_node_lookup (const char *name)
+{
+	gpointer hash_value;
+
+	g_assert (name != NULL);
+
+	preference_initialize_if_needed ();
+
+	hash_value = g_hash_table_lookup (global_preference_table, (gconstpointer) name);
+	
+	return (PreferenceHashNode *) hash_value;
+}
+
+static PreferenceHashNode *
+preference_hash_node_lookup_with_registration (const char		*name,
+					      NautilusPreferenceType	type)
+{
+	PreferenceHashNode * node;
+
+	g_assert (name != NULL);
+
+	preference_initialize_if_needed ();
+
+	node = preference_hash_node_lookup (name);
+
+	if (!node) {
+		preference_register (g_strdup (name),
+				      "Unspecified Description",
+				      type);
+		
+		node = preference_hash_node_lookup (name);
+	}
+	
+	g_assert (node != NULL);
+
+	return node;
+}
+
+void
+nautilus_preference_shutdown (void)
+{
+	if (global_preference_table == NULL) {
+		return;
+	}
+	
+	if (global_preference_table != NULL) {
+		g_hash_table_foreach (global_preference_table,
+				      preference_hash_node_free_func,
+				      NULL);
+		
+		g_hash_table_destroy (global_preference_table);
+		
+		global_preference_table = NULL;
+	}
+}
+
+
+/*
+ * Public functions
+ */
+
+
+/**
+ * nautilus_preference_find_by_name
+ *
+ * Search for a named preference in the given preference and return it.
+ * @preference: The preference to search
+ *
+ * Return value: A referenced pointer to the preference object that corresponds
+ * to the given preference name.  The caller should gtk_object_unref() the return
+ * value of this function.
+ **/
+NautilusPreference *
+nautilus_preference_find_by_name (const char *name)
+{
+	PreferenceHashNode *node;
+
+	g_return_val_if_fail (name != NULL, NULL);
+
+	preference_initialize_if_needed ();
+
+	node = preference_hash_node_lookup (name);
+	
+	g_assert (node != NULL);
+
+	gtk_object_ref (GTK_OBJECT (node->preference));
+
+	return node->preference;
+}
+
+void
+nautilus_preference_set_info_by_name (const char		*name,
+				      const char		*description,
+				      NautilusPreferenceType	type,
+				      gconstpointer		*default_values,
+				      guint			num_default_values)
+{
+	PreferenceHashNode *node;
+	
+	g_return_if_fail (name != NULL);
+
+	preference_initialize_if_needed ();
+
+	node = preference_hash_node_lookup_with_registration (name, type);
+	
+	g_assert (node != NULL);
+	g_assert (node->preference != NULL);
+
+	if (description) {
+		nautilus_preference_set_description (node->preference, description);
+	}
+
+	if (default_values && num_default_values) {
+		guint i;
+
+		for (i = 0; i < num_default_values; i++)
+		{
+			nautilus_user_level_manager_set_default_value_if_needed (name,
+										 type,
+										 i,
+										 default_values[i]);
+		}
+	}
+}
+
+void
+nautilus_preference_enum_add_entry_by_name (const char	*name,
+				     const char	*entry_name,
+				     const char	*entry_description,
+				     int	entry_value)
+{
+	PreferenceHashNode *node;
+	
+	g_return_if_fail (name != NULL);
+
+	preference_initialize_if_needed ();
+	
+	node = preference_hash_node_lookup_with_registration (name, NAUTILUS_PREFERENCE_ENUM);
+	
+	g_assert (node != NULL);
+	g_assert (node->preference != NULL);
+
+	g_assert (nautilus_preference_get_preference_type (node->preference) == NAUTILUS_PREFERENCE_ENUM);
+
+	nautilus_preference_enum_add_entry (node->preference,
+					    entry_name,
+					    entry_description,
+					    entry_value);
+}
+
+
+
+
+
+
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 

@@ -31,39 +31,39 @@
 BEGIN_GNOME_DECLS
 
 /* Window options */
-#define NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW			"/nautilus/preferences/window_always_new"
+#define NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW			"preferences/window_always_new"
 
 /* Show hidden files  */
-#define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"/nautilus/preferences/show_hidden_files"
+#define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"preferences/show_hidden_files"
 
 /* sidebar width */
-#define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"/nautilus/preferences/sidebar_width"
+#define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"preferences/sidebar_width"
 
 /* Home URI  */
-#define NAUTILUS_PREFERENCES_HOME_URI                 		"/nautilus/preferences/home_uri"
+#define NAUTILUS_PREFERENCES_HOME_URI                 		"preferences/home_uri"
 
 /* adding/removing from property browser */
-#define NAUTILUS_PREFERENCES_CAN_ADD_CONTENT			"/nautilus/preferences/can_add_content"
+#define NAUTILUS_PREFERENCES_CAN_ADD_CONTENT			"preferences/can_add_content"
 
 /* Preferences not (currently?) displayed in dialog */
-#define NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES	"/nautilus/icon_view/text_attribute_names"
-#define NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME		"/nautilus/preferences/show_real_file_name"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES	"icon_view/text_attribute_names"
+#define NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME		"preferences/show_real_file_name"
 
 /* Single/Double click preference  */
-#define NAUTILUS_PREFERENCES_CLICK_POLICY			"/nautilus/preferences/click_policy"
+#define NAUTILUS_PREFERENCES_CLICK_POLICY			"preferences/click_policy"
 
 /* use anti-aliased canvas */
-#define NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS		"/nautilus/preferences/anti_aliased_canvas"
+#define NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS		"preferences/anti_aliased_canvas"
 
 /* Sidebar panels */
-#define NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE		"/nautilus/sidebar-panels"
+#define NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE		"sidebar-panels"
 
 /* Directory view */
-#define NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY		"/nautilus/directory-view/font_family"
+#define NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY		"directory-view/font_family"
 
 /* themes */
-#define NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS		"/nautilus/preferences/eazel_toolbar_icons"
-#define NAUTILUS_PREFERENCES_ICON_THEME				"/nautilus/preferences/icon_theme"
+#define NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS		"preferences/eazel_toolbar_icons"
+#define NAUTILUS_PREFERENCES_ICON_THEME				"preferences/icon_theme"
 
 enum
 {
@@ -71,12 +71,13 @@ enum
 	NAUTILUS_CLICK_POLICY_DOUBLE
 };
 
-#define NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS "/nautilus/preferences/remote_icon_text"
+#define NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS		"preferences/remote_icon_text"
 
 void   nautilus_global_preferences_shutdown                                    (void);
 void   nautilus_global_preferences_show_dialog                                 (void);
 void   nautilus_global_preferences_hide_dialog                                 (void);
 void   nautilus_global_preferences_set_dialog_title                            (const char *title);
+void   nautilus_global_preferences_dialog_update                               (void);
 
 /* Sidebar */
 GList *nautilus_global_preferences_get_enabled_sidebar_panel_view_identifiers  (void);

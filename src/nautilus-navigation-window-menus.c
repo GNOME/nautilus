@@ -71,6 +71,7 @@ static void                  update_user_level_menu_items                   (Nau
 static void                  user_level_changed_callback                    (GtkObject              *user_level_manager,
 									     gpointer                user_data);
 static char *                get_customize_user_level_string                (void);
+static void		     update_preferences_dialog_title		    (void);
 
 /* Struct that stores all the info necessary to activate a bookmark. */
 typedef struct {
@@ -885,11 +886,8 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 					      NAUTILUS_MENU_PATH_AFTER_USER_LEVEL_SEPARATOR,
 					      -1);
 
-//  	/* Update the user level menus to reflect the user level reality */
-// 	bonobo_ui_handler_menu_set_radio_state (
-// 		ui_handler, 
-// 		convert_user_level_to_menu_path (nautilus_user_level_manager_get_user_level ()),
-// 		TRUE);
+	/* Make sure the dialog title matched the user level */
+	update_preferences_dialog_title ();
 
 	update_user_level_menu_items (window);
 
@@ -1115,18 +1113,14 @@ user_level_changed_callback (GtkObject	*user_level_manager,
 
 	update_user_level_menu_items (NAUTILUS_WINDOW (user_data));
 
-	/* Hide the customize dialog for notive user level */
+	/* Hide the customize dialog for novice user level */
 	if (nautilus_user_level_manager_get_user_level () == 0) {
 		nautilus_global_preferences_hide_dialog ();
 	}
 	/* Otherwise update its title to reflect the user level */
 	else {
-		char *dialog_title;
-
-		dialog_title = get_customize_user_level_string ();
-		g_assert (dialog_title != NULL);
-
-		nautilus_global_preferences_set_dialog_title (dialog_title);
+		nautilus_global_preferences_dialog_update ();
+		update_preferences_dialog_title ();
 	}
 }
 
@@ -1246,5 +1240,16 @@ get_customize_user_level_setttings_menu_string (void)
 	g_free (title);
 
 	return ellipse_suffixed_title;
+}
+
+static void
+update_preferences_dialog_title (void)
+{
+	char *dialog_title;
+	
+	dialog_title = get_customize_user_level_string ();
+	g_assert (dialog_title != NULL);
+	
+	nautilus_global_preferences_set_dialog_title (dialog_title);
 }
 

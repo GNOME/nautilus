@@ -248,7 +248,7 @@ preferences_item_construct (NautilusPreferencesItem	*item,
 	
 	item->details->preference_name = g_strdup (preference_name);
 
-	preference = nautilus_preferences_find_preference (item->details->preference_name);
+	preference = nautilus_preference_find_by_name (item->details->preference_name);
 	
 	g_assert (preference != NULL);
 
@@ -432,7 +432,7 @@ enum_radio_group_changed_callback (GtkWidget *buttons, GtkWidget * button, gpoin
 
 	g_assert (item->details->preference_name != NULL);
 
-	preference = nautilus_preferences_find_preference (item->details->preference_name);
+	preference = nautilus_preference_find_by_name (item->details->preference_name);
 
 	i = nautilus_radio_button_group_get_active_index (NAUTILUS_RADIO_BUTTON_GROUP (buttons));
 

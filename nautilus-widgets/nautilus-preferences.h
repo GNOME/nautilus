@@ -38,21 +38,6 @@ BEGIN_GNOME_DECLS
  */
 typedef void (*NautilusPreferencesCallback) (gpointer                callback_data);
 
-NautilusPreference *nautilus_preferences_find_preference      (const char                   *name);
-void                nautilus_preferences_set_info             (const char                   *name,
-							       const char                   *description,
-							       NautilusPreferenceType        type,
-							       gconstpointer                 default_value);
-void                nautilus_preferences_enum_add_entry       (const char                   *name,
-							       const char                   *entry_name,
-							       const char                   *entry_description,
-							       int                           entry_value);
-gboolean            nautilus_preferences_add_enum_callback    (const char                   *name,
-							       NautilusPreferencesCallback   callback,
-							       gpointer                      callback_data);
-gboolean            nautilus_preferences_add_boolean_callback (const char                   *name,
-							       NautilusPreferencesCallback   callback,
-							       gpointer                      callback_data);
 gboolean            nautilus_preferences_add_callback         (const char                   *name,
 							       NautilusPreferencesCallback   callback,
 							       gpointer                      callback_data);

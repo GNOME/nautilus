@@ -28,6 +28,7 @@
 #include <gtk/gtkobject.h>
 #include <libgnome/gnome-defs.h>
 #include <libnautilus-extensions/nautilus-string-list.h>
+#include <nautilus-widgets/nautilus-preference.h>
 
 BEGIN_GNOME_DECLS
 
@@ -48,7 +49,13 @@ char			    *nautilus_user_level_manager_make_current_gconf_key (const char *pref
 char			    *nautilus_user_level_manager_make_gconf_key         (const char *preference_name,
 										 guint         user_level);
 char			    *nautilus_user_level_manager_get_user_level_as_string  (void);
-
+void			     nautilus_user_level_manager_set_default_value_if_needed (const char		*preference_name,
+										      NautilusPreferenceType       type,
+										      guint			user_level,
+										      gconstpointer		default_value);
+gboolean		     nautilus_user_level_manager_compare_preference_between_user_levels (const char *preference_name,
+												 guint	 user_level_a,
+												 guint	 user_level_b);
 
 BEGIN_GNOME_DECLS
 

@@ -371,5 +371,141 @@ nautilus_user_level_manager_get_user_level_as_string (void)
 	
 	user_level_string = gconf_client_get_string (manager->gconf_client, USER_LEVEL_KEY, NULL);
 
+	if (!user_level_string)
+		user_level_string = g_strdup ("novice");
+
 	return user_level_string;
+}
+
+
+/**
+ * nautilus_user_level_manager_set_default_value_if_needed
+ *
+ * This function will ask gconf for a value. If
+ * 
+ * The value is not found in the user's database:
+ *   It will be added to the database using the given default value.  
+ *
+ * The value is found in the user's database:
+ *   Nothing.
+ *
+ * @name: The name of the preference.
+ * @type: The type of preference.
+ * @default_value: The default_value to use.
+ **/
+void
+nautilus_user_level_manager_set_default_value_if_needed (const char		*preference_name,
+							 NautilusPreferenceType       type,
+							 guint			user_level,
+							 gconstpointer		default_value)
+{
+	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
+	GConfValue	*value = NULL;
+	char		*key;
+
+	g_return_if_fail (preference_name != NULL);
+
+	key = nautilus_user_level_manager_make_gconf_key (preference_name, user_level);
+	g_assert (key != NULL);
+
+	/* Find out if the preference exists at all */
+	value = gconf_client_get_without_default (manager->gconf_client, key, NULL);
+	
+	/* The value does not exist, so create one */
+	if (!value) {
+		switch (type)
+		{
+		case NAUTILUS_PREFERENCE_STRING: 
+			/* Gconf will not grok NULL strings, so for this case dont do it. */
+			if (default_value) {
+				value = gconf_value_new (GCONF_VALUE_STRING);
+				gconf_value_set_string (value, (const char *) default_value);
+			}
+			break;
+		case NAUTILUS_PREFERENCE_BOOLEAN:
+			value = gconf_value_new (GCONF_VALUE_BOOL);
+			gconf_value_set_bool (value, GPOINTER_TO_INT (default_value));
+			break;
+		case NAUTILUS_PREFERENCE_ENUM:
+			value = gconf_value_new (GCONF_VALUE_INT);
+			gconf_value_set_int (value, GPOINTER_TO_INT (default_value));
+			break;
+		}
+		
+		if (value) {
+			gconf_client_set (manager->gconf_client, key, value, NULL);
+		}
+	}
+	
+	if (value) {
+		gconf_value_destroy (value);
+	}
+
+	g_free (key);
+}
+
+gboolean
+nautilus_user_level_manager_compare_preference_between_user_levels (const char *preference_name,
+								    guint	 user_level_a,
+								    guint	 user_level_b)
+{
+	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
+	gboolean	result = FALSE;
+	char		*key_a;
+	char		*key_b;
+	GConfValue	*value_a;
+	GConfValue	*value_b;
+
+	g_return_val_if_fail (preference_name != NULL, FALSE);
+
+	key_a = nautilus_user_level_manager_make_gconf_key (preference_name, user_level_a);
+	g_assert (key_a != NULL);
+
+	key_b = nautilus_user_level_manager_make_gconf_key (preference_name, user_level_b);
+	g_assert (key_b != NULL);
+
+	value_a = gconf_client_get (manager->gconf_client, key_a, NULL);
+	value_b = gconf_client_get (manager->gconf_client, key_b, NULL);
+
+	g_free (key_a);
+	g_free (key_b);
+
+	if (value_a && value_b)
+	{
+		g_assert (value_a->type == value_b->type);
+		
+		switch (value_a->type)
+		{
+		case GCONF_VALUE_STRING:
+			result = (gconf_value_string (value_a)
+				  && gconf_value_string (value_b)
+				  && (strcmp (gconf_value_string (value_a), gconf_value_string (value_b)) == 0));
+			break;
+			
+		case GCONF_VALUE_INT:
+			result = (gconf_value_int (value_a) == gconf_value_int (value_b));
+			break;
+			
+		case GCONF_VALUE_BOOL:
+			result = (gconf_value_bool (value_a) == gconf_value_bool (value_b));
+			break;
+
+		default:
+			g_assert_not_reached ();
+		}
+	}
+	else
+	{
+		result = TRUE;
+	}
+
+	if (value_a) {
+		gconf_value_destroy (value_a);
+	}
+
+	if (value_b) {
+		gconf_value_destroy (value_b);
+	}
+
+	return result;
 }

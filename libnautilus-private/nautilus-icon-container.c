@@ -2495,15 +2495,14 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 		mode == NAUTILUS_CLICK_POLICY_SINGLE;
 
 	/* Keep track of changes in clicking policy */
-	nautilus_preferences_add_enum_callback
-		(NAUTILUS_PREFERENCES_CLICK_POLICY,
-		 click_policy_changed_callback,
-		 container);
-
-	/* add callback for preference changes */
-	nautilus_preferences_add_boolean_callback(NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS, 
-						(NautilusPreferencesCallback) anti_aliased_preferences_changed, 
-						container);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
+					   click_policy_changed_callback,
+					   container);
+	
+	/* Keep track of changes in graphics trade offs */
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS, 
+					   (NautilusPreferencesCallback) anti_aliased_preferences_changed, 
+					   container);
 }
 
 

@@ -1,3 +1,129 @@
+2000-06-02  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Task 518.  Support for changing preferecens individually
+	within each confgurable user level.
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Change all preferences strings to not include the "/nautilus"
+	prefix.  The prefix is not automatically computed by the prefences
+	api taking into account the user level.
+
+	Add (nautilus_global_preferences_dialog_update) to rebuild the
+	preferences dialog when the user level changes.
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_get_dialog),
+	(global_preferences_register_sidebar_panels_preferences_for_ui),
+	(global_preferences_register_with_defaults),
+	(global_preferences_register_boolean_with_defaults),
+	(global_preferences_register_string_with_defaults),
+	(global_preferences_register_enum_with_defaults),
+	(global_preferences_register_for_ui),
+	(global_preferences_initialize_if_needed),
+	(nautilus_global_preferences_show_dialog),
+	(nautilus_global_preferences_hide_dialog),
+	(nautilus_global_preferences_set_dialog_title),
+	(nautilus_global_preferences_dialog_update),
+	(nautilus_global_preferences_shutdown):
+	remove the user level tracking hack.  We now set default values
+	for each of the user levels.
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_initialize):
+	Simplified preference callback api by having a single add_callback
+	function.  Use it here.
+
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_initialize):
+	Simplified preference callback api by having a single add_callback
+	function.  Use it here.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize):
+	Simplified preference callback api by having a single add_callback
+	function.  Use it here.
+
+	* nautilus-widgets/nautilus-preference.c:
+	(preference_initialize_if_needed), (preference_hash_node_alloc),
+	(preference_hash_node_free_func), (preference_hash_node_free),
+	(preference_register), (preference_hash_node_lookup),
+	(preference_hash_node_lookup_with_registration),
+	(nautilus_preference_shutdown), (nautilus_preference_find_by_name),
+	(nautilus_preference_set_info_by_name),
+	(nautilus_preference_enum_add_entry_by_name):
+	* nautilus-widgets/nautilus-preference.h:
+	Move the preference description hash table here from
+	nautilus-preferences.  These are preferences that are expected to
+	have nice defaults as well as descriptions and possibly extra data
+	for the preferences widgets to use (like enumeration values)
+
+	I moved the tabulation and hashing stuff intactly even though it
+	contains many turds.  I plan to fix these soon.
+	
+	* nautilus-widgets/nautilus-preferences-group.c:
+	(nautilus_preferences_group_add_item):
+	* nautilus-widgets/nautilus-preferences-item.c:
+	(preferences_item_construct), (enum_radio_group_changed_callback):
+	Update for the above.
+
+	* nautilus-widgets/nautilus-preferences.c:
+	(preferences_hash_node_alloc), (preferences_hash_node_free),
+	(preferences_hash_node_add_callback),
+	(preferences_hash_node_remove_callback),
+	(preferences_hash_node_check_changes_func),
+	(preferneces_callback_node_invoke_func), (preferences_register),
+	(preferences_hash_node_lookup_with_registration),
+	(preferences_gconf_callback), (user_level_changed_callback),
+	(preferences_initialize_if_needed),
+	(nautilus_preferences_add_callback),
+	(nautilus_preferences_set_boolean),
+	(nautilus_preferences_get_boolean),
+	(nautilus_preferences_set_enum), (nautilus_preferences_get_enum),
+	(nautilus_preferences_set), (nautilus_preferences_get),
+	(nautilus_preferences_shutdown):
+	* nautilus-widgets/nautilus-preferences.h:
+	Move the tabulation of nice preferences to nautilus-preference.
+
+	Install one gconf notification for each user level.  Remove all
+	the extra unused registration parameters.  
+
+	Use generated keys that take into account the current user level
+	to communicato with GConf.
+
+	Keep track of user level changes so that we can compare
+	preferences between user levels and fire callbacks accordingly.
+	This simplifies the lifes of preferences callers as they can
+	continue to install one simple callback as before.  They will get
+	notified when a preference changes for whatever reason.  That
+	could be the user manaually tweaking it, or a sweeping user level
+	change. 
+
+	Again, i tried to keep as much of the original hashing logic
+	intact.  It needs cleaning up as well.
+
+	* nautilus-widgets/nautilus-user-level-manager.c:
+	(nautilus_user_level_manager_set_default_value_if_needed),
+	(nautilus_user_level_manager_compare_preference_between_user_levels
+	):
+	* nautilus-widgets/nautilus-user-level-manager.h:
+	Add a public function to determine whether a preference is the
+	same between 2 user levels.
+
+	* nautilus-widgets/test-nautilus-preferences.c:
+	(register_global_preferences):
+	Update to reflect api changes.
+	
+	* src/nautilus-window-menus.c: (nautilus_window_initialize_menus),
+	(user_level_changed_callback),
+	(get_customize_user_level_setttings_menu_string),
+	(update_preferences_dialog_title):
+	Update the preferences dialog whenever the user level changes.
+	This is an easy way to have the dialog reflect reallity.
+
+	It would be a lot nicer it the contents updated on the fly instead
+	of rebuilding the whole thing.  I can do that later.
+	
+
 2000-06-02  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-list.c:

@@ -50,6 +50,29 @@ static GList *    global_preferences_get_sidebar_panel_view_identifiers (void);
 static gboolean   global_preferences_close_dialog_callback              (GtkWidget              *dialog,
 									 gpointer                user_data);
 static void       global_preferences_initialize_if_needed               (void);
+static void       global_preferences_register_with_defaults             (const char             *name,
+									 const char             *description,
+									 NautilusPreferenceType  type,
+									 gconstpointer           novice_default,
+									 gconstpointer           intermediate_default,
+									 gconstpointer           hacker_default);
+static void       global_preferences_register_boolean_with_defaults     (const char             *name,
+									 const char             *description,
+									 gboolean                novice_default,
+									 gboolean                intermediate_default,
+									 gboolean                hacker_default);
+static void       global_preferences_register_string_with_defaults      (const char             *name,
+									 const char             *description,
+									 const char             *novice_default,
+									 const char             *intermediate_default,
+									 const char             *hacker_default);
+static void       global_preferences_register_enum_with_defaults        (const char             *name,
+									 const char             *description,
+									 int                     novice_default,
+									 int                     intermediate_default,
+									 int                     hacker_default);
+
+static GtkWidget *global_prefs_dialog = NULL;
 
 /*
  * Private stuff
@@ -263,8 +286,6 @@ nautilus_global_preferences_get_disabled_sidebar_panel_view_identifiers (void)
 static GtkWidget *
 global_preferences_get_dialog (void)
 {
-	static GtkWidget * global_prefs_dialog = NULL;
-
 	global_preferences_initialize_if_needed ();
 
 	if (!global_prefs_dialog)
@@ -292,12 +313,16 @@ global_preferences_register_sidebar_panels_preferences_for_ui (void)
 		preference_key = global_preferences_get_sidebar_panel_key (identifier->iid);
 
 		g_assert (preference_key != NULL);
- 		
-		nautilus_preferences_set_info (preference_key,
-					       identifier->name,
-					       NAUTILUS_PREFERENCE_BOOLEAN,
-					       (gconstpointer) TRUE);
-		
+
+		/* FIXME: The actual defaults fed to this function need to be queried 
+		 * so that only the appropiate sidebar panels show for a user level.
+		 */
+		global_preferences_register_boolean_with_defaults (preference_key,
+								   identifier->name,
+								   TRUE,
+								   TRUE,
+								   TRUE);
+
 		g_free (preference_key);
 	}
 
@@ -334,6 +359,72 @@ global_preferences_is_sidebar_panel_enabled (NautilusViewIdentifier *panel_ident
 }
 
 static void
+global_preferences_register_with_defaults (const char			*name,
+					   const char			*description,
+					   NautilusPreferenceType	type,
+					   gconstpointer		novice_default,
+					   gconstpointer		intermediate_default,
+					   gconstpointer		hacker_default)
+{
+	gconstpointer defaults[3];
+
+	defaults[0] = novice_default;
+	defaults[1] = intermediate_default;
+	defaults[2] = hacker_default;
+
+	nautilus_preference_set_info_by_name (name,
+					      description,
+					      type,
+					      defaults,
+					      3);
+}
+
+static void
+global_preferences_register_boolean_with_defaults (const char	*name,
+						   const char	*description,
+						   gboolean	novice_default,
+						   gboolean	intermediate_default,
+						   gboolean	hacker_default)
+{
+	global_preferences_register_with_defaults (name,
+						   description,
+						   NAUTILUS_PREFERENCE_BOOLEAN,
+						   (gconstpointer) novice_default,
+						   (gconstpointer) intermediate_default,
+						   (gconstpointer) hacker_default);
+}
+
+static void
+global_preferences_register_string_with_defaults (const char	*name,
+						  const char	*description,
+						  const char    *novice_default,
+						  const char    *intermediate_default,
+						  const char    *hacker_default)
+{
+	global_preferences_register_with_defaults (name,
+						   description,
+						   NAUTILUS_PREFERENCE_STRING,
+						   (gconstpointer) novice_default,
+						   (gconstpointer) intermediate_default,
+						   (gconstpointer) hacker_default);
+}
+
+static void
+global_preferences_register_enum_with_defaults (const char	*name,
+						const char	*description,
+						int		novice_default,
+						int		intermediate_default,
+						int		hacker_default)
+{
+	global_preferences_register_with_defaults (name,
+						   description,
+						   NAUTILUS_PREFERENCE_ENUM,
+						   (gconstpointer) novice_default,
+						   (gconstpointer) intermediate_default,
+						   (gconstpointer) hacker_default);
+}
+
+static void
 global_preferences_register_for_ui (void)
 {
 	static gboolean preference_for_ui_registered = FALSE;
@@ -343,65 +434,119 @@ global_preferences_register_for_ui (void)
 
 	preference_for_ui_registered = TRUE;
 
+
 	/*
 	 * In the soon to come star trek future, the following information
 	 * will be fetched using the latest xml techniques.
 	 */
-
+	
 	/* Window create new */
-	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-				       "Open each item in a new window",
-				       NAUTILUS_PREFERENCE_BOOLEAN,
-				       (gconstpointer) FALSE);
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
+							   "Open each item in a new window",
+							   FALSE,
+							   FALSE,
+							   FALSE);
 	
 	/* Click activation type */
-	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_CLICK_POLICY,
-				       "Click policy",
-				       NAUTILUS_PREFERENCE_ENUM,
-				       (gconstpointer) NAUTILUS_CLICK_POLICY_SINGLE);
-
-	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					     "single",
-					     "Activate items with a single click",
-					     NAUTILUS_CLICK_POLICY_SINGLE);
-
-	nautilus_preferences_enum_add_entry (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					     "double",
-					     "Activate items with a double click",
-					     NAUTILUS_CLICK_POLICY_DOUBLE);
-
+	global_preferences_register_enum_with_defaults (NAUTILUS_PREFERENCES_CLICK_POLICY,
+							"Click policy",
+							NAUTILUS_CLICK_POLICY_SINGLE,
+							NAUTILUS_CLICK_POLICY_SINGLE,
+							NAUTILUS_CLICK_POLICY_SINGLE);
+	
+	nautilus_preference_enum_add_entry_by_name (NAUTILUS_PREFERENCES_CLICK_POLICY,
+						    "single",
+						    "Activate items with a single click",
+						    NAUTILUS_CLICK_POLICY_SINGLE);
+	
+	nautilus_preference_enum_add_entry_by_name (NAUTILUS_PREFERENCES_CLICK_POLICY,
+						    "double",
+						    "Activate items with a double click",
+						    NAUTILUS_CLICK_POLICY_DOUBLE);
+	
 	/* Remote views */
-	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS,
-			               "Display text in icons even for remote text files",
-				       NAUTILUS_PREFERENCE_BOOLEAN,
-				       (gconstpointer) FALSE);
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS,
+							   "Display text in icons even for remote text files",
+							   FALSE,
+							   FALSE,
+							   FALSE);
 	
 	/* Sidebar panels */
 	global_preferences_register_sidebar_panels_preferences_for_ui ();
 
 	/* Appearance options */
-	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
-				       "Use smoother (but slower) graphics",
-				       NAUTILUS_PREFERENCE_BOOLEAN,
-				       (gconstpointer) FALSE);
-
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
+							   "Use smoother (but slower) graphics",
+							   FALSE,
+							   FALSE,
+							   FALSE);
+	
 	/* Directory View */
-	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
-				       "Font familiy used to display file names",
-				       NAUTILUS_PREFERENCE_STRING,
-				       (gconstpointer) "helvetica");
+	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
+							  "Font familiy used to display file names",
+							  "helvetica",
+							  "helvetica",
+							  "helvetica");
 	
 	/* toolbar icons */
-	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS,
-				       "Use Eazel's toolbar icons",
-				       NAUTILUS_PREFERENCE_BOOLEAN,
-				       (gconstpointer) FALSE);
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS,
+							   "Use Eazel's toolbar icons",
+							   FALSE,
+							   FALSE,
+							   FALSE);
+
+	/*
+	 * These dont have a UI (yet ? maybe in the advanced settings ?).
+	 * They do need to have appropiate defaults nontheless.
+	 */
+
+	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_ICON_THEME,
+							  "Show entire filename",
+							  "default",
+							  "default",
+							  "default");
+
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME,
+							   "Show entire filename",
+							   FALSE,
+							   FALSE,
+							   TRUE);
+
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+							   "Show hidden files",
+							   FALSE,
+							   TRUE,
+							   TRUE);
+
+	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_CAN_ADD_CONTENT,
+							   "Can add Content",
+							   FALSE,
+							   TRUE,
+							   TRUE);
 	
-	/* Miscellaneous */
-	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME,
-				       "Show entire file file",
-				       NAUTILUS_PREFERENCE_BOOLEAN,
-				       (gconstpointer) FALSE);	
+	{
+		const char	*user_main_directory;
+		char		*novice_home_location;
+		char		*intermediate_home_location;
+		char		*hacker_home_location;
+
+		/* FIXME bugzilla.eazel.com 715: This call needs to be spanked to conform.  Should return a strduped string */
+		user_main_directory = nautilus_get_user_main_directory ();
+		
+		novice_home_location = g_strdup_printf ("file://%s", user_main_directory);
+		intermediate_home_location = g_strdup_printf ("file://%s", g_get_home_dir());
+		hacker_home_location = g_strdup_printf ("file://%s", g_get_home_dir());
+		
+		global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_HOME_URI,
+								  "Home Location",
+								  novice_home_location,
+								  intermediate_home_location,
+								  hacker_home_location);
+
+		g_free (novice_home_location);
+		g_free (intermediate_home_location);
+		g_free (hacker_home_location);
+	}
 }
 
 static gboolean
@@ -411,76 +556,6 @@ global_preferences_close_dialog_callback (GtkWidget   *dialog,
 	nautilus_global_preferences_hide_dialog ();
 
 	return TRUE;
-}
-
-#define USER_LEVEL_NOVICE	0
-#define USER_LEVEL_INTERMEDIATE 1
-#define USER_LEVEL_HACKER	2
-
-static void
-user_level_changed_callback (GtkObject	*user_level_manager,
-			     gpointer	user_data)
-{
-	int			new_user_level;
-	char			*home_uri_string;
-
-	gboolean		show_hidden_files = FALSE;
-	gboolean		use_real_home = TRUE;
-	gboolean		show_real_file_name = FALSE;
-	gboolean		can_add_content = TRUE;
-	
-	const char		*user_main_directory;
-
-	new_user_level = nautilus_user_level_manager_get_user_level ();
-
-	/* Set some preferences according to the user level */
-	switch (new_user_level) {
-	case USER_LEVEL_NOVICE:
-		show_hidden_files = FALSE;
-		use_real_home = FALSE;
-		show_real_file_name = FALSE;
-		can_add_content = FALSE;
-		break;
-
-	case USER_LEVEL_INTERMEDIATE: 
-		show_hidden_files = FALSE;
-		use_real_home = TRUE;
-		show_real_file_name = FALSE;
-		can_add_content = TRUE;
-		break;
-		
-	case USER_LEVEL_HACKER:
-	default:
-		show_hidden_files = TRUE;
-		use_real_home = TRUE;
-		show_real_file_name = TRUE;
-		can_add_content = TRUE;
-		break;
-	}
-
-	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-					  show_hidden_files);
-	
-	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_SHOW_REAL_FILE_NAME,
-					  show_real_file_name);
-
-	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_CAN_ADD_CONTENT,
-					  can_add_content);
-	
-	/* FIXME bugzilla.eazel.com 715: This call needs to be spanked to conform.  Should return a strduped string */
-	user_main_directory = nautilus_get_user_main_directory ();
-	
-	if (use_real_home)
-		home_uri_string = g_strdup_printf ("file://%s", g_get_home_dir());
-	else
-		home_uri_string = g_strdup_printf ("file://%s", user_main_directory);
-
-	g_assert (home_uri_string != NULL);
-	
-	nautilus_preferences_set (NAUTILUS_PREFERENCES_HOME_URI,
-				  home_uri_string);
-
-	g_free (home_uri_string);
 }
 
 static void
@@ -493,15 +568,6 @@ global_preferences_initialize_if_needed (void)
 	}
 
 	global_preferences_register_for_ui ();
-	
-	/* Register to find out about user level changes */
-	gtk_signal_connect (GTK_OBJECT (nautilus_user_level_manager_get ()),
-			    "user_level_changed",
-			    user_level_changed_callback,
-			    NULL);
-	
-	/* Invoke the callback once to make sure stuff is properly setup */
-	user_level_changed_callback (NULL, NULL);
 
 	initialized = TRUE;
 }
@@ -512,40 +578,56 @@ global_preferences_initialize_if_needed (void)
 void
 nautilus_global_preferences_show_dialog (void)
 {
-	GtkWidget * global_prefs_dialog = global_preferences_get_dialog ();
+	GtkWidget *dialog = global_preferences_get_dialog ();
 
-	gtk_widget_show (global_prefs_dialog);
+	gtk_widget_show (dialog);
 }
 
 void
 nautilus_global_preferences_hide_dialog (void)
 {
-	GtkWidget * global_prefs_dialog = global_preferences_get_dialog ();
+	GtkWidget *dialog = global_preferences_get_dialog ();
 
-	gtk_widget_hide (global_prefs_dialog);
+	gtk_widget_hide (dialog);
 }
 
 void
 nautilus_global_preferences_set_dialog_title (const char *title)
 {
-	GtkWidget *global_prefs_dialog;
+	GtkWidget *dialog;
 	g_return_if_fail (title != NULL);
 	
-	global_prefs_dialog = global_preferences_get_dialog ();
+	dialog = global_preferences_get_dialog ();
 
-	gtk_window_set_title (GTK_WINDOW (global_prefs_dialog), title);
+	gtk_window_set_title (GTK_WINDOW (dialog), title);
+}
+
+void
+nautilus_global_preferences_dialog_update (void)
+{
+	gboolean was_showing = FALSE;
+
+	/* Free the dialog first, cause it has refs to preferences */
+	if (global_prefs_dialog != NULL) {
+		was_showing = GTK_WIDGET_VISIBLE (global_prefs_dialog);
+
+		gtk_widget_destroy (global_prefs_dialog);
+	}
+	
+	global_prefs_dialog = global_preferences_create_dialog ();
+
+	if (was_showing) {
+		nautilus_global_preferences_show_dialog ();
+	}
 }
 
 void
 nautilus_global_preferences_shutdown (void)
 {
 	/* Free the dialog first, cause it has refs to preferences */
-	GtkWidget * global_prefs_dialog = global_preferences_get_dialog ();
-	gtk_widget_destroy (global_prefs_dialog);
-
-	gtk_signal_disconnect_by_func (GTK_OBJECT (nautilus_user_level_manager_get ()),
-				       user_level_changed_callback,
-				       NULL);
+	if (global_prefs_dialog != NULL) {
+		gtk_widget_destroy (global_prefs_dialog);
+	}
 
 	/* Now free the preferences tables and stuff */
 	nautilus_preferences_shutdown ();

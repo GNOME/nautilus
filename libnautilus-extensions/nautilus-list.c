@@ -486,9 +486,9 @@ nautilus_list_initialize (NautilusList *list)
 	update_single_click_mode_from_preferences (list);
 
 	/* Keep track of changes in clicking policy */
-	nautilus_preferences_add_enum_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-						click_policy_changed_callback,
-						list);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
+					   click_policy_changed_callback,
+					   list);
 }
 
 static void

@@ -567,9 +567,9 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 		nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES, FALSE);
 
 	/* Keep track of changes in this pref to filter files accordingly. */
-	nautilus_preferences_add_boolean_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
-						   show_hidden_files_changed_callback,
-						   directory_view);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+					   show_hidden_files_changed_callback,
+					   directory_view);
 }
 
 static void

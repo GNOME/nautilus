@@ -94,22 +94,25 @@ create_enum_item (const char *preference_name)
 static void
 register_global_preferences (void)
 {
-	nautilus_preferences_set_info (FRUIT_PREFERENCE,
-				       "Fruits",
-				       NAUTILUS_PREFERENCE_ENUM,
-				       (gconstpointer) FRUIT_ORANGE);
+	gconstpointer default_values[3] = { (gconstpointer)FRUIT_ORANGE, (gconstpointer)FRUIT_ORANGE, (gconstpointer)FRUIT_ORANGE };
 
-	nautilus_preferences_enum_add_entry (FRUIT_PREFERENCE,
-					     "apple",
-					     "Apple",
-					     FRUIT_APPLE);
+	nautilus_preference_set_info_by_name (FRUIT_PREFERENCE,
+					      "Fruits",
+					      NAUTILUS_PREFERENCE_ENUM,
+					      default_values,
+					      3);
+	
+	nautilus_preference_enum_add_entry_by_name (FRUIT_PREFERENCE,
+						    "apple",
+						    "Apple",
+						    FRUIT_APPLE);
 
-	nautilus_preferences_enum_add_entry (FRUIT_PREFERENCE,
+	nautilus_preference_enum_add_entry_by_name (FRUIT_PREFERENCE,
 					     "orange",
 					     "Orange",
 					     FRUIT_ORANGE);
 
-	nautilus_preferences_enum_add_entry (FRUIT_PREFERENCE,
+	nautilus_preference_enum_add_entry_by_name (FRUIT_PREFERENCE,
 					     "bannana",
 					     "Bannana",
 					     FRUIT_BANNANA);

@@ -89,6 +89,24 @@ gint                   nautilus_preference_enum_get_nth_entry_value       (const
 									   guint                     n);
 guint                  nautilus_preference_enum_get_num_entries           (const NautilusPreference *preference);
 
+
+/*
+ *
+ */
+NautilusPreference *nautilus_preference_find_by_name           (const char             *name);
+void                nautilus_preference_set_info_by_name       (const char             *name,
+								const char             *description,
+								NautilusPreferenceType  type,
+								gconstpointer		*default_values,
+								guint			num_default_values);
+void                nautilus_preference_enum_add_entry_by_name (const char             *name,
+								const char             *entry_name,
+								const char             *entry_description,
+								int                     entry_value);
+
+void nautilus_preference_shutdown (void);
+
+
 BEGIN_GNOME_DECLS
 
 #endif /* NAUTILUS_PREFERENCE_H */
