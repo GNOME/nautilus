@@ -322,10 +322,14 @@ nautilus_link_desktop_file_get_link_icon_from_desktop (GnomeDesktopItem *desktop
 		return NULL;
 	}
 	
-	absolute = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, icon_name, TRUE, NULL);
-	g_free (icon_name);
-	if (absolute == NULL) {
-		return NULL;
+	if (icon_name[0] == '/') {
+		absolute = icon_name;
+	} else {
+		absolute = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, icon_name, TRUE, NULL);
+		g_free (icon_name);
+		if (absolute == NULL) {
+			return NULL;
+		}
 	}
 
 	icon_uri = gnome_vfs_get_uri_from_local_path (absolute);

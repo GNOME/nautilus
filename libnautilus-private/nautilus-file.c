@@ -887,7 +887,7 @@ operation_cancel (Operation *op)
 }
 
 static gboolean
-in_filesystem (NautilusFile *file)
+has_local_path (NautilusFile *file)
 {
 	return eel_str_has_prefix (file->details->directory->details->uri, "file:");
 }
@@ -1040,7 +1040,7 @@ nautilus_file_rename (NautilusFile *file,
 {
 	char *locale_name;
 
-	if (!in_filesystem (file) || g_getenv ("G_BROKEN_FILENAMES") == NULL) {
+	if (!has_local_path (file) || g_getenv ("G_BROKEN_FILENAMES") == NULL) {
 		rename_guts (file, new_name, callback, callback_data);
 		return;
 	}
@@ -2202,7 +2202,7 @@ nautilus_file_get_display_name (NautilusFile *file)
 			 * thing with any local filename that does not
 			 * validate as good UTF-8.
 			 */
-			if (in_filesystem (file)) {
+			if (has_local_path (file)) {
 				if (g_getenv ("G_BROKEN_FILENAMES") != NULL
 				    || !g_utf8_validate (name, -1, NULL)) {
 					utf8_name = g_filename_to_utf8 (name, -1, NULL, NULL, NULL);

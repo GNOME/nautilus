@@ -1,5 +1,13 @@
 2002-02-28  Darin Adler  <darin@bentspoon.com>
 
+	* libnautilus-private/nautilus-link-desktop-file.c:
+	(nautilus_link_desktop_file_get_link_icon_from_desktop):
+	Fix handling of files with Icon entries that are full paths.
+
+	* libnautilus-private/nautilus-file.c: Name tweak.
+
+2002-02-28  Darin Adler  <darin@bentspoon.com>
+
 	* components/notes/nautilus-notes.c: (do_destroy): Remove some
 	GNOME2_CONVERSION_COMPLETE code.
 
