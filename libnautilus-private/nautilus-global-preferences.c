@@ -57,8 +57,12 @@ static gpointer default_smooth_font_callback             (int  user_level);
 static gpointer default_home_location_callback           (int  user_level);
 static gpointer default_default_folder_viewer_callback	 (int  user_level);
 
+#if GNOME2_CONVERSION_COMPLETE
+
 static const char *default_smooth_font_auto_value;
 static const char *icon_view_smooth_font_auto_value;
+
+#endif
 
 /* An enumeration used for installing type specific preferences defaults. */
 typedef enum
@@ -680,12 +684,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
 	  { USER_LEVEL_NONE }
 	},
-	{ nautilus_sidebar_help_enabled_preference_name,
-	  PREFERENCE_BOOLEAN,
-	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (TRUE) },
-	  { USER_LEVEL_NONE }
-	},
 	{ nautilus_sidebar_history_enabled_preference_name,
 	  PREFERENCE_BOOLEAN,
 	  EEL_USER_LEVEL_INTERMEDIATE,
@@ -1097,10 +1095,12 @@ nautilus_global_preferences_init (void)
 	eel_preferences_monitor_directory (SYSTEM_GNOME_VFS_PATH);
 
 	/* Set up storage for values accessed in this file */
+#if GNOME2_CONVERSION_COMPLETE
 	eel_preferences_add_auto_string (NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
 					 &icon_view_smooth_font_auto_value);
 	eel_preferences_add_auto_string (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
 					 &default_smooth_font_auto_value);
+#endif
 
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
 				      smooth_graphics_mode_changed_callback, 
