@@ -514,6 +514,7 @@ nautilus_bonobo_set_icon (BonoboUIComponent *ui,
 				      "filename", NULL);
 }
 
+
 static void
 activation_handle_done (NautilusBonoboActivationHandle *handle)
 {
@@ -521,6 +522,18 @@ activation_handle_done (NautilusBonoboActivationHandle *handle)
 		g_assert (*handle->early_completion_hook == handle);
 		*handle->early_completion_hook = NULL;
 	}
+}
+
+static void
+activation_handle_free (NautilusBonoboActivationHandle *handle)
+{
+	activation_handle_done (handle);
+	
+	if (handle->activated_object != NULL) {
+		bonobo_object_release_unref (handle->activated_object, NULL);
+	}
+	
+	g_free (handle);
 }
 
 static gboolean
@@ -534,8 +547,7 @@ activation_idle_callback (gpointer callback_data)
 			      handle->activated_object,
 			      handle->callback_data);
 
-	activation_handle_done (handle);
-	g_free (handle);
+	activation_handle_free (handle);
 
 	return FALSE;
 }
@@ -543,10 +555,7 @@ activation_idle_callback (gpointer callback_data)
 static void
 activation_cancel (NautilusBonoboActivationHandle *handle)
 {
-	bonobo_object_release_unref (handle->activated_object, NULL);
-
-	activation_handle_done (handle);
-	g_free (handle);
+	activation_handle_free (handle);
 }
 
 static void
