@@ -1,5 +1,23 @@
 2000-04-18  John Sullivan <sullivan@eazel.com>
 
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_monitor_add), (nautilus_file_monitor_remove):
+	Added empty implementations for these two routines. Will
+	fill in with actual code later after talking to Darin.
+
+	* src/nautilus-index-title.c:
+	(nautilus_index_title_set_uri): Monitor file for changes
+	in directory item count.
+	(release_file): Remove monitoring of file.
+	
+	* src/file-manager/fm-properties-window.c:
+	(name_field_done_editing), (name_field_focus_out),
+	(name_field_focus_in), (create_properties_window):
+	Made focusing away from the name field in the Properties
+	window deselect the text, and focusing in select it.
+
+2000-04-18  John Sullivan <sullivan@eazel.com>
+
 	Fixed bugs, mostly related to editable text fields.
 
 	* README: Made the contents of this file slightly helpful.

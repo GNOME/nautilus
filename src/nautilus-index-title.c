@@ -34,6 +34,7 @@
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
+#include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -111,6 +112,9 @@ release_file (NautilusIndexTitle *index_title)
 	}
 
 	if (index_title->details->file != NULL) {
+		if (nautilus_file_is_directory (index_title->details->file)) {
+			nautilus_file_monitor_remove (index_title->details->file, index_title);
+		}
 		nautilus_file_unref (index_title->details->file);
 		index_title->details->file = NULL;
 	}
@@ -431,7 +435,10 @@ nautilus_index_title_set_uri (NautilusIndexTitle *index_title,
 			      const char* new_uri,
 			      const char* initial_text)
 {
+	GList *attributes;
+
 	release_file (index_title);
+
 	index_title->details->file = nautilus_file_get (new_uri);
 	if (index_title->details->file != NULL) {
 		index_title->details->file_changed_connection =
@@ -439,6 +446,15 @@ nautilus_index_title_set_uri (NautilusIndexTitle *index_title,
 						   "changed",
 						   update,
 						   GTK_OBJECT (index_title));
+	}
+
+	/* Monitor the item count so we can update when it is known. */
+	if (nautilus_file_is_directory (index_title->details->file)) {
+		attributes = g_list_prepend (NULL,
+					     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
+		nautilus_file_monitor_add (index_title->details->file, index_title,
+					   attributes, NULL);
+		g_list_free (attributes);
 	}
 
 	g_free (index_title->details->requested_text);

@@ -705,6 +705,21 @@ nautilus_file_set_metadata (NautilusFile *file,
 	nautilus_file_changed (file);
 }
 
+void             
+nautilus_file_monitor_add (NautilusFile         *file,
+			   gconstpointer         client,
+			   GList                *attributes,
+			   GList                *metadata_keys)
+{
+}			   
+			   
+void            
+nautilus_file_monitor_remove (NautilusFile         *file,
+			      gconstpointer         client)
+{
+}			      
+
+
 char *
 nautilus_file_get_name (NautilusFile *file)
 {

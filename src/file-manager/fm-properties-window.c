@@ -124,10 +124,8 @@ create_pixmap_widget_for_file (NautilusFile *file)
 	return widget;
 }
 
-static gboolean
-name_field_done_editing (NautilusEntry *name_field,
-			 GdkEventFocus *event,
-			 gpointer user_data)
+static void
+name_field_done_editing (NautilusEntry *name_field)
 {
 	NautilusFile *file;
 	GnomeVFSResult rename_result;
@@ -141,7 +139,7 @@ name_field_done_editing (NautilusEntry *name_field,
 
 	g_assert (NAUTILUS_IS_FILE (file));
 	if (nautilus_file_is_gone (file)) {
-		return FALSE;
+		return;
 	}
 
 	new_name = gtk_entry_get_text (GTK_ENTRY (name_field));
@@ -153,7 +151,7 @@ name_field_done_editing (NautilusEntry *name_field,
 		rename_result = nautilus_file_rename (file, new_name);
 
 		if (rename_result == GNOME_VFS_OK) {
-			return FALSE;
+			return;
 		}
 	}	
 
@@ -169,7 +167,25 @@ name_field_done_editing (NautilusEntry *name_field,
 	}
 	
 	g_free (original_name);
+}
 
+static gboolean
+name_field_focus_out (NautilusEntry *name_field,
+		      GdkEventFocus *event,
+		      gpointer user_data)
+{
+	name_field_done_editing (name_field);
+	gtk_editable_select_region (GTK_EDITABLE (name_field), -1, -1);
+
+	return TRUE;
+}
+
+static gboolean
+name_field_focus_in (NautilusEntry *name_field,
+		      GdkEventFocus *event,
+		      gpointer user_data)
+{
+	nautilus_entry_select_all (name_field);
 	return TRUE;
 }
 
@@ -179,7 +195,7 @@ name_field_activate (NautilusEntry *name_field)
 	g_assert (NAUTILUS_IS_ENTRY (name_field));
 
 	/* Accept changes. */
-	name_field_done_editing (name_field, NULL, NULL);
+	name_field_done_editing (name_field);
 
 	nautilus_entry_select_all_at_idle (name_field);
 }
@@ -379,8 +395,12 @@ create_properties_window (NautilusFile *file)
 	/* Update name field initially before hooking up changed signal. */
 	name_field_update_to_match_file (NAUTILUS_ENTRY (name_field));
 
+	gtk_signal_connect (GTK_OBJECT (name_field), "focus_in_event",
+      	              	    GTK_SIGNAL_FUNC (name_field_focus_in),
+                            NULL);
+                      			    
 	gtk_signal_connect (GTK_OBJECT (name_field), "focus_out_event",
-      	              	    GTK_SIGNAL_FUNC (name_field_done_editing),
+      	              	    GTK_SIGNAL_FUNC (name_field_focus_out),
                             NULL);
                       			    
 	gtk_signal_connect (GTK_OBJECT (name_field), "activate",
@@ -388,7 +408,6 @@ create_properties_window (NautilusFile *file)
                             NULL);
 
         /* Start with name field selected. */
-        nautilus_entry_select_all (NAUTILUS_ENTRY (name_field));
         gtk_widget_grab_focus (GTK_WIDGET (name_field));
                       			    
 	/* React to name changes from elsewhere. */
