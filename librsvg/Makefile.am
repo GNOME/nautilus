@@ -1,6 +1,6 @@
 NULL=
 
-bin_PROGRAMS=test-rsvg test-ft
+bin_PROGRAMS=test-rsvg test-ft test-ft-gtk
 
 noinst_LTLIBRARIES = librsvg.la
 
@@ -47,6 +47,7 @@ librsvg_la_SOURCES =\
 
 test_rsvg_SOURCES = test-rsvg.c
 test_ft_SOURCES = test-ft.c
+test_ft_gtk_SOURCES = test-ft-gtk.c
 
 test_rsvg_LDADD =\
 	librsvg.la \
@@ -63,3 +64,12 @@ test_ft_LDADD =\
 	$(GNOMEUI_LIBS) \
 	$(XML_LIBS) \
 	$(NULL)
+
+test_ft_gtk_LDADD =\
+	librsvg.la \
+	$(top_builddir)/cut-n-paste-code/freetype/libfreetype2.la \
+	$(GNOMECANVASPIXBUF_LIBS) \
+	$(GNOMEUI_LIBS) \
+	$(XML_LIBS) \
+	$(NULL)
+
