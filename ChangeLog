@@ -1,3 +1,18 @@
+2000-07-26  Gene Z. Ragan  <gzr@eazel.com>
+
+	* src/file-manager/fm-cdrom-extensions.h:
+	New file that has constants defined in <linux/cdrom.h>
+	I added this to solve many problems that people are
+	running into with both Mathieu's fix and the old way
+	of including the kernel header.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	It makes me sad to do this, because Matheiu worked so hard
+	to fix this, but I created a new file with the CDROM constants
+	in them.  This solves several problems people have.  I wish
+	there was a beter solution, because now we have to make
+	sure we are in sync with the kernel header constants.
+
 2000-07-26  Pavel Cisler  <pavel@eazel.com>
 
 	* src/file-manager/dfos-xfer.c: (handle_xfer_vfs_error):

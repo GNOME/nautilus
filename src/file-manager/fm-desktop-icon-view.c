@@ -27,6 +27,7 @@
 #include "fm-desktop-icon-view.h"
 
 
+#if 0
 /* The folowing is an ugly hack to get nautilus to compile 
    with -Werror with recent 2.2.x kernels ( at least
    kernel >= 2.2.16). Evil Kernel Hackers is my new moto: EKH.
@@ -53,9 +54,13 @@ extern __inline__ __u64 __swab64p(__u64 *x);
 extern __inline__ void __swab64s(__u64 *addr);
 #endif /* __BYTEORDER_HAS_U64__ */
 #endif /* LINUX_VERSION_CODE > KERNEL_VERSION (2,2,12) */
+#include <linux/iso_fs.h>
+#include <linux/cdrom.h>
+#endif
 
-
+#include "fm-cdrom-extensions.h"
 #include "fm-icon-view.h"
+
 #include "iso9660.h"
 #include "src/nautilus-application.h"
 
@@ -65,8 +70,6 @@ extern __inline__ void __swab64s(__u64 *addr);
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <linux/iso_fs.h>
-#include <linux/cdrom.h>
 #include <mntent.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
