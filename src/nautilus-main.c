@@ -26,7 +26,7 @@
  *
  */
 
-/* ntl-main.c: Implementation of the routines that drive program lifecycle and main window creation/destruction. */
+/* nautilus-main.c: Implementation of the routines that drive program lifecycle and main window creation/destruction. */
 
 #include <config.h>
 
@@ -43,51 +43,6 @@
 #include <liboaf/liboaf.h>
 #include <popt.h>
 #include <stdlib.h>
-
-/* FIXME: Replace the leak checker calls with weakly exported ones in
- * libnautilus-extensions or in the leak checker library itself.
- */
-static void
-nautilus_leak_checker_init (const char *path)
-{
-	void (*real_nautilus_leak_checker_init) (const char *path);
-
-	/* Try to hook up with the leakchecker library. This only
-	 * succeeds if we run nautilus with a
-	 * LD_PRELOAD=./libleakcheck.so environment variable
-	 * setting. If there isn't one, this call is benign.
-	 */
-	real_nautilus_leak_checker_init = dlsym (RTLD_NEXT, "nautilus_leak_checker_init");
-	if (real_nautilus_leak_checker_init != NULL) {
-		real_nautilus_leak_checker_init (path);
-	}
-}
-
-static void 
-nautilus_leak_print_leaks (int stack_grouping_depth,
-			   int stack_print_depth,
-			   int max_count,
-			   int sort_by_count)
-{
-	void (*real_nautilus_leak_print_leaks) (int stack_grouping_depth, 
-						int stack_print_depth,
-						int max_count,
-						int sort_by_count);
-
-	/* Try to hook up with the leak checker library. */
-	real_nautilus_leak_print_leaks = dlsym (RTLD_NEXT, "nautilus_leak_print_leaks");
-	if (real_nautilus_leak_print_leaks != NULL) {
-		real_nautilus_leak_print_leaks (stack_grouping_depth, stack_print_depth,
-						max_count, sort_by_count);
-	}
-}
-
-static void
-print_leaks (void)
-{
-	/* If leak checking, dump all the outstanding allocations just before exiting. */
-	nautilus_leak_print_leaks (8, 15, 100, TRUE);
-}
 
 int
 main (int argc, char *argv[])
@@ -107,10 +62,6 @@ main (int argc, char *argv[])
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
 	};
 
-	/* Set up the leak checker symbol lookup. */
-	nautilus_leak_checker_init (argv[0]);
-	g_atexit (print_leaks);
-	
 	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
 	 * Unfortunately, this has to be done explicitly for each domain.
 	 */
