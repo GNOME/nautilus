@@ -11,7 +11,6 @@
 #define NAUTILUS_ICON_TEXT_ITEM_H
 
 #include <libgnome/gnome-defs.h>
-#include <gtk/gtkentry.h>
 #include <libgnomeui/gnome-canvas.h>
 #include <libgnomeui/gnome-icon-text.h>
 
@@ -60,6 +59,7 @@ typedef struct {
 
 	/* Signals we emit */
 	int  (* text_changed)      (NautilusIconTextItem *item);
+	void (* text_edited)       (NautilusIconTextItem *item);
 	void (* height_changed)    (NautilusIconTextItem *item);
 	void (* width_changed)     (NautilusIconTextItem *item);
 	void (* editing_started)   (NautilusIconTextItem *item);
@@ -87,5 +87,6 @@ char    *nautilus_icon_text_item_get_text      (NautilusIconTextItem *item);
 void     nautilus_icon_text_item_start_editing (NautilusIconTextItem *item);
 void     nautilus_icon_text_item_stop_editing  (NautilusIconTextItem *item,
 						gboolean              accept);
+void	 nautilus_icon_text_item_get_margins   (int *x, int *y);
 
 #endif /* NAUTILUS_ICON_TEXT_ITEM_H */

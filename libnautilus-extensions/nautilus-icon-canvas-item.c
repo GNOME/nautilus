@@ -1403,42 +1403,6 @@ nautilus_icon_canvas_item_hit_test_rectangle (NautilusIconCanvasItem *item,
 	return hit_test (item, &canvas_rect);
 }
 
-/* Return coordinates of icon and text location */
-/*
-void
-nautilus_icon_canvas_item_get_bounds (NautilusIconCanvasItem *icon_item,
-				      ArtIRect *text_rect)
-{
-	ArtIRect icon_rect;
-
-	g_return_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (icon_item));
-	g_return_if_fail (text_rect != NULL);
-	
-	get_icon_canvas_rectangle (icon_item, &icon_rect);
-}
-*/
-
-/* Get the rectangle of the canvas item, in world coordinates. */
-void
-nautilus_icon_canvas_item_get_bounds (NautilusIconCanvasItem *item,
-					      ArtIRect *rect)
-{
-	double i2w[6];
-	ArtPoint art_point;
-		
-	g_return_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item));
-	g_return_if_fail (rect != NULL);
-
-	gnome_canvas_item_i2w_affine (GNOME_CANVAS_ITEM (item), i2w);
-	
-	art_point.x = 0;
-	art_point.y = 0;
-	art_affine_point (&art_point, &art_point, i2w);
-	
-	rect->x0 = art_point.x;
-	rect->y0 = art_point.y;	
-}
-
 
 /* Return coordinates of icon text location */
 void
@@ -1490,4 +1454,10 @@ nautilus_icon_canvas_item_set_renaming (NautilusIconCanvasItem *item, gboolean s
 
 	item->details->is_renaming = state;
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (item));
+}
+
+int 
+nautilus_icon_canvas_item_get_max_text_width (NautilusIconCanvasItem *item)
+{
+	return MAX_TEXT_WIDTH;
 }

@@ -110,6 +110,7 @@ enum {
 	GET_ICON_PROPERTY,
 	GET_ICON_URI,
 	ICON_CHANGED,
+	ICON_TEXT_EDIT_OCCURRED,
 	ICON_TEXT_CHANGED,
 	MOVE_COPY_ITEMS,
 	SELECTION_CHANGED,	
@@ -1915,6 +1916,14 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  GTK_TYPE_INT,
 				  GTK_TYPE_DOUBLE,
 				  GTK_TYPE_DOUBLE);
+	signals[ICON_TEXT_EDIT_OCCURRED]
+		= gtk_signal_new ("icon_text_edit_occurred",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+						     icon_text_edit_occurred),
+				  gtk_marshal_NONE__NONE,
+				  GTK_TYPE_NONE, 0);
 	signals[ICON_TEXT_CHANGED]
 		= gtk_signal_new ("icon_text_changed",
 				  GTK_RUN_LAST,
@@ -3072,6 +3081,82 @@ nautilus_self_check_compute_stretch (int icon_x, int icon_y, int icon_size,
 }
 
 /**
+ * rename_text_dirty
+ * @container: An icon container widget.
+ * 
+ * Check and see if a rename edit has modified the icon tect item text
+ **/
+
+static gboolean 
+rename_text_dirty(NautilusIconContainer *container)
+{
+	char *edit_text;
+	
+	if (!container->details->renaming)
+		return FALSE;
+
+	if (container->details->original_text == NULL)
+		return FALSE;
+
+	edit_text = nautilus_icon_text_item_get_text (container->details->rename_widget);	
+	if (g_strcasecmp(container->details->original_text, edit_text) == 0)
+		return FALSE;
+	
+	return TRUE;
+}
+
+
+/**
+ * text_edited_callback
+ * @container: An icon container widget.
+ * 
+ * Signal callback connected to icon text widget.  Callback is called
+ * on any edit event.  This may be just the movement of the i-beam
+ * or an actual change of the text.  If the text has changed, we need 
+ * to fire the signal to allow the undo menu to be enabled.
+ **/
+ 
+static void
+text_edited_callback(NautilusIconTextItem *item, NautilusIconContainer *container)
+{
+	/* Check and see if we need to update our dirty flag */
+	if (rename_text_dirty(container) && !container->details->renaming_is_dirty) {
+		container->details->renaming_is_dirty = TRUE;
+		gtk_signal_emit (GTK_OBJECT (container), signals[ICON_TEXT_EDIT_OCCURRED]);
+	}
+}
+
+/**
+ * nautilus_icon_container_is_renaming
+ * @container: An icon container widget.
+ * 
+ * Returns true if container is in renaming mode
+ **/
+ 
+gboolean
+nautilus_icon_container_is_renaming (NautilusIconContainer *container)
+{
+	return container->details->renaming;
+}
+
+/**
+ * nautilus_icon_container_is_renaming_is_dirty
+ * @container: An icon container widget.
+ * 
+ * Returns true if container is in renaming mode
+ **/
+ 
+gboolean
+nautilus_icon_container_is_renaming_is_dirty (NautilusIconContainer *container)
+{
+	if (!container->details->renaming)
+		return FALSE;
+
+	return container->details->renaming_is_dirty;
+}
+
+
+/**
  * nautilus_icon_container_start_renaming_selected_item
  * @container: An icon container widget.
  * 
@@ -3083,11 +3168,13 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 {
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
-	ArtIRect text_rect, icon_rect;
+	ArtIRect text_rect;
+	ArtDRect icon_rect;
 	GdkFont *font;
 	const char *editable_text;
 	int max_text_width;
-	int cx, cy;
+	int cx0, cy0, cx1, cy1;
+	int marginX, marginY;
 	double ppu;
 	
 	/* Check if it already in renaming mode. */
@@ -3113,27 +3200,32 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	details->rename_widget = NAUTILUS_ICON_TEXT_ITEM (gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (container)),
 										 nautilus_icon_text_item_get_type (),
 										 NULL));
-	
+
+	/* Determine widget position widget in container */
 	font = details->label_font[details->zoom_level];
-	/* FIXME: There needs to be a way to get the max width constant from the canvas item */
 	ppu = GNOME_CANVAS_ITEM (icon->item)->canvas->pixels_per_unit;
-	max_text_width = floor (80 * ppu);
-	nautilus_icon_canvas_item_get_bounds(icon->item, &icon_rect);
-	gnome_canvas_w2c(GNOME_CANVAS(container), icon_rect.x0, icon_rect.y0, &cx, &cy);
-	
-	/* FIXME:  Why aren't the coordinate transforms taking the scroll amount into account? */
-	cx += GNOME_CANVAS(container)->scroll_x1 * ppu;
-	cy = text_rect.y0;
-	
+	max_text_width = floor (nautilus_icon_canvas_item_get_max_text_width (icon->item) * ppu);
+	nautilus_icon_canvas_item_get_icon_rectangle (icon->item, &icon_rect);
+	gnome_canvas_w2c(GNOME_CANVAS(container), icon_rect.x0, icon_rect.y0, &cx0, &cy0);
+	gnome_canvas_w2c(GNOME_CANVAS(container), icon_rect.x1, icon_rect.y1, &cx1, &cy1);
+
+	cx0 = cx0 + ((cx1 - cx0) - max_text_width) / 2;
+	cy0 = text_rect.y0;
+
+	nautilus_icon_text_item_get_margins(&marginX, &marginY);
+		
 	nautilus_icon_text_item_configure (details->rename_widget, 
-					   cx,			/* x */
-					   cy,			/* y */		
+					   cx0 - marginX,	/* x */
+					   cy0 - marginY,	/* y */		
 					   max_text_width + 4, 	/* width */
 					   font,		/* font */
 					   editable_text,	/* text */
 					   1);			/* allocate local copy */
 	
 	/* Set up the signals */
+	gtk_signal_connect (GTK_OBJECT (details->rename_widget), "text_edited",
+			    GTK_SIGNAL_FUNC (text_edited_callback),
+			    container);
 	gtk_signal_connect (GTK_OBJECT (details->rename_widget), "editing_started",
 			    GTK_SIGNAL_FUNC (editing_started),
 			    container);
@@ -3147,7 +3239,26 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	
 	/* We are in renaming mode */
 	details->renaming = TRUE;
+
+	/* The text is not dirty yet */
+	details->renaming_is_dirty = FALSE;
+	
 	nautilus_icon_canvas_item_set_renaming (icon->item, details->renaming);
+}
+
+
+/**
+ * nautilus_icon_container_undo_renaming_selected_item
+ * @container: An icon container widget.
+ * 
+ * Undo renaming operation on item being renamed
+ **/
+ 
+void
+nautilus_icon_container_undo_renaming_selected_item (NautilusIconContainer *container)
+{
+	nautilus_icon_text_item_set_text (container->details->rename_widget, 
+					  container->details->original_text);
 }
 
 static void
@@ -3191,8 +3302,9 @@ hide_rename_widget (NautilusIconContainer *container, NautilusIcon *icon)
 
 	g_free (container->details->original_text);
 	
-	/* We are not in renaming mode */	
+	/* We are not in renaming mode */
 	container->details->renaming = FALSE;
+	container->details->renaming_is_dirty = FALSE;
 	nautilus_icon_canvas_item_set_renaming (icon->item, container->details->renaming);		
 }
 

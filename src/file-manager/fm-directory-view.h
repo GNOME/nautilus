@@ -36,6 +36,17 @@
 typedef struct FMDirectoryView FMDirectoryView;
 typedef struct FMDirectoryViewClass FMDirectoryViewClass;
 
+/* Paths to use when creating & referring to bonobo menu items */
+#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN                      	"/File/Open"
+#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW        	"/File/OpenNew"
+#define FM_DIRECTORY_VIEW_MENU_PATH_CLOSE                     	"/File/Close"
+#define FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_AFTER_CLOSE	"/File/SeparatorAfterClose"
+#define FM_DIRECTORY_VIEW_MENU_PATH_DELETE                    	"/File/Delete"
+#define FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE                 	"/File/Duplicate"
+#define FM_DIRECTORY_VIEW_MENU_PATH_SELECT_ALL                	"/Edit/Select All"
+#define FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES            	"/File/Set Properties"
+
+
 #define FM_TYPE_DIRECTORY_VIEW			(fm_directory_view_get_type ())
 #define FM_DIRECTORY_VIEW(obj)			(GTK_CHECK_CAST ((obj), FM_TYPE_DIRECTORY_VIEW, FMDirectoryView))
 #define FM_DIRECTORY_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_DIRECTORY_VIEW, FMDirectoryViewClass))
@@ -202,6 +213,8 @@ void                      fm_directory_view_move_copy_items                (Naut
 									    int                    x,
 									    int                    y,
 									    FMDirectoryView       *view);
+gint			  fm_directory_view_get_context_menu_index	   (const char *menu_name);
+
 
 /* Wrappers for signal emitters. These are normally called 
  * only by FMDirectoryView itself. They have corresponding signals

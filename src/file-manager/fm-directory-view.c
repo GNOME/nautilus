@@ -59,16 +59,6 @@
 
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
 
-/* Paths to use when creating & referring to bonobo menu items */
-#define MENU_PATH_OPEN                      "/File/Open"
-#define MENU_PATH_OPEN_IN_NEW_WINDOW        "/File/OpenNew"
-#define MENU_PATH_CLOSE                     "/File/Close"
-#define MENU_PATH_SEPARATOR_AFTER_CLOSE	    "/File/SeparatorAfterClose"
-#define MENU_PATH_DELETE                    "/File/Delete"
-#define MENU_PATH_DUPLICATE                 "/File/Duplicate"
-#define MENU_PATH_SELECT_ALL                "/Edit/Select All"
-#define MENU_PATH_SET_PROPERTIES            "/File/Set Properties"
-
 enum
 {
 	ADD_FILE,
@@ -1495,23 +1485,23 @@ compute_menu_item_info (const char *path,
 {
 	char *name, *stripped;
 
-        if (strcmp (path, MENU_PATH_OPEN) == 0) {
+        if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OPEN) == 0) {
                 name = g_strdup_printf (_("_Open"));
                 *return_sensitivity = selection_length == 1;
-        } else if (strcmp (path, MENU_PATH_OPEN_IN_NEW_WINDOW) == 0) {
+        } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW) == 0) {
 		if (selection_length <= 1) {
 			name = g_strdup (_("Open in _New Window"));
 		} else {
 			name = g_strdup_printf (_("Open in %d _New Windows"), selection_length);
 		}
 		*return_sensitivity = selection_length > 0;
-	} else if (strcmp (path, MENU_PATH_DELETE) == 0) {
-		name = g_strdup (_("_Delete"));
+	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_DELETE) == 0) {
+		name = g_strdup (_("_Delete..."));
 		*return_sensitivity = selection_length > 0;
-	} else if (strcmp (path, MENU_PATH_DUPLICATE) == 0) {
+	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) == 0) {
 		name = g_strdup (_("_Duplicate"));
 		*return_sensitivity = selection_length > 0;
-	} else if (strcmp (path, MENU_PATH_SET_PROPERTIES) == 0) {
+	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES) == 0) {
 		name = g_strdup (_("Set _Properties..."));
 		*return_sensitivity = selection_length > 0;
         } else {
@@ -1567,15 +1557,15 @@ fm_directory_view_real_append_selection_context_menu_items (FMDirectoryView *vie
 						       	    GList *files)
 {
 	append_selection_menu_item (view, menu, files,
-				    MENU_PATH_OPEN, open_cb);
+				    FM_DIRECTORY_VIEW_MENU_PATH_OPEN, open_cb);
 	append_selection_menu_item (view, menu, files,
-				    MENU_PATH_OPEN_IN_NEW_WINDOW, open_in_new_window_cb);
+				    FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW, open_in_new_window_cb);
 	append_selection_menu_item (view, menu, files,
-				    MENU_PATH_DELETE, delete_cb);
+				    FM_DIRECTORY_VIEW_MENU_PATH_DELETE, delete_cb);
 	append_selection_menu_item (view, menu, files,
-				    MENU_PATH_DUPLICATE, duplicate_cb);
+				    FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE, duplicate_cb);
 	append_selection_menu_item (view, menu, files,
-				    MENU_PATH_SET_PROPERTIES, open_properties_window_cb);
+				    FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES, open_properties_window_cb);
 }
 
 static void
@@ -1591,7 +1581,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
          * right places without special knowledge like this.
          */
         bonobo_ui_handler_menu_new_item (ui_handler,
-                                         MENU_PATH_OPEN,
+                                         FM_DIRECTORY_VIEW_MENU_PATH_OPEN,
                                          _("_Open"),
                                          _("Open the selected item in this window"),
                                          1,
@@ -1602,7 +1592,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          bonobo_menu_open_cb,
                                          view);
         bonobo_ui_handler_menu_new_item (ui_handler,
-                                         MENU_PATH_OPEN_IN_NEW_WINDOW,
+                                         FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW,
                                          _("Open in New Window"),
                                          _("Open each selected item in a new window"),
                                          2,
@@ -1613,13 +1603,13 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          bonobo_menu_open_in_new_window_cb,
                                          view);
         bonobo_ui_handler_menu_new_separator (ui_handler,
-                                         MENU_PATH_SEPARATOR_AFTER_CLOSE,
-                                         bonobo_ui_handler_menu_get_pos (ui_handler, MENU_PATH_CLOSE) + 1);
+                                         FM_DIRECTORY_VIEW_MENU_PATH_SEPARATOR_AFTER_CLOSE,
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_CLOSE) + 1);
         bonobo_ui_handler_menu_new_item (ui_handler,
-                                         MENU_PATH_SET_PROPERTIES,
+                                         FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES,
                                          _("Set Properties..."),
                                          _("View or modify the properties of the selected items"),
-                                         bonobo_ui_handler_menu_get_pos (ui_handler, MENU_PATH_CLOSE) + 2,
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_CLOSE) + 2,
                                          BONOBO_UI_HANDLER_PIXMAP_NONE,
                                          NULL,
                                          0,
@@ -1627,10 +1617,10 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          bonobo_menu_open_properties_window_cb,
                                          view);
         bonobo_ui_handler_menu_new_item (ui_handler,
-                                         MENU_PATH_DELETE,
-                                         _("Delete"),
+                                         FM_DIRECTORY_VIEW_MENU_PATH_DELETE,
+                                         _("Delete..."),
                                          _("Delete all selected items"),
-                                         bonobo_ui_handler_menu_get_pos (ui_handler, MENU_PATH_CLOSE) + 3,
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_CLOSE) + 3,
                                          BONOBO_UI_HANDLER_PIXMAP_NONE,
                                          NULL,
                                          0,
@@ -1638,10 +1628,10 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          bonobo_menu_delete_cb,
                                          view);
         bonobo_ui_handler_menu_new_item (ui_handler,
-                                         MENU_PATH_DUPLICATE,
+                                         FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE,
                                          _("Duplicate"),
                                          _("Duplicate all selected items"),
-                                         bonobo_ui_handler_menu_get_pos (ui_handler, MENU_PATH_CLOSE) + 4,
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_CLOSE) + 4,
                                          BONOBO_UI_HANDLER_PIXMAP_NONE,
                                          NULL,
                                          'D',
@@ -1649,10 +1639,10 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          bonobo_menu_duplicate_cb,
                                          view);
         bonobo_ui_handler_menu_new_item (ui_handler,
-                                         MENU_PATH_SELECT_ALL,
+                                         FM_DIRECTORY_VIEW_MENU_PATH_SELECT_ALL,
                                          _("Select All"),
                                          _("Select all items in this window"),
-                                         bonobo_ui_handler_menu_get_pos (ui_handler, MENU_PATH_SELECT_ALL),
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_SELECT_ALL),
                                          BONOBO_UI_HANDLER_PIXMAP_NONE,
                                          NULL,
                                          0,
@@ -1685,11 +1675,11 @@ fm_directory_view_real_update_menus (FMDirectoryView *view)
 	count = g_list_length (selection);
 	nautilus_file_list_free (selection);
 
-	update_one_menu_item (handler, MENU_PATH_OPEN, count);
-	update_one_menu_item (handler, MENU_PATH_OPEN_IN_NEW_WINDOW, count);
-	update_one_menu_item (handler, MENU_PATH_DELETE, count);
-	update_one_menu_item (handler, MENU_PATH_DUPLICATE, count);
-	update_one_menu_item (handler, MENU_PATH_SET_PROPERTIES, count);
+	update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_OPEN, count);
+	update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW, count);
+	update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_DELETE, count);
+	update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE, count);
+	update_one_menu_item (handler, FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES, count);
 }
 
 static GtkMenu *
@@ -2237,3 +2227,38 @@ free_file_by_uri_map (FMDirectoryView *view)
 
 	g_hash_table_destroy (view->details->files_by_uri);
 }
+
+
+/**
+ * fm_directory_view_get_context_menu_index:
+ * 
+ * Return index of menu item in context menu.  This function only
+ * works if it is referring to the context menu that is displayed
+ * when it is brought up in responze to a click on an icon item.
+ * Return -1 if item is not found
+ * 
+ * @menu_name: Item index to be returned.
+ * 
+ * 
+ */
+gint
+fm_directory_view_get_context_menu_index(const char *menu_name)
+{
+	if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_OPEN, menu_name) == 0) {
+		return 0;
+	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW, menu_name) == 0) {
+		return 1;
+	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_DELETE, menu_name) == 0) {
+		return 2;
+	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE, menu_name) == 0) {
+		return 3;
+	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_SELECT_ALL, menu_name) == 0) {
+		return 4;
+	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES, menu_name) == 0) {
+		return 5;
+	} else {
+		/* No match found */
+		return -1;
+	}
+}
+

@@ -1,3 +1,44 @@
+2000-04-21  Gene Z. Ragan  <gzr@eazel.com>
+	* libnautilus-extensions/nautilus-icon-canvas-item.c
+	* libnautilus-extensions/nautilus-icon-canvas-item.h
+	(nautilus_icon_canvas_item_get_max_text_width):
+	Return value of MAX_TEXT_WIDTH constant.  Used is positoning the rename
+	text widget.
+
+	* libnautilus-extensions/nautilus-icon-container.c
+	Added signal "icon_text_edit_occurred" called when the text rename widget
+	recieves some sort of edit, such as a keyboard entry.
+	(rename_text_dirty):  Returns boolean indicating edit state of
+	text in rename widget.  Used in undo operation.
+	(text_edited_callback):  Signal callback called when NautilusIconTextItem
+	text is edited.
+	(nautilus_icon_container_start_renaming_selected_item):  Fixed positioning
+	code to address bug #543
+	(nautilus_icon_container_undo_renaming_selected_item):  Added simple undo
+	code.  This needs to be replaced with a global undo system.
+
+	* libnautilus-extensions/nautilus-icon-text-item.c
+	(iti_paint_text):  Fixed drawing of i-beam to address bug #506
+	(iti_event): Added keyboard handling for simple undo
+	(nautilus_icon_text_item_get_margins):  Returns values of MARGIN_X and
+	MARGIN_X constants.  Used when positioning text item in canvas.
+
+	* src/file-manager/fm-directory-view.c
+	Moved menu item title constants to header file.  This is needed so
+	FMIconView can get menu position paths when placing items in the
+	bonobo and contect menus.  Renamed the constants to be specific to
+	FMDirectoryView.
+	(fm_directory_view_get_context_menu_index):  Added function to return
+	index of requested menu item.
+	
+	* src/file-manager/fm-icon-view.c
+	(fm_icon_view_icon_text_edit_callback):  Callback that connect to
+	NautilusIconContainer signal.
+	(undo_rename_icon_callback): Added simple undo functionality.
+	(insert_one_context_menu_item): Added function to insert context menu
+	add a specific index.
+	Fixed bug #499, Rename menu in bad place in context menu.
+
 2000-04-21  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/history/ntl-history-view.c:

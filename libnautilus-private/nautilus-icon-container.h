@@ -70,6 +70,8 @@ struct NautilusIconContainerClass {
 	void                   (* icon_text_changed)        (NautilusIconContainer *container,
 							     NautilusIconData *data,
 							     char *text);
+							     
+	void                   (* icon_text_edit_occurred)  (NautilusIconContainer *container);
 	
 	char *		       (* get_container_uri)	    (NautilusIconContainer *container);
 	gboolean	       (* can_accept_item)	    (NautilusIconContainer *container,
@@ -142,6 +144,9 @@ gboolean   nautilus_icon_container_is_stretched            (NautilusIconContaine
 void       nautilus_icon_container_show_stretch_handles    (NautilusIconContainer *container);
 void       nautilus_icon_container_unstretch               (NautilusIconContainer *container);
 void	   nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *container);
+gboolean   nautilus_icon_container_is_renaming 		   (NautilusIconContainer *container);
+gboolean   nautilus_icon_container_is_renaming_is_dirty    (NautilusIconContainer *container);
+void	   nautilus_icon_container_undo_renaming_selected_item (NautilusIconContainer *container);
 
 /* options */
 int        nautilus_icon_container_get_zoom_level          (NautilusIconContainer *view);

@@ -62,8 +62,8 @@
 #define MENU_PATH_LAYOUT_GROUP "/Setings/Layout"
 #define MENU_PATH_AUTO_LAYOUT "/Settings/Auto Layout"
 #define MENU_PATH_MANUAL_LAYOUT "/Settings/Manual Layout"
-#define MENU_PATH_CLOSE "/File/Close"
 #define MENU_PATH_RENAME "/File/Rename"
+#define MENU_PATH_UNDO "/Edit/Undo"
 
 /* forward declarations */
 static void                   add_icon_at_free_position                         (FMIconView             *icon_view,
@@ -112,6 +112,8 @@ static void                   fm_icon_view_icon_text_changed_callback           
 										 NautilusFile           *file,
 										 char                   *new_name,
 										 FMIconView             *icon_view);
+static void                   fm_icon_view_icon_text_edit_callback           	(NautilusIconContainer  *container,
+										 FMDirectoryView        *view);
 static void                   fm_icon_view_update_menus                         (FMDirectoryView        *view);
 static NautilusIconContainer *get_icon_container                                (FMIconView             *icon_view);
 static void                   icon_container_activate_callback                  (NautilusIconContainer  *container,
@@ -267,6 +269,10 @@ create_icon_container (FMIconView *icon_view)
 			    GTK_SIGNAL_FUNC (fm_icon_view_icon_text_changed_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "icon_text_edit_occurred",
+			    GTK_SIGNAL_FUNC (fm_icon_view_icon_text_edit_callback),
+			    directory_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "selection_changed",
 			    GTK_SIGNAL_FUNC (icon_container_selection_changed_callback),
 			    icon_view);
@@ -415,10 +421,22 @@ static void
 rename_icon_callback (gpointer ignored, gpointer view)
 {
 	g_assert (FM_IS_ICON_VIEW (view));
-	
+  		
 	nautilus_icon_container_start_renaming_selected_item (
 				get_icon_container (FM_ICON_VIEW (view)));
+
+	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
 }
+
+
+static void
+undo_rename_icon_callback (gpointer ignored, gpointer view)
+{
+	g_assert (FM_IS_ICON_VIEW (view));  		
+	nautilus_icon_container_undo_renaming_selected_item (
+				get_icon_container (FM_ICON_VIEW (view)));
+}
+
 
 static void
 fm_icon_view_compute_menu_item_info (FMIconView *view, 
@@ -458,7 +476,12 @@ fm_icon_view_compute_menu_item_info (FMIconView *view,
 		name = g_strdup (_("_Rename"));
 		*sensitive_return = nautilus_g_list_exactly_one_item (files)
 			&& nautilus_file_can_rename (files->data);
+	} else if (strcmp (MENU_PATH_UNDO, menu_path) == 0) {
+		/* Allow undo if text has been edited */
+		name = g_strdup (_("_Undo"));
+		*sensitive_return = nautilus_icon_container_is_renaming_is_dirty(icon_container);
 	} else {
+
 		g_assert_not_reached ();
 	}
 
@@ -496,11 +519,40 @@ append_one_context_menu_item (FMIconView *view,
 	gtk_menu_append (menu, menu_item);
 }
 
+
+static void
+insert_one_context_menu_item (FMIconView *view,
+                              GtkMenu *menu,
+                              GList *files,
+                              const char *menu_path,
+                              gint position,
+                              GtkSignalFunc callback)
+{
+	GtkWidget *menu_item;
+	char *label;
+	gboolean sensitive;
+        
+        fm_icon_view_compute_menu_item_info (view, 
+					     files, 
+					     menu_path, 
+					     FALSE, 
+					     &label, 
+					     &sensitive); 
+        menu_item = gtk_menu_item_new_with_label (label);
+        g_free (label);
+        gtk_widget_set_sensitive (menu_item, sensitive);
+	gtk_widget_show (menu_item);
+	gtk_signal_connect (GTK_OBJECT (menu_item), "activate", callback, view);
+	gtk_menu_insert (menu, menu_item, position);
+}
+
 static void
 fm_icon_view_append_selection_context_menu_items (FMDirectoryView *view,
 						  GtkMenu *menu,
 						  GList *files)
 {
+	gint position;
+	
 	g_assert (FM_IS_ICON_VIEW (view));
 	g_assert (GTK_IS_MENU (menu));
 
@@ -514,9 +566,21 @@ fm_icon_view_append_selection_context_menu_items (FMDirectoryView *view,
         append_one_context_menu_item (FM_ICON_VIEW (view), menu, files, 
                                       MENU_PATH_RESTORE_STRETCHED_ICONS, 
                                       GTK_SIGNAL_FUNC (unstretch_icons_callback));
-	append_one_context_menu_item (FM_ICON_VIEW (view), menu, files, 
-                                      MENU_PATH_RENAME,
+
+
+	/* The Rename item is inserted directly after the Duplicate item created by the FMDirectoryView */
+	position = fm_directory_view_get_context_menu_index(FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE);
+
+	if (position == -1) {
+		append_one_context_menu_item (FM_ICON_VIEW (view), menu, files, 
+                                      MENU_PATH_RENAME, 
                                       GTK_SIGNAL_FUNC (rename_icon_callback));
+	} else {
+		position++;
+     		insert_one_context_menu_item (FM_ICON_VIEW (view), menu, files, 
+                                      MENU_PATH_RENAME, position,
+                                      GTK_SIGNAL_FUNC (rename_icon_callback));
+	}
 }
 
 /* Note that this is used both as a Bonobo menu callback and a signal callback.
@@ -845,7 +909,7 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 {
         GList *selection;
         BonoboUIHandler *ui_handler;
-
+	
         g_assert (FM_IS_ICON_VIEW (view));
 
 	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, merge_menus, (view));
@@ -896,18 +960,31 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 					      0, 0,
 					      manual_layout_callback, view);
 
+	/* This menu item needs to go right after the Duplicate item that fm-directory-view places in the File menu */
         bonobo_ui_handler_menu_new_item (ui_handler,
                                          MENU_PATH_RENAME,
                                          _("Rename"),
                                          _("Rename selected item"),
-					 /* FIXME: Hard-coded 5 lines down from CLOSE? */
-                                         bonobo_ui_handler_menu_get_pos (ui_handler, MENU_PATH_CLOSE) + 5,
+                                         bonobo_ui_handler_menu_get_pos (ui_handler, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) + 1,
                                          BONOBO_UI_HANDLER_PIXMAP_NONE,
                                          NULL,
                                          0,
                                          0,
                                          (BonoboUIHandlerCallbackFunc) rename_icon_callback,
                                          view);
+
+	/* Add Undo menu item at top of Edit menu */
+	bonobo_ui_handler_menu_new_item (ui_handler,
+                                         MENU_PATH_UNDO,
+                                         _("Undo"),
+                                         _("Undo Rename"),
+                                         0,
+                                         BONOBO_UI_HANDLER_PIXMAP_NONE,
+                                         NULL,
+                                         0,
+                                         0,
+                                         (BonoboUIHandlerCallbackFunc) undo_rename_icon_callback,
+                                         view);                                         
 
         nautilus_file_list_free (selection);
 
@@ -950,6 +1027,8 @@ fm_icon_view_update_menus (FMDirectoryView *view)
                                  MENU_PATH_RESTORE_STRETCHED_ICONS);
         update_bonobo_menu_item (FM_ICON_VIEW (view), ui_handler, selection, 
                                  MENU_PATH_RENAME);
+        update_bonobo_menu_item (FM_ICON_VIEW (view), ui_handler, selection, 
+                                 MENU_PATH_UNDO);
 	
 	nautilus_file_list_free (selection);
 }
@@ -962,7 +1041,7 @@ fm_icon_view_select_all (FMDirectoryView *view)
 	g_return_if_fail (FM_IS_ICON_VIEW (view));
 
 	icon_container = get_icon_container (FM_ICON_VIEW (view));
-        nautilus_icon_container_select_all(icon_container);
+        nautilus_icon_container_select_all (icon_container);
 }
 
 static void
@@ -1144,6 +1223,23 @@ fm_icon_view_icon_text_changed_callback (NautilusIconContainer *container,
 	g_free (original_name);
 }
 
+/* An edit occurred to the icon text item.  Update Undo menu if needed */
+void
+fm_icon_view_icon_text_edit_callback (NautilusIconContainer *container, FMDirectoryView *view)
+{
+	GList *selection;
+	BonoboUIHandler *ui_handler;
+	
+	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
+
+	ui_handler = fm_directory_view_get_bonobo_ui_handler (view);
+	selection = fm_directory_view_get_selection (view);
+                
+        update_bonobo_menu_item (FM_ICON_VIEW (view), ui_handler, selection, 
+                                 MENU_PATH_UNDO);
+	
+	nautilus_file_list_free (selection);
+}
 
 static NautilusScalableIcon *
 get_icon_images_callback (NautilusIconContainer *container,
@@ -1291,7 +1387,6 @@ get_icon_property_callback (NautilusIconContainer *container,
 
 static void
 text_attribute_names_changed_callback (gpointer user_data)
-
 {
 	nautilus_icon_container_request_update_all (get_icon_container (FM_ICON_VIEW (user_data)));	
 }

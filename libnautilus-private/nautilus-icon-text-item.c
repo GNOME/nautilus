@@ -11,6 +11,7 @@
 
 #include <config.h>
 #include "nautilus-icon-text-item.h"
+#include "nautilus-entry.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -18,7 +19,6 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
-
 
 /* Margins used to display the information */
 #define MARGIN_X 2
@@ -43,8 +43,8 @@ typedef struct {
 	/* Font */
 	GdkFont *font;
 
-	/* Hack: create an offscreen window and place an entry inside it */
-	GtkEntry *entry;
+	/* Create an offscreen window and place an entry inside it */
+	NautilusEntry *entry;
 	GtkWidget *entry_top;
 
 	/* Whether the user pressed the mouse while the item was unselected */
@@ -76,6 +76,7 @@ enum {
 
 enum {
 	TEXT_CHANGED,
+	TEXT_EDITED,
 	HEIGHT_CHANGED,
 	WIDTH_CHANGED,
 	EDITING_STARTED,
@@ -134,7 +135,7 @@ layout_text (Iti *iti)
 
 	/* Change the text layout */
 	if (iti->editing)
-		text = gtk_entry_get_text (priv->entry);
+		text = gtk_entry_get_text (GTK_ENTRY(priv->entry));
 	else
 		text = iti->text;
 
@@ -153,6 +154,8 @@ layout_text (Iti *iti)
 
 	if (height != old_height)
 		gtk_signal_emit (GTK_OBJECT (iti), iti_signals[HEIGHT_CHANGED]);
+
+	gtk_signal_emit (GTK_OBJECT (iti), iti_signals [TEXT_EDITED]);		
 }
 
 
@@ -173,7 +176,7 @@ iti_edition_accept (Iti *iti)
 			if (iti->is_text_allocated)
 				g_free (iti->text);
 
-			iti->text = g_strdup (gtk_entry_get_text (priv->entry));
+			iti->text = g_strdup (gtk_entry_get_text (GTK_ENTRY(priv->entry)));
 			iti->is_text_allocated = 1;
 		}
 
@@ -205,12 +208,12 @@ iti_start_editing (Iti *iti)
 	if (iti->editing)
 		return;
 
-	/* Trick: The actual edition of the entry takes place in a GtkEntry
+	/* Trick: The actual edition of the entry takes place in a NautilusEntry
 	 * which is placed offscreen.  That way we get all of the advantages
-	 * from GtkEntry without duplicating code.  Yes, this is a hack.
+	 * from NautilusEntry without duplicating code.  Yes, this is a hack.
 	 */
-	priv->entry = (GtkEntry *) gtk_entry_new ();
-	gtk_entry_set_text (priv->entry, iti->text);
+	priv->entry = (NautilusEntry *) nautilus_entry_new ();
+	gtk_entry_set_text (GTK_ENTRY(priv->entry), iti->text);
 	gtk_signal_connect (GTK_OBJECT (priv->entry), "activate",
 			    GTK_SIGNAL_FUNC (iti_entry_activate), iti);
 
@@ -397,16 +400,20 @@ iti_paint_text (Iti *iti, GdkDrawable *drawable, int x, int y)
 	GtkStyle *style;
 	GdkGC *fg_gc, *bg_gc;
 	GdkGC *gc, *bgc, *sgc, *bsgc;
-        GList *item;
-        int xpos, len;
+	GList *item;
+	int xpos, len;
+	int cursor, offset, i;
 
 	priv = iti->priv;
 	style = GTK_WIDGET (GNOME_CANVAS_ITEM (iti)->canvas)->style;
 
 	ti = iti->ti;
 	len = 0;
-        y += ti->font->ascent;
+	y += ti->font->ascent;
 
+	cursor = 0;
+	i = -1;
+	
 	/*
 	 * Pointers to all of the GCs we use
 	 */
@@ -415,15 +422,14 @@ iti_paint_text (Iti *iti, GdkDrawable *drawable, int x, int y)
 	sgc = style->fg_gc [GTK_STATE_SELECTED];
 	bsgc = style->bg_gc [GTK_STATE_SELECTED];
 
-        for (item = ti->rows; item; item = item->next, len += (row ? row->text_length : 0)) {
+	for (item = ti->rows; item; item = item->next, len += (row ? row->text_length : 0)) {
 		GdkWChar *text_wc;
-		int text_length;
-		int cursor, offset, i;
+		int text_length;		
 		int sel_start, sel_end;
 
 		row = item->data;
 
-                if (!row) {
+		if (!row) {
 			y += ti->baseline_skip / 2;
 			continue;
 		}
@@ -468,27 +474,32 @@ iti_paint_text (Iti *iti, GdkDrawable *drawable, int x, int y)
 			if (cursor == i)
 				gdk_draw_line (drawable,
 					       gc,
-					       px - 1,
+					       px,
 					       y - ti->font->ascent,
-					       px - 1,
+					       px,
 					       y + ti->font->descent - 1);
 
 			offset += size;
 		}
-
-		if (cursor == i) {
-			int px = x + xpos + offset;
-
-			gdk_draw_line (drawable,
-				       gc,
-				       px - 1,
-				       y - ti->font->ascent,
-				       px - 1,
-				       y + ti->font->descent - 1);
-		}
-
+		
 		y += ti->baseline_skip;
-        }
+	}
+
+	/* The i-beam should only be drawn at the end of a line of text if that line is the
+	 * only or last line of text in a label.  We subtract one form the x position
+	 * so the i-beam is not visually jammed against the edge of the bounding rect. */
+	if (cursor == i){
+		int px = x + xpos + offset;
+		y -= ti->baseline_skip;
+		
+		gdk_draw_line (drawable,
+			       gc,
+			       px - 1,
+			       y - ti->font->ascent,
+			       px - 1,
+			       y + ti->font->descent - 1);
+	}
+
 }
 
 /* Draw method handler for the icon text item */
@@ -523,13 +534,6 @@ iti_draw (GnomeCanvasItem *item, GdkDrawable *drawable, int x, int y, int width,
 
 	style = GTK_WIDGET (item->canvas)->style;
 
-	if (iti->selected && !iti->editing)
-		gdk_draw_rectangle (drawable,
-				    style->bg_gc[GTK_STATE_SELECTED],
-				    TRUE,
-				    xofs, yofs,
-				    w, h);
-
 	if (iti->editing) {
 		gdk_draw_rectangle (drawable,
 				    style->fg_gc[GTK_STATE_NORMAL],
@@ -538,7 +542,16 @@ iti_draw (GnomeCanvasItem *item, GdkDrawable *drawable, int x, int y, int width,
 				    w - 1, h - 1);
 
 		iti_paint_text (iti, drawable, xofs + MARGIN_X, yofs + MARGIN_Y);
-	} else
+	} else {
+
+		if (iti->selected) {
+			gdk_draw_rectangle (drawable,
+				    style->bg_gc[GTK_STATE_SELECTED],
+				    TRUE,
+				    xofs, yofs,
+				    w, h);
+		}
+		
 		gnome_icon_paint_text (iti->ti,
 				       drawable,
 				       style->fg_gc[(iti->selected
@@ -547,6 +560,7 @@ iti_draw (GnomeCanvasItem *item, GdkDrawable *drawable, int x, int y, int width,
 				       xofs + MARGIN_X,
 				       yofs + MARGIN_Y,
 				       GTK_JUSTIFY_CENTER);
+	}
 }
 
 /* Point method handler for the icon text item */
@@ -632,7 +646,7 @@ iti_idx_from_x_y (Iti *iti, int x, int y)
 
 	idx += col;
 
-	g_assert (idx <= priv->entry->text_size);
+	g_assert (idx <= GTK_ENTRY(priv->entry)->text_size);
 
 	return idx;
 }
@@ -728,18 +742,25 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 	case GDK_KEY_PRESS:
 		if (!iti->editing)
 			break;
-
-		/* Handle escape key */		
+		
 		switch(event->key.keyval) {
+		
+		/* Pass these events back to parent */		
 		case GDK_Escape:
 		case GDK_Return:
 		case GDK_KP_Enter:
 			return FALSE;
-
-		default:
-			gtk_widget_event (GTK_WIDGET (priv->entry), event);
+									
+		default:			
+			/* Check for control key operations */
+			if (event->key.state & GDK_CONTROL_MASK) {
+				return FALSE;
+			}
 			break;
 		}
+
+		/* Handle any events that reach us */
+		gtk_widget_event (GTK_WIDGET (priv->entry), event);
 
 		layout_text (iti);
 		priv->need_text_update = TRUE;
@@ -835,6 +856,15 @@ iti_class_init (NautilusIconTextItemClass *text_item_class)
 			GTK_SIGNAL_OFFSET (NautilusIconTextItemClass, text_changed),
 			gtk_marshal_BOOL__NONE,
 			GTK_TYPE_BOOL, 0);
+
+	iti_signals [TEXT_EDITED] =
+		gtk_signal_new (
+			"text_edited",
+			GTK_RUN_LAST,
+			object_class->type,
+			GTK_SIGNAL_OFFSET (NautilusIconTextItemClass, text_edited),
+			gtk_marshal_NONE__NONE,
+			GTK_TYPE_NONE, 0);
 
 	iti_signals [HEIGHT_CHANGED] =
 		gtk_signal_new (
@@ -1086,13 +1116,14 @@ nautilus_icon_text_item_set_text (NautilusIconTextItem *iti, const char *text)
 
 	priv = iti->priv;
 
-	gtk_entry_set_text (priv->entry, text);
-	iti_entry_activate (GTK_WIDGET(priv->entry), iti);
+	gtk_entry_set_text (GTK_ENTRY(priv->entry), text);
+	gtk_editable_select_region (GTK_EDITABLE (priv->entry), 0, -1);
 
-	priv->need_state_update = TRUE;
+	layout_text (iti);
+
+	priv->need_text_update = TRUE;
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 }
-
 
 /**
  * nautilus_icon_text_item_get_text:
@@ -1112,7 +1143,7 @@ nautilus_icon_text_item_get_text (NautilusIconTextItem *iti)
 	priv = iti->priv;
 
 	if (iti->editing)
-		return gtk_entry_get_text (priv->entry);
+		return gtk_entry_get_text (GTK_ENTRY(priv->entry));
 	else
 		return iti->text;
 }
@@ -1195,3 +1226,18 @@ nautilus_icon_text_item_get_type (void)
 
 	return iti_type;
 }
+
+
+/**
+ * nautilus_icon_text_item_get_margins:
+ * @void:
+ *
+ * Return the x and y margins of th etext item
+ **/
+void
+nautilus_icon_text_item_get_margins (int *x, int *y)
+{
+	*x = MARGIN_X;
+	*y = MARGIN_Y;
+}
+
