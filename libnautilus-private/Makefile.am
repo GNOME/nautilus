@@ -188,8 +188,12 @@ nautilus-marshal-guts.c: nautilus-marshal.list $(GLIB_GENMARSHAL)
 
 $(libnautilus_private_la_OBJECTS): nautilus_metafile_server_idl_stamp $(marshal_sources)
 
+
+schema_in_files =  apps_nautilus_preferences.schemas.in
 schemadir   = $(GCONF_SCHEMA_FILE_DIR)
-schema_DATA = apps_nautilus_preferences.schemas
+schema_DATA = $(schema_in_files:.schemas.in=.schemas)
+
+@INTLTOOL_SCHEMAS_RULE@
 
 # don't do this if we are building in eg. rpm
 install-data-local:
