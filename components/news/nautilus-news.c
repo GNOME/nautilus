@@ -107,7 +107,7 @@ typedef struct {
 	gboolean news_changed;
 	gboolean always_display_title;
 	gboolean configure_mode;
-
+		
 	guint timer_task;
 } News;
 
@@ -170,6 +170,7 @@ typedef struct {
 #define TIME_MARGIN_OFFSET 2
 #define TITLE_FONT_SIZE 18
 #define MINIMUM_DRAW_SIZE 16
+#define MAX_ITEM_COUNT 6
 #define NEWS_BACKGROUND_RGBA 0xFFFFFFFF
 
 /* special prelight values for logo and triangle */
@@ -418,7 +419,7 @@ draw_rss_logo_image (RSSChannelData *channel_data,
 		}
 		v_offset += logo_height + 2;
 
-		/* also, draw the update time in the upper right corner */
+		/* also, draw the update time in the upper right corner if it fits*/
 		if (channel_data->last_update != 0 && !measure_only) {
 			strftime (&time_str[0], 16, "%I:%M %p",	localtime (&channel_data->last_update));
 
@@ -426,11 +427,13 @@ draw_rss_logo_image (RSSChannelData *channel_data,
 	
 			pixbuf_width = gdk_pixbuf_get_width (pixbuf);
 			time_x_pos = pixbuf_width - time_dimensions.width - TIME_MARGIN_OFFSET;
-			time_y_pos = offset + ((gdk_pixbuf_get_height (channel_data->logo_image) - time_dimensions.height) / 2);
-			eel_scalable_font_draw_text (channel_data->owner->font, pixbuf, 
+			if (time_x_pos >= LOGO_LEFT_OFFSET + logo_width) {
+				time_y_pos = offset + ((gdk_pixbuf_get_height (channel_data->logo_image) - time_dimensions.height) / 2);
+				eel_scalable_font_draw_text (channel_data->owner->font, pixbuf, 
 					  time_x_pos, time_y_pos,
 					  NULL, TIME_FONT_SIZE, time_str, strlen (time_str),
 					  EEL_RGB_COLOR_BLACK, EEL_OPACITY_FULLY_OPAQUE);
+			}
 		}
 	}
 	return v_offset;
@@ -574,8 +577,8 @@ draw_rss_items (RSSChannelData *channel_data,
 		item_index += 1;
 		current_item = current_item->next;
 
-		/* limit to five items max, for now */
-		if (item_index > 5) {
+		/* only allow a fixed number of items, max */
+		if (item_index >= MAX_ITEM_COUNT) {
 			break;
 		}
 	}
@@ -660,7 +663,7 @@ nautilus_news_configure_event (GtkWidget *widget, GdkEventConfigure *event, News
 	if (news_data->pixbuf != NULL) {
 		gdk_pixbuf_unref (news_data->pixbuf);
 	}
-	
+		
 	news_data->pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8,
 					    widget->allocation.width, widget->allocation.height);
 	
@@ -786,6 +789,7 @@ nautilus_news_button_release_event (GtkWidget *widget, GdkEventButton *event, Ne
 					selected_item = g_list_nth (channel_data->items, which_item);
 					item_data = (RSSItemData*) selected_item->data;
 					go_to_uri (news_data, item_data->item_url);
+					item_data->new_item = FALSE;
 					return TRUE;
 				}
 			}				
@@ -1101,10 +1105,11 @@ update_size_and_redraw (News* news_data)
 	int display_size;
 	
 	display_size = nautilus_news_update_display (news_data, TRUE);
-	gtk_widget_set_usize (news_data->news_display, -1, display_size);
-	
-	gtk_widget_queue_resize (GTK_WIDGET (news_data->news_display));				
-	gtk_widget_queue_draw (GTK_WIDGET (news_data->news_display));
+	if (display_size != news_data->news_display->allocation.height) {
+		gtk_widget_set_usize (news_data->news_display, -1, display_size);
+		gtk_widget_queue_resize (news_data->news_display);				
+	}
+	gtk_widget_queue_draw (news_data->news_display);
 }
 
 /* utility routine to search for the passed-in url in an item list */
@@ -1817,6 +1822,18 @@ add_channels_to_lists (News* news_data)
 	xmlFreeDoc (channel_doc);
 }
 
+/* handle resizing the news display by recalculating our size if necessary */
+static void
+nautilus_news_size_allocate (GtkWidget *widget, GtkAllocation *allocation, News *news_data)
+{	
+	int line_width;
+		
+	line_width = news_data->news_display->allocation.width - ITEM_POSITION; 
+	if (line_width > 0) {
+		update_size_and_redraw (news_data);
+	}
+}
+
 /* code-saving utility to allocate a left-justified anti-aliased label */
 static GtkWidget *
 news_label_new (const char *label_text)
@@ -2068,7 +2085,10 @@ make_news_view (const char *iid, gpointer callback_data)
 
 	/* set up the update timeout */
 	news->timer_task = gtk_timeout_add (10000, check_for_updates, news);
-	
+
+	/* arrange for notification when we're resized */
+	gtk_signal_connect (GTK_OBJECT (main_container), "size_allocate", nautilus_news_size_allocate, news);
+		
 	/* Create the nautilus view CORBA object. */
         news->view = nautilus_view_new (main_container);
         gtk_signal_connect (GTK_OBJECT (news->view), "destroy", do_destroy, news);

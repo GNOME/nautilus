@@ -1,3 +1,19 @@
+2001-04-25  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/news/nautilus-news.c: (draw_rss_logo_image),
+	(draw_rss_items), (nautilus_news_configure_event),
+	(nautilus_news_button_release_event), (update_size_and_redraw),
+	(nautilus_news_size_allocate), (make_news_view):
+	
+	attach to size_allocate signal to properly resize the panel
+	when the width changes, as well as for the first time when the
+	size isn't allocated yet; don't draw the time when it overlaps
+	the logo, plus other clean-ups.
+	
+	* nautilus-clean.sh:
+	fixed recently introduced problem in nautilus-clean by replacing
+	'==' with '=' as suggested by Darin.
+	
 2001-04-25  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: removed mozilla-mail and mozilla-psm dependency

@@ -111,7 +111,7 @@ for NAME in $AUX_PROGS; do
 	    else
 	        $killcmd "$NAME" > /dev/null 2>&1
 	    fi
-	    if [ "$NAME" == "gconfd-1" ]; then
+	    if [ "$NAME" = "gconfd-1" ]; then
 		rm -f "$HOME/.gconfd/saved_state"
 	    fi
 	fi
