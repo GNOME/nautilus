@@ -77,6 +77,8 @@ icon_DATA =\
 	theme_preview.png \
 	trash-empty.png \
 	trash-full.png \
+	trash-empty-192.png \
+	trash-full-192.png \
 	zoom_body.png \
 	$(NULL)
 
