@@ -304,8 +304,9 @@ file_read_callback (GnomeVFSAsyncHandle *vfs_handle,
 	text_view = NAUTILUS_TEXT_VIEW (callback_data);
 
 	text_view->details->file_size += bytes_read;
-	
-	if (result == GNOME_VFS_OK) {
+
+	/* at EOF, bytes_read is 0 and result is GNOME_VFS_OK */
+	if (result == GNOME_VFS_OK && bytes_read > 0) {
 		/* write the buffer into the text field */
                 display = GTK_TEXT (text_view->details->text_display);
 		if (!GTK_OBJECT_DESTROYED (display)) {

@@ -1,3 +1,14 @@
+2001-04-24  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 7650 (Display flashes forever when Text viewer
+	used in FTP)
+
+	* components/text/nautilus-text-view.c: (file_read_callback):
+	Bail out when bytes_read is 0, instead of trying again forever.
+	This happens at EOF.
+
 2001-04-23  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/news/nautilus-news.c: (mark_new_items),
