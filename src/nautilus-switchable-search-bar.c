@@ -115,7 +115,6 @@ nautilus_switchable_search_bar_new (NautilusWindow *window)
 {
 	GtkWidget *label;
 	GtkWidget *event_box;
-	GtkWidget *vbox;
 	GtkWidget *hbox;
 	GtkWidget *switchable_search_bar;
 	NautilusSwitchableSearchBar *bar;
@@ -128,7 +127,6 @@ nautilus_switchable_search_bar_new (NautilusWindow *window)
 	gtk_container_set_border_width (GTK_CONTAINER (event_box),
 					GNOME_PAD_SMALL);
 	
-	vbox = gtk_vbox_new (0, FALSE);
 	label = gtk_label_new (_("Find:"));
 	gtk_container_add (GTK_CONTAINER (event_box), label);
 	

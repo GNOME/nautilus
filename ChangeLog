@@ -1,3 +1,14 @@
+2001-08-27  Yoann Vandoorselaere  <yoann@mandrakesoft.com>
+
+	* src/nautilus-switchable-search-bar.c (nautilus_switchable_search_bar_new): 
+	Don't leak a GtkBox.
+
+	* src/nautilus-complex-search-bar.c (load_find_them_pixmap_widget): 
+	Do not check pixmap, check pixbuf. This also fix a leak.
+
+	* libnautilus-private/nautilus-link.c (local_set_root_property): 
+	Fix a leak of the xmlProp returned data.
+
 2001-08-27  Darin Adler  <darin@bentspoon.com>
 
 	* helper-utilities/error-dialog/Makefile.am:

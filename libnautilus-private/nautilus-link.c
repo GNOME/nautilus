@@ -237,8 +237,11 @@ local_set_root_property (const char *path,
 	old_value = xmlGetProp (root, key);
 	if (old_value != NULL && strcmp (old_value, value) == 0) {
 		xmlFreeDoc (document);
+		xmlFree (old_value);
 		return TRUE;
 	}
+	
+	xmlFree (old_value);
 
 	/* Change and write the property. */
 	xmlSetProp (root, key, value);
