@@ -160,6 +160,25 @@ nautilus_make_uri_from_input (const char *location)
 	return toreturn;
 }
 
+char *
+nautilus_uri_get_basename (const char *uri)
+{
+	GnomeVFSURI *vfs_uri;
+	char *name;
+
+	/* Make VFS version of URI. */
+	vfs_uri = gnome_vfs_uri_new (uri);
+	if (vfs_uri == NULL) {
+		return NULL;
+	}
+
+	/* Extract name part. */
+	name = gnome_vfs_uri_extract_short_path_name (vfs_uri);
+	gnome_vfs_uri_unref (vfs_uri);
+
+	return name;
+}
+
 gboolean
 nautilus_uri_is_trash (const char *uri)
 {

@@ -1,3 +1,22 @@
+2000-10-18  Pavel Cisler  <pavel@eazel.com>
+
+	* components/tree/nautilus-tree-view.c:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_notify_files_moved),
+	(nautilus_directory_schedule_metadata_copy),
+	(nautilus_directory_schedule_metadata_move),
+	(nautilus_directory_schedule_metadata_remove):
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_uri_get_basename):
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_internal):
+	* src/nautilus-theme-selector.c: (add_theme_to_icons):
+	Clean up calls to gnome_vfs_extract_short_name, remove explicit
+	unescaping because gnome_vfs_extract_short_name now does it.
+	Eliminate some copy-paste technology, creating a new call
+	nautilus_uri_get_basename.
+
 2000-10-18  Robey Pointer  <robey@eazel.com>
 
 	* components/services/login/nautilus-view/nautilus-change-password-

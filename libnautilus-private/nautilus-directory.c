@@ -691,27 +691,6 @@ uri_get_directory_part (const char *uri)
 	return directory_uri;
 }
 
-static char *
-uri_get_basename (const char *uri)
-{
-	GnomeVFSURI *vfs_uri;
-	char *escaped_name, *name;
-
-	/* Make VFS version of URI. */
-	vfs_uri = gnome_vfs_uri_new (uri);
-	if (vfs_uri == NULL) {
-		return NULL;
-	}
-
-	/* Extract name part. */
-	escaped_name = gnome_vfs_uri_extract_short_path_name (vfs_uri);
-	gnome_vfs_uri_unref (vfs_uri);
-	name = gnome_vfs_unescape_string (escaped_name, NULL);
-	g_free (escaped_name);
-
-	return name;
-}
-
 /* Return a directory object for this one's parent. */
 static NautilusDirectory *
 get_parent_directory (const char *uri)
@@ -1000,7 +979,7 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 				nautilus_directory_remove_file (old_directory, file);
 
 				/* Update the name. */
-				name = uri_get_basename (pair->to_uri);
+				name = nautilus_uri_get_basename (pair->to_uri);
 				nautilus_file_update_name (file, name);
 				g_free (name);
 				
@@ -1053,8 +1032,8 @@ nautilus_directory_schedule_metadata_copy (GList *uri_pairs)
 		source_directory = get_parent_directory (pair->from_uri);
 		destination_directory = get_parent_directory (pair->to_uri);
 		
-		source_file_name = uri_get_basename (pair->from_uri);
-		destination_file_name = uri_get_basename (pair->to_uri);
+		source_file_name = nautilus_uri_get_basename (pair->from_uri);
+		destination_file_name = nautilus_uri_get_basename (pair->to_uri);
 		
 		nautilus_directory_copy_file_metadata (source_directory,
 						       source_file_name,
@@ -1083,8 +1062,8 @@ nautilus_directory_schedule_metadata_move (GList *uri_pairs)
 		source_directory = get_parent_directory (pair->from_uri);
 		destination_directory = get_parent_directory (pair->to_uri);
 		
-		source_file_name = uri_get_basename (pair->from_uri);
-		destination_file_name = uri_get_basename (pair->to_uri);
+		source_file_name = nautilus_uri_get_basename (pair->from_uri);
+		destination_file_name = nautilus_uri_get_basename (pair->to_uri);
 		
 		nautilus_directory_copy_file_metadata (source_directory,
 						       source_file_name,
@@ -1113,7 +1092,7 @@ nautilus_directory_schedule_metadata_remove (GList *uris)
 		uri = (const char *) p->data;
 
 		directory = get_parent_directory (uri);
-		file_name = uri_get_basename (uri);
+		file_name = nautilus_uri_get_basename (uri);
 		
 		nautilus_directory_remove_file_metadata (directory,
 							 file_name);

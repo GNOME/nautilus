@@ -43,6 +43,7 @@ char *                  nautilus_make_uri_canonical         (const char         
 gboolean                nautilus_uri_is_canonical_uri       (const char                *uri);
 gboolean                nautilus_uris_match                 (const char                *uri_1,
 							     const char                *uri_2);
+char *			nautilus_uri_get_basename	    (const char 	       *uri);
 
 /* FIXME bugzilla.eazel.com 2424: 
  * This is the same as gnome-libs g_concat_dir_and_file except

@@ -138,7 +138,6 @@ static void         notify_done_loading    (NautilusTreeView *view,
 static void         notify_node_seen       (NautilusTreeView *view, 
 					    NautilusTreeNode *node);
 
-static char         *nautilus_tree_view_uri_to_name      (const char       *uri);
 static NautilusCTreeNode *nautilus_tree_view_find_parent_node (NautilusTreeView *view, 
 							  const char       *uri);
 
@@ -574,7 +573,7 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 	if (view_node != NULL) {
 
-		name = nautilus_tree_view_uri_to_name (uri);
+		name = nautilus_uri_get_basename (uri);
 	
 		nautilus_icon_factory_get_pixmap_and_mask_for_file (file,
 								    NULL,
@@ -1427,22 +1426,6 @@ nautilus_tree_view_update_all_icons (NautilusTreeView *view)
 					 view);
 }
 
-
-static char *
-nautilus_tree_view_uri_to_name (const char *uri)
-{
-	GnomeVFSURI *gnome_vfs_uri;
-	char *escaped_name;
-	char *name;
-	
-	gnome_vfs_uri = gnome_vfs_uri_new (uri);
-	escaped_name = gnome_vfs_uri_extract_short_path_name (gnome_vfs_uri);
-	gnome_vfs_uri_unref (gnome_vfs_uri);
-	name = gnome_vfs_unescape_string_for_display (escaped_name);
-	g_free (escaped_name);
-
-	return name;
-}
 
 static NautilusCTreeNode *
 nautilus_tree_view_find_parent_node (NautilusTreeView *view, 

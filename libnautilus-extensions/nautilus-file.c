@@ -269,7 +269,7 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 	GnomeVFSURI *vfs_uri, *directory_vfs_uri;
 	char *directory_uri;
 	NautilusDirectory *directory;
-	char *file_name_escaped, *file_name;
+	char *file_name;
 	NautilusFile *file;
 
 	g_return_val_if_fail (uri != NULL, NULL);
@@ -280,9 +280,7 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 	file_name = NULL;
 
 	if (vfs_uri != NULL) {
-		file_name_escaped = gnome_vfs_uri_extract_short_path_name (vfs_uri);
-		file_name = gnome_vfs_unescape_string (file_name_escaped, NULL);
-		g_free (file_name_escaped);
+		file_name = gnome_vfs_uri_extract_short_name (vfs_uri);
 
 		/* Couldn't parse a name out of the URI: the URI must be bogus,
 		 * so we'll treat it like the case where gnome_vfs_uri couldn't

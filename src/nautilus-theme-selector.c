@@ -334,27 +334,6 @@ nautilus_theme_selector_delete_event_callback (GtkWidget *widget,
 }
 
 
-static char *
-uri_get_basename (const char *uri)
-{
-	GnomeVFSURI *vfs_uri;
-	char *escaped_name, *name;
-
-	/* Make VFS version of URI. */
-	vfs_uri = gnome_vfs_uri_new (uri);
-	if (vfs_uri == NULL) {
-		return NULL;
-	}
-
-	/* Extract name part. */
-	escaped_name = gnome_vfs_uri_extract_short_path_name (vfs_uri);
-	gnome_vfs_uri_unref (vfs_uri);
-	name = gnome_vfs_unescape_string (escaped_name, NULL);
-	g_free (escaped_name);
-
-	return name;
-}
-
 /* callback to add a newly selected theme to the user's theme collection */
 static void
 add_theme_to_icons (GtkWidget *widget, gpointer *data)
@@ -373,7 +352,7 @@ add_theme_to_icons (GtkWidget *widget, gpointer *data)
 	theme_selector->details->dialog = NULL;
 		
 	/* make sure it's a valid theme directory  - check for xml file */
-	theme_name = uri_get_basename (theme_path);
+	theme_name = nautilus_uri_get_basename (theme_path);
 	
 	temp_path = nautilus_make_path (theme_path, theme_name);
 	xml_path = g_strconcat (temp_path, ".xml", NULL);
