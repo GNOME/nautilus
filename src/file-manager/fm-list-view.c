@@ -123,6 +123,8 @@ static void              fm_list_view_begin_adding_files          (FMDirectoryVi
 static void              fm_list_view_begin_loading               (FMDirectoryView    *view);
 static void              fm_list_view_bump_zoom_level             (FMDirectoryView    *view,
 								   int                 zoom_increment);
+static void              fm_list_view_zoom_to_level               (FMDirectoryView    *view,
+								   int                 zoom_level);
 static void              fm_list_view_restore_default_zoom_level  (FMDirectoryView    *view);
 static gboolean          fm_list_view_can_zoom_in                 (FMDirectoryView    *view);
 static gboolean          fm_list_view_can_zoom_out                (FMDirectoryView    *view);
@@ -171,6 +173,7 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_directory_view_class->begin_adding_files = fm_list_view_begin_adding_files;
 	fm_directory_view_class->begin_loading = fm_list_view_begin_loading;
 	fm_directory_view_class->bump_zoom_level = fm_list_view_bump_zoom_level;
+	fm_directory_view_class->zoom_to_level = fm_list_view_zoom_to_level;
 	fm_directory_view_class->restore_default_zoom_level = fm_list_view_restore_default_zoom_level;
 	fm_directory_view_class->can_zoom_in = fm_list_view_can_zoom_in;
 	fm_directory_view_class->can_zoom_out = fm_list_view_can_zoom_out;
@@ -853,6 +856,18 @@ fm_list_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
 }
 
 static void
+fm_list_view_zoom_to_level (FMDirectoryView *view, int zoom_level)
+{
+	FMListView *list_view;
+
+	g_return_if_fail (FM_IS_LIST_VIEW (view));
+
+	list_view = FM_LIST_VIEW (view);
+
+	fm_list_view_set_zoom_level (list_view, zoom_level);
+}
+
+static void
 fm_list_view_restore_default_zoom_level (FMDirectoryView *view)
 {
 	FMListView *list_view;
@@ -861,7 +876,8 @@ fm_list_view_restore_default_zoom_level (FMDirectoryView *view)
 
 	list_view = FM_LIST_VIEW (view);
 
-	fm_list_view_set_zoom_level (list_view, NAUTILUS_ZOOM_LEVEL_STANDARD);
+	/* The list view is using NAUTILUS_ZOOM_LEVEL_SMALLER as default */
+	fm_list_view_set_zoom_level (list_view, NAUTILUS_ZOOM_LEVEL_SMALLER);
 }
 
 static gboolean 
