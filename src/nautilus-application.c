@@ -90,9 +90,6 @@ static GList *nautilus_application_window_list;
 static gboolean need_to_show_first_time_druid     (void);
 static void     desktop_changed_callback          (gpointer                  user_data);
 static void     desktop_location_changed_callback (gpointer                  user_data);
-static void     volume_mounted_callback           (NautilusVolumeMonitor    *monitor,
-						   NautilusVolume           *volume,
-						   NautilusApplication      *application);
 static void     volume_unmounted_callback         (NautilusVolumeMonitor    *monitor,
 						   NautilusVolume           *volume,
 						   NautilusApplication      *application);
@@ -148,9 +145,9 @@ nautilus_application_instance_init (NautilusApplication *application)
 	/* Create an undo manager */
 	application->undo_manager = nautilus_undo_manager_new ();
 
-	/* Watch for volume mounts so we can restore open windows */
-	g_signal_connect_object (nautilus_volume_monitor_get (), "volume_mounted",
-				 G_CALLBACK (volume_mounted_callback), application, 0);
+	/* Watch for volume mounts so we can restore open windows
+	 * This used to be for showing new window on mount, but is not
+	 * used anymore */
 
 	/* Watch for volume unmounts so we can close open windows */
 	g_signal_connect_object (nautilus_volume_monitor_get (), "volume_unmounted",
@@ -917,43 +914,6 @@ need_to_show_first_time_druid (void)
 	}
 	g_free (user_directory); 
 	return result;
-}
-
-/* Apps like redhat-config-packages that are using the CD-ROM
- * directly, can grab ownership of the _NAUTILUS_DISABLE_MOUNT_WINDOW
- * selection to temporarily disable the new window behavior.
- */
-static gboolean
-check_mount_window_disabled (void)
-{
-        Atom selection_atom = gdk_x11_get_xatom_by_name ("_NAUTILUS_DISABLE_MOUNT_WINDOW");
-
-        if (XGetSelectionOwner (GDK_DISPLAY(), selection_atom) != None)
-                return TRUE;
-	else
-		return FALSE;
-}
-
-static void
-volume_mounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
-			 NautilusApplication *application)
-{
-	NautilusWindow *window;
-	char *uri;
-
-	if (volume == NULL || application == NULL) {
-		return;
-	}
-
-	/* Open a window to the CD if the user has set that preference. */
-	if (nautilus_volume_get_device_type (volume) == NAUTILUS_DEVICE_CDROM_DRIVE
-		&& eel_gconf_get_boolean( "/apps/magicdev/do_fileman_window")
-	        && !check_mount_window_disabled ()) {
-		window = nautilus_application_create_window (application, gdk_screen_get_default ());
-		uri = gnome_vfs_get_uri_from_local_path (nautilus_volume_get_mount_path (volume));
-		nautilus_window_go_to (window, uri);
-		g_free (uri);
-	}
 }
 
 static gboolean
