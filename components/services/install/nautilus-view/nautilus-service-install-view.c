@@ -779,29 +779,73 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 	show_dialog_and_run_away (view, message);
 }
 
-/* FIXME bugzilla.eazel.com 2587:  need to show whole dep tree here */
+/* recursive descent of a package and its dependencies, building up a GString of errors */
+static void
+dig_up_errors (const PackageData *package, GString *messages)
+{
+	GList *iter;
+
+	switch (package->status) {
+	case PACKAGE_DEPENDENCY_FAIL:
+		g_string_sprintfa (messages, _("%s %s: failed dependency check\n"), package->name, package->version);
+		break;
+	case PACKAGE_CANNOT_OPEN:
+		g_string_sprintfa (messages, _("%s %s: couldn't find this package\n"), package->name, package->version);
+		break;
+	case PACKAGE_SOURCE_NOT_SUPPORTED:
+		g_string_sprintfa (messages, _("%s %s: source package (not supported)\n"), package->name, package->version);
+		break;
+	case PACKAGE_BREAKS_DEPENDENCY:
+		g_string_sprintfa (messages, _("%s %s: would break other dependencies\n"), package->name, package->version);
+		break;
+	case PACKAGE_FILE_CONFLICT:
+		g_string_sprintfa (messages, _("%s %s: conflicts with installd files\n"), package->name, package->version);
+		break;
+	case PACKAGE_ALREADY_INSTALLED:
+		g_string_sprintfa (messages, _("%s %s: already installed\n"), package->name, package->version);
+		break;
+	default:
+		break;
+	}
+
+	for (iter = g_list_first (package->hard_depends); iter; iter = g_list_next (iter)) {
+		dig_up_errors ((PackageData *) (iter->data), messages);
+	}
+	for (iter = g_list_first (package->soft_depends); iter; iter = g_list_next (iter)) {
+		dig_up_errors ((PackageData *) (iter->data), messages);
+	}
+	for (iter = g_list_first (package->breaks); iter; iter = g_list_next (iter)) {
+		dig_up_errors ((PackageData *) (iter->data), messages);
+	}
+}
+
 static void
 nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pack, NautilusServiceInstallView *view)
 {
-	char *message;
+	GString *message;
 
 	g_assert (NAUTILUS_IS_SERVICE_INSTALL_VIEW (view));
 
 	turn_cylon_off (view, 0.0);
+	message = g_string_new ("");
 
 	/* override the "success" result for install_done signal */
 	view->details->failure = TRUE;
 
 	if (pack->status == PACKAGE_ALREADY_INSTALLED) {
-		message = _("This package has already been installed.");
-		show_overall_feedback (view, message);
-		show_dialog_and_run_away (view, message);
+		message = g_string_append (message, _("This package has already been installed."));
+		show_overall_feedback (view, message->str);
+		show_dialog_and_run_away (view, message->str);
+		g_string_free (message, TRUE);
 		return;
 	}
 
-	message = _("Installation failed!\n(Probably a dependency issue.)");
-	show_overall_feedback (view, message);
-	show_dialog_and_run_away (view, message);
+	g_string_sprintfa (message, _("Installation Failed!\n\n"));
+	show_overall_feedback (view, message->str);
+
+	dig_up_errors (pack, message);
+	show_dialog_and_run_away (view, message->str);
+	g_string_free (message, TRUE);
 }
 
 
