@@ -4,7 +4,7 @@
 	don't react to external emblem changes)
 
 	* src/file-manager/fm-properties-window.c: 
-	(create_emblems_page): Added file-changes signal
+	(create_emblems_page): Added file-changed signal
 	handler so checkboxes react to external emblem changes.
 	Also changed page to use a GtkTable rather than four 
 	nested boxes; this keeps all the cells the same size 
