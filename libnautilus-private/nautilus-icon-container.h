@@ -121,6 +121,8 @@ typedef struct {
 						   NautilusIconData *data,
 						   char **editable_text,
 						   char **additional_text);
+	char *       (* get_icon_description)     (NautilusIconContainer *container,
+						   NautilusIconData *data);
 	int          (* compare_icons)            (NautilusIconContainer *container,
 						   NautilusIconData *icon_a,
 						   NautilusIconData *icon_b);
@@ -266,5 +268,7 @@ void              nautilus_icon_container_set_margins                   (Nautilu
 									 int                     bottom_margin);
 void              nautilus_icon_container_set_use_drop_shadows          (NautilusIconContainer  *container,
 									 gboolean                use_drop_shadows);
+char*             nautilus_icon_container_get_icon_description          (NautilusIconContainer  *container,
+                                                                         NautilusIconData       *data);
 
 #endif /* NAUTILUS_ICON_CONTAINER_H */

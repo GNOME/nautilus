@@ -1,3 +1,26 @@
+2003-12-03  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_accessible_action_set_description): Return
+	TRUE when function succeeds.
+	(nautilus_icon_canvas_item_accessible_get_name): If name has been set 
+	using atk_object_set_name return that.
+	(nautilus_icon_canvas_item_accessible_finalize): Free image description
+	or description if exists.
+	(nautilus_icon_canvas_item_accessible_get_image_description): Return
+	icon description, if it exists.
+	(nautilus_icon_canvas_item_accessible_set_image-description):
+	Implement this function.
+
+	* libnautilus-private/nautrilus-icon-container.[ch]:
+	(nautilus_icon_container_get_icon_description): New function.
+
+	* src/file-manager/fm-icon-container.c:
+	(fm_icon_container_get_icon_description): New function to implement
+	NautilusIconContainerClass's get_icon_description.
+
+	This fixes part of bug #126183.
+
 2003-12-01  David Bordoley  <bordoley@msu.edu>
 
 	* src/nautilus-application.c: (nautilus_application_close_parent_windows):

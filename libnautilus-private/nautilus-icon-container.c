@@ -6416,6 +6416,28 @@ nautilus_icon_container_set_font_size_table (NautilusIconContainer *container,
 	}
 }
 
+/**
+ * nautilus_icon_container_get_icon_description
+ * @container: An icon container widget.
+ * @data: Icon data 
+ * 
+ * Gets the description for the icon. This function may return NULL.
+ **/
+char*
+nautilus_icon_container_get_icon_description (NautilusIconContainer *container,
+				              NautilusIconData      *data)
+{
+	NautilusIconContainerClass *klass;
+
+	klass = NAUTILUS_ICON_CONTAINER_GET_CLASS (container);
+
+	if (klass->get_icon_description) {
+		return klass->get_icon_description (container, data);
+	} else {
+		return NULL;
+	}
+}
+
 /* NautilusIconContainerAccessible */
 
 static NautilusIconContainerAccessiblePrivate *

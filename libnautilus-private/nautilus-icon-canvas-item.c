@@ -26,6 +26,8 @@
 #include <math.h>
 #include "nautilus-icon-canvas-item.h"
 
+#include <libgnome/gnome-i18n.h>
+
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-factory.h"
@@ -142,6 +144,8 @@ enum {
 
 typedef struct {
         char *action_descriptions[LAST_ACTION];
+	char *image_description;
+	char *description;
 } NautilusIconCanvasItemAccessiblePrivate;
 
 typedef struct {
@@ -2148,7 +2152,7 @@ nautilus_icon_canvas_item_accessible_action_set_description (AtkAction *accessib
 	}
 	priv->action_descriptions[i] = g_strdup (description);
 
-	return FALSE;
+	return TRUE;
 }
 
 static void
@@ -2167,11 +2171,14 @@ nautilus_icon_canvas_item_accessible_get_name (AtkObject *accessible)
 {
 	NautilusIconCanvasItem *item;
 
+	if (accessible->name) {
+		return accessible->name;
+	}
+
 	item = eel_accessibility_get_gobject (accessible);
 	if (!item) {
 		return NULL;
 	}
-
 	return item->details->editable_text;
 }
 
@@ -2301,16 +2308,16 @@ nautilus_icon_canvas_item_accessible_initialize (AtkObject *accessible,
 static void
 nautilus_icon_canvas_item_accessible_finalize (GObject *object)
 {
-        NautilusIconCanvasItemAccessiblePrivate *priv;
-        int i;
+	NautilusIconCanvasItemAccessiblePrivate *priv;
+	int i;
 
-        priv = accessible_get_priv (ATK_OBJECT (object));
+	priv = accessible_get_priv (ATK_OBJECT (object));
 
-        for (i = 0; i < LAST_ACTION; i++) {
-                if (priv->action_descriptions[i]) {
-                        g_free (priv->action_descriptions[i]);
-                }
-        }
+	for (i = 0; i < LAST_ACTION; i++) {
+		g_free (priv->action_descriptions[i]);
+	}
+	g_free (priv->image_description);
+	g_free (priv->description);
 
         g_free (priv);
 
@@ -2340,9 +2347,28 @@ static G_CONST_RETURN gchar *
 nautilus_icon_canvas_item_accessible_get_image_description
 	(AtkImage *image)
 {
-	return _("file icon");
-}
+	NautilusIconCanvasItemAccessiblePrivate *priv;
+	NautilusIconCanvasItem *item;
+	NautilusIcon *icon;
+	NautilusIconContainer *container;
+	char *description;
 
+	priv = accessible_get_priv (ATK_OBJECT (image));
+	if (priv->image_description) {
+		return priv->image_description;
+	} else {
+		item = eel_accessibility_get_gobject (ATK_OBJECT (image));
+		if (item == NULL) {
+			return NULL;
+		}
+		icon = item->user_data;
+		container = NAUTILUS_ICON_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
+		description = nautilus_icon_container_get_icon_description (container, icon->data);
+		g_free (priv->description);
+		priv->description = description;
+		return priv->description;
+	}
+}
 
 static void
 nautilus_icon_canvas_item_accessible_get_image_size
@@ -2416,8 +2442,14 @@ nautilus_icon_canvas_item_accessible_set_image_description
 	(AtkImage    *image,
 	 const gchar *description)
 {
-	g_warning (G_STRLOC "this api seems broken");
-	return FALSE;
+	NautilusIconCanvasItemAccessiblePrivate *priv;
+
+	priv = accessible_get_priv (ATK_OBJECT (image));
+
+	g_free (priv->image_description);
+	priv->image_description = g_strdup (description);
+
+	return TRUE;
 }
 
 static void
