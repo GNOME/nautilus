@@ -1,3 +1,18 @@
+2000-09-05  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_draw_text),
+	(nautilus_scalable_font_draw_text_lines_with_dimensions),
+	(nautilus_scalable_font_draw_text_lines),
+	(initialize_global_stuff_if_needed):
+	Add support for rendering text on pixbufs without alpha channels.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c: (embed_text):
+	No longer need to create a pixbuf with alpha channel duplicate.
+	
+	* test/test-nautilus-font.c: (main):
+	Paint the pixbuf white before drawing stuff to it.		
+	
 2000-09-05  Andy Hertzfeld  <andy@eazel.com>
 
 	* icons/arlo/sidebar_tab_pieces/Makefile.am:

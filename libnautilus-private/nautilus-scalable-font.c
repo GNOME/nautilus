@@ -706,13 +706,12 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 
 	ArtRender	*art_render;
 	ArtPixMaxDepth	art_color_array[3];
-
+	ArtAlphaType	alpha_type;
 	ArtIRect	area;
 	ArtIRect	glyph_area;
 
 	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
 	g_return_if_fail (destination_pixbuf != NULL);
-	g_return_if_fail (gdk_pixbuf_get_has_alpha (destination_pixbuf));
 	g_return_if_fail (font_width > 0);
 	g_return_if_fail (font_height > 0);
 
@@ -746,6 +745,10 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
    	glyph_xy[0] = 0;
    	glyph_xy[1] = 0;
 
+	alpha_type = gdk_pixbuf_get_has_alpha (destination_pixbuf) ? 
+		ART_ALPHA_SEPARATE : 
+		ART_ALPHA_NONE;
+
 	art_render = art_render_new (0,
 				     0,
 				     pixbuf_width,
@@ -754,7 +757,7 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 				     pixbuf_rowstride,
 				     3,
 				     8,
-				     ART_ALPHA_SEPARATE,
+				     alpha_type,
 				     NULL);
 
 	art_color_array[0] = ART_PIX_MAX_FROM_8 (NAUTILUS_RGBA_COLOR_GET_R (color));
@@ -905,7 +908,6 @@ nautilus_scalable_font_draw_text_lines_with_dimensions (const NautilusScalableFo
 
 	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
 	g_return_if_fail (destination_pixbuf != NULL);
-	g_return_if_fail (gdk_pixbuf_get_has_alpha (destination_pixbuf));
 	g_return_if_fail (clip_area != NULL);
 	g_return_if_fail (font_width > 0);
 	g_return_if_fail (font_height > 0);
@@ -1022,7 +1024,6 @@ nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
 
 	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
 	g_return_if_fail (destination_pixbuf != NULL);
-	g_return_if_fail (gdk_pixbuf_get_has_alpha (destination_pixbuf));
 	g_return_if_fail (clip_area != NULL);
 	g_return_if_fail (font_width > 0);
 	g_return_if_fail (font_height > 0);
@@ -1308,6 +1309,7 @@ initialize_global_stuff_if_needed (void)
 	if (fonts_initialized == FALSE) {
 		fonts_initialized = TRUE;
 		global_font_family_table = g_hash_table_new (g_str_hash, g_str_equal);
+
 		font_family_table_add_fonts (global_font_family_table, "/usr/share/fonts/default/Type1");
 
 		g_atexit (font_family_table_at_exit_destructor);

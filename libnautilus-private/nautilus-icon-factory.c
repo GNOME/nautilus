@@ -2245,19 +2245,7 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 		 */
 		font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", "medium", NULL, NULL));
 
-		/* We need to feed NautilusScalableFont a pixbuf with alpha */
-		if (gdk_pixbuf_get_has_alpha (pixbuf_without_text)) {
-			pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
-		}
-		else {
-			GdkPixbuf *copy_without_alpha;
-
-			copy_without_alpha = gdk_pixbuf_copy (pixbuf_without_text);
-
-			pixbuf_with_text = gdk_pixbuf_add_alpha (copy_without_alpha, FALSE, 0, 0, 0);
-
-			gdk_pixbuf_unref (copy_without_alpha);
-		}
+		pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
 		
 		nautilus_scalable_font_draw_text_lines (font,
 							pixbuf_with_text,

@@ -46,6 +46,8 @@ main (int argc, char* argv[])
 	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, pixbuf_width, pixbuf_height);
 	g_assert (pixbuf != NULL);
 
+	nautilus_gdk_pixbuf_fill_rectangle_with_color (pixbuf, NULL, NAUTILUS_RGBA_COLOR_PACK (255, 255, 255, 0));
+
 	/* Measure some text lines */
 	{
 		guint	num_text_lines;
