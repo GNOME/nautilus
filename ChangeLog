@@ -1,3 +1,22 @@
+2000-10-13  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-throbber.c: (bump_throbber_frame),
+	(nautilus_throbber_load_images):
+	added support for throbbers with a different number of frames
+	by adding a frame count fetched from the theme data
+	
+	* configure.in:
+	* icons/eazel/Makefile.am:
+	* icons/eazel/throbber/.cvsignore:
+	* icons/eazel/throbber/Makefile.am:
+	* icons/eazel/throbber/*.png:
+	added a eazel logo throbber to the eazel theme
+	
+	* icons/eazel/eazel.xml:
+	* icons/default.xml:
+	* icons/gnome/gnome.xml:
+	added the appropriate frame count to the relevant themes.
+
 2000-10-13  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-object.c:

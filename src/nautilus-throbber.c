@@ -287,7 +287,7 @@ static int
 bump_throbber_frame (NautilusThrobber *throbber)
 {
 	throbber->details->current_frame += 1;
-	if (throbber->details->current_frame > throbber->details->max_frame) {
+	if (throbber->details->current_frame > throbber->details->max_frame - 1) {
 		throbber->details->current_frame = 0;
 	}
 
@@ -389,30 +389,35 @@ static void
 nautilus_throbber_load_images (NautilusThrobber *throbber)
 {
 	int index;
-	char *throbber_frame_name;
+	char *throbber_frame_name, *frames;
 	GdkPixbuf *pixbuf;
 	
 	nautilus_throbber_unload_images (throbber);
 
 	throbber->details->quiescent_pixbuf = load_themed_image ("throbber/rest.png", throbber->details->small_mode);
 	
-	/* images are of the form throbber/001.png, 002.png, etc, so load them into a list
-	 * until we get an error.
-	 */
-	throbber->details->max_frame = -1;
+	/* images are of the form throbber/001.png, 002.png, etc, so load them into a list */
+
+	frames = nautilus_theme_get_theme_data ("throbber", "FRAME_COUNT");
+	if (frames != NULL) {
+		throbber->details->max_frame = atoi (frames);
+		g_free (frames);
+	} else {
+		throbber->details->max_frame = 16;
+	}
+	
 	index = 1;
-	while (TRUE) {
+	while (index <= throbber->details->max_frame) {
 		throbber_frame_name = make_throbber_frame_name (index);
 		pixbuf = load_themed_image (throbber_frame_name, throbber->details->small_mode);
 		g_free (throbber_frame_name);
-		if (pixbuf == NULL)
+		if (pixbuf == NULL) {
+			throbber->details->max_frame = index - 1;
 			break;
-	
+		}
 		throbber->details->image_list = g_list_append (throbber->details->image_list, pixbuf);
 		index += 1;
-		throbber->details->max_frame += 1;	
-	}
-	
+	}	
 }
 
 /* handle button presses by emitting the location changed signal */
