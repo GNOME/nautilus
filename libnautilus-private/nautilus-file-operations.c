@@ -1731,6 +1731,9 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		}
 
 		source_uri = gnome_vfs_uri_new ((const char *) p->data);
+		if (source_uri == NULL) {
+			continue;
+		}
 		source_dir_uri = gnome_vfs_uri_get_parent (source_uri);
 		target_uri = NULL;
 		if (target_dir != NULL) {
