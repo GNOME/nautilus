@@ -123,13 +123,13 @@ druid_finished (GtkWidget *druid_page)
 	
 	switch (last_signup_choice) {
 		case 0:
-			signup_uris[0] = "eazel:registerinfo";
+			signup_uris[0] = "eazel:info";
 			break;
 		case 1:
 			signup_uris[0] = "eazel:register";
 			break;
 		case 2:
-			signup_uris[0] = "eazel:login";
+			signup_uris[0] = "eazel:summary";
 			break;
 		case 3:
 		default:

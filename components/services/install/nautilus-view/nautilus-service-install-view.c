@@ -49,7 +49,7 @@
 #include <errno.h>
 #include <sys/stat.h>
 
-#define NEXT_VIEW				"eazel-summary:"
+#define NEXT_SERVICE_VIEW				"eazel-summary:"
 
 static void       nautilus_service_install_view_initialize_class (NautilusServiceInstallViewClass	*klass);
 static void       nautilus_service_install_view_initialize       (NautilusServiceInstallView		*view);
@@ -425,7 +425,6 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView	*view,
 	show_overall_feedback (view, "Waiting for downloads");
 	generate_current_progress (view, "Downloading glib libraries ...");		
 	fake_overall_install_progress (view);
-	go_to_uri (view->details->nautilus_view, NEXT_VIEW);
 
 }
 
@@ -459,6 +458,8 @@ service_install_load_location_callback (NautilusView			*nautilus_view,
 	nautilus_service_install_view_load_uri (view, location);
 	
 	nautilus_view_report_load_complete (nautilus_view);
+
+	go_to_uri (nautilus_view, NEXT_SERVICE_VIEW);
 
 }
 

@@ -1,3 +1,19 @@
+2000-08-22  J Shane Culpepper  <pepper@eazel.com>
+
+	 
+	components/services/install/nautilus-view/nautilus-service-install-
+	view.c: (nautilus_service_install_view_update_from_uri),
+	(service_install_load_location_callback):
+	 
+	components/services/startup/nautilus-view/nautilus-service-startup-
+	view.c: (generate_startup_form),
+	(nautilus_service_startup_view_load_uri),
+	(service_load_location_callback):
+	* src/nautilus-first-time-druid.c: (druid_finished):
+
+	Fixing the go_to_uri problem so that the first time druid works and
+	eazel: redirects work more consistently.
+
 2000-08-21  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-link.c:

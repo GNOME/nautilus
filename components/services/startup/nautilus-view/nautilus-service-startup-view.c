@@ -54,6 +54,7 @@
 
 struct _NautilusServiceStartupViewDetails {
 	char		*uri;
+	char		*redirect_location;
 	NautilusView	*nautilus_view;
 	GtkWidget	*form;
 	GtkWidget	*form_title;
@@ -62,9 +63,7 @@ struct _NautilusServiceStartupViewDetails {
 };
 
 #define STARTUP_VIEW_DEFAULT_BACKGROUND_COLOR  "rgb:0000/6666/6666"
-#define SERVICE_DOMAIN_NAME		       "testmachine.eazel.com"
-
-
+#define NEXT_SERVICE_URL		       "eazel-summary:"
 
 static void       nautilus_service_startup_view_initialize_class (NautilusServiceStartupViewClass *klass);
 static void       nautilus_service_startup_view_initialize       (NautilusServiceStartupView      *view);
@@ -151,7 +150,7 @@ generate_startup_form (NautilusServiceStartupView	*view)
 			show_feedback (view->details->feedback_text, "Retreiving services list ...");
 		}
 		if (counter == 20000) {
-			go_to_uri (view->details->nautilus_view, "eazel-login:");
+			view->details->redirect_location = g_strdup_printf (NEXT_SERVICE_URL);
 		}
 		else {
 			gtk_progress_bar_update (GTK_PROGRESS_BAR (view->details->progress_bar), value);
@@ -257,25 +256,28 @@ nautilus_service_startup_view_load_uri (NautilusServiceStartupView	*view,
 		generate_startup_form (view);
 	}
 	else if (is_location (document_name, "login")) {
-		go_to_uri (view->details->nautilus_view, "eazel-login:");
+		view->details->redirect_location = g_strdup_printf ("eazel-login:");
 	}
 	else if (is_location(document_name, "summary")) {
-		go_to_uri (view->details->nautilus_view, "eazel-summary:");
+		view->details->redirect_location = g_strdup_printf ("eazel-summary:");
 	}
 	else if (is_location(document_name, "inventory")) {
-		go_to_uri (view->details->nautilus_view, "eazel-inventory:");
+		view->details->redirect_location = g_strdup_printf ("eazel-inventory:");
 	}
 	else if (is_location(document_name, "install")) {
-		go_to_uri (view->details->nautilus_view, "eazel-install:");
+		view->details->redirect_location = g_strdup_printf ("eazel-install:");
 	}
 	else if (is_location(document_name, "time")) {
-		go_to_uri (view->details->nautilus_view, "eazel-time:");
+		view->details->redirect_location = g_strdup_printf ("eazel-time:");
 	}
 	else if (is_location(document_name, "vault")) {
-		go_to_uri (view->details->nautilus_view, "eazel-vault:");
+		view->details->redirect_location = g_strdup_printf ("eazel-vault:");
 	}
 	else if (is_location(document_name, "register")) {
-		go_to_uri (view->details->nautilus_view, "http://www.eazel.com");
+		go_to_uri (view->details->nautilus_view, "http://www.eazel.com/registration.html");
+	}
+	else if (is_location(document_name, "info")) {
+		go_to_uri (view->details->nautilus_view, "http://www.eazel.com/services.html");
 	}
 	else {
 		generate_startup_form (view); /* eventually, this should be setup_bad_location_form */
@@ -290,5 +292,6 @@ service_load_location_callback (NautilusView			*view,
 	nautilus_view_report_load_underway (services->details->nautilus_view);
 	nautilus_service_startup_view_load_uri (services, location);
 	nautilus_view_report_load_complete (services->details->nautilus_view);
+	go_to_uri (view, services->details->redirect_location);
 }
 
