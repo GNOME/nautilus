@@ -2,7 +2,7 @@
 
 INCLUDES = 			\
 	-I$(includedir)		\
-	-I$(top_srcdir)/intl
+	-I$(top_srcdir)/intl -I$(top_builddir)/intl
 
 
 LDADD = \
