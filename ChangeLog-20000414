@@ -1,3 +1,19 @@
+2000-04-10	John Sullivan <sullivan@eazel.com>
+
+	* libnautilus/nautilus-list.c:
+	(nautilus_list_initialize_class), (nautilus_list_initialize),
+	(select_or_unselect_row_callback), (emit_selection_changed),
+	(select_range), (select_row), (select_row_from_mouse), 
+	(row_set_selected), (select_row_unselect_others), 
+	(nautilus_list_select_all), (nautilus_list_unselect_all), 
+	(nautilus_list_button_press), (nautilus_list_keyboard_move_to),
+	(nautilus_list_motion), (nautilus_list_set_selection):
+	Reworked selection such that the SELECTION_CHANGED signal is
+	emitted only once for every selection-affecting operation,
+	and never if the selection hasn't changed at all. This makes
+	such operations as Select All, switch-from-icon-view-with-lots-
+	selected, and arrow-key-to-end-of-list significantly faster.
+
 2000-04-09	Andy Hertzfeld <andy@eazel.com>
 
 	* components/services/startup/nautilus-service-startup-view.c:

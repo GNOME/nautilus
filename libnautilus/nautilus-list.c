@@ -71,6 +71,10 @@ struct NautilusListDetails
 	guint keyboard_row_reveal_timer_id;
 	int keyboard_row_to_reveal;
 
+	/* Signal IDs that we sometimes want to block. */
+	guint select_row_signal_id;
+	guint unselect_row_signal_id;
+
 	/* Delayed selection information */
 	int dnd_select_pending;
 	guint dnd_select_pending_state;
@@ -172,12 +176,13 @@ static int nautilus_list_get_first_selected_row (NautilusList *list);
 static int nautilus_list_get_last_selected_row (NautilusList *list);
 static gint nautilus_list_key_press	  (GtkWidget *widget,
 					   GdkEventKey *event);
+static void nautilus_list_unselect_all (GtkCList *clist);
+static void nautilus_list_select_all (GtkCList *clist);
 
 static void reveal_row (NautilusList *list, int row);
 static void schedule_keyboard_row_reveal (NautilusList *list, int row);
 static void unschedule_keyboard_row_reveal (NautilusList *list);
-static void select_or_unselect_row_callback (GtkCList *clist, gint row, gint column, 
-				       GdkEvent *event);
+static void emit_selection_changed (NautilusList *clist);
 
 static void nautilus_list_clear (GtkCList *clist);
 static void draw_row (GtkCList *list, GdkRectangle *area, gint row, GtkCListRow *clist_row);
@@ -198,6 +203,8 @@ static void nautilus_list_resize_column (GtkCList *widget, int column, int width
 static void nautilus_list_column_resize_track_start (GtkWidget *widget, int column);
 static void nautilus_list_column_resize_track (GtkWidget *widget, int column);
 static void nautilus_list_column_resize_track_end (GtkWidget *widget, int column);
+static gboolean row_set_selected (NautilusList *list, int row, GtkCListRow *clist_row, gboolean select);
+static gboolean select_row_unselect_others (NautilusList *list, int row_to_select);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusList, nautilus_list, GTK_TYPE_CLIST)
 
@@ -302,6 +309,8 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 	clist_class->draw_row = draw_row;
   	clist_class->resize_column = nautilus_list_resize_column;
   	clist_class->set_cell_contents = nautilus_list_set_cell_contents;
+  	clist_class->select_all = nautilus_list_select_all;
+  	clist_class->unselect_all = nautilus_list_unselect_all;
 
 	widget_class->button_press_event = nautilus_list_button_press;
 	widget_class->button_release_event = nautilus_list_button_release;
@@ -342,14 +351,14 @@ nautilus_list_initialize (NautilusList *list)
 			   GDK_ACTION_COPY);
 
 	/* Emit "selection changed" signal when parent class changes selection */
-	gtk_signal_connect (GTK_OBJECT (list),
-			    "select_row",
-			    select_or_unselect_row_callback,
-			    list);
-	gtk_signal_connect (GTK_OBJECT (list),
-			    "unselect_row",
-			    select_or_unselect_row_callback,
-			    list);
+	list->details->select_row_signal_id = gtk_signal_connect (GTK_OBJECT (list),
+			    					  "select_row",
+			    					  emit_selection_changed,
+			    					  list);
+	list->details->unselect_row_signal_id = gtk_signal_connect (GTK_OBJECT (list),
+			    					    "unselect_row",
+			    					    emit_selection_changed,
+			    					    list);
 
 	list->details->title = GTK_WIDGET (nautilus_list_column_title_new());
 }
@@ -368,12 +377,11 @@ nautilus_list_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
-
 static void
-select_or_unselect_row_callback (GtkCList *clist, gint row, gint column, GdkEvent *event)
+emit_selection_changed (NautilusList *list) 
 {
-	/* This is the one bottleneck for all selection changes */
-	gtk_signal_emit (GTK_OBJECT (clist), list_signals[SELECTION_CHANGED]);
+	g_assert (NAUTILUS_IS_LIST (list));
+	gtk_signal_emit (GTK_OBJECT (list), list_signals[SELECTION_CHANGED]);
 }
 
 static void
@@ -401,15 +409,20 @@ nautilus_list_is_row_selected (NautilusList *list, gint row)
 	return elem->state == GTK_STATE_SELECTED;
 }
 
-/* Selects the rows between the anchor to the specified row, inclusive.  */
-static void
+/* Selects the rows between the anchor to the specified row, inclusive.
+ * Returns TRUE if selection changed.  */
+static gboolean
 select_range (NautilusList *list, int row)
 {
 	int min, max;
 	int i;
+	gboolean selection_changed;
 
-	if (list->details->anchor_row == -1)
+	selection_changed = FALSE;
+
+	if (list->details->anchor_row == -1) {
 		list->details->anchor_row = row;
+	}
 
 	if (row < list->details->anchor_row) {
 		min = row;
@@ -419,36 +432,149 @@ select_range (NautilusList *list, int row)
 		max = row;
 	}
 
-	for (i = min; i <= max; i++)
-		gtk_clist_select_row (GTK_CLIST (list), i, 0);
+	for (i = min; i <= max; i++) {
+		selection_changed |= row_set_selected (list, i, NULL, TRUE);
+	}
+
+	return selection_changed;
 }
 
 /* Handles row selection according to the specified modifier state */
 static void
-select_row (NautilusList *list, int row, guint state)
+select_row_from_mouse (NautilusList *list, int row, guint state)
 {
 	int range, additive;
+	gboolean should_select_row;
+	gboolean selection_changed;
+
+	selection_changed = FALSE;
 
 	range = (state & GDK_SHIFT_MASK) != 0;
 	additive = (state & GDK_CONTROL_MASK) != 0;
 
-	if (!additive)
-		gtk_clist_unselect_all (GTK_CLIST (list));
+	if (!additive) {
+		selection_changed |= select_row_unselect_others (list, -1);
+	}
 
-	if (!range) {
-		if (additive) {
-			if (nautilus_list_is_row_selected (list, row))
-				gtk_clist_unselect_row
-					(GTK_CLIST (list), row, 0);
-			else
-				gtk_clist_select_row
-					(GTK_CLIST (list), row, 0);
-		} else {
-			gtk_clist_select_row (GTK_CLIST (list), row, 0);
-		}
+	if (range) {
+		selection_changed |= select_range (list, row);
+	} else {
+		should_select_row = !additive || !nautilus_list_is_row_selected (list, row);
+		selection_changed |= row_set_selected (list, row, NULL, should_select_row);
 		list->details->anchor_row = row;
-	} else
-		select_range (list, row);
+	}
+
+	if (selection_changed) {
+		emit_selection_changed (list);
+	}
+}
+
+/* 
+ * row_set_selected:
+ * 
+ * Select or unselect a row. Return TRUE if selection has changed. 
+ * Does not emit the SELECTION_CHANGED signal; it's up to the caller
+ * to handle that.
+ *
+ * @list: The NautilusList in question.
+ * @row: index of row number to select or unselect.
+ * @clist_row: GtkCListRow pointer for given list. Passing this avoids
+ * expensive lookup. If it's NULL, it will be looked up in this function.
+ * @select: TRUE if row should be selected, FALSE otherwise.
+ * 
+ * Return Value: TRUE if selection has changed, FALSE otherwise.
+ */
+static gboolean
+row_set_selected (NautilusList *list, int row, GtkCListRow *clist_row, gboolean select)
+{
+	g_assert (row >= 0 && row < GTK_CLIST (list)->rows);
+
+	if (clist_row == NULL) {
+		clist_row = ROW_ELEMENT (GTK_CLIST (list), row)->data;
+	}
+
+	if (select == (clist_row->state == GTK_STATE_SELECTED)) {
+		return FALSE;
+	}
+
+	/* Block signal handlers so we can make sure the selection-changed
+	 * signal gets sent only once.
+	 */
+	gtk_signal_handler_block (GTK_OBJECT(list), 
+				  list->details->select_row_signal_id);
+	gtk_signal_handler_block (GTK_OBJECT(list), 
+				  list->details->unselect_row_signal_id);
+	
+	if (select) {
+		gtk_clist_select_row (GTK_CLIST (list), row, -1);
+	} else {
+		gtk_clist_unselect_row (GTK_CLIST (list), row, -1);
+	}
+
+	gtk_signal_handler_unblock (GTK_OBJECT(list), 
+				    list->details->select_row_signal_id);
+	gtk_signal_handler_unblock (GTK_OBJECT(list), 
+				    list->details->unselect_row_signal_id);
+
+	return TRUE;
+}
+
+/**
+ * select_row_unselect_others:
+ * 
+ * Change the selected rows as necessary such that only
+ * the given row remains selected.
+ * 
+ * @list: The NautilusList in question.
+ * @row: The row number to leave selected. Use -1 to leave
+ * no row selected.
+ * 
+ * Return value: TRUE if the selection changed; FALSE otherwise.
+ */
+static gboolean
+select_row_unselect_others (NautilusList *list, int row_to_select)
+{
+	GList *p;
+	int row;
+	gboolean selection_changed;
+
+	g_return_val_if_fail (NAUTILUS_IS_LIST (list), FALSE);
+
+	selection_changed = FALSE;
+	for (p = GTK_CLIST (list)->row_list, row = 0; p != NULL; p = p->next, ++row) {
+		selection_changed |= row_set_selected (list, row, p->data, row == row_to_select);
+	}
+
+	return selection_changed;
+}
+
+static void
+nautilus_list_unselect_all (GtkCList *clist)
+{
+	g_return_if_fail (NAUTILUS_IS_LIST (clist));
+
+	if (select_row_unselect_others (NAUTILUS_LIST (clist), -1)) {
+		emit_selection_changed (NAUTILUS_LIST (clist));
+	}
+}
+
+static void
+nautilus_list_select_all (GtkCList *clist)
+{
+	GList *p;
+	int row;
+	gboolean selection_changed;
+
+	g_return_if_fail (NAUTILUS_IS_LIST (clist));
+
+	selection_changed = FALSE;
+	for (p = clist->row_list, row = 0; p != NULL; p = p->next, ++row) {
+		selection_changed |= row_set_selected (NAUTILUS_LIST (clist), row, p->data, TRUE);
+	}
+
+	if (selection_changed) {
+		emit_selection_changed (NAUTILUS_LIST (clist));
+	}
 }
 
 /* Our handler for button_press events.  We override all of GtkCList's broken
@@ -501,7 +627,7 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 					list->details->dnd_select_pending_state = event->state;
 				}
 
-				select_row (list, row, event->state);
+				select_row_from_mouse (list, row, event->state);
 			} else {
 				gtk_clist_unselect_all (clist);
 			}
@@ -513,7 +639,7 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 				 * to modify selection as appropriate, then emit signal that
 				 * will bring up menu.
 				 */
-				select_row (list, row, event->state);
+				select_row_from_mouse (list, row, event->state);
 				gtk_signal_emit (GTK_OBJECT (list),
 						 list_signals[CONTEXT_CLICK_SELECTION]);
 			} else
@@ -667,12 +793,9 @@ nautilus_list_keyboard_move_to (NautilusList *list, int row, GdkEventKey *event)
 	} else {
 		/* Select row and get rid of special keyboard focus. */
 		nautilus_list_clear_keyboard_focus (list);
-		/* FIXME: This sends numerous selection_changed messages
-		 * instead of only one. It also flashes unpleasantly when
-		 * selection is pinned up at first row.
-		 */
-		gtk_clist_unselect_all (clist);
-		gtk_clist_select_row (clist, row, -1);
+		if (select_row_unselect_others (list, row)) {
+			emit_selection_changed (list);
+		}
 	}
 
 	schedule_keyboard_row_reveal (list, row);
@@ -1897,9 +2020,9 @@ nautilus_list_motion (GtkWidget *widget, GdkEventMotion *event)
 	/* Handle any pending selections */
 
 	if (list->details->dnd_select_pending) {
-		select_row (list,
-			    list->details->button_down_row,
-			    list->details->dnd_select_pending_state);
+		select_row_from_mouse (list,
+			    	       list->details->button_down_row,
+			    	       list->details->dnd_select_pending_state);
 
 		list->details->dnd_select_pending = FALSE;
 		list->details->dnd_select_pending_state = 0;
@@ -2150,19 +2273,13 @@ nautilus_list_set_selection (NautilusList *list, GList *selection)
 		row = p->data;
 		row_data = row->data;
 
-		select_this = (NULL != g_list_find (selection, row_data)); 
+		select_this = (NULL != g_list_find (selection, row_data));
 
-		if (row->state == GTK_STATE_SELECTED) {
-			if (!select_this) {
-				gtk_clist_unselect_row (GTK_CLIST (list), i, -1);
-				selection_changed = TRUE;
-			}
-		} else {
-			if (select_this) {
-				gtk_clist_select_row (GTK_CLIST (list), i, -1);
-				selection_changed = TRUE;
-			}
-		}
+		selection_changed |= row_set_selected (list, i, row_data, select_this);
+	}
+
+	if (selection_changed) {
+		emit_selection_changed (list);
 	}
 }
 
