@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.2\n"
-"POT-Creation-Date: 2001-06-04 16:02+0200\n"
+"POT-Creation-Date: 2001-06-07 00:27+0200\n"
 "PO-Revision-Date: 2001-06-04 16:07+02:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -1599,7 +1599,7 @@ msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Beklager, men '%s' er ikke en brukbar bildefil."
 
 #: components/music/nautilus-music-view.c:699
-#: src/nautilus-property-browser.c:1057 src/nautilus-property-browser.c:1309
+#: src/nautilus-property-browser.c:1058 src/nautilus-property-browser.c:1310
 msgid "Not an Image"
 msgstr "Ikke et bilde"
 
@@ -1661,24 +1661,24 @@ msgstr "Pause"
 msgid "Stop"
 msgstr "Stopp"
 
-#: components/music/nautilus-music-view.c:1697
+#: components/music/nautilus-music-view.c:1698
 #, c-format
 msgid "Sorry, but there was an error reading %s."
 msgstr "Beklager, en feil oppsto under lesing av %s."
 
-#: components/music/nautilus-music-view.c:1698
+#: components/music/nautilus-music-view.c:1699
 msgid "Can't Read Folder"
 msgstr "Kan ikke lese mappe"
 
-#: components/music/nautilus-music-view.c:1770
+#: components/music/nautilus-music-view.c:1771
 msgid "Stereo"
 msgstr "Stereo"
 
-#: components/music/nautilus-music-view.c:1770
+#: components/music/nautilus-music-view.c:1771
 msgid "Mono"
 msgstr "Mono"
 
-#: components/music/nautilus-music-view.c:1812
+#: components/music/nautilus-music-view.c:1813
 #, c-format
 msgid "%s - %s"
 msgstr "%s - %s"
@@ -4135,13 +4135,16 @@ msgid ""
 "Fast searches will not be available until an initial index of your files has "
 "been created.  This may take a long time."
 msgstr ""
-"Hvis du ønsker å bruke raske søk, kan du redigere filen %s som root. Ved å sette flagget \"enabled\" til \"yes\" slår du på medusa tjenesten.\n"
-"For å starte indeksering og søketjenesten med en gang må du også kjøre følgende kommando som root:\n"
+"Hvis du ønsker å bruke raske søk, kan du redigere filen %s som root. Ved å "
+"sette flagget \"enabled\" til \"yes\" slår du på medusa tjenesten.\n"
+"For å starte indeksering og søketjenesten med en gang må du også kjøre "
+"følgende kommando som root:\n"
 "\n"
 "medusa-indexd\n"
 "medusa-searchd\n"
 "\n"
-"Raske søk vil ikke være tilgjengelig før en første index over dine filer er opprettet. Dette kan ta lang tid."
+"Raske søk vil ikke være tilgjengelig før en første index over dine filer er "
+"opprettet. Dette kan ta lang tid."
 
 #: libnautilus-private/nautilus-medusa-support.c:139
 msgid ""
@@ -4152,8 +4155,11 @@ msgid ""
 "If you are using a packaged version of Nautilus, fast searching is not "
 "available.\n"
 msgstr ""
-"Medusa, applikasjonen som utfører søk, kan ikke finnes på ditt system. Hvis du har kompilert nautilus selv, må du installere en kopi av medusa og rekompilere nautilus. (Du finner en kopi av medusa på ftp://ftp.gnome.org/)\n"
-"Hvis du bruker en pakkeversjon av Nautilus vil ikke raske søk være tilgjengelig.\n"
+"Medusa, applikasjonen som utfører søk, kan ikke finnes på ditt system. Hvis "
+"du har kompilert nautilus selv, må du installere en kopi av medusa og "
+"rekompilere nautilus. (Du finner en kopi av medusa på ftp://ftp.gnome.org/)\n"
+"Hvis du bruker en pakkeversjon av Nautilus vil ikke raske søk være "
+"tilgjengelig.\n"
 
 #: libnautilus-private/nautilus-program-chooser.c:227
 msgid "not in menu"
@@ -6884,12 +6890,12 @@ msgid "No Update Available... Press Next to Continue."
 msgstr "Ingen oppdatering tilgjengelig... Trykk neste for å fortsette."
 
 #. set the window title
-#: src/nautilus-link-set-window.c:188
+#: src/nautilus-link-set-window.c:192
 msgid "Link sets"
 msgstr "Lenkesett"
 
 #. add a descriptive label
-#: src/nautilus-link-set-window.c:201
+#: src/nautilus-link-set-window.c:205
 msgid "Add or remove sets of links by clicking on the checkboxes below."
 msgstr ""
 "Legg til eller fjern sett med lenker ved å klikke på avkrysningsboksene "
@@ -7284,110 +7290,110 @@ msgstr "Legg til..."
 msgid "Remove..."
 msgstr "Fjern..."
 
-#: src/nautilus-property-browser.c:876
+#: src/nautilus-property-browser.c:877
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "Beklager, men mønster %s kunne ikke slettes."
 
-#: src/nautilus-property-browser.c:877 src/nautilus-property-browser.c:906
+#: src/nautilus-property-browser.c:878 src/nautilus-property-browser.c:907
 msgid "Couldn't delete pattern"
 msgstr "Kunne ikke slette mønster"
 
-#: src/nautilus-property-browser.c:905
+#: src/nautilus-property-browser.c:906
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "Beklager, men emblem %s kunne ikke slettes."
 
-#: src/nautilus-property-browser.c:941
+#: src/nautilus-property-browser.c:942
 msgid "Create a New Emblem:"
 msgstr "Lag et nytt emblem:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:946
+#: src/nautilus-property-browser.c:947
 msgid "Keyword:"
 msgstr "Nøkkelord:"
 
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:959
+#: src/nautilus-property-browser.c:960
 msgid "Image:"
 msgstr "Bilde:"
 
-#: src/nautilus-property-browser.c:963
+#: src/nautilus-property-browser.c:964
 msgid "Select an image file for the new emblem:"
 msgstr "Velg en bildefil for det nye emblemet:"
 
-#: src/nautilus-property-browser.c:990
+#: src/nautilus-property-browser.c:991
 msgid "Create a New Color:"
 msgstr "Lag en ny farge:"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:995
+#: src/nautilus-property-browser.c:996
 msgid "Color name:"
 msgstr "Fargenavn:"
 
-#: src/nautilus-property-browser.c:1006
+#: src/nautilus-property-browser.c:1007
 msgid "Color value:"
 msgstr "Fargeverdi:"
 
-#: src/nautilus-property-browser.c:1042
+#: src/nautilus-property-browser.c:1043
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "Beklager, men \"%s\" er ikke et gyldig filnavn."
 
-#: src/nautilus-property-browser.c:1044
+#: src/nautilus-property-browser.c:1045
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "Beklager, men du oppga ikke et gyldig filnavn."
 
-#: src/nautilus-property-browser.c:1046 src/nautilus-property-browser.c:1089
+#: src/nautilus-property-browser.c:1047 src/nautilus-property-browser.c:1090
 msgid "Couldn't install pattern"
 msgstr "Kunne ikke installere mønster"
 
-#: src/nautilus-property-browser.c:1057
+#: src/nautilus-property-browser.c:1058
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Beklager, men du kan ikke erstatte nullstill-bildet."
 
-#: src/nautilus-property-browser.c:1088
+#: src/nautilus-property-browser.c:1089
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Beklager, men mønster %s kunne ikke installeres."
 
-#: src/nautilus-property-browser.c:1111
+#: src/nautilus-property-browser.c:1112
 msgid "Select an image file to add as a pattern:"
 msgstr "Velg en bildefil som skal legges til som mønster:"
 
-#: src/nautilus-property-browser.c:1170
+#: src/nautilus-property-browser.c:1171
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Beklager, men du må spesifisere et navn for den nye fargen."
 
-#: src/nautilus-property-browser.c:1171
+#: src/nautilus-property-browser.c:1172
 msgid "Couldn't install color"
 msgstr "Kunne ikke installere farge"
 
-#: src/nautilus-property-browser.c:1227
+#: src/nautilus-property-browser.c:1228
 msgid "Select a color to add:"
 msgstr "Velg en farge å legge til:"
 
-#: src/nautilus-property-browser.c:1308
+#: src/nautilus-property-browser.c:1309
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Beklager, men '%s' er ikke en brukbar bildefil!"
 
-#: src/nautilus-property-browser.c:1326
+#: src/nautilus-property-browser.c:1327
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Beklager, men du må spesifisere et navn for det nye emblemet."
 
-#: src/nautilus-property-browser.c:1327 src/nautilus-property-browser.c:1330
-#: src/nautilus-property-browser.c:1334 src/nautilus-property-browser.c:1363
+#: src/nautilus-property-browser.c:1328 src/nautilus-property-browser.c:1331
+#: src/nautilus-property-browser.c:1335 src/nautilus-property-browser.c:1364
 msgid "Couldn't install emblem"
 msgstr "Kunne ikke installere emblem"
 
-#: src/nautilus-property-browser.c:1329
+#: src/nautilus-property-browser.c:1330
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Beklager, men nøkkelord for emblemer kan kun inneholde bokstaver og tall."
 
-#: src/nautilus-property-browser.c:1332
+#: src/nautilus-property-browser.c:1333
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
@@ -7396,64 +7402,64 @@ msgstr ""
 "Beklager, men \"%s\" er et eksisterende nøkkelord. Vennligst velg et annet "
 "navn for det."
 
-#: src/nautilus-property-browser.c:1362
+#: src/nautilus-property-browser.c:1363
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Beklager, men bildet på %s kunne ikke installeres som et emblem."
 
-#: src/nautilus-property-browser.c:2021
+#: src/nautilus-property-browser.c:2022
 msgid "Select A Category:"
 msgstr "Velg en kategori:"
 
-#: src/nautilus-property-browser.c:2029 src/nautilus-theme-selector.c:193
+#: src/nautilus-property-browser.c:2030 src/nautilus-theme-selector.c:193
 msgid "Cancel Remove"
 msgstr "Avbryt fjern"
 
-#: src/nautilus-property-browser.c:2034
+#: src/nautilus-property-browser.c:2035
 msgid "Add a New Pattern..."
 msgstr "Legg til et nytt mønster..."
 
-#: src/nautilus-property-browser.c:2037
+#: src/nautilus-property-browser.c:2038
 msgid "Add a New Color..."
 msgstr "Legg til en ny farge..."
 
-#: src/nautilus-property-browser.c:2040
+#: src/nautilus-property-browser.c:2041
 msgid "Add a New Emblem..."
 msgstr "Legg til et nytt emblem..."
 
-#: src/nautilus-property-browser.c:2063
+#: src/nautilus-property-browser.c:2064
 msgid "Click on a pattern to remove it"
 msgstr "Klikk på et mønster for å fjerne det."
 
-#: src/nautilus-property-browser.c:2066
+#: src/nautilus-property-browser.c:2067
 msgid "Click on a color to remove it"
 msgstr "Klikk på en farge for å fjerne den"
 
-#: src/nautilus-property-browser.c:2069
+#: src/nautilus-property-browser.c:2070
 msgid "Click on an emblem to remove it"
 msgstr "Klikk på et emblem for å fjerne den"
 
-#: src/nautilus-property-browser.c:2078
+#: src/nautilus-property-browser.c:2079
 msgid "Patterns:"
 msgstr "Mønstre:"
 
-#: src/nautilus-property-browser.c:2081
+#: src/nautilus-property-browser.c:2082
 msgid "Colors:"
 msgstr "Farger:"
 
-#: src/nautilus-property-browser.c:2084
+#: src/nautilus-property-browser.c:2085
 msgid "Emblems:"
 msgstr "Emblemer:"
 
-#: src/nautilus-property-browser.c:2103
+#: src/nautilus-property-browser.c:2104
 msgid "Remove a Pattern..."
 msgstr "Fjern et mønster..."
 
-#: src/nautilus-property-browser.c:2106
+#: src/nautilus-property-browser.c:2107
 msgid "Remove a Color..."
 msgstr "Fjern en farge..."
 
-#: src/nautilus-property-browser.c:2109
+#: src/nautilus-property-browser.c:2110
 msgid "Remove an Emblem..."
 msgstr "Fjern et emblem..."
 
