@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.1.7\n"
-"POT-Creation-Date: 2002-06-10 07:20+0200\n"
+"POT-Creation-Date: 2002-06-13 17:31+0900\n"
 "PO-Revision-Date: 2002-02-06 08:40+0900\n"
 "Last-Translator: Young-Ho Cha <ganadist@chollian.net>\n"
 "Language-Team: Korean <gnome-kr-translation@lists.sourceforge.net>\n"
@@ -1325,19 +1325,19 @@ msgstr "활동중이라는 것을 표시하는 움직임"
 #: components/throbber/Nautilus_Control_throbber.server.in.h:2
 #: components/throbber/nautilus-throbber.c:702
 msgid "throbber"
-msgstr "맥박"
+msgstr "throbber"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.h:3
 msgid "throbber factory"
-msgstr ""
+msgstr "throbber 팩토리"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.h:4
 msgid "throbber object factory"
-msgstr ""
+msgstr "throbber 객체 팩토리"
 
 #: components/throbber/nautilus-throbber.c:703
 msgid "provides visual status"
-msgstr ""
+msgstr "작동하는 상태를 보여줍니다"
 
 #: components/tree/Nautilus_View_tree.server.in.h:1
 msgid "Nautilus Tree sidebar panel"
@@ -1446,7 +1446,7 @@ msgstr "코르크"
 
 #: data/browser.xml.h:20
 msgid "Countertop"
-msgstr ""
+msgstr "Countertop"
 
 #: data/browser.xml.h:21
 msgid "Danger"
@@ -1764,11 +1764,11 @@ msgstr "시작 메뉴"
 
 #: data/static_bookmarks.xml.h:1
 msgid "Allaire"
-msgstr ""
+msgstr "Allaire"
 
 #: data/static_bookmarks.xml.h:2
 msgid "Binary Freedom"
-msgstr ""
+msgstr "Binary Freedom"
 
 #: data/static_bookmarks.xml.h:3
 msgid "Borland"
@@ -1784,7 +1784,7 @@ msgstr "CNET 리눅스 센터"
 
 #: data/static_bookmarks.xml.h:6
 msgid "CollabNet"
-msgstr ""
+msgstr "CollabNet"
 
 #: data/static_bookmarks.xml.h:7
 msgid "Compaq"
@@ -1796,7 +1796,7 @@ msgstr "커넥티바"
 
 #: data/static_bookmarks.xml.h:9
 msgid "Covalent"
-msgstr ""
+msgstr "Covalent"
 
 #: data/static_bookmarks.xml.h:10
 msgid "Debian.org"
@@ -1916,7 +1916,7 @@ msgstr "썬 스타오피스"
 
 #: data/static_bookmarks.xml.h:40
 msgid "Sun Wah Linux"
-msgstr ""
+msgstr "Sun Wah Linux"
 
 #: data/static_bookmarks.xml.h:41
 msgid "Web Services"
@@ -1936,7 +1936,7 @@ msgstr "ZDNet 리눅스 리소스 센터"
 
 #: data/static_bookmarks.xml.h:45
 msgid "Zero-Knowledge"
-msgstr ""
+msgstr "Zero-Knowledge"
 
 #: data/sysconfig.desktop.in.h:1 data/sysconfig.directory.in.h:1
 msgid "Change systemwide settings (affects all users)"
@@ -2051,9 +2051,8 @@ msgid "MSDOS Volume"
 msgstr "MSDOS 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:14
-#, fuzzy
 msgid "MacOS Volume"
-msgstr "MSDOS 볼륨"
+msgstr "MacOS 볼륨"
 
 #: libnautilus-private/filesystem-attributes.xml.h:15
 msgid "Minix Volume"
@@ -5675,13 +5674,12 @@ msgid "Duplicate each selected item"
 msgstr "각각 선택한 항목을 복사 합니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:16
-#, fuzzy
 msgid "Edit Launcher"
-msgstr "새 실행기"
+msgstr "실행기 편집"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Edit the launcher information"
-msgstr ""
+msgstr "실행기의 정보를 편집합니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:19
 msgid "Make Link"
@@ -5702,9 +5700,8 @@ msgid "New Folder"
 msgstr "새 폴더"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:25
-#, fuzzy
 msgid "New La_uncher"
-msgstr "새 실행기"
+msgstr "새 실행기(_U)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:27
 msgid "Open"
@@ -6160,9 +6157,9 @@ msgstr ""
 "러스를 재시작 하면문제가 해결될수 있습니다."
 
 #: src/nautilus-bookmarks-window.c:132
-#, fuzzy, c-format
+#, c-format
 msgid "There was an error displaying help: %s"
-msgstr "%s 읽기 오류가 있습니다."
+msgstr "도움말을 표시하는 중 오류가 발생했습니다: %s"
 
 #: src/nautilus-bookmarks-window.c:171
 msgid "Bookmarks"
@@ -7125,7 +7122,7 @@ msgstr "창 닫기(_C)"
 
 #: src/nautilus-shell-ui.xml.h:63
 msgid "_Contents"
-msgstr "내용(_C)"
+msgstr "차례(_C)"
 
 #: src/nautilus-shell-ui.xml.h:65
 msgid "_Edit"
@@ -7501,11 +7498,13 @@ msgstr ""
 "그래픽 쉘입니다."
 
 #: src/nautilus-window-menus.c:648
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "There was an error displaying help: \n"
 "%s"
-msgstr "%s 읽기 오류가 있습니다."
+msgstr ""
+"도움말을 표시하는 중 오류가 발생했습니다: \n"
+"%s"
 
 #: src/nautilus-window-menus.c:688
 #, c-format
@@ -7539,11 +7538,11 @@ msgstr "이 책갈피에 지정된 위치로 이동합니다"
 
 #: src/nautilus-window-toolbars.c:469
 msgid "Go back a few pages"
-msgstr ""
+msgstr "뒤로 몇페이지 갑니다"
 
 #: src/nautilus-window-toolbars.c:472
 msgid "Go forward a number of pages"
-msgstr ""
+msgstr "앞으로 몇페이지 갑니다"
 
 #: src/nautilus-window.c:1065
 #, c-format
@@ -7581,12 +7580,3 @@ msgstr "확대"
 #: src/nautilus-zoom-control.c:1088
 msgid "Set the zoom level of the current view"
 msgstr "현재 보기의 확대수준을 설정합니다"
-
-#~ msgid " (invalid Unicode)"
-#~ msgstr " (잘못된 유니코드)"
-
-#~ msgid "Clear"
-#~ msgstr "지우기"
-
-#~ msgid "Factory for history views"
-#~ msgstr "방문기록 보기의 팩토리"
