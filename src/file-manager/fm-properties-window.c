@@ -33,6 +33,9 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 
+#include <libgnomevfs/gnome-vfs.h>
+#include <gnome.h>
+
 #include <gtk/gtkcheckbutton.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkhbox.h>
@@ -45,6 +48,7 @@
 #include <gtk/gtktable.h>
 #include <gtk/gtkvbox.h>
 
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
@@ -52,18 +56,6 @@
 #include <libnautilus-extensions/nautilus-string.h>
 
 static GHashTable *windows;
-
-static const char * const property_names[] =
-{
-	"certified",
-	"changed",
-	"confidential",
-	"encrypted",
-	"important",
-	"new",
-	"personal",
-	"remote"
-};
 
 enum {
 	BASIC_PAGE_ICON_AND_NAME_ROW,
@@ -638,14 +630,72 @@ remove_default_viewport_shadow (GtkViewport *viewport)
 	gtk_viewport_set_shadow_type (viewport, GTK_SHADOW_NONE);
 }
 
+/* utility routine to build the list of available property names */
+
+static GList *
+get_property_names_from_uri (const char *directory_uri, GList *property_list)
+{
+	char *keyword, *dot_pos;
+	GnomeVFSResult result;
+	GnomeVFSFileInfo *current_file_info;
+	GnomeVFSDirectoryList *list;
+			
+	result = gnome_vfs_directory_list_load (&list, directory_uri, GNOME_VFS_FILE_INFO_GETMIMETYPE, NULL, NULL);
+	if (result != GNOME_VFS_OK) {
+		return property_list;
+	}
+	
+	for (current_file_info = gnome_vfs_directory_list_first(list); current_file_info != NULL; 
+	    current_file_info = gnome_vfs_directory_list_next(list)) {
+		if (nautilus_str_has_prefix(current_file_info->mime_type, "image/")) {
+			keyword = g_strdup(current_file_info->name);
+			
+			/* strip image type suffix */
+			dot_pos = strrchr(keyword, '.');
+			if (dot_pos)
+				*dot_pos = '\0';
+			
+			property_list = g_list_prepend(property_list, keyword);
+		}
+	}
+
+	gnome_vfs_directory_list_destroy(list);	
+	return property_list;
+}
+
+static GList *
+get_property_names ()
+{
+	char *directory_path, *directory_uri;
+	GList *property_list;
+	
+	directory_path = gnome_datadir_file ("nautilus/emblems");
+	directory_uri = g_strdup_printf ("file://%s", directory_path);
+	g_free (directory_path);
+		
+	property_list = get_property_names_from_uri (directory_uri, NULL);
+	g_free (directory_uri);
+
+	directory_uri = g_strdup_printf ("file://%s/emblems", nautilus_user_directory());
+	property_list = get_property_names_from_uri (directory_uri, property_list);
+	g_free (directory_uri);
+
+	return g_list_sort(property_list, (GCompareFunc) nautilus_strcmp);		
+}
+
 static void
 create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 {
+	GList *property_names, *save_property_names;
 	GtkWidget *emblems_table, *button, *scroller;
 	GtkWidget *image_widget, *label, *image_and_label_table;
-	int i;
+	int i, property_count;
 
-	emblems_table = gtk_table_new ((NAUTILUS_N_ELEMENTS (property_names) + 1) / 2,
+	property_names = get_property_names();	
+	save_property_names = property_names;
+	property_count = g_list_length(property_names);
+	
+	emblems_table = gtk_table_new ((property_count + 1) / 2,
 				       2,
 				       TRUE);
 	gtk_widget_show (emblems_table);
@@ -671,7 +721,7 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 	gtk_notebook_append_page (notebook, scroller, gtk_label_new (_("Emblems")));
 	
 	/* The check buttons themselves. */
-	for (i = 0; i < NAUTILUS_N_ELEMENTS (property_names); i++) {
+	for (i = 0; i < property_count; i++) {
 		button = gtk_check_button_new ();
 
 		/* Make 3-column homogeneous table with 1/3 for image, 2/3 text.
@@ -680,12 +730,12 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 		image_and_label_table = gtk_table_new (1, 3, TRUE);
 		gtk_widget_show (image_and_label_table);
 		
-		image_widget = create_image_widget_for_emblem (property_names[i]);
+		image_widget = create_image_widget_for_emblem (property_names->data);
 		gtk_table_attach_defaults (GTK_TABLE (image_and_label_table), image_widget,
 					   0, 1,
 					   0, 1);
 					
-		label = gtk_label_new (_(property_names[i]));
+		label = gtk_label_new (_(property_names->data));
 		/* Move label to left edge. */
 		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 		gtk_widget_show (label);
@@ -699,14 +749,17 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 		gtk_widget_show (button);
 
 		/* Attach parameters and signal handler. */
-		gtk_object_set_data (GTK_OBJECT (button),
+		gtk_object_set_data_full (GTK_OBJECT (button),
 				     "nautilus_property_name",
-				     (char *) property_names[i]);
+				     g_strdup ((char *)property_names->data),
+				     (GtkDestroyNotify) g_free);
+				     
 		nautilus_file_ref (file);
 		gtk_object_set_data_full (GTK_OBJECT (button),
 					  "nautilus_file",
 					  file,
 					  (GtkDestroyNotify) nautilus_file_unref);
+		
 		gtk_signal_connect (GTK_OBJECT (button),
 				    "toggled",
 				    property_button_toggled,
@@ -721,17 +774,19 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 						       property_button_update,
 						       GTK_OBJECT (button));
 
-		if (i < NAUTILUS_N_ELEMENTS (property_names) / 2) {
+		if (i < property_count / 2) {
 			gtk_table_attach_defaults (GTK_TABLE (emblems_table), button,
 					  	   0, 1,
 					  	   i, i+1);
 		} else {
 			gtk_table_attach_defaults (GTK_TABLE (emblems_table), button,
 						   1, 2,
-						   i - (NAUTILUS_N_ELEMENTS (property_names) / 2),
-						   i - (NAUTILUS_N_ELEMENTS (property_names) / 2) + 1);
+						   i - (property_count / 2),
+						   i - (property_count / 2) + 1);
 		}
+		property_names = property_names->next;
 	}
+	nautilus_g_list_free_deep (save_property_names);
 }
 
 static void

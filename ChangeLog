@@ -1,3 +1,16 @@
+2000-05-13  Andy Hertzfeld <andy@eazel.com>
+
+	fixed bug 842, finish emblems UI in properties window 
+	* src/file-manager/fm-properties-window.c:
+	removed hard-wired list of emblems
+	(get_property_names_from_uri), (get_property_names):
+	added routine to return a list of available keywords on the fly
+	(create_emblems_page):
+	used get_property_names instead of a hardwired list
+	
+	* src/nautilus-property-browser.c: (element_clicked_callback):
+	fixed bug where it wasn't exiting remove mode properly after removing an element
+	
 2000-05-13  J Shane Culpepper  <pepper@eazel.com>
 
 	*configure.in

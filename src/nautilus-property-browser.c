@@ -1051,7 +1051,7 @@ element_clicked_callback(GtkWidget *widget, GdkEventButton *event, char *element
 	/* handle remove mode by removing the element */
 	if (property_browser->details->remove_mode) {
 		nautilus_property_browser_remove_element(property_browser, element_name);
-		property_browser->details->remove_mode = TRUE;
+		property_browser->details->remove_mode = FALSE;
 		nautilus_property_browser_update_contents(property_browser);
 		return;
 	}
