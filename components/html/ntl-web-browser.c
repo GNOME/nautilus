@@ -327,21 +327,25 @@ browser_do_post(HTRequest *request, HTStream *stream)
 static char vfs_read_buf[40960];
 
 static void
-browser_vfs_read_callback(GnomeVFSAsyncHandle *h, GnomeVFSResult res, gpointer buffer,
-			  GnomeVFSFileSize bytes_requested,
-			  GnomeVFSFileSize bytes_read,
-			  gpointer data)
+browser_vfs_read_callback (GnomeVFSAsyncHandle *h, GnomeVFSResult res, gpointer buffer,
+			   GnomeVFSFileSize bytes_requested,
+			   GnomeVFSFileSize bytes_read,
+			   gpointer data)
 {
   VFSHandle *vfsh = data;
-
+  
   g_message("browser_vfs_read_callback: %ld/%ld bytes", (long) bytes_read, (long) bytes_requested);
-  gtk_html_write(GTK_HTML(vfsh->bi->htmlw), vfsh->sh, buffer, bytes_read);
+  if(bytes_read != 0)
+    {
+      gtk_html_write(GTK_HTML(vfsh->bi->htmlw), vfsh->sh, buffer, bytes_read);
+    }
 
-  if(res != GNOME_VFS_OK)
+  if(bytes_read == 0 || res != GNOME_VFS_OK)
     {
       gtk_html_end(GTK_HTML(vfsh->bi->htmlw), vfsh->sh, GTK_HTML_STREAM_OK);
       gnome_vfs_async_close(h, (GnomeVFSAsyncCloseCallback)gtk_true, NULL);
       g_free(vfsh);
+      return;
     }
 
   gnome_vfs_async_read(h, vfs_read_buf, sizeof(vfs_read_buf), browser_vfs_read_callback, data);

@@ -73,8 +73,6 @@ void       nautilus_icon_canvas_item_set_emblems              (NautilusIconCanva
 void       nautilus_icon_canvas_item_set_show_stretch_handles (NautilusIconCanvasItem *item,
 							       gboolean                show_stretch_handles);
 
-const char *nautilus_icon_canvas_item_get_modifier        (NautilusIconCanvasItem *item);
-
 /* geometry and hit testing */
 gboolean   nautilus_icon_canvas_item_hit_test_rectangle       (NautilusIconCanvasItem *item,
 							       const ArtDRect         *world_rectangle);

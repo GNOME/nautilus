@@ -1,17 +1,50 @@
-2000-04-13  Andy Hertzfeld <andy@eazel.com>
+2000-04-13  Darin Adler  <darin@eazel.com>
+	
+	* components/html/ntl-web-browser.c: (browser_vfs_read_callback):
+	Fixed a bug my changes to GNOME VFS exposed. The callback couldn't
+	handle a "bytes_read" of 0.
+
+	* libnautilus/nautilus-directory-private.h:
+	* libnautilus/nautilus-directory.c:
+	* libnautilus/nautilus-directory.h:
+	* src/file-manager/fm-directory-view.c:
+	Added a new interface for monitoring files and directories.
+	Also fixed the self-check code that was failing since the
+	async. changes.
+	
+	* libnautilus/nautilus-file.h:
+	Added the interface for monitoring single files, but it isn't
+	implemented yet.
+	
+	* libnautilus/nautilus-icon-canvas-item.c: 
+	* libnautilus/nautilus-icon-canvas-item.h: 
+	* libnautilus/nautilus-icon-container.c: 
+	* libnautilus/nautilus-icon-container.h: 
+	* libnautilus/nautilus-icon-dnd.c: 
+	* libnautilus/nautilus-icon-dnd.h: 
+	* libnautilus/nautilus-icon-private.h:
+	Restructured Andy's modifier changes so the canvas item doesn't
+	have to know about modifiers. This makes the canvas item private
+	again. Users of NautilusIconContainer shouldn't have to know
+	about the canvas item.
+	
+	* src/file-manager/fm-icon-view.c:
+	Reformatting.
+	
+2000-04-13  Andy Hertzfeld  <andy@eazel.com>
 	
 	* components/services/startup/nautilus-service-startup-view.c:
 	made configuration upload work again by adding a "Content-Type"
 	header, which is now required by Jonathan's script
 	
-2000-04-13  Andy Hertzfeld <andy@eazel.com>
+2000-04-13  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/services/startup/nautilus-service-startup-view.c:
 	fixed problems with the url escaping by unescaping the token
 	return by the service before re-escaping it
 	* components/services/startup/eazel-register.c:
-	added periodic call to gtk_main_iteration during configuration gather
-	to get feedback displayed
+	added periodic call to gtk_main_iteration during configuration
+	gather to get feedback displayed
 
 2000-04-13  Andy Hertzfeld <andy@eazel.com>
 

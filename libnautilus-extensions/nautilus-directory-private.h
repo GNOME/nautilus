@@ -44,8 +44,6 @@ struct NautilusDirectoryDetails
 	GnomeVFSURI *metafile_uri;
 	GnomeVFSURI *alternate_metafile_uri;
 
-	guint monitor_files_ref_count;
-
 	GList *files;
 
 	xmlDoc *metafile;
@@ -57,11 +55,12 @@ struct NautilusDirectoryDetails
 	guint write_metafile_idle_id;
 	MetafileWriteState *write_state;
 
-	/* This list is going to be pretty short.
-	 * If we thought it was going to get big, we could
-	 * use a hash table instead.
+	/* These list are going to be pretty short.  If we think they
+	 * are going to get big, we can use hash tables instead.
 	 */
 	GList *metafile_callbacks;
+	GList *monitors;
+	GList *file_monitors;
 
 	gboolean directory_loaded;
 	GnomeVFSAsyncHandle *directory_load_in_progress;
@@ -102,4 +101,4 @@ void          nautilus_directory_call_when_ready_internal (NautilusDirectory    
 							   const QueuedCallback *callback);
 
 /* debugging functions */
-int           nautilus_directory_number_outstanding     (void);
+int           nautilus_directory_number_outstanding       (void);

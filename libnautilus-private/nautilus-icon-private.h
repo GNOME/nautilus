@@ -110,6 +110,9 @@ struct NautilusIconContainerDetails {
 	/* Current icon with stretch handles, so we have only one. */
 	NautilusIcon *stretch_icon;
 
+	/* Last highlighted drop target. */
+	NautilusIcon *drop_target;
+
 	/* Rubberbanding status. */
 	NautilusIconRubberbandInfo rubberband_info;
 
@@ -169,6 +172,8 @@ void          nautilus_icon_container_move_icon                   (NautilusIconC
 void          nautilus_icon_container_select_list_unselect_others (NautilusIconContainer *container,
 								   GList                 *icons);
 char *        nautilus_icon_container_get_icon_uri                (NautilusIconContainer *container,
+								   NautilusIcon          *icon);
+void          nautilus_icon_container_update_icon                 (NautilusIconContainer *container,
 								   NautilusIcon          *icon);
 
 #endif /* NAUTILUS_ICON_CONTAINER_PRIVATE_H */

@@ -57,78 +57,78 @@
 #define MENU_PATH_CUSTOMIZE_ICON_TEXT   "/Settings/Icon Text"
 
 /* forward declarations */
-static void                   add_icon_at_free_position                         (FMIconView               *icon_view,
-										 NautilusFile             *file);
-static void                   add_icon_if_already_positioned                    (FMIconView               *icon_view,
-										 NautilusFile             *file);
-static NautilusIconContainer *create_icon_container                             (FMIconView               *icon_view);
-static void                   display_icons_not_already_positioned              (FMIconView               *icon_view);
-static void                   fm_icon_view_icon_changed_callback                (NautilusIconContainer    *container,
-										 NautilusFile             *icon_data,
-										 int                       x,
-										 int                       y,
-										 double                    scale_x,
-										 double                    scale_y,
-										 FMIconView               *icon_view);
-static void                   fm_icon_view_add_file                             (FMDirectoryView          *view,
-										 NautilusFile             *file);
-static void                   fm_icon_view_file_changed                         (FMDirectoryView          *view,
-										 NautilusFile             *file);
-static void                   fm_icon_view_append_background_context_menu_items (FMDirectoryView          *view,
-										 GtkMenu                  *menu);
-static void                   fm_icon_view_append_selection_context_menu_items  (FMDirectoryView          *view,
-										 GtkMenu                  *menu,
-										 GList                    *files);
-static void                   fm_icon_view_begin_loading                        (FMDirectoryView          *view);
-static void                   fm_icon_view_bump_zoom_level                      (FMDirectoryView          *view,
-										 gint                      zoom_increment);
-static gboolean               fm_icon_view_can_zoom_in                          (FMDirectoryView          *view);
-static gboolean               fm_icon_view_can_zoom_out                         (FMDirectoryView          *view);
-static void                   fm_icon_view_clear                                (FMDirectoryView          *view);
-static void                   fm_icon_view_destroy                              (GtkObject                *view);
-static void                   fm_icon_view_done_adding_files                    (FMDirectoryView          *view);
-static char *                 fm_icon_view_get_icon_text_attribute_names        (FMIconView               *view);
-static GList *                fm_icon_view_get_selection                        (FMDirectoryView          *view);
-static NautilusZoomLevel      fm_icon_view_get_zoom_level                       (FMIconView               *view);
-static void                   fm_icon_view_initialize                           (FMIconView               *icon_view);
-static void                   fm_icon_view_initialize_class                     (FMIconViewClass          *klass);
-static void                   fm_icon_view_merge_menus                          (FMDirectoryView          *view);
-static gboolean               fm_icon_view_react_to_icon_change_idle_callback   (gpointer                  data);
-static void                   fm_icon_view_select_all                           (FMDirectoryView          *view);
-static void                   fm_icon_view_set_selection                        (FMDirectoryView          *view, GList *selection);
-static void                   fm_icon_view_set_zoom_level                       (FMIconView               *view,
-										 NautilusZoomLevel         new_level);
-static void                   fm_icon_view_update_menus                         (FMDirectoryView          *view);
-
-static NautilusIconContainer *get_icon_container                                (FMIconView               *icon_view);
-static void                   icon_container_activate_callback                  (NautilusIconContainer    *container,
-										 NautilusFile             *icon_data,
-										 FMIconView               *icon_view);
-static void                   icon_container_selection_changed_callback         (NautilusIconContainer    *container,
-										 FMIconView               *icon_view);
-static void                   icon_container_context_click_selection_callback   (NautilusIconContainer    *container,
-										 FMIconView               *icon_view);
-static void                   icon_container_context_click_background_callback  (NautilusIconContainer    *container,
-										 FMIconView               *icon_view);
-static NautilusScalableIcon * get_icon_images_callback                          (NautilusIconContainer    *container,
-										 NautilusFile             *icon_data,
-										 GList                   **emblem_icons,
-										 gchar 					  *modifier,
-										 FMIconView               *icon_view);
-static char *                 get_icon_uri_callback                             (NautilusIconContainer    *container,
-										 NautilusFile             *icon_data,
-										 FMIconView               *icon_view);
-static char *                 get_icon_text_callback                            (NautilusIconContainer    *container,
-										 NautilusFile             *icon_data,
-										 FMIconView               *icon_view);
-static char *                 get_icon_property_callback                        (NautilusIconContainer    *container,
-										 NautilusFile             *icon_data,
-										 const char               *property_name,
-										 FMIconView               *icon_view);
-static void                   text_attribute_names_changed_callback             (NautilusPreferences      *preferences,
-										 const char               *name,
-										 gconstpointer             value,
-										 gpointer                  user_data);
+static void                   add_icon_at_free_position                         (FMIconView             *icon_view,
+										 NautilusFile           *file);
+static void                   add_icon_if_already_positioned                    (FMIconView             *icon_view,
+										 NautilusFile           *file);
+static NautilusIconContainer *create_icon_container                             (FMIconView             *icon_view);
+static void                   display_icons_not_already_positioned              (FMIconView             *icon_view);
+static void                   fm_icon_view_icon_changed_callback                (NautilusIconContainer  *container,
+										 NautilusFile           *icon_data,
+										 int                     x,
+										 int                     y,
+										 double                  scale_x,
+										 double                  scale_y,
+										 FMIconView             *icon_view);
+static void                   fm_icon_view_add_file                             (FMDirectoryView        *view,
+										 NautilusFile           *file);
+static void                   fm_icon_view_file_changed                         (FMDirectoryView        *view,
+										 NautilusFile           *file);
+static void                   fm_icon_view_append_background_context_menu_items (FMDirectoryView        *view,
+										 GtkMenu                *menu);
+static void                   fm_icon_view_append_selection_context_menu_items  (FMDirectoryView        *view,
+										 GtkMenu                *menu,
+										 GList                  *files);
+static void                   fm_icon_view_begin_loading                        (FMDirectoryView        *view);
+static void                   fm_icon_view_bump_zoom_level                      (FMDirectoryView        *view,
+										 int                     zoom_increment);
+static gboolean               fm_icon_view_can_zoom_in                          (FMDirectoryView        *view);
+static gboolean               fm_icon_view_can_zoom_out                         (FMDirectoryView        *view);
+static void                   fm_icon_view_clear                                (FMDirectoryView        *view);
+static void                   fm_icon_view_destroy                              (GtkObject              *view);
+static void                   fm_icon_view_done_adding_files                    (FMDirectoryView        *view);
+static char *                 fm_icon_view_get_icon_text_attribute_names        (FMIconView             *view);
+static GList *                fm_icon_view_get_selection                        (FMDirectoryView        *view);
+static NautilusZoomLevel      fm_icon_view_get_zoom_level                       (FMIconView             *view);
+static void                   fm_icon_view_initialize                           (FMIconView             *icon_view);
+static void                   fm_icon_view_initialize_class                     (FMIconViewClass        *klass);
+static void                   fm_icon_view_merge_menus                          (FMDirectoryView        *view);
+static gboolean               fm_icon_view_react_to_icon_change_idle_callback   (gpointer                data);
+static void                   fm_icon_view_select_all                           (FMDirectoryView        *view);
+static void                   fm_icon_view_set_selection                        (FMDirectoryView        *view,
+										 GList                  *selection);
+static void                   fm_icon_view_set_zoom_level                       (FMIconView             *view,
+										 NautilusZoomLevel       new_level);
+static void                   fm_icon_view_update_menus                         (FMDirectoryView        *view);
+static NautilusIconContainer *get_icon_container                                (FMIconView             *icon_view);
+static void                   icon_container_activate_callback                  (NautilusIconContainer  *container,
+										 NautilusFile           *icon_data,
+										 FMIconView             *icon_view);
+static void                   icon_container_selection_changed_callback         (NautilusIconContainer  *container,
+										 FMIconView             *icon_view);
+static void                   icon_container_context_click_selection_callback   (NautilusIconContainer  *container,
+										 FMIconView             *icon_view);
+static void                   icon_container_context_click_background_callback  (NautilusIconContainer  *container,
+										 FMIconView             *icon_view);
+static NautilusScalableIcon * get_icon_images_callback                          (NautilusIconContainer  *container,
+										 NautilusFile           *icon_data,
+										 GList                 **emblem_icons,
+										 const char             *modifier,
+										 FMIconView             *icon_view);
+static char *                 get_icon_uri_callback                             (NautilusIconContainer  *container,
+										 NautilusFile           *icon_data,
+										 FMIconView             *icon_view);
+static char *                 get_icon_text_callback                            (NautilusIconContainer  *container,
+										 NautilusFile           *icon_data,
+										 FMIconView             *icon_view);
+static char *                 get_icon_property_callback                        (NautilusIconContainer  *container,
+										 NautilusFile           *icon_data,
+										 const char             *property_name,
+										 FMIconView             *icon_view);
+static void                   text_attribute_names_changed_callback             (NautilusPreferences    *preferences,
+										 const char             *name,
+										 gconstpointer           value,
+										 gpointer                user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconView, fm_icon_view, FM_TYPE_DIRECTORY_VIEW);
 
@@ -637,7 +637,7 @@ fm_icon_view_set_zoom_level (FMIconView *view,
 
 
 static void
-fm_icon_view_bump_zoom_level (FMDirectoryView *view, gint zoom_increment)
+fm_icon_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
 {
 	FMIconView *icon_view;
 	NautilusZoomLevel new_level;
@@ -686,7 +686,7 @@ fm_icon_view_get_icon_text_attribute_names (FMIconView *view)
 	char * c;
 	int pieces_so_far;
 	int piece_count;
-	int pieces_by_level[] = {
+	const int pieces_by_level[] = {
 		0,	/* NAUTILUS_ZOOM_LEVEL_SMALLEST */
 		1,	/* NAUTILUS_ZOOM_LEVEL_SMALLER */
 		1,	/* NAUTILUS_ZOOM_LEVEL_SMALL */
@@ -970,7 +970,7 @@ static NautilusScalableIcon *
 get_icon_images_callback (NautilusIconContainer *container,
 			  NautilusFile *file,
 			  GList **emblem_icons,
-			  gchar *modifier,
+			  const char *modifier,
 			  FMIconView *icon_view)
 {
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));

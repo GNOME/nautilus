@@ -71,9 +71,6 @@ struct NautilusIconDndInfo {
 
 	/* Shadow for the icons being dragged.  */
 	GnomeCanvasItem *shadow;
-
-	/* last highlighted drop target*/
-	gpointer current_drop_target_icon;
 };
 
 void nautilus_icon_dnd_init       (NautilusIconContainer *container,

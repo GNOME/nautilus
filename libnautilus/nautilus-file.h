@@ -70,6 +70,14 @@ void             nautilus_file_ref                       (NautilusFile         *
 void             nautilus_file_unref                     (NautilusFile         *file);
 void             nautilus_file_delete                    (NautilusFile         *file);
 
+/* Monitor the file. */
+void             nautilus_file_monitor_add               (NautilusFile         *file,
+							  gpointer              client,
+							  GList                *attributes,
+							  GList                *metadata_keys);
+void             nautilus_file_monitor_remove            (NautilusFile         *file,
+							  gpointer              client);
+
 /* Waiting for data that's read asynchronously.
  * This interface currently works only for metadata, but could be expanded
  * to other attributes as well.
@@ -124,7 +132,7 @@ char *           nautilus_file_get_string_attribute      (NautilusFile         *
 
 /* Matching with another URI*/
 gboolean         nautilus_file_matches_uri               (NautilusFile         *file,
-							  const char 	       *uri);
+							  const char           *uri);
 
 /* Comparing two file objects for sorting */
 int              nautilus_file_compare_for_sort          (NautilusFile         *file_1,

@@ -70,23 +70,18 @@
  */
 #define MAXIMUM_INITIAL_ICON_SIZE 2
 
-static void                    activate_selected_items               (NautilusIconContainer      *container);
-static void                    nautilus_icon_container_initialize_class (NautilusIconContainerClass *class);
-static void                    nautilus_icon_container_initialize       (NautilusIconContainer      *container);
-static void                    update_icon                           (NautilusIconContainer      *container,
-								      NautilusIcon  *icon);
-static void                    compute_stretch                       (StretchState            *start,
-								      StretchState            *current);
-static NautilusIcon *get_first_selected_icon               (NautilusIconContainer      *container);
-static NautilusIcon *get_nth_selected_icon                 (NautilusIconContainer      *container,
-								      int                      index);
-#if 0
-static gboolean                has_selection                         (NautilusIconContainer      *container);
-#endif
-static gboolean                has_multiple_selection                (NautilusIconContainer      *container);
-static void                    icon_destroy                          (NautilusIconContainer      *container,
-								      NautilusIcon  *icon);
-static guint                   icon_get_actual_size                  (NautilusIcon  *icon);
+static void          activate_selected_items                  (NautilusIconContainer      *container);
+static void          nautilus_icon_container_initialize_class (NautilusIconContainerClass *class);
+static void          nautilus_icon_container_initialize       (NautilusIconContainer      *container);
+static void          compute_stretch                          (StretchState               *start,
+							       StretchState               *current);
+static NautilusIcon *get_first_selected_icon                  (NautilusIconContainer      *container);
+static NautilusIcon *get_nth_selected_icon                    (NautilusIconContainer      *container,
+							       int                         index);
+static gboolean      has_multiple_selection                   (NautilusIconContainer      *container);
+static void          icon_destroy                             (NautilusIconContainer      *container,
+							       NautilusIcon               *icon);
+static guint         icon_get_actual_size                     (NautilusIcon               *icon);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer, nautilus_icon_container, GNOME_TYPE_CANVAS)
 
@@ -148,7 +143,7 @@ icon_new (NautilusIconContainer *container,
 					NULL));
 	icon->item->user_data = icon;
 
-	update_icon (container, icon);
+	nautilus_icon_container_update_icon (container, icon);
 	
 	/* Enforce a maximum size for new icons by reducing the scale factor as necessary.
 	 * FIXME: This needs to be done again later when the image changes, so it's not
@@ -163,7 +158,7 @@ icon_new (NautilusIconContainer *container,
 	if (actual_size > max_size) {
 		icon->scale_x = max_size / (double) actual_size;
 		icon->scale_y = icon->scale_x;
-		update_icon (container, icon);
+		nautilus_icon_container_update_icon (container, icon);
 	}
 	
 	return icon;
@@ -629,7 +624,7 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 	if (scale_x != icon->scale_x || scale_y != icon->scale_y) {
 		icon->scale_x = scale_x;
 		icon->scale_y = scale_y;
-		update_icon (container, icon);
+		nautilus_icon_container_update_icon (container, icon);
 		emit_signal = TRUE;
 	}
 	
@@ -2142,6 +2137,9 @@ icon_destroy (NautilusIconContainer *container,
 	if (details->keyboard_icon_to_reveal == icon) {
 		unschedule_keyboard_icon_reveal (container);
 	}
+	if (details->drop_target == icon) {
+		details->drop_target = NULL;
+	}
 
 	nautilus_icon_grid_remove (details->grid, icon);
 	
@@ -2211,8 +2209,9 @@ set_up_icon_in_container (NautilusIconContainer *container,
 			    GTK_SIGNAL_FUNC (bounds_changed_callback), container);
 }
 
-static void 
-update_icon (NautilusIconContainer *container, NautilusIcon *icon)
+void 
+nautilus_icon_container_update_icon (NautilusIconContainer *container,
+				     NautilusIcon *icon)
 {
 	NautilusIconContainerDetails *details;
 	NautilusScalableIcon *scalable_icon;
@@ -2224,6 +2223,10 @@ update_icon (NautilusIconContainer *container, NautilusIcon *icon)
 	char *contents_as_text;
 	GdkFont *font;
 
+	if (icon == NULL) {
+		return;
+	}
+
 	details = container->details;
 
 	/* Get the icons. */
@@ -2232,7 +2235,7 @@ update_icon (NautilusIconContainer *container, NautilusIcon *icon)
 			 signals[GET_ICON_IMAGES],
 			 icon->data,
 			 &emblem_icons,
-			 nautilus_icon_canvas_item_get_modifier(icon->item),
+			 (icon == details->drop_target) ? "accept" : "",
 			 &scalable_icon);
 	g_assert (scalable_icon != NULL);
 
@@ -2281,6 +2284,7 @@ update_icon (NautilusIconContainer *container, NautilusIcon *icon)
 			       "text", label,
 			       "font", font,
 			       "text_source", contents_as_text,
+			       "highlighted_for_drop", icon == details->drop_target,
 			       NULL);
 	nautilus_icon_canvas_item_set_image (icon->item, pixbuf, &text_rect);
 	nautilus_icon_canvas_item_set_emblems (icon->item, emblem_pixbufs);
@@ -2316,7 +2320,7 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 
 	request_idle (container);
 
-	update_icon (container, new_icon);
+	nautilus_icon_container_update_icon (container, new_icon);
 }
 
 /**
@@ -2386,7 +2390,7 @@ nautilus_icon_container_remove (NautilusIconContainer *container,
  **/
 void
 nautilus_icon_container_request_update (NautilusIconContainer *container,
-				     NautilusIconData *data)
+					NautilusIconData *data)
 {
 	NautilusIcon *icon;
 	GList *p;
@@ -2397,33 +2401,7 @@ nautilus_icon_container_request_update (NautilusIconContainer *container,
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		icon = p->data;
 		if (icon->data == data) {
-			update_icon (container, icon);
-			return;
-		}
-	}
-}
-
-/**
- * nautilus_icon_container_request_update_by_item:
- * @container: A NautilusIconContainer.
- * @item: Icon canvas item.
- * 
- * Update the icon with this data.
- **/
-void
-nautilus_icon_container_request_update_by_item (NautilusIconContainer *container,
-				     NautilusIconCanvasItem *item)
-{
-	NautilusIcon *icon;
-	GList *p;
-
-	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_return_if_fail (item != NULL);
-
-	for (p = container->details->icons; p != NULL; p = p->next) {
-		icon = p->data;
-		if (icon->item == item) {
-			update_icon (container, icon);
+			nautilus_icon_container_update_icon (container, icon);
 			return;
 		}
 	}
@@ -2481,7 +2459,7 @@ nautilus_icon_container_request_update_all (NautilusIconContainer *container)
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	for (p = container->details->icons; p != NULL; p = p->next) {
-		update_icon (container, p->data);
+		nautilus_icon_container_update_icon (container, p->data);
 	}
 }
 

@@ -117,10 +117,14 @@ void               nautilus_directory_set_integer_metadata (NautilusDirectory   
 							    int                        metadata);
 
 /* Monitor the files in a directory. */
-void               nautilus_directory_monitor_files_ref    (NautilusDirectory         *directory,
+void               nautilus_directory_file_monitor_add     (NautilusDirectory         *directory,
+							    gpointer                   client,
+							    GList                     *attributes,
+							    GList                     *metadata_keys,
 							    NautilusFileListCallback   initial_files_callback,
 							    gpointer                   callback_data);
-void               nautilus_directory_monitor_files_unref  (NautilusDirectory         *directory);
+void               nautilus_directory_file_monitor_remove  (NautilusDirectory         *directory,
+							    gpointer                   client);
 
 /* Return true if the directory has information about all the files.
  * This will be false until the directory has been read at least once.

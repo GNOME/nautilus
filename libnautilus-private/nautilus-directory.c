@@ -145,6 +145,7 @@ static GnomeVFSDirectoryListPosition nautilus_gnome_vfs_directory_list_get_next_
 static void                          nautilus_gnome_vfs_file_info_list_free              (GList                         *list);
 static void                          nautilus_gnome_vfs_file_info_list_unref             (GList                         *list);
 static void                          schedule_dequeue_pending                            (NautilusDirectory             *directory);
+static void                          stop_monitoring_files                               (NautilusDirectory             *directory);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDirectory, nautilus_directory, GTK_TYPE_OBJECT)
 
@@ -241,10 +242,10 @@ nautilus_directory_destroy (GtkObject *object)
 	g_assert (directory->details->write_state == NULL);
 	metafile_read_cancel (directory);
 
-	if (directory->details->monitor_files_ref_count != 0) {
+	if (directory->details->file_monitors != NULL) {
 		g_warning ("destroying a NautilusDirectory while it's being monitored");
-		directory->details->monitor_files_ref_count = 1;
-		nautilus_directory_monitor_files_unref (directory);
+		stop_monitoring_files (directory);
+		g_list_free (directory->details->file_monitors);
 	}
 
 	g_hash_table_remove (directory_objects, directory->details->uri_text);
@@ -876,12 +877,21 @@ nautilus_directory_new (const char* uri)
 }
 
 void
-nautilus_directory_monitor_files_ref (NautilusDirectory *directory,
-				      NautilusFileListCallback callback,
-				      gpointer callback_data)
+nautilus_directory_file_monitor_add (NautilusDirectory *directory,
+				     gpointer client,
+				     GList *attributes,
+				     GList *metadata_keys,
+				     NautilusFileListCallback callback,
+				     gpointer callback_data)
 {
+	gboolean first_file_monitor;
+
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (callback != NULL);
+
+	first_file_monitor = directory->details->file_monitors == NULL;
+	directory->details->file_monitors =
+		g_list_prepend (directory->details->file_monitors, client);
 
 	nautilus_file_list_ref (directory->details->files);
 
@@ -891,8 +901,7 @@ nautilus_directory_monitor_files_ref (NautilusDirectory *directory,
 			      callback_data);
 	}
 
-	g_assert (directory->details->monitor_files_ref_count != UINT_MAX);
-	if (directory->details->monitor_files_ref_count++ != 0) {
+	if (!first_file_monitor) {
 		nautilus_file_list_unref (directory->details->files);
 		return;
 	}
@@ -946,7 +955,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
 	}
 
 	/* If we stopped monitoring, then throw away these. */
-	if (directory->details->monitor_files_ref_count == 0) {
+	if (directory->details->file_monitors == NULL) {
 		nautilus_gnome_vfs_file_info_list_free (pending_file_info);
 		return FALSE;
 	}
@@ -1054,22 +1063,29 @@ nautilus_directory_load_callback (GnomeVFSAsyncHandle *handle,
 	}
 }
 
-void
-nautilus_directory_monitor_files_unref (NautilusDirectory *directory)
+static void
+stop_monitoring_files (NautilusDirectory *directory)
 {
-	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
-	g_return_if_fail (directory->details->monitor_files_ref_count != 0);
-
-	if (--directory->details->monitor_files_ref_count != 0) {
-		return;
-	}
-
 	if (directory->details->directory_load_in_progress != NULL) {
 		gnome_vfs_async_cancel (directory->details->directory_load_in_progress);
 		directory->details->directory_load_in_progress = NULL;
 	}
 
 	nautilus_file_list_unref (directory->details->files);
+}
+
+void
+nautilus_directory_file_monitor_remove (NautilusDirectory *directory,
+					gpointer client)
+{
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+	g_return_if_fail (g_list_find (directory->details->file_monitors, client) != NULL);
+
+	directory->details->file_monitors =
+		g_list_remove (directory->details->file_monitors, client);
+	if (directory->details->file_monitors == NULL) {
+		stop_monitoring_files (directory);
+	}
 }
 
 gboolean
@@ -1553,15 +1569,25 @@ nautilus_directory_files_changed (NautilusDirectory *directory,
 
 static int data_dummy;
 static guint file_count;
+static gboolean got_metadata_flag;
 
 static void
-get_files_callback (NautilusDirectory *directory, GList *files, gpointer data)
+get_files_callback (NautilusDirectory *directory, GList *files, gpointer callback_data)
 {
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-	g_assert (files);
-	g_assert (data == &data_dummy);
+	g_assert (files != NULL);
+	g_assert (callback_data == &data_dummy);
 
 	file_count += g_list_length (files);
+}
+
+static void
+got_metadata_callback (NautilusDirectory *directory, gpointer callback_data)
+{
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	g_assert (callback_data == &data_dummy);
+
+	got_metadata_flag = TRUE;
 }
 
 /* Return the number of extant NautilusDirectories */
@@ -1575,13 +1601,26 @@ void
 nautilus_self_check_directory (void)
 {
 	NautilusDirectory *directory;
+	GList *list;
+
+	list = g_list_prepend (NULL, "TEST");
 
 	directory = nautilus_directory_get ("file:///etc");
 
 	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directory_objects), 1);
 
 	file_count = 0;
-	nautilus_directory_monitor_files_ref (directory, get_files_callback, &data_dummy);
+	nautilus_directory_file_monitor_add (directory, &file_count,
+					     NULL, NULL,
+					     get_files_callback, &data_dummy);
+
+	got_metadata_flag = FALSE;
+	nautilus_directory_call_when_ready (directory, list, NULL,
+					    got_metadata_callback, &data_dummy);
+
+	while (!got_metadata_flag) {
+		gtk_main_iteration ();
+	}
 
 	nautilus_directory_set_metadata (directory, "TEST", "default", "value");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_get_metadata (directory, "TEST", "default"), "value");
@@ -1610,12 +1649,11 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_directory_get ("file:///etc////") == directory, TRUE);
 	nautilus_directory_unref (directory);
 
-	nautilus_directory_monitor_files_unref (directory);
+	nautilus_directory_file_monitor_remove (directory, &file_count);
 
 	nautilus_directory_unref (directory);
 
-	/* let the idle function run */
-	while (gtk_events_pending ()) {
+	while (g_hash_table_size (directory_objects) != 0) {
 		gtk_main_iteration ();
 	}
 
@@ -1623,11 +1661,21 @@ nautilus_self_check_directory (void)
 
 	directory = nautilus_directory_get ("file:///etc");
 
+	got_metadata_flag = FALSE;
+	nautilus_directory_call_when_ready (directory, list, NULL,
+					    got_metadata_callback, &data_dummy);
+
+	while (!got_metadata_flag) {
+		gtk_main_iteration ();
+	}
+
 	NAUTILUS_CHECK_BOOLEAN_RESULT (directory->details->metafile != NULL, TRUE);
 
 	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directory_objects), 1);
 
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_get_metadata (directory, "TEST", "default"), "value");
+
+	nautilus_directory_unref (directory);
 
 	/* escape_slashes */
 	NAUTILUS_CHECK_STRING_RESULT (escape_slashes (""), "");
@@ -1639,7 +1687,7 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_STRING_RESULT (escape_slashes ("%25"), "%2525");
 	NAUTILUS_CHECK_STRING_RESULT (escape_slashes ("%2F"), "%252F");
 
-	nautilus_directory_unref (directory);
+	g_list_free (list);
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */
