@@ -95,6 +95,7 @@ static void          volume_mounted_callback               (NautilusVolumeMonito
 static void          volume_unmounted_callback             (NautilusVolumeMonitor    *monitor,
 							    NautilusVolume           *volume,
 							    NautilusApplication      *application);
+static void	     update_session			    (gpointer		      callback_data);
 static void	     init_session 			    (void);
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusApplication, nautilus_application, BONOBO_OBJECT_TYPE)
@@ -758,6 +759,11 @@ desktop_changed_callback (gpointer user_data)
 	} else {
 		nautilus_application_close_desktop ();
 	}
+
+	/* Can't make this function just watch the preference
+	 * itself changing since ordering is important
+	 */
+	update_session (gnome_master_client ());
 }
 
 /*
@@ -924,14 +930,13 @@ set_session_restart (GnomeClient *client, gboolean restart)
 	static char *restart_argv[] = { "nautilus", "--no-default-window", 0 };
 
 	gnome_client_set_restart_command (client, 2, restart_argv);
-
 	gnome_client_set_priority (client, 40);
-	
-	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
+
+	if (restart && g_getenv ("NAUTILUS_DEBUG") == NULL) {
 		/* Don't respawn in debug mode */
-		gnome_client_set_restart_style (client, GNOME_RESTART_NEVER);
+		gnome_client_set_restart_style (client, GNOME_RESTART_IMMEDIATELY);
 	} else {
-		gnome_client_set_restart_style (client, (restart ? GNOME_RESTART_IMMEDIATELY : GNOME_RESTART_NEVER));
+		gnome_client_set_restart_style (client, GNOME_RESTART_NEVER);
 	}
 }
 
@@ -940,7 +945,11 @@ update_session (gpointer callback_data)
 {
 	set_session_restart (callback_data,
 			     nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_ADD_TO_SESSION)
-			     && nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP));
+			     /* Only ever add ourselves to the session
+			      * if we have a desktop window. Prevents the
+			      * session thrashing that's seen otherwise
+			      */
+			     && nautilus_application_desktop_window != NULL);
 }
 
 static void
@@ -960,10 +969,6 @@ init_session (void)
 	
 	nautilus_preferences_add_callback
 		(NAUTILUS_PREFERENCES_ADD_TO_SESSION,
-		 update_session, client);
-
-	nautilus_preferences_add_callback
-		(NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 		 update_session, client);
 
 	update_session (client);

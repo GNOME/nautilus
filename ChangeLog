@@ -1,3 +1,20 @@
+2001-04-27  John Harper  <jsh@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 7732 (opening window from prompt spawns endless
+	process cycle):
+
+	* src/nautilus-application.c (desktop_changed_callback): call
+	update_session () directly
+
+	(update_session): don't check the SHOW_DESKTOP preference to
+	see if we should add ourselves to the session, check that the
+	current process has actually _created_ a desktop window
+
+	(init_session): don't register a listener for the SHOW_DESKTOP
+	preference since it's called by desktop_changed_callback ()
+
 2001-04-27  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-preferences.c:
