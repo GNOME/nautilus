@@ -27,9 +27,11 @@
 
 #include <bonobo/bonobo-generic-factory.h>
 #include <bonobo/bonobo-main.h>
+#include <bonobo/bonobo-ui-util.h>
 #include <gnome.h>
 #include <libnautilus/libnautilus.h>
 #include <libnautilus/nautilus-view-component.h>
+#include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-bookmark.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libgnome/gnome-i18n.h>
@@ -49,6 +51,11 @@ typedef struct {
 #define HISTORY_VIEW_COLUMN_ICON	0
 #define HISTORY_VIEW_COLUMN_NAME	1
 #define HISTORY_VIEW_COLUMN_COUNT	2
+
+
+static void history_load_location 	(NautilusView 	*view, 
+					const char 	*location, 
+					HistoryView 	*hview);
 
 static NautilusBookmark *
 get_bookmark_from_row (GtkCList *clist, int row)
@@ -82,37 +89,32 @@ history_view_frame_call_end (Nautilus_HistoryFrame frame, CORBA_Environment *ev)
 }
 
 static void
-install_icon (GtkCList *clist, gint row)
+install_icon (GtkCList *clist, gint row, GdkPixbuf *pixbuf)
 {
 	GdkPixmap *pixmap;
-	GdkBitmap *bitmap;
+	GdkBitmap *mask;
 	NautilusBookmark *bookmark;
 
 	bookmark = get_bookmark_from_row (clist, row);
-	
-	if (!nautilus_bookmark_get_pixmap_and_mask (bookmark,
-		  				    NAUTILUS_ICON_SIZE_SMALLER,
-						    &pixmap,
-						    &bitmap))
-	{
-		return;
-	}
 
-	gtk_clist_set_pixmap (clist,	
-			      row,
-			      HISTORY_VIEW_COLUMN_ICON,
-			      pixmap,
-			      bitmap);
+	if (pixbuf != NULL) {
+		gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 
+						   NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+	} else {
+		if (!nautilus_bookmark_get_pixmap_and_mask (bookmark, NAUTILUS_ICON_SIZE_SMALLER, 
+							   &pixmap, &mask)) {
+			return;
+		}
+	}
+	
+	gtk_clist_set_pixmap (clist, row, HISTORY_VIEW_COLUMN_ICON, pixmap, mask);
 }
 
 static void
-history_view_update_icons (GtkCList *clist)
+history_view_update_icons (HistoryView *hview)
 {
-	int row;
-		
-	for (row = 0; row < clist->rows; ++row) {
-		install_icon (clist, row);
-	}
+	/* Reload all bookmarks and pixbufs */
+	history_load_location (hview->view, NULL, hview);
 }
 
 static Nautilus_HistoryList *
@@ -132,9 +134,7 @@ get_history_list (HistoryView *hview)
 
 
 static void
-history_load_location (NautilusView *view,
-		       const char *location,
-		       HistoryView *hview)
+history_load_location (NautilusView *view, const char *location, HistoryView *hview)
 {
 	char *cols[HISTORY_VIEW_COLUMN_COUNT];
 	int new_rownum;
@@ -142,7 +142,9 @@ history_load_location (NautilusView *view,
 	NautilusBookmark *bookmark;
 	Nautilus_HistoryList *history_list;
 	Nautilus_HistoryItem *item;
+	GdkPixbuf *pixbuf;
 	guint i;
+	
 	static int lock = 0;
 
 	if (lock != 0) {
@@ -172,7 +174,14 @@ history_load_location (NautilusView *view,
 		
 		gtk_clist_set_row_data_full (clist, new_rownum, bookmark,
 					     (GtkDestroyNotify) gtk_object_unref);
-		install_icon (clist, new_rownum);
+
+		pixbuf = bonobo_ui_util_xml_to_pixbuf (item->icon);
+		if (pixbuf != NULL) {
+			install_icon (clist, new_rownum, pixbuf);
+			gdk_pixbuf_unref (pixbuf);
+		} else {
+			install_icon (clist, new_rownum, NULL);
+		}
 		
 		gtk_clist_columns_autosize (clist);
 		
@@ -297,10 +306,8 @@ make_obj (BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 	gtk_signal_connect(GTK_OBJECT(clist), "button-press-event", history_button_press, hview);
 	gtk_signal_connect(GTK_OBJECT(clist), "button-release-event", history_button_release, hview);
 
-	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
-					 "icons_changed",
-					 history_view_update_icons,
-					 GTK_OBJECT (hview->clist));
+	gtk_signal_connect (nautilus_icon_factory_get (), "icons_changed",
+			    history_view_update_icons, hview);
 					 
 	return BONOBO_OBJECT (hview->view);
 }
@@ -316,7 +323,7 @@ main (int argc, char *argv[])
 				    argc, argv,
 				    oaf_popt_options, 0, NULL); 
 	orb = oaf_init (argc, argv);
-	bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 	gnome_vfs_init ();
 
 	registration_id = oaf_make_registration_id ("OAFIID:nautilus_history_view_factory:912d6634-d18f-40b6-bb83-bdfe16f1d15e", g_getenv ("DISPLAY"));

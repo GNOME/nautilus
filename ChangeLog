@@ -1,3 +1,27 @@
+2000-11-13  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 1633, History sidebar panel items all display generic 
+	bookmark icon.
+	
+	* libnautilus/nautilus-view-component.idl:
+	Added icon string element to History structure to hold
+	an pifbuf converted to a XML string.
+
+	* src/nautilus-window-manage-views.c: (get_history_list_callback):
+	Get bookmark pixbuf, convert it to XML and copt the XML string into
+	the CORBA structure that is added to the list to be returned.
+	
+	* components/history/nautilus-history-view.c: 
+	(install_icon):
+	Check and see if pixbuf is non-NULL. If it is, use it. Otherwise
+	use the generic bookmark icon.
+	
+	(history_view_update_icons):
+	Reload entire list to ensure that proper icons are used.
+	
+	(history_load_location):
+	Call install_icon with new pixbuf parameter.	
+
 2000-11-13  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	A lot of housecleaning, for which there were no bug reports...

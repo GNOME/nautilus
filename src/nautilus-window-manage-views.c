@@ -35,6 +35,7 @@
 #include "nautilus-zoom-control.h"
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmain.h>
+#include <bonobo/bonobo-ui-util.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dialog-util.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
@@ -1513,8 +1514,9 @@ get_history_list_callback (NautilusViewFrame *view,
 	NautilusBookmark *bookmark;
 	int length, i;
 	GList *node;
-	char *name, *location;
-
+	char *name, *location, *pixbuf_xml;
+	GdkPixbuf *pixbuf;
+	
 	/* Get total number of history items */
 	length = g_list_length (nautilus_get_history_list ());
 
@@ -1531,12 +1533,17 @@ get_history_list_callback (NautilusViewFrame *view,
 
 		name = nautilus_bookmark_get_name (bookmark);
 		location = nautilus_bookmark_get_uri (bookmark);
+		pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS);
+		pixbuf_xml = bonobo_ui_util_pixbuf_to_xml (pixbuf);
 		
 		list->_buffer[i].title = CORBA_string_dup (name);
 		list->_buffer[i].location = CORBA_string_dup (location);
-		
+		list->_buffer[i].icon = CORBA_string_dup (pixbuf_xml);
+
 		g_free (name);
 		g_free (location);
+		g_free (pixbuf_xml);
+		gdk_pixbuf_unref (pixbuf);		
 	}
 
 	return list;
