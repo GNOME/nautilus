@@ -1,3 +1,17 @@
+2000-08-30  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_component_for_uri_internal):
+	Fixed bug 1158, GnomeVFSMimeHandlers code needs error handling.
+
+	There was a lonely FIXME here.  A NULL is now returned instead of
+	an assert. A NULL is handled properly by all callers of this function.
+
+	* src/file-manager/fm-desktop-icon-view.c: (event_callback),
+	(fm_desktop_icon_view_initialize):
+	Work in progress trying to get keyboard events to the desktop.
+	I am working with John Harper on this.
+
 2000-08-30  Ali Abdin  <aliabdin@aucegypt.edu>
 
         New tags to fix the following bugs: #2383, #2384, #2386, #2387,

@@ -258,6 +258,12 @@ startup_create_mount_links (const NautilusVolume *volume, gpointer data)
 }
 
 static void
+event_callback (GtkWidget *widget, GdkEvent *event, FMDesktopIconView *desktop_icon_view)
+{
+	//g_message ("event_callback: %d", event->type);
+}
+
+static void
 fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 {
 	NautilusIconContainer *icon_container;
@@ -305,9 +311,15 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 			    "middle_click",
 			    GTK_SIGNAL_FUNC (fm_desktop_icon_view_handle_middle_click),
 			    desktop_icon_view);
+			    
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "compare_icons",
 			    GTK_SIGNAL_FUNC (desktop_icons_compare_callback),
+			    desktop_icon_view);
+
+	gtk_signal_connect (GTK_OBJECT (desktop_icon_view),
+			    "event",
+			    GTK_SIGNAL_FUNC (event_callback),
 			    desktop_icon_view);
 
 	gtk_signal_connect (GTK_OBJECT (nautilus_trash_monitor_get ()),
