@@ -1,3 +1,27 @@
+2003-11-03  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-bonobo-extensions.h:
+	* libnautilus-private/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_register_activation_shortcut),
+	(nautilus_bonobo_unregister_activation_shortcut),
+	(nautilus_bonobo_activate_from_id):
+	Allow to register shortcuts for in-process IIDs so
+	that activation doesn't go through bonobo-activation.
+	
+	* src/nautilus-application.c: (create_object_shortcut),
+	(nautilus_application_instance_init),
+	(nautilus_application_destroy):
+	* components/emblem/libmain.c:
+	* components/history/libmain.c:
+	* components/notes/nautilus-notes.c:
+	* components/tree/libmain.c:
+	Register activation shortcuts.
+
+	* src/nautilus-navigation-window.c:
+	(nautilus_navigation_window_hide_sidebar),
+	(nautilus_navigation_window_show_sidebar):
+	Avoid gratuitus gconf write.
+	
 2003-11-01  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-window.c (nautilus_window_hide_status_bar) 

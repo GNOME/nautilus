@@ -46,6 +46,7 @@
 #include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus/nautilus-view.h>
 #include <libnautilus/nautilus-view-standard-main.h>
+#include <libnautilus-private/nautilus-bonobo-extensions.h>
 
 /* FIXME bugzilla.gnome.org 44436: 
  * Undo not working in notes-view.
@@ -434,6 +435,23 @@ make_notes_view ()
         return BONOBO_OBJECT (notes->view);
 }
 
+static gboolean shortcut_registered = FALSE;
+
+static CORBA_Object
+create_object (const char *iid,
+	       gpointer callback_data)
+{
+	BonoboObject *view;
+
+	if (strcmp (iid, VIEW_IID) != 0) {
+		return CORBA_OBJECT_NIL;
+	}
+
+	view = make_notes_view ();
+
+	return CORBA_Object_duplicate (BONOBO_OBJREF (view), NULL);
+}
+
 
 static CORBA_Object
 notes_shlib_make_object (PortableServer_POA poa,
@@ -443,6 +461,12 @@ notes_shlib_make_object (PortableServer_POA poa,
 {
 	BonoboObject *view;
 
+	if (!shortcut_registered) {
+		nautilus_bonobo_register_activation_shortcut (VIEW_IID,
+							      create_object, NULL);
+		shortcut_registered = TRUE;
+	}
+        
 	if (strcmp (iid, VIEW_IID) != 0) {
 		return CORBA_OBJECT_NIL;
 	}

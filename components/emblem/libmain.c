@@ -30,12 +30,13 @@
 #include "nautilus-emblem-view.h"
 #include <bonobo.h>
 #include <bonobo-activation/bonobo-activation.h>
+#include <libnautilus-private/nautilus-bonobo-extensions.h>
+
+static gboolean shortcut_registered = FALSE;
 
 static CORBA_Object
-emblem_shlib_make_object (PortableServer_POA poa,
-			  const char *iid,
-			  gpointer impl_ptr,
-			  CORBA_Environment *ev)
+create_object (const char *iid,
+	       gpointer callback_data)
 {
 	NautilusEmblemView *view;
 
@@ -45,9 +46,32 @@ emblem_shlib_make_object (PortableServer_POA poa,
 
 	view = NAUTILUS_EMBLEM_VIEW (g_object_new (NAUTILUS_TYPE_EMBLEM_VIEW, NULL));
 
+	return CORBA_Object_duplicate (BONOBO_OBJREF (view), NULL);
+}
+
+static CORBA_Object
+emblem_shlib_make_object (PortableServer_POA poa,
+			  const char *iid,
+			  gpointer impl_ptr,
+			  CORBA_Environment *ev)
+{
+	NautilusEmblemView *view;
+
+	if (!shortcut_registered) {
+		nautilus_bonobo_register_activation_shortcut (EMBLEM_VIEW_IID,
+							      create_object, NULL);
+		shortcut_registered = TRUE;
+	}
+
+	if (strcmp (iid, EMBLEM_VIEW_IID) != 0) {
+		return CORBA_OBJECT_NIL;
+	}
+	
+	view = NAUTILUS_EMBLEM_VIEW (g_object_new (NAUTILUS_TYPE_EMBLEM_VIEW, NULL));
+
 	bonobo_activation_plugin_use (poa, impl_ptr);
 
-	return CORBA_Object_duplicate (BONOBO_OBJREF (view), ev);
+	return CORBA_Object_duplicate (BONOBO_OBJREF (view), NULL);
 }
 
 static const BonoboActivationPluginObject emblem_plugin_list[] = {

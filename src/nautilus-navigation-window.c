@@ -1364,7 +1364,8 @@ nautilus_navigation_window_hide_sidebar (NautilusNavigationWindow *window)
 	nautilus_navigation_window_tear_down_sidebar (window);
 	nautilus_navigation_window_update_show_hide_menu_items (window);
 
-	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR)) {
+	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR) &&
+	    eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR)) {
 		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR, FALSE);
 	}
 }
@@ -1378,7 +1379,8 @@ nautilus_navigation_window_show_sidebar (NautilusNavigationWindow *window)
 
 	nautilus_navigation_window_set_up_sidebar (window);
 	nautilus_navigation_window_update_show_hide_menu_items (window);
-	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR)) {
+	if (eel_preferences_key_is_writable (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR) &&
+	    !eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR)) {
 		eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR, TRUE);
 	}
 }

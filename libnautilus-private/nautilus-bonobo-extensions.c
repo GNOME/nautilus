@@ -30,6 +30,7 @@
 
 #include <eel/eel-string.h>
 #include <eel/eel-gnome-extensions.h>
+#include <eel/eel-debug.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <gtk/gtkmain.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -507,6 +508,44 @@ activation_handle_free (NautilusBonoboActivationHandle *handle)
 	g_free (handle);
 }
 
+static GHashTable *nautilus_activation_shortcuts = NULL;
+
+struct CreateObjectData {
+	NautilusBonoboCreateObject create_object;
+	gpointer callback_data;
+};
+
+void
+nautilus_bonobo_register_activation_shortcut (const char                       *iid,
+					      NautilusBonoboCreateObject        create_object_callback,
+					      gpointer                          callback_data)
+{
+	struct CreateObjectData *data;
+	
+	if (nautilus_activation_shortcuts == NULL) {
+		nautilus_activation_shortcuts = g_hash_table_new_full
+			(g_str_hash, g_str_equal, g_free, g_free);
+		eel_debug_call_at_shutdown_with_data ((GFreeFunc)g_hash_table_destroy,
+						      nautilus_activation_shortcuts);
+	}
+
+	data = g_new (struct CreateObjectData, 1);
+	data->create_object = create_object_callback;
+	data->callback_data = callback_data;
+	g_hash_table_insert (nautilus_activation_shortcuts,
+			     g_strdup (iid), data);
+}
+
+void
+nautilus_bonobo_unregister_activation_shortcut (const char *iid)
+{
+	if (nautilus_activation_shortcuts == NULL) {
+		g_assert_not_reached ();
+		return;
+	}
+	g_hash_table_remove (nautilus_activation_shortcuts, iid);
+}
+
 static gboolean
 activation_idle_callback (gpointer callback_data)
 {
@@ -567,7 +606,9 @@ nautilus_bonobo_activate_from_id (const char *iid,
 				  gpointer callback_data)
 {
 	NautilusBonoboActivationHandle *handle;
-
+	struct CreateObjectData *data;
+	CORBA_Object activated_object;
+	
 	g_return_val_if_fail (iid != NULL, NULL);
 	g_return_val_if_fail (callback != NULL, NULL);
 
@@ -576,6 +617,23 @@ nautilus_bonobo_activate_from_id (const char *iid,
 	handle->early_completion_hook = &handle;
 	handle->callback = callback;
 	handle->callback_data = callback_data;
+
+	handle->activated_object = CORBA_OBJECT_NIL;
+	
+	if (nautilus_activation_shortcuts != NULL) {
+		data = g_hash_table_lookup (nautilus_activation_shortcuts, iid);
+		if (data != NULL) {
+			activated_object = (*data->create_object) (iid, data->callback_data);
+			if (activated_object != CORBA_OBJECT_NIL) {
+				handle->activated_object = activated_object;
+				handle->early_completion_hook = NULL;
+				handle->idle_id = g_idle_add (activation_idle_callback,
+							      handle);
+				return handle;
+			}
+		}
+	}
+
 
 	bonobo_activation_activate_from_id_async ((char *) iid, 0,
 				    bonobo_activation_activation_callback, 

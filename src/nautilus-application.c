@@ -152,6 +152,13 @@ nautilus_application_get_spatial_window_list (void)
 	return nautilus_application_spatial_window_list;
 }
 
+static CORBA_Object
+create_object_shortcut (const char *iid,
+			gpointer callback_data)
+{
+	return create_object (BONOBO_OBJREF (callback_data), iid, NULL);
+}
+
 static void
 nautilus_application_instance_init (NautilusApplication *application)
 {
@@ -165,6 +172,11 @@ nautilus_application_instance_init (NautilusApplication *application)
 	/* Watch for volume unmounts so we can close open windows */
 	g_signal_connect_object (nautilus_volume_monitor_get (), "volume_unmounted",
 				 G_CALLBACK (volume_unmounted_callback), application, 0);
+
+	nautilus_bonobo_register_activation_shortcut (NAUTILUS_ICON_VIEW_IID, create_object_shortcut, application);
+	nautilus_bonobo_register_activation_shortcut (NAUTILUS_DESKTOP_ICON_VIEW_IID, create_object_shortcut, application);
+	nautilus_bonobo_register_activation_shortcut (NAUTILUS_LIST_VIEW_IID, create_object_shortcut, application);
+	nautilus_bonobo_register_activation_shortcut (SEARCH_LIST_VIEW_IID, create_object_shortcut, application);
 }
 
 NautilusApplication *
@@ -188,6 +200,11 @@ nautilus_application_destroy (BonoboObject *object)
 
 	application = NAUTILUS_APPLICATION (object);
 
+	nautilus_bonobo_unregister_activation_shortcut (NAUTILUS_ICON_VIEW_IID);
+	nautilus_bonobo_unregister_activation_shortcut (NAUTILUS_DESKTOP_ICON_VIEW_IID);
+	nautilus_bonobo_unregister_activation_shortcut (NAUTILUS_LIST_VIEW_IID);
+	nautilus_bonobo_unregister_activation_shortcut (SEARCH_LIST_VIEW_IID);
+	
 	nautilus_bookmarks_exiting ();
 	
 	bonobo_object_unref (application->undo_manager);

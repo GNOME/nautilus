@@ -29,6 +29,7 @@
 
 #include <bonobo/bonobo-ui-component.h>
 #include <bonobo/bonobo-xobject.h>
+#include <bonobo/bonobo-generic-factory.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 typedef struct NautilusBonoboActivationHandle NautilusBonoboActivationHandle;
@@ -36,6 +37,9 @@ typedef struct NautilusBonoboActivationHandle NautilusBonoboActivationHandle;
 typedef void (*NautilusBonoboActivationCallback) (NautilusBonoboActivationHandle *handle,
 						  Bonobo_Unknown activated_object,
 						  gpointer callback_data);
+
+typedef CORBA_Object (*NautilusBonoboCreateObject) (const char *iid,
+						      gpointer callback_data);
 
 void                            nautilus_bonobo_set_accelerator                     (BonoboUIComponent                *ui,
 										     const char                       *path,
@@ -99,6 +103,10 @@ void                            nautilus_bonobo_set_icon                        
 										     const char                       *path,
 										     const char                       *icon_relative_path);
 
+void                            nautilus_bonobo_register_activation_shortcut        (const char                       *iid,
+										     NautilusBonoboCreateObject        create_object_callback,
+										     gpointer                          callback_data);
+void                            nautilus_bonobo_unregister_activation_shortcut      (const char                       *iid);
 NautilusBonoboActivationHandle *nautilus_bonobo_activate_from_id                    (const char                       *iid,
 										     NautilusBonoboActivationCallback  callback,
 										     gpointer                          callback_data);

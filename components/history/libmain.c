@@ -30,6 +30,24 @@
 #include "nautilus-history-view.h"
 #include <bonobo.h>
 #include <bonobo-activation/bonobo-activation.h>
+#include <libnautilus-private/nautilus-bonobo-extensions.h>
+
+static gboolean shortcut_registered = FALSE;
+
+static CORBA_Object
+create_object (const char *iid,
+	       gpointer callback_data)
+{
+	NautilusHistoryView *view;
+
+	if (strcmp (iid, VIEW_IID) != 0) {
+		return CORBA_OBJECT_NIL;
+	}
+
+	view = NAUTILUS_HISTORY_VIEW (g_object_new (NAUTILUS_TYPE_HISTORY_VIEW, NULL));
+
+	return CORBA_Object_duplicate (BONOBO_OBJREF (view), NULL);
+}
 
 static CORBA_Object
 history_shlib_make_object (PortableServer_POA poa,
@@ -38,6 +56,12 @@ history_shlib_make_object (PortableServer_POA poa,
 			CORBA_Environment *ev)
 {
 	NautilusHistoryView *view;
+
+	if (!shortcut_registered) {
+		nautilus_bonobo_register_activation_shortcut (VIEW_IID,
+							      create_object, NULL);
+		shortcut_registered = TRUE;
+	}
 
 	if (strcmp (iid, VIEW_IID) != 0) {
 		return CORBA_OBJECT_NIL;
