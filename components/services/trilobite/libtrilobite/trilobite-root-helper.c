@@ -212,6 +212,22 @@ eazel_helper_response (int pipe_stdout)
 	}
 }
 
+/* read chars from eazel-helper (and discard them) until we reach a linefeed
+ * (or there's nothing else in the buffer -- older buggy versions of userhelper
+ * won't end msg-type "5" with a linefeed correctly.)
+ */
+static void
+discard_line (int pipe_stdout)
+{
+	char in;
+
+	do {
+		in = 0;
+		read (pipe_stdout, &in, 1);
+	} while ((in != 0) && (in != '\n'));
+}
+
+
 /* /usr/sbin/userhelper
  * userhelper
  * -w
@@ -238,28 +254,38 @@ eazel_helper_start (int *pipe_stdin, int *pipe_stdout, int *child_pid)
 
 	make_nonblocking (*pipe_stdout);
 
-	/* if the first thing from the pipe is a "2", we need the root password */
-	buffer[0] = eazel_helper_response (*pipe_stdout);
-	if (buffer[0] == '\0') {
-		trilobite_debug ("roothelper: userhelper died (stdin: %d, stdout: %d, pid: %d",
-				 *pipe_stdin, *pipe_stdout, *child_pid);
-		err = TRILOBITE_ROOT_HELPER_NO_USERHELPER;
-		goto give_up;
-	} else if (buffer[0] == '2') {
-		/* need root password.  but first, clear the buffer of crap. */
-		read (*pipe_stdout, buffer, 256);
-		err = TRILOBITE_ROOT_HELPER_NEED_PASSWORD;
-		goto done;
-	} else if (buffer[0] == '*') {
-		/* the winner! */
-		read (*pipe_stdout, buffer, 256);
-		err = TRILOBITE_ROOT_HELPER_SUCCESS;
-		goto done;
-	} else {
-		/* ?! */
-		g_warning ("TrilobiteRootHelper: unknown userhelper result %02X", buffer[0]);
-		err = TRILOBITE_ROOT_HELPER_INTERNAL_ERROR;
-		goto give_up;
+	while (1) {
+		switch (buffer[0] = eazel_helper_response (*pipe_stdout)) {
+		case '\0':
+			trilobite_debug ("roothelper: userhelper died (stdin: %d, stdout: %d, pid: %d",
+					 *pipe_stdin, *pipe_stdout, *child_pid);
+			err = TRILOBITE_ROOT_HELPER_NO_USERHELPER;
+			goto give_up;
+		case '2':
+			/* need root password.  but first, clear the buffer of crap. */
+			discard_line (*pipe_stdout);
+			err = TRILOBITE_ROOT_HELPER_NEED_PASSWORD;
+			goto done;
+		case '3':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+			/* informational messages from userhelper -- don't care */
+			trilobite_debug ("roothelper: info msg '%c'", buffer[0]);
+			discard_line (*pipe_stdout);
+			continue;
+		case '*':
+			/* the winner! */
+			discard_line (*pipe_stdout);
+			err = TRILOBITE_ROOT_HELPER_SUCCESS;
+			goto done;
+		default:
+			/* ?! */
+			g_warning ("TrilobiteRootHelper: unknown userhelper result %02X", buffer[0]);
+			err = TRILOBITE_ROOT_HELPER_INTERNAL_ERROR;
+			goto give_up;
+		}
 	}
 
 give_up:
@@ -288,30 +314,32 @@ eazel_helper_password (int pipe_stdin, int pipe_stdout, const char *password)
 
 	/* now check for response */
 	while (1) {
-		buffer[0] = eazel_helper_response (pipe_stdout);
-		if (buffer[0] == '\0') {
+		switch (buffer[0] = eazel_helper_response (pipe_stdout)) {
+		case '\0':
 			trilobite_debug ("roothelper: userhelper closed pipe");
 			err = TRILOBITE_ROOT_HELPER_LOST_PIPE;
 			goto give_up;
-		} else if (buffer[0] == '2') {
+		case '2':
 			trilobite_debug ("roothelper: bad password");
 			err = TRILOBITE_ROOT_HELPER_BAD_PASSWORD;
 			/* don't close the pipe, let them try again if they want */
-			read (pipe_stdout, buffer, 256);
+			discard_line (pipe_stdout);
 			goto done;
-		} else if (buffer[0] == '5') {
-			/* sometimes a leftover status message from the last stage */
-			/* read 2 chars, then continue */
-			trilobite_debug ("roothelper: cleaning up userhelper spam (ok)");
-			eazel_helper_response (pipe_stdout);
-			eazel_helper_response (pipe_stdout);
+		case '3':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+			/* useless info messages */
+			trilobite_debug ("roothelper: info msg '%c'", buffer[0]);
+			discard_line (pipe_stdout);
 			continue;
-		} else if (buffer[0] == '*') {
+		case '*':
 			/* clear buffer */
-			read (pipe_stdout, buffer, 256);
+			discard_line (pipe_stdout);
 			err = TRILOBITE_ROOT_HELPER_SUCCESS;
 			goto done;
-		} else {
+		default:
 			/* ?! */
 			g_warning ("TrilobiteRootHelper: unknown userhelper 2nd result %02X", buffer[0]);
 			err = TRILOBITE_ROOT_HELPER_INTERNAL_ERROR;
