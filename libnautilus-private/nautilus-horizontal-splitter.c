@@ -32,6 +32,9 @@ struct _NautilusHorizontalSplitterDetail
 	gint	fixme;
 };
 
+/* Bar width currently hardcoded to 7 */
+#define BAR_WIDTH 7
+
 /* NautilusHorizontalSplitterClass methods */
 static void nautilus_horizontal_splitter_initialize_class (NautilusHorizontalSplitterClass *horizontal_splitter_class);
 static void nautilus_horizontal_splitter_initialize       (NautilusHorizontalSplitter      *horizontal_splitter);
@@ -74,7 +77,7 @@ nautilus_horizontal_splitter_initialize (NautilusHorizontalSplitter *horizontal_
 
 	horizontal_splitter->detail->fixme = 666;
 
-	e_paned_set_handle_size (E_PANED (horizontal_splitter), 7);
+	e_paned_set_handle_size (E_PANED (horizontal_splitter), BAR_WIDTH);
 }
 
 /* GtkObjectClass methods */
@@ -92,6 +95,115 @@ nautilus_horizontal_splitter_destroy(GtkObject *object)
 	
 	/* Chain */
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+static void
+draw_resize_bar (GtkWidget		*widget,
+		 GdkWindow		*window,
+		 const GdkRectangle	*area)
+{
+	GtkStyle	*style;
+	GdkGC		*gcs[BAR_WIDTH];
+	guint		i;
+
+	g_assert (widget != NULL);
+	g_assert (window != NULL);
+	g_assert (area != NULL);
+	g_assert (area->width == BAR_WIDTH);
+
+	style = widget->style;
+
+	g_assert (style != NULL);
+	
+	gcs[0] = style->fg_gc[GTK_STATE_NORMAL];
+	gcs[1] = style->fg_gc[GTK_STATE_SELECTED];
+	gcs[2] = style->light_gc[GTK_STATE_ACTIVE];
+	gcs[3] = style->bg_gc[GTK_STATE_NORMAL];
+	gcs[4] = style->mid_gc[GTK_STATE_ACTIVE];
+	gcs[5] = style->dark_gc[GTK_STATE_NORMAL];
+	gcs[6] = style->fg_gc[GTK_STATE_NORMAL];
+		
+	for (i = 0; i < BAR_WIDTH; i++)
+	{
+		gdk_draw_line (window,
+			       gcs[i],
+			       area->x + i,
+			       area->y,
+			       area->x + i,
+			       area->y + area->height - 1);
+	}
+}
+
+/* Number of ridges in the thumb currently hardcoded to 8 */
+#define NUM_RIDGES 8
+
+/* These control the layout of the ridges */
+#define RIDGE_HEIGHT 2
+#define RIDGE_EDGE_OFFSET 2
+#define BETWEEN_RIDGE_OFFSET 1
+
+static void
+draw_resize_bar_thumb (GtkWidget		*widget,
+		       GdkWindow		*window,
+		       const GdkRectangle	*area)
+{
+	EPaned		*paned;
+	GtkStyle	*style;
+	GdkGC		*light_gc;
+	GdkGC		*dark_gc;
+	guint		total_thumb_height;
+
+	g_assert (widget != NULL);
+	g_assert (window != NULL);
+	g_assert (area != NULL);
+	g_assert (area->width == BAR_WIDTH);
+
+	style = widget->style;
+	g_assert (style != NULL);
+
+	paned = E_PANED (widget);
+
+	light_gc = style->light_gc[GTK_STATE_ACTIVE];
+	dark_gc = style->dark_gc[GTK_STATE_NORMAL];
+
+	total_thumb_height = (NUM_RIDGES * RIDGE_HEIGHT) + ((NUM_RIDGES - 1) * BETWEEN_RIDGE_OFFSET);
+
+	/* Make sure the thumb aint bigger than the handle */
+	if (total_thumb_height > paned->handle_height)
+	{
+		total_thumb_height = paned->handle_height;
+	}
+
+	/* Draw the thumb only if we have enough space for at least one ridge */
+	if (total_thumb_height > RIDGE_HEIGHT)
+	{
+		gint	y = paned->handle_ypos + (paned->handle_height - total_thumb_height) / 2;
+		guint	i;
+		
+		for (i = 0; i < NUM_RIDGES; i++)
+		{
+			gint x1 = area->x + RIDGE_EDGE_OFFSET;
+			gint x2 = area->x + BAR_WIDTH - RIDGE_EDGE_OFFSET;
+
+			gdk_draw_line (window,
+				       dark_gc,
+				       x1,
+				       y,
+				       x2,
+				       y);
+			
+			y += BETWEEN_RIDGE_OFFSET;
+			
+			gdk_draw_line (window,
+				       light_gc,
+				       x1,
+				       y,
+				       x2,
+				       y);
+			
+			y += RIDGE_HEIGHT;
+		}
+	}
 }
 
 /* GtkWidgetClass methods */
@@ -123,17 +235,13 @@ nautilus_horizontal_splitter_draw (GtkWidget    *widget,
 			if (gdk_rectangle_intersect (&handle_area, area, &child_area)) {
 				child_area.x -= paned->handle_xpos;
 				child_area.y -= paned->handle_ypos;
-				
-				gtk_paint_handle (widget->style,
-						  paned->handle,
-						  GTK_STATE_NORMAL,
-						  GTK_SHADOW_NONE,
-						  &child_area,
-						  widget,
-						  "paned",
-						  0, 0, -1, -1,
-						  GTK_ORIENTATION_VERTICAL);
-				
+
+				/* Simply things by always drawing the full width of the bar. */
+				child_area.x = 0;
+				child_area.width = BAR_WIDTH;
+
+				draw_resize_bar (widget, paned->handle, &child_area);
+				draw_resize_bar_thumb (widget, paned->handle, &child_area);
 			}
 		}
 
