@@ -78,6 +78,8 @@ void    nautilus_view_client_request_selection_change (NautilusViewClient       
 						       Nautilus_SelectionRequestInfo *loc);
 void    nautilus_view_client_request_status_change    (NautilusViewClient        *view,
 						       Nautilus_StatusRequestInfo *loc);
+void    nautilus_view_client_request_progress_change  (NautilusViewClient        *view,
+						       Nautilus_ProgressRequestInfo *loc);
 GnomeObject *nautilus_view_client_get_gnome_object    (NautilusViewClient        *view);
 
 #ifdef __cplusplus

@@ -18,36 +18,39 @@ LDADD=	file-manager/libntl-file-manager.la \
 	$(VFS_LIBS)
 
 nautilus_SOURCES=			\
-	nautilus-bookmark.h	\
-	nautilus-bookmark.c	\
-	nautilus-bookmarklist.h	\
-	nautilus-bookmarklist.c	\
+	nautilus-bookmark.h		\
+	nautilus-bookmark.c		\
+	nautilus-bookmarklist.h		\
+	nautilus-bookmarklist.c		\
 	nautilus-bookmarks-menu.h	\
 	nautilus-bookmarks-menu.c	\
-	ntl-app.h		\
-	ntl-app.c		\
-	ntl-content-view.h	\
-	ntl-content-view.c	\
-	ntl-main.c 		\
-	ntl-meta-view.h		\
-	ntl-meta-view.c		\
-	ntl-miniicon.h		\
-	ntl-miniicon.c		\
-	ntl-types.h		\
-	ntl-uri-map.h		\
-	ntl-uri-map.c		\
-	ntl-view.h		\
-	ntl-view.c		\
-	ntl-view-frame-svr.h	\
-	ntl-view-frame-svr.c	\
-	ntl-window.h		\
-	ntl-window.c		\
-	ntl-window-msgs.c	\
-	ntl-window-msgs.h	\
-	ntl-window-private.h	\
-	ntl-window-state.h	\
-	ntl-window-state.c	\
-	explorer-location-bar.h	\
+	ntl-app.h			\
+	ntl-app.c			\
+	ntl-content-view.h		\
+	ntl-content-view.c		\
+	ntl-main.c 			\
+	ntl-meta-view.h			\
+	ntl-meta-view.c			\
+	ntl-miniicon.h			\
+	ntl-miniicon.c			\
+	ntl-types.h			\
+	ntl-uri-map.h			\
+	ntl-uri-map.c			\
+	ntl-view.h			\
+	ntl-view.c			\
+	ntl-view-bonobo-control.c	\
+	ntl-view-bonobo-subdoc.c	\
+	ntl-view-frame-svr.c		\
+	ntl-view-nautilus.c		\
+	ntl-view-private.h		\
+	ntl-window.h			\
+	ntl-window.c			\
+	ntl-window-msgs.c		\
+	ntl-window-msgs.h		\
+	ntl-window-private.h		\
+	ntl-window-state.h		\
+	ntl-window-state.c		\
+	explorer-location-bar.h		\
 	explorer-location-bar.c
 
 goaddir=$(sysconfdir)/CORBA/servers

@@ -46,6 +46,5 @@ typedef struct {
 } NautilusContentView;
 
 GtkType nautilus_content_view_get_type(void);
-NautilusContentView *nautilus_content_view_new(void);
 
 #endif

@@ -35,7 +35,6 @@
 
 static void nautilus_window_realize (GtkWidget *widget);
 
-static int window_count = 0;
 static GnomeAppClass *parent_class = NULL;
 
 /* Stuff for handling the CORBA interface */
@@ -322,6 +321,7 @@ nautilus_window_class_init (NautilusWindowClass *klass)
   klass->request_location_change = nautilus_window_real_request_location_change;
   klass->request_selection_change = nautilus_window_real_request_selection_change;
   klass->request_status_change = nautilus_window_real_request_status_change;
+  klass->request_progress_change = nautilus_window_real_request_progress_change;
 
   i = 0;
   klass->window_signals[i++] = gtk_signal_new("request_location_change",
@@ -342,6 +342,12 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 					      GTK_SIGNAL_OFFSET (NautilusWindowClass, request_status_change),
 					      gtk_marshal_NONE__BOXED_OBJECT,
 					      GTK_TYPE_NONE, 2, GTK_TYPE_BOXED, GTK_TYPE_OBJECT);
+  klass->window_signals[i++] = gtk_signal_new("request_progress_change",
+					      GTK_RUN_LAST,
+					      object_class->type,
+					      GTK_SIGNAL_OFFSET (NautilusWindowClass, request_progress_change),
+					      gtk_marshal_NONE__BOXED_OBJECT,
+					      GTK_TYPE_NONE, 2, GTK_TYPE_BOXED, GTK_TYPE_OBJECT);
   gtk_object_class_add_signals (object_class, klass->window_signals, i);
 
   gtk_object_add_arg_type ("NautilusWindow::app_id",
@@ -355,6 +361,11 @@ nautilus_window_class_init (NautilusWindowClass *klass)
   impl_Nautilus_ViewWindow_vepv.GNOME_Unknown_epv = gnome_object_get_epv();
 
   widget_class->realize = nautilus_window_realize;
+}
+
+static void
+nautilus_window_init (NautilusWindow *window)
+{
 }
 
 static gboolean
@@ -597,14 +608,9 @@ nautilus_window_get_arg (GtkObject      *object,
   }
 }
 
-static void
-nautilus_window_init (NautilusWindow *window)
-{
-  window_count++;
-}
-
 static void nautilus_window_destroy (NautilusWindow *window)
 {
+  NautilusWindowClass *klass = NAUTILUS_WINDOW_CLASS(GTK_OBJECT(window)->klass);
   g_slist_free(window->meta_views);
   CORBA_free(window->ni);
   CORBA_free(window->si);
@@ -616,10 +622,8 @@ static void nautilus_window_destroy (NautilusWindow *window)
   if(window->statusbar_clear_id)
     g_source_remove(window->statusbar_clear_id);
 
-  if(--window_count <= 0) 
-    {
-      gtk_main_quit();
-    }
+  if(GTK_OBJECT_CLASS(klass->parent_class)->destroy)
+    GTK_OBJECT_CLASS(klass->parent_class)->destroy(GTK_OBJECT(window));
 }
 
 GtkWidget *

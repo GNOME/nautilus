@@ -89,9 +89,3 @@ static void
 nautilus_content_view_init (NautilusContentView *view)
 {
 }
-
-NautilusContentView *
-nautilus_content_view_new(void)
-{
-  return NAUTILUS_CONTENT_VIEW (gtk_type_new (nautilus_content_view_get_type()));
-}

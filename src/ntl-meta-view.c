@@ -16,7 +16,7 @@
  *  General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with this library; if not, write to the Free Software
+ *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *  Author: Elliot Lee <sopwith@redhat.com>
@@ -24,7 +24,8 @@
  */
 /* ntl-meta-view.c: Implementation of the object representing a meta/navigation view. */
 
-#include "ntl-meta-view.h"
+#include "nautilus.h"
+#include "ntl-view-private.h"
 #include <gtk/gtksignal.h>
 
 static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
@@ -75,13 +76,15 @@ nautilus_meta_view_class_init (NautilusMetaViewClass *klass)
 {
   GtkObjectClass *object_class;
   GtkWidgetClass *widget_class;
+  NautilusViewClass *view_class;
 
   object_class = (GtkObjectClass*) klass;
   widget_class = (GtkWidgetClass*) klass;
+  view_class = (NautilusViewClass*) klass;
   klass->parent_class = gtk_type_class (gtk_type_parent (object_class->type));
-  NAUTILUS_VIEW_CLASS(klass)->servant_init_func = POA_Nautilus_MetaViewFrame__init;
-  NAUTILUS_VIEW_CLASS(klass)->servant_destroy_func = POA_Nautilus_MetaViewFrame__fini;
-  NAUTILUS_VIEW_CLASS(klass)->vepv = &impl_Nautilus_MetaViewFrame_vepv;
+  view_class->servant_init_func = POA_Nautilus_MetaViewFrame__init;
+  view_class->servant_destroy_func = POA_Nautilus_MetaViewFrame__fini;
+  view_class->vepv = &impl_Nautilus_MetaViewFrame_vepv;
 }
 
 static void
@@ -89,47 +92,22 @@ nautilus_meta_view_init (NautilusMetaView *view)
 {
 }
 
-NautilusMetaView *
-nautilus_meta_view_new(void)
-{
-  return NAUTILUS_META_VIEW (gtk_type_new (nautilus_meta_view_get_type()));
-}
-
 const char *
 nautilus_meta_view_get_label(NautilusMetaView *nview)
 {
   NautilusView *view = NAUTILUS_VIEW(nview);
-  GnomePropertyBagClient *bc;
-  GNOME_Property prop;
-  CORBA_Environment ev;
   char *retval = NULL;
-  CORBA_any *anyval;
-  GnomeControlFrame *control_frame;
 
-  g_return_val_if_fail(view->type != NV_NONE, NULL);
+  if(view->component_class->get_label)
+    {
+      CORBA_Environment ev;
 
-  control_frame = GNOME_CONTROL_FRAME(nautilus_view_get_control_frame(view));
-  bc = gnome_control_frame_get_control_property_bag(control_frame);
-  g_return_val_if_fail(bc, NULL);
+      CORBA_exception_init(&ev);
 
-  prop = gnome_property_bag_client_get_property(bc, "label");
-  CORBA_exception_init(&ev);
+      retval = view->component_class->get_label(view, &ev);
 
-  if(CORBA_Object_is_nil(prop, &ev))
-    goto out;
+      CORBA_exception_free(&ev);
+    }
 
-  anyval = GNOME_Property_get_value(prop, &ev);
-  if(ev._major != CORBA_NO_EXCEPTION)
-    goto out;
-
-  if(!CORBA_TypeCode_equal(anyval->_type, TC_string, &ev))
-    goto out;
-
-  retval = g_strdup(*(CORBA_char **)anyval->_value);
-
-  CORBA_free(anyval);
-
- out:
-  CORBA_exception_free(&ev);
   return retval;
 }

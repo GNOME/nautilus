@@ -12,7 +12,6 @@
 #include "ntl-window-state.h"
 #include "ntl-window-msgs.h"
 #include "ntl-view.h"
-#include "ntl-view-frame-svr.h"
 #include "ntl-meta-view.h"
 #include "ntl-content-view.h"
 #include "ntl-uri-map.h"

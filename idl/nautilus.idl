@@ -30,6 +30,12 @@ module Nautilus {
     string status_string;
   };
 
+  enum ProgressType { PROGRESS_DONE_OK, PROGRESS_DONE_ERROR, PROGRESS_UNDERWAY };
+  struct ProgressRequestInfo {
+    ProgressType type;
+    double amount;
+  };
+
   interface View : ::GNOME::Unknown {
     void save_state(in string config_path);
     void load_state(in string config_path);
@@ -53,6 +59,7 @@ module Nautilus {
     oneway void request_status_change(in StatusRequestInfo statinfo);
     oneway void request_location_change(in NavigationRequestInfo navinfo);
     oneway void request_selection_change(in SelectionRequestInfo selinfo);
+    oneway void request_progress_change(in ProgressRequestInfo proginfo);
   };
 
   interface MetaViewFrame : ViewFrame {

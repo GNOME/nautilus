@@ -403,6 +403,34 @@ nautilus_view_client_request_status_change    (NautilusViewClient        *view,
   CORBA_exception_free(&ev);
 }
 
+void
+nautilus_view_client_request_progress_change(NautilusViewClient        *view,
+					     Nautilus_ProgressRequestInfo *loc)
+{
+  CORBA_Environment ev;
+
+  g_return_if_fail (view != NULL);
+  g_return_if_fail (NAUTILUS_IS_VIEW_CLIENT (view));
+
+  CORBA_exception_init(&ev);
+  if(CORBA_Object_is_nil(view->view_frame, &ev))
+    view->view_frame = GNOME_Unknown_query_interface(gnome_control_get_control_frame(GNOME_CONTROL(view->control)),
+						     "IDL:Nautilus/ViewFrame:1.0", &ev);
+  if(ev._major != CORBA_NO_EXCEPTION)
+    view->view_frame = CORBA_OBJECT_NIL;
+  if(CORBA_Object_is_nil(view->view_frame, &ev))
+    return;
+
+  Nautilus_ViewFrame_request_progress_change(view->view_frame, loc, &ev);
+  if(ev._major != CORBA_NO_EXCEPTION)
+    {
+      CORBA_Object_release(view->view_frame, &ev);
+      view->view_frame = CORBA_OBJECT_NIL;
+    }
+  
+  CORBA_exception_free(&ev);
+}
+
 static void
 nautilus_view_client_size_request (GtkWidget      *widget,
 				   GtkRequisition *requisition)

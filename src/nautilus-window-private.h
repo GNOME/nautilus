@@ -15,6 +15,9 @@ void nautilus_window_real_request_status_change(NautilusWindow *window,
 void nautilus_window_real_request_location_change (NautilusWindow *window,
 						   Nautilus_NavigationRequestInfo *loc,
 						   NautilusView *requesting_view);
+void nautilus_window_real_request_progress_change (NautilusWindow *window,
+						   Nautilus_ProgressRequestInfo *loc,
+						   NautilusView *requesting_view);
 void nautilus_window_set_status(NautilusWindow *window, const char *txt);
 void nautilus_window_change_location(NautilusWindow *window,
 				     Nautilus_NavigationRequestInfo *loc,

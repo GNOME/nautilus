@@ -1,4 +1,11 @@
 1999-12-21  Elliot Lee  <sopwith@redhat.com>
+
+	* idl/nautilus.idl, libnautilus/ntl-view-client.[ch], src/ntl-window*.[ch], src/ntl-view-frame-svr.c:
+	  Add request_progress_change notification
+
+	* src/ntl-view-*: Fix/finish various mjs changes: Do the component type abstraction properly,
+	lose ntl-view-frame-svr.h, add ntl-view-private.h, add various component type implementations.
+
 	* src/ntl-view-frame-svr.h: Add 'extern' so everyone doesn't get their
 	  own vepv variable.
 

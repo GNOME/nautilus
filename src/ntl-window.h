@@ -53,8 +53,11 @@ typedef struct {
   void (* request_status_change)   (NautilusWindow *window,
                                     Nautilus_StatusRequestInfo *loc,
                                     NautilusView *requesting_view);
+  void (* request_progress_change) (NautilusWindow *window,
+                                    Nautilus_ProgressRequestInfo *loc,
+                                    NautilusView *requesting_view);
 
-  guint window_signals[3];
+  guint window_signals[4];
 } NautilusWindowClass;
 
 struct _NautilusWindow {
@@ -96,7 +99,5 @@ void nautilus_window_allow_forward (NautilusWindow *window, gboolean allow);
 void nautilus_window_allow_up (NautilusWindow *window, gboolean allow);
 void nautilus_window_allow_reload (NautilusWindow *window, gboolean allow);
 void nautilus_window_allow_stop (NautilusWindow *window, gboolean allow);
-
-
 
 #endif

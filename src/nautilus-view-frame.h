@@ -59,7 +59,8 @@ struct _NautilusViewClass
   void (*save_state) (NautilusView *view, const char *config_path);
   void (*show_properties) (NautilusView *view);
 
-  void (*view_constructed) (NautilusView *view); /* Not a signal. Work-around for Gtk+'s lack of a 'constructed' operation */
+  /* Not a signal. Work-around for Gtk+'s lack of a 'constructed' operation */
+  void (*view_constructed) (NautilusView *view);
 
   GtkBinClass *parent_class;
   guint view_signals[6];
@@ -67,6 +68,8 @@ struct _NautilusViewClass
 
   gpointer servant_init_func, servant_destroy_func, vepv;
 };
+
+typedef struct _NautilusViewComponentType NautilusViewComponentType;
 
 struct _NautilusView
 {
@@ -76,30 +79,15 @@ struct _NautilusView
 
   char *iid;
 
-  enum { NV_NONE, NV_NAUTILUS_VIEW, NV_BONOBO_SUBDOC, NV_BONOBO_CONTROL } type;
-
-  union {
-    struct {
-      CORBA_Object view_client;
-      GnomeObject *control_frame;
-
-    } nautilus_view_info;
-    struct {
-      GnomeObject *container, *client_site, *view_frame;
-
-    } bonobo_subdoc_info;
-    struct {
-      GnomeObject *control_frame;
-
-    } bonobo_control_info;
-  } u; 
-
   GnomeObjectClient *client_object;
   GtkWidget *client_widget;
 
   GnomeObject *view_frame;
 
   guint construct_arg_count;
+
+  NautilusViewComponentType *component_class;
+  gpointer component_data;
 };
 
 GtkType nautilus_view_get_type                (void);
@@ -116,6 +104,5 @@ void    nautilus_view_construct_arg_set(NautilusView *view);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
-
 
 #endif /* __NAUTILUS_VIEW_H__ */

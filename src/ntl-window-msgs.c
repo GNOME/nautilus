@@ -80,6 +80,20 @@ nautilus_window_request_location_change(NautilusWindow *window,
   gtk_signal_emit(obj, klass->window_signals[0], loc, requesting_view);
 }
 
+void
+nautilus_window_request_progress_change(NautilusWindow *window,
+					Nautilus_ProgressRequestInfo *loc,
+					GtkWidget *requesting_view)
+{
+  NautilusWindowClass *klass;
+  GtkObject *obj;
+
+  obj = GTK_OBJECT(window);
+
+  klass = NAUTILUS_WINDOW_CLASS(obj->klass);
+  gtk_signal_emit(obj, klass->window_signals[3], loc, requesting_view);
+}
+
 static void
 nautilus_window_change_location_internal(NautilusWindow *window, NautilusNavigationInfo *loci, gboolean is_back)
 {
@@ -338,4 +352,15 @@ nautilus_window_real_request_location_change (NautilusWindow *window,
 					      NautilusView *requesting_view)
 {
   nautilus_window_change_location(window, loc, requesting_view, FALSE);
+}
+
+void
+nautilus_window_real_request_progress_change (NautilusWindow *window,
+					      Nautilus_ProgressRequestInfo *loc,
+					      NautilusView *requesting_view)
+{
+  if(requesting_view != window->content_view)
+    return; /* Only pay attention to progress information from the main view, for now */
+
+  g_message("Progress is %f", loc->amount);
 }
