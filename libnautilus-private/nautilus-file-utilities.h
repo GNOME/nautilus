@@ -25,6 +25,8 @@
 #ifndef NAUTILUS_FILE_UTILITIES_H
 #define NAUTILUS_FILE_UTILITIES_H
 
+char *     nautilus_format_uri_for_display (const char *uri);
+char *     nautilus_make_uri_from_input(const char *location);
 char *      nautilus_make_path               (const char *path,
 					      const char *name);
 const char *nautilus_get_user_directory      (void);

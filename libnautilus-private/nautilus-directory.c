@@ -271,6 +271,7 @@ nautilus_directory_get (const char *uri)
 	}
 
 	/* If the object is already in the hash table, look it up. */
+
 	g_assert (is_canonical_uri (canonical_uri));
 	directory = g_hash_table_lookup (directory_objects,
 					 canonical_uri);

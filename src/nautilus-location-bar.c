@@ -44,6 +44,7 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 
 #define NAUTILUS_DND_URI_LIST_TYPE 	  "text/uri-list"
 #define NAUTILUS_DND_TEXT_PLAIN_TYPE 	  "text/plain"
@@ -77,7 +78,6 @@ static GtkTargetEntry drop_types [] = {
 
 static void nautilus_location_bar_initialize_class (NautilusLocationBarClass *class);
 static void nautilus_location_bar_initialize       (NautilusLocationBar      *bar);
-
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusLocationBar, nautilus_location_bar, GTK_TYPE_HBOX)
 
@@ -153,12 +153,16 @@ static void
 editable_activated_callback (GtkEditable *editable,
 		       	     NautilusLocationBar *bar)
 {
+	gchar *uri;
+
 	g_assert (GTK_IS_EDITABLE (editable));
 	g_assert (NAUTILUS_IS_LOCATION_BAR (bar));
 
+	uri = nautilus_make_uri_from_input (gtk_entry_get_text (GTK_ENTRY (editable)));
 	gtk_signal_emit (GTK_OBJECT (bar),
 			 signals[LOCATION_CHANGED],
-			 gtk_entry_get_text (GTK_ENTRY (editable)));
+			 uri);
+	g_free (uri);
 }	
 
 /* utility routine to determine the string to expand to.  If we don't have anything yet, accept
@@ -353,6 +357,7 @@ nautilus_location_bar_new (void)
 	return gtk_widget_new (nautilus_location_bar_get_type (), NULL);
 }
 
+
 /**
  * nautilus_location_bar_set_location
  * 
@@ -365,10 +370,16 @@ void
 nautilus_location_bar_set_location (NautilusLocationBar *bar,
 				    const char *location)
 {
+	gchar *formatted_location;
+	g_assert (location != NULL);
 	g_return_if_fail (NAUTILUS_IS_LOCATION_BAR (bar));
 	
 	/* Note: This is called in reaction to external changes, and 
 	 * thus should not emit the LOCATION_CHANGED signal.*/
+	
+	formatted_location = nautilus_format_uri_for_display (location);
 	nautilus_entry_set_text (NAUTILUS_ENTRY (bar->entry),
-			    location == NULL ? "" : location);
+			    formatted_location);
+	g_free (formatted_location);
 }
+

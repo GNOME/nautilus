@@ -46,6 +46,65 @@
 
 #define NAUTILUS_USER_MAIN_DIRECTORY_NAME "Nautilus"
 
+#define DEFAULT_SCHEMA "file://"
+
+/**
+ * nautilus_format_uri_for_display:
+ *
+ * Filter, modify, unescape and change URIs to make them appropriate
+ * to display to users.
+ *
+ * @uri: a URI
+ *
+ * returns a g_malloc'd string
+ **/
+char *
+nautilus_format_uri_for_display (const char *uri) 
+{
+	gchar *toreturn, *unescaped;
+
+	g_assert (uri != NULL);
+
+	unescaped = gnome_vfs_unescape_for_display (uri);
+	
+	/* Remove file:// from the beginning */
+	if (nautilus_str_has_prefix (uri, DEFAULT_SCHEMA)) {
+		toreturn = strdup (unescaped + sizeof(DEFAULT_SCHEMA));
+	} else {
+		toreturn = strdup (unescaped);
+	}
+	
+	g_free (unescaped);
+
+	return toreturn;
+}
+
+/**
+ * nautilus_make_uri_from_input:
+ *
+ * Takes a user input path/URI and makes a valid URI
+ * out of it
+ *
+ * @location: a possibly mangled "uri"
+ *
+ * returns a newly allocated uri
+ *
+ **/
+char *
+nautilus_make_uri_from_input(const char *location)
+{
+	gchar *toreturn;
+
+	/* FIXME: add escaping logic to this function */
+	if (location[0] == '/') {
+		toreturn = g_strconcat(DEFAULT_SCHEMA, location, NULL);
+	} else {
+		toreturn = strdup (location);
+	}
+
+	return toreturn;
+}
+
 /**
  * nautilus_make_path:
  * 

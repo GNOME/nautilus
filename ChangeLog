@@ -1,3 +1,20 @@
+2000-06-13  Seth Nickell  <seth@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_get):
+	Minor assertion changes.
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_format_uri_for_display), (nautilus_make_uri_from_input):
+	Created two functions for preparing data to display to the user
+	(unescape, filter file://, probably more stuff later), and
+	dealing with URIs inputed by the user (currently tacks on a
+	file:// if the "uri" starts with a /)
+	* src/nautilus-location-bar.c: (editable_activated_callback),
+	(nautilus_location_bar_set_location):
+	Changed to use nautilus_format_uri_for_display and
+	nautilus_make_uri_from_input.
+
 2000-06-13  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug #305.  CLicking in center of zoom control
@@ -287,6 +304,7 @@
 	start_renaming_item): Fix bugzilla bug #658 (fix memory management
 	in display_pending_files) and some related memory leaks.
 
+>>>>>>> 1.655
 2000-06-12  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-property-browser.c:
