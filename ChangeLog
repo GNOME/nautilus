@@ -1,3 +1,12 @@
+2000-06-09  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(get_themed_icon_file_path):
+	fixed problem where vector icons were scaled from the nominal
+	size instead of being rendered at the appropriate size.  Fixed by
+	no longer appending the size suffix for vector icons in
+	get_themed_icon_file_path
+	
 2000-06-09  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* Makefile.am:

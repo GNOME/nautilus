@@ -59,16 +59,19 @@
 #include "nautilus-xml-extensions.h"
 
 /* List of suffixes to search when looking for an icon file. */
+/* smoothly scalable alternatives are first, and MAX_SCALABLE_INDEX
+   specifies where the less scalable alternatives start */
 static const char *icon_file_name_suffixes[] =
 {
-	"",
 	".svg",
 	".SVG",
+	"",
 	".png",
 	".PNG",
 	".gif",
 	".GIF"
 };
+#define	MAX_SCALABLE_INDEX		2
 
 #define ICON_NAME_DIRECTORY             "i-directory"
 #define ICON_NAME_DIRECTORY_CLOSED      "i-dirclosed"
@@ -539,7 +542,7 @@ get_themed_icon_file_path (const char *theme_name,
 	/* Try each suffix. */
 	for (i = 0; i < NAUTILUS_N_ELEMENTS (icon_file_name_suffixes); i++) {
 
-		if (include_size) {
+		if (include_size && (i > MAX_SCALABLE_INDEX)) {
 			/* Build a path for this icon. */
 			partial_path = g_strdup_printf ("%s-%u",
 							themed_icon_name,
