@@ -1,3 +1,9 @@
+2002-04-06  David Emory Watson  <dwatson@cs.ucr.edu>
+
+	* src/file-manager/fm-list-model.c:
+	(fm_list_model_get_sort_column_id_from_sort_type): Size was incorrectly
+	returning name, bug 76191.
+
 2002-04-07  Alexander Larsson  <alla@lysator.liu.se>
 
 	* libnautilus-private/nautilus-icon-factory.c:
@@ -17,7 +23,7 @@
 	Make NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT a
 	EEL_PREFERENCE_ITEM_ENUMERATION_MENU_INTEGER.
 
-2002-03-30  David Emory Watson  <dwatson@cs.ucr.edu>
+2002-04-05  David Emory Watson  <dwatson@cs.ucr.edu>
 
 	This fixes single click activation in the list view, bug 76197.
 

@@ -525,8 +525,7 @@ fm_list_model_add_file (FMListModel *model, NautilusFile *file)
 	else {
 		for (tmp = model->details->files; tmp; tmp = tmp->next) {
 			file1 = tmp->data;
-			
-			
+
 			result = nautilus_file_compare_for_sort (file1, file,
 								 fm_list_model_get_nautilus_file_sort_type (model),
 								 model->details->sort_directories_first,
@@ -712,12 +711,12 @@ fm_list_model_get_sort_column_id_from_sort_type (NautilusFileSortType sort_type)
 	switch (sort_type) {
 	case NAUTILUS_FILE_SORT_NONE:
 		return -1;
-	case NAUTILUS_FILE_SORT_BY_SIZE:
+	case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
 		return FM_LIST_MODEL_NAME_COLUMN;
 	case NAUTILUS_FILE_SORT_BY_TYPE:
 		return FM_LIST_MODEL_TYPE_COLUMN;
-	case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
-		return FM_LIST_MODEL_NAME_COLUMN;
+	case NAUTILUS_FILE_SORT_BY_SIZE:
+		return FM_LIST_MODEL_SIZE_COLUMN;
 	case NAUTILUS_FILE_SORT_BY_MTIME:
 		return FM_LIST_MODEL_DATE_MODIFIED_COLUMN;
 	case NAUTILUS_FILE_SORT_BY_EMBLEMS:
