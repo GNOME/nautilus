@@ -353,7 +353,7 @@ nautilus_buffered_widget_expose (GtkWidget *widget, GdkEventExpose *event)
 	
 	g_return_val_if_fail (widget != NULL, FALSE);
 	g_return_val_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (widget), FALSE);
-	
+
 	buffered_widget = NAUTILUS_BUFFERED_WIDGET (widget);
 	
 	nautilus_buffered_widget_draw (widget, &event->area);
@@ -571,18 +571,18 @@ buffered_widget_create_pixbuf_from_background (const NautilusBufferedWidget *buf
 
 		pixmap = gdk_pixmap_new (widget->window, widget->allocation.width, widget->allocation.height, -1);
 		
-		gtk_paint_box (widget->style,
-			       pixmap,
-			       GTK_STATE_NORMAL,
-			       GTK_SHADOW_NONE,
-			       NULL,
-			       widget,
-			       "entry_bg",
-			       0,
-			       0,
-			       widget->allocation.width,
-			       widget->allocation.height);
-		
+		gtk_paint_flat_box (widget->style,
+				    pixmap,
+				    widget->state,
+				    GTK_SHADOW_NONE,
+				    NULL,
+				    widget,
+				    "eventbox",
+				    0,
+				    0,
+				    widget->allocation.width,
+				    widget->allocation.height);
+
 		pixbuf = gdk_pixbuf_get_from_drawable (NULL,
 						       pixmap,
 						       gdk_rgb_get_cmap (),
@@ -677,4 +677,29 @@ nautilus_buffered_widget_get_tile_pixbuf (const NautilusBufferedWidget *buffered
 	nautilus_gdk_pixbuf_ref_if_not_null (buffered_widget->detail->tile_pixbuf);
 	
 	return buffered_widget->detail->tile_pixbuf;
+}
+
+/**
+ * nautilus_buffered_widget_get_tile_pixbuf_size:
+ *
+ * @buffered_widget: A NautilusBufferedWidget
+ *
+ * Return value: The tile pixbuf size or {0,0} if there aint no tile pixbuf.
+ */
+NautilusPixbufSize
+nautilus_buffered_get_tile_pixbuf_size (const NautilusBufferedWidget *buffered_widget)
+{
+	NautilusPixbufSize size;
+
+	size.width = 0;
+	size.height = 0;
+
+	g_return_val_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget), size);
+
+	if (buffered_widget->detail->tile_pixbuf != NULL) {
+		size.width = gdk_pixbuf_get_width (buffered_widget->detail->tile_pixbuf);
+		size.height = gdk_pixbuf_get_height (buffered_widget->detail->tile_pixbuf);
+	}
+
+	return size;
 }

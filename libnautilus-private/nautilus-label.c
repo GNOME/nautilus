@@ -267,15 +267,18 @@ static void
 nautilus_label_size_request (GtkWidget		*widget,
 			     GtkRequisition	*requisition)
 {
-	NautilusLabel	*label;
-	guint		text_width = 0;
-	guint		text_height = 0;
+	NautilusLabel		*label;
+	guint			text_width = 0;
+	guint			text_height = 0;
+	NautilusPixbufSize	tile_size;
 
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (NAUTILUS_IS_LABEL (widget));
 	g_return_if_fail (requisition != NULL);
 
 	label = NAUTILUS_LABEL (widget);
+
+	tile_size = nautilus_buffered_get_tile_pixbuf_size (NAUTILUS_BUFFERED_WIDGET (label));
 
 	if (label->detail->num_text_lines > 0) {
 		text_width = label->detail->max_text_line_width;
@@ -288,7 +291,7 @@ nautilus_label_size_request (GtkWidget		*widget,
 	}
 
    	requisition->width = MAX (2, text_width);
-   	requisition->height = MAX (2, text_height);
+   	requisition->height = MAX (2, MAX (text_height, tile_size.height));
 }
 
 /* Private NautilusLabel things */
