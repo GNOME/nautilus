@@ -280,6 +280,22 @@ nautilus_drag_items_on_desktop (const GList *selection_list)
 	
 }
 
+GdkDragAction
+nautilus_drag_default_drop_action_for_url (GdkDragContext *context)
+{
+	/* Mozilla defaults to copy, but unless thats the
+	   only allowed thing (enforced by ctrl) we want to ASK */
+	if (context->suggested_action == GDK_ACTION_COPY &&
+	    context->actions != GDK_ACTION_COPY) {
+		return GDK_ACTION_ASK;
+	} else if (context->suggested_action == GDK_ACTION_MOVE) {
+		/* Don't support move */
+		return GDK_ACTION_COPY;
+	}
+	
+	return context->suggested_action;
+}
+
 
 void
 nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,

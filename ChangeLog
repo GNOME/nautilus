@@ -1,3 +1,53 @@
+2005-01-13  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.[ch]:
+	* libnautilus-private/nautilus-marshal.list:
+	Add handle_url signal
+	Fix argument list for handle_uri_list
+
+	* libnautilus-private/nautilus-dnd.[ch]:
+	Add nautilus_drag_default_drop_action_for_url
+	
+	* libnautilus-private/nautilus-icon-dnd.c: (receive_dropped_url),
+	(nautilus_icon_container_get_drop_action),
+	(drag_data_received_callback):
+	Handle URL drops separately from URI_LIST
+	Set different actions for URL drop
+	
+	* libnautilus-private/nautilus-tree-view-drag-dest.[ch]:
+	(get_drop_action), (receive_dropped_uri_list),
+	(receive_dropped_url), (drag_data_received_callback),
+	(nautilus_tree_view_drag_dest_class_init):
+	Add handle_url and handle_uri lists
+	Set different actions for URL drop
+	Fix bug that made url_list & url drops not work
+	
+	* src/file-manager/fm-directory-view.[ch]: (revert_slashes),
+	(ask_link_action), (fm_directory_view_handle_url_drop),
+	(fm_directory_view_handle_uri_list_drop):
+	Move url and uri_list drop handling here. Make it handle
+	url drops better.
+	
+	* src/file-manager/fm-icon-view.c: (icon_view_handle_url),
+	(icon_view_handle_uri_list), (fm_icon_view_init):
+	* src/file-manager/fm-list-view.c: (list_view_handle_url),
+	(list_view_handle_uri_list), (create_and_set_up_tree_view):
+	Call up to the drop code in directory view.
+
+	The above is based on a patch from Jorn Baayen <jbaayen@gnome.org>
+
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_directory_schedule_metadata_copy):
+	Handle source_directory being NULL. (happens on toplevel uri)
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(nautilus_file_operations_copy_move):
+	Handle source_dir_uri being NULL. (happens on toplevel uri)
+
+	* libnautilus-private/nautilus-link-desktop-file.c:
+	(nautilus_link_desktop_file_local_create):
+	Use right icon field
+	
 2005-01-12  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-actions.h:

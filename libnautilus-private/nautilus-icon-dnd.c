@@ -615,6 +615,20 @@ receive_dropped_keyword (NautilusIconContainer *container, const char *keyword, 
 	nautilus_icon_container_update_icon (container, drop_target_icon);
 }
 
+/* handle dropped url */
+static void
+receive_dropped_url (NautilusIconContainer *container, const char *encoded_url, GdkDragAction action, int x, int y)
+{
+	if (encoded_url == NULL) {
+		return;
+	}
+
+	g_signal_emit_by_name (container, "handle_url",
+			       encoded_url,
+			       action,
+			       x, y);
+}
+
 /* handle dropped uri list */
 static void
 receive_dropped_uri_list (NautilusIconContainer *container, const char *uri_list, GdkDragAction action, int x, int y)
@@ -1107,8 +1121,11 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 		}	
 		break;
 	
-	case NAUTILUS_ICON_DND_URI_LIST:
 	case NAUTILUS_ICON_DND_URL:
+		*action = nautilus_drag_default_drop_action_for_url (context);
+		break;
+		
+	case NAUTILUS_ICON_DND_URI_LIST:
 	case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
 		*action = context->suggested_action;
 		break;
@@ -1590,8 +1607,13 @@ drag_data_received_callback (GtkWidget *widget,
 				(NAUTILUS_ICON_CONTAINER (widget),
 				 (char *) data->data, x, y);
 			break;
-		case NAUTILUS_ICON_DND_URI_LIST:
 		case NAUTILUS_ICON_DND_URL:
+			receive_dropped_url
+				(NAUTILUS_ICON_CONTAINER (widget),
+				 (char *) data->data, context->action, x, y);
+			success = TRUE;
+			break;
+		case NAUTILUS_ICON_DND_URI_LIST:
 			receive_dropped_uri_list
 				(NAUTILUS_ICON_CONTAINER (widget),
 				 (char *) data->data, context->action, x, y);

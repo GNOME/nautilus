@@ -1380,11 +1380,13 @@ nautilus_directory_schedule_metadata_copy (GList *uri_pairs)
 		
 		source_relative_uri = g_path_get_basename (pair->from_uri);
 		destination_relative_uri = g_path_get_basename (pair->to_uri);
-		
-		nautilus_directory_copy_file_metadata (source_directory,
-						       source_relative_uri,
-						       destination_directory,
-						       destination_relative_uri);
+
+		if (source_directory != NULL && destination_directory != NULL) {
+			nautilus_directory_copy_file_metadata (source_directory,
+							       source_relative_uri,
+							       destination_directory,
+							       destination_relative_uri);
+		}
 
 		g_free (source_relative_uri);
 		g_free (destination_relative_uri);

@@ -46,6 +46,7 @@
 #include <gtk/gtkradioaction.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
+#include <gtk/gtkstock.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-config.h>
 #include <libgnome/gnome-desktop-item.h>
@@ -187,7 +188,6 @@ static void                 preview_audio                             (FMIconVie
 								       NautilusFile         *file,
 								       gboolean              start_flag);
 static void                 update_layout_menus                       (FMIconView           *view);
-
 
 static void fm_icon_view_iface_init (NautilusViewIface *iface);
 
@@ -2458,191 +2458,21 @@ create_icon_container (FMIconView *icon_view)
 	gtk_widget_show (GTK_WIDGET (icon_container));
 }
 
+/* Handles an URL received from Mozilla */
+static void
+icon_view_handle_url (NautilusIconContainer *container, const char *encoded_url,
+		      GdkDragAction action, int x, int y, FMIconView *view)
+{
+	fm_directory_view_handle_url_drop (FM_DIRECTORY_VIEW (view),
+					   encoded_url, action, x, y);
+}
+
 static void
 icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_uris,
 			   GdkDragAction action, int x, int y, FMIconView *view)
 {
-
-	GList *uri_list;
-	GList *node, *real_uri_list = NULL;
-	GnomeDesktopItem *entry;
-	GdkPoint point;
-	char *uri;
-	char *path;
-	char *stripped_uri;
-	char *container_uri;
-	char *mime_type;
-	const char *last_slash, *link_name;
-	char *link_file_name;
-	int n_uris, n_links;
-	gboolean all_local;
-	GArray *points;
-	GdkScreen *screen;
-	int screen_num;
-
-	if (item_uris == NULL) {
-		return;
-	}
-
-	container_uri = fm_directory_view_get_backing_uri (FM_DIRECTORY_VIEW (view));
-	g_return_if_fail (container_uri != NULL);
-
-	if (eel_vfs_has_capability (container_uri,
-				    EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW)) {
-		eel_show_warning_dialog (_("Drag and drop is not supported."),
-					 _("Drag and drop is only supported on local file systems."),
-					 _("Drag and Drop Error"),
-					 fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)));
-		g_free (container_uri);
-		return;
-	}
-
-	if (action == GDK_ACTION_ASK) {
-		action = nautilus_drag_drop_action_ask 
-			(GTK_WIDGET (container),
-			 GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
-		if (action == 0) {
-			g_free (container_uri);
-			return;
-		}
-	}
-	
-	/* We don't support GDK_ACTION_ASK or GDK_ACTION_PRIVATE
-	 * and we don't support combinations either. */
-	if ((action != GDK_ACTION_DEFAULT) &&
-	    (action != GDK_ACTION_COPY) &&
-	    (action != GDK_ACTION_MOVE) &&
-	    (action != GDK_ACTION_LINK)) {
-		eel_show_warning_dialog (_("Drag and drop is not supported."),
-					 _("An invalid drag type was used."),
-					 _("Drag and Drop Error"),
-					 fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)));
-		g_free (container_uri);
-		return;
-	}
-
-	point.x = x;
-	point.y = y;
-
-	screen = gtk_widget_get_screen (GTK_WIDGET (view));
-	screen_num = gdk_screen_get_number (screen);
-		
-	/* Most of what comes in here is not really URIs, but rather paths that
-	 * have a file: prefix in them.  We try to sanitize the uri list as a
-	 * result.  Additionally, if they are all local files, then we can copy
-	 * them.  Otherwise, we just make links.
-	 */
-	all_local = TRUE;
-	n_uris = 0;
-	uri_list = nautilus_icon_dnd_uri_list_extract_uris (item_uris);
-	for (node = uri_list; node != NULL; node = node->next) {
-		gchar *sanitized_uri;
-
-		sanitized_uri = eel_make_uri_from_half_baked_uri (node->data);
-		if (sanitized_uri == NULL)
-			continue;
-		real_uri_list = g_list_append (real_uri_list, sanitized_uri);
-		if (eel_vfs_has_capability (sanitized_uri,
-					    EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW)) {
-			all_local = FALSE;
-		}
-		n_uris++;
-	}
-	nautilus_icon_dnd_uri_list_free_strings (uri_list);
-
-	if (all_local == TRUE &&
-	    (action == GDK_ACTION_COPY ||
-	     action == GDK_ACTION_MOVE)) {
-		/* Copying files */
-		if (n_uris == 1) {
-			GdkPoint tmp_point = { 0, 0 };
-
-			/* pass in a 1-item array of icon positions, relative to x, y */
-			points = g_array_new (FALSE, TRUE, sizeof (GdkPoint));
-			g_array_append_val (points, tmp_point);
-		} else {
-			points = NULL;
-		}
-		fm_directory_view_move_copy_items (real_uri_list, points,
-						   container_uri,
-						   action, x, y, FM_DIRECTORY_VIEW (view));
-		
-		if (points)
-			g_array_free (points, TRUE);
-	} else {
-		n_links = 0;
-		for (node = real_uri_list; node != NULL; node = node->next) {
-			/* Make a link using the desktop file contents? */
-			uri = node->data;
-			path = gnome_vfs_get_local_path_from_uri (uri);
-
-			if (path != NULL) {
-				mime_type = gnome_vfs_get_mime_type (uri);
-
-				if (mime_type != NULL &&
-				    (strcmp (mime_type, "application/x-gnome-app-info") == 0 ||
-				     strcmp (mime_type, "application/x-desktop") == 0)) {
-					entry = gnome_desktop_item_new_from_file (path,
-										  0,
-										  NULL);
-				} else {
-					entry = NULL;
-				}
-
-				g_free (mime_type);
-				g_free (path);
-			} else {
-				entry = NULL;
-			}
-
-			if (entry != NULL) {
-				/* FIXME: Handle name conflicts? */
-				nautilus_link_local_create_from_gnome_entry (entry, container_uri, 
-				                                             (n_links > 0) ? NULL: &point, screen_num);
-
-				gnome_desktop_item_unref (entry);
-				continue;
-			}
-
-			/* Make a link from the URI alone. Generate the file
-			 * name by extracting the basename of the URI.
-			 */
-			/* FIXME: This should be using eel_uri_get_basename
-			 * instead of a "roll our own" solution.
-			 */
-			stripped_uri = eel_str_strip_trailing_chr (uri, '/');
-			last_slash = strrchr (stripped_uri, '/');
-			link_name = last_slash == NULL ? NULL : last_slash + 1;
-			
-			if (!eel_str_is_empty (link_name)) {
-				link_file_name = g_strconcat (link_name, ".desktop", NULL);
-				/* FIXME: Handle name conflicts? */
-				nautilus_link_local_create (container_uri,
-							    link_file_name,
-							    link_name,
-							    NULL, uri,
-							    (n_links > 0) ? NULL: &point, 
-							    screen_num);
-				g_free (link_file_name);
-			}
-			
-			n_links++;
-			g_free (stripped_uri);
-			
-			/* The following break statement handles mozilla urls.  
-			 * Do not remove it; otherwise, nautilus will create two 
-			 * links when the url is dropped on the desktop.
-			 */
-			if (path == NULL) {
-				break;
-			}
-		}
-	}
-	
-	nautilus_icon_dnd_uri_list_free_strings (real_uri_list);
-
-	g_free (container_uri);
-	
+	fm_directory_view_handle_uri_list_drop (FM_DIRECTORY_VIEW (view),
+						item_uris, action, x, y);
 }
 
 static char *
@@ -2680,6 +2510,7 @@ icon_view_scroll_to_file (NautilusView *view,
 		}
 	}
 }
+
 
 static void
 fm_icon_view_class_init (FMIconViewClass *klass)
@@ -2805,6 +2636,8 @@ fm_icon_view_init (FMIconView *icon_view)
 						  labels_beside_icons_changed_callback,
 						  icon_view, G_OBJECT (icon_view));
 
+	g_signal_connect_object (get_icon_container (icon_view), "handle_url",
+				 G_CALLBACK (icon_view_handle_url), icon_view, 0);
 	g_signal_connect_object (get_icon_container (icon_view), "handle_uri_list",
 				 G_CALLBACK (icon_view_handle_uri_list), icon_view, 0);
 }

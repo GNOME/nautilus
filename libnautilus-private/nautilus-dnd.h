@@ -120,6 +120,7 @@ void                        nautilus_drag_default_drop_action_for_icons (GdkDrag
 									 const char                           *target_uri,
 									 const GList                          *items,
 									 int                                  *action);
+GdkDragAction               nautilus_drag_default_drop_action_for_url   (GdkDragContext                       *context);
 gboolean                    nautilus_drag_drag_data_get                 (GtkWidget                            *widget,
 									 GdkDragContext                       *context,
 									 GtkSelectionData                     *selection_data,

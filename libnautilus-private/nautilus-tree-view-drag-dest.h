@@ -64,7 +64,14 @@ struct _NautilusTreeViewDragDestClass {
 				 guint action,
 				 int x,
 				 int y);
-				 
+	void (* handle_url)     (NautilusTreeViewDragDest *dest,
+				 char *url,
+				 int x,
+				 int y);
+	void (* handle_uri_list) (NautilusTreeViewDragDest *dest,
+				  char *uri_list,
+				  int x,
+				  int y);
 };
 
 GType                     nautilus_tree_view_drag_dest_get_type (void);

@@ -108,7 +108,7 @@ nautilus_link_desktop_file_local_create (const char        *directory_uri,
 				    "%s%s\n",
 				    display_name,
 				    target_uri,
-				    image != NULL ? "X-Nautilus-Icon=" : "",
+				    image != NULL ? "Icon=" : "",
 				    image != NULL ? image : "");
 	
 	desktop_item = gnome_desktop_item_new_from_string (uri,

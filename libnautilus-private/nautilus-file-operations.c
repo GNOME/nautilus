@@ -1837,6 +1837,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 			have_nonlocal_source = TRUE;
 		}
 			
+		/* Note: this could be null if we're e.g. copying the top level file of a web site */
 		source_dir_uri = gnome_vfs_uri_get_parent (source_uri);
 		target_uri = NULL;
 		if (target_dir != NULL) {
@@ -1861,12 +1862,14 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 			target_uri_list = g_list_prepend (target_uri_list, target_uri);
 			source_uri_list = g_list_prepend (source_uri_list, source_uri);
 
-			if (duplicate
-			    && !gnome_vfs_uri_equal (source_dir_uri, target_dir_uri)) {
+			if (duplicate && source_dir_uri != NULL &&
+			    !gnome_vfs_uri_equal (source_dir_uri, target_dir_uri)) {
 				duplicate = FALSE;
 			}
 		}
-		gnome_vfs_uri_unref (source_dir_uri);
+		if (source_dir_uri != NULL) {
+			gnome_vfs_uri_unref (source_dir_uri);
+		}
 	}
 
 	if (target_is_trash) {

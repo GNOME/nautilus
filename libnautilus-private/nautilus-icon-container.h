@@ -100,8 +100,12 @@ typedef struct {
 						   int copy_action,
 						   int x,
 						   int y);
+	void	     (* handle_url)		  (NautilusIconContainer *container,
+						   char *url,
+						   int x,
+						   int y);
 	void	     (* handle_uri_list)    	  (NautilusIconContainer *container,
-						   GList *item_uris,
+						   char *uri_list,
 						   int x,
 						   int y);
 

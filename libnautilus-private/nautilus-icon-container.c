@@ -227,6 +227,7 @@ enum {
 	RENAMING_ICON,
 	LAYOUT_CHANGED,
 	MOVE_COPY_ITEMS,
+	HANDLE_URL,
 	HANDLE_URI_LIST,
 	PREVIEW,
 	SELECTION_CHANGED,
@@ -4105,6 +4106,19 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 				G_TYPE_INT,
 				G_TYPE_INT,
 				G_TYPE_INT);
+	signals[HANDLE_URL]
+		= g_signal_new ("handle_url",
+		                G_TYPE_FROM_CLASS (class),
+		                G_SIGNAL_RUN_LAST,
+		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
+						     handle_url),
+		                NULL, NULL,
+		                nautilus_marshal_VOID__STRING_INT_INT_INT,
+		                G_TYPE_NONE, 4,
+				G_TYPE_STRING,
+				G_TYPE_INT,
+				G_TYPE_INT,
+				G_TYPE_INT);
 	signals[HANDLE_URI_LIST] 
 		= g_signal_new ("handle_uri_list",
 		                G_TYPE_FROM_CLASS (class),
@@ -4112,9 +4126,9 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass, 
 						     handle_uri_list),
 		                NULL, NULL,
-		                nautilus_marshal_VOID__POINTER_INT_INT_INT,
+		                nautilus_marshal_VOID__STRING_INT_INT_INT,
 		                G_TYPE_NONE, 4,
-				G_TYPE_POINTER,
+				G_TYPE_STRING,
 				G_TYPE_INT,
 				G_TYPE_INT,
 				G_TYPE_INT);

@@ -31,6 +31,7 @@
 #include <math.h>
 #include "fm-directory-view.h"
 #include "fm-list-view.h"
+#include "fm-desktop-icon-view.h"
 
 #include "fm-actions.h"
 #include "fm-error-reporting.h"
@@ -76,6 +77,7 @@
 #include <libnautilus-private/nautilus-desktop-directory.h>
 #include <libnautilus-private/nautilus-directory-background.h>
 #include <libnautilus-private/nautilus-directory.h>
+#include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file-dnd.h>
 #include <libnautilus-private/nautilus-file-operations.h>
@@ -330,6 +332,7 @@ static gboolean can_show_default_app                           (FMDirectoryView 
 static gboolean activate_check_mime_types                      (FMDirectoryView *view,
 								NautilusFile *file,
 								gboolean warn_on_mismatch);
+static GdkDragAction ask_link_action                           (FMDirectoryView      *view);
 
 
 static void action_open_scripts_folder_callback    (GtkAction *action,
@@ -7746,6 +7749,274 @@ monitor_file_for_open_with (FMDirectoryView *view, NautilusFile *file)
 	}
 }
 
+
+static void
+revert_slashes (char *string)
+{
+	while (*string != 0) {
+		if (*string == '/') {
+			*string = '\\';
+		}
+		string++;
+	}
+}
+
+
+static GdkDragAction
+ask_link_action (FMDirectoryView *view)
+{
+	int button_pressed;
+	GdkDragAction result;
+	GtkWidget *parent_window;
+
+	parent_window = NULL;
+
+	/* Don't use desktop window as parent, since that means
+	   we show up an all desktops etc */
+	if (! FM_IS_DESKTOP_ICON_VIEW (view)) {
+		parent_window = GTK_WIDGET (fm_directory_view_get_containing_window (view));
+	}
+	
+	button_pressed = eel_run_simple_dialog (parent_window,
+			                        TRUE,
+			                        GTK_MESSAGE_QUESTION,
+                                                _("Download location?"),
+                                                _("You can download it or make a link to it."),
+                                                NULL, /* as per HIG */
+                                                _("Make a _Link"),
+                                                GTK_STOCK_CANCEL,
+                                                _("_Download"),
+                                                NULL);
+
+	switch (button_pressed) {
+	case 0:
+		result = GDK_ACTION_LINK;
+		break;
+	case 1:
+	case GTK_RESPONSE_DELETE_EVENT:
+		result = 0;
+		break;
+	case 2:
+		result = GDK_ACTION_COPY;
+		break;
+	default:
+		g_assert_not_reached ();
+		result = 0;
+	}
+
+	return result;
+}
+
+void
+fm_directory_view_handle_url_drop (FMDirectoryView  *view,
+				   const char       *encoded_url,
+				   GdkDragAction     action,
+				   int               x,
+				   int               y)
+{
+	GdkPoint point;
+	GdkScreen *screen;
+	int screen_num;
+	char *url, *title;
+	char *link_name, *link_file_name, *link_display_name;
+	char *container_uri;
+	GArray *points;
+	char **bits;
+	GList *uri_list = NULL;
+
+	if (encoded_url == NULL) {
+		return;
+	}
+
+	container_uri = fm_directory_view_get_backing_uri (view);
+	g_return_if_fail (container_uri != NULL);
+
+	if (eel_vfs_has_capability (container_uri,
+				    EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW)) {
+		eel_show_warning_dialog (_("Drag and drop is not supported."),
+					 _("Drag and drop is only supported on local file systems."),
+					 _("Drag and Drop Error"),
+					 fm_directory_view_get_containing_window (view));
+		g_free (container_uri);
+		return;
+	}
+
+	if (action == GDK_ACTION_ASK) {
+		action = ask_link_action (view);
+		if (action == 0) {
+			g_free (container_uri);
+			return;
+		}
+	}
+
+	/* We don't support GDK_ACTION_ASK or GDK_ACTION_PRIVATE
+	 * and we don't support combinations either. */
+	if ((action != GDK_ACTION_DEFAULT) &&
+	    (action != GDK_ACTION_COPY) &&
+	    (action != GDK_ACTION_MOVE) &&
+	    (action != GDK_ACTION_LINK)) {
+		eel_show_warning_dialog (_("Drag and drop is not supported."),
+					 _("An invalid drag type was used."),
+					 _("Drag and Drop Error"),
+					 fm_directory_view_get_containing_window (view));
+		g_free (container_uri);
+		return;
+	}
+
+	/* _NETSCAPE_URL_ works like this: $URL\n$TITLE */
+	bits = g_strsplit (encoded_url, "\n", 0);
+	switch (g_strv_length (bits)) {
+	case 0:
+		g_strfreev (bits);
+		g_free (container_uri);
+		return;
+	case 1:
+		url = bits[0];
+		title = NULL;
+		break;
+	default:
+		url = bits[0];
+		title = bits[1];
+	}
+
+	if (action == GDK_ACTION_LINK) {
+		if (eel_str_is_empty (title)) {
+			link_name = eel_uri_get_basename (url);
+		} else {
+			link_name = g_strdup (title);
+		}
+		
+		if (!eel_str_is_empty (link_name)) {
+			link_display_name = g_strdup_printf (_("link to %s"), link_name);
+
+			/* FIXME: Handle name conflicts? */
+			link_file_name = g_strconcat (link_name, ".desktop", NULL);
+			/* The filename can't contain slashes, strip em.
+			   (the basename of http://foo/ is http://foo/) */
+			revert_slashes (link_file_name);
+
+			point.x = x;
+			point.y = y;
+
+			screen = gtk_widget_get_screen (GTK_WIDGET (view));
+			screen_num = gdk_screen_get_number (screen);
+
+			nautilus_link_local_create (container_uri,
+						    link_file_name,
+						    link_display_name,
+						    "gnome-fs-bookmark",
+						    url,
+						    &point,
+						    screen_num);
+
+			g_free (link_file_name);
+			g_free (link_display_name);
+		}
+		g_free (link_name);
+	} else {
+		GdkPoint tmp_point = { 0, 0 };
+
+		/* pass in a 1-item array of icon positions, relative to x, y */
+		points = g_array_new (FALSE, TRUE, sizeof (GdkPoint));
+		g_array_append_val (points, tmp_point);
+
+		uri_list = g_list_append (uri_list, url);
+
+		fm_directory_view_move_copy_items (uri_list, points,
+						   container_uri,
+						   action, x, y, view);
+
+		g_list_free (uri_list);
+		g_array_free (points, TRUE);
+	}
+
+	g_strfreev (bits);
+
+	g_free (container_uri);
+}
+
+void
+fm_directory_view_handle_uri_list_drop (FMDirectoryView  *view,
+					const char       *item_uris,
+					GdkDragAction     action,
+					int               x,
+					int               y)
+{
+	gchar **uri_list;
+	GList *real_uri_list = NULL;
+	char *container_uri;
+	int n_uris, i;
+	GArray *points;
+
+	if (item_uris == NULL) {
+		return;
+	}
+
+	container_uri = fm_directory_view_get_backing_uri (view);
+	g_return_if_fail (container_uri != NULL);
+
+	if (action == GDK_ACTION_ASK) {
+		action = nautilus_drag_drop_action_ask
+			(GTK_WIDGET (view),
+			 GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
+		if (action == 0) {
+			g_free (container_uri);
+			return;
+		}
+	}
+
+	/* We don't support GDK_ACTION_ASK or GDK_ACTION_PRIVATE
+	 * and we don't support combinations either. */
+	if ((action != GDK_ACTION_DEFAULT) &&
+	    (action != GDK_ACTION_COPY) &&
+	    (action != GDK_ACTION_MOVE) &&
+	    (action != GDK_ACTION_LINK)) {
+		eel_show_warning_dialog (_("Drag and drop is not supported."),
+					 _("An invalid drag type was used."),
+					 _("Drag and Drop Error"),
+					 fm_directory_view_get_containing_window (view));
+		g_free (container_uri);
+		return;
+	}
+
+	/* Most of what comes in here is not really URIs, but rather paths that
+	 * have a file: prefix in them.  We try to sanitize the uri list as a
+	 * result.
+	 */
+	n_uris = 0;
+	uri_list = g_uri_list_extract_uris (item_uris);
+	for (i = 0; uri_list[i] != NULL; i++) {
+		char *sanitized_uri;
+
+		sanitized_uri = eel_make_uri_from_half_baked_uri (uri_list[i]);
+		if (sanitized_uri != NULL) {
+			n_uris++;
+			real_uri_list = g_list_append (real_uri_list, sanitized_uri);
+		}
+	}
+	g_strfreev (uri_list);
+
+	if (n_uris == 1) {
+		GdkPoint tmp_point = { 0, 0 };
+
+		/* pass in a 1-item array of icon positions, relative to x, y */
+		points = g_array_new (FALSE, TRUE, sizeof (GdkPoint));
+		g_array_append_val (points, tmp_point);
+	} else {
+		points = NULL;
+	}
+
+	fm_directory_view_move_copy_items (real_uri_list, points,
+					   container_uri,
+					   action, x, y, view);
+
+	eel_g_list_free_deep (real_uri_list);
+
+	if (points != NULL)
+		g_array_free (points, TRUE);
+
+	g_free (container_uri);
+}
 
 static void
 real_sort_files (FMDirectoryView *view, GList **files)
