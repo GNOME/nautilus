@@ -1103,6 +1103,7 @@ load_icon_file (const char    *filename,
 	int width, height, size;
 	double scale;
 	gboolean is_thumbnail;
+        gboolean add_frame = FALSE;
 
 	*scale_x = 1.0;
 	*scale_y = 1.0;
@@ -1130,11 +1131,7 @@ load_icon_file (const char    *filename,
 		if (force_nominal) {
 			width = gdk_pixbuf_get_width (pixbuf); 
 			height = gdk_pixbuf_get_height (pixbuf);
-			size = MAX (width, height);
-
-			if (size > nominal_size) {
-				base_size = size;
-			}
+			base_size = MAX (width, height);                        
 		} else if (base_size == 0) {
 			if (is_thumbnail) {
 				base_size = 128 * NAUTILUS_ICON_SIZE_STANDARD / NAUTILUS_ICON_SIZE_THUMBNAIL;
@@ -1142,8 +1139,14 @@ load_icon_file (const char    *filename,
 				width = gdk_pixbuf_get_width (pixbuf); 
 				height = gdk_pixbuf_get_height (pixbuf);
 				size = MAX (width, height);
-				if (size > NAUTILUS_ICON_SIZE_STANDARD + 5) {
-					base_size = size;
+                                if (size > NAUTILUS_ICON_SIZE_THUMBNAIL) {
+                                        add_frame=TRUE;
+                                }
+                                if (size >  nominal_size * NAUTILUS_ICON_SIZE_THUMBNAIL / NAUTILUS_ICON_SIZE_STANDARD) {
+                                        base_size = size * NAUTILUS_ICON_SIZE_STANDARD / NAUTILUS_ICON_SIZE_THUMBNAIL;
+                                }
+                                else if (size > NAUTILUS_ICON_SIZE_STANDARD) {
+					base_size = nominal_size;
 				} else {
 					/* Don't scale up small icons */
 					base_size = NAUTILUS_ICON_SIZE_STANDARD;
@@ -1161,6 +1164,9 @@ load_icon_file (const char    *filename,
 		}
 	}
 
+        if (add_frame){
+                nautilus_thumbnail_frame_image(&pixbuf);
+        }
 	return pixbuf;
 }
 

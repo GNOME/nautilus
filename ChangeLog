@@ -1,3 +1,17 @@
+2004-12-15  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_update_icon):
+	* libnautilus-private/nautilus-icon-factory.c: (load_icon_file):
+	* libnautilus-private/nautilus-thumbnails.c:
+	(nautilus_thumbnail_frame_image),
+	(nautilus_thumbnail_load_framed_image):
+	* libnautilus-private/nautilus-thumbnails.h:
+	Better handling of icon sizes, including
+	framing of large file-as-icon images.
+
+	Patches from Jaap Haitsma <jaap@haitsma.org>
+
 2004-12-13  Dwayne Bailey  <dwayne@translate.org.za>
 
 	* configure.in: Added "zu" to ALL_LINGUAS.

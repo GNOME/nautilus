@@ -225,30 +225,22 @@ nautilus_remove_thumbnail_for_file (const char *old_file_uri)
 	g_free (old_thumbnail_path);
 }
 
-/* routine to load an image from the passed-in path, and then embed it in
- * a frame if necessary
- */
-GdkPixbuf *
-nautilus_thumbnail_load_framed_image (const char *path)
+void
+nautilus_thumbnail_frame_image (GdkPixbuf **pixbuf)
 {
-	GdkPixbuf *pixbuf, *pixbuf_with_frame, *frame;
+	GdkPixbuf *pixbuf_with_frame, *frame;
 	gboolean got_frame_offsets;
 	char *frame_offset_str;
 	int left_offset, top_offset, right_offset, bottom_offset;
 	char c;
-	
-	pixbuf = gdk_pixbuf_new_from_file (path, NULL);
-	if (pixbuf == NULL) {
-		return NULL;
-	}
-	
+		
 	/* The pixbuf isn't already framed (i.e., it was not made by
 	 * an old Nautilus), so we must embed it in a frame.
 	 */
 
 	frame = nautilus_icon_factory_get_thumbnail_frame ();
 	if (frame == NULL) {
-		return pixbuf;
+		return;
 	}
 	
 	got_frame_offsets = FALSE;
@@ -269,13 +261,28 @@ nautilus_thumbnail_load_framed_image (const char *path)
 	}
 	
 	pixbuf_with_frame = eel_embed_image_in_frame
-		(pixbuf, frame,
+		(*pixbuf, frame,
 		 left_offset, top_offset, right_offset, bottom_offset);
-	g_object_unref (pixbuf);	
+	g_object_unref (*pixbuf);	
 
-	return pixbuf_with_frame;
+	*pixbuf=pixbuf_with_frame;
 }
 
+/* routine to load an image from the passed-in path, and then embed it in
+ * a frame if necessary
+ */
+GdkPixbuf *
+nautilus_thumbnail_load_framed_image (const char *path)
+{
+	GdkPixbuf *pixbuf;
+	
+	pixbuf = gdk_pixbuf_new_from_file (path, NULL);
+	if (pixbuf == NULL) {
+		return NULL;
+	}
+        nautilus_thumbnail_frame_image(&pixbuf);	
+        return pixbuf;
+}
 
 void
 nautilus_thumbnail_remove_from_queue (const char *file_uri)
