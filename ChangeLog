@@ -1,3 +1,16 @@
+2000-11-12  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 3116, add preference for disabling sound preview
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	defined sound preview preference
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog), (global_preferences_register):
+	registered sound preview preference and added to speed tradeoffs
+	* src/file-manager/fm-icon-view.c: (should_preview_sound),
+	(icon_container_preview_callback):
+	only preview sounds if the preference is set
+	
 2000-11-12 John Fleck <jfleck@inkstain.net>
 	* adding term tag support to gnome-db2html2 - fixing bug #4406
 	

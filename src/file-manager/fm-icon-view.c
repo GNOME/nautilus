@@ -1728,6 +1728,23 @@ preview_sound (NautilusFile *file, gboolean start_flag)
 	}
 }
 
+
+static gboolean
+should_preview_sound (NautilusFile *file) {
+	int preview_mode;
+	
+	preview_mode = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_PREVIEW_SOUND,
+						    NAUTILUS_SPEED_TRADEOFF_ALWAYS);
+
+	if (preview_mode == NAUTILUS_SPEED_TRADEOFF_NEVER) {
+		return FALSE;
+	}
+	if (preview_mode == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {
+		return TRUE;
+	}
+	return nautilus_file_is_local (file);
+}
+
 static int
 icon_container_preview_callback (NautilusIconContainer *container,
 				 NautilusFile *file,
@@ -1741,14 +1758,18 @@ icon_container_preview_callback (NautilusIconContainer *container,
 	
 	/* preview files based on the mime_type. */
 	/* at first, we just handle sounds */
-	mime_type = nautilus_file_get_mime_type (file);
-	if (nautilus_istr_has_prefix (mime_type, "audio/") && nautilus_file_is_local (file)) {   	
-		if (nautilus_sound_can_play_sound ()) {
-			result = 1;
-			preview_sound (file, start_flag);
-		}
-	}	
-	g_free (mime_type);
+
+	if (should_preview_sound (file)) {
+		/* FIXME: we can only preview local sounds */	
+		mime_type = nautilus_file_get_mime_type (file);
+		if (nautilus_istr_has_prefix (mime_type, "audio/") && nautilus_file_is_local (file)) {   	
+			if (nautilus_sound_can_play_sound ()) {
+				result = 1;
+				preview_sound (file, start_flag);
+			}
+		}	
+		g_free (mime_type);
+	}
 	
 	/* display file name in status area at low zoom levels, since the name is not displayed or hard to read */
 	if (fm_icon_view_get_zoom_level (icon_view) <= NAUTILUS_ZOOM_LEVEL_SMALLER) {

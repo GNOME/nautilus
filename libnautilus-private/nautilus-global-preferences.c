@@ -263,11 +263,19 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
 
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Previewing Sound Files"));
+	
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
+							 2,
+							 NAUTILUS_PREFERENCES_PREVIEW_SOUND,
+							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
+
+	
 	/* FIXME bugzilla.eazel.com 2560: This title phrase needs improvement. */
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Make Folder Appearance Details Public"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
-							 2,
+							 3,
 							 NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
 							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
 
@@ -893,6 +901,12 @@ global_preferences_register (void)
 							   	  NAUTILUS_SPEED_TRADEOFF_ALWAYS,
 							   	  NAUTILUS_SPEED_TRADEOFF_ALWAYS,
 							   	  NAUTILUS_SPEED_TRADEOFF_ALWAYS);
+
+	global_preferences_register_speed_tradeoff_with_defaults (NAUTILUS_PREFERENCES_PREVIEW_SOUND,
+							   _("Play a sound file when the mouse is over it"),
+							   NAUTILUS_SPEED_TRADEOFF_ALWAYS,
+							   NAUTILUS_SPEED_TRADEOFF_ALWAYS,
+							   NAUTILUS_SPEED_TRADEOFF_ALWAYS);
 	
 	/* Sidebar panels */
 	global_preferences_register_sidebar_panels ();
