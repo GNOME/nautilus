@@ -139,6 +139,8 @@ static void	      fm_directory_view_load_uri 				  (FMDirectoryView 	    *view,
 static void           fm_directory_view_merge_menus                               (FMDirectoryView          *view);
 static void	      real_create_background_context_menu_background_items        (FMDirectoryView	    *view, 
 							                           GtkMenu		    *menu);
+static void	      real_create_background_context_menu_zoom_items		  (FMDirectoryView	    *view, 
+							                           GtkMenu		    *menu);
 static void           fm_directory_view_real_create_background_context_menu_items (FMDirectoryView          *view,
 										   GtkMenu                  *menu);
 static void           fm_directory_view_real_create_selection_context_menu_items  (FMDirectoryView          *view,
@@ -278,6 +280,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	klass->create_selection_context_menu_items = fm_directory_view_real_create_selection_context_menu_items;
 	klass->create_background_context_menu_items = fm_directory_view_real_create_background_context_menu_items;
 	klass->create_background_context_menu_background_items = real_create_background_context_menu_background_items;
+	klass->create_background_context_menu_zoom_items = real_create_background_context_menu_zoom_items;
         klass->merge_menus = fm_directory_view_real_merge_menus;
         klass->update_menus = fm_directory_view_real_update_menus;
 	klass->get_required_metadata_keys = get_required_metadata_keys;
@@ -2444,6 +2447,24 @@ fm_directory_view_add_menu_item (FMDirectoryView *view, GtkMenu *menu, const cha
 }
 
 static void
+real_create_background_context_menu_zoom_items (FMDirectoryView *view, 
+							     GtkMenu *menu)
+{
+	fm_directory_view_add_menu_item (view, menu, _("Zoom In"), zoom_in_callback,
+		       fm_directory_view_can_zoom_in (view));
+	fm_directory_view_add_menu_item (view, menu, _("Zoom Out"), zoom_out_callback,
+		       fm_directory_view_can_zoom_out (view));
+	fm_directory_view_add_menu_item (view, menu, _("Normal Size"), zoom_default_callback, TRUE);
+}
+
+static void
+create_background_context_menu_zoom_items (FMDirectoryView *view, 
+							     GtkMenu *menu)
+{
+	NAUTILUS_CALL_VIRTUAL (FM_DIRECTORY_VIEW_CLASS, view, create_background_context_menu_zoom_items, (view, menu));
+}
+
+static void
 real_create_background_context_menu_background_items (FMDirectoryView *view, 
 							     GtkMenu *menu)
 {
@@ -2480,13 +2501,8 @@ fm_directory_view_real_create_background_context_menu_items (FMDirectoryView *vi
 	 * Zoom In and Out don't really seem to belong. Maybe "Show Properties"
 	 * (for the current location, not selection -- but would have to not
 	 * include this item when there's a selection)? Add Bookmark? (same issue).
-	 */
-	fm_directory_view_add_menu_item (view, menu, _("Zoom In"), zoom_in_callback,
-		       fm_directory_view_can_zoom_in (view));
-	fm_directory_view_add_menu_item (view, menu, _("Zoom Out"), zoom_out_callback,
-		       fm_directory_view_can_zoom_out (view));
-	fm_directory_view_add_menu_item (view, menu, _("Normal Size"), zoom_default_callback, TRUE);
-	
+	 */	
+	create_background_context_menu_zoom_items (view, menu);
 	create_background_context_menu_background_items (view, menu);
 }
 

@@ -1,3 +1,19 @@
+2000-08-28  Michael Engber  <engber@eazel.com>
+	
+	The three zooming related items no longer appear in
+	the desktop's right click menu (bug 1737)
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize_class),
+	(change_desktop_background_menu_item_callback),
+	(fm_desktop_icon_view_create_background_context_menu_zoom_items):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize_class),
+	(real_create_background_context_menu_zoom_items),
+	(create_background_context_menu_zoom_items),
+	(fm_directory_view_real_create_background_context_menu_items):
+	* src/file-manager/fm-directory-view.h:
+
 2000-08-28  John Sullivan  <sullivan@eazel.com>
 
 	Added more bug numbers to FIXMEs. 142 to go.

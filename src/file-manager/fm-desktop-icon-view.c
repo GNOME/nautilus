@@ -59,6 +59,9 @@ static void     fm_desktop_icon_view_initialize                           (FMDes
 static void     fm_desktop_icon_view_initialize_class                     (FMDesktopIconViewClass *klass);
 static void     fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView        *view,
 									   GtkMenu                *menu);
+static void     fm_desktop_icon_view_create_background_context_menu_zoom_items
+                                                                          (FMDirectoryView        *view,
+									   GtkMenu                *menu);
 static void     fm_desktop_icon_view_create_background_context_menu_background_items
                                                                           (FMDirectoryView        *view,
 									   GtkMenu                *menu);
@@ -149,6 +152,7 @@ fm_desktop_icon_view_initialize_class (FMDesktopIconViewClass *klass)
 
         fm_directory_view_class->create_background_context_menu_items = fm_desktop_icon_view_create_background_context_menu_items;
 	fm_directory_view_class->create_background_context_menu_background_items = fm_desktop_icon_view_create_background_context_menu_background_items;
+	fm_directory_view_class->create_background_context_menu_zoom_items = fm_desktop_icon_view_create_background_context_menu_zoom_items;
 	fm_directory_view_class->bump_zoom_level = bump_zoom_level;
 	fm_directory_view_class->zoom_to_level = zoom_to_level;
 	fm_directory_view_class->restore_default_zoom_level = restore_default_zoom_level;
@@ -332,6 +336,13 @@ static void
 change_desktop_background_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
 {
 	nautilus_launch_application_from_command ("background-properties-capplet", NULL);
+}
+
+static void
+fm_desktop_icon_view_create_background_context_menu_zoom_items (FMDirectoryView *view, GtkMenu *menu)
+{
+	/* Do nothing - the desktop does not support zooming.
+	 */
 }
 
 static void

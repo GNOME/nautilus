@@ -139,6 +139,12 @@ struct FMDirectoryViewClass {
 	 
 	/* Function pointers that don't have corresponding signals */
 
+	/* This method adds the items relating to zooming to the
+	 * background context menu. It's there to be overridden (by the desktop
+	 * icon view) to not add any items since zooming the desktop isn't supported.
+	 */
+	void (* create_background_context_menu_zoom_items) (FMDirectoryView *view, GtkMenu *menu);
+
 	/* This method adds the items relating to changed background to the
 	 * background context menu. It's there to be overridden (by the desktop
 	 * icon view) to add different items.
