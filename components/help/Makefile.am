@@ -16,7 +16,9 @@ INCLUDES = \
 	-DPREFIX=\""$(prefix)"\" \
 	-DHYPERBOLA_DATADIR=\""$(datadir)/nautilus/components/hyperbola"\" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	-DINFODIR=\"$(infodir)\"
+	-DINFODIR=\"$(infodir)\" \
+	-DENABLE_SCROLLKEEPER_SUPPORT
+	
 
 LDADD =\
 	$(top_builddir)/libnautilus/libnautilus.la \
