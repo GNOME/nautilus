@@ -4,9 +4,6 @@ CPPFLAGS = \
 	-DPREFIX=\"$(prefix)\" \
 	-DG_LOG_DOMAIN=\"Nautilus-Services\"
 
-## CFLAGS = -O -g
-## LDFLAGS = -static
-
 INCLUDES = \
 	-I$(top_srcdir)						\
 	-I$(top_builddir)					\
@@ -30,9 +27,13 @@ LDADD =                                           \
 	$(RPM_LIBS)                                                       \
 	$(NULL)
 
-bin_PROGRAMS = eazel-install
+bin_PROGRAMS = eazel-install eazel-uninstall
 
 eazel_install_SOURCES = 		\
 	eazel-alt-install-corba.c	\
+	$(NULL)
+
+eazel_uninstall_SOURCES = 	\
+	eazel-uninstall.c	\
 	$(NULL)
 

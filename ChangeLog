@@ -1,3 +1,25 @@
+2000-06-29  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/Makefile.am:
+	* components/services/install/command-line/eazel-uninstall.c:
+	(set_parameters_from_command_line), (progress_signal),
+	(uninstall_failed), (dep_check), (create_package), (done), (main):
+	* components/services/install/lib/Makefile.am:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_uninstall_packages):
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(uninstall_packages), (uninstall_a_package), (do_rpm_uninstall),
+	(eazel_install_prepare_rpm_system), (eazel_install_add_to_rpm_set),
+	(eazel_install_add_to_set), (eazel_install_fetch_rpm_dependencies),
+	(eazel_install_do_dependency_check), (eazel_install_ensure_deps),
+	(eazel_uninstall_upward_traverse),
+	(eazel_uninstall_downward_traverse), (eazel_uninstall_globber):
+	Doing a lot of slashing in the uninstall part.
+	
+	* nautilus-installer/src/Makefile:
+	This is still checked in, as the installer isn't part of the build
+	tree.
+	
 2000-06-29  Pavel Cisler  <pavel@eazel.com>
 
 	Fixed some memory leaks.

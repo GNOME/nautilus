@@ -5,6 +5,8 @@ CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"eazel-install\"	\
 	$(NULL)
 
+CFLAGS=-g -O
+
 INCLUDES = \
 	-I$(top_srcdir)						\
 	-I$(top_builddir)					\
@@ -36,7 +38,7 @@ noinst_HEADERS = \
 
 libeazelinstallincludedir=$(includedir)/eazel-install
 
-libeazelinstall_HEADERS = \
+libeazelinstallinclude_HEADERS = 		\
 	eazel-install-public.h			\
 	$(NULL)
 
@@ -68,17 +70,20 @@ CORBA_GENERATED =				\
 	trilobite-eazel-install-common.c	\
 	trilobite-eazel-install-skels.c		\
 	trilobite-eazel-install-stubs.c		\
+	trilobite-eazel-install.h		\
 	$(NULL)
 
 IDLDIR = $(top_srcdir)/components/services/install/idl
 IDL = $(IDLDIR)/trilobite-eazel-install.idl
 
-$(libinstall_base_a_SOURCES) $(CORBA_GENERATED): trilobite-eazel-install.h
-
-trilobite-eazel-install.h: $(IDL)
+$(CORBA_GENERATED): idl_stamp
+idl_stamp: $(IDL)
 	$(ORBIT_IDL) $(IDL_CFLAGS) -I$(IDLDIR) $(IDL)
+	touch idl_stamp
 
-CLEANFILES+=$(CORBA_GENERATED) trilobite-eazel-install.h lessevil.c evil.c moreevil.c
+CLEANFILES+=$(CORBA_GENERATED) idl_stamp
 
+BUILT_SOURCES = \
+	$(CORBA_GENERATED)
 ##
 

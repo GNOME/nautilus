@@ -585,7 +585,7 @@ void
 eazel_install_uninstall_packages (EazelInstall *service, GList *categories)
 {
 	SANITY (service);
-
+	eazel_install_set_uninstall (service, TRUE);
 	if (categories == NULL && eazel_install_get_package_list (service) == NULL) {
 		eazel_install_set_package_list (service, "/var/eazel/services/package-list.xml");
 		switch (service->private->iopts->protocol) {

@@ -96,6 +96,10 @@ static int eazel_install_package_name_compare (PackageData *pack,
 static int eazel_install_package_conflict_compare (PackageData *pack,
 						   struct rpmDependencyConflict *conflict);
 
+static void eazel_uninstall_globber (EazelInstall *service,
+				     GList **packages,
+				     GList **failed);
+
 gboolean
 install_new_packages (EazelInstall *service, GList *categories) {
 
@@ -245,6 +249,7 @@ uninstall_packages (EazelInstall *service,
 	problem_filters = 0;
 	
 	if (eazel_install_get_test (service) == TRUE) {
+		g_message (_("Dry Run Mode Activated.  Packages will not actually be installed ..."));
 		uninstall_flags |= RPMTRANS_FLAG_TEST;
 	}
 
@@ -258,11 +263,23 @@ uninstall_packages (EazelInstall *service,
 
 	rpmReadConfigFiles (eazel_install_get_rpmrc_file (service), NULL);
 
+	eazel_install_set_install_flags (service, uninstall_flags);
+	eazel_install_set_interface_flags (service, interface_flags);
+	eazel_install_set_problem_filters (service, problem_filters);
+
+	rv = TRUE;
 	while (categories) {
 		CategoryData* cat = categories->data;
-		GList* pkgs = cat->packages;
+		GList *pkgs;
+		GList *failed;
 
 		g_message (_("Category = %s"), cat->name);
+
+		failed = NULL;
+		eazel_uninstall_globber (service, &cat->packages, &failed);
+		exit (1);
+		g_message ("g_list_length (failed) = %d", g_list_length (failed));
+		pkgs = cat->packages;
 		while (pkgs) {
 			PackageData* package = pkgs->data;
 
@@ -273,7 +290,6 @@ uninstall_packages (EazelInstall *service,
 						 interface_flags) == FALSE) {
 				g_warning ("Uninstall failed for %s",package->name);
 				eazel_install_emit_uninstall_failed (service, package);
-			} else {
 				rv = FALSE;
 			}
 			pkgs = pkgs->next;
@@ -298,6 +314,7 @@ uninstall_a_package (EazelInstall *service,
 
 	retval = 0;
 
+	rv = TRUE;
 	g_message (_("Uninstalling %s"), package->name);
 	retval = rpm_uninstall (service,
 				"/",
@@ -307,7 +324,6 @@ uninstall_a_package (EazelInstall *service,
 				interface_flags);
 	if (retval == 0) {
 		g_message ("Package uninstall successful!");
-		rv = TRUE;
 	} else {
 		g_message (_("Package uninstall failed !"));
 		rv = FALSE;
@@ -667,10 +683,19 @@ do_rpm_uninstall (EazelInstall *service,
 		}
 
 		if (!stop_uninstall && conflicts) {
-
+			int i;
 			g_message (_("Dependency check failed."));
 			printDepProblems (stderr, conflicts,
                                           num_conflicts);
+			for (i=0; i<num_conflicts; i++) {
+				switch (conflicts[i].sense) {
+				case RPMDEP_SENSE_REQUIRES:
+					g_message ("%s deps on %s and must also be uninstalled", conflicts[i].byName, conflicts[i].needsName);
+					break;
+				default:
+					break;
+				}
+			}
 			num_failed += num_packages;
 			stop_uninstall = 1;
 			rpmdepFreeConflicts (conflicts, num_conflicts);
@@ -956,6 +981,7 @@ eazel_install_prepare_rpm_system(EazelInstall *service)
 		}
 		return FALSE;
 	}
+
 	if (set) {
 		(*set) = rpmtransCreateSet (*db, root_dir);
 		if (set == NULL) {
@@ -993,36 +1019,91 @@ eazel_install_free_package_system (EazelInstall *service)
 }
 
 static void
-eazel_install_add_headers_to_rpm_set (EazelInstall *service,
-				      GList *packages)
+eazel_install_add_to_rpm_set (EazelInstall *service,
+			      GList **packages,
+			      GList **failed)
 {
 	GList *iterator;
+	GList *tmp_failed;
 	int interface_flags;
+
+	g_assert (packages!=NULL);
+	g_assert (*packages!=NULL);
+
+	tmp_failed = NULL;
 
 	if (eazel_install_get_update (service) == TRUE) {
 		interface_flags |= INSTALL_UPGRADE;
 	}
 
-	for (iterator = packages; iterator; iterator = iterator->next) {
+	for (iterator = *packages; iterator; iterator = iterator->next) {
 		PackageData *pack;
 		int err;
+
 		pack = (PackageData*)iterator->data;
-		err = rpmtransAddPackage (service->private->packsys.rpm.set,
-					  *((Header*)pack->packsys_struc),
-					  NULL, 
-					  NULL,
-					  interface_flags, 
-					  NULL);
+
+		if (!eazel_install_get_uninstall (service)) {
+			err = rpmtransAddPackage (service->private->packsys.rpm.set,
+						  *((Header*)pack->packsys_struc),
+						  NULL, 
+						  NULL,
+						  interface_flags, 
+						  NULL);
+			if (err!=0) {
+				g_warning ("rpmtransAddPackage (..., %s, ...) = %d", pack->name, err);
+				/* We cannot remove the thing immediately from packages, as
+				   we're iterating it, so add to a tmp list and nuke later */
+				tmp_failed = g_list_prepend (tmp_failed, pack);
+			}
+		} else {
+			dbiIndexSet matches;
+			int rc;
+			
+			rc =  rpmdbFindByLabel (service->private->packsys.rpm.db, pack->name, &matches);
+
+			if (rc!=0) {
+				g_warning ("%s not installed, not doing rpmtransRemovePackage", pack->name);
+				tmp_failed = g_list_prepend (tmp_failed, pack);
+			} else {
+				int i;
+				for (i=0; i< dbiIndexSetCount (matches); i++) {
+					unsigned int offset;
+					offset = dbiIndexRecordOffset (matches, i);
+					if (offset) {
+						rpmtransRemovePackage (service->private->packsys.rpm.set, 
+								       offset);
+					} else {
+						tmp_failed = g_list_prepend (tmp_failed, pack);
+					}
+				}
+			}
+		} 
+	} /* end for loop */
+
+	/* Remove all failed from packages, and add them to failed */
+	if (tmp_failed) {
+		for (iterator = tmp_failed; iterator; iterator = iterator->next) {
+			if (failed) {
+				(*failed) = g_list_prepend (*failed, iterator->data);
+			}
+			(*packages) = g_list_remove (*packages, iterator->data);
+		}
+		g_list_free (tmp_failed);
 	}
 }			
 
+/*
+  Adds the headers to the package system set
+ */
 static void
-eazel_install_add_headers_to_set (EazelInstall *service,
-				  GList *packages)
+eazel_install_add_to_set (EazelInstall *service,
+			  GList **packages,
+			  GList **failed)
+
 {
 	switch (eazel_install_get_package_system (service)) {
 	case EAZEL_INSTALL_USE_RPM:
-		eazel_install_add_headers_to_rpm_set (service, packages);	       
+		eazel_install_add_to_rpm_set (service, packages, failed);
 		break;
 	}
 }
@@ -1067,6 +1148,10 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 	to_remove = NULL;
 	extras = g_hash_table_new (g_str_hash, g_str_equal);
 
+	/* FIXME: bugzilla.eazel.com 1512 
+	   This piece of code is rpm specific. It has some generic algorithm
+	   for doing the dep stuff, but it's rpm entangled */
+
 	for (iterator = 0; iterator < service->private->packsys.rpm.num_conflicts; iterator++) {
 		GList *pack_entry;
 		PackageData *pack;
@@ -1106,6 +1191,16 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 				   Here, it'd be cool to compare dep->name to pack->name to see if
 				   dep is pack's devel package. And if so, replace dep->version with
 				   pack->version and not fail pack, but continue */
+
+				{
+					char *tmp;
+					tmp = g_strdup_printf ("%s-devel", pack->name);
+					if (strcmp (tmp, dep->name)==0) {
+						g_message ("breakage is the devel package");
+					}
+					g_free (tmp);
+				}
+
 				if (!eazel_install_get_force (service)) {
 					pack->breaks = g_list_prepend (pack->breaks, dep);
 					if (g_list_find (*failedpackages, pack) == NULL) {
@@ -1117,7 +1212,7 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 				break;
 			case RPMDEP_SENSE_CONFLICTS:
 				/* If we end here, it's a conflict is going to break something */
-				/* FIXME: bugzilla.eazel.com
+				/* FIXME: bugzilla.eazel.com 1514
 				   Need to handle this more intelligently */
 				g_warning (_("%s conflicts %s-%s"), conflict.byName, conflict.needsName, conflict.needsVersion);
 				continue;
@@ -1263,6 +1358,30 @@ print_package_list (char *str, GList *packages, gboolean show_deps)
 	}
 }
 
+/* 
+   Use package system to do the dependency check
+ */
+static int
+eazel_install_do_dependency_check (EazelInstall *service) {
+	switch (eazel_install_get_package_system (service)) {
+	case EAZEL_INSTALL_USE_RPM: {
+		rpmTransactionSet *set;
+		int *num_conflicts;
+		struct rpmDependencyConflict **conflicts;
+		
+		set = &service->private->packsys.rpm.set;
+		num_conflicts = &service->private->packsys.rpm.num_conflicts;
+		conflicts = &service->private->packsys.rpm.conflicts;
+		
+		/* Reorder the packages as per. deps and do the dep check */
+		rpmdepOrder (*set);		
+		rpmdepCheck (*set, conflicts, num_conflicts);
+		
+		return *num_conflicts;
+	}
+	}	
+	return -1;
+}
 
 /*
   Given a glist of PackageData's, ensure_deps_are_fetched checks deps
@@ -1291,30 +1410,25 @@ eazel_install_ensure_deps (EazelInstall *service,
 	if (eazel_install_prepare_package_system (service) == FALSE) {
 		GList *iterator;
 		for (iterator = *packages; iterator; iterator = iterator->next) {
-			(*packages) = g_list_prepend (*packages, iterator->data);			
+			(*failedpackages) = g_list_prepend (*failedpackages, iterator->data);			
 		}
 		g_list_free (*packages);
 		(*packages) = NULL;
 		return FALSE;
 	}
-	eazel_install_add_headers_to_set (service, *packages);
+	eazel_install_add_to_set (service, packages, failedpackages);
 
 	/* Weak attempt at making it easy to extend to other
 	   package formats (debian). 
 	*/
 	switch (eazel_install_get_package_system (service)) {
 	case EAZEL_INSTALL_USE_RPM: {
+		int num_conflicts;
+/*
 		rpmTransactionSet *set;
-		int *num_conflicts;
 		struct rpmDependencyConflict **conflicts;
-
-		set = &service->private->packsys.rpm.set;
-		num_conflicts = &service->private->packsys.rpm.num_conflicts;
-		conflicts = &service->private->packsys.rpm.conflicts;
-
-		/* Reorder the packages as per. deps and do the dep check */
-		rpmdepOrder (*set);		
-		rpmdepCheck (*set, conflicts, num_conflicts);
+*/
+		num_conflicts = eazel_install_do_dependency_check (service);
 
 		/* Free stuff for the package system */
 		eazel_install_free_package_system (service);
@@ -1332,7 +1446,7 @@ eazel_install_ensure_deps (EazelInstall *service,
 				pack->status = PACKAGE_PARTLY_RESOLVED;
 			}
 
-			g_message (_("%d dependencies failed!"), *num_conflicts);
+			g_message (_("%d dependencies failed!"), num_conflicts);
 			
 			/* Fetch the needed stuff. 
 			   "extrapackages" gets the new packages added,
@@ -1427,6 +1541,164 @@ rpm_install (EazelInstall *service,
 	g_list_free (list);
 	return result;
 	} */ /* end rpm_install */
+
+
+/* This traverses upwards in the deptree from the initial list, and adds
+   all packages that will break to "breaks" */
+static void
+eazel_uninstall_upward_traverse (EazelInstall *service,
+				 GList **packages,
+				 GList **failed,
+				 GList **breaks)
+{
+	int num_conflicts;
+	GList *iterator;
+	/*
+	  Create set
+	  add all packs from packages to set
+	  dep check
+	  for all break, add to packages and recurse
+	 */
+
+	g_message ("in eazel_uninstall_upward_traverse");
+
+	g_assert (packages!=NULL);
+	g_assert (*packages!=NULL);
+	g_assert (breaks!=NULL);
+	g_assert (*breaks==NULL);
+
+	/* Open the package system */
+	if (eazel_install_prepare_package_system (service) == FALSE) {
+		GList *iterator;
+		for (iterator = *packages; iterator; iterator = iterator->next) {
+			(*failed) = g_list_prepend (*failed, iterator->data);			
+		}
+		g_list_free (*packages);
+		(*packages) = NULL;
+	}
+
+	/* Add all packages to the set */
+	eazel_install_add_to_set (service, packages, failed);
+	
+	/*
+	  both this and rpmtransFree causes a subsequent 
+	  sigsegv during a later recursion into upward_traverse
+	  eazel_install_free_package_system (service);
+	*/
+	
+	if (num_conflicts) {		
+		GList *tmp_breaks;
+		GList *iterator;
+		int dep_iterator;
+			
+		tmp_breaks = NULL;
+		/* iterate across all the conflicts */
+		for (dep_iterator = 0; dep_iterator < num_conflicts; dep_iterator++) {
+			/* FIXME: bugzilla.eazel.com 1513
+			   This piece of code is rpm specific */
+			struct rpmDependencyConflict conflict;
+			GList *pack_entry;
+			PackageData *pack;
+			PackageData *dep;
+				
+			/* find the package "pack" that caused the conflict,
+			   find the upward dep, add "pack" to dep's soft_depends */
+			conflict = service->private->packsys.rpm.conflicts[dep_iterator];
+			dep = packagedata_new_from_rpm_conflict_reversed (conflict);
+				
+			if (g_list_find_custom (*breaks, (gpointer)dep, (GCompareFunc)eazel_install_package_conflict_compare)) {
+				packagedata_destroy (dep);
+				continue;
+			} else {
+				pack = NULL;
+				pack_entry = g_list_find_custom (*packages, 
+								 (gpointer)&conflict,
+								 (GCompareFunc)eazel_install_package_conflict_compare);
+				if (pack_entry == NULL) {
+					dbiIndexSet matches;
+					g_message ("looking for provider of %s", conflict.needsName);
+				} else {
+					g_warning ("Unable to find provider of %s", conflict.needsName);
+				}									 
+			} 
+			if (pack!=NULL) {
+				pack->status = PACKAGE_BREAKS_DEPENDENCY;
+				dep->archtype = g_strdup (pack->archtype);
+				dep->soft_depends = g_list_prepend (dep->soft_depends, pack);
+				g_message ("uninst of %s breaks %s", pack->name, dep->name);
+			}
+			(*breaks) = g_list_prepend (*breaks, dep);
+		}
+		
+		/* Recurse */
+		eazel_uninstall_upward_traverse (service, breaks, failed, &tmp_breaks);
+		
+		/* Add to output variable breaks */
+		for (iterator = tmp_breaks; iterator; iterator = iterator->next) {
+			(*breaks) = g_list_prepend (*breaks, iterator->next);
+		}
+		
+	}		
+
+	g_message ("out eazel_uninstall_upward_traverse");
+}
+
+/* This traverses downwards on all requirements in "packages", 
+   checks that their uninstall do _not_ break anything, and
+   adds thm to requires */
+
+static void
+eazel_uninstall_downward_traverse (EazelInstall *service,
+				   GList **packages,
+				   GList **failed,
+				   GList **requires)
+{
+	/* 
+	   create set
+	   find all requirements from "packages"
+	   add all packs + requirements from "packages" to set
+	   dep check
+	   for all breaks, remove from requirements
+	   recurse calling eazel_uninstall_downward_traverse (requirements, &tmp)
+	   add all from tmp to requirements
+	*/
+	g_message ("in eazel_uninstall_downward_traverse");
+	g_message ("out eazel_uninstall_downward_traverse");
+}
+
+/* Calls the upward and downward traversal */
+static void
+eazel_uninstall_globber (EazelInstall *service,
+			 GList **packages,
+			 GList **failed)
+{
+	GList *iterator;
+	GList *tmp;
+	/*
+	  call upward with packages
+	  call downward with packages and &tmp
+	  add all from &tmp to packages
+	*/
+
+	g_message ("in eazel_uninstall_globber");
+
+	tmp = NULL;
+	eazel_uninstall_upward_traverse (service, packages, failed, &tmp);
+	for (iterator = tmp; iterator; iterator = iterator->next) {
+		g_message ("also doing %s", ((PackageData*)iterator->data)->name);
+		(*packages) = g_list_prepend (*packages, iterator->data);
+	}
+	g_list_free (tmp);
+
+	tmp = NULL;
+	eazel_uninstall_downward_traverse (service, packages, failed, &tmp);
+	for (iterator = tmp; iterator; iterator = iterator->next) {
+		g_message ("also doing %s", ((PackageData*)iterator->data)->name);
+		(*packages) = g_list_prepend (*packages, iterator->data);
+	}
+	g_list_free (tmp);
+	g_message ("out eazel_uninstall_globber");
+}
 
 static int
 rpm_uninstall (EazelInstall *service, 
