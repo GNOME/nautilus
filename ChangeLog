@@ -1,5 +1,11 @@
 2000-07-20  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* src/file-manager/Makefile.am:
+	Make distcheck happy by putting all the headers in a
+	noinst_HEADERS macro.
+	
+2000-07-20  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* cut-n-paste-code/freetype/Makefile.am:
 	Add missing included .[ch] files to build to make distcheck happy.
 	

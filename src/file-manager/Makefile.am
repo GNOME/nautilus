@@ -18,34 +18,40 @@ dfos_corba_srcs=					\
 	GNOME_Desktop_FileOperationService.h		\
 	GNOME_Desktop_FileOperationService-stubs.c	\
 	GNOME_Desktop_FileOperationService-skels.c	\
-	GNOME_Desktop_FileOperationService-common.c
+	GNOME_Desktop_FileOperationService-common.c \
+	$(NULL)
 
 libnautilus_file_manager_la_SOURCES=	\
 	$(dfos_corba_srcs)		\
 	dfos-corba.c			\
-	dfos-corba.h			\
 	dfos-xfer-progress-dialog.c	\
-	dfos-xfer-progress-dialog.h	\
 	dfos-xfer.c			\
-	dfos-xfer.h			\
 	dfos.c				\
-	dfos.h				\
 	fm-desktop-icon-view.c		\
-	fm-desktop-icon-view.h		\
 	fm-directory-view.c		\
-	fm-directory-view.h		\
 	fm-error-reporting.c		\
-	fm-error-reporting.h		\
 	fm-icon-text-window.c		\
-	fm-icon-text-window.h		\
 	fm-icon-view.c			\
-	fm-icon-view.h			\
 	fm-list-view.c			\
-	fm-list-view.h			\
 	fm-properties-window.c		\
-	fm-properties-window.h		\
 	fm-search-list-view.c		\
-	fm-search-list-view.h
+	$(NULL)
+
+noinst_HEADERS = \
+	dfos-corba.h \
+	dfos-xfer-progress-dialog.h \
+	dfos-xfer.h \
+	dfos.h \
+	fm-desktop-icon-view.h \
+	fm-directory-view.h \
+	fm-error-reporting.h \
+	fm-icon-text-window.h \
+	fm-icon-view.h \
+	fm-list-view-private.h \
+	fm-list-view.h \
+	fm-properties-window.h \
+	fm-search-list-view.h \
+	$(NULL)
 
 dfos-corba.h: GNOME_Desktop_FileOperationService.h
 
