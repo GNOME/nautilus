@@ -25,13 +25,18 @@
 /* nautilus-customization-data.c - functions to collect and load customization
    names and imges */
 
+#include <config.h>
 #include <ctype.h>
+
+#include <gnome-xml/parser.h>
+#include <gnome-xml/xmlmemory.h>
 
 #include <glib.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtk.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <string.h>
+#include <libgnome/gnome-defs.h>
 
 #include "nautilus-customization-data.h"
 #include "nautilus-gdk-extensions.h"
@@ -39,6 +44,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gtk-extensions.h"
+#include "nautilus-xml-extensions.h"
 #include "nautilus-image.h"
 #include "nautilus-label.h"
 #include "nautilus-string.h"
@@ -56,6 +62,8 @@ struct NautilusCustomizationData {
 	GnomeVFSDirectoryList *private_file_list;
 	GnomeVFSDirectoryList *current_file_list;
 
+	GHashTable *name_map_hash;
+	
 	GdkPixbuf *pattern_frame;
 
 	gboolean started_reading_current_file_list;
@@ -71,8 +79,9 @@ static char *            get_global_customization_uri        (const char *custom
 static char *            get_private_customization_uri       (const char *customization_name);
 static char *            get_file_path_for_mode              (const NautilusCustomizationData *data,
 							      const char *file_name);
-static char*             format_name_for_display             (const char *name);
+static char*             format_name_for_display             (NautilusCustomizationData *data, const char *name);
 static char*             strip_extension                     (const char* string_to_strip);
+static void		 load_name_map_hash_table	     (NautilusCustomizationData *data);
 
 NautilusCustomizationData* 
 nautilus_customization_data_new (const char *customization_name,
@@ -138,6 +147,8 @@ nautilus_customization_data_new (const char *customization_name,
 	data->maximum_icon_height = maximum_icon_height;
 	data->maximum_icon_width = maximum_icon_width;
 
+	load_name_map_hash_table (data);
+	
 	return data;
 }
 
@@ -209,7 +220,7 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (*pixmap_widget), pixbuf);
 	gdk_pixbuf_unref (pixbuf);
 	
-	filtered_name = format_name_for_display (current_file_info->name);
+	filtered_name = format_name_for_display (data, current_file_info->name);
 	/* If the data is for a menu,
 	   we want to truncate it and not use the nautilus
 	   label because anti-aliased text doesn't look right
@@ -254,7 +265,10 @@ nautilus_customization_data_destroy (NautilusCustomizationData *data)
 	if (data->private_file_list != NULL) {
 		gnome_vfs_directory_list_destroy (data->private_file_list);
 	}
-
+	if (data->name_map_hash != NULL) {
+		g_hash_table_destroy (data->name_map_hash);	
+	}
+	
 	g_free (data->customization_name);
 	g_free (data);
 }
@@ -362,40 +376,77 @@ nautilus_customization_make_pattern_chit (GdkPixbuf *pattern_tile, GdkPixbuf *fr
    and capitalizing as necessary */
 
 static char*
-format_name_for_display (const char* name)
+format_name_for_display (NautilusCustomizationData *data, const char* name)
 {
-	gboolean need_to_cap;
-	int index, length;
-	char *formatted_str;
+	char *formatted_str, *mapped_name;
 
-	/* don't display a name for the "reset" property, since it's name is
+	/* don't display a name for the "reset" property, since its name is
 	   contained in its image and also to help distinguish it */  
 	if (!nautilus_strcmp(name, RESET_IMAGE_NAME)) {
 		return g_strdup("");
 	}
-		
+
+	/* map file names to display names using the mappings defined in the hash table */
+	
 	formatted_str = strip_extension (name);
-	
-	/* FIXME bugzilla.eazel.com 5046: Not appropriate to upper-case the letter of the name
-	 * after a space for all languages. A potential translation
-	 * nightmare.
-	 */
-	need_to_cap = TRUE;
-	length = strlen (formatted_str);
-	for (index = 0; index < length; index++) {
-		if (need_to_cap) {
-			formatted_str[index] = toupper ((guchar) formatted_str[index]);
-		}
-		
-		if (formatted_str[index] == '_') {
-			formatted_str[index] = ' ';
-		}
-		need_to_cap = formatted_str[index] == ' ';
+	if (data->name_map_hash != NULL) {
+		mapped_name = g_hash_table_lookup (data->name_map_hash, formatted_str);
+		if (mapped_name) {
+			g_free (formatted_str);
+			formatted_str = g_strdup (mapped_name);
+		}	
 	}
-	
+			
 	return formatted_str;	
 }
 
+/* utility routine to allocate a hash table and load it with the appropriate 
+ * name mapping data from the browser xml file 
+ */
+static void
+load_name_map_hash_table (NautilusCustomizationData *data)
+{
+	char *xml_path;
+	char *filename, *display_name;
+
+	xmlDocPtr browser_data;
+	xmlNodePtr category_node, current_node;
+	
+	/* allocate the hash table */
+	data->name_map_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	
+	/* build the path name to the browser.xml file and load it */
+	xml_path = nautilus_make_path (NAUTILUS_DATADIR, "browser.xml");
+	if (xml_path) {
+		browser_data = xmlParseFile (xml_path);
+		g_free (xml_path);
+
+		if (browser_data) {
+			/* get the category node */
+			category_node = nautilus_xml_get_root_child_by_name_and_property (browser_data, "category", "name", data->customization_name);
+			current_node = category_node->childs;	
+			
+			/* loop through the entries, adding a mapping to the hash table */
+			while (current_node != NULL) {
+				display_name = nautilus_xml_get_property_translated (current_node, "display_name");
+				filename = xmlGetProp (current_node, "filename");
+				if (display_name && filename) {
+					g_hash_table_insert (data->name_map_hash, g_strdup (filename), g_strdup (display_name));
+				}
+				if (filename) {
+					xmlFree (filename);		
+				}
+				if (display_name) {
+					xmlFree (display_name);
+				}
+				current_node = current_node->next;
+			}
+			
+			/* close the xml file */
+			xmlFreeDoc (browser_data);
+		}		
+	}	
+}
 
 /* utility routine to strip the extension from the passed in string */
 static char*

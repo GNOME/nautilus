@@ -1,3 +1,33 @@
+2001-01-07  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bugs 5189, 5190 and 5046, pattern and emblem names
+	not translated, and upper-casing emblem names is bad for
+	translation, by introducing a translatable display name
+	specified in the browser xml file.
+	
+	* libnautilus-extensions/nautilus-customization-data.c:
+	(nautilus_customization_data_new),
+	(nautilus_customization_data_get_next_element_for_display),
+	(nautilus_customization_data_destroy), (format_name_for_display),
+	(load_name_map_hash_table):
+	made it load a display name mapping from the browser xml file into
+	a hash table when a nautilus customization is created; use the mapping
+	to return a label with a translated name.
+	
+	* src/file-manager/fm-properties-window.c: (create_emblems_page):
+	rewrote the emblem code in the properties window to use
+	nautilus_customization instead of ad hoc code, so it will use
+	the translated names.
+	
+	* src/nautilus-property-browser.c: (get_color_category):
+	replaced custom xml code with a standard routine from xml_extensions.
+	
+	* src/nautilus-search-bar-criterion.c: (make_emblem_value_menu):
+	fixed a memory leak and tweaked the code a bit for translated names.
+	
+	* data/browser.xml:
+	added display name mappings for patterns and emblems
+	
 2001-01-05  Gene Z. Ragan  <gzr@eazel.com>
 
 	* components/music/nautilus-music-view.c: (selection_callback),

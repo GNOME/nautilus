@@ -43,6 +43,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libnautilus-extensions/nautilus-customization-data.h>
 #include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
@@ -1274,34 +1275,6 @@ create_basic_page (FMPropertiesWindow *window, GtkNotebook *notebook, NautilusFi
 	g_free (image_uri);
 }
 
-static GtkWidget *
-create_image_widget_for_emblem (const char *emblem_name)
-{
-	NautilusScalableIcon *icon;
-	GdkPixbuf *pixbuf;
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
-	GtkWidget *image_widget;
-
-	icon = nautilus_icon_factory_get_emblem_icon_by_name (emblem_name, FALSE);
-	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-		(icon,
-		 NAUTILUS_ICON_SIZE_STANDARD,
-		 NAUTILUS_ICON_SIZE_STANDARD,
-		 NAUTILUS_ICON_SIZE_STANDARD,
-		 NAUTILUS_ICON_SIZE_STANDARD,
-		 NULL, TRUE);
-
-	nautilus_scalable_icon_unref (icon);
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
-	gdk_pixbuf_unref (pixbuf);
-
-	image_widget = gtk_pixmap_new (pixmap, mask);
-	gtk_widget_show (image_widget);
-
-	return image_widget;
-}
-
 static void
 remove_default_viewport_shadow (GtkViewport *viewport)
 {
@@ -1312,79 +1285,20 @@ remove_default_viewport_shadow (GtkViewport *viewport)
 
 /* utility routine to build the list of available property names */
 
-static GList *
-get_property_names_from_uri (const char *directory_uri, GList *property_list)
-{
-	char *keyword, *dot_pos;
-	GnomeVFSResult result;
-	GnomeVFSFileInfo *current_file_info;
-	GnomeVFSDirectoryList *list;
-			
-	result = gnome_vfs_directory_list_load
-		(&list, directory_uri, 
-		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE, NULL);
-	if (result != GNOME_VFS_OK) {
-		return property_list;
-	}
-	
-	for (current_file_info = gnome_vfs_directory_list_first(list); current_file_info != NULL; 
-	    current_file_info = gnome_vfs_directory_list_next(list)) {
-		if (nautilus_istr_has_prefix (current_file_info->mime_type, "image/")) {
-			/* skip the special "erase" emblem */
-			if (nautilus_strcmp (current_file_info->name, 
-					     ERASE_EMBLEM_FILENAME) == 0)
-				continue;
-				
-			keyword = g_strdup (current_file_info->name);
-			
-			/* strip image type suffix */
-			dot_pos = strrchr(keyword, '.');
-			if (dot_pos)
-				*dot_pos = '\0';
-			
-			property_list = g_list_prepend(property_list, keyword);
-		}
-	}
-
-	gnome_vfs_directory_list_destroy(list);	
-	return property_list;
-}
-
-static GList *
-get_property_names (void)
-{
-	char *directory_uri;
-	GList *property_list;
-	char *user_directory;	
-
-	property_list = get_property_names_from_uri
-		("file://" NAUTILUS_DATADIR "/emblems", NULL);
-
-	user_directory = nautilus_get_user_directory ();
-	directory_uri = g_strdup_printf ("file://%s/emblems", user_directory);
-	g_free (user_directory);
-	property_list = get_property_names_from_uri (directory_uri, property_list);
-	g_free (directory_uri);
-
-	return nautilus_g_str_list_alphabetize (property_list);
-}
 
 static void
 create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 {
-	GList *property_names, *save_property_names;
+	NautilusCustomizationData *customization_data;
 	GtkWidget *emblems_table, *button, *scroller;
-	GtkWidget *image_widget, *label, *image_and_label_table;
-	int i, property_count;
+	GtkWidget *image_and_label_table;
+	char *emblem_name, *dot_pos;
+	GtkWidget *emblem_pixmap_widget;
+	GtkWidget *emblem_label;	
 	int row, column;
-
-	property_names = get_property_names();	
-	save_property_names = property_names;
-	property_count = g_list_length(property_names);
 	
-	emblems_table = gtk_table_new ((property_count + EMBLEM_COLUMN_COUNT - 1) / EMBLEM_COLUMN_COUNT,
-				       EMBLEM_COLUMN_COUNT,
-				       TRUE);
+	/* we use an estimate for the number of rows - the table will grow as we add more */
+	emblems_table = gtk_table_new (4, EMBLEM_COLUMN_COUNT, TRUE);
 	gtk_widget_show (emblems_table);
 	gtk_container_set_border_width (GTK_CONTAINER (emblems_table), GNOME_PAD);
 	gtk_table_set_row_spacings (GTK_TABLE (emblems_table), GNOME_PAD);
@@ -1409,33 +1323,51 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 
 	gtk_notebook_append_page (notebook, scroller, gtk_label_new (_("Emblems")));
 	
-	/* The check buttons themselves. */
+	/* Use nautilus_customization to make the emblem widgets */
 	row = 0;
 	column = 0;
-	for (i = 0; i < property_count; i++) {
+	
+	customization_data = nautilus_customization_data_new ("emblems", TRUE, TRUE,
+							      NAUTILUS_ICON_SIZE_SMALL, 
+							      NAUTILUS_ICON_SIZE_SMALL);
+	
+	while (nautilus_customization_data_get_next_element_for_display (customization_data,
+									 &emblem_name,
+									 &emblem_pixmap_widget,
+									 &emblem_label) == GNOME_VFS_OK) {	
+
+		/* strip the suffix, if any */
+		dot_pos = strrchr(emblem_name, '.');
+		if (dot_pos) {
+			*dot_pos = '\0';
+		}
+		
+		if (strcmp (emblem_name, "erase") == 0) {
+			gtk_widget_destroy (emblem_pixmap_widget);
+			gtk_widget_destroy (emblem_label);
+			g_free (emblem_name);
+			continue;
+		}
+		
+		g_message ("emblem name is %s", emblem_name);
 		button = gtk_check_button_new ();
 
 		image_and_label_table = gtk_table_new (2, 1, FALSE);
-		gtk_widget_show (image_and_label_table);
 		
-		image_widget = create_image_widget_for_emblem (property_names->data);
-		gtk_table_attach_defaults (GTK_TABLE (image_and_label_table), image_widget,
+		gtk_table_attach_defaults (GTK_TABLE (image_and_label_table), emblem_pixmap_widget,
 					   0, 1,
 					   0, 1);
 					
-		label = gtk_label_new (_(property_names->data));
-		gtk_widget_show (label);
-		gtk_table_attach_defaults (GTK_TABLE (image_and_label_table), label,
+		gtk_table_attach_defaults (GTK_TABLE (image_and_label_table), emblem_label,
 				  0, 1,
 				  1, 2);
 
 		gtk_container_add (GTK_CONTAINER (button), image_and_label_table);
-		gtk_widget_show (button);
 
 		/* Attach parameters and signal handler. */
 		gtk_object_set_data_full (GTK_OBJECT (button),
 					  "nautilus_property_name",
-					  g_strdup ((char *)property_names->data),
+					  emblem_name,
 					  g_free);
 				     
 		nautilus_file_ref (file);
@@ -1466,9 +1398,9 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 			column = 0;
 			++row;
 		}
-		property_names = property_names->next;
+
 	}
-	nautilus_g_list_free_deep (save_property_names);
+	gtk_widget_show_all (emblems_table);
 }
 
 static void

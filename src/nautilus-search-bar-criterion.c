@@ -1009,8 +1009,7 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 	NautilusCustomizationData *customization_data;
 	GtkWidget *temp_hbox;
 	GtkWidget *menu_item;
-	char *emblem_file_name;
-	char *emblem_display_name;
+	char *emblem_name, *dot_pos;
 	GtkWidget *emblem_pixmap_widget;
 	GtkWidget *emblem_label;
 	GtkWidget *value_menu; 
@@ -1023,23 +1022,25 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 							      NAUTILUS_ICON_SIZE_FOR_MENUS, 
 							      NAUTILUS_ICON_SIZE_FOR_MENUS);
 	while (nautilus_customization_data_get_next_element_for_display (customization_data,
-									 &emblem_file_name,
+									 &emblem_name,
 									 &emblem_pixmap_widget,
 									 &emblem_label) == GNOME_VFS_OK) {
 		
+		/* remove the suffix, if any, to make the emblem name */
+		dot_pos = strrchr(emblem_name, '.');
+		if (dot_pos) {
+			*dot_pos = '\0';
+		}
 		
-		
-		gtk_label_get (GTK_LABEL (emblem_label),
-			       &emblem_display_name);
-		if (strcmp (emblem_display_name, "Erase") == 0) {
+		if (strcmp (emblem_name, "erase") == 0) {
 			gtk_widget_destroy (emblem_pixmap_widget);
 			gtk_widget_destroy (emblem_label);
+			g_free (emblem_name);
 			continue;
 		}
 		menu_item = gtk_menu_item_new ();
 		
-		gtk_object_set_data (GTK_OBJECT (menu_item), "emblem name", emblem_display_name);
-		g_assert (strcmp (emblem_display_name, "Erase") != 0);
+		gtk_object_set_data (GTK_OBJECT (menu_item), "emblem name", emblem_name);
 		temp_hbox = gtk_hbox_new (FALSE, GNOME_PAD_SMALL);
 		gtk_box_pack_start (GTK_BOX (temp_hbox), emblem_pixmap_widget, FALSE, FALSE, 0);
 		gtk_box_pack_start (GTK_BOX (temp_hbox), emblem_label, FALSE, FALSE, 0);
@@ -1052,7 +1053,7 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 	gtk_option_menu_set_menu (criterion->details->value_menu,
 				  value_menu);
 	criterion->details->use_value_menu = TRUE;
-	g_free (emblem_file_name);
+	g_free (emblem_name);
 }
 
 

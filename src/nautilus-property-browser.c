@@ -809,24 +809,7 @@ write_browser_xml (NautilusPropertyBrowser *property_browser,
 static xmlNodePtr
 get_color_category (xmlDocPtr document)
 {
-	xmlNodePtr cur_node;
-	char *category_name;
-	gboolean match;
-
-	for (cur_node = nautilus_xml_get_children (xmlDocGetRootElement (document));
-	     cur_node != NULL;
-	     cur_node = cur_node->next) {
-		if (strcmp (cur_node->name, "category") == 0) {
-			category_name = xmlGetProp (cur_node, "name");
-			match = strcmp (category_name, "colors") == 0;
-			xmlFree (category_name);
-			if (match) {
-				return cur_node;
-			}
-		}
-	}
-	
-	return NULL;
+	return nautilus_xml_get_root_child_by_name_and_property (document, "category", "name", "colors");
 }
 
 /* routines to remove specific category types.  First, handle colors */
