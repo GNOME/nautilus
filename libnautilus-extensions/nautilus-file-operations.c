@@ -1576,6 +1576,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	GnomeVFSResult result;
 	gboolean same_fs;
 	gboolean is_trash_move;
+	gboolean is_desktop_trash_link;
 	gboolean duplicate;
 	
 	IconPositionIterator *icon_position_iterator;
@@ -1609,6 +1610,11 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	for (p = item_uris; p != NULL; p = p->next) {
 		source_uri = gnome_vfs_uri_new ((const char *)p->data);
 		/* Filter out special Nautilus link files */
+		/* FIXME bugzilla.eazel.com 5295: 
+		 * This is surprising behavior -- the user drags the Trash icon (say)
+		 * to a folder, releases it, and nothing whatsoever happens. Don't we want
+		 * a dialog in this case?
+		 */
 		if (!is_special_link (source_uri)) {
 			source_uri_list = g_list_prepend (source_uri_list, source_uri);
 			source_dir_uri = gnome_vfs_uri_get_parent (source_uri);
@@ -1740,17 +1746,23 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		for (p = source_uri_list; p != NULL; p = p->next) {
 			uri = (GnomeVFSURI *)p->data;
 
-			/* Check that the Trash is not being moved/copied */
-			if (trash_dir_uri != NULL && gnome_vfs_uri_equal (uri, trash_dir_uri)) {
+			/* Check that a trash folder is not being moved/copied (link is OK). */
+			if (trash_dir_uri != NULL 
+			    && ((move_options & GNOME_VFS_XFER_LINK_ITEMS) == 0) 
+			    && gnome_vfs_uri_equal (uri, trash_dir_uri)) {
+			    	/* Distinguish Trash file on desktop from other trash folders for
+			    	 * message purposes.
+			    	 */
+			    	is_desktop_trash_link = is_special_link (uri);
 				nautilus_simple_dialog
 					(view, 
 					 FALSE,
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
-					 ? _("The Trash must remain on the desktop.")
-					 : _("You cannot copy the Trash."), 
+						 ? (is_desktop_trash_link ? _("The Trash must remain on the desktop.") : _("You cannot move this trash folder."))
+						 : (is_desktop_trash_link ? _("You cannot copy the Trash.") : _("You cannot copy this trash folder.")), 
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0)
-					 ? _("Can't Change Trash Location")
-					 : _("Can't Copy Trash"),
+						 ? _("Can't Change Trash Location")
+						 : _("Can't Copy Trash"),
 					 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
 
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;

@@ -1,3 +1,16 @@
+2000-12-20  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 4842 (Link to .Trash gives "You cannot copy the Trash"
+	dialog) and part of bug 5221 (Trying to delete .Trash says
+	"The Trash cannot be moved from the desktop")
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(nautilus_file_operations_copy_move): Don't disallow linking
+	to trash folders (was doing so accidentally); distinguish
+	error wording for desktop Trash icon and other trash folders.
+
 2000-12-20  J Shane Culpepper  <pepper@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>
