@@ -1,5 +1,14 @@
 2000-08-29  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 1884 (mistyped URL is changed back to previous)
+
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_end_location_change_callback): Replaced
+	a nautilus_navigation_bar_set_location call with a comment
+	explaining why not to call it there.
+
+2000-08-29  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bug 2173 (We should allow clearing the History list)
 	There's now a Forget History item in the Go menu which
 	(after confirmation) forgets the history items in the Go

@@ -1382,13 +1382,12 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                 /* Clean up state of already-showing window */
                 nautilus_window_allow_stop (window, FALSE);
                 nautilus_error_dialog (error_message, GTK_WINDOW (window));
-                
-                /* If it was an error loading a URI that had been
-                 * dragged to the location bar, we might need to reset
-                 * the URI.
+
+                /* Leave the location bar showing the bad location that the user
+                 * typed (or maybe achieved by dragging or something). Many times
+                 * the mistake will just be an easily-correctable typo. The user
+                 * can choose "Refresh" to get the original URI back in the location bar.
                  */
-                nautilus_navigation_bar_set_location (NAUTILUS_NAVIGATION_BAR (window->navigation_bar),
-                                                      window->location);
         }
         
         g_free (error_message);
