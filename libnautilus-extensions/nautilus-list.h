@@ -130,6 +130,8 @@ GtkWidget *  nautilus_list_new_with_titles       (int                      colum
 GList *      nautilus_list_get_selection         (NautilusList            *list);
 void         nautilus_list_set_selection         (NautilusList            *list,
 						  GList                   *selection);
+void	     nautilus_list_reveal_row		 (NautilusList		  *list,
+						  int			   row);
 gboolean     nautilus_list_is_row_selected       (NautilusList            *list,
 						  int                      row);
 void         nautilus_list_set_pixbuf_list       (NautilusList            *list,
@@ -145,6 +147,7 @@ void         nautilus_list_select_row            (NautilusList            *list,
 						  int                      row);
 GtkCListRow *nautilus_list_row_at                (NautilusList            *list,
 						  int                      y);
+int	     nautilus_list_get_first_selected_row (NautilusList		  *list);
 void         nautilus_list_each_selected_row     (NautilusList            *list,
 						  NautilusEachRowFunction  function,
 						  gpointer                 data);

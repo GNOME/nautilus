@@ -1,3 +1,34 @@
+2000-08-21  John Sullivan  <sullivan@eazel.com>
+
+	Finished bug 1750 ("Reveal in New Window" feature for 
+	search results). Now choosing this menu item opens the
+	right window, selects the right item, and scrolls as
+	necessary to reveal the selected item.
+
+	* libnautilus-extensions/nautilus-icon-container.h,
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_reveal): New function, wrapper for
+	existing private reveal_icon function that first finds the
+	NautilusIcon for the given NautilusIconData.
+	
+	* libnautilus-extensions/nautilus-list.h,
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_reveal_row): Renamed this function from
+	reveal_row and made it public.
+	(keyboard_row_reveal_timeout_callback): Accounted for
+	name change
+	(nautilus_list_get_first_selected_row): New function, returns
+	index of first selected item.
+	
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_set_selection),
+	* src/file-manager/fm-list-view.c: (fm_list_view_set_selection):
+	reveal first selected item. This has the (good, I think) side effect
+	of scrolling as necessary to make sure at least one selected item
+	is in view whenever the selection is explicitly set, which includes
+	when creating a new folder and when switching views with an existing
+	selection (but beware, switching from list view to icon view with a
+	selection currently crashes due to bug 2222).
+
 2000-08-21  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 2137, renaming of trash causes a duplicate trash to 

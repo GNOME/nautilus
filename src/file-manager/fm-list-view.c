@@ -1296,6 +1296,11 @@ fm_list_view_set_selection (FMDirectoryView *view, GList *selection)
         nlist = NAUTILUS_LIST (get_list (FM_LIST_VIEW(view)));
 
         nautilus_list_set_selection (nlist, selection);
+	/* Make sure at least one of the selected items is scrolled into view */
+        if (selection != NULL) {
+	        nautilus_list_reveal_row 
+	        	(nlist, nautilus_list_get_first_selected_row (nlist));
+        }
 }
 
 

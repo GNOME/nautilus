@@ -1211,6 +1211,10 @@ fm_icon_view_set_selection (FMDirectoryView *view, GList *selection)
 
 	icon_container = get_icon_container (FM_ICON_VIEW (view));
 	nautilus_icon_container_set_selection (icon_container, selection);
+	/* Make sure at least one of the selected items is scrolled into view */
+	if (selection != NULL) {
+		nautilus_icon_container_reveal (icon_container, selection->data);
+	}
 }
 
 static void

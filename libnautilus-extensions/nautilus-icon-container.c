@@ -3486,6 +3486,30 @@ nautilus_icon_container_request_update_all (NautilusIconContainer *container)
 }
 
 /**
+ * nautilus_icon_container_reveal:
+ * Change scroll position as necessary to reveal the specified item.
+ */
+void
+nautilus_icon_container_reveal (NautilusIconContainer *container, NautilusIconData *data)
+{
+	GList *p;
+	NautilusIcon *icon;
+
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+	g_return_if_fail (data != NULL);
+
+	/* FIXME bugzilla.eazel.com 1288: 
+	 * I guess we need to use an indexed data structure to avoid this loop.
+	 */
+	for (p = container->details->icons; p != NULL; p = p->next) {
+		icon = p->data;
+		if (icon->data == data) {
+			reveal_icon (container, icon);
+		}
+	}
+}
+
+/**
  * nautilus_icon_container_get_anti_aliased_mode:
  * get the state of the anti_aliased boolean
  *

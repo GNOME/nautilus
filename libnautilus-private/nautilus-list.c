@@ -245,8 +245,6 @@ static int      nautilus_list_key_press                 (GtkWidget            *w
 							 GdkEventKey          *event);
 static void     nautilus_list_unselect_all              (GtkCList             *clist);
 static void     nautilus_list_select_all                (GtkCList             *clist);
-static void     reveal_row                              (NautilusList         *list,
-							 int                   row);
 static void     schedule_keyboard_row_reveal            (NautilusList         *list,
 							 int                   row);
 static void     unschedule_keyboard_row_reveal          (NautilusList         *list);
@@ -1087,7 +1085,7 @@ keyboard_row_reveal_timeout_callback (gpointer data)
 		 */
 		if (row_index == GTK_CLIST (list)->focus_row
 		    || nautilus_list_is_row_selected (list, row_index)) {
-			reveal_row (list, row_index);
+			nautilus_list_reveal_row (list, row_index);
 		}
 		list->details->keyboard_row_reveal_timer_id = 0;
 	}
@@ -1117,12 +1115,13 @@ schedule_keyboard_row_reveal (NautilusList *list, int row_index)
 				   list);
 }
 
-static void
-reveal_row (NautilusList *list, int row_index)
+void
+nautilus_list_reveal_row (NautilusList *list, int row_index)
 {
 	GtkCList *clist;
 
-	g_assert (NAUTILUS_IS_LIST (list));
+	g_return_if_fail (NAUTILUS_IS_LIST (list));
+	g_return_if_fail (row_index >= 0 && row_index < GTK_CLIST (list) ->rows);
 	
 	clist = GTK_CLIST (list);
 	
@@ -2994,6 +2993,26 @@ nautilus_list_each_selected_row (NautilusList *list, NautilusEachRowFunction fun
 		if (!function(row, data))
 			return;
 	}
+}
+
+int
+nautilus_list_get_first_selected_row (NautilusList *list)
+{
+	GtkCListRow *row;
+	GList *p;
+	int row_index;
+
+	g_return_val_if_fail (NAUTILUS_IS_LIST (list), -1);
+
+	for (p = GTK_CLIST (list)->row_list, row_index = 0; 
+	     p != NULL; 
+	     p = p->next, ++row_index) {
+		row = p->data;
+		if (row->state == GTK_STATE_SELECTED) 
+			return row_index;
+	}
+
+	return -1;
 }
 
 /* Workaround for a bug in GtkCList's insert_row.
