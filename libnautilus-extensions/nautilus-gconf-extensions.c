@@ -25,13 +25,11 @@
 #include <config.h>
 #include "nautilus-gconf-extensions.h"
 
-#include <gconf/gconf.h>
+#include "nautilus-glib-extensions.h"
+#include "nautilus-stock-dialogs.h"
 #include <gconf/gconf-client.h>
-
-#include <libgnome/gnome-defs.h>
+#include <gconf/gconf.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-dialog.h>
-#include <libgnomeui/gnome-dialog-util.h>
 
 static GConfClient *global_gconf_client = NULL;
 
@@ -73,24 +71,22 @@ nautilus_gconf_client_get_global (void)
 gboolean
 nautilus_gconf_handle_error (GError **error)
 {
+	char *message;
 	static gboolean shown_dialog = FALSE;
 	
 	g_return_val_if_fail (error != NULL, FALSE);
 
 	if (*error != NULL) {
 		g_warning (_("GConf error:\n  %s"), (*error)->message);
-		if ( ! shown_dialog) {
-			char *message;
-			GtkWidget *dialog;
-
+		if (! shown_dialog) {
 			shown_dialog = TRUE;
 
 			message = g_strdup_printf (_("GConf error:\n  %s\n"
 						     "All further errors shown "
 						     "only on terminal"),
 						   (*error)->message);
-
-			dialog = gnome_error_dialog (message);
+			nautilus_show_error_dialog (message, _("GConf Error"), NULL);
+			g_free (message);
 		}
 		g_error_free (*error);
 		*error = NULL;
@@ -214,37 +210,47 @@ nautilus_gconf_get_string (const char *key)
 
 void
 nautilus_gconf_set_string_list (const char *key,
-				   GSList *string_list_value)
+				GList *string_list_value)
 {
 	GConfClient *client;
-	GError *error = NULL;
+	GError *error;
+	GSList *slist;
 
 	g_return_if_fail (key != NULL);
 
 	client = nautilus_gconf_client_get_global ();
 	g_return_if_fail (client != NULL);
 
-	gconf_client_set_list (client, key, GCONF_VALUE_STRING, string_list_value, &error);
+	slist = nautilus_g_slist_from_g_list (string_list_value);
+
+	error = NULL;
+	gconf_client_set_list (client, key, GCONF_VALUE_STRING, slist, &error);
 	nautilus_gconf_handle_error (&error);
+
+	g_slist_free (slist);
 }
 
-GSList *
+GList *
 nautilus_gconf_get_string_list (const char *key)
 {
-	GSList *result;
+	GSList *slist;
+	GList *result;
 	GConfClient *client;
-	GError *error = NULL;
+	GError *error;
 	
 	g_return_val_if_fail (key != NULL, NULL);
 	
 	client = nautilus_gconf_client_get_global ();
 	g_return_val_if_fail (client != NULL, NULL);
 	
-	result = gconf_client_get_list (client, key, GCONF_VALUE_STRING, &error);
-	
+	error = NULL;
+	slist = gconf_client_get_list (client, key, GCONF_VALUE_STRING, &error);
 	if (nautilus_gconf_handle_error (&error)) {
-		result = NULL;
+		slist = NULL;
 	}
+
+	result = nautilus_g_list_from_g_slist (slist);
+	g_slist_free (slist);
 	
 	return result;
 }

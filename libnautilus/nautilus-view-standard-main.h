@@ -35,9 +35,7 @@
 
 #include <libnautilus/nautilus-view.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+BEGIN_GNOME_DECLS
 
 typedef NautilusView * (*NautilusViewCreateFunction) (const char *iid, void *user_data);
 
@@ -64,8 +62,6 @@ int nautilus_view_standard_main_multi  (const char                 *executable_n
  */
 NautilusView * nautilus_view_create_from_get_type_function (const char *iid, void *user_data);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+END_GNOME_DECLS
 
 #endif /* NAUTILUS_VIEW_STANDARD_MAIN_H */

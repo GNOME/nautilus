@@ -26,10 +26,9 @@
 #include <config.h>
 #include "nautilus-tree-expansion-state.h"
 
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
-
 
 
 struct NautilusTreeExpansionStateDetails {
@@ -74,59 +73,56 @@ nautilus_tree_expansion_state_initialize_class (gpointer klass)
 #define NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE		"tree-sidebar-panel/expansion_state"
 
 static void
-nautilus_tree_expansion_state_load_foreach_callback (char *uri,
-						     NautilusTreeExpansionState *expansion_state)
+expansion_state_load_callback (gpointer node_data,
+			       gpointer callback_data)
 {
-	nautilus_tree_expansion_state_expand_node_internal (expansion_state, uri);
+	nautilus_tree_expansion_state_expand_node_internal
+		(callback_data, node_data);
 }
 
 static void 
 nautilus_tree_expansion_state_load_table_from_gconf (NautilusTreeExpansionState *expansion_state)
 {
-	GSList *uris;
+	GList *uris;
 
 	uris = nautilus_preferences_get_string_list (NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE);
-
-	g_slist_foreach (uris, (GFunc) nautilus_tree_expansion_state_load_foreach_callback, expansion_state);
-
-	nautilus_g_slist_free_deep (uris);
+	g_list_foreach (uris, expansion_state_load_callback, expansion_state);
+	nautilus_g_list_free_deep (uris);
 }
 
 
 static void
-g_hash_table_get_keys_callback (gpointer key,
-				gpointer value,
-				gpointer user_data)
+hash_table_get_keys_callback (gpointer key,
+			      gpointer value,
+			      gpointer user_data)
 {
-	GSList **keys;
+	GList **keys;
 
-	keys = (GSList **) user_data;
-	*keys = g_slist_prepend (*keys, key);
+	keys = (GList **) user_data;
+	*keys = g_list_prepend (*keys, key);
 }
 
-static GSList *
-g_hash_table_get_keys (GHashTable *hash_table)
+static GList *
+hash_table_get_keys (GHashTable *hash_table)
 {
-	GSList *keys;
+	GList *keys;
 
 	keys = NULL;
 	g_hash_table_foreach (hash_table,
-			      g_hash_table_get_keys_callback,
+			      hash_table_get_keys_callback,
 			      &keys);
 	return keys;
 }
 
-
 static void 
 nautilus_tree_expansion_state_save_table_to_gconf (NautilusTreeExpansionState *expansion_state)
 {
-	GSList *uris;
+	GList *uris;
 
-	uris = g_hash_table_get_keys (expansion_state->details->table);
-
+	uris = hash_table_get_keys (expansion_state->details->table);
+	uris = nautilus_g_str_list_alphabetize (uris);
 	nautilus_preferences_set_string_list (NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE, uris);
-
-	g_slist_free (uris);
+	g_list_free (uris);
 }
 
 static void

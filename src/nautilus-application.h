@@ -52,23 +52,20 @@ typedef struct {
 	BonoboObjectClass parent_class;
 } NautilusApplicationClass;
 
-GtkType              nautilus_application_get_type      (void);
-NautilusApplication *nautilus_application_new           (void);
-void                 nautilus_application_startup       (NautilusApplication *application,
-							 gboolean             kill_shell,
-							 gboolean	      restart_shell,
-							 gboolean             start_desktop,
-							 gboolean             no_default_window,
-							 gboolean             do_first_time_druid_check,
-							 const char          *default_geometry,
-							 const char          *urls[]);
-						 
-GSList		*nautilus_application_windows (void);
-NautilusWindow	*nautilus_application_create_window (NautilusApplication *application);
-
-void	nautilus_application_close_all_windows (void);
-
-void	nautilus_application_open_desktop (NautilusApplication *application);
-void	nautilus_application_close_desktop (void);
+GtkType              nautilus_application_get_type          (void);
+NautilusApplication *nautilus_application_new               (void);
+void                 nautilus_application_startup           (NautilusApplication *application,
+							     gboolean             kill_shell,
+							     gboolean             restart_shell,
+							     gboolean             start_desktop,
+							     gboolean             no_default_window,
+							     gboolean             do_first_time_druid_check,
+							     const char          *default_geometry,
+							     const char          *urls[]);
+GList *              nautilus_application_get_window_list   (void);
+NautilusWindow *     nautilus_application_create_window     (NautilusApplication *application);
+void                 nautilus_application_close_all_windows (void);
+void                 nautilus_application_open_desktop      (NautilusApplication *application);
+void                 nautilus_application_close_desktop     (void);
 
 #endif /* NAUTILUS_APPLICATION_H */

@@ -124,8 +124,7 @@ nautilus_view_identifier_new_from_oaf_server_info (OAF_ServerInfo *server, char 
                 view_as_name = server->iid;
         }
 
-	g_slist_foreach (langs, (GFunc)g_free, NULL);
-        g_slist_free (langs);
+	nautilus_g_slist_free_deep (langs);
 
 	/* if the name is an OAFIID, clean it up for display */
 	if (nautilus_str_has_prefix (view_as_name, "OAFIID:")) {

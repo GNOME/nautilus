@@ -997,9 +997,12 @@ nautilus_shell_quote (const char *string)
 	return quoted_str;
 }
 
-int nautilus_g_round (double d)
+int
+nautilus_round (double d)
 {
-	double val = floor (d + .5);
+	double val;
+
+	val = floor (d + .5);
 
 	/* The tests are needed because the result of floating-point to integral
 	 * conversion is undefined if the floating point value is not representable
@@ -1010,6 +1013,32 @@ int nautilus_g_round (double d)
 	g_return_val_if_fail (val >= INT_MIN, INT_MIN);
 
 	return val;
+}
+
+GList *
+nautilus_g_list_from_g_slist (GSList *slist)
+{
+	GList *list;
+	GSList *node;
+
+	list = NULL;
+	for (node = slist; node != NULL; node = node->next) {
+		list = g_list_prepend (list, node->data);
+	}
+	return g_list_reverse (list);
+}
+
+GSList *
+nautilus_g_slist_from_g_list (GList *list)
+{
+	GSList *slist;
+	GList *node;
+
+	slist = NULL;
+	for (node = list; node != NULL; node = node->next) {
+		slist = g_slist_prepend (slist, node->data);
+	}
+	return g_slist_reverse (slist);
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

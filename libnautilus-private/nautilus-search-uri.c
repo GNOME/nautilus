@@ -27,17 +27,18 @@
 /* Must be included before other libgnome headers. */
 #include <libgnome/gnome-defs.h>
 
+#include "nautilus-glib-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-string.h"
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 
-static const char *       strip_uri_beginning         (const char *location_uri);
-static GSList *           tokenize_uri                (const char *string);
-static char *             get_translated_criterion    (const GSList *criterion);
-static char *             get_nth_criterion_prefix    (GSList *criterion);
-static char *             parse_uri                   (const char *search_uri);
-static void               free_tokenized_uri          (GSList *list);
+static const char *strip_uri_beginning      (const char *location_uri);
+static GList *     tokenize_uri             (const char *string);
+static char *      get_translated_criterion (GList      *criterion);
+static char *      get_nth_criterion_prefix (GList      *criterion);
+static char *      parse_uri                (const char *search_uri);
+static void        free_tokenized_uri       (GList      *list);
 
 /**
  * strip_uri_beginning:
@@ -79,22 +80,14 @@ strip_uri_beginning (const char *location_uri)
  *
  */
 static void
-free_tokenized_uri (GSList *list)
+free_tokenized_uri (GList *list)
 {
-        GSList *temp_list;
+        GList *node;
 
-        for (temp_list = list; temp_list != NULL; temp_list = temp_list->next) {
-                GSList *inner_list, *temp_inner_list;
-                
-                inner_list = (GSList *)temp_list->data;
-                for (temp_inner_list = inner_list; temp_inner_list != NULL; 
-                     temp_inner_list = temp_inner_list->next) {
-                        g_free ((char *)temp_inner_list->data);
-                }
-                
-                g_slist_free (inner_list);
+        for (node = list; node != NULL; node = node->next) {
+                nautilus_g_list_free_deep (node->data);
         }
-        g_slist_free (list);
+        g_list_free (list);
 }
 
 
@@ -110,12 +103,12 @@ free_tokenized_uri (GSList *list)
  *               each criterin sinlgly linked list is made of the different tokens
  *               of the criterion.
  */
-static GSList *
+static GList *
 tokenize_uri (const char *string) 
 {
         const char *temp_string;
         char **criteria;
-        GSList *criterion_list;
+        GList *criterion_list;
         int i, j;
 
         if (string == NULL) {
@@ -143,16 +136,16 @@ tokenize_uri (const char *string)
              i++, temp_string = criteria[i]) {
                 char **tokens;
                 char *token;
-                GSList *token_list;
+                GList *token_list;
 
                 /* split a criterion in different tokens */
                 token_list = NULL;
                 tokens = g_strsplit (temp_string, " ", 2);
                 for (j = 0, token = tokens[0]; token != NULL; j++, token = tokens[j]) {
                         /* g_strstrip does not return a newly allocated string. */
-                        token_list = g_slist_append (token_list, g_strdup(g_strstrip (token)));
+                        token_list = g_list_append (token_list, g_strdup (g_strstrip (token)));
                 }
-                criterion_list = g_slist_append (criterion_list, token_list);
+                criterion_list = g_list_append (criterion_list, token_list);
                 g_strfreev (tokens);
         }
         g_strfreev (criteria);
@@ -581,7 +574,7 @@ get_item_number (field_criterion_item *current_table, char *item)
  * Returns a translated string for a given criterion uri.
  */
 static char *
-get_translated_criterion (const GSList *criterion)
+get_translated_criterion (GList *criterion)
 {
 
         int item_number, value_item_number;
@@ -590,7 +583,7 @@ get_translated_criterion (const GSList *criterion)
         char *ret_val;
 
         /* make sure we got a valid criterion */
-        if (g_slist_length ((GSList *) criterion) != 3) {
+        if (g_list_length (criterion) != 3) {
                 return NULL;
         }
 
@@ -650,14 +643,14 @@ get_translated_criterion (const GSList *criterion)
 
 /**
  * get_nth_criterion_prefix:
- * @criterion: The GSList whose data field points to the criterion GSList.
+ * @criterion: The GList whose data field points to the criterion GList.
  *
  * calculates the "," or "and" prefix for any criterion.
  *
  * return value: the translated prefix.
  */
 static char *
-get_nth_criterion_prefix (GSList *criterion)
+get_nth_criterion_prefix (GList *criterion)
 {
         /* if we are the last criterion, put it here. */
 
@@ -676,7 +669,7 @@ get_nth_criterion_prefix (GSList *criterion)
 static char *
 parse_uri (const char *search_uri)
 {
-        GSList *criteria, *criterion;
+        GList *criteria, *criterion;
         char *translated_criterion, *translated_prefix;
         char *ret_val, *temp;
         
@@ -686,7 +679,7 @@ parse_uri (const char *search_uri)
         }
 
         /* processes the first criterion and add the necessary "whose" prefix */
-        translated_criterion = get_translated_criterion ((GSList *)criteria->data);
+        translated_criterion = get_translated_criterion ((GList *)criteria->data);
         if (translated_criterion == NULL) {
                 free_tokenized_uri (criteria);
                 return NULL;
@@ -697,7 +690,7 @@ parse_uri (const char *search_uri)
         
         /* processes the other criteria and add the necessary "and" prefixes */
         for (criterion = criteria->next; criterion != NULL; criterion = criterion->next) {
-                translated_criterion = get_translated_criterion ((const GSList *)criterion->data);
+                translated_criterion = get_translated_criterion (criterion->data);
                 if (translated_criterion == NULL) {
                         g_free (ret_val);
                         free_tokenized_uri (criteria);

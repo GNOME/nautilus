@@ -731,7 +731,7 @@ set_theme (const char *theme_name)
 
 	/* now set up the default theme */
         g_free (factory->default_theme_name);	
-	factory->default_theme_name = nautilus_theme_get_theme_data ("icon-images", "DEFAULT_THEME");
+	factory->default_theme_name = nautilus_theme_get_theme_data ("icon-images", "default_theme");
 	check_local_theme (factory->default_theme_name, &factory->local_default_theme);
 			
 	/* we changed the theme, so emit the icons_changed signal */
@@ -978,10 +978,10 @@ get_themed_icon_file_path (const char *theme_name,
 		
 		size_as_string = g_strdup_printf ("%u", icon_size);
 		node = nautilus_xml_get_root_child_by_name_and_property
-			(doc, "ICON", "SIZE", size_as_string);
+			(doc, "icon", "size", size_as_string);
 		g_free (size_as_string);
 		
-		property = xmlGetProp (node, "EMBEDDED_TEXT_RECTANGLE");		
+		property = xmlGetProp (node, "embedded_text_rectangle");		
 		if (property != NULL) {
 			
 			if (sscanf (property,
@@ -995,7 +995,7 @@ get_themed_icon_file_path (const char *theme_name,
 			xmlFree (property);
 		}
 
-		property = xmlGetProp (node, "ATTACH_POINTS");
+		property = xmlGetProp (node, "attach_points");
 		parse_attach_points (&details->attach_points, property);	
 		xmlFree (property);
 		
@@ -1115,7 +1115,7 @@ icon_theme_changed_callback (gpointer user_data)
 	 * long run, we sould just get rid of the user preference.
 	 */
 	theme_preference = nautilus_preferences_get (NAUTILUS_PREFERENCES_THEME);
-	icon_theme = nautilus_theme_get_theme_data ("icons", "ICON_THEME");
+	icon_theme = nautilus_theme_get_theme_data ("icons", "icon_theme");
 	
 	set_theme (icon_theme == NULL ? theme_preference : icon_theme);
 	

@@ -1,3 +1,182 @@
+2001-01-30  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix bug 6147 (selected icons flash unselected/selected rapidly):
+	
+	* src/nautilus-window-manage-views.c: (change_selection): Don't
+	send out selection change notices to the view that reported the
+	selection change.
+	(change_selection_callback): Pass in view that requested the
+	change so we can know not to send a selection change to that view.
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_send_selection_change): Clear flag that says we
+	have a selection change for the shell.
+	(selection_changed_callback): Add code to indicate this selection
+	change is due to the shell, so we don't tell the shell about
+	something it just told us.
+	(done_loading): Set flag so we don't tell the shell about selection
+	changes that are part of the first load of the directory.
+	(display_selection_info_idle_callback): Only send a selection change
+	to the shell if the change was initiated here. Also remove the code
+	that ref's the NautilusView object -- wasn't helping.
+	(update_menus_timeout_callback), (display_pending_idle_callback),
+	(display_pending_timeout_callback): Remove the code that ref's the
+	NautilusView object -- wasn't helping.
+	(fm_directory_view_notify_selection_changed): Propagate flag that
+	tells the idle code we have made the change to the selection and
+	the shell should be notified.
+	
+	Fix bug 6158 (nautilus --quit shouldn't check for
+	~/.nautilus/first-time-wizard-flag).
+
+	* src/nautilus-main.c: (main): Don't do the first-time druid check
+	when the --quit or --restart option is used.
+	
+	Fix bug 803 (All metafile tags should be lower case).
+	
+	* libnautilus-extensions/nautilus-metadata.h: Use lower-case for
+	metadata tags.
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(create_metafile_root), (get_file_node),
+	(nautilus_directory_rename_file_metadata),
+	(nautilus_directory_copy_file_metadata),
+	(nautilus_directory_set_metafile_contents): Change metadata tags
+	to be lower-case.
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_self_check_directory): Use lower-case in metadata
+	self-test for clarity.
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_keywords), (nautilus_file_set_keywords): Change
+	metadata tags to be lower-case.
+	
+	* data/top/.nautilus-metafile.xml
+	* icons/ardmore/ardmore.xml:
+	* icons/arlo/arlo.xml:
+	* icons/arlo/i-directory.xml:
+	* icons/arlo/i-regular.xml:
+	* icons/crux_eggplant/crux_eggplant.xml:
+	* icons/crux_eggplant/i-directory.xml:
+	* icons/crux_eggplant/i-regular.xml:
+	* icons/default.xml:
+	* icons/gnome/gnome.xml:
+	* icons/i-directory-accept.xml:
+	* icons/i-directory.xml:
+	* icons/i-regular.xml:
+	* icons/villanova/villanova.xml:
+	Change XML to use lower-case.
+
+	* libnautilus-extensions/nautilus-link-set.c: (create_new_link):
+	Use lower-case for link XML tags.
+	* libnautilus-extensions/nautilus-link.c:
+	(nautilus_link_local_create), (nautilus_link_local_set_link_uri),
+	(nautilus_link_local_set_type),
+	(nautilus_link_local_get_link_uri),
+	(nautilus_link_local_get_link_type),
+	(nautilus_link_get_link_uri_given_file_contents): Use lower-case
+	for link XML tags.
+	
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_select_text_color),
+	(nautilus_sidebar_title_theme_changed): Use lower-case for theme
+	XML tags.
+	* components/throbber/nautilus-throbber.c:
+	(get_bonobo_properties), (nautilus_throbber_initialize),
+	(nautilus_throbber_load_images),
+	(nautilus_throbber_button_press_event): Change theme XML tags to be
+	lower-case.
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(start_rubberbanding): Use lower-case for theme XML tags.
+	(nautilus_icon_container_initialize): Fix comment.
+	(update_label_color), (nautilus_icon_container_theme_changed): Use
+	lower-case for theme XML tags.
+	* libnautilus-extensions/nautilus-icon-factory.c: (set_theme): Use
+	lower-case for theme XML tags.
+	(get_themed_icon_file_path): Use lower-case for icon XML file
+	tags.
+	(icon_theme_changed_callback): Use lower-case for theme XML tags.
+	* src/nautilus-sidebar-tabs.c:
+	(nautilus_sidebar_tabs_load_theme_data), (get_text_offset): Use
+	lowe-case for theme XML tags.
+	* src/nautilus-sidebar.c: (nautilus_sidebar_update_appearance):
+	Use lower-case for theme XML tags.
+	* src/nautilus-window-toolbars.c: (get_file_name_from_icon_name):
+	Use lower-case for theme XML tags.
+	* src/nautilus-zoom-control.c: (draw_number): Use lower-case for
+	theme XML tags.
+
+	Change code that used GSList when it should use GList. We use
+	GList so that we can share utility functions. It's arbitrary. We
+	could have decided to use all GSList instead, but we chose GList
+	(because of its name, initially).
+
+	* components/tree/nautilus-tree-expansion-state.c:
+	(expansion_state_load_callback),
+	(nautilus_tree_expansion_state_load_table_from_gconf),
+	(hash_table_get_keys_callback), (hash_table_get_keys),
+	(nautilus_tree_expansion_state_save_table_to_gconf): Update to use
+	GList instead of GSList.
+	* libnautilus-extensions/nautilus-gconf-extensions.h:
+	* libnautilus-extensions/nautilus-gconf-extensions.c:
+	(nautilus_gconf_handle_error), (nautilus_gconf_set_string_list),
+	(nautilus_gconf_get_string_list): Change to work with GList
+	instead of GSList to match the rest of Nautilus, so that the lists
+	can be manipulated with all the GList utility functions.
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_round): Changed name from nautilus_g_round -- "g" for
+	"gratuitous".
+	(nautilus_g_list_from_g_slist), (nautilus_g_slist_from_g_list):
+	Added utility functions to help make GSLists from GLists and vice
+	versa. Useful when dealing with functions that yield/expect
+	GSLists.
+	* libnautilus-extensions/nautilus-icon-text-item.c: (iti_destroy),
+	(iti_update), (iti_paint_text), (iti_draw), (iti_render),
+	(iti_event): Use nautilus_round by its new name.
+	* libnautilus-extensions/nautilus-preferences.h:
+	* libnautilus-extensions/nautilus-preferences.c:
+	(nautilus_preferences_set_string_list),
+	(nautilus_preferences_get_string_list),
+	(nautilus_preferences_default_set_string_list),
+	(nautilus_preferences_default_get_string_list): Change to use
+	GList instead of GSList.
+	* libnautilus-extensions/nautilus-search-uri.c:
+	(free_tokenized_uri), (tokenize_uri), (get_translated_criterion),
+	(get_nth_criterion_prefix), (parse_uri): Change to use GList
+	instead of GSList.
+	* src/nautilus-application.h:
+	* src/nautilus-application.c:
+	(nautilus_application_get_window_list): Renamed from
+	nautilus_application_windows and changed to use GList instead of
+	GSList.
+	(nautilus_application_destroyed_window),
+	(nautilus_application_create_window), (volume_unmounted_callback):
+	Change to use GList instead of GSList.
+	* src/nautilus-shell.c: (save_window_states),
+	(restore_window_states): Use GList instead of GSList.
+	* src/nautilus-window-manage-views.c: (just_one_window): Use GList
+	instead of GSList.
+	(open_location_prefer_existing_window_callback): Use GList instead
+	of GSList.
+	* src/nautilus-window.c: (nautilus_forget_history): Use GList
+	instead of GSList and the new name for
+	nautilus_application_get_window_list.
+	
+	Other changes.
+
+	* src/nautilus-shell.c: (display_caveat_first_time): Turn off the
+	caveat -- we're close enough to 1.0.
+	
+	* libnautilus-extensions/nautilus-view-identifier.c:
+	(nautilus_view_identifier_new_from_oaf_server_info): Use free_deep
+	call.
+	
+	* libnautilus/nautilus-view-standard-main.h: Use
+	BEGIN/END_GNOME_DECLS.
+	
+	* src/file-manager/fm-desktop-icon-view.c: Remove unneeded
+	include.
+
 2001-01-30  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Gene Z. Ragan <gzr@eazel.com>
@@ -144,7 +323,6 @@
 	Reduced timed-wait initial timeout from 5 seconds to
 	3 after playing around with the gnome-vfs test-method.
 	
-
 2001-01-29  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>
@@ -8091,8 +8269,6 @@ Wed Jan 24 21:21:52 2001  George Lebl <jirka@5z.com>
 	Dumshit me forgot to add new files to makefile.
 		
 2000-12-19  Ramiro Estrugo  <ramiro@eazel.com>
-
-	reviewed by: <delete if not using a buddy>
 
 	* libnautilus-extensions/Makefile.am:
 	* libnautilus-extensions/nautilus-debug-drawing.h:

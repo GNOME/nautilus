@@ -4,7 +4,7 @@
  *  Nautilus
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
- *  Copyright (C) 2000 Eazel, Inc.
+ *  Copyright (C) 2000, 2001 Eazel, Inc.
  *
  *  Nautilus is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
@@ -20,7 +20,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Author: Elliot Lee <sopwith@redhat.com>,
+ *  Authors: Elliot Lee <sopwith@redhat.com>,
+ *           Darin Adler <darin@eazel.com>
  *
  */
 
@@ -157,9 +158,10 @@ create_factory (PortableServer_POA poa,
 static NautilusDesktopWindow *nautilus_application_desktop_window;
 
 /* Keeps track of all the nautilus windows. */
-static GSList *nautilus_application_window_list;
+static GList *nautilus_application_window_list;
 
-GSList *nautilus_application_windows (void)
+GList *
+nautilus_application_get_window_list (void)
 {
 	return nautilus_application_window_list;
 }
@@ -526,7 +528,7 @@ nautilus_application_close_all_windows (void)
 static void
 nautilus_application_destroyed_window (GtkObject *object, NautilusApplication *application)
 {
-	nautilus_application_window_list = g_slist_remove (nautilus_application_window_list, object);
+	nautilus_application_window_list = g_list_remove (nautilus_application_window_list, object);
 }
 
 static gboolean
@@ -561,7 +563,7 @@ nautilus_application_create_window (NautilusApplication *application)
 			    "destroy", nautilus_application_destroyed_window,
 			    application);
 
-	nautilus_application_window_list = g_slist_prepend (nautilus_application_window_list, window);
+	nautilus_application_window_list = g_list_prepend (nautilus_application_window_list, window);
 
 	/* Do not yet show the window. It will be shown later on if it can
 	 * successfully display its initial URI. Otherwise it will be destroyed
@@ -674,7 +676,7 @@ static void
 volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 			   NautilusApplication *application)
 {
-	GSList *windows, *index, *close_list;
+	GList *windows, *index, *close_list;
 	NautilusWindow *window;
 	char *text_uri;
 	const char *path;
@@ -683,7 +685,7 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volum
 	close_list = NULL;
 	
 	/* Check and see if any of the open windows are displaying contents from the unmounted volume */
-	windows = nautilus_application_windows ();
+	windows = nautilus_application_get_window_list ();
 	
 	/* Construct a list of windows to be closed */
 	for (index = windows; index != NULL; index = index->next) {
@@ -697,7 +699,7 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volum
 				path = gnome_vfs_uri_get_path (uri);				
 				if (strlen (path) >= strlen (volume->mount_path)) {
 					if (strncmp (path, volume->mount_path, strlen (volume->mount_path)) == 0) {
-						close_list = g_slist_prepend (close_list, window);
+						close_list = g_list_prepend (close_list, window);
 					}				
 				}
 				gnome_vfs_uri_unref (uri);
@@ -710,6 +712,6 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volum
 		nautilus_window_close (NAUTILUS_WINDOW (index->data));
 	}
 	
-	g_slist_free (close_list);
+	g_list_free (close_list);
 }
 

@@ -1498,23 +1498,23 @@ nautilus_self_check_directory (void)
 		gtk_main_iteration ();
 	}
 
-	nautilus_file_set_metadata (file, "TEST", "default", "value");
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_metadata (file, "TEST", "default"), "value");
+	nautilus_file_set_metadata (file, "test", "default", "value");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_metadata (file, "test", "default"), "value");
 
-	nautilus_file_set_boolean_metadata (file, "TEST_BOOLEAN", TRUE, TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (file, "TEST_BOOLEAN", TRUE), TRUE);
-	nautilus_file_set_boolean_metadata (file, "TEST_BOOLEAN", TRUE, FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (file, "TEST_BOOLEAN", TRUE), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (NULL, "TEST_BOOLEAN", TRUE), TRUE);
+	nautilus_file_set_boolean_metadata (file, "test_boolean", TRUE, TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (file, "test_boolean", TRUE), TRUE);
+	nautilus_file_set_boolean_metadata (file, "test_boolean", TRUE, FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (file, "test_boolean", TRUE), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (NULL, "test_boolean", TRUE), TRUE);
 
-	nautilus_file_set_integer_metadata (file, "TEST_INTEGER", 0, 17);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "TEST_INTEGER", 0), 17);
-	nautilus_file_set_integer_metadata (file, "TEST_INTEGER", 0, -1);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "TEST_INTEGER", 0), -1);
-	nautilus_file_set_integer_metadata (file, "TEST_INTEGER", 42, 42);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "TEST_INTEGER", 42), 42);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (NULL, "TEST_INTEGER", 42), 42);
-	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "NONEXISTENT_KEY", 42), 42);
+	nautilus_file_set_integer_metadata (file, "test_integer", 0, 17);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "test_integer", 0), 17);
+	nautilus_file_set_integer_metadata (file, "test_integer", 0, -1);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "test_integer", 0), -1);
+	nautilus_file_set_integer_metadata (file, "test_integer", 42, 42);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "test_integer", 42), 42);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (NULL, "test_integer", 42), 42);
+	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "nonexistent_key", 42), 42);
 
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_directory_get ("file:///etc") == directory, TRUE);
 	nautilus_directory_unref (directory);
@@ -1569,7 +1569,7 @@ nautilus_self_check_directory (void)
 
 	file = nautilus_file_get ("file:///etc/passwd");
 
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_metadata (file, "TEST", "default"), "value");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_file_get_metadata (file, "test", "default"), "value");
 	
 	nautilus_file_unref (file);
 

@@ -101,9 +101,11 @@ static void cancel_location_change (NautilusWindow    *window);
 
 static void
 change_selection (NautilusWindow *window,
-                  GList *selection)
+                  GList *selection,
+                  NautilusViewFrame *requesting_view)
 {
         GList *sorted, *node;
+        NautilusViewFrame *view;
 
         /* Sort list into canonical order and check if it's the same as
          * the selection we already have.
@@ -118,10 +120,15 @@ change_selection (NautilusWindow *window,
         nautilus_g_list_free_deep (window->selection);
         window->selection = sorted;
 
-        /* Tell all the view frames about it. */
-        nautilus_view_frame_selection_changed (window->content_view, sorted);
+        /* Tell all the view frames about it, except the one that changed it. */
+        if (window->content_view != requesting_view) {
+                nautilus_view_frame_selection_changed (window->content_view, sorted);
+        }
         for (node = window->sidebar_panels; node != NULL; node = node->next) {
-                nautilus_view_frame_selection_changed (node->data, sorted);
+                view = node->data;
+                if (view != requesting_view) {
+                        nautilus_view_frame_selection_changed (view, sorted);
+                }
         }
 }
 
@@ -993,7 +1000,6 @@ static void
 end_location_change (NautilusWindow *window)
 {
         nautilus_window_allow_stop (window, FALSE);
-
         free_location_change (window);
 }
 
@@ -1060,9 +1066,8 @@ position_and_show_window_callback (NautilusFile *file,
 static gboolean
 just_one_window (void)
 {
-	GSList *window_list;
-	window_list = nautilus_application_windows ();
-	return window_list == NULL || window_list->next == NULL;
+	return !nautilus_g_list_more_than_one_item
+                (nautilus_application_get_window_list ());
 }
 
 static void
@@ -1080,7 +1085,8 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
         char *scheme_string;
         char *type_string;
         char *dialog_title;
- 	GnomeDialog *dialog;
+        char *home_uri;
+	GnomeDialog *dialog;
         GList *attributes;
         GnomeVFSURI *vfs_uri;
        
@@ -1249,8 +1255,6 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                 
 		/* if this is the only window, we don't want to quit, so we redirect it to home */
 		if (just_one_window ()) {
-			char *home_uri;
-			
 			/* the user could have typed in a home directory that doesn't exist,
 			   in which case going home would cause an infinite loop, so we
 			   better test for that */
@@ -1597,7 +1601,7 @@ change_selection_callback (NautilusViewFrame *view,
 {
         g_assert (NAUTILUS_IS_WINDOW (window));
 
-        change_selection (window, selection);
+        change_selection (window, selection, view);
 }
 
 static void
@@ -1669,14 +1673,14 @@ open_location_prefer_existing_window_callback (NautilusViewFrame *view,
                                                NautilusWindow *window)
 {
         NautilusWindow *existing_window;
-	GSList *node;
+	GList *node;
 
         g_assert (NAUTILUS_IS_WINDOW (window));
 
         /* First, handle the case where there's already a window for
          * this location.
          */
-        for (node = nautilus_application_windows ();
+        for (node = nautilus_application_get_window_list ();
              node != NULL; node = node->next) {
                 existing_window = NAUTILUS_WINDOW (node->data);
                 if (nautilus_uris_match (existing_window->location, location)) {
@@ -1721,7 +1725,9 @@ view_loaded_callback (NautilusViewFrame *view,
                 /* it's a sidebar panel being loaded */
                 g_assert (view != window->content_view);
                 if (window->location != NULL) {
-                        set_view_location_and_selection (view, window->location, window->selection);
+                        set_view_location_and_selection (view,
+                                                         window->location,
+                                                         window->selection);
                 }
         }
         if (window->details->title != NULL) {

@@ -617,22 +617,24 @@ nautilus_window_set_arg (GtkObject *object,
 			 guint arg_id)
 {
 	char *old_name;
-	NautilusWindow *window = (NautilusWindow *) object;
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (object);
 	
-	switch(arg_id) {
+	switch (arg_id) {
 	case ARG_APP_ID:
 		if (GTK_VALUE_STRING (*arg) == NULL) {
 			return;
 		}
-		old_name = bonobo_window_get_name (BONOBO_WINDOW (object));
-		bonobo_window_set_name (BONOBO_WINDOW (object), GTK_VALUE_STRING (*arg));
+		old_name = bonobo_window_get_name (BONOBO_WINDOW (window));
+		bonobo_window_set_name (BONOBO_WINDOW (window), GTK_VALUE_STRING (*arg));
 		/* This hack of using the time when the name first
 		 * goes non-NULL to be window-constructed time is
 		 * completely lame. But it works, so for now we leave
 		 * it alone.
 		 */
 		if (old_name == NULL) {
-			nautilus_window_constructed (NAUTILUS_WINDOW (object));
+			nautilus_window_constructed (window);
 		}
 		g_free (old_name);
 		break;
@@ -647,7 +649,7 @@ nautilus_window_get_arg (GtkObject *object,
 			 GtkArg *arg,
 			 guint arg_id)
 {
-	switch(arg_id) {
+	switch (arg_id) {
 	case ARG_APP_ID:
 		GTK_VALUE_STRING (*arg) = bonobo_window_get_name (BONOBO_WINDOW (object));
 		break;
@@ -1488,14 +1490,14 @@ nautilus_window_clear_back_list (NautilusWindow *window)
 void
 nautilus_forget_history (void) 
 {
-	GSList *window_node;
+	GList *window_node;
 	NautilusWindow *window;
 
 	/* Clear out each window's back & forward lists. Also, remove 
 	 * each window's current location bookmark from history list 
 	 * so it doesn't get clobbered.
 	 */
-	for (window_node = nautilus_application_windows ();
+	for (window_node = nautilus_application_get_window_list ();
 	     window_node != NULL;
 	     window_node = window_node->next) {
 
@@ -1514,7 +1516,7 @@ nautilus_forget_history (void)
 	free_history_list ();
 
 	/* Re-add each window's current location to history list. */
-	for (window_node = nautilus_application_windows ();
+	for (window_node = nautilus_application_get_window_list ();
 	     window_node != NULL;
 	     window_node = window_node->next) {
 

@@ -271,10 +271,10 @@ iti_destroy (GtkObject *object)
 
 	/* Queue redraw of bounding box */
 	gnome_canvas_request_redraw (item->canvas,
-				     nautilus_g_round (item->x1),
-				     nautilus_g_round (item->y1),
-				     nautilus_g_round (item->x2),
-				     nautilus_g_round (item->y2));
+				     nautilus_round (item->x1),
+				     nautilus_round (item->y1),
+				     nautilus_round (item->x2),
+				     nautilus_round (item->y2));
 
 	/* Free everything */
 	if (iti->font)
@@ -373,16 +373,16 @@ iti_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags)
 		(* parent_class->update) (item, affine, clip_path, flags);
 
 	gnome_canvas_request_redraw (item->canvas,
-				     nautilus_g_round (item->x1),
-				     nautilus_g_round (item->y1),
-				     nautilus_g_round (item->x2),
-				     nautilus_g_round (item->y2));
+				     nautilus_round (item->x1),
+				     nautilus_round (item->y1),
+				     nautilus_round (item->x2),
+				     nautilus_round (item->y2));
 	recompute_bounding_box (iti);
 	gnome_canvas_request_redraw (item->canvas,
-				     nautilus_g_round (item->x1),
-				     nautilus_g_round (item->y1),
-				     nautilus_g_round (item->x2),
-				     nautilus_g_round (item->y2));
+				     nautilus_round (item->x1),
+				     nautilus_round (item->y1),
+				     nautilus_round (item->x2),
+				     nautilus_round (item->y2));
 }
 
 /* utility to fetch a color from a theme */
@@ -437,9 +437,9 @@ iti_paint_text (Iti *iti, GdkDrawable *drawable, int x, int y)
 	bsgc = style->bg_gc [GTK_STATE_SELECTED];
 
 	/* fetch the colors from the theme */
-	fetch_themed_color ("HIGHLIGHT_BACKGROUND_COLOR",  &highlight_background_color);
-	fetch_themed_color ("HIGHLIGHT_TEXT_COLOR",  &highlight_text_color);
-	fetch_themed_color ("TEXT_FILL_COLOR",  &fill_color);
+	fetch_themed_color ("highlight_background_color",  &highlight_background_color);
+	fetch_themed_color ("highlight_text_color",  &highlight_text_color);
+	fetch_themed_color ("text_fill_color",  &fill_color);
 	
 	/* Set up user defined colors */
 	canvas_item = GNOME_CANVAS_ITEM (iti);
@@ -569,11 +569,11 @@ iti_draw (GnomeCanvasItem *item, GdkDrawable *drawable, int x, int y, int update
 
 	iti = ITI (item);
 
-	width  = nautilus_g_round (item->x2 - item->x1);
-	height = nautilus_g_round (item->y2 - item->y1);
+	width  = nautilus_round (item->x2 - item->x1);
+	height = nautilus_round (item->y2 - item->y1);
 	
-	xofs = nautilus_g_round (item->x1) - x;
-	yofs = nautilus_g_round (item->y1) - y;
+	xofs = nautilus_round (item->x1) - x;
+	yofs = nautilus_round (item->y1) - y;
 
 	style = GTK_WIDGET (item->canvas)->style;
 
@@ -655,8 +655,8 @@ iti_render (GnomeCanvasItem *item, GnomeCanvasBuf *buffer)
 
 	visual = gdk_visual_get_system ();
 	art_affine_identity(affine);
-	width  = nautilus_g_round (item->x2 - item->x1);
-	height = nautilus_g_round (item->y2 - item->y1);
+	width  = nautilus_round (item->x2 - item->x1);
+	height = nautilus_round (item->y2 - item->y1);
 	
 	/* allocate a pixmap to draw the text into, and clear it to white */
 	pixmap = gdk_pixmap_new (NULL, width, height, visual->depth);
@@ -671,7 +671,7 @@ iti_render (GnomeCanvasItem *item, GnomeCanvasBuf *buffer)
 	gdk_gc_unref (gc);
 	
 	/* use a common routine to draw the label into the pixmap */
-	iti_draw (item, pixmap, nautilus_g_round (item->x1), nautilus_g_round (item->y1), width, height);
+	iti_draw (item, pixmap, nautilus_round (item->x1), nautilus_round (item->y1), width, height);
 	
 	/* turn it into a pixbuf */
 	colormap = gdk_colormap_new (visual, FALSE);
@@ -686,7 +686,7 @@ iti_render (GnomeCanvasItem *item, GnomeCanvasBuf *buffer)
 	gdk_pixmap_unref (pixmap);
 		
 	/* draw the pixbuf containing the label */
-	draw_pixbuf_aa (text_pixbuf, buffer, affine, nautilus_g_round (item->x1), nautilus_g_round (item->y1));
+	draw_pixbuf_aa (text_pixbuf, buffer, affine, nautilus_round (item->x1), nautilus_round (item->y1));
 	gdk_pixbuf_unref (text_pixbuf);
 
 	buffer->is_bg = FALSE;
@@ -1025,8 +1025,8 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 		if (event->button.button == 1) {
 			gnome_canvas_w2c_d (item->canvas, event->button.x, event->button.y, &cx, &cy);						
 			idx = iti_idx_from_x_y (iti,
-						nautilus_g_round (cx - (item->x1 + MARGIN_X)),
-						nautilus_g_round (cy - (item->y1 + MARGIN_Y)));
+						nautilus_round (cx - (item->x1 + MARGIN_X)),
+						nautilus_round (cy - (item->y1 + MARGIN_Y)));
 			iti_start_selecting (iti, idx, event->button.time);
 		}
 		return TRUE;
@@ -1038,8 +1038,8 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 		gtk_widget_event (GTK_WIDGET (priv->entry), event);
 		gnome_canvas_w2c_d (item->canvas, event->button.x, event->button.y, &cx, &cy);			
 		idx = iti_idx_from_x_y (iti,
-					nautilus_g_round (cx - (item->x1 + MARGIN_X)),
-					nautilus_g_round (cy - (item->y1 + MARGIN_Y)));
+					nautilus_round (cx - (item->x1 + MARGIN_X)),
+					nautilus_round (cy - (item->y1 + MARGIN_Y)));
 		iti_selection_motion (iti, idx);
 		return TRUE;
 

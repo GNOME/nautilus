@@ -54,7 +54,6 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-trash-monitor.h>
 #include <libnautilus-extensions/nautilus-volume-monitor.h>
-#include <src/nautilus-application.h>
 #include <limits.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -714,7 +713,7 @@ icon_view_create_nautilus_links (NautilusIconContainer *container, const GList *
 				message = _("Nautilus does not currently support "
 					    "launchers that require a terminal.");
 				nautilus_show_warning_dialog (message, _("Unable to Create Link"),
-					  fm_directory_view_get_containing_window (view));
+							      fm_directory_view_get_containing_window (view));
 				break;
 			}
 			

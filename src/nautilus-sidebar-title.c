@@ -281,9 +281,9 @@ nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title)
 	background = nautilus_sidebar_title_background (sidebar_title);
 	if (background != NULL) {
 		if (nautilus_sidebar_title_background_is_default (sidebar_title)) {
-			sidebar_title_color = nautilus_theme_get_theme_data ("sidebar", "TITLE_COLOR");
-			sidebar_info_title_color = nautilus_theme_get_theme_data ("sidebar", "TITLE_INFO_COLOR");
-			sidebar_title_shadow_color = nautilus_theme_get_theme_data ("sidebar", "TITLE_SHADOW_COLOR"); 
+			sidebar_title_color = nautilus_theme_get_theme_data ("sidebar", "title_color");
+			sidebar_info_title_color = nautilus_theme_get_theme_data ("sidebar", "title_info_color");
+			sidebar_title_shadow_color = nautilus_theme_get_theme_data ("sidebar", "title_shadow_color"); 
 		}
 		
 		if (sidebar_title_color == NULL) {
@@ -340,7 +340,7 @@ nautilus_sidebar_title_theme_changed (gpointer user_data)
 
 	sidebar_title = NAUTILUS_SIDEBAR_TITLE (user_data);		
 	
-	shadow_offset_str = nautilus_theme_get_theme_data ("sidebar", "SHADOW_OFFSET");
+	shadow_offset_str = nautilus_theme_get_theme_data ("sidebar", "shadow_offset");
 	if (shadow_offset_str) {
 		sidebar_title->details->shadow_offset = atoi (shadow_offset_str);	
 		g_free (shadow_offset_str);

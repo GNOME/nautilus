@@ -1405,7 +1405,7 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 		char* combine_str;
 		background_color = g_strdup (sidebar->details->default_background_color);
 		background_image = g_strdup (sidebar->details->default_background_image);
-		combine_str = nautilus_theme_get_theme_data ("sidebar", "COMBINE");
+		combine_str = nautilus_theme_get_theme_data ("sidebar", "combine");
 		combine = combine_str != NULL;
 		g_free (combine_str);
 	} else {
@@ -1534,7 +1534,8 @@ nautilus_sidebar_set_title (NautilusSidebar *sidebar, const char* new_title)
    doesn't generate a signal */
    
 static void
-nautilus_sidebar_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
+nautilus_sidebar_size_allocate (GtkWidget *widget,
+				GtkAllocation *allocation)
 {
 	NautilusSidebar *sidebar = NAUTILUS_SIDEBAR(widget);
 	

@@ -70,8 +70,6 @@
 #include <libnautilus-extensions/nautilus-view-identifier.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <math.h>
-#include <src/nautilus-application.h>
-
 
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
 #define SILENT_WINDOW_OPEN_LIMIT	5
@@ -82,22 +80,14 @@
 #define NAUTILUS_COMMAND_SPECIFIER "command:"
 
 /* Paths to use when referring to bonobo menu items. */
-#define FM_DIRECTORY_VIEW_MENU_PATH_OPEN                      		"/menu/File/Open Placeholder/Open"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW        		"/menu/File/Open Placeholder/OpenNew"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH				"/menu/File/Open Placeholder/Open With"
-#define FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER				"/menu/File/New Items Placeholder/New Folder"
-#define FM_DIRECTORY_VIEW_MENU_PATH_DELETE                    		"/menu/File/File Items Placeholder/Delete"
 #define FM_DIRECTORY_VIEW_MENU_PATH_TRASH                    		"/menu/File/File Items Placeholder/Trash"
 #define FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH                    	"/menu/File/Global File Items Placeholder/Empty Trash"
-#define FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE                	 	"/menu/File/File Items Placeholder/Duplicate"
 #define FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK                	 	"/menu/File/File Items Placeholder/Create Link"
-#define FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES         	   	"/menu/File/File Items Placeholder/Show Properties"
-#define FM_DIRECTORY_VIEW_MENU_PATH_RESET_BACKGROUND			"/menu/Edit/Global Edit Items Placeholder/Reset Background"
 #define FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS			"/menu/Edit/Edit Items Placeholder/Remove Custom Icons"
 #define FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER    	"/menu/File/Open Placeholder/Open With/Applications Placeholder"
-#define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION    		"/menu/File/Open Placeholder/Open With/OtherApplication"
 #define FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER    		"/menu/File/Open Placeholder/Open With/Viewers Placeholder"
-#define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER	   		"/menu/File/Open Placeholder/Open With/OtherViewer"
 
 #define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND				"/popups/background"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_SELECTION				"/popups/selection"
@@ -160,6 +150,9 @@ struct FMDirectoryViewDetails
 
 	gboolean metadata_for_directory_as_file_pending;
 	gboolean metadata_for_files_in_directory_pending;
+
+	gboolean selection_change_is_due_to_shell;
+	gboolean send_selection_change_to_shell;
 
 	NautilusFile *file_monitored_for_open_with;
 };
@@ -1325,6 +1318,8 @@ fm_directory_view_send_selection_change (FMDirectoryView *view)
 
 	/* Free the URIs. */
 	nautilus_g_list_free_deep (uris);
+
+	view->details->send_selection_change_to_shell = FALSE;
 }
 
 static void
@@ -1356,33 +1351,35 @@ file_list_from_uri_list (GList *uri_list)
 static void
 selection_changed_callback (NautilusView *nautilus_view,
 			    GList *selection_uris,
-			    FMDirectoryView *directory_view)
+			    FMDirectoryView *view)
 {
 	GList *selection;
 
-	if (directory_view->details->loading) {
-		nautilus_g_list_free_deep (directory_view->details->pending_uris_selected);
-		directory_view->details->pending_uris_selected = NULL;
+	if (view->details->loading) {
+		nautilus_g_list_free_deep (view->details->pending_uris_selected);
+		view->details->pending_uris_selected = NULL;
 	}
 
-	if (!directory_view->details->loading) {
+	if (!view->details->loading) {
 		/* If we aren't still loading, set the selection right now. */
-		selection = file_list_from_uri_list (selection_uris);		
-		fm_directory_view_set_selection (directory_view, selection);
+		selection = file_list_from_uri_list (selection_uris);
+		view->details->selection_change_is_due_to_shell = TRUE;
+		fm_directory_view_set_selection (view, selection);
+		view->details->selection_change_is_due_to_shell = FALSE;
 		nautilus_file_list_free (selection);
 	} else {
 		/* If we are still loading, add to the list of pending URIs instead. */
-		directory_view->details->pending_uris_selected =
-			g_list_concat (directory_view->details->pending_uris_selected,
+		view->details->pending_uris_selected =
+			g_list_concat (view->details->pending_uris_selected,
 				       nautilus_g_str_list_copy (selection_uris));
 	}
 }
 
 static void
 stop_loading_callback (NautilusView *nautilus_view,
-		       FMDirectoryView *directory_view)
+		       FMDirectoryView *view)
 {
-	fm_directory_view_stop (directory_view);
+	fm_directory_view_stop (view);
 }
 
 
@@ -1458,7 +1455,9 @@ done_loading (FMDirectoryView *view)
 			selection = file_list_from_uri_list (uris_selected);
 			nautilus_g_list_free_deep (uris_selected);
 			
+			view->details->selection_change_is_due_to_shell = TRUE;
 			fm_directory_view_set_selection (view, selection);
+			view->details->selection_change_is_due_to_shell = FALSE;
 			fm_directory_view_reveal_selection (view);
 			
 			nautilus_file_list_free (selection);
@@ -1673,7 +1672,8 @@ copy_move_done_callback (GHashTable *debuting_uris, gpointer data)
 			/* on the off-chance that all the icons have already been added ...
 			 */
 			if (debuting_uri_data->added_files != NULL) {
-				fm_directory_view_set_selection (directory_view, debuting_uri_data->added_files);
+				fm_directory_view_set_selection (directory_view,
+								 debuting_uri_data->added_files);
 				fm_directory_view_reveal_selection (directory_view);
 			}
 			debuting_uri_data_free (debuting_uri_data);
@@ -1792,6 +1792,9 @@ display_pending_files (FMDirectoryView *view)
 	}
 
 	if (send_selection_change) {
+		/* Send a selection change since some file names could
+		 * have changed.
+		 */
 		fm_directory_view_send_selection_change (view);
 	}
 
@@ -1802,21 +1805,14 @@ static gboolean
 display_selection_info_idle_callback (gpointer data)
 {
 	FMDirectoryView *view;
-	BonoboObject *nautilus_view;
 	
 	view = FM_DIRECTORY_VIEW (data);
-	nautilus_view = BONOBO_OBJECT (view->details->nautilus_view);
-
-	/* Ref the view so that the widget can't be destroyed during
-	 * idle processing.
-	 */
-	bonobo_object_ref (nautilus_view);
 
 	view->details->display_selection_idle_id = 0;
 	fm_directory_view_display_selection_info (view);
-	fm_directory_view_send_selection_change (view);
-
-	bonobo_object_unref (nautilus_view);
+	if (view->details->send_selection_change_to_shell) {
+		fm_directory_view_send_selection_change (view);
+	}
 
 	return FALSE;
 }
@@ -1845,20 +1841,11 @@ static gboolean
 update_menus_timeout_callback (gpointer data)
 {
 	FMDirectoryView *view;
-	BonoboObject *nautilus_view;
 	
 	view = FM_DIRECTORY_VIEW (data);
-	nautilus_view = BONOBO_OBJECT (view->details->nautilus_view);
-
-	/* Ref the view so that the widget can't be destroyed during
-	 * idle processing.
-	 */
-	bonobo_object_ref (nautilus_view);
 
 	view->details->update_menus_timeout_id = 0;
 	fm_directory_view_update_menus (view);
-
-	bonobo_object_unref (nautilus_view);
 
 	return FALSE;
 }
@@ -1867,20 +1854,11 @@ static gboolean
 display_pending_idle_callback (gpointer data)
 {
 	FMDirectoryView *view;
-	BonoboObject *nautilus_view;
 	
 	view = FM_DIRECTORY_VIEW (data);
-	nautilus_view = BONOBO_OBJECT (view->details->nautilus_view);
-
-	/* Ref the view so that the widget can't be destroyed during
-	 * idle processing.
-	 */
-	bonobo_object_ref (nautilus_view);
 
 	view->details->display_pending_idle_id = 0;
 	display_pending_files (view);
-
-	bonobo_object_unref (nautilus_view);
 
 	/* Don't do another idle until we receive more files. */
 
@@ -1892,15 +1870,8 @@ display_pending_timeout_callback (gpointer data)
 {
 	FMDirectoryView *view;
 	gboolean displayed_some;
-	BonoboObject *nautilus_view;
 
 	view = FM_DIRECTORY_VIEW (data);
-	nautilus_view = BONOBO_OBJECT (view->details->nautilus_view);
-
-	/* Ref the view so that the widget can't be destroyed during
-	 * idle processing.
-	 */
-	bonobo_object_ref (nautilus_view);
 
 	/* Do another timeout if we displayed some files. Once we get
 	 * all the files, we'll start using idle instead.
@@ -1910,8 +1881,6 @@ display_pending_timeout_callback (gpointer data)
 	if (!displayed_some) {
 		view->details->display_pending_timeout_id = 0;
 	}
-
-	bonobo_object_unref (nautilus_view);
 
 	return displayed_some;
 }
@@ -2318,7 +2287,6 @@ fm_directory_view_get_bonobo_control (FMDirectoryView *view)
 	NautilusView *nautilus_view;
 
 	nautilus_view = fm_directory_view_get_nautilus_view (view);
-
 	return nautilus_view_get_bonobo_control (nautilus_view);
 }
 
@@ -3180,7 +3148,6 @@ real_update_menus (FMDirectoryView *view)
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_OPEN,
 				       selection_count == 1);
-
 	
 	if (selection_count <= 1) {
 		label_with_underscore = g_strdup (_("Open in _New Window"));
@@ -3339,8 +3306,8 @@ fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView *view,
  * 
  **/
 void 
-fm_directory_view_pop_up_background_context_menu  (FMDirectoryView *view, 
-						   GdkEventButton *event)
+fm_directory_view_pop_up_background_context_menu (FMDirectoryView *view, 
+						  GdkEventButton *event)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
@@ -3350,7 +3317,7 @@ fm_directory_view_pop_up_background_context_menu  (FMDirectoryView *view,
 	update_menus_if_pending (view);
 
 	nautilus_pop_up_context_menu (create_popup_menu 
-				      	(view, FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND),
+				      (view, FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND),
 				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
 				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
 				      event);
@@ -3385,6 +3352,10 @@ void
 fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+
+	if (!view->details->selection_change_is_due_to_shell) {
+		view->details->send_selection_change_to_shell = TRUE;
+	}
 
 	/* Schedule a display of the new selection. */
 	if (view->details->display_selection_idle_id == 0) {

@@ -1508,12 +1508,17 @@ start_rubberbanding (NautilusIconContainer *container,
 		 event->x, event->y,
 		 &band_info->start_x, &band_info->start_y);
 
+	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
+	 * The NautilusIconContainer class should simply provide calls to set the colors.
+	 */
 	if (GNOME_CANVAS(container)->aa) {
-		fill_color_str = nautilus_theme_get_theme_data ("directory", "SELECTION_BOX_COLOR_RGBA");
+		/* FIXME: Should use some standard format, not just a 32-bit integer. */
+		fill_color_str = nautilus_theme_get_theme_data ("directory", "selection_box_color_rgba");
 		if (fill_color_str == NULL) {
-			fill_color = 0x77bbdd40;
+			fill_color = 0x77BBDD40;
 		} else {
 			fill_color = strtoul (fill_color_str, NULL, 0);
+			/* FIXME: Need error handling here. */
 			g_free (fill_color_str);
 		}
 		
@@ -1533,7 +1538,7 @@ start_rubberbanding (NautilusIconContainer *container,
 		 	NULL);
 	
 	} else {
-		fill_color_str = nautilus_theme_get_theme_data ("directory", "SELECTION_BOX_COLOR");
+		fill_color_str = nautilus_theme_get_theme_data ("directory", "selection_box_color");
 		if (fill_color_str == NULL) {
 			fill_color_str = g_strdup ("rgb:7777/BBBB/DDDD");
 		}
@@ -2282,6 +2287,9 @@ destroy (GtkObject *object)
 		gdk_pixbuf_unref (container->details->highlight_frame);
 	}
 
+	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
+	 * The NautilusIconContainer class should simply provide calls to set the colors.
+	 */
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					      nautilus_icon_container_theme_changed,
 					      container);
@@ -3265,7 +3273,7 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 	/* Set up DnD.  */
 	nautilus_icon_dnd_init (container, stipple);
 
-	/* Make sure that we find out if the theme changes. */
+	/* Make sure that we find out if the icons change. */
 	gtk_signal_connect_object_while_alive
 		(nautilus_icon_factory_get (),
 		 "icons_changed",
@@ -3284,7 +3292,9 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 
 	gtk_signal_connect (GTK_OBJECT (container), "focus-out-event", handle_focus_out_event, NULL);	
 
-
+	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
+	 * The NautilusIconContainer class should simply provide calls to set the colors.
+	 */
 	/* read in theme-dependent data */
 	nautilus_icon_container_theme_changed (container);
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_icon_container_theme_changed, container);	
@@ -4928,8 +4938,11 @@ update_label_color (NautilusBackground *background,
 	g_assert (NAUTILUS_IS_BACKGROUND (background));
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	
+	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
+	 * The NautilusIconContainer class should simply provide calls to set the colors.
+	 */
 	/* read the info colors from the current theme; use a reasonable default if undefined */
-	light_info_color = nautilus_theme_get_theme_data ("directory", "LIGHT_INFO_COLOR");
+	light_info_color = nautilus_theme_get_theme_data ("directory", "light_info_color");
 	if (light_info_color == NULL) {
 		light_info_value = 0xAAAAFD;
 	} else {
@@ -4937,7 +4950,7 @@ update_label_color (NautilusBackground *background,
 		g_free (light_info_color);
 	}
 	
-	dark_info_color = nautilus_theme_get_theme_data ("directory", "DARK_INFO_COLOR");
+	dark_info_color = nautilus_theme_get_theme_data ("directory", "dark_info_color");
 	if (dark_info_color == NULL) {
 		dark_info_value = 0x33337F;
 	} else {
@@ -4976,6 +4989,9 @@ nautilus_icon_container_set_is_fixed_size (NautilusIconContainer *container,
 
 /* handle theme changes */
 
+/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
+ * The NautilusIconContainer class should simply provide calls to set the colors.
+ */
 static void
 nautilus_icon_container_theme_changed (gpointer user_data)
 {
@@ -4994,7 +5010,7 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 	g_free (text_frame_path);
 
 	/* load the highlight color */	
-	highlight_color_str = nautilus_theme_get_theme_data ("directory", "HIGHLIGHT_COLOR_RGBA");
+	highlight_color_str = nautilus_theme_get_theme_data ("directory", "highlight_color_rgba");
 	
 	if (highlight_color_str == NULL) {
 			container->details->highlight_color = NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 102);

@@ -513,7 +513,7 @@ nautilus_preferences_get (const char *name)
 
 void
 nautilus_preferences_set_string_list (const char *name,
-				      GSList *string_list_value)
+				      GList *string_list_value)
 {
 	char *key;
 
@@ -526,10 +526,10 @@ nautilus_preferences_set_string_list (const char *name,
 	nautilus_gconf_suggest_sync ();
 }
 
-GSList *
+GList *
 nautilus_preferences_get_string_list (const char *name)
 {
- 	GSList *result;
+ 	GList *result;
 	char *key;
 	
 	g_return_val_if_fail (name != NULL, NULL);
@@ -682,7 +682,7 @@ nautilus_preferences_default_get_string (const char *name,
 void
 nautilus_preferences_default_set_string_list (const char *name,
 					      int user_level,
-					      GSList *string_list_value)
+					      GList *string_list_value)
 {
 	char *default_key;
 	
@@ -693,11 +693,11 @@ nautilus_preferences_default_set_string_list (const char *name,
 	g_free (default_key);
 }
 
-GSList *
+GList *
 nautilus_preferences_default_get_string_list (const char *name,
 					      int user_level)
 {
- 	GSList *result;
+ 	GList *result;
 	char *default_key;
 	
 	g_return_val_if_fail (name != NULL, NULL);

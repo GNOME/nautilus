@@ -259,7 +259,9 @@ main (int argc, char *argv[])
 		application = nautilus_application_new ();
 		nautilus_application_startup
 			(application,
-			 kill_shell, restart_shell, start_desktop, no_default_window, TRUE, geometry,
+			 kill_shell, restart_shell, start_desktop, no_default_window,
+			 !(kill_shell || restart_shell),
+			 geometry,
 			 args);
 		if (is_event_loop_needed ()) {
 			bonobo_main ();

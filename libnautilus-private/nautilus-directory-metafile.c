@@ -86,7 +86,7 @@ create_metafile_root (NautilusDirectory *directory)
 	}
 	root = xmlDocGetRootElement (directory->details->metafile);
 	if (root == NULL) {
-		root = xmlNewDocNode (directory->details->metafile, NULL, "DIRECTORY", NULL);
+		root = xmlNewDocNode (directory->details->metafile, NULL, "directory", NULL);
 		xmlDocSetRootElement (directory->details->metafile, root);
 	}
 
@@ -111,8 +111,8 @@ get_file_node (NautilusDirectory *directory,
 	
 	if (create) {
 		root = create_metafile_root (directory);
-		node = xmlNewChild (root, NULL, "FILE", NULL);
-		xmlSetProp (node, "NAME", file_name);
+		node = xmlNewChild (root, NULL, "file", NULL);
+		xmlSetProp (node, "name", file_name);
 		g_hash_table_insert (hash, xmlMemStrdup (file_name), node);
 		return node;
 	}
@@ -650,7 +650,7 @@ nautilus_directory_rename_file_metadata (NautilusDirectory *directory,
 			xmlFree (key);
 			g_hash_table_insert (hash,
 					     xmlMemStrdup (new_file_name), value);
-			xmlSetProp (file_node, "NAME", new_file_name);
+			xmlSetProp (file_node, "name", new_file_name);
 			nautilus_directory_request_write_metafile (directory);
 		}
 	} else {
@@ -872,7 +872,7 @@ nautilus_directory_copy_file_metadata (NautilusDirectory *source_directory,
 			node = xmlCopyNode (source_node, TRUE);
 			root = create_metafile_root (destination_directory);
 			xmlAddChild (root, node);
-			xmlSetProp (node, "NAME", destination_file_name);
+			xmlSetProp (node, "name", destination_file_name);
 			g_hash_table_insert (destination_directory->details->metafile_node_hash,
 					     xmlMemStrdup (destination_file_name), node);
 		} else {
@@ -972,8 +972,8 @@ nautilus_directory_set_metafile_contents (NautilusDirectory *directory,
 	hash = directory->details->metafile_node_hash;
 	for (node = nautilus_xml_get_root_children (metafile_contents);
 	     node != NULL; node = node->next) {
-		if (strcmp (node->name, "FILE") == 0) {
-			name = xmlGetProp (node, "NAME");
+		if (strcmp (node->name, "file") == 0) {
+			name = xmlGetProp (node, "name");
 			if (g_hash_table_lookup (hash, name) != NULL) {
 				xmlFree (name);
 				/* FIXME: Should we delete duplicate nodes as we discover them? */

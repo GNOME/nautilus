@@ -292,9 +292,9 @@ void draw_number (GtkWidget *widget, GdkRectangle *box)
 	zoom_control = NAUTILUS_ZOOM_CONTROL (widget);
 	number_pixbuf = NULL;
 	
-	num_v_offset = get_zoom_offset ("NUMBER_V_OFFSET");
-	num_h_offset = get_zoom_offset ("NUMBER_H_OFFSET");
-	char_width = get_zoom_offset ("DIGIT_WIDTH");
+	num_v_offset = get_zoom_offset ("number_v_offset");
+	num_h_offset = get_zoom_offset ("number_h_offset");
+	char_width = get_zoom_offset ("digit_width");
 	if (char_width == 0)
 		char_width = 6;
 		

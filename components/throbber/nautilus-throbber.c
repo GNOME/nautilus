@@ -135,7 +135,7 @@ get_bonobo_properties (BonoboPropertyBag *bag,
 
 		case LOCATION:
 		{
-			char *location = nautilus_theme_get_theme_data ("throbber", "URL");
+			char *location = nautilus_theme_get_theme_data ("throbber", "url");
 			if (location != NULL) {
 				BONOBO_ARG_SET_STRING (arg, location);
 				g_free (location);
@@ -279,7 +279,7 @@ nautilus_throbber_initialize (NautilusThrobber *throbber)
 	gtk_container_add (GTK_CONTAINER (box), widget);
 
 	/* set up the delay from the theme */
-	delay_str = nautilus_theme_get_theme_data ("throbber", "DELAY");
+	delay_str = nautilus_theme_get_theme_data ("throbber", "delay");
 	
 	if (delay_str) {
 		throbber->details->delay = atoi (delay_str);
@@ -548,12 +548,12 @@ nautilus_throbber_load_images (NautilusThrobber *throbber)
 	
 	nautilus_throbber_unload_images (throbber);
 
-	image_theme = nautilus_theme_get_theme_data ("throbber", "IMAGE_THEME");
+	image_theme = nautilus_theme_get_theme_data ("throbber", "image_theme");
 	throbber->details->quiescent_pixbuf = load_themed_image ("throbber/rest.png", image_theme, throbber->details->small_mode);
 
 	/* images are of the form throbber/001.png, 002.png, etc, so load them into a list */
 
-	frames = nautilus_theme_get_theme_data ("throbber", "FRAME_COUNT");
+	frames = nautilus_theme_get_theme_data ("throbber", "frame_count");
 	if (frames != NULL) {
 		throbber->details->max_frame = atoi (frames);
 		g_free (frames);
@@ -586,7 +586,7 @@ nautilus_throbber_button_press_event (GtkWidget *widget, GdkEventButton *event)
 	BonoboArg *location_arg;
 	
 	throbber = NAUTILUS_THROBBER (widget);
-	location = nautilus_theme_get_theme_data ("throbber", "URL");
+	location = nautilus_theme_get_theme_data ("throbber", "url");
 	if (location != NULL) {
 		location_arg = bonobo_arg_new (BONOBO_ARG_STRING);
 		BONOBO_ARG_SET_STRING (location_arg, location);			

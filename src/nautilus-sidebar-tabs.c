@@ -180,8 +180,8 @@ nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 	}
 				
 	/* load the tab_pieces image if necessary */
-	tab_pieces = nautilus_theme_get_theme_data ("sidebar", "TAB_PIECE_IMAGES");
-	tab_piece_theme = nautilus_theme_get_theme_data ("sidebar", "TAB_PIECE_THEME");
+	tab_pieces = nautilus_theme_get_theme_data ("sidebar", "tab_piece_images");
+	tab_piece_theme = nautilus_theme_get_theme_data ("sidebar", "tab_piece_theme");
 	
 	if (tab_pieces) {
 		/* check for "none" to force non-bitmap tabs, necessary since the default has bitmap ones now */
@@ -203,7 +203,7 @@ nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 			
 			if (sidebar_tabs->details->tab_piece_images[0]) {
 				/* load the left offset */
-				temp_str = nautilus_theme_get_theme_data ("sidebar", "LEFT_OFFSET");
+				temp_str = nautilus_theme_get_theme_data ("sidebar", "left_offset");
 				if (temp_str) {
 					sidebar_tabs->details->tab_left_offset = atoi(temp_str);
 					g_free (temp_str);
@@ -738,7 +738,7 @@ get_text_offset (void)
 	int offset;
 	char *temp_str;
 	
-	temp_str = nautilus_theme_get_theme_data ("sidebar", "TEXT_H_OFFSET");
+	temp_str = nautilus_theme_get_theme_data ("sidebar", "text_h_offset");
 	if (temp_str) {
 		offset = atoi (temp_str);
 		g_free (temp_str);

@@ -117,16 +117,16 @@ nautilus_link_local_create (const char *directory_path,
 	output_document = xmlNewDoc ("1.0");
 	
 	/* add the root node to the output document */
-	root_node = xmlNewDocNode (output_document, NULL, "NAUTILUS_OBJECT", NULL);
+	root_node = xmlNewDocNode (output_document, NULL, "nautilus_object", NULL);
 	xmlDocSetRootElement (output_document, root_node);
 
 	/* Add mime magic string so that the mime sniffer can recognize us.
 	 * Note: The value of the tag identfies what type of link this.  */
-	xmlSetProp (root_node, "NAUTILUS_LINK", get_tag (type));
+	xmlSetProp (root_node, "nautilus_link", get_tag (type));
 	
 	/* Add link and custom icon tags */
-	xmlSetProp (root_node, "CUSTOM_ICON", image);
-	xmlSetProp (root_node, "LINK", target_uri);
+	xmlSetProp (root_node, "custom_icon", image);
+	xmlSetProp (root_node, "link", target_uri);
 	
 	/* all done, so save the xml document as a link file */
 	path = nautilus_make_path (directory_path, name);
@@ -269,7 +269,7 @@ gboolean
 nautilus_link_local_set_link_uri (const char *path, const char *link_uri)
 {
 	return local_set_root_property (path,
-					"LINK",
+					"link",
 					link_uri,
 					forget_file_activation_uri);
 }
@@ -279,7 +279,7 @@ nautilus_link_local_set_type (const char *path,
 			      NautilusLinkType type)
 {
 	return local_set_root_property (path,
-					"NAUTILUS_LINK",
+					"nautilus_link",
 					get_tag (type),
 					NULL);
 }
@@ -428,18 +428,18 @@ nautilus_link_local_get_image_uri (const char *path)
 char *
 nautilus_link_local_get_link_uri (const char *path)
 {
-	return local_get_root_property (path, "LINK");
+	return local_get_root_property (path, "link");
 }
 
 /* Returns the link type of the link file. */
 NautilusLinkType
 nautilus_link_local_get_link_type (const char *path)
 {
-	return get_link_type (local_get_root_property (path, "NAUTILUS_LINK"));
+	return get_link_type (local_get_root_property (path, "nautilus_link"));
 }
 
 /* FIXME bugzilla.eazel.com 2495: 
- * Caller has to know to pass in a file with a NULL character at the end.
+ * Caller has to know to pass in a file with a NUL character at the end.
  */
 char *
 nautilus_link_get_link_uri_given_file_contents (const char *file_contents,
@@ -449,7 +449,7 @@ nautilus_link_get_link_uri_given_file_contents (const char *file_contents,
 	char *property;
 	
 	doc = xmlParseMemory ((char *) file_contents, file_size);
-	property = xml_get_root_property (doc, "LINK");
+	property = xml_get_root_property (doc, "link");
 	xmlFreeDoc (doc);
 	return property;
 }

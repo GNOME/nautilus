@@ -56,16 +56,16 @@ create_new_link (const char *directory_path, const char *name, const char *image
 	output_document = xmlNewDoc ("1.0");
 	
 	/* add the root node to the output document */
-	root_node = xmlNewDocNode (output_document, NULL, "NAUTILUS_OBJECT", NULL);
+	root_node = xmlNewDocNode (output_document, NULL, "nautilus_object", NULL);
 	xmlDocSetRootElement (output_document, root_node);
 
 	/* Add mime magic string so that the mime sniffer can recognize us.
 	 * Note: The value of the tag has no meaning.  */
-	xmlSetProp (root_node, "NAUTILUS_LINK", "Nautilus Link");
+	xmlSetProp (root_node, "nautilus_link", "Nautilus Link");
 
 	/* Add link and custom icon tags */
-	xmlSetProp (root_node, "CUSTOM_ICON", image);
-	xmlSetProp (root_node, "LINK", uri);
+	xmlSetProp (root_node, "custom_icon", image);
+	xmlSetProp (root_node, "link", uri);
 	
 	/* all done, so save the xml document as a link file */
 	file_name = nautilus_make_path (directory_path, name);

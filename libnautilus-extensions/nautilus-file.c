@@ -3862,7 +3862,7 @@ nautilus_file_get_keywords (NautilusFile *file)
 
 	/* Put all the keywords into a list. */
 	keywords = nautilus_file_get_metadata_list
-		(file, "KEYWORD", "NAME");
+		(file, "keyword", "name");
 	
 	return sort_keyword_list_and_remove_duplicates (keywords);
 }
@@ -3885,7 +3885,7 @@ nautilus_file_set_keywords (NautilusFile *file, GList *keywords)
 	canonical_keywords = sort_keyword_list_and_remove_duplicates
 		(g_list_copy (keywords));
 	nautilus_file_set_metadata_list
-		(file, "KEYWORD", "NAME", canonical_keywords);
+		(file, "keyword", "name", canonical_keywords);
 	g_list_free (canonical_keywords);
 }
 

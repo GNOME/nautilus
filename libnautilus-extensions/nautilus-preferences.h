@@ -2,7 +2,7 @@
 
 /* nautilus-preferences.c - Preference peek/poke/notify interface.
 
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -62,9 +62,9 @@ void     nautilus_preferences_set_integer                     (const char       
 char *   nautilus_preferences_get                             (const char                  *name);
 void     nautilus_preferences_set                             (const char                  *name,
 							       const char                  *string_value);
-GSList * nautilus_preferences_get_string_list                 (const char                  *name);
+GList *  nautilus_preferences_get_string_list                 (const char                  *name);
 void     nautilus_preferences_set_string_list                 (const char                  *name,
-							       GSList                      *string_list_value);
+							       GList                       *string_list_value);
 
 /* Default values getters and setters */
 gboolean nautilus_preferences_default_get_boolean             (const char                  *name,
@@ -82,11 +82,11 @@ char *   nautilus_preferences_default_get_string              (const char       
 void     nautilus_preferences_default_set_string              (const char                  *name,
 							       int                          user_level,
 							       const char                  *string_value);
-GSList * nautilus_preferences_default_get_string_list         (const char                  *name,
+GList *  nautilus_preferences_default_get_string_list         (const char                  *name,
 							       int                          user_level);
 void     nautilus_preferences_default_set_string_list         (const char                  *name,
 							       int                          user_level,
-							       GSList                      *string_list_value);
+							       GList                       *string_list_value);
 /* Callbacks */
 void     nautilus_preferences_add_callback                    (const char                  *name,
 							       NautilusPreferencesCallback  callback,
