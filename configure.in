@@ -419,7 +419,7 @@ then
 	  AM_CONDITIONAL(COMPILE_RPM_30, false)
 	  AM_CONDITIONAL(COMPILE_RPM_40, false)
 	  case $RPM_VERSION in
-		3.0.4|3.0.5|3.0.6)
+		3.0.5|3.0.6)
 			AC_DEFINE(HAVE_RPM_30)
 			_found_valid_rpm="yes"
 			AM_CONDITIONAL(COMPILE_RPM_30, true)
@@ -428,7 +428,7 @@ then
 			PACKAGESYSTEM="libeazelpackagesystem-rpm3.la"
 			AC_SUBST(PACKAGESYSTEM)
 		;;
-		4.*)
+		4.0)
 			AC_DEFINE(HAVE_RPM_40)
 			_found_valid_rpm="yes"
 			AM_CONDITIONAL(COMPILE_RPM_40, true)
@@ -446,7 +446,7 @@ then
 		rpmversion="$RPM_VERSION"
 	  else
 		AC_MSG_RESULT([no])
-		AC_MSG_WARN([RPM 3.0.4 or higher required, $RPM_VERSION found])
+		AC_MSG_WARN([RPM 3.0.5 or higher required, $RPM_VERSION found])
 		build_rpmview=no
 	  fi
 	fi
