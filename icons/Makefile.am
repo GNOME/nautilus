@@ -23,11 +23,9 @@ icon_DATA =\
 	eazel-logo.gif \
 	emblem-OK.svg \
 	emblem-certified.svg \
-	emblem-changed.gif \
 	emblem-cool.svg \
 	emblem-distinguished.svg \
 	emblem-draft.svg \
-	emblem-encrypted.gif \
 	emblem-favorite.svg \
 	emblem-generic.png \
 	emblem-important.svg \
@@ -36,7 +34,6 @@ icon_DATA =\
 	emblem-nowrite.svg \
 	emblem-ohno.svg \
 	emblem-personal.svg \
-	emblem-remote.gif \
 	emblem-secret.svg \
 	emblem-shared.svg \
 	emblem-special.svg \
