@@ -3816,6 +3816,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	details = container->details;
 
 	/* Get the icons. */
+	emblem_scalable_icons = NULL;
 	scalable_icon = nautilus_icon_container_get_icon_images (
 		container, icon->data, 
 		(icon == details->drop_target) ? "accept" : "",

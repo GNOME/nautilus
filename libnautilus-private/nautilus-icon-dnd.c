@@ -1305,7 +1305,9 @@ drag_data_received_callback (GtkWidget *widget,
 	case NAUTILUS_ICON_DND_URI_LIST:
 	case NAUTILUS_ICON_DND_RESET_BACKGROUND:
 		/* Save the data so we can do the actual work on drop. */
-		g_assert (drag_info->selection_data == NULL);
+		if (drag_info->selection_data != NULL) {
+			gtk_selection_data_free (drag_info->selection_data);
+		}
 		drag_info->selection_data = gtk_selection_data_copy (data);
 		break;
 
