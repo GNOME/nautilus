@@ -49,6 +49,7 @@ libnautilusinclude_HEADERS=			\
 	nautilus-metadata.h			\
 	nautilus-mime-type.h			\
 	nautilus-self-checks.h			\
+	nautilus-string-list.h			\
 	nautilus-string.h			\
 	nautilus-zoomable.h			\
 	nautilus.h				\
@@ -82,6 +83,7 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	nautilus-lib-self-check-functions.c	\
 	nautilus-mime-type.c			\
 	nautilus-self-checks.c			\
+	nautilus-string-list.c			\
 	nautilus-string.c			\
 	nautilus-zoomable.c			\
 	ntl-content-view-frame.c		\

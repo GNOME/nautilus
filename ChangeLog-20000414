@@ -1,4 +1,15 @@
 2000-03-12  Ramiro Estrugo  <ramiro@eazel.com>
+	*libnautilus/Makefile.am: Added nautilus_string_table
+
+	*libnautilus/nautilus-lib-self-check-functions.h: Added string
+	table tests hooks.
+	
+	*libnautilus/nautilus-string-list.c,
+	libnautilus/nautilus-string-list.h: New class to deal with lists
+	of strings in a type safe manner.  Also added self tests for this
+	class.
+	
+2000-03-12  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* nautilus-widgets/nautilus-preferences.c:
 	(prefs_set_pref, nautilus_preferences_register_from_info,
