@@ -29,13 +29,13 @@
 #include "nautilus-icon-factory.h"
 
 #include "nautilus-default-file-icon.h"
-#include "nautilus-desktop-file.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-factory-private.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-link.h"
+#include "nautilus-link-impl-desktop.h"
 #include "nautilus-metadata.h"
 #include "nautilus-theme.h"
 #include "nautilus-thumbnails.h"
@@ -1446,7 +1446,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 	file_uri = nautilus_file_get_uri (file);
 	is_local = nautilus_file_is_local (file);
 	mime_type = nautilus_file_get_mime_type (file);
-	
+
 	/* if the file is an image, either use the image itself as the icon if it's small enough,
 	   or use a thumbnail if one exists.  If it's too large, don't try to thumbnail it at all. 
 	   If a thumbnail is required, but does not yet exist,  put an entry on the thumbnail queue so we
@@ -1505,14 +1505,6 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 	}
 
 
-	/* Handle .desktop files */
-	if (uri == NULL && icon_name == NULL &&
-	    nautilus_file_is_mime_type (file, "application/x-gnome-app-info") &&
-	    /* sync I/O, so locally only */
-	    nautilus_file_is_local (file)) {
-		uri = nautilus_desktop_file_get_icon (file_uri);
-	}
-
 	/* .directory files */
 	if (uri == NULL && icon_name == NULL &&
 	    nautilus_file_is_directory (file) &&
@@ -1521,35 +1513,30 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 		char *dot_dir_uri;
 		
 		dot_dir_uri = nautilus_make_path (file_uri, ".directory");
-		uri = nautilus_desktop_file_get_icon (dot_dir_uri);
+		uri = nautilus_link_impl_desktop_local_get_image_uri (dot_dir_uri);
 		g_free (dot_dir_uri);
 	}
 
-	
-	/* Handle nautilus link xml files, which may specify their own image */	
+	/* Handle link files, which may specify their own image */
 	if (uri == NULL && icon_name == NULL &&
 	    nautilus_file_is_nautilus_link (file)) {
 		/* FIXME bugzilla.eazel.com 2563: This does sync. I/O and only works for local paths. */
-		file_path = gnome_vfs_get_local_path_from_uri (file_uri);
-		if (file_path != NULL) {
-			image_uri = nautilus_link_local_get_image_uri (file_path);
-			if (image_uri != NULL) {
-				/* FIXME bugzilla.eazel.com 2564: All custom icons must be in file:. */
-				icon_path = gnome_vfs_get_local_path_from_uri (image_uri);
-				if (icon_path == NULL && image_uri[0] == '/') {
-					icon_path = g_strdup (image_uri);
-				}
-				if (icon_path != NULL) {
-					if (uri == NULL) {
-						uri = gnome_vfs_get_uri_from_local_path (icon_path);
-					}
-					g_free (icon_path);
-				} else if (strpbrk (image_uri, ":/") == NULL) {
-					icon_name = remove_icon_name_suffix (image_uri);
-				}
-				g_free (image_uri);
+		image_uri = nautilus_link_local_get_image_uri (file_uri);
+		if (image_uri != NULL) {
+			/* FIXME bugzilla.eazel.com 2564: All custom icons must be in file:. */
+			icon_path = gnome_vfs_get_local_path_from_uri (image_uri);
+			if (icon_path == NULL && image_uri[0] == '/') {
+				icon_path = g_strdup (image_uri);
 			}
-			g_free (file_path);
+			if (icon_path != NULL) {
+				if (uri == NULL) {
+					uri = gnome_vfs_get_uri_from_local_path (icon_path);
+				}
+				g_free (icon_path);
+			} else if (strpbrk (image_uri, ":/") == NULL) {
+				icon_name = remove_icon_name_suffix (image_uri);
+			}
+			g_free (image_uri);
 		}
 	}
 

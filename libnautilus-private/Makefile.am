@@ -27,7 +27,6 @@ CDDALIBADD =
 endif
 
 libnautilus_private_la_LDFLAGS =	\
-	-ldesktopfile			\
 	$(dependency_static_libs)	\
 	$(NAUTILUS_PRIVATE_LIBS)	\
 	$(ESD_LIBS)			\
@@ -51,7 +50,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-bookmark.c \
 	nautilus-customization-data.c \
 	nautilus-default-file-icon.c \
-	nautilus-desktop-file.c	\
 	nautilus-directory-async.c \
 	nautilus-directory-background.c \
 	nautilus-directory-metafile-monitor.c \
@@ -79,6 +77,9 @@ libnautilus_private_la_SOURCES = \
 	nautilus-lib-self-check-functions.c \
 	nautilus-link-set.c \
 	nautilus-link.c \
+	nautilus-link-impl.c \
+	nautilus-link-impl-desktop.c \
+	desktop-file-loader.c \
 	nautilus-medusa-support.c \
 	nautilus-merged-directory.c \
 	nautilus-metafile-factory.c \
@@ -113,7 +114,6 @@ noinst_HEADERS = \
 	nautilus-cdrom-extensions.h \
 	nautilus-customization-data.h \
 	nautilus-default-file-icon.h \
-	nautilus-desktop-file.h	\
 	nautilus-directory-background.h \
 	nautilus-directory-metafile-monitor.h \
 	nautilus-directory-metafile.h \
@@ -147,6 +147,9 @@ noinst_HEADERS = \
 	nautilus-lib-self-check-functions.h \
 	nautilus-link-set.h \
 	nautilus-link.h \
+	nautilus-link-impl.h \
+	nautilus-link-impl-desktop.h \
+	desktop-file-loader.h \
 	nautilus-medusa-support.h \
 	nautilus-merged-directory.h \
 	nautilus-metadata.h \

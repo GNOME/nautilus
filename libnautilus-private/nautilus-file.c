@@ -25,7 +25,6 @@
 #include <config.h>
 #include "nautilus-file.h"
 
-#include "nautilus-desktop-file.h"
 #include "nautilus-directory-metafile.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
@@ -35,6 +34,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-link.h"
+#include "nautilus-link-impl-desktop.h"
 #include "nautilus-metadata.h"
 #include "nautilus-trash-directory.h"
 #include "nautilus-trash-file.h"
@@ -2224,13 +2224,14 @@ nautilus_file_get_name (NautilusFile *file)
 	}
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
+	 
 	/* handle .desktop files */
 	if (nautilus_file_is_mime_type (file, "application/x-gnome-app-info")) {
 		uri = nautilus_file_get_uri (file);
 
 		name = NULL;
 		if (nautilus_file_is_local (file)) {
-			name = nautilus_desktop_file_get_name (uri);
+			name = nautilus_link_impl_desktop_local_get_text (uri);
 		}
 		
 		g_free (uri);
@@ -2251,7 +2252,7 @@ nautilus_file_get_name (NautilusFile *file)
 		dot_dir_uri = nautilus_make_path (file_uri, ".directory");
 		g_free (file_uri);
 		
-		name = nautilus_desktop_file_get_name (dot_dir_uri);
+		name = nautilus_link_impl_desktop_local_get_additional_text (dot_dir_uri);
 		g_free (dot_dir_uri);
 
 		if (name != NULL)
@@ -4428,7 +4429,8 @@ nautilus_file_get_symbolic_link_target_path (NautilusFile *file)
 gboolean
 nautilus_file_is_nautilus_link (NautilusFile *file)
 {
-	return nautilus_file_is_mime_type (file, "application/x-nautilus-link");
+	return nautilus_file_is_mime_type (file, "application/x-nautilus-link") ||
+		nautilus_file_is_mime_type (file, "application/x-gnome-app-info");
 }
 
 /**

@@ -4444,7 +4444,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 			action = ACTIVATION_ACTION_DO_NOTHING;
 		}
 	}
-
+#if 0
 	if (action != ACTIVATION_ACTION_DO_NOTHING
 	    && strcmp (gnome_vfs_mime_type_from_name_or_default (uri, ""),
 		       "application/x-gnome-app-info") == 0
@@ -4453,7 +4453,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		
 		action = ACTIVATION_ACTION_DO_NOTHING;
 	}
-	
+#endif
 	if (action != ACTIVATION_ACTION_DO_NOTHING && file_is_launchable (file)) {
 
 		action = ACTIVATION_ACTION_LAUNCH;

@@ -2002,7 +2002,7 @@ get_icon_text_callback (NautilusIconContainer *container,
 			char **additional_text,
 			FMIconView *icon_view)
 {
-	char *actual_uri, *path;
+	char *actual_uri;
 	char *attribute_names;
 	char **text_array;
 	int i , slot_index;
@@ -2026,25 +2026,13 @@ get_icon_text_callback (NautilusIconContainer *container,
 	if (nautilus_file_is_nautilus_link (file)) {
 		/* FIXME bugzilla.eazel.com 2531: Does sync. I/O and works only locally. */
 		actual_uri = nautilus_file_get_uri (file);
-		path = gnome_vfs_get_local_path_from_uri (actual_uri);
-		g_free (actual_uri);
-		if (path != NULL) {
-			*additional_text = nautilus_link_local_get_additional_text (path);
-			g_free (path);
-			return;
-		}
-	}
-
-	actual_uri = nautilus_file_get_uri (file);
-	if (strcmp (gnome_vfs_mime_type_from_name_or_default (actual_uri, ""),
-		    "application/x-gnome-app-info") == 0 &&
-	    nautilus_file_is_local (file)) {
 		*additional_text = NULL;
+		/* This looks pretty bad.  It would be nice to get the additional text to only appear if
+		 * you zoom in a lot */
+		/* *additional_text = nautilus_link_local_get_additional_text (actual_uri); */
 		return;
 	}
 
-	g_free (actual_uri);
-	
 	/* Find out what attributes go below each icon. */
 	attribute_names = fm_icon_view_get_icon_text_attribute_names (icon_view);
 	text_array = g_strsplit (attribute_names, "|", 0);
