@@ -1,3 +1,16 @@
+2000-04-24  Darin Adler  <darin@eazel.com>
+
+	* components/music/nautilus-music-view.c
+	(nautilus_music_view_update_from_uri): Spacing tweak.
+	
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	* libnautilus-extensions/nautilus-file.c:
+	Moved half of nautilus-directory.c into a new file as a first step
+	in cleaning up the state machine a bit.
+
 2000-04-24  Andy Hertzfeld <andy@eazel.com>
 
 	changed the location of the novice home directory, and gave it
@@ -20,11 +33,10 @@
 	added new icon to build
 	
 2000-04-24  J. Shane Culpepper  <pepper@eazel.com>
-	*configure.in
-	*components/services/install/Makefile.am
 
+	* configure.in
+	* components/services/install/Makefile.am
 	Adding a gnet configure option to remove hardcoded makefile references.
-
 
 2000-04-24  Darin Adler  <darin@eazel.com>
 
@@ -54,7 +66,7 @@
 2000-04-24  J. Shane Culpepper  <pepper@eazel.com>
 
 	* HACKING
-	Updating hacking to reflect the new gnet dependancy.
+	Updating hacking to reflect the new gnet dependency.
 
 2000-04-24  Andy Hertzfeld <andy@eazel.com>
 
@@ -95,7 +107,7 @@
 	
 	* components/rpmview/nautilus-rpm-view.c:
 	changed default background color of package view
-		
+	
 2000-04-23  J. Shane Culpepper  <pepper@eazel.com>
 	
 	* components/services/install/eazel-install.c

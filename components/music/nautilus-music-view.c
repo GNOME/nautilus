@@ -499,9 +499,8 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
         }
 	
 	/* set up background color */
-
-	nautilus_connect_background_to_directory_metadata_by_uri (GTK_WIDGET (music_view),
-                                                                  music_view->details->uri);
+	nautilus_connect_background_to_directory_metadata_by_uri
+                (GTK_WIDGET (music_view), music_view->details->uri);
 	
 	/* determine the album title/artist line */
 	

@@ -71,12 +71,13 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-debug.c			\
 	nautilus-default-file-icon.c		\
 	nautilus-default-file-icon.h		\
+	nautilus-directory-async.c		\
 	nautilus-directory-background.c		\
 	nautilus-directory.c			\
 	nautilus-entry.c			\
+	nautilus-file-changes-queue.c		\
 	nautilus-file-utilities.c		\
 	nautilus-file.c				\
-	nautilus-file-changes-queue.c		\
 	nautilus-gdk-extensions.c		\
 	nautilus-gdk-pixbuf-extensions.c	\
 	nautilus-glib-extensions.c		\
@@ -89,7 +90,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-icon-dnd.c			\
 	nautilus-icon-factory.c			\
 	nautilus-icon-grid.c			\
-	nautilus-icon-text-item.c	\
+	nautilus-icon-text-item.c		\
 	nautilus-lib-self-check-functions.c	\
 	nautilus-link.c				\
 	nautilus-list-column-title.c		\

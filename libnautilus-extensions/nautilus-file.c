@@ -1569,7 +1569,7 @@ nautilus_file_changed (NautilusFile *file)
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
 	changed_files = g_list_prepend (NULL, file);
-	nautilus_directory_files_changed (file->details->directory, changed_files);
+	nautilus_directory_emit_files_changed (file->details->directory, changed_files);
 	g_list_free (changed_files);
 }
 

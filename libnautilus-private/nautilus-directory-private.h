@@ -107,8 +107,7 @@ gboolean      nautilus_directory_set_file_metadata            (NautilusDirectory
 xmlNode *     nautilus_directory_get_file_metadata_node       (NautilusDirectory        *directory,
 							       const char               *file_name,
 							       gboolean                  create);
-void          nautilus_directory_files_changed                (NautilusDirectory        *directory,
-							       GList                    *changed_files);
+void          nautilus_directory_request_read_metafile        (NautilusDirectory        *directory);
 void          nautilus_directory_request_write_metafile       (NautilusDirectory        *directory);
 void          nautilus_directory_cancel_callback_internal     (NautilusDirectory        *directory,
 							       const QueuedCallback     *callback);
@@ -126,6 +125,11 @@ void          nautilus_directory_file_monitor_remove_internal (NautilusDirectory
 							       gconstpointer             client);
 void          nautilus_directory_remove_file_monitor_link     (NautilusDirectory        *directory,
 							       GList                    *link);
+void          nautilus_directory_emit_metadata_changed        (NautilusDirectory        *directory);
+void          nautilus_directory_emit_files_added             (NautilusDirectory        *directory,
+							       GList                    *added_files);
+void          nautilus_directory_emit_files_changed           (NautilusDirectory        *directory,
+							       GList                    *changed_files);
 
 /* Change notification calls */
 void          nautilus_directory_notify_files_added           (GList                    *uris);
@@ -134,3 +138,16 @@ void          nautilus_directory_notify_files_moved           (GList            
 
 /* debugging functions */
 int           nautilus_directory_number_outstanding           (void);
+
+/* async. interface */
+void          nautilus_metafile_read_cancel                   (NautilusDirectory        *directory);
+gboolean      nautilus_directory_is_file_list_monitored       (NautilusDirectory        *directory);
+void          nautilus_directory_stop_monitoring_file_list    (NautilusDirectory        *directory);
+void          nautilus_metafile_write_start                   (NautilusDirectory        *directory);
+void          nautilus_directory_schedule_dequeue_pending     (NautilusDirectory        *directory);
+
+/* utilities */
+int           nautilus_compare_file_with_name                 (gconstpointer             a,
+							       gconstpointer             b);
+void          nautilus_gnome_vfs_file_info_list_free          (GList                    *list);
+void          nautilus_gnome_vfs_file_info_list_unref         (GList                    *list);
