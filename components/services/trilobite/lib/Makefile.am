@@ -7,7 +7,6 @@ INCLUDES = \
 	-I$(top_builddir)	\
 	-I/usr/include/rpm	\
 	$(GNOME_CFLAGS)		\
-	$(GNET_CFLAGS)		\
 	$(GCONF_CFLAGS)		\
 	$(OAF_CFLAGS)		\
 	$(XML_CFLAGS)		\
@@ -19,8 +18,8 @@ libtrilobite_la_LDFLAGS =	\
 	$(GNOMEUI_LIBS)		\
 	$(OAF_LIBS)		\
 	$(GCONF_LIBS)		\
-	$(GNET_LIBS)		\
 	$(BONOBO_LIBS)		\
+	$(XML_LIBS)		\
 	$(RPM_LIBS)		\
 	$(NULL)
 
@@ -35,7 +34,6 @@ libtrilobiteinclude_HEADERS =			\
 	trilobite-core-security-manager.h	\
 	trilobite-core-tests.h			\
 	trilobite-core-utils.h			\
-	eazel-register.h			\
 	helixcode-utils.h			\
 	$(NULL)
 
@@ -47,7 +45,6 @@ libtrilobite_la_SOURCES =			\
 	trilobite-core-security-manager.c	\
 	trilobite-core-tests.c			\
 	trilobite-core-utils.c			\
-	eazel-register.c			\
 	helixcode-utils.c			\
 	$(NULL)
 

@@ -9,6 +9,7 @@ CPPFLAGS =							\
 INCLUDES =							\
 	-I$(top_srcdir)						\
 	-I$(top_srcdir)/components/services/trilobite/lib	\
+	-I$(top_srcdir)/components/services/startup/lib		\
 	-I$(top_builddir)					\
 	$(GNOMEUI_CFLAGS)                       		\
 	$(GCONF_CFLAGS) 					\
@@ -30,18 +31,19 @@ nautilus_service_startup_view_SOURCES =		\
 	main.c					\
 	$(NULL)
 
-nautilus_service_startup_view_LDFLAGS =			\
+nautilus_service_startup_view_LDADD =                                     \
 	$(top_builddir)/components/services/trilobite/lib/libtrilobite.la \
-	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la \
-	$(top_builddir)/libnautilus/libnautilus.la	\
-	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
-	$(top_builddir)/librsvg/librsvg.la		\
-	$(BONOBO_LIBS)					\
-	$(GNOMEUI_LIBS)					\
-	$(GCONF_LIBS)					\
-	$(VFS_LIBS)					\
-	-lghttp						\
-	$(OAF_LIBS)					\
+	$(top_builddir)/nautilus-widgets/libnautilus-widgets.la           \
+	$(top_builddir)/libnautilus/libnautilus.la                        \
+	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la  \
+	$(top_builddir)/librsvg/librsvg.la                                \
+	$(BONOBO_LIBS)                                                    \
+	$(GNOMEUI_LIBS)                                                   \
+	$(GCONF_LIBS)                                                     \
+	$(VFS_LIBS)                                                       \
+	-lghttp                                                           \
+	$(OAF_LIBS)                                                       \
+	$(top_builddir)/components/services/startup/lib/libstartup.a      \
 	$(NULL)
 
 EXTRA_DIST = $(oaf_DATA)

@@ -1,2 +1,2 @@
-SUBDIRS = nautilus-view
+SUBDIRS = lib nautilus-view
 

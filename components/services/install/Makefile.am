@@ -1,2 +1,2 @@
-SUBDIRS = command-line
+SUBDIRS = lib command-line
 

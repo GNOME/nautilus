@@ -1,3 +1,17 @@
+2000-05-13  J Shane Culpepper  <pepper@eazel.com>
+
+	*configure.in
+	*components/services/startup/lib
+	*components/services/install/lib
+	Created a shared lib directory for the nautilus-view and command-line.
+	This allows an abstracion layer between each individual service and
+	libtrilobite.so so that we don't have to link libtrilobite against
+	libnautilus, etc.  Also allows abstraction of common functions in 
+	eazel-install that can now be statically linked into nautilus-installer.
+	
+	*components/services/trilobite/lib
+	Removed some useless templates that were checked in by accident.
+
 2000-05-12  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bug 620, when multiple files are selected, they all should be opened when the
