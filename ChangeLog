@@ -1,3 +1,18 @@
+2001-04-19  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 8049, Nautilus makes sound even when control center
+	"Enable sound server startup" switch is off
+	
+	* components/music/nautilus-music-view.c: (play_current_file):
+	Check status of sound server gnome preference and display an
+	informational dialog if music view playback is compromised
+	as a result.
+	
+	* src/file-manager/fm-icon-view.c: (should_preview_sound):
+	Check status of sound server gnome preference as one of
+	the conditions when determining if we should preview
+	the audio file on rollover.
+	
 2001-04-19  Darin Adler  <darin@eazel.com>
 
 	* configure.in: Oops, said INIT instead of AC_INIT.

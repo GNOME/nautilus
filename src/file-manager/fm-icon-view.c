@@ -43,6 +43,7 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-config.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -1599,9 +1600,17 @@ preview_audio (FMIconView *icon_view, NautilusFile *file, gboolean start_flag)
 
 static gboolean
 should_preview_sound (NautilusFile *file) {
+
+	/* Check gnome config sound preference */
+	if (!gnome_config_get_bool ("/sound/system/settings/start_esd=true")) {
+		return FALSE;
+	}
+
+	/* Check user performance preference */	
 	if (preview_sound_auto_value == NAUTILUS_SPEED_TRADEOFF_NEVER) {
 		return FALSE;
 	}
+		
 	/* the following is disabled until we can preview remote sounds, which we currently can't do */
 	/*
 	if (preview_mode == NAUTILUS_SPEED_TRADEOFF_ALWAYS) {

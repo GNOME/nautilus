@@ -1175,6 +1175,19 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
         GnomeVFSFileInfo file_info;
 	int length;
 
+	
+	/* Check gnome config sound preference */
+	if (!gnome_config_get_bool ("/sound/system/settings/start_esd=true")) {
+		eel_show_error_dialog (_("Sorry, but the music view is unable to play back sound right now. "
+					      "This is because the Enable sound server startup setting "
+					      "in the Sound section of the Control Center is turned off."),
+				            _("Unable to Play File"),
+					    //GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (&music_view->details->event_box->parent))));
+					    NULL);		
+		return;	
+
+	}
+
 	if (esdout_playing ()) {
 		eel_show_error_dialog (_("Sorry, but the music view is unable to play back sound right now. "
 					      "Either another program is using or blocking the sound card, "
@@ -1182,9 +1195,7 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 					      "applications that may be blocking use of the sound card."),
 				            _("Unable to Play File"),
 					    //GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (&music_view->details->event_box->parent))));
-					    NULL);
-
-		
+					    NULL);		
 		return;	
 	}
        	
