@@ -1,35 +1,66 @@
 if test x$DISPLAY = x; then
-    echo "The Nautilus-Installer requires X"
-    exit
+   echo "The Nautilus-Installer requires X"
+   exit
 fi
 params="DISPLAY=$DISPLAY"
 if test x$http_proxy = x; then
-    params="$params"
+   params="$params"
 else
     params="$params http_proxy=$http_proxy"
 fi
+
+# Figure out what is already installed
+PR1_TO_PR2=no
+if [ -f /usr/bin/nautilus ]; then
+   VERSION=`/usr/bin/nautilus --version`
+   if [ "x$VERSION" = "xGnome nautilus 0.1.0" ]; then
+      PR1_TO_PR2=yes
+   fi
+fi
+
 if test $UID -ne 0; then
-    echo ""
-    echo "Eazel Installer PR2"
-    echo ""
-    echo "Eazel Installer requires superuser (root) access to prepare the system"
-    echo "and to install packages."
-    echo ""
-    echo "Please enter root password at the prompt."
-    xhost + localhost
-    su - -c "export $params && cd $PWD && echo Uncompressing... && sh $0 $* $USER"
-    xhost - localhost
-    exit
+   
+   # blurp 
+   echo ""
+   echo "Eazel Installer PR2"
+   echo ""
+   echo "Eazel Installer requires superuser (root) access to prepare the system"
+   echo "and to install packages."
+   echo ""
+   if [ "x$PR1_TO_PR2" = "xyes" ]; then
+      echo "Your PR1 setttings will be moved to ~/.nautilus.pr2.backup..."
+      echo ""
+   fi
+  
+   # Start
+   echo "Please enter root password at the prompt."
+   xhost + localhost
+   su - -c "export $params && cd $PWD && echo Uncompressing... && sh $0 $* $USER"
+   xhost - localhost
+
+   # Move config
+   if [ "x$PR1_TO_PR2" = "xyes" ]; then
+      VERSION=`/usr/bin/nautilus --version`
+      if [ "x$VERSION" != "xGnome nautilus 0.1.0" ]; then
+         echo "Saving old settings..."
+         mkdir -p $HOME/.nautilus.pr2.backup >& /dev/null
+         mv -f $HOME/.nautilus $HOME/.nautilus.pr2.backup/ >& /dev/null
+         mv -f $HOME/Nautilus $HOME/.nautilus.pr2.backup/ >& /dev/null
+         mv -f $HOME/.gconf/apps/nautilus/ $HOME/.nautilus.pr2.backup/ >& /dev/null
+         mv -f $HOME/.gconf/apps/eazel-trilobite/ $HOME/.nautilus.pr2.backup/ >& /dev/null
+      fi
+   fi
+
+   # Start the nautilus launcher if needed
+   ps ax | grep -w 'nautilus-launcher-applet' > /dev/null 2>&1
+   rv=$?
+   echo $rv
+   if [ $rv -ne 0 ]; then
+      if [ -f /usr/bin/nautilus-launcher-applet ]; then
+           nautilus-launcher-applet &
+       fi
+   fi
+
+   exit
 fi
 
-# Start the nautilus launcher if needed
-ps ax | grep -w 'nautilus-launcher-applet' > /dev/null 2>&1
-
-rv=$?
-
-echo $rv
-
-if [ $rv -ne 0 ]
-then
-  nautilus-launcher-applet &
-fi
