@@ -524,8 +524,8 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (temp_scrolled_window),
 			                GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
-	temp_label = nautilus_label_new (_("Check back here for new system management\nservices that will help make Linux easier to use."));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_label), 18);
+	temp_label = nautilus_label_new (_("\nCheck back here for new system management\nservices that will help make Linux easier to use."));
+	nautilus_label_set_font_size (NAUTILUS_LABEL (temp_label), 14);
 	nautilus_label_set_font_from_components (NAUTILUS_LABEL (temp_label),
 						 "helvetica",
 						 "bold",
