@@ -1,3 +1,10 @@
+2000-09-28  John Sullivan  <sullivan@eazel.com>
+
+	* src/nautilus-view-frame.c: (check_if_view_is_gone):
+	Removed an unnecessary line that was setting a field
+	of a struct that was just set to NULL. This crashed for
+	terral (IRC name).
+
 2000-09-28  Josh Barrow  <linuxfan@ionet.net>
 
 	* docs/smoketests.html:

@@ -449,9 +449,13 @@ check_if_view_is_gone (gpointer data)
 		/* FIXME bugzilla.eazel.com 1840: Is a destroy really sufficient here? Who does the unref? 
 		 * See bug 1840 for one bad case this destroy is involved in.
 		 */
+		/* view->details->check_if_view_is_gone_timeout_id used to be
+		 * set to zero here, but that's not necessary with the destroy.
+		 * If we change the destroy to something else later we might want
+		 * to bring that line back.
+		 */
 		gtk_object_destroy (GTK_OBJECT (view));
 
-		view->details->check_if_view_is_gone_timeout_id = 0;
 		ok = FALSE;
 	}
 	CORBA_exception_free (&ev);
