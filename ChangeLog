@@ -1,3 +1,39 @@
+2001-02-25  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Michael K. Fleming  <mfleming@eazel.com>
+
+	* components/services/install/nautilus-view/.cvsignore:
+	* components/services/install/nautilus-view/Makefile.am:
+	* components/services/install/nautilus-view/Nautilus_View_install.oaf.in:
+	* components/services/install/nautilus-view/callbacks.c:
+	* components/services/install/nautilus-view/callbacks.h:
+	* components/services/install/nautilus-view/forms.c:
+	* components/services/install/nautilus-view/forms.h:
+	* components/services/install/nautilus-view/main.c:
+	* components/services/install/nautilus-view/nautilus-service-install-view.c:
+	* components/services/install/nautilus-view/nautilus-service-install-view.h:
+	* components/services/install/nautilus-view/nautilus-service-install.c:
+	* components/services/install/nautilus-view/nautilus-service-install.h:
+	Move it all to components/services/install-view
+
+	* components/services/install/Makefile.am: Don't build nautilus-view subdir.
+
+	* components/services/Makefile.am: Build insall-view subdir.
+	
+	* components/services/install-view/Makefile.am: Don't do evil hack
+	to build inventory dir.
+
+	* components/services/vault/.cvsignore:
+	* components/services/vault/Makefile.am:
+	* components/services/vault/command-line/.cvsignore:
+	* components/services/vault/command-line/Makefile.am:
+	* components/services/vault/command-line/main.c:
+	* components/services/vault/command-line/vault-operations.c:
+	* components/services/vault/command-line/vault-operations.h:
+	Remove old cruft.
+
+	* configure.in: Adjust for above changes.
+
 2001-02-25  arik devens  <arik@eazel.com
 
 	reviewed by: John Harper  <jsh@eazel.com>

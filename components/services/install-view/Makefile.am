@@ -65,7 +65,3 @@ oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
 
 EXTRA_DIST = $(oaf_in_files) $(oaf_DATA)
 
-
-$(top_builddir)/components/services/inventory/libtrilobite-inventory-service.la:
-	# forgive me father for I have sinned
-	cd $(top_builddir)/components/services/inventory/;make libtrilobite-inventory-service.la
