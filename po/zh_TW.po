@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.2.4\n"
-"POT-Creation-Date: 2003-05-17 03:30+0800\n"
-"PO-Revision-Date: 2003-05-17 03:39+0800\n"
+"POT-Creation-Date: 2003-05-28 05:46+0800\n"
+"PO-Revision-Date: 2003-05-28 06:00+0800\n"
 "Last-Translator: Abel Cheung <maddog@linux.org.hk>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
 "MIME-Version: 1.0\n"
@@ -2845,9 +2845,9 @@ msgid ""
 "Fast searches will not be available until an initial index of your files has "
 "been created.  This may take a long time."
 msgstr ""
-"如果想使用快速搜尋功能，必須以 root 的身份修改檔案 %s。修改 enabled 設定"
+"如果想使用快速搜尋功能，必須以 root 的身分修改檔案 %s。修改 enabled 設定"
 "為“yes”會開啟 medusa 服務。\n"
-"如果要現在就啟用搜尋服務，應該以 root 的身份執行以下的指令：\n"
+"如果要現在就啟用搜尋服務，應該以 root 的身分執行以下的指令：\n"
 "\n"
 "medusa-indexd\n"
 "medusa-searchd\n"
@@ -4257,21 +4257,21 @@ msgstr "拖放時發生錯誤"
 msgid "An invalid drag type was used."
 msgstr "拖曳方式不正確。"
 
-#: src/file-manager/fm-list-view.c:728
+#: src/file-manager/fm-list-view.c:733
 msgid "File name"
 msgstr "檔案名稱"
 
-#: src/file-manager/fm-list-view.c:752
+#: src/file-manager/fm-list-view.c:757
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "大小"
 
-#: src/file-manager/fm-list-view.c:763
+#: src/file-manager/fm-list-view.c:768
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "類型"
 
-#: src/file-manager/fm-list-view.c:774
+#: src/file-manager/fm-list-view.c:779
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "最後修改日期"
@@ -4553,7 +4553,7 @@ msgid ""
 "running \"medusa-indexd\" as root on the command line."
 msgstr ""
 "搜尋條件中的時間比最後一次進行索引的時間還要新。現在進行搜尋不會輸出任何結"
-"果。可以用 root 的身份在指令列中執行“medusa-indexd”來產生新的索引。"
+"果。可以用 root 的身分在指令列中執行“medusa-indexd”來產生新的索引。"
 
 #: src/file-manager/fm-search-list-view.c:196
 msgid "Search for items that are too new"
@@ -4581,7 +4581,7 @@ msgid ""
 "corrupt.  You can create a new index by running \"medusa-indexd\" as root on "
 "the command line."
 msgstr ""
-"Find 無法開啟檔案系統索引。索引檔可能消失了或者已經損壞。您可以用 root 的身份"
+"Find 無法開啟檔案系統索引。索引檔可能消失了或者已經損壞。您可以用 root 的身分"
 "在指令列中執行“medusa-indexd”來產生新的索引。"
 
 #: src/file-manager/fm-search-list-view.c:214
@@ -4629,7 +4629,7 @@ msgid ""
 "medusa-searchd"
 msgstr ""
 "索引檔已經存在，但處理索引要求的 Medusa 搜尋伺服程式並沒有執行。如要執行該程"
-"式，請先以 root 身份登入並輸入以下指令：\n"
+"式，請先以 root 身分登入並輸入以下指令：\n"
 "\n"
 "medusa-searchd"
 
@@ -4664,7 +4664,7 @@ msgid ""
 "searches will take several minutes."
 msgstr ""
 "如果要進行快速搜尋，Find 需要使用一個包含系統中所有檔案的索引。目前該索引不存"
-"在。您可以用 root 的身份執行“medusa-indexd”來產生索引。今次的搜尋要求可能會需"
+"在。您可以用 root 的身分執行“medusa-indexd”來產生索引。今次的搜尋要求可能會需"
 "時數分鐘，直至有完整的索引為止。"
 
 #: src/file-manager/fm-search-list-view.c:298
@@ -4675,7 +4675,7 @@ msgid ""
 "index is available, content searches cannot be performed."
 msgstr ""
 "如果要進行內容搜尋，Find 需要使用一個包含系統中所有檔案內容的索引。目前該索引"
-"檔不存在。您可以用 root 的身份執行“medusa-indexd”來產生索引。目前無法進行搜"
+"檔不存在。您可以用 root 的身分執行“medusa-indexd”來產生索引。目前無法進行搜"
 "尋，直至有完整的索引為止。"
 
 #: src/file-manager/fm-search-list-view.c:323
@@ -5159,7 +5159,7 @@ msgstr ""
 "LD_LIBRARY_PATH 未包括 bonobo-activation 函式庫所在目錄。另一個可能性是安裝時"
 "出現錯誤導致沒有安裝 Nautilus_Shell.oaf 檔案。\n"
 "\n"
-"執行“bonobo-slay”會終止所有的 Bonobo Activation 和 GConf 程序，這些程序有可能"
+"執行“bonobo-slay”會終止所有的 Bonobo Activation 和 GConf 進程，這些程序有可能"
 "是其它應用程式需要使用的。\n"
 "\n"
 "有時終止 bonobo-activation-server 和 gconfd 會解決問題，但仍未找出原因。\n"
@@ -6346,7 +6346,7 @@ msgid ""
 "Check that an SMB server is running in the local network."
 msgstr ""
 "無法顯示“%s”，因為 Nautilus 無法聯絡 SMB master browser。\n"
-"請檢查本地網路中有 SMB 伺服器正在運行。"
+"請確保本地網路中已經有運行中的 SMB 伺服器。"
 
 #: src/nautilus-window-manage-views.c:1405
 msgid ""
@@ -6519,6 +6519,20 @@ msgstr "網路伺服器"
 msgid "View your network servers in the Nautilus file manager"
 msgstr "在 Nautilus 檔案總管中瀏覽網路伺服器"
 
+#~ msgid ""
+#~ "A list of captions below an icon in the icon view and the desktop. The "
+#~ "actual number of captions shown depends on the zoom level. Possible "
+#~ "values are: size, type, date_modified, date_changed, date_accessed, "
+#~ "owner, group, permissions, octal_permissions and mime_type"
+#~ msgstr ""
+#~ "在圖示顯示模式中，或者在桌面中，圖示下方附帶的一系列標題。實際會顯示的標題"
+#~ "數目取決於縮放倍率。可接受的值為：size、type、date_modified、"
+#~ "date_changed、date_accessed、owner、group、permissions、octal_permissions "
+#~ "及 mime_type"
+
+#~ msgid "Add nautilus to session"
+#~ msgstr "將 nautilus 加入至作業階段"
+
 #~ msgid "Bring up a new window for every opened file"
 #~ msgstr "每一個檔案都用新的視窗開啟"
 
@@ -6577,6 +6591,12 @@ msgstr "在 Nautilus 檔案總管中瀏覽網路伺服器"
 #~ msgid "Desktop font"
 #~ msgstr "桌面字型"
 
+#~ msgid "Desktop home icon name"
+#~ msgstr "桌面中個人目錄圖示的名稱"
+
+#~ msgid "Desktop trash icon name"
+#~ msgstr "桌面中垃圾桶圖示的名稱"
+
 #~ msgid "Enable 'special' flags in file preferences dialog"
 #~ msgstr "在檔案偏好設定中顯示「特殊」的旗標"
 
@@ -6596,6 +6616,9 @@ msgstr "在 Nautilus 檔案總管中瀏覽網路伺服器"
 
 #~ msgid "Hide default bookmarks in the bookmark menu."
 #~ msgstr "在書籤選單中隱藏預設的書籤。"
+
+#~ msgid "Home icon visible on desktop"
+#~ msgstr "在桌面中顯示個人目錄圖示"
 
 #~ msgid ""
 #~ "If set to true, Nautilus will show only show directories in the tree "
@@ -6684,6 +6707,16 @@ msgstr "在 Nautilus 檔案總管中瀏覽網路伺服器"
 #~ "動執行 Nautilus。"
 
 #~ msgid ""
+#~ "If this is set to true, an icon linking to the home directory will be put "
+#~ "on the desktop."
+#~ msgstr "如選用本選項，則桌面上會有一個圖示連結至個人目錄。"
+
+#~ msgid ""
+#~ "If this is set to true, an icon linking to the trash will be put on the "
+#~ "desktop."
+#~ msgstr "如選用本選項，則桌面上會有一個圖示連結至垃圾桶。"
+
+#~ msgid ""
 #~ "If true, files in new windows will be sorted in reverse order. ie, if "
 #~ "sorted by name, then instead of sorting the files from \"a\" to \"z\", "
 #~ "they will be sorted from \"z\" to \"a\"."
@@ -6704,6 +6737,9 @@ msgstr "在 Nautilus 檔案總管中瀏覽網路伺服器"
 #~ msgid "If true, icons will be layed out tighter by default in new windows."
 #~ msgstr "如選用本選項，新的視窗會使用較緊密的方式排列圖示。"
 
+#~ msgid "If true, new windows will use manual layout by default."
+#~ msgstr "如選用本選項，在新的視窗中，圖示預設會以自選的方式排列。"
+
 #~ msgid ""
 #~ "Images over this size (in bytes) won't be thumbnailed. The purpose of "
 #~ "this setting is to avoid thumbnailing large images that may take a long "
@@ -6711,6 +6747,9 @@ msgstr "在 Nautilus 檔案總管中瀏覽網路伺服器"
 #~ msgstr ""
 #~ "不會為超過指定大小(位元組)的圖像產生縮圖。這個設定的目的是避免為太大的圖像"
 #~ "產生縮圖，消耗過多的時間或記憶體。"
+
+#~ msgid "List of possible captions on icons"
+#~ msgstr "圖示下方可以出現的標題"
 
 #~ msgid "Maximum handled files in a directory"
 #~ msgstr "一個目錄可容納的檔案數目上限"
@@ -6774,6 +6813,17 @@ msgstr "在 Nautilus 檔案總管中瀏覽網路伺服器"
 #~ "如果設定為“never”則一定不會預先聆聽。"
 
 #~ msgid ""
+#~ "Speed tradeoff for when to show a image files as a thumbnail. If set to "
+#~ "\"always\" then always thumbnail, even if the directory is on a remote "
+#~ "server. If set to \"local_only\" then only show thumbnails for local "
+#~ "filesystems. If set to \"never\" then never bother to thumbnail images, "
+#~ "just use a generic icon."
+#~ msgstr ""
+#~ "決定是否顯示圖像的縮圖。如果設定為“always”，即使是遠端檔案仍然必定會顯示縮"
+#~ "圖。如果設定為“local_only”則只會顯示本機檔案的縮圖。如果設定為“never”則一"
+#~ "定不會顯示縮圖，只會用一般的圖示代替。"
+
+#~ msgid ""
 #~ "Speed tradeoff for when to show a preview of text file contents in the "
 #~ "file's icon. If set to \"always\" then always show previews, even if the "
 #~ "directory is on a remote server. If set to \"local_only\" then only show "
@@ -6783,6 +6833,17 @@ msgstr "在 Nautilus 檔案總管中瀏覽網路伺服器"
 #~ "決定是否顯示文字檔的預覽圖示。如果設定為“always”，即使是遠端檔案仍然必定會"
 #~ "顯示預覽圖示。如果設定為“local_only”則只會顯示本機檔案的預覽圖示。如果設定"
 #~ "為“never”則一定不會顯示預覽圖示。"
+
+#~ msgid ""
+#~ "Speed tradeoff for when to show the number of items in a directory. If "
+#~ "set to \"always\" then always show item counts, even if the directory is "
+#~ "on a remote server. If set to \"local_only\" then only show counts for "
+#~ "local filesystems. If set to \"never\" then never bother to compute item "
+#~ "counts."
+#~ msgstr ""
+#~ "決定是否顯示目錄中副目錄或檔案的數目。如果設定為“always”，即使是遠端目錄仍"
+#~ "然必定會顯示數目。如果設定為“local_only”則只會在本機目錄顯示數目。如果設定"
+#~ "為“never”則一定不會計算數目。"
 
 #~ msgid ""
 #~ "The default sort-order for the item in the icon view. Possible values are "
@@ -6807,14 +6868,52 @@ msgstr "在 Nautilus 檔案總管中瀏覽網路伺服器"
 #~ msgid "The side pane view to show in newly opened windows."
 #~ msgstr "在新的視窗中，側面窗格預設的顯示模式"
 
+#~ msgid ""
+#~ "This name can be set if you want a custom name for the home link icon on "
+#~ "the desktop."
+#~ msgstr "如果您想為桌面上的個人目錄圖示命名，可以在這裡指定。"
+
+#~ msgid ""
+#~ "This name can be set if you want a custom name for the trash icon on the "
+#~ "desktop."
+#~ msgstr "如果您想為桌面上的垃圾桶圖示命名，可以在這裡指定。"
+
+#~ msgid "Trash icon visible on desktop"
+#~ msgstr "在桌面上顯示垃圾桶圖示"
+
+#~ msgid "Type of click used to launch/open files"
+#~ msgstr "使用指定的方式，按下滑鼠按鈕來啟動/開啟檔案"
+
 #~ msgid "Use manual layout new windows"
 #~ msgstr "在新的視窗中使用自選的排列方式"
 
 #~ msgid "Use tighter Layout in new windows"
 #~ msgstr "在新的視窗中使用較緊密的排列方式"
 
+#~ msgid ""
+#~ "Vast directories, over this size will be truncated to around this size. "
+#~ "The purpose of this is to avoid unintentionally blowing the heap and "
+#~ "killing nautilus on massive directories. A negative value denotes no "
+#~ "limit. The limit is approximate due to the reading of directories chunk-"
+#~ "wise."
+#~ msgstr ""
+#~ "對於一些項目太多的目錄，將實際上顯示的項目數目減少至大約這個數字。這樣做的"
+#~ "意義是避免 nautilus 因載入過大的目錄而不正常地結束。負數表示沒有限制。這個"
+#~ "數字只是大約的數字，因為載入目錄時，每次讀取資料都是讀取多個項目的。"
+
 #~ msgid "What to do with executable text files when activated"
 #~ msgstr "當按下可執行的文字檔時，會以哪種方式處理"
+
+#~ msgid ""
+#~ "What to do with executable text files when they are activated (single or "
+#~ "double clicked). Possible values are \"launch\" to launch them as "
+#~ "programs, \"ask\" to ask what to do via a dialog, and \"display\" to "
+#~ "display them as text files."
+#~ msgstr ""
+#~ "當啟用(點選或雙擊)可執行的文字檔時，會以哪一種方式處理。可接受的值為：\n"
+#~ "“launch”會當它們作為程式來啟動\n"
+#~ "“ask”會顯示對話方塊詢問使用者\n"
+#~ "“display”會以文字檔方式顯示內容"
 
 #~ msgid ""
 #~ "When a folder is visited this viewer is used unless you have selected "
@@ -6825,7 +6924,7 @@ msgstr "在 Nautilus 檔案總管中瀏覽網路伺服器"
 #~ "表的顯示模式。可接受的值為 list_view 及 icon_view。"
 
 #~ msgid "When to show number of items in a directory"
-#~ msgstr "何時會在目錄中顯示項目的數目"
+#~ msgstr "何時會在目錄中顯示有多少個項目"
 
 #~ msgid "When to show preview text in icons"
 #~ msgstr "何時會在圖示內顯示預覽文字"
@@ -6857,15 +6956,22 @@ msgstr "在 Nautilus 檔案總管中瀏覽網路伺服器"
 #~ msgid "width of the sidebar"
 #~ msgstr "側面窗格寬度"
 
-#, fuzzy
+#~ msgid ""
+#~ "You cannot delete a volume icon. If you want to eject the volume, please "
+#~ "use Eject in the right-click menu of the volume."
+#~ msgstr ""
+#~ "您不可以刪除檔案系統圖示。如果您想卸載該檔案系統，請在該圖示上按右邊滑鼠按"
+#~ "鈕，然後選「退出」。"
+
+#~ msgid "Can't delete volume"
+#~ msgstr "不可刪除檔案系統"
+
 #~ msgid "There is no action associated with \"%s\"."
 #~ msgstr "沒有任何和“%s”有關聯的處理程序。"
 
-#, fuzzy
 #~ msgid "No Action Associated"
-#~ msgstr "沒有任何有關聯的程式"
+#~ msgstr "沒有任何有關聯的處理程序"
 
-#, fuzzy
 #~ msgid ""
 #~ "%s\n"
 #~ "\n"
@@ -6874,10 +6980,27 @@ msgstr "在 Nautilus 檔案總管中瀏覽網路伺服器"
 #~ msgstr ""
 #~ "%s\n"
 #~ "\n"
-#~ "您可以在 GNOME 中將程式及檔案類型建立聯繫。是否立刻將這種檔案和其它程式建"
-#~ "立聯繫？"
+#~ "您可以在 GNOME 中將不同的檔案類型及程式建立聯繫。是否立刻將這種檔案和其它"
+#~ "程式建立聯繫？"
 
-#, fuzzy
+#~ msgid "The viewer associated with \"%s\" is invalid."
+#~ msgstr "這個和“%s”有聯繫的顯示模式是無效的。"
+
+#~ msgid "Invalid Viewer Associated"
+#~ msgstr "聯繫了無效的顯示模式"
+
+#~ msgid "The application associated with \"%s\" is invalid."
+#~ msgstr "這個和“%s”有聯繫的程式是無效的。"
+
+#~ msgid "Invalid Application Associated"
+#~ msgstr "聯繫了無效的程式"
+
+#~ msgid "The action associated with \"%s\" is invalid."
+#~ msgstr "這個和“%s”有聯繫的處理方式是無效的。"
+
+#~ msgid "Invalid Action Associated"
+#~ msgstr "聯繫了無效的處理方式"
+
 #~ msgid ""
 #~ "%s\n"
 #~ "\n"
@@ -6887,27 +7010,59 @@ msgstr "在 Nautilus 檔案總管中瀏覽網路伺服器"
 #~ msgstr ""
 #~ "%s\n"
 #~ "\n"
-#~ "您可以在 GNOME 中將程式及檔案類型建立聯繫。是否立刻將這種檔案和其它程式建"
-#~ "立聯繫？"
+#~ "您可以在 GNOME 中將這類檔案和不同的程式/顯示模式建立聯繫。是否立刻將這類檔"
+#~ "案和其它程式/顯示模式建立聯繫？"
 
-#, fuzzy
+#~ msgid "Associate Action"
+#~ msgstr "和其它處理方式建立聯繫"
+
 #~ msgid ""
 #~ "The default action can't open \"%s\" because it can't access files at \"%s"
 #~ "\" locations.  Would you like to choose another action?"
 #~ msgstr ""
-#~ "“%s”無法開啟“%s”，因為“%s”無法存取“%s”中的檔案。是否選取其它應用程式？"
+#~ "預設的處理方式無法開啟“%s”，因為無法存取“%s”中的檔案。是否使用其它處理方"
+#~ "式？"
 
-#, fuzzy
 #~ msgid ""
 #~ "The default action can't open \"%s\" because it can't access files at \"%s"
 #~ "\" locations.  No other actions are available to view this file.  If you "
 #~ "copy this file onto your computer, you may be able to open it."
 #~ msgstr ""
-#~ "“%s”無法開啟“%s”，因為“%s”無法存取“%s”中的檔案。目前沒有其它應用程式可以用"
-#~ "來顯示該檔案。如果將該檔案複製至您的電腦中，也許可以開啟該檔案。"
+#~ "預設的處理方式無法開啟“%s”，因為無法存取“%s”中的檔案。目前沒有其它方式可以"
+#~ "顯示該檔案。如果將該檔案複製至您的電腦中，也許可以開啟它。"
+
+#~ msgid "Select an icon"
+#~ msgstr "選取圖示"
 
 #~ msgid "Keep icons lined up on a grid"
 #~ msgstr "令圖示貼齊格線"
+
+#~ msgid "_Keep Aligned"
+#~ msgstr "保持整齊排列(_K)"
+
+#~ msgid "Link To Old Desktop"
+#~ msgstr "舊桌面的鏈結"
+
+#~ msgid ""
+#~ "The location of the desktop directory has changed in Gnome 2.4. A link "
+#~ "called \"Link To Old Desktop\" has been created on the desktop. You can "
+#~ "open this to move over the files you want, then delete the link."
+#~ msgstr ""
+#~ "在 GNOME 2.4 中，桌面目錄的位置有所更改。桌面上會有一個新的鏈結，稱為「舊"
+#~ "桌面的鏈結」。您可以在其中，將所有需要保留的檔案移至新的桌面，然後刪除該鏈"
+#~ "結。"
+
+#~ msgid "Migrated old desktop"
+#~ msgstr "成功合併舊的桌面"
+
+#~ msgid "<b>_Bookmarks</b>"
+#~ msgstr "<b>書籤</b>(_B)"
+
+#~ msgid "<b>_Location</b>"
+#~ msgstr "<b>位置</b>(_L)"
+
+#~ msgid "<b>_Name</b>"
+#~ msgstr "<b>名稱</b>(_N)"
 
 #~ msgid ""
 #~ "Unable to launch the cd burner application:\n"
@@ -6921,6 +7076,12 @@ msgstr "在 Nautilus 檔案總管中瀏覽網路伺服器"
 
 #~ msgid "_Write contents to CD"
 #~ msgstr "將內容燒錄至光碟中(_W)"
+
+#~ msgid "Select a Category:"
+#~ msgstr "選取類別："
+
+#~ msgid "_Connect"
+#~ msgstr "連接(_C)"
 
 #~ msgid "Go to Empty CD folder"
 #~ msgstr "前往空白的光碟資料夾"
