@@ -1,4 +1,33 @@
-2000-03-02	Andy Hertzfeld <andy@eazel.com>
+2000-04-03  Darin Adler  <darin@eazel.com>
+
+	Fix the build. Changes in GtkHtml and Bonobo required us
+	to catch up.
+
+	* libnautilus/ntl-meta-view-frame.h:
+	* libnautilus/ntl-meta-view-frame.c:
+	Rewrote to use the new property bag. This requires us to
+	store our own properties, since the bag no longer provides
+	any storage.
+	(nautilus_meta_view_frame_initialize): Set up the label.
+	(nautilus_meta_view_frame_new_from_bonobo_control): Make it
+	actually take a BonoboControl instead of a BonoboObject and
+	make it set up the property bag.
+	(nautilus_meta_view_destroy): Free the label.
+	(autilus_meta_view_frame_set_label): Just set the label.
+	The property bag simply uses our stored label.
+
+	* components/html/ntl-web-browser.c (browser_url_load_gone):
+	Changed call to match name in new version of GtkHtml.
+	Unfortunately, the new name makes it clear the call is
+	intended to be private.
+
+	* components/rpmview/.cvsignore: Ignore the actual binary,
+	not nautilus-music-view.
+	* components/rpmview/Makefile.am: Turned on -Werror.
+	* components/music/Makefile.am: Turned on -Werror.
+	* components/rpmview/nautilus-rpm-view.c: Fixed warnings.
+
+2000-04-02  Andy Hertzfeld <andy@eazel.com>
 
 	Added a first cut at a component for viewing rpm packages.
 	
@@ -13,7 +42,7 @@
 	which reads a package with rpm and sets up the fields in the view from the data
 	* src/ntl-uri-map.c: modified mapping so rpms get this component added
 	
-2000-03-01  Ramiro Estrugo  <ramiro@eazel.com>
+2000-04-01  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Add a conditionally built skeleton for a startup service.
 	

@@ -336,14 +336,18 @@ nautilus_rpm_view_realize(GtkWidget *widget)
 	nautilus_background_set_color (background, RPM_VIEW_DEFAULT_BACKGROUND_COLOR);
 }
 
-/* utility to format time using std libarary routines */
+/* utility to format time using std library routines */
 
-gchar* format_time(gint time_value)
+#if 0
+
+static char* format_time(time_t time_value)
 {
-	gchar *time_string = strdup(ctime(&time_value));
+	char *time_string = g_strdup(ctime(&time_value));
 	time_string[strlen(time_string) - 1] = '\0';
 	return time_string;
 }
+
+#endif
 
 /* here's where we do most of the real work of populating the view with info from the package */
 /* open the package and copy the information, and then set up the appropriate views with it */
@@ -355,19 +359,19 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 	/* open the package */
 	HeaderIterator iterator;
 	Header header_info, signature;
-	gchar buffer[512];
-	gint iterator_tag, type, data_size, result;
-	gchar *data_ptr, *temp_str, *time_string;
-	gint file_descriptor;
-	gint *integer_ptr;
-	gchar *temp_version = NULL;
-	gchar *temp_release = NULL;
-	const gchar *path_name = uri + 7;
+	char buffer[512];
+	int iterator_tag, type, data_size, result;
+	char *data_ptr, *temp_str;
+	int file_descriptor;
+	int *integer_ptr;
+	char *temp_version = NULL;
+	char *temp_release = NULL;
+	const char *path_name = uri + 7;
 	
 	file_descriptor = open(path_name, O_RDONLY, 0644);
 	 
 	if (file_descriptor >= 0) {
-	
+                
 		/* read out the appropriate fields, and set them up in the view */
 		result = rpmReadPackageInfo((FD_t)&file_descriptor, &signature, &header_info);
 		if (result) {
@@ -379,53 +383,53 @@ nautilus_rpm_view_update_from_uri (NautilusRPMView *rpm_view, const char *uri)
 		while (headerNextIterator(iterator, &iterator_tag, &type, (void**)&data_ptr, &data_size)) {
 			integer_ptr = (int*) data_ptr;
 			switch (iterator_tag) {
-				case RPMTAG_NAME:
-					temp_str = g_strdup_printf("Package \"%s\" ", data_ptr);
-					gtk_label_set (GTK_LABEL (rpm_view->details->package_title), temp_str);				 
-					g_free(temp_str);
-					break;
-				case RPMTAG_VERSION:
-					temp_version = strdup(data_ptr);
-					break;
-				case RPMTAG_RELEASE:
-					temp_release = strdup(data_ptr);
-					break;
-				case RPMTAG_SUMMARY:
-					gtk_label_set (GTK_LABEL (rpm_view->details->package_summary), data_ptr+4);				 
-					break;
-				case RPMTAG_DESCRIPTION:
-					gtk_label_set (GTK_LABEL (rpm_view->details->package_description), data_ptr+4);				 
- 					break;
-				case RPMTAG_SIZE:
-					temp_str = gnome_vfs_file_size_to_string (*integer_ptr);
-					gtk_label_set (GTK_LABEL (rpm_view->details->package_size), temp_str);				 
-					g_free(temp_str);					
-					break;
-				case RPMTAG_DISTRIBUTION:
-					gtk_label_set (GTK_LABEL (rpm_view->details->package_distribution), data_ptr+4);				 
-					break;
-				case RPMTAG_GROUP:
-					break;
-				case RPMTAG_ICON:
-					break;
-				case RPMTAG_LICENSE:
-					gtk_label_set (GTK_LABEL (rpm_view->details->package_license), data_ptr);				 
-					break;
-				case RPMTAG_BUILDTIME:
-    					strftime(buffer, 511, "%a %b %d %I:%M:%S %Z %Y", gmtime(integer_ptr));
-    					gtk_label_set(GTK_LABEL(rpm_view->details->package_bdate), buffer);
-					break;
-				case RPMTAG_INSTALLTIME:
-    					strftime(buffer, 511, "%a %b %d %I:%M:%S %Z %Y", gmtime(integer_ptr));
-    					gtk_label_set(GTK_LABEL(rpm_view->details->package_idate), buffer);
-					break;
-				case RPMTAG_VENDOR:
-					gtk_label_set (GTK_LABEL (rpm_view->details->package_vendor), data_ptr);				 
-					break;
-				case RPMTAG_GIF:
-					break;
-				case RPMTAG_XPM:
-					break;
+                        case RPMTAG_NAME:
+                                temp_str = g_strdup_printf("Package \"%s\" ", data_ptr);
+                                gtk_label_set (GTK_LABEL (rpm_view->details->package_title), temp_str);				 
+                                g_free(temp_str);
+                                break;
+                        case RPMTAG_VERSION:
+                                temp_version = g_strdup(data_ptr);
+                                break;
+                        case RPMTAG_RELEASE:
+                                temp_release = g_strdup(data_ptr);
+                                break;
+                        case RPMTAG_SUMMARY:
+                                gtk_label_set (GTK_LABEL (rpm_view->details->package_summary), data_ptr+4);				 
+                                break;
+                        case RPMTAG_DESCRIPTION:
+                                gtk_label_set (GTK_LABEL (rpm_view->details->package_description), data_ptr+4);				 
+                                break;
+                        case RPMTAG_SIZE:
+                                temp_str = gnome_vfs_file_size_to_string (*integer_ptr);
+                                gtk_label_set (GTK_LABEL (rpm_view->details->package_size), temp_str);				 
+                                g_free(temp_str);					
+                                break;
+                        case RPMTAG_DISTRIBUTION:
+                                gtk_label_set (GTK_LABEL (rpm_view->details->package_distribution), data_ptr+4);
+                                break;
+                        case RPMTAG_GROUP:
+                                break;
+                        case RPMTAG_ICON:
+                                break;
+                        case RPMTAG_LICENSE:
+                                gtk_label_set (GTK_LABEL (rpm_view->details->package_license), data_ptr);
+                                break;
+                        case RPMTAG_BUILDTIME:
+                                strftime(buffer, 511, "%a %b %d %I:%M:%S %Z %Y", gmtime((time_t *) data_ptr));
+                                gtk_label_set(GTK_LABEL(rpm_view->details->package_bdate), buffer);
+                                break;
+                        case RPMTAG_INSTALLTIME:
+                                strftime(buffer, 511, "%a %b %d %I:%M:%S %Z %Y", gmtime((time_t *) data_ptr));
+                                gtk_label_set(GTK_LABEL(rpm_view->details->package_idate), buffer);
+                                break;
+                        case RPMTAG_VENDOR:
+                                gtk_label_set (GTK_LABEL (rpm_view->details->package_vendor), data_ptr);
+                                break;
+                        case RPMTAG_GIF:
+                                break;
+                        case RPMTAG_XPM:
+                                break;
 			}
 			
 		}
@@ -455,15 +459,14 @@ void
 nautilus_rpm_view_load_uri (NautilusRPMView *rpm_view, const char *uri)
 {
 	g_free(rpm_view->details->current_uri);
-  
 	rpm_view->details->current_uri = g_strdup (uri);	
 	nautilus_rpm_view_update_from_uri(rpm_view, uri);
 }
 
 static void
 rpm_view_notify_location_change_callback (NautilusContentViewFrame *view, 
-                                            Nautilus_NavigationInfo *navinfo, 
-                                            NautilusRPMView *rpm_view)
+                                          Nautilus_NavigationInfo *navinfo, 
+                                          NautilusRPMView *rpm_view)
 {
 	Nautilus_ProgressRequestInfo progress;
  
