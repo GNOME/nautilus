@@ -99,7 +99,7 @@
 #define CD_AUDIO_PATH "/dev/cdrom"
 #define CD_AUDIO_URI "cdda:///dev/cdrom"
 #define CDDA_SCHEME "cdda"
-
+#define HAVE_CDDA 1
 #include <cdda_interface.h>
 #include <cdda_paranoia.h>
 
@@ -175,7 +175,7 @@ static GList 		*get_removable_volumes 				(void);
 static GHashTable 	*create_readable_mount_point_name_table 	(void);
 									 
 #ifdef HAVE_CDDA
-static cdrom_drive 	*open_cdda_device 				(GnomeVFSURI 			*uri);
+static gboolean 	open_cdda_device 				(GnomeVFSURI 			*uri);
 static gboolean 	locate_audio_cd 				(void);
 #endif
 
@@ -645,7 +645,7 @@ mount_volume_get_cdrom_name (NautilusVolume *volume)
 
 static void
 mount_volume_get_cdda_name (NautilusVolume *volume)
-{
+{		
 	volume->volume_name = g_strdup (_("Audio CD"));
 }
 
@@ -1920,8 +1920,6 @@ open_cdda_device (GnomeVFSURI *uri)
 	cdrom_drive *drive;
 	gboolean opened;
 	
-	g_message ("open_cdda_device");
-	
 	device_name = gnome_vfs_uri_get_path (uri);
 
 	drive = cdda_identify (device_name, FALSE, NULL);
@@ -1969,7 +1967,7 @@ locate_audio_cd (void) {
 	
 	uri = gnome_vfs_uri_new (CD_AUDIO_URI);
 	if (uri == NULL) {
-		return found_one;
+		return FALSE;
 	}
 		
 	found_drive = open_cdda_device (uri);
