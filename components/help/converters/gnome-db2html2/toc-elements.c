@@ -44,7 +44,7 @@ ElementInfo toc_elements[] = {
 	{ HOLDER, "holder", NULL, NULL, (charactersSAXFunc) toc_copyright_characters},
 	{ TITLE, "title", (startElementSAXFunc) toc_title_start_element, (endElementSAXFunc) toc_title_end_element, (charactersSAXFunc) toc_title_characters },
 	{ SUBTITLE, "subtitle", (startElementSAXFunc) toc_title_start_element, (endElementSAXFunc) toc_title_end_element, (charactersSAXFunc) toc_title_characters },
-	{ ULINK, "ulink", (startElementSAXFunc) ulink_start_element, (endElementSAXFunc) ulink_end_element, (charactersSAXFunc) write_characters},
+	{ ULINK, "ulink", NULL, NULL, NULL}, //(startElementSAXFunc) toc_ulink_start_element, (endElementSAXFunc) toc_ulink_end_element, (charactersSAXFunc) write_characters},
 	{ XREF, "xref", NULL, NULL, NULL},
 	{ FOOTNOTE, "footnote", NULL, NULL, NULL},
 	{ FIGURE, "figure", NULL, NULL, NULL},
