@@ -1,3 +1,24 @@
+2001-01-19  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Michael Engber <engber@eazel.com>
+
+	* src/nautilus-view-frame-corba.c: (view_widget_gone),
+	(impl_Nautilus_ViewFrame__destroy),
+	(impl_Nautilus_ViewFrame__create),
+	(impl_Nautilus_ViewFrame_open_location_in_this_window),
+	(impl_Nautilus_ViewFrame_open_location_prefer_existing_window),
+	(impl_Nautilus_ViewFrame_open_location_force_new_window),
+	(impl_Nautilus_ViewFrame_report_selection_change),
+	(impl_Nautilus_ViewFrame_report_status),
+	(impl_Nautilus_ViewFrame_report_load_underway),
+	(impl_Nautilus_ViewFrame_report_load_progress),
+	(impl_Nautilus_ViewFrame_report_load_complete),
+	(impl_Nautilus_ViewFrame_report_load_failed),
+	(impl_Nautilus_ViewFrame_set_title):
+	Since the NautilusViewFrame object is a widget, we don't
+	control its lifetime completely. So we disconnect from it
+	when it is destroyed and stop trying to make calls on it.
+
 2001-01-19  Michael Engber  <engber@eazel.com>
 
 	reviewed by: Brian Frank

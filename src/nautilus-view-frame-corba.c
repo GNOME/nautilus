@@ -27,8 +27,6 @@
 /* nautilus-view-frame-corba.c: CORBA server implementation of the object
    representing a data view frame. */
 
-#define DEBUG_MATHIEU 0
-
 #include <config.h>
 
 #include "nautilus-view-frame-private.h"
@@ -91,6 +89,14 @@ POA_Nautilus_ViewFrame__vepv impl_Nautilus_ViewFrame_vepv =
 };
 
 static void
+view_widget_gone (GtkObject *object,
+		  impl_POA_Nautilus_ViewFrame *servant)
+{
+	g_assert (servant->view == NAUTILUS_VIEW_FRAME (object));
+	servant->view = NULL;
+}
+
+static void
 impl_Nautilus_ViewFrame__destroy (BonoboObject *object,
 				  impl_POA_Nautilus_ViewFrame *servant)
 {
@@ -98,6 +104,12 @@ impl_Nautilus_ViewFrame__destroy (BonoboObject *object,
 	CORBA_Environment ev;
 	
 	CORBA_exception_init (&ev);
+
+	if (servant->view != NULL) {
+		gtk_signal_disconnect_by_func (GTK_OBJECT (servant->view),
+					       view_widget_gone,
+					       servant);
+	}
 	
 	object_id = PortableServer_POA_servant_to_id (bonobo_poa (), servant, &ev);
 	PortableServer_POA_deactivate_object (bonobo_poa (), object_id, &ev);
@@ -127,6 +139,9 @@ impl_Nautilus_ViewFrame__create (NautilusViewFrame *view, CORBA_Environment *ev)
   
 	gtk_signal_connect (GTK_OBJECT (bonobo_object), "destroy",
 			    GTK_SIGNAL_FUNC (impl_Nautilus_ViewFrame__destroy), servant);
+
+	gtk_signal_connect (GTK_OBJECT (view), "destroy",
+			    view_widget_gone, servant);
   
 	return bonobo_object;
 }
@@ -136,12 +151,13 @@ impl_Nautilus_ViewFrame_open_location_in_this_window (PortableServer_Servant ser
 						      Nautilus_URI location,
 						      CORBA_Environment *ev)
 {
-#if DEBUG_MATHIEU
-	g_print ("open location \n");
-#endif /* DEBUG_MATHIEU */
+	NautilusViewFrame *view;
 
-	nautilus_view_frame_open_location_in_this_window
-		(((impl_POA_Nautilus_ViewFrame *) servant)->view, location);
+	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
+	if (view == NULL) {
+		return;
+	}
+	nautilus_view_frame_open_location_in_this_window (view, location);
 }
 
 static void
@@ -149,8 +165,13 @@ impl_Nautilus_ViewFrame_open_location_prefer_existing_window (PortableServer_Ser
 							      Nautilus_URI location,
 							      CORBA_Environment *ev)
 {
-	nautilus_view_frame_open_location_prefer_existing_window
-		(((impl_POA_Nautilus_ViewFrame *) servant)->view, location);
+	NautilusViewFrame *view;
+
+	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
+	if (view == NULL) {
+		return;
+	}
+	nautilus_view_frame_open_location_prefer_existing_window (view, location);
 }
 
 static void
@@ -159,15 +180,16 @@ impl_Nautilus_ViewFrame_open_location_force_new_window (PortableServer_Servant s
 							const Nautilus_URIList *selection,
 							CORBA_Environment *ev)
 {
+	NautilusViewFrame *view;
 	GList *selection_as_g_list;
 
-#if DEBUG_MATHIEU
-	g_print ("open location in new window\n");
-#endif /* DEBUG_MATHIEU */
-
+	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
+	if (view == NULL) {
+		return;
+	}
 	selection_as_g_list = nautilus_shallow_g_list_from_uri_list (selection);
 	nautilus_view_frame_open_location_force_new_window
-		(((impl_POA_Nautilus_ViewFrame *) servant)->view, location, selection_as_g_list);
+		(view, location, selection_as_g_list);
 	g_list_free (selection_as_g_list);
 }
 
@@ -177,14 +199,15 @@ impl_Nautilus_ViewFrame_report_selection_change (PortableServer_Servant servant,
 						 CORBA_Environment *ev)
 {
 	GList *selection_as_g_list;
+	NautilusViewFrame *view;
 
-#if DEBUG_MATHIEU
-	g_print ("selection change \n");
-#endif /* DEBUG_MATHIEU */
-	
+	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
+	if (view == NULL) {
+		return;
+	}
 	selection_as_g_list = nautilus_shallow_g_list_from_uri_list (selection);
 	nautilus_view_frame_report_selection_change
-		(((impl_POA_Nautilus_ViewFrame *) servant)->view, selection_as_g_list);
+		(view, selection_as_g_list);
 	g_list_free (selection_as_g_list);
 }
 
@@ -193,24 +216,26 @@ impl_Nautilus_ViewFrame_report_status (PortableServer_Servant servant,
 				       const CORBA_char *status,
 				       CORBA_Environment *ev)
 {
-#if DEBUG_MATHIEU
-	g_print ("report status \n");
-#endif /* DEBUG_MATHIEU */
+	NautilusViewFrame *view;
 
-	nautilus_view_frame_report_status
-		(((impl_POA_Nautilus_ViewFrame *) servant)->view, status);
+	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
+	if (view == NULL) {
+		return;
+	}
+	nautilus_view_frame_report_status (view, status);
 }
 
 static void
 impl_Nautilus_ViewFrame_report_load_underway (PortableServer_Servant servant,
 					      CORBA_Environment *ev)
 {
-#if DEBUG_MATHIEU
-	g_print ("report load underway \n");
-#endif /* DEBUG_MATHIEU */
+	NautilusViewFrame *view;
 
-	nautilus_view_frame_report_load_underway
-		(((impl_POA_Nautilus_ViewFrame *) servant)->view);
+	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
+	if (view == NULL) {
+		return;
+	}
+	nautilus_view_frame_report_load_underway (view);
 }
 
 static void
@@ -218,36 +243,39 @@ impl_Nautilus_ViewFrame_report_load_progress (PortableServer_Servant servant,
 					      CORBA_float fraction_done,
 					      CORBA_Environment *ev)
 {
-#if DEBUG_MATHIEU
-	g_print ("report load progress \n");
-#endif /* DEBUG_MATHIEU */
+	NautilusViewFrame *view;
 
-	nautilus_view_frame_report_load_progress
-		(((impl_POA_Nautilus_ViewFrame *) servant)->view, fraction_done);
+	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
+	if (view == NULL) {
+		return;
+	}
+	nautilus_view_frame_report_load_progress (view, fraction_done);
 }
 
 static void
 impl_Nautilus_ViewFrame_report_load_complete (PortableServer_Servant servant,
 					      CORBA_Environment *ev)
 {
-#if DEBUG_MATHIEU
-	g_print ("report load complete \n");
-#endif /* DEBUG_MATHIEU */
+	NautilusViewFrame *view;
 
-	nautilus_view_frame_report_load_complete
-		(((impl_POA_Nautilus_ViewFrame *) servant)->view);
+	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
+	if (view == NULL) {
+		return;
+	}
+	nautilus_view_frame_report_load_complete (view);
 }
 
 static void
 impl_Nautilus_ViewFrame_report_load_failed (PortableServer_Servant servant,
 					    CORBA_Environment *ev)
 {
-#if DEBUG_MATHIEU
-	g_print ("report load failed \n");
-#endif /* DEBUG_MATHIEU */
+	NautilusViewFrame *view;
 
-	nautilus_view_frame_report_load_failed
-		(((impl_POA_Nautilus_ViewFrame *) servant)->view);
+	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
+	if (view == NULL) {
+		return;
+	}
+	nautilus_view_frame_report_load_failed (view);
 }
 
 static void
@@ -255,10 +283,11 @@ impl_Nautilus_ViewFrame_set_title (PortableServer_Servant servant,
 				   const CORBA_char *title,
 				   CORBA_Environment *ev)
 {
-#if DEBUG_MATHIEU
-	g_print ("set title \n");
-#endif /* DEBUG_MATHIEU */
+	NautilusViewFrame *view;
 
-	nautilus_view_frame_set_title
-		(((impl_POA_Nautilus_ViewFrame *) servant)->view, title);
+	view = ((impl_POA_Nautilus_ViewFrame *) servant)->view;
+	if (view == NULL) {
+		return;
+	}
+	nautilus_view_frame_set_title (view, title);
 }
