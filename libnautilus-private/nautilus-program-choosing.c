@@ -594,64 +594,7 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 	g_free (parameter);
 }
 
-static void
-concat_option_cb (const char *string,
-		  gpointer    callback_data)
-{
-	char *quoted;
-	GString *s;
-	
-	s = callback_data;
-	quoted = g_shell_quote (string);
 
-	g_string_append (s, quoted);
-	g_string_append_c (s, ' ');
-
-	g_free (quoted);
-}
-
-static char *
-get_xalf_prefix (const char *name)
-{
-	char *xalf_executable;
-	GString *s;
-	char *quoted;
-	EelStringList *str_list;
-
-	/* FIXME bugzilla.gnome.org 48206: At time I am writing this,
-	 * xalf is still pretty buggy, and Nautilus uses it a lot more
-	 * than the Panel does with no way to turn it off for
-	 * individual programs the way you can in the Panel. Sadly,
-	 * Ximian GNOME 1.4 ships with xalf on by default. So we did
-	 * this lame thing and turned it off unless you define this
-	 * environment variable. Some day we can remove this.
-	 */
-	if (g_getenv ("NAUTILUS_USE_XALF") == NULL) {
-		return g_strdup ("");
-	}
-	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_XALF_ENABLED)) {
-		return g_strdup ("");
-	}
-	xalf_executable = g_find_program_in_path ("xalf");
-	if (xalf_executable == NULL) {
-		return g_strdup ("");
-	}
-
-	s = g_string_new (xalf_executable);
-	g_string_append (s, " --title ");
-	quoted = g_shell_quote (name);
-	g_string_append (s, quoted);
-	g_free (quoted);
-	g_string_append_c (s, ' ');
-
-	str_list = eel_preferences_get_string_list (NAUTILUS_PREFERENCES_XALF_OPTIONS);
-	if (str_list) {
-		eel_string_list_for_each (str_list, concat_option_cb, s);
-		eel_string_list_free (str_list);
-	}
-
-	return g_string_free (s, FALSE);
-}
 
 /**
  * nautilus_launch_application_from_command:
@@ -671,8 +614,6 @@ nautilus_launch_application_from_command (const char *name,
 {
 	char *full_command;
 	char *quoted_parameter; 
-	char *final_command;
-	char *xalf_prefix;
 
 	if (parameter != NULL) {
 		quoted_parameter = g_shell_quote (parameter);
@@ -682,19 +623,13 @@ nautilus_launch_application_from_command (const char *name,
 		full_command = g_strdup (command_string);
 	}
 
-	xalf_prefix = get_xalf_prefix (name);
-	final_command = g_strconcat (xalf_prefix, full_command, NULL);
-
-	g_free (full_command);
-	g_free (xalf_prefix);
-	
 	if (use_terminal) {
-		eel_gnome_open_terminal (final_command);
+		eel_gnome_open_terminal (full_command);
 	} else {
-	    	eel_gnome_shell_execute (final_command);
+	    	eel_gnome_shell_execute (full_command);
 	}
 
-	g_free (final_command);
+	g_free (full_command);
 }
 
 void

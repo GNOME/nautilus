@@ -1,4 +1,18 @@
 2002-06-28  Alexander Larsson  <alexl@redhat.com>
+	
+	* libnautilus-private/apps_nautilus_preferences.schemas
+	* libnautilus-private/nautilus-global-preferences.c
+	* libnautilus-private/nautilus-global-preferences.h
+	* libnautilus-private/nautilus-program-choosing.c
+	Removed xalf preferences and all remaining code references 
+	to xalf since we no longer support xalf in nautilus. 
+
+	* src/nautilus-window-menus.c
+	Removed unused define for old help.
+
+	Patch from David Bordoley <bordoley@msu.edu>
+
+2002-06-28  Alexander Larsson  <alexl@redhat.com>
 
 	* icons/default/Makefile.am (icon_DATA):
 	* icons/default/trash-empty-192.png:

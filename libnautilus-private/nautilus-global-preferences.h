@@ -63,10 +63,6 @@ G_BEGIN_DECLS
 /* Single/Double click preference  */
 #define NAUTILUS_PREFERENCES_CLICK_POLICY			"preferences/click_policy"
 
-/* Xalf settings */
-#define NAUTILUS_PREFERENCES_XALF_ENABLED			"preferences/xalf/enabled"
-#define NAUTILUS_PREFERENCES_XALF_OPTIONS			"preferences/xalf/options"
-
 /* Activating executable text files */
 #define NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION		"preferences/executable_text_activation"
 

@@ -92,7 +92,6 @@
 
 #define COMMAND_PATH_CLOSE_WINDOW			"/commands/Close"
 
-#define USER_MANUAL_URI		"help:nautilus-user-manual"
 #define START_HERE_URI          "start-here:"
 
 #define RESPONSE_FORGET		1000
