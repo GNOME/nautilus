@@ -1,3 +1,14 @@
+2001-03-08  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed and checked in by: Darin Adler <darin@eazel.com>
+
+	Fix bug 7549 - Should block bookman and symbols fonts in older
+	RedHat systems
+	
+	* libnautilus-extensions/nautilus-font-picker.c:
+	Add 2 more fonts to the black list.  There were already in the
+	list, but older RedHat systems name these fonts differently.
+
 2001-03-08  John Harper  <jsh@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>
@@ -504,7 +515,7 @@ Tue Mar 06 12:24:24 2001  George Lebl <jirka@5z.com>
 	* help/nautilus-quick-reference/sv/figures/themes_small.png:
 	* help/nautilus-quick-reference/sv/figures/viewmenu.png:
 
-        --- end of what mjs reviewed
+	--- end of what mjs reviewed
 
 	Fixing these screenshots so they render correctly in some
 	browsers.  Replacing a screenshot in a doc with another can't break
@@ -845,16 +856,16 @@ Tue Mar 06 12:24:24 2001  George Lebl <jirka@5z.com>
 
 	reviewed & checked in by: Darin Adler <darin@eazel.com>
 
-        Fix bug 7389 (crash when starting nautilus):
+	Fix bug 7389 (crash when starting nautilus):
 
-        * libnautilus-extensions/nautilus-directory-background.c
-        (nautilus_background_get_desktop_background_window): check if
-        the `icon_container' object data (a GtkLayout widget) is
-        non-null before dereferencing it
+	* libnautilus-extensions/nautilus-directory-background.c
+	(nautilus_background_get_desktop_background_window): check if
+	the `icon_container' object data (a GtkLayout widget) is
+	non-null before dereferencing it
 
-        (image_loading_done_callback): only pass result of
-        nautilus_background_get_desktop_background_window to
-        gdk_window_set_back_pixmap if it's non-null
+	(image_loading_done_callback): only pass result of
+	nautilus_background_get_desktop_background_window to
+	gdk_window_set_back_pixmap if it's non-null
 
 2001-03-05  Arik Devens  <arik@eazel.com>
 
@@ -1249,14 +1260,14 @@ Tue Mar 06 12:24:24 2001  George Lebl <jirka@5z.com>
 
 2001-03-04  Dan Mueth  <dan@eazel.com>
 
-        reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
 
-        Updated the Nautilus User Manual from v0.9 to v1.0.
-        Note that the file TRACKED_CHANGES details the changes
-        between the two versions, for use by translators.
-        There are some new screenshots.
+	Updated the Nautilus User Manual from v0.9 to v1.0.
+	Note that the file TRACKED_CHANGES details the changes
+	between the two versions, for use by translators.
+	There are some new screenshots.
 
-        Bug#:7271
+	Bug#:7271
 
 	* help/nautilus-user-manual/C/Makefile.am:
 	* help/nautilus-user-manual/C/TRACKED_CHANGES:
@@ -3792,22 +3803,22 @@ Tue Mar 06 12:24:24 2001  George Lebl <jirka@5z.com>
 
 2001-02-26  J Shane Culpepper  <pepper@eazel.com>
 
-        reviewed by: John Sullivan <sullivan@eazel.com>
+	reviewed by: John Sullivan <sullivan@eazel.com>
 
-        * README:
-        Reflecting the need for minimum Mozilla version of 0.8
+	* README:
+	Reflecting the need for minimum Mozilla version of 0.8
 
-        * components/mozilla/nautilus-mozilla-content-view.c:
-        (nautilus_mozilla_content_view_initialize),
-        (mozilla_new_window_callback):
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize),
+	(mozilla_new_window_callback):
 
-        Fixed spelling of Javascript to JavaScript.  Removed the
-        js_status callback because it was only added for debugging
-        and Ramiro found a bug in it.  Finish bug #6885.
+	Fixed spelling of Javascript to JavaScript.  Removed the
+	js_status callback because it was only added for debugging
+	and Ramiro found a bug in it.  Finish bug #6885.
 
 
-        * configure.in: Nautilus mozilla component now requires
-        0.8.  Fix for bug #7042.
+	* configure.in: Nautilus mozilla component now requires
+	0.8.  Fix for bug #7042.
 
 2001-02-26  Darin Adler  <darin@eazel.com>
 
@@ -4246,43 +4257,43 @@ Mon Feb 26 03:00:03 2001  George Lebl <jirka@5z.com>
 	A mistake in the xml file (and ChangeLog!) oops.	
 
 
-        * configure.in:
-        * icons/arlo/Makefile.am:
-        * icons/arlo/i-regular-12-aa.png:
-        * icons/arlo/i-regular-12.png:
-        * icons/arlo/i-regular-192-aa.png:
-        * icons/arlo/i-regular-192.png:
-        * icons/arlo/i-regular-24-aa.png:
-        * icons/arlo/i-regular-24.png:
-        * icons/arlo/i-regular-36-aa.png:
-        * icons/arlo/i-regular-36.png:
-        * icons/arlo/i-regular-72-aa.png:
-        * icons/arlo/i-regular-72.png:
-        * icons/arlo/i-regular-96-aa.png:
-        * icons/arlo/i-regular-96.png:
-        * icons/arlo/i-regular-aa.png:
-        * icons/arlo/i-regular.png:
-        * icons/arlo/i-regular.xml:
-        Changed the design of the Crux documents to have 8.5 x 11
-        aspect ratio, and removed the torn out of a sprial notebook
-        visual appearance.
+	* configure.in:
+	* icons/arlo/Makefile.am:
+	* icons/arlo/i-regular-12-aa.png:
+	* icons/arlo/i-regular-12.png:
+	* icons/arlo/i-regular-192-aa.png:
+	* icons/arlo/i-regular-192.png:
+	* icons/arlo/i-regular-24-aa.png:
+	* icons/arlo/i-regular-24.png:
+	* icons/arlo/i-regular-36-aa.png:
+	* icons/arlo/i-regular-36.png:
+	* icons/arlo/i-regular-72-aa.png:
+	* icons/arlo/i-regular-72.png:
+	* icons/arlo/i-regular-96-aa.png:
+	* icons/arlo/i-regular-96.png:
+	* icons/arlo/i-regular-aa.png:
+	* icons/arlo/i-regular.png:
+	* icons/arlo/i-regular.xml:
+	Changed the design of the Crux documents to have 8.5 x 11
+	aspect ratio, and removed the torn out of a sprial notebook
+	visual appearance.
 
-        I also added all the sizes that Nautilus needs in both 8 bit
-        and 1 bit mask mode.
+	I also added all the sizes that Nautilus needs in both 8 bit
+	and 1 bit mask mode.
 
-        * icons/crux_eggplant/Makefile.am:
-        * icons/crux_eggplant/crux_eggplant.xml:
-        * icons/crux_eggplant/i-regular-192-aa.png:
-        * icons/crux_eggplant/i-regular-192.png:
-        * icons/crux_eggplant/i-regular-72-aa.png:
-        * icons/crux_eggplant/i-regular-72.png:
-        * icons/crux_eggplant/i-regular-96-aa.png:
-        * icons/crux_eggplant/i-regular-96.png:
-        * icons/crux_eggplant/i-regular-aa.png:
-        * icons/crux_eggplant/i-regular.png:
-        * icons/crux_eggplant/i-regular.xml:
-        Removed the throbber and the document icons out of Crux Eggplant
-        and made them point to the ones in Crux teal.
+	* icons/crux_eggplant/Makefile.am:
+	* icons/crux_eggplant/crux_eggplant.xml:
+	* icons/crux_eggplant/i-regular-192-aa.png:
+	* icons/crux_eggplant/i-regular-192.png:
+	* icons/crux_eggplant/i-regular-72-aa.png:
+	* icons/crux_eggplant/i-regular-72.png:
+	* icons/crux_eggplant/i-regular-96-aa.png:
+	* icons/crux_eggplant/i-regular-96.png:
+	* icons/crux_eggplant/i-regular-aa.png:
+	* icons/crux_eggplant/i-regular.png:
+	* icons/crux_eggplant/i-regular.xml:
+	Removed the throbber and the document icons out of Crux Eggplant
+	and made them point to the ones in Crux teal.
 
 2001-02-26 Dan Mueth  <dan@eazel.com>
 
@@ -4438,7 +4449,7 @@ Sun Feb 25 17:58:57 2001  George Lebl <jirka@5z.com>
 
 	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
 
-        Fix bug 5462 ("View as %s" and "%s Viewer" composed messages hard
+	Fix bug 5462 ("View as %s" and "%s Viewer" composed messages hard
 	to translate) by making Nautilus view oafinfo files provide the
 	full messages.
 
@@ -5546,7 +5557,7 @@ Sat Feb 24 12:49:43 2001  George Lebl <jirka@5z.com>
 
 2001-02-23  Robey Pointer  <robey@eazel.com>
 
-        reviewed by: Mathieu Lacage <mathieu@gnome.org>
+	reviewed by: Mathieu Lacage <mathieu@gnome.org>
 
 	* components/rpmview/nautilus-rpm-view-private.h:
 	* components/rpmview/nautilus-rpm-view.c:
@@ -6847,57 +6858,57 @@ Thu Feb 22 21:22:58 2001  George Lebl <jirka@5z.com>
 
 2001-02-22  Dan Mueth  <dan@eazel.com>
 
-        reviewed by: Pavel Cisler <pavel@eazel.com>
+	reviewed by: Pavel Cisler <pavel@eazel.com>
 
 	Generally, I removed old cruft, added COPYING-DOCS, added
 	a new HTML doc (nautilus-quick-reference), and updated
 	the build stuff and spec file as necessary.
 
-        * COPYING-DOCS: This is the GNU FDL, similar to COPYING.  It
-          should be installed with all modules with FDL'd docs.
-        * Makefile.am: Added COPYING-DOCS to EXTRA_DIST
-        * configure.in: Added nautilus-quick-reference 
-        * help/Makefile.am: Added nautilus-quick-reference
-        * help/htmldocs.make: Created this file.  This is the makefile
+	* COPYING-DOCS: This is the GNU FDL, similar to COPYING.  It
+	  should be installed with all modules with FDL'd docs.
+	* Makefile.am: Added COPYING-DOCS to EXTRA_DIST
+	* configure.in: Added nautilus-quick-reference 
+	* help/Makefile.am: Added nautilus-quick-reference
+	* help/htmldocs.make: Created this file.  This is the makefile
 	  to suck in for html docs.  Be sure to use index.html as
 	  your primary HTML file and put PNG images into figures/
 
 	This stuff is Vera's new Nautilus Quick Reference doc in HTML
 	format. <vera@eazel.com>  I purposefully left out two screenshots
 	with the Eazel logo in them.
-        * help/nautilus-quick-reference/C/Makefile.am: added
-        * help/nautilus-quick-reference/C/figures/colors_small.png: added
-        * help/nautilus-quick-reference/C/figures/emblems_small.png: added
-        * help/nautilus-quick-reference/C/figures/ff_small.png:
-        * help/nautilus-quick-reference/C/figures/find_small.png:
-        * help/nautilus-quick-reference/C/figures/locbar_small.png:
-        * help/nautilus-quick-reference/C/figures/menubar_small.png:
-        * help/nautilus-quick-reference/C/figures/music_small.png:
-        * help/nautilus-quick-reference/C/figures/sidebar_small.png:
-        * help/nautilus-quick-reference/C/figures/softcat.png:
-        * help/nautilus-quick-reference/C/figures/storage.png:
-        * help/nautilus-quick-reference/C/figures/themes_small.png:
-        * help/nautilus-quick-reference/C/index.html:
-        * help/nautilus-quick-reference/C/nautilus-quick-reference-C.omf:
-        * help/nautilus-quick-reference/Makefile.am:
-        * help/nautilus-user-manual/C/nautilus-user-manual-C.omf: Updated
-        * nautilus.spec.in: Added OMF files, Quick Ref, and COPYING-DOCS
+	* help/nautilus-quick-reference/C/Makefile.am: added
+	* help/nautilus-quick-reference/C/figures/colors_small.png: added
+	* help/nautilus-quick-reference/C/figures/emblems_small.png: added
+	* help/nautilus-quick-reference/C/figures/ff_small.png:
+	* help/nautilus-quick-reference/C/figures/find_small.png:
+	* help/nautilus-quick-reference/C/figures/locbar_small.png:
+	* help/nautilus-quick-reference/C/figures/menubar_small.png:
+	* help/nautilus-quick-reference/C/figures/music_small.png:
+	* help/nautilus-quick-reference/C/figures/sidebar_small.png:
+	* help/nautilus-quick-reference/C/figures/softcat.png:
+	* help/nautilus-quick-reference/C/figures/storage.png:
+	* help/nautilus-quick-reference/C/figures/themes_small.png:
+	* help/nautilus-quick-reference/C/index.html:
+	* help/nautilus-quick-reference/C/nautilus-quick-reference-C.omf:
+	* help/nautilus-quick-reference/Makefile.am:
+	* help/nautilus-user-manual/C/nautilus-user-manual-C.omf: Updated
+	* nautilus.spec.in: Added OMF files, Quick Ref, and COPYING-DOCS
 
 	Removed this old stuff:
-        * user-guide/C/Makefile.am: 
-        * user-guide/C/html/license.html:
-        * user-guide/C/img/custicon.png:
-        * user-guide/C/img/full.png: removed
-        * user-guide/C/img/locbar.png: 
-        * user-guide/C/img/player.png:
-        * user-guide/C/img/prefmenu.png:
-        * user-guide/C/img/sidebar.png:
-        * user-guide/C/img/viewmenu.png:
-        * user-guide/C/nautilus-C.omf:
-        * user-guide/C/sgml/nautilus.sgml:
+	* user-guide/C/Makefile.am: 
+	* user-guide/C/html/license.html:
+	* user-guide/C/img/custicon.png:
+	* user-guide/C/img/full.png: removed
+	* user-guide/C/img/locbar.png: 
+	* user-guide/C/img/player.png:
+	* user-guide/C/img/prefmenu.png:
+	* user-guide/C/img/sidebar.png:
+	* user-guide/C/img/viewmenu.png:
+	* user-guide/C/nautilus-C.omf:
+	* user-guide/C/sgml/nautilus.sgml:
 
 	Added this notice so people don't add stuff in user-guide/
-        * user-guide/NOTICE:
+	* user-guide/NOTICE:
 
 2001-02-22  Gene Z. Ragan  <gzr@eazel.com>
  
@@ -9383,19 +9394,19 @@ Thu Feb 22 04:13:13 2001  George Lebl <jirka@5z.com>
 	
 2001-02-14  Laszlo Kovacs <laszlo.kovacs@sun.com>
 	* components/help/hyperbola_top_doc_tree_populate.h:
-          components/help/hyperbola-filefmt.c:
-          components/help/hyperbola-nav-tree.c:
-          (ctree_populate_subnode, ctree_populate,
-           hyperbola_navigation_tree_new,
-           hyperbola_navigation_tree_load_location,
-           hyperbola_navigation_tree_select_row):
-        Toplevel docs put into a separate ctree in
-        the GUI of the help sidebar if Scrollkeeper
-        is enabled.
-        Note that this is not the final GUI, only the widget
-        layout is right, the look will be changed by somebody
-        who knows more gtk than me. Dan Mueth tries to find the
-        right person.
+	  components/help/hyperbola-filefmt.c:
+	  components/help/hyperbola-nav-tree.c:
+	  (ctree_populate_subnode, ctree_populate,
+	   hyperbola_navigation_tree_new,
+	   hyperbola_navigation_tree_load_location,
+	   hyperbola_navigation_tree_select_row):
+	Toplevel docs put into a separate ctree in
+	the GUI of the help sidebar if Scrollkeeper
+	is enabled.
+	Note that this is not the final GUI, only the widget
+	layout is right, the look will be changed by somebody
+	who knows more gtk than me. Dan Mueth tries to find the
+	right person.
 
 2001-02-14  Ramiro Estrugo  <ramiro@eazel.com>
 
@@ -10908,7 +10919,7 @@ Thu Feb 22 04:13:13 2001  George Lebl <jirka@5z.com>
 	Man page map file moved to new hyperbola data
 	directory.
 
-        * components/help/hyperbola-filefmt.c:
+	* components/help/hyperbola-filefmt.c:
 	Compiler warnings fixed
 
 2001-02-08  Laszlo Kovacs  <laszlo.kovacs@sun.com>
