@@ -474,7 +474,7 @@ static const PreferenceDefault preference_defaults[] = {
 	{ NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
 	  PREFERENCE_STRING,
 	  EEL_USER_LEVEL_INTERMEDIATE,
-	  { EEL_USER_LEVEL_NOVICE, "http://www.eazel.com/websearch" },
+	  { EEL_USER_LEVEL_NOVICE, "http://www.google.com" },
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,

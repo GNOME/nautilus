@@ -1,3 +1,14 @@
+2001-05-17  Darin Adler  <darin@eazel.com>
+
+	* configure.in:
+	* nautilus.spec.in:
+	Don't require ammonite any more in the default Nautilus RPM. I
+	left the ability to compile ammonite support in for now. That can
+	be removed at any time, but it doesn't hurt anybody.
+
+	* libnautilus-private/nautilus-global-preferences.c: Change default
+	web search to use google instead of the defunct Eazel search page.
+
 2001-05-16  Darin Adler  <darin@eazel.com>
 
 	* configure.in: Up version to 1.0.3.1 so we don't confuse cvs
