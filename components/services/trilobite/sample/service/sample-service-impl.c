@@ -97,6 +97,8 @@ sample_service_get_epv()
 void
 sample_service_destroy (GtkObject *object)
 {
+	/* FIXME bugzilla.eazel.com 920:
+	   implement this properly */
 	g_message ("in sample_service_destroy");
 }
 
@@ -161,6 +163,8 @@ sample_service_create_corba_object (BonoboObject *service) {
 
 	return (Trilobite_Eazel_Sample) bonobo_object_activate_servant (service, servant);
 }
+
+
 
 GtkType
 sample_service_get_type() {

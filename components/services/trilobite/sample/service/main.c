@@ -71,7 +71,15 @@ trilobite_sample_service_factory (BonoboGenericFactory *this_factory,
 		return NULL;
 	}
 
-	trilobite = trilobite_service_new ();
+	trilobite = TRILOBITE_SERVICE (gtk_object_new (TRILOBITE_TYPE_SERVICE,
+						       "name", "Sample",
+						       "version", "0.1",
+						       "vendor_name", "Eazel, inc.",
+						       "vendor_url", "http://www.eazel.com",
+						       "url", "http://www.eazel.com/sample",
+						       "icon_uri", "file:///gnome/share/pixmaps/gnome-default-dlg.png",
+						       NULL));
+
 	service = sample_service_new ();
 
 	trilobites_active++;
@@ -107,12 +115,15 @@ int main(int argc, char *argv[]) {
 		g_error ("Could not register factory");
 	}
 
-	if (1) {
+	if (0) {
 		TrilobiteService *test;
-		test = trilobite_service_new ();
+		test = trilobite_service_new (); 
+		g_assert (test);
+		trilobite_service_set_name (test, "roevbanan");
+		g_message ("name is %s",trilobite_service_get_name (test));
 		trilobite_service_destroy (GTK_OBJECT (test));		
 	}
-	if (1) {
+	if (0) {
 		SampleService *test;
 		test = sample_service_new ();
 		sample_service_destroy (GTK_OBJECT (test));		

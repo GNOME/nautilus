@@ -45,16 +45,19 @@ enum {
 	LAST_SIGNAL
 };
 
-/* The signal array  and prototypes for default handlers*/
+enum {
+	ARG_0,
+	ARG_NAME,
+	ARG_VERSION,
+	ARG_VENDOR_NAME,
+	ARG_VENDOR_URL,
+	ARG_URL,
+	ARG_ICON_URI
+};
+
+/* The signal array  and prototypes for default handlers */
 
 static guint trilobite_service_signals[LAST_SIGNAL] = { 0 };
-
-char* trilobite_service_default_get_name            (TrilobiteService *trilobite);
-char* trilobite_service_default_get_version         (TrilobiteService *trilobite);
-char* trilobite_service_default_get_vendor_name     (TrilobiteService *trilobite);
-char* trilobite_service_default_get_vendor_url      (TrilobiteService *trilobite);
-char* trilobite_service_default_get_url             (TrilobiteService *trilobite);
-char* trilobite_service_default_get_icon_uri        (TrilobiteService *trilobite);
 
 static BonoboObjectClass *trilobite_service_parent_class;
 
@@ -199,12 +202,45 @@ trilobite_service_destroy (GtkObject *object)
 	}
 
 	if (GTK_OBJECT_CLASS (trilobite_service_parent_class)->destroy) {
-		/* FIXME 
-		   this doesn't work... */
+		/* FIXME bugzilla.eazel.com 921:
+		   this doesn't work... Implement proper destroy function */
 		/* GTK_OBJECT_CLASS (trilobite_service_parent_class)->destroy (object); */
 	}
 }
 
+static void
+trilobite_service_set_arg (GtkObject *object,
+			   GtkArg    *arg,
+			   guint      arg_id)
+{
+	TrilobiteService *trilobite;
+
+	g_assert (object != NULL);
+	g_assert (TRILOBITE_IS_SERVICE (object));
+
+	trilobite = TRILOBITE_SERVICE (object);
+
+	switch (arg_id) {
+	case ARG_NAME:
+		trilobite_service_set_name (trilobite, (char*)GTK_VALUE_OBJECT(*arg));
+		break;
+	case ARG_VERSION:
+		trilobite_service_set_version (trilobite, (char*)GTK_VALUE_OBJECT(*arg));
+		break;
+	case ARG_VENDOR_NAME:
+		trilobite_service_set_vendor_name (trilobite, (char*)GTK_VALUE_OBJECT(*arg));
+		break;
+	case ARG_VENDOR_URL:
+		trilobite_service_set_vendor_url (trilobite, (char*)GTK_VALUE_OBJECT(*arg));
+		break;
+	case ARG_URL:
+		trilobite_service_set_url (trilobite, (char*)GTK_VALUE_OBJECT(*arg));
+		break;
+	case ARG_ICON_URI:
+		trilobite_service_set_icon_uri (trilobite, (char*)GTK_VALUE_OBJECT(*arg));
+		break;
+	}
+}
 
 static void
 trilobite_service_class_initialize (TrilobiteServiceClass *klass)
@@ -215,6 +251,7 @@ trilobite_service_class_initialize (TrilobiteServiceClass *klass)
 
 	object_class = (GtkObjectClass*) klass;
 	object_class->destroy = (void(*)(GtkObject*))trilobite_service_destroy;
+	object_class->set_arg = trilobite_service_set_arg;
 
 	trilobite_service_parent_class = gtk_type_class (bonobo_object_get_type ());
 
@@ -271,35 +308,45 @@ trilobite_service_class_initialize (TrilobiteServiceClass *klass)
 	
 	gtk_object_class_add_signals (object_class, trilobite_service_signals,LAST_SIGNAL);
 
-	klass->get_name = trilobite_service_default_get_name;
-	klass->get_version = trilobite_service_default_get_version;
-	klass->get_vendor_name = trilobite_service_default_get_vendor_name;
-	klass->get_vendor_url = trilobite_service_default_get_vendor_url;
-	klass->get_url = trilobite_service_default_get_url;
-	klass->get_icon_uri = trilobite_service_default_get_icon_uri;
+	gtk_object_add_arg_type ("TrilobiteService::name",
+				 GTK_TYPE_POINTER,
+				 GTK_ARG_READWRITE | GTK_ARG_CONSTRUCT | GTK_ARG_CONSTRUCT_ONLY,
+				 ARG_NAME);
+	gtk_object_add_arg_type ("TrilobiteService::version",
+				 GTK_TYPE_POINTER,
+				 GTK_ARG_WRITABLE | GTK_ARG_CONSTRUCT_ONLY,
+				 ARG_VERSION);
+	gtk_object_add_arg_type ("TrilobiteService::vendor_name",
+				 GTK_TYPE_POINTER,
+				 GTK_ARG_WRITABLE | GTK_ARG_CONSTRUCT_ONLY,
+				 ARG_VENDOR_NAME);
+	gtk_object_add_arg_type ("TrilobiteService::vendor_url",
+				 GTK_TYPE_POINTER,
+				 GTK_ARG_WRITABLE | GTK_ARG_CONSTRUCT_ONLY,
+				 ARG_VENDOR_URL);
+	gtk_object_add_arg_type ("TrilobiteService::url",
+				 GTK_TYPE_POINTER,
+				 GTK_ARG_WRITABLE | GTK_ARG_CONSTRUCT_ONLY,
+				 ARG_URL);
+	gtk_object_add_arg_type ("TrilobiteService::icon_uri",
+				 GTK_TYPE_POINTER,
+				 GTK_ARG_WRITABLE | GTK_ARG_CONSTRUCT_ONLY,
+				 ARG_ICON_URI);
+				 
+	klass->get_name = trilobite_service_get_name;
+	klass->get_version = trilobite_service_get_version;
+	klass->get_vendor_name = trilobite_service_get_vendor_name;
+	klass->get_vendor_url = trilobite_service_get_vendor_url;
+	klass->get_url = trilobite_service_get_url;
+	klass->get_icon_uri = trilobite_service_get_icon_uri;
+
+	klass->set_name = trilobite_service_set_name;
+	klass->set_version = trilobite_service_set_version;
+	klass->set_vendor_name = trilobite_service_set_vendor_name;
+	klass->set_vendor_url = trilobite_service_set_vendor_url;
+	klass->set_url = trilobite_service_set_url;
+	klass->set_icon_uri = trilobite_service_set_icon_uri;
 };
-
-static void
-trilobite_service_initialize (TrilobiteService *trilobite)
-{
-	/* g_message ("in trilobite_service_initialize"); */
-
-	g_return_if_fail (trilobite != NULL);
-	g_return_if_fail (TRILOBITE_IS_SERVICE (trilobite));
-
-	/* FIXME bugzilla.eazel.com 854:
-	   how to initialize the values */
-	trilobite->private = g_new0 (TrilobiteServicePrivate,1);
-	trilobite->private->service_name = g_strdup ("Default");
-	trilobite->private->service_version = g_strdup ("0.1");
-	trilobite->private->service_vendor_name = g_strdup ("Dev Null");
-	trilobite->private->service_vendor_url = g_strdup ("http://www.dev.null");
-	trilobite->private->service_url = g_strdup ("http://www.dev.null");
-	trilobite->private->service_icon_uri = g_strdup ("file://dev/random");
-
-	trilobite->private->destroyed = FALSE;
-	trilobite->private->alive = TRUE;
-}
 
 gboolean
 trilobite_service_construct (TrilobiteService *trilobite,
@@ -312,8 +359,6 @@ trilobite_service_construct (TrilobiteService *trilobite,
 	if (!bonobo_object_construct (BONOBO_OBJECT (trilobite), (CORBA_Object) corba_trilobite)) {
 		return FALSE;
 	}
-
-	trilobite_service_initialize (trilobite);
 
 	return TRUE;
 }
@@ -353,6 +398,37 @@ trilobite_service_create_corba_object (BonoboObject *trilobite)
 	return (Trilobite_Service) bonobo_object_activate_servant (trilobite, servant);
 }
 
+static void
+trilobite_service_initialize (TrilobiteService *trilobite)
+{
+	Trilobite_Service corba_trilobite;
+
+	g_message ("in trilobite_service_initialize");
+
+	g_return_if_fail (trilobite != NULL);
+	g_return_if_fail (TRILOBITE_IS_SERVICE (trilobite));
+
+	g_message ("hest");
+
+	corba_trilobite = trilobite_service_create_corba_object (BONOBO_OBJECT (trilobite));
+	
+	if (trilobite_service_construct (trilobite, corba_trilobite) == FALSE) {
+		trilobite_service_destroy (GTK_OBJECT (trilobite));
+		trilobite = NULL;
+	} 
+
+	trilobite->private = g_new0 (TrilobiteServicePrivate,1);
+	trilobite->private->service_name = NULL;
+	trilobite->private->service_version = NULL;
+	trilobite->private->service_vendor_name = NULL;
+	trilobite->private->service_vendor_url = NULL;
+	trilobite->private->service_url = NULL;
+	trilobite->private->service_icon_uri = NULL;
+
+	trilobite->private->destroyed = FALSE;
+	trilobite->private->alive = TRUE;
+}
+
 GtkType
 trilobite_service_get_type (void)
 {
@@ -369,7 +445,7 @@ trilobite_service_get_type (void)
 			sizeof (TrilobiteService),
 			sizeof (TrilobiteServiceClass),
 			(GtkClassInitFunc) trilobite_service_class_initialize,
-			(GtkObjectInitFunc) NULL,
+			(GtkObjectInitFunc) trilobite_service_initialize,
 			/* reserved_1 */ NULL,
 			/* reserved_2 */ NULL,
 			(GtkClassInitFunc) NULL,
@@ -391,7 +467,6 @@ TrilobiteService*
 trilobite_service_new() 
 {
 	TrilobiteService *trilobite;
-	Trilobite_Service corba_trilobite;
 
 	g_message ("in trilobite_service_new");
 
@@ -401,52 +476,155 @@ trilobite_service_new()
 		g_warning ("Could not create a TrilobiteService*");
 	}
 
-	corba_trilobite = trilobite_service_create_corba_object (BONOBO_OBJECT (trilobite));
-	
-	if (trilobite_service_construct (trilobite, corba_trilobite) == FALSE) {
-		trilobite_service_destroy (GTK_OBJECT (trilobite));
-		trilobite = NULL;
-	}
+	trilobite_service_initialize (trilobite);
 
 	return trilobite;
 }
 
 /**************************************************/
-/* Signal receivers                               */
+/* Class methods                                  */
 /**************************************************/
 
 char*
-trilobite_service_default_get_name(TrilobiteService *trilobite)
+trilobite_service_get_name(TrilobiteService *trilobite)
 {
+	g_return_val_if_fail (trilobite != NULL, NULL);
+	g_return_val_if_fail (TRILOBITE_IS_SERVICE (trilobite), NULL);
+	g_assert (trilobite->private != NULL);
+
 	return trilobite->private->service_name;
 }
 
 char*
-trilobite_service_default_get_version(TrilobiteService *trilobite)
+trilobite_service_get_version(TrilobiteService *trilobite)
 {
+	g_return_val_if_fail (trilobite != NULL, NULL);
+	g_return_val_if_fail (TRILOBITE_IS_SERVICE (trilobite), NULL);
+	g_assert (trilobite->private != NULL);
+
 	return trilobite->private->service_version;
 }
 
 char*
-trilobite_service_default_get_vendor_name(TrilobiteService *trilobite)
+trilobite_service_get_vendor_name(TrilobiteService *trilobite)
 {
+	g_return_val_if_fail (trilobite != NULL, NULL);
+	g_return_val_if_fail (TRILOBITE_IS_SERVICE (trilobite), NULL);
+	g_assert (trilobite->private != NULL);
+
 	return trilobite->private->service_vendor_name;
 }
 
 char*
-trilobite_service_default_get_vendor_url(TrilobiteService *trilobite)
+trilobite_service_get_vendor_url(TrilobiteService *trilobite)
 {
+	g_return_val_if_fail (trilobite != NULL, NULL);
+	g_return_val_if_fail (TRILOBITE_IS_SERVICE (trilobite), NULL);
+	g_assert (trilobite->private != NULL);
+
 	return trilobite->private->service_vendor_url;
 }
 
 char*
-trilobite_service_default_get_url(TrilobiteService *trilobite)
+trilobite_service_get_url(TrilobiteService *trilobite)
 {
+	g_return_val_if_fail (trilobite != NULL, NULL);
+	g_return_val_if_fail (TRILOBITE_IS_SERVICE (trilobite), NULL);
+	g_assert (trilobite->private != NULL);
+
 	return trilobite->private->service_url;
 }
 
 char*
-trilobite_service_default_get_icon_uri(TrilobiteService *trilobite)
+trilobite_service_get_icon_uri(TrilobiteService *trilobite)
 {
+	g_return_val_if_fail (trilobite != NULL, NULL);
+	g_return_val_if_fail (TRILOBITE_IS_SERVICE (trilobite), NULL);
+	g_assert (trilobite->private != NULL);
+
 	return trilobite->private->service_icon_uri;
+}
+
+void 
+trilobite_service_set_name (TrilobiteService *trilobite, 
+			    char *value) 
+{
+	g_return_if_fail (trilobite != NULL);
+	g_return_if_fail (TRILOBITE_IS_SERVICE (trilobite));
+	g_assert (trilobite->private != NULL);
+
+	if (trilobite->private->service_name != NULL) {
+		g_free (trilobite->private->service_name);
+	}
+	trilobite->private->service_name = g_strdup (value);
+}
+
+void 
+trilobite_service_set_version (TrilobiteService *trilobite, 
+			       char *value)
+{
+	g_return_if_fail (trilobite != NULL);
+	g_return_if_fail (TRILOBITE_IS_SERVICE (trilobite));
+	g_assert (trilobite->private != NULL);
+
+	if (trilobite->private->service_version != NULL) {
+		g_free (trilobite->private->service_version);
+	}
+	trilobite->private->service_version = g_strdup (value);
+}
+
+void 
+trilobite_service_set_vendor_name (TrilobiteService *trilobite, 
+				   char *value)
+{
+	g_return_if_fail (trilobite != NULL);
+	g_return_if_fail (TRILOBITE_IS_SERVICE (trilobite));
+	g_assert (trilobite->private != NULL);
+
+	if (trilobite->private->service_vendor_name != NULL) {
+		g_free (trilobite->private->service_vendor_name);
+	}
+	trilobite->private->service_vendor_name = g_strdup (value);
+}
+
+void 
+trilobite_service_set_vendor_url (TrilobiteService *trilobite, 
+				  char *value)
+{
+	g_return_if_fail (trilobite != NULL);
+	g_return_if_fail (TRILOBITE_IS_SERVICE (trilobite));
+	g_assert (trilobite->private != NULL);
+
+	if (trilobite->private->service_vendor_url != NULL) {
+		g_free (trilobite->private->service_vendor_url);
+	}
+	trilobite->private->service_vendor_url = g_strdup (value);
+}
+
+void 
+trilobite_service_set_url (TrilobiteService *trilobite, 
+			   char *value)
+{
+	g_return_if_fail (trilobite != NULL);
+	g_return_if_fail (TRILOBITE_IS_SERVICE (trilobite));
+	g_assert (trilobite->private != NULL);
+
+	if (trilobite->private->service_url != NULL) {
+		g_free (trilobite->private->service_url);
+	}
+	trilobite->private->service_url = g_strdup (value);
+}
+
+void 
+trilobite_service_set_icon_uri (TrilobiteService *trilobite, 
+				char *value)
+{
+	g_return_if_fail (trilobite != NULL);
+	g_return_if_fail (TRILOBITE_IS_SERVICE (trilobite));
+	g_assert (trilobite->private != NULL);
+
+	if (trilobite->private->service_icon_uri != NULL) {
+		g_free (trilobite->private->service_icon_uri);
+	}
+	trilobite->private->service_icon_uri = g_strdup (value);
 }

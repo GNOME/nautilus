@@ -1,3 +1,19 @@
+2000-05-17  Eskil Heyn Olsen  <eskil@eazel.om>
+
+	* components/services/trilobite/sample/service/sample-service-impl.c:
+	Added a bug for the destroyer
+
+	* components/services/trilobite/sample/service/main.c:
+	the trilobite creating now uses gtk_object_new to
+	set the name, version and such.
+
+	* components/services/trilobite/src/trilobite-service-public.h
+	* components/services/trilobite/src/trilobite-service.c:
+	defined a set of set_* methods for the name, version
+	and friends. Also added gtk_arg stuff to trilobite for
+	these fields. The default of these is now NULL. Had to
+	restructure the _initialize call to make gtk_object_new
+	work.
 2000-05-17  Pavel Cisler  <pavel@eazel.com>
 
 	* src/file-manager/dfos-xfer.c: (fs_xfer), (fs_move_to_trash):
