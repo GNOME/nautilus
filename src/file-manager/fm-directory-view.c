@@ -565,7 +565,7 @@ display_selection_info (FMDirectoryView *view)
 		file = p->data;
 		if (nautilus_file_is_directory (file)) {
 			folder_count++;
-			if (nautilus_file_get_directory_item_count (file, &item_count)) {
+			if (nautilus_file_get_directory_item_count (file, &item_count, NULL)) {
 				folder_item_count += item_count;
 			} else {
 				folder_item_count_known = FALSE;

@@ -105,7 +105,8 @@ gboolean         nautilus_file_is_symbolic_link          (NautilusFile         *
 gboolean         nautilus_file_is_executable             (NautilusFile         *file);
 gboolean         nautilus_file_is_directory              (NautilusFile         *file);
 gboolean         nautilus_file_get_directory_item_count  (NautilusFile         *file,
-							  guint                *count);
+							  guint                *count,
+							  gboolean	       *count_unreadable);
 GList *          nautilus_file_get_keywords              (NautilusFile         *file);
 void             nautilus_file_set_keywords              (NautilusFile         *file,
 							  GList                *keywords);

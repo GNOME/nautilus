@@ -416,6 +416,7 @@ nautilus_file_compare_directories_by_size (NautilusFile *file_1, NautilusFile *f
 	 */
 	gboolean is_directory_1, is_directory_2;
 	gboolean count_known_1, count_known_2;
+	gboolean count_unreadable_1, count_unreadable_2;
 	guint item_count_1, item_count_2;
 
 	is_directory_1 = nautilus_file_is_directory (file_1);
@@ -435,15 +436,30 @@ nautilus_file_compare_directories_by_size (NautilusFile *file_1, NautilusFile *f
 	/* Both are directories, compare by item count. */
 
 	count_known_1 = nautilus_file_get_directory_item_count (file_1,
-								&item_count_1);
+								&item_count_1,
+								&count_unreadable_1);
 	count_known_2 = nautilus_file_get_directory_item_count (file_2,
-								&item_count_2);
+								&item_count_2,
+								&count_unreadable_2);
 
 	if (!count_known_1 && count_known_2) {
 		return -1;
 	}
 	if (count_known_1 && !count_known_2) {
 		return +1;
+	}
+
+	if (!count_known_1 && !count_known_2) {
+		/* Put unknowable before simply unknown. */
+		if (count_unreadable_1 && !count_unreadable_2) {
+			return -1;
+		}
+
+		if (!count_unreadable_1 && count_unreadable_2) {
+			return +1;
+		}
+
+		return 0;
 	}
 
 	if (item_count_1 < item_count_2) {
@@ -902,20 +918,25 @@ nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type
  * Get the number of items in a directory.
  * @file: NautilusFile representing a directory. It is an error to
  * call this function on a file that is not a directory.
- * @ignore_invisible_items: TRUE if invisible items should not be
- * included in count.
  * @count: Place to put count.
+ * @count_unreadable: Set to TRUE (if non-NULL) if permissions prevent
+ * the item count from being read on this directory. Otherwise set to FALSE.
  * 
  * Returns: TRUE if count is available.
  * 
  **/
 gboolean
 nautilus_file_get_directory_item_count (NautilusFile *file, 
-					guint *count)
+					guint *count,
+					gboolean *count_unreadable)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 	g_return_val_if_fail (nautilus_file_is_directory (file), FALSE);
 	g_return_val_if_fail (count != NULL, FALSE);
+
+	if (count_unreadable != NULL) {
+		*count_unreadable = file->details->directory_count_failed;
+	}
 
 	if (!file->details->got_directory_count) {
 		return FALSE;
@@ -1078,12 +1099,13 @@ static char *
 nautilus_file_get_size_as_string (NautilusFile *file)
 {
 	guint item_count;
+	gboolean count_unreadable;
 	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 	
 	if (nautilus_file_is_directory (file)) {
-		if (!nautilus_file_get_directory_item_count (file, &item_count)) {
-			return g_strdup (_("--"));
+		if (!nautilus_file_get_directory_item_count (file, &item_count, &count_unreadable)) {
+			return g_strdup (count_unreadable ? _("xxx") : _("--"));
 		}
 		if (item_count == 0) {
 			return g_strdup (_("0 items"));

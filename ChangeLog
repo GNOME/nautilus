@@ -1,3 +1,26 @@
+2000-04-18  John Sullivan  <sullivan@eazel.com>
+
+	Distinguished the item count for unreadable directories
+	from the "not yet known" item count. Unreadable directories
+	shows "xxx" and "not yet known" shows "--". This fixes bug 513.
+	
+
+	* libnautilus-extensions/nautilus-file.h,
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_compare_directories_by_size): Put unreadable
+	counts before unknown counts before known counts.
+	(nautilus_file_get_directory_item_count): New result parameter
+	that callers can use to distinguish unreadable case from
+	unknown case.
+	(nautilus_file_get_size_as_string): return different string
+	if unreadable.
+	* libnautilus-extensions/nautilus-directory.c:
+	(directory_count_callback): Call nautilus_file_changed
+	even when we discover that the count is unreadable.
+	* src/file-manager/fm-directory-view.c:
+	(display_selection_info): pass NULL for unreadable parameter
+	because this caller doesn't care why it's not known.
+
 2000-04-18  Pavel Cisler  <pavel@eazel.com>
 
 	* src/file-manager/dfos-xfer.c:
@@ -11,7 +34,7 @@
 	(preference_get): If the stored default_value is NULL, then used
 	the provided one.
 	
-2000-04-19  Andy Hertzfeld <andy@eazel.com>
+2000-04-18  Andy Hertzfeld <andy@eazel.com>
 
 	added better abstraction for the xml-based links introduced yesterday
 	
@@ -41,7 +64,7 @@
 	* data/Makefile.am:
 	added new files
 	
-2000-04-19  John Sullivan  <sullivan@eazel.com>
+2000-04-18  John Sullivan  <sullivan@eazel.com>
 
 	Yet more tweakery to the file-monitoring code.
 
@@ -60,7 +83,7 @@
           segfault in rpmInstall.
 
 
-2000-04-19  John Sullivan  <sullivan@eazel.com>
+2000-04-18  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory.c:
 	(dequeue_pending_idle_callback), 
@@ -69,7 +92,7 @@
 	new is_file_list_monitored function in three places.
 	Two of these were bugs, one was code duplication.
 
-2000-04-19  John Sullivan  <sullivan@eazel.com>
+2000-04-18  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 494 (initial directory count never appears in sidebar).
 
@@ -690,7 +713,7 @@
 	text items that are not editable by the user using the "Rename"
 	command.
 
-2000-04-18  John Sullivan <sullivan@eazel.com>
+2000-04-17  John Sullivan <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-file.c:
 	(nautilus_file_monitor_add), (nautilus_file_monitor_remove):
@@ -708,7 +731,7 @@
 	Made focusing away from the name field in the Properties
 	window deselect the text, and focusing in select it.
 
-2000-04-18  John Sullivan <sullivan@eazel.com>
+2000-04-17  John Sullivan <sullivan@eazel.com>
 
 	Fixed bugs, mostly related to editable text fields.
 

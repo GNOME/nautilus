@@ -1747,8 +1747,12 @@ directory_count_callback (GnomeVFSAsyncHandle *handle,
 	} else {
 		directory->details->count_file->details->directory_count = entries_read;
 		directory->details->count_file->details->got_directory_count = TRUE;
-		nautilus_file_changed (directory->details->count_file);
 	}
+
+	/* Send file-changed even if count failed, so interested parties can
+	 * distinguish between unknowable and not-yet-known cases.
+	 */
+	nautilus_file_changed (directory->details->count_file);
 
 	/* Let go of this request. */
 	nautilus_file_unref (directory->details->count_file);
