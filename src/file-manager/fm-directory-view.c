@@ -22,6 +22,7 @@
  * Authors: Ettore Perazzoli,
  *          John Sullivan <sullivan@eazel.com>,
  *          Darin Adler <darin@eazel.com>
+ *          Pavel Cisler <pavel@eazel.com>
  */
 
 #include <config.h>
@@ -183,7 +184,7 @@ static void           start_renaming_item                   	                  (
 static void           metadata_ready_callback                                     (NautilusDirectory        *directory,
 										   GList                    *files,
 										   gpointer                  callback_data);
-static void	      trash_state_changed_callback				  (NautilusTrashMonitor     *trash,
+static void	      fm_directory_view_trash_state_changed_callback		  (NautilusTrashMonitor     *trash,
 										   gboolean 		     state,
 										   gpointer		     callback_data);
 
@@ -843,7 +844,7 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 			    directory_view);
 	gtk_signal_connect (GTK_OBJECT(nautilus_trash_monitor_get ()),
 			    "trash_state_changed",
-			    trash_state_changed_callback,
+			    fm_directory_view_trash_state_changed_callback,
 			    directory_view);
 
 	gtk_widget_show (GTK_WIDGET (directory_view));
@@ -2146,8 +2147,7 @@ compute_menu_item_info (FMDirectoryView *directory_view,
 		*return_sensitivity = selection != NULL;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH) == 0) {
 		name = g_strdup (_("_Empty Trash"));
-		/* FIXME bugzilla.eazel.com 656: Should only be sensitive if trash is not empty */
-		*return_sensitivity = TRUE;
+		*return_sensitivity =  !nautilus_trash_monitor_is_empty ();
 	} else if (strcmp (path, NAUTILUS_MENU_PATH_SELECT_ALL_ITEM) == 0) {
 		name = g_strdup (_("_Select All"));
 		*return_sensitivity = TRUE;
@@ -3477,17 +3477,13 @@ fm_directory_view_get_context_menu_index (const char *menu_name)
 }
 
 static void
-trash_state_changed_callback (NautilusTrashMonitor *trash_monitor,
+fm_directory_view_trash_state_changed_callback (NautilusTrashMonitor *trash_monitor,
 	gboolean state, gpointer callback_data)
 {
-	char *desktop_directory_path, *path;
+	FMDirectoryView *view;
 
-	desktop_directory_path = nautilus_get_desktop_directory ();
-	path = nautilus_make_path (desktop_directory_path, "Trash");
-
-	/* Change the XML file to have a new icon. */
-	nautilus_link_set_icon (path, state ? "trash-empty.png" : "trash-full.png");
-
-	g_free (path);
-	g_free (desktop_directory_path);
+	view = (FMDirectoryView *)callback_data;
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	
+	fm_directory_view_update_menus (view);
 }

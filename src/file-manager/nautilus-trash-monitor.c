@@ -175,3 +175,9 @@ nautilus_trash_monitor_shutdown (void)
 	g_free (nautilus_trash_monitor->details);
 	g_free (nautilus_trash_monitor);
 }
+
+gboolean
+nautilus_trash_monitor_is_empty (void)
+{
+	return nautilus_trash_monitor->details->empty;
+}

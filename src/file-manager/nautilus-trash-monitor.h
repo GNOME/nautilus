@@ -58,6 +58,5 @@ GtkType			nautilus_trash_monitor_get_type		(void);
 NautilusTrashMonitor   *nautilus_trash_monitor_get 		(void);
 void			nautilus_trash_monitor_shutdown		(void);
 gboolean		nautilus_trash_monitor_is_empty 	(void);
-int			nautilus_trash_monitor_count_items 	(void);
 
 #endif

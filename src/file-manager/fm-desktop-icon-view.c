@@ -42,6 +42,8 @@
 #include <mntent.h>
 #include <unistd.h>
 
+#include "nautilus-trash-monitor.h"
+
 
 static void     fm_desktop_icon_view_initialize                           (FMDesktopIconView      *desktop_icon_view);
 static void     fm_desktop_icon_view_initialize_class                     (FMDesktopIconViewClass *klass);
@@ -62,6 +64,9 @@ static gboolean fm_desktop_icon_view_get_directory_auto_layout            (FMIco
 static void     fm_desktop_icon_view_set_directory_auto_layout            (FMIconView             *icon_view,
 									   NautilusDirectory      *directory,
 									   gboolean                auto_layout);
+static void	fm_desktop_icon_view_trash_state_changed_callback 	  (NautilusTrashMonitor   *trash,
+									   gboolean 		   state,
+									   gpointer		   callback_data);
 									   
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView, fm_desktop_icon_view, FM_TYPE_ICON_VIEW);
 
@@ -179,6 +184,11 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "middle_click",
 			    GTK_SIGNAL_FUNC (fm_desktop_icon_view_handle_middle_click),
+			    desktop_icon_view);
+
+	gtk_signal_connect (GTK_OBJECT(nautilus_trash_monitor_get ()),
+			    "trash_state_changed",
+			    fm_desktop_icon_view_trash_state_changed_callback,
 			    desktop_icon_view);
 
 	/* Check for mountable devices */
@@ -301,3 +311,18 @@ fm_desktop_icon_view_set_directory_auto_layout (FMIconView *icon_view, NautilusD
 }
 
 
+static void
+fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor *trash_monitor,
+	gboolean state, gpointer callback_data)
+{
+	char *desktop_directory_path, *path;
+
+	desktop_directory_path = nautilus_get_desktop_directory ();
+	path = nautilus_make_path (desktop_directory_path, "Trash");
+
+	/* Change the XML file to have a new icon. */
+	nautilus_link_set_icon (path, state ? "trash-empty.png" : "trash-full.png");
+
+	g_free (path);
+	g_free (desktop_directory_path);
+}

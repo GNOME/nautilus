@@ -1,5 +1,29 @@
 2000-08-02  Pavel Cisler  <pavel@eazel.com>
 
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize),
+	(fm_desktop_icon_view_trash_state_changed_callback):
+	Move the desktop icon updating call here from fm_directory_view.c.
+	Since there is only one desktop, we will only try to update the
+	Trash icon once this way, rather than once for every open window.
+	Hook up the trash trash_state_changed properly.
+	
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize), (compute_menu_item_info),
+	(fm_directory_view_trash_state_changed_callback):
+	Fix bugzilla 656: Empty Trash menu item is enabled even when Trash
+	is empty.
+	Hook up to the trash_state_changed signal and trigger a menu update for
+	the change.
+	
+	* src/file-manager/nautilus-trash-monitor.c:
+	* src/file-manager/nautilus-trash-monitor.h:
+	(nautilus_trash_monitor_is_empty):
+	Forgot to implement this one in my last checkin and it's needed for the
+	above call.
+
+2000-08-02  Pavel Cisler  <pavel@eazel.com>
+
 	Bugzilla bug 1400
 	
 	* libnautilus-extensions/nautilus-directory.c:
