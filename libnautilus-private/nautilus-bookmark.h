@@ -79,6 +79,8 @@ void		      nautilus_bookmark_set_name 	    (NautilusBookmark 	  *bookmark,
 gboolean	      nautilus_bookmark_uri_known_not_to_exist (NautilusBookmark  *bookmark);
 int                   nautilus_bookmark_compare_with        (gconstpointer         a,
 							     gconstpointer         b);
+int                   nautilus_bookmark_compare_uris        (gconstpointer         a,
+							     gconstpointer         b);
 
 /* Helper functions for displaying bookmarks */
 gboolean              nautilus_bookmark_get_pixmap_and_mask (NautilusBookmark     *bookmark,

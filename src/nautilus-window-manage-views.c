@@ -302,7 +302,7 @@ nautilus_window_set_displayed_location (NautilusWindow *window, const char *uri)
                 recreate = TRUE;
         } else {
                 bookmark_uri = nautilus_bookmark_get_uri (window->current_location_bookmark);
-                recreate = nautilus_strcmp (bookmark_uri, uri) != 0;
+                recreate = !nautilus_uris_match (bookmark_uri, uri);
                 g_free (bookmark_uri);
         }
         
@@ -435,7 +435,7 @@ handle_go_elsewhere (NautilusWindow *window, const char *location)
                  * This also avoids a problem where nautilus_window_set_displayed_location
                  * didn't update last_location_bookmark since the uri didn't change.
                  */
-                if (strcmp (window->location, location) != 0) {
+                if (!nautilus_uris_match (window->location, location)) {
                         /* Store bookmark for current location in back list, unless there is no current location */
 	                check_last_bookmark_location_matches_window (window);
                         
@@ -766,7 +766,7 @@ open_location (NautilusWindow *window,
 		 */                 
 		for (element = nautilus_application_windows (); element != NULL; element = element->next) {
 			traverse_window = element->data;
-			if (traverse_window->location != NULL && strcmp (traverse_window->location, location) == 0) {
+			if (traverse_window->location != NULL && nautilus_uris_match (traverse_window->location, location)) {
 				gtk_widget_show_now (GTK_WIDGET (traverse_window));
 				nautilus_gdk_window_bring_to_front (GTK_WIDGET (traverse_window)->window);								
 				return;

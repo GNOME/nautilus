@@ -1107,9 +1107,13 @@ nautilus_add_to_history_list (NautilusBookmark *bookmark)
 
 	gtk_object_ref (GTK_OBJECT (bookmark));
 
+	/* Compare only the uris here. Comparing the names also is not necessary
+	 * and can cause problems due to the asynchronous nature of when the title
+	 * of the window is set. 
+	 */
 	found_link = g_list_find_custom (history_list, 
 					 bookmark,
-					 nautilus_bookmark_compare_with);
+					 nautilus_bookmark_compare_uris);
 	
 	/* Remove any older entry for this same item. There can be at most 1. */
 	if (found_link != NULL) {

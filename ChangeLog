@@ -1,3 +1,30 @@
+2000-09-07  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2218 (Duplicate items appear in history list)
+
+	Also changed a few places to compare uris with the new
+	nautilus_uris_match instead of strcmp.
+
+	* libnautilus-extensions/nautilus-bookmark.h,
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_compare_with): Use nautilus_uris_match.
+	(nautilus_bookmark_compare_uris): New function, compares
+	bookmarks' uris with nautilus_uris_match; ignores names.
+	
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_set_displayed_location), (handle_go_elsewhere),
+	(open_location): Use nautilus_uris_match.
+	
+	* src/nautilus-window.c: (nautilus_add_to_history_list):
+	Use nautilus_bookmark_compare_uris instead of _compare_with.
+	This was the source of the bug. Due to asynchronicity introduced
+	sometime after this code was written, when the bookmark for the 
+	current location was created it did not	yet know what name to use, 
+	and so it did not match any of the old History items that had the 
+	correct name. But for the History list we only want one entry per 
+	uri anyway, so it needn't have been comparing the names in the 
+	first place.
+
 2000-09-07  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar.c: (nautilus_sidebar_initialize):
