@@ -47,6 +47,11 @@ typedef struct _NautilusCanvasNoteItemClass NautilusCanvasNoteItemClass;
 struct _NautilusCanvasNoteItem {
 	GnomeCanvasItem item;
 
+	double x1;			/* canvas coordinates of bounding box */
+	double y1;
+	double x2;
+	double y2;
+	
 	double width;			/* Outline width */
 
 	guint fill_color;		/* Fill color, RGBA */

@@ -1,5 +1,21 @@
 2001-04-03  Andy Hertzfeld  <andy@eazel.com>
 
+	* libnautilus-extensions/nautilus-canvas-note-item.c: (get_bounds),
+	(update_item_bounding_box),
+	(nautilus_canvas_note_item_set_note_text),
+	(nautilus_canvas_note_item_set_arg),
+	(nautilus_canvas_note_item_get_arg),
+	(nautilus_canvas_note_item_translate),
+	(nautilus_canvas_note_item_bounds),
+	(nautilus_canvas_note_item_draw),
+	(nautilus_canvas_note_item_point),
+	(nautilus_canvas_note_item_update):
+	* libnautilus-extensions/nautilus-canvas-note-item.h:
+	some more work at making the annotations show up properly, but
+	there's still more to do.
+	
+2001-04-03  Andy Hertzfeld  <andy@eazel.com>
+
 	* libnautilus-extensions/nautilus-global-preferences.c:
 	(global_preferences_create_dialog):
 	restored the annotation preferences that was inadvertently left

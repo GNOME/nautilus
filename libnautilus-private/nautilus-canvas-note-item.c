@@ -210,10 +210,10 @@ static void get_bounds (NautilusCanvasNoteItem *note_item, double *px1, double *
 	else
 		hwidth = note_item->width / 2.0;
 
-	x1 = item->x1;
-	y1 = item->y1;
-	x2 = item->x2;
-	y2 = item->y2;
+	x1 = note_item->x1;
+	y1 = note_item->y1;
+	x2 = note_item->x2;
+	y2 = note_item->y2;
 
 	gnome_canvas_item_i2w (item, &x1, &y1);
 	gnome_canvas_item_i2w (item, &x2, &y2);
@@ -301,6 +301,19 @@ nautilus_canvas_note_item_set_outline (NautilusCanvasNoteItem *note_item, gboole
 	}
 }
 
+/* utility to update the canvas item bounding box from the note item's private bounding box */
+static void
+update_item_bounding_box (NautilusCanvasNoteItem *note_item)
+{
+	GnomeCanvasItem *item;
+	item  = GNOME_CANVAS_ITEM (note_item);
+	
+	item->x1 = note_item->x1;
+	item->y1 = note_item->y1;
+	item->x2 = note_item->x2;
+	item->y2 = note_item->y2;
+}
+
 static void
 nautilus_canvas_note_item_set_note_text (NautilusCanvasNoteItem *note_item, const char *new_text)
 {
@@ -330,8 +343,9 @@ nautilus_canvas_note_item_set_note_text (NautilusCanvasNoteItem *note_item, cons
 		width = ANNOTATION_WIDTH;	
 	}
 
-	item->x2 = item->x1 + width;
-	item->y2 = item->y1 + height + 4; /* room for descenders */
+	note_item->x2 = note_item->x1 + width;
+	note_item->y2 = note_item->y1 + height + 4; /* room for descenders */
+	update_item_bounding_box (note_item);
 	
 	g_free (display_text);
 }
@@ -351,25 +365,26 @@ nautilus_canvas_note_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 
 	switch (arg_id) {
 	case ARG_X1:
-		item->x1 = GTK_VALUE_DOUBLE (*arg);
+		note_item->x1 = GTK_VALUE_DOUBLE (*arg);
+		update_item_bounding_box (note_item);
 		gnome_canvas_item_request_update (item);
 		break;
 
 	case ARG_Y1:
-		item->y1 = GTK_VALUE_DOUBLE (*arg);
-
+		note_item->y1 = GTK_VALUE_DOUBLE (*arg);
+		update_item_bounding_box (note_item);
 		gnome_canvas_item_request_update (item);
 		break;
 
 	case ARG_X2:
-		item->x2 = GTK_VALUE_DOUBLE (*arg);
-
+		note_item->x2 = GTK_VALUE_DOUBLE (*arg);
+		update_item_bounding_box (note_item);
 		gnome_canvas_item_request_update (item);
 		break;
 
 	case ARG_Y2:
-		item->y2 = GTK_VALUE_DOUBLE (*arg);
-
+		note_item->y2 = GTK_VALUE_DOUBLE (*arg);
+		update_item_bounding_box (note_item);
 		gnome_canvas_item_request_update (item);
 		break;
 
@@ -537,19 +552,19 @@ nautilus_canvas_note_item_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 
 	switch (arg_id) {
 	case ARG_X1:
-		GTK_VALUE_DOUBLE (*arg) = item->x1;
+		GTK_VALUE_DOUBLE (*arg) = note_item->x1;
 		break;
 
 	case ARG_Y1:
-		GTK_VALUE_DOUBLE (*arg) = item->y1;
+		GTK_VALUE_DOUBLE (*arg) = note_item->y1;
 		break;
 
 	case ARG_X2:
-		GTK_VALUE_DOUBLE (*arg) = item->x2;
+		GTK_VALUE_DOUBLE (*arg) = note_item->x2;
 		break;
 
 	case ARG_Y2:
-		GTK_VALUE_DOUBLE (*arg) = item->y2;
+		GTK_VALUE_DOUBLE (*arg) = note_item->y2;
 		break;
 
 	case ARG_FILL_COLOR_GDK:
@@ -622,11 +637,16 @@ nautilus_canvas_note_item_unrealize (GnomeCanvasItem *item)
 static void
 nautilus_canvas_note_item_translate (GnomeCanvasItem *item, double dx, double dy)
 {
+	NautilusCanvasNoteItem *note_item;
 
-	item->x1 += dx;
-	item->y1 += dy;
-	item->x2 += dx;
-	item->y2 += dy;
+	note_item = NAUTILUS_CANVAS_NOTE_ITEM (item);
+	
+	note_item->x1 += dx;
+	note_item->y1 += dy;
+	note_item->x2 += dx;
+	note_item->y2 += dy;
+
+	update_item_bounding_box (note_item);
 
 	if (item->canvas->aa) {
 		gnome_canvas_item_request_update (item);
@@ -646,10 +666,10 @@ nautilus_canvas_note_item_bounds (GnomeCanvasItem *item, double *x1, double *y1,
 	else
 		hwidth = note_item->width / 2.0;
 
-	*x1 = item->x1 - hwidth;
-	*y1 = item->y1 - hwidth;
-	*x2 = item->x2 + hwidth;
-	*y2 = item->y2 + hwidth;
+	*x1 = note_item->x1 - hwidth;
+	*y1 = note_item->y1 - hwidth;
+	*x2 = note_item->x2 + hwidth;
+	*y2 = note_item->y2 + hwidth;
 }
 
 /* utility routine to map raw annotation text into text to be displayed */
@@ -752,10 +772,10 @@ nautilus_canvas_note_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable, in
 	gnome_canvas_w2c_affine (item->canvas, w2c);
 	art_affine_multiply (i2c, i2w, w2c);
 
-	i1.x = item->x1;
-	i1.y = item->y1;
-	i2.x = item->x2;
-	i2.y = item->y2;
+	i1.x = note_item->x1;
+	i1.y = note_item->y1;
+	i2.x = note_item->x2;
+	i2.y = note_item->y2;
 	art_affine_point (&c1, &i1, i2c);
 	art_affine_point (&c2, &i2, i2c);
 	x1 = c1.x;
@@ -823,10 +843,10 @@ nautilus_canvas_note_item_point (GnomeCanvasItem *item, double x, double y, int 
 
 	/* Find the bounds for the rectangle plus its outline width */
 
-	x1 = item->x1;
-	y1 = item->y1;
-	x2 = item->x2;
-	y2 = item->y2;
+	x1 = note_item->x1;
+	y1 = note_item->y1;
+	x2 = note_item->x2;
+	y2 = note_item->y2;
 
 	if (note_item->outline_set) {
 		if (note_item->width_pixels)
@@ -903,10 +923,10 @@ nautilus_canvas_note_item_update (GnomeCanvasItem *item, double affine[6], ArtSV
 		(* note_item_parent_class->update) (item, affine, clip_path, flags);
 
 	if (item->canvas->aa) {
-		x0 = item->x1;
-		y0 = item->y1;
-		x1 = item->x2;
-		y1 = item->y2;
+		x0 = note_item->x1;
+		y0 = note_item->y1;
+		x1 = note_item->x2;
+		y1 = note_item->y2;
 
 		gnome_canvas_item_reset_bounds (item);
 
