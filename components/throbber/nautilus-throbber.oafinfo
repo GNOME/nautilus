@@ -1,0 +1,20 @@
+<oaf_info>
+
+<oaf_server iid="OAFIID:nautilus_throbber_factory" type="exe" location="nautilus-throbber">
+<oaf_attribute name="repo_ids" type="stringv">
+<item value="IDL:Bonobo/GenericFactory:1.0"/>
+</oaf_attribute>
+<oaf_attribute name="name" type="string" value="throbber factory"/>
+<oaf_attribute name="description" type="string" value="throbber object factory"/>
+</oaf_server>
+
+<oaf_server iid="OAFIID:nautilus_throbber" type="factory" location="OAFIID:nautilus_throbber_factory">
+<oaf_attribute name="repo_ids" type="stringv">
+<item value="IDL:Bonobo/Control:1.0"/>
+<item value="IDL:Bonobo/Unknown:1.0"/>
+</oaf_attribute>
+<oaf_attribute name="name" type="string" value="throbber"/>
+<oaf_attribute name="description" type="string" value="throbber to indicate on-going activity"/>
+</oaf_server>
+
+</oaf_info>

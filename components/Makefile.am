@@ -23,6 +23,7 @@ SUBDIRS = \
 	notes \
 	sample \
 	text \
+	throbber \
 	tree \
 	$(SERVICE_SUBDIRS) \
 	$(RPMVIEW_COMPONENT_SUBDIRS) \

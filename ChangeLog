@@ -1,3 +1,61 @@
+2001-01-15  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 4369, throbber frozen during long refresh, by making the
+	throbber a bonobo component so it's driven by its own thread.
+	Note that clicking on the throbber is temporarily broken; I'll
+	fix that soon.  Also, made the frame delay be specified by the
+	theme and set the default to spin somewhat slower than before.
+	
+	* configure.in:
+	* components/Makefile.am:
+	* components/throbber/.cvsignore:
+	* components/throbber/Makefile.am:
+	* components/throbber/nautilus-throbber.oafinfo:
+	added throbber component
+	
+	* components/throbber/main.c: (throbber_object_destroyed),
+	(throbber_make_object), (main):
+	factory for the throbber component
+	
+	* components/throbber/nautilus-throbber.c,h:
+	(nautilus_throbber_initialize_class), (is_throbbing),
+	(get_bonobo_properties), (set_bonobo_properties),
+	(nautilus_throbber_destroy), (nautilus_throbber_get_control),
+	(get_throbber_dimensions), (nautilus_throbber_initialize),
+	(nautilus_throbber_new), (nautilus_throbber_theme_changed),
+	(draw_pixbuf), (select_throbber_image), (draw_throbber_image),
+	(nautilus_throbber_draw), (nautilus_throbber_expose),
+	(nautilus_throbber_map), (bump_throbber_frame),
+	(nautilus_throbber_start),
+	(nautilus_throbber_remove_update_callback),
+	(nautilus_throbber_stop), (nautilus_throbber_unload_images),
+	(load_themed_image), (make_throbber_frame_name),
+	(nautilus_throbber_load_images),
+	(nautilus_throbber_button_press_event),
+	(nautilus_throbber_set_small_mode),
+	(nautilus_throbber_size_allocate),
+	(nautilus_throbber_size_request):
+	throbber widget for the bonobo component
+
+	* src/nautilus-window-toolbars.c: (theme_changed_callback),
+	(nautilus_window_initialize_toolbars):
+	set up throbber component in the toolbar
+	
+	* src/nautilus-window.c,h: (nautilus_window_constructed),
+	(nautilus_window_allow_stop):
+	use property interface to start and stop the throbber
+	
+	* icons/default.xml:
+	added delay specification to throbber in default theme
+	
+	* nautilus-clean.sh:
+	clean throbber component as necessary
+	
+	* src/Makefile.am:
+	* src/nautilus-throbber.c,h
+	removed old throbber widget
+	
+	
 2001-01-15  Michael Engber  <engber@eazel.com>
 
 	reviewed by: John Sullivan

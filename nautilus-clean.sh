@@ -94,6 +94,7 @@ nautilus-service-startup-view \
 nautilus-sidebar-loser \
 nautilus-summary-view \
 nautilus-text-view \
+nautilus-throbber \
 nautilus-tree-view \
 trilobite-eazel-install-service  \
 trilobite-eazel-time-view \

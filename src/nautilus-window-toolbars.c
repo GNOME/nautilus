@@ -29,12 +29,10 @@
 #include <config.h>
 
 #include "nautilus-application.h"
-#include "nautilus-throbber.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window.h"
-#include <bonobo/bonobo-control.h>
-#include <bonobo/bonobo-ui-util.h>
+#include <bonobo.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtktogglebutton.h>
 #include <libgnome/gnome-i18n.h>
@@ -291,55 +289,6 @@ set_up_toolbar_images (NautilusWindow *window)
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 }
 
-static GtkWidget *
-set_up_throbber_frame_type (NautilusWindow *window)
-{
-	GtkWidget *frame;
-	char *frame_type;
-	GtkShadowType shadow_type;
-	
-	frame = window->throbber->parent;
-	
-	frame_type = nautilus_theme_get_theme_data ("toolbar", "FRAME_TYPE");
-	shadow_type = GTK_SHADOW_NONE;
-	
-	if (nautilus_strcmp (frame_type, "in") == 0) {
-		shadow_type = GTK_SHADOW_IN;
-	} else if (nautilus_strcmp (frame_type, "out") == 0) {
-		shadow_type = GTK_SHADOW_OUT;	
-	} else if (nautilus_strcmp (frame_type, "none") == 0) {
-		shadow_type = GTK_SHADOW_NONE;	
-	} else {
-		shadow_type = GTK_SHADOW_NONE;
-	}
-	
-	g_free (frame_type);	
-	
-	/* FIXME bugzilla.eazel.com 5034: for now, force no shadow until bonobo toolbar problems get resolved */
-	shadow_type = GTK_SHADOW_NONE;
-	gtk_frame_set_shadow_type (GTK_FRAME (frame), shadow_type);
-	
-	return frame;
-}
-
-static GtkWidget *
-allocate_throbber (void)
-{
-	GtkWidget *throbber, *frame;
-	gboolean small_mode;
-	
-	throbber = nautilus_throbber_new ();
-	gtk_widget_show (throbber);
-	
-	frame = gtk_frame_new (NULL);
-	gtk_widget_show (frame);
-	gtk_container_add (GTK_CONTAINER (frame), throbber);
-			
-	small_mode = !gnome_preferences_get_toolbar_labels ();
-	nautilus_throbber_set_small_mode (NAUTILUS_THROBBER (throbber), small_mode);
-	
-	return throbber;
-}
 
 /* handle theme changes */
 static void
@@ -350,7 +299,6 @@ theme_changed_callback (gpointer callback_data)
 	window = NAUTILUS_WINDOW (callback_data);
 	
 	set_up_toolbar_images (window);
-	set_up_throbber_frame_type (window);
 	
 	/* if the toolbar is visible, toggle it's visibility to force a relayout */
 	if (nautilus_window_tool_bar_showing (window)) {
@@ -404,18 +352,26 @@ set_up_back_or_forward_tool_bar_item (NautilusWindow *window,
 void
 nautilus_window_initialize_toolbars (NautilusWindow *window)
 {
-	GtkWidget *frame, *box;
+	CORBA_Environment ev;
+	CORBA_exception_init (&ev);
 	
-	window->throbber = allocate_throbber ();	
-	frame = set_up_throbber_frame_type (window);
+	window->throbber = bonobo_get_object ("OAFIID:nautilus_throbber", "IDL:Bonobo/Control:1.0", &ev);
 	
-	/* wrap it in another box to add some visual padding */
-	box = gtk_hbox_new (FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (box), 4);
-	gtk_widget_show (box);
-	gtk_container_add (GTK_CONTAINER (box), frame);
+	if (BONOBO_EX (&ev)) {
+		char *txt;
+		g_warning ("Activation exception '%s'",
+			   (txt = bonobo_exception_get_text (&ev)));
+		g_free (txt);
+		window->throbber = CORBA_OBJECT_NIL;
+	}
 
-	set_widget_for_bonobo_control (window, box, "/Tool Bar/ThrobberWrapper");
+	bonobo_ui_component_object_set (window->details->shell_ui,
+					"/Tool Bar/ThrobberWrapper",
+					window->throbber,
+					&ev);
+
+	CORBA_exception_free (&ev);
+
 
 	window->details->back_button_item = set_up_back_or_forward_tool_bar_item 
 		(window, _("Back"), "/Tool Bar/BackWrapper");

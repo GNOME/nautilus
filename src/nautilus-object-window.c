@@ -36,11 +36,11 @@
 #include "nautilus-sidebar.h"
 #include "nautilus-signaller.h"
 #include "nautilus-switchable-navigation-bar.h"
-#include "nautilus-throbber.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-service-ui.h"
 #include "nautilus-zoom-control.h"
 #include <bonobo/bonobo-ui-util.h>
+#include <bonobo/bonobo-exception.h>
 #include <ctype.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtkmain.h>
@@ -537,8 +537,10 @@ nautilus_window_constructed (NautilusWindow *window)
 	nautilus_window_initialize_toolbars (window);
 
 	/* watch for throbber location changes, too */
+	/*
 	gtk_signal_connect (GTK_OBJECT (window->throbber), "location_changed",
 			    goto_uri_callback, window);
+	*/
 	
 	/* Set initial sensitivity of some buttons & menu items 
 	 * now that they're all created.
@@ -1304,14 +1306,22 @@ nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
 void
 nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 {
+	CORBA_Environment ev;
+	Bonobo_PropertyBag property_bag;
+
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 				       NAUTILUS_COMMAND_STOP, allow);
+	
 	if (window->throbber != NULL) {
-		if (allow) {
-			nautilus_throbber_start (NAUTILUS_THROBBER (window->throbber));
-		} else {
-			nautilus_throbber_stop (NAUTILUS_THROBBER (window->throbber));
+		CORBA_exception_init (&ev);
+		property_bag = Bonobo_Control_getProperties (window->throbber, &ev);
+	
+		if (property_bag != NULL && !BONOBO_EX (&ev)) {	
+			bonobo_property_bag_client_set_value_gboolean (property_bag, "throbbing", allow, &ev);				
+			bonobo_object_release_unref (property_bag, &ev);	
 		}
+		CORBA_exception_free (&ev);
+		
 	}
 }
 
