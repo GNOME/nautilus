@@ -3214,6 +3214,16 @@ can_move_uri_to_trash (FMDirectoryView *view, const char *file_uri_string)
 	return result;
 }
 
+static gboolean
+can_delete_uri_without_confirm (const char *file_uri_string)
+{
+	if (eel_istr_has_prefix (file_uri_string, "burn:") != FALSE) {
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 static char *
 file_name_from_uri (const char *uri)
 {
@@ -3333,6 +3343,7 @@ trash_or_delete_files_common (FMDirectoryView *view,
 	GList *moveable_uris;
 	GList *unmoveable_uris;
 	GList *in_trash_uris;
+	GList *no_confirm_uris;
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
@@ -3349,12 +3360,15 @@ trash_or_delete_files_common (FMDirectoryView *view,
 	moveable_uris = NULL;
 	unmoveable_uris = NULL;
 	in_trash_uris = NULL;
+	no_confirm_uris = NULL;
 	
 	for (file_node = file_uris; file_node != NULL; file_node = file_node->next) {
 		file_uri = (char *) file_node->data;
 		
 		if (delete_if_all_already_in_trash && eel_uri_is_in_trash (file_uri)) {
 			in_trash_uris = g_list_prepend (in_trash_uris, g_strdup (file_uri));
+		} else if (can_delete_uri_without_confirm (file_uri)) {
+			no_confirm_uris = g_list_prepend (no_confirm_uris, g_strdup (file_uri));
 		} else if (can_move_uri_to_trash (view, file_uri)) {
 			moveable_uris = g_list_prepend (moveable_uris, g_strdup (file_uri));
 		} else {
@@ -3365,8 +3379,12 @@ trash_or_delete_files_common (FMDirectoryView *view,
 	if (in_trash_uris != NULL && moveable_uris == NULL && unmoveable_uris == NULL) {
 		if (confirm_delete_from_trash (view, in_trash_uris)) {
 			nautilus_file_operations_delete (in_trash_uris, GTK_WIDGET (view));
-		}		
+		}
 	} else {
+		if (no_confirm_uris != NULL) {
+			nautilus_file_operations_delete (no_confirm_uris,
+							 GTK_WIDGET (view));
+		}
 		if (moveable_uris != NULL) {
 			nautilus_file_operations_copy_move (moveable_uris, relative_item_points, 
 							    EEL_TRASH_URI, GDK_ACTION_MOVE, GTK_WIDGET (view),
@@ -3384,6 +3402,7 @@ trash_or_delete_files_common (FMDirectoryView *view,
 	eel_g_list_free_deep (in_trash_uris);
 	eel_g_list_free_deep (moveable_uris);
 	eel_g_list_free_deep (unmoveable_uris);
+	eel_g_list_free_deep (no_confirm_uris);
 }
 
 static void

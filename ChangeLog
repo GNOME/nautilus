@@ -1,3 +1,12 @@
+2004-06-17  Bastien Nocera  <hadess@hadess.net>
+
+	reviewed by: Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(can_delete_uri_without_confirm), (trash_or_delete_files_common):
+	do not ask for deletion confirmation when the files are in the burn:
+	scheme (Closes: #114340)
+
 2004-06-14  Martin Wehner  <martin.wehner@epost.de>
 
 	* libnautilus-private/nautilus-file-operations-progress.c:
