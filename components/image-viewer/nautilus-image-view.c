@@ -838,6 +838,8 @@ init_server_factory (int argc, char **argv)
         gnome_init_with_popt_table("bonobo-image-generic", VERSION,
 				   argc, argv,
 				   oaf_popt_options, 0, NULL); 
+	gdk_rgb_init ();
+
 	oaf_init (argc, argv);
 
 	if (!bonobo_init (CORBA_OBJECT_NIL, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL))

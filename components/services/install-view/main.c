@@ -77,9 +77,9 @@ main (int argc, char *argv[])
 	gnome_init_with_popt_table ("nautilus-service-install-view", VERSION, 
                                     argc, argv,
                                     oaf_popt_options, 0, NULL);
+	gdk_rgb_init ();
 
 	orb = oaf_init (argc, argv);
-
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
 	/* log to stderr, for now (but leave debug mode off) */

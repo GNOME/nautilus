@@ -1,3 +1,78 @@
+2001-01-24  Maciej Stachowiak  <mjs@eazel.com>
+
+	Merged some changes from HEAD that somehow did not get committed
+	during the CVS lossage last night.
+	
+	2001-01-23  Maciej Stachowiak  <mjs@eazel.com>
+
+	        reviewed by: Darin Adler  <darin@eazel.com>
+	
+		Partial fix for bug 5902 (Rapidly changing between Icon and
+		Image/Text crashes Nautilus).
+
+		* src/nautilus-view-frame.c:
+		(nautilus_view_frame_load_client_async),
+		(nautilus_view_frame_load_client),
+		(nautilus_view_frame_stop_activation),
+		(nautilus_view_frame_load_location),
+		(nautilus_view_frame_stop_loading),
+		(nautilus_view_frame_selection_changed),
+		(nautilus_view_frame_title_changed),
+		(nautilus_view_frame_is_zoomable),
+		(nautilus_view_frame_get_zoom_level),
+		(nautilus_view_frame_set_zoom_level),
+		(nautilus_view_frame_get_min_zoom_level),
+		(nautilus_view_frame_get_max_zoom_level),
+		(nautilus_view_frame_get_has_min_zoom_level),
+		(nautilus_view_frame_get_has_max_zoom_level),
+		(nautilus_view_frame_get_is_continuous),
+		(nautilus_view_frame_get_preferred_zoom_levels),
+		(nautilus_view_frame_zoom_in), (nautilus_view_frame_zoom_out),
+		(nautilus_view_frame_zoom_to_fit),
+		(nautilus_view_frame_open_location_in_this_window),
+		(nautilus_view_frame_open_location_prefer_existing_window),
+		(nautilus_view_frame_open_location_force_new_window),
+		(nautilus_view_frame_report_selection_change),
+		(nautilus_view_frame_report_status),
+		(nautilus_view_frame_report_load_underway),
+		(nautilus_view_frame_report_load_progress),
+		(nautilus_view_frame_report_load_complete),
+		(nautilus_view_frame_report_load_failed),
+		(nautilus_view_frame_set_title), (nautilus_view_frame_get_title),
+		(nautilus_view_frame_get_label), (nautilus_view_frame_set_label),
+		(nautilus_view_frame_activate), (get_history_list),
+		(send_history),
+		(nautilus_view_frame_get_is_underway): Silently do nothing if the
+		view frame has failed. Based on suggestions from Darin. Also
+		includes return_if_fail fixes from Darin.
+
+	2001-01-23  Maciej Stachowiak  <mjs@eazel.com>
+
+	        reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+		Fixed bug 5943 (Throbber crashes on nautilus startup (crashing
+		Nautilus) with some themes and configurations)
+
+		* components/help/hyperbola-main.c: (main):
+		* components/image-viewer/nautilus-image-view.c:
+		(init_server_factory):
+		* components/mozilla/main.c: (main):
+		* components/music/main.c: (main):
+		* components/notes/nautilus-notes.c: (main):
+		* components/services/install/nautilus-view/main.c: (main):
+		* components/services/login/nautilus-view/main.c: (main):
+		* components/services/summary/nautilus-view/main.c: (main):
+		* components/shell/shell.c:
+		* components/text/main.c: (main):
+		* components/throbber/main.c: (main):
+		* components/tree/main.c: (main):
+		* libnautilus/nautilus-view-standard-main.c:
+		(nautilus_view_standard_main_multi):
+		* nautilus-installer/src/main.c: (main):
+		* src/nautilus-main.c: (main): Added gdk_rgb_init calls. The
+		throbber one was causing a real 100% reproducible crash for me on
+		Nautilus startup, the rest are pre-emptive.
+
 2001-01-24  Eskil Olsen  <eskil@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>

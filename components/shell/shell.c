@@ -56,6 +56,8 @@ init_bonobo (int argc, char **argv)
 {
     gnome_init_with_popt_table ("xterm-control-factory", "0.0",
 				argc, argv, oaf_popt_options, 0, NULL);
+    gdk_rgb_init ();
+
     orb = oaf_init (argc, argv);
 
     if (!bonobo_init (orb, NULL, NULL))
