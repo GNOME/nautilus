@@ -86,7 +86,23 @@ dnl = the nautilus mozilla component.
 dnl =
 dnl = The nautilus mozilla component is only built if these libraries are found
 dnl =
+dnl = --disable-mozilla-component can be used to disable building of the
+dnl = mozilla component even if the mozilla development libraries are 
+dnl = detected.
+dnl =
 dnl ====================================
+mozilla_component_disabled="no"
+
+AC_ARG_ENABLE(mozilla-component,
+              [  --disable-mozilla-component=       Disable the mozilla component],
+              mozilla_component_disabled="yes")
+
+found_mozilla=false
+
+echo mozilla_component_disabled is $mozilla_component_disabled
+
+if test "x$mozilla_component_disabled" = "xno"
+then 
 BUILD_MOZILLA_COMPONENT=
 MOZILLA_COMPONENT_CFLAGS=
 MOZILLA_COMPONENT_LDFLAGS=
@@ -198,6 +214,8 @@ else
 	AC_MSG_RESULT(no)
 	found_mozilla=false
 fi
+fi
+
 AM_CONDITIONAL(BUILD_MOZILLA_COMPONENT, test "x$found_mozilla" = "xtrue")
 
 dnl
