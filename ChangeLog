@@ -1,3 +1,13 @@
+2000-11-06  Mike Fleming  <mfleming@eazel.com>
+
+	* src/nautilus-first-time-druid.c: (druid_finished),
+	(download_callback), (initiate_file_download), (set_http_proxy),
+	(my_sigalrm_handler), (check_dns_resolution),
+	(check_network_connectivity):
+
+	Fix for bug 4549 Check for a potential DNS freeze case, and hang
+	for only 15 seconds rather than 2+ mins in this case.
+
 2000-11-06  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-logic.c:
