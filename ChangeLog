@@ -1,3 +1,13 @@
+2001-01-26  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: John Harper  <jsh@eazel.com>
+
+	* src/nautilus-window-manage-views.c
+	(disconnect_and_destroy_sidebar_panel): hold a ref on the widget
+	during this function, to avoid it being finalized before we get to
+	the destroy call. This avoids some bad casts mentioned in the
+	reopened bug 5997.
+
 2001-01-26  Dan Mueth <dan@eazel.com>
 
 	* user-guide/C/sgml/nautilus.sgml: Adding this file which 

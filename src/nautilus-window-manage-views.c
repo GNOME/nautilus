@@ -1940,9 +1940,11 @@ disconnect_view (NautilusWindow *window, NautilusViewFrame *view)
 static void
 disconnect_and_destroy_sidebar_panel (NautilusWindow *window, NautilusViewFrame *view)
 {
+        gtk_widget_ref (GTK_WIDGET (view));
 	disconnect_view (window, view);
         nautilus_window_remove_sidebar_panel (window, view);
 	gtk_widget_destroy (GTK_WIDGET (view));
+        gtk_widget_unref (GTK_WIDGET (view));
 }
 
 static void
