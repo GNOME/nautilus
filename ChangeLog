@@ -1,5 +1,11 @@
 2004-01-03  Anders Carlsson  <andersca@gnome.org>
 
+	* src/nautilus-location-bar.c: (nautilus_location_bar_init):
+	* src/nautilus-location-entry.c:
+	Don't use EelInputEventBox, we can use GtkEventBox now instead.
+	
+2004-01-03  Anders Carlsson  <andersca@gnome.org>
+
 	* components/adapter/nautilus-adapter.c: (nautilus_adapter_new):
 	* src/nautilus-navigation-bar.c:
 	* src/nautilus-navigation-bar.h:

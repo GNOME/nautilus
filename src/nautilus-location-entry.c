@@ -39,7 +39,6 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
-#include <eel/eel-input-event-box.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtksignal.h>

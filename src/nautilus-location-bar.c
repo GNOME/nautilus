@@ -39,7 +39,6 @@
 #include <eel/eel-accessibility.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-macros.h>
-#include <eel/eel-input-event-box.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
@@ -370,7 +369,9 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 
 	hbox = gtk_hbox_new (0, FALSE);
 
-	event_box = eel_input_event_box_new ();
+	event_box = gtk_event_box_new ();
+	gtk_event_box_set_visible_window (GTK_EVENT_BOX (event_box), FALSE);
+	
 	gtk_container_set_border_width (GTK_CONTAINER (event_box),
 					GNOME_PAD_SMALL);
 	label = gtk_label_new (LOCATION_LABEL);
