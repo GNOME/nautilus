@@ -1704,6 +1704,15 @@ go_back_callback (NautilusViewFrame *view,
 }
 
 static void
+close_window_callback (NautilusViewFrame *view,
+                       NautilusWindow *window)
+{
+        g_assert (NAUTILUS_IS_WINDOW (window));
+
+        nautilus_window_close (window);
+}
+
+static void
 change_selection_callback (NautilusViewFrame *view,
                            GList *selection,
                            NautilusWindow *window)
@@ -1925,6 +1934,7 @@ view_loaded_callback (NautilusViewFrame *view,
 	macro (failed)					\
 	macro (get_history_list)			\
 	macro (go_back)					\
+        macro (close_window)                            \
 	macro (load_complete)				\
 	macro (load_underway)				\
 	macro (open_location_force_new_window)		\

@@ -58,6 +58,7 @@ enum {
 	FAILED,
 	GET_HISTORY_LIST,
 	GO_BACK,
+	CLOSE_WINDOW,
 	LOAD_COMPLETE,
 	LOAD_PROGRESS_CHANGED,
 	LOAD_UNDERWAY,
@@ -1254,6 +1255,14 @@ nautilus_view_frame_go_back (NautilusViewFrame *view)
 }
 
 void
+nautilus_view_frame_close_window (NautilusViewFrame *view)
+{
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
+	g_signal_emit (view, signals[CLOSE_WINDOW], 0);
+}
+
+void
 nautilus_view_frame_set_title (NautilusViewFrame *view,
                                const char *title)
 {
@@ -1428,6 +1437,15 @@ nautilus_view_frame_class_init (NautilusViewFrameClass *class)
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
 				  go_back),
+		 NULL, NULL,
+		 gtk_marshal_VOID__VOID,
+		 G_TYPE_NONE, 0);
+	signals[CLOSE_WINDOW] = g_signal_new
+		("close_window",
+		 G_TYPE_FROM_CLASS (class),
+		 G_SIGNAL_RUN_LAST,
+		 G_STRUCT_OFFSET (NautilusViewFrameClass, 
+				  close_window),
 		 NULL, NULL,
 		 gtk_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);

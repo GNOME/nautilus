@@ -187,6 +187,13 @@ go_back (NautilusViewFrame *view,
 }
 
 static void
+close_window (NautilusViewFrame *view,
+	      gpointer callback_data)
+{
+	nautilus_view_frame_close_window (view);
+}
+
+static void
 impl_Nautilus_ViewFrame_open_location_in_this_window (PortableServer_Servant servant,
 						      const CORBA_char *location,
 						      CORBA_Environment *ev)
@@ -367,6 +374,14 @@ impl_Nautilus_ViewFrame_go_back (PortableServer_Servant servant,
 }
 
 static void
+impl_Nautilus_ViewFrame_close_window (PortableServer_Servant servant,
+				      CORBA_Environment *ev)
+{
+	nautilus_view_frame_queue_incoming_call
+		(servant, close_window, NULL, NULL);
+}
+
+static void
 nautilus_view_frame_corba_part_class_init (NautilusViewFrameCorbaPartClass *class)
 {
 	class->epv.open_location_in_this_window = impl_Nautilus_ViewFrame_open_location_in_this_window;
@@ -382,6 +397,7 @@ nautilus_view_frame_corba_part_class_init (NautilusViewFrameCorbaPartClass *clas
 	class->epv.report_load_failed = impl_Nautilus_ViewFrame_report_load_failed;
 	class->epv.set_title = impl_Nautilus_ViewFrame_set_title;
 	class->epv.go_back = impl_Nautilus_ViewFrame_go_back;
+	class->epv.close_window = impl_Nautilus_ViewFrame_close_window;
 }
 
 static void

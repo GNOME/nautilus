@@ -763,6 +763,22 @@ call_go_back (NautilusView *view,
 	view_frame_call_end (view_frame, &ev);
 }
 
+
+static void
+call_close_window (NautilusView *view,
+		   gpointer callback_data)
+{
+	CORBA_Environment ev;
+	Nautilus_ViewFrame view_frame;
+	
+	view_frame = view_frame_call_begin (view, &ev);
+	if (view_frame != CORBA_OBJECT_NIL) {
+		Nautilus_ViewFrame_close_window (view_frame, &ev);
+	}
+	view_frame_call_end (view_frame, &ev);
+}
+
+
 void
 nautilus_view_open_location_in_this_window (NautilusView *view,
 					    const char *location)
@@ -915,6 +931,16 @@ nautilus_view_go_back (NautilusView *view)
 			     NULL,
 			     NULL);
 }
+
+void
+nautilus_view_close_window (NautilusView *view)
+{
+	queue_outgoing_call (view,
+			     call_close_window,
+			     NULL,
+			     NULL);
+}
+
 
 BonoboControl *
 nautilus_view_get_bonobo_control (NautilusView *view)
