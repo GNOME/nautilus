@@ -1,3 +1,11 @@
+2000-06-15  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/nautilus-music-view.c: (fetch_play_time),
+	(play_current_file), (nautilus_music_view_update_from_uri):
+	fixed bug where the track time slider in the music view was not
+	working anymore, that Darin introduced when he was cleaning
+	stuff up.  Fixed by escaping and unescaping uris properly.
+	
 2000-06-15  J Shane Culpepper  <pepper@eazel.com>
 
 	* HACKING:

@@ -542,7 +542,6 @@ static int
 fetch_play_time (GnomeVFSFileInfo *file_info, int bitrate)
 {
         if ((file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_SIZE) == 0) {
-                /* FIXME: Unknown time should return 0? */
                 return 0;
         }
 
@@ -897,26 +896,25 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 	play_mode = get_play_status();
 	gtk_clist_select_row (GTK_CLIST(music_view->details->song_list), music_view->details->selected_index, 0);
 	
-	song_filename = gtk_clist_get_row_data (GTK_CLIST (music_view->details->song_list),
+	song_uri = gtk_clist_get_row_data (GTK_CLIST (music_view->details->song_list),
                                                 music_view->details->selected_index);
-	if (song_filename == NULL) {
+	if (song_uri == NULL) {
 		return;
 	}
-
+	song_filename = nautilus_get_local_path_from_uri(song_uri);
+	
 	/* set up the current bitrate and file size so we can give progress feedback */
         
         gtk_clist_get_text (GTK_CLIST(music_view->details->song_list),
                             music_view->details->selected_index, 4, &temp_str);
 	music_view->details->current_bitrate = atoi (temp_str);
-        song_uri = nautilus_get_uri_from_local_path (song_filename);
         result = gnome_vfs_get_file_info (song_uri, &file_info,
                                           GNOME_VFS_FILE_INFO_DEFAULT, NULL);
-        g_free (song_uri);
  	music_view->details->current_file_size =
                 (result == GNOME_VFS_OK
                  && (file_info.valid_fields & GNOME_VFS_FILE_INFO_FIELDS_SIZE) != 0)
                 ? file_info.size
-                : 0; /* FIXME: Is 0 OK for the failure case here? */
+                : 0;
 
 	gtk_widget_set_sensitive (music_view->details->playtime_bar, TRUE);
 	
@@ -924,9 +922,8 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 		gtk_timeout_remove(music_view->details->status_timeout);
 		
 	music_view->details->status_timeout = gtk_timeout_add(900, (GtkFunction) play_status_display, music_view);
-
-        /* FIXME: +7 does not make a URI into a path. */
-	start_playing_file(song_filename + 7, from_start || (play_mode != STATUS_PAUSE));
+ 	start_playing_file(song_filename, from_start || (play_mode != STATUS_PAUSE));
+	g_free(song_filename);
 }
 
 static void
@@ -1248,8 +1245,8 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	GdkBitmap *mask;	
 	GList *song_list;
 	SongInfo *info;
-	char *path_uri;
-	char *image_path_uri;
+	char *path_uri, *escaped_name;
+	char *image_path, *image_path_uri;
 	int file_index;
 	int track_index;
 	
@@ -1280,10 +1277,9 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 				continue;
                 }
 		
-                /* FIXME: This won't work for file names with special characters.
-                 * The file name needs to be escaped.
-                 */
-		path_uri = nautilus_make_path (uri, current_file_info->name);
+ 		escaped_name = gnome_vfs_escape_string (current_file_info->name, GNOME_VFS_URI_UNSAFE_PATH);
+		path_uri = nautilus_make_path (uri, escaped_name);
+		g_free(escaped_name);
 			
 		/* fetch info and queue it if it's an mp3 file */
 		info = fetch_song_info (path_uri, current_file_info, file_index);
@@ -1358,8 +1354,8 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	/* install the album cover */
 		
 	if (image_path_uri != NULL) {
-                /* FIXME: +7 does not make a URI into a path. */
-		pixbuf = gdk_pixbuf_new_from_file(image_path_uri + 7);
+  		image_path = nautilus_get_local_path_from_uri(image_path_uri);
+  		pixbuf = gdk_pixbuf_new_from_file(image_path);
 		pixbuf = nautilus_gdk_pixbuf_scale_to_fit(pixbuf, 128, 128);
 
        		gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
@@ -1376,7 +1372,8 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 		
 		gtk_widget_show (music_view->details->album_image);
  		g_free(image_path_uri);
- 	} else if (music_view->details->album_image != NULL) {
+ 		g_free(image_path);
+	} else if (music_view->details->album_image != NULL) {
 		gtk_widget_hide (music_view->details->album_image);
         }
 		
