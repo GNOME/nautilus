@@ -677,12 +677,17 @@ static void
 egg_recent_model_monitor (EggRecentModel *model, gboolean should_monitor)
 {
 	if (should_monitor && model->priv->monitor == NULL) {
+		char *uri;
+
+		uri = gnome_vfs_get_uri_from_local_path (model->priv->path);
 
 		gnome_vfs_monitor_add (&model->priv->monitor,
-					     model->priv->path,
-					     GNOME_VFS_MONITOR_FILE,
-					     egg_recent_model_monitor_cb,
-					     model);
+				       uri,
+				       GNOME_VFS_MONITOR_FILE,
+				       egg_recent_model_monitor_cb,
+				       model);
+
+		g_free (uri);
 
 		/* if the above fails, don't worry about it.
 		 * local notifications will still happen
