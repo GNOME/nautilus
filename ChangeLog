@@ -1,3 +1,9 @@
+2002-12-19  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-background.c (image_loading_done_callback):
+	Handle the fact the we may have to reload the background if it
+	needed to be rescaled before.
+
 2002-12-18  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-file-operations.c (build_error_string):

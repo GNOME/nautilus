@@ -561,21 +561,32 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
 	}
 
 	screen = g_object_get_data (G_OBJECT (background), "screen");
-	if (screen == NULL)
+	if (screen == NULL) {
 		return;
+        }
 	entire_width = gdk_screen_get_width (screen);
 	entire_height = gdk_screen_get_height (screen);
 
 	if (eel_background_get_suggested_pixmap_size (background, entire_width, entire_height,
                                                       &pixmap_width, &pixmap_height)) {
+                eel_background_pre_draw (background, entire_width, entire_height);
+                /* image resize may have forced us to reload the image */
+                if (!eel_background_is_loaded (background)) {
+                        g_signal_connect (background, "image_loading_done",
+                                          G_CALLBACK (image_loading_done_callback),
+                                          GINT_TO_POINTER (TRUE));
+                        return;
+                }
+
 		pixmap = make_root_pixmap (screen, pixmap_width, pixmap_height);
 	        if (pixmap == NULL) {
 	                return;
 	        }
         
 		gc = gdk_gc_new (pixmap);
-		eel_background_draw_to_drawable (background, pixmap, gc, 0, 0, pixmap_width, pixmap_height,
-                                                 entire_width, entire_height);
+		eel_background_draw (background, pixmap, gc,
+                                     0, 0, 0, 0,
+                                     pixmap_width, pixmap_height);
 		g_object_unref (gc);
 		set_root_pixmap (pixmap, screen);
 		g_object_unref (pixmap);
