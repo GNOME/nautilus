@@ -173,9 +173,7 @@ hyperbola_navigation_history_select_row(GtkCList *clist, gint row, gint column, 
 
   /* FIXME: gotta cast away const because requested_uri isn't defined correctly */
   reqi.requested_uri = (char *)get_uri_from_row (clist, row);
-
-  reqi.new_window_default = reqi.new_window_suggested = Nautilus_V_FALSE;
-  reqi.new_window_enforced = Nautilus_V_FALSE;
+  reqi.new_window_requested = FALSE;
 
   nautilus_view_frame_request_location_change(hview->view, &reqi);
 

@@ -137,7 +137,7 @@ static void hyperbola_navigation_tree_select_row(GtkCTree *ctree, GtkCTreeNode *
 
   memset(&nri, 0, sizeof(nri));
   nri.requested_uri = tnode->uri;
-  nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_UNKNOWN;
+  nri.new_window_requested = FALSE;
   nautilus_view_frame_request_location_change(view->view_frame, &nri);
 
   view->notify_count--;

@@ -4,10 +4,9 @@
 #include <Bonobo.idl>
 
 module Nautilus {
-	enum TruthValue { V_UNKNOWN, V_FALSE, V_TRUE };
 	struct NavigationRequestInfo {
 		string requested_uri;
-		TruthValue new_window_default, new_window_suggested, new_window_enforced;
+		boolean new_window_requested;
 	};
 	
 	struct NavigationInfo {

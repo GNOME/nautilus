@@ -138,7 +138,7 @@ hyperbola_navigation_search_select_row(GtkWidget *clist, gint row, gint column, 
 
   memset(&loc, 0, sizeof(loc));
   loc.requested_uri = uri;
-  loc.new_window_default = loc.new_window_suggested = loc.new_window_enforced = Nautilus_V_UNKNOWN;
+  loc.new_window_requested = FALSE;
   nautilus_view_frame_request_location_change(NAUTILUS_VIEW_FRAME(hns->view_frame), &loc);
 }
 

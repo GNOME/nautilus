@@ -241,7 +241,7 @@ hyperbola_navigation_index_select_row(GtkWidget *clist, gint row, gint column, G
 
   memset(&loc, 0, sizeof(loc));
   loc.requested_uri = ii->uri;
-  loc.new_window_default = loc.new_window_suggested = loc.new_window_enforced = Nautilus_V_UNKNOWN;
+  loc.new_window_requested = FALSE;
   nautilus_view_frame_request_location_change(NAUTILUS_VIEW_FRAME(hni->view_frame), &loc);
 }
 

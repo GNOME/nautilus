@@ -318,8 +318,7 @@ nautilus_window_goto_uri (NautilusWindow *window, const char *uri)
 
   memset(&navinfo, 0, sizeof(navinfo));
   navinfo.requested_uri = (char *)uri;
-  navinfo.new_window_default = navinfo.new_window_suggested = Nautilus_V_FALSE;
-  navinfo.new_window_enforced = Nautilus_V_UNKNOWN;
+  navinfo.new_window_requested = FALSE;
 
   nautilus_window_request_location_change (window, &navinfo, NULL);
 }
@@ -701,7 +700,7 @@ nautilus_window_back_or_forward (NautilusWindow *window, gboolean back, guint di
   /* FIXME: Have to cast away the const for nri.requested_uri. This field should be
    * declared const. */
   nri.requested_uri = (char *)nautilus_bookmark_get_uri (g_slist_nth_data (list, distance));
-  nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_FALSE;
+  nri.new_window_requested = FALSE;
 
   nautilus_window_begin_location_change (window, &nri, NULL, back ? NAUTILUS_LOCATION_CHANGE_BACK : NAUTILUS_LOCATION_CHANGE_FORWARD, distance);
 }

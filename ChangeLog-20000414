@@ -1,3 +1,35 @@
+2000-03-22  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 308 (Straighten out the new_window situation
+	in Nautilus_NavigationRequestInfo)
+
+	Nautilus_NavigationRequestInfo was passing around a trio
+	of tri-state values where one boolean would do. Now it
+	passes around one boolean.
+
+	* idl/nautilus.idl: Eliminated enum TruthValue,
+	replaced NavigationRequestInfo's new_window_default, 
+	new_window_suggested, and new_window_enforced with boolean 
+	new_window_requested.
+	
+	* components/help/hyperbola-nav-index.c: (hyperbola_navigation_index_select_row), 
+	* components/help/hyperbola-nav-search.c: (hyperbola_navigation_search_select_row),
+	* components/help/hyperbola-nav-tree.c: (hyperbola_navigation_tree_select_row), 
+	* components/history/ntl-history-view.c:
+	* components/websearch/ntl-web-search.c:
+	* src/nautilus-window-toolbars.c:
+	* src/ntl-window-msgs.c:
+	* src/ntl-window.c:
+	* src/file-manager/fm-directory-view.c:
+	Simplified all users of Nautilus_NavigationRequestInfo to match.
+
+
+	
+
+	* components/music/main.c: Added a #include to kill 
+	warning about gnome_vfs_init being undefined.
+	
+
 2000-03-21  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 335 (Menus incorrect after keyboard navigation)

@@ -89,9 +89,7 @@ do_search(GtkWidget *widget, WebSearchView *hview)
   real_query[j] = '\0';
   g_snprintf(uri, sizeof(uri), "%s%s%s", ei->url_head?ei->url_head:"", real_query, ei->url_tail?ei->url_tail:"");
   nri.requested_uri = uri;
-  nri.new_window_default = Nautilus_V_FALSE;
-  nri.new_window_suggested = Nautilus_V_FALSE;
-  nri.new_window_enforced = Nautilus_V_UNKNOWN;
+  nri.new_window_requested = FALSE;
 
   nautilus_view_frame_request_location_change(hview->view, &nri);
 }

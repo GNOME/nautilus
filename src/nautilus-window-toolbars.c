@@ -196,7 +196,7 @@ nautilus_window_reload_cb (GtkWidget *widget, NautilusWindow *window)
 
 	memset(&nri, 0, sizeof(nri));
 	nri.requested_uri = (char *)nautilus_window_get_requested_uri (window);
-	nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_FALSE;
+	nri.new_window_requested = FALSE;
 	nautilus_window_begin_location_change (window, &nri, NULL, NAUTILUS_LOCATION_CHANGE_RELOAD, 0);
 }
 

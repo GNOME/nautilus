@@ -27,6 +27,7 @@
 #include "nautilus-music-view.h"
 
 #include <gnome.h>
+#include <libgnomevfs/gnome-vfs.h>
 #include <libgnorba/gnorba.h>
 #include <bonobo.h>
 

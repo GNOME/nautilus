@@ -497,17 +497,7 @@ nautilus_window_request_location_change(NautilusWindow *window,
 					Nautilus_NavigationRequestInfo *loc,
 					NautilusView *requesting_view)
 {  
-  gboolean use_new_window;
-
-
-  /* FIXME: Either remove distinctions between default, suggested, & enforced, or
-   * deal with them somehow.
-   */
-  use_new_window = (loc->new_window_default == Nautilus_V_TRUE ||
-  			     loc->new_window_suggested == Nautilus_V_TRUE ||
-  			     loc->new_window_enforced == Nautilus_V_TRUE);
-
-  if (use_new_window) 
+  if (loc->new_window_requested) 
     {
       NautilusWindow *new_window;
 

@@ -1665,11 +1665,7 @@ fm_directory_view_activate_file_internal (FMDirectoryView *view,
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
 	request.requested_uri = nautilus_file_get_uri (file);
-	request.new_window_default = Nautilus_V_FALSE;
-	request.new_window_suggested = use_new_window ? 
-				       Nautilus_V_TRUE : 
-				       Nautilus_V_FALSE;
-	request.new_window_enforced = Nautilus_V_UNKNOWN;
+	request.new_window_requested = use_new_window;
 	nautilus_view_frame_request_location_change
 		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &request);
 
