@@ -2,7 +2,7 @@
 
 /* fm-annotation-window.c - window that lets user modify file annotations
 
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -26,8 +26,6 @@
 #include "fm-annotation-window.h"
 
 #include "fm-error-reporting.h"
-#include <gtk/gtkcheckbutton.h>
-#include <gtk/gtkentry.h>
 #include <gtk/gtkfilesel.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkhseparator.h>
@@ -71,6 +69,8 @@
 
 struct FMAnnotationWindowDetails {
 	NautilusFile *file;
+	GtkWidget *file_icon;
+	GtkLabel *file_title;	
 };
 
 
@@ -96,9 +96,23 @@ static void
 fm_annotation_window_initialize (FMAnnotationWindow *window)
 {
 	window->details = g_new0 (FMAnnotationWindowDetails, 1);
+	window->details->file = NULL;
+}
+
+static void
+real_destroy (GtkObject *object)
+{
+	FMAnnotationWindow *window;
+
+	window = FM_ANNOTATION_WINDOW (object);
+
+	nautilus_file_unref (window->details->file);
+	
+	g_free (window->details);
+	
+	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 	
-/*
 static GdkPixbuf *
 get_pixbuf_for_annotation_window (NautilusFile *file)
 {
@@ -158,7 +172,7 @@ create_image_widget_for_file (NautilusFile *file)
 					       GTK_OBJECT (image));
 	return image;
 }
-*/
+
 
 static void
 update_annotation_window_title (GtkWindow *window, NautilusFile *file)
@@ -195,7 +209,10 @@ static FMAnnotationWindow *
 create_annotation_window (NautilusFile *file,  FMDirectoryView *directory_view)
 {
 	FMAnnotationWindow *window;
-
+	GtkWidget *hbox, *content_box;
+	GtkWidget *label;
+	char *file_name, *title;
+	
 	window = FM_ANNOTATION_WINDOW (gtk_widget_new (fm_annotation_window_get_type (), NULL));
 
 	window->details->file = nautilus_file_ref (file);
@@ -204,10 +221,29 @@ create_annotation_window (NautilusFile *file,  FMDirectoryView *directory_view)
   	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
 	gtk_window_set_wmclass (GTK_WINDOW (window), "file_annotation", "Nautilus");
 
-	/* Set initial window title */
+	/* allocate a vbox to hold the contents of the annotation window */
+	content_box = gtk_vbox_new (FALSE, GNOME_PAD);
+	gtk_container_add (GTK_CONTAINER (window), content_box);
+	
+	/* allocate an hbox to hold the icon and the title */
+	hbox = gtk_hbox_new (FALSE, GNOME_PAD);
+	gtk_box_pack_start (GTK_BOX (content_box), hbox, FALSE, FALSE, 0);
+	 
+	/* allocate an icon and title */
+	window->details->file_icon = create_image_widget_for_file (window->details->file);
+	gtk_box_pack_start (GTK_BOX (hbox), window->details->file_icon, FALSE, FALSE, GNOME_PAD);
+
+	file_name = nautilus_file_get_name (window->details->file);
+	title = g_strdup_printf (_("Add Annotation to\n%s"), file_name);
+	label = gtk_label_new (title);
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	g_free (file_name);
+	g_free (title);
+	
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, GNOME_PAD);
 	update_annotation_window_title (GTK_WINDOW (window), window->details->file);
 
-	gtk_widget_show (GTK_WIDGET (window));
+	gtk_widget_show_all (GTK_WIDGET (window));
 	return window;
 }
 
@@ -218,20 +254,5 @@ fm_annotation_window_present (NautilusFile *file, FMDirectoryView *directory_vie
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (directory_view));
 	
 	create_annotation_window (file, directory_view);
-}
-
-static void
-real_destroy (GtkObject *object)
-{
-	FMAnnotationWindow *window;
-
-	window = FM_ANNOTATION_WINDOW (object);
-
-	nautilus_file_monitor_remove (window->details->file, window);
-	nautilus_file_unref (window->details->file);
-	
-	g_free (window->details);
-	
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
