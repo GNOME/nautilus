@@ -43,6 +43,7 @@ nautilus_summary_view_LDADD =						\
 	$(VFS_LIBS)							\
 	$(GHTTP_LIBS)							\
 	$(OAF_LIBS)							\
+	$(AMMONITE_LIBS)						\
 	$(NULL)
 
 EXTRA_DIST = $(oaf_DATA)

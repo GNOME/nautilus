@@ -365,6 +365,33 @@ dnl =======================
 dnl end tests for medusa
 dnl =======================
 
+dnl =======================
+dnl begin tests for ammonite (--enable-services only)
+dnl =======================
+
+if test "x$EAZEL_SERVICES" = "x1" ;
+then
+	AMMONITE_CFLAGS=""
+	AMMONITE_LIBS=""
+	AC_MSG_CHECKING(for Ammonite)
+	if test -n `gnome-config --libs ammonite | cut -d ' ' -f1`;
+	then
+		AMMONITE_CFLAGS=`gnome-config --cflags ammonite`
+		AMMONITE_LIBS=`gnome-config --libs ammonite`
+		AC_MSG_RESULT(yes)
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR(Ammonite is required for Eazel Services.  Please obtain it from Eazel's FTP site)
+	fi
+
+	AC_SUBST(AMMONITE_CFLAGS)
+	AC_SUBST(AMMONITE_LIBS)
+
+fi
+
+dnl =======================
+dnl end tests for ammonite
+dnl =======================
 
 dnl Test for libpng
   if test -z "$LIBPNG"; then

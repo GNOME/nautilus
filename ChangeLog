@@ -1,3 +1,17 @@
+2000-08-30  Mike Fleming  <mfleming@eazel.com>
+
+	eazel:summary view now calls ammonite to log in.
+	Also added ammonite dependency to configure.in when 
+	nautilus is compiled with --enable-eazel-services
+
+	* components/services/summary/nautilus-view/Makefile.am:
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (entry_changed_cb), (authn_cb_succeeded), (authn_cb_failed),
+	(login_button_cb), (logout_button_cb),
+	(nautilus_summary_view_initialize),
+	(nautilus_summary_view_destroy):
+	* configure.in:
+
 2000-08-30  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-mime-actions.c:

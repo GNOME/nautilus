@@ -40,7 +40,18 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include <orb/orbit.h>
+#include <liboaf/liboaf.h>
+#include <libtrilobite/eazelproxy.h>
+#include <libtrilobite/libammonite.h>
+#include <bonobo/bonobo-main.h>
+
 #define DEFAULT_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
+
+typedef enum {
+	Pending_None,
+	Pending_Login,
+} SummaryPendingOperationType;
 
 /* A NautilusContentView's private information. */
 struct _NautilusSummaryViewDetails {
@@ -62,6 +73,11 @@ struct _NautilusSummaryViewDetails {
 	GtkWidget	*logout_label;
 
 	GtkWidget	*feedback_text;
+
+	/* EazelProxy -- for logging in/logging out */
+	EazelProxy_UserControl user_control;
+	SummaryPendingOperationType pending_operation;
+	EazelProxy_AuthnCallback authn_callback;
 };
 
 static void	nautilus_summary_view_initialize_class	(NautilusSummaryViewClass	*klass);
@@ -368,27 +384,150 @@ entry_changed_cb (GtkWidget	*entry, NautilusSummaryView	*view)
 	user_name = gtk_entry_get_text (GTK_ENTRY (view->details->username_entry));
 	password = gtk_entry_get_text (GTK_ENTRY (view->details->password_entry));
 
-	button_enabled = user_name && strlen (user_name) && password && strlen (password);
+	button_enabled = 	user_name && strlen (user_name) && password && strlen (password)
+				&& (Pending_None == view->details->pending_operation);
+
 	gtk_widget_set_sensitive (view->details->login_button, button_enabled);
 
+}
+
+static void
+authn_cb_succeeded (const EazelProxy_User *user, gpointer state, CORBA_Environment *ev)
+{
+	NautilusSummaryView    *view;
+
+	view = NAUTILUS_SUMMARY_VIEW (state);
+
+	g_assert (Pending_Login == view->details->pending_operation);
+
+	view->details->pending_operation = Pending_None;
+	gtk_widget_set_sensitive (view->details->login_button, TRUE);
+	
+	/* FIXME-- what now? */
+
+	g_message ("Login succeeded");
+	
+	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
+}
+
+static void
+authn_cb_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *info, gpointer state, CORBA_Environment *ev)
+{
+	NautilusSummaryView    *view;
+
+	view = NAUTILUS_SUMMARY_VIEW (state);
+
+	g_assert (Pending_Login == view->details->pending_operation);
+
+	view->details->pending_operation = Pending_None;
+	gtk_widget_set_sensitive (view->details->login_button, TRUE);
+	
+	/* FIXME-- what now? */
+
+	g_message ("Login FAILED");
+	
+	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 }
 
 /* callback to handle the login button.  Right now only does a simple redirect. */
 static void
 login_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 {
+	char		*user_name;
+	char		*password;
+	EazelProxy_AuthnInfo *authinfo;
+	CORBA_Environment ev;
 
-	go_to_uri (view->details->nautilus_view, "eazel-inventory:");
+	AmmoniteAuthCallbackWrapperFuncs cb_funcs = {
+		authn_cb_succeeded, authn_cb_failed
+	};
 
+	CORBA_exception_init (&ev);
+
+	g_assert (Pending_None == view->details->pending_operation);
+
+	gtk_widget_set_sensitive (view->details->login_button, FALSE);
+
+	if (CORBA_OBJECT_NIL != view->details->user_control) {
+		view->details->authn_callback = ammonite_auth_callback_wrapper_new (bonobo_poa(), &cb_funcs, view);
+
+		user_name = gtk_entry_get_text (GTK_ENTRY (view->details->username_entry));
+		password = gtk_entry_get_text (GTK_ENTRY (view->details->password_entry));
+
+		authinfo = EazelProxy_AuthnInfo__alloc ();
+		authinfo->username = CORBA_string_dup (user_name);
+		authinfo->password = CORBA_string_dup (password);
+		authinfo->services_redirect_uri = CORBA_string_dup ("");
+		authinfo->services_login_path = CORBA_string_dup ("");
+
+		/* Ref myself until the callback returns */
+		bonobo_object_ref (BONOBO_OBJECT (view->details->nautilus_view));
+
+		view->details->pending_operation = Pending_Login;
+		
+		EazelProxy_UserControl_authenticate_user (
+			view->details->user_control,
+			authinfo, TRUE, 
+			view->details->authn_callback, &ev
+		);
+
+		if (CORBA_NO_EXCEPTION != ev._major) {
+			g_warning ("Exception during EazelProxy login");
+			/* FIXME cleanup after fail here */ 
+		}
+
+		g_free (user_name);
+		g_free (password);
+	}
+/*	go_to_uri (view->details->nautilus_view, "eazel-inventory:");*/
+
+	CORBA_exception_free (&ev);
 }
 
 /* callback to handle the logout button.  Right now only does a simple redirect. */
 static void
 logout_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 {
+	CORBA_Environment ev;
+	EazelProxy_UserList *users;
+	CORBA_unsigned_long i;
 
-	go_to_uri (view->details->nautilus_view, "eazel-inventory:");
+	CORBA_exception_init (&ev);
 
+	if (CORBA_OBJECT_NIL != view->details->user_control) {
+		/* Get list of currently active users */
+
+		EazelProxy_UserControl_get_active_users (
+			view->details->user_control, &ev
+		);
+
+		if (CORBA_NO_EXCEPTION != ev._major) {
+			g_message ("Exception while logging out user");
+			return;
+		}
+
+		/* Log out the current default user */
+		for (i = 0; i < users->_length ; i++) {
+			EazelProxy_User *cur;
+
+			cur = users->_buffer + i;
+
+			if (cur->is_default) {
+				g_message ("Logging out user '%s'", cur->user_name);
+				EazelProxy_UserControl_logout_user (
+					view->details->user_control,
+					cur->proxy_port, &ev
+				);
+				break;
+			}
+		}
+
+		CORBA_free (users);
+	}
+
+/*	go_to_uri (view->details->nautilus_view, "eazel-inventory:"); */
+
+	CORBA_exception_free (&ev);
 }
 
 /* callback to handle the maintenance button.  Right now only does a simple redirect. */
@@ -435,9 +574,11 @@ nautilus_summary_view_initialize_class (NautilusSummaryViewClass *klass)
 static void
 nautilus_summary_view_initialize (NautilusSummaryView *view)
 {
-
+	CORBA_Environment ev;
 	NautilusBackground	*background;
 
+	CORBA_exception_init (&ev);
+	
 	view->details = g_new0 (NautilusSummaryViewDetails, 1);
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
@@ -448,7 +589,17 @@ nautilus_summary_view_initialize (NautilusSummaryView *view)
 	background = nautilus_get_widget_background (GTK_WIDGET (view));
 	nautilus_background_set_color (background, SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
 
+	view->details->user_control = (EazelProxy_UserControl) oaf_activate_from_id (IID_EAZELPROXY, 0, NULL, &ev);
+
+	if ( CORBA_NO_EXCEPTION != ev._major ) {
+		/* FIXME user should be warned that Ammonite may not be installed */
+		g_warning ("Couldn't instantiate eazel-proxy\n");
+		view->details->user_control = CORBA_OBJECT_NIL;
+	}
+
 	gtk_widget_show (GTK_WIDGET (view));
+
+	CORBA_exception_free (&ev);
 
 }
 
@@ -457,15 +608,24 @@ nautilus_summary_view_destroy (GtkObject *object)
 {
 
 	NautilusSummaryView	*view;
-	
+	CORBA_Environment ev;
+
+	CORBA_exception_init (&ev);
+
 	view = NAUTILUS_SUMMARY_VIEW (object);
 
 	if (view->details->uri) {
 		g_free (view->details->uri);
 	}
+
+	g_assert (Pending_None == view->details->pending_operation);
+	CORBA_Object_release (view->details->user_control, &ev);
+
 	g_free (view->details);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+
+	CORBA_exception_free (&ev);
 
 }
 
