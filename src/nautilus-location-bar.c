@@ -383,7 +383,9 @@ try_to_expand_path (gpointer callback_data)
 		return FALSE;
 	}
 
-	current_path = eel_make_uri_from_input (user_location);
+	/* Trailing whitespace is OK here since the cursor is known to
+	   be at the end of the text and therefor after the whitespace. */
+	current_path = eel_make_uri_from_input_with_trailing_ws (user_location);
 	if (!eel_istr_has_prefix (current_path, "file://")) {
 		g_free (user_location);
 		g_free (current_path);
@@ -465,7 +467,7 @@ try_to_expand_path (gpointer callback_data)
 			pos = user_location_length;
 			gtk_editable_insert_text (editable,
 						  insert_text,
-						  strlen (insert_text),
+						  g_utf8_strlen (insert_text, -1),
 						  &pos);
 
 			pos = user_location_length;

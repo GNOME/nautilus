@@ -1,3 +1,12 @@
+2002-05-04  David Emory Watson  <dwatson@cs.ucr.edu>
+
+	* configure.in: Require eel 1.1.13.
+
+	* src/nautilus-location-bar.c:
+	(try_to_expand_path): Handle filenames with embeded or trailing white-
+	space.  Fixes bug 46582.  Also fixes a minor utf8 bug that crept into
+	the build.
+
 2002-05-05  Christophe Merlet  <christophe@merlet.net>
 
        * src/file-manager/nautilus-desktop-icon-view-ui.xml:
