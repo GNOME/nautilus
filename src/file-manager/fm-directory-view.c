@@ -99,6 +99,7 @@
 
 #define FM_DIRECTORY_VIEW_POPUP_PATH_APPLICATIONS_PLACEHOLDER    	"/popups/selection/Open Placeholder/Open With/Applications Placeholder"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_VIEWERS_PLACEHOLDER    		"/popups/selection/Open Placeholder/Open With/Viewers Placeholder"
+#define FM_DIRECTORY_VIEW_POPUP_PATH_OPEN_WITH				"/popups/selection/Open Placeholder/Open With"
 
 enum {
 	ADD_FILE,
@@ -2647,118 +2648,6 @@ remove_custom_icons_callback (BonoboUIComponent *component, gpointer callback_da
 }
 
 static void
-compute_menu_item_info (FMDirectoryView *directory_view,
-			const char *path, 
-                        GList *selection,
-                        char **return_name_with_underscore, 
-                        char **return_name_no_underscore,
-                        gboolean *return_sensitivity)
-{
-	char *name_with_underscore;
-	int count;
-
-	*return_sensitivity = TRUE;
-
-        if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OPEN) == 0) {
-                name_with_underscore = g_strdup (_("_Open"));
-                *return_sensitivity = nautilus_g_list_exactly_one_item (selection);
-        } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH) == 0) {
-		name_with_underscore = g_strdup (_("Open With"));
-		*return_sensitivity = nautilus_g_list_exactly_one_item (selection);
-        } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION) == 0) {
-		name_with_underscore = g_strdup (_("Other Application..."));
-        } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER) == 0) {
-		name_with_underscore = g_strdup (_("Other Viewer..."));
-        } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW) == 0) {
-		count = g_list_length (selection);
-		if (count <= 1) {
-			name_with_underscore = g_strdup (_("Open in _New Window"));
-		} else {
-			name_with_underscore = g_strdup_printf (_("Open in %d _New Windows"), count);
-		}
-		if (nautilus_g_list_exactly_one_item (selection)) {
-			/* If the only selected item is launchable, dim out "Open in New Window"
-			 * to avoid confusion about how it differs from "Open" in this case (it
-			 * doesn't differ; they would do the same thing).
-			 */
-			*return_sensitivity = !file_is_launchable (NAUTILUS_FILE (selection->data));
-		} else {
-			*return_sensitivity = selection != NULL;
-		}
-        } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER) == 0) {
-		name_with_underscore = g_strdup (_("New Folder"));
-		*return_sensitivity = fm_directory_view_supports_creating_files (directory_view);
-	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_TRASH) == 0) {
-		if (fm_directory_all_selected_items_in_trash (directory_view)) {
-			if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH, TRUE)) {
-				name_with_underscore = g_strdup (_("Delete from _Trash..."));
-			} else {
-				name_with_underscore = g_strdup (_("Delete from _Trash"));
-			}
-		} else {
-			name_with_underscore = g_strdup (_("Move to _Trash"));
-		}
-		*return_sensitivity = !fm_directory_view_is_read_only (directory_view)
-				      && selection != NULL
-				      && !special_link_in_selection (directory_view);
-	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) == 0) {
-		name_with_underscore = g_strdup (_("_Duplicate"));
-		*return_sensitivity = fm_directory_view_supports_creating_files (directory_view) 
-				      && selection != NULL
-				      && !special_link_in_selection (directory_view);
-	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK) == 0) {
-		if (selection != NULL && !nautilus_g_list_exactly_one_item (selection)) {
-			name_with_underscore = g_strdup (_("Create _Links"));
-		} else {
-			name_with_underscore = g_strdup (_("Create _Link"));
-		}
-		*return_sensitivity = fm_directory_view_supports_creating_files (directory_view) 
-				      && selection != NULL
-				      && !special_link_in_selection (directory_view);
-	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES) == 0) {
-		/* No ellipses here because this command does not require further
-		 * information to be completed.
-		 */
-		name_with_underscore = g_strdup (_("Show _Properties"));
-		*return_sensitivity = selection != NULL && fm_directory_view_supports_properties (directory_view);
-	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH) == 0) {
-		if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH, TRUE)) {
-			name_with_underscore = g_strdup (_("_Empty Trash..."));
-		} else {
-			name_with_underscore = g_strdup (_("_Empty Trash"));
-		}
-		*return_sensitivity =  !nautilus_trash_monitor_is_empty ();
-	} else if (strcmp (path, NAUTILUS_MENU_PATH_SELECT_ALL_ITEM) == 0) {
-		name_with_underscore = g_strdup (_("_Select All Files"));
-		*return_sensitivity = !fm_directory_view_is_empty (directory_view);
-	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS) == 0) {
-                if (nautilus_g_list_more_than_one_item (selection)) {
-                        name_with_underscore = g_strdup (_("R_emove Custom Images"));
-                } else {
-                        name_with_underscore = g_strdup (_("R_emove Custom Image"));
-                }
-        	*return_sensitivity = files_have_any_custom_images (selection);
-	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_RESET_BACKGROUND) == 0) {
-                name_with_underscore = g_strdup (_("Reset _Background"));
-        	*return_sensitivity = nautilus_file_background_is_set 
-        		(fm_directory_view_get_background (directory_view));
-        } else {
-        	name_with_underscore = "";
-                g_assert_not_reached ();
-        }
-
-        if (return_name_no_underscore != NULL) {
-        	*return_name_no_underscore = nautilus_str_strip_chr (name_with_underscore, '_');
-        }
-
-        if (return_name_with_underscore != NULL) {
-		*return_name_with_underscore = name_with_underscore;
-        } else {
-		g_free (name_with_underscore);
-        }
-}
-
-static void
 bonobo_launch_application_callback (BonoboUIComponent *component, gpointer callback_data, const char *path)
 {
 	ApplicationLaunchParameters *launch_parameters;
@@ -2895,56 +2784,11 @@ add_component_to_bonobo_menu (FMDirectoryView *directory_view,
 
 
 static void
-update_one_menu_item (FMDirectoryView *view,
-		      GList *selection,
-		      const char *menu_path,
-		      const char *verb_path)
-{
-	char *label_with_underscore, *label_no_underscore;
-	gboolean sensitive;
-
-        compute_menu_item_info (view, menu_path, selection, &label_with_underscore, &label_no_underscore, &sensitive);
-
-	nautilus_bonobo_set_sensitive (view->details->ui, verb_path, sensitive);
-	nautilus_bonobo_set_label (view->details->ui, verb_path, label_no_underscore);
-	nautilus_bonobo_set_label (view->details->ui, menu_path, label_with_underscore);
-
-	g_free (label_with_underscore);
-	g_free (label_no_underscore);
-}
-
-static void
-reset_bonobo_trash_delete_menu (FMDirectoryView *view, GList *selection)
-{
-	if (fm_directory_all_selected_items_in_trash (view)) {
-		nautilus_bonobo_set_description (view->details->ui, 
-						 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
-						 _("Delete all selected items permanently"));
-		nautilus_bonobo_set_accelerator (view->details->ui, 
-						 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
-						 "");
-	} else {
-		nautilus_bonobo_set_description (view->details->ui, 
-						 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
-						 _("Move all selected items to the Trash"));
-		nautilus_bonobo_set_accelerator (view->details->ui, 
-						 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
-		/* NOTE to translators: DO NOT translate "Control*" part, it is a parsed string
-		   Only change the "t" part to something that makes sense in your language.
-		   This string defines Ctrl-T as "Move all selected items to the Trash" */
-						 _("*Control*t"));
-	}
-	
-	update_one_menu_item (view, selection, 
-			      FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
-			      FM_DIRECTORY_VIEW_COMMAND_TRASH);
-}
-
-static void
 reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 {
 	GList *applications, *components, *node;
 	NautilusFile *file;
+	gboolean sensitive;
 	char *uri;
 	int index;
 	
@@ -2960,8 +2804,10 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 	
 	/* This menu is only displayed when there's one selected item. */
 	if (!nautilus_g_list_exactly_one_item (selection)) {
+		sensitive = FALSE;
 		monitor_file_for_open_with (view, NULL);
 	} else {
+		sensitive = TRUE;
 		file = NAUTILUS_FILE (selection->data);
 		
 		monitor_file_for_open_with (view, file);
@@ -2983,9 +2829,15 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 		g_free (uri);
 	}
 
-	update_one_menu_item (view, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH,
-			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH);
+	/* It's OK to set the sensitivity of the menu items (rather than the verbs)
+	 * here because these are submenu titles, not items with verbs.
+	 */
+	nautilus_bonobo_set_sensitive (view->details->ui,
+				       FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH,
+				       sensitive);
+	nautilus_bonobo_set_sensitive (view->details->ui,
+				       FM_DIRECTORY_VIEW_POPUP_PATH_OPEN_WITH,
+				       sensitive);
 }
 
 static BonoboWindow *
@@ -3064,46 +2916,157 @@ real_merge_menus (FMDirectoryView *view)
 }
 
 static void
+set_label_for_menu_and_command (FMDirectoryView *view,
+				const char *menu_path,
+				const char *command_path,
+				const char *label_with_underscore)
+{
+	char *label_no_underscore;
+
+	label_no_underscore = nautilus_str_strip_chr (label_with_underscore, '_');
+	nautilus_bonobo_set_label (view->details->ui,
+				   menu_path,
+				   label_with_underscore);
+	nautilus_bonobo_set_label (view->details->ui,
+				   command_path,
+				   label_no_underscore);
+	
+	g_free (label_no_underscore);
+}				
+
+static void
 real_update_menus (FMDirectoryView *view)
 {
 	GList *selection;
+	gint selection_count;
+	char *label_with_underscore;
+	gboolean confirm_trash;
+	gboolean selection_contains_special_link;
+	gboolean can_create_files;
 	
 	selection = fm_directory_view_get_selection (view);
+	selection_count = g_list_length (selection);
+	
+	confirm_trash = nautilus_preferences_get_boolean 	
+		(NAUTILUS_PREFERENCES_CONFIRM_TRASH, TRUE);
+	selection_contains_special_link = special_link_in_selection (view);
+	can_create_files = fm_directory_view_supports_creating_files (view);
 
 	bonobo_ui_component_freeze (view->details->ui, NULL);
 
-	update_one_menu_item (view, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER,
-			      FM_DIRECTORY_VIEW_COMMAND_NEW_FOLDER);
-	update_one_menu_item (view, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN,
-			      FM_DIRECTORY_VIEW_COMMAND_OPEN);
-	update_one_menu_item (view, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW,
-			      FM_DIRECTORY_VIEW_COMMAND_OPEN_IN_NEW_WINDOW);
 
+	nautilus_bonobo_set_sensitive (view->details->ui, 
+				       FM_DIRECTORY_VIEW_COMMAND_NEW_FOLDER,
+				       can_create_files);
+
+	nautilus_bonobo_set_sensitive (view->details->ui, 
+				       FM_DIRECTORY_VIEW_COMMAND_OPEN,
+				       selection_count == 1);
+
+	
+	if (selection_count <= 1) {
+		label_with_underscore = g_strdup (_("Open in _New Window"));
+	} else {
+		label_with_underscore = g_strdup_printf (_("Open in %d _New Windows"), selection_count);
+	}
+	set_label_for_menu_and_command (view,
+					FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW,
+					FM_DIRECTORY_VIEW_COMMAND_OPEN_IN_NEW_WINDOW,
+					label_with_underscore);
+	g_free (label_with_underscore);
+				   
+	/* If the only selected item is launchable, dim out "Open in New Window"
+	 * to avoid confusion about how it differs from "Open" in this case (it
+	 * doesn't differ; they would do the same thing).
+	 */
+	nautilus_bonobo_set_sensitive (view->details->ui, 
+				       FM_DIRECTORY_VIEW_COMMAND_OPEN_IN_NEW_WINDOW,
+				       selection_count == 1
+				        ? !file_is_launchable (NAUTILUS_FILE (selection->data))
+				        : selection_count == 0);
+
+	/* Broken into its own function just for convenience */
 	reset_bonobo_open_with_menu (view, selection);
-	reset_bonobo_trash_delete_menu (view, selection);
 
-	update_one_menu_item (view, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE,
-			      FM_DIRECTORY_VIEW_COMMAND_DUPLICATE);
-	update_one_menu_item (view, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK,
-			      FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK);
-	update_one_menu_item (view, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES,
-			      FM_DIRECTORY_VIEW_COMMAND_SHOW_PROPERTIES);
-	update_one_menu_item (view, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH,
-			      FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH);
-	update_one_menu_item (view, selection,
-			      FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS,
-			      FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS);
 
-	update_one_menu_item (view, selection,
-			      NAUTILUS_MENU_PATH_SELECT_ALL_ITEM,
-			      NAUTILUS_COMMAND_SELECT_ALL);
+	if (fm_directory_all_selected_items_in_trash (view)) {
+		nautilus_bonobo_set_description (view->details->ui, 
+						 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
+						 _("Delete all selected items permanently"));
+		nautilus_bonobo_set_accelerator (view->details->ui, 
+						 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
+						 "");
+		label_with_underscore = g_strdup (confirm_trash 
+						   ? _("Delete from _Trash...") 
+						   : _("Delete from _Trash"));
+	} else {
+		nautilus_bonobo_set_description (view->details->ui, 
+						 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
+						 _("Move all selected items to the Trash"));
+		nautilus_bonobo_set_accelerator (view->details->ui, 
+						 FM_DIRECTORY_VIEW_MENU_PATH_TRASH, 
+						 "*Control*t");
+		label_with_underscore = g_strdup (_("Move to _Trash"));
+	}
+	set_label_for_menu_and_command (view,
+					FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
+					FM_DIRECTORY_VIEW_COMMAND_TRASH,
+					label_with_underscore);
+	nautilus_bonobo_set_sensitive (view->details->ui, 
+				       FM_DIRECTORY_VIEW_COMMAND_TRASH,
+				       !fm_directory_view_is_read_only (view)
+			     	       	&& selection_count != 0
+			      		&& !selection_contains_special_link);
+
+	nautilus_bonobo_set_sensitive (view->details->ui, 
+				       FM_DIRECTORY_VIEW_COMMAND_DUPLICATE,
+				       can_create_files
+			     	       	&& selection_count != 0
+			      		&& !selection_contains_special_link);
+
+	set_label_for_menu_and_command (view,
+					FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK,
+					FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK,
+					selection_count > 1
+						? _("Create _Links")
+						: _("Create _Link"));
+	nautilus_bonobo_set_sensitive (view->details->ui, 
+				       FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK,
+				       can_create_files
+			     	       	&& selection_count != 0
+			      		&& !selection_contains_special_link);
+
+	nautilus_bonobo_set_sensitive (view->details->ui, 
+				       FM_DIRECTORY_VIEW_COMMAND_SHOW_PROPERTIES,
+				       selection_count != 0
+			      		&& fm_directory_view_supports_properties (view));
+
+
+	set_label_for_menu_and_command (view,
+					FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH,
+					FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH,
+					confirm_trash
+						? _("_Empty Trash...")
+						: _("_Empty Trash"));
+	nautilus_bonobo_set_sensitive (view->details->ui, 
+				       FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH,
+				       !nautilus_trash_monitor_is_empty ());
+
+
+	set_label_for_menu_and_command (view,
+					FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS,
+					FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS,
+					selection_count > 1
+						? _("R_emove Custom Images")
+						: _("R_emove Custom Image"));
+	nautilus_bonobo_set_sensitive (view->details->ui, 
+				       FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS,
+				       files_have_any_custom_images (selection));
+
+	nautilus_bonobo_set_sensitive (view->details->ui, 
+				       NAUTILUS_COMMAND_SELECT_ALL,
+				       !fm_directory_view_is_empty (view));
+
 
 	bonobo_ui_component_thaw (view->details->ui, NULL);
 

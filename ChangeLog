@@ -1,5 +1,29 @@
 2000-11-16  John Sullivan  <sullivan@eazel.com>
 
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Reimplemented code that updates menu items' labels and
+	sensitivity in a much more straightforward way, made
+	possible by the elimination of gtk context menus.
+
+	* src/file-manager/fm-directory-view.c:
+	(reset_bonobo_open_with_menu): set sensitivity in here
+	instead of in a separate call. Also set sensitivity of
+	"Open With" title in context menu, which was previously
+	always sensitive. However, it is still always sensitive
+	due to a Bonobo bug.
+	(set_label_for_menu_and_command): Helper function that
+	handles stripping the underscore for the command's label.
+	(real_update_menus): Now all the dynamic menu items are
+	updated in here, which removes a lot of string compares,
+	unnecessary label-setting, and other extra code.
+
+	(compute_menu_item_info), (update_one_menu_item),
+	(reset_bonobo_trash_delete_menu): Removed functions;
+	they are merged into real_update_menus now.
+
+2000-11-16  John Sullivan  <sullivan@eazel.com>
+
 	* components/adapter/nautilus-zoomable-proxy.c:
 	(nautilus_zoomable_proxy_get):
 	Fixed uninitialized variable warning that was
