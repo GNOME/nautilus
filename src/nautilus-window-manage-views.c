@@ -1082,6 +1082,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
         char *dialog_title;
  	GnomeDialog *dialog;
         GList *attributes;
+        GnomeVFSURI *vfs_uri;
        
         if (!final) {
                 return;
@@ -1190,9 +1191,16 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
 		break;
 
 	case NAUTILUS_NAVIGATION_RESULT_HOST_NOT_FOUND:
-                error_message = g_strdup_printf (_("Couldn't display \"%s\", because the host couldn't be found. "
-                				   "Check that your proxy settings are correct."),
-                                                 uri_for_display);
+		/* This case can be hit for user-typed strings like "foo" due to
+		 * the code that guesses web addresses when there's no initial "/".
+		 * But this case is also hit for legitimate web addresses when
+		 * the proxy is set up wrong.
+		 */
+		vfs_uri = gnome_vfs_uri_new (location);
+                error_message = g_strdup_printf (_("Couldn't display \"%s\", because no host \"%s\" could be found. "
+                				   "Check that the spelling is correct and that your proxy settings are correct."),
+                                                 uri_for_display, gnome_vfs_uri_get_host_name (vfs_uri));
+                gnome_vfs_uri_unref (vfs_uri);
 		break;
 
 	case NAUTILUS_NAVIGATION_RESULT_HOST_HAS_NO_ADDRESS:

@@ -1,3 +1,15 @@
+2001-01-30  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 6153 (confusing error message after trying to
+	navigate to "foo")
+
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_end_location_change_callback):
+	Improved the error message for this case so that it's
+	more likely to be helpful.
+
 2001-01-30  Martin Norbäck  <d95mback@dtek.chalmers.se>
 
         * libnautilus-extensions/nautilus-file-operations-progress.c:
