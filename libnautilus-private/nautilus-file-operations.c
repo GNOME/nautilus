@@ -2037,7 +2037,7 @@ handle_new_folder_vfs_error (const GnomeVFSXferProgressInfo *progress_info, NewF
 	}
 	
 	eel_show_error_dialog (error_string, _("Error creating new folder"),
-				    GTK_WINDOW (state->parent_view));
+				    GTK_WINDOW (gtk_widget_get_toplevel (state->parent_view)));
 	
 	g_free (error_string_to_free);
 	
