@@ -1,5 +1,23 @@
 2000-07-01  J Shane Culpepper  <pepper@eazel.com>
 
+	* components/services/inventory/lib/Makefile.am:
+	* components/services/inventory/lib/eazel-inventory-shared.c:
+	(add_package_info), (read_proc_info), (add_info), (add_io_info),
+	(add_hardware_info), (synchronize_configuration_metafile),
+	(update_configuration_metafile), (create_configuration_metafile):
+	* components/services/inventory/lib/eazel-inventory-shared.h:
+	* components/services/inventory/nautilus-view/Makefile.am:
+	*
+	components/services/inventory/nautilus-view/nautilus-inventory-view
+	.c: (generate_inventory_form), (gather_config_button_cb),
+	(register_later_cb), (make_http_post_request), (go_to_uri),
+	(get_home_uri), (update_now):
+
+	Moving the inventory view to its new home to make way for the new
+	bootstrap startup view.
+
+2000-07-01  J Shane Culpepper  <pepper@eazel.com>
+
 	* components/services/inventory/nautilus-view/Makefile.am:
 	* components/services/inventory/nautilus-view/main.c:
 	(inventory_object_destroyed), (inventory_make_object), (main):

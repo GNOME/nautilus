@@ -10,13 +10,19 @@ INCLUDES = \
 	-I$(top_srcdir)						\
 	-I$(top_builddir)					\
         -I$(top_srcdir)/components/services/trilobite		\
+        -I/usr/include/rpm					\
 	$(GNOME_CFLAGS)						\
 	$(GCONF_CFLAGS)						\
 	$(GHTTP_CFLAGS)						\
 	$(WERROR)						\
 	$(NULL)
 
-noinst_LIBRARIES = libinventory_corba.a
+noinst_LIBRARIES = libinventory.a libinventory_corba.a
+
+libinventory_a_SOURCES =						\
+	eazel-inventory-shared.h					\
+	eazel-inventory-shared.c					\
+	$(NULL)
 
 ## CORBA magic
 

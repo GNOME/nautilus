@@ -33,19 +33,20 @@ nautilus_inventory_view_SOURCES =					\
 	main.c								\
 	$(NULL)
 
-nautilus_inventory_view_LDFLAGS =				\
+nautilus_inventory_view_LDADD =							\
 	$(top_builddir)/components/services/inventory/lib/libinventory_corba.a  \
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
-	$(top_builddir)/libnautilus/libnautilus.la			\
+	$(top_builddir)/libnautilus/libnautilus.la				\
 	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la	\
-	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la  \
-	$(top_builddir)/librsvg/librsvg.la				\
-	$(BONOBO_LIBS)							\
-	$(GNOMEUI_LIBS)							\
-	$(GCONF_LIBS)							\
-	$(VFS_LIBS)							\
-	$(GHTTP_LIBS)							\
-	$(OAF_LIBS)							\
+	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la  	\
+	$(top_builddir)/librsvg/librsvg.la					\
+	$(BONOBO_LIBS)								\
+	$(GNOMEUI_LIBS)								\
+	$(GCONF_LIBS)								\
+	$(VFS_LIBS)								\
+	$(GHTTP_LIBS)								\
+	$(OAF_LIBS)								\
+	$(top_builddir)/components/services/inventory/lib/libinventory.a	\
 	$(NULL)
 
 EXTRA_DIST = $(oaf_DATA)
