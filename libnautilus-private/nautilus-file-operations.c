@@ -386,9 +386,11 @@ handle_transfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 	if (transfer_info->cancelled
 		&& progress_info->phase != GNOME_VFS_XFER_PHASE_COMPLETED) {
 		/* If cancelled, delete any partially copied files that are laying
-		 * around and return.
+		 * around and return. Don't delete the source though..
 		 */
 		if (progress_info->target_name != NULL
+		    && progress_info->source_name != NULL
+		    && strcmp (progress_info->source_name, progress_info->target_name) != 0
 		    && progress_info->bytes_total != progress_info->bytes_copied) {
 			GList *delete_me;
 
