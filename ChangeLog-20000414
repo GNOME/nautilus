@@ -1,5 +1,12 @@
 2000-03-09  John Sullivan <sullivan@eazel.com>
 
+        * libnautilus/gnome-icon-container.c: (update_icon):
+        Changed decision of when to draw mini-text on an icon to
+        be based on icon size rather than zoom level, so it works
+        more sensibly with stretched icons.
+
+2000-03-09  John Sullivan <sullivan@eazel.com>
+
         Bug fixes and memory leak fixes.
 
         * libnautilus/gnome-icon-container.c:
@@ -29,7 +36,7 @@
 	NautilusThumbnailInfos.
 	(nautilus_icon_factory_get_thumbnail_uri): Use compare_thumbnail_info
 	to avoid putting the same uri in the thumbnail-making queue multiple
-	times. This may or may not have been the cause of an intermittend
+	times. This may or may not have been the cause of an intermittent
 	thumbnail-creating problem I was seeing.
 
 2000-03-08  Andy Hertzfeld <andy@eazel.com>

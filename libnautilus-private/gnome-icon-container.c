@@ -2571,7 +2571,10 @@ update_icon (GnomeIconContainer *container, GnomeIconContainerIcon *icon)
 
 	font = details->label_font[details->zoom_level];
         
-	if (details->zoom_level < NAUTILUS_ZOOM_LEVEL_STANDARD) {
+        /* Choose to show mini-text based on this icon's size, not zoom level,
+         * since icon may be stretched big or small.
+         */
+	if (icon_size_x < NAUTILUS_ICON_SIZE_STANDARD || icon_size_y < NAUTILUS_ICON_SIZE_STANDARD) {
 		contents_as_text = NULL;
 	} else {
 		contents_as_text = nautilus_icons_controller_get_icon_property  
