@@ -30,8 +30,6 @@
 #include "nautilus-list.h"
 
 #include <ctype.h>
-#include <string.h>
-
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkbindings.h>
 #include <gtk/gtkdnd.h>
@@ -106,6 +104,13 @@ struct NautilusListDetails
 	GList *selection_list;
 
 	GtkWidget *title;
+
+	/* Rendering state */
+	GdkGC *cell_lighter_background;
+	GdkGC *cell_darker_background;
+	GdkGC *cell_selected_lighter_background;
+	GdkGC *cell_selected_darker_background;
+	GdkGC *cell_divider_color;
 };
 
 /* maximum amount of milliseconds the mouse button is allowed to stay down and still be considered a click */
@@ -179,9 +184,10 @@ static int      get_cell_horizontal_start_position      (GtkCList             *c
 							 GtkCListRow          *row,
 							 int                   column_index,
 							 int                   content_width);
-static void     get_cell_style                          (GtkCList             *clist,
+static void     get_cell_style                          (NautilusList         *clist,
 							 GtkCListRow          *row,
 							 int                   state,
+							 int		       row_index,
 							 int                   column_index,
 							 GtkStyle            **style,
 							 GdkGC               **fg_gc,
@@ -499,6 +505,12 @@ nautilus_list_destroy (GtkObject *object)
 	unschedule_keyboard_row_reveal (list);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+
+	gdk_gc_unref (list->details->cell_lighter_background);
+	gdk_gc_unref (list->details->cell_darker_background);
+	gdk_gc_unref (list->details->cell_selected_lighter_background);
+	gdk_gc_unref (list->details->cell_selected_darker_background);
+	gdk_gc_unref (list->details->cell_divider_color);
 
 	g_free (list->details->type_select_pattern);
 
@@ -910,7 +922,7 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 					/* One final test. Check whether the click was in the
 					 * horizontal bounds of the displayed text.
 					 */
-					get_cell_style (clist, row, GTK_STATE_NORMAL, column_index, &style, NULL, NULL);
+					get_cell_style (list, row, GTK_STATE_NORMAL, row_index, column_index, &style, NULL, NULL);
 					text_width = gdk_string_width (style->font, GTK_CELL_TEXT (row->cell[column_index])->text);
 					text_x = get_cell_horizontal_start_position (clist, row, column_index, text_width);
 					if (event->x >= text_x && event->x <= text_x + text_width) {
@@ -1317,12 +1329,75 @@ nautilus_list_key_press (GtkWidget *widget,
 	return TRUE;
 }
 
+static guint32
+nautilus_gdk_color_to_gdk_rgb (const GdkColor *color)
+{
+	guint32 result;
+	
+	result = (0xff0000 | (color->red & 0xff00));
+	result <<= 8;
+	result |= ((color->green & 0xff00) | (color->blue >> 8));
+
+	return result;
+}
+
+static guint32
+nautilus_shift_color_component (guchar component, float shift_by)
+{
+	guint32 result;
+	if (shift_by > 1.0) {
+		result = component * (2 - shift_by);
+	} else {
+		result = 0xff - shift_by * (0xff - component);
+	}
+
+	return result & 0xff;
+}
+
+static guint32
+nautilus_gdk_rgb_shift_color (guint32 color, float shift_by)
+{
+	guint32 result;
+
+	/* alpha doesn't change */
+	result = 0xff00;
+
+	/* shift red by shift_by */
+	result |=  nautilus_shift_color_component((color & 0x00ff0000) >> 16, shift_by);
+	result <<= 8;
+	/* shift green by shift_by */
+	result |=  nautilus_shift_color_component((color & 0x0000ff00) >> 8, shift_by);
+	result <<= 8;
+	/* shift blue by shift_by */
+	result |=  nautilus_shift_color_component((color & 0x000000ff), shift_by);
+
+	return result;
+}
+
+static void
+nautilus_gdk_set_shifted_foreground_gc_color (GdkGC *gc, guint32 color, float shift_by)
+{
+	gdk_rgb_gc_set_foreground (gc, nautilus_gdk_rgb_shift_color (color, shift_by));
+}
+
+static GdkGC *
+nautilus_gdk_gc_copy (GdkGC *source, GdkWindow *window)
+{
+	GdkGC *result;
+
+	result = gdk_gc_new (window);
+	gdk_gc_copy (result, source);
+
+	return result;
+}
+
 static void
 nautilus_list_realize (GtkWidget *widget)
 {
 	NautilusList *list;
 	GtkCList *clist;
 	GtkWindow *window;
+	guint32 style_background_color;
 
 	g_return_if_fail (NAUTILUS_IS_LIST (widget));
 
@@ -1332,6 +1407,43 @@ nautilus_list_realize (GtkWidget *widget)
 	clist->column[0].button = list->details->title;
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
+
+	gdk_rgb_init();
+
+	style_background_color = nautilus_gdk_color_to_gdk_rgb
+		(&GTK_WIDGET (list)->style->bg [GTK_STATE_NORMAL]);
+
+	
+	style_background_color = 0xffdddddd;
+	/* FIXME: for now hardcode a gray value*/
+
+	list->details->cell_lighter_background = nautilus_gdk_gc_copy (
+		GTK_WIDGET (list)->style->bg_gc[GTK_STATE_NORMAL], widget->window);
+	list->details->cell_darker_background = nautilus_gdk_gc_copy (
+		GTK_WIDGET (list)->style->bg_gc[GTK_STATE_NORMAL], widget->window);
+	list->details->cell_selected_lighter_background = nautilus_gdk_gc_copy (
+		GTK_WIDGET (list)->style->bg_gc[GTK_STATE_NORMAL], widget->window);
+	list->details->cell_selected_darker_background = nautilus_gdk_gc_copy (
+		GTK_WIDGET (list)->style->bg_gc[GTK_STATE_NORMAL], widget->window);
+	list->details->cell_divider_color = nautilus_gdk_gc_copy (
+		GTK_WIDGET (list)->style->bg_gc[GTK_STATE_NORMAL], widget->window);
+
+
+	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_lighter_background, 
+		style_background_color, 1);
+
+	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_darker_background, 
+		style_background_color, 1.1);
+
+	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_selected_lighter_background, 
+		style_background_color, 1.1);
+
+	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_selected_darker_background, 
+		style_background_color, 1.2);
+
+	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_divider_color, 
+		style_background_color, 1.3);
+
 
 	if (clist->title_window) {
 		gtk_widget_set_parent_window (list->details->title, clist->title_window);
@@ -1593,74 +1705,42 @@ nautilus_list_draw_focus (GtkWidget *widget)
 }
 
 static void
-get_cell_style (GtkCList *clist, GtkCListRow *row,
-		int state, int column_index, GtkStyle **style,
+get_cell_style (NautilusList *list, GtkCListRow *row,
+		int state, int row_index, int column_index, GtkStyle **style,
 		GdkGC **fg_gc, GdkGC **bg_gc)
 {
-	int fg_state;
+	if (style) {
+		*style = GTK_WIDGET (list)->style;
+	}
 
-	if ((state == GTK_STATE_NORMAL) &&
-	    (GTK_WIDGET (clist)->state == GTK_STATE_INSENSITIVE))
-		fg_state = GTK_STATE_INSENSITIVE;
-	else
-		fg_state = state;
-
-	if (row->cell[column_index].style) {
-		if (style) {
-			*style = row->cell[column_index].style;
+	if (state == GTK_STATE_SELECTED) {
+		if (fg_gc != NULL) {
+			*fg_gc = GTK_WIDGET (list)->style->fg_gc[state];
 		}
-		
-		if (fg_gc) {
-			*fg_gc = row->cell[column_index].style->fg_gc[fg_state];
-		}
-		
-		if (bg_gc) {
-			if (state == GTK_STATE_SELECTED) {
-				*bg_gc = row->cell[column_index].style->bg_gc[state];
-			} else {
-	  			*bg_gc = row->cell[column_index].style->base_gc[state];
-	  		}
-		}
-	} else if (row->style) {
-		if (style) {
-			*style = row->style;
-		}
-		
-		if (fg_gc) {
-			*fg_gc = row->style->fg_gc[fg_state];
-		}
-		
-		if (bg_gc) {
-			if (state == GTK_STATE_SELECTED) {
-				*bg_gc = row->style->bg_gc[state];
-			} else {
-				*bg_gc = row->style->base_gc[state];
-			}
-		}
-	} else {
-		if (style) {
-			*style = GTK_WIDGET (clist)->style;
-		}
-		
-		if (fg_gc) {
-			*fg_gc = GTK_WIDGET (clist)->style->fg_gc[fg_state];
-		}
-		
-		if (bg_gc) {
-			if (state == GTK_STATE_SELECTED) {
-				*bg_gc = GTK_WIDGET (clist)->style->bg_gc[state];
-			} else {
-				*bg_gc = GTK_WIDGET (clist)->style->base_gc[state];
-			}
+		if (bg_gc != NULL) {
+			*bg_gc = GTK_WIDGET (list)->style->bg_gc[state];
 		}
 
-		if (state != GTK_STATE_SELECTED) {
-			if (fg_gc && row->fg_set) {
-				*fg_gc = clist->fg_gc;
+		return;
+	}
+
+	if (fg_gc != NULL) {
+		*fg_gc = GTK_WIDGET (list)->style->fg_gc[state];
+	}
+
+	if (bg_gc != NULL) {
+		/* FIXME - this has to be based on selected column, not hardcoded */
+		if (column_index == 2) {
+			if ((row_index % 2) != 0) {
+				*bg_gc = list->details->cell_selected_lighter_background;
+			} else {
+				*bg_gc = list->details->cell_selected_darker_background;
 			}
-			
-			if (bg_gc && row->bg_set) {
-				*bg_gc = clist->bg_gc;
+		} else {
+			if ((row_index % 2) != 0) {
+				*bg_gc = list->details->cell_lighter_background;
+			} else {
+				*bg_gc = list->details->cell_darker_background;
 			}
 		}
 	}
@@ -1828,7 +1908,8 @@ draw_cell (GtkCList *clist, GdkRectangle *area, int row_index, int column_index,
 		return;
 	}
 
-	get_cell_style (clist, row, row->state, column_index, &style, &fg_gc, &bg_gc);
+	get_cell_style (NAUTILUS_LIST(clist), row, row->state, row_index, 
+		column_index, &style, &fg_gc, &bg_gc);
 	get_cell_rectangle (clist, row_index, column_index, &cell_rectangle);
 	get_cell_greater_rectangle (&cell_rectangle, &erase_rectangle, 
 		column_index == last_column_index (clist));
@@ -2045,14 +2126,14 @@ draw_row (GtkCList *clist, GdkRectangle *area, int row_index, GtkCListRow *row)
 
 	/* draw the row spacer */
 	gdk_draw_rectangle (clist->clist_window,
-			    widget->style->base_gc[GTK_STATE_ACTIVE],
+			    NAUTILUS_LIST (clist)->details->cell_divider_color,
 			    TRUE,
 			    intersect_rectangle.x,
 			    extended_row_rectangle.y,
 			    intersect_rectangle.width,
 			    CELL_SPACING);
 	gdk_draw_rectangle (clist->clist_window,
-			    widget->style->base_gc[GTK_STATE_ACTIVE],
+			    NAUTILUS_LIST (clist)->details->cell_divider_color,
 			    TRUE,
 			    intersect_rectangle.x,
 			    row_rectangle.y + row_rectangle.height,

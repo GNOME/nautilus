@@ -320,7 +320,8 @@ nautilus_gdk_pixbuf_render_to_drawable_tiled (GdkPixbuf *pixbuf,
 }
 
 /* return the average value of each component */
-void nautilus_gdk_pixbuf_average_value (GdkPixbuf *pixbuf, GdkColor *color)
+void 
+nautilus_gdk_pixbuf_average_value (GdkPixbuf *pixbuf, GdkColor *color)
 {
 	int red_total, green_total, blue_total, count;
 	int row, column;

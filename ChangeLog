@@ -1,3 +1,30 @@
+2000-07-14  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-list.c: 
+	(nautilus_list_destroy), (nautilus_list_button_release), 
+	(nautilus_list_realize), (get_cell_style),
+	(draw_cell), (draw_row):
+	Work in progress on new list view look. Allocate GdkGCs needed to
+	draw the individual cells in different colors. Rework get_cell_style
+	to alternate gcs for different rows/columns properly.
+	Few things are still hardcoded and will get fixed soon.
+
+	* libnautilus-extensions/nautilus-list.c: 
+	(nautilus_gdk_gc_copy)
+	Cover call for creating a new gc and copying state from an existing one.
+
+	* libnautilus-extensions/nautilus-list.c: 
+	(nautilus_gdk_color_to_gdk_rgb),
+	(nautilus_shift_color_component), (nautilus_gdk_rgb_shift_color),
+	(nautilus_gdk_set_shifted_foreground_gc_color),
+	Convenience calls for lightening/darkening a color. Flavor that
+	sets a lightened/darkened color as a foreground color for a GC.
+	I'll move most of these to nautilus-gdk-extensions.c soon.
+	
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_average_value):
+	Fix white space.
+
 2000-07-13  Robey Pointer  <robey@eazel.com>
 
 	* components/services/trilobite/libtrilobite/Makefile.am:
