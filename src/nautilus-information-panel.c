@@ -789,6 +789,12 @@ nautilus_sidebar_remove_panel (NautilusSidebar *sidebar,
 	
 	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (sidebar->details->notebook),
 					  GTK_WIDGET (panel));
+
+
+	/* FIXME bugzilla.eazel.com 1840: 
+	 * This g_return_if_fail gets hit in cases where the sidebar panel
+	 * fails when loading, which causes the panel's tab to be left behind.
+	 */
 	g_return_if_fail (page_num >= 0);
 
 	gtk_notebook_remove_page (GTK_NOTEBOOK (sidebar->details->notebook),

@@ -1383,6 +1383,7 @@ window_update_sidebar_panels_from_preferences (NautilusWindow *window)
 		sidebar_panel = window_find_sidebar_panel_by_identifier (window, identifier);
 
 		if (sidebar_panel != NULL) {
+			nautilus_window_disconnect_view	(window, sidebar_panel);
 			nautilus_window_remove_sidebar_panel (window, sidebar_panel);
 
 			gtk_widget_unref (GTK_WIDGET (sidebar_panel));

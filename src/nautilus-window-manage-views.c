@@ -819,8 +819,18 @@ report_content_view_failure_to_user (NautilusWindow *window)
 static void
 report_sidebar_panel_failure_to_user (NautilusWindow *window, NautilusViewFrame *panel)
 {
-	/* FIXME bugzilla.eazel.com 762: Need real message here */
-	nautilus_error_dialog ("Sidebar panel died.", GTK_WINDOW (window));
+	char *name;
+	char *message;
+
+	name = nautilus_view_frame_get_label (panel);
+	message = g_strdup_printf ("The %s sidebar panel encountered an error and can't continue. "
+			           "If this keeps happening, you might want to turn this panel off.",
+			           name);
+	g_free (name);
+
+	nautilus_error_dialog (message, GTK_WINDOW (window));
+
+	g_free (message);
 }
 
 static gboolean
@@ -874,8 +884,9 @@ nautilus_window_update_state (gpointer data)
                                 window->cv_progress_error = TRUE;
                         }
 
+                        report_sidebar_panel_failure_to_user (window, error_view);
+
                         if (g_list_find (window->new_sidebar_panels, error_view) != NULL) {
-                        	report_sidebar_panel_failure_to_user (window, error_view);
                                 window->new_sidebar_panels = g_list_remove (window->new_sidebar_panels, error_view);
                                 gtk_widget_unref (GTK_WIDGET (error_view));
                         }

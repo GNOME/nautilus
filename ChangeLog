@@ -1,3 +1,26 @@
+2000-07-31  John Sullivan  <sullivan@eazel.com>
+
+	Finished rest of bug 762 (Framework for dealing with
+	component that crashes). Remaining component-failure issues
+	have been split off as separate bugs.
+
+	* src/nautilus-sidebar.c: (nautilus_sidebar_remove_panel),
+	* src/nautilus-view-frame.c: (check_object):
+	Just added FIXME comments with bug numbers.
+	
+	* src/nautilus-window-manage-views.c:
+	(report_sidebar_panel_failure_to_user):
+	Turned this from a placeholder to a real function that puts up
+	a sensible error message.
+	(nautilus_window_update_state): Moved the report_to_user call
+	to a place where it is hit in all the error cases, not just some.
+	
+	* src/nautilus-window.c:
+	(window_update_sidebar_panels_from_preferences):
+	Call nautilus_window_disconnect_view on sidebar panel before
+	removing it the normal way so that it doesn't trigger the
+	report-error-to-user code.
+
 2000-07-28  Darin Adler  <darin@eazel.com>
 
 	Mostly some tweaking on the recent link file work.

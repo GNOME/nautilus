@@ -737,7 +737,9 @@ check_object (gpointer data)
 	view->checking++;
 	ok = TRUE;
 	if (CORBA_Object_non_existent (bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object)), &ev)) {
-		/* FIXME: Is a destroy really sufficient here? Who does the unref? */
+		/* FIXME bugzilla.eazel.com 1840: Is a destroy really sufficient here? Who does the unref? 
+		 * See bug 1840 for one bad case this destroy is involved in.
+		 */
 		gtk_object_destroy (GTK_OBJECT (view));
 
 		view->timer_id = 0;
