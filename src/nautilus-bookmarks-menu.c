@@ -330,6 +330,12 @@ nautilus_bookmarks_menu_new (NautilusWindow *window)
 
 	nautilus_bookmarks_menu_fill(new_bookmarks_menu);
 
+	/* Register to find out about icon theme changes */
+	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
+					       "theme_changed",
+					       nautilus_bookmarks_menu_repopulate,
+					       GTK_OBJECT (new_bookmarks_menu));
+
 	return GTK_WIDGET (new_bookmarks_menu);
 }
 

@@ -1,5 +1,28 @@
 2000-02-22  John Sullivan  <sullivan@eazel.com>
 
+	Made bookmarks menu, go menu, and bookmarks window respond
+	to icon theme changes. The history metaview is still an
+	outstanding issue, waiting on technical solution to
+	icon-factories-in-different-executables problem.
+
+	* src/nautilus-bookmarks-menu.c:
+	(nautilus_bookmarks_menu_new): register to call
+	nautilus_bookmarks_menu_repopulate when nautilus_icon_factory
+	emits "theme_changed" signal.
+	* src/nautilus-bookmarks-window.c:
+	(create_bookmarks_window): register to call repopulate
+	when nautilus_icon_factory emits "theme_changed" signal.
+	* src/ntl-window.c:
+	(refresh_history_list_in_go_menu): Renamed from history_list_changed_cb,
+	removed unused NautilusSignaller parameter.
+	(nautilus_window_init): Changed a gtk_signal_connect_while_alive to
+	gtk_signal_connect_object_while_alive to avoid that unused
+	NautilusSignaller parameter; register to call 
+	refresh_history_list_in_go_menu when nautilus_icon_factory emits
+	"theme_changed" signal.
+
+2000-02-22  John Sullivan  <sullivan@eazel.com>
+
 	Improved the status text that appears after changing the
 	selection in the file manager.
 

@@ -237,6 +237,13 @@ create_bookmarks_window(NautilusBookmarklist *list)
         	            GTK_SIGNAL_FUNC (on_remove_button_clicked),
                       	    NULL);
 
+	/* Register to find out about icon theme changes */
+	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
+					       "theme_changed",
+					       repopulate,
+					       GTK_OBJECT (window));
+                      	    
+
 	/* Set selection mode after connecting signal to notice initial selected row. */
 	gtk_clist_set_selection_mode(GTK_CLIST (bookmark_list_widget), 
 				     GTK_SELECTION_BROWSE);

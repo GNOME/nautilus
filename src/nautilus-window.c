@@ -38,6 +38,7 @@
 #include "ntl-miniicon.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libnautilus/nautilus-gtk-extensions.h>
+#include <libnautilus/nautilus-icon-factory.h>
 #include <libnautilus/nautilus-string.h>
 #include "nautilus-zoom-control.h"
 #include <ctype.h>
@@ -384,8 +385,7 @@ activate_bookmark_in_menu_item (GtkMenuItem *menu_item, NautilusWindow *window)
 }
 
 static void
-history_list_changed_cb (NautilusSignaller *signaller,
-			 NautilusWindow *window)
+refresh_history_list_in_go_menu (NautilusWindow *window)
 {
 	GSList *iterator;
 	GtkMenu *go_menu;
@@ -509,11 +509,16 @@ nautilus_window_init (NautilusWindow *window)
 {
   gtk_quit_add_destroy (1, GTK_OBJECT (window));
 
-  gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_signaller_get_current ()),
-  				  "history_list_changed",
-  				  history_list_changed_cb,
-  				  window,
-  				  GTK_OBJECT (window));
+  gtk_signal_connect_object_while_alive (GTK_OBJECT (nautilus_signaller_get_current ()),
+  				         "history_list_changed",
+  				         refresh_history_list_in_go_menu,
+  				         GTK_OBJECT (window));
+
+  gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
+				         "theme_changed",
+				         refresh_history_list_in_go_menu,
+				         GTK_OBJECT (window));
+				         
 }
 
 static gboolean
