@@ -4434,10 +4434,14 @@ nautilus_icon_container_scroll_to_icon (NautilusIconContainer  *container,
 
 	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
 
+	/* We need to force a relayout now if there are updates queued
+	 * since we need the final positions */
+	nautilus_icon_container_layout_now (container);
+	
 	l = container->details->icons;
 	while (l != NULL) {
 		icon = l->data;
-
+		
 		if (icon->data == data &&
 		    icon_is_positioned (icon)) {
 			item = EEL_CANVAS_ITEM (icon->item);
