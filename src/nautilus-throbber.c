@@ -106,12 +106,31 @@ static void
 get_throbber_dimensions (NautilusThrobber *throbber, int *throbber_width, int* throbber_height)
 {
 	int current_width, current_height;
+	int pixbuf_width, pixbuf_height;
+	GList *current_entry;
+	GdkPixbuf *pixbuf;
 	
 	/* start with the quiescent image */
 	current_width = gdk_pixbuf_get_width (throbber->details->quiescent_pixbuf);
 	current_height = gdk_pixbuf_get_height (throbber->details->quiescent_pixbuf);
 
 	/* loop through all the installed images, taking the union */
+	current_entry = throbber->details->image_list;
+	while (current_entry != NULL) {	
+		pixbuf = (GdkPixbuf*) current_entry->data;
+		pixbuf_width = gdk_pixbuf_get_width (pixbuf);
+		pixbuf_height = gdk_pixbuf_get_height (pixbuf);
+		
+		if (pixbuf_width > current_width) {
+			current_width = pixbuf_width;
+		}
+		
+		if (pixbuf_height > current_height) {
+			current_height = pixbuf_height;
+		}
+		
+		current_entry = current_entry->next;
+	}
 	
 	/* return the result */
 	*throbber_width = current_width;
@@ -144,8 +163,7 @@ nautilus_throbber_initialize (NautilusThrobber *throbber)
 	/* add a callback for when the theme changes */
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
 					  nautilus_throbber_theme_changed,
-					  throbber);	
-
+					  throbber);
 }
 
 /* allocate a new throbber */
@@ -277,7 +295,7 @@ nautilus_throbber_stop (NautilusThrobber *throbber)
 
 }
 
-/* routines to load the images used to draw the control */
+/* routines to load the images used to draw the throbber */
 
 /* unload all the images, and the list itself */
 
