@@ -67,7 +67,7 @@
 #define ASSUME_ix86_IS_i386 
 
 /* send the user here after a completed (success or failure) install */
-#define NEXT_URL	"eazel-services:/catalog"
+#define NEXT_URL	"eazel:"
 
 
 static void       nautilus_service_install_view_initialize_class (NautilusServiceInstallViewClass	*klass);
