@@ -1,3 +1,39 @@
+2001-02-15  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(dump_tree_helper), (dump_tree):
+
+	Made dump_tree dump less redundant info (tries not to repeat
+	sections of the graph it's already visited).
+	
+	* nautilus-installer/install-lib/Makefile.am:
+	* nautilus-installer/libtrilobite/Makefile.am:
+
+	Set LOG_DOMAIN to G_LOG_DOMAIN so our log catcher will actually
+	work. :)
+
+	* nautilus-installer/src/Makefile.am:
+
+	Remove redundant object file.
+
+	* nautilus-installer/src/create-eazel-installer.sh:
+
+	By default, strip the installer binary before gzexe'ing it (this
+	makes it much much smaller).  Eventually we'll want to add some
+	sort of command-line option for deciding which kind to build.
+
+	* nautilus-installer/src/installer.c: (conflict_check),
+	(eazel_installer_initialize):
+
+	Remember to nudge GTK+ after updating labels so they'll actually
+	refresh.
+
+	* nautilus-installer/src/link.sh:
+	* nautilus-installer/src/main.c: (main):
+	* nautilus-installer/src/prescript:
+
+	Fix the prescript to work around a sad popt bug.
+
 2001-02-15  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Mike Engber <engber@eazel.com>

@@ -24,7 +24,7 @@ libeazelinstall_minimal_a_DEPENDENCIES = $(PACKAGE_SYSTEM_OBJECT)
 INCLUDES=\
 	-DEAZEL_INSTALL_NO_CORBA				\
 	-DEAZEL_INSTALL_SLIM 					\
-	-DLOG_DOMAIN=\"Nautilus-Installer\"			\
+	-DG_LOG_DOMAIN=\"Nautilus-Installer\"			\
 	-I.							\
 	-I@top_srcdir@						\
 	-I/usr/include/rpm					\

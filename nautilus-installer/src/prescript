@@ -65,7 +65,10 @@ if test $UID -ne 0 -a "x$QUICK" '!=' "xyes"; then
 else
     if test "x$botan_rice_candy" = "x"; then
         # running as root, or has "--{version|build|help}" command-line option
-	/bin/sh -c "$params && $export && cd $PWD && /bin/sh $0 $* --user $USER"
+        # note that the --user option has to be of the '=' variety because of
+        # a bug in popt. (if any of the user args use the '=' form, a final
+        # non-'=' ['--user arg'] option silently corrupts argv.)
+	/bin/sh -c "$params && $export && cd $PWD && /bin/sh $0 $* --user=$USER"
 	exit
     fi
 fi

@@ -143,7 +143,7 @@ rm hest
 if test "$1" = "push" -a $? = 0; then
     echo "Copying installer to /h/public/bin ..."
     if test "$USER" = "robey"; then
-        cp eazel-installer.sh /h/public/bin/
+        cp eazel-installer.sh /h/public/bin/eazel-installer-rpm${RPM_MAJOR}.sh
 	# make it so anyone can write a new one in
 	chmod 777 /h/public/bin/eazel-installer-rpm${RPM_MAJOR}.sh
     else

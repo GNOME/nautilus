@@ -62,7 +62,7 @@ enum {
 */
 #if EI2_DEBUG & 0x10
 static void
-dump_tree_helper (GList *packages, char *indent, GList *path) 
+dump_tree_helper (GList *packages, char *indent, GList *path, GList **touched) 
 {
 	GList *iterator;
 	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
@@ -77,30 +77,43 @@ dump_tree_helper (GList *packages, char *indent, GList *path)
 		}
 		
 		name = packagedata_get_readable_name (pack);
-		trilobite_debug ("%s%p (%s) %s %s%s %s", 
-				 indent, 
-				 pack, 
-				 name, 
-				 pack->eazel_id,
-				 (pack->fillflag & MUST_HAVE) ? "filled" : "not filled",
-				 (pack->status == PACKAGE_CANNOT_OPEN) ? " but failed" : "",
-				 pack->toplevel ? "TOP":"");
-		tmp = g_strdup_printf ("%s  ", indent);
-		if (g_list_find (path, pack)) {
-			trilobite_debug ("%s... %p %s recurses ..", indent, pack, pack->name);
+		if (g_list_find (*touched, pack) != NULL) {
+			trilobite_debug ("%s%p (%s) %s   [see above]",
+					 indent,
+					 pack,
+					 name,
+					 pack->eazel_id);
 		} else {
-			path = g_list_prepend (path, pack);
-			dump_tree_helper (pack->depends, tmp, path);
-			path = g_list_remove (path, pack);
+			trilobite_debug ("%s%p (%s) %s %s%s %s", 
+					 indent, 
+					 pack, 
+					 name, 
+					 pack->eazel_id,
+					 (pack->fillflag & MUST_HAVE) ? "filled" : "not filled",
+					 (pack->status == PACKAGE_CANNOT_OPEN) ? " but failed" : "",
+					 pack->toplevel ? "TOP":"");
+			tmp = g_strdup_printf ("%s  ", indent);
+			if (g_list_find (path, pack)) {
+				trilobite_debug ("%s... %p %s recurses ..", indent, pack, pack->name);
+			} else {
+				path = g_list_prepend (path, pack);
+				*touched = g_list_prepend (*touched, pack);
+				dump_tree_helper (pack->depends, tmp, path, touched);
+				path = g_list_remove (path, pack);
+			}
+			g_free (tmp);
 		}
 		g_free (name);
-		g_free (tmp);
 	}
 }
 
 static void
-dump_tree (GList *packages) {
-	dump_tree_helper (packages, "", NULL);
+dump_tree (GList *packages)
+{
+	GList *touched = NULL;
+
+	dump_tree_helper (packages, "", NULL, &touched);
+	g_list_free (touched);
 }
 #endif
 

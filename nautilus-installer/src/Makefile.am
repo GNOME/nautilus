@@ -58,7 +58,6 @@ CFLAGS = 					\
 eazel_installer_LDFLAGS = -all-static
 
 eazel_installer_LDADD = 	\
-        $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 	\
 	../install-lib/libeazelinstall_minimal.a			\
 	../libtrilobite/libtrilobite_minimal.a		\
 	$(top_builddir)/libnautilus-extensions/nautilus-druid.o						\
@@ -70,6 +69,7 @@ eazel_installer_LDADD = 	\
 	$(GHTTP_LIBS) \
 	$(XML_LIBS)
 
+#       $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 	\
 #	$(GNOME_LIBS) \
 #	$(GTK_LIBS) \
 #	$(GLIB_LIBS) \

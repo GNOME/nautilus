@@ -40,7 +40,7 @@ INCLUDES=							\
 	-I@top_srcdir@						\
         -I@top_srcdir@/components/services/trilobite		\
 	-DTRILOBITE_SLIM 					\
-	-DLOG_DOMAIN=\"Nautilus-Installer\"			\
+	-DG_LOG_DOMAIN=\"Nautilus-Installer\"			\
 	@GNOME_CFLAGS@						\
 	@XML_CFLAGS@						\
 	$(NULL)

@@ -1,5 +1,8 @@
 #!/bin/sh
 
+echo "* Stripping"
+strip eazel-installer
+
 echo "* Packing"
 
 cp eazel-installer hest
@@ -34,3 +37,5 @@ echo "* Patching"
 
 	sed -e '1,2d' -e 's/set -C//' hest
 ) > eazel-installer.sh
+
+rm hest

@@ -849,6 +849,10 @@ conflict_check (EazelInstall *service, const PackageData *package, EazelInstalle
 	out = g_strdup_printf (_("Checking \"%s\" for conflicts"), package->name);
 	gtk_label_set_text (GTK_LABEL (label_single), out);
 	g_free (out);
+
+	while (gtk_events_pending ()) {
+		gtk_main_iteration ();
+	}
 }
 
 static void 
@@ -2229,12 +2233,6 @@ eazel_installer_initialize (EazelInstaller *object)
 	if (installer->categories && installer->categories->next) {
 		/* more than one category */
 		for (iterator = installer->categories; iterator; iterator=iterator->next) {
-#if 0
-			/* eventually, it would be nice to go pre-fetch the list of required rpm's.  unfortunately
-			 * the install lib isn't quite ready for that yet.
-			 */
-			eazel_install_fetch_definitive_category_info (installer->service, (CategoryData *)(iterator->data));
-#endif
 			eazel_installer_add_category (installer, (CategoryData*)iterator->data, FALSE);
 			gtk_box_add_padding (vbox, 0, 5);
 		}

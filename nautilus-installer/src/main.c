@@ -182,7 +182,7 @@ main (int argc, char *argv[])
 			installer_homedir = g_strdup (passwd_entry->pw_dir);
 		} else {
 			/* give up */
-			printf ("*** Unable to find user's homedir: using '/'\n");
+			printf ("*** Unable to find %s's homedir: using '/'\n", installer_user);
 			installer_homedir = g_strdup ("/");
 		}
 	}
