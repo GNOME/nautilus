@@ -949,7 +949,7 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 	xy[1] = bbox.y0;
 
 	dimensions[0] = (bbox.x1 - bbox.x0);
-	dimensions[1] = (bbox.y1 - bbox.y0);
+	dimensions[1] = pixel_height;
 
 	g_free (wcstr);
 	
@@ -982,7 +982,8 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 	for (i = 0; i < n_glyphs; i++) {
 		rsvg_ft_glyph_composite (result, glyphs[i],
 					 glyph_xy[i * 2] - bbox.x0,
-					 glyph_xy[i * 2 + 1] + pixel_baseline);
+					 glyph_xy[i * 2 + 1]
+					 + pixel_baseline - glyph_affine[5]);
 		rsvg_ft_glyph_unref (glyphs[i]);
 	}
 

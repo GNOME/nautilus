@@ -1,5 +1,32 @@
 2001-03-02  John Harper  <jsh@eazel.com>
 
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 7264 (Nautilus crashing regularly when browsing
+	folders with .svg files with text in them):
+
+	* librsvg/rsvg-ft.c (rsvg_ft_measure_or_render_string): in the
+	returned `dimensions' array, return the actual height of the
+	glyph buffer, not the height of the text bounding box. This
+	appears to fix bug 7264
+
+	* librsvg/rsvg-ft.c (rsvg_ft_measure_or_render_string):
+	subtract the last element of the glyph affine transformation
+	(the vertical offset) from the position at which it's rendered.
+	This fixes the test-ft-gtk test program
+
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	* src/nautilus-window.c (nautilus_window_realize): modified my
+	last change to use gnome_pixmap_file () instead of
+	nautilus_pixmap_file () (since the nautilus-launch-icon.png
+	image gets installed in $prefix/share/pixmaps instead of
+	$pixmap/share/nautilus/pixmaps, I had an old icon lying around
+	which made me not see this..)
+
+2001-03-02  John Harper  <jsh@eazel.com>
+
 	* libnautilus-extensions/nautilus-smooth-text-layout-cache.c:
 	disabled self check for now, since it won't work without make
 	install having been run

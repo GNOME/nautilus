@@ -50,6 +50,7 @@
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkvbox.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-geometry.h>
 #include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-uidefs.h>
@@ -997,7 +998,7 @@ nautilus_window_realize (GtkWidget *widget)
 	}
 
 	/* Set the maxi icon */
-	filename = nautilus_pixmap_file ("nautilus-launch-icon.png");
+	filename = gnome_pixmap_file ("nautilus-launch-icon.png");
 	if (filename != NULL) {
 		gnome_window_icon_set_from_file (GTK_WINDOW (widget),
 						 filename);
