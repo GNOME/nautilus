@@ -77,9 +77,13 @@ test_radio_group (void)
 	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (buttons), "Oranges");
 	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (buttons), "Strawberries");
 
-	nautilus_radio_button_group_set_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (buttons), 0, pixbufs[0]);
-	nautilus_radio_button_group_set_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (buttons), 1, pixbufs[1]);
-	nautilus_radio_button_group_set_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (buttons), 2, pixbufs[2]);
+	nautilus_radio_button_group_set_entry_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (buttons), 0, pixbufs[0]);
+	nautilus_radio_button_group_set_entry_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (buttons), 1, pixbufs[1]);
+	nautilus_radio_button_group_set_entry_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (buttons), 2, pixbufs[2]);
+
+	nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (buttons), 0, _("Apple description"));
+	nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (buttons), 1, _("Oranges description"));
+	nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (buttons), 2, _("Strawberries description"));
 
 	gdk_pixbuf_unref (pixbufs[0]);
 	gdk_pixbuf_unref (pixbufs[1]);

@@ -121,12 +121,31 @@ signup_selection_changed (GtkWidget *radio_buttons, gpointer user_data)
 	last_signup_choice = nautilus_radio_button_group_get_active_index (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons));
 }
 
+static GdkPixbuf*
+create_named_pixbuf (const char *name) 
+{
+	GdkPixbuf	*pixbuf;
+	char		*path;
+	
+	g_return_val_if_fail (name != NULL, NULL);
+	
+	path = nautilus_pixmap_file (name);
+
+	pixbuf = gdk_pixbuf_new_from_file (path);
+	g_free (path);
+
+	g_assert (pixbuf != NULL);
+
+	return pixbuf;
+}
+
 /* set up the user level page */
 static void
 set_up_user_level_page (NautilusDruidPageStandard *page)
 {
 	GtkWidget *radio_buttons, *frame, *label;
 	GtkWidget *container, *main_box;
+	GdkPixbuf *user_level_icons[3];
 
 	container = set_up_background (page, "rgb:bbbb/bbbb/eeee-rgb:ffff/ffff/ffff:h");
 
@@ -150,9 +169,27 @@ set_up_user_level_page (NautilusDruidPageStandard *page)
 	gtk_container_add (GTK_CONTAINER (frame),
 					radio_buttons);
 
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Novice         - for beginning users"));
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Intermediate  - for non-technical users"));
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Hacker         - for expert users"));
+	user_level_icons[0] = create_named_pixbuf ("novice.png");
+	g_assert (user_level_icons[0] != NULL);
+
+	user_level_icons[1] = create_named_pixbuf ("intermediate.png");
+	g_assert (user_level_icons[1] != NULL);
+
+	user_level_icons[2] = create_named_pixbuf ("expert.png");
+	g_assert (user_level_icons[3] != NULL);
+
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Novice"));
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Intermediate"));
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Hacker"));
+
+	nautilus_radio_button_group_set_entry_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), 0, user_level_icons[0]);
+	nautilus_radio_button_group_set_entry_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), 1, user_level_icons[1]);
+	nautilus_radio_button_group_set_entry_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), 2, user_level_icons[2]);
+
+	nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), 0, _("For beginning users"));
+	nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), 1, _("For non-technical users"));
+	nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), 2, _("For expert users"));
+
 	nautilus_radio_button_group_set_active_index (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons),
 						      nautilus_user_level_manager_get_user_level ());
 
@@ -295,7 +332,14 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
                       NULL);
 
 	gtk_widget_show_all (druid);
-	gtk_widget_set_usize (druid, 400, 320);
+
+	/* Im commenting out this call cause it makes the druid unusable for me and 
+	 * thus any new users of nautilus that use large fonts as i do.
+	 * Perhaps we need a better way to control the druid geometry.  We can
+	 * file specific bugs for that --ramiro
+	 */
+
+	/* gtk_widget_set_usize (druid, 400, 320); */
 
 	gtk_widget_show (GTK_WIDGET (dialog));
 	return druid;

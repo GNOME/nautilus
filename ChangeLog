@@ -1,3 +1,23 @@
+2000-07-18  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-radio-button-group.c:
+	(button_toggled), (nautilus_radio_button_group_insert),
+	(nautilus_radio_button_group_get_active_index),
+	(nautilus_radio_button_group_set_entry_pixbuf),
+	(nautilus_radio_button_group_set_entry_description_text):
+	* libnautilus-extensions/nautilus-radio-button-group.h:
+	Add support for nicely aligned description labels.
+
+	* src/nautilus-first-time-druid.c: (create_named_pixbuf),
+	(set_up_user_level_page), (nautilus_first_time_druid_show):
+	Add icons for each of the user levels.
+	
+	Use radio group description labels for the description blurb so
+	that they align nicely.
+
+	* test/test-nautilus-widgets.c: (test_radio_group):
+	Update for description label support.
+	
 2000-07-18  Andy Hertzfeld <andy@eazel.com>
 
 	* icons/eazel/i-directory.png

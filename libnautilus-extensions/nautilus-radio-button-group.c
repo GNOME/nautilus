@@ -27,7 +27,9 @@
 #include "nautilus-image.h"
 
 #include <gtk/gtkradiobutton.h>
+#include <gtk/gtklabel.h>
 #include <gtk/gtksignal.h>
+
 #include "nautilus-gtk-macros.h"
 #include "nautilus-glib-extensions.h"
 
@@ -51,6 +53,7 @@ typedef struct
 {
 	GtkWidget	*button;
 	GtkWidget	*image;
+	GtkWidget	*description;
 } TableRow;
 
 /* NautilusRadioButtonGroupClass methods */
@@ -183,8 +186,7 @@ button_toggled (GtkWidget *button, gpointer user_data)
 	g_assert (button_group != NULL);
 	g_assert (button_group->details != NULL);
 
-	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button)))
-	{
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button))) {
 		radio_button_group_emit_changed_signal (button_group, button);
 	}
 }
@@ -228,6 +230,7 @@ nautilus_radio_button_group_insert (NautilusRadioButtonGroup	*button_group,
 
 	row->button = gtk_radio_button_new_with_label (button_group->details->group, label);
 	row->image = NULL;
+	row->description = NULL;
 
 	/*
 	 * For some crazy reason I dont grok, the group has to be fetched each
@@ -241,10 +244,10 @@ nautilus_radio_button_group_insert (NautilusRadioButtonGroup	*button_group,
 			    (gpointer) button_group);
 
 	button_group->details->num_rows++;
+	
+	gtk_table_resize (table, button_group->details->num_rows, 3);
 
-	gtk_table_resize (table, button_group->details->num_rows, 2);
-
-	/* Column 2 */
+	/* Place the radio button in column 2 */
 	gtk_table_attach (table, 
 			  row->button,				/* child */
 			  1,					/* left_attatch */
@@ -282,8 +285,7 @@ nautilus_radio_button_group_get_active_index (NautilusRadioButtonGroup *button_g
 
 	button_iterator = button_group->details->rows;
 
-	while (button_iterator)
-	{
+	while (button_iterator) {
 		TableRow *row;
 
 		row = button_iterator->data;
@@ -291,8 +293,7 @@ nautilus_radio_button_group_get_active_index (NautilusRadioButtonGroup *button_g
 		g_assert (row->button != NULL);
 		g_assert (GTK_TOGGLE_BUTTON (row->button));
 
-		if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (row->button)))
-		{
+		if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (row->button))) {
 			return i;
 		}
 		
@@ -325,32 +326,31 @@ nautilus_radio_button_group_set_active_index (NautilusRadioButtonGroup *button_g
 
 /* Set an item's pixbuf. */
 void
-nautilus_radio_button_group_set_pixbuf (NautilusRadioButtonGroup *button_group,
-					guint                     index,
-					GdkPixbuf                *pixbuf)
+nautilus_radio_button_group_set_entry_pixbuf (NautilusRadioButtonGroup *button_group,
+					      guint                     entry_index,
+					      GdkPixbuf                *pixbuf)
 {
 	GtkTable	*table;
 	TableRow	*row;
 
  	g_return_if_fail (button_group != NULL);
 	g_return_if_fail (NAUTILUS_IS_RADIO_BUTTON_GROUP (button_group));
-	g_return_if_fail (index < g_list_length (button_group->details->rows));
+	g_return_if_fail (entry_index < g_list_length (button_group->details->rows));
 
 	table = GTK_TABLE (button_group);
 
-	row = g_list_nth_data (button_group->details->rows, index);
+	row = g_list_nth_data (button_group->details->rows, entry_index);
 	g_assert (row != NULL);
 
-	if (row->image == NULL)
-	{
+	if (row->image == NULL) {
 		row->image = nautilus_image_new ();
 		
 		gtk_table_attach (table,
 				  row->image,			/* child */
 				  0,				/* left_attatch */
 				  1,				/* right_attatch */
-				  index,			/* top_attatch */
-				  index + 1,			/* bottom_attatch */
+				  entry_index,			/* top_attatch */
+				  entry_index + 1,		/* bottom_attatch */
 				  GTK_FILL,			/* xoptions */
 				  (GTK_FILL|GTK_EXPAND),	/* yoptions */
 				  0,				/* xpadding */
@@ -362,5 +362,46 @@ nautilus_radio_button_group_set_pixbuf (NautilusRadioButtonGroup *button_group,
 	g_assert (row->image != NULL);
 
 	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (row->image), pixbuf);
+}
+
+/* Set an item's description. */
+void
+nautilus_radio_button_group_set_entry_description_text (NautilusRadioButtonGroup *button_group,
+							guint                     entry_index,
+							const char               *description_text)
+{
+	GtkTable	*table;
+	TableRow	*row;
+
+ 	g_return_if_fail (button_group != NULL);
+	g_return_if_fail (NAUTILUS_IS_RADIO_BUTTON_GROUP (button_group));
+	g_return_if_fail (entry_index < g_list_length (button_group->details->rows));
+
+	table = GTK_TABLE (button_group);
+
+	row = g_list_nth_data (button_group->details->rows, entry_index);
+	g_assert (row != NULL);
+	
+	if (row->description == NULL) {
+		row->description = gtk_label_new (description_text);
+
+		gtk_misc_set_alignment (GTK_MISC (row->description), 0, 0.5);
+		
+		gtk_table_attach (table,
+				  row->description,		/* child */
+				  2,				/* left_attatch */
+				  3,				/* right_attatch */
+				  entry_index,			/* top_attatch */
+				  entry_index + 1,		/* bottom_attatch */
+				  (GTK_FILL|GTK_EXPAND),	/* xoptions */
+				  (GTK_FILL|GTK_EXPAND),	/* yoptions */
+				  0,				/* xpadding */
+				  0);				/* ypadding */
+		
+		gtk_widget_show (row->description);
+	}
+	else {
+		gtk_label_set_text (GTK_LABEL (row->description), description_text);
+	}
 }
 
