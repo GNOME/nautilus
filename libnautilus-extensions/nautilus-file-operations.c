@@ -1694,10 +1694,10 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	TransferInfo *transfer_info;
 	SyncTransferInfo *sync_transfer_info;
 	GnomeVFSResult result;
-	gboolean same_fs;
 	gboolean target_is_trash;
 	gboolean is_desktop_trash_link;
 	gboolean duplicate;
+	gboolean all_local;
 	
 	IconPositionIterator *icon_position_iterator;
 
@@ -1705,17 +1705,9 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 
 	target_dir_uri = NULL;
 	trash_dir_uri = NULL;
-	icon_position_iterator = NULL;
 	result = GNOME_VFS_OK;
 
-	source_uri_list = NULL;
-	target_uri_list = NULL;
-	same_fs = TRUE;
 	target_is_trash = FALSE;
-	
-	duplicate = copy_action != GDK_ACTION_MOVE;
-	move_options = GNOME_VFS_XFER_RECURSIVE;
-
 	if (target_dir != NULL) {
 		if (eel_uri_is_trash (target_dir)) {
 			target_is_trash = TRUE;
@@ -1724,9 +1716,13 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		}
 	}
 
-	/* build the source and target URI lists and figure out if all the files are on the
-	 * same disk
+	/* Build the source and target URI lists and figure out if all
+	 * the files are on the same disk.
 	 */
+	source_uri_list = NULL;
+	target_uri_list = NULL;
+	all_local = TRUE;
+	duplicate = copy_action != GDK_ACTION_MOVE;
 	for (p = item_uris; p != NULL; p = p->next) {
 		/* Filter out special Nautilus link files */
 		/* FIXME bugzilla.eazel.com 5295: 
@@ -1744,7 +1740,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		if (target_dir != NULL) {
 			if (target_is_trash) {
 				gnome_vfs_find_directory (source_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
-							  &target_dir_uri, FALSE, FALSE, 0777);				
+							  &target_dir_uri, FALSE, FALSE, 0777);
 			}
 			if (target_dir_uri != NULL) {
 				target_uri = append_basename (target_dir_uri, source_uri);
@@ -1758,20 +1754,29 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		}
 		
 		if (target_uri != NULL) {
+			g_assert (target_dir_uri != NULL);
+
 			target_uri_list = g_list_prepend (target_uri_list, target_uri);
 			source_uri_list = g_list_prepend (source_uri_list, source_uri);
-			gnome_vfs_check_same_fs_uris (source_uri, target_uri, &same_fs);
-	
-			g_assert (target_dir_uri != NULL);
-			duplicate &= same_fs;
-			duplicate &= gnome_vfs_uri_equal (source_dir_uri, target_dir_uri);
+
+			if (all_local && (!gnome_vfs_uri_is_local (source_uri)
+					  || !gnome_vfs_uri_is_local (target_uri))) {
+				all_local = FALSE;
+			}
+
+			if (duplicate
+			    && !gnome_vfs_uri_equal (source_dir_uri, target_dir_uri)) {
+				duplicate = FALSE;
+			}
 		}
 		gnome_vfs_uri_unref (source_dir_uri);
 	}
 
+	move_options = GNOME_VFS_XFER_RECURSIVE;
 	if (duplicate) {
-		/* Copy operation, parents match -> duplicate operation. Ask gnome-vfs 
-		 * to generate unique names for target files
+		/* Copy operation, parents match -> duplicate
+		 * operation. Ask gnome-vfs to generate unique names
+		 * for target files.
 		 */
 		move_options |= GNOME_VFS_XFER_USE_UNIQUE_NAMES;
 	}
@@ -1803,7 +1808,10 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		/* FIXME: we probably don't need an icon_position_iterator
 		 * here at all.
 		 */
-		icon_position_iterator = icon_position_iterator_new (relative_item_points, item_uris);
+		icon_position_iterator = icon_position_iterator_new
+			(relative_item_points, item_uris);
+	} else {
+		icon_position_iterator = NULL;
 	}
 	
 	if (target_is_trash && (move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) {
@@ -1818,11 +1826,12 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		transfer_info->preparation_name =_("Preparing to Move to Trash...");
 
 		transfer_info->kind = TRANSFER_MOVE_TO_TRASH;
+
 		/* Do an arbitrary guess that an operation will take very little
 		 * time and the progress shouldn't be shown.
 		 */
 		transfer_info->show_progress_dialog = 
-			!same_fs || g_list_length ((GList *)item_uris) > 20;
+			!all_local || g_list_length ((GList *) item_uris) > 20;
 	} else if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) {
 		/* localizers: progress dialog title */
 		transfer_info->operation_title = _("Moving files");
@@ -1834,11 +1843,12 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		transfer_info->cleanup_name = _("Finishing Move...");
 
 		transfer_info->kind = TRANSFER_MOVE;
+
 		/* Do an arbitrary guess that an operation will take very little
 		 * time and the progress shouldn't be shown.
 		 */
 		transfer_info->show_progress_dialog = 
-			!same_fs || g_list_length ((GList *)item_uris) > 20;
+			!all_local || g_list_length ((GList *) item_uris) > 20;
 	} else if ((move_options & GNOME_VFS_XFER_LINK_ITEMS) != 0) {
 		/* when creating links, handle name conflicts automatically */
 		move_options |= GNOME_VFS_XFER_USE_UNIQUE_NAMES;

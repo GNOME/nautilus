@@ -1,3 +1,14 @@
+2001-04-27  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 7818 (Duplicating a link to a file on a different
+	partition gives "You can't copy a file over itself" error).
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(nautilus_file_operations_copy_move): There was a bug in the call
+	to check_same_fs in here (it was passing in the target URI, which
+	is often a file that doesn't even exist), so I removed that check.
+	Did some other cleanups too.
+
 2001-04-27  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3214 (Confusing how to make bookmark changes "stick")
