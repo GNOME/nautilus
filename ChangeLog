@@ -1,3 +1,16 @@
+2001-01-18  Andy Hertzfeld  <andy@eazel.com>
+
+	now that the bonobo problems are resolved, we can go back to
+	the componentized throbber.
+	
+	* src/Makefile.am:
+	* src/nautilus-window-toolbars.c:
+	(nautilus_window_initialize_toolbars):
+	* src/nautilus-window.c: (throbber_location_changed_callback),
+	(nautilus_window_constructed), (nautilus_window_destroy),
+	(nautilus_window_allow_stop):
+	* src/nautilus-window.h:
+
 2001-01-18  Michael Engber  <engber@eazel.com>
 
 	reviewed by: John Sullivan
@@ -16,7 +29,6 @@
 	The desktop can now be reset to the "default" meaning when
 	you change themes it will use the default desktop setting
 	for the new theme - bug 5730.
-	
 
 2001-01-18  Arlo Rose  <arlo@eazel.com>
 
@@ -344,7 +356,6 @@
 	that were doing this independently (one of which is 
 	where the code for the gnome-vfs routine came from).
 
->>>>>>> 1.3409
 2001-01-18  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 5260: (Should revise 'Music view is unable to play

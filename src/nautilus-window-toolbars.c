@@ -29,7 +29,6 @@
 #include <config.h>
 
 #include "nautilus-application.h"
-#include "nautilus-throbber.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window.h"
@@ -353,9 +352,6 @@ set_up_back_or_forward_tool_bar_item (NautilusWindow *window,
 void
 nautilus_window_initialize_toolbars (NautilusWindow *window)
 {
-	GtkWidget *box;
-		
-	/*
 	CORBA_Environment ev;
 	CORBA_exception_init (&ev);
 	window->throbber = bonobo_get_object ("OAFIID:nautilus_throbber", "IDL:Bonobo/Control:1.0", &ev);
@@ -373,22 +369,8 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 					"/Tool Bar/ThrobberWrapper",
 					window->throbber,
 					&ev);
-
 	CORBA_exception_free (&ev);
-	*/
 	
-	window->throbber = nautilus_throbber_new ();
-	gtk_widget_show (window->throbber);
-	
-	/* wrap it in another box to add some visual padding */
-	box = gtk_hbox_new (FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (box), 4);
-	gtk_widget_show (box);
-	gtk_container_add (GTK_CONTAINER (box), window->throbber);
-
-	set_widget_for_bonobo_control (window, box, "/Tool Bar/ThrobberWrapper");
-
-
 	window->details->back_button_item = set_up_back_or_forward_tool_bar_item 
 		(window, _("Back"), "/Tool Bar/BackWrapper");
 	window->details->forward_button_item = set_up_back_or_forward_tool_bar_item 
