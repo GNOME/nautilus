@@ -17,7 +17,7 @@
          <long>
           If set to true, then hidden files are shown in 
           the file manager.  Hidden files are either dotfiles or are
-	  listed in the directory's .hidden file.
+	  listed in the folder's .hidden file.
          </long>
       </locale>
     </schema>
@@ -81,7 +81,7 @@
            Speed tradeoff for when to show a preview of text file contents
            in the file's icon.
            If set to "always" then always show previews, 
-           even if the directory is on a remote server.
+           even if the folder is on a remote server.
            If set to "local_only" then only show previews for local filesystems.
            If set to "never" then never bother to read preview data.
          </long>
@@ -95,11 +95,11 @@
       <type>string</type>
       <default>local_only</default>
       <locale name="C">
-         <short>When to show number of items in a directory</short>
+         <short>When to show number of items in a folder</short>
          <long>
            Speed tradeoff for when to show the number of items in a 
-           directory. If set to "always" then always show item counts, 
-           even if the directory is on a remote server. 
+           folder. If set to "always" then always show item counts, 
+           even if the folder is on a remote server. 
            If set to "local_only" then only show counts for local filesystems.
            If set to "never" then never bother to compute item counts.
          </long>
@@ -166,7 +166,7 @@
          <long>
            Speed tradeoff for when to show an image file as a thumbnail.
            If set to "always" then always thumbnail, 
-           even if the directory is on a remote server.
+           even if the folder is on a remote server.
            If set to "local_only" then only show thumbnails for local filesystems.
            If set to "never" then never bother to thumbnail images,
            just use a generic icon.
@@ -198,13 +198,13 @@
       <type>int</type>
       <default>-1</default>
       <locale name="C">
-         <short>Maximum handled files in a directory</short>
+         <short>Maximum handled files in a folder</short>
          <long>
-	  Directories over this size will be truncated to
+	  Folders over this size will be truncated to
 	  around this size. The purpose of this is to avoid unintentionally
-	  blowing the heap and killing Nautilus on massive directories.
+	  blowing the heap and killing Nautilus on massive folders.
 	  A negative value denotes no limit. The limit is approximate due
-	  to the reading of directories chunk-wise.
+	  to the reading of folders chunk-wise.
          </long>
       </locale>
     </schema>
@@ -250,9 +250,9 @@
       <type>bool</type>
       <default>true</default>
       <locale name="C">
-         <short>Show directories first in windows</short>
+         <short>Show folders first in windows</short>
 	 <long>
-	  If set to true, then Nautilus shows directories prior to
+	  If set to true, then Nautilus shows folders prior to
 	  showing files in the icon and list views.
          </long>
       </locale>
@@ -294,10 +294,10 @@
       <type>bool</type>
       <default>false</default>
       <locale name="C">
-         <short>Nautilus uses the users home directory as the desktop</short>
+         <short>Nautilus uses the users home folder as the desktop</short>
 	 <long>
 	  If set to true, then Nautilus will use the user's home
-	  directory as the desktop.  If it is false, then it will use
+	  folder as the desktop.  If it is false, then it will use
 	  ~/Desktop as the desktop.
          </long>
       </locale>
@@ -344,7 +344,7 @@
       <default>false</default>
       <locale name="C">
          <short>Custom Background Set</short>
-         <long>Whether a custom default directory background has been set.</long>
+         <long>Whether a custom default folder background has been set.</long>
       </locale>
     </schema>
     
@@ -356,7 +356,7 @@
       <default>#ffffff</default>
       <locale name="C">
          <short>Default Background Color</short>
-         <long>Filename for the default directory background.  Only used if background_set is true.</long>
+         <long>Filename for the default folder background.  Only used if background_set is true.</long>
       </locale>
     </schema>
     
@@ -368,7 +368,7 @@
       <default></default>
       <locale name="C">
          <short>Default Background Filename</short>
-         <long>Filename for the default directory background.  Only used if background_set is true.</long>
+         <long>Filename for the default folder background.  Only used if background_set is true.</long>
       </locale>
     </schema>
 
@@ -692,10 +692,10 @@
       <type>bool</type>
       <default>true</default>
       <locale name="C">
-         <short>Only show directories in the tree sidebar</short>
+         <short>Only show folders in the tree sidebar</short>
          <long>
-           If set to true, Nautilus will only show directories
-           in the tree side pane. Otherwise it will show both directories
+           If set to true, Nautilus will only show folders
+           in the tree side pane. Otherwise it will show both folders
 	   and files.
          </long>
       </locale>
@@ -726,7 +726,7 @@
       <locale name="C">
          <short>Home icon visible on desktop</short>
          <long>
-          If this is set to true, an icon linking to the home directory
+          If this is set to true, an icon linking to the home folder
 	  will be put on the desktop.
          </long>
       </locale>
