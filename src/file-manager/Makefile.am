@@ -36,13 +36,11 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-properties-window.h 		\
 	fm-tree-model.c			\
 	fm-tree-model.h			\
+	fm-tree-view.c			\
+	fm-tree-view.h			\
 	nautilus-indexing-info.c	\
 	nautilus-indexing-info.h 	\
 	$(NULL)
-
-# temp commented out:
-#	fm-tree-view.c			\
-#	fm-tree-view.h			\
 
 
 uidir = $(datadir)/gnome-2.0/ui

@@ -77,12 +77,13 @@ struct _NautilusWindowInfoIface
 
 	/* signals: */
 
-        void           (* loading_uri)            (NautilusWindowInfo *window,
-						   const char        *uri);
+        void           (* loading_uri)              (NautilusWindowInfo *window,
+						     const char        *uri);
 	/* Emitted when the view in the window changes the selection */
-        void           (* selection_changed)      (NautilusWindowInfo *window);
-        void           (* title_changed)          (NautilusWindowInfo *window,
-						   const char         *title);
+        void           (* selection_changed)        (NautilusWindowInfo *window);
+        void           (* title_changed)            (NautilusWindowInfo *window,
+						     const char         *title);
+        void           (* hidden_files_mode_changed)(NautilusWindowInfo *window);
   
 	/* VTable: */
 	/* A view calls this once after a load_location, once it starts loading the

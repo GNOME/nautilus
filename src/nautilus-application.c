@@ -176,6 +176,7 @@ nautilus_application_instance_init (NautilusApplication *application)
 
 	/* register sidebars */
 	nautilus_information_panel_register ();
+	fm_tree_view_register ();
 	nautilus_history_sidebar_register ();
 	nautilus_notes_sidebar_register ();
 	nautilus_emblem_sidebar_register ();

@@ -29,6 +29,7 @@ enum {
 	LOADING_URI,
 	SELECTION_CHANGED,
 	TITLE_CHANGED,
+	HIDDEN_FILES_MODE_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -68,6 +69,15 @@ nautilus_window_info_base_init (gpointer g_class)
 				      g_cclosure_marshal_VOID__STRING,
 				      G_TYPE_NONE, 1,
 				      G_TYPE_STRING);
+		
+		nautilus_window_info_signals[HIDDEN_FILES_MODE_CHANGED] =
+			g_signal_new ("hidden_files_mode_changed",
+				      NAUTILUS_TYPE_WINDOW_INFO,
+				      G_SIGNAL_RUN_LAST,
+				      G_STRUCT_OFFSET (NautilusWindowInfoIface, hidden_files_mode_changed),
+				      NULL, NULL,
+				      g_cclosure_marshal_VOID__VOID,
+				      G_TYPE_NONE, 0);
 		
 		initialized = TRUE;
 	}

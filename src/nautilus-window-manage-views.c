@@ -1032,7 +1032,6 @@ load_new_location (NautilusWindow *window,
 		   gboolean tell_current_content_view,
 		   gboolean tell_new_content_view)
 {
-	char *location_copy;
 	GList *selection_copy;
 	NautilusView *view;
         
@@ -1064,12 +1063,6 @@ load_new_location (NautilusWindow *window,
 	}
 	
         eel_g_list_free_deep (selection_copy);
-	
-	location_copy = g_strdup (location);
-	g_signal_emit_by_name (window, "loading_uri",
-			       location_copy);
-	g_free (location_copy);
-
 }
 
 /* A view started to load the location its viewing, either due to
@@ -1096,6 +1089,7 @@ static void
 location_has_really_changed (NautilusWindow *window)
 {
 	GtkWidget *widget;
+	char *location_copy;
 
 	if (window->new_content_view != NULL) {
 		widget = nautilus_view_get_widget (window->new_content_view);
@@ -1107,11 +1101,14 @@ location_has_really_changed (NautilusWindow *window)
 		g_object_unref (window->new_content_view);
 		window->new_content_view = NULL;
 	}
-        
+
+	location_copy = g_strdup (window->details->pending_location);
         if (window->details->pending_location != NULL) {
                 /* Tell the window we are finished. */
                 update_for_new_location (window);
-        }
+
+
+	}
 
         free_location_change (window);
 
@@ -1119,6 +1116,12 @@ location_has_really_changed (NautilusWindow *window)
 	nautilus_window_update_icon (window);
 
 	gtk_widget_show (GTK_WIDGET (window));
+
+	if (location_copy != NULL) {
+		g_signal_emit_by_name (window, "loading_uri",
+				       location_copy);
+		g_free (location_copy);
+	}
 }
 
 /* Handle the changes for the NautilusWindow itself. */

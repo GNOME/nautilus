@@ -1,3 +1,21 @@
+2004-11-08  Alexander Larsson  <alexl@redhat.com>
+
+	* components/Makefile.am:
+	Remove emblem subdir
+	
+	* libnautilus-private/nautilus-window-info.[ch]:
+	* src/nautilus-window.c: (nautilus_window_set_hidden_files_mode):
+	hidden_files_mode_changed signal
+
+	* src/file-manager/Makefile.am:
+	* src/file-manager/fm-tree-view.[ch]:
+	* src/nautilus-application.c: (nautilus_application_instance_init):
+	Make tree view work with new system.
+	
+	* src/nautilus-window-manage-views.c: (load_new_location),
+	(location_has_really_changed):
+	Only emit loading_uri after load_underway has been reported.
+
 2004-11-05  Alexander Larsson  <alexl@redhat.com>
 
 	* src/Makefile.am:

@@ -1647,6 +1647,9 @@ nautilus_window_set_hidden_files_mode (NautilusWindowInfo *window,
 				       NautilusWindowShowHiddenFilesMode  mode)
 {
 	window->details->show_hidden_files_mode = mode;
+
+	g_signal_emit_by_name (window, "hidden_files_mode_changed",
+			       mode);
 }
 
 static void
