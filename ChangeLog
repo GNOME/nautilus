@@ -1,5 +1,12 @@
 2000-04-26  Pavel Cisler  <pavel@eazel.com>
 
+	* librsvg/test-rsvg.c:
+	Make it build:
+	Add a workaround const cast for poptGetContext that thinks it's using
+	const properly.
+	
+2000-04-26  Pavel Cisler  <pavel@eazel.com>
+
 	* src/file-manager/fm-directory-view.c
 	* src/file-manager/fm-directory-view.h:
 	(bonobo_menu_open_in_new_window_cb), (bonobo_menu_delete_cb),
