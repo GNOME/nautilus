@@ -132,7 +132,7 @@ parse_category (xmlNode* cat) {
 	PackageData* pakdat;
 	xmlNode* pkg;
 	xmlNode* pkg2;
-	char *text;
+	char *text, *textp;
 
 	category = categorydata_new ();
 	category->name = g_strdup (xml_get_value (cat, "name"));
@@ -183,7 +183,13 @@ parse_category (xmlNode* cat) {
 			category->default_choice = TRUE;
 		} else if (g_strcasecmp (pkg->name, "DESCRIPTION") == 0) {
 			text = xmlNodeGetContent (pkg);
-			category->description = g_strdup (text);
+			/* remove leading and trailing linefeeds (xml artifact) */
+			while ((strlen (text) > 0) && (text[strlen (text) - 1] == '\n')) {
+					text[strlen (text) - 1] = '\0';
+			}
+			for (textp = text; (*textp == '\n'); textp++)
+				;
+			category->description = g_strdup (textp);
 			free (text);
 		} else {
 			g_error (_("*** Unknown node type '%s'"), pkg->name);
