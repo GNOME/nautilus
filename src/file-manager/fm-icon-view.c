@@ -1482,8 +1482,26 @@ icon_container_compare_icons_callback (NautilusIconContainer *container,
 		(file_a, file_b, icon_view->details->sort->sort_type);
 
 	if (icon_view->details->sort_reversed) {
-		result = -1 * result;
+		result = -result;
 	}
+
+	return result;
+}
+
+static int
+icon_container_compare_icons_by_name_callback (NautilusIconContainer *container,
+					       NautilusFile *file_a,
+					       NautilusFile *file_b,
+					       FMIconView *icon_view)
+{
+	int result;
+
+	g_assert (FM_IS_ICON_VIEW (icon_view));
+	g_assert (container == get_icon_container (icon_view));
+	g_assert (NAUTILUS_IS_FILE (file_a));
+	g_assert (NAUTILUS_IS_FILE (file_b));
+
+	result = nautilus_file_compare_for_sort (file_a, file_b, NAUTILUS_FILE_SORT_BY_NAME);
 
 	return result;
 }
@@ -1996,6 +2014,10 @@ create_icon_container (FMIconView *icon_view)
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "compare_icons",
 			    GTK_SIGNAL_FUNC (icon_container_compare_icons_callback),
+			    icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "compare_icons_by_name",
+			    GTK_SIGNAL_FUNC (icon_container_compare_icons_by_name_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "context_click_selection",

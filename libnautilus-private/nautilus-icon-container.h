@@ -123,6 +123,9 @@ typedef struct {
 	int          (* compare_icons)            (NautilusIconContainer *container,
 						   NautilusIconData *icon_a,
 						   NautilusIconData *icon_b);
+	int          (* compare_icons_by_name)    (NautilusIconContainer *container,
+						   NautilusIconData *icon_a,
+						   NautilusIconData *icon_b);
 
 	/* Notifications for the whole container. */
 	void	     (* band_select_started)	  (NautilusIconContainer *container);

@@ -1,3 +1,24 @@
+2001-01-26  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	Fix 5352 (Tab Order messed up by "Layout" order of folder)
+	Fix 5478 (Icon view tab order doesn't follow the layout order)
+	* libnautilus-extensions/nautilus-icon-container.c: (sort_icons),
+	(compare_icons_by_name), (sort_icons_by_name),
+	(build_icon_list_sorted_by_name), (select_previous_or_next_name),
+	(nautilus_icon_container_initialize_class):
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* src/file-manager/fm-icon-view.c:
+	(icon_container_compare_icons_callback),
+	(icon_container_compare_icons_by_name_callback),
+	(create_icon_container):
+	Add a new signal "compare_icons_by_name" that circumvents the
+	selected sort order and sort kind in a window and uses the unmollested
+	sort by name function.
+	Hook up the select-previous/next function to use the sort-by-name
+	call instead of nautilus_strcoll.
+	
 2001-01-26  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 5747, Nautilus freezes while mounting a device

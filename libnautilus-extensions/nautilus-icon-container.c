@@ -154,6 +154,7 @@ enum {
 	BUTTON_PRESS,
 	CAN_ACCEPT_ITEM,
 	COMPARE_ICONS,
+	COMPARE_ICONS_BY_NAME,
 	CONTEXT_CLICK_BACKGROUND,
 	CONTEXT_CLICK_SELECTION,
 	MIDDLE_CLICK,
@@ -706,9 +707,35 @@ sort_icons (NautilusIconContainer *container,
 	    GList **icons)
 {
 	sort_hack_container = container;
-	*icons = g_list_sort
-		(*icons, compare_icons);
+	*icons = g_list_sort (*icons, compare_icons);
 }
+
+static int
+compare_icons_by_name (gconstpointer a, gconstpointer b)
+{
+	const NautilusIcon *icon_a, *icon_b;
+	int result;
+
+	icon_a = a;
+	icon_b = b;
+
+	result = 0;
+	gtk_signal_emit (GTK_OBJECT (sort_hack_container),
+			 signals[COMPARE_ICONS_BY_NAME],
+			 icon_a->data,
+			 icon_b->data,
+			 &result);
+	return result;
+}
+
+static void
+sort_icons_by_name (NautilusIconContainer *container,
+	    GList **icons)
+{
+	sort_hack_container = container;
+	*icons = g_list_sort (*icons, compare_icons_by_name);
+}
+
 
 static void
 resort (NautilusIconContainer *container)
@@ -2158,31 +2185,19 @@ select_matching_name (NautilusIconContainer *container,
 	g_free (match_state.name);
 }
 
-static int
-compare_icons_by_name (gconstpointer a, gconstpointer b)
-{
-	const NautilusIcon *icon_a, *icon_b;
-
-	icon_a = a;
-	icon_b = b;
-
-	/* _get_editable_text might return NULL here if called while the
-	 * icon container is loading, before each icon has been updated once. 
-	 */
-	return nautilus_strcoll
-		(nautilus_icon_canvas_item_get_editable_text (icon_a->item),
-		 nautilus_icon_canvas_item_get_editable_text (icon_b->item));
-}
-
 static GList *
-build_sorted_icon_list (NautilusIconContainer *container)
+build_icon_list_sorted_by_name (NautilusIconContainer *container)
 {
+	GList *result;
+	
 	if (container->details->icons == NULL) {
 		return NULL;
 	}
 
-	return g_list_sort (nautilus_g_list_copy (container->details->icons), 
-			    compare_icons_by_name);
+	result = nautilus_g_list_copy (container->details->icons);
+	sort_icons_by_name (container, &result);
+
+	return result;
 }
 
 static void
@@ -2204,7 +2219,7 @@ select_previous_or_next_name (NautilusIconContainer *container,
 		icon = get_first_selected_icon (container);
 	}
 
-	list = build_sorted_icon_list (container);
+	list = build_icon_list_sorted_by_name (container);
 
 	if (icon != NULL) {
 		/* must have at least @icon in the list */
@@ -3084,6 +3099,16 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 				  object_class->type,
 				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
 						     compare_icons),
+				  nautilus_gtk_marshal_INT__POINTER_POINTER,
+				  GTK_TYPE_INT, 2,
+				  GTK_TYPE_POINTER,
+				  GTK_TYPE_POINTER);
+	signals[COMPARE_ICONS_BY_NAME]
+		= gtk_signal_new ("compare_icons_by_name",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusIconContainerClass,
+						     compare_icons_by_name),
 				  nautilus_gtk_marshal_INT__POINTER_POINTER,
 				  GTK_TYPE_INT, 2,
 				  GTK_TYPE_POINTER,
