@@ -1,3 +1,16 @@
+2002-03-05  Darin Adler  <darin@bentspoon.com>
+
+	* src/file-manager/fm-list-view.c:
+	(tree_selection_foreach_set_boolean): New.
+	(tree_selection_not_empty): New.
+	(tree_view_has_selection): New.
+	(event_after_callback): Handle only clicks in the bin_window.
+	Also, decide which menu to display by whether an item is selected
+	or not rather than by where the click is.
+	(button_press_callback): Deselect all items when you click on the
+	background.
+	(create_and_set_up_tree_view): Connect the new handler.
+
 2002-03-05  Dave Camp  <dave@ximian.com>
        
 	* components/notes/nautilus-notes.c:

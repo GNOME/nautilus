@@ -89,24 +89,64 @@ list_activate_callback (GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewCo
 	nautilus_file_list_free (file_list);
 }
 
+/* Move these to eel? */
+
+static void
+tree_selection_foreach_set_boolean (GtkTreeModel *model,
+				    GtkTreePath *path,
+				    GtkTreeIter *iter,
+				    gpointer callback_data)
+{
+	* (gboolean *) callback_data = TRUE;
+}
+
+static gboolean
+tree_selection_not_empty (GtkTreeSelection *selection)
+{
+	gboolean not_empty;
+
+	not_empty = FALSE;
+	gtk_tree_selection_selected_foreach (selection,
+					     tree_selection_foreach_set_boolean,
+					     &not_empty);
+	return not_empty;
+}
+
+static gboolean
+tree_view_has_selection (GtkTreeView *view)
+{
+	return tree_selection_not_empty (gtk_tree_view_get_selection (view));
+}
+
 static void
 event_after_callback (GtkWidget *widget, GdkEventAny *event, gpointer callback_data)
 {
-
-	if (event->type == GDK_BUTTON_PRESS && ((GdkEventButton *) event)->button == 3) {
-
-		if (gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (widget),
-						   ((GdkEventButton *) event)->x,
-						   ((GdkEventButton *) event)->y,
-						   NULL, NULL, NULL, NULL) == TRUE) {
+	/* Put up the right kind of menu if we right click in the tree view. */
+	if (event->type == GDK_BUTTON_PRESS
+	    && event->window == gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget))
+	    && ((GdkEventButton *) event)->button == 3) {
+		if (tree_view_has_selection (GTK_TREE_VIEW (widget))) {
 			fm_directory_view_pop_up_selection_context_menu
 				(FM_DIRECTORY_VIEW (callback_data), (GdkEventButton *) event);
-		}
-		else {
+		} else {
 			fm_directory_view_pop_up_background_context_menu
 				(FM_DIRECTORY_VIEW (callback_data), (GdkEventButton *) event);
 		}
 	}
+}
+
+static gboolean
+button_press_callback (GtkWidget *widget, GdkEventButton *event, gpointer callback_data)
+{
+	/* Deselect if people click outside any row. */
+	if (event->window == gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget))
+	    && !gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (widget),
+					       event->x, event->y, NULL, NULL, NULL, NULL)) {
+		gtk_tree_selection_unselect_all (gtk_tree_view_get_selection (GTK_TREE_VIEW (widget)));
+	}
+
+	/* Let the default code run in any case; it won't reselect anything. */
+	return FALSE;
 }
 
 static void
@@ -123,6 +163,8 @@ create_and_set_up_tree_view (FMListView *view)
 			  G_CALLBACK (list_activate_callback), view);
 	g_signal_connect (view->details->tree_view, "event-after",
 			  G_CALLBACK (event_after_callback), view);
+	g_signal_connect (view->details->tree_view, "button_press_event",
+			  G_CALLBACK (button_press_callback), view);
 	
 	view->details->model = g_object_new (FM_TYPE_LIST_MODEL, NULL);
 	gtk_tree_view_set_model (view->details->tree_view, GTK_TREE_MODEL (view->details->model));
