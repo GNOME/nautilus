@@ -41,7 +41,7 @@ static void               nautilus_tree_expansion_state_init       (gpointer    
 									  gpointer     klass);
 static void               nautilus_tree_expansion_state_class_init (gpointer     klass);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusTreeExpansionState, nautilus_tree_expansion_state, GTK_TYPE_OBJECT)
+EEL_CLASS_BOILERPLATE (NautilusTreeExpansionState, nautilus_tree_expansion_state, GTK_TYPE_OBJECT)
 
 
 static gboolean	          expansion_table_hash_remove_func               (gpointer key,

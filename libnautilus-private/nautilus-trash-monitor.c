@@ -56,7 +56,7 @@ static void nautilus_trash_monitor_init       (gpointer                   object
 						     gpointer                   klass);
 static void destroy                                 (GtkObject                 *object);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusTrashMonitor, nautilus_trash_monitor, GTK_TYPE_OBJECT)
+EEL_CLASS_BOILERPLATE (NautilusTrashMonitor, nautilus_trash_monitor, GTK_TYPE_OBJECT)
 
 static void
 nautilus_trash_monitor_class_init (NautilusTrashMonitorClass *klass)

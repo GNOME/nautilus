@@ -169,7 +169,7 @@ static void                 icon_view_handle_uri_list                          (
 
 static int preview_sound_auto_value;
 
-EEL_DEFINE_CLASS_BOILERPLATE (FMIconView,
+EEL_CLASS_BOILERPLATE (FMIconView,
 			      fm_icon_view,
 			      FM_TYPE_DIRECTORY_VIEW)
 

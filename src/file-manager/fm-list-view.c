@@ -186,7 +186,7 @@ static void                 font_or_font_size_changed_callback        (gpointer 
 static void                 default_sort_criteria_changed_callback    (gpointer            callback_data);
 static void                 default_zoom_level_changed_callback       (gpointer            callback_data);
 
-EEL_DEFINE_CLASS_BOILERPLATE (FMListView,
+EEL_CLASS_BOILERPLATE (FMListView,
 				   fm_list_view,
 				   FM_TYPE_DIRECTORY_VIEW)
 

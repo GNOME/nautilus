@@ -45,7 +45,7 @@ static NautilusComponentAdapterFactory *global_component_adapter_factory = NULL;
 static void nautilus_component_adapter_factory_class_init (NautilusComponentAdapterFactoryClass *klass);
 static void nautilus_component_adapter_factory_init       (NautilusComponentAdapterFactory      *factory);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusComponentAdapterFactory,
+EEL_CLASS_BOILERPLATE (NautilusComponentAdapterFactory,
 			      nautilus_component_adapter_factory,
 			      GTK_TYPE_OBJECT)
 

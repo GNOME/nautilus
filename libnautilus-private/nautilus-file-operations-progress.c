@@ -56,7 +56,7 @@
 static void nautilus_file_operations_progress_class_init (NautilusFileOperationsProgressClass *klass);
 static void nautilus_file_operations_progress_init       (NautilusFileOperationsProgress      *dialog);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusFileOperationsProgress,
+EEL_CLASS_BOILERPLATE (NautilusFileOperationsProgress,
 				   nautilus_file_operations_progress,
 				   GNOME_TYPE_DIALOG);
 

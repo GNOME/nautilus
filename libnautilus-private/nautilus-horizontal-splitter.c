@@ -62,7 +62,7 @@ static void     nautilus_horizontal_splitter_draw             (GtkWidget        
 							       GdkRectangle                    *area);
 #endif
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusHorizontalSplitter,
+EEL_CLASS_BOILERPLATE (NautilusHorizontalSplitter,
 				   nautilus_horizontal_splitter,
 				   E_TYPE_HPANED)
 

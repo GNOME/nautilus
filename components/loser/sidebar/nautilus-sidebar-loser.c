@@ -49,7 +49,7 @@ static void nautilus_sidebar_loser_class_init (NautilusSidebarLoserClass *klass)
 static void nautilus_sidebar_loser_init       (NautilusSidebarLoser      *view);
 static void nautilus_sidebar_loser_destroy          (GtkObject                      *object);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusSidebarLoser, nautilus_sidebar_loser, GTK_TYPE_LABEL)
+EEL_CLASS_BOILERPLATE (NautilusSidebarLoser, nautilus_sidebar_loser, GTK_TYPE_LABEL)
      
 static void loser_load_location_callback      (NautilusView         *nautilus_view,
 					       const char           *location,

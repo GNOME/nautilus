@@ -94,7 +94,7 @@ static void     insert_unparented_nodes              (NautilusTreeView      *vie
 static void     expand_uri_sequence_and_select_end   (NautilusTreeView      *view);
 static gboolean is_anti_aliased			     (NautilusTreeView	    *view);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusTreeView,
+EEL_CLASS_BOILERPLATE (NautilusTreeView,
 				   nautilus_tree_view,
 				   NAUTILUS_TYPE_VIEW)
 

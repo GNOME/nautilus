@@ -88,7 +88,7 @@ static int      update_authors_if_necessary     (gpointer             callback_d
 #define UPDATE_TIME_INTERVAL 8
 
 /* gtk class definition boilerplate */
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusAbout, nautilus_about, GNOME_TYPE_DIALOG)
+EEL_CLASS_BOILERPLATE (NautilusAbout, nautilus_about, GNOME_TYPE_DIALOG)
 
 static void
 nautilus_about_class_init (NautilusAboutClass *about_class)

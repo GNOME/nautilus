@@ -203,7 +203,7 @@ static NautilusSearchBarCriterionType get_next_criterion_type                   
 										     GSList                          *displayed_criteria);
 static void                           nautilus_search_bar_criterion_destroy         (GtkObject                       *object);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusSearchBarCriterion, nautilus_search_bar_criterion, GTK_TYPE_EVENT_BOX)
+EEL_CLASS_BOILERPLATE (NautilusSearchBarCriterion, nautilus_search_bar_criterion, GTK_TYPE_EVENT_BOX)
 
      static void
 nautilus_search_bar_criterion_class_init (NautilusSearchBarCriterionClass *klass)

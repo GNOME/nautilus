@@ -95,9 +95,9 @@ static void     update_session                    (gpointer                  cal
 static void     init_session                      (void);
 static gboolean is_kdesktop_present               (void);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusApplication,
-			      nautilus_application,
-			      BONOBO_GENERIC_FACTORY_TYPE)
+EEL_BONOBO_BOILERPLATE (NautilusApplication,
+			nautilus_application,
+			BONOBO_GENERIC_FACTORY_TYPE)
 
 static CORBA_Object
 create_object (PortableServer_Servant servant,
@@ -464,7 +464,7 @@ nautilus_application_startup (NautilusApplication *application,
 			/* Can't register myself due to trouble locating the
 			 * Nautilus_Shell.server file. This has happened when you
 			 * launch Nautilus with an LD_LIBRARY_PATH that
-			 * doesn't include the directory containg the oaf
+			 * doesn't include the directory containing the oaf
 			 * library. It could also happen if the
 			 * Nautilus_Shell.server file was not present for some
 			 * reason. Sometimes killing oafd and gconfd fixes

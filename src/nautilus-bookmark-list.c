@@ -92,7 +92,7 @@ nautilus_bookmark_list_init (NautilusBookmarkList *bookmarks)
 	nautilus_bookmark_list_load_file (bookmarks);
 }
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusBookmarkList, nautilus_bookmark_list, GTK_TYPE_OBJECT)
+EEL_CLASS_BOILERPLATE (NautilusBookmarkList, nautilus_bookmark_list, GTK_TYPE_OBJECT)
 
 static void
 stop_monitoring_one (gpointer data, gpointer user_data)

@@ -109,7 +109,7 @@ static void	reveal_selected_items_callback 		 (BonoboUIComponent *component,
 							  const char 	   *verb);
 
 
-EEL_DEFINE_CLASS_BOILERPLATE (FMSearchListView,
+EEL_CLASS_BOILERPLATE (FMSearchListView,
 				   fm_search_list_view,
 				   FM_TYPE_LIST_VIEW)
 

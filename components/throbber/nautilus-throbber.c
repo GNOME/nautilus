@@ -91,7 +91,7 @@ static void	nautilus_throbber_size_allocate		 (GtkWidget *widget, GtkAllocation 
 static void	nautilus_throbber_size_request		 (GtkWidget *widget, GtkRequisition *requisition);
 static void     nautilus_throbber_remove_update_callback (NautilusThrobber *throbber);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusThrobber, nautilus_throbber, GTK_TYPE_EVENT_BOX)
+EEL_CLASS_BOILERPLATE (NautilusThrobber, nautilus_throbber, GTK_TYPE_EVENT_BOX)
 
 static void
 nautilus_throbber_class_init (NautilusThrobberClass *throbber_class)

@@ -1,3 +1,14 @@
+2001-11-03  Darin Adler  <darin@bentspoon.com>
+
+	* Many files.
+	Update for change in Eel boilerplate macro names.
+	
+	* src/nautilus-application.c: (nautilus_application_startup):
+	GtkObject -> GObject.
+	* src/nautilus-shell.c: (nautilus_shell_class_init), (finalize),
+	(nautilus_shell_new):
+	GtkObject -> GObject.
+
 2001-11-02  Darin Adler  <darin@bentspoon.com>
 
 	* src/Makefile.am: Put the server file in the right directory.

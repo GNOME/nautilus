@@ -40,7 +40,7 @@ static Nautilus_Metafile corba_open (PortableServer_Servant  servant,
 				     const CORBA_char       *directory,
 				     CORBA_Environment      *ev);
 
-EEL_DEFINE_BONOBO_BOILERPLATE (NautilusMetafileFactory,
+EEL_BONOBO_BOILERPLATE_FULL (NautilusMetafileFactory,
 			       Nautilus_MetafileFactory,
 			       nautilus_metafile_factory,
 			       BONOBO_OBJECT_TYPE)

@@ -93,7 +93,7 @@ static void nautilus_tree_model_directory_done_loading_callback  (NautilusDirect
 								  NautilusTreeModel *model);
 
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusTreeModel, nautilus_tree_model, GTK_TYPE_OBJECT)
+EEL_CLASS_BOILERPLATE (NautilusTreeModel, nautilus_tree_model, GTK_TYPE_OBJECT)
 
 /* infrastructure stuff */
 

@@ -58,7 +58,7 @@ static void                    impl_Nautilus_Undo_Transaction__undo             
 static void                    undo_atom_list_free                                (GList                        *list);
 static void                    undo_atom_list_undo_and_free                       (GList                        *list);
 
-EEL_DEFINE_BONOBO_BOILERPLATE (NautilusUndoTransaction,
+EEL_BONOBO_BOILERPLATE_FULL (NautilusUndoTransaction,
 			       Nautilus_Undo_Transaction,
 			       nautilus_undo_transaction,
 			       BONOBO_OBJECT_TYPE)

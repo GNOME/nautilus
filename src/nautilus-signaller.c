@@ -50,7 +50,7 @@ static void    nautilus_signaller_class_init (gpointer klass);
 static void    nautilus_signaller_init       (gpointer object,
 						    gpointer klass);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusSignaller,
+EEL_CLASS_BOILERPLATE (NautilusSignaller,
 				   nautilus_signaller,
 				   GTK_TYPE_OBJECT)
 

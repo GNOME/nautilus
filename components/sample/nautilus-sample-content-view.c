@@ -77,7 +77,7 @@ static void sample_merge_bonobo_items_callback            (BonoboControl        
 
 #if 0
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusSampleContentView,
+EEL_CLASS_BOILERPLATE (NautilusSampleContentView,
 				   nautilus_sample_content_view,
 				   NAUTILUS_TYPE_VIEW)
 #else

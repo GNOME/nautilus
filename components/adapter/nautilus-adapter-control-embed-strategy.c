@@ -58,7 +58,7 @@ static GtkWidget *nautilus_adapter_control_embed_strategy_get_widget (NautilusAd
 static BonoboObject *nautilus_adapter_control_embed_strategy_get_zoomable (NautilusAdapterEmbedStrategy *strategy);
 
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterControlEmbedStrategy, nautilus_adapter_control_embed_strategy, NAUTILUS_TYPE_ADAPTER_EMBED_STRATEGY)
+EEL_CLASS_BOILERPLATE (NautilusAdapterControlEmbedStrategy, nautilus_adapter_control_embed_strategy, NAUTILUS_TYPE_ADAPTER_EMBED_STRATEGY)
 
 
 static void

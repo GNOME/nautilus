@@ -55,7 +55,7 @@ static void     nautilus_trash_directory_class_init (gpointer                kla
 static void	add_volume				  (NautilusTrashDirectory *trash,
 							   NautilusVolume	  *volume);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusTrashDirectory,
+EEL_CLASS_BOILERPLATE (NautilusTrashDirectory,
 				   nautilus_trash_directory,
 				   NAUTILUS_TYPE_MERGED_DIRECTORY)
 

@@ -58,7 +58,7 @@ static void  nautilus_simple_search_bar_class_init         (NautilusSimpleSearch
 static void  nautilus_simple_search_bar_init               (NautilusSimpleSearchBar      *bar);
 static void  nautilus_simple_search_bar_destroy 	 	 (GtkObject 		       *object);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusSimpleSearchBar,
+EEL_CLASS_BOILERPLATE (NautilusSimpleSearchBar,
 				   nautilus_simple_search_bar,
 				   NAUTILUS_TYPE_SEARCH_BAR)
 

@@ -54,7 +54,7 @@ static guint signals[LAST_SIGNAL];
 static void nautilus_entry_init       (NautilusEntry      *entry);
 static void nautilus_entry_class_init (NautilusEntryClass *class);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusEntry,
+EEL_CLASS_BOILERPLATE (NautilusEntry,
 				   nautilus_entry,
 				   GTK_TYPE_ENTRY)
 

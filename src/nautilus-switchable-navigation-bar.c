@@ -62,7 +62,7 @@ static void  nautilus_switchable_navigation_bar_class_init (NautilusSwitchableNa
 static void  nautilus_switchable_navigation_bar_init       (NautilusSwitchableNavigationBar      *bar);
 static void  nautilus_switchable_navigation_bar_destroy 	 (GtkObject 			       *object);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableNavigationBar,
+EEL_CLASS_BOILERPLATE (NautilusSwitchableNavigationBar,
 				   nautilus_switchable_navigation_bar,
 				   NAUTILUS_TYPE_NAVIGATION_BAR)
 

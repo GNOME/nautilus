@@ -169,7 +169,7 @@ typedef enum {
 static gboolean confirm_trash_auto_value;
 
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusSidebar, nautilus_sidebar, GTK_TYPE_EVENT_BOX)
+EEL_CLASS_BOILERPLATE (NautilusSidebar, nautilus_sidebar, GTK_TYPE_EVENT_BOX)
 
 /* initializing the class object by installing the operations we override */
 static void

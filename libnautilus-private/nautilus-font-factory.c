@@ -70,7 +70,7 @@ static void    nautilus_font_factory_class_init (NautilusFontFactoryClass *class
 static void    nautilus_font_factory_init       (NautilusFontFactory      *factory);
 static void    destroy                                (GtkObject                *object);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusFontFactory,
+EEL_CLASS_BOILERPLATE (NautilusFontFactory,
 				   nautilus_font_factory,
 				   GTK_TYPE_OBJECT)
 

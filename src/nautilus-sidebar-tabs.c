@@ -142,7 +142,7 @@ static TabItem* tab_item_find_by_name                   (NautilusSidebarTabs    
 							 const char               *name);
 static void     smooth_font_changed_callback            (gpointer                  callback_data);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusSidebarTabs, nautilus_sidebar_tabs, GTK_TYPE_WIDGET)
+EEL_CLASS_BOILERPLATE (NautilusSidebarTabs, nautilus_sidebar_tabs, GTK_TYPE_WIDGET)
 
 static void
 nautilus_sidebar_tabs_class_init (NautilusSidebarTabsClass *class)

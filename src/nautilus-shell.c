@@ -65,7 +65,7 @@ struct NautilusShellDetails {
 
 static void     nautilus_shell_init       (NautilusShell          *shell);
 static void     nautilus_shell_class_init (NautilusShellClass     *klass);
-static void     destroy                         (GtkObject              *shell);
+static void     finalize                         (GObject              *shell);
 static void     corba_open_windows              (PortableServer_Servant  servant,
 						 const Nautilus_URIList *list,
 						 const CORBA_char       *geometry,
@@ -83,14 +83,15 @@ static void     corba_restart                   (PortableServer_Servant  servant
 						 CORBA_Environment      *ev);
 static gboolean restore_window_states           (NautilusShell          *shell);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusShell,
-				   nautilus_shell,
-				   BONOBO_OBJECT_TYPE)
+EEL_BONOBO_BOILERPLATE_FULL (NautilusShell,
+			     Nautilus_Shell,
+			     nautilus_shell,
+			     BONOBO_OBJECT_TYPE)
 
 static void
 nautilus_shell_class_init (NautilusShellClass *klass)
 {
-	GTK_OBJECT_CLASS (klass)->destroy = destroy;
+	G_OBJECT_CLASS (klass)->finalize = finalize;
 
 	klass->epv.open_windows = corba_open_windows;
 	klass->epv.open_default_window = corba_open_default_window;
@@ -107,14 +108,14 @@ nautilus_shell_init (NautilusShell *shell)
 }
 
 static void
-destroy (GtkObject *object)
+finalize (GObject *object)
 {
 	NautilusShell *shell;
 
 	shell = NAUTILUS_SHELL (object);
 	g_free (shell->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 NautilusShell *
@@ -122,7 +123,7 @@ nautilus_shell_new (NautilusApplication *application)
 {
 	NautilusShell *shell;
 
-	shell = NAUTILUS_SHELL (gtk_object_new (NAUTILUS_TYPE_SHELL, NULL));
+	shell = NAUTILUS_SHELL (g_object_new (NAUTILUS_TYPE_SHELL, NULL));
 	shell->details->application = application;
 	return shell;
 }

@@ -87,7 +87,10 @@ static void nautilus_view_init             (NautilusView           *view);
 static void nautilus_view_destroy                (GtkObject              *object);
 static void nautilus_view_class_init       (NautilusViewClass      *klass);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusView, nautilus_view, BONOBO_OBJECT_TYPE)
+EEL_BONOBO_BOILERPLATE (NautilusView,
+			Nautilus_View,
+			nautilus_view,
+			BONOBO_OBJECT_TYPE)
 
 static void
 queue_incoming_call (PortableServer_Servant servant,

@@ -83,7 +83,7 @@ static void nautilus_adapter_factory_server_init       (NautilusAdapterFactorySe
 static void nautilus_adapter_factory_server_destroy          (GtkObject                      *object);
 
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterFactoryServer,
+EEL_CLASS_BOILERPLATE (NautilusAdapterFactoryServer,
 				   nautilus_adapter_factory_server,
 				   BONOBO_OBJECT_TYPE)
 

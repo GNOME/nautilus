@@ -101,7 +101,7 @@ static void  nautilus_location_bar_class_init (NautilusLocationBarClass *class);
 static void  nautilus_location_bar_init       (NautilusLocationBar      *bar);
 static void  nautilus_location_bar_update_label     (NautilusLocationBar      *bar);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusLocationBar,
+EEL_CLASS_BOILERPLATE (NautilusLocationBar,
 				   nautilus_location_bar,
 				   NAUTILUS_TYPE_NAVIGATION_BAR)
 

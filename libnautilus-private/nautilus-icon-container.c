@@ -151,7 +151,7 @@ static void	     process_pending_icon_to_rename	      (NautilusIconContainer	  *
 
 static int click_policy_auto_value;
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer,
+EEL_CLASS_BOILERPLATE (NautilusIconContainer,
 				   nautilus_icon_container,
 				   GNOME_TYPE_CANVAS)
 

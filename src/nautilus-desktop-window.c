@@ -54,7 +54,7 @@ static void real_add_current_location_to_history_list (NautilusWindow		 *window)
 
 static void set_wmspec_desktop_hint                   (GdkWindow *window);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_window, NAUTILUS_TYPE_WINDOW)
+EEL_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_window, NAUTILUS_TYPE_WINDOW)
 
 static void
 nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass)

@@ -122,7 +122,7 @@ static void     update_disks_menu                                 (FMDesktopIcon
 static void     free_volume_black_list                            (FMDesktopIconView      *view);
 static gboolean	volume_link_is_selection 			  (FMDirectoryView 	  *view);
 
-EEL_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView,
+EEL_CLASS_BOILERPLATE (FMDesktopIconView,
 			      fm_desktop_icon_view,
 			      FM_TYPE_ICON_VIEW)
 

@@ -67,7 +67,7 @@ static void    nautilus_history_view_class_init (NautilusHistoryViewClass *klass
 static void    nautilus_history_view_init       (NautilusHistoryView      *view);
 static void    nautilus_history_view_destroy          (GtkObject                *object);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusHistoryView,
+EEL_CLASS_BOILERPLATE (NautilusHistoryView,
 				   nautilus_history_view,
 				   NAUTILUS_TYPE_VIEW)
 

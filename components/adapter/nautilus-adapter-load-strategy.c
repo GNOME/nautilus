@@ -57,7 +57,7 @@ static void nautilus_adapter_load_strategy_class_init (NautilusAdapterLoadStrate
 static void nautilus_adapter_load_strategy_init       (NautilusAdapterLoadStrategy      *strategy);
 static void nautilus_adapter_load_strategy_destroy          (GtkObject                        *object);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterLoadStrategy, nautilus_adapter_load_strategy, GTK_TYPE_OBJECT)
+EEL_CLASS_BOILERPLATE (NautilusAdapterLoadStrategy, nautilus_adapter_load_strategy, GTK_TYPE_OBJECT)
 
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_load_strategy, load_location)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_load_strategy, stop_loading)

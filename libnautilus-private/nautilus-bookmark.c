@@ -63,7 +63,7 @@ static void       nautilus_bookmark_class_init      (NautilusBookmarkClass *clas
 static void       nautilus_bookmark_init            (NautilusBookmark      *bookmark);
 static GtkWidget *create_pixmap_widget_for_bookmark       (NautilusBookmark 	 *bookmark);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusBookmark, nautilus_bookmark, GTK_TYPE_OBJECT)
+EEL_CLASS_BOILERPLATE (NautilusBookmark, nautilus_bookmark, GTK_TYPE_OBJECT)
 
 /* GtkObject methods.  */
 

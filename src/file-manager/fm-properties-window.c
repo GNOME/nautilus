@@ -168,7 +168,7 @@ static void remove_pending_file                   (StartupData             *data
 						   gboolean                 cancel_timed_wait,
 						   gboolean                 cancel_destroy_handler);
 
-EEL_DEFINE_CLASS_BOILERPLATE (FMPropertiesWindow, fm_properties_window, GTK_TYPE_WINDOW)
+EEL_CLASS_BOILERPLATE (FMPropertiesWindow, fm_properties_window, GTK_TYPE_WINDOW)
 
 static void
 fm_properties_window_class_init (FMPropertiesWindowClass *class)

@@ -43,7 +43,7 @@ static guint signals[LAST_SIGNAL];
 static void nautilus_navigation_bar_class_init (NautilusNavigationBarClass *class);
 static void nautilus_navigation_bar_init       (NautilusNavigationBar      *bar);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusNavigationBar, nautilus_navigation_bar, EEL_TYPE_GENEROUS_BIN)
+EEL_CLASS_BOILERPLATE (NautilusNavigationBar, nautilus_navigation_bar, EEL_TYPE_GENEROUS_BIN)
 
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_navigation_bar, get_location)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_navigation_bar, set_location)

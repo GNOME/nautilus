@@ -39,7 +39,7 @@
 static void nautilus_search_bar_class_init (NautilusSearchBarClass *class);
 static void nautilus_search_bar_init       (NautilusSearchBar      *bar);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusSearchBar, nautilus_search_bar, NAUTILUS_TYPE_NAVIGATION_BAR)
+EEL_CLASS_BOILERPLATE (NautilusSearchBar, nautilus_search_bar, NAUTILUS_TYPE_NAVIGATION_BAR)
 
 static void
 nautilus_search_bar_class_init (NautilusSearchBarClass *klass)

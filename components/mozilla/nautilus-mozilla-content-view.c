@@ -243,7 +243,7 @@ static void bonobo_control_activate_callback (BonoboObject *control, gboolean st
 /***********************************************************************************/
 /***********************************************************************************/
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusMozillaContentView,
+EEL_CLASS_BOILERPLATE (NautilusMozillaContentView,
 			      nautilus_mozilla_content_view,
 			      GTK_TYPE_VBOX);
 

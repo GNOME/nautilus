@@ -100,7 +100,7 @@ struct NautilusSidebarTitleDetails {
 	gboolean		determined_icon;
 };
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusSidebarTitle, nautilus_sidebar_title, gtk_vbox_get_type ())
+EEL_CLASS_BOILERPLATE (NautilusSidebarTitle, nautilus_sidebar_title, gtk_vbox_get_type ())
 
 static void
 nautilus_sidebar_title_class_init (NautilusSidebarTitleClass *class)

@@ -65,7 +65,7 @@ typedef struct {
 static void nautilus_undo_manager_class_init (NautilusUndoManagerClass  *class);
 static void nautilus_undo_manager_init       (NautilusUndoManager       *item);
 
-EEL_DEFINE_BONOBO_BOILERPLATE (NautilusUndoManager,
+EEL_BONOBO_BOILERPLATE_FULL (NautilusUndoManager,
 			       Nautilus_Undo_Manager,
 			       nautilus_undo_manager,
 			       BONOBO_OBJECT_TYPE)

@@ -75,7 +75,7 @@ static void nautilus_adapter_init             (NautilusAdapter              *ser
 static void nautilus_adapter_destroy                (GtkObject                    *object);
 
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapter,
+EEL_CLASS_BOILERPLATE (NautilusAdapter,
 			      nautilus_adapter,
 			      GTK_TYPE_OBJECT)
 

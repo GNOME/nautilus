@@ -72,7 +72,7 @@ static char *             real_get_name_for_self_as_new_file  (NautilusDirectory
 static void               set_directory_uri                   (NautilusDirectory      *directory,
 							       const char             *new_uri);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusDirectory,
+EEL_CLASS_BOILERPLATE (NautilusDirectory,
 				   nautilus_directory,
 				   GTK_TYPE_OBJECT)
 

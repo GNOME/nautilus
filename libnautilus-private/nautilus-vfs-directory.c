@@ -38,7 +38,7 @@ static void nautilus_vfs_directory_init       (gpointer   object,
 						     gpointer   klass);
 static void nautilus_vfs_directory_class_init (gpointer   klass);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusVFSDirectory,
+EEL_CLASS_BOILERPLATE (NautilusVFSDirectory,
 				   nautilus_vfs_directory,
 				   NAUTILUS_TYPE_DIRECTORY)
 

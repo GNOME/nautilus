@@ -226,7 +226,7 @@ static void nautilus_music_view_load_uri (NautilusMusicView *view,
 
 
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusMusicView,
+EEL_CLASS_BOILERPLATE (NautilusMusicView,
                                    nautilus_music_view,
                                    NAUTILUS_TYPE_VIEW)
 

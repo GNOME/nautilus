@@ -222,7 +222,7 @@ static gboolean hit_test_stretch_handle                    (NautilusIconCanvasIt
 							    ArtIRect                       canvas_rect);
 static gboolean icon_canvas_item_is_smooth                 (const NautilusIconCanvasItem  *icon_item);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusIconCanvasItem, nautilus_icon_canvas_item, GNOME_TYPE_CANVAS_ITEM)
+EEL_CLASS_BOILERPLATE (NautilusIconCanvasItem, nautilus_icon_canvas_item, GNOME_TYPE_CANVAS_ITEM)
 
 static EelSmoothTextLayoutCache *layout_cache;
 

@@ -99,7 +99,7 @@ static void     theme_selector_update_selected_theme_from_preferences (NautilusT
 static void     theme_selector_update_help_label                      (NautilusThemeSelector       *theme_selector,
 								       gboolean                     removing);
 	
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusThemeSelector, nautilus_theme_selector, GTK_TYPE_VBOX)
+EEL_CLASS_BOILERPLATE (NautilusThemeSelector, nautilus_theme_selector, GTK_TYPE_VBOX)
 
 /* NautilusThemeSelectorClass methods */
 static void

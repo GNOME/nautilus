@@ -76,7 +76,7 @@ static guint    merged_callback_hash                       (gconstpointer       
 static gboolean merged_callback_equal                      (gconstpointer            merged_callback,
 							    gconstpointer            merged_callback_2);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusMergedDirectory,
+EEL_CLASS_BOILERPLATE (NautilusMergedDirectory,
 				   nautilus_merged_directory,
 				   NAUTILUS_TYPE_DIRECTORY)
 

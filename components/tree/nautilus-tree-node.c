@@ -39,7 +39,7 @@ static void               nautilus_tree_node_class_init (gpointer     klass);
 
 
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusTreeNode, nautilus_tree_node, GTK_TYPE_OBJECT)
+EEL_CLASS_BOILERPLATE (NautilusTreeNode, nautilus_tree_node, GTK_TYPE_OBJECT)
 
 
 static void

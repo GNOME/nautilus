@@ -89,7 +89,7 @@ static void	   update_dynamic_buttons_state 	  (NautilusComplexSearchBar *bar);
 static void        update_criteria_choices                (gpointer list_item,
 							   gpointer data);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusComplexSearchBar, nautilus_complex_search_bar, NAUTILUS_TYPE_SEARCH_BAR)
+EEL_CLASS_BOILERPLATE (NautilusComplexSearchBar, nautilus_complex_search_bar, NAUTILUS_TYPE_SEARCH_BAR)
 
 /* called by the criterion when the user chooses
    a new criterion type */

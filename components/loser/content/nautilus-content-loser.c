@@ -47,7 +47,7 @@ static void nautilus_content_loser_class_init (NautilusContentLoserClass *klass)
 static void nautilus_content_loser_init       (NautilusContentLoser      *view);
 static void nautilus_content_loser_destroy          (GtkObject                 *object);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusContentLoser, nautilus_content_loser, GTK_TYPE_LABEL)
+EEL_CLASS_BOILERPLATE (NautilusContentLoser, nautilus_content_loser, GTK_TYPE_LABEL)
      
 static void loser_load_location_callback      (NautilusView         *nautilus_view,
 					       const char           *location,

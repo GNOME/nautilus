@@ -214,7 +214,7 @@ static GtkTargetEntry drag_types[] = {
 
 static NautilusPropertyBrowser *main_browser = NULL;
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusPropertyBrowser,
+EEL_CLASS_BOILERPLATE (NautilusPropertyBrowser,
 				   nautilus_property_browser,
 				   GTK_TYPE_WINDOW)
 

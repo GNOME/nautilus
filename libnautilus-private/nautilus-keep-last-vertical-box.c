@@ -33,7 +33,7 @@ static void     nautilus_keep_last_vertical_box_init        (NautilusKeepLastVer
 static void	nautilus_keep_last_vertical_box_size_allocate 	  (GtkWidget 			    *widget, 
 								   GtkAllocation 		    *allocation);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusKeepLastVerticalBox, nautilus_keep_last_vertical_box, GTK_TYPE_VBOX)
+EEL_CLASS_BOILERPLATE (NautilusKeepLastVerticalBox, nautilus_keep_last_vertical_box, GTK_TYPE_VBOX)
 
 /* Standard class initialization function */
 static void

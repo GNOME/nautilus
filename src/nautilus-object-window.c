@@ -134,7 +134,7 @@ static void nautilus_window_unrealize                 (GtkWidget           *widg
 static void cancel_view_as_callback                   (NautilusWindow      *window);
 static void real_add_current_location_to_history_list (NautilusWindow      *window);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusWindow,
+EEL_CLASS_BOILERPLATE (NautilusWindow,
 			      nautilus_window,
 			      BONOBO_TYPE_WINDOW)
 

@@ -110,7 +110,7 @@ static char *   nautilus_file_get_type_as_string  (NautilusFile      *file);
 static gboolean update_info_and_name              (NautilusFile      *file,
 						   GnomeVFSFileInfo  *info);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusFile, nautilus_file, GTK_TYPE_OBJECT)
+EEL_CLASS_BOILERPLATE (NautilusFile, nautilus_file, GTK_TYPE_OBJECT)
 
 static void
 nautilus_file_class_init (NautilusFileClass *klass)

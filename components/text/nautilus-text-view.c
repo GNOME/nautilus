@@ -115,7 +115,7 @@ static void nautilus_text_view_load_uri         (NautilusTextView      *view,
 						 const char            *uri);
 static void font_changed_callback               (gpointer               callback_data);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusTextView,
+EEL_CLASS_BOILERPLATE (NautilusTextView,
                                    nautilus_text_view,
                                    NAUTILUS_TYPE_VIEW)
 

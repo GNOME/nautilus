@@ -115,7 +115,7 @@ static void send_history                   (NautilusViewFrame      *view);
 
 static guint signals[LAST_SIGNAL];
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusViewFrame,
+EEL_CLASS_BOILERPLATE (NautilusViewFrame,
 			      nautilus_view_frame,
 			      EEL_TYPE_GENEROUS_BIN)
 

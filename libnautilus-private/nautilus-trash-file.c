@@ -80,7 +80,7 @@ static void nautilus_trash_file_init       (gpointer   object,
 						  gpointer   klass);
 static void nautilus_trash_file_class_init (gpointer   klass);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusTrashFile,
+EEL_CLASS_BOILERPLATE (NautilusTrashFile,
 				   nautilus_trash_file,
 				   NAUTILUS_TYPE_FILE)
 

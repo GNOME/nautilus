@@ -53,7 +53,7 @@ static NautilusSearchBarMode nautilus_search_uri_to_search_bar_mode          (co
 static gboolean              nautilus_search_uri_is_displayable_by_mode      (const char *uri,
 									      NautilusSearchBarMode mode);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusSwitchableSearchBar,
+EEL_CLASS_BOILERPLATE (NautilusSwitchableSearchBar,
 				   nautilus_switchable_search_bar,
 				   NAUTILUS_TYPE_SEARCH_BAR)
 

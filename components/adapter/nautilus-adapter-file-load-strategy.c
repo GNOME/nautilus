@@ -53,7 +53,7 @@ static void nautilus_adapter_file_load_strategy_load_location (NautilusAdapterLo
 static void nautilus_adapter_file_load_strategy_stop_loading  (NautilusAdapterLoadStrategy *strategy);
 
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterFileLoadStrategy, nautilus_adapter_file_load_strategy, NAUTILUS_TYPE_ADAPTER_LOAD_STRATEGY)
+EEL_CLASS_BOILERPLATE (NautilusAdapterFileLoadStrategy, nautilus_adapter_file_load_strategy, NAUTILUS_TYPE_ADAPTER_LOAD_STRATEGY)
 
 
 static void

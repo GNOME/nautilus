@@ -51,7 +51,7 @@ static guint signals[LAST_SIGNAL];
 static void nautilus_adapter_embed_strategy_class_init (NautilusAdapterEmbedStrategyClass *klass);
 static void nautilus_adapter_embed_strategy_init       (NautilusAdapterEmbedStrategy      *strategy);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusAdapterEmbedStrategy,
+EEL_CLASS_BOILERPLATE (NautilusAdapterEmbedStrategy,
 				   nautilus_adapter_embed_strategy,
 				   GTK_TYPE_OBJECT)
 

@@ -250,7 +250,7 @@ static CacheIcon *get_icon_from_cache                    (NautilusScalableIcon  
 static CacheIcon *load_icon_with_embedded_text           (NautilusScalableIcon     *scalable_icon,
 							  const IconSizeRequest    *size);
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusIconFactory,
+EEL_CLASS_BOILERPLATE (NautilusIconFactory,
 			      nautilus_icon_factory,
 			      GTK_TYPE_OBJECT)
 

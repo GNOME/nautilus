@@ -391,7 +391,7 @@ nautilus_view_frame_corba_part_init (NautilusViewFrameCorbaPart *frame)
 
 static GType nautilus_view_frame_corba_part_get_type (void);
 
-EEL_DEFINE_BONOBO_BOILERPLATE (NautilusViewFrameCorbaPart,
+EEL_BONOBO_BOILERPLATE_FULL (NautilusViewFrameCorbaPart,
 			       Nautilus_ViewFrame,
 			       nautilus_view_frame_corba_part,
 			       BONOBO_OBJECT_TYPE)

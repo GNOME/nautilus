@@ -224,7 +224,7 @@ static void            nautilus_volume_free                     (NautilusVolume 
 static gboolean        locate_audio_cd                          (void);
 #endif
 
-EEL_DEFINE_CLASS_BOILERPLATE (NautilusVolumeMonitor,
+EEL_CLASS_BOILERPLATE (NautilusVolumeMonitor,
 			      nautilus_volume_monitor,
 			      GTK_TYPE_OBJECT)
 
