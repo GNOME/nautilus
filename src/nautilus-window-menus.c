@@ -1162,9 +1162,9 @@ nautilus_window_initialize_bookmarks_menu (NautilusWindow *window)
 	 * showing static bookmarks changes.
 	 */
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
-						       nautilus_window_bookmarks_preference_changed_callback,
-						       window,
-						       GTK_OBJECT (window));
+						  nautilus_window_bookmarks_preference_changed_callback,
+						  window,
+						  G_OBJECT (window));
 		
 	/* Recreate dynamic part of menu if bookmark list changes */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (get_bookmark_list ()),
@@ -1323,7 +1323,7 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 	eel_preferences_add_callback_while_alive ("user_level",
 						  user_level_changed_callback,
 						  window,
-						  GTK_OBJECT (window));
+						  G_OBJECT (window));
 	/* Update the user level menu items for the first time */
 	user_level_changed_callback (window);
 

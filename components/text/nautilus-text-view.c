@@ -209,11 +209,11 @@ nautilus_text_view_init (NautilusTextView *text_view)
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_TEXT_VIEW_FONT,
                                                   font_changed_callback,
                                                   text_view,
-                                                  GTK_OBJECT (text_view));
+                                                  G_OBJECT (text_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_TEXT_VIEW_STANDARD_FONT_SIZE,
                                                   font_changed_callback,
                                                   text_view,
-                                                  GTK_OBJECT (text_view));
+                                                  G_OBJECT (text_view));
 	
 	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),

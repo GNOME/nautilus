@@ -2770,35 +2770,35 @@ fm_icon_view_init (FMIconView *icon_view)
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
 						  font_changed_callback, 
 						  icon_view,
-						  GTK_OBJECT (icon_view));
+						  G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
 						  smooth_font_changed_callback, 
 						  icon_view,
-						  GTK_OBJECT (icon_view));
+						  G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE,
 						  default_zoom_level_font_size_changed_callback,
 						  icon_view,
-						  GTK_OBJECT (icon_view));
+						  G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
 						  default_sort_order_changed_callback,
 						  icon_view,
-						  GTK_OBJECT (icon_view));
+						  G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
 						  default_sort_in_reverse_order_changed_callback,
 						  icon_view,
-						  GTK_OBJECT (icon_view));
+						  G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
 						  default_use_tighter_layout_changed_callback,
 						  icon_view,
-						  GTK_OBJECT (icon_view));
+						  G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
 						  default_use_manual_layout_changed_callback,
 						  icon_view,
-						  GTK_OBJECT (icon_view));
+						  G_OBJECT (icon_view));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
 						  default_zoom_level_changed_callback,
 						  icon_view,
-						  GTK_OBJECT (icon_view));
+						  G_OBJECT (icon_view));
 
 	icon_container = get_icon_container (icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),

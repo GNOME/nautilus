@@ -1377,7 +1377,7 @@ append_directory_contents_fields (FMPropertiesWindow *window,
 		(NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
 		 update_visibility_of_item_count_fields_wrapper,
 		 window,
-		 GTK_OBJECT (window));
+		 G_OBJECT (window));
 	
 	return last_row;
 }
@@ -1996,7 +1996,7 @@ append_special_execution_flags (FMPropertiesWindow *window,
 		(NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS,
 		 update_visibility_of_special_flags_widgets_wrapper,
 		 window,
-		 GTK_OBJECT (window));
+		 G_OBJECT (window));
 	
 }
 

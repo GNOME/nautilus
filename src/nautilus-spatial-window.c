@@ -208,7 +208,7 @@ add_sidebar_panel_callback (const char *name,
 	eel_preferences_add_callback_while_alive (preference_key,
 						  sidebar_panels_changed_callback,
 						  callback_data,
-						  GTK_OBJECT (callback_data));
+						  G_OBJECT (callback_data));
 }
 
 static void

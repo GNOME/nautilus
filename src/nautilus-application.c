@@ -565,16 +565,16 @@ nautilus_application_startup (NautilusApplication *application,
 		
 		/* Monitor the preference to show or hide the desktop */
 		eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SHOW_DESKTOP,
-							       desktop_changed_callback,
-							       application,
-							       GTK_OBJECT (application));
+							  desktop_changed_callback,
+							  application,
+							  G_OBJECT (application));
 
 		/* Monitor the preference to have the desktop */
 		/* point to the Unix home folder */
 		eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
-							       desktop_location_changed_callback,
-							       NULL,
-							       GTK_OBJECT (application));
+							  desktop_location_changed_callback,
+							  NULL,
+							  G_OBJECT (application));
 
 		/* CORBA C mapping doesn't allow NULL to be passed
 		   for string parameters */
@@ -669,7 +669,7 @@ nautilus_application_create_window (NautilusApplication *application)
 	g_return_val_if_fail (NAUTILUS_IS_APPLICATION (application), NULL);
 	
 	window = NAUTILUS_WINDOW (gtk_widget_new (nautilus_window_get_type (),
-						  "app", GTK_OBJECT (application),
+						  "app", G_OBJECT (application),
 						  "app_id", "nautilus", NULL));
 	
 	gtk_signal_connect (GTK_OBJECT (window), 

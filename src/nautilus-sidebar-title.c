@@ -242,18 +242,18 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 	update_all (sidebar_title);
 #if GNOME2_CONVERSION_COMPLETE
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_FONT,
-						       non_smooth_font_changed_callback,
-						       sidebar_title,
-						       GTK_OBJECT (sidebar_title));
+						  non_smooth_font_changed_callback,
+						  sidebar_title,
+						  G_OBJECT (sidebar_title));
 #endif
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
-						       smooth_font_changed_callback,
-						       sidebar_title,
-						       GTK_OBJECT (sidebar_title));
+						  smooth_font_changed_callback,
+						  sidebar_title,
+						  G_OBJECT (sidebar_title));
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_THEME,
-						       nautilus_sidebar_title_theme_changed,
-						       sidebar_title,
-						       GTK_OBJECT (sidebar_title));
+						  nautilus_sidebar_title_theme_changed,
+						  sidebar_title,
+						  G_OBJECT (sidebar_title));
 
 	/* initialize the label colors & fonts */
 	nautilus_sidebar_title_theme_changed (sidebar_title);
