@@ -381,6 +381,7 @@ generate_summary_form (NautilusSummaryView	*view)
 
 		view->details->user_name = who_is_logged_in (view);
 		title_string = g_strdup_printf ("Welcome Back %s!", view->details->user_name);
+		g_print ("%s\n", title_string);
 		title = create_services_title_widget (title_string);
 		g_free (title_string);
 	}
@@ -1053,15 +1054,16 @@ static char*
 who_is_logged_in (NautilusSummaryView	*view)
 {
 	CORBA_Environment	ev;
-	EazelProxy_User		*user;
+	EazelProxy_UserList	*user;
 	char			*rv;
+	int			i;
 
 	CORBA_exception_init (&ev);
 
 	if (CORBA_OBJECT_NIL != view->details->user_control) {
 		/* Get list of currently active users */
 
-		user = EazelProxy_UserControl_get_default_user (
+		user = EazelProxy_UserControl_get_active_users (
 			view->details->user_control, &ev);
 
 		if (CORBA_NO_EXCEPTION != ev._major) {
@@ -1070,7 +1072,14 @@ who_is_logged_in (NautilusSummaryView	*view)
 		}
 		else {
 			g_message ("Default user found!");
-			rv = user->user_name;
+			for (i = 0; i < user->_length; i++) {
+				EazelProxy_User *current;
+	
+				current = user->_buffer + i;
+				if (current->is_default) {
+					rv = current->user_name;
+				}
+			}
 			CORBA_free (user);
 		}
 	}
