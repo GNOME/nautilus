@@ -1,6 +1,20 @@
 2004-11-08  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/Makefile.am:
+	* libnautilus-private/nautilus-sidebar-factory.c:
+	* libnautilus-private/nautilus-sidebar-factory.h:
+	Remove old sidebar-factory API
+	
+	* src/file-manager/fm-tree-view.c: 
+	* src/nautilus-emblem-sidebar.c:
+	* src/nautilus-history-sidebar.c:
+	* src/nautilus-information-panel.c:
+	* src/nautilus-navigation-window.c:
+	Convert to new provider API.
+
+2004-11-08  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/Makefile.am:
 	* libnautilus-private/nautilus-sidebar-provider.[ch]:
 	Add new extensions-style sidebar provider interface
 	

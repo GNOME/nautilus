@@ -67,7 +67,17 @@
 #include <libnautilus-private/nautilus-tree-view-drag-dest.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-cell-renderer-pixbuf-emblem.h>
-#include <libnautilus-private/nautilus-sidebar-factory.h>
+#include <libnautilus-private/nautilus-sidebar-provider.h>
+#include <libnautilus-private/nautilus-module.h>
+
+typedef struct {
+        GObject parent;
+} FMTreeViewProvider;
+
+typedef struct {
+        GObjectClass parent;
+} FMTreeViewProviderClass;
+
 
 struct FMTreeViewDetails {
 	NautilusWindowInfo *window;
@@ -117,12 +127,18 @@ static const GtkTargetEntry clipboard_targets[] = {
 	{ "x-special/gnome-copied-files", 0, GNOME_COPIED_FILES },
 };
 
-static void fm_tree_view_iface_init (NautilusSidebarIface *iface);
+static void  fm_tree_view_iface_init        (NautilusSidebarIface         *iface);
+static void  sidebar_provider_iface_init    (NautilusSidebarProviderIface *iface);
+static GType fm_tree_view_provider_get_type (void);
 
 G_DEFINE_TYPE_WITH_CODE (FMTreeView, fm_tree_view, GTK_TYPE_SCROLLED_WINDOW,
 			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR,
 						fm_tree_view_iface_init));
 #define parent_class fm_tree_view_parent_class
+
+G_DEFINE_TYPE_WITH_CODE (FMTreeViewProvider, fm_tree_view_provider, G_TYPE_OBJECT,
+			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR_PROVIDER,
+						sidebar_provider_iface_init));
 
 static gboolean
 show_iter_for_file (FMTreeView *view, NautilusFile *file, GtkTreeIter *iter)
@@ -1530,7 +1546,8 @@ fm_tree_view_set_parent_window (FMTreeView *sidebar,
 }
 
 static NautilusSidebar *
-fm_tree_view_create (NautilusWindowInfo *window)
+fm_tree_view_create (NautilusSidebarProvider *provider,
+		     NautilusWindowInfo *window)
 {
 	FMTreeView *sidebar;
 	
@@ -1542,14 +1559,25 @@ fm_tree_view_create (NautilusWindowInfo *window)
 	return NAUTILUS_SIDEBAR (sidebar);
 }
 
-static NautilusSidebarInfo tree_sidebar = {
-	TREE_SIDEBAR_ID,
-	fm_tree_view_create,
-};
+static void 
+sidebar_provider_iface_init (NautilusSidebarProviderIface *iface)
+{
+	iface->create = fm_tree_view_create;
+}
+
+static void
+fm_tree_view_provider_init (FMTreeViewProvider *sidebar)
+{
+}
+
+static void
+fm_tree_view_provider_class_init (FMTreeViewProviderClass *class)
+{
+}
 
 void
 fm_tree_view_register (void)
 {
-	nautilus_sidebar_factory_register (&tree_sidebar);
+        nautilus_module_add_type (fm_tree_view_provider_get_type ());
 }
 

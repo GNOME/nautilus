@@ -41,7 +41,8 @@
 #include <libgnome/gnome-i18n.h>
 #include <libnautilus-private/nautilus-bookmark.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-sidebar-factory.h>
+#include <libnautilus-private/nautilus-sidebar-provider.h>
+#include <libnautilus-private/nautilus-module.h>
 
 #include "nautilus-signaller.h"
 #include "nautilus-history-sidebar.h"
@@ -54,6 +55,15 @@ typedef struct {
 	GtkScrolledWindowClass parent;
 } NautilusHistorySidebarClass;
 
+typedef struct {
+        GObject parent;
+} NautilusHistorySidebarProvider;
+
+typedef struct {
+        GObjectClass parent;
+} NautilusHistorySidebarProviderClass;
+
+
 enum {
 	HISTORY_SIDEBAR_COLUMN_ICON,
 	HISTORY_SIDEBAR_COLUMN_NAME,
@@ -61,11 +71,17 @@ enum {
 	HISTORY_SIDEBAR_COLUMN_COUNT
 };
 
-static void nautilus_history_sidebar_iface_init (NautilusSidebarIface *iface);
+static void  nautilus_history_sidebar_iface_init        (NautilusSidebarIface         *iface);
+static void  sidebar_provider_iface_init                (NautilusSidebarProviderIface *iface);
+static GType nautilus_history_sidebar_provider_get_type (void);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusHistorySidebar, nautilus_history_sidebar, GTK_TYPE_SCROLLED_WINDOW,
 			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR,
 						nautilus_history_sidebar_iface_init));
+
+G_DEFINE_TYPE_WITH_CODE (NautilusHistorySidebarProvider, nautilus_history_sidebar_provider, G_TYPE_OBJECT,
+			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR_PROVIDER,
+						sidebar_provider_iface_init));
 
 static void
 update_history (NautilusHistorySidebar *sidebar)
@@ -294,7 +310,8 @@ nautilus_history_sidebar_set_parent_window (NautilusHistorySidebar *sidebar,
 }
 
 static NautilusSidebar *
-nautilus_history_sidebar_create (NautilusWindowInfo *window)
+nautilus_history_sidebar_create (NautilusSidebarProvider *provider,
+				 NautilusWindowInfo *window)
 {
 	NautilusHistorySidebar *sidebar;
 	
@@ -306,14 +323,25 @@ nautilus_history_sidebar_create (NautilusWindowInfo *window)
 	return NAUTILUS_SIDEBAR (sidebar);
 }
 
-static NautilusSidebarInfo history_sidebar = {
-	NAUTILUS_HISTORY_SIDEBAR_ID,
-	nautilus_history_sidebar_create,
-};
+static void 
+sidebar_provider_iface_init (NautilusSidebarProviderIface *iface)
+{
+	iface->create = nautilus_history_sidebar_create;
+}
+
+static void
+nautilus_history_sidebar_provider_init (NautilusHistorySidebarProvider *sidebar)
+{
+}
+
+static void
+nautilus_history_sidebar_provider_class_init (NautilusHistorySidebarProviderClass *class)
+{
+}
 
 void
 nautilus_history_sidebar_register (void)
 {
-	nautilus_sidebar_factory_register (&history_sidebar);
+        nautilus_module_add_type (nautilus_history_sidebar_provider_get_type ());
 }
 

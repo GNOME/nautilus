@@ -167,8 +167,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-recent.c \
 	nautilus-search-uri.c \
 	nautilus-search-uri.h \
-	nautilus-sidebar-factory.c \
-	nautilus-sidebar-factory.h \
 	nautilus-sidebar-provider.c \
 	nautilus-sidebar-provider.h \
 	nautilus-sidebar.c \

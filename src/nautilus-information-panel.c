@@ -65,7 +65,8 @@
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
-#include <libnautilus-private/nautilus-sidebar-factory.h>
+#include <libnautilus-private/nautilus-sidebar-provider.h>
+#include <libnautilus-private/nautilus-module.h>
 #include <math.h>
 
 struct NautilusInformationPanelDetails {
@@ -89,28 +90,31 @@ struct NautilusInformationPanelDetails {
 /* button assignments */
 #define CONTEXTUAL_MENU_BUTTON 3
 
-static gboolean nautilus_information_panel_press_event           (GtkWidget        *widget,
-							GdkEventButton   *event);
-static void     nautilus_information_panel_destroy               (GtkObject        *object);
-static void     nautilus_information_panel_finalize              (GObject          *object);
-static void     nautilus_information_panel_drag_data_received    (GtkWidget        *widget,
-							GdkDragContext   *context,
-							int               x,
-							int               y,
-							GtkSelectionData *selection_data,
-							guint             info,
-							guint             time);
-static void     nautilus_information_panel_read_defaults         (NautilusInformationPanel  *information_panel);
-static void     nautilus_information_panel_style_set             (GtkWidget        *widget,
-							GtkStyle         *previous_style);
-static void     nautilus_information_panel_theme_changed         (gpointer          user_data);
-static void     nautilus_information_panel_confirm_trash_changed (gpointer          user_data);
-static void     nautilus_information_panel_update_appearance     (NautilusInformationPanel  *information_panel);
-static void     nautilus_information_panel_update_buttons        (NautilusInformationPanel  *information_panel);
-static void     add_command_buttons                    (NautilusInformationPanel  *information_panel,
-							GList            *application_list);
-static void     background_metadata_changed_callback   (NautilusInformationPanel  *information_panel);
-static void     nautilus_information_panel_iface_init  (NautilusSidebarIface      *iface);
+static gboolean nautilus_information_panel_press_event           (GtkWidget                    *widget,
+								  GdkEventButton               *event);
+static void     nautilus_information_panel_destroy               (GtkObject                    *object);
+static void     nautilus_information_panel_finalize              (GObject                      *object);
+static void     nautilus_information_panel_drag_data_received    (GtkWidget                    *widget,
+								  GdkDragContext               *context,
+								  int                           x,
+								  int                           y,
+								  GtkSelectionData             *selection_data,
+								  guint                         info,
+								  guint                         time);
+static void     nautilus_information_panel_read_defaults         (NautilusInformationPanel     *information_panel);
+static void     nautilus_information_panel_style_set             (GtkWidget                    *widget,
+								  GtkStyle                     *previous_style);
+static void     nautilus_information_panel_theme_changed         (gpointer                      user_data);
+static void     nautilus_information_panel_confirm_trash_changed (gpointer                      user_data);
+static void     nautilus_information_panel_update_appearance     (NautilusInformationPanel     *information_panel);
+static void     nautilus_information_panel_update_buttons        (NautilusInformationPanel     *information_panel);
+static void     add_command_buttons                              (NautilusInformationPanel     *information_panel,
+								  GList                        *application_list);
+static void     background_metadata_changed_callback             (NautilusInformationPanel     *information_panel);
+static void     nautilus_information_panel_iface_init            (NautilusSidebarIface         *iface);
+static void     nautilus_information_panel_iface_init            (NautilusSidebarIface         *iface);
+static void     sidebar_provider_iface_init                      (NautilusSidebarProviderIface *iface);
+static GType    nautilus_information_panel_provider_get_type     (void);
 
 static gboolean confirm_trash_auto_value = TRUE;
 
@@ -147,12 +151,25 @@ typedef enum {
 	ICON_PART
 } InformationPanelPart;
 
+typedef struct {
+        GObject parent;
+} NautilusInformationPanelProvider;
+
+typedef struct {
+        GObjectClass parent;
+} NautilusInformationPanelProviderClass;
+
 
 G_DEFINE_TYPE_WITH_CODE (NautilusInformationPanel, nautilus_information_panel, EEL_TYPE_BACKGROUND_BOX,
 			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR,
 						nautilus_information_panel_iface_init));
 /* for EEL_CALL_PARENT */
 #define parent_class nautilus_information_panel_parent_class
+
+G_DEFINE_TYPE_WITH_CODE (NautilusInformationPanelProvider, nautilus_information_panel_provider, G_TYPE_OBJECT,
+			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR_PROVIDER,
+						sidebar_provider_iface_init));
+
 
 static const char *
 nautilus_information_panel_get_sidebar_id (NautilusSidebar *sidebar)
@@ -1299,7 +1316,8 @@ nautilus_information_panel_set_parent_window (NautilusInformationPanel *panel,
 }
 
 static NautilusSidebar *
-nautilus_information_panel_create (NautilusWindowInfo *window)
+nautilus_information_panel_create (NautilusSidebarProvider *provider,
+				   NautilusWindowInfo *window)
 {
 	NautilusInformationPanel *panel;
 	
@@ -1311,14 +1329,26 @@ nautilus_information_panel_create (NautilusWindowInfo *window)
 	return NAUTILUS_SIDEBAR (panel);
 }
 
-static NautilusSidebarInfo information_sidebar = {
-	NAUTILUS_INFORMATION_PANEL_ID,
-	nautilus_information_panel_create,
-};
+static void 
+sidebar_provider_iface_init (NautilusSidebarProviderIface *iface)
+{
+	iface->create = nautilus_information_panel_create;
+}
+
+static void
+nautilus_information_panel_provider_init (NautilusInformationPanelProvider *sidebar)
+{
+}
+
+static void
+nautilus_information_panel_provider_class_init (NautilusInformationPanelProviderClass *class)
+{
+}
+
 
 void
 nautilus_information_panel_register (void)
 {
-	nautilus_sidebar_factory_register (&information_sidebar);
+        nautilus_module_add_type (nautilus_information_panel_provider_get_type ());
 }
 

@@ -66,7 +66,8 @@
 #include <libnautilus-private/nautilus-icon-dnd.h>
 #include <libnautilus-private/nautilus-emblem-utils.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-sidebar-factory.h>
+#include <libnautilus-private/nautilus-sidebar-provider.h>
+#include <libnautilus-private/nautilus-module.h>
 
 struct NautilusEmblemSidebarDetails {
 	NautilusWindowInfo *window;
@@ -85,10 +86,13 @@ struct NautilusEmblemSidebarDetails {
 #define STANDARD_EMBLEM_HEIGHT			52
 #define EMBLEM_LABEL_SPACING			2
 
-static void nautilus_emblem_sidebar_iface_init    (NautilusSidebarIface       *iface);
-static void nautilus_emblem_sidebar_finalize      (GObject                    *object);
-static void nautilus_emblem_sidebar_populate      (NautilusEmblemSidebar      *emblem_sidebar);
-static void nautilus_emblem_sidebar_refresh       (NautilusEmblemSidebar      *emblem_sidebar);
+static void nautilus_emblem_sidebar_iface_init        (NautilusSidebarIface         *iface);
+static void nautilus_emblem_sidebar_finalize          (GObject                      *object);
+static void nautilus_emblem_sidebar_populate          (NautilusEmblemSidebar        *emblem_sidebar);
+static void nautilus_emblem_sidebar_refresh           (NautilusEmblemSidebar        *emblem_sidebar);
+static void nautilus_emblem_sidebar_iface_init        (NautilusSidebarIface         *iface);
+static void sidebar_provider_iface_init               (NautilusSidebarProviderIface *iface);
+static GType nautilus_emblem_sidebar_provider_get_type (void);
 
 static GtkTargetEntry drag_types[] = {
 	{"property/keyword", 0, 0 }
@@ -113,10 +117,24 @@ typedef struct _Emblem {
 	char *keyword;
 } Emblem;
 
+typedef struct {
+        GObject parent;
+} NautilusEmblemSidebarProvider;
+
+typedef struct {
+        GObjectClass parent;
+} NautilusEmblemSidebarProviderClass;
+
+
+
 
 G_DEFINE_TYPE_WITH_CODE (NautilusEmblemSidebar, nautilus_emblem_sidebar, GTK_TYPE_VBOX,
 			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR,
 						nautilus_emblem_sidebar_iface_init));
+
+G_DEFINE_TYPE_WITH_CODE (NautilusEmblemSidebarProvider, nautilus_emblem_sidebar_provider, G_TYPE_OBJECT,
+			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SIDEBAR_PROVIDER,
+						sidebar_provider_iface_init));
 
 static void
 nautilus_emblem_sidebar_drag_data_get_cb (GtkWidget *widget,
@@ -1057,7 +1075,8 @@ nautilus_emblem_sidebar_set_parent_window (NautilusEmblemSidebar *sidebar,
 }
 
 static NautilusSidebar *
-nautilus_emblem_sidebar_create (NautilusWindowInfo *window)
+nautilus_emblem_sidebar_create (NautilusSidebarProvider *provider,
+				NautilusWindowInfo *window)
 {
 	NautilusEmblemSidebar *sidebar;
 	
@@ -1069,14 +1088,25 @@ nautilus_emblem_sidebar_create (NautilusWindowInfo *window)
 	return NAUTILUS_SIDEBAR (sidebar);
 }
 
-static NautilusSidebarInfo emblem_sidebar = {
-	NAUTILUS_EMBLEM_SIDEBAR_ID,
-	nautilus_emblem_sidebar_create,
-};
+static void 
+sidebar_provider_iface_init (NautilusSidebarProviderIface *iface)
+{
+	iface->create = nautilus_emblem_sidebar_create;
+}
+
+static void
+nautilus_emblem_sidebar_provider_init (NautilusEmblemSidebarProvider *sidebar)
+{
+}
+
+static void
+nautilus_emblem_sidebar_provider_class_init (NautilusEmblemSidebarProviderClass *class)
+{
+}
 
 void
 nautilus_emblem_sidebar_register (void)
 {
-	nautilus_sidebar_factory_register (&emblem_sidebar);
+        nautilus_module_add_type (nautilus_emblem_sidebar_provider_get_type ());
 }
 

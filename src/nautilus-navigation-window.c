@@ -76,7 +76,6 @@
 #include <libnautilus-private/nautilus-mime-actions.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-sidebar.h>
-#include <libnautilus-private/nautilus-sidebar-factory.h>
 #include <libnautilus-private/nautilus-theme.h>
 #include <libnautilus-private/nautilus-view-factory.h>
 #include <libnautilus-private/nautilus-bonobo-ui.h>
@@ -1007,60 +1006,6 @@ side_panel_image_changed_callback (NautilusSidebar *side_panel,
 	}
 }
 
-void
-nautilus_navigation_window_set_sidebar_panels (NautilusNavigationWindow *window,
-                                               GList *passed_identifier_list)
-{
-	GList *identifier_list;
-	GList *node, *next, *found_node;
-	NautilusSidebar *sidebar_panel;
-	char *identifier;
-
-	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-	/* Make a copy of the list so we can remove items from it. */
-	identifier_list = g_list_copy (passed_identifier_list);
-	
-	/* Remove panels from the window that don't appear in the list. */
-	for (node = window->sidebar_panels; node != NULL; node = next) {
-		next = node->next;
-
-		sidebar_panel = NAUTILUS_SIDEBAR (node->data);
-		
-		found_node = g_list_find_custom (identifier_list,
-						 (char *) nautilus_sidebar_get_sidebar_id (sidebar_panel),
-						 (GCompareFunc)eel_strcmp);
-		if (found_node == NULL) {
-			nautilus_navigation_window_remove_sidebar_panel (window,
-									 sidebar_panel);
-		} else {
-                        identifier = (char *) found_node->data;
-
-                        /* Since this was found, there's no need to add it in the loop below. */
-			identifier_list = g_list_remove_link (identifier_list, found_node);
-			g_list_free_1 (found_node);
-		}
-        }
-
-	/* Add panels to the window that were in the list, but not the window. */
-	for (node = identifier_list; node != NULL; node = node->next) {
-		g_assert (node->data != NULL);
-		
-		identifier = (char *) node->data;
-
-                /* Create and load the panel. */
-		sidebar_panel = nautilus_sidebar_factory_create (identifier,
-								 NAUTILUS_WINDOW_INFO (window));
-                
-		nautilus_navigation_window_add_sidebar_panel (window,
-							      sidebar_panel);
-		
-		g_object_unref (sidebar_panel);
-	}
-
-	g_list_free (identifier_list);
-}
-
 /**
  * add_sidebar_panels:
  * @window:	A NautilusNavigationWindow
@@ -1071,7 +1016,6 @@ nautilus_navigation_window_set_sidebar_panels (NautilusNavigationWindow *window,
 static void
 add_sidebar_panels (NautilusNavigationWindow *window)
 {
-	GList *sidebar_list;
 	GtkWidget *current;
 	GList *providers;
 	GList *p;
@@ -1084,12 +1028,7 @@ add_sidebar_panels (NautilusNavigationWindow *window)
 		return;
 	}
 
-	sidebar_list = nautilus_sidebar_factory_enumerate_sidebars ();
-	nautilus_navigation_window_set_sidebar_panels (window, sidebar_list);
-	eel_g_list_free_deep (sidebar_list);
-
  	providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_SIDEBAR_PROVIDER);
-
 	
 	for (p = providers; p != NULL; p = p->next) {
 		provider = NAUTILUS_SIDEBAR_PROVIDER (p->data);
