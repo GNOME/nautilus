@@ -218,7 +218,7 @@ nautilus_background_image_fully_obscures (NautilusBackground *background, int de
 	int image_width;
 	int image_height;
 	
-	if (background->details->image == NULL || (use_alpha && gdk_pixbuf_get_has_alpha (background->details->image)) {
+	if (background->details->image == NULL || (use_alpha && gdk_pixbuf_get_has_alpha (background->details->image))) {
 		return FALSE;
 	} else {
 		image_width = gdk_pixbuf_get_width (background->details->image);
