@@ -128,16 +128,21 @@ static void
 smooth_font_changed_callback (gpointer callback_data)
 {
 	NautilusScalableFont *new_font;
+	NautilusScalableFont *new_bold_font;
 	NautilusSidebarTitle *sidebar_title;
 
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (callback_data));
 
 	sidebar_title = NAUTILUS_SIDEBAR_TITLE (callback_data);
-
+	
 	new_font = nautilus_global_preferences_get_smooth_font ();
+	new_bold_font = nautilus_global_preferences_get_smooth_bold_font ();
 
-	nautilus_label_set_smooth_font (NAUTILUS_LABEL (sidebar_title->details->title_label), new_font);
+	nautilus_label_set_smooth_font (NAUTILUS_LABEL (sidebar_title->details->title_label), new_bold_font);
 	nautilus_label_set_smooth_font (NAUTILUS_LABEL (sidebar_title->details->more_info_label), new_font);
+
+	gtk_object_unref (GTK_OBJECT (new_font));
+	gtk_object_unref (GTK_OBJECT (new_bold_font));
 }
 
 static void

@@ -1,3 +1,36 @@
+2001-03-07  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Merge from HEAD:
+
+	2001-03-07  Ramiro Estrugo  <ramiro@eazel.com>
+	
+ 	reviewed by: John Sullivan <sullivan@eazel.com>
+ 
+ 	Fix bugs:
+ 
+ 	7349 - Sidebar tabs no longer display in a bold font
+ 	7477 - Sidebar tab labels don't update to new font when font is
+ 	changed
+ 	7492 - Font style regression on Sidebar title
+ 	
+ 	* libnautilus-extensions/nautilus-global-preferences.h:
+ 	* libnautilus-extensions/nautilus-global-preferences.c:
+ 	(nautilus_global_preferences_get_smooth_font): Add documentation
+ 	to clarify the fact that the result needs to be unrefed.
+ 	(nautilus_global_preferences_get_smooth_bold_font): New function
+ 	that returns a bold version of the user's preferred font.
+ 
+ 	* src/nautilus-sidebar-tabs.c:
+ 	(nautilus_sidebar_tabs_load_theme_data): Use the user's bold
+ 	preffered font instead of the default font. (bug 7349)
+ 	(smooth_font_changed_callback), (nautilus_sidebar_tabs_initialize),
+ 	(nautilus_sidebar_tabs_destroy): Listen for changes in the user's
+ 	preferred font and update the tabs accordingly (bug 7477)
+ 
+ 	* src/nautilus-sidebar-title.c: (smooth_font_changed_callback):
+ 	Use the user's bold preferred font instead of the plain one.  Also
+ 	unref the font when done to plug a tiny leak. (bug 7492)
+
 2001-03-07  Eskil Olsen  <eskil@eazel.com>
 
 	reviewed by: Robey Pointer <robey@eazel.com>
