@@ -197,7 +197,6 @@ local_get_root_property (const char *uri,
 	const char *mime_type;
 	
 	path = gnome_vfs_get_local_path_from_uri (uri);
-	g_print ("opening (%s)%s\n", uri, path);
 	property = NULL;
 
 	/* Check mime type. Exit if it is not a nautilus link */
@@ -208,11 +207,10 @@ local_get_root_property (const char *uri,
 	
 	document = xmlParseFile (path);
 	if (document != NULL) {
-		g_print ("got property\n");
 		property = xml_get_root_property (document, key);
 		xmlFreeDoc (document);
-	} else
-		g_print ("no doc\n");
+	}
+
 	g_free (path);
 	return property;
 }

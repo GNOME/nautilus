@@ -65,8 +65,8 @@ slurp_uri_contents (const char *uri)
                 g_free (buffer);
                 buffer = NULL;
 	}
-
 	gnome_vfs_close (handle);
+	buffer[bytes_read] = '\000';
 
 	return buffer;
 }
@@ -181,6 +181,7 @@ slurp_key_string (const char *path,
 	gchar *text;
 	gboolean set;
 	gchar *contents;
+
 	contents = slurp_uri_contents (path);
 
 	if (contents == NULL)
@@ -271,8 +272,28 @@ gboolean
 nautilus_link_impl_desktop_local_set_icon (const char *path,
 					   const char *icon_name)
 {
-	/* We don't want to actually set the name of the file. */
-	return FALSE;
+	DesktopFile *desktop_file;
+	gchar *contents;
+	NautilusFile *file;
+
+	contents = slurp_uri_contents (path);
+	if (contents == NULL)
+		return FALSE;
+	desktop_file = desktop_file_from_string (contents);
+	g_free (contents);
+
+	if (desktop_file == NULL)
+		return FALSE;
+	desktop_file_set_string (desktop_file, "Desktop Entry", "X-Nautilus-Icon", icon_name);
+	desktop_file_save (desktop_file, path);
+	desktop_file_free (desktop_file);
+
+	file = nautilus_file_get (path);
+	if (file != NULL) {
+		nautilus_file_changed (file);
+		nautilus_file_unref (file);
+	}
+	return TRUE;
 }
 
 gboolean
@@ -321,7 +342,7 @@ nautilus_link_impl_desktop_local_get_image_uri (const char *path)
 	NautilusLinkIconNotificationInfo *info;
 	
 	icon_uri = slurp_key_string (path, "X-Nautilus-Icon");
-	
+
 	if (icon_uri == NULL) {
 		gchar *absolute;
 		gchar *icon_name;
@@ -546,27 +567,3 @@ nautilus_link_impl_desktop_local_create_from_gnome_entry    (GnomeDesktopEntry *
 	gnome_desktop_entry_free (new_entry);
 }
 
-
-#if 0
-void
-nautilus_desktop_file_launch (const char *uri)
-{
-	DesktopFile *desktop_file;
-	gchar *contents;
-
-	contents = slurp_uri_contents (uri);
-
-	if (contents == NULL)
-		return;
-
-	desktop_file = desktop_file_from_string (contents);
-	g_free (contents);
-
-        if (desktop_file == NULL)
-                return;
-        
-        desktop_file_launch (desktop_file);
-
-        desktop_file_free (desktop_file);
-}
-#endif

@@ -36,6 +36,7 @@
 #include <langinfo.h>
 
 typedef struct _Section Section;
+typedef struct _Addition Addition;
 
 struct _Section
 {
@@ -55,12 +56,27 @@ struct _Section
         char **start_line;
 };
 
+struct _Addition
+{
+	Section *section;
+	char *name;
+	char *value;
+
+	/* used for saving */
+	gboolean in_section;
+};
+
 static void     hash_lines   (DesktopFile  *df);
 static Section* section_new  (const char *name,
                               char      **start_line);
 static void     section_free (Section      *sect);
 static char*    section_dup_name (Section  *sect);
 static char*    validated_strdup (const char *str);
+
+static Addition* addition_new  (Section    *section,
+				const char *name,
+				const char *value);
+static void      addition_free (Addition   *addition);
 
 struct _DesktopFile
 {
@@ -70,6 +86,7 @@ struct _DesktopFile
          * bracket) to Section structs
          */  
         GHashTable *section_hash;
+	GList *addition_list;
 
         Section *main_section;
 };
@@ -82,6 +99,7 @@ desktop_file_new (void)
         df = g_new (DesktopFile, 1);
 
         df->lines = NULL;
+	df->addition_list = NULL;
         df->main_section = NULL;
         df->section_hash = NULL;
 
@@ -158,6 +176,7 @@ desktop_file_from_string (const char *data)
         DesktopFile *df;
 
         df = desktop_file_new ();
+
         df->lines = g_strsplit (data, "\n", G_MAXINT);
 
         hash_lines (df);
@@ -169,8 +188,51 @@ gboolean
 desktop_file_save (DesktopFile *df,
                    const char  *filename)
 {
-        g_warning ("FIXME"); /* we just need to write df->lines */
-	return FALSE;
+	FILE *f;
+	gint i;
+	GList *list;
+
+	g_return_val_if_fail (df != NULL, FALSE);
+	g_return_val_if_fail (df->lines != NULL, FALSE);
+
+        f = fopen (filename, "w");
+	if (f == NULL)
+		return FALSE;
+
+	for (i = 0; df->lines[i] != NULL; i++) {
+		gboolean handled_line;
+
+		handled_line = FALSE;
+		for (list = df->addition_list; list; list = list->next) {
+			Addition *addition;
+			addition = (Addition *)list->data;
+			if (addition->section->start_line[0] == df->lines[i])
+				addition->in_section = TRUE;
+
+			if (addition->in_section &&
+			    df->lines[i][0] == '[')
+				addition->in_section = FALSE;
+
+			if ((addition->in_section) &&
+			    (strncmp (addition->name, df->lines[i], strlen (addition->name)) == 0)) {
+				char *old_val;
+				old_val = strstr (df->lines[i], "=");
+				if (old_val == NULL)
+					continue;
+				fwrite (df->lines[i], 1, old_val + 1 - df->lines[i], f);
+				fwrite (addition->value, 1, strlen (addition->value), f);
+				fwrite ("\n", 1, 1, f);
+				handled_line = TRUE;
+			}
+		}
+		if (handled_line == FALSE) {
+			fwrite (df->lines[i], 1, strlen (df->lines[i]), f);
+			fwrite ("\n", 1, 1, f);
+		}
+	}
+
+	fclose (f);
+	return TRUE;
 }
 
 static void
@@ -179,6 +241,7 @@ destroy_foreach (gpointer key, gpointer value, gpointer data)
         section_free (value);
 }
 
+
 void
 desktop_file_free (DesktopFile *df)
 {
@@ -186,7 +249,9 @@ desktop_file_free (DesktopFile *df)
                 g_hash_table_foreach (df->section_hash, destroy_foreach, NULL);
                 g_hash_table_destroy (df->section_hash);
         }
-  
+
+	g_list_foreach (df->addition_list, (GFunc) addition_free, NULL);
+	g_list_free (df->addition_list);
         if (df->lines)
                 g_strfreev (df->lines);
 
@@ -425,6 +490,31 @@ section_free (Section *sect)
 {
         g_hash_table_destroy (sect->key_hash);
         g_free (sect);
+}
+
+
+static Addition *
+addition_new  (Section    *section,
+	       const char *name,
+	       const char *value)
+{
+	Addition *addition;
+
+	addition = g_new (Addition, 1);
+
+	addition->section = section;
+	addition->name = g_strdup (name);
+	addition->value = g_strdup (value);
+
+	return addition;
+}
+
+static void
+addition_free (Addition *addition)
+{
+	g_free (addition->name);
+	g_free (addition->value);
+	g_free (addition);
 }
 
 static char*
@@ -1209,5 +1299,23 @@ desktop_file_launch (DesktopFile *df)
 	}
 
 	g_free (type);
+}
+
+
+gboolean
+desktop_file_set_string (DesktopFile *df,
+			 const char  *section,
+			 const char  *keyname,
+			 const char  *value)
+{
+	Section *sect;
+	Addition *addition;
+
+	sect = get_section (df, section);
+	if (sect == NULL)
+		return FALSE;
+	addition = addition_new (sect, keyname, value);
+	df->addition_list = g_list_append (df->addition_list, addition);
+	return TRUE; 
 }
 

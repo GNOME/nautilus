@@ -1,3 +1,12 @@
+Thu Jul 26 19:09:48 2001  Jonathan Blandford  <jrb@redhat.com>
+
+	* src/file-manager/fm-desktop-icon-view.c
+	(update_trash_link_and_delete_copies): fix Trash.desktop file.
+
+	* libnautilus-private/nautilus-link-impl-desktop.c
+	(slurp_uri_contents): '\000' terminate buffer read in.
+	(nautilus_link_impl_desktop_local_set_icon): Implement.
+
 2001-07-26  Havoc Pennington  <hp@redhat.com>
 
 	* src/file-manager/fm-icon-view.c: handle .desktop file drops a

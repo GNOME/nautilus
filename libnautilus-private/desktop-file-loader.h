@@ -103,5 +103,10 @@ gboolean desktop_file_get_regexps       (DesktopFile   *df,
                                          char        ***vals,
                                          int           *len);
 
+gboolean desktop_file_set_string (DesktopFile *df,
+				  const char  *section,
+				  const char  *keyname,
+				  const char  *value);
+
 
 #endif /* __DESKTOP_FILE_LOADER_H__ */
