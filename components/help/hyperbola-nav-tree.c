@@ -11,6 +11,10 @@ typedef struct {
   gint notify_count;
 } HyperbolaNavigationTree;
 
+/* Temporary prototypes until hyperbola-nav-tree.h compiles. */
+GtkType hyperbola_navigation_tree_get_type(void);
+GnomeObject *hyperbola_navigation_tree_new(void);
+
 static void hyperbola_navigation_tree_select_row(GtkCTree *ctree,
 						 GtkCTreeNode *node,
 						 gint column,
@@ -52,7 +56,7 @@ ctree_populate_subnode(gpointer key, gpointer value, gpointer user_data)
 static void
 ctree_populate(HyperbolaNavigationTree *view)
 {
-  PopulateInfo subpi = {NULL};
+  PopulateInfo subpi = { NULL, NULL, NULL };
 
   subpi.view = view;
 

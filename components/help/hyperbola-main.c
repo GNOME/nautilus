@@ -10,6 +10,7 @@ make_obj(GnomeGenericFactory *Factory, const char *goad_id, void *closure)
 {
   if(!strcmp(goad_id, "hyperbola_navigation_tree"))
     return hyperbola_navigation_tree_new();
+  return NULL;
 }
 
 int main(int argc, char *argv[])

@@ -26,7 +26,7 @@ static FormatHandler format_handlers[] = {
   {"ghelp", fmt_ghelp_populate_tree},
   {"man", fmt_man_populate_tree},
   {"info", fmt_info_populate_tree},
-  {NULL}
+  {NULL, NULL}
 };
 
 static gboolean
