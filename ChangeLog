@@ -1,3 +1,17 @@
+2001-01-12  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Rebecca Schulman  <rebecka@eazel.com>
+
+	Fixed bug 5437 (date column is too wide for default nautilus width)
+
+	* src/file-manager/fm-list-view.c: (real_get_column_specification):
+	Tweaked the default column widths so they're more balanced in the
+	default window width. The tradeoff is that you lose the date column
+	more quickly if you resize the window thinner (but of course the
+	user can stretch the columns to get it back). The column widths
+	in the search results view already look decent, for slightly
+	mysterious historical reasons.
+
 2001-01-12  Michael Engber  <engber@eazel.com>
 
 	reviewed by: Gene Z. Ragan

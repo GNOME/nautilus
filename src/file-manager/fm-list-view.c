@@ -1914,7 +1914,7 @@ real_get_column_specification (FMListView *view,
 		fm_list_view_column_set (specification,
 					 "name", _("Name"),
 					 NAUTILUS_FILE_SORT_BY_NAME,
-					 30, 130, 300, FALSE);
+					 30, 170, 300, FALSE);
 		break;
 	case 3:
 		fm_list_view_column_set (specification,
@@ -1926,7 +1926,7 @@ real_get_column_specification (FMListView *view,
 		fm_list_view_column_set (specification,
 					 "type", _("Type"),
 					 NAUTILUS_FILE_SORT_BY_TYPE,
-					 20, 95, 200, FALSE);
+					 20, 135, 200, FALSE);
 		break;
 	case 5:
 		fm_list_view_column_set (specification,
