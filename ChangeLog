@@ -1,3 +1,10 @@
+2001-04-23  Darin Adler  <darin@eazel.com>
+
+	* src/nautilus-window-manage-views.c: (open_location): Handle NULL
+	case that can happen now that we check the workspace and area --
+	the desktop is no longer guaranteed to be in the list considered
+	when looking for the topmost window.
+
 2001-04-23  John Harper  <jsh@eazel.com>
 
 	* components/news/nautilus-news.c (set_up_edit_widgets): when

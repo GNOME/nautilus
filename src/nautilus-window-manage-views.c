@@ -719,7 +719,7 @@ open_location (NautilusWindow *window,
         if (!create_new_window && NAUTILUS_IS_DESKTOP_WINDOW (window)) {
                 if (NAUTILUS_DESKTOP_WINDOW(window)->affect_desktop_on_next_location_change == FALSE) {
                         target_window = get_topmost_nautilus_window_in_current_workspace_and_area ();
-                        if (target_window == window) {
+                        if (target_window == NULL || target_window == window) {
                                 create_new_window = TRUE;
                         } else {
                                 eel_gtk_window_present (GTK_WINDOW (target_window));
