@@ -1,3 +1,16 @@
+2001-10-15  Darin Adler  <darin@bentspoon.com>
+
+	Switch to require Mozilla 0.9.5 -- sadly this means we are
+	now incompatible with any older verion. Thanks to frb@ximian.com
+	for his patch and help making it compile with 0.9.5.
+
+	* README: Tell people 0.9.5 is needed.
+	* configure.in: Various cleanup, and ask for 0.9.5.
+	* components/mozilla/mozilla-events.cpp:
+	* components/mozilla/nautilus-mozilla-embed-extensions.cpp:
+	Work around gcc bug with the directory named string. Switch to use
+	new calls in cases where the old ones are gone.
+	
 2001-10-13  Carlos Perelló Marín <carlos@gnome-db.org>
 
         * configure.in (ALL_LINGUAS): Added pt

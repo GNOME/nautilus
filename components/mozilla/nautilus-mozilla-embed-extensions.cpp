@@ -34,23 +34,31 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
+#include "nsICharsetConverterManager.h"
+#include "nsICharsetConverterManager2.h"
 #include "nsIContentViewer.h"
-#include "nsIServiceManager.h"
 #include "nsIDocShell.h"
 #include "nsIDocShellTreeItem.h"
 #include "nsIDocShellTreeOwner.h"
 #include "nsIMarkupDocumentViewer.h"
-#include "nsICharsetConverterManager.h"
-#include "nsICharsetConverterManager2.h"
 #include "nsIPlatformCharset.h"
+#include "nsIServiceManager.h"
+#include "nsReadableUtils.h"
+
 #include <vector>
-#include <string>
+
+/* We can't include <string> because of a bug in g++, which gets confused
+ * by the "string" directory in the mozilla include directory. So we do the
+ * following as a workaround.
+ */
+#include <std/bastring.h>
+typedef basic_string<char> string;
 
 struct Encoding
 {
 	Encoding (const char *encoding,
-	      const char *encoding_title,
-	      const char *translated_encoding_title) :
+		  const char *encoding_title,
+		  const char *translated_encoding_title) :
 		m_encoding (encoding),
 		m_encoding_title (encoding_title),
 		m_translated_encoding_title (translated_encoding_title)
@@ -69,7 +77,7 @@ static const char * translated_encoding_peek_nth_translated_encoding_title (guin
 static const char * translated_encoding_peek_nth_translated_encoding_title (guint              n);
 static const char * translated_encoding_find_translated_title              (const char        *title);
 static guint        encoding_group_get_count                               (void);
-static char *       convert_ns_string_to_c_string                          (const              nsString &ns_string);
+static char *       convert_to_c_string                                    (const nsString    &ns_string);
 
 static vector<Encoding>
 encoding_get_encoding_table (void)
@@ -103,7 +111,7 @@ encoding_get_encoding_table (void)
 		rv = decoderAtom->ToString (decoderName);
 		g_return_val_if_fail (NS_SUCCEEDED (rv), empty_encodings);
 
-		char *charset = convert_ns_string_to_c_string (decoderName);
+		char *charset = convert_to_c_string (decoderName);
 		g_assert (charset != NULL);
 
 
@@ -113,7 +121,7 @@ encoding_get_encoding_table (void)
  		char *charset_title = NULL;
 
  		if (NS_SUCCEEDED (rv)) {
- 			charset_title = convert_ns_string_to_c_string (decoderTitle);
+ 			charset_title = convert_to_c_string (decoderTitle);
  		}
 
  		if (charset_title == NULL || strlen (charset_title) <= 0) {
@@ -211,8 +219,7 @@ mozilla_charset_set_encoding (GtkMozEmbed *mozilla_embed,
 	
 	nsAutoString charsetString;
 	charsetString.AssignWithConversion (charset_encoding);
-	rv = markupDocumentViewer->SetForceCharacterSet (charsetString.ToNewUnicode());
-
+	rv = markupDocumentViewer->SetForceCharacterSet (ToNewUnicode(charsetString));
 	return NS_SUCCEEDED (rv) ? TRUE : FALSE;
 }
 
@@ -312,10 +319,10 @@ mozilla_embed_get_primary_docshell (const GtkMozEmbed *mozilla_embed)
 
 /* This nonsense is needed to get the allocators right */
 static char *
-convert_ns_string_to_c_string (const nsString & ns_string)
+convert_to_c_string (const nsString & ns_string)
 {
 	char *c_string;
-	char *ns_c_string = ns_string.ToNewCString ();
+	char *ns_c_string = ToNewCString(ns_string);
 	
 	if (ns_c_string == NULL) {
 		return NULL;

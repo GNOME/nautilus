@@ -58,7 +58,6 @@ AC_PROG_MAKE_SET
 AC_ISC_POSIX
 AM_PATH_ESD
 
-dnl ORBit
 AM_PATH_ORBIT
 
 dnl ====================================
@@ -131,7 +130,7 @@ AC_ARG_ENABLE(mozilla-component,
               [  --disable-mozilla-component       Disable the mozilla component],
               mozilla_component_enabled="$enableval")
 
-dnl Dont build the mozilla component for profiled builds cause the c++ compiler
+dnl Dont build the mozilla component for profiled builds because the C++ compiler
 dnl used for mozilla rpms is not binary compatible with the one used for profiling.
 if test "x$ENABLE_PROFILER" = "x1"
 then
@@ -142,30 +141,21 @@ found_mozilla=false
 
 if test "x$mozilla_component_enabled" = "xyes"
 then 
-BUILD_MOZILLA_COMPONENT=
-MOZILLA_COMPONENT_CFLAGS=
-MOZILLA_COMPONENT_LDFLAGS=
-MOZILLA_COMPONENT_LIBS=
 
 _mozilla_lib_place=/usr/lib/mozilla
-_mozilla_include_place=/usr/include/mozilla
-
-dnl Add a flag to override the default mozilla lib dir
 AC_ARG_WITH(mozilla-lib-place,
 	[  --with-mozilla-lib-place              Set mozilla 'lib' place ],
 	[ _mozilla_lib_place="$withval" ])
 
-dnl Add a flag to override the default mozilla include dir
+_mozilla_include_place=/usr/include/mozilla
 AC_ARG_WITH(mozilla-include-place,
 	[  --with-mozilla-include-place              Set mozilla 'include' place ],
 	[ _mozilla_include_place="$withval" ])
 
-_mozilla_nspr_libs=
-_mozilla_plc_libs=
-_mozilla_plds_libs=
-_mozilla_xpcom_libs=
-_mozilla_gtk_moz_embed_libs=
-_mozilla_gtk_super_win_libs=
+_mozilla_nspr_include_place=$_mozilla_include_place/nspr
+AC_ARG_WITH(mozilla-nspr-include-place,
+	[  --with-mozilla-nspr-include-place              Set mozilla nspr directory 'include' place ],
+	[ _mozilla_nspr_include_place="$withval" ])
 
 dnl Save flags and compiler
 _save_cflags="$CFLAGS"
@@ -176,10 +166,14 @@ dnl Hack flags to find the mozilla stuff
 CFLAGS="$_save_cflags -I$_mozilla_include_place -I$_mozilla_include_place/nspr"
 LDFLAGS="$_save_ldflags -L$_mozilla_lib_place"
 
-dnl Check for nspr and friends
+_mozilla_nspr_libs=
 AC_CHECK_LIB(nspr4, PR_Init, [_mozilla_nspr_libs="-lnspr4"])
 LDFLAGS="$LDFLAGS $_mozilla_nspr_libs"
+
+_mozilla_plc_libs=
 AC_CHECK_LIB(plc4, PL_strcmp, [_mozilla_plc_libs="-lplc4"])
+
+_mozilla_plds_libs=
 AC_CHECK_LIB(plds4, PL_NewHashTable, [_mozilla_plds_libs="-lplds4"])
 
 _mozilla_all_nspr_flags="$_mozilla_nspr_libs $_mozilla_plc_libs $_mozilla_plds_libs"
@@ -199,18 +193,21 @@ if test "$have_xpcom" = "true" ; then
   _mozilla_xpcom_libs="-lxpcom"
   AC_MSG_RESULT(yes)
 else
+  _mozilla_xpcom_libs=
   AC_MSG_RESULT(no)
 fi  
 
-dnl The next two are pure from evil
+dnl The next two are pure evil
 CC="$_save_cc"
 
 dnl gtk superwin library
 LDFLAGS="$_save_ldflags -L$_mozilla_lib_place $_mozilla_all_nspr_flags -lgtksuperwin"
+_mozilla_gtk_super_win_libs=
 AC_CHECK_LIB(gtksuperwin, gdk_superwin_get_type, [_mozilla_gtk_super_win_libs="-lgtksuperwin"])
 
 dnl gtk moz embed library
 LDFLAGS="$_save_ldflags -L$_mozilla_lib_place $_mozilla_all_nspr_flags -lgtkembedmoz $_mozilla_xpcom_libs"
+_mozilla_gtk_moz_embed_libs=
 AC_CHECK_LIB(gtkembedmoz, gtk_moz_embed_get_type, [_mozilla_gtk_moz_embed_libs="-lgtkembedmoz"])
 
 dnl Restore the flags and compiler
@@ -233,9 +230,6 @@ then
 	found_mozilla=true
 
 	MOZILLA_COMPONENT_RPATH_FLAGS=-Wl,-rpath=$_mozilla_lib_place
-	dnl The '-I$_mozilla_include_place/nspr' is needed for Mozilla 0.9.x
-	dnl and is not used (yet harmless) by Mozilla 0.8.x
-	MOZILLA_COMPONENT_CFLAGS="-I$_mozilla_include_place -I$_mozilla_include_place/nspr -fno-rtti -fno-exceptions"
 	MOZILLA_COMPONENT_LDFLAGS=-L$_mozilla_lib_place
 	MOZILLA_COMPONENT_LIBS="$_mozilla_gtk_moz_embed_libs \
 				$_mozilla_gtk_super_win_libs \
@@ -244,28 +238,37 @@ then
 				$_mozilla_plc_libs \
 				$_mozilla_plds_libs"
 	AC_SUBST(MOZILLA_COMPONENT_RPATH_FLAGS)
-	AC_SUBST(MOZILLA_COMPONENT_CFLAGS)
 	AC_SUBST(MOZILLA_COMPONENT_LDFLAGS)
 	AC_SUBST(MOZILLA_COMPONENT_LIBS)
 else
 	AC_MSG_RESULT(no)
 	found_mozilla=false
 fi
+
 fi
 
 AM_CONDITIONAL(BUILD_MOZILLA_COMPONENT, test "x$found_mozilla" = "xtrue")
 
-dnl
-dnl EVIL1:
-dnl
-dnl The mozilla milestone version checks are very un-scientific.
-dnl They are based on thing that I know changed between milestones,
-dnl but are likely to not be right in the future.  Unfortunately, there
-dnl doesnt seem to be anything in mozilla (such as #define MOZILLA_VERSION) 
-dnl thing that we can check.  -re
-dnl
-dnl EVIL2:
-dnl
+if test "x$found_mozilla" = "xtrue"
+then
+	grep -w gtk_moz_embed_set_profile_path $_mozilla_include_place/gtkembedmoz/gtkmozembed.h > /dev/null 2>&1
+	if test $? -eq 0
+	then
+		MOZILLA_PROFILES_CFLAGS="-DMOZILLA_HAVE_PROFILES_SUPPORT"
+		AC_SUBST(MOZILLA_PROFILES_CFLAGS)
+
+		MOZILLA_COMPONENT_CFLAGS="-I$_mozilla_include_place -I$_mozilla_nspr_include_place -fno-rtti -fno-exceptions"
+		for component in xpcom gfx widget gtkembedmoz dom \
+		    webbrwsr docshell content layout pref uconv string; do
+			MOZILLA_COMPONENT_CFLAGS="$MOZILLA_COMPONENT_CFLAGS -I$_mozilla_include_place/$component"
+		done
+		AC_SUBST(MOZILLA_COMPONENT_CFLAGS)
+	else
+		AC_MSG_ERROR([
+*** Mozilla 0.9.5 or greater is required to build the
+*** Nautilus Mozilla component.])
+	fi
+
 dnl The DEBUG check is a most evil hack.  The problem im trying to solve
 dnl is that we dont know whether the mozilla binaries we are using are built
 dnl in debug mode or not (DEBUG).  We need to know this so that we set
@@ -273,56 +276,21 @@ dnl appropiate compile flags in the mozilla component.  Otherwise we get
 dnl undefined symbols.  Specifically, the undefined symbols are some
 dnl destrcutors (nsCOMPtr_base::~nsCOMPtr_base) which are implemented only
 dnl if the debug flag DEBUG is set a certain way.
-dnl
-if test "x$found_mozilla" = "xtrue"
-then
-dnl EVIL1:
-	grep -w gtk_moz_embed_set_profile_path $_mozilla_include_place/gtkmozembed.h > /dev/null 2>&1
 
-	if test $? -eq 0
-	then
-		MOZILLA_VERSION=MOZILLA_0_8_OR_HIGHER
-		MOZILLA_PROFILES_CFLAGS="-DMOZILLA_HAVE_PROFILES_SUPPORT"
-
-		AC_SUBST(MOZILLA_PROFILES_CFLAGS)
-	else
-		grep -w GetName $_mozilla_include_place/nsIRequest.h > /dev/null 2>&1
-
-		if test $? -eq 0
-		then
-			MOZILLA_VERSION=MOZILLA_0_7
-		else
-			MOZILLA_VERSION=MOZILLA_PRE_0_7
-		fi
-	fi
-
-dnl EVIL2:
 	_xpcom_lib=$_mozilla_lib_place/libxpcom.so
 	_symbol="nsCOMPtr_base::~nsCOMPtr_base"
 	_num_symbols=`nm $_xpcom_lib 2> /dev/null | wc -l`
 
+	MOZILLA_COMPONENT_DEBUG_FLAGS=
 	if test $_num_symbols -ne 0
 	then
 		nm --demangle $_xpcom_lib | grep $_symbol > /dev/null 2>&1
-
 		if test $? -eq 1
 		then
 			MOZILLA_COMPONENT_DEBUG_FLAGS="-DDEBUG"
 		fi
 	fi
-
 	AC_SUBST(MOZILLA_COMPONENT_DEBUG_FLAGS)
-
-	if test "$MOZILLA_VERSION" != "MOZILLA_0_8_OR_HIGHER"
-	then
-
-	AC_MSG_ERROR([
-*** Mozilla 0.8 or greater is required to build the Nautilus Mozilla component.
-*** Mozilla packages for RedHat 6.x and 7.x are available here:
-*** http://developer.eazel.com/eazel-hacking/updates/redhat62/mozilla/
-*** http://developer.eazel.com/eazel-hacking/updates/redhat70/mozilla/.])
-	fi
-
 fi
 
 dnl ====================================
@@ -565,7 +533,6 @@ case "`medusa-config --libs 2>/dev/null | cut -d ' ' -f1`" in
 	MEDUSA_CFLAGS=""
 	MEDUSA_LIBS=""
 	AC_MSG_RESULT(no)
-	AC_MSG_WARN(Could not find medusa library. Please get it from GNOME's cvs.)
 ;;
  
 *)
@@ -842,7 +809,6 @@ case $found_mozilla in
 	echo "Mozilla component                 : YES"
 	echo "   mozilla libraries              : $_mozilla_lib_place"
 	echo "   mozilla includes               : $_mozilla_include_place"
-	echo "   MOZILLA_VERSION                : $MOZILLA_VERSION"
 	echo "   MOZILLA_PROFILES_CFLAGS        : $MOZILLA_PROFILES_CFLAGS"
 	echo "   MOZILLA_COMPONENT_RPATH_FLAGS  : $MOZILLA_COMPONENT_RPATH_FLAGS"
 	echo "   MOZILLA_COMPONENT_DEBUG_FLAGS  : $MOZILLA_COMPONENT_DEBUG_FLAGS"
