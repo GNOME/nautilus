@@ -283,6 +283,43 @@ need to do some environment setup for the Mozilla component:
 export MOZILLA_FIVE_HOME=/foo/bar/mozilla/dist/bin
 export LD_LIBRARY_PATH=/foo/bar/mozilla/dist/bin:$LD_LIBRARY_PATH
 
+If you experience linking problems (e. g. undefined reference to
+`nsString type_info node'), please note that both applications
+(mozilla and nautilus) must be compiled not only with the same version
+of compiler, but also with the same compiler flags. Download the right
+mozilla package for your distribution (see upper). If you have built
+Mozilla from source, Mozilla by default adds CXXFLAGS -fno-rtti and
+-fno-exceptions or -fno-handle-exceptions (depends on gcc version).
+You have two chances to make things in sync:
+
+1)
+Compile mozilla with this .mozconfig script: (You must place it in your home directory)
+
+# sh
+# Build configuration script
+#
+# See http://www.mozilla.org/build/unix.html for build instructions.
+#
+
+# Options for 'configure' (same as command-line options).
+ac_add_options --disable-tests
+ac_add_options --disable-debug
+ac_add_options --enable-strip-libs
+ac_add_options --enable-cpp-rtti
+ac_add_options --disable-mailnews
+ac_add_options --enable-optimize
+
+2)
+Configure mozilla with standard configure script and compile it.
+Before configuring Nautilus set proper CXXFLAGS. For example with
+latest gcc it means:
+
+CXXFLAGS='-fno-rtti -fno-exceptions'
+export CXXFLAGS
+
+For more see configure.in in mozilla source. You can save some space by
+disabling RTTI.
+
 Finally, you can disable the Mozilla component (even if Mozilla
 development libraries are installed in your system) as follows:
 
