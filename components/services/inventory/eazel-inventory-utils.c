@@ -188,7 +188,9 @@ eazel_create_configuration_metafile (void)
 	xmlAddChild (container_node, get_software_inventory ());
 
 	/* add the hardware info */
+	/* Disable the hardware inventory for 1.0
 	xmlAddChild (container_node, eazel_inventory_collect_hardware ());
+	*/
 	
 	return configuration_metafile;
 }
