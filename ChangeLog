@@ -1,3 +1,11 @@
+2000-09-29  Mathieu Lacage  <mathieu@eazel.com>
+
+	Fix bug 3074: local html files not displayed by mozilla.
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_vfs_read_callback), (mozilla_vfs_callback),
+	(nautilus_mozilla_content_view_load_uri): add a 
+	report_load_underway call where necessary.
+
 2000-09-29  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/help/converters/gnome-info2html2/html.c:

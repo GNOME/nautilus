@@ -368,7 +368,7 @@ mozilla_vfs_read_callback (GnomeVFSAsyncHandle *handle, GnomeVFSResult result, g
 #ifdef DEBUG_ramiro
 	g_print ("mozilla_vfs_read_callback: %ld/%ld bytes\n", (long) bytes_read, (long) bytes_requested);
 #endif
-
+	nautilus_view_report_load_underway (view->details->nautilus_view);
 	if (bytes_read != 0) {
 		gtk_moz_embed_append_data (GTK_MOZ_EMBED (view->details->mozilla), buffer, bytes_read);
 	}
@@ -408,7 +408,6 @@ mozilla_vfs_callback (GnomeVFSAsyncHandle *handle, GnomeVFSResult result, gpoint
 		gnome_vfs_async_read (handle, vfs_read_buf, sizeof (vfs_read_buf), mozilla_vfs_read_callback, view);
 	}
 }
-
 /**
  * nautilus_mozilla_content_view_load_uri:
  *
@@ -421,7 +420,7 @@ nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 					const char			*uri)
 {
 	GnomeVFSAsyncHandle *async_handle;
-	
+
 	g_assert (uri != NULL);
 
 	view->details->got_called_by_nautilus = TRUE;
@@ -441,8 +440,10 @@ nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 	if (strncmp (uri, "http:", 5) == 0) {
 		gtk_moz_embed_load_url (GTK_MOZ_EMBED (view->details->mozilla), view->details->uri);
 	} else {
+		nautilus_view_report_load_underway (view->details->nautilus_view);
 		gnome_vfs_async_open (&async_handle, uri, GNOME_VFS_OPEN_READ, mozilla_vfs_callback, view);	
 	}
+
 }
 
 static void
