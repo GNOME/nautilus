@@ -690,7 +690,7 @@ nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item,
 	
 	/* Update canvas and text rect cache */
 	get_icon_canvas_rectangle (item, &item->details->canvas_rect);
-	item->details->text_rect = compute_text_rectangle (item, item->details->canvas_rect, FALSE);
+	item->details->text_rect = compute_text_rectangle (item, item->details->canvas_rect, TRUE);
 	
 	/* Update emblem rect cache */
 	item->details->emblem_rect.x0 = 0;
