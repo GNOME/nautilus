@@ -413,9 +413,6 @@ preferences_hash_node_check_changes_func (gpointer key,
 	old_user_level = GPOINTER_TO_UINT (user_data);
 	new_user_level = nautilus_user_level_manager_get_user_level ();
 
-	/* FIXME bugzilla.eazel.com 1273: 
-	 * This currently only works for keys, it doesnt work with whole namespaces 
-	 */
 	if (!nautilus_user_level_manager_compare_preference_between_user_levels (node->name,
 										 old_user_level,
 										 new_user_level)) {
