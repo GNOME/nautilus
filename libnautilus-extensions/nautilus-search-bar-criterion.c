@@ -28,6 +28,8 @@
 #include "nautilus-search-bar-criterion.h"
 #include "nautilus-search-bar-criterion-private.h"
 
+#include <stdio.h>
+
 #include <gtk/gtksignal.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkoptionmenu.h>
@@ -35,6 +37,7 @@
 #include <gtk/gtkmenuitem.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 
 #include <libgnomeui/gnome-uidefs.h>
 
@@ -512,6 +515,32 @@ nautilus_search_bar_criterion_human_from_uri (const char *location_uri)
 	return g_strdup (location_uri);
 
 
+}
+
+char *
+nautilus_search_uri_get_first_criterion (const char *search_uri)
+{
+	char *unescaped_uri;
+	char *first_criterion;
+	int matches;
+
+	unescaped_uri = gnome_vfs_unescape_string (search_uri, NULL);
+
+	/* Start with a string as long as the URI, since
+	 * we don't necessarily trust the search_uri to have
+	 * the pattern we're looking for.
+	 */
+	first_criterion = g_strdup (unescaped_uri);
+
+	matches = sscanf (unescaped_uri, "search:[file:///]%s %*s", first_criterion);
+	g_free (unescaped_uri);
+	
+	if (matches == 0) {
+		g_free (first_criterion);
+		return NULL;
+	}
+
+	return first_criterion;
 }
 
 static char *                              

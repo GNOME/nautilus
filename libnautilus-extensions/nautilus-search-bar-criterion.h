@@ -52,7 +52,6 @@ typedef enum {
 #define NAUTILUS_SEARCH_URI_TEXT_DATE_MODIFIED	"mod_time"
 #define NAUTILUS_SEARCH_URI_TEXT_OWNER		"owner"
 
-
 typedef struct NautilusSearchBarCriterionDetails NautilusSearchBarCriterionDetails;
 typedef struct NautilusSearchBarCriterion {
 	NautilusSearchBarCriterionDetails *details;
@@ -84,14 +83,16 @@ void                               nautilus_search_bar_criterion_set_callback   
 */
 char *                             nautilus_search_bar_criterion_get_location     (NautilusSearchBarCriterion *criterion);
 
-char *                             nautilus_search_bar_criterion_human_from_uri   (const char *location_uri);
-
 void                               nautilus_search_bar_criterion_show             (NautilusSearchBarCriterion *criterion);
 void                               nautilus_search_bar_criterion_hide             (NautilusSearchBarCriterion *criterion);
 
 void                               nautilus_search_bar_criterion_destroy          (NautilusSearchBarCriterion *criterion);
 
 
+/* Search URI utilities. Maybe these should go in a separate file? */
+char *                             nautilus_search_bar_criterion_human_from_uri   (const char *location_uri);
+
+char *				   nautilus_search_uri_get_first_criterion 	  (const char *search_uri);
 
 
 #endif NAUTILUS_SEARCH_BAR_CRITERION_H

@@ -113,13 +113,45 @@ real_get_number_of_columns (FMListView *view)
 }
 
 static char *
+get_sort_attribute_from_search_criterion (const char *criterion)
+{
+	if (criterion != NULL) {
+		if (strcmp (criterion, NAUTILUS_SEARCH_URI_TEXT_NAME) == 0) {
+			return g_strdup ("name");
+		} else if (strcmp (criterion, NAUTILUS_SEARCH_URI_TEXT_TYPE) == 0) {
+			return g_strdup ("type");
+		} else if (strcmp (criterion, NAUTILUS_SEARCH_URI_TEXT_SIZE) == 0) {
+			return g_strdup ("size");
+		} else if (strcmp (criterion, NAUTILUS_SEARCH_URI_TEXT_EMBLEMS) == 0) {
+			return g_strdup ("emblems");
+		} else if (strcmp (criterion, NAUTILUS_SEARCH_URI_TEXT_DATE_MODIFIED) == 0) {
+			return g_strdup ("date_modified");
+		}
+	}
+
+	return NULL;
+}
+
+static char *
 real_get_default_sort_attribute (FMListView *view)
 {
-	/* FIXME bugzilla.eazel.com 1753:
-	 * Maybe we should start out sorted by the attribute that
-	 * most closely matches what was searched for.
+	char *uri;
+	char *criterion;
+	char *sort_attribute;
+
+	uri = fm_directory_view_get_uri (FM_DIRECTORY_VIEW (view));
+	criterion = nautilus_search_uri_get_first_criterion (uri);
+	g_free (uri);
+	sort_attribute = get_sort_attribute_from_search_criterion (criterion);
+
+	/* Default to "name" if we're using some unknown search criterion, or
+	 * search criterion that doesn't correspond to any column.
 	 */
-	return g_strdup ("name");
+	if (sort_attribute == NULL) {
+		return g_strdup ("name");
+	}
+
+	return sort_attribute;
 }
 
 static int
