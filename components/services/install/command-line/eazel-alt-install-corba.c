@@ -451,7 +451,7 @@ eazel_install_progress_signal (EazelInstallCallback *service,
 						 amount, total, 100);
 				} else {
 					fprintf (stdout, "\r");
-					fprintf (stdout, _("Unnstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"),
+					fprintf (stdout, _("Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"),
 						 packname,
 						 package_num, num_packages,
 						 total_size_completed, total_size,
