@@ -1,5 +1,17 @@
 2000-01-03  John Sullivan  <sullivan@eazel.com>
 
+	Fixed memory leaks in bookmarks stuff
+
+	* src/nautilus-bookmarklist.c: (nautilus_bookmarklist_delete_item_at):
+	  Destroy the bookmark when removing it from list.
+	* src/nautilus-bookmarks-menu.c: 
+	  (nautilus_bookmarks_menu_repopulate):
+	  Store an index rather than a bookmark in the menu item, since the
+	  item will be destroyed if the menu is reordered.
+	  (bookmark_activated_cb): Find bookmark from the index stored in item.
+
+2000-01-03  John Sullivan  <sullivan@eazel.com>
+
 	Started new file for file-related utilities in Nautilus.
 
 	* libnautilus/nautilus-file-utilities.h : new file

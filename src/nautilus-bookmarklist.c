@@ -237,8 +237,12 @@ nautilus_bookmarklist_delete_item_at (NautilusBookmarklist *bookmarks,
 	g_return_if_fail(index < g_list_length(bookmarks->list));
 
 	doomed = g_list_nth (bookmarks->list, index);
-	/* FIXME: free the bookmark here */
 	bookmarks->list = g_list_remove_link (bookmarks->list, doomed);
+
+	g_assert(NAUTILUS_IS_BOOKMARK(doomed->data));
+	gtk_object_destroy(GTK_OBJECT(doomed->data));
+	
+	g_list_free(doomed);
 	
 	nautilus_bookmarklist_contents_changed(bookmarks);
 }
@@ -342,7 +346,7 @@ nautilus_bookmarklist_load_file (NautilusBookmarklist *bookmarks)
 	{
 		if (strcmp(node->name, "bookmark") == 0)
 		{
-			/* FIXME: should only accept bookmarks with both a name and uri? */
+			/* Maybe should only accept bookmarks with both a name and uri? */
 			bookmarks->list = g_list_append(
 				bookmarks->list,
 				nautilus_bookmark_new(
@@ -358,8 +362,7 @@ nautilus_bookmarklist_load_file (NautilusBookmarklist *bookmarks)
 /**
  * nautilus_bookmarklist_new:
  * 
- * Create a new bookmarklist, initially empty.
- * FIXME: needs to read initial contents from disk
+ * Create a new bookmarklist, with contents read from disk.
  * 
  * Return value: A pointer to the new widget.
  **/

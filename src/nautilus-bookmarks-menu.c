@@ -150,20 +150,21 @@ add_bookmark_cb(GtkMenuItem* item, gpointer func_data)
 static void
 bookmark_activated_cb(GtkMenuItem* item, gpointer func_data)
 {
-	NautilusBookmarksMenu *menu;
-	NautilusBookmark *bookmark;
+	NautilusBookmarksMenu  *menu;
+	guint		  	item_index;
 
 	g_return_if_fail(NAUTILUS_IS_BOOKMARKS_MENU(gtk_object_get_data(GTK_OBJECT(item), OWNING_MENU)));
-	g_return_if_fail(NAUTILUS_IS_BOOKMARK (func_data));
 
 	menu = NAUTILUS_BOOKMARKS_MENU(gtk_object_get_data(GTK_OBJECT(item), OWNING_MENU));
-	bookmark = NAUTILUS_BOOKMARK(func_data);
+	item_index = GPOINTER_TO_UINT(func_data);
 
 	/* FIXME: should check whether we know this to be an invalid uri.
 	 * If so, don't try to go there, and put up an alert asking user if
 	 * they want to edit bookmarks (or maybe remove this one).
 	 */
-	nautilus_window_goto_uri(menu->window, nautilus_bookmark_get_uri(bookmark));
+	nautilus_window_goto_uri(menu->window, 
+				 nautilus_bookmark_get_uri(
+				 	nautilus_bookmarklist_item_at(bookmarks, item_index)));
 
 	/* FIXME: bookmark created for this signal is never destroyed. */
 }
@@ -312,7 +313,7 @@ static void
 nautilus_bookmarks_menu_repopulate (NautilusBookmarksMenu *menu)
 {
 	guint 	bookmark_count;
-	gint	index;
+	guint	index;
 	
 	g_return_if_fail(NAUTILUS_IS_BOOKMARKS_MENU(menu));
 
@@ -323,22 +324,25 @@ nautilus_bookmarks_menu_repopulate (NautilusBookmarksMenu *menu)
 	bookmark_count = nautilus_bookmarklist_length(bookmarks);
 	for (index = 0; index < bookmark_count; ++index)
 	{
-		const NautilusBookmark *bookmark;
 		GtkWidget *item;
 
-		bookmark = nautilus_bookmarklist_item_at(bookmarks, index);
 		item = gtk_menu_item_new_with_label(
-			nautilus_bookmark_get_name(bookmark));
+			nautilus_bookmark_get_name(
+				nautilus_bookmarklist_item_at(bookmarks, index)));
 
-		/* remember the menu this item is attached to */
+		/* The signal will need to know both the menu that this item is
+		 * attached to (to get at the window), and the bookmark
+		 * that this item represents. The menu is stored as the item
+		 * data. The bookmark is passed as an index. This assumes
+		 * that the signal will not be called on this item if the
+		 * menu is reordered (which is true since the menu is
+		 * repopulated from scratch at that time) */
 		gtk_object_set_data(GTK_OBJECT(item),
 				    OWNING_MENU,
 				    menu);
 		gtk_signal_connect(GTK_OBJECT (item), "activate",
 				   GTK_SIGNAL_FUNC (bookmark_activated_cb),
-				   nautilus_bookmark_new(
-				   	nautilus_bookmark_get_name(bookmark),
-				   	nautilus_bookmark_get_uri(bookmark)));
+				   GUINT_TO_POINTER(index));
 		nautilus_bookmarks_menu_append(menu, item);
 	}	
 }
