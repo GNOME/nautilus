@@ -5,13 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.2\n"
-"POT-Creation-Date: 2002-02-09 23:04-0800\n"
-"PO-Revision-Date: 2002-02-03 21:57+0100\n"
+"POT-Creation-Date: 2002-02-10 12:35+0100\n"
+"PO-Revision-Date: 2002-02-10 12:37+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8-bit\n"
+
+#: components/adapter/main.c:99
+msgid "bonobo_ui_init() failed."
+msgstr "bonobo_ui_init() feilet."
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -32,36 +36,6 @@ msgstr ""
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.h:4
 msgid "Nautilus component adapter factory"
 msgstr "Nautilus komponent-adapter factory"
-
-#: components/adapter/main.c:99
-msgid "bonobo_ui_init() failed."
-msgstr "bonobo_ui_init() feilet."
-
-#: components/hardware/Nautilus_View_hardware.server.in.h:1
-msgid "Factory for hardware view"
-msgstr "Factory for maskinvarevisning"
-
-#: components/hardware/Nautilus_View_hardware.server.in.h:2
-#: components/hardware/nautilus-hardware-view.c:760
-#: data/static_bookmarks.xml.h:15
-msgid "Hardware"
-msgstr "Maskinvare"
-
-#: components/hardware/Nautilus_View_hardware.server.in.h:3
-msgid "Hardware Viewer"
-msgstr "Maskinvarevisning"
-
-#: components/hardware/Nautilus_View_hardware.server.in.h:4
-msgid "Hardware view"
-msgstr "Maskinvarevisning"
-
-#: components/hardware/Nautilus_View_hardware.server.in.h:5
-msgid "View as Hardware"
-msgstr "Vis som maskinvare"
-
-#: components/hardware/Nautilus_View_hardware.server.in.h:6
-msgid "hardware view"
-msgstr "maskinvarevisning"
 
 #: components/hardware/nautilus-hardware-view.c:177
 msgid "name of icon for the hardware view"
@@ -124,6 +98,32 @@ msgstr "Dette er en plassholder for RAM-siden."
 msgid "This is a placeholder for the IDE page."
 msgstr "Dette er en plassholder for IDE-siden."
 
+#: components/hardware/Nautilus_View_hardware.server.in.h:2
+#: components/hardware/nautilus-hardware-view.c:760
+#: data/static_bookmarks.xml.h:15
+msgid "Hardware"
+msgstr "Maskinvare"
+
+#: components/hardware/Nautilus_View_hardware.server.in.h:1
+msgid "Factory for hardware view"
+msgstr "Factory for maskinvarevisning"
+
+#: components/hardware/Nautilus_View_hardware.server.in.h:3
+msgid "Hardware Viewer"
+msgstr "Maskinvarevisning"
+
+#: components/hardware/Nautilus_View_hardware.server.in.h:4
+msgid "Hardware view"
+msgstr "Maskinvarevisning"
+
+#: components/hardware/Nautilus_View_hardware.server.in.h:5
+msgid "View as Hardware"
+msgstr "Vis som maskinvare"
+
+#: components/hardware/Nautilus_View_hardware.server.in.h:6
+msgid "hardware view"
+msgstr "maskinvarevisning"
+
 #: components/history/Nautilus_View_history.server.in.h:1
 msgid "Factory for history views"
 msgstr "Factory for historikkvisning"
@@ -139,6 +139,10 @@ msgstr "Historikk sidelinjepanel"
 #: components/history/Nautilus_View_history.server.in.h:4
 msgid "History sidebar panel for Nautilus"
 msgstr "Historikk sidelinjepanel for Nautilus"
+
+#: components/image-viewer/nautilus-image-view.c:810
+msgid "I could not initialize Bonobo"
+msgstr "Kunne ikke initiere Bonobo"
 
 #: components/image-viewer/Nautilus_View_image.server.in.h:1
 msgid "Generic Image Viewer"
@@ -168,9 +172,40 @@ msgstr "Nautilus factory for bildevisning"
 msgid "View as Image"
 msgstr "Vis som bilde"
 
-#: components/image-viewer/nautilus-image-view.c:810
-msgid "I could not initialize Bonobo"
-msgstr "Kunne ikke initiere Bonobo"
+#: components/loser/content/nautilus-content-loser.c:139
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"This is a Nautilus content view that fails on demand."
+msgstr ""
+"%s\n"
+"\n"
+"Dette er en innholdsvisningskomponent for Nautilus som feiler på "
+"etterspørsel."
+
+#: components/loser/content/nautilus-content-loser.c:188
+msgid "You have tried to kill the Content Loser"
+msgstr "Du har prøvd å drepe innholdstaperen"
+
+#: components/loser/content/nautilus-content-loser-ui.xml.h:1
+msgid "Kill Content Loser"
+msgstr "Drep innholdsvisning"
+
+#: components/loser/content/nautilus-content-loser-ui.xml.h:2
+msgid "Kill the Loser content view"
+msgstr "Drep taperen innholdsvisning"
+
+#: components/loser/content/nautilus-content-loser-ui.xml.h:3
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
+#: components/sample/nautilus-sample-content-view-ui.xml.h:4
+#: src/nautilus-shell-ui.xml.h:71
+msgid "_File"
+msgstr "_Fil"
+
+#: components/loser/content/nautilus-content-loser-ui.xml.h:4
+msgid "_Kill Content Loser"
+msgstr "_Drep innholdsvisning"
 
 #: components/loser/content/Nautilus_View_content-loser.server.in.h:1
 msgid "Content Loser"
@@ -200,40 +235,32 @@ msgstr "Innholdsvisningskomponent for Nautilus som feiler på etterspørsel"
 msgid "View as Content Loser"
 msgstr "Vis som innholdstaper"
 
-#: components/loser/content/nautilus-content-loser-ui.xml.h:1
-msgid "Kill Content Loser"
-msgstr "Drep innholdsvisning"
-
-#: components/loser/content/nautilus-content-loser-ui.xml.h:2
-msgid "Kill the Loser content view"
-msgstr "Drep taperen innholdsvisning"
-
-#: components/loser/content/nautilus-content-loser-ui.xml.h:3
-#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
-#: components/sample/nautilus-sample-content-view-ui.xml.h:4
-#: src/nautilus-shell-ui.xml.h:71
-msgid "_File"
-msgstr "_Fil"
-
-#: components/loser/content/nautilus-content-loser-ui.xml.h:4
-msgid "_Kill Content Loser"
-msgstr "_Drep innholdsvisning"
-
-#: components/loser/content/nautilus-content-loser.c:139
+#: components/loser/sidebar/nautilus-sidebar-loser.c:142
 #, c-format
 msgid ""
 "%s\n"
 "\n"
-"This is a Nautilus content view that fails on demand."
+"Loser sidebar."
 msgstr ""
 "%s\n"
 "\n"
-"Dette er en innholdsvisningskomponent for Nautilus som feiler på "
-"etterspørsel."
+"Taper sidelinje."
 
-#: components/loser/content/nautilus-content-loser.c:188
-msgid "You have tried to kill the Content Loser"
-msgstr "Du har prøvd å drepe innholdstaperen"
+#: components/loser/sidebar/nautilus-sidebar-loser.c:191
+msgid "You have tried to kill the Sidebar Loser"
+msgstr "Du har prøvd å drepe sidelinjetaperen"
+
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:1
+msgid "Kill Sidebar Loser"
+msgstr "_Drep sidelinje-taper"
+
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:2
+msgid "Kill the Loser sidebar panel"
+msgstr "Drep taper sidelinjepanel"
+
+#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:4
+msgid "_Kill Sidebar Loser"
+msgstr "_Drep sidelinjevisning"
 
 #: components/loser/sidebar/Nautilus_View_sidebar-loser.server.in.h:1
 msgid "Nautilus Sidebar Loser"
@@ -254,57 +281,6 @@ msgstr "Sidelinjevisning for Nautilus som feiler på kommando"
 #: components/loser/sidebar/Nautilus_View_sidebar-loser.server.in.h:5
 msgid "Sidebar Loser"
 msgstr "Sidelinjetaper"
-
-#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:1
-msgid "Kill Sidebar Loser"
-msgstr "_Drep sidelinje-taper"
-
-#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:2
-msgid "Kill the Loser sidebar panel"
-msgstr "Drep taper sidelinjepanel"
-
-#: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:4
-msgid "_Kill Sidebar Loser"
-msgstr "_Drep sidelinjevisning"
-
-#: components/loser/sidebar/nautilus-sidebar-loser.c:142
-#, c-format
-msgid ""
-"%s\n"
-"\n"
-"Loser sidebar."
-msgstr ""
-"%s\n"
-"\n"
-"Taper sidelinje."
-
-#: components/loser/sidebar/nautilus-sidebar-loser.c:191
-msgid "You have tried to kill the Sidebar Loser"
-msgstr "Du har prøvd å drepe sidelinjetaperen"
-
-#: components/music/Nautilus_View_music.server.in.h:1
-msgid "Factory for music view"
-msgstr "Factory for musikkvisning"
-
-#: components/music/Nautilus_View_music.server.in.h:2
-msgid "Music"
-msgstr "Musikk"
-
-#: components/music/Nautilus_View_music.server.in.h:3
-msgid "Music Viewer"
-msgstr "Musikkvisning"
-
-#: components/music/Nautilus_View_music.server.in.h:4
-msgid "Music view"
-msgstr "Musikkvisning"
-
-#: components/music/Nautilus_View_music.server.in.h:5
-msgid "Music view factory"
-msgstr "Factory for musikkvisning"
-
-#: components/music/Nautilus_View_music.server.in.h:6
-msgid "View as Music"
-msgstr "Vis som musikk"
 
 #: components/music/mpg123.c:29
 msgid "Blues"
@@ -1017,21 +993,29 @@ msgstr "Kan ikke lese mappe"
 msgid "<span size=\"xx-large\">%s - %s</span>"
 msgstr "<span size=\"xx-large\">%s - %s</span>"
 
-#: components/news/Nautilus_View_news.server.in.h:1
-msgid "Factory for news view"
-msgstr "Factory for nyhetsvisning"
+#: components/music/Nautilus_View_music.server.in.h:1
+msgid "Factory for music view"
+msgstr "Factory for musikkvisning"
 
-#: components/news/Nautilus_View_news.server.in.h:2
-msgid "News"
-msgstr "Nyheter"
+#: components/music/Nautilus_View_music.server.in.h:2
+msgid "Music"
+msgstr "Musikk"
 
-#: components/news/Nautilus_View_news.server.in.h:3
-msgid "News sidebar panel"
-msgstr "Sidelinjepanel for nyheter"
+#: components/music/Nautilus_View_music.server.in.h:3
+msgid "Music Viewer"
+msgstr "Musikkvisning"
 
-#: components/news/Nautilus_View_news.server.in.h:4
-msgid "News sidebar panel fetches and displays RSS feeds"
-msgstr "Sidelinjepanel for nyheter henter og viser RSS-strømmer"
+#: components/music/Nautilus_View_music.server.in.h:4
+msgid "Music view"
+msgstr "Musikkvisning"
+
+#: components/music/Nautilus_View_music.server.in.h:5
+msgid "Music view factory"
+msgstr "Factory for musikkvisning"
+
+#: components/music/Nautilus_View_music.server.in.h:6
+msgid "View as Music"
+msgstr "Vis som musikk"
 
 #: components/news/nautilus-news.c:473
 msgid "%I:%M %p"
@@ -1079,9 +1063,8 @@ msgid "Edit"
 msgstr "Rediger"
 
 #: components/news/nautilus-news.c:2322
-#, fuzzy
 msgid "Site Name"
-msgstr "Navn på nettsted:"
+msgstr "Navn på nettsted"
 
 #: components/news/nautilus-news.c:2345
 msgid "Remove Site"
@@ -1139,6 +1122,22 @@ msgstr "Velg nettsteder"
 msgid "image indicating that the news has changed"
 msgstr "bilde som indikerer at nyhetene er endret"
 
+#: components/news/Nautilus_View_news.server.in.h:1
+msgid "Factory for news view"
+msgstr "Factory for nyhetsvisning"
+
+#: components/news/Nautilus_View_news.server.in.h:2
+msgid "News"
+msgstr "Nyheter"
+
+#: components/news/Nautilus_View_news.server.in.h:3
+msgid "News sidebar panel"
+msgstr "Sidelinjepanel for nyheter"
+
+#: components/news/Nautilus_View_news.server.in.h:4
+msgid "News sidebar panel fetches and displays RSS feeds"
+msgstr "Sidelinjepanel for nyheter henter og viser RSS-strømmer"
+
 #: components/notes/Nautilus_View_notes.server.in.h:1
 msgid "Factory for annotation view"
 msgstr "Factory for annotasjonsvisning"
@@ -1154,47 +1153,6 @@ msgstr "Sidelinjepanel for notater"
 #: components/notes/Nautilus_View_notes.server.in.h:4
 msgid "Notes sidebar panel for Nautilus"
 msgstr "Sidelinjepanel for notater"
-
-#: components/sample/Nautilus_View_sample.server.in.h:1
-msgid "Nautilus Sample view"
-msgstr "Nautilus eksempelvisning"
-
-#: components/sample/Nautilus_View_sample.server.in.h:2
-msgid "Nautilus Sample view factory"
-msgstr "Factory for Nautilus eksempelvisning"
-
-#: components/sample/Nautilus_View_sample.server.in.h:3
-#: components/sample/nautilus-sample-content-view-ui.xml.h:1
-msgid "Sample"
-msgstr "Eksempel"
-
-#: components/sample/Nautilus_View_sample.server.in.h:4
-msgid "Sample Viewer"
-msgstr "Eksempelvisning"
-
-#: components/sample/Nautilus_View_sample.server.in.h:5
-msgid "Sample content view component"
-msgstr "Eksempel på innholdsvisningskomponent"
-
-#: components/sample/Nautilus_View_sample.server.in.h:6
-msgid "Sample content view component's factory"
-msgstr "Factory for eksempelvisningskomponent"
-
-#: components/sample/Nautilus_View_sample.server.in.h:7
-msgid "View as Sample"
-msgstr "Vis som eksempel"
-
-#: components/sample/nautilus-sample-content-view-ui.xml.h:2
-msgid "This is a sample merged menu item"
-msgstr "Dette er et eksempel på en flettet menyoppføring"
-
-#: components/sample/nautilus-sample-content-view-ui.xml.h:3
-msgid "This is a sample merged toolbar button"
-msgstr "Dette er et eksempel på en flettet verktøylinjeknapp"
-
-#: components/sample/nautilus-sample-content-view-ui.xml.h:5
-msgid "_Sample"
-msgstr "_Eksempel"
 
 #: components/sample/nautilus-sample-content-view.c:79
 #, c-format
@@ -1233,30 +1191,55 @@ msgstr ""
 msgid "(none)"
 msgstr "(ingen)"
 
-#: components/text/Nautilus_View_text.server.in.h:1
-msgid "Factory for text view"
-msgstr "Factory for tekstvisning"
+#: components/sample/Nautilus_View_sample.server.in.h:3
+#: components/sample/nautilus-sample-content-view-ui.xml.h:1
+msgid "Sample"
+msgstr "Eksempel"
 
-#: components/text/Nautilus_View_text.server.in.h:2
-msgid "Text"
-msgstr "Tekst"
+#: components/sample/nautilus-sample-content-view-ui.xml.h:2
+msgid "This is a sample merged menu item"
+msgstr "Dette er et eksempel på en flettet menyoppføring"
 
-#: components/text/Nautilus_View_text.server.in.h:3
-msgid "Text Viewer"
-msgstr "Tekstvisning"
+#: components/sample/nautilus-sample-content-view-ui.xml.h:3
+msgid "This is a sample merged toolbar button"
+msgstr "Dette er et eksempel på en flettet verktøylinjeknapp"
 
-#: components/text/Nautilus_View_text.server.in.h:4
-#: components/text/nautilus-text-view-ui.xml.h:4
-msgid "Text view"
-msgstr "Tekstvisning"
+#: components/sample/nautilus-sample-content-view-ui.xml.h:5
+msgid "_Sample"
+msgstr "_Eksempel"
 
-#: components/text/Nautilus_View_text.server.in.h:5
-msgid "Text view factory"
-msgstr "Factory for tekstvisning"
+#: components/sample/Nautilus_View_sample.server.in.h:1
+msgid "Nautilus Sample view"
+msgstr "Nautilus eksempelvisning"
 
-#: components/text/Nautilus_View_text.server.in.h:6
-msgid "View as Text"
-msgstr "Vis som tekst"
+#: components/sample/Nautilus_View_sample.server.in.h:2
+msgid "Nautilus Sample view factory"
+msgstr "Factory for Nautilus eksempelvisning"
+
+#: components/sample/Nautilus_View_sample.server.in.h:4
+msgid "Sample Viewer"
+msgstr "Eksempelvisning"
+
+#: components/sample/Nautilus_View_sample.server.in.h:5
+msgid "Sample content view component"
+msgstr "Eksempel på innholdsvisningskomponent"
+
+#: components/sample/Nautilus_View_sample.server.in.h:6
+msgid "Sample content view component's factory"
+msgstr "Factory for eksempelvisningskomponent"
+
+#: components/sample/Nautilus_View_sample.server.in.h:7
+msgid "View as Sample"
+msgstr "Vis som eksempel"
+
+#: components/text/nautilus-text-view.c:349
+#, c-format
+msgid "Sorry, but %s is too large for Nautilus to load all of it."
+msgstr "Beklager, men %s er for stor til at Nautilus kan lese inn alt."
+
+#: components/text/nautilus-text-view.c:352
+msgid "File too large"
+msgstr "Filen er for stor"
 
 #: components/text/nautilus-text-view-ui.xml.h:1
 msgid "F_onts"
@@ -1269,6 +1252,11 @@ msgstr "Lucida"
 #: components/text/nautilus-text-view-ui.xml.h:3
 msgid "Services"
 msgstr "Tjenester"
+
+#: components/text/Nautilus_View_text.server.in.h:4
+#: components/text/nautilus-text-view-ui.xml.h:4
+msgid "Text view"
+msgstr "Tekstvisning"
 
 #: components/text/nautilus-text-view-ui.xml.h:5
 msgid "Use the Courier Font"
@@ -1314,14 +1302,25 @@ msgstr "_Helvetica"
 msgid "_Times"
 msgstr "_Times"
 
-#: components/text/nautilus-text-view.c:349
-#, c-format
-msgid "Sorry, but %s is too large for Nautilus to load all of it."
-msgstr "Beklager, men %s er for stor til at Nautilus kan lese inn alt."
+#: components/text/Nautilus_View_text.server.in.h:1
+msgid "Factory for text view"
+msgstr "Factory for tekstvisning"
 
-#: components/text/nautilus-text-view.c:352
-msgid "File too large"
-msgstr "Filen er for stor"
+#: components/text/Nautilus_View_text.server.in.h:2
+msgid "Text"
+msgstr "Tekst"
+
+#: components/text/Nautilus_View_text.server.in.h:3
+msgid "Text Viewer"
+msgstr "Tekstvisning"
+
+#: components/text/Nautilus_View_text.server.in.h:5
+msgid "Text view factory"
+msgstr "Factory for tekstvisning"
+
+#: components/text/Nautilus_View_text.server.in.h:6
+msgid "View as Text"
+msgstr "Vis som tekst"
 
 #: components/text/services/google.xml.h:1
 msgid "Search Google for Selected Text"
@@ -1354,6 +1353,14 @@ msgstr "Factory for throbber"
 #: components/throbber/Nautilus_Control_throbber.server.in.h:4
 msgid "throbber object factory"
 msgstr "throbber objekt factory"
+
+#: components/tree/nautilus-tree-model.c:896
+msgid "(Empty)"
+msgstr "(Tom)"
+
+#: components/tree/nautilus-tree-model.c:896
+msgid "Loading..."
+msgstr "Laster..."
 
 #: components/tree/Nautilus_View_tree.server.in.h:1
 msgid "Nautilus Tree sidebar panel"
@@ -1721,11 +1728,16 @@ msgstr "Brukervalg"
 msgid "Configure network services (web server, DNS server, etc.)"
 msgstr "Konfigurer nettverkstjenester (webtjener, DNS-tjener, etc.)"
 
-#: data/serverconfig.desktop.in.h:2
+#: data/serverconfig.desktop.in.h:2 data/serverconfig.directory.in.h:2
 msgid "Server Configuration"
 msgstr "Tjenerkonfigurasjon"
 
+#: data/serverconfig.directory.in.h:1
+msgid "Configure network services"
+msgstr "Konfigurer nettverkstjenester"
+
 #: data/starthere-link.desktop.in.h:1 data/starthere.desktop.in.h:1
+#: data/starthere.directory.in.h:1
 msgid "Start Here"
 msgstr "Start her"
 
@@ -1905,11 +1917,11 @@ msgstr "ZDNET Linux ressurssenter"
 msgid "Zero-Knowledge"
 msgstr "Zero-Knowledge"
 
-#: data/sysconfig.desktop.in.h:1
+#: data/sysconfig.desktop.in.h:1 data/sysconfig.directory.in.h:1
 msgid "Change systemwide settings (affects all users)"
 msgstr "Endre innstillinger for hele systemet (påvirker alle brukere)"
 
-#: data/sysconfig.desktop.in.h:2
+#: data/sysconfig.desktop.in.h:2 data/sysconfig.directory.in.h:2
 msgid "System Settings"
 msgstr "Systeminnstillinger"
 
@@ -1957,6 +1969,86 @@ msgstr "Tahoe"
 #: icons/tahoe/tahoe.xml.h:2
 msgid "This theme uses photo-realistic folders."
 msgstr "Dette temaet bruker fotorealistiske mapper."
+
+#: libbackground/applier.c:239 src/file-manager/fm-list-view.c:149
+#: src/file-manager/fm-search-list-view.c:520
+msgid "Type"
+msgstr "Type"
+
+#: libbackground/applier.c:240
+msgid ""
+"Type of bg_applier: BG_APPLIER_ROOT for root window or BG_APPLIER_PREVIEW "
+"for preview"
+msgstr "Type bg_applier: BG_APPLIER_ROOT for rotvinduet eller BG_APPLIER_PREVIEW for forhåndsvisning"
+
+#: libbackground/applier.c:402
+#, c-format
+msgid "Could not load pixbuf \"%s\"; disabling wallpaper."
+msgstr "Kunne ikke laste pixbuf «%s»; deaktiverer bakgrunn."
+
+#: libbackground/applier.c:475
+msgid "Disabled"
+msgstr "Deaktivert"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:1 src/nautilus-shell-ui.xml.h:2
+msgid "C_lear Text"
+msgstr "F_jern tekst"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:2
+msgid "Clear Text"
+msgstr "Fjern tekst"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:3
+msgid "Copy Text"
+msgstr "Kopier tekst"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:4
+msgid "Copy the selected text to the clipboard"
+msgstr "Kopier valgt tekst til utklippstavlen"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:5
+msgid "Cut Text"
+msgstr "Klipp ut tekst"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:12
+msgid "Cut _Text"
+msgstr "Klipp ut _tekst"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:7
+msgid "Cut the selected text to the clipboard"
+msgstr "Klipp ut valgt tekst til utklippstavlen"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:8
+msgid "Paste Text"
+msgstr "Lim inn tekst"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:9
+msgid "Paste the text stored on the clipboard"
+msgstr "Lim inn tekst som er lagret på utklippstavlen"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:10
+msgid "Remove the selected text without putting it on the clipboard"
+msgstr "Fjerner den valgte teksten uten å plassere den på utklippstavlen"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:11
+msgid "Select All"
+msgstr "Velg alt"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:46
+msgid "Select _All"
+msgstr "Velg _alt"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:13
+msgid "Select all the text in a text field"
+msgstr "Marker all tekst i et tekstfelt"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:14 src/nautilus-shell-ui.xml.h:67
+msgid "_Copy Text"
+msgstr "_Kopier tekst"
+
+#: libnautilus/nautilus-clipboard-ui.xml.h:15 src/nautilus-shell-ui.xml.h:79
+msgid "_Paste Text"
+msgstr "_Lim inn tekst"
 
 #: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "AFFS Volume"
@@ -2101,10 +2193,258 @@ msgstr "_Lag lenke hit"
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: libnautilus-private/nautilus-file-operations-progress.c:378
+#: libnautilus-private/nautilus-file.c:2142
+msgid " (invalid Unicode)"
+msgstr " (ugyldig Unicode)"
+
+#. Today, use special word.
+#. * strftime patterns preceeded with the widest
+#. * possible resulting string for that pattern.
+#. *
+#. * Note to localizers: You can look at man strftime
+#. * for details on the format, but you should only use
+#. * the specifiers from the C standard, not extensions.
+#. * These include "%" followed by one of
+#. * "aAbBcdHIjmMpSUwWxXyYZ". There are two extensions
+#. * in the Nautilus version of strftime that can be
+#. * used (and match GNU extensions). Putting a "-"
+#. * between the "%" and any numeric directive will turn
+#. * off zero padding, and putting a "_" there will use
+#. * space padding instead of zero padding.
+#.
+#: libnautilus-private/nautilus-file.c:2359
+msgid "today at 00:00:00 PM"
+msgstr "i dag kl. 00:00:00 PM"
+
+#: libnautilus-private/nautilus-file.c:2360
+msgid "today at %-I:%M:%S %p"
+msgstr "i dag, %-I:%M:%S %p"
+
+#: libnautilus-private/nautilus-file.c:2362
+msgid "today at 00:00 PM"
+msgstr "i dag, 00:00 PM"
+
+#: libnautilus-private/nautilus-file.c:2363
+msgid "today at %-I:%M %p"
+msgstr "i dag, %-I:%M %p"
+
+#: libnautilus-private/nautilus-file.c:2365
+msgid "today, 00:00 PM"
+msgstr "i dag, 00:00 PM"
+
+#: libnautilus-private/nautilus-file.c:2366
+msgid "today, %-I:%M %p"
+msgstr "i dag, %-I:%M %p"
+
+#: libnautilus-private/nautilus-file.c:2368
+#: libnautilus-private/nautilus-file.c:2369
+msgid "today"
+msgstr "i dag"
+
+#. Yesterday, use special word.
+#. * Note to localizers: Same issues as "today" string.
+#.
+#: libnautilus-private/nautilus-file.c:2378
+msgid "yesterday at 00:00:00 PM"
+msgstr "i går, 00:00:00 PM"
+
+#: libnautilus-private/nautilus-file.c:2379
+msgid "yesterday at %-I:%M:%S %p"
+msgstr "i går, %-I:%M:%S %p"
+
+#: libnautilus-private/nautilus-file.c:2381
+msgid "yesterday at 00:00 PM"
+msgstr "i går, 00:00 PM"
+
+#: libnautilus-private/nautilus-file.c:2382
+msgid "yesterday at %-I:%M %p"
+msgstr "i går, %-I:%M %p"
+
+#: libnautilus-private/nautilus-file.c:2384
+msgid "yesterday, 00:00 PM"
+msgstr "i går, 00:00 PM"
+
+#: libnautilus-private/nautilus-file.c:2385
+msgid "yesterday, %-I:%M %p"
+msgstr "i går, %-I:%M %p"
+
+#: libnautilus-private/nautilus-file.c:2387
+#: libnautilus-private/nautilus-file.c:2388
+msgid "yesterday"
+msgstr "i går"
+
+#. Current week, include day of week.
+#. * Note to localizers: Same issues as "today" string.
+#. * The width measurement templates correspond to
+#. * the day/month name with the most letters.
+#.
+#: libnautilus-private/nautilus-file.c:2399
+msgid "Wednesday, September 00 0000 at 00:00:00 PM"
+msgstr "Onsdag, september 00 0000 kl. 00:00:00 PM"
+
+#: libnautilus-private/nautilus-file.c:2400
+msgid "%A, %B %-d %Y at %-I:%M:%S %p"
+msgstr "%A, %B %-d %Y, %-I:%M:%S %p"
+
+#: libnautilus-private/nautilus-file.c:2402
+msgid "Mon, Oct 00 0000 at 00:00:00 PM"
+msgstr "Man, 00 Okt 0000 kl. 00:00:00 PM"
+
+#: libnautilus-private/nautilus-file.c:2403
+msgid "%a, %b %-d %Y at %-I:%M:%S %p"
+msgstr "%a, %b %-d %Y, %-I:%M:%S %p"
+
+#: libnautilus-private/nautilus-file.c:2405
+msgid "Mon, Oct 00 0000 at 00:00 PM"
+msgstr "Man, okt 00 0000 kl. 00:00 PM"
+
+#: libnautilus-private/nautilus-file.c:2406
+msgid "%a, %b %-d %Y at %-I:%M %p"
+msgstr "%a, %b %-d %Y, %-I:%M %p"
+
+#: libnautilus-private/nautilus-file.c:2408
+msgid "Oct 00 0000 at 00:00 PM"
+msgstr "Okt 00 0000 kl. 00:00 PM"
+
+#: libnautilus-private/nautilus-file.c:2409
+msgid "%b %-d %Y at %-I:%M %p"
+msgstr "%b %-d %Y, %-I:%M %p"
+
+#: libnautilus-private/nautilus-file.c:2411
+msgid "Oct 00 0000, 00:00 PM"
+msgstr "Okt 00 0000, 00:00 PM"
+
+#: libnautilus-private/nautilus-file.c:2412
+msgid "%b %-d %Y, %-I:%M %p"
+msgstr "%b %-d %Y, %-I:%M %p"
+
+#: libnautilus-private/nautilus-file.c:2414
+msgid "00/00/00, 00:00 PM"
+msgstr "00/00/00, 00:00 PM"
+
+#: libnautilus-private/nautilus-file.c:2415
+msgid "%m/%-d/%y, %-I:%M %p"
+msgstr "%m/%-d/%y, %-I:%M %p"
+
+#: libnautilus-private/nautilus-file.c:2417
+msgid "00/00/00"
+msgstr "00/00/00"
+
+#: libnautilus-private/nautilus-file.c:2418
+msgid "%m/%d/%y"
+msgstr "%m/%d/%y"
+
+#: libnautilus-private/nautilus-file.c:3692
+msgid "0 items"
+msgstr "0 oppføringer"
+
+#: libnautilus-private/nautilus-file.c:3692
+msgid "0 folders"
+msgstr "0 mapper"
+
+#: libnautilus-private/nautilus-file.c:3693
+msgid "0 files"
+msgstr "0 filer"
+
+#: libnautilus-private/nautilus-file.c:3697
+msgid "1 item"
+msgstr "1 oppføring"
+
+#: libnautilus-private/nautilus-file.c:3697
+msgid "1 folder"
+msgstr "1 mappe"
+
+#: libnautilus-private/nautilus-file.c:3698
+msgid "1 file"
+msgstr "1 fil"
+
+#: libnautilus-private/nautilus-file.c:3701
 #, c-format
-msgid "%ld of %ld"
-msgstr "%ld av %ld"
+msgid "%u items"
+msgstr "%u oppføringer"
+
+#: libnautilus-private/nautilus-file.c:3701
+#, c-format
+msgid "%u folders"
+msgstr "%u mapper"
+
+#: libnautilus-private/nautilus-file.c:3702
+#, c-format
+msgid "%u files"
+msgstr "%u filer"
+
+#. This means no contents at all were readable
+#: libnautilus-private/nautilus-file.c:4009
+#: libnautilus-private/nautilus-file.c:4025
+msgid "? items"
+msgstr "? oppføringer"
+
+#. This means no contents at all were readable
+#: libnautilus-private/nautilus-file.c:4015
+msgid "? bytes"
+msgstr "? bytes"
+
+#: libnautilus-private/nautilus-file.c:4030
+msgid "unknown type"
+msgstr "ukjent type"
+
+#: libnautilus-private/nautilus-file.c:4033
+msgid "unknown MIME type"
+msgstr "ukjent MIME-type"
+
+#. Fallback, use for both unknown attributes and attributes
+#. * for which we have no more appropriate default.
+#.
+#: libnautilus-private/nautilus-file.c:4039
+msgid "unknown"
+msgstr "ukjent"
+
+#: libnautilus-private/nautilus-file.c:4071
+msgid "program"
+msgstr "program"
+
+#: libnautilus-private/nautilus-file.c:4083
+msgid ""
+"Can't find description even for \"x-directory/normal\". This probably means "
+"that your gnome-vfs.keys file is in the wrong place or isn't being found for "
+"some other reason."
+msgstr ""
+"Kan ikke finne beskrivelse selv for \"x-directory/normal\". Dette betyr "
+"sannsynligvis at din gnome-vfs.keys fil er på feilt sted eller ikke kan "
+"finnes av en eller annen grunn."
+
+#: libnautilus-private/nautilus-file.c:4087
+#, c-format
+msgid ""
+"No description found for mime type \"%s\" (file is \"%s\"), please tell the "
+"gnome-vfs mailing list."
+msgstr ""
+"Ingen beskrivelse funnet for MIME-type \"%s\" (fil \"%s\"), si i fra til "
+"gnome-vfs e-post listen."
+
+#: libnautilus-private/nautilus-file.c:4101
+msgid "link"
+msgstr "lenke"
+
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
+#: libnautilus-private/nautilus-file-operations.c:1190
+#: libnautilus-private/nautilus-file.c:4107
+#, c-format
+msgid "link to %s"
+msgstr "lenke til %s"
+
+#: libnautilus-private/nautilus-file.c:4121
+msgid "link (broken)"
+msgstr "lenke (ødelagt)"
+
+#: libnautilus-private/nautilus-file.c:5128
+#: libnautilus-private/nautilus-trash-directory.c:388
+#: src/file-manager/fm-desktop-icon-view.c:68
+msgid "Trash"
+msgstr "Søppelkurv"
 
 #. "From" dialog label, source path gets placed next to it in the dialog
 #: libnautilus-private/nautilus-file-operations.c:431
@@ -2456,13 +2796,6 @@ msgstr "Erstatt"
 #: libnautilus-private/nautilus-file-operations.c:1141
 msgid "Replace All"
 msgstr "Erstatt alle"
-
-#. appended to new link file
-#: libnautilus-private/nautilus-file-operations.c:1190
-#: libnautilus-private/nautilus-file.c:4107
-#, c-format
-msgid "link to %s"
-msgstr "lenke til %s"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1194
@@ -3069,248 +3402,10 @@ msgstr "foo (124de kopi)"
 msgid "foo (124th copy).txt"
 msgstr "foo (124de kopi).txt"
 
-#: libnautilus-private/nautilus-file.c:2142
-msgid " (invalid Unicode)"
-msgstr " (ugyldig Unicode)"
-
-#. Today, use special word.
-#. * strftime patterns preceeded with the widest
-#. * possible resulting string for that pattern.
-#. *
-#. * Note to localizers: You can look at man strftime
-#. * for details on the format, but you should only use
-#. * the specifiers from the C standard, not extensions.
-#. * These include "%" followed by one of
-#. * "aAbBcdHIjmMpSUwWxXyYZ". There are two extensions
-#. * in the Nautilus version of strftime that can be
-#. * used (and match GNU extensions). Putting a "-"
-#. * between the "%" and any numeric directive will turn
-#. * off zero padding, and putting a "_" there will use
-#. * space padding instead of zero padding.
-#.
-#: libnautilus-private/nautilus-file.c:2359
-msgid "today at 00:00:00 PM"
-msgstr "i dag kl. 00:00:00 PM"
-
-#: libnautilus-private/nautilus-file.c:2360
-msgid "today at %-I:%M:%S %p"
-msgstr "i dag, %-I:%M:%S %p"
-
-#: libnautilus-private/nautilus-file.c:2362
-msgid "today at 00:00 PM"
-msgstr "i dag, 00:00 PM"
-
-#: libnautilus-private/nautilus-file.c:2363
-msgid "today at %-I:%M %p"
-msgstr "i dag, %-I:%M %p"
-
-#: libnautilus-private/nautilus-file.c:2365
-msgid "today, 00:00 PM"
-msgstr "i dag, 00:00 PM"
-
-#: libnautilus-private/nautilus-file.c:2366
-msgid "today, %-I:%M %p"
-msgstr "i dag, %-I:%M %p"
-
-#: libnautilus-private/nautilus-file.c:2368
-#: libnautilus-private/nautilus-file.c:2369
-msgid "today"
-msgstr "i dag"
-
-#. Yesterday, use special word.
-#. * Note to localizers: Same issues as "today" string.
-#.
-#: libnautilus-private/nautilus-file.c:2378
-msgid "yesterday at 00:00:00 PM"
-msgstr "i går, 00:00:00 PM"
-
-#: libnautilus-private/nautilus-file.c:2379
-msgid "yesterday at %-I:%M:%S %p"
-msgstr "i går, %-I:%M:%S %p"
-
-#: libnautilus-private/nautilus-file.c:2381
-msgid "yesterday at 00:00 PM"
-msgstr "i går, 00:00 PM"
-
-#: libnautilus-private/nautilus-file.c:2382
-msgid "yesterday at %-I:%M %p"
-msgstr "i går, %-I:%M %p"
-
-#: libnautilus-private/nautilus-file.c:2384
-msgid "yesterday, 00:00 PM"
-msgstr "i går, 00:00 PM"
-
-#: libnautilus-private/nautilus-file.c:2385
-msgid "yesterday, %-I:%M %p"
-msgstr "i går, %-I:%M %p"
-
-#: libnautilus-private/nautilus-file.c:2387
-#: libnautilus-private/nautilus-file.c:2388
-msgid "yesterday"
-msgstr "i går"
-
-#. Current week, include day of week.
-#. * Note to localizers: Same issues as "today" string.
-#. * The width measurement templates correspond to
-#. * the day/month name with the most letters.
-#.
-#: libnautilus-private/nautilus-file.c:2399
-msgid "Wednesday, September 00 0000 at 00:00:00 PM"
-msgstr "Onsdag, september 00 0000 kl. 00:00:00 PM"
-
-#: libnautilus-private/nautilus-file.c:2400
-msgid "%A, %B %-d %Y at %-I:%M:%S %p"
-msgstr "%A, %B %-d %Y, %-I:%M:%S %p"
-
-#: libnautilus-private/nautilus-file.c:2402
-msgid "Mon, Oct 00 0000 at 00:00:00 PM"
-msgstr "Man, 00 Okt 0000 kl. 00:00:00 PM"
-
-#: libnautilus-private/nautilus-file.c:2403
-msgid "%a, %b %-d %Y at %-I:%M:%S %p"
-msgstr "%a, %b %-d %Y, %-I:%M:%S %p"
-
-#: libnautilus-private/nautilus-file.c:2405
-msgid "Mon, Oct 00 0000 at 00:00 PM"
-msgstr "Man, okt 00 0000 kl. 00:00 PM"
-
-#: libnautilus-private/nautilus-file.c:2406
-msgid "%a, %b %-d %Y at %-I:%M %p"
-msgstr "%a, %b %-d %Y, %-I:%M %p"
-
-#: libnautilus-private/nautilus-file.c:2408
-msgid "Oct 00 0000 at 00:00 PM"
-msgstr "Okt 00 0000 kl. 00:00 PM"
-
-#: libnautilus-private/nautilus-file.c:2409
-msgid "%b %-d %Y at %-I:%M %p"
-msgstr "%b %-d %Y, %-I:%M %p"
-
-#: libnautilus-private/nautilus-file.c:2411
-msgid "Oct 00 0000, 00:00 PM"
-msgstr "Okt 00 0000, 00:00 PM"
-
-#: libnautilus-private/nautilus-file.c:2412
-msgid "%b %-d %Y, %-I:%M %p"
-msgstr "%b %-d %Y, %-I:%M %p"
-
-#: libnautilus-private/nautilus-file.c:2414
-msgid "00/00/00, 00:00 PM"
-msgstr "00/00/00, 00:00 PM"
-
-#: libnautilus-private/nautilus-file.c:2415
-msgid "%m/%-d/%y, %-I:%M %p"
-msgstr "%m/%-d/%y, %-I:%M %p"
-
-#: libnautilus-private/nautilus-file.c:2417
-msgid "00/00/00"
-msgstr "00/00/00"
-
-#: libnautilus-private/nautilus-file.c:2418
-msgid "%m/%d/%y"
-msgstr "%m/%d/%y"
-
-#: libnautilus-private/nautilus-file.c:3692
-msgid "0 items"
-msgstr "0 oppføringer"
-
-#: libnautilus-private/nautilus-file.c:3692
-msgid "0 folders"
-msgstr "0 mapper"
-
-#: libnautilus-private/nautilus-file.c:3693
-msgid "0 files"
-msgstr "0 filer"
-
-#: libnautilus-private/nautilus-file.c:3697
-msgid "1 item"
-msgstr "1 oppføring"
-
-#: libnautilus-private/nautilus-file.c:3697
-msgid "1 folder"
-msgstr "1 mappe"
-
-#: libnautilus-private/nautilus-file.c:3698
-msgid "1 file"
-msgstr "1 fil"
-
-#: libnautilus-private/nautilus-file.c:3701
+#: libnautilus-private/nautilus-file-operations-progress.c:378
 #, c-format
-msgid "%u items"
-msgstr "%u oppføringer"
-
-#: libnautilus-private/nautilus-file.c:3701
-#, c-format
-msgid "%u folders"
-msgstr "%u mapper"
-
-#: libnautilus-private/nautilus-file.c:3702
-#, c-format
-msgid "%u files"
-msgstr "%u filer"
-
-#. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4009
-#: libnautilus-private/nautilus-file.c:4025
-msgid "? items"
-msgstr "? oppføringer"
-
-#. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4015
-msgid "? bytes"
-msgstr "? bytes"
-
-#: libnautilus-private/nautilus-file.c:4030
-msgid "unknown type"
-msgstr "ukjent type"
-
-#: libnautilus-private/nautilus-file.c:4033
-msgid "unknown MIME type"
-msgstr "ukjent MIME-type"
-
-#. Fallback, use for both unknown attributes and attributes
-#. * for which we have no more appropriate default.
-#.
-#: libnautilus-private/nautilus-file.c:4039
-msgid "unknown"
-msgstr "ukjent"
-
-#: libnautilus-private/nautilus-file.c:4071
-msgid "program"
-msgstr "program"
-
-#: libnautilus-private/nautilus-file.c:4083
-msgid ""
-"Can't find description even for \"x-directory/normal\". This probably means "
-"that your gnome-vfs.keys file is in the wrong place or isn't being found for "
-"some other reason."
-msgstr ""
-"Kan ikke finne beskrivelse selv for \"x-directory/normal\". Dette betyr "
-"sannsynligvis at din gnome-vfs.keys fil er på feilt sted eller ikke kan "
-"finnes av en eller annen grunn."
-
-#: libnautilus-private/nautilus-file.c:4087
-#, c-format
-msgid ""
-"No description found for mime type \"%s\" (file is \"%s\"), please tell the "
-"gnome-vfs mailing list."
-msgstr ""
-"Ingen beskrivelse funnet for MIME-type \"%s\" (fil \"%s\"), si i fra til "
-"gnome-vfs e-post listen."
-
-#: libnautilus-private/nautilus-file.c:4101
-msgid "link"
-msgstr "lenke"
-
-#: libnautilus-private/nautilus-file.c:4121
-msgid "link (broken)"
-msgstr "lenke (ødelagt)"
-
-#: libnautilus-private/nautilus-file.c:5128
-#: libnautilus-private/nautilus-trash-directory.c:388
-#: src/file-manager/fm-desktop-icon-view.c:68
-msgid "Trash"
-msgstr "Søppelkurv"
+msgid "%ld of %ld"
+msgstr "%ld av %ld"
 
 #: libnautilus-private/nautilus-global-preferences.c:100
 msgid "Always"
@@ -4234,66 +4329,6 @@ msgstr "Nautilus kunne ikke avmontere det valgte volumet."
 msgid "ISO 9660 Volume"
 msgstr "ISO 9660 volum"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:1 src/nautilus-shell-ui.xml.h:2
-msgid "C_lear Text"
-msgstr "F_jern tekst"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:2
-msgid "Clear Text"
-msgstr "Fjern tekst"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:3
-msgid "Copy Text"
-msgstr "Kopier tekst"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:4
-msgid "Copy the selected text to the clipboard"
-msgstr "Kopier valgt tekst til utklippstavlen"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:5
-msgid "Cut Text"
-msgstr "Klipp ut tekst"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:12
-msgid "Cut _Text"
-msgstr "Klipp ut _tekst"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:7
-msgid "Cut the selected text to the clipboard"
-msgstr "Klipp ut valgt tekst til utklippstavlen"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:8
-msgid "Paste Text"
-msgstr "Lim inn tekst"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:9
-msgid "Paste the text stored on the clipboard"
-msgstr "Lim inn tekst som er lagret på utklippstavlen"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:10
-msgid "Remove the selected text without putting it on the clipboard"
-msgstr "Fjerner den valgte teksten uten å plassere den på utklippstavlen"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:11
-msgid "Select All"
-msgstr "Velg alt"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:46
-msgid "Select _All"
-msgstr "Velg _alt"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:13
-msgid "Select all the text in a text field"
-msgstr "Marker all tekst i et tekstfelt"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:14 src/nautilus-shell-ui.xml.h:67
-msgid "_Copy Text"
-msgstr "_Kopier tekst"
-
-#: libnautilus/nautilus-clipboard-ui.xml.h:15 src/nautilus-shell-ui.xml.h:79
-msgid "_Paste Text"
-msgstr "_Lim inn tekst"
-
 #: nautilus.desktop.in.h:1
 msgid "Home Folder"
 msgstr "Hjemmekatalog"
@@ -4301,99 +4336,6 @@ msgstr "Hjemmekatalog"
 #: nautilus.desktop.in.h:2
 msgid "View your home folder in the Nautilus file manager"
 msgstr "Vis din hjemmekatalog i Nautilus filhåndtereren"
-
-#: src/Nautilus_shell.server.in.h:1
-msgid "Factory for Nautilus shell and file manager"
-msgstr "Factory for Nautilus skallet og filhåndtereren"
-
-#: src/Nautilus_shell.server.in.h:2
-msgid "Icons"
-msgstr "Ikoner"
-
-#: src/Nautilus_shell.server.in.h:3
-msgid "Icons Viewer"
-msgstr "Ikonvisning"
-
-#: src/Nautilus_shell.server.in.h:4
-msgid "List"
-msgstr "Liste"
-
-#: src/Nautilus_shell.server.in.h:5
-msgid "List Viewer"
-msgstr "Listevisning"
-
-#: src/Nautilus_shell.server.in.h:6
-msgid "Nautilus factory"
-msgstr "Nautilus factory"
-
-#: src/Nautilus_shell.server.in.h:7
-msgid "Nautilus file manager component that shows a scrollable list"
-msgstr "Nautilus komponent for filhåndterer som viser en rullende liste"
-
-#: src/Nautilus_shell.server.in.h:8
-msgid ""
-"Nautilus file manager component that shows a scrollable list for search "
-"results"
-msgstr ""
-"Nautilus komponent for filhåndterer som viser en rullende liste for "
-"søkeresultater"
-
-#: src/Nautilus_shell.server.in.h:9
-msgid "Nautilus file manager component that shows a two-dimensional icon space"
-msgstr ""
-"Nautilus komponent for filhåndterer som viser et todimensjonal ikonområde"
-
-#: src/Nautilus_shell.server.in.h:10
-msgid "Nautilus file manager component that shows icons on the desktop"
-msgstr "Nautilus komponent for filhåndterer som viser ikoner på skrivebordet"
-
-#: src/Nautilus_shell.server.in.h:11
-msgid "Nautilus file manager desktop icon view"
-msgstr "Nautilus filhåndterer visning for skrivebordsikoner"
-
-#: src/Nautilus_shell.server.in.h:12
-msgid "Nautilus file manager icon view"
-msgstr "Nautilus filhåndterer ikonvisning"
-
-#: src/Nautilus_shell.server.in.h:13
-msgid "Nautilus file manager list view"
-msgstr "Nautilus filhåndterer listevisning"
-
-#: src/Nautilus_shell.server.in.h:14
-msgid "Nautilus file manager search results list view"
-msgstr "Nautilus filhåndterer listevisning for søkeresultat"
-
-#: src/Nautilus_shell.server.in.h:15
-msgid "Nautilus metafile factory"
-msgstr "Metafil-factory for Nautilus"
-
-#: src/Nautilus_shell.server.in.h:16
-msgid "Nautilus shell"
-msgstr "Nautilus skall"
-
-#: src/Nautilus_shell.server.in.h:17
-msgid ""
-"Nautilus shell operations that can be done from subsequent command-line "
-"invocations"
-msgstr ""
-"Nautilus skall-operasjoner som kan utføres fra etterfølgende "
-"kommandolinjeinvokasjoner"
-
-#: src/Nautilus_shell.server.in.h:18
-msgid "Produces metafile objects for accessing Nautilus metadata"
-msgstr "Produserer metafil-objekter for å aksessere Nautilus metadata"
-
-#: src/Nautilus_shell.server.in.h:19
-msgid "Search List"
-msgstr "Søkeliste"
-
-#: src/Nautilus_shell.server.in.h:20
-msgid "View as Icons"
-msgstr "Vis som ikoner"
-
-#: src/Nautilus_shell.server.in.h:21
-msgid "View as List"
-msgstr "Vis som liste"
 
 #: src/file-manager/fm-desktop-icon-view.c:655
 msgid "Background"
@@ -5073,11 +5015,6 @@ msgstr "Filnavn"
 #: src/file-manager/fm-search-list-view.c:514
 msgid "Size"
 msgstr "Størrelse"
-
-#: src/file-manager/fm-list-view.c:149
-#: src/file-manager/fm-search-list-view.c:520
-msgid "Type"
-msgstr "Type"
 
 #: src/file-manager/fm-list-view.c:158
 #: src/file-manager/fm-search-list-view.c:526
@@ -5818,9 +5755,8 @@ msgid "Re_versed Order"
 msgstr "Om_vendt rekkefølge"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:24
-#, fuzzy
 msgid "Rename selected item"
-msgstr "Gi nytt navn til valgt ikon"
+msgstr "Endre navn på valgt oppføring"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:25
 msgid "Reposition icons to better fit in the window and avoid overlapping"
@@ -6870,6 +6806,99 @@ msgstr "[Fileier] er [root]"
 msgid "[File owner] is not [root]"
 msgstr "[Fileier] er ikke [root]"
 
+#: src/Nautilus_shell.server.in.h:1
+msgid "Factory for Nautilus shell and file manager"
+msgstr "Factory for Nautilus skallet og filhåndtereren"
+
+#: src/Nautilus_shell.server.in.h:2
+msgid "Icons"
+msgstr "Ikoner"
+
+#: src/Nautilus_shell.server.in.h:3
+msgid "Icons Viewer"
+msgstr "Ikonvisning"
+
+#: src/Nautilus_shell.server.in.h:4
+msgid "List"
+msgstr "Liste"
+
+#: src/Nautilus_shell.server.in.h:5
+msgid "List Viewer"
+msgstr "Listevisning"
+
+#: src/Nautilus_shell.server.in.h:6
+msgid "Nautilus factory"
+msgstr "Nautilus factory"
+
+#: src/Nautilus_shell.server.in.h:7
+msgid "Nautilus file manager component that shows a scrollable list"
+msgstr "Nautilus komponent for filhåndterer som viser en rullende liste"
+
+#: src/Nautilus_shell.server.in.h:8
+msgid ""
+"Nautilus file manager component that shows a scrollable list for search "
+"results"
+msgstr ""
+"Nautilus komponent for filhåndterer som viser en rullende liste for "
+"søkeresultater"
+
+#: src/Nautilus_shell.server.in.h:9
+msgid "Nautilus file manager component that shows a two-dimensional icon space"
+msgstr ""
+"Nautilus komponent for filhåndterer som viser et todimensjonal ikonområde"
+
+#: src/Nautilus_shell.server.in.h:10
+msgid "Nautilus file manager component that shows icons on the desktop"
+msgstr "Nautilus komponent for filhåndterer som viser ikoner på skrivebordet"
+
+#: src/Nautilus_shell.server.in.h:11
+msgid "Nautilus file manager desktop icon view"
+msgstr "Nautilus filhåndterer visning for skrivebordsikoner"
+
+#: src/Nautilus_shell.server.in.h:12
+msgid "Nautilus file manager icon view"
+msgstr "Nautilus filhåndterer ikonvisning"
+
+#: src/Nautilus_shell.server.in.h:13
+msgid "Nautilus file manager list view"
+msgstr "Nautilus filhåndterer listevisning"
+
+#: src/Nautilus_shell.server.in.h:14
+msgid "Nautilus file manager search results list view"
+msgstr "Nautilus filhåndterer listevisning for søkeresultat"
+
+#: src/Nautilus_shell.server.in.h:15
+msgid "Nautilus metafile factory"
+msgstr "Metafil-factory for Nautilus"
+
+#: src/Nautilus_shell.server.in.h:16
+msgid "Nautilus shell"
+msgstr "Nautilus skall"
+
+#: src/Nautilus_shell.server.in.h:17
+msgid ""
+"Nautilus shell operations that can be done from subsequent command-line "
+"invocations"
+msgstr ""
+"Nautilus skall-operasjoner som kan utføres fra etterfølgende "
+"kommandolinjeinvokasjoner"
+
+#: src/Nautilus_shell.server.in.h:18
+msgid "Produces metafile objects for accessing Nautilus metadata"
+msgstr "Produserer metafil-objekter for å aksessere Nautilus metadata"
+
+#: src/Nautilus_shell.server.in.h:19
+msgid "Search List"
+msgstr "Søkeliste"
+
+#: src/Nautilus_shell.server.in.h:20
+msgid "View as Icons"
+msgstr "Vis som ikoner"
+
+#: src/Nautilus_shell.server.in.h:21
+msgid "View as List"
+msgstr "Vis som liste"
+
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Legg til et bokmerke for nåværende adresse i denne menyen"
@@ -7288,6 +7317,11 @@ msgstr "historikk for nettleser"
 msgid "the current selection"
 msgstr "aktivt utvalg"
 
+#: src/nautilus-window.c:1189
+#, c-format
+msgid "Display this location with \"%s\""
+msgstr "Vis denne lokasjonen med \"%s\""
+
 #. FIXME bugzilla.gnome.org 45037: The text Preview
 #. * Release is hardcoded here. Are all builds with
 #. * time stamps really best described as "preview
@@ -7540,11 +7574,6 @@ msgstr "Tilbake"
 msgid "Forward"
 msgstr "Fremover"
 
-#: src/nautilus-window.c:1189
-#, c-format
-msgid "Display this location with \"%s\""
-msgstr "Vis denne lokasjonen med \"%s\""
-
 #. Note to localizers: this font is used for the number in the
 #. * zoom control widget.
 #.
@@ -7556,3681 +7585,3 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 #, c-format
 msgid "%d%%"
 msgstr "%d%%"
-
-#~ msgid "Smoother Graphics"
-#~ msgstr "Jevnere grafikk"
-
-#~ msgid "Use smoother (but slower) graphics"
-#~ msgstr "Bruk jevnere (men tregere) grafikk"
-
-#~ msgid "Search the World Wide Web"
-#~ msgstr "Søk på World Wide Web"
-
-#~ msgid "We_b Search"
-#~ msgstr "We_b-søk"
-
-#~ msgid "Web Search"
-#~ msgstr "Web-søk"
-
-#~ msgid "Default"
-#~ msgstr "Standard"
-
-#~ msgid "Nautilus File Manager and Graphic Shell"
-#~ msgstr "Nautilus filhåndterer og grafisk skall"
-
-#~ msgid "%s - %s"
-#~ msgstr "%s - %s"
-
-#~ msgid "Documentation"
-#~ msgstr "Dokumentasjon"
-
-#~ msgid "Help"
-#~ msgstr "Hjelp"
-
-#~ msgid " _Advanced"
-#~ msgstr " _Avansert"
-
-#~ msgid " _Beginner"
-#~ msgstr " _Begynner"
-
-#~ msgid " _Intermediate"
-#~ msgstr " V_iderekommen"
-
-#~ msgid "Use preferences appropriate for beginners"
-#~ msgstr "Bruk brukervalg som passer for begynnere"
-
-#~ msgid "Use preferences appropriate for experts"
-#~ msgstr "Bruk brukervalg som passer for eksperter"
-
-#~ msgid "Use preferences appropriate for most people"
-#~ msgstr "Bruk brukervalg som passer for de fleste folk"
-
-#~ msgid "_Edit Preferences..."
-#~ msgstr "R_ediger brukervalg..."
-
-#~ msgid "_Preferences"
-#~ msgstr "_Brukervalg"
-
-#~ msgid "Help Navigation Tree"
-#~ msgstr "Hjelp navigasjonstre"
-
-#~ msgid "Help sidebar panel"
-#~ msgstr "Hjelp sidelinjepanel"
-
-#~ msgid "Internal use only"
-#~ msgstr "Kun intern bruk"
-
-#~ msgid "Manual"
-#~ msgstr "Manual"
-
-#~ msgid "Development"
-#~ msgstr "Utvikling"
-
-#~ msgid "System Calls"
-#~ msgstr "Systemkall"
-
-#~ msgid "Library Functions"
-#~ msgstr "Bibliotekfunksjoner"
-
-#~ msgid "Devices"
-#~ msgstr "Enheter"
-
-#~ msgid "Configuration Files"
-#~ msgstr "Konfigurasjonsfiler"
-
-#~ msgid "Games"
-#~ msgstr "Spill"
-
-#~ msgid "Conventions"
-#~ msgstr "Konvensjoner"
-
-#~ msgid "System Administration"
-#~ msgstr "Systemadministrasjon"
-
-#~ msgid "Kernel Routines"
-#~ msgstr "Kjernerutiner"
-
-#~ msgid "Info"
-#~ msgstr "Info"
-
-#~ msgid "No index terms found for this selection"
-#~ msgstr "Ingen stikkord for indeks funnet for dette utvalget"
-
-#~ msgid "see "
-#~ msgstr "se "
-
-#~ msgid "see also "
-#~ msgstr "se også "
-
-#~ msgid "No matches."
-#~ msgstr "Ingen treff."
-
-#~ msgid " (see \""
-#~ msgstr " (se \""
-
-#~ msgid " (see also \""
-#~ msgstr " (se også \""
-
-#~ msgid "(see: "
-#~ msgstr "(se: "
-
-#~ msgid "(see also: "
-#~ msgstr "(se også: "
-
-#~ msgid "_Index:"
-#~ msgstr "_Indeks:"
-
-#~ msgid ""
-#~ "Select _documents to show \n"
-#~ "in index tab"
-#~ msgstr ""
-#~ "Velg _dokumenter som skal vises \n"
-#~ "i indeksfanen"
-
-#~ msgid "Select Al_l"
-#~ msgstr "Velg al_le"
-
-#~ msgid "Select _None"
-#~ msgstr "Velg i_ngen"
-
-#~ msgid "Show indexes for:"
-#~ msgstr "Vis indekser for:"
-
-#~ msgid "Selection on Contents _tab"
-#~ msgstr "Utvalg i _innholdsfanen"
-
-#~ msgid "_All documents"
-#~ msgstr "_Alle dokumenter"
-
-#~ msgid "_Specific documents"
-#~ msgstr "_Spesifikke dokumenter"
-
-#~ msgid "S_how all index terms"
-#~ msgstr "_Vis alle stikkord for indeks"
-
-#~ msgid "Show _only terms containing"
-#~ msgstr "Vis kun stikk_ord som inneholder"
-
-#~ msgid "Sho_w"
-#~ msgstr "_Vis"
-
-#~ msgid "Inde_x:"
-#~ msgstr "Inde_ks:"
-
-#~ msgid "Introductory Documents"
-#~ msgstr "Innledende dokumenter"
-
-#~ msgid "Documents by Subject"
-#~ msgstr "Dokumenter etter emne"
-
-#~ msgid "_Contents"
-#~ msgstr "_Innhold:"
-
-#~ msgid "_Index"
-#~ msgstr "_Indeks"
-
-#~ msgid "All Selected"
-#~ msgstr "Alle valgt"
-
-#~ msgid "Contents Selected"
-#~ msgstr "Innhold valgt"
-
-#~ msgid "Mozilla Nautilus view"
-#~ msgstr "Mozilla Nautilus-visning"
-
-#~ msgid "Mozilla Nautilus view factory"
-#~ msgstr "Factory for Mozilla Nautilus-visning"
-
-#~ msgid "Mozilla content view component"
-#~ msgstr "Mozilla innholdsvisningskomponent"
-
-#~ msgid "Mozilla content view component's factory"
-#~ msgstr "Factory for Mozilla innholdsvisningskomponent"
-
-#~ msgid "View as Web Page"
-#~ msgstr "Vis som webside"
-
-#~ msgid "Web Page"
-#~ msgstr "Webside"
-
-#~ msgid "Web Page Viewer"
-#~ msgstr "Webside-visning"
-
-#~ msgid ""
-#~ "GConf error:\n"
-#~ "  %s"
-#~ msgstr ""
-#~ "GConf feil:\n"
-#~ "  %s"
-
-#~ msgid ""
-#~ "GConf error:\n"
-#~ "  %s\n"
-#~ "All further errors shown only on terminal"
-#~ msgstr ""
-#~ "GConf feil:\n"
-#~ "  %s\n"
-#~ "Alle videre feil vises kun på kommandolinjen"
-
-#~ msgid "name of icon for the mozilla view"
-#~ msgstr "navn på ikonet for mozilla-visning"
-
-#~ msgid "mozilla summary info"
-#~ msgstr "mozilla sammendragsinformasjon"
-
-#~ msgid ""
-#~ "A JavaScript function (small software program) on this page tried to open "
-#~ "a new window, but Nautilus does not support the opening new windows by "
-#~ "JavaScript.\n"
-#~ "\n"
-#~ "Try viewing the page in a different web browser, such as Mozilla."
-#~ msgstr ""
-#~ "En JavaScript-funksjon (et lite program) på denne siden prøvde å åpne et "
-#~ "nytt vindu, men nautilus støtter ikke åpning av nye vinduer fra "
-#~ "Javascript.\n"
-#~ "\n"
-#~ "Prøv å vise siden i en annen nettleser, slik som Mozilla."
-
-#~ msgid "Nautilus JavaScript Warning"
-#~ msgstr "Nautilus JavaScript advarsel"
-
-#~ msgid "Arabic"
-#~ msgstr "Arabisk"
-
-#~ msgid "Baltic"
-#~ msgstr "Baltisk"
-
-#~ msgid "Central European"
-#~ msgstr "Sentraleuropeisk"
-
-#~ msgid "Chinese"
-#~ msgstr "Kinesisk"
-
-#~ msgid "Cyrillic"
-#~ msgstr "Kyrillisk"
-
-#~ msgid "Greek"
-#~ msgstr "Gresk"
-
-#~ msgid "Hebrew"
-#~ msgstr "Hebraisk"
-
-#~ msgid "Japanese"
-#~ msgstr "Japansk"
-
-#~ msgid "Turkish"
-#~ msgstr "Tyrkisk"
-
-#~ msgid "Unicode"
-#~ msgstr "Unicode"
-
-#~ msgid "UTF"
-#~ msgstr "UTF"
-
-#~ msgid "Vietnamese"
-#~ msgstr "Vietnamesisk"
-
-#~ msgid "Western"
-#~ msgstr "Vestlig"
-
-#~ msgid "Arabic (IBM-864)"
-#~ msgstr "Arabisk (IBM-864)"
-
-#~ msgid "Arabic (ISO-8859-6)"
-#~ msgstr "Arabisk (ISO-8859-6)"
-
-#~ msgid "Arabic (ISO-8859-6-E)"
-#~ msgstr "Arabisk (ISO-8859-6-E)"
-
-#~ msgid "Arabic (ISO-8859-6-I)"
-#~ msgstr "Arabisk (ISO-8859-6-I)"
-
-#~ msgid "Arabic (Windows-1256)"
-#~ msgstr "Arabisk (Windows-1256)"
-
-#~ msgid "Armenian (ARMSCII-8)"
-#~ msgstr "Armensk (ARMSCII-8)"
-
-#~ msgid "Baltic (ISO-8859-13)"
-#~ msgstr "Baltisk (ISO-8859-13)"
-
-#~ msgid "Baltic (ISO-8859-4)"
-#~ msgstr "Baltisk (ISO-8859-4)"
-
-#~ msgid "Baltic (Windows-1257)"
-#~ msgstr "Baltisk (Windows-1257)"
-
-#~ msgid "Celtic (ISO-8859-14)"
-#~ msgstr "Keltisk (ISO-8859-14)"
-
-#~ msgid "Central European (IBM-852)"
-#~ msgstr "Sentraleuropeisk (IBM-852)"
-
-#~ msgid "Central European (ISO-8859-2)"
-#~ msgstr "Sentraleuropeisk (ISO-8859-2)"
-
-#~ msgid "Central European (MacCE)"
-#~ msgstr "Sentraleuropeisk (MacCE)"
-
-#~ msgid "Central European (Windows-1250)"
-#~ msgstr "Sentraleuropeisk (Windows-1250)"
-
-#~ msgid "Chinese Simplified (GB2312)"
-#~ msgstr "Forenklet kinesisk (GB2312)"
-
-#~ msgid "Chinese Simplified (GBK)"
-#~ msgstr "Forenklet kinesisk (GBK)"
-
-#~ msgid "Chinese Simplified (HZ)"
-#~ msgstr "Forenklet kinesisk(HZ)"
-
-#~ msgid "Chinese Traditional (Big5)"
-#~ msgstr "Trasisjonell kinesis (Big5)"
-
-#~ msgid "Chinese Traditional (EUC-TW)"
-#~ msgstr "Tradisjonell kinesisk (EUC-TW)"
-
-#~ msgid "Croatian (MacCroatian)"
-#~ msgstr "Kroatisk (MacCroatian)"
-
-#~ msgid "Cyrillic (IBM-855)"
-#~ msgstr "Kyrillisk (IBM-855)"
-
-#~ msgid "Cyrillic (ISO-8859-5)"
-#~ msgstr "Kyrillisk (ISO-8859-5)"
-
-#~ msgid "Cyrillic (ISO-IR-111)"
-#~ msgstr "Kyrillisk (ISO-IR-111)"
-
-#~ msgid "Cyrillic (MacCyrillic)"
-#~ msgstr "Kyrillisk (MacCyrillic)"
-
-#~ msgid "Cyrillic (Windows-1251)"
-#~ msgstr "Kyrillisk (Windows-1251)"
-
-#~ msgid "Cyrillic/Russian (IBM-866)"
-#~ msgstr "Kyrillisk/russisk (IBM-866)"
-
-#~ msgid "Cyrillic/Russian (KOI8-R)"
-#~ msgstr "Kyrillisk/russisk (KOI8-R)"
-
-#~ msgid "Cyrillic/Ukrainian (KOI8-U)"
-#~ msgstr "Kyrillisk/Ukrainsk (KOI8-U)"
-
-#~ msgid "Cyrillic/Ukrainian (MacUkrainian)"
-#~ msgstr "Kyrillisk/ukrainsk (MacUkrainian)"
-
-#~ msgid "English (US-ASCII)"
-#~ msgstr "Engelsk (US-ASCII)"
-
-#~ msgid "Greek (ISO-8859-7)"
-#~ msgstr "Gresk (ISO-8859-7)"
-
-#~ msgid "Greek (MacGreek)"
-#~ msgstr "Gresk (MacGreek)"
-
-#~ msgid "Greek (Windows-1253)"
-#~ msgstr "Gresk (Windows-1253)"
-
-#~ msgid "Hebrew (IBM-862)"
-#~ msgstr "Hebraisk (IBM-862)"
-
-#~ msgid "Hebrew (ISO-8859-8-E)"
-#~ msgstr "Hebraisk (ISO-8859-8-E)"
-
-#~ msgid "Hebrew (ISO-8859-8-I)"
-#~ msgstr "Hebraisk (ISO-8859-8-I)"
-
-#~ msgid "Hebrew (Windows-1255)"
-#~ msgstr "Hebraisk (Windows-1255)"
-
-#~ msgid "Icelandic (MacIcelandic)"
-#~ msgstr "Islandsk (MacIcelandic)"
-
-#~ msgid "Japanese (EUC-JP)"
-#~ msgstr "Japansk (EUC-JP)"
-
-#~ msgid "Japanese (ISO-2022-JP)"
-#~ msgstr "Japansk (ISO-2022-JP)"
-
-#~ msgid "Japanese (Shift_JIS)"
-#~ msgstr "Japansk (Shift_JIS)"
-
-#~ msgid "Korean (EUC-KR)"
-#~ msgstr "Koreansk (EUC-KR)"
-
-#~ msgid "Nordic (ISO-8859-10)"
-#~ msgstr "Nordisk (ISO-8859-10)"
-
-#~ msgid "Romanian (MacRomanian)"
-#~ msgstr "Rumensk (MacRomanian)"
-
-#~ msgid "South European (ISO-8859-3)"
-#~ msgstr "Sydeuropeisk (ISO-8859-3)"
-
-#~ msgid "T.61-8bit"
-#~ msgstr "T.61-8bit"
-
-#~ msgid "Thai (TIS-620)"
-#~ msgstr "Thai (TIS-620)"
-
-#~ msgid "Turkish (IBM-857)"
-#~ msgstr "Tyrkisk (IBM-857)"
-
-#~ msgid "Turkish (ISO-8859-9)"
-#~ msgstr "Tyrkisk (ISO-8859-9)"
-
-#~ msgid "Turkish (MacTurkish)"
-#~ msgstr "Tyrkisk (MacTurkish)"
-
-#~ msgid "Turkish (Windows-1254)"
-#~ msgstr "Tyrkisk (Windows-1254)"
-
-#~ msgid "Unicode (UTF-7)"
-#~ msgstr "Unicode (UTF-7)"
-
-#~ msgid "Unicode (UTF-8)"
-#~ msgstr "Unicode (UTF-8)"
-
-#~ msgid "User Defined"
-#~ msgstr "Brukerdefinert"
-
-#~ msgid "UTF-16BE"
-#~ msgstr "UTF-16BE"
-
-#~ msgid "UTF-16LE"
-#~ msgstr "UTF-16LE"
-
-#~ msgid "UTF-32BE"
-#~ msgstr "UTF-32BE"
-
-#~ msgid "UTF-32LE"
-#~ msgstr "UTF-32LE"
-
-#~ msgid "Vietnamese (TCVN)"
-#~ msgstr "Vietnamesisk (TCVN)"
-
-#~ msgid "Vietnamese (VISCII)"
-#~ msgstr "Vietnamesisk (VISCII)"
-
-#~ msgid "Vietnamese (VPS)"
-#~ msgstr "Vietnamesisk (VPS)"
-
-#~ msgid "Vietnamese (Windows-1258)"
-#~ msgstr "Vietnamesisk (Windows-1258)"
-
-#~ msgid "Visual Hebrew (ISO-8859-8)"
-#~ msgstr "Synlig hebraisk (ISO-8859-8)"
-
-#~ msgid "Western (IBM-850)"
-#~ msgstr "Vestlig (IBM-850)"
-
-#~ msgid "Western (ISO-8859-1)"
-#~ msgstr "Vestlig (ISO-8859-1)"
-
-#~ msgid "Western (ISO-8859-15)"
-#~ msgstr "Vestlig (ISO-8859-15)"
-
-#~ msgid "Western (MacRoman)"
-#~ msgstr "Vestlig (MacRoman)"
-
-#~ msgid "Western (Windows-1252)"
-#~ msgstr "Vestlig (Windows-1252)"
-
-#~ msgid "windows-936"
-#~ msgstr "windows-936"
-
-#~ msgid "x-imap4-modified-utf7"
-#~ msgstr "x-imap4-modified-utf7"
-
-#~ msgid "x-u-escaped"
-#~ msgstr "x-u-escaped"
-
-#~ msgid "Charset Encoding"
-#~ msgstr "Koding for tegnsett"
-
-#~ msgid "Programs"
-#~ msgstr "Programmer"
-
-#~ msgid "Can't create nautilus-launcher-applet!"
-#~ msgstr "Kan ikke opprette nautilus-launcher-applet!"
-
-#~ msgid "Can't create nautilus-preferences-applet!"
-#~ msgstr "Kan ikke opprette nautilus-preferences-applet!"
-
-#~ msgid "Show Desktop"
-#~ msgstr "Vis skrivebord"
-
-#~ msgid "Smooth Graphics"
-#~ msgstr "Jevn grafikk"
-
-#~ msgid "Quit"
-#~ msgstr "Avslutt"
-
-#~ msgid "Start"
-#~ msgstr "Start"
-
-#~ msgid "Restart"
-#~ msgstr "Start på nytt"
-
-#~ msgid "Help Index"
-#~ msgstr "Hjelp indeks"
-
-#~ msgid "Help Index sidebar panel"
-#~ msgstr "Hjelp indeks sidelinjepanel"
-
-#~ msgid "Help Search"
-#~ msgstr "Hjelp-søk"
-
-#~ msgid "Help Search sidebar panel"
-#~ msgstr "Hjelp søk sidelinjepanel"
-
-#~ msgid "Table %d."
-#~ msgstr "Tabell %d."
-
-#~ msgid "Up to Table of Contents"
-#~ msgstr "Opp til innholdsfortegnelse"
-
-#~ msgid "Figure %s"
-#~ msgstr "Figur %s"
-
-#~ msgid "Figure %d"
-#~ msgstr "Figur %d"
-
-#~ msgid "IMAGE"
-#~ msgstr "BILDE"
-
-#~ msgid "Legal Notice"
-#~ msgstr "Lisens"
-
-#~ msgid "Q"
-#~ msgstr "SPM"
-
-#~ msgid "A"
-#~ msgstr "SV"
-
-#~ msgid "See"
-#~ msgstr "Se"
-
-#~ msgid "See also"
-#~ msgstr "Se også "
-
-#~ msgid "GNOME Documentation"
-#~ msgstr "GNOME dokumentasjon"
-
-#~ msgid "Copyright"
-#~ msgstr "Kopibeskyttet"
-
-#~ msgid "by"
-#~ msgstr "av"
-
-#~ msgid "PREFACE"
-#~ msgstr "INNLEDNING"
-
-#~ msgid "APPENDIX"
-#~ msgstr "APPENDIKS"
-
-#~ msgid "Gnumeric"
-#~ msgstr "Gnumeric"
-
-#~ msgid "Netscape"
-#~ msgstr "Netscape"
-
-#~ msgid "The Gimp"
-#~ msgstr "GIMP"
-
-#~ msgid "Computer"
-#~ msgstr "Datamaskin"
-
-#~ msgid "Home Directory"
-#~ msgstr "Hjemmekatalog"
-
-#~ msgid "Excite"
-#~ msgstr "Excite"
-
-#~ msgid "Portals"
-#~ msgstr "Portaler"
-
-#~ msgid "Yahoo"
-#~ msgstr "Yahoo"
-
-#~ msgid "Alta Vista"
-#~ msgstr "Alta Vista"
-
-#~ msgid "Google"
-#~ msgstr "Google"
-
-#~ msgid "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
-#~ msgstr "-adobe-helvetica-fet-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
-
-#~ msgid "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
-#~ msgstr "-adobe-helvetica-fet-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
-
-#~ msgid ""
-#~ "You are about to run Nautilus as root.\n"
-#~ "\n"
-#~ "As root, you can damage your system if you are not careful, and\n"
-#~ "Nautilus will not stop you from doing it."
-#~ msgstr ""
-#~ "Du er i ferd med å kjøre Nautilus som root.\n"
-#~ "\n"
-#~ "Du kan, som root, ødelegge ditt system hvis du ikke er forsiktig, og\n"
-#~ "Nautilus vil ikke hindre deg i å gjøre dette."
-
-#~ msgid ""
-#~ "Your user level adjusts Nautilus to your degree of experience\n"
-#~ "using GNOME and %s. Choose a level that's comfortable for\n"
-#~ "you - you can always change it later."
-#~ msgstr ""
-#~ "Ditt brukernivå tilpasser Nautilus til ditt nivå av teknisk\n"
-#~ "ekspertise innen bruk av GNOME og %s. Velg et nivå som du\n"
-#~ "er komfortabel med - du kan alltid endre det igjen senere."
-
-#~ msgid ""
-#~ "For users who have no previous experience with GNOME\n"
-#~ "and %s."
-#~ msgstr ""
-#~ "For bruker som ikke har tidligere erfaring med GNOME\n"
-#~ "og %s."
-
-#~ msgid ""
-#~ "For users who are comfortable with GNOME and %s,\n"
-#~ "but don't describe themselves as ``technical.''"
-#~ msgstr ""
-#~ "For brukere som er komfortabel med GNOME og %s,\n"
-#~ "men som ikke beskriver seg selv som ``tekniske''."
-
-#~ msgid ""
-#~ "For users who have GNOME and %s experience, and\n"
-#~ "like to see every detail of the operating system."
-#~ msgstr ""
-#~ "For brukere som har erfaring med GOME og %s, og\n"
-#~ "som ønsker å se alle detaljer ved operativsystemet."
-
-#~ msgid ""
-#~ "To verify your Internet connection and make sure you have\n"
-#~ "the latest Nautilus updates, Nautilus will now connect to\n"
-#~ "Eazel's web site. This will take seconds if your copy of\n"
-#~ "Nautilus is recent; longer (but no more than a minute or two)\n"
-#~ "if you need an update.\n"
-#~ "\n"
-#~ "If you know your computer uses a proxy connection, click\n"
-#~ "Verify and Nautilus will use it.\n"
-#~ msgstr ""
-#~ "For å verifisere din Internett-tilkobling og fastslå at du har\n"
-#~ "de siste oppdateringene til Nautilus, vil Nautilus nå koble til\n"
-#~ "Eazel's nettsider. Dette vil ta noen sekunder hvis din kopi av\n"
-#~ "Nautilus er ny; lenger (men ikke mer enn et minutt eller to)\n"
-#~ "hvis du trenger en oppdatering.\n"
-#~ "\n"
-#~ "Hvis du vet at din maskin bruker en proxy-tilkobling, klikker\n"
-#~ "du verifiser for å la Nautilus bruke den.\n"
-
-#~ msgid "Verify my connection and check for updates"
-#~ msgstr "Verifiser min tilkobling og sjekk for oppdateringer"
-
-#~ msgid "Don't verify my connection or check for updates"
-#~ msgstr "Ikke verifiser min tilkobling eller sjekk for oppdateringer"
-
-#~ msgid ""
-#~ "We are having trouble making an external web connection.\n"
-#~ "Sometimes, firewalls require you to specify a web proxy server.\n"
-#~ "Fill in the name or port of your proxy server, if any, below."
-#~ msgstr ""
-#~ "Vi har problemer med å opprette en ekstern web-forbindelse.\n"
-#~ "Noen ganger gjør brannvegger det nødvendig å spesifisere en proxy-"
-#~ "tjener.\n"
-#~ "Fyll ut navn eller port for din proxy-tjener, hvis du har en, under."
-
-#~ msgid "No proxy server required."
-#~ msgstr "Ingen proxy-tjener nødvendig."
-
-#~ msgid "Use this proxy server:"
-#~ msgstr "Bruk denne proxy-tjeneren:"
-
-#~ msgid "Proxy address:"
-#~ msgstr "Proxy-adresse:"
-
-#~ msgid "Verifying your Internet connection and checking for updates..."
-#~ msgstr "Verifiserer din Internett-tilkobling og ser etter oppdateringer..."
-
-#~ msgid "Downloading Nautilus updates..."
-#~ msgstr "Laster ned Nautilus-oppdateringer..."
-
-#~ msgid ""
-#~ "If you have been using the GNOME Midnight Commander\n"
-#~ "these settings move your desktop icons to Nautilus and\n"
-#~ "make Nautilus the default desktop.\n"
-#~ msgstr ""
-#~ "Hvis du har brukt GNOME Midnight Commander vil disse\n"
-#~ "innstillingene flytte dine skrivebordsikoner til Nautilus\n"
-#~ "og gjøre Nautilus til standard skrivebord.\n"
-
-#~ msgid "Use Nautilus to draw the desktop."
-#~ msgstr "Bruk Nautilus til å tegne skrivebordet."
-
-#~ msgid "Move existing desktop icons to the Nautilus desktop."
-#~ msgstr "Flytt eksisterende skrivebordsikoner til Nautilus-skrivebordet."
-
-#~ msgid "Launch Nautilus when GNOME starts up."
-#~ msgstr "Start Nautilus når GNOME starter opp."
-
-#~ msgid ""
-#~ "Click Finish to launch Nautilus. You'll start with two\n"
-#~ "Nautilus windows: one shows your home folder, and the\n"
-#~ "other tells you about Eazel's services that make the life\n"
-#~ "of a %s user easier.\n"
-#~ "\n"
-#~ "We hope you enjoy Nautilus!"
-#~ msgstr ""
-#~ "Klikk Fullfør for å starte Nautilus. Du vil starte opp med\n"
-#~ "to Nautilus-vinduer: ett viser din hjemmekatalog, og det andre\n"
-#~ "forteller deg om Eazel's tjenester som gjør livet enklere\n"
-#~ "for en %s-bruker.\n"
-#~ "\n"
-#~ "Vi håper du vil like Nautilus!"
-
-#~ msgid ""
-#~ "Click Finish to launch Nautilus. You'll start with a\n"
-#~ "window showing your home folder.\n"
-#~ "\n"
-#~ "We hope you enjoy Nautilus!"
-#~ msgstr ""
-#~ "Klikk Fullfør for å starte Nautilus. Du vil starte opp med\n"
-#~ "et vindu som viser din hjemmekatalog.\n"
-#~ "\n"
-#~ "Vi håper du vil like Nautilus!"
-
-#~ msgid "Nautilus First Time Setup"
-#~ msgstr "Nautilus førstegangsoppsett"
-
-#~ msgid "Welcome to Nautilus"
-#~ msgstr "Velkommen til Nautilus"
-
-#~ msgid ""
-#~ "Nautilus...\n"
-#~ "    Is a great file manager for the GNOME desktop.\n"
-#~ "    Provides a simple intuitive way to access Internet services.\n"
-#~ "    Is an extensible framework for GNOME developers.\n"
-#~ "    Provides a powerful delivery platform for service providers.\n"
-#~ "\n"
-#~ "Click Next to begin customizing your Nautilus environment."
-#~ msgstr ""
-#~ "Nautilus...\n"
-#~ "    Er en fantastisk filhåndterer for GNOME skrivebordsmiljøet.\n"
-#~ "    Gir deg en enkel intuitiv måte å aksessere Internettjenester.\n"
-#~ "    Er et utvidbart rammeverk for GNOME utviklere.\n"
-#~ "    Tilbyr en kraftig plattform for levering av tjenester fra tilbydere.\n"
-#~ "\n"
-#~ "Klikk Neste for å starte tilpasning av ditt Nautilus-miljø."
-
-#~ msgid "Finished"
-#~ msgstr "Fullført"
-
-#~ msgid "Choose Your User Level"
-#~ msgstr "Velg ditt brukernivå"
-
-#~ msgid "GMC to Nautilus Transition"
-#~ msgstr "GMC til Nautilus overgang"
-
-#~ msgid "Checking Your Internet Connection"
-#~ msgstr "Sjekker din Internett-tilkobling"
-
-#~ msgid "Updating Nautilus..."
-#~ msgstr "Oppdaterer Nautilus..."
-
-#~ msgid "Web Proxy Configuration"
-#~ msgstr "Konfigurasjon av web-proxy"
-
-#~ msgid "Decoding Update..."
-#~ msgstr "Dekoder oppdatering..."
-
-#~ msgid "Update Complete. Click Next to Continue."
-#~ msgstr "Oppdatering fullført. Klikk neste for å fortsette."
-
-#~ msgid "No Update Available... Press Next to Continue."
-#~ msgstr "Ingen oppdatering tilgjengelig... Trykk neste for å fortsette."
-
-#~ msgid "Link sets"
-#~ msgstr "Lenkesett"
-
-#~ msgid "Add or remove sets of links by clicking on the checkboxes below."
-#~ msgstr ""
-#~ "Legg til eller fjern sett med lenker ved å klikke på avkrysningsboksene "
-#~ "under."
-
-#~ msgid "Caveat"
-#~ msgstr "Advarsel"
-
-#~ msgid ""
-#~ "Thank you for your interest in Nautilus.\n"
-#~ " \n"
-#~ "As with any software under development, you should exercise caution when "
-#~ "using Nautilus. We do not provide any guarantee that it will work "
-#~ "properly, or assume any liability for your use of it.  Please use it at "
-#~ "your own risk.\n"
-#~ "\n"
-#~ "Please write a mail to <nautilus-list@eazel.com> to provide feedback, "
-#~ "comments, and suggestions."
-#~ msgstr ""
-#~ "Takk for din interesse for Nautilus.\n"
-#~ "\n"
-#~ "Som med all annen programvare under utvikling, bør du utøve forsiktighet "
-#~ "ved bruk av Nautilus. Vi gir deg ingen garantier for at programmet vil "
-#~ "virke, og tar heller ikke ansvar for din bruk av det. Vennligst bruk det "
-#~ "på egen risiko.\n"
-#~ "\n"
-#~ "Vennligst skriv en melding til <nautilus-list@eazel.com> for å gi "
-#~ "tilbakemeldinger, kommentarer og forslag."
-
-#~ msgid "Close"
-#~ msgstr "Lukk"
-
-#~ msgid "foo (11st copy)"
-#~ msgstr "foo (11te kopi)"
-
-#~ msgid "foo (11st copy).txt"
-#~ msgstr "foo (11te kopi).txt"
-
-#~ msgid "foo (12nd copy)"
-#~ msgstr "foo (12te kopi)"
-
-#~ msgid "foo (13rd copy)"
-#~ msgstr "foo (13de kopi)"
-
-#~ msgid "is write-protected, mounting read-only"
-#~ msgstr "er skrivebeskyttet, monterer med lesetilgang"
-
-#~ msgid "is not a valid block device"
-#~ msgstr "er ikke en gyldig blokkenhet"
-
-#~ msgid "No medium found"
-#~ msgstr "Ingen media funnet"
-
-#~ msgid "wrong fs type, bad option, bad superblock on"
-#~ msgstr "feil fs-type, ugyldig flagg, ugyldig superblokk på"
-
-#~ msgid "Year"
-#~ msgstr "År"
-
-#~ msgid "Album"
-#~ msgstr "Album"
-
-#~ msgid "Comment"
-#~ msgstr "Kommentar"
-
-#~ msgid "Channels"
-#~ msgstr "Kanaler"
-
-#~ msgid "Sample Rate"
-#~ msgstr "Samplerate"
-
-#~ msgid "Stereo"
-#~ msgstr "Stereo"
-
-#~ msgid "Mono"
-#~ msgstr "Mono"
-
-#~ msgid "Root"
-#~ msgstr "Root"
-
-#~ msgid "scripts"
-#~ msgstr "skript"
-
-#~ msgid "Nautilus was unable to create the directory %s."
-#~ msgstr "Nautilus kunne ikke opprette katalogen %s."
-
-#~ msgid "No Scripts Folder"
-#~ msgstr "Ingen skript-mappe"
-
-#~ msgid "Move all selected items to the Trash"
-#~ msgstr "Flytt alle valgte oppføringer til søppelkurven"
-
-#~ msgid "Go to the Eazel Services Summary Page"
-#~ msgstr "Gå til Eazel tjenesters sammendrag-side"
-
-#~ msgid "Go to the Eazel Software Catalog"
-#~ msgstr "Gå til Eazel's programvarekatalog"
-
-#~ msgid "Go to your online storage repository"
-#~ msgstr "Gå til ditt lagringsområde på nett"
-
-#~ msgid "Software _Catalog"
-#~ msgstr "Programvare_katalog"
-
-#~ msgid "_Eazel Services Home"
-#~ msgstr "_Eazel tjenester"
-
-#~ msgid "_Online Storage"
-#~ msgstr "_Nettlagring"
-
-#~ msgid "_Services"
-#~ msgstr "Tjene_ster"
-
-#~ msgid "Display support information for Nautilus and Eazel Services"
-#~ msgstr "Vis støtteinformasjon for Nautilus og Eazel tjenester"
-
-#~ msgid "Go to Eazel Services"
-#~ msgstr "Gå til Eazel tjenester"
-
-#~ msgid "_Community Support"
-#~ msgstr "_Brukerstøtte for mijøet"
-
-#~ msgid "Eazel Services"
-#~ msgstr "Eazel tjenester"
-
-#~ msgid "GConf Error"
-#~ msgstr "GConf-feil"
-
-#~ msgid "Beginner"
-#~ msgstr "Begynner"
-
-#~ msgid "Intermediate"
-#~ msgstr "Viderekommen"
-
-#~ msgid "Advanced"
-#~ msgstr "Avansert"
-
-#~ msgid "Create a new index"
-#~ msgstr "Opprett en ny indeks"
-
-#~ msgid "Don't create index"
-#~ msgstr "Ikke opprett indeks"
-
-#~ msgid ""
-#~ "To do a fast search, Find requires an index of the files on your system.  "
-#~ "Your computer does not have an index right now.  Because Find cannot use "
-#~ "an index, this search may take several minutes.  Would you like to create "
-#~ "an index? Creating an index will be done while you are not actively using "
-#~ "your computer."
-#~ msgstr ""
-#~ "For å utføre et raskt søk, krever \"Find\" en indeks over filene på ditt "
-#~ "system. Din datamaskin har ingen indeks akkurat nå. Fordi \"Find\" ikke "
-#~ "kan bruke en indeks vil dette søke kunne ta flere minutter. Vil du "
-#~ "opprette en indeks? Oppretting av en indeks vil bli gjort når du ikke "
-#~ "bruker datamaskinen aktivt."
-
-#~ msgid ""
-#~ "To do a content search, Find requires an index of the content on your "
-#~ "system.  Your computer does not have an index right now.  Would you like "
-#~ "to create an index?  Creating an index will be done while you are not "
-#~ "actively using your computer."
-#~ msgstr ""
-#~ "For å utføre et innholdssøk, krever \"Find\" en indeks over innholdet på "
-#~ "ditt system. Din datamaskin har ingen indeks nå. Vil du opprette en "
-#~ "indeks? Oppretting av en indeks vil bli gjort når du ikke bruker "
-#~ "datamaskinen aktivt."
-
-#~ msgid "Create an Index"
-#~ msgstr "Opprett en indeks"
-
-#~ msgid "Don't Create an Index Now"
-#~ msgstr "Ikke opprett en indeks nå"
-
-#~ msgid "The indexer is currently busy."
-#~ msgstr "Indeksereren er opptatt."
-
-#~ msgid ""
-#~ "An indexer is not running, or is not responding to requests to reindex "
-#~ "your computer."
-#~ msgstr ""
-#~ "Indeksereren kjører ikke, eller svarer ikke på forespørsler om å "
-#~ "reindeksere din datamaskin."
-
-#~ msgid ""
-#~ "An attempt to reindex, caused an Internal Indexer Error.  Tell "
-#~ "rebecka@eazel.com"
-#~ msgstr ""
-#~ "Forsøk på å reindeksere forårsaket en intern feil i indeksereren. Si ifra "
-#~ "til rebecka@eazel.com"
-
-#~ msgid "Reindexing Failed"
-#~ msgstr "Reindeksering feilet"
-
-#~ msgid ""
-#~ "Once a day your files and text content are indexed so your searches are "
-#~ "fast. If you need to update your index now, click on the \"Update Now\" "
-#~ "button."
-#~ msgstr ""
-#~ "En gang om dagen blir dine filer og tekstinnhold indeksert slik at dine "
-#~ "søk blir raske. Hvis du trenger å oppdatere din indeks nå, klikker du på "
-#~ "\"Oppdater nå\"-knappen."
-
-#~ msgid "Update Now"
-#~ msgstr "Oppdater nå"
-
-#~ msgid "Display the set of available appearance themes"
-#~ msgstr "Vis tilgjengelige temaer for utseende"
-
-#~ msgid "_Nautilus Themes..."
-#~ msgstr "Nautilus tema..."
-
-#~ msgid "Nautilus Theme Selector"
-#~ msgstr "Nautilus temavelger"
-
-#~ msgid "_Tighter Layout"
-#~ msgstr "_Tettere plassering"
-
-#~ msgid "helvetica"
-#~ msgstr "helvetica"
-
-#~ msgid "Set the default answer to continue, also default delete to Yes"
-#~ msgstr "Sett standard svar for å fortsette, sett i tillegg slett til Ja"
-
-#~ msgid "Specify search cgi"
-#~ msgstr "Spesifiser cgi for søk"
-
-#~ msgid "Show debug output"
-#~ msgstr "Vis avlusingsdata"
-
-#~ msgid "10 sec delay after starting service"
-#~ msgstr "10 sek pause etter start av tjeneste"
-
-#~ msgid "Allow downgrades"
-#~ msgstr "Tillat nedgraderinger"
-
-#~ msgid "Erase packages"
-#~ msgstr "Slett pakker"
-
-#~ msgid "enable ei2"
-#~ msgstr "slå på ei2"
-
-#~ msgid "RPM args are filename"
-#~ msgstr "RPM argumenter er filnavn"
-
-#~ msgid "Use ftp"
-#~ msgstr "Bruk ftp"
-
-#~ msgid "Use local"
-#~ msgstr "Bruk lokal"
-
-#~ msgid "Use http"
-#~ msgstr "Bruk http"
-
-#~ msgid "RPM args are Eazel Ids"
-#~ msgstr "RPM argumenter er Eazel Id'er"
-
-#~ msgid "machine readable output"
-#~ msgstr "maskinlesbare data"
-
-#~ msgid "Don't print fancy percent output"
-#~ msgstr "Ikke skriv ut fancy prosentdata"
-
-#~ msgid "don't use eazel auth stuff"
-#~ msgstr "ikke bruk eazel autentisering"
-
-#~ msgid "Specify package file"
-#~ msgstr "Spesifiser pakkefil"
-
-#~ msgid "RPM args are needed files"
-#~ msgstr "RPM argumenter er nødvendige filnavn"
-
-#~ msgid "Run Query"
-#~ msgstr "Kjør spørring"
-
-#~ msgid "Set root"
-#~ msgstr "Sett rot"
-
-#~ msgid "Specify server"
-#~ msgstr "Spesifiser tjener"
-
-#~ msgid "Dont print too much, just problems and download"
-#~ msgstr "Ikke skriv ut for mye, bare problemer og nedlasting"
-
-#~ msgid "Perform ssl renaming"
-#~ msgstr "Utfør ssl-omdøping"
-
-#~ msgid "argument is a suite id"
-#~ msgstr "argumentet er en suite-id"
-
-#~ msgid "Test run"
-#~ msgstr "Testkjøring"
-
-#~ msgid "Allow username"
-#~ msgstr "Tillat brukernavn"
-
-#~ msgid "Allow upgrades"
-#~ msgstr "Tillat oppgraderinger"
-
-#~ msgid "Verbose output"
-#~ msgstr "Utfyllende utskrift"
-
-#~ msgid "Install a specific package version"
-#~ msgstr "Installer en spesifikk pakkeversjon"
-
-#~ msgid "*** You cannot specify more then one protocol type.\n"
-#~ msgstr "*** Du kan ikke spesifisere mer enn én type protokoll.\n"
-
-#~ msgid "*** Erase and revert ?  Somebody set up us the bomb!\n"
-#~ msgstr "*** Slett og forkast? Noen har laget en bombe til oss!\n"
-
-#~ msgid "File conflict checking %s...\n"
-#~ msgstr "Sjekk etter filkonflikt %s...\n"
-
-#~ msgid "File uniqueness checking %s...\n"
-#~ msgstr "Sjekker om filen er unik %s...\n"
-
-#~ msgid "Feature consistency checking %s...\n"
-#~ msgstr "Sjekker etter konsistente funksjoner %s...\n"
-
-#~ msgid "Downloading %s..."
-#~ msgstr "Laster ned %s..."
-
-#~ msgid "Downloading %s... (%d/%d) = %d%% %.1f KB/s"
-#~ msgstr "Laster ned %s... (%d/%d) = %d%% %.1f KB/s"
-
-#~ msgid "Downloading %s... (%d/%d) = %d%%"
-#~ msgstr "Laster ned %s... (%d/%d) = %d%%"
-
-#~ msgid "Downloading %s... (%d/%d) %.1f KB/s Done      \n"
-#~ msgstr "Laster ned %s... (%d/%d) %.1f KB/s Ferdig     \n"
-
-#~ msgid "Downloading %s... %3.1f KB/s Done\n"
-#~ msgstr "Laster ned %s... %3.1f KB/s Ferdig\n"
-
-#~ msgid "Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
-#~ msgstr "Installerer %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
-
-#~ msgid "Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
-#~ msgstr "Avinstallerer %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
-
-#~ msgid "Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
-#~ msgstr "Installerer %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Ferdig\n"
-
-#~ msgid "Uninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
-#~ msgstr "Avinstallerer %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Ferdig\n"
-
-#~ msgid "Done\n"
-#~ msgstr "Ferdig\n"
-
-#~ msgid "Download of %s FAILED\n"
-#~ msgstr "Nedlasting av %s FEILET\n"
-
-#~ msgid "Package %s failed to uninstall.\n"
-#~ msgstr "Feilet avinstallering for pakke %s.\n"
-
-#~ msgid "Package %s failed to install.\n"
-#~ msgstr "Feilet installering for pakke %s.\n"
-
-#~ msgid "\t· Problem : %s\n"
-#~ msgstr "\t· Problem: %s\n"
-
-#~ msgid "\t· Action : %s\n"
-#~ msgstr "\t· Handling: %s\n"
-
-#~ msgid "Cancelling operation\n"
-#~ msgstr "Avbryter operasjon\n"
-
-#~ msgid "About to install a total of %d packages, %dKB\n"
-#~ msgstr "I ferd med å installere totalt %d pakker, %dKB\n"
-
-#~ msgid "About to uninstall a total of %d packages, %dKB\n"
-#~ msgstr "I ferd med å avinstallere totalt %d pakker, %dKB\n"
-
-#~ msgid "About to revert a total of %d packages, %d KB\n"
-#~ msgstr "I ferd med å forkaste totalt %d pakker, %dKB\n"
-
-#~ msgid "\t· %s and it's dependencies\n"
-#~ msgstr "\t· %s med avhengigheter\n"
-
-#~ msgid "\t· %s\n"
-#~ msgstr "\t· %s\n"
-
-#~ msgid "Save transaction report ? (y/n) "
-#~ msgstr "Lagre transaksjonsrapport? (j/n)"
-
-#~ msgid "y"
-#~ msgstr "j"
-
-#~ msgid "Dependency : %s needs %s\n"
-#~ msgstr "Avhengighet: %s trenger %s\n"
-
-#~ msgid "Package %s failed md5 check!\n"
-#~ msgstr "Pakke %s feilet md5 sjekk!\n"
-
-#~ msgid "\t· server MD5 checksum is %s\n"
-#~ msgstr "\t· tjeners MD5-sjekksum er %s\n"
-
-#~ msgid "\t· actual MD5 checksum is %s\n"
-#~ msgstr "\t· faktisk MD5-sjekksum er %s\n"
-
-#~ msgid "Continue? (y/n) "
-#~ msgstr "Fortsett? (j/n) "
-
-#~ msgid "Should I delete the RPM files? (y/n) "
-#~ msgstr "Skal jeg slette RPM-filene? (y/n) "
-
-#~ msgid "Operation ok\n"
-#~ msgstr "Operasjon ok\n"
-
-#~ msgid "Operation failed\n"
-#~ msgstr "Operasjonen feilet\n"
-
-#~ msgid "Installing"
-#~ msgstr "Installerer"
-
-#~ msgid "Uninstalling"
-#~ msgstr "Avinstallerer"
-
-#~ msgid "Only one operation at a time please."
-#~ msgstr "Kun en operasjon om gangen er du snill."
-
-#~ msgid "%s: --help for usage\n"
-#~ msgstr "%s: --help for bruksmelding\n"
-
-#~ msgid "Name         : %s\n"
-#~ msgstr "Navn         : %s\n"
-
-#~ msgid "Version      : %s\n"
-#~ msgstr "Versjon      : %s\n"
-
-#~ msgid "Minor        : %s\n"
-#~ msgstr "Mindre       : %s\n"
-
-#~ msgid "Size         : %d\n"
-#~ msgstr "Størrelse    : %d\n"
-
-#~ msgid "Arch         : %s\n"
-#~ msgstr "Ark          : %s\n"
-
-#~ msgid "Distribution : %s\n"
-#~ msgstr "Distribusjon : %s\n"
-
-#~ msgid "Description  : %s\n"
-#~ msgstr "Beskrivelse  : %s\n"
-
-#~ msgid "Install root : %s\n"
-#~ msgstr "Installasjonsrot :  %s\n"
-
-#~ msgid "Provides     : \n"
-#~ msgstr "Tilbyr       : \n"
-
-#~ msgid "exit code %d\n"
-#~ msgstr "avsluttende kode %d\n"
-
-#~ msgid "Specify package list to use (/var/eazel/service/package-list.xml)"
-#~ msgstr ""
-#~ "Spesifiser pakkeliste som skal brukes (/var/eazel/service/package-list."
-#~ "xml)"
-
-#~ msgid ""
-#~ "Use specified file to generate a package list, requires --packagelist"
-#~ msgstr ""
-#~ "Bruk spesifisert fil til å generere en pakkeliste, trenger --packagelist"
-
-#~ msgid "Softcat server to connect to"
-#~ msgstr "Softcat-tjener du vil koble deg til"
-
-#~ msgid "Use alternate CGI path"
-#~ msgstr "Bruk alternativ CGI-sti"
-
-#~ msgid "Connect as a softcat user through ammonite"
-#~ msgstr "Koble til som en softcat bruker gjennom ammonite"
-
-#~ msgid "Number of times to try the request"
-#~ msgstr "Antall ganger forespørselen skal forsøkes"
-
-#~ msgid "Delay between request retries, in usec"
-#~ msgstr "Pause mellom nye forsøk på forespørsel, i mikrosekunder"
-
-#~ msgid "Lookup by Eazel package id"
-#~ msgstr "Slå opp etter Eazel pakke-id"
-
-#~ msgid "Lookup package with a specific version"
-#~ msgstr "Slå opp pakke med en spesifikk versjon"
-
-#~ msgid "(with --version) Use >= comparison"
-#~ msgstr "(med --version) Bruk >= sammenligning"
-
-#~ msgid "use check function (for debugging)"
-#~ msgstr "bruk sjekkfunksjon (for feilsøking)"
-
-#~ msgid "Show detailed sub-package info"
-#~ msgstr "Vis detaljert underpakkeinformasjon"
-
-#~ msgid "Failed to lock the downloaded file"
-#~ msgstr "Kunne ikke låse nedlastingsfilen"
-
-#~ msgid "MD5 mismatch, package %s may be compromised"
-#~ msgstr "MD5-feil, pakke %s kan være tuklet med"
-
-#~ msgid "No MD5 available for %s"
-#~ msgstr "Ingen MD5-sum tilgjengelig for %s"
-
-#~ msgid "%s is ok"
-#~ msgstr "%s er ok"
-
-#~ msgid "%s-%s version %s-%s already installed"
-#~ msgstr "%s-%s versjon %s-%s er allerede installert"
-
-#~ msgid "%s version %s already installed"
-#~ msgstr "%s versjon %s er allerede installert"
-
-#~ msgid "%s upgrades from version %s-%s to %s-%s"
-#~ msgstr "%s oppgraderinger fra versjon %s-%s til %s-%s"
-
-#~ msgid "%s downgrades from version %s-%s to %s-%s"
-#~ msgstr "%s nedgraderinger fra versjon %s-%s til %s-%s"
-
-#~ msgid "%s downgrades from version %s to %s"
-#~ msgstr "%s nedgraderinger fra versjon %s til %s"
-
-#~ msgid "%s installs version %s-%s"
-#~ msgstr "%s installerer versjon %s-%s"
-
-#~ msgid "%s installs version %s"
-#~ msgstr "%s installerer versjon %s"
-
-#~ msgid "Loading package info from file %s"
-#~ msgstr "Leser pakkeinformasjon fra fil %s"
-
-#~ msgid "ok"
-#~ msgstr "ok"
-
-#~ msgid "not ok"
-#~ msgstr "ikke ok"
-
-#~ msgid "Checking dependencies for %s"
-#~ msgstr "Sjekker avhengigheter for %s"
-
-#~ msgid "%s is related to %s"
-#~ msgstr "%s er relatert til %s"
-
-#~ msgid "updating %s to version %s-%s solves conflict"
-#~ msgstr "oppdatering av %s til versjon %s-%s løser konflikt"
-
-#~ msgid "available update to %s (%s-%s) does not solves conflict"
-#~ msgstr "tilgjengelig oppdatering for %s (%s-%s) løser ikke konflikt"
-
-#~ msgid "could not revive %s"
-#~ msgstr "kunne ikke gjenopplive %s"
-
-#~ msgid "file uniqueness checking %s"
-#~ msgstr "Sjekker om filen er unik %s"
-
-#~ msgid "Duplicate file : %s occurs in %s and %s"
-#~ msgstr "Duplikatfil : %s finnes i %s og %s"
-
-#~ msgid "... but it's ok, the packages are related"
-#~ msgstr "... men det er ok, pakkene er relatert"
-
-#~ msgid "(there were %d other conflicts)"
-#~ msgstr "(fant %d andre konflikter)"
-
-#~ msgid "file conflict checking %s"
-#~ msgstr "sjekk etter filkonflikt %s"
-
-#~ msgid ""
-#~ "file conflict : package %s already provides file %s also provided by %s"
-#~ msgstr ""
-#~ "filkonflikt : pakke %s inneholder allerede fil %s som også finnes i %s"
-
-#~ msgid "...but it is okay, we're upgrading %s and it ditched that file"
-#~ msgstr "...men det er ok, vi oppgraderer %s og den forkastet den filen"
-
-#~ msgid "checking feature consistency of %s"
-#~ msgstr "sjekker etter konsistente funksjoner i %s"
-
-#~ msgid ""
-#~ "feature missing : %s breaks if %s is installed (feature %s would be lost"
-#~ msgstr ""
-#~ "manglende funksjon : %s blir ødelagt hvis %s installeres (funksjon %s "
-#~ "ville gå tapt)"
-
-#~ msgid "downloading %d packages"
-#~ msgstr "laster ned %d pakker"
-
-#~ msgid "will upgrade %s"
-#~ msgstr "vil oppgradere %s"
-
-#~ msgid "will downgrade %s"
-#~ msgstr "vil nedgradere %s"
-
-#~ msgid "will install %s"
-#~ msgstr "vil installere %s"
-
-#~ msgid "will uninstall %s"
-#~ msgstr "vil avinstallere %s"
-
-#~ msgid "%s requires %s"
-#~ msgstr "%s er avhengig av %s"
-
-#~ msgid "failed %s"
-#~ msgstr "feilet %s"
-
-#~ msgid "Could not set URLType from config file!"
-#~ msgstr "Kunne ikke sette URLType fra konfigurasjonsfilen!"
-
-#~ msgid "Transactions are not stored, could not find home dir"
-#~ msgstr "Transaksjoner lagres ikke, kunne ikke finne hjemmekatalog"
-
-#~ msgid "Transactions are stored in %s"
-#~ msgstr "Transaksjoner lagres i %s"
-
-#~ msgid "Getting package list from remote server ...\n"
-#~ msgstr "Henter pakkeliste fra ekstern tjener ...\n"
-
-#~ msgid "Unable to retrieve package-list.xml!\n"
-#~ msgstr "Kunne ikke hente package-list.xml!\n"
-
-#~ msgid "Cannot write to file %s, using default log handler"
-#~ msgstr "Kan ikke skrive til fil %s, bruker forvalgt logghåndterer"
-
-#~ msgid "Install failed"
-#~ msgstr "Installasjon feilet"
-
-#~ msgid "Uninstall failed"
-#~ msgstr "Avinstallering feilet"
-
-#~ msgid "Could not create transaction directory (%s)! ***\n"
-#~ msgstr "*** Kunne ikke opprette transaksjonskatalog (%s)! ***\n"
-
-#~ msgid "Writing transaction to %s"
-#~ msgstr "Skriver transaksjon til %s"
-
-#~ msgid "%s was cancelled"
-#~ msgstr "%s ble avbrutt"
-
-#~ msgid "%s is a source package, which is not yet supported"
-#~ msgstr "%s er en kildepakke, hvilket ikke er støttet ennå"
-
-#~ msgid "%s would break other packages"
-#~ msgstr "%s ville ødelegge andre pakker"
-
-#~ msgid "%s would break"
-#~ msgstr "%s vil ikke fungere"
-
-#~ msgid "%s would break %s"
-#~ msgstr "%s vil ødelegge %s"
-
-#~ msgid "%s is damaged"
-#~ msgstr "%s er skadet"
-
-#~ msgid "%s requires %s, which could not be found on the server"
-#~ msgstr "%s trenger %s, som ikke kunne finnes på tjeneren"
-
-#~ msgid "%s is already installed"
-#~ msgstr "%s er allerede installert"
-
-#~ msgid "%s, which is newer, needs downgrade and downgrade is not enabled"
-#~ msgstr "%s, som er nyere, må nedgraderes, og nedgradering er ikke slått på"
-
-#~ msgid "%s, which is older, needs upgrade and upgrade is not enabled"
-#~ msgstr "%s, som er eldre, må oppgraderes, og oppgradering er ikke slått på"
-
-#~ msgid "%s is not installed and could not be found on server"
-#~ msgstr "%s er ikke installert kunne ikke finnes på tjeneren"
-
-#~ msgid "Check for a new version of %s"
-#~ msgstr "Sjekk etter en ny versjon av %s"
-
-#~ msgid "Install both %s and %s"
-#~ msgstr "Installer både %s og %s"
-
-#~ msgid "Remove %s from your system"
-#~ msgstr "Fjern %s fra ditt system"
-
-#~ msgid "Force the removal of %s from your system"
-#~ msgstr "Tvungen fjerning av %s fra ditt system"
-
-#~ msgid "Package database has an inconsistency"
-#~ msgstr "Pakkedatabasen er ikke konsistent"
-
-#~ msgid "Continue with force"
-#~ msgstr "Fortsett med tvang"
-
-#~ msgid "Allow downgrade"
-#~ msgstr "Tillat nedgradering"
-
-#~ msgid "Could not open target file %s"
-#~ msgstr "Kunne ikke åpne målfil %s"
-
-#~ msgid "Could not create an http request !"
-#~ msgstr "Kunne ikke lage en http forespørsel!"
-
-#~ msgid "Proxy: Invalid uri !"
-#~ msgstr "Proxy: Ugyldig uri!"
-
-#~ msgid "Could not prepare http request !"
-#~ msgstr "Kunne ikke forberede http forespørsel!"
-
-#~ msgid "Couldn't get async mode "
-#~ msgstr "Kunne ikke gå over i asynkron modus"
-
-#~ msgid "DISK FULL: could not write %s"
-#~ msgstr "DISK FULL: kunne ikke skrive %s"
-
-#~ msgid "Could not get request body!"
-#~ msgstr "Fikk ikke forspørselens kropp!"
-
-#~ msgid "HTTP error: %d %s"
-#~ msgstr "HTTP-feil: %d %s"
-
-#~ msgid "FTP not supported yet"
-#~ msgstr "FTP er ikke støttet ennå"
-
-#~ msgid "Checking local file %s..."
-#~ msgstr "Sjekker lokal fil %s..."
-
-#~ msgid "Failed to retrieve %s!"
-#~ msgstr "Klarte ikke å hente %s!"
-
-#~ msgid "Could not get an URL for %s"
-#~ msgstr "Fant ikke en URL for %s"
-
-#~ msgid "Downloaded package does not have the correct name"
-#~ msgstr "Nedlastet pakke har ikke korrekt navn"
-
-#~ msgid "Package %s should have had name %s"
-#~ msgstr "Pakke %s skulle hatt navn %s"
-
-#~ msgid "File download failed"
-#~ msgstr "Nedlasting av fil feilet"
-
-#~ msgid "*** Begin pkg dump ***\n"
-#~ msgstr "*** Start pakkedump ***\n"
-
-#~ msgid "*** End pkg dump ***\n"
-#~ msgstr "*** Slutt pakkedump ***\n"
-
-#~ msgid "*** No package nodes! (cat has no children) ***"
-#~ msgstr "*** Ingen pakkenoder! (cat har ingen barn) ***"
-
-#~ msgid "*** Bailing from package parse! ***"
-#~ msgstr "*** Hopper over lesing av pakke! ***"
-
-#~ msgid "*** No package nodes! ***"
-#~ msgstr "*** Ingen pakkenoder! ***"
-
-#~ msgid "*** Malformed package node!"
-#~ msgstr "*** Feilutformet pakkenode! ***"
-
-#~ msgid "*** No depends nodes! ***"
-#~ msgstr "*** Ingen avhengighetsnoder! ***"
-
-#~ msgid "*** Malformed depends node!"
-#~ msgstr "*** Feilutformet avhengighetsnode!"
-
-#~ msgid "*** Unknown node type '%s'"
-#~ msgstr "*** Ukjent nodetype '%s'"
-
-#~ msgid "*** The pkg list file contains no data! ***\n"
-#~ msgstr "*** Pakkelistefilen inneholder ikke data! ***\n"
-
-#~ msgid "*** Cannot find the CATEGORIES xmlnode! ***\n"
-#~ msgstr "*** Kan ikke finne xmlnoden KATEGORIER! ***\n"
-
-#~ msgid "*** Bailing from categories parse! ***\n"
-#~ msgstr "*** Hopper ut av tolking av kategorier! ***\n"
-
-#~ msgid "*** No Categories! ***\n"
-#~ msgstr "*** Ingen kategorier! ***\n"
-
-#~ msgid "*** Bailing from category parse! ***\n"
-#~ msgstr "*** Hopper ut fra tolking av kategorier! ***\n"
-
-#~ msgid "*** Cannot find the TRANSACTION xmlnode! ***\n"
-#~ msgstr "*** Kan ikke finne xmlnoden TRANSAKSJON! ***\n"
-
-#~ msgid "*** Bailing from transaction parse! ***\n"
-#~ msgstr "*** Hopper ut fra tolking av transaksjoner! ***\n"
-
-#~ msgid "*** No packages! ***\n"
-#~ msgstr "*** Ingen pakker! ***\n"
-
-#~ msgid "*** No category nodes! ***"
-#~ msgstr "*** Ingen kategorinoder! ***"
-
-#~ msgid "*** Cannot find the CATEGORIES xmlnode! ***"
-#~ msgstr "*** Kan ikke finne xmlnoden KATEGORIER! ***"
-
-#~ msgid "*** Unknown node %s"
-#~ msgstr "*** Ukjent node %s"
-
-#~ msgid "*** Error generating xml package list! ***\n"
-#~ msgstr "*** Feil under generering av xml pakkeliste! ***\n"
-
-#~ msgid "*** Error reading package list! ***\n"
-#~ msgstr "*** Feil under lesing av pakkelisten! ***\n"
-
-#~ msgid "*** The osd xml contains no data! ***\n"
-#~ msgstr "*** Osd xml inneholder ikke data! ***\n"
-
-#~ msgid "*** Bailing from osd parse! ***\n"
-#~ msgstr "*** Hopper ut av osd tolking! ***\n"
-
-#~ msgid "Could not parse the xml (length %d)"
-#~ msgstr "Kunne ikke tolke xml (lengde %d)"
-
-#~ msgid "Opened packages database in %s"
-#~ msgstr "Åpnet pakkedatabasen i %s"
-
-#~ msgid "Opening packages database in %s failed"
-#~ msgstr "Åpning av pakkedatabasen i %s feilet"
-
-#~ msgid "Closing db for %s (open)"
-#~ msgstr "Lukker db for %s (åpen)"
-
-#~ msgid "Closing db for %s (not open)"
-#~ msgstr "Lukker db for %s (ikke åpen)"
-
-#~ msgid "Cannot open %s"
-#~ msgstr "Kan ikke åpne %s"
-
-#~ msgid "Getting package information ..."
-#~ msgstr "Henter pakkeinformasjon..."
-
-#~ msgid "Checking \"%s\" for conflicts..."
-#~ msgstr "Sjekker \"%s\" for konflikter..."
-
-#~ msgid "Downloading 1 package (%s)"
-#~ msgstr "Laster ned 1 pakke (%s)"
-
-#~ msgid "Downloading %d packages (%s)"
-#~ msgstr "Laster ned %d pakker (%s)"
-
-#~ msgid "0K of %dK"
-#~ msgstr "0K av %dK"
-
-#~ msgid ""
-#~ "The package \"%s\" requires \"%s\" to run.\n"
-#~ "Downloading \"%s\" now."
-#~ msgstr ""
-#~ "Pakke \"%s\" trenger \"%s\" for å kjøre.\n"
-#~ "Laster ned \"%s\" nå."
-
-#~ msgid "Attempting to download package \"%s\"."
-#~ msgstr "Prøver å laste ned pakke \"%s\"."
-
-#~ msgid "Complete"
-#~ msgstr "Fullført"
-
-#~ msgid ""
-#~ "The package \"%s\" requires \"%s\" to run.\n"
-#~ "\"%s\" has been successfully downloaded."
-#~ msgstr ""
-#~ "Pakken \"%s\" krever \"%s\" for å kjøre.\n"
-#~ "Har fullført nedlasting av \"%s\"."
-
-#~ msgid "The package \"%s\" has been successfully downloaded."
-#~ msgstr "Nedlasting av pakke \"%s\" fullført."
-
-#~ msgid "%dK of %dK"
-#~ msgstr "%dK av %dK"
-
-#~ msgid "Download of package \"%s\" failed!"
-#~ msgstr "Nedlasting av pakke \"%s\" feilet!"
-
-#~ msgid ""
-#~ "The package \"%s\" requires \"%s\" to run.\n"
-#~ "\"%s\" has been successfully downloaded and installed."
-#~ msgstr ""
-#~ "Pakke \"%s\" krever \"%s\" for å kjøre.\n"
-#~ "\"%s\" er lastet ned og installert."
-
-#~ msgid "\"%s\" has been successfully downloaded and installed."
-#~ msgstr "Fullført nedlasting og installasjon av \"%s\"."
-
-#~ msgid "Installing package %d of %d"
-#~ msgstr "Installerer pakke %d av %d"
-
-#~ msgid ""
-#~ "The package \"%s\" requires \"%s\" to run.\n"
-#~ "\"%s\" is now being installed."
-#~ msgstr ""
-#~ "Pakke \"%s\" krever \"%s\" for å kjøre.\n"
-#~ "Installerer \"%s\" nå."
-
-#~ msgid "Now installing package \"%s\"."
-#~ msgstr "Installerer pakke \"%s\"."
-
-#~ msgid "Installing \"%s\""
-#~ msgstr "Installerer \"%s\""
-
-#~ msgid "Installation failed on %s"
-#~ msgstr "Installasjonen feilet på %s"
-
-#~ msgid "I ran into problems while installing."
-#~ msgstr "Det oppstod problemer under installasjonen."
-
-#~ msgid "I'd like to try the following :"
-#~ msgstr "Vil gjerne forsøke følgende :"
-
-#~ msgid "Is this ok ?"
-#~ msgstr "Er dette ok?"
-
-#~ msgid "Installation cancelled."
-#~ msgstr "Installasjon avbrutt."
-
-#~ msgid "This package has already been installed."
-#~ msgstr "Denne pakken er allerede installert."
-
-#~ msgid "Installation complete."
-#~ msgstr "Installasjon fullført."
-
-#~ msgid "Installation failed."
-#~ msgstr "Installasjonen feilet."
-
-#~ msgid "Some packages installed successfully:"
-#~ msgstr "Noen pakker fullførte installasjon:"
-
-#~ msgid ""
-#~ "\n"
-#~ "Some packages failed:"
-#~ msgstr ""
-#~ "\n"
-#~ "Noen pakker feilet:"
-
-#~ msgid "Erase the RPM files?"
-#~ msgstr "Slett RPM-filene?"
-
-#~ msgid "Erase the leftover RPM files?"
-#~ msgstr "Slette RPM-filene som er til overs?"
-
-#~ msgid "Ok"
-#~ msgstr "Ok"
-
-#~ msgid ""
-#~ "A core package of Nautilus has been\n"
-#~ "updated.  You should restart Nautilus.\n"
-#~ "\n"
-#~ "Do you wish to do that now?"
-#~ msgstr ""
-#~ "En av nautilus kjernepakker er oppdatert.\n"
-#~ "Du bør starte nautilus på nytt.\n"
-#~ "\n"
-#~ "Vil du gjøre det nå?"
-
-#~ msgid "Easy Install"
-#~ msgstr "Enkel installasjon"
-
-#~ msgid "Messages"
-#~ msgstr "Meldinger"
-
-#~ msgid "Version: %s"
-#~ msgstr "Versjon: %s"
-
-#~ msgid "These packages are ready to be downloaded and installed:"
-#~ msgstr "Disse pakkene er klar til å bli lastet ned og installert:"
-
-#~ msgid "If you wish to download and install these packages, click Continue."
-#~ msgstr ""
-#~ "Hvis du ønsker å laste ned og installere disse pakkene, klikk Fortsett."
-
-#~ msgid "These packages are ready to be uninstalled:"
-#~ msgstr "Disse pakkene er klar til avinstallering:"
-
-#~ msgid "If you wish to uninstall these packages, click Continue."
-#~ msgstr "Hvis du ønser å avinstallere disse pakkene, klitt Fortsett."
-
-#~ msgid "These packages are ready to be reverted:"
-#~ msgstr "Disse pakkene er klar til å bli forkastet:"
-
-#~ msgid "If you wish to revert these packages, click Continue."
-#~ msgstr "Hvis du ønsker å forkaste disse pakkene, klikk Fortsett."
-
-#~ msgid "for a total of %ld MB."
-#~ msgstr "totalt %ld MB."
-
-#~ msgid "for a total of %ld KB."
-#~ msgstr "totalt %ld KB."
-
-#~ msgid "Continue"
-#~ msgstr "Fortsett"
-
-#~ msgid "%s is in GNOME (footprint) > %s"
-#~ msgstr "%s er i GNOME (fot-menyen) > %s"
-
-#~ msgid "%s is in the GNOME (footprint) menu.\n"
-#~ msgstr "%s er i GNOME (fot-menyen).\n"
-
-#~ msgid "%s is in the KDE menu.\n"
-#~ msgstr "%s er i KDE-menyen.\n"
-
-#~ msgid "Installation Complete"
-#~ msgstr "Installasjon fullført"
-
-#~ msgid ""
-#~ "%sTo start %s, click the Launch button below, or to create a shortcut, "
-#~ "drag the icon on the right to the GNOME panel or your desktop."
-#~ msgstr ""
-#~ "%sFor å starte %s klikker du på Start knappen under, eller fra ikonet til "
-#~ "høyre til GNOME panelet eller skrivebordet for å opprette en snarvei."
-
-#~ msgid "%sTo start %s, click the Launch button below."
-#~ msgstr "%sFor å starte %s klikker du Start knappen under."
-
-#~ msgid "Incorrect password."
-#~ msgstr "Ugyldig passord."
-
-#~ msgid "Authenticate as root"
-#~ msgstr "Autentiser som root"
-
-#~ msgid "Installing packages"
-#~ msgstr "Installerer pakker"
-
-#~ msgid "Installing remote package"
-#~ msgstr "Innstallerer ekstern pakke"
-
-#~ msgid "Installing some package"
-#~ msgstr "Innstallerer en pakke"
-
-#~ msgid ""
-#~ "The Eazel install service is missing:\n"
-#~ "Installs will not work."
-#~ msgstr ""
-#~ "Eazel installeringstjenesten mangler:\n"
-#~ "Installering vil ikke fungere."
-
-#~ msgid "Contacting the Eazel Software Catalog ..."
-#~ msgstr "Kontakter Eazel programvarekatalog..."
-
-#~ msgid "Checking for authorization..."
-#~ msgstr "Sjekker autorisasjon..."
-
-#~ msgid "Aborting package downloads (please wait) ..."
-#~ msgstr "Avbryter nedlasting av pakker (vennligst vent)..."
-
-#~ msgid "Package download aborted."
-#~ msgstr "Nedlasting av pakke avbrutt."
-
-#~ msgid "Aborted"
-#~ msgstr "Avbrutt"
-
-#~ msgid "Install"
-#~ msgstr "Installer"
-
-#~ msgid "Install Viewer"
-#~ msgstr "Installasjonsvisning"
-
-#~ msgid "Nautilus Service Install View"
-#~ msgstr "Factory for installasjonsvisning for tjenester"
-
-#~ msgid "Nautilus Service Install View Factory"
-#~ msgstr "Factory for installasjonsvisning for Nautilus tjenester"
-
-#~ msgid "Service Install View Component"
-#~ msgstr "Komponenet for installasjonsvisning for tjenester"
-
-#~ msgid "Service Install View Component's Factory"
-#~ msgstr "Factory for visningskomponent for tjenesteinstallering"
-
-#~ msgid "View as Install"
-#~ msgstr "Vis som installasjon"
-
-#~ msgid "Factory for the install service"
-#~ msgstr "Factory for installasjonstjenesten"
-
-#~ msgid "Enable inventory upload."
-#~ msgstr "Slå på opplasting av inventar."
-
-#~ msgid "Disable inventory upload."
-#~ msgstr "Slå av opplasting av inventar."
-
-#~ msgid "Display information about current inventory settings."
-#~ msgstr "Vis informasjon om aktive inventarinnstillinger."
-
-#~ msgid "Upload inventory now, if not up to date."
-#~ msgstr "Last opp inventar nå, hvis den ikke er oppdatert."
-
-#~ msgid "Factory for the inventory service"
-#~ msgstr "Factory for inventartjenesten"
-
-#~ msgid "Inventory"
-#~ msgstr "Inventar"
-
-#~ msgid "Nautilus Inventory view"
-#~ msgstr "Nautilus inventarvisning"
-
-#~ msgid "Nautilus Inventory view factory"
-#~ msgstr "Factory for Nautilus inventarvisning"
-
-#~ msgid "Nautilus System Inventory component's component's factory"
-#~ msgstr "Factory for Nautilus syteminventarkomponent"
-
-#~ msgid "System Inventory"
-#~ msgstr "Systeminventar"
-
-#~ msgid "System Inventory Viewer"
-#~ msgstr "Systeminventarvisning"
-
-#~ msgid "System inventory view component"
-#~ msgstr "Komponent for systeminventar"
-
-#~ msgid "View as System Inventory"
-#~ msgstr "Vis som systeminventar"
-
-#~ msgid "Please Change Your Eazel Password"
-#~ msgstr "Vennligst endre ditt passord for Eazel"
-
-#~ msgid "Current Password:"
-#~ msgstr "Nåværende passord:"
-
-#~ msgid "New Password:"
-#~ msgstr "Nytt passord:"
-
-#~ msgid "Confirm New Password:"
-#~ msgstr "Bekreft nytt passord:"
-
-#~ msgid "Change my password"
-#~ msgstr "Endre mitt passord"
-
-#~ msgid "I need assistance"
-#~ msgstr "Jeg trenger hjelp"
-
-#~ msgid "Your password has been changed!"
-#~ msgstr "Ditt passord er endret"
-
-#~ msgid ""
-#~ "I'm sorry, but that password\n"
-#~ "is incorrect.  Please try again."
-#~ msgstr ""
-#~ "Beklager, men dette passordet\n"
-#~ "er ikke korrekt. Vennligst prøv igjen."
-
-#~ msgid ""
-#~ "I'm sorry, but your new password\n"
-#~ "must be at least six (6) characters long.\n"
-#~ "Please try another one."
-#~ msgstr ""
-#~ "Beklager, men ditt nye passord\n"
-#~ "må være minst seks (6) tegn langt.\n"
-#~ "Vennligst prøv et nytt."
-
-#~ msgid ""
-#~ "I'm sorry, but your new password\n"
-#~ "can't be ridiculously long.\n"
-#~ "Please try another one."
-#~ msgstr ""
-#~ "Beklager, men ditt nye passord\n"
-#~ "kan ikke være latterlig langt.\n"
-#~ "Vennligst prøv et nytt."
-
-#~ msgid ""
-#~ "I'm sorry, but your new password must\n"
-#~ "contain letters along with at least one\n"
-#~ "number or symbol. Please try another one."
-#~ msgstr ""
-#~ "Beklager, men ditt nye passord må\n"
-#~ "inneholde bokstaver sammen med minst ett\n"
-#~ "tall eller symbol. Vennligst prøv et nytt."
-
-#~ msgid ""
-#~ "I'm sorry, but I hit an unexpected\n"
-#~ "error. Please try again, with\n"
-#~ "different passwords."
-#~ msgstr ""
-#~ "Beklager, men en uventet feil\n"
-#~ "oppsto. Vennligst prøv igjen, med\n"
-#~ "et annet passord."
-
-#~ msgid ""
-#~ "I'm sorry, but I got an unexpected\n"
-#~ "error.  Please try again."
-#~ msgstr ""
-#~ "Beklager, men en uventet feil\n"
-#~ "oppsto. Vennligst prøv igjen."
-
-#~ msgid ""
-#~ "I'm sorry, but your new password\n"
-#~ "wasn't typed the same way twice.\n"
-#~ "Please try again."
-#~ msgstr ""
-#~ "Beklager, men ditt nye passord\n"
-#~ "ble ikke skrevet inn likt to ganger.\n"
-#~ "Vennligst prøv igjen."
-
-#~ msgid "Change Password"
-#~ msgstr "Endre passord"
-
-#~ msgid "Change Password Viewer"
-#~ msgstr "Visning for endring av passord"
-
-#~ msgid "Eazel Change Password View"
-#~ msgstr "Eazel visning for endring av passord"
-
-#~ msgid "Eazel Change Password view component"
-#~ msgstr "Eazel komponent for endring av passord"
-
-#~ msgid "Nautilus Service Login View Factory"
-#~ msgstr "Nautilus factory for visning av tjenesteinnlogging"
-
-#~ msgid "Service Login View Component's Factory"
-#~ msgstr "Factory for visningskomponenten for tjenesteinnlogging"
-
-#~ msgid "View as Change Password"
-#~ msgstr "Vis som endring av passord"
-
-#~ msgid "Unknown Date"
-#~ msgstr "ukjent dato"
-
-#~ msgid "%A, %B %d"
-#~ msgstr "%A, %B %d"
-
-#~ msgid ""
-#~ "Sorry, network problems are preventing you from connecting to Eazel "
-#~ "Services."
-#~ msgstr ""
-#~ "Beklager, nettverksproblemer forhindrer deg i å koble til Eazel tjenester."
-
-#~ msgid ""
-#~ "Your Eazel Services account has not yet been activated.  You can't log "
-#~ "into Eazel Services until you activate your account.\n"
-#~ "\n"
-#~ "Please check your email for activation instructions."
-#~ msgstr ""
-#~ "Din konto til Eazel tjenester er ikke aktivert ennå. Du kan ikke logge "
-#~ "inn til Eazel tjenester før du aktiverer din konto.\n"
-#~ "\n"
-#~ "Vennligst sjekk din e-post for instruksjoner angående aktivering."
-
-#~ msgid ""
-#~ "Your Eazel Service User Account has been temporarily disabled.\n"
-#~ "\n"
-#~ "Please try again in a few minutes, or contact Eazel support if this "
-#~ "problem continues."
-#~ msgstr ""
-#~ "Din brukerkonto for Eazel tjenester er midlertidig stengt.\n"
-#~ "\n"
-#~ "Vennligst prøv igjen om noen minutter, eller kontakt Eazel support hvis "
-#~ "problemet fortsetter."
-
-#~ msgid "We're sorry, but your name and password are still not recognized."
-#~ msgstr "Beklager, men navn og passord ble fremdeles ikke gjenkjent."
-
-#~ msgid "Eazel Service Login Error"
-#~ msgstr "Feil ved pålogging til Eazel tjenester"
-
-#~ msgid "Service Error"
-#~ msgstr "Feil i tjeneste"
-
-#~ msgid "Register Now"
-#~ msgstr "Registrer deg nå"
-
-#~ msgid "Services Login"
-#~ msgstr "Innlogging til tjenester"
-
-#~ msgid "Please log in to Eazel Services"
-#~ msgstr "Vennligst logg inn til Eazel-tjenester"
-
-#~ msgid "Your user name or password were not correct.  Please try again."
-#~ msgstr ""
-#~ "Ditt brukernavn og passord var ikke korrekt. Vennligst forsøk igjen."
-
-#~ msgid "More Info"
-#~ msgstr "Mer info"
-
-#~ msgid "Account Preferences"
-#~ msgstr "Brukervalg for konto"
-
-#~ msgid "Logout"
-#~ msgstr "Logg ut"
-
-#~ msgid "Terms of Use"
-#~ msgstr "Bruksbetingelser"
-
-#~ msgid "Privacy Statement"
-#~ msgstr "Erklæring om konfidensialitet"
-
-#~ msgid "Register"
-#~ msgstr "Registrer"
-
-#~ msgid "Login"
-#~ msgstr "Logg inn"
-
-#~ msgid "Eazel Services - Welcome, %s!"
-#~ msgstr "_Eazel tjenester - Velkommen, %s!"
-
-#~ msgid "Eazel Services - You are not logged in"
-#~ msgstr "Eazel tjenester - Du er ikke logget inn"
-
-#~ msgid "Connecting to Eazel Services..."
-#~ msgstr "Kobler til Eazel tjenester..."
-
-#~ msgid "Featured Downloads"
-#~ msgstr "Inkluderte nedlastinger"
-
-#~ msgid ""
-#~ "Unable to get services data from Eazel's server. The server might be "
-#~ "unavailable right now, or your computer might be configured incorrectly. "
-#~ "Please contact support@eazel.com."
-#~ msgstr ""
-#~ "Kunne ikke hente tjenestedata fra Eazels tjener. Tjeneren kan være "
-#~ "utilgjengelig akkurat nå, eller kanskje din datamaskin ikke er riktig "
-#~ "konfigurert. Vennligst kontakt support@eazel.com."
-
-#~ msgid ""
-#~ "Found a problem with services data on Eazel servers. Please contact "
-#~ "support@eazel.com."
-#~ msgstr ""
-#~ "Fant et problem med tjenestedata på Eazel's tjenere. Vennligst kontakt "
-#~ "support@eazel.com."
-
-#~ msgid ""
-#~ "Information is missing from the redirect data on Eazel servers. Please "
-#~ "contact support@eazel.com."
-#~ msgstr ""
-#~ "Manglende informasjon fra omdirigeringsdata på Eazel's tjenere. Vennligst "
-#~ "kontakt support@eazel.com."
-
-#~ msgid ""
-#~ "Unable to connect to Eazel's server. The server might be unavailable "
-#~ "right now, or your computer might be configured incorrectly. You could "
-#~ "try again later."
-#~ msgstr ""
-#~ "Kunne ikke koble til Eazels tjener. Tjeneren kan være utilgjengelig "
-#~ "akkurat nå, eller kanskje din datamaskin ikke er riktig konfigurert. Du "
-#~ "kan prøve igjen senere."
-
-#~ msgid ""
-#~ "Found a problem with redirect data on Eazel servers. Please contact "
-#~ "support@eazel.com."
-#~ msgstr ""
-#~ "Fant et problem med omdirigeringsdata på Eazel's tjenere. Vennligst "
-#~ "kontakt support@eazel.com."
-
-#~ msgid "Failed to upload system inventory."
-#~ msgstr "Feil under opplasting av systeminventar."
-
-#~ msgid "Configure your service preferences"
-#~ msgstr "Konfigurer brukervalg for tjenester"
-
-#~ msgid "Go to the Eazel Services Registration Form"
-#~ msgstr "Gå til registrering for Eazel tjenester"
-
-#~ msgid "Log out from Eazel Services"
-#~ msgstr "Logg ut fra Eazel-tjenester"
-
-#~ msgid "Show the log-in dialog box"
-#~ msgstr "Vis dialogboksen for innlogging"
-
-#~ msgid "_Log in to Eazel Services"
-#~ msgstr "_Logg på Eazel-tjenester"
-
-#~ msgid "_Log out from Eazel Services"
-#~ msgstr "_Logg ut fra Eazel-tjenester"
-
-#~ msgid "_Register for Eazel Services"
-#~ msgstr "Registrer deg for Eazel tjenester"
-
-#~ msgid "Nautilus Service Summary View Factory"
-#~ msgstr "Factory for sammendragsvisning for Nautilus tjenester"
-
-#~ msgid "Nautilus Summary View"
-#~ msgstr "Nautilus sammendragsvisning"
-
-#~ msgid "Service Summary View Component's Factory"
-#~ msgstr "Factory for visningskomponent for tjenestesammendrag"
-
-#~ msgid "Service Summary view component"
-#~ msgstr "Komponenet for visning av tjenestesammendrag"
-
-#~ msgid "Summary"
-#~ msgstr "Sammendrag"
-
-#~ msgid "Summary Viewer"
-#~ msgstr "Sammendragsvisning"
-
-#~ msgid "View as Summary"
-#~ msgstr "Vis som sammendrag"
-
-#~ msgid "HTTP error %d \"%s\" on uri %s"
-#~ msgstr "HTTP-feil: %d \"%s\" på uri %s"
-
-#~ msgid "Could not initialize Bonobo"
-#~ msgstr "Kunne ikke initiere Bonobo"
-
-#~ msgid "Can't write logfile %s -- using default log handler"
-#~ msgstr "Kan ikke skrive loggfil %s -- bruker forvalgt logghåndterer"
-
-#~ msgid "Nautilus eazel sample service view component"
-#~ msgstr "Visningskomponent for eksempeltjeneste for Nautilus."
-
-#~ msgid "Nautilus services startup view factory"
-#~ msgstr "Factory for oppstartsvisning for Nautilus tjenester"
-
-#~ msgid "Service"
-#~ msgstr "Tjeneste"
-
-#~ msgid "Service Viewer"
-#~ msgstr "Tjenestevisning"
-
-#~ msgid "Services startup view factory"
-#~ msgstr "Factory for visning av tjenesteoppstart"
-
-#~ msgid "View as Service"
-#~ msgstr "Vis som tjeneste"
-
-#~ msgid "eazel sample service view"
-#~ msgstr "eazel visning for eksempeltjeneste"
-
-#~ msgid "Factory for the sample service"
-#~ msgstr "Factory for eksempeltjeneste"
-
-#~ msgid "You cannot move a file onto itself."
-#~ msgstr "Du kan ikke flytte en fil til seg selv."
-
-#~ msgid "Can't Move Onto Self"
-#~ msgstr "Kan ikke flytte over seg selv"
-
-#~ msgid "Normal"
-#~ msgstr "Normal"
-
-#~ msgid "Bold"
-#~ msgstr "Uthevet"
-
-#~ msgid "Book"
-#~ msgstr "Bok"
-
-#~ msgid "Demibold"
-#~ msgstr "Halvfet"
-
-#~ msgid "Light"
-#~ msgstr "Tynn"
-
-#~ msgid "Italic"
-#~ msgstr "Kursiv"
-
-#~ msgid "Oblique"
-#~ msgstr "Hellende"
-
-#~ msgid "Reverse Italic"
-#~ msgstr "Omvendt kursiv"
-
-#~ msgid "Reverse Oblique"
-#~ msgstr "Omvendt hellende"
-
-#~ msgid "Condensed"
-#~ msgstr "Kondensert"
-
-#~ msgid "Semicondensed"
-#~ msgstr "Halvkondensert"
-
-#~ msgid "fixed"
-#~ msgstr "fast"
-
-#~ msgid "1/1/00, 1:00 AM"
-#~ msgstr "1/1/00, 1:00 AM"
-
-#~ msgid " 1/ 1/00,  1:00 AM"
-#~ msgstr "1/ 1/00, 1:00 AM"
-
-#~ msgid "Nautilus Preferences"
-#~ msgstr "Nautilus brukervalg"
-
-#~ msgid "current theme"
-#~ msgstr "aktivt tema"
-
-#~ msgid "Ask before emptying the Trash"
-#~ msgstr "Spør før tømming av søppelkurven"
-
-#~ msgid "single"
-#~ msgstr "enkelt"
-
-#~ msgid "double"
-#~ msgstr "dobbelt"
-
-#~ msgid "launch"
-#~ msgstr "start"
-
-#~ msgid "display"
-#~ msgstr "vis"
-
-#~ msgid "ask"
-#~ msgstr "spør"
-
-#~ msgid "Enable fast search (indexes your hard drive)"
-#~ msgstr "Bruk raske søk (indekserer din harddisk)"
-
-#~ msgid "Can add Content"
-#~ msgstr "Kan legge til Innhold"
-
-#~ msgid "Fast Search"
-#~ msgstr "Raskt søk"
-
-#~ msgid "always"
-#~ msgstr "alltid"
-
-#~ msgid "local only"
-#~ msgstr "kun lokalt"
-
-#~ msgid "never"
-#~ msgstr "aldri"
-
-#~ msgid ""
-#~ "Indexing is turned on, enabling the fast search feature. However, "
-#~ "indexing currently can't be performed because the program crond, which "
-#~ "does nightly tasks on your computer, is turned off. To make sure fast "
-#~ "searches can be done, turn crond on."
-#~ msgstr ""
-#~ "Indeksering er slått på, hvilket aktiverer raske søk. Men indeksering kan "
-#~ "ikke utføres fordi programmet 'crond', som utfører nattlige oppgaver på "
-#~ "din datamaskin, er deaktivert. For å forsikre at raske søk kan utføres må "
-#~ "du aktivere crond."
-
-#~ msgid "Files May Not Be Indexed"
-#~ msgstr "Filer skal ikke indekseres"
-
-#~ msgid ""
-#~ "If you are running Linux, you can log in as root and type these commands "
-#~ "to start cron:\n"
-#~ "\n"
-#~ "/sbin/chkconfig --level 345 crond on\n"
-#~ "/etc/rc.d/init.d/cron start\n"
-#~ msgstr ""
-#~ "Hvis du kjører Linux kan du logge inn som root og skrive disse "
-#~ "kommandoene for å starte cron:\n"
-#~ "\n"
-#~ "/sbin/chkconfig --level 345 crond on\n"
-#~ "/etc/rc.d/init.d/cron start\n"
-
-#~ msgid ""
-#~ "Indexing is turned on, enabling the fast search feature. However, "
-#~ "indexing may not be performed because the program crond, which does "
-#~ "nightly tasks on your computer, may be turned off. To make sure fast "
-#~ "searches can be done, check to make sure that crond is turned on.\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Indeksering er slått på hvilket aktiverer raske søk. Men indeksering kan "
-#~ "ikke utføres fordi programmet 'crond', som utfører nattlige oppgaver på "
-#~ "din datamaskin, kan være deaktivert. For å forsikre deg om at raske søk "
-#~ "kan utføres må du sjekke at crond er aktivert.\n"
-#~ "\n"
-
-#~ msgid "No image was selected.  You must click on an image to select it."
-#~ msgstr "Ingen bilder ble valgt. Du må klikke på et bilde for å velge det."
-
-#~ msgid "No selection made"
-#~ msgstr "Ingen valgt gjort"
-
-#~ msgid "Remember this password"
-#~ msgstr "Husk dette passordet"
-
-#~ msgid "times"
-#~ msgstr "times"
-
-#~ msgid "courier"
-#~ msgstr "courier"
-
-#~ msgid "lucida"
-#~ msgstr "lucida"
-
-#~ msgid "Prefs Box"
-#~ msgstr "Brukervalg-boks"
-
-#~ msgid "Details"
-#~ msgstr "Detaljer"
-
-#~ msgid "Warning"
-#~ msgstr "Advarsel"
-
-#~ msgid "Error"
-#~ msgstr "Feil"
-
-#~ msgid "Question"
-#~ msgstr "Spørsmål"
-
-#~ msgid "Create _Links"
-#~ msgstr "Opprett _lenker"
-
-#~ msgid "Create _Link"
-#~ msgstr "Opprett _lenke"
-
-#~ msgid ""
-#~ "To do a content search, Find requires an index of the content on your "
-#~ "system.  An index can't be created right now."
-#~ msgstr ""
-#~ "For å utføre et innholdssøk, krever \"Find\" en indeks over innholdet på "
-#~ "ditt system. En indeks kan ikke opprettes nå."
-
-#~ msgid ""
-#~ "To do a fast search, Find requires an index of the files on your system. "
-#~ "Fast search is disabled in your Search preferences, so no index is "
-#~ "available."
-#~ msgstr ""
-#~ "For å utføre et raskt søk krever \"Find\" en indeks over filene på ditt "
-#~ "system. \"Raskt søk er slått av i brukervalg for søk, så ingen indeks er "
-#~ "tilgjengelig."
-
-#~ msgid "Fast searches are not available on your computer."
-#~ msgstr "Raskt søk er ikke tilgjengelig på din datamaskin."
-
-#~ msgid ""
-#~ "To enable fast search, open the Preferences menu and choose Preferences. "
-#~ "Then select Search preferences and put a checkmark in the Enable Fast "
-#~ "Search checkbox. An index will be generated while your computer is idle, "
-#~ "so your index won't be available immediately."
-#~ msgstr ""
-#~ "For å bruke raske søk, åpne brukervalg-menyen og velg \"Brukervalg\". "
-#~ "Velg så brukervalg for søk, og kryss av for \"Bruk raskt søk\". En indeks "
-#~ "vil genereres når din datamaskin ikke er i bruk, så indeksen vil ikke "
-#~ "være tilgjengelig med én gang."
-
-#~ msgid "Choose which information appears beneath each icon's name"
-#~ msgstr "Velg hvilken informasjon som skal vises under hvert ikons navn"
-
-#~ msgid "Icon Captions..."
-#~ msgstr "Ikontekst..."
-
-#~ msgid "_Icon Captions..."
-#~ msgstr "_Ikontekst..."
-
-#~ msgid ""
-#~ "The fast search feature indexes all the items on your hard disk.\n"
-#~ "It speeds up searching and allows you to search by file content\n"
-#~ "as well as filename, date, and other file properties.  The indexing\n"
-#~ "takes time but is performed only when your computer is idle.\n"
-#~ "Fast search requires that the cron daemon on your system be running.\n"
-#~ msgstr ""
-#~ "Raske søk indekserer alle oppføringer på din harddisk.\n"
-#~ "Det gjør søk raskere og lar deg søke på filinnhold i tillegg\n"
-#~ "til filnavn, dato og andre filegenskaper. Indekseringen tar\n"
-#~ "tid, men utføres kun når datamaskinen ikke er i bruk. Raske søk\n"
-#~ "krever at cron daemonen kjører på datamaskinen din.\n"
-
-#~ msgid ""
-#~ "The fast search feature indexes all the items on your hard disk.\n"
-#~ "It speeds up searching and allows you to search by file content\n"
-#~ "as well as filename, date, and other file properties. The indexing\n"
-#~ "takes time but is performed only when your computer is idle.\n"
-#~ msgstr ""
-#~ "Raske søk indekserer alle oppføringer på din harddisk.\n"
-#~ "Det gjør søk raskere og lar deg søke på filinnhold i tillegg\n"
-#~ "til filnavn, dato og andre filegenskaper. Indekseringen tar\n"
-#~ "tid, men utføres kun når datamaskinen ikke er i bruk.\n"
-
-#~ msgid "Enable fast search"
-#~ msgstr "Bruk raskt søk"
-
-#~ msgid "Turn fast search on when cron is enabled"
-#~ msgstr "Slå på raske søk når cron er aktivert"
-
-#~ msgid ""
-#~ "Indexing is turned on, enabling the fast search feature. However, "
-#~ "indexing\n"
-#~ "currently can't be performed because the program crond, which does\n"
-#~ "nightly tasks on your computer, is turned off. To make sure fast "
-#~ "searches\n"
-#~ "can be done, turn crond on.\n"
-#~ "\n"
-#~ "If you are running Linux, you can log in as root and type these "
-#~ "commands \n"
-#~ "to start cron:\n"
-#~ "\n"
-#~ "/sbin/chkconfig --level 345 crond on\n"
-#~ "/etc/rc.d/init.d/cron start\n"
-#~ msgstr ""
-#~ "Indeksering er slått på, hvilket aktiverer raske søk. Men indeksering kan "
-#~ "ikke utføres nå fordi programmet 'crond', som utfører nattlige oppgaver "
-#~ "på din datamaskin, er deaktivert. For å forsikre deg om at raske søk kan "
-#~ "utføres må du aktivere cron:\n"
-#~ "\n"
-#~ "/sbin/chkconfig --level 345 crond on\n"
-#~ "/etc/rc.d/init.d/cron start\n"
-
-#~ msgid ""
-#~ "Indexing is turned on, enabling the fast search feature. However, "
-#~ "indexing\n"
-#~ "may not be performed because the program crond, which does nightly tasks\n"
-#~ "on your computer, may be turned off. To make sure fast searches can be\n"
-#~ "done, check to make sure that crond is turned on.\n"
-#~ "\n"
-#~ "If you are running Linux, you can log in as root and type these commands\n"
-#~ "to start cron:\n"
-#~ "\n"
-#~ "/sbin/chkconfig --level 345 crond on\n"
-#~ "/etc/rc.d/init.d/cron start\n"
-#~ msgstr ""
-#~ "Indeksering er slått på, hvilket aktiverer raske søk. Men indeksering kan "
-#~ "ikke\n"
-#~ "utføres nå fordi programmet 'crond', som utfører nattlige oppgaver på "
-#~ "din\n"
-#~ "datamaskin, er deaktivert. For å forsikre deg om at raske søk kan "
-#~ "utføres\n"
-#~ "må du sjekke at crond er aktivert.\n"
-#~ "\n"
-#~ "Hvis du kjører Linux kan du logge inn som root og skrive disse "
-#~ "kommandoene\n"
-#~ "for å starte cron:\n"
-#~ "\n"
-#~ "/sbin/chkconfig --level 345 crond on\n"
-#~ "/etc/rc.d/init.d/cron start\n"
-
-#~ msgid "Fast Searches"
-#~ msgstr "Raske søk"
-
-#~ msgid "The Cron Daemon"
-#~ msgstr "Cron daemonen"
-
-#~ msgid "  Done  "
-#~ msgstr "  Ferdig  "
-
-#~ msgid "Removes the selected text without putting it on the clipboard"
-#~ msgstr "Fjerner den valgte teksten uten å plassere den på utklippstavlen"
-
-#~ msgid "Use Advanced settings"
-#~ msgstr "Bruk avanserte innstillinger"
-
-#~ msgid "Use Beginner settings"
-#~ msgstr "Bruk innstillinger for begynner"
-
-#~ msgid "Use Intermediate settings"
-#~ msgstr "Bruk innstillinger for viderekommen"
-
-#~ msgid "  Empty Trash  "
-#~ msgstr "  Tøm søppelkurv  "
-
-#~ msgid "  Add New Theme  "
-#~ msgstr "  Legg til et nytt tema  "
-
-#~ msgid "View as Other..."
-#~ msgstr "Vis som annet..."
-
-#~ msgid "_Cut Text"
-#~ msgstr "_Klipp ut tekst"
-
-#~ msgid ""
-#~ "Nautilus is part of your GNOME desktop environment. It\n"
-#~ "helps you manage your files and folders (directories),\n"
-#~ "view documents, connect to the Internet, and do many\n"
-#~ "other tasks.\n"
-#~ "\n"
-#~ "The next four screens ask about your level of Linux\n"
-#~ "experience, and check your Internet connection. Click Next\n"
-#~ "to continue."
-#~ msgstr ""
-#~ "Nautilus er en del av ditt GNOME skrivebordsmiljø. Programmet\n"
-#~ "hjelper deg å håndtere dine filer og mapper (kataloger),\n"
-#~ "vise dokumenter, koble til Internett, og mange andre\n"
-#~ "oppgaver.\n"
-#~ "\n"
-#~ "De neste fire skjermene spør deg om ditt nivå av\n"
-#~ "Linux erfaring, og sjekker din Internett-tilkobling. Klikk\n"
-#~ "neste for å fortsette."
-
-#~ msgid "Cyrillic (KOI8-R)"
-#~ msgstr "Kyrillisk (KOI8-R)"
-
-#~ msgid "Verifying %s..."
-#~ msgstr "Verifiserer %s..."
-
-#~ msgid "Failed on \"%s\""
-#~ msgstr "Feilet på \"%s\""
-
-#~ msgid "Checking \"%s\" (%ld/%ld)"
-#~ msgstr "Sjekker \"%s\" (%ld/%ld)"
-
-#~ msgid "Package Contents"
-#~ msgstr "Pakkeinnhold"
-
-#~ msgid "Package Title"
-#~ msgstr "Pakketittel"
-
-#~ msgid "Installed Size: "
-#~ msgstr "Installert størrelse: "
-
-#~ msgid "<size>"
-#~ msgstr "<størrelse>"
-
-#~ msgid "Install Date: "
-#~ msgstr "Installasjonsdato: "
-
-#~ msgid "<unknown>"
-#~ msgstr "<ukjent>"
-
-#~ msgid "License: "
-#~ msgstr "Lisens: "
-
-#~ msgid "Build Date: "
-#~ msgstr "Byggedato: "
-
-#~ msgid "Distribution: "
-#~ msgstr "Distribusjon: "
-
-#~ msgid "Vendor: "
-#~ msgstr "Forhandler: "
-
-#~ msgid "Update"
-#~ msgstr "Oppdater"
-
-#~ msgid "Uninstall"
-#~ msgstr "Avinstaller"
-
-#~ msgid "Verify"
-#~ msgstr "Verifiser"
-
-#~ msgid "Package Contents: %d files"
-#~ msgstr "Pakkeinnhold: %d filer"
-
-#~ msgid "Package \"%s\" "
-#~ msgstr "Pakke \"%s\""
-
-#~ msgid "This package is currently installed"
-#~ msgstr "Denne pakken er allerede installert"
-
-#~ msgid "This package is currently not installed"
-#~ msgstr "Denne pakken er ikke installert"
-
-#~ msgid "Verification completed, package ok."
-#~ msgstr "Verifisering fullført, pakker ok."
-
-#~ msgid "%s would not work anymore\n"
-#~ msgstr "%s ville ikke virke mer\n"
-
-#~ msgid "%s would break other installed packages\n"
-#~ msgstr "%s ville ødelegge andre installerte pakker\n"
-
-#~ msgid "%s is needed, but could not be found\n"
-#~ msgstr "%s er nødvendig, men kunne ikke finnes\n"
-
-#~ msgid "%s was already installed\n"
-#~ msgstr "%s var allerede installert\n"
-
-#~ msgid "%s causes a circular dependency problem\n"
-#~ msgstr "%s forårsaker et problem med sirkulære avhengigheter\n"
-
-#~ msgid "Cannot access the local package system\n"
-#~ msgstr "Kan ikke aksessere lokalt pakkesystem\n"
-
-#~ msgid "Installing %s failed because of the following issue(s):\n"
-#~ msgstr "Installasjon av %s feilet pga følgende problem(er):\n"
-
-#~ msgid "Uninstalling %s failed because of the following issue(s):\n"
-#~ msgstr "Avinstallasjon av %s feilet pga følgende problem(er):\n"
-
-#~ msgid "Uninstall failed..."
-#~ msgstr "Avinstallering feilet..."
-
-#~ msgid "Uninstall Failed"
-#~ msgstr "Avinstallering feilet"
-
-#~ msgid "Install failed..."
-#~ msgstr "Installasjon feilet..."
-
-#~ msgid "Install Failed"
-#~ msgstr "Installasjon feilet"
-
-#~ msgid "Factory for rpm view"
-#~ msgstr "Factory for rpm-visning"
-
-#~ msgid "Package"
-#~ msgstr "Pakke"
-
-#~ msgid "Package Viewer"
-#~ msgstr "Pakkevisning"
-
-#~ msgid "RPM component"
-#~ msgstr "RPM-innhold"
-
-#~ msgid "RPM view factory"
-#~ msgstr "Factory for RPM-visning"
-
-#~ msgid "View as Package"
-#~ msgstr "Vis som pakke"
-
-#~ msgid "rpm view"
-#~ msgstr "rpm-visning"
-
-#~ msgid "%s is not installed"
-#~ msgstr "%s er ikke installert"
-
-#~ msgid " · %s is in the Gnome menu.\n"
-#~ msgstr " · %s er i GNOME-menyen.\n"
-
-#~ msgid "LWN.net"
-#~ msgstr "LWN.net"
-
-#~ msgid "Open in _New Window"
-#~ msgstr "Åpne i et _nytt vindu"
-
-#~ msgid "New _Folder"
-#~ msgstr "Ny _mappe"
-
-#~ msgid "_Open in New Window"
-#~ msgstr "_Åpne i et nytt vindu"
-
-#~ msgid "_Select All Files"
-#~ msgstr "_Velg alle filer"
-
-#~ msgid "medium"
-#~ msgstr "middels"
-
-#~ msgid "_New Window"
-#~ msgstr "_Nytt vindu"
-
-#~ msgid "_Web Search"
-#~ msgstr "_Web-søk"
-
-#~ msgid "System"
-#~ msgstr "System"
-
-#~ msgid "Config files"
-#~ msgstr "Konfigurasjonsfiler"
-
-#~ msgid "Command Line"
-#~ msgstr "Kommandolinje"
-
-#~ msgid "APIs"
-#~ msgstr "APIer"
-
-#~ msgid "Miscellaneous"
-#~ msgstr "Forskjellig"
-
-#~ msgid "Appearance Settings"
-#~ msgstr "Innstillinger for utseende"
-
-#~ msgid "Windows & Desktop Settings"
-#~ msgstr "Innstillinger for vinduer og skrivebord"
-
-#~ msgid "Icon & List Views Settings"
-#~ msgstr "Innstillinger for ikon- og listevisninger"
-
-#~ msgid "Sidebar Panels Settings"
-#~ msgstr "Innstillinger for sidepanel"
-
-#~ msgid "Navigation Settings"
-#~ msgstr "Innstillinger for navigasjon"
-
-#~ msgid "Speed Tradeoffs Settings"
-#~ msgstr "Innstillinger for forsaking av hastighet"
-
-#~ msgid "Disable Inventory [FIXME]"
-#~ msgstr "Slå av inventar"
-
-#~ msgid "An explanation of how why and what we're doing here."
-#~ msgstr "En forklaring av hva vi gjør og hvorfor passer her."
-
-#~ msgid "Yes"
-#~ msgstr "Ja"
-
-#~ msgid "No"
-#~ msgstr "Nei"
-
-#~ msgid "Force install"
-#~ msgstr "Tvungen installasjon"
-
-#~ msgid "Shared"
-#~ msgstr "Delt"
-
-#~ msgid "Size: "
-#~ msgstr "Størrelse: "
-
-#~ msgid "_About Nautilus"
-#~ msgstr "_Om Nautilus"
-
-#~ msgid "Enable debugging"
-#~ msgstr "Slå på feilsøking"
-
-#~ msgid "Vault location"
-#~ msgstr "Plassering av hvelv"
-
-#~ msgid "Valid operations:"
-#~ msgstr "Gyldige operasjoner:"
-
-#~ msgid "Error: No operation supplied\n"
-#~ msgstr "Feil: Ingen operasjon oppgitt!\n"
-
-#~ msgid "Error: Invalid operation supplied (%s)\n"
-#~ msgstr "Feil: Ugyldig operasjon oppgitt (%s)\n"
-
-#~ msgid ""
-#~ "Error: Invalid syntax\n"
-#~ "Syntax: %s\n"
-#~ msgstr ""
-#~ "Feil: Ugyldig syntaks\n"
-#~ "Syntaks: %s\n"
-
-#~ msgid "%s had a file conflict with %s which %s required"
-#~ msgstr "%s hadde en filkonflikt med %s som %s er avhengig av"
-
-#~ msgid "%s had a file conflict with %s"
-#~ msgstr "%s hadde en filkonflikt med %s"
-
-#~ msgid "Enable warning before each upload."
-#~ msgstr "Vis advarsel før hver opplasting."
-
-#~ msgid "Disable warning before each upload."
-#~ msgstr "Slå av advarsel før hver opplasting."
-
-#~ msgid "Set machine name."
-#~ msgstr "Sett maskinnavn."
-
-#~ msgid "User isn't logged into ammonite yet.\n"
-#~ msgstr "Bruker er ikke logget på ammonite ennå.\n"
-
-#~ msgid "The supplied URL was bad.\n"
-#~ msgstr "Oppgitt URL er ugyldig.\n"
-
-#~ msgid "A CORBA error occured.\n"
-#~ msgstr "En CORBA-feil oppsto.\n"
-
-#~ msgid "Ammonite returned an error translating the url.\n"
-#~ msgstr "Ammonite returnerte en feil under oversetting av url.\n"
-
-#~ msgid "Can't post !"
-#~ msgstr "Kan ikke postere!"
-
-#~ msgid "can't open tempory file hell\n"
-#~ msgstr "kan ikke åpne midlertidig filskall\n"
-
-#~ msgid "Can't set body !"
-#~ msgstr "Kan ikke sette kropp!"
-
-#~ msgid "Caldera"
-#~ msgstr "Caldera"
-
-#~ msgid "Hewlett-Packard"
-#~ msgstr "Hewlett-Packard"
-
-#~ msgid "IBM"
-#~ msgstr "IBM"
-
-#~ msgid "Linux Companies"
-#~ msgstr "Linux-selskaper"
-
-#~ msgid "Linux at IBM"
-#~ msgstr "Linux hos IBM"
-
-#~ msgid "Linuxcare"
-#~ msgstr "Linuxcare"
-
-#~ msgid "Myplay"
-#~ msgstr "Myplay"
-
-#~ msgid "Slashdot"
-#~ msgstr "Slashdot"
-
-#~ msgid "SourceXchange"
-#~ msgstr "SourceXchange"
-
-#~ msgid "VA Linux"
-#~ msgstr "VA Linux"
-
-#~ msgid "VMWare"
-#~ msgstr "VMWare"
-
-#~ msgid ""
-#~ "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
-#~ "again may fix the problem."
-#~ msgstr ""
-#~ "Nautilus kan ikke brukes nå. Problemet vil kanskje løses ved å starte om "
-#~ "datamaskinen eller installere Nautilus på nytt."
-
-#~ msgid ""
-#~ "The Medusa daemon indexes all the items on your hard\n"
-#~ "disk and mounted volumes, so you can quickly search\n"
-#~ "by name, date, and other attributes as well as by content.\n"
-#~ "Without Medusa, searching is slower.\n"
-#~ msgstr ""
-#~ "Medusa-daemonen indekserer alle oppføringer på din harddisk\n"
-#~ "og monterte volumer, slik at du kan utføre raske søk etter\n"
-#~ "navn, dato og andre attributter i tillegg til innhold.\n"
-#~ "Uten medusa vil søk være tregere.\n"
-
-#~ msgid "Launch medusa."
-#~ msgstr "Start medusa."
-
-#~ msgid "Launch Medusa"
-#~ msgstr "Start Medusa"
-
-#~ msgid "_Support"
-#~ msgstr "_Brukerstøtte"
-
-#~ msgid "Nautilus does not support javascript spawning of new windows!"
-#~ msgstr "Nautilus støtter ikke javascript til åpning av nye vinduer!"
-
-#~ msgid "Go to selected file"
-#~ msgstr "Gå til valgt fil"
-
-#~ msgid ""
-#~ "Enable fast search (indexes your hard drive)\n"
-#~ "Turns on the Medusa daemon, which indexes your hard disk\n"
-#~ "when your computer is idle."
-#~ msgstr ""
-#~ "Slå på raskt søk (indekserer din harddisk)\n"
-#~ "Slår på Medusa daemonen, som indekserer din harddisk når\n"
-#~ "datamaskinen ikke arbeider."
-
-#~ msgid "Home location:"
-#~ msgstr "Hjemme:"
-
-#~ msgid "HTTP Proxy:"
-#~ msgstr "HTTP-proxy:"
-
-#~ msgid "HTTP Proxy Port:"
-#~ msgstr "Port for HTTP-proxy:"
-
-#~ msgid "Search Locations"
-#~ msgstr "Lokasjoner for søk"
-
-#~ msgid ""
-#~ "Sorry, %s can only open local files, and \"%s\" is remote. If you want to "
-#~ "open it with %s, make a local copy first."
-#~ msgstr ""
-#~ "Beklager, %s kan kun åpne lokale filer, og \"%s\" er ekstern. Hvis du "
-#~ "ønsker å åpne den med %s, må du lage en lokal kopi først."
-
-#~ msgid "Can't open remote file"
-#~ msgstr "Kunne ikke åpne ekstern fil"
-
-#~ msgid "Where:"
-#~ msgstr "Hvor:"
-
-#~ msgid ""
-#~ "For beginner users that are not yet\n"
-#~ "familiar with the working of GNOME and Linux."
-#~ msgstr ""
-#~ "For begynnende brukere som ikke ennå\n"
-#~ "er kjent med GNOME og Linux."
-
-#~ msgid ""
-#~ "Eazel offers a growing number of services to help you\n"
-#~ "install and maintain new software and manage your files\n"
-#~ "across the network.  Choose an option below, and the\n"
-#~ "information will be presented in Nautilus after you've\n"
-#~ "finished setting up."
-#~ msgstr ""
-#~ "Eazel tilbyr et voksende antall tjenester for å\n"
-#~ "hjelpe deg med å installere og vedlikeholde ny programvare\n"
-#~ "og å håndtere dine filer over nettverket. Velg et alternativ\n"
-#~ "under så vil informasjonen presenteres i Nautilus etter at\n"
-#~ "du er ferdig med oppsettet."
-
-#~ msgid "I want to learn more about Eazel services."
-#~ msgstr "Jeg ønsker å lære mer om Eazel-tjenester."
-
-#~ msgid "I want to sign up for Eazel services now."
-#~ msgstr "Jeg vil registrere meg for Eazel-tjenester nå."
-
-#~ msgid "I've already signed up and want to login now."
-#~ msgstr "Jeg har allerede registrert meg og vil logge inn nå."
-
-#~ msgid "I don't want to learn about Eazel services at this time."
-#~ msgstr "Jeg vil ikke vite mer om Eazel-tjenester ennå."
-
-#~ msgid ""
-#~ "Nautilus will now contact Eazel services to quickly verify \n"
-#~ "your web connection and download the latest updates. \n"
-#~ "\n"
-#~ "If you know your computer uses a proxy connection, \n"
-#~ "click Yes and Nautilus will use it. \n"
-#~ "\n"
-#~ "Click the Next button to continue."
-#~ msgstr ""
-#~ "Nautilus vil nå kontakte Eazel-tjenester for å verifisere\n"
-#~ "din web-tilgang og laste ned de siste oppdateringene.\n"
-#~ "\n"
-#~ "Hvis du vet at din datamaskin bruker en proxy-tilkobling,\n"
-#~ "klikk Ja for å la Nautilus bruke den.\n"
-#~ "\n"
-#~ "Klikk Neste-knappen for å fortsette."
-
-#~ msgid "No, don't contact Eazel services at this time."
-#~ msgstr "Nei, ikke kontakt Eazel-tjenester nå."
-
-#~ msgid "HTTP Proxy Configuration"
-#~ msgstr "Konfigurasjon av HTTP-proxy"
-
-#~ msgid ""
-#~ "We are now contacting the Eazel service to test your \n"
-#~ "web connection and update Nautilus."
-#~ msgstr ""
-#~ "Vi kontakter nå Eazel-tjenesten for å teste din web-forbindelse\n"
-#~ "og oppdatere Nautilus."
-
-#~ msgid "Use Nautilus to draw desktop."
-#~ msgstr "Bruk Nautilus til å tegne skrivebordet."
-
-#~ msgid ""
-#~ "Since this is the first time that you've launched\n"
-#~ "Nautilus, we'd like to ask you a few questions\n"
-#~ "to help personalize it for your use."
-#~ msgstr ""
-#~ "Siden dette er den første gangen du har startet\n"
-#~ "Nautilus, vil vi spørre deg noen spørsmål for å\n"
-#~ "hjelpe deg med personlige innstillinger."
-
-#~ msgid "Press the next button to continue."
-#~ msgstr "Trykk neste for å fortsette."
-
-#~ msgid ""
-#~ "Click the finish button to launch Nautilus.\n"
-#~ "We hope that you enjoy using it!"
-#~ msgstr ""
-#~ "Klikk Fullfør-knappen for å starte Nautilus.\n"
-#~ "Vi håper du liker det du ser!"
-
-#~ msgid "Sign Up for Eazel Services"
-#~ msgstr "Registrer deg for Eazel tjenester"
-
-#~ msgid "Nautilus Update"
-#~ msgstr "Nautilus oppdatering"
-
-#~ msgid "Nautilus _License"
-#~ msgstr "Nautilus _lisens"
-
-#~ msgid ""
-#~ "Do slower but more complete search whenever possible\n"
-#~ "(slower search is not available when searching by content)"
-#~ msgstr ""
-#~ "Bruk tregere men mer komplett søk når mulig\n"
-#~ "(tregere søk er ikke tilgjengelig når det søkes etter innhold)"
-
-#~ msgid "Search Tradeoffs"
-#~ msgstr "Forsaking ved søk"
-
-#~ msgid "Downloaded package does not have the correct version"
-#~ msgstr "Nedlastet pakke har ikke korrekt versjon"
-
-#~ msgid "Package %s had version %s and not %s"
-#~ msgstr "Pakke %s hadde versjon %s og ikke %s"
-
-#~ msgid "Preparing to download packages..."
-#~ msgstr "Forbereder nedlasting av pakker..."
-
-#~ msgid "Could not find a valid boolean value for grey_out!"
-#~ msgstr "Kunne ikke finne en gyldig bolsk verdi for grey_out!"
-
-#~ msgid "There is no service data !\n"
-#~ msgstr "Ingen tjenestedata!\n"
-
-#~ msgid "There is no eazel news data !\n"
-#~ msgstr "Ingen data for eazel-nyheter!\n"
-
-#~ msgid ""
-#~ "An index of your files is not available because creating a nightly index "
-#~ "of files has been disabled by your system administrator."
-#~ msgstr ""
-#~ "En indeks over dine filer er ikke tilgjengelig fordi oppretting av en "
-#~ "nattlig indeks over dine filer er slått av av din systemadministrator."
-
-#~ msgid "No index of your system is available"
-#~ msgstr "Ingen indeks over dine filer er tilgjengelig"
-
-#~ msgid ""
-#~ "An index of your files is not available, because you have elected to turn "
-#~ "the indexing feature off.  You can set your computer up to index your "
-#~ "files nightly by changing your search preferences."
-#~ msgstr ""
-#~ "En indeks over dine filer er ikke tilgjengelig, fordi du har valgt å slå "
-#~ "av indekseringsfunksjonen. Du kan sette opp din datamaskin til å "
-#~ "indeksere dine filer om natten ved å endre brukervalg for søk."
-
-#~ msgid "Could not fetch summary configuration !"
-#~ msgstr "Kunne ikke hente sammendragskonfigurasjon!"
-
-#~ msgid "The summary configuration contains no data!\n"
-#~ msgstr "Sammendragskonfigurasjonen inneholder ikke data!\n"
-
-#~ msgid "Cannot find the SUMMARY_DATA xmlnode!\n"
-#~ msgstr "Kan ikke finne xmlnoden SUMMARY_DATA!\n"
-
-#~ msgid "Bailing from the SUMMARY_DATA parse!\n"
-#~ msgstr "Hopper ut fra tolking av SUMMARY_DATA!\n"
-
-#~ msgid "Could not find any summary configuration data!\n"
-#~ msgstr "Kunne ikke finne sammendragskonfigurasjonsdata!\n"
-
-#~ msgid "Bailing from summary configuration parse!\n"
-#~ msgstr "Hopper ut av innlesing av sammendragskonfigurasjon!\n"
-
-#~ msgid "Indexing is Blocked on Your Computer"
-#~ msgstr "Indeksering er blokkert på din datamaskin"
-
-#~ msgid ""
-#~ "To do a fast search, Find requires an index of the files on your system.  "
-#~ "You have elected not to index your computer so it does not have an index "
-#~ "right now.  Because Find cannot use an index, this search may take "
-#~ "several minutes.  "
-#~ msgstr ""
-#~ "For å utføre et raskt søk, krever \"Find\" en indeks over filene på ditt "
-#~ "system. Du har valgt å ikke indeksere din datamaskin så den har ingen "
-#~ "indeks akkurat nå. Fordi \"Find\" ikke kan bruke en indeks vil dette "
-#~ "søket kunne ta flere minutter."
-
-#~ msgid "Indexing is Disabled on Your Computer"
-#~ msgstr "Indeksering er slått av på din datamaskin"
-
-#~ msgid "Mozilla Test"
-#~ msgstr "Mozilla test"
-
-#~ msgid "This is a Mozilla merged menu item"
-#~ msgstr "Dette er en flettet menyoppføring for mozilla"
-
-#~ msgid "This is a Mozilla merged tool bar button"
-#~ msgstr "Dette er en flettet verktøylinjeknapp for mozilla"
-
-#~ msgid "_Mozilla Test"
-#~ msgstr "_Mozilla test"
-
-#~ msgid "Click behavior"
-#~ msgstr "Oppførsel ved klikk"
-
-#~ msgid "Always execute"
-#~ msgstr "Alltid kjør"
-
-#~ msgid "Always display"
-#~ msgstr "Alltid vis"
-
-#~ msgid "Display text in icons"
-#~ msgstr "Vis tekst i ikoner"
-
-#~ msgid "Display item counts for folders"
-#~ msgstr "Vis antall oppføringer for mapper"
-
-#~ msgid "Show thumbnails for image files"
-#~ msgstr "Vis miniatyrer for bildefiler"
-
-#~ msgid "Read and write metadata in each folder"
-#~ msgstr "Les og skriv metadata i hver mappe"
-
-#~ msgid "Play a sound file when the mouse is over it"
-#~ msgstr "Spill av en lydfil når muspekeren er over den"
-
-#~ msgid "Views"
-#~ msgstr "Visninger"
-
-#~ msgid "Folder Views"
-#~ msgstr "Mappevisninger"
-
-#~ msgid "Window Behavior"
-#~ msgstr "Vindusoppførsel"
-
-#~ msgid "Choose which panels should appear in the sidebar"
-#~ msgstr "Velg hvilke paneler som skal vises på sidelinjen"
-
-#~ msgid "%.0f%%"
-#~ msgstr "%.0f%%"
-
-#~ msgid "Sound hardware missing or busy!"
-#~ msgstr "Lydkort mangler eller er opptatt!"
-
-#~ msgid "Reading the install package list %s"
-#~ msgstr "Leser pakkeliste for installasjon %s"
-
-#~ msgid "Will download %s"
-#~ msgstr "Vil laste ned %s"
-
-#~ msgid "%s already installed"
-#~ msgstr "%s er allerede installalert"
-
-#~ msgid "Category = %s"
-#~ msgstr "Kategori = %s"
-
-#~ msgid "Removing package %s (0x%p) %s"
-#~ msgstr "Fjerner pakke %s (0x%p) %s"
-
-#~ msgid "Dependencies appear ok"
-#~ msgstr "Avhengigheter ser ok ut"
-
-#~ msgid "Processing dep for %s, requires library %s"
-#~ msgstr "Prosesserer avhengighet for %s, trenger bibliotek %s"
-
-#~ msgid "Processing dep for %s, requires package %s"
-#~ msgstr "Prosesserer avhengighet for %s, trenger pakke %s"
-
-#~ msgid "package %s is already in requirements, whew!"
-#~ msgstr "pakke %s er allerede listet som nødvendig, puh!"
-
-#~ msgid "Package %s conflicts with %s-%s"
-#~ msgstr "Pakke %s er i konflikt med %s-%s"
-
-#~ msgid ""
-#~ "The package \"%s\" needs \"%s\" to run.\n"
-#~ "I'm now attempting to download it."
-#~ msgstr ""
-#~ "Pakken \"%s\" trenger \"%s\" for å kjøre.\n"
-#~ "Forsøker nå å laste den ned."
-
-#~ msgid "Getting information about package \"%s\" ..."
-#~ msgstr "Henter informasjon om pakke \"%s\"..."
-
-#~ msgid "I've downloaded and installed package \"%s\"."
-#~ msgstr "Pakke \"%s\" er lastet ned og installert."
-
-#~ msgid ""
-#~ "%s\n"
-#~ "%s\n"
-#~ "Erase the leftover RPM files?"
-#~ msgstr ""
-#~ "%s\n"
-#~ "%s\n"
-#~ "Slette RPM-filene som er til overs?"
-
-#~ msgid "You cannot link a file to itself."
-#~ msgstr "Du kan ikke lenke en fil til seg selv."
-
-#~ msgid "Can't Link To Self"
-#~ msgstr "Kan ikke lenke til seg selv"
-
-#~ msgid "Click policy"
-#~ msgstr "Klikk-regler"
-
-#~ msgid ""
-#~ "Nautilus does not currently support launchers that require a terminal."
-#~ msgstr "Nautilus støtter ikke oppstartere som er avhengig av en terminal."
-
-#~ msgid "Unable to Create Link"
-#~ msgstr "Kan ikke opprette lenke"
-
-#~ msgid "Link to %s"
-#~ msgstr "Lenke til %s"
-
-#~ msgid "Link to Unknown"
-#~ msgstr "Lenke til ukjent"
-
-#~ msgid "Select an image to represent the file:"
-#~ msgstr "Velg et bilde som skal representere filen:"
-
-#~ msgid "Error while trying to reindex: Busy"
-#~ msgstr "Feil under forsøk på å reindeksere: Opptatt"
-
-#~ msgid "Error while trying to reindex: No response"
-#~ msgstr "Feil under forsøk på å reindeksere: Ikke svar"
-
-#~ msgid "Error While Reindexing"
-#~ msgstr "Feil under reindeksering"
-
-#~ msgid "Your files are currently being indexed:"
-#~ msgstr "Filene dine blir indeksert nå:"
-
-#~ msgid "Indexing Info"
-#~ msgstr "Indekseringsinformasjon"
-
-#~ msgid "Search For:"
-#~ msgstr "Søk etter:"
-
-#~ msgid "Inadequate Permissions"
-#~ msgstr "Utilstrekkelige rettigheter"
-
-#~ msgid "for a total of %ld kB."
-#~ msgstr "totalt %ld kB."
-
-#~ msgid "Additional Services"
-#~ msgstr "Tillegstjenester"
-
-#~ msgid ""
-#~ "\n"
-#~ "Check back here for new system management\n"
-#~ "services that will help make Linux easier to use."
-#~ msgstr ""
-#~ "\n"
-#~ "Kom tilbake senere for å se nye systemhåndterings-\n"
-#~ "tjenester som vil gjøre Linux enklere å bruke."
-
-#~ msgid "Current Updates"
-#~ msgstr "Tilgjengelige oppdateringer"
-
-#~ msgid "Version %s"
-#~ msgstr "Versjon %s"
-
-#~ msgid "Always do slow, complete search"
-#~ msgstr "Alltid bruk tregt, komplett søk"
-
-#~ msgid "containing \"%s\" in their names"
-#~ msgstr "som har \"%s\" i sitt navn"
-
-#~ msgid "regular files"
-#~ msgstr "vanlige filer"
-
-#~ msgid "folders"
-#~ msgstr "mapper"
-
-#~ msgid "music"
-#~ msgstr "musikk"
-
-#~ msgid "owned by \"%s\""
-#~ msgstr "eid av \"%s\""
-
-#~ msgid "modified on %s"
-#~ msgstr "endret på %s"
-
-#~ msgid "marked with \"%s\""
-#~ msgstr "merket med \"%s\""
-
-#~ msgid "are folders"
-#~ msgstr "er mapper"
-
-#~ msgid " and "
-#~ msgstr " og "
-
-#~ msgid "With Emblem"
-#~ msgstr "Med emblem"
-
-#~ msgid "Last Modified"
-#~ msgstr "Sist endret"
-
-#~ msgid "Owner"
-#~ msgstr "Eier"
-
-#~ msgid "contains"
-#~ msgstr "inneholder"
-
-#~ msgid "starts with"
-#~ msgstr "starter med"
-
-#~ msgid "ends with"
-#~ msgstr "slutter med"
-
-#~ msgid "matches glob"
-#~ msgstr "er lik glob"
-
-#~ msgid "matches regexp"
-#~ msgstr "er lik regexp"
-
-#~ msgid "regular file"
-#~ msgstr "vanlig fil"
-
-#~ msgid "text file"
-#~ msgstr "tekstfil"
-
-#~ msgid "application"
-#~ msgstr "applikasjon"
-
-#~ msgid "folder"
-#~ msgstr "mappe"
-
-#~ msgid "larger than"
-#~ msgstr "større enn"
-
-#~ msgid "smaller than"
-#~ msgstr "mindre enn"
-
-#~ msgid "marked with"
-#~ msgstr "merket med"
-
-#~ msgid "not marked with"
-#~ msgstr "ikke merket med"
-
-#~ msgid "is after"
-#~ msgstr "er etter"
-
-#~ msgid "is before"
-#~ msgstr "er før"
-
-#~ msgid "is within a week of"
-#~ msgstr "er innen en uke"
-
-#~ msgid "is within a month of"
-#~ msgstr "er innen en måned"
-
-#~ msgid "C_hange Appearance..."
-#~ msgstr "En_dre utseende..."
-
-#~ msgid "Set port numer (80)"
-#~ msgstr "Sett portnummer (80)"
-
-#~ msgid "Set tmp dir (/tmp)"
-#~ msgstr "Sett midlertidig katalog (/tmp)"
-
-#~ msgid "Preparing to install 1 package"
-#~ msgstr "Forbereder installasjon av 1 pakke"
-
-#~ msgid "Contacting install server ..."
-#~ msgstr "Kontakter installasjonstjener..."
-
-#~ msgid "New password (again): "
-#~ msgstr "Nytt passord (igjen): "
-
-#~ msgid "  I need some help!  "
-#~ msgstr "  Jeg trenger litt hjelp!  "
-
-#~ msgid "The new password fields don't match.  Please try again."
-#~ msgstr "Det nye passordfeltet er ikke likt. Vennligst forsøk igjen."
-
-#~ msgid "Bricks"
-#~ msgstr "Murstein"
-
-#~ msgid "Brown Bag"
-#~ msgstr "Brun pose"
-
-#~ msgid "Bubbles"
-#~ msgstr "Bobler"
-
-#~ msgid "Clouds"
-#~ msgstr "Skyer"
-
-#~ msgid "Frost"
-#~ msgstr "Frost"
-
-#~ msgid "Irish Spring"
-#~ msgstr "Irsk vår"
-
-#~ msgid "Leaves"
-#~ msgstr "Løv"
-
-#~ msgid "Pale Blue Stripe"
-#~ msgstr "Lys blå stripe"
-
-#~ msgid "Pale Blue Wavy"
-#~ msgstr "Lys blå bølge"
-
-#~ msgid "Pale Coins"
-#~ msgstr "Lyse mynter"
-
-#~ msgid "Pink Fabric"
-#~ msgstr "Rosa stoff"
-
-#~ msgid "Puzzle"
-#~ msgstr "Puslespill"
-
-#~ msgid "Satin"
-#~ msgstr "Sateng"
-
-#~ msgid "White Paper"
-#~ msgstr "Hvitt papir"
-
-#~ msgid "Yellow Paper"
-#~ msgstr "Gult papir"
-
-#~ msgid "Helix Code"
-#~ msgstr "Helix Code"
-
-#~ msgid "Inprise"
-#~ msgstr "Inprise"
-
-#~ msgid "This simple theme uses the standard GNOME icons."
-#~ msgstr "Dette enkle temaet bruker GNOME's standardikoner."
-
-#~ msgid "This experimental theme uses vector-based icons."
-#~ msgstr "Dette eksperimentelle temaet bruker vektorbaserte ikoner."
-
-#~ msgid "Items %s %s"
-#~ msgstr "Oppføringer %s %s"
-
-#~ msgid "Edit Settings..."
-#~ msgstr "Rediger innstillinger..."
-
-#~ msgid "Edit settings for the current user level"
-#~ msgstr "Rediger innstillinger for aktivt brukernivå"
-
-#~ msgid ""
-#~ "None of the settings for the %s level can be edited. If you want to edit "
-#~ "the settings you must choose the %s or %s level. Do you want to switch to "
-#~ "the %s level now and edit its settings?"
-#~ msgstr ""
-#~ "Ingen av innstillingene for %s-nivået kan redigeres. Hvis du vil redigere "
-#~ "innstillingene må du velge nivå %s eller %s. Vil du bytte til nivå %s nå, "
-#~ "og redigere innstillingene?"
-
-#~ msgid "Switch to %s Level?"
-#~ msgstr "Bytt til %s-nivå?"
-
-#~ msgid "Edit %s Settings"
-#~ msgstr "Rediger innstillinger for %s..."
-
-#~ msgid "Edit %s Settings..."
-#~ msgstr "Rediger innstillinger for %s..."
-
-#~ msgid "Could not replace file because it is special."
-#~ msgstr "Kunne ikke erstatte filen fordi den er spesiell."
-
-#~ msgid "Install Page"
-#~ msgstr "Installasjonsside"
-
-#~ msgid "Progress"
-#~ msgstr "Fremgang"
-
-#~ msgid ""
-#~ "Your user name or password were not correct, or you have not activated "
-#~ "your account.  Please try again, or check your email for an account "
-#~ "activation notice."
-#~ msgstr ""
-#~ "Ditt brukernavn og passord var ikke korrekt, eller du har ikke aktivert "
-#~ "din konto. Vennligst prøv igjen, eller sjekk din e-post for en melding om "
-#~ "aktivering av konto."
-
-#~ msgid "display service name and such"
-#~ msgstr "vis tjenestenavn og slikt"
-
-#~ msgid "maximum allowed difference in seconds"
-#~ msgstr "maks tillatt forskjell i sekunder"
-
-#~ msgid "update the system clock"
-#~ msgstr "oppdater systemklokken"
-
-#~ msgid "specify time server"
-#~ msgstr "spesifiser tidtjener"
-
-#~ msgid "Unable to get server time"
-#~ msgstr "Kan ikke hente tid fra tjener"
-
-#~ msgid "Time off by %d, max allowed diff is %d"
-#~ msgstr "Tiden er feil med %d, maks tillatt forskjell er %d"
-
-#~ msgid "Could not read time-service config from %s"
-#~ msgstr "Kunne ikke lese konfigurasjon for tidstjenesten fra %s"
-
-#~ msgid "Busy"
-#~ msgstr "Opptatt"
-
-#~ msgid "No response"
-#~ msgstr "Ikke svar"
-
-#~ msgid "No indexer present"
-#~ msgstr "Ingen indekserer tilstede"
-
-#~ msgid ""
-#~ "We're sorry, but the folder you're viewing has more files than we're able "
-#~ "to display. As a result, we are only able to show you the first 4000 "
-#~ "files it contains.\n"
-#~ "This is a temporary limitation in this Preview Release of Nautilus, and "
-#~ "will not be present in the final version."
-#~ msgstr ""
-#~ "Beklager, men katalogen du viser har flere filer enn vi kan vise. Som et "
-#~ "resultat kan vi kun vise de første 4000 filene den inneholder.\n"
-#~ "Dette er en midlertidig begrensning i denne testversjonen av Nautilus, og "
-#~ "vil ikke være tilstede i den ferdige versjonen."
-
-#~ msgid "Link to"
-#~ msgstr "Lenke til"
-
-#~ msgid "with \"%s\" in the name"
-#~ msgstr "som har \"%s\" i navnet"
-
-#~ msgid "are not %s"
-#~ msgstr "er ikke %s"
-
-#~ msgid "that"
-#~ msgstr "som"
-
-#~ msgid "-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*"
-#~ msgstr "-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*"
-
-#~ msgid "User Main Directory"
-#~ msgstr "Brukers hovedkatalog"
-
-#~ msgid "Desktop Directory"
-#~ msgstr "Skrivebordskatalog"
-
-#~ msgid "No, I don't wish to connect and update Nautilus now."
-#~ msgstr "Nei, jeg vil ikke koble til og oppdatere Nautilus nå."
-
-#~ msgid ""
-#~ "Error while copying.\n"
-#~ "You do not have permissions to read %s."
-#~ msgstr ""
-#~ "Feil under kopiering.\n"
-#~ "Du har ikke rettigheter til å lese %s."
-
-#~ msgid ""
-#~ "Error while moving.\n"
-#~ "You do not have permissions to read %s."
-#~ msgstr ""
-#~ "Feil under flytting.\n"
-#~ "Du har ikke rettigheter til å lese %s."
-
-#~ msgid ""
-#~ "Error while linking.\n"
-#~ "You do not have permissions to read %s."
-#~ msgstr ""
-#~ "Feil under oppretting av lenke.\n"
-#~ "Du har ikke rettigheter til å lese %s."
-
-#~ msgid ""
-#~ "Error while deleting.\n"
-#~ "You do not have permissions to read %s."
-#~ msgstr ""
-#~ "Feil under sletting.\n"
-#~ "Du har ikke rettigheter til å lese %s."
-
-#~ msgid ""
-#~ "Error while copying.\n"
-#~ "%s is not readable."
-#~ msgstr ""
-#~ "Feil under kopiering.\n"
-#~ "%s er ikke lesbar."
-
-#~ msgid ""
-#~ "Error while moving.\n"
-#~ "%s is not readable."
-#~ msgstr ""
-#~ "Feil under flytting.\n"
-#~ "%s er ikke lesbar."
-
-#~ msgid ""
-#~ "Error while linking.\n"
-#~ "%s is not readable."
-#~ msgstr ""
-#~ "Feil under oppretting av lenke.\n"
-#~ "%s er ikke lesbar."
-
-#~ msgid ""
-#~ "Error while deleting.\n"
-#~ "%s is not readable."
-#~ msgstr ""
-#~ "Feil under sletting.\n"
-#~ "%s er ikke lesbar."
-
-#~ msgid ""
-#~ "Error while linking items to \"%s\".\n"
-#~ "You do not have permissions to write to the destination."
-#~ msgstr ""
-#~ "Feil under lenking av oppføringer til \"%s\".\n"
-#~ "Du har ikke skriverettigheter på målet."
-
-#~ msgid ""
-#~ "Error while linking items to \"%s\".\n"
-#~ "The destination is not writable."
-#~ msgstr ""
-#~ "Feil under lenking av oppføringer til \"%s\".\n"
-#~ "Kan ikke skrive til målet."
-
-#~ msgid ""
-#~ "Error while copying.\n"
-#~ "There is no space on the destination."
-#~ msgstr ""
-#~ "Feil under kopiering.\n"
-#~ "Ingen plass på målet."
-
-#~ msgid ""
-#~ "Error while moving.\n"
-#~ "There is no space on the destination."
-#~ msgstr ""
-#~ "Feil under flytting.\n"
-#~ "Ingen plass på målet."
-
-#~ msgid ""
-#~ "Error while linking.\n"
-#~ "There is no space on the destination."
-#~ msgstr ""
-#~ "Feil under oppretting av lenke.\n"
-#~ "Ingen plass på målet."
-
-#~ msgid ""
-#~ "Error \"%s\" while linking \"%s\".\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "Feil \"%s\" under oppretting av lenke til \"%s\".\n"
-#~ "Vil du fortsette?"
-
-#~ msgid ""
-#~ "Display the Property Browser, containing patterns, colors, and emblems"
-#~ msgstr "Visning av egenskaper, inneholder mønstre, farger og emblemer"
-
-#~ msgid "Message."
-#~ msgstr "Melding."
-
-#~ msgid "Title."
-#~ msgstr "Tittel."
-
-#~ msgid "Button one label."
-#~ msgstr "Etikett for knapp én."
-
-#~ msgid "Button two label."
-#~ msgstr "Etikett for knapp to."
-
-#~ msgid "Customization Options"
-#~ msgstr "Alternativer for tilpasning"
-
-#~ msgid "Couldn't install background"
-#~ msgstr "Kunne ikke installere bakgrunn"
-
-#~ msgid "Click on a background to remove it"
-#~ msgstr "Klikk på en bakgrunn for å fjerne den"
-
-#~ msgid "version %s-%s"
-#~ msgstr "versjon %s-%s"
-
-#~ msgid "file %s has an error!"
-#~ msgstr "fil %s har en feil!"
