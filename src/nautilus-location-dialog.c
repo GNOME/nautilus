@@ -29,7 +29,9 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkstock.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
 #include "nautilus-location-entry.h"
+#include "nautilus-desktop-window.h"
 
 struct _NautilusLocationDialogDetails {
 	GtkWidget *entry;
@@ -198,7 +200,11 @@ nautilus_location_dialog_new (NautilusWindow *window)
 
 	location = nautilus_window_get_location (window);
 	if (location != NULL) {
-		formatted_location = eel_format_uri_for_display (location);
+		if(NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+			formatted_location = nautilus_get_desktop_directory ();
+		} else {
+			formatted_location = eel_format_uri_for_display (location);
+		}
 		nautilus_entry_set_text (NAUTILUS_ENTRY (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry), formatted_location);
 		gtk_editable_select_region (GTK_EDITABLE (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry), 0, -1);
 		gtk_editable_set_position (GTK_EDITABLE (NAUTILUS_LOCATION_DIALOG (dialog)->details->entry), -1);
