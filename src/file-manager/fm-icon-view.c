@@ -81,13 +81,13 @@
 /* Paths to use when creating & referring to Bonobo menu items */
 #define MENU_PATH_STRETCH_ICON 			"/menu/Edit/Edit Items Placeholder/Stretch"
 #define MENU_PATH_UNSTRETCH_ICONS 		"/menu/Edit/Edit Items Placeholder/Unstretch"
-#define MENU_PATH_LAY_OUT			"/menu/View/View Items Placeholder/Lay Out"
-#define MENU_PATH_MANUAL_LAYOUT 		"/menu/View/View Items Placeholder/Lay Out/Manual Layout"
-#define MENU_PATH_TIGHTER_LAYOUT 		"/menu/View/View Items Placeholder/Lay Out/Tighter Layout"
-#define MENU_PATH_SORT_REVERSED			"/menu/View/View Items Placeholder/Lay Out/Reversed Order"
+#define MENU_PATH_LAY_OUT			"/menu/View/View Items Placeholder/Arrange Items"
+#define MENU_PATH_MANUAL_LAYOUT 		"/menu/View/View Items Placeholder/Arrange Items/Manual Layout"
+#define MENU_PATH_TIGHTER_LAYOUT 		"/menu/View/View Items Placeholder/Arrange Items/Tighter Layout"
+#define MENU_PATH_SORT_REVERSED			"/menu/View/View Items Placeholder/Arrange Items/Reversed Order"
 #define MENU_PATH_CLEAN_UP			"/menu/View/View Items Placeholder/Clean Up"
 
-#define POPUP_PATH_LAY_OUT			"/popups/background/Before Zoom Items/View Items/Lay Out"
+#define POPUP_PATH_LAY_OUT			"/popups/background/Before Zoom Items/View Items/Arrange Items"
 
 #define COMMAND_PREFIX                          "/commands/"
 #define COMMAND_STRETCH_ICON 			"/commands/Stretch"

@@ -180,7 +180,7 @@ static EelPreferencesItemDescription view_preferences_items[] = {
 	/* Icon View Defaults */
 	{ N_("Icon View Defaults"),
 	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
-	  N_("Lay Out Items:"),
+	  N_("Arrange Items:"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU
 	},
 	{ N_("Icon View Defaults"),
@@ -215,7 +215,7 @@ static EelPreferencesItemDescription view_preferences_items[] = {
 	/* List View Defaults */
 	{ N_("List View Defaults"),
 	  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
-	  N_("Lay Out Items:"),
+	  N_("Arrange Items:"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_MENU
 	},
 	{ N_("List View Defaults"),
@@ -381,7 +381,7 @@ static EelPreferencesItemDescription news_panel_items[] = {
 
 
 static EelPreferencesPaneDescription panes[] = {
-	{ N_("View Preferences"),	  view_preferences_items },
+	{ N_("View Defaults"),  	  view_preferences_items },
 	{ N_("Appearance"),		  appearance_items },
 	{ N_("Windows"),	  	  windows_items },
 	{ N_("Desktop & Trash"),	  desktop_and_trash_items },

@@ -350,8 +350,8 @@ forget_history_if_confirmed (NautilusWindow *window)
 	}
 					   
 	dialog = eel_create_question_dialog (prompt,
-					     _("Forget History?"), 
-					     _("Forget"), RESPONSE_FORGET,
+					     _("Clear History?"), 
+					     _("Clear"), RESPONSE_FORGET,
 					     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					     GTK_WINDOW (window));
 
@@ -1096,7 +1096,7 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("Home", go_menu_home_callback),
 		BONOBO_UI_VERB ("Start Here", go_menu_start_here_callback),
 		BONOBO_UI_VERB ("Go to Location", go_menu_location_callback),
-		BONOBO_UI_VERB ("Forget History", go_menu_forget_history_callback),
+		BONOBO_UI_VERB ("Clear History", go_menu_forget_history_callback),
 		BONOBO_UI_VERB ("Reload", view_menu_reload_callback),
 		BONOBO_UI_VERB ("Show Hide Sidebar", view_menu_show_hide_sidebar_callback),
 		BONOBO_UI_VERB ("Show Hide Toolbar", view_menu_show_hide_toolbar_callback),
