@@ -75,18 +75,24 @@ enum {
 enum {
 	PERMISSIONS_PAGE_OWNER_ROW,
 	PERMISSIONS_PAGE_GROUP_ROW,
+	PERMISSIONS_PAGE_SEPARATOR_AFTER_GROUP_ROW,
 	PERMISSIONS_PAGE_TITLE_ROW,
 	PERMISSIONS_PAGE_OWNER_CHECKBOX_ROW,
 	PERMISSIONS_PAGE_GROUP_CHECKBOX_ROW,
 	PERMISSIONS_PAGE_OTHERS_CHECKBOX_ROW,
+	PERMISSIONS_PAGE_SEPARATOR_AFTER_OTHERS_ROW,
 	PERMISSIONS_PAGE_SUID_ROW,
 	PERMISSIONS_PAGE_SGID_ROW,
 	PERMISSIONS_PAGE_STICKY_ROW,
+	PERMISSIONS_PAGE_SEPARATOR_AFTER_SPECIALS_ROW,
 	PERMISSIONS_PAGE_FULL_STRING_ROW,
 	PERMISSIONS_PAGE_FULL_OCTAL_ROW,
 	PERMISSIONS_PAGE_DATE_ROW,
 	PERMISSIONS_PAGE_ROW_COUNT
 };
+
+#define PERMISSIONS_PAGE_FIRST_SPECIAL_FLAGS_ROW	PERMISSIONS_PAGE_SUID_ROW
+#define PERMISSIONS_PAGE_LAST_SPECIAL_FLAGS_ROW 	PERMISSIONS_PAGE_SEPARATOR_AFTER_SPECIALS_ROW
 
 enum {
 	PERMISSIONS_CHECKBOXES_TITLE_ROW,
@@ -110,6 +116,7 @@ enum {
 };
 
 #define ERASE_EMBLEM_FILENAME	"erase.png"
+#define EMBLEM_COLUMN_COUNT 2
 
 static void cancel_group_change_callback (gpointer callback_data);
 static void cancel_owner_change_callback (gpointer callback_data);
@@ -493,11 +500,15 @@ attach_label (GtkTable *table,
 	      int row,
 	      int column,
 	      const char *initial_text,
-	      gboolean right_aligned)
+	      gboolean right_aligned,
+	      gboolean bold)
 {
 	GtkWidget *label_field;
 
 	label_field = gtk_label_new (initial_text);
+	if (bold) {
+		nautilus_gtk_label_make_bold (GTK_LABEL (label_field));
+	}
 	gtk_misc_set_alignment (GTK_MISC (label_field), right_aligned ? 1 : 0, 0.5);
 	gtk_widget_show (label_field);
 	gtk_table_attach (table, label_field,
@@ -510,21 +521,12 @@ attach_label (GtkTable *table,
 }	      
 
 static GtkLabel *
-attach_left_aligned_label (GtkTable *table,
-	      		    int row,
-	      		    int column,
-	      		    const char *initial_text)
+attach_value_label (GtkTable *table,
+	      		  int row,
+	      		  int column,
+	      		  const char *initial_text)
 {
-	return attach_label (table, row, column, initial_text, FALSE);
-}
-
-static GtkLabel *
-attach_right_aligned_label (GtkTable *table,
-	      		    int row,
-	      		    int column,
-	      		    const char *initial_text)
-{
-	return attach_label (table, row, column, initial_text, TRUE);
+	return attach_label (table, row, column, initial_text, FALSE, FALSE);
 }
 
 static void
@@ -536,7 +538,7 @@ attach_value_field (GtkTable *table,
 {
 	GtkLabel *value_field;
 
-	value_field = attach_left_aligned_label (table, row, column, "");
+	value_field = attach_value_label (table, row, column, "");
 
 	/* Stash a copy of the file attribute name in this field for the callback's sake. */
 	gtk_object_set_data_full (GTK_OBJECT (value_field),
@@ -664,31 +666,42 @@ synch_groups_menu (GtkOptionMenu *option_menu, NautilusFile *file)
 
 	g_free (current_group_name);
 	nautilus_g_list_free_deep (groups);
-}	
+}
+
+static GtkOptionMenu *
+attach_option_menu (GtkTable *table,
+		    int row)
+{
+	GtkWidget *option_menu;
+	GtkWidget *aligner;
+
+	option_menu = gtk_option_menu_new ();
+	gtk_widget_show (option_menu);
+
+	/* Put option menu in alignment to make it left-justified
+	 * but minimally sized.
+	 */	
+	aligner = gtk_alignment_new (0, 0.5, 0, 0);
+	gtk_widget_show (aligner);
+
+	gtk_container_add (GTK_CONTAINER (aligner), option_menu);
+	gtk_table_attach_defaults (table, aligner,
+			  	   VALUE_COLUMN, VALUE_COLUMN + 1,
+			  	   row, row + 1);
+
+	return GTK_OPTION_MENU (option_menu);
+}		    	
 
 static void
 attach_group_menu (GtkTable *table,
 		   int row,
 		   NautilusFile *file)
 {
-	GtkWidget *option_menu;
+	GtkOptionMenu *option_menu;
 
-	option_menu = gtk_option_menu_new ();
-	gtk_widget_show (option_menu);
+	option_menu = attach_option_menu (table, row);
 
-	/* FIXME bugzilla.eazel.com 1454: 
-	 * for reasons I don't understand, passing
-	 * GTK_FILL here is not making the option menu
-	 * minimally-sized horizontally. Might have to pack
-	 * it in an hbox or something.
-	 */	
-	gtk_table_attach (table, option_menu,
-			  VALUE_COLUMN, VALUE_COLUMN + 1,
-			  row, row + 1,
-			  GTK_FILL, 0,
-			  0, 0);
-
-	synch_groups_menu (GTK_OPTION_MENU (option_menu), file);
+	synch_groups_menu (option_menu, file);
 
 	/* Connect to signal to update menu when file changes. */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
@@ -828,31 +841,30 @@ attach_owner_menu (GtkTable *table,
 		   int row,
 		   NautilusFile *file)
 {
-	GtkWidget *option_menu;
+	GtkOptionMenu *option_menu;
 
-	option_menu = gtk_option_menu_new ();
-	gtk_widget_show (option_menu);
+	option_menu = attach_option_menu (table, row);
 
-	/* FIXME bugzilla.eazel.com 1454: 
-	 * for reasons I don't understand, passing
-	 * GTK_FILL here is not making the option menu
-	 * minimally-sized horizontally. Might have to pack
-	 * it in an hbox or something.
-	 */	
-	gtk_table_attach (table, option_menu,
-			  VALUE_COLUMN, VALUE_COLUMN + 1,
-			  row, row + 1,
-			  GTK_FILL, 0,
-			  0, 0);
-
-	synch_user_menu (GTK_OPTION_MENU (option_menu), file);
+	synch_user_menu (option_menu, file);
 
 	/* Connect to signal to update menu when file changes. */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
 					       "changed",
 					       synch_user_menu,
 					       GTK_OBJECT (option_menu));	
-}	
+}
+
+static void
+attach_separator (GtkTable *table, int row)
+{
+	GtkWidget *separator;
+
+	separator = gtk_hseparator_new ();
+	gtk_widget_show (separator);
+	gtk_table_attach_defaults (table, separator,
+				   TITLE_COLUMN, COLUMN_COUNT,
+				   row, row+1);				   
+}		  	
  
 static void
 directory_contents_value_field_update (GtkLabel *label, NautilusFile *file)
@@ -940,7 +952,7 @@ attach_directory_contents_value_field (GtkTable *table,
 {
 	GtkLabel *value_field;
 
-	value_field = attach_left_aligned_label (table, row, VALUE_COLUMN, "");
+	value_field = attach_value_label (table, row, VALUE_COLUMN, "");
 	gtk_label_set_line_wrap (value_field, TRUE);
 
 	/* Bit of a hack; store a reference to the title field in
@@ -968,7 +980,7 @@ attach_title_field (GtkTable *table,
 		     int row,
 		     const char *title)
 {
-	return attach_right_aligned_label (table, row, TITLE_COLUMN, title);
+	return attach_label (table, row, TITLE_COLUMN, title, TRUE, TRUE);
 }		      
 
 static void
@@ -1058,39 +1070,31 @@ static void
 create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 {
 	GtkWidget *table;
-	GtkWidget *icon_pixmap_widget, *name_field;
+	GtkWidget *icon_pixmap_widget, *icon_aligner, *name_field;
 	gboolean is_directory;
-	int row_count;
 
 	is_directory = nautilus_file_is_directory (file);
 
-	/* We hide MIME type for directories, so we need one fewer row */
-	/* FIXME bugzilla.eazel.com 1454: 
-	 * Without the && FALSE here, the last row in the directory
-	 * case is too close to the 2nd to last row. Haven't figured out why.
-	 */
-	if (is_directory && FALSE) {
-		row_count = BASIC_PAGE_ROW_COUNT - 1;
-	} else {
-		row_count = BASIC_PAGE_ROW_COUNT;
-	}
-
 	create_page_with_table_in_vbox (notebook, 
 					_("Basic"), 
-					row_count, 
+					is_directory ? BASIC_PAGE_ROW_COUNT - 1 : BASIC_PAGE_ROW_COUNT, 
 					&table, 
 					NULL);
 
 	/* Icon pixmap */
-// 	icon_pixmap_widget = create_pixmap_widget_for_file (file);
 	icon_pixmap_widget = create_image_widget_for_file (file);
 	gtk_widget_show (icon_pixmap_widget);
+	
+	icon_aligner = gtk_alignment_new (1, 0.5, 0, 0);
+	gtk_widget_show (icon_aligner);
+
+	gtk_container_add (GTK_CONTAINER (icon_aligner), icon_pixmap_widget);
 	gtk_table_attach_defaults (GTK_TABLE (table),
-				   icon_pixmap_widget,
-				   TITLE_COLUMN, 
-				   TITLE_COLUMN + 1,
-				   BASIC_PAGE_ICON_AND_NAME_ROW, 
-				   BASIC_PAGE_ICON_AND_NAME_ROW + 1);
+			  	   icon_aligner,
+			  	   TITLE_COLUMN, 
+			  	   TITLE_COLUMN + 1,
+			  	   BASIC_PAGE_ICON_AND_NAME_ROW, 
+			  	   BASIC_PAGE_ICON_AND_NAME_ROW + 1);
 
 	/* Name field */
 	name_field = nautilus_entry_new ();
@@ -1150,6 +1154,10 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 		attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_SIZE_ROW,
 					  _("Size:"), file, "size");
 	}
+	
+	/* Blank title ensures standard row height */
+	attach_title_field (GTK_TABLE (table), BASIC_PAGE_EMPTY_ROW, "");			    
+	
 	attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_MODIFIED_DATE_ROW,
 				  _("Modified:"), file, "date_modified");
 	attach_title_value_pair (GTK_TABLE (table), BASIC_PAGE_ACCESSED_DATE_ROW,
@@ -1262,16 +1270,19 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 	GtkWidget *emblems_table, *button, *scroller;
 	GtkWidget *image_widget, *label, *image_and_label_table;
 	int i, property_count;
+	int row, column;
 
 	property_names = get_property_names();	
 	save_property_names = property_names;
 	property_count = g_list_length(property_names);
 	
-	emblems_table = gtk_table_new ((property_count + 1) / 2,
-				       2,
+	emblems_table = gtk_table_new ((property_count + EMBLEM_COLUMN_COUNT - 1) / EMBLEM_COLUMN_COUNT,
+				       EMBLEM_COLUMN_COUNT,
 				       TRUE);
 	gtk_widget_show (emblems_table);
 	gtk_container_set_border_width (GTK_CONTAINER (emblems_table), GNOME_PAD);
+	gtk_table_set_row_spacings (GTK_TABLE (emblems_table), GNOME_PAD);
+	gtk_table_set_col_spacings (GTK_TABLE (emblems_table), 2*GNOME_PAD_BIG);
 
 	scroller = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroller),
@@ -1293,13 +1304,12 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 	gtk_notebook_append_page (notebook, scroller, gtk_label_new (_("Emblems")));
 	
 	/* The check buttons themselves. */
+	row = 0;
+	column = 0;
 	for (i = 0; i < property_count; i++) {
 		button = gtk_check_button_new ();
 
-		/* Make 3-column homogeneous table with 1/3 for image, 2/3 text.
-		 * This allows text to line up nicely.
-		 */
-		image_and_label_table = gtk_table_new (1, 3, TRUE);
+		image_and_label_table = gtk_table_new (2, 1, FALSE);
 		gtk_widget_show (image_and_label_table);
 		
 		image_widget = create_image_widget_for_emblem (property_names->data);
@@ -1308,14 +1318,10 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 					   0, 1);
 					
 		label = gtk_label_new (_(property_names->data));
-		/* Move label to left edge. */
-		gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 		gtk_widget_show (label);
-		gtk_table_attach (GTK_TABLE (image_and_label_table), label,
-				  1, 3,
+		gtk_table_attach_defaults (GTK_TABLE (image_and_label_table), label,
 				  0, 1,
-				  GTK_FILL, 0,
-				  0, 0);
+				  1, 2);
 
 		gtk_container_add (GTK_CONTAINER (button), image_and_label_table);
 		gtk_widget_show (button);
@@ -1346,15 +1352,13 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 						       property_button_update,
 						       GTK_OBJECT (button));
 
-		if (i < property_count / 2) {
-			gtk_table_attach_defaults (GTK_TABLE (emblems_table), button,
-					  	   0, 1,
-					  	   i, i+1);
-		} else {
-			gtk_table_attach_defaults (GTK_TABLE (emblems_table), button,
-						   1, 2,
-						   i - (property_count / 2),
-						   i - (property_count / 2) + 1);
+		gtk_table_attach_defaults (GTK_TABLE (emblems_table), button,
+				  	   column, column + 1,
+				  	   row, row+1);
+
+		if (++column == EMBLEM_COLUMN_COUNT) {
+			column = 0;
+			++row;
 		}
 		property_names = property_names->next;
 	}
@@ -1369,6 +1373,7 @@ add_permissions_column_label (GtkTable *table,
 	GtkWidget *label;
 
 	label = gtk_label_new (title_text);
+	nautilus_gtk_label_make_bold (GTK_LABEL (label));
 
 	/* Text is centered in table cell by default, which is what we want here. */
 	gtk_widget_show (label);
@@ -1537,6 +1542,23 @@ add_special_execution_flags (GtkTable *table,
 					PERMISSIONS_PAGE_STICKY_ROW, 
 					_("Sticky"), 
 					GNOME_VFS_PERM_STICKY);
+	attach_separator (table, 
+			  PERMISSIONS_PAGE_SEPARATOR_AFTER_SPECIALS_ROW);
+}
+
+static int
+get_adjusted_permissions_row (int permissions_row, gboolean show_special_flags)
+{
+	if (show_special_flags) {
+		return permissions_row;
+	}
+
+	if (permissions_row < PERMISSIONS_PAGE_FIRST_SPECIAL_FLAGS_ROW) {
+		return permissions_row;
+	}
+
+	return permissions_row - 
+		(PERMISSIONS_PAGE_LAST_SPECIAL_FLAGS_ROW - PERMISSIONS_PAGE_FIRST_SPECIAL_FLAGS_ROW + 1);
 }
 
 static void
@@ -1545,6 +1567,7 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 	GtkWidget *vbox;
 	GtkTable *page_table, *check_button_table;
 	char *file_name, *prompt_text;
+	gboolean show_special_flags;
 
 	vbox = create_page_with_vbox (notebook, _("Permissions"));
 
@@ -1555,8 +1578,12 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 				_("You are not the owner, so you can't change these permissions."));
 		}
 
-		page_table = GTK_TABLE (gtk_table_new (PERMISSIONS_PAGE_ROW_COUNT, 
-						       COLUMN_COUNT, FALSE));
+		show_special_flags = nautilus_preferences_get_boolean 
+			(NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS, FALSE);
+
+		page_table = GTK_TABLE (gtk_table_new 
+			(get_adjusted_permissions_row (PERMISSIONS_PAGE_ROW_COUNT, show_special_flags),
+			 COLUMN_COUNT, FALSE));
 		apply_standard_table_padding (page_table);
 		gtk_widget_show (GTK_WIDGET (page_table));
 		gtk_box_pack_start (GTK_BOX (vbox), 
@@ -1574,54 +1601,79 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 		gtk_widget_show (GTK_WIDGET (check_button_table));
 		gtk_table_attach (page_table, GTK_WIDGET (check_button_table),
 				  VALUE_COLUMN, VALUE_COLUMN + 1,
-				  PERMISSIONS_PAGE_TITLE_ROW, 
-				  PERMISSIONS_PAGE_TITLE_ROW + PERMISSIONS_CHECKBOXES_ROW_COUNT,
+				  get_adjusted_permissions_row (PERMISSIONS_PAGE_TITLE_ROW, show_special_flags),
+				  get_adjusted_permissions_row (PERMISSIONS_PAGE_TITLE_ROW, show_special_flags) 
+				  	+ PERMISSIONS_CHECKBOXES_ROW_COUNT,
 				  0, 0,
 				  0, 0);
 
-		attach_title_field (page_table, PERMISSIONS_PAGE_OWNER_ROW, _("File Owner:"));
+		attach_title_field (page_table, 
+				    get_adjusted_permissions_row (PERMISSIONS_PAGE_OWNER_ROW, show_special_flags), 
+				    _("File Owner:"));
 		if (nautilus_file_can_set_owner (file)) {
 			/* Option menu in this case. */
-			attach_owner_menu (page_table, PERMISSIONS_PAGE_OWNER_ROW, file);
+			attach_owner_menu (page_table, 
+					   get_adjusted_permissions_row (PERMISSIONS_PAGE_OWNER_ROW, show_special_flags), 
+					   file);
 		} else {
 			/* Static text in this case. */
-			attach_value_field (page_table, PERMISSIONS_PAGE_OWNER_ROW, 
-					    VALUE_COLUMN, file, "owner"); 
+			attach_value_field (page_table, 
+					    get_adjusted_permissions_row (PERMISSIONS_PAGE_OWNER_ROW, show_special_flags), 
+					    VALUE_COLUMN, 
+					    file, 
+					    "owner"); 
 		}
 
 		attach_title_field (page_table, PERMISSIONS_PAGE_GROUP_ROW, _("File Group:"));
 		if (nautilus_file_can_set_group (file)) {
 			/* Option menu in this case. */
-			attach_group_menu (page_table, PERMISSIONS_PAGE_GROUP_ROW, file);
+			attach_group_menu (page_table, 
+					   get_adjusted_permissions_row (PERMISSIONS_PAGE_GROUP_ROW, show_special_flags), 
+					   file);
 		} else {
 			/* Static text in this case. */
-			attach_value_field (page_table, PERMISSIONS_PAGE_GROUP_ROW, 
+			attach_value_field (page_table, 
+					    get_adjusted_permissions_row (PERMISSIONS_PAGE_GROUP_ROW, show_special_flags), 
 					    VALUE_COLUMN, file, "group"); 
 		}
+
+		attach_separator (page_table,
+				  get_adjusted_permissions_row (PERMISSIONS_PAGE_SEPARATOR_AFTER_GROUP_ROW, show_special_flags));
 
 		/* This next empty label is a hack to make the title row
 		 * in the main table the same height as the title row in
 		 * the checkboxes sub-table so the other row titles will
 		 * line up horizontally with the checkbox rows.
 		 */
-		attach_title_field (page_table, PERMISSIONS_PAGE_TITLE_ROW, "");
+		attach_title_field (page_table, 
+				    get_adjusted_permissions_row (PERMISSIONS_PAGE_TITLE_ROW, show_special_flags),
+				    "");
 
-		attach_title_field (page_table, PERMISSIONS_PAGE_OWNER_CHECKBOX_ROW, 
+		attach_title_field (page_table, 
+				    get_adjusted_permissions_row (PERMISSIONS_PAGE_OWNER_CHECKBOX_ROW, show_special_flags), 
 				    _("Owner:"));
 
-		attach_title_field (page_table, PERMISSIONS_PAGE_GROUP_CHECKBOX_ROW, 
+		attach_title_field (page_table, 
+				    get_adjusted_permissions_row (PERMISSIONS_PAGE_GROUP_CHECKBOX_ROW, show_special_flags), 
 				    _("Group:"));
 
-		attach_title_field (page_table, PERMISSIONS_PAGE_OTHERS_CHECKBOX_ROW, 
+		attach_title_field (page_table, 
+				    get_adjusted_permissions_row (PERMISSIONS_PAGE_OTHERS_CHECKBOX_ROW, show_special_flags), 
 				    _("Others:"));
 		
-		attach_title_value_pair (page_table, PERMISSIONS_PAGE_FULL_STRING_ROW,
+		attach_separator (page_table, 
+				  get_adjusted_permissions_row (PERMISSIONS_PAGE_SEPARATOR_AFTER_OTHERS_ROW, show_special_flags));
+
+		attach_title_value_pair (page_table, 
+					 get_adjusted_permissions_row (PERMISSIONS_PAGE_FULL_STRING_ROW, show_special_flags),
 					 _("Text View:"), file, "permissions");
 		
-		attach_title_value_pair (page_table, PERMISSIONS_PAGE_FULL_OCTAL_ROW,
+		attach_title_value_pair (page_table,
+					 get_adjusted_permissions_row (PERMISSIONS_PAGE_FULL_OCTAL_ROW, show_special_flags),
 					 _("Number View:"), file, "octal_permissions");
 		
-		attach_title_value_pair (page_table, PERMISSIONS_PAGE_DATE_ROW,
+		attach_title_value_pair (page_table,
+					 get_adjusted_permissions_row (PERMISSIONS_PAGE_DATE_ROW, show_special_flags),
 					 _("Last Changed:"), file, "date_permissions");
 		
 		add_permissions_column_label (check_button_table, 
@@ -1637,47 +1689,47 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 					      _("Execute"));
 
 		add_permissions_checkbox (check_button_table, file, 
-					  PERMISSIONS_CHECKBOXES_OWNER_ROW,
+					  get_adjusted_permissions_row (PERMISSIONS_CHECKBOXES_OWNER_ROW, show_special_flags),
 					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
 					  GNOME_VFS_PERM_USER_READ);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  PERMISSIONS_CHECKBOXES_OWNER_ROW,
+					  get_adjusted_permissions_row (PERMISSIONS_CHECKBOXES_OWNER_ROW, show_special_flags),
 					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
 					  GNOME_VFS_PERM_USER_WRITE);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  PERMISSIONS_CHECKBOXES_OWNER_ROW,
+					  get_adjusted_permissions_row (PERMISSIONS_CHECKBOXES_OWNER_ROW, show_special_flags),
 					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
 					  GNOME_VFS_PERM_USER_EXEC);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  PERMISSIONS_CHECKBOXES_GROUP_ROW,
+					  get_adjusted_permissions_row (PERMISSIONS_CHECKBOXES_GROUP_ROW, show_special_flags),
 					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
 					  GNOME_VFS_PERM_GROUP_READ);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  PERMISSIONS_CHECKBOXES_GROUP_ROW,
+					  get_adjusted_permissions_row (PERMISSIONS_CHECKBOXES_GROUP_ROW, show_special_flags),
 					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
 					  GNOME_VFS_PERM_GROUP_WRITE);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  PERMISSIONS_CHECKBOXES_GROUP_ROW,
+					  get_adjusted_permissions_row (PERMISSIONS_CHECKBOXES_GROUP_ROW, show_special_flags),
 					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
 					  GNOME_VFS_PERM_GROUP_EXEC);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
+					  get_adjusted_permissions_row (PERMISSIONS_CHECKBOXES_OTHERS_ROW, show_special_flags),
 					  PERMISSIONS_CHECKBOXES_READ_COLUMN,
 					  GNOME_VFS_PERM_OTHER_READ);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
+					  get_adjusted_permissions_row (PERMISSIONS_CHECKBOXES_OTHERS_ROW, show_special_flags),
 					  PERMISSIONS_CHECKBOXES_WRITE_COLUMN,
 					  GNOME_VFS_PERM_OTHER_WRITE);
 
 		add_permissions_checkbox (check_button_table, file, 
-					  PERMISSIONS_CHECKBOXES_OTHERS_ROW,
+					  get_adjusted_permissions_row (PERMISSIONS_CHECKBOXES_OTHERS_ROW, show_special_flags),
 					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
 					  GNOME_VFS_PERM_OTHER_EXEC);
 
@@ -1685,12 +1737,7 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 		 * Would be better to show/hide this info dynamically, so if the
 		 * preference is changed while the window is open it would react.
 		 */
-		/* FIXME bugzilla.eazel.com 1454: 
-		 * Spacing is wrong if you just leave empty table cells; need
-		 * to size table appropriately in advance.
-		 */
-		if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS, 
-						      FALSE)) {
+		if (show_special_flags) {
 			add_special_execution_flags (page_table, file);					  
 		}
 
@@ -1713,7 +1760,7 @@ create_properties_window (NautilusFile *file)
 	/* Create the window. */
 	window = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
   	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
-  	gtk_window_set_policy (window, FALSE, FALSE, FALSE);
+  	gtk_window_set_policy (window, FALSE, TRUE, FALSE);
 
 	/* Set initial window title */
 	update_properties_window_title (window, file);

@@ -1,3 +1,79 @@
+2000-11-30  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Rebecca Schulman  <rebecka@eazel.com>
+
+	Fixed bug 4899 (Bookmark for nonexistent file can cause
+	infinite loop at startup)
+
+	Changed NautilusBookmark's internal logic so that it doesn't
+	keep around a file object for known non-existent URIs. The
+	trick is to get it to notice when the URI is no longer non-existent
+	and get a fresh file object then. This is done imperfectly, but
+	the new symptom is very minor and deferrable (wrote it up as bug 4906).
+
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_connect_file): Don't get a new NautilusFile
+	object if we know the URI doesn't exist; instead just set the
+	missing-bookmark icon. Also made it safe to call this routine
+	when there's already a file object in hand (just bails out early).
+	(nautilus_bookmark_get_icon), (nautilus_bookmark_get_uri): 
+	Call nautilus_bookmark_connect_file so that it will connect to a 
+	now-existing file if possible (and thus	get the right icon).
+	Since callers that try to activate the bookmark will call get_uri,
+	one way to kick a reincarnated bookmark's icon into appearing is
+	to select it in a menu.
+	(nautilus_bookmark_get_pixbuf): Call nautilus_bookmark_get_icon to
+	benefit from its connect_file logic.
+
+
+	Fixed bug 3847 (Icon in properties window flashes while 
+	folder count increments)
+
+	* libnautilus-extensions/nautilus-image.c:
+	(nautilus_image_set_pixbuf): Don't call gtk_widget_queue_resize if
+	the pixbuf hasn't changed.
+
+
+	Fixed bug 1454 (Properties dialog needs mucho tweaking)
+
+	Mostly this was changes to match Arlo's design that he gave me
+	ages ago. I also fixed a few other problems.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_date_as_string): Change format of date
+	strings from "<date> <time>" to "<date> at <time>" to match
+	Arlo's design.
+	* src/file-manager/fm-properties-window.c: 
+	(attach_label): Now handles requests for a bold font.
+	(attach_value_label): Renamed from attach_left_aligned_label, use bold 
+	font here.
+	(attach_value_field),(attach_directory_contents_value_field):
+	updated for name change.
+	(attach_right_aligned_label): Removed, guts moved to caller.
+	(attach_title_field): Use bold font here.
+	(attach_option_menu): New helper function to share code between
+	attach_group_menu and attach_owner_menu; now uses gtk_alignment
+	to make the menu be minimally-sized and left-aligned.
+	(attach_group_menu), (attach_owner_menu): Use attach_option_menu.
+	(attach_separator): New helper function to install a separator
+	across both columns of a properties window table.
+	(create_basic_page): Use gtk_alignment to make the icon right-aligned;
+	make the blank row above date rows be standard height.
+	(create_emblems_page): Changed layout so name appears below emblem
+	rather than to its right; this matches Customize window and allows
+	the Properties window to be a smaller width, which looks much better
+	for the other panes. Also, the emblems are now layed out lrtb instead of
+	tblr.
+	(add_permissions_column_label): Make these labels bold.
+	(add_special_execution_flags): Attach a separator.
+	(get_adjusted_permissions_row): Helper function to account for the "special
+	flags" rows, which are not always displayed.
+	(create_permissions_page): Deploy get_adjusted_permissions_row wherever a
+	raw row number was used; insert separators.
+	(create_properties_window): Allow window to be stretched, since the emblems
+	don't all fit at initial window height (so user can stretch rather than
+	scrolling if desired).
+
 2000-11-30  Rebecca Schulman  <rebecka@eazel.com>
 	Fix for bug 2438, that we need to handle bad user
 	input when searching by size.  

@@ -2211,22 +2211,22 @@ nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type
 		 * off zero padding, and putting a "_" there will use
 		 * space padding instead of zero padding.
 		 */
-		format = _("today %-I:%M %p");
+		format = _("today at %-I:%M %p");
 	} else if (file_date_age == 1) {
 		/* Yesterday, use special word.
 		 * Note to localizers: Same issues as "today" string.
 		 */
-		format = _("yesterday %-I:%M %p");
+		format = _("yesterday at %-I:%M %p");
 	} else if (file_date_age < 7) {
 		/* Current week, include day of week.
 		 * Note to localizers: Same issues as "today" string.
 		 */
-		format = _("%A %-m/%-d/%y %-I:%M %p");
+		format = _("%A %-m/%-d/%y at %-I:%M %p");
 	} else {
 		/* Other dates.
 		 * Note to localizers: Same issues as "today" string.
 		 */
-		format = _("%-m/%-d/%y %-I:%M %p");
+		format = _("%-m/%-d/%y at %-I:%M %p");
 	}
 
 	return nautilus_strdup_strftime (format, file_time);

@@ -223,20 +223,30 @@ GdkPixbuf *
 nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
 			      guint icon_size)
 {
+	GdkPixbuf *result;
+	NautilusScalableIcon *icon;
+	
 	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
-	if (bookmark->details->icon == NULL) {
+	icon = nautilus_bookmark_get_icon (bookmark);
+	if (icon == NULL) {
 		return NULL;
 	}
 	
-	return nautilus_icon_factory_get_pixbuf_for_icon
-		(bookmark->details->icon, icon_size, icon_size, icon_size, icon_size, NULL);
+	result = nautilus_icon_factory_get_pixbuf_for_icon
+		(icon, icon_size, icon_size, icon_size, icon_size, NULL);
+	nautilus_scalable_icon_unref (icon);
+	
+	return result;
 }
 
 NautilusScalableIcon *
 nautilus_bookmark_get_icon (NautilusBookmark *bookmark)
 {
 	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), NULL);
+
+	/* Try to connect a file in case file exists now but didn't earlier. */
+	nautilus_bookmark_connect_file (bookmark);
 
 	if (bookmark->details->icon != NULL) {
 		nautilus_scalable_icon_ref (bookmark->details->icon);
@@ -248,6 +258,14 @@ char *
 nautilus_bookmark_get_uri (NautilusBookmark *bookmark)
 {
 	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK (bookmark), NULL);
+
+	/* Try to connect a file in case file exists now but didn't earlier.
+	 * This allows a bookmark to update its image properly in the case
+	 * where a new file appears with the same URI as a previously-deleted
+	 * file. Calling connect_file here means that attempts to activate the 
+	 * bookmark will update its image if possible. 
+	 */
+	nautilus_bookmark_connect_file (bookmark);
 
 	return g_strdup (bookmark->details->uri);
 }
@@ -452,25 +470,29 @@ static void
 nautilus_bookmark_connect_file (NautilusBookmark *bookmark)
 {
 	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
-	g_assert (bookmark->details->file == NULL);
-	
-	bookmark->details->file = nautilus_file_get (bookmark->details->uri);
-	g_assert (!nautilus_file_is_gone (bookmark->details->file));
+
+	if (bookmark->details->file != NULL) {
+		return;
+	}
+
+	if (!nautilus_bookmark_uri_known_not_to_exist (bookmark)) {
+		bookmark->details->file = nautilus_file_get (bookmark->details->uri);
+		g_assert (!nautilus_file_is_gone (bookmark->details->file));
+
+		gtk_signal_connect (GTK_OBJECT (bookmark->details->file),
+				    "changed",
+				    bookmark_file_changed_callback,
+				    bookmark);
+	}	
 
 	/* Set icon based on available information; don't force network i/o
 	 * to get any currently unknown information. 
 	 */
 	if (!nautilus_bookmark_update_icon (bookmark)) {
-		if (bookmark->details->icon == NULL) {
+		if (bookmark->details->icon == NULL || bookmark->details->file == NULL) {
 			nautilus_bookmark_set_icon_to_default (bookmark);
 		}
 	}
-
-	g_assert (bookmark->details->file != NULL);
-	gtk_signal_connect (GTK_OBJECT (bookmark->details->file),
-			    "changed",
-			    bookmark_file_changed_callback,
-			    bookmark);
 }
 
 NautilusBookmark *

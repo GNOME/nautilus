@@ -449,9 +449,8 @@ nautilus_image_set_pixbuf (NautilusImage *image, GdkPixbuf *pixbuf)
 		nautilus_gdk_pixbuf_unref_if_not_null (image->detail->pixbuf);
 		nautilus_gdk_pixbuf_ref_if_not_null (pixbuf);
 		image->detail->pixbuf = pixbuf;
+		gtk_widget_queue_resize (GTK_WIDGET (image));
 	}
-
-	gtk_widget_queue_resize (GTK_WIDGET (image));
 }
 
 GdkPixbuf*
