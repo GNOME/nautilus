@@ -23,3 +23,4 @@
 #define HAVE_GTK_MULTIHEAD /* needed for egg-screen-exec functions */
 #undef HAVE_STARTUP_NOTIFICATION
 #undef HAVE_EXIF
+#undef HAVE_OLD_EXIF

@@ -144,13 +144,20 @@ static void
 exif_content_callback (ExifContent *content, gpointer data)
 {
 	struct ExifAttribute *attribute;
+#if !HAVE_OLD_EXIF
+	char b[1024];
+#endif
 
 	attribute = (struct ExifAttribute *)data;
 	if (attribute->found) {
 		return;
 	}
 
+#ifdef HAVE_OLD_EXIF
         attribute->value = g_strdup (exif_content_get_value (content, attribute->tag));
+#else
+        attribute->value = g_strdup (exif_content_get_value (content, attribute->tag, b, sizeof(b)));
+#endif
 	if (attribute->value != NULL) {
 		attribute->found = TRUE;
 	}
