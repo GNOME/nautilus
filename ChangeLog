@@ -1,3 +1,9 @@
+2001-08-16  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_get_mount_name_for_display):
+	Corrected a backwards g_return_if_fail!
+
 2001-08-15  Darin Adler  <darin@bentspoon.com>
 
 	A pass at cleaning up the volume monitor. Made all the details of

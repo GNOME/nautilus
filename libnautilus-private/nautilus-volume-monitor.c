@@ -1668,8 +1668,8 @@ nautilus_volume_monitor_get_mount_name_for_display (NautilusVolumeMonitor *monit
 {
 	const char *name, *found_name;
 
-	g_return_val_if_fail (monitor == NULL, NULL);
-	g_return_val_if_fail (volume == NULL, NULL);
+	g_return_val_if_fail (monitor != NULL, NULL);
+	g_return_val_if_fail (volume != NULL, NULL);
 	
 	name = strrchr (volume->mount_path, '/');
 	if (name != NULL) {
