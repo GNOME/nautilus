@@ -76,6 +76,7 @@ struct NautilusWindowDetails
         NautilusLocationChangeType location_change_type;
         guint location_change_distance;
         char *pending_location;
+        char *pending_scroll_to;
         GList *pending_selection;
         NautilusDetermineViewHandle *determine_view_handle;
 

@@ -84,6 +84,11 @@ int                   nautilus_bookmark_compare_with           (gconstpointer   
 int                   nautilus_bookmark_compare_uris           (gconstpointer          a,
 								gconstpointer          b);
 
+void                  nautilus_bookmark_set_scroll_pos         (NautilusBookmark      *bookmark,
+								const char            *uri);
+char *                nautilus_bookmark_get_scroll_pos         (NautilusBookmark      *bookmark);
+
+
 /* Helper functions for displaying bookmarks */
 GdkPixbuf *           nautilus_bookmark_get_pixbuf             (NautilusBookmark      *bookmark,
 								guint                  icon_size,

@@ -66,6 +66,16 @@ module Nautilus {
 		oneway void load_location (in URI location);
 		oneway void stop_loading ();
 	};
+
+
+	/* An interface that allows the shell to query the current
+	 * scrolled position of views, and later return to that
+	 * position. Typically used when going back/forward.
+	 */
+	interface ScrollPositionable : ::Bonobo::Unknown {
+		URI get_first_visible_file ();
+		void scroll_to_file (in URI position);
+	};
 	
 	/* The ViewFrame interface is used by the view to communicate
 	 * with the Nautilus shell. It's implemented as an interface

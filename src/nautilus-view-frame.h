@@ -128,6 +128,11 @@ void               nautilus_view_frame_zoom_in                   (NautilusViewFr
 void               nautilus_view_frame_zoom_out                  (NautilusViewFrame   *view);
 void               nautilus_view_frame_zoom_to_fit               (NautilusViewFrame   *view);
 
+/* calls to Nautilus::ScrollPositionable */
+char *             nautilus_view_frame_get_first_visible_file    (NautilusViewFrame   *view);
+void               nautilus_view_frame_scroll_to_file            (NautilusViewFrame   *view,
+                                                                  const char          *uri);
+
 /* Other. */
 gboolean           nautilus_view_frame_get_is_view_loaded        (NautilusViewFrame   *view);
 const char *       nautilus_view_frame_get_view_iid              (NautilusViewFrame   *view);

@@ -1,3 +1,58 @@
+2003-03-10  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-global-preferences.c: 
+	* libnautilus-private/apps_nautilus_preferences.schemas:
+	Make 50% the default list view zoom.
+
+	* libnautilus-private/nautilus-bookmark.h:
+	* libnautilus-private/nautilus-bookmark.c:
+	(nautilus_bookmark_finalize),
+	(nautilus_bookmark_uri_known_not_to_exist),
+	(nautilus_bookmark_set_scroll_pos),
+	(nautilus_bookmark_get_scroll_pos):
+	Add scroll positions to bookmarks. Used for the window
+	back/forward history.
+	
+	* libnautilus-private/nautilus-icon-container.h:
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_get_first_visible_icon),
+	(nautilus_icon_container_scroll_to_icon):
+	Add new functions.
+	
+	* libnautilus/nautilus-view-component.idl:
+	Add Nautilus::ScollPositionable interface.
+	
+	* libnautilus/Makefile.am:
+	* libnautilus/nautilus-scroll-positionable.h:
+	* libnautilus/nautilus-scroll-positionable.c:
+	Standard implementation of Nautilus::ScollPositionable.
+	
+	* src/file-manager/fm-icon-view.c:
+	(icon_view_get_first_visible_file_callback),
+	(icon_view_scroll_to_file_callback), (fm_icon_view_instance_init):
+	Implement Nautilus::ScollPositionable for icon view.
+	
+	* src/file-manager/fm-list-view.c:
+	(list_view_get_first_visible_file_callback),
+	(list_view_scroll_to_file_callback), (fm_list_view_instance_init):
+	Implement Nautilus::ScollPositionable for list view.
+	
+	* src/nautilus-view-frame.h:
+	* src/nautilus-view-frame.c: (destroy_view),
+	(create_corba_objects),
+	(nautilus_view_frame_get_first_visible_file),
+	(nautilus_view_frame_scroll_to_file):
+	Add support for Nautilus::ScollPositionable.
+	
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-manage-views.c: (open_location),
+	(free_location_change), (end_location_change),
+	(begin_location_change), (nautilus_window_set_content_view),
+	(load_complete_callback), (nautilus_window_back_or_forward),
+	(nautilus_window_reload):
+	Save scroll position when changing location and switching
+	components. Scroll to the right place on back/forward.
+
 2003-03-08  Dave Camp  <dave@ximian.com>
 
 	* components/text/nautilus-text-view-ui.xml: Fixed the strings 

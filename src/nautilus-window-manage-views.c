@@ -108,7 +108,8 @@ static void disconnect_view        (NautilusWindow             *window,
 static void begin_location_change  (NautilusWindow             *window,
                                     const char                 *location,
                                     NautilusLocationChangeType  type,
-                                    guint                       distance);
+                                    guint                       distance,
+                                    const char                 *scroll_pos);
 static void free_location_change   (NautilusWindow             *window);
 static void end_location_change    (NautilusWindow             *window);
 static void cancel_location_change (NautilusWindow             *window);
@@ -753,7 +754,7 @@ open_location (NautilusWindow *window,
                            "This can cause subtle evils like #48423", location);
 
         begin_location_change (target_window, location,
-                               NAUTILUS_LOCATION_CHANGE_STANDARD, 0);
+                               NAUTILUS_LOCATION_CHANGE_STANDARD, 0, NULL);
 }
 
 void
@@ -1115,6 +1116,10 @@ free_location_change (NautilusWindow *window)
         g_free (window->details->pending_location);
         window->details->pending_location = NULL;
 
+        /* Don't free pending_scroll_to, since thats needed until
+         * the load_complete callback.
+         */
+
         if (window->details->determine_view_handle != NULL) {
                 nautilus_determine_initial_view_cancel (window->details->determine_view_handle);
                 window->details->determine_view_handle = NULL;
@@ -1134,6 +1139,13 @@ static void
 end_location_change (NautilusWindow *window)
 {
         nautilus_window_allow_stop (window, FALSE);
+
+        /* Now we can free pending_scroll_to, since the load_complete
+         * callback already has been emitted.
+         */
+        g_free (window->details->pending_scroll_to);
+        window->details->pending_scroll_to = NULL;
+
         free_location_change (window);
 }
 
@@ -1464,16 +1476,19 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
  * @type: Which type of location change is this? Standard, back, forward, or reload?
  * @distance: If type is back or forward, the index into the back or forward chain. If
  * type is standard or reload, this is ignored, and must be 0.
+ * @scroll_pos: The file to scroll to when the location is loaded.
  */
 static void
 begin_location_change (NautilusWindow *window,
                        const char *location,
                        NautilusLocationChangeType type,
-                       guint distance)
+                       guint distance,
+                       const char *scroll_pos)
 {
         NautilusDirectory *directory;
         NautilusFile *file;
 	gboolean force_reload;
+        char *current_pos;
 
         g_assert (NAUTILUS_IS_WINDOW (window));
         g_assert (location != NULL);
@@ -1490,7 +1505,9 @@ begin_location_change (NautilusWindow *window,
         window->details->pending_location = g_strdup (location);
         window->details->location_change_type = type;
         window->details->location_change_distance = distance;
-
+        
+        window->details->pending_scroll_to = g_strdup (scroll_pos);
+        
         directory = nautilus_directory_get (location);
 
 	/* The code to force a reload is here because if we do it
@@ -1513,6 +1530,13 @@ begin_location_change (NautilusWindow *window,
 	}
 
         nautilus_directory_unref (directory);
+
+        /* Set current_bookmark scroll pos */
+        if (window->current_location_bookmark != NULL) {
+                current_pos = nautilus_view_frame_get_first_visible_file (window->content_view);
+                nautilus_bookmark_set_scroll_pos (window->current_location_bookmark, current_pos);
+                g_free (current_pos);
+        }
         
         window->details->determine_view_handle = nautilus_determine_initial_view
                 (location, determined_initial_view_callback, window);
@@ -1564,11 +1588,11 @@ nautilus_window_set_content_view (NautilusWindow *window,
         g_return_if_fail (window->details->location != NULL);
 	g_return_if_fail (id != NULL);
 
-        end_location_change (window);
-
         if (nautilus_window_content_view_matches_iid (window, id->iid)) {
         	return;
         }
+
+        end_location_change (window);
 
 	file = nautilus_file_get (window->details->location);
         nautilus_mime_set_default_component_for_file
@@ -1576,6 +1600,12 @@ nautilus_window_set_content_view (NautilusWindow *window,
         nautilus_file_unref (file);
         
         nautilus_window_allow_stop (window, TRUE);
+
+        if (window->details->selection == NULL) {
+                /* If there is no selection, queue a scroll to the same icon that
+                 * is currently visible */
+                window->details->pending_scroll_to = nautilus_view_frame_get_first_visible_file (window->content_view);
+        }
         
         load_content_view (window, id);
 }
@@ -1873,6 +1903,10 @@ load_complete_callback (NautilusViewFrame *view,
          */
 
         if (view == window->content_view) {
+                if (window->details->pending_scroll_to != NULL) {
+                        nautilus_view_frame_scroll_to_file (window->content_view,
+                                                            window->details->pending_scroll_to);
+                }
                 end_location_change (window);
         }
 }
@@ -2196,7 +2230,9 @@ nautilus_window_back_or_forward (NautilusWindow *window, gboolean back, guint di
 {
 	GList *list;
 	char *uri;
+        char *scroll_pos;
         guint len;
+        NautilusBookmark *bookmark;
 	
 	list = back ? window->back_list : window->forward_list;
 
@@ -2211,14 +2247,18 @@ nautilus_window_back_or_forward (NautilusWindow *window, gboolean back, guint di
         if (distance >= len)
                 distance = len - 1;
 
-	uri = nautilus_bookmark_get_uri (g_list_nth_data (list, distance));
+        bookmark = g_list_nth_data (list, distance);
+	uri = nautilus_bookmark_get_uri (bookmark);
+        scroll_pos = nautilus_bookmark_get_scroll_pos (bookmark);
 	begin_location_change
 		(window,
 		 uri,
 		 back ? NAUTILUS_LOCATION_CHANGE_BACK : NAUTILUS_LOCATION_CHANGE_FORWARD,
-		 distance);
+		 distance,
+                 scroll_pos);
 
 	g_free (uri);
+        g_free (scroll_pos);
 }
 
 /* reload the contents of the window */
@@ -2235,6 +2275,6 @@ nautilus_window_reload (NautilusWindow *window)
 	location = g_strdup (window->details->location);
 	begin_location_change
 		(window, location,
-		 NAUTILUS_LOCATION_CHANGE_RELOAD, 0);
+		 NAUTILUS_LOCATION_CHANGE_RELOAD, 0, NULL);
 	g_free (location);
 }

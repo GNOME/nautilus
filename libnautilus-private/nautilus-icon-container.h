@@ -191,6 +191,9 @@ void              nautilus_icon_container_request_update_all            (Nautilu
 void              nautilus_icon_container_reveal                        (NautilusIconContainer  *container,
 									 NautilusIconData       *data);
 gboolean          nautilus_icon_container_is_empty                      (NautilusIconContainer  *container);
+NautilusIconData *nautilus_icon_container_get_first_visible_icon        (NautilusIconContainer  *container);
+void              nautilus_icon_container_scroll_to_icon                (NautilusIconContainer  *container,
+									 NautilusIconData       *data);
 
 /* control the layout */
 gboolean          nautilus_icon_container_is_auto_layout                (NautilusIconContainer  *container);

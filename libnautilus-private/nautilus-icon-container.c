@@ -3823,6 +3823,76 @@ nautilus_icon_container_is_empty (NautilusIconContainer *container)
 	return container->details->icons == NULL;
 }
 
+NautilusIconData *
+nautilus_icon_container_get_first_visible_icon (NautilusIconContainer *container)
+{
+	GList *l;
+	NautilusIcon *icon;
+	GtkAdjustment *vadj;
+	double x, y;
+	double x1, y1, x2, y2;
+
+	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
+
+	eel_canvas_c2w (EEL_CANVAS (container),
+			0, vadj->value,
+			&x, &y);
+
+	l = container->details->icons;
+	while (l != NULL) {
+		icon = l->data;
+
+		if (icon_is_positioned (icon)) {
+			eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (icon->item),
+						    &x1, &y1, &x2, &y2);
+			if (y2 > y) {
+				return icon->data;
+			}
+		}
+		
+		l = l->next;
+	}
+	return NULL;
+}
+
+void
+nautilus_icon_container_scroll_to_icon (NautilusIconContainer  *container,
+					NautilusIconData       *data)
+{
+	GList *l;
+	NautilusIcon *icon;
+	GtkAdjustment *vadj;
+	int x, y;
+	double x1, y1, x2, y2;
+	EelCanvasItem *item;
+
+	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
+
+	l = container->details->icons;
+	while (l != NULL) {
+		icon = l->data;
+
+		if (icon->data == data &&
+		    icon_is_positioned (icon)) {
+			item = EEL_CANVAS_ITEM (icon->item);
+			eel_canvas_item_get_bounds (item,
+						    &x1, &y1, &x2, &y2);
+			eel_canvas_item_i2w (item->parent,
+					     &x1,
+					     &y1);
+			eel_canvas_w2c (item->canvas,
+					x1, y1,
+					&x, &y);
+
+			y = MAX (0, y);
+			
+			eel_gtk_adjustment_set_value (vadj, y);
+		}
+		
+		l = l->next;
+	}
+}
+
 /* Call a function for all the icons. */
 typedef struct {
 	NautilusIconCallback callback;

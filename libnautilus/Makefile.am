@@ -34,6 +34,7 @@ libnautilusinclude_HEADERS=			\
 	nautilus-clipboard.h			\
 	nautilus-distributed-undo.h		\
 	nautilus-idle-queue.h			\
+	nautilus-scroll-positionable.h		\
 	nautilus-view-component.h		\
 	nautilus-view.h				\
 	nautilus-view-standard-main.h		\
@@ -46,6 +47,7 @@ libnautilus_la_SOURCES=					\
 	$(nautilus_distributed_undo_idl_sources)	\
 	nautilus-clipboard.c				\
 	nautilus-idle-queue.c				\
+	nautilus-scroll-positionable.c			\
 	nautilus-undo-transaction.c			\
 	nautilus-undo-transaction.h			\
 	nautilus-undo.c					\
