@@ -98,7 +98,7 @@ set_preference_string (char *new_value) {
 static void
 synch_menus_with_preference (void)
 {
-	int menu_index;
+	int i;
 	char **text_array;
 
 	if (attribute_names_preference == NULL) {
@@ -106,19 +106,20 @@ synch_menus_with_preference (void)
 						       	   	        NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES));
 
 	}
+
 	text_array = g_strsplit (attribute_names_preference, "|", 0);
 	
-	for (menu_index = 0; menu_index < MENU_COUNT; ++menu_index) {
+	for (i = 0; i < MENU_COUNT; ++i) {
 		int string_index;
 
 		/* Note that text_array includes initial "name" entry that's
 		 * skipped in the menu, so option_menus[i] corresponds to
 		 * text_array[i+1]
 		 */
-		g_assert (text_array[menu_index+1] != NULL);
-		string_index = nautilus_g_strfindv (attribute_names, text_array[menu_index+1]);
+		g_assert (text_array[i+1] != NULL);
+		string_index = nautilus_g_strv_find (attribute_names, text_array[i+1]);
 		g_assert (string_index >= 0);
-	  	gtk_option_menu_set_history (option_menus[menu_index], string_index);
+	  	gtk_option_menu_set_history (option_menus[i], string_index);
 	}
 
 	g_strfreev (text_array);
@@ -285,7 +286,6 @@ create_icon_text_window (void)
 					   NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
 					   preference_changed_callback,
 					   NULL);
-	
 
 	gtk_signal_connect (GTK_OBJECT (window), "delete_event",
                     	    GTK_SIGNAL_FUNC (fm_icon_text_window_delete_event_cb),
@@ -301,12 +301,10 @@ create_icon_text_window (void)
 static gboolean
 is_in_chosen_values (int value)
 {
-	int index;
+	int i;
 	
-	for (index = 0; index < MENU_COUNT; ++index)
-	{
-		if (value == get_attribute_index_from_option_menu (option_menus[index]))
-		{
+	for (i = 0; i < MENU_COUNT; ++i) {
+		if (value == get_attribute_index_from_option_menu (option_menus[i])) {
 			return TRUE;
 		}
 	}
@@ -317,25 +315,25 @@ is_in_chosen_values (int value)
 static void
 ensure_unique_attributes (int chosen_menu)
 {
-	int menu_index;
+	int i;
 	int chosen_value;
 
 	chosen_value = get_attribute_index_from_option_menu (option_menus[chosen_menu]);
 
-	for (menu_index = 0; menu_index < MENU_COUNT; ++menu_index)
+	for (i = 0; i < MENU_COUNT; ++i)
 	{
-		if (menu_index == chosen_menu)
+		if (i == chosen_menu) {
 			continue;
+		}
 
-		if (chosen_value == get_attribute_index_from_option_menu (option_menus[menu_index]))
-		{
+		if (chosen_value == get_attribute_index_from_option_menu (option_menus[i])) {
 			int new_value;
 			
 			/* Another item already had this value; change that other item */
-			for (new_value = 0; is_in_chosen_values (new_value); ++new_value)
-			{}
-
-			gtk_option_menu_set_history (option_menus[menu_index], new_value);
+			for (new_value = 0; is_in_chosen_values (new_value); ++new_value) {
+			}
+			
+			gtk_option_menu_set_history (option_menus[i], new_value);
 			return;
 		}
 	}

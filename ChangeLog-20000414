@@ -1,3 +1,46 @@
+2000-03-31  Darin Adler  <darin@eazel.com>
+
+	Fixed a bug that Pavel reported where he got a crash in
+	nautilus_directory_monitor_files_unref when he pushed the
+	"Up" button.
+
+	* libnautilus/nautilus-glib-extensions.c:
+	* libnautilus/nautilus-glib-extensions.h:
+	(nautilus_g_strv_find): Renamed the existing function
+	nautilus_g_strfindv to be more consistent with the rest
+	of glib, even though it's less consistent with the other
+	strv functions.
+	(nautilus_g_list_safe_for_each): Added an alternate
+	version of g_list_foreach that works even when the current
+	item is removed from the list inside the function.
+
+	* libnautilus/nautilus-gtk-extensions.c:
+	(nautilus_gtk_object_list_unref): Use the new safe version
+	of g_list_foreach so this works even on lists where the
+	objects remove themselves in their destroy/finalize methods.
+	This is the change that fixes the bug.
+
+	* src/nautilus-bookmark-list.c:
+	(nautilus_bookmark_list_load_file): Replaced some explicit
+	code with a call to nautilus_gtk_object_list_free.
+
+	* src/nautilus-index-title.c:
+	(nautilus_index_title_update_icon): Fixed a bug that would
+	prevent you from viewing the root level. The current version
+	of nautilus_file_get returns NULL for the root.
+
+	* src/nautilus-window-menus.c:
+	(clear_appended_bookmark_items): Replaced some explicit
+	code with a call to nautilus_g_list_free_deep.
+
+	* src/file-manager/fm-icon-text-window.c:
+	(synch_menus_with_preference): Updated to use the
+	nautilus_g_strv_find call by its new name.
+
+	* libnautilus/nautilus-file.c:
+	(nautilus_file_set_keywords): Did some minor tweaks to
+	simplify the no-keywords case.
+
 2000-03-30  John Sullivan <sullivan@eazel.com>
 
 	Finished task 172 (show icon emblems in list view)

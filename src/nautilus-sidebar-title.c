@@ -151,6 +151,10 @@ nautilus_index_title_update_icon (NautilusIndexTitle *index_title)
 	double h_scale = 1.0;
 	double v_scale = 1.0;
 
+	/* NULL can happen because nautilus_file_get returns NULL for the root. */
+	if (index_title->details->file == NULL) {
+		return;
+	}
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (index_title->details->file,
 							    NAUTILUS_ICON_SIZE_STANDARD);
 
@@ -330,6 +334,7 @@ nautilus_index_title_update_info (NautilusIndexTitle *index_title)
 	char *temp_string;
 	char *info_string;
 
+	/* NULL can happen because nautilus_file_get returns NULL for the root. */
 	file = index_title->details->file;
 	if (file == NULL) {
 		return;

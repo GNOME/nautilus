@@ -31,6 +31,7 @@
 
 #include <libnautilus/nautilus-file-utilities.h>
 #include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus/nautilus-gtk-extensions.h>
 #include <libnautilus/nautilus-xml-extensions.h>
 
 #include <parser.h>
@@ -292,8 +293,7 @@ nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 	xmlNodePtr node;
 
 	/* Wipe out old list. */
-	g_list_foreach (bookmarks->list, (GFunc)gtk_object_unref, NULL);
-	g_list_free (bookmarks->list);
+	nautilus_gtk_object_list_free (bookmarks->list);
 	bookmarks->list = NULL;
 
 	/* Read new list from file */

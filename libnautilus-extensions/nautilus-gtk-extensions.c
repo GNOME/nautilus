@@ -30,6 +30,7 @@
 #include <gtk/gtkselection.h>
 #include <gtk/gtksignal.h>
 #include <libgnomeui/gnome-geometry.h>
+#include "nautilus-glib-extensions.h"
 
 /**
  * nautilus_gtk_signal_connect_free_data:
@@ -390,7 +391,7 @@ nautilus_gtk_object_list_ref (GList *list)
 void
 nautilus_gtk_object_list_unref (GList *list)
 {
-	g_list_foreach (list, (GFunc) gtk_object_unref, NULL);
+	nautilus_g_list_safe_for_each (list, (GFunc) gtk_object_unref, NULL);
 }
 
 /**

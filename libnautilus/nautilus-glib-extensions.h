@@ -34,17 +34,20 @@
 #define NAUTILUS_N_ELEMENTS(array) (sizeof (array) / sizeof ((array)[0]))
 
 /* Date & time functions. */
-GDate *  nautilus_g_date_new_tm    (struct tm  *time_pieces);
-char *   nautilus_strdup_strftime  (const char *format,
-				    struct tm  *time_pieces);
+GDate *  nautilus_g_date_new_tm        (struct tm   *time_pieces);
+char *   nautilus_strdup_strftime      (const char  *format,
+					struct tm   *time_pieces);
 
 /* List functions. */
-gboolean nautilus_g_list_equal     (GList      *list_a,
-				    GList      *list_b);
-void     nautilus_g_list_free_deep (GList      *list);
+gboolean nautilus_g_list_equal         (GList       *list_a,
+					GList       *list_b);
+void     nautilus_g_list_free_deep     (GList       *list);
+void     nautilus_g_list_safe_for_each (GList       *list,
+					GFunc        function,
+					gpointer     user_data);
 
-/* NULL terminated string arrays. */
-int	nautilus_g_strfindv	   (char      **str_array,
-				    const char *find_me);
+/* NULL terminated string arrays (strv). */
+int      nautilus_g_strv_find          (char       **strv,
+					const char  *find_me);
 
 #endif /* NAUTILUS_GLIB_EXTENSIONS_H */

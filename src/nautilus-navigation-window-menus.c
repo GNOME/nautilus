@@ -31,6 +31,7 @@
 
 
 #include <libnautilus/nautilus-bonobo-extensions.h>
+#include <libnautilus/nautilus-glib-extensions.h>
 #include <libnautilus/nautilus-gtk-extensions.h>
 #include <libnautilus/nautilus-icon-factory.h>
 #include <libnautilus/nautilus-string.h>
@@ -362,40 +363,35 @@ clear_appended_bookmark_items (NautilusWindow *window,
                                const char *menu_path, 
                                const char *last_static_item_path)
 {
-	GList *children;
-	GList *iterator;
+	GList *children, *p;
 	gboolean found_dynamic_items;
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	children = bonobo_ui_handler_menu_get_child_paths (window->uih, menu_path);
-	iterator = children;
 	found_dynamic_items = FALSE;
 
-	while (iterator != NULL)
-	{
+	for (p = children; p != NULL; p = p->next) {
                 if (found_dynamic_items) {
                         BookmarkHolder *holder;
                         BonoboUIHandlerCallbackFunc func;
 
                         bonobo_ui_handler_menu_get_callback (window->uih,
-                                                             iterator->data,
+                                                             p->data,
                                                              &func,
                                                              (gpointer *)&holder);
                         if (holder != NULL) {
                                 g_free (holder);
                         }
-                        bonobo_ui_handler_menu_remove (window->uih, iterator->data);
+                        bonobo_ui_handler_menu_remove (window->uih, p->data);
 		}
-		else if (strcmp ((const char *) iterator->data, last_static_item_path) == 0) {
+		else if (strcmp ((const char *) p->data, last_static_item_path) == 0) {
 			found_dynamic_items = TRUE;
 		}
-		iterator = g_list_next (iterator);
 	}
 
 	g_assert (found_dynamic_items);
-        g_list_foreach (children, (GFunc)g_free, NULL);
-	g_list_free (children);
+        nautilus_g_list_free_deep (children);
 }
 
 static NautilusBookmarkList *
@@ -657,7 +653,7 @@ refresh_bookmarks_in_bookmarks_menu (NautilusWindow *window)
 static void
 refresh_bookmarks_in_go_menu (NautilusWindow *window)
 {
-	GSList *iterator;
+	GSList *p;
 	int index;
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
@@ -670,13 +666,12 @@ refresh_bookmarks_in_go_menu (NautilusWindow *window)
 
 	/* Add in a new set of history items. */
 	index = 0;
-	for (iterator = nautilus_get_history_list (); iterator != NULL; iterator = g_slist_next (iterator))
-	{
+	for (p = nautilus_get_history_list (); p != NULL; p = p->next) {
 		char *path;
 
 		path = g_strdup_printf ("/Go/History%d", index); 
                 append_bookmark_to_menu (window,
-                                         NAUTILUS_BOOKMARK (iterator->data),
+                                         NAUTILUS_BOOKMARK (p->data),
                                          path);
                 g_free (path);
 

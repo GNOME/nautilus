@@ -1017,7 +1017,7 @@ sort_keyword_list_and_remove_duplicates (GList *keywords)
 	GList *p;
 	GList *duplicate_link;
 	
-	keywords = g_list_sort (keywords, (GCompareFunc)compare_emblem_names);
+	keywords = g_list_sort (keywords, (GCompareFunc) compare_emblem_names);
 
 	if (keywords != NULL) {
 		p = keywords;		
@@ -1099,17 +1099,17 @@ nautilus_file_set_keywords (NautilusFile *file, GList *keywords)
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	canonical_keywords = g_list_copy (keywords);
-	canonical_keywords = sort_keyword_list_and_remove_duplicates (canonical_keywords);
-
 	/* Put all the keywords into a list. */
 	file_node = nautilus_directory_get_file_metadata_node (file->details->directory,
 							       file->details->info->name,
-							       canonical_keywords != NULL);
+							       keywords != NULL);
 	need_write = FALSE;
 	if (file_node == NULL) {
-		g_assert (canonical_keywords == NULL);
-	} else	{
+		g_assert (keywords == NULL);
+	} else {
+		canonical_keywords = sort_keyword_list_and_remove_duplicates
+			(g_list_copy (keywords));
+
 		p = canonical_keywords;
 
 		/* Remove any nodes except the ones we expect. */
@@ -1138,6 +1138,8 @@ nautilus_file_set_keywords (NautilusFile *file, GList *keywords)
 			xmlSetProp (child, "NAME", p->data);
 			need_write = TRUE;
 		}
+
+		g_list_free (canonical_keywords);
 	}
 
 	if (need_write) {
@@ -1145,8 +1147,6 @@ nautilus_file_set_keywords (NautilusFile *file, GList *keywords)
 		nautilus_directory_request_write_metafile (file->details->directory);
 		nautilus_file_changed (file);
 	}
-
-	g_list_free (canonical_keywords);
 }
 
 /**
