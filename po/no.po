@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.2\n"
-"POT-Creation-Date: 2003-08-19 15:55+0200\n"
-"PO-Revision-Date: 2003-08-23 22:38+0200\n"
+"POT-Creation-Date: 2003-08-31 17:46+0200\n"
+"PO-Revision-Date: 2003-08-31 17:50+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -390,15 +390,15 @@ msgstr "(Tom)"
 msgid "Loading..."
 msgstr "Laster..."
 
-#: components/tree/nautilus-tree-view.c:505 nautilus.desktop.in.h:1
+#: components/tree/nautilus-tree-view.c:519 nautilus.desktop.in.h:1
 msgid "Home Folder"
 msgstr "Hjemmekatalog"
 
-#: components/tree/nautilus-tree-view.c:507
+#: components/tree/nautilus-tree-view.c:521
 msgid "Filesystem"
 msgstr "Filsystem"
 
-#: components/tree/nautilus-tree-view.c:509
+#: components/tree/nautilus-tree-view.c:523
 msgid "Network Neighbourhood"
 msgstr "Nettverksnabolaget"
 
@@ -1156,13 +1156,12 @@ msgid ""
 msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
-#, fuzzy
 msgid "Hide default bookmarks in the bookmark menu"
-msgstr "Ikke ta med inne_bygde bokmerker i bokmerkemenyen"
+msgstr "Skjul innebygde bokmerker i bokmerkemenyen"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
 msgid "Home icon visible on desktop"
-msgstr ""
+msgstr "Vis Hjem-ikonet på skrivebordet"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
 msgid ""
@@ -1669,7 +1668,7 @@ msgstr "på skrivebordet"
 msgid ""
 "You cannot delete a volume icon. If you want to eject the volume, please use "
 "Eject in the right-click menu of the volume."
-msgstr ""
+msgstr "Du kan ikke slette et volum-ikon. Vennligst bruk menyvalget «Løs ut» hvis du ønsker å løse ut volumet"
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:105
 msgid "Can't delete volume"
@@ -3265,55 +3264,55 @@ msgstr "merket for slipp"
 msgid "whether we are highlighted for a D&D drop"
 msgstr "om vi er merket for slipp"
 
-#: libnautilus-private/nautilus-icon-container.c:2009
+#: libnautilus-private/nautilus-icon-container.c:2022
 msgid "The selection rectangle"
 msgstr "Utvalgsrektangelet"
 
-#: libnautilus-private/nautilus-icon-container.c:4011
+#: libnautilus-private/nautilus-icon-container.c:4079
 msgid "Frame Text"
 msgstr "Sett tekst i ramme"
 
-#: libnautilus-private/nautilus-icon-container.c:4012
+#: libnautilus-private/nautilus-icon-container.c:4080
 msgid "Draw a frame around unselected text"
 msgstr "Tegn en ramme rundt tekst som ikke er valgt"
 
-#: libnautilus-private/nautilus-icon-container.c:4018
+#: libnautilus-private/nautilus-icon-container.c:4086
 msgid "Selection Box Color"
 msgstr "Farge for utvalgsboks"
 
-#: libnautilus-private/nautilus-icon-container.c:4019
+#: libnautilus-private/nautilus-icon-container.c:4087
 msgid "Color of the selection box"
 msgstr "Farge på utvalgsboksen"
 
-#: libnautilus-private/nautilus-icon-container.c:4024
+#: libnautilus-private/nautilus-icon-container.c:4092
 msgid "Selection Box Alpha"
 msgstr "Alpha for utvalgsboks"
 
-#: libnautilus-private/nautilus-icon-container.c:4025
+#: libnautilus-private/nautilus-icon-container.c:4093
 msgid "Opacity of the selection box"
 msgstr "Ugjennomsiktighet for utvalgsboksen"
 
-#: libnautilus-private/nautilus-icon-container.c:4032
+#: libnautilus-private/nautilus-icon-container.c:4100
 msgid "Highlight Alpha"
 msgstr "Lys opp alpha"
 
-#: libnautilus-private/nautilus-icon-container.c:4033
+#: libnautilus-private/nautilus-icon-container.c:4101
 msgid "Opacity of the highlight for selected icons"
 msgstr "Ugjennomsiktighet i merking for valgte ikoner"
 
-#: libnautilus-private/nautilus-icon-container.c:4039
+#: libnautilus-private/nautilus-icon-container.c:4107
 msgid "Light Info Color"
 msgstr "Lys informasjonsfarge"
 
-#: libnautilus-private/nautilus-icon-container.c:4040
+#: libnautilus-private/nautilus-icon-container.c:4108
 msgid "Color used for information text against a dark background"
 msgstr "Farge som brukes for informativ tekst på en mørk bakgrunn"
 
-#: libnautilus-private/nautilus-icon-container.c:4045
+#: libnautilus-private/nautilus-icon-container.c:4113
 msgid "Dark Info Color"
 msgstr "Mørk informasjonsfarge"
 
-#: libnautilus-private/nautilus-icon-container.c:4046
+#: libnautilus-private/nautilus-icon-container.c:4114
 msgid "Color used for information text against a light background"
 msgstr "Farge som brukes for informativ tekst på en lys bakgrunn"
 
@@ -3642,7 +3641,9 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"Du kan konfigurere GNOME til å koble applikasjoner eller visningskomponenter til filtyper. Vil du assosiere en applikasjon eller visningskomponent med denne filtypen nå?"
+"Du kan konfigurere GNOME til å koble applikasjoner eller visningskomponenter "
+"til filtyper. Vil du assosiere en applikasjon eller visningskomponent med "
+"denne filtypen nå?"
 
 #: libnautilus-private/nautilus-program-chooser.c:1665
 msgid "Associate Action"
@@ -3662,7 +3663,9 @@ msgstr ""
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations.  Would you like to choose another action?"
-msgstr "Forvalgt handling kan ikke åpne «%s» fordi den ikke kan aksessere filer i lokasjoner som «%s». Vil du velge en annen handling?"
+msgstr ""
+"Forvalgt handling kan ikke åpne «%s» fordi den ikke kan aksessere filer i "
+"lokasjoner som «%s». Vil du velge en annen handling?"
 
 #: libnautilus-private/nautilus-program-choosing.c:515
 #: libnautilus-private/nautilus-program-choosing.c:546
@@ -3687,7 +3690,11 @@ msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations.  No other actions are available to view this file.  If you copy "
 "this file onto your computer, you may be able to open it."
-msgstr "Forvalgt handling kan ikke åpne «%s» fordi den ikke kan aksessere filer i lokasjoner som «%s». Ingen andre handlinger er tilgjengelige for å vise denne filen. Hvis du kopierer denne filen til din datamaskin, vil du kanskje kunne åpne den."
+msgstr ""
+"Forvalgt handling kan ikke åpne «%s» fordi den ikke kan aksessere filer i "
+"lokasjoner som «%s». Ingen andre handlinger er tilgjengelige for å vise "
+"denne filen. Hvis du kopierer denne filen til din datamaskin, vil du kanskje "
+"kunne åpne den."
 
 #: libnautilus-private/nautilus-program-choosing.c:800
 #: libnautilus-private/nautilus-program-choosing.c:1017
@@ -5548,7 +5555,9 @@ msgstr ""
 msgid ""
 "Move or copy files previously selected by a Cut Files or Copy Files command "
 "into the selected folder"
-msgstr "Flytt eller kopier filer som er valgt tidligere med kommandoene Klipp ut filer eller Kopier filer til valgt mappe"
+msgstr ""
+"Flytt eller kopier filer som er valgt tidligere med kommandoene Klipp ut "
+"filer eller Kopier filer til valgt mappe"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:21
 msgid "Open Wit_h"
@@ -5787,11 +5796,11 @@ msgstr "Vis _indekseringsstatus"
 msgid "Show status of indexing used when searching"
 msgstr "Vis status for indeksering som brukes for søk"
 
-#: src/nautilus-application.c:220
+#: src/nautilus-application.c:221
 msgid "Couldn't Create Required Folder"
 msgstr "Kunne ikke opprette nødvendig mappe"
 
-#: src/nautilus-application.c:221
+#: src/nautilus-application.c:222
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5802,11 +5811,11 @@ msgstr ""
 "mappen før du kjører Nautilus, eller endre rettighetene slik at Nautilus kan "
 "opprette den."
 
-#: src/nautilus-application.c:226
+#: src/nautilus-application.c:227
 msgid "Couldn't Create Required Folders"
 msgstr "Kunne ikke opprette nødvendige mapper"
 
-#: src/nautilus-application.c:227
+#: src/nautilus-application.c:228
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5823,18 +5832,18 @@ msgstr ""
 "Vennligst opprett disse mappene før du kjører Nautilus, eller sett "
 "rettigheter slik at Nautilus kan opprette dem."
 
-#: src/nautilus-application.c:298
+#: src/nautilus-application.c:299
 msgid "Link To Old Desktop"
 msgstr "Lenke til gammelt skrivebord"
 
-#: src/nautilus-application.c:314
+#: src/nautilus-application.c:315
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
-msgstr ""
+msgstr "Plasseringen for skrivebordskatalogen er endret i GNOME 2.4. En lenke som har navnet «Lenke til gammelt skrivebord» er opprettet på skrivebordet. Du kan åpne denne for å flytte over filene du ønsker før du eventuelt sletter lenken."
 
-#: src/nautilus-application.c:317
+#: src/nautilus-application.c:318
 msgid "Migrated old desktop"
 msgstr "Migrerte gammelt skrivebord"
 
@@ -5848,7 +5857,7 @@ msgstr "Migrerte gammelt skrivebord"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:435
+#: src/nautilus-application.c:485
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5859,7 +5868,7 @@ msgstr ""
 "datamaskinen på nytt eller installere Nautilus på nytt."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:441
+#: src/nautilus-application.c:491
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5905,12 +5914,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:471 src/nautilus-application.c:489
-#: src/nautilus-application.c:496
+#: src/nautilus-application.c:521 src/nautilus-application.c:539
+#: src/nautilus-application.c:546
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus kan ikke brukes nå, pga en uventet feil."
 
-#: src/nautilus-application.c:472
+#: src/nautilus-application.c:522
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5918,7 +5927,7 @@ msgstr ""
 "Nautilus kan ikke brukes nå pga en uventet feil fra Bonobo under forsøk på å "
 "registrere visningstjeneren i filbehandleren."
 
-#: src/nautilus-application.c:490
+#: src/nautilus-application.c:540
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5928,7 +5937,7 @@ msgstr ""
 "å finne factory. Du kan fikse problemet ved å drepe bonobo-activation-server "
 "og starte Nautilus på nytt."
 
-#: src/nautilus-application.c:497
+#: src/nautilus-application.c:547
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
