@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2001-03-14 18:46+0300\n"
-"PO-Revision-Date: 2001-03-14 19:25+03:00\n"
+"POT-Creation-Date: 2001-03-19 18:01+0300\n"
+"PO-Revision-Date: 2001-03-19 18:55+03:00\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2160,13 +2160,13 @@ msgid "Description  : %s\n"
 msgstr "Описание    : %s\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:1021
-#, fuzzy, c-format
+#, c-format
 msgid "Install root : %s\n"
-msgstr "Установить и %s и %s"
+msgstr "Установить корень: %s\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:1024
 msgid "Provides     : \n"
-msgstr ""
+msgstr "Предоставляет : \n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:1066
 #, c-format
@@ -2187,47 +2187,47 @@ msgstr ""
 
 #: components/services/install/command-line/eazel-test-softcat.c:43
 msgid "Softcat server to connect to"
-msgstr ""
+msgstr "Сервер каталога программного обеспечения для подключения"
 
 #: components/services/install/command-line/eazel-test-softcat.c:44
 msgid "Use alternate CGI path"
-msgstr ""
+msgstr "Использовать альтернативный путь к CGI"
 
 #: components/services/install/command-line/eazel-test-softcat.c:46
 msgid "Connect as a softcat user through ammonite"
-msgstr ""
+msgstr "Подключиться как пользователь каталога программ через ammonite"
 
 #: components/services/install/command-line/eazel-test-softcat.c:47
 msgid "Number of times to try the request"
-msgstr ""
+msgstr "Число попыток запроса"
 
 #: components/services/install/command-line/eazel-test-softcat.c:48
 msgid "Delay between request retries, in usec"
-msgstr ""
+msgstr "Задержка между запросами, в микросекундах"
 
 #: components/services/install/command-line/eazel-test-softcat.c:49
 msgid "Lookup by Eazel package id"
-msgstr ""
+msgstr "Поиск по идентификатору пакета Eazel"
 
 #: components/services/install/command-line/eazel-test-softcat.c:50
 msgid "Lookup package that provides a feature/file"
-msgstr ""
+msgstr "Поиск пакета, который предоставляет свойство/файл"
 
 #: components/services/install/command-line/eazel-test-softcat.c:51
 msgid "Lookup package with a specific version"
-msgstr ""
+msgstr "Поиск пакета с указанной версией"
 
 #: components/services/install/command-line/eazel-test-softcat.c:52
 msgid "(with --version) Use >= comparison"
-msgstr ""
+msgstr "(c --version) Использовать сравнение >="
 
 #: components/services/install/command-line/eazel-test-softcat.c:53
 msgid "use check function (for debugging)"
-msgstr ""
+msgstr "использовать проверочную функцию (для отладки)"
 
 #: components/services/install/command-line/eazel-test-softcat.c:54
 msgid "Show detailed sub-package info"
-msgstr ""
+msgstr "Показать подробную информацию о подпакете"
 
 #: components/services/install/lib/eazel-install-logic2.c:99
 msgid "Failed to lock the downloaded file"
@@ -2488,7 +2488,7 @@ msgstr "%s будет разрушать %s"
 #: components/services/install/lib/eazel-install-problem.c:193
 #, c-format
 msgid "%s is damaged"
-msgstr ""
+msgstr "%s повреждено"
 
 #: components/services/install/lib/eazel-install-problem.c:197
 #, c-format
@@ -2509,7 +2509,8 @@ msgstr "%s уже установлено"
 #: components/services/install/lib/eazel-install-problem.c:252
 #, c-format
 msgid "%s, which is newer, needs downgrade and downgrade is not enabled"
-msgstr "%s, который новее, требует предудущей версии и предыдущая версия недоступна"
+msgstr ""
+"%s, который новее, требует предудущей версии и предыдущая версия недоступна"
 
 #: components/services/install/lib/eazel-install-problem.c:256
 #, c-format
@@ -2557,7 +2558,7 @@ msgstr ""
 
 #: components/services/install/lib/eazel-install-problem.c:1008
 msgid "Continue with force"
-msgstr ""
+msgstr "Принудительное продолжение"
 
 #: components/services/install/lib/eazel-install-problem.c:1014
 msgid "Allow downgrade"
@@ -2936,7 +2937,9 @@ msgstr "Некоторые пакеты успешно установлены:"
 msgid ""
 "\n"
 "Some packages failed:"
-msgstr "\nСбой некоторых пакетов:"
+msgstr ""
+"\n"
+"Сбой некоторых пакетов:"
 
 #: components/services/install-view/callbacks.c:627
 msgid "Erase the RPM files?"
@@ -2957,6 +2960,10 @@ msgid ""
 "\n"
 "Do you wish to do that now?"
 msgstr ""
+"Ключевой пакет Nautilus был обновлен.\n"
+"Вам надо перезапустить Nautilus.\n"
+"\n"
+"Сделать это сейчас?"
 
 #. Setup the title
 #: components/services/install-view/forms.c:201
@@ -2984,7 +2991,8 @@ msgstr "Эти пакеты готовы к скачиванию и установке:"
 
 #: components/services/install-view/forms.c:408
 msgid "If you wish to download and install these packages, click Continue."
-msgstr "Если вы хотите скачать и установить эти пакеты, нажмите \"Продолжить\"."
+msgstr ""
+"Если вы хотите скачать и установить эти пакеты, нажмите \"Продолжить\"."
 
 #: components/services/install-view/forms.c:411
 msgid "These packages are ready to be uninstalled:"
@@ -3061,7 +3069,7 @@ msgstr "Неправильный пароль."
 
 #: components/services/install-view/nautilus-service-install-view.c:776
 msgid "Authenticate as root"
-msgstr ""
+msgstr "Идентифицироваться как root"
 
 #: components/services/install-view/nautilus-service-install-view.c:893
 msgid "Installing packages"
@@ -3329,7 +3337,7 @@ msgstr "%A, %B %d"
 #: components/services/summary/nautilus-summary-callbacks.c:97
 msgid ""
 "Sorry, network problems are preventing you from connecting to Eazel Services."
-msgstr ""
+msgstr "Извините, проблемы в сети не позволяют вам подключиться к сервисам Eazel."
 
 #. FIXME we really should use the services alert icon here, eh?
 #: components/services/summary/nautilus-summary-callbacks.c:102
@@ -3457,13 +3465,10 @@ msgstr ""
 "позднее."
 
 #: components/services/summary/nautilus-summary-view.c:893
-#, fuzzy
 msgid ""
 "Found a problem with services data on Eazel servers. Please contact "
 "support@eazel.com."
-msgstr ""
-"Обнаружена проблема с данными на серверах Eazel. Пожалуйста, напишите по "
-"адресу support@eazel.com."
+msgstr "Обнаружена проблема с сервисными данными на серверах Eazel. Пожалуйста, напишите по адресу support@eazel.com."
 
 #: components/services/summary/nautilus-summary-view.c:916
 #, fuzzy
@@ -3496,7 +3501,7 @@ msgstr ""
 
 #: components/services/summary/nautilus-summary-view.c:985
 msgid "Failed to upload system inventory."
-msgstr ""
+msgstr "Сбой при передаче системного инвентаря."
 
 #: components/services/summary/nautilus-summary-view.c:1048
 #: src/nautilus-first-time-druid.c:258
@@ -3627,7 +3632,7 @@ msgstr "Файл слишком велик"
 
 #: components/text/nautilus-text-view-ui.xml.h:1
 msgid "Lucida"
-msgstr "Люцида"
+msgstr "Lucida"
 
 #: components/text/nautilus-text-view-ui.xml.h:2
 msgid "Use the Courier Font"
@@ -3663,7 +3668,7 @@ msgstr "Таймс"
 
 #: components/text/Nautilus_View_text.oaf.in.h:1
 msgid "Factory for text view"
-msgstr ""
+msgstr "Фабрика для просотра текста"
 
 #: components/text/Nautilus_View_text.oaf.in.h:2
 msgid "Text"
@@ -4194,7 +4199,7 @@ msgstr "Linux Resources"
 
 #: data/static_bookmarks.xml.h:22
 msgid "Linux Weekly News"
-msgstr ""
+msgstr "Linux Weekly News"
 
 #: data/static_bookmarks.xml.h:23
 msgid "LinuxNewbie.org"
@@ -4206,7 +4211,7 @@ msgstr "LinuxOrbit.com"
 
 #: data/static_bookmarks.xml.h:25
 msgid "MandrakeSoft"
-msgstr ""
+msgstr "MandrakeSoft"
 
 #: data/static_bookmarks.xml.h:26
 msgid "Netraverse"
@@ -4282,7 +4287,7 @@ msgstr "ZDNet Linux Resource Center"
 
 #: data/static_bookmarks.xml.h:44
 msgid "Zero-Knowledge"
-msgstr ""
+msgstr "Zero-Knowledge"
 
 #: icons/ardmore/ardmore.xml.h:1
 msgid "Tahoe"
@@ -5737,7 +5742,7 @@ msgstr ""
 #: libnautilus-extensions/nautilus-global-preferences.c:1152
 #: libnautilus-extensions/nautilus-global-preferences.c:1170
 msgid "Files May Not Be Indexed"
-msgstr ""
+msgstr "Файлы могут быть не проиндексированы"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:1153
 #: libnautilus-extensions/nautilus-global-preferences.c:1171
@@ -5760,11 +5765,11 @@ msgstr ""
 
 #: libnautilus-extensions/nautilus-gnome-extensions.c:640
 msgid "No image was selected.  You must click on an image to select it."
-msgstr ""
+msgstr "Не было выбрано изображение. Вам надо щелкнуть на изображении чтобы выбрать его."
 
 #: libnautilus-extensions/nautilus-gnome-extensions.c:641
 msgid "No selection made"
-msgstr ""
+msgstr "Выделение не сделано"
 
 #. The list of characters that cause line breaks can be localized.
 #: libnautilus-extensions/nautilus-icon-canvas-item.c:70
@@ -5836,19 +5841,19 @@ msgstr "Восстановить измененное название"
 
 #: libnautilus-extensions/nautilus-password-dialog.c:306
 msgid "Remember this password"
-msgstr ""
+msgstr "Запомнить этот пароль"
 
 #: libnautilus-extensions/nautilus-preferences-item.c:483
 msgid "times"
-msgstr "таймс"
+msgstr "times"
 
 #: libnautilus-extensions/nautilus-preferences-item.c:484
 msgid "courier"
-msgstr "курьер"
+msgstr "courier"
 
 #: libnautilus-extensions/nautilus-preferences-item.c:485
 msgid "lucida"
-msgstr "люцида"
+msgstr "lucida"
 
 #: libnautilus-extensions/nautilus-preferences.c:77
 msgid "Beginner"
@@ -6015,13 +6020,13 @@ msgstr ""
 "управления Gnome."
 
 #: libnautilus-extensions/nautilus-program-chooser.c:1485
-#, fuzzy, c-format
+#, c-format
 msgid "No viewers are available for \"%s\"."
-msgstr "Нет доступного описания для темы \"%s\""
+msgstr "Нет доступной программы просмотра для \"%s\"."
 
 #: libnautilus-extensions/nautilus-program-chooser.c:1486
 msgid "No Viewers Available"
-msgstr ""
+msgstr "Нет доступных программ просмотра"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:1489
 #, c-format
@@ -6410,14 +6415,14 @@ msgstr "не является допустимым блочным устройством"
 
 #: libnautilus-extensions/nautilus-volume-monitor.c:1583
 msgid "No medium found"
-msgstr ""
+msgstr "Не найдена среда"
 
 #. Handle floppy case
 #: libnautilus-extensions/nautilus-volume-monitor.c:1587
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
-msgstr ""
+msgstr "Nautilus не удалось подключить дисковод. Возможно в нем нет дискеты."
 
 #. All others
 #: libnautilus-extensions/nautilus-volume-monitor.c:1591
@@ -6532,7 +6537,7 @@ msgstr "Наутилус"
 
 #: nautilus.desktop.in.h:2
 msgid "Nautilus File Manager and Graphic Shell"
-msgstr ""
+msgstr "Диспетчер файлов и графическая оболочка Nautilus"
 
 #. Note to translators: If it's hard to compose a good home
 #. * icon name from the user name, you can use a string without
