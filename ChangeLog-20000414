@@ -1,3 +1,12 @@
+2000-04-11  Andy Hertzfeld <andy@eazel.com>
+
+	* components/services/startup/eazel-register.c:
+	added hostname to configuration node to distinguish machines when
+	the user has more than one
+	* components/services/startup/nautilus-service-startup-view.c:
+	changed protocol for configuration upload to match Jonathans's new
+	cgi; configuration upload is now working with Jonathan's stuff!
+	
 2000-04-11  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/nautilus-directory.c

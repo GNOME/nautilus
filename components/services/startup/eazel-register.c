@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <time.h>
+#include <unistd.h>
 #include <rpm/rpmlib.h>
 #include <gnome.h>
 #include <gnome-xml/entities.h>
@@ -242,15 +243,18 @@ xmlDoc* create_configuration_metafile()
 	time_t current_time;
 	xmlNode *container_node;
     	gchar *time_string;
+	gchar host_name[512];
 	
 	xmlDoc *configuration_metafile = xmlNewDoc((const CHAR*)"1.0");
 	
+	gethostname(&host_name[0], 511);
 	container_node = xmlNewDocNode(configuration_metafile, NULL, (const CHAR*) "CONFIGURATION", NULL);
     
 	configuration_metafile->root = container_node;
 	time(&current_time);
 	time_string = strdup(ctime(&current_time));
 	time_string[strlen(time_string) - 1] = '\0';
+	xmlSetProp(container_node, "computer", host_name);	
 	xmlSetProp(container_node, "date", time_string);
 	g_free(time_string);
 	

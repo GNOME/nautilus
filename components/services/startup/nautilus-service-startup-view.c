@@ -31,6 +31,7 @@
 #include "eazel-register.h"
 
 #include <ghttp.h>
+#include <unistd.h>
 #include <gnome-xml/tree.h>
 #include <libnautilus/nautilus-background.h>
 #include <libnautilus/nautilus-gtk-macros.h>
@@ -182,8 +183,8 @@ static void
 gather_config_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 {
 	FILE* config_file;
-	gchar buffer[256];
-	gchar *config_file_name, *config_string, *uri, *response_str;
+	gchar buffer[256], host_name[512];
+	gchar *config_file_name, *config_string, *uri, *response_str, *cookie_str;
 	GString* config_data;
 	xmlDocPtr config_doc;
 	ghttp_request *request;	
@@ -223,9 +224,13 @@ gather_config_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 	
 	/* send the config file to the server via HTTP */
 	/* FIXME: need to url-encode the arguments here */
-	uri = g_strdup_printf("http://%s/set.pl", SERVICE_DOMAIN_NAME);
+	uri = g_strdup_printf("http://%s/profile/set.pl", SERVICE_DOMAIN_NAME);
 	
-	request = make_http_post_request(uri, config_string, view->details->auth_token);
+	gethostname(&host_name[0], 511);
+	cookie_str = g_strdup_printf("token=%s; computer=%s", view->details->auth_token, host_name);
+	request = make_http_post_request(uri, config_string, cookie_str);
+	g_free(cookie_str);
+	
 	response_str = ghttp_get_body(request);
 	g_free(uri);
 	ghttp_request_destroy(request);
@@ -283,7 +288,7 @@ register_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 	body = g_strdup_printf("email=%s&pwd=%s", email, password);
 	uri = g_strdup_printf("http://%s/member/new.pl", SERVICE_DOMAIN_NAME);
 	 
-	request = make_http_post_request(uri, body, view->details->auth_token);
+	request = make_http_post_request(uri, body, NULL);
 	response_str = ghttp_get_body(request);
 	
 	/* handle the error response */
