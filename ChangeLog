@@ -1,3 +1,17 @@
+2001-01-25  Mike Fleming  <mfleming@eazel.com>
+ 
+	reviewed by: <sullivan@eazel.com>
+ 
+ 	Bug 6032: summary view was crashing because widget was being
+ 	destroyed during finish_button_activation.
+ 
+ 	Added a ref to the button across the timer callback and
+ 	avoided calling gtk_button_clicked and gtk_button_released
+ 	if the widget is already destroyed.
+ 	
+ 	* libnautilus-extensions/nautilus-gtk-extensions.c:
+ 	(finish_button_activation), (nautilus_gtk_button_auto_click):
+ 
 2001-01-25  John Harper  <jsh@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>
