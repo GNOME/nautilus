@@ -1,3 +1,26 @@
+2000-12-11  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 3818, Sorting of album is case insensitive
+
+	* libnautilus-extensions/nautilus-string.c:
+	* libnautilus-extensions/nautilus-string.h:
+	(nautilus_strcmp_case_breaks_ties), (nautilus_strcoll):
+	New function that wraps strcoll. It checks the locale and if it is
+	specific, uses strcoll. If the locale is generic "C" or "POSIX",
+	sorting is done using nautilus_strcmp_case_breaks_ties.
+	
+
+	Fixed bug 5126, Press "Pause" and "Play", music view returns
+	to start of track.
+
+	* components/music/nautilus-music-view.c: (selection_callback),
+	(value_changed_callback), (sort_by_title), (sort_by_artist),
+	(sort_by_year), (play_button_callback), (pause_button_callback),
+	(get_player_state):
+	Some state machine logic cleanup to fix bug 5216.
+
 2000-12-11  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Maciej Stachowiak  <mjs@eazel.com>

@@ -421,17 +421,19 @@ music_view_set_selected_song_title (NautilusMusicView *music_view, int row)
 static void 
 selection_callback (GtkCList *clist, int row, int column, GdkEventButton *event, NautilusMusicView *music_view)
 {
-	gboolean is_playing;
+	gboolean is_playing_or_paused;
 	char *song_name;
-		
-	is_playing = get_player_state (music_view) == PLAYER_PLAYING;
-
+	PlayerState state;
+	
+	state = get_player_state (music_view);
+	is_playing_or_paused = (state == PLAYER_PLAYING || state == PLAYER_PAUSED);
+	 
 	/* Exit if we are playing and clicked on the row that represents the playing song */
-	if (is_playing && (music_view->details->selected_index == row)) {
+	if (is_playing_or_paused && (music_view->details->selected_index == row)) {
 		return;
         }
 
-	if (is_playing) {
+	if (is_playing_or_paused) {
 		stop_playing_file (music_view);
         }
         
@@ -443,7 +445,7 @@ selection_callback (GtkCList *clist, int row, int column, GdkEventButton *event,
         music_view_set_selected_song_title (music_view, row);
 
         /* Play if playback was already happening or there was a double click */
-	if ((is_playing) || (event != NULL && event->type == GDK_2BUTTON_PRESS)) {
+	if ((is_playing_or_paused) || (event != NULL && event->type == GDK_2BUTTON_PRESS)) {
 		play_current_file (music_view, FALSE);
         }
         
@@ -456,7 +458,7 @@ static void
 value_changed_callback (GtkAdjustment *adjustment, GtkCList *clist)
 {
         /* Redraw to fix lame bug GtkCList has with setting the wrong GC */
-        gtk_widget_queue_draw (GTK_WIDGET (clist));
+ 	gtk_widget_queue_draw (GTK_WIDGET (clist));
 }
 
 
@@ -821,7 +823,7 @@ sort_by_title (gconstpointer ap, gconstpointer bp)
 	a = (SongInfo *) ap;
 	b = (SongInfo *) bp;
 
-	return nautilus_strcmp (a->title, b->title);
+	return nautilus_strcoll (a->title, b->title);
 }
 
 static int
@@ -832,7 +834,7 @@ sort_by_artist (gconstpointer ap, gconstpointer bp)
 	a = (SongInfo *) ap;
 	b = (SongInfo *) bp;
 
-	return nautilus_strcmp (a->artist, b->artist);
+	return nautilus_strcoll (a->artist, b->artist);
 }
 
 static int
@@ -854,7 +856,7 @@ sort_by_year (gconstpointer ap, gconstpointer bp)
 	a = (SongInfo *) ap;
 	b = (SongInfo *) bp;
 
-	return nautilus_strcmp (a->artist, b->artist);
+	return nautilus_strcoll (a->year, b->year);	
 }
 
 static int
@@ -971,12 +973,12 @@ play_status_display (NautilusMusicView *music_view)
 	float percentage;
 	char play_time_str[256];
 	int current_time;
-	gboolean is_playing;
+	gboolean is_playing_or_paused;
 	int samps_per_frame;
 	PlayerState status;
 	
 	status = get_player_state (music_view);
-	is_playing = (status == PLAYER_PLAYING) || (status == PLAYER_PAUSED);
+	is_playing_or_paused = (status == PLAYER_PLAYING) || (status == PLAYER_PAUSED);
 	
 	if (status == PLAYER_NEXT) {
 		stop_playing_file (music_view);
@@ -990,7 +992,7 @@ play_status_display (NautilusMusicView *music_view)
 		update_play_controls_status (music_view, status);
 	}
 	
-	if (is_playing) {			
+	if (is_playing_or_paused) {			
 		if (!music_view->details->slider_dragging) {									
 			samps_per_frame = (music_view->details->current_samprate >= 32000) ? 1152 : 576;
                         
@@ -1019,11 +1021,11 @@ play_status_display (NautilusMusicView *music_view)
 	} else 
 		reset_playtime(music_view);
 
-	if (!is_playing) {
+	if (!is_playing_or_paused) {
 		music_view->details->status_timeout = 0;
         }
 	
-	return is_playing;
+	return is_playing_or_paused;
 }
 
 
@@ -1122,7 +1124,6 @@ go_to_previous_track (NautilusMusicView *music_view)
 /* callback for the play control semantics */
 
 /* callback for buttons */
-
 static void
 play_button_callback (GtkWidget *widget, NautilusMusicView *music_view)
 {
@@ -1130,8 +1131,12 @@ play_button_callback (GtkWidget *widget, NautilusMusicView *music_view)
 		return;
 	}
 
-	mpg123_pause (FALSE);
-	play_current_file (music_view, FALSE);
+	if (get_player_state (music_view) == PLAYER_PAUSED) {			
+		set_player_state (music_view, PLAYER_PLAYING);
+		mpg123_pause (FALSE);
+	} else {
+		play_current_file (music_view, FALSE);
+	}
 }
 
 static void
@@ -1143,9 +1148,15 @@ stop_button_callback (GtkWidget *widget, NautilusMusicView *music_view)
 static void
 pause_button_callback (GtkWidget *widget, NautilusMusicView *music_view)
 {
-	if (get_player_state (music_view) == PLAYER_PLAYING) {
+	PlayerState state;
+	state = get_player_state (music_view);
+	
+	if (state == PLAYER_PLAYING) {
 		set_player_state (music_view, PLAYER_PAUSED);
 		mpg123_pause (TRUE);
+	} else if (state == PLAYER_PAUSED) {
+		set_player_state (music_view, PLAYER_PLAYING);
+		mpg123_pause (FALSE);
 	}
 }
 
@@ -1800,8 +1811,8 @@ nautilus_music_view_drag_data_received (GtkWidget *widget, GdkDragContext *conte
 static void
 start_playing_file (NautilusMusicView *music_view, const char *file_name)
 {
-	mpg123_play_file (file_name);
 	set_player_state (music_view, PLAYER_PLAYING);
+	mpg123_play_file (file_name);
 }
 
 static void
@@ -1812,8 +1823,8 @@ stop_playing_file (NautilusMusicView *music_view)
 	state = get_player_state (music_view);
 	
 	if (state == PLAYER_PLAYING || state == PLAYER_PAUSED) {
-		mpg123_stop ();
 		set_player_state (music_view, PLAYER_STOPPED);
+		mpg123_stop ();
 	}
 }
 

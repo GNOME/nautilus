@@ -27,6 +27,7 @@
 
 #include <ctype.h>
 #include <errno.h>
+#include <locale.h>
 #include <stdlib.h>
 
 #include "nautilus-lib-self-check-functions.h"
@@ -67,6 +68,23 @@ nautilus_strcmp_case_breaks_ties (const char *string_a, const char *string_b)
 		return casecmp_result;
 	}
 	return nautilus_strcmp (string_a, string_b);
+}
+
+int
+nautilus_strcoll (const char *string_a, const char *string_b)
+{
+	const char *locale;
+	
+	locale = setlocale (LC_COLLATE, NULL);
+	
+	if (nautilus_strcmp (locale, "C") == 0 || nautilus_strcmp (locale, "POSIX") == 0) {
+		/* If locale is default "C" or "POSIX" use nautilus sorting */
+		return nautilus_strcmp_case_breaks_ties (string_a, string_b);
+	} else {
+		/* Use locale specific collated sorting */
+		return strcoll (string_a == NULL ? "" : string_a,
+		       string_b == NULL ? "" : string_b);
+	}
 }
 
 gboolean

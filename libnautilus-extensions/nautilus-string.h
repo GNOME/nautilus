@@ -45,6 +45,8 @@ int      nautilus_strcasecmp              (const char    *str_a,
 					   const char    *str_b);
 int      nautilus_strcmp_case_breaks_ties (const char    *str_a,
 					   const char    *str_b);
+int	 nautilus_strcoll 		  (const char 	*string_a,
+					   const char 	*string_b);
 
 /* GCompareFunc version. */
 int      nautilus_str_compare             (gconstpointer  str_a,
