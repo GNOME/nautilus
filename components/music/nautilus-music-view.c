@@ -285,7 +285,7 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 
 	/* allocate a list widget to hold the song list */
 	music_view->details->song_list = gtk_clist_new_with_titles (10, titles);
-		
+
 	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 0, 36);		/* track number */
 	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 1, 204);	/* song name */
 	gtk_clist_set_column_width (GTK_CLIST (music_view->details->song_list), 2, 96);		/* artist */
@@ -824,6 +824,18 @@ is_mp3_file (GnomeVFSFileInfo *file_info)
 		&& eel_istr_has_suffix (file_info->mime_type, "mp3");
 }
 
+
+static char *
+filter_out_unset_year (const char *year)
+{
+        /* All-zero year should be interpreted as unset year. */
+        if (strspn (year, "0 ") == strlen (year)) {
+                return g_strdup ("");
+        } else {
+                return g_strdup (year);
+        } 
+}
+
 /* read the id3 tag of the file if present */
 static gboolean
 read_id_tag (const char *song_uri, SongInfo *song_info)
@@ -867,7 +879,7 @@ read_id_tag (const char *song_uri, SongInfo *song_info)
 	song_info->title = g_strdup (tag.title);
 	song_info->artist = g_strdup (tag.artist);
 	song_info->album = g_strdup (tag.album); 
-	song_info->year = g_strdup (tag.year);
+        song_info->year = filter_out_unset_year (tag.year);
 	song_info->comment = g_strdup (tag.comment);
 	song_info->track_number = atoi (tag.track);
 
