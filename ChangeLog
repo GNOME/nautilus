@@ -1,3 +1,10 @@
+2000-07-31  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(construct_alternate_metafile_uri):
+	Back out debugging hacks that must have gotten checked in
+	by accident and would have caused leaks.
+
 2000-07-31  Andy Hertzfeld  <andy@eazel.com>
 
 	* icons/eazel/i-regular.xml:
