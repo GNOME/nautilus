@@ -192,7 +192,7 @@ nautilus_uri_is_local_scheme (const char *uri)
 	gboolean is_local_scheme;
 	char *temp_scheme;
 	int i;
-	char *local_schemes[] = {"file", "help", "ghelp", 
+	char *local_schemes[] = {"file", "help", "ghelp", "gnome-help",
 				 "trash", "man", "info", 
 				 "hardware", "search", "pipe",
 				 "gnome-trash", NULL};

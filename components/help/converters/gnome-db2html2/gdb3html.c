@@ -706,7 +706,11 @@ parse_file (gchar *filename, gchar *section, char *arg)
 			context->base_path = g_strndup (arg, dirpointer - arg);
 		}
 	} else {
-		context->base_path = g_strconcat (g_getenv("PWD"), "/", NULL );
+		if (g_getenv("PWD")) {
+			context->base_path = g_strconcat (g_getenv("PWD"), "/", NULL );
+		} else {
+			context->base_path = g_strdup ("./");
+		}
 	}
 
 	if (section) {
