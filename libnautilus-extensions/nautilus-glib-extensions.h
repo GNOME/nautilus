@@ -90,6 +90,11 @@ GList *     nautilus_g_str_list_copy                  (GList                    
 GList *     nautilus_g_str_list_sort                  (GList                      *str_list);
 GList *     nautilus_g_str_list_sort_case_insensitive (GList                      *str_list);
 
+/* GString functions */
+void        nautilus_g_string_append_len              (GString                    *string,
+						       const char                 *characters,
+						       int                         length);
+
 /* GHashTable functions */
 GHashTable *nautilus_g_hash_table_new_free_at_exit    (GHashFunc                   hash_function,
 						       GCompareFunc                key_compare_function,

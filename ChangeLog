@@ -1,3 +1,29 @@
+2000-09-06  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 1960 (nautilus_strdup_strftime relies on glibc strftime
+	behavior) and bug 2820 (date/time formatting uses non-standard
+	glibc extension).
+
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_strdup_strftime): Rewrote nautilus_strdup_strftime so
+	that it provides the features we need, but no longer requires the
+	GNU glibc version of strftime.
+	(nautilus_g_string_append_len): Added a half-assed version of the
+	GLib 2.0 function g_string_append_len, since I needed it for
+	nautilus_strdup_strftime.
+	(test_strftime), (nautilus_self_check_glib_extensions): Added
+	light self-checks for the nautilus_strdup_strftime function to
+	confirm that my rewrite didn't break it.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_date_as_string): Refined the comments for
+	localizers to make it clear that the GNU "%-" and "%_" extensions
+	are allowed, but other GNU extensions are not.
+
+	* components/services/trilobite/libtrilobite/.cvsignore:
+	Ignore some generated files that weren't in the list.
+	
 2000-09-06  Arlo Rose  <arlo@eazel.com>
 
 	* icons/arlo/left-bumper-active-prelight.png:

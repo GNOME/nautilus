@@ -1733,9 +1733,15 @@ nautilus_file_get_date_as_string (NautilusFile *file, NautilusDateType date_type
 	if (file_date_age == 0)	{
 		/* Today, use special word.
 		 * Note to localizers: You can look at man strftime
-		 * for details on the format, but do no use format
-		 * strings that are specific to the GNU version of
-		 * the library, or you will make Nautilus less portable.
+		 * for details on the format, but you should only use
+		 * the specifiers from the C standard, not extensions.
+		 * These include "%" followed by one of
+		 * "aAbBcdHIjmMpSUwWxXyYZ". There are two extensions
+		 * in the Nautilus version of strftime that can be
+		 * used (and match GNU extensions). Putting a "-"
+		 * between the "%" and any numeric directive will turn
+		 * off zero padding, and putting a "_" there will use
+		 * space padding instead of zero padding.
 		 */
 		format = _("today %-I:%M %p");
 	} else if (file_date_age == 1) {
