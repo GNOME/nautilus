@@ -100,12 +100,15 @@ struct NautilusMusicViewDetails {
 	GtkWidget *play_control_box;
 
 	GtkWidget *song_label;
-	//GtkWidget *total_track_time;
 	
 	GtkWidget *playtime;
 	GtkWidget *playtime_bar;
 	GtkObject *playtime_adjustment;
 
+	GtkWidget *previous_track_button;
+	GtkWidget *pause_button;
+	GtkWidget *stop_button;
+	GtkWidget *next_track_button;
 	GtkWidget *inactive_play_pixwidget;
 	GtkWidget *active_play_pixwidget;
 	GtkWidget *inactive_pause_pixwidget;
@@ -1008,19 +1011,21 @@ static void
 update_play_controls_status (NautilusMusicView *music_view, PlayerState state)
 {
 	if (state == PLAYER_PLAYING) {
-		gtk_widget_show(music_view->details->active_play_pixwidget);
-		gtk_widget_hide(music_view->details->inactive_play_pixwidget);
+		gtk_widget_show (music_view->details->active_play_pixwidget);
+		gtk_widget_hide (music_view->details->inactive_play_pixwidget);
+		//gtk_widget_set_sensitive (music_view->details->pause_button, TRUE);
 	} else {
-		gtk_widget_hide(music_view->details->active_play_pixwidget);
-		gtk_widget_show(music_view->details->inactive_play_pixwidget);
+		gtk_widget_hide (music_view->details->active_play_pixwidget);
+		gtk_widget_show (music_view->details->inactive_play_pixwidget);		
 	}
 
 	if (state == PLAYER_PAUSED) {
-		gtk_widget_show(music_view->details->active_pause_pixwidget);
-		gtk_widget_hide(music_view->details->inactive_pause_pixwidget);
+		gtk_widget_show (music_view->details->active_pause_pixwidget);
+		gtk_widget_hide (music_view->details->inactive_pause_pixwidget);
+		//gtk_widget_set_sensitive (music_view->details->pause_button, FALSE);
 	} else {
-		gtk_widget_hide(music_view->details->active_pause_pixwidget);
-		gtk_widget_show(music_view->details->inactive_pause_pixwidget);
+		gtk_widget_hide (music_view->details->active_pause_pixwidget);
+		gtk_widget_show (music_view->details->inactive_pause_pixwidget);
 	}
 }
 
@@ -1176,7 +1181,9 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 					      "or your sound card is not configured properly. Try quitting any "
 					      "applications that may be blocking use of the sound card."),
 				            _("Unable to Play File"),
-					    GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (&music_view->details->event_box->parent))));
+					    //GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (&music_view->details->event_box->parent))));
+					    NULL);
+
 		
 		return;	
 	}
@@ -1508,14 +1515,14 @@ add_play_controls (NautilusMusicView *music_view)
 	/* previous track button */	
 	box = xpm_label_box (music_view, prev_xpm);
 	gtk_widget_show (box);
-	button = gtk_button_new ();
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), button, _("Previous"), NULL);
-	gtk_container_add (GTK_CONTAINER (button), box);
-	gtk_signal_connect (GTK_OBJECT (button), "clicked", GTK_SIGNAL_FUNC (prev_button_callback), music_view);
-	gtk_widget_set_sensitive (button, TRUE);
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
-	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
-	gtk_widget_show (button);
+	music_view->details->previous_track_button = gtk_button_new ();
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), music_view->details->previous_track_button, _("Previous"), NULL);
+	gtk_container_add (GTK_CONTAINER (music_view->details->previous_track_button), box);
+	gtk_signal_connect (GTK_OBJECT (music_view->details->previous_track_button), "clicked", GTK_SIGNAL_FUNC (prev_button_callback), music_view);
+	gtk_widget_set_sensitive (music_view->details->previous_track_button, TRUE);
+	gtk_button_set_relief (GTK_BUTTON (music_view->details->previous_track_button), GTK_RELIEF_NORMAL);
+	gtk_box_pack_start (GTK_BOX (hbox), music_view->details->previous_track_button, FALSE, FALSE, 0);
+	gtk_widget_show (music_view->details->previous_track_button);
 
 	/* play button */
 	box = xpm_dual_label_box (music_view, play_xpm, play_green_xpm,
@@ -1536,44 +1543,44 @@ add_play_controls (NautilusMusicView *music_view)
                                   &music_view->details->inactive_pause_pixwidget,
                                   &music_view->details->active_pause_pixwidget);
 	gtk_widget_show (box);
-	button = gtk_button_new ();
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), button, _("Pause"), NULL);
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
-	gtk_container_add (GTK_CONTAINER (button), box);
-	gtk_widget_set_sensitive (button, TRUE);
+	music_view->details->pause_button = gtk_button_new ();
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), music_view->details->pause_button, _("Pause"), NULL);
+	gtk_button_set_relief (GTK_BUTTON (music_view->details->pause_button), GTK_RELIEF_NORMAL);
+	gtk_container_add (GTK_CONTAINER (music_view->details->pause_button), box);
+	gtk_widget_set_sensitive (music_view->details->pause_button, TRUE);
 
-	gtk_signal_connect (GTK_OBJECT (button), "clicked",
+	gtk_signal_connect (GTK_OBJECT (music_view->details->pause_button), "clicked",
                             GTK_SIGNAL_FUNC(pause_button_callback), music_view);
-	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
-	gtk_widget_show (button);
+	gtk_box_pack_start (GTK_BOX (hbox), music_view->details->pause_button, FALSE, FALSE, 0);
+	gtk_widget_show (music_view->details->pause_button);
 
 	/* stop button */
 	box = xpm_label_box (music_view, stop_xpm);
 	gtk_widget_show (box);
-	button = gtk_button_new ();
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), button, _("Stop"), NULL);
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
-	gtk_container_add (GTK_CONTAINER (button), box);
-	gtk_widget_set_sensitive (button, TRUE);
+	music_view->details->stop_button = gtk_button_new ();
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), music_view->details->stop_button, _("Stop"), NULL);
+	gtk_button_set_relief (GTK_BUTTON (music_view->details->stop_button), GTK_RELIEF_NORMAL);
+	gtk_container_add (GTK_CONTAINER (music_view->details->stop_button), box);
+	gtk_widget_set_sensitive (music_view->details->stop_button, TRUE);
 
-	gtk_signal_connect(GTK_OBJECT (button), "clicked",
+	gtk_signal_connect (GTK_OBJECT (music_view->details->stop_button), "clicked",
                            GTK_SIGNAL_FUNC (stop_button_callback), music_view);
-	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
-	gtk_widget_show (button);
+	gtk_box_pack_start (GTK_BOX (hbox), music_view->details->stop_button, FALSE, FALSE, 0);
+	gtk_widget_show (music_view->details->stop_button);
 
 	/* next button */
 	box = xpm_label_box (music_view, next_xpm);
 	gtk_widget_show (box);
-	button = gtk_button_new();
-	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), button, _("Next"), NULL);
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NORMAL);
-	gtk_container_add (GTK_CONTAINER (button), box);
-	gtk_widget_set_sensitive (button, TRUE);
+	music_view->details->next_track_button = gtk_button_new();
+	gtk_tooltips_set_tip (GTK_TOOLTIPS (tooltips), music_view->details->next_track_button, _("Next"), NULL);
+	gtk_button_set_relief (GTK_BUTTON (music_view->details->next_track_button), GTK_RELIEF_NORMAL);
+	gtk_container_add (GTK_CONTAINER (music_view->details->next_track_button), box);
+	gtk_widget_set_sensitive (music_view->details->next_track_button, TRUE);
 
-	gtk_signal_connect (GTK_OBJECT (button), "clicked",
+	gtk_signal_connect (GTK_OBJECT (music_view->details->next_track_button), "clicked",
                             GTK_SIGNAL_FUNC (next_button_callback), music_view);
-	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
-	gtk_widget_show (button);
+	gtk_box_pack_start (GTK_BOX (hbox), music_view->details->next_track_button, FALSE, FALSE, 0);
+	gtk_widget_show (music_view->details->next_track_button);
 
 	/* Song title label */
 	music_view->details->song_label = eel_label_new ("");

@@ -1,3 +1,19 @@
+2001-04-05  Gene Z. Ragan  <gzr@eazel.com>
+	
+	Fixed bug 7790, Music View silently fails if sound
+	hardware busy or missing
+	
+	* components/music/esd-audio.c: (esdout_playing), (esdout_close),
+	(esdout_loop), (esdout_open):
+	Modify logic used to determine if another process has opened a
+	connection to esd, blocking us from doing so.
+	
+	* components/music/nautilus-music-view.c:
+	(update_play_controls_status), (play_current_file),
+	(add_play_controls):
+	Add code in anticipation of adding support to disable controls at
+	appropriate times.
+
 2001-04-05  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/rpmview/Makefile.am:

@@ -222,11 +222,22 @@ esdout_used (void)
 gint 
 esdout_playing (void)
 {
-	if (!going)
+	int fd;
+	
+	fd = esd_open_sound (hostname);
+	if (fd == -1) {
+		return TRUE;
+	}
+	esd_close (fd);
+	
+	if (!going) {
 		return FALSE;
-	if (!esdout_used())
+	}
+	
+	if (!esdout_used ()) {
 		return FALSE;
-
+	}
+			
 	return TRUE;
 }
 
@@ -305,7 +316,7 @@ esdout_close (void)
 	wr_index = 0;
 	rd_index = 0;
 	going = 0;
-	g_free(hostname);
+	g_free (hostname);
 	hostname = NULL;
 	pthread_join (buffer_thread, NULL);
 }
@@ -335,8 +346,8 @@ esdout_loop (void *arg)
 			prebuffer = FALSE;
 		}
 		
-		if (esdout_used() > 0 && !paused && !prebuffer) {
-			length = MIN (blk_size, esdout_used());
+		if (esdout_used () > 0 && !paused && !prebuffer) {
+			length = MIN (blk_size, esdout_used ());
 			while (length > 0) {
 				cnt = MIN(length,buffer_size-rd_index);
 				esdout_write_audio ((gchar *)buffer + rd_index, cnt);
@@ -399,7 +410,7 @@ esdout_open (AFormat fmt, gint rate, gint nch)
 	remove_prebuffer = FALSE;
 
 	if (hostname)
-		g_free(hostname);
+		g_free (hostname);
 	if (esd_cfg.use_remote)
 		hostname = g_strdup_printf("%s:%d", esd_cfg.server, esd_cfg.port);
 	else
