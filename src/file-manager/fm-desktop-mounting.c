@@ -32,6 +32,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <fstab.h>
 #include <glib.h>
 #include <gnome.h>
 #include <libgnome/gnome-i18n.h>
@@ -76,39 +77,24 @@ static void     mount_device_activate_floppy                              (FMDes
 									   DeviceInfo             *device);
 static gboolean	mntent_is_removable_fs					  (struct mntent 	  *ent);
 
-void 
-fm_desktop_rescan_floppy (GtkMenuItem *item, FMDirectoryView *view)
+static int
+floppy_sort (const char *name_1, const char *name_2) 
 {
-	char *argv[3];
-	FMDesktopIconView *icon_view;
-	GList *element;
-	DeviceInfo *device;
-
-	icon_view = FM_DESKTOP_ICON_VIEW (view);
-	
-	/* Locate floppy in device */
-	for (element = icon_view->details->devices; element != NULL; element = element->next) {
-		device = element->data;
-		if (strncmp ("/dev/fd", device->fsname, strlen("/dev/fd")) == 0) {
-			argv[1] = device->mount_path;
-			argv[2] = NULL;
-
-			/* Unmount the device if needed */
-			if (mount_device_is_mounted (device)) {
-				argv[0] = "/bin/umount";
-				gnome_execute_async (g_get_home_dir(), 2, argv);
-
-				mount_device_deactivate (icon_view, device);
-			}
-
-			/* Mount the device */
-			mount_device_activate_floppy (icon_view, device);
-		}
+	/* If both are floppies, we don't care yet */
+	if ((strncmp (name_1, "/mnt/fd", strlen("/mnt/fd")) == 0) &&
+	   (strncmp (name_2, "/mnt/fd", strlen("/mnt/fd")) == 0)) {
+		return 0; 
 	}
+
+	if (strncmp (name_1, "/mnt/fd", strlen("/mnt/fd")) != 0) {
+		return 1; 
+	}
+
+	return -1;
 }
 
 GList *
-fm_desktop_get_removable_list (void)
+fm_desktop_get_removable_volume_list (void)
 {
 	GList *list;
 	FILE *mef;
@@ -116,7 +102,7 @@ fm_desktop_get_removable_list (void)
 
 	list = NULL;
 
-	mef = setmntent (_PATH_MNTTAB, "r");
+	mef = setmntent (_PATH_FSTAB, "r");
 	g_return_val_if_fail (mef, NULL);
 
 	while ((ent = getmntent (mef))) {
@@ -127,6 +113,9 @@ fm_desktop_get_removable_list (void)
 	}
   	endmntent (mef);
 
+	/* Move all floppy mounts to top of list */
+	list = g_list_sort (list, (GCompareFunc) floppy_sort);
+	
   	return list;	
 }
 
@@ -138,7 +127,8 @@ fm_desktop_mount_unmount_removable (GtkCheckMenuItem *item, FMDesktopIconView *i
 	char *argv[3];
 	GList *element;
 	DeviceInfo *device;
-
+	int exec_err;
+	
 	is_mounted = FALSE;
 	found_device = FALSE;
 	device = NULL;
@@ -154,7 +144,7 @@ fm_desktop_mount_unmount_removable (GtkCheckMenuItem *item, FMDesktopIconView *i
 				break;
 			}
 		}
-
+				
 		/* Get mount state and then decide to mount/unmount the volume */
 		if (found_device) {
 			is_mounted = fm_desktop_volume_is_mounted (mount_point);
@@ -164,12 +154,12 @@ fm_desktop_mount_unmount_removable (GtkCheckMenuItem *item, FMDesktopIconView *i
 			if (is_mounted) {
 				/* Unount */
 				argv[0] = "/bin/umount";
-				gnome_execute_async (g_get_home_dir(), 2, argv);
+				exec_err = gnome_execute_async (g_get_home_dir(), 2, argv);
 				is_mounted = FALSE;
 			} else {
 				/* Mount */
 				argv[0] = "/bin/mount";
-				gnome_execute_async (g_get_home_dir(), 2, argv);
+				exec_err = gnome_execute_async (g_get_home_dir(), 2, argv);
 				is_mounted = TRUE;
 			}
 		}
@@ -236,7 +226,7 @@ mount_device_cdrom_set_state (FMDesktopIconView *icon_view, DeviceInfo *device)
 				if (mount_device_is_mounted (device)) {
 					device->state = STATE_ACTIVE;
 				} else {
-					device->state = STATE_INACTIVE;
+					device->state = STATE_EMPTY;
 				}
 				break;
 
@@ -258,22 +248,12 @@ mount_device_cdrom_set_state (FMDesktopIconView *icon_view, DeviceInfo *device)
 static void
 mount_device_floppy_set_state (FMDesktopIconView *icon_view, DeviceInfo *device)
 {
-	int fd, err;
-
-  	fd = open (device->fsname, O_RDONLY);
-
-  	if(fd < 0) {
-    		err = errno;
-
-    		if (err == EBUSY) {
-      			device->state = STATE_ACTIVE;
-    		} else {
-      			device->state = STATE_EMPTY;
-      		}
-  	} else {
-		close (fd);
-		device->state = STATE_INACTIVE;
-  	}
+	/* If the floppy is not in mtab, then we set it to empty */
+	if (fm_desktop_volume_is_mounted (device->mount_path)) {
+		device->state = STATE_ACTIVE;
+	} else {
+		device->state = STATE_EMPTY;
+	}
 }
 
 static void
@@ -412,16 +392,8 @@ mount_device_activate_cdrom (FMDesktopIconView *icon_view, DeviceInfo *device)
 static void
 mount_device_activate_floppy (FMDesktopIconView *view, DeviceInfo *device)
 {
-	char *argv[3];
-
 	/* Get volume name */
 	get_floppy_volume_name (device);
-
-	argv[0] = "/bin/mount";
-	argv[1] = device->mount_path;
-	argv[2] = NULL;
-
-	gnome_execute_async (g_get_home_dir(), 2, argv);
 
 	mount_device_mount (view, device);
 }
@@ -459,6 +431,27 @@ mount_device_activate (FMDesktopIconView *view, DeviceInfo *device)
 	}
 }
 
+
+static void 
+eject_cdrom (DeviceInfo *device)
+{
+#if 0
+	if (device->device_fd < 0) {
+		device->device_fd = open (device->fsname, O_RDONLY|O_NONBLOCK);
+	}
+
+	if(device->device_fd < 0) {
+		return;
+	}
+
+	g_message ("Trying to eject");
+	ioctl (device->device_fd, CDROMEJECT, 0);
+
+	close (device->device_fd);
+	device->device_fd = -1;
+#endif
+}
+
 static void
 mount_device_deactivate (FMDesktopIconView *icon_view, DeviceInfo *device)
 {
@@ -473,7 +466,14 @@ mount_device_deactivate (FMDesktopIconView *icon_view, DeviceInfo *device)
 	/* Clean up old link */
 	remove_mount_link (device);
 
-	device->did_mount = FALSE;
+	switch (device->type) {
+		case DEVICE_CDROM:
+			eject_cdrom (device);
+			break;
+			
+		default:
+			break;
+	}
 }
 
 static void
@@ -597,20 +597,23 @@ check_permissions (gchar *filename, int mode)
 }
 
 static gboolean
-mount_device_floppy_add (DeviceInfo *device)
+mount_device_floppy_add (FMDesktopIconView *icon_view, DeviceInfo *device)
 {
+	device->mount_type 	= g_strdup ("floppy");
+	device->type 		= DEVICE_FLOPPY;
+	return TRUE;
+#if 0
 	if (check_permissions (device->fsname, R_OK)) {
 		return FALSE;
 	}
-
-	device->type = DEVICE_FLOPPY;
-
+	
 	return TRUE;
+#endif
 }
 
 static gboolean
 mount_device_ext2_add (DeviceInfo *device)
-{
+{		
 	if (check_permissions (device->fsname, R_OK)) {		
 		return FALSE;
 	}
@@ -620,6 +623,7 @@ mount_device_ext2_add (DeviceInfo *device)
 		return FALSE;
 	}
 
+	device->mount_type = g_strdup ("blockdevice");
 	device->type = DEVICE_EXT2;
 		
 	return TRUE;
@@ -629,29 +633,31 @@ mount_device_ext2_add (DeviceInfo *device)
 static void
 cdrom_ioctl_frenzy (int fd)
 {
-	ioctl(fd, CDROM_CLEAR_OPTIONS, CDO_LOCK|CDO_AUTO_CLOSE | CDO_AUTO_EJECT);
-	ioctl(fd, CDROM_SET_OPTIONS, CDO_USE_FFLAGS | CDO_CHECK_TYPE);
-	ioctl(fd, CDROM_LOCKDOOR, 0);
+	ioctl (fd, CDROM_CLEAR_OPTIONS, CDO_LOCK|CDO_AUTO_CLOSE | CDO_AUTO_EJECT);
+	ioctl (fd, CDROM_SET_OPTIONS, CDO_USE_FFLAGS | CDO_CHECK_TYPE);
+	ioctl (fd, CDROM_LOCKDOOR, 0);
 }
 
 
 static gboolean
 mount_device_iso9660_add (FMDesktopIconView *icon_view, DeviceInfo *device)
-{
+{		
 	device->device_fd = open (device->fsname, O_RDONLY|O_NONBLOCK);
 	if(device->device_fd < 0) {
 		return FALSE;
 	}
-
+	
 	device->type = DEVICE_CDROM;
 
 	/* It's probably not a CD-ROM drive */
-	if(ioctl (device->device_fd, CDROM_DRIVE_STATUS, CDSL_CURRENT) < 0) {
+	if (ioctl (device->device_fd, CDROM_DRIVE_STATUS, CDSL_CURRENT) < 0) {
     		return FALSE;
     	}
 
 	cdrom_ioctl_frenzy (device->device_fd);
 	close (device->device_fd); device->device_fd = -1;
+
+	device->mount_type = g_strdup ("cdrom");
 
 	return TRUE;
 }
@@ -703,14 +709,11 @@ add_mount_device (FMDesktopIconView *icon_view, struct mntent *ent)
 
 	mounted = FALSE;
 	
-	if (strcmp (ent->mnt_type, MOUNT_TYPE_ISO9660) == 0) {
-		newdev->mount_type = g_strdup ("cdrom");
+	if (strcmp (ent->mnt_type, MOUNT_TYPE_ISO9660) == 0) {		
     		mounted = mount_device_iso9660_add (icon_view, newdev); 
-	} else if (strncmp (ent->mnt_fsname, "/dev/fd", strlen("/dev/fd")) == 0) {
-		newdev->mount_type = g_strdup ("floppy");
-		mounted = mount_device_floppy_add (newdev);
-	} else if (strcmp (ent->mnt_type, MOUNT_TYPE_EXT2) == 0) {
-		newdev->mount_type = g_strdup ("blockdevice");
+	} else if (strncmp (ent->mnt_fsname, "/dev/fd", strlen("/dev/fd")) == 0) {		
+		mounted = mount_device_floppy_add (icon_view, newdev);
+	} else if (strcmp (ent->mnt_type, MOUNT_TYPE_EXT2) == 0) {		
 		mounted = mount_device_ext2_add (newdev);
 	} else {
 		/* FIXME: Is this a reasonable way to report this error? */
@@ -736,7 +739,7 @@ mntent_is_removable_fs (struct mntent *ent)
 		return TRUE;
 	}
 	
-	if (!strncmp (ent->mnt_fsname, "/dev/fd", strlen("/dev/fd"))) {
+	if (strncmp (ent->mnt_fsname, "/dev/fd", strlen("/dev/fd")) == 0) {
 		return TRUE;
 	}
 	
@@ -790,7 +793,7 @@ fm_desktop_find_mount_devices (FMDesktopIconView *icon_view, const char *fstab_p
 			continue;
 		}
 #endif
-		/* Add it to out list of mount points */
+		/* Add it to our list of mount points */
 		add_mount_device (icon_view, ent);
 	}
 

@@ -1,3 +1,27 @@
+2000-08-01  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 1790, want a command to cause-removable media check.
+
+	Well, here it is.  I am sure Josh will have fun finding bugs.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_destroy),
+	(fm_desktop_icon_view_create_background_context_menu_items):
+	Added menu item to desktop icon view that lists possible
+	mounted volumes and there current mount status.
+	
+	* src/file-manager/fm-desktop-mounting.c: 
+	(floppy_sort),
+	(fm_desktop_get_removable_volume_list),
+	(fm_desktop_mount_unmount_removable),
+	(mount_device_cdrom_set_state), (mount_device_floppy_set_state),
+	(mount_device_activate_floppy), (eject_cdrom),
+	(mount_device_deactivate), (mount_device_floppy_add),
+	(mount_device_ext2_add), (cdrom_ioctl_frenzy),
+	(mount_device_iso9660_add), (add_mount_device),
+	(mntent_is_removable_fs), (fm_desktop_find_mount_devices):
+	Added support for our new exciting mount menu item.
+
 2000-08-01  John Sullivan  <sullivan@eazel.com>
 
 	Finished task 1781 (Type of search bar should change

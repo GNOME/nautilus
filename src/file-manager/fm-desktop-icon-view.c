@@ -86,7 +86,7 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 
 	/* Remove mount link files */
 	g_list_foreach (icon_view->details->devices, (GFunc)fm_desktop_remove_mount_links, icon_view);
-
+	
 	/* Clean up other device info */
 	g_list_foreach (icon_view->details->devices, (GFunc)fm_desktop_free_device_info, icon_view);
 	
@@ -223,18 +223,25 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 		GList *element;
 		GtkWidget *check_menu_item;
 		gboolean active;
+		char *name;
 		
 		/* Get a list containing the mount point of all removable volumes in fstab */
-		disk_list = fm_desktop_get_removable_list ();
+		disk_list = fm_desktop_get_removable_volume_list ();
 
 		/* Create submenu to place them in */
 		sub_menu = GTK_MENU (gtk_menu_new ());
 		gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item), GTK_WIDGET (sub_menu));
 
 		/* Iterate list and populate menu with removable volumes */
-		for (element = disk_list; element != NULL; element = element->next) {			
-			check_menu_item = gtk_check_menu_item_new_with_label (element->data);
-
+		for (element = disk_list; element != NULL; element = element->next) {
+			/* Create item with human readable name */
+			name = strrchr (element->data, '/');
+			if (name != NULL) {
+				check_menu_item = gtk_check_menu_item_new_with_label (name + 1);
+			} else {
+				check_menu_item = gtk_check_menu_item_new_with_label (element->data);
+			}
+			
 			/* Add check mark if volume is mounted */
 			active = fm_desktop_volume_is_mounted (element->data);
 			gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (check_menu_item), TRUE);
