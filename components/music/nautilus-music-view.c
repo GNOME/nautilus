@@ -73,6 +73,7 @@ struct _NautilusMusicViewDetails {
 	int current_samprate;
 	
 	gboolean slider_dragging;
+	gboolean sound_enabled;
 	
 	GtkVBox   *album_container;
 	GtkWidget *album_title;
@@ -179,6 +180,21 @@ static void play_current_file                      (NautilusMusicView      *musi
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMusicView, nautilus_music_view, GTK_TYPE_EVENT_BOX)
 
+/* utility to determine if we can play sounds */
+static gboolean
+can_play_sounds ()
+{
+	int open_result;
+	
+	open_result = open ("/dev/dsp", O_WRONLY, 0644);
+	if (open_result < 0) {
+		return FALSE;
+	}
+	
+	close (open_result);
+	return TRUE;
+}
+
 static void
 nautilus_music_view_initialize_class (NautilusMusicViewClass *klass)
 {
@@ -211,6 +227,8 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 
 	music_view->details->status_timeout = -1;
 	music_view->details->slider_dragging = FALSE;
+	
+	music_view->details->sound_enabled = can_play_sounds ();
 	
 	/* allocate a vbox to contain all of the views */
 	
@@ -256,7 +274,6 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	gtk_clist_set_column_visibility (GTK_CLIST (music_view->details->song_list), 8, FALSE);
 	gtk_clist_set_column_visibility (GTK_CLIST (music_view->details->song_list), 9, FALSE);
 
-  
  	/* make some of the columns right justified */
  		
  	gtk_clist_set_column_justification(GTK_CLIST(music_view->details->song_list), 0, GTK_JUSTIFY_RIGHT);
@@ -300,7 +317,7 @@ nautilus_music_view_destroy (GtkObject *object)
 {
 	NautilusMusicView *music_view = NAUTILUS_MUSIC_VIEW (object);
 
-	/* we'd rather allow the song to keep playing, but it's hard to main state */
+	/* we'd rather allow the song to keep playing, but it's hard to maintain state */
 	/* so we stop things on exit for now, and improve it post 1.0 */
 	stop_playing_file();
 
@@ -348,13 +365,13 @@ music_view_set_selected_song_title (NautilusMusicView *music_view, int row)
 
 	music_view->details->selected_index = row;
 	
-	label_text = get_song_text(music_view, row);
+	label_text = get_song_text (music_view, row);
 	nautilus_label_set_text (NAUTILUS_LABEL(music_view->details->song_label), label_text);
-	g_free(label_text);
+	g_free (label_text);
         
         gtk_clist_get_text (GTK_CLIST(music_view->details->song_list), row, 5, &temp_str);
-	nautilus_label_set_text(NAUTILUS_LABEL(music_view->details->total_track_time), temp_str);
-	nautilus_label_set_font_size(NAUTILUS_LABEL (music_view->details->total_track_time), 14);
+	nautilus_label_set_text(NAUTILUS_LABEL (music_view->details->total_track_time), temp_str);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (music_view->details->total_track_time), 14);
 }
 
 
