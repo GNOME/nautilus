@@ -263,16 +263,20 @@ char * fixup_local_path (const char *uri_text);
 char *
 fixup_local_path (const char *uri_text)
 {
-	GnomeVFSURI *uri = gnome_vfs_uri_new (uri_text);
+	GnomeVFSURI *uri;
 	gchar *path = NULL;
 	/* Ugly hack to catch writes to favorites: */
-	
+
 	uri = gnome_vfs_uri_new (uri_text);
-	if (strcmp (gnome_vfs_uri_get_scheme (uri), "favorites") == 0)
+	if (uri == NULL)
+		return NULL;
+	if (gnome_vfs_uri_get_scheme (uri) != NULL &&
+	    strcmp (gnome_vfs_uri_get_scheme (uri), "favorites") == 0)
 		path = g_strconcat (g_get_home_dir (),
 				    "/.gnome/apps",
 				    gnome_vfs_uri_get_path (uri),
 				    NULL);
+	gnome_vfs_uri_unref (uri);
 
 	return path;
 }
