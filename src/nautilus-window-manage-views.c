@@ -1071,8 +1071,6 @@ end_location_change (NautilusWindow *window)
 static void
 cancel_location_change (NautilusWindow *window)
 {
-        NautilusViewFrame *skip_view;
-
         if (window->details->pending_location != NULL
             && window->details->location != NULL
             && window->content_view != NULL
