@@ -39,6 +39,12 @@
 #include <liboaf/liboaf.h>
 #include "nautilus-desktop-window.h"
 
+#include <widgets/nautilus-druid/nautilus-druid.h>
+#include <widgets/nautilus-druid/nautilus-druid-page-start.h>
+#include <widgets/nautilus-druid/nautilus-druid-page-standard.h>
+#include <widgets/nautilus-druid/nautilus-druid-page-finish.h>
+#include <libnautilus-extensions/nautilus-icon-factory.h>
+
 static CORBA_boolean manufactures                                (PortableServer_Servant    servant,
 								  const CORBA_char         *iid,
 								  CORBA_Environment        *ev);
@@ -213,6 +219,73 @@ display_caveat (GtkWindow *parent_window)
 	gtk_widget_show (GTK_WIDGET (dialog));
 }
 
+#if 0
+static void
+display_installation_wizard (GtkWindow *parent_window)
+{
+	GtkWidget *dialog;
+	GtkWidget *druid;
+
+	GtkWidget *start_page;
+	GtkWidget *finish_page;
+
+	GtkWidget *pages[3];
+
+	GdkPixbuf *logo;
+
+	dialog = gnome_dialog_new (_("Nautilus: Installation Wizard"),
+				   NULL);
+  	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);
+  	gtk_window_set_policy (GTK_WINDOW (dialog), FALSE, FALSE, FALSE);
+
+	logo = gdk_pixbuf_new_from_file ("/gnome/share/pixmaps/nautilus.png");
+	g_assert (logo != NULL);
+
+	druid = nautilus_druid_new ();
+
+	start_page = nautilus_druid_page_start_new ();
+	finish_page = nautilus_druid_page_finish_new ();
+
+	pages[0] = nautilus_druid_page_standard_new ();
+	pages[1] = nautilus_druid_page_standard_new ();
+	pages[2] = nautilus_druid_page_standard_new ();
+
+	nautilus_druid_page_start_set_title (NAUTILUS_DRUID_PAGE_START (start_page), "Start");
+	nautilus_druid_page_finish_set_title (NAUTILUS_DRUID_PAGE_FINISH (finish_page), "Finish");
+
+	nautilus_druid_page_standard_set_title (NAUTILUS_DRUID_PAGE_STANDARD (pages[0]), "Step One");
+	nautilus_druid_page_standard_set_title (NAUTILUS_DRUID_PAGE_STANDARD (pages[1]), "Step Two");
+	nautilus_druid_page_standard_set_title (NAUTILUS_DRUID_PAGE_STANDARD (pages[2]), "Step Three");
+
+	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (start_page));
+
+	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (pages[0]));
+	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (pages[1]));
+	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (pages[2]));
+
+	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (finish_page));
+
+	nautilus_druid_page_start_set_logo (NAUTILUS_DRUID_PAGE_START (start_page), logo);
+	nautilus_druid_page_finish_set_logo (NAUTILUS_DRUID_PAGE_FINISH (finish_page), logo);
+
+	nautilus_druid_page_standard_set_logo (NAUTILUS_DRUID_PAGE_STANDARD (pages[0]), logo);
+	nautilus_druid_page_standard_set_logo (NAUTILUS_DRUID_PAGE_STANDARD (pages[1]), logo);
+	nautilus_druid_page_standard_set_logo (NAUTILUS_DRUID_PAGE_STANDARD (pages[2]), logo);
+
+  	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), 
+  			    druid,
+  			    TRUE,
+			    TRUE,
+			    0);
+
+	gtk_widget_show_all (druid);
+
+	gtk_widget_set_usize (druid, 400, 200);
+
+	gtk_widget_show (GTK_WIDGET (dialog));
+}
+#endif
+
 static void
 nautilus_application_check_user_directories (NautilusApplication *application)
 {
@@ -383,6 +456,17 @@ nautilus_application_startup (NautilusApplication *application,
 					    display_caveat, first_window);
 		}
   	}
+
+#if 0
+	if (first_window == NULL) {
+		display_installation_wizard (NULL);
+	} else {
+		gtk_signal_connect (GTK_OBJECT (first_window),
+				    "show",
+				    display_installation_wizard, 
+				    first_window);
+	}
+#endif
 }
 
 static void

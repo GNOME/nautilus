@@ -1,5 +1,12 @@
 2000-06-30  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* src/nautilus-application.c: (display_installation_wizard),
+	(nautilus_application_startup):
+	Add code to display an installation wizard using the new druid.
+	Its #ifdefed out until we do more real work on it.
+	
+2000-06-30  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* configure.in:
 	* cut-n-paste-code/widgets/Makefile.am:
 	Build the new nautilus druid.
