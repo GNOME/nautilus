@@ -17,7 +17,10 @@ LDADD=\
 	$(COMPONENT_LIBS) \
 	$(NULL)
 
-nautilus_news_SOURCES=nautilus-news.c nautilus-news-pixmaps.h
+nautilus_news_SOURCES= \
+	nautilus-cell-renderer-news.c \
+	nautilus-cell-renderer-news.h \
+	nautilus-news.c
 
 nautilusdir = $(datadir)/nautilus
 nautilus_DATA = news_channels.xml

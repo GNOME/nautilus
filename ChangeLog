@@ -1,3 +1,57 @@
+2002-02-25  Dave Camp  <dave@ximian.com>
+
+	* components/news/nautilus-news-pixmaps.h: Removed.
+
+	* components/news/Makefile.am: Build
+	nautilus-cell-renderer-news.c, don't build
+	nautilus-news-pixmaps.h.
+
+	* components/news/nautilus-news.c:
+	(toggle_open_state), (rss_logo_callback),
+	(set_bonobo_properties), (rss_read_done_callback),
+	(max_items_changed), (set_views_for_mode), (switch_page),
+	(configure_button_clicked), (add_site_button_clicked),
+	(add_site_from_fields), (remove_selected_site),
+	(nautilus_news_load_location), (empty_message_size_allocate),
+	(set_up_edit_widgets), (set_up_configure_widgets),
+	(set_up_main_widgets), (make_news_view): use a GtkNotebook to
+	store the pages of the news view, and switch between them instead
+	of individually hiding and showing the widgets when pages are
+	flipped.  This allowed all the size negotiation code to go away,
+	as the GtkNotebook takes care of it.
+	
+	* components/news/nautilus-news.c: (update_node),
+	(get_channel_markup), (get_item_markup), (set_bonobo_properties),
+	(do_destroy), (go_to_uri), (set_row_widths), (wrap_idle),
+	(nautilus_news_size_allocate), (node_data_for_path),
+	(nautilus_news_activate_path), (nautilus_news_row_activated),
+	(nautilus_news_button_release_event), (nautilus_news_set_title),
+	(free_rss_data_item), (free_channel),
+	(nautilus_news_set_news_changed), (clear_channel_changed_flags),
+	(nautilus_news_make_channel_document), (rss_logo_callback),
+	(extract_items), (has_matching_uri), (mark_new_items),
+	(extract_rss_title), (extract_scripting_news_title),
+	(rss_read_done_callback), (nautilus_news_insert_channel),
+	(nautilus_news_load_channel), (detach_items), (remove_items),
+	(update_channels), (update_items),
+	(nautilus_news_make_new_channel), (nautilus_news_add_channels),
+	(nautilus_news_load_images), (nautilus_news_cell_data_func),
+	(nautilus_news_row_expanded), (nautilus_news_row_collapsed),
+	(max_items_changed),
+	(add_channel_to_remove_list), (add_site_from_fields),
+	(remove_selected_site), (add_command_buttons),
+	(nautilus_news_load_location), (add_channel_entry),
+	(empty_message_size_allocate), (make_remove_widgets),
+	(set_up_configure_widgets), (set_up_main_widgets),
+	(make_news_view):  Use a GtkTreeView to render the news.
+
+	(make_news_view): Remove the #ifdef GNOME2_CONVERSION_COMPLETE
+	and send the proper arguments to bonobo_control_set_properties.
+	(nautilus_news_set_news_changed): Remove the #ifdef
+	GNOME2_CONVERSION_COMPLETE and replace
+	bonobo_property_bag_notify_listeners with a
+	bonobo_event_source_notify_listeners_full call.
+
 2002-02-26  Alexander Larsson  <alla@lysator.liu.se>
 
 	* libnautilus-private/nautilus-icon-factory.c (load_icon_for_scaling):
