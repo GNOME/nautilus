@@ -29,10 +29,9 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
-#include <libnautilus-extensions/nautilus-image.h>
-#include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-clickable-image.h>
 
 #include <time.h>
 
@@ -72,6 +71,41 @@ eazel_services_image_new (const char *icon_name,
 	}
 
 	image = nautilus_image_new_solid (pixbuf, 0.5, 0.5, 0, 0, background_color, tile_pixbuf);
+
+	nautilus_gdk_pixbuf_unref_if_not_null (pixbuf);
+	nautilus_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
+
+	return image;
+}
+
+GtkWidget *
+eazel_services_image_new_clickable (const char *icon_name,
+				    const char *tile_name,
+				    guint32 background_color)
+{
+	GtkWidget *image;
+	GdkPixbuf *pixbuf = NULL;
+	GdkPixbuf *tile_pixbuf = NULL;
+
+	if (icon_name) {
+		pixbuf = eazel_services_pixbuf_new (icon_name);
+	}
+
+	if (tile_name) {
+		tile_pixbuf = eazel_services_pixbuf_new (tile_name);
+	}
+
+	image = nautilus_clickable_image_new_solid (NULL,
+						    pixbuf,
+						    0,
+						    0,
+						    0,
+						    0.5,
+						    0.5,
+						    0,
+						    0,
+						    background_color,
+						    tile_pixbuf);
 
 	nautilus_gdk_pixbuf_unref_if_not_null (pixbuf);
 	nautilus_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
@@ -139,7 +173,7 @@ eazel_services_label_new (const char *text,
 	if (tile_name != NULL) {
 		tile_pixbuf = eazel_services_pixbuf_new (tile_name);
 	}
-	
+
 	label = nautilus_label_new_solid (text,
 					  drop_shadow_offset,
 					  EAZEL_SERVICES_DROP_SHADOW_COLOR_RGB,
@@ -150,7 +184,8 @@ eazel_services_label_new (const char *text,
 					  ypadding,
 					  background_color,
 					  tile_pixbuf);
-	
+
+
 	if (num_larger_sizes < 0) {
 		nautilus_label_make_smaller (NAUTILUS_LABEL (label), ABS (num_larger_sizes));
 	} else if (num_larger_sizes > 0) {
@@ -159,6 +194,53 @@ eazel_services_label_new (const char *text,
 
 	if (bold) {
 		nautilus_label_make_bold (NAUTILUS_LABEL (label));
+	}
+	
+	nautilus_gdk_pixbuf_unref_if_not_null (tile_pixbuf);
+
+	return label;
+}
+
+GtkWidget *
+eazel_services_label_new_clickable (const char *text,
+				    guint drop_shadow_offset,
+				    float xalign,
+				    float yalign,
+				    gint xpadding,
+				    gint ypadding,
+				    guint32 text_color,
+				    guint32 background_color,
+				    const char *tile_name,
+				    gint num_larger_sizes,
+				    gboolean bold)
+{
+ 	GtkWidget *label;
+	GdkPixbuf *tile_pixbuf = NULL;
+
+	if (tile_name != NULL) {
+		tile_pixbuf = eazel_services_pixbuf_new (tile_name);
+	}
+
+	label = nautilus_clickable_image_new_solid (text,
+						    NULL,
+						    drop_shadow_offset,
+						    EAZEL_SERVICES_DROP_SHADOW_COLOR_RGB,
+						    text_color,
+						    xalign,
+						    yalign,
+						    xpadding,
+						    ypadding,
+						    background_color,
+						    tile_pixbuf);
+
+	if (num_larger_sizes < 0) {
+		nautilus_labeled_image_make_smaller (NAUTILUS_LABELED_IMAGE (label), ABS (num_larger_sizes));
+	} else if (num_larger_sizes > 0) {
+		nautilus_labeled_image_make_larger (NAUTILUS_LABELED_IMAGE (label), num_larger_sizes);
+	}
+
+	if (bold) {
+		nautilus_labeled_image_make_bold (NAUTILUS_LABELED_IMAGE (label));
 	}
 	
 	nautilus_gdk_pixbuf_unref_if_not_null (tile_pixbuf);

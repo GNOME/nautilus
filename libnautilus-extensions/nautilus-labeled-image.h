@@ -24,15 +24,15 @@
 
 /* NautilusLabeledImage is a container widget.  It can only contain internal 
  * widgets.  These internal widgets are can be a NautilusLabel and/or a 
- * NautilusImage.  These internal widgets are create as needed.  That means
+ * NautilusImage.  These internal widgets are created as needed.  That means
  * that NautilusLabeledImage can always be used for "free" instead of a 
  * NautilusLabel or NautilusImage.  The only overhead is that of the GtkObject
- * machinery.  The label and image widgets themselves are only created as needed.
+ * machinery.
  *
  * The position of the label with respect to the image is controlled by the
  * 'label_positon' attribute.
  *
- * By default the internal image and label wigets are sized to their natural
+ * By default the internal image and label widgets are sized to their natural
  * preferred geometry.  You can use the 'fill' attribute of LabeledImage
  * to have the internal widgets fill as much of the LabeledImage allocation
  * as is available.  This is useful if you install a tile_pixbuf and want it
@@ -79,77 +79,85 @@ struct _NautilusLabeledImageClass
 };
 
 /* Public GtkLabeledImage methods */
-GtkType         nautilus_labeled_image_get_type                       (void);
-GtkWidget *     nautilus_labeled_image_new                            (const char                   *text,
-								       GdkPixbuf                    *pixbuf);
-void            nautilus_labeled_image_set_label_position             (NautilusLabeledImage         *labeled_image,
-								       GtkPositionType               label_position);
-GtkPositionType nautilus_labeled_image_get_label_position             (const NautilusLabeledImage   *labeled_image);
-void            nautilus_labeled_image_set_show_label                 (NautilusLabeledImage         *labeled_image,
-								       gboolean                      show_label);
-gboolean        nautilus_labeled_image_get_show_label                 (const NautilusLabeledImage   *labeled_image);
-void            nautilus_labeled_image_set_show_image                 (NautilusLabeledImage         *labeled_image,
-								       gboolean                      show_image);
-gboolean        nautilus_labeled_image_get_show_image                 (const NautilusLabeledImage   *labeled_image);
-void            nautilus_labeled_image_set_spacing                    (NautilusLabeledImage         *labeled_image,
-								       guint                         spacing);
-guint           nautilus_labeled_image_get_spacing                    (const NautilusLabeledImage   *labeled_image);
-int             nautilus_labeled_image_get_x_padding                  (const NautilusLabeledImage   *labeled_image);
-void            nautilus_labeled_image_set_x_padding                  (NautilusLabeledImage         *labeled_image,
-								       int                           x_padding);
-int             nautilus_labeled_image_get_y_padding                  (const NautilusLabeledImage   *labeled_image);
-void            nautilus_labeled_image_set_y_padding                  (NautilusLabeledImage         *labeled_image,
-								       int                           y_padding);
-float           nautilus_labeled_image_get_x_alignment                (const NautilusLabeledImage   *labeled_image);
-void            nautilus_labeled_image_set_x_alignment                (NautilusLabeledImage         *labeled_image,
-								       float                         x_alignment);
-float           nautilus_labeled_image_get_y_alignment                (const NautilusLabeledImage   *labeled_image);
-void            nautilus_labeled_image_set_y_alignment                (NautilusLabeledImage         *labeled_image,
-								       float                         y_alignment);
-void            nautilus_labeled_image_set_fill                       (NautilusLabeledImage         *labeled_image,
-								       gboolean                      fill);
-gboolean        nautilus_labeled_image_get_fill                       (const NautilusLabeledImage   *labeled_image);
+GtkType         nautilus_labeled_image_get_type                         (void);
+GtkWidget *     nautilus_labeled_image_new                              (const char                   *text,
+									 GdkPixbuf                    *pixbuf);
+GtkWidget *     nautilus_labeled_image_new_from_file_name               (const char                   *text,
+									 const char                   *pixbuf_file_name);
+void            nautilus_labeled_image_set_label_position               (NautilusLabeledImage         *labeled_image,
+									 GtkPositionType               label_position);
+GtkPositionType nautilus_labeled_image_get_label_position               (const NautilusLabeledImage   *labeled_image);
+void            nautilus_labeled_image_set_show_label                   (NautilusLabeledImage         *labeled_image,
+									 gboolean                      show_label);
+gboolean        nautilus_labeled_image_get_show_label                   (const NautilusLabeledImage   *labeled_image);
+void            nautilus_labeled_image_set_show_image                   (NautilusLabeledImage         *labeled_image,
+									 gboolean                      show_image);
+gboolean        nautilus_labeled_image_get_show_image                   (const NautilusLabeledImage   *labeled_image);
+void            nautilus_labeled_image_set_spacing                      (NautilusLabeledImage         *labeled_image,
+									 guint                         spacing);
+guint           nautilus_labeled_image_get_spacing                      (const NautilusLabeledImage   *labeled_image);
+int             nautilus_labeled_image_get_x_padding                    (const NautilusLabeledImage   *labeled_image);
+void            nautilus_labeled_image_set_x_padding                    (NautilusLabeledImage         *labeled_image,
+									 int                           x_padding);
+int             nautilus_labeled_image_get_y_padding                    (const NautilusLabeledImage   *labeled_image);
+void            nautilus_labeled_image_set_y_padding                    (NautilusLabeledImage         *labeled_image,
+									 int                           y_padding);
+float           nautilus_labeled_image_get_x_alignment                  (const NautilusLabeledImage   *labeled_image);
+void            nautilus_labeled_image_set_x_alignment                  (NautilusLabeledImage         *labeled_image,
+									 float                         x_alignment);
+float           nautilus_labeled_image_get_y_alignment                  (const NautilusLabeledImage   *labeled_image);
+void            nautilus_labeled_image_set_y_alignment                  (NautilusLabeledImage         *labeled_image,
+									 float                         y_alignment);
+void            nautilus_labeled_image_set_fill                         (NautilusLabeledImage         *labeled_image,
+									 gboolean                      fill);
+gboolean        nautilus_labeled_image_get_fill                         (const NautilusLabeledImage   *labeled_image);
 
 /* Functions for creating stock GtkButtons with a labeled image child */
-GtkWidget *     nautilus_labeled_image_button_new                     (const char                   *text,
-								       GdkPixbuf                    *pixbuf);
-GtkWidget *     nautilus_labeled_image_toggle_button_new              (const char                   *text,
-								       GdkPixbuf                    *pixbuf);
-GtkWidget *     nautilus_labeled_image_check_button_new               (const char                   *text,
-								       GdkPixbuf                    *pixbuf);
+GtkWidget *     nautilus_labeled_image_button_new                       (const char                   *text,
+									 GdkPixbuf                    *pixbuf);
+GtkWidget *     nautilus_labeled_image_button_new_from_file_name        (const char                   *text,
+									 const char                   *pixbuf_file_name);
+GtkWidget *     nautilus_labeled_image_toggle_button_new                (const char                   *text,
+									 GdkPixbuf                    *pixbuf);
+GtkWidget *     nautilus_labeled_image_toggle_button_new_from_file_name (const char                   *text,
+									 const char                   *pixbuf_file_name);
+GtkWidget *     nautilus_labeled_image_check_button_new                 (const char                   *text,
+									 GdkPixbuf                    *pixbuf);
+GtkWidget *     nautilus_labeled_image_check_button_new_from_file_name  (const char                   *text,
+									 const char                   *pixbuf_file_name);
 
 /* These are proxies for methods in NautilusImage and NautilusLabel */
-void            nautilus_labeled_image_set_pixbuf                     (NautilusLabeledImage         *labeled_image,
-								       GdkPixbuf                    *pixbuf);
-void            nautilus_labeled_image_set_pixbuf_from_file_name      (NautilusLabeledImage         *labeled_image,
-								       const char                   *file_name);
-GdkPixbuf*      nautilus_labeled_image_get_pixbuf                     (const NautilusLabeledImage   *labeled_image);
-void            nautilus_labeled_image_set_text                       (NautilusLabeledImage         *labeled_image,
-								       const char                   *text);
-char*           nautilus_labeled_image_get_text                       (const NautilusLabeledImage   *labeled_image);
-void            nautilus_labeled_image_set_tile_pixbuf                (NautilusLabeledImage         *image,
-								       GdkPixbuf                    *pixbuf);
-void            nautilus_labeled_image_set_tile_pixbuf_from_file_name (NautilusLabeledImage         *image,
-								       const char                   *tile_file_name);
-void            nautilus_labeled_image_make_bold                      (NautilusLabeledImage         *labeled_image);
-void            nautilus_labeled_image_make_larger                    (NautilusLabeledImage         *labeled_image,
-								       guint                         num_sizes);
-void            nautilus_labeled_image_make_smaller                   (NautilusLabeledImage         *labeled_image,
-								       guint                         num_sizes);
-void            nautilus_labeled_image_set_tile_width                 (NautilusLabeledImage         *labeled_image,
-								       int                           tile_width);
-void            nautilus_labeled_image_set_tile_height                (NautilusLabeledImage         *labeled_image,
-								       int                           tile_height);
-void            nautilus_labeled_image_set_background_mode            (NautilusLabeledImage         *labeled_image,
-								       NautilusSmoothBackgroundMode  background_mode);
-void            nautilus_labeled_image_set_solid_background_color     (NautilusLabeledImage         *labeled_image,
-								       guint32                       solid_background_color);
-void            nautilus_labeled_image_set_smooth_drop_shadow_offset  (NautilusLabeledImage         *labeled_image,
-								       guint                         drop_shadow_offset);
-void            nautilus_labeled_image_set_smooth_drop_shadow_color   (NautilusLabeledImage         *labeled_image,
-								       guint32                       drop_shadow_color);
-void            nautilus_labeled_image_set_text_color                 (NautilusLabeledImage         *labeled_image,
-								       guint32                       text_color);
+void            nautilus_labeled_image_set_pixbuf                       (NautilusLabeledImage         *labeled_image,
+									 GdkPixbuf                    *pixbuf);
+void            nautilus_labeled_image_set_pixbuf_from_file_name        (NautilusLabeledImage         *labeled_image,
+									 const char                   *pixbuf_file_name);
+GdkPixbuf*      nautilus_labeled_image_get_pixbuf                       (const NautilusLabeledImage   *labeled_image);
+void            nautilus_labeled_image_set_text                         (NautilusLabeledImage         *labeled_image,
+									 const char                   *text);
+char*           nautilus_labeled_image_get_text                         (const NautilusLabeledImage   *labeled_image);
+void            nautilus_labeled_image_set_tile_pixbuf                  (NautilusLabeledImage         *image,
+									 GdkPixbuf                    *pixbuf);
+void            nautilus_labeled_image_set_tile_pixbuf_from_file_name   (NautilusLabeledImage         *image,
+									 const char                   *tile_file_name);
+void            nautilus_labeled_image_make_bold                        (NautilusLabeledImage         *labeled_image);
+void            nautilus_labeled_image_make_larger                      (NautilusLabeledImage         *labeled_image,
+									 guint                         num_sizes);
+void            nautilus_labeled_image_make_smaller                     (NautilusLabeledImage         *labeled_image,
+									 guint                         num_sizes);
+void            nautilus_labeled_image_set_tile_width                   (NautilusLabeledImage         *labeled_image,
+									 int                           tile_width);
+void            nautilus_labeled_image_set_tile_height                  (NautilusLabeledImage         *labeled_image,
+									 int                           tile_height);
+void            nautilus_labeled_image_set_background_mode              (NautilusLabeledImage         *labeled_image,
+									 NautilusSmoothBackgroundMode  background_mode);
+void            nautilus_labeled_image_set_solid_background_color       (NautilusLabeledImage         *labeled_image,
+									 guint32                       solid_background_color);
+void            nautilus_labeled_image_set_smooth_drop_shadow_offset    (NautilusLabeledImage         *labeled_image,
+									 guint                         drop_shadow_offset);
+void            nautilus_labeled_image_set_smooth_drop_shadow_color     (NautilusLabeledImage         *labeled_image,
+									 guint32                       drop_shadow_color);
+void            nautilus_labeled_image_set_text_color                   (NautilusLabeledImage         *labeled_image,
+									 guint32                       text_color);
 
 END_GNOME_DECLS
 

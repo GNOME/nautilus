@@ -22,8 +22,8 @@
    Authors: Ramiro Estrugo <ramiro@eazel.com>
 */
 
-/* NautilusClickableImage is a NautilusLabeledImage sublclass that can handle
- * event useful for detect click events.
+/* NautilusClickableImage is a NautilusLabeledImage sublclass with signals
+ * usful for detecting user click and prelight events.
  *
  * The following signals are provided by NautilusClickableImage:
  *
@@ -31,7 +31,7 @@
  * "enter"   - Pointer entered widget.
  * "leave"   - Pointer left widget.
  *
- * NautilusClickableImage is a NO_WINDOW widget.  It does it event detection
+ * NautilusClickableImage is a NO_WINDOW widget.  It does its event detection
  * by monitoring events on the first windowed ancestor in its widget hierarchy.
  *
  * Being a NO_WINDOW widget, it will work nicely with tile_pixbufs.

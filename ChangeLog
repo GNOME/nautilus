@@ -1,3 +1,46 @@
+2001-02-01  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-clickable-image.h:
+	A little better documentation.
+
+	* libnautilus-extensions/nautilus-labeled-image.c:
+	(nautilus_labeled_image_new),
+	(nautilus_labeled_image_new_from_file_name),
+	(nautilus_labeled_image_button_new_from_file_name),
+	(nautilus_labeled_image_toggle_button_new),
+	(nautilus_labeled_image_toggle_button_new_from_file_name),
+	(nautilus_labeled_image_check_button_new_from_file_name),
+	(nautilus_labeled_image_set_pixbuf_from_file_name),
+	(nautilus_labeled_image_set_tile_pixbuf_from_file_name):
+	* libnautilus-extensions/nautilus-labeled-image.h:
+	New functions for creating stock buttons from pixbuf filenames.
+	Also a little better documentation.
+	
+2001-02-01  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus-extensions/nautilus-clickable-image.c:
+	(nautilus_clickable_image_realize),
+	(nautilus_clickable_image_unrealize):
+	* libnautilus-extensions/nautilus-clickable-image.h:
+	Need to store the connection ids to properly diconnect them on
+	unrealize.  Otheriwse bad things happen.
+	
+	* components/services/nautilus-dependent-shared/eazel-services-extensions.h:
+	* components/services/nautilus-dependent-shared/eazel-services-extensions.c:
+	(eazel_services_image_new_clickable),
+	(eazel_services_label_new), (eazel_services_label_new_clickable):
+	Add new functions to create clickable images and labels.
+	
+	* components/services/nautilus-dependent-shared/eazel-services-footer.c:
+	(eazel_services_footer_initialize), (footer_destroy),
+	(footer_item_clicked_callback), (footer_item_enter_callback),
+	(footer_item_leave_callback), (footer_item_new):
+	Made a lot simpler by using clickable images.  It could be even
+	simpler if the clickable images handled all the prelighting
+	details.  Thats a possible improvement.
+	
 2001-02-01  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	This patch is temporarily going to break a few things, will sync

@@ -1099,7 +1099,7 @@ labeled_image_show_label (const NautilusLabeledImage *labeled_image)
  */
 GtkWidget*
 nautilus_labeled_image_new (const char *text,
-			   GdkPixbuf *pixbuf)
+			    GdkPixbuf *pixbuf)
 {
 	NautilusLabeledImage *labeled_image;
 
@@ -1115,6 +1115,28 @@ nautilus_labeled_image_new (const char *text,
 
 	labeled_image_update_alignments (labeled_image);
 
+	return GTK_WIDGET (labeled_image);
+}
+
+/**
+ * nautilus_labeled_image_new_from_file_name:
+ * @text: Text to use for label or NULL.
+ * @file_name: File name of picture to use for pixbuf.  Cannot be NULL.
+ *
+ * Returns A newly allocated NautilusLabeledImage.  If the &text parameter is not
+ * NULL then the LabeledImage will show a label.
+ *
+ */
+GtkWidget*
+nautilus_labeled_image_new_from_file_name (const char *text,
+					   const char *pixbuf_file_name)
+{
+	NautilusLabeledImage *labeled_image;
+
+	g_return_val_if_fail (pixbuf_file_name != NULL, NULL);
+
+	labeled_image = NAUTILUS_LABELED_IMAGE (nautilus_labeled_image_new (text, NULL));
+	nautilus_labeled_image_set_pixbuf_from_file_name (labeled_image, pixbuf_file_name);
 	return GTK_WIDGET (labeled_image);
 }
 
@@ -1537,6 +1559,31 @@ nautilus_labeled_image_button_new (const char *text,
 }
 
 /**
+ * nautilus_labeled_image_button_new_from_file_name:
+ * @text: Text to use for label or NULL.
+ * @pixbuf_file_name: Name of pixbuf to use for image.  Cannot be NULL.
+ *
+ * Create a stock GtkToggleButton with a NautilusLabeledImage child.
+ *
+ */
+GtkWidget *
+nautilus_labeled_image_button_new_from_file_name (const char *text,
+							 const char *pixbuf_file_name)
+{
+	GtkWidget *button;
+	GtkWidget *labeled_image;
+
+	g_return_val_if_fail (pixbuf_file_name != NULL, NULL);
+	
+	button = gtk_button_new ();
+	labeled_image = nautilus_labeled_image_new_from_file_name (text, pixbuf_file_name);
+	gtk_container_add (GTK_CONTAINER (button), labeled_image);
+	gtk_widget_show (labeled_image);
+	
+	return button;
+}
+
+/**
  * nautilus_labeled_image_toggle_button_new:
  * @text: Text to use for label or NULL.
  * @pixbuf: Pixbuf to use for image or NULL.
@@ -1546,13 +1593,38 @@ nautilus_labeled_image_button_new (const char *text,
  */
 GtkWidget *
 nautilus_labeled_image_toggle_button_new (const char *text,
-					   GdkPixbuf *pixbuf)
+					  GdkPixbuf *pixbuf)
 {
 	GtkWidget *toggle_button;
 	GtkWidget *labeled_image;
 	
 	toggle_button = gtk_toggle_button_new ();
 	labeled_image = nautilus_labeled_image_new (text, pixbuf);
+	gtk_container_add (GTK_CONTAINER (toggle_button), labeled_image);
+	gtk_widget_show (labeled_image);
+	
+	return toggle_button;
+}
+
+/**
+ * nautilus_labeled_image_toggle_button_new_from_file_name:
+ * @text: Text to use for label or NULL.
+ * @pixbuf_file_name: Name of pixbuf to use for image.  Cannot be NULL.
+ *
+ * Create a stock GtkToggleButton with a NautilusLabeledImage child.
+ *
+ */
+GtkWidget *
+nautilus_labeled_image_toggle_button_new_from_file_name (const char *text,
+							 const char *pixbuf_file_name)
+{
+	GtkWidget *toggle_button;
+	GtkWidget *labeled_image;
+
+	g_return_val_if_fail (pixbuf_file_name != NULL, NULL);
+	
+	toggle_button = gtk_toggle_button_new ();
+	labeled_image = nautilus_labeled_image_new_from_file_name (text, pixbuf_file_name);
 	gtk_container_add (GTK_CONTAINER (toggle_button), labeled_image);
 	gtk_widget_show (labeled_image);
 	
@@ -1582,11 +1654,49 @@ nautilus_labeled_image_check_button_new (const char *text,
 	return check_button;
 }
 
+/**
+ * nautilus_labeled_image_check_button_new_from_file_name:
+ * @text: Text to use for label or NULL.
+ * @pixbuf_file_name: Name of pixbuf to use for image.  Cannot be NULL.
+ *
+ * Create a stock GtkCheckButton with a NautilusLabeledImage child.
+ *
+ */
+GtkWidget *
+nautilus_labeled_image_check_button_new_from_file_name (const char *text,
+							const char *pixbuf_file_name)
+{
+	GtkWidget *check_button;
+	GtkWidget *labeled_image;
+
+	g_return_val_if_fail (pixbuf_file_name != NULL, NULL);
+	
+	check_button = gtk_check_button_new ();
+	labeled_image = nautilus_labeled_image_new_from_file_name (text, pixbuf_file_name);
+	gtk_container_add (GTK_CONTAINER (check_button), labeled_image);
+	gtk_widget_show (labeled_image);
+	
+	return check_button;
+}
+
 /*
  * The rest of the methods are proxies for those in NautilusImage and 
  * NautilusLabel.  We have all these so that we dont have to expose 
  * our internal widgets at all.  Probably more of these will be added
  * as they are needed.
+ */
+
+/**
+ * nautilus_labeled_image_set_pixbuf:
+ * @labaled_image: A NautilusLabeledImage.
+ * @pixbuf: New pixbuf to use or NULL.
+ *
+ * Change the pixbuf displayed by the LabeledImage.  Note that the widget display
+ * is only updated if the show_image attribute is TRUE.
+ *
+ * If no internal image widget exists as of yet, a new one will be created.
+ *
+ * A NULL &pixbuf will cause the internal image widget (if alive) to be destroyed.
  */
 void
 nautilus_labeled_image_set_pixbuf (NautilusLabeledImage *labeled_image,
@@ -1609,12 +1719,12 @@ nautilus_labeled_image_set_pixbuf (NautilusLabeledImage *labeled_image,
 
 void
 nautilus_labeled_image_set_pixbuf_from_file_name (NautilusLabeledImage *labeled_image,
-						  const char *file_name)
+						  const char *pixbuf_file_name)
 {
 	g_return_if_fail (NAUTILUS_IS_LABELED_IMAGE (labeled_image));
 
 	labeled_image_ensure_image (labeled_image);
-	nautilus_image_set_pixbuf_from_file_name (NAUTILUS_IMAGE (labeled_image->details->image), file_name);
+	nautilus_image_set_pixbuf_from_file_name (NAUTILUS_IMAGE (labeled_image->details->image), pixbuf_file_name);
 }
 
 void
@@ -1642,13 +1752,13 @@ nautilus_labeled_image_set_tile_pixbuf (NautilusLabeledImage *labeled_image,
 
 void
 nautilus_labeled_image_set_tile_pixbuf_from_file_name (NautilusLabeledImage *labeled_image,
-						       const char *file_name)
+						       const char *pixbuf_file_name)
 {
 	g_return_if_fail (NAUTILUS_IS_LABELED_IMAGE (labeled_image));
 	
 	if (labeled_image->details->image != NULL) {
 		nautilus_image_set_tile_pixbuf_from_file_name (NAUTILUS_IMAGE (labeled_image->details->image),
-							       file_name);
+							       pixbuf_file_name);
 		nautilus_image_set_tile_mode_horizontal (NAUTILUS_IMAGE (labeled_image->details->image),
 							 NAUTILUS_SMOOTH_TILE_ANCESTOR);
 		nautilus_image_set_tile_mode_vertical (NAUTILUS_IMAGE (labeled_image->details->image),
@@ -1657,7 +1767,7 @@ nautilus_labeled_image_set_tile_pixbuf_from_file_name (NautilusLabeledImage *lab
 
 	if (labeled_image->details->label != NULL) {
 		nautilus_label_set_tile_pixbuf_from_file_name (NAUTILUS_LABEL (labeled_image->details->label),
-							       file_name);
+							       pixbuf_file_name);
 		nautilus_label_set_tile_mode_horizontal (NAUTILUS_LABEL (labeled_image->details->label),
 							 NAUTILUS_SMOOTH_TILE_ANCESTOR);
 		nautilus_label_set_tile_mode_vertical (NAUTILUS_LABEL (labeled_image->details->label),
@@ -1677,6 +1787,18 @@ nautilus_labeled_image_get_pixbuf (const NautilusLabeledImage *labeled_image)
 	return nautilus_image_get_pixbuf (NAUTILUS_IMAGE (labeled_image->details->image));
 }
 
+/**
+ * nautilus_labeled_image_set_text:
+ * @labaled_image: A NautilusLabeledImage.
+ * @text: New text to use or NULL.
+ *
+ * Change the text displayed by the LabeledImage.  Note that the widget display
+ * is only updated if the show_label attribute is TRUE.
+ *
+ * If no internal label widget exists as of yet, a new one will be created.
+ *
+ * A NULL &text will cause the internal label widget (if alive) to be destroyed.
+ */
 void
 nautilus_labeled_image_set_text (NautilusLabeledImage *labeled_image,
 				const char *text)
