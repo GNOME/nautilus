@@ -1,3 +1,9 @@
+2001-04-17  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-monitor.c:
+	#include <glib.h> for g_return macros in the case where HAVE_FAM_H
+	ain't defined.
+	
 2001-04-16  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-monitor.c:

@@ -25,12 +25,12 @@
 
 #include <config.h>
 #include "nautilus-monitor.h"
-#include <stdio.h>
+
+#include <eel/eel-glib-extensions.h>
 
 #ifdef HAVE_FAM_H
 
 #include "nautilus-file-changes-queue.h"
-#include <eel/eel-glib-extensions.h>
 #include <fam.h>
 #include <gdk/gdk.h>
 #include <libgnome/gnome-defs.h>
