@@ -151,6 +151,16 @@ notes_load_location (NautilusView *view,
         }
 }
 
+static gboolean
+on_text_field_focus_out_event (GtkWidget *widget,
+			       GdkEventFocus *event,
+			       gpointer user_data)
+{
+	Notes *notes = user_data;
+
+	notes_save_metainfo (notes);
+	return FALSE;
+}
 
                               
 static void
@@ -186,7 +196,11 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         gtk_box_pack_start (GTK_BOX (vbox), notes->note_text_field, TRUE, TRUE, 0);
         background = nautilus_get_widget_background (notes->note_text_field);
         nautilus_background_set_color (background, NOTES_DEFAULT_BACKGROUND_COLOR);
-        
+
+	gtk_signal_connect (GTK_OBJECT (notes->note_text_field), "focus_out_event",
+      	              	    GTK_SIGNAL_FUNC (on_text_field_focus_out_event),
+                            notes);
+     
         gtk_widget_show_all (vbox);
         
 	/* Create CORBA object. */
