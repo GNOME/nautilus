@@ -1,3 +1,17 @@
+2001-04-20  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Fix bug 8105 - GConf error getting font for icon view and text
+	view.
+		
+	* libnautilus/nautilus-view-standard-main.c:
+	(nautilus_view_standard_main_multi):
+	Move the post initialization callback to before the
+	component's factory creation.  Otherwise bad things can happen if
+	the component assumes that its post init function has already been
+	called while in its factory code.  For example, if the post init
+	function initialized nautilus preferences and the component
+	factory executes code that uses nautilus preferences.
+	
 2001-04-19  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/Makefile.am:

@@ -119,7 +119,8 @@ make_object (BonoboGenericFactory *factory,
  * @post_initialize_callback: An optional callback which is invoked after
  *                            all modules have been initialized (gtk, bonobo,
  *                            gnome-vfs, etc.) but before the execution of 
- *                            the main event loop.
+ *                            the main event loop or the creation of the 
+ *                            component's factory.
  * @user_data:                User data for @create_function.
  **/
 int
@@ -178,6 +179,10 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	gnome_vfs_init ();
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
+	if (post_initialize_callback != NULL) {
+		(* post_initialize_callback) ();
+	}
+	
 	/* Fill in the callback data */
 	callback_data.object_count = 0;
 	callback_data.view_iids = view_iids;
@@ -191,10 +196,6 @@ nautilus_view_standard_main_multi (const char *executable_name,
 						    &callback_data);
 	g_free (registration_id);
 
-	if (post_initialize_callback != NULL) {
-		(* post_initialize_callback) ();
-	}
-	
 	/* Loop until we have no more objects. */
 	do {
 		bonobo_main ();
@@ -232,7 +233,8 @@ nautilus_view_standard_main_multi (const char *executable_name,
  * @post_initialize_callback: An optional callback which is invoked after
  *                            all modules have been initialized (gtk, bonobo,
  *                            gnome-vfs, etc.) but before the execution of 
- *                            the main event loop.
+ *                            the main event loop or the creation of the 
+ *                            component's factory.
  * @user_data:                User data for @create_function.
  **/
 int
