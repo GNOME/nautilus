@@ -82,8 +82,6 @@ Summary:        Nautilus component for use with Mozilla
 Group:          User Interface/Desktop
 Requires:       %name = %{PACKAGE_VERSION}
 Requires:	mozilla >= 0.8
-Requires:	mozilla-mail >= 0.8
-Requires:	mozilla-psm >= 0.8
 Conflicts:	mozilla = M18
 Conflicts:	mozilla = M17
 
@@ -109,8 +107,6 @@ Requires:	%name-mozilla = %{PACKAGE_VERSION}
 ##
 ##Requires:	%name-trilobite = %{PACKAGE_VERSION}
 Requires:	%name-extras = %{PACKAGE_VERSION}
-Requires:	mozilla-mail >= 0.8
-Requires:	mozilla-psm >= 0.8
 
 %description suggested
 This is a meta-package that requires packages useful for running
