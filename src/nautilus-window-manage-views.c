@@ -310,7 +310,7 @@ nautilus_window_real_request_selection_change(NautilusWindow *window,
   signum = gtk_signal_lookup("notify_selection_change", nautilus_view_get_type());
 
   selinfo.selected_uris = loc->selected_uris;
-  selinfo.content_view = NAUTILUS_VIEW(window->content_view)->view_client;
+  selinfo.content_view = nautilus_view_get_objref(NAUTILUS_VIEW(window->content_view));
 
   CORBA_free(window->si);
 

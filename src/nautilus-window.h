@@ -89,6 +89,7 @@ void nautilus_window_add_meta_view(NautilusWindow *window, NautilusView *meta_vi
 void nautilus_window_remove_meta_view(NautilusWindow *window, NautilusView *meta_view);
 void nautilus_window_goto_uri(NautilusWindow *window, const char *uri);
 const char *nautilus_window_get_requested_uri(NautilusWindow *window);
+GnomeUIHandler *nautilus_window_get_uih(NautilusWindow *window);
 
 void nautilus_window_allow_back (NautilusWindow *window, gboolean allow);
 void nautilus_window_allow_forward (NautilusWindow *window, gboolean allow);

@@ -414,13 +414,6 @@ nautilus_window_goto_uri_cb (GtkWidget *widget,
   nautilus_window_goto_uri(NAUTILUS_WINDOW(window), uri);
 }
 
-const char *
-nautilus_window_get_requested_uri (NautilusWindow *window)
-{
-  return window->ni->requested_uri;
-}
-
-
 static void
 gtk_option_menu_do_resize(GtkWidget *widget, GtkWidget *child, GtkWidget *optmenu)
 {
@@ -837,6 +830,17 @@ nautilus_window_fwd (GtkWidget *btn, NautilusWindow *window)
   nautilus_window_change_location(window, &nri, NULL, FALSE);
 }
 
+const char *
+nautilus_window_get_requested_uri (NautilusWindow *window)
+{
+  return window->ni->requested_uri;
+}
+
+GnomeUIHandler *
+nautilus_window_get_uih(NautilusWindow *window)
+{
+  return window->uih;
+}
 
 static void
 nautilus_window_up (GtkWidget *btn, NautilusWindow *window)
@@ -876,7 +880,6 @@ nautilus_window_stop (GtkWidget *btn, NautilusWindow *window)
 {
 
 }
-
 
 void
 nautilus_window_allow_back (NautilusWindow *window, gboolean allow)
