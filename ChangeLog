@@ -1,5 +1,33 @@
 2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* src/nautilus-index-tabs.c: (nautilus_index_tabs_initialize),
+	(nautilus_index_tabs_size_request), (draw_one_tab),
+	(draw_or_hit_test_all_tabs), (tab_item_find_by_name),
+	(nautilus_index_tabs_add_view),
+	(nautilus_index_tabs_get_title_from_index),
+	(nautilus_index_tabs_remove_view),
+	(nautilus_index_tabs_prelight_tab),
+	(nautilus_index_tabs_select_tab), (nautilus_index_tabs_set_color),
+	(nautilus_index_tabs_receive_dropped_color),
+	(nautilus_index_tabs_set_title),
+	(nautilus_index_tabs_set_title_mode),
+	(nautilus_index_tabs_set_visible):
+
+	Some cleanup of index tabs.
+
+	Changed find_tab() to tab_item_find_by_name() which returns the
+	actual tab item instead of a list node.
+
+	Changed the GList append and remove operations to be more sane and
+	actually work in the latter case.
+
+	Print warnings on attempts to operate on non-existing tab items as
+	these indicate programming errors upstream.
+
+	Also add bulletproofing g_return_* macros.
+	
+2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* nautilus-widgets/nautilus-preferences.c: (pref_hash_node_alloc),
 	(pref_hash_node_free), (pref_hash_node_add_callback),
 	(pref_hash_node_remove_callback), (pref_callback_info_alloc),

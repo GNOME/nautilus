@@ -27,6 +27,7 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <string.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnome/gnome-defs.h>
@@ -70,19 +71,21 @@ struct NautilusIndexTabsDetails {
 
 /* headers */
 
-static void nautilus_index_tabs_initialize_class (NautilusIndexTabsClass *klass);
-static void nautilus_index_tabs_initialize       (NautilusIndexTabs      *pixmap);
-static int  nautilus_index_tabs_expose           (GtkWidget              *widget,
-						  GdkEventExpose         *event);
-static void nautilus_index_tabs_destroy          (GtkObject              *object);
-static void nautilus_index_tabs_size_allocate     (GtkWidget              *widget,
-						  GtkAllocation         *allocatoin);
-static void nautilus_index_tabs_size_request     (GtkWidget              *widget,
-						  GtkRequisition         *requisition);
-static int  draw_or_hit_test_all_tabs            (NautilusIndexTabs      *index_tabs,
-						  gboolean                draw_flag,
-						  int                     test_x,
-						  int                     test_y);
+static void     nautilus_index_tabs_initialize_class (NautilusIndexTabsClass *klass);
+static void     nautilus_index_tabs_initialize       (NautilusIndexTabs      *pixmap);
+static int      nautilus_index_tabs_expose           (GtkWidget              *widget,
+						      GdkEventExpose         *event);
+static void     nautilus_index_tabs_destroy          (GtkObject              *object);
+static void     nautilus_index_tabs_size_allocate    (GtkWidget              *widget,
+						      GtkAllocation          *allocatoin);
+static void     nautilus_index_tabs_size_request     (GtkWidget              *widget,
+						      GtkRequisition         *requisition);
+static int      draw_or_hit_test_all_tabs            (NautilusIndexTabs      *index_tabs,
+						      gboolean                draw_flag,
+						      int                     test_x,
+						      int                     test_y);
+static TabItem* tab_item_find_by_name                (NautilusIndexTabs      *index_tabs,
+						      const char             *name);
 
 /* static variables */
 
@@ -135,6 +138,14 @@ nautilus_index_tabs_initialize (NautilusIndexTabs *index_tabs)
 	GTK_WIDGET_SET_FLAGS (GTK_WIDGET(index_tabs), GTK_NO_WINDOW);
 	
 	index_tabs->details = g_new0 (NautilusIndexTabsDetails, 1);
+
+	/* Initialize private members */
+	index_tabs->details->tab_items = NULL;
+	index_tabs->details->tab_count = 0;
+	index_tabs->details->total_height = 0;
+	index_tabs->details->title_mode = FALSE;
+	index_tabs->details->title = NULL;
+	index_tabs->details->title_prelit = FALSE;
 	
 	/* set up the colors */
 	gdk_color_parse ("rgb:99/99/99", &index_tabs->details->tab_color);
@@ -243,7 +254,7 @@ nautilus_index_tabs_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 }
 
 static void
-nautilus_index_tabs_size_request(GtkWidget *widget, GtkRequisition *requisition)
+nautilus_index_tabs_size_request (GtkWidget *widget, GtkRequisition *requisition)
 {
 	NautilusIndexTabs *index_tabs = NAUTILUS_INDEX_TABS(widget);
 	
@@ -262,11 +273,21 @@ static int
 draw_one_tab (NautilusIndexTabs *index_tabs, GdkGC *gc,
 	      char *tab_name, int x, int y, gboolean prelight_flag)
 {  
-	int text_y_offset, tab_bottom, tab_right;
+	int		text_y_offset;
+	int		tab_bottom;
+	int		tab_right;
+	int		name_width;
+	int		total_width;
+	GtkWidget	*widget;
+
+	g_assert (index_tabs != NULL);
+	g_assert (NAUTILUS_IS_INDEX_TABS (index_tabs));
+
 	/* measure the name and compute the bounding box */
-	int name_width = gdk_string_width (tab_font, tab_name);
-	int total_width = name_width + 2*TAB_MARGIN;
-	GtkWidget *widget = GTK_WIDGET (index_tabs);
+	name_width = gdk_string_width (tab_font, tab_name);
+	total_width = name_width + 2*TAB_MARGIN;
+
+	widget = GTK_WIDGET (index_tabs);
 	
 	/* FIXME bugzilla.eazel.com 668: 
 	 * we must "ellipsize" the name if it doesn't fit, for now, assume it does 
@@ -310,13 +331,25 @@ draw_one_tab (NautilusIndexTabs *index_tabs, GdkGC *gc,
 static int
 draw_or_hit_test_all_tabs (NautilusIndexTabs *index_tabs, gboolean draw_flag, int test_x, int test_y)
 {
-	GdkGC *temp_gc;
-	int name_width, tab_width;
-	GList *next_tab = index_tabs->details->tab_items;
-	GtkWidget *widget = GTK_WIDGET(index_tabs);  
-	int x_pos = widget->allocation.x + 4;
-	int y_pos = widget->allocation.y + widget->allocation.height - TAB_HEIGHT;
-	int total_height = TAB_HEIGHT;
+	GdkGC		*temp_gc;
+	int		name_width;
+	int		tab_width;
+	GList		*next_tab;
+	GtkWidget	*widget;  
+	int		x_pos;
+	int		y_pos;
+	int		total_height;
+	
+	g_assert (index_tabs != NULL);
+	g_assert (NAUTILUS_IS_INDEX_TABS (index_tabs));
+
+	next_tab = index_tabs->details->tab_items;
+
+	widget = GTK_WIDGET (index_tabs);  
+
+	x_pos = widget->allocation.x + 4;
+	y_pos = widget->allocation.y + widget->allocation.height - TAB_HEIGHT;
+	total_height = TAB_HEIGHT;
 	
 	/* handle hit-testing for title mode */  
 	if (index_tabs->details->title_mode && !draw_flag) {
@@ -380,17 +413,26 @@ draw_or_hit_test_all_tabs (NautilusIndexTabs *index_tabs, gboolean draw_flag, in
 }
 
 /* find a tab with a given name, or return NULL if we can't find one */
-
-static GList*
-find_tab (NautilusIndexTabs *index_tabs, const char *search_name)
+static TabItem *
+tab_item_find_by_name (NautilusIndexTabs *index_tabs, const char *name)
 {
-	GList *next_tab;
-	for (next_tab = index_tabs->details->tab_items; next_tab != NULL; next_tab = next_tab->next) {
-		TabItem *item = next_tab->data;
-		if (strcmp (item->tab_text, search_name) == 0)
-			return next_tab;
+	GList *iterator;
+
+	g_return_val_if_fail (index_tabs != NULL, NULL);
+	g_return_val_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs), NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+
+	for (iterator = index_tabs->details->tab_items; iterator != NULL; iterator = iterator->next) {
+		TabItem *tab_item = iterator->data;
+
+		g_assert (tab_item != NULL);
+		g_assert (tab_item->tab_text != NULL);
+
+		if (strcmp (tab_item->tab_text, name) == 0) {
+			return tab_item;
+		}
 	}
-	
+
 	return NULL;
 }
 
@@ -433,11 +475,16 @@ nautilus_index_tabs_expose (GtkWidget *widget, GdkEventExpose *event)
 gboolean
 nautilus_index_tabs_add_view (NautilusIndexTabs *index_tabs, const char *name, GtkWidget *new_view, int page_num)
 {
-	/* check to see if we already have one with this name, if so, refuse to add it */   
 	TabItem *new_tab_item;
-	GList *item = find_tab(index_tabs, name);
-	
-	if (item) {
+
+	g_return_val_if_fail (index_tabs != NULL, FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs), FALSE);
+	g_return_val_if_fail (name != NULL, FALSE);
+	g_return_val_if_fail (new_view != NULL, FALSE);
+
+	/* Check to see if we already have one with this name, if so, refuse to add it */   
+	if (tab_item_find_by_name (index_tabs, name)) {
+		g_warning ("nautilus_index_tabs_add_view: Trying to add duplicate item '%s'\n", name);
 		return FALSE;
 	}
 	
@@ -448,18 +495,13 @@ nautilus_index_tabs_add_view (NautilusIndexTabs *index_tabs, const char *name, G
 	new_tab_item->prelit = FALSE;
 	new_tab_item->tab_view = new_view;
 	new_tab_item->notebook_page = page_num;
-	
+
 	/* add it to the list */
-	if (index_tabs->details->tab_items)
-		index_tabs->details->tab_items = g_list_append(index_tabs->details->tab_items, new_tab_item);
-	else {
-		index_tabs->details->tab_items = g_list_alloc(); 
-		index_tabs->details->tab_items->data = new_tab_item;
-	}
+	index_tabs->details->tab_items = g_list_append(index_tabs->details->tab_items, new_tab_item);
 	
 	index_tabs->details->tab_count += 1;
-	recalculate_size(index_tabs);
-	gtk_widget_queue_draw(GTK_WIDGET(index_tabs));
+	recalculate_size (index_tabs);
+	gtk_widget_queue_draw (GTK_WIDGET (index_tabs));
 	
 	return TRUE;
 }
@@ -467,9 +509,13 @@ nautilus_index_tabs_add_view (NautilusIndexTabs *index_tabs, const char *name, G
 /* return the name of the tab with the passed in index */
 
 char*
-nautilus_index_tabs_get_title_from_index(NautilusIndexTabs *index_tabs, int which_tab)
+nautilus_index_tabs_get_title_from_index (NautilusIndexTabs *index_tabs, int which_tab)
 {
 	GList *next_tab;
+
+	g_return_val_if_fail (index_tabs != NULL, NULL);
+	g_return_val_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs), NULL);
+
 	for (next_tab = index_tabs->details->tab_items; next_tab != NULL; next_tab = next_tab->next) {
 		TabItem *item = next_tab->data;
 		if (item->notebook_page == which_tab)
@@ -485,17 +531,27 @@ nautilus_index_tabs_get_title_from_index(NautilusIndexTabs *index_tabs, int whic
 void
 nautilus_index_tabs_remove_view (NautilusIndexTabs *index_tabs, const char *name)
 {
-	/* first, look up the item */
-	GList *item = find_tab (index_tabs, name);
-	if (item == NULL)
+	TabItem *tab_item;
+
+	g_return_if_fail (index_tabs != NULL);
+	g_return_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs));
+	g_return_if_fail (name != NULL);
+
+	/* Look up the item */
+	tab_item = tab_item_find_by_name (index_tabs, name);
+
+	if (tab_item == NULL) {
+		g_warning ("nautilus_index_tabs_remove_view: Trying to remove a non-existing item '%s'\n", name);
 		return;
+	}
 	
-	/* unlink the item from the list and dispose of it */
-	index_tabs->details->tab_items = g_list_remove (index_tabs->details->tab_items, item);
-	tab_item_destroy (index_tabs->details->tab_items->data);
-	g_list_free (item);
+	/* Remove the item from the list */
+	index_tabs->details->tab_items = g_list_remove (index_tabs->details->tab_items, tab_item);
+
+ 	tab_item_destroy (tab_item);
 	
 	index_tabs->details->tab_count -= 1;
+	
 	recalculate_size (index_tabs);
 	gtk_widget_queue_draw (GTK_WIDGET (index_tabs));
 }
@@ -504,11 +560,14 @@ nautilus_index_tabs_remove_view (NautilusIndexTabs *index_tabs, const char *name
    the proper tab and clearing the others */
 
 void
-nautilus_index_tabs_prelight_tab(NautilusIndexTabs *index_tabs, int which_tab)
+nautilus_index_tabs_prelight_tab (NautilusIndexTabs *index_tabs, int which_tab)
 {
 	GList *next_tab;
 	gboolean is_prelit;
 	gboolean changed = FALSE;
+
+	g_return_if_fail (index_tabs != NULL);
+	g_return_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs));
 	
 	if (index_tabs->details->title_mode) {
 		gboolean is_prelit = which_tab != -1;
@@ -538,6 +597,10 @@ void
 nautilus_index_tabs_select_tab (NautilusIndexTabs *index_tabs, int which_tab)
 {
 	GList *next_tab;
+
+	g_return_if_fail (index_tabs != NULL);
+	g_return_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs));
+
 	for (next_tab = index_tabs->details->tab_items; next_tab != NULL; next_tab = next_tab->next) {
 		TabItem *item = next_tab->data;
 		item->visible = (item->notebook_page != which_tab);
@@ -565,6 +628,10 @@ void
 nautilus_index_tabs_set_color (NautilusIndexTabs *index_tabs,
 			       const char *color_spec)
 {
+	g_return_if_fail (index_tabs != NULL);
+	g_return_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs));
+	g_return_if_fail (color_spec != NULL);
+	
 	gdk_color_parse (color_spec, &index_tabs->details->tab_color);
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (index_tabs)), 
 				  &index_tabs->details->tab_color, FALSE, TRUE);
@@ -586,6 +653,10 @@ nautilus_index_tabs_receive_dropped_color (NautilusIndexTabs *index_tabs,
 {
 	guint16 *channels;
 	char *color_spec;
+
+	g_return_if_fail (index_tabs != NULL);
+	g_return_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs));
+	g_return_if_fail (selection_data != NULL);
 	
 	/* Convert the selection data into a color spec. */
 	if (selection_data->length != 8 || selection_data->format != 16) {
@@ -604,6 +675,10 @@ nautilus_index_tabs_receive_dropped_color (NautilusIndexTabs *index_tabs,
 void
 nautilus_index_tabs_set_title (NautilusIndexTabs *index_tabs, const char *new_title)
 {
+	g_return_if_fail (index_tabs != NULL);
+	g_return_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs));
+	g_return_if_fail (new_title != NULL);
+
 	g_free(index_tabs->details->title);
 	index_tabs->details->title = g_strdup (new_title);
 }
@@ -612,6 +687,9 @@ nautilus_index_tabs_set_title (NautilusIndexTabs *index_tabs, const char *new_ti
 void
 nautilus_index_tabs_set_title_mode (NautilusIndexTabs *index_tabs, gboolean is_title_mode)
 {
+	g_return_if_fail (index_tabs != NULL);
+	g_return_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs));
+
 	if (index_tabs->details->title_mode != !!is_title_mode) {
 		index_tabs->details->title_mode = !!is_title_mode;
 		recalculate_size (index_tabs);
@@ -622,21 +700,26 @@ nautilus_index_tabs_set_title_mode (NautilusIndexTabs *index_tabs, gboolean is_t
 /* set the visibility of the selected tab */
 
 void
-nautilus_index_tabs_set_visible(NautilusIndexTabs *index_tabs,
-				const char *name,
-				gboolean is_visible)
+nautilus_index_tabs_set_visible (NautilusIndexTabs *index_tabs,
+				 const char *name,
+				 gboolean is_visible)
 {
-	/* first, look up the item */
-	TabItem *this_item;
-	GList *item = find_tab (index_tabs, name);
-	
-	if (item == NULL) {
+	TabItem *tab_item;
+
+	g_return_if_fail (index_tabs != NULL);
+	g_return_if_fail (NAUTILUS_IS_INDEX_TABS (index_tabs));
+	g_return_if_fail (name != NULL);
+
+	/* Look up the item */
+	tab_item = tab_item_find_by_name (index_tabs, name);
+
+	if (tab_item == NULL) {
+		g_warning ("nautilus_index_tabs_set_visible: Trying to munge a non-existing item '%s'\n", name);
 		return;
 	}
-	
-	this_item = item->data;
-	if (this_item->visible != !!is_visible) {
-		this_item->visible = !!is_visible;
-		gtk_widget_queue_draw (GTK_WIDGET (index_tabs));	
+
+	if (tab_item->visible != is_visible) {
+		tab_item->visible = is_visible;
+		gtk_widget_queue_draw (GTK_WIDGET (index_tabs));
 	}
 }
