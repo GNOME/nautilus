@@ -1,3 +1,11 @@
+2000-11-06  Mathieu Lacage  <mathieu@eazel.com>
+
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	(oaf_activation_callback): small fix: replace NULL with 
+	CORBA_OBJECT_NIL
+	* test/Makefile.am: add new test.
+	* test/test-nautilus-async-activation.{c|h}
+
 2000-11-06  Andy Hertzfeld  <andy@eazel.com>
 
 	* icons/eazel/Makefile.am:

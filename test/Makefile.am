@@ -39,6 +39,7 @@ noinst_PROGRAMS =\
 	test-nautilus-preferences 	\
 	test-nautilus-widgets 		\
 	test-nautilus-background	\
+	test-nautilus-async-activation	\
 	$(NULL)
 
 test_nautilus_font_SOURCES = test-nautilus-font.c
@@ -52,6 +53,7 @@ test_nautilus_password_dialog_SOURCES = test-nautilus-password-dialog.c
 test_nautilus_preferences_SOURCES = test-nautilus-preferences.c
 test_nautilus_widgets_SOURCES = test-nautilus-widgets.c
 test_nautilus_background_SOURCES = test-nautilus-background.c
+test_nautilus_async_activation_SOURCES = test-nautilus-async-activation.c
 
 EXTRA_DIST =\
 	font-test.sh \

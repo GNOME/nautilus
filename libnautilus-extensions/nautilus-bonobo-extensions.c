@@ -336,9 +336,9 @@ oaf_activation_callback (CORBA_Object object_reference,
 	
 	if (CORBA_Object_is_nil (object_reference, &ev)) {
 		/* error */
-		activate_struct->activation_callback (NULL, 
+		activate_struct->activation_callback (CORBA_OBJECT_NIL, 
 						      activate_struct->callback_data);
-		
+
 	} else if (!activate_struct->stop_activation) {
 		
 		/* report activation to caller */
@@ -404,8 +404,9 @@ nautilus_bonobo_activate_from_id (const char *iid,
  * @callback: callback to call when activation finished.
  * @user_data: data to pass to callback when activation finished.
  *
- * Stops activation of a component. Your callback will never be called.
- * you should free your %NautilusBonoboActivate strucutre through
+ * Stops activation of a component. Your callback will not be called
+ * after this call.
+ * you should free your %NautilusBonoboActivate structure through
  * nautilus_bonobo_activate_free after this call.
  */
 
