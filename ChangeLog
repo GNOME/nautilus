@@ -1,3 +1,14 @@
+2000-08-28  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/Makefile.am:
+	* components/services/install/lib/eazel-install-md5.c:
+	(_byte_reverse), (md5_init), (md5_update), (md5_final),
+	(md5_transform), (md5_get_digest), (md5_get_digest_from_file),
+	(main):
+	* components/services/install/lib/eazel-install-md5.h:
+
+	Add MD5 code (stolen from evolution).
+
 2000-08-28  John Sullivan  <sullivan@eazel.com>
 
 	Added more bug numbers to FIXMEs. 77 to go. I am exhausted
