@@ -2129,7 +2129,7 @@ compute_menu_item_info (FMDirectoryView *directory_view,
 	*return_sensitivity = TRUE;
 
         if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OPEN) == 0) {
-                name = g_strdup_printf (_("_Open"));
+                name = g_strdup (_("_Open"));
                 *return_sensitivity = nautilus_g_list_exactly_one_item (selection);
         } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH) == 0) {
 		name = g_strdup (_("Open With"));

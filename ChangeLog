@@ -1,3 +1,22 @@
+2000-08-09  John Sullivan  <sullivan@eazel.com>
+
+	Work on 1750 (add Reveal command to show search result in
+	its "real" directory). I wired up the menu items, but they
+	don't do anything yet.
+
+	* src/file-manager/fm-directory-view.c: (compute_menu_item_info):
+	Noticed that a g_strdup_printf should have been just a g_strdup
+	
+	* src/file-manager/fm-search-list-view.c:
+	(fm_search_list_view_initialize_class): connect up functions for
+	menu-merging stuff.
+	(compute_reveal_item_name_and_sensitivity): New function, determine
+	Reveal menu item title & sensitivity based on selection.
+	(real_create_selection_context_menu_items): Put Reveal menu item
+	in selection context menu.
+	(real_merge_menus): Put Reveal menu item in File menu
+	(real_update_menus): Update state of Reveal menu item in File menu
+
 2000-08-09  Pavel Cisler  <pavel@eazel.com>
 
 	* src/file-manager/fm-directory-view.c:
