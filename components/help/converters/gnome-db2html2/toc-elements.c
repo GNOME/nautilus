@@ -127,6 +127,7 @@ ElementInfo toc_elements[] = {
 	{ QUESTION, "question", NULL, NULL, NULL},
 	{ ANSWER, "answer", NULL, NULL, NULL},
 	{ CHAPTER, "chapter", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
+	{ PREFACE, "preface", (startElementSAXFunc) toc_sect_start_element, (endElementSAXFunc) toc_sect_end_element, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -152,6 +153,16 @@ toc_sect_start_element (Context *context,
 	}
 
 	switch (name[4]) {
+	case 'a':
+		sect1id_stack_add (context, name, atrs);
+		context->preface++;
+		context->chapter = 0;
+		context->sect1 = 0;
+		context->sect2 = 0;
+		context->sect3 = 0;
+		context->sect4 = 0;
+		context->sect5 = 0;
+		break;
 	case 't':
 		sect1id_stack_add (context, name, atrs);
 		context->chapter++;
@@ -217,6 +228,9 @@ toc_sect_end_element (Context *context,
 	
 
 	switch (name[4]) {
+	case 'a':
+	        context->preface = 0;
+		context->sect1 = 0;
 	case 't':
 		context->sect1 = 0;
 	case '1':
@@ -272,7 +286,7 @@ toc_artheader_end_element (Context *context, const gchar *name)
 	}
 	g_print ("<P>");
 	if ((header->copyright_holder) && (header->copyright_year))
-		g_print ("<A HREF=\"help:%s?legalnotice\">Copyright</A> &copy; %s by %s", context->base_file, header->copyright_year, header->copyright_holder);
+		g_print ("<A HREF=\"gnome-help:%s?legalnotice\">Copyright</A> &copy; %s by %s", context->base_file, header->copyright_year, header->copyright_holder);
 	g_print ("<HR>\n<H1>Table of Contents</H1>\n\n");
 	g_print ("<P>\n");
 }
@@ -377,7 +391,8 @@ toc_title_start_element (Context *context,
 	StackElement *stack_el;
 	gchar **atrs_ptr;
 	gboolean print_link;
-	
+
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (PREFACE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CHAPTER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT1));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT2));
@@ -393,6 +408,7 @@ toc_title_start_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GRAPHIC));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CAUTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (IMPORTANT));
 	stack_el = find_first_element (context, element_list);
 
 	g_slist_free (element_list);
@@ -400,6 +416,7 @@ toc_title_start_element (Context *context,
 		return;
 
 	switch (stack_el->info->index) {
+	case PREFACE:
 	case CHAPTER:
 	case SECT1:
 	case SECTION:
@@ -417,7 +434,12 @@ toc_title_start_element (Context *context,
 		} else {
 			g_print ("<H4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 		}
-		if (context->chapter > 0) {
+
+		if (context->preface > 0) {
+		       if (context->sect1 == 0) g_print ("PREFACE:<BR>");
+		       if (context->sect1 > 0) g_print ("&nbsp;&nbsp;%d", context->sect1); 
+		        
+		} else if (context->chapter > 0) {
 			g_print ("%d", context->chapter);
 			if (context->sect1 > 0) g_print (".%d", context->sect1);
 									
@@ -425,21 +447,23 @@ toc_title_start_element (Context *context,
 			if (context->sect1 > 0) g_print ("%d", context->sect1);
 		}
 		
+		
 		if (context->sect2 > 0) g_print (".%d", context->sect2);
                 if (context->sect3 > 0) g_print (".%d", context->sect3);
                 if (context->sect4 > 0) g_print (".%d", context->sect4);
                 if (context->sect5 > 0) g_print (".%d", context->sect5);
 
-
-		g_print (".&nbsp;&nbsp;");
+		/* Don't print the "." if you are in the preface title */
+		if (stack_el->info->index != PREFACE)  g_print (".&nbsp;&nbsp;"); 
 		
 		/* Only print the link if we are the chapter tag, or the sect1 tag
-		 * (and the document is an article) */
+		 * (and the document is an article) or preface */
 		print_link = (((stack_el->info->index == SECT1) && (context->doctype != BOOK_DOC))
-				|| stack_el->info->index == CHAPTER);
+				|| stack_el->info->index == CHAPTER
+		                || stack_el->info->index == PREFACE);
 
 		if (print_link == TRUE) {
-			g_print ("<A href=\"help:%s", context->base_file);
+			g_print ("<A href=\"gnome-help:%s", context->base_file);
 
 			atrs_ptr = (stack_el->atrs);
 			while (atrs_ptr && *atrs_ptr) {
@@ -488,6 +512,7 @@ toc_title_end_element (Context *context,
 	GSList *element_list = NULL;
 	ElementIndex index;
 
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (PREFACE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CHAPTER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT1));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT2));
@@ -503,10 +528,14 @@ toc_title_end_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GRAPHIC));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CAUTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (IMPORTANT));
 
 	index = find_first_parent (context, element_list);
 
 	switch (index) {
+	case PREFACE:
+		g_print ("</A></H1>");
+		break;
 	case CHAPTER:
 		g_print ("</A></H1>");
 		break;
@@ -540,6 +569,7 @@ toc_title_characters (Context *context, const gchar *chars, int len)
 	ElementIndex index;
 	char *temp;
 
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (PREFACE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CHAPTER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT1));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT2));
@@ -557,12 +587,14 @@ toc_title_characters (Context *context, const gchar *chars, int len)
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (GRAPHIC));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CAUTION));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (IMPORTANT));
 
 	index = find_first_parent (context, element_list);
 
 	temp = g_strndup (chars, len);
 
 	switch (index) {
+	case PREFACE:
 	case CHAPTER:
 	case SECT1:
 	case SECT2:

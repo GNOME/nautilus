@@ -111,6 +111,7 @@ ElementInfo sect_elements[] = {
 	{ QUESTION, "question", (startElementSAXFunc) sect_question_start_element, (endElementSAXFunc) sect_formalpara_end_element, NULL /* (charactersSAXFunc) sect_write_characters */},
 	{ ANSWER, "answer", (startElementSAXFunc) sect_answer_start_element, (endElementSAXFunc) sect_formalpara_end_element, NULL /* charactersSAXFunc) sect_write_characters */},
 	{ CHAPTER, "chapter", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
+	{ PREFACE, "preface", (startElementSAXFunc) sect_sect_start_element, (endElementSAXFunc) sect_sect_end_element, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -254,7 +255,7 @@ sect_para_start_element (Context *context, const gchar *name, const xmlChar **at
 
 	if (!IS_IN_SECT (context))
 		return;
-
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (PREFACE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CHAPTER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT1));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT2));
@@ -276,6 +277,7 @@ sect_para_start_element (Context *context, const gchar *name, const xmlChar **at
 		return;
 
 	switch (stack_el->info->index) {
+	case PREFACE:
 	case CHAPTER:
 	case SECT1:
 	case SECT2:
@@ -304,6 +306,7 @@ sect_para_end_element (Context *context, const gchar *name)
 	if (!IS_IN_SECT (context))
 		return;
 
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (PREFACE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CHAPTER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT1));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT2));
@@ -325,6 +328,7 @@ sect_para_end_element (Context *context, const gchar *name)
 		return;
 
 	switch (stack_el->info->index) {
+	case PREFACE:
 	case CHAPTER:
 	case SECT1:
 	case SECT2:
@@ -392,8 +396,17 @@ sect_sect_start_element (Context *context,
 	}
 
 	switch (name[4]) {
+	case 'a':
+	        context->preface++;
+		context->chapter = 0;
+		context->sect1 = 0;
+		context->sect2 = 0;
+		context->sect3 = 0;
+		context->sect4 = 0;
+		context->sect5 = 0;
 	case 't':
 		context->chapter++;
+		context->sect1 = 0;
 		context->sect2 = 0;
 		context->sect3 = 0;
 		context->sect4 = 0;
@@ -443,6 +456,8 @@ sect_sect_end_element (Context *context,
 	}
 	
 	switch (name[4]) {
+	case 'a':
+	        context->chapter = 0;
 	case 't':
 		context->sect1 = 0;
 	case '1':
@@ -612,6 +627,7 @@ sect_title_start_element (Context *context,
 	if (!IS_IN_SECT (context)) 
 		return;
 
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (PREFACE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CHAPTER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT1));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT2));
@@ -622,6 +638,7 @@ sect_title_start_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (IMPORTANT));
 	stack_el = find_first_element (context, element_list);
 
 	g_slist_free (element_list);
@@ -632,6 +649,7 @@ sect_title_start_element (Context *context,
 	case TABLE:
 		sect_print (context, "<P><B>Table %d. ", sect_context->table_count); 
 		break;
+	case PREFACE:
 	case CHAPTER:
 	case SECT1:
 	case SECT2:
@@ -677,6 +695,7 @@ sect_title_end_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (PREFACE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CHAPTER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT1));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT2));
@@ -687,12 +706,16 @@ sect_title_end_element (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (IMPORTANT));
 
 	index = find_first_parent (context, element_list);
 
 	switch (index) {
 	case TABLE:
 		sect_print (context, "</B></P>\n");
+		break;
+	case PREFACE:
+	        sect_print (context, "</A></H1>\n");
 		break;
 	case CHAPTER:
 		/* FIXME: This sometimes causes the output of invalid HTML because in sect_title_characters
@@ -733,6 +756,7 @@ sect_title_characters (Context *context,
 	if (((SectContext *)context->data)->state == LOOKING_FOR_SECT_TITLE) {
 		StackElement *stack_el;
 
+		element_list = g_slist_prepend (element_list, GINT_TO_POINTER (PREFACE));
 		element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CHAPTER));
 		element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT1));
 		element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT2));
@@ -748,11 +772,11 @@ sect_title_characters (Context *context,
 		sect_print (context, "<HEAD>\n<TITLE>%s</TITLE>\n</HEAD>\n", temp);
 		sect_print (context, "<BODY BGCOLOR=\"#FFFFFF\" TEXT=\"#000000\" LINK=\"#0000FF\" VLINK=\"#840084\" ALINK=\"#0000FF\">\n");
 		if (stack_el == NULL)
-			sect_print (context, "<A href=\"help:%s\"><font size=3>Up to Table of Contents</font></A><BR>\n",
+			sect_print (context, "<A href=\"gnome-help:%s\"><font size=3>Up to Table of Contents</font></A><BR>\n",
 				 context->base_file);
 #if 0
 		else
-			sect_print (context, "<A href=\"help:%s#%s\"><font size=3>Up to %s</font></A><BR>\n",
+			sect_print (context, "<A href=\"gnome-help:%s#%s\"><font size=3>Up to %s</font></A><BR>\n",
 				 context->base_file,
 				 sect_context->topid,
 				 sect_context->top);
@@ -768,7 +792,7 @@ sect_title_characters (Context *context,
 
 	temp = g_strndup (chars, len);
 
-
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (PREFACE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CHAPTER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT1));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT2));
@@ -780,10 +804,12 @@ sect_title_characters (Context *context,
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FIGURE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (TABLE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (FORMALPARA));
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (IMPORTANT));
 
 	index = find_first_parent (context, element_list);
 
 	switch (index) {
+	case PREFACE:
 	case CHAPTER:
 	case SECT1:
 	case SECT2:
@@ -845,7 +871,7 @@ sect_link_start_element (Context *context,
 	if (!IS_IN_SECT (context))
 		return;
 
-	sect_print (context, "<A HREF=\"help:%s", context->base_file);
+	sect_print (context, "<A HREF=\"gnome-help:%s", context->base_file);
 	atrs_ptr = (gchar **) atrs;
 	while (atrs_ptr && *atrs_ptr) {
 		if (g_strcasecmp (*atrs_ptr, "linkend") == 0) {
@@ -891,7 +917,7 @@ sect_xref_start_element (Context *context,
 		return;
 	}
 	
-	sect_print (context, "<A HREF=\"help:%s", context->base_file);
+	sect_print (context, "<A HREF=\"gnome-help:%s", context->base_file);
 	while (atrs_ptr && *atrs_ptr) {
 		if (!g_strcasecmp (*atrs_ptr, "linkend")) {
 			atrs_ptr++;
@@ -1916,7 +1942,7 @@ sect_legalnotice_end_element (Context *context,
 	}
 
 
-	prev_link = g_strdup_printf ("help:%s", context->base_file);
+	prev_link = g_strdup_printf ("gnome-help:%s", context->base_file);
 	print_footer (prev_link, prev_link, NULL);
 	g_free (prev_link);
 	

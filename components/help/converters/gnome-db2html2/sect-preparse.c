@@ -117,6 +117,7 @@ ElementInfo sect_preparse[] = {
         { QUESTION, "question", NULL, NULL, NULL},
         { ANSWER, "answer", NULL, NULL, NULL},
         { CHAPTER, "chapter", (startElementSAXFunc) sect_preparse_sect_start_element, NULL, NULL},
+	{ PREFACE, "preface", (startElementSAXFunc) sect_preparse_sect_start_element, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -146,6 +147,9 @@ sect_preparse_sect_start_element (Context *context,
 
 
 	switch (name[4]) {
+	case 'a':
+	        sect1id_stack_add (context, name, atrs);
+		break;
 	case 't':
 		sect1id_stack_add (context, name, atrs);
 		break;
@@ -180,6 +184,7 @@ sect_preparse_title_characters (Context *context,
 	StackElement *stack_el;
 	gchar **atrs_ptr;
 
+	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (PREFACE));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (CHAPTER));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT1));
 	element_list = g_slist_prepend (element_list, GINT_TO_POINTER (SECT2));

@@ -642,17 +642,17 @@ sect_footer (Context *context, const char *section)
 			if (next_node == NULL) {
 				next_uri = NULL;
 			} else {
-				next_uri = g_strdup_printf ("help:%s?%s", context->base_file, (char *) next_node->data);
+				next_uri = g_strdup_printf ("gnome-help:%s?%s", context->base_file, (char *) next_node->data);
 			}
 
 			if (prev_node == NULL) {
 				/* link back to the TOC */
-				prev_uri = g_strdup_printf ("help:%s", context->base_file);
+				prev_uri = g_strdup_printf ("gnome-help:%s", context->base_file);
 			} else {
-				prev_uri = g_strdup_printf ("help:%s?%s", context->base_file, (char *)prev_node->data);
+				prev_uri = g_strdup_printf ("gnome-help:%s?%s", context->base_file, (char *)prev_node->data);
 			}
 			
-			home_uri = g_strdup_printf ("help:%s", context->base_file);
+			home_uri = g_strdup_printf ("gnome-help:%s", context->base_file);
 			
 			print_footer (prev_uri, home_uri, next_uri);
 
@@ -708,7 +708,7 @@ parse_file (gchar *filename, gchar *section)
 		if (temp_list != NULL) {
 			char *temp_uri;
 			
-			temp_uri = g_strdup_printf ("help:%s?%s", context->base_file, (char *)temp_list->data);
+			temp_uri = g_strdup_printf ("gnome-help:%s?%s", context->base_file, (char *)temp_list->data);
 			print_footer (NULL, NULL, temp_uri);
 			g_free (temp_uri);
 		}

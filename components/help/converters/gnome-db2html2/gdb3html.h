@@ -116,7 +116,8 @@ typedef enum ElementIndex {
 	QUESTION,
 	ANSWER, /* 105 */
 	CHAPTER,
-	UNDEFINED /* 107 */
+	PREFACE,
+	UNDEFINED /* 108 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;
@@ -153,6 +154,7 @@ struct _Context {
 
 	/* determine the "depth" that the current section is on.
 	 * only applies to section and chapter */
+        gint preface;
 	gint chapter;
 	gint sect1;
 	gint sect2;
