@@ -544,15 +544,6 @@ update_layout_menus (FMIconView *view)
 		/* Sort order isn't relevant for manual layout. */
 		nautilus_bonobo_set_sensitive
 			(view->details->ui, COMMAND_SORT_REVERSED, is_auto_layout);
-
-		/* FIXME bugzilla.eazel.com 5903:
-		 * Tighter Layout is only relevant for manual layout when doing a Clean Up.
-		 * Leaving it disabled for manual layout is therefore not correct.
-		 * But enabling it is both potentially confusing (since it has no immediate
-		 * effect) and causes layout problems. More info in bug report.
-		 */
-		nautilus_bonobo_set_sensitive
-			(view->details->ui, COMMAND_TIGHTER_LAYOUT, is_auto_layout);
 	}
 
 	/* Clean Up is only relevant for manual layout */

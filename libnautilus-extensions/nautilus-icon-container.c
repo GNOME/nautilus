@@ -4571,6 +4571,12 @@ nautilus_icon_container_set_tighter_layout (NautilusIconContainer *container,
 		redo_layout (container);
 
 		gtk_signal_emit (GTK_OBJECT (container), signals[LAYOUT_CHANGED]);
+	} else {
+		/* in manual layout, label sizes still change, even though
+		 * the icons don't move.
+		 */
+		invalidate_label_sizes (container);	
+		nautilus_icon_container_request_update_all (container);	
 	}
 }
 

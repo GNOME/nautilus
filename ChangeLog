@@ -1,3 +1,18 @@
+2001-02-09  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 5903 ("Tighter Layout" can't be changed in
+	manual layout, but affects Clean Up by Name)
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_set_tighter_layout): When in
+	manual layout mode, invalidate label sizes and update
+	all items so the smaller caption width used for
+	tighter layout can take effect immediately.
+	
+	* src/file-manager/fm-icon-view.c: 
+	(update_layout_menus): Remove the code that was making
+	this item insensitive in manual layout.
+
 2001-02-09  Robey Pointer  <robey@eazel.com>
 
 	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>
