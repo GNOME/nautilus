@@ -288,24 +288,6 @@ set_outline_gc_width (NautilusCanvasNoteItem *note_item)
 				    GDK_LINE_SOLID, GDK_CAP_PROJECTING, GDK_JOIN_MITER);
 }
 
-static void
-nautilus_canvas_note_item_set_fill (NautilusCanvasNoteItem *note_item, gboolean fill_set)
-{
-	if (note_item->fill_set != fill_set) {
-		note_item->fill_set = fill_set;
-		gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (note_item));
-	}
-}
-
-static void
-nautilus_canvas_note_item_set_outline (NautilusCanvasNoteItem *note_item, gboolean outline_set)
-{
-	if (note_item->outline_set != outline_set) {
-		note_item->outline_set = outline_set;
-		gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (note_item));
-	}
-}
-
 /* utility to update the canvas item bounding box from the note item's private bounding box */
 static void
 update_item_bounding_box (NautilusCanvasNoteItem *note_item)
@@ -415,11 +397,7 @@ nautilus_canvas_note_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 	case ARG_FILL_COLOR_RGBA:
 		switch (arg_id) {
 		case ARG_FILL_COLOR:
-			if (GTK_VALUE_STRING (*arg) &&
-			    gdk_color_parse (GTK_VALUE_STRING (*arg), &color))
-				nautilus_canvas_note_item_set_fill (note_item, TRUE);
-			else
-				nautilus_canvas_note_item_set_fill (note_item, FALSE);
+			gdk_color_parse (GTK_VALUE_STRING (*arg), &color);
 
 			note_item->fill_color = ((color.red & 0xff00) << 16 |
 					  (color.green & 0xff00) << 8 |
@@ -429,8 +407,6 @@ nautilus_canvas_note_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 
 		case ARG_FILL_COLOR_GDK:
 			pcolor = GTK_VALUE_BOXED (*arg);
-			nautilus_canvas_note_item_set_fill (note_item, pcolor != NULL);
-
 			if (pcolor) {
 				color = *pcolor;
 				gdk_color_context_query_color (item->canvas->cc, &color);
@@ -444,7 +420,6 @@ nautilus_canvas_note_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 			break;
 
 		case ARG_FILL_COLOR_RGBA:
-			nautilus_canvas_note_item_set_fill (note_item, TRUE);
 			note_item->fill_color = GTK_VALUE_UINT (*arg);
 			break;
 		}
@@ -465,11 +440,7 @@ nautilus_canvas_note_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 	case ARG_OUTLINE_COLOR_RGBA:
 		switch (arg_id) {
 		case ARG_OUTLINE_COLOR:
-			if (GTK_VALUE_STRING (*arg) &&
-			    gdk_color_parse (GTK_VALUE_STRING (*arg), &color))
-				nautilus_canvas_note_item_set_outline (note_item, TRUE);
-			else
-				nautilus_canvas_note_item_set_outline (note_item, FALSE);
+			gdk_color_parse (GTK_VALUE_STRING (*arg), &color);
 
 			note_item->outline_color = ((color.red & 0xff00) << 16 |
 					     (color.green & 0xff00) << 8 |
@@ -479,8 +450,6 @@ nautilus_canvas_note_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 
 		case ARG_OUTLINE_COLOR_GDK:
 			pcolor = GTK_VALUE_BOXED (*arg);
-			nautilus_canvas_note_item_set_outline (note_item, pcolor != NULL);
-
 			if (pcolor) {
 				color = *pcolor;
 				gdk_color_context_query_color (item->canvas->cc, &color);
@@ -494,7 +463,6 @@ nautilus_canvas_note_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 			break;
 
 		case ARG_OUTLINE_COLOR_RGBA:
-			nautilus_canvas_note_item_set_outline (note_item, TRUE);
 			note_item->outline_color = GTK_VALUE_UINT (*arg);
 			break;
 		}
@@ -805,18 +773,16 @@ nautilus_canvas_note_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable, in
 	x2 = c2.x;
 	y2 = c2.y;
 
-	if (note_item->fill_set) {
-		if (note_item->fill_stipple)
-			gnome_canvas_set_stipple_origin (item->canvas, note_item->fill_gc);
+	if (note_item->fill_stipple)
+		gnome_canvas_set_stipple_origin (item->canvas, note_item->fill_gc);
 
-		gdk_draw_rectangle (drawable,
-				    note_item->fill_gc,
-				    TRUE,
-				    x1 - x,
-				    y1 - y,
-				    x2 - x1 + 1,
-				    y2 - y1 + 1);
-	}
+	gdk_draw_rectangle (drawable,
+				note_item->fill_gc,
+				TRUE,
+				x1 - x,
+				y1 - y,
+				x2 - x1 + 1,
+				y2 - y1 + 1);
 
 	/* draw the annotation text */
 	if (note_item->note_text) {
@@ -836,18 +802,16 @@ nautilus_canvas_note_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable, in
 		g_free (display_text);
 	}
 		
-	if (note_item->outline_set) {
-		if (note_item->outline_stipple)
-			gnome_canvas_set_stipple_origin (item->canvas, note_item->outline_gc);
+	if (note_item->outline_stipple)
+		gnome_canvas_set_stipple_origin (item->canvas, note_item->outline_gc);
 
-		gdk_draw_rectangle (drawable,
-				    note_item->outline_gc,
-				    FALSE,
-				    x1 - x,
-				    y1 - y,
-				    x2 - x1,
-				    y2 - y1);
-	}
+	gdk_draw_rectangle (drawable,
+				note_item->outline_gc,
+				FALSE,
+				x1 - x,
+				y1 - y,
+				x2 - x1,
+				y2 - y1);
 }
 
 static double
@@ -857,7 +821,6 @@ nautilus_canvas_note_item_point (GnomeCanvasItem *item, double x, double y, int 
 	double x1, y1, x2, y2;
 	double hwidth;
 	double dx, dy;
-	double tmp;
 
 	note_item = NAUTILUS_CANVAS_NOTE_ITEM (item);
 
@@ -870,44 +833,20 @@ nautilus_canvas_note_item_point (GnomeCanvasItem *item, double x, double y, int 
 	x2 = note_item->x2;
 	y2 = note_item->y2;
 
-	if (note_item->outline_set) {
-		if (note_item->width_pixels)
-			hwidth = (note_item->width / item->canvas->pixels_per_unit) / 2.0;
-		else
-			hwidth = note_item->width / 2.0;
+	if (note_item->width_pixels)
+		hwidth = (note_item->width / item->canvas->pixels_per_unit) / 2.0;
+	else
+		hwidth = note_item->width / 2.0;
 
-		x1 -= hwidth;
-		y1 -= hwidth;
-		x2 += hwidth;
-		y2 += hwidth;
-	} else
-		hwidth = 0.0;
+	x1 -= hwidth;
+	y1 -= hwidth;
+	x2 += hwidth;
+	y2 += hwidth;
 
 	/* Is point inside rectangle (which can be hollow if it has no fill set)? */
 
 	if ((x >= x1) && (y >= y1) && (x <= x2) && (y <= y2)) {
-		if (note_item->fill_set || !note_item->outline_set)
-			return 0.0;
-
-		dx = x - x1;
-		tmp = x2 - x;
-		if (tmp < dx)
-			dx = tmp;
-
-		dy = y - y1;
-		tmp = y2 - y;
-		if (tmp < dy)
-			dy = tmp;
-
-		if (dy < dx)
-			dx = dy;
-
-		dx -= 2.0 * hwidth;
-
-		if (dx < 0.0)
-			return 0.0;
-		else
-			return dx;
+		return 0.0;
 	}
 
 	/* Point is outside rectangle */

@@ -74,8 +74,6 @@ struct _NautilusCanvasNoteItem {
 	ArtSVP *outline_svp;		/* The SVP for the outline shape */
 
 	/* Configuration flags */
-	unsigned int fill_set : 1;	/* Is fill color set? */
-	unsigned int outline_set : 1;	/* Is outline color set? */
 	unsigned int width_pixels : 1;	/* Is outline width specified in pixels or units? */
 };
 
