@@ -102,7 +102,7 @@ ElementInfo sect_elements[] = {
 	{ SYSTEMITEM, "systemitem", NULL, NULL, (charactersSAXFunc) sect_write_characters},
 	{ VARNAME, "varname", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
 	{ BLOCKQUOTE, "blockquote", (startElementSAXFunc) sect_blockquote_start_element, (endElementSAXFunc) sect_blockquote_end_element, (charactersSAXFunc) sect_write_characters},
-	{ QUOTE, "quote", (startElementSAXFunc) sect_quote_start_element, (endElementSAXFunc) sect_quote_end_element, NULL},
+	{ QUOTE, "quote", (startElementSAXFunc) sect_quote_start_element, (endElementSAXFunc) sect_quote_end_element, (charactersSAXFunc) sect_write_characters},
 	{ OPTION, "option", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
