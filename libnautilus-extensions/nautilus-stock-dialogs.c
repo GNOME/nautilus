@@ -103,6 +103,8 @@ add_label_to_dialog (GnomeDialog *dialog, const char *message)
 static void
 timed_wait_free (TimedWait *wait)
 {
+	g_assert (g_hash_table_lookup (timed_wait_hash_table, wait) == NULL);
+
 	g_hash_table_remove (timed_wait_hash_table, wait);
 
 	g_free (wait->window_title);
@@ -206,6 +208,7 @@ nautilus_timed_wait_start (NautilusCancelCallback cancel_callback,
 	}
 	g_assert (g_hash_table_lookup (timed_wait_hash_table, wait) == NULL);
 	g_hash_table_insert (timed_wait_hash_table, wait, wait);
+	g_assert (g_hash_table_lookup (timed_wait_hash_table, wait) == wait);
 }
 
 void

@@ -682,7 +682,7 @@ activate_owner_callback (GtkMenuItem *menu_item, FileNamePair *pair)
 	/* Try to change file owner. If this fails, complain to user. */
 	nautilus_file_ref (pair->file);
 	nautilus_timed_wait_start
-		(cancel_group_change_callback,
+		(cancel_owner_change_callback,
 		 pair->file,
 		 _("Cancel Owner Change?"),
 		 _("Changing owner"),

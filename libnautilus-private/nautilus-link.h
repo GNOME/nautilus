@@ -26,23 +26,23 @@
 #ifndef NAUTILUS_LINK_H
 #define NAUTILUS_LINK_H
 
-#define LINK_SUFFIX ".link"
-
 #include <glib.h>
 
 /* given a uri, returns TRUE if it's a link file */
-gboolean	nautilus_link_is_link_file(const char *file_uri);
+gboolean nautilus_link_is_link_file_name                (const char *file_uri);
 
 /* returns additional text to display under the name, NULL if none */
-char*		nautilus_link_get_additional_text(const char *link_file_uri);
+char *   nautilus_link_get_additional_text              (const char *link_file_uri);
 
 /* returns the image associated with a link file */
-char*		nautilus_link_get_image_uri(const char *link_file_uri);
+char *   nautilus_link_get_image_uri                    (const char *link_file_uri);
 
 /* returns the link uri associated with a link file */
-char*		nautilus_link_get_link_uri(const char *link_file_uri);
+char *   nautilus_link_get_link_uri                     (const char *link_file_uri);
+char *   nautilus_link_get_link_uri_given_file_contents (const char *link_file_contents,
+							 int         link_file_size);
 
 /* strips the suffix from the passed in string if it's a link file */
-char*		nautilus_link_get_display_name(char* link_file_name);
+char *   nautilus_link_get_display_name                 (char       *link_file_name);
 
 #endif /* NAUTILUS_LINK_H */

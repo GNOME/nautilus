@@ -53,7 +53,7 @@ static GnomeVFSResult vault_list(GList *args, gchar *uri, gboolean debug, gchar 
 	gchar *text_uri;
 
 	if(args != NULL) {
-		text_uri = g_strconcat(uri, args->data);
+		text_uri = g_strconcat(uri, args->data, NULL);
 	} else {
 		text_uri = uri;
 	}

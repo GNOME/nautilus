@@ -158,11 +158,8 @@ gboolean           nautilus_directory_are_all_files_seen   (NautilusDirectory   
  */
 gboolean           nautilus_directory_metadata_loaded      (NautilusDirectory         *directory);
 
-/* Return true if the directory is local.
- */
+/* Return true if the directory is local. */
 gboolean           nautilus_directory_is_local             (NautilusDirectory         *directory);
-
-
 
 typedef struct NautilusDirectoryDetails NautilusDirectoryDetails;
 

@@ -20,25 +20,19 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
-#include <string.h>
-#include <stdio.h>
-#include <ctype.h>
-
-#ifdef HAVE_ALLOCA_H
-#include <alloca.h>
-#endif
-
-#include <gnome.h>
-
-#include <libgnomevfs/gnome-vfs.h>
-#include <libgnomevfs/gnome-vfs-mime.h>
 #include "help-method.h"
-#include <libgnomevfs/gnome-vfs-module.h>
+
+#include <ctype.h>
+#include <gnome.h>
+#include <libgnomevfs/gnome-vfs-mime.h>
 #include <libgnomevfs/gnome-vfs-module-shared.h>
+#include <libgnomevfs/gnome-vfs-module.h>
+#include <libgnomevfs/gnome-vfs.h>
+#include <stdio.h>
+#include <string.h>
+
+#define ALI_DEBUG
 
 static gboolean already_initialized = FALSE;
 G_LOCK_DEFINE_STATIC (already_initialized);
@@ -55,8 +49,8 @@ typedef enum {
 } HelpFileTypes;
 
 typedef struct {
-	gchar *file; /* The absolute path */
-	gchar *section;
+	char *file; /* The absolute path */
+	char *section;
 	HelpFileTypes type;
 } HelpURI;
 
@@ -65,7 +59,7 @@ static gboolean file_in_info_path (const char *file);
 
 
 static HelpURI *
-help_uri_new ()
+help_uri_new (void)
 {
 	HelpURI *retval;
 
@@ -75,63 +69,63 @@ help_uri_new ()
 	return retval;
 }
 
-static gchar *
+static char *
 help_uri_to_string (HelpURI *help_uri)
 {
-	gchar *retval;
-	gchar *after_method;
-	gchar *escaped_uri;
+        const char *scheme;
+	char *after_scheme;
+	char *escaped, *uri;
 
-	retval = NULL;
-	after_method = NULL;
-	escaped_uri = NULL;
+        scheme = "pipe:";
+        after_scheme = NULL;
 	
 	switch (help_uri->type) {
 	case SGML_FILE:
-		if (help_uri->section) {
-			after_method = g_strdup_printf ("gnome-db2html2 %s?%s;mime-type=text/html",
-						  help_uri->file, help_uri->section);
-			escaped_uri = gnome_vfs_escape_string (after_method);
-			retval = g_strconcat ("pipe:",  escaped_uri, NULL);		
+		if (help_uri->section != NULL) {
+			after_scheme = g_strdup_printf
+                                ("gnome-db2html2 %s?%s;mime-type=text/html",
+                                 help_uri->file, help_uri->section);
                 } else {
-			after_method = g_strdup_printf ("gnome-db2html2 %s;mime-type=text/html",
-						  help_uri->file);
-			escaped_uri = gnome_vfs_escape_string (after_method);
-			retval = g_strconcat ("pipe:", escaped_uri, NULL);
+			after_scheme = g_strdup_printf
+                                ("gnome-db2html2 %s;mime-type=text/html",
+                                 help_uri->file);
                 }
 		break;
 	case MAN_FILE:
-		after_method = g_strdup_printf ("gnome-man2html2 %s;mime-type=text/html",
-					  help_uri->file);
-		escaped_uri = gnome_vfs_escape_string (after_method);
-		retval = g_strconcat ("pipe:", escaped_uri, NULL);
+		after_scheme = g_strdup_printf
+                        ("gnome-man2html2 %s;mime-type=text/html",
+                         help_uri->file);
 		break;
 	case INFO_FILE:
-		after_method = g_strdup_printf ("gnome-info2html2 %s;mime-type=text/html",
-					  help_uri->file);
-		escaped_uri = gnome_vfs_escape_string (after_method);
-		retval = g_strconcat ("pipe:", escaped_uri, NULL);
+		after_scheme = g_strdup_printf
+                        ("gnome-info2html2 %s;mime-type=text/html",
+                         help_uri->file);
 		break;
 	case HTML_FILE:
-		if (help_uri->section) {
-			retval = g_strdup_printf ("file://%s#%s", help_uri->file, help_uri->section);
+                scheme = "file://";
+		if (help_uri->section != NULL) {
+                        after_scheme = g_strconcat (help_uri->file,
+                                                    "#",
+                                                    help_uri->section,
+                                                    NULL);
 		} else {
-			retval = g_strdup_printf ("file://%s", help_uri->file);
+                        after_scheme = g_strdup (help_uri->file);
                 }
 		break;
 	default:
-		/* FIXME: This needs to be removed so things can be handled more
-		 * gracefully (i.e. g_warning) */
+		/* FIXME: An assert at runtime may be a bit harsh.
+                 * We'd like behavior more like g_return_if_fail.
+                 */
 		g_assert_not_reached ();
+                return NULL;
 	}
-	if (after_method != NULL) {
-		g_free (after_method);
-	}
-	if (escaped_uri != NULL) {
-		g_free (escaped_uri);
-	}
+        
+        escaped = gnome_vfs_escape_string (after_scheme);
+        g_free (after_scheme);
+        uri = g_strconcat (scheme, escaped, NULL);
+        g_free (escaped);
 
-	return retval;
+	return uri;
 }
 
 static void
@@ -143,7 +137,7 @@ help_uri_free (HelpURI *help_uri)
 }
 
 static void
-init_help_module ()
+init_help_module (void)
 {
 	G_LOCK (already_initialized);
 	if (already_initialized) {
@@ -155,13 +149,13 @@ init_help_module ()
 
 	G_LOCK (app_list);
 	app_list = g_hash_table_new (g_str_hash, g_str_equal);
-	G_UNLOCK (already_initialized);
+	G_UNLOCK (app_list);
 }
 
 static gboolean
-convert_file_to_uri (HelpURI *help_uri, gchar *file)
+convert_file_to_uri (HelpURI *help_uri, char *file)
 {
-	const gchar *mime_type;
+	const char *mime_type;
 	
 	if (!g_file_test (file, G_FILE_TEST_ISFILE | G_FILE_TEST_ISLINK)) { 
 		return FALSE;
@@ -169,19 +163,87 @@ convert_file_to_uri (HelpURI *help_uri, gchar *file)
 
 	help_uri->file = file;
 	mime_type = gnome_vfs_get_file_mime_type (file, NULL, FALSE);
-		
-	if (strcmp (mime_type, "text/sgml") == 0) {
+        
+	if (g_strcasecmp (mime_type, "text/sgml") == 0) {
 		help_uri->type = SGML_FILE;
-	} else if (strcmp (mime_type, "text/html") == 0) {
+	} else if (g_strcasecmp (mime_type, "text/html") == 0) {
 		help_uri->type = HTML_FILE;
-	} else if (strcmp (mime_type, "application/x-troff-man") == 0) {
+	} else if (g_strcasecmp (mime_type, "application/x-troff-man") == 0) {
+                /* FIXME: The check above used to check for a prefix
+                 * of "application/x-troff-man", but now we check for
+                 * an exact string match. Is that what we really want?
+                 */
 		help_uri->type = MAN_FILE;
 	} else if (file_in_info_path (file)) {
   	        help_uri->type = INFO_FILE;
 	}
 
 	return TRUE;
-}	
+}
+
+static HelpURI *
+transform_file (const char *old_uri,
+                char * (* compute_uri_function) (const char *base))
+{
+	HelpURI *help_uri;
+	char *p;
+	char *base, *new_uri, *new_uri_with_extension;
+
+	help_uri = help_uri_new ();
+
+        /* Find the part after either a "?" or a "#". Only look for a
+         * "#" if there is no "?". (We could instead use strpbrk to
+         * search for the first occurence of either "?" or "#".) 
+         */
+	p = strrchr (old_uri, '?');
+	if (p == NULL) {
+		p = strrchr (old_uri, '#');
+        }
+
+	if (p == NULL) {
+		base = g_strdup (old_uri);
+	} else {
+		help_uri->section = g_strdup (p + 1);
+		base = g_strndup (old_uri, p - old_uri);
+	}
+
+        /* We do not want trailing spaces or it can screw things up. */
+        g_strchomp (base);
+
+        /* Call the passed in function to compute the URI. */
+	new_uri = (* compute_uri_function) (base);
+        g_free (base);
+        if (new_uri == NULL) {
+                help_uri_free (help_uri);
+                return NULL;
+        }
+
+        /* Try the URI. */
+	if (convert_file_to_uri (help_uri, new_uri)) {
+		return help_uri;
+	}
+
+	/* Try with an sgml extension. */
+	new_uri_with_extension = g_strconcat (new_uri, ".sgml", NULL);
+	if (convert_file_to_uri (help_uri, new_uri)) {
+		g_free (new_uri);
+		return help_uri;
+	}
+	g_free (new_uri_with_extension);
+
+	/* Try with an html extension. */
+	new_uri_with_extension = g_strconcat (new_uri, ".html", NULL);
+	if (convert_file_to_uri (help_uri, new_uri)) {
+		g_free (new_uri);
+		return help_uri;
+	}
+        g_free (new_uri_with_extension);
+
+        /* Failed, so return. */
+	g_free (new_uri);
+        help_uri_free (help_uri);
+	return NULL;
+}
 
 /* We can handle sgml, info and html files only.
  *
@@ -192,55 +254,9 @@ convert_file_to_uri (HelpURI *help_uri, gchar *file)
  * /absolute/path/to/file[.sgml]
  */
 static HelpURI *
-transform_absolute_file (const gchar *file)
+transform_absolute_file (const char *file)
 {
-	HelpURI *help_uri;
-	gchar *temp_file_base, *temp_file2, *temp_file;
-	gchar *p;
-
-	help_uri = help_uri_new ();
-
-	p = strrchr (file, '?');
-	if (p == NULL) {
-		p = strrchr (g_strchomp((gchar *)file), '#');
-	}
-
-	if (p) {
-		help_uri->section = g_strdup (p+1);
-		temp_file_base = g_strndup (file, p - file);
-	} else {
-		/* we do not want trailing spaces or it can screw things up */
-		temp_file_base = g_strdup (g_strchomp ((gchar *) file));
-	}
-
-	/* Concantation to TOPHELPDIR commented out because this is an
-	 * ABSOLUTE uri
-	temp_file = g_concat_dir_and_file (TOPHELPDIR, temp_file_base); */
-	/* First we try the file directly */
-	temp_file = g_strdup (temp_file_base);
-	
-	if (convert_file_to_uri (help_uri, temp_file)) {
-		g_free (temp_file_base);
-		return help_uri;
-	}
-
-	/* Next, we try to add extensions */
-	temp_file2 = g_strdup_printf ("%s.sgml", temp_file);
-	if (convert_file_to_uri (help_uri, temp_file2) != FALSE) {
-		g_free (temp_file);
-		g_free (temp_file_base);
-		return help_uri;
-	}
-
-	g_free (temp_file2);
-	temp_file2 = g_strdup_printf ("%s.html", temp_file);
-	if (convert_file_to_uri (help_uri, temp_file2) != FALSE) {
-		g_free (temp_file);
-		g_free (temp_file_base);
-		return help_uri;
-	}
-	
-	return NULL;
+        return transform_file (file, g_strdup);
 }
 
 /* Possible cases for 'path' in this function are:
@@ -249,114 +265,74 @@ transform_absolute_file (const gchar *file)
  */
 
 static char *
-file_from_path (const char *path) {
+file_from_path (const char *path)
+{
 	const char *slash, *period;
-	char *retval;
 
 	/* Get rid of the path to just get the filename */
-	retval = NULL;
-	period = NULL;
 	slash = strrchr (path, '/');
-	
 	if (slash != NULL) {
 		period = strchr (slash, '.');
 	} else {
 		period = strchr (path, '.');
 	}
+
 	if (period != NULL) {
 		if (slash == NULL) {
 			/* e.g. file.sgml */
-			retval = g_strndup (path, period - path);
+			return g_strndup (path, period - path);
 		} else {
 			/* e.g. path/to/file.sgml */
 			slash = slash + 1; /* Get rid of leading '/' */
-			retval = g_strndup (slash, period - slash);
+			return g_strndup (slash, period - slash);
 		}
 	} else {
 		if (slash != NULL) {
 			/* e.g. path/to/file */
-			retval = g_strndup (slash+1, strlen (slash+1));
+			return g_strdup (slash+1);
 		} else {
 			/* e.g. file */
-			retval = g_strdup (path);
+			return g_strdup (path);
 		}
 	}
-	
-	return retval;
+}
+
+static char *
+find_help_file (const char *old_uri)
+{
+        char *base_name, *new_uri;
+
+        base_name = file_from_path (old_uri);
+        if (base_name == NULL || base_name[0] == '\0') {
+                g_free (base_name);
+                return NULL;
+        }
+
+        /* FIXME: gnome_help_file_path should take const char * parameters. */
+        new_uri = gnome_help_file_path (base_name, (char *) old_uri);
+        g_free (base_name);
+
+        return new_uri;
 }
 
 static HelpURI *
-transform_relative_file (const gchar *file)
+transform_relative_file (const char *file)
 {
-	HelpURI *help_uri;
-	gchar *temp_file, *temp_file_base, *temp_file2;
-	gchar *appname;
-	gchar *p;
-
-	help_uri = help_uri_new ();
-	
-	p = strrchr (file, '?');
-	if (p == NULL) {
-		p = strrchr (g_strchomp ((gchar *)file), '#');
-	}
-
-	if (p) {
-		help_uri->section = g_strdup (p+1);
-		temp_file_base = g_strndup (file, p - file);
-	} else {
-		temp_file_base = g_strdup (g_strchomp ((gchar *) file));
-	}
-	
-	appname = file_from_path (temp_file_base);
-	
-	if (strcmp (appname, "") == 0) {
-		/* NULL string */
-		g_free (appname);
-		appname = NULL;
-	}
-	
-	if (appname == NULL)
-		return NULL;
-
-	/* Get the help file while taking i18n into account */
-	temp_file = gnome_help_file_path (appname, temp_file_base);
-	
-	if (convert_file_to_uri (help_uri, temp_file) != FALSE) {
-		g_free (temp_file_base);
-		return help_uri;
-	}
-
-	/* Try to add some extensions */
-	temp_file2 = g_strdup_printf ("%s.sgml", temp_file);
-	if (convert_file_to_uri (help_uri, temp_file2) != FALSE) {
-		g_free (temp_file);
-		g_free (temp_file_base);
-		return help_uri;
-	}
-
-	g_free (temp_file2);
-	temp_file2 = g_strdup_printf ("%s.html", temp_file);
-	if (convert_file_to_uri (help_uri, temp_file2) != FALSE) {
-		g_free (temp_file);
-		g_free (temp_file_base);
-		return help_uri;
-	}
-	
-	return NULL;
+	return transform_file (file, find_help_file);
 }
 
 static GnomeVFSResult
 help_do_transform (GnomeVFSTransform *transform,
-		   const gchar *old_uri,
-		   gchar **new_uri,
+		   const char *old_uri,
+		   char **new_uri,
 		   GnomeVFSContext *context)
 {
 	HelpURI *help_uri;
+
 	*new_uri = NULL;
-
-
-	if (old_uri == NULL || *old_uri == '\000')
+	if (old_uri == NULL || *old_uri == '\0') {
 		return GNOME_VFS_ERROR_NOT_FOUND;
+        }
 
 	if (old_uri[0] == '/') {
 		help_uri = transform_absolute_file (old_uri);
@@ -366,7 +342,7 @@ help_do_transform (GnomeVFSTransform *transform,
 
 	if (help_uri == NULL) {
 		return GNOME_VFS_ERROR_NOT_FOUND;
-	}
+        }
 
 	*new_uri = help_uri_to_string (help_uri);
 	help_uri_free (help_uri);
@@ -382,10 +358,8 @@ GnomeVFSTransform *
 vfs_module_transform (const char *method_name, const char *args)
 {
 	init_help_module ();
-	
 	return &transform;
 }
-
 
 static gboolean
 file_in_info_path (const char *file) 
@@ -418,6 +392,4 @@ file_in_info_path (const char *file)
 
         return FALSE;
 }
-
-
 

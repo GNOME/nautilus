@@ -29,6 +29,7 @@
  * in changes to the attributes.
  */
 
+#define NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI       "activation URI"
 #define NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON          "custom icon"
 #define NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS          "deep counts"
 #define NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT "directory item count"

@@ -80,6 +80,12 @@ fm_report_error_setting_group (NautilusFile *file,
 	switch (error) {
 	case GNOME_VFS_OK:
 		return;
+	case GNOME_VFS_ERROR_NOT_PERMITTED:
+		file_name = nautilus_file_get_name (file);
+		message = g_strdup_printf (_("You do not have the permissions necessary to change the group of \"%s\"."),
+					   file_name);
+		g_free (file_name);
+		break;
 	default:
 		/* We should invent decent error messages for every case we actually experience. */
 		g_warning ("Hit unhandled case %d in fm_report_error_setting_group, tell sullivan@eazel.com", error);

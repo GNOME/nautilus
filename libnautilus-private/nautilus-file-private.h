@@ -28,6 +28,7 @@
 struct NautilusFileDetails
 {
 	NautilusDirectory *directory;
+	gboolean self_owned;
 	gboolean unconfirmed;
 
 	gboolean is_gone;
@@ -49,6 +50,9 @@ struct NautilusFileDetails
 	gboolean got_top_left_text;
 	char *top_left_text;
 
+	gboolean got_activation_uri;
+	char *activation_uri;
+
 	/* The following is for file operations in progress. Since
 	 * there are normally only a few of these, we can move them to
 	 * a separate hash table or something if required to keep the
@@ -61,19 +65,24 @@ struct NautilusFileDetails
 #define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES               24
 #define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES            10000
 
-NautilusFile *nautilus_file_new_from_info    (NautilusDirectory *directory,
-					      GnomeVFSFileInfo  *info);
-void          nautilus_file_emit_changed     (NautilusFile      *file);
-void          nautilus_file_mark_gone        (NautilusFile      *file);
-char *        nautilus_extract_top_left_text (const char        *text,
-					      int                length);
-gboolean      nautilus_file_contains_text    (NautilusFile      *file);
+NautilusFile *nautilus_file_new_from_info            (NautilusDirectory *directory,
+						      GnomeVFSFileInfo  *info);
+void          nautilus_file_emit_changed             (NautilusFile      *file);
+void          nautilus_file_mark_gone                (NautilusFile      *file);
+char *        nautilus_extract_top_left_text         (const char        *text,
+						      int                length);
+gboolean      nautilus_file_contains_text            (NautilusFile      *file);
 
 /* Compare file's state with a fresh file info struct, return FALSE if
  * no change, update file and return TRUE if the file info contains
  * new state.
  */
-gboolean      nautilus_file_update_info      (NautilusFile      *file,
-					      GnomeVFSFileInfo  *info);
-gboolean      nautilus_file_update_name      (NautilusFile      *file,
-					      const char        *name);
+gboolean      nautilus_file_update_info              (NautilusFile      *file,
+						      GnomeVFSFileInfo  *info);
+gboolean      nautilus_file_update_name              (NautilusFile      *file,
+						      const char        *name);
+
+/* Return true if the top lefts of files in this directory should be
+ * fetched, according to the preference settings.
+ */
+gboolean      nautilus_file_should_get_top_left_text (NautilusFile      *file);

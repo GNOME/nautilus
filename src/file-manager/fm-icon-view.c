@@ -1430,7 +1430,7 @@ icon_position_changed_callback (NautilusIconContainer *container,
 		scale_string = scale_string_x;
 		g_free (scale_string_y);
 	} else {
-		scale_string = g_strconcat (scale_string_x, ",", scale_string_y);
+		scale_string = g_strconcat (scale_string_x, ",", scale_string_y, NULL);
 		g_free (scale_string_x);
 		g_free (scale_string_y);
 	}
@@ -1526,14 +1526,12 @@ get_icon_text_callback (NautilusIconContainer *container,
 	
 	/* Handle link files specially. */
 	actual_uri = nautilus_file_get_uri (file);
-	if (actual_uri) {
-		if (nautilus_link_is_link_file (actual_uri)) {
-			*additional_text = nautilus_link_get_additional_text (actual_uri);
-			g_free (actual_uri);
-			return;
-		}
+	if (nautilus_link_is_link_file_name (actual_uri)) {
+		*additional_text = nautilus_link_get_additional_text (actual_uri);
 		g_free (actual_uri);
+		return;
 	}
+	g_free (actual_uri);
 	
 	/* Find out what attributes go below each icon. */
 	attribute_names = fm_icon_view_get_icon_text_attribute_names (icon_view);

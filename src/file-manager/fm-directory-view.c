@@ -2900,25 +2900,33 @@ file_is_launchable (NautilusFile *file)
  * @use_new_window: Should this item be opened in a new window?
  * 
  **/
+
+typedef struct {
+	FMDirectoryView *view;
+	NautilusFile *file;
+	gboolean use_new_window;
+} ActivateParameters;
+
 static void
-fm_directory_view_activate_file (FMDirectoryView *view, 
-				 NautilusFile *file,
-				 gboolean use_new_window)
+activate_callback (NautilusFile *file, gpointer callback_data)
 {
+	ActivateParameters *parameters;
+	FMDirectoryView *view;
+	char *uri, *executable_path;
 	GnomeVFSMimeActionType action_type;
 	GnomeVFSMimeApplication *application;
-	char *uri;
-	char *executable_path;
 
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	parameters = callback_data;
 
-	if (nautilus_file_activate_custom (file, use_new_window)) {
-		return;
-	}
+	view = FM_DIRECTORY_VIEW (parameters->view);
 
-	uri = nautilus_file_get_mapped_uri (file);
+	uri = nautilus_file_get_activation_uri (file);
 
+	/* FIXME: This should check if the activation URI points to
+	 * something launchable, not the original file. Also, for
+	 * symbolic links we need to check the X bit on the target
+	 * file, not on the original.
+	 */
 	if (file_is_launchable (file)) {
 		/* Launch executables to activate them. */
 		/* FIXME: bugzilla.eazel.com 1773: This is a lame way to
@@ -2943,11 +2951,41 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 			g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_NONE ||
 				  action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
 
-			fm_directory_view_switch_location (view, uri, use_new_window);
+			fm_directory_view_switch_location
+				(view, uri, parameters->use_new_window);
 		}
 	}
 
 	g_free (uri);
+}
+
+static void
+fm_directory_view_activate_file (FMDirectoryView *view, 
+				 NautilusFile *file,
+				 gboolean use_new_window)
+{
+	ActivateParameters *parameters;
+	GList dummy_list;
+
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+
+	if (nautilus_file_activate_custom (file, use_new_window)) {
+		return;
+	}
+
+	/* Might have to read some of the file to activate it. */
+	dummy_list.data = NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI;
+	dummy_list.next = NULL;
+	dummy_list.prev = NULL;
+	parameters = g_new (ActivateParameters, 1);
+	parameters->view = view;
+	parameters->file = file;
+	parameters->use_new_window = use_new_window;
+	nautilus_file_call_when_ready
+		(file, &dummy_list, FALSE, activate_callback, parameters);
+
+	/* FIXME: Need a timed wait here too. */
 }
 
 

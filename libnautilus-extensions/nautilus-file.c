@@ -25,31 +25,29 @@
 #include <config.h>
 #include "nautilus-file-private.h"
 
+#include "nautilus-directory-metafile.h"
+#include "nautilus-directory-private.h"
+#include "nautilus-glib-extensions.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-gtk-extensions.h"
+#include "nautilus-gtk-macros.h"
+#include "nautilus-lib-self-check-functions.h"
+#include "nautilus-link.h"
+#include "nautilus-link.h"
+#include "nautilus-string.h"
 #include <ctype.h>
 #include <grp.h>
-#include <pwd.h>
-#include <unistd.h>
-#include <stdlib.h>
-
 #include <gtk/gtksignal.h>
-
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-mime-info.h>
 #include <libgnome/gnome-mime.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-info.h>
-
 #include <parser.h>
-
-#include "nautilus-glib-extensions.h"
-#include "nautilus-gtk-extensions.h"
-#include "nautilus-lib-self-check-functions.h"
-#include "nautilus-link.h"
-#include "nautilus-string.h"
-#include "nautilus-gtk-macros.h"
-#include "nautilus-directory-private.h"
-#include "nautilus-directory-metafile.h"
+#include <pwd.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 typedef enum {
 	NAUTILUS_DATE_TYPE_MODIFIED,
@@ -118,7 +116,8 @@ nautilus_file_initialize (NautilusFile *file)
 
 static NautilusFile *
 nautilus_file_new_from_name (NautilusDirectory *directory,
-			     const char *name)
+			     const char *name,
+			     gboolean self_owned)
 {
 	NautilusFile *file;
 
@@ -135,6 +134,7 @@ nautilus_file_new_from_name (NautilusDirectory *directory,
 
 	file->details->directory = directory;
 	file->details->name = g_strdup (name);
+	file->details->self_owned = self_owned;
 
 	return file;
 }
@@ -174,6 +174,7 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
 NautilusFile *
 nautilus_file_get (const char *uri)
 {
+	gboolean self_owned;
 	GnomeVFSURI *vfs_uri, *directory_vfs_uri;
 	char *directory_uri;
 	NautilusDirectory *directory;
@@ -190,16 +191,17 @@ nautilus_file_get (const char *uri)
 
 	/* Make VFS version of directory URI. */
 	directory_vfs_uri = gnome_vfs_uri_get_parent (vfs_uri);
-	if (directory_vfs_uri == NULL) {
+	self_owned = directory_vfs_uri == NULL;
+	if (self_owned) {
 		/* Use the item itself if we have no parent. */
-		gnome_vfs_uri_ref (vfs_uri);
-		directory_vfs_uri = vfs_uri;
+		directory_uri = g_strdup (uri);
+	} else {
+		/* Make text version of directory URI. */
+		directory_uri = gnome_vfs_uri_to_string
+			(directory_vfs_uri,
+			 GNOME_VFS_URI_HIDE_NONE);
+		gnome_vfs_uri_unref (directory_vfs_uri);
 	}
-
-	/* Make text version of directory URI. */
-	directory_uri = gnome_vfs_uri_to_string (directory_vfs_uri,
-						 GNOME_VFS_URI_HIDE_NONE);
-	gnome_vfs_uri_unref (directory_vfs_uri);
 
 	/* Get object that represents the directory. */
 	directory = nautilus_directory_get (directory_uri);
@@ -219,9 +221,10 @@ nautilus_file_get (const char *uri)
 	}
 	file = nautilus_directory_find_file (directory, file_name);
 	if (file != NULL) {
+		g_assert (file->details->self_owned == self_owned);
 		nautilus_file_ref (file);
 	} else {
-		file = nautilus_file_new_from_name (directory, file_name);
+		file = nautilus_file_new_from_name (directory, file_name, self_owned);
 		directory->details->files =
 			g_list_prepend (directory->details->files, file);
 	}
@@ -240,6 +243,8 @@ destroy (GtkObject *object)
 
 	file = NAUTILUS_FILE (object);
 
+	g_assert (file->details->operations_in_progress == NULL);
+
 	nautilus_async_destroying_file (file);
 	
 	files = &file->details->directory->details->files;
@@ -251,6 +256,13 @@ destroy (GtkObject *object)
 	}
 
 	nautilus_directory_unref (file->details->directory);
+	if (file->details->info == NULL) {
+		g_free (file->details->name);
+	} else {
+		gnome_vfs_file_info_unref (file->details->info);
+	}
+	g_free (file->details->top_left_text);
+	g_free (file->details->activation_uri);
 
 	g_free (file->details);
 
@@ -297,9 +309,9 @@ nautilus_file_get_parent_uri_as_string (NautilusFile *file)
 {
 	g_assert (NAUTILUS_IS_FILE (file));
 	
-	if (file->details->directory == NULL) {
+	if (file->details->self_owned) {
 		/* Callers expect an empty string, not a NULL. */
-		return "";
+		return g_strdup ("");
 	}
 
 	return nautilus_directory_get_uri (file->details->directory);
@@ -313,7 +325,7 @@ get_file_for_parent_directory (NautilusFile *file)
 
 	g_assert (NAUTILUS_IS_FILE (file));
 	
-	if (file->details->directory == NULL) {
+	if (file->details->self_owned) {
 		return NULL;
 	}
 
@@ -665,6 +677,18 @@ nautilus_file_rename (NautilusFile *file,
 	 * containing path separators.
 	 */
 
+	/* Self-owned files can't be renamed. */
+	if (file->details->self_owned) {
+	       	/* Claim that something changed even if the rename
+		 * failed. This makes it easier for some clients who
+		 * see the "reverting" to the old name as "changing
+		 * back".
+		 */
+		nautilus_file_changed (file);
+		(* callback) (file, GNOME_VFS_ERROR_NOT_SUPPORTED, callback_data);
+		return;
+	}		
+
 	/* Can't rename a file that's already gone.
 	 * We need to check this here because there may be a new
 	 * file with the same name.
@@ -740,13 +764,14 @@ nautilus_file_cancel (NautilusFile *file,
 static GnomeVFSURI *
 nautilus_file_get_gnome_vfs_uri (NautilusFile *file)
 {
-	if (file->details->name[0] == '/') {
+	if (file->details->self_owned) {
 		gnome_vfs_uri_ref (file->details->directory->details->uri);
 		return file->details->directory->details->uri;
 	}
 
-	return gnome_vfs_uri_append_file_name (file->details->directory->details->uri,
-					       file->details->name);
+	return gnome_vfs_uri_append_file_name
+		(file->details->directory->details->uri,
+		 file->details->name);
 }
 
 gboolean         
@@ -773,11 +798,21 @@ nautilus_file_matches_uri (NautilusFile *file, const char *uri_string)
 }
 
 gboolean
-nautilus_file_is_local(NautilusFile *file)
+nautilus_file_is_local (NautilusFile *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 	
-	return(nautilus_directory_is_local(file->details->directory));
+	return nautilus_directory_is_local (file->details->directory);
+}
+
+gboolean
+nautilus_file_should_get_top_left_text (NautilusFile *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+	
+	return nautilus_file_is_local (file)
+		|| nautilus_preferences_get_boolean
+		(NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS, FALSE);
 }
 
 gboolean
@@ -1298,57 +1333,21 @@ nautilus_file_monitor_remove (NautilusFile *file,
 		(file->details->directory, file, client);
 }			      
 
-
-/* FIXME: This needs to be changed to use async. I/O, and callers need
- * to use the "call when ready" way for asking for the info.
+/* Return the uri associated with the passed-in file, which may not be
+ * the actual uri if the file is an old-style gmc link or a nautilus
+ * xml link file.
  */
-/* return the uri associated with the passed-in file, which may not be the actual uri if
-   the file is an old-style gmc link or a nautilus xml file */
 char *
-nautilus_file_get_mapped_uri (NautilusFile *file)
+nautilus_file_get_activation_uri (NautilusFile *file)
 {
-	char* actual_uri;
-	GnomeVFSResult result;
-	GnomeVFSHandle *handle;
-	char buffer[512];
-	GnomeVFSFileSize bytes_read;
-
-	/* first get the actual uri */
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-		
-	actual_uri = nautilus_file_get_uri (file);
-	if (actual_uri == NULL) {
+
+	if (!file->details->got_activation_uri) {
 		return NULL;
 	}
-		
-	/* FIXME bugzilla.eazel.com 911: Need to use async. I/O. */
-	/* see if it's a gmc style URI by reading the first part of the file */
-	result = gnome_vfs_open (&handle, actual_uri, GNOME_VFS_OPEN_READ);
-	if (result == GNOME_VFS_OK) {
-		result = gnome_vfs_read (handle, buffer, sizeof (buffer), &bytes_read);
-		if (result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_EOF) {
-			if (nautilus_str_has_prefix (buffer, "URL: ")) {
-				char *eol = strchr (buffer, '\n');
-				if (eol)
-					*eol = '\0';
-				if (strlen (buffer) <= bytes_read) {
-					g_free (actual_uri);
-					actual_uri = g_strdup (buffer + 5);
-				}
-			}
-		}
-		gnome_vfs_close (handle);
-	}
-	
-	/* see if it's a nautilus link xml file - if so, open and parse the file to fetch the uri */
-	if (nautilus_link_is_link_file (actual_uri)) {
-		char *old_uri = actual_uri;
-		actual_uri = nautilus_link_get_link_uri (actual_uri);
-		g_free (old_uri);
-	}
-		
-	/* all done so return the result */
-	return actual_uri;
+	return file->details->activation_uri == NULL
+		? nautilus_file_get_uri (file)
+		: g_strdup (file->details->activation_uri);
 }
 
 /* Return the actual uri associated with the passed-in file. */
@@ -1359,6 +1358,10 @@ nautilus_file_get_uri (NautilusFile *file)
 	char *uri_text;
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	if (file->details->self_owned) {
+		return g_strdup (file->details->directory->details->uri_text);
+	}
 
 	uri = nautilus_file_get_gnome_vfs_uri (file);
 	uri_text = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
@@ -2036,7 +2039,7 @@ nautilus_file_set_owner (NautilusFile *file,
 	}
 
 	/* FIXME: We can't assume that the gid is already good/read,
-	 * can we? Maybe we have to preced the set_file_info with a
+	 * can we? Maybe we have to precede the set_file_info with a
 	 * get_file_info to fix this?
 	 */
 	set_owner_and_group (file,
@@ -2336,7 +2339,7 @@ nautilus_file_set_group (NautilusFile *file,
 	}
 
 	/* FIXME: We can't assume that the gid is already good/read,
-	 * can we? Maybe we have to preced the set_file_info with a
+	 * can we? Maybe we have to precede the set_file_info with a
 	 * get_file_info to fix this?
 	 */
 	set_owner_and_group (file,
@@ -3120,26 +3123,26 @@ nautilus_file_is_directory (NautilusFile *file)
 gboolean
 nautilus_file_contains_text (NautilusFile *file)
 {
-	char *mime_type, *uri;
+	char *mime_type, *name;
 	gboolean contains_text;
-
+	
 	if (file == NULL) {
 		return FALSE;
 	}
-
+	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
+	
 	mime_type = nautilus_file_get_mime_type (file);
-	uri = nautilus_file_get_uri (file);
+	name = nautilus_file_get_name (file);
 	
 	/* see if it's a nautilus link xml file - if so, see if we need to handle specially */
 	contains_text = (nautilus_istr_has_prefix (mime_type, "text/")
-		|| (mime_type == NULL && nautilus_file_get_file_type (file)
-		    == GNOME_VFS_FILE_TYPE_REGULAR)) 
-		&& !nautilus_link_is_link_file (uri);
-		    
+			 || (mime_type == NULL && nautilus_file_get_file_type (file)
+			     == GNOME_VFS_FILE_TYPE_REGULAR))
+		&& !nautilus_link_is_link_file_name (name);
+	
 	g_free (mime_type);
-	g_free (uri);
+	g_free (name);
 	
 	return contains_text;
 }
@@ -3183,6 +3186,10 @@ char *
 nautilus_file_get_top_left_text (NautilusFile *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	if (!nautilus_file_should_get_top_left_text (file)) {
+		return NULL;
+	}
 
 	/* Show " --" in the file until we read the contents in. */
 	if (!file->details->got_top_left_text) {
@@ -3336,10 +3343,10 @@ nautilus_file_activate_custom (NautilusFile *file, gboolean use_new_window)
 {
 	int result;
 	char *uri, *old_uri, *command_str;
-	uri = nautilus_file_get_uri (file);
 	
 	/* See if it's a nautilus link xml file - if so, see if we need to handle specially. */
-	if (nautilus_link_is_link_file (uri)) {
+	uri = nautilus_file_get_uri (file);
+	if (nautilus_link_is_link_file_name (uri)) {
 		old_uri = uri;
 		uri = nautilus_link_get_link_uri (uri);
 		g_free (old_uri);

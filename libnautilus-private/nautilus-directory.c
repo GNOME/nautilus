@@ -394,7 +394,7 @@ construct_alternate_metafile_uri (GnomeVFSURI *uri)
 	g_free (user_directory);
 
 	metafiles_directory_uri = gnome_vfs_uri_append_file_name (nautilus_directory_uri,
-							     METAFILES_DIRECTORY_NAME);
+								  METAFILES_DIRECTORY_NAME);
 	gnome_vfs_uri_unref (nautilus_directory_uri);
 	result = nautilus_make_directory_and_parents (metafiles_directory_uri,
 						      METAFILES_DIRECTORY_PERMISSIONS);
@@ -451,7 +451,6 @@ nautilus_directory_is_local (NautilusDirectory *directory)
 	
 	return gnome_vfs_uri_is_local (directory->details->uri);
 }
-
 
 gboolean
 nautilus_directory_are_all_files_seen (NautilusDirectory *directory)

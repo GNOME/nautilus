@@ -959,7 +959,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	
 	/* handle nautilus link xml files, which may specify their own image */	
 	icon_name = NULL;
-	if (nautilus_link_is_link_file (file_uri)) {
+	if (nautilus_link_is_link_file_name (file_uri)) {
 		image_uri = nautilus_link_get_image_uri (file_uri);
 		if (image_uri != NULL) {
 			if (nautilus_istr_has_prefix (image_uri, "file://"))
@@ -993,15 +993,12 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 		icon_name = g_strdup (nautilus_icon_factory_get_icon_name_for_file (file));
 	}
 
-	top_left_text = NULL;
-	if (nautilus_file_is_local (file)
-	    || nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS, FALSE)) {
-		top_left_text = nautilus_file_get_top_left_text (file);
-	}
+	top_left_text = nautilus_file_get_top_left_text (file);
 	
 	/* Create the icon or find it in the cache if it's already there. */
 	scalable_icon = nautilus_scalable_icon_new_from_text_pieces 
 		(uri, icon_name, modifier, top_left_text, anti_aliased);
+
 	g_free (uri);
 	g_free (icon_name);
 	g_free (top_left_text);

@@ -27,54 +27,68 @@
 
 #include <libgnomevfs/gnome-vfs-types.h>
 
-typedef void (* NautilusReadFileCallback) (GnomeVFSResult result,
-					   GnomeVFSFileSize file_size,
-					   char *file_contents,
-					   gpointer callback_data);
+typedef void     (* NautilusReadFileCallback) (GnomeVFSResult result,
+					       GnomeVFSFileSize file_size,
+					       char *file_contents,
+					       gpointer callback_data);
+typedef gboolean (* NautilusReadMoreCallback) (GnomeVFSFileSize file_size,
+					       const char *file_contents,
+					       gpointer callback_data);
 typedef struct NautilusReadFileHandle NautilusReadFileHandle;
 
-char *                  nautilus_format_uri_for_display  (const char                *uri);
-char *                  nautilus_make_uri_from_input     (const char                *location);
-char *                  nautilus_make_path               (const char                *path,
-							  const char                *name);
+char *                  nautilus_format_uri_for_display     (const char                *uri);
+char *                  nautilus_make_uri_from_input        (const char                *location);
 
-/* Return paths that NEED to be destroyed.  
- * These functions are meant to return something something that is not NULL and
- * is guranteed to exist.
+/* FIXME: This is the same as gnome-libs g_concat_dir_and_file except
+ * for handling path == NULL.
  */
-char *            nautilus_get_user_directory      (void);
-char *            nautilus_get_user_main_directory (void);
-char *            nautilus_get_desktop_directory   (void);
-char *            nautilus_get_pixmap_directory    (void);
+char *                  nautilus_make_path                  (const char                *path,
+							     const char                *name);
 
-/* see if the user_main_directory exists.  This must be called before
-   "nautilus_get_user_main_directory", which creates it */
-gboolean		nautilus_user_main_directory_exists (void);
-
-/* Turn a "file://" URI into a local path.
- * Returns NULL if it's not a URI that can be converted.
+/* These functions all return something something that needs to be
+ * freed with g_free, is not NULL, and is guaranteed to exist.
  */
-char *                  nautilus_get_local_path_from_uri (const char                *uri);
+char *                  nautilus_get_user_directory         (void);
+char *                  nautilus_get_user_main_directory    (void);
+char *                  nautilus_get_desktop_directory      (void);
+char *                  nautilus_get_pixmap_directory       (void);
+
+/* See if the user_main_directory exists. This should be called before
+ * nautilus_get_user_main_directory, which creates the directory.
+ */
+gboolean                nautilus_user_main_directory_exists (void);
+
+/* Turn a "file://" URI into a local path. Returns NULL if it's not a
+ * URI that can be converted.
+ */
+char *                  nautilus_get_local_path_from_uri    (const char                *uri);
 
 /* Turn a path into a "file://" URI. */
-char *                  nautilus_get_uri_from_local_path (const char                *local_full_path);
+char *                  nautilus_get_uri_from_local_path    (const char                *local_full_path);
 
-/* convenience routine to test if a string is a remote uri */
-gboolean		nautilus_is_remote_uri		 (const char 		    *uri);
+/* Convenience routine to test if a string is a remote URI. */
+gboolean                nautilus_is_remote_uri              (const char                *uri);
 
 /* A version of gnome's gnome_pixmap_file that works for the nautilus prefix.
  * Otherwise similar to gnome_pixmap_file in that it checks to see if the file
  * exists and returns NULL if it doesn't.
  */
-char *                  nautilus_pixmap_file             (const char                *partial_path);
+/* FIXME: We might not need this once we get on gnome-libs 2.0 which handles
+ * gnome_pixmap_file better, using GNOME_PATH.
+ */
+char *                  nautilus_pixmap_file                (const char                *partial_path);
 
 /* Read an entire file at once with gnome-vfs. */
-GnomeVFSResult          nautilus_read_entire_file        (const char                *uri,
-							  int                       *file_size,
-							  char                     **file_contents);
-NautilusReadFileHandle *nautilus_read_entire_file_async  (const char                *uri,
-							  NautilusReadFileCallback   calllback,
-							  gpointer                   callback_data);
-void                    nautilus_read_entire_file_cancel (NautilusReadFileHandle    *handle);
+GnomeVFSResult          nautilus_read_entire_file           (const char                *uri,
+							     int                       *file_size,
+							     char                     **file_contents);
+NautilusReadFileHandle *nautilus_read_entire_file_async     (const char                *uri,
+							     NautilusReadFileCallback   callback,
+							     gpointer                   callback_data);
+NautilusReadFileHandle *nautilus_read_file_async            (const char                *uri,
+							     NautilusReadFileCallback   callback,
+							     NautilusReadMoreCallback   read_more_callback,
+							     gpointer                   callback_data);
+void                    nautilus_read_file_cancel           (NautilusReadFileHandle    *handle);
 
 #endif /* NAUTILUS_FILE_UTILITIES_H */

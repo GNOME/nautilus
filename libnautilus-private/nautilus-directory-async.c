@@ -24,27 +24,23 @@
 
 #include <config.h>
 
-#include "nautilus-directory-private.h"
 #include "nautilus-directory-metafile.h"
-#include "nautilus-file-private.h"
+#include "nautilus-directory-private.h"
 #include "nautilus-file-attributes.h"
-#include "nautilus-global-preferences.h"
-
-#include <gtk/gtkmain.h>
-
-#include <parser.h>
-#include <xmlmemory.h>
-#include <stdlib.h>
-
-#include "nautilus-string.h"
+#include "nautilus-file-private.h"
 #include "nautilus-glib-extensions.h"
+#include "nautilus-link.h"
+#include "nautilus-string.h"
+#include <gtk/gtkmain.h>
+#include <parser.h>
+#include <stdlib.h>
+#include <xmlmemory.h>
 
 #define METAFILE_PERMISSIONS (GNOME_VFS_PERM_USER_READ | GNOME_VFS_PERM_USER_WRITE \
 			      | GNOME_VFS_PERM_GROUP_READ | GNOME_VFS_PERM_GROUP_WRITE \
 			      | GNOME_VFS_PERM_OTHER_READ | GNOME_VFS_PERM_OTHER_WRITE)
 
 #define DIRECTORY_LOAD_ITEMS_PER_CALLBACK 32
-#define TOP_LEFT_TEXT_READ_CHUNK_SIZE (4 * 1024)
 
 struct MetafileWriteState {
 	GnomeVFSAsyncHandle *handle;
@@ -54,11 +50,13 @@ struct MetafileWriteState {
 };
 
 struct TopLeftTextReadState {
-	GnomeVFSAsyncHandle *handle;
 	NautilusFile *file;
-	gboolean is_open;
-	char *buffer;
-	int bytes_read;
+	NautilusReadFileHandle *handle;
+};
+
+struct ActivationURIReadState {
+	NautilusFile *file;
+	NautilusReadFileHandle *handle;
 };
 
 /* A request for information about one or more files. */
@@ -69,6 +67,7 @@ typedef struct {
 	gboolean directory_count;
 	gboolean deep_count;
 	gboolean top_left_text;
+	gboolean activation_uri;
 } Request;
 
 typedef struct {
@@ -97,7 +96,6 @@ static void 	metafile_read_start  (NautilusDirectory *directory);
 static gboolean request_is_satisfied (NautilusDirectory *directory,
 		      		      NautilusFile  	*file,
 		      		      Request 		*request);
-static void 	top_left_read_some   (NautilusDirectory *directory);
 
 static void
 empty_close_callback (GnomeVFSAsyncHandle *handle,
@@ -140,27 +138,22 @@ cancel_deep_count (NautilusDirectory *directory)
 }
 
 static void
-top_left_read_close (NautilusDirectory *directory)
-{
-	g_assert (directory->details->top_left_read_state->handle != NULL);
-	if (directory->details->top_left_read_state->is_open) {
-		gnome_vfs_async_close (directory->details->top_left_read_state->handle,
-				       empty_close_callback,
-				       directory);
-		directory->details->top_left_read_state->is_open = FALSE;
-	}
-	directory->details->top_left_read_state->handle = NULL;
-}
-
-static void
 cancel_top_left_read (NautilusDirectory *directory)
 {
 	if (directory->details->top_left_read_state != NULL) {
-		gnome_vfs_async_cancel (directory->details->top_left_read_state->handle);
-		top_left_read_close (directory);
-		g_free (directory->details->top_left_read_state->buffer);
+		nautilus_read_file_cancel (directory->details->top_left_read_state->handle);
 		g_free (directory->details->top_left_read_state);
 		directory->details->top_left_read_state = NULL;
+	}
+}
+
+static void
+cancel_get_activation_uri (NautilusDirectory *directory)
+{
+	if (directory->details->activation_uri_read_state != NULL) {
+		nautilus_read_file_cancel (directory->details->activation_uri_read_state->handle);
+		g_free (directory->details->activation_uri_read_state);
+		directory->details->activation_uri_read_state = NULL;
 	}
 }
 
@@ -178,7 +171,7 @@ static void
 cancel_metafile_read (NautilusDirectory *directory)
 {
 	if (directory->details->metafile_read_handle != NULL) {
-		nautilus_read_entire_file_cancel (directory->details->metafile_read_handle);
+		nautilus_read_file_cancel (directory->details->metafile_read_handle);
 		directory->details->metafile_read_handle = NULL;
 	}
 }
@@ -191,6 +184,7 @@ nautilus_directory_cancel (NautilusDirectory *directory)
 	cancel_get_info (directory);
 	cancel_metafile_read (directory);
 	cancel_top_left_read (directory);
+	cancel_get_activation_uri (directory);
 }
 
 static void
@@ -581,6 +575,10 @@ set_up_request_by_file_attributes (Request *request,
 	request->file_info = g_list_find_custom
 		(file_attributes,
 		 NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE,
+		 nautilus_str_compare) != NULL;
+	request->activation_uri = g_list_find_custom
+		(file_attributes,
+		 NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI,
 		 nautilus_str_compare) != NULL;
 
 	/* FIXME:
@@ -1198,6 +1196,11 @@ nautilus_async_destroying_file (NautilusFile *file)
 		directory->details->top_left_read_state->file = NULL;
 		changed = TRUE;
 	}
+	if (directory->details->activation_uri_read_state != NULL
+	    && directory->details->activation_uri_read_state->file == file) {
+		directory->details->activation_uri_read_state->file = NULL;
+		changed = TRUE;
+	}
 
 	/* Let the directory take care of the rest. */
 	if (changed) {
@@ -1222,7 +1225,8 @@ wants_directory_count (const Request *request)
 static gboolean
 lacks_top_left (NautilusFile *file)
 {
-	return nautilus_file_contains_text (file)
+	return nautilus_file_should_get_top_left_text (file)
+		&& nautilus_file_contains_text (file)
 		&& !file->details->got_top_left_text;
 }
 
@@ -1256,6 +1260,18 @@ static gboolean
 wants_deep_count (const Request *request)
 {
 	return request->deep_count;
+}
+
+static gboolean
+lacks_activation_uri (NautilusFile *file)
+{
+	return !file->details->got_activation_uri;
+}
+
+static gboolean
+wants_activation_uri (const Request *request)
+{
+	return request->activation_uri;
 }
 
 static gboolean
@@ -1304,6 +1320,12 @@ request_is_satisfied (NautilusDirectory *directory,
 
 	if (request->deep_count) {
 		if (has_problem (directory, file, lacks_deep_count)) {
+			return FALSE;
+		}
+	}
+
+	if (request->activation_uri) {
+		if (has_problem (directory, file, lacks_activation_uri)) {
 			return FALSE;
 		}
 	}
@@ -1472,13 +1494,19 @@ nautilus_directory_force_reload (NautilusDirectory *directory)
 
 
 static gboolean
-is_wanted (NautilusFile *file, RequestCheck check_wanted)
+is_needy (NautilusFile *file,
+	  FileCheck check_missing,
+	  RequestCheck check_wanted)
 {
 	GList *p;
 	ReadyCallback *callback;
 	Monitor *monitor;
 
 	g_assert (NAUTILUS_IS_FILE (file));
+
+	if (!(* check_missing) (file)) {
+		return FALSE;
+	}
 
 	for (p = file->details->directory->details->call_when_ready_list; p != NULL; p = p->next) {
 		callback = p->data;
@@ -1566,11 +1594,13 @@ start_getting_directory_counts (NautilusDirectory *directory)
 	 * it's still wanted.
 	 */
 	if (directory->details->count_in_progress != NULL) {
-		if (directory->details->count_file != NULL) {
-			g_assert (NAUTILUS_IS_FILE (directory->details->count_file));
-			g_assert (directory->details->count_file->details->directory == directory);
-			if (is_wanted (directory->details->count_file,
-				       wants_directory_count)) {
+		file = directory->details->count_file;
+		if (file != NULL) {
+			g_assert (NAUTILUS_IS_FILE (file));
+			g_assert (file->details->directory == directory);
+			if (is_needy (file,
+				      lacks_directory_count,
+				      wants_directory_count)) {
 				return;
 			}
 		}
@@ -1736,7 +1766,9 @@ deep_count_start (NautilusDirectory *directory)
 		if (file != NULL) {
 			g_assert (NAUTILUS_IS_FILE (file));
 			g_assert (file->details->directory == directory);
-			if (is_wanted (file, wants_deep_count)) {
+			if (is_needy (file,
+				      lacks_deep_count,
+				      wants_deep_count)) {
 				return;
 			}
 		}
@@ -1780,11 +1812,11 @@ count_lines (const char *text, int length)
 static void
 top_left_read_done (NautilusDirectory *directory)
 {
+	g_assert (directory->details->top_left_read_state->handle == NULL);
 	g_assert (NAUTILUS_IS_FILE (directory->details->top_left_read_state->file));
 
 	directory->details->top_left_read_state->file->details->got_top_left_text = TRUE;
 
-	g_free (directory->details->top_left_read_state->buffer);
 	g_free (directory->details->top_left_read_state);
 	directory->details->top_left_read_state = NULL;
 
@@ -1792,100 +1824,40 @@ top_left_read_done (NautilusDirectory *directory)
 }
 
 static void
-top_left_read_failed (NautilusDirectory *directory)
-{
-	top_left_read_done (directory);
-}
-
-static void
-top_left_read_complete (NautilusDirectory *directory)
-{
-	g_assert (NAUTILUS_IS_FILE (directory->details->top_left_read_state->file));
-
-	g_free (directory->details->top_left_read_state->file->details->top_left_text);
-	directory->details->top_left_read_state->file->details->top_left_text =
-		nautilus_extract_top_left_text (directory->details->top_left_read_state->buffer,
-						directory->details->top_left_read_state->bytes_read);
-
-	nautilus_file_changed (directory->details->top_left_read_state->file);
-
-	top_left_read_done (directory);
-}
-
-static void
-top_left_read_callback (GnomeVFSAsyncHandle *handle,
-			GnomeVFSResult result,
-			gpointer buffer,
-			GnomeVFSFileSize bytes_requested,
+top_left_read_callback (GnomeVFSResult result,
 			GnomeVFSFileSize bytes_read,
-			gpointer callback_data)
-{
-	NautilusDirectory *directory;
-
-	g_assert (bytes_requested == TOP_LEFT_TEXT_READ_CHUNK_SIZE);
-
-	directory = NAUTILUS_DIRECTORY (callback_data);
-	g_assert (directory->details->top_left_read_state->handle == handle);
-	g_assert (directory->details->top_left_read_state->buffer
-		  + directory->details->top_left_read_state->bytes_read == buffer);
-
-	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_EOF) {
-		top_left_read_close (directory);
-		top_left_read_failed (directory);
-		return;
-	}
-
-	directory->details->top_left_read_state->bytes_read += bytes_read;
-
-	/* If we haven't read the whole file and we don't have enough lines,
-	 * keep reading.
-	 */
-	if (bytes_read != 0 && result == GNOME_VFS_OK
-	    && count_lines (directory->details->top_left_read_state->buffer,
-			    directory->details->top_left_read_state->bytes_read)
-	    <= NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES) {
-		top_left_read_some (directory);
-		return;
-	}
-
-	/* We are done reading. */
-	top_left_read_close (directory);
-	top_left_read_complete (directory);
-}
-
-static void
-top_left_read_some (NautilusDirectory *directory)
-{
-	directory->details->top_left_read_state->buffer = g_realloc
-		(directory->details->top_left_read_state->buffer,
-		 directory->details->top_left_read_state->bytes_read
-		 + TOP_LEFT_TEXT_READ_CHUNK_SIZE);
-
-	gnome_vfs_async_read (directory->details->top_left_read_state->handle,
-			      directory->details->top_left_read_state->buffer
-			      + directory->details->top_left_read_state->bytes_read,
-			      TOP_LEFT_TEXT_READ_CHUNK_SIZE,
-			      top_left_read_callback,
-			      directory);
-}
-
-static void
-top_left_open_callback (GnomeVFSAsyncHandle *handle,
-			GnomeVFSResult result,
+			char *file_contents,
 			gpointer callback_data)
 {
 	NautilusDirectory *directory;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
-	g_assert (directory->details->top_left_read_state->handle == handle);
 
-	if (result != GNOME_VFS_OK) {
-		top_left_read_failed (directory);
-		return;
+	directory->details->top_left_read_state->handle = NULL;
+
+	if (result == GNOME_VFS_OK) {
+		g_free (directory->details->top_left_read_state->file->details->top_left_text);
+		directory->details->top_left_read_state->file->details->top_left_text =
+			nautilus_extract_top_left_text (file_contents, bytes_read);
+		
+		nautilus_file_changed (directory->details->top_left_read_state->file);
+		
+		g_free (file_contents);
 	}
+	
+	top_left_read_done (directory);
+}
 
-	directory->details->top_left_read_state->is_open = TRUE;
-	top_left_read_some (directory);
+static gboolean
+top_left_read_more_callback (GnomeVFSFileSize bytes_read,
+			     const char *file_contents,
+			     gpointer callback_data)
+{
+	g_assert (NAUTILUS_IS_DIRECTORY (callback_data));
+
+	/* Stop reading when we have enough. */
+	return bytes_read < NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_BYTES
+		&& count_lines (file_contents, bytes_read) <= NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_LINES;
 }
 
 static void
@@ -1898,11 +1870,13 @@ start_getting_top_lefts (NautilusDirectory *directory)
 	 * it's still wanted.
 	 */
 	if (directory->details->top_left_read_state != NULL) {
-		if (directory->details->top_left_read_state->file != NULL) {
-			g_assert (NAUTILUS_IS_FILE (directory->details->top_left_read_state->file));
-			g_assert (directory->details->top_left_read_state->file->details->directory == directory);
-			if (is_wanted (directory->details->top_left_read_state->file,
-				       wants_top_left)) {
+		file = directory->details->top_left_read_state->file;
+		if (file != NULL) {
+			g_assert (NAUTILUS_IS_FILE (file));
+			g_assert (file->details->directory == directory);
+			if (is_needy (file,
+				      lacks_top_left,
+				      wants_top_left)) {
 				return;
 			}
 		}
@@ -1920,14 +1894,14 @@ start_getting_top_lefts (NautilusDirectory *directory)
 	}
 
 	/* Start reading. */
-	uri = nautilus_file_get_uri (file);
 	directory->details->top_left_read_state = g_new0 (TopLeftTextReadState, 1);
 	directory->details->top_left_read_state->file = file;
-	gnome_vfs_async_open (&directory->details->top_left_read_state->handle,
-			      uri,
-			      GNOME_VFS_OPEN_READ,
-			      top_left_open_callback,
-			      directory);
+	uri = nautilus_file_get_uri (file);
+	directory->details->top_left_read_state->handle = nautilus_read_file_async
+		(uri,
+		 top_left_read_callback,
+		 top_left_read_more_callback,
+		 directory);
 	g_free (uri);
 }
 
@@ -1966,24 +1940,24 @@ start_getting_file_info (NautilusDirectory *directory)
 	GnomeVFSURI *vfs_uri;
 	GList fake_list;
 
-	/* If there's already a count in progress, check to be sure
-	 * it's still wanted.
+	/* If there's already a file info fetch in progress, check to
+	 * be sure it's still wanted.
 	 */
 	if (directory->details->get_info_in_progress != NULL) {
-		if (directory->details->get_info_file != NULL) {
-			g_assert (NAUTILUS_IS_FILE (directory->details->get_info_file));
-			g_assert (directory->details->get_info_file->details->directory == directory);
-			if (is_wanted (directory->details->get_info_file,
-				       wants_info)) {
+		file = directory->details->get_info_file;
+		if (file != NULL) {
+			g_assert (NAUTILUS_IS_FILE (file));
+			g_assert (file->details->directory == directory);
+			if (is_needy (file, lacks_info, wants_info)) {
 				return;
 			}
 		}
 
-		/* The count is not wanted, so stop it. */
+		/* The info is not wanted, so stop it. */
 		cancel_get_info (directory);
 	}
 
-	/* Figure out which file to get a count for. */
+	/* Figure out which file to get file info for. */
 	file = select_needy_file (directory, lacks_info, wants_info);
 	if (file == NULL) {
 		return;
@@ -2004,6 +1978,161 @@ start_getting_file_info (NautilusDirectory *directory)
 		 get_info_callback,
 		 directory);
 	gnome_vfs_uri_unref (vfs_uri);
+}
+
+static void
+activation_uri_found (NautilusDirectory *directory,
+		      const char *uri)
+{
+	NautilusFile *file;
+
+	file = directory->details->activation_uri_read_state->file;
+	file->details->got_activation_uri = TRUE;
+	g_free (file->details->activation_uri);
+	file->details->activation_uri = g_strdup (uri);
+
+	g_free (directory->details->activation_uri_read_state);
+	directory->details->activation_uri_read_state = NULL;
+}
+
+static void
+activation_uri_nautilus_link_read_callback (GnomeVFSResult result,
+					    GnomeVFSFileSize bytes_read,
+					    char *file_contents,
+					    gpointer callback_data)
+{
+	NautilusDirectory *directory;
+	char *buffer, *uri;
+
+	directory = NAUTILUS_DIRECTORY (callback_data);
+
+	/* Handle the case where we read the Nautilus link. */
+	if (result != GNOME_VFS_OK) {
+		/* FIXME: We should show a dialog in this case. */
+		g_free (file_contents);
+		activation_uri_found (directory, NULL);
+	} else {
+		/* The gnome-xml parser requires a zero-terminated array. */
+		buffer = g_realloc (file_contents, bytes_read + 1);
+		buffer[bytes_read] = '\0';
+		uri = nautilus_link_get_link_uri_given_file_contents (buffer, bytes_read);
+		g_free (buffer);
+		activation_uri_found (directory, uri);
+	}
+}
+
+static void
+activation_uri_gmc_link_read_callback (GnomeVFSResult result,
+				       GnomeVFSFileSize bytes_read,
+				       char *file_contents,
+				       gpointer callback_data)
+{
+	NautilusDirectory *directory;
+	char *end_of_line, *uri, *name;
+
+	directory = NAUTILUS_DIRECTORY (callback_data);
+
+	/* Handle the case where we found a GMC link. */
+	if (result == GNOME_VFS_OK && nautilus_str_has_prefix (file_contents, "URL: ")) {
+		/* Make sure we don't run off the end of the buffer. */
+		end_of_line = memchr (file_contents, '\n', bytes_read);
+		if (end_of_line != NULL) {
+			uri = g_strndup (file_contents, end_of_line - file_contents);
+		} else {
+			uri = g_strndup (file_contents, bytes_read);
+		}
+		g_free (file_contents);
+		activation_uri_found (directory, uri);
+		g_free (uri);
+		return;
+	}
+	g_free (file_contents);
+
+	/* Since we didn't find a GMC link, we try to consider a
+	 * special Nautilus ".link" file.
+	 */
+	/* FIXME: If we did this with MIME we would have known it was
+	 * a Nautilus link before we even dealt with the GMC link
+	 * part.
+	 */
+	name = nautilus_file_get_name (directory->details->activation_uri_read_state->file);
+	if (!nautilus_link_is_link_file_name (name)) {
+		/* Tell it that the activation URI is just the real URI. */
+		g_free (name);
+		activation_uri_found (directory, NULL);
+	}
+
+	/* We know it's a link file, so we must read and parse the
+	 * file to find the link URI.
+	 */
+	/* FIXME: We are reading the same file again, which is
+	 * necessary because the first read only is guaranteed to get
+	 * the first 512 bytes. The cleanest way to redo this is to
+	 * just use MIME types so we don't have to do both.
+	 */
+	uri = nautilus_file_get_uri (directory->details->activation_uri_read_state->file);
+	directory->details->activation_uri_read_state->handle = nautilus_read_entire_file_async
+		(uri,
+		 activation_uri_nautilus_link_read_callback,
+		 directory);
+	g_free (uri);
+}
+
+static gboolean
+activation_uri_gmc_link_read_more_callback (GnomeVFSFileSize bytes_read,
+					    const char *file_contents,
+					    gpointer callback_data)
+{
+	g_assert (NAUTILUS_IS_DIRECTORY (callback_data));
+
+	/* We need the first 512 bytes to see if something is a gmc link. */
+	return bytes_read < 512;
+}
+
+static void
+start_getting_activation_uris (NautilusDirectory *directory)
+{
+	NautilusFile *file;
+	char *uri;
+
+	/* If there's already a activation URI read in progress, check
+	 * to be sure it's still wanted.'
+	 */
+	if (directory->details->activation_uri_read_state != NULL) {
+		file = directory->details->activation_uri_read_state->file;
+		if (file != NULL) {
+			g_assert (NAUTILUS_IS_FILE (file));
+			g_assert (file->details->directory == directory);
+			if (is_needy (file, lacks_info, wants_info)) {
+				return;
+			}
+		}
+
+		/* The count is not wanted, so stop it. */
+		cancel_get_activation_uri (directory);
+	}
+
+	/* Figure out which file to get activation_uri for. */
+	file = select_needy_file (directory,
+				  lacks_activation_uri,
+				  wants_activation_uri);
+	if (file == NULL) {
+		return;
+	}
+
+	/* First step is to read it to see if it's a GMC link. */
+	/* FIXME: If we did this with MIME sniffing we could avoid
+	 * most of this mess.
+	 */
+	directory->details->activation_uri_read_state = g_new0 (ActivationURIReadState, 1);
+	directory->details->activation_uri_read_state->file = file;
+	uri = nautilus_file_get_uri (file);
+	directory->details->activation_uri_read_state->handle = nautilus_read_file_async
+		(uri,
+		 activation_uri_gmc_link_read_callback,
+		 activation_uri_gmc_link_read_more_callback,
+		 directory);
+	g_free (uri);
 }
 
 /* Call this when the monitor or call when ready list changes,
@@ -2035,8 +2164,7 @@ nautilus_directory_async_state_changed (NautilusDirectory *directory)
 	deep_count_start (directory);
 
 	/* Start or stop getting top left pieces of files. */
-	if (nautilus_directory_is_local (directory)
-	    || nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS, FALSE)) {
-		start_getting_top_lefts (directory);
-	}
+	start_getting_top_lefts (directory);
+
+	start_getting_activation_uris (directory);
 }

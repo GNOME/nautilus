@@ -33,6 +33,7 @@
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
 
+typedef struct ActivationURIReadState ActivationURIReadState;
 typedef struct MetafileWriteState MetafileWriteState;
 typedef struct TopLeftTextReadState TopLeftTextReadState;
 
@@ -88,6 +89,7 @@ struct NautilusDirectoryDetails
 	NautilusFile *get_info_file;
 
 	TopLeftTextReadState *top_left_read_state;
+	ActivationURIReadState *activation_uri_read_state;
 
 	GList *file_operations_in_progress; /* list of FileOperation * */
 };

@@ -292,6 +292,7 @@ nautilus_application_startup (NautilusApplication *application,
 	const char *message, *detailed_message;
 	GnomeDialog *dialog;
 	Nautilus_URIList *url_list;
+	gboolean need_main_loop;
 
 	/* Check if this is the first time running the program by seeing
 	 * if the user_main_directory exists; if not, run the first time druid 
@@ -340,14 +341,14 @@ nautilus_application_startup (NautilusApplication *application,
 			/* FIXME: The guesses and stuff here are lame. */
 			detailed_message = _("Nautilus can't be used now. "
 					     "Rebooting the computer or installing "
-					     "Nautilus again may fix the problem. "
+					     "Nautilus again may fix the problem.\n\n"
 					     "OAF couldn't locate the nautilus.oafinfo file. "
 					     "One cause of this seems to be an LD_LIBRARY_PATH "
 					     "that does not include the oaf library's directory. "
 					     "Another possible cause would be bad install "
-					     "with a missing nautilus.oafinfo file. "
+					     "with a missing nautilus.oafinfo file.\n\n"
 					     "Sometimes killing oafd and gconfd fixes "
-					     "the problem, but we don't know why. "
+					     "the problem, but we don't know why.\n\n"
 					     "We need a much less confusing message here for Nautilus 1.0.");
 			break;
 		default:
@@ -392,6 +393,7 @@ nautilus_application_startup (NautilusApplication *application,
 				(message, detailed_message, NULL);
 			gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
 					    gtk_main_quit, NULL);
+			need_main_loop = TRUE;
 			goto out;
 		}
 	}
@@ -416,9 +418,12 @@ nautilus_application_startup (NautilusApplication *application,
 	Nautilus_Shell_unref (shell, &ev);
 	CORBA_Object_release (shell, &ev);
 
+	need_main_loop = nautilus_application_window_list != NULL
+		|| nautilus_application_desktop != NULL;
+
  out:
 	CORBA_exception_free (&ev);
-	return nautilus_application_window_list != NULL || nautilus_application_desktop != NULL;
+	return need_main_loop;
 }
 
 static void

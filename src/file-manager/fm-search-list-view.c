@@ -329,8 +329,8 @@ sort_criterion_from_column (int column)
 		return NAUTILUS_FILE_SORT_BY_TYPE;
 	case SEARCH_LIST_VIEW_COLUMN_NAME:
 		return NAUTILUS_FILE_SORT_BY_NAME;
-		/* FIXME: ADD sort by full path name */
 	case SEARCH_LIST_VIEW_COLUMN_ACTUAL_PATH:
+		/* FIXME: Add sort by full path name. */
 		return NAUTILUS_FILE_SORT_BY_NAME;
 	case SEARCH_LIST_VIEW_COLUMN_EMBLEMS:
 		return NAUTILUS_FILE_SORT_BY_EMBLEMS;
@@ -353,6 +353,11 @@ get_attribute_from_column (int column)
 		return SEARCH_LIST_VIEW_ICON_ATTRIBUTE;
 	case SEARCH_LIST_VIEW_COLUMN_NAME:
 		return SEARCH_LIST_VIEW_NAME_ATTRIBUTE;
+	case SEARCH_LIST_VIEW_COLUMN_ACTUAL_PATH:
+		/* FIXME: Darin added this just to get rid of the core
+		 * dump. Need to add real code here.
+		 */
+		return SEARCH_LIST_VIEW_NAME_ATTRIBUTE;
 	case SEARCH_LIST_VIEW_COLUMN_EMBLEMS:
 		return SEARCH_LIST_VIEW_EMBLEMS_ATTRIBUTE;
 	case SEARCH_LIST_VIEW_COLUMN_SIZE:
@@ -374,4 +379,3 @@ fm_search_list_view_destroy (GtkObject *object)
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
-
