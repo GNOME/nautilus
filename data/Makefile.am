@@ -4,7 +4,7 @@ NULL=
 @INTLTOOL_DIRECTORY_RULE@
 
 DESKTOP_IN_FILES=	favorites.desktop.in		\
-			programs.desktop.in		\
+			applications.desktop.in		\
 			starthere.desktop.in		\
 			sysconfig.desktop.in		\
 			preferences.desktop.in		\
@@ -22,7 +22,7 @@ DIRECTORY_FILES=$(DIRECTORY_IN_FILES:.directory.in=.directory)
 
 startheredir= $(sysconfdir)/X11/starthere
 starthere_DATA= 	favorites.desktop	\
-			programs.desktop	\
+			applications.desktop	\
 			sysconfig.desktop	\
 			preferences.desktop	\
 			serverconfig.desktop	\

@@ -1,5 +1,17 @@
 2001-12-14  Seth Nickell  <snickell@stanford.edu>
 
+        The programs:/ URI is now applications:/ to conform with the
+	HIG and GDP word list.
+
+	* data/Makefile.am:
+	* data/applications.desktop.in:
+	* data/programs.desktop.in:
+
+	Move programs.desktop.in to applications.desktop.in and change
+	the URI and Name in the desktop entry.
+	
+2001-12-14  Seth Nickell  <snickell@stanford.edu>
+
 	* Makefile.am:
 
 	Install nautilus and help .desktop files into the proper 
