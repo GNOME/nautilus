@@ -587,7 +587,7 @@ activate_group_callback (GtkMenuItem *menu_item, FileNamePair *pair)
 		 pair->file,
 		 _("Cancel Group Change?"),
 		 _("Changing group"),
-		 NULL); /* FIXME: Parent this? */
+		 NULL); /* FIXME bugzilla.eazel.com 2397: Parent this? */
 	nautilus_file_set_group
 		(pair->file, pair->name,
 		 group_change_callback, NULL);
@@ -676,7 +676,8 @@ attach_group_menu (GtkTable *table,
 	option_menu = gtk_option_menu_new ();
 	gtk_widget_show (option_menu);
 
-	/* FIXME: for reasons I don't understand, passing
+	/* FIXME bugzilla.eazel.com 1454: 
+	 * for reasons I don't understand, passing
 	 * GTK_FILL here is not making the option menu
 	 * minimally-sized horizontally. Might have to pack
 	 * it in an hbox or something.
@@ -732,7 +733,7 @@ activate_owner_callback (GtkMenuItem *menu_item, FileNamePair *pair)
 		 pair->file,
 		 _("Cancel Owner Change?"),
 		 _("Changing owner"),
-		 NULL); /* FIXME: Parent this? */
+		 NULL); /* FIXME bugzilla.eazel.com 2397: Parent this? */
 	nautilus_file_set_owner
 		(pair->file, pair->name,
 		 owner_change_callback, NULL);
@@ -832,7 +833,8 @@ attach_owner_menu (GtkTable *table,
 	option_menu = gtk_option_menu_new ();
 	gtk_widget_show (option_menu);
 
-	/* FIXME: for reasons I don't understand, passing
+	/* FIXME bugzilla.eazel.com 1454: 
+	/* for reasons I don't understand, passing
 	 * GTK_FILL here is not making the option menu
 	 * minimally-sized horizontally. Might have to pack
 	 * it in an hbox or something.
@@ -1064,7 +1066,8 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 	is_directory = nautilus_file_is_directory (file);
 
 	/* We hide MIME type for directories, so we need one fewer row */
-	/* FIXME: Without the && FALSE here, the last row in the directory
+	/* FIXME bugzilla.eazel.com 1454: 
+	 * Without the && FALSE here, the last row in the directory
 	 * case is too close to the 2nd to last row. Haven't figured out why.
 	 */
 	if (is_directory && FALSE) {
@@ -1674,10 +1677,12 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 					  PERMISSIONS_CHECKBOXES_EXECUTE_COLUMN,
 					  GNOME_VFS_PERM_OTHER_EXEC);
 
-		/* FIXME: Would be better to show/hide this info dynamically, so if the
+		/* FIXME bugzilla.eazel.com 2396: 
+		 * Would be better to show/hide this info dynamically, so if the
 		 * preference is changed while the window is open it would react.
 		 */
-		/* FIXME: Spacing is wrong if you just leave empty table cells; need
+		/* FIXME bugzilla.eazel.com 1454: 
+		 * Spacing is wrong if you just leave empty table cells; need
 		 * to size table appropriately in advance.
 		 */
 		if (nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS, 

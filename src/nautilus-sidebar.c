@@ -596,10 +596,6 @@ receive_dropped_uri_list (NautilusSidebar *sidebar,
 		break;
 	case ICON_PART:
 		/* handle images dropped on the logo specially */
-		/* FIXME bugzilla.eazel.com 605: 
-		 * Need feedback for cases where there is more than one URI 
-		 * and where the URI is not a local image.
-		 */
 		
 		if (!exactly_one) {
 			nautilus_error_dialog (_("You can't assign more than one custom icon at a time! Please drag just one image to set a custom icon."), window);

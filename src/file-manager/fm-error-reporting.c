@@ -225,7 +225,7 @@ fm_rename_file (NautilusFile *file,
 				   data,
 				   _("Cancel Rename?"),
 				   wait_message,
-				   NULL); /* FIXME: Parent this? */
+				   NULL); /* FIXME bugzilla.eazel.com 2395: Parent this? */
 	nautilus_file_rename (file, new_name,
 			      rename_callback, data);
 	g_free (wait_message);

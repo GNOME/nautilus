@@ -435,7 +435,6 @@ real_merge_menus (FMDirectoryView *view)
 
 	compute_reveal_item_name_and_sensitivity (selected_files, TRUE, &name, &sensitive);
 
-	/* FIXME bugzilla.eazel.com 1750: need to connect callback */
 	bonobo_ui_handler_menu_new_item (
 		ui_handler,
 		MENU_PATH_REVEAL_IN_NEW_WINDOW, name,

@@ -1315,7 +1315,7 @@ zoomable_set_zoom_level_callback (NautilusZoomable *zoomable, double level, FMDi
 static void
 zoomable_zoom_to_fit_callback (NautilusZoomable *zoomable, FMDirectoryView *view)
 {
-	/* FIXME
+	/* FIXME bugzilla.eazel.com 2388:
 	 * Need to really implement "zoom to fit"
 	 */
 	fm_directory_view_restore_default_zoom_level (view);
@@ -1927,7 +1927,8 @@ fm_directory_view_can_move_file_to_trash (FMDirectoryView *view, NautilusFile *f
 	}
 	directory_uri = gnome_vfs_uri_new (directory);
 	
-	/* FIXME: Does this do I/O? If so we might need to find a way
+	/* FIXME bugzilla.eazel.com 2389: 
+	 * Does this do I/O? If so we might need to find a way
 	 * of doing this based on a list of known trash directories
 	 * instead.
 	 */
@@ -2031,7 +2032,7 @@ fm_directory_view_trash_or_delete_selection (FMDirectoryView *view, GList *files
 	}
 
 	if (in_trash_uris != NULL && moveable_uris == NULL && unmoveable_uris == NULL) {
-		/* FIXME: Confirm here? */
+		/* FIXME bugzilla.eazel.com 2274: Confirm here if preference set */
 		fs_delete (in_trash_uris, GTK_WIDGET (view));
 	}
 
@@ -3281,14 +3282,14 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	performed_special_handling = FALSE;
 
-	/* FIXME: Quite a security hole here. */
+	/* FIXME bugzilla.eazel.com 2390: Quite a security hole here. */
 	if (nautilus_istr_has_prefix (uri, "command:")) {
 		command = g_strconcat (uri + 8, " &", NULL);
 		system (command);
 		g_free (command);
 		performed_special_handling = TRUE;
 	} else if (file_is_launchable (file)) {
-		/* FIXME: This should check if the activation URI points to
+		/* FIXME bugzilla.eazel.com 2391: This should check if the activation URI points to
 		 * something launchable, not the original file. Also, for
 		 * symbolic links we need to check the X bit on the target
 		 * file, not on the original.
@@ -3366,7 +3367,7 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	nautilus_file_call_when_ready
 		(file, &dummy_list, FALSE, activate_callback, parameters);
 
-	/* FIXME: Need a timed wait here too. */
+	/* FIXME bugzilla.eazel.com 2392: Need a timed wait here too. */
 }
 
 
@@ -3413,8 +3414,7 @@ fm_directory_view_activate_files (FMDirectoryView *view,
  * @uri: A string representing the uri to switch to.
  * 
  **/
-/* FIXME: Why is this function public? Left over from pre-Bonobo days? */
-void
+static void
 fm_directory_view_load_uri (FMDirectoryView *view,
 			    const char *uri)
 {
@@ -3746,7 +3746,7 @@ fm_directory_view_get_context_menu_index (const char *menu_name)
 {
 	g_return_val_if_fail (menu_name != NULL, -1);
 
-	/* FIXME: It's very bad to have this redundant information
+	/* FIXME bugzilla.eazel.com 2393: It's very bad to have this redundant information
          * here that replicates what's done in the function above that
 	 * creates the context menu. We should make a cleaner way of
 	 * doing this.

@@ -1,3 +1,25 @@
+2000-08-28  John Sullivan  <sullivan@eazel.com>
+
+	Some FIXME work. Removed some obsolete FIXMEs, and added
+	bug numbers to others (some existing bug reports, some new
+	bug reports). 236 FIXMES without bug numbers remain.
+
+	* src/file-manager/fm-directory-view.c:
+	(zoomable_zoom_to_fit_callback),
+	(fm_directory_view_can_move_file_to_trash),
+	(fm_directory_view_trash_or_delete_selection), (activate_callback),
+	(fm_directory_view_activate_file),
+	(fm_directory_view_get_context_menu_index):
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-error-reporting.c: (fm_rename_file):
+	* src/file-manager/fm-error-reporting.h:
+	* src/file-manager/fm-properties-window.c:
+	(activate_group_callback), (attach_group_menu),
+	(activate_owner_callback), (attach_owner_menu),
+	(create_basic_page), (create_permissions_page):
+	* src/file-manager/fm-search-list-view.c: (real_merge_menus):
+	* src/nautilus-sidebar.c: (receive_dropped_uri_list):
+
 2000-08-28  Rebecca Schulman  <rebecka@eazel.com>
 	Work on task 1969, allow content searches to
 	be done by looking for "All of the words" or

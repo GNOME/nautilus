@@ -247,10 +247,6 @@ GtkType            fm_directory_view_get_type                       (void);
 /* Component embedding support */
 NautilusView *     fm_directory_view_get_nautilus_view              (FMDirectoryView       *view);
 
-/* URI handling */
-void               fm_directory_view_load_uri                       (FMDirectoryView       *view,
-								     const char            *uri);
-
 /* Functions callable from the user interface and elsewhere. */
 char *             fm_directory_view_get_uri		            (FMDirectoryView       *view);
 gboolean           fm_directory_view_can_accept_item                (NautilusFile          *target_item,
