@@ -178,6 +178,7 @@ enum {
 	SELECT_NEXT_NAME,
 	HANDLE_DROPPED_ITEMS,
 	HANDLE_DRAGGED_ITEMS,
+	GET_DEFAULT_ACTION,
 	GET_DRAG_PIXMAP,
 	GET_SORT_COLUMN_INDEX,
 	LAST_SIGNAL
@@ -397,6 +398,20 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				nautilus_gtk_marshal_NONE__INT_POINTER_INT_INT_UINT,
 				GTK_TYPE_NONE, 5,
 				GTK_TYPE_INT,
+				GTK_TYPE_POINTER,
+				GTK_TYPE_INT,
+				GTK_TYPE_INT,
+				GTK_TYPE_UINT);
+	list_signals[GET_DEFAULT_ACTION] =
+		gtk_signal_new ("get_default_action",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusListClass, get_default_action),
+				nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER_POINTER_INT_INT_UINT,
+				GTK_TYPE_NONE, 7,
+				GTK_TYPE_POINTER,
+				GTK_TYPE_POINTER,
+				GTK_TYPE_POINTER,
 				GTK_TYPE_POINTER,
 				GTK_TYPE_INT,
 				GTK_TYPE_INT,
@@ -2885,25 +2900,6 @@ nautilus_list_set_rejects_dropped_icons (NautilusList *list, gboolean new_value)
 	list->details->rejects_dropped_icons = new_value;
 }
 
-static char *
-nautilus_list_find_icon_list_drop_target (NautilusList *list,
-					  GdkDragContext *context,
-					  int x, int y,
-					  gboolean *icon_hit)
-{
-	if (nautilus_list_rejects_dropped_icons (list)) {
-		return NULL;
-	}
-
-	/* FIXME bugzilla.eazel.com 2571: implement this function 
-	   It might need to be implemented in the fm-list-view.c
-	   actually. If so, the rejects_dropped_icons logic should
-	   be moved there too.
-	 */
-
-	return g_strdup ("file:///");
-}
-
 static void
 nautilus_list_get_drop_action (NautilusList *list, 
 			       GdkDragContext *context,
@@ -2912,8 +2908,6 @@ nautilus_list_get_drop_action (NautilusList *list,
 			       int *non_default_action)
 {
 	NautilusDragInfo *drag_info;
-	char *drop_target;
-	gboolean icon_hit;
 
 	drag_info = NAUTILUS_LIST (list)->details->drag_info;
 
@@ -2924,42 +2918,23 @@ nautilus_list_get_drop_action (NautilusList *list,
 		return;
 	}
 
-
-	switch (drag_info->data_type) {
-	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-		if (drag_info->selection_list == NULL) {
-			*default_action = 0;
-			*non_default_action = 0;
-			return;
-		}
-
-		/* FIXME bugzilla.eazel.com 2571: */ 
-		drop_target = nautilus_list_find_icon_list_drop_target (list,
-							      		context, x, y, &icon_hit);
-		if (!drop_target) {
-			*default_action = 0;
-			*non_default_action = 0;
-			return;
-		}
-		nautilus_drag_default_drop_action_for_icons (context, drop_target, 
-			drag_info->selection_list, 
-			default_action, non_default_action);
-		break;
-
-	case NAUTILUS_ICON_DND_COLOR:
-	case NAUTILUS_ICON_DND_BGIMAGE:
-		*default_action = context->suggested_action;
-		*non_default_action = context->suggested_action;
-		break;
-
-	case NAUTILUS_ICON_DND_KEYWORD:
-		/* FIXME bugzilla.eazel.com 2572: Doesn't handle dropped keywords in 
-		   list view? Do we need to support this? */
-		*default_action = context->suggested_action;
-		*non_default_action = context->suggested_action;
-		break;
-	default:
+	if (drag_info->selection_list == NULL) {
+		*default_action = 0;
+		*non_default_action = 0;
+		return;
 	}
+	
+
+	/* get those actions from a subclass of this object */
+	gtk_signal_emit (GTK_OBJECT (list), 
+			 list_signals[GET_DEFAULT_ACTION],
+			 default_action, 
+			 non_default_action,  
+			 context,
+			 drag_info->selection_list,
+			 x, y, 
+			 drag_info->data_type);
+
 }			       
 
 

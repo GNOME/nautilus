@@ -632,6 +632,86 @@ fm_list_handle_dragged_items (NautilusList *list,
 }
 
 
+static char *
+nautilus_list_find_icon_list_drop_target (NautilusList *list,
+					  int x, int y,
+					  GList *selection_list,
+					  FMListView *list_view)
+{
+	NautilusFile *file;
+	char *uri;
+
+	if (nautilus_list_rejects_dropped_icons (list)) {
+		return NULL;
+	}
+
+	file = fm_list_nautilus_file_at (NAUTILUS_LIST (list), x, y);
+	if (file == NULL) {
+		uri = fm_directory_view_get_uri (FM_DIRECTORY_VIEW (list_view));
+		return uri;
+	}
+
+	if ( !nautilus_drag_can_accept_items (file, 
+					      selection_list)) {
+		uri = fm_directory_view_get_uri (FM_DIRECTORY_VIEW (list_view));
+	} else {
+		
+		uri = nautilus_file_get_uri (NAUTILUS_FILE (file));
+	}
+
+	
+	return uri;	
+}
+
+
+static void
+fm_list_get_default_action (NautilusList *list,
+			    int *default_action,
+			    int *non_default_action,
+			    GdkDragContext *context,
+			    GList *drop_data,
+			    int x, int y, guint info,
+			    FMListView *list_view)
+{
+	char *drop_target;
+
+	g_assert (NAUTILUS_IS_LIST (list));
+
+	/* FIXME bugzilla.eazel.com 2569: Too much code copied from nautilus-icon-dnd.c. Need to share more. */
+
+	switch (info) {
+	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+
+		drop_target = nautilus_list_find_icon_list_drop_target (list, x, y,
+									drop_data,
+									list_view);
+		if (!drop_target) {
+			*default_action = 0;
+			*non_default_action = 0;
+			return;
+		}
+		nautilus_drag_default_drop_action_for_icons (context, drop_target, 
+							     drop_data, 
+							     default_action, non_default_action);
+		break;
+
+	case NAUTILUS_ICON_DND_COLOR:
+	case NAUTILUS_ICON_DND_BGIMAGE:
+		*default_action = context->suggested_action;
+		*non_default_action = context->suggested_action;
+		break;
+
+	case NAUTILUS_ICON_DND_KEYWORD:
+		/* FIXME bugzilla.eazel.com 2572: Doesn't handle dropped keywords in 
+		   list view? Do we need to support this? */
+		*default_action = context->suggested_action;
+		*non_default_action = context->suggested_action;
+		break;
+	default:
+	}
+
+}
+
 
 static void
 fm_list_handle_dropped_items (NautilusList *list,
@@ -868,6 +948,10 @@ set_up_list (FMListView *list_view)
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "handle_dropped_items",
 			    fm_list_handle_dropped_items,
+			    list_view);
+	gtk_signal_connect (GTK_OBJECT (list),
+			    "get_default_action",
+			    fm_list_get_default_action,
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "drag_data_get",

@@ -1,3 +1,25 @@
+2000-10-26  Mathieu Lacage  <mathieu@eazel.com>
+
+	Fix bug 2571: action not computed corected for dnd in list view.
+	Also, the dnd in list view should be slightly nicer now :)
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER_INT_INT_INT), space
+	(nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER_POINTER_INT_INT
+	_UINT): brand new function for brand new signal as below :)
+	* libnautilus-extensions/nautilus-gtk-extensions.h: prototype.
+	
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_initialize_class), 
+	(nautilus_list_get_drop_action):
+	* libnautilus-extensions/nautilus-list.h:
+	Add signal get_default_action, remove old code to compute
+	default action...
+
+	* src/file-manager/fm-list-view.c:
+	(nautilus_list_find_icon_list_drop_target),
+	(fm_list_get_default_action), (set_up_list):
+	connect to new signal, move old code to there, cleanup, finish.
+
 2000-10-26  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/nautilus-music-view.c: (selection_callback),

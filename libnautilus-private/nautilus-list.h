@@ -122,6 +122,15 @@ struct NautilusListClass {
 						 int            x,
 						 int            y,
 						 guint          info);
+	void      (* get_default_action)        (GtkWidget     *widget,
+						 int           *default_action,
+						 int           *non_default_action,
+						 GdkDragContext *context,
+						 GList         *drop_data,
+						 int            x,
+						 int            y,
+						 guint          info);
+
 };
 
 typedef gboolean (* NautilusEachRowFunction) (NautilusCListRow *, gpointer);
