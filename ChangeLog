@@ -1,3 +1,10 @@
+2001-09-27  Darin Adler  <darin@bentspoon.com>
+
+	* components/news/nautilus-news.c: (draw_rss_logo_image):
+	Format time using eel_strdup_strftime so we don't have
+	a fixed maximum buffer size and marked the time format
+	for localization.
+
 2001-09-26  Alex Larsson  <alexl@redhat.com>
 
 	* components/mozilla/nautilus-mozilla-content-view.c:

@@ -442,7 +442,7 @@ draw_rss_logo_image (RSSChannelData *channel_data,
 		     int offset,
 		     gboolean measure_only)
 {
-	char time_str[16];
+	char *time_str;
 	int logo_width, logo_height;
 	int v_offset, pixbuf_width;
 	int time_x_pos, time_y_pos;
@@ -471,7 +471,7 @@ draw_rss_logo_image (RSSChannelData *channel_data,
 
 		/* also, draw the update time in the upper right corner if it fits*/
 		if (channel_data->last_update != 0 && !measure_only) {
-			strftime (&time_str[0], 16, "%I:%M %p",	localtime (&channel_data->last_update));
+			time_str = eel_strdup_strftime (_("%I:%M %p"), localtime (&channel_data->last_update));
 
 			time_dimensions = eel_scalable_font_measure_text (channel_data->owner->font, 9, time_str, strlen (time_str));
 	
@@ -485,6 +485,7 @@ draw_rss_logo_image (RSSChannelData *channel_data,
 							     TIME_FONT_SIZE, time_str, strlen (time_str),
 							     EEL_RGB_COLOR_BLACK, EEL_OPACITY_FULLY_OPAQUE);
 			}
+			g_free (time_str);
 		}
 	}
 	return v_offset;
