@@ -1,3 +1,14 @@
+2000-09-25  Pavel Cisler  <pavel@eazel.com>
+
+	* src/nautilus-component-adapter-factory.c:
+	(nautilus_component_adapter_factory_initialize),
+	(nautilus_component_adapter_factory_destroy),
+	(nautilus_component_adapter_factory_get):
+	Fix some NULL-dereferencing crashers that I was hitting.
+
+	* tools/profiler/funcsummary.C:
+	Special case root arcs with zero function times.
+
 2000-09-25  Andy Hertzfeld  <andy@eazel.com>
 
 	work toward completing user added themes; it's almost done

@@ -144,7 +144,8 @@ void FuncSummary::MyArcVisitor::visit(const ProfileData::ArcData &a)
 	to.func_time += a.time;
 	to.func_children_time += a.time;
 
-	from.func_time -= a.time;
+	if (from.func_time > 0)
+	  	from.func_time -= a.time;
 }
 
 

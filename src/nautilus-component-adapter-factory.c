@@ -79,11 +79,13 @@ nautilus_component_adapter_factory_initialize (NautilusComponentAdapterFactory *
            initialize function to fail, and if so, how should it do
            so?? */
 
-	factory->details->corba_factory = bonobo_object_query_interface 
-		(BONOBO_OBJECT (object_client), "IDL:Nautilus/ComponentAdapterFactory:1.0");
+	if (object_client != NULL) {
+		factory->details->corba_factory = bonobo_object_query_interface 
+			(BONOBO_OBJECT (object_client), "IDL:Nautilus/ComponentAdapterFactory:1.0");
 
-	/* FIXME: Do we want a gtk_object_unref or a bonobo_object_unref? */
-	bonobo_object_unref (BONOBO_OBJECT (object_client)); 
+		/* FIXME: Do we want a gtk_object_unref or a bonobo_object_unref? */
+		bonobo_object_unref (BONOBO_OBJECT (object_client)); 
+	}
 }
 
 
@@ -96,7 +98,9 @@ nautilus_component_adapter_factory_destroy (GtkObject *object)
 	factory = NAUTILUS_COMPONENT_ADAPTER_FACTORY (object);
 
 	CORBA_exception_init (&ev);
-	Bonobo_Unknown_unref (factory->details->corba_factory, &ev);
+	if (factory->details->corba_factory != NULL) {
+		Bonobo_Unknown_unref (factory->details->corba_factory, &ev);
+	}
 	CORBA_exception_free (&ev);
 
 	g_free (factory->details);
@@ -119,8 +123,7 @@ NautilusComponentAdapterFactory *
 nautilus_component_adapter_factory_get (void)
 {
 
-	if (global_component_adapter_factory == NULL)
-	{
+	if (global_component_adapter_factory == NULL) {
 		global_component_adapter_factory = gtk_type_new (NAUTILUS_TYPE_COMPONENT_ADAPTER_FACTORY);
 
 		/* FIXME: is it OK to destroy CORBA objects in an atexit handler? */
