@@ -1,0 +1,280 @@
+gnome-man2html
+--------------
+
+Modified version of VH-Man2html by Michael Fulbright <msf@redhat.com>
+
+Please do not contact the individuals below if you have problems with
+gnome-man2htm, instead send me an email and I'll try to help.
+
+The README for the original program lies below...
+
+
+VH-Man2html - Modified Verhoeven-man2html
+-----------------------------------------
+Michael Hamilton <michael@actrix.gen.nz>
+http://www.actrix.gen.nz/users/michael
+
+vh = Richard Verhoeven's (rcb5@win.tue.nl) Man2html as modified and
+packaged by Michael Hamilton.
+
+Featues:
+  - Translate man pages to html from tbl/troff source.
+  - Look up a page by name and section or via full path name.
+  - Links generated html to other pages, include files, email addresses, 
+    and http refs.
+  - Name-title index built from man whatis info.
+  - Name only index built from inspecting the man directories.
+  - Full text search via glimpse (glimpse obtainable separately). 
+  - Works from man and BSD mandoc source files.
+  - Fast troff to HTML translator written in C.
+  - Copes with compressed (gzip etc) source.
+
+New in version 1.5:
+  - fix to mansec for compressed pages.
+  - make now configures ALL scripts, html files, and man pages.
+  - includes section 9.
+
+New in version 1.4:
+  - Uses /etc/man.config to obtain the man path.
+  - Man2html.c now uses decompression filters specified in /etc/man.config.
+  - Glimpse now uses decompression filters (see glimpse_filters file).
+    (Generating indexes will be be slower for compressed hierarchies.)
+  - Safer - more secure from memory overuns.  Man2html now checks for 
+    excessively long input parameters.
+  - All configuration can now be done by editing the Makefile and the
+    glimpse_filters file.
+  - By default (in version 1.4 and above) -M only allows the user to select 
+    what part of the hierarchy to search first - they cannot specify a path
+    outside of the official hierarchy.  Previously the -M option could be
+    used to retrieve any man/mandoc source file that had "man" in it's 
+    path-name/file-name (a compile time switch can restore the previous 
+    behaviour).
+  - Fixed more bugs.
+
+QUICK START INSTRUCTIONS
+------------------------
+
+To use these cgi scripts all you have to do is install the rpm and
+then point your web browser at
+
+ http://localhost/cgi-bin/man2html 
+
+You can either save this location as a bookmark or use an editor to
+insert the following lines into an appropriate place in
+/usr/doc/HTML/calderadoc/caldera.html (or somewhere like
+/home/httpd/index.html if you are using RedHat's http server)
+
+ <H3><A HREF="http:/cgi-bin/man2html"><IMG SRC="book2.gif">
+ Linux Manual Pages</A></H3>
+
+For some of the indexes to work you must generate the necessary
+databases...
+
+Vh-man2html's manwhatis CGI-script uses the /usr/man/whatis file to build
+a man page index.  Caldera 1.0 normally builds the /usr/man/whatis every
+morning at 3:21am.  If this job has never been run (perhaps because
+you turn your machine off at night), you can build it by becoming the
+root user and entering:
+
+ /usr/sbin/makewhatis /usr/man /usr/X11R6/man /usr/local/man
+
+WARNING: makewhatis in Caldera 1.0 takes about 30 minutes on my
+486DX66.  I have a modified version of makewhatis so that it does
+exactly the same job in only 1.5 minutes. My modified version is now
+available as part of man-1.4g (man-1.4g.tar.gz) and above:
+
+ ftp://sunsite.unc.edu/pub/Linux/system/Manual-pagers
+
+To use the Glimpse full text searching, you will need to install
+glimpse in /usr/bin.  Redhat rpm users can get glimpse from 
+
+ ftp://ftp.redhat.com/pub/non-free/glimpse-3.0-1.i386.rpm
+
+The glimpse home ftp site is cs.arizona.edu.  N.B. glimpse is not
+freely redistributable for commercial use, I'd be very interested in a
+more liberal alternative.  Having installed glimpse, you will need to
+build a glimpse index in /var/man2html.  This doesn't take too long -
+about 3 minutes on my 486DX2/66 16MB machine.  As root do:
+
+ /usr/bin/glimpseindex -z -H /var/man2html /usr/man/man* /usr/X11R6/man/man* \
+     /usr/local/man/man* /opt/man/man*
+ chmod ugo+r /var/man2html/.glimpse*
+
+The -z option causes glimpse to apply any filters (for decompression etc)
+specified in /var/man2html/.glimpse_filters.
+
+This could be set up as a cron job in /etc/crontab, e.g. (the following
+must be all on one line):
+
+  21 04 * * 1 root /usr/bin/glimpseindex -z -H /var/man2html /usr/man/man* 
+      /usr/X11R6/man/man* /usr/local/man/man* /opt/man/man* ;
+      chmod +r /var/man2html/.glimpse*
+
+If you don't want to use glimpse you can edit the man.html file that 
+the package installs in /home/http/html/man.html, and remove the 
+references to full text searches and glimpse.  This file can also be
+edited to include any local instructions you might wish to include.
+
+The scripts may generate errors to the httpd error log
+/var/log/httpd/error_log.  The man binary (used to obtain the man-path
+by some of the scripts) seems to always think it's talking to a tty,
+and tries to obtain the screen size, resulting in the following error
+log entries:
+
+  TIOCGWINSZ
+  failed : Bad file number
+
+To serve man pages to remote hosts, all that is required is a httpd 
+daemon that sets the environment variable SERVER_NAME correctly.
+
+END OF QUICK START INSTRUCTIONS
+-------------------------------
+
+Vh-man2html was was written by Richard Verhoeven (NL:5482ZX35) at
+the Eindhoven University of Technology (Email: rcb5@win.tue.nl).  The
+original source is available from his web page at:
+
+ http://wsinwp01.win.tue.nl:1234/maninfo.html
+
+There are other man2html programs around - Richard's page has links to
+several of them.  Richard's man2html has some useful features for
+Caldera/RedHat Linux -
+
+  Works from the troff/nroff source pages.
+    With linux we almost always have the man source.
+    Doesn't have to run man+tbl+eqn+nroff to generate output.
+    Because man isn't run, no catman pages are generated.
+    Accurate - doesn't have to guess from the man output.
+    Does tables (eg man ascii) (but doesn't do eqn - few pages use eqn).
+  Written in C - efficient speed/memory usage.
+    Fast enough not to need a cache.
+  Intelligent 
+    Makes good guesses on where to find pages.
+    Creates links for man pages and include files.
+
+Richard's original program copes with pages formatted with the man
+macros.  I've enhanced it by adding translations for the mandoc macros
+used in the BSD man pages.  BSD mandoc pages in Caldera/Redhat
+include Mail, ftp, telnet, rlogin, and lpr and other printer man
+pages - so they're pretty important.  
+
+I don't have any documentation on the mandoc macros, so I've had to
+guess what they intend, by looking at man source, man output and the
+gnroff macro definitions.  I've tested it on all the BSD mandoc pages
+in Section 1 that I could find.  It works reasonable well.  There are
+still minor formatting glitches to do with punctuation placement.
+I checked the BSD mandoc with weblint, e.g. in tcsh/csh
+
+ foreach i ( `egrep -l '^\.Bl' /usr/man/man1/* /usr/man/man8/*` )
+     /home/httpd/cgi-bin/man2html $i > tmp/`basename $i`
+ end
+ weblint tmp/*
+
+For broader testing:
+
+ find /usr/man/man* -name '*.[0-9]' \
+ -printf "echo %p; /home/httpd/cgi-bin/man2html %p |weblint -x netscape -\n" \
+ | sh \
+ |& tee weblint.log
+
+If you want to sample the spectrum of mandoc translation, look at
+any of the pages the above grep locates, telnet, lpc, and mail
+are good examples.
+
+For full details of my modifications to man2html.c see the patch
+included in the source archive.
+
+Here's a summary of the rpm's components:
+
+  1)  man.html       - Main page or access to man2html and man indexes.
+  2)  man2html       - CGI binary that converts man pages to html.
+  3)  manwhatis      - CGI script for a name and synopsis index organised
+                       by manual section
+  4)  mansec         - CGI script for a name only index for each section.
+  5)  mansearch      - Glimpse full text searching.
+  6)  mansearch.html - Main page or access to man2html and man indexes.
+  7)  netscape-man   - Front end that starts, or talks to, a running netscape.
+  8)  /var/ma2html   - Cache directory for indexes and glimpse indexes.
+
+All my scripts are written in awk.  In detail...
+
+The manwhatis script creates section contents html files by looking
+for whatis files along the man path.  Each whatis entry is translated
+to a man2html link.  Manwhatis caches it's output in
+/var/man2html/whatis-[0-9].html.  The cache will be regenerated if any
+whatis file in the man path is updated (eg touch /usr/man/whatis).
+
+The mansec script lists the names of all manual pages for a given
+section by using find on the man path.  It caches its output in
+/var/man2html/manindex-[0-9].html.  The cache will be regenerated if
+any associated man[0-9] directory in the man path is updated.
+
+The mansearch script uses glimpse to get back a list of files and
+matches which it links back to the actual man pages.  The mansearch
+script is not pure awk.  It's starts out as a shell script to ensure
+that the parameters are safely passed to awk.  I think it's secure,
+but I'm not a cgi script expert.
+
+To build and install man2html, the scripts, and man.html from the
+source archive - edit the Makefile and then:
+
+ make install
+
+To build binary and source rpms, placing them under /usr/src/...
+
+ make rpm
+
+SECURITY
+--------
+
+I've modified the man2html C code so that it checks all client input
+parameters for length and characters that need escaping.
+
+Man2html will only return man or mandoc files resident in the man
+hierarchy defined in /etc/man.config.
+
+When man2html generates references to include files they are in the
+form file: on the CLIENT host, not the server.
+
+The parameters to the decompression programs are checked for any
+nasties.
+
+It is still possible for the contents of a man page to over-run
+man2html's memory - so I guess a hacker might try to get you to
+install a bogus man page in order to get man2html to do something
+nasty.
+
+The scripts check their parameters for anything suspicious.
+
+The scripts and program write suspicious requests to stderr - so they
+can be found in web server log files.
+
+CREDITS
+-------
+
+See the man page man2html.8 for credits.
+
+---------------
+
+My modifications, packaging and scripts are copyright (c) 1996 
+Michael Hamilton (michael@actrix.gen.nz).  All rights reserved.
+
+Permission is hereby granted, without written agreement and without
+license or royalty fees, to use, copy, modify, and distribute this
+software and its documentation for any purpose, provided that the
+above copyright notice and the following two paragraphs appear in all
+copies of this software.
+
+IN NO EVENT SHALL MICHAEL HAMILTON BE LIABLE TO ANY PARTY FOR DIRECT,
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF
+THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF MICHAEL
+HAMILTON HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+MICHAEL HAMILTON SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING,
+BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+ON AN "AS IS" BASIS, AND MICHAEL HAMILTON HAS NO OBLIGATION TO
+PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+
+
+Michael
