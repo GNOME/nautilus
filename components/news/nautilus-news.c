@@ -87,9 +87,13 @@ typedef struct {
 	GtkWidget *configure_box;
 	GtkWidget *checkbox_list;
 	
-	GtkWidget *add_site_box;
+	GtkWidget *edit_site_box;
 	GtkWidget *item_name_field;
 	GtkWidget *item_location_field;
+	
+	GtkWidget *remove_site_list;
+	GtkWidget *remove_button;
+	int remove_selection_index;
 	
 	EelScalableFont *font;	
 	EelScalableFont *bold_font;	
@@ -123,6 +127,8 @@ typedef struct {
 
 	EelReadFileHandle *load_file_handle;
 	EelPixbufLoadHandle *load_image_handle;
+	
+	GtkWidget *checkbox;
 	
 	int prelight_index;
 	
@@ -166,6 +172,8 @@ static gboolean nautilus_news_save_channel_state (News* news_data);
 static void update_size_and_redraw (News* news_data);
 static char* get_xml_path (const char *file_name, gboolean force_local);
 static int check_for_updates (gpointer callback_data);
+static RSSChannelData* get_channel_from_name (News *news_data, const char *channel_name);
+
 static void add_channel_entry (News *news_data, const char *channel_name,
 			       int index, gboolean is_showing);
 static RSSChannelData*
@@ -1314,12 +1322,12 @@ configure_button_clicked (GtkWidget *widget, News *news)
 	if (news->configure_mode) {
 		gtk_widget_show_all (news->configure_box);
 		gtk_widget_hide_all (news->main_box);
-		gtk_widget_hide_all (news->add_site_box);
+		gtk_widget_hide_all (news->edit_site_box);
 	} else {
 		/* when exiting configure mode, update everything */		
 		gtk_widget_show_all (news->main_box);
 		gtk_widget_hide_all (news->configure_box);
-		gtk_widget_hide_all (news->add_site_box);
+		gtk_widget_hide_all (news->edit_site_box);
 
 		nautilus_news_save_channel_state (news);		
 		check_for_updates (news);
@@ -1335,7 +1343,17 @@ add_site_button_clicked (GtkWidget *widget, News *news)
 {
 	news->configure_mode = FALSE;
 	gtk_widget_hide_all (news->configure_box);
-	gtk_widget_show_all (news->add_site_box);
+	gtk_widget_show_all (news->edit_site_box);
+}
+
+/* utility to add an entry to the remove channel clist */
+static void
+add_channel_to_remove_list (News *news_data, const char *channel_name)
+{
+	char* entry[1];
+	
+	entry[0] = g_strdup (channel_name);
+	gtk_clist_append ( GTK_CLIST (news_data->remove_site_list), entry);
 }
 
 /* handle adding a new site from the data in the "add site" fields */
@@ -1354,7 +1372,42 @@ add_site_from_fields (GtkWidget *widget, News *news)
 		news->channel_list = g_list_append (news->channel_list, channel_data);
 		channel_count = g_list_length (news->channel_list);
 		add_channel_entry (news, site_name, channel_count, TRUE);
+		add_channel_to_remove_list (news, site_name);
+
 	}
+	/* back to configure mode */
+	configure_button_clicked (widget, news);
+}
+
+/* handle the remove command  */
+static void
+remove_selected_site (GtkWidget *widget, News *news)
+{
+	RSSChannelData *channel_data;
+	GList *channel_item;
+	char *channel_name;
+
+	gtk_clist_get_text (GTK_CLIST (news->remove_site_list),
+			    news->remove_selection_index, 0,
+			    &channel_name);
+	
+	/* remove the channel from the channel linked list */
+	channel_data = get_channel_from_name (news, channel_name);
+	
+	channel_item = g_list_find (news->channel_list, channel_data);
+	if (channel_item != NULL) {
+		news->channel_list = g_list_remove_link (news->channel_list, channel_item);
+	}
+
+	/* remove the channel from the add list and release it */
+	if (channel_data != NULL) {
+		gtk_widget_destroy (channel_data->checkbox);
+		free_channel (channel_data);	
+	}	
+	
+	/* remove the channel from the remove list */
+	gtk_clist_remove (GTK_CLIST (news->remove_site_list), news->remove_selection_index);
+	
 	/* back to configure mode */
 	configure_button_clicked (widget, news);
 }
@@ -1382,7 +1435,7 @@ add_command_buttons (News *news_data, const char* label, gboolean from_configure
   	gtk_button_box_set_child_size (GTK_BUTTON_BOX (button_box), 24, 14);
 	
 	if (from_configure) {
-		button = gtk_button_new_with_label (_("Add Site"));
+		button = gtk_button_new_with_label (_("Edit Sites"));
 		gtk_container_add (GTK_CONTAINER (button_box), button);
 
 		gtk_signal_connect (GTK_OBJECT (button), "clicked",
@@ -1450,6 +1503,7 @@ static void
 add_channel_entry (News *news_data, const char *channel_name, int index, gboolean is_showing)
 {
 	GtkWidget *check_button;
+	RSSChannelData *channel_data;
 	
 	check_button = gtk_check_button_new_with_label (channel_name);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button), is_showing);
@@ -1459,6 +1513,12 @@ add_channel_entry (News *news_data, const char *channel_name, int index, gboolea
       	              	    			GTK_SIGNAL_FUNC (check_button_toggled_callback),
                             			news_data);
 
+	/* set up pointer in channel object to checkbox, so we can delete it */
+	channel_data = get_channel_from_name (news_data, channel_name);
+	if (channel_data != NULL) {
+		channel_data->checkbox = check_button;
+	}
+	
 	/* set up user data to use in toggle handler */
         gtk_object_set_user_data (GTK_OBJECT (check_button), news_data);
 	gtk_object_set_data_full (GTK_OBJECT (check_button),
@@ -1468,10 +1528,10 @@ add_channel_entry (News *news_data, const char *channel_name, int index, gboolea
 }
 
 /* here's the routine that loads and parses the xml file, then iterates through it
- * to add channels to the enable/disable list
+ * to add channels to the enable/disable lists
  */
 static void
-add_channels_to_configure_list (News* news_data)
+add_channels_to_lists (News* news_data)
 {
 	char *path;
 	char *channel_name, *show_str;
@@ -1506,6 +1566,8 @@ add_channels_to_configure_list (News* news_data)
 			/* add an entry to the channel list */
 			if (channel_name != NULL) {
 				add_channel_entry (news_data, channel_name, channel_index, is_shown);
+				add_channel_to_remove_list (news_data, channel_name);
+
 				channel_index += 1;
 			}
 			
@@ -1518,36 +1580,75 @@ add_channels_to_configure_list (News* news_data)
 	xmlFreeDoc (channel_doc);
 }
 
-/* allocate the add/remove location widgets */
-static void
-set_up_add_widgets (News *news, GtkWidget *container)
+/* code-saving utility to allocate a left-justified anti-aliased label */
+static GtkWidget *
+news_label_new (const char *label_text)
 {
-	GtkWidget  *label;
-	GtkWidget  *temp_vbox;
-	GtkWidget  *expand_box;
-	GtkWidget *button_box, *button;
-
-	news->add_site_box = gtk_vbox_new (FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (container), news->add_site_box, TRUE, TRUE, 0);
-
-	/* add a descriptive label */
-	label = eel_label_new (_("Add A New Site:"));
-	eel_label_set_smooth_font_size (EEL_LABEL (label), 18);
+	GtkWidget *label;
+	
+	label = eel_label_new (label_text);
 	eel_label_set_justify (EEL_LABEL (label), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
-	
-	gtk_box_pack_start (GTK_BOX (news->add_site_box), label, FALSE, FALSE, 0);
 
-	expand_box = gtk_vbox_new (FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (news->add_site_box), expand_box, TRUE, TRUE, 0);
+	return label;	
+}
+
+static void
+select_row_in_remove_list (GtkCList *clist, gint row, gint column,
+			   GdkEventButton *event, News* news)
+{
+	news->remove_selection_index = row;
+}
+
+/* generate the remove widgets */
+static void
+make_remove_widgets (News *news, GtkWidget *container)
+{
+	GtkWidget *button_box;
+	GtkScrolledWindow *scrolled_window;
+	
+	news->remove_site_list = gtk_clist_new (1);
+
+	gtk_clist_column_titles_hide (GTK_CLIST (news->remove_site_list));
+	gtk_clist_set_column_width (GTK_CLIST (news->remove_site_list), 0, 108);
+	gtk_clist_set_selection_mode (GTK_CLIST (news->remove_site_list), GTK_SELECTION_BROWSE);		
+	gtk_signal_connect (GTK_OBJECT (news->remove_site_list), "select_row",
+			    GTK_SIGNAL_FUNC (select_row_in_remove_list), news);
+			    
+	scrolled_window = GTK_SCROLLED_WINDOW (gtk_scrolled_window_new (NULL, NULL));
+	gtk_scrolled_window_set_policy (scrolled_window, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);   
+	gtk_container_add (GTK_CONTAINER (scrolled_window), news->remove_site_list);
+	gtk_box_pack_start (GTK_BOX (container), GTK_WIDGET (scrolled_window), TRUE, TRUE, 0);
+
+	/* install the remove button */
+    	button_box = gtk_hbutton_box_new ();
+	gtk_box_pack_start (GTK_BOX (container), button_box, FALSE, FALSE, 4);
+ 	
+	gtk_button_box_set_layout (GTK_BUTTON_BOX (button_box), GTK_BUTTONBOX_END);
+	gtk_button_box_set_spacing (GTK_BUTTON_BOX (button_box), 4);
+  	gtk_button_box_set_child_size (GTK_BUTTON_BOX (button_box), 24, 14);
+	
+	news->remove_button = gtk_button_new_with_label (_("Remove Site"));
+	gtk_container_add (GTK_CONTAINER (button_box), news->remove_button);
+	gtk_signal_connect (GTK_OBJECT (news->remove_button), "clicked",
+		(GtkSignalFunc) remove_selected_site, news);
+
+}
+
+/* generate the add new site widgets */
+static void
+make_add_widgets (News *news, GtkWidget *container)
+{
+	GtkWidget *label;
+	GtkWidget *temp_vbox;
+	GtkWidget *button_box;
+	GtkWidget *button;
 	
 	temp_vbox = gtk_vbox_new (FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (temp_vbox), 4);
-	gtk_box_pack_start (GTK_BOX (expand_box), temp_vbox, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (container), temp_vbox, FALSE, FALSE, 0);
 
-	label = eel_label_new (_("Site Name:"));
-	eel_label_set_justify (EEL_LABEL (label), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	/* allocate the name field */
+	label = news_label_new (_("Site Name:"));
 	gtk_box_pack_start (GTK_BOX (temp_vbox), label, FALSE, FALSE, 0);
 
 	news->item_name_field = nautilus_entry_new ();
@@ -1556,12 +1657,9 @@ set_up_add_widgets (News *news, GtkWidget *container)
 	
 	/* allocate the location field */
 	temp_vbox = gtk_vbox_new (FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (temp_vbox), 4);
-	gtk_box_pack_start (GTK_BOX (expand_box), temp_vbox, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (container), temp_vbox, FALSE, FALSE, 0);
 
-	label = eel_label_new (_("Site Location:"));
-	eel_label_set_justify (EEL_LABEL (label), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+	label = news_label_new (_("Site Location:"));
 	gtk_box_pack_start (GTK_BOX (temp_vbox), label, FALSE, FALSE, 0);
 
 	news->item_location_field = nautilus_entry_new ();
@@ -1570,8 +1668,7 @@ set_up_add_widgets (News *news, GtkWidget *container)
 	
 	/* install the add buttons */
     	button_box = gtk_hbutton_box_new ();
-	gtk_container_set_border_width (GTK_CONTAINER (button_box), 4);
-	gtk_box_pack_start (GTK_BOX (expand_box), button_box, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (container), button_box, FALSE, FALSE, 4);
  	
 	gtk_button_box_set_layout (GTK_BUTTON_BOX (button_box), GTK_BUTTONBOX_END);
 	gtk_button_box_set_spacing (GTK_BUTTON_BOX (button_box), 4);
@@ -1581,10 +1678,46 @@ set_up_add_widgets (News *news, GtkWidget *container)
 	gtk_container_add (GTK_CONTAINER (button_box), button);
 	gtk_signal_connect (GTK_OBJECT (button), "clicked",
 		(GtkSignalFunc) add_site_from_fields, news);
+}
 
+/* allocate the add/remove location widgets */
+static void
+set_up_edit_widgets (News *news, GtkWidget *container)
+{
+	GtkWidget  *label;
+	GtkWidget  *expand_box;
+	GtkWidget *button_box;
+	GtkWidget *temp_vbox;
+	
+	news->edit_site_box = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (container), news->edit_site_box, TRUE, TRUE, 0);
+
+	expand_box = gtk_vbox_new (FALSE, 0);	
+	gtk_box_pack_start (GTK_BOX (news->edit_site_box), expand_box, TRUE, TRUE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (expand_box), 4);
+
+	/* make the add new site label */
+	label = news_label_new (_("Add A New Site:"));
+	eel_label_set_smooth_font_size (EEL_LABEL (label), 18);
+	gtk_box_pack_start (GTK_BOX (expand_box), label, FALSE, FALSE, 0);
+	
+	/* allocate the add new site widgets */
+	make_add_widgets (news, expand_box);
+	
+	/* allocate the remove label */
+	temp_vbox = gtk_vbox_new (FALSE, 0);
+	
+	label = news_label_new (_("Remove A Site:"));
+	eel_label_set_smooth_font_size (EEL_LABEL (label), 18);
+	gtk_box_pack_start (GTK_BOX (temp_vbox), label, FALSE, FALSE, 0);
+	
+	/* allocate the remove widgets */
+	make_remove_widgets (news, temp_vbox);
+	gtk_box_pack_start (GTK_BOX (expand_box), temp_vbox, FALSE, FALSE, 0);
+	
 	/* add the button box at the bottom with a cancel button */
 	button_box = add_command_buttons (news, _("Cancel"), FALSE);
-	gtk_box_pack_start (GTK_BOX (news->add_site_box), button_box, FALSE, FALSE, 0);	
+	gtk_box_pack_start (GTK_BOX (news->edit_site_box), button_box, FALSE, FALSE, 0);	
 }
 
 /* allocate the widgets for the configure mode */
@@ -1600,10 +1733,8 @@ set_up_configure_widgets (News *news, GtkWidget *container)
 	gtk_box_pack_start (GTK_BOX (container), news->configure_box, TRUE, TRUE, 0);
 
 	/* add a descriptive label */
-	label = eel_label_new (_("Select Sites:"));
+	label = news_label_new (_("Select Sites:"));
 	eel_label_set_smooth_font_size (EEL_LABEL (label), 18);
-	eel_label_set_justify (EEL_LABEL (label), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (news->configure_box), label, FALSE, FALSE, 0);
 	
 	/* allocate a table to hold the check boxes */
@@ -1684,7 +1815,7 @@ make_news_view (const char *iid, gpointer callback_data)
 	/* set up the widgets for the main,configure and add modes */
 	set_up_main_widgets (news, main_container);
 	set_up_configure_widgets (news, main_container);
-	set_up_add_widgets (news, main_container);
+	set_up_edit_widgets (news, main_container);
 		
 	/* set up the fonts */
  	news->font = eel_scalable_font_get_default_font ();
@@ -1696,9 +1827,6 @@ make_news_view (const char *iid, gpointer callback_data)
 	
 	/* load some images */
 	nautilus_news_load_images (news);
-
-	/* populate the configuration list */
-	add_channels_to_configure_list (news);
 
 	/* set up the update timeout */
 	news->timer_task = gtk_timeout_add (10000, check_for_updates, news);
@@ -1718,7 +1846,10 @@ make_news_view (const char *iid, gpointer callback_data)
  	
         /* read the channel definition file and start loading the channels */
         read_channel_list (news);
-          
+ 
+ 	/* populate the configuration list */
+	add_channels_to_lists (news);
+         
     	/* return the nautilus view */    
         return news->view;
 }

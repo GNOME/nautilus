@@ -1,5 +1,19 @@
 2001-04-21  Andy Hertzfeld  <andy@eazel.com>
 
+	implemented the remove command for the news panel, plus
+	other clean-ups.
+	
+	* components/news/nautilus-news.c: (configure_button_clicked),
+	(add_site_button_clicked), (add_channel_to_remove_list),
+	(add_site_from_fields), (remove_selected_site),
+	(add_command_buttons), (add_channel_entry),
+	(add_channels_to_lists), (news_label_new),
+	(select_row_in_remove_list), (make_remove_widgets),
+	(make_add_widgets), (set_up_edit_widgets),
+	(set_up_configure_widgets), (make_news_view):
+
+2001-04-21  Andy Hertzfeld  <andy@eazel.com>
+
 	* components/news/nautilus-news.c: (do_destroy), (draw_triangle),
 	(draw_rss_logo_image), (is_current_uri), (draw_rss_items),
 	(nautilus_news_motion_notify_event), (rss_read_done_callback),
