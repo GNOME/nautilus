@@ -96,7 +96,7 @@ struct NautilusPropertyBrowserDetails {
 	GtkWidget *content_table;
 	
 	GtkWidget *category_container;
-	GtkWidget *category_table;
+	GtkWidget *category_box;
 	GtkWidget *selected_button;
 	
 	GtkWidget *title_box;
@@ -273,7 +273,7 @@ nautilus_property_browser_initialize (GtkObject *object)
  	viewport = gtk_viewport_new(NULL, NULL);	
 	gtk_widget_show (viewport);
 	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_NONE);
-	gtk_widget_set_usize (viewport, 76, -1);
+	/* gtk_widget_set_usize (viewport, 76, -1); */
 
 	gtk_box_pack_start (GTK_BOX (property_browser->details->container),
 			    property_browser->details->category_container, FALSE, FALSE, 0);
@@ -282,10 +282,11 @@ nautilus_property_browser_initialize (GtkObject *object)
 					GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
 	/* allocate a table to hold the category selector */
-  	property_browser->details->category_table = gtk_table_new (1, 4, FALSE);
-	gtk_container_add(GTK_CONTAINER(viewport), property_browser->details->category_table); 
+  	property_browser->details->category_box = gtk_vbox_new (FALSE, 0);
+	gtk_container_set_border_width ( GTK_CONTAINER (property_browser->details->category_box), 4);
+	gtk_container_add(GTK_CONTAINER(viewport), property_browser->details->category_box); 
 	gtk_container_add (GTK_CONTAINER (property_browser->details->category_container), viewport);
-	gtk_widget_show (GTK_WIDGET (property_browser->details->category_table));
+	gtk_widget_show (GTK_WIDGET (property_browser->details->category_box));
 
 	/* make the content container vbox */
   	property_browser->details->content_container = gtk_vbox_new (FALSE, 0);
@@ -1922,7 +1923,7 @@ make_category_link (NautilusPropertyBrowser *property_browser, char* name, char 
 	 */
 	button = gtk_toggle_button_new();
 	gtk_widget_show(button);
-	gtk_widget_set_usize(button, 80, 60);
+	/* gtk_widget_set_usize (button, 80, 60); */
 	
 	/* if the button represents the current category, highlight it */
 	
@@ -1942,10 +1943,8 @@ make_category_link (NautilusPropertyBrowser *property_browser, char* name, char 
 	gtk_box_pack_start (GTK_BOX (temp_box), label, FALSE, FALSE, 0);
 	gtk_widget_show (label);
 	
-	gtk_table_attach (GTK_TABLE (property_browser->details->category_table),
-			  temp_vbox, 0, 1,
-			  property_browser->details->category_position, property_browser->details->category_position + 1, 
-			  GTK_FILL, GTK_FILL, 4, 4);
+	gtk_box_pack_start (GTK_BOX (property_browser->details->category_box),
+				temp_vbox, FALSE, FALSE, 8);
 	
 	property_browser->details->category_position += 1;
 	

@@ -1,3 +1,12 @@
+2001-01-23  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize), (make_category_link):
+	fixed bug 5587, hard-coded button geometry in the property browser,
+	fixed by removing the set_usizes and allowing gtk to adaptively
+	size them and replacing the table that was holding them with a
+	box so they will be centered properly.
+	
 2001-01-23  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>
