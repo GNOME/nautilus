@@ -76,3 +76,7 @@ test_nautilus_pixbuf_tile_SOURCES = test-nautilus-pixbuf-tile.c test.c
 test_nautilus_preferences_SOURCES = test-nautilus-preferences.c
 test_nautilus_smooth_graphics_SOURCES = test-nautilus-smooth-graphics.c
 test_nautilus_widgets_SOURCES = test-nautilus-widgets.c
+
+EXTRA_DIST = \
+	test.h \
+	$(NULL)
