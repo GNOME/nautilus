@@ -1,5 +1,15 @@
 2000-08-07  John Sullivan  <sullivan@eazel.com>
 
+	Made preview bug 2017 no longer crash. That's the "Up button
+	in search results" one. Darin is planning to make it be
+	disabled like it should have been, which is a fix in gnome-vfs.
+	Special dispensation from Robin to check this in.
+
+	* src/nautilus-window.c: (nautilus_window_go_up): Check for
+	NULL parent_uri and bail out if so.
+
+2000-08-07  John Sullivan  <sullivan@eazel.com>
+
 	Part of bug 2005 (Should display error message when search
 	fails because search demon isn't running)
 

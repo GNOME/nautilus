@@ -930,6 +930,12 @@ nautilus_window_go_up (NautilusWindow *window)
 	current_uri = gnome_vfs_uri_new (window->location);
 	parent_uri = gnome_vfs_uri_get_parent (current_uri);
 	gnome_vfs_uri_unref (current_uri);
+
+	if (parent_uri == NULL) {
+		g_warning ("Can't go Up from here. The UI should have prevented us from getting this far.");
+		return;
+	}
+	
 	parent_uri_string = gnome_vfs_uri_to_string (parent_uri, GNOME_VFS_URI_HIDE_NONE);
 	gnome_vfs_uri_unref (parent_uri);  
 	
