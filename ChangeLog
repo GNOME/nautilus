@@ -1,4 +1,14 @@
 2003-01-06  Alex Duggan  <aldug@gnome.org>
+	
+	* src/nautilus-window.c:
+	* src/nautilus-window.h:
+	Removed statusbar timeout
+	
+	* libnautilus-private/nautilus-global-preferences.c:
+	Removed unnecessary include.  Patch from 
+	Dave Bordoley <bordoley@msu.edu>
+
+2003-01-06  Alex Duggan  <aldug@gnome.org>
 
 	* src/nautilus-shell-ui.xml: remove control-f keybinding leftover
 	from nautilus-1.0.x.  Partially fixes #85230

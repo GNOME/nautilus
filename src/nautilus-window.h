@@ -85,8 +85,7 @@ struct NautilusWindow {
         
 	char *last_geometry;
 	
-        guint status_bar_clear_id;
-        guint save_geometry_timeout_id;
+       guint save_geometry_timeout_id;
 	  
         /** CORBA-related elements **/
         NautilusApplication *application;

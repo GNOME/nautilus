@@ -87,7 +87,6 @@
  */
 #include "nautilus-desktop-window.h"
 
-#define STATUS_BAR_CLEAR_TIMEOUT 10000	/* milliseconds */
 #define MAX_HISTORY_ITEMS 50
 
 /* FIXME bugzilla.gnome.org 41245: hardwired sizes */
@@ -338,7 +337,6 @@ nautilus_window_clear_status (gpointer callback_data)
 	window = NAUTILUS_WINDOW (callback_data);
 
 	bonobo_ui_component_set_status (window->details->status_ui, NULL, NULL);
-	window->status_bar_clear_id = 0;
 
 	return FALSE;
 }
@@ -346,17 +344,10 @@ nautilus_window_clear_status (gpointer callback_data)
 void
 nautilus_window_set_status (NautilusWindow *window, const char *text)
 {
-	if (window->status_bar_clear_id != 0) {
-		g_source_remove (window->status_bar_clear_id);
-	}
-
 	if (text != NULL && text[0] != '\0') {
 		bonobo_ui_component_set_status (window->details->status_ui, text, NULL);
-		window->status_bar_clear_id = g_timeout_add
-			(STATUS_BAR_CLEAR_TIMEOUT, nautilus_window_clear_status, window);
 	} else {
 		nautilus_window_clear_status (window);
-		window->status_bar_clear_id = 0;
 	}
 }
 
@@ -969,10 +960,6 @@ nautilus_window_finalize (GObject *object)
 	}
 	if (window->last_location_bookmark != NULL) {
 		g_object_unref (window->last_location_bookmark);
-	}
-
-	if (window->status_bar_clear_id != 0) {
-		g_source_remove (window->status_bar_clear_id);
 	}
 
 	bonobo_object_unref (window->details->ui_container);
