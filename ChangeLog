@@ -1,3 +1,25 @@
+2000-08-05  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-undo-manager.c: (corba_append),
+	(nautilus_undo_manager_undo):
+	Fixed a bug where transaction)in_progress was always TRUE.
+	This caused a g_warning to always be fired.  I guess no one
+	noticed because we aren't exercising the undo code.
+	
+	* libnautilus/nautilus-undo-transaction.c:
+	(remove_transaction_from_object),
+	(nautilus_undo_transaction_add_atom),
+	(nautilus_undo_transaction_add_to_undo_manager),
+	(remove_atoms_cover),
+	(nautilus_undo_transaction_unregister_object):
+	Fixed bug 1984, crash when closing window after an undo operation.
+	This crash is caused by a bogus transaction being left
+	in the target objects transaction list.  An assert is thrown
+	because the item in the list is not a transaction.  I suspect it
+	is the sad remains of an unrefed transaciton that is still in
+	the list somehow.  I made a work arund by checking before
+	freeing, but need Darin's help to figure out the true cause.
+
 2000-08-05  Ali Abdin  <aliabdin@aucegypt.edu>
 
         In summary, get Docbook XML working. Support JPEG images. Make PNG

@@ -175,9 +175,9 @@ corba_append (PortableServer_Servant servant,
 	 */
 	if (manager->details->undo_in_progress) {
 		manager->details->num_transactions_during_undo += 1;
-		g_return_if_fail (manager->details->num_transactions_during_undo == 1);
+		g_return_if_fail (manager->details->num_transactions_during_undo == 1);		
 	}
-
+	
 	g_return_if_fail (!CORBA_Object_is_nil (transaction, ev));
 
 	/* Keep a copy of this transaction (dump the old one). */
@@ -296,7 +296,7 @@ nautilus_undo_manager_undo (NautilusUndoManager *manager)
 		manager->details->undo_in_progress = TRUE;
 		manager->details->num_transactions_during_undo = 0;
 		Nautilus_Undo_Transaction_undo (transaction, &ev);
-		manager->details->undo_in_progress = TRUE;
+		manager->details->undo_in_progress = FALSE;
 		manager->details->new_transaction_is_redo = FALSE;
 
 		/* Let go of the transaction. */

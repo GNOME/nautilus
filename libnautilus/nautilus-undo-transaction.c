@@ -212,8 +212,11 @@ remove_transaction_from_object (gpointer list_data, gpointer callback_data)
 
 	/* Remove the transaction from the list on the atom. */
 	list = gtk_object_get_data (atom->target, NAUTILUS_UNDO_TRANSACTION_LIST_DATA);
-	list = g_list_remove (list, transaction);
-	gtk_object_set_data (atom->target, NAUTILUS_UNDO_TRANSACTION_LIST_DATA, list);
+
+	if (list != NULL) {
+		list = g_list_remove (list, transaction);
+		gtk_object_set_data (atom->target, NAUTILUS_UNDO_TRANSACTION_LIST_DATA, list);
+	}
 }
 
 static void
@@ -262,7 +265,7 @@ nautilus_undo_transaction_add_atom (NautilusUndoTransaction *transaction,
 	transaction->atom_list = g_list_append
 		(transaction->atom_list, g_memdup (atom, sizeof (*atom)));
 
-	/* Add the transaction to the list on the atom. */
+	/* Add the transaction to the list on the atoms target object. */
 	list = gtk_object_get_data (atom->target, NAUTILUS_UNDO_TRANSACTION_LIST_DATA);
 	if (g_list_find (list, transaction) != NULL) {
 		return;
@@ -271,7 +274,7 @@ nautilus_undo_transaction_add_atom (NautilusUndoTransaction *transaction,
 	/* If it's not already on that atom, this object is new. */
 	list = g_list_prepend (list, transaction);
 	gtk_object_set_data (atom->target, NAUTILUS_UNDO_TRANSACTION_LIST_DATA, list);
-	
+
 	/* Connect a signal handler to the atom so it will unregister
 	 * itself when it's destroyed.
 	 */
@@ -290,8 +293,7 @@ nautilus_undo_transaction_undo (NautilusUndoTransaction *transaction)
 }
 
 void
-nautilus_undo_transaction_add_to_undo_manager (NautilusUndoTransaction *transaction,
-					       Nautilus_Undo_Manager manager)
+nautilus_undo_transaction_add_to_undo_manager (NautilusUndoTransaction *transaction,					       Nautilus_Undo_Manager manager)
 {
 	CORBA_Environment ev;
 
@@ -352,7 +354,9 @@ remove_atoms (NautilusUndoTransaction *transaction,
 static void
 remove_atoms_cover (gpointer list_data, gpointer callback_data)
 {
-	remove_atoms (NAUTILUS_UNDO_TRANSACTION (list_data), GTK_OBJECT (callback_data));
+	if (NAUTILUS_IS_UNDO_TRANSACTION (list_data)) {
+		remove_atoms (NAUTILUS_UNDO_TRANSACTION (list_data), GTK_OBJECT (callback_data));
+	}
 }
 
 void
@@ -364,9 +368,11 @@ nautilus_undo_transaction_unregister_object (GtkObject *object)
 
 	/* Remove atoms from each transaction on the list. */
 	list = gtk_object_get_data (object, NAUTILUS_UNDO_TRANSACTION_LIST_DATA);
-	g_list_foreach (list, remove_atoms_cover, object);	
-	g_list_free (list);
-	gtk_object_remove_data (object, NAUTILUS_UNDO_TRANSACTION_LIST_DATA);
+	if (list != NULL) {
+		g_list_foreach (list, remove_atoms_cover, object);	
+		g_list_free (list);
+		gtk_object_remove_data (object, NAUTILUS_UNDO_TRANSACTION_LIST_DATA);
+	}
 }
 
 static void
