@@ -81,7 +81,7 @@ struct NautilusTreeModelDetails {
 	guint root_node_changed_id;
 	gboolean root_node_parented;
 
-	guint destroy_unneeded_children_idle_id;
+	guint monitoring_update_idle_id;
 };
 
 typedef struct {
@@ -91,9 +91,9 @@ typedef struct {
 
 static GObjectClass *parent_class;
 
-static void schedule_destroy_unneeded_children (NautilusTreeModel *model);
-static void destroy_node_without_reporting     (NautilusTreeModel *model,
-						TreeNode          *node);
+static void schedule_monitoring_update     (NautilusTreeModel *model);
+static void destroy_node_without_reporting (NautilusTreeModel *model,
+					    TreeNode          *node);
 
 static void
 object_unref_if_not_NULL (gpointer object)
@@ -393,7 +393,7 @@ decrement_ref_count (NautilusTreeModel *model, TreeNode *node, int count)
 {
 	node->all_children_ref_count -= count;
 	if (node->all_children_ref_count == 0) {
-		schedule_destroy_unneeded_children (model);
+		schedule_monitoring_update (model);
 	}
 }
 
@@ -1134,14 +1134,16 @@ nautilus_tree_model_iter_n_children (GtkTreeModel *model, GtkTreeIter *iter)
 }
 
 static gboolean
-nautilus_tree_model_iter_nth_child (GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter *parent_iter, int n)
+nautilus_tree_model_iter_nth_child (GtkTreeModel *model, GtkTreeIter *iter,
+				    GtkTreeIter *parent_iter, int n)
 {
 	NautilusTreeModel *tree_model;
 	TreeNode *parent, *node;
 	int i;
 	
 	g_return_val_if_fail (NAUTILUS_IS_TREE_MODEL (model), FALSE);
-	g_return_val_if_fail (parent_iter == NULL || iter_is_valid (NAUTILUS_TREE_MODEL (model), parent_iter), FALSE);
+	g_return_val_if_fail (parent_iter == NULL
+			      || iter_is_valid (NAUTILUS_TREE_MODEL (model), parent_iter), FALSE);
 	
 	tree_model = NAUTILUS_TREE_MODEL (model);
 
@@ -1172,7 +1174,7 @@ nautilus_tree_model_iter_nth_child (GtkTreeModel *model, GtkTreeIter *iter, GtkT
 }
 
 static void
-destroy_unneeded_children (NautilusTreeModel *model, TreeNode *node)
+update_monitoring (NautilusTreeModel *model, TreeNode *node)
 {
 	TreeNode *child;
 
@@ -1181,47 +1183,30 @@ destroy_unneeded_children (NautilusTreeModel *model, TreeNode *node)
 		destroy_children (model, node);
 	} else {
 		for (child = node->first_child; child != NULL; child = child->next) {
-			destroy_unneeded_children (model, child);
+			update_monitoring (model, child);
 		}
+		start_monitoring_directory (model, node);
 	}
 }
 
 static gboolean
-destroy_unneeded_children_idle_callback (gpointer callback_data)
+update_monitoring_idle_callback (gpointer callback_data)
 {
 	NautilusTreeModel *model;
 
 	model = NAUTILUS_TREE_MODEL (callback_data);
-	model->details->destroy_unneeded_children_idle_id = 0;
-	destroy_unneeded_children (model, model->details->root_node);
+	model->details->monitoring_update_idle_id = 0;
+	update_monitoring (model, model->details->root_node);
 	return FALSE;
 }
 
 static void
-schedule_destroy_unneeded_children (NautilusTreeModel *model)
+schedule_monitoring_update (NautilusTreeModel *model)
 {
-	if (model->details->destroy_unneeded_children_idle_id == 0) {
-		model->details->destroy_unneeded_children_idle_id =
-			g_idle_add (destroy_unneeded_children_idle_callback, model);
+	if (model->details->monitoring_update_idle_id == 0) {
+		model->details->monitoring_update_idle_id =
+			g_idle_add (update_monitoring_idle_callback, model);
 	}
-}
-
-static void
-first_child_ref (NautilusTreeModel *model, TreeNode *node)
-{
-	g_assert (node->all_children_ref_count == 1);
-	start_monitoring_directory (model, node);
-}
-
-static void
-last_child_unref (NautilusTreeModel *model, TreeNode *node)
-{
-	/* Destroying nodes in here causes trouble, at least when we
-	 * use GtkTreeModelSort. I'm not sure if this is a bug or by
-	 * design. For now, sidestep this issue by deferring until idle.
-	 */
-	g_assert (node->all_children_ref_count == 0);
-	schedule_destroy_unneeded_children (model);
 }
 
 static void
@@ -1251,7 +1236,7 @@ nautilus_tree_model_ref_node (GtkTreeModel *model, GtkTreeIter *iter)
 	} else {
 		g_assert (parent->all_children_ref_count >= 0);
 		if (++parent->all_children_ref_count == 1) {
-			first_child_ref (NAUTILUS_TREE_MODEL (model), parent);
+			schedule_monitoring_update (NAUTILUS_TREE_MODEL (model));
 		}
 #if LOG_REF_COUNTS
 		uri = get_node_uri (iter);
@@ -1295,7 +1280,7 @@ nautilus_tree_model_unref_node (GtkTreeModel *model, GtkTreeIter *iter)
 		g_free (uri);
 #endif
 		if (--parent->all_children_ref_count == 0) {
-			last_child_unref (NAUTILUS_TREE_MODEL (model), parent);
+			schedule_monitoring_update (NAUTILUS_TREE_MODEL (model));
 		}
 	}
 }
@@ -1384,8 +1369,8 @@ nautilus_tree_model_finalize (GObject *object)
 		destroy_node_without_reporting (model, root);
 	}
 
-	if (model->details->destroy_unneeded_children_idle_id != 0) {
-		g_source_remove (model->details->destroy_unneeded_children_idle_id);
+	if (model->details->monitoring_update_idle_id != 0) {
+		g_source_remove (model->details->monitoring_update_idle_id);
 	}
 
 	g_free (model->details);

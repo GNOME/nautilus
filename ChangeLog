@@ -1,5 +1,23 @@
 2002-03-06  Darin Adler  <darin@bentspoon.com>
 
+	* components/tree/nautilus-tree-model.c: (update_monitoring): New
+	name for destroy_unneeded_children, which now starts monitoring
+	for nodes that need it as well as stopping monitoring and
+	destroying children for notes that don't need it.
+	(update_monitoring_idle_callback): New name.
+	(schedule_monitoring_update): New name.
+	(nautilus_tree_model_ref_node): Call schedule_monitoring_update when
+	a node is ref'd, rather than doing it right away.
+	(nautilus_tree_model_unref_node): Hoist the code from last_child_unref
+	here, since it's only a single call.
+
+	* components/tree/nautilus-tree-view.c: (sort_model_iter_to_file),
+	(compare_rows), (create_tree): Turn on the GtkTreeModelSort code.
+	The above fix makes us stop crashing, and the Gtk fix I'll check in
+	soon makes the sorting actually work.
+
+2002-03-06  Darin Adler  <darin@bentspoon.com>
+
 	* libnautilus-private/nautilus-mime-actions.c:
 	(nautilus_mime_set_short_list_applications_for_file),
 	(nautilus_mime_set_short_list_components_for_file):

@@ -50,11 +50,7 @@
 struct NautilusTreeViewDetails {
 	GtkWidget *scrolled_window;
 	GtkTreeView *tree_widget;
-#if SORT_MODEL_WORKS
 	GtkTreeModelSort *sort_model;
-#else
-	NautilusTreeModel *sort_model;
-#endif
 	NautilusTreeModel *child_model;
 
 	gboolean show_hidden_files;
@@ -88,13 +84,10 @@ load_expansion_state (NautilusTreeView *view)
 static NautilusFile *
 sort_model_iter_to_file (NautilusTreeView *view, GtkTreeIter *iter)
 {
-	GtkTreeIter copy;
+	GtkTreeIter child_iter;
 
-	copy = *iter;
-#if SORT_MODEL_WORKS
-	gtk_tree_model_sort_convert_iter_to_child_iter (view->details->sort_model, &copy, &copy);
-#endif
-	return nautilus_tree_model_iter_get_file (view->details->child_model, &copy);
+	gtk_tree_model_sort_convert_iter_to_child_iter (view->details->sort_model, &child_iter, iter);
+	return nautilus_tree_model_iter_get_file (view->details->child_model, &child_iter);
 }
 
 static NautilusFile *
@@ -224,17 +217,11 @@ selection_changed_callback (GtkTreeSelection *selection,
 	g_list_free (attrs);
 }
 
-#if SORT_MODEL_WORKS
-
 static int
 compare_rows (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer callback_data)
 {
-	NautilusTreeView *view;
 	NautilusFile *file_a, *file_b;
-	char *uri_a, *uri_b;
 	int result;
-
-	view = NAUTILUS_TREE_VIEW (callback_data);
 
 	file_a = nautilus_tree_model_iter_get_file (NAUTILUS_TREE_MODEL (model), a);
 	file_b = nautilus_tree_model_iter_get_file (NAUTILUS_TREE_MODEL (model), b);
@@ -246,11 +233,6 @@ compare_rows (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer call
 	} else if (file_b == NULL) {
 		result = +1;
 	} else {
-		uri_a = nautilus_file_get_uri (file_a);
-		uri_b = nautilus_file_get_uri (file_b);
-		g_message ("comparing %s with %s", uri_a, uri_b);
-		g_free (uri_a);
-		g_free (uri_b);
 		result = nautilus_file_compare_for_sort (file_a, file_b,
 							 NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
 							 FALSE, FALSE);
@@ -262,8 +244,6 @@ compare_rows (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer call
 	return result;
 }
 
-#endif
-
 static void
 create_tree (NautilusTreeView *view)
 {
@@ -271,19 +251,13 @@ create_tree (NautilusTreeView *view)
 	GtkCellRenderer *cell;
 	
 	view->details->child_model = nautilus_tree_model_new ("file:///");
-#if SORT_MODEL_WORKS
 	view->details->sort_model = GTK_TREE_MODEL_SORT (gtk_tree_model_sort_new_with_model (GTK_TREE_MODEL (view->details->child_model)));
 	g_object_unref (view->details->child_model);
-#else
-	view->details->sort_model = view->details->child_model;
-#endif
 	view->details->tree_widget = GTK_TREE_VIEW (gtk_tree_view_new_with_model (GTK_TREE_MODEL (view->details->sort_model)));
 	g_object_unref (view->details->sort_model);
 
-#if SORT_MODEL_WORKS
 	gtk_tree_sortable_set_default_sort_func (GTK_TREE_SORTABLE (view->details->sort_model),
 						 compare_rows, view, NULL);
-#endif
 
 	gtk_tree_view_set_headers_visible (view->details->tree_widget, FALSE);
 
