@@ -1,3 +1,21 @@
+2002-08-31  David Bordoley <bordoley@msu.edu>
+
+	* src/nautilus-shell-ui.xml:
+	Added escape keybinding to the stop button (bug 83691)
+
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Removed the "Remove Custom Icon" entry from the view menu 
+	and context menu (bug 82117 also sort of takes care of 
+	bug 86179). 
+	Changed keybinding for "Move to Trash" to delete 
+	and for "Delete" to shift+delete (bug 83218 this fixes bug 
+	78120 as well).
+	Use GTK_STOCK_DELETE in a bunch of dialogs instead of our own string.
+	Changed broken link dialog string to "Do you want to move this 
+	link to the Trash?" and changed confirming button to 
+	"Mo_ve to Trash" to be consistent with the rest of the UI.
+
 2002-08-30  Alexander Larsson  <alexl@redhat.com>
 
 	Branched off Gnome 2.0.x development on the gnome-2-0 branch.

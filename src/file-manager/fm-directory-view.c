@@ -116,7 +116,6 @@
 #define FM_DIRECTORY_VIEW_COMMAND_DUPLICATE                		"/commands/Duplicate"
 #define FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK                		"/commands/Create Link"
 #define FM_DIRECTORY_VIEW_COMMAND_PROPERTIES         			"/commands/Properties"
-#define FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS			"/commands/Remove Custom Icons"
 #define FM_DIRECTORY_VIEW_COMMAND_OTHER_APPLICATION    			"/commands/OtherApplication"
 #define FM_DIRECTORY_VIEW_COMMAND_OTHER_VIEWER	   			"/commands/OtherViewer"
 #define FM_DIRECTORY_VIEW_COMMAND_CUT_FILES	    			"/commands/Cut Files"
@@ -130,7 +129,6 @@
 #define FM_DIRECTORY_VIEW_MENU_PATH_DELETE                    		"/menu/Edit/Dangerous File Items Placeholder/Delete"
 #define FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH                    	"/menu/File/Global File Items Placeholder/Empty Trash"
 #define FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK                	 	"/menu/Edit/File Items Placeholder/Create Link"
-#define FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS			"/menu/Edit/Edit Items Placeholder/Remove Custom Icons"
 #define FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER    	"/menu/File/Open Placeholder/Open With/Applications Placeholder"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION		    	"/menu/File/Open Placeholder/Open With/OtherApplication"
 #define FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER    		"/menu/File/Open Placeholder/Open With/Viewers Placeholder"
@@ -828,7 +826,7 @@ confirm_delete_directly (FMDirectoryView *view,
 
 	dialog = eel_show_yes_no_dialog
 		(prompt,
-		 _("Delete?"), _("Delete"), GTK_STOCK_CANCEL,
+		 _("Delete?"), GTK_STOCK_DELETE, GTK_STOCK_CANCEL,
 		 fm_directory_view_get_containing_window (view));
 
 	g_free (prompt);
@@ -3011,7 +3009,7 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean
 
 	dialog = eel_show_yes_no_dialog
 		(prompt,
-		 _("Delete Immediately?"), _("Delete"), GTK_STOCK_CANCEL,
+		 _("Delete Immediately?"), GTK_STOCK_DELETE, GTK_STOCK_CANCEL,
 		 fm_directory_view_get_containing_window (view));
 	
 	g_free (prompt);
@@ -3053,7 +3051,7 @@ confirm_delete_from_trash (FMDirectoryView *view, GList *uris)
 
 	dialog = eel_show_yes_no_dialog (
 		prompt,
-		_("Delete From Trash?"),_("Delete"), GTK_STOCK_CANCEL,
+		_("Delete From Trash?"), GTK_STOCK_DELETE, GTK_STOCK_CANCEL,
 		fm_directory_view_get_containing_window (view));
 
 	g_free (prompt);
@@ -3230,58 +3228,12 @@ open_one_properties_window (gpointer data, gpointer callback_data)
 	fm_properties_window_present (data, callback_data);
 }
 
-static void
-remove_custom_icon (gpointer file, gpointer callback_data)
-{
-	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (callback_data == NULL);
-
-	nautilus_file_set_metadata (NAUTILUS_FILE (file),
-				    NAUTILUS_METADATA_KEY_ICON_SCALE,
-				    NULL, NULL);
-	nautilus_file_set_metadata (NAUTILUS_FILE (file),
-				    NAUTILUS_METADATA_KEY_CUSTOM_ICON,
-				    NULL, NULL);
-}
-
 NautilusFile *
 fm_directory_view_get_directory_as_file (FMDirectoryView *view)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	return view->details->directory_as_file; 
-}
-
-static gboolean
-files_have_any_custom_images (GList *files)
-{
-	GList *p;
-	char *uri;
-
-	for (p = files; p != NULL; p = p->next) {
-		uri = nautilus_file_get_metadata (NAUTILUS_FILE (p->data),
-						  NAUTILUS_METADATA_KEY_CUSTOM_ICON,
-						  NULL);
-		if (uri != NULL) {
-			g_free (uri);
-			return TRUE;
-		}
-	}
-
-	return FALSE;
-}
-
-static void
-remove_custom_icons_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
-{
-	GList *selection;
-
-	selection = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (callback_data));
-	g_list_foreach (selection, remove_custom_icon, NULL);
-	nautilus_file_list_free (selection);
-
-        /* Update menus because Remove Custom Icons item has changed state */
-	schedule_update_menus (FM_DIRECTORY_VIEW (callback_data));
 }
 
 static void
@@ -4202,7 +4154,6 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("OtherViewer", other_viewer_callback),
 		BONOBO_UI_VERB ("Edit Launcher", edit_launcher_callback),
 		BONOBO_UI_VERB ("Paste Files", paste_files_callback),
-		BONOBO_UI_VERB ("Remove Custom Icons", remove_custom_icons_callback),
 		BONOBO_UI_VERB ("Reset Background", reset_background_callback),
 		BONOBO_UI_VERB ("Reset to Defaults", reset_to_defaults_callback),
 		BONOBO_UI_VERB ("Select All", bonobo_menu_select_all_callback),
@@ -4348,12 +4299,12 @@ real_update_menus (FMDirectoryView *view)
 
 	if (all_selected_items_in_trash (view)) {
 		label = _("_Delete from Trash");
-		accelerator = "";
+		accelerator = "Delete";
 		tip = _("Delete all selected items permanently");
 		show_separate_delete_command = FALSE;
 	} else {
 		label = _("Mo_ve to Trash");
-		accelerator = "*Control*t";
+		accelerator = "Delete";
 		tip = _("Move each selected item to the Trash");
 		show_separate_delete_command = show_delete_command_auto_value;
 	}
@@ -4416,17 +4367,6 @@ real_update_menus (FMDirectoryView *view)
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH,
 				       !nautilus_trash_monitor_is_empty ());
-
-
-	nautilus_bonobo_set_label
-		(view->details->ui,
-		 FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS,
-		 selection_count > 1
-			? _("Re_move Custom Icons")
-			: _("Re_move Custom Icon"));
-	nautilus_bonobo_set_sensitive (view->details->ui, 
-				       FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS,
-				       files_have_any_custom_images (selection));
 
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       NAUTILUS_COMMAND_SELECT_ALL,
@@ -4630,15 +4570,15 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 	target_path = nautilus_file_get_symbolic_link_target_path (file);
 	if (target_path == NULL) {
 		prompt = g_strdup_printf (_("This link can't be used, because it has no target. "
-					    "Do you want to put this link in the Trash?"));
+					    "Do you want to move this link to the Trash?"));
 	} else {
 		prompt = g_strdup_printf (_("This link can't be used, because its target \"%s\" doesn't exist. "
-				 	    "Do you want to put this link in the Trash?"),
+				 	    "Do you want to move this link to the Trash?"),
 					  target_path);
 	}
 
 	dialog = eel_show_yes_no_dialog (prompt,
-					 _("Broken Link"), _("Throw Away"), GTK_STOCK_CANCEL,
+					 _("Broken Link"), _("Mo_ve to Trash"), GTK_STOCK_CANCEL,
 					 fm_directory_view_get_containing_window (view));
 
 	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_YES);
