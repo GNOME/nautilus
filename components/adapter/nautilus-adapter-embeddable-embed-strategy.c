@@ -51,6 +51,10 @@ struct NautilusAdapterEmbeddableEmbedStrategyDetails {
 static void nautilus_adapter_embeddable_embed_strategy_initialize_class (NautilusAdapterEmbeddableEmbedStrategyClass *klass);
 static void nautilus_adapter_embeddable_embed_strategy_initialize       (NautilusAdapterEmbeddableEmbedStrategy      *strategy);
 static void nautilus_adapter_embeddable_embed_strategy_destroy          (GtkObject                              *object);
+static void nautilus_adapter_embeddable_embed_strategy_activate         (NautilusAdapterEmbedStrategy                *object,
+									 gpointer                                     ui_container);
+static void nautilus_adapter_embeddable_embed_strategy_deactivate       (NautilusAdapterEmbedStrategy                *object);
+
 
 static GtkWidget *nautilus_adapter_embeddable_embed_strategy_get_widget (NautilusAdapterEmbedStrategy *strategy);
 
@@ -71,6 +75,8 @@ nautilus_adapter_embeddable_embed_strategy_initialize_class (NautilusAdapterEmbe
 	adapter_embed_strategy_class = NAUTILUS_ADAPTER_EMBED_STRATEGY_CLASS (klass);
 
 	adapter_embed_strategy_class->get_widget = nautilus_adapter_embeddable_embed_strategy_get_widget;
+	adapter_embed_strategy_class->activate = nautilus_adapter_embeddable_embed_strategy_activate;
+	adapter_embed_strategy_class->deactivate = nautilus_adapter_embeddable_embed_strategy_deactivate;
 }
 
 static void
@@ -104,6 +110,40 @@ nautilus_adapter_embeddable_embed_strategy_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
+
+static void 
+nautilus_adapter_embeddable_embed_strategy_activate (NautilusAdapterEmbedStrategy *object,
+						     gpointer                      ui_container)
+{
+	NautilusAdapterEmbeddableEmbedStrategy *strategy;
+	Bonobo_UIContainer corba_container = ui_container;
+
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (NAUTILUS_IS_ADAPTER_EMBEDDABLE_EMBED_STRATEGY (object));
+
+	strategy = NAUTILUS_ADAPTER_EMBEDDABLE_EMBED_STRATEGY (object);
+
+	bonobo_control_frame_set_ui_container (BONOBO_CONTROL_FRAME (strategy->details->view_frame),
+					       corba_container);
+
+	bonobo_control_frame_control_activate (BONOBO_CONTROL_FRAME (strategy->details->view_frame));
+}
+
+static void 
+nautilus_adapter_embeddable_embed_strategy_deactivate (NautilusAdapterEmbedStrategy *object)
+{
+	NautilusAdapterEmbeddableEmbedStrategy *strategy;
+
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (NAUTILUS_IS_ADAPTER_EMBEDDABLE_EMBED_STRATEGY (object));
+
+	strategy = NAUTILUS_ADAPTER_EMBEDDABLE_EMBED_STRATEGY (object);
+
+	/* This is not strictly necessary, but it makes sure that the component's menus
+	 * and toolbars are really unmerged even if our component is badly behaving or
+	 * leaking a reference somewhere. */
+	bonobo_control_frame_control_deactivate (BONOBO_CONTROL_FRAME (strategy->details->view_frame));
+}
 
 static void
 activate_uri_callback (BonoboControlFrame *frame,

@@ -47,6 +47,9 @@ typedef struct {
 	GtkObjectClass parent;
 
 	/* signals */
+	void       (*activate)       (NautilusAdapterEmbedStrategy *strategy,
+				      gpointer                      corba_container);
+	void       (*deactivate)     (NautilusAdapterEmbedStrategy *strategy);
 	void       (*open_location)  (NautilusAdapterEmbedStrategy *strategy,
 				      const char                   *uri);
 
@@ -59,8 +62,11 @@ typedef struct {
 GtkType                      nautilus_adapter_embed_strategy_get_type      (void);
 
 /* Instantiates the proper concrete subclass */
-NautilusAdapterEmbedStrategy *nautilus_adapter_embed_strategy_get       (Bonobo_Unknown     component,
-									 Bonobo_UIContainer ui_container);
+NautilusAdapterEmbedStrategy *nautilus_adapter_embed_strategy_get       (Bonobo_Unknown     component);
+
+void                          nautilus_adapter_embed_strategy_activate  (NautilusAdapterEmbedStrategy *strategy,
+									 Bonobo_UIContainer            ui_container);
+void                          nautilus_adapter_embed_strategy_deactivate(NautilusAdapterEmbedStrategy *strategy);
 
 GtkWidget                   *nautilus_adapter_embed_strategy_get_widget (NautilusAdapterEmbedStrategy *strategy);
 

@@ -29,6 +29,7 @@
 #include "nautilus-adapter.h"
 #include "nautilus-adapter-load-strategy.h"
 #include "nautilus-adapter-embed-strategy.h"
+#include "nautilus-adapter-embed-strategy-private.h"
 
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-item-container.h>
@@ -56,6 +57,9 @@ static void nautilus_adapter_load_location_callback (NautilusView    *view,
 static void nautilus_adapter_stop_loading_callback  (NautilusView    *view,
 						     NautilusAdapter *adapter);
 
+static void nautilus_adapter_activate_callback      (BonoboControl   *control,
+						     gboolean         state,
+						     NautilusAdapter *adapter);
 static void nautilus_adapter_open_location_callback (NautilusAdapterEmbedStrategy *strategy,
 						     const char                   *uri,
 						     NautilusAdapter              *adapter);
@@ -110,7 +114,7 @@ nautilus_adapter_destroy (GtkObject *object)
 	NautilusAdapter *server;
 	
 	server = NAUTILUS_ADAPTER (object);
-	
+
 	if (server->details->load_strategy != NULL) {
 		nautilus_adapter_load_strategy_stop_loading (server->details->load_strategy);
 		gtk_object_unref (GTK_OBJECT (server->details->load_strategy));
@@ -124,7 +128,6 @@ nautilus_adapter_destroy (GtkObject *object)
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
-
 
 NautilusAdapter *
 nautilus_adapter_new (Bonobo_Unknown component)
@@ -155,13 +158,17 @@ nautilus_adapter_new (Bonobo_Unknown component)
 
 	/* Get the class to handle embedding this kind of component. */
 	adapter->details->embed_strategy = nautilus_adapter_embed_strategy_get
-		(component, bonobo_control_get_remote_ui_container (control));
+		(component);
 
 	if (adapter->details->embed_strategy == NULL) {
 		gtk_object_unref (GTK_OBJECT (adapter));
 		
 		return NULL;
 	}
+
+	gtk_signal_connect (GTK_OBJECT (control), "activate",
+			    GTK_SIGNAL_FUNC (nautilus_adapter_activate_callback),
+			    adapter);
 
 	gtk_signal_connect (GTK_OBJECT (adapter->details->embed_strategy), "open_location", 
 			    nautilus_adapter_open_location_callback, adapter);
@@ -259,6 +266,26 @@ nautilus_adapter_open_location_callback  (NautilusAdapterEmbedStrategy *strategy
 				     uri);
 }
 
+
+static void
+nautilus_adapter_activate_callback (BonoboControl   *control,
+				    gboolean         state,
+				    NautilusAdapter *adapter)
+{
+	g_return_if_fail (control != NULL);
+	g_return_if_fail (BONOBO_IS_CONTROL (control));
+	g_return_if_fail (adapter != NULL);
+	g_return_if_fail (NAUTILUS_IS_ADAPTER (adapter));
+
+	if (state) {
+		Bonobo_UIContainer corba_container;
+
+		corba_container = bonobo_control_get_remote_ui_container (control);
+		nautilus_adapter_embed_strategy_activate (adapter->details->embed_strategy,
+							  corba_container);
+	} else
+		nautilus_adapter_embed_strategy_deactivate (adapter->details->embed_strategy);
+}
 
 
 static void

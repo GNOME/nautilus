@@ -41,6 +41,8 @@
 #include <stdio.h>
 
 enum {
+	ACTIVATE,
+	DEACTIVATE,
 	OPEN_LOCATION,
 	LAST_SIGNAL
 };
@@ -65,6 +67,20 @@ nautilus_adapter_embed_strategy_initialize_class (NautilusAdapterEmbedStrategyCl
 
 	object_class->destroy = nautilus_adapter_embed_strategy_destroy;
 
+	signals[ACTIVATE] =
+		gtk_signal_new ("avtivate",
+			       GTK_RUN_LAST,
+			       object_class->type,
+			       GTK_SIGNAL_OFFSET (NautilusAdapterEmbedStrategyClass, activate),
+			       gtk_marshal_NONE__POINTER,
+			       GTK_TYPE_POINTER, 0);
+	signals[DEACTIVATE] =
+		gtk_signal_new ("deavtivate",
+			       GTK_RUN_LAST,
+			       object_class->type,
+			       GTK_SIGNAL_OFFSET (NautilusAdapterEmbedStrategyClass, deactivate),
+			       gtk_marshal_NONE__NONE,
+			       GTK_TYPE_NONE, 0);
 	signals[OPEN_LOCATION] =
 		gtk_signal_new ("open_location",
 			       GTK_RUN_LAST,
@@ -96,8 +112,7 @@ nautilus_adapter_embed_strategy_destroy (GtkObject *object)
 
 
 NautilusAdapterEmbedStrategy *
-nautilus_adapter_embed_strategy_get (Bonobo_Unknown component,
-				     Bonobo_UIContainer ui_container)
+nautilus_adapter_embed_strategy_get (Bonobo_Unknown component)
 {
 	Bonobo_Control    control;
 	Bonobo_Embeddable embeddable;
@@ -112,7 +127,7 @@ nautilus_adapter_embed_strategy_get (Bonobo_Unknown component,
 	if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (control, &ev)) {
 		CORBA_exception_free (&ev);
 		
-		return nautilus_adapter_control_embed_strategy_new (control, ui_container);
+		return nautilus_adapter_control_embed_strategy_new (control, CORBA_OBJECT_NIL);
 	}
 
 	embeddable = Bonobo_Unknown_query_interface (component,
@@ -121,7 +136,7 @@ nautilus_adapter_embed_strategy_get (Bonobo_Unknown component,
 	if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (embeddable, &ev)) {
 		CORBA_exception_free (&ev);
 		
-		return nautilus_adapter_embeddable_embed_strategy_new (embeddable, ui_container);		
+		return nautilus_adapter_embeddable_embed_strategy_new (embeddable, CORBA_OBJECT_NIL);		
 	}
 
 	CORBA_exception_free (&ev);
@@ -136,6 +151,22 @@ nautilus_adapter_embed_strategy_get_widget (NautilusAdapterEmbedStrategy *strate
 				      get_widget, (strategy));
 }
 
+
+void 
+nautilus_adapter_embed_strategy_activate (NautilusAdapterEmbedStrategy *strategy,
+					  Bonobo_UIContainer            ui_container)
+{
+	gtk_signal_emit (GTK_OBJECT (strategy),
+			 signals[ACTIVATE],
+			 ui_container);
+}
+
+void 
+nautilus_adapter_embed_strategy_deactivate (NautilusAdapterEmbedStrategy *strategy)
+{
+	gtk_signal_emit (GTK_OBJECT (strategy),
+			 signals[DEACTIVATE]);
+}
 
 void 
 nautilus_adapter_embed_strategy_emit_open_location (NautilusAdapterEmbedStrategy *strategy,

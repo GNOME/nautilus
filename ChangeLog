@@ -1,3 +1,33 @@
+2000-10-22  Martin Baulig  <baulig@suse.de>
+
+	This is Maciej checking in Martin's fix for 3691. Credit to him,
+	blame to me.
+	
+	* components/adapter/nautilus-adapter-embed-strategy.h
+	(NautilusAdapterEmbedStrategyClass): Added "activate" and "deactivate"
+	signals.
+	(nautilus_adapter_embed_strategy_get): Removed ui_container argument.
+	(nautilus_adapter_embed_strategy_activate): New function; emits
+	the "activate" signal.
+	(nautilus_adapter_embed_strategy_deactivate): New function; emits
+	the "deactivate" signal.
+
+	* components/adapter/nautilus-adapter-control-embed-strategy.c
+	(nautilus_adapter_control_embed_strategy_activate): New static function;
+	this is the handler of the "activate" signal.
+	(nautilus_adapter_control_embed_strategy_deactivate): New static function;
+	this is the handler of the "deactivate" signal.
+
+	* components/adapter/nautilus-adapter-embeddable-embed-strategy.c
+	(nautilus_adapter_embeddable_embed_strategy_activate): New static function;
+	this is the handler of the "activate" signal.
+	(nautilus_adapter_embeddable_embed_strategy_deactivate): New static function;
+	this is the handler of the "deactivate" signal.
+
+	* components/adapter/nautilus-adapter.c (nautilus_adapter_activate_callback):
+	New static function; connect this to the "activate" signal of the adapter
+	control.
+
 2000-10-23  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* src/nautilus-shell-ui.xml.h: Check in a file containing
