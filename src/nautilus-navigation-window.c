@@ -686,7 +686,7 @@ real_set_title (NautilusWindow *window, const char *title)
 	EEL_CALL_PARENT (NAUTILUS_WINDOW_CLASS,
 			 set_title, (window, title));
 	
-	full_title = g_strdup_printf (_("File Browser: %s"), title);
+	full_title = g_strdup_printf (_("%s - File Browser"), title);
 
 	window_title = eel_str_middle_truncate (full_title, MAX_TITLE_LENGTH);
 	gtk_window_set_title (GTK_WINDOW (window), window_title);
