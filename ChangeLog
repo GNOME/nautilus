@@ -1,5 +1,11 @@
 2000-12-23  Ali Abdin  <aliabdin@aucegypt.edu>
 
+        * components/help/hyperbola-filefmt.c:
+        (fmt_man_populate_tree):
+        Look in /usr/share/man if the 'manpath' app returns nothing.
+
+2000-12-23  Ali Abdin  <aliabdin@aucegypt.edu>
+
         So, I thought I was fixing this bug in the Eazel bugtracker. I hack
         away, and get gzipped man files showing up in the Help sidebar. Turns
         out, that the bug I /should/ have been working on was some info-files

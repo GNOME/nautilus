@@ -565,8 +565,10 @@ fmt_man_populate_tree(HyperbolaDocTree *tree)
       for(; manpath[i]; i++)
 	fmt_man_populate_tree_for_dir(tree, manpath[i]);
     }
-  if(!manpath || !manpath[i])
-    fmt_man_populate_tree_for_dir(tree, "/usr/man");
+  if(!manpath || !manpath[i]) {
+    fmt_man_populate_tree_for_dir (tree, "/usr/man");
+    fmt_man_populate_tree_for_dir (tree, "/usr/share/man");
+  }
 
   fmt_free_tree_info(tree);
 }
