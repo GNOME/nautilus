@@ -459,12 +459,12 @@ static void setup_overview_form (NautilusHardwareView *view)
                                 
                                 /* Set the icon depending on the type of device */
                                 if(!strcmp(ide_media, "disk\n")) {
-                                        file_name = nautilus_pixmap_file("i-blockdev.png");
+                                        file_name = nautilus_pixmap_file("i-harddisk.png");
                                 } else if(!strcmp(ide_media, "cdrom\n")) {
                                         file_name = nautilus_pixmap_file("CD_drive.png");
                                 } else {
                                         /* some other device ... still set an icon */
-                                        file_name = nautilus_pixmap_file("i-blockdev.png");
+                                        file_name = nautilus_pixmap_file("i-harddisk.png");
                                 }
                                 
 				pixmap_widget = GTK_WIDGET (gnome_pixmap_new_from_file(file_name));
