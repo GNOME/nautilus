@@ -272,6 +272,20 @@ set_displayed_location (NautilusWindow *window, const char *uri)
 
 /* The bulk of this file - location changing */
 
+static void
+check_bookmark_location_matches_uri (NautilusBookmark *bookmark, const char *uri)
+{
+	char *bookmark_uri;
+	gboolean result;
+
+	bookmark_uri = nautilus_bookmark_get_uri (bookmark);
+	result = nautilus_uris_match (uri, bookmark_uri);
+	if (!result) {
+		g_warning ("bookmark uri is %s, but expected %s", bookmark_uri, uri);
+	}
+	g_free (bookmark_uri);
+}
+
 /* Debugging function used to verify that the last_location_bookmark
  * is in the state we expect when we're about to use it to update the
  * Back or Forward list.
@@ -279,15 +293,7 @@ set_displayed_location (NautilusWindow *window, const char *uri)
 static void
 check_last_bookmark_location_matches_window (NautilusWindow *window)
 {
-	char *uri;
-	gboolean result;
-
-	uri = nautilus_bookmark_get_uri (window->last_location_bookmark);
-	result = nautilus_uris_match (uri, window->location);
-	if (!result) {
-		 g_error ("last_location_bookmark is %s, but expected %s", uri, window->location);
-	}
-	g_free (uri);
+	check_bookmark_location_matches_uri (window->last_location_bookmark, window->location);
 }
 
 static void
@@ -299,10 +305,9 @@ handle_go_back (NautilusWindow *window, const char *location)
 
         /* Going back. Move items from the back list to the forward list. */
         g_assert (g_list_length (window->back_list) > window->location_change_distance);
-        nautilus_assert_computed_str
-                (nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (g_list_nth_data (window->back_list,
-                                                                                window->location_change_distance))),
-                 location);
+        check_bookmark_location_matches_uri (NAUTILUS_BOOKMARK (g_list_nth_data (window->back_list,
+                                                                                window->location_change_distance)),
+                                             location);
         g_assert (window->location != NULL);
         
         /* Move current location to Forward list */
@@ -336,10 +341,9 @@ handle_go_forward (NautilusWindow *window, const char *location)
 
         /* Going forward. Move items from the forward list to the back list. */
         g_assert (g_list_length (window->forward_list) > window->location_change_distance);
-        nautilus_assert_computed_str
-                (nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (g_list_nth_data (window->forward_list,
-                                                                                window->location_change_distance))),
-                 location);
+        check_bookmark_location_matches_uri (NAUTILUS_BOOKMARK (g_list_nth_data (window->forward_list,
+                                                                                window->location_change_distance)),
+                                             location);
         g_assert (window->location != NULL);
                                 
         /* Move current location to Back list */

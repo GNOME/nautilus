@@ -1,3 +1,20 @@
+2000-11-01  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 4343 (crash clicking "Back" deep in software catalog)
+
+	This was an inaccurate assert. Other similar asserts had been
+	fixed earlier, but this one and a parallel one in Forward got
+	overlooked.
+
+	* src/nautilus-window-manage-views.c:
+	(check_bookmark_location_matches_uri): New helper function, uses
+	uris_match.
+	(check_last_bookmark_location_matches_window): Now calls the
+	new function (which was extracted from this)
+	(handle_go_back),
+	(handle_go_forward): Use the new function to check that the bookmark
+	has the right uri, instead of direct string compares.
+
 2000-11-01  Mathieu Lacage  <mathieu@eazel.com>
 
 	* nautilus.spec.in: adding fdl.
