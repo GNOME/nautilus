@@ -1,3 +1,35 @@
+2000-06-04  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog),
+	(global_preferences_register_for_ui):
+	reorganized the icon theming in the preferences dialog, combining toolbar and
+	icon themes into one section, and generalizing toolbar themes to support any
+	number of themes.
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	generalized the toolbar icon theme preference from a boolean to a string,
+	changing its name to avoid confusion
+	* nautilus-widgets/nautilus-preferences-item.c:
+	(preferences_item_construct), (has_image_file), (add_icon_themes),
+	(preferences_item_create_icon_theme),
+	(preferences_item_create_toolbar_icon_theme):
+	added support for toolbar icon themes and made it more robust for icon themes
+	in general, by adding code to check that a candidate directory actually has
+	the required icons.
+	* nautilus-widgets/nautilus-preferences-item.h:
+	added a new item type for toolbar themes
+	* src/nautilus-window-toolbars.c: (setup_button),
+	(setup_toolbar_images), (nautilus_window_initialize_toolbars),
+	(nautilus_window_toolbar_remove_theme_callback):
+	generalized the toolbar icon switching code to support arbitrary themes instead
+	of just two.
+	* libnautilus-extensions/nautilus-link-set.c:
+	(get_link_set_document), (expand_uri), (nautilus_link_set_install),
+	(nautilus_link_set_remove):
+	added link set remove code, which hasn't been tested yet, but will be soon.
+	* icons/zoom.png:
+	cleaner version of magnifier icon
+		
 2000-06-04  Ian McKellar  <yakk@yakk.net>
 
 	* nautilus-widgets/nautilus-preferences.c:

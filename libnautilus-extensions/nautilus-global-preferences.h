@@ -62,7 +62,7 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY		"directory-view/font_family"
 
 /* themes */
-#define NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS		"preferences/eazel_toolbar_icons"
+#define NAUTILUS_PREFERENCES_TOOLBAR_ICON_THEME			"preferences/toolbar_icon_theme"
 #define NAUTILUS_PREFERENCES_ICON_THEME				"preferences/icon_theme"
 
 enum

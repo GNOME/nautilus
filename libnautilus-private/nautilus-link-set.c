@@ -69,6 +69,39 @@ create_new_link (const char *directory_path, const char *name, const char *image
 	return result > 0;
 }
 
+/* utility to return link set path */
+
+static xmlDocPtr
+get_link_set_document(const char* link_set_name)
+{
+	char *link_set_path, *temp_str;
+	xmlDocPtr document;
+	
+	temp_str = g_strdup_printf ("nautilus/linksets/%s.xml", link_set_name);
+	link_set_path = gnome_datadir_file (temp_str);
+	g_free (temp_str);
+	
+	document = xmlParseFile (link_set_path);
+	g_free (link_set_path);
+	
+	return document;
+}
+
+/* utility to expand the uri to deal with the home directory, etc. */
+static char *
+expand_uri(const char *uri)
+{
+	char *full_uri, *home_in_uri_format;
+				
+	if (uri[0] == '~') {
+		home_in_uri_format = gnome_vfs_escape_string (g_get_home_dir (), GNOME_VFS_URI_UNSAFE_PATH);
+		full_uri = g_strconcat ("file://", home_in_uri_format, uri + 1, NULL);
+		g_free (home_in_uri_format);
+		return full_uri;
+	}
+	return g_strdup(uri);
+}
+
 /* install a link set into the specified directory */
 
 gboolean
@@ -76,22 +109,18 @@ nautilus_link_set_install (const char *directory_path, const char *link_set_name
 {
 	xmlDocPtr document;
 	xmlNodePtr node;
-	char *temp_str, *link_set_path;
-	char *link_name, *image_name, *uri, *full_uri, *home_in_uri_format;	
+	char *link_name, *image_name, *uri, *full_uri;	
 
-	/* compose the path of the link set file */
-	temp_str = g_strdup_printf ("nautilus/linksets/%s.xml", link_set_name);
-	link_set_path = gnome_datadir_file (temp_str);
-	g_free (temp_str);
+	/* load and parse the link set document */
+	document = get_link_set_document(link_set_name);
 
-	/* load and parse the linkset xml file */
-	document = xmlParseFile (link_set_path);
-	g_free (link_set_path);
 	if (document == NULL) {
 		return FALSE;
 	}
 	
-	/* loop through the entries, generating .link files */
+	/* loop through the entries, generating .link files, or incrementing the
+	   reference count if it's already there */
+	
 	for (node = nautilus_xml_get_children (xmlDocGetRootElement (document));
 	     node != NULL; node = node->next) {
 		if (strcmp (node->name, "link") == 0) {
@@ -100,16 +129,10 @@ nautilus_link_set_install (const char *directory_path, const char *link_set_name
 			uri = xmlGetProp (node, "uri");
 
 			/* Expand special URIs */
-			full_uri = NULL;
-			if (uri[0] == '~') {
-				home_in_uri_format = gnome_vfs_escape_string
-					(g_get_home_dir (), GNOME_VFS_URI_UNSAFE_PATH);
-				full_uri = g_strconcat ("file://", home_in_uri_format, uri + 1, NULL);
-				g_free (home_in_uri_format);
-				uri = full_uri;
-			}
-
-			if (!create_new_link (directory_path, link_name, image_name, uri)) {
+			full_uri = expand_uri(uri);
+			
+			/* create the link file */
+			if (!create_new_link (directory_path, link_name, image_name, full_uri)) {
 				g_free (full_uri);
 				xmlFreeDoc (document);
 				return FALSE;
@@ -126,10 +149,31 @@ nautilus_link_set_install (const char *directory_path, const char *link_set_name
 }
 
 /* remove a link set from the specified directory */
-/* FIXME: Not implemented. */
-#if 0
 void
-nautilus_link_set_remove (const char *directory_uri, const char *link_set_name)
+nautilus_link_set_remove (const char *directory_path, const char *link_set_name)
 {
+	xmlDocPtr document;
+	xmlNodePtr node;
+	char *link_name, *file_name;	
+	
+	document = get_link_set_document(link_set_name);
+
+	if (document == NULL)
+		return;
+ 
+	/* loop through the entries in the xml file, formulating the names of the link files and
+	   deleting them or decrementing their reference count */
+	for (node = nautilus_xml_get_children (xmlDocGetRootElement (document));
+	     node != NULL; node = node->next) {
+		if (strcmp (node->name, "link") == 0) {
+			link_name = xmlGetProp (node, "name");
+			/* formulate the link file path name */
+			file_name = g_strdup_printf ("%s/%s.link", directory_path, link_name);		
+			/* delete the file */
+			unlink(file_name);
+			g_free(link_name);
+		}   
+	}
+	
+	xmlFreeDoc (document);
 }
-#endif

@@ -200,16 +200,23 @@ remember_buttons(NautilusWindow *window, GnomeUIInfo current_toolbar_info[])
 /* set up the toolbar info based on the current theme selection from preferences */
 
 static void
-setup_button(GtkWidget* button,  const char *icon_name)
+setup_button(GtkWidget* button,  const char *theme_name, const char *icon_name)
 {
 	GList *list;
 	GtkWidget *widget;
+	char *full_name;
+	
+	if (!strcmp(theme_name, "standard"))
+		full_name = g_strdup(icon_name);
+	else
+		 full_name = g_strdup_printf("nautilus/%s/%s.png", theme_name, icon_name);
 	
 	list = gtk_container_children(GTK_CONTAINER(GTK_BIN(button)->child));
 	widget = GTK_WIDGET(list->data);
 	g_list_free(list);
-			
-	gnome_stock_set_icon(GNOME_STOCK(widget), icon_name);
+	
+	gnome_stock_set_icon(GNOME_STOCK(widget), full_name);
+	g_free(full_name);
 	gtk_widget_queue_resize(button); 
 }
 
@@ -217,16 +224,18 @@ setup_button(GtkWidget* button,  const char *icon_name)
 static void
 setup_toolbar_images(NautilusWindow *window)
 {
-	gboolean use_eazel_theme;
+	char *theme_name;
 	
-	use_eazel_theme = nautilus_preferences_get_boolean(NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS, FALSE);
-		
-	setup_button (window->back_button, use_eazel_theme ?  "nautilus/eazel/Back.png" : GNOME_STOCK_PIXMAP_BACK);
-	setup_button (window->forward_button, use_eazel_theme ? "nautilus/eazel/Forward.png" : GNOME_STOCK_PIXMAP_FORWARD);
-	setup_button (window->up_button, use_eazel_theme ? "nautilus/eazel/Up.png" : GNOME_STOCK_PIXMAP_UP);
-	setup_button (window->home_button, use_eazel_theme ? "nautilus/eazel/Home.png" : GNOME_STOCK_PIXMAP_HOME);
-	setup_button (window->reload_button, use_eazel_theme ? "nautilus/eazel/Refresh.png" : GNOME_STOCK_PIXMAP_REFRESH);
-	setup_button (window->stop_button, use_eazel_theme ? "nautilus/eazel/Stop.png" : GNOME_STOCK_PIXMAP_STOP);
+	theme_name = nautilus_preferences_get (NAUTILUS_PREFERENCES_TOOLBAR_ICON_THEME, "standard");
+	
+	setup_button (window->back_button, theme_name, GNOME_STOCK_PIXMAP_BACK);
+	setup_button (window->forward_button, theme_name, GNOME_STOCK_PIXMAP_FORWARD);
+	setup_button (window->up_button, theme_name, GNOME_STOCK_PIXMAP_UP);
+	setup_button (window->home_button, theme_name,  GNOME_STOCK_PIXMAP_HOME);
+	setup_button (window->reload_button, theme_name,  GNOME_STOCK_PIXMAP_REFRESH);
+	setup_button (window->stop_button, theme_name, GNOME_STOCK_PIXMAP_STOP);
+
+	g_free(theme_name);
 }
 
 /* allocate a new toolbar */
@@ -258,7 +267,7 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 	      window);
 
 	/* add callback for preference changes */
-	nautilus_preferences_add_callback(NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS, 
+	nautilus_preferences_add_callback(NAUTILUS_PREFERENCES_TOOLBAR_ICON_THEME, 
 						(NautilusPreferencesCallback) setup_toolbar_images, 
 						window);
 }
@@ -266,7 +275,7 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 void
 nautilus_window_toolbar_remove_theme_callback()
 {
-nautilus_preferences_remove_callback(NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS,
+nautilus_preferences_remove_callback(NAUTILUS_PREFERENCES_TOOLBAR_ICON_THEME,
 				     (NautilusPreferencesCallback) setup_toolbar_images, NULL);
 }
  

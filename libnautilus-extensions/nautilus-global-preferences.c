@@ -185,24 +185,23 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_ANTI_ALIASED_CANVAS,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), "Toolbar Icons");
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), "Icon Themes");
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
 							 1,
-							 NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS,
-							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+							 NAUTILUS_PREFERENCES_TOOLBAR_ICON_THEME,
+							 NAUTILUS_PREFERENCE_ITEM_TOOLBAR_ICON_THEME);
+
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
+							 1,
+							 NAUTILUS_PREFERENCES_ICON_THEME,
+							 NAUTILUS_PREFERENCE_ITEM_ICON_THEME);
 	
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), "Fonts");
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
 							 2,
 							 NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
 							 NAUTILUS_PREFERENCE_ITEM_FONT_FAMILY);
-
 	
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), "Icons");
-	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
-							 3,
-							 NAUTILUS_PREFERENCES_ICON_THEME,
-							 NAUTILUS_PREFERENCE_ITEM_ICON_THEME);
 	/*
 	 * Tradeoffs
 	 */
@@ -500,7 +499,7 @@ global_preferences_register_for_ui (void)
 							   FALSE);
 
 	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_ICON_THEME,
-							  "Select theme for icons",
+							  "theme for file icons:      ",
 							  "default",
 							  "default",
 							  "default");
@@ -512,11 +511,11 @@ global_preferences_register_for_ui (void)
 							  "helvetica");
 	
 	/* toolbar icons */
-	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_EAZEL_TOOLBAR_ICONS,
-							   "Use Eazel's toolbar icons",
-							   FALSE,
-							   FALSE,
-							   FALSE);
+	global_preferences_register_string_with_defaults (NAUTILUS_PREFERENCES_TOOLBAR_ICON_THEME,
+							   "theme for toolbar icons:",
+							   "standard",
+							   "standard",
+							   "standard");
 
 	/*
 	 * These dont have a UI (yet ? maybe in the advanced settings ?).

@@ -25,6 +25,8 @@
 #include <config.h>
 #include "nautilus-preferences-item.h"
 #include "nautilus-preferences.h"
+#include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libgnomevfs/gnome-vfs.h>
 
@@ -84,6 +86,8 @@ static void preferences_item_create_boolean            (NautilusPreferencesItem 
 static void preferences_item_create_font_family               (NautilusPreferencesItem      *item,
 							const NautilusPreference     *prefrence);
 static void preferences_item_create_icon_theme         (NautilusPreferencesItem      *item,
+							const NautilusPreference     *preference);
+static void preferences_item_create_toolbar_icon_theme (NautilusPreferencesItem      *item,
 							const NautilusPreference     *preference);
 static void enum_radio_group_changed_callback          (GtkWidget                    *button_group,
 							GtkWidget                    *button,
@@ -274,6 +278,10 @@ preferences_item_construct (NautilusPreferencesItem	*item,
 		preferences_item_create_icon_theme (item, preference);
 		break;
 	
+	case NAUTILUS_PREFERENCE_ITEM_TOOLBAR_ICON_THEME:
+		preferences_item_create_toolbar_icon_theme (item, preference);
+		break;
+	
 	}
 
 	gtk_object_unref (GTK_OBJECT (preference));
@@ -408,10 +416,50 @@ preferences_item_create_font_family (NautilusPreferencesItem	*item,
  			    (gpointer) item);
 }
 
+/* utility to determine if an image file exists in the candidate directory */
+
+static const char *icon_file_name_suffixes[] =
+{
+	".svg",
+	".SVG",
+	".png",
+	".PNG"
+};
+
+static gboolean
+has_image_file(const char *directory_uri, const char *dir_name, const char *required_file)
+{
+	char *temp_str, *base_uri;
+	int index;
+	GnomeVFSResult result;
+	GnomeVFSFileInfo *file_info;
+	
+	file_info = gnome_vfs_file_info_new ();
+	
+	temp_str = nautilus_make_path(directory_uri, dir_name);
+	base_uri = nautilus_make_path(temp_str, required_file);
+	g_free(temp_str);
+	
+	for (index = 0; index < NAUTILUS_N_ELEMENTS (icon_file_name_suffixes); index++) {
+		temp_str = g_strconcat (base_uri, icon_file_name_suffixes[index], NULL);
+		result = gnome_vfs_get_file_info (temp_str, file_info, 0, NULL);
+		g_free(temp_str);
+		if (result == GNOME_VFS_OK) {
+			g_free(base_uri);
+			gnome_vfs_file_info_unref (file_info);
+			return TRUE;	
+		}
+	}
+	
+	gnome_vfs_file_info_unref (file_info);
+	g_free(base_uri);
+	return FALSE;
+}
+
 /* add available icon themes to the theme list by iterating through the
    nautilus icons directory, looking for sub-directories */
 static void
-add_icon_themes(NautilusStringList *theme_list)
+add_icon_themes(NautilusStringList *theme_list, char *required_file)
 {
 	char *directory_uri;
 	GnomeVFSResult result;
@@ -433,7 +481,8 @@ add_icon_themes(NautilusStringList *theme_list)
 	while (current_file_info != NULL) {
 		if ((current_file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) &&
 			(current_file_info->name[0] != '.'))
-			nautilus_string_list_insert (theme_list, current_file_info->name);	
+			if (has_image_file(directory_uri, current_file_info->name, required_file))
+				nautilus_string_list_insert (theme_list, current_file_info->name);	
 		current_file_info = gnome_vfs_directory_list_next(list);
 	}
 	
@@ -465,11 +514,57 @@ preferences_item_create_icon_theme (NautilusPreferencesItem	*item,
 
 	theme_list = nautilus_string_list_new ();
 	nautilus_string_list_insert (theme_list, "default");
-	add_icon_themes(theme_list);
+	add_icon_themes(theme_list, "i-directory");
 	
 	nautilus_string_picker_set_string_list (NAUTILUS_STRING_PICKER (item->details->child), theme_list);
 
 	current_value = nautilus_preferences_get (item->details->preference_name, "default");
+
+	g_assert (current_value != NULL);
+	g_assert (nautilus_string_list_contains (theme_list, current_value));
+	
+	nautilus_string_picker_set_text (NAUTILUS_STRING_PICKER (item->details->child), current_value);
+
+	g_free (current_value);
+
+	nautilus_string_list_free (theme_list);
+	
+ 	gtk_signal_connect (GTK_OBJECT (item->details->child),
+ 			    "changed",
+ 			    GTK_SIGNAL_FUNC (text_item_changed_callback),
+ 			    (gpointer) item);
+}
+
+
+static void
+preferences_item_create_toolbar_icon_theme (NautilusPreferencesItem	*item,
+				     		const NautilusPreference	*preference)
+{
+	char			*description;
+	char			*current_value;
+	NautilusStringList	*theme_list;
+
+	g_assert (item != NULL);
+	g_assert (preference != NULL);
+
+	g_assert (item->details->preference_name != NULL);
+	description = nautilus_preference_get_description (preference);
+
+	g_assert (description != NULL);
+
+	item->details->child = nautilus_string_picker_new ();
+
+	nautilus_string_picker_set_title_label (NAUTILUS_STRING_PICKER (item->details->child), description);
+	
+	g_free (description);
+
+	theme_list = nautilus_string_list_new ();
+	nautilus_string_list_insert (theme_list, "standard");
+	add_icon_themes(theme_list, "Up");
+	
+	nautilus_string_picker_set_string_list (NAUTILUS_STRING_PICKER (item->details->child), theme_list);
+
+	current_value = nautilus_preferences_get (item->details->preference_name, "standard");
 
 	g_assert (current_value != NULL);
 	g_assert (nautilus_string_list_contains (theme_list, current_value));
