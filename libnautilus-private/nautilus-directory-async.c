@@ -2035,13 +2035,14 @@ get_info_callback (GnomeVFSAsyncHandle *handle,
 	get_info_file = directory->details->get_info_file;
 	g_assert (NAUTILUS_IS_FILE (get_info_file));
 	
-	result = results->data;
-	nautilus_file_update_info (get_info_file, result->file_info);
-
 	directory->details->get_info_file = NULL;
 	directory->details->get_info_in_progress = NULL;
-
-	nautilus_file_changed (get_info_file);
+	
+	result = results->data;
+	if (result->result == GNOME_VFS_OK) {
+		nautilus_file_update_info (get_info_file, result->file_info);
+		nautilus_file_changed (get_info_file);
+	}
 
 	nautilus_directory_async_state_changed (directory);
 }

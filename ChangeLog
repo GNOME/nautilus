@@ -1,3 +1,18 @@
+2000-08-03  Darin Adler  <darin@eazel.com>
+
+	* check-signals.pl: Wrote a script to check for people who forget
+	to call gtk_object_class_add_signals. It found only one violation,
+	and that was already fixed by the time I got around to checking
+	this in.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(get_info_callback): Added a code to check the error result from
+	get_file_info. Without this, we were doing
+	
+	* src/nautilus-sidebar-title.c: (nautilus_sidebar_title_set_uri):
+	Fixed it so we won't destroy and then instantly recreate the same
+	NautilusFile if the URI is set to the same value.
+
 2000-08-03  Michael K. Fleming  <mfleming@eazel.com>
 
 	*

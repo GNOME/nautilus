@@ -425,33 +425,39 @@ nautilus_sidebar_title_set_uri (NautilusSidebarTitle *sidebar_title,
 				const char *initial_text)
 {
 	GList *attributes;
-
-	release_file (sidebar_title);
+	NautilusFile *file;
 
 	if (new_uri == NULL) {
-		sidebar_title->details->file = NULL;
+		file = NULL;
 	} else {
-		sidebar_title->details->file = nautilus_file_get (new_uri);
+		file = nautilus_file_get (new_uri);
 	}
 
-	/* attach file */
-	if (sidebar_title->details->file != NULL) {
-		sidebar_title->details->file_changed_connection =
-			gtk_signal_connect_object (GTK_OBJECT (sidebar_title->details->file),
-						   "changed",
-						   update_all,
-						   GTK_OBJECT (sidebar_title));
-
-		/* Monitor the things needed to get the right
-		 * icon. Also monitor a directory's item count because
-		 * the "size" attribute is based on that.
-		 */
-		attributes = nautilus_icon_factory_get_required_file_attributes ();		
-		attributes = g_list_prepend (attributes,
-					     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
-		nautilus_file_monitor_add (sidebar_title->details->file, sidebar_title,
-					   attributes, TRUE);
-		g_list_free (attributes);
+	if (file == sidebar_title->details->file) {
+		nautilus_file_unref (file);
+	} else {
+		release_file (sidebar_title);
+		sidebar_title->details->file = file;
+	
+		/* attach file */
+		if (file != NULL) {
+			sidebar_title->details->file_changed_connection =
+				gtk_signal_connect_object (GTK_OBJECT (sidebar_title->details->file),
+							   "changed",
+							   update_all,
+							   GTK_OBJECT (sidebar_title));
+			
+			/* Monitor the things needed to get the right
+			 * icon. Also monitor a directory's item count because
+			 * the "size" attribute is based on that.
+			 */
+			attributes = nautilus_icon_factory_get_required_file_attributes ();		
+			attributes = g_list_prepend (attributes,
+						     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT);
+			nautilus_file_monitor_add (sidebar_title->details->file, sidebar_title,
+						   attributes, TRUE);
+			g_list_free (attributes);
+		}
 	}
 
 	g_free (sidebar_title->details->title_text);
