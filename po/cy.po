@@ -30,7 +30,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-30 16:44+0200\n"
+"POT-Creation-Date: 2004-09-12 00:36+0100\n"
 "PO-Revision-Date: 2004-03-16 00:28+0000\n"
 "Last-Translator: Dafydd Harries <daf@muse.19inch.net>\n"
 "Language-Team: Cymraeg <gnome-cy@pengwyn.linux.org.uk>\n"
@@ -1152,9 +1152,8 @@ msgid "Custom Side Pane Background Set"
 msgstr "Gosod Cefndir Panel Ochr Addasiedig"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
-#, fuzzy
 msgid "Date Format"
-msgstr "_Fformat"
+msgstr "Fformat Dyddiad"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:10
 msgid "Default Background Color"
@@ -1213,9 +1212,8 @@ msgid "Default zoom level used by the list view."
 msgstr "Y rhagosodiad lefel chwyddo a ddefnyddir gan y golwg rhestr."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
-#, fuzzy
 msgid "Desktop computer icon name"
-msgstr "Enw eicon cartref y penbwrdd"
+msgstr "Enw eicon cyfrifiadur y penbwrdd"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid "Desktop font"
@@ -1422,13 +1420,12 @@ msgstr ""
 "sbwriel"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
-#, fuzzy
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
 msgstr ""
-"Os wedi gosod i gwir, caiff eicon ei osod ar y penbwrdd sy'n cysylltu a'r "
-"sbwriel"
+"Os wedi gosod i gwir, caiff eiconau sy'n cysylltu at gyfrolau wedi eu clymu "
+"eu rhoi ar y penbwrdd."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
@@ -1537,9 +1534,8 @@ msgid "Show location bar in new windows"
 msgstr "Dangos y bar lleoliad mewn ffenestri newydd"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
-#, fuzzy
 msgid "Show mounted volumes on the desktop"
-msgstr "Rhaid i'r Sbwriel aros ar y penbwrdd."
+msgstr "Dangos cyfrolau wedi eu clymu ar y penbwrdd"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid "Show side pane in new windows"
@@ -1636,26 +1632,24 @@ msgid "The font description used for the icons on the desktop."
 msgstr "Y disgrifiad ffont a ddefnyddir ar gyfer eiconau ar y penbwrdd."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
-#, fuzzy
 msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
 msgstr ""
-"Y drefn rhagosod ar gyfer eitemau yn y golwg rhestr. Gwerthoedd posib yw "
-"\"name\", \"size\", \"type\", a \"modification_date\"."
+"Fformat dyddiadau ffeil. Gwerthoedd posib: \"locale\", \"iso\", ac "
+"\"informal\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
 msgid "The side pane view to show in newly opened windows."
 msgstr "Y golwg panel ochr i'w ddangos mewn ffenestri newydd eu agor."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the computer icon on the "
 "desktop."
 msgstr ""
-"Gellir gosod yr enw hwn os hoffech enw addasiedig ar gyfer yr eicon cartref "
-"ar y penbwrdd."
+"Gellir gosod yr enw hwn os hoffech enw addasiedig ar gyfer yr eicon "
+"cyfrifiadur ar y penbwrdd."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
 msgid ""
@@ -2436,9 +2430,9 @@ msgid "Unable to Replace File"
 msgstr "Methu Amnewid Ffeil"
 
 #: libnautilus-private/nautilus-file-operations.c:1090
-#, fuzzy, c-format
+#, c-format
 msgid "The folder \"%s\" already exists.  Would you like to replace it?"
-msgstr "Mae ffeil \"%s\" yn bodoli yn eisioes. A hoffech ei amnewid e?"
+msgstr "Mae plygell \"%s\" yn bodoli yn eisioes. A hoffech ei amnewid e?"
 
 #: libnautilus-private/nautilus-file-operations.c:1093
 #, c-format
@@ -2446,12 +2440,12 @@ msgid "The file \"%s\" already exists.  Would you like to replace it?"
 msgstr "Mae ffeil \"%s\" yn bodoli yn eisioes. A hoffech ei amnewid e?"
 
 #: libnautilus-private/nautilus-file-operations.c:1101
-#, fuzzy
 msgid ""
 "If you replace the existing folder, any files in it that conflicts with the "
 "files being copied will be overwritten."
 msgstr ""
-"Os ydych yn amnewid ffeil sy'n bodoli, caiff ei gynnwys eu trosysgrifo."
+"Os ydych yn amnewid y plygell sy'n bodoli, caiff unrhyw ffeiliau sydd ynddo "
+"sy'n gwrthdaro gyda'r ffeiliau sy'n cael eu copïo eu trosysgrifo."
 
 #: libnautilus-private/nautilus-file-operations.c:1103
 msgid "If you replace an existing file, its contents will be overwritten."
@@ -2840,12 +2834,12 @@ msgstr "_Gwagu"
 #: libnautilus-private/nautilus-file-operations-progress.c:402
 #, c-format
 msgid "(%d:%02d:%d Remaining)"
-msgstr ""
+msgstr "(%d:%02d:%d Ar Ôl)"
 
 #: libnautilus-private/nautilus-file-operations-progress.c:407
 #, c-format
 msgid "(%d:%02d Remaining)"
-msgstr ""
+msgstr "(%d:%02d Ar Ôl)"
 
 #: libnautilus-private/nautilus-file-operations-progress.c:520
 #, c-format
@@ -2871,18 +2865,16 @@ msgid "Themes"
 msgstr "Themâu"
 
 #: libnautilus-private/nautilus-file-utilities.c:377
-#, fuzzy
 msgid "CD/DVD Creator"
-msgstr "Crëwr CD"
+msgstr "Crëwr CD/DVD"
 
 #: libnautilus-private/nautilus-file-utilities.c:379
 msgid "Windows Network"
 msgstr "Rhwydwaith Windows"
 
 #: libnautilus-private/nautilus-file-utilities.c:381
-#, fuzzy
 msgid "Services in"
-msgstr "Gwasanaethau Gwe"
+msgstr "Gwasanaethau yn"
 
 #: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Always"
@@ -3456,9 +3448,8 @@ msgid "Browse the filesystem with the file manager"
 msgstr "Pori'r System Ffeiliau hefo'r trefnydd ffeiliau"
 
 #: nautilus.desktop.in.h:2
-#, fuzzy
 msgid "File Browser"
-msgstr "Porwr Ffeil: %s"
+msgstr "Porwr Ffeil"
 
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
@@ -3692,9 +3683,9 @@ msgid "Delete From Trash?"
 msgstr "Dileu O'r Sbwriel?"
 
 #: src/file-manager/fm-directory-view.c:3692
-#, fuzzy, c-format
+#, c-format
 msgid "Open with \"%s\""
-msgstr "Agor gyda %s"
+msgstr "Agor gyda \"%s\""
 
 #: src/file-manager/fm-directory-view.c:3693
 #, c-format
@@ -3878,12 +3869,12 @@ msgstr "Gwall Allfwrw"
 
 #: src/file-manager/fm-directory-view.c:5337
 msgid "Unmount Error"
-msgstr "Gwall Datosod"
+msgstr "Gwall Datglymu"
 
 #: src/file-manager/fm-directory-view.c:5461
-#, fuzzy, c-format
+#, c-format
 msgid "Connect to Server %s"
-msgstr "Cysylltu i'r Gweinydd"
+msgstr "Cysylltu i'r Gweinydd %s"
 
 #: src/file-manager/fm-directory-view.c:5466
 msgid "_Connect"
@@ -3900,12 +3891,12 @@ msgstr "Bwrw _Allan"
 #: src/file-manager/fm-directory-view.c:5792
 #: src/file-manager/nautilus-directory-view-ui.xml.h:66
 msgid "_Unmount Volume"
-msgstr "_Datosod Cyfrol"
+msgstr "_Datglymu Cyfrol"
 
 #: src/file-manager/fm-directory-view.c:5936
-#, fuzzy, c-format
+#, c-format
 msgid "_Open with \"%s\""
-msgstr "Agor gyda %s"
+msgstr "_Agor gyda \"%s\""
 
 #: src/file-manager/fm-directory-view.c:5948
 #: src/file-manager/nautilus-directory-view-ui.xml.h:59
@@ -4015,28 +4006,24 @@ msgid "Cancel Open?"
 msgstr "Diddymu Agor?"
 
 #: src/file-manager/fm-ditem-page.c:340 src/file-manager/fm-ditem-page.c:351
-#, fuzzy
 msgid "Comment"
-msgstr "Covalent"
+msgstr "Sylw"
 
 #: src/file-manager/fm-ditem-page.c:343
 msgid "URL"
-msgstr ""
+msgstr "LAU"
 
 #: src/file-manager/fm-ditem-page.c:347
-#, fuzzy
 msgid "Link"
-msgstr "cyswllt"
+msgstr "Cyswllt"
 
 #: src/file-manager/fm-ditem-page.c:354
-#, fuzzy
 msgid "Command"
-msgstr "Compaq"
+msgstr "Gorchymyn"
 
 #: src/file-manager/fm-ditem-page.c:358
-#, fuzzy
 msgid "Launcher"
-msgstr "Golygu Lansiwr"
+msgstr "Lansiwr"
 
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
@@ -4529,9 +4516,8 @@ msgid "Couldn't Show Help"
 msgstr "Methwyd Dangos Cymorth"
 
 #: src/file-manager/fm-properties-window.c:3291
-#, fuzzy
 msgid "Open With"
-msgstr "Agor _Gyda"
+msgstr "Agor Gyda"
 
 #: src/file-manager/fm-properties-window.c:3629
 msgid "Cancel Showing Properties Window?"
@@ -4640,9 +4626,8 @@ msgid "Choose another application with which to open the selected item"
 msgstr "Dewis rhaglen arall i agor yr eitem dewisiedig"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:3
-#, fuzzy
 msgid "Connect To This Server"
-msgstr "Cysylltu i'r Gweinydd"
+msgstr "Cysylltu i'r Gweinydd Hwn"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:5
 msgid "Create _Document"
@@ -4690,7 +4675,7 @@ msgstr "Fformatio'r cyfrol dewisiedig"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Make a permanent connection to this server"
-msgstr ""
+msgstr "Creu cysylltiad parhaol i'r gweinydd"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:21
 msgid "Medi_a Properties"
@@ -4736,9 +4721,8 @@ msgid "Open the selected item in this window"
 msgstr "Agor yr eitem dewisiedig yn y ffenestr yma"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:32
-#, fuzzy
 msgid "Open with Other _Application..."
-msgstr "Agor gyda Rhaglen Arall"
+msgstr "Agor gyda _Rhaglen Arall..."
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Prepare the selected files to be copied with a Paste Files command"
@@ -4790,9 +4774,8 @@ msgid "Select items in this window matching a given pattern"
 msgstr "Dewis pob eitem yn y ffenestr yma sy'n cyfateb a'r patrwm"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:45
-#, fuzzy
 msgid "Show _Hidden Files"
-msgstr "Dangos ffeiliau cudd a chopïau wrth _gefn"
+msgstr "Dangos Ffeiliau _Cudd"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:46
 msgid "Show media properties for the selected volume"
@@ -4805,11 +4788,11 @@ msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:48
 msgid "Toggles the display of hidden files in the current window"
-msgstr ""
+msgstr "Toglu dangosiad ffeiliau cudd yn y ffenest cyfredol"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "Unmount the selected volume"
-msgstr "Datosod y cyfrol dewisiedig"
+msgstr "Datglymu y cyfrol dewisiedig"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:51
 msgid "Use the default background for this location"
@@ -5140,48 +5123,41 @@ msgid "Please enter a name and try again."
 msgstr "Bwydwch enw a ceisiwch eto os gwelwch yn dda."
 
 #: src/nautilus-connect-server-dialog.c:252 src/nautilus-window.c:1118
-#, fuzzy, c-format
+#, c-format
 msgid "%s on %s"
-msgstr "%s (copi)%s"
+msgstr "%s ar %s"
 
 #: src/nautilus-connect-server-dialog.c:380
-#, fuzzy
 msgid "_Location (URI):"
-msgstr "_Lleoliad (LAU):"
+msgstr "_Lleoliad (URI):"
 
 #: src/nautilus-connect-server-dialog.c:424
-#, fuzzy
 msgid "_Server:"
-msgstr "_Byth"
+msgstr "_Gweinydd:"
 
 #: src/nautilus-connect-server-dialog.c:443
-#, fuzzy
 msgid "Optional information:"
-msgstr "Gwybodaeth"
+msgstr "Gwybodaeth opsiynnol:"
 
 #: src/nautilus-connect-server-dialog.c:455
-#, fuzzy
 msgid "_Share:"
-msgstr "Siâl"
+msgstr "_Rhaniad:"
 
 #: src/nautilus-connect-server-dialog.c:476
-#, fuzzy
 msgid "_Port:"
-msgstr "_Fformat"
+msgstr "_Porth:"
 
 #: src/nautilus-connect-server-dialog.c:496
-#, fuzzy
 msgid "_Folder:"
-msgstr "Creu _Plygell"
+msgstr "_Plygellau:"
 
 #: src/nautilus-connect-server-dialog.c:516
-#, fuzzy
 msgid "_User Name:"
-msgstr "_Enw:"
+msgstr "Enw _Defnyddiwr:"
 
 #: src/nautilus-connect-server-dialog.c:539
 msgid "_Name to use for connection:"
-msgstr ""
+msgstr "_Enw i'w ddefnyddio ar gyfer y cysylltiad:"
 
 #: src/nautilus-connect-server-dialog.c:597
 msgid "Connect to Server"
@@ -5189,42 +5165,39 @@ msgstr "Cysylltu i'r Gweinydd"
 
 #: src/nautilus-connect-server-dialog.c:614
 msgid "Service _type:"
-msgstr ""
+msgstr "_Math gwasanaeth:"
 
 #: src/nautilus-connect-server-dialog.c:623
 msgid "SSH"
-msgstr ""
+msgstr "SSH"
 
 #: src/nautilus-connect-server-dialog.c:625
 msgid "Public FTP"
-msgstr ""
+msgstr "FTP Cyhoeddus"
 
 #: src/nautilus-connect-server-dialog.c:627
 msgid "FTP (with login)"
-msgstr ""
+msgstr "FTP (gyda mewngofnodiad)"
 
 #: src/nautilus-connect-server-dialog.c:629
-#, fuzzy
 msgid "Windows share"
-msgstr "Cyfrol Rhannu Windows"
+msgstr "Rhaniad Windows"
 
 #: src/nautilus-connect-server-dialog.c:631
 msgid "WebDAV (HTTP)"
-msgstr ""
+msgstr "WebDAV (HTTP)"
 
 #: src/nautilus-connect-server-dialog.c:633
 msgid "Secure WebDAV (HTTPS)"
-msgstr ""
+msgstr "WebDAV Diogel (HTTPS)"
 
 #: src/nautilus-connect-server-dialog.c:635
-#, fuzzy
 msgid "Custom Location"
-msgstr "Lleoliad:"
+msgstr "Lleoliad Addasiedig"
 
 #: src/nautilus-connect-server-dialog.c:685
-#, fuzzy
 msgid "Browse _Network"
-msgstr "Rhwydwaith Windows"
+msgstr "Pori'r _Rhwydwaith"
 
 #: src/nautilus-connect-server-dialog.c:691
 msgid "C_onnect"
@@ -5255,14 +5228,12 @@ msgid "500 KB"
 msgstr "500 KB"
 
 #: src/nautilus-file-management-properties.glade.h:24
-#, fuzzy
 msgid "<span weight=\"bold\">Behavior</span>"
 msgstr "<span weight=\"bold\">Ymddygiad</span>"
 
 #: src/nautilus-file-management-properties.glade.h:25
-#, fuzzy
 msgid "<span weight=\"bold\">Date</span>"
-msgstr "<span weight=\"bold\">Sbwriel</span>"
+msgstr "<span weight=\"bold\">Dyddiad</span>"
 
 #: src/nautilus-file-management-properties.glade.h:26
 msgid "<span weight=\"bold\">Default View</span>"
@@ -5317,9 +5288,8 @@ msgid "Always"
 msgstr "Pob Tro"
 
 #: src/nautilus-file-management-properties.glade.h:39
-#, fuzzy
 msgid "Always open in _browser windows"
-msgstr "agor ffenestr pori newydd."
+msgstr "Agor mewn ffenstri _pori newydd wastad."
 
 #: src/nautilus-file-management-properties.glade.h:40
 msgid "Ask before _emptying the Trash or deleting files"
@@ -5350,9 +5320,8 @@ msgid "Default _zoom level:"
 msgstr "Lefel _chwyddo rhagosod"
 
 #: src/nautilus-file-management-properties.glade.h:51
-#, fuzzy
 msgid "Display"
-msgstr "_Arddangos"
+msgstr "Dangos"
 
 #: src/nautilus-file-management-properties.glade.h:52
 msgid "File Management Preferences"
@@ -5427,9 +5396,8 @@ msgid "_Double click to activate items"
 msgstr "Clic _ddwbl er mwyn gweithredu eitemau"
 
 #: src/nautilus-file-management-properties.glade.h:73
-#, fuzzy
 msgid "_Format:"
-msgstr "_Fformat"
+msgstr "_Fformat:"
 
 #: src/nautilus-file-management-properties.glade.h:74
 msgid "_Only for files smaller than:"
@@ -5468,19 +5436,16 @@ msgid "group"
 msgstr "grwp"
 
 #: src/nautilus-file-management-properties.glade.h:83
-#, fuzzy
 msgid "informal"
-msgstr "Gwybodaeth"
+msgstr "anffurfiol"
 
 #: src/nautilus-file-management-properties.glade.h:84
-#, fuzzy
 msgid "iso"
-msgstr "Hanes"
+msgstr "iso"
 
 #: src/nautilus-file-management-properties.glade.h:85
-#, fuzzy
 msgid "locale"
-msgstr "Blodeuol"
+msgstr "locale"
 
 #: src/nautilus-file-management-properties.glade.h:86
 msgid "none"
@@ -5626,9 +5591,9 @@ msgstr "Nautilus"
 
 #. translators: %s is an option (e.g. --check)
 #: src/nautilus-main.c:260 src/nautilus-main.c:269 src/nautilus-main.c:274
-#, fuzzy, c-format
+#, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
-msgstr "nautilus: ni ellir defnyddio --quit efo URI.\n"
+msgstr "nautilus: ni ellir defnyddio %s efo URI.\n"
 
 #: src/nautilus-main.c:265
 #, c-format
@@ -5784,9 +5749,8 @@ msgstr "Mynd i'r plygell templedi"
 
 #: src/nautilus-navigation-window-ui.xml.h:16
 #: src/nautilus-spatial-window-ui.xml.h:9
-#, fuzzy
 msgid "Go to the CD/DVD Creator"
-msgstr "Mynd i'r Crêwr CD"
+msgstr "Mynd i'r Crêwr CD/DVD"
 
 #: src/nautilus-navigation-window-ui.xml.h:17
 msgid "Go to the next visited location"
@@ -6311,9 +6275,8 @@ msgid "_Backgrounds and Emblems..."
 msgstr "Cefndiroedd a _Bathodynau..."
 
 #: src/nautilus-shell-ui.xml.h:30
-#, fuzzy
 msgid "_CD/DVD Creator"
-msgstr "Crëwr _CD"
+msgstr "Crëwr _CD/DVD"
 
 #: src/nautilus-shell-ui.xml.h:31
 msgid "_Close"
@@ -6377,18 +6340,16 @@ msgid "Show %s"
 msgstr "Dangos %s"
 
 #: src/nautilus-spatial-window-ui.xml.h:2
-#, fuzzy
 msgid "Clos_e All Folders"
-msgstr "Cau y Plygell Rhiant"
+msgstr "Cau _Pob Plygell"
 
 #: src/nautilus-spatial-window-ui.xml.h:3
 msgid "Close P_arent Folders"
 msgstr "Cau y Plygell Rhiant"
 
 #: src/nautilus-spatial-window-ui.xml.h:4
-#, fuzzy
 msgid "Close all folder windows"
-msgstr "Cau pob ffenest Morlwyio"
+msgstr "Cau pob ffenest plygell"
 
 #: src/nautilus-spatial-window-ui.xml.h:5
 msgid "Close this folder's parents"
@@ -6431,9 +6392,8 @@ msgid "the type of window the view is embedded in"
 msgstr "y math o ffenestr mae'r gwelydd wedi ei blannu ynndi"
 
 #: src/nautilus-view-frame.c:641
-#, fuzzy
 msgid "whether to show hidden files in the view"
-msgstr "A ddylid dangos ffeiliau cudd"
+msgstr "a ddylid dangos ffeiliau cudd yn y golwg"
 
 #: src/nautilus-window.c:885
 #, c-format
