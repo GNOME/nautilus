@@ -506,10 +506,10 @@ preference_set (NautilusPreferences	*preferences,
 
 static void
 preference_get (const NautilusPreferences	*preferences,
-		const char		*name,
-		NautilusPreferenceType	type,
-		gconstpointer		default_value,
-		gconstpointer		*value_out)
+		const char			*name,
+		NautilusPreferenceType		type,
+		gconstpointer			default_value,
+		gconstpointer			*value_out)
 {
 	PrefHashNode *pref_hash_node;
 
@@ -525,7 +525,8 @@ preference_get (const NautilusPreferences	*preferences,
 
 	g_assert (pref_hash_node != NULL);
 
-	*value_out = pref_hash_node->value;
+	/* If the stored default_value is NULL, then used the provided one */
+	*value_out = (pref_hash_node->value ? pref_hash_node->value : default_value);
 }
 
 /*
