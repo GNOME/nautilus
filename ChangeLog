@@ -1,3 +1,12 @@
+2001-01-23  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 5959 (File name in "no applications available"
+	dialog should be in quotes)
+
+	* libnautilus-extensions/nautilus-program-chooser.c:
+	(nautilus_program_chooser_show_no_choices_message):
+	Put quotes around file name in dialog.
+
 2001-01-23  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/hardware/nautilus-hardware-view.c:

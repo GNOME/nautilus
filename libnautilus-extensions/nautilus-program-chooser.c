@@ -1438,11 +1438,11 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 	file_name = nautilus_file_get_name (file);
 
 	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
-		unavailable_message = g_strdup_printf ("No viewers are available for %s.", file_name);		
+		unavailable_message = g_strdup_printf ("No viewers are available for \"%s\".", file_name);		
 		dialog_title = g_strdup ("No Viewers Available");
 	} else {
 		g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION);
-		unavailable_message = g_strdup_printf ("No applications are available for %s.", file_name);		
+		unavailable_message = g_strdup_printf ("No applications are available for \"%s\".", file_name);		
 		dialog_title = g_strdup ("No Applications Available");
 	}
 
