@@ -31,11 +31,13 @@
 
 static PackageData* parse_package (xmlNode* package);
 static CategoryData* parse_category (xmlNode* cat);
+const char* parse_pkg_template (const char* pkg_template_file);
+
 
 static PackageData*
 parse_package (xmlNode* package) {
 
-	xmlNode* dep;
+	xmlNodePtr dep;
 	PackageData* rv;
 
 	rv = g_new0 (PackageData, 1);
@@ -48,8 +50,8 @@ parse_package (xmlNode* package) {
 	rv->summary = g_strdup (xml_get_value (package, "SUMMARY"));
 	
 	/* Dependency Lists */
-	rv->SoftDepends = NULL;
-	rv->HardDepends = NULL;
+	rv->soft_depends = NULL;
+	rv->hard_depends = NULL;
 
 	dep = package->childs;
 	while (dep) {
@@ -57,13 +59,13 @@ parse_package (xmlNode* package) {
 			PackageData* depend;
 
 			depend = parse_package (dep);
-			rv->SoftDepends = g_list_append (rv->SoftDepends, depend);
+			rv->soft_depends = g_list_append (rv->soft_depends, depend);
 		}
 		else if (g_strcasecmp (dep->name, "HARD_DEPEND") == 0) {
 			PackageData* depend;
 
 			depend = parse_package (dep);
-			rv->HardDepends = g_list_append (rv->HardDepends, depend);
+			rv->hard_depends = g_list_append (rv->hard_depends, depend);
 		}
 
 		dep = dep->next;
@@ -93,7 +95,7 @@ parse_category (xmlNode* cat) {
 		PackageData* pakdat;
 
 		pakdat = parse_package (pkg);
-		category->Packages = g_list_append (category->Packages, pakdat);
+		category->packages = g_list_append (category->packages, pakdat);
 		pkg = pkg->next;
 	}
 
@@ -156,32 +158,32 @@ free_categories (GList* categories) {
 
 	while (categories) {
 		CategoryData* c = categories->data;
-		GList* t = c->Packages;
+		GList* t = c->packages;
 
 		while (t) {
 			PackageData* pack = t->data;
 			GList* temp;
 
-			temp = pack->SoftDepends;
+			temp = pack->soft_depends;
 			while (temp) {
 				g_free (temp->data);
 				temp = temp->next;
 			}
-			g_list_free(pack->SoftDepends);
+			g_list_free(pack->soft_depends);
 
-			temp = pack->HardDepends;
+			temp = pack->hard_depends;
 			while (temp) {
 				g_free (temp->data);
 				temp = temp->next;
 			}
-			g_list_free (pack->HardDepends);
+			g_list_free (pack->hard_depends);
 			
 			g_free (t->data);
 
 			t = t->next;
 		}
 
-		g_list_free (c->Packages);
+		g_list_free (c->packages);
 		g_free (c);
 
 		categories = categories->next;
@@ -189,3 +191,112 @@ free_categories (GList* categories) {
 	g_list_free (categories);
 
 } /* end free_categories */
+
+gboolean
+generate_xml_package_list (const char* pkg_template_file, const char* target_file) {
+
+/* This function will accept a colon delimited list of packages and generate
+ * an xml package list for eazel-install.  The pkg_template_function should
+ * be of the following format:
+ * 
+ * category name : package name : version : minor : archtype : bytesize : summary
+ * 
+ * Example:
+ * 
+ *
+ * Essential Packages:anaconda:7.0:1:i386:2722261:The redhat installer
+ * 
+ */
+
+	xmlDocPtr doc;
+	xmlNodePtr category;
+	xmlNodePtr packages;
+	xmlNodePtr package;
+	xmlNodePtr data;
+	const char* retbuf;
+	int index;
+	char** entry_array;
+	char** package_array;
+	
+	doc = xmlNewDoc ("1.0");
+	doc->root = xmlNewDocNode (doc, NULL, "CATEGORIES", NULL);
+	
+	retbuf = parse_pkg_template (pkg_template_file);
+
+	/* FIXME Maximum entries should not be hardcoded.  Max is 500 right now.  This
+	 * should be set by counting the number of lines in the input file */
+
+	entry_array = g_strsplit (retbuf, "\n", 500);
+
+	for (index = 0; index < 500; index++) {
+
+		if (entry_array[index] == NULL) {
+			break;
+		}
+
+		g_print ("entry = %s\n", entry_array[index]);
+		
+		package_array = g_strsplit (entry_array[index], ":", 7);
+
+		g_print ("pe0 = %s\n", package_array[0]);
+		g_print ("pe1 = %s\n", package_array[1]);
+		g_print ("pe2 = %s\n", package_array[2]);
+		g_print ("pe3 = %s\n", package_array[3]);
+		g_print ("pe4 = %s\n", package_array[4]);
+		g_print ("pe5 = %s\n", package_array[5]);
+		g_print ("pe6 = %s\n", package_array[6]);
+
+ /* FIXME this has no error control right now.  It needs to be improved alot.  */
+ 
+		if ((doc->root->childs == NULL) ||
+		   (xmlGetProp (doc->root->childs, package_array[0]))) {
+			category = xmlNewChild (doc->root, NULL, "CATEGORY", NULL);
+			xmlSetProp (category, "name", package_array[0]);
+			packages = xmlNewChild (category, NULL, "PACKAGES", NULL);
+		}
+		package = xmlNewChild (packages, NULL, "PACKAGE", NULL);
+		data = xmlNewChild (package, NULL, "NAME", package_array[1]);
+		data = xmlNewChild (package, NULL, "VERSION", package_array[2]);
+		data = xmlNewChild (package, NULL, "MINOR", package_array[3]);
+		data = xmlNewChild (package, NULL, "ARCH", package_array[4]);
+		data = xmlNewChild (package, NULL, "BYTESIZE", package_array[5]);
+		data = xmlNewChild (package, NULL, "SUMMARY", package_array[6]);
+	}
+
+	if (doc == NULL) {
+		fprintf (stderr, "***Error generating xml package list !***\n");
+		xmlFreeDoc (doc);
+		return FALSE;
+	}
+
+	/* FIXME this should check to see if target_file already exists and save a copy. */
+
+	xmlSaveFile (target_file, doc);
+	xmlFreeDoc (doc);
+	return TRUE;
+
+} /* end generate_xml_package_list */
+
+const char*
+parse_pkg_template (const char* pkg_template_file) {
+
+	FILE* input_file;
+	char buffer[256];
+	GString* string_data;
+	char* rv;
+	
+	string_data = g_string_new("");
+
+	input_file = fopen (pkg_template_file, "r");
+
+	while (fgets (buffer, 255, input_file) != NULL) {
+		g_string_append (string_data, buffer);
+	}
+
+	fclose (input_file);
+
+	rv = g_strdup (string_data->str);
+	g_string_free (string_data, TRUE);
+
+	return rv;
+}

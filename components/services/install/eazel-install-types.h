@@ -65,7 +65,7 @@ struct _InstallOptions {
 
 struct _CategoryData {
 	char* name;
-	GList* Packages;
+	GList* packages;
 };
 
 struct _PackageData {
@@ -75,8 +75,8 @@ struct _PackageData {
 	char* archtype;
 	int bytesize;
 	char* summary;
-	GList* SoftDepends;
-	GList* HardDepends;
+	GList* soft_depends;
+	GList* hard_depends;
 };
 
 #endif /* __EAZEL_SERVICES_TYPES_H__ */

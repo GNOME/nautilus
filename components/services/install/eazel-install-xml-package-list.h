@@ -36,10 +36,8 @@
 #include <gnome-xml/parser.h>
 
 GList* parse_local_xml_package_list (const char* pkg_list_file);
-gboolean http_fetch_xml_package_list (const char* hostname,
-									  int port,
-									  const char* path,
-									  const char* pkg_list_file);
 void free_categories (GList* categories);
+gboolean generate_xml_package_list (const char* pkg_template_file,
+									const char* target_file);
 
 #endif /* __EAZEL_SERVICES_XML_PACKAGE_LIST_H__ */

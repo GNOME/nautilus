@@ -32,36 +32,36 @@ install_new_packages (InstallOptions* iopts) {
 
 	GList *categories;
 	gboolean rv;
-	int installFlags, interfaceFlags, probFilter;
+	int install_flags, interface_flags, problem_filter;
 	
 	categories = NULL;
-	installFlags = 0;
-	interfaceFlags = 0;
-	probFilter = 0;
+	install_flags = 0;
+	interface_flags = 0;
+	problem_filter = 0;
 	
 	if (iopts->mode_test == TRUE) {
-		installFlags |= RPMTRANS_FLAG_TEST;
+		install_flags |= RPMTRANS_FLAG_TEST;
 	}
 
 	if (iopts->mode_update == TRUE) {
-		interfaceFlags |= INSTALL_UPGRADE;
+		interface_flags |= INSTALL_UPGRADE;
 	}
 
 	if (iopts->mode_verbose == TRUE) {
-		interfaceFlags |= INSTALL_HASH;
+		interface_flags |= INSTALL_HASH;
 		rpmSetVerbosity (RPMMESS_VERBOSE);
 	}
 	else {
 		rpmSetVerbosity (RPMMESS_NORMAL);
 	}
 
-	/* FIXME bugzilla.eazel.com 730:
-	 * This needs to be setup as an option.  Forcing everything right now.
-	 */
-	probFilter |= RPMPROB_FILTER_REPLACEPKG |
-				  RPMPROB_FILTER_REPLACEOLDFILES |
-				  RPMPROB_FILTER_REPLACENEWFILES |
-				  RPMPROB_FILTER_OLDPACKAGE;
+	/* FIXME bugzilla.eazel.com 730: This needs to be setup 
+	 *as an option.  Forcing everything right now. */
+
+	problem_filter |= RPMPROB_FILTER_REPLACEPKG |
+				      RPMPROB_FILTER_REPLACEOLDFILES |
+				      RPMPROB_FILTER_REPLACENEWFILES |
+				      RPMPROB_FILTER_OLDPACKAGE;
 	
 	rpmReadConfigFiles (iopts->rpmrc_file, NULL);
 
@@ -70,7 +70,7 @@ install_new_packages (InstallOptions* iopts) {
 
 	while (categories) {
 		CategoryData* c = categories->data;
-		GList* t = c->Packages;
+		GList* t = c->packages;
 
 		g_print ("Install Category - %s\n", c->name);
 		while (t) {
@@ -94,9 +94,9 @@ install_new_packages (InstallOptions* iopts) {
 				char* url;
 
 				rpmname = g_strdup_printf ("%s-%s-%s.%s.rpm", pack->name,
-															 pack->version,
-															 pack->minor,
-															 pack->archtype);
+															  pack->version,
+															  pack->minor,
+															  pack->archtype);
 	
 				targetname = g_strdup_printf ("%s/%s", iopts->install_tmpdir, rpmname);
 				url = g_strdup_printf ("http://%s%s/%s", iopts->hostname,
@@ -119,8 +119,8 @@ install_new_packages (InstallOptions* iopts) {
             pkg[0] = tmpbuf;
 			pkg[1] = NULL;
 			g_print ("Installing %s\n", pack->summary);
-			retval = rpmInstall ("/", pkg, installFlags, interfaceFlags,
-								probFilter, NULL);
+			retval = rpmInstall ("/", pkg, install_flags, interface_flags,
+								problem_filter, NULL);
 			if (retval == 0) {
 				g_print ("Package install successful !\n");
 				rv = TRUE;
@@ -144,18 +144,18 @@ gboolean
 uninstall_packages (InstallOptions* iopts) {
 	GList *categories;
 	gboolean rv;
-	int uninstallFlags, interfaceFlags;
+	int uninstall_flags, interface_flags;
 	
 	categories = NULL;
-	uninstallFlags = 0;
-	interfaceFlags = 0;
+	uninstall_flags = 0;
+	interface_flags = 0;
 	
 	if (iopts->mode_test == TRUE) {
-		uninstallFlags |= RPMTRANS_FLAG_TEST;
+		uninstall_flags |= RPMTRANS_FLAG_TEST;
 	}
 
 	if (iopts->mode_verbose == TRUE) {
-		interfaceFlags |= INSTALL_HASH;
+		interface_flags |= INSTALL_HASH;
 		rpmSetVerbosity (RPMMESS_VERBOSE);
 	}
 	else {
@@ -169,7 +169,7 @@ uninstall_packages (InstallOptions* iopts) {
 
 	while (categories) {
 		CategoryData* c = categories->data;
-		GList* t = c->Packages;
+		GList* t = c->packages;
 
 		g_print ("Uninstall Category - %s\n", c->name);
 		while (t) {
@@ -187,7 +187,7 @@ uninstall_packages (InstallOptions* iopts) {
             	pkg[0] = tmpbuf;
 				pkg[1] = NULL;
 				g_print ("Uninstalling %s\n", pack->summary);
-				retval = rpmErase ("/", pkg, uninstallFlags, interfaceFlags);
+				retval = rpmErase ("/", pkg, uninstall_flags, interface_flags);
 
 				if (retval == 0) {
 					g_print ("Package uninstall successful !\n");

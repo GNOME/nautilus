@@ -43,15 +43,16 @@ static void
 show_usage (int exitcode, char* error) {
 	fprintf (stderr, "Usage: eazel-install [options]\n"
 			"Valid options are:\n"
-			"	--help            : show help\n"
-			"	--License         : show license\n"
-			"	--local           : use local files\n"
-			"	--http            : use http\n"
-			"	--ftp             : use ftp\n"
-			"	--test            : dry run - don't actually install\n"
-			"	--uninstall       : uninstall the package list\n"
-			"	--tmpdir <dir>    : temporary directory to store rpms\n"
-			"	--server <url>)   : url of remote server\n\n"
+			"	--help               : show help\n"
+			"	--License            : show license\n"
+			"	--local              : use local files\n"
+			"	--http               : use http\n"
+			"	--ftp                : use ftp\n"
+			"	--test               : dry run - don't actually install\n"
+			"	--uninstall          : uninstall the package list\n"
+			"	--tmpdir <dir>       : temporary directory to store rpms\n"
+			"	--server <url>)      : url of remote server\n"
+			"   --genpkg_list <file> : generate xml package list\n"
 			"Example: eazel-install --http --server www.eazel.com --tmpdir /tmp\n");
 			
 	if (error) {
@@ -96,6 +97,7 @@ main (int argc, char* argv[]) {
 	char* config_file;
 	char* popt_tmpdir;
 	char* popt_server;
+	char* popt_genpkg_file;
 	char* remote_path;
 		
 	struct poptOption optionsTable[] = {
@@ -108,6 +110,7 @@ main (int argc, char* argv[]) {
 		{ "uninstall", 'u', 0, NULL, 'u' },
 		{ "tmpdir", 'T', POPT_ARG_STRING, &popt_tmpdir, 'T' },
 		{ "server", 's', POPT_ARG_STRING, &popt_server, 's' },
+		{ "genpkg_list", 'g', POPT_ARG_STRING, &popt_genpkg_file, 'g' },
 		{ NULL, '\0', 0, NULL, 0 }
 	};
 
@@ -119,6 +122,7 @@ main (int argc, char* argv[]) {
 	UNINSTALL_MODE = FALSE;
 	popt_server = NULL;
 	popt_tmpdir = NULL;
+	popt_genpkg_file = NULL;
 
 	config_file = g_strdup ("/etc/eazel/services/eazel-services-config.xml");
 	remote_path = g_strdup ("/package-list.xml");
@@ -152,6 +156,8 @@ main (int argc, char* argv[]) {
 				break;
 			case 's':
 				break;
+			case 'g':
+				break;
 		}
 	}
 
@@ -183,6 +189,24 @@ main (int argc, char* argv[]) {
 	g_print ("Reading the eazel services configuration ...\n");
 	iopts = init_default_install_configuration (config_file);
 
+	if (popt_genpkg_file) {
+		gboolean rv;
+		char* target_file;
+
+		target_file = g_strdup ("/etc/eazel/services/package-list.xml");
+		
+		rv = generate_xml_package_list (popt_genpkg_file, target_file);
+
+		if (rv == FALSE) {
+			fprintf (stderr, "***Could not generate xml package list !***\n");
+			g_free (target_file);
+			exit (1);
+		}
+
+		g_print ("New xml package list generated ...\n");
+		g_free (target_file);
+		exit (1);
+	} 
 
 	if ( USE_FTP == TRUE ) {
 		fprintf (stderr, "***FTP installs are not currently supported !***\n");
