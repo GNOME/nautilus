@@ -1,3 +1,11 @@
+2000-06-07  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-location-bar.c: (accumulate_name),
+	(try_to_expand_path), (editable_key_press_callback),
+	(nautilus_location_bar_initialize):
+	implemented first cut at auto-completion for the location bar text
+	entry. For now, it only handles file uris.
+
 2000-06-07  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-list.c: (nautilus_list_destroy):

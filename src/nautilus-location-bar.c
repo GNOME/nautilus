@@ -33,6 +33,8 @@
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkeventbox.h>
 
+#include <libgnomevfs/gnome-vfs.h>
+
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-mime.h>
 #include <libgnome/gnome-i18n.h>
@@ -160,7 +162,109 @@ editable_activated_callback (GtkEditable *editable,
 			 gtk_entry_get_text (GTK_ENTRY (editable)));
 }	
 
-
+/* utility routine to determine the string to expand to.  If we don't have anything yet, accept
+   the whole string, otherwise accept the largest part common to both */
+   
+static char *
+accumulate_name(char *full_name, char *candidate_name)
+{
+	char *result_name, *str1, *str2;
+	if (full_name == NULL)
+		result_name = g_strdup(candidate_name);
+	else {
+		result_name = full_name;
+		if (!nautilus_str_has_prefix(full_name, candidate_name)) {
+			str1 = full_name;
+			str2 = candidate_name;
+			while ((*str1++ == *str2++)) {};	
+			*--str1 = '\0';
+		}
+	}
+	return result_name;
+}
+
+/* routine that performs the tab expansion using gnome-vfs.  Extract the directory name and
+  incomplete basename, then iterate through the directory trying to complete it.  If we
+  find something, add it to the entry */
+  
+static void
+try_to_expand_path(GtkEditable *editable)
+{
+	GnomeVFSResult result;
+	GnomeVFSFileInfo *current_file_info;
+	GnomeVFSDirectoryList *list;
+	GnomeVFSURI *uri;
+	int base_length, current_path_length;
+	const char *base_name;
+	char *current_path, *dir_name, *expand_text;
+	
+	current_path = gtk_entry_get_text (GTK_ENTRY (editable));
+	
+	if (current_path == NULL) 
+		return;
+	
+	current_path_length = strlen(current_path);		
+	if (!nautilus_str_has_prefix(current_path, "file://"))
+		return;
+
+	uri = gnome_vfs_uri_new(current_path);
+	
+	base_name = gnome_vfs_uri_get_basename(uri);
+	if (base_name)
+		base_length = strlen(base_name);
+	else {
+		gnome_vfs_uri_unref(uri);
+		return;	
+	}
+		
+	dir_name = gnome_vfs_uri_extract_dirname(uri);
+
+	/* get file info for the directory */
+
+	result = gnome_vfs_directory_list_load (&list, dir_name,
+					       GNOME_VFS_FILE_INFO_DEFAULT, NULL, NULL);
+	if (result != GNOME_VFS_OK) {
+		g_free(dir_name);
+		gnome_vfs_uri_unref(uri);
+		return;
+	}
+
+	/* iterate through the directory, keeping the intersection of all the names that
+	   have the current basename as a prefix. */
+
+	current_file_info = gnome_vfs_directory_list_first(list);
+	expand_text = NULL;
+	while (current_file_info != NULL) {
+		if (nautilus_str_has_prefix(current_file_info->name, base_name)) {
+			expand_text = accumulate_name(expand_text, current_file_info->name);
+		}
+		current_file_info = gnome_vfs_directory_list_next(list);
+	}
+	
+	/* if we've got something, add it to the entry */	
+	if (expand_text && !nautilus_str_has_suffix(current_path, expand_text)) {
+		gtk_entry_append_text (GTK_ENTRY(editable), expand_text + base_length);
+ 		gtk_entry_select_region(GTK_ENTRY(editable), current_path_length,
+					current_path_length + strlen(expand_text) - base_length);
+		g_free (expand_text);
+	}
+	
+	g_free(dir_name);
+	gnome_vfs_directory_list_destroy(list);
+}
+
+
+/* handle changes in the location entry by checking for tabs */
+static void
+editable_key_press_callback (GtkEditable *editable,
+		       	     	GdkEventKey *event)
+{
+	g_assert (GTK_IS_EDITABLE (editable));
+	if (event->string[0] != 8)  {
+		try_to_expand_path(editable);
+	}
+}	
+
 static void
 destroy (GtkObject *object)
 {
@@ -174,7 +278,6 @@ destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
-
 static void
 nautilus_location_bar_initialize_class (NautilusLocationBarClass *class)
 {
@@ -213,6 +316,10 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 	entry = nautilus_entry_new ();
 	gtk_signal_connect (GTK_OBJECT (entry), "activate",
 			    editable_activated_callback, bar);
+
+	gtk_signal_connect_after (GTK_OBJECT (entry), "key_press_event",
+			    editable_key_press_callback, NULL);
+	
 	gtk_box_pack_start (GTK_BOX (bar), entry, TRUE, TRUE, 0);
 
 	/* Drag source */
