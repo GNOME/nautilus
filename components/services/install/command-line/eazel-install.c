@@ -39,6 +39,11 @@
 
 static void show_usage (int exitcode, char* error);
 static void show_license (int exitcode, char* error);
+static void generate_new_package_list (const char* popt_genpkg_file,
+                                       const char* config_file);
+static void create_temporary_directory (const char* tmpdir);
+static void fetch_remote_package_list (const char* pkg_list,
+                                       TransferOptions* topts);
 
 static void
 show_usage (int exitcode, char* error) {
@@ -50,6 +55,7 @@ show_usage (int exitcode, char* error) {
 			"	--http               : use http\n"
 			"	--ftp                : use ftp\n"
 			"	--test               : dry run - don't actually install\n"
+			"	--force              : dry run - don't actually install\n"
 			"	--uninstall          : uninstall the package list\n"
 			"	--tmpdir <dir>       : temporary directory to store rpms\n"
 			"	--server <url>)      : url of remote server\n"
@@ -88,18 +94,68 @@ show_license (int exitcode, char* error) {
 
 } /* end show_license */
 
+static void
+generate_new_package_list (const char* popt_genpkg_file,
+                           const char* config_file) {
+
+	gboolean retval;
+
+	retval = generate_xml_package_list (popt_genpkg_file, config_file);
+
+	if (retval == FALSE) {
+		fprintf (stderr, "***Could not generate xml package list !***\n");
+		exit (1);
+	}
+
+	g_print ("XML package list successfully generated ...\n");
+	exit (1);
+} /* end generate_new_package_list */
+
+static void
+create_temporary_directory (const char* tmpdir) {
+
+	int retval;
+
+	g_print("Creating temporary download directory ...\n");
+
+	retval = mkdir (tmpdir, 0755);
+	if (retval < 0) {
+		if (errno != EEXIST) {
+			fprintf (stderr, "***Could not create temporary directory !***\n");
+			exit (1);
+		}
+	}
+} /* end create_temporary_directory */
+
+static void
+fetch_remote_package_list (const char* pkg_list, TransferOptions* topts) {
+
+	gboolean retval;
+
+	g_print ("Getting package-list.xml from remote server ...\n");
+
+	retval = http_fetch_xml_package_list (topts->hostname,
+                                              topts->port_number,
+                                              topts->pkg_list_storage_path,
+                                              pkg_list);
+	if (retval == FALSE) {
+		fprintf (stderr, "***Unable to retrieve package-list.xml !***\n");
+		exit (1);
+	}
+} /* end fetch_remote_package_list */
+
 int
 main (int argc, char* argv[]) {
 	char opt;
 	gboolean retval;
-	gboolean USE_LOCAL, USE_HTTP, USE_FTP, UNINSTALL_MODE, TEST_MODE;
-	InstallOptions *iopts;
+	gboolean USE_LOCAL, USE_HTTP, USE_FTP, UNINSTALL_MODE, DOWNGRADE_MODE, TEST_MODE, FORCE_MODE;
+	InstallOptions* iopts;
+	TransferOptions* topts;
 	poptContext pctx;
 	char* config_file;
 	char* popt_tmpdir;
 	char* popt_server;
 	char* popt_genpkg_file;
-	char* remote_path;
 		
 	struct poptOption optionsTable[] = {
 		{ "help", 'h', 0, NULL, 'h' }, 
@@ -107,8 +163,10 @@ main (int argc, char* argv[]) {
 		{ "local", 'l', 0, NULL, 'l'},
 		{ "http", 'w', 0, NULL, 'w' },
 		{ "ftp", 'f', 0, NULL, 'f' },
+		{ "force", 'F', 0, NULL, 'F' },
 		{ "test", 't', 0, NULL, 't' },
 		{ "uninstall", 'u', 0, NULL, 'u' },
+		{ "downgrade", 'D', 0, NULL, 'D' },
 		{ "tmpdir", 'T', POPT_ARG_STRING, &popt_tmpdir, 'T' },
 		{ "server", 's', POPT_ARG_STRING, &popt_server, 's' },
 		{ "genpkg_list", 'g', POPT_ARG_STRING, &popt_genpkg_file, 'g' },
@@ -119,14 +177,15 @@ main (int argc, char* argv[]) {
 	USE_LOCAL = FALSE;
 	USE_HTTP = FALSE;
 	USE_FTP = FALSE;
+	FORCE_MODE = FALSE;
 	TEST_MODE = FALSE;
 	UNINSTALL_MODE = FALSE;
+	DOWNGRADE_MODE = FALSE;
 	popt_server = NULL;
 	popt_tmpdir = NULL;
 	popt_genpkg_file = NULL;
 
-	config_file = g_strdup ("/etc/eazel/services/eazel-services-config.xml");
-	remote_path = g_strdup ("/package-list.xml");
+	config_file = g_strdup ("/var/eazel/services/eazel-services-config.xml");
 	
 	pctx = poptGetContext ("eazel-install", argc, argv, optionsTable, 0);
 
@@ -147,11 +206,17 @@ main (int argc, char* argv[]) {
 			case 'f':
 				USE_FTP = TRUE;
 				break;
+			case 'F':
+				FORCE_MODE = TRUE;
+				break;
 			case 't':
 				TEST_MODE = TRUE;
 				break;
 			case 'u':
 				UNINSTALL_MODE = TRUE;
+				break;
+			case 'D':
+				DOWNGRADE_MODE = TRUE;
 				break;
 			case 'T':
 				break;
@@ -186,28 +251,19 @@ main (int argc, char* argv[]) {
 		exit (1);
 	}
 
-	/* Initialize iopts with defaults from the configuration file */
+	if ( DOWNGRADE_MODE == TRUE ) {
+		fprintf (stderr, "***Downgrade Mode not supported yet !***\n");
+		exit (1);
+	}
+
+	/* Initialize iopts and topts with defaults from the configuration file */
 	g_print ("Reading the eazel services configuration ...\n");
 	iopts = init_default_install_configuration (config_file);
+	topts = init_default_transfer_configuration (config_file);
 
 	if (popt_genpkg_file) {
-		gboolean rv;
-		char* target_file;
-
-		target_file = g_strdup ("/etc/eazel/services/package-list.xml");
-		
-		rv = generate_xml_package_list (popt_genpkg_file, target_file);
-
-		if (rv == FALSE) {
-			fprintf (stderr, "***Could not generate xml package list !***\n");
-			g_free (target_file);
-			exit (1);
-		}
-
-		g_print ("New xml package list generated ...\n");
-		g_free (target_file);
-		exit (1);
-	} 
+		generate_new_package_list (popt_genpkg_file, config_file);
+	}
 
 	if ( USE_FTP == TRUE ) {
 		fprintf (stderr, "***FTP installs are not currently supported !***\n");
@@ -220,62 +276,46 @@ main (int argc, char* argv[]) {
 		iopts->protocol = PROTOCOL_LOCAL;
 	}
 
-	if (iopts->mode_silent && iopts->mode_verbose == TRUE) {
-		fprintf (stderr, "***You cannot specify verbose and silent modes\n"
-						 "   at the same time !***\n");
+	if (iopts->mode_silent == TRUE) {
+		fprintf (stderr, "*** Silent mode not available yet !***\n");
 		exit (1);
 	}
 
 	if (TEST_MODE == TRUE) {
 		iopts->mode_test = TRUE;
 	}
+	
+	if (FORCE_MODE == TRUE) {
+		iopts->mode_force = TRUE;
+	}
 
 	if (popt_server) {
-		iopts->hostname = g_strdup_printf ("%s", popt_server);
+		topts->hostname = g_strdup_printf ("%s", popt_server);
 	}
 
 	if (popt_tmpdir) {
-		iopts->install_tmpdir = g_strdup_printf ("%s", popt_tmpdir);
+		topts->tmp_dir = g_strdup_printf ("%s", popt_tmpdir);
 	}
 
-	if (!g_file_exists (iopts->install_tmpdir)) {
-		int retval;
-
-		g_print("Creating temporary download directory ...\n");
-
-		retval = mkdir (iopts->install_tmpdir, 0755);
-		if (retval < 0) {
-			if (errno != EEXIST) {
-				fprintf (stderr, "***Could not create temporary directory !***\n");
-				exit (1);
-			}
-		}
+	if (!g_file_exists (topts->tmp_dir)) {
+		create_temporary_directory (topts->tmp_dir);
 	}
 	
 	if (iopts->protocol == PROTOCOL_HTTP) {
-
-		g_print ("Getting package-list.xml from remote server ...\n");
-		
-		retval = http_fetch_xml_package_list (iopts->hostname,
-											  iopts->port_number,
-											  remote_path,
-											  iopts->pkg_list_file);
-		if (retval == FALSE) {
-			fprintf (stderr, "***Unable to retrieve package-list.xml !***\n");
-			exit (1);
-		}
+		fetch_remote_package_list (iopts->pkg_list, topts);
 	}
+
 	if (UNINSTALL_MODE == TRUE) {
 		iopts->mode_uninstall = TRUE;
 
-		retval = uninstall_packages (iopts);
+		retval = uninstall_packages (iopts, topts);
 		if (retval == FALSE) {
 			fprintf (stderr, "***The uninstall failed !***\n");
 			exit (1);
 		}
 	}
 	else {
-		retval = install_new_packages (iopts);
+		retval = install_new_packages (iopts, topts);
 		if (retval == FALSE) {
 			fprintf (stderr, "***The install failed !***\n");
 			exit (1);
@@ -285,5 +325,6 @@ main (int argc, char* argv[]) {
 	g_print ("Install completed normally...\n");
 	g_free (config_file);
 	g_free (iopts);
+	g_free (topts);
 	exit (0);
 }

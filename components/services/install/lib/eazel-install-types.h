@@ -36,6 +36,8 @@
 #include <unistd.h>
 
 typedef enum _URLType URLType;
+typedef enum _PackageType PackageType;
+typedef struct _TransferOptions TransferOptions;
 typedef struct _InstallOptions InstallOptions;
 typedef struct _CategoryData CategoryData;
 typedef struct _PackageData PackageData;
@@ -46,21 +48,33 @@ enum _URLType {
 	PROTOCOL_FTP
 };
 
+enum _PackageType {
+	PACKAGE_TYPE_RPM,
+	PACKAGE_TYPE_DPKG,
+	PACKAGE_TYPE_SOLARIS
+};
+
+struct _TransferOptions {
+	char* hostname;                    /* Remote hostname */
+	guint port_number;                 /* Connection port */
+	char* pkg_list_storage_path;       /* Remote path to package-list.xml */
+	char* rpm_storage_path;            /* Remote path to RPM directory */
+	char* tmp_dir;                     /* Local directory to store incoming RPMs */
+	char* rpmrc_file;                  /* Location of the rpm resource file */
+};
+
 struct _InstallOptions {
 	URLType protocol;          /* Specifies local, ftp, or http */ 
-	gboolean mode_debug;       /* Internal testing mode for debugging */
-	gboolean mode_test;        /* dry run mode */
+	char* pkg_list;            /* Local path to package-list.xml */
 	gboolean mode_verbose;     /* print extra information */
 	gboolean mode_silent;      /* FIXME bugzilla.eazel.com 731: print all information to a logfile */
+	gboolean mode_debug;       /* Internal testing mode for debugging */
+	gboolean mode_test;        /* dry run mode */
+	gboolean mode_force;       /* Force the action to be performed */
 	gboolean mode_depend;      /* FIXME bugzilla.eazel.com 731: print all dependancies */
-	gboolean mode_uninstall;   /* Uninstall the package list */
 	gboolean mode_update;      /* If package is already installed, update it */
-	guint port_number;         /* Connection port */
-	char* hostname;            /* Remote Hostname */
-	char* rpmrc_file;          /* Points to the rpmrc file */
-	char* pkg_list_file;       /* Absolute path to package-list.xml */
-	char* rpm_storage_dir;     /* Absolute path to remote RPM directory */
-	char* install_tmpdir;      /* Location to copy rpm downloads before installing */
+	gboolean mode_uninstall;   /* Uninstall the package list */
+	gboolean mode_downgrade;   /* Downgrade the packages to previous version*/
 };
 
 struct _CategoryData {

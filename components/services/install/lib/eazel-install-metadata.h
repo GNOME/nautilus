@@ -36,5 +36,6 @@
 #include <gnome-xml/parser.h>
 
 InstallOptions* init_default_install_configuration (const char* config_file);
+TransferOptions* init_default_transfer_configuration (const char* config_file);
 
 #endif /* __EAZEL_SERVICES_METADATA_H__ */

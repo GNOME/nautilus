@@ -32,7 +32,7 @@
 
 static PackageData* parse_package (xmlNode* package);
 static CategoryData* parse_category (xmlNode* cat);
-static int parse_pkg_template (const char* pkg_template_file, char **result);
+static int parse_pkg_template (const char* pkg_template_file, char** result);
 
 
 static PackageData*
@@ -194,7 +194,8 @@ free_categories (GList* categories) {
 } /* end free_categories */
 
 gboolean
-generate_xml_package_list (const char* pkg_template_file, const char* target_file) {
+generate_xml_package_list (const char* pkg_template_file,
+                           const char* target_file) {
 
 /* This function will accept a colon delimited list of packages and generate
  * an xml package list for eazel-install.  The pkg_template_function should
@@ -235,17 +236,7 @@ generate_xml_package_list (const char* pkg_template_file, const char* target_fil
 			break;
 		}
 
-		g_print ("entry = %s\n", entry_array[index]);
-		
 		package_array = g_strsplit (entry_array[index], ":", 7);
-
-		g_print ("pe0 = %s\n", package_array[0]);
-		g_print ("pe1 = %s\n", package_array[1]);
-		g_print ("pe2 = %s\n", package_array[2]);
-		g_print ("pe3 = %s\n", package_array[3]);
-		g_print ("pe4 = %s\n", package_array[4]);
-		g_print ("pe5 = %s\n", package_array[5]);
-		g_print ("pe6 = %s\n", package_array[6]);
 
  /* FIXME this has no error control right now.  It needs to be improved alot.  */
  
@@ -314,4 +305,5 @@ parse_pkg_template (const char* pkg_template_file, char **result) {
 	g_string_free (string_data, TRUE);
 
 	return lines_read;
-}
+} /* end parse_pkg_template */
+

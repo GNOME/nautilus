@@ -30,8 +30,6 @@
 
  #include "eazel-install-types.h"
 
- InstallOptions* init_default_install_configuration_test (void);
- void dump_install_options (InstallOptions* iopts);
  void dump_package_list (PackageData* pkg);
 
  #endif /* __EAZEL_SERVICES_TESTS_H__ */

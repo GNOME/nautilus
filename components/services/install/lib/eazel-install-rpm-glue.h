@@ -30,8 +30,8 @@
 
 #include "eazel-install-types.h"
 
-gboolean install_new_packages (InstallOptions* iopts);
-gboolean uninstall_packages (InstallOptions* iopts);
+gboolean install_new_packages (InstallOptions* iopts, TransferOptions* topts);
+gboolean uninstall_packages (InstallOptions* iopts, TransferOptions* topts);
 
 
 #endif /* __EAZEL_SERVICES_RPM_GLUE_H__ */

@@ -32,9 +32,9 @@
 #include <rpm/rpmurl.h>
 
 gboolean
-install_new_packages (InstallOptions* iopts) {
+install_new_packages (InstallOptions* iopts, TransferOptions* topts) {
 
-	GList *categories;
+	GList* categories;
 	gboolean rv;
 	int install_flags, interface_flags, problem_filter;
 	
@@ -59,18 +59,17 @@ install_new_packages (InstallOptions* iopts) {
 		rpmSetVerbosity (RPMMESS_NORMAL);
 	}
 
-	/* FIXME bugzilla.eazel.com 730: This needs to be setup 
-	 *as an option.  Forcing everything right now. */
-
-	problem_filter |= RPMPROB_FILTER_REPLACEPKG |
-				      RPMPROB_FILTER_REPLACEOLDFILES |
-				      RPMPROB_FILTER_REPLACENEWFILES |
-				      RPMPROB_FILTER_OLDPACKAGE;
+	if (iopts->mode_force == TRUE) {
+		problem_filter |= RPMPROB_FILTER_REPLACEPKG |
+                                  RPMPROB_FILTER_REPLACEOLDFILES |
+                                  RPMPROB_FILTER_REPLACENEWFILES |
+                                  RPMPROB_FILTER_OLDPACKAGE;
+	}
 	
-	rpmReadConfigFiles (iopts->rpmrc_file, NULL);
+	rpmReadConfigFiles (topts->rpmrc_file, NULL);
 
 	g_print ("Reading the install package list ...\n");
-	categories = parse_local_xml_package_list (iopts->pkg_list_file);
+	categories = parse_local_xml_package_list (iopts->pkg_list);
 
 	while (categories) {
 		CategoryData* c = categories->data;
@@ -85,11 +84,12 @@ install_new_packages (InstallOptions* iopts) {
 
 			retval = 0;
 			
-			tmpbuf = g_strdup_printf ("%s/%s-%s-%s.%s.rpm", iopts->install_tmpdir,
-															pack->name,
-															pack->version,
-															pack->minor,
-															pack->archtype);
+			tmpbuf = g_strdup_printf ("%s/%s-%s-%s.%s.rpm",
+                                                  topts->tmp_dir,
+                                                  pack->name,
+                                                  pack->version,
+                                                  pack->minor,
+                                                  pack->archtype);
 
 			if (iopts->protocol == PROTOCOL_HTTP) {
 				int rv;
@@ -97,15 +97,18 @@ install_new_packages (InstallOptions* iopts) {
 				char* targetname;
 				char* url;
 
-				rpmname = g_strdup_printf ("%s-%s-%s.%s.rpm", pack->name,
-															  pack->version,
-															  pack->minor,
-															  pack->archtype);
+				rpmname = g_strdup_printf ("%s-%s-%s.%s.rpm",
+                                                           pack->name,
+                                                           pack->version,
+                                                           pack->minor,
+                                                           pack->archtype);
 	
-				targetname = g_strdup_printf ("%s/%s", iopts->install_tmpdir, rpmname);
-				url = g_strdup_printf ("http://%s%s/%s", iopts->hostname,
-														 iopts->rpm_storage_dir,
-														 rpmname);
+				targetname = g_strdup_printf ("%s/%s",
+                                                topts->tmp_dir, rpmname);
+				url = g_strdup_printf ("http://%s%s/%s",
+                                                       topts->hostname,
+                                                       topts->rpm_storage_path,
+                                                       rpmname);
 				
 				g_print ("Downloading %s...\n", rpmname);
 				rv = urlGetFile (url, targetname);
@@ -120,11 +123,12 @@ install_new_packages (InstallOptions* iopts) {
 
 			}
 			
-            pkg[0] = tmpbuf;
+			pkg[0] = tmpbuf;
 			pkg[1] = NULL;
 			g_print ("Installing %s\n", pack->summary);
-			retval = rpmInstall ("/", pkg, install_flags, interface_flags,
-								problem_filter, NULL);
+			retval = rpmInstall ("/", pkg, install_flags,
+                                             interface_flags,
+                                             problem_filter, NULL);
 			if (retval == 0) {
 				g_print ("Package install successful !\n");
 				rv = TRUE;
@@ -145,8 +149,8 @@ install_new_packages (InstallOptions* iopts) {
 } /* end install_new_packages */
 
 gboolean 
-uninstall_packages (InstallOptions* iopts) {
-	GList *categories;
+uninstall_packages (InstallOptions* iopts, TransferOptions* topts) {
+	GList* categories;
 	gboolean rv;
 	int uninstall_flags, interface_flags;
 	
@@ -166,10 +170,10 @@ uninstall_packages (InstallOptions* iopts) {
 		rpmSetVerbosity (RPMMESS_NORMAL);
 	}
 
-	rpmReadConfigFiles (iopts->rpmrc_file, NULL);
+	rpmReadConfigFiles (topts->rpmrc_file, NULL);
 
 	g_print ("Reading the uninstall package list ...\n");
-	categories = parse_local_xml_package_list (iopts->pkg_list_file);
+	categories = parse_local_xml_package_list (iopts->pkg_list);
 
 	while (categories) {
 		CategoryData* c = categories->data;
@@ -185,13 +189,15 @@ uninstall_packages (InstallOptions* iopts) {
 			retval = 0;
 			if (g_strcasecmp (pack->archtype, "src") != 0) {
 
-				tmpbuf = g_strdup_printf ("%s-%s-%s", pack->name,
-													  pack->version,
-													  pack->minor);
-            	pkg[0] = tmpbuf;
+				tmpbuf = g_strdup_printf ("%s-%s-%s",
+                                                          pack->name,
+                                                          pack->version,
+                                                          pack->minor);
+				pkg[0] = tmpbuf;
 				pkg[1] = NULL;
 				g_print ("Uninstalling %s\n", pack->summary);
-				retval = rpmErase ("/", pkg, uninstall_flags, interface_flags);
+				retval = rpmErase ("/", pkg, uninstall_flags,
+                                                   interface_flags);
 
 				if (retval == 0) {
 					g_print ("Package uninstall successful !\n");
@@ -204,9 +210,10 @@ uninstall_packages (InstallOptions* iopts) {
 				g_free(tmpbuf);
 			}
 			else {
-				tmpbuf = g_strdup_printf ("%s-%s-%s", pack->name,
-													  pack->version,
-													  pack->minor);
+				tmpbuf = g_strdup_printf ("%s-%s-%s",
+                                                          pack->name,
+                                                          pack->version,
+                                                          pack->minor);
   				g_print ("%s seems to be a source package.  Skipping ...\n", tmpbuf);
   				g_free(tmpbuf);
   			}
