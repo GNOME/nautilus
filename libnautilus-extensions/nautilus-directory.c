@@ -219,7 +219,6 @@ nautilus_directory_try_to_read_metafile (NautilusDirectory *directory)
 
 		result = gnome_vfs_read (metafile_handle, buffer, size, &actual_size);
 		directory->details->metafile_tree = xmlParseMemory (buffer, actual_size);
-		g_free (buffer);
 	}
 
 	if (metafile_handle != NULL)
