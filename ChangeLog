@@ -1,3 +1,15 @@
+2000-11-02  Mike Fleming  <mfleming@eazel.com>
+
+	* components/mozilla/mozilla-events.cpp:
+	* components/mozilla/mozilla-events.h:
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_open_uri_callback), (mozilla_dom_mouse_click_callback):
+
+	bugzilla.eazel.com 4156: Documents containing IFRAME's cause
+	unexpected navigation.  This is a hack fix that checks to see if 
+	a possible destination is the same as the URI of an IFRAME and, if
+	they do, ditch the navigation
+
 2000-11-02  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3613 (activating any file as root tries to

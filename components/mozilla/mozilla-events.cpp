@@ -43,6 +43,19 @@
 #include "nsIDOMHTMLInputElement.h"
 #include "nsIDOMHTMLFormElement.h"
 #include "nsIDOMNamedNodeMap.h"
+#include "nsIDOMWindow.h"
+#include "nsIDOMDocument.h"
+#include "nsIWebBrowser.h"
+#include "nsIDOMNodeList.h"
+#include "nsIDocShell.h"
+#include "nsIDocShellTreeItem.h"
+#include "nsIDocShellTreeOwner.h"
+#include "nsIDocument.h"
+#include "nsIContent.h"
+#include "nsIDOMHTMLElement.h"
+#include "nsIDOMHTMLDocument.h"
+#include "nsIPresShell.h"
+
 
 extern "C" char *
 mozilla_events_get_href_for_mouse_event (gpointer mouse_event)
@@ -201,3 +214,239 @@ mozilla_events_is_in_form_POST_submit (gpointer mouse_event)
 
 	return FALSE;
 }
+
+/* defined in gtkmozembed_internal.h */
+extern "C" void gtk_moz_embed_get_nsIWebBrowser  (GtkMozEmbed *embed, nsIWebBrowser **retval);
+
+#if 0
+static void
+debug_dom_dump (nsIDOMElement *element, int depth)
+{
+	char *tabs;
+
+	nsCOMPtr<nsIDOMNodeList> dom_nodes_list;
+
+	nsAutoString element_name_string; 
+	element_name_string.AssignWithConversion ( "*" );
+
+	tabs = g_new(char, depth+1);
+	memset (tabs, (unsigned char) '\t', depth);
+	tabs [depth] =0;
+
+	element->GetElementsByTagName (element_name_string, getter_AddRefs (dom_nodes_list));
+
+	if ( ! dom_nodes_list ) {
+		g_print ("%s...no dom_nodes_list\n", tabs);
+		return;
+	}
+	
+	PRUint32 i;
+
+	nsCOMPtr<nsIDOMNode> node;
+
+	dom_nodes_list->GetLength (&i);
+
+	g_print ("%s...number of elements %d\n", tabs, i);
+
+	for ( i = 0 ; NS_SUCCEEDED (dom_nodes_list->Item (i, getter_AddRefs (node))) && node
+		; i++
+	) {
+		nsCOMPtr<nsIDOMElement> child_element;
+		nsCOMPtr<nsIDOMNamedNodeMap> attribs;
+		nsCOMPtr<nsIDOMNode> href_attrib;
+		nsCOMPtr<nsIDOMHTMLDocument> html_element;
+
+
+		child_element = do_QueryInterface (node);
+
+		if ( ! child_element ) {
+			g_print ("%s...node is not an element (?!?!?)\n", tabs);
+		}
+
+		html_element = do_QueryInterface (node);
+
+		if ( ! html_element ) {
+			g_print ("%s...QI to HTMLElement returns NULL\n", tabs);
+		}
+		
+		nsAutoString nodeName;
+		nsAutoString anotherName;
+
+		node->GetNodeName (anotherName);
+
+		g_print ("%s...element node name %s\n", tabs, anotherName.ToNewCString());
+
+		node->GetNodeValue (anotherName);
+
+		g_print ("%s...element value %s\n", tabs, anotherName.ToNewCString());
+
+		child_element->GetTagName (nodeName);
+
+		g_print ("%s...element tagName %s\n", tabs, nodeName.ToNewCString());
+
+		debug_dom_dump (child_element, depth + 1);
+	}
+}
+#endif /* 0 */
+
+/* Why can't I use GetElementsByTagName?  I couldn't get it to work for me */
+static gboolean
+find_node_named_with_src (nsIDOMNode *top_node, const nsAReadableString& aName, const nsAReadableString& uri)
+{
+	nsresult rv;
+	nsAutoString src_string;
+	nsCOMPtr<nsIDOMNodeList> nodes_list;
+	PRUint32 i;
+	nsCOMPtr<nsIDOMNode> child_node;
+
+	src_string.AssignWithConversion ("SRC");
+
+	top_node->GetChildNodes (getter_AddRefs(nodes_list));
+
+	for ( i = 0 
+		; nodes_list && NS_SUCCEEDED (nodes_list->Item (i, getter_AddRefs (child_node))) 
+		  && child_node
+		; i++
+	) {
+		nsAutoString currentNodeName;
+		PRBool has_children;
+
+		if ( ! NS_SUCCEEDED (child_node->GetNodeName (currentNodeName) )) {
+			continue;
+		}
+
+		if (currentNodeName.Equals (aName)) {
+			nsAutoString attribute_value;
+			nsCOMPtr<nsIDOMElement> element = do_QueryInterface (child_node);
+
+			if ( element && NS_SUCCEEDED (element->GetAttribute (src_string, attribute_value)) ) {
+#ifdef DEBUG_mfleming
+				g_print ("...found iframe href %s\n", attribute_value.ToNewCString());
+#endif
+
+				if (attribute_value.Equals (uri)) {
+
+#ifdef DEBUG_mfleming
+					g_print ("...returning TRUE\n");
+#endif
+					
+					return TRUE;
+				}
+			}
+		}
+
+		rv = child_node->HasChildNodes (&has_children);
+
+		if ( NS_SUCCEEDED (rv) && has_children) {
+			gboolean ret;
+
+			ret = find_node_named_with_src (child_node, aName, uri);
+			
+			if (ret) {
+				return ret;
+			}
+		}
+	}
+
+	return FALSE;
+}
+
+
+static nsIDocShell* 
+get_primary_docshell (GtkMozEmbed *b)
+{
+	nsresult result;
+	nsIWebBrowser *wb;
+	gtk_moz_embed_get_nsIWebBrowser (b, &wb);
+
+	nsCOMPtr<nsIDocShell> ds;
+
+        nsCOMPtr<nsIDocShellTreeItem> browserAsItem = do_QueryInterface(wb);
+	if (!browserAsItem) return NULL;
+
+	// get the tree owner for that item
+	nsCOMPtr<nsIDocShellTreeOwner> treeOwner;
+	result = browserAsItem->GetTreeOwner(getter_AddRefs(treeOwner));
+	if (!NS_SUCCEEDED (result) || ! treeOwner) return NULL;
+
+	// get the primary content shell as an item
+	nsCOMPtr<nsIDocShellTreeItem> contentItem;
+	result = treeOwner->GetPrimaryContentShell(getter_AddRefs(contentItem));
+	if (!NS_SUCCEEDED (result) || ! contentItem) return NULL;
+
+	// QI that back to a docshell
+	ds = do_QueryInterface(contentItem);
+
+	return ds;
+}
+
+nsIDOMElement *
+get_toplevel_doc_element (GtkMozEmbed *embed)
+{
+
+	nsCOMPtr<nsIDocShell> ds;
+	nsresult rv, result;
+
+	ds = get_primary_docshell (embed);
+
+	if ( ! ds ) {
+		return NULL;
+	}
+
+	/* get nsIPresShell */
+
+	nsCOMPtr<nsIPresShell> presShell;
+	result = ds->GetPresShell(getter_AddRefs(presShell));
+	if (!NS_SUCCEEDED(result) || (!presShell)) return NULL;
+
+	/* get nsIDocument */
+
+	nsCOMPtr<nsIDocument> document;
+	result = presShell->GetDocument(getter_AddRefs(document));
+	if (!NS_SUCCEEDED(result) || (!document)) return NULL;
+
+	/* get nsIDOMDocument */
+
+	nsCOMPtr<nsIDOMDocument> domDoc = do_QueryInterface(document);
+	if (!domDoc) return NULL;
+
+	nsCOMPtr<nsIDOMElement> documentElement;
+
+	domDoc->GetDocumentElement (getter_AddRefs (documentElement));
+
+	return documentElement;
+}
+
+
+gboolean
+mozilla_events_is_url_in_iframe (GtkMozEmbed *embed, const char *uri)
+{
+	nsCOMPtr<nsIDocShell> ds;
+	gboolean ret;
+	nsCOMPtr<nsIDOMElement> documentElement;
+	size_t uri_len;
+
+#ifdef DEBUG_mfleming
+	g_print ("mozilla_events_is_url_in_iframe for uri '%s'\n", uri);
+#endif
+
+	documentElement = get_toplevel_doc_element (embed);
+	
+	if ( ! documentElement) {
+		return FALSE;
+	}
+ 
+	nsAutoString iframe_string; 
+	iframe_string.AssignWithConversion ("IFRAME");
+	nsAutoString uri_string;
+	uri_string.AssignWithConversion (uri);
+
+	ret =  find_node_named_with_src (documentElement, iframe_string, uri_string);
+
+#ifdef DEBUG_mfleming
+	g_print (ret ? "...is in frame\n" : "is not in frame\n");
+#endif
+}
+
+
+

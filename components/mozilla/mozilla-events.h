@@ -29,6 +29,7 @@
 #define MOZILLA_EVENTS_H
 
 #include <glib.h>
+#include "gtkmozembed.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,6 +38,8 @@ extern "C" {
 char *mozilla_events_get_href_for_mouse_event (gpointer mouse_event);
 
 gboolean mozilla_events_is_in_form_POST_submit (gpointer mouse_event);
+
+gboolean mozilla_events_is_url_in_iframe (GtkMozEmbed *embed, const char *uri);
 
 #ifdef __cplusplus
 }

@@ -719,6 +719,20 @@ mozilla_open_uri_callback (GtkMozEmbed *mozilla,
 	/* Determine whether we want to abort this uri load */
 	abort_uri_open = mozilla_is_uri_handled_by_nautilus (uri);
 
+	/* FIXME: I believe that this will cause a navigation from
+	 * a page containing a specific iframe URL to that same URL
+	 * to fail.
+	 * 
+	 * This check is here because we get an "open_uri" call from GtkEmbedMoz
+	 * in M18 when mozilla opens locations that appear as IFRAME's
+	 * within the current document.  If we didn't do this check, we would
+	 * cause Nautilus to navigate to these IFRAME url's
+	 */
+
+	if ( mozilla_events_is_url_in_iframe (mozilla, uri)) {
+		return FALSE;
+	}
+	
 #ifdef DEBUG_ramiro
 	g_print ("mozilla_open_uri_callback (uri = %s) abort = %s\n",
 		 uri,
@@ -931,6 +945,14 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 			g_free (href);
 			href = href_full;
 			href_full = NULL;
+
+#if 0
+/* FIXME mfleming I think I should do this here, but I'm not sure */
+			href_full = mozilla_untranslate_uri_if_needed (href);
+			g_free (href);
+			href = href_full;
+			href_full = NULL;
+#endif
 
 #ifdef DEBUG_ramiro
 			g_print ("%s() href = %s\n", __FUNCTION__, href);
