@@ -22,7 +22,6 @@ bin_PROGRAMS = eazel-installer
 
 eazel_installer_SOURCES = \
 	main.c \
-	support.c support.h \
 	callbacks.c callbacks.h \
 	proxy.c proxy.h \
 	installer.c installer.h 

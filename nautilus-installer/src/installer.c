@@ -113,11 +113,6 @@ typedef struct {
 			  "are items involved that might be important to you, we thought we'd\n" \
 			  "check first.")
 #define D_RETRY_TITLE	_("Just so you know...")
-#define D_EVIL_RETRY_LABEL	_("A serious problem has been encountered, but we think we can\n" \
-				  "fix it.  We would like to try the following actions, but since it might\n" \
-				  "have undesireable side effects, you might want to skip to an install\n" \
-				  "where file conflicts are ignored. If not, just press next...")
-#define D_EVIL_RETRY_TITLE	_("Serious problem encountered....")
 #define D_SPLASH_TITLE    _("Welcome to the Eazel Installer!")
 #define D_FINISHED_TITLE	_("Congratulations!")
 
@@ -144,6 +139,15 @@ typedef struct {
 #define D_ERROR_RED_HAT_7_NOT_SUPPORTED _("Sorry, but this preview installer won't work for Red Hat\n" \
 					  "Linux 7.x systems.")
 
+#define D_EVIL_RETRY_TITLE	_("Update not found")
+#define D_EVIL_RETRY_LABEL	_("There doesn't appear to be a new version of any of the following\n" \
+				  "packages.  Your current versions may still work, but if you would\n" \
+				  "like us to remove these packages for you, we can.")
+#define D_EVIL_RETRY_LABEL_S	_("There doesn't appear to be a new version of this package.  Your\n" \
+				  "current version may still work, but if you like us to remove this\n" \
+				  "package for you, we can.")
+
+
 #define NAUTILUS_INSTALLER_RELEASE
 
 enum {
@@ -165,6 +169,7 @@ enum {
 	WHAT_TO_INSTALL_LABEL_SINGLE,
 	RETRY_LABEL,
 	EVIL_RETRY_LABEL,
+	EVIL_RETRY_LABEL_S,
 
 	ERROR_TITLE,
 	RETRY_TITLE,
@@ -745,6 +750,13 @@ skip_over_remove_problems (GtkWidget *widget,
 	jump_to_retry_page (installer);
 }
 
+static gboolean
+remove_problems_timer (EazelInstaller *installer)
+{
+	skip_over_remove_problems (NULL, installer);
+	return FALSE;
+}
+
 /* give the user an opportunity to retry the install, with new info */
 static void
 jump_to_retry_page (EazelInstaller *installer)
@@ -759,6 +771,7 @@ jump_to_retry_page (EazelInstaller *installer)
 	GList *iter;
 	GList *problems_as_strings;
 	EazelInstallProblemEnum p;
+	int problem_count;
 
 	g_message ("jump_to_retry_page");
 
@@ -778,17 +791,14 @@ jump_to_retry_page (EazelInstaller *installer)
 	gtk_widget_show (vbox);
 	nautilus_druid_page_eazel_put_widget (NAUTILUS_DRUID_PAGE_EAZEL (retry_page), vbox);
 
-	switch (p) {
-	case EI_PROBLEM_REMOVE:
-	case EI_PROBLEM_FORCE_REMOVE:
-	case EI_PROBLEM_CASCADE_REMOVE:
+	if ((p == EI_PROBLEM_REMOVE) ||
+	    (p == EI_PROBLEM_FORCE_REMOVE) ||
+	    (p == EI_PROBLEM_CASCADE_REMOVE)) {
 		title = gtk_label_new_with_font (text_labels [EVIL_RETRY_TITLE], FONT_TITLE);
 		installer->uninstalling = TRUE;
-		break;
-	default:
+	} else {
 		title = gtk_label_new_with_font (text_labels [RETRY_TITLE], FONT_TITLE);
 		installer->uninstalling = FALSE;
-		break;
 	}
 
 	gtk_label_set_justify (GTK_LABEL (title), GTK_JUSTIFY_LEFT);
@@ -803,15 +813,20 @@ jump_to_retry_page (EazelInstaller *installer)
 
 	add_padding_to_box (vbox, 0, 20);
 
-	switch (p) {
-	case EI_PROBLEM_REMOVE:
-	case EI_PROBLEM_FORCE_REMOVE:
-	case EI_PROBLEM_CASCADE_REMOVE:
-		label = gtk_label_new (text_labels [EVIL_RETRY_LABEL]);
-		break;
-	default:
+	if (installer->uninstalling) {
+		problems_as_strings = eazel_install_problem_cases_to_package_names (installer->problem,
+										    installer->problems);
+		problem_count = g_list_length (problems_as_strings);
+		if (problem_count == 1) {
+			label = gtk_label_new (text_labels [EVIL_RETRY_LABEL_S]);
+		} else {
+			label = gtk_label_new (text_labels [EVIL_RETRY_LABEL]);
+		}
+	} else {
+		problems_as_strings = eazel_install_problem_cases_to_string (installer->problem,
+									     installer->problems);
+		problem_count = g_list_length (problems_as_strings);
 		label = gtk_label_new (text_labels [RETRY_LABEL]);
-		break;
 	}
 
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
@@ -824,8 +839,6 @@ jump_to_retry_page (EazelInstaller *installer)
 
 	add_padding_to_box (vbox, 0, 15);
 
-	problems_as_strings = eazel_install_problem_cases_to_string (installer->problem,
-								     installer->problems);
 	for (iter = problems_as_strings; iter != NULL; iter = g_list_next (iter)) {
 		add_bullet_point_to_vbox (vbox, (char*)(iter->data));
 		g_free (iter->data);
@@ -861,44 +874,72 @@ jump_to_retry_page (EazelInstaller *installer)
 
 	add_padding_to_box (vbox, 0, 15);
 
-	switch (p) {
-	case EI_PROBLEM_REMOVE:
-	case EI_PROBLEM_FORCE_REMOVE:
-	case EI_PROBLEM_CASCADE_REMOVE:
+	if (installer->uninstalling) {
 		g_message ("ranglebær");
 
 		hbox = gtk_hbox_new (FALSE, 0);
 		gtk_widget_show (hbox);
 
-		button = gtk_button_new_with_label ("Ignore file conflicts");
-		gtk_widget_set_name (button, "ignore_conflicts_button");
+		label = gtk_label_new ("");
+		gtk_widget_show (label);
+		gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
+
+		if (problem_count == 1) {
+			button = gtk_button_new_with_label (_("Remove this package"));
+		} else {
+			button = gtk_button_new_with_label (_("Remove these packages"));
+		}
+		gtk_widget_set_name (button, "remove_button");
+		gtk_signal_connect (GTK_OBJECT (button), "clicked",
+				    GTK_SIGNAL_FUNC (start_over_callback),
+				    installer);
+		gtk_widget_show (button);
+		gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+
+		add_padding_to_box (hbox, 10, 0);
+
+		if (problem_count == 1) {
+			button = gtk_button_new_with_label (_("Keep this package"));
+		} else {
+			button = gtk_button_new_with_label (_("Keep these packages"));
+		}
+		gtk_widget_set_name (button, "ignore_button");
 		gtk_signal_connect (GTK_OBJECT (button), "clicked",
 				    GTK_SIGNAL_FUNC (skip_over_remove_problems),
 				    installer);
 		gtk_widget_show (button);
 		gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 
+		add_padding_to_box (hbox, 90, 0);
+
 		gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
-		break;
-	default:
-		break;
-	} 
+	}
 
 	gtk_signal_connect (GTK_OBJECT (retry_page), "prepare",
 			    GTK_SIGNAL_FUNC (prep_retry),
 			    installer);
-	gtk_signal_connect (GTK_OBJECT (retry_page), "next",
-			    GTK_SIGNAL_FUNC (start_over_callback),
-			    installer);
+	if (! installer->uninstalling) {
+		gtk_signal_connect (GTK_OBJECT (retry_page), "next",
+				    GTK_SIGNAL_FUNC (start_over_callback),
+				    installer);
+	}
 	gtk_signal_connect (GTK_OBJECT (retry_page), "cancel",
 			    GTK_SIGNAL_FUNC (dont_start_over_callback),
 			    installer);
 	gnome_druid_set_page (installer->druid, GNOME_DRUID_PAGE (retry_page));
 
-	/* user may want to not be bothered */
-	if (installer_dont_ask_questions) {
+	/* user may want to not be bothered --
+	 * or, we may have just asked them a question and they answered that they wanted to ignore, so we should
+	 * respect their wishes.  UTTER HACK!  i will kill this madness in the new xml scheme.
+	 */
+	if (installer_dont_ask_questions || (problem_count == 1 && p == EI_PROBLEM_CONTINUE_WITH_FORCE)) {
 		log_debug ("skipping the question page; moving to the next round");
-		gtk_timeout_add (0, (GtkFunction)start_over_timer, installer);
+		if (installer->uninstalling) {
+			/* assume they want to ignore conflicts */
+			gtk_timeout_add (0, (GtkFunction)remove_problems_timer, installer);
+		} else {
+			gtk_timeout_add (0, (GtkFunction)start_over_timer, installer);
+		}
 	}
 }
 
@@ -1432,7 +1473,7 @@ toggle_button_lock (EazelInstaller *installer, char *name, gboolean lock)
 	GtkWidget *label;
 	char *temp;
 	
-	button = lookup_widget (installer->window, name);
+	button = gtk_object_get_data (GTK_OBJECT (installer->window), name);
 	temp = g_strdup_printf ("%s/label", gtk_widget_get_name (GTK_WIDGET (button)));
 	label = gtk_object_get_data (GTK_OBJECT (installer->window), name);
 	g_free (temp);
@@ -1473,7 +1514,7 @@ toggle_button_toggled (GtkToggleButton *button,
 		if (category->exclusive && gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button))) {
 			for (iterator = installer->categories; iterator; iterator = iterator->next) {
 				category2 = (CategoryData *)(iterator->data);
-				other_button = lookup_widget (installer->window, category2->name);
+				other_button = gtk_object_get_data (GTK_OBJECT (installer->window), category2->name);
 				if (other_button && (category != category2)) {
 					gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (other_button), FALSE);
 				}
@@ -1918,6 +1959,7 @@ eazel_installer_set_default_texts (EazelInstaller *installer)
 	text_labels [WHAT_TO_INSTALL_LABEL_SINGLE] = g_strdup (D_WHAT_TO_INSTALL_LABEL_SINGLE);
 	text_labels [RETRY_LABEL] = g_strdup (D_RETRY_LABEL);
 	text_labels [EVIL_RETRY_LABEL] = g_strdup (D_EVIL_RETRY_LABEL);
+	text_labels [EVIL_RETRY_LABEL_S] = g_strdup (D_EVIL_RETRY_LABEL_S);
 	text_labels [INFO_EAZEL_HACKING_TEXT] = g_strdup (D_INFO_EAZEL_HACKING_TEXT); 
 	text_labels [INFO_EAZEL_HACKING_TITLE] = g_strdup (D_INFO_EAZEL_HACKING_TITLE); 
 }

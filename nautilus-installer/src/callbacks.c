@@ -55,7 +55,7 @@ begin_install (EazelInstaller  *installer)
 
 	druid = GNOME_DRUID (gtk_object_get_data (GTK_OBJECT (window), "druid"));
 
-	gnome_druid_set_buttons_sensitive(druid,FALSE,FALSE,TRUE);
+	gnome_druid_set_buttons_sensitive(druid, FALSE, FALSE, TRUE);
 
 	/* First time ? If so, check which categories were marked */
 	if (installer->install_categories == NULL) {
@@ -89,13 +89,14 @@ begin_install (EazelInstaller  *installer)
 						    NULL);
 		eazel_installer_post_install (installer);
 		/* return TRUE; */
-	} else
-	if (installer->successful && installer->install_categories) { 
-		eazel_installer_do_install (installer, installer->install_categories, FALSE);
-		eazel_installer_post_install (installer);
-	}
+	} else {
+		if (installer->successful && installer->install_categories) { 
+			eazel_installer_do_install (installer, installer->install_categories, FALSE);
+			eazel_installer_post_install (installer);
+		}
 
-	gnome_druid_set_buttons_sensitive(druid, FALSE, TRUE, TRUE); 
+		gnome_druid_set_buttons_sensitive(druid, FALSE, TRUE, TRUE); 
+	}
 	
 	/* FALSE means remove this source */
 	return FALSE;
@@ -142,5 +143,5 @@ prep_retry (GnomeDruidPage *gnomedruidpage,
 	    GtkWidget *druid,
 	    EazelInstaller *installer)
 {
-	gnome_druid_set_buttons_sensitive (GNOME_DRUID (druid), FALSE, TRUE, TRUE);
+	gnome_druid_set_buttons_sensitive (GNOME_DRUID (druid), FALSE, installer->uninstalling ? FALSE : TRUE, TRUE);
 }

@@ -714,7 +714,7 @@ get_detailed_uninstall_cases_foreach (PackageData *pack, GetErrorsForEachData *d
 }
 
 static char*
-eazel_install_problem_case_to_string (EazelInstallProblemCase *pcase)
+eazel_install_problem_case_to_string (EazelInstallProblemCase *pcase, gboolean name_only)
 {
 	char *message = NULL;
 	switch (pcase->problem) {
@@ -722,7 +722,9 @@ eazel_install_problem_case_to_string (EazelInstallProblemCase *pcase)
 		char *required = packagedata_get_readable_name (pcase->u.update.pack);
 		/* TRANSLATORS : This string is a solution to a dependency problem,
 		   %s is a package name or filename */
-		message = g_strdup_printf (_("Update %s"), required);
+		if (! name_only) {
+			message = g_strdup_printf (_("Check for a new version of %s"), required);
+		}
 		g_free (required);
 	}
 	break;
@@ -731,9 +733,11 @@ eazel_install_problem_case_to_string (EazelInstallProblemCase *pcase)
 		char *required_2 = packagedata_get_readable_name (pcase->u.force_install_both.pack_2);
 		/* TRANSLATORS : This string is a solution to a dependency problem,
 		   both %s's are package names or filenames */
-		message = g_strdup_printf (_("Install both %s and %s"), 
-					   required_1, 
-					   required_2);
+		if (! name_only) {
+			message = g_strdup_printf (_("Install both %s and %s"), 
+						   required_1, 
+						   required_2);
+		}
 		g_free (required_1);
 		g_free (required_2);
 	}
@@ -742,8 +746,12 @@ eazel_install_problem_case_to_string (EazelInstallProblemCase *pcase)
 		char *required = packagedata_get_readable_name (pcase->u.remove.pack);
 		/* TRANSLATORS : This string is a solution to a dependency problem,
 		   %s is a package name or filename */
-		message = g_strdup_printf (_("Remove %s"), required);
-		g_free (required);
+		if (name_only) {
+			message = required;
+		} else {
+			message = g_strdup_printf (_("Remove %s from your system"), required);
+			g_free (required);
+		}
 	}
 	break;
 	case EI_PROBLEM_FORCE_REMOVE: {
@@ -751,28 +759,41 @@ eazel_install_problem_case_to_string (EazelInstallProblemCase *pcase)
 		/* TRANSLATORS : This string is a solution to a dependency problem,
 		   %s is a package name or filename. "Force" is in the rpm sense of force,
 		   meaning that no dependency checking etc will be done */
-		message = g_strdup_printf (_("Force remove %s"), required);
-		g_free (required);
+		if (name_only) {
+			message = required;
+		} else {
+			message = g_strdup_printf (_("Force the removal of %s from your system"), required);
+			g_free (required);
+		}
 	}
 	break;
 	case EI_PROBLEM_INCONSISTENCY: {
 		/* TRANSLATORS : This string is a solution to a dependency problem */
-		message = g_strdup (_("Package database has an inconsistency"));
+		if (! name_only) {
+			message = g_strdup (_("Package database has an inconsistency"));
+		}
 	}
 	break;
 	case EI_PROBLEM_BASE:
 		g_warning ("%s:%d: should not be reached", __FILE__, __LINE__);
 		break;
         case EI_PROBLEM_CANNOT_SOLVE: {
-		char *tmp = eazel_install_problem_case_to_string (pcase->u.cannot_solve.problem);
-		message = g_strdup_printf ("I could not solve \"%s\"", tmp);
+		char *tmp = eazel_install_problem_case_to_string (pcase->u.cannot_solve.problem, name_only);
+		if (! name_only) {
+			message = g_strdup_printf ("I could not solve \"%s\"", tmp);
+		}
 		g_free (tmp);
 	}
 	break;
 	case EI_PROBLEM_CASCADE_REMOVE: {
 		GList *iterator;
-		GString *str = g_string_new ("Remove ");
-		
+		GString *str;
+
+		if (name_only) {
+			str = g_string_new ("");
+		} else {
+			str = g_string_new ("Remove these packages: ");
+		}
 		iterator  = pcase->u.cascade.packages;
 		while (iterator) {
 			PackageData *pack = (PackageData*)iterator->data;
@@ -796,10 +817,12 @@ eazel_install_problem_case_to_string (EazelInstallProblemCase *pcase)
 	case EI_PROBLEM_CONTINUE_WITH_FORCE: {
 		/* FIXME
 		   needs better string */
-		if (pcase->file_conflict) {
-			message = g_strdup_printf ("Complete operation by ignoring file conflicts");
-		} else {
-			message = g_strdup_printf ("Complete operation by ignoring problems");
+		if (! name_only) {
+			if (pcase->file_conflict) {
+				message = g_strdup_printf ("Complete operation by ignoring file conflicts");
+			} else {
+				message = g_strdup_printf ("Complete operation by ignoring problems");
+			}
 		}
 	}
 	break;
@@ -811,7 +834,18 @@ static void
 eazel_install_problem_case_foreach_to_string (EazelInstallProblemCase *pcase,
 					      GList **output)
 {
-	char *message = eazel_install_problem_case_to_string (pcase);
+	char *message = eazel_install_problem_case_to_string (pcase, FALSE);
+	if (message) {
+		(*output) = g_list_prepend (*output,
+					    message);
+	}
+}
+
+static void
+eazel_install_problem_case_foreach_to_package_names (EazelInstallProblemCase *pcase,
+						     GList **output)
+{
+	char *message = eazel_install_problem_case_to_string (pcase, TRUE);
 	if (message) {
 		(*output) = g_list_prepend (*output,
 					    message);
@@ -1082,6 +1116,18 @@ eazel_install_problem_cases_to_string (EazelInstallProblem *problem,
 	return result;
 }
 
+/* Like above, but only returns the package names, and only for packages that are about to be removed */
+GList *
+eazel_install_problem_cases_to_package_names (EazelInstallProblem *problem,
+					      GList *cases)
+{
+	GList *result = NULL;
+	g_list_foreach (cases,
+			(GFunc)eazel_install_problem_case_foreach_to_package_names,
+			&result);
+	return result;
+}
+
 EazelInstallProblemEnum
 eazel_install_problem_find_dominant_problem_type (EazelInstallProblem *problem,
 						  GList *problems)
@@ -1095,7 +1141,7 @@ eazel_install_problem_find_dominant_problem_type (EazelInstallProblem *problem,
 			dominant = pcase->problem;
 #ifdef EIP_DEBUG
 			{
-				char *message = eazel_install_problem_case_to_string (pcase);
+				char *message = eazel_install_problem_case_to_string (pcase, FALSE);
 				g_message ("dominant problem is now %d", dominant);
 				g_message ("aka %s", message);
 				g_free (message);

@@ -167,6 +167,10 @@ GList * eazel_install_problem_tree_to_string (EazelInstallProblem *problem,
 GList * eazel_install_problem_cases_to_string (EazelInstallProblem *problem,
 					       GList *cases);
 
+/* Like above, but only returns the package names, and only for packages that are about to be removed */
+GList * eazel_install_problem_cases_to_package_names (EazelInstallProblem *problem,
+						      GList *cases);
+
 /* This lets you know which type of problems the next call
    to eazel_install_handle_cases will handle. So if eg. 
    the next type is EI_PROBLEM_FORCE_REMOVE, you can alert the user */

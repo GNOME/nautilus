@@ -1,3 +1,36 @@
+2000-11-21  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-problem.c:
+	(eazel_install_problem_case_to_string),
+	(eazel_install_problem_case_foreach_to_string),
+	(eazel_install_problem_case_foreach_to_package_names),
+	(eazel_install_problem_cases_to_package_names),
+	(eazel_install_problem_find_dominant_problem_type):
+	* components/services/install/lib/eazel-install-problem.h:
+
+	Add hack to let us ask for only the package names of items in the
+	problem list (and only those that need to be uninstalled).  This
+	lets us build up a special bullet list for the "update not found"
+	installer panel.
+	
+	* nautilus-installer/src/callbacks.c: (begin_install),
+	(prep_retry):
+	* nautilus-installer/src/installer.c: (remove_problems_timer),
+	(jump_to_retry_page), (toggle_button_lock),
+	(toggle_button_toggled), (eazel_installer_set_default_texts):
+
+	Fix up the "update not found" panel to match a reasonable UI, and
+	fix some bugs that caused it to go straight into another
+	(extremely confusing) panel that suggested you ignore "all
+	problems" and then listed no problems.
+
+	* nautilus-installer/src/Makefile.am:
+	* nautilus-installer/src/support.c:
+	* nautilus-installer/src/support.h:
+
+	Remove the unused support.c from the Makefile, and mark the files
+	as unused so that a more adventurous soul can cvs remove them soon.
+
 2000-11-21  Rebecca Schulman  <rebecka@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
