@@ -1,3 +1,12 @@
+2004-01-24  Srinivasa Ragavan  <sragavan@novell.com>
+
+	* libnautilus-private/nautilus-program-choser.c:
+	  (nautilus_program_chooser_show_no_choices_message):
+	  Do not use object ('dialog') after destruction
+
+	  (nautilus_program_chooser_show_invalid_message):
+          Do not use object ('dialog') after destruction
+
 2004-01-22  Christian Neumair  <chris@gnome-de.org>
 
 	* libnautilus-private/nautilus-file-operations.c:

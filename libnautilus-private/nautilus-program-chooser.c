@@ -1610,12 +1610,12 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 	                                 _("_Associate Application"), GTK_STOCK_CANCEL, parent_window);
 
 	response = gtk_dialog_run (dialog);
-	gtk_object_destroy (GTK_OBJECT (dialog));
 		
 	if (response == GTK_RESPONSE_YES) {
 		launch_mime_capplet (file, dialog);	 
 	}
 
+	gtk_object_destroy(GTK_OBJECT (dialog));
 	g_free (unavailable_message);
 	g_free (file_name);
 	g_free (dialog_title);
@@ -1654,12 +1654,12 @@ nautilus_program_chooser_show_invalid_message (GnomeVFSMimeActionType  action_ty
 	                                 _("_Associate Action"), GTK_STOCK_CANCEL, parent_window);
 	
 	response = gtk_dialog_run (dialog);
-	gtk_object_destroy (GTK_OBJECT (dialog));
 		
 	if (response == GTK_RESPONSE_YES) {
 		launch_mime_capplet (file, dialog);	 
 	}
 
+	gtk_object_destroy (GTK_OBJECT (dialog));
 	g_free (unavailable_message);
 	g_free (file_name);
 	g_free (dialog_title);
