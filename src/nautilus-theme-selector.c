@@ -562,7 +562,7 @@ has_image_file(const char *path_uri, const char *dir_name, const char *image_fil
 static char*
 make_theme_description (const char *theme_name, const char *theme_path_uri)
 {
-	char *theme_file_name, *theme_path;
+	char *theme_file_name, *theme_path, *theme_local_path;
 	char *description_result, *temp_str;
 	xmlDocPtr theme_document;
 	xmlNodePtr description_node;
@@ -570,15 +570,17 @@ make_theme_description (const char *theme_name, const char *theme_path_uri)
 	description_result = NULL;
 	
 	theme_file_name = g_strdup_printf ("%s.xml", theme_name);	
-	theme_path = nautilus_make_path (theme_path_uri, theme_file_name);
+	theme_local_path = gnome_vfs_get_local_path_from_uri (theme_path_uri);
+	theme_path = nautilus_make_path (theme_local_path, theme_file_name);
+	g_free (theme_local_path);
 		
 	if (theme_path) {
 		/* read the xml document */
 		theme_document = xmlParseFile(theme_path);
-
+		
 		if (theme_document != NULL) {
 			/* fetch the description mode, of any */		
-			description_node = nautilus_xml_get_child_by_name(xmlDocGetRootElement (theme_document), "description");
+			description_node = nautilus_xml_get_child_by_name (xmlDocGetRootElement (theme_document), "description");
 			if (description_node) {		
 				temp_str = xmlGetProp(description_node, "TEXT");
 				if (temp_str)
@@ -590,7 +592,7 @@ make_theme_description (const char *theme_name, const char *theme_path_uri)
 			
 		g_free (theme_path);
 	}
-	
+		
 	g_free (theme_file_name);
 	if (description_result)
 		return description_result;

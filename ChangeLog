@@ -1,3 +1,10 @@
+2000-09-25  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-theme-selector.c: (make_theme_description):
+	fixed bug where the theme descriptions were not showing up in
+	the theme selector; the problem was that the xml routines couldn't
+	handle a uri, so fixed by calling gnome_vfs_get_local_path_from_uri.
+	
 2000-09-25  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/lib/eazel-summary-shared.c:
