@@ -33,6 +33,7 @@
 #include "nautilus-string.h"
 #include "nautilus-xml-extensions.h"
 #include <libgnomevfs/gnome-vfs.h>
+#include <libgnomevfs/gnome-vfs-mime.h>
 #include <parser.h>
 #include <stdlib.h>
 #include <xmlmemory.h>
@@ -46,20 +47,79 @@ typedef struct {
 	char *file_path;
 } NautilusLinkIconNotificationInfo;
 
-/* given a uri, returns TRUE if it's a link file */
-
+ 
 gboolean
-nautilus_link_is_link_file (NautilusFile *file)
+nautilus_link_create (const char *directory_path, const char *name, const char *image, const char *uri)
 {
-	char *mime_type;
+	xmlDocPtr output_document;
+	xmlNodePtr root_node;
+	char *file_name;
+	int result;
 	
-	mime_type = nautilus_file_get_mime_type (file);
+	/* create a new xml document */
+	output_document = xmlNewDoc ("1.0");
+	
+	/* add the root node to the output document */
+	root_node = xmlNewDocNode (output_document, NULL, "NAUTILUS_OBJECT", NULL);
+	xmlDocSetRootElement (output_document, root_node);
 
+	/* Add mime magic string so that the mime sniffer can recognize us.
+	 * Note: The value of the tag has no meaning.  */
+	xmlSetProp (root_node, "NAUTILUS_LINK", "Nautilus Link");
+
+	/* Add link and custom icon tags */
+	xmlSetProp (root_node, "CUSTOM_ICON", image);
+	xmlSetProp (root_node, "LINK", uri);
+	
+	/* all done, so save the xml document as a link file */
+	file_name = g_strdup_printf ("%s/%s", directory_path, name);
+	result = xmlSaveFile (file_name, output_document);
+	g_free (file_name);
+	
+	xmlFreeDoc (output_document);
+
+	return result > 0;
+}
+
+/* given a path, returns TRUE if it's a link file */
+gboolean
+nautilus_link_is_link_file (const char *path)
+{
+	const char *mime_type;
+	
+	mime_type = gnome_vfs_get_file_mime_type (path, NULL, FALSE);
+	if (mime_type == NULL) {
+		return FALSE;
+	}
+	
 	if (nautilus_strcasecmp (mime_type, "application/x-nautilus-link") == 0) {
 		return TRUE;
 	}
 
 	return FALSE;
+}
+
+
+/* Set the icon for a link file */
+gboolean
+nautilus_link_set_icon (const char *path, const char *icon_name)
+{
+	xmlDocPtr document;
+
+	if (!nautilus_link_is_link_file (path)) {
+		return FALSE;
+	}
+
+	document = xmlParseFile (path);
+	if (document == NULL) {
+		return FALSE;
+	}
+
+	xmlSetProp (xmlDocGetRootElement (document), NAUTILUS_METADATA_KEY_CUSTOM_ICON, icon_name);
+
+	xmlFreeDoc (document);
+	
+	return TRUE;
 }
 
 static char *

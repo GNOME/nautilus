@@ -2047,6 +2047,8 @@ activation_uri_gmc_link_read_callback (GnomeVFSResult result,
 {
 	NautilusDirectory *directory;
 	char *end_of_line, *uri;
+	const gchar *path;
+	GnomeVFSURI *vfs_uri;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
@@ -2073,11 +2075,16 @@ activation_uri_gmc_link_read_callback (GnomeVFSResult result,
 	 * a Nautilus link before we even dealt with the GMC link
 	 * part.
 	 */
-	if (!nautilus_link_is_link_file (directory->details->activation_uri_read_state->file)) {
+	uri = nautilus_file_get_uri (directory->details->activation_uri_read_state->file);
+	vfs_uri = gnome_vfs_uri_new (uri);
+	path = gnome_vfs_uri_get_path (vfs_uri);
+	if (!nautilus_link_is_link_file (path)) {
 		/* Tell it that the activation URI is just the real URI. */
 		activation_uri_found (directory, NULL);
+		gnome_vfs_uri_unref (vfs_uri);
 		return;
 	}
+	gnome_vfs_uri_unref (vfs_uri);
 
 	/* We know it's a link file, so we must read and parse the
 	 * file to find the link URI.
@@ -2087,7 +2094,6 @@ activation_uri_gmc_link_read_callback (GnomeVFSResult result,
 	 * the first 512 bytes. The cleanest way to redo this is to
 	 * just use MIME types so we don't have to do both.
 	 */
-	uri = nautilus_file_get_uri (directory->details->activation_uri_read_state->file);
 	directory->details->activation_uri_read_state->handle = nautilus_read_entire_file_async
 		(uri,
 		 activation_uri_nautilus_link_read_callback,

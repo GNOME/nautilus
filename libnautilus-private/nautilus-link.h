@@ -29,8 +29,17 @@
 #include <glib.h>
 #include "nautilus-file.h"
 
+/* Create a new link file */
+gboolean nautilus_link_create 				(const char *directory_path, 
+							 const char *name, 
+							 const char *image, 
+							 const char *uri);
+
 /* given a uri, returns TRUE if it's a link file */
-gboolean nautilus_link_is_link_file                	(NautilusFile *file);
+gboolean nautilus_link_is_link_file                	(const char *path);
+
+gboolean nautilus_link_set_icon 			(const char  *path, 
+							 const char  *icon_name);
 
 /* returns additional text to display under the name, NULL if none */
 char *   nautilus_link_get_additional_text              (const char *link_file_uri);

@@ -1,3 +1,34 @@
+2000-07-27  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(activation_uri_gmc_link_read_callback):
+	Changed the API to determine if file is link file to use path.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_contains_text), (nautilus_file_activate_custom):
+	Changed the API to determine if file is link file to use path.
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file):
+	Changed the API to determine if file is link file to use path.
+	
+	* libnautilus-extensions/nautilus-link.c: (nautilus_link_create),
+	(nautilus_link_is_link_file), (nautilus_link_set_icon):
+	Changed the API to determine if file is link file to use path.
+		
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_destroy), (mount_device_mount),
+	(remove_mount_links), (place_home_directory):
+	More work on setting links icons.
+	
+	* src/file-manager/fm-icon-view.c: 
+	(get_icon_text_callback):
+	Changed the API to determine if file is link file to use path.
+	
+	* src/nautilus-desktop-window.c: 
+	(nautilus_desktop_window_new):
+	Work in progress on setting up the Trash icon.
+
 2000-07-27  Seth Nickell  <seth@eazel.com>
 
 	* icons/Makefile.am:

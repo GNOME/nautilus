@@ -3183,8 +3183,10 @@ nautilus_file_is_directory (NautilusFile *file)
 gboolean
 nautilus_file_contains_text (NautilusFile *file)
 {
-	char *mime_type;
+	char *mime_type, *uri;
 	gboolean contains_text;
+	const char *path;
+	GnomeVFSURI *vfs_uri;
 	
 	if (file == NULL) {
 		return FALSE;
@@ -3194,13 +3196,19 @@ nautilus_file_contains_text (NautilusFile *file)
 	
 	mime_type = nautilus_file_get_mime_type (file);
 		
+	/* Get path */
+	uri = nautilus_file_get_uri (file);
+	vfs_uri = gnome_vfs_uri_new (uri);
+	path = gnome_vfs_uri_get_path (vfs_uri);	
+		
 	/* see if it's a nautilus link xml file - if so, see if we need to handle specially */
 	contains_text = (nautilus_istr_has_prefix (mime_type, "text/")
 			 || (mime_type == NULL && nautilus_file_get_file_type (file)
 			     == GNOME_VFS_FILE_TYPE_REGULAR))
-		&& !nautilus_link_is_link_file (file);
-	
+		&& !nautilus_link_is_link_file (path);
 	g_free (mime_type);
+	g_free (uri);
+	gnome_vfs_uri_unref (vfs_uri);
 	
 	return contains_text;
 }
@@ -3482,10 +3490,17 @@ nautilus_file_activate_custom (NautilusFile *file, gboolean use_new_window)
 {
 	int result;
 	char *uri, *old_uri, *command_str;
+	GnomeVFSURI *vfs_uri;
+	const char *path;
 	
 	/* See if it's a nautilus link xml file - if so, see if we need to handle specially. */
 	uri = nautilus_file_get_uri (file);
-	if (nautilus_link_is_link_file (file)) {
+
+	/* Get path */
+	vfs_uri = gnome_vfs_uri_new (uri);
+	path = gnome_vfs_uri_get_path (vfs_uri);
+	
+	if (nautilus_link_is_link_file (path)) {
 		old_uri = uri;
 		uri = nautilus_link_get_link_uri (uri);
 		g_free (old_uri);
@@ -3500,6 +3515,7 @@ nautilus_file_activate_custom (NautilusFile *file, gboolean use_new_window)
 		}
 	}
 	g_free (uri);
+	gnome_vfs_uri_unref (vfs_uri);
 	return FALSE;
 }
 

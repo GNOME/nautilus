@@ -25,12 +25,16 @@
 #include <config.h>
 #include "nautilus-desktop-window.h"
 
+#include <libgnome/gnome-i18n.h>
+#include <libgnomevfs/gnome-vfs-find-directory.h>
+#include <libgnomeui/gnome-winhints.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-link-set.h>
-#include <libgnomeui/gnome-winhints.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
+#include <libnautilus-extensions/nautilus-link.h>
+
 
 struct NautilusDesktopWindowDetails {
 	GList *unref_list;
@@ -87,6 +91,8 @@ nautilus_desktop_window_new (NautilusApplication *application)
 	NautilusDesktopWindow *window;
 	char *desktop_directory_path;
 	char *desktop_directory_uri;
+	GnomeVFSURI *trash_dir_uri;
+	GnomeVFSResult result;
 
 	window = NAUTILUS_DESKTOP_WINDOW
 		(gtk_object_new (nautilus_desktop_window_get_type(),
@@ -100,7 +106,25 @@ nautilus_desktop_window_new (NautilusApplication *application)
 	 * We can do this at some other time if we want, but this
 	 * might be a good time.
 	 */
-	nautilus_link_set_install (desktop_directory_path, "desktop");
+	result = gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH, 
+					   &trash_dir_uri, TRUE, 0777);
+
+	nautilus_link_create (desktop_directory_path, "Trash", "trash-full.png", 
+			      gnome_vfs_uri_get_path (trash_dir_uri));
+
+	{
+		NautilusFile *file;
+		char *path;
+		
+		file = nautilus_file_get ("/home/gzr/.nautilus/desktop/Trash");
+		if (file != NULL) {
+			path = g_strdup_printf ("%s/%s", desktop_directory_path, "Trash");
+			nautilus_link_set_icon (path, "trash-empty.png");
+			nautilus_file_changed (file);
+			nautilus_file_unref (file);
+			g_free (path);
+		}
+	}
 
 	/* Point window at the desktop folder.
 	 * Note that nautilus_desktop_window_initialize is too early to do this.
