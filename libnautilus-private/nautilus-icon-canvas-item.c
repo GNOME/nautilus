@@ -101,6 +101,9 @@ struct NautilusIconCanvasItemDetails {
 	ArtIRect canvas_rect;
 	ArtIRect text_rect;
 	ArtIRect emblem_rect;
+
+	/* Accessibility bits */
+	GailTextUtil *text_util;
 };
 
 /* Object argument IDs. */
@@ -184,9 +187,8 @@ static void     clear_rounded_corners                (GdkPixbuf                 
 						      GdkPixbuf                     *corner_pixbuf,
 						      int                            corner_size);
 
-EEL_CLASS_BOILERPLATE (NautilusIconCanvasItem,
-		       nautilus_icon_canvas_item,
-		       GNOME_TYPE_CANVAS_ITEM)
+
+static NautilusIconCanvasItemClass *parent_class = NULL;
 
 /* Object initialization function for the icon item. */
 static void
@@ -205,7 +207,6 @@ nautilus_icon_canvas_item_init (NautilusIconCanvasItem *icon_item)
 	details = g_new0 (NautilusIconCanvasItemDetails, 1);
 
 	icon_item->details = details;
-
 	nautilus_icon_canvas_item_invalidate_label_size (icon_item);
 }
 
@@ -221,6 +222,11 @@ nautilus_icon_canvas_item_finalize (GObject *object)
 	if (details->pixbuf != NULL) {
 		g_object_unref (details->pixbuf);
 	}
+	
+	if (details->text_util != NULL) {
+		g_object_unref (details->text_util);
+	}
+
 	eel_gdk_pixbuf_list_free (details->emblem_pixbufs);
 	g_free (details->editable_text);
 	g_free (details->additional_text);
@@ -289,8 +295,12 @@ nautilus_icon_canvas_item_set_property (GObject        *object,
 
 		g_free (details->editable_text);
 		details->editable_text = g_strdup (g_value_get_string (value));
+		if (details->text_util) {
+			gail_text_util_text_setup (details->text_util,
+						   details->editable_text);
+		}
 		
-		nautilus_icon_canvas_item_invalidate_label_size (item);		
+		nautilus_icon_canvas_item_invalidate_label_size (item);
 		break;
 
 	case PROP_ADDITIONAL_TEXT:
@@ -317,6 +327,11 @@ nautilus_icon_canvas_item_set_property (GObject        *object,
 			return;
 		}
 		details->is_highlighted_as_keyboard_focus = g_value_get_boolean (value);
+
+		if (details->is_highlighted_as_keyboard_focus) {
+			AtkObject *atk_object = eel_accessibility_for_object (object);
+			atk_focus_tracker_notify (atk_object);
+		}
 		break;
 		
         case PROP_HIGHLIGHTED_FOR_DROP:
@@ -1753,7 +1768,6 @@ nautilus_icon_canvas_item_accessible_get_index_in_parent (AtkObject *accessible)
 		l = l->next;
 	}
 
-
 	return -1;
 }
 
@@ -1839,7 +1853,6 @@ nautilus_icon_canvas_item_accessible_get_type (void)
 			(GInterfaceFinalizeFunc) NULL,
 			NULL
 		};
-
 		type = eel_accessibility_create_derived_type (
 			"NautilusIconCanvasItemAccessibility",
 			GNOME_TYPE_CANVAS_ITEM,
@@ -1847,6 +1860,8 @@ nautilus_icon_canvas_item_accessible_get_type (void)
 
 		g_type_add_interface_static (
 			type, ATK_TYPE_IMAGE, &atk_image_info);
+
+		eel_accessibility_add_simple_text (type);
 	}
 
 	return type;
@@ -1861,6 +1876,10 @@ nautilus_icon_canvas_item_accessible_create (GObject *for_object)
 	item = NAUTILUS_ICON_CANVAS_ITEM (for_object);
 	g_return_val_if_fail (item != NULL, NULL);
 
+	item->details->text_util = gail_text_util_new ();
+	gail_text_util_text_setup (item->details->text_util,
+				   item->details->editable_text);
+
 	accessible = g_object_new
 		(nautilus_icon_canvas_item_accessible_get_type (), NULL);
 
@@ -1873,12 +1892,27 @@ EEL_ACCESSIBLE_FACTORY (nautilus_icon_canvas_item_accessible_get_type (),
 			nautilus_icon_canvas_item_accessible,
 			nautilus_icon_canvas_item_accessible_create);
 
+
+static GailTextUtil *
+nautilus_icon_canvas_item_get_text (GObject *text)
+{
+	return NAUTILUS_ICON_CANVAS_ITEM (text)->details->text_util;
+}
+
+static void
+nautilus_icon_canvas_item_text_interface_init (EelAccessibleTextIface *iface)
+{
+	iface->get_text = nautilus_icon_canvas_item_get_text;
+}
+
 /* Class initialization function for the icon canvas item. */
 static void
 nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 {
 	GObjectClass *object_class;
 	GnomeCanvasItemClass *item_class;
+
+	parent_class = g_type_class_peek_parent (class);
 
 	object_class = G_OBJECT_CLASS (class);
 	item_class = GNOME_CANVAS_ITEM_CLASS (class);
@@ -1947,4 +1981,38 @@ nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 
 	EEL_OBJECT_SET_FACTORY (NAUTILUS_TYPE_ICON_CANVAS_ITEM,
 				nautilus_icon_canvas_item_accessible);
+}
+
+GType
+nautilus_icon_canvas_item_get_type (void)
+{
+	static GType type = 0;
+
+	if (!type) {
+		static const GTypeInfo info = {
+			sizeof (NautilusIconCanvasItemClass),
+			NULL,		/* base_init */
+			NULL,		/* base_finalize */
+			(GClassInitFunc) nautilus_icon_canvas_item_class_init,
+			NULL,		/* class_finalize */
+			NULL,               /* class_data */
+			sizeof (NautilusIconCanvasItem),
+			0,                  /* n_preallocs */
+			(GInstanceInitFunc) nautilus_icon_canvas_item_init,
+		};
+		static const GInterfaceInfo eel_text_info = {
+			(GInterfaceInitFunc)
+			nautilus_icon_canvas_item_text_interface_init,
+			(GInterfaceFinalizeFunc) NULL,
+			NULL
+		};
+
+		type = g_type_register_static
+			(GNOME_TYPE_CANVAS_ITEM, "NautilusIconCanvasItem", &info, 0);
+
+		g_type_add_interface_static
+			(type, EEL_TYPE_ACCESSIBLE_TEXT, &eel_text_info);
+	}
+
+	return type;
 }

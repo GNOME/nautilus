@@ -1,3 +1,28 @@
+2002-04-02  Michael Meeks  <michael@ximian.com>
+
+	* This commit requires a newer eel, which requires gail.
+	
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(nautilus_icon_canvas_item_finalize): free text util.
+	(nautilus_icon_canvas_item_set_property): sync the text.
+	(nautilus_icon_canvas_item_accessible_create): create the
+	text util idly as required.
+	(nautilus_icon_canvas_item_image_interface_init),
+	(nautilus_icon_canvas_item_get_text): impl.
+	(nautilus_icon_canvas_item_class_init): add interface,
+	should do it in a get_type, but artefact of boilerplate
+	macros hiding that.
+	(nautilus_icon_canvas_item_get_type): bin boilerplate
+	so we can add an interface.
+	(nautilus_icon_canvas_item_set_property): add atk
+	focus notification / tracking.
+
+2002-03-28  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-container.c
+	(start_rubberbanding): set name / description on the
+	selection rectangle.
+
 2002-03-30  Dave Camp  <dave@ximian.com>
 
         * libnautilus-private/nautilus-icon-canvas-item.c:
@@ -180,7 +205,6 @@
 	(nautilus_window_instance_init): to here, so it will be
 	done by the time the throbber async activate comes in.
 
->>>>>>> 1.5170
 2002-03-26  Michael Meeks  <michael@ximian.com>
 
 	* libnautilus-private/nautilus-icon-canvas-item.c

@@ -1550,6 +1550,7 @@ static void
 start_rubberbanding (NautilusIconContainer *container,
 		     GdkEventButton *event)
 {
+	AtkObject *accessible;
 	NautilusIconContainerDetails *details;
 	NautilusIconRubberbandInfo *band_info;
 	uint fill_color, outline_color;
@@ -1598,6 +1599,11 @@ start_rubberbanding (NautilusIconContainer *container,
 		 "outline_color_rgba", outline_color,
 		 "width_pixels", 1,
 		 NULL);
+
+	accessible = atk_gobject_accessible_for_object
+		(G_OBJECT (band_info->selection_rectangle));
+	atk_object_set_name (accessible, "selection");
+	atk_object_set_description (accessible, _("The selection rectangle"));
 
 	band_info->prev_x = event->x - gtk_adjustment_get_value (gtk_layout_get_hadjustment (GTK_LAYOUT (container)));
 	band_info->prev_y = event->y - gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (container)));
