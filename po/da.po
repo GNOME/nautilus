@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "POT-Creation-Date: 2000-10-29 04:41+0100\n"
-"PO-Revision-Date: 2000-12-26 11:38+02:00\n"
+"PO-Revision-Date: 2001-01-03 11:38+02:00\n"
 "Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -28,6 +28,22 @@ msgstr ""
 #: applets/launcher/nautilus-launcher-applet.c:279
 msgid "Can't create nautilus-launcher-applet!"
 msgstr "Kan ikke starte nautilus-launcher-applet!"
+
+#: components/hardware/nautilus-hardware-view.c:242
+#, c-format
+msgid ""
+"%s CPU\n"
+"%s MHz\n"
+"%s cache size"
+msgstr ""
+"%s CPU\n"
+"%s MHz\n"
+"%s cache størrelse"
+
+#: components/hardware/nautilus-hardware-view.c:285
+#, c-format
+msgid "%s RAM"
+msgstr "%s RAM"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:708
 #: components/music/nautilus-music-view.c:1563
@@ -44,85 +60,85 @@ msgstr "Hjem"
 msgid "Next"
 msgstr "Næste"
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:252
+#: components/help/converters/gnome-db2html2/sect-elements.c:254
 msgid "Notes"
 msgstr "Noter"
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:700
+#: components/help/converters/gnome-db2html2/sect-elements.c:704
 #, c-format
 msgid "Table %d."
 msgstr "Tabel %d"
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:847
+#: components/help/converters/gnome-db2html2/sect-elements.c:859
 msgid "Up to Table of Contents"
 msgstr "Op til indholdsfortegnelse"
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:995
+#: components/help/converters/gnome-db2html2/sect-elements.c:1007
 #, c-format
 msgid "Figure %s"
 msgstr "Figur %s"
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:1015
+#: components/help/converters/gnome-db2html2/sect-elements.c:1027
 msgid "the section here"
 msgstr "sektionen her"
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:1017
+#: components/help/converters/gnome-db2html2/sect-elements.c:1029
 msgid "the section"
 msgstr "sektionen"
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:1073
+#: components/help/converters/gnome-db2html2/sect-elements.c:1085
 #, c-format
 msgid "Figure %d"
 msgstr "Figur %d"
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:1085
+#: components/help/converters/gnome-db2html2/sect-elements.c:1097
 msgid "IMAGE"
 msgstr "BILLEDE"
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:2050
-#: components/help/converters/gnome-db2html2/sect-elements.c:2052
+#: components/help/converters/gnome-db2html2/sect-elements.c:2063
+#: components/help/converters/gnome-db2html2/sect-elements.c:2065
 msgid "Legal Notice"
 msgstr "Juridisk bemærkning"
 
 #. This 'Q' is short for 'Question:'
-#: components/help/converters/gnome-db2html2/sect-elements.c:2098
+#: components/help/converters/gnome-db2html2/sect-elements.c:2111
 msgid "Q"
 msgstr "?"
 
 #. This 'A' is short for 'Answer'
-#: components/help/converters/gnome-db2html2/sect-elements.c:2110
+#: components/help/converters/gnome-db2html2/sect-elements.c:2123
 msgid "A"
 msgstr "!"
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:2133
+#: components/help/converters/gnome-db2html2/sect-elements.c:2146
 msgid "See"
 msgstr "Se"
 
-#: components/help/converters/gnome-db2html2/sect-elements.c:2160
+#: components/help/converters/gnome-db2html2/sect-elements.c:2173
 msgid "See also"
 msgstr "Se også"
 
-#: components/help/converters/gnome-db2html2/toc-elements.c:305
+#: components/help/converters/gnome-db2html2/toc-elements.c:315
 msgid "GNOME Documentation"
 msgstr "GNOME dokumentation"
 
-#: components/help/converters/gnome-db2html2/toc-elements.c:336
+#: components/help/converters/gnome-db2html2/toc-elements.c:346
 msgid "Copyright"
 msgstr "Ophavsret"
 
-#: components/help/converters/gnome-db2html2/toc-elements.c:336
+#: components/help/converters/gnome-db2html2/toc-elements.c:346
 msgid "by"
 msgstr "ved"
 
-#: components/help/converters/gnome-db2html2/toc-elements.c:337
+#: components/help/converters/gnome-db2html2/toc-elements.c:348
 msgid "Table of Contents"
 msgstr "Indholdsfortegnelse"
 
-#: components/help/converters/gnome-db2html2/toc-elements.c:499
+#: components/help/converters/gnome-db2html2/toc-elements.c:513
 msgid "PREFACE"
 msgstr "Forord"
 
-#: components/help/converters/gnome-db2html2/toc-elements.c:508
+#: components/help/converters/gnome-db2html2/toc-elements.c:522
 msgid "APPENDIX"
 msgstr "Appendix"
 
@@ -234,7 +250,7 @@ msgstr " (se \""
 msgid " (see also \""
 msgstr " (se også \""
 
-#: components/image-viewer/nautilus-image-view.c:825
+#: components/image-viewer/nautilus-image-view.c:829
 msgid "I could not initialize Bonobo"
 msgstr "Kunne ikke initiere Bonobo"
 
@@ -2288,11 +2304,11 @@ msgstr "Tiden er forkert med %d, maks tilladt forskel er %d"
 msgid "Could not read time-service config from %s"
 msgstr "Kunne ikke læse konfiguration for tidstjenesten fra %s"
 
-#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:192
+#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:195
 msgid "Could not initialize Bonobo"
 msgstr "Kunne ikke initialisere Bonobo"
 
-#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:207
+#: components/services/trilobite/libtrilobite/trilobite-core-utils.c:210
 #, c-format
 msgid "Can't write logfile %s -- using default log handler"
 msgstr "Kan ikke skrive logfil %s -- bruger forvalgt loghåndterer"
@@ -2488,7 +2504,7 @@ msgstr "Gimp"
 msgid "Desktop"
 msgstr "Skrivebord"
 
-#: libnautilus-extensions/nautilus-file.c:4666
+#: libnautilus-extensions/nautilus-file.c:4699
 #: libnautilus-extensions/nautilus-trash-directory.c:261
 #: po/tmp/desktop.xml.h:2 src/file-manager/fm-desktop-icon-view.c:65
 msgid "Trash"
@@ -2614,8 +2630,12 @@ msgstr "Linuxcare"
 msgid "Myplay"
 msgstr "Myplay"
 
+#. The copyright character in here is correct for
+#. * Latin-1 encoding, but not for UTF-8, so we have
+#. * to change it when we upgrade to GTK 2.0.
+#.
 #: po/tmp/static_bookmarks.xml.h:25 src/nautilus-window-manage-views.c:235
-#: src/nautilus-window-menus.c:611
+#: src/nautilus-window-menus.c:618
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -3013,7 +3033,7 @@ msgstr "Erstat alt"
 
 #. appended to new link file
 #: libnautilus-extensions/nautilus-file-operations.c:1016
-#: libnautilus-extensions/nautilus-file.c:3718
+#: libnautilus-extensions/nautilus-file.c:3749
 #, c-format
 msgid "link to %s"
 msgstr "lænke til %s"
@@ -3539,100 +3559,100 @@ msgstr "foo foo (100000000000000te kopi).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-extensions/nautilus-file.c:2229
+#: libnautilus-extensions/nautilus-file.c:2260
 msgid "today at %-I:%M %p"
 msgstr "i dag kl %H:%M"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2234
+#: libnautilus-extensions/nautilus-file.c:2265
 msgid "yesterday at %-I:%M %p"
 msgstr "i går kl %H:%M"
 
 #. Current week, include day of week.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2239
+#: libnautilus-extensions/nautilus-file.c:2270
 msgid "%A %-m/%-d/%y at %-I:%M %p"
 msgstr "%A %Y-%-m-%-d %H:%M"
 
 #. Other dates.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2244
+#: libnautilus-extensions/nautilus-file.c:2275
 msgid "%-m/%-d/%y at %-I:%M %p"
 msgstr "%Y-%-m-%-d %H:%M"
 
-#: libnautilus-extensions/nautilus-file.c:3313
+#: libnautilus-extensions/nautilus-file.c:3344
 msgid "0 items"
 msgstr "0 ting"
 
-#: libnautilus-extensions/nautilus-file.c:3313
+#: libnautilus-extensions/nautilus-file.c:3344
 msgid "0 folders"
 msgstr "0 mapper"
 
-#: libnautilus-extensions/nautilus-file.c:3314
+#: libnautilus-extensions/nautilus-file.c:3345
 msgid "0 files"
 msgstr "0 filer"
 
-#: libnautilus-extensions/nautilus-file.c:3318
+#: libnautilus-extensions/nautilus-file.c:3349
 msgid "1 item"
 msgstr "1 ting"
 
-#: libnautilus-extensions/nautilus-file.c:3318
+#: libnautilus-extensions/nautilus-file.c:3349
 msgid "1 folder"
 msgstr "1 mappe"
 
-#: libnautilus-extensions/nautilus-file.c:3319
+#: libnautilus-extensions/nautilus-file.c:3350
 msgid "1 file"
 msgstr "1 fil"
 
-#: libnautilus-extensions/nautilus-file.c:3322
+#: libnautilus-extensions/nautilus-file.c:3353
 #, c-format
 msgid "%u items"
 msgstr "%u ting"
 
-#: libnautilus-extensions/nautilus-file.c:3322
+#: libnautilus-extensions/nautilus-file.c:3353
 #, c-format
 msgid "%u folders"
 msgstr "%u mapper"
 
-#: libnautilus-extensions/nautilus-file.c:3323
+#: libnautilus-extensions/nautilus-file.c:3354
 #, c-format
 msgid "%u files"
 msgstr "%u filer"
 
 #. This means no contents at all were readable
-#: libnautilus-extensions/nautilus-file.c:3623
-#: libnautilus-extensions/nautilus-file.c:3637
+#: libnautilus-extensions/nautilus-file.c:3654
+#: libnautilus-extensions/nautilus-file.c:3668
 msgid "? items"
 msgstr "? opføringer"
 
-#: libnautilus-extensions/nautilus-file.c:3641
+#: libnautilus-extensions/nautilus-file.c:3672
 msgid "unknown type"
 msgstr "ukendt type"
 
-#: libnautilus-extensions/nautilus-file.c:3643
+#: libnautilus-extensions/nautilus-file.c:3674
 msgid "unknown MIME type"
 msgstr "ukendt MIME-type"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-extensions/nautilus-file.c:3648
+#: libnautilus-extensions/nautilus-file.c:3679
 msgid "unknown"
 msgstr "ukendt"
 
-#: libnautilus-extensions/nautilus-file.c:3683
+#: libnautilus-extensions/nautilus-file.c:3714
 msgid "program"
 msgstr "program"
 
-#: libnautilus-extensions/nautilus-file.c:3712
+#: libnautilus-extensions/nautilus-file.c:3743
 msgid "link"
 msgstr "lænke"
 
-#: libnautilus-extensions/nautilus-file.c:3732
+#: libnautilus-extensions/nautilus-file.c:3763
 msgid "link (broken)"
 msgstr "lænke (ødelagt)"
 
@@ -3936,7 +3956,7 @@ msgid "Don't include the built-in bookmarks"
 msgstr "Inkludér ikke indbyggede bogmærker"
 
 #. The list of characters that cause line breaks can be localized.
-#: libnautilus-extensions/nautilus-icon-canvas-item.c:66
+#: libnautilus-extensions/nautilus-icon-canvas-item.c:67
 #: libnautilus-extensions/nautilus-label.c:180
 msgid " -_,;.?/&"
 msgstr " -_,;.?/&"
@@ -3982,7 +4002,7 @@ msgid "Switch to Manual Layout?"
 msgstr "Skift til Manuel-udseende?"
 
 #: libnautilus-extensions/nautilus-icon-dnd.c:739
-#: src/nautilus-window-menus.c:533
+#: src/nautilus-window-menus.c:536
 msgid "Switch"
 msgstr "Skift"
 
@@ -4677,22 +4697,28 @@ msgstr "_Klip tekst"
 msgid "_Paste Text"
 msgstr "_Indsæt tekst"
 
-#: src/file-manager/fm-desktop-icon-view.c:618
-#: src/file-manager/fm-desktop-icon-view.c:623
-msgid "Link to"
-msgstr "Lænk til"
+#: src/file-manager/fm-desktop-icon-view.c:602
+#: src/file-manager/fm-desktop-icon-view.c:607
+#, c-format
+msgid "Link to %s"
+msgstr "lænke til %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:620
+#: src/file-manager/fm-desktop-icon-view.c:604
 msgid "Link to Unknown"
 msgstr "Lænk til ukendt"
 
-#: src/file-manager/fm-desktop-icon-view.c:1111
+#: src/file-manager/fm-desktop-icon-view.c:703
+#, c-format
+msgid "%s's Home"
+msgstr "%s's hjem"
+
+#: src/file-manager/fm-desktop-icon-view.c:991
 msgid "Empty Trash..."
 msgstr "Tøm papirkurv..."
 
 #: po/tmp/nautilus-desktop-icon-view-ui.xml.h:4
 #: po/tmp/nautilus-directory-view-ui.xml.h:11
-#: src/file-manager/fm-desktop-icon-view.c:1113
+#: src/file-manager/fm-desktop-icon-view.c:993
 msgid "Empty Trash"
 msgstr "Tøm papirkurv"
 
@@ -4765,25 +4791,20 @@ msgstr "%d andre ting valgte (%s)"
 msgid "%s%s, %s"
 msgstr "%s%s %s"
 
-#. FIXME bugzilla.eazel.com 5037: This says Preview Release explicitly. Must remove for real thing.
-#: src/file-manager/fm-directory-view.c:1394
+#: src/file-manager/fm-directory-view.c:1399
+#, c-format
 msgid ""
-"We're sorry, but the folder you're viewing has more files than we're able to "
-"display. As a result, we are only able to show you the first 4000 files it "
-"contains.\n"
-"This is a temporary limitation in this Preview Release of Nautilus, and will "
-"not be present in the final version."
+"The folder \"%s\" contains more files than Nautilus can handle. Only the "
+"first %d files will be displayed."
 msgstr ""
-"Beklager, men mappen du kigger på har flere filer end vi kan vise. Som et "
-"resultat kan vi kun vise de første 4000 filer den indeholder.\n"
-"Dette er en midlertidig begrænsning i denne testversion af Nautilus, og det "
-"vil ikke være tilstede i den færdige version."
+"Mappen '%s' indeholder flere filer end Nautilus kan behandle. Kun de "
+"første %d filer vil blive vist."
 
-#: src/file-manager/fm-directory-view.c:1400
-msgid "Too many Files"
+#: src/file-manager/fm-directory-view.c:1407
+msgid "Too Many Files"
 msgstr "For mange filer"
 
-#: src/file-manager/fm-directory-view.c:2567
+#: src/file-manager/fm-directory-view.c:2575
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the trash. Do you want to delete it immediately?"
@@ -4791,7 +4812,7 @@ msgstr ""
 "\"%s\" kan ikke flyttes til papirkurven. Ønsker du at slette den med det "
 "samme?"
 
-#: src/file-manager/fm-directory-view.c:2572
+#: src/file-manager/fm-directory-view.c:2580
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the trash. Do you want to delete "
@@ -4800,7 +4821,7 @@ msgstr ""
 "De %d valgte opføringer kan ikke flyttes til papirkurven. Vil du slette dem "
 "med det samme?"
 
-#: src/file-manager/fm-directory-view.c:2576
+#: src/file-manager/fm-directory-view.c:2584
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the trash. Do you want to delete "
@@ -4809,21 +4830,21 @@ msgstr ""
 "%d af de valgte opføringer kan ikke flyttes til papirkurven. Vil du slette "
 "disse %d opføringer med det samme?"
 
-#: src/file-manager/fm-directory-view.c:2584
+#: src/file-manager/fm-directory-view.c:2592
 msgid "Delete Immediately?"
 msgstr "Slet med det samme?"
 
-#: src/file-manager/fm-directory-view.c:2585
-#: src/file-manager/fm-directory-view.c:2626
+#: src/file-manager/fm-directory-view.c:2593
+#: src/file-manager/fm-directory-view.c:2634
 msgid "Delete"
 msgstr "Slet"
 
-#: src/file-manager/fm-directory-view.c:2615
+#: src/file-manager/fm-directory-view.c:2623
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Er du sikker på at du vil slette \"%s\" fra papirkurven for altid?"
 
-#: src/file-manager/fm-directory-view.c:2619
+#: src/file-manager/fm-directory-view.c:2627
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
@@ -4831,79 +4852,79 @@ msgid ""
 msgstr ""
 "Er du sikker på at du vil slette %d valgte ting i papirkurven for altid?"
 
-#: src/file-manager/fm-directory-view.c:2625
+#: src/file-manager/fm-directory-view.c:2633
 msgid "Delete From Trash?"
 msgstr "Slet fra papirkurven?"
 
-#: src/file-manager/fm-directory-view.c:2898
-#: src/file-manager/fm-directory-view.c:2939
+#: src/file-manager/fm-directory-view.c:2906
+#: src/file-manager/fm-directory-view.c:2947
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Brug \"%s\" for at åbne det markerede objekt"
 
-#: src/file-manager/fm-directory-view.c:2937
+#: src/file-manager/fm-directory-view.c:2945
 #, c-format
 msgid "%s Viewer"
 msgstr "%s Fremviser"
 
-#: src/file-manager/fm-directory-view.c:3125
+#: src/file-manager/fm-directory-view.c:3133
 msgid "Open in _New Window"
 msgstr "Åbn i _nyt vindue"
 
-#: src/file-manager/fm-directory-view.c:3127
+#: src/file-manager/fm-directory-view.c:3135
 #, c-format
 msgid "Open in %d _New Windows"
 msgstr "Åbn i %d _nye vinduer"
 
-#: src/file-manager/fm-directory-view.c:3153
+#: src/file-manager/fm-directory-view.c:3161
 msgid "Delete all selected items permanently"
 msgstr "Slet alle valgte opføringer permanent"
 
-#: src/file-manager/fm-directory-view.c:3158
+#: src/file-manager/fm-directory-view.c:3166
 msgid "Delete from _Trash..."
 msgstr "Sle_t fra papirkurven..."
 
-#: src/file-manager/fm-directory-view.c:3159
+#: src/file-manager/fm-directory-view.c:3167
 msgid "Delete from _Trash"
 msgstr "Sle_t fra papirkurven"
 
-#: src/file-manager/fm-directory-view.c:3163
+#: src/file-manager/fm-directory-view.c:3171
 msgid "Move all selected items to the Trash"
 msgstr "Flyt alle valgte ting til papirkurv"
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:14
-#: src/file-manager/fm-directory-view.c:3167
+#: src/file-manager/fm-directory-view.c:3175
 msgid "Move to _Trash"
 msgstr "Fly_t til papirkurv"
 
-#: src/file-manager/fm-directory-view.c:3196
+#: src/file-manager/fm-directory-view.c:3204
 msgid "Create _Links"
 msgstr "Opret _lænker"
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:5
-#: src/file-manager/fm-directory-view.c:3197
+#: src/file-manager/fm-directory-view.c:3205
 msgid "Create _Link"
 msgstr "Opret _lænke"
 
-#: src/file-manager/fm-directory-view.c:3215
+#: src/file-manager/fm-directory-view.c:3223
 msgid "_Empty Trash..."
 msgstr "_Tøm papirkurv..."
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:39
-#: src/file-manager/fm-directory-view.c:3216
+#: src/file-manager/fm-directory-view.c:3224
 msgid "_Empty Trash"
 msgstr "_Tøm papirkurv"
 
 #: po/tmp/nautilus-directory-view-ui.xml.h:26
-#: src/file-manager/fm-directory-view.c:3227
+#: src/file-manager/fm-directory-view.c:3235
 msgid "R_emove Custom Images"
 msgstr "Fj_ern personlige billeder"
 
-#: src/file-manager/fm-directory-view.c:3228
+#: src/file-manager/fm-directory-view.c:3236
 msgid "R_emove Custom Image"
 msgstr "Fj_ern personligt billede"
 
-#: src/file-manager/fm-directory-view.c:3367
+#: src/file-manager/fm-directory-view.c:3375
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the trash?"
@@ -4911,7 +4932,7 @@ msgstr ""
 "Denne lænke kan ikke bruges fordi den ikke har noget mål. Ønsker du at "
 "flytte denne lænke til papirkurven?"
 
-#: src/file-manager/fm-directory-view.c:3370
+#: src/file-manager/fm-directory-view.c:3378
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -4920,15 +4941,15 @@ msgstr ""
 "Denne lænke kan ikke bruges fordi målet, \"%s\", ikke eksisterer. Vil du "
 "lægge denne lænke i papirkurven?"
 
-#: src/file-manager/fm-directory-view.c:3376
+#: src/file-manager/fm-directory-view.c:3384
 msgid "Broken Link"
 msgstr "Ødelagt lænke"
 
-#: src/file-manager/fm-directory-view.c:3377
+#: src/file-manager/fm-directory-view.c:3385
 msgid "Throw Away"
 msgstr "Kast væk"
 
-#: src/file-manager/fm-directory-view.c:3433
+#: src/file-manager/fm-directory-view.c:3441
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -4936,16 +4957,16 @@ msgstr ""
 "Desværre, men du kan ikke udføre kommandoer fra et ekstern websted pga. "
 "sikkerhedshensyn."
 
-#: src/file-manager/fm-directory-view.c:3434
+#: src/file-manager/fm-directory-view.c:3442
 msgid "Can't execute remote links"
 msgstr "Kunne ikke udføre eksterne lænker"
 
-#: src/file-manager/fm-directory-view.c:3554
+#: src/file-manager/fm-directory-view.c:3562
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Åbner \"%s\""
 
-#: src/file-manager/fm-directory-view.c:3560
+#: src/file-manager/fm-directory-view.c:3568
 msgid "Cancel Open?"
 msgstr "Fortryd åbning?"
 
@@ -5897,7 +5918,7 @@ msgstr "Bogmærker"
 msgid "Location"
 msgstr "Placering"
 
-#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:780
+#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:787
 msgid "Remove"
 msgstr "Fjern"
 
@@ -6167,28 +6188,28 @@ msgid "View in Multiple Windows?"
 msgstr "Vis i flere vinduer?"
 
 #: src/nautilus-main.c:141
-msgid "Perform high-speed self-check tests."
-msgstr "Udfør hurtig selvtest"
+msgid "Perform a quick set of self-check tests."
+msgstr "Udfør et hurtigt sæt af selvtjek-prøver."
 
 #: src/nautilus-main.c:143
-msgid "Quit Nautilus."
-msgstr "Afslut Nautilus."
-
-#: src/nautilus-main.c:144
-msgid "Restart Nautilus."
-msgstr "Start Nautilus igen."
-
-#: src/nautilus-main.c:145
-msgid "Only create Nautilus windows for explicity specified URIs."
-msgstr "Opret kun Nautilus-vinduer for udtrykkeligt anførte URI-er."
-
-#: src/nautilus-main.c:146
 msgid "Create the initial window with the given geometry."
 msgstr "Opret det første vindue med den angivne geometri."
 
-#: src/nautilus-main.c:146
+#: src/nautilus-main.c:143
 msgid "GEOMETRY"
 msgstr "GEOMETRI"
+
+#: src/nautilus-main.c:144
+msgid "Only create Nautilus windows for explicitly specified URIs."
+msgstr "Opret kun Nautilus-vinduer for udtrykkeligt anførte URI-er."
+
+#: src/nautilus-main.c:145
+msgid "Quit Nautilus."
+msgstr "Afslut Nautilus."
+
+#: src/nautilus-main.c:146
+msgid "Restart Nautilus."
+msgstr "Start Nautilus igen."
 
 #: src/nautilus-main.c:197
 msgid "nautilus: --check cannot be used with URIs.\n"
@@ -6638,8 +6659,7 @@ msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
 msgstr ""
-"Vis mønstre, farver, og emblemer som kan bruges til at tilpasse "
-"udseendet"
+"Vis mønstre, farver, og emblemer som kan bruges til at tilpasse udseendet"
 
 #: po/tmp/nautilus-shell-ui.xml.h:22
 msgid "Display the latest contents of the current location"
@@ -6689,19 +6709,19 @@ msgstr "Gå til næste besøgte lokation"
 msgid "Go to the previous visited location"
 msgstr "Gå til forrige besøgte placering"
 
-#: po/tmp/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:434
+#: po/tmp/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:437
 msgid "Hide Location Bar"
 msgstr "Skjul adresselinje"
 
-#: po/tmp/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:422
+#: po/tmp/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:425
 msgid "Hide Sidebar"
 msgstr "Skjul sidelinje"
 
-#: po/tmp/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:416
+#: po/tmp/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:419
 msgid "Hide Status Bar"
 msgstr "Skjul statuslinje"
 
-#: po/tmp/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:428
+#: po/tmp/nautilus-shell-ui.xml.h:37 src/nautilus-window-menus.c:431
 msgid "Hide Tool Bar"
 msgstr "Skjul værktøjslinje"
 
@@ -6750,8 +6770,8 @@ msgid ""
 "Show a page from which you can send feedback about Nautilus and Eazel "
 "Services"
 msgstr ""
-"Vis en side, fra hvilken du kan sende tilbagemeldinger om Nautilus "
-"og Eazel-tjenester"
+"Vis en side, fra hvilken du kan sende tilbagemeldinger om Nautilus og "
+"Eazel-tjenester"
 
 #: po/tmp/nautilus-shell-ui.xml.h:51
 msgid "Show the contents at the normal size"
@@ -6853,7 +6873,7 @@ msgstr "_Ændr bogmærker..."
 msgid "_Feedback..."
 msgstr "Til_bagemeldinger..."
 
-#: po/tmp/nautilus-shell-ui.xml.h:79 src/nautilus-window-menus.c:1312
+#: po/tmp/nautilus-shell-ui.xml.h:79 src/nautilus-window-menus.c:1319
 msgid "_Find"
 msgstr "_Find"
 
@@ -7231,7 +7251,7 @@ msgstr "Kan ikke vise lokation"
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:307
+#: src/nautilus-window-menus.c:310
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
@@ -7239,33 +7259,33 @@ msgstr ""
 "Er du sikker på at du ønsker at glemme historikken? Hvis det er tilfældet, "
 "vil du være dømt til at gentage den."
 
-#: src/nautilus-window-menus.c:310
+#: src/nautilus-window-menus.c:313
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr ""
 "Er du sikker på at du ønsker at Nautilus skal glemme stederne du har besøgt?"
 
-#: src/nautilus-window-menus.c:315
+#: src/nautilus-window-menus.c:318
 msgid "Forget History?"
 msgstr "Glem historik?"
 
-#: src/nautilus-window-menus.c:316
+#: src/nautilus-window-menus.c:319
 msgid "Forget"
 msgstr "Glem"
 
-#: src/nautilus-window-menus.c:417
+#: src/nautilus-window-menus.c:420
 msgid "Show Status Bar"
 msgstr "Vis statuslinje"
 
-#: src/nautilus-window-menus.c:423
+#: src/nautilus-window-menus.c:426
 msgid "Show Sidebar"
 msgstr "Vis sidelinje"
 
-#: src/nautilus-window-menus.c:429
+#: src/nautilus-window-menus.c:432
 msgid "Show Tool Bar"
 msgstr "Vis værktøjslinje"
 
-#: src/nautilus-window-menus.c:435
+#: src/nautilus-window-menus.c:438
 msgid "Show Location Bar"
 msgstr "Vis adresselinje"
 
@@ -7274,7 +7294,7 @@ msgstr "Vis adresselinje"
 #. * names of the middle user level ("Intermediate"). The 3rd %s is the name of the highest user
 #. * level ("Advanced").
 #.
-#: src/nautilus-window-menus.c:518
+#: src/nautilus-window-menus.c:521
 #, c-format
 msgid ""
 "None of the settings for the %s level can be edited. If you want to edit the "
@@ -7288,7 +7308,7 @@ msgstr ""
 #. Localizers: This is the title of the dialog that appears if the user chooses "Edit Beginner Settings".
 #. * The %s is the name of the middle user level ("Intermediate").
 #.
-#: src/nautilus-window-menus.c:530
+#: src/nautilus-window-menus.c:533
 #, c-format
 msgid "Switch to %s Level?"
 msgstr "Skift til %s-niveau?"
@@ -7299,11 +7319,11 @@ msgstr "Skift til %s-niveau?"
 #. * not translate the
 #. * company name, please.
 #.
-#: src/nautilus-window-menus.c:619
-msgid "(C) 1999, 2000 Eazel, Inc."
-msgstr "(C) 1999, 2000 Eazel, Inc."
+#: src/nautilus-window-menus.c:626
+msgid "Copyright © 1999-2001 Eazel, Inc."
+msgstr "(C) 1999-2001 Eazel, Inc."
 
-#: src/nautilus-window-menus.c:621
+#: src/nautilus-window-menus.c:628
 msgid ""
 "Nautilus is a graphical shell\n"
 "for GNOME that makes it\n"
@@ -7315,7 +7335,7 @@ msgstr ""
 "at håndtere dine filer\n"
 "og resten af dit system."
 
-#: src/nautilus-window-menus.c:775
+#: src/nautilus-window-menus.c:782
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -7324,24 +7344,24 @@ msgstr ""
 "Lokationen \"%s\" eksisterer ikke. Ønsker du at fjerne alle bogmærker med "
 "denne lokation fra din liste?"
 
-#: src/nautilus-window-menus.c:779
+#: src/nautilus-window-menus.c:786
 msgid "Bookmark for Nonexistent Location"
 msgstr "Bogmærke for ikke-eksisterende lokation"
 
-#: src/nautilus-window-menus.c:793
+#: src/nautilus-window-menus.c:800
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Lokationen \"%s\" eksisterer ikke længere."
 
-#: src/nautilus-window-menus.c:794
+#: src/nautilus-window-menus.c:801
 msgid "Go to Nonexistent Location"
 msgstr "Gå til ikke-eksisterende lokation"
 
-#: src/nautilus-window-menus.c:861
+#: src/nautilus-window-menus.c:868
 msgid "Go to the location specified by this bookmark"
 msgstr "Gå til stedet givet ved dette bogmærke"
 
-#: src/nautilus-window-menus.c:1311
+#: src/nautilus-window-menus.c:1318
 msgid "_Browse"
 msgstr "_Gennemse"
 
@@ -7349,7 +7369,7 @@ msgstr "_Gennemse"
 #. * dialog. %s will be replaced with the name of a user level
 #. * ("Beginner", "Intermediate", or "Advanced").
 #.
-#: src/nautilus-window-menus.c:1503
+#: src/nautilus-window-menus.c:1510
 #, c-format
 msgid "Edit %s Settings"
 msgstr "Redigér indstillinger for %s..."
@@ -7359,7 +7379,7 @@ msgstr "Redigér indstillinger for %s..."
 #. * the name of a user level ("Beginner", "Intermediate", or
 #. * "Advanced").
 #.
-#: src/nautilus-window-menus.c:1525
+#: src/nautilus-window-menus.c:1532
 #, c-format
 msgid "Edit %s Settings..."
 msgstr "Redigér indstillinger for %s..."
@@ -7391,6 +7411,21 @@ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 #: src/nautilus-zoom-control.c:587
 msgid "%.0f%%"
 msgstr "%.0f%%"
+
+#~ msgid "Link to"
+#~ msgstr "Lænk til"
+
+#~ msgid ""
+#~ "We're sorry, but the folder you're viewing has more files than we're able to "
+#~ "display. As a result, we are only able to show you the first 4000 files it "
+#~ "contains.\n"
+#~ "This is a temporary limitation in this Preview Release of Nautilus, and will "
+#~ "not be present in the final version."
+#~ msgstr ""
+#~ "Beklager, men mappen du kigger på har flere filer end vi kan vise. Som et "
+#~ "resultat kan vi kun vise de første 4000 filer den indeholder.\n"
+#~ "Dette er en midlertidig begrænsning i denne testversion af Nautilus, og det "
+#~ "vil ikke være tilstede i den færdige version."
 
 #~ msgid "with \"%s\" in the name"
 #~ msgstr "med \"%s\" i navnet"
