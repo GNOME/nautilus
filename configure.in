@@ -50,6 +50,15 @@ AC_SUBST(EAZEL_SERVICES)
 
 AM_CONDITIONAL(EAZEL_SERVICES, test "x$EAZEL_SERVICES" = "x1")
 
+dnl There needs to be a better check here for the real stuff the authenticate
+dnl helper depends on, like pam.
+BUILD_AUTHENTICATE_HELPER=
+AC_ARG_ENABLE(authenticate-helper,
+[--enable-authenticate-helper	Authenticate Helper utility],
+BUILD_AUTHENTICATE_HELPER=1)
+
+AM_CONDITIONAL(BUILD_AUTHENTICATE_HELPER, test "x$BUILD_AUTHENTICATE_HELPER" = "x1")
+
 dnl ====================================
 dnl =
 dnl = mozilla embedded component support
@@ -293,6 +302,8 @@ components/services/Makefile
 components/services/startup/Makefile
 components/services/startup/icons/Makefile
 components/services/install/Makefile
+helper-utilities/Makefile
+helper-utilities/authenticate/Makefile
 po/Makefile.in
 intl/Makefile
 ])

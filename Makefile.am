@@ -7,6 +7,7 @@ SUBDIRS =\
 	nautilus-widgets \
 	src \
 	components \
+	helper-utilities \
 	icons \
 	data \
 	intl \

@@ -1,5 +1,29 @@
 2000-04-27  Ramiro Estrugo  <ramiro@eazel.com>
 
+	Add authenticate helper utility to build.
+
+	* Makefile.am:
+	Add helper-utilities to build.
+
+	* configure.in:
+	Add helper-utilities and helper-utilities/authenticate to build
+	using a conditional flag until better pam detection voodoo can be
+	written.
+
+	* helper-utilities: New dir.
+
+	* helper-utilities/authenticate: New dir.  A simple utility to
+	authenticate a user using PAM and execute a command on their
+	behalf.  Still needs some work to be more useful.
+
+	* helper-utilities/authenticate/nautilus-authenticate.h,
+	  helper-utilities/authenticate/nautilus-authenticate.c,
+	  helper-utilities/authenticate/nautilus-authenticate-pam.c,
+	  helper-utilities/authenticate/nautilus-authenticate-fork.c:
+	New files.  Code for authenticate helper utility.
+	
+2000-04-27  Ramiro Estrugo  <ramiro@eazel.com>
+
 	More 'make dist' fixes.  I missed the services dir.
 
 	* components/services/install/Makefile.am:
