@@ -259,7 +259,8 @@ nautilus_link_get_link_info_given_file_contents (const char       *file_contents
 	
 	switch (get_link_style_for_data (file_contents, link_file_size)) {
 	case desktop:
-		return nautilus_link_desktop_file_get_link_info_given_file_contents (file_contents, link_file_size, uri, name, icon, drive_id, volume_id);
+		nautilus_link_desktop_file_get_link_info_given_file_contents (file_contents, link_file_size, uri, name, icon, drive_id, volume_id);
+		break;
 	case historical:
 		*uri = nautilus_link_historical_get_link_uri_given_file_contents (file_contents, link_file_size);
 		*icon = nautilus_link_historical_get_link_icon_given_file_contents (file_contents, link_file_size);
