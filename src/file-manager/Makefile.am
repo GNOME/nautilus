@@ -19,6 +19,8 @@ libntl_file_manager_la_SOURCES=		\
 	fm-icon-cache.h			\
 	desktop-canvas.c		\
 	desktop-canvas.h		\
+	desktop-item.c			\
+	desktop-item.h			\
 	desktop-layout.h		\
 	desktop-layout.c		\
 	desktop-window.c		\
@@ -38,8 +40,12 @@ libntl_file_manager_la_SOURCES=		\
 noinst_PROGRAMS=gnome-desktop
 
 gnome_desktop_SOURCES=			\
+	fm-icon-cache.c			\
+	fm-icon-cache.h			\
 	desktop-canvas.c		\
 	desktop-canvas.h		\
+	desktop-item.c			\
+	desktop-item.h			\
 	desktop-layout.h		\
 	desktop-layout.c		\
 	desktop-menu.h			\

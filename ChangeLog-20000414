@@ -1,3 +1,12 @@
+1999-12-17  Havoc Pennington  <hp@redhat.com>
+
+	* src/file-manager/fm-directory-view.c: Change to use
+	get_current_icon_cache() (it wasn't ever freeing the icon cache anyway)
+
+	* src/file-manager/fm-icon-cache.c (fm_get_current_icon_cache):
+	function to get a global icon cache, we will share this throughout 
+	the program.
+
 1999-12-19  Havoc Pennington  <hp@pobox.com>
 
 	* src/file-manager/desktop-canvas.c
@@ -24,6 +33,7 @@
 	* src/ntl-window.c, src/ntl-window.h: Added calls to
 	allow/disallow some of the toolbar operations.
 
+>>>>>>> 1.39
 1999-12-17  Havoc Pennington  <hp@redhat.com>
 
 	* src/ntl-window.c (nautilus_window_realize): set the mini icon.

@@ -25,6 +25,7 @@
 #include <gnome.h>
 #include <gtk/gtk.h>
 #include "desktop-menu.h"
+#include "fm-icon-cache.h"
 
 static void desktop_canvas_class_init (DesktopCanvasClass *class);
 static void desktop_canvas_init       (DesktopCanvas      *dcanvas);
@@ -96,6 +97,8 @@ desktop_canvas_init (DesktopCanvas *dcanvas)
            the popup */
         gnome_popup_menu_attach(dcanvas->popup, GTK_WIDGET(dcanvas), NULL);
 
+        dcanvas->layout = desktop_layout_new();
+
         dcanvas->desktop_dir_list = NULL;
         dcanvas->entries_loaded_id = 0;
 }
@@ -137,7 +140,8 @@ desktop_canvas_finalize (GtkObject *object)
         canvas = DESKTOP_CANVAS(object);
 
         desktop_background_info_unref(canvas->background_info);
-
+        desktop_layout_unref(canvas->layout);
+        
         (* GTK_OBJECT_CLASS(parent_class)->finalize) (object);
 }
 
@@ -179,7 +183,10 @@ desktop_canvas_size_allocate(GtkWidget        *widget,
                                        allocation->width,
                                        allocation->height);
 
-        
+        desktop_layout_set_size(DESKTOP_CANVAS(widget)->layout,
+                                0, 0,
+                                allocation->width,
+                                allocation->height);
         
         if (GTK_WIDGET_CLASS (parent_class)->size_allocate)
 		(* GTK_WIDGET_CLASS (parent_class)->size_allocate) (widget,
@@ -278,6 +285,7 @@ update_bg_idle(gpointer data)
         case DesktopBackgroundSolid:
                 set_widget_color(GTK_WIDGET(canvas), canvas->background_info->solid_color);
                 break;
+                
         default:
                 g_warning("FIXME background features not all implemented yet");
                 break;

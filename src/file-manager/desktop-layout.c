@@ -137,7 +137,7 @@ desktop_layout_item_unref (DesktopLayoutItem *item)
 }
 
 gpointer
-desktop_item_get_user_data (DesktopLayoutItem *item)
+desktop_layout_item_get_user_data (DesktopLayoutItem *item)
 {
         return item->user_data;
 }
@@ -255,6 +255,8 @@ desktop_layout_set_size (DesktopLayout *layout,
         layout->y = y;
         layout->width = width;
         layout->height = height;
+
+        desktop_layout_arrange(layout, FALSE);
 }
 
 void
@@ -266,6 +268,8 @@ desktop_layout_set_mode (DesktopLayout *layout,
         layout->rows_not_columns = rows_not_columns;
         layout->hmode = hmode;
         layout->vmode = vmode;
+
+        desktop_layout_arrange(layout, FALSE);
 }
 
 void
@@ -274,6 +278,8 @@ desktop_layout_add_item (DesktopLayout *layout,
 {
         desktop_layout_item_ref(item);
         layout->items = g_list_prepend(layout->items, item);
+
+        desktop_layout_arrange(layout, FALSE);
 }
 
 void
@@ -282,6 +288,8 @@ desktop_layout_remove_item (DesktopLayout *layout,
 {
         layout->items = g_list_remove(layout->items, item);
         desktop_layout_item_unref(item);
+
+        desktop_layout_arrange(layout, FALSE);
 }
 
 

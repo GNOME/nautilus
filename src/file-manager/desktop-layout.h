@@ -73,7 +73,7 @@ DesktopLayoutItem *desktop_layout_item_new            (DesktopLayoutSizeRequestF
                                                        gpointer user_data);
 void               desktop_layout_item_ref            (DesktopLayoutItem             *item);
 void               desktop_layout_item_unref          (DesktopLayoutItem             *item);
-gpointer           desktop_item_get_user_data         (DesktopLayoutItem             *item);
+gpointer           desktop_layout_item_get_user_data  (DesktopLayoutItem             *item);
 
 
 /* get the last allocation we were given; pass NULL for any dimensions
@@ -110,7 +110,7 @@ void               desktop_layout_remove_item         (DesktopLayout            
 /* Redo the layout, ignoring all x/y positions from size requests
    (i.e.  arrange icons after the user has made a big mess). */
 void               desktop_layout_arrange             (DesktopLayout                 *layout,
-                                                       gboolean                      ignore_position_requests);
+                                                       gboolean                       ignore_position_requests);
 
 
 END_GNOME_DECLS
