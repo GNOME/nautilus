@@ -1,3 +1,70 @@
+2001-01-08  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	A cut at an ability to build without Medusa, starting with a patch
+	that Eric Fischer wrote. This change is not fully tested.
+
+	Fixed bug 5513 ("nautilus --help" displays "Help options" twice).
+
+	* acconfig.h: Add HAVE_MEDUSA.
+	* configure.in: Add code to detect HAVE_MEDUSA.
+	
+	* libnautilus-extensions/nautilus-customization-data.c:
+	(nautilus_customization_data_destroy), (load_name_map_hash_table):
+	Added a FIXME.
+	
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-file.h:
+	* libnautilus-extensions/nautilus-trash-file.h:
+	* libnautilus-extensions/nautilus-trash-file.c:
+	(nautilus_trash_file_initialize), (trash_destroy),
+	(nautilus_trash_file_initialize_class):
+	* libnautilus-extensions/nautilus-vfs-file.h:
+	* libnautilus-extensions/nautilus-vfs-file.c:
+	(nautilus_vfs_file_initialize), (vfs_destroy),
+	(nautilus_vfs_file_initialize_class):
+	Initial cut at breaking out the special trash version of
+	NautilusFile. Sadly we need this as well as
+	NautilusTrashDirectory.
+	
+	* src/file-manager/fm-search-list-view.c:
+	(load_location_callback): Add _() so things get localized and put
+	the code to compose the indexing message inside ifdef HAVE_MEDUSA.
+	
+	* src/file-manager/nautilus-indexing-info.h:
+	* src/file-manager/nautilus-indexing-info.c:
+	Put HAVE_MEDUSA ifdefs around most of this file.
+	(get_text_for_progress_label): Mark string for translation.
+	(update_progress_display): Remove code to "handle" timeout left
+	around after dialog is destroyed.
+	(update_file_index_callback): Change error messages to be more
+	easily localizable. Use nautilus_error_dialog instead of
+	gnome_error_dialog.
+	(timeout_remove_callback): Get rid of the timeout when the object
+	is destroyed.
+	(show_index_progress_bar): Connect handler to get rid of the
+	timeout when the object is destroyed.
+	(show_indexing_info_dialog): Move code that puts up dialog into a
+	new function. Also use nautilus_gtk_window_present to put up a
+	window. Change the NautilusLabel to use line wrapping.
+	(show_search_service_not_available_dialog): Put this dialog in its
+	own function so you can use it multiple times.
+	(nautilus_indexing_info_request_reindex): Put HAVE_MEDUSA around
+	the content of this function.
+	(nautilus_indexing_info_get_last_index_time): Put HAVE_MEDUSA
+	around the function, with a small simple implementation for the
+	other case.
+	(nautilus_indexing_info_show_dialog): Put HAVE_MEDUSA around the
+	function, with a small invocation of the "not available" dialog.
+	
+	* src/nautilus-main.c: (main): Remove redundant AUTOHELP.
+	
+	* src/nautilus-search-bar-criterion.c: (make_emblem_value_menu):
+	Fix emblem_name storage lifetime problem.
+
+	* src/file-manager/fm-icon-view.c: Whitespace tweak.
+
 2001-01-08  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>

@@ -266,6 +266,7 @@ nautilus_customization_data_destroy (NautilusCustomizationData *data)
 		gnome_vfs_directory_list_destroy (data->private_file_list);
 	}
 	if (data->name_map_hash != NULL) {
+		/* FIXME: This leaks all the strings in the hash table. */
 		g_hash_table_destroy (data->name_map_hash);	
 	}
 	
@@ -433,12 +434,8 @@ load_name_map_hash_table (NautilusCustomizationData *data)
 				if (display_name && filename) {
 					g_hash_table_insert (data->name_map_hash, g_strdup (filename), g_strdup (display_name));
 				}
-				if (filename) {
-					xmlFree (filename);		
-				}
-				if (display_name) {
-					xmlFree (display_name);
-				}
+				xmlFree (filename);		
+				xmlFree (display_name);
 				current_node = current_node->next;
 			}
 			

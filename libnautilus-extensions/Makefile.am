@@ -131,11 +131,13 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-thumbnails.c			\
 	nautilus-trash-directory.c		\
 	nautilus-trash-monitor.c		\
+	nautilus-trash-file.c			\
 	nautilus-undo-context.c			\
 	nautilus-undo-manager.c			\
 	nautilus-undo-signal-handlers.c		\
 	nautilus-user-level-manager.c		\
 	nautilus-vfs-directory.c		\
+	nautilus-vfs-file.c			\
 	nautilus-view-identifier.c		\
 	nautilus-volume-monitor.c		\
 	nautilus-xml-extensions.c		\
@@ -236,11 +238,13 @@ noinst_HEADERS =				\
 	nautilus-thumbnails.h			\
 	nautilus-trash-directory.h		\
 	nautilus-trash-monitor.h		\
+	nautilus-trash-file.h			\
 	nautilus-undo-context.h			\
 	nautilus-undo-manager.h			\
 	nautilus-undo-signal-handlers.h		\
 	nautilus-user-level-manager.h		\
 	nautilus-vfs-directory.h		\
+	nautilus-vfs-file.h			\
 	nautilus-view-identifier.h		\
 	nautilus-volume-monitor.h		\
 	nautilus-xml-extensions.h		\

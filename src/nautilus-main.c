@@ -110,7 +110,8 @@ nautilus_main_event_loop_register (GtkObject* object)
 gboolean
 nautilus_main_is_event_loop_mainstay (GtkObject* object)
 {
-	return g_slist_length (event_loop_registrants) == 1 && event_loop_registrants->data == object;
+	return g_slist_length (event_loop_registrants) == 1
+		&& event_loop_registrants->data == object;
 }
 
 void
@@ -141,11 +142,11 @@ main (int argc, char *argv[])
 		{ "check", 'c', POPT_ARG_NONE, &perform_self_check, 0, N_("Perform a quick set of self-check tests."), NULL },
 #endif
 		{ "geometry", 'g', POPT_ARG_STRING, &geometry, 0, N_("Create the initial window with the given geometry."), N_("GEOMETRY") },
-		{ "no-default-window", 'n', POPT_ARG_NONE, &no_default_window, 0, N_("Only create Nautilus windows for explicitly specified URIs."), NULL },
+		{ "no-default-window", 'n', POPT_ARG_NONE, &no_default_window, 0, N_("Only create windows for explicitly specified URIs."), NULL },
 		{ "quit", 'q', POPT_ARG_NONE, &kill_shell, 0, N_("Quit Nautilus."), NULL },
 		{ "restart", '\0', POPT_ARG_NONE | POPT_ARGFLAG_DOC_HIDDEN, &restart_shell, 0, N_("Restart Nautilus."), NULL },
+		/* FIXME bugzilla.eazel.com 5510: These OAF options don't get translated for some reason. */
 		{ NULL, '\0', POPT_ARG_INCLUDE_TABLE, &oaf_popt_options, 0, NULL, NULL },
-		POPT_AUTOHELP
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
 	};
 

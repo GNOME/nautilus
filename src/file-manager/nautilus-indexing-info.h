@@ -26,14 +26,11 @@
 #ifndef NAUTILUS_INDEXING_INFO_H
 #define NAUTILUS_INDEXING_INFO_H
 
-BEGIN_GNOME_DECLS
-
 /* Show the indexing info dialog,  If one is already running
- * just raise that one */
-void		nautilus_indexing_info_show_dialog	(void);
-void            nautilus_indexing_info_request_reindex  (void);
-char *          nautilus_indexing_info_get_last_index_time (void);
-
-END_GNOME_DECLS
+ * just raise that one.
+ */
+void  nautilus_indexing_info_show_dialog         (void);
+void  nautilus_indexing_info_request_reindex     (void);
+char *nautilus_indexing_info_get_last_index_time (void);
 
 #endif /* NAUTILUS_INDEXING_INFO_H */

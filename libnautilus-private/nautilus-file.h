@@ -79,213 +79,207 @@ typedef void (*NautilusFileOperationCallback) (NautilusFile  *file,
 					       gpointer       callback_data);
 
 /* GtkObject requirements. */
-GtkType                 nautilus_file_get_type                      (void);
+GtkType                 nautilus_file_get_type                          (void);
 
 /* Getting at a single file. */
-NautilusFile *          nautilus_file_get                           (const char                     *uri);
+NautilusFile *          nautilus_file_get                               (const char                     *uri);
 
 /* Covers for gtk_object_ref and gtk_object_unref that provide two conveniences:
  * 1) You don't have to cast to GtkObject *, so using these is type safe.
  * 2) You are allowed to call these with NULL,
  */
-NautilusFile *          nautilus_file_ref                           (NautilusFile                   *file);
-void                    nautilus_file_unref                         (NautilusFile                   *file);
+NautilusFile *          nautilus_file_ref                               (NautilusFile                   *file);
+void                    nautilus_file_unref                             (NautilusFile                   *file);
 
 /* Monitor the file. */
-void                    nautilus_file_monitor_add                   (NautilusFile                   *file,
-								     gconstpointer                   client,
-								     GList                          *attributes);
-void                    nautilus_file_monitor_remove                (NautilusFile                   *file,
-								     gconstpointer                   client);
+void                    nautilus_file_monitor_add                       (NautilusFile                   *file,
+									 gconstpointer                   client,
+									 GList                          *attributes);
+void                    nautilus_file_monitor_remove                    (NautilusFile                   *file,
+									 gconstpointer                   client);
 
 /* Waiting for data that's read asynchronously.
  * This interface currently works only for metadata, but could be expanded
  * to other attributes as well.
  */
-void                    nautilus_file_call_when_ready               (NautilusFile                   *file,
-								     GList                          *attributes,
-								     NautilusFileCallback            callback,
-								     gpointer                        callback_data);
-void                    nautilus_file_cancel_call_when_ready        (NautilusFile                   *file,
-								     NautilusFileCallback            callback,
-								     gpointer                        callback_data);
-gboolean                nautilus_file_check_if_ready                (NautilusFile                   *file,
-								     GList                          *attributes);
-void                    nautilus_file_invalidate_attributes         (NautilusFile                   *file,
-								     GList                          *file_attributes);
-void                    nautilus_file_invalidate_all_attributes     (NautilusFile                   *file);
-
-
-
+void                    nautilus_file_call_when_ready                   (NautilusFile                   *file,
+									 GList                          *attributes,
+									 NautilusFileCallback            callback,
+									 gpointer                        callback_data);
+void                    nautilus_file_cancel_call_when_ready            (NautilusFile                   *file,
+									 NautilusFileCallback            callback,
+									 gpointer                        callback_data);
+gboolean                nautilus_file_check_if_ready                    (NautilusFile                   *file,
+									 GList                          *attributes);
+void                    nautilus_file_invalidate_attributes             (NautilusFile                   *file,
+									 GList                          *attributes);
+void                    nautilus_file_invalidate_all_attributes         (NautilusFile                   *file);
 
 /* Basic attributes for file objects. */
-char *                  nautilus_file_get_name                      (NautilusFile                   *file);
-char *                  nautilus_file_get_uri                       (NautilusFile                   *file);
-char *                  nautilus_file_get_uri_scheme                (NautilusFile                   *file);
-char *                  nautilus_file_get_parent_uri                (NautilusFile                   *file);
-char *                  nautilus_file_get_parent_uri_for_display    (NautilusFile                   *file);
-GnomeVFSFileSize        nautilus_file_get_size                      (NautilusFile                   *file);
-GnomeVFSFileType        nautilus_file_get_file_type                 (NautilusFile                   *file);
-char *                  nautilus_file_get_mime_type                 (NautilusFile                   *file);
-gboolean                nautilus_file_is_mime_type                  (NautilusFile                   *file,
-								     const char                     *mime_type);
-gboolean                nautilus_file_is_symbolic_link              (NautilusFile                   *file);
-char *			nautilus_file_get_symbolic_link_target_path
-(NautilusFile		       *file);
-gboolean                nautilus_file_is_broken_symbolic_link       (NautilusFile                   *file);
-gboolean                nautilus_file_is_nautilus_link              (NautilusFile                   *file);
-gboolean                nautilus_file_is_executable                 (NautilusFile                   *file);
-gboolean                nautilus_file_is_directory                  (NautilusFile                   *file);
-gboolean                nautilus_file_is_in_trash                   (NautilusFile                   *file);
-GnomeVFSResult          nautilus_file_get_file_info_result          (NautilusFile                   *file);
-gboolean                nautilus_file_get_directory_item_count      (NautilusFile                   *file,
-								     guint                          *count,
-								     gboolean                       *count_unreadable);
-void                    nautilus_file_recompute_deep_counts         (NautilusFile                   *file);
-NautilusRequestStatus   nautilus_file_get_deep_counts               (NautilusFile                   *file,
-								     guint                          *directory_count,
-								     guint                          *file_count,
-								     guint                          *unreadable_directory_count,
-								     GnomeVFSFileSize               *total_size);
-GList *                 nautilus_file_get_keywords                  (NautilusFile                   *file);
-void                    nautilus_file_set_keywords                  (NautilusFile                   *file,
-								     GList                          *keywords);
-GList *                 nautilus_file_get_emblem_names              (NautilusFile                   *file);
-char *                  nautilus_file_get_top_left_text             (NautilusFile                   *file);
-gboolean                nautilus_file_get_directory_item_mime_types (NautilusFile                   *file,
-								     GList                         **mime_list);
-
+char *                  nautilus_file_get_name                          (NautilusFile                   *file);
+char *                  nautilus_file_get_uri                           (NautilusFile                   *file);
+char *                  nautilus_file_get_uri_scheme                    (NautilusFile                   *file);
+char *                  nautilus_file_get_parent_uri                    (NautilusFile                   *file);
+char *                  nautilus_file_get_parent_uri_for_display        (NautilusFile                   *file);
+GnomeVFSFileSize        nautilus_file_get_size                          (NautilusFile                   *file);
+GnomeVFSFileType        nautilus_file_get_file_type                     (NautilusFile                   *file);
+char *                  nautilus_file_get_mime_type                     (NautilusFile                   *file);
+gboolean                nautilus_file_is_mime_type                      (NautilusFile                   *file,
+									 const char                     *mime_type);
+gboolean                nautilus_file_is_symbolic_link                  (NautilusFile                   *file);
+char *                  nautilus_file_get_symbolic_link_target_path     (NautilusFile                   *file);
+gboolean                nautilus_file_is_broken_symbolic_link           (NautilusFile                   *file);
+gboolean                nautilus_file_is_nautilus_link                  (NautilusFile                   *file);
+gboolean                nautilus_file_is_executable                     (NautilusFile                   *file);
+gboolean                nautilus_file_is_directory                      (NautilusFile                   *file);
+gboolean                nautilus_file_is_in_trash                       (NautilusFile                   *file);
+GnomeVFSResult          nautilus_file_get_file_info_result              (NautilusFile                   *file);
+gboolean                nautilus_file_get_directory_item_count          (NautilusFile                   *file,
+									 guint                          *count,
+									 gboolean                       *count_unreadable);
+void                    nautilus_file_recompute_deep_counts             (NautilusFile                   *file);
+NautilusRequestStatus   nautilus_file_get_deep_counts                   (NautilusFile                   *file,
+									 guint                          *directory_count,
+									 guint                          *file_count,
+									 guint                          *unreadable_directory_count,
+									 GnomeVFSFileSize               *total_size);
+GList *                 nautilus_file_get_keywords                      (NautilusFile                   *file);
+void                    nautilus_file_set_keywords                      (NautilusFile                   *file,
+									 GList                          *keywords);
+GList *                 nautilus_file_get_emblem_names                  (NautilusFile                   *file);
+char *                  nautilus_file_get_top_left_text                 (NautilusFile                   *file);
+gboolean                nautilus_file_get_directory_item_mime_types     (NautilusFile                   *file,
+									 GList                         **mime_list);
 
 /* Permissions. */
-gboolean                nautilus_file_can_get_permissions           (NautilusFile                   *file);
-gboolean                nautilus_file_can_set_permissions           (NautilusFile                   *file);
-GnomeVFSFilePermissions nautilus_file_get_permissions               (NautilusFile                   *file);
-gboolean                nautilus_file_can_get_owner                 (NautilusFile                   *file);
-gboolean                nautilus_file_can_set_owner                 (NautilusFile                   *file);
-gboolean                nautilus_file_can_get_group                 (NautilusFile                   *file);
-gboolean                nautilus_file_can_set_group                 (NautilusFile                   *file);
-char *                  nautilus_file_get_owner_name                (NautilusFile                   *file);
-char *                  nautilus_file_get_group_name                (NautilusFile                   *file);
-GList *                 nautilus_get_user_names                     (void);
-GList *                 nautilus_get_group_names                    (void);
-GList *                 nautilus_file_get_settable_group_names      (NautilusFile                   *file);
+gboolean                nautilus_file_can_get_permissions               (NautilusFile                   *file);
+gboolean                nautilus_file_can_set_permissions               (NautilusFile                   *file);
+GnomeVFSFilePermissions nautilus_file_get_permissions                   (NautilusFile                   *file);
+gboolean                nautilus_file_can_get_owner                     (NautilusFile                   *file);
+gboolean                nautilus_file_can_set_owner                     (NautilusFile                   *file);
+gboolean                nautilus_file_can_get_group                     (NautilusFile                   *file);
+gboolean                nautilus_file_can_set_group                     (NautilusFile                   *file);
+char *                  nautilus_file_get_owner_name                    (NautilusFile                   *file);
+char *                  nautilus_file_get_group_name                    (NautilusFile                   *file);
+GList *                 nautilus_get_user_names                         (void);
+GList *                 nautilus_get_group_names                        (void);
+GList *                 nautilus_file_get_settable_group_names          (NautilusFile                   *file);
 
 /* "Capabilities". */
-gboolean                nautilus_file_can_read                      (NautilusFile                   *file);
-gboolean                nautilus_file_can_write                     (NautilusFile                   *file);
-gboolean                nautilus_file_can_execute                   (NautilusFile                   *file);
-gboolean                nautilus_file_can_rename                    (NautilusFile                   *file);
+gboolean                nautilus_file_can_read                          (NautilusFile                   *file);
+gboolean                nautilus_file_can_write                         (NautilusFile                   *file);
+gboolean                nautilus_file_can_execute                       (NautilusFile                   *file);
+gboolean                nautilus_file_can_rename                        (NautilusFile                   *file);
 
 /* Basic operations for file objects. */
-void                    nautilus_file_set_owner                     (NautilusFile                   *file,
-								     const char                     *user_name_or_id,
-								     NautilusFileOperationCallback   callback,
-								     gpointer                        callback_data);
-void                    nautilus_file_set_group                     (NautilusFile                   *file,
-								     const char                     *group_name_or_id,
-								     NautilusFileOperationCallback   callback,
-								     gpointer                        callback_data);
-void                    nautilus_file_set_permissions               (NautilusFile                   *file,
-								     GnomeVFSFilePermissions         permissions,
-								     NautilusFileOperationCallback   callback,
-								     gpointer                        callback_data);
-void                    nautilus_file_rename                        (NautilusFile                   *file,
-								     const char                     *new_name,
-								     NautilusFileOperationCallback   callback,
-								     gpointer                        callback_data);
-void                    nautilus_file_cancel                        (NautilusFile                   *file,
-								     NautilusFileOperationCallback   callback,
-								     gpointer                        callback_data);
+void                    nautilus_file_set_owner                         (NautilusFile                   *file,
+									 const char                     *user_name_or_id,
+									 NautilusFileOperationCallback   callback,
+									 gpointer                        callback_data);
+void                    nautilus_file_set_group                         (NautilusFile                   *file,
+									 const char                     *group_name_or_id,
+									 NautilusFileOperationCallback   callback,
+									 gpointer                        callback_data);
+void                    nautilus_file_set_permissions                   (NautilusFile                   *file,
+									 GnomeVFSFilePermissions         permissions,
+									 NautilusFileOperationCallback   callback,
+									 gpointer                        callback_data);
+void                    nautilus_file_rename                            (NautilusFile                   *file,
+									 const char                     *new_name,
+									 NautilusFileOperationCallback   callback,
+									 gpointer                        callback_data);
+void                    nautilus_file_cancel                            (NautilusFile                   *file,
+									 NautilusFileOperationCallback   callback,
+									 gpointer                        callback_data);
 
 /* Return true if this file has already been deleted.
  * This object will be unref'd after sending the files_removed signal,
  * but it could hang around longer if someone ref'd it.
  */
-gboolean                nautilus_file_is_gone                       (NautilusFile                   *file);
+gboolean                nautilus_file_is_gone                           (NautilusFile                   *file);
 
 /* Simple getting and setting top-level metadata. */
-char *                  nautilus_file_get_metadata                  (NautilusFile                   *file,
-								     const char                     *key,
-								     const char                     *default_metadata);
-GList *                 nautilus_file_get_metadata_list             (NautilusFile                   *file,
-								     const char                     *list_key,
-								     const char                     *list_subkey);
-void                    nautilus_file_set_metadata                  (NautilusFile                   *file,
-								     const char                     *key,
-								     const char                     *default_metadata,
-								     const char                     *metadata);
-void                    nautilus_file_set_metadata_list             (NautilusFile                   *file,
-								     const char                     *list_key,
-								     const char                     *list_subkey,
-								     GList                          *list);
+char *                  nautilus_file_get_metadata                      (NautilusFile                   *file,
+									 const char                     *key,
+									 const char                     *default_metadata);
+GList *                 nautilus_file_get_metadata_list                 (NautilusFile                   *file,
+									 const char                     *list_key,
+									 const char                     *list_subkey);
+void                    nautilus_file_set_metadata                      (NautilusFile                   *file,
+									 const char                     *key,
+									 const char                     *default_metadata,
+									 const char                     *metadata);
+void                    nautilus_file_set_metadata_list                 (NautilusFile                   *file,
+									 const char                     *list_key,
+									 const char                     *list_subkey,
+									 GList                          *list);
 
 /* Covers for common data types. */
-gboolean                nautilus_file_get_boolean_metadata          (NautilusFile                   *file,
-								     const char                     *key,
-								     gboolean                        default_metadata);
-void                    nautilus_file_set_boolean_metadata          (NautilusFile                   *file,
-								     const char                     *key,
-								     gboolean                        default_metadata,
-								     gboolean                        metadata);
-int                     nautilus_file_get_integer_metadata          (NautilusFile                   *file,
-								     const char                     *key,
-								     int                             default_metadata);
-void                    nautilus_file_set_integer_metadata          (NautilusFile                   *file,
-								     const char                     *key,
-								     int                             default_metadata,
-								     int                             metadata);
+gboolean                nautilus_file_get_boolean_metadata              (NautilusFile                   *file,
+									 const char                     *key,
+									 gboolean                        default_metadata);
+void                    nautilus_file_set_boolean_metadata              (NautilusFile                   *file,
+									 const char                     *key,
+									 gboolean                        default_metadata,
+									 gboolean                        metadata);
+int                     nautilus_file_get_integer_metadata              (NautilusFile                   *file,
+									 const char                     *key,
+									 int                             default_metadata);
+void                    nautilus_file_set_integer_metadata              (NautilusFile                   *file,
+									 const char                     *key,
+									 int                             default_metadata,
+									 int                             metadata);
 
 
 /* Attributes for file objects as user-displayable strings. */
-char *                  nautilus_file_get_string_attribute          (NautilusFile                   *file,
-								     const char                     *attribute_name);
-char *                  nautilus_file_get_string_attribute_with_default      
-(NautilusFile                  *file,
- const char                    *attribute_name);
+char *                  nautilus_file_get_string_attribute              (NautilusFile                   *file,
+									 const char                     *attribute_name);
+char *                  nautilus_file_get_string_attribute_with_default (NautilusFile                   *file,
+									 const char                     *attribute_name);
 
 /* Matching with another URI. */
-gboolean                nautilus_file_matches_uri                   (NautilusFile                   *file,
-								     const char                     *uri);
+gboolean                nautilus_file_matches_uri                       (NautilusFile                   *file,
+									 const char                     *uri);
 
 /* Is the file local? */
-gboolean                nautilus_file_is_local                      (NautilusFile                   *file);
+gboolean                nautilus_file_is_local                          (NautilusFile                   *file);
 
 /* Comparing two file objects for sorting */
-int                     nautilus_file_compare_for_sort              (NautilusFile                   *file_1,
-								     NautilusFile                   *file_2,
-								     NautilusFileSortType            sort_type);
-int                     nautilus_file_compare_for_sort_reversed     (NautilusFile                   *file_1,
-								     NautilusFile                   *file_2,
-								     NautilusFileSortType            sort_type);
-int                     nautilus_file_compare_name                  (NautilusFile                   *file_1,
-								     const char                     *pattern);
+int                     nautilus_file_compare_for_sort                  (NautilusFile                   *file_1,
+									 NautilusFile                   *file_2,
+									 NautilusFileSortType            sort_type);
+int                     nautilus_file_compare_for_sort_reversed         (NautilusFile                   *file_1,
+									 NautilusFile                   *file_2,
+									 NautilusFileSortType            sort_type);
+int                     nautilus_file_compare_name                      (NautilusFile                   *file_1,
+									 const char                     *pattern);
 
 /* filtering functions for use by various directory views */
-gboolean                nautilus_file_is_hidden_file                (NautilusFile                   *file);
-gboolean                nautilus_file_is_backup_file                (NautilusFile                   *file);
-gboolean                nautilus_file_should_show                   (NautilusFile                   *file,
-								     gboolean                        show_hidden,
-								     gboolean                        show_backup);
-GList                  *nautilus_file_list_filter_hidden_and_backup (GList                          *files,
-								     gboolean                        show_hidden,
-								     gboolean                        show_backup);
+gboolean                nautilus_file_is_hidden_file                    (NautilusFile                   *file);
+gboolean                nautilus_file_is_backup_file                    (NautilusFile                   *file);
+gboolean                nautilus_file_should_show                       (NautilusFile                   *file,
+									 gboolean                        show_hidden,
+									 gboolean                        show_backup);
+GList                  *nautilus_file_list_filter_hidden_and_backup     (GList                          *files,
+									 gboolean                        show_hidden,
+									 gboolean                        show_backup);
 
 
 /* Get the URI that's used when activating the file.
  * Getting this can require reading the contents of the file.
  */
-char *                  nautilus_file_get_activation_uri            (NautilusFile                   *file);
+char *                  nautilus_file_get_activation_uri                (NautilusFile                   *file);
 
 /* Convenience functions for dealing with a list of NautilusFile objects that each have a ref.
  * These are just convenient names for functions that work on lists of GtkObject *.
  */
-GList *                 nautilus_file_list_ref                      (GList                          *file_list);
-void                    nautilus_file_list_unref                    (GList                          *file_list);
-void                    nautilus_file_list_free                     (GList                          *file_list);
-GList *                 nautilus_file_list_copy                     (GList                          *file_list);
+GList *                 nautilus_file_list_ref                          (GList                          *file_list);
+void                    nautilus_file_list_unref                        (GList                          *file_list);
+void                    nautilus_file_list_free                         (GList                          *file_list);
+GList *                 nautilus_file_list_copy                         (GList                          *file_list);
 
 /* Debugging */
-void                    nautilus_file_dump                          (NautilusFile                   *file);
+void                    nautilus_file_dump                              (NautilusFile                   *file);
 
 typedef struct NautilusFileDetails NautilusFileDetails;
 
@@ -297,8 +291,32 @@ struct NautilusFile {
 typedef struct {
 	GtkObjectClass parent_slot;
 	
-	/* Called then the file notices any change. */
-	void (* changed) (NautilusFile *file);
+	/* Called when the file notices any change. */
+	void                  (* changed)                (NautilusFile *file);
+
+	/* Virtual functions (mainly used for trash directory). */
+	void                  (* monitor_add)            (NautilusFile         *file,
+							  gconstpointer         client,
+							  GList                *attributes);
+	void                  (* monitor_remove)         (NautilusFile         *file,
+							  gconstpointer         client);
+	gboolean              (* get_item_count)         (NautilusFile         *file,
+							  guint                *count,
+							  gboolean             *count_unreadable);
+	NautilusRequestStatus (* get_deep_counts)        (NautilusFile         *file,
+							  guint                *directory_count,
+							  guint                *file_count,
+							  guint                *unreadable_directory_count,
+							  GnomeVFSFileSize     *total_size);
+	void                  (* call_when_ready)        (NautilusFile         *file,
+							  GList                *attributes,
+							  NautilusFileCallback  callback,
+							  gpointer              callback_data);
+	void                  (* cancel_call_when_ready) (NautilusFile         *file,
+							  NautilusFileCallback  callback,
+							  gpointer              callback_data);
+	gboolean              (* check_if_ready)         (NautilusFile         *file,
+							  GList                *attributes);
 } NautilusFileClass;
 
 #endif /* NAUTILUS_FILE_H */

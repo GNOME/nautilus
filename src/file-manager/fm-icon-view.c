@@ -1645,7 +1645,6 @@ get_icon_uri_callback (NautilusIconContainer *container,
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 
-	
 	return nautilus_file_get_uri (file);
 }
 

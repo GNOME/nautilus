@@ -1027,7 +1027,7 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 									 &emblem_label) == GNOME_VFS_OK) {
 		
 		/* remove the suffix, if any, to make the emblem name */
-		dot_pos = strrchr(emblem_name, '.');
+		dot_pos = strrchr (emblem_name, '.');
 		if (dot_pos) {
 			*dot_pos = '\0';
 		}
@@ -1040,7 +1040,8 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 		}
 		menu_item = gtk_menu_item_new ();
 		
-		gtk_object_set_data (GTK_OBJECT (menu_item), "emblem name", emblem_name);
+		gtk_object_set_data_full (GTK_OBJECT (menu_item), "emblem name",
+					  emblem_name, (GtkDestroyNotify) g_free);
 		temp_hbox = gtk_hbox_new (FALSE, GNOME_PAD_SMALL);
 		gtk_box_pack_start (GTK_BOX (temp_hbox), emblem_pixmap_widget, FALSE, FALSE, 0);
 		gtk_box_pack_start (GTK_BOX (temp_hbox), emblem_label, FALSE, FALSE, 0);
@@ -1053,7 +1054,6 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 	gtk_option_menu_set_menu (criterion->details->value_menu,
 				  value_menu);
 	criterion->details->use_value_menu = TRUE;
-	g_free (emblem_name);
 }
 
 
