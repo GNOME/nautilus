@@ -202,6 +202,7 @@ tree_node_destroy (NautilusTreeModel *model, TreeNode *node)
 
 	g_object_unref (node->file);
 	g_free (node->display_name);
+	g_free (node->icon_name);
 	object_unref_if_not_NULL (node->closed_pixbuf);
 	object_unref_if_not_NULL (node->open_pixbuf);
 
