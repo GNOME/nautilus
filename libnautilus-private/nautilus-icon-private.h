@@ -157,6 +157,9 @@ struct NautilusIconContainerDetails {
 	/* Idle ID. */
 	guint idle_id;
 
+	/* Idle handler for stretch code */
+	guint stretch_idle_id;
+
 	/* Timeout for selection in browser mode. */
 	guint linger_selection_mode_timer_id;
 
@@ -206,6 +209,10 @@ struct NautilusIconContainerDetails {
 
 	/* Ignore the visible area the next time the scroll region is recomputed */
 	gboolean reset_scroll_region_trigger;
+	
+	/* The position we are scaling to on stretch */
+	int window_x;
+	int window_y;
 };
 
 /* Private functions shared by mutiple files. */

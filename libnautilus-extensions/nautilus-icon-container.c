@@ -2287,6 +2287,10 @@ destroy (GtkObject *object)
         if (container->details->idle_id != 0) {
 		gtk_idle_remove (container->details->idle_id);
 	}
+
+	if (container->details->stretch_idle_id != 0) {
+		gtk_idle_remove (container->details->stretch_idle_id);
+	}
        
         for (i = 0; i < NAUTILUS_N_ELEMENTS (container->details->label_font); i++) {
        		if (container->details->label_font[i] != NULL)
@@ -2596,9 +2600,8 @@ start_stretching (NautilusIconContainer *container)
 	return TRUE;
 }
 
-static void
-continue_stretching (NautilusIconContainer *container,
-		     int window_x, int window_y)
+static gboolean
+update_stretch_at_idle (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
@@ -2609,11 +2612,12 @@ continue_stretching (NautilusIconContainer *container,
 	icon = details->stretch_icon;
 
 	if (icon == NULL) {
-		return;
+		container->details->stretch_idle_id = 0;
+		return FALSE;
 	}
 
 	gnome_canvas_window_to_world (GNOME_CANVAS (container),
-				      window_x, window_y,
+				      details->window_x, details->window_y,
 				      &world_x, &world_y);
 	gnome_canvas_w2c (GNOME_CANVAS (container),
 			  world_x, world_y,
@@ -2628,6 +2632,25 @@ continue_stretching (NautilusIconContainer *container,
 
 	icon_set_position (icon, world_x, world_y);
 	icon_set_size (container, icon, stretch_state.icon_size, FALSE);
+
+	container->details->stretch_idle_id = 0;
+
+	return FALSE;
+}	
+
+static void
+continue_stretching (NautilusIconContainer *container,
+		     int window_x, int window_y)
+{
+
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	container->details->window_x = window_x;
+	container->details->window_y = window_y;
+
+	if (container->details->stretch_idle_id == 0) {		
+		container->details->stretch_idle_id = gtk_idle_add ((GtkFunction) update_stretch_at_idle, container);
+	}
 }
 
 static void

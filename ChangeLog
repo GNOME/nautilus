@@ -1,3 +1,17 @@
+2001-02-26  Arik Devens  <arik@eazel.com>
+
+	reviewed by: John Harper  <jsh@eazel.com
+
+	Partial fix for bug 5701, Icon stretching is slow and
+	CPU-intensive.
+		
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(update_stretch_at_idle), (continue_stretching): Moved the
+	stretching code to an idle handler to speed it up and remove
+	blocking.  
+	* libnautilus-extensions/nautilus-icon-private.h: Added three new
+	members to the IconContainerDetails struct for the idle handler.
+
 2001-02-26  Dan Mueth  <dan@eazel.com>
 
 	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
