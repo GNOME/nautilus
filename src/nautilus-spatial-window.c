@@ -30,34 +30,31 @@
 #include <config.h>
 #include "nautilus-window-private.h"
 
-#include "nautilus-window-manage-views.h"
 #include "nautilus-application.h"
-
-#include <gnome.h>
-#include <math.h>
 #include "nautilus-bookmarks-window.h"
+#include "nautilus-sidebar.h"
 #include "nautilus-signaller.h"
 #include "nautilus-switchable-navigation-bar.h"
-#include "nautilus-sidebar.h"
-
+#include "nautilus-window-manage-views.h"
+#include "nautilus-zoom-control.h"
+#include <ctype.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-
-#include <libnautilus/nautilus-bonobo-ui.h>
-
+#include <gnome.h>
+#include <libgnomevfs/gnome-vfs-uri.h>
+#include <libnautilus-extensions/nautilus-generous-bin.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-horizontal-splitter.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-mime-actions.h>
+#include <libnautilus-extensions/nautilus-mini-icon.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-mini-icon.h>
-#include <libnautilus-extensions/nautilus-generous-bin.h>
-#include <libnautilus-extensions/nautilus-horizontal-splitter.h>
+#include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus/nautilus-undo.h>
-#include "nautilus-zoom-control.h"
-#include <ctype.h>
-#include <libgnomevfs/gnome-vfs-uri.h>
+#include <math.h>
 
 /* FIXME bugzilla.eazel.com 1243: 
  * We should use inheritance instead of these special cases
@@ -65,71 +62,8 @@
  */
 #include "nautilus-desktop-window.h"
 
-static void nautilus_window_realize (GtkWidget *widget);
-static void nautilus_window_real_set_content_view (NautilusWindow *window, NautilusViewFrame *new_view);
-
-/* Object framework static variables */
-static GnomeAppClass *parent_class = NULL;
-
-/* Other static variables */
-static GSList *history_list = NULL;
-
-/* Private functions */
-static void               nautilus_window_class_init                    (NautilusWindowClass    *klass);
-static void               nautilus_window_init                          (NautilusWindow         *window);
-static void               nautilus_window_destroy                       (NautilusWindow         *window);
-static void               nautilus_window_set_arg                       (GtkObject              *object,
-									 GtkArg                 *arg,
-									 guint                   arg_id);
-static void               nautilus_window_get_arg                       (GtkObject              *object,
-									 GtkArg                 *arg,
-									 guint                   arg_id);
-static void               nautilus_window_goto_uri_callback             (GtkWidget              *widget,
-									 const char             *uri,
-									 GtkWidget              *window);
-
-static void               nautilus_window_navigation_bar_mode_changed_callback (GtkWidget              *widget,
-									 NautilusSwitchableNavigationBarMode mode,
-									 GtkWidget              *window);
-static void               zoom_in_callback                              (NautilusZoomControl    *zoom_control,
-									 NautilusWindow         *window);
-static void               zoom_out_callback                             (NautilusZoomControl    *zoom_control,
-									 NautilusWindow         *window);
-static void               zoom_to_level_callback                        (NautilusZoomControl    *zoom_control,
-									 double			level,
-									 NautilusWindow         *window);
-static void               zoom_to_fit_callback                         (NautilusZoomControl    *zoom_control,
-									 NautilusWindow         *window);
-static void               sidebar_panels_changed_callback               (gpointer                user_data);
-static NautilusViewFrame *window_find_sidebar_panel_by_identifier       (NautilusWindow         *window,
-									 NautilusViewIdentifier *identifier);
-static void               window_update_sidebar_panels_from_preferences (NautilusWindow         *window);
-
 /* Milliseconds */
 #define STATUSBAR_CLEAR_TIMEOUT 5000
-
-GtkType
-nautilus_window_get_type(void)
-{
-	static guint window_type = 0;
-	
-	if (!window_type) {
-		GtkTypeInfo window_info = {
-			"NautilusWindow",
-			sizeof(NautilusWindow),
-			sizeof(NautilusWindowClass),
-			(GtkClassInitFunc) nautilus_window_class_init,
-			(GtkObjectInitFunc) nautilus_window_init,
-			NULL,
-			NULL,
-			NULL
-		};
-		
-		window_type = gtk_type_unique (gnome_app_get_type(), &window_info);
-	}
-	
-	return window_type;
-}
 
 enum {
 	ARG_0,
@@ -138,8 +72,29 @@ enum {
 	ARG_CONTENT_VIEW
 };
 
+/* Other static variables */
+static GSList *history_list = NULL;
+
+static void nautilus_window_initialize_class      (NautilusWindowClass *klass);
+static void nautilus_window_initialize            (NautilusWindow      *window);
+static void nautilus_window_destroy               (GtkObject           *object);
+static void nautilus_window_set_arg               (GtkObject           *object,
+						   GtkArg              *arg,
+						   guint                arg_id);
+static void nautilus_window_get_arg               (GtkObject           *object,
+						   GtkArg              *arg,
+						   guint                arg_id);
+static void nautilus_window_realize               (GtkWidget           *widget);
+static void nautilus_window_real_set_content_view (NautilusWindow      *window,
+						   NautilusViewFrame   *new_view);
+static void sidebar_panels_changed_callback       (gpointer             user_data);
+
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusWindow,
+				   nautilus_window,
+				   GNOME_TYPE_APP)
+
 static void
-nautilus_window_class_init (NautilusWindowClass *klass)
+nautilus_window_initialize_class (NautilusWindowClass *klass)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
@@ -147,18 +102,11 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 	parent_class = gtk_type_class(gnome_app_get_type());
 	
 	object_class = (GtkObjectClass*) klass;
-	object_class->destroy = (void (*)(GtkObject *))nautilus_window_destroy;
+	object_class->destroy = nautilus_window_destroy;
 	object_class->get_arg = nautilus_window_get_arg;
 	object_class->set_arg = nautilus_window_set_arg;
 	
 	widget_class = (GtkWidgetClass*) klass;
-
-	/* FIXME bugzilla.eazel.com 1580
-	 * The parent_class field in the NautilusWindowClass is redundant
-	 * given that we have static parent_class variable. One or the other
-	 * should go. Since the static is usually our practice the field should go.
-	 */
-	klass->parent_class = gtk_type_class (gtk_type_parent (object_class->type));
 	
 	gtk_object_add_arg_type ("NautilusWindow::app_id",
 				 GTK_TYPE_STRING,
@@ -177,7 +125,7 @@ nautilus_window_class_init (NautilusWindowClass *klass)
 }
 
 static void
-nautilus_window_init (NautilusWindow *window)
+nautilus_window_initialize (NautilusWindow *window)
 {
 	window->details = g_new0 (NautilusWindowDetails, 1);
 
@@ -218,7 +166,7 @@ nautilus_window_goto_uri (NautilusWindow *window, const char *uri)
 }
 
 static void
-nautilus_window_goto_uri_callback (GtkWidget *widget,
+goto_uri_callback (GtkWidget *widget,
 				   const char *uri,
 				   GtkWidget *window)
 {
@@ -226,7 +174,7 @@ nautilus_window_goto_uri_callback (GtkWidget *widget,
 }
 
 static void
-nautilus_window_navigation_bar_mode_changed_callback (GtkWidget *widget,
+navigation_bar_mode_changed_callback (GtkWidget *widget,
 						      NautilusSwitchableNavigationBarMode mode,
 						      GtkWidget *window)
 {
@@ -297,10 +245,10 @@ nautilus_window_constructed (NautilusWindow *window)
 	gtk_widget_show (GTK_WIDGET (window->navigation_bar));
 
 	gtk_signal_connect (GTK_OBJECT (window->navigation_bar), "location_changed",
-			    nautilus_window_goto_uri_callback, window);
+			    goto_uri_callback, window);
 
 	gtk_signal_connect (GTK_OBJECT (window->navigation_bar), "mode_changed",
-			     nautilus_window_navigation_bar_mode_changed_callback, window);
+			    navigation_bar_mode_changed_callback, window);
 
 	gtk_box_pack_start (GTK_BOX (location_bar_box), window->navigation_bar,
 			    TRUE, TRUE, GNOME_PAD_SMALL);
@@ -370,7 +318,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	window->sidebar = nautilus_sidebar_new ();
 	gtk_widget_show (GTK_WIDGET (window->sidebar));
 	gtk_signal_connect (GTK_OBJECT (window->sidebar), "location_changed",
-			    nautilus_window_goto_uri_callback, window);
+			    goto_uri_callback, window);
 	
 	/* FIXME bugzilla.eazel.com 1243: 
 	 * We should use inheritance instead of these special cases
@@ -468,10 +416,12 @@ view_disconnect (gpointer data, gpointer user_data)
 }
 
 static void 
-nautilus_window_destroy (NautilusWindow *window)
+nautilus_window_destroy (GtkObject *object)
 {
-	NautilusWindowClass *klass = NAUTILUS_WINDOW_CLASS(GTK_OBJECT(window)->klass);
-	
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (object);
+
 	/* Dont keep track of sidebar panel changes no more */
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE,
 					      sidebar_panels_changed_callback,
@@ -506,8 +456,7 @@ nautilus_window_destroy (NautilusWindow *window)
 		g_source_remove (window->action_tag);
 	}
 	
-	if (GTK_OBJECT_CLASS(klass->parent_class)->destroy)
-		GTK_OBJECT_CLASS(klass->parent_class)->destroy(GTK_OBJECT(window));
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (GTK_OBJECT (window)));
 }
 
 void
@@ -588,8 +537,7 @@ nautilus_window_realize (GtkWidget *widget)
         gchar *filename;
         
         /* Create our GdkWindow */
-        if (GTK_WIDGET_CLASS(parent_class)->realize)
-                (* GTK_WIDGET_CLASS(parent_class)->realize) (widget);
+	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
         
         /* Set the mini icon */
         /* FIXME bugzilla.eazel.com 609:

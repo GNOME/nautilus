@@ -1,3 +1,75 @@
+2000-07-07  Darin Adler  <darin@eazel.com>
+
+	* components/hardware/nautilus-hardware-view.oafinfo:
+	* components/help/help-contents.oafinfo:
+	* components/help/help-index.oafinfo:
+	* components/help/help-search.oafinfo:
+	* components/history/nautilus-history-view.oafinfo:
+	* components/html/ntl-web-browser.oafinfo:
+	* components/loser/content/nautilus-content-loser.oafinfo:
+	* components/loser/sidebar/nautilus-sidebar-loser.oafinfo:
+	* components/mozilla/nautilus-mozilla-content-view.oafinfo:
+	* components/music/nautilus-music-view.oafinfo:
+	* components/notes/nautilus-notes.oafinfo:
+	* components/rpmview/nautilus-rpm-view.oafinfo:
+	* components/sample/nautilus-sample-content-view.oafinfo:
+	* components/services/inventory/nautilus-view/nautilus-inventory-view.oafinfo:
+	* components/services/login/nautilus-view/nautilus-login-view.oafinfo:
+	* components/services/startup/nautilus-view/nautilus-service-startup-view.oafinfo:
+	* components/services/summary/nautilus-view/nautilus-summary-view.oafinfo:
+	* components/services/time/nautilus-view/trilobite-eazel-time-view.oafinfo:
+	* components/services/trilobite/sample/nautilus-view/nautilus-sample-service-view.oafinfo:
+	* components/shell/shell.oafinfo:
+	* components/tree/nautilus-tree-view.oafinfo:
+	* components/websearch/ntl-web-search.oafinfo:
+	Removed the obsolete Nautilus/ContentView and Nautilus/MetaView.
+
+	* components/services/install/command-line/.cvsignore:
+	Added a generated file.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(metafile_read_done), (allow_metafile),
+	(nautilus_directory_request_read_metafile): Another quick cut at
+	leaving out metafiles for some schemes.
+	(dequeue_pending_idle_callback): Get rid of "pending file info is
+	NULL!" message and "approve" the change that made Maciej put it
+	in.
+	
+	* libnautilus/nautilus-view.c: (nautilus_uri_list_from_g_list):
+	Use CORBA_TRUE to truly use CORBA correctly.
+	
+	* src/nautilus-shell-interface.idl:
+	* src/.cvsignore:
+	* src/Makefile.am:
+	* src/nautilus.oafinfo:
+	* src/nautilus-shell.h:
+	* src/nautilus-shell.c: (nautilus_shell_initialize_class),
+	(nautilus_shell_get_epv), (nautilus_shell_get_vepv),
+	(nautilus_shell_create_servant), (nautilus_shell_initialize),
+	(destroy), (nautilus_shell_new), (display_caveat),
+	(display_caveat_first_time), (open_window), (corba_open_windows),
+	(corba_open_default_window), (corba_manage_desktop): Added a new
+	CORBA file for the interface of the Nautilus shell itself and a
+	class for a server side of it. Moved some code in here from
+	NautilusApplication.
+	
+	* src/nautilus-application.c: (manufactures), (create_object),
+	(create_factory), (nautilus_application_initialize),
+	(nautilus_strv_length), (nautilus_make_uri_list_from_strv),
+	(nautilus_application_startup): Moved the IID strings into
+	constants for easier code reading. Added the code that can yield
+	up the shell object, although it's not used yet. Changed startup
+	code to use the NautilusShell object to do the work. This doesn't
+	work cross-process yet, but it's ready to.
+	
+	* src/nautilus-window.h:
+	* src/nautilus-window.c: (nautilus_window_initialize_class),
+	(nautilus_window_initialize), (goto_uri_callback),
+	(navigation_bar_mode_changed_callback),
+	(nautilus_window_constructed), (nautilus_window_destroy),
+	(nautilus_window_realize): Misc. cleanup, including getting rid of
+	the strange old way of doing parent_class.
+	
 2000-07-07  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-drag.c:
@@ -182,7 +254,6 @@
 2000-07-05  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* po/POTFILES.in:
-
 	Removed ntl-web-search.c since it's no longer in the codebase.
 	
 	* components/rpmview/nautilus-rpm-view-install.c:
@@ -190,8 +261,7 @@
 	Fixed bug... eh, some number.
 	
 	* components/services/install/command-line/Makefile.am:
-	*
-	components/services/install/command-line/eazel-alt-install-corba.c:
+	* components/services/install/command-line/eazel-alt-install-corba.c:
 	(set_parameters_from_command_line), (main):
 	* components/services/install/command-line/eazel-gen-xml.c: (main):
 	* components/services/install/command-line/eazel-uninstall.c:

@@ -51,7 +51,6 @@ typedef struct NautilusWindow NautilusWindow;
 
 typedef struct {
   GnomeAppClass parent_spot;
-  GnomeAppClass *parent_class;
 } NautilusWindowClass;
 
 typedef struct NautilusWindowStateInfo NautilusWindowStateInfo;

@@ -197,8 +197,6 @@ nautilus_directory_cancel (NautilusDirectory *directory)
 static void
 metafile_read_done (NautilusDirectory *directory)
 {
-	g_assert (directory->details->metafile_read_handle != NULL);
-
 	directory->details->metafile_read = TRUE;
 	directory->details->metafile_read_handle = NULL;
 
@@ -284,6 +282,8 @@ metafile_read_start (NautilusDirectory *directory)
 static gboolean
 allow_metafile (NautilusDirectory *directory)
 {
+	const char *scheme;
+
 	/* Note that this inhibits both reading and writing metadata
 	 * completely. In the future we may want to inhibit writing to
 	 * the real directory while allowing parallel-directory
@@ -299,18 +299,22 @@ allow_metafile (NautilusDirectory *directory)
 		return FALSE;
 	}
 
-	/* For now, hard-code this one scheme. Perhaps we should
-         * hardcode the schemes that are good for metadata instead of
+	/* For now, hard-code these schemes. Perhaps we should *
+	 * hardcode the schemes that are good for metadata instead of
 	 * the schemes that are bad for it.
 	 */
 	/* FIXME: We need to handle this in a better way. Perhaps a
 	 * better way can wait until we have support for metadata
 	 * access inside gnome-vfs.
 	 */
-	if (nautilus_strcasecmp (gnome_vfs_uri_get_scheme (directory->details->uri), "pipe") == 0) {
+	scheme = gnome_vfs_uri_get_scheme (directory->details->uri);
+	if (nautilus_strcasecmp (scheme, "info") == 0
+	    || nautilus_strcasecmp (scheme, "help") == 0
+	    || nautilus_strcasecmp (scheme, "man") == 0
+	    || nautilus_strcasecmp (scheme, "pipe") == 0) {
 		return FALSE;
 	}
-
+	
 	return TRUE;
 }
 
@@ -319,10 +323,6 @@ nautilus_directory_request_read_metafile (NautilusDirectory *directory)
 {
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
-	if (!allow_metafile (directory)) {
-		return;
-	}
-
 	if (directory->details->metafile_read
 	    || directory->details->metafile_read_handle != NULL) {
 		return;
@@ -330,8 +330,12 @@ nautilus_directory_request_read_metafile (NautilusDirectory *directory)
 
 	g_assert (directory->details->metafile == NULL);
 
-	directory->details->use_alternate_metafile = TRUE;
-	metafile_read_start (directory);
+	if (!allow_metafile (directory)) {
+		metafile_read_done (directory);
+	} else {
+		directory->details->use_alternate_metafile = TRUE;
+		metafile_read_start (directory);
+	}
 }
 
 static void
@@ -686,18 +690,6 @@ dequeue_pending_idle_callback (gpointer callback_data)
 
 	pending_file_info = directory->details->pending_file_info;
 	directory->details->pending_file_info = NULL;
-
-	if (pending_file_info == NULL) {
-		puts ("pending file info is NULL!");
-	}
-
-#if 0
-	/* Don't emit a signal if there are no new files. */
-	if (pending_file_info == NULL) {
-		nautilus_directory_async_state_changed (directory);
-		return FALSE;
-	}
-#endif
 
 	/* If we are no longer monitoring, then throw away these. */
 	if (!nautilus_directory_is_file_list_monitored (directory)) {

@@ -122,7 +122,7 @@ nautilus_uri_list_from_g_list (GList *list)
 		g_assert (p != NULL);
 		uri_list->_buffer[i] = CORBA_string_dup (p->data);
 	}
-	CORBA_sequence_set_release (uri_list, TRUE);
+	CORBA_sequence_set_release (uri_list, CORBA_TRUE);
 
 	return uri_list;
 }

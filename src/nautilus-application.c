@@ -27,21 +27,31 @@
 #include <config.h>
 #include "nautilus-application.h"
 
-#include <bonobo.h>
+/* FIXME: This is a workaround for ORBit bug where including idl files
+ * in other idl files causes trouble.
+ */
+#include "nautilus-shell-interface.h"
+#define nautilus_view_component_H
+
 #include "file-manager/fm-icon-view.h"
 #include "file-manager/fm-list-view.h"
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include "nautilus-desktop-window.h"
+#include "nautilus-first-time-druid.h"
+#include "nautilus-shell.h"
+#include <bonobo.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string-list.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
 #include <liboaf/liboaf.h>
 
-#include "nautilus-desktop-window.h"
-#include "nautilus-first-time-druid.h"
-
-#include <libnautilus-extensions/nautilus-icon-factory.h>
+#define FACTORY_IID   "OAFIID:nautilus_factory:bd1e1862-92d7-4391-963e-37583f0daef3"
+#define ICON_VIEW_IID "OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058"
+#define LIST_VIEW_IID "OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c"
+#define SHELL_IID     "OAFIID:nautilus_shell:cd5183b2-3913-4b74-9b8e-10528b0de08d"
 
 static CORBA_boolean manufactures                                (PortableServer_Servant    servant,
 								  const CORBA_char         *iid,
@@ -73,8 +83,9 @@ manufactures (PortableServer_Servant servant,
 	      const CORBA_char *iid,
 	      CORBA_Environment *ev)
 {
-	return strcmp (iid, "OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058") == 0
-		|| strcmp (iid, "OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c") == 0;
+	return strcmp (iid, ICON_VIEW_IID) == 0
+		|| strcmp (iid, LIST_VIEW_IID) == 0
+		|| strcmp (iid, SHELL_IID) == 0;
 }
 
 static CORBA_Object
@@ -83,19 +94,30 @@ create_object (PortableServer_Servant servant,
 	       const Bonobo_stringlist *params,
 	       CORBA_Environment *ev)
 {
+	BonoboObject *object;
 	FMDirectoryView *directory_view;
-	NautilusView *view;
+	static NautilusShell *shell;
+	NautilusApplication *application;
 
-	if (strcmp (iid, "OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058") == 0) {
+	if (strcmp (iid, ICON_VIEW_IID) == 0) {
 		directory_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_icon_view_get_type (), NULL));
-	} else if (strcmp (iid, "OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c") == 0) {
+		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
+	} else if (strcmp (iid, LIST_VIEW_IID) == 0) {
 		directory_view = FM_DIRECTORY_VIEW (gtk_object_new (fm_list_view_get_type (), NULL));
+		object = BONOBO_OBJECT (fm_directory_view_get_nautilus_view (directory_view));
+	} else if (strcmp (iid, SHELL_IID) == 0) {
+		if (shell == NULL) {
+			application = NAUTILUS_APPLICATION (((BonoboObjectServant *) servant)->bonobo_object);
+			shell = nautilus_shell_new (application);
+		} else {
+			bonobo_object_ref (BONOBO_OBJECT (shell));
+		}
+		object = BONOBO_OBJECT (shell);
 	} else {
 		return CORBA_OBJECT_NIL;
 	}
-        
-	view = fm_directory_view_get_nautilus_view (directory_view);
-	return CORBA_Object_duplicate (bonobo_object_corba_objref (BONOBO_OBJECT (view)), ev);
+
+	return CORBA_Object_duplicate (bonobo_object_corba_objref (object), ev);
 }
 
 static CORBA_Object
@@ -103,10 +125,10 @@ create_factory (PortableServer_POA poa,
 		NautilusApplication *bonobo_object,
 		CORBA_Environment *ev)
 {
-	POA_Bonobo_GenericFactory *servant;
+	BonoboObjectServant *servant;
 
-	servant = g_new0 (POA_Bonobo_GenericFactory, 1);
-	servant->vepv = &vepv;
+	servant = g_new0 (BonoboObjectServant, 1);
+	((POA_Bonobo_GenericFactory *) servant)->vepv = &vepv;
 	POA_Bonobo_GenericFactory__init ((PortableServer_Servant) servant, ev);
 	return bonobo_object_activate_servant (BONOBO_OBJECT (bonobo_object), servant);
 }
@@ -122,16 +144,18 @@ nautilus_application_initialize (NautilusApplication *application)
 {
 	CORBA_Environment ev;
 	CORBA_Object corba_object;
-	
-	/* Create an undo manager */
-	application->undo_manager = nautilus_undo_manager_new ();
 
 	CORBA_exception_init (&ev);
-
 	corba_object = create_factory (bonobo_poa (), application, &ev);
+	if (ev._major != CORBA_NO_EXCEPTION) {
+		g_error ("could not create factory");
+	}
+	CORBA_exception_free (&ev);
+
 	bonobo_object_construct (BONOBO_OBJECT (application), corba_object);
 
-	CORBA_exception_free (&ev);
+	/* Create an undo manager */
+	application->undo_manager = nautilus_undo_manager_new ();
 }
 
 NautilusApplication *
@@ -155,66 +179,6 @@ nautilus_application_destroy (GtkObject *object)
 	nautilus_bookmarks_exiting ();
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
-}
-
-static void
-display_caveat (GtkWindow *parent_window)
-{
-	GtkWidget *dialog;
-	GtkWidget *frame;
-	GtkWidget *pixmap;
-	GtkWidget *hbox;
-	GtkWidget *text;
-	char *file_name;
-
-	dialog = gnome_dialog_new (_("Nautilus: caveat"),
-				   GNOME_STOCK_BUTTON_OK,
-				   NULL);
-  	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);
-  	gtk_window_set_policy (GTK_WINDOW (dialog), FALSE, FALSE, FALSE);
-
-  	hbox = gtk_hbox_new (FALSE, GNOME_PAD);
-  	gtk_container_set_border_width (GTK_CONTAINER (hbox), GNOME_PAD);
-  	gtk_widget_show (hbox);
-  	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), 
-  			    hbox,
-  			    FALSE, FALSE, 0);
-
-	frame = gtk_frame_new (NULL);
-	gtk_widget_show (frame);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_IN);
-  	gtk_box_pack_start (GTK_BOX (hbox), frame, FALSE, FALSE, 0);
-	
-	file_name = nautilus_pixmap_file ("About_Image.png");
-	pixmap = gnome_pixmap_new_from_file (file_name);
-	g_free (file_name);
-	gtk_widget_show (pixmap);
-	gtk_container_add (GTK_CONTAINER (frame), pixmap);
-
-  	text = gtk_label_new
-		(_("The Nautilus shell is under development; it's not "
-  		   "ready for daily use. Many features, including some "
-  		   "of the best ones, are not yet done, partly done, or "
-  		   "unstable. The program doesn't look or act the way "
-  		   "it will in version 1.0."
-		   "\n\n"
-		   "If you do decide to test this version of Nautilus, "
-		   "beware. The program could do something "
-		   "unpredictable and may even delete or overwrite "
-		   "files on your computer."
-		   "\n\n"
-		   "For more information, visit http://nautilus.eazel.com."));
-    	gtk_label_set_line_wrap (GTK_LABEL (text), TRUE);
-	gtk_widget_show (text);
-  	gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
-
-  	gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
-
-	if (parent_window != NULL) {
-		gnome_dialog_set_parent (GNOME_DIALOG (dialog), parent_window);
-	}
-
-	gtk_widget_show (GTK_WIDGET (dialog));
 }
 
 static void
@@ -272,136 +236,174 @@ nautilus_application_check_user_directories (NautilusApplication *application)
 	nautilus_string_list_free (dir_list);
 }
 
+static int
+nautilus_strv_length (const char * const *strv)
+{
+	const char * const *p;
+
+	for (p = strv; *p != NULL; p++) { }
+	return p - strv;
+}
+
+static Nautilus_URIList *
+nautilus_make_uri_list_from_strv (const char * const *strv)
+{
+	int length, i;
+	Nautilus_URIList *uri_list;
+
+	length = nautilus_strv_length (strv);
+
+	uri_list = Nautilus_URIList__alloc ();
+	uri_list->_maximum = length;
+	uri_list->_length = length;
+	uri_list->_buffer = CORBA_sequence_Nautilus_URI_allocbuf (length);
+	for (i = 0; i < length; i++) {
+		uri_list->_buffer[i] = CORBA_string_dup (strv[i]);
+	}
+	CORBA_sequence_set_release (uri_list, CORBA_TRUE);
+
+	return uri_list;
+}
+
 void
 nautilus_application_startup (NautilusApplication *application,
 			      gboolean manage_desktop,
 			      const char *urls[])
 {
+	CORBA_Environment ev;
+	Nautilus_Shell shell;
 	OAF_RegistrationResult result;
 	const char *message, *detailed_message;
 	GnomeDialog *dialog;
-	const char **p;
-	NautilusWindow *window;
-	NautilusWindow *first_window;
+	Nautilus_URIList *url_list;
 
-	/* check if this is the first time running the program by seeing
-	   if the user_main_directory exists; if not, run the first time druid 
-	   instead of launching the application */
-	if (!nautilus_user_main_directory_exists()) {
-		nautilus_first_time_druid_show(application, manage_desktop, urls);
-		return;
-	}	
-
-	/* Try to register the file manager view factory with OAF. */
-	result = oaf_active_server_register
-		("OAFIID:nautilus_file_manager_factory:bd1e1862-92d7-4391-963e-37583f0daef3",
-		 bonobo_object_corba_objref (BONOBO_OBJECT (application)));
-	switch (result) {
-	case OAF_REG_SUCCESS:
-		/* We are registered with OAF and all is right with the world. */
-		message = NULL;
-		break;
-	case OAF_REG_NOT_LISTED:
-		/* Can't register myself due to trouble locating the
-		 * nautilus.oafinfo file. This has happened when you
-		 * launch Nautilus with an LD_LIBRARY_PATH that
-		 * doesn't include the directory containg the oaf
-		 * library. It could also happen if the
-		 * nautilus.oafinfo file was not present for some
-		 * reason. Sometimes killing oafd and gconfd fixes
-		 * this problem but we don't exactly understand why,
-		 * since neither of the above causes explain it.
-		 */
-		message = _("Nautilus can't be used now. "
-			    "Rebooting the computer or installing "
-			    "Nautilus again may fix the problem.");
-		/* FIXME: The guesses and stuff here are lame. */
-		detailed_message = _("Nautilus can't be used now. "
-				     "Rebooting the computer or installing "
-				     "Nautilus again may fix the problem. "
-				     "OAF couldn't locate the nautilus.oafinfo file. "
-				     "One cause of this seems to be an LD_LIBRARY_PATH "
-				     "that does not include the oaf library's directory. "
-				     "Another possible cause would be bad install "
-				     "with a missing nautilus.oafinfo file. "
-				     "Sometimes killing oafd and gconfd fixes "
-				     "the problem, but we don't know why. "
-				     "We need a much less confusing message here for Nautilus 1.0.");
-		break;
-	case OAF_REG_ALREADY_ACTIVE:
-		/* Another copy of Nautilus is already running. */
-		/* FIXME: We want to "glom on" to this old copy. */
-		message = _("Nautilus is already running. "
-			    "Soon, instead of presenting this dialog, "
-			    "the already-running copy of Nautilus will "
-			    "respond by opening windows.");
-		detailed_message = NULL;
-		break;
-	default:
-		/* This should never happen. */
-		g_warning ("bad error code from oaf_active_server_register");
-	case OAF_REG_ERROR:
-		/* Some misc. error (can never happen with current
-		 * version of OAF). Show dialog and terminate the
-		 * program.
-		 */
-		message = _("Nautilus can't be used now, due to an unexpected error.");
-		detailed_message = _("Nautilus can't be used now, due to an unexpected error "
-				     "from OAF when attempting to register the file manager view server.");
-		break;
-	}
-	if (message != NULL) {
-		dialog = nautilus_error_dialog_with_details
-			(message, detailed_message, NULL);
-		gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
-				    gtk_main_quit, NULL);
+	/* Check if this is the first time running the program by seeing
+	 * if the user_main_directory exists; if not, run the first time druid 
+	 * instead of launching the application
+	 */
+	/* FIXME: You will get multiple druids if you invoke nautilus again. */
+	if (!nautilus_user_main_directory_exists ()) {
+		nautilus_first_time_druid_show (application, manage_desktop, urls);
 		return;
 	}
 
 	/* Check the user's ~/.nautilus directories and post warnings
-	 * if there are problems
+	 * if there are problems.
 	 */
 	nautilus_application_check_user_directories (application);
 
+	/* Start up the factory. */
+#if 0
+	for (;;) {
+		shell = oaf_activate_from_id (SHELL_IID, OAF_FLAG_EXISTING_ONLY, NULL, NULL);
+		if (shell != CORBA_OBJECT_NIL) {
+			g_message ("did activate");
+			break;
+		}
+		g_message ("didn't activate");
+#endif
+
+		/* Try to register the file manager view factory with OAF. */
+		result = oaf_active_server_register
+			(FACTORY_IID,
+			 bonobo_object_corba_objref (BONOBO_OBJECT (application)));
+		switch (result) {
+		case OAF_REG_SUCCESS:
+			/* We are registered with OAF and all is right with the world. */
+			message = NULL;
+			break;
+		case OAF_REG_NOT_LISTED:
+			/* Can't register myself due to trouble locating the
+			 * nautilus.oafinfo file. This has happened when you
+			 * launch Nautilus with an LD_LIBRARY_PATH that
+			 * doesn't include the directory containg the oaf
+			 * library. It could also happen if the
+			 * nautilus.oafinfo file was not present for some
+			 * reason. Sometimes killing oafd and gconfd fixes
+			 * this problem but we don't exactly understand why,
+			 * since neither of the above causes explain it.
+			 */
+			message = _("Nautilus can't be used now. "
+				    "Rebooting the computer or installing "
+				    "Nautilus again may fix the problem.");
+			/* FIXME: The guesses and stuff here are lame. */
+			detailed_message = _("Nautilus can't be used now. "
+					     "Rebooting the computer or installing "
+					     "Nautilus again may fix the problem. "
+					     "OAF couldn't locate the nautilus.oafinfo file. "
+					     "One cause of this seems to be an LD_LIBRARY_PATH "
+					     "that does not include the oaf library's directory. "
+					     "Another possible cause would be bad install "
+					     "with a missing nautilus.oafinfo file. "
+					     "Sometimes killing oafd and gconfd fixes "
+					     "the problem, but we don't know why. "
+					     "We need a much less confusing message here for Nautilus 1.0.");
+			break;
+		case OAF_REG_ALREADY_ACTIVE:
+			/* Another copy of Nautilus is already running. */
+			/* FIXME: We want to "glom on" to this old copy. */
+			message = _("Nautilus is already running. "
+				    "Soon, instead of presenting this dialog, "
+				    "the already-running copy of Nautilus will "
+				    "respond by opening windows.");
+			detailed_message = NULL;
+			break;
+		default:
+			/* This should never happen. */
+			g_warning ("bad error code from oaf_active_server_register");
+		case OAF_REG_ERROR:
+			/* Some misc. error (can never happen with current
+			 * version of OAF). Show dialog and terminate the
+			 * program.
+			 */
+			message = _("Nautilus can't be used now, due to an unexpected error.");
+			detailed_message = _("Nautilus can't be used now, due to an unexpected error "
+					     "from OAF when attempting to register the file manager view server.");
+			break;
+		}
+		if (message != NULL) {
+			dialog = nautilus_error_dialog_with_details
+				(message, detailed_message, NULL);
+			gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
+					    gtk_main_quit, NULL);
+			return;
+		}
+#if 0
+	}
+#endif
+
+	/* FIXME: This is a temporary hack so we can use the CORBA
+         * interface even though I can't get activation to work.
+	 */
+	shell = bonobo_object_corba_objref (BONOBO_OBJECT (nautilus_shell_new (application)));
+
+	CORBA_exception_init (&ev);
+
 	/* Set up the desktop. */
 	if (manage_desktop) {
-		gtk_widget_show (GTK_WIDGET (nautilus_desktop_window_new (application)));
+		Nautilus_Shell_manage_desktop (shell, &ev);
 	}
 
   	/* Create the other windows. */
-	first_window = NULL;
 	if (urls != NULL) {
-		for (p = urls; *p != NULL; p++) {
-			window = nautilus_application_create_window (application);
-			nautilus_window_goto_uri (window, *p);
-			if (first_window == NULL) {
-				first_window = window;
-			}
-		}
+		url_list = nautilus_make_uri_list_from_strv (urls);
+		Nautilus_Shell_open_windows (shell, url_list, &ev);
+		CORBA_free (url_list);
 	}
+
 	/* FIXME bugzilla.eazel.com 1051: Change this logic back so it won't
 	 * make a new window when asked to manage the desktop, once we have
 	 * a way to get rid of the desktop.
 	 */
-	if (/* !manage_desktop && */ first_window == NULL) {
-		first_window = nautilus_application_create_window (application);
-		nautilus_window_go_home (first_window);
+	if (/* !manage_desktop && */ urls == NULL) {
+		Nautilus_Shell_open_default_window (shell, &ev);
 	}
 
-	/* Show the "not ready for prime time" dialog after the first
-	 * window appears, so it's on top.
-	 */
-	/* FIXME bugzilla.eazel.com 1256: It's not on top of the
-         * windows other than the first one.
-	 */
-	if (g_getenv ("NAUTILUS_NO_CAVEAT_DIALOG") == NULL) {
-	  	if (first_window == NULL) {
-			display_caveat (NULL);
-		} else {
-			gtk_signal_connect (GTK_OBJECT (first_window), "show",
-					    display_caveat, first_window);
-		}
-  	}
+	/* We're done with the shell now, so let it go. */
+	Nautilus_Shell_unref (shell, &ev);
+	CORBA_Object_release (shell, &ev);
+
+	CORBA_exception_free (&ev);
 }
 
 static void

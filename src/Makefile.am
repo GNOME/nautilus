@@ -37,6 +37,14 @@ LDADD =\
 	$(XML_LIBS) \
 	$(NULL)
 
+nautilus_shell_interface_idl_sources =		\
+	nautilus-shell-interface-stubs.c	\
+	nautilus-shell-interface-skels.c	\
+	nautilus-shell-interface.h		\
+	nautilus-shell-interface-common.c
+
+BUILT_SOURCES = $(nautilus_shell_interface_idl_sources)
+
 noinst_HEADERS = \
 	nautilus-applicable-views.h		\
 	nautilus-application.h			\
@@ -53,6 +61,7 @@ noinst_HEADERS = \
 	nautilus-search-bar-private.h		\
 	nautilus-search-bar.h			\
 	nautilus-self-check-functions.h 	\
+	nautilus-shell.h			\
 	nautilus-sidebar-tabs.h			\
 	nautilus-sidebar-title.h		\
 	nautilus-sidebar.h			\
@@ -68,7 +77,8 @@ noinst_HEADERS = \
 	nautilus-zoom-control.h			\
 	$(NULL)
 
-nautilus_SOURCES =\
+nautilus_SOURCES = \
+	$(nautilus_shell_interface_idl_sources)	\
 	nautilus-applicable-views.c		\
 	nautilus-application.c			\
 	nautilus-bookmark-list.c		\
@@ -85,6 +95,7 @@ nautilus_SOURCES =\
 	nautilus-search-bar-criterion.c		\
 	nautilus-search-bar.c			\
 	nautilus-self-check-functions.c 	\
+	nautilus-shell.c			\
 	nautilus-sidebar-tabs.c			\
 	nautilus-sidebar-title.c		\
 	nautilus-sidebar.c			\
@@ -105,13 +116,27 @@ nautilus_SOURCES =\
 	nautilus-zoomable-frame-corba.c		\
 	$(NULL)
 
+$(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp
+nautilus_shell_interface_idl_stamp: nautilus-shell-interface.idl
+	$(ORBIT_IDL) $(IDL_CFLAGS) -I.. nautilus-shell-interface.idl
+	touch nautilus_shell_interface_idl_stamp
+
 TESTS=check-nautilus
 
 oafdir = $(datadir)/oaf
 oaf_DATA =					\
 	nautilus.oafinfo
 
-EXTRA_DIST = $(oaf_DATA) run-nautilus
+CLEANFILES = \
+	$(nautilus_shell_interface_idl_sources)	\
+	nautilus_shell_interface_idl_stamp	\
+	$(NULL)
+
+EXTRA_DIST = \
+	nautilus-shell-interface.idl		\
+	$(oaf_DATA)				\
+	run-nautilus				\
+	$(NULL)
 
 install-data-hook: run-nautilus
 	$(mkinstalldirs) $(DESTDIR)/$(prefix)/bin
