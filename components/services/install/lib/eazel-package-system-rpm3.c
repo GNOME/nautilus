@@ -224,7 +224,8 @@ make_rpm_argument_list (EazelPackageSystemRpm3 *system,
 		if (flags & EAZEL_PACKAGE_SYSTEM_OPERATION_DOWNGRADE) {
 			(*args) = g_list_prepend (*args, g_strdup ("--oldpackage"));
 		}
-		if (flags & EAZEL_PACKAGE_SYSTEM_OPERATION_UPGRADE) {
+		if (flags & EAZEL_PACKAGE_SYSTEM_OPERATION_UPGRADE ||
+		    flags & EAZEL_PACKAGE_SYSTEM_OPERATION_DOWNGRADE) {
 #ifdef USE_PERCENT
 			(*args) = g_list_prepend (*args, g_strdup ("--percent"));
 			(*args) = g_list_prepend (*args, g_strdup ("-Uv"));
@@ -871,6 +872,7 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 	eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_NAME, &pack->name);
 	eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_VERSION, &pack->version);
 	eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_RELEASE, &pack->minor);
+	eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_OBSOLETENAME, &pack->obsoletes);
 	eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_ARCH, &pack->archtype);
 	if (~detail_level & PACKAGE_FILL_NO_TEXT) {
 		eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_DESCRIPTION, &pack->description);
@@ -1044,6 +1046,8 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 		}
 
 		free ((void*)provides_name);
+
+	
 	}
 
 }

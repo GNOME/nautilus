@@ -1450,7 +1450,7 @@ packagedata_dump_int (const PackageData *package, gboolean deep, int indent)
 	if (package->obsoletes) {
 		g_string_sprintfa (out, "\n");
 		gstr_indent (out, indent);
-		g_string_sprintfa (out, "Obsoletes %s", package->obsoletes);
+		g_string_sprintfa (out, "Obsoletes: %s", package->obsoletes);
 	}
 	g_string_sprintfa (out, "\n");
 

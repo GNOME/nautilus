@@ -2045,7 +2045,6 @@ eazel_install_set_cgi_path (EazelInstall *service, const char *cgi_path)
 void eazel_install_set_debug (EazelInstall *service, gboolean debug) {
 	EAZEL_INSTALL_SANITY (service);
 	service->private->iopts->mode_debug = debug;
-
 	if (debug) {
 #ifdef ESKIL
 		eazel_package_system_set_debug (service->private->package_system, 

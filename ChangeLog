@@ -1,3 +1,50 @@
+2001-02-24  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	tired reviewer was: Robey Pointer  <robey@eazel.com>
+
+	Fixes bug 6903 6913 and 6972
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (set_parameters_from_command_line),
+	(eazel_file_conflict_check_signal),
+	(eazel_file_uniqueness_check_signal),
+	(eazel_feature_consistency_check_signal),
+	(eazel_download_progress_signal):
+	Marked strings for i18n.
+	
+	* components/services/install/lib/eazel-install-logic2.c:
+	(is_satisfied), (do_dep_check_internal), (do_dep_check),
+	(check_if_modification_is_ok),
+	(do_requirement_consistency_check_package),
+	(do_requirement_consistency_check_internal),
+	(do_requirement_consistency_check), (check_tree_helper),
+	(check_conflicts_against_already_installed_packages),
+	(do_file_conflict_check), (install_packages_helper),
+	(install_packages):
+
+	Swapped the check of a requirements features and if it's installed
+	(in the case where there is no sense/version)
+
+	Added a vast amount of logic to check if modification of packages
+	(update/downgrade) breaks other packages. This also includes a
+	move of a huge block of code.
+
+	Try to revive on both FILE_CONFLICT and BREAKS_DEPENDENCY.
+
+	Don't ignore file-conflicts on force (since we set it when epochs
+	are involved)
+
+	Do do_requirement_consistency_check before
+	check_tree_for_conflicts, so we try and revive any upgrades that
+	causes a BREAK_DEPENDENCY
+
+	Large section of code moved  upwards...	
+
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(make_rpm_argument_list):
+	Use -U for both up and downgrade.
+	Load obsoletes tag.
+
 2001-02-24  Ian McKellar  <ian@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>

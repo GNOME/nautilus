@@ -931,6 +931,13 @@ is_satisfied (EazelInstall *service,
 #endif
 				result = TRUE;
 			}
+		} else if (dep->package->features && is_satisfied_features (service, packages, dep->package)) {
+			/* If package dependency didn't have a name/sense/version, but 
+			   has features, check if features are installed */
+#if EI2_DEBUG & 0x4
+			trilobite_debug ("\t--> features of package are satisfied");
+#endif
+			result = TRUE;
 		} else if (dep->package->name) {
 			/* Else check for name in workset and then amongst installed packages,
 			   using sense ANY */
@@ -950,16 +957,8 @@ is_satisfied (EazelInstall *service,
 #endif
 				result = TRUE;
 			}
-		} else {
-			/* If package dependency didn't have a name, but has features, check if features
-			   are installed */
-			if (dep->package->features && is_satisfied_features (service, packages, dep->package)) {
-#if EI2_DEBUG & 0x4
-				trilobite_debug ("\t--> features of package are satisfied");
-#endif
-				result = TRUE;
-			}
 		}
+
 		if (result) {
 #if EI2_DEBUG & 0x4
 			trilobite_debug ("\t--> feature is satisfied");
@@ -1208,6 +1207,296 @@ check_dependencies (EazelInstall *service,
 
 /***********************************************************************************/
 
+/* This is the main dependency check function */
+
+void do_dep_check_internal (EazelInstall *service, GList *packages);
+void do_dep_check (EazelInstall *service, GList **packages);
+void do_requirement_consistency_check (EazelInstall *service, GList *packages);
+void do_requirement_consistency_check_internal (EazelInstall *service, GList *packages);
+
+void
+do_dep_check_internal (EazelInstall *service,
+		       GList *packages)
+{
+	GList *iterator;
+	GList *K = NULL;
+
+	g_assert (service);
+	g_assert (EAZEL_IS_INSTALL (service));
+
+	if (packages==NULL) {
+		return;
+	}
+
+#if EI2_DEBUG & 0x1
+	trilobite_debug ("do_dep_check tree");
+	dump_tree (packages);
+#endif
+
+	get_package_info (service, packages);
+	dedupe (service, packages);
+	check_dependencies (service, packages);
+
+	/* we might have received a "stop" callback recently */
+	if (service->private->cancel_download) {
+		return;
+	}
+
+	/* Build the K list, consisting of packages without must_have set... */
+	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
+	        GList *diterator;
+		for (diterator = PACKAGEDATA(iterator->data)->depends; diterator; diterator = g_list_next (diterator)) {
+			PackageDependency *dep = PACKAGEDEPENDENCY (diterator->data);
+			if (((~dep->package->fillflag & MUST_HAVE) ||
+			    (PACKAGEDATA(iterator->data)->suite_id)) && 
+			    (g_list_find (K, dep->package)==NULL)) {
+				K = g_list_prepend (K, dep->package);
+			}
+		}
+	}
+
+	/* ... and process them */
+	if (K) {
+		do_dep_check_internal (service, K);
+	}
+}
+
+void
+do_dep_check (EazelInstall *service,
+	      GList **packages)
+{
+	/* Shift to the internal. We want to do a prune_failed_packages
+	   after completion, but since the do_dep_check algorithm is 
+	   recursive, we call an internal function here. */
+	do_dep_check_internal (service, *packages);
+	prune_failed_packages (service, packages);
+}
+
+/* This function is used by do_requirement_consistency_check_package.
+   pack is a package which modified updated, and dep is a 
+   dependency that someone else has on updated.
+
+   To accept :
+   calculate version compare value x for cmp (dep->version, pack->version)
+   if upgrading the package and sense is any, accept
+   if upgrading the package and sense has >, accept
+   if upgrading the package and sense has <, accept if x > 0
+   if upgrading the package and sense has =, accept if x = 0
+   vice versa for downgrade (flipping the ><'s)
+   
+   This will not be called with dep->sense = ANY, since these are always ok.
+*/
+static gboolean
+check_if_modification_is_ok (EazelInstall *service, 
+			     PackageData *pack, 
+			     PackageData *updated,
+			     PackageDependency *dep)
+{
+	gboolean accept = FALSE;
+	int x;
+
+	/* But just in case.... */
+	if (dep->sense == EAZEL_SOFTCAT_SENSE_ANY) {
+		return TRUE;
+	}
+
+	x = eazel_package_system_compare_version (service->private->package_system, 
+						  dep->version,
+						  pack->version);
+
+	switch (updated->modify_status) {
+	case PACKAGE_MOD_UPGRADED:
+#if EI2_DEBUG & 0x4
+		trilobite_debug ("\t\t\t -> checking if upgrade is ok");
+#endif
+		if (dep->sense & EAZEL_SOFTCAT_SENSE_GT) {
+			/* is sense it has > in it, upgrading is safe */
+			accept = TRUE;
+		} else if (dep->sense & EAZEL_SOFTCAT_SENSE_LT) {
+			/* if sense it has < in it, upgrade is
+			   safe if dep->version is > pack->version*/
+			if (x > 0) {
+				accept = TRUE;
+			}
+		} else if (dep->sense & EAZEL_SOFTCAT_SENSE_EQ) {
+			/* if sense is =, upgrade is safe if
+			   x == 0 */
+			if (x == 0) {
+				accept = TRUE;
+			}
+		} 
+		break;
+	case PACKAGE_MOD_DOWNGRADED:
+#if EI2_DEBUG & 0x4
+		trilobite_debug ("\t\t\t -> checking if downgrade is ok");
+#endif
+		if (dep->sense & EAZEL_SOFTCAT_SENSE_LT) {
+			/* is sense it has < in it, 
+			   downgrading is safe */
+			accept = TRUE;
+		} else if (dep->sense & EAZEL_SOFTCAT_SENSE_GT) {
+			/* if sense it has > in it, upgrade is
+			   safe if pack->version is > dep->version */
+			if (x < 0) {
+				accept = TRUE;
+			}
+		} else if (dep->sense & EAZEL_SOFTCAT_SENSE_EQ) {
+			/* if sense is =, upgrade is safe if
+			   x == 0 */
+			if (x == 0) {
+				accept = TRUE;
+			}
+		}
+		break;
+	default:
+		break;
+	}
+
+#if EI2_DEBUG & 0x4
+	trilobite_debug ("\t\t\t -> %s", accept ? "yarh" : "argh");
+#endif
+
+	return accept;
+}
+
+/*
+  Traverse the packages modifies and query for packages R that require them
+  foreach r in R 
+      foreach d in R->depends
+          if d->version && d->package is set (and sense isn'any) 
+             if modification not ok, add breaks structure
+ */
+static void 
+do_requirement_consistency_check_package (EazelInstall *service, 
+					  PackageData *pack)
+{
+	GList *iterator;
+
+#if EI2_DEBUG & 0x4
+	trilobite_debug ("\t -> do_requirement_consistency_check_package (%p %s)", pack, pack->name);
+#endif
+
+	if (GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (pack), "do_requirement_consistency_check"))!=0) {
+		return;
+	}
+	gtk_object_set_data (GTK_OBJECT (pack), "do_requirement_consistency_check", GINT_TO_POINTER (1));
+	
+	/* Check all the modifies of the package */
+	for (iterator = pack->modifies; iterator; iterator = g_list_next (iterator)) {
+		PackageData *updated = PACKAGEDATA (iterator->data);
+		GList *requiredby_list = NULL;
+		GList *requiredby_it;
+
+		GList *feature_cache;
+		GList *provide_cache;
+
+#if EI2_DEBUG & 0x4
+		trilobite_debug ("\t -> querying for who requires %s", updated->name);
+#endif
+		/* I temporarily omit the provides, since we later do a provide consistency check */
+		feature_cache = updated->features;
+		updated->features = NULL;
+		provide_cache = updated->provides;
+		updated->provides = NULL;
+
+		/* Get the packages that require the modified package */
+		requiredby_list = eazel_package_system_query (service->private->package_system,
+							      service->private->cur_root,
+							      updated,
+							      EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
+							      PACKAGE_FILL_NO_PROVIDES);
+		updated->features = feature_cache;
+		updated->provides = provide_cache;
+
+		/* Now check all the dependencies of the packages that requires the modified package */
+		for (requiredby_it = requiredby_list; requiredby_it; requiredby_it = g_list_next (requiredby_it)) {
+			PackageData *requiredby = PACKAGEDATA (requiredby_it->data);
+			GList *dep_it;
+
+#if EI2_DEBUG & 0x4
+			trilobite_debug ("\t\t -> scanning deps for %s", requiredby->name);
+#endif
+			for (dep_it = requiredby->depends; dep_it; dep_it = g_list_next (dep_it)) {
+				PackageDependency *dep = PACKAGEDEPENDENCY (dep_it->data);
+				if (dep->package && dep->version) {
+					/* if this is a dep for the updated package, and sense
+					   isn't ANY, check if modification is safe.
+					   Note, sense will never be ANY (since you can't have ANY sense
+					   and a version, but just for purity, I check for it */
+					if (dep->package->name &&
+					    strcmp (dep->package->name, updated->name)==0 &&
+					    dep->sense != EAZEL_SOFTCAT_SENSE_ANY) {
+#if EI2_DEBUG & 0x4
+						trilobite_debug ("\t\t -> %p %s requires %s %s %s",
+								 requiredby, requiredby->name,
+								 dep->package->name,
+								 eazel_softcat_sense_flags_to_string (dep->sense),
+								 dep->version);
+#endif
+
+						/* If we fail, mark pack as breaking requiredby */
+						if (check_if_modification_is_ok (service, pack, updated, dep)
+						    == FALSE) {
+							PackageFeatureMissing *breakage = 
+								packagefeaturemissing_new ();
+							PackageDependency *req_dep = packagedependency_new();
+
+							/* Ref mojo */
+							gtk_object_ref (GTK_OBJECT (updated));
+							gtk_object_ref (GTK_OBJECT (requiredby));
+							req_dep->package = updated;
+							req_dep->sense = dep->sense;
+							req_dep->version = g_strdup (dep->version);
+							packagedata_add_pack_to_depends (requiredby, req_dep);
+							pack->status = PACKAGE_BREAKS_DEPENDENCY;
+							packagebreaks_set_package (PACKAGEBREAKS (breakage), 
+										   requiredby);
+							packagedata_add_to_breaks (pack, PACKAGEBREAKS (breakage));
+						}
+					}
+				}
+			}
+		}
+		g_list_foreach (requiredby_list, (GFunc)gtk_object_unref, NULL);
+		g_list_free (requiredby_list);
+	}
+}
+
+void 
+do_requirement_consistency_check_internal (EazelInstall *service, 
+					   GList *packages)
+{
+	GList *iterator;
+	
+#if EI2_DEBUG & 0x4
+	trilobite_debug ("--> do_requirement_consistency_check_internal");
+#endif
+
+	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
+		PackageData *pack = PACKAGEDATA (iterator->data);
+		if (pack->modifies) {		      
+#if EI2_DEBUG & 0x4
+			trilobite_debug ("\t -> checking %p %s", pack, pack->name);
+#endif
+			do_requirement_consistency_check_package (service, pack);
+			
+		}
+
+#if EI2_DEBUG & 0x4
+	trilobite_debug ("<-- do_requirement_consistency_check_internal");
+#endif
+	}
+}
+
+void 
+do_requirement_consistency_check (EazelInstall *service, 
+				  GList *packages)
+{
+	do_requirement_consistency_check_internal (service, packages);
+}
+
+/***********************************************************************************/
+
 /* This is the main file conflicts check hell */
 
 void do_file_conflict_check (EazelInstall *service, GList **packages, GList **extra_packages);
@@ -1367,8 +1656,11 @@ check_tree_helper (EazelInstall *service,
 #endif
 		return;
 	}
-
-	if (pack->status == PACKAGE_FILE_CONFLICT) {
+#if EI2_DEBUG & 0x4
+	trilobite_debug ("-> check_tree_for_conflicts_helper");
+#endif
+	if (pack->status == PACKAGE_FILE_CONFLICT ||
+	    pack->status == PACKAGE_BREAKS_DEPENDENCY) {
 		if (eazel_install_get_upgrade (service)==FALSE) {
 #if EI2_DEBUG & 0x4
 			trilobite_debug ("cannot revive %s, update not allowed", pack->name);
@@ -1709,8 +2001,7 @@ check_conflicts_against_already_installed_packages (EazelInstall *service,
 	char *filename;
 	GList *flat_packages;
 
-	if (eazel_install_get_force (service) ||
-	    eazel_install_get_ignore_file_conflicts (service)) {
+	if (eazel_install_get_ignore_file_conflicts (service)) {
 		trilobite_debug ("(not performing file conflict check)");
 		return;
 	}
@@ -1943,6 +2234,7 @@ do_file_conflict_check (EazelInstall *service,
 	/* Check for file conflicts against already installed packages,
 	   if conflicts, try and revive */
 	check_conflicts_against_already_installed_packages (service, *packages);
+	do_requirement_consistency_check (service, *packages);
 	check_tree_for_conflicts (service, packages, extra_packages);
 
 	/* If packages were revived (added to extra_packages,
@@ -1956,72 +2248,6 @@ do_file_conflict_check (EazelInstall *service,
 		trilobite_debug ("extra_packages set, no doing feature consistency check");
 #endif		
 	}
-}
-
-
-/***********************************************************************************/
-
-/* This is the main dependency check function */
-
-void do_dep_check_internal (EazelInstall *service, GList *packages);
-void do_dep_check (EazelInstall *service, GList **packages);
-
-void
-do_dep_check_internal (EazelInstall *service,
-		       GList *packages)
-{
-	GList *iterator;
-	GList *K = NULL;
-
-	g_assert (service);
-	g_assert (EAZEL_IS_INSTALL (service));
-
-	if (packages==NULL) {
-		return;
-	}
-
-#if EI2_DEBUG & 0x1
-	trilobite_debug ("do_dep_check tree");
-	dump_tree (packages);
-#endif
-
-	get_package_info (service, packages);
-	dedupe (service, packages);
-	check_dependencies (service, packages);
-
-	/* we might have received a "stop" callback recently */
-	if (service->private->cancel_download) {
-		return;
-	}
-
-	/* Build the K list, consisting of packages without must_have set... */
-	for (iterator = packages; iterator; iterator = g_list_next (iterator)) {
-	        GList *diterator;
-		for (diterator = PACKAGEDATA(iterator->data)->depends; diterator; diterator = g_list_next (diterator)) {
-			PackageDependency *dep = PACKAGEDEPENDENCY (diterator->data);
-			if (((~dep->package->fillflag & MUST_HAVE) ||
-			    (PACKAGEDATA(iterator->data)->suite_id)) && 
-			    (g_list_find (K, dep->package)==NULL)) {
-				K = g_list_prepend (K, dep->package);
-			}
-		}
-	}
-
-	/* ... and process them */
-	if (K) {
-		do_dep_check_internal (service, K);
-	}
-}
-
-void
-do_dep_check (EazelInstall *service,
-	      GList **packages)
-{
-	/* Shift to the internal. We want to do a prune_failed_packages
-	   after completion, but since the do_dep_check algorithm is 
-	   recursive, we call an internal function here. */
-	do_dep_check_internal (service, *packages);
-	prune_failed_packages (service, packages);
 }
 
 /***********************************************************************************/
@@ -2172,6 +2398,8 @@ install_packages_helper (EazelInstall *service,
 			 GList **packages,
 			 GList **extra_packages)
 {
+	g_assert (extra_packages);
+
 #if EI2_DEBUG & 0x4
 	trilobite_debug ("-> install_packages_helper");
 #endif	
@@ -2190,7 +2418,6 @@ install_packages_helper (EazelInstall *service,
 	}
 	trilobite_debug ("FINAL TREE END");
 #endif
-	
 #if EI2_DEBUG & 0x4
 	trilobite_debug ("<- install_packages_helper");
 #endif	
@@ -2566,6 +2793,7 @@ install_packages (EazelInstall *service, GList *categories)
 #if EI2_DEBUG & 0x4
 	trilobite_debug ("%d packages survived", g_list_length (packages));
 #endif	
+
 	if (packages) {
 		if (eazel_install_emit_preflight_check (service, packages)) {
 			int flags = 0;

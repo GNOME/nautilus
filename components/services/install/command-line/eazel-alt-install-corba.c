@@ -164,7 +164,7 @@ set_parameters_from_command_line (GNOME_Trilobite_Eazel_Install service)
 
 	/* We only want 1 protocol type */
 	if (arg_http + arg_ftp + arg_local > 1) {
-			fprintf (stderr, "*** You cannot specify more then one protocol type.\n");
+			fprintf (stderr, _("*** You cannot specify more then one protocol type.\n"));
 			exit (1);
 	}
 	if (arg_http) {
@@ -181,7 +181,7 @@ set_parameters_from_command_line (GNOME_Trilobite_Eazel_Install service)
 		check_ev ("set_protocol");
 	}
 	if (arg_erase + arg_revert > 1) {
-			fprintf (stderr, "*** Erase and revert ?  Somebody set us up the bomb!\n");
+			fprintf (stderr, _("*** Erase and revert ?  Somebody set us up the bomb!\n"));
 			exit (1);
 	}
 	if (arg_upgrade) {
@@ -290,7 +290,7 @@ eazel_file_conflict_check_signal (EazelInstallCallback *service,
 {
 	if (!arg_silent) {
 		if (!arg_machine) {
-			printf ("File conflict checking %s...\n", pack->name);
+			printf (_("File conflict checking %s...\n"), pack->name);
 		}
 	} else {
 		printf ("."); fflush (stdout);
@@ -304,7 +304,7 @@ eazel_file_uniqueness_check_signal (EazelInstallCallback *service,
 {
 	if (!arg_silent) {
 		if (! arg_machine) {
-			printf ("File uniqueness checking %s...\n", pack->name);
+			printf (_("File uniqueness checking %s...\n"), pack->name);
 		}
 	} else {
 		printf ("."); fflush (stdout);
@@ -318,7 +318,7 @@ eazel_feature_consistency_check_signal (EazelInstallCallback *service,
 {
 	if (!arg_silent) {
 		if (!arg_machine) {
-			printf ("Feature consistency checking %s...\n", pack->name);
+			printf (_("Feature consistency checking %s...\n"), pack->name);
 		}
 	} else {
 		printf ("."); fflush (stdout);
@@ -330,7 +330,7 @@ eazel_download_progress_signal (EazelInstallCallback *service,
 				const PackageData *pack,
 				int amount, 
 				int total,
-				char *title) 
+				gpointer unused) 
 {
 	static time_t t;
 	static int pct;
@@ -349,7 +349,7 @@ eazel_download_progress_signal (EazelInstallCallback *service,
 	}
 
 	if (amount==0) {
-		fprintf (stdout, "Downloading %s...", pack->name);
+		fprintf (stdout, _("Downloading %s..."), pack->name);
 		t = time (NULL);
 		old_pct = pct = 0;
 	} else if (amount != total ) {
@@ -362,24 +362,28 @@ eazel_download_progress_signal (EazelInstallCallback *service,
 					ks = ((float)amount/1024)/diff;
 					old_pct = pct;
 				}
-				fprintf (stdout, "\rDownloading %s... (%d/%d) = %d%% %.1f Kb/s     \r", 
+				/* I18N note: %s is a package name, %d/%d is bytes/totalbytes,
+				   the next %d is a percentage completed, %1.f is a KB/s, and the
+				   trailing spaces must be present to overwrite KB/s if it changes 
+				   radically */
+				fprintf (stdout, _("\rDownloading %s... (%d/%d) = %d%% %.1f KB/s     \r"), 
 					 pack->name,
 					 amount, total, pct,
 					 ks);
 			} else {
-				fprintf (stdout, "\rDownloading %s... (%d/%d) = %d%%", 
+				fprintf (stdout, _("\rDownloading %s... (%d/%d) = %d%%"), 
 					 pack->name,
 					 amount, total, pct);
 			}
 		}
 	} else if (amount == total && total!=0) {
 		if (arg_no_pct==0) {
-			fprintf (stdout, "\rDownloading %s... (%d/%d) %.1f Kb/s Done      \n",
+			fprintf (stdout, _("\rDownloading %s... (%d/%d) %.1f KB/s Done      \n"),
 				 pack->name,
 				 amount, total, 
 				 ks);
 		} else {
-			fprintf (stdout, "Downloading %s... %3.1f KB/s Done\n", 
+			fprintf (stdout, _("Downloading %s... %3.1f KB/s Done\n"), 
 				 pack->name, ks);
 		}
 	}
@@ -405,12 +409,22 @@ eazel_install_progress_signal (EazelInstallCallback *service,
 	} else if (amount != total ) {
 		if (arg_no_pct==0) {
 			if (!arg_machine) {
-				fprintf (stdout, "\r%s %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%", 
-					 title, packname,
-					 package_num, num_packages,
-					 total_size_completed, total_size,
-					 amount, total,
-					 amount / (total / 100));
+				if (strcasecmp (title, "Installing")==0) {
+					fprintf (stdout, _("\rInstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"), 
+						 packname,
+						 package_num, num_packages,
+						 total_size_completed, total_size,
+						 amount, total,
+						 amount / (total / 100));
+				} else {
+					fprintf (stdout, _("\rUninstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"), 
+						 packname,
+						 package_num, num_packages,
+						 total_size_completed, total_size,
+						 amount, total,
+						 amount / (total / 100));
+
+				}
 			}
 		}
 	}
@@ -423,17 +437,27 @@ eazel_install_progress_signal (EazelInstallCallback *service,
 			}
 		} else {
 			if (arg_no_pct==0) {
-				fprintf (stdout, "\r%s %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n",
-					 title, packname,
-					 package_num, num_packages,
-					 total_size_completed, total_size,
-					 amount, total, 100);
+				if (strcasecmp (title, "Installing")==0) {					
+					fprintf (stdout, _("\rInstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"),
+						 packname,
+						 package_num, num_packages,
+						 total_size_completed, total_size,
+						 amount, total, 100);
+				} else {
+					fprintf (stdout, _("\rUnnstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"),
+						 packname,
+						 package_num, num_packages,
+						 total_size_completed, total_size,
+						 amount, total, 100);
+					
+				}
 			} else {
-				fprintf (stdout, "Done\n");
+				fprintf (stdout, _("Done\n"));
 			}
 		}
 
 	}
+
 	fflush (stdout);
 	g_free (packname);
 }
@@ -448,7 +472,7 @@ download_failed (EazelInstallCallback *service,
 	cli_result = 1;
 
 	if (!arg_machine) {
-		fprintf (stdout, "Download of %s FAILED\n", pack->name);
+		fprintf (stdout, _("Download of %s FAILED\n"), pack->name);
 	}
 }
 
@@ -514,9 +538,6 @@ tree_helper (EazelInstallCallback *service,
 	char *readable_name;
 	GList *iterator;
 
-	if (g_list_find (*seen, pd)) { return; }
-	(*seen) = g_list_prepend (*seen, pd);
-
 	if (title && pd->toplevel) {
 		fprintf (stdout, title);
 	}
@@ -528,6 +549,9 @@ tree_helper (EazelInstallCallback *service,
 		 packagedata_status_enum_to_str (pd->status),
 		 packagedata_modstatus_enum_to_str (pd->modify_status));
 	g_free (readable_name);
+
+	if (g_list_find (*seen, pd)) { return; }
+	(*seen) = g_list_prepend (*seen, pd);
 
 	for (iterator = pd->depends; iterator; iterator = iterator->next) {		
 		char *tmp;
@@ -568,9 +592,9 @@ something_failed (EazelInstallCallback *service,
 	if (arg_machine) { return; };
 	if (arg_silent) { printf ("\n"); }
 	if (uninstall) {
-		title = g_strdup_printf ("Package %s failed to uninstall.\n", pd->name);
+		title = g_strdup_printf (_("Package %s failed to uninstall.\n"), pd->name);
 	} else {
-		title = g_strdup_printf ("Package %s failed to install.\n", pd->name);
+		title = g_strdup_printf (_("Package %s failed to install.\n"), pd->name);
 	}
 
 	if (arg_debug) {
@@ -590,7 +614,7 @@ something_failed (EazelInstallCallback *service,
 			GList *extra_cases = NULL;
 			GList *it;
 			for (it = stuff; it; it = g_list_next (it)) {
-				fprintf (stdout, "\t\xB7 Problem : %s\n", (char*)(it->data));
+				fprintf (stdout, _("\t\xB7 Problem : %s\n"), (char*)(it->data));
 			}
 			eazel_install_problem_tree_to_case (problem, pd, uninstall, &extra_cases);
 			if (extra_cases) {
@@ -598,7 +622,7 @@ something_failed (EazelInstallCallback *service,
 				if (stuff) {
 					GList *it;
 					for (it = stuff; it; it = g_list_next (it)) {
-						fprintf (stdout, "\t\xB7 Action : %s\n", (char*)(it->data));
+						fprintf (stdout, _("\t\xB7 Action : %s\n"), (char*)(it->data));
 					}
 				}
 			}
@@ -641,7 +665,7 @@ eazel_preflight_check_signal (EazelInstallCallback *service,
 		if (arg_machine) { 
 			return FALSE; 
 		}
-		fprintf (stdout, "Cancelling operation\n");
+		fprintf (stdout, _("Cancelling operation\n"));
 		return FALSE;
 	}
 
@@ -652,15 +676,15 @@ eazel_preflight_check_signal (EazelInstallCallback *service,
 	if (arg_silent) { printf ("\n"); }
 	switch (op) {
 	case EazelInstallCallbackOperation_INSTALL:
-		fprintf (stdout, _("About to install a total of %d packages, %dKb\n"), 
+		fprintf (stdout, _("About to install a total of %d packages, %dKB\n"), 
 			 total_packages, total_bytes/1024);
 		break;
 	case EazelInstallCallbackOperation_UNINSTALL:
-		fprintf (stdout, _("About to uninstall a total of %d packages, %dKb\n"), 
+		fprintf (stdout, _("About to uninstall a total of %d packages, %dKB\n"), 
 			 total_packages, total_bytes/1024);
 		break;
 	case EazelInstallCallbackOperation_REVERT:
-		fprintf (stdout, _("About to revert a total of %d packages, %dKb\n"), 
+		fprintf (stdout, _("About to revert a total of %d packages, %d KB\n"), 
 			 total_packages, total_bytes/1024);
 		break;
 	}
@@ -674,9 +698,11 @@ eazel_preflight_check_signal (EazelInstallCallback *service,
 		} else {
 			char *name = packagedata_get_readable_name (pack);
 			if (pack->depends) {
-				printf ("\t\xB7 %s and dependencies\n", name);
+				/* I18N note: %s is a package name */
+				printf (_("\t\xB7 %s and it's dependencies\n"), name);
 			} else {
-				printf ("\t\xB7 %s\n", name);
+				/* I18N note: %s is a package name */
+				printf (_("\t\xB7 %s\n"), name);
 			}
 			g_free (name);
 		}
@@ -698,7 +724,7 @@ dep_check (EazelInstallCallback *service,
 	pack = packagedata_get_readable_name (package);
 	needs = packagedata_get_readable_name (needs_package);
 	if (!arg_silent) {
-		printf ("Dependency : %s needs %s\n", pack, needs);
+		printf (_("Dependency : %s needs %s\n"), pack, needs);
 	} else {
 		printf ("."); fflush (stdout);
 	}
@@ -715,9 +741,12 @@ md5_check_failed (EazelInstallCallback *service,
 	cli_result = 3;
 	if (arg_machine) { return; }
 	if (arg_silent) { printf ("\n"); }
-	fprintf (stdout, "Package %s failed md5 check!\n", package->name);
-	fprintf (stdout, "\tserver MD5 checksum is %s\n", package->md5);
-	fprintf (stdout, "\tactual MD5 checksum is %s\n", actual_md5);
+	/* I18N note: %s is a package name */
+	fprintf (stdout, _("Package %s failed md5 check!\n"), package->name);
+	/* I18N note: %s is a 32 bytes hex numbers */
+	fprintf (stdout, _("\t\xB7 server MD5 checksum is %s\n"), package->md5);
+	/* I18N note: %s is a 32 bytes hex numbers */
+	fprintf (stdout, _("\t\xB7 actual MD5 checksum is %s\n"), actual_md5);
 }
 
 static PackageData*
@@ -778,7 +807,7 @@ delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 		gboolean cont = FALSE;
 
 		if (auto_cont == FALSE) {
-			printf ("continue? (y/n) ");
+			printf (_("Continue? (y/n) "));
 			fflush (stdout);
 			if (arg_batch) {			
 				fprintf (stdout, "%s\n", arg_batch);
@@ -786,7 +815,10 @@ delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 			} else {
 				fgets (answer, 10, stdin);
 			}
-			if (answer[0] == 'y' || answer[0] == 'Y') {
+			/* I18N note: y is the letter for the word Yes. This is
+			   used in the response for a yes/no questions. Your translation
+			   must be 1 character only. */
+			if (strncasecmp (answer, _("y"), 1)==0) {
 				fflush (stdout);
 				cont = TRUE;
 			}
@@ -811,7 +843,7 @@ delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 	} 
 
 	if (downloaded_files && !arg_query && !arg_erase && !arg_file && ask_delete) {
-		printf ("should i delete the RPM files? (y/n) ");
+		printf (_("Should i delete the RPM files? (y/n) "));
 		fflush (stdout);
 		if (arg_batch) {			
 			fprintf (stdout, "yes\n");
@@ -820,7 +852,10 @@ delete_files (EazelInstallCallback *service, EazelInstallProblem *problem)
 			fgets (answer, 10, stdin);
 		}
 		
-		if (answer[0] == 'y' || answer[0] == 'Y') {
+		/* I18N note: y is the letter for the word Yes. This is
+		   used in the response for a yes/no questions. Your translation
+		   must be 1 character only. */
+		if (strncasecmp (answer, _("y"), 1)==0) {
 			fflush (stdout);
 			eazel_install_callback_delete_files (service, &ev);			
 		} 
@@ -839,7 +874,11 @@ done (EazelInstallCallback *service,
 	}
 
 	if (!arg_machine) {
-		fprintf (stderr, "Operation %s\n", result ? "ok" : "failed");
+		if (result) {
+			fprintf (stderr, _("Operation ok\n"));
+		} else {
+			fprintf (stderr, _("Operation failed\n"));
+		}
 	}
 
 	if (delete_files (service, problem)) {
@@ -949,13 +988,13 @@ int main(int argc, char *argv[]) {
 
 	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", 
 			    GTK_SIGNAL_FUNC (eazel_download_progress_signal), 
-			    "Download progress");
+			    NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "preflight_check", 
 			    GTK_SIGNAL_FUNC (eazel_preflight_check_signal), 
 			    NULL);
 	gtk_signal_connect (GTK_OBJECT (cb), "install_progress", 
 			    GTK_SIGNAL_FUNC (eazel_install_progress_signal), 
-			    "Installing");
+			    _("Installing"));
 	gtk_signal_connect (GTK_OBJECT (cb), "md5_check_failed", 
 			    GTK_SIGNAL_FUNC (md5_check_failed), 
 			    "");
@@ -964,7 +1003,7 @@ int main(int argc, char *argv[]) {
 			    problem);
 	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_progress", 
 			    GTK_SIGNAL_FUNC (eazel_install_progress_signal), 
-			    "Uninstalling");
+			    _("Uninstalling"));
 	gtk_signal_connect (GTK_OBJECT (cb), "uninstall_failed", 
 			    GTK_SIGNAL_FUNC (uninstall_failed), 
 			    problem);
@@ -979,12 +1018,12 @@ int main(int argc, char *argv[]) {
 			    problem);
 
 	if (arg_erase + arg_query + arg_revert > 1) {
-		g_error ("Only one operation at a time please.");
+		g_error (_("Only one operation at a time please."));
 	}
 
 	if (arg_erase) {
 		if (categories == NULL) {
-			fprintf (stderr, "%s: --help for usage\n", argv[0]);
+			fprintf (stderr, _("%s: --help for usage\n"), argv[0]);
 			cli_result = 1;
 		} else {
 			eazel_install_callback_uninstall_packages (cb, categories, arg_root, &ev);
@@ -992,7 +1031,7 @@ int main(int argc, char *argv[]) {
 	} else if (arg_query) {
 		GList *iterator;
 		if (strs == NULL) {
-			fprintf (stderr, "%s: --help for usage\n", argv[0]);
+			fprintf (stderr, _("%s: --help for usage\n"), argv[0]);
 			cli_result = 1;
 		} else for (iterator = strs; iterator; iterator = iterator->next) {
 			GList *matched_packages;
@@ -1008,19 +1047,19 @@ int main(int argc, char *argv[]) {
 					char *tmp;
 					GList *provide_iterator;
 					tmp = trilobite_get_distribution_name (p->distribution, TRUE, FALSE);
-					fprintf (stdout, "Name         : %s\n", p->name?p->name:"?"); 
-					fprintf (stdout, "Version      : %s\n", p->version?p->version:"?");
-					fprintf (stdout, "Minor        : %s\n", p->minor?p->minor:"?");
+					fprintf (stdout, _("Name         : %s\n"), p->name?p->name:"?"); 
+					fprintf (stdout, _("Version      : %s\n"), p->version?p->version:"?");
+					fprintf (stdout, _("Minor        : %s\n"), p->minor?p->minor:"?");
 					
-					fprintf (stdout, "Size         : %d\n", p->bytesize);
-					fprintf (stdout, "Arch         : %s\n", p->archtype?p->archtype:"?");
-					fprintf (stdout, "Distribution : %s\n", tmp?tmp:"?");
-					fprintf (stdout, "Description  : %s\n", 
+					fprintf (stdout, _("Size         : %d\n"), p->bytesize);
+					fprintf (stdout, _("Arch         : %s\n"), p->archtype?p->archtype:"?");
+					fprintf (stdout, _("Distribution : %s\n"), tmp?tmp:"?");
+					fprintf (stdout, _("Description  : %s\n"), 
 						 p->description?p->description:"?");
-					fprintf (stdout, "Install root : %s\n", 
+					fprintf (stdout, _("Install root : %s\n"), 
 						 p->install_root?p->install_root:"?");
 					if (p->provides) {
-						fprintf (stdout, "Provides     : \n");
+						fprintf (stdout, _("Provides     : \n"));
 						for (provide_iterator = p->provides; provide_iterator; 
 						     provide_iterator = g_list_next (provide_iterator)) {
 							fprintf (stdout, "\t%s\n", 
@@ -1036,14 +1075,14 @@ int main(int argc, char *argv[]) {
 	} else if (arg_revert) {
 		GList *iterator;
 		if (strs == NULL) {
-			fprintf (stderr, "%s: --help for usage\n", argv[0]);
+			fprintf (stderr, _("%s: --help for usage\n"), argv[0]);
 			cli_result = 1;
 		} else for (iterator = strs; iterator; iterator = iterator->next) {
 			eazel_install_callback_revert_transaction (cb, (char*)iterator->data, arg_root, &ev);
 		}
 	} else {
 		if (categories == NULL) {
-			fprintf (stderr, "%s: --help for usage\n", argv[0]);
+			fprintf (stderr, _("%s: --help for usage\n"), argv[0]);
 			cli_result = 1;
 		} else {
 			eazel_install_callback_install_packages (cb, categories, arg_root, &ev);
@@ -1062,7 +1101,7 @@ int main(int argc, char *argv[]) {
 	CORBA_exception_free (&ev);
 
 	if (arg_debug) {
-		printf ("exit code %d\n", cli_result);
+		printf (_("exit code %d\n"), cli_result);
 	}
        
 	return cli_result;
