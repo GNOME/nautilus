@@ -58,6 +58,10 @@ struct NautilusTreeModelClass {
 	void         (*node_removed)          (NautilusTreeModel *model,
 					       NautilusTreeNode *node);
 
+	void         (*node_being_renamed)    (NautilusTreeModel *model,
+					       const char *old_uri,
+					       const char *new_uri);
+
 	void         (*done_loading_children) (NautilusTreeModel *model,
 					       NautilusTreeNode *node);
 };

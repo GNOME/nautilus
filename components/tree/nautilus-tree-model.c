@@ -38,6 +38,7 @@ enum {
 	NODE_ADDED,
 	NODE_CHANGED,
 	NODE_REMOVED,
+	NODE_BEING_RENAMED,
 	DONE_LOADING_CHILDREN,
 	LAST_SIGNAL
 };
@@ -126,6 +127,14 @@ nautilus_tree_model_initialize_class (gpointer klass)
 				GTK_SIGNAL_OFFSET (NautilusTreeModelClass, node_removed),
 				gtk_marshal_NONE__POINTER,
 				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+
+	signals[NODE_BEING_RENAMED] =
+		gtk_signal_new ("node_being_renamed",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusTreeModelClass, node_removed),
+				gtk_marshal_NONE__POINTER_POINTER,
+				GTK_TYPE_NONE, 2, GTK_TYPE_STRING, GTK_TYPE_STRING);
 
 	signals[DONE_LOADING_CHILDREN] =
 		gtk_signal_new ("done_loading_children",
@@ -448,6 +457,10 @@ nautilus_tree_model_monitor_node (NautilusTreeModel         *model,
 				  gconstpointer              client,
 				  gboolean                   force_reload)
 {
+	GList *p;
+	GList *lost_nodes;
+	NautilusDirectory *directory;
+
 	if (!nautilus_file_is_directory (nautilus_tree_node_get_file (node))) {
 		report_done_loading (model, node);
 		return;
@@ -463,6 +476,21 @@ nautilus_tree_model_monitor_node (NautilusTreeModel         *model,
 		node->details->monitor_clients = g_list_prepend (node->details->monitor_clients, 
 								 (gpointer) client);
 	}
+
+	/* Check if any files got moved out of this directory
+	 * while the node was collapsed.
+	 */
+	directory = nautilus_tree_node_get_directory (node);
+	lost_nodes = NULL;
+	for (p = nautilus_tree_node_get_children (node); p != NULL; p = p->next) {
+		if (!nautilus_directory_contains_file (directory, nautilus_tree_node_get_file (p->data))) {
+			lost_nodes = g_list_prepend (lost_nodes, p->data);
+		}
+	}
+	for (p = lost_nodes; p != 0; p = p->next) {
+		report_node_removed (model, p->data);
+	}
+	g_list_free (lost_nodes);
 }
 
 
@@ -672,8 +700,17 @@ report_node_changed (NautilusTreeModel *model,
 
 			gtk_object_ref (GTK_OBJECT (node));
 
-			report_node_removed (model, node);
-			
+
+			/* Let the view know that the rename is happening, this allows
+			 * it to propagate the expansion state from the old name to the
+			 * new name
+			 */
+			gtk_signal_emit (GTK_OBJECT (model),
+					 signals[NODE_BEING_RENAMED],
+					 node->details->uri, file_uri);
+
+			report_node_removed_internal (model, node, FALSE);
+
 			g_free (node->details->uri);
 			node->details->uri = file_uri;
 			

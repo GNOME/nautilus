@@ -102,6 +102,8 @@ static void got_activation_uri_callback         (NautilusFile          *file,
 						 gpointer               callback_data);
 static void cancel_possible_activation          (NautilusTreeView      *view);
 
+static void nautilus_tree_view_update_model_node (NautilusTreeView     *view,
+						  NautilusTreeNode     *node);
 
 static void nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass);
 static void nautilus_tree_view_initialize       (NautilusTreeView      *view);
@@ -230,6 +232,8 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 
 			g_free (uri);
 		}
+	} else {
+		nautilus_tree_view_update_model_node (view, node);
 	}
 
 	g_free (text[0]);
@@ -565,6 +569,28 @@ nautilus_tree_view_model_node_removed_callback (NautilusTreeModel *model,
 }
 
 static void
+nautilus_tree_view_model_node_renamed_callback (NautilusTreeModel *model,
+						const char	  *old_uri,
+						const char 	  *new_uri,
+						gpointer           callback_data)
+{
+    NautilusTreeView *view;
+
+    /* Propagate the expansion state of the old name to the new name */
+
+    view = NAUTILUS_TREE_VIEW (callback_data);
+
+
+    if (nautilus_tree_expansion_state_is_node_expanded (view->details->expansion_state, old_uri)) {
+	    nautilus_tree_expansion_state_expand_node (view->details->expansion_state, new_uri);
+    } else {
+	    nautilus_tree_expansion_state_collapse_node (view->details->expansion_state, new_uri);
+    }
+
+    nautilus_tree_expansion_state_remove_node (view->details->expansion_state, old_uri);
+}
+
+static void
 nautilus_tree_view_model_done_loading_callback (NautilusTreeModel *model,
 						NautilusTreeNode  *node,
 						gpointer           callback_data)
@@ -595,6 +621,10 @@ nautilus_tree_view_load_from_filesystem (NautilusTreeView *view)
 	gtk_signal_connect (GTK_OBJECT (view->details->model),
 			    "node_removed",
 			    nautilus_tree_view_model_node_removed_callback,
+			    view);
+	gtk_signal_connect (GTK_OBJECT (view->details->model),
+			    "node_being_renamed",
+			    nautilus_tree_view_model_node_renamed_callback,
 			    view);
 	gtk_signal_connect (GTK_OBJECT (view->details->model),
 			    "done_loading_children",

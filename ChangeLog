@@ -1,3 +1,35 @@
+2001-02-08  John Harper  <jsh@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	Fix bug 4423 (when a folder that is expanded in the tree view
+	is renamed, it collapses)
+
+	* components/tree/nautilus-tree-model.h,
+	components/tree/nautilus-tree-model.c: added a new signal
+	`node_being_renamed'. Has two arguments, the old and new URIs
+
+	(report_node_changed): when the node is being renamed, use
+	report_node_removed_internal instead of report_node_removed so
+	we can avoid emitting the `node_removed' signal. Before doing
+	this, emit the new `node_being_renamed' signal
+
+	* components/tree/nautilus-tree-view.c
+	(nautilus_tree_view_insert_model_node): if the node is already
+	inserted in the tree, call nautilus_tree_view_update_model_node
+
+	(nautilus_tree_view_model_node_renamed_callback): connected to
+	the `node_being_renamed' signal, propagates the expansion state
+	from the old URI to the new one
+
+	Fix bug 4421 (Delete file while folder collapsed -> not
+	reflected in Tree View)
+
+	* components/tree/nautilus-tree-model.c
+	(nautilus_tree_model_monitor_node): if the node being monitored
+	is a directory, check if any of the files we think it contains
+	got moved away (e.g. while the node was collapsed)
+
 2001-02-09  Andy Hertzfeld  <andy@eazel.com>
 
 	* icons/i-directory-12.png:
