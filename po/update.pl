@@ -211,7 +211,7 @@ sub GenHeaders{
            # Find .xml.h files in POTFILES.in and generate the
            # files with help from the ui-extract.pl script
            #--------------------------------------------------
-           if ($_=~ /(.*)(\.xml\.h)/o){
+           if ($_=~ /(.*)(\.xml)/o){
               $filename = "../$1.xml";
               $xmlfiles="./ui-extract.pl --update $filename";
               system($xmlfiles);
@@ -220,7 +220,7 @@ sub GenHeaders{
            # Find .glade.h files in POTFILES.in and generate
            # the files with help from the ui-extract.pl script
            #--------------------------------------------------
-           elsif ($_=~ /(.*)(\.glade\.h)/o){
+           elsif ($_=~ /(.*)(\.glade)/o){
               $filename = "../$1.glade";
               $xmlfiles="./ui-extract.pl --update $filename";
               system($xmlfiles);  
@@ -244,6 +244,17 @@ sub GeneratePot{
 
     print "Building the $PACKAGE.pot...\n";
 
+    system ("mv POTFILES.in POTFILES.in.old");    
+
+    open INFILE, "<POTFILES.in.old";
+    open OUTFILE, ">POTFILES.in";
+    while (<INFILE>) {
+        s/\.xml$/\.xml\.h/;
+        print OUTFILE $_;        
+    }
+    close OUTFILE;
+    close INFILE;
+
     $GETTEXT ="xgettext --default-domain\=$PACKAGE --directory\=\.\."
              ." --add-comments --keyword\=\_ --keyword\=N\_"
              ." --files-from\=\.\/POTFILES\.in ";  
@@ -253,6 +264,7 @@ sub GeneratePot{
     system($GETTEXT);
     system($GTEST);
     print "Wrote $PACKAGE.pot\n";
+    system("mv POTFILES.in.old POTFILES.in");
 
     # If .headerlock file is found, it means that the potfiles
     # already has been generated. If so delete the generated 
@@ -271,14 +283,14 @@ sub GeneratePot{
 
            # Delete header files coming from xml files
            #------------------------------------------
-           if ($_=~ /(.*)(\.xml\.h)/o){
+           if ($_=~ /(.*)(\.xml)/o){
                $filename = "../$1.xml.h";
     	       unlink($filename);
            }
 
            # Delete header files coming from glade files
            #--------------------------------------------
-           elsif ($_=~ /(.*)(\.glade\.h)/o){
+           elsif ($_=~ /(.*)(\.glade)/o){
                $filename = "../$1.glade.h";
                unlink($filename);
            }
