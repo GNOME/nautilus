@@ -28,6 +28,7 @@
 
 #include "fm-vfs-directory.h"
 
+#include "fm-directory-protected.h"
 #include <libnautilus/nautilus-gtk-macros.h>
 
 struct _FMVFSDirectoryDetails {
@@ -60,7 +61,7 @@ fm_vfs_directory_initialize (gpointer object, gpointer klass)
 
 	directory = FM_VFS_DIRECTORY(object);
 
-	directory->details = g_new (FMVFSDirectoryDetails, 1);
+	directory->details = g_new0 (FMVFSDirectoryDetails, 1);
 }
 
 static void
@@ -85,5 +86,11 @@ NAUTILUS_DEFINE_GET_TYPE_FUNCTION(FMVFSDirectory, fm_vfs_directory, FM_TYPE_DIRE
 FMVFSDirectory *
 fm_vfs_directory_new (const char* uri)
 {
-	return gtk_type_new (FM_TYPE_VFS_DIRECTORY);
+	FMVFSDirectory *directory;
+
+	directory = gtk_type_new (FM_TYPE_VFS_DIRECTORY);
+
+	FM_DIRECTORY(directory)->details->hash_table_key = g_strdup(uri);
+
+	return directory;
 }

@@ -1,3 +1,20 @@
+2000-01-04  Darin Adler  <darin@eazel.com>
+
+	A couple of quick fixes to make "make check" work again.
+	
+	* src/file-manager/fm-directory.c (fm_directory_initialize):
+	src/file-manager/fm-vfs-directory.c (fm_vfs_directory_initialize):
+	Use g_new0 instead of g_new for details structure to better
+	mimic what gtk_object_new does.
+
+	* src/file-manager/fm-directory.c (fm_directory_get):
+	Added an assert to check that the hash table key is set up
+	correctly. This was failing when John did a "make check".
+
+	* src/file-manager/fm-vfs-directory.c (fm_vfs_directory_new):
+	Set up the hash table key when creating the object. This
+	was causing a failure in "make check".
+
 2000-01-04  John Sullivan  <sullivan@eazel.com>
 
 	* src/nautilus-bookmarks-window.c (create_bookmarks_window):

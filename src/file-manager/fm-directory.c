@@ -58,7 +58,7 @@ fm_directory_initialize (gpointer object, gpointer klass)
 
 	directory = FM_DIRECTORY(object);
 
-	directory->details = g_new (FMDirectoryDetails, 1);
+	directory->details = g_new0 (FMDirectoryDetails, 1);
 }
 
 static void
@@ -117,6 +117,7 @@ FMDirectory *fm_directory_get(const char *uri)
 	} else {
 		/* Create a new directory object instead. */
 		directory = FM_DIRECTORY(fm_vfs_directory_new(uri));
+		g_assert(strcmp(directory->details->hash_table_key, uri) == 0);
 
 		/* Put it in the hash table. */
 		gtk_object_ref(GTK_OBJECT(directory));
