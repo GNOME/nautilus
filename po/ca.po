@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.9.91\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-25 15:27+0100\n"
-"PO-Revision-Date: 2005-03-25 17:40+0100\n"
+"POT-Creation-Date: 2005-03-30 08:11+0200\n"
+"PO-Revision-Date: 2005-03-30 08:14+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -380,6 +380,49 @@ msgstr "_Distintius"
 msgid "_Patterns"
 msgstr "_Patrons"
 
+#: ../libbackground/applier.c:256
+#: ../libnautilus-private/nautilus-column-utilities.c:58
+msgid "Type"
+msgstr "Tipus"
+
+#: ../libbackground/applier.c:257
+msgid ""
+"Type of bg_applier: BG_APPLIER_ROOT for root window or BG_APPLIER_PREVIEW "
+"for preview"
+msgstr ""
+"Tipus de bg_applier: BG_APPLIER_ROOT per a una finestra arrel, o "
+"BG_APPLIER_PREVIEW per a una previsualització"
+
+#: ../libbackground/applier.c:264
+msgid "Preview Width"
+msgstr "Amplada de la previsualització"
+
+# FIXME: applier? (josep)
+#: ../libbackground/applier.c:265
+msgid "Width if applier is a preview: Defaults to 64."
+msgstr "Amplada si applier és una previsualització: per defecte és 64."
+
+#: ../libbackground/applier.c:272
+msgid "Preview Height"
+msgstr "Alçària de la previsualització"
+
+# FIXME: applier? (josep)
+#: ../libbackground/applier.c:273
+msgid "Height if applier is a preview: Defaults to 48."
+msgstr "Alçària si applier és una previsualització: per defecte és 64."
+
+#: ../libbackground/applier.c:280
+msgid "Screen"
+msgstr "Pantalla"
+
+#: ../libbackground/applier.c:281
+msgid "Screen on which BGApplier is to draw"
+msgstr "La pantalla on s'ha de dibuixar el BGApplier"
+
+#: ../libbackground/applier.c:757
+msgid "Disabled"
+msgstr "Inhabilitat"
+
 #: ../libnautilus-extension/nautilus-column.c:175
 #: ../libnautilus-extension/nautilus-menu-item.c:206
 #: ../libnautilus-extension/nautilus-property-page.c:176
@@ -442,7 +485,7 @@ msgstr "Consell"
 
 #: ../libnautilus-extension/nautilus-menu-item.c:221
 msgid "Tooltip for the menu item"
-msgstr "Consell per a l'element del menú"
+msgstr "Rètol indicador de funció de l'element del menú"
 
 #: ../libnautilus-extension/nautilus-menu-item.c:227
 msgid "Icon"
@@ -493,7 +536,7 @@ msgid ""
 "\"mime_type\"."
 msgstr ""
 "Una llista de títols sota una icona a la vista d'icones i a l'escriptori. El "
-"número actual de títols mostrats depen del nivell de zoom. Els valors "
+"nombre actual de títols mostrats depèn del nivell d'ampliació. Els valors "
 "possibles són: «size», «type», «date_modified», «date_changed», "
 "«date_accessed», «owner», «group», «permissions», «octal_permissions» i "
 "«mime_type»."
@@ -830,8 +873,8 @@ msgstr ""
 msgid ""
 "If true, labels will be placed beside icons rather than underneath them."
 msgstr ""
-"Si és veritat, les etiquetes es ficaran al costat de les icones en comptes "
-"de sota d'elles."
+"Si és cert, les etiquetes es ficaran al costat de les icones en comptes de "
+"sota d'elles."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 msgid "If true, new windows will use manual layout by default."
@@ -866,8 +909,8 @@ msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
 msgstr ""
-"Nom del tema de Nautilus a utilitzar. Es desaconsella fer-ho servir des del "
-"Nautilus 2.2. Utilitzeu el tema d'icones en el seu lloc."
+"Nom del tema de Nautilus a utilitzar. A partir del Nautilus 2.2, es "
+"desaconsella fer-ho servir. Utilitzeu el tema d'icones en el seu lloc."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
 msgid "Nautilus handles drawing the desktop"
@@ -908,7 +951,7 @@ msgstr "Mostra abans les carpetes a les finestres"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid "Show location bar in new windows"
-msgstr "Mostra la barra d'ubicació a les noves finestres"
+msgstr "Mostra la barra d'ubicació a les finestres noves"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid "Show mounted volumes on the desktop"
@@ -916,15 +959,15 @@ msgstr "Mostra els volums muntats a l'escriptori"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid "Show side pane in new windows"
-msgstr "Mostra la barra lateral a les noves finestres"
+msgstr "Mostra la barra lateral a les finestres noves"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "Show status bar in new windows"
-msgstr "Mostra la barra d'estat a les noves finestres"
+msgstr "Mostra la barra d'estat a les finestres noves"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "Show toolbar in new windows"
-msgstr "Mostra la barra d'eines a les noves finestres"
+msgstr "Mostra la barra d'eines a les finestres noves"
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid "Side pane view"
@@ -937,9 +980,9 @@ msgid ""
 "on a remote server. If set to \"local_only\" then only plays previews on "
 "local filesystems. If set to \"never\" then it never previews sound."
 msgstr ""
-"Penalització de velocitat quan es previsualitza un fitxer de so en passar el "
-"punter per damunt de la icona del fitxer. Si s'estableix a «always», sempre "
-"es reprodueix el so, encara que el fitxer sigui a un servidor remot. Si "
+"Penalització de velocitat quan es previsualitza un fitxer de so quan el "
+"fitxer passa per damunt de la icona. Si s'estableix a «always», sempre es "
+"reprodueix el so, encara que el fitxer sigui a un servidor remot. Si "
 "s'estableix a «local_only» aleshores només reprodueix les previsualitzacions "
 "a sistemes de fitxers locals. Si s'estableix a «never», mai previsualitza "
 "sons."
@@ -980,11 +1023,11 @@ msgid ""
 "server. If set to \"local_only\" then only show counts for local "
 "filesystems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
-"Penalització de velocitat per a quan es mostra el número d'elements a un "
+"Penalització de velocitat per a quan es mostra el nombre d'elements a un "
 "directori. Si s'estableix a «always», sempre mostra el comptatge d'elements, "
 "encara que el directori sigui a un servidor remot. Si s'estableix a "
-"«local_only» aleshores només mostra els comptes per a sistemes de fitxers "
-"locals. Si s'estableix a «never», no calcula el comptatge d'elements."
+"«local_only» aleshores només mostra el comptatge per a sistemes de fitxers "
+"locals. Si s'estableix a «never», no calcula el comptatge dels elements."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid ""
@@ -1198,7 +1241,7 @@ msgstr "_Utilitza el predeterminat"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:44
 msgid "The name and icon of the file."
-msgstr "El nom i la icona del fitxer"
+msgstr "El nom i la icona del fitxer."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:50
 msgid "Size"
@@ -1208,13 +1251,9 @@ msgstr "Mida"
 msgid "The size of the file."
 msgstr "La mida del fitxer."
 
-#: ../libnautilus-private/nautilus-column-utilities.c:58
-msgid "Type"
-msgstr "Tipus"
-
 #: ../libnautilus-private/nautilus-column-utilities.c:59
 msgid "The type of the file."
-msgstr "El tipus del fitxer"
+msgstr "El tipus del fitxer."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:65
 msgid "Date Modified"
@@ -1283,11 +1322,12 @@ msgstr "reinicia"
 msgid "on the desktop"
 msgstr "a l'escriptori"
 
-#: ../libnautilus-private/nautilus-desktop-link-monitor.c:105
-msgid "You cannot delete a volume icon."
-msgstr "No podeu suprimir una icona de volum."
+#: ../libnautilus-private/nautilus-desktop-link-monitor.c:114
+#, c-format
+msgid "You cannot move the volume \"%s\" to the trash."
+msgstr "No podeu moure el volum «%s» a la paperera."
 
-#: ../libnautilus-private/nautilus-desktop-link-monitor.c:106
+#: ../libnautilus-private/nautilus-desktop-link-monitor.c:124
 msgid ""
 "If you want to eject the volume, please use Eject in the right-click menu of "
 "the volume."
@@ -1295,9 +1335,13 @@ msgstr ""
 "Si voleu expulsar el volum utilitzeu «Expulsa» al menú del botó dret del "
 "volum."
 
-#: ../libnautilus-private/nautilus-desktop-link-monitor.c:108
-msgid "Can't Delete Volume"
-msgstr "No es pot suprimir el volum"
+#: ../libnautilus-private/nautilus-desktop-link-monitor.c:133
+msgid ""
+"If you want to unmount the volume, please use Unmount Volume in the right-"
+"click menu of the volume."
+msgstr ""
+"Si voleu desmuntar el volum, utilitzeu «Desmunta el volum» del menú del botó "
+"dret del volum."
 
 #: ../libnautilus-private/nautilus-dnd.c:631
 msgid "_Move here"
@@ -1322,11 +1366,11 @@ msgstr "Cancel·la"
 
 #: ../libnautilus-private/nautilus-dnd.c:696
 msgid "Set as background for _all folders"
-msgstr "Estableix com a fons per a _totes les carpetes"
+msgstr "Estableix com a fons per a totes les c_arpetes"
 
 #: ../libnautilus-private/nautilus-dnd.c:701
 msgid "Set as background for _this folder"
-msgstr "Es_tableix com a fons per a la carpeta"
+msgstr "Es_tableix com a fons per a aquesta carpeta"
 
 #: ../libnautilus-private/nautilus-emblem-utils.c:197
 #: ../libnautilus-private/nautilus-emblem-utils.c:202
@@ -1350,7 +1394,7 @@ msgstr "No s'ha pogut instal·lar el distintiu"
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
-"Les paraules claus per als distintius només poden contenir lletres, espais i "
+"Les paraules clau per als distintius només poden contenir lletres, espais i "
 "nombres."
 
 #. this really should never happen, as a user has no idea
@@ -1378,20 +1422,20 @@ msgstr "No s'ha pogut desar el distintiu personalitzat."
 msgid "Sorry, unable to save custom emblem name."
 msgstr "No s'ha pogut desar el nom del distintiu personalitzat."
 
-#: ../libnautilus-private/nautilus-file-operations-progress.c:408
+#: ../libnautilus-private/nautilus-file-operations-progress.c:169
+#, c-format
+msgid "%s %ld of %ld %s"
+msgstr "%s %ld de %ld %s"
+
+#: ../libnautilus-private/nautilus-file-operations-progress.c:448
 #, c-format
 msgid "(%d:%02d:%d Remaining)"
 msgstr "(queden %d:%02d:%d)"
 
-#: ../libnautilus-private/nautilus-file-operations-progress.c:413
+#: ../libnautilus-private/nautilus-file-operations-progress.c:453
 #, c-format
 msgid "(%d:%02d Remaining)"
 msgstr "(queden %d:%02d)"
-
-#: ../libnautilus-private/nautilus-file-operations-progress.c:526
-#, c-format
-msgid "%ld of %ld"
-msgstr "%ld de %ld"
 
 #. "From" dialog label, source path gets placed next to it in the dialog
 #: ../libnautilus-private/nautilus-file-operations.c:358
@@ -1482,7 +1526,7 @@ msgstr "S'ha produït un error en copiar a «%s»."
 #: ../libnautilus-private/nautilus-file-operations.c:672
 #: ../libnautilus-private/nautilus-file-operations.c:676
 msgid "There is not enough space on the destination."
-msgstr "No hi ha suficient espai al destí."
+msgstr "No hi ha prou espai al destí."
 
 #: ../libnautilus-private/nautilus-file-operations.c:671
 #, c-format
@@ -1590,11 +1634,11 @@ msgstr "S'ha produït un error en suprimir"
 #: ../libnautilus-private/nautilus-file-operations.c:1118
 #: ../libnautilus-private/nautilus-file-operations.c:1137
 msgid "_Skip"
-msgstr "Ome_t"
+msgstr "_Omet"
 
 #: ../libnautilus-private/nautilus-file-operations.c:969
 msgid "_Retry"
-msgstr "To_rna-ho a intentar"
+msgstr "_Torna-ho a intentar"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1059
 #, c-format
@@ -1648,7 +1692,7 @@ msgstr ""
 #: ../libnautilus-private/nautilus-file-operations.c:1104
 msgid "If you replace an existing file, its contents will be overwritten."
 msgstr ""
-"Si reemplaceu un fitxer existent, se'n sobreescriuran el seus continguts."
+"Si reemplaceu un fitxer existent, se'n sobreescriuran els seus continguts."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1117
 #: ../libnautilus-private/nautilus-file-operations.c:1136
@@ -1925,11 +1969,11 @@ msgstr "No podeu copiar la paperera."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2046
 msgid "You cannot move a folder into itself."
-msgstr "No podeu moure una carpeta dins ella mateixa."
+msgstr "No podeu moure una carpeta dins d'ella mateixa."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2047
 msgid "You cannot copy a folder into itself."
-msgstr "No podeu copiar una carpeta dins ella mateixa."
+msgstr "No podeu copiar una carpeta dins d'ella mateixa."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2048
 msgid "The destination folder is inside the source folder."
@@ -1937,11 +1981,11 @@ msgstr "La carpeta destí està a la carpeta origen."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2050
 msgid "Can't Move Into Self"
-msgstr "No podeu moure dins ella mateixa."
+msgstr "No es pot moure dins d'ella mateixa."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2051
 msgid "Can't Copy Into Self"
-msgstr "No podeu copiar dins ella mateixa."
+msgstr "No es pot copiar dins d'ella mateixa."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2064
 msgid "You cannot copy a file over itself."
@@ -1949,11 +1993,11 @@ msgstr "No podeu copiar un fitxer sobre ell mateix."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2065
 msgid "The destination and source are the same file."
-msgstr "El destí i origen són el mateix fitxer."
+msgstr "El destí i l'origen són el mateix fitxer."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2066
 msgid "Can't Copy Over Self"
-msgstr "No podeu copiar sobre ell mateix"
+msgstr "No es pot copiar sobre ell mateix"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2118
 #: ../libnautilus-private/nautilus-file-operations.c:2258
@@ -1998,7 +2042,7 @@ msgstr "S'ha produït un error en crear un nou document"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2414
 msgid "new file"
-msgstr "nou fitxer"
+msgstr "fitxer nou"
 
 #. localizers: progress dialog title
 #: ../libnautilus-private/nautilus-file-operations.c:2487
@@ -2531,7 +2575,7 @@ msgstr "ressaltat per a sel·lecció"
 
 #: ../libnautilus-private/nautilus-icon-canvas-item.c:2909
 msgid "whether we are highlighted for a selection"
-msgstr "si estem remarcats per a una sel·lecció"
+msgstr "si estem ressaltats per a una sel·lecció"
 
 #: ../libnautilus-private/nautilus-icon-canvas-item.c:2916
 msgid "highlighted as keyboard focus"
@@ -2539,23 +2583,23 @@ msgstr "ressaltats com a focus de teclat"
 
 #: ../libnautilus-private/nautilus-icon-canvas-item.c:2917
 msgid "whether we are highlighted to render keyboard focus"
-msgstr "si estem o no remarcats per tenir el focus del teclat"
+msgstr "si estem o no ressaltats per tenir el focus del teclat"
 
 #: ../libnautilus-private/nautilus-icon-canvas-item.c:2925
 msgid "highlighted for drop"
-msgstr "remarcat per a deixar anar"
+msgstr "ressaltat per a deixar anar"
 
 #: ../libnautilus-private/nautilus-icon-canvas-item.c:2926
 msgid "whether we are highlighted for a D&D drop"
-msgstr "si estem o no remarcats per un arrossegar i deixar"
+msgstr "si estem o no ressaltats per a un arrossegar i deixar anar"
 
 #: ../libnautilus-private/nautilus-icon-container.c:2107
 msgid "The selection rectangle"
-msgstr "El rectangle de la sel·lecció"
+msgstr "El rectangle de la selecció"
 
 #: ../libnautilus-private/nautilus-icon-container.c:4269
 msgid "Frame Text"
-msgstr "Enmarca el text"
+msgstr "Emmarca el text"
 
 #: ../libnautilus-private/nautilus-icon-container.c:4270
 msgid "Draw a frame around unselected text"
@@ -2740,7 +2784,7 @@ msgstr "No s'ha pogut mostrar «%s»."
 #: ../libnautilus-private/nautilus-program-choosing.c:888
 #: ../libnautilus-private/nautilus-program-choosing.c:957
 msgid "There was an error launching the application."
-msgstr "S'ha produït un error en llençar l'aplicació."
+msgstr "S'ha produït un error en llançar l'aplicació."
 
 #: ../libnautilus-private/nautilus-program-choosing.c:601
 #: ../src/nautilus-window-manage-views.c:1387
@@ -2810,12 +2854,12 @@ msgstr "No es poden executar el enllaços remots"
 #: ../libnautilus-private/nautilus-program-choosing.c:886
 #: ../libnautilus-private/nautilus-program-choosing.c:955
 msgid "Details: "
-msgstr "Detalls:"
+msgstr "Detalls: "
 
 #: ../libnautilus-private/nautilus-program-choosing.c:890
 #: ../libnautilus-private/nautilus-program-choosing.c:959
 msgid "Error Launching Application"
-msgstr "S'ha produït un error en llençar l'aplicació"
+msgstr "S'ha produït un error en llançar l'aplicació"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:918
 #: ../libnautilus-private/nautilus-program-choosing.c:930
@@ -2842,6 +2886,7 @@ msgstr ""
 "Per obrir fitxers que no són locals, copieu-los a una carpeta local i deixeu-"
 "los-hi anar de nou. Els fitxer locals que heu deixat anar ja s'han obert."
 
+# FIXME: "Edita" ? (josep)
 #: ../libnautilus-private/nautilus-undo-signal-handlers.c:174
 msgid "Edit"
 msgstr "Edició"
@@ -2897,11 +2942,11 @@ msgstr "Factoria per a l'intèrpret d'ordres i gestor de fitxers Nautilus"
 
 #: ../src/Nautilus_shell.server.in.h:2
 msgid "Nautilus factory"
-msgstr "Factoria de Nautilus"
+msgstr "Factoria del Nautilus"
 
 #: ../src/Nautilus_shell.server.in.h:3
 msgid "Nautilus metafile factory"
-msgstr "Metafitxer de factoria de Nautilus"
+msgstr "Metafitxer de factoria del Nautilus"
 
 #: ../src/Nautilus_shell.server.in.h:4
 msgid "Nautilus shell"
@@ -2941,14 +2986,14 @@ msgstr "Obre una nova finestra de terminal del GNOME"
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:702
 #: ../src/file-manager/fm-directory-view.c:5737
-msgid "Create L_auncher"
-msgstr "Crea una nova llenç_adora"
+msgid "Create L_auncher..."
+msgstr "Crea una llanç_adora..."
 
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:703
 #: ../src/file-manager/fm-directory-view.c:5738
 msgid "Create a new launcher"
-msgstr "Crea una nova llençadora"
+msgstr "Crea una nova llançadora"
 
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:706
@@ -3181,12 +3226,12 @@ msgstr "Utilitza «%s» per a obrir l'element seleccionat"
 #: ../src/file-manager/fm-directory-view.c:3748
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
-msgstr "Voleu executar el «%s» o mostrar-ne els continguts?"
+msgstr "Voleu executar «%s», o mostrar-ne els continguts?"
 
 #: ../src/file-manager/fm-directory-view.c:3750
 #, c-format
 msgid "\"%s\" is an executable text file."
-msgstr "El «%s» és un fitxer de text executable."
+msgstr "«%s» és un fitxer de text executable."
 
 #: ../src/file-manager/fm-directory-view.c:3756
 msgid "Run or Display?"
@@ -3225,11 +3270,11 @@ msgstr ""
 "continguts del fitxer indiquen que el fitxer és de tipus «%s». Obrir aquest "
 "fitxer pot representar una amenaça de seguretat per al vostre sistema.\n"
 "\n"
-"No obriu el fitxer si no l'heu creat vosaltres mateixos, o l'heu rebut d'una "
-"font en la que confieu. Per a obrir aquest fitxer, reanomeneu el fitxer a "
-"l'extensió correcta per a «%s», i després obriu el fitxer normalment. "
-"Alternativament, utilitzeu el menú «Obre amb» per a seleccionar una "
-"aplicació específica per al fitxer."
+"No obriu el fitxer si no l'heu creat vós mateix, o l'heu rebut d'una font en "
+"la que confieu. Per a obrir aquest fitxer, reanomeneu-lo a l'extensió "
+"correcta per a «%s», i després obriu-lo normalment. Alternativament, "
+"utilitzeu el menú «Obre amb» per a seleccionar una aplicació específica per "
+"al fitxer."
 
 #: ../src/file-manager/fm-directory-view.c:4571
 #, c-format
@@ -3244,7 +3289,7 @@ msgstr "Crea un document a partir de la plantilla «%s»"
 #: ../src/file-manager/fm-directory-view.c:5026
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
-"Tot els fitxer executables de la carpeta apareixeran al menú de seqüències."
+"Tot els fitxers executables de la carpeta apareixeran al menú de seqüències."
 
 #: ../src/file-manager/fm-directory-view.c:5028
 msgid ""
@@ -3339,17 +3384,17 @@ msgstr[1] ""
 #: ../src/file-manager/fm-directory-view.c:5293
 #: ../src/file-manager/fm-tree-view.c:975
 msgid "There is nothing on the clipboard to paste."
-msgstr "No hi ha res al porta-retalls per a enganxar."
+msgstr "No hi ha res al porta-retalls per enganxar."
 
 #: ../src/file-manager/fm-directory-view.c:5400
 #: ../src/file-manager/fm-directory-view.c:6793
 msgid "Mount Error"
-msgstr "S'ha produït un error de muntatge"
+msgstr "S'ha produït un error en muntar"
 
 #: ../src/file-manager/fm-directory-view.c:5457
 #: ../src/file-manager/fm-tree-view.c:1060
 msgid "Unmount Error"
-msgstr "S'ha produït un error de desmuntatge"
+msgstr "S'ha produït un error en desmuntar"
 
 #: ../src/file-manager/fm-directory-view.c:5470
 #: ../src/file-manager/fm-tree-view.c:1057
@@ -3381,7 +3426,7 @@ msgstr "Obre am_b"
 #. name, stock id, label
 #: ../src/file-manager/fm-directory-view.c:5718
 msgid "Choose a program with which to open the selected item"
-msgstr "Trieu un programa amb què obrir l'element seleccionat"
+msgstr "Escolliu un programa per a obrir l'element seleccionat"
 
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:5720
@@ -3471,7 +3516,7 @@ msgstr "Re_talla els fitxer"
 #: ../src/file-manager/fm-directory-view.c:5770
 msgid "Prepare the selected files to be moved with a Paste Files command"
 msgstr ""
-"Prepara els fitxers seleccionats per ser moguts amb una ordre Enganxa fitxers"
+"Prepara els fitxers seleccionats per moure'ls amb una ordre Enganxa fitxers"
 
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:5773
@@ -3483,7 +3528,7 @@ msgstr "_Copia els fitxers"
 #: ../src/file-manager/fm-directory-view.c:5774
 msgid "Prepare the selected files to be copied with a Paste Files command"
 msgstr ""
-"Prepara els fitxers seleccionats per ser copiats amb una ordre d'enganxar "
+"Prepara els fitxers seleccionats per copiar-los amb una ordre d'enganxar "
 "fitxers"
 
 #. name, stock id
@@ -3556,11 +3601,13 @@ msgstr "Crea un _enllaç"
 msgid "Create a symbolic link for each selected item"
 msgstr "Crea un enllaç simbòlic per a cada element seleccionat"
 
+# FIXME: "Canvia el nom" (josep)
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:5803
 msgid "_Rename..."
 msgstr "_Reanomena..."
 
+# FIXME: "Canvia el nom..." (josep)
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:5804
 msgid "Rename selected item"
@@ -3620,7 +3667,7 @@ msgstr "_Munta el volum"
 #. label, accelerator
 #: ../src/file-manager/fm-directory-view.c:5824
 msgid "Mount the selected volume"
-msgstr "Munta el volum sel·leccionat"
+msgstr "Munta el volum seleccionat"
 
 #. name, stock id
 #: ../src/file-manager/fm-directory-view.c:5827
@@ -3744,7 +3791,7 @@ msgstr "Ubicació de descàrrega?"
 
 #: ../src/file-manager/fm-directory-view.c:7800
 msgid "You can download it or make a link to it."
-msgstr "Podeu descarregar-ho o crear un enllaç que apunti a ell."
+msgstr "Podeu descarregar-ho o crear un enllaç que hi apunti."
 
 #: ../src/file-manager/fm-directory-view.c:7803
 msgid "Make a _Link"
@@ -3758,12 +3805,12 @@ msgstr "_Descarrega"
 #: ../src/file-manager/fm-directory-view.c:7886
 #: ../src/file-manager/fm-directory-view.c:8000
 msgid "Drag and drop is not supported."
-msgstr "No se suporta l'arrossegar i deixar anar."
+msgstr "No es permet arrossegar i deixar anar."
 
 #: ../src/file-manager/fm-directory-view.c:7865
 msgid "Drag and drop is only supported on local file systems."
 msgstr ""
-"L'arrossegar i deixar anar només ho suporten els sistemes de fitxers locals."
+"L'arrossegar i deixar anar només es permet en els sistemes de fitxers locals."
 
 #: ../src/file-manager/fm-directory-view.c:7866
 #: ../src/file-manager/fm-directory-view.c:7888
@@ -4667,6 +4714,7 @@ msgstr "Heu d'introduir un nom per al servidor."
 msgid "Please enter a name and try again."
 msgstr "Introduïu un nom i proveu-ho de nou."
 
+# FIXME: "a"?
 #: ../src/nautilus-connect-server-dialog.c:269 ../src/nautilus-window.c:981
 #, c-format
 msgid "%s on %s"
@@ -4684,6 +4732,8 @@ msgstr "_Servidor:"
 msgid "Optional information:"
 msgstr "Informació opcional:"
 
+# FIXME: Com sabem que és un "volum"?
+# "Recurs compartit", potser? (josep)
 #: ../src/nautilus-connect-server-dialog.c:463
 msgid "_Share:"
 msgstr "_Volum compartit:"
@@ -4724,6 +4774,7 @@ msgstr "FTP públic"
 msgid "FTP (with login)"
 msgstr "FTP (amb usuari)"
 
+# FIXME: "Recurs compartit" ? (Josep)
 #: ../src/nautilus-connect-server-dialog.c:637
 msgid "Windows share"
 msgstr "Volum compartit de Windows"
@@ -4751,7 +4802,7 @@ msgstr "C_onnecta"
 #: ../src/nautilus-emblem-sidebar.c:241
 #, c-format
 msgid "Couldn't remove emblem with name '%s'."
-msgstr "No s'ha pogut suprimir el distintiu amb el nom '%s'."
+msgstr "No s'ha pogut suprimir el distintiu amb el nom «%s»."
 
 #: ../src/nautilus-emblem-sidebar.c:242
 msgid ""
@@ -4759,7 +4810,7 @@ msgid ""
 "added yourself."
 msgstr ""
 "Probablement és perquè el distintiu és un dels permanents, i no un dels que "
-"heu afegit vosaltres."
+"heu afegit vós."
 
 #: ../src/nautilus-emblem-sidebar.c:243
 msgid "Couldn't Remove Emblem"
@@ -4768,7 +4819,7 @@ msgstr "No s'ha pogut suprimir el distintiu"
 #: ../src/nautilus-emblem-sidebar.c:276
 #, c-format
 msgid "Couldn't rename emblem with name '%s'."
-msgstr "No s'ha pogut canviar el nom del distintiu per '%s'."
+msgstr "No s'ha pogut canviar el nom del distintiu per «%s»."
 
 #: ../src/nautilus-emblem-sidebar.c:277
 msgid ""
@@ -4776,7 +4827,7 @@ msgid ""
 "added yourself."
 msgstr ""
 "Probablement és perquè el distintiu és un dels permanents, i no un dels que "
-"heu afegit vosaltres."
+"heu afegit vós."
 
 #: ../src/nautilus-emblem-sidebar.c:278
 msgid "Couldn't Rename Emblem"
@@ -4842,7 +4893,7 @@ msgstr "El text arrossegat no era una ubicació de fitxer vàlida."
 #: ../src/nautilus-emblem-sidebar.c:802 ../src/nautilus-emblem-sidebar.c:827
 #: ../src/nautilus-emblem-sidebar.c:877
 msgid "Couldn't Add Emblem"
-msgstr "No s'ha pogut afegir un distintiu"
+msgstr "No s'ha pogut afegir el distintiu"
 
 #: ../src/nautilus-emblem-sidebar.c:822 ../src/nautilus-emblem-sidebar.c:876
 #, c-format
@@ -4942,7 +4993,7 @@ msgstr "O_bre sempre en finestres del navegador"
 
 #: ../src/nautilus-file-management-properties.glade.h:40
 msgid "Ask before _emptying the Trash or deleting files"
-msgstr "Pregunta a_bans de buidar la paperera o suprimir els fitxers"
+msgstr "Pr_egunta abans de buidar la paperera o suprimir els fitxers"
 
 #: ../src/nautilus-file-management-properties.glade.h:41
 msgid "Behavior"
@@ -4953,8 +5004,8 @@ msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
 msgstr ""
-"Trieu l'ordre de la informació que apareix a sota dels noms de les icones. "
-"Apareixerà més informació a mida que incrementeu l'ampliació."
+"Escolliu l'ordre de la informació que apareix a sota dels noms de les "
+"icones. Apareixerà més informació així que incrementeu l'ampliació."
 
 #: ../src/nautilus-file-management-properties.glade.h:48
 msgid "Choose the order of information to appear in the list view."
@@ -4964,7 +5015,7 @@ msgstr ""
 
 #: ../src/nautilus-file-management-properties.glade.h:49
 msgid "Count _number of items:"
-msgstr "Compte el _nombre d'elements:"
+msgstr "Compta el _nombre d'elements:"
 
 #: ../src/nautilus-file-management-properties.glade.h:50
 msgid "Default _zoom level:"
@@ -5030,9 +5081,10 @@ msgstr "Ordena les car_petes abans que els fitxers"
 msgid "View _new folders using:"
 msgstr "Visualitza les _noves carpetes amb:"
 
+# Recull: "view - f visualització" (josep)
 #: ../src/nautilus-file-management-properties.glade.h:68
 msgid "Views"
-msgstr "Vistes"
+msgstr "Visualitzacions"
 
 #: ../src/nautilus-file-management-properties.glade.h:69
 msgid "_Arrange items:"
@@ -5052,7 +5104,7 @@ msgstr "_Format:"
 
 #: ../src/nautilus-file-management-properties.glade.h:74
 msgid "_Only for files smaller than:"
-msgstr "_Només per a fitxers més petits que:"
+msgstr "_Només per a fitxers més petits de:"
 
 #: ../src/nautilus-file-management-properties.glade.h:75
 msgid "_Run executable text files when they are clicked"
@@ -5261,8 +5313,8 @@ msgstr "Vés a:"
 #, c-format
 msgid "Do you want to view %d location?"
 msgid_plural "Do you want to view %d locations?"
-msgstr[0] "Voleu veure %d ubicació?"
-msgstr[1] "Voleu veure %d ubicacions?"
+msgstr[0] "Voleu visualitzar %d ubicació?"
+msgstr[1] "Voleu visualitzar %d ubicacions?"
 
 #: ../src/nautilus-location-bar.c:170
 msgid "View in Multiple Windows?"
@@ -5317,7 +5369,7 @@ msgid "File Manager"
 msgstr "Gestor de fitxers"
 
 #. Set initial window title
-#: ../src/nautilus-main.c:331 ../src/nautilus-spatial-window.c:330
+#: ../src/nautilus-main.c:331 ../src/nautilus-spatial-window.c:336
 #: ../src/nautilus-window-menus.c:442 ../src/nautilus-window.c:147
 msgid "Nautilus"
 msgstr "Nautilus"
@@ -5350,7 +5402,7 @@ msgstr "Esteu segur de voler oblidar l'historial?"
 
 #: ../src/nautilus-navigation-window-menus.c:128
 msgid "If you do, you will be doomed to repeat it."
-msgstr "Si ho feu, estareu destinats a repetir-ho."
+msgstr "Si ho feu, estareu destinats a repetir-lo."
 
 #: ../src/nautilus-navigation-window-menus.c:130
 msgid "Are you sure you want to clear the list of locations you have visited?"
@@ -5385,7 +5437,7 @@ msgstr "Adreça d'interès d'una ubicació inexistent"
 
 #: ../src/nautilus-navigation-window-menus.c:293
 msgid "Remove"
-msgstr "Elimina"
+msgstr "Suprimeix"
 
 #: ../src/nautilus-navigation-window-menus.c:545
 msgid "_Go"
@@ -5421,9 +5473,9 @@ msgstr "_Ubicació..."
 
 #. name, stock id, label
 #: ../src/nautilus-navigation-window-menus.c:554
-#: ../src/nautilus-spatial-window.c:582
+#: ../src/nautilus-spatial-window.c:662
 msgid "Specify a location to open"
-msgstr "Especifiqueu una ubicació per a obrir"
+msgstr "Especifiqueu una ubicació a obrir"
 
 #: ../src/nautilus-navigation-window-menus.c:556
 msgid "Clea_r History"
@@ -5494,7 +5546,7 @@ msgstr "Vés a la ubicació visitada anteriorment"
 
 #: ../src/nautilus-navigation-window-menus.c:620
 msgid "_Forward"
-msgstr "_Endavant"
+msgstr "E_ndavant"
 
 #: ../src/nautilus-navigation-window-menus.c:622
 msgid "Go to the next visited location"
@@ -5591,7 +5643,7 @@ msgstr "«%s» no és un nom de fitxer vàlid."
 
 #: ../src/nautilus-property-browser.c:1099
 msgid "Sorry, but you did not supply a valid file name."
-msgstr "No heu donat un nom de fitxer vàlid."
+msgstr "No heu proporcionat cap nom de fitxer vàlid."
 
 #: ../src/nautilus-property-browser.c:1100
 msgid "Please try again."
@@ -5639,7 +5691,7 @@ msgstr "No s'ha pogut instal·lar el color"
 
 #: ../src/nautilus-property-browser.c:1281
 msgid "Select a color to add"
-msgstr "Seleccioneu un color per a afegir"
+msgstr "Seleccioneu un color a afegir"
 
 #: ../src/nautilus-property-browser.c:1318
 #: ../src/nautilus-property-browser.c:1334
@@ -5674,15 +5726,15 @@ msgstr "_Afegeix un distintiu nou..."
 
 #: ../src/nautilus-property-browser.c:2084
 msgid "Click on a pattern to remove it"
-msgstr "Feu clic en un patró per a eliminar-lo"
+msgstr "Feu clic en un patró per eliminar-lo"
 
 #: ../src/nautilus-property-browser.c:2087
 msgid "Click on a color to remove it"
-msgstr "Feu clic sobre un color per a eliminar-lo"
+msgstr "Feu clic sobre un color per eliminar-lo"
 
 #: ../src/nautilus-property-browser.c:2090
 msgid "Click on an emblem to remove it"
-msgstr "Feu clic sobre un distintiu per a eliminar-lo"
+msgstr "Feu clic sobre un distintiu per eliminar-lo"
 
 #: ../src/nautilus-property-browser.c:2099
 msgid "Patterns:"
@@ -5718,30 +5770,30 @@ msgstr "Tanca la barra lateral"
 msgid "Show %s"
 msgstr "Mostra la %s"
 
-#: ../src/nautilus-spatial-window.c:580
+#: ../src/nautilus-spatial-window.c:660
 msgid "_Places"
 msgstr "_Llocs"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:581
+#: ../src/nautilus-spatial-window.c:661
 msgid "Open _Location..."
 msgstr "Obre una _ubicació..."
 
-#: ../src/nautilus-spatial-window.c:584
+#: ../src/nautilus-spatial-window.c:664
 msgid "Close P_arent Folders"
-msgstr "Tanca les car_petes pare"
+msgstr "Tanca les carpetes _pare"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:585
+#: ../src/nautilus-spatial-window.c:665
 msgid "Close this folder's parents"
-msgstr "Tanca les carpetes pare"
+msgstr "Tanca les carpetes pare d'aquesta carpeta"
 
-#: ../src/nautilus-spatial-window.c:587
+#: ../src/nautilus-spatial-window.c:667
 msgid "Clos_e All Folders"
 msgstr "Tanca totes les carp_etes"
 
 #. name, stock id, label
-#: ../src/nautilus-spatial-window.c:588
+#: ../src/nautilus-spatial-window.c:668
 msgid "Close all folder windows"
 msgstr "Tanca totes les finestres de carpetes"
 
@@ -5835,7 +5887,7 @@ msgid ""
 "the Free Software Foundation; either version 2 of the License, or \n"
 "(at your option) any later version."
 msgstr ""
-"Nautilus és programari lliure; podeu redistribuir-lo i/o modificar-lo\n"
+"El Nautilus és programari lliure; podeu redistribuir-lo i/o modificar-lo\n"
 "sota els termes de la Llicència Pública General GNU tal i com ha estat\n"
 "publicada per la Free Software Foundation; bé sota la versió 2 de la\n"
 "Llicència o bé (si ho preferiu) sota qualsevol versió posterior."
@@ -5847,7 +5899,7 @@ msgid ""
 "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the \n"
 "GNU General Public License for more details."
 msgstr ""
-"Nautilus es distribueix amb l'expectativa de que serà útil,\n"
+"El Nautilus es distribueix amb l'expectativa de que serà útil,\n"
 "però SENSE CAP GARANTIA; ni tan sols la garantia implícita de\n"
 "COMERCIABILITAT o ADEQUACIÓ PER UN PROPÒSIT PARTICULAR.  Vegeu la\n"
 "Llicència Pública General GNU per obtenir-ne més detalls."
@@ -5868,8 +5920,8 @@ msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
 msgstr ""
-"Nautilus és un intèrpret d'ordres gràfic per al GNOME que facilita la gestió "
-"dels vostres fitxers i la resta del sistema."
+"El Nautilus és un intèrpret d'ordres gràfic per al GNOME, que facilita la "
+"gestió dels vostres fitxers i la resta del sistema."
 
 #: ../src/nautilus-window-menus.c:448
 msgid "Copyright © 1999-2005 The Nautilus authors"
@@ -6121,5899 +6173,8 @@ msgid "View your network servers in the Nautilus file manager"
 msgstr ""
 "Visualitzeu els vostres servidors de xarxa en el gestor de fitxers Nautilus"
 
-#: ../libbackground/applier.c:257
-msgid ""
-"Type of bg_applier: BG_APPLIER_ROOT for root window or BG_APPLIER_PREVIEW "
-"for preview"
-msgstr ""
-"Tipus de bg_applier: BG_APPLIER_ROOT per a finestra o BG_APPLIER_PREVIEW per "
-"a visualització prèvia"
-
-#: ../libbackground/applier.c:264
-msgid "Preview Width"
-msgstr "Amplada de la previsualització"
-
-#: ../libbackground/applier.c:265
-msgid "Width if applier is a preview: Defaults to 64."
-msgstr "Amplada si l'aplicador és una previsualització: Predeterminat a 64."
-
-#: ../libbackground/applier.c:272
-msgid "Preview Height"
-msgstr "Alçària de la previsualització"
-
-#: ../libbackground/applier.c:273
-msgid "Height if applier is a preview: Defaults to 48."
-msgstr "Alçària si l'aplicador és una previsualització: Predeterminat a 48."
-
-#: ../libbackground/applier.c:280
-msgid "Screen"
-msgstr "Pantalla"
-
-#: ../libbackground/applier.c:281
-msgid "Screen on which BGApplier is to draw"
-msgstr "La pantalla on s'ha de dibuxar BGApplier"
-
-#: ../libbackground/applier.c:757
-msgid "Disabled"
-msgstr "Inhabilitat"
-
-#: ../libnautilus-private/nautilus-desktop-link-monitor.c:114
-#, c-format
-msgid "You cannot move the volume \"%s\" to the trash."
-msgstr "No podeu moure el volum «%s» a la paperera."
-
-#: ../libnautilus-private/nautilus-desktop-link-monitor.c:133
-msgid ""
-"If you want to unmount the volume, please use Unmount Volume in the right-"
-"click menu of the volume."
-msgstr ""
-"Si voleu desmuntar el volum, utilitzeu «Desmunta el volum» al menú del botó "
-"dret del volum."
-
-#. name, stock id
-#: ../src/file-manager/fm-desktop-icon-view.c:702
-#: ../src/file-manager/fm-directory-view.c:5737
-msgid "Create L_auncher..."
-msgstr "Crea una llançadora..."
-
-#~ msgid "Applications"
-#~ msgstr "Aplicacions"
-
-#~ msgid "Browse available software"
-#~ msgstr "Navega pel programari disponible"
-
-#~ msgid "Favorite applications"
-#~ msgstr "Aplicacions preferides"
-
-#~ msgid "Favorites"
-#~ msgstr "Preferits"
-
-#~ msgid "An Eggplant variation of the Crux theme."
-#~ msgstr "Una variació albergínia del tema Crux"
-
-#~ msgid "Crux-Eggplant"
-#~ msgstr "Crux-Eggplant"
-
-#~ msgid "A Teal variation of the Crux theme."
-#~ msgstr "Una variant de Teal del tema Crux."
-
-#~ msgid "Crux-Teal"
-#~ msgstr "Crux-Teal"
-
-#~ msgid "Eazel"
-#~ msgstr "Eazel"
-
-#~ msgid "This is the default theme for Nautilus."
-#~ msgstr "És el tema predeterminat del Nautilus."
-
-#~ msgid "A theme designed to fit well with the classic GNOME environment."
-#~ msgstr "Tema dissenyat per anar bé amb l'entorn GNOME clàssic"
-
-#~ msgid "Sierra"
-#~ msgstr "Serra"
-
-#~ msgid "Uses manila folders and gray-green backgrounds."
-#~ msgstr "utilitza les carpetes manila i fons grisos verds."
-
-#~ msgid "Tahoe"
-#~ msgstr "Tahoe"
-
-#~ msgid "This theme uses photo-realistic folders."
-#~ msgstr "El tema utilitza carpetes fotorealistes."
-
-#~ msgid "Allaire"
-#~ msgstr "Allaire"
-
-#~ msgid "Binary Freedom"
-#~ msgstr "Binary Freedom"
-
-#~ msgid "Borland"
-#~ msgstr "Borland"
-
-#~ msgid "CNET Computers.com"
-#~ msgstr "CNET Computers.com"
-
-#~ msgid "CNET Linux Center"
-#~ msgstr "CNET Linux Center"
-
-#~ msgid "CollabNet"
-#~ msgstr "CollabNet"
-
-#~ msgid "Compaq"
-#~ msgstr "Compaq"
-
-#~ msgid "Conectiva"
-#~ msgstr "Conectiva"
-
-#~ msgid "Covalent"
-#~ msgstr "Covalent"
-
-#~ msgid "Debian.org"
-#~ msgstr "Debian.org"
-
-#~ msgid "Dell"
-#~ msgstr "Dell"
-
-#~ msgid "Freshmeat.net"
-#~ msgstr "Freshmeat.net"
-
-#~ msgid "GNOME.org"
-#~ msgstr "GNOME.org"
-
-#~ msgid "GNU.org"
-#~ msgstr "GNU.org"
-
-#~ msgid "Hardware"
-#~ msgstr "Maquinari"
-
-#~ msgid "International"
-#~ msgstr "Internacional"
-
-#~ msgid "Linux Documentation Project"
-#~ msgstr "Linux Documentation Project"
-
-#~ msgid "Linux One"
-#~ msgstr "Linux One"
-
-#~ msgid "Linux Online"
-#~ msgstr "Linux Online"
-
-#~ msgid "Linux Resources"
-#~ msgstr "Linux Resources"
-
-#~ msgid "Linux Weekly News"
-#~ msgstr "Linux Weekly News"
-
-#~ msgid "LinuxNewbie.org"
-#~ msgstr "LinuxNewbie.org"
-
-#~ msgid "LinuxOrbit.com"
-#~ msgstr "LinuxOrbit.com"
-
-#~ msgid "MandrakeSoft"
-#~ msgstr "MandrakeSoft"
-
-#~ msgid "Netraverse"
-#~ msgstr "Netraverse"
-
-#~ msgid "News and Media"
-#~ msgstr "News and Media"
-
-#~ msgid "O'Reilly"
-#~ msgstr "O'Reilly"
-
-#~ msgid "OSDN"
-#~ msgstr "OSDN"
-
-#~ msgid "Open Source Asia"
-#~ msgstr "Open Source Asia"
-
-#~ msgid "OpenOffice"
-#~ msgstr "OpenOffice"
-
-#~ msgid "Penguin Computing"
-#~ msgstr "Penguin Computing"
-
-#~ msgid "Rackspace"
-#~ msgstr "Rackspace"
-
-#~ msgid "Red Hat"
-#~ msgstr "Red Hat"
-
-#~ msgid "Red Hat Network"
-#~ msgstr "Red Hat Network"
-
-#~ msgid "RedFlag Linux"
-#~ msgstr "RedFlag Linux"
-
-#~ msgid "SourceForge"
-#~ msgstr "SourceForge"
-
-#~ msgid "SuSE"
-#~ msgstr "SuSE"
-
-#~ msgid "Sun StarOffice"
-#~ msgstr "Sun StarOffice"
-
-#~ msgid "Sun Wah Linux"
-#~ msgstr "Sun Wah Linux"
-
-#~ msgid "Web Services"
-#~ msgstr "Web Services"
-
-#~ msgid "Ximian"
-#~ msgstr "Ximian"
-
-#~ msgid "ZDNet Linux Hardware Database"
-#~ msgstr "ZDNet Linux Hardware Database"
-
-#~ msgid "ZDNet Linux Resource Center"
-#~ msgstr "ZDNet Linux Resource Center"
-
-#~ msgid "Zero-Knowledge"
-#~ msgstr "Zero-Knowledge"
-
-#~ msgid "Icons Viewer"
-#~ msgstr "Visualitzador d'icones"
-
-#~ msgid "List Viewer"
-#~ msgstr "Visualitzador de llista"
-
-#~ msgid "Nautilus Tree View"
-#~ msgstr "Vista de l'arbre del Nautilus"
-
-#~ msgid "Nautilus Tree side pane"
-#~ msgstr "Barra lateral de l'arbre del Nautilus"
-
-#~ msgid "Nautilus file manager component that shows a scrollable list"
-#~ msgstr ""
-#~ "Component del gestor de fitxers del Nautilus que mostra una llista "
-#~ "desplaçable"
-
-#~ msgid ""
-#~ "Nautilus file manager component that shows a scrollable list for search "
-#~ "results"
-#~ msgstr ""
-#~ "Component del gestor de fitxers del Nautilus que mostra una llista "
-#~ "desplegable per als resultats de la cerca"
-
-#~ msgid ""
-#~ "Nautilus file manager component that shows a two-dimensional icon space"
-#~ msgstr ""
-#~ "Component del gestor de fitxer del Nautilus que mostra un espaiat d'icona "
-#~ "bidimensional"
-
-#~ msgid "Nautilus file manager component that shows icons on the desktop"
-#~ msgstr ""
-#~ "Component del gestor de fitxer del Nautilus que mostra icones sobre "
-#~ "l'escriptori"
-
-#~ msgid "Nautilus file manager desktop icon view"
-#~ msgstr "Vista d'icones de l'escriptori del gestor de fitxers del Nautilus"
-
-#~ msgid "Nautilus file manager icon view"
-#~ msgstr "Vista d'icones del gestor de fitxers del Nautilus "
-
-#~ msgid "Nautilus file manager list view"
-#~ msgstr "Vista de llista del gestor de fitxer del Nautilus"
-
-#~ msgid "Nautilus file manager search results list view"
-#~ msgstr ""
-#~ "Vista de la llista dels resultats de la cerca del gestor de fitxers del "
-#~ "Nautilus"
-
-#~ msgid "Search List"
-#~ msgstr "Llista de cerca"
-
-#~ msgid "View as Icons"
-#~ msgstr "Visualitza com a icones"
-
-#~ msgid "View as List"
-#~ msgstr "Visualitza com llista"
-
-#~ msgid "View as _Icons"
-#~ msgstr "Visualitza com a _icones"
-
-#~ msgid "View as _List"
-#~ msgstr "Visualitza com _llista"
-
-#~ msgid "Files thrown out:"
-#~ msgstr "Fitxers llençats:"
-
-#~ msgid "Files moved:"
-#~ msgstr "Fitxers moguts:"
-
-#~ msgid "Files linked:"
-#~ msgstr "Fitxers enllaçats:"
-
-#~ msgid "Files copied:"
-#~ msgstr "Fitxers copiats:"
-
-#~ msgid "_Empty"
-#~ msgstr "_Buida"
-
-#~ msgid "Use the default background for this location"
-#~ msgstr "Utilitza el fons per defecte per a la ubicació"
-
-#~ msgid "_Clear History"
-#~ msgstr "Obl_ida't de l'historial"
-
-#~ msgid "File Browser: %s"
-#~ msgstr "Navegador de fitxers: %s"
-
-#~ msgid "Copyright (C) 1999-2001 Eazel, Inc."
-#~ msgstr "Copyright © 1999-2001 Eazel, Inc."
-
-#~ msgid "CD _Creator"
-#~ msgstr "_Creador de CD"
-
-#~ msgid "Open with..."
-#~ msgstr "Obre amb..."
-
-#~ msgid "bonobo_ui_init() failed."
-#~ msgstr "S'ha produït un error en la funció bonobo_ui_init()."
-
-#~ msgid "Factory for Nautilus component adapter factories"
-#~ msgstr ""
-#~ "Factoria per a les factories d'adaptadors de components del Nautilus"
-
-#~ msgid "Factory for Nautilus component adapter factories "
-#~ msgstr ""
-#~ "Factoria per a les factories d'adaptadors de components del Nautilus "
-
-#~ msgid ""
-#~ "Factory for objects that wrap ordinary Bonobo Controls or Embeddables to "
-#~ "look like Nautilus Views"
-#~ msgstr ""
-#~ "Factoria per als objectes que ajusten els controls Bonobo ordinaris o "
-#~ "incrustats per tenir un aspecte semblant a les vistes del Nautilus"
-
-#~ msgid "Nautilus component adapter factory"
-#~ msgstr "Factoria del component adaptador del Nautilus"
-
-#~ msgid "Nautilus Emblem side pane"
-#~ msgstr "Barra lateral de distintius del Nautilus"
-
-#~ msgid "Nautilus Emblem view"
-#~ msgstr "Vista del distintiu del Nautilus"
-
-#~ msgid "History side pane"
-#~ msgstr "Barra lateral de l'historial"
-
-#~ msgid "History side pane for Nautilus"
-#~ msgstr "Barra lateral de l'historial per al Nautilus"
-
-#~ msgid "URI currently displayed"
-#~ msgstr "L'URI actualment mostrada"
-
-#~ msgid "Image Properties content view component"
-#~ msgstr "Component de vista de continguts de les propietats de la imatge"
-
-#~ msgid "Nautilus Image Properties view"
-#~ msgstr "Vista de les propietats de la imatge del Nautilus"
-
-#~ msgid "Notes side pane"
-#~ msgstr "Barra lateral de notes"
-
-#~ msgid "Notes side pane for Nautilus"
-#~ msgstr "Barra lateral de notes per al Nautilus"
-
-#~ msgid "Factory for text view"
-#~ msgstr "Original per a la vista de text"
-
-#~ msgid "Text"
-#~ msgstr "Text"
-
-#~ msgid "Text Viewer"
-#~ msgstr "Visualitzador de text"
-
-#~ msgid "Text view"
-#~ msgstr "Vista de text"
-
-#~ msgid "Text view factory"
-#~ msgstr "Vista de text original"
-
-#~ msgid "View as Text"
-#~ msgstr "Visualitza com a text"
-
-#~ msgid "animation to indicate on-going activity"
-#~ msgstr "animació per indicar una activitat en procés"
-
-#~ msgid "throbber factory"
-#~ msgstr "polsador original"
-
-#~ msgid "throbber object factory"
-#~ msgstr "original per l'objecte polsador"
-
-#~ msgid "C_lear Text"
-#~ msgstr "_Neteja el text"
-
-#~ msgid "Cut Text"
-#~ msgstr "Retalla el text"
-
-#~ msgid "Remove the selected text without putting it on the clipboard"
-#~ msgstr "Elimina el text seleccionat sense posar-lo al porta-retalls"
-
-#~ msgid "Hide default bookmarks in the bookmark menu"
-#~ msgstr ""
-#~ "Amaga les adreces d'interès predeterminades al menú de adreces d'interès"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will just show the user's bookmarks in the "
-#~ "bookmark menu."
-#~ msgstr ""
-#~ "Si és cert, el Nautilus només mostrarà les adreces d'interès de l'usuari "
-#~ "al menú d'adreces d'interès."
-
-#~ msgid "%s Viewer"
-#~ msgstr "Visualitzador %s"
-
-#~ msgid "Could not complete specified action:  %s"
-#~ msgstr "No s'ha pogut completar l'acció especificada: %s"
-
-#~ msgid "Could not complete specified action."
-#~ msgstr "No s'ha pogut completar l'acció especificada."
-
-#~ msgid "Use the default desktop background"
-#~ msgstr "Utilitza el fons de l'escriptori per defecte"
-
-#~ msgid "Edit Launcher"
-#~ msgstr "Edita la llençadora"
-
-#~ msgid "Edit the launcher information"
-#~ msgstr "Edita la informació de la llençadora"
-
-#~ msgid "Format the selected volume"
-#~ msgstr "Formata el volum seleccionat"
-
-#~ msgid "Medi_a Properties"
-#~ msgstr "Propietats del med_i"
-
-#~ msgid "Prot_ect"
-#~ msgstr "Prot_egeix"
-
-#~ msgid "Show media properties for the selected volume"
-#~ msgstr "Mostra les propietats del medi per al volum seleccionat"
-
-#~ msgid "_Format"
-#~ msgstr "_Format"
-
-#~ msgid "One of the side panels encountered an error and can't continue."
-#~ msgstr "S'ha produït un error en les barres laterals i no es pot continuar."
-
-#~ msgid "Unfortunately I couldn't tell which one."
-#~ msgstr "Malauradament no us he pogut dir quina."
-
-#~ msgid "The %s side panel encountered an error and can't continue."
-#~ msgstr "S'ha produït un error en la barra lateral %s i no es pot continuar."
-
-#~ msgid "If this keeps happening, you might want to turn this panel off."
-#~ msgstr "Si continua passant, probablement voldreu aturar la barra."
-
-#~ msgid "Side Panel Failed"
-#~ msgstr "S'ha produït un error en la barra lateral"
-
-#~ msgid "Side Pane"
-#~ msgstr "Barra lateral"
-
-#~ msgid "Contains a side pane view"
-#~ msgstr "Conté una vista de barra lateral"
-
-#~ msgid "Back"
-#~ msgstr "Endarrere"
-
-#~ msgid "Find"
-#~ msgstr "Troba"
-
-#~ msgid "Forward"
-#~ msgstr "Endavant"
-
-#~ msgid "Home"
-#~ msgstr "Inici"
-
-#~ msgid "Reload"
-#~ msgstr "Actualitza"
-
-#~ msgid "Search this computer for files"
-#~ msgstr "Cerca fitxers a l'ordinador"
-
-#~ msgid "Stop"
-#~ msgstr "Atura"
-
-#~ msgid "Up"
-#~ msgstr "Amunt"
-
-#~ msgid "Print"
-#~ msgstr "Imprimeix"
-
-#~ msgid "Save"
-#~ msgstr "Desa"
-
-#~ msgid "Profile Dump"
-#~ msgstr "Volcat del perfilat"
-
-#~ msgid "Display the latest contents of the current location"
-#~ msgstr "Mostra els últims continguts de la ubicació actual"
-
-#~ msgid "Go to Empty CD folder"
-#~ msgstr "Vés a la carpeta CD buit"
-
-#~ msgid "Go up one level"
-#~ msgstr "Puja un nivell"
-
-#~ msgid "Report Profiling"
-#~ msgstr "Mostra el perfilat"
-
-#~ msgid "Reset Profiling"
-#~ msgstr "Reinicia el perfilat"
-
-#~ msgid "Start Profiling"
-#~ msgstr "Comença el perfilat"
-
-#~ msgid "Stop Profiling"
-#~ msgstr "Atura el perfilat"
-
-#~ msgid "Stop loading this location"
-#~ msgstr "Atura la càrrega de la ubicació"
-
-#~ msgid "_CD/DVD Creator"
-#~ msgstr "Creador de _CD/DVD"
-
-#~ msgid "_Profiler"
-#~ msgstr "_Perfilador"
-
-#~ msgid "_Report Profiling"
-#~ msgstr "_Mostra el perfilat"
-
-#~ msgid "_Reset Profiling"
-#~ msgstr "_Reinicia el perfilat"
-
-#~ msgid "_Start Profiling"
-#~ msgstr "_Inicia el perfilat"
-
-#~ msgid "_Stop Profiling"
-#~ msgstr "_Atura el perfilat"
-
-#~ msgid "Go to Computer"
-#~ msgstr "Vés a l'ordinador"
-
-#~ msgid "a title"
-#~ msgstr "un títol"
-
-#~ msgid "the browse history"
-#~ msgstr "historial del navegador"
-
-#~ msgid "the current selection"
-#~ msgstr "la selecció actual"
-
-#~ msgid "the type of window the view is embedded in"
-#~ msgstr "el tipus de la vista de la finestra està empotrat"
-
-#~ msgid "whether to show hidden files in the view"
-#~ msgstr "si s'ha de mostrar els fitxers ocults en la visualització"
-
-#~ msgid "Application ID"
-#~ msgstr "ID de l'aplicació"
-
-#~ msgid "The application ID of the window."
-#~ msgstr "L'ID de l'aplicació de la finestra"
-
-#~ msgid "Nautilus cannot determine what type of file it is."
-#~ msgstr "El Nautilus no pot determinar el tipus del fitxer."
-
-#~ msgid ""
-#~ "Searching is unavailable right now, because you either have no index, or "
-#~ "the search service isn't running."
-#~ msgstr ""
-#~ "La cerca no està disponible perquè no disposeu de cap índex o no s'està "
-#~ "executant el servei de cerca."
-
-#~ msgid ""
-#~ "Be sure that you have started the Medusa search service, and if you don't "
-#~ "have an index, that the Medusa indexer is running."
-#~ msgstr ""
-#~ "Assegureu-vos que heu iniciat el servei de cerca Medusa. Si no disposeu "
-#~ "d'un índex, assegureu-vos de que s'estigui executant l'indexador del "
-#~ "Medusa."
-
-#~ msgid "Searching Unavailable"
-#~ msgstr "Cercant no està disponible"
-
-#~ msgid "Go back a few pages"
-#~ msgstr "Anar enrere algunes pàgines"
-
-#~ msgid "Go forward a number of pages"
-#~ msgstr "Anar endavant un nombre de pàgines"
-
-#~ msgid "Try to fit in window"
-#~ msgstr "Tracta d'ajustar-se en la finestra"
-
-#~ msgid "There was an error displaying help: %s"
-#~ msgstr "S'ha produït un error en mostrar l'ajuda: %s"
-
-#~ msgid "not in menu"
-#~ msgstr "no és al menú"
-
-#~ msgid "in menu for this file"
-#~ msgstr "al menú per al fitxer"
-
-#~ msgid "in menu for \"%s\""
-#~ msgstr "al menú per a \"%s\""
-
-#~ msgid "default for this file"
-#~ msgstr "predeterminat per al fitxer"
-
-#~ msgid "default for \"%s\""
-#~ msgstr "predeterminat per a \"%s\""
-
-#~ msgid "Is not in the menu for \"%s\" items."
-#~ msgstr "No és al menú per als elements \"%s\"."
-
-#~ msgid "Is in the menu for \"%s\"."
-#~ msgstr "És al menú per a \"%s\"."
-
-#~ msgid "Is in the menu for \"%s\" items."
-#~ msgstr "És al menú per als elements \"%s\"."
-
-#~ msgid "Is in the menu for all \"%s\" items."
-#~ msgstr "És al menú per a tots els elements \"%s\"."
-
-#~ msgid "Is the default for \"%s\"."
-#~ msgstr "És el predeterminat per a \"%s\"."
-
-#~ msgid "Is the default for \"%s\" items."
-#~ msgstr "És predeterminat per als elements \"%s\"."
-
-#~ msgid "Is the default for all \"%s\" items."
-#~ msgstr "És predeterminat per a tots els elements \"%s\"."
-
-#~ msgid "Modify \"%s\""
-#~ msgstr "Modifica \"%s\""
-
-#~ msgid "Include in the menu for \"%s\" items"
-#~ msgstr "Inclou al menú per als elements \"%s\""
-
-#~ msgid "Use as default for \"%s\" items"
-#~ msgstr "Utilitza com predeterminat per als elements \"%s\""
-
-#~ msgid "Include in the menu for \"%s\" only"
-#~ msgstr "Inclou al menú només per a \"%s\""
-
-#~ msgid "Use as default for \"%s\" only"
-#~ msgstr "Utilitza com predeterminat només per a \"%s\""
-
-#~ msgid "Don't include in the menu for \"%s\" items"
-#~ msgstr "No incloure al menú per als elements \"%s\""
-
-#~ msgid "Status"
-#~ msgstr "Estat"
-
-#~ msgid "Done"
-#~ msgstr "Fet"
-
-#~ msgid "_Modify..."
-#~ msgstr "_Modifica..."
-
-#~ msgid "File Types and Programs"
-#~ msgstr "Tipus de fitxers i programes"
-
-#~ msgid "_Go There"
-#~ msgstr "_Vés allí"
-
-#~ msgid ""
-#~ "You can configure which programs are offered for which file types in the "
-#~ "File Types and Programs dialog."
-#~ msgstr ""
-#~ "Podeu configurar quins programes s'ofereixen per a cada tipus de fitxer "
-#~ "al diàleg Tipus de fitxers i programes"
-
-#~ msgid "Open with Other Application"
-#~ msgstr "Obre amb una altra aplicació"
-
-#~ msgid "Choose an application with which to open \"%s\":"
-#~ msgstr "Trieu una aplicació amb la qual obrir \"%s\":"
-
-#~ msgid "Open with Other Viewer"
-#~ msgstr "Obre amb un altre visualitzador"
-
-#~ msgid "Choose a view for \"%s\":"
-#~ msgstr "Trieu una vista per a \"%s\":"
-
-#~ msgid "No viewers are available for \"%s\"."
-#~ msgstr "Trieu una vista per a \"%s\"."
-
-#~ msgid "No Viewers Available"
-#~ msgstr "No hi ha visualitzadors disponibles"
-
-#~ msgid "There is no application associated with \"%s\"."
-#~ msgstr "No hi ha cap aplicació associada amb «%s»."
-
-#~ msgid "No Application Associated"
-#~ msgstr "No hi ha aplicacions associades"
-
-#~ msgid "There is no action associated with \"%s\"."
-#~ msgstr "No hi ha cap acció associada amb «%s»."
-
-#~ msgid "No Action Associated"
-#~ msgstr "No hi ha accions associades"
-
-#~ msgid ""
-#~ "You can configure GNOME to associate applications with file types. Do you "
-#~ "want to associate an application with this file type now?"
-#~ msgstr ""
-#~ "Podeu configurar el GNOME per a que associe aplicacions amb tipus de "
-#~ "fitxers. Voleu associar una aplicació amb aquest tipus de fitxer ara?"
-
-#~ msgid "_Associate Application"
-#~ msgstr "_Associa una aplicació"
-
-#~ msgid "The viewer associated with \"%s\" is invalid."
-#~ msgstr "El visor associat amb «%s» és invàlid."
-
-#~ msgid "Invalid Viewer Associated"
-#~ msgstr "Visor associat invàlid"
-
-#~ msgid "The application associated with \"%s\" is invalid."
-#~ msgstr "L'aplicació associada amb «%s» és invàlida."
-
-#~ msgid "Invalid Application Associated"
-#~ msgstr "Aplicació associada invàlida"
-
-#~ msgid "The action associated with \"%s\" is invalid."
-#~ msgstr "L'acció associada amb «%s» és invàlida."
-
-#~ msgid "Invalid Action Associated"
-#~ msgstr "Acció associada invàlida"
-
-#~ msgid ""
-#~ "You can configure GNOME to associate a different application or viewer "
-#~ "with this file type. Do you want to associate an application or viewer "
-#~ "with this file type now?"
-#~ msgstr ""
-#~ "Podeu configurar el GNOME perquè asociï una aplicació o un visualitzador "
-#~ "diferent a aquest tipus de fitxer. Voleu associar una aplicació o "
-#~ "visualitzador a aquest tipus de fitxer?"
-
-#~ msgid "_Associate Action"
-#~ msgstr "_Associa una acció"
-
-#~ msgid "Adjust your user environment"
-#~ msgstr "Ajusta l'entorn d'usuari"
-
-#~ msgid "Desktop Preferences"
-#~ msgstr "Preferències de l'escriptori"
-
-#~ msgid "Configure network services (web server, DNS server, etc.)"
-#~ msgstr ""
-#~ "Configura els serveis de xarxa (servidor web, servidor de DNS, etc)."
-
-#~ msgid "Server Settings"
-#~ msgstr "Configuració del servidor"
-
-#~ msgid "Configure network services"
-#~ msgstr "Configuració dels serveis de xarxa"
-
-#~ msgid "Start Here"
-#~ msgstr "Comenceu aquí"
-
-#~ msgid "Change systemwide settings (affects all users)"
-#~ msgstr "Canvia els paràmetres globalment (afectarà a tots els usuaris)"
-
-#~ msgid "System Settings"
-#~ msgstr "Paràmetres del sistema"
-
-#~ msgid "Add Nautilus to session"
-#~ msgstr "Afegeix el Nautilus a la sessió"
-
-#~ msgid ""
-#~ "If this is set to true, Nautilus adds itself to the session when it "
-#~ "starts up. This means it will be started the next time you log in."
-#~ msgstr ""
-#~ "Si s'estableix a cert, el Nautilus s'afegirà ell mateix a la sessió quan "
-#~ "s'inicia. Vol dir que s'iniciarà la pròxima vegada que entreu."
-
-#~ msgid "Browse Filesystem"
-#~ msgstr "Navega el sistema de fitxers"
-
-#~ msgid "Other _Application..."
-#~ msgstr "Una altra _aplicació...."
-
-#~ msgid "An _Application..."
-#~ msgstr "Una _aplicació...."
-
-#~ msgid "Example:"
-#~ msgstr "Exemple:"
-
-#~ msgid "Icon Captions"
-#~ msgstr "Títol de les icones"
-
-#~ msgid "nautilus: --check cannot be used with URIs.\n"
-#~ msgstr "nautilus: --la comprovació no es pot utilitzar amb les URI.\n"
-
-#~ msgid "nautilus: --restart cannot be used with URIs.\n"
-#~ msgstr "nautilus: --reiniciar no es pot utilitzar amb les URI.\n"
-
-#~ msgid "View as..."
-#~ msgstr "Visualitza com a..."
-
-#~ msgid "Choose a view for the current location, or modify the set of views"
-#~ msgstr ""
-#~ " Tria una vista per a la ubicació actual, o modifica el conjunt de vistes"
-
-#~ msgid "_View as..."
-#~ msgstr "_Visualitza com..."
-
-#~ msgid "Error while moving. "
-#~ msgstr "S'ha produït un error en moure."
-
-#~ msgid ""
-#~ "If you would like to enable fast searches, you can edit the file %s as "
-#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-#~ "To start indexing and search services right away, you should also run the "
-#~ "following commands as root:\n"
-#~ "\n"
-#~ "medusa-indexd\n"
-#~ "medusa-searchd\n"
-#~ "\n"
-#~ "Fast searches will not be available until an initial index of your files "
-#~ "has been created.  This may take a long time."
-#~ msgstr ""
-#~ "Si voleu habilitar cerques ràpides, podeu editar el fitxer %s com a "
-#~ "superusuari. Si poseu el senyalador habilitat en \"sí\" activareu els "
-#~ "serveis Medusa.\n"
-#~ "Per iniciar els serveis d'indexació i cerca immediatament, també heu "
-#~ "d'executar les ordres següents com a superusuari:\n"
-#~ "\n"
-#~ "medusa-indexd\n"
-#~ "medusa-searchd\n"
-#~ "\n"
-#~ "Les cerques ràpides no funcionaran fins que s'hagi creat un índex inicial "
-#~ "dels vostres fitxers. Això pot trigar força temps."
-
-#~ msgid ""
-#~ "Medusa, the application that performs searches, cannot be found on your "
-#~ "system.  If you have compiled nautilus yourself, you will need to install "
-#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
-#~ "available at ftp://ftp.gnome.org)\n"
-#~ "If you are using a packaged version of Nautilus, fast searching is not "
-#~ "available.\n"
-#~ msgstr ""
-#~ "No trobareu Medusa, l'aplicació que realitza les cerques, al vostre "
-#~ "sistema. Si heu compilat el Nautilus personalment, us caldrà instal·lar "
-#~ "una còpia de Medusa i tornar a compilar el Nautilus. (Podeu trobar una "
-#~ "còpia de Medusa a ftp://ftp.gnome.org)\n"
-#~ "Si utilitzeu una versió empaquetada del Nautilus no podreu utilitzar la "
-#~ "cerca ràpida.\n"
-
-#~ msgid "[Items ]containing \"%s\" in their names"
-#~ msgstr "[Elements ]que contenen \"%s\" en els seus noms"
-
-#~ msgid "[Items ]starting with \"%s\""
-#~ msgstr "[Elements ]començant amb \"%s\""
-
-#~ msgid "[Items ]ending with %s"
-#~ msgstr "[Elements ]finalitzant amb %s"
-
-#~ msgid "[Items ]not containing \"%s\" in their names"
-#~ msgstr "[Elements ]sense contenir \"%s\" en el seus noms"
-
-#~ msgid "[Items ]matching the regular expression \"%s\""
-#~ msgstr "[Elements ]coincidents amb l'expressió regular \"%s\""
-
-#~ msgid "[Items ]matching the file pattern \"%s\""
-#~ msgstr "[Elements ]coincidint amb el patró de fitxer \"%s\""
-
-#~ msgid "[Items that are ]regular files"
-#~ msgstr "[Elements que són ]fitxers regulars"
-
-#~ msgid "[Items that are ]text files"
-#~ msgstr "[Elements que són ]fitxers de text"
-
-#~ msgid "[Items that are ]applications"
-#~ msgstr "[Elements que són ]aplicacions"
-
-#~ msgid "[Items that are ]folders"
-#~ msgstr "[Elements que són ]carpetes"
-
-#~ msgid "[Items that are ]music"
-#~ msgstr "[Elements que són ]música"
-
-#~ msgid "[Items ]that are not %s"
-#~ msgstr "[Elements ]que no són %s"
-
-#~ msgid "[Items ]that are %s"
-#~ msgstr "[Elements ]que són %s"
-
-#~ msgid "[Items ]not owned by \"%s\""
-#~ msgstr "[Elements ]que no són propietat de \"%s\""
-
-#~ msgid "[Items ]owned by \"%s\""
-#~ msgstr "[Elements ]propietat de \"%s\""
-
-#~ msgid "[Items ]with owner UID \"%s\""
-#~ msgstr "[Elements ]amb l'UID del propietari \"%s\""
-
-#~ msgid "[Items ]with owner UID other than \"%s\""
-#~ msgstr "[Elements ]amb l'UID de propietari diferent de \"%s\""
-
-#~ msgid "[Items ]larger than %s bytes"
-#~ msgstr "[Elements ]més grans de %s bytes"
-
-#~ msgid "[Items ]smaller than %s bytes"
-#~ msgstr "[Elements ]més petits de %s bytes"
-
-#~ msgid "[Items ]of %s bytes"
-#~ msgstr "[Elements ]de %s bytes"
-
-#~ msgid "[Items ]modified today"
-#~ msgstr "[Elements ]modificats avui"
-
-#~ msgid "[Items ]modified yesterday"
-#~ msgstr "[Elements ]modificats ahir"
-
-#~ msgid "[Items ]modified on %s"
-#~ msgstr "[Elements ]modificats en %s"
-
-#~ msgid "[Items ]not modified on %s"
-#~ msgstr "[Elements ]no modificats en %s"
-
-#~ msgid "[Items ]modified before %s"
-#~ msgstr "[Elements ]modificats abans de %s"
-
-#~ msgid "[Items ]modified after %s"
-#~ msgstr "[Elements ]modificats després de %s"
-
-#~ msgid "[Items ]modified within a week of %s"
-#~ msgstr "[Elements ]modificats dins de la setmana de %s"
-
-#~ msgid "[Items ]modified within a month of %s"
-#~ msgstr "[Elements ]modificats dins del mes de %s"
-
-#~ msgid "[Items ]marked with \"%s\""
-#~ msgstr "[Elements ]marcats amb \"%s\""
-
-#~ msgid "[Items ]not marked with \"%s\""
-#~ msgstr "[Elements ]no marcats amb \"%s"
-
-#~ msgid "[Items ]with all the words \"%s\""
-#~ msgstr "[Elements ]amb totes les paraules \"%s\""
-
-#~ msgid "[Items ]containing one of the words \"%s\""
-#~ msgstr "[Elements ]que contenen una de les paraules \"%s\""
-
-#~ msgid "[Items ]without all the words \"%s\""
-#~ msgstr "[Elements ]sense totes les paraules \"%s\""
-
-#~ msgid "[Items ]without any of the words \"%s\""
-#~ msgstr "[Elements ]sense cap de les paraules \"%s\""
-
-#~ msgid ""
-#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
-#~ msgstr ""
-#~ "[Elements més grans de 400K] i [sense les paraules \"poma taronja\"]"
-
-#~ msgid ""
-#~ "[Items larger than 400K], [owned by root and without all the words "
-#~ "\"apple orange\"]"
-#~ msgstr ""
-#~ "[Elements més grans de 400K], [propietat del superusuari i sense cap de "
-#~ "les paraules \"poma taronja\"]"
-
-#~ msgid "Items %s"
-#~ msgstr "Elements %s"
-
-#~ msgid "Items containing \"stuff\" in their names"
-#~ msgstr "Elements que contenen \"coses\" en el seus noms"
-
-#~ msgid "Items that are regular files"
-#~ msgstr "Elements que són fitxers regulars"
-
-#~ msgid "Items containing \"stuff\" in their names and that are regular files"
-#~ msgstr ""
-#~ "Elements que contenen \"coses\" en els seus noms i són fitxers regulars"
-
-#~ msgid ""
-#~ "Items containing \"stuff\" in their names, that are regular files and "
-#~ "smaller than 2000 bytes"
-#~ msgstr ""
-#~ "Elements que contenen \"coses\" en els seus noms, que són fitxers "
-#~ "regulars i amb menys de 2000 bytes"
-
-#~ msgid "Items containing \"medusa\" in their names and that are folders"
-#~ msgstr ""
-#~ "Elements que contenen \"medusa\" en els seus noms i que són carpetes"
-
-#~ msgid ""
-#~ "Search results may not include items modified after %s, when your drive "
-#~ "was last indexed."
-#~ msgstr ""
-#~ "Els resultats de la cerca poden no incloure els elements modificats "
-#~ "després de %s, la última vegada que la vostra unitat fou indexada."
-
-#~ msgid "Search Results"
-#~ msgstr "Resultats de la cerca"
-
-#~ msgid "Search Service Not Available"
-#~ msgstr "Servei de cerca no disponible"
-
-#~ msgid "Find can't access your index right now."
-#~ msgstr "No es pot accedir al vostre índex ara mateix."
-
-#~ msgid ""
-#~ "Your index files are available but the Medusa search daemon, which "
-#~ "handles index requests, isn't running.  To start this program, log in as "
-#~ "root and enter this command at the command line:\n"
-#~ "\n"
-#~ "medusa-searchd"
-#~ msgstr ""
-#~ "El vostre índex de fitxers està disponible però el dimoni de cerca "
-#~ "Medusa, que gestiona les sol·licituds d'índex, no s'està executant. Per "
-#~ "iniciar el programa, entreu com a superusuari i introduïu aquesta ordre a "
-#~ "la línia d'ordres:\n"
-#~ "medusa-searchd"
-
-#~ msgid ""
-#~ "To do a fast search, Find requires an index of the files on your system. "
-#~ "Your system administrator has disabled fast search on your computer, so "
-#~ "no index is available."
-#~ msgstr ""
-#~ "Per fer una cerca ràpida, Buscar requereix un índex dels fitxers en el "
-#~ "vostre sistema. L'administrador del vostre sistema ha inhabilitat la "
-#~ "cerca ràpida en el vostre ordinador, de manera que no hi ha cap índex "
-#~ "disponible."
-
-#~ msgid "Where"
-#~ msgstr "On"
-
-#~ msgid "Too Many Matches"
-#~ msgstr "Massa coincidències"
-
-#~ msgid "Indexing is %d%% complete."
-#~ msgstr "La indexació està un %d%% completada."
-
-#~ msgid ""
-#~ "Once a day your files and text content are indexed so your searches are "
-#~ "fast. "
-#~ msgstr ""
-#~ "Una vegada al dia els vostres fitxers i el contingut del text és "
-#~ "reindexat de manera que les cerques són ràpides."
-
-#~ msgid "Indexing Status"
-#~ msgstr "Estat de la indexació"
-
-#~ msgid "There is no index of your files right now."
-#~ msgstr "No hi ha cap índex dels vostres fitxers ara mateix."
-
-#~ msgid ""
-#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
-#~ "Fast searching is not enabled on your computer, so you do not have an "
-#~ "index right now."
-#~ msgstr ""
-#~ "Quan la cerca ràpida està habilitada, Buscar crea un índex per fer més "
-#~ "ràpides les cerques. La cerca ràpida no està habilitada al vostre "
-#~ "ordinador, de manera que no teniu un índex ara mateix."
-
-#~ msgid "No Index of Files"
-#~ msgstr "No hi ha un índex de fitxers"
-
-#~ msgid "Sorry, but the medusa search service is not available."
-#~ msgstr "El servei de cerca medusa no està disponible."
-
-#~ msgid "Please verify medusa has been setup correctly."
-#~ msgstr "Assegureu-vos que medusa ha estat configurat correctament."
-
-#~ msgid "%I:%M %p, %x"
-#~ msgstr "%I:%M %p, %x"
-
-#~ msgid "Reveal each selected item in its original folder"
-#~ msgstr "Mostra cada element seleccionat a la seva carpeta original"
-
-#~ msgid "Reveal in New Window"
-#~ msgstr "Mostra en una finestra nova"
-
-#~ msgid "Show Indexing Status"
-#~ msgstr "Mostra l'estat de la indexació"
-
-#~ msgid "Show _Indexing Status"
-#~ msgstr "Mostra l'estat de la _indexació"
-
-#~ msgid "Show status of indexing used when searching"
-#~ msgstr "Mostra l'estat de la indexació utilitzat mentre s'està cercant"
-
-#~ msgid "More Options"
-#~ msgstr "Més opcions"
-
-#~ msgid "Fewer Options"
-#~ msgstr "Poques opcions"
-
-#~ msgid "Find Them!"
-#~ msgstr "Busca'ls!"
-
-#~ msgid "[Search for] Name [contains \"fish\"]"
-#~ msgstr "[Search for] Nom [contains \"fish\"]"
-
-#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
-#~ msgstr "[Search for] Contingut [includes all of \"fish trene\"]"
-
-#~ msgid "[Search for] Type [is regular file]"
-#~ msgstr "[Search for] Tipus [is regular file]"
-
-#~ msgid "[Search for] Size [larger than 400K]"
-#~ msgstr "[Search for] Mida [larger than 400K]"
-
-#~ msgid "[Search for] With Emblem [includes \"Important\"]"
-#~ msgstr "[Search for] Amb un distintiu [includes \"Important\"]"
-
-#~ msgid "[Search for] Last Modified [before yesterday]"
-#~ msgstr "[Search for] Darrera modificació [before yesterday]"
-
-#~ msgid "[Search for] Owner [is not root]"
-#~ msgstr "[Search for] Propietari [is not root]"
-
-#~ msgid "[File name] contains [help]"
-#~ msgstr "[File name] conté [help]"
-
-#~ msgid "[File name] starts with [nautilus]"
-#~ msgstr "[File name] comença amb [nautilus]"
-
-#~ msgid "[File name] ends with [.c]"
-#~ msgstr "[File name] acaba amb [.c]"
-
-#~ msgid "[File name] matches glob [*.c]"
-#~ msgstr "[File name] coincidències globals [*.c]"
-
-#~ msgid "[File name] matches regexp [\"e??l.$\"]"
-#~ msgstr "[File name] coincideix amb expressió regular [\"e??l.$\"]"
-
-#~ msgid "[File content] includes all of [apple orange]"
-#~ msgstr "[File content] inclou tot de [apple orange]"
-
-#~ msgid "[File content] includes any of [apply orange]"
-#~ msgstr "[File content] inclou alguna cosa de [apply orange]"
-
-#~ msgid "[File content] does not include all of [apple orange]"
-#~ msgstr "[File content] sense incloure tot de [apple orange]"
-
-#~ msgid "[File content] includes none of [apple orange]"
-#~ msgstr "[File content] sense incloure res de [apple orange]"
-
-#~ msgid "[File type] is [folder]"
-#~ msgstr "[File type] és [folder]"
-
-#~ msgid "[File type] is not [folder]"
-#~ msgstr "[File type] no és [folder]"
-
-#~ msgid "[File type is] regular file"
-#~ msgstr "[File type is] fitxer regular"
-
-#~ msgid "[File type is] text file"
-#~ msgstr "[File type is] fitxer de text"
-
-#~ msgid "[File type is] application"
-#~ msgstr "[File type is] aplicació"
-
-#~ msgid "[File type is] folder"
-#~ msgstr "[File type is] carpeta"
-
-#~ msgid "[File type is] music"
-#~ msgstr "[File type is] música"
-
-#~ msgid "[File size is] larger than [400K]"
-#~ msgstr "[File size is] més gran de [400K]"
-
-#~ msgid "[File size is] smaller than [300K]"
-#~ msgstr "[File size is] més petit de [300K]"
-
-#~ msgid "[With emblem] marked with [Important]"
-#~ msgstr "[With emblem] marcat amb [Important]"
-
-#~ msgid "[With emblem] not marked with [Important]"
-#~ msgstr "[With emblem] no marcat amb [Important]"
-
-#~ msgid "[Last modified date] is [1/24/00]"
-#~ msgstr "[Last modified date] és [1/24/00]"
-
-#~ msgid "[Last modified date] is not [1/24/00]"
-#~ msgstr "[Last modified date] no és [1/24/00]"
-
-#~ msgid "[Last modified date] is after [1/24/00]"
-#~ msgstr "[Last modified date] és posterior a [1/24/00]"
-
-#~ msgid "[Last modified date] is before [1/24/00]"
-#~ msgstr "[Last modified date] és anterior a [1/24/00]"
-
-#~ msgid "[Last modified date] is today"
-#~ msgstr "[Last modified date] és avui"
-
-#~ msgid "[Last modified date] is yesterday"
-#~ msgstr "[Last modified date] és ahir"
-
-#~ msgid "[Last modified date] is within a week of [1/24/00]"
-#~ msgstr "[Last modified date] està dins la setmana de [1/24/00]"
-
-#~ msgid "[Last modified date] is within a month of [1/24/00]"
-#~ msgstr "[Last modified date] està dins el més [1/24/00]"
-
-#~ msgid "[File owner] is [root]"
-#~ msgstr "[File owner] és [root]"
-
-#~ msgid "[File owner] is not [root]"
-#~ msgstr "[File owner] no és [root]"
-
-#~ msgid "Find:"
-#~ msgstr "Troba:"
-
-#~ msgid "Can't find an hbox, using a normal file selection"
-#~ msgstr ""
-#~ "No puc trobar una hbox; passo a utilitzar una sel·lecció normal d'arxius"
-
-#~ msgid "AFFS Volume"
-#~ msgstr "Volum AFFS"
-
-#~ msgid "AFS Network Volume"
-#~ msgstr "Volum de la xarxa AFS"
-
-#~ msgid "Auto-detected Volume"
-#~ msgstr "Volum autodetectat"
-
-#~ msgid "CD Digital Audio"
-#~ msgstr "Àudio digital en CD"
-
-#~ msgid "CD-ROM Drive"
-#~ msgstr "Unitat de CD-ROM"
-
-#~ msgid "CDROM Volume"
-#~ msgstr "Volum CDROM"
-
-#~ msgid "DVD Volume"
-#~ msgstr "Volum DVD"
-
-#~ msgid "Enhanced DOS Volume"
-#~ msgstr "Volum DOS millorat"
-
-#~ msgid "Ext2 Linux Volume"
-#~ msgstr "Volum Linux Ext2"
-
-#~ msgid "Ext3 Linux Volume"
-#~ msgstr "Volum Linux Ext3"
-
-#~ msgid "Hardware Device Volume"
-#~ msgstr "Volum de dispositiu del maquinari"
-
-#~ msgid "Hsfs CDROM Volume"
-#~ msgstr "Volum CDROM Hsfs"
-
-#~ msgid "JFS Volume"
-#~ msgstr "Volum JFS"
-
-#~ msgid "MSDOS Volume"
-#~ msgstr "Volum MSDOS"
-
-#~ msgid "MacOS Volume"
-#~ msgstr "Volum MacOS"
-
-#~ msgid "Minix Volume"
-#~ msgstr "Volum Minix"
-
-#~ msgid "NFS Network Volume"
-#~ msgstr "Volum de la xarxa NFS"
-
-#~ msgid "Pcfs Solaris Volume"
-#~ msgstr "Volum Solaris Pcfs"
-
-#~ msgid "ReiserFS Linux Volume"
-#~ msgstr "Volum Linux ReiserFS"
-
-#~ msgid "Solaris/BSD Volume"
-#~ msgstr "Volum Solaris/BSD"
-
-#~ msgid "SuperMount Volume"
-#~ msgstr "Supermunta el volum"
-
-#~ msgid "System Volume"
-#~ msgstr "Volum del sistema"
-
-#~ msgid "Udfs Solaris Volume"
-#~ msgstr "Volum Solaris Udfs"
-
-#~ msgid "Windows NT Volume"
-#~ msgstr "Volum Windows NT"
-
-#~ msgid "Windows VFAT Volume"
-#~ msgstr "Volum Windows VFAT"
-
-#~ msgid "XFS Linux Volume"
-#~ msgstr "Volum Linux XFS"
-
-#~ msgid "XIAFS Volume"
-#~ msgstr "Volum XIAFS"
-
-#~ msgid "Xenix Volume"
-#~ msgstr "Volum Xenix"
-
-#~ msgid ""
-#~ "Couldn't execute nautilus\n"
-#~ "Make sure nautilus is in your path and correctly installed"
-#~ msgstr ""
-#~ "No s'ha pogut executar nautilus\n"
-#~ "Assegureu-vos que nautilus està en el vostre camí i està correctament "
-#~ "instal·lat"
-
-#~ msgid ""
-#~ "Couldn't connect to URI %s\n"
-#~ "Please make sure that the address is correct and alternatively, type in "
-#~ "this address in the file manager directly"
-#~ msgstr ""
-#~ "No s'ha pogut connectar a l'URI %s\n"
-#~ "Assegureu-vos que l'adreça és correcta i alternativament, teclejeu "
-#~ "aquesta adreça directament en el gestor de fitxers"
-
-#~ msgid ""
-#~ "Glade file for the connect to server program is missing.\n"
-#~ "Please check your installation of nautilus"
-#~ msgstr ""
-#~ "Manca el fitxer glade per al programa de connexió al servidor.\n"
-#~ "Si us plau, comproveu la vostra instal·lació de nautilus"
-
-#~ msgid "Add a new server to your Network Servers and connect to it"
-#~ msgstr ""
-#~ "Afegeix un nou servidor als vostres Servidors de xarxa i es connecta a ell"
-
-#~ msgid "New Server"
-#~ msgstr "Nou servidor"
-
-#~ msgid "*"
-#~ msgstr "*"
-
-#~ msgid "File name"
-#~ msgstr "Nom del fitxer"
-
-#~ msgid "foo"
-#~ msgstr "foo"
-
-#~ msgid "foo (copy)"
-#~ msgstr "foo (còpia)"
-
-#~ msgid ".bashrc"
-#~ msgstr ".bashrc"
-
-#~ msgid ".bashrc (copy)"
-#~ msgstr ".bashrc (còpia)"
-
-#~ msgid ".foo.txt"
-#~ msgstr ".foo.txt"
-
-#~ msgid ".foo (copy).txt"
-#~ msgstr ".foo (còpia).txt"
-
-#~ msgid "foo foo"
-#~ msgstr "foo foo"
-
-#~ msgid "foo foo (copy)"
-#~ msgstr "foo foo (còpia)"
-
-#~ msgid "foo.txt"
-#~ msgstr "foo.txt"
-
-#~ msgid "foo (copy).txt"
-#~ msgstr "foo (còpia).txt"
-
-#~ msgid "foo foo.txt"
-#~ msgstr "foo foo.txt"
-
-#~ msgid "foo foo (copy).txt"
-#~ msgstr "foo foo (còpia).txt"
-
-#~ msgid "foo foo.txt txt"
-#~ msgstr "foo foo.txt txt"
-
-#~ msgid "foo foo (copy).txt txt"
-#~ msgstr "foo foo (còpia).txt txt"
-
-#~ msgid "foo...txt"
-#~ msgstr "foo...txt"
-
-#~ msgid "foo.. (copy).txt"
-#~ msgstr "foo.. (còpia).txt"
-
-#~ msgid "foo..."
-#~ msgstr "foo..."
-
-#~ msgid "foo... (copy)"
-#~ msgstr "foo... (còpia)"
-
-#~ msgid "foo. (copy)"
-#~ msgstr "foo. (còpia)"
-
-#~ msgid "foo. (another copy)"
-#~ msgstr "foo. (un altra còpia)"
-
-#~ msgid "foo (another copy)"
-#~ msgstr "foo (un altra còpia)"
-
-#~ msgid "foo (another copy).txt"
-#~ msgstr "foo (un altra còpia).txt"
-
-#~ msgid "foo (3rd copy)"
-#~ msgstr "foo (3a còpia)"
-
-#~ msgid "foo (3rd copy).txt"
-#~ msgstr "foo (3a còpia).txt"
-
-#~ msgid "foo foo (another copy).txt"
-#~ msgstr "foo foo (un altra còpia).txt"
-
-#~ msgid "foo foo (3rd copy).txt"
-#~ msgstr "foo foo (3a còpia).txt"
-
-#~ msgid "foo (13th copy)"
-#~ msgstr "foo (13a còpia)"
-
-#~ msgid "foo (14th copy)"
-#~ msgstr "foo (14a còpia)"
-
-#~ msgid "foo (13th copy).txt"
-#~ msgstr "foo (13a còpia).txt"
-
-#~ msgid "foo (14th copy).txt"
-#~ msgstr "foo (14a còpia).txt"
-
-#~ msgid "foo (21st copy)"
-#~ msgstr "foo (21a còpia)"
-
-#~ msgid "foo (22nd copy)"
-#~ msgstr "foo (22a còpia)"
-
-#~ msgid "foo (21st copy).txt"
-#~ msgstr "foo (21a còpia).txt"
-
-#~ msgid "foo (22nd copy).txt"
-#~ msgstr "foo (22a còpia).txt"
-
-#~ msgid "foo (23rd copy)"
-#~ msgstr "foo (23a còpia)"
-
-#~ msgid "foo (23rd copy).txt"
-#~ msgstr "foo (23a còpia).txt"
-
-#~ msgid "foo (24th copy)"
-#~ msgstr "foo (24a còpia)"
-
-#~ msgid "foo (24th copy).txt"
-#~ msgstr "foo (24a còpia).txt"
-
-#~ msgid "foo (25th copy)"
-#~ msgstr "foo (25a còpia)"
-
-#~ msgid "foo (25th copy).txt"
-#~ msgstr "foo (25a còpia).txt"
-
-#~ msgid "foo foo (24th copy)"
-#~ msgstr "foo foo (24a còpia)"
-
-#~ msgid "foo foo (25th copy)"
-#~ msgstr "foo foo(25a còpia)"
-
-#~ msgid "foo foo (24th copy).txt"
-#~ msgstr "foo foo (24a còpia).txt"
-
-#~ msgid "foo foo (25th copy).txt"
-#~ msgstr "foo foo(25a còpia).txt"
-
-#~ msgid "foo foo (100000000000000th copy).txt"
-#~ msgstr "foo foo (100000000000000a còpia).txt"
-
-#~ msgid "foo (10th copy)"
-#~ msgstr "foo (10a còpia)"
-
-#~ msgid "foo (11th copy)"
-#~ msgstr "foo (11a còpia)"
-
-#~ msgid "foo (10th copy).txt"
-#~ msgstr "foo (10a còpia).txt"
-
-#~ msgid "foo (11th copy).txt"
-#~ msgstr "foo (11a còpia).txt"
-
-#~ msgid "foo (12th copy)"
-#~ msgstr "foo (12a còpia)"
-
-#~ msgid "foo (12th copy).txt"
-#~ msgstr "foo (12a còpia).txt"
-
-#~ msgid "foo (110th copy)"
-#~ msgstr "foo (110a còpia)"
-
-#~ msgid "foo (111th copy)"
-#~ msgstr "foo (111a còpia)"
-
-#~ msgid "foo (110th copy).txt"
-#~ msgstr "foo (110a còpia).txt"
-
-#~ msgid "foo (111th copy).txt"
-#~ msgstr "foo (111a còpia).txt"
-
-#~ msgid "foo (122nd copy)"
-#~ msgstr "foo (122a còpia)"
-
-#~ msgid "foo (123rd copy)"
-#~ msgstr "foo (123a còpia)"
-
-#~ msgid "foo (122nd copy).txt"
-#~ msgstr "foo (122a còpia).txt"
-
-#~ msgid "foo (123rd copy).txt"
-#~ msgstr "foo (123a còpia).txt"
-
-#~ msgid "foo (124th copy)"
-#~ msgstr "foo (124a còpia)"
-
-#~ msgid "foo (124th copy).txt"
-#~ msgstr "foo (124a còpia).txt"
-
-#~ msgid "0 items"
-#~ msgstr "0 elements"
-
-#~ msgid "0 folders"
-#~ msgstr "0 carpetes"
-
-#~ msgid "0 files"
-#~ msgstr "0 fitxers"
-
-#~ msgid "1 item"
-#~ msgstr "1 element"
-
-#~ msgid "1 folder"
-#~ msgstr "1 carpeta"
-
-#~ msgid "1 file"
-#~ msgstr "1 fitxer"
-
-#~ msgid "date changed"
-#~ msgstr "data de canvi"
-
-#~ msgid "C_hoose"
-#~ msgstr "T_rieu"
-
-#~ msgid "1 folder selected"
-#~ msgstr "1 directori seleccionat"
-
-#~ msgid " (containing 0 items)"
-#~ msgstr " (contenint 0 elements)"
-
-#~ msgid " (containing 1 item)"
-#~ msgstr " (contenint 1 element)"
-
-#~ msgid " (containing a total of 0 items)"
-#~ msgstr " (contenint un total de 0 elements)"
-
-#~ msgid " (containing a total of 1 item)"
-#~ msgstr " (contenint un total d'1 element)"
-
-#~ msgid "1 other item selected (%s)"
-#~ msgstr "1 altre element seleccionat (%s)"
-
-#~ msgid "Other _Viewer..."
-#~ msgstr "Un altre _visualitzador..."
-
-#~ msgid "A _Viewer..."
-#~ msgstr "Un _visualitzador..."
-
-#~ msgid "%d items, totalling %s"
-#~ msgstr "%d elements, totalitzant %s"
-
-#~ msgid "Reveal in %d _New Windows"
-#~ msgstr "Mostra en %d _noves finestres"
-
-#~ msgid "Choose another viewer with which to view the selected item"
-#~ msgstr "Trieu un altre visualitzador amb el què veure l'element seleccionat"
-
-#~ msgid "Write to CD"
-#~ msgstr "Escriu a un CD"
-
-#~ msgid "Close this window"
-#~ msgstr "Tanca aquesta finestra"
-
-#~ msgid "Write contents to a CD"
-#~ msgstr "Escriu els continguts a un CD"
-
-#~ msgid "_Backgrounds and Emblems"
-#~ msgstr "_Fons i distintius"
-
-#~ msgid "_Close Window"
-#~ msgstr "_Tanca la finestra"
-
-#~ msgid "_Write to CD"
-#~ msgstr "_Escriu a un CD"
-
-#~ msgid ""
-#~ "Some of the files could not be added as emblems because they did not "
-#~ "appear to be valid images."
-#~ msgstr ""
-#~ "Alguns fitxers no s'han pogut afegir com a distintius perquè no pareixien "
-#~ "ser imatges vàlides."
-
-#~ msgid "Factory for hardware view"
-#~ msgstr "Original per a la vista del maquinari"
-
-#~ msgid "Hardware Viewer"
-#~ msgstr "Visualitzador del maquinari"
-
-#~ msgid "Hardware view"
-#~ msgstr "Vista del maquinari"
-
-#~ msgid "View as Hardware"
-#~ msgstr "Visualitza com a maquinari"
-
-#~ msgid "hardware view"
-#~ msgstr "vista del maquinari"
-
-#~ msgid "name of icon for the hardware view"
-#~ msgstr "nom de la icona per a la vista del maquinari"
-
-#~ msgid "summary of hardware info"
-#~ msgstr "resum d'informació sobre el maquinari"
-
-#~ msgid ""
-#~ "%s CPU\n"
-#~ "%s MHz\n"
-#~ "%s K cache size"
-#~ msgstr ""
-#~ "%s CPU\n"
-#~ "%s MHz\n"
-#~ "%s K mida de la memòria cau"
-
-#~ msgid "%lu GB RAM"
-#~ msgstr "%lu GB RAM"
-
-#~ msgid "%lu MB RAM"
-#~ msgstr "%lu MB RAM"
-
-#~ msgid "%lu GB"
-#~ msgstr "%lu GB"
-
-#~ msgid "%lu MB"
-#~ msgstr "%lu MB"
-
-#~ msgid "Uptime is %d days, %d hours, %d minutes"
-#~ msgstr "Temps: % dies, %d hores, %d minuts"
-
-#~ msgid "Hardware Overview"
-#~ msgstr "Informació general del maquinari"
-
-#~ msgid "This is a placeholder for the CPU page."
-#~ msgstr "Aquest és un lloc destinat per a la pàgina de la CPU."
-
-#~ msgid "This is a placeholder for the RAM page."
-#~ msgstr "Aquest és un lloc destinat a la pàgina de RAM."
-
-#~ msgid "This is a placeholder for the IDE page."
-#~ msgstr "Aquest és un lloc destinat per a la pàgina IDE."
-
-#~ msgid "Search Google for Selected Text"
-#~ msgstr "Cerca amb el Google el text seleccionat"
-
-#~ msgid "Use Google to search the web for the selected text"
-#~ msgstr "Utilitza el Google per cercar al web el text seleccionat"
-
-#~ msgid "Look Up Selected Text in Dictionary"
-#~ msgstr "Cerca el text seleccionat en el diccionari"
-
-#~ msgid "Look up the selected text in the Merriam-Webster dictionary"
-#~ msgstr "Cerca el text seleccionat en el diccionari Merriam-Webster"
-
-#~ msgid ""
-#~ "Error while copying to \"%s\".\n"
-#~ "\n"
-#~ "There is not enough space on the destination."
-#~ msgstr ""
-#~ "S'ha produït un error en copiar-lo a \"%s\".\n"
-#~ "\n"
-#~ "No hi ha prou espai en la destinació."
-
-#~ msgid ""
-#~ "Error while creating link in \"%s\".\n"
-#~ "\n"
-#~ "There is not enough space on the destination."
-#~ msgstr ""
-#~ "S'ha produït un error en crear l'enllaç en \"%s\".\n"
-#~ "\n"
-#~ "No hi ha prou espai en la destinació."
-
-#~ msgid ""
-#~ "Error while moving items to \"%s\".\n"
-#~ "\n"
-#~ "You do not have permissions to write to this folder."
-#~ msgstr ""
-#~ "S'ha produït un error en moure els elements a \"%s\".\n"
-#~ "\n"
-#~ "No teniu permisos per escriure en aquesta carpeta."
-
-#~ msgid ""
-#~ "Error while moving items to \"%s\".\n"
-#~ "\n"
-#~ "The destination disk is read-only."
-#~ msgstr ""
-#~ "S'ha produït un error en moure els elements a \"%s\".\n"
-#~ "\n"
-#~ "El disc de destinació és de només lectura."
-
-#~ msgid ""
-#~ "Error while creating links in \"%s\".\n"
-#~ "\n"
-#~ "You do not have permissions to write to this folder."
-#~ msgstr ""
-#~ "S'ha produït un error en crear els enllaços en \"%s\".\n"
-#~ "\n"
-#~ "No teniu permisos per escriure en aquesta carpeta."
-
-#~ msgid ""
-#~ "Error while creating links in \"%s\".\n"
-#~ "\n"
-#~ "The destination disk is read-only."
-#~ msgstr ""
-#~ "S'ha produït un error en crear els enllaços en \"%s\".\n"
-#~ "\n"
-#~ "El disc de destinació és de només lectura."
-
-#~ msgid ""
-#~ "Error \"%s\" while copying \"%s\".\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "S'ha produït un error \"%s\" en copiar \"%s\".\n"
-#~ "\n"
-#~ "Voleu continuar?"
-
-#~ msgid ""
-#~ "Error \"%s\" while moving \"%s\".\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "S'ha produït un error \"%s\" en moure \"%s\".\n"
-#~ "\n"
-#~ "Voleu continuar?"
-
-#~ msgid ""
-#~ "Error \"%s\" while deleting \"%s\".\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "S'ha produït un error \"%s\" en suprimir \"%s\".\n"
-#~ "\n"
-#~ "Voleu continuar?"
-
-#~ msgid ""
-#~ "Error \"%s\" while copying.\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "S'ha produït un error \"%s\" en copiar\n"
-#~ "\n"
-#~ "Voleu continuar?"
-
-#~ msgid ""
-#~ "Error \"%s\" while linking.\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "S'ha produït un error \"%s\" en enllaçar.\n"
-#~ "\n"
-#~ "Voleu continuar?"
-
-#~ msgid ""
-#~ "Error \"%s\" while deleting.\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "S'ha produït un error \"%s\" en suprimir.\n"
-#~ "\n"
-#~ "Voleu continuar?"
-
-#~ msgid "Can't Copy to Trash"
-#~ msgstr "No podeu copiar la paperera."
-
-#~ msgid "file icon"
-#~ msgstr "icona d'arxiu"
-
-#~ msgid ""
-#~ "The default action can't open \"%s\" because it can't access files at \"%s"
-#~ "\" locations.  No other actions are available to view this file.  If you "
-#~ "copy this file onto your computer, you may be able to open it."
-#~ msgstr ""
-#~ "L'acció predeterminada no pot obrir «%s» perque no pot accedir als "
-#~ "fitxers a les ubicacions «%s». No hi ha altres accions disponibles per "
-#~ "visualitzar aquest fitxer. Si copieu aquest fitxer al vostre ordinador, "
-#~ "potser podreu obrir-lo."
-
-#~ msgid "Searching Disks"
-#~ msgstr "S'estan cercant discs"
-
-#~ msgid "Nautilus is searching your disks for trash folders."
-#~ msgstr "Nautilus està cercants carpetes de paperera en els vostres discs."
-
-#~ msgid "Unknown"
-#~ msgstr "Desconegut"
-
-#~ msgid "Floppy"
-#~ msgstr "Disquet"
-
-#~ msgid "CD-ROM"
-#~ msgstr "CD-ROM"
-
-#~ msgid "Zip Drive"
-#~ msgstr "Unitat Zip"
-
-#~ msgid "Audio CD"
-#~ msgstr "Àudio CD"
-
-#~ msgid "Root Volume"
-#~ msgstr "Volum arrel"
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the floppy drive. There is probably no "
-#~ "floppy in the drive."
-#~ msgstr ""
-#~ "Nautilus no ha pogut muntar la unitat de disquet. Probablement no hi ha "
-#~ "capdisquet en la unitat."
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the volume. There is probably no media in "
-#~ "the device."
-#~ msgstr ""
-#~ "Nautilus no ha pogut muntar el volum. Probablement no hi ha cap medi en "
-#~ "el dispositiu."
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the floppy drive. The floppy is probably in "
-#~ "a format that cannot be mounted."
-#~ msgstr ""
-#~ "Nautilus no ha pogut muntar la unitat de disquet. El disquet probablement "
-#~ "està en un format que no es pot muntar."
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the selected volume. The volume is probably "
-#~ "in a format that cannot be mounted."
-#~ msgstr ""
-#~ "Nautilus no ha pogut muntar el volum seleccionat. El volum probablement "
-#~ "està en un format que no es pot muntar."
-
-#~ msgid "Nautilus was unable to mount the selected floppy drive."
-#~ msgstr "Nautilus no ha pogut muntar la unitat de disquet seleccionada."
-
-#~ msgid "Nautilus was unable to mount the selected volume."
-#~ msgstr "Nautilus no ha pogut muntar el volum seleccionat."
-
-#~ msgid "Nautilus was unable to unmount the selected volume."
-#~ msgstr "Nautilus no ha pogut desmuntar el volum seleccionat."
-
-#~ msgid "ISO 9660 Volume"
-#~ msgstr "Volum ISO 9660"
-
-#~ msgid "Error executing utility program '%s': %s"
-#~ msgstr "Error a l'executar el programa d'utilitat «%s»: %s"
-
-#~ msgid ""
-#~ "The %d selected items cannot be moved to the Trash. Do you want to delete "
-#~ "them immediately?"
-#~ msgstr ""
-#~ "Els %d elements seleccionats no es poden moure a la paperera. Voleu "
-#~ "suprimir-los immediatament?"
-
-#~ msgid ""
-#~ "%d of the selected items cannot be moved to the Trash. Do you want to "
-#~ "delete those %d items immediately?"
-#~ msgstr ""
-#~ "%d dels elements seleccionats no es poden moure a la paperera. Voleu "
-#~ "suprimir aquests %d elements immediatament?"
-
-#~ msgid "Open _in This Window"
-#~ msgstr "Obre _en aquesta Finestra"
-
-#~ msgid ""
-#~ "The file that you dropped is not an image.  You can only use local images "
-#~ "as custom icons."
-#~ msgstr ""
-#~ "El fitxer que heu deixat anar no és una imatge. Només podeu utilitzar "
-#~ "imatges locals com a icones personalitzades."
-
-#~ msgid ""
-#~ "Sorry, but the Medusa search service is not available because it is not "
-#~ "installed."
-#~ msgstr ""
-#~ "El servei de cerca Medusa no està disponible perquè no està instal·lat."
-
-#~ msgid "Dis_ks"
-#~ msgstr "Dis_cs"
-
-#~ msgid "Mount or unmount disks"
-#~ msgstr "Munta o desmunta discs"
-
-#~ msgid ""
-#~ "Once a day your files and text content are indexed so your searches are "
-#~ "fast.  Your files are currently being indexed."
-#~ msgstr ""
-#~ "Una vegada al dia els vostres fitxers i el contingut del text és "
-#~ "reindexat de manera que les cerques són ràpides. Els fitxers s'estan "
-#~ "reindexant actualment."
-
-#~ msgid "_Open activated item in a new window"
-#~ msgstr "_Obre cada element activat en una nova finestra"
-
-#~ msgid "Sorry, but '%s' is not a usable image file!"
-#~ msgstr "'%s' no és un fitxer d'imatge utilitzable!"
-
-#~ msgid "Change the visibility of this window's toolbar"
-#~ msgstr "Canvia la visibilitat de la barra d'eines d'aquesta finestra"
-
-#~ msgid "Go to the Start Here folder"
-#~ msgstr "Vés a la carpeta Comenceu aquí"
-
-#~ msgid "_Start Here"
-#~ msgstr "_Comenceu aquí"
-
-#~ msgid "_Toolbar"
-#~ msgstr "Barra d'_eines"
-
-#~ msgid ""
-#~ "\"%s\" is not a valid location. Please check the spelling and try again."
-#~ msgstr ""
-#~ "«%s» no és una ubicació vàlida. Si us plau comproveu l'ortografia i "
-#~ "torneu a provar."
-
-#~ msgid ""
-#~ "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
-#~ "browser.\n"
-#~ "Check that an SMB server is running in the local network."
-#~ msgstr ""
-#~ "No s'ha pogut mostrar «%s» perquè el Nautilus no pot connectar amb el "
-#~ "navegador principal de SMB.\n"
-#~ "Revisa que tinguis un servidor de SMB a la xarxa local."
-
-#~ msgid "Go to Nonexistent Location"
-#~ msgstr "Vés a la ubicació inexistent"
-
-#~ msgid "Default zoom level used by the icon view"
-#~ msgstr "Nivell de zoom predeterminat utilitzat en la vista d'icones"
-
-#~ msgid ""
-#~ "If set to true, then hidden files (dotfiles) are shown in the file "
-#~ "manager."
-#~ msgstr ""
-#~ "Si és vertader, es mostraran els fitxers ocults (que comencen amb un "
-#~ "punt) al gestor de fitxers."
-
-#~ msgid "Sort in _reverse"
-#~ msgstr "Ordena en ordre inve_rs"
-
-#~ msgid "Use _manual layout"
-#~ msgstr "Utilitza un format _manual"
-
-#~ msgid "New _Window"
-#~ msgstr "Nova _finestra"
-
-#~ msgid "Your HTTP Proxy requires you to log in.\n"
-#~ msgstr "El teu Proxy d'HTTP requereix que t'identifiquis.\n"
-
-#~ msgid ""
-#~ "You must log in to access \"%s\".\n"
-#~ "\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Per accedir a \"%s\" necessites identificar-te.\n"
-#~ "\n"
-#~ "%s"
-
-#~ msgid "Your password will be transmitted unencrypted."
-#~ msgstr "La teva paraula de pas serà transmesa sense encriptació."
-
-#~ msgid "Your password will be transmitted encrypted."
-#~ msgstr "La teva paraula de pas serà transmesa amb encriptació."
-
-#~ msgid "Authentication Required"
-#~ msgstr "Es requereix identificació"
-
-#~ msgid "You cannot copy the Trash."
-#~ msgstr "No podeu copiar la paperera."
-
-#~ msgid "F_onts"
-#~ msgstr "T_ipus de lletra"
-
-#~ msgid "Lucida"
-#~ msgstr "Lucida"
-
-#~ msgid "Services"
-#~ msgstr "Serveis"
-
-#~ msgid "Use the Courier Font"
-#~ msgstr "Utilitza el tipus de lletra Courier"
-
-#~ msgid "Use the Fixed Font"
-#~ msgstr "Utilitza el tipus de lletra Fixed"
-
-#~ msgid "Use the GTK System Font"
-#~ msgstr "Utilitza el tipus de lletra del sistema GTK"
-
-#~ msgid "Use the Helvetica Font"
-#~ msgstr "Utilitza el tipus de lletra Helvetica"
-
-#~ msgid "Use the Lucida Font"
-#~ msgstr "Utilitza el tipus de lletra Lucida"
-
-#~ msgid "Use the Times Font"
-#~ msgstr "Utilitza el tipus de lletra Times"
-
-#~ msgid "_Courier"
-#~ msgstr "_Courier"
-
-#~ msgid "_Fixed"
-#~ msgstr "_Fixed"
-
-#~ msgid "_GTK System Font"
-#~ msgstr "Tipus de lletra del sistema _GTK"
-
-#~ msgid "_Helvetica"
-#~ msgstr "_Helvetica"
-
-#~ msgid "Clear Text"
-#~ msgstr "Neteja el text"
-
-#~ msgid "Copy Text"
-#~ msgstr "Còpia el text"
-
-#~ msgid "Select All"
-#~ msgstr "Selecciona-ho Tot"
-
-#~ msgid "Content Loser"
-#~ msgstr "Continguts del Perdedor"
-
-#~ msgid "Content Loser Viewer"
-#~ msgstr "Contingut del visualitzador Perdedor:"
-
-#~ msgid "Nautilus Content Loser"
-#~ msgstr "Contingut del Perdedor del Nautilus"
-
-#~ msgid "Nautilus content loser component's factory"
-#~ msgstr "Original del component de contingut del perdedor del Nautilus"
-
-#~ msgid "Nautilus content loser factory"
-#~ msgstr "Original pel contingut del perdedor del Nautilus"
-
-#~ msgid "Nautilus content view that fails on command"
-#~ msgstr "Vista de contingut del Nautilus que falla a una petició"
-
-#~ msgid "View as Content Loser"
-#~ msgstr "Visualitza com a contingut del Perdedor"
-
-#~ msgid "Kill Content Loser"
-#~ msgstr "Mata la vista de continguts del Perdedor"
-
-#~ msgid "Kill the Loser content view"
-#~ msgstr "Mata la vista de continguts del Perdedor"
-
-#~ msgid "_Kill Content Loser"
-#~ msgstr "_Mata el contingut del Perdedor"
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "This is a Nautilus content view that fails on demand."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Aquesta és una vista de contingut del Nautilus que falla a una petició."
-
-#~ msgid "You have tried to kill the Content Loser"
-#~ msgstr "Heu provat de matar el contingut del Perdedor"
-
-#~ msgid "Nautilus Sidebar Loser"
-#~ msgstr "Barra lateral del Perdedor del Nautilus"
-
-#~ msgid "Nautilus sidebar loser component's factory"
-#~ msgstr "Original per al component barra lateral del perdedor del Nautilus"
-
-#~ msgid "Nautilus sidebar loser factory"
-#~ msgstr "Original de la barra lateral del Perdedor del Nautilus "
-
-#~ msgid "Nautilus sidebar view that fails on command"
-#~ msgstr "Vista de la barra lateral del Nautilus que falla a una petició"
-
-#~ msgid "Sidebar Loser"
-#~ msgstr "Barra lateral del Perdedor"
-
-#~ msgid "Kill Sidebar Loser"
-#~ msgstr "Mata la barra lateral del Perdedor"
-
-#~ msgid "Kill the Loser sidebar panel"
-#~ msgstr "Mata la barra lateral del quadre del Perdedor"
-
-#~ msgid "_Kill Sidebar Loser"
-#~ msgstr "_Mata la barra lateral del Perdedor"
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "Loser sidebar."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Barra lateral del Perdedor."
-
-#~ msgid "You have tried to kill the Sidebar Loser"
-#~ msgstr "Heu provat de matar la barra lateral del Perdedor"
-
-#~ msgid "Nautilus Sample view"
-#~ msgstr "Vista de mostra del Nautilus"
-
-#~ msgid "Nautilus Sample view factory"
-#~ msgstr "Original per la vista de mostra del Nautilus"
-
-#~ msgid "Sample Viewer"
-#~ msgstr "Visualitzador de mostra"
-
-#~ msgid "Sample content view component"
-#~ msgstr "Mostra de component de vista de contingut"
-
-#~ msgid "Sample content view component's factory"
-#~ msgstr "Mostra original del component de vista de contingut"
-
-#~ msgid "View as Sample"
-#~ msgstr "Visualitza com a mostra"
-
-#~ msgid "This is a sample merged menu item"
-#~ msgstr "Això és un element de mostra del menú combinat"
-
-#~ msgid "This is a sample merged toolbar button"
-#~ msgstr "Això és una mostra dels botons de la barra d'eines"
-
-#~ msgid "_Sample"
-#~ msgstr "_Mostra"
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "This is a sample Nautilus content view component."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Això és una mostra del component de la vista de contingut del Nautilus."
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "You selected the Sample menu item."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Heu seleccionat l'element del menú Mostra."
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "You clicked the Sample toolbar button."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Heu fet clic al botó Mostra de la barra d'eines."
-
-#~ msgid "(none)"
-#~ msgstr "(cap)"
-
-#~ msgid "No description available for the \"%s\" theme"
-#~ msgstr "No hi ha cap descripció disponible pel tema \"%s\""
-
-#~ msgid " (invalid Unicode)"
-#~ msgstr " (Unicode incorrecte)"
-
-#~ msgid "New Window Behavior"
-#~ msgstr "Nou comportament de finestra"
-
-#~ msgid "New Window Display"
-#~ msgstr "Visualització en nova finestra"
-
-#~ msgid "Display _side pane"
-#~ msgstr "Mo_stra barra lateral"
-
-#~ msgid "Display _toolbar"
-#~ msgstr "Mos_tra la barra d'eines"
-
-#~ msgid "Display location _bar"
-#~ msgstr "Mostra la _barra d'ubicació"
-
-#~ msgid "Display st_atusbar"
-#~ msgstr "Mostra la barra d'estat"
-
-#~ msgid "_Ask before emptying the Trash or deleting files"
-#~ msgstr "Pregunt_a'm abans de buidar la paperera o suprimir els fitxers"
-
-#~ msgid "_Include a Delete command that bypasses Trash"
-#~ msgstr "_Inclou una ordre Suprimeix que no tingui en compte la paperera"
-
-#~ msgid "Click Behavior"
-#~ msgstr "Comportament en fer clic"
-
-#~ msgid "Show Options"
-#~ msgstr "Mostra les opcions"
-
-#~ msgid "_Hidden files (filenames starting with \".\")"
-#~ msgstr "Fitxers _ocults (noms de fitxers que comencen amb \".\")"
-
-#~ msgid "_Backup files (filenames ending with \"~\")"
-#~ msgstr "Fitxers de còpia de se_guretat (noms de fitxers acabats amb \"~\")"
-
-#~ msgid "Sort"
-#~ msgstr "Ordena"
-
-#~ msgid "Fo_lders before files"
-#~ msgstr "Car_petes abans que els fitxers"
-
-#~ msgid ""
-#~ "Choose the order for information to appear beneath icon names.\n"
-#~ "More information appears as you zoom in closer"
-#~ msgstr ""
-#~ "Trieu l'ordre de la informació que apareix a sota dels noms de les "
-#~ "icones.\n"
-#~ "Apareixerà més informació a mida que amplieu el zoom."
-
-#~ msgid "_View new folders using:"
-#~ msgstr "_Visualitza les noves carpetes amb:"
-
-#~ msgid "Icon View Defaults"
-#~ msgstr "Vista de les icones predeterminada"
-
-#~ msgid "_Sort in reverse"
-#~ msgstr "Ordena en ordre inver_s"
-
-#~ msgid "Use co_mpact layout"
-#~ msgstr "Utilitza un format co_mpacte"
-
-#~ msgid "List View Defaults"
-#~ msgstr "Vista de llista predeterminada"
-
-#~ msgid "Arrange _items:"
-#~ msgstr "Organitza els _elements:"
-
-#~ msgid "Search Complexity Options"
-#~ msgstr "Opcions de cerca complexes"
-
-#~ msgid "search type to do by default"
-#~ msgstr "tipus de cerca a executar per defecte"
-
-#~ msgid "Built-in Bookmarks"
-#~ msgstr "Adreces d'interès integrades"
-
-#~ msgid "_Do not make thumbnails for files larger than:"
-#~ msgstr "_No genera miniatures dels fitxers més grans que:"
-
-#~ msgid "Preview Sound Files"
-#~ msgstr "Previsualitza els fitxers de so"
-
-#~ msgid "Tabs"
-#~ msgstr "Tabuladors"
-
-#~ msgid "_Show folders only"
-#~ msgstr "Mo_stra només les carpetes"
-
-#~ msgid "Maximum items per site"
-#~ msgstr "Nombre màxim d'elements per lloc"
-
-#~ msgid "_Maximum number of items displayed per site"
-#~ msgstr "Nombre _màxim d'elements visualitzats per lloc"
-
-#~ msgid "Update Minutes"
-#~ msgstr "Actualitza els minuts"
-
-#~ msgid "_Update frequency in minutes"
-#~ msgstr "Freqüència d'act_ualització en minuts"
-
-#~ msgid "Appearance"
-#~ msgstr "Aparença"
-
-#~ msgid "Desktop & Trash"
-#~ msgstr "Escritori i paperera"
-
-#~ msgid "Icon & List Views"
-#~ msgstr "Vistes de icona i llista "
-
-#~ msgid "Side Panes"
-#~ msgstr "Barres laterals"
-
-#~ msgid "Search"
-#~ msgstr "Cerca"
-
-#~ msgid "Navigation"
-#~ msgstr "Navegació"
-
-#~ msgid "Performance"
-#~ msgstr "Rendiment"
-
-#~ msgid "News Panel"
-#~ msgstr "Quadre de notícies"
-
-#~ msgid "Preferences"
-#~ msgstr "Preferències"
-
-#~ msgid "Click on a theme to remove it."
-#~ msgstr "Feu click sobre un tema per a eliminar-lo"
-
-#~ msgid "Click on a theme to change the appearance of Nautilus."
-#~ msgstr "Feu clic a un tema per canviar l'aspecte del Nautilus."
-
-#~ msgid "Sorry, but \"%s\" is not a valid theme folder."
-#~ msgstr "'%s' no és una carpeta vàlida de temes."
-
-#~ msgid "Couldn't add theme"
-#~ msgstr "No s'ha pogut afegir un tema"
-
-#~ msgid "Couldn't install theme"
-#~ msgstr "No s'ha pogut instal3lar el tema"
-
-#~ msgid "Sorry, but \"%s\" is not a valid theme file."
-#~ msgstr "'%s' no és un fitxer vàlid de tema."
-
-#~ msgid "Select a theme folder to add as a new theme:"
-#~ msgstr "Seleccioneu una carpeta de temes per afegir un tema nou:"
-
-#~ msgid ""
-#~ "Sorry, but you can't remove the current theme. Please change to another "
-#~ "theme before removing this one."
-#~ msgstr ""
-#~ "No podeu suprimir el tema actual. Trieu un altre tema abans de suprimir-lo"
-
-#~ msgid "Couldn't remove theme"
-#~ msgstr "No s'ha pogut suprimir el tema"
-
-#~ msgid "_Add Theme..."
-#~ msgstr "_Afegeix un tema..."
-
-#~ msgid "_Remove Theme..."
-#~ msgstr "E_limina el tema..."
-
-#~ msgid "Cancel _Remove"
-#~ msgstr "Cancel·la elimina_r"
-
-#~ msgid "Factory for music view"
-#~ msgstr "Original per a la vista de música"
-
-#~ msgid "Music"
-#~ msgstr "Música"
-
-#~ msgid "Music Viewer"
-#~ msgstr "Visualitzador de música"
-
-#~ msgid "Music view"
-#~ msgstr "Vista de música"
-
-#~ msgid "Music view factory"
-#~ msgstr "Original per la vista de música"
-
-#~ msgid "View as Music"
-#~ msgstr "Veure com a música"
-
-#~ msgid "Blues"
-#~ msgstr "Blues"
-
-#~ msgid "Classic Rock"
-#~ msgstr "Rock clàssic"
-
-#~ msgid "Country"
-#~ msgstr "Country"
-
-#~ msgid "Dance"
-#~ msgstr "Dance"
-
-#~ msgid "Funk"
-#~ msgstr "Funk"
-
-#~ msgid "Grunge"
-#~ msgstr "Grunge"
-
-#~ msgid "Hip-Hop"
-#~ msgstr "Hip-Hop"
-
-#~ msgid "Jazz"
-#~ msgstr "Jazz"
-
-#~ msgid "Metal"
-#~ msgstr "Metal"
-
-#~ msgid "New Age"
-#~ msgstr "Nova Era"
-
-#~ msgid "Oldies"
-#~ msgstr "Antics"
-
-#~ msgid "Other"
-#~ msgstr "Altres"
-
-#~ msgid "Pop"
-#~ msgstr "Pop"
-
-#~ msgid "R&B"
-#~ msgstr "R&B"
-
-#~ msgid "Rap"
-#~ msgstr "Rap"
-
-#~ msgid "Reggae"
-#~ msgstr "Reggae"
-
-#~ msgid "Rock"
-#~ msgstr "Rock"
-
-#~ msgid "Techno"
-#~ msgstr "Tecno"
-
-#~ msgid "Industrial"
-#~ msgstr "Industrial"
-
-#~ msgid "Alternative"
-#~ msgstr "Alternativa"
-
-#~ msgid "Ska"
-#~ msgstr "Ska"
-
-#~ msgid "Death Metal"
-#~ msgstr "Death Metal"
-
-#~ msgid "Pranks"
-#~ msgstr "Pranks"
-
-#~ msgid "Soundtrack"
-#~ msgstr "Banda sonora"
-
-#~ msgid "Euro-Techno"
-#~ msgstr "Euro-Tecno"
-
-#~ msgid "Ambient"
-#~ msgstr "Ambient"
-
-#~ msgid "Trip-Hop"
-#~ msgstr "Trip-Hop"
-
-#~ msgid "Jazz+Funk"
-#~ msgstr "Jazz+Funk"
-
-#~ msgid "Fusion"
-#~ msgstr "Fusió"
-
-#~ msgid "Trance"
-#~ msgstr "Trance"
-
-#~ msgid "Classical"
-#~ msgstr "Clàssica"
-
-#~ msgid "Instrumental"
-#~ msgstr "Instrumental"
-
-#~ msgid "Acid"
-#~ msgstr "Acid"
-
-#~ msgid "House"
-#~ msgstr "House"
-
-#~ msgid "Game"
-#~ msgstr "Joc"
-
-#~ msgid "Sound Clip"
-#~ msgstr "Clip musical"
-
-#~ msgid "Gospel"
-#~ msgstr "Gospel"
-
-#~ msgid "Noise"
-#~ msgstr "Soroll"
-
-#~ msgid "Alt"
-#~ msgstr "Alt"
-
-#~ msgid "Bass"
-#~ msgstr "Baix"
-
-#~ msgid "Soul"
-#~ msgstr "Soul"
-
-#~ msgid "Punk"
-#~ msgstr "Punk"
-
-#~ msgid "Space"
-#~ msgstr "Espai"
-
-#~ msgid "Instrumental Pop"
-#~ msgstr "Pop instrumental"
-
-#~ msgid "Instrumental Rock"
-#~ msgstr "Rock instrumental"
-
-#~ msgid "Ethnic"
-#~ msgstr "Ètnica"
-
-#~ msgid "Gothic"
-#~ msgstr "Gòtica"
-
-#~ msgid "Darkwave"
-#~ msgstr "Darkwave"
-
-#~ msgid "Techno-Industrial"
-#~ msgstr "Tecno Industrial"
-
-#~ msgid "Electronic"
-#~ msgstr "Electrònica"
-
-#~ msgid "Pop-Folk"
-#~ msgstr "Pop-Folk"
-
-#~ msgid "Eurodance"
-#~ msgstr "Eurodance"
-
-#~ msgid "Dream"
-#~ msgstr "Dream"
-
-#~ msgid "Southern Rock"
-#~ msgstr "Rock sureny"
-
-#~ msgid "Comedy"
-#~ msgstr "Comèdia"
-
-#~ msgid "Cult"
-#~ msgstr "Culte"
-
-#~ msgid "Gangsta Rap"
-#~ msgstr "Gangsta Rap"
-
-#~ msgid "Top 40"
-#~ msgstr "Els 40 principals"
-
-#~ msgid "Christian Rap"
-#~ msgstr "Christian Rap"
-
-#~ msgid "Pop/Funk"
-#~ msgstr "Pop/Funk"
-
-#~ msgid "Jungle"
-#~ msgstr "jungla"
-
-#~ msgid "Native American"
-#~ msgstr "Americana nativa"
-
-#~ msgid "Cabaret"
-#~ msgstr "Cabaret"
-
-#~ msgid "Psychedelic"
-#~ msgstr "Psicodèlic"
-
-#~ msgid "Rave"
-#~ msgstr "Delirant"
-
-#~ msgid "Showtunes"
-#~ msgstr "Showtunes"
-
-#~ msgid "Trailer"
-#~ msgstr "Trailer"
-
-#~ msgid "Lo-Fi"
-#~ msgstr "Lo-Fi"
-
-#~ msgid "Tribal"
-#~ msgstr "Tribal"
-
-#~ msgid "Acid Punk"
-#~ msgstr "Àcid Punk"
-
-#~ msgid "Acid Jazz"
-#~ msgstr "Àcid Jazz"
-
-#~ msgid "Polka"
-#~ msgstr "Polka"
-
-#~ msgid "Retro"
-#~ msgstr "Retro"
-
-#~ msgid "Musical"
-#~ msgstr "Musical"
-
-#~ msgid "Rock & Roll"
-#~ msgstr "Rock & Roll"
-
-#~ msgid "Hard Rock"
-#~ msgstr "Rock dur"
-
-#~ msgid "Folk"
-#~ msgstr "Folk"
-
-#~ msgid "Folk/Rock"
-#~ msgstr "Folk/Rock"
-
-#~ msgid "National Folk"
-#~ msgstr "Folk nacional"
-
-#~ msgid "Swing"
-#~ msgstr "Swing"
-
-#~ msgid "Fast-Fusion"
-#~ msgstr "Fast-Fusion"
-
-#~ msgid "Bebob"
-#~ msgstr "Bebob"
-
-#~ msgid "Latin"
-#~ msgstr "Llatí"
-
-#~ msgid "Revival"
-#~ msgstr "Revival"
-
-#~ msgid "Celtic"
-#~ msgstr "Cèltica"
-
-#~ msgid "Bluegrass"
-#~ msgstr "Bluegrass"
-
-#~ msgid "Avantgarde"
-#~ msgstr "Avantgarde"
-
-#~ msgid "Gothic Rock"
-#~ msgstr "Rock gòtic"
-
-#~ msgid "Progressive Rock"
-#~ msgstr "Rock progressiu"
-
-#~ msgid "Psychedelic Rock"
-#~ msgstr "Rock psicodèlic"
-
-#~ msgid "Symphonic Rock"
-#~ msgstr "Rock simfònic"
-
-#~ msgid "Slow Rock"
-#~ msgstr "Rock lent"
-
-#~ msgid "Big Band"
-#~ msgstr "Big Band"
-
-#~ msgid "Chorus"
-#~ msgstr "Cor"
-
-#~ msgid "Easy Listening"
-#~ msgstr "Fàcil d'escoltar"
-
-#~ msgid "Acoustic"
-#~ msgstr "Acústic"
-
-#~ msgid "Humour"
-#~ msgstr "Humor"
-
-#~ msgid "Speech"
-#~ msgstr "Discurs"
-
-#~ msgid "Chanson"
-#~ msgstr "Cançó"
-
-#~ msgid "Opera"
-#~ msgstr "Opera"
-
-#~ msgid "Chamber Music"
-#~ msgstr "Música de cambra"
-
-#~ msgid "Sonata"
-#~ msgstr "Sonata"
-
-#~ msgid "Symphony"
-#~ msgstr "Simfonia"
-
-#~ msgid "Booty Bass"
-#~ msgstr "Booty Bass"
-
-#~ msgid "Primus"
-#~ msgstr "Primus"
-
-#~ msgid "Porn Groove"
-#~ msgstr "Porn Groove"
-
-#~ msgid "Satire"
-#~ msgstr "Sàtira"
-
-#~ msgid "Slow Jam"
-#~ msgstr "Slow Jam"
-
-#~ msgid "Club"
-#~ msgstr "Club"
-
-#~ msgid "Tango"
-#~ msgstr "Tango"
-
-#~ msgid "Samba"
-#~ msgstr "Samba"
-
-#~ msgid "Folklore"
-#~ msgstr "Folklore"
-
-#~ msgid "Ballad"
-#~ msgstr "Balada"
-
-#~ msgid "Power Ballad"
-#~ msgstr "Balada potent"
-
-#~ msgid "Rhythmic Soul"
-#~ msgstr "Soul rítmic"
-
-#~ msgid "Duet"
-#~ msgstr "Duo"
-
-#~ msgid "Punk Rock"
-#~ msgstr "Punk Rock"
-
-#~ msgid "Drum Solo"
-#~ msgstr "Sol de bateria"
-
-#~ msgid "A Cappella"
-#~ msgstr "A cappella"
-
-#~ msgid "Euro-House"
-#~ msgstr "Euro-House"
-
-#~ msgid "Dance Hall"
-#~ msgstr "Dance Hall"
-
-#~ msgid "Goa"
-#~ msgstr "Goa"
-
-#~ msgid "Drum & Bass"
-#~ msgstr "Bateria i baix"
-
-#~ msgid "Club-House"
-#~ msgstr "Club-House"
-
-#~ msgid "Hardcore"
-#~ msgstr "Dur"
-
-#~ msgid "Terror"
-#~ msgstr "Terror"
-
-#~ msgid "Indie"
-#~ msgstr "Indie"
-
-#~ msgid "BritPop"
-#~ msgstr "BritPop"
-
-#~ msgid "Negerpunk"
-#~ msgstr "Negerpunk"
-
-#~ msgid "Polsk Punk"
-#~ msgstr "Polsk Punk"
-
-#~ msgid "Beat"
-#~ msgstr "Beat"
-
-#~ msgid "Christian Gangsta Rap"
-#~ msgstr "Christian Gangsta Rap"
-
-#~ msgid "Heavy Metal"
-#~ msgstr "Heavy Metal"
-
-#~ msgid "Black Metal"
-#~ msgstr "Black Metal"
-
-#~ msgid "Crossover"
-#~ msgstr "Crossover"
-
-#~ msgid "Contemporary Christian"
-#~ msgstr "Contemporary Christian"
-
-#~ msgid "Christian Rock"
-#~ msgstr "Rock cristià"
-
-#~ msgid "Merengue"
-#~ msgstr "Merengue"
-
-#~ msgid "Salsa"
-#~ msgstr "Salsa"
-
-#~ msgid "Thrash Metal"
-#~ msgstr "Thrash Metal"
-
-#~ msgid "Anime"
-#~ msgstr "Animació"
-
-#~ msgid "JPop"
-#~ msgstr "JPop"
-
-#~ msgid "Synthpop"
-#~ msgstr "Synthpop"
-
-#~ msgid "Track"
-#~ msgstr "Peça"
-
-#~ msgid "Title"
-#~ msgstr "Títol"
-
-#~ msgid "Artist"
-#~ msgstr "Artista"
-
-#~ msgid "Bit Rate"
-#~ msgstr "Velocitat en bits"
-
-#~ msgid "Time"
-#~ msgstr "Temps"
-
-#~ msgid "Set Cover Image"
-#~ msgstr "Defineix la imatge de la coberta"
-
-#~ msgid "Select an image file for the album cover:"
-#~ msgstr "Seleccioneu un fitxer d'imatge per a la coberta de l'àlbum:"
-
-#~ msgid ""
-#~ "Sorry, but the music view is unable to play back sound right now. This is "
-#~ "because the Enable sound server startup setting in the Sound section of "
-#~ "the Control Center is turned off."
-#~ msgstr ""
-#~ "La vista de música no pot reproduir el so gravat ara mateix. Això és "
-#~ "perquè els paràmetres d'inici que habiliten el servidor de so en la "
-#~ "secció de so del Centre de Control estan desactivats."
-
-#~ msgid "Unable to Play File"
-#~ msgstr "No s'ha pogut reproduir el fitxer"
-
-#~ msgid ""
-#~ "Sorry, but the music view is unable to play back sound right now. Either "
-#~ "another program is using or blocking the sound card, or your sound card "
-#~ "is not configured properly. Try quitting any applications that may be "
-#~ "blocking use of the sound card."
-#~ msgstr ""
-#~ "La vista de música no pot reproduir el so gravat ara mateix. Algun altre "
-#~ "programa està utilitzant o blocant la targeta de so, o no teniu la "
-#~ "targeta de so configurada correctament. Proveu de sortir de les "
-#~ "aplicacions que poden estar blocant la targeta de so"
-
-#~ msgid "Sorry, but the music view can't play non-local files yet."
-#~ msgstr "La vista de música no pot reproduir encara els fitxers no locals"
-
-#~ msgid "Can't Play Remote Files"
-#~ msgstr "No es pot reproduir el fitxer remot"
-
-#~ msgid "Drag to seek within track"
-#~ msgstr "Arrossega per cercar entre la pista"
-
-#~ msgid "Previous"
-#~ msgstr "Anterior"
-
-#~ msgid "Play"
-#~ msgstr "Reproduir"
-
-#~ msgid "Pause"
-#~ msgstr "Pausa"
-
-#~ msgid "Next"
-#~ msgstr "Següent"
-
-#~ msgid "cover image"
-#~ msgstr "imatge de la coberta"
-
-#~ msgid "Sorry, but there was an error reading %s."
-#~ msgstr "S'ha produït un error en llegir %s."
-
-#~ msgid "Can't Read Folder"
-#~ msgstr "No es pot llegir la carpeta"
-
-#~ msgid "<span size=\"xx-large\">%s - %s</span>"
-#~ msgstr "<span size=\"xx-large\">%s - %s</span>"
-
-#~ msgid "Delete"
-#~ msgstr "Suprimeix"
-
-#~ msgid "Re_move Custom Icons"
-#~ msgstr "E_limina les icones personalitzades"
-
-#~ msgid "Re_move Custom Icon"
-#~ msgstr "E_limina la icona personalitzada"
-
-#~ msgid "Throw Away"
-#~ msgstr "Llança fora"
-
-#~ msgid "Remove any custom images from selected icons"
-#~ msgstr "Elimina qualsevol imatge personalitzada de les icones seleccionades"
-
-#~ msgid "Empty Trash..."
-#~ msgstr "Buida la paperera..."
-
-#~ msgid "_Delete from Trash..."
-#~ msgstr "_Suprimeix des de la paperera..."
-
-#~ msgid "_Delete..."
-#~ msgstr "_Suprimeix..."
-
-#~ msgid "_Empty Trash..."
-#~ msgstr "_Buida la paperera"
-
-#~ msgid "Factory for news view"
-#~ msgstr "Original per a la vista de notícies"
-
-#~ msgid "News"
-#~ msgstr "Notícies"
-
-#~ msgid "News sidebar panel"
-#~ msgstr "Quadre nou de la barra lateral"
-
-#~ msgid "News sidebar panel fetches and displays RSS feeds"
-#~ msgstr ""
-#~ "El quadre de notícies de la barra lateral recull i visualitza el "
-#~ "subministrament de dades RSS"
-
-#~ msgid "Wrap at"
-#~ msgstr "Ajusta a"
-
-#~ msgid "Width the cell should wrap to."
-#~ msgstr "Amplada a la qual ajustar la cel.la."
-
-#~ msgid "Markup"
-#~ msgstr "Remarca"
-
-#~ msgid "Marked up text to display"
-#~ msgstr "Text remarcat a ensenyar"
-
-#~ msgid "Bullet"
-#~ msgstr "Bola"
-
-#~ msgid "Bullet to display"
-#~ msgstr "Bola a mostrar"
-
-#~ msgid "Prelight Bullet"
-#~ msgstr "Preil·luminar bola"
-
-#~ msgid "Bullet to display when prelit"
-#~ msgstr "Bola a mostrar quan es preil·lumini"
-
-#~ msgid "%I:%M %p"
-#~ msgstr "%I:%M %p"
-
-#~ msgid "Loading %s"
-#~ msgstr "S'està carregant %s"
-
-#~ msgid "Sorry, but you have not specified a name for the site!"
-#~ msgstr "No heu indicat cap nom per a aquest lloc!"
-
-#~ msgid "Missing Site Name Error"
-#~ msgstr "Error de nom de lloc faltant"
-
-#~ msgid "Sorry, but you have not specified a URL for the site!"
-#~ msgstr "No heu indicat cap URL per al lloc!"
-
-#~ msgid "Missing URL Error"
-#~ msgstr "Error d'URL faltant"
-
-#~ msgid "Sorry, but the specified url doesn't seem to be a valid RSS file!"
-#~ msgstr "L'URL indicat no sembla ser un fitxer RSS vàlid!"
-
-#~ msgid "Invalid RSS URL"
-#~ msgstr "L'URL RSS no és vàlid"
-
-#~ msgid "Edi_t"
-#~ msgstr "E_dició"
-
-#~ msgid "Site Name"
-#~ msgstr "Nom del lloc:"
-
-#~ msgid "_Remove Site"
-#~ msgstr "E_limina el lloc"
-
-#~ msgid "Site _RSS URL:"
-#~ msgstr "URL _RSS del lloc:"
-
-#~ msgid "_Add New Site"
-#~ msgstr "_Afegeix un nou lloc"
-
-#~ msgid "Add a New Site:"
-#~ msgstr "Afegeix un nou lloc:"
-
-#~ msgid "Remove a _Site:"
-#~ msgstr "Elimina un _lloc:"
-
-#~ msgid "_Select Sites:"
-#~ msgstr "_Seleccioneu els llocs:"
-
-#~ msgid "_Done"
-#~ msgstr "_Fet"
-
-#~ msgid ""
-#~ "The News panel displays current headlines from your favorite websites.  "
-#~ "Click the 'Select Sites' button to select the sites to display."
-#~ msgstr ""
-#~ "El quadre de notícies mostra els titulars del dia dels vostres llocs "
-#~ "favorits.  Feu clic al botó 'Seleccioneu llocs' per triar els llocs a "
-#~ "visualitzar."
-
-#~ msgid "_Select Sites"
-#~ msgstr "_Seleccioneu els llocs"
-
-#~ msgid "image indicating that the news has changed"
-#~ msgstr "imatge que indica que la notícia ha canviat"
-
-#~ msgid "Empty Trash?"
-#~ msgstr "Buida la paperera?"
-
-#~ msgid "Include in the menu just for \"%s\""
-#~ msgstr "Inclou al menú només per a \"%s\""
-
-#~ msgid "Use as default just for \"%s\""
-#~ msgstr "Empra com predeterminat només per a \"%s\""
-
-#~ msgid "View as Other"
-#~ msgstr "Veure com altre"
-
-#~ msgid "No applications are available for \"%s\"."
-#~ msgstr "No hi ha aplicacions disponibles per a \"%s\"."
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "You can configure which programs are offered for which file types with "
-#~ "the \"File Types and Programs\" part of the GNOME Control Center. Do you "
-#~ "want to go there now?"
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Podeu configurar quins programes s'ofereixen per a cada tipus de fitxer "
-#~ "amb \"Tipus de fitxers i programes\" del Centre de Control de Gnome. "
-#~ "Voleu anar-hi ara?"
-
-#~ msgid "De_lete"
-#~ msgstr "Su_primeix"
-
-#~ msgid "R_emove Custom Icons"
-#~ msgstr "_Elimina la icona personalitzada"
-
-#~ msgid "R_emove Custom Icon"
-#~ msgstr "_Elimina la icona personalitzada"
-
-#~ msgid "Restore Icons' _Original Sizes"
-#~ msgstr "Restaura les icones a la mida _original"
-
-#~ msgid "Text View:"
-#~ msgstr "Vista de text:"
-
-#~ msgid "Format Conditionally"
-#~ msgstr "Formateja condicionalment"
-
-# No estic gens segur d'açò. jm
-#~ msgid "Media Properties Conditionally"
-#~ msgstr "Propietats condicionals del medi"
-
-#~ msgid "Protect Conditionally"
-#~ msgstr "Progeteix condicionalment"
-
-#~ msgid "Unmount Volume Conditionally"
-#~ msgstr "Desmunta el volum condicionalment"
-
-#~ msgid "Cut Files"
-#~ msgstr "Retalla els fitxers"
-
-#~ msgid "New Folder"
-#~ msgstr "Nova carpeta"
-
-#~ msgid "Open Scripts Folder"
-#~ msgstr "Obre carpeta de seqüències"
-
-#~ msgid "Other Viewer..."
-#~ msgstr "Un altre visualitzador..."
-
-#~ msgid "Paste Files"
-#~ msgstr "Enganxa els fitxers"
-
-#~ msgid "Reset View to Default"
-#~ msgstr "Reinicia la vista al valor predeterminat"
-
-#~ msgid "Select All Files"
-#~ msgstr "Selecciona tots els fitxers"
-
-#~ msgid "Show the contents of the Trash"
-#~ msgstr "Mostra els continguts de la paperera"
-
-#~ msgid "_Duplicate"
-#~ msgstr "_Duplica"
-
-#~ msgid "_Make Link"
-#~ msgstr "Crea una enllaç"
-
-#~ msgid "_Show Trash"
-#~ msgstr "_Mostra la paperera"
-
-#~ msgid "Reversed Order"
-#~ msgstr "Ordre invers"
-
-#~ msgid "Tighter Layout"
-#~ msgstr "Format ajustat"
-
-#~ msgid "_Clean Up by Name"
-#~ msgstr "_Posa en ordre per nom"
-
-#~ msgid "_Stretch Icon"
-#~ msgstr "_Amplia la icona"
-
-#~ msgid "Bookmarks"
-#~ msgstr "_Adreces d'interès"
-
-#~ msgid "_Remove"
-#~ msgstr "_Elimina"
-
-#~ msgid "Nautilus Themes"
-#~ msgstr "Temes del Nautilus"
-
-#~ msgid "Opening New Windows"
-#~ msgstr "S'estan obrint noves finestres"
-
-#~ msgid "Sorting Order"
-#~ msgstr "Ordre d'ordenació"
-
-#~ msgid "_Show only folders (no files) in the tree"
-#~ msgstr "_Mostra només les carpetes (no els fitxers) a l'arbre"
-
-#~ msgid "View Defaults"
-#~ msgstr "Veure predeterminats"
-
-#~ msgid "Speed Tradeoffs"
-#~ msgstr "Canvi de velocitat"
-
-#~ msgid "Hide _Toolbar"
-#~ msgstr "Amaga la barra d'_eines"
-
-#~ msgid "P_references"
-#~ msgstr "P_referències"
-
-#~ msgid "_About Nautilus"
-#~ msgstr "_Quant al Nautilus"
-
-#~ msgid "_Normal Size"
-#~ msgstr "Mida _normal"
-
-#~ msgid "_Up a Level"
-#~ msgstr "_Puja un nivell"
-
-#~ msgid "Hide St_atus Bar"
-#~ msgstr "Amaga la barra d'est_at"
-
-#~ msgid "Show St_atus Bar"
-#~ msgstr "Mostra la barra d'es_tat"
-
-#~ msgid "Show _Sidebar"
-#~ msgstr "Mostra la barra _lateral"
-
-#~ msgid "Show Location _Bar"
-#~ msgstr "Mostra la _barra d'ubicació"
-
-#~ msgid "Clear"
-#~ msgstr "Oblida"
-
-#~ msgid "Factory for history views"
-#~ msgstr "Original per a les vistes de l'historial"
-
-#~ msgid "Factory for annotation view"
-#~ msgstr "Original per a la vista d'anotacions"
-
-#~ msgid "Delete Trash Contents?"
-#~ msgstr "Voleu suprimir el contingut de la paperera?"
-
-#~ msgid "_Restore Icons' Original Sizes"
-#~ msgstr "_Restaura les icones a la mida sense estirar"
-
-#~ msgid "Show Properties"
-#~ msgstr "Mostra les _Propietats"
-
-#~ msgid "Show _Properties"
-#~ msgstr "Mostra les _Propietats"
-
-#~ msgid "Font:"
-#~ msgstr "Tipus de lletra:"
-
-#~ msgid "HTTP Proxy Settings"
-#~ msgstr "Paràmetres dels servidor intermediari HTTP"
-
-#~ msgid "Use HTTP Proxy"
-#~ msgstr "Utilitza un servidor intermediari HTTP"
-
-#~ msgid "Proxy requires a username and password:"
-#~ msgstr ""
-#~ "El servidor intermediari necessita un nom d'usuari i una contrasenya:"
-
-#~ msgid "Password:"
-#~ msgstr "Contrasenya:"
-
-#~ msgid "Make Folder Appearance Details Public"
-#~ msgstr "Fes públic els detalls d'aparença de la carpeta."
-
-#~ msgid "Remove any custom pattern or color from the desktop background"
-#~ msgstr ""
-#~ "Elimina qualsevol model o color personalitzat del fons de l'escriptori"
-
-#~ msgid ""
-#~ "Remove any custom pattern or color from the background of this location"
-#~ msgstr "Elimina qualsevol model o color del fons d'aquesta ubicació"
-
-#~ msgid "Display on-line help for Nautilus"
-#~ msgstr "Mostra l'ajuda en línia del Nautilus"
-
-#~ msgid "Display quick reference pages for Nautilus"
-#~ msgstr "Mostra les pàgines de referència ràpida del Nautilus"
-
-#~ msgid "Go up to the location that contains the displayed location"
-#~ msgstr "Va a la ubicació que conté la ubicació mostrada"
-
-#~ msgid "Nautilus Quick _Reference"
-#~ msgstr "_Referència ràpida del Nautilus"
-
-#~ msgid "Nautilus User _Manual"
-#~ msgstr "_Manual d'usuari del Nautilus"
-
-#~ msgid "P_references..."
-#~ msgstr "P_referències..."
-
-#~ msgid "_About Nautilus..."
-#~ msgstr "_Quant al Nautilus"
-
-#~ msgid "Server Configuration"
-#~ msgstr "Configuració del servidor"
-
-#~ msgid "R_emove Custom Images"
-#~ msgstr "E_limina les imatges personalitzades"
-
-#~ msgid "R_emove Custom Image"
-#~ msgstr "E_limina la imatge personalitzada"
-
-#~ msgid "Remove Custom Images"
-#~ msgstr "Elimina les imatges personalitzades"
-
-#~ msgid "Reset View to Match _Preferences"
-#~ msgstr "Reinicia la vista de _preferències per les coincidències"
-
-#~ msgid "Refresh"
-#~ msgstr "Refresca"
-
-#~ msgid "_Refresh"
-#~ msgstr "_Refresca"
-
-#~ msgid "Lay Out Items"
-#~ msgstr "Situa fora els elements"
-
-#~ msgid "_Lay Out Items"
-#~ msgstr "_Situa fora els elements"
-
-#~ msgid "Lay Out Items:"
-#~ msgstr "Ordenar els elements:"
-
-#~ msgid "Preview Release %s: %s"
-#~ msgstr "Versió de prova %s: %s"
-
-#~ msgid "Sorry, but %s is too large for Nautilus to load all of it."
-#~ msgstr "Per al Nautilus %s és massa gran per carregar-ho tot."
-
-#~ msgid "File too large"
-#~ msgstr "El fitxer és massa gran"
-
-#~ msgid "Keyboard Shortcuts"
-#~ msgstr "Dreceres del teclat"
-
-#~ msgid "Use Emacs-style keyboard shortcuts in text fields"
-#~ msgstr ""
-#~ "Utilitza les dreceres del teclat a l'estil Emacs en els camps de text"
-
-#~ msgid "Display release notes for Nautilus"
-#~ msgstr "Mostra les notes de llançament del Nautilus"
-
-#~ msgid "Nautilus Release _Notes"
-#~ msgstr "_Notes de llançament del Nautilus"
-
-#~ msgid "search by text"
-#~ msgstr "cerca per text"
-
-#~ msgid "search by text and properties"
-#~ msgstr "cerca per text i propietats"
-
-#~ msgid "Mailing list where you can send feedback about Nautilus"
-#~ msgstr "Llista de correu on podeu enviar comentaris sobre el Nautilus"
-
-#~ msgid "_Feedback"
-#~ msgstr "_Informació de tornada"
-
-#~ msgid "%d%%"
-#~ msgstr "%d%%"
-
-#~ msgid "Generic Image Viewer"
-#~ msgstr "Visualitzador genèric d'imatges"
-
-#~ msgid "Generic image control factory"
-#~ msgstr "Controls d'imatges genèric predeterminat"
-
-#~ msgid "Image Viewer"
-#~ msgstr "Visualitzador d'imatges"
-
-#~ msgid "Nautilus Image Viewer"
-#~ msgstr "Visualitzador d'imatges del Nautilus"
-
-#~ msgid "Nautilus Image viewer factory"
-#~ msgstr "Original del visualitzador d'imatges del Nautilus"
-
-#~ msgid "View as Image"
-#~ msgstr "Visualitza com a imatge"
-
-#~ msgid "I could not initialize Bonobo"
-#~ msgstr "No he pogut inicialitzar el Bonobo"
-
-#~ msgid " -_,;.?/&"
-#~ msgstr " -_,;.?/&"
-
-#~ msgid "Undo Typing"
-#~ msgstr "Desfés l'edició"
-
-#~ msgid "Redo Typing"
-#~ msgstr "Refés Edició"
-
-#~ msgid "Restore the changed name"
-#~ msgstr "Restaura el nom canviat"
-
-#~ msgid "Authors"
-#~ msgstr "Autors"
-
-#~ msgid "Search Engines"
-#~ msgstr "Motors de cerca"
-
-#~ msgid "Search Engine Location"
-#~ msgstr "Ubicació del motor de cerca"
-
-#~ msgid "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
-#~ msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
-
-#~ msgid "Smoother Graphics"
-#~ msgstr "Gràfics millorats"
-
-#~ msgid "Use smoother (but slower) graphics"
-#~ msgstr "Utilitza gràfics millorats (però lents)"
-
-#~ msgid "Default non-smooth font:"
-#~ msgstr "Tipus de lletra no millorat predeterminat:"
-
-#~ msgid "Nautilus File Manager and Graphic Shell"
-#~ msgstr "Gestor de fitxers Nautilus i intèrpret gràfic"
-
-#~ msgid "Search the World Wide Web"
-#~ msgstr "Cerca a la World Wide Web"
-
-#~ msgid "We_b Search"
-#~ msgstr "Cerca a la we_b"
-
-#~ msgid "Web Search"
-#~ msgstr "Cerca a la web"
-
-#~ msgid "Can't create nautilus-launcher-applet!"
-#~ msgstr "No es pot crear la miniaplicació llançadora del Nautilus!"
-
-#~ msgid "Can't create nautilus-preferences-applet!"
-#~ msgstr "No es pot crear la miniaplicació preferències del Nautilus"
-
-#~ msgid "Show Desktop"
-#~ msgstr "Mostra l'escriptori"
-
-#~ msgid "Smooth Graphics"
-#~ msgstr "Suavitza els gràfics"
-
-#~ msgid "Quit"
-#~ msgstr "Surt"
-
-#~ msgid "Restart"
-#~ msgstr "Reinicia"
-
-#~ msgid "Help"
-#~ msgstr "Ajuda"
-
-#~ msgid "Help Index"
-#~ msgstr "Índex de l'ajuda"
-
-#~ msgid "Help Index sidebar panel"
-#~ msgstr "Barra lateral de l'índex de l'ajuda"
-
-#~ msgid "Help Navigation Tree"
-#~ msgstr "Arbre de navegació de l'ajuda"
-
-#~ msgid "Help Search"
-#~ msgstr "Cerca a l'ajuda"
-
-#~ msgid "Help Search sidebar panel"
-#~ msgstr "Quadre de la barra lateral de cerca de l'ajuda"
-
-#~ msgid "Help sidebar panel"
-#~ msgstr "Quadre de la barra lateral de l'ajuda"
-
-#~ msgid "Internal use only"
-#~ msgstr "Només d'ús intern"
-
-#~ msgid "Table %d."
-#~ msgstr "Taula %d."
-
-#~ msgid "Up to Table of Contents"
-#~ msgstr "Fins a la taula de continguts"
-
-#~ msgid "Figure %s"
-#~ msgstr "Figura %s"
-
-#~ msgid "Figure %d"
-#~ msgstr "Figura %d"
-
-#~ msgid "IMAGE"
-#~ msgstr "IMATGE"
-
-#~ msgid "Legal Notice"
-#~ msgstr "Avís legal"
-
-#~ msgid "Q"
-#~ msgstr "Q"
-
-#~ msgid "A"
-#~ msgstr "A"
-
-#~ msgid "See also"
-#~ msgstr "Vegeu també"
-
-#~ msgid "GNOME Documentation"
-#~ msgstr "Documentació del GNOME"
-
-#~ msgid "Copyright"
-#~ msgstr "Copyright"
-
-#~ msgid "by"
-#~ msgstr "per"
-
-#~ msgid "Table of Contents"
-#~ msgstr "Índex"
-
-#~ msgid "PREFACE"
-#~ msgstr "PREFACI"
-
-#~ msgid "APPENDIX"
-#~ msgstr "APÈNDIX"
-
-#~ msgid "Manual"
-#~ msgstr "Manual"
-
-#~ msgid "Development"
-#~ msgstr "Desenvolupament"
-
-#~ msgid "System Calls"
-#~ msgstr "Crides al sistema"
-
-#~ msgid "Library Functions"
-#~ msgstr "Funcions de biblioteca"
-
-#~ msgid "Devices"
-#~ msgstr "Dispositius"
-
-#~ msgid "Games"
-#~ msgstr "Jocs"
-
-#~ msgid "Conventions"
-#~ msgstr "Convencions"
-
-#~ msgid "System Administration"
-#~ msgstr "Administració del sistema"
-
-#~ msgid "Kernel Routines"
-#~ msgstr "Rutines del nucli"
-
-#~ msgid "Info"
-#~ msgstr "Informació"
-
-#~ msgid "see "
-#~ msgstr "vegeu "
-
-#~ msgid "see also "
-#~ msgstr "vegeu també"
-
-#~ msgid "No matches."
-#~ msgstr "Sense coincidències."
-
-#~ msgid " (see \""
-#~ msgstr " (vegeu \""
-
-#~ msgid " (see also \""
-#~ msgstr " (vegeu també \""
-
-#~ msgid "Introductory Documents"
-#~ msgstr "Documents introductoris"
-
-#~ msgid "Documents by Subject"
-#~ msgstr "Documents per assumpte"
-
-#~ msgid "Mozilla Nautilus view"
-#~ msgstr "Vista del Mozilla Nautilus"
-
-#~ msgid "Mozilla Nautilus view factory"
-#~ msgstr "Vista original del Mozilla Nautilus"
-
-#~ msgid "Mozilla content view component"
-#~ msgstr "Component de vista de contingut de Mozilla"
-
-#~ msgid "Mozilla content view component's factory"
-#~ msgstr "Component de vista de contingut Mozilla original"
-
-#~ msgid "View as Web Page"
-#~ msgstr "Visualitza com una pàgina web"
-
-#~ msgid "Web Page"
-#~ msgstr "Pàgina web"
-
-#~ msgid "Web Page Viewer"
-#~ msgstr "Visualitzador de pàgina web"
-
-#~ msgid ""
-#~ "GConf error:\n"
-#~ "  %s"
-#~ msgstr ""
-#~ "S'ha produït un error Gconf:\n"
-#~ "  %s"
-
-#~ msgid ""
-#~ "GConf error:\n"
-#~ "  %s\n"
-#~ "All further errors shown only on terminal"
-#~ msgstr ""
-#~ "S'ha produït un error Gconf:\n"
-#~ "  %s\n"
-#~ "Tots el errors posteriors es mostraran només en un terminal"
-
-#~ msgid "mozilla summary info"
-#~ msgstr "informació de resum del Mozilla"
-
-#~ msgid ""
-#~ "A JavaScript function (small software program) on this page tried to open "
-#~ "a new window, but Nautilus does not support the opening new windows by "
-#~ "JavaScript.\n"
-#~ "\n"
-#~ "Try viewing the page in a different web browser, such as Mozilla."
-#~ msgstr ""
-#~ "Una funció JavaScript (un petit programa) d'aquesta pàgina ha provat "
-#~ "d'obrir una finestra nova, però amb el Nautilus no es poden obrir noves "
-#~ "finestres mitjançant JavaScript.\n"
-#~ "\n"
-#~ "Proveu de veure la pàgina en un altre navegador web, com ara el Mozilla."
-
-#~ msgid "Nautilus JavaScript Warning"
-#~ msgstr "Avís de JavaScript del Nautilus"
-
-#~ msgid "Arabic"
-#~ msgstr "Àrab"
-
-#~ msgid "Baltic"
-#~ msgstr "Bàltic"
-
-#~ msgid "Central European"
-#~ msgstr "Centreeuropeu"
-
-#~ msgid "Chinese"
-#~ msgstr "Xinès"
-
-#~ msgid "Cyrillic"
-#~ msgstr "Ciríl·lic"
-
-#~ msgid "Greek"
-#~ msgstr "Grec"
-
-#~ msgid "Hebrew"
-#~ msgstr "Hebreu"
-
-#~ msgid "Japanese"
-#~ msgstr "Japonès"
-
-#~ msgid "Turkish"
-#~ msgstr "Turc"
-
-#~ msgid "Unicode"
-#~ msgstr "Unicode"
-
-#~ msgid "UTF"
-#~ msgstr "UTF"
-
-#~ msgid "Vietnamese"
-#~ msgstr "Vietnamita"
-
-#~ msgid "Western"
-#~ msgstr "Occidental"
-
-#~ msgid "Arabic (IBM-864)"
-#~ msgstr "Àrab (IBM-864)"
-
-#~ msgid "Arabic (ISO-8859-6)"
-#~ msgstr "Àrab (ISO-8859-6)"
-
-#~ msgid "Arabic (ISO-8859-6-E)"
-#~ msgstr "Àrab (ISO-8859-6-E)"
-
-#~ msgid "Arabic (ISO-8859-6-I)"
-#~ msgstr "Àrab (ISO-8859-6-I)"
-
-#~ msgid "Arabic (Windows-1256)"
-#~ msgstr "Àrab (Windows-1256)"
-
-#~ msgid "Armenian (ARMSCII-8)"
-#~ msgstr "Armeni (ARMSCII-8)"
-
-#~ msgid "Baltic (ISO-8859-13)"
-#~ msgstr "Bàltic (ISO-8859-13)"
-
-#~ msgid "Baltic (ISO-8859-4)"
-#~ msgstr "Bàltic (ISO-8859-4)"
-
-#~ msgid "Baltic (Windows-1257)"
-#~ msgstr "Bàltic (Windows-1257)"
-
-#~ msgid "Celtic (ISO-8859-14)"
-#~ msgstr "Cèltic (ISO-8859-14)"
-
-#~ msgid "Central European (IBM-852)"
-#~ msgstr "Centreeuropeu (IBM-852)"
-
-#~ msgid "Central European (ISO-8859-2)"
-#~ msgstr "Centreeuropeu (ISO-8859-2)"
-
-#~ msgid "Central European (MacCE)"
-#~ msgstr "Centreeuropeu (MacCE)"
-
-#~ msgid "Central European (Windows-1250)"
-#~ msgstr "Centreeuropeu (Windows-1250)"
-
-#~ msgid "Chinese Simplified (GB2312)"
-#~ msgstr "Xinès simplificat (GB2312)"
-
-#~ msgid "Chinese Simplified (GBK)"
-#~ msgstr "Xinès simplificat (GBK)"
-
-#~ msgid "Chinese Simplified (HZ)"
-#~ msgstr "Xinès simplificat (HZ)"
-
-#~ msgid "Chinese Traditional (Big5)"
-#~ msgstr "Xinès tradicional (Big5)"
-
-#~ msgid "Chinese Traditional (EUC-TW)"
-#~ msgstr "Xinès tradicional (EUC-TW)"
-
-#~ msgid "Croatian (MacCroatian)"
-#~ msgstr "Croat (MacCroatian)"
-
-#~ msgid "Cyrillic (IBM-855)"
-#~ msgstr "Ciríl·lic (IBM-855)"
-
-#~ msgid "Cyrillic (ISO-8859-5)"
-#~ msgstr "Ciríl·lic (ISO-8859-5)"
-
-#~ msgid "Cyrillic (ISO-IR-111)"
-#~ msgstr "Ciríl·lic (ISO-IR-111)"
-
-#~ msgid "Cyrillic (MacCyrillic)"
-#~ msgstr "Ciríl·lic (MacCyrillic)"
-
-#~ msgid "Cyrillic (Windows-1251)"
-#~ msgstr "Ciríl·lic (Windows-1251)"
-
-#~ msgid "Cyrillic/Russian (IBM-866)"
-#~ msgstr "Ciríl·lic/Rus (IBM-866)"
-
-#~ msgid "Cyrillic/Russian (KOI8-R)"
-#~ msgstr "Ciríl·lic/Rus (IBM-866)"
-
-#~ msgid "Cyrillic/Ukrainian (KOI8-U)"
-#~ msgstr "Ciríl·lic/Ucraí (KOI8-U)"
-
-#~ msgid "Cyrillic/Ukrainian (MacUkrainian)"
-#~ msgstr "Ciríl·lic/Ucraïnès (MacUkrainian)"
-
-#~ msgid "English (US-ASCII)"
-#~ msgstr "Anglès (US-ASCII)"
-
-#~ msgid "Greek (ISO-8859-7)"
-#~ msgstr "Grec (ISO-8859-7)"
-
-#~ msgid "Greek (MacGreek)"
-#~ msgstr "Grec (MacGreek)"
-
-#~ msgid "Greek (Windows-1253)"
-#~ msgstr "Grec (Windows-1253)"
-
-#~ msgid "Hebrew (IBM-862)"
-#~ msgstr "Hebreu (IBM-862)"
-
-#~ msgid "Hebrew (ISO-8859-8-E)"
-#~ msgstr "Hebreu (ISO-8859-8-E)"
-
-#~ msgid "Hebrew (ISO-8859-8-I)"
-#~ msgstr "Hebreu (ISO-8859-9-I)"
-
-#~ msgid "Hebrew (Windows-1255)"
-#~ msgstr "Hebreu (Windows-1255)"
-
-#~ msgid "Icelandic (MacIcelandic)"
-#~ msgstr "Islandès (MacIcelandic)"
-
-#~ msgid "Japanese (EUC-JP)"
-#~ msgstr "Japonès (EUC-JP)"
-
-#~ msgid "Japanese (ISO-2022-JP)"
-#~ msgstr "Japonès (ISO-2022-JP)"
-
-#~ msgid "Japanese (Shift_JIS)"
-#~ msgstr "Japonès (Shift_JIS)"
-
-#~ msgid "Korean (EUC-KR)"
-#~ msgstr "Coreà (EUC-KR)"
-
-#~ msgid "Nordic (ISO-8859-10)"
-#~ msgstr "Nòrdic (ISO-8859-10)"
-
-#~ msgid "Romanian (MacRomanian)"
-#~ msgstr "Romanès (MacRomanian)"
-
-#~ msgid "South European (ISO-8859-3)"
-#~ msgstr "sudeuropeu (ISO-8859-3)"
-
-#~ msgid "T.61-8bit"
-#~ msgstr "T.61-8bit"
-
-#~ msgid "Thai (TIS-620)"
-#~ msgstr "Tai (TIS-620)"
-
-#~ msgid "Turkish (IBM-857)"
-#~ msgstr "Turc (IBM-857)"
-
-#~ msgid "Turkish (ISO-8859-9)"
-#~ msgstr "Turc (ISO-8859-9)"
-
-#~ msgid "Turkish (MacTurkish)"
-#~ msgstr "Turc (MacTurkish)"
-
-#~ msgid "Turkish (Windows-1254)"
-#~ msgstr "Turc (Windows-1254)"
-
-#~ msgid "Unicode (UTF-7)"
-#~ msgstr "Unicode (UTF-7)"
-
-#~ msgid "Unicode (UTF-8)"
-#~ msgstr "Unicode (UTF-8)"
-
-#~ msgid "User Defined"
-#~ msgstr "Definid per l'usuari"
-
-#~ msgid "UTF-16BE"
-#~ msgstr "UTF-16BE"
-
-#~ msgid "UTF-16LE"
-#~ msgstr "UTF-16LE"
-
-#~ msgid "UTF-32BE"
-#~ msgstr "UTF-32BE"
-
-#~ msgid "UTF-32LE"
-#~ msgstr "UTF-32LE"
-
-#~ msgid "Vietnamese (TCVN)"
-#~ msgstr "Vietnamita (TCVN)"
-
-#~ msgid "Vietnamese (VISCII)"
-#~ msgstr "Vietnamita (VISCII)"
-
-#~ msgid "Vietnamese (VPS)"
-#~ msgstr "Vietnamita (VPS)"
-
-#~ msgid "Vietnamese (Windows-1258)"
-#~ msgstr "Vietnamita (Windows-1258)"
-
-#~ msgid "Visual Hebrew (ISO-8859-8)"
-#~ msgstr "Hebreu visual (ISO-8859-8)"
-
-#~ msgid "Western (IBM-850)"
-#~ msgstr "Occidental (IBM-850)"
-
-#~ msgid "Western (ISO-8859-1)"
-#~ msgstr "Occidental (ISO-8859-1)"
-
-#~ msgid "Western (ISO-8859-15)"
-#~ msgstr "Occidental (ISO-8859-15)"
-
-#~ msgid "Western (MacRoman)"
-#~ msgstr "Occidental (MacRoman)"
-
-#~ msgid "Western (Windows-1252)"
-#~ msgstr "Occidental (Windows-1252)"
-
-#~ msgid "windows-936"
-#~ msgstr "windows-936"
-
-#~ msgid "x-imap4-modified-utf7"
-#~ msgstr "x-imap4-modified-utf7"
-
-#~ msgid "x-u-escaped"
-#~ msgstr "x-u-escaped"
-
-#~ msgid "Charset Encoding"
-#~ msgstr "Codificació del conjunt de caràcters"
-
-#~ msgid "Gnumeric"
-#~ msgstr "Gnumeric"
-
-#~ msgid "Netscape"
-#~ msgstr "Netscape"
-
-#~ msgid "The Gimp"
-#~ msgstr "The Gimp"
-
-#~ msgid "Home Directory"
-#~ msgstr "Directori de l'usuari"
-
-#~ msgid "Excite"
-#~ msgstr "Excite"
-
-#~ msgid "Portals"
-#~ msgstr "Portals"
-
-#~ msgid "Yahoo"
-#~ msgstr "Yahoo"
-
-#~ msgid "Alta Vista"
-#~ msgstr "Alta Vista"
-
-#~ msgid "Google"
-#~ msgstr "Google"
-
-#~ msgid "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
-#~ msgstr "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
-
-#~ msgid "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
-#~ msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
-
-#~ msgid ""
-#~ "You are about to run Nautilus as root.\n"
-#~ "\n"
-#~ "As root, you can damage your system if you are not careful, and\n"
-#~ "Nautilus will not stop you from doing it."
-#~ msgstr ""
-#~ "Esteu executant el Nautilus com a superusuari.\n"
-#~ "\n"
-#~ "Com a superusuari, podeu malmetre el sistema si no aneu en compte, i\n"
-#~ "el Nautilus no us impedirà fer-ho."
-
-#~ msgid ""
-#~ "Your user level adjusts Nautilus to your degree of experience\n"
-#~ "using GNOME and %s. Choose a level that's comfortable for\n"
-#~ "you - you can always change it later."
-#~ msgstr ""
-#~ "El vostre nivell d'usuari ajustar el Nautilus al vostre grau "
-#~ "d'experiència\n"
-#~ "utilitzant el GNOME i %s. Escolliu el nivell que us sigui més "
-#~ "comfortable-\n"
-#~ "sempre el podreu canviar més tard."
-
-#~ msgid ""
-#~ "For users who have no previous experience with GNOME\n"
-#~ "and %s."
-#~ msgstr ""
-#~ "Per usuaris sense experiència amb el GNOME\n"
-#~ "i %s."
-
-#~ msgid ""
-#~ "For users who are comfortable with GNOME and %s,\n"
-#~ "but don't describe themselves as ``technical.''"
-#~ msgstr ""
-#~ "Per usuaris que es trobin a gust amb el GNOME i %s,\n"
-#~ "però que no es descriguin a ells mateixos com a ``tècnis.''"
-
-#~ msgid ""
-#~ "For users who have GNOME and %s experience, and\n"
-#~ "like to see every detail of the operating system."
-#~ msgstr ""
-#~ "Per usuaris que tinguin experiència amb el GNOME i %s, i\n"
-#~ "els agradi veure cada detall del sistema operatiu."
-
-#~ msgid ""
-#~ "To verify your Internet connection and make sure you have\n"
-#~ "the latest Nautilus updates, Nautilus will now connect to\n"
-#~ "Eazel's web site. This will take seconds if your copy of\n"
-#~ "Nautilus is recent; longer (but no more than a minute or two)\n"
-#~ "if you need an update.\n"
-#~ "\n"
-#~ "If you know your computer uses a proxy connection, click\n"
-#~ "Verify and Nautilus will use it.\n"
-#~ msgstr ""
-#~ "Per verificar la vostra connexió a Internet i assegurar-vos que\n"
-#~ "teniu la última actualització del Nautilus, el Nautilus connectarà\n"
-#~ "ara mateix al lloc web de Eazel. Això tardarà uns segons si teniu\n"
-#~ "una còpia recent del Nautilus; més temps (però no més d'un o dos\n"
-#~ "minuts) si necessiteu una actualització.\n"
-#~ "\n"
-#~ "Si sabeu que el vostre ordinador està connectat a un servidor\n"
-#~ "intermediari, feu clic a Verificar i el Nautilus l'utilitzarà.\n"
-
-#~ msgid "Verify my connection and check for updates"
-#~ msgstr "Verifica la meva connexió i comprova les actualitzacions"
-
-#~ msgid "Don't verify my connection or check for updates"
-#~ msgstr "No verifiquis la meva connexió o comprovis les actualitzacions"
-
-#~ msgid ""
-#~ "We are having trouble making an external web connection.\n"
-#~ "Sometimes, firewalls require you to specify a web proxy server.\n"
-#~ "Fill in the name or port of your proxy server, if any, below."
-#~ msgstr ""
-#~ "Estem tenint problemes per realitzar una connexió web externa.\n"
-#~ "De vegades, els tallafocs necessiten que especifiqueu un servidor\n"
-#~ "intermediari web. Completeu el nom o el port del vostre servidor\n"
-#~ "intermediari, si existeix, a sota."
-
-#~ msgid "No proxy server required."
-#~ msgstr "No es necessita el servidor intermediari."
-
-#~ msgid "Use this proxy server:"
-#~ msgstr "Utilitza aquest servidor intermediari:"
-
-#~ msgid "Proxy address:"
-#~ msgstr "Adreça del servidor intermediari:"
-
-#~ msgid "Verifying your Internet connection and checking for updates..."
-#~ msgstr "Verificant la connexió a Internet i comprovant per actualitzar..."
-
-#~ msgid "Downloading Nautilus updates..."
-#~ msgstr "S'estan baixant les actualitzacions del Nautilus..."
-
-#~ msgid ""
-#~ "If you have been using the GNOME Midnight Commander\n"
-#~ "these settings move your desktop icons to Nautilus and\n"
-#~ "make Nautilus the default desktop.\n"
-#~ msgstr ""
-#~ "Si heu estat utilitzant el GNOME Midnight Commander\n"
-#~ "aquests paràmetres mouen les icones de l'escriptori al\n"
-#~ "Nautilus i fan que sigui l'escriptori predeterminat.\n"
-
-#~ msgid "Use Nautilus to draw the desktop."
-#~ msgstr "Utilitza el Nautilus per dibuixar l'escriptori."
-
-#~ msgid "Move existing desktop icons to the Nautilus desktop."
-#~ msgstr ""
-#~ "Mou les icones de l'escriptori existents a l'escriptori del Nautilus."
-
-#~ msgid "Launch Nautilus when GNOME starts up."
-#~ msgstr "Executa el Nautilus quan s'iniciï el GNOME."
-
-#~ msgid ""
-#~ "Click Finish to launch Nautilus. You'll start with two\n"
-#~ "Nautilus windows: one shows your home folder, and the\n"
-#~ "other tells you about Eazel's services that make the life\n"
-#~ "of a %s user easier.\n"
-#~ "\n"
-#~ "We hope you enjoy Nautilus!"
-#~ msgstr ""
-#~ "Feu clic a Finalitza per executar el Nautilus. Començareu amb dues\n"
-#~ "finestres del Nautilus: una que mostra la vostra carpeta inicial i\n"
-#~ "l'altra que us informarà dels serveis de Eazel que fan la vida d'un "
-#~ "usuari\n"
-#~ "%s més fàcil.\n"
-#~ "\n"
-#~ "Esperem que gaudiu del Nautilus!"
-
-#~ msgid ""
-#~ "Click Finish to launch Nautilus. You'll start with a\n"
-#~ "window showing your home folder.\n"
-#~ "\n"
-#~ "We hope you enjoy Nautilus!"
-#~ msgstr ""
-#~ "Feu clic a Finalitza per executar el Nautilus. Començareu amb\n"
-#~ "una finestra que mostra la vostra carpeta inicial.\n"
-#~ "\n"
-#~ "Esperem que gaudiu del Nautilus!"
-
-#~ msgid "Nautilus First Time Setup"
-#~ msgstr "La primera instal·lació del Nautilus"
-
-#~ msgid "Welcome to Nautilus"
-#~ msgstr "Benvingut al Nautilus!"
-
-#~ msgid ""
-#~ "Nautilus...\n"
-#~ "    Is a great file manager for the GNOME desktop.\n"
-#~ "    Provides a simple intuitive way to access Internet services.\n"
-#~ "    Is an extensible framework for GNOME developers.\n"
-#~ "    Provides a powerful delivery platform for service providers.\n"
-#~ "\n"
-#~ "Click Next to begin customizing your Nautilus environment."
-#~ msgstr ""
-#~ "Nautilus...\n"
-#~ "    És un gran gestor de fitxers per a l'escriptori GNOME.\n"
-#~ "    Facilita una forma simple i intuïtiva d'accedir als serveis "
-#~ "d'Internet.\n"
-#~ "    És un entorn extensible per als desenvolupadors GNOME.\n"
-#~ "    Proveeix na poderosa plataforma de subministrament per a proveïdors "
-#~ "de\n"
-#~ "    serveis.\n"
-#~ "\n"
-#~ "Feu clic a Següent per començar a personalitzar el vostre entorn del "
-#~ "Nautilus."
-
-#~ msgid "Finished"
-#~ msgstr "Finalitzat"
-
-#~ msgid "Choose Your User Level"
-#~ msgstr "Trieu el vostre nivell d'usuari"
-
-#~ msgid "GMC to Nautilus Transition"
-#~ msgstr "Transició de GMC al Nautilus"
-
-#~ msgid "Checking Your Internet Connection"
-#~ msgstr "S'està comprovant la connexió a Internet"
-
-#~ msgid "Updating Nautilus..."
-#~ msgstr "S'està actualitzant el Nautilus..."
-
-#~ msgid "Web Proxy Configuration"
-#~ msgstr "Configuaració del servidor intermediari web"
-
-#~ msgid "Decoding Update..."
-#~ msgstr "S'està descodificant l'actualització..."
-
-#~ msgid "Update Complete. Click Next to Continue."
-#~ msgstr "S'ha completat l'actualització. Feu clic a Següent per continuar."
-
-#~ msgid "No Update Available... Press Next to Continue."
-#~ msgstr ""
-#~ "No hi ha disponible cap actualització...Premeu Següent per continuar."
-
-#~ msgid "Link sets"
-#~ msgstr "Configuració dels enllaços"
-
-#~ msgid "Add or remove sets of links by clicking on the checkboxes below."
-#~ msgstr ""
-#~ "Afegeix o elimina configuracions dels enllaços fent clic als quadres de "
-#~ "verificació de sota."
-
-#~ msgid " _Advanced"
-#~ msgstr " _Avançat"
-
-#~ msgid " _Beginner"
-#~ msgstr " _Principiant"
-
-#~ msgid " _Intermediate"
-#~ msgstr " _Intermedi"
-
-#~ msgid "Use preferences appropriate for beginners"
-#~ msgstr "Utilitza les preferències apropiades per als principiants"
-
-#~ msgid "Use preferences appropriate for experts"
-#~ msgstr "Utilitza les preferències apropiades per als experts"
-
-#~ msgid "Use preferences appropriate for most people"
-#~ msgstr "Utilitza les preferències apropiades per a la majoria de gent"
-
-#~ msgid "_Edit Preferences..."
-#~ msgstr "_Edita les preferències..."
-
-#~ msgid "_Preferences"
-#~ msgstr "_Preferències"
-
-#~ msgid ""
-#~ "Thank you for your interest in Nautilus.\n"
-#~ " \n"
-#~ "As with any software under development, you should exercise caution when "
-#~ "using Nautilus. We do not provide any guarantee that it will work "
-#~ "properly, or assume any liability for your use of it.  Please use it at "
-#~ "your own risk.\n"
-#~ "\n"
-#~ "Please write a mail to <nautilus-list@eazel.com> to provide feedback, "
-#~ "comments, and suggestions."
-#~ msgstr ""
-#~ "Gràcies pel vostre interès en el Nautilus.\n"
-#~ "\n"
-#~ "Com qualsevol altre programa en desenvolupament, heu d'anar amb compte en "
-#~ "utilitzar el Nautilus. No oferim cap garantia de que funcionarà "
-#~ "correctament, ni assumim cap responsabilitat per l'ús que en feu. "
-#~ "Utilitzeu-lo sota la vostra  pròpia responsabilitat.\n"
-#~ "\n"
-#~ "Envieu un correu a <nautilus-list@eazel.com> per fer comentaris i "
-#~ "suggeriments."
-
-#~ msgid "foo (11st copy)"
-#~ msgstr "foo (11a còpia)"
-
-#~ msgid "foo (11st copy).txt"
-#~ msgstr "foo (11a còpia).txt"
-
-#~ msgid "foo (12nd copy)"
-#~ msgstr "foo (12a còpia)"
-
-#~ msgid "foo (13rd copy)"
-#~ msgstr "foo (13a còpia)"
-
-#~ msgid "is write-protected, mounting read-only"
-#~ msgstr ""
-#~ "està protegit contra escriptura, s'està muntant com només de lectura"
-
-#~ msgid "No medium found"
-#~ msgstr "No s'ha trobat cap medi"
-
-#~ msgid "wrong fs type, bad option, bad superblock on"
-#~ msgstr "tipus de sistema de fitxers erroni, superbloc erroni"
-
-#~ msgid "Year"
-#~ msgstr "Any"
-
-#~ msgid "Album"
-#~ msgstr "Àlbum"
-
-#~ msgid "Channels"
-#~ msgstr "Canals"
-
-#~ msgid "Sample Rate"
-#~ msgstr "Velocitat de mostreig"
-
-#~ msgid "Stereo"
-#~ msgstr "Stereo"
-
-#~ msgid "Mono"
-#~ msgstr "Mono"
-
-#~ msgid "Root"
-#~ msgstr "Arrel"
-
-#~ msgid "No Scripts Folder"
-#~ msgstr "No hi ha carpeta de seqüències"
-
-#~ msgid "Move all selected items to the Trash"
-#~ msgstr "Mou tots els elements seleccionats a la paperera"
-
-#~ msgid "GConf Error"
-#~ msgstr "S'ha produït un error a GConf"
-
-#~ msgid "Beginner"
-#~ msgstr "Principiant"
-
-#~ msgid "Intermediate"
-#~ msgstr "Intermedi"
-
-#~ msgid "Advanced"
-#~ msgstr "Avançat"
-
-#~ msgid "Don't create index"
-#~ msgstr "No creïs l'índex"
-
-#~ msgid ""
-#~ "To do a fast search, Find requires an index of the files on your system.  "
-#~ "Your computer does not have an index right now.  Because Find cannot use "
-#~ "an index, this search may take several minutes.  Would you like to create "
-#~ "an index? Creating an index will be done while you are not actively using "
-#~ "your computer."
-#~ msgstr ""
-#~ "Per una cerca ràpida, Buscar requereix un índex dels fitxers del vostre "
-#~ "sistema. L'ordinador no té cap índex ara mateix. Com Buscar no pot "
-#~ "utilitzar un índex, la cerca pot tardar uns quants minuts. Voleu crear un "
-#~ "índex? La creació de l'índex es realitzarà mentre no esteu utilitzant "
-#~ "activament l'ordinador."
-
-#~ msgid ""
-#~ "To do a content search, Find requires an index of the content on your "
-#~ "system.  Your computer does not have an index right now.  Would you like "
-#~ "to create an index?  Creating an index will be done while you are not "
-#~ "actively using your computer."
-#~ msgstr ""
-#~ "Per cercar un contingut, Buscar requereix un índex del contingut en el "
-#~ "vostre sistema. L'ordinador no disposa d'un índex ara mateix. Voleu crear "
-#~ "un índex? La creació de l'índex es realitzarà mentre no esteu utilitzant "
-#~ "activament l'ordinador."
-
-#~ msgid "Create an Index"
-#~ msgstr "Crea una índex"
-
-#~ msgid "Don't Create an Index Now"
-#~ msgstr "No creïs un índex ara"
-
-#~ msgid "The indexer is currently busy."
-#~ msgstr "L'indexador està ocupat actualment."
-
-#~ msgid ""
-#~ "An indexer is not running, or is not responding to requests to reindex "
-#~ "your computer."
-#~ msgstr ""
-#~ "Un indexador no s'està executant, o no està responent a les sol·licituds "
-#~ "per reindexar l'ordinador."
-
-#~ msgid ""
-#~ "An attempt to reindex, caused an Internal Indexer Error.  Tell "
-#~ "rebecka@eazel.com"
-#~ msgstr ""
-#~ "Un intent de reindexació ha provocat un error intern de l'indexador. "
-#~ "Informeu a rebecka@eazel.com"
-
-#~ msgid "Reindexing Failed"
-#~ msgstr "La reindexació ha fallat"
-
-#~ msgid ""
-#~ "Once a day your files and text content are indexed so your searches are "
-#~ "fast. If you need to update your index now, click on the \"Update Now\" "
-#~ "button."
-#~ msgstr ""
-#~ "Una vegada al dia els vostres fitxers i el contingut del text és "
-#~ "reindexat de manera que les cerques són ràpides. Si voleu actualitzar "
-#~ "l'índex ara, feu clic al botó \"Actualitza ara\"."
-
-#~ msgid "Update Now"
-#~ msgstr "Actualitza ara"
-
-#~ msgid "Display the set of available appearance themes"
-#~ msgstr "Mostra el conjunt dels temes d'aparença disponibles"
-
-#~ msgid "_Nautilus Themes..."
-#~ msgstr "Temes del _Nautilus"
-
-#~ msgid "Config files"
-#~ msgstr "Fitxers de configuració"
-
-#~ msgid "APIs"
-#~ msgstr "API"
-
-#~ msgid "Miscellaneous"
-#~ msgstr "Miscel·lània"
-
-#~ msgid "Cyrillic (KOI8-R)"
-#~ msgstr "Ciríl·lic (KOI8-R)"
-
-#~ msgid "Verifying %s..."
-#~ msgstr "S'està verificant %s..."
-
-#~ msgid "Failed on \"%s\""
-#~ msgstr "Ha fallat en %s!"
-
-#~ msgid "Checking \"%s\" (%ld/%ld)"
-#~ msgstr "S'està comprovant \"%s\" (%ld/%ld)"
-
-#~ msgid "Package Contents"
-#~ msgstr "Continguts del paquet"
-
-#~ msgid "Package Title"
-#~ msgstr "Títol del paquet"
-
-#~ msgid "Size: "
-#~ msgstr "Mida: "
-
-#~ msgid "<size>"
-#~ msgstr "<mida>"
-
-#~ msgid "Install Date: "
-#~ msgstr "Data d'instal·lació: "
-
-#~ msgid "<unknown>"
-#~ msgstr "<desconegut>"
-
-#~ msgid "License: "
-#~ msgstr "Llicència: "
-
-#~ msgid "Build Date: "
-#~ msgstr "Data de muntatge: "
-
-#~ msgid "Distribution: "
-#~ msgstr "Distribució: "
-
-#~ msgid "Vendor: "
-#~ msgstr "Proveïdor: "
-
-#~ msgid "Install"
-#~ msgstr "Instal·la"
-
-#~ msgid "Update"
-#~ msgstr "Actualitza"
-
-#~ msgid "Uninstall"
-#~ msgstr "Desinstal·la"
-
-#~ msgid "Verify"
-#~ msgstr "Verifica"
-
-#~ msgid "Package Contents: %d files"
-#~ msgstr "Continguts del paquet: %d fitxers"
-
-#~ msgid "Verification completed, package ok."
-#~ msgstr "La verificació s'ha completat, el paquet està correcte."
-
-#~ msgid "%s would not work anymore\n"
-#~ msgstr "%s voleu no treballar més\n"
-
-#~ msgid "%s would break other installed packages\n"
-#~ msgstr "%s voleu interrompre els altres paquets instal·lats\n"
-
-#~ msgid "%s is needed, but could not be found\n"
-#~ msgstr "%s és necessari, però no s'ha pogut trobar\n"
-
-#~ msgid "%s was already installed\n"
-#~ msgstr "%s ja està instal·lat\n"
-
-#~ msgid "%s causes a circular dependency problem\n"
-#~ msgstr "%s motiva un problema de dependència circular\n"
-
-#~ msgid "Installing %s failed because of the following issue(s):\n"
-#~ msgstr "La instal·lació de %s ha fallat pel següent motiu(s):\n"
-
-#~ msgid "Uninstalling %s failed because of the following issue(s):\n"
-#~ msgstr "La desinstal·lació de %s ha fallat pel següent motiu(s):\n"
-
-#~ msgid "Uninstall failed..."
-#~ msgstr "La desinstal·lació ha fallat..."
-
-#~ msgid "Uninstall Failed"
-#~ msgstr "La desinstal·lació ha fallat"
-
-#~ msgid "Install failed..."
-#~ msgstr "La instal·lació ha fallat..."
-
-#~ msgid "Install Failed"
-#~ msgstr "La instal·lació ha fallat"
-
-#~ msgid "Incorrect password."
-#~ msgstr "Contrasenya incorrecta"
-
-#~ msgid "Factory for rpm view"
-#~ msgstr "Original pel visualitzador de rpm"
-
-#~ msgid "RPM component"
-#~ msgstr "Component RPM"
-
-#~ msgid "Set the default answer to continue, also default delete to Yes"
-#~ msgstr ""
-#~ "Especifiqueu la resposta predeterminada per continuar, i a la vegada "
-#~ "predetermina suprimeix a SI"
-
-#~ msgid "Specify search cgi"
-#~ msgstr "Especifiqueu el cercador cgi"
-
-#~ msgid "Show debug output"
-#~ msgstr "Mostra la sortida de la depuració"
-
-#~ msgid "10 sec delay after starting service"
-#~ msgstr "Retard de 10 s després d'iniciar el servei"
-
-#~ msgid "Allow downgrades"
-#~ msgstr "Permet instal·lar noves versions"
-
-#~ msgid "Erase packages"
-#~ msgstr "Suprimeix els paquets"
-
-#~ msgid "enable ei2"
-#~ msgstr "Habilita ei2"
-
-#~ msgid "RPM args are filename"
-#~ msgstr "Els arguments de l'RPM són el nom de fitxer"
-
-#~ msgid "Force install"
-#~ msgstr "Força la instal·lació"
-
-#~ msgid "Use ftp"
-#~ msgstr "Utilitza l'ftp"
-
-#~ msgid "Use local"
-#~ msgstr "Utilitza la ubicació local"
-
-#~ msgid "Use http"
-#~ msgstr "Utilitza l'http"
-
-#~ msgid "RPM args are Eazel Ids"
-#~ msgstr "Els arguments de l'RPM són els identificadors Eazel"
-
-#~ msgid "machine readable output"
-#~ msgstr "sortida llegible per la màquina"
-
-#~ msgid "Don't print fancy percent output"
-#~ msgstr "No imprimeixis a la sortida el percentatge de decoració"
-
-#~ msgid "don't use eazel auth stuff"
-#~ msgstr "No utilitzis el mecanisme d'autorització eazel"
-
-#~ msgid "Specify package file"
-#~ msgstr "Especifica el fitxer del paquet"
-
-#~ msgid "RPM args are needed files"
-#~ msgstr "Els arguments de l'RPM són el nom de fitxer"
-
-#~ msgid "Run Query"
-#~ msgstr "Executa la consulta"
-
-#~ msgid "Revert"
-#~ msgstr "Revertir"
-
-#~ msgid "Set root"
-#~ msgstr "Especifiqueu l'arrel"
-
-#~ msgid "Specify server"
-#~ msgstr "Especifiqueu el servidor"
-
-#~ msgid "Dont print too much, just problems and download"
-#~ msgstr "No imprimeixes més del compte, només els problemes i les baixades"
-
-#~ msgid "Perform ssl renaming"
-#~ msgstr "Realitza el canvi de nom ssl"
-
-#~ msgid "argument is a suite id"
-#~ msgstr "l'argument és un identificador suite"
-
-#~ msgid "Test run"
-#~ msgstr "Prova d'execució"
-
-#~ msgid "Allow username"
-#~ msgstr "Permet el nom d'usuari"
-
-#~ msgid "Allow upgrades"
-#~ msgstr "Permet actualitzar"
-
-#~ msgid "Verbose output"
-#~ msgstr "Sortida prolixa"
-
-#~ msgid "About to install a total of %d packages, %dKb\n"
-#~ msgstr "S'instal·laran al voltant d'un total de %d paquets, %dkB\n"
-
-#~ msgid "About to uninstall a total of %d packages, %dKb\n"
-#~ msgstr "Es desistal·laran al voltant d'un total de %d paquets, %dkB\n"
-
-#~ msgid "About to revert a total of %d packages, %dKb\n"
-#~ msgstr "Es revertiran al voltant d'un total de %d paquets, %dkB\n"
-
-#~ msgid "Specify package list to use (/var/eazel/service/package-list.xml)"
-#~ msgstr ""
-#~ "Especifiqueu la llista de paquets a utilitzar (/var/eazel/service/package-"
-#~ "list.xml)"
-
-#~ msgid ""
-#~ "Use specified file to generate a package list, requires --packagelist"
-#~ msgstr ""
-#~ "Utilitza el fitxer especificat per a generar una llista de paquets, "
-#~ "requereix --packagelist"
-
-#~ msgid "Use alternate CGI path"
-#~ msgstr "Utilitzeu un camí alternatiu per CGI"
-
-#~ msgid "Number of times to try the request"
-#~ msgstr "Nombre de vegades per provar la sol·licitud"
-
-#~ msgid "Delay between request retries, in usec"
-#~ msgstr "Retard entre reintents de sol·licitud, en micro segons"
-
-#~ msgid "Lookup by Eazel package id"
-#~ msgstr "Cerca per l'identificador del paquet Eazel"
-
-#~ msgid "Lookup package with a specific version"
-#~ msgstr "Cerca el paquet amb una versió específica"
-
-#~ msgid "%s-%s version %s-%s already installed"
-#~ msgstr "%s-%s versió %s-%s ja està intal·lat"
-
-#~ msgid "%s downgrades from version %s-%s to %s-%s"
-#~ msgstr "%s actualitza des de la versió %s-%s a la %s-%s"
-
-#~ msgid "%s downgrades from version %s to %s"
-#~ msgstr "%s actualitza des de la vesió %s a la %s"
-
-#~ msgid "%s installs version %s-%s"
-#~ msgstr "%s instal·la la versió %s-%s"
-
-#~ msgid "could not revive %s"
-#~ msgstr "No s'ha pogut recuperar %s"
-
-#~ msgid "Could not set URLType from config file!"
-#~ msgstr ""
-#~ "No s'ha pogut definir el tipus d'URL des del fitxer de configuració!"
-
-#~ msgid "Transactions are not stored, could not find home dir"
-#~ msgstr ""
-#~ "Les transaccions no s'han emmagatzemat, no s'ha pogut trobar el directori "
-#~ "d'inici"
-
-#~ msgid "Getting package list from remote server ...\n"
-#~ msgstr "S'està obtenint la llista de paquets del servidor remot ...\n"
-
-#~ msgid "Unable to retrieve package-list.xml!\n"
-#~ msgstr "És impossible recuperar package-list.xml!\n"
-
-#~ msgid "Cannot write to file %s, using default log handler"
-#~ msgstr ""
-#~ "No es pot escriure al fitxer %s, s'emprarà el gestor de registre "
-#~ "predeterminat"
-
-#~ msgid "Install failed"
-#~ msgstr "La instal·lació ha fallat"
-
-#~ msgid "Uninstall failed"
-#~ msgstr "La desinstal·lació ha fallat"
-
-#~ msgid "Could not create transaction directory (%s)! ***\n"
-#~ msgstr "*** No s'ha pogut crear un directori de transacció (%s) ***\n"
-
-#~ msgid "%s would break other packages"
-#~ msgstr "%s pot interferir en altres paquets"
-
-#~ msgid "%s could not be found on the server"
-#~ msgstr "%s no s'ha pogut trobar al servidor"
-
-#~ msgid "%s is already installed"
-#~ msgstr "%s ja està instal·lat"
-
-#~ msgid ""
-#~ "%s, which is newer, is already installed and downgrade is not enabled"
-#~ msgstr ""
-#~ "%s, què és nou, ja està instal·lat i l'actualització no està permesa"
-
-#~ msgid "%s, which is older, is already installed and upgrade is not enabled"
-#~ msgstr ""
-#~ "%s, què és antic, ja està instal·lat però la actualització no està permesa"
-
-#~ msgid "%s requires %s"
-#~ msgstr "%s requereix %s"
-
-#~ msgid "Check for a new version of %s"
-#~ msgstr "Comprova per una nova versió de %s"
-
-#~ msgid "Install both %s and %s"
-#~ msgstr "Instal·la ambdós, %s i %s"
-
-#~ msgid "Remove %s from your system"
-#~ msgstr "Elimina %s del vostre sistema"
-
-#~ msgid "Force the removal of %s from your system"
-#~ msgstr "Força la eliminació de %s del vostre sistema"
-
-#~ msgid "Package database has an inconsistency"
-#~ msgstr "La base de dades del paquet té una inconsistència"
-
-#~ msgid "Continue with force"
-#~ msgstr "Continua forçant"
-
-#~ msgid "Allow downgrade"
-#~ msgstr "Permet instal·lar noves versions"
-
-#~ msgid "Downloading %s..."
-#~ msgstr "S'està baixant %s..."
-
-#~ msgid "Could not open target file %s"
-#~ msgstr "No s'ha pogut obrir el fitxer objectiu %s"
-
-#~ msgid "Could not create an http request !"
-#~ msgstr "No s'ha pogut crear una sol·licitud http !"
-
-#~ msgid "Proxy: Invalid uri !"
-#~ msgstr "Servidor intermedi: La uri és invàlida!"
-
-#~ msgid "Could not prepare http request !"
-#~ msgstr "No s'ha pogut preparar la sol·licitud http !"
-
-#~ msgid "Couldn't get async mode "
-#~ msgstr "No s'ha pogut aconseguir el mode asíncron"
-
-#~ msgid "Could not get request body!"
-#~ msgstr "No s'ha pogut obtenir el cos de la sol·licitud!"
-
-#~ msgid "HTTP error: %d %s"
-#~ msgstr "S'ha produït un error HTTP: %d %s"
-
-#~ msgid "FTP not supported yet"
-#~ msgstr "L'FTP encara no està suportat"
-
-#~ msgid "Checking local file %s..."
-#~ msgstr "S'està comprovant el fitxer local %s..."
-
-#~ msgid "Failed to retrieve %s!"
-#~ msgstr "Ha fallat la recuperació de %s!"
-
-#~ msgid "Could not get an URL for %s"
-#~ msgstr "No s'ha pogut obtenir una URL per a %s"
-
-#~ msgid "Downloaded package does not have the correct name"
-#~ msgstr "Els paquets baixats no tenen el nom correcte"
-
-#~ msgid "Package %s should have had name %s"
-#~ msgstr "El paquet %s hauria de tenir el nom %s"
-
-#~ msgid "Downloaded package does not have the correct version"
-#~ msgstr "Els paquets baixats no tenen la versió correcta"
-
-#~ msgid "Package %s had version %s and not %s"
-#~ msgstr "El paquet %s tenia la versió %s i no %s"
-
-#~ msgid "File download failed"
-#~ msgstr "Ha fallat la baixada del fitxer"
-
-#~ msgid "*** Begin pkg dump ***\n"
-#~ msgstr "*** Comença el vessat de paquets ***\n"
-
-#~ msgid "*** End pkg dump ***\n"
-#~ msgstr "*** Acaba el vessat de paquets ***\n"
-
-#~ msgid "*** No package nodes! (cat has no children) ***"
-#~ msgstr "*** Falten els nodes del paquet! (cat no té fill) ***\n"
-
-#~ msgid "*** Bailing from package parse! ***"
-#~ msgstr "*** Avalant des de l'analitzador de paquets! ***\n"
-
-#~ msgid "*** No package nodes! ***"
-#~ msgstr "*** Falten els nodes del paquet! ***\n"
-
-#~ msgid "*** Malformed package node!"
-#~ msgstr "*** El node del paquet és incorecte! ***\n"
-
-#~ msgid "*** No depends nodes! ***"
-#~ msgstr "*** Falten les dependències dels nodes! ***\n"
-
-#~ msgid "*** Malformed depends node!"
-#~ msgstr "*** Dependències dels nodes incorrectes!"
-
-#~ msgid "*** Unknown node type '%s'"
-#~ msgstr "*** el tipus de node '%s' no és conegut"
-
-#~ msgid "*** The pkg list file contains no data! ***\n"
-#~ msgstr "*** El fitxer de la llista de paquets no conté dades! ***\n"
-
-#~ msgid "*** Cannot find the CATEGORIES xmlnode! ***\n"
-#~ msgstr "*** No es pot trobar el node xml de CATEGORIES! ***\n"
-
-#~ msgid "*** Bailing from categories parse! ***\n"
-#~ msgstr "*** S'està avalant des de l'analitzador de categories! ***\n"
-
-#~ msgid "*** No Categories! ***\n"
-#~ msgstr "*** Les categories no hi són! ***\n"
-
-#~ msgid "*** Bailing from category parse! ***\n"
-#~ msgstr "*** S'està avalant des de l'analitzador de categories! ***\n"
-
-#~ msgid "*** Cannot find the TRANSACTION xmlnode! ***\n"
-#~ msgstr "*** No es pot trobar el node xml de TRANSACCIÓ! ***\n"
-
-#~ msgid "*** Bailing from transaction parse! ***\n"
-#~ msgstr "*** S'està avalant des de l'analitzador de categories! ***\n"
-
-#~ msgid "*** No packages! ***\n"
-#~ msgstr "*** Els paquets no hi són! ***\n"
-
-#~ msgid "*** No category nodes! ***"
-#~ msgstr "*** Els nodes de categoria no hi són! ***\n"
-
-#~ msgid "*** Cannot find the CATEGORIES xmlnode! ***"
-#~ msgstr "*** No es pot trobar el node xml de CATEGORIES! ***\n"
-
-#~ msgid "*** Unknown node %s"
-#~ msgstr "*** Node %s desconegut"
-
-#~ msgid "*** Error generating xml package list! ***\n"
-#~ msgstr ""
-#~ "*** S'ha produït un error en generar la llista de paquets xml! ***\n"
-
-#~ msgid "*** Error reading package list! ***\n"
-#~ msgstr "*** S'ha produït un error en llegir la llista de paquets! ***\n"
-
-#~ msgid "*** The osd xml contains no data! ***\n"
-#~ msgstr "*** L'osd xml no conté dades! ***\n"
-
-#~ msgid "*** Bailing from osd parse! ***\n"
-#~ msgstr "*** Avalant des de l'analitzador osd! ***\n"
-
-#~ msgid "Could not parse the xml (length %d)"
-#~ msgstr "No s'ha pogut analitzar el xml (longitud %d)"
-
-#~ msgid "Opened packages database in %s"
-#~ msgstr "La base de dades de paquets s'ha obert en %s"
-
-#~ msgid "Opening packages database in %s failed"
-#~ msgstr "La consulta a la base de dades de paquets en %s ha fallat !"
-
-#~ msgid "Easy Install"
-#~ msgstr "Instal·lació fàcil"
-
-#~ msgid "Messages"
-#~ msgstr "Missatges"
-
-#~ msgid "Version: %s"
-#~ msgstr "Versió %s-%s"
-
-#~ msgid "Checking \"%s\" for conflicts..."
-#~ msgstr "S'està comprovant \"%s\" per conflictes..."
-
-#~ msgid "0K of %dK"
-#~ msgstr "0kB de %dkB"
-
-#~ msgid ""
-#~ "The package \"%s\" requires \"%s\" to run.\n"
-#~ "Downloading \"%s\" now."
-#~ msgstr ""
-#~ "El paquet \"%s\" requereix \"%s\" per executar-se.\n"
-#~ "Ara s'està baixant \"%s\"."
-
-#~ msgid "Attempting to download package \"%s\"."
-#~ msgstr "S'està intentant baixar el paquet \"%s\"."
-
-#~ msgid ""
-#~ "The package \"%s\" requires \"%s\" to run.\n"
-#~ "\"%s\" has been successfully downloaded."
-#~ msgstr ""
-#~ "El paquet \"%s\" requereix \"%s\" per executar-se.\n"
-#~ "\"%s\" s'ha baixat amb èxit."
-
-#~ msgid "The package \"%s\" has been successfully downloaded."
-#~ msgstr "El paquet \"%s\" s'ha baixat amb èxit."
-
-#~ msgid "%dK of %dK"
-#~ msgstr "%dkB de %dkB"
-
-#~ msgid "Preparing to download packages..."
-#~ msgstr "S'està preparant per baixar els paquets..."
-
-#~ msgid ""
-#~ "These packages are about to be downloaded and installed:\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Aquests paquets s'estan preparant per ser baixats i instal·lats:\n"
-#~ "\n"
-
-#~ msgid ""
-#~ "These packages are about to be reverted:\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Aquets paquets s'estan preparant per ser revertits:\n"
-#~ "\n"
-
-#~ msgid "for a total of %ld MB."
-#~ msgstr "per un total de %ld MB."
-
-#~ msgid "for a total of %ld KB."
-#~ msgstr "per un total de %ld kB."
-
-#~ msgid ""
-#~ "\n"
-#~ "Is this okay?"
-#~ msgstr ""
-#~ "\n"
-#~ "És correcte?"
-
-#~ msgid "Downloading 1 package (%s)"
-#~ msgstr "S'està baixant 1 paquet (%s)"
-
-#~ msgid "Downloading %d packages (%s)"
-#~ msgstr "S'estan baixant %d paquets (%s)"
-
-#~ msgid "Download of package \"%s\" failed!"
-#~ msgstr "La baixada del paquet \"%s\" ha fallat!"
-
-#~ msgid ""
-#~ "The package \"%s\" requires \"%s\" to run.\n"
-#~ "\"%s\" has been successfully downloaded and installed."
-#~ msgstr ""
-#~ "El paquet \"%s\" requereix \"%s\"  per executar-se.\n"
-#~ "\"%s\" ha estat baixat amb èxit i instal·lat."
-
-#~ msgid "\"%s\" has been successfully downloaded and installed."
-#~ msgstr "\"%s\" ha estat baixat amb èxit i instal·lat."
-
-#~ msgid "Installing package %d of %d"
-#~ msgstr "S'està instal·lant el paquet %d de %d"
-
-#~ msgid ""
-#~ "The package \"%s\" requires \"%s\" to run.\n"
-#~ "\"%s\" is now being installed."
-#~ msgstr ""
-#~ "El paquet \"%s\" requereix \"%s\" per executar-se.\n"
-#~ "\"%s\" està instal·lant-se ara."
-
-#~ msgid "Now installing package \"%s\"."
-#~ msgstr "Ara s'està instal·lant el paquet \"%s\"."
-
-#~ msgid "Installing \"%s\""
-#~ msgstr "S'està instal·lant \"%s\" "
-
-#~ msgid "I ran into problems while installing."
-#~ msgstr "M'he trobat amb problemes mentre estava instal·lant."
-
-#~ msgid "I'd like to try the following :"
-#~ msgstr "Hauria de provar el següent:"
-
-#~ msgid "Is this ok ?"
-#~ msgstr "És correcte?"
-
-#~ msgid "Installation aborted."
-#~ msgstr "La instal·lació ha avortat."
-
-#~ msgid "This package has already been installed."
-#~ msgstr "Aquest paquet ja està instal·lat."
-
-#~ msgid "Installation complete."
-#~ msgstr "La instal·lació s'ha completat"
-
-#~ msgid "Installation failed."
-#~ msgstr "La instal·lació ha fallat"
-
-#~ msgid "Some packages installed successfully:"
-#~ msgstr "Alguns paquets s'han instal·lat amb èxit:"
-
-#~ msgid ""
-#~ "\n"
-#~ "Some packages failed:"
-#~ msgstr ""
-#~ "\n"
-#~ "Alguns paquets han fallat:"
-
-#~ msgid "Erase the RPM files?"
-#~ msgstr "Suprimeixo els fitxers RPM?"
-
-#~ msgid "Erase the leftover RPM files?"
-#~ msgstr "Suprimeixo els fitxers RPM restants?"
-
-#~ msgid ""
-#~ "A core package of Nautilus has been\n"
-#~ "updated.  You should restart Nautilus.\n"
-#~ "\n"
-#~ "Do you wish to do that now?"
-#~ msgstr ""
-#~ "S'ha actualitzat un paquet del nucli del\n"
-#~ "Nautilus. Haurieu de reiniciar el Nautilus.\n"
-#~ "\n"
-#~ "Voleu fer-ho ara?"
-
-#~ msgid "Installation failed on %s"
-#~ msgstr "La instal·lació ha fallat a %s"
-
-#~ msgid "Authenticate as root"
-#~ msgstr "Autentícat com superusuari"
-
-#~ msgid "Downloading packages"
-#~ msgstr "S'estan baixant els paquets"
-
-#~ msgid "Downloading remote package"
-#~ msgstr "S'està baixant el paquet remot"
-
-#~ msgid "Downloading some package"
-#~ msgstr "S'està baixant un paquet"
-
-#~ msgid ""
-#~ "The Eazel install service is missing:\n"
-#~ "Installs will not work."
-#~ msgstr ""
-#~ "Falta el servei d'instal·lació Eazel:\n"
-#~ "La instal·lació no funcionarà."
-
-#~ msgid "Contacting the Eazel Software Catalog ..."
-#~ msgstr "S'està contactant amb el catàleg del programari de Eazel..."
-
-#~ msgid "Checking for authorization..."
-#~ msgstr "S'està comprovant l'autorització..."
-
-#~ msgid "Aborting package downloads (please wait) ..."
-#~ msgstr "s'estan avortant les baixades de paquets (espereu)..."
-
-#~ msgid "Package download aborted."
-#~ msgstr "Avortada la baixada de paquets"
-
-#~ msgid "Nautilus Service Install View"
-#~ msgstr "Vista del servei d'instal·lació del Nautilus"
-
-#~ msgid "Nautilus Service Install View Factory"
-#~ msgstr "Vista original de la vista del servei d'instal·lació del Nautilus"
-
-#~ msgid "Enable inventory upload."
-#~ msgstr "Habilita la càrrega de l'inventari"
-
-#~ msgid "Disable inventory upload."
-#~ msgstr "Inhabilita la càrrega de l'inventari"
-
-#~ msgid "Enable warning before each upload."
-#~ msgstr "Habilita l'advertiment abans de cada càrrega."
-
-#~ msgid "Disable warning before each upload."
-#~ msgstr "Inhabilita l'advertiment abans de cada càrrega."
-
-#~ msgid "Set machine name."
-#~ msgstr "Especifica el nom de la màquina."
-
-#~ msgid "Display information about current inventory settings."
-#~ msgstr "Mostra informació sobre els paràmetres actuals de l'inventari."
-
-#~ msgid "Upload inventory now, if not up to date."
-#~ msgstr "Carrega l'inventari ara, sinó està actualitzat."
-
-#~ msgid "The supplied URL was bad.\n"
-#~ msgstr "L'URL subministrada era incorrecta.\n"
-
-#~ msgid "A CORBA error occured.\n"
-#~ msgstr "S'ha produït un error CORBA.\n"
-
-#~ msgid "Can't post !"
-#~ msgstr "No es pot enviar!"
-
-#~ msgid "can't open tempory file hell \n"
-#~ msgstr "No es pot obrir el fitxer temporal\n"
-
-#~ msgid "Can't set body !"
-#~ msgstr "No es pot especificar el cos!"
-
-#~ msgid "Factory for the inventory service"
-#~ msgstr "Original per al servei d'inventari"
-
-#~ msgid "Inventory"
-#~ msgstr "Inventari"
-
-#~ msgid "System Inventory"
-#~ msgstr "Inventari del sistema"
-
-#~ msgid "Please Change Your Eazel Password"
-#~ msgstr "Si us plau, canvieu la vostra contrasenya a Eazel"
-
-#~ msgid "Current Password:"
-#~ msgstr "Contrasenya actual:"
-
-#~ msgid "New Password:"
-#~ msgstr "Nova contrasenya:"
-
-#~ msgid "Confirm New Password:"
-#~ msgstr "Confirmeu la nova contrasenya:"
-
-#~ msgid "Change my password"
-#~ msgstr "Canvia la meva contrasenya"
-
-#~ msgid "I need assistance"
-#~ msgstr "Necessito assistència"
-
-#~ msgid "Your password has been changed!"
-#~ msgstr "La vostra contrasenya s'ha canviat!"
-
-#~ msgid ""
-#~ "I'm sorry, but that password\n"
-#~ "is incorrect.  Please try again."
-#~ msgstr ""
-#~ "La contrasenya és incorrecta.\n"
-#~ "Torneu-ho a provar."
-
-#~ msgid ""
-#~ "I'm sorry, but your new password\n"
-#~ "must be at least six (6) characters long.\n"
-#~ "Please try another one."
-#~ msgstr ""
-#~ "La nova contrasenya ha de tenir\n"
-#~ "al menys sis (6) caràcters de longitud.\n"
-#~ "Proveu-ne un altra."
-
-#~ msgid ""
-#~ "I'm sorry, but your new password\n"
-#~ "can't be ridiculously long.\n"
-#~ "Please try another one."
-#~ msgstr ""
-#~ "La nova contrasenya no pot ser\n"
-#~ "tant llarga. Proveu-ne un altra."
-
-#~ msgid ""
-#~ "I'm sorry, but your new password must\n"
-#~ "contain letters along with at least one\n"
-#~ "number or symbol. Please try another one."
-#~ msgstr ""
-#~ "La nova contrasenya hauria de contenir\n"
-#~ "lletres amb al menys algun número o\n"
-#~ "símbol. Proveu-ne un altra."
-
-#~ msgid ""
-#~ "I'm sorry, but I hit an unexpected\n"
-#~ "error. Please try again, with\n"
-#~ "different passwords."
-#~ msgstr ""
-#~ "He obtingut un error inesperat.\n"
-#~ "Torneu-ho a provar amb una\n"
-#~ "contrasenya diferent."
-
-#~ msgid ""
-#~ "I'm sorry, but I got an unexpected\n"
-#~ "error.  Please try again."
-#~ msgstr ""
-#~ "He obtingut un error inesperat.\n"
-#~ "Torneu-ho a provar."
-
-#~ msgid ""
-#~ "I'm sorry, but your new password\n"
-#~ "wasn't typed the same way twice.\n"
-#~ "Please try again."
-#~ msgstr ""
-#~ "La nova contrasenya no s'ha escrit\n"
-#~ "igual a la repetició.\n"
-#~ "Torneu-ho a provar."
-
-#~ msgid "Change Password"
-#~ msgstr "Canvia la contrasenya"
-
-#~ msgid "Unknown Date"
-#~ msgstr "Data desconeguda"
-
-#~ msgid "%A, %B %d"
-#~ msgstr "%A, %B %d"
-
-#~ msgid "Could not find a valid boolean value for grey_out!"
-#~ msgstr "No s'ha pogut trobar un valor booleà per grey_out!"
-
-#~ msgid "Could not fetch summary configuration !"
-#~ msgstr "No s'ha pogut recollir el sumari de configuració!"
-
-#~ msgid "The summary configuration contains no data!\n"
-#~ msgstr "El sumari de configuració no conté dades!\n"
-
-#~ msgid "Cannot find the SUMMARY_DATA xmlnode!\n"
-#~ msgstr "No es pot trobar el node xml del SUMARI DE DADES!\n"
-
-#~ msgid "Bailing from the SUMMARY_DATA parse!\n"
-#~ msgstr "Avalant des de l'analitzador del SUMARI DE DADES!\n"
-
-#~ msgid "Could not find any summary configuration data!\n"
-#~ msgstr "No s'ha pogut trobar cap sumari de la configuració de dades!\n"
-
-#~ msgid "Bailing from summary configuration parse!\n"
-#~ msgstr "Avalant des de l'analitzador del sumari de configuració!\n"
-
-#~ msgid ""
-#~ "I'm sorry, network problems are preventing you from connecting to Eazel "
-#~ "Services."
-#~ msgstr ""
-#~ "Ho sentim, problemes en la xarxa us estan impedint de connectar des del "
-#~ "servei d'Eazel."
-
-#~ msgid ""
-#~ "Your Eazel Services account has not yet been activated.  You can't log "
-#~ "into Eazel Services until you activate your account.\n"
-#~ "\n"
-#~ "Please check your email for activation instructions."
-#~ msgstr ""
-#~ "El vostre compte amb els sreveis Eazel encara no s'han activat. No us "
-#~ "podeu connectar als serveis d'Eazel fins que no activeu el vostre "
-#~ "compte.\n"
-#~ "\n"
-#~ "Comproveu el vostre correu per a les instruccions d'activació."
-
-#~ msgid "We're sorry, but your name and password are still not recognized."
-#~ msgstr ""
-#~ "Ho sentim, però el vostre nom i contrasenya no estan encara reconeguts."
-
-#~ msgid "Eazel Service Login Error"
-#~ msgstr "Error del Serveis d'entrada a l'Eazel"
-
-#~ msgid "Register Now"
-#~ msgstr "Registreu-vos ara"
-
-#~ msgid "Please log in to Eazel services"
-#~ msgstr "Vull contractar els serveis de l'Eazel ara."
-
-#~ msgid "Your user name or password were not correct.  Please try again."
-#~ msgstr ""
-#~ "El nom d'usuari o la contrasenya són incorrectes. Torneu-ho a provar."
-
-#~ msgid "Register"
-#~ msgstr "Registrar-se"
-
-#~ msgid "Login"
-#~ msgstr "Entrar"
-
-#~ msgid "Terms of Use"
-#~ msgstr "Condicions d'ús"
-
-#~ msgid "Privacy Statement"
-#~ msgstr "Declaració privada"
-
-#~ msgid "Account Preferences"
-#~ msgstr "Compte de preferències"
-
-#~ msgid "Logout"
-#~ msgstr "Sortida"
-
-#~ msgid "Welcome, %s!"
-#~ msgstr "Benvingut al Nautilus!"
-
-#~ msgid "You are not logged in"
-#~ msgstr "No esteu registrats"
-
-#~ msgid "Log out from Eazel Services"
-#~ msgstr "Serveis de l'Eazel"
-
-#~ msgid "_Log in to Eazel Services"
-#~ msgstr "Serveis de l'Eazel"
-
-#~ msgid "_Log out from Eazel Services"
-#~ msgstr "_Sortir dels serveis de l'Eazel"
-
-#~ msgid "_Register for Eazel Services"
-#~ msgstr "_Registrar-se als serveis de l'Eazel"
-
-#~ msgid "HTTP error %d \"%s\" on uri %s"
-#~ msgstr "S'ha produït un error HTTP %d %s a l'URI"
-
-#~ msgid "Could not initialize Bonobo"
-#~ msgstr "No s'ha pogut inicialitzar el Bonobo"
-
-#~ msgid "Can't write logfile %s -- using default log handler"
-#~ msgstr ""
-#~ "No es por escriure el fitxer de registre %s -- s'emprarà el gestor de "
-#~ "registres predeterminat"
-
-#~ msgid "Nautilus eazel sample service view component"
-#~ msgstr "Mostra del servei de components de la vista del Nautilus eazel."
-
-#~ msgid "Nautilus services startup view factory"
-#~ msgstr "Inicialització dels serveis de "
-
-#~ msgid "Enable debugging"
-#~ msgstr "Habilita el procés de depuració"
-
-#~ msgid "Valid operations:"
-#~ msgstr "Operacions vàlides:"
-
-#~ msgid "Error: No operation supplied\n"
-#~ msgstr "S'ha produït un error: No s'ha subministrat cap operació\n"
-
-#~ msgid "Error: Invalid operation supplied (%s)\n"
-#~ msgstr "S'ha produït un error: L'operació subministrada no és vàlida (%s)\n"
-
-#~ msgid ""
-#~ "Error: Invalid syntax\n"
-#~ "Syntax: %s\n"
-#~ msgstr ""
-#~ "S'ha produït un error: La sintaxi no és vàlida\n"
-#~ "Sintaxi: %s\n"
-
-#~ msgid "_Fonts"
-#~ msgstr "_Tipus de lletra"
-
-#~ msgid "Hewlett-Packard"
-#~ msgstr "Hewlett-Packard"
-
-#~ msgid "IBM"
-#~ msgstr "IBM"
-
-#~ msgid "Linux Companies"
-#~ msgstr "Linux Companies"
-
-#~ msgid "Linux at IBM"
-#~ msgstr "Linux at IBM"
-
-#~ msgid "Linuxcare"
-#~ msgstr "Linuxcare"
-
-#~ msgid "Myplay"
-#~ msgstr "Myplay"
-
-#~ msgid "You cannot move a file onto itself."
-#~ msgstr "No podeu moure un element a sobre d'ell mateix."
-
-#~ msgid "Error Moving to Trash"
-#~ msgstr "Hi ha hagut un error en moure a la paperera"
-
-#~ msgid "current theme"
-#~ msgstr "tema actual"
-
-#~ msgid "single"
-#~ msgstr "mida"
-
-#~ msgid "display"
-#~ msgstr "Mostra la barra lateral"
-
-#~ msgid "Can add Content"
-#~ msgstr "Continguts del paquet"
-
-#~ msgid "Home location:"
-#~ msgstr "Ubicació"
-
-#~ msgid "HTTP Proxy Port:"
-#~ msgstr "Configuaració"
-
-#~ msgid "Sidebar Panels Settings"
-#~ msgstr "Barra lateral"
-
-#~ msgid "Navigation Settings"
-#~ msgstr "Edita els paràmetres..."
-
-#~ msgid "always"
-#~ msgstr "Reproduir"
-
-#~ msgid "never"
-#~ msgstr "propietari"
-
-#~ msgid "Prefs Box"
-#~ msgstr "Quadre de preferències"
-
-#~ msgid ""
-#~ "Sorry, %s can only open local files, and \"%s\" is remote. If you want to "
-#~ "open it with %s, make a local copy first."
-#~ msgstr ""
-#~ "%s només pot obrir fitxers locals, i \"%s\" és remot. Si voleu obrir-lo "
-#~ "amb %s, feu primer una còpia local."
-
-#~ msgid "Can't open remote file"
-#~ msgstr "No es pot obrir el fitxer remot"
-
-#~ msgid "Question"
-#~ msgstr "Descripció"
-
-#~ msgid "Open in _New Window"
-#~ msgstr "Obre en una _Nova Finestra"
-
-#~ msgid "Where:"
-#~ msgstr "On:"
-
-#~ msgid "_Open in New Window"
-#~ msgstr "Obre en una _Nova Finestra"
-
-#~ msgid "_Select All Files"
-#~ msgstr "_Selecciona-ho Tot"
-
-#~ msgid "Icon Captions..."
-#~ msgstr "Títol de les _icones..."
-
-#~ msgid "_Icon Captions..."
-#~ msgstr "Títol de les _icones..."
-
-#~ msgid ""
-#~ "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
-#~ "again may fix the problem."
-#~ msgstr ""
-#~ "El Nautilus no es pot utilitzar ara. Reiniciar l'ordinador o instalar el "
-#~ "Nautilus altra vegada pot arreglar el problema."
-
-#~ msgid ""
-#~ "Eazel offers a growing number of services to help you\n"
-#~ "install and maintain new software and manage your files\n"
-#~ "across the network.  Choose an option below, and the\n"
-#~ "information will be presented in Nautilus after you've\n"
-#~ "finished setting up."
-#~ msgstr ""
-#~ "Eazel ofereix un creixent nombre de serveis per a ajudar-vos a instal·lar "
-#~ "i mantenir noves aplicacions i gestionar els vostres fitxers a través de "
-#~ "la xarxa. Si voleu buscar més sobre els serveis de l'Eazel, premeu el "
-#~ "botó 'Següent'."
-
-#~ msgid "I want to learn more about Eazel services."
-#~ msgstr "Vull aprendre més sobre els serveis de l'Eazel."
-
-#~ msgid "I want to sign up for Eazel services now."
-#~ msgstr "Vull contractar els serveis de l'Eazel ara."
-
-#~ msgid "I don't want to learn about Eazel services at this time."
-#~ msgstr "No vull aprendre sobre els serveis de l'Eazel per ara."
-
-#~ msgid "No, don't contact Eazel services at this time."
-#~ msgstr "No vull contactar amb els serveis de l'Eazel per ara."
-
-#~ msgid "HTTP Proxy Configuration"
-#~ msgstr "Configuaració del servidor intermedi HTTP"
-
-#~ msgid ""
-#~ "Since this is the first time that you've launched\n"
-#~ "Nautilus, we'd like to ask you a few questions\n"
-#~ "to help personalize it for your use."
-#~ msgstr ""
-#~ "Com aquesta és la primera vegada que executeu\n"
-#~ "el Nautilus, ens agaradria fer-vos unes poques\n"
-#~ "preguntes per a ajudar-vos a personalitzar-lo.\n"
-#~ "\n"
-#~ "Premeu el botó Següent per a continuar."
-
-#~ msgid ""
-#~ "Click the finish button to launch Nautilus.\n"
-#~ "We hope that you enjoy using it!"
-#~ msgstr ""
-#~ "Feu clic al botó acabar per a executar el Nautilus.\n"
-#~ "\n"
-#~ "Esperem que disfruteu utilitzant-lo!"
-
-#~ msgid "Select A User Level"
-#~ msgstr "Seleccioneu un nivell d'usuari"
-
-#~ msgid "Sign Up for Eazel Services"
-#~ msgstr "Apunteu-vos als serveis de l'Eazel"
-
-#~ msgid "Nautilus Update"
-#~ msgstr "Actualització del Nautilus"
-
-#~ msgid "Nautilus _License"
-#~ msgstr "_Llicència del Nautilus"
-
-#~ msgid "Removes the selected text without putting it on the clipboard"
-#~ msgstr "Elimina el text seleccionat sense posar-lo al portaretalls"
-
-#~ msgid "Use Intermediate settings"
-#~ msgstr "Paràmetres d'ús intermedi"
-
-#~ msgid "_New Window"
-#~ msgstr "_Nova finestra"
-
-#~ msgid "_Web Search"
-#~ msgstr "Cerca a la web"
-
-#~ msgid "  Empty Trash  "
-#~ msgstr " Buida la paperera"
-
-#~ msgid "View as Other..."
-#~ msgstr "Veure com altres..."
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "You clicked the Kill Content View toolbar button."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Heu fet clic al botó 'Mata la vista de continguts' de la barra d'eines."
-
-#~ msgid "Kill the Loser content view."
-#~ msgstr "Mata la vista de continguts del Perdedor"
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "You clicked the Kill Sidebar View toolbar button."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Heu fet clic al botó Mata la vista de la barra lateral de la barra "
-#~ "d'eines."
-
-#~ msgid "Loser"
-#~ msgstr "Perdedor"
-
-#~ msgid "Kill the Loser sidebar view."
-#~ msgstr "Mata la vista de la barra lateral del Perdedor."
-
-#~ msgid "_Mozilla"
-#~ msgstr "_Mozilla"
-
-#~ msgid "This is a mozilla merged menu item"
-#~ msgstr "Això és un element del menú combinat del Mozilla"
-
-#~ msgid "Mozilla"
-#~ msgstr "Mozilla"
-
-#~ msgid "This is a mozilla merged toolbar button"
-#~ msgstr "Això és un element del menú combinat del Mozilla"
-
-#~ msgid "checking %s..."
-#~ msgstr "S'està comprovant %s..."
-
-#~ msgid "Set port numer (80)"
-#~ msgstr "Especifiqueu el número de port (80)"
-
-#~ msgid "Set tmp dir (/tmp/eazel-install)"
-#~ msgstr "Especifiqueu el directori temporal (/tmp/eazel-install)"
-
-#~ msgid "Creating temporary download directory ...\n"
-#~ msgstr "S'està creant un directori temporal de descàrrega ...\n"
-
-#~ msgid "Could not create temporary directory!\n"
-#~ msgstr "No s'ha pogut crear un directori temporal!\n"
-
-#~ msgid "Using local protocol cannot resolve library dependencies"
-#~ msgstr "La utilització d'un protocol local no pot resoldre les dependències"
-
-#~ msgid "Using local protocol cannot fetch by id"
-#~ msgstr "L'ús d'un protocol local no pot recollir-se per un identificador"
-
-#~ msgid "Could not get a URL for package id %s"
-#~ msgstr "No s'ha pogut obtenir una URL per a %s"
-
-#~ msgid "Could not retrieve a URL for id %s"
-#~ msgstr "No s'ha pogut recuperar un URL per a %s"
-
-#~ msgid "Dry Run Mode Activated.  Packages will not actually be installed ..."
-#~ msgstr ""
-#~ "S'ha activat el mode Dry Run. Els paquets no s'instal·laran realment..."
-
-#~ msgid "*** Could not create tmp directory (%s)! ***\n"
-#~ msgstr "*** No s'ha pogut crear el directori tmp (%s)! ***\n"
-
-#~ msgid "Reading the install package list %s"
-#~ msgstr "S'està llegint la llista de paquets %s"
-
-#~ msgid "Will download %s"
-#~ msgstr "Es baixarà %s"
-
-#~ msgid "Category = %s"
-#~ msgstr "Categoria = %s"
-
-#~ msgid "Preflight (%d bytes, %d packages)"
-#~ msgstr "Prevolada (%d bytes, %d paquets)"
-
-#~ msgid "Removing package %s %s"
-#~ msgstr "S'està eliminant el paquet %s %s"
-
-#~ msgid "RPM package database query failed !"
-#~ msgstr "La consulta a la base de dades de paquets de l'RPM ha fallat !"
-
-#~ msgid "Preparing package system"
-#~ msgstr "S'està eliminant el paquet %s"
-
-#~ msgid "%s conflicts %s-%s"
-#~ msgstr "%s provoca el conflicte %s-%s"
-
-#~ msgid "Processing dep for %s, requires library %s"
-#~ msgstr ""
-#~ "S'estan processant les dependències per a %s, requereix la biblioteca %s"
-
-#~ msgid "Processing dep for %s, requires package %s"
-#~ msgstr ""
-#~ "S'estan processant les dependències per a %s, requereix el paquet %s"
-
-#~ msgid "%d dependency failure(s)"
-#~ msgstr "%d dependències han fallat!"
-
-#~ msgid "Dependencies are ok"
-#~ msgstr "Les dependències estàn bé"
-
-#~ msgid "Downloading package %s ..."
-#~ msgstr "S'està baixant el paquet %s..."
-
-#~ msgid "Preparing to install 1 package"
-#~ msgstr "S'està preparant per instal·lar 1 paquet"
-
-#~ msgid ""
-#~ "Installation Failed!\n"
-#~ "\n"
-#~ msgstr ""
-#~ "La instal·lació ha fallat!\n"
-#~ "\n"
-
-#~ msgid "display service name and such"
-#~ msgstr "mostra el nom del servei i d'altres"
-
-#~ msgid "maximum allowed difference in seconds"
-#~ msgstr "diferència màxima permesa en segons"
-
-#~ msgid "update the system clock"
-#~ msgstr "actualitza el rellotge del sistema"
-
-#~ msgid "specify time url"
-#~ msgstr "especifica l'url per l'hora"
-
-#~ msgid "Could not read time-service config from %s"
-#~ msgstr "No s'ha pogut llegir la configuració del servei de temps des de %s"
-
-#~ msgid "moved"
-#~ msgstr "moguts"
-
-#~ msgid "Folder Views"
-#~ msgstr "Vista de carpetes"
-
-#~ msgid "marked with \"%s\""
-#~ msgstr "marcat amb \"%s\""
-
-#~ msgid "that"
-#~ msgstr "aquell"
-
-#~ msgid "User Main Directory"
-#~ msgstr "Directori de l'usuari principal"
-
-#~ msgid "Desktop Directory"
-#~ msgstr "Directori de l'escriptori"
-
-#~ msgid "Don't draw background and icons on desktop."
-#~ msgstr "No dibuixis el fons i les icones sobre l'escriptori."
-
-#~ msgid "With Emblem"
-#~ msgstr "Amb el distintiu"
-
-#~ msgid "Last Modified"
-#~ msgstr "Última modificació"
-
-#~ msgid "Owned By"
-#~ msgstr "Propietat de"
-
-#~ msgid "starts with"
-#~ msgstr "començant amb"
-
-#~ msgid "ends with"
-#~ msgstr "acabats amb"
-
-#~ msgid "matches glob"
-#~ msgstr "coincidències globals"
-
-#~ msgid "matches regexp"
-#~ msgstr "coincidències regexp"
-
-#~ msgid "includes all of"
-#~ msgstr "inclou tot"
-
-#~ msgid "includes any of"
-#~ msgstr "inclou algun"
-
-#~ msgid "includes none of"
-#~ msgstr "inclou cap"
-
-#~ msgid "is not"
-#~ msgstr "no és"
-
-#~ msgid "text file"
-#~ msgstr "fitxer de text"
-
-#~ msgid "application"
-#~ msgstr "aplicació"
-
-#~ msgid "directory"
-#~ msgstr "directori"
-
-#~ msgid "larger than"
-#~ msgstr "major que"
-
-#~ msgid "smaller than"
-#~ msgstr "menor que"
-
-#~ msgid "marked with"
-#~ msgstr "marcat amb"
-
-#~ msgid "not marked with"
-#~ msgstr "no marcat amb"
-
-#~ msgid "is after"
-#~ msgstr "és després"
-
-#~ msgid "is before"
-#~ msgstr "és abans"
-
-#~ msgid ""
-#~ "The Nautilus shell is under development; it's not\n"
-#~ "ready for daily use. Some features are not yet done,\n"
-#~ "partly done, or unstable. The program doesn't look\n"
-#~ "or act exactly the way it will in version 1.0.\n"
-#~ "\n"
-#~ "If you do decide to test this version of Nautilus, \n"
-#~ "beware. The program could do something \n"
-#~ "unpredictable and may even delete or overwrite \n"
-#~ "files on your computer.\n"
-#~ "\n"
-#~ "For more information, visit http://nautilus.eazel.com."
-#~ msgstr ""
-#~ "L'intèrpret d'ordres del Nautilus està en desenvolupament;\n"
-#~ "no està preparada per a un ús diari. Algunes característiques\n"
-#~ "encara no estan llestes o llestes del tot, o són inestables. \n"
-#~ "El programa no sembla o actua com ho hauria de fer a la versió 1.0.\n"
-#~ "\n"
-#~ "Si decidiu provar aquesta versió del Nautilus, compte. El programa\n"
-#~ "podria fer alguna cosa no prevista i fins i tot pot esborrar o\n"
-#~ "sobreescriure fitxers al vostre ordinador.\n"
-#~ "\n"
-#~ "Per a més informació, visiteu http://nautilus.eazel.com."
-
-#~ msgid "Inadequate Permissions"
-#~ msgstr "Permisos inadequats"
-
-#~ msgid "Switch to %s Level?"
-#~ msgstr "Commuto al nivell %s?"
-
-#~ msgid "_Customize..."
-#~ msgstr "_Personalitza..."
-
-#~ msgid "Edit Settings for the Current User Level"
-#~ msgstr "Edita els paràmetres per al nivell de l'usuari actual"
-
-#~ msgid "Specify config file (/var/eazel/services/eazel-services-config.xml)"
-#~ msgstr ""
-#~ "Especifiqueu el fitxer de configuració (/var/eazel/services/eazel-"
-#~ "services-config.xml)"
-
-#~ msgid "*** Could not generate xml package list! ***\n"
-#~ msgstr "*** No s'ha pogut generar la llista de paquets xml! ***\n"
-
-#~ msgid "*** Could not create temporary directory! ***\n"
-#~ msgstr "*** No s'ha pogut crear un directori temporal! ***\n"
-
-#~ msgid "Getting package-list.xml from remote server ...\n"
-#~ msgstr "S'està rebent package-list.xml des del servidor remot ...\n"
-
-#~ msgid "*** You must run eazel-install as root! ***\n"
-#~ msgstr "*** Heu d'executar eazel-install com a superusuari! ***\n"
-
-#~ msgid "*** eazel-install can only be used on RedHat! ***\n"
-#~ msgstr "*** eazel-install només pot ser utilitzat amb RedHat! ***\n"
-
-#~ msgid "*** Downgrade Mode not supported yet! ***\n"
-#~ msgstr "*** El mode de desactualització encara no està suportat! ***\n"
-
-#~ msgid "Reading the eazel services configuration ...\n"
-#~ msgstr "S'està llegint la configuració del serveis de l'eazel ...\n"
-
-#~ msgid "*** Logging not currently supported! ***\n"
-#~ msgstr "*** L'enregistrament no està suportat actualment! ***\n"
-
-#~ msgid "*** FTP installs are not currently supported! ***\n"
-#~ msgstr ""
-#~ "*** Les instal·lacions per FTP no estan suportades actualment! ***\n"
-
-#~ msgid "*** The uninstall failed! ***\n"
-#~ msgstr "*** La desinstal·lació ha fallat! ***\n"
-
-#~ msgid "*** The install failed! ***\n"
-#~ msgstr "*** La instal·lació ha fallat! ***\n"
-
-#~ msgid "Transaction completed normally...\n"
-#~ msgstr "La transacció s'ha completat normalment...\n"
-
-#~ msgid "Who owns specified files"
-#~ msgstr "Qui és el propietari dels fitxers especificats"
-
-#~ msgid "Who provides specified files"
-#~ msgstr "Qui proveeix els fitxers especificats"
-
-#~ msgid "Who requires specified packages"
-#~ msgstr "Qui requereix els paquets especificats"
-
-#~ msgid "Installing \"The Gimp\""
-#~ msgstr "S'està instal·lant \"The Gimp\""
-
-#~ msgid "Finish"
-#~ msgstr "Finalitza"
-
-#~ msgid "With Note"
-#~ msgstr "Amb la nota"
-
-#~ msgid "in my vault"
-#~ msgstr "al meu lloc d'arxiu"
-
-#~ msgid "1 KB"
-#~ msgstr "1 kB"
-
-#~ msgid "10 KB"
-#~ msgstr "10 kB"
-
-#~ msgid "not including"
-#~ msgstr "no incloent"
-
-#~ msgid "this week"
-#~ msgstr "aquesta setmana"
-
-#~ msgid "*** Could not create services directory (%s)! ***\n"
-#~ msgstr "*** No s'ha pogut crear el directori de serveis (%s)! ***\n"
-
-#~ msgid ""
-#~ "This is a warning, you're running\n"
-#~ "the installer for real, without \n"
-#~ "the --test flag... Beware!"
-#~ msgstr ""
-#~ "Això és una advertència, esteu executant\n"
-#~ "l'instal·lador de forma real, sense\n"
-#~ "el --senyalador de prova... Compte!"
-
-#~ msgid "Step one:"
-#~ msgstr "Primer pas:"
-
-#~ msgid ""
-#~ "This is the internal Nautilus installer.\n"
-#~ "\n"
-#~ "Lots of text should go here letting you know what you need\n"
-#~ "to have installed before you should even begin to think about\n"
-#~ "using this. For example:\n"
-#~ "\n"
-#~ "  * Stuff\n"
-#~ "  * More stuff\n"
-#~ "  * Other stuff\n"
-#~ "\n"
-#~ "If you meet these requirements, hit the \"Next\" button to continue!\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Aquest és l'instal·lador intern del Nautilus.\n"
-#~ "\n"
-#~ "Un munt de text hauria d'anar aquí per permetre-us saber què necessiteu\n"
-#~ "tenir instal·lat, abans hauríeu de començar a pensar com utilitzar-ho.\n"
-#~ "Per exemple:\n"
-#~ "\n"
-#~ "  * Coses\n"
-#~ "  * Més coses\n"
-#~ "  * Altres coses\n"
-#~ "\n"
-#~ "Si us sembla bé, premeu el botó \"Següent\" per a continuar!\n"
-#~ "\n"
-
-#~ msgid "What to do ?"
-#~ msgstr "Què fer?"
-
-#~ msgid ""
-#~ "You have several choices for what you would like the installer to do.\n"
-#~ "Please choose one and click on the \"Next\" button."
-#~ msgstr ""
-#~ "Teniu diverses alternatives per allò que vulgueu que faci "
-#~ "l'instal·lador.\n"
-#~ "Trieu-ne una i feu clic sobre el botó \"Següent\"."
-
-#~ msgid "Most recent build"
-#~ msgstr "Muntatge més recent"
-
-#~ msgid ""
-#~ "Press the big begin button, and watch the installer do it's thing...\n"
-#~ "(between download and install, we'll take a small break)"
-#~ msgstr ""
-#~ "Premeu el gran botó de començament, i mireu com l'instal·lador fa la seva "
-#~ "feina...\n"
-#~ "(entre la descàrrega i la instal·lació, farem una petita pausa)"
-
-#~ msgid ""
-#~ "If the installation was successfull, you can\n"
-#~ " findthe nautilus icon in the applications menu.\n"
-#~ "\n"
-#~ "Thanks for taking the time to try out Nautilus.\n"
-#~ "\n"
-#~ "May your life be a healthy and happy one."
-#~ msgstr ""
-#~ "Si la instal·lació ha tingut èxit, podreu trobar\n"
-#~ " la icona del nautilus al menú d'aplicacions.\n"
-#~ "\n"
-#~ "Gràcies per prendre-us el temps de provar el Nautilus.\n"
-#~ "\n"
-#~ "Que tingueu una vida feliç i saludable."
-
-#~ msgid "Couldn't find pixmap file: %s"
-#~ msgstr "No s'ha pogut trobar el fitxer de mapa de píxels: %s"
-
-#~ msgid "Hacker"
-#~ msgstr "Expert"
-
-#~ msgid "For beginning users"
-#~ msgstr "Per a usuaris inexperts"
-
-#~ msgid "For non-technical users"
-#~ msgstr "Per a usuaris no tècnics"
-
-#~ msgid "For expert users"
-#~ msgstr "Per a usuaris experts"
-
-#~ msgid "Transfer Progress"
-#~ msgstr "Progrés de la transferència"
-
-#~ msgid "Looking up %s"
-#~ msgstr "S'està cercant %s"
-
-#~ msgid "Logging in..."
-#~ msgstr "S'està entrant..."
-
-#~ msgid "Read %ld bytes"
-#~ msgstr "S'han llegit %ld octets"
-
-#~ msgid "Writing %d%%%% of %ld"
-#~ msgstr "S'estàn escrivint %d%%%% de %ld"
-
-#~ msgid "Writing %ld bytes"
-#~ msgstr "S'estàn escrivint %ld octets"
-
-#~ msgid "Writing %d bytes"
-#~ msgstr "S'estàn escrivint %d octets"
-
-#~ msgid "Done!"
-#~ msgstr "Fet!"
-
-#~ msgid "Interrupted!"
-#~ msgstr "Interromput!"
-
-#~ msgid "Request timeout!"
-#~ msgstr "El temps de sol·licitud s'ha excedit!"
-
-#~ msgid "Enter Text"
-#~ msgstr "Introduïu el text"
-
-#~ msgid "Album Title"
-#~ msgstr "Títol de l'àlbum"
-
-#~ msgid "Song Title"
-#~ msgstr "Títol de la cançó"
-
-#~ msgid "Creating default configuration file ...\n"
-#~ msgstr "S'està creant el fitxer de la configuració predeterminada...\n"
-
-#~ msgid "*** Error generating default configuration file! ***\n"
-#~ msgstr ""
-#~ "*** S'ha produït un error en generar el fitxer de la configuració "
-#~ "predeterminada! ***\n"
-
-#~ msgid "*** Unable to open config file! ***\n"
-#~ msgstr "*** No es pot obrir el fitxer de configuració! ***\n"
-
-#~ msgid "*** Cannot find the EAZEL_INSTALLER xmlnode! ***\n"
-#~ msgstr "*** No es pot trobar el node xml de l'EAZEL_INSTALLER! ***\n"
-
-#~ msgid "ftp install not supported"
-#~ msgstr "La instal·lació per ftp no està suportada"
-
-#~ msgid "Search URL: %s"
-#~ msgstr "Cerca la URL: %s"
-
-#~ msgid "Invalid uri"
-#~ msgstr "L'uri és invàlida"
-
-#~ msgid "1 directory"
-#~ msgstr "1 directori"
-
-#~ msgid "%u directories"
-#~ msgstr "%u directoris"
-
-#~ msgid "xxx"
-#~ msgstr "xxx"
-
-#~ msgid " --"
-#~ msgstr " --"
-
-#~ msgid "Undo Rename"
-#~ msgstr "Desfés el canvi de nom"
-
-#~ msgid "Redo Rename"
-#~ msgstr "Refés canviar el nom"
-
-#~ msgid "Remove selected text from selection"
-#~ msgstr "Elimina el text seleccionat de la selecció"
-
-#~ msgid "_Paste"
-#~ msgstr "_Enganxa"
-
-#~ msgid "Paste text from clipboard into text box"
-#~ msgstr "Enganxa el text del porta-retalls al quadre de text"
-
-#~ msgid "Unknown XferOverwriteMode %d"
-#~ msgstr "XferOverwriteMode %d desconegut"
-
-#~ msgid "Unknown XferErrorMode %d"
-#~ msgstr "XferErrorMode %d desconegut"
-
-#~ msgid "File copy error"
-#~ msgstr "Hi ha un error en la còpia del fitxer"
-
-#~ msgid "File copy conflict"
-#~ msgstr "Hi ha un conflicte en la còpia del fitxer"
-
-#~ msgid ""
-#~ "The transfer between\n"
-#~ "%s\n"
-#~ "and\n"
-#~ "%s\n"
-#~ "could not be started:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "La transferència entre\n"
-#~ "%s\n"
-#~ "i\n"
-#~ "%s\n"
-#~ "no s'ha pogut iniciar:\n"
-#~ "%s"
-
-#~ msgid "You cannot throw away the Trash."
-#~ msgstr "No podeu llançar la paperera."
-
-#~ msgid "Deleting items"
-#~ msgstr "S'estan suprimint els elements"
-
-#~ msgid "Nautilus: Icon Captions"
-#~ msgstr "Nautilus: títol de les icones"
-
-#~ msgid "_Restore Icon to Unstretched Size"
-#~ msgstr "_Restaura la icona a la mida sense estirar"
-
-#~ msgid "_Manual Layout"
-#~ msgstr "Format _manual"
-
-#~ msgid "_Ascending"
-#~ msgstr "_Ascendent"
-
-#~ msgid ""
-#~ "Sort icons from \"smallest\" to \"largest\" according to sort criteria"
-#~ msgstr ""
-#~ "Ordena les icones de \"més petita\" a \"més gran\" d'acord amb els "
-#~ "criteris d'ordenació"
-
-#~ msgid "Des_cending"
-#~ msgstr "Des_cendent"
-
-#~ msgid ""
-#~ "Sort icons from \"largest\" to \"smallest\" according to sort criteria"
-#~ msgstr ""
-#~ "Ordena les icones de \"més gran\" a \"més petita\" d'acord amb els "
-#~ "criteris d'ordenació"
-
-#~ msgid "The Gnome Shell"
-#~ msgstr "L'intèrpret d'ordres del GNOME"
-
-#~ msgid "Set Intermediate User Level"
-#~ msgstr "Especifica el nivell de l'usuari intermedi"
-
-#~ msgid " Expert"
-#~ msgstr " Expert"
-
-#~ msgid "Go to the previously visited directory"
-#~ msgstr "Vés al directori visitat anteriorment"
-
-#~ msgid "Go up a level in the directory hierarchy"
-#~ msgstr "Puja un nivell en la jerarquía de directoris"
-
-#~ msgid "Reload this view"
-#~ msgstr "Actualitza aquesta vista"
-
-#~ msgid "Interrupt loading"
-#~ msgstr "Interromp la càrrega"
+#~ msgid "You cannot delete a volume icon."
+#~ msgstr "No podeu suprimir una icona de volum."
+
+#~ msgid "Can't Delete Volume"
+#~ msgstr "No es pot suprimir el volum"
