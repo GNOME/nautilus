@@ -136,7 +136,6 @@ main (int argc, char* argv[])
 	gdk_pixbuf_unref (pixbuf);
 	gtk_object_unref (GTK_OBJECT (font));
 	gtk_object_unref (GTK_OBJECT (bold_font));
-	test_quit (0);
 
-	return 0;
+	return test_quit (EXIT_SUCCESS);
 }

@@ -336,20 +336,18 @@ nautilus_preferences_box_new (const char *box_title)
 
 GtkWidget *
 nautilus_preferences_box_add_pane (NautilusPreferencesBox *preferences_box,
-				   const char *pane_title,
-				   const char *pane_description)
+				   const char *pane_title)
 {
 	PaneInfo *info;
 
 	g_return_val_if_fail (NAUTILUS_IS_PREFERENCES_BOX (preferences_box), NULL);
 	g_return_val_if_fail (pane_title != NULL, NULL);
-	g_return_val_if_fail (pane_description != NULL, NULL);
 
 	info = pane_info_new (pane_title);
 	
 	preferences_box->details->panes = g_list_append (preferences_box->details->panes, info);
 	
-	info->pane_widget = nautilus_preferences_pane_new (pane_title, pane_description);
+	info->pane_widget = nautilus_preferences_pane_new ();
 	
 	gtk_notebook_append_page (GTK_NOTEBOOK (preferences_box->details->pane_notebook),
 				  info->pane_widget,

@@ -264,7 +264,7 @@ global_preferences_install_defaults (void)
 	
 	nautilus_preferences_default_set_string (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
 						 NAUTILUS_USER_LEVEL_NOVICE,
-						 "helvetica");
+						 _("helvetica"));
 
 	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_CLICK_POLICY,
 						  NAUTILUS_USER_LEVEL_NOVICE,
@@ -522,8 +522,7 @@ global_preferences_create_dialog (void)
 	 * Appearance
 	 */
 	appearance_pane = nautilus_preferences_box_add_pane (preference_box,
-							     _("Appearance"),
-							     _("Appearance Settings"));
+							     _("Appearance"));
 	
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), _("Smoother Graphics"));
 	
@@ -543,8 +542,7 @@ global_preferences_create_dialog (void)
 	 * Windows & Desktop pane
 	 */
 	windows_and_desktop_pane = nautilus_preferences_box_add_pane (preference_box,
-								      _("Windows & Desktop"),
-								      _("Windows & Desktop Settings"));
+								      _("Windows & Desktop"));
 
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane), _("Desktop"));
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane),
@@ -587,8 +585,7 @@ global_preferences_create_dialog (void)
 	 * Folder Views pane
 	 */
 	directory_views_pane = nautilus_preferences_box_add_pane (preference_box,
-								 _("Icon & List Views"),
-								 _("Icon & List Views Settings"));
+								 _("Icon & List Views"));
 	
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), _("Click Behavior"));
 	
@@ -625,8 +622,7 @@ global_preferences_create_dialog (void)
 	 * Sidebar panels pane
 	 */
 	sidebar_panels_pane = nautilus_preferences_box_add_pane (preference_box,
-								 _("Sidebar Panels"),
-								 _("Sidebar Panels Settings"));
+								 _("Sidebar Panels"));
 	
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (sidebar_panels_pane), 
 					     _("Tabs"));
@@ -678,8 +674,7 @@ global_preferences_create_dialog (void)
 	 * Navigation
 	 */
 	navigation_pane = nautilus_preferences_box_add_pane (preference_box,
-							    _("Navigation"),
-							    _("Navigation Settings"));
+							    _("Navigation"));
 
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (navigation_pane), _("Home"));
 	
@@ -718,8 +713,7 @@ global_preferences_create_dialog (void)
 	 * Tradeoffs
 	 */
 	tradeoffs_pane = nautilus_preferences_box_add_pane (preference_box,
-							    _("Speed Tradeoffs"),
-							    _("Speed Tradeoffs Settings"));
+							    _("Speed Tradeoffs"));
 
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Show Text in Icons"));
 	
@@ -790,8 +784,7 @@ global_preferences_create_search_pane (NautilusPreferencesBox *preference_box)
  	 * Search Settings 
  	 */
 	search_pane = nautilus_preferences_box_add_pane (preference_box,
-								_("Search"),
-								_("Search Settings"));
+							 _("Search"));
 	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (search_pane),
 					     _("Search Complexity Options"));
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (search_pane),

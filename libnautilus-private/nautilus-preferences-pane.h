@@ -56,8 +56,7 @@ struct _NautilusPreferencesPaneClass
 };
 
 GtkType    nautilus_preferences_pane_get_type               (void);
-GtkWidget* nautilus_preferences_pane_new                    (const gchar                   *pane_title,
-							     const gchar                   *pane_description);
+GtkWidget* nautilus_preferences_pane_new                    (void);
 GtkWidget *nautilus_preferences_pane_add_group              (NautilusPreferencesPane       *preferences_pane,
 							     const char                    *group_title);
 GtkWidget *nautilus_preferences_pane_add_item_to_nth_group  (NautilusPreferencesPane       *preferences_pane,

@@ -67,16 +67,15 @@ typedef enum
 	NAUTILUS_PREFERENCE_ITEM_ENUM,
 	NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM,
 	NAUTILUS_PREFERENCE_ITEM_FONT_FAMILY,
-	NAUTILUS_PREFERENCE_ITEM_THEME,
 	NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING,
 	NAUTILUS_PREFERENCE_ITEM_INTEGER
 } NautilusPreferencesItemType;
 
-GtkType    nautilus_preferences_item_get_type 		    (void);
-GtkWidget* nautilus_preferences_item_new      		    (const gchar                   *preference_name,
-					       		     NautilusPreferencesItemType    item_type);
-char *     nautilus_preferences_item_get_name 		    (const NautilusPreferencesItem *preferences_item);
-void	   nautilus_preferences_item_update_displayed_value (const NautilusPreferencesItem *preferences_item);
+GtkType    nautilus_preferences_item_get_type               (void);
+GtkWidget* nautilus_preferences_item_new                    (const char                    *preference_name,
+							     NautilusPreferencesItemType    item_type);
+char *     nautilus_preferences_item_get_name               (const NautilusPreferencesItem *preferences_item);
+void       nautilus_preferences_item_update_displayed_value (const NautilusPreferencesItem *preferences_item);
 
 END_GNOME_DECLS
 

@@ -1,3 +1,81 @@
+2001-03-01  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Eskil Heinous Olsen <eskil@eazel.com>
+
+	* libnautilus-extensions/nautilus-string-list.h:
+	* libnautilus-extensions/nautilus-string-list.c:
+	(nautilus_string_list_nth_as_integer),
+	(nautilus_self_check_string_list):
+	New function to get the nth string as an integer - and checks.
+
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-font-manager.h:
+	* libnautilus-extensions/nautilus-font-manager.c:
+	* libnautilus-extensions/nautilus-lib-self-check-functions.h:
+	New files.  Support for collecting information about the scalable
+	fonts installed on the system.  Parts written by Pavel Cisler.
+	
+	* components/text/nautilus-text-view.c:
+	(nautilus_text_view_initialize):
+	Mark a string for translation.
+
+	* libnautilus-extensions/nautilus-font-factory.c:
+	(nautilus_font_factory_get_font_by_family):
+	Take fontsets into account.  Patch submitted by
+	eungkyu@sparcs.kaist.ac.kr.
+
+	* libnautilus-extensions/nautilus-preferences-item.h:
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(nautilus_preferences_item_initialize_class),
+	(nautilus_preferences_item_initialize), (preferences_item_destroy),
+	(preferences_item_construct), (preferences_item_update_enum),
+	(preferences_item_create_enum),
+	(preferences_item_update_short_enum),
+	(preferences_item_create_short_enum),
+	(preferences_item_update_boolean),
+	(preferences_item_create_boolean),
+	(preferences_item_update_editable_string),
+	(preferences_item_create_editable_string),
+	(preferences_item_update_integer),
+	(preferences_item_create_integer),
+	(preferences_item_update_font_family),
+	(preferences_item_create_font_family),
+	(nautilus_preferences_item_new),
+	(enum_radio_group_changed_callback),
+	(nautilus_preferences_item_update_displayed_value),
+	(update_text_settings_at_idle):
+	Clean this up a bit.  Follow nautilus coding conventions more.
+	Remove long unused theme picker.
+	Remove unused GtkArg stuff.
+
+	* libnautilus-extensions/nautilus-preferences-pane.c:
+	(nautilus_preferences_pane_new):
+	* libnautilus-extensions/nautilus-preferences-pane.h:
+	Remove unused pane description.
+
+	* libnautilus-extensions/nautilus-preferences-box.c:
+	(nautilus_preferences_box_add_pane):
+	* libnautilus-extensions/nautilus-preferences-box.h:
+	Remove unused pane description.
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_defaults): Mark font name for
+	translation.
+	(global_preferences_create_dialog),
+	(global_preferences_create_search_pane): Remove unused pane
+	description.
+
+	* test/.cvsignore:
+	* test/Makefile.am:
+	* test/test-nautilus-glyph-simple.c: (main):
+	* test/test-nautilus-glyph.c: (main):
+	* test/test-nautilus-labeled-image.c: (main):
+	* test/test-nautilus-smooth-text-layout.c: (main):
+	* test/test-nautilus-font-manager.c: (main):
+	* test/test.c: (test_quit):
+	* test/test.h:
+	Some minor changes.  New test for font manager.
+
 2001-03-02  Arlo Rose  <arlo@eazel.com>
 
 	reviewed by: Josh Barrow <josh@eazel.com>
@@ -94,7 +172,6 @@
 	* icons/crux_eggplant/throbber/rest.png:
 	Yee Ha!  New throbbers for everyone!
 	Added new throbbers for Crux Teal and Eggplant.
-
 
 2001-03-01  Ian McKellar <ian@eazel.com>
 

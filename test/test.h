@@ -30,7 +30,7 @@
 
 void       test_init                            (int                         *argc,
 						 char                      ***argv);
-void       test_quit                            (int                          exit_code);
+int        test_quit                            (int                          exit_code);
 void       test_delete_event                    (GtkWidget                   *widget,
 						 GdkEvent                    *event,
 						 gpointer                     callback_data);

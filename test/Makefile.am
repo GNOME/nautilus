@@ -35,6 +35,7 @@ noinst_PROGRAMS =\
 	test-nautilus-font \
 	test-nautilus-font-picker \
 	test-nautilus-font-simple \
+	test-nautilus-font-manager \
 	test-nautilus-glyph \
 	test-nautilus-glyph-simple \
 	test-nautilus-image \
@@ -70,6 +71,7 @@ test_nautilus_clickable_image_SOURCES = test-nautilus-clickable-image.c test.c
 test_nautilus_font_SOURCES = test-nautilus-font.c test.c
 test_nautilus_font_picker_SOURCES = test-nautilus-font-picker.c
 test_nautilus_font_simple_SOURCES = test-nautilus-font-simple.c test.c
+test_nautilus_font_manager_SOURCES = test-nautilus-font-manager.c test.c
 test_nautilus_glyph_SOURCES = test-nautilus-glyph.c test.c
 test_nautilus_glyph_simple_SOURCES = test-nautilus-glyph-simple.c test.c
 test_nautilus_image_SOURCES = test-nautilus-image.c

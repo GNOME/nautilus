@@ -68,6 +68,10 @@ void                nautilus_string_list_clear                     (NautilusStri
 /* Access the nth string in the collection.  Returns an strduped string. */
 char *              nautilus_string_list_nth                       (const NautilusStringList       *string_list,
 								    guint                           n);
+/* Access the nth string as an integer.  Return TRUE if the conversion was successful.  */
+gboolean            nautilus_string_list_nth_as_integer            (const NautilusStringList       *string_list,
+								    guint                           n,
+								    int *integer_result);
 /* Modify the nth string in the collection. */
 void                nautilus_string_list_modify_nth                (NautilusStringList             *string_list,
 								    guint                           n,

@@ -212,19 +212,33 @@ nautilus_font_factory_get_font_by_family (const char *family,
 	GdkFont *font;
 	FontHashNode *node;
 	char *font_name;
+	char **fontset;
+	char **iter;
 
 	g_return_val_if_fail (family != NULL, NULL);
 	g_return_val_if_fail (size_in_pixels > 0, NULL);
 
+	fontset = g_strsplit (family, ",", 5);
+	iter = fontset;
+
 	factory = nautilus_get_current_font_factory ();
-	font_name = nautilus_gdk_font_xlfd_string_new ("*", 
-						       family,
-						       "medium",
-						       "r",
-						       "normal",
-						       "*",
-						       size_in_pixels);
+	while (*iter) {
+		font_name = nautilus_gdk_font_xlfd_string_new ("*", 
+							       *iter,
+							       "medium",
+							       "r",
+							       "normal",
+							       "*",
+							       size_in_pixels);
 	
+		g_free (*iter);
+		*iter = font_name;
+		iter++;
+	}
+
+	font_name = g_strjoinv (",", fontset);
+	g_strfreev (fontset);
+
 	node = font_hash_node_lookup_with_insertion (font_name);
 
 	if (node != NULL) {

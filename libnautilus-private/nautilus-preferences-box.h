@@ -60,8 +60,7 @@ struct _NautilusPreferencesBoxClass
 GtkType    nautilus_preferences_box_get_type (void);
 GtkWidget* nautilus_preferences_box_new      (const char             *box_title);
 GtkWidget* nautilus_preferences_box_add_pane (NautilusPreferencesBox *prefs_box,
-					      const char             *pane_title,
-					      const char             *pane_description);
+					      const char             *pane_title);
 void       nautilus_preferences_box_update   (NautilusPreferencesBox *prefs_box);
 
 END_GNOME_DECLS

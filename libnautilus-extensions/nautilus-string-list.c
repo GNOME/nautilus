@@ -212,6 +212,39 @@ nautilus_string_list_nth (const NautilusStringList *string_list, guint n)
 }
 
 /**
+ * nautilus_string_list_nth_as_integer
+ *
+ * @string_list: A NautilusStringList
+ * @n: Index of string to convert.
+ * @integer_result: Where to store the conversion result.
+ *
+ * Convert the nth string to an integer and store the result in &integer_result.
+ *
+ * Return value: Returns TRUE if the string to integer conversion was successful,
+ * FALSE otherwise.
+ */
+gboolean
+nautilus_string_list_nth_as_integer (const NautilusStringList *string_list,
+				     guint n,
+				     int *integer_result)
+{
+	const char *string;
+
+	g_return_val_if_fail (string_list != NULL, FALSE);
+	g_return_val_if_fail (integer_result != NULL, FALSE);
+
+	if (n >= g_list_length (string_list->strings)) {
+		if (!supress_out_of_bounds_warning) {
+			g_warning ("(n = %d) is out of bounds.", n);
+		}
+		return FALSE;
+	}
+
+	string = g_list_nth_data (string_list->strings, n);
+	return nautilus_str_to_int (string, integer_result);
+}
+
+/**
  * nautilus_string_list_modify_nth
  *
  * @string_list: A NautilusStringList
@@ -1139,6 +1172,51 @@ nautilus_self_check_string_list (void)
 
 		nautilus_string_list_free (list);
 		nautilus_string_list_free (sorted_list);
+	}
+
+	/*
+	 * nautilus_string_list_nth_as_integer
+	 */
+	{
+		NautilusStringList *list;
+		const int untouched = 666;
+		int result;
+
+		list = nautilus_string_list_new_from_tokens ("word,c,0,1,20,xxx,foo,bar,-1", ",", TRUE);
+		
+		result = untouched;
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_nth_as_integer (list, 0, &result), FALSE);
+		NAUTILUS_CHECK_INTEGER_RESULT (result, untouched);
+
+		result = untouched;
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_nth_as_integer (list, 1, &result), FALSE);
+		NAUTILUS_CHECK_INTEGER_RESULT (result, untouched);
+
+		result = untouched;
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_nth_as_integer (list, 5, &result), FALSE);
+		NAUTILUS_CHECK_INTEGER_RESULT (result, untouched);
+
+		result = untouched;
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_nth_as_integer (list, 6, &result), FALSE);
+		NAUTILUS_CHECK_INTEGER_RESULT (result, untouched);
+
+		result = untouched;
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_nth_as_integer (list, 7, &result), FALSE);
+		NAUTILUS_CHECK_INTEGER_RESULT (result, untouched);
+		
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_nth_as_integer (list, 2, &result), TRUE);
+		NAUTILUS_CHECK_INTEGER_RESULT (result, 0);
+		
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_nth_as_integer (list, 3, &result), TRUE);
+		NAUTILUS_CHECK_INTEGER_RESULT (result, 1);
+
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_nth_as_integer (list, 4, &result), TRUE);
+		NAUTILUS_CHECK_INTEGER_RESULT (result, 20);
+		
+		NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_nth_as_integer (list, 8, &result), TRUE);
+		NAUTILUS_CHECK_INTEGER_RESULT (result, -1);
+		
+		nautilus_string_list_free (list);
 	}
 }
 

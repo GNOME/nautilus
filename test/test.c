@@ -27,11 +27,16 @@ test_init (int *argc,
 		 NULL);
 }
 
-void
+int
 test_quit (int exit_code)
 {
 	gnome_vfs_shutdown ();
-	gtk_main_quit ();
+
+	if (gtk_main_level () > 0) {
+		gtk_main_quit ();
+	}
+
+	return exit_code;
 }
 
 void

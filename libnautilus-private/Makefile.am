@@ -91,6 +91,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-file-utilities.c		\
 	nautilus-file.c				\
 	nautilus-font-factory.c			\
+	nautilus-font-manager.c			\
 	nautilus-font-picker.c			\
 	nautilus-gconf-extensions.c		\
 	nautilus-gdk-extensions.c		\
@@ -206,6 +207,7 @@ noinst_HEADERS =				\
 	nautilus-file-utilities.h		\
 	nautilus-file.h				\
 	nautilus-font-factory.h			\
+	nautilus-font-manager.h			\
 	nautilus-font-picker.h			\
 	nautilus-gconf-extensions.h		\
 	nautilus-gdk-extensions.h		\

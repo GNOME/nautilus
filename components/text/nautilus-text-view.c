@@ -50,6 +50,7 @@
 
 #include <gnome.h>
 #include <gtk/gtkeventbox.h>
+#include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <ghttp.h>
 
@@ -184,7 +185,7 @@ nautilus_text_view_initialize (NautilusTextView *text_view)
 			    	
         /* FIXME: eventually, get this from preferences */	
 	/* set up the default font */
-	text_view->details->font_name = g_strdup ("helvetica"); 
+	text_view->details->font_name = g_strdup (_("helvetica")); 
 
 	/* allocate a vbox to contain the text widget */
 	

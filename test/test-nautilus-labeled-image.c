@@ -115,5 +115,5 @@ main (int argc, char* argv[])
 	
 	gtk_main ();
 
-	return 0;
+	return test_quit (EXIT_SUCCESS);
 }

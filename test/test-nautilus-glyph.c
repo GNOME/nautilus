@@ -35,7 +35,7 @@ main (int argc, char* argv[])
 	const guint pixbuf_height = 480;
 	const gboolean has_alpha = FALSE;
 	const guint32 background_color = NAUTILUS_RGB_COLOR_WHITE;
-	const char text[] = "Something";
+	const char text[] = "ù È É Ê Ë Ì Í Î Ï Ð Ñ Ò Ó Ô Õ Ö Ø Ù Ú Û Ü Ý Þ";
 	const gboolean solid_background = FALSE;
 	const guint font_size = 100;
 	const int opacity = NAUTILUS_OPACITY_FULLY_OPAQUE;
