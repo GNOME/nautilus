@@ -57,9 +57,6 @@ static void         notify_done_loading    (NautilusTreeView *view,
 static void         notify_node_seen       (NautilusTreeView *view, 
 					    NautilusTreeNode *node);
 
-static NautilusCTreeNode *nautilus_tree_view_find_parent_node (NautilusTreeView *view, 
-							       NautilusFile     *file);
-
 static gboolean           ctree_is_node_expanded              (NautilusCTree     *ctree,
 							       NautilusCTreeNode *node);
 static NautilusCTreeNode *file_to_view_node                   (NautilusTreeView  *view,
@@ -225,6 +222,7 @@ nautilus_tree_view_would_include_uri (NautilusTreeView *view,
 static void
 nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *node)
 {
+	NautilusTreeNode *parent_node;
 	NautilusCTreeNode *parent_view_node;
  	NautilusCTreeNode *view_node;
 	NautilusFile *file;
@@ -246,8 +244,9 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 	printf ("Inserting URI into tree: %s\n", nautilus_file_get_uri (file));
 #endif
 
-	parent_view_node = nautilus_tree_view_find_parent_node (view, file);
-
+	parent_node = nautilus_tree_node_get_parent (node);
+	parent_view_node = (parent_node == NULL ? NULL
+			    : nautilus_tree_view_model_node_to_view_node (view, parent_node));
 
 #ifdef DEBUG_TREE
 	printf ("parent_view_node 0x%x (%s)\n", (unsigned) parent_view_node, 
@@ -1543,28 +1542,3 @@ nautilus_tree_view_update_all_icons (NautilusTreeView *view)
 					 nautilus_tree_view_model_node_changed_callback,
 					 view);
 }
-
-
-static NautilusCTreeNode *
-nautilus_tree_view_find_parent_node (NautilusTreeView *view, 
-				     NautilusFile     *file)
-{
-	NautilusTreeNode *node;
-
-	node = nautilus_tree_model_get_node_from_file (view->details->model, 
-						       file);
-
-	if (node == NULL) {
-		g_print ("You've run into an intermittent tree view bug.\n");
-		g_print ("Running Nautilus again will probably not hit this bug.\n");
-		g_print ("The tree view didn't have a node for %s\n", nautilus_file_get_uri (file));
-		g_print ("The tree view had the following nodes:\n\n");
-		nautilus_tree_model_dump_files (view->details->model);
-
-		/* NOW die. */
-		g_assert_not_reached ();
-	}
-
-	return nautilus_tree_view_model_node_to_view_node (view, nautilus_tree_node_get_parent (node));
-}
-

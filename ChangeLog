@@ -1,3 +1,25 @@
+2001-02-23  John Harper  <jsh@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	Fixed bug 6932 (Nautilus Crashes with 'intermittent tree view
+	bug'):
+
+	* components/tree/nautilus-tree-view.c
+	(nautilus_tree_view_insert_model_node): don't call
+	nautilus_tree_view_find_parent_node () to find the parent view
+	node.
+
+	This can fail if the model has already removed the node we're
+	trying to add giving the `intermittent' assertion (since we run
+	in the idle handler, asynchronously to the model).
+
+	Instead just try to grab the parent of the node and find it's
+	view node directly. If either of these don't exist, the
+	usual unparented node logic will handle it
+
+	(nautilus_tree_view_find_parent_node): deleted this function
+
 2001-02-23  Arik Devens  <arik@eazel.com>
 
 	reviewed by: John Harper  <jsh@eazel.com>
