@@ -64,6 +64,7 @@
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-tree-view-drag-dest.h>
 #include <libnautilus/nautilus-scroll-positionable.h>
+#include <libnautilus/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-cell-renderer-pixbuf-emblem.h>
 
 /* Included for the typeselect flush delay */
@@ -1852,6 +1853,11 @@ fm_list_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 	gtk_editable_select_region (GTK_EDITABLE (entry), start_offset, end_offset);
 	
 	gtk_tree_path_free (path);
+
+	nautilus_clipboard_set_up_editable_in_control
+		(GTK_EDITABLE (entry),
+		 fm_directory_view_get_bonobo_control (view),
+		 FALSE);
 }
 
 static void
