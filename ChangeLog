@@ -1,3 +1,10 @@
+2000-10-10  John Sullivan  <sullivan@eazel.com>
+
+	* src/nautilus-window.c: (nautilus_window_clear_status):
+	Fixed bug where the clear-status timeout wasn't working.
+	Pass " " instead of "" to bonobo_ui_component_set_status
+	to work around Bonobo bug.
+
 2000-10-10  Pavel Cisler  <pavel@eazel.com>
 
 	* src/nautilus-window.c: (navigation_bar_mode_changed_callback):
