@@ -25,8 +25,7 @@ void                 nautilus_window_set_status                        (Nautilus
 void                 nautilus_window_back_or_forward                   (NautilusWindow             *window,
 									gboolean                    back,
 									guint                       distance);
-void                 nautilus_window_load_content_view_menu            (NautilusWindow             *window,
-									NautilusNavigationInfo     *ni);
+void                 nautilus_window_load_content_view_menu            (NautilusWindow             *window);
 void                 nautilus_window_synch_content_view_menu           (NautilusWindow             *window);
 void                 nautilus_window_connect_content_view              (NautilusWindow             *window,
 									NautilusViewFrame          *view);

@@ -422,7 +422,7 @@ nautilus_window_update_internals (NautilusWindow *window)
                 update_up_button (window);
                 
                 /* Set up the content view menu for this new location. */
-                nautilus_window_load_content_view_menu (window, window->pending_ni);
+                nautilus_window_load_content_view_menu (window);
         }
         
         /* Check if the back and forward buttons need enabling or disabling. */

@@ -104,8 +104,6 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
         gpointer notify_ready_data;
         NautilusNavigationResult result_code;
         NautilusViewIdentifier *default_id;
-        GList *components;
-        GList *p;
         OAF_ServerInfo *default_component;
 
         g_assert (result_list != NULL);
@@ -125,32 +123,15 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
         file_result = result_list->data;
         vfs_result_code = file_result->result;
 
-        if (vfs_result_code == GNOME_VFS_OK || vfs_result_code == GNOME_VFS_ERROR_NOTSUPPORTED
-                   || vfs_result_code == GNOME_VFS_ERROR_INVALIDURI) {
-                components = nautilus_mime_get_short_list_components_for_uri (navinfo->location);
-        } else {
+        if (vfs_result_code != GNOME_VFS_OK && vfs_result_code != GNOME_VFS_ERROR_NOTSUPPORTED
+                   && vfs_result_code != GNOME_VFS_ERROR_INVALIDURI) {
                 goto out;
         }
 
-        navinfo->content_identifiers = NULL;
-
-        /* convert component list into view identifier list */   
-        for (p = components; p != NULL; p = p->next) {
-                navinfo->content_identifiers = g_list_append 
-                        (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new_from_content_view (p->data));
-        }
-
-        gnome_vfs_mime_component_list_free (components);
-
         default_component = nautilus_mime_get_default_component_for_uri (navinfo->location);
-        
         if (default_component != NULL) {
         	default_id = nautilus_view_identifier_new_from_content_view (default_component);
                 CORBA_free (default_component);
-        } else if (navinfo->content_identifiers != NULL) {              
-		/* No default component, just take first one from list. */
-                default_id = nautilus_view_identifier_copy (navinfo->content_identifiers->data);
         }
         
 #ifdef DEBUG_MJS
@@ -175,9 +156,6 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
                 }
         }
                
-        /* Now that all the content_identifiers are in place, we're ready to choose
-         * the initial one.
-         */
         g_assert (default_id != NULL);
 	navinfo->initial_content_id = nautilus_view_identifier_copy (default_id);
         
@@ -265,7 +243,6 @@ nautilus_navigation_info_free (NautilusNavigationInfo *info)
         
         nautilus_navigation_info_cancel (info);
 
-        nautilus_view_identifier_list_free (info->content_identifiers);
         nautilus_g_list_free_deep (info->explicit_iids);
 
         nautilus_view_identifier_free (info->initial_content_id);

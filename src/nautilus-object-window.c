@@ -616,6 +616,7 @@ view_menu_switch_views_callback (GtkWidget *widget, gpointer data)
         nautilus_window_switch_views (window, identifier);
 }
 
+/* Note: The identifier parameter ownership is handed off to the menu item. */
 static GtkWidget *
 create_content_view_menu_item (NautilusWindow *window, NautilusViewIdentifier *identifier)
 {
@@ -635,7 +636,7 @@ create_content_view_menu_item (NautilusWindow *window, NautilusViewIdentifier *i
 	/* Store copy of iid in item; free when item destroyed. */
 	gtk_object_set_data_full (GTK_OBJECT (menu_item),
 				  "identifier",
-				  nautilus_view_identifier_copy (identifier),
+				  identifier,
 				  (GtkDestroyNotify) nautilus_view_identifier_free);
 
 	/* Store reference to window in item; no need to free this. */
@@ -676,7 +677,7 @@ replace_special_current_view_in_content_view_menu (NautilusWindow *window)
 		gtk_menu_prepend (GTK_MENU (menu), new_menu_item);
 	}
 
-	new_menu_item = create_content_view_menu_item (window, window->content_view_id);
+	new_menu_item = create_content_view_menu_item (window, nautilus_view_identifier_copy (window->content_view_id));
 	gtk_object_set_data (GTK_OBJECT (new_menu_item), "current content view", GINT_TO_POINTER (TRUE));
 	gtk_menu_prepend (GTK_MENU (menu), new_menu_item);
 
@@ -732,13 +733,24 @@ nautilus_window_synch_content_view_menu (NautilusWindow *window)
 static void
 chose_component_callback (NautilusViewIdentifier *identifier, gpointer callback_data)
 {
+	/* Can't assume callback_data is a valid NautilusWindow, because
+	 * it might be garbage if the program is exiting when this dialog
+	 * is up.
+	 */
+
 	if (identifier != NULL) {
-		/* Only check callback_data if identifier is not NULL, because the
-		 * callback_data might be garbage if (for example) the program is
-		 * exiting when this dialog is up.
-		 */
 		g_return_if_fail (NAUTILUS_IS_WINDOW (callback_data));
 		nautilus_window_switch_views (NAUTILUS_WINDOW (callback_data), identifier);
+	}
+
+	/* FIXME bugzilla.eazel.com 1334: 
+	 * There should be some global way to signal that the
+	 * file type associations have changed, so that the places that
+	 * display these lists can react. For now, hardwire this case, which
+	 * is the most obvious one by far.
+	 */
+	if (NAUTILUS_IS_WINDOW (callback_data)) {
+		nautilus_window_load_content_view_menu (NAUTILUS_WINDOW (callback_data));
 	}
 }
 
@@ -773,9 +785,9 @@ view_menu_choose_view_callback (GtkWidget *widget, gpointer data)
 }
 
 void
-nautilus_window_load_content_view_menu (NautilusWindow *window,
-					NautilusNavigationInfo *ni)
-{
+nautilus_window_load_content_view_menu (NautilusWindow *window)
+{	
+	GList *components;
         GList *p;
         GtkWidget *new_menu;
         int index;
@@ -783,14 +795,16 @@ nautilus_window_load_content_view_menu (NautilusWindow *window,
 
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
         g_return_if_fail (GTK_IS_OPTION_MENU (window->view_as_option_menu));
-        g_return_if_fail (ni != NULL);
         
         new_menu = gtk_menu_new ();
         
-        /* Add a menu item for each available content view type */
+        /* Add a menu item for each view in the preferred list for this location. */
+        components = nautilus_mime_get_short_list_components_for_uri (window->location);
+
         index = 0;
-        for (p = ni->content_identifiers; p != NULL; p = p->next) {
-                menu_item = create_content_view_menu_item (window, (NautilusViewIdentifier *) p->data);
+        for (p = components; p != NULL; p = p->next) {
+                menu_item = create_content_view_menu_item 
+                	(window, nautilus_view_identifier_new_from_content_view (p->data));
                 gtk_menu_append (GTK_MENU (new_menu), menu_item);
 
                 ++index;
@@ -799,7 +813,7 @@ nautilus_window_load_content_view_menu (NautilusWindow *window,
         /* Add "View as Other..." extra bonus choice, with separator before it.
          * Leave separator out if there are no viewers in menu by default. 
          */
-        if (ni->content_identifiers != NULL) {
+        if (components != NULL) {
 	        menu_item = gtk_menu_item_new ();
 	        gtk_widget_show (menu_item);
 	        gtk_menu_append (GTK_MENU (new_menu), menu_item);

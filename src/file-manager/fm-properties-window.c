@@ -211,7 +211,7 @@ name_field_done_editing (NautilusEntry *name_field)
 
 	g_assert (NAUTILUS_IS_FILE (file));
 
-	new_name = gtk_entry_get_text (GTK_ENTRY (name_field));
+	new_name = gtk_editable_get_chars (GTK_EDITABLE (name_field), 0, -1);
 
 	/* Special case: silently revert text if new text is empty. */
 	if (strlen (new_name) == 0) {
@@ -259,7 +259,7 @@ static void
 name_field_update_to_match_file (NautilusEntry *name_field)
 {
 	NautilusFile *file;
-	char *original_name, *current_name;
+	char *original_name, *current_name, *displayed_name;
 
 	file = gtk_object_get_data (GTK_OBJECT (name_field), "nautilus_file");
 
@@ -288,9 +288,11 @@ name_field_update_to_match_file (NautilusEntry *name_field)
 		 * currently showing. This causes minimal ripples (e.g.
 		 * selection change).
 		 */
-		if (strcmp (gtk_entry_get_text (GTK_ENTRY (name_field)), current_name) != 0) {
+		displayed_name = gtk_editable_get_chars (GTK_EDITABLE (name_field), 0, -1);
+		if (strcmp (displayed_name, current_name) != 0) {
 			gtk_entry_set_text (GTK_ENTRY (name_field), current_name);
 		}
+		g_free (displayed_name);
 	} else {
 		g_free (current_name);
 	}

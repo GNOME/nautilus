@@ -1,3 +1,43 @@
+2000-06-13  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug mjs noticed where the Properties window tended
+	to crash on close.
+
+	* src/file-manager/fm-properties-window.c:
+	(name_field_done_editing): use gtk_editable_get_chars
+	instead of gtk_entry_get_text, since _get_text returns
+	the original text and is deprecated. This was being freed
+	twice.
+	(name_field_update_to_match_file): Made this function use
+	the safe call too, which required adding a local variable.
+
+	Fixed bug 1212 ("View as" menu doesn't update after user
+	modifies preferred list from "View as Other" dialog)
+	
+	* src/nautilus-applicable-views.h: Eliminated 
+	content_identifiers from NautilusNavigationInfo.
+	* src/nautilus-applicable-views.c: (got_file_info_callback):
+	Don't bother getting short list here since it's no longer
+	stored; just get default component.
+	(nautilus_navigation_info_free): Take out cleanup for
+	content_identifiers.
+	* src/nautilus-window.c: 
+	(create_content_view_menu_item): Made this function take
+	ownership of a parameter instead of copying it, so that
+	one of the two callers wouldn't have to make extra copies.
+	Commented this.
+	(replace_special_current_view_in_content_view_menu):
+	This was caller #1, now it passes copy as parameter.
+	(nautilus_window_load_content_view_menu): This was caller
+	#2. Now it gets preferred list for uri here, instead of
+	examining NautilusNavigationInfo parameter. Eliminated
+	that parameter.
+	(chose_component_callback): Reload the content view menu
+	after the View as Other dialog closes.
+	* src/nautilus-window-private.h,
+	* src/nautilus-window-manage-views.c: Eliminated 2nd parameter
+	from nautilus_window_load_content_view.
+
 2000-06-13  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/help/help-method.c: (help_uri_to_string,
