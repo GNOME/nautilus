@@ -1,3 +1,17 @@
+2000-02-04  Darin Adler  <darin@eazel.com>
+
+	Make optimized builds succeed.
+        
+        * configure.in: Turn off uninitialized variable warnings.
+        At some point, we should turn these off only for the ORBit-
+        generated stub files, since they are meaningful and useful
+        in other files. For now, though, since we use -Werror, we
+	need be sure these warnings don't cause trouble for people
+        who do optimized builds.
+        
+        * src/ntl-main.c (main): Added GnomeUI to the list of domains
+        to "stop on warning/critical".
+
 2000-02-04  John Sullivan <sullivan@eazel.com>
 
 	Some renaming and reorganization heading towards supporting
