@@ -3,8 +3,8 @@
 
 <!--
       (Do not remove this comment block.)
-  Version: 0.9.0
-  Last modified: Feb 18, 2001
+  Version: 1.0.0
+  Last modified: March 6, 2001
   This document is maintained by Eazel Inc.
   Maintainers: 
                Eazel Inc.
@@ -19,7 +19,7 @@
 
  <bookinfo>
   <title>노틸러스 사용자 설명서</title>
-  <edition>v0.9</edition>
+  <edition>v1.0</edition>
   <authorgroup>
    <author>
     <firstname>Vera</firstname>
@@ -66,7 +66,7 @@
 
   <!-- this is the version of manual, not application --> 
   <releaseinfo>
-   이것은 노틸러스 사용자 설명서의 0.9 버젼 입니다.
+   이것은 노틸러스 사용자 설명서의 1.0 버젼 입니다.
   </releaseinfo>
 
  </bookinfo>
@@ -89,11 +89,11 @@
   자원을 쉽고 빠르게 가져와서 사용할수 있게 하여줍니다.
   </para>
 
-  <sect1 id="window">
+  <sect1 id="intro1">
    <title>노틸러스 창</title>
 
 
-   <figure id="full">
+   <figure id="full1">
     <title>노틸러스 창</title>
     <screenshot>
      <screeninfo>Diagram of Nautilus</screeninfo>
@@ -103,6 +103,7 @@
    </figure>
 
    <para>
+    <inlinegraphic fileref="figures/full-1"></inlinegraphic>
     <guimenu>메뉴 막대</guimenu>
    </para> 
 
@@ -115,6 +116,7 @@
    </para>
 
    <para>
+    <inlinegraphic fileref="figures/full-2"></inlinegraphic>
     <guimenu>도구 막대</guimenu>
    </para>
 
@@ -126,6 +128,7 @@
    </para>
 
    <para>
+    <inlinegraphic fileref="figures/full-3"></inlinegraphic>
     <guimenu>위치 막대</guimenu>
    </para>
 
@@ -139,6 +142,7 @@
    </para>
 
    <para>
+    <inlinegraphic fileref="figures/full-4"></inlinegraphic>
     <guimenu>가장자리 막대</guimenu>
    </para>
 
@@ -187,6 +191,18 @@
    </para>
 
    <para>
+    <inlinegraphic fileref="figures/full-5"></inlinegraphic>
+    <guimenu>상태 막대</guimenu>
+   </para>
+
+   <para>
+    상태 막대는 메뉴 항목에 대한 정보를 표시합니다. 메뉴 항목에 대한
+    설명을 보려면, 메뉴에 마우스 포인터를 두고 상태바의 글씨를 읽으
+    십시오.
+   </para>
+
+   <para>
+    <inlinegraphic fileref="figures/full-6"></inlinegraphic>
     <guimenu>주 패널</guimenu>
    </para>
 
@@ -206,6 +222,41 @@
     - 폴더와 아이콘 작업중인것들로 가득 채울수도 있고 깨끗이 비울수도
     있습니다. 노틸러스는 여러분이 원하는대로 작동할것 입니다.
    </para>
+
+   <para>
+    만약 노틸러스가 시스템의 바탕화면을 그리지 않는다면, 이렇게 하세요:
+   </para>
+
+     <orderedlist>
+
+      <listitem>
+       <para>
+        (아래 보이는)세부사항 메뉴를 열고 세부사항을 선택하십시오.
+       </para>
+      </listitem>
+
+      <listitem>
+       <para>
+        바탕화면 부분에서 "노틸러스가 바탕화면을 그립니다."를
+	선택합니다.
+       </para>
+      </listitem>
+
+      <listitem>
+       <para>확인을 누르십시오.
+       </para>
+      </listitem> 
+     
+     </orderedlist>
+  
+   <figure id="prefmenu11">
+    <title>세부사항 메뉴</title>
+    <screenshot>
+     <screeninfo>Screenshot of Preferences Menu</screeninfo>
+     <graphic format="png" fileref="figures/prefmenu">
+     </graphic>
+    </screenshot>
+   </figure>   
 
    <para>
     처음에는, 바탕화면에는 두개의 항목이 있습니다: 홈 디렉토리를
@@ -228,37 +279,6 @@
   </sect1>
 
 
-  <!-- Introducing Nautilus: Adding Nautilus to the Panel  -->
-  <sect1 id="default">
-   <title>패널에 노틸러스 추가시키기</title>
-
-   <note>
-    <title>이렇게 하세요.</title>
-     <para>노틸러스를 쉽게 실행하게 하려면, 그놈 패널에 아이콘을 
-     추가 하십시오: 
-     </para>
-
-     <orderedlist>
-
-      <listitem>
-       <para>
-        <guimenu>그놈 주메뉴</guimenu>(발바닥 아이콘으로 표시된)을 
-        여십시오. 
-       </para>
-      </listitem>
-
-      <listitem>
-       <para><menuchoice><guimenu>프로그램 메뉴</guimenu>를 
-       선택하십시오. 그러고 나서 <guisubmenu>응용프로그램</guisubmenu> 
-       메뉴의 <guimenuitem>노틸러스</guimenuitem>를 선택하십시오.</menuchoice>
-       노틸러스 아이콘을 그놈 패널로 끌어놓으십시오. 
-       </para>
-      </listitem>
-
-     </orderedlist>
-    </note>
-
-  </sect1>
   <!-- Introducing Nautilus: About GNOME  -->
   <sect1 id="gnome">
    <title>그놈은</title>
@@ -272,16 +292,18 @@
 
   </sect1>
 
-
  </chapter>
+
 
  <!-- CHAPTER 2: NAVIGATING YOUR COMPUTER AND THE INTERNET -->
  <chapter id="chapter2">
   <title>컴퓨터와 인터넷 탐색하기</title>
 
-  <para>이 부분에서는 노틸러스에서 여러분의 컴퓨터와 인터넷에서 
-  폴더와 파일을 어떻게 사용할수 있는지 설명합니다.
+  <para>
+   이 부분에서는 노틸러스에서 여러분의 컴퓨터와 인터넷에서 
+   폴더와 파일을 어떻게 사용할수 있는지 설명합니다.
   </para>
+  
   <sect1 id="toc2">
    <title>이 섹션의 내용:</title>
 
@@ -292,10 +314,14 @@
     <member>
      <link linkend="navigating">여러분 컴퓨터의 파일과 
      폴더 탐색하기</link>
-     </member>
+    </member>
+    <member>
+     <link linkend="tree">나무 구조 </link>
+    </member>
     <member>
      <link linkend="viewopen">파일을 보고 열기</link>
     </member>
+    <member>
      <link linkend="music">MP3파일을 보고 연주하기</link>
     </member>
     <member>
@@ -320,32 +346,27 @@
   <sect1 id="home">
    <title>홈 폴더 보기</title>
 
-   <para>노틸러스를 처음으로 실행시키면 홈 폴더를 보여줍니다. 
-   노틸러스는 폴더에 대한 정보를 3부분의 창에 보여줍니다: 
+   <para>
+    노틸러스를 처음으로 실행시키면 홈 폴더를 보여줍니다. 
+    노틸러스는 폴더에 대한 정보를 3부분의 창에 보여줍니다: 
    </para>
 
-   <itemizedlist>
+   <para>
+    <inlinegraphic fileref="figures/part-1"></inlinegraphic>
+    폴더의 경로를 보여주는 <guimenu>위치 막대</guimenu>
+   </para>
+   
+   <para>
+    <inlinegraphic fileref="figures/part-2"></inlinegraphic>
+    폴더를 표현하는 폴더아이콘을 보여주는 
+    <guimenu>가장자리막대 패널</guimenu>
+   </para>
 
-    <listitem>
-     <para>
-      폴더를 표현하는 폴더아이콘을 보여주는 
-      <guimenu>가장자리막대 패널</guimenu>
-     </para>
-    </listitem>
+   <para>
+    <inlinegraphic fileref="figures/part-3"></inlinegraphic>
+    폴더에 있는 항목을 표현하는 아이콘을 볼수 있는 <guimenu>주 패널</guimenu>
+   </para>
 
-    <listitem>
-     <para>
-      폴더에 있는 항목을 표현하는 아이콘을 볼수 있는 <guimenu>주 패널</guimenu>
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      폴더의 경로를 보여주는 <guimenu>위치 막대</guimenu>
-     </para>
-    </listitem>
-
-   </itemizedlist>
    <figure id="part">
     <title>위치 막대, 가장자리 막대, 주 패널</title>
     <screenshot>
@@ -365,8 +386,8 @@
     홈 폴더에 대한 주의: 사용자 수준 설정에 따라서 홈폴더는 기본 
     노틸러스 홈 폴더, 즉, 여러분의 컴퓨터에 대한 기본적인 정보와 몇몇
     유용한 응용프로그램을 가르키는것을 포함하는 곳, 또는 여러분의
-    리눅스 설정에 정의된 홈 폴더(보통 /home/여러분의 이름)을 가르키게
-    됩니다.
+    리눅스 설정에 정의된 홈 폴더(보통 /home/<emphasis>여러분의 
+    이름</emphasis>)을 가르키게 됩니다.
    </para>
 
   </sect1>
@@ -376,12 +397,13 @@
   <sect1 id="navigating">
    <title>여러분 컴퓨터의 파일과 폴더 탐색하기</title>
 
-    <para>노틸러스의 아이콘과 도구막대에 있는 탐색버튼을 
-     사용하여 파일과 폴더로 이동할수 있습니다.  
-    </para>
+   <para>
+    노틸러스의 아이콘과 도구막대에 있는 탐색버튼을 
+    사용하여 파일과 폴더로 이동할수 있습니다.  
+   </para>
 
-    <note>
-     <title>이렇게 하세요</title>
+   <tip>
+    <title>이렇게 하세요</title>
     <para>
      여러분의 홈 폴더를 참고점으로 하여서 하드 디스크를 탐색
      하십시오:
@@ -391,50 +413,49 @@
 
      <listitem>
       <para>
-       홈 폴더를 보려면, <guibutton>홈</guibutton>버튼을 
-       클릭하십시오.
+       홈 폴더를 보려면, 홈버튼을 누르십시오.
       </para>
      </listitem>
 
      <listitem>
       <para>
        홈 폴더를 포함하는 폴더로 이동하려면 -- 즉, 
-       상위폴더로 이동하려면 - <guibutton>위로</guibutton>버튼을 
+       상위폴더로 이동하려면 - 위로 버튼을 
        누르십시오.
       </para>
      </listitem>
-     
+    
      <listitem>
       <para>
-       이전으로 되돌아 가려면, <guibutton>뒤로</guibutton>버튼을 
+       이전으로 되돌아 가려면, 뒤로 버튼을 
        누르십시오.
       </para>
      </listitem>
-     
+    
      <listitem>
       <para>
        다른 폴더의 내용을 보려면, 그 아이콘(보통 폴더 아이콘)을 
        두번 누르십시오.
       </para>
      </listitem>
-     
+    
      <listitem>
       <para>
        폴더를 보는동안 내용이 바뀌었다고 생각되면, 
-       <guibutton>다시 읽기</guibutton> 버튼을 눌러서 정보를 
+       다시 읽기 버튼을 눌러서 정보를 
        다시 읽을수 있습니다.
       </para>
      </listitem>
 
      <listitem>
       <para>
-       항목을 그만 읽으려면, <guibutton>중지</guibutton> 버튼을
+       항목을 그만 읽으려면, 중지 버튼을
        누릅니다.
       </para>
      </listitem>
 
     </itemizedlist>
-   </note>
+   </tip>
 
   </sect1>
 
@@ -469,7 +490,7 @@
     이름의 디렉토리도 있습니다.)
    </para>
 
-   <note>
+   <tip>
     <title>이렇게 하세요</title>
     <para>
      나무 구조에서 폴더를 열고 닫으려면:
@@ -492,7 +513,7 @@
      </listitem>
 
     </itemizedlist>
-   </note>
+   </tip>
 
   </sect1>
 
@@ -509,17 +530,18 @@
     표시가 됩니다. 이것이 기본값입니다.
    </para>
 
-   <note>
+   <tip>
     <title>이렇게 하세요</title>
     <para>
      파일과 폴더를 두가지 다른 방법으로 볼수 있습니다:
     </para>
 
     <itemizedlist>
+
      <listitem>
       <para>
-       폴더의 내용을 목록으로 보려면, <guimenu>로 보기</guimenu> 
-       메뉴를 눌러서 <guimenuitem>목록으로 보기</guimenuitem>를 
+       폴더의 내용을 목록으로 보려면, 로 보기 
+       메뉴를 눌러서 목록으로 보기 를 
        선택하십시오.
       </para>
      </listitem>
@@ -535,22 +557,22 @@
      <listitem>
       <para>
        아이콘 보기로 되돌아 가고 싶으면, 
-       <guimenu>로 보기</guimenu> 메뉴를 클릭하고 
-       <guimenuitem>아이콘으로 보기</guimenuitem>를 선택하십시오.
+       로 보기 메뉴를 클릭하고 
+       아이콘으로 보기를 선택하십시오.
       </para>
      </listitem>
      
      <listitem>
       <para>
-       아이콘 보기에서 항목을 정렬하려면 <guimenu>보기</guimenu>를
-       열고 <guimenuitem>항목 배치</guimenuitem>,를 선택하고 배치
+       아이콘 보기에서 항목을 정렬하려면 보기를
+       열고 항목 배치 를 선택하고 배치
        옵션을 선택하십시오. (배치 옵션에 대해 더 알고 싶다면,
        <link linkend="layout">파일 배치 선택</link>를 참고 하십시오.)
       </para>
      </listitem>
     
     </itemizedlist>
-   </note>
+   </tip>
 
    <figure id="viewmenu">
     <title>로 보기 팝업메뉴</title>
@@ -571,7 +593,7 @@
     아이콘의 크기를 키울수도 있습니다. 
    </para>
 
-   <note>
+   <tip>
     <title>이렇게 하세요</title>
     <para>
      아이콘 보기나 목록 보기에서 아이콘을 키우거나 줄이려면:
@@ -594,9 +616,9 @@
      </listitem> 
 
     </itemizedlist>
-   </note>
+   </tip>
 
-   <note>
+   <tip>
     <title>이렇게 하십시오</title>
     <para>
      각각의 아이콘을 확대하기:
@@ -633,7 +655,7 @@
      </listitem>
 
     </orderedlist>
-   </note>
+   </tip>
 
    <para>
     아이콘을 원래 크기로 되돌리려면, 아이콘을 선택하고; 편집 메뉴를 
@@ -749,9 +771,8 @@
      
      <listitem>
       <para>
-       파일 아이콘을 누르고 <guimenu>파일</guimenu>메뉴를 열고 
-       <guimenuitem>열기</guimenuitem>나 <guimenuitem>다른 
-       프로그램으로 열기</guimenuitem>를 선택하기
+       파일 아이콘을 누르고 파일메뉴를 열고 
+       열기나 다른 프로그램으로 열기 를 선택하기
       </para>
      </listitem>
 
@@ -784,7 +805,7 @@
     표지(사용자 아이콘)으로 표시 할수 있습니다.
    </para>
 
-   <note>
+   <tip>
     <title>이렇게 하세요</title>
     <para>
      사용자 음악 앨범을 만들기 위해 MP3파일 모음을 사용하십시오:
@@ -800,13 +821,13 @@
 
      <listitem>
       <para>
-       <guimenu>로 보기</guimenu> 메뉴를 누르고 <guimenuitem>음악으로 
-       보기</guimenuitem>를 선택합니다.
+       로 보기 메뉴를 누르고 음악으로 
+       보기 를 선택합니다.
       </para>
      </listitem>
 
     </orderedlist>
-   </note>
+   </tip>
 
    <figure id="view2">
     <title>보기 메뉴</title>
@@ -839,6 +860,26 @@
    </figure>
 
    <para>
+    <inlinegraphic fileref="figures/player-1"></inlinegraphic>
+    연주 버튼
+   </para>
+
+   <para>
+    <inlinegraphic fileref="figures/player-2"></inlinegraphic>
+    잠시 멈춤 버튼
+   </para>
+
+   <para>
+    <inlinegraphic fileref="figures/player-3"></inlinegraphic>
+    중지 버튼
+   </para>
+
+   <para>
+    <inlinegraphic fileref="figures/player-4"></inlinegraphic>
+    되감거나 빨리 감으려면 슬라이더를 끌어당기십시오.
+   </para>
+
+   <para>
     원한다면, 음악 폴더에 표지 그림을 선택할수도 있습니다:
    </para>
 
@@ -852,15 +893,15 @@
 
     <listitem>
      <para>
-      <guimenu>로 보기</guimenu>메뉴를 누르고 <guimenuitem>음악으로 
-      보기</guimenuitem>를 선택합니다.
+      로 보기 메뉴를 누르고 음악으로 
+      보기를 선택합니다.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      노틸러스 창의 오른쪽 아래에 있는 <guimenuitem>표지그림 설정
-      </guimenuitem>을 누릅니다.
+      노틸러스 창의 오른쪽 아래에 있는 표지그림 설정
+      을 누릅니다.
      </para>
     </listitem>
 
@@ -872,7 +913,7 @@
 
     <listitem>
      <para>
-      <guimenuitem>확인</guimenuitem>을 누릅니다.
+      확인을 누릅니다.
      </para>
     </listitem>
     
@@ -924,14 +965,14 @@
     웹페이지를 보려면 위치막대에 URL(주소)를 입력합니다. 
    </para>
 
-   <note>
+   <tip>
     <title>이렇게 하세요</title>
     <para>
-     위치막대에서 <userinput>eazel.com</userinput>이라고 
+     위치막대에서 eazel.com이라고 
      입력하여 Eazel웹 사이트에 접속 할수 잇습니다.
      "http://"나 "www."를 입력할 필요는 없습니다.
     </para>
-   </note>
+   </tip>
 
    <figure id="locbar">
     <title>위치 막대</title>
@@ -977,21 +1018,21 @@
 
     <listitem>
      <para>
-      <guimenu>가기</guimenu>  메뉴의 아랫부분에 현재 세션동안 
+      가기 메뉴의 아랫부분에 현재 세션동안 
       보았던 것들이 있습니다.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      가장자리 막대 아래의 <guimenuitem>방문기록</guimenuitem> 탭을 
+      가장자리 막대 아래의 방문기록 탭을 
       누릅니다.(방문기록 목록을 사라지게 하려면 다시 탭을 누릅니다.)
      </para>
     </listitem>
 
     <listitem>
      <para>
-      <guimenu>뒤로</guimenu>, <guimenu>앞으로</guimenu> 버튼을 
+      뒤로, 앞으로 버튼을 
       오른 마우스 버튼으로 누릅니다.
      </para>
     </listitem>
@@ -1011,8 +1052,8 @@
    <itemizedlist>
     <listitem>
      <para>
-      <guimenu>가기</guimenu> 메뉴를 열고 <guimenuitem>방문기록 
-      지우기</guimenuitem>를 선택합니다.
+      가기 메뉴를 열고 방문기록 
+      지우기 를 선택합니다.
      </para>
     </listitem>
    </itemizedlist>
@@ -1049,14 +1090,14 @@
     
     <listitem>
      <para>
-      <guimenu>책갈피</guimenu> 메뉴로 가서 <guimenuitem>책갈피 
-      추가</guimenuitem>를 선택하십시오.
+      책갈피 메뉴로 가서 책갈피 
+      추가 를 선택하십시오.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      책갈피를 사용하려면 <guimenu>책갈피</guimenu> 메뉴를 연다음 
+      책갈피를 사용하려면 책갈피 메뉴를 연다음 
       항목을 선택하십시오.
      </para>
     </listitem> 
@@ -1081,28 +1122,28 @@
    <orderedlist>
     <listitem>
      <para>
-      <guimenu>세부설정<i/guimenu> 메뉴를 열고 <guimenuitem>세부설정
-      </guimenuitem>을 선택합니다.
+      세부설정 메뉴를 열고 세부설정
+      을 선택합니다.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      세부설정 대화상자의 왼쪽에서 <guimenuitem>탐색</guimenuitem>을 
+      세부설정 대화상자의 왼쪽에서 탐색을 
       누릅니다.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      <guimenuitem>메뉴의 내장 책갈피에 포함하지 않음</guimenuitem>을 
+      메뉴의 내장 책갈피에 포함하지 않음을 
       선택합니다.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      <guimenuitem>확인</guimenuitem>을 누릅니다.
+      확인을 누릅니다.
      </para>
     </listitem>
 
@@ -1130,8 +1171,8 @@
     
     <listitem>
      <para>
-      <guimenu>책갈피</guimenu> 메뉴를 열고 <guimenuitem>책갈피 편집
-      </guimenuitem>을 선택합니다.
+      책갈피 메뉴를 열고 책갈피 편집
+      을 선택합니다.
      </para>
     </listitem>
 
@@ -1207,63 +1248,24 @@
     </listitem>
 
    </itemizedlist>
-
+   
    <para>
-    <guimenu>Medusa</guimenu>
+    <guimenu>빠른 검색과 느린 검색</guimenu>
    </para>
 
    <para>
-    Medusa는 색인 데몬 - 컴퓨터가 유휴상태일때 뒤에서 실행되는 작은
-    도구 - 입니다. Medusa는 컴퓨터와 마운트된 볼륨(CD-ROM 디스크와 같은)에 
-    있는 파일의 모든 내용을 색인화 합니다, 따라서 어떤 파일에 있는
-    어떤 문자열이라도 빨리 찾아낼수 있습니다.
-   </para>
-  
-  <!--  Searching Your Computer and the Internet: Simple Searches -->
-  <sect1 id="simple">
-   <title>간단히 찾기</title>
-
-   <para>
-    하드디스크에서 항목 찾기(초보 사용자 수준):
-   </para>
-
-   <orderedlist>
-    <listitem>
-     <para>
-      도구 막대의 <guimenuitem>찾기</guimenuitem> 버튼을 누릅니다.
-      위치 막대가 찾기 막대로 바뀝니다.
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      찾기를 원하는 항목의 이름을 <guimenuitem>찾기</guimenuitem> 
-      필드에 입력합니다.
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      <guimenuitem>찾기</guimenuitem> 를 누릅니다.
-     </para>
-    </listitem>
-
-   </orderedlist>
-
-  </sect1>
-
-  <!--  Searching Your Computer and the Internet: Fast Searches -->
-  <sect1 id="medusa">
-   <title>빨리 찾기</title>
-
-   <para>
-    노틸러스는 Medusa, 즉 컴퓨터가 유휴상태일때 뒤에서 실행되는
-    소프트웨어인 데몬을 사용합니다. Medusa는 하드디스크와 마운트된
+    노틸러스는 Medusa, 즉 컴퓨터의 뒤에서 실행되는
+    소프트웨어인 데몬으로 동작합니다. Medusa는 하드디스크와 마운트된
     볼륨에서 이름과 크기, 생성일, 그리고 다른 속성들을 포함하는
     모든 항목을 색인으로 만듭니다. 그리고 Medusa는 각각 파일의
     실제 <emphasis>내용</emphasis>까지도 색인화 합니다 - 따라서
     내용을 검색할때 컴퓨터의 어떤 파일안에 있는 단어나 문장도
     찾아낼수 있습니다.
+   </para>
+
+   <para>
+    Medusa는 컴퓨터가 유휴상태일때 동작합니다, 따라서 여러분의 작업을
+    방해하지 않습니다.
    </para>
 
    <para>
@@ -1299,6 +1301,78 @@
    </orderedlist>
 
    <para>
+    그래도 켜지지 않으면, 이렇게 하세요:
+   </para>
+   
+    <orderedlist>
+
+     <listitem>
+      <para>
+       세부사항 메뉴를 열고 세부사항을 선택합니다.
+      </para>
+     </listitem>
+
+     <listitem>
+      <para>
+       세부사항 대화상자의 왼쪽에서 검색을 선택합니다.
+      </para>
+     </listitem>
+
+     <listitem>
+      <para>
+       빠른 검색 부분에서 "빠른 찾기 사용"을 켭니다.
+      </para>
+     </listitem>
+
+    </orderedlist>
+    
+  </sect1>
+  
+  <!--  Searching Your Computer and the Internet: Simple Searches -->
+  <sect1 id="simple">
+   <title>간단히 찾기</title>
+
+   <para>
+    하드디스크에서 항목 찾기(초보 사용자 수준):
+   </para>
+
+   <orderedlist>
+    <listitem>
+     <para>
+      도구 막대의 찾기 버튼을 누릅니다.
+      위치 막대가 찾기 막대로 바뀝니다.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      찾기를 원하는 항목의 이름을 찾기 
+      필드에 입력합니다.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      찾기 를 누릅니다.
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      찾기가 끝나면, 다시 찾기 버튼을 눌러서 찾기막대를
+      사라지게 합니다.
+     </para>
+    </listitem> 
+
+   </orderedlist>
+
+  </sect1>
+
+  <!--  Searching Your Computer and the Internet: Fast Searches -->
+  <sect1 id="medusa">
+   <title>복잡한 찾기</title>
+
+   <para>
     하드디스크에서 항목 찾기(중급, 고급 사용자 수준):
    </para>
 
@@ -1306,7 +1380,7 @@
 
     <listitem>
      <para>
-      도구 막대의 <guimenuitem>찾기</guimenuitem> 버튼을 
+      도구 막대의 찾기 버튼을 
       누릅니다.
      </para>
     </listitem>
@@ -1320,8 +1394,8 @@
 
     <listitem>
      <para>
-      (선택적으로) 검색의 폭을 줄이기 위해 <guimenuitem>더 많은 
-      옵션</guimenuitem>을 눌러서 검색내용을 추가할수 있습니다. 
+      (선택적으로) 검색의 폭을 줄이기 위해 더 많은 
+      옵션을 눌러서 검색내용을 추가할수 있습니다. 
      </para>
     </listitem>
 
@@ -1334,13 +1408,13 @@
 
     <listitem>
      <para>
-      <guimenuitem>찾기</guimenuitem> 를 누릅니다.
+      찾기 를 누릅니다.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      찾기가 끝나면 <guimenuitem>찾기</guimenuitem> 버튼을 다시
+      찾기가 끝나면 찾기 버튼을 다시
       눌러서 찾기 막대를 없앱니다.
      </para>
     </listitem> 
@@ -1487,14 +1561,14 @@
    
     <listitem>
      <para>
-      <guimenu>세부사항</guimenu> 메뉴를 열고 <guimenuitem>세부사항
-      </guimenuitem>을 선택합니다.
+      세부사항 메뉴를 열고 세부사항
+      을 선택합니다.
      </para>
     </listitem>
    
     <listitem>
      <para>
-      세부사항 대화상자의 왼쪽 부분에 <guimenuitem>검색</guimenuitem>
+      세부사항 대화상자의 왼쪽 부분에 검색
       을 누릅니다.
      </para>
     </listitem>
@@ -1502,13 +1576,13 @@
     <listitem>
      <para>
       검색 엔진 섹션에 여러분이 좋아하는 검색 서비스의 웹 주소
-      (URL)dmf dlqfurgkqslek.
+      (URL)을 입력합니다.
      </para>
     </listitem>
 
     <listitem>
      <para>
-      <guimenuitem>확인</guimenuitem>을 누릅니다.
+      확인 을 누릅니다.
      </para> 
     </listitem>
    
@@ -2098,15 +2172,6 @@
     <listitem><para>상태 막대(창의 맨 아래)</para></listitem>
    </itemizedlist>
 
-   <figure id="full3">
-    <title>노틸러스 창</title>
-    <screenshot>
-     <screeninfo>Diagram of Nautilus</screeninfo>
-     <graphic format="png" fileref="figures/full">
-     </graphic>
-    </screenshot>
-   </figure>
-
    <para>
     화면 공간을 더 확보하기 위해서 하나이상의 막대를 숨길수 있습니다.
    </para>
@@ -2676,12 +2741,12 @@
     꼬리표를 여러개 붙일수도 있습니다.
    </para>
 
-   <note>
+   <tip>
     <title>이렇게 하세요</title>
     <para>
      꼬리표를 사용해서 파일을 구성할수 있습니다.
     </para>
-   </note>
+   </tip>
 
    <para>
     즉시 주의가 필요한 파일에 안돼에엣! 이나 긴급 꼬리표를 붙이십시오;
@@ -3489,6 +3554,90 @@
     the members of the GNOME Documentation Project, the names have
     been printed in caps or initial caps.
    </para>
+
+  </sect1>
+
+  <sect1 id="logos">
+   <title>Eazel Trademarks</title>
+
+    <para>
+     Copyright 2001 Eazel, Inc., and others.  All Rights Reserved.
+     Eazel, the Eazel Logo, and Nautilus are trademarks of Eazel,
+     Inc. (the "Eazel Trademarks"). The Eazel Trademarks are distinct
+     from the Eazel GPL Software and are not subject to the provisions
+     of the GPL.
+    </para>
+
+    <para>
+     This software contains files that include the Eazel Logo (the
+     "Logo"). Eazel, Inc. has created and distributes certain
+     software under the GNU General Public License (GPL) (the "Eazel
+     GPL Software"). The Logo is distinct from the Eazel GPL Software
+     and is not governed by the terms of the GPL. You may only use
+     the Logo pursuant to the terms contained herein. The files that
+     include the Eazel Logo can be removed without impairing the way
+     the Eazel GPL Software functions.
+    </para>
+
+    <para>
+     Eazel, Inc. grants you the right to use, copy, and redistribute
+     the Logo, but only in conjunction with the use, copying, or
+     redistribution of an official release of Eazel GPL Software that
+     calls upon the Logo during the normal course of operation and
+     provided that,
+    </para>
+
+    <orderedlist>
+
+     <listitem>
+      <para>
+       The notice and this license are included with each copy
+       you make, and they are not altered, deleted, or modified in any
+       way;
+      </para>
+     </listitem>
+
+     <listitem>
+      <para>
+       You do not modify the Logo, or the appearance of the Logo in any
+       manner;
+      </para>
+     </listitem>
+
+     <listitem>
+      <para>
+       You do not use the Logo as, or as part of, a trademark, trade
+       name, or trade identifier; or in any other fashion except as
+       set forth in this license; and
+      </para>
+     </listitem>
+
+     <listitem>
+      <para>
+       The Logo is only used, copied, or distributed in conjunction
+       with Eazel GPL Software that has not been modified from the
+       form it was made available by Eazel, Inc.  You may modify Eazel
+       GPL software pursuant to the terms of the license that
+       accompanies it, but if you do so, you may not use, copy, or
+       redistribute the Logo with the modified software.
+      </para>
+     </listitem>
+
+    </orderedlist>
+    <para>
+     NO WARRANTY. THIS SOFTWARE IS PROVIDED "AS IS" AND ANY
+     EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+     IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+     PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL EAZEL,
+     INC. BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+     EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+     TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+     DATA OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+     ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+     OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+     OUT OF THE USE OF THIS PACKAGE, EVEN IF ADVISED OF THE
+     POSSIBILITY OF SUCH DAMAGE.
+    </para>
 
   </sect1>
 
