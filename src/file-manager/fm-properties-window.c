@@ -63,8 +63,10 @@ enum {
 	BASIC_PAGE_LOCATION_ROW,
 	BASIC_PAGE_TYPE_ROW,
 	BASIC_PAGE_SIZE_ROW,
-	BASIC_PAGE_DATE_ROW,
-	BASIC_PAGE_ROW_COUNT
+	BASIC_PAGE_ACCESSED_DATE_ROW,
+	BASIC_PAGE_CHANGED_DATE_ROW,
+	BASIC_PAGE_MODIFIED_DATE_ROW,
+	BASIC_PAGE_ROW_COUNT_WITH_SEPARATE_MODIFICATION_DATE
 };
 
 enum {
@@ -74,6 +76,7 @@ enum {
 	PERMISSIONS_PAGE_OTHERS_ROW,
 	PERMISSIONS_PAGE_INTENTIONALLY_BLANK_ROW,
 	PERMISSIONS_PAGE_FULL_STRING_ROW,
+	PERMISSIONS_PAGE_FULL_OCTAL_ROW,
 	PERMISSIONS_PAGE_ROW_COUNT
 };	
 
@@ -520,17 +523,41 @@ create_page_with_table_in_vbox (GtkNotebook *notebook,
 	if (return_vbox != NULL) {
 		*return_vbox = vbox;
 	}
-}			
+}		
+
+static gboolean
+mtime_and_ctime_different (NautilusFile *file)
+{
+	char *mtime_string, *ctime_string;
+	gboolean result;
+
+	mtime_string = nautilus_file_get_string_attribute (file, "date_modified");
+	ctime_string = nautilus_file_get_string_attribute (file, "date_changed");
+
+	result = strcmp (mtime_string, ctime_string) != 0;
+
+	g_free (mtime_string);
+	g_free (ctime_string);
+
+	return result;
+}	
 
 static void
 create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 {
 	GtkWidget *table;
 	GtkWidget *icon_pixmap_widget, *name_field;
+	gboolean separate_modification_date;
+	int row_count;
+
+	separate_modification_date = mtime_and_ctime_different (file);
+	row_count = separate_modification_date
+		? BASIC_PAGE_ROW_COUNT_WITH_SEPARATE_MODIFICATION_DATE
+		: BASIC_PAGE_ROW_COUNT_WITH_SEPARATE_MODIFICATION_DATE -1;
 
 	create_page_with_table_in_vbox (notebook, 
 					_("Basic"), 
-					BASIC_PAGE_ROW_COUNT, 
+					row_count, 
 					&table, 
 					NULL);
 
@@ -588,13 +615,22 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
 					       GTK_OBJECT (name_field));
 
 	install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_LOCATION_ROW,
-				  _("Location:"), file, "parent_uri");
+				  _("location:"), file, "parent_uri");
 	install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_TYPE_ROW,
-				  _("Type:"), file, "type");
+				  _("type:"), file, "type");
 	install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_SIZE_ROW,
-				  _("Size:"), file, "size");
-	install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_DATE_ROW,
-				  _("Date Modified:"), file, "date_modified");
+				  _("size:"), file, "size");
+	if (separate_modification_date) {
+		install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_CHANGED_DATE_ROW,
+					  _("permissions changed:"), file, "date_changed");
+		install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_MODIFIED_DATE_ROW,
+					  _("contents changed:"), file, "date_modified");
+	} else {
+		install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_CHANGED_DATE_ROW,
+					  _("changed:"), file, "date_changed");
+	}				  
+	install_title_value_pair (GTK_TABLE (table), BASIC_PAGE_ACCESSED_DATE_ROW,
+				  _("accessed:"), file, "date_accessed");
 }
 
 static GtkWidget *
@@ -1045,7 +1081,11 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 		
 		add_permissions_row_label (row_label_table, file, 
 					   PERMISSIONS_PAGE_FULL_STRING_ROW, 
-					   _("standard format:"), NULL);
+					   _("as text:"), NULL);
+		
+		add_permissions_row_label (row_label_table, file, 
+					   PERMISSIONS_PAGE_FULL_OCTAL_ROW, 
+					   _("as octal number:"), NULL);
 		
 		add_permissions_column_label (check_button_table, 
 					      PERMISSIONS_CHECKBOXES_READ_COLUMN,
@@ -1109,6 +1149,12 @@ create_permissions_page (GtkNotebook *notebook, NautilusFile *file)
 				     PERMISSIONS_CHECKBOXES_READ_COLUMN, 
 				     PERMISSIONS_CHECKBOXES_COLUMN_COUNT - PERMISSIONS_CHECKBOXES_READ_COLUMN, 
 				     file, "permissions"); 
+
+		install_value_field (check_button_table, 
+				     PERMISSIONS_PAGE_FULL_OCTAL_ROW, 
+				     PERMISSIONS_CHECKBOXES_READ_COLUMN, 
+				     PERMISSIONS_CHECKBOXES_COLUMN_COUNT - PERMISSIONS_CHECKBOXES_READ_COLUMN, 
+				     file, "octal_permissions"); 
 	} else {
 		file_name = nautilus_file_get_name (file);
 		prompt_text = g_strdup_printf (_("The permissions of \"%s\" could not be determined."), file_name);

@@ -64,6 +64,7 @@ static char * attribute_names[] = {
 	"owner",
 	"group",
 	"permissions",
+	"octal_permissions",
 	"mime_type",
 	NULL
 };
@@ -77,6 +78,7 @@ static const char * attribute_labels[] = {
 	N_("owner"),
 	N_("group"),
 	N_("permissions"),
+	N_("octal permissions"),
 	N_("MIME type"),
 	NULL
 };

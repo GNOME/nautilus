@@ -1472,6 +1472,32 @@ nautilus_file_set_permissions (NautilusFile *file,
 }
 
 /**
+ * nautilus_file_get_octal_permissions_as_string:
+ * 
+ * Get a user-displayable string representing a file's permissions
+ * as an octal number. The caller
+ * is responsible for g_free-ing this string.
+ * @file: NautilusFile representing the file in question.
+ * 
+ * Returns: Newly allocated string ready to display to the user.
+ * 
+ **/
+static char *
+nautilus_file_get_octal_permissions_as_string (NautilusFile *file)
+{
+	GnomeVFSFilePermissions permissions;
+
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+	if (!nautilus_file_can_get_permissions (file)) {
+		return g_strdup (_("unknown permissions"));
+	}
+
+	permissions = file->details->info->permissions;
+	return g_strdup_printf ("%o", permissions);
+}
+
+/**
  * nautilus_file_get_permissions_as_string:
  * 
  * Get a user-displayable string representing a file's permissions. The caller
@@ -1490,10 +1516,15 @@ nautilus_file_get_permissions_as_string (NautilusFile *file)
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
+	if (!nautilus_file_can_get_permissions (file)) {
+		return g_strdup (_("unknown permissions"));
+	}
+
 	permissions = file->details->info->permissions;
 	is_directory = nautilus_file_is_directory (file);
 	is_link = GNOME_VFS_FILE_INFO_SYMLINK(file->details->info);
-	
+
+	/* FIXME bugzilla.eazel.com 877: Need to reflect suid, guid, sticky bits */
 	return g_strdup_printf ("%c%c%c%c%c%c%c%c%c%c",
 				 is_link ? 'l' : is_directory ? 'd' : '-',
 		 		 permissions & GNOME_VFS_PERM_USER_READ ? 'r' : '-',
@@ -1639,7 +1670,7 @@ nautilus_file_get_size_as_string (NautilusFile *file)
  * @file: NautilusFile representing the file in question.
  * @attribute_name: The name of the desired attribute. The currently supported
  * set includes "name", "type", "mime_type", "size", "date_modified", "date_changed",
- * "date_accessed", "owner", "group", "permissions", "uri", "parent_uri".
+ * "date_accessed", "owner", "group", "permissions", "octal_permissions", "uri", "parent_uri".
  * 
  * Returns: Newly allocated string ready to display to the user, or NULL
  * if @attribute_name is not supported.
@@ -1687,6 +1718,10 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 
 	if (strcmp (attribute_name, "permissions") == 0) {
 		return nautilus_file_get_permissions_as_string (file);
+	}
+
+	if (strcmp (attribute_name, "octal_permissions") == 0) {
+		return nautilus_file_get_octal_permissions_as_string (file);
 	}
 
 	if (strcmp (attribute_name, "owner") == 0) {

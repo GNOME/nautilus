@@ -1,3 +1,29 @@
+2000-06-20  John Sullivan  <sullivan@eazel.com>
+
+	Finished task 878 (permissions should be displayed as an
+	octal number in Properties window)
+
+	Finished task 880 (should show accessed & modified dates
+	in Properties window)
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_octal_permissions_as_string):
+	New function, returns permissions as octal number.
+	(nautilus_file_get_permissions_as_string): Added check
+	for invalid permissions.
+	(nautilus_file_get_string_attribute): Added case for
+	"octal_permissions"
+	* src/file-manager/fm-icon-text-window.c: Made "octal
+	permissions" a new choice for icon captions.
+	* src/file-manager/fm-properties-window.c:
+	(mtime_and_ctime_different): New function, does what you
+	might think.
+	(create_basic_page): Include accessed date/time, and 
+	include modification date/time if different than changed
+	date/time.
+	(create_permissions_page): Show permissions as octal number
+	in addition to as string.
+
 2000-06-20  Michael Engber  <set EMAIL_ADDRESS environment variable>
 
 	* src/file-manager/fm-directory-view.c:
