@@ -1,3 +1,10 @@
+2001-02-21  Pavel Cisler <pavel@eazel.com>
+
+	* components/help/help-method.c:
+
+	Fix broken build - add the right includes that got dropped by
+	GnomeVFS header file shuffle.
+
 2001-02-20  John Harper  <jsh@eazel.com>
 
 	reviewed by Maciej Stachowiak  <mjs@eazel.com>
@@ -144,10 +151,7 @@
 	fixed bug 6804, resizing sidebar crashes summary view.  Fixed by
 	adding a check to not draw the label when it's position is past
 	the right edge of the pixbuf.
-	
-	* src/nautilus-first-time-druid.c:
-	had to add an include of signal.h to get this to build for me.
-	
+		
 2001-02-20  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	reviewed in part by: Robey Pointer  <robey@eazel.com>

@@ -29,6 +29,7 @@
 #include <libgnomevfs/gnome-vfs-module-shared.h>
 #include <libgnomevfs/gnome-vfs-module.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libgnomevfs/gnome-vfs-method.h>
 #include <stdio.h>
 #include <string.h>
 
