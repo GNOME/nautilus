@@ -148,8 +148,6 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 		break;
 	}
 	
-	obscure_cursor (entry);
-
 	old_has = gtk_editable_get_selection_bounds (editable, NULL, NULL);
 
 	result = EEL_CALL_PARENT_WITH_RETURN_VALUE
@@ -175,7 +173,6 @@ nautilus_entry_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 	int result;
 	gboolean old_had, new_had;
 	int old_start, old_end, new_start, new_end;
-	GdkCursor *cursor;
 	NautilusEntry *entry;
 	GtkEditable *editable;
 
