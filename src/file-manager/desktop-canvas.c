@@ -1,7 +1,7 @@
 /*  -*- Mode: C; c-set-style: linux; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  * Desktop component of GNOME file manager
  * 
- * Copyright (C) 1999 Red Hat Inc., Free Software Foundation
+ * Copyright (C) 1999, 2000 Red Hat Inc., Free Software Foundation
  * (based on Midnight Commander code by Federico Mena Quintero and Miguel de Icaza)
  *
  * This program is free software; you can redistribute it and/or 

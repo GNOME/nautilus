@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* fm-directory-view.c
  *
- * Copyright (C) 1999  Free Software Foundaton
+ * Copyright (C) 1999, 2000  Free Software Foundaton
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as

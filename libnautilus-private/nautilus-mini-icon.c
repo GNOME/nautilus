@@ -1,7 +1,7 @@
 /*  -*- Mode: C; c-set-style: linux; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  * Nautilus shell - mini icon setting routine
  * 
- * Copyright (C) 1999 Anders Carlsson
+ * Copyright (C) 1999, 2000 Anders Carlsson
  *
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License as 

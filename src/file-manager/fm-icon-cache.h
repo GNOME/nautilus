@@ -1,7 +1,7 @@
 /*  -*- Mode: C; c-set-style: linux; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  * GNOME File Manager: Icon Cache
  * 
- * Copyright (C) 1999 Red Hat Inc.
+ * Copyright (C) 1999, 2000 Red Hat Inc.
  *
  * This program is free software; you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License as 

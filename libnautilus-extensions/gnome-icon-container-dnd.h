@@ -2,7 +2,7 @@
 /* gnome-icon-container-dnd.h - Drag & drop handling for the icon container
    widget.
 
-   Copyright (C) 1999 Free Software Foundation
+   Copyright (C) 1999, 2000 Free Software Foundation
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as

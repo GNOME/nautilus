@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* gnome-icon-container-private.h
 
-   Copyright (C) 1999 Free Software Foundation
+   Copyright (C) 1999, 2000 Free Software Foundation
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as

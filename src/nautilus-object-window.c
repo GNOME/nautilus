@@ -3,7 +3,7 @@
 /*
  *  Nautilus
  *
- *  Copyright (C) 1999 Red Hat, Inc.
+ *  Copyright (C) 1999, 2000 Red Hat, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
@@ -899,7 +899,7 @@ nautilus_window_about_cb (GtkWidget *widget,
 
   aboot = gnome_about_new(_("Nautilus"),
                           VERSION,
-                          "Copyright (C) 1999",
+                          "Copyright (C) 1999, 2000",
                           authors,
                           _("The Cool Shell Program"),
                           "nautilus/nautilus3.jpg");

@@ -2,7 +2,7 @@
 /* xfer-progress-dialog.h - Progress dialog for transfer operations in the
    GNOME Desktop File Operation Service.
 
-   Copyright (C) 1999 Free Software Foundation
+   Copyright (C) 1999, 2000 Free Software Foundation
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as

@@ -3,7 +3,7 @@
 /*
  *  Nautilus
  *
- *  Copyright (C) 1999 Red Hat, Inc.
+ *  Copyright (C) 1999, 2000 Red Hat, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
