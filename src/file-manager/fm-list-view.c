@@ -512,6 +512,8 @@ popup_menu_callback (GtkWidget *widget, gpointer callback_data)
 	view = FM_LIST_VIEW (callback_data);
 
 	do_popup_menu (widget, view, NULL);
+
+	return TRUE;
 }
 
 static gboolean
