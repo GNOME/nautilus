@@ -1,5 +1,13 @@
 2002-04-17  Anders Carlsson  <andersca@gnu.org>
 
+	* components/hardware/nautilus-hardware-view.c:
+	(nautilus_hardware_view_class_init),
+	(nautilus_hardware_view_finalize):
+	Use ::finalize instead of ::destroy so we don't free 
+	data twice.
+	
+2002-04-17  Anders Carlsson  <andersca@gnu.org>
+
 	* libnautilus-private/nautilus-volume-monitor.c:
 	(nautilus_file_system_type_free):
 	Remove debugging output.

@@ -86,7 +86,7 @@ static void nautilus_hardware_view_drag_data_received (GtkWidget                
                                                        guint                      time);
 static void nautilus_hardware_view_class_init   (NautilusHardwareViewClass *klass);
 static void nautilus_hardware_view_init         (NautilusHardwareView      *view);
-static void nautilus_hardware_view_destroy            (GtkObject                 *object);
+static void nautilus_hardware_view_finalize            (GObject                 *object);
 static void hardware_view_load_location_callback      (NautilusView              *view,
                                                        const char                *location,
                                                        NautilusHardwareView      *hardware_view);
@@ -100,13 +100,13 @@ EEL_CLASS_BOILERPLATE (NautilusHardwareView, nautilus_hardware_view, GTK_TYPE_EV
 static void
 nautilus_hardware_view_class_init (NautilusHardwareViewClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 	
-	object_class = GTK_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (klass);
 	widget_class = GTK_WIDGET_CLASS (klass);
 
-	object_class->destroy = nautilus_hardware_view_destroy;
+	object_class->finalize = nautilus_hardware_view_finalize;
 	widget_class->drag_data_received  = nautilus_hardware_view_drag_data_received;
 }
 
@@ -185,7 +185,7 @@ nautilus_hardware_view_init (NautilusHardwareView *hardware_view)
 }
 
 static void
-nautilus_hardware_view_destroy (GtkObject *object)
+nautilus_hardware_view_finalize (GObject *object)
 {
 	NautilusHardwareView *hardware_view;
 
@@ -199,7 +199,7 @@ nautilus_hardware_view_destroy (GtkObject *object)
 
 	g_free (hardware_view->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 /* Component embedding support */
