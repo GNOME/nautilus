@@ -1,3 +1,12 @@
+2000-02-23  Maciej Stachowiak  <mjs@eazel.com>
+
+	* idl/nautilus.idl: Added Nautilus::Zoomable and
+	Nautilus::ZoomableFrame interfaces.
+	* nautilus-zoomable.c, nautilus-zoomable.h: New files for the
+	NautilusZoomable class. This class is used to implement the
+	Nautilus::Zoomable interface on a nautilus view or other control.
+	* Makefile.am: Added nautilus.c and nautilus.h to the build.
+	
 2000-02-23  John Sullivan  <sullivan@eazel.com>
 
 	Visible part of the fix to bug 14 (Open in New Window only

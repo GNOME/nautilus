@@ -71,6 +71,25 @@ module Nautilus {
   interface ContentViewFrame : ViewFrame {
   };
 
+  // typedef sequence<double> ZoomLevelList;
+
+  interface Zoomable : ::Bonobo::Unknown {
+    attribute double zoom_level;
+    readonly attribute double min_zoom_level;
+    readonly attribute double max_zoom_level;
+    readonly attribute boolean is_continuous;
+    // readonly attribute ZoomLevelList preferred_zoom_levels;
+    
+    oneway void zoom_in ();
+    oneway void zoom_out ();
+    oneway void zoom_to_fit ();
+  };
+
+  interface ZoomableFrame : ::Bonobo::Unknown {
+    oneway void notify_zoom_level (in double zoom_level);
+  };
+
+
   interface ViewWindow : ::Bonobo::Unknown {
 	readonly attribute string current_uri;
 	void open_uri(in string uri);
