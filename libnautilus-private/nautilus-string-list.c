@@ -257,6 +257,40 @@ nautilus_string_list_as_g_list (const NautilusStringList *string_list)
 	return copy;
 }
 
+/**
+ * nautilus_string_list_get_index_for_string:
+ *
+ * @string_list: A NautilusStringList
+ * @string: The string to look for
+ *
+ * Return value: An int with the index of the given string or 
+ * NAUTILUS_STRING_LIST_NOT_FOUND if the string aint found.
+ */
+int
+nautilus_string_list_get_index_for_string (const NautilusStringList	*string_list,
+					   const char			*string)
+{
+	gint	n = 0;
+	GList	*iterator;
+
+	g_return_val_if_fail (string_list != NULL, NAUTILUS_STRING_LIST_NOT_FOUND);
+	g_return_val_if_fail (string != NULL, NAUTILUS_STRING_LIST_NOT_FOUND);
+
+	for (iterator = string_list->strings; iterator != NULL; iterator = iterator->next) {
+		const char *current = (const char *) iterator->data;
+		
+		g_assert (current != NULL);
+
+		if (strcmp (current, string) == 0) {
+			return n;
+		}
+
+		n++;
+	}
+
+	return NAUTILUS_STRING_LIST_NOT_FOUND;
+}
+
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
@@ -400,6 +434,36 @@ nautilus_self_check_string_list (void)
 
 		nautilus_g_list_free_deep (glist);
 	}
+	
+	/*
+	 * nautilus_string_list_get_index_for_string
+	 *
+	 */
+
+	{
+		NautilusStringList *fruits;
+
+		fruits = nautilus_string_list_new ();
+		
+		nautilus_string_list_insert (fruits, "orange");
+		nautilus_string_list_insert (fruits, "apple");
+		nautilus_string_list_insert (fruits, "strawberry");
+		nautilus_string_list_insert (fruits, "cherry");
+		nautilus_string_list_insert (fruits, "bananna");
+		nautilus_string_list_insert (fruits, "watermelon");
+
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_index_for_string (fruits, "orange"), 0);
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_index_for_string (fruits, "apple"), 1);
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_index_for_string (fruits, "strawberry"), 2);
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_index_for_string (fruits, "cherry"), 3);
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_index_for_string (fruits, "bananna"), 4);
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_index_for_string (fruits, "watermelon"), 5);
+
+		NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_index_for_string (fruits, "papaya"), NAUTILUS_STRING_LIST_NOT_FOUND);
+
+		nautilus_string_list_free (fruits);
+	}
+
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

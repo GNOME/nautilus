@@ -27,6 +27,8 @@
 
 #include <glib.h>
 
+#define NAUTILUS_STRING_LIST_NOT_FOUND -1
+
 /* Opaque type declaration. */
 typedef struct _NautilusStringList NautilusStringList;
 
@@ -61,6 +63,10 @@ gboolean            nautilus_string_list_contains             (const NautilusStr
 							       const char               *string);
 /* How many strings are currently in the collection ? */
 guint               nautilus_string_list_get_length           (const NautilusStringList *string_list);
+
+/* Get the index for the given string.  Return NAUTILUS_STRING_LIST_NOT_FOUND if not found. */
+gint                nautilus_string_list_get_index_for_string (const NautilusStringList *string_list,
+							       const char		*string);
 
 /* Does the string list a equal string list b ? */
 gboolean            nautilus_string_list_equals               (const NautilusStringList *a,
