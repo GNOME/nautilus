@@ -381,7 +381,7 @@ nautilus_gdk_pixbuf_render_to_pixbuf_tiled (GdkPixbuf *source_pixbuf,
 void 
 nautilus_gdk_pixbuf_average_value (GdkPixbuf *pixbuf, GdkColor *color)
 {
-	int red_total, green_total, blue_total, count;
+	uint red_total, green_total, blue_total, count;
 	int row, column;
 	int width, height;
 	int row_stride;
@@ -402,7 +402,7 @@ nautilus_gdk_pixbuf_average_value (GdkPixbuf *pixbuf, GdkColor *color)
 	original_pixels = gdk_pixbuf_get_pixels (pixbuf);
 
 	for (row = 0; row < height; row++) {
-		pixsrc = original_pixels + row * row_stride;
+		pixsrc = original_pixels + (row * row_stride);
 		for (column = 0; column < width; column++) {
 			red_total += *pixsrc++;
 			green_total += *pixsrc++;

@@ -1,3 +1,12 @@
+2000-10-03  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_average_value):
+	fixed bug where there was an overflow computing the average
+	pixel value for large enough tiles; it manifested by choosing the
+	wrong color text over certain backgrounds like clouds; fixed by 
+	using uints for the accumulators instead of ints.
+	
 2000-10-03  Mathieu Lacage  <mathieu@eazel.com>
 
 	* libnautilus-extensions/nautilus-gtk-extensions.c:
