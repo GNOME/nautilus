@@ -1,3 +1,19 @@
+2000-09-27  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1010 (delay between when an item gets selected
+	and revealed).
+
+	The delay was there for two reasons, one of which was a mistaken
+	accident of history. Reduced the delay from 300ms to 10ms in icon
+	view, and to 0ms in list view. Couldn't reduce the icon view delay
+	to 0ms due to problems with the scroll/redraw being unable to keep
+	up with holding the arrow key down. The current settings seem to
+	work well in both views, though it would be worthwhile to verify
+	this on a maximally-slow target machine.
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	* libnautilus-extensions/nautilus-list.c:
+
 2000-09-27  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-theme-selector.c:

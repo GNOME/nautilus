@@ -52,17 +52,17 @@
 /* Interval for updating the rubberband selection, in milliseconds.  */
 #define RUBBERBAND_TIMEOUT_INTERVAL 10
 
-/* Internal double click time contant */
+/* Internal double click time constant */
 #define DOUBLE_CLICK_TIME 500000
 
 /* Initial unpositioned icon value */
 #define ICON_UNPOSITIONED_VALUE -1
 
-/* Timeout for making the icon currently selected for keyboard operation visible. */
-/* FIXME bugzilla.eazel.com 611: This *must* be higher than the double-click 
- * time in GDK, but there is no way to access its value from outside.
+/* Timeout for making the icon currently selected for keyboard operation visible.
+ * If this is 0, you can get into trouble with extra scrolling after holding
+ * down the arrow key for awhile when there are many items.
  */
-#define KEYBOARD_ICON_REVEAL_TIMEOUT 300
+#define KEYBOARD_ICON_REVEAL_TIMEOUT 10
 
 #define CONTEXT_MENU_TIMEOUT_INTERVAL 500
 

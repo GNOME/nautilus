@@ -48,12 +48,11 @@
 #include "nautilus-gtk-macros.h"
 #include "nautilus-list-column-title.h"
 
-/* Timeout for making the row currently selected for keyboard operation visible. */
-/* FIXME bugzilla.eazel.com 611: 
- * This *must* be higher than the double-click time in GDK,
- * but there is no way to access its value from outside.
+/* Timeout for making the row currently selected for keyboard operation visible.
+ * Unlike in nautilus-icon-container, there appear to be no adverse effects from
+ * making this 0.
  */
-#define KEYBOARD_ROW_REVEAL_TIMEOUT 300
+#define KEYBOARD_ROW_REVEAL_TIMEOUT 0
 
 /* FIXME bugzilla.eazel.com 2573: This constant and much of the code surrounding its use was copied from
  * nautilus-icon-container; they should share code instead.
