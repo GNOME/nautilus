@@ -29,20 +29,15 @@
 #include "nautilus-theme-selector.h"
 
 #include <eel/eel-art-gtk-extensions.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <eel/eel-image-chooser.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <gtk/gtkalignment.h>
-#include <gtk/gtkbutton.h>
 #include <gtk/gtkfilesel.h>
 #include <gtk/gtkhbox.h>
-#include <gtk/gtkmain.h>
 #include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnome/gnome-util.h>
+#include <libgnome/gnome-macros.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-theme.h>
 
@@ -64,63 +59,22 @@ struct NautilusThemeSelectorDetails
 	GtkWindow *parent_window;
 };
 
-/* Signals */
-typedef enum
+enum
 {
 	THEME_CHANGED,
 	LAST_SIGNAL
-} ThemeSelectorSignals;
+};
 
 static guint theme_selector_signals[LAST_SIGNAL];
 
-/* GtkObjectClass methods */
-static void     nautilus_theme_selector_class_init              (NautilusThemeSelectorClass  *theme_selector_class);
-static void     nautilus_theme_selector_init                    (NautilusThemeSelector       *theme_selector);
-static void     theme_selector_finalize                               (GObject                     *object);
+static void theme_selector_populate_list                          (EelImageChooser       *image_chooser,
+								   GtkWidget             *scrolled_window,
+								   gboolean               include_builtin);
+static void theme_selector_update_remove_theme_button             (NautilusThemeSelector *theme_selector);
+static void theme_selector_update_selected_theme_from_preferences (NautilusThemeSelector *theme_selector);
 
-/* Private stuff */
-static void     theme_selector_populate_list                          (EelImageChooser             *image_chooser,
-								       GtkWidget                   *scrolled_window,
-								       gboolean                     include_builtin);
-static void     theme_selector_changed_callback                       (EelImageChooser             *image_chooser,
-								       gpointer                     callback_data);
-static void     remove_theme_selector_changed_callback                (EelImageChooser             *image_chooser,
-								       gpointer                     callback_data);
-static void     install_theme_button_clicked_callback                 (GtkWidget                   *button,
-								       gpointer                     callback_data);
-static void     remove_theme_button_clicked_callback                  (GtkWidget                   *button,
-								       gpointer                     callback_data);
-static void     cancel_remove_button_clicked_callback                 (GtkWidget                   *button,
-								       gpointer                     callback_data);
-static gboolean theme_selector_has_user_themes                        (const NautilusThemeSelector *theme_selector);
-static void     theme_selector_update_remove_theme_button             (NautilusThemeSelector       *theme_selector);
-static void     theme_selector_update_selected_theme_from_preferences (NautilusThemeSelector       *theme_selector);
-static void     theme_selector_update_help_label                      (NautilusThemeSelector       *theme_selector,
-								       gboolean                     removing);
-	
-EEL_CLASS_BOILERPLATE (NautilusThemeSelector, nautilus_theme_selector, GTK_TYPE_VBOX)
-
-/* NautilusThemeSelectorClass methods */
-static void
-nautilus_theme_selector_class_init (NautilusThemeSelectorClass *theme_selector_class)
-{
-	GObjectClass *object_class;
-
-	object_class = G_OBJECT_CLASS (theme_selector_class);
-
-	/* GObjectClass */
-	object_class->finalize = theme_selector_finalize;
-
-	/* Signals */
-	theme_selector_signals[THEME_CHANGED] = g_signal_new
-		("theme_changed",
-		 G_TYPE_FROM_CLASS (object_class),
-		 G_SIGNAL_RUN_LAST,
-		 0,
-		 NULL, NULL,
-		 g_cclosure_marshal_VOID__STRING,
-		 G_TYPE_NONE, 1, G_TYPE_STRING);
-}
+GNOME_CLASS_BOILERPLATE (NautilusThemeSelector, nautilus_theme_selector,
+			 GtkVBox, GTK_TYPE_VBOX)
 
 static void
 make_widgets_same_size (GtkWidget *one, GtkWidget *two)
@@ -141,94 +95,6 @@ make_widgets_same_size (GtkWidget *one, GtkWidget *two)
 	gtk_widget_set_size_request (two,
 				     MAX (one_dimensions.width, two_dimensions.width),
 				     MAX (one_dimensions.height, two_dimensions.height));
-}
-
-static void
-nautilus_theme_selector_init (NautilusThemeSelector *theme_selector)
-{
-	GtkWidget *button_box;
-	GtkWidget *alignment_box;
-
-	theme_selector->details = g_new0 (NautilusThemeSelectorDetails, 1);
-	
-	theme_selector->details->help_label = gtk_label_new ("");
-
-	gtk_label_set_justify (GTK_LABEL (theme_selector->details->help_label),
-			       GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment (GTK_MISC (theme_selector->details->help_label), 0.0, 1.0);
-
-	theme_selector_update_help_label (theme_selector, FALSE);
-
- 	theme_selector->details->scrolled_window = 
-		eel_scrolled_image_chooser_new ((GtkWidget**) &theme_selector->details->theme_selector);
-
- 	theme_selector->details->remove_scrolled_window = 
-		eel_scrolled_image_chooser_new ((GtkWidget**) &theme_selector->details->remove_theme_selector);
-
- 	alignment_box = gtk_hbox_new (FALSE, 4);
-	button_box = gtk_hbox_new (TRUE, 2);
-	
-	gtk_box_pack_start (GTK_BOX (theme_selector), theme_selector->details->help_label, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (theme_selector), theme_selector->details->scrolled_window, TRUE, TRUE, 4);
-	gtk_box_pack_start (GTK_BOX (theme_selector), theme_selector->details->remove_scrolled_window, TRUE, TRUE, 2);
-	gtk_box_pack_start (GTK_BOX (theme_selector), alignment_box, FALSE, TRUE, 2);
-
-	gtk_box_pack_end (GTK_BOX (alignment_box), button_box, FALSE, FALSE, 2);
-
-	theme_selector->details->install_theme_button = gtk_button_new_with_label (_("Add New Theme..."));
-	g_signal_connect (theme_selector->details->install_theme_button,
-			    "clicked",
-			    G_CALLBACK (install_theme_button_clicked_callback),
-			    theme_selector);
-
-	theme_selector->details->remove_theme_button = gtk_button_new_with_label (_("Remove Theme..."));
-	g_signal_connect (theme_selector->details->remove_theme_button,
-			    "clicked",
-			    G_CALLBACK (remove_theme_button_clicked_callback),
-			    theme_selector);
-
-	theme_selector->details->cancel_remove_button = gtk_button_new_with_label (_("Cancel Remove"));
-	g_signal_connect (theme_selector->details->cancel_remove_button,
-			    "clicked",
-			    G_CALLBACK (cancel_remove_button_clicked_callback),
-			    theme_selector);
-
-	gtk_box_pack_start (GTK_BOX (button_box), theme_selector->details->cancel_remove_button, TRUE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (button_box), theme_selector->details->install_theme_button, TRUE, FALSE, 4);
-	gtk_box_pack_start (GTK_BOX (button_box), theme_selector->details->remove_theme_button, TRUE, FALSE, 4);
-
-	make_widgets_same_size (theme_selector->details->install_theme_button,
-				theme_selector->details->remove_theme_button);
-	
-	theme_selector_populate_list (theme_selector->details->theme_selector,
-				      theme_selector->details->scrolled_window,
-				      TRUE);
-	theme_selector_update_selected_theme_from_preferences (theme_selector);
-
-	theme_selector_populate_list (theme_selector->details->remove_theme_selector,
-				      theme_selector->details->remove_scrolled_window,
-				      FALSE);
-
-	gtk_widget_show (theme_selector->details->help_label);
-	gtk_widget_show_all (theme_selector->details->scrolled_window);
-	gtk_widget_show_all (theme_selector->details->remove_scrolled_window);
- 	gtk_widget_show_all (alignment_box);
-
-	gtk_widget_hide (theme_selector->details->remove_scrolled_window);
-	gtk_widget_hide (theme_selector->details->cancel_remove_button);
-
-	theme_selector_update_remove_theme_button (theme_selector);
-
-	g_signal_connect (theme_selector->details->theme_selector,
-			    "selection_changed",
-			    G_CALLBACK (theme_selector_changed_callback),
-			    theme_selector);
-
-	theme_selector->details->theme_selector_changed_connection =
-		g_signal_connect (theme_selector->details->remove_theme_selector,
-				    "selection_changed",
-				    G_CALLBACK (remove_theme_selector_changed_callback),
-				    theme_selector);
 }
 
 static void
@@ -527,8 +393,7 @@ theme_selector_finalize (GObject *object)
 
 	g_free (theme_selector->details);
 
-	/* Chain finalize */
-	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 /* Private stuff */
@@ -634,7 +499,7 @@ nautilus_theme_selector_get_selected_theme (const NautilusThemeSelector *theme_s
 
 void
 nautilus_theme_selector_set_selected_theme (NautilusThemeSelector *theme_selector,
-					    char *new_theme_name)
+					    const char *new_theme_name)
 {
 	guint i;
 	const char *theme_name;
@@ -648,7 +513,7 @@ nautilus_theme_selector_set_selected_theme (NautilusThemeSelector *theme_selecto
 			eel_image_chooser_set_selected_row (theme_selector->details->theme_selector, i);
 			eel_scrolled_image_chooser_show_selected_row (theme_selector->details->theme_selector,
 								      theme_selector->details->scrolled_window);
-			return;
+			break;
 		}
 	}
 }
@@ -661,4 +526,109 @@ nautilus_theme_selector_set_parent_window (NautilusThemeSelector *theme_selector
 	g_return_if_fail (GTK_IS_WINDOW (parent_window));
 
 	theme_selector->details->parent_window = parent_window;
+}
+
+
+static void
+nautilus_theme_selector_instance_init (NautilusThemeSelector *theme_selector)
+{
+	GtkWidget *button_box;
+	GtkWidget *alignment_box;
+
+	theme_selector->details = g_new0 (NautilusThemeSelectorDetails, 1);
+	
+	theme_selector->details->help_label = gtk_label_new ("");
+
+	gtk_label_set_justify (GTK_LABEL (theme_selector->details->help_label),
+			       GTK_JUSTIFY_LEFT);
+	gtk_misc_set_alignment (GTK_MISC (theme_selector->details->help_label), 0.0, 1.0);
+
+	theme_selector_update_help_label (theme_selector, FALSE);
+
+ 	theme_selector->details->scrolled_window = 
+		eel_scrolled_image_chooser_new ((GtkWidget**) &theme_selector->details->theme_selector);
+
+ 	theme_selector->details->remove_scrolled_window = 
+		eel_scrolled_image_chooser_new ((GtkWidget**) &theme_selector->details->remove_theme_selector);
+
+ 	alignment_box = gtk_hbox_new (FALSE, 4);
+	button_box = gtk_hbox_new (TRUE, 2);
+	
+	gtk_box_pack_start (GTK_BOX (theme_selector), theme_selector->details->help_label, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (theme_selector), theme_selector->details->scrolled_window, TRUE, TRUE, 4);
+	gtk_box_pack_start (GTK_BOX (theme_selector), theme_selector->details->remove_scrolled_window, TRUE, TRUE, 2);
+	gtk_box_pack_start (GTK_BOX (theme_selector), alignment_box, FALSE, TRUE, 2);
+
+	gtk_box_pack_end (GTK_BOX (alignment_box), button_box, FALSE, FALSE, 2);
+
+	theme_selector->details->install_theme_button = gtk_button_new_with_label (_("Add New Theme..."));
+	g_signal_connect (theme_selector->details->install_theme_button,
+			    "clicked",
+			    G_CALLBACK (install_theme_button_clicked_callback),
+			    theme_selector);
+
+	theme_selector->details->remove_theme_button = gtk_button_new_with_label (_("Remove Theme..."));
+	g_signal_connect (theme_selector->details->remove_theme_button,
+			    "clicked",
+			    G_CALLBACK (remove_theme_button_clicked_callback),
+			    theme_selector);
+
+	theme_selector->details->cancel_remove_button = gtk_button_new_with_label (_("Cancel Remove"));
+	g_signal_connect (theme_selector->details->cancel_remove_button,
+			    "clicked",
+			    G_CALLBACK (cancel_remove_button_clicked_callback),
+			    theme_selector);
+
+	gtk_box_pack_start (GTK_BOX (button_box), theme_selector->details->cancel_remove_button, TRUE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (button_box), theme_selector->details->install_theme_button, TRUE, FALSE, 4);
+	gtk_box_pack_start (GTK_BOX (button_box), theme_selector->details->remove_theme_button, TRUE, FALSE, 4);
+
+	make_widgets_same_size (theme_selector->details->install_theme_button,
+				theme_selector->details->remove_theme_button);
+	
+	theme_selector_populate_list (theme_selector->details->theme_selector,
+				      theme_selector->details->scrolled_window,
+				      TRUE);
+	theme_selector_update_selected_theme_from_preferences (theme_selector);
+
+	theme_selector_populate_list (theme_selector->details->remove_theme_selector,
+				      theme_selector->details->remove_scrolled_window,
+				      FALSE);
+
+	gtk_widget_show (theme_selector->details->help_label);
+	gtk_widget_show_all (theme_selector->details->scrolled_window);
+	gtk_widget_show_all (theme_selector->details->remove_scrolled_window);
+ 	gtk_widget_show_all (alignment_box);
+
+	gtk_widget_hide (theme_selector->details->remove_scrolled_window);
+	gtk_widget_hide (theme_selector->details->cancel_remove_button);
+
+	theme_selector_update_remove_theme_button (theme_selector);
+
+	g_signal_connect (theme_selector->details->theme_selector,
+			    "selection_changed",
+			    G_CALLBACK (theme_selector_changed_callback),
+			    theme_selector);
+
+	theme_selector->details->theme_selector_changed_connection =
+		g_signal_connect (theme_selector->details->remove_theme_selector,
+				    "selection_changed",
+				    G_CALLBACK (remove_theme_selector_changed_callback),
+				    theme_selector);
+}
+
+static void
+nautilus_theme_selector_class_init (NautilusThemeSelectorClass *class)
+{
+	G_OBJECT_CLASS (class)->finalize = theme_selector_finalize;
+
+	/* Signals */
+	theme_selector_signals[THEME_CHANGED] = g_signal_new
+		("theme_changed",
+		 G_TYPE_FROM_CLASS (class),
+		 G_SIGNAL_RUN_LAST,
+		 0,
+		 NULL, NULL,
+		 g_cclosure_marshal_VOID__STRING,
+		 G_TYPE_NONE, 1, G_TYPE_STRING);
 }

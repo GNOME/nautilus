@@ -593,9 +593,22 @@ pixbuf_composite (GdkPixbuf *source, GdkPixbuf *destination, int x_offset, int y
 			      float_x_offset, float_y_offset, 1.0, 1.0, GDK_PIXBUF_ALPHA_BILEVEL, alpha);
 }
 
+static PangoLayout *
+make_tab_text_layout (NautilusSidebarTabs *sidebar_tabs,
+		      const char *tab_name)
+{
+	PangoLayout *layout;
+
+	layout = pango_layout_new (eel_gtk_widget_get_pango_ft2_context (GTK_WIDGET (sidebar_tabs)));
+	pango_layout_set_text (layout, tab_name, -1);
+	pango_layout_set_font_description (layout, sidebar_tabs->details->tab_font);
+	
+	return layout;
+}
+
 /* draw a single tab using the default, non-themed approach */
 static int
-draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc, char *tab_name,
+draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc, const char *tab_name,
 		    GdkPixbuf *indicator_pixbuf, int x, int y, gboolean prelight_flag, GdkRectangle *tab_rect)
 {  
 	int tab_bottom;
@@ -616,10 +629,7 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc, char *tab_name
 		indicator_width = 0;
 	}
 
-	layout = pango_layout_new (eel_gtk_widget_get_pango_ft2_context (GTK_WIDGET (sidebar_tabs)));
-	pango_layout_set_text (layout, tab_name, -1);
-	pango_layout_set_font_description (layout, sidebar_tabs->details->tab_font);
-	
+	layout = make_tab_text_layout (sidebar_tabs, tab_name);
 	pango_layout_get_pixel_size (layout, &text_width, &text_height);
 
 	total_width = text_width + indicator_width + 2 * TAB_MARGIN;
@@ -763,7 +773,7 @@ draw_tab_piece_aa (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *dest_pixbuf, in
    to do it properly at this time.  We draw into an offscreen pixbuf so we can get nice anti-aliased text */
 static int
 draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf, GdkPixbuf *indicator_pixbuf,
-		     char *tab_name, int x, int y, gboolean prelight_flag, 
+		     const char *tab_name, int x, int y, gboolean prelight_flag, 
 		     gboolean first_flag, gboolean prev_invisible, int text_h_offset,
 		     GdkRectangle *tab_rect)
 {  
@@ -795,10 +805,7 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf, G
 	}
 	
 	/* measure the size of the name */
-	layout = pango_layout_new (eel_gtk_widget_get_pango_ft2_context (GTK_WIDGET (sidebar_tabs)));
-	pango_layout_set_text (layout, tab_name, -1);
-	pango_layout_set_font_description (layout, sidebar_tabs->details->tab_font);
-	
+	layout = make_tab_text_layout (sidebar_tabs, tab_name);
 	pango_layout_get_pixel_size (layout, &text_width, NULL);
 
 	/* draw the left edge piece */
@@ -896,8 +903,7 @@ get_tab_width (NautilusSidebarTabs *sidebar_tabs, TabItem *this_tab, gboolean is
 	} else {	
 		edge_width = 2 * TAB_MARGIN;
 	}
-	layout = pango_layout_new (eel_gtk_widget_get_pango_ft2_context (GTK_WIDGET (sidebar_tabs)));
-	pango_layout_set_text (layout, this_tab->tab_text, -1);
+	layout = make_tab_text_layout (sidebar_tabs, this_tab->tab_text);
 	pango_layout_get_pixel_size (layout, &text_width, NULL);
 	g_object_unref (layout);
 

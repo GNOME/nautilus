@@ -1,3 +1,14 @@
+2002-02-27  Darin Adler  <darin@bentspoon.com>
+
+	* src/nautilus-sidebar-tabs.c: (make_tab_text_layout): New
+	(draw_one_tab_plain), (draw_one_tab_themed), (get_tab_width):
+	Use common function to create PangoLayout so we don't forget
+	anything. The old code forgot to set the font description in
+	one case, leading to wrong-looking sidebar tabs.
+	
+	* src/nautilus-theme-selector.h:
+	* src/nautilus-theme-selector.c: Minor cleanup.
+
 2002-02-25  Dave Camp  <dave@ximian.com>
 
 	* components/news/nautilus-news-pixmaps.h: Removed.

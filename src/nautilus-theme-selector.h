@@ -58,7 +58,8 @@ GtkType    nautilus_theme_selector_get_type           (void);
 GtkWidget *nautilus_theme_selector_new                (void);
 char *     nautilus_theme_selector_get_selected_theme (const NautilusThemeSelector *theme_selector);
 void       nautilus_theme_selector_set_selected_theme (NautilusThemeSelector       *theme_selector,
-						       char                        *theme_name);
+						       const char                  *theme_name);
+
 /* Parent window for transient dialogs (file selector and error dialogs) */
 void       nautilus_theme_selector_set_parent_window  (NautilusThemeSelector       *theme_selector,
 						       GtkWindow                   *parent_window);
