@@ -41,6 +41,7 @@
 #include <libgnome/gnome-config.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libbackground/preferences.h>
 
 static void background_changed_callback     (EelBackground *background, 
                                              NautilusFile       *file);
@@ -50,7 +51,7 @@ static void background_reset_callback       (EelBackground *background,
 static void saved_settings_changed_callback (NautilusFile       *file, 
                                              EelBackground *background);
                                          
-static void nautilus_file_background_receive_root_window_changes (EelBackground *background);
+static void nautilus_file_background_receive_gconf_changes (EelBackground *background);
 
 static void nautilus_file_update_desktop_pixmaps (EelBackground *background);
 
@@ -112,7 +113,7 @@ nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *ico
 		g_signal_connect (icon_container, "realize", G_CALLBACK (desktop_background_realized), GINT_TO_POINTER (TRUE));
 	}
 
-	nautilus_file_background_receive_root_window_changes (background); 
+	nautilus_file_background_receive_gconf_changes (background); 
 }
 
 static gboolean
@@ -207,52 +208,29 @@ nautilus_file_background_get_default_settings (const char* theme_source,
 	g_free (theme_name);
 }
 
-static gboolean
-eel_gnome_config_string_match_no_case_with_default (const char *path, const char *test_value, gboolean *was_default)
-{
-	char *value;
-	gboolean result;
-	value = gnome_config_get_string_with_default (path, was_default);
-	result = !eel_strcasecmp (value, test_value);
-	g_free (value);
-	return result;
-}
-
-/* This enum is from gnome-source/control-center/capplets/background-properties/render-background.h */
-enum {
-	WALLPAPER_TILED,
-	WALLPAPER_CENTERED,
-	WALLPAPER_SCALED,
-	WALLPAPER_SCALED_KEEP,
-	WALLPAPER_EMBOSSED
-};
-
 static void
 nautilus_file_background_read_desktop_settings (char **color,
                                                 char **image,
                                                 EelBackgroundImagePlacement *placement)
 {
-	int	 image_alignment;
-	char*	 image_local_path;
 	char*	 default_image_uri;
-	gboolean no_alignment_set;
-	gboolean no_image_set;
 	EelBackgroundImagePlacement default_placement;
 	
+	char    *cur_theme_name;
 	char	*end_color;
 	char	*start_color;
 	char	*default_color;
 	gboolean use_gradient;
 	gboolean is_horizontal;
-	gboolean no_start_color_set;
-	gboolean no_end_color_set;
-	gboolean no_gradient_set;
-	gboolean no_gradient_orientation_set;
+	gboolean switch_to_cur_theme_default;
 
 	char *theme_name;
-	char *cur_theme_name;
 	gboolean no_theme_name_set;
-	gboolean switch_to_cur_theme_default;
+	BGPreferences *prefs;
+
+        prefs = BG_PREFERENCES (bg_preferences_new ());
+
+	bg_preferences_load (prefs);
 
 	theme_name = gnome_config_get_string_with_default ("/Background/Default/nautilus_theme", &no_theme_name_set);
 
@@ -264,64 +242,51 @@ nautilus_file_background_read_desktop_settings (char **color,
 			(theme_name, desktop_theme_source, &default_color, &default_image_uri, &default_placement);
 	}
 
-	image_local_path = gnome_config_get_string_with_default ("/Background/Default/wallpaper", &no_image_set);
-
-	if (no_image_set) {
-		*image = g_strdup (default_image_uri);
-	} else if (eel_strcasecmp (image_local_path, "none") != 0) {
-		*image = gnome_vfs_get_uri_from_local_path (image_local_path);
-	} else {
+        if (prefs->wallpaper_enabled) {
+                if (prefs->wallpaper_filename != NULL) {
+                        *image = gnome_vfs_get_uri_from_local_path (prefs->wallpaper_filename);
+                } else {
+                        *image = g_strdup (default_image_uri);
+                }
+	}
+        else {
 		*image = NULL;
 	}
 	
-	g_free(image_local_path);
+        switch (prefs->wallpaper_type) {
+        default:
+                g_assert_not_reached ();
+        case WPTYPE_EMBOSSED:
+                /* FIXME bugzilla.gnome.org 42193: we don't support embossing.
+                 * Just treat it as centered - ugh.
+                 */
+        case WPTYPE_CENTERED:
+                *placement = EEL_BACKGROUND_CENTERED;
+                break;
+        case WPTYPE_TILED:
+                *placement = EEL_BACKGROUND_TILED;
+                break;
+        case WPTYPE_STRETCHED:
+                *placement = EEL_BACKGROUND_SCALED;
+                break;
+        case WPTYPE_SCALED:
+                *placement = EEL_BACKGROUND_SCALED_ASPECT;
+                break;
+        }
+	
+        end_color     = eel_gdk_rgb_to_color_spec (eel_gdk_color_to_rgb (prefs->color2));
+	start_color   = eel_gdk_rgb_to_color_spec (eel_gdk_color_to_rgb (prefs->color1));
+	use_gradient  = prefs->gradient_enabled;
+	is_horizontal = (prefs->orientation == ORIENTATION_HORIZ);
 
-	image_alignment  = gnome_config_get_int_with_default ("/Background/Default/wallpaperAlign", &no_alignment_set);
-
-	if (no_alignment_set) {
-		*placement = default_placement;
-	} else {
-		 switch (image_alignment) {
-		 	default:
-		 		g_assert_not_reached ();
-			case WALLPAPER_EMBOSSED:
-				/* FIXME bugzilla.gnome.org 42193: we don't support embossing.
-				 * Just treat it as centered - ugh.
-				 */
-			case WALLPAPER_CENTERED:
-				*placement = EEL_BACKGROUND_CENTERED;
-				break;
-			case WALLPAPER_TILED:
-				*placement = EEL_BACKGROUND_TILED;
-				break;
-			case WALLPAPER_SCALED:
-				*placement = EEL_BACKGROUND_SCALED;
-				break;
-			case WALLPAPER_SCALED_KEEP:
-				*placement = EEL_BACKGROUND_SCALED_ASPECT;
-				break;
-		 }
-	}
-
-	end_color     = gnome_config_get_string_with_default ("/Background/Default/color2", &no_end_color_set);
-	start_color   = gnome_config_get_string_with_default ("/Background/Default/color1", &no_start_color_set);
-	use_gradient  = !eel_gnome_config_string_match_no_case_with_default ("/Background/Default/simple", "solid", &no_gradient_set);
-	is_horizontal = !eel_gnome_config_string_match_no_case_with_default ("/Background/Default/gradient", "vertical", &no_gradient_orientation_set);
-
-	if (no_gradient_set || no_gradient_orientation_set || no_start_color_set) {
-		*color = g_strdup (default_color);
-	} else if (use_gradient) {
-		if (no_end_color_set) {
-			*color = g_strdup (default_color);
-		} else {
-			*color = eel_gradient_new (start_color, end_color , is_horizontal);
-		}
+	if (use_gradient) {
+		*color = eel_gradient_new (start_color, end_color , is_horizontal);
 	} else {
 		*color = g_strdup (start_color);
 	}
 
-	g_free(start_color);
-	g_free(end_color);
+	g_free (start_color);
+	g_free (end_color);
 
 	/* Since we share our settings with the background-capplet, we can't
 	 * write the default values specially (e.g. by removing them entirely).
@@ -360,8 +325,10 @@ nautilus_file_background_read_desktop_settings (char **color,
 
 	g_free (theme_name);	
 	g_free (cur_theme_name);	
-	g_free(default_color);
-	g_free(default_image_uri);
+	g_free (default_color);
+	g_free (default_image_uri);
+
+	g_object_unref (G_OBJECT (prefs));
 }
 
 static void
@@ -369,87 +336,73 @@ nautilus_file_background_write_desktop_settings (char *color, char *image, EelBa
 {
 	char *end_color;
 	char *start_color;
-	char *image_local_path;
 	char *theme_name;
+	char *default_image_uri;
 
-	int wallpaper_align;
+	wallpaper_type_t wallpaper_align;
+	BGPreferences *prefs;
 
-	int i;
-	int wallpaper_count;
-	char *wallpaper_path_i;
-	char *wallpaper_config_path_i;
-	gboolean found_wallpaper;
+        prefs = BG_PREFERENCES (bg_preferences_new ());
+	bg_preferences_load (prefs);
 
 	if (color != NULL) {
 		start_color = eel_gradient_get_start_color_spec (color);
-		gnome_config_set_string ("/Background/Default/color1", start_color);		
+		gdk_color_parse (start_color, prefs->color1);
 		g_free (start_color);
 
 		/* if color is not a gradient, this ends up writing same as start_color */
 		end_color = eel_gradient_get_end_color_spec (color);
-		gnome_config_set_string ("/Background/Default/color2", end_color);		
+		gdk_color_parse (end_color, prefs->color2);
 		g_free (end_color);
 
-		gnome_config_set_string ("/Background/Default/simple", eel_gradient_is_gradient (color) ? "gradient" : "solid");
-		gnome_config_set_string ("/Background/Default/gradient", eel_gradient_is_horizontal (color) ? "horizontal" : "vertical");
+		if (eel_gradient_is_gradient (color)) {
+			prefs->gradient_enabled = TRUE;
+			prefs->orientation = eel_gradient_is_horizontal (color) ? ORIENTATION_HORIZ : ORIENTATION_VERT;
+		} else {
+			prefs->gradient_enabled = FALSE;
+			prefs->orientation = ORIENTATION_SOLID;
+		}
 	} else {
 		/* We set it to white here because that's how backgrounds with a NULL color
 		 * are drawn by Nautilus - due to usage of eel_gdk_color_parse_with_white_default.
 		 */
-		gnome_config_set_string ("/Background/Default/color1", "#FFFFFF");		
-		gnome_config_set_string ("/Background/Default/color2", "#FFFFFF");		
-		gnome_config_set_string ("/Background/Default/simple", "solid");
-		gnome_config_set_string ("/Background/Default/gradient", "vertical");
+		gdk_color_parse ("#FFFFFF", prefs->color1);
+		gdk_color_parse ("#FFFFFF", prefs->color2);
+		prefs->gradient_enabled = FALSE;
+		prefs->orientation = ORIENTATION_SOLID;
 	}
 
+	g_free (prefs->wallpaper_filename);
 	if (image != NULL) {
-		image_local_path = gnome_vfs_get_local_path_from_uri (image);
-		gnome_config_set_string ("/Background/Default/wallpaper", image_local_path);
+		prefs->wallpaper_filename = gnome_vfs_get_local_path_from_uri (image);
+                prefs->wallpaper_enabled = TRUE;
 		switch (placement) {
 			case EEL_BACKGROUND_TILED:
-				wallpaper_align = WALLPAPER_TILED;
+				wallpaper_align = WPTYPE_TILED;
 				break;	
 			case EEL_BACKGROUND_CENTERED:
-				wallpaper_align = WALLPAPER_CENTERED;
+				wallpaper_align = WPTYPE_CENTERED;
 				break;	
 			case EEL_BACKGROUND_SCALED:
-				wallpaper_align = WALLPAPER_SCALED;
+				wallpaper_align = WPTYPE_STRETCHED;
 				break;	
 			case EEL_BACKGROUND_SCALED_ASPECT:
-				wallpaper_align = WALLPAPER_SCALED_KEEP;
+				wallpaper_align = WPTYPE_SCALED;
 				break;
 			default:
 				g_assert_not_reached ();
-				wallpaper_align = WALLPAPER_TILED;
+				wallpaper_align = WPTYPE_TILED;
 				break;	
 		}
-		
-		gnome_config_set_int ("/Background/Default/wallpaperAlign", wallpaper_align);
-
-		wallpaper_count = gnome_config_get_int ("/Background/Default/wallpapers=0");
-		found_wallpaper = FALSE;
-		for (i = 1; i <= wallpaper_count && !found_wallpaper; ++i) {
-			wallpaper_config_path_i = g_strdup_printf ("/Background/Default/wallpaper%d", i);
-			wallpaper_path_i = gnome_config_get_string (wallpaper_config_path_i);
-			g_free (wallpaper_config_path_i);
-			if (eel_strcmp (wallpaper_path_i, image_local_path) == 0) {
-				found_wallpaper = TRUE;
-			}
-			
-			g_free (wallpaper_path_i);			
-		}
-
-		if (!found_wallpaper) {
-			gnome_config_set_int ("/Background/Default/wallpapers", wallpaper_count + 1);
-			gnome_config_set_string ("/Background/Default/wallpapers_dir", image_local_path);
-			wallpaper_config_path_i = g_strdup_printf ("/Background/Default/wallpaper%d", wallpaper_count + 1);
-			gnome_config_set_string (wallpaper_config_path_i, image_local_path);
-			g_free (wallpaper_config_path_i);
-		}
-		
-		g_free (image_local_path);		
+	
+		prefs->wallpaper_type = wallpaper_align;
 	} else {
-		gnome_config_set_string ("/Background/Default/wallpaper", "none");
+                prefs->wallpaper_enabled = FALSE;
+                /* Need to set something, or libbackground will barf */
+                nautilus_file_background_get_default_settings
+			(desktop_theme_source, NULL, &default_image_uri, NULL);
+		prefs->wallpaper_filename = gnome_vfs_get_local_path_from_uri (default_image_uri);
+                g_free (default_image_uri);
 	}
 
 	theme_name = nautilus_theme_get_theme ();
@@ -457,6 +410,9 @@ nautilus_file_background_write_desktop_settings (char *color, char *image, EelBa
 	g_free (theme_name);
 
 	gnome_config_sync ();
+
+	bg_preferences_save (prefs);
+	g_object_unref (G_OBJECT (prefs));
 }
 
 static void
@@ -480,71 +436,31 @@ call_settings_changed (EelBackground *background)
 	return FALSE;
 }
 
-/* We don't want to respond to our own changes to the root pixmap.
- * Since there's no way to determine the origin of the x-event (or mark it)
- * we use this variable determine if we think the next PropertyNotify is
- * due to us.
- */
-static int set_root_pixmap_count = 0;
-
-static GdkFilterReturn
-nautilus_file_background_event_filter (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
-{
-	XEvent *xevent;
-	EelBackground *background;
-
-	xevent = (XEvent *) gdk_xevent;
-
-	if (xevent->type == PropertyNotify && xevent->xproperty.atom == gdk_x11_get_xatom_by_name ("ESETROOT_PMAP_ID")) {
-
-		/* If we caused it, ignore it.
-		 */
-		if (set_root_pixmap_count > 0) {
-			--set_root_pixmap_count;
-			return GDK_FILTER_CONTINUE;
-		}
-		
-	    	background = EEL_BACKGROUND (data);
-	    	/* FIXME bugzilla.gnome.org 42220:
-	    	 * We'd like to call saved_settings_changed_callback right here, directly.
-	    	 * However, the current version of the property-background capplet saves
-	    	 * the new setting in gnome_config AFTER setting the root window's property -
-	    	 * i.e. after we get this event. How long afterwards is not knowable - we
-	    	 * guess half a second. Fixing this requires changing the capplet.
-	    	 */
-	    	gtk_timeout_add (500, (GtkFunction) (call_settings_changed), background);
-	}
-
-	return GDK_FILTER_CONTINUE;
-}
-
 static void
 desktop_background_destroyed_callback (EelBackground *background, void *georgeWBush)
 {
-	gdk_window_remove_filter (
-                gdk_get_default_root_window (),
-                nautilus_file_background_event_filter, background);
+	guint notification_id;
+
+        notification_id = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (background), "desktop_gconf_notification"));
+	eel_gconf_notification_remove (notification_id);
 }
 
 static void
-nautilus_file_background_receive_root_window_changes (EelBackground *background)
+desktop_background_gconf_notify_cb (GConfClient *client, guint notification_id, GConfEntry *entry, gpointer data)
 {
-	XWindowAttributes attribs = { 0 };
+	call_settings_changed (EEL_BACKGROUND (data));
+}
 
-	/* set up a filter on the root window to get notified about property changes */
-	gdk_window_add_filter (
-                gdk_get_default_root_window (),
-                nautilus_file_background_event_filter, background);
+static void
+nautilus_file_background_receive_gconf_changes (EelBackground *background)
+{
+	guint notification_id;
 
-	gdk_error_trap_push ();
+        eel_gconf_monitor_add ("/desktop/gnome/background");
+        notification_id = eel_gconf_notification_add ("/desktop/gnome/background", desktop_background_gconf_notify_cb, background);
 
-	/* select events, we need to trap the kde status thingies anyway */
-	XGetWindowAttributes (GDK_DISPLAY (), GDK_ROOT_WINDOW (), &attribs);
-	XSelectInput (GDK_DISPLAY (), GDK_ROOT_WINDOW (), attribs.your_event_mask | PropertyChangeMask);
-	
-	gdk_flush ();
-	gdk_error_trap_pop ();
-
+	g_object_set_data (G_OBJECT (background), "desktop_gconf_notification", GUINT_TO_POINTER (notification_id));
+			
 	g_signal_connect (background,
  			    "destroy",
 			    G_CALLBACK (desktop_background_destroyed_callback),
@@ -615,8 +531,6 @@ set_root_pixmap (GdkPixmap *pixmap)
 		XFree (data_esetroot);
 	}
 
-	++set_root_pixmap_count;
-	
 	pixmap_id = GDK_WINDOW_XWINDOW (pixmap);
 
 	XChangeProperty (GDK_DISPLAY(), GDK_ROOT_WINDOW(),

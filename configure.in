@@ -62,7 +62,6 @@ PKG_CHECK_MODULES(ALL, \
 	libgnomeui-2.0 >= $GNOME_UI_REQUIRED \
 	librsvg-2.0 >= $RSVG_REQUIRED \
 	libxml-2.0 >= $XML_REQUIRED)
-
 dnl ==========================================================================
 
 ALL_LINGUAS="az ca cs da de el en_GB es fi fr ga gl hu it ja ko lt lv nl nn no pl pt pt_BR ro ru sk sl sv ta tr uk zh_CN zh_TW"
@@ -303,6 +302,8 @@ DISABLE_DEPRECATED_CFLAGS=" \
 	-DBONOBO_DISABLE_DEPRECATED"
 AC_SUBST(DISABLE_DEPRECATED_CFLAGS)
 
+dnl libbackground
+PKG_CHECK_MODULES(CAPPLET, "gtk+-2.0 gconf-2.0 libgnomeui-2.0 libbonoboui-2.0")
 dnl ==========================================================================
 
 AC_OUTPUT([
@@ -360,6 +361,7 @@ icons/sidebar_tab_pieces/Makefile
 icons/sierra/Makefile
 icons/tahoe/Makefile
 icons/throbber/Makefile
+libbackground/Makefile
 libnautilus-adapter/Makefile
 libnautilus-private/Makefile
 libnautilus/Makefile

@@ -1,3 +1,25 @@
+2002-03-03  Alexander Larsson  <alla@lysator.liu.se>
+
+	Based on patch from Richard Hestilow <hestilow@ximian.com>
+	
+	* Makefile.am: Add libbackground directory
+	
+	* configure.in: Add CAPPLET flags and libs for libbackground
+	Add libbackground/Makefile to list of Makefiles
+	
+	* libnautilus-private/Makefile.am: Add libbackground to
+	dependency_static_libs
+	
+	* libnautilus-private/nautilus-directory-background.c:
+	(nautilus_connect_desktop_background_to_file_metadata),
+	(nautilus_file_background_read_desktop_settings),
+	(nautilus_file_background_write_desktop_settings),
+	(desktop_background_destroyed_callback),
+	(desktop_background_gconf_notify_cb),
+	(nautilus_file_background_receive_gconf_changes),
+	(set_root_pixmap): Implement reading and writing of
+	desktop background setting using libbackground.
+
 2002-03-03  Yanko Kaneti  <yaneti@declera.com>
 
 	* components/notes/Makefile.am: (LDADD) use COMPONENT_LIBS rather than

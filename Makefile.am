@@ -8,6 +8,7 @@ DESKTOP_FILES=$(DESKTOP_IN_FILES:.desktop.in=.desktop)
 SUBDIRS =			\
 	libnautilus 		\
 	cut-n-paste-code 	\
+	libbackground		\
 	libnautilus-private 	\
 	libnautilus-adapter	\
 	src 			\
