@@ -1186,7 +1186,7 @@ fm_directory_view_initialize (FMDirectoryView *view)
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
 					   schedule_update_menus_callback,
 					   view);
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_CAPTIONS,
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
 					   text_attribute_names_changed_callback,
 					   view);
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
@@ -1256,7 +1256,7 @@ fm_directory_view_destroy (GtkObject *object)
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ENABLE_DELETE,
 					      schedule_update_menus_callback,
 					      view);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_CAPTIONS,
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
 					      text_attribute_names_changed_callback,
 					      view);
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,

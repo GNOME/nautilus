@@ -62,6 +62,7 @@ struct NautilusPreferencesItemDetails
 	GSList *change_signal_connections;
 	char *control_preference_name;
 	NautilusPreferencesItemControlAction control_action;
+	EelStringList *enumeration_list_unique_exceptions;
 };
 
 /* GtkObjectClass methods */
@@ -76,9 +77,9 @@ static void preferences_item_create_editable_string                   (NautilusP
 static void preferences_item_create_enumeration_menu                  (NautilusPreferencesItem      *item);
 static void preferences_item_create_enumeration_radio                 (NautilusPreferencesItem      *item,
 								       gboolean                      horizontal);
-static void       preferences_item_create_enumeration_list                  (NautilusPreferencesItem       *item,
-									     gboolean                       horizontal);
-static void       preferences_item_create_font                              (NautilusPreferencesItem       *item);
+static void preferences_item_create_enumeration_list                  (NautilusPreferencesItem      *item,
+								       gboolean                      horizontal);
+static void preferences_item_create_font                              (NautilusPreferencesItem      *item);
 static void preferences_item_create_font                              (NautilusPreferencesItem      *item);
 static void preferences_item_create_padding                           (NautilusPreferencesItem      *item);
 static void preferences_item_create_smooth_font                       (NautilusPreferencesItem      *item);
@@ -100,8 +101,8 @@ static void enumeration_menu_changed_callback                         (EelString
 								       NautilusPreferencesItem      *item);
 static void font_changed_callback                                     (GtkWidget                    *caption,
 								       gpointer                      user_data);
-static void       enumeration_list_changed_callback                         (EelStringPicker               *string_picker,
-									     NautilusPreferencesItem       *item);
+static void enumeration_list_changed_callback                         (EelStringPicker              *string_picker,
+								       NautilusPreferencesItem      *item);
 static void smooth_font_changed_callback                              (EelFontPicker                *font_picker,
 								       gpointer                      callback_data);
 
@@ -112,12 +113,8 @@ static void
 nautilus_preferences_item_initialize_class (NautilusPreferencesItemClass *preferences_item_class)
 {
 	GtkObjectClass *object_class;
-	GtkWidgetClass *widget_class;
-	
-	object_class = GTK_OBJECT_CLASS (preferences_item_class);
-	widget_class = GTK_WIDGET_CLASS (preferences_item_class);
 
- 	parent_class = gtk_type_class (gtk_vbox_get_type ());
+	object_class = GTK_OBJECT_CLASS (preferences_item_class);
 
 	/* GtkObjectClass */
 	object_class->destroy = preferences_item_destroy;
@@ -128,6 +125,7 @@ nautilus_preferences_item_initialize (NautilusPreferencesItem *item)
 {
 	item->details = g_new0 (NautilusPreferencesItemDetails, 1);
 	item->details->item_type = PREFERENCES_ITEM_UNDEFINED_ITEM;
+	item->details->enumeration_list_unique_exceptions = eel_string_list_new (TRUE);
 }
 
 /* GtkObjectClass methods */
@@ -143,6 +141,7 @@ preferences_item_destroy (GtkObject *object)
 	g_free (item->details->preference_name);
 	g_free (item->details->control_preference_name);
 	eel_g_slist_free_deep (item->details->change_signal_connections);
+	eel_string_list_free (item->details->enumeration_list_unique_exceptions);
 	g_free (item->details);
 
 	/* Chain destroy */
@@ -177,6 +176,74 @@ preferences_item_update_enumeration_radio (NautilusPreferencesItem *item)
 	}
 
  	g_free (enumeration_id);
+}
+
+/* Make sure the string pickers are wired such that duplicate choices cannot be
+ * made by the user.  We do this by making items that would result in duplicates
+ * insensitive.  Its possible to bypass this rule for some items.  We use the
+ * use the enumeration_list_unique_exceptions for that.
+ */
+static void
+preferences_item_update_enumeration_list_uniqueness (NautilusPreferencesItem *item)
+{
+	const GSList *node;
+	guint i;
+	guint j;
+	const PreferencesItemConnection *connection;
+	guint num_pickers;
+	EelStringList **insensitive_lists;
+	char *selected_string;
+
+	g_return_if_fail (item->details->item_type == NAUTILUS_PREFERENCE_ITEM_ENUMERATION_LIST_VERTICAL
+			  || item->details->item_type == NAUTILUS_PREFERENCE_ITEM_ENUMERATION_LIST_HORIZONTAL);
+	
+	num_pickers = g_slist_length (item->details->change_signal_connections);
+
+	g_return_if_fail (num_pickers > 0);
+	
+	/* Allocate as many insensitive lists as we have string pickers */
+	insensitive_lists = g_new (EelStringList *, num_pickers);
+	for (j = 0; j < num_pickers; j++) {
+		insensitive_lists[j] = eel_string_list_new (TRUE);
+	}
+
+	/* Populate the insensitive lists with the selected strings of all the
+	 * other lists.
+	 */
+	for (node = item->details->change_signal_connections, i = 0; node != NULL; node = node->next, i++) {
+		g_assert (node->data != NULL);
+
+		connection = node->data;
+		g_assert (EEL_IS_STRING_PICKER (connection->widget));
+		
+		selected_string = eel_string_picker_get_selected_string (EEL_STRING_PICKER (connection->widget));
+
+		for (j = 0; j < num_pickers; j++) {
+			if (j != i && !eel_string_list_contains (item->details->enumeration_list_unique_exceptions,
+								 selected_string)) {
+				eel_string_list_insert (insensitive_lists[j],
+							selected_string);
+			}
+		}
+		g_free (selected_string);
+	}
+	
+	/* Install the insensitive lists on the string pickers */
+	for (node = item->details->change_signal_connections, i = 0; node != NULL; node = node->next, i++) {
+		g_assert (node->data != NULL);
+
+		connection = node->data;
+		g_assert (EEL_IS_STRING_PICKER (connection->widget));
+
+		eel_string_picker_set_insensitive_list (EEL_STRING_PICKER (connection->widget),
+							insensitive_lists[i]);
+	}
+	
+	/* Free the insensitive lists */
+	for (j = 0; j < num_pickers; j++) {
+		eel_string_list_free (insensitive_lists[j]);
+	}
+	g_free (insensitive_lists);
 }
 
 static void
@@ -226,6 +293,8 @@ preferences_item_update_enumeration_list (NautilusPreferencesItem *item)
 
 	eel_string_list_free (value);
  	g_free (enumeration_id);
+
+	preferences_item_update_enumeration_list_uniqueness (item);
 }
 
 /* This callback is called whenever the preference value changes, so that we can
@@ -381,7 +450,7 @@ preferences_item_create_enumeration_list (NautilusPreferencesItem *item,
 	gtk_widget_show (title);
 	gtk_widget_show (picker_box);
 	
-	/* Populate the radio group */
+	/* Populate the string pickers */
 	for (j = 0; j < num_pickers; j++) {
 		string_picker = eel_string_picker_new ();
 		eel_caption_set_show_title (EEL_CAPTION (string_picker), FALSE);
@@ -406,7 +475,6 @@ preferences_item_create_enumeration_list (NautilusPreferencesItem *item,
 						       string_picker,
 						       "changed",
 						       GTK_SIGNAL_FUNC (enumeration_list_changed_callback));
-
 	}
  	g_free (enumeration_id);
 
@@ -1009,11 +1077,7 @@ enumeration_list_changed_callback (EelStringPicker *string_picker,
 
  	g_free (enumeration_id);
 
-// 	{
-// 		EelStringList *foo;
-// 		foo = nautilus_preferences_get_string_list (item->details->preference_name);
-// 		g_print ("new_value = %s\n", eel_string_list_as_string (foo, ",", EEL_STRING_LIST_ALL_STRINGS));
-// 	}
+	preferences_item_update_enumeration_list_uniqueness (item);
 }
 
 char *
@@ -1273,3 +1337,31 @@ nautilus_preferences_item_update_showing (NautilusPreferencesItem *item)
 	eel_gtk_widget_set_shown (GTK_WIDGET (item),
 				  nautilus_preferences_item_is_showing (item));
 }
+
+void
+nautilus_preferences_item_enumeration_list_set_unique_exceptions (NautilusPreferencesItem *item,
+								  const char *exceptions,
+								  const char *exceptions_delimeter)
+{
+	EelStringList *new_exceptions;
+
+	g_return_if_fail (NAUTILUS_IS_PREFERENCES_ITEM (item));
+	g_return_if_fail (item->details->item_type == NAUTILUS_PREFERENCE_ITEM_ENUMERATION_LIST_VERTICAL
+			  || item->details->item_type == NAUTILUS_PREFERENCE_ITEM_ENUMERATION_LIST_HORIZONTAL);
+	g_return_if_fail (eel_strlen (exceptions_delimeter) > 0);
+
+	new_exceptions = eel_string_list_new_from_tokens (exceptions,
+							  exceptions_delimeter,
+							  TRUE);
+
+	if (eel_string_list_equals (new_exceptions, item->details->enumeration_list_unique_exceptions)) {
+		eel_string_list_free (new_exceptions);
+		return;
+	}
+
+	eel_string_list_free (item->details->enumeration_list_unique_exceptions);
+	item->details->enumeration_list_unique_exceptions = new_exceptions;
+
+	preferences_item_update_enumeration_list_uniqueness (item);
+}
+

@@ -83,20 +83,23 @@ typedef enum
 	NAUTILUS_PREFERENCE_ITEM_HIDE
 } NautilusPreferencesItemControlAction;
 
-GtkType    nautilus_preferences_item_get_type                  (void);
-GtkWidget* nautilus_preferences_item_new                       (const char                           *preference_name,
-								NautilusPreferencesItemType           item_type);
-char *     nautilus_preferences_item_get_name                  (const NautilusPreferencesItem        *preferences_item);
-void       nautilus_preferences_item_set_control_preference    (NautilusPreferencesItem              *preferences_item,
-								const char                           *control_preference_name);
-void       nautilus_preferences_item_set_control_action        (NautilusPreferencesItem              *preferences_item,
-								NautilusPreferencesItemControlAction  control_action);
-gboolean   nautilus_preferences_item_child_is_caption          (const NautilusPreferencesItem        *preferences_item);
-int        nautilus_preferences_item_get_child_width           (const NautilusPreferencesItem        *item);
-void       nautilus_preferences_item_set_caption_extra_spacing (NautilusPreferencesItem              *item,
-								int                                   extra_spacing);
-void       nautilus_preferences_item_update_showing            (NautilusPreferencesItem              *item);
-gboolean   nautilus_preferences_item_is_showing                (const NautilusPreferencesItem        *item);
+GtkType    nautilus_preferences_item_get_type                               (void);
+GtkWidget* nautilus_preferences_item_new                                    (const char                           *preference_name,
+									     NautilusPreferencesItemType           item_type);
+char *     nautilus_preferences_item_get_name                               (const NautilusPreferencesItem        *preferences_item);
+void       nautilus_preferences_item_set_control_preference                 (NautilusPreferencesItem              *preferences_item,
+									     const char                           *control_preference_name);
+void       nautilus_preferences_item_set_control_action                     (NautilusPreferencesItem              *preferences_item,
+									     NautilusPreferencesItemControlAction  control_action);
+gboolean   nautilus_preferences_item_child_is_caption                       (const NautilusPreferencesItem        *preferences_item);
+int        nautilus_preferences_item_get_child_width                        (const NautilusPreferencesItem        *item);
+void       nautilus_preferences_item_set_caption_extra_spacing              (NautilusPreferencesItem              *item,
+									     int                                   extra_spacing);
+void       nautilus_preferences_item_update_showing                         (NautilusPreferencesItem              *item);
+gboolean   nautilus_preferences_item_is_showing                             (const NautilusPreferencesItem        *item);
+void       nautilus_preferences_item_enumeration_list_set_unique_exceptions (NautilusPreferencesItem              *item,
+									     const char                           *exceptions,
+									     const char                           *exceptions_delimeter);
 
 END_GNOME_DECLS
 

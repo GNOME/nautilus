@@ -22,7 +22,6 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-desktop-icon-view.c		\
 	fm-directory-view.c		\
 	fm-error-reporting.c		\
-	fm-icon-text-window.c		\
 	fm-icon-view.c			\
 	fm-list-view.c			\
 	fm-properties-window.c		\
@@ -34,7 +33,6 @@ noinst_HEADERS = 			\
 	fm-desktop-icon-view.h 		\
 	fm-directory-view.h 		\
 	fm-error-reporting.h 		\
-	fm-icon-text-window.h 		\
 	fm-icon-view.h 			\
 	fm-list-view-private.h 		\
 	fm-list-view.h 			\

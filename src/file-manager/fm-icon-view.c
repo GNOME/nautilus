@@ -27,9 +27,13 @@
 
 #include "fm-desktop-icon-view.h"
 #include "fm-error-reporting.h"
-#include "fm-icon-text-window.h"
 #include <bonobo/bonobo-ui-util.h>
 #include <ctype.h>
+#include <eel/eel-background.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-string.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <gtk/gtkmain.h>
@@ -44,22 +48,17 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-xfer.h>
 #include <libnautilus-extensions/nautilus-audio-player.h>
-#include <eel/eel-background.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
-#include <eel/eel-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-container.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-sound.h>
-#include <eel/eel-string.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus/nautilus-clipboard.h>
 #include <locale.h>
@@ -73,7 +72,6 @@
 
 /* Paths to use when creating & referring to Bonobo menu items */
 #define MENU_PATH_RENAME 			"/menu/File/File Items Placeholder/Rename"
-#define MENU_PATH_CUSTOMIZE_ICON_TEXT 		"/menu/Edit/Global Edit Items Placeholder/Icon Text"
 #define MENU_PATH_STRETCH_ICON 			"/menu/Edit/Edit Items Placeholder/Stretch"
 #define MENU_PATH_UNSTRETCH_ICONS 		"/menu/Edit/Edit Items Placeholder/Unstretch"
 #define MENU_PATH_LAY_OUT			"/menu/View/View Items Placeholder/Lay Out"
@@ -96,6 +94,8 @@
 #define ID_TIGHTER_LAYOUT                       "Tighter Layout"
 #define ID_SORT_REVERSED                        "Reversed Order"
 
+#define ICON_TEXT_ATTRIBUTES_NUM_ITEMS		3
+#define ICON_TEXT_ATTRIBUTES_DEFAULT_TOKENS	"size,date_modified,type"
 
 typedef struct {
 	NautilusFileSortType sort_type;
@@ -456,12 +456,6 @@ handle_radio_item (FMIconView *view,
 	} else if (get_sort_criterion_by_id (id) != NULL) {
 		set_sort_criterion_by_id (view, id);
 	}
-}
-
-static void
-customize_icon_text_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
-{
-	eel_gtk_window_present (fm_icon_text_window_get_or_create ());
 }
 
 static void
@@ -1078,6 +1072,54 @@ fm_icon_view_get_background_widget (FMDirectoryView *view)
 	return GTK_WIDGET (get_icon_container (FM_ICON_VIEW (view)));
 }
 
+/*
+ * Get the preference for which caption text should appear
+ * beneath icons.
+ */
+static EelStringList *
+fm_icon_view_get_icon_text_attributes_from_preferences (void)
+{
+	static const EelStringList *attributes;
+
+	if (attributes == NULL) {
+		nautilus_preferences_add_auto_string_list (NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
+							   &attributes);
+	}
+
+	/* A simple check that the attributes list matches the expected length */
+	g_return_val_if_fail (eel_string_list_get_length (attributes) == ICON_TEXT_ATTRIBUTES_NUM_ITEMS,
+			      eel_string_list_new_from_tokens (ICON_TEXT_ATTRIBUTES_DEFAULT_TOKENS, ",", TRUE));
+
+
+	/* We don't need to sanity check the attributes list even though it came
+	 * from preferences.
+	 *
+	 * There are 2 ways that the values in the list could be bad.
+	 *
+	 * 1) The user picks "bad" values.  "bad" values are those that result in 
+	 *    there being duplicate attributes in the list.
+	 *
+	 * 2) Value stored in GConf are tampered with.  Its possible physically do
+	 *    this by pulling the rug underneath GConf and manually editing its
+	 *    config files.  Its also possible to use a third party GConf key 
+	 *    editor and store garbage for the keys in question.
+	 *
+	 * Thankfully, the Nautilus preferences machinery deals with both of 
+	 * these cases.
+	 *
+	 * In the first case, the preferences dialog widgetry prevents
+	 * duplicate attributes by making "bad" choices insensitive.
+	 *
+	 * In the second case, the preferences getter (and also the auto storage) for
+	 * string_list values are always valid members of the enumeration associated
+	 * with the preference.
+	 *
+	 * So, no more error checking on attributes is needed here and we can return
+	 * a copy of the auto stored value.
+	 */
+	return eel_string_list_copy (attributes);
+}
+
 /**
  * fm_icon_view_get_icon_text_attribute_names:
  *
@@ -1092,8 +1134,10 @@ fm_icon_view_get_background_widget (FMDirectoryView *view)
 static char *
 fm_icon_view_get_icon_text_attribute_names (FMIconView *view)
 {
-	char *all_names, *result, *c;
-	int pieces_so_far, piece_count;
+	EelStringList *attributes;
+	char *result;
+	int piece_count;
+
 	const int pieces_by_level[] = {
 		0,	/* NAUTILUS_ZOOM_LEVEL_SMALLEST */
 		0,	/* NAUTILUS_ZOOM_LEVEL_SMALLER */
@@ -1105,24 +1149,13 @@ fm_icon_view_get_icon_text_attribute_names (FMIconView *view)
 	};
 
 	piece_count = pieces_by_level[fm_icon_view_get_zoom_level (view)];
-
-	all_names = fm_get_text_attribute_names_preference ();
-	pieces_so_far = 0;
-
-	for (c = all_names; *c != '\0'; ++c) {
-		if (pieces_so_far == piece_count) {
-			break;
-		}
-		if (*c == '|') {
-			++pieces_so_far;
-		}
-	}
-
-	/* Return an initial substring of the full set */
-	result = g_strndup (all_names, (c - all_names));
-
-	g_free (all_names);
 	
+	attributes = fm_icon_view_get_icon_text_attributes_from_preferences ();
+	g_return_val_if_fail ((guint)piece_count <= eel_string_list_get_length (attributes), NULL);
+	
+	result = eel_string_list_as_string (attributes, "|", piece_count);
+	eel_string_list_free (attributes);
+
 	return result;
 }
 
@@ -1258,7 +1291,6 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	FMIconView *icon_view;
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("Rename", rename_icon_callback),
-		BONOBO_UI_VERB ("Icon Text", customize_icon_text_callback),
 		BONOBO_UI_VERB ("Stretch", show_stretch_handles_callback),
 		BONOBO_UI_VERB ("Unstretch", unstretch_icons_callback),
 		BONOBO_UI_VERB ("Clean Up", clean_up_callback),

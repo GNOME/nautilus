@@ -27,6 +27,7 @@
 
 #include "nautilus-gconf-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
+#include <eel/eel-enumeration.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string-list.h>
 #include <eel/eel-string.h>
@@ -65,6 +66,7 @@ typedef struct {
 	char *description;
 	PreferenceType type;
 	GList *callback_list;
+	gboolean callbacks_blocked;
 	GList *auto_storage_list;
 	int gconf_connection_id;
 	char *enumeration_id;
@@ -126,6 +128,7 @@ static void         preferences_callback_entry_free                 (Preferences
 static void         preferences_entry_update_auto_storage           (PreferencesEntry         *entry);
 static void         preferences_global_table_free                   (void);
 static const char * preferences_peek_user_level_name_for_storage    (int                       user_level);
+static PreferencesEntry * preferences_global_table_lookup_or_insert (const char *name);
 
 static guint user_level_changed_connection_id = NAUTILUS_GCONF_UNDEFINED_CONNECTION;
 static GHashTable *global_table = NULL;
@@ -326,6 +329,34 @@ preferences_make_user_level_filtered_key (const char *name)
 	return key;
 }
 
+static void
+preferences_block_callbacks (const char *name)
+{
+	PreferencesEntry *entry;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (preferences_is_initialized ());
+
+	entry = preferences_global_table_lookup_or_insert (name);
+	g_assert (entry != NULL);
+
+	entry->callbacks_blocked = TRUE;
+}
+
+static void
+preferences_unblock_callbacks (const char *name)
+{
+	PreferencesEntry *entry;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (preferences_is_initialized ());
+
+	entry = preferences_global_table_lookup_or_insert (name);
+	g_assert (entry != NULL);
+
+	entry->callbacks_blocked = FALSE;
+}
+
 /* Public preferences functions */
 int
 nautilus_preferences_get_visible_user_level (const char *name)
@@ -504,12 +535,35 @@ nautilus_preferences_set_string_list (const char *name,
 	nautilus_gconf_suggest_sync ();
 }
 
+static gboolean
+string_list_is_valid (const EelStringList *string_list,
+		      const char *enumeration_id)
+{
+	guint i;
+	char *nth;
+	gboolean bad;
+
+	g_return_val_if_fail (string_list != NULL, FALSE);
+	g_return_val_if_fail (enumeration_id != NULL, FALSE);
+
+	bad = FALSE;
+	for (i = 0; i < eel_string_list_get_length (string_list) && !bad; i++) {
+		nth = eel_string_list_nth (string_list, i);
+		bad = !eel_enumeration_id_contains_name (enumeration_id, nth);
+		g_free (nth);
+	}
+
+	return !bad;
+}
+
 EelStringList *
 nautilus_preferences_get_string_list (const char *name)
 {
  	EelStringList *result;
 	char *key;
 	GSList *slist;
+	PreferencesEntry *entry;
+	char *default_key;
 	
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (preferences_is_initialized (), NULL);
@@ -520,6 +574,35 @@ nautilus_preferences_get_string_list (const char *name)
 
 	result = eel_string_list_new_from_g_slist (slist, TRUE);
 	eel_g_slist_free_deep (slist);
+
+	entry = preferences_global_table_lookup_or_insert (name);
+	g_assert (entry != NULL);
+
+	/* No enumeration_id so we're done */
+	if (entry->enumeration_id == NULL) {
+		return result;
+	}
+
+	/* Do a sanity check on the validity of the values */
+	if (string_list_is_valid (result, entry->enumeration_id)) {
+		return result;
+	}
+
+	/* Forget the bad value and use the default instead */
+	eel_string_list_free (result);
+	default_key = preferences_key_make_for_default_getter (name,
+							       nautilus_preferences_get_user_level ());
+	slist = nautilus_gconf_get_string_list (default_key);
+	g_free (default_key);
+	
+	result = eel_string_list_new_from_g_slist (slist, TRUE);
+	eel_g_slist_free_deep (slist);
+	
+ 	/* Go the extra mile and fix the problem for the user */
+	preferences_block_callbacks (name);
+	nautilus_preferences_set_string_list (name, result);
+	preferences_unblock_callbacks (name);
+
 	return result;
 }
 
@@ -759,6 +842,11 @@ preferences_entry_invoke_callbacks_if_needed (PreferencesEntry *entry)
 	/* Store the new cached value */
 	nautilus_gconf_value_free (entry->cached_value);
 	entry->cached_value = new_value;
+
+	/* Dont invoke callbacks if the entry is blocked */
+	if (entry->callbacks_blocked) {
+		return;
+	}
 	
 	/* Invoke callbacks for this entry if any */
 	if (entry->callback_list != NULL) {

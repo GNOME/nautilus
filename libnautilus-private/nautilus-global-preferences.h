@@ -31,8 +31,6 @@ BEGIN_GNOME_DECLS
 
 /* Which theme is active */
 #define NAUTILUS_PREFERENCES_THEME				"preferences/theme"
-/* Which text attributes appear beneath icon names */
-#define NAUTILUS_PREFERENCES_ICON_CAPTIONS			"icon_view/captions"
 
 /* How wide the sidebar is (or how wide it will be when expanded) */
 #define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"preferences/sidebar_width"

@@ -1,3 +1,66 @@
+2001-04-18  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Remove NAUTILUS_PREFERENCES_ICON_CAPTIONS, its not needed anymore.
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_populate_pane): Add support for installing a
+	list if strings to ignore when enforcing the unique choice rule
+	for enumeration lists items.
+	(global_preferences_create_dialog),
+	(nautilus_global_preferences_initialize): Register the
+	enumerations at initialization time instead of dialog creation
+	time.  This is needed so that sanity checking on enumeration
+	preferences can occur even if the user hasnt opened the dialog.
+
+	* libnautilus-extensions/nautilus-preferences-item.h:
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(nautilus_preferences_item_initialize_class),
+	(nautilus_preferences_item_initialize), (preferences_item_destroy),
+	(preferences_item_update_enumeration_list_uniqueness),
+	(preferences_item_update_enumeration_list),
+	(preferences_item_create_enumeration_list),
+	(enumeration_list_changed_callback),
+	(nautilus_preferences_item_enumeration_list_set_unique_exceptions):
+	Make sure the string pickers are wired such that duplicate choices cannot be
+	made by the user.  We do this by making items that would result in duplicates
+	insensitive.  Its possible to bypass this rule for some items.  We use the
+	use the enumeration_list_unique_exceptions.
+	
+	* libnautilus-extensions/nautilus-preferences.c:
+	(preferences_block_callbacks), (preferences_unblock_callbacks):
+	New private functions to block/unblock preferences callbacks.
+	(string_list_is_valid): New private function to sanity check the
+	values of a string list.
+	(nautilus_preferences_get_string_list): Sanity check the results
+	of this function for greater convenience of the callers - they no
+	longer need to do error checking on the result.
+	(preferences_entry_invoke_callbacks_if_needed): Invoke callbacks
+	only if they are not blocked.
+
+	* src/file-manager/Makefile.am:
+	* src/file-manager/fm-icon-text-window.c:
+	* src/file-manager/fm-icon-text-window.h:
+	Retire these 2 files.  There no longer is a Icon Captions window.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize), (fm_directory_view_destroy):
+	Update for slight change in the Icon Captions preference name.
+
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_get_icon_text_attributes_from_preferences): New
+	function to fetch the icon caption attributes from preferences.  A
+	similar function used to live in fm-icon-text-window.[ch].  That
+	is no longer the case now that the Icon Captions have moved into
+	the preferences dialog.
+	(fm_icon_view_get_icon_text_attribute_names): Simplify the munging
+	of icon captions by using a string list.
+	(fm_icon_view_merge_menus): Remove the Icon Captions menu.  The
+	Icon Captions picker now lives in the preferences dialog.
+	
+	* src/file-manager/nautilus-icon-view-ui.xml:
+	Remove Icon Captions menu item which no longer exists.
+	
 2001-04-17  Darin Adler  <darin@eazel.com>
 
 	* THANKS: Added a translator's name.

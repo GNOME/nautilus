@@ -818,6 +818,7 @@ struct PreferenceDialogItem
 	const char *control_preference_name;
 	NautilusPreferencesItemControlAction control_action;
 	int column;
+	const char *enumeration_list_unique_exceptions;
 };
 
 /* The following tables define preference items for the preferences dialog.
@@ -883,6 +884,21 @@ struct PreferenceDialogItem
  *    a frame.  Each of these groups can have 0 or 1 columns of preference
  *    item widgets.  This field controls which column the preference item 
  *    widgets appear in.
+ *
+ * 8. enumeration_list_unique_exceptions
+ *    If the item type is one of:
+ *
+ *      NAUTILUS_PREFERENCE_ITEM_ENUMERATION_LIST_HORIZONTAL
+ *      NAUTILUS_PREFERENCE_ITEM_ENUMERATION_LIST_VERTICAL
+ *
+ *    The this field can be a string of exceptions to the rule that enumeration
+ *    list items must always not allow duplicate choices.  For example, if there
+ *    are 3 string pickers in the item, then each one cannot select and item
+ *    which is already selected in one of the other two.  The preferences item
+ *    widget enforces this rule by making such items insensitive.  
+ *
+ *    The enumeration_list_unique_exceptions allows a way to bypass this rule
+ *    for certain choices.
  */
 static PreferenceDialogItem appearance_items[] = {
 	{ N_("Smoother Graphics"),
@@ -999,7 +1015,11 @@ static PreferenceDialogItem icon_captions_items[] = {
 	  NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
 	  N_("Choose the order for information to appear beneath icon names.\n"
 	     "More information appears as you zoom in closer"),
-	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_LIST_VERTICAL
+	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_LIST_VERTICAL,
+	  NULL,
+	  0,
+	  0,
+	  "none"
 	},
 	{ NULL }
 };
@@ -1216,8 +1236,6 @@ global_preferences_create_dialog (void)
 	preference_box = NAUTILUS_PREFERENCES_BOX (nautilus_preferences_dialog_get_prefs_box
 						   (NAUTILUS_PREFERENCES_DIALOG (prefs_dialog)));
 
-	global_preferences_register_enumerations ();
-
 	/* View Preferences */
 	global_preferences_populate_pane (preference_box,
 					  _("View Preferences"),
@@ -1412,6 +1430,7 @@ global_preferences_populate_pane (NautilusPreferencesBox *preference_box,
 									preference_dialog_item[i].item_type,
 									preference_dialog_item[i].column);
 
+		/* Install a control preference if needed */
 		if (preference_dialog_item[i].control_preference_name != NULL) {
 			nautilus_preferences_item_set_control_preference (NAUTILUS_PREFERENCES_ITEM (item),
 									  preference_dialog_item[i].control_preference_name);
@@ -1420,6 +1439,19 @@ global_preferences_populate_pane (NautilusPreferencesBox *preference_box,
 
 			nautilus_preferences_pane_add_control_preference (NAUTILUS_PREFERENCES_PANE (pane),
 									  preference_dialog_item[i].control_preference_name);
+
+		}
+
+		/* Install exceptions to enum lists uniqueness rule */
+		if (preference_dialog_item[i].enumeration_list_unique_exceptions != NULL) {
+			g_assert (preference_dialog_item[i].item_type == 
+				  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_LIST_VERTICAL
+				  || preference_dialog_item[i].item_type == 
+				  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_LIST_HORIZONTAL);
+			nautilus_preferences_item_enumeration_list_set_unique_exceptions (
+				NAUTILUS_PREFERENCES_ITEM (item),
+				preference_dialog_item[i].enumeration_list_unique_exceptions,
+				STRING_LIST_DEFAULT_TOKENS_DELIMETER);
 		}
 	}
 
@@ -1597,6 +1629,8 @@ nautilus_global_preferences_initialize (void)
 
 	/* Install defaults */
 	global_preferences_install_defaults ();
+
+	global_preferences_register_enumerations ();
 
 	/* Set up storage for values accessed in this file */
 	nautilus_preferences_add_auto_string (NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
