@@ -26,7 +26,8 @@
 
 #include "nautilus.h"
 #include <libnautilus/libnautilus.h>
-#include <file-manager/fm-public-api.h>
+#include "file-manager/fm-directory-view-icons.h"
+#include "file-manager/fm-directory-view-list.h"
 
 static int window_count = 0;
 
