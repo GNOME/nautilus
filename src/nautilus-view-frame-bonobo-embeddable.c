@@ -58,6 +58,8 @@ bonobo_subdoc_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Enviro
   gnome_container_add(GNOME_CONTAINER(bsi->container), bsi->client_site);
 
   bsi->view_frame = GNOME_OBJECT(gnome_client_site_new_view(GNOME_CLIENT_SITE(bsi->client_site)));
+  gnome_control_frame_set_ui_handler(GNOME_CONTROL_FRAME(bsi->view_frame),
+				     nautilus_window_get_uih(NAUTILUS_WINDOW(view->main_window)));
 
   g_assert(bsi->view_frame);
       

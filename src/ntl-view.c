@@ -378,6 +378,9 @@ nautilus_view_notify_location_change(NautilusView *view,
   Nautilus_NavigationInfo real_nav_ctx;
   CORBA_Environment ev;
 
+  g_return_if_fail(view);
+  g_return_if_fail(view->component_class);
+
   real_nav_ctx = *nav_context;
   g_assert(real_nav_ctx.requested_uri);
 #define DEFAULT_STRING(x) if(!real_nav_ctx.x) real_nav_ctx.x = ""
@@ -399,6 +402,10 @@ nautilus_view_notify_selection_change(NautilusView *view,
 				      Nautilus_SelectionInfo *nav_context)
 {
   CORBA_Environment ev;
+
+  g_return_if_fail(view);
+  g_return_if_fail(view->component_class);
+
   CORBA_exception_init(&ev);
 
   if(view->component_class->notify_selection_change)
@@ -411,6 +418,9 @@ static void
 nautilus_view_load_state(NautilusView *view, const char *config_path)
 {
   CORBA_Environment ev;
+
+  g_return_if_fail(view);
+  g_return_if_fail(view->component_class);
 
   CORBA_exception_init(&ev);
 
@@ -425,6 +435,9 @@ nautilus_view_save_state(NautilusView *view, const char *config_path)
 {
   CORBA_Environment ev;
 
+  g_return_if_fail(view);
+  g_return_if_fail(view->component_class);
+
   CORBA_exception_init(&ev);
 
   if(view->component_class->save_state)
@@ -437,6 +450,10 @@ static void
 nautilus_view_show_properties(NautilusView *view)
 {
   CORBA_Environment ev;
+
+  g_return_if_fail(view);
+  g_return_if_fail(view->component_class);
+
   CORBA_exception_init(&ev);
 
   if(view->component_class->show_properties)
@@ -454,11 +471,11 @@ nautilus_view_get_iid(NautilusView *view)
 CORBA_Object
 nautilus_view_get_client_objref(NautilusView *view)
 {
-  return gnome_object_corba_objref(GNOME_OBJECT(view->client_object));
+  return view?gnome_object_corba_objref(GNOME_OBJECT(view->client_object)):NULL;
 }
 
 CORBA_Object
 nautilus_view_get_objref(NautilusView *view)
 {
-  return gnome_object_corba_objref(view->view_frame);
+  return view?gnome_object_corba_objref(view->view_frame):NULL;
 }

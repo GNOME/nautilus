@@ -160,6 +160,8 @@ nautilus_window_update_view(NautilusWindow *window,
                             guint signum_location,
                             NautilusView *requesting_view)
 {
+  g_return_if_fail(view);
+
   loci->navinfo.self_originated = (view == requesting_view);
 
   if(!signum_location)
@@ -188,7 +190,7 @@ nautilus_window_load_content_view(NautilusWindow *window,
   g_return_if_fail(loci);
   g_return_if_fail(requesting_view);
 
-  if(!content_view || strcmp(nautilus_view_get_iid(content_view), iid))
+  if((!content_view || !NAUTILUS_IS_VIEW(content_view)) || strcmp(nautilus_view_get_iid(content_view), iid))
     {
       if(*requesting_view == window->content_view) /* If we are going to be zapping the old view,
                                                       we definitely don't want any of the new views
@@ -196,13 +198,28 @@ nautilus_window_load_content_view(NautilusWindow *window,
         *requesting_view = NULL;
 
       new_view = NAUTILUS_VIEW(gtk_widget_new(nautilus_content_view_get_type(), "main_window", window, NULL));
-      nautilus_view_load_client(new_view, iid);
+      if(!nautilus_view_load_client(new_view, iid))
+	{
+	  gtk_widget_destroy(GTK_WIDGET(new_view));
+	  new_view = NULL;
+	}
+
       nautilus_window_set_content_view(window, new_view);
     }
 
-  loci->navinfo.content_view = nautilus_view_get_client_objref(window->content_view);
+  if(window->content_view && NAUTILUS_IS_VIEW(window->content_view))
+    {
+      loci->navinfo.content_view = nautilus_view_get_client_objref(window->content_view);
 
-  nautilus_window_update_view(window, window->content_view, loci, signum_location, *requesting_view);
+      nautilus_window_update_view(window, window->content_view, loci, signum_location, *requesting_view);
+    }
+  else
+    {
+      NautilusView *dummy_view;
+
+      dummy_view = (NautilusView *)gtk_label_new(_("The component needed to display this file was not found."));
+      nautilus_window_set_content_view(window, dummy_view);
+    }
 }
 
 static void
@@ -225,11 +242,18 @@ nautilus_window_load_meta_view(NautilusWindow *window,
   if(!curview)
     {
       meta_view = NAUTILUS_VIEW(gtk_widget_new(nautilus_meta_view_get_type(), "main_window", window, NULL));
-      nautilus_view_load_client(meta_view, iid);
-      nautilus_window_add_meta_view(window, meta_view);
+      if(!nautilus_view_load_client(meta_view, iid))
+	{
+	  gtk_widget_destroy(GTK_WIDGET(meta_view));
+	  meta_view = NULL;
+	}
+
+      if(meta_view)
+	nautilus_window_add_meta_view(window, meta_view);
     }
 
-  nautilus_window_update_view(window, meta_view, loci, 0, requesting_view);
+  if(meta_view)
+    nautilus_window_update_view(window, meta_view, loci, 0, requesting_view);
 }
 
 /* This is the most complicated routine in Nautilus. Steps include:
@@ -268,7 +292,10 @@ nautilus_window_change_location(NautilusWindow *window,
   /* Step 4 */
   signum = gtk_signal_lookup("notify_location_change", nautilus_view_get_type());
 
-  nautilus_window_load_content_view(window, loci->content_iid, loci, signum, &requesting_view);
+  if(loci->content_iid)
+    nautilus_window_load_content_view(window, loci->content_iid, loci, signum, &requesting_view);
+  else
+    nautilus_window_set_content_view(window, NULL);
 
   /* Step 5 */
 

@@ -98,6 +98,9 @@ nautilus_meta_view_get_label(NautilusMetaView *nview)
   NautilusView *view = NAUTILUS_VIEW(nview);
   char *retval = NULL;
 
+  g_return_val_if_fail(view, NULL);
+  g_return_val_if_fail(view->component_class, NULL);
+
   if(view->component_class->get_label)
     {
       CORBA_Environment ev;

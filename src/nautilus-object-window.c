@@ -158,97 +158,97 @@ file_menu_new_window_cb (GtkWidget *widget,
 
 static void
 file_menu_exit_cb (GtkWidget *widget,
-	       gpointer data)
+                   gpointer data)
 {
-	gtk_main_quit();
+  gtk_main_quit();
 }
 
 static GnomeUIInfo file_menu_info[] = {
-	{
-	    GNOME_APP_UI_ITEM,
-	    N_("New Window"), N_("Create a new window"),
-	    file_menu_new_window_cb, NULL, NULL,
-	    GNOME_APP_PIXMAP_NONE, NULL,
-	    'N', GDK_CONTROL_MASK, NULL
-	},
-	GNOMEUIINFO_MENU_CLOSE_ITEM(file_menu_close_cb,NULL),
-	GNOMEUIINFO_SEPARATOR,
-	GNOMEUIINFO_MENU_EXIT_ITEM(file_menu_exit_cb,NULL),
-	GNOMEUIINFO_END
+  {
+    GNOME_APP_UI_ITEM,
+    N_("New Window"), N_("Create a new window"),
+    file_menu_new_window_cb, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    'N', GDK_CONTROL_MASK, NULL
+  },
+  GNOMEUIINFO_MENU_CLOSE_ITEM(file_menu_close_cb,NULL),
+  GNOMEUIINFO_SEPARATOR,
+  GNOMEUIINFO_MENU_EXIT_ITEM(file_menu_exit_cb,NULL),
+  GNOMEUIINFO_END
 };
 
 /* FIXME: These all need implementation, though we might end up doing that
  * separately for each content view (and merging with the insensitive items here)
  */
 static GnomeUIInfo edit_menu_info[] = {
-	GNOMEUIINFO_MENU_UNDO_ITEM(NULL, NULL),
-	GNOMEUIINFO_SEPARATOR,
-	GNOMEUIINFO_MENU_CUT_ITEM(NULL, NULL),
-	GNOMEUIINFO_MENU_COPY_ITEM(NULL, NULL),
-	GNOMEUIINFO_MENU_PASTE_ITEM(NULL, NULL),
-	GNOMEUIINFO_MENU_CLEAR_ITEM(NULL, NULL),
-	GNOMEUIINFO_SEPARATOR,
-	/* Didn't use standard SELECT_ALL_ITEM 'cuz it didn't have accelerator */
-	{
-	    GNOME_APP_UI_ITEM,
-	    N_("Select All"), NULL,
-	    NULL, NULL, NULL,
-	    GNOME_APP_PIXMAP_NONE, NULL,
-	    'A', GDK_CONTROL_MASK, NULL
-	},
-	GNOMEUIINFO_END
+  GNOMEUIINFO_MENU_UNDO_ITEM(NULL, NULL),
+  GNOMEUIINFO_SEPARATOR,
+  GNOMEUIINFO_MENU_CUT_ITEM(NULL, NULL),
+  GNOMEUIINFO_MENU_COPY_ITEM(NULL, NULL),
+  GNOMEUIINFO_MENU_PASTE_ITEM(NULL, NULL),
+  GNOMEUIINFO_MENU_CLEAR_ITEM(NULL, NULL),
+  GNOMEUIINFO_SEPARATOR,
+  /* Didn't use standard SELECT_ALL_ITEM 'cuz it didn't have accelerator */
+  {
+    GNOME_APP_UI_ITEM,
+    N_("Select All"), NULL,
+    NULL, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    'A', GDK_CONTROL_MASK, NULL
+  },
+  GNOMEUIINFO_END
 };
 
 static GnomeUIInfo bookmarks_menu_info[] = {
-	GNOMEUIINFO_END
+  GNOMEUIINFO_END
 };
 
 /* FIXME: This needs implementation. */
 static GnomeUIInfo help_menu_info[] = {
-        {
-            GNOME_APP_UI_ITEM,
-            N_("About Nautilus..."), N_("Info about the Nautilus program"),
-            nautilus_window_about_cb, NULL, NULL,
-            GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_ABOUT,
-            0, 0, NULL
-        },
-	GNOMEUIINFO_END
+  {
+    GNOME_APP_UI_ITEM,
+    N_("About Nautilus..."), N_("Info about the Nautilus program"),
+    nautilus_window_about_cb, NULL, NULL,
+    GNOME_APP_PIXMAP_STOCK, GNOME_STOCK_MENU_ABOUT,
+    0, 0, NULL
+  },
+  GNOMEUIINFO_END
 };
 
 
 #define BOOKMARKS_MENU_INDEX	2
 static GnomeUIInfo main_menu[] = {
-	GNOMEUIINFO_MENU_FILE_TREE (file_menu_info),
-	GNOMEUIINFO_MENU_EDIT_TREE (edit_menu_info),
-	GNOMEUIINFO_SUBTREE(N_("_Bookmarks"), bookmarks_menu_info),
-	GNOMEUIINFO_MENU_HELP_TREE (help_menu_info),
-	GNOMEUIINFO_END
+  GNOMEUIINFO_MENU_FILE_TREE (file_menu_info),
+  GNOMEUIINFO_MENU_EDIT_TREE (edit_menu_info),
+  GNOMEUIINFO_SUBTREE(N_("_Bookmarks"), bookmarks_menu_info),
+  GNOMEUIINFO_MENU_HELP_TREE (help_menu_info),
+  GNOMEUIINFO_END
 };
 
 /* toolbar definitions */
 
 static GnomeUIInfo toolbar_info[] = {
-	GNOMEUIINFO_ITEM_STOCK
-		(N_("Back"), N_("Go to the previously visited directory"),
-		 nautilus_window_back, GNOME_STOCK_PIXMAP_BACK),
-	GNOMEUIINFO_ITEM_STOCK
-		(N_("Forward"), N_("Go to the next directory"),
-		 nautilus_window_fwd, GNOME_STOCK_PIXMAP_FORWARD),
-        GNOMEUIINFO_ITEM_STOCK
-        (N_("Up"), N_("Go up a level in the directory heirarchy"),
-         nautilus_window_up, GNOME_STOCK_PIXMAP_UP),
-        GNOMEUIINFO_ITEM_STOCK
-        (N_("Reload"), N_("Reload this view"),
-         nautilus_window_reload, GNOME_STOCK_PIXMAP_REFRESH),
-        GNOMEUIINFO_SEPARATOR,
-        GNOMEUIINFO_ITEM_STOCK
-        (N_("Home"), N_("Go to your home directory"),
-         nautilus_window_home, GNOME_STOCK_PIXMAP_HOME),
-        GNOMEUIINFO_SEPARATOR,
-        GNOMEUIINFO_ITEM_STOCK
-        (N_("Stop"), N_("Interrupt loading"),
-         nautilus_window_stop, GNOME_STOCK_PIXMAP_STOP),
-        GNOMEUIINFO_END
+  GNOMEUIINFO_ITEM_STOCK
+  (N_("Back"), N_("Go to the previously visited directory"),
+   nautilus_window_back, GNOME_STOCK_PIXMAP_BACK),
+  GNOMEUIINFO_ITEM_STOCK
+  (N_("Forward"), N_("Go to the next directory"),
+   nautilus_window_fwd, GNOME_STOCK_PIXMAP_FORWARD),
+  GNOMEUIINFO_ITEM_STOCK
+  (N_("Up"), N_("Go up a level in the directory heirarchy"),
+   nautilus_window_up, GNOME_STOCK_PIXMAP_UP),
+  GNOMEUIINFO_ITEM_STOCK
+  (N_("Reload"), N_("Reload this view"),
+   nautilus_window_reload, GNOME_STOCK_PIXMAP_REFRESH),
+  GNOMEUIINFO_SEPARATOR,
+  GNOMEUIINFO_ITEM_STOCK
+  (N_("Home"), N_("Go to your home directory"),
+   nautilus_window_home, GNOME_STOCK_PIXMAP_HOME),
+  GNOMEUIINFO_SEPARATOR,
+  GNOMEUIINFO_ITEM_STOCK
+  (N_("Stop"), N_("Interrupt loading"),
+   nautilus_window_stop, GNOME_STOCK_PIXMAP_STOP),
+  GNOMEUIINFO_END
 };
 
 	
@@ -278,8 +278,8 @@ nautilus_window_get_type(void)
 }
 
 typedef void (*GtkSignal_NONE__BOXED_OBJECT) (GtkObject * object,
-					       gpointer arg1,
-					       GtkObject *arg2,
+                                              gpointer arg1,
+                                              GtkObject *arg2,
 					       gpointer user_data);
 static void 
 gtk_marshal_NONE__BOXED_OBJECT (GtkObject * object,
@@ -433,29 +433,6 @@ nautilus_window_constructed(NautilusWindow *window)
   
   app = GNOME_APP(window);
 
-  /* set up menu bar */
-  gnome_app_create_menus_with_data(app, main_menu, window);
-
-  /* desensitize the items that haven't yet been implemented
-   * FIXME: these all need to be implemented. I'm using hardwired numbers
-   * rather than enum symbols here just 'cuz the enums aren't needed (I think)
-   * once we've implemented things. If it turns out they are, we'll define 'em.
-   */
-
-  gtk_widget_set_sensitive(edit_menu_info[0].widget, FALSE); /* Undo */
-  gtk_widget_set_sensitive(edit_menu_info[2].widget, FALSE); /* Cut */
-  gtk_widget_set_sensitive(edit_menu_info[3].widget, FALSE); /* Copy */
-  gtk_widget_set_sensitive(edit_menu_info[4].widget, FALSE); /* Paste */
-  gtk_widget_set_sensitive(edit_menu_info[5].widget, FALSE); /* Clear */
-  gtk_widget_set_sensitive(edit_menu_info[7].widget, FALSE); /* Select All */
-
-  gtk_widget_set_sensitive(bookmarks_menu_info[0].widget, FALSE); /* Add Bookmark */
-  gtk_widget_set_sensitive(bookmarks_menu_info[1].widget, FALSE); /* Edit Bookmarks */
-  gtk_widget_set_sensitive(help_menu_info[0].widget, TRUE); /* About */
-
-  /* insert bookmarks menu */
-  gtk_menu_item_set_submenu(GTK_MENU_ITEM (main_menu[BOOKMARKS_MENU_INDEX].widget), 
-  			    nautilus_bookmarks_menu_new(window));
   /* set up toolbar */
   gnome_app_create_toolbar_with_data(app, toolbar_info, window);
   window->btn_back = toolbar_info[0].widget;
@@ -508,9 +485,6 @@ nautilus_window_constructed(NautilusWindow *window)
   /* insert a little padding so text isn't jammed against frame */
   gtk_misc_set_padding(GTK_MISC ((GTK_STATUSBAR (statusbar))->label), GNOME_PAD, 0);
   window->statusbar_ctx = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "IhateGtkStatusbar");
-  gnome_app_install_menu_hints(app, main_menu); /* This has to go here
-                                                   after the statusbar
-                                                   creation */
 
   /* set up window contents and policy */
 
@@ -538,7 +512,34 @@ nautilus_window_constructed(NautilusWindow *window)
   window->ntl_viewwindow = impl_Nautilus_ViewWindow__create(window);
   window->uih = gnome_ui_handler_new();
   gnome_ui_handler_set_app(window->uih, app);
-  gnome_object_add_interface(GNOME_OBJECT(window->uih), window->ntl_viewwindow);
+  gnome_ui_handler_set_statusbar(window->uih, statusbar);
+
+  /* set up menu bar */
+  gnome_app_create_menus_with_data(app, main_menu, window);
+
+  /* desensitize the items that haven't yet been implemented
+   * FIXME: these all need to be implemented. I'm using hardwired numbers
+   * rather than enum symbols here just 'cuz the enums aren't needed (I think)
+   * once we've implemented things. If it turns out they are, we'll define 'em.
+   */
+
+  gtk_widget_set_sensitive(edit_menu_info[0].widget, FALSE); /* Undo */
+  gtk_widget_set_sensitive(edit_menu_info[2].widget, FALSE); /* Cut */
+  gtk_widget_set_sensitive(edit_menu_info[3].widget, FALSE); /* Copy */
+  gtk_widget_set_sensitive(edit_menu_info[4].widget, FALSE); /* Paste */
+  gtk_widget_set_sensitive(edit_menu_info[5].widget, FALSE); /* Clear */
+  gtk_widget_set_sensitive(edit_menu_info[7].widget, FALSE); /* Select All */
+
+  gtk_widget_set_sensitive(bookmarks_menu_info[0].widget, FALSE); /* Add Bookmark */
+  gtk_widget_set_sensitive(bookmarks_menu_info[1].widget, FALSE); /* Edit Bookmarks */
+  gtk_widget_set_sensitive(help_menu_info[0].widget, TRUE); /* About */
+
+  /* insert bookmarks menu */
+  gtk_menu_item_set_submenu(GTK_MENU_ITEM (main_menu[BOOKMARKS_MENU_INDEX].widget), 
+  			    nautilus_bookmarks_menu_new(window));
+  gnome_app_install_menu_hints(app, main_menu); /* This has to go here
+                                                   after the statusbar
+                                                   creation */
 }
 
 static void
@@ -548,7 +549,7 @@ nautilus_window_set_arg (GtkObject      *object,
 {
   GnomeApp *app = (GnomeApp *) object;
   char *old_app_name;
-  NautilusView *new_cv;
+  GtkWidget *new_cv;
   NautilusWindow *window = (NautilusWindow *) object;
 
   switch(arg_id) {
@@ -566,27 +567,33 @@ nautilus_window_set_arg (GtkObject      *object,
       nautilus_window_constructed(NAUTILUS_WINDOW(object));
     break;
   case ARG_CONTENT_VIEW:
-    new_cv = NAUTILUS_VIEW(GTK_VALUE_OBJECT(*arg));
+    new_cv = (GtkWidget *)GTK_VALUE_OBJECT(*arg);
     if(window->content_view)
       {
 	gtk_widget_ref(GTK_WIDGET(window->content_view));
 	gtk_container_remove(GTK_CONTAINER(window->content_hbox), GTK_WIDGET(window->content_view));
+        if(new_cv)
+          {
 #ifdef CONTENTS_AS_HBOX
-	gtk_box_pack_end(GTK_BOX(window->content_hbox), GTK_WIDGET(new_cv), TRUE, TRUE, GNOME_PAD);
+            gtk_box_pack_end(GTK_BOX(window->content_hbox), new_cv, TRUE, TRUE, GNOME_PAD);
 #else
-        gtk_paned_pack2(GTK_PANED(window->content_hbox), GTK_WIDGET(new_cv), TRUE, FALSE);
+            gtk_paned_pack2(GTK_PANED(window->content_hbox), new_cv, TRUE, FALSE);
 #endif
+          }
+
 	gtk_widget_unref(GTK_WIDGET(window->content_view));
       }
-    else
+    else if(new_cv)
+      {
 #ifdef CONTENTS_AS_HBOX
-      gtk_box_pack_end(GTK_BOX(window->content_hbox), GTK_WIDGET(new_cv), TRUE, TRUE, GNOME_PAD);
+      gtk_box_pack_end(GTK_BOX(window->content_hbox), new_cv, TRUE, TRUE, GNOME_PAD);
 #else
-      gtk_paned_pack2(GTK_PANED(window->content_hbox), GTK_WIDGET(new_cv), TRUE, FALSE);
+      gtk_paned_pack2(GTK_PANED(window->content_hbox), new_cv, TRUE, FALSE);
 #endif
+      }
 
     gtk_widget_queue_resize(window->content_hbox);
-    window->content_view = new_cv;
+    window->content_view = (NautilusView *)new_cv;
     break;
   }
 }
@@ -747,7 +754,9 @@ void
 nautilus_window_set_content_view(NautilusWindow *window, NautilusView *content_view)
 {
   gtk_object_set(GTK_OBJECT(window), "content_view", content_view, NULL);
-  gtk_widget_show(GTK_WIDGET(content_view));
+
+  if(content_view)
+    gtk_widget_show(GTK_WIDGET(content_view));
 }
 
 void

@@ -29,6 +29,8 @@ nautilus_view_try_load_client(NautilusView *view, CORBA_Object obj, CORBA_Enviro
   nvi->control_frame = GNOME_OBJECT(gnome_control_frame_new());
   gnome_object_add_interface(GNOME_OBJECT(nvi->control_frame), view->view_frame);
 
+  gnome_control_frame_set_ui_handler(GNOME_CONTROL_FRAME(nvi->control_frame),
+				     nautilus_window_get_uih(NAUTILUS_WINDOW(view->main_window)));
   gnome_control_frame_bind_to_control(GNOME_CONTROL_FRAME(nvi->control_frame), control);
   view->client_widget = gnome_control_frame_get_widget(GNOME_CONTROL_FRAME(nvi->control_frame));
 
