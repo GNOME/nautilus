@@ -334,7 +334,12 @@ nautilus_window_title_changed (NautilusWindow *window,
 
 /* The bulk of this file - location changing */
 
-static gboolean
+
+/* Debugging function used to verify that the last_location_bookmark
+ * is in the state we expect when we're about to use it to update the
+ * Back or Forward list.
+ */
+static void
 check_last_bookmark_location_matches_window (NautilusWindow *window)
 {
 	char *uri;
@@ -343,16 +348,9 @@ check_last_bookmark_location_matches_window (NautilusWindow *window)
 	uri = nautilus_bookmark_get_uri (window->last_location_bookmark);
 	result = nautilus_uris_match (uri, window->location);
 	if (!result) {
-        	/* FIXME bugzilla.eazel.com 2707: This is always a bug, and there might be multiple bugs here.
-                 * Right now one of them is so common that I'm changing this from an
-                 * assert to a warning to stop blocking other work. When known bugs here are fixed,
-                 * we should change this back to g_error.
-                 */
-		 g_warning ("last_location_bookmark is %s, but should match %s", uri, window->location);
+		 g_error ("last_location_bookmark is %s, but expected %s", uri, window->location);
 	}
 	g_free (uri);
-
-	return result;
 }
 
 static void

@@ -1,3 +1,27 @@
+2000-09-15  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2362 (Selecting "Add Bookmark" while loading a web
+	page can crash)
+
+	* src/nautilus-window-menus.c:
+	(nautilus_window_add_bookmark_for_current_location): Removed
+	incorrect assert comparing window->location and 
+	window->current_location_bookmark. These can be out of synch
+	here due to the evils of the state machine, but this function
+	will be OK. Also, removed logic preventing adding multiple
+	bookmarks for the same location, since it (A) doesn't match the
+	behavior of other browsers; (B) might be annoying if you want
+	to add several identical bookmarks and then hand-tweak them in
+	the Edit Bookmarks window; (C) might be confusing if you don't
+	notice the existing bookmark in the menu; and (D) won't make 
+	sense when we fully support hierarchical bookmarks.
+
+	* src/nautilus-window-manage-views.c:
+	(check_last_bookmark_location_matches_window):
+	Updated the comments on this debugging function, and changed
+	its behavior from g_warning to g_error since the only known
+	reasons for it complaining have recently been fixed.
+
 2000-09-15  Darin Adler  <darin@eazel.com>
 
 	Robin helped me fix up the spec. file. Take that, Tinderbox!
