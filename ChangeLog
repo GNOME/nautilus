@@ -1,3 +1,13 @@
+2001-01-12  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Arik Devens  <arik@gnome.org>
+
+	* components/music/nautilus-music-view.c:
+	(music_view_set_selected_song_title), (reset_playtime),
+	(play_status_display), (slider_moved_callback),
+	(add_play_controls):
+	Fix bug 5617.  Playtime in music view keeps growing forever.
+	
 2001-01-12  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Rebecca Schulman  <rebecka@eazel.com>
