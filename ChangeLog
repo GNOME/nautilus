@@ -1,5 +1,13 @@
 2000-06-27  Andy Hertzfeld  <andy@eazel.com>
 
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(make_thumbnail_path), (nautilus_icon_factory_make_thumbnails):
+	fixed bug 1491, can't make thumbnails if enclosing directory has
+	a blank, by escaping and unescaping properly when we translate
+	between paths and uris.
+	
+2000-06-27  Andy Hertzfeld  <andy@eazel.com>
+
 	* libnautilus-extensions/nautilus-directory-background.c:
 	(background_reset_callback),
 	(nautilus_connect_background_to_directory_metadata):

@@ -1082,7 +1082,7 @@ nautilus_make_directory_and_parents (GnomeVFSURI *uri, guint permissions)
 static char *
 make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean use_local_directory)
 {
-	char *thumbnail_uri;
+	char *thumbnail_uri, *thumbnail_path;
 	char *directory_name = g_strdup (image_uri);
 	char *last_slash = strrchr (directory_name, '/');
 	*last_slash = '\0';
@@ -1095,7 +1095,9 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean us
 		GnomeVFSURI  *thumbnail_directory_uri;
 	        	
 	        char *escaped_uri = nautilus_str_escape_slashes (directory_name);		
-		thumbnail_uri = g_strdup_printf("file://%s/.nautilus/thumbnails/%s", g_get_home_dir(), escaped_uri);
+		thumbnail_path = g_strdup_printf ("%s/.nautilus/thumbnails/%s", g_get_home_dir(), escaped_uri);
+		thumbnail_uri = nautilus_get_uri_from_local_path (thumbnail_path);
+		g_free (thumbnail_path);
 		g_free(escaped_uri);
 		
 		/* we must create the directory if it doesnt exist */
@@ -2367,8 +2369,12 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 		/* fork a task to make the thumbnail, using gdk-pixbuf to do the scaling */
 		if (!(thumbnail_pid = fork())) {
 			GdkPixbuf* full_size_image;
-
-			full_size_image = gdk_pixbuf_new_from_file (info->thumbnail_uri + 7);
+			char *thumbnail_path;
+			
+			thumbnail_path = nautilus_get_local_path_from_uri (info->thumbnail_uri);
+			full_size_image = gdk_pixbuf_new_from_file (thumbnail_path);
+			g_free (thumbnail_path);
+			
 			if (full_size_image != NULL) {
 				GdkPixbuf *scaled_image, *framed_image;
 				int scaled_width, scaled_height;
@@ -2388,17 +2394,26 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 						      scaled_width, scaled_height, framed_image, 6, 6);
 				gdk_pixbuf_unref (scaled_image);
 				
-				if (!save_pixbuf_to_file (framed_image, factory->new_thumbnail_path + 7)) {
-					g_warning ("error saving thumbnail %s", factory->new_thumbnail_path + 7);
+				thumbnail_path = nautilus_get_local_path_from_uri (factory->new_thumbnail_path);			
+				if (!save_pixbuf_to_file (framed_image, thumbnail_path)) {
+					g_warning ("error saving thumbnail %s", thumbnail_path);
 				}
+				g_free (thumbnail_path);
 				gdk_pixbuf_unref (framed_image);
 			}
 			else {
 				/* gdk-pixbuf couldn't load the image, so trying using ImageMagick */
-				char *temp_str = g_strdup_printf ("png:%s", factory->new_thumbnail_path + 7);
+				char *temp_str;
+				thumbnail_path = nautilus_get_local_path_from_uri (factory->new_thumbnail_path);
+				temp_str = g_strdup_printf ("png:%s", thumbnail_path);
+				g_free (thumbnail_path);
+				
+				thumbnail_path = nautilus_get_local_path_from_uri (info->thumbnail_uri);
 				
 				/* scale the image, then draw a border and frame */
-				execlp ("convert", "convert", "-geometry",  "96x96", info->thumbnail_uri + 7, temp_str, NULL);
+				execlp ("convert", "convert", "-geometry",  "96x96", thumbnail_path, temp_str, NULL);
+				g_free (thumbnail_path);
+				g_free (temp_str);
 			}
 			
 			_exit(0);
