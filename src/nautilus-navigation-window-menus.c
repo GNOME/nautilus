@@ -32,7 +32,6 @@
 
 #include <libnautilus/nautilus-gtk-extensions.h>
 #include <libnautilus/nautilus-icon-factory.h>
-#include <bonobo/bonobo-ui-handler.h>
 
 
 static void                  activate_bookmark_in_menu_item      (BonoboUIHandler *uih, 
@@ -345,7 +344,7 @@ clear_appended_bookmark_items (NautilusWindow *window,
                         }
                         bonobo_ui_handler_menu_remove (window->uih, iterator->data);
 		}
-		else if (strcmp (iterator->data, last_static_item_path) == 0) {
+		else if (strcmp ((const char *) iterator->data, last_static_item_path) == 0) {
 			found_dynamic_items = TRUE;
 		}
 		iterator = g_list_next (iterator);
