@@ -1006,14 +1006,17 @@ nautilus_window_save_geometry (NautilusWindow *window)
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-	geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
-
-	nautilus_file_set_metadata (window->details->viewed_file,
-				    NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY,
-				    NULL,
-				    geometry_string);
-				    
-	g_free (geometry_string);
+	if (GTK_WIDGET(window)->window &&
+	    !(gdk_window_get_state (GTK_WIDGET(window)->window) & GDK_WINDOW_STATE_MAXIMIZED)) {
+		geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
+		
+		nautilus_file_set_metadata (window->details->viewed_file,
+					    NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY,
+					    NULL,
+					    geometry_string);
+		
+		g_free (geometry_string);
+	}
 }
 
 void
