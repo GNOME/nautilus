@@ -145,12 +145,14 @@ eazel_install_pre_install_packages (EazelInstall *service,
 		
 		if (skip) {
 			trilobite_debug ("Skipping %s...", pack->name);
+#if 0
 			/* Nuke the modifies list again, since we don't want to see them */
 			g_list_foreach (pack->modifies, 
 					(GFunc)packagedata_destroy, 
 					GINT_TO_POINTER (TRUE));
 			g_list_free (pack->modifies);
 			pack->modifies = NULL;
+#endif
 
 			/* Add it to the list of packages to nuke at the end
 			   of this function */

@@ -419,8 +419,7 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 	Trilobite_Eazel_Install__set_protocol (eazel_install_callback_corba_objref (cb), Trilobite_Eazel_PROTOCOL_HTTP, &ev);
 	Trilobite_Eazel_Install__set_server (eazel_install_callback_corba_objref (cb), DEFAULT_SERVICES_HOST, &ev);
 	Trilobite_Eazel_Install__set_server_port (eazel_install_callback_corba_objref (cb), DEFAULT_SERVICES_PORT, &ev);
-	Trilobite_Eazel_Install__set_tmp_dir (eazel_install_callback_corba_objref (cb), "/tmp", &ev);
-
+	
 	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", nautilus_rpm_view_download_progress_signal, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "install_progress", nautilus_rpm_view_install_progress_signal, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "install_failed", nautilus_rpm_view_install_failed, rpm_view);

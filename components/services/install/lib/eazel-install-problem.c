@@ -140,13 +140,37 @@ get_detailed_messages_foreach (PackageData *pack, GetErrorsForEachData *data)
 	case PACKAGE_RESOLVED:
 		break;
 	}
-	g_free (required);
-	g_free (required_by);
-	g_free (top_name);
 
 	if (message != NULL) {
 		(*errors) = g_list_append (*errors, message);
+	} else {
+		switch (pack->modify_status) {
+		case PACKAGE_MOD_UNTOUCHED:
+			if (pack->modifies) { 
+			} else {
+				message = g_strdup_printf (_("%s is already installed"), required);
+			}
+			break;
+		case PACKAGE_MOD_UPGRADED:
+			break;
+		case PACKAGE_MOD_DOWNGRADED:
+			message = g_strdup_printf (_("%s, which is newer, is already installed"), 
+						   required);
+			break;
+		case PACKAGE_MOD_INSTALLED:
+			break;
+		case PACKAGE_MOD_UNINSTALLED:
+			break;
+		}
+
+		if (message != NULL) {
+			(*errors) = g_list_append (*errors, message);
+		}
 	}
+
+	g_free (required);
+	g_free (required_by);
+	g_free (top_name);
 
 	/* Create the path list */
 	data->path = g_list_prepend (data->path, pack);

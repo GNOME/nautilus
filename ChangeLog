@@ -1,3 +1,26 @@
+2000-10-31  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(nautilus_rpm_view_install_package_callback):
+	Hopefully fixed the completely fatal tmp_dir bug in the 
+	package view.
+
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_pre_install_packages):
+	Ifdeffed some borked code
+
+	* components/services/install/lib/eazel-install-problem.c:
+	(get_detailed_messages_foreach):
+	If no messages generated on modification status. Potientially
+	completely incorrect unless I check prev_pack->status first.
+
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (dig_up_errors), (nautilus_service_install_failed):
+	Use eazel-install-problem to generate error messages
+
+	* nautilus.spec.in:
+	Woops, eazel/throbber is not there..
+
 2000-10-30  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* nautilus.spec.in:
