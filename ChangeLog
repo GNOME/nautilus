@@ -137,6 +137,37 @@
 	implementing the design that Arlo wanted, with the theme name
 	above the theme description instead of in separate columns.
 	
+2001-02-12  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* configure.in:
+
+	Move -lrpmio earlier in the RPM_LIBS line, because the bootstrap
+	installer is picky about it.  Also, generate the installer's
+	Makefile during the 'configure' stage.
+	
+	* nautilus-installer/src/Makefile.am:
+
+	Use predefined macros for most libraries (still keeping them to
+	the mininum) and get libtool/automake to do the heavy lifting part
+	of making a static binary.
+	
+	* nautilus-installer/src/callbacks.c: (druid_cancel),
+	(druid_finish):
+
+	Try to avoid unref'ing or using the installer object during button
+	callbacks if it hasn't been created yet.
+
+	* nautilus-installer/src/installer.c: (eazel_installer_finalize):
+
+	Don't unref the service object, it causes assertions.
+	
+	* nautilus-installer/src/link.sh:
+
+	Make it so that (at least for me) the bootstrap installer will
+	build on a RH70 system now.
+
 2001-02-12  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* src/Makefile.am: disabled "make check" by commenting
