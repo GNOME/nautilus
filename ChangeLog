@@ -1,3 +1,13 @@
+2000-06-18  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_remove_image_uri),
+	(nautilus_icon_factory_clear_image), (first_file_more_recent),
+	(nautilus_icon_factory_get_thumbnail_uri), (check_for_thumbnails):
+	made it check modification dates to update thumbnails when their underlying
+	image changes.  Had to add a routine to remove specific images from the
+	icon cache.
+	
 2000-06-18  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/inventory/.cvsignore:

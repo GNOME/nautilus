@@ -313,6 +313,7 @@ nautilus_icon_factory_destroy_cached_image (gpointer key, gpointer value, gpoint
         return TRUE;
 }
 
+
 /* Reset the cache to the default state. */
 static void
 nautilus_icon_factory_clear (void)
@@ -387,6 +388,34 @@ nautilus_icon_factory_possibly_free_cached_image (gpointer key,
 #endif
 }
 
+/* remove images whose uri field matches the passed-in uri */
+
+static gboolean
+nautilus_icon_factory_remove_image_uri (gpointer key,
+					gpointer value,
+					gpointer user_data)
+{
+        char *image_uri;
+        IconCacheKey *icon_key;
+
+	icon_key = key;
+        image_uri = user_data;
+
+	/* see if the the uri's match - if not, just return */
+	if (icon_key->scalable_icon->uri && strcmp(icon_key->scalable_icon->uri, image_uri)) {
+		return FALSE;
+	}
+	
+	/* if it's in the recently used list, free it from there */      
+        if (icon_key->recently_used_node.next != NULL) {
+		icon_key->recently_used_node.next->prev = icon_key->recently_used_node.prev;
+		icon_key->recently_used_node.prev->next = icon_key->recently_used_node.next;
+	}
+	
+	/* Free the item. */
+        return nautilus_icon_factory_destroy_cached_image (key, value, NULL);
+}
+
 /* Sweep the cache, freeing any images that are not in use and are
  * also not recently used.
  */
@@ -422,6 +451,22 @@ nautilus_icon_factory_schedule_sweep (void)
 					      nautilus_icon_factory_sweep,
 					      factory);
 }
+
+/* clear a specific image from the cache */
+
+static void
+nautilus_icon_factory_clear_image(const char *image_uri)
+{
+	NautilusIconFactory *factory;
+
+	/* build the key and look it up in the icon cache */
+
+	factory = nautilus_get_current_icon_factory ();
+	g_hash_table_foreach_remove (factory->icon_cache,
+				     nautilus_icon_factory_remove_image_uri,
+				     (gpointer) image_uri);
+}
+
 
 /* Change the theme. */
 void
@@ -1028,6 +1073,42 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only, gboolean us
 	return thumbnail_uri;
 }
 
+/* utility routine that takes two uris and returns true if the first file has been modified later than the second */
+/* FIXME: it makes synchronous file info calls, so for now, it returns FALSE if either of the uri's are non-local */
+static gboolean
+first_file_more_recent(const char* file_uri, const char* other_file_uri)
+{
+	GnomeVFSURI *vfs_uri, *other_vfs_uri;
+	gboolean more_recent, is_local;
+	
+	GnomeVFSFileInfo file_info, other_file_info;
+
+	/* if either file is remote, return FALSE.  Eventually we'll make this async to fix this */
+	vfs_uri = gnome_vfs_uri_new(file_uri);
+	other_vfs_uri = gnome_vfs_uri_new(other_file_uri);
+	is_local = gnome_vfs_uri_is_local (vfs_uri) && gnome_vfs_uri_is_local (other_vfs_uri);
+	gnome_vfs_uri_unref(vfs_uri);
+	gnome_vfs_uri_unref(other_vfs_uri);
+	
+	if (!is_local) {
+		return FALSE;
+	}
+	
+	/* gather the info and then compare modification times */
+	gnome_vfs_file_info_init (&file_info);
+	gnome_vfs_get_file_info (file_uri, &file_info, GNOME_VFS_FILE_INFO_DEFAULT, NULL);
+	
+	gnome_vfs_file_info_init (&other_file_info);
+	gnome_vfs_get_file_info (other_file_uri, &other_file_info, GNOME_VFS_FILE_INFO_DEFAULT, NULL);
+
+	more_recent = file_info.mtime > other_file_info.mtime;
+
+	gnome_vfs_file_info_clear (&file_info);
+	gnome_vfs_file_info_clear (&other_file_info);
+
+	return more_recent;
+}
+
 /* structure used for making thumbnails, associating a uri with where the thumbnail is to be stored */
 
 typedef struct {
@@ -1064,6 +1145,8 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file)
 	char *thumbnail_uri;
 	char *file_uri;
 	gboolean local_flag = TRUE;
+	gboolean  remake_thumbnail = FALSE;
+	
 	file_uri = nautilus_file_get_uri (file);
 	
 	/* compose the uri for the thumbnail locally */
@@ -1071,18 +1154,40 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file)
 		
 	/* if the thumbnail file already exists locally, simply return the uri */
 	if (vfs_file_exists (thumbnail_uri)) {
-		g_free (file_uri);
-		return thumbnail_uri;
+		
+		/* see if the file changed since it was thumbnailed by comparing the modification time */
+		remake_thumbnail = first_file_more_recent(file_uri, thumbnail_uri);
+		
+		/* if the file hasn't changed, return the thumbnail uri */
+		if (!remake_thumbnail) {
+			g_free (file_uri);
+			return thumbnail_uri;
+		} else {
+			nautilus_icon_factory_clear_image(thumbnail_uri);
+			gnome_vfs_unlink(thumbnail_uri);
+		}
 	}
 	
 	/* now try it globally */
-	g_free (thumbnail_uri);
-	thumbnail_uri = make_thumbnail_path (file_uri, FALSE, FALSE);
+	if (!remake_thumbnail) {
+		g_free (thumbnail_uri);
+		thumbnail_uri = make_thumbnail_path (file_uri, FALSE, FALSE);
 		
-	/* if the thumbnail file already exists in the common area,  return that uri */
-	if (vfs_file_exists (thumbnail_uri)) {
-		g_free (file_uri);
-		return thumbnail_uri;
+		/* if the thumbnail file already exists in the common area,  return that uri */
+		if (vfs_file_exists (thumbnail_uri)) {
+		
+			/* see if the file changed since it was thumbnailed by comparing the modification time */
+			remake_thumbnail = first_file_more_recent(file_uri, thumbnail_uri);
+		
+			/* if the file hasn't changed, return the thumbnail uri */
+			if (!remake_thumbnail) {
+				g_free (file_uri);
+				return thumbnail_uri;
+			} else {
+				nautilus_icon_factory_clear_image(thumbnail_uri);
+				gnome_vfs_unlink(thumbnail_uri);
+			}
+		}
 	}
 	
         /* make the thumbnail directory if necessary, at first try it locally */
@@ -1099,7 +1204,7 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file)
 		result = gnome_vfs_make_directory (thumbnail_uri, THUMBNAIL_DIR_PERMISSIONS);	
 	}
 	
-	/* the thumbnail needs to be created, so add an entry to the thumbnail list */
+	/* the thumbnail needs to be created (or recreated), so add an entry to the thumbnail list */
  
 	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILEEXISTS) {
 
@@ -1108,6 +1213,7 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file)
 		NautilusThumbnailInfo *info = g_new0 (NautilusThumbnailInfo, 1);
 		info->thumbnail_uri = file_uri;
 		info->is_local = local_flag;
+		
 		factory = nautilus_get_current_icon_factory ();		
 		if (factory->thumbnails) {
 			if (g_list_find_custom (factory->thumbnails, info, compare_thumbnail_info) == NULL) {
@@ -1122,6 +1228,7 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file)
 			factory->timeout_task_id = gtk_timeout_add (400, (GtkFunction) nautilus_icon_factory_make_thumbnails, NULL);
 		}
 	}
+	
 	g_free (thumbnail_uri);
 	
 	/* return the uri to the "loading image" icon */
@@ -2105,6 +2212,7 @@ check_for_thumbnails (NautilusIconFactory *factory)
 			   this one from the pending list. */
 			g_free (current_thumbnail);
 			file = nautilus_file_get (info->thumbnail_uri);
+						
 			if (file != NULL) {
 				nautilus_file_changed (file);
 				nautilus_file_unref (file);
