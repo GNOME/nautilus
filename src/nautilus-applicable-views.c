@@ -272,10 +272,10 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                         (navinfo->content_identifiers, 
                          nautilus_view_identifier_new ("OAFIID:bonobo_text-plain:26e1f6ba-90dd-4783-b304-6122c4b6c821", "Text"));
         } else if (nautilus_str_has_prefix (navinfo->navinfo.content_type, "image/")) {
-                fallback_iid = "eog-image-viewer";
+                fallback_iid = "OAFIID:eog-image-viewer:f67c01c8-a44d-4c50-8ce1-dc893c961876";
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 
-                         nautilus_view_identifier_new ("eog-image-viewer", "Image"));
+                         nautilus_view_identifier_new ("OAFIID:eog-image-viewer:f67c01c8-a44d-4c50-8ce1-dc893c961876", "Image"));
         } else if (strcmp (navinfo->navinfo.content_type, "special/x-irc-session") == 0) {
                 fallback_iid = "xchat";
                 navinfo->content_identifiers = g_slist_append
