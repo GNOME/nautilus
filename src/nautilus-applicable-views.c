@@ -423,26 +423,17 @@ got_metadata_callback (NautilusDirectory *directory,
                        gpointer callback_data)
 {
         NautilusNavigationInfo *info;
-        GnomeVFSResult result;
 
         info = callback_data;
         g_assert (info->directory == directory);
         
-        result = gnome_vfs_async_get_file_info (&info->ah,
-                                                info->navinfo.requested_uri,
-                                                (GNOME_VFS_FILE_INFO_GETMIMETYPE
-                                                 | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
-                                                NULL,
-                                                my_notify_when_ready,
-                                                info);
-        
-        if (result != GNOME_VFS_OK) {
-                /* Note: Not sure if or when this case ever occurs. result == GNOME_VFS_OK
-                 * for normally-handled uris, for non-existent uris, and for uris for which
-                 * Nautilus has no content viewer.
-                 */
-                my_notify_when_ready (NULL, result, NULL, info);
-        }
+        gnome_vfs_async_get_file_info (&info->ah,
+                                       info->navinfo.requested_uri,
+                                       (GNOME_VFS_FILE_INFO_GETMIMETYPE
+                                        | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
+                                       NULL,
+                                       my_notify_when_ready,
+                                       info);
 }
 
 /* NautilusNavigationInfo */

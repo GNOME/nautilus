@@ -1,12 +1,30 @@
+2000-04-13  Darin Adler  <darin@eazel.com>
+
+	Updated for new GNOME VFS.
+
+	* libnautilus/nautilus-directory.c
+	(read_some_metafile_data), (metafile_read_start),
+	(metafile_write_create_callback), (metafile_write_start),
+	(nautilus_directory_monitor_files_ref):
+	* libnautilus/gdk-pixbuf-extensions.c
+	(nautilus_gdk_pixbuf_load_async):
+	* src/ntl-uri-map.c (got_metadata_callback):
+	* components/html/ntl-web-browser.c (browser_vfs_callback),
+	(do_vfs_load):
+	Update for the new GNOME VFS which doesn't return an immediate error
+	code when doing an async. call.
+
 2000-04-12  Andy Hertzfeld <andy@eazel.com>
 
 	* src/ntl-window-msgs.c:
-	improved the title of uri's not handled by gnome-vfs; instead of "Nautilus" use the text
-	after the colon, if there is any
+	improved the title of uri's not handled by gnome-vfs; instead of
+	"Nautilus" use the text after the colon, if there is any
 	* components/services/startup/nautilus-service-startup-view.c:
-	used Gene's escaping routine in gnome-vfs to escape http parameters as necessary
+	used Gene's escaping routine in gnome-vfs to escape http
+	parameters as necessary
 	* libnautilus/nautilus-directory.c:
-	weakened assert in metadata callback to allow non-vfs uris to continue to work
+	weakened assert in metadata callback to allow non-vfs uris to
+	continue to work
 	
 2000-04-12  Andy Hertzfeld <andy@eazel.com>
 

@@ -367,22 +367,18 @@ browser_vfs_callback(GnomeVFSAsyncHandle *h, GnomeVFSResult res, gpointer data)
     }
   else
     {
-      res = gnome_vfs_async_read(h, vfs_read_buf, sizeof(vfs_read_buf), browser_vfs_read_callback, vfsh);
-      g_message("Did read, result was %s", gnome_vfs_result_to_string(res));
+      gnome_vfs_async_read(h, vfs_read_buf, sizeof(vfs_read_buf), browser_vfs_read_callback, vfsh);
     }
 }
 
 static void
 do_vfs_load(VFSHandle *vfsh)
 {
-  GnomeVFSResult res;
   GnomeVFSAsyncHandle *ah;
 
   g_warning("Falling back to gnome-vfs for %s", vfsh->url);
 
-  res = gnome_vfs_async_open(&ah, vfsh->url, GNOME_VFS_OPEN_READ, browser_vfs_callback, vfsh);
-      
-  return;
+  gnome_vfs_async_open(&ah, vfsh->url, GNOME_VFS_OPEN_READ, browser_vfs_callback, vfsh);
 }
 
 static void

@@ -142,21 +142,16 @@ nautilus_gdk_pixbuf_load_async (const char *uri,
 				gpointer callback_data)
 {
 	NautilusPixbufLoadHandle *handle;
-	GnomeVFSResult result;
 
 	handle = g_new0 (NautilusPixbufLoadHandle, 1);
 	handle->callback = callback;
 	handle->callback_data = callback_data;
 
-	result = gnome_vfs_async_open (&handle->vfs_handle,
-				       uri,
-				       GNOME_VFS_OPEN_READ,
-				       file_opened_callback,
-				       handle);
-	if (result != GNOME_VFS_OK) {
-		load_done (handle, result, NULL);
-		return NULL;
-	}
+	gnome_vfs_async_open (&handle->vfs_handle,
+			      uri,
+			      GNOME_VFS_OPEN_READ,
+			      file_opened_callback,
+			      handle);
 
 	return handle;
 }
