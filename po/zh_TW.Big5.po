@@ -2,11 +2,16 @@
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # Gong Yi LIAO <granziliao@sinamail.com>, 2000.
 #
-#: libnautilus-extensions/nautilus-search-uri.c:357
+#: libnautilus-extensions/nautilus-search-uri.c:342
+#: libnautilus-extensions/nautilus-search-uri.c:348
+#: libnautilus-extensions/nautilus-search-uri.c:351
+#: libnautilus-extensions/nautilus-search-uri.c:355
+#: libnautilus-extensions/nautilus-search-uri.c:359
+#: libnautilus-extensions/nautilus-search-uri.c:363
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus CVS-20000722\n"
-"POT-Creation-Date: 2000-08-21 00:56+0800\n"
+"POT-Creation-Date: 2000-08-27 00:52+0800\n"
 "PO-Revision-Date: 2000-08-04 03:25+0800\n"
 "Last-Translator: Gong Yi LIAO <granziliao@sinamail.com>\n"
 "Language-Team: Taiwanese <granziliao@sinamail.com>\n"
@@ -14,14 +19,14 @@ msgstr ""
 "Content-Type: text/plain; charset=big5\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:82
+#: components/services/install/command-line/eazel-alt-install-corba.c:81
 #: components/services/install/command-line/eazel-alt-install.c:74
 #: components/services/install/command-line/eazel-gen-xml.c:43
 #: components/services/install/command-line/eazel-uninstall.c:68
 msgid "Show debug output"
 msgstr "顯示除錯結果"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:92
+#: components/services/install/command-line/eazel-alt-install-corba.c:91
 #: components/services/install/command-line/eazel-alt-install.c:75
 msgid "Set port numer (80)"
 msgstr "設定傳輸埠 (預設 80)"
@@ -42,17 +47,17 @@ msgstr "設定暫存檔案目錄 (預設 /tmp/eazel-install)"
 msgid "Specify server"
 msgstr "指定伺服器形式"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:90
+#: components/services/install/command-line/eazel-alt-install-corba.c:89
 #: components/services/install/command-line/eazel-alt-install.c:79
 msgid "Use http"
 msgstr "使用HTTP傳輸協定"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:88
+#: components/services/install/command-line/eazel-alt-install-corba.c:87
 #: components/services/install/command-line/eazel-alt-install.c:80
 msgid "Use ftp"
 msgstr "使用FTP傳輸協定"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:89
+#: components/services/install/command-line/eazel-alt-install-corba.c:88
 #: components/services/install/command-line/eazel-alt-install.c:81
 msgid "Use local"
 msgstr "使用本機資料"
@@ -62,7 +67,6 @@ msgstr "使用本機資料"
 msgid "Specify package list to use (/var/eazel/service/package-list.xml)"
 msgstr "指定要使用的套件列表 (/var/eazel/service/package-list.xml)"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:81
 #: components/services/install/command-line/eazel-alt-install.c:83
 #: components/services/install/command-line/eazel-uninstall.c:71
 msgid "Specify config file (/var/eazel/services/eazel-services-config.xml)"
@@ -82,7 +86,7 @@ msgid "XML package list successfully generated ...\n"
 msgstr "XML 套件表已成功\產生...\n"
 
 #: components/services/install/command-line/eazel-install.c:124
-#: components/services/install/lib/eazel-install-object.c:570
+#: components/services/install/lib/eazel-install-object.c:595
 msgid "Creating temporary download directory ...\n"
 msgstr "設置下載檔案暫存目錄...\n"
 
@@ -147,26 +151,10 @@ msgstr "供應指定檔案者"
 msgid "Who requires specified packages"
 msgstr "需要指定套件者"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:83
+#: components/services/install/command-line/eazel-alt-install-corba.c:82
 #: components/services/install/command-line/eazel-uninstall.c:70
 msgid "10 sec delay after starting service"
 msgstr "十秒後進行服務"
-
-#. Add package information
-#. Package Name
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:92
-msgid "Installing \"The Gimp\""
-msgstr "安裝 \"The Gimp\""
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:340
-#, c-format
-msgid "Installing \"%s\" "
-msgstr "安裝 \"%s\" 中 "
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:381
-#, c-format
-msgid "Version %s-%s"
-msgstr "版本 %s-%s"
 
 #: components/services/trilobite/libtrilobite/trilobite-core-utils.c:197
 #: components/shell/shell.c:60
@@ -204,11 +192,10 @@ msgstr "錯誤:不確實的操作模式(%s)\n"
 msgid ""
 "Error: Invalid syntax\n"
 "Syntax: %s\n"
-msgstr "錯誤:未知符號符號: %s\n"
+msgstr "錯誤:未知表示法: %s\n"
 
 #: components/websearch/ntl-web-search.c:164
 #: libnautilus-extensions/nautilus-global-preferences.c:256
-#: src/nautilus-window-toolbars.c:140
 msgid "Search"
 msgstr "搜尋"
 
@@ -219,24 +206,30 @@ msgid "Results"
 msgstr "結果"
 
 #: cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-edge.c:265
-#: cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-finish.c:244
-#: cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-standard.c:241
-#: cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-start.c:262
+#: cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-standard.c:259
 msgid "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*"
 msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*"
 
 #: cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-edge.c:274
-#: cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-finish.c:251
-#: cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-start.c:271
 msgid "-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*"
 msgstr "-adobe-helvetica-medium-r-normal-*-*-120-*-*-p-*-*-*"
 
-#: cut-n-paste-code/widgets/nautilus-druid/nautilus-druid.c:145
-#: src/nautilus-window-toolbars.c:113
+#: cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-eazel.c:347
+#, fuzzy
+msgid "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
+msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*"
+
+#: cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-eazel.c:356
+#, fuzzy
+msgid "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
+msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*"
+
+#: cut-n-paste-code/widgets/nautilus-druid/nautilus-druid.c:147
+#: src/nautilus-window-toolbars.c:105
 msgid "Back"
 msgstr "前一頁"
 
-#: cut-n-paste-code/widgets/nautilus-druid/nautilus-druid.c:153
+#: cut-n-paste-code/widgets/nautilus-druid/nautilus-druid.c:155
 msgid "Finish"
 msgstr "完成"
 
@@ -244,7 +237,7 @@ msgstr "完成"
 #. * can only handle local files. Tell user. Some day we could offer
 #. * to copy it locally for the user, if we knew where to put it.
 #.
-#: libnautilus-extensions/nautilus-program-choosing.c:247
+#: libnautilus-extensions/nautilus-program-choosing.c:245
 #, c-format
 msgid ""
 "Sorry, %s can only open local files, and \"%s\" is remote. If you want to "
@@ -253,161 +246,177 @@ msgstr ""
 "抱歉, %s 只能開啟這台電腦上的檔案,但是 \"%s\" 在遠端電腦上.如果您要以 %s "
 "開啟這個檔案,請先將複製一份到您的電腦上."
 
-#: libnautilus-extensions/nautilus-program-choosing.c:252
+#: libnautilus-extensions/nautilus-program-choosing.c:250
 msgid "Can't open remote file"
 msgstr "無法開啟遠端檔案"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:1196
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:47
-#: src/file-manager/fm-list-view.c:1669
-#: src/file-manager/fm-search-list-view.c:235
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:50
+#: src/file-manager/fm-list-view.c:1674
+#: src/file-manager/fm-search-list-view.c:232
 #: src/nautilus-bookmarks-window.c:175
 msgid "Name"
 msgstr "名稱"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:48
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:51
 msgid "Content"
 msgstr "內容"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:49
-#: src/file-manager/fm-list-view.c:1681
-#: src/file-manager/fm-search-list-view.c:247
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:52
+#: src/file-manager/fm-list-view.c:1686
+#: src/file-manager/fm-search-list-view.c:244
 msgid "Type"
 msgstr "格式"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:50
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:53
 msgid "Stored"
 msgstr "儲存"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:51
-#: src/file-manager/fm-list-view.c:1675
-#: src/file-manager/fm-search-list-view.c:241
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:54
+#: src/file-manager/fm-list-view.c:1680
+#: src/file-manager/fm-search-list-view.c:238
 msgid "Size"
 msgstr "大小"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:52
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:55
 msgid "With Emblem"
 msgstr "象徵"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:53
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:56
 msgid "Last Modified"
 msgstr "最後修改日期"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:54
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:57
 msgid "Owned By"
 msgstr "所有者"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:60
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:63
 msgid "contains"
 msgstr "包含"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:61
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:64
 msgid "starts with"
 msgstr "以...開始"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:62
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:65
 msgid "ends with"
 msgstr "以...結束"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:63
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:66
 msgid "matches glob"
 msgstr "比對 glob"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:64
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:67
 msgid "matches regexp"
 msgstr "比對符合紀錄"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:69
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:72
 msgid "includes"
 msgstr "包含"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:70
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:73
 msgid "does not include"
 msgstr "不包含"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:76
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:91
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:134
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:79
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:94
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:124
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:139
 msgid "is"
 msgstr "是"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:77
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:135
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:80
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:125
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:140
 msgid "is not"
 msgstr "不是"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:82
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:85
 msgid "regular file"
 msgstr "標準檔案"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:83
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:86
 msgid "text file"
 msgstr "純文字檔案"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:84
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:87
 msgid "application"
 msgstr "應用程式"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:85
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:88
 msgid "directory"
 msgstr "目錄"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:86
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:89
 #: libnautilus-extensions/nautilus-search-uri.c:239
 msgid "music"
 msgstr "音樂"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:96
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:99
 msgid "on this computer"
 msgstr "在這台電腦上搜尋"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:97
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:100
 msgid "in my vault"
 msgstr "我的倉庫"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:102
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:105
 msgid "larger than"
 msgstr "大於..."
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:103
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:106
 msgid "smaller than"
 msgstr "小於..."
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:108
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:111
 msgid "marked with"
 msgstr "以...標記"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:109
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:112
 msgid "not marked with"
 msgstr "不以...標記"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:121
-#: libnautilus-extensions/nautilus-search-uri.c:298
-msgid "after"
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:126
+#, fuzzy
+msgid "is after"
 msgstr "之後"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:122
-#: libnautilus-extensions/nautilus-search-uri.c:301
-msgid "before"
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:127
+#, fuzzy
+msgid "is before"
 msgstr "之前"
 
-#: libnautilus-extensions/nautilus-search-bar-criterion.c:127
-msgid "today"
-msgstr "今日"
-
+#: libnautilus-extensions/nautilus-file.c:3058
+#: libnautilus-extensions/nautilus-file.c:3068
 #: libnautilus-extensions/nautilus-search-bar-criterion.c:128
-msgid "this week"
-msgstr "本週"
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:131
+#: src/file-manager/fm-properties-window.c:881
+msgid "--"
+msgstr "--"
 
 #: libnautilus-extensions/nautilus-search-bar-criterion.c:129
-msgid "this month"
+#, fuzzy
+msgid "is today"
+msgstr "今日"
+
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:130
+msgid "is yesterday"
+msgstr "昨日"
+
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:132
+msgid "is within a week of"
+msgstr "一週內"
+
+#: libnautilus-extensions/nautilus-search-bar-criterion.c:133
+#, fuzzy
+msgid "is within a month of"
 msgstr "這個月"
 
 #: libnautilus-extensions/nautilus-stock-dialogs.c:409
 msgid "Details"
 msgstr "細節"
 
-#: nautilus-installer/src/installer.c:249
+#: nautilus-installer/src/installer.c:285
 #, c-format
 msgid ""
 "Now starting the install process.\n"
@@ -420,14 +429,14 @@ msgstr ""
 "安裝軟體需要 %d MB 的磁碟空間."
 
 #: components/services/install/lib/eazel-install-metadata.c:54
-#: components/services/install/lib/eazel-install-metadata.c:62
-#: nautilus-installer/src/installer.c:310
-#: nautilus-installer/src/installer.c:318
+#: components/services/install/lib/eazel-install-metadata.c:64
+#: nautilus-installer/src/installer.c:364
+#: nautilus-installer/src/installer.c:373
 #, c-format
 msgid "*** Could not create services directory (%s)! ***\n"
 msgstr "*** 無法設置服務目錄! ***\n"
 
-#: nautilus-installer/src/installer.c:339
+#: nautilus-installer/src/installer.c:390
 msgid ""
 "This is a warning, you're running\n"
 "the installer for real, without \n"
@@ -438,11 +447,30 @@ msgstr ""
 "並非測試 ( 使用引數 --test )而已,\n"
 "請務必小心."
 
-#: nautilus-installer/src/interface.c:51
+#: nautilus-installer/src/installer.c:400
+msgid ""
+"This preview installer only works\n"
+"for RPM based systems. You will have\n"
+"to download the source yourself."
+msgstr ""
+"這個安裝程式只能適用於RPM-Based系統,\n"
+"您必須自己下載,然後手動安裝."
+
+#: nautilus-installer/src/installer.c:410
+msgid ""
+"You do not have HelixCode gnome installed.\n"
+"This means I will install the required parts\n"
+"for you, but you might want to abort the\n"
+"installer and go to http://www.helixcode.com\n"
+"and download the full HelixCode Gnome\n"
+"installation"
+msgstr ""
+
+#: nautilus-installer/src/interface.c:72
 msgid "What to do ?"
 msgstr "如何作?"
 
-#: nautilus-installer/src/interface.c:69
+#: nautilus-installer/src/interface.c:90
 #, fuzzy
 msgid ""
 "You have several choices for what you would like the installer to do.\n"
@@ -451,68 +479,50 @@ msgstr ""
 "您有許\多要安裝程式的執行選項\n"
 "請選擇並按下\"下一步\"按鈕."
 
-#: nautilus-installer/src/interface.c:88
-msgid "Most recent build"
+#: nautilus-installer/src/interface.c:109
+#, fuzzy
+msgid "Most Recent Build"
 msgstr "最近完成"
 
-#: nautilus-installer/src/interface.c:99
+#: nautilus-installer/src/interface.c:120
 msgid "Stable Nautilus"
 msgstr "Nautilus 穩定版"
 
-#.
-#. services_only_button = gtk_radio_button_new_with_label (fixed3_group, _("*"));
-#. fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (services_only_button));
-#. gtk_widget_set_name (services_only_button, "services_only_button");
-#. gtk_widget_ref (services_only_button);
-#. gtk_object_set_data_full (GTK_OBJECT (window), "services_only_button", services_only_button,
-#. (GtkDestroyNotify) gtk_widget_unref);
-#. gtk_widget_show (services_only_button);
-#. gtk_fixed_put (GTK_FIXED (fixed3), services_only_button, 72, 88);
-#. gtk_widget_set_uposition (services_only_button, 72, 88);
-#. gtk_widget_set_usize (services_only_button, 0, 0);
-#. gtk_widget_set_sensitive (GTK_WIDGET (services_only_button), FALSE);
-#.
-#. upgrade_button = gtk_radio_button_new_with_label (fixed3_group, _("*"));
-#. fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (upgrade_button));
-#. gtk_widget_set_name (upgrade_button, "upgrade_button");
-#. gtk_widget_ref (upgrade_button);
-#. gtk_object_set_data_full (GTK_OBJECT (window), "upgrade_button", upgrade_button,
-#. (GtkDestroyNotify) gtk_widget_unref);
-#. gtk_widget_show (upgrade_button);
-#. gtk_fixed_put (GTK_FIXED (fixed3), upgrade_button, 72, 120);
-#. gtk_widget_set_uposition (upgrade_button, 72, 120);
-#. gtk_widget_set_usize (upgrade_button, 0, 0);
-#. gtk_widget_set_sensitive (GTK_WIDGET (upgrade_button), FALSE);
-#.
-#: components/rpmview/nautilus-rpm-view.c:286
-#: nautilus-installer/src/interface.c:134
-msgid "Uninstall"
-msgstr "移除"
+#: nautilus-installer/src/interface.c:131
+msgid "*"
+msgstr "*"
 
-#: nautilus-installer/src/interface.c:172
+#: nautilus-installer/src/interface.c:143
+msgid "Latest RPM Build"
+msgstr "最近RPM完成時間"
+
+#: nautilus-installer/src/interface.c:154
+#, fuzzy
+msgid "Uninstall Nautilus"
+msgstr "移除失敗"
+
+#: nautilus-installer/src/interface.c:191
 msgid "Currently downloading packages required to install Nautilus\n"
 msgstr "現在正在下載安裝Nautilus所需的套件\n"
 
-#: nautilus-installer/src/interface.c:190
+#: nautilus-installer/src/interface.c:209
 msgid "Progress..."
 msgstr "程序..."
 
-#: nautilus-installer/src/interface.c:243
-msgid "                                                    "
-msgstr ""
+#: nautilus-installer/src/interface.c:262
+msgid "En fj犘ing hedder Bent"
+msgstr "正在處理"
 
 #. set up the final page
-#: nautilus-installer/src/interface.c:315 src/nautilus-first-time-druid.c:442
+#: nautilus-installer/src/interface.c:345 src/nautilus-first-time-druid.c:589
 msgid "Finished"
 msgstr "完成"
 
-#: nautilus-installer/src/interface.c:317
+#: nautilus-installer/src/interface.c:347
 #, fuzzy
 msgid ""
 "If the installation was successfull, you can\n"
 "find the nautilus icon in the applications menu.\n"
-"If you restart GMC, you can also use the desktop icon, which\n"
-"I'll install when you click \"Finish\".\n"
 "\n"
 "Thanks for taking the time to try out Nautilus.\n"
 "\n"
@@ -525,15 +535,15 @@ msgstr ""
 "\n"
 "祝您健康快樂."
 
-#: nautilus-installer/src/interface.c:344
+#: nautilus-installer/src/interface.c:372
 msgid "Nautilus install tool"
 msgstr "Nautilus 安裝工具"
 
-#: nautilus-installer/src/interface.c:370
+#: nautilus-installer/src/interface.c:398
 msgid "Step one:"
 msgstr "步驟一"
 
-#: nautilus-installer/src/interface.c:372
+#: nautilus-installer/src/interface.c:400
 msgid ""
 "This is the internal Nautilus installer.\n"
 "\n"
@@ -569,47 +579,58 @@ msgstr "無法找到點陣圖檔案: %s "
 msgid "Couldn't create pixmap from file: %s"
 msgstr "無法建立點陣圖檔案從檔案: %s "
 
-#: src/file-manager/fm-desktop-icon-view.c:305
+#: src/file-manager/fm-desktop-icon-view.c:342
+#, fuzzy
+msgid "Reset Desktop Background"
+msgstr "重設背景"
+
+#: src/file-manager/fm-desktop-icon-view.c:350
+#, fuzzy
+msgid "Change Desktop Background"
+msgstr "重設背景"
+
+#: src/file-manager/fm-desktop-icon-view.c:365
 msgid "New Terminal"
 msgstr "新的終端機"
 
-#: src/file-manager/fm-desktop-icon-view.c:317
+#: src/file-manager/fm-desktop-icon-view.c:377
 msgid "Disks"
 msgstr "磁碟"
 
-#: src/file-manager/fm-search-list-view.c:229
-msgid "Directory"
-msgstr "目錄"
+#: src/file-manager/fm-search-list-view.c:226
+#, fuzzy
+msgid "Where"
+msgstr "出處:"
 
-#: src/file-manager/fm-list-view.c:1687
-#: src/file-manager/fm-search-list-view.c:253
+#: src/file-manager/fm-list-view.c:1692
+#: src/file-manager/fm-search-list-view.c:250
 msgid "Date Modified"
 msgstr "最後修改日期"
 
-#: src/file-manager/fm-search-list-view.c:283
+#: src/file-manager/fm-search-list-view.c:280
 #, fuzzy
 msgid "_Reveal in New Window"
 msgstr "用新視窗開啟"
 
-#: src/file-manager/fm-search-list-view.c:285
+#: src/file-manager/fm-search-list-view.c:282
 #, fuzzy, c-format
 msgid "Reveal in %d _New Windows"
 msgstr "用 %d 個新視窗開啟 "
 
-#: src/file-manager/fm-search-list-view.c:438
+#: src/file-manager/fm-search-list-view.c:428
 msgid "Indexing Info..."
 msgstr "排序資訊..."
 
-#: src/file-manager/fm-search-list-view.c:439
+#: src/file-manager/fm-search-list-view.c:429
 msgid "Show indexing info dialog"
 msgstr "顯示排序資訊對話視窗"
 
-#: src/file-manager/fm-search-list-view.c:452
+#: src/file-manager/fm-search-list-view.c:442
 #, fuzzy
 msgid "Reveal each selected item in its original folder"
 msgstr "將每個已選圖示以原大小儲存"
 
-#: src/nautilus-first-time-druid.c:87
+#: src/nautilus-first-time-druid.c:93
 msgid ""
 "Existence of this file indicates that the Nautilus configuration wizard\n"
 "has been presented.\n"
@@ -622,47 +643,53 @@ msgstr ""
 "您可以手動刪除這個檔案以俾重新使用安裝精靈\n"
 "\n"
 
-#. allocate a descriptive label
-#: src/nautilus-first-time-druid.c:217
+#: src/nautilus-first-time-druid.c:308
+#, fuzzy
 msgid ""
-"User levels provide a way to adjust the software to your level of technical "
-"expertise.  Pick an initial level that you feel comfortable with; you can "
-"always change it later."
+"User levels provide a way to adjust the software to\n"
+"your level of technical expertise.  Pick an initial level that you\n"
+"feel comfortable with; you can always change it later."
 msgstr ""
 "使用者等級提供您找出您的技術能力程度,\n"
 "請選出適合您的等級,\n"
 "您隨時可以改變這項設定."
 
-#: src/nautilus-first-time-druid.c:223
-msgid "User Levels"
-msgstr "使用者等級"
+#: src/nautilus-first-time-druid.c:318
+#, fuzzy
+msgid "Beginner"
+msgstr "開始"
 
-#: src/nautilus-first-time-druid.c:240
-msgid "Novice"
-msgstr "新手指南"
+#: src/nautilus-first-time-druid.c:319
+msgid ""
+"For beginner users that are not yet\n"
+"familiar with the working of GNOME and Linux."
+msgstr ""
+"為Linux及GNOME的新手者"
 
-#: src/nautilus-first-time-druid.c:241
+#: src/nautilus-first-time-druid.c:326
 msgid "Intermediate"
 msgstr "進階"
 
-#: src/nautilus-first-time-druid.c:242
-msgid "Hacker"
-msgstr "駭客"
+#: src/nautilus-first-time-druid.c:327
+msgid ""
+"For non-techincal users that are comfortable with\n"
+"their GNOME and Linux environment."
+msgstr ""
+"為非linux及GNOME的專家者"
 
-#: src/nautilus-first-time-druid.c:248
-msgid "For beginning users"
-msgstr "新手等級"
+#: src/nautilus-first-time-druid.c:333
+msgid "Advanced"
+msgstr "厲害傢伙"
 
-#: src/nautilus-first-time-druid.c:249
-msgid "For non-technical users"
-msgstr "非專家等級"
-
-#: src/nautilus-first-time-druid.c:250
-msgid "For expert users"
-msgstr "專家等級"
+#: src/nautilus-first-time-druid.c:334
+msgid ""
+"For techincal users that have the need to be exposed\n"
+"to every detail of their operating system"
+msgstr ""
+"為小心仔細的系統熟手者"
 
 #. allocate a descriptive label
-#: src/nautilus-first-time-druid.c:280
+#: src/nautilus-first-time-druid.c:369
 msgid ""
 "Eazel offers a growing number of services to help you install and maintain "
 "new software and manage your files across the network.  If you want to find "
@@ -672,29 +699,29 @@ msgstr ""
 "如果您想知道更多有關Eazel的服務資訊,\n"
 "請按下'下一步'"
 
-#: src/nautilus-first-time-druid.c:286 src/nautilus-window-toolbars.c:158
+#: src/nautilus-first-time-druid.c:375 src/nautilus-window-toolbars.c:150
 msgid "Eazel Services"
 msgstr "Eazel 服務"
 
-#: src/nautilus-first-time-druid.c:294
+#: src/nautilus-first-time-druid.c:383
 msgid "I want to learn more about Eazel services."
 msgstr "我想知道更多的 Eazel 的服務資訊."
 
-#: src/nautilus-first-time-druid.c:295
+#: src/nautilus-first-time-druid.c:384
 msgid "I want to sign up for Eazel services now."
 msgstr "我想立即取得Eazel的服務."
 
-#: src/nautilus-first-time-druid.c:296
+#: src/nautilus-first-time-druid.c:385
 msgid "I've already signed up and want to login now."
-msgstr ""
+msgstr "我已經註冊而且想立刻登入"
 
-#: src/nautilus-first-time-druid.c:297
+#: src/nautilus-first-time-druid.c:386
 #, fuzzy
 msgid "I don't want to learn about Eazel services at this time."
 msgstr "我現在不想取得Eazel的服務."
 
 #. allocate a descriptive label
-#: src/nautilus-first-time-druid.c:324
+#: src/nautilus-first-time-druid.c:413
 msgid ""
 "Nautilus will now contact Eazel services to verify your web connection and "
 "download the latest updates.  Click the Next button to continue."
@@ -703,21 +730,21 @@ msgstr ""
 "幫您升級或修正臭蟲,\n"
 "請按下'下一步',繼續執行程式."
 
-#: src/nautilus-first-time-druid.c:330
+#: src/nautilus-first-time-druid.c:419
 #, fuzzy
 msgid "Updating Nautilus"
 msgstr "有關 Nautilus..."
 
-#: src/nautilus-first-time-druid.c:338
+#: src/nautilus-first-time-druid.c:427
 msgid "Yes, verify my web connection and update Nautilus now."
 msgstr "是,立刻連結網站幫我升級"
 
-#: src/nautilus-first-time-druid.c:339
+#: src/nautilus-first-time-druid.c:428
 msgid "No, I do not wish to verify my web connect and update Nautilus now."
 msgstr "不,我日後再處理"
 
 #. allocate a descriptive label
-#: src/nautilus-first-time-druid.c:366
+#: src/nautilus-first-time-druid.c:456
 msgid ""
 "We are now contacting the Eazel service to verify your web connection and "
 "update Nautilus.  We will advance to the next page automatically when "
@@ -726,25 +753,25 @@ msgstr ""
 "現在正在為您的Nautilus升級,\n"
 "當程式完成這個動作時,將會自動進入下一頁."
 
-#: src/nautilus-first-time-druid.c:372
+#: src/nautilus-first-time-druid.c:462
 #, fuzzy
 msgid "Nautilus Update Progress"
 msgstr "Nautilus 升級程式"
 
-#: src/nautilus-first-time-druid.c:376
-msgid "This is a placeholder - the real thing is coming soon"
-msgstr "這是預告,敬請期待."
+#: src/nautilus-first-time-druid.c:480
+#, fuzzy
+msgid "Downloading Nautilus updates..."
+msgstr "下載 %s 中..."
 
-#: src/nautilus-first-time-druid.c:422
+#: src/nautilus-first-time-druid.c:553
 msgid "Nautilus: Initial Preferences"
 msgstr "Nautilus: 初始化參數設定"
 
-#. set up the initial page
-#: src/nautilus-first-time-druid.c:438
+#: src/nautilus-first-time-druid.c:583
 msgid "Welcome to Nautilus!"
 msgstr "歡迎使用 Nautilus !"
 
-#: src/nautilus-first-time-druid.c:439
+#: src/nautilus-first-time-druid.c:586
 msgid ""
 "Welcome to Nautilus!\n"
 "\n"
@@ -760,7 +787,7 @@ msgstr ""
 "\n"
 "請按下next按鈕繼續"
 
-#: src/nautilus-first-time-druid.c:443
+#: src/nautilus-first-time-druid.c:590
 msgid ""
 "Click to finish button to launch Nautilus.\n"
 "\n"
@@ -771,34 +798,34 @@ msgstr ""
 "希望您使用愉快"
 
 #. set up the user level page
-#: src/nautilus-first-time-druid.c:446
+#: src/nautilus-first-time-druid.c:593
 #, fuzzy
 msgid "Select A User Level"
 msgstr "選擇使用者等級"
 
 #. set up the service sign-up page
-#: src/nautilus-first-time-druid.c:450
+#: src/nautilus-first-time-druid.c:597
 #, fuzzy
 msgid "Sign Up for Eazel Services"
 msgstr "加入 Eazel 服務"
 
 #. set up the update page
-#: src/nautilus-first-time-druid.c:454
+#: src/nautilus-first-time-druid.c:601
 #, fuzzy
 msgid "Nautilus Update"
 msgstr "Nautilus: 升級"
 
 #. set up the update feedback page
-#: src/nautilus-first-time-druid.c:462
+#: src/nautilus-first-time-druid.c:609
 #, fuzzy
 msgid "Updating Nautilus..."
 msgstr "升級 Nautilus..."
 
-#: src/nautilus-shell.c:158
+#: src/nautilus-shell.c:162
 msgid "Nautilus: caveat"
 msgstr "Nautilus: 通知"
 
-#: src/nautilus-shell.c:187
+#: src/nautilus-shell.c:191
 msgid ""
 "The Nautilus shell is under development; it's not ready for daily use. Many "
 "features, including some of the best ones, are not yet done, partly done, or "
@@ -889,7 +916,7 @@ msgstr "指令列"
 #: components/help/hyperbola-filefmt.c:399
 #: components/help/hyperbola-filefmt.c:400
 msgid "Development"
-msgstr "設計"
+msgstr "程式開發"
 
 #: components/help/hyperbola-filefmt.c:399
 #: components/help/hyperbola-filefmt.c:400
@@ -1014,6 +1041,13 @@ msgstr "輸入文字"
 msgid "Enter Password"
 msgstr "輸入密碼"
 
+#: components/html/ntl-web-browser.c:620
+#, fuzzy, c-format
+msgid ""
+"GConf init failed:\n"
+"  %s"
+msgstr "設定檔案"
+
 #: components/loser/content/nautilus-content-loser.c:140
 #, c-format
 msgid ""
@@ -1067,7 +1101,7 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"隱藏邊框."
+"隱藏輔助工具列."
 
 #: components/loser/sidebar/nautilus-sidebar-loser.c:202
 #, c-format
@@ -1078,7 +1112,7 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"您按下了清除邊框按鈕."
+"您按下了清除輔助工具列按鈕."
 
 #. BonoboUIHandler
 #. menu item path, must start with /some-existing-menu-path and be otherwise unique
@@ -1208,7 +1242,7 @@ msgstr "暫停"
 
 #: components/music/nautilus-music-view.c:1158
 #: src/file-manager/dfos-xfer.c:352 src/file-manager/dfos-xfer.c:372
-#: src/nautilus-window-toolbars.c:152
+#: src/nautilus-window-toolbars.c:144
 msgid "Stop"
 msgstr "停止"
 
@@ -1268,6 +1302,10 @@ msgstr "安裝"
 #: components/rpmview/nautilus-rpm-view.c:277
 msgid "Update"
 msgstr "升級"
+
+#: components/rpmview/nautilus-rpm-view.c:286
+msgid "Uninstall"
+msgstr "移除"
 
 #: components/rpmview/nautilus-rpm-view.c:325
 msgid "Go to selected file"
@@ -1345,36 +1383,41 @@ msgstr "範例"
 msgid "This is a sample merged toolbar button"
 msgstr "這是一個合併工具列 button 範例"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:84
+#: components/services/install/command-line/eazel-alt-install-corba.c:83
 #, fuzzy
 msgid "Allow downgrades"
 msgstr "准許\升級到舊的版本"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:85
+#: components/services/install/command-line/eazel-alt-install-corba.c:84
 msgid "Erase packages"
 msgstr "移除套件"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:86
+#: components/services/install/command-line/eazel-alt-install-corba.c:85
 msgid "RPM args are filename"
 msgstr "RPM 引數為檔案名稱"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:87
+#: components/services/install/command-line/eazel-alt-install-corba.c:86
 msgid "Force install"
 msgstr "強制安裝"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:91
+#: components/services/install/command-line/eazel-alt-install-corba.c:90
 #, fuzzy
 msgid "Specify package file"
 msgstr "套件標題"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:93
+#: components/services/install/command-line/eazel-alt-install-corba.c:92
 msgid "Run Query"
 msgstr "執行查詢"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:94
+#: components/services/install/command-line/eazel-alt-install-corba.c:93
 #, fuzzy
 msgid "Revert"
 msgstr "刪除"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:94
+#, fuzzy
+msgid "Set root"
+msgstr "設定群組 ID"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:98
 msgid "Allow upgrades"
@@ -1384,143 +1427,143 @@ msgstr "准許\升級"
 msgid "Creating default configuration file ...\n"
 msgstr "新建預設設定檔案中...\n"
 
-#: components/services/install/lib/eazel-install-metadata.c:69
+#: components/services/install/lib/eazel-install-metadata.c:73
 msgid "*** Could not create the default configuration file! ***\n"
 msgstr "*** 無法建制預設設定檔案! ***\n"
 
-#: components/services/install/lib/eazel-install-metadata.c:100
+#: components/services/install/lib/eazel-install-metadata.c:106
 msgid "*** Error generating default configuration file! ***\n"
 msgstr "*** 推廣設定錯誤! ***\n"
 
-#: components/services/install/lib/eazel-install-metadata.c:117
+#: components/services/install/lib/eazel-install-metadata.c:123
 msgid "*** Unable to open config file! ***\n"
 msgstr "*** 無法讀取設定資料! ***\n"
 
-#: components/services/install/lib/eazel-install-metadata.c:124
+#: components/services/install/lib/eazel-install-metadata.c:130
 msgid "*** The config file contains no data! ***\n"
 msgstr "*** 設定檔無資料! ***\n"
 
-#: components/services/install/lib/eazel-install-metadata.c:129
+#: components/services/install/lib/eazel-install-metadata.c:135
 msgid "*** Cannot find the EAZEL_INSTALLER xmlnode! ***\n"
 msgstr "***  找不到EAZEL_INSTALLER xmlnode ! ***\n"
 
-#: components/services/install/lib/eazel-install-metadata.c:131
+#: components/services/install/lib/eazel-install-metadata.c:137
 msgid "*** Bailing from xmlparse! ***\n"
 msgstr "xmlparse 跳出! ***\n"
 
-#: components/services/install/lib/eazel-install-metadata.c:153
+#: components/services/install/lib/eazel-install-metadata.c:159
 msgid "Could not set URLType from config file!"
 msgstr "無法從試定檔讀取URLType !"
 
-#: components/services/install/lib/eazel-install-object.c:575
+#: components/services/install/lib/eazel-install-object.c:600
 msgid "Could not create temporary directory!\n"
 msgstr "無法建制暫存目錄!\n"
 
-#: components/services/install/lib/eazel-install-object.c:589
+#: components/services/install/lib/eazel-install-object.c:614
 msgid "Getting package list from remote server ...\n"
 msgstr "正從遠端伺服器下載封包中...\n"
 
-#: components/services/install/lib/eazel-install-object.c:607
+#: components/services/install/lib/eazel-install-object.c:632
 msgid "Unable to retrieve package-list.xml!\n"
 msgstr "無法取得 package-list.xml!\n"
 
-#: components/services/install/lib/eazel-install-object.c:652
+#: components/services/install/lib/eazel-install-object.c:677
 #, c-format
 msgid "Cannot write to file %s, using default log handler"
 msgstr "無法寫入檔案%s,使用預設紀錄handler"
 
-#: components/services/install/lib/eazel-install-object.c:673
+#: components/services/install/lib/eazel-install-object.c:704
 msgid "Install failed"
 msgstr "安裝失敗"
 
-#: components/services/install/lib/eazel-install-object.c:721
+#: components/services/install/lib/eazel-install-object.c:758
 msgid "Uninstall failed"
 msgstr "移除失敗"
 
-#: components/services/install/lib/eazel-install-protocols.c:97
-#: components/services/install/lib/eazel-install-protocols.c:204
+#: components/services/install/lib/eazel-install-protocols.c:103
+#: components/services/install/lib/eazel-install-protocols.c:210
 #, c-format
 msgid "Downloading %s..."
 msgstr "下載 %s 中..."
 
-#: components/services/install/lib/eazel-install-protocols.c:104
+#: components/services/install/lib/eazel-install-protocols.c:110
 #, fuzzy, c-format
 msgid "*** Could not create tmp directory (%s)! ***\n"
 msgstr "*** 無法設置服務目錄! ***\n"
 
-#: components/services/install/lib/eazel-install-protocols.c:120
+#: components/services/install/lib/eazel-install-protocols.c:126
 #, c-format
 msgid "Could not open target file %s"
 msgstr "無法處理目標檔案 %s "
 
-#: components/services/install/lib/eazel-install-protocols.c:127
-#: components/services/install/lib/eazel-install-protocols.c:586
+#: components/services/install/lib/eazel-install-protocols.c:133
+#: components/services/install/lib/eazel-install-protocols.c:632
 msgid "Could not create an http request !"
 msgstr "無法做出HTTP請求!"
 
-#: components/services/install/lib/eazel-install-protocols.c:132
+#: components/services/install/lib/eazel-install-protocols.c:138
 msgid "Invalid uri !"
 msgstr "無效 URI !"
 
-#: components/services/install/lib/eazel-install-protocols.c:139
-#: components/services/install/lib/eazel-install-protocols.c:597
+#: components/services/install/lib/eazel-install-protocols.c:145
+#: components/services/install/lib/eazel-install-protocols.c:643
 msgid "Could not prepare http request !"
 msgstr "無法準備HTTP請求!"
 
-#: components/services/install/lib/eazel-install-protocols.c:143
+#: components/services/install/lib/eazel-install-protocols.c:149
 msgid "Couldn't get async mode "
 msgstr "無法進入非同步傳輸模式"
 
-#: components/services/install/lib/eazel-install-protocols.c:168
+#: components/services/install/lib/eazel-install-protocols.c:174
 #, c-format
 msgid "HTTP error: %d %s"
 msgstr "HTTP error: %d %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:178
+#: components/services/install/lib/eazel-install-protocols.c:184
 msgid "Could not get request body!"
 msgstr "無法進行HTTP請求!"
 
-#: components/services/install/lib/eazel-install-protocols.c:205
+#: components/services/install/lib/eazel-install-protocols.c:211
 msgid "FTP not supported yet"
 msgstr "無法支援FTP"
 
-#: components/services/install/lib/eazel-install-protocols.c:353
+#: components/services/install/lib/eazel-install-protocols.c:412
 #, c-format
 msgid "Checking local file %s..."
 msgstr "檢視本機檔案中..."
 
-#: components/services/install/lib/eazel-install-protocols.c:409
+#: components/services/install/lib/eazel-install-protocols.c:468
 #, c-format
 msgid "Failed to retreive %s!"
 msgstr "無法還原 %s!"
 
-#: components/services/install/lib/eazel-install-protocols.c:466
-#: components/services/install/lib/eazel-install-protocols.c:530
+#: components/services/install/lib/eazel-install-protocols.c:525
+#: components/services/install/lib/eazel-install-protocols.c:576
 #, c-format
 msgid "Could not get a URL for %s"
 msgstr "無法取得 %s 的URL"
 
-#: components/services/install/lib/eazel-install-protocols.c:524
+#: components/services/install/lib/eazel-install-protocols.c:570
 msgid "Using local protocol cannot resolve library dependencies"
 msgstr "無法以本機協定解決函式庫相依性問題"
 
-#: components/services/install/lib/eazel-install-protocols.c:582
+#: components/services/install/lib/eazel-install-protocols.c:628
 #, c-format
 msgid "Search URL: %s"
 msgstr "搜尋URL: %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:594
+#: components/services/install/lib/eazel-install-protocols.c:640
 msgid "Invalid uri"
 msgstr "無效URI"
 
-#: components/services/install/lib/eazel-install-protocols.c:608
-#: components/services/install/lib/eazel-install-protocols.c:612
+#: components/services/install/lib/eazel-install-protocols.c:654
+#: components/services/install/lib/eazel-install-protocols.c:658
 #, c-format
 msgid "Could not retrieve a URL for %s"
 msgstr "無法恢復 %s 的URL"
 
 #: components/services/install/lib/eazel-install-rpm-glue.c:107
-#: components/services/install/lib/eazel-install-rpm-glue.c:318
+#: components/services/install/lib/eazel-install-rpm-glue.c:323
 msgid "Dry Run Mode Activated.  Packages will not actually be installed ..."
 msgstr "Dry Run 模式啟動,套件現在無法安裝......"
 
@@ -1529,36 +1572,36 @@ msgid "Reading the install package list ..."
 msgstr "讀取安裝套件列表中..."
 
 #: components/services/install/lib/eazel-install-rpm-glue.c:168
-#: components/services/install/lib/eazel-install-rpm-glue.c:293
+#: components/services/install/lib/eazel-install-rpm-glue.c:298
 #, c-format
 msgid "Category = %s"
 msgstr "項目 = %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:268
+#: components/services/install/lib/eazel-install-rpm-glue.c:272
 #, c-format
 msgid "Category = %s, %d packages"
 msgstr "項目 = %s, %d 個套件"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:607
+#: components/services/install/lib/eazel-install-rpm-glue.c:612
 #, c-format
 msgid "*** Could not create transaction directory (%s)! ***\n"
 msgstr "*** 無法建立執行目錄 (%s)! ***\n"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:901
+#: components/services/install/lib/eazel-install-rpm-glue.c:907
 #, c-format
 msgid "Removing package %s"
 msgstr "刪除套件 %s "
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1019
+#: components/services/install/lib/eazel-install-rpm-glue.c:1026
 #, c-format
 msgid "Cannot open %s"
 msgstr "無法開啟 %s "
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1117
+#: components/services/install/lib/eazel-install-rpm-glue.c:1138
 msgid "RPM package database query failed !"
 msgstr "無法取得RPM套件資料庫資料!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1367
+#: components/services/install/lib/eazel-install-rpm-glue.c:1402
 #, c-format
 msgid "%s %s breaks %s"
 msgstr "%s %s 與 %s 相衝"
@@ -1566,23 +1609,27 @@ msgstr "%s %s 與 %s 相衝"
 #. If we end here, it's a conflict is going to break something
 #. FIXME bugzilla.eazel.com 1514:
 #. Need to handle this more intelligently
-#: components/services/install/lib/eazel-install-rpm-glue.c:1417
+#: components/services/install/lib/eazel-install-rpm-glue.c:1452
 #, c-format
 msgid "%s conflicts %s-%s"
 msgstr "%s 與 %s-%s 相衝"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1431
-#: components/services/install/lib/eazel-install-rpm-glue.c:1440
+#: components/services/install/lib/eazel-install-rpm-glue.c:1466
+#, fuzzy, c-format
+msgid "Processing dep for %s : requires library %s"
+msgstr "檢察 %s 的相依性 : 需要 %s"
+
+#: components/services/install/lib/eazel-install-rpm-glue.c:1479
 #, c-format
 msgid "Processing dep for %s : requires %s"
 msgstr "檢察 %s 的相依性 : 需要 %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1672
+#: components/services/install/lib/eazel-install-rpm-glue.c:1724
 #, c-format
 msgid "%d dependencies failed!"
 msgstr "%d 依存性失敗!"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1736
+#: components/services/install/lib/eazel-install-rpm-glue.c:1788
 msgid "Dependencies are ok"
 msgstr "依存性正確無誤"
 
@@ -1594,64 +1641,64 @@ msgstr "*** 開始 pkg dump ***\n"
 msgid "*** End pkg dump ***\n"
 msgstr "*** 完成 pkg dump ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:124
+#: components/services/install/lib/eazel-install-xml-package-list.c:138
 msgid "*** No package nodes! ***\n"
 msgstr "*** 找不到套件nodes! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:126
+#: components/services/install/lib/eazel-install-xml-package-list.c:140
 msgid "*** Bailing from package parse! ***\n"
 msgstr "*** 由 package 跳出 ! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:150
+#: components/services/install/lib/eazel-install-xml-package-list.c:164
 msgid "*** The pkg list file contains no data! ***\n"
 msgstr "*** 套件列表中沒有資料 ! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:155
+#: components/services/install/lib/eazel-install-xml-package-list.c:169
 msgid "*** Cannot find the CATEGORIES xmlnode! ***\n"
 msgstr "*** 找不到 CATEGORIES xmnode! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:157
+#: components/services/install/lib/eazel-install-xml-package-list.c:171
 msgid "*** Bailing from categories parse! ***\n"
 msgstr "*** 從 category parse 跳出 ! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:163
+#: components/services/install/lib/eazel-install-xml-package-list.c:177
 msgid "*** No Categories! ***\n"
 msgstr "*** 沒有項目 ! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:165
+#: components/services/install/lib/eazel-install-xml-package-list.c:179
 msgid "*** Bailing from category parse! ***\n"
 msgstr "*** 從 category parse 跳出 ! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:216
+#: components/services/install/lib/eazel-install-xml-package-list.c:230
 #, fuzzy
 msgid "*** Cannot find the TRANSACTION xmlnode! ***\n"
 msgstr "*** 找不到 CATEGORIES xmnode! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:218
-#: components/services/install/lib/eazel-install-xml-package-list.c:226
+#: components/services/install/lib/eazel-install-xml-package-list.c:232
+#: components/services/install/lib/eazel-install-xml-package-list.c:240
 #, fuzzy
 msgid "*** Bailing from transaction parse! ***\n"
 msgstr "*** 從 category parse 跳出 ! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:224
+#: components/services/install/lib/eazel-install-xml-package-list.c:238
 #, fuzzy
 msgid "*** No packages! ***\n"
 msgstr "*** 找不到套件nodes! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:328
+#: components/services/install/lib/eazel-install-xml-package-list.c:344
 msgid "*** Error generating xml package list! ***\n"
 msgstr "*** xml 套件列表錯誤 ! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:375
+#: components/services/install/lib/eazel-install-xml-package-list.c:391
 msgid "*** Error reading package list! ***\n"
 msgstr "*** 套件列表讀取錯誤 ! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:546
+#: components/services/install/lib/eazel-install-xml-package-list.c:567
 #, fuzzy
 msgid "*** The osd xml contains no data! ***\n"
 msgstr "*** 設定檔無資料! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:551
+#: components/services/install/lib/eazel-install-xml-package-list.c:572
 #, fuzzy
 msgid "*** Bailing from osd parse! ***\n"
 msgstr "xmlparse 跳出! ***\n"
@@ -1673,95 +1720,89 @@ msgid "specify time url"
 msgstr "說明 URL 時間"
 
 #. today, use special word
-#: libnautilus-extensions/nautilus-file.c:1700
+#: libnautilus-extensions/nautilus-file.c:1727
 msgid "today %-I:%M %p"
 msgstr "今天  %-I:%M %p"
 
 #. yesterday, use special word
-#: libnautilus-extensions/nautilus-file.c:1703
+#: libnautilus-extensions/nautilus-file.c:1730
 msgid "yesterday %-I:%M %p"
 msgstr "明天 %-I:%M %p"
 
 #. current week, include day of week
-#: libnautilus-extensions/nautilus-file.c:1706
+#: libnautilus-extensions/nautilus-file.c:1733
 msgid "%A %-m/%-d/%y %-I:%M %p"
 msgstr "%A %-m/%-d/%y %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:1708
+#: libnautilus-extensions/nautilus-file.c:1735
 msgid "%-m/%-d/%y %-I:%M %p"
 msgstr "%-m/%-d/%y %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:2704
+#: libnautilus-extensions/nautilus-file.c:2731
 msgid "0 items"
 msgstr "0 個項目"
 
-#: libnautilus-extensions/nautilus-file.c:2704
+#: libnautilus-extensions/nautilus-file.c:2731
 msgid "0 directories"
 msgstr "0 個目錄"
 
-#: libnautilus-extensions/nautilus-file.c:2705
+#: libnautilus-extensions/nautilus-file.c:2732
 msgid "0 files"
 msgstr "0 個檔案"
 
-#: libnautilus-extensions/nautilus-file.c:2709
+#: libnautilus-extensions/nautilus-file.c:2736
 msgid "1 item"
 msgstr "1 個項目"
 
-#: libnautilus-extensions/nautilus-file.c:2709
+#: libnautilus-extensions/nautilus-file.c:2736
 msgid "1 directory"
 msgstr "1 個目錄"
 
-#: libnautilus-extensions/nautilus-file.c:2710
+#: libnautilus-extensions/nautilus-file.c:2737
 msgid "1 file"
 msgstr "1 檔案"
 
-#: libnautilus-extensions/nautilus-file.c:2713
+#: libnautilus-extensions/nautilus-file.c:2740
 #, c-format
 msgid "%u items"
 msgstr "%u 個項目"
 
-#: libnautilus-extensions/nautilus-file.c:2713
+#: libnautilus-extensions/nautilus-file.c:2740
 #, c-format
 msgid "%u directories"
 msgstr "%d 個目錄"
 
-#: libnautilus-extensions/nautilus-file.c:2714
+#: libnautilus-extensions/nautilus-file.c:2741
 #, c-format
 msgid "%u files"
 msgstr "%u 個檔案"
 
 #. This means no contents at all were readable
-#: libnautilus-extensions/nautilus-file.c:3036
-#: libnautilus-extensions/nautilus-file.c:3044
+#: libnautilus-extensions/nautilus-file.c:3058
+#: libnautilus-extensions/nautilus-file.c:3066
 msgid "xxx"
 msgstr "xxx"
 
-#: libnautilus-extensions/nautilus-file.c:3036
-#: libnautilus-extensions/nautilus-file.c:3046
-#: src/file-manager/fm-properties-window.c:880
-msgid "--"
-msgstr "--"
-
-#: libnautilus-extensions/nautilus-file.c:3048
+#: libnautilus-extensions/nautilus-file.c:3070
 msgid "unknown type"
 msgstr "未知格式"
 
-#: libnautilus-extensions/nautilus-file.c:3050
+#: libnautilus-extensions/nautilus-file.c:3072
 msgid "unknown MIME type"
 msgstr "未知 MIME 格式"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-extensions/nautilus-file.c:3055
+#: libnautilus-extensions/nautilus-file.c:3077
 msgid "unknown"
 msgstr "未知"
 
-#: libnautilus-extensions/nautilus-file.c:3084
+#: libnautilus-extensions/nautilus-file.c:3106
 msgid "program"
 msgstr "程式"
 
-#: libnautilus-extensions/nautilus-file.c:3479
+#: libnautilus-extensions/nautilus-file.c:3501
 msgid " --"
 msgstr " --"
 
@@ -1956,20 +1997,24 @@ msgid "Font family used to display file names"
 msgstr "顯示檔案所要用的字形"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:674
-msgid "Display tool bar"
+#, fuzzy
+msgid "Display tool bar in new windows"
 msgstr "顯示工具列"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:680
-msgid "Display location bar"
+#, fuzzy
+msgid "Display location bar in new windows"
 msgstr "顯示位置列"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:686
-msgid "Display status bar"
+#, fuzzy
+msgid "Display status bar in new windows"
 msgstr "顯示狀態列"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:692
-msgid "Display Sidebar"
-msgstr "顯示輔助工具"
+#, fuzzy
+msgid "Display sidebar in new windows"
+msgstr "用新視窗開啟每一個已選項目"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:700
 msgid "Always do slow, complete search"
@@ -2021,28 +2066,33 @@ msgstr "輔助工具列寬度"
 
 #: libnautilus-extensions/nautilus-search-uri.c:203
 #, fuzzy, c-format
-msgid "name contains \"%s\""
+msgid "that contain \"%s\""
 msgstr "包含"
 
 #: libnautilus-extensions/nautilus-search-uri.c:206
 #, fuzzy, c-format
-msgid "name starts with \"%s\""
+msgid "that start with \"%s\""
 msgstr "以...開始"
 
+#: libnautilus-extensions/nautilus-search-uri.c:209
+#, fuzzy, c-format
+msgid "that end with %s"
+msgstr "以 %s 開啟 "
+
 #: libnautilus-extensions/nautilus-search-uri.c:212
-#, c-format
-msgid "name does not contain \"%s\""
+#, fuzzy, c-format
+msgid "that don't contain \"%s\""
 msgstr "名稱不包含 \"%s\""
 
 #: libnautilus-extensions/nautilus-search-uri.c:215
 #, fuzzy, c-format
-msgid "name matches regexp \"%s\""
-msgstr "名稱比對符合 regexp \"%s\""
+msgid "that match the regular expression \"%s\""
+msgstr "名稱比對符合正規 regexp \"%s\""
 
 #: libnautilus-extensions/nautilus-search-uri.c:218
-#, fuzzy, c-format
-msgid "name matches glob \"%s\""
-msgstr "名稱比對符合 glob"
+#, c-format
+msgid "that match the file pattern \"%s\""
+msgstr "名稱比對符合檔案格式"
 
 #: libnautilus-extensions/nautilus-search-uri.c:231
 #, fuzzy
@@ -2076,137 +2126,145 @@ msgstr "是 %s"
 
 #: libnautilus-extensions/nautilus-search-uri.c:260
 #, fuzzy, c-format
-msgid "owner is not \"%s\""
-msgstr "以 %s 列印"
+msgid "are not owned by \"%s\""
+msgstr "非 %s "
 
 #: libnautilus-extensions/nautilus-search-uri.c:263
-#, c-format
-msgid "owner is \"%s\""
+#, fuzzy, c-format
+msgid "are owned by \"%s\""
 msgstr "所有者為 \"%s\""
 
 #: libnautilus-extensions/nautilus-search-uri.c:267
-#, c-format
-msgid "owner has uid of \"%s\""
-msgstr "所有者uid為 \"%s\""
+#, fuzzy, c-format
+msgid "have owner UID \"%s\""
+msgstr "所有者為 \"%s\""
 
 #: libnautilus-extensions/nautilus-search-uri.c:270
-#, fuzzy
-msgid "does not have UID"
-msgstr "沒有 UID"
+#, fuzzy, c-format
+msgid "have owner UID other than \"%s\""
+msgstr "名稱不包含 \"%s\""
 
 #: libnautilus-extensions/nautilus-search-uri.c:281
-#, c-format
-msgid "size is larger than %s bytes"
+#, fuzzy, c-format
+msgid "that are larger than %s kilobytes"
 msgstr "大 %s bytes "
 
 #: libnautilus-extensions/nautilus-search-uri.c:284
-#, c-format
-msgid "size is smaller than %s bytes"
+#, fuzzy, c-format
+msgid "that are smaller than %s kilobytes"
 msgstr "小  %s bytes"
 
 #: libnautilus-extensions/nautilus-search-uri.c:287
-#, c-format
-msgid "size is %s kilobytes"
+#, fuzzy, c-format
+msgid "that are %s kilobytes"
 msgstr "大小為 %s kilobytes"
 
-#: libnautilus-extensions/nautilus-search-uri.c:336
-#: libnautilus-extensions/nautilus-search-uri.c:342
-#: libnautilus-extensions/nautilus-search-uri.c:345
-#: libnautilus-extensions/nautilus-search-uri.c:353
+#: libnautilus-extensions/nautilus-search-uri.c:298
 #, fuzzy
-msgid "whose"
-msgstr "誰的"
+msgid "modified after"
+msgstr "修改:"
 
-#: libnautilus-extensions/nautilus-search-uri.c:339
-#: libnautilus-extensions/nautilus-search-uri.c:349
-msgid "who"
-msgstr "誰"
+#: libnautilus-extensions/nautilus-search-uri.c:301
+msgid "modified before"
+msgstr "之前修改"
 
-#: libnautilus-extensions/nautilus-search-uri.c:462
+#: libnautilus-extensions/nautilus-search-uri.c:325
+msgid "with the word"
+msgstr "以字根..."
+
+#: libnautilus-extensions/nautilus-search-uri.c:328
+msgid "without the word"
+msgstr "不以字根..."
+
+#: libnautilus-extensions/nautilus-search-uri.c:345
+#, fuzzy
+msgid "that"
+msgstr "狀態"
+
+#: libnautilus-extensions/nautilus-search-uri.c:468
 #, fuzzy
 msgid "are directories"
 msgstr "是目錄"
 
-#: libnautilus-extensions/nautilus-search-uri.c:506
+#: libnautilus-extensions/nautilus-search-uri.c:512
 msgid " and "
 msgstr " 和 "
 
-#: libnautilus-extensions/nautilus-search-uri.c:570
+#: libnautilus-extensions/nautilus-search-uri.c:576
 #, c-format
 msgid "Search results for items %s %s%s"
 msgstr " %s %s%s 的搜尋結果"
 
-#: libnautilus-extensions/nautilus-search-uri.c:680
+#: libnautilus-extensions/nautilus-search-uri.c:684
 msgid "Search results for items whose name contains \"stuff\"."
 msgstr "名稱條件包含 \"stuff\" 的搜尋結果"
 
-#: libnautilus-extensions/nautilus-search-uri.c:682
+#: libnautilus-extensions/nautilus-search-uri.c:686
 msgid ""
 "Search results for items whose name contains \"stuff\" and are regular files."
-msgstr ""
-"條件為標準檔案名稱包含 \"stuff\" 的搜尋結果"
+msgstr "條件為標準檔案名稱包含 \"stuff\" 的搜尋結果"
 
-#: libnautilus-extensions/nautilus-search-uri.c:685
+#: libnautilus-extensions/nautilus-search-uri.c:689
 msgid ""
 "Search results for items whose name contains \"stuff\", are regular files "
 "and size is smaller than 2000 bytes."
-msgstr ""
-"條件為標準檔案名稱包含 \"stuff\" 且小於 2000 bytes 的搜尋結果"
+msgstr "條件為標準檔案名稱包含 \"stuff\" 且小於 2000 bytes 的搜尋結果"
 
 #: libnautilus-extensions/nautilus-icon-canvas-item.c:704
 msgid " -_,;.?/&"
 msgstr " -_,;.?/&"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:697
+#: libnautilus-extensions/nautilus-icon-dnd.c:699
 msgid ""
 "This directory uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
 "manual layout."
 msgstr "這個目錄採用自動規劃,你想切換到自訂規劃嗎? 這將會改寫你的已存設定."
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:701
+#: libnautilus-extensions/nautilus-icon-dnd.c:703
 msgid ""
 "This directory uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
 "manual layout."
 msgstr "這個目錄採用自動規劃,你想切換到自訂規劃嗎? 這將會改寫你的原來設定."
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:707
+#: libnautilus-extensions/nautilus-icon-dnd.c:709
 msgid ""
 "This directory uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
 msgstr "這個目錄採用自動規劃,你想切換到自訂規劃嗎? 這將會改寫你的已存設定."
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:710
+#: libnautilus-extensions/nautilus-icon-dnd.c:712
 msgid ""
 "This directory uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
 msgstr "這個目錄採用自動規劃,你想切換到自訂規劃嗎? 這將會改寫你的已存設定."
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:717
+#: libnautilus-extensions/nautilus-icon-dnd.c:719
 msgid "Switch to Manual Layout?"
 msgstr "切換到自訂規劃?"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:718
+#: libnautilus-extensions/nautilus-icon-dnd.c:720
 msgid "Switch"
 msgstr "切換"
 
 #: libnautilus-extensions/nautilus-icon-text-item.c:1487
-#: src/file-manager/fm-icon-view.c:1144
 msgid "Rename"
 msgstr "重新命名"
 
 #: libnautilus-extensions/nautilus-icon-text-item.c:1488
-msgid "Undo Rename"
-msgstr "取消重新命名"
+#, fuzzy
+msgid "Undo Typing"
+msgstr "取消編輯"
 
 #: libnautilus-extensions/nautilus-icon-text-item.c:1489
 msgid "Restore the old name"
 msgstr "儲存原來名稱"
 
 #: libnautilus-extensions/nautilus-icon-text-item.c:1490
-msgid "Redo Rename"
-msgstr "繼續重新命名"
+#, fuzzy
+msgid "Redo Typing"
+msgstr "重新編輯"
 
 #: libnautilus-extensions/nautilus-icon-text-item.c:1491
 msgid "Restore the changed name"
@@ -2217,7 +2275,7 @@ msgid "Prefs Box"
 msgstr "Prefs Box"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:188
-#: src/nautilus-window.c:644
+#: src/nautilus-window.c:618
 #, c-format
 msgid "View as %s"
 msgstr "以 %s 瀏覽"
@@ -2366,23 +2424,23 @@ msgid ""
 "GNOME Control Center."
 msgstr "請在控制台選擇每種檔案格式對應的處理程式"
 
-#: libnautilus-extensions/nautilus-undo-signal-handlers.c:174
+#: libnautilus-extensions/nautilus-undo-signal-handlers.c:175
 msgid "Edit"
 msgstr "編輯"
 
-#: libnautilus-extensions/nautilus-undo-signal-handlers.c:175
+#: libnautilus-extensions/nautilus-undo-signal-handlers.c:176
 msgid "Undo Edit"
 msgstr "取消編輯"
 
-#: libnautilus-extensions/nautilus-undo-signal-handlers.c:176
+#: libnautilus-extensions/nautilus-undo-signal-handlers.c:177
 msgid "Undo the edit"
 msgstr "取消此次編輯"
 
-#: libnautilus-extensions/nautilus-undo-signal-handlers.c:177
+#: libnautilus-extensions/nautilus-undo-signal-handlers.c:178
 msgid "Redo Edit"
 msgstr "重新編輯"
 
-#: libnautilus-extensions/nautilus-undo-signal-handlers.c:178
+#: libnautilus-extensions/nautilus-undo-signal-handlers.c:179
 msgid "Redo the edit"
 msgstr "重作此次編輯"
 
@@ -2488,12 +2546,74 @@ msgstr "取代"
 msgid "Replace All"
 msgstr "全部取代"
 
-#: src/file-manager/dfos-xfer.c:526 src/file-manager/dfos-xfer.c:893
+#: src/file-manager/dfos-xfer.c:465
+#, fuzzy, c-format
+msgid "link to %s"
+msgstr "連結集合"
+
+#: src/file-manager/dfos-xfer.c:467
+#, c-format
+msgid "another link to %s"
+msgstr "另一個到 %s 的連結"
+
+#: src/file-manager/dfos-xfer.c:476
+#, c-format
+msgid "%dst link to %s"
+msgstr "第 %d 個到 %s 的連結"
+
+#: src/file-manager/dfos-xfer.c:478
+#, c-format
+msgid "%dnd link to %s"
+msgstr "第 %d 個到 %s 的連結"
+
+#: src/file-manager/dfos-xfer.c:480
+#, c-format
+msgid "%drd link to %s"
+msgstr "第 %d 個到 %s 的連結"
+
+#. The general case.
+#: src/file-manager/dfos-xfer.c:484
+#, c-format
+msgid "%dth link to %s"
+msgstr "第 %d 個到 %s 的連結"
+
+#: src/file-manager/dfos-xfer.c:502
+#, c-format
+msgid "%s (copy)"
+msgstr "%s (複製)"
+
+#: src/file-manager/dfos-xfer.c:504
+#, c-format
+msgid "%s (another copy)"
+msgstr "%s (另外複製)"
+
+#: src/file-manager/dfos-xfer.c:513
+#, c-format
+msgid "%s (%dst copy)"
+msgstr "%s (第 %d 個複製)"
+
+#: src/file-manager/dfos-xfer.c:515
+#, c-format
+msgid "%s (%dnd copy)"
+msgstr "%s (第 %d 個複製)"
+
+#: src/file-manager/dfos-xfer.c:517
+#, c-format
+msgid "%s (%drd copy)"
+msgstr "%s (第 %d 個複製)"
+
+#. The general case.
+#: src/file-manager/dfos-xfer.c:521
+#, c-format
+msgid "%s (%dth copy)"
+msgstr "%s (第 %d 個複製)"
+
+#: src/file-manager/dfos-xfer.c:569 src/file-manager/dfos-xfer.c:936
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "未知 GnomeVFSXferProgressStatus %d "
 
-#: src/file-manager/dfos-xfer.c:591
+#: src/file-manager/dfos-xfer.c:634
 #, c-format
 msgid ""
 "The transfer between\n"
@@ -2509,168 +2629,168 @@ msgstr ""
 "之間的傳輸無法執行:\n"
 "%s"
 
-#: src/file-manager/dfos-xfer.c:658
+#: src/file-manager/dfos-xfer.c:701
 msgid ""
 "Oops! These items are from two or more different directories. Nautilus can't "
 "handle this correctly, so some of the items will be ignored. Harrass someone "
 "into fixing bugzilla.eazel.com 2186"
 msgstr ""
 
-#: src/file-manager/dfos-xfer.c:663
+#: src/file-manager/dfos-xfer.c:706
 msgid "Bug alert!"
 msgstr "當掉了...:-( !"
 
-#: src/file-manager/dfos-xfer.c:734
+#: src/file-manager/dfos-xfer.c:777
 msgid "Moving files"
 msgstr "移動檔案中"
 
-#: src/file-manager/dfos-xfer.c:735
+#: src/file-manager/dfos-xfer.c:778
 msgid "moved"
 msgstr "已移動"
 
-#: src/file-manager/dfos-xfer.c:736 src/file-manager/dfos-xfer.c:997
+#: src/file-manager/dfos-xfer.c:779 src/file-manager/dfos-xfer.c:1040
 msgid "Moving"
 msgstr "移動中"
 
-#: src/file-manager/dfos-xfer.c:737
+#: src/file-manager/dfos-xfer.c:780
 msgid "Preparing To Move..."
 msgstr "準備移動中..."
 
-#: src/file-manager/dfos-xfer.c:738
+#: src/file-manager/dfos-xfer.c:781
 msgid "Finishing Move..."
 msgstr "完成移動中..."
 
-#: src/file-manager/dfos-xfer.c:747
+#: src/file-manager/dfos-xfer.c:790
 #, fuzzy
 msgid "Creating a link to files"
 msgstr "準備刪除檔案..."
 
-#: src/file-manager/dfos-xfer.c:748
+#: src/file-manager/dfos-xfer.c:791
 msgid "linked"
 msgstr "已連結"
 
-#: src/file-manager/dfos-xfer.c:749
+#: src/file-manager/dfos-xfer.c:792
 #, fuzzy
 msgid "linking"
 msgstr "連結中"
 
-#: src/file-manager/dfos-xfer.c:750
+#: src/file-manager/dfos-xfer.c:793
 #, fuzzy
 msgid "Preparing to Create Links..."
 msgstr "準備產生連結..."
 
-#: src/file-manager/dfos-xfer.c:751
+#: src/file-manager/dfos-xfer.c:794
 #, fuzzy
 msgid "Finishing linking..."
 msgstr "完成連結中..."
 
-#: src/file-manager/dfos-xfer.c:757
+#: src/file-manager/dfos-xfer.c:800
 msgid "Copying files"
 msgstr "複製檔案中"
 
-#: src/file-manager/dfos-xfer.c:758
+#: src/file-manager/dfos-xfer.c:801
 msgid "copied"
 msgstr "已複製"
 
-#: src/file-manager/dfos-xfer.c:759
+#: src/file-manager/dfos-xfer.c:802
 msgid "Copying"
 msgstr "複製"
 
-#: src/file-manager/dfos-xfer.c:760
+#: src/file-manager/dfos-xfer.c:803
 msgid "Preparing To Copy..."
 msgstr "準備複製中..."
 
-#: src/file-manager/dfos-xfer.c:778
+#: src/file-manager/dfos-xfer.c:821
 msgid "You cannot copy items into the Trash."
 msgstr "你不能把這個東西複製到垃圾桶"
 
-#: src/file-manager/dfos-xfer.c:779
+#: src/file-manager/dfos-xfer.c:822
 msgid "Error copying"
 msgstr "複製錯誤"
 
-#: src/file-manager/dfos-xfer.c:780 src/file-manager/dfos-xfer.c:799
-#: src/file-manager/dfos-xfer.c:815 src/file-manager/dfos-xfer.c:958
-#: src/file-manager/dfos-xfer.c:968
+#: src/file-manager/dfos-xfer.c:823 src/file-manager/dfos-xfer.c:842
+#: src/file-manager/dfos-xfer.c:858 src/file-manager/dfos-xfer.c:1001
+#: src/file-manager/dfos-xfer.c:1011
 msgid "OK"
 msgstr "OK"
 
-#: src/file-manager/dfos-xfer.c:796
+#: src/file-manager/dfos-xfer.c:839
 msgid "You cannot move the Trash."
 msgstr "你不能移動垃圾桶"
 
-#: src/file-manager/dfos-xfer.c:797
+#: src/file-manager/dfos-xfer.c:840
 msgid "You cannot copy the Trash."
 msgstr "你不能複製垃圾桶"
 
-#: src/file-manager/dfos-xfer.c:798 src/file-manager/dfos-xfer.c:814
-#: src/file-manager/dfos-xfer.c:957 src/file-manager/dfos-xfer.c:967
+#: src/file-manager/dfos-xfer.c:841 src/file-manager/dfos-xfer.c:857
+#: src/file-manager/dfos-xfer.c:1000 src/file-manager/dfos-xfer.c:1010
 msgid "Error moving to Trash"
 msgstr "複製到垃圾桶時發生錯誤"
 
-#: src/file-manager/dfos-xfer.c:812
+#: src/file-manager/dfos-xfer.c:855
 msgid "You cannot move an item into itself."
 msgstr "您不能將某個項目移動到其自己本身."
 
-#: src/file-manager/dfos-xfer.c:813
+#: src/file-manager/dfos-xfer.c:856
 msgid "You cannot copy an item into itself."
 msgstr "您不能移動某個項目到其自己本身"
 
-#: src/file-manager/dfos-xfer.c:956
+#: src/file-manager/dfos-xfer.c:999
 msgid "You cannot throw away the Trash."
 msgstr "你只能丟到垃圾桶"
 
-#: src/file-manager/dfos-xfer.c:963
+#: src/file-manager/dfos-xfer.c:1006
 #, c-format
 msgid "You cannot throw \"%s\" into the Trash."
 msgstr "你不能把 \"%s\" 丟到垃圾桶 "
 
-#: src/file-manager/dfos-xfer.c:995
+#: src/file-manager/dfos-xfer.c:1038
 msgid "Moving files to the Trash"
 msgstr "丟到垃圾桶"
 
-#: src/file-manager/dfos-xfer.c:996
+#: src/file-manager/dfos-xfer.c:1039
 msgid "thrown out"
 msgstr "清除垃圾桶"
 
-#: src/file-manager/dfos-xfer.c:998
+#: src/file-manager/dfos-xfer.c:1041
 msgid "Preparing to Move to Trash..."
 msgstr "打開垃圾桶蓋\中..."
 
-#: src/file-manager/dfos-xfer.c:1040
+#: src/file-manager/dfos-xfer.c:1083
 msgid "Deleting files"
 msgstr "刪除檔案中"
 
-#: src/file-manager/dfos-xfer.c:1041 src/file-manager/dfos-xfer.c:1093
+#: src/file-manager/dfos-xfer.c:1084 src/file-manager/dfos-xfer.c:1136
 msgid "deleted"
 msgstr "已刪除"
 
-#: src/file-manager/dfos-xfer.c:1042 src/file-manager/dfos-xfer.c:1094
+#: src/file-manager/dfos-xfer.c:1085 src/file-manager/dfos-xfer.c:1137
 msgid "Deleting"
 msgstr "刪除中"
 
-#: src/file-manager/dfos-xfer.c:1043
+#: src/file-manager/dfos-xfer.c:1086
 msgid "Preparing to Delete files..."
 msgstr "準備刪除檔案..."
 
-#: src/file-manager/dfos-xfer.c:1092
+#: src/file-manager/dfos-xfer.c:1135
 msgid "Emptying the Trash"
 msgstr "倒垃圾"
 
-#: src/file-manager/dfos-xfer.c:1095
+#: src/file-manager/dfos-xfer.c:1138
 msgid "Preparing to Empty the Trash..."
 msgstr "打包中..."
 
-#: src/file-manager/dfos-xfer.c:1130
+#: src/file-manager/dfos-xfer.c:1173
 #, fuzzy
 msgid ""
 "Are you sure you want to permanently delete all of the items in the trash?"
 msgstr "你確定要把 \"%s\" 永久刪除嗎?"
 
-#: src/file-manager/dfos-xfer.c:1132
+#: src/file-manager/dfos-xfer.c:1175
 msgid "Empty"
 msgstr "空"
 
-#: src/file-manager/dfos-xfer.c:1136
+#: src/file-manager/dfos-xfer.c:1179
 msgid "Delete Trash Contents?"
 msgstr "刪除垃圾桶內的所有檔案?"
 
@@ -2731,14 +2851,13 @@ msgstr "%s%s"
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
 
-#: src/file-manager/fm-directory-view.c:2012
+#: src/file-manager/fm-directory-view.c:1969
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the trash. Do you want to delete it immediately?"
-msgstr ""
-"無法將 \"%s\" 移到垃圾桶,您要立刻永久刪除嗎 ? "
+msgstr "無法將 \"%s\" 移到垃圾桶,您要立刻永久刪除嗎 ? "
 
-#: src/file-manager/fm-directory-view.c:2017
+#: src/file-manager/fm-directory-view.c:1974
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the trash. Do you want to delete "
@@ -2747,7 +2866,7 @@ msgstr ""
 "無法將您所選的 %d 個項目移到垃圾桶,\n"
 "您要立刻永久刪除嗎 ? "
 
-#: src/file-manager/fm-directory-view.c:2021
+#: src/file-manager/fm-directory-view.c:1978
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the trash. Do you want to delete "
@@ -2756,91 +2875,92 @@ msgstr ""
 "無法將您所選的項目中的 %d 個項目移到垃圾桶,\n"
 "您要立刻將這 %d 個項目永久刪除嗎 ?"
 
-#: src/file-manager/fm-directory-view.c:2027
+#: src/file-manager/fm-directory-view.c:1984
 #, fuzzy
 msgid "Can't Move to Trash"
 msgstr "丟到垃圾桶"
 
-#: src/file-manager/fm-directory-view.c:2028
+#: src/file-manager/fm-directory-view.c:1985
 msgid "Delete"
 msgstr "刪除"
 
-#: src/file-manager/fm-directory-view.c:2028
+#: src/file-manager/fm-directory-view.c:1985
 msgid "Cancel"
 msgstr "取消"
 
-#: src/file-manager/fm-directory-view.c:2309
+#: src/file-manager/fm-directory-view.c:2266
 msgid "_Open"
 msgstr "開啟"
 
-#: src/file-manager/fm-directory-view.c:2312
+#: src/file-manager/fm-directory-view.c:2269
 msgid "Open With"
 msgstr "以..開啟"
 
-#: src/file-manager/fm-directory-view.c:2315
+#: src/file-manager/fm-directory-view.c:2272
 msgid "Other Application..."
 msgstr "其他應用程式..."
 
-#: src/file-manager/fm-directory-view.c:2317
+#: src/file-manager/fm-directory-view.c:2274
 msgid "Other Viewer..."
 msgstr "其他瀏覽程式..."
 
-#: src/file-manager/fm-directory-view.c:2321
+#: src/file-manager/fm-directory-view.c:2278
 msgid "Open in _New Window"
 msgstr "用新視窗開啟"
 
-#: src/file-manager/fm-directory-view.c:2323
+#: src/file-manager/fm-directory-view.c:2280
 #, c-format
 msgid "Open in %d _New Windows"
 msgstr "用 %d 個新視窗開啟 "
 
-#: src/file-manager/fm-directory-view.c:2335
-#: src/file-manager/fm-directory-view.c:2459
+#: src/file-manager/fm-directory-view.c:2292
+#: src/file-manager/fm-directory-view.c:2439
 msgid "New Folder"
 msgstr "新文件"
 
-#: src/file-manager/fm-directory-view.c:2337
+#: src/file-manager/fm-directory-view.c:2294
 msgid "Delete from _Trash"
 msgstr "從 _垃圾桶刪除"
 
-#: src/file-manager/fm-directory-view.c:2340
+#: src/file-manager/fm-directory-view.c:2297
 #, fuzzy
 msgid "Move to _Trash"
 msgstr "丟到 _垃圾桶"
 
-#: src/file-manager/fm-directory-view.c:2343
+#: src/file-manager/fm-directory-view.c:2300
 msgid "_Duplicate"
 msgstr "複製"
 
-#: src/file-manager/fm-directory-view.c:2347
+#: src/file-manager/fm-directory-view.c:2304
 msgid "Create _Links"
 msgstr "建立 _連結"
 
-#: src/file-manager/fm-directory-view.c:2349
+#: src/file-manager/fm-directory-view.c:2306
 msgid "Create _Link"
 msgstr "建立 _連結"
 
-#: src/file-manager/fm-directory-view.c:2353
+#: src/file-manager/fm-directory-view.c:2310
 msgid "Show _Properties"
 msgstr "檢視問題"
 
-#: src/file-manager/fm-directory-view.c:2356
+#: src/file-manager/fm-directory-view.c:2313
 msgid "_Empty Trash"
 msgstr "清理垃圾桶"
 
-#: src/file-manager/fm-directory-view.c:2359 src/nautilus-window-menus.c:1165
-msgid "_Select All"
+#: src/file-manager/fm-directory-view.c:2316
+#, fuzzy
+msgid "_Select All Files"
 msgstr "全選"
 
-#: src/file-manager/fm-directory-view.c:2363
+#: src/file-manager/fm-directory-view.c:2320
 msgid "R_emove Custom Images"
 msgstr "刪除自訂影像"
 
-#: src/file-manager/fm-directory-view.c:2365
+#: src/file-manager/fm-directory-view.c:2322
 msgid "R_emove Custom Image"
 msgstr "刪除自訂影像"
 
-#: src/file-manager/fm-directory-view.c:2369
+#: src/file-manager/fm-directory-view.c:2326
 msgid "Reset _Background"
 msgstr "重設背景"
 
@@ -2851,80 +2971,81 @@ msgstr "重設背景"
 #. * (for the current location, not selection -- but would have to not
 #. * include this item when there's a selection)? Add Bookmark? (same issue).
 #.
-#: src/file-manager/fm-directory-view.c:2470
+#: src/file-manager/fm-directory-view.c:2450
 msgid "Zoom In"
 msgstr "放大"
 
-#: src/file-manager/fm-directory-view.c:2472
+#: src/file-manager/fm-directory-view.c:2452
 msgid "Zoom Out"
 msgstr "縮小"
 
-#: src/file-manager/fm-directory-view.c:2474
-msgid "Zoom to Default"
-msgstr "使用預設尺寸"
+#: src/file-manager/fm-directory-view.c:2454
+#, fuzzy
+msgid "Normal Size"
+msgstr "一般選單"
 
-#: src/file-manager/fm-directory-view.c:2605
-#: src/file-manager/fm-directory-view.c:2859
+#: src/file-manager/fm-directory-view.c:2581
+#: src/file-manager/fm-directory-view.c:2835
 #, c-format
 msgid "%s Viewer"
 msgstr "用 %s "
 
-#: src/file-manager/fm-directory-view.c:2888
+#: src/file-manager/fm-directory-view.c:2864
 msgid "Move all selected items to the Trash"
 msgstr "將已選項目丟到垃圾桶"
 
-#: src/file-manager/fm-directory-view.c:2897
+#: src/file-manager/fm-directory-view.c:2873
 #, fuzzy
 msgid "Delete all selected items permanently"
 msgstr "刪除已選項目"
 
-#: src/file-manager/fm-directory-view.c:2919
+#: src/file-manager/fm-directory-view.c:2895
 msgid "Choose a program with which to open the selected item"
 msgstr "請選擇一個程式來開啟已選項目"
 
-#: src/file-manager/fm-directory-view.c:2939
+#: src/file-manager/fm-directory-view.c:2915
 msgid "Choose another application with which to open the selected item"
 msgstr "請選擇另一個應用程式來開啟已選項目"
 
-#: src/file-manager/fm-directory-view.c:2961
+#: src/file-manager/fm-directory-view.c:2937
 msgid "Choose another viewer with which to view the selected item"
 msgstr "請選擇另一個程式來瀏覽已選項目"
 
-#: src/file-manager/fm-directory-view.c:2983
+#: src/file-manager/fm-directory-view.c:2959
 msgid "Create a new folder in this window"
 msgstr "在這個視窗中開啟新文件"
 
-#: src/file-manager/fm-directory-view.c:2991
+#: src/file-manager/fm-directory-view.c:2967
 msgid "Open the selected item in this window"
 msgstr "在這個視窗中開啟已選項目"
 
-#: src/file-manager/fm-directory-view.c:2999
+#: src/file-manager/fm-directory-view.c:2975
 msgid "Open each selected item in a new window"
 msgstr "用新視窗開啟每一個已選項目"
 
-#: src/file-manager/fm-directory-view.c:3014
+#: src/file-manager/fm-directory-view.c:2990
 msgid "View or modify the properties of the selected items"
 msgstr "檢視或者修改已選項目的性質"
 
-#: src/file-manager/fm-directory-view.c:3025
+#: src/file-manager/fm-directory-view.c:3001
 #, fuzzy
 msgid "Duplicate each selected item"
 msgstr "復原所有已選項目"
 
-#: src/file-manager/fm-directory-view.c:3033
+#: src/file-manager/fm-directory-view.c:3009
 #, fuzzy
 msgid "Create a symbolic link for each selected item"
 msgstr "刪除已選項目"
 
-#: src/file-manager/fm-directory-view.c:3047
+#: src/file-manager/fm-directory-view.c:3023
 msgid "Delete all items in the trash"
 msgstr "清理垃圾桶"
 
-#: src/file-manager/fm-directory-view.c:3055
+#: src/file-manager/fm-directory-view.c:3031
 msgid "Select all items in this window"
 msgstr "選擇這個視窗中的所有項目"
 
-#: src/file-manager/fm-directory-view.c:3069
+#: src/file-manager/fm-directory-view.c:3045
 msgid "Remove the custom image from each selected icon"
 msgstr "刪除所有圖示的自訂影像"
 
@@ -3031,158 +3152,185 @@ msgid ""
 "information appears as you zoom in closer."
 msgstr "請選擇圖示下方的資訊的係數當您放大時將會有更多訊息"
 
-#: src/file-manager/fm-icon-view.c:109
-msgid "Sort by _Name"
+#: src/file-manager/fm-icon-view.c:123
+#, fuzzy
+msgid "by _Name"
 msgstr "以名稱排列"
 
-#: src/file-manager/fm-icon-view.c:110
+#: src/file-manager/fm-icon-view.c:124
 msgid "Keep icons sorted by name in rows"
 msgstr "保持以名稱排列每一行的圖示"
 
-#: src/file-manager/fm-icon-view.c:116
-msgid "Sort by _Size"
+#: src/file-manager/fm-icon-view.c:130
+#, fuzzy
+msgid "by _Size"
 msgstr "以大小排列"
 
-#: src/file-manager/fm-icon-view.c:117
+#: src/file-manager/fm-icon-view.c:131
 msgid "Keep icons sorted by size in rows"
 msgstr "保持以大小排列每一行得圖示"
 
-#: src/file-manager/fm-icon-view.c:123
-msgid "Sort by _Type"
+#: src/file-manager/fm-icon-view.c:137
+#, fuzzy
+msgid "by _Type"
 msgstr "以格式排列"
 
-#: src/file-manager/fm-icon-view.c:124
+#: src/file-manager/fm-icon-view.c:138
 msgid "Keep icons sorted by type in rows"
 msgstr "保持以格式排列每一行的圖示"
 
-#: src/file-manager/fm-icon-view.c:130
-msgid "Sort by Modification _Date"
+#: src/file-manager/fm-icon-view.c:144
+#, fuzzy
+msgid "by Modification _Date"
 msgstr "以修改日期排列"
 
-#: src/file-manager/fm-icon-view.c:131
+#: src/file-manager/fm-icon-view.c:145
 msgid "Keep icons sorted by modification date in rows"
 msgstr "保持以修改日期排列每一行的圖示"
 
-#: src/file-manager/fm-icon-view.c:137
-msgid "Sort by _Emblems"
+#: src/file-manager/fm-icon-view.c:151
+#, fuzzy
+msgid "by _Emblems"
 msgstr "以圖章排列"
 
-#: src/file-manager/fm-icon-view.c:138
+#: src/file-manager/fm-icon-view.c:152
 msgid "Keep icons sorted by emblems in rows"
 msgstr "保持以圖章排列每一行的圖示"
 
-#: src/file-manager/fm-icon-view.c:310
+#: src/file-manager/fm-icon-view.c:401
 msgid "_Stretch Icon"
 msgstr "放大圖示"
 
-#: src/file-manager/fm-icon-view.c:318
-#, fuzzy
-msgid "_Restore Icon's Original Size"
-msgstr "將圖示以未放大前的大小儲存"
-
-#: src/file-manager/fm-icon-view.c:320
+#: src/file-manager/fm-icon-view.c:409
 #, fuzzy
 msgid "_Restore Icons' Original Sizes"
 msgstr "將圖示以未放大前的大小儲存"
 
-#: src/file-manager/fm-icon-view.c:324
+#: src/file-manager/fm-icon-view.c:411
+#, fuzzy
+msgid "_Restore Icon's Original Size"
+msgstr "將圖示以未放大前的大小儲存"
+
+#: src/file-manager/fm-icon-view.c:415
 msgid "_Icon Captions..."
 msgstr "圖示說明..."
 
 #. Modify file name. We only allow this on a single file selection.
-#: src/file-manager/fm-icon-view.c:328
+#: src/file-manager/fm-icon-view.c:419
 msgid "_Rename"
 msgstr "重新命名"
 
-#: src/file-manager/fm-icon-view.c:1064
-msgid "Make the selected icon stretchable"
-msgstr "將已選圖示可伸展化"
+#: src/file-manager/fm-icon-view.c:423
+msgid "_Clean Up by Name"
+msgstr "依照名稱清理"
 
-#: src/file-manager/fm-icon-view.c:1069
-msgid "Restore each selected icon to its original size"
-msgstr "將每個已選圖示以原大小儲存"
+#: src/file-manager/fm-icon-view.c:427
+msgid "_Use Tighter Layout"
+msgstr "使用簡便格式"
 
-#: src/file-manager/fm-icon-view.c:1078
+#: src/file-manager/fm-icon-view.c:1239
 msgid "Choose which information appears beneath each icon's name"
 msgstr "請選擇要在圖示下方出現的訊息"
 
-#: src/file-manager/fm-icon-view.c:1091
-msgid "_Layout"
+#: src/file-manager/fm-icon-view.c:1245
+msgid "Make the selected icon stretchable"
+msgstr "將已選圖示可伸展化"
+
+#: src/file-manager/fm-icon-view.c:1251
+msgid "Restore each selected icon to its original size"
+msgstr "將每個已選圖示以原大小儲存"
+
+#: src/file-manager/fm-icon-view.c:1264
+#, fuzzy
+msgid "_Lay out items"
 msgstr "規劃"
 
-#: src/file-manager/fm-icon-view.c:1099
-msgid "_Manual Layout"
-msgstr "手動規劃"
+#: src/file-manager/fm-icon-view.c:1265
+msgid "Choose an order for the icons in this folder"
+msgstr "選擇此卷宗中圖示的排列方式"
 
-#: src/file-manager/fm-icon-view.c:1100
+#: src/file-manager/fm-icon-view.c:1272
+#, fuzzy
+msgid "_manually"
+msgstr "手動"
+
+#: src/file-manager/fm-icon-view.c:1273
 msgid "Leave icons wherever they are dropped"
 msgstr "留下已放棄的圖示"
 
-#: src/file-manager/fm-icon-view.c:1121
+#: src/file-manager/fm-icon-view.c:1294
+msgid "Toggle using a tighter layout scheme"
+msgstr "使用簡便格式"
+
+#: src/file-manager/fm-icon-view.c:1301
+msgid "Reposition icons to better fit in the window and avoid overlapping"
+msgstr "以最佳方式排列圖示以免超出視窗"
+
+#: src/file-manager/fm-icon-view.c:1310
 msgid "_Ascending"
 msgstr "依字母順序升冪排列"
 
-#: src/file-manager/fm-icon-view.c:1122
+#: src/file-manager/fm-icon-view.c:1311
 msgid "Sort icons from \"smallest\" to \"largest\" according to sort criteria"
 msgstr "以標準將圖示從小排到大"
 
-#: src/file-manager/fm-icon-view.c:1128
+#: src/file-manager/fm-icon-view.c:1318
 msgid "Des_cending"
 msgstr "依字母順序降冪排列"
 
-#: src/file-manager/fm-icon-view.c:1129
+#: src/file-manager/fm-icon-view.c:1319
 msgid "Sort icons from \"largest\" to \"smallest\" according to sort criteria"
 msgstr "以標準將圖示從大排到小"
 
-#: src/file-manager/fm-icon-view.c:1145
+#: src/file-manager/fm-icon-view.c:1329
 msgid "Rename selected item"
 msgstr "將已選項目重新命名"
 
-#: src/file-manager/fm-icon-view.c:1316
+#: src/file-manager/fm-icon-view.c:1502
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "以 %s 列印"
 
-#: src/file-manager/fm-properties-window.c:440
+#: src/file-manager/fm-properties-window.c:441
 #, c-format
 msgid "Nautilus: %s Properties"
 msgstr "Nautilus: %s 性質"
 
-#: src/file-manager/fm-properties-window.c:572
+#: src/file-manager/fm-properties-window.c:573
 msgid "Cancel Group Change?"
 msgstr "取消改變群組?"
 
-#: src/file-manager/fm-properties-window.c:573
+#: src/file-manager/fm-properties-window.c:574
 msgid "Changing group"
 msgstr "改變群組中"
 
-#: src/file-manager/fm-properties-window.c:717
+#: src/file-manager/fm-properties-window.c:718
 msgid "Cancel Owner Change?"
 msgstr "取消改變所有者?"
 
-#: src/file-manager/fm-properties-window.c:718
+#: src/file-manager/fm-properties-window.c:719
 msgid "Changing owner"
 msgstr "改變所有者中"
 
-#: src/file-manager/fm-properties-window.c:874
+#: src/file-manager/fm-properties-window.c:875
 msgid "nothing"
 msgstr "沒事"
 
-#: src/file-manager/fm-properties-window.c:876
+#: src/file-manager/fm-properties-window.c:877
 msgid "unreadable"
 msgstr "無法讀取"
 
-#: src/file-manager/fm-properties-window.c:886
+#: src/file-manager/fm-properties-window.c:887
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 個項目,大小 %s"
 
-#: src/file-manager/fm-properties-window.c:888
+#: src/file-manager/fm-properties-window.c:889
 #, c-format
 msgid "%d items, totalling %s"
 msgstr "%d 個項目,總共 %s"
 
-#: src/file-manager/fm-properties-window.c:894
+#: src/file-manager/fm-properties-window.c:895
 msgid "(some contents unreadable)"
 msgstr "(有些目錄無法讀取)"
 
@@ -3191,111 +3339,111 @@ msgstr "(有些目錄無法讀取)"
 #. * "Contents:" title to line up with the first line of the 2-line value.
 #. * Maybe there's a better way to do this, but I couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:908
+#: src/file-manager/fm-properties-window.c:909
 msgid "Contents:"
 msgstr "目錄:"
 
-#: src/file-manager/fm-properties-window.c:1061
+#: src/file-manager/fm-properties-window.c:1062
 msgid "Basic"
 msgstr "基礎"
 
-#: src/file-manager/fm-properties-window.c:1124
+#: src/file-manager/fm-properties-window.c:1125
 msgid "Where:"
 msgstr "出處:"
 
-#: src/file-manager/fm-properties-window.c:1126
+#: src/file-manager/fm-properties-window.c:1127
 msgid "Type:"
 msgstr "格式:"
 
-#: src/file-manager/fm-properties-window.c:1132
+#: src/file-manager/fm-properties-window.c:1133
 msgid "Size:"
 msgstr "大小:"
 
-#: src/file-manager/fm-properties-window.c:1135
+#: src/file-manager/fm-properties-window.c:1136
 msgid "Modified:"
 msgstr "修改:"
 
-#: src/file-manager/fm-properties-window.c:1137
+#: src/file-manager/fm-properties-window.c:1138
 msgid "Accessed:"
 msgstr "定位:"
 
-#: src/file-manager/fm-properties-window.c:1140
+#: src/file-manager/fm-properties-window.c:1141
 msgid "MIME type:"
 msgstr "MIME 格式:"
 
-#: src/file-manager/fm-properties-window.c:1269
+#: src/file-manager/fm-properties-window.c:1270
 msgid "Emblems"
 msgstr "象徵"
 
-#: src/file-manager/fm-properties-window.c:1502
+#: src/file-manager/fm-properties-window.c:1503
 msgid "Special Flags:"
 msgstr "特殊旗標:"
 
-#: src/file-manager/fm-properties-window.c:1506
+#: src/file-manager/fm-properties-window.c:1507
 msgid "Set User ID"
 msgstr "設定使用者 ID"
 
-#: src/file-manager/fm-properties-window.c:1510
+#: src/file-manager/fm-properties-window.c:1511
 msgid "Set Group ID"
 msgstr "設定群組 ID"
 
-#: src/file-manager/fm-properties-window.c:1514
+#: src/file-manager/fm-properties-window.c:1515
 msgid "Sticky"
 msgstr "黏附"
 
-#: src/file-manager/fm-properties-window.c:1525
+#: src/file-manager/fm-properties-window.c:1526
 msgid "Permissions"
 msgstr "權限"
 
-#: src/file-manager/fm-properties-window.c:1531
+#: src/file-manager/fm-properties-window.c:1532
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "您並非所有人,您不能改變這些權限"
 
-#: src/file-manager/fm-properties-window.c:1558
+#: src/file-manager/fm-properties-window.c:1559
 msgid "File Owner:"
 msgstr "檔案所有者:"
 
-#: src/file-manager/fm-properties-window.c:1568
+#: src/file-manager/fm-properties-window.c:1569
 msgid "File Group:"
 msgstr "檔案群組:"
 
-#: src/file-manager/fm-properties-window.c:1586
+#: src/file-manager/fm-properties-window.c:1587
 msgid "Owner:"
 msgstr "所有者:"
 
-#: src/file-manager/fm-properties-window.c:1589
+#: src/file-manager/fm-properties-window.c:1590
 msgid "Group:"
 msgstr "群組:"
 
-#: src/file-manager/fm-properties-window.c:1592
+#: src/file-manager/fm-properties-window.c:1593
 msgid "Others:"
 msgstr "其他:"
 
-#: src/file-manager/fm-properties-window.c:1595
+#: src/file-manager/fm-properties-window.c:1596
 msgid "Text View:"
 msgstr "文本瀏覽:"
 
-#: src/file-manager/fm-properties-window.c:1598
+#: src/file-manager/fm-properties-window.c:1599
 msgid "Number View:"
 msgstr "數字瀏覽:"
 
-#: src/file-manager/fm-properties-window.c:1601
+#: src/file-manager/fm-properties-window.c:1602
 msgid "Last Changed:"
 msgstr "最後修改:"
 
-#: src/file-manager/fm-properties-window.c:1605
+#: src/file-manager/fm-properties-window.c:1606
 msgid "Read"
 msgstr "讀取"
 
-#: src/file-manager/fm-properties-window.c:1609
+#: src/file-manager/fm-properties-window.c:1610
 msgid "Write"
 msgstr "寫入"
 
-#: src/file-manager/fm-properties-window.c:1613
+#: src/file-manager/fm-properties-window.c:1614
 msgid "Execute"
 msgstr "執行"
 
-#: src/file-manager/fm-properties-window.c:1673
+#: src/file-manager/fm-properties-window.c:1674
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "\"%s\" 的權限不能刪除"
@@ -3310,7 +3458,7 @@ msgstr "\"%s\" 的權限不能刪除"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:349
+#: src/nautilus-application.c:350
 msgid ""
 "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
 "again may fix the problem."
@@ -3318,7 +3466,7 @@ msgstr ""
 "Nautilus 現在無法使用,重新開機或者重新安裝 Nautilis 或許\可以解決這個問題."
 
 #. FIXME: The guesses and stuff here are lame.
-#: src/nautilus-application.c:353
+#: src/nautilus-application.c:354
 msgid ""
 "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
 "again may fix the problem.\n"
@@ -3349,23 +3497,23 @@ msgstr ""
 #. * wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:378 src/nautilus-application.c:396
+#: src/nautilus-application.c:379 src/nautilus-application.c:397
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "因為未知錯誤,您現在無法使用 Nautilus "
 
-#: src/nautilus-application.c:379
+#: src/nautilus-application.c:380
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to register the file manager view server."
 msgstr " OAF 指向檔案瀏覽伺服器時發生未知錯誤您現在將無法使用 Nautilus "
 
-#: src/nautilus-application.c:397
+#: src/nautilus-application.c:398
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the factory."
 msgstr " OAF 指向路徑時發生未知錯誤呢現在將無法使用 Nautilus "
 
-#: src/nautilus-application.c:532
+#: src/nautilus-application.c:535
 msgid ""
 "You are running Nautilus as root.\n"
 "\n"
@@ -3385,7 +3533,7 @@ msgstr "Nautilus: 書籤"
 msgid "Location"
 msgstr "位置"
 
-#: src/nautilus-bookmarks-window.c:201 src/nautilus-window-menus.c:588
+#: src/nautilus-bookmarks-window.c:201 src/nautilus-window-menus.c:643
 msgid "Remove"
 msgstr "刪除"
 
@@ -3416,33 +3564,49 @@ msgstr "以多視窗瀏覽 ?"
 msgid "Location:"
 msgstr "位置 :"
 
-#: src/nautilus-main.c:63
+#: src/nautilus-main.c:64
 msgid "Perform high-speed self-check tests."
 msgstr "執行快速自動檢察測試"
 
-#: src/nautilus-main.c:65
+#: src/nautilus-main.c:66
 #, fuzzy
 msgid "Quit Nautilus."
 msgstr "有關 Nautilus..."
 
-#: src/nautilus-main.c:66
+#: src/nautilus-main.c:67
+#, fuzzy
+msgid "Restart Nautilus."
+msgstr "有關 Nautilus..."
+
+#: src/nautilus-main.c:68
 #, fuzzy
 msgid "Don't draw background and icons on desktop."
 msgstr "在桌面上劃上圖示和背景"
 
-#: src/nautilus-main.c:67
+#: src/nautilus-main.c:69
 msgid "Draw background and icons on desktop."
 msgstr "在桌面上劃上圖示和背景"
 
-#: src/nautilus-main.c:117
+#: src/nautilus-main.c:120
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: 無法以 --quit 使用 URIs.\n"
 
-#: src/nautilus-main.c:119
-msgid "nautiluls: --quit and --start-desktop cannot be used together.\n"
+#: src/nautilus-main.c:122
+#, fuzzy
+msgid "nautilus: --restart cannot be used with URIs.\n"
+msgstr "nautilus: 無法以 --quit 使用 URIs.\n"
+
+#: src/nautilus-main.c:124
+#, fuzzy
+msgid "nautilus: --quit and --start-desktop cannot be used together.\n"
 msgstr "nauitlus: 不能將 --quit 和--start-desktop 一起使用.\n"
 
-#: src/nautilus-main.c:121
+#: src/nautilus-main.c:126
+#, fuzzy
+msgid "nautilus: --restart and --start-desktop cannot be used together.\n"
+msgstr "nauitlus: 不能將 --quit 和--start-desktop 一起使用.\n"
+
+#: src/nautilus-main.c:128
 msgid ""
 "nautiluls: --stop-desktop and --start-desktop cannot be used together.\n"
 msgstr "nautilus: 不能將 --stop-desktop 和 --start-desktop 一起使用.\n"
@@ -3453,7 +3617,7 @@ msgid "Nautilus Property Browser"
 msgstr "Nautilus: 性質瀏覽器"
 
 #. add the title label
-#: src/nautilus-property-browser.c:265 src/nautilus-property-browser.c:1830
+#: src/nautilus-property-browser.c:265 src/nautilus-property-browser.c:1838
 msgid "Select A Category:"
 msgstr "選擇一個種類 :"
 
@@ -3465,49 +3629,49 @@ msgstr "加入新的..."
 msgid "Remove..."
 msgstr "刪除..."
 
-#: src/nautilus-property-browser.c:831 src/nautilus-property-browser.c:925
+#: src/nautilus-property-browser.c:833 src/nautilus-property-browser.c:928
 #, c-format
 msgid "Sorry, but '%s' is not an image file!"
 msgstr "抱歉 , '%s' 並不是一個影像檔案"
 
-#: src/nautilus-property-browser.c:858
+#: src/nautilus-property-browser.c:860
 msgid "Create a New Emblem:"
 msgstr "開啟新的圖章:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:863
+#: src/nautilus-property-browser.c:865
 msgid "Keyword:"
 msgstr "關鍵字:"
 
 #. set up a gnome file entry to pick the image file
-#: src/nautilus-property-browser.c:880
+#: src/nautilus-property-browser.c:882
 msgid "Select an image file for the new emblem:"
 msgstr "請為這個圖示選取一個新的圖章:"
 
-#: src/nautilus-property-browser.c:990
+#: src/nautilus-property-browser.c:993
 msgid "Select an image file to add as a background:"
 msgstr "請選擇一個影像檔案作為背景 :"
 
-#: src/nautilus-property-browser.c:1088
+#: src/nautilus-property-browser.c:1091
 msgid "Select a color to add:"
 msgstr "請選擇新的顏色來加入 :"
 
-#: src/nautilus-property-browser.c:1838
+#: src/nautilus-property-browser.c:1846
 msgid "Cancel Remove"
 msgstr "取消刪除"
 
-#: src/nautilus-property-browser.c:1840
+#: src/nautilus-property-browser.c:1848
 #, c-format
 msgid "Add a new %s"
 msgstr "加入新的 %s "
 
 #. strip trailing s
-#: src/nautilus-property-browser.c:1855
+#: src/nautilus-property-browser.c:1863
 #, c-format
 msgid "Click on a %s to remove it"
 msgstr "選擇要刪除的 %s"
 
-#: src/nautilus-property-browser.c:1867
+#: src/nautilus-property-browser.c:1875
 #, c-format
 msgid "Remove a %s"
 msgstr "刪除一個 %s"
@@ -3517,27 +3681,51 @@ msgstr "刪除一個 %s"
 msgid "Reset Background"
 msgstr "重設背景"
 
-#: src/nautilus-sidebar.c:1153
+#: src/nautilus-sidebar.c:605
+msgid ""
+"You can't assign more than one custom icon at a time! Please drag just one "
+"image to set a custom icon."
+msgstr ""
+"您不能同時選擇一個以上的圖示,\n"
+"請選擇一個影像作為圖示"
+
+#: src/nautilus-sidebar.c:625
+msgid ""
+"The file that you dropped is not local.  You can only use local images as "
+"custom icons."
+msgstr ""
+"您所選擇的檔案並不在這台電腦上,\n"
+"請選擇這台電腦上的檔案"
+
+#: src/nautilus-sidebar.c:628
+msgid ""
+"The file that you dropped is not an image.  You can only use local images as "
+"custom icons."
+msgstr ""
+"您所選擇的檔案並非影像檔,\n"
+"請選擇這台電腦上的影像檔"
+
+#: src/nautilus-sidebar.c:1173
 #, c-format
 msgid "Open with %s"
 msgstr "以 %s 開啟 "
 
 #. Catch-all button after all the others.
-#: src/nautilus-sidebar.c:1182
+#: src/nautilus-sidebar.c:1202
 msgid "Open with..."
 msgstr "以...開啟"
 
-#: src/nautilus-window.c:863
+#: src/nautilus-window.c:837
 #, c-format
 msgid "View as %s..."
 msgstr "瀏覽 %s..."
 
 #. Add "View as Other..." extra bonus choice.
-#: src/nautilus-window.c:887
+#: src/nautilus-window.c:861
 msgid "View as Other..."
 msgstr "以其他瀏覽..."
 
-#: src/nautilus-window.c:1337
+#: src/nautilus-window.c:1339
 msgid "Close"
 msgstr "關閉"
 
@@ -3545,58 +3733,56 @@ msgstr "關閉"
 msgid "(untitled)"
 msgstr "(未命名)"
 
-#: src/nautilus-window-manage-views.c:200
-#: src/nautilus-window-manage-views.c:246
-#: src/nautilus-window-manage-views.c:247 src/nautilus-window-menus.c:467
+#: src/nautilus-window-manage-views.c:252 src/nautilus-window-menus.c:522
 msgid "Nautilus"
 msgstr "Nautilus"
 
-#: src/nautilus-window-manage-views.c:250
+#: src/nautilus-window-manage-views.c:255
 #, c-format
 msgid "Nautilus: %s"
 msgstr "Nautilus: %s"
 
-#: src/nautilus-window-manage-views.c:696
+#: src/nautilus-window-manage-views.c:701
 #, c-format
 msgid "You do not have the permissions necessary to view \"%s\"."
 msgstr "您沒有瀏覽 \"%s\" 的權限"
 
-#: src/nautilus-window-manage-views.c:1293
+#: src/nautilus-window-manage-views.c:1307
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr "無法找到 \"%s\" 請檢察有無拼錯字"
 
-#: src/nautilus-window-manage-views.c:1299
+#: src/nautilus-window-manage-views.c:1313
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr "\"%s\" 不是個完整位置,請檢察"
 
-#: src/nautilus-window-manage-views.c:1317
+#: src/nautilus-window-manage-views.c:1331
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot handle items of this type."
 msgstr "無法展示 \"%s\" Nautilus 無法處理這種格式"
 
-#: src/nautilus-window-manage-views.c:1321
+#: src/nautilus-window-manage-views.c:1335
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot handle items of type \"%s\"."
 msgstr "無法展示\"%s\",Nautilus 尚未支援 \"%s\" 格式"
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1333
+#: src/nautilus-window-manage-views.c:1347
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr "無法展示 \"%s\" ,Nautilus 無法處理  %s 位置"
 
-#: src/nautilus-window-manage-views.c:1339
+#: src/nautilus-window-manage-views.c:1353
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "無法展示 \"%s\" ,登錄失敗 "
 
 #. FIXME: Need to give the user some advice about what to do here.
-#: src/nautilus-window-manage-views.c:1346
+#: src/nautilus-window-manage-views.c:1360
 msgid ""
 "Sorry, searching can't be used now. In the future this message will be more "
 "helpful."
@@ -3604,330 +3790,519 @@ msgstr ""
 "抱歉,目前無法使用搜尋功\能;\n"
 "不久這項功\能將提供給您使用"
 
-#: src/nautilus-window-manage-views.c:1350
+#: src/nautilus-window-manage-views.c:1364
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus 無法展示 \"%s\""
 
-#: src/nautilus-window-menus.c:464
+#: src/nautilus-window-menus.c:403
+#, fuzzy
+msgid "Hide Status Bar"
+msgstr "狀態列"
+
+#: src/nautilus-window-menus.c:404
+#, fuzzy
+msgid "Show Status Bar"
+msgstr "狀態列"
+
+#: src/nautilus-window-menus.c:410
+#, fuzzy
+msgid "Hide Sidebar"
+msgstr "側列"
+
+#: src/nautilus-window-menus.c:411
+#, fuzzy
+msgid "Show Sidebar"
+msgstr "側列"
+
+#: src/nautilus-window-menus.c:417
+#, fuzzy
+msgid "Hide Tool Bar"
+msgstr "工具列"
+
+#: src/nautilus-window-menus.c:418
+#, fuzzy
+msgid "Show Tool Bar"
+msgstr "工具列"
+
+#: src/nautilus-window-menus.c:424
+#, fuzzy
+msgid "Hide Location Bar"
+msgstr "你家住址"
+
+#: src/nautilus-window-menus.c:425
+#, fuzzy
+msgid "Show Location Bar"
+msgstr "位置列"
+
+#: src/nautilus-window-menus.c:519
 #, fuzzy, c-format
 msgid ""
 "The GNOME Shell\n"
 "%s"
 msgstr "The GNOME Shell"
 
-#: src/nautilus-window-menus.c:584
+#: src/nautilus-window-menus.c:639
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
 "this location from your list?"
 msgstr "位置 \"%s\" 不存在您要刪除所有有關這個位置的相關書籤嗎?"
 
-#: src/nautilus-window-menus.c:599
+#: src/nautilus-window-menus.c:654
 msgid "Bookmark for Bad Location"
 msgstr "錯誤位置書籤"
 
-#: src/nautilus-window-menus.c:602
+#: src/nautilus-window-menus.c:657
 #, c-format
 msgid ""
 "The location \"%s\" no longer exists. It was probably moved, deleted, or "
 "renamed."
 msgstr " 位置 \"%s\" 不存在  可能已改名或者已刪除"
 
-#: src/nautilus-window-menus.c:605
+#: src/nautilus-window-menus.c:660
 msgid "Go To Bad Location"
 msgstr "去 Bad Location"
 
-#: src/nautilus-window-menus.c:677
+#: src/nautilus-window-menus.c:732
 msgid "Go to the specified location"
 msgstr "到指定位置"
 
 #. File menu
-#: src/nautilus-window-menus.c:1053
+#: src/nautilus-window-menus.c:1108
 msgid "_File"
 msgstr "檔案"
 
-#: src/nautilus-window-menus.c:1057
+#: src/nautilus-window-menus.c:1112
 msgid "_New Window"
 msgstr "新視窗"
 
-#: src/nautilus-window-menus.c:1058
+#: src/nautilus-window-menus.c:1113
 msgid "Create a new window"
 msgstr "製造新視窗"
 
-#: src/nautilus-window-menus.c:1072
+#: src/nautilus-window-menus.c:1127
 msgid "_Close Window"
 msgstr "關閉視窗"
 
-#: src/nautilus-window-menus.c:1073
+#: src/nautilus-window-menus.c:1128
 msgid "Close this window"
 msgstr "關閉這個視窗"
 
-#: src/nautilus-window-menus.c:1084
+#: src/nautilus-window-menus.c:1139
 #, fuzzy
-msgid "Close All Windows"
+msgid "Close _All Windows"
 msgstr "關閉視窗"
 
-#: src/nautilus-window-menus.c:1085
+#: src/nautilus-window-menus.c:1140
 #, fuzzy
-msgid "Close all windows"
+msgid "Close all Nautilus windows"
 msgstr "關閉這個視窗"
 
+#. No initial text; set in update_find_menu_item
+#: src/nautilus-window-menus.c:1156
+msgid "Show the searching controls instead of the location"
+msgstr "以勳控制取代位置"
+
+#: src/nautilus-window-menus.c:1168
+#, fuzzy
+msgid "_Web Search"
+msgstr "搜尋網站"
+
+#: src/nautilus-window-menus.c:1169
+#, fuzzy
+msgid "Search the World Wide Web"
+msgstr "搜尋這個網站"
+
 #. Edit menu
-#: src/nautilus-window-menus.c:1097
+#: src/nautilus-window-menus.c:1180
 msgid "_Edit"
 msgstr "編輯"
 
-#: src/nautilus-window-menus.c:1101 src/nautilus-window-menus.c:1462
+#: src/nautilus-window-menus.c:1184 src/nautilus-window-menus.c:1585
 msgid "_Undo"
 msgstr "復原"
 
-#: src/nautilus-window-menus.c:1102 src/nautilus-window-menus.c:1462
+#: src/nautilus-window-menus.c:1185 src/nautilus-window-menus.c:1585
 msgid "Undo the last text change"
 msgstr "復原最後文字修改"
 
-#: src/nautilus-window-menus.c:1115
+#: src/nautilus-window-menus.c:1198
 msgid "_Cut Text"
 msgstr "剪下文本"
 
-#: src/nautilus-window-menus.c:1116
+#: src/nautilus-window-menus.c:1199
 msgid "Cuts the selected text to the clipboard"
 msgstr "剪下已選文本到剪貼簿"
 
-#: src/nautilus-window-menus.c:1127
+#: src/nautilus-window-menus.c:1210
 msgid "_Copy Text"
 msgstr "複製文本"
 
-#: src/nautilus-window-menus.c:1128
+#: src/nautilus-window-menus.c:1211
 msgid "Copies the selected text to the clipboard"
 msgstr "複製已選文本到剪貼簿"
 
-#: src/nautilus-window-menus.c:1139
+#: src/nautilus-window-menus.c:1222
 msgid "_Paste Text"
 msgstr "貼上文本"
 
-#: src/nautilus-window-menus.c:1140
+#: src/nautilus-window-menus.c:1223
 msgid "Pastes the text stored on the clipboard"
 msgstr "將剪貼簿內的文本貼上"
 
-#: src/nautilus-window-menus.c:1151
+#: src/nautilus-window-menus.c:1234
 msgid "C_lear Text"
 msgstr "清除文本"
 
-#: src/nautilus-window-menus.c:1152
+#: src/nautilus-window-menus.c:1235
 msgid "Removes the selected text without putting it on the clipboard"
 msgstr "清除已選文本而不送到剪貼簿"
 
-#: src/nautilus-window-menus.c:1182
+#: src/nautilus-window-menus.c:1248
+msgid "_Select All"
+msgstr "全選"
+
+#: src/nautilus-window-menus.c:1262
 msgid "_Customize..."
 msgstr "修改..."
 
-#: src/nautilus-window-menus.c:1183
+#: src/nautilus-window-menus.c:1263
 msgid ""
 "Displays the Property Browser, to add properties to objects and customize "
 "appearance"
 msgstr "顯示特性瀏覽器,加入物件和模式"
 
-#: src/nautilus-window-menus.c:1194
+#: src/nautilus-window-menus.c:1274
 msgid "_Change Appearance..."
 msgstr "改變顯示方式..."
 
-#: src/nautilus-window-menus.c:1195
+#: src/nautilus-window-menus.c:1275
 msgid ""
 "Displays a list of alternative appearances, to allow you to change the "
 "appearance"
-msgstr "" 
+msgstr ""
 "將可使用的顯示方式列出,\n"
 "讓您改變顯示方式."
 
+#. View menu
+#: src/nautilus-window-menus.c:1288
+#, fuzzy
+msgid "_View"
+msgstr "瀏覽"
+
+#: src/nautilus-window-menus.c:1292
+msgid "_Refresh"
+msgstr "更新"
+
+#: src/nautilus-window-menus.c:1293 src/nautilus-window-toolbars.c:120
+msgid "Display the latest contents of the current location"
+msgstr "顯示這個位置的最新內容"
+
+#. Title computed dynamically
+#: src/nautilus-window-menus.c:1306
+msgid "Change the visibility of this window's sidebar"
+msgstr "顯示或隱藏這個視窗的輔助工具列"
+
+#. Title computed dynamically
+#: src/nautilus-window-menus.c:1317
+msgid "Change the visibility of this window's tool bar"
+msgstr "顯示或隱藏這個視窗的工具列"
+
+#. Title computed dynamically
+#: src/nautilus-window-menus.c:1328
+msgid "Change the visibility of this window's location bar"
+msgstr "顯示或隱藏這個視窗的位置列"
+
+#. Title computed dynamically
+#: src/nautilus-window-menus.c:1339
+msgid "Change the visibility of this window's status bar"
+msgstr "顯示或隱藏這個視窗的狀態列"
+
+#: src/nautilus-window-menus.c:1355
+#, fuzzy
+msgid "Zoom _In"
+msgstr "放大"
+
+#: src/nautilus-window-menus.c:1356
+#, fuzzy
+msgid "Show the contents in more detail"
+msgstr "(有些目錄無法讀取)"
+
+#: src/nautilus-window-menus.c:1367
+#, fuzzy
+msgid "Zoom _Out"
+msgstr "縮小"
+
+#: src/nautilus-window-menus.c:1368
+msgid "Show the contents in less detail"
+msgstr "顯示一些細節"
+
+#: src/nautilus-window-menus.c:1379
+#, fuzzy
+msgid "_Normal Size"
+msgstr "一般選單"
+
+#: src/nautilus-window-menus.c:1380
+msgid "Show the contents at the normal size"
+msgstr "以正常大小顯示"
+
 #. Go menu
-#: src/nautilus-window-menus.c:1206
+#: src/nautilus-window-menus.c:1392
 msgid "_Go"
 msgstr "到..."
 
-#: src/nautilus-window-menus.c:1210
+#: src/nautilus-window-menus.c:1396
 msgid "_Back"
 msgstr "前一頁"
 
-#: src/nautilus-window-menus.c:1211
+#: src/nautilus-window-menus.c:1397
 msgid "Go to the previous visited location"
 msgstr "到前一個位置"
 
-#: src/nautilus-window-menus.c:1222
+#: src/nautilus-window-menus.c:1408
 msgid "_Forward"
 msgstr "下一頁"
 
-#: src/nautilus-window-menus.c:1223
+#: src/nautilus-window-menus.c:1409
 msgid "Go to the next visited location"
 msgstr "到下一個位置"
 
-#: src/nautilus-window-menus.c:1234
-msgid "_Up"
-msgstr " Up"
+#: src/nautilus-window-menus.c:1420
+#, fuzzy
+msgid "_Up a Level"
+msgstr "使用者等級"
 
-#: src/nautilus-window-menus.c:1235
+#: src/nautilus-window-menus.c:1421
 msgid "Go to the location that contains this one"
 msgstr "到包含這個位置的地方"
 
-#: src/nautilus-window-menus.c:1246
+#: src/nautilus-window-menus.c:1432
 msgid "_Home"
 msgstr "首頁"
 
-#: src/nautilus-window-menus.c:1247
+#: src/nautilus-window-menus.c:1433
 msgid "Go to the home location"
 msgstr "到首頁"
 
 #. Bookmarks
-#: src/nautilus-window-menus.c:1260
+#: src/nautilus-window-menus.c:1446
 msgid "_Bookmarks"
 msgstr "書籤"
 
-#: src/nautilus-window-menus.c:1264
+#: src/nautilus-window-menus.c:1450
 msgid "_Add Bookmark"
 msgstr "新增書籤"
 
-#: src/nautilus-window-menus.c:1265
+#: src/nautilus-window-menus.c:1451
 msgid "Add a bookmark for the current location to this menu"
 msgstr "將此頁加入書籤"
 
-#: src/nautilus-window-menus.c:1276
+#: src/nautilus-window-menus.c:1462
 msgid "_Edit Bookmarks..."
 msgstr "編輯書籤..."
 
-#: src/nautilus-window-menus.c:1277
+#: src/nautilus-window-menus.c:1463
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "在此選單中編輯現有書籤"
 
-#: src/nautilus-window-menus.c:1296
-msgid "Toolbar"
-msgstr "工具列"
-
-#: src/nautilus-window-menus.c:1297 src/nautilus-window-menus.c:1309
-#: src/nautilus-window-menus.c:1320 src/nautilus-window-menus.c:1331
-#: src/nautilus-window-menus.c:1342
-msgid "Show/Hide Stuff"
-msgstr "顯示/隱藏 要件"
-
-#: src/nautilus-window-menus.c:1308
-msgid "Locationbar"
-msgstr "位置列"
-
-#: src/nautilus-window-menus.c:1319
-msgid "Statusbar"
-msgstr "狀態列"
-
-#: src/nautilus-window-menus.c:1330
-msgid "Sidebar"
-msgstr "側列"
-
-#: src/nautilus-window-menus.c:1341
-msgid "Normalize Menu"
-msgstr "一般選單"
-
 #. Help
-#: src/nautilus-window-menus.c:1352
+#: src/nautilus-window-menus.c:1475
 msgid "_Help"
 msgstr "說明"
 
-#: src/nautilus-window-menus.c:1356
+#: src/nautilus-window-menus.c:1479
 msgid "_About Nautilus..."
 msgstr "有關 Nautilus..."
 
-#: src/nautilus-window-menus.c:1357
+#: src/nautilus-window-menus.c:1480
 msgid "Displays information about the Nautilus program"
 msgstr "顯示 Nautilus 的相關訊息"
 
-#: src/nautilus-window-menus.c:1400
+#: src/nautilus-window-menus.c:1523
 msgid " Novice"
 msgstr "新手"
 
-#: src/nautilus-window-menus.c:1401
+#: src/nautilus-window-menus.c:1524
 msgid "Set Novice User Level"
 msgstr "菜鳥等級"
 
-#: src/nautilus-window-menus.c:1414
+#: src/nautilus-window-menus.c:1537
 msgid " Intermediate"
 msgstr "進階"
 
-#: src/nautilus-window-menus.c:1415
+#: src/nautilus-window-menus.c:1538
 msgid "Set Intermediate User Level"
 msgstr "進階等級"
 
-#: src/nautilus-window-menus.c:1429
+#: src/nautilus-window-menus.c:1552
 msgid " Expert"
 msgstr "專家"
 
-#: src/nautilus-window-menus.c:1430
+#: src/nautilus-window-menus.c:1553
 msgid "Set Expert User Level"
 msgstr "駭客等級"
 
-#: src/nautilus-window-menus.c:1446
+#: src/nautilus-window-menus.c:1569
 msgid "Edit Settings..."
 msgstr "編輯設定..."
 
-#: src/nautilus-window-menus.c:1447
+#: src/nautilus-window-menus.c:1570
 msgid "Edit Settings for the Current User Level"
 msgstr "改為目前等級的設定"
 
-#: src/nautilus-window-toolbars.c:113
+#: src/nautilus-window-menus.c:1634
+msgid "_Browse"
+msgstr " 瀏覽"
+
+#: src/nautilus-window-menus.c:1635
+#, fuzzy
+msgid "_Find"
+msgstr "完成"
+
+#: src/nautilus-window-toolbars.c:105
 msgid "Go to the previously visited directory"
 msgstr "到前一個目錄"
 
-#: src/nautilus-window-toolbars.c:118
+#: src/nautilus-window-toolbars.c:110
 msgid "Forward"
 msgstr "下一頁"
 
-#: src/nautilus-window-toolbars.c:118
+#: src/nautilus-window-toolbars.c:110
 msgid "Go to the next directory"
 msgstr "到下一個目錄"
 
-#: src/nautilus-window-toolbars.c:123
+#: src/nautilus-window-toolbars.c:115
 msgid "Up"
 msgstr "Up"
 
-#: src/nautilus-window-toolbars.c:123
+#: src/nautilus-window-toolbars.c:115
 msgid "Go up a level in the directory hierarchy"
 msgstr "到上一層目錄"
 
-#: src/nautilus-window-toolbars.c:128
-msgid "Reload"
-msgstr "從新載入"
+#: src/nautilus-window-toolbars.c:120
+#, fuzzy
+msgid "Refresh"
+msgstr "之前"
 
-#: src/nautilus-window-toolbars.c:128
-msgid "Reload this view"
-msgstr "重新載入"
-
-#: src/nautilus-window-toolbars.c:135
+#: src/nautilus-window-toolbars.c:127
 msgid "Home"
 msgstr "家目錄"
 
-#: src/nautilus-window-toolbars.c:135
+#: src/nautilus-window-toolbars.c:127
 msgid "Go to your home directory"
 msgstr "到家目錄"
 
-#: src/nautilus-window-toolbars.c:140
+#: src/nautilus-window-toolbars.c:132
+#, fuzzy
+msgid "Find"
+msgstr "完成"
+
+#: src/nautilus-window-toolbars.c:132
 msgid "Search this computer for files"
 msgstr "在這台電腦上搜尋"
 
-#: src/nautilus-window-toolbars.c:145
+#: src/nautilus-window-toolbars.c:137
 msgid "Web Search"
 msgstr "搜尋網站"
 
-#: src/nautilus-window-toolbars.c:145
+#: src/nautilus-window-toolbars.c:137
 msgid "Search the web"
 msgstr "搜尋這個網站"
 
-#: src/nautilus-window-toolbars.c:152
+#: src/nautilus-window-toolbars.c:144
 msgid "Interrupt loading"
 msgstr "中斷載入"
 
-#: src/nautilus-window-toolbars.c:158
+#: src/nautilus-window-toolbars.c:150
 msgid "Services"
 msgstr "Services"
 
 #: src/nautilus-zoom-control.c:486
 msgid "%.0f%%"
 msgstr "%.0f%%"
+
+#~ msgid "Installing \"The Gimp\""
+#~ msgstr "安裝 \"The Gimp\""
+
+#~ msgid "Installing \"%s\" "
+#~ msgstr "安裝 \"%s\" 中 "
+
+#~ msgid "Version %s-%s"
+#~ msgstr "版本 %s-%s"
+
+#~ msgid "this week"
+#~ msgstr "本週"
+
+#~ msgid "Directory"
+#~ msgstr "目錄"
+
+#~ msgid "Novice"
+#~ msgstr "新手指南"
+
+#~ msgid "Hacker"
+#~ msgstr "駭客"
+
+#~ msgid "For beginning users"
+#~ msgstr "新手等級"
+
+#~ msgid "For non-technical users"
+#~ msgstr "非專家等級"
+
+#~ msgid "For expert users"
+#~ msgstr "專家等級"
+
+#~ msgid "This is a placeholder - the real thing is coming soon"
+#~ msgstr "這是預告,敬請期待."
+
+#~ msgid "Display Sidebar"
+#~ msgstr "顯示輔助工具"
+
+#, fuzzy
+#~ msgid "name matches glob \"%s\""
+#~ msgstr "名稱比對符合 glob"
+
+#, fuzzy
+#~ msgid "owner is not \"%s\""
+#~ msgstr "以 %s 列印"
+
+#~ msgid "owner has uid of \"%s\""
+#~ msgstr "所有者uid為 \"%s\""
+
+#, fuzzy
+#~ msgid "does not have UID"
+#~ msgstr "沒有 UID"
+
+#, fuzzy
+#~ msgid "whose"
+#~ msgstr "誰的"
+
+#~ msgid "who"
+#~ msgstr "誰"
+
+#~ msgid "Undo Rename"
+#~ msgstr "取消重新命名"
+
+#~ msgid "Redo Rename"
+#~ msgstr "繼續重新命名"
+
+#~ msgid "Zoom to Default"
+#~ msgstr "使用預設尺寸"
+
+#~ msgid "_Manual Layout"
+#~ msgstr "手動規劃"
+
+#~ msgid "_Up"
+#~ msgstr " Up"
+
+#~ msgid "Show/Hide Stuff"
+#~ msgstr "顯示/隱藏 要件"
+
+#~ msgid "Reload"
+#~ msgstr "從新載入"
+
+#~ msgid "Reload this view"
+#~ msgstr "重新載入"
 
 #~ msgid "1 KB"
 #~ msgstr "1 KB"
@@ -3947,9 +4322,6 @@ msgstr "%.0f%%"
 #~ msgid "100 MB"
 #~ msgstr "100 MB"
 
-#~ msgid "*"
-#~ msgstr "*"
-
 #~ msgid ""
 #~ "Press the big begin button, and watch the installer do it's thing...\n"
 #~ "(between download and install, we'll take a small break)"
@@ -3957,9 +4329,6 @@ msgstr "%.0f%%"
 
 #~ msgid "Package :"
 #~ msgstr "套件:"
-
-#~ msgid "Begin"
-#~ msgstr "開始"
 
 #~ msgid "ftp install not supported"
 #~ msgstr "無法進行FTP模式安裝"
