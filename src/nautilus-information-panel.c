@@ -143,11 +143,11 @@ nautilus_index_panel_initialize_class (GtkObjectClass *object_klass)
 static void
 make_button_box (NautilusIndexPanel *index_panel)
 {
-	index_panel->details->button_box = GTK_VBOX (gtk_vbox_new (FALSE, 0));
-	gtk_container_set_border_width (GTK_CONTAINER (index_panel->details->button_box), 8);				
+	index_panel->details->button_box = GTK_VBOX (gtk_vbox_new (TRUE, GNOME_PAD_SMALL));
+	gtk_container_set_border_width (GTK_CONTAINER (index_panel->details->button_box), GNOME_PAD);				
 	gtk_widget_show (GTK_WIDGET (index_panel->details->button_box));
-	gtk_container_add (GTK_CONTAINER (index_panel->details->container),
-			   GTK_WIDGET (index_panel->details->button_box));
+	gtk_box_pack_start_defaults (GTK_BOX (index_panel->details->container),
+			    	     GTK_WIDGET (index_panel->details->button_box));
 	index_panel->details->has_buttons = FALSE;
 }
 
@@ -205,7 +205,7 @@ nautilus_index_panel_initialize (GtkObject *object)
 	
 	/* allocate and install the command button container */
 	make_button_box (index_panel);
-	
+
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (index_panel),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
@@ -704,7 +704,7 @@ command_button_cb (GtkWidget *button, char *command_str)
 /* utility routine that allocates the command buttons from the command list */
 
 static void
-add_command_buttons(NautilusIndexPanel *index_panel, GList *command_list)
+add_command_buttons (NautilusIndexPanel *index_panel, GList *command_list)
 {
 	char *command_string, *temp_str;
 	GList *p;
@@ -718,9 +718,10 @@ add_command_buttons(NautilusIndexPanel *index_panel, GList *command_list)
 
 		temp_str = g_strdup_printf (_("Open with %s"), info->display_name);
 	        temp_button = gtk_button_new_with_label (temp_str);		    
-		gtk_box_pack_start (GTK_BOX (index_panel->details->button_box), temp_button, FALSE, TRUE, 2);
-		gtk_button_set_relief (GTK_BUTTON (temp_button), GTK_RELIEF_NORMAL);
-		gtk_widget_set_usize (GTK_WIDGET (temp_button), 80, 20);
+		gtk_box_pack_start (GTK_BOX (index_panel->details->button_box), 
+				    temp_button, 
+				    FALSE, FALSE, 
+				    0);
 
 		temp_str = g_strdup_printf("'%s'", 
 		             nautilus_str_has_prefix (index_panel->details->uri, "file://") ?
