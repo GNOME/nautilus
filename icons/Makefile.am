@@ -142,6 +142,8 @@ icon_DATA =\
 	tableft.png \
 	tabright.png \
 	trash.png \
+	trash-empty.png \
+	trash-full.png \
 	uparrow.png \
 	zoom.png \
 	$(NULL)
