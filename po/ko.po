@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.1.14\n"
-"POT-Creation-Date: 2002-05-01 11:22+0900\n"
+"POT-Creation-Date: 2002-05-06 13:56-0400\n"
 "PO-Revision-Date: 2002-05-02 00:46+0900\n"
 "Last-Translator: Young-Ho Cha <ganadist@chollian.net>\n"
 "Language-Team: Korean <gnome-kr-translation@lists.sourceforge.net>\n"
@@ -176,7 +176,7 @@ msgstr "쓸모없는 내용을 강제로 종료합니다"
 #: components/loser/content/nautilus-content-loser-ui.xml.h:3
 #: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
 #: components/sample/nautilus-sample-content-view-ui.xml.h:4
-#: src/nautilus-shell-ui.xml.h:67
+#: src/nautilus-shell-ui.xml.h:65
 msgid "_File"
 msgstr "파일(_F)"
 
@@ -960,7 +960,7 @@ msgstr "중지"
 #: libnautilus-private/nautilus-file-operations.c:904
 #: libnautilus-private/nautilus-file-operations.c:919
 #: libnautilus-private/nautilus-file-operations.c:939
-#: src/nautilus-shell-ui.xml.h:47
+#: src/nautilus-shell-ui.xml.h:44
 msgid "Stop"
 msgstr "중지"
 
@@ -1962,14 +1962,6 @@ msgstr "Tahoe"
 msgid "This theme uses photo-realistic folders."
 msgstr "이 테마는 현실감 있는 사진 폴더를 사용합니다."
 
-#: libbackground/preview-file-selection.c:193
-msgid "Can't find an hbox, using a normal file selection"
-msgstr "hbox를 찾을 수 없습니다, 보통 파일 선택으로 사용합니다"
-
-#: libbackground/preview-file-selection.c:198
-msgid "Preview"
-msgstr "미리 보기"
-
 #: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "AFFS Volume"
 msgstr "AFFS 볼륨"
@@ -2153,7 +2145,8 @@ msgid ""
 msgstr ""
 "이동중 오류.\n"
 "\n"
-"부모 폴더를 수정할수있는 허가권을 기자고 있지 않기 때문에 \"%s\"을(를) 이동할수 없습니다."
+"부모 폴더를 수정할수있는 허가권을 기자고 있지 않기 때문에 \"%s\"을(를) 이동할"
+"수 없습니다."
 
 #: libnautilus-private/nautilus-file-operations.c:562
 #, c-format
@@ -2176,7 +2169,8 @@ msgid ""
 msgstr ""
 "이동중 오류.\n"
 "\n"
-"부모 폴더나 그 자신을  수정할수있는 허가권을 기자고 있지 않기 때문에 \"%s\"을(를) 이동할수 없습니다."
+"부모 폴더나 그 자신을  수정할수있는 허가권을 기자고 있지 않기 때문에 \"%s\"을"
+"(를) 이동할수 없습니다."
 
 #: libnautilus-private/nautilus-file-operations.c:600
 #, c-format
@@ -2188,7 +2182,8 @@ msgid ""
 msgstr ""
 "이동중 오류.\n"
 "\n"
-"부모 폴더를 수정할수 있는 허가권을 가지고 있지 않기 때문에 \"%s\"을(를) 휴지통으로 이동할수 없습니다."
+"부모 폴더를 수정할수 있는 허가권을 가지고 있지 않기 때문에 \"%s\"을(를) 휴지"
+"통으로 이동할수 없습니다."
 
 #: libnautilus-private/nautilus-file-operations.c:624
 #, c-format
@@ -2423,8 +2418,8 @@ msgid ""
 "\n"
 "If you still want to move \"%s\", rename it and try again."
 msgstr ""
-"\"%s\"을(를) 새 위치로 이동할수 없습니다, 그이름은 이미 지우거나 바꿀수 없는 특수"
-"한 항목이 사용하고 있습니다.\n"
+"\"%s\"을(를) 새 위치로 이동할수 없습니다, 그이름은 이미 지우거나 바꿀수 없는 "
+"특수한 항목이 사용하고 있습니다.\n"
 "\n"
 "\"%s\"을(를) 옮기고 싶다면 이름을 바꾸고 다시 시도하십시오."
 
@@ -2436,8 +2431,8 @@ msgid ""
 "\n"
 "If you still want to copy \"%s\", rename it and try again."
 msgstr ""
-"\"%s\"을(를) 새 위치로 복사할수 없습니다, 그이름은 이미 지우거나 바꿀수 없는 특수"
-"한 항목이 사용하고 있습니다.\n"
+"\"%s\"을(를) 새 위치로 복사할수 없습니다, 그이름은 이미 지우거나 바꿀수 없는 "
+"특수한 항목이 사용하고 있습니다.\n"
 "\n"
 "\"%s\"을(를) 복사하고 싶다면 이름을 바꾸고 다시 시도하십시오."
 
@@ -3653,8 +3648,8 @@ msgid ""
 "Fast searches will not be available until an initial index of your files has "
 "been created.  This may take a long time."
 msgstr ""
-"빠른 검색을 사용하려면 root 권한으로 파일 %s을(를) 수정하여야 합니다. 사용 프래그"
-"를 \"yes\"로 설정하면 메두사 서비스가 켜질 것입니다.\n"
+"빠른 검색을 사용하려면 root 권한으로 파일 %s을(를) 수정하여야 합니다. 사용 프"
+"래그를 \"yes\"로 설정하면 메두사 서비스가 켜질 것입니다.\n"
 "색인화를 시작하고 검색서비스를 바로 사용하려면 root권한으로 다음 명령을 실행"
 "시키면 됩니다:\n"
 "\n"
@@ -3870,7 +3865,9 @@ msgstr ""
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations.  Would you like to choose another application?"
-msgstr "\"%s\"이(가) \"%s\"을(를) 열수 없습니다. \"%s\"이(가) \"%s\"위치에 있는 파일을 접근할 수 없습니다. 다른 응용프로그램을 선택하시겠습니까?"
+msgstr ""
+"\"%s\"이(가) \"%s\"을(를) 열수 없습니다. \"%s\"이(가) \"%s\"위치에 있는 파일"
+"을 접근할 수 없습니다. 다른 응용프로그램을 선택하시겠습니까?"
 
 #: libnautilus-private/nautilus-program-choosing.c:496
 #: libnautilus-private/nautilus-program-choosing.c:518
@@ -3883,7 +3880,10 @@ msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
 "locations.  No other applications are available to view this file.  If you "
 "copy this file onto your computer, you may be able to open it."
-msgstr "\"%s\"이(가) \"%s\"을(를) 열수 없습니다. \"%s\"이(가) \"%s\"위치에 있는 파일을 접근할 수 없습니다. 이 파일을 볼수 있는 다른 응용프로그램이 업없습니다.여러분의 컴퓨터로 파일을 복사하면, 열 수 있을 것입니다."
+msgstr ""
+"\"%s\"이(가) \"%s\"을(를) 열수 없습니다. \"%s\"이(가) \"%s\"위치에 있는 파일"
+"을 접근할 수 없습니다. 이 파일을 볼수 있는 다른 응용프로그램이 업없습니다.여"
+"러분의 컴퓨터로 파일을 복사하면, 열 수 있을 것입니다."
 
 #. Human readable description for a criterion in a search for
 #. files. Bracketed items are context, and are message
@@ -4297,7 +4297,7 @@ msgstr "클립보드에 선택된 문자를 기록하지 않고 지웁니다"
 msgid "Select All"
 msgstr "전체 선택"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:42
+#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:39
 msgid "Select _All"
 msgstr "전체 선택(_A)"
 
@@ -4305,11 +4305,11 @@ msgstr "전체 선택(_A)"
 msgid "Select all the text in a text field"
 msgstr "텍스트 영역의 모든 텍스트 선택"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:14 src/nautilus-shell-ui.xml.h:64
+#: libnautilus/nautilus-clipboard-ui.xml.h:14 src/nautilus-shell-ui.xml.h:62
 msgid "_Copy Text"
 msgstr "텍스트 복사(_C)"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:15 src/nautilus-shell-ui.xml.h:75
+#: libnautilus/nautilus-clipboard-ui.xml.h:15 src/nautilus-shell-ui.xml.h:73
 msgid "_Paste Text"
 msgstr "텍스트 붙이기(_P)"
 
@@ -4554,7 +4554,9 @@ msgstr "%s%s, %s"
 msgid ""
 "The folder \"%s\" contains more files than Nautilus can handle. Some files "
 "will not be displayed."
-msgstr "폴더 \"%s\"은(는) 노틸러스가 처리할수 있는것보다 더많은 파일을 포함하고 있습니 다. 몇 파일들이 표시되지 않을수 있습니다."
+msgstr ""
+"폴더 \"%s\"은(는) 노틸러스가 처리할수 있는것보다 더많은 파일을 포함하고 있습"
+"니 다. 몇 파일들이 표시되지 않을수 있습니다."
 
 #: src/file-manager/fm-directory-view.c:1639
 msgid "Too Many Files"
@@ -4813,7 +4815,9 @@ msgstr ""
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
 "want to put this link in the Trash?"
-msgstr "이 링크는 가르키는 파일 \"%s\"이(가) 없기 때문에 사용할수 없습니다. 이 링크를 휴지통에 버리겠습니까?"
+msgstr ""
+"이 링크는 가르키는 파일 \"%s\"이(가) 없기 때문에 사용할수 없습니다. 이 링크"
+"를 휴지통에 버리겠습니까?"
 
 #: src/file-manager/fm-directory-view.c:4580
 msgid "Broken Link"
@@ -4828,7 +4832,9 @@ msgstr "버림"
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
 "contents?"
-msgstr "\"%s\"은(는) 실행할수 있는 텍스트 파일입니다. 실행 할까요? 아니면 내용을 보시겠습니까?"
+msgstr ""
+"\"%s\"은(는) 실행할수 있는 텍스트 파일입니다. 실행 할까요? 아니면 내용을 보시"
+"겠습니까?"
 
 #: src/file-manager/fm-directory-view.c:4643
 msgid "Run or Display?"
@@ -4885,7 +4891,9 @@ msgstr "표시하는중 오류"
 #, c-format
 msgid ""
 "The name \"%s\" is already used in this folder. Please use a different name."
-msgstr "\"%s\"(이)라는 이름은 이미 이 폴더에서 사용되고 있습니다. 다른 이름을 사용하십시오."
+msgstr ""
+"\"%s\"(이)라는 이름은 이미 이 폴더에서 사용되고 있습니다. 다른 이름을 사용하"
+"십시오."
 
 #: src/file-manager/fm-error-reporting.c:107
 #, c-format
@@ -4903,7 +4911,9 @@ msgstr "\"%s\"의 이름을 바꾸기 위한 허가권을 가지지 않았습니
 msgid ""
 "The name \"%s\" is not valid because it contains the character \"/\". Please "
 "use a different name."
-msgstr "\"%s\"(이)라는 이름은 \"/\"를 포함하고 있기때문에 올바르지 않습니다. 다른 이름을 사용하십시오."
+msgstr ""
+"\"%s\"(이)라는 이름은 \"/\"를 포함하고 있기때문에 올바르지 않습니다. 다른 이"
+"름을 사용하십시오."
 
 #: src/file-manager/fm-error-reporting.c:121
 #, c-format
@@ -5053,21 +5063,21 @@ msgstr "끌어서 놓기 오류"
 msgid "An invalid drag type was used."
 msgstr "잘못된 끌기형식이 사용되었습니다."
 
-#: src/file-manager/fm-list-view.c:286
+#: src/file-manager/fm-list-view.c:319
 msgid "File name"
 msgstr "파일 이름"
 
-#: src/file-manager/fm-list-view.c:315
+#: src/file-manager/fm-list-view.c:341
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "크기"
 
-#: src/file-manager/fm-list-view.c:325
+#: src/file-manager/fm-list-view.c:352
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "형식"
 
-#: src/file-manager/fm-list-view.c:335
+#: src/file-manager/fm-list-view.c:363
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "변경 날짜"
@@ -5562,25 +5572,29 @@ msgid "Protect Conditionally"
 msgstr "가능하면 보호합니다"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:16
-msgid "Remove any custom pattern or color from the desktop background"
-msgstr "바탕화면 배경에서 사용자 패턴이나 색상을을 지웁니다"
-
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:17
-msgid "Reset Desktop Background"
-msgstr "바탕화면 배경 재설정"
-
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:18
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr "바탕화면의 패턴이나 색상을 설정할수 있는 창을 보입니다"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:19
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:17
 msgid "Unmount Volume"
 msgstr "볼륨 마운트해제"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
-msgid "Unmount Voulme Conditionally"
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:18
+#, fuzzy
+msgid "Unmount Volume Conditionally"
 msgstr "가능하면 볼륨을 마운트 해제합니다"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:19
+#: src/file-manager/nautilus-directory-view-ui.xml.h:54
+#, fuzzy
+msgid "Use Default Background"
+msgstr "바탕화면 배경 재설정"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
+#, fuzzy
+msgid "Use the default desktop background"
+msgstr "바탕화면 배경 재설정"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
 msgid "Choose a program with which to open the selected item"
@@ -5697,74 +5711,69 @@ msgid "Remove any custom images from selected icons"
 msgstr "선택된 아이콘의 사용자 그림을 지웁니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
-msgid "Remove any custom pattern or color from the background of this location"
-msgstr "이 위치의 배경에서 어떠한 사용자 패턴이나 색상을 지웁니다"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "Rename"
 msgstr "이름 바꿈"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:41
+#: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "Rename selected item"
 msgstr "선택된 항목의 이름바꿉니다"
 
-#. add the reset background item, possibly disabled
-#: src/file-manager/nautilus-directory-view-ui.xml.h:42
-#: src/nautilus-sidebar.c:567
-msgid "Reset Background"
-msgstr "배경 재설정"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:43
+#: src/file-manager/nautilus-directory-view-ui.xml.h:41
 msgid "Reset View to Default"
 msgstr "기본값으로 보기 리셋"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:44
+#: src/file-manager/nautilus-directory-view-ui.xml.h:42
 msgid "Reset View to _Defaults"
 msgstr "기본값으로 보기 리셋(_D)"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:45
+#: src/file-manager/nautilus-directory-view-ui.xml.h:43
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr "이 보기에서 정렬 순서와 확대 수준을 환경 설정과 비교하여 리셋"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:46
+#: src/file-manager/nautilus-directory-view-ui.xml.h:44
 msgid "Run or manage scripts from ~/Nautilus/scripts"
 msgstr "~/Nautilus/scripts 에서 혼잣말을 실행하거나 관리"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:47
+#: src/file-manager/nautilus-directory-view-ui.xml.h:45
 msgid "Scripts"
 msgstr "혼잣말"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:48
+#: src/file-manager/nautilus-directory-view-ui.xml.h:46
 msgid "Select All Files"
 msgstr "모든 파일 선택"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:49
+#: src/file-manager/nautilus-directory-view-ui.xml.h:47
 msgid "Select _All Files"
 msgstr "모든 파일 선택(_A)"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:50
+#: src/file-manager/nautilus-directory-view-ui.xml.h:48
 msgid "Select all items in this window"
 msgstr "모든 선택한 항목을 이창에서 엽니다"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:51
+#: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "Show Properties"
 msgstr "등록 정보 보기"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:52
+#: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "Show Trash"
 msgstr "휴지통 보기"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:53
+#: src/file-manager/nautilus-directory-view-ui.xml.h:51
 msgid "Show _Properties"
 msgstr "등록 정보 보기(_P)"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:54
+#: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "Show the contents of the Trash"
 msgstr "휴지통 내용 보이기"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:55
+#: src/file-manager/nautilus-directory-view-ui.xml.h:53
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "이 메뉴에서 보이는 혼잣말을 포함하는 폴더 보기"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:55
+#, fuzzy
+msgid "Use the default background for this location"
+msgstr "표시된 위치를 다른 노틸러스창에서 엽니다"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "View or modify the properties of each selected item"
@@ -5976,8 +5985,8 @@ msgid ""
 "Nautilus, please create this folder, or set permissions such that Nautilus "
 "can create it."
 msgstr ""
-"노틸러스는 필요한 폴더인 \"%s\"을(를) 만들 수 없습니다. 노틸러스를 실행하기 전에"
-"이 폴더를 만들거나 노틸러스가 만들 수 있도록 허가권을 설정하십시오."
+"노틸러스는 필요한 폴더인 \"%s\"을(를) 만들 수 없습니다. 노틸러스를 실행하기 "
+"전에이 폴더를 만들거나 노틸러스가 만들 수 있도록 허가권을 설정하십시오."
 
 #: src/nautilus-application.c:222
 msgid "Couldn't Create Required Folders"
@@ -6183,7 +6192,7 @@ msgstr "노틸러스 재시작."
 
 #. Set initial window title
 #: src/nautilus-main.c:185 src/nautilus-window-manage-views.c:221
-#: src/nautilus-window-menus.c:613 src/nautilus-window.c:184
+#: src/nautilus-window-menus.c:612 src/nautilus-window.c:184
 msgid "Nautilus"
 msgstr "노틸러스"
 
@@ -6302,7 +6311,7 @@ msgstr "정렬 순서"
 msgid "Always list folders before files"
 msgstr "항상 폴더를 파일보다 먼저 나열"
 
-#: src/nautilus-preferences-dialog.c:159 src/nautilus-preferences-dialog.c:389
+#: src/nautilus-preferences-dialog.c:159 src/nautilus-preferences-dialog.c:391
 msgid "Icon Captions"
 msgstr "아이콘 설명"
 
@@ -6368,7 +6377,7 @@ msgstr "검색 복잡도 설정"
 msgid "search type to do by default"
 msgstr "기본값으로 작동하는 찾기 형식"
 
-#: src/nautilus-preferences-dialog.c:264 src/nautilus-shell-ui.xml.h:30
+#: src/nautilus-preferences-dialog.c:264 src/nautilus-shell-ui.xml.h:29
 msgid "Home"
 msgstr "홈"
 
@@ -6439,67 +6448,67 @@ msgstr "탭"
 msgid "Show only folders (no files) in the tree"
 msgstr "트리에 폴더만 보이기(파일은 보이지 않기)"
 
-#: src/nautilus-preferences-dialog.c:368
+#: src/nautilus-preferences-dialog.c:369
 msgid "Maximum items per site"
 msgstr "사이트 마다 최대 항목"
 
-#: src/nautilus-preferences-dialog.c:370
+#: src/nautilus-preferences-dialog.c:371
 msgid "Maximum number of items displayed per site"
 msgstr "사이트 마다 보여줄 최대 항목 개수"
 
-#: src/nautilus-preferences-dialog.c:373
+#: src/nautilus-preferences-dialog.c:374
 msgid "Update Minutes"
 msgstr "분마다 새로 고침"
 
-#: src/nautilus-preferences-dialog.c:375
+#: src/nautilus-preferences-dialog.c:376
 msgid "Update frequency in minutes"
 msgstr "분마다 새로 고침 주기"
 
-#: src/nautilus-preferences-dialog.c:384
+#: src/nautilus-preferences-dialog.c:386
 msgid "View Defaults"
 msgstr "보기 기본값"
 
-#: src/nautilus-preferences-dialog.c:385
+#: src/nautilus-preferences-dialog.c:387
 msgid "Appearance"
 msgstr "모양새"
 
-#: src/nautilus-preferences-dialog.c:386
+#: src/nautilus-preferences-dialog.c:388
 msgid "Windows"
 msgstr "창"
 
-#: src/nautilus-preferences-dialog.c:387
+#: src/nautilus-preferences-dialog.c:389
 msgid "Desktop & Trash"
 msgstr "바탕화면 및 휴지통"
 
-#: src/nautilus-preferences-dialog.c:388
+#: src/nautilus-preferences-dialog.c:390
 msgid "Icon & List Views"
 msgstr "아이콘 & 목록 보기"
 
-#: src/nautilus-preferences-dialog.c:390
+#: src/nautilus-preferences-dialog.c:392
 msgid "Sidebar Panels"
 msgstr "가장자리막대 판넬"
 
-#: src/nautilus-preferences-dialog.c:392
+#: src/nautilus-preferences-dialog.c:394
 msgid "Search"
 msgstr "검색"
 
-#: src/nautilus-preferences-dialog.c:394
+#: src/nautilus-preferences-dialog.c:396
 msgid "Navigation"
 msgstr "탐색"
 
-#: src/nautilus-preferences-dialog.c:395
+#: src/nautilus-preferences-dialog.c:397
 msgid "Speed Tradeoffs"
 msgstr "속도 조정"
 
-#: src/nautilus-preferences-dialog.c:396
+#: src/nautilus-preferences-dialog.c:399
 msgid "News Panel"
 msgstr "새소식 패널"
 
-#: src/nautilus-preferences-dialog.c:422
+#: src/nautilus-preferences-dialog.c:426
 msgid "Preferences"
 msgstr "기본 설정"
 
-#: src/nautilus-preferences-dialog.c:448
+#: src/nautilus-preferences-dialog.c:452
 #, c-format
 msgid "Display %s tab in sidebar"
 msgstr "가장자리 막대에 %s탭 보이기"
@@ -6598,7 +6607,7 @@ msgstr "반복무늬 %s은(는) 설치할수 없습니다."
 
 #: src/nautilus-property-browser.c:1122
 msgid "Select an image file to add as a pattern"
-msgstr "무늬에 추가할 그림파일을 선택하십시오" 
+msgstr "무늬에 추가할 그림파일을 선택하십시오"
 
 #: src/nautilus-property-browser.c:1182
 msgid "Sorry, but you must specify a non-blank name for the new color."
@@ -6636,7 +6645,9 @@ msgstr "꼬리표 키워드는 문자와 공백, 숫자만 포함할수 있습�
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
 "for it."
-msgstr "\"%s\"(이)라는 이름은 이미 사용되고 있는 키워드 입니다.다른 이름을 사용하십시오."
+msgstr ""
+"\"%s\"(이)라는 이름은 이미 사용되고 있는 키워드 입니다.다른 이름을 사용하십시"
+"오."
 
 #: src/nautilus-property-browser.c:1374
 #, c-format
@@ -6895,16 +6906,17 @@ msgid "Close this window"
 msgstr "이 창을 닫습니다"
 
 #: src/nautilus-shell-ui.xml.h:13
+#, fuzzy
+msgid "Display Nautilus help"
+msgstr "노틸러스 쉘"
+
+#: src/nautilus-shell-ui.xml.h:14
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "책갈피를 편집할수 있는 창을 표시합니다"
 
-#: src/nautilus-shell-ui.xml.h:14
+#: src/nautilus-shell-ui.xml.h:15
 msgid "Display credits for the creators of Nautilus"
 msgstr "노틸러스를 만든 사람들을 표시합니다"
-
-#: src/nautilus-shell-ui.xml.h:15
-msgid "Display on-line help for Nautilus"
-msgstr "노틸러스의 온라인 도움말을 표시합니다"
 
 #: src/nautilus-shell-ui.xml.h:16
 msgid ""
@@ -6913,262 +6925,263 @@ msgid ""
 msgstr "겉모양을 꾸밀수 있는 무늬 및 생상, 그리고 꼬리표등을 표시합니다"
 
 #: src/nautilus-shell-ui.xml.h:17
-msgid "Display quick reference pages for Nautilus"
-msgstr "노틸러스의 빠른 참조 페이지를 표시합니다"
-
-#: src/nautilus-shell-ui.xml.h:18
 msgid "Display the latest contents of the current location"
 msgstr "현재위치의 최근 내용을 표시합니다"
 
-#: src/nautilus-shell-ui.xml.h:19
+#: src/nautilus-shell-ui.xml.h:18
 msgid "Edit Nautilus preferences"
 msgstr "노틸러스 환경 설정 편집"
 
-#: src/nautilus-shell-ui.xml.h:20
+#: src/nautilus-shell-ui.xml.h:19
 msgid "Find"
 msgstr "찾기"
 
-#: src/nautilus-shell-ui.xml.h:21
+#: src/nautilus-shell-ui.xml.h:20
 msgid "Go to the Start Here folder"
 msgstr "시작 메뉴로 갑니다"
 
-#: src/nautilus-shell-ui.xml.h:22
+#: src/nautilus-shell-ui.xml.h:21
 msgid "Go to the home location"
 msgstr "홈 위치로 갑니다"
 
-#: src/nautilus-shell-ui.xml.h:23 src/nautilus-window-toolbars.c:568
+#: src/nautilus-shell-ui.xml.h:22 src/nautilus-window-toolbars.c:568
 msgid "Go to the next visited location"
 msgstr "다음 방문한 위치로 갑니다"
 
-#: src/nautilus-shell-ui.xml.h:24 src/nautilus-window-toolbars.c:565
+#: src/nautilus-shell-ui.xml.h:23 src/nautilus-window-toolbars.c:565
 msgid "Go to the previous visited location"
 msgstr "이전에 방문한 위치로 갑니다"
 
-#: src/nautilus-shell-ui.xml.h:25
-msgid "Go up to the location that contains the displayed location"
-msgstr "표시된 위치가 포함된 위치로 이동합니다"
+#: src/nautilus-shell-ui.xml.h:24
+msgid "Go up one level"
+msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:26 src/nautilus-window-menus.c:473
+#: src/nautilus-shell-ui.xml.h:25 src/nautilus-window-menus.c:472
 msgid "Hide Location _Bar"
 msgstr "위치막대 숨김(_B)"
 
-#: src/nautilus-shell-ui.xml.h:27
+#: src/nautilus-shell-ui.xml.h:26
 msgid "Hide St_atusbar"
 msgstr "상태막대 숨김(_a)"
 
-#: src/nautilus-shell-ui.xml.h:28 src/nautilus-window-menus.c:461
+#: src/nautilus-shell-ui.xml.h:27 src/nautilus-window-menus.c:460
 msgid "Hide _Sidebar"
 msgstr "가장자리막대 숨김(_S)"
 
-#: src/nautilus-shell-ui.xml.h:29 src/nautilus-window-menus.c:467
+#: src/nautilus-shell-ui.xml.h:28 src/nautilus-window-menus.c:466
 msgid "Hide _Toolbar"
 msgstr "도구막대 숨김(_T)"
 
-#: src/nautilus-shell-ui.xml.h:31
-msgid "Nautilus Quick _Reference"
-msgstr "노틸러스 빠른 참고서(_R)"
-
-#: src/nautilus-shell-ui.xml.h:32
-msgid "Nautilus User _Manual"
-msgstr "노틸러스 사용자 설명서(_M)"
-
-#: src/nautilus-shell-ui.xml.h:33
+#: src/nautilus-shell-ui.xml.h:30
 msgid "New Window"
 msgstr "새 창"
 
-#: src/nautilus-shell-ui.xml.h:34
+#: src/nautilus-shell-ui.xml.h:31
 msgid "New _Window"
 msgstr "새 창(_W)"
 
-#: src/nautilus-shell-ui.xml.h:35
+#: src/nautilus-shell-ui.xml.h:32
 msgid "Normal Size"
 msgstr "보통 크기"
 
-#: src/nautilus-shell-ui.xml.h:36
+#: src/nautilus-shell-ui.xml.h:33
 msgid "Open another Nautilus window for the displayed location"
 msgstr "표시된 위치를 다른 노틸러스창에서 엽니다"
 
-#: src/nautilus-shell-ui.xml.h:37
-msgid "P_references..."
-msgstr "환경 설정(_r)..."
+#: src/nautilus-shell-ui.xml.h:34
+#, fuzzy
+msgid "P_references"
+msgstr "기본 설정"
 
-#: src/nautilus-shell-ui.xml.h:38
+#: src/nautilus-shell-ui.xml.h:35
 msgid "Reload"
 msgstr "다시 읽기"
 
-#: src/nautilus-shell-ui.xml.h:39
+#: src/nautilus-shell-ui.xml.h:36
 msgid "Report Profiling"
 msgstr "프로파일 보고"
 
-#: src/nautilus-shell-ui.xml.h:40
+#: src/nautilus-shell-ui.xml.h:37
 msgid "Reset Profiling"
 msgstr "프로파일 리셋"
 
-#: src/nautilus-shell-ui.xml.h:41
+#: src/nautilus-shell-ui.xml.h:38
 msgid "Search this computer for files"
 msgstr "이 컴퓨터에서 파일을 찾습니다"
 
-#: src/nautilus-shell-ui.xml.h:43
+#: src/nautilus-shell-ui.xml.h:40
 msgid "Show the contents at the normal size"
 msgstr "보통 크기의 내용으로 봅니다"
 
-#: src/nautilus-shell-ui.xml.h:44
+#: src/nautilus-shell-ui.xml.h:41
 msgid "Show the contents in less detail"
 msgstr "덜 자세하게 내용을 봅니다"
 
-#: src/nautilus-shell-ui.xml.h:45
+#: src/nautilus-shell-ui.xml.h:42
 msgid "Show the contents in more detail"
 msgstr "더 자세한 내용을 봅니다"
 
-#: src/nautilus-shell-ui.xml.h:46
+#: src/nautilus-shell-ui.xml.h:43
 msgid "Start Profiling"
 msgstr "프로파일 시작"
 
-#: src/nautilus-shell-ui.xml.h:48
+#: src/nautilus-shell-ui.xml.h:45
 msgid "Stop Profiling"
 msgstr "프로파일 마침"
 
-#: src/nautilus-shell-ui.xml.h:49
+#: src/nautilus-shell-ui.xml.h:46
 msgid "Stop loading this location"
 msgstr "이 위치 읽기 멈춤"
 
-#: src/nautilus-shell-ui.xml.h:50
+#: src/nautilus-shell-ui.xml.h:47
 msgid "Undo the last text change"
 msgstr "마지막으로 바뀐 글자를 되돌림"
 
-#: src/nautilus-shell-ui.xml.h:51
+#: src/nautilus-shell-ui.xml.h:48
 msgid "Up"
 msgstr "위로"
 
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-shell-ui.xml.h:52 src/nautilus-window.c:516
+#: src/nautilus-shell-ui.xml.h:49 src/nautilus-window.c:516
 #: src/nautilus-window.c:1354
 msgid "View as..."
 msgstr "...로서 보기"
 
-#: src/nautilus-shell-ui.xml.h:53
+#: src/nautilus-shell-ui.xml.h:50
 msgid "Zoom In"
 msgstr "확대"
 
-#: src/nautilus-shell-ui.xml.h:54
+#: src/nautilus-shell-ui.xml.h:51
 msgid "Zoom Out"
 msgstr "축소"
 
-#: src/nautilus-shell-ui.xml.h:55
+#: src/nautilus-shell-ui.xml.h:52
 msgid "Zoom _In"
 msgstr "확대(_I)"
 
-#: src/nautilus-shell-ui.xml.h:56
+#: src/nautilus-shell-ui.xml.h:53
 msgid "Zoom _Out"
 msgstr "축소(_O)"
 
-#: src/nautilus-shell-ui.xml.h:57
-msgid "_About Nautilus..."
+#: src/nautilus-shell-ui.xml.h:54
+#, fuzzy
+msgid "_About Nautilus"
 msgstr "노틸러스 정보(_A)"
 
-#: src/nautilus-shell-ui.xml.h:58
+#: src/nautilus-shell-ui.xml.h:55
 msgid "_Add Bookmark"
 msgstr "책갈피 추가(_A)"
 
-#: src/nautilus-shell-ui.xml.h:59
+#: src/nautilus-shell-ui.xml.h:56
 msgid "_Back"
 msgstr "뒤로(_B)"
 
-#: src/nautilus-shell-ui.xml.h:60
+#: src/nautilus-shell-ui.xml.h:57
 msgid "_Backgrounds and Emblems..."
 msgstr "배경과 꼬리표(_B)..."
 
-#: src/nautilus-shell-ui.xml.h:61
+#: src/nautilus-shell-ui.xml.h:58
 msgid "_Bookmarks"
 msgstr "책갈피(_B)"
 
-#: src/nautilus-shell-ui.xml.h:62
+#: src/nautilus-shell-ui.xml.h:59
 msgid "_Clear History"
 msgstr "방문기록 지우기(_C)"
 
-#: src/nautilus-shell-ui.xml.h:63
+#: src/nautilus-shell-ui.xml.h:60
 msgid "_Close Window"
 msgstr "창 닫기(_C)"
 
-#: src/nautilus-shell-ui.xml.h:65
+#: src/nautilus-shell-ui.xml.h:61
+#, fuzzy
+msgid "_Contents"
+msgstr "내용:"
+
+#: src/nautilus-shell-ui.xml.h:63
 msgid "_Edit"
 msgstr "편집(_E)"
 
-#: src/nautilus-shell-ui.xml.h:66
-msgid "_Edit Bookmarks..."
+#: src/nautilus-shell-ui.xml.h:64
+#, fuzzy
+msgid "_Edit Bookmarks"
 msgstr "책갈피 편집"
 
-#: src/nautilus-shell-ui.xml.h:68
+#: src/nautilus-shell-ui.xml.h:66
 msgid "_Find"
 msgstr "찾기(_F)"
 
-#: src/nautilus-shell-ui.xml.h:69
+#: src/nautilus-shell-ui.xml.h:67
 msgid "_Forward"
 msgstr "앞으로(_F)"
 
-#: src/nautilus-shell-ui.xml.h:70
+#: src/nautilus-shell-ui.xml.h:68
 msgid "_Go"
 msgstr "가기(_G)"
 
-#: src/nautilus-shell-ui.xml.h:71
+#: src/nautilus-shell-ui.xml.h:69
 msgid "_Help"
 msgstr "도움말(_H)"
 
-#: src/nautilus-shell-ui.xml.h:72
+#: src/nautilus-shell-ui.xml.h:70
 msgid "_Home"
 msgstr "홈(_H)"
 
-#: src/nautilus-shell-ui.xml.h:73
+#: src/nautilus-shell-ui.xml.h:71
 msgid "_Location..."
 msgstr "위치(_L)..."
 
-#: src/nautilus-shell-ui.xml.h:74
+#: src/nautilus-shell-ui.xml.h:72
 msgid "_Normal Size"
 msgstr "보통 크기(_N)"
 
-#: src/nautilus-shell-ui.xml.h:76
+#: src/nautilus-shell-ui.xml.h:74
 msgid "_Profiler"
 msgstr "프로파일러(_P)"
 
-#: src/nautilus-shell-ui.xml.h:77
+#: src/nautilus-shell-ui.xml.h:75
 msgid "_Reload"
 msgstr "다시 읽기(_R)"
 
-#: src/nautilus-shell-ui.xml.h:78
+#: src/nautilus-shell-ui.xml.h:76
 msgid "_Report Profiling"
 msgstr "프로파일 보고(_R)"
 
-#: src/nautilus-shell-ui.xml.h:79
+#: src/nautilus-shell-ui.xml.h:77
 msgid "_Reset Profiling"
 msgstr "프로파일 리셋(_R)"
 
-#: src/nautilus-shell-ui.xml.h:80
+#: src/nautilus-shell-ui.xml.h:78
 msgid "_Start Here"
 msgstr "시작 메뉴(_S)"
 
-#: src/nautilus-shell-ui.xml.h:81
+#: src/nautilus-shell-ui.xml.h:79
 msgid "_Start Profiling"
 msgstr "프로파일 시작(_S)"
 
-#: src/nautilus-shell-ui.xml.h:82
+#: src/nautilus-shell-ui.xml.h:80
 msgid "_Stop Profiling"
 msgstr "프로파일 마침(_S)"
 
-#: src/nautilus-shell-ui.xml.h:83
+#: src/nautilus-shell-ui.xml.h:81
 msgid "_Undo"
 msgstr "되돌리기(_U)"
 
-#: src/nautilus-shell-ui.xml.h:84
+#: src/nautilus-shell-ui.xml.h:82
 msgid "_Up a Level"
 msgstr "위로(_U)"
 
-#: src/nautilus-shell-ui.xml.h:85
+#: src/nautilus-shell-ui.xml.h:83
 msgid "_View"
 msgstr "보기(_V)"
 
-#: src/nautilus-shell-ui.xml.h:86
+#: src/nautilus-shell-ui.xml.h:84
 msgid "_View as..."
 msgstr "...로서 보기(_V)"
+
+#. add the reset background item, possibly disabled
+#: src/nautilus-sidebar.c:567
+msgid "Reset Background"
+msgstr "배경 재설정"
 
 #: src/nautilus-sidebar.c:1364
 #, c-format
@@ -7303,7 +7316,9 @@ msgstr "가장자리막대 패널 실패"
 #: src/nautilus-window-manage-views.c:1223
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
-msgstr "\"%s\"을(를) 찾을수 없습니다. 정확히 입력하였는지 확인하시고 다시 시도 해보십시오."
+msgstr ""
+"\"%s\"을(를) 찾을수 없습니다. 정확히 입력하였는지 확인하시고 다시 시도 해보십"
+"시오."
 
 #: src/nautilus-window-manage-views.c:1229
 #, c-format
@@ -7347,15 +7362,17 @@ msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
 "the spelling is correct and that your proxy settings are correct."
 msgstr ""
-"\"%s\"을(를) 표시할수 없는 데, 그것은 \"%s\" 호스트를 찾을 수 없기 때문입니다. 맞"
-"춤법이 올바르고 프록시 설정이 올바른지 확인하십시오."
+"\"%s\"을(를) 표시할수 없는 데, 그것은 \"%s\" 호스트를 찾을 수 없기 때문입니"
+"다. 맞춤법이 올바르고 프록시 설정이 올바른지 확인하십시오."
 
 #: src/nautilus-window-manage-views.c:1293
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
 "proxy settings are correct."
-msgstr "호스트 이름이 비어 있어 \"%s\"을(를) 표시할수 없습니다. 프록시 설정이 올바른지 확인하십시오."
+msgstr ""
+"호스트 이름이 비어 있어 \"%s\"을(를) 표시할수 없습니다. 프록시 설정이 올바른"
+"지 확인하십시오."
 
 #: src/nautilus-window-manage-views.c:1305
 msgid ""
@@ -7379,7 +7396,8 @@ msgid ""
 "browser.\n"
 "Check that an SMB server is running in the local network."
 msgstr ""
-"\"%s\"을(를) 표시할수 없습니다. 노틸러스가 SMB 마스터 브라우저에 연결할 수 없습니다.\n"
+"\"%s\"을(를) 표시할수 없습니다. 노틸러스가 SMB 마스터 브라우저에 연결할 수 없"
+"습니다.\n"
 "로컬 네트워크에서 SMB서버가 실행되고 있는지 확인하삽시오."
 
 #: src/nautilus-window-manage-views.c:1324
@@ -7394,42 +7412,42 @@ msgstr "위치를 표시할수 없습니다"
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:345
+#: src/nautilus-window-menus.c:344
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
 msgstr "방문 기록을 지우시겠습니까? 그렇다면 되풀이 하지 않기를 빕니다"
 
-#: src/nautilus-window-menus.c:348
+#: src/nautilus-window-menus.c:347
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr "정말로 노틸러스로 방문하였던 위치들을 지우시겠습니까?"
 
-#: src/nautilus-window-menus.c:353
+#: src/nautilus-window-menus.c:352
 msgid "Clear History?"
 msgstr "기록을 지울까요?"
 
-#: src/nautilus-window-menus.c:354
+#: src/nautilus-window-menus.c:353
 msgid "Clear"
 msgstr "지우기"
 
-#: src/nautilus-window-menus.c:455
+#: src/nautilus-window-menus.c:454
 msgid "Hide St_atus Bar"
 msgstr "상태막대 숨김(_a)"
 
-#: src/nautilus-window-menus.c:456
+#: src/nautilus-window-menus.c:455
 msgid "Show St_atus Bar"
 msgstr "상태막대 보임(_a)"
 
-#: src/nautilus-window-menus.c:462
+#: src/nautilus-window-menus.c:461
 msgid "Show _Sidebar"
 msgstr "가장자리막대 보임(_S)"
 
-#: src/nautilus-window-menus.c:468
+#: src/nautilus-window-menus.c:467
 msgid "Show _Toolbar"
 msgstr "도구막대 보임(_T)"
 
-#: src/nautilus-window-menus.c:474
+#: src/nautilus-window-menus.c:473
 msgid "Show Location _Bar"
 msgstr "위치막대 보임(_B)"
 
@@ -7437,7 +7455,7 @@ msgstr "위치막대 보임(_B)"
 #. * symbol characters -- do not translate the company
 #. * name, please.
 #.
-#: src/nautilus-window-menus.c:603
+#: src/nautilus-window-menus.c:602
 msgid "Copyright (C) 1999-2001 Eazel, Inc."
 msgstr "Copyright (C) 1999-2001 Eazel, Inc"
 
@@ -7445,11 +7463,11 @@ msgstr "Copyright (C) 1999-2001 Eazel, Inc"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window-menus.c:610 src/nautilus-window-menus.c:611
+#: src/nautilus-window-menus.c:609 src/nautilus-window-menus.c:610
 msgid "Translator Credits"
 msgstr "차영호 <ganadist@chollian.net>"
 
-#: src/nautilus-window-menus.c:616
+#: src/nautilus-window-menus.c:615
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
@@ -7457,7 +7475,7 @@ msgstr ""
 "노틸러스는 여러분의 파일과 시스템의 나머지부분을 쉽게관리하게 해주는 그놈의 "
 "그래픽 쉘입니다."
 
-#: src/nautilus-window-menus.c:685
+#: src/nautilus-window-menus.c:676
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -7466,24 +7484,24 @@ msgstr ""
 "\"%s\"위치가 존재하지 않습니다. 목록에서 이 위치를 가진 책갈피를 제거하시겠습"
 "니까?"
 
-#: src/nautilus-window-menus.c:689
+#: src/nautilus-window-menus.c:680
 msgid "Bookmark for Nonexistent Location"
 msgstr "존재하지 않는 위치의 책갈피"
 
-#: src/nautilus-window-menus.c:690
+#: src/nautilus-window-menus.c:681
 msgid "Remove"
 msgstr "지우기"
 
-#: src/nautilus-window-menus.c:701
+#: src/nautilus-window-menus.c:692
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "\"%s\"위치가 더이상 존재하지 않습니다."
 
-#: src/nautilus-window-menus.c:702
+#: src/nautilus-window-menus.c:693
 msgid "Go to Nonexistent Location"
 msgstr "존재하지 않는 위치로 가기"
 
-#: src/nautilus-window-menus.c:771
+#: src/nautilus-window-menus.c:762
 msgid "Go to the location specified by this bookmark"
 msgstr "이 책갈피에 지정된 위치로 이동합니다"
 
@@ -7515,6 +7533,37 @@ msgstr "응용 프로그램"
 #: src/nautilus-window.c:2091
 msgid "The NautilusApplication associated with this window."
 msgstr "이 창에 연결된 노틸러스 응용프로그램."
+
+#~ msgid "Can't find an hbox, using a normal file selection"
+#~ msgstr "hbox를 찾을 수 없습니다, 보통 파일 선택으로 사용합니다"
+
+#~ msgid "Preview"
+#~ msgstr "미리 보기"
+
+#~ msgid "Remove any custom pattern or color from the desktop background"
+#~ msgstr "바탕화면 배경에서 사용자 패턴이나 색상을을 지웁니다"
+
+#~ msgid ""
+#~ "Remove any custom pattern or color from the background of this location"
+#~ msgstr "이 위치의 배경에서 어떠한 사용자 패턴이나 색상을 지웁니다"
+
+#~ msgid "Display on-line help for Nautilus"
+#~ msgstr "노틸러스의 온라인 도움말을 표시합니다"
+
+#~ msgid "Display quick reference pages for Nautilus"
+#~ msgstr "노틸러스의 빠른 참조 페이지를 표시합니다"
+
+#~ msgid "Go up to the location that contains the displayed location"
+#~ msgstr "표시된 위치가 포함된 위치로 이동합니다"
+
+#~ msgid "Nautilus Quick _Reference"
+#~ msgstr "노틸러스 빠른 참고서(_R)"
+
+#~ msgid "Nautilus User _Manual"
+#~ msgstr "노틸러스 사용자 설명서(_M)"
+
+#~ msgid "P_references..."
+#~ msgstr "환경 설정(_r)..."
 
 #~ msgid "Server Configuration"
 #~ msgstr "서버 설정"

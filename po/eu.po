@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.0.6\n"
-"POT-Creation-Date: 2002-04-29 22:39+0200\n"
+"POT-Creation-Date: 2002-05-06 13:56-0400\n"
 "PO-Revision-Date: 2001-05-25 13:35+0200\n"
 "Last-Translator: Unmantained\n"
 "Language-Team: Euskara\n"
@@ -179,7 +179,7 @@ msgstr "Hil Eduki-galtzailearen ikuspegia"
 #: components/loser/content/nautilus-content-loser-ui.xml.h:3
 #: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
 #: components/sample/nautilus-sample-content-view-ui.xml.h:4
-#: src/nautilus-shell-ui.xml.h:67
+#: src/nautilus-shell-ui.xml.h:65
 msgid "_File"
 msgstr "_Fitxategia"
 
@@ -964,7 +964,7 @@ msgstr "Pausarazi"
 #: libnautilus-private/nautilus-file-operations.c:904
 #: libnautilus-private/nautilus-file-operations.c:919
 #: libnautilus-private/nautilus-file-operations.c:939
-#: src/nautilus-shell-ui.xml.h:47
+#: src/nautilus-shell-ui.xml.h:44
 msgid "Stop"
 msgstr "Gelditu"
 
@@ -1985,15 +1985,6 @@ msgstr "Tahoe"
 #: icons/tahoe/tahoe.xml.h:2
 msgid "This theme uses photo-realistic folders."
 msgstr "Argazki errealen karpetak erabiltzen ditu."
-
-#: libbackground/preview-file-selection.c:193
-msgid "Can't find an hbox, using a normal file selection"
-msgstr ""
-
-#: libbackground/preview-file-selection.c:198
-#, fuzzy
-msgid "Preview"
-msgstr "Aurrekoa"
 
 #: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "AFFS Volume"
@@ -4355,7 +4346,7 @@ msgstr "Hautatutako testua kentzen du arbelean ipini gabe"
 msgid "Select All"
 msgstr "Hautatu dena"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:42
+#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:39
 msgid "Select _All"
 msgstr "Hautatu _dena"
 
@@ -4363,11 +4354,11 @@ msgstr "Hautatu _dena"
 msgid "Select all the text in a text field"
 msgstr "Testu-eremuko testu osoa hautatzen du"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:14 src/nautilus-shell-ui.xml.h:64
+#: libnautilus/nautilus-clipboard-ui.xml.h:14 src/nautilus-shell-ui.xml.h:62
 msgid "_Copy Text"
 msgstr "_Kopiatu testua"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:15 src/nautilus-shell-ui.xml.h:75
+#: libnautilus/nautilus-clipboard-ui.xml.h:15 src/nautilus-shell-ui.xml.h:73
 msgid "_Paste Text"
 msgstr "_Itsatsi testua"
 
@@ -5159,22 +5150,22 @@ msgstr "Errorea arrastatu eta jaregitean"
 msgid "An invalid drag type was used."
 msgstr "Arrastatze-mota baliogabea erabili da."
 
-#: src/file-manager/fm-list-view.c:286
+#: src/file-manager/fm-list-view.c:319
 #, fuzzy
 msgid "File name"
 msgstr "Fitxategi-jabea:"
 
-#: src/file-manager/fm-list-view.c:315
+#: src/file-manager/fm-list-view.c:341
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Tamaina"
 
-#: src/file-manager/fm-list-view.c:325
+#: src/file-manager/fm-list-view.c:352
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Mota"
 
-#: src/file-manager/fm-list-view.c:335
+#: src/file-manager/fm-list-view.c:363
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Aldatze-data"
@@ -5679,29 +5670,31 @@ msgid "Protect Conditionally"
 msgstr ""
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:16
-msgid "Remove any custom pattern or color from the desktop background"
-msgstr ""
-"Mahaigainaren atzeko planoko eredu edo kolore pertsonalizatu guztiak kendu"
-
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:17
-msgid "Reset Desktop Background"
-msgstr "Berrezarri mahaigainaren atzeko planoa"
-
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:18
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
 "Zure mahaigainaren eredua edo kolorea ezartzeko aukera ematen dizun leihoa "
 "erakusten du"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:19
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:17
 msgid "Unmount Volume"
 msgstr "Desmuntatu bolumena"
 
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:18
+#, fuzzy
+msgid "Unmount Volume Conditionally"
+msgstr "Desmuntatu bolumena"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:19
+#: src/file-manager/nautilus-directory-view-ui.xml.h:54
+#, fuzzy
+msgid "Use Default Background"
+msgstr "Berrezarri mahaigainaren atzeko planoa"
+
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
 #, fuzzy
-msgid "Unmount Voulme Conditionally"
-msgstr "Desmuntatu bolumena"
+msgid "Use the default desktop background"
+msgstr "Berrezarri mahaigainaren atzeko planoa"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
 msgid "Choose a program with which to open the selected item"
@@ -5824,81 +5817,74 @@ msgid "Remove any custom images from selected icons"
 msgstr "Hautatutako ikonoetako irudi pertsonalizatu guztiak kentzen ditu"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
-msgid "Remove any custom pattern or color from the background of this location"
-msgstr ""
-"Kokaleku honetako atzeko planoaren eredu eta kolore pertsonalizatuak kentzen "
-"ditu"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "Rename"
 msgstr "Izena aldatu"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:41
+#: src/file-manager/nautilus-directory-view-ui.xml.h:40
 #, fuzzy
 msgid "Rename selected item"
 msgstr "Izena aldatu hautatutako ikonoari"
 
-#. add the reset background item, possibly disabled
-#: src/file-manager/nautilus-directory-view-ui.xml.h:42
-#: src/nautilus-sidebar.c:567
-msgid "Reset Background"
-msgstr "Berrezarri atzeko planoa"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:43
+#: src/file-manager/nautilus-directory-view-ui.xml.h:41
 #, fuzzy
 msgid "Reset View to Default"
 msgstr "Zerrendaren ikuspegi lehenetsia"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:44
+#: src/file-manager/nautilus-directory-view-ui.xml.h:42
 #, fuzzy
 msgid "Reset View to _Defaults"
 msgstr "Zerrendaren ikuspegi lehenetsia"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:45
+#: src/file-manager/nautilus-directory-view-ui.xml.h:43
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 "Ordenatzeko modua eta zoom-maila berrezartzen du ikuspegi honen hobespenekin "
 "bat etortzeko"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:46
+#: src/file-manager/nautilus-directory-view-ui.xml.h:44
 msgid "Run or manage scripts from ~/Nautilus/scripts"
 msgstr "Exekutatu edo kudeatu script-ak ~/Nautilus/scripts-etik"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:47
+#: src/file-manager/nautilus-directory-view-ui.xml.h:45
 msgid "Scripts"
 msgstr "Script-ak"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:48
+#: src/file-manager/nautilus-directory-view-ui.xml.h:46
 msgid "Select All Files"
 msgstr "Hautatu fitxategi guztiak"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:49
+#: src/file-manager/nautilus-directory-view-ui.xml.h:47
 msgid "Select _All Files"
 msgstr "Hautatu _fitxategi guztiak"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:50
+#: src/file-manager/nautilus-directory-view-ui.xml.h:48
 msgid "Select all items in this window"
 msgstr "Hautatu leiho honetako elementu guztiak"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:51
+#: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "Show Properties"
 msgstr "Erakutsi Propietateak"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:52
+#: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "Show Trash"
 msgstr "Erakutsi zakarrontzia"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:53
+#: src/file-manager/nautilus-directory-view-ui.xml.h:51
 msgid "Show _Properties"
 msgstr "Erakutsi _Propietateak"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:54
+#: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "Show the contents of the Trash"
 msgstr "Zakarrontziaren edukia erakusten du"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:55
+#: src/file-manager/nautilus-directory-view-ui.xml.h:53
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Menu honetan agertzen diren script-ak dituen karpeta erakusten du"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:55
+#, fuzzy
+msgid "Use the default background for this location"
+msgstr "Ez da indizeko terminorik aurkitu hautapen honentzat"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "View or modify the properties of each selected item"
@@ -6329,7 +6315,7 @@ msgstr "Berrabiarazi Nautilus."
 
 #. Set initial window title
 #: src/nautilus-main.c:185 src/nautilus-window-manage-views.c:221
-#: src/nautilus-window-menus.c:613 src/nautilus-window.c:184
+#: src/nautilus-window-menus.c:612 src/nautilus-window.c:184
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -6449,7 +6435,7 @@ msgstr "Ordenatzeko modua"
 msgid "Always list folders before files"
 msgstr "Zerrendatu beti karpetak fitxategiak baino lehen"
 
-#: src/nautilus-preferences-dialog.c:159 src/nautilus-preferences-dialog.c:389
+#: src/nautilus-preferences-dialog.c:159 src/nautilus-preferences-dialog.c:391
 msgid "Icon Captions"
 msgstr "Ikonoen epigrafeak"
 
@@ -6515,7 +6501,7 @@ msgstr "Bilaketa-aukerak"
 msgid "search type to do by default"
 msgstr "bilaketa-mota lehenetsia"
 
-#: src/nautilus-preferences-dialog.c:264 src/nautilus-shell-ui.xml.h:30
+#: src/nautilus-preferences-dialog.c:264 src/nautilus-shell-ui.xml.h:29
 msgid "Home"
 msgstr "Etxera"
 
@@ -6586,70 +6572,70 @@ msgstr "Fitxak"
 msgid "Show only folders (no files) in the tree"
 msgstr "Karpetak bakarrik erakutsi zuhaitzean (fitxategiak ez)"
 
-#: src/nautilus-preferences-dialog.c:368
+#: src/nautilus-preferences-dialog.c:369
 msgid "Maximum items per site"
 msgstr "Gune bakoitzeko gehieneko elementu-kopurua"
 
-#: src/nautilus-preferences-dialog.c:370
+#: src/nautilus-preferences-dialog.c:371
 msgid "Maximum number of items displayed per site"
 msgstr "Gune bakoitzeko gehienez bistara daitekeen elementu-kopurua"
 
-#: src/nautilus-preferences-dialog.c:373
+#: src/nautilus-preferences-dialog.c:374
 msgid "Update Minutes"
 msgstr "Eguneratzeko maiztasuna"
 
-#: src/nautilus-preferences-dialog.c:375
+#: src/nautilus-preferences-dialog.c:376
 msgid "Update frequency in minutes"
 msgstr "Eguneratze-maiztasuna minututan"
 
-#: src/nautilus-preferences-dialog.c:384
+#: src/nautilus-preferences-dialog.c:386
 #, fuzzy
 msgid "View Defaults"
 msgstr "Ikonoen ikuspegi lehenetsia"
 
-#: src/nautilus-preferences-dialog.c:385
+#: src/nautilus-preferences-dialog.c:387
 msgid "Appearance"
 msgstr "Itxura"
 
-#: src/nautilus-preferences-dialog.c:386
+#: src/nautilus-preferences-dialog.c:388
 #, fuzzy
 msgid "Windows"
 msgstr "Leiho berria"
 
-#: src/nautilus-preferences-dialog.c:387
+#: src/nautilus-preferences-dialog.c:389
 #, fuzzy
 msgid "Desktop & Trash"
 msgstr "Eraman Zakarrontzira"
 
-#: src/nautilus-preferences-dialog.c:388
+#: src/nautilus-preferences-dialog.c:390
 msgid "Icon & List Views"
 msgstr "Ikono eta Zerrenda ikuspegiak"
 
-#: src/nautilus-preferences-dialog.c:390
+#: src/nautilus-preferences-dialog.c:392
 msgid "Sidebar Panels"
 msgstr "Alboko barraren panelak"
 
-#: src/nautilus-preferences-dialog.c:392
+#: src/nautilus-preferences-dialog.c:394
 msgid "Search"
 msgstr "Bilaketa"
 
-#: src/nautilus-preferences-dialog.c:394
+#: src/nautilus-preferences-dialog.c:396
 msgid "Navigation"
 msgstr "Nabigazioa"
 
-#: src/nautilus-preferences-dialog.c:395
+#: src/nautilus-preferences-dialog.c:397
 msgid "Speed Tradeoffs"
 msgstr "Abiadura-erlazioak"
 
-#: src/nautilus-preferences-dialog.c:396
+#: src/nautilus-preferences-dialog.c:399
 msgid "News Panel"
 msgstr "Berrien panela"
 
-#: src/nautilus-preferences-dialog.c:422
+#: src/nautilus-preferences-dialog.c:426
 msgid "Preferences"
 msgstr "Hobespenak"
 
-#: src/nautilus-preferences-dialog.c:448
+#: src/nautilus-preferences-dialog.c:452
 #, c-format
 msgid "Display %s tab in sidebar"
 msgstr "Bistaratu %s fitxa alboko barran"
@@ -7062,16 +7048,17 @@ msgid "Close this window"
 msgstr "Leiho hau ixten du"
 
 #: src/nautilus-shell-ui.xml.h:13
+#, fuzzy
+msgid "Display Nautilus help"
+msgstr "Nautilus shell"
+
+#: src/nautilus-shell-ui.xml.h:14
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Menu honetako laster-markak editatzeko leihoa bistaratzen du"
 
-#: src/nautilus-shell-ui.xml.h:14
+#: src/nautilus-shell-ui.xml.h:15
 msgid "Display credits for the creators of Nautilus"
 msgstr "Nautilus-en sortzaileen kredituak bistaratzen ditu"
-
-#: src/nautilus-shell-ui.xml.h:15
-msgid "Display on-line help for Nautilus"
-msgstr "Nautilus-en lineako laguntza bistaratzen du"
 
 #: src/nautilus-shell-ui.xml.h:16
 msgid ""
@@ -7082,268 +7069,267 @@ msgstr ""
 "bistaratzen ditu"
 
 #: src/nautilus-shell-ui.xml.h:17
-msgid "Display quick reference pages for Nautilus"
-msgstr "Nautilus-en erreferentzia azkarreko orrialdeak bistaratzen ditu"
-
-#: src/nautilus-shell-ui.xml.h:18
 msgid "Display the latest contents of the current location"
 msgstr "Uneko helbidearen azken edukia bistaratzen du"
 
-#: src/nautilus-shell-ui.xml.h:19
+#: src/nautilus-shell-ui.xml.h:18
 #, fuzzy
 msgid "Edit Nautilus preferences"
 msgstr "Nautilus-en hainbat hobespen editatzen ditu"
 
-#: src/nautilus-shell-ui.xml.h:20
+#: src/nautilus-shell-ui.xml.h:19
 msgid "Find"
 msgstr "Bilatu"
 
-#: src/nautilus-shell-ui.xml.h:21
+#: src/nautilus-shell-ui.xml.h:20
 msgid "Go to the Start Here folder"
 msgstr "'Hasi hemen' karpetara joaten da"
 
-#: src/nautilus-shell-ui.xml.h:22
+#: src/nautilus-shell-ui.xml.h:21
 msgid "Go to the home location"
 msgstr "Etxeko helbidera joaten da"
 
-#: src/nautilus-shell-ui.xml.h:23 src/nautilus-window-toolbars.c:568
+#: src/nautilus-shell-ui.xml.h:22 src/nautilus-window-toolbars.c:568
 msgid "Go to the next visited location"
 msgstr "Bisitatutako hurrengo helbidera joaten da"
 
-#: src/nautilus-shell-ui.xml.h:24 src/nautilus-window-toolbars.c:565
+#: src/nautilus-shell-ui.xml.h:23 src/nautilus-window-toolbars.c:565
 msgid "Go to the previous visited location"
 msgstr "Bisitatutako aurreko helbidera joaten da"
 
-#: src/nautilus-shell-ui.xml.h:25
-msgid "Go up to the location that contains the displayed location"
-msgstr "Goragoko mailako helbidera joaten da"
+#: src/nautilus-shell-ui.xml.h:24
+msgid "Go up one level"
+msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:26 src/nautilus-window-menus.c:473
+#: src/nautilus-shell-ui.xml.h:25 src/nautilus-window-menus.c:472
 msgid "Hide Location _Bar"
 msgstr "Ezkutatu helbide-_barra"
 
-#: src/nautilus-shell-ui.xml.h:27
+#: src/nautilus-shell-ui.xml.h:26
 #, fuzzy
 msgid "Hide St_atusbar"
 msgstr "Ezkutatu _egoera-barra"
 
-#: src/nautilus-shell-ui.xml.h:28 src/nautilus-window-menus.c:461
+#: src/nautilus-shell-ui.xml.h:27 src/nautilus-window-menus.c:460
 msgid "Hide _Sidebar"
 msgstr "Ezkutatu _alboko barra"
 
-#: src/nautilus-shell-ui.xml.h:29 src/nautilus-window-menus.c:467
+#: src/nautilus-shell-ui.xml.h:28 src/nautilus-window-menus.c:466
 msgid "Hide _Toolbar"
 msgstr "Ezkutatu t_resna-barra"
 
-#: src/nautilus-shell-ui.xml.h:31
-msgid "Nautilus Quick _Reference"
-msgstr "Nautilus-en er_referentzia azkarra"
-
-#: src/nautilus-shell-ui.xml.h:32
-msgid "Nautilus User _Manual"
-msgstr "Nautilus-en erabiltzailearen _eskuliburua"
-
-#: src/nautilus-shell-ui.xml.h:33
+#: src/nautilus-shell-ui.xml.h:30
 msgid "New Window"
 msgstr "Leiho berria"
 
-#: src/nautilus-shell-ui.xml.h:34
+#: src/nautilus-shell-ui.xml.h:31
 msgid "New _Window"
 msgstr "Leiho _berria"
 
-#: src/nautilus-shell-ui.xml.h:35
+#: src/nautilus-shell-ui.xml.h:32
 msgid "Normal Size"
 msgstr "Tamaina normala"
 
-#: src/nautilus-shell-ui.xml.h:36
+#: src/nautilus-shell-ui.xml.h:33
 msgid "Open another Nautilus window for the displayed location"
 msgstr "Bistaratutako helbidearentzat beste Nautilus leiho bat irekitzen du"
 
-#: src/nautilus-shell-ui.xml.h:37
+#: src/nautilus-shell-ui.xml.h:34
 #, fuzzy
-msgid "P_references..."
+msgid "P_references"
 msgstr "Hobespenak"
 
-#: src/nautilus-shell-ui.xml.h:38
+#: src/nautilus-shell-ui.xml.h:35
 #, fuzzy
 msgid "Reload"
 msgstr "Irakurri"
 
-#: src/nautilus-shell-ui.xml.h:39
+#: src/nautilus-shell-ui.xml.h:36
 msgid "Report Profiling"
 msgstr "Profilen txostena"
 
-#: src/nautilus-shell-ui.xml.h:40
+#: src/nautilus-shell-ui.xml.h:37
 msgid "Reset Profiling"
 msgstr "Berrezarri profilak"
 
-#: src/nautilus-shell-ui.xml.h:41
+#: src/nautilus-shell-ui.xml.h:38
 msgid "Search this computer for files"
 msgstr "Bilatu fitxategiak ordenagailu honetan"
 
-#: src/nautilus-shell-ui.xml.h:43
+#: src/nautilus-shell-ui.xml.h:40
 msgid "Show the contents at the normal size"
 msgstr "Edukia tamaina normalean erakusten du"
 
-#: src/nautilus-shell-ui.xml.h:44
+#: src/nautilus-shell-ui.xml.h:41
 msgid "Show the contents in less detail"
 msgstr "Edukia xehetasun gutxiagorekin erakusten du"
 
-#: src/nautilus-shell-ui.xml.h:45
+#: src/nautilus-shell-ui.xml.h:42
 msgid "Show the contents in more detail"
 msgstr "Edukiak xehetasun handiagoarekin erakusten du"
 
-#: src/nautilus-shell-ui.xml.h:46
+#: src/nautilus-shell-ui.xml.h:43
 msgid "Start Profiling"
 msgstr "Abiarazi profilak"
 
-#: src/nautilus-shell-ui.xml.h:48
+#: src/nautilus-shell-ui.xml.h:45
 msgid "Stop Profiling"
 msgstr "Geldiarazi profilak"
 
-#: src/nautilus-shell-ui.xml.h:49
+#: src/nautilus-shell-ui.xml.h:46
 msgid "Stop loading this location"
 msgstr "Utzi helbide hau kargatzeari"
 
-#: src/nautilus-shell-ui.xml.h:50
+#: src/nautilus-shell-ui.xml.h:47
 msgid "Undo the last text change"
 msgstr "Desegin azken testu-aldaketa"
 
-#: src/nautilus-shell-ui.xml.h:51
+#: src/nautilus-shell-ui.xml.h:48
 msgid "Up"
 msgstr "Gora"
 
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-shell-ui.xml.h:52 src/nautilus-window.c:516
+#: src/nautilus-shell-ui.xml.h:49 src/nautilus-window.c:516
 #: src/nautilus-window.c:1354
 msgid "View as..."
 msgstr "Ikusi honela..."
 
-#: src/nautilus-shell-ui.xml.h:53
+#: src/nautilus-shell-ui.xml.h:50
 msgid "Zoom In"
 msgstr "Zooma handiagotu"
 
-#: src/nautilus-shell-ui.xml.h:54
+#: src/nautilus-shell-ui.xml.h:51
 msgid "Zoom Out"
 msgstr "Zooma txikiagotu"
 
-#: src/nautilus-shell-ui.xml.h:55
+#: src/nautilus-shell-ui.xml.h:52
 msgid "Zoom _In"
 msgstr "Zooma ha_ndiagotu"
 
-#: src/nautilus-shell-ui.xml.h:56
+#: src/nautilus-shell-ui.xml.h:53
 msgid "Zoom _Out"
 msgstr "Zooma t_xikiagotu"
 
-#: src/nautilus-shell-ui.xml.h:57
-msgid "_About Nautilus..."
-msgstr "_Nautilus-i buruz..."
+#: src/nautilus-shell-ui.xml.h:54
+#, fuzzy
+msgid "_About Nautilus"
+msgstr "Nautilus-i buruz"
 
-#: src/nautilus-shell-ui.xml.h:58
+#: src/nautilus-shell-ui.xml.h:55
 msgid "_Add Bookmark"
 msgstr "_Gehitu laster-marka"
 
-#: src/nautilus-shell-ui.xml.h:59
+#: src/nautilus-shell-ui.xml.h:56
 msgid "_Back"
 msgstr "_Atzera"
 
-#: src/nautilus-shell-ui.xml.h:60
+#: src/nautilus-shell-ui.xml.h:57
 msgid "_Backgrounds and Emblems..."
 msgstr "_Atzeko planoak eta ikurrak..."
 
-#: src/nautilus-shell-ui.xml.h:61
+#: src/nautilus-shell-ui.xml.h:58
 msgid "_Bookmarks"
 msgstr "Laster-_markak"
 
-#: src/nautilus-shell-ui.xml.h:62
+#: src/nautilus-shell-ui.xml.h:59
 #, fuzzy
 msgid "_Clear History"
 msgstr "Aha_ztu historia"
 
-#: src/nautilus-shell-ui.xml.h:63
+#: src/nautilus-shell-ui.xml.h:60
 msgid "_Close Window"
 msgstr "_Itxi leihoa"
 
-#: src/nautilus-shell-ui.xml.h:65
+#: src/nautilus-shell-ui.xml.h:61
+msgid "_Contents"
+msgstr "_Edukia"
+
+#: src/nautilus-shell-ui.xml.h:63
 msgid "_Edit"
 msgstr "_Edizioa"
 
-#: src/nautilus-shell-ui.xml.h:66
-msgid "_Edit Bookmarks..."
+#: src/nautilus-shell-ui.xml.h:64
+#, fuzzy
+msgid "_Edit Bookmarks"
 msgstr "_Editatu laster-markak..."
 
-#: src/nautilus-shell-ui.xml.h:68
+#: src/nautilus-shell-ui.xml.h:66
 msgid "_Find"
 msgstr "Bila_tu"
 
-#: src/nautilus-shell-ui.xml.h:69
+#: src/nautilus-shell-ui.xml.h:67
 msgid "_Forward"
 msgstr "A_urrera"
 
-#: src/nautilus-shell-ui.xml.h:70
+#: src/nautilus-shell-ui.xml.h:68
 msgid "_Go"
 msgstr "_Joan"
 
-#: src/nautilus-shell-ui.xml.h:71
+#: src/nautilus-shell-ui.xml.h:69
 msgid "_Help"
 msgstr "L_aguntza"
 
-#: src/nautilus-shell-ui.xml.h:72
+#: src/nautilus-shell-ui.xml.h:70
 msgid "_Home"
 msgstr "_Etxera"
 
-#: src/nautilus-shell-ui.xml.h:73
+#: src/nautilus-shell-ui.xml.h:71
 msgid "_Location..."
 msgstr "_Helbidea..."
 
-#: src/nautilus-shell-ui.xml.h:74
+#: src/nautilus-shell-ui.xml.h:72
 msgid "_Normal Size"
 msgstr "_Tamaina normala"
 
-#: src/nautilus-shell-ui.xml.h:76
+#: src/nautilus-shell-ui.xml.h:74
 msgid "_Profiler"
 msgstr "_Profilgilea"
 
-#: src/nautilus-shell-ui.xml.h:77
+#: src/nautilus-shell-ui.xml.h:75
 #, fuzzy
 msgid "_Reload"
 msgstr "Irakurri"
 
-#: src/nautilus-shell-ui.xml.h:78
+#: src/nautilus-shell-ui.xml.h:76
 msgid "_Report Profiling"
 msgstr "_Profilen txostena"
 
-#: src/nautilus-shell-ui.xml.h:79
+#: src/nautilus-shell-ui.xml.h:77
 msgid "_Reset Profiling"
 msgstr "_Berrezarri profilak"
 
-#: src/nautilus-shell-ui.xml.h:80
+#: src/nautilus-shell-ui.xml.h:78
 msgid "_Start Here"
 msgstr "Hasi he_men"
 
-#: src/nautilus-shell-ui.xml.h:81
+#: src/nautilus-shell-ui.xml.h:79
 msgid "_Start Profiling"
 msgstr "_Abiarazi profilak"
 
-#: src/nautilus-shell-ui.xml.h:82
+#: src/nautilus-shell-ui.xml.h:80
 msgid "_Stop Profiling"
 msgstr "_Geldiarazi profilak"
 
-#: src/nautilus-shell-ui.xml.h:83
+#: src/nautilus-shell-ui.xml.h:81
 msgid "_Undo"
 msgstr "_Desegin"
 
-#: src/nautilus-shell-ui.xml.h:84
+#: src/nautilus-shell-ui.xml.h:82
 msgid "_Up a Level"
 msgstr "_Igo maila bat"
 
-#: src/nautilus-shell-ui.xml.h:85
+#: src/nautilus-shell-ui.xml.h:83
 msgid "_View"
 msgstr "_Ikusi"
 
-#: src/nautilus-shell-ui.xml.h:86
+#: src/nautilus-shell-ui.xml.h:84
 msgid "_View as..."
 msgstr "_Ikusi honela..."
+
+#. add the reset background item, possibly disabled
+#: src/nautilus-sidebar.c:567
+msgid "Reset Background"
+msgstr "Berrezarri atzeko planoa"
 
 #: src/nautilus-sidebar.c:1364
 #, c-format
@@ -7578,7 +7564,7 @@ msgstr "Ezin da Helbidea bistaratu"
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:345
+#: src/nautilus-window-menus.c:344
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
@@ -7586,39 +7572,39 @@ msgstr ""
 "Ziur zaude historia ahaztu nahi duzula? Hala egiten baduzu, errepikatu egin "
 "beharko duzu."
 
-#: src/nautilus-window-menus.c:348
+#: src/nautilus-window-menus.c:347
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr ""
 "Ziur zaude Nautilus-ek bisitatu dituzun helbideak ahatz ditzan nahi duzula?"
 
-#: src/nautilus-window-menus.c:353
+#: src/nautilus-window-menus.c:352
 #, fuzzy
 msgid "Clear History?"
 msgstr "Historia ahaztu?"
 
-#: src/nautilus-window-menus.c:354
+#: src/nautilus-window-menus.c:353
 #, fuzzy
 msgid "Clear"
 msgstr "Urtea"
 
-#: src/nautilus-window-menus.c:455
+#: src/nautilus-window-menus.c:454
 msgid "Hide St_atus Bar"
 msgstr "Ezkutatu _egoera-barra"
 
-#: src/nautilus-window-menus.c:456
+#: src/nautilus-window-menus.c:455
 msgid "Show St_atus Bar"
 msgstr "Erakutsi _egoera-barra"
 
-#: src/nautilus-window-menus.c:462
+#: src/nautilus-window-menus.c:461
 msgid "Show _Sidebar"
 msgstr "Erakutsi _alboko barra"
 
-#: src/nautilus-window-menus.c:468
+#: src/nautilus-window-menus.c:467
 msgid "Show _Toolbar"
 msgstr "Erakutsi t_resna-barra"
 
-#: src/nautilus-window-menus.c:474
+#: src/nautilus-window-menus.c:473
 msgid "Show Location _Bar"
 msgstr "Erakutsi helbide-_barra"
 
@@ -7626,7 +7612,7 @@ msgstr "Erakutsi helbide-_barra"
 #. * symbol characters -- do not translate the company
 #. * name, please.
 #.
-#: src/nautilus-window-menus.c:603
+#: src/nautilus-window-menus.c:602
 msgid "Copyright (C) 1999-2001 Eazel, Inc."
 msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 
@@ -7634,7 +7620,7 @@ msgstr "Copyright (C) 1999-2001 Eazel, Inc."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window-menus.c:610 src/nautilus-window-menus.c:611
+#: src/nautilus-window-menus.c:609 src/nautilus-window-menus.c:610
 msgid "Translator Credits"
 msgstr ""
 "Euskarazko itzulpena:\n"
@@ -7642,7 +7628,7 @@ msgstr ""
 "  Sailburuordetza\n"
 "  (<hizkpol@ej-gv.es>)"
 
-#: src/nautilus-window-menus.c:616
+#: src/nautilus-window-menus.c:615
 #, fuzzy
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
@@ -7653,7 +7639,7 @@ msgstr ""
 "eta sistema osoa erraz \n"
 "kudeatzeko prestatua."
 
-#: src/nautilus-window-menus.c:685
+#: src/nautilus-window-menus.c:676
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -7662,24 +7648,24 @@ msgstr ""
 "\"%s\" helbidea ez da existitzen. Helbide hori duten laster-markak kendu "
 "nahi dituzu zerrendatik?"
 
-#: src/nautilus-window-menus.c:689
+#: src/nautilus-window-menus.c:680
 msgid "Bookmark for Nonexistent Location"
 msgstr "Laster-marka honen helbidea ez dago"
 
-#: src/nautilus-window-menus.c:690
+#: src/nautilus-window-menus.c:681
 msgid "Remove"
 msgstr "Kendu"
 
-#: src/nautilus-window-menus.c:701
+#: src/nautilus-window-menus.c:692
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "\"%s\" helbiderik ez dago orain."
 
-#: src/nautilus-window-menus.c:702
+#: src/nautilus-window-menus.c:693
 msgid "Go to Nonexistent Location"
 msgstr "Joan Ez dagoen helbidera"
 
-#: src/nautilus-window-menus.c:771
+#: src/nautilus-window-menus.c:762
 msgid "Go to the location specified by this bookmark"
 msgstr "Laster-marka honek zehaztutako helbidera joaten da"
 
@@ -7713,6 +7699,42 @@ msgstr "Aplikazioak"
 #: src/nautilus-window.c:2091
 msgid "The NautilusApplication associated with this window."
 msgstr ""
+
+#, fuzzy
+#~ msgid "Preview"
+#~ msgstr "Aurrekoa"
+
+#~ msgid "Remove any custom pattern or color from the desktop background"
+#~ msgstr ""
+#~ "Mahaigainaren atzeko planoko eredu edo kolore pertsonalizatu guztiak kendu"
+
+#~ msgid ""
+#~ "Remove any custom pattern or color from the background of this location"
+#~ msgstr ""
+#~ "Kokaleku honetako atzeko planoaren eredu eta kolore pertsonalizatuak "
+#~ "kentzen ditu"
+
+#~ msgid "Display on-line help for Nautilus"
+#~ msgstr "Nautilus-en lineako laguntza bistaratzen du"
+
+#~ msgid "Display quick reference pages for Nautilus"
+#~ msgstr "Nautilus-en erreferentzia azkarreko orrialdeak bistaratzen ditu"
+
+#~ msgid "Go up to the location that contains the displayed location"
+#~ msgstr "Goragoko mailako helbidera joaten da"
+
+#~ msgid "Nautilus Quick _Reference"
+#~ msgstr "Nautilus-en er_referentzia azkarra"
+
+#~ msgid "Nautilus User _Manual"
+#~ msgstr "Nautilus-en erabiltzailearen _eskuliburua"
+
+#, fuzzy
+#~ msgid "P_references..."
+#~ msgstr "Hobespenak"
+
+#~ msgid "_About Nautilus..."
+#~ msgstr "_Nautilus-i buruz..."
 
 #~ msgid "Can't create nautilus-launcher-applet!"
 #~ msgstr "Ezin da nautilus-launcher-applet sortu!"
@@ -7831,9 +7853,6 @@ msgstr ""
 #~ msgid "Info"
 #~ msgstr "Informazioa"
 
-#~ msgid "No index terms found for this selection"
-#~ msgstr "Ez da indizeko terminorik aurkitu hautapen honentzat"
-
 #~ msgid "see "
 #~ msgstr "ikus "
 
@@ -7900,9 +7919,6 @@ msgstr ""
 
 #~ msgid "Documents by Subject"
 #~ msgstr "Gaiaren araberako dokumentuak"
-
-#~ msgid "_Contents"
-#~ msgstr "_Edukia"
 
 #~ msgid "_Index"
 #~ msgstr "_Indizea"
@@ -8387,9 +8403,6 @@ msgstr ""
 
 #~ msgid "_Lay Out Items"
 #~ msgstr "Aurkeztu ele_mentuak"
-
-#~ msgid "About Nautilus"
-#~ msgstr "Nautilus-i buruz"
 
 #~ msgid "Authors"
 #~ msgstr "Egileak"

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.2\n"
-"POT-Creation-Date: 2002-04-29 15:46+0200\n"
+"POT-Creation-Date: 2002-05-06 13:56-0400\n"
 "PO-Revision-Date: 2002-04-29 15:49+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -179,7 +179,7 @@ msgstr "Drep taperen innholdsvisning"
 #: components/loser/content/nautilus-content-loser-ui.xml.h:3
 #: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
 #: components/sample/nautilus-sample-content-view-ui.xml.h:4
-#: src/nautilus-shell-ui.xml.h:67
+#: src/nautilus-shell-ui.xml.h:65
 msgid "_File"
 msgstr "_Fil"
 
@@ -963,7 +963,7 @@ msgstr "Pause"
 #: libnautilus-private/nautilus-file-operations.c:904
 #: libnautilus-private/nautilus-file-operations.c:919
 #: libnautilus-private/nautilus-file-operations.c:939
-#: src/nautilus-shell-ui.xml.h:47
+#: src/nautilus-shell-ui.xml.h:44
 msgid "Stop"
 msgstr "Stopp"
 
@@ -1966,14 +1966,6 @@ msgstr "Tahoe"
 #: icons/tahoe/tahoe.xml.h:2
 msgid "This theme uses photo-realistic folders."
 msgstr "Dette temaet bruker fotorealistiske mapper."
-
-#: libbackground/preview-file-selection.c:193
-msgid "Can't find an hbox, using a normal file selection"
-msgstr "Kan ikke finne en hbox. Bruker vanlig filutvalg"
-
-#: libbackground/preview-file-selection.c:198
-msgid "Preview"
-msgstr "Forhåndsvis"
 
 #: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "AFFS Volume"
@@ -4321,7 +4313,7 @@ msgstr "Fjerner den valgte teksten uten å plassere den på utklippstavlen"
 msgid "Select All"
 msgstr "Velg alt"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:42
+#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:39
 msgid "Select _All"
 msgstr "Velg _alt"
 
@@ -4329,11 +4321,11 @@ msgstr "Velg _alt"
 msgid "Select all the text in a text field"
 msgstr "Marker all tekst i et tekstfelt"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:14 src/nautilus-shell-ui.xml.h:64
+#: libnautilus/nautilus-clipboard-ui.xml.h:14 src/nautilus-shell-ui.xml.h:62
 msgid "_Copy Text"
 msgstr "_Kopier tekst"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:15 src/nautilus-shell-ui.xml.h:75
+#: libnautilus/nautilus-clipboard-ui.xml.h:15 src/nautilus-shell-ui.xml.h:73
 msgid "_Paste Text"
 msgstr "_Lim inn tekst"
 
@@ -5108,21 +5100,21 @@ msgstr "Feil ved dra-og-slipp"
 msgid "An invalid drag type was used."
 msgstr "En ugyldig type ble brukt for draoperasjon."
 
-#: src/file-manager/fm-list-view.c:286
+#: src/file-manager/fm-list-view.c:319
 msgid "File name"
 msgstr "Filnavn"
 
-#: src/file-manager/fm-list-view.c:315
+#: src/file-manager/fm-list-view.c:341
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Størrelse"
 
-#: src/file-manager/fm-list-view.c:325
+#: src/file-manager/fm-list-view.c:352
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Type"
 
-#: src/file-manager/fm-list-view.c:335
+#: src/file-manager/fm-list-view.c:363
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Dato endret"
@@ -5621,27 +5613,30 @@ msgid "Protect Conditionally"
 msgstr "Betinget beskyttelse"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:16
-msgid "Remove any custom pattern or color from the desktop background"
-msgstr ""
-"Fjern ethvert egendefinert mønster eller farge fra skrivebordsbakgrunnen"
-
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:17
-msgid "Reset Desktop Background"
-msgstr "Nulltill skrivebordsbakgrunn"
-
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:18
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
 "Vis et vindu som lar deg velge mønster eller farge for skrivebordsbakgrunnen"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:19
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:17
 msgid "Unmount Volume"
 msgstr "Avmonter volum"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
-msgid "Unmount Voulme Conditionally"
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:18
+#, fuzzy
+msgid "Unmount Volume Conditionally"
 msgstr "Betinget avmontering av volum"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:19
+#: src/file-manager/nautilus-directory-view-ui.xml.h:54
+#, fuzzy
+msgid "Use Default Background"
+msgstr "Nulltill skrivebordsbakgrunn"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
+#, fuzzy
+msgid "Use the default desktop background"
+msgstr "Nulltill skrivebordsbakgrunn"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
 msgid "Choose a program with which to open the selected item"
@@ -5759,78 +5754,71 @@ msgid "Remove any custom images from selected icons"
 msgstr "Fjern egendefinerte bilder fra valgte ikoner"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
-msgid "Remove any custom pattern or color from the background of this location"
-msgstr ""
-"Fjern ethvert egendefinert mønster eller farge fra bakgrunnen for denne "
-"plasseringen"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "Rename"
 msgstr "Gi nytt navn"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:41
+#: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "Rename selected item"
 msgstr "Endre navn på valgt oppføring"
 
-#. add the reset background item, possibly disabled
-#: src/file-manager/nautilus-directory-view-ui.xml.h:42
-#: src/nautilus-sidebar.c:567
-msgid "Reset Background"
-msgstr "Nulltill bakgrunn"
-
-#: src/file-manager/nautilus-directory-view-ui.xml.h:43
+#: src/file-manager/nautilus-directory-view-ui.xml.h:41
 msgid "Reset View to Default"
 msgstr "Nullstill visning til forvalg"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:44
+#: src/file-manager/nautilus-directory-view-ui.xml.h:42
 msgid "Reset View to _Defaults"
 msgstr "_Nullstill visning til forvalg"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:45
+#: src/file-manager/nautilus-directory-view-ui.xml.h:43
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 "Nullstill sorteringsrekkefølge og zoom-nivå til brukervalg for denne "
 "visningen"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:46
+#: src/file-manager/nautilus-directory-view-ui.xml.h:44
 msgid "Run or manage scripts from ~/Nautilus/scripts"
 msgstr "Kjør eller håndter skript fra ~/Nautilus/scripts"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:47
+#: src/file-manager/nautilus-directory-view-ui.xml.h:45
 msgid "Scripts"
 msgstr "Skript"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:48
+#: src/file-manager/nautilus-directory-view-ui.xml.h:46
 msgid "Select All Files"
 msgstr "Velg alle filer"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:49
+#: src/file-manager/nautilus-directory-view-ui.xml.h:47
 msgid "Select _All Files"
 msgstr "Velg _alle filer"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:50
+#: src/file-manager/nautilus-directory-view-ui.xml.h:48
 msgid "Select all items in this window"
 msgstr "Velg alle oppføringer i dette vinduet"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:51
+#: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "Show Properties"
 msgstr "Vis egenskaper"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:52
+#: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "Show Trash"
 msgstr "Vis søppelkurv"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:53
+#: src/file-manager/nautilus-directory-view-ui.xml.h:51
 msgid "Show _Properties"
 msgstr "Vis egenska_per"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:54
+#: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "Show the contents of the Trash"
 msgstr "Vis innholdet i søppelkurven"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:55
+#: src/file-manager/nautilus-directory-view-ui.xml.h:53
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Vis mappen som inneholder skriptene som vises i denne menyen"
+
+#: src/file-manager/nautilus-directory-view-ui.xml.h:55
+#, fuzzy
+msgid "Use the default background for this location"
+msgstr "Åpne et nytt Nautilus-vindu for vist lokasjon"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "View or modify the properties of each selected item"
@@ -6255,7 +6243,7 @@ msgstr "Start Nautilus på nytt."
 
 #. Set initial window title
 #: src/nautilus-main.c:185 src/nautilus-window-manage-views.c:221
-#: src/nautilus-window-menus.c:613 src/nautilus-window.c:184
+#: src/nautilus-window-menus.c:612 src/nautilus-window.c:184
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -6374,7 +6362,7 @@ msgstr "Sorteringsrekkefølge"
 msgid "Always list folders before files"
 msgstr "Vis mapper før filer"
 
-#: src/nautilus-preferences-dialog.c:159 src/nautilus-preferences-dialog.c:389
+#: src/nautilus-preferences-dialog.c:159 src/nautilus-preferences-dialog.c:391
 msgid "Icon Captions"
 msgstr "Ikontekst"
 
@@ -6440,7 +6428,7 @@ msgstr "Alternativer for kompleksitet i søk"
 msgid "search type to do by default"
 msgstr "standard søketype"
 
-#: src/nautilus-preferences-dialog.c:264 src/nautilus-shell-ui.xml.h:30
+#: src/nautilus-preferences-dialog.c:264 src/nautilus-shell-ui.xml.h:29
 msgid "Home"
 msgstr "Hjem"
 
@@ -6511,67 +6499,67 @@ msgstr "Faner"
 msgid "Show only folders (no files) in the tree"
 msgstr "Vis kun mapper (ingen filer) i treet"
 
-#: src/nautilus-preferences-dialog.c:368
+#: src/nautilus-preferences-dialog.c:369
 msgid "Maximum items per site"
 msgstr "Maksimalt antall oppføringer per sted"
 
-#: src/nautilus-preferences-dialog.c:370
+#: src/nautilus-preferences-dialog.c:371
 msgid "Maximum number of items displayed per site"
 msgstr "Maksimalt antall oppføringer som vises per sted"
 
-#: src/nautilus-preferences-dialog.c:373
+#: src/nautilus-preferences-dialog.c:374
 msgid "Update Minutes"
 msgstr "Oppdaterer minutter"
 
-#: src/nautilus-preferences-dialog.c:375
+#: src/nautilus-preferences-dialog.c:376
 msgid "Update frequency in minutes"
 msgstr "Oppdater frekvens i minutter"
 
-#: src/nautilus-preferences-dialog.c:384
+#: src/nautilus-preferences-dialog.c:386
 msgid "View Defaults"
 msgstr "Forvalg for visning"
 
-#: src/nautilus-preferences-dialog.c:385
+#: src/nautilus-preferences-dialog.c:387
 msgid "Appearance"
 msgstr "Utseende"
 
-#: src/nautilus-preferences-dialog.c:386
+#: src/nautilus-preferences-dialog.c:388
 msgid "Windows"
 msgstr "Vinduer"
 
-#: src/nautilus-preferences-dialog.c:387
+#: src/nautilus-preferences-dialog.c:389
 msgid "Desktop & Trash"
 msgstr "Skrivebord og søppelkurv"
 
-#: src/nautilus-preferences-dialog.c:388
+#: src/nautilus-preferences-dialog.c:390
 msgid "Icon & List Views"
 msgstr "Ikon- og listevisning"
 
-#: src/nautilus-preferences-dialog.c:390
+#: src/nautilus-preferences-dialog.c:392
 msgid "Sidebar Panels"
 msgstr "Sidelinjepaneler"
 
-#: src/nautilus-preferences-dialog.c:392
+#: src/nautilus-preferences-dialog.c:394
 msgid "Search"
 msgstr "Søk"
 
-#: src/nautilus-preferences-dialog.c:394
+#: src/nautilus-preferences-dialog.c:396
 msgid "Navigation"
 msgstr "Navigasjon"
 
-#: src/nautilus-preferences-dialog.c:395
+#: src/nautilus-preferences-dialog.c:397
 msgid "Speed Tradeoffs"
 msgstr "Forsak hastighet"
 
-#: src/nautilus-preferences-dialog.c:396
+#: src/nautilus-preferences-dialog.c:399
 msgid "News Panel"
 msgstr "Nyhetspanel"
 
-#: src/nautilus-preferences-dialog.c:422
+#: src/nautilus-preferences-dialog.c:426
 msgid "Preferences"
 msgstr "Brukervalg"
 
-#: src/nautilus-preferences-dialog.c:448
+#: src/nautilus-preferences-dialog.c:452
 #, c-format
 msgid "Display %s tab in sidebar"
 msgstr "Vis fanen %s på sidelinjen"
@@ -6970,16 +6958,17 @@ msgid "Close this window"
 msgstr "Lukk dette vinduet"
 
 #: src/nautilus-shell-ui.xml.h:13
+#, fuzzy
+msgid "Display Nautilus help"
+msgstr "Nautilus skall"
+
+#: src/nautilus-shell-ui.xml.h:14
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Vis et vindu som tillater redigering av bokmerkene i denne menyen"
 
-#: src/nautilus-shell-ui.xml.h:14
+#: src/nautilus-shell-ui.xml.h:15
 msgid "Display credits for the creators of Nautilus"
 msgstr "Vis informasjon om dem som laget Nautilus"
-
-#: src/nautilus-shell-ui.xml.h:15
-msgid "Display on-line help for Nautilus"
-msgstr "Vis hjelp for Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:16
 msgid ""
@@ -6990,262 +6979,263 @@ msgstr ""
 "utseende"
 
 #: src/nautilus-shell-ui.xml.h:17
-msgid "Display quick reference pages for Nautilus"
-msgstr "Vis hurtigreferansesider for Nautilus"
-
-#: src/nautilus-shell-ui.xml.h:18
 msgid "Display the latest contents of the current location"
 msgstr "Les innholdet for denne lokasjonen på nytt"
 
-#: src/nautilus-shell-ui.xml.h:19
+#: src/nautilus-shell-ui.xml.h:18
 msgid "Edit Nautilus preferences"
 msgstr "Rediger brukervalg for Nautilus"
 
-#: src/nautilus-shell-ui.xml.h:20
+#: src/nautilus-shell-ui.xml.h:19
 msgid "Find"
 msgstr "Finn"
 
-#: src/nautilus-shell-ui.xml.h:21
+#: src/nautilus-shell-ui.xml.h:20
 msgid "Go to the Start Here folder"
 msgstr "Gå til \"Start her\" mappen"
 
-#: src/nautilus-shell-ui.xml.h:22
+#: src/nautilus-shell-ui.xml.h:21
 msgid "Go to the home location"
 msgstr "Gå til hovedsiden"
 
-#: src/nautilus-shell-ui.xml.h:23 src/nautilus-window-toolbars.c:568
+#: src/nautilus-shell-ui.xml.h:22 src/nautilus-window-toolbars.c:568
 msgid "Go to the next visited location"
 msgstr "Gå til neste besøkte lokasjon"
 
-#: src/nautilus-shell-ui.xml.h:24 src/nautilus-window-toolbars.c:565
+#: src/nautilus-shell-ui.xml.h:23 src/nautilus-window-toolbars.c:565
 msgid "Go to the previous visited location"
 msgstr "Gå til forrige besøkte lokasjon"
 
-#: src/nautilus-shell-ui.xml.h:25
-msgid "Go up to the location that contains the displayed location"
-msgstr "Gå til lokasjonen som inneholder den viste lokasjonen"
+#: src/nautilus-shell-ui.xml.h:24
+msgid "Go up one level"
+msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:26 src/nautilus-window-menus.c:473
+#: src/nautilus-shell-ui.xml.h:25 src/nautilus-window-menus.c:472
 msgid "Hide Location _Bar"
 msgstr "Skjul a_dresselinje"
 
-#: src/nautilus-shell-ui.xml.h:27
+#: src/nautilus-shell-ui.xml.h:26
 msgid "Hide St_atusbar"
 msgstr "Skjul st_atuslinje"
 
-#: src/nautilus-shell-ui.xml.h:28 src/nautilus-window-menus.c:461
+#: src/nautilus-shell-ui.xml.h:27 src/nautilus-window-menus.c:460
 msgid "Hide _Sidebar"
 msgstr "Skjul _sidelinje"
 
-#: src/nautilus-shell-ui.xml.h:29 src/nautilus-window-menus.c:467
+#: src/nautilus-shell-ui.xml.h:28 src/nautilus-window-menus.c:466
 msgid "Hide _Toolbar"
 msgstr "Skjul verk_tøylinje"
 
-#: src/nautilus-shell-ui.xml.h:31
-msgid "Nautilus Quick _Reference"
-msgstr "Nautilus hurtig_referanse"
-
-#: src/nautilus-shell-ui.xml.h:32
-msgid "Nautilus User _Manual"
-msgstr "Nautilus bruker_håndbok"
-
-#: src/nautilus-shell-ui.xml.h:33
+#: src/nautilus-shell-ui.xml.h:30
 msgid "New Window"
 msgstr "Nytt vindu"
 
-#: src/nautilus-shell-ui.xml.h:34
+#: src/nautilus-shell-ui.xml.h:31
 msgid "New _Window"
 msgstr "Nytt _vindu"
 
-#: src/nautilus-shell-ui.xml.h:35
+#: src/nautilus-shell-ui.xml.h:32
 msgid "Normal Size"
 msgstr "Normal størrelse"
 
-#: src/nautilus-shell-ui.xml.h:36
+#: src/nautilus-shell-ui.xml.h:33
 msgid "Open another Nautilus window for the displayed location"
 msgstr "Åpne et nytt Nautilus-vindu for vist lokasjon"
 
-#: src/nautilus-shell-ui.xml.h:37
-msgid "P_references..."
-msgstr "B_rukervalg..."
+#: src/nautilus-shell-ui.xml.h:34
+#, fuzzy
+msgid "P_references"
+msgstr "Brukervalg"
 
-#: src/nautilus-shell-ui.xml.h:38
+#: src/nautilus-shell-ui.xml.h:35
 msgid "Reload"
 msgstr "Oppdater"
 
-#: src/nautilus-shell-ui.xml.h:39
+#: src/nautilus-shell-ui.xml.h:36
 msgid "Report Profiling"
 msgstr "Rapporter profilering"
 
-#: src/nautilus-shell-ui.xml.h:40
+#: src/nautilus-shell-ui.xml.h:37
 msgid "Reset Profiling"
 msgstr "Nullstill profilering"
 
-#: src/nautilus-shell-ui.xml.h:41
+#: src/nautilus-shell-ui.xml.h:38
 msgid "Search this computer for files"
 msgstr "Søk etter filer på denne datamaskinen"
 
-#: src/nautilus-shell-ui.xml.h:43
+#: src/nautilus-shell-ui.xml.h:40
 msgid "Show the contents at the normal size"
 msgstr "Vis innholdet i normal størrelse"
 
-#: src/nautilus-shell-ui.xml.h:44
+#: src/nautilus-shell-ui.xml.h:41
 msgid "Show the contents in less detail"
 msgstr "Vis innholdet med mindre grad av detaljer"
 
-#: src/nautilus-shell-ui.xml.h:45
+#: src/nautilus-shell-ui.xml.h:42
 msgid "Show the contents in more detail"
 msgstr "Vis innhold med større grad av detaljer"
 
-#: src/nautilus-shell-ui.xml.h:46
+#: src/nautilus-shell-ui.xml.h:43
 msgid "Start Profiling"
 msgstr "Start profilering"
 
-#: src/nautilus-shell-ui.xml.h:48
+#: src/nautilus-shell-ui.xml.h:45
 msgid "Stop Profiling"
 msgstr "Stopp profilering"
 
-#: src/nautilus-shell-ui.xml.h:49
+#: src/nautilus-shell-ui.xml.h:46
 msgid "Stop loading this location"
 msgstr "Stopp nedlasting av denne lokasjonen"
 
-#: src/nautilus-shell-ui.xml.h:50
+#: src/nautilus-shell-ui.xml.h:47
 msgid "Undo the last text change"
 msgstr "Angre siste tekstendring"
 
-#: src/nautilus-shell-ui.xml.h:51
+#: src/nautilus-shell-ui.xml.h:48
 msgid "Up"
 msgstr "Opp"
 
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-shell-ui.xml.h:52 src/nautilus-window.c:516
+#: src/nautilus-shell-ui.xml.h:49 src/nautilus-window.c:516
 #: src/nautilus-window.c:1354
 msgid "View as..."
 msgstr "Vis som..."
 
-#: src/nautilus-shell-ui.xml.h:53
+#: src/nautilus-shell-ui.xml.h:50
 msgid "Zoom In"
 msgstr "Zoom inn"
 
-#: src/nautilus-shell-ui.xml.h:54
+#: src/nautilus-shell-ui.xml.h:51
 msgid "Zoom Out"
 msgstr "Zoom ut"
 
-#: src/nautilus-shell-ui.xml.h:55
+#: src/nautilus-shell-ui.xml.h:52
 msgid "Zoom _In"
 msgstr "Zoom _inn"
 
-#: src/nautilus-shell-ui.xml.h:56
+#: src/nautilus-shell-ui.xml.h:53
 msgid "Zoom _Out"
 msgstr "Zoom _ut"
 
-#: src/nautilus-shell-ui.xml.h:57
-msgid "_About Nautilus..."
+#: src/nautilus-shell-ui.xml.h:54
+#, fuzzy
+msgid "_About Nautilus"
 msgstr "_Om Nautilus..."
 
-#: src/nautilus-shell-ui.xml.h:58
+#: src/nautilus-shell-ui.xml.h:55
 msgid "_Add Bookmark"
 msgstr "_Legg til bokmerke"
 
-#: src/nautilus-shell-ui.xml.h:59
+#: src/nautilus-shell-ui.xml.h:56
 msgid "_Back"
 msgstr "_Tilbake"
 
-#: src/nautilus-shell-ui.xml.h:60
+#: src/nautilus-shell-ui.xml.h:57
 msgid "_Backgrounds and Emblems..."
 msgstr "_Bakgrunner og emblemer..."
 
-#: src/nautilus-shell-ui.xml.h:61
+#: src/nautilus-shell-ui.xml.h:58
 msgid "_Bookmarks"
 msgstr "_Bokmerker"
 
-#: src/nautilus-shell-ui.xml.h:62
+#: src/nautilus-shell-ui.xml.h:59
 msgid "_Clear History"
 msgstr "_Tøm historikk"
 
-#: src/nautilus-shell-ui.xml.h:63
+#: src/nautilus-shell-ui.xml.h:60
 msgid "_Close Window"
 msgstr "_Lukk vindu"
 
-#: src/nautilus-shell-ui.xml.h:65
+#: src/nautilus-shell-ui.xml.h:61
+#, fuzzy
+msgid "_Contents"
+msgstr "Innhold:"
+
+#: src/nautilus-shell-ui.xml.h:63
 msgid "_Edit"
 msgstr "_Rediger"
 
-#: src/nautilus-shell-ui.xml.h:66
-msgid "_Edit Bookmarks..."
+#: src/nautilus-shell-ui.xml.h:64
+#, fuzzy
+msgid "_Edit Bookmarks"
 msgstr "R_ediger bokmerker..."
 
-#: src/nautilus-shell-ui.xml.h:68
+#: src/nautilus-shell-ui.xml.h:66
 msgid "_Find"
 msgstr "_Finn"
 
-#: src/nautilus-shell-ui.xml.h:69
+#: src/nautilus-shell-ui.xml.h:67
 msgid "_Forward"
 msgstr "_Fremover"
 
-#: src/nautilus-shell-ui.xml.h:70
+#: src/nautilus-shell-ui.xml.h:68
 msgid "_Go"
 msgstr "_Gå"
 
-#: src/nautilus-shell-ui.xml.h:71
+#: src/nautilus-shell-ui.xml.h:69
 msgid "_Help"
 msgstr "_Hjelp"
 
-#: src/nautilus-shell-ui.xml.h:72
+#: src/nautilus-shell-ui.xml.h:70
 msgid "_Home"
 msgstr "_Hjem"
 
-#: src/nautilus-shell-ui.xml.h:73
+#: src/nautilus-shell-ui.xml.h:71
 msgid "_Location..."
 msgstr "P_lassering..."
 
-#: src/nautilus-shell-ui.xml.h:74
+#: src/nautilus-shell-ui.xml.h:72
 msgid "_Normal Size"
 msgstr "_Normal størrelse"
 
-#: src/nautilus-shell-ui.xml.h:76
+#: src/nautilus-shell-ui.xml.h:74
 msgid "_Profiler"
 msgstr "_Profilering"
 
-#: src/nautilus-shell-ui.xml.h:77
+#: src/nautilus-shell-ui.xml.h:75
 msgid "_Reload"
 msgstr "_Oppdater"
 
-#: src/nautilus-shell-ui.xml.h:78
+#: src/nautilus-shell-ui.xml.h:76
 msgid "_Report Profiling"
 msgstr "_Rapporter profilering"
 
-#: src/nautilus-shell-ui.xml.h:79
+#: src/nautilus-shell-ui.xml.h:77
 msgid "_Reset Profiling"
 msgstr "_Nullstill profilering"
 
-#: src/nautilus-shell-ui.xml.h:80
+#: src/nautilus-shell-ui.xml.h:78
 msgid "_Start Here"
 msgstr "Start her"
 
-#: src/nautilus-shell-ui.xml.h:81
+#: src/nautilus-shell-ui.xml.h:79
 msgid "_Start Profiling"
 msgstr "_Start profilering"
 
-#: src/nautilus-shell-ui.xml.h:82
+#: src/nautilus-shell-ui.xml.h:80
 msgid "_Stop Profiling"
 msgstr "_Stopp profilering"
 
-#: src/nautilus-shell-ui.xml.h:83
+#: src/nautilus-shell-ui.xml.h:81
 msgid "_Undo"
 msgstr "_Angre"
 
-#: src/nautilus-shell-ui.xml.h:84
+#: src/nautilus-shell-ui.xml.h:82
 msgid "_Up a Level"
 msgstr "_Opp ett nivå"
 
-#: src/nautilus-shell-ui.xml.h:85
+#: src/nautilus-shell-ui.xml.h:83
 msgid "_View"
 msgstr "_Vis"
 
-#: src/nautilus-shell-ui.xml.h:86
+#: src/nautilus-shell-ui.xml.h:84
 msgid "_View as..."
 msgstr "_Vis som..."
+
+#. add the reset background item, possibly disabled
+#: src/nautilus-sidebar.c:567
+msgid "Reset Background"
+msgstr "Nulltill bakgrunn"
 
 #: src/nautilus-sidebar.c:1364
 #, c-format
@@ -7477,7 +7467,7 @@ msgstr "Kan ikke vise lokasjon"
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:345
+#: src/nautilus-window-menus.c:344
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
@@ -7485,37 +7475,37 @@ msgstr ""
 "Er du sikker på at du ønsker å glemme historikken? Hvis det er tilfelle, vil "
 "du være dømt til å gjenta den."
 
-#: src/nautilus-window-menus.c:348
+#: src/nautilus-window-menus.c:347
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr ""
 "Er du sikker på at du ønsker at Nautilus skal glemme stedene du har besøkt?"
 
-#: src/nautilus-window-menus.c:353
+#: src/nautilus-window-menus.c:352
 msgid "Clear History?"
 msgstr "Tøm historikk?"
 
-#: src/nautilus-window-menus.c:354
+#: src/nautilus-window-menus.c:353
 msgid "Clear"
 msgstr "Tøm"
 
-#: src/nautilus-window-menus.c:455
+#: src/nautilus-window-menus.c:454
 msgid "Hide St_atus Bar"
 msgstr "Skjul st_atuslinje"
 
-#: src/nautilus-window-menus.c:456
+#: src/nautilus-window-menus.c:455
 msgid "Show St_atus Bar"
 msgstr "Vis st_atuslinje"
 
-#: src/nautilus-window-menus.c:462
+#: src/nautilus-window-menus.c:461
 msgid "Show _Sidebar"
 msgstr "Vis _sidelinje"
 
-#: src/nautilus-window-menus.c:468
+#: src/nautilus-window-menus.c:467
 msgid "Show _Toolbar"
 msgstr "Vis verk_tøylinje"
 
-#: src/nautilus-window-menus.c:474
+#: src/nautilus-window-menus.c:473
 msgid "Show Location _Bar"
 msgstr "Vis a_dresselinje"
 
@@ -7523,7 +7513,7 @@ msgstr "Vis a_dresselinje"
 #. * symbol characters -- do not translate the company
 #. * name, please.
 #.
-#: src/nautilus-window-menus.c:603
+#: src/nautilus-window-menus.c:602
 msgid "Copyright (C) 1999-2001 Eazel, Inc."
 msgstr "Copyright © 1999-2001 Eazel, Inc."
 
@@ -7531,14 +7521,14 @@ msgstr "Copyright © 1999-2001 Eazel, Inc."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window-menus.c:610 src/nautilus-window-menus.c:611
+#: src/nautilus-window-menus.c:609 src/nautilus-window-menus.c:610
 msgid "Translator Credits"
 msgstr ""
 "Oversatt til norsk av\n"
 "Kjartan Maraas\n"
 "<kmaraas@gnome.org>"
 
-#: src/nautilus-window-menus.c:616
+#: src/nautilus-window-menus.c:615
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
@@ -7546,7 +7536,7 @@ msgstr ""
 "Nautilus er et grafisk skall for GNOME som gjør det lett å håndtere dine "
 "filer og resten av ditt system."
 
-#: src/nautilus-window-menus.c:685
+#: src/nautilus-window-menus.c:676
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -7555,24 +7545,24 @@ msgstr ""
 "Lokasjonen \"%s\" eksisterer ikke. Ønsker du å fjerne alle bokmerker med "
 "denne lokasjonen fra din liste?"
 
-#: src/nautilus-window-menus.c:689
+#: src/nautilus-window-menus.c:680
 msgid "Bookmark for Nonexistent Location"
 msgstr "Bokmerke for ikke-eksisterende lokasjon"
 
-#: src/nautilus-window-menus.c:690
+#: src/nautilus-window-menus.c:681
 msgid "Remove"
 msgstr "Fjern"
 
-#: src/nautilus-window-menus.c:701
+#: src/nautilus-window-menus.c:692
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Lokasjonen \"%s\" eksisterer ikke lenger."
 
-#: src/nautilus-window-menus.c:702
+#: src/nautilus-window-menus.c:693
 msgid "Go to Nonexistent Location"
 msgstr "Gå til ikke-eksisterende lokasjon"
 
-#: src/nautilus-window-menus.c:771
+#: src/nautilus-window-menus.c:762
 msgid "Go to the location specified by this bookmark"
 msgstr "Gå til lokasjonen spesifisert i dette bokmerket"
 
@@ -7604,6 +7594,40 @@ msgstr "Applikasjon"
 #: src/nautilus-window.c:2091
 msgid "The NautilusApplication associated with this window."
 msgstr "NautilusApplication assosiert med dette vinduet."
+
+#~ msgid "Can't find an hbox, using a normal file selection"
+#~ msgstr "Kan ikke finne en hbox. Bruker vanlig filutvalg"
+
+#~ msgid "Preview"
+#~ msgstr "Forhåndsvis"
+
+#~ msgid "Remove any custom pattern or color from the desktop background"
+#~ msgstr ""
+#~ "Fjern ethvert egendefinert mønster eller farge fra skrivebordsbakgrunnen"
+
+#~ msgid ""
+#~ "Remove any custom pattern or color from the background of this location"
+#~ msgstr ""
+#~ "Fjern ethvert egendefinert mønster eller farge fra bakgrunnen for denne "
+#~ "plasseringen"
+
+#~ msgid "Display on-line help for Nautilus"
+#~ msgstr "Vis hjelp for Nautilus"
+
+#~ msgid "Display quick reference pages for Nautilus"
+#~ msgstr "Vis hurtigreferansesider for Nautilus"
+
+#~ msgid "Go up to the location that contains the displayed location"
+#~ msgstr "Gå til lokasjonen som inneholder den viste lokasjonen"
+
+#~ msgid "Nautilus Quick _Reference"
+#~ msgstr "Nautilus hurtig_referanse"
+
+#~ msgid "Nautilus User _Manual"
+#~ msgstr "Nautilus bruker_håndbok"
+
+#~ msgid "P_references..."
+#~ msgstr "B_rukervalg..."
 
 #~ msgid "Server Configuration"
 #~ msgstr "Tjenerkonfigurasjon"
