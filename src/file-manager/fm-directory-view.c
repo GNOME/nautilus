@@ -108,6 +108,7 @@ enum {
 	CREATE_SELECTION_CONTEXT_MENU_ITEMS,
 	BEGIN_ADDING_FILES,
 	BEGIN_LOADING,
+	LOAD_ERROR,
 	CLEAR,
 	DONE_ADDING_FILES,
 	FILE_CHANGED,
@@ -134,6 +135,7 @@ struct FMDirectoryViewDetails
 	
 	guint files_added_handler_id;
 	guint files_changed_handler_id;
+	guint load_error_handler_id;
 	
 	GList *pending_files_added;
 	GList *pending_files_changed;
@@ -299,6 +301,13 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
                     		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, begin_loading),
 		    		gtk_marshal_NONE__NONE,
 		    		GTK_TYPE_NONE, 0);
+	signals[LOAD_ERROR] =
+		gtk_signal_new ("load_error",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (FMDirectoryViewClass, load_error),
+				gtk_marshal_NONE__INT,
+				GTK_TYPE_NONE, 1, GTK_TYPE_INT);
 	signals[CREATE_SELECTION_CONTEXT_MENU_ITEMS] =
 		gtk_signal_new ("create_selection_context_menu_items",
        				GTK_RUN_LAST,
@@ -1944,6 +1953,22 @@ files_changed_callback (NautilusDirectory *directory,
 	 * one thing, so we need to update menus when files change.
 	 */
 	schedule_update_menus (view);
+}
+
+static void
+load_error_callback (NautilusDirectory *directory,
+		     GnomeVFSResult load_error_code,
+		     gpointer callback_data)
+{
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+
+	fm_directory_view_stop (view);
+	/* Emit a signal to tell subclasses that a load
+	   error has occurred, so they can handle it in the
+	   UI */
+	gtk_signal_emit (GTK_OBJECT (view), signals[LOAD_ERROR], load_error_code);
 }
 
 /**
@@ -4061,6 +4086,11 @@ finish_loading_uri (FMDirectoryView *view)
 		 "files_changed",
 		 files_changed_callback,
 		 view);
+	view->details->load_error_handler_id = gtk_signal_connect
+		(GTK_OBJECT (view->details->model),
+		 "load_error",
+		 load_error_callback,
+		 view);
 
 	/* Monitor the things needed to get the right
 	 * icon. Also monitor a directory's item count because
@@ -4150,6 +4180,7 @@ disconnect_model_handlers (FMDirectoryView *view)
 {
 	disconnect_handler (view, &view->details->files_added_handler_id);
 	disconnect_handler (view, &view->details->files_changed_handler_id);
+	disconnect_handler (view, &view->details->load_error_handler_id);
 	if (view->details->model != NULL) {
 		nautilus_directory_file_monitor_remove (view->details->model, view);
 		nautilus_file_cancel_call_when_ready (view->details->directory_as_file,

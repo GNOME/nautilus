@@ -26,6 +26,7 @@
 #define NAUTILUS_DIRECTORY_H
 
 #include <gtk/gtkobject.h>
+#include <libgnomevfs/gnome-vfs-types.h>
 
 /* NautilusDirectory is a class that manages the model for a directory,
    real or virtual, for Nautilus, mainly the file-manager component. The directory is
@@ -100,6 +101,8 @@ typedef struct
 	 * initiated by `nautilus_directory_file_monitor_add' completes.
 	 */
 	void     (* done_loading)        (NautilusDirectory         *directory);
+
+	void     (* load_error)          (NautilusDirectory         *directory);
 
 	/*** Virtual functions for subclasses to override. ***/
 	gboolean (* contains_file)       (NautilusDirectory         *directory,

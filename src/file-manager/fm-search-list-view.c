@@ -32,13 +32,17 @@
 #include <bonobo/bonobo-ui-util.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-uidefs.h>
+#include <libgnomevfs/gnome-vfs-result.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-file-attributes.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-search-uri.h>
+#include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
 
 /* FIXME bugzilla.eazel.com 2815: This code uses part of the
@@ -110,6 +114,47 @@ load_location_callback (NautilusView *nautilus_view, char *location)
 
 }
 
+/* FIXME: GnomeVFSResults may not be the
+   best way to communicate an error code to
+   a view */
+static void
+load_error_callback (FMDirectoryView *nautilus_view, 
+		     GnomeVFSResult result,
+		     gpointer callback_data)
+{
+	GnomeDialog *load_error_dialog;
+	char *generic_error_string;
+	
+	if (result == GNOME_VFS_ERROR_SERVICE_OBSOLETE) {
+		/* FIXME: Shoudl be two messages, one for each of whether
+		   "slow complete search" turned on or not */
+		load_error_dialog = nautilus_yes_no_dialog (_("The search you have selected "
+							      "is newer than the index on your "
+							      "system.  The search will return no "
+							      "results right now.  Would you like "
+							      "to create a new index now?"),
+							    _("Search for items that are too new"),
+							    _("Create a new index"),
+							    _("Don't create index"),
+							    NULL);
+		gtk_signal_connect (GTK_OBJECT (nautilus_gnome_dialog_get_button_by_index
+						(load_error_dialog, GNOME_OK)),
+				    "clicked",
+				    nautilus_indexing_info_request_reindex,
+				    NULL);
+		
+	}
+	else {
+		generic_error_string = g_strdup_printf (_("An error occurred while loading "
+							  "this search's contents: "
+							  "%s"),
+							gnome_vfs_result_to_string (result));
+		load_error_dialog = nautilus_error_dialog (generic_error_string,
+							   "Error during directory load",
+							   NULL);
+	}
+}
+
 static void
 fm_search_list_view_initialize_class (gpointer klass)
 {
@@ -163,11 +208,14 @@ fm_search_list_view_initialize (gpointer object,
 
 	nautilus_view = fm_directory_view_get_nautilus_view (directory_view);
 
-	gtk_signal_connect (GTK_OBJECT(nautilus_view),
+	gtk_signal_connect (GTK_OBJECT (nautilus_view),
 			    "load_location",
 			    GTK_SIGNAL_FUNC (load_location_callback),
 			    NULL);
-
+	gtk_signal_connect (GTK_OBJECT (directory_view),
+			    "load_error",
+			    GTK_SIGNAL_FUNC (load_error_callback),
+			    NULL);
 }
 
 static void

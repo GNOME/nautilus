@@ -1366,6 +1366,9 @@ directory_load_done (NautilusDirectory *directory,
 		     node != NULL; node = node->next) {
 			set_file_unconfirmed (NAUTILUS_FILE (node->data), FALSE);
 		}
+
+		nautilus_directory_emit_load_error (directory,
+						    result);
 	}
 
 	/* Call the idle function right away. */

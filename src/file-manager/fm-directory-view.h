@@ -116,6 +116,14 @@ struct FMDirectoryViewClass {
 	 */
 	void 	(* begin_loading) 	 (FMDirectoryView *view);
 
+	/* The 'load_error' signal is emitted when the directory model
+	   reports an error in the process of monitoring the directory's
+	   contents.  The load error indicates that the process of 
+	   load the contents has ended, but the directory is still
+	   being monitored*/
+	void    (* load_error)           (FMDirectoryView *view,
+					  GnomeVFSResult result);
+
 	/* The 'create_selection_context_menu_items' signal is emitted 
 	 * when creating a context menu for the selected items. @files is
 	 * the list of selected files; it isn't destroyed until the menu

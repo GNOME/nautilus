@@ -31,6 +31,7 @@ BEGIN_GNOME_DECLS
 /* Show the indexing info dialog,  If one is already running
  * just raise that one */
 void		nautilus_indexing_info_show_dialog	(void);
+void            nautilus_indexing_info_request_reindex  (void);
 
 END_GNOME_DECLS
 

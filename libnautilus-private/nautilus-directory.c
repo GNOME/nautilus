@@ -45,6 +45,7 @@ enum {
 	FILES_ADDED,
 	FILES_CHANGED,
 	DONE_LOADING,
+	LOAD_ERROR,
 	LAST_SIGNAL
 };
 
@@ -106,7 +107,14 @@ nautilus_directory_initialize_class (NautilusDirectoryClass *klass)
 				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, done_loading),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
-
+	signals[LOAD_ERROR] =
+		gtk_signal_new ("load_error",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, load_error),
+				gtk_marshal_NONE__INT,
+				GTK_TYPE_NONE, 1, GTK_TYPE_INT);
+	
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	klass->get_name_for_self_as_new_file = real_get_name_for_self_as_new_file;
@@ -593,7 +601,6 @@ nautilus_directory_file_list_length_reached (NautilusDirectory *directory)
 	return directory->details->confirmed_file_count >= NAUTILUS_DIRECTORY_FILE_LIST_HARD_LIMIT;
 }
 
-
 GList *
 nautilus_directory_begin_file_name_change (NautilusDirectory *directory,
 					   NautilusFile *file)
@@ -695,6 +702,16 @@ nautilus_directory_emit_done_loading (NautilusDirectory *directory)
 	gtk_signal_emit (GTK_OBJECT (directory),
 			 signals[DONE_LOADING]);
 }
+
+void
+nautilus_directory_emit_load_error (NautilusDirectory *directory,
+				    GnomeVFSResult error_result)
+{
+	gtk_signal_emit (GTK_OBJECT (directory),
+			 signals[LOAD_ERROR],
+			 error_result);
+}
+
 
 static char *
 uri_get_directory_part (const char *uri)

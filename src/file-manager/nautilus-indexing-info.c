@@ -249,6 +249,12 @@ show_index_progress_bar (GnomeDialog *gnome_dialog)
                               g_free);
 }
 
+void
+nautilus_indexing_info_request_reindex (void)
+{
+        medusa_index_service_request_reindex ();
+}
+
 /**
  * nautilus_indexing_info_show_dialog:
  *

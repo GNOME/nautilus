@@ -1,12 +1,47 @@
-2000-11-15  John Sullivan  <sullivan@eazel.com>
+2000-11-15  Rebecca Schulman  <rebecka@eazel.com>
+	This change is the first part of the fix for bug 3920.
+	The fix will allow nautilus to tell a user that the
+	search they have requested is newer than their index.
+	This involved communicating errors that occurred while
+	opening and reading the directory outside of the
+	directory model to a view, which can react in a useful
+	way.
 
+	Reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(directory_load_done):
+	If the directory load did not complete successfully,
+	emit an error signal
+
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_initialize_class),
+	(nautilus_directory_emit_load_error):
+	Add the load error signal, and a cover function to 
+	emit the signal
+
+	* src/file-manager/fm-directory-view.h:	
 	* src/file-manager/fm-directory-view.c:
-	(fm_directory_view_pop_up_selection_context_menu),
-	(fm_directory_view_pop_up_background_context_menu):
-	Enabled Bonobo context menus again, because Darin has
-	now checked in the fixes to Bonobo that make them work
-	properly. Let me know about any (new) context-menu bugs
-	you might run into.
+	(fm_directory_view_initialize_class), (load_error_callback),
+	(finish_loading_uri), (disconnect_model_handlers):
+	Also add a load_error signal to the fm directory view class,
+	so that subclasses can get information about errors particular
+	to a type of directory, (in this case the search list view)
+	and react correctly.
+
+	* src/file-manager/fm-search-list-view.c: (load_error_callback),
+	(fm_search_list_view_initialize):
+	Handle the load error SERVICE_OBSOLETE, by displaying a dialog
+	that tells the user that their index is too old for their
+	search to work correctly, and gives them an option to reindex
+	
+	* src/file-manager/nautilus-indexing-info.c:
+	(nautilus_indexing_info_request_reindex):
+	* src/file-manager/nautilus-indexing-info.h:
+	Add a cover function to medusa's request reindex function
+	that the search list view calls.
 
 2000-11-15  John Sullivan  <sullivan@eazel.com>
 
