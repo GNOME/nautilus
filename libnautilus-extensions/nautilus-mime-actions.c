@@ -418,7 +418,7 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 			if (mime_default != NULL) {
 				default_component_string = g_strdup (mime_default->iid);
 				if (default_component_string != NULL) {
-				/* Default component chosen based only on type. */
+					/* Default component chosen based only on type. */
 					used_user_chosen_info = FALSE;
 				}
 				CORBA_free (mime_default);
@@ -440,7 +440,6 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
            respect the setting regardless of content type requirements */
 	if (metadata_default) {
 		extra_requirements = g_strconcat ("iid == '", default_component_string, "'", NULL);
-
 		info_list = nautilus_do_component_query (mime_type, uri_scheme, item_mime_types, TRUE,
 							 explicit_iids, sort_conditions, extra_requirements, &ev);
 		g_free (extra_requirements);
@@ -451,19 +450,18 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 							 explicit_iids, sort_conditions, NULL, &ev);
 	}
 
-	if (ev._major == CORBA_NO_EXCEPTION  && info_list != NULL) {
+	if (info_list != NULL) {
 		server = OAF_ServerInfo_duplicate (info_list->data);
 		gnome_vfs_mime_component_list_free (info_list);
-
+		
 		if (default_component_string != NULL && strcmp (server->iid, default_component_string) == 0) {
 			used_user_chosen_info = TRUE;	/* Default component chosen based on user-stored . */
 		}
 	} else {
-		g_assert (info_list == NULL);  /* or else we are leaking it */
 		server = NULL;		
-		return NULL;
 	}
-
+	
+	nautilus_g_list_free_deep (item_mime_types);
 	g_strfreev (sort_conditions);
 
 	g_free (uri_scheme);
@@ -654,6 +652,7 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile      *file)
 		g_free (extra_requirements);
 	}
 
+	nautilus_g_list_free_deep (item_mime_types);
 	gnome_vfs_mime_component_list_free (servers);
 	g_list_free (iids);
 	g_free (uri_scheme);
