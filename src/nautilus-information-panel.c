@@ -108,7 +108,7 @@ static void     nautilus_sidebar_update_buttons     (NautilusSidebar  *sidebar);
 static void     add_command_buttons                 (NautilusSidebar  *sidebar,
 						     GList            *application_list);
 
-/* FIXME bug 1245: hardwired sizes */
+/* FIXME bugzilla.eazel.com 1245: hardwired sizes */
 #define DEFAULT_TAB_COLOR "rgb:9999/9999/9999"
 
 #define SIDEBAR_MINIMUM_WIDTH 1
@@ -578,7 +578,7 @@ receive_dropped_uri_list (NautilusSidebar *sidebar,
 	switch (hit_test (sidebar, x, y)) {
 	case NO_PART:
 	case BACKGROUND_PART:
-		/* FIXME: Does this work for all images, or only background images?
+		/* FIXME bugzilla.eazel.com 2507: Does this work for all images, or only background images?
 		 * Other views handle background images differently from other URIs.
 		 */
 		if (exactly_one && uri_is_local_image (uris[0])) {
@@ -700,7 +700,7 @@ receive_dropped_keyword (NautilusSidebar *sidebar,
 	NautilusFile *file;
 	GList *keywords, *word;
 
-	/* FIXME: This is a cut and paste copy of code that's in the icon dnd code. */
+	/* FIXME bugzilla.eazel.com 2509: This is a cut and paste copy of code that's in the icon dnd code. */
 			
 	/* OK, now we've got the keyword, so add it to the metadata */
 
@@ -1174,7 +1174,7 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 				    FALSE, FALSE, 
 				    0);
 
-		/* FIXME: Security hole? Can't use a string from the
+		/* FIXME bugzilla.eazel.com 2510: Security hole? Can't use a string from the
 		 * MIME file as a printf format string without first
 		 * checking it over somehow.
 		 */

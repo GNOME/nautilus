@@ -32,7 +32,7 @@
 
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 
-/* FIXME: This adds nothing to NautilusNavigationBar.
+/* FIXME bugzilla.eazel.com 2516: This adds nothing to NautilusNavigationBar.
  * Perhaps we can remove it.
  */
 

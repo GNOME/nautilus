@@ -281,7 +281,7 @@ nautilus_complex_search_bar_set_location (NautilusNavigationBar *navigation_bar,
 
 	bar = NAUTILUS_COMPLEX_SEARCH_BAR (navigation_bar);
 
-	/* FIXME: Not implemented. */
+	/* FIXME bugzilla.eazel.com 2517: Not implemented. */
 }
 
 static void
@@ -462,7 +462,7 @@ fewer_options_callback (GtkObject *object,
 	new_length = g_slist_length (bar->details->search_criteria);
 	g_assert (new_length + 1 == old_length);
 
-	/* FIXME: the folowing is pretty much evil since it relies on the run-time
+	/* FIXME bugzilla.eazel.com 2519: the folowing is pretty much evil since it relies on the run-time
 	   widget hierarchy of the nautilus toolbar. 
 	   Any better fix is wellcome.
 	*/
@@ -477,7 +477,7 @@ update_options_buttons_state (NautilusComplexSearchBar *bar)
 	/* "Fewer Options" is enabled unless there's only one criterion */
 	gtk_widget_set_sensitive (GTK_WIDGET (bar->details->fewer_options), g_slist_length (bar->details->search_criteria) > 1);
 
-	/* FIXME:
+	/* FIXME bugzilla.eazel.com 1937:
 	 * When we limit the number of criteria available for a single search, we need to
 	 * sensitize the "More Options" button correctly here.
 	 */
