@@ -34,6 +34,7 @@ Requires:	freetype >= 2.0
 Requires:	medusa >= 0.2.2
 Requires:	esound >= 0.2
 Requires:	libghttp >= 1.0.9
+# Requires:	scrollkeeper >= 0.1.0
 
 %description
 Nautilus integrates access to files, applications, media, Internet-based
@@ -142,8 +143,10 @@ if ! grep %{prefix}/lib /etc/ld.so.conf > /dev/null ; then
 	echo "%{prefix}/lib" >> /etc/ld.so.conf
 fi
 /sbin/ldconfig
+scrollkeeper-update
 
 %postun -p /sbin/ldconfig
+scrollkeeper-update
 
 %files
 
@@ -254,7 +257,7 @@ fi
 %{prefix}/share/gnome/help/nautilus-quick-reference/C/*
 %{prefix}/share/gnome/help/gnufdl/C/*
 %{prefix}/share/gnome/help/gnugpl/C/*
-# %{prefix}/share/omf/nautilus/*.omf
+%{prefix}/share/omf/nautilus/*.omf
 
 %files devel
 

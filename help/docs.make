@@ -35,7 +35,7 @@ app-dist-hook: index.html
 	-cp $(srcdir)/figures/*.png \
 		$(distdir)/figures
 
-install-data-am: index.html
+install-data-am: index.html omf
 	-$(mkinstalldirs) $(DESTDIR)$(helpdir)/stylesheet-images
 	-$(mkinstalldirs) $(DESTDIR)$(helpdir)/figures
 	-cp $(srcdir)/$(docname).sgml $(DESTDIR)$(helpdir)

@@ -19,7 +19,7 @@ app-dist-hook:
 	-cp $(srcdir)/$(docname)/*.css $(distdir)/$(docname)
 	-cp $(srcdir)/figures/*.png $(distdir)/figures
 
-install-data-am:
+install-data-am: omf
 	-$(mkinstalldirs) $(DESTDIR)$(helpdir)/figures
 	-for file in $(srcdir)/*.html; do \
 	  basefile=`echo $$file | sed -e 's,^.*/,,'`; \

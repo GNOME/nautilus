@@ -1,3 +1,20 @@
+2001-02-23  Dan Mueth  <dan@eazel.com>
+
+	reviewed by: Ian McKellar  <ian@eazel.com>
+
+	Applied several build system bug fixes and updated
+	spec file.
+
+	* help/Makefile.am: Fix bug with broken rpm install: Added 
+	docs.make and htmldocs.make to EXTRA_DIST
+	* help/docs.make: Have omf processed for install-data-am
+	* help/htmldocs.make: Have omf processed for install-data-am
+	* nautilus.spec.in: Added post install and post uninstall
+	calls to scrollkeeper-update. Added scrollkeeper as a 
+	requirement, but commented out because it isn't in the
+	software map.  Uncommented OMF file b/c bug fixes above
+	now install the OMF files properly.
+
 2001-02-23  John Harper  <jsh@eazel.com>
 
 	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
