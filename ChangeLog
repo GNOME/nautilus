@@ -1,3 +1,18 @@
+2000-09-22  Andy Hertzfeld  <andy@eazel.com>
+
+	in response to user testing, made the location bar label switch to
+	"Go to:" during input when the text doesn't match the uri.
+	
+	* src/nautilus-location-bar.h:
+	added "last_location" field
+	* src/nautilus-location-bar.c: (editable_key_press_callback),
+	(destroy), (nautilus_location_bar_initialize),
+	(nautilus_location_bar_set_location),
+	(nautilus_location_bar_update_label):
+	maintained last_location field; when anything changes, set the label
+	to "location" if the contents match last_location and "goto"
+	otherwise.
+	
 2000-09-21  Pavel Cisler  <pavel@eazel.com>
 
 	* tools/profiler/nautilus-leak-symbol-lookup.C:

@@ -86,6 +86,7 @@ static void  nautilus_location_bar_set_location     (NautilusNavigationBar    *n
 						     const char               *location);
 static void  nautilus_location_bar_initialize_class (NautilusLocationBarClass *class);
 static void  nautilus_location_bar_initialize       (NautilusLocationBar      *bar);
+static void  nautilus_location_bar_update_label     (NautilusLocationBar      *bar);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusLocationBar, nautilus_location_bar, NAUTILUS_TYPE_NAVIGATION_BAR)
 
@@ -362,8 +363,8 @@ editable_key_press_callback (GtkObject *object,
 	GdkEventKey *event;
 	int position;
 	gboolean *return_value_location;
-
-	g_assert (data == NULL);
+	NautilusLocationBar *bar;
+	
 	g_assert (n_args == 1);
 	g_assert (args != NULL);
 
@@ -384,6 +385,9 @@ editable_key_press_callback (GtkObject *object,
 	    && entry_would_have_inserted_characters (event))  {
 		try_to_expand_path (editable);
 	}
+	
+	bar = NAUTILUS_LOCATION_BAR (data);
+	nautilus_location_bar_update_label (bar);
 }
 
 static void
@@ -403,7 +407,11 @@ destroy (GtkObject *object)
 	NautilusLocationBar *bar;
 
 	bar = NAUTILUS_LOCATION_BAR (object);
-
+	
+	if (bar->last_location) {
+		g_free (bar->last_location);
+	}
+	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
@@ -431,6 +439,8 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 	GtkWidget *event_box;
 	GtkWidget *hbox;
 
+	bar->last_location = NULL;
+	
 	hbox = gtk_hbox_new (0, FALSE);
 
 	event_box = gtk_event_box_new ();
@@ -454,7 +464,7 @@ nautilus_location_bar_initialize (NautilusLocationBar *bar)
 	 */
 	gtk_signal_connect_full (GTK_OBJECT (entry), "key_press_event",
 				 NULL, editable_key_press_callback,
-				 NULL, NULL,
+				 bar, NULL,
 				 FALSE, TRUE);
 	
 	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
@@ -510,6 +520,15 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
 	nautilus_entry_set_text (NAUTILUS_ENTRY (bar->entry),
 				 formatted_location);
 	g_free (formatted_location);
+
+	/* remember the original location for later comparison */
+	
+	if (bar->last_location) {
+		g_free (bar->last_location);
+	}
+
+	bar->last_location = g_strdup (location);
+	nautilus_location_bar_update_label (bar);
 }
 
 /**
@@ -539,3 +558,28 @@ nautilus_location_bar_get_location (NautilusNavigationBar *navigation_bar)
 	return best_uri;
 }
 	       
+/**
+* nautilus_location_bar_update_label
+*
+* if the text in the entry matches the uri, set the label to "location", otherwise use "goto"
+*
+**/
+
+static void
+nautilus_location_bar_update_label (NautilusLocationBar *bar)
+{
+	char *current_text, *current_location;
+	
+	current_text = gtk_entry_get_text (GTK_ENTRY (bar->entry));
+	current_location = nautilus_make_uri_from_input (current_text);
+	
+	if (nautilus_uris_match (bar->last_location, current_location)) {
+		gtk_label_set_text (GTK_LABEL (bar->label), _("Location:"));
+		
+	} else {		 
+		gtk_label_set_text (GTK_LABEL (bar->label), _("Go To:"));
+
+	}	
+	g_free (current_location);
+}
+
