@@ -601,7 +601,7 @@ icon_container_activate_cb (GnomeIconContainer *container,
 	g_assert (container == get_icon_container (icon_view));
 	g_assert (file != NULL);
 
-	fm_directory_view_activate_entry (FM_DIRECTORY_VIEW (icon_view), file);
+	fm_directory_view_activate_entry (FM_DIRECTORY_VIEW (icon_view), file, FALSE);
 }
 
 static void

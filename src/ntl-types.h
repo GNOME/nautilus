@@ -53,6 +53,7 @@ struct _NautilusNavigationInfo {
   /* internal usage */
   NautilusNavigationInfoFunc notify_ready;
   gpointer data;
+  gboolean use_new_window;
 
   GnomeVFSAsyncHandle *ah;
 };

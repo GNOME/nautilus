@@ -92,6 +92,8 @@ static void stop_location_change_cb 		(NautilusViewFrame *view_frame,
 static void notify_location_change_cb 		(NautilusViewFrame *view_frame, 
 						 Nautilus_NavigationInfo *nav_context, 
 						 FMDirectoryView *directory_view);
+static void open_cb 				(GtkMenuItem *item, NautilusFile *file);
+static void open_in_new_window_cb 		(GtkMenuItem *item, NautilusFile *file);
 static void select_all_cb                       (GtkMenuItem *item, FMDirectoryView *directory_view);
 static void zoom_in_cb                          (GtkMenuItem *item, FMDirectoryView *directory_view);
 static void zoom_out_cb                         (GtkMenuItem *item, FMDirectoryView *directory_view);
@@ -755,6 +757,27 @@ fm_directory_view_get_model (FMDirectoryView *view)
 }
 
 static void
+open_cb (GtkMenuItem *item, NautilusFile *file)
+{
+	FMDirectoryView *directory_view;
+
+	directory_view = FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view"));
+
+	fm_directory_view_activate_entry (directory_view, file, FALSE);
+}
+
+static void
+open_in_new_window_cb (GtkMenuItem *item, NautilusFile *file)
+{
+	FMDirectoryView *directory_view;
+
+	directory_view = FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view"));
+
+	fm_directory_view_activate_entry (directory_view, file, TRUE);
+}
+
+
+static void
 popup_context_menu (GtkMenu *menu)
 {
 	gtk_object_ref (GTK_OBJECT(menu));
@@ -803,7 +826,22 @@ append_item_context_menu_items (FMDirectoryView *view, GtkMenu *menu, NautilusFi
 	GtkWidget *menu_item;
 
 	menu_item = gtk_menu_item_new_with_label ("Open");
-	gtk_widget_set_sensitive (menu_item, FALSE);
+	/* Store directory view in menu item so callback can access it. */
+	gtk_object_set_data_full (GTK_OBJECT (menu_item), "directory_view",
+				  view, (GtkDestroyNotify) gtk_object_unref);
+	gtk_object_ref (GTK_OBJECT (view));
+	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
+		           GTK_SIGNAL_FUNC (open_cb), file);
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+
+	menu_item = gtk_menu_item_new_with_label ("Open in New Window");
+	/* Store directory view in menu item so callback can access it. */
+	gtk_object_set_data_full (GTK_OBJECT (menu_item), "directory_view",
+				  view, (GtkDestroyNotify) gtk_object_unref);
+	gtk_object_ref (GTK_OBJECT (view));
+	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
+		           GTK_SIGNAL_FUNC (open_in_new_window_cb), file);
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
@@ -942,10 +980,13 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
  * called only by subclasses.
  * @view: FMDirectoryView in question.
  * @file: A NautilusFile representing the entry in this view to activate.
+ * @request_new_window: Should this item be opened in a new window?
  * 
  **/
 void
-fm_directory_view_activate_entry (FMDirectoryView *view, NautilusFile *file)
+fm_directory_view_activate_entry (FMDirectoryView *view, 
+				  NautilusFile *file,
+				  gboolean request_new_window)
 {
 	Nautilus_NavigationRequestInfo request;
 
@@ -954,7 +995,9 @@ fm_directory_view_activate_entry (FMDirectoryView *view, NautilusFile *file)
 
 	request.requested_uri = nautilus_file_get_uri (file);
 	request.new_window_default = Nautilus_V_FALSE;
-	request.new_window_suggested = Nautilus_V_FALSE;
+	request.new_window_suggested = request_new_window ? 
+				       Nautilus_V_TRUE : 
+				       Nautilus_V_FALSE;
 	request.new_window_enforced = Nautilus_V_UNKNOWN;
 	nautilus_view_frame_request_location_change
 		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &request);

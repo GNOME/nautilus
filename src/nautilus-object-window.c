@@ -218,6 +218,43 @@ static GnomeUIInfo edit_menu_info[] = {
   GNOMEUIINFO_END
 };
 
+#define GO_MENU_BACK_ITEM_INDEX		0
+#define GO_MENU_FORWARD_ITEM_INDEX	1
+#define GO_MENU_UP_ITEM_INDEX		2
+#define GO_MENU_HOME_ITEM_INDEX		3
+static GnomeUIInfo go_menu_info[] = {
+  {
+    GNOME_APP_UI_ITEM,
+    N_("Back"), N_("Go to the previous visited location"),
+    nautilus_window_back, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    'B', GDK_CONTROL_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM,
+    N_("Forward"), N_("Go to the next visited location"),
+    nautilus_window_fwd, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    'F', GDK_CONTROL_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM,
+    N_("Up"), N_("Go to the location that contains this one"),
+    nautilus_window_up, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    'U', GDK_CONTROL_MASK, NULL
+  },
+  {
+    GNOME_APP_UI_ITEM,
+    N_("Home"), N_("Go to the home location"),
+    nautilus_window_home, NULL, NULL,
+    GNOME_APP_PIXMAP_NONE, NULL,
+    'H', GDK_CONTROL_MASK, NULL
+  },
+/*  GNOMEUIINFO_SEPARATOR, */ /* FIXME: Uncomment separator when history list added. */
+  GNOMEUIINFO_END
+};
+
 static GnomeUIInfo bookmarks_menu_info[] = {
   GNOMEUIINFO_END
 };
@@ -239,10 +276,11 @@ static GnomeUIInfo debug_menu_info [] = {
 };
 
 
-#define BOOKMARKS_MENU_INDEX	2
+#define BOOKMARKS_MENU_INDEX	3
 static GnomeUIInfo main_menu[] = {
   GNOMEUIINFO_MENU_FILE_TREE (file_menu_info),
   GNOMEUIINFO_MENU_EDIT_TREE (edit_menu_info),
+  GNOMEUIINFO_SUBTREE(N_("_Go"), go_menu_info),
   GNOMEUIINFO_SUBTREE(N_("_Bookmarks"), bookmarks_menu_info),
   GNOMEUIINFO_MENU_HELP_TREE (help_menu_info),
   GNOMEUIINFO_SUBTREE(N_("_Debug"), debug_menu_info),
@@ -251,6 +289,14 @@ static GnomeUIInfo main_menu[] = {
 
 /* toolbar definitions */
 
+#define TOOLBAR_BACK_BUTTON_INDEX	0
+#define TOOLBAR_FORWARD_BUTTON_INDEX	1
+#define TOOLBAR_UP_BUTTON_INDEX		2
+#define TOOLBAR_RELOAD_BUTTON_INDEX	3
+/* separator */
+#define TOOLBAR_HOME_BUTTON_INDEX	5
+/* separator */
+#define TOOLBAR_STOP_BUTTON_INDEX	7
 static GnomeUIInfo toolbar_info[] = {
   GNOMEUIINFO_ITEM_STOCK
   (N_("Back"), N_("Go to the previously visited directory"),
@@ -425,11 +471,6 @@ nautilus_window_constructed(NautilusWindow *window)
   toolbar = gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL, GTK_TOOLBAR_BOTH);
   gnome_app_fill_toolbar_with_data(GTK_TOOLBAR(toolbar), toolbar_info, app->accel_group, app);
   gnome_app_set_toolbar(app, GTK_TOOLBAR(toolbar));
-  window->btn_back = toolbar_info[0].widget;
-  window->btn_fwd = toolbar_info[1].widget;
-  nautilus_window_allow_stop(window, FALSE);
-  gtk_widget_set_sensitive(window->btn_back, FALSE);
-  gtk_widget_set_sensitive(window->btn_fwd, FALSE);
 
   /* set up location bar */
 
@@ -521,6 +562,13 @@ nautilus_window_constructed(NautilusWindow *window)
   gnome_app_install_menu_hints(app, main_menu); /* This has to go here
                                                    after the statusbar
                                                    creation */
+
+  /* Set initial sensitivity of some buttons & menu items 
+   * now that they're all created.
+   */
+  nautilus_window_allow_back(window, FALSE);
+  nautilus_window_allow_forward(window, FALSE);
+  nautilus_window_allow_stop(window, FALSE);
 
   bonobo_ui_handler_set_menubar(window->uih, app->menubar);
   bonobo_ui_handler_set_app(window->uih, app);
@@ -895,31 +943,34 @@ nautilus_window_about_cb (GtkWidget *widget,
 void
 nautilus_window_allow_back (NautilusWindow *window, gboolean allow)
 {
-   gtk_widget_set_sensitive(toolbar_info[0].widget, allow); 
+   gtk_widget_set_sensitive(toolbar_info[TOOLBAR_BACK_BUTTON_INDEX].widget, allow); 
+   gtk_widget_set_sensitive(go_menu_info[GO_MENU_BACK_ITEM_INDEX].widget, allow); 
 }
 
 void
 nautilus_window_allow_forward (NautilusWindow *window, gboolean allow)
 {
-   gtk_widget_set_sensitive(toolbar_info[1].widget, allow); 
+   gtk_widget_set_sensitive(toolbar_info[TOOLBAR_FORWARD_BUTTON_INDEX].widget, allow); 
+   gtk_widget_set_sensitive(go_menu_info[GO_MENU_FORWARD_ITEM_INDEX].widget, allow); 
 }
 
 void
 nautilus_window_allow_up (NautilusWindow *window, gboolean allow)
 {
-   gtk_widget_set_sensitive(toolbar_info[2].widget, allow); 
+   gtk_widget_set_sensitive(toolbar_info[TOOLBAR_UP_BUTTON_INDEX].widget, allow); 
+   gtk_widget_set_sensitive(go_menu_info[GO_MENU_UP_ITEM_INDEX].widget, allow); 
 }
 
 void
 nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
 {
-   gtk_widget_set_sensitive(toolbar_info[5].widget, allow); 
+   gtk_widget_set_sensitive(toolbar_info[TOOLBAR_RELOAD_BUTTON_INDEX].widget, allow); 
 }
 
 void
 nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 {
-  gtk_widget_set_sensitive(toolbar_info[7].widget, allow); 
+  gtk_widget_set_sensitive(toolbar_info[TOOLBAR_STOP_BUTTON_INDEX].widget, allow); 
 }
 
 

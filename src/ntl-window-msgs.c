@@ -869,6 +869,18 @@ nautilus_window_change_location_2(NautilusNavigationInfo *navi, gpointer data)
       goto errout;
     }
 
+  if (navi->use_new_window)
+  {
+  	/* Reset state of old window before creating new window. */
+	nautilus_window_set_state_info(window, 
+				       (NautilusWindowStateItem)RESET_TO_IDLE, 
+				       (NautilusWindowStateItem)SYNC_STATE, 
+				       (NautilusWindowStateItem)0);
+
+  	window = nautilus_app_create_window ();
+  	gtk_widget_show (GTK_WIDGET (window));
+  }
+
   nautilus_window_set_state_info(window, (NautilusWindowStateItem)NAVINFO_RECEIVED, navi, (NautilusWindowStateItem)0);
   return;
 

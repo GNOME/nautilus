@@ -1,3 +1,73 @@
+2000-02-11  John Sullivan <sullivan@eazel.com>
+
+	Sensitized "Open" context menu item, and added
+	"Open in New Window". Extended the framework as
+	required to support opening into a new window.
+
+	* src/ntl-types.h: Added use_new_window gboolean
+	to NautilusNavigationInfo struct. (Nautilus_
+	NavigationRequestInfo already had a concept of using
+	a new window, but it was never passed on to the
+	window-managing code).
+	
+	* src/ntl-uri-map.c: (nautilus_navinfo_new): Set the
+	use_new_window field of the new object based on the
+	new_window_default/suggested/enforced settings from
+	the NavigationRequestInfo.
+	
+	* src/ntl-window-msgs.c: (nautilus_window_change_location_2):
+	Create a new window if passed-in NautilusNavigationInfo says so.
+	
+	* src/file-manager/fm-directory-view.h:
+	(fm_directory_view_activate_entry): Added gboolean 
+	request_new_window parameter. 
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_activate_entry): Set new_window_suggested
+	of NavigationRequestInfo based on value of new
+	request_new_window parameter.
+	(open_cb): New function, calls fm_directory_view_activate_entry
+	with request_new_window FALSE.
+	(open_in_new_window_cb): New function, calls 
+	fm_directory_view_activate_entry with request_new_window TRUE.
+	(append_item_context_menu_items): Sensitize "Open" item, add
+	"Open in New Window" item, wire 'em up.
+	
+	* src/file-manager/fm-directory-view-icons.c:
+	(icon_container_activate_cb): pass FALSE for request_new_window.
+	
+	* src/file-manager/fm-directory-view-list.c:
+	(flist_activate_cb): pass FALSE for request_new_window.
+
+
+	Added beginnings of Go menu, and cleaned up some
+	cruft found in the process. Holler now if you think
+	the Go menu is a bad idea.
+
+	* src/ntl-window.h:
+	Removed btn_back and btn_fwd fields, as they were being
+	initialized and then ignored.
+
+	* src/ntl-window.c:
+	Added go_menu_info array and filled it with Back, Forward,
+	Up, and Home, all with keyboard equivalents. (Later this menu
+	will also contain dynamic history list.)
+	Added #defines for toolbar button indices.
+	(nautilus_window_constructed): Removed mentions of btn_back 
+	and btn_fwd; moved nautilus_window_allow_stop to after the
+	menus are set up; added nautilus_window_allow_back and
+	nautilus_window_allow_forward calls.
+	(nautilus_window_allow_back): Use #define for Back button index
+	instead of hardcoded magic number; set Back menu item sensitivity.
+	(nautilus_window_allow_forward): Use #define for Forward button index
+	instead of hardcoded magic number; set Forward menu item sensitivity.
+	(nautilus_window_allow_up): Use #define for Up button index
+	instead of hardcoded magic number; set Up menu item sensitivity.
+	(nautilus_window_allow_reload): Use #define for Reload button index
+	instead of hardcoded magic number (which was incorrect).
+	(nautilus_window_allow_stop): Use #define for Stop button index
+	instead of hardcoded magic number.
+
 2000-02-10  Andy Hertzfeld <andy@eazel.com>
 
     * src/ntl-index-panel.c:

@@ -435,7 +435,7 @@ flist_activate_cb (GtkFList *flist,
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (data));
 	g_return_if_fail (entry_data != NULL);
 
-	fm_directory_view_activate_entry (FM_DIRECTORY_VIEW (data), entry_data);
+	fm_directory_view_activate_entry (FM_DIRECTORY_VIEW (data), entry_data, FALSE);
 }
 
 static void

@@ -153,7 +153,8 @@ void                      fm_directory_view_begin_loading            (FMDirector
  * FMDirectoryView and its subclasses 
  */
 void                      fm_directory_view_activate_entry           (FMDirectoryView         *view,
-								      NautilusFile            *file);
+								      NautilusFile            *file,
+								      gboolean		       request_new_window);
 void                      fm_directory_view_notify_selection_changed (FMDirectoryView         *view);
 
 
