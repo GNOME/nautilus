@@ -95,7 +95,6 @@ typedef gboolean (* NautilusEachVolumeFunction) (const NautilusVolume *, gpointe
 GtkType                nautilus_volume_monitor_get_type                   (void);
 NautilusVolumeMonitor *nautilus_volume_monitor_get                        (void);
 gboolean               nautilus_volume_monitor_volume_is_mounted          (const char            	*mount_point);
-void                   nautilus_volume_monitor_find_volumes         	  (NautilusVolumeMonitor 	*monitor);
 gboolean               nautilus_volume_monitor_mount_unmount_removable    (NautilusVolumeMonitor 	*monitor,
 									   const char            	*mount_point);
 gboolean               nautilus_volume_monitor_is_volume_link             (const char            	*path);

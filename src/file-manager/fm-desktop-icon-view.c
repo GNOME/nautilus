@@ -183,6 +183,43 @@ fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
 		    ButtonPressMask, (XEvent *) &x_event);
 }
 
+static gboolean
+startup_create_mount_links (const NautilusVolume *volume, gpointer data)
+{
+	gboolean result;
+	char *desktop_path, *target_uri, *icon_name;
+
+	/* Get icon type */
+	if (strcmp (volume->mount_type, "cdrom") == 0) {
+		icon_name = g_strdup("i-cdrom.png");
+	} else if (strcmp (volume->mount_type, "floppy") == 0) {
+		icon_name = g_strdup("i-floppy.png");
+	} else {
+		icon_name = g_strdup("i-blockdev.png");
+	}
+	
+	desktop_path = nautilus_get_desktop_directory ();
+	target_uri = nautilus_get_uri_from_local_path (volume->mount_path);
+
+	/* Create link */
+	result = nautilus_link_create (desktop_path, volume->volume_name, icon_name, target_uri);
+	if (result) {		
+		char *link_uri;
+		
+		link_uri = nautilus_make_path (desktop_path, volume->volume_name);
+
+		/* Identify this as a mount link */
+		nautilus_link_set_type (link_uri, NAUTILUS_LINK_MOUNT);
+		g_free (link_uri);		
+	}
+	
+	g_free (desktop_path);
+	g_free (target_uri);
+	g_free (icon_name);
+	
+	return TRUE;
+}
+
 static void
 fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 {
@@ -219,7 +256,11 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 
 	/* Setup home directory link */
 	place_home_directory (desktop_icon_view);
-	
+
+	/* Create initial mount links */
+	nautilus_volume_monitor_each_mounted_volume (desktop_icon_view->details->volume_monitor, 
+					     	     startup_create_mount_links, desktop_icon_view);
+
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "middle_click",
 			    GTK_SIGNAL_FUNC (fm_desktop_icon_view_handle_middle_click),
@@ -243,9 +284,6 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 			    "volume_unmounted",
 			    volume_unmounted_callback,
 			    desktop_icon_view);
-
-	/* Check for mountable devices */
-	nautilus_volume_monitor_find_volumes (desktop_icon_view->details->volume_monitor);
 }
 
 static void
@@ -395,7 +433,7 @@ volume_mounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 {
 	gboolean result;
 	char *desktop_path, *target_uri, *icon_name;
-		
+			
 	/* Get icon type */
 	if (strcmp (volume->mount_type, "cdrom") == 0) {
 		icon_name = g_strdup("i-cdrom.png");

@@ -1,3 +1,22 @@
+2000-08-18  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	(nautilus_volume_monitor_initialize), (find_volumes):
+	Removed public call to nautilus_volume_monitor_find_volumes
+	and replaced with find_volumes which is called internally
+	when class is initialized.
+		
+	* src/file-manager/fm-desktop-icon-view.c:
+	(startup_create_mount_links), (fm_desktop_icon_view_initialize),
+	(volume_mounted_callback):
+	Create a callback that is called for each mounted volume
+	to create mounted volume icons when desktop is created.
+	
+	* icons/trash-empty.png:
+	* icons/trash-full.png:
+	Added new Trash icons to try and make text appear centered.
+	
 Fri Aug 18 21:22:17 2000  George Lebl <jirka@5z.com>
 
 	* components/hardware/nautilus-hardware-view.c

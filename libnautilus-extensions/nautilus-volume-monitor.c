@@ -95,6 +95,7 @@ static void     mount_volume_activate_floppy                          	(Nautilus
 static gboolean	mntent_is_removable_fs					(struct mntent 	  		*ent);
 static void	free_volume_info             				(NautilusVolume             	*volume,
 						 	 	 	 NautilusVolumeMonitor      	*monitor);
+static void	find_volumes 						(NautilusVolumeMonitor 		*monitor);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusVolumeMonitor,
 				   nautilus_volume_monitor,
@@ -107,6 +108,8 @@ nautilus_volume_monitor_initialize (NautilusVolumeMonitor *monitor)
 	monitor->details = g_new0 (NautilusVolumeMonitorDetails, 1);	
 	monitor->details->volumes_by_fsname = g_hash_table_new (g_str_hash, g_str_equal);
 	monitor->details->volumes = NULL;
+
+	find_volumes (monitor);
 }
 
 static void
@@ -791,8 +794,8 @@ mntent_has_option(const char *optlist, const char *option)
 }
 #endif
 
-void
-nautilus_volume_monitor_find_volumes (NautilusVolumeMonitor *monitor)
+static void
+find_volumes (NautilusVolumeMonitor *monitor)
 {
 	FILE *mef;
 	struct mntent *ent;
