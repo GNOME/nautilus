@@ -1,3 +1,15 @@
+2001-03-05  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Ramiro Estrugo  <ramiro@eazel.com>
+	
+	Fix 7404: Clicking on "Install" in Eazel services fails.
+
+	* libnautilus-extensions/nautilus-font-manager.c:
+	(gnome_vfs_init_if_needed), (nautilus_font_manager_for_each_font),
+	(nautilus_font_manager_file_is_scalable_font):
+	Add lazy GnomeVFS initialization because the nautilus font manager
+	code now makes GnomeVFS calls.
+
 2001-03-05  Brian Frank  <bfrank@eazel.com>
 
 	* data/static_bookmarks.xml:

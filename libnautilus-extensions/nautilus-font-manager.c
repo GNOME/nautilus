@@ -177,6 +177,25 @@ file_as_string (const char *file_name)
 	return result;
 }
 
+static void
+gnome_vfs_init_if_needed (void)
+{
+	/* Caching the call go gnome_vfs_initialized to make calling this
+	 * trivial. Even if this got called from multiple treads at the same time,
+	 * using the static here is not a problem because gnome_vfs_init is
+	 * atomic and idempotent.
+	 */
+	static gboolean initialized = FALSE;
+	
+	if (!initialized) {
+		initialized = gnome_vfs_initialized ();
+		if (!initialized) {
+			initialized = gnome_vfs_init();
+		}
+	}
+}
+
+
 static FontDescription *
 font_description_new (const char *font_file_name,
 		      NautilusFontType font_type,
@@ -1051,6 +1070,9 @@ nautilus_font_manager_for_each_font (NautilusFontManagerCallback callback,
 
  	g_return_if_fail (callback != NULL);
 
+	/* We will be making GnomeVFS calls */
+	gnome_vfs_init_if_needed ();
+	
 	/* Ensure that all the font tables exist */
 	ensure_global_font_table ();
 
@@ -1118,6 +1140,8 @@ nautilus_font_manager_file_is_scalable_font (const char *file_name)
 	GnomeVFSResult result;
 	
 	g_return_val_if_fail (nautilus_strlen (file_name) > 0, FALSE);
+
+	gnome_vfs_init_if_needed ();
 
 	uri = g_strconcat ("file://", file_name, NULL);
 
