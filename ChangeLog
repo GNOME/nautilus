@@ -1,3 +1,10 @@
+2001-02-14  Eric Fischer <eric@eazel.com>
+
+	* nautilus-installer/install-lib/Makefile.am:
+	Gmake seems to have trouble recognizing .c -> .o dependencies
+	when the .c files don't appear until after the make has begun,
+	so explicitly add the rpm3 and rpm4 dependencies.
+
 2001-02-13  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	reviewed by: Robey Pointer  <robey@eazel.com>

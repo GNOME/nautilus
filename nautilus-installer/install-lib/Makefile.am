@@ -38,3 +38,6 @@ INCLUDES=\
 $(libeazelinstall_minimal_a_SOURCES):
 	for i in $(top_srcdir)/components/services/install/lib/*.[ch]; \
 	do bn=`basename $$i`; rm -f $$bn; ln -s $$i $$bn; done
+
+eazel-package-system-rpm4.o: eazel-package-system-rpm4.c
+eazel-package-system-rpm3.o: eazel-package-system-rpm3.c
