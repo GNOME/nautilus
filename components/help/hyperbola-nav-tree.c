@@ -75,8 +75,9 @@ set_node_style (HyperbolaNavigationTree *view,
 
 	tnode = gtk_ctree_node_get_row_data (ctree, node);
 
-	if (tnode != NULL &&
-	    tnode->type == HYP_TREE_NODE_PAGE) {
+	if (tnode != NULL
+	    && (tnode->type == HYP_TREE_NODE_PAGE
+		|| tnode->type == HYP_TREE_NODE_BOOK)) {
 		ensure_italic_style (view);
 
 		gtk_ctree_node_set_row_style (ctree, node, view->italic_style);
