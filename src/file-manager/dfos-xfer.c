@@ -1026,26 +1026,28 @@ fs_delete (const GList *item_uris, GtkWidget *parent_view)
 	g_free (source_dir);
 }
 
-void 
-fs_empty_trash (GtkWidget *parent_view)
+static void
+do_empty_trash (GtkWidget *parent_view)
 {
 	GnomeVFSURI *trash_dir_uri;
 	GnomeVFSResult result;
 	XferInfo *xfer_info;
+	GList *trash_dir_list;
+	char *trash_dir_name;
 
 	/* FIXME bugzilla.eazel.com 638:
 	 * add the different trash directories from the different volumes
 	 */
 
+	trash_dir_uri = NULL;
 	result = gnome_vfs_find_directory (NULL, GNOME_VFS_DIRECTORY_KIND_TRASH,
 		&trash_dir_uri, FALSE, FALSE, 0777);
 
 	if (result == GNOME_VFS_OK) {
-		GList *trash_dir_list;
-		char *trash_dir_name;
-		trash_dir_list = NULL;
 
 		g_assert (trash_dir_uri != NULL);
+
+		trash_dir_list = NULL;
 
 		/* set up the move parameters */
 		xfer_info = g_new (XferInfo, 1);
@@ -1077,5 +1079,50 @@ fs_empty_trash (GtkWidget *parent_view)
 		nautilus_g_list_free_deep (trash_dir_list);
 	}
 
-	gnome_vfs_uri_unref (trash_dir_uri);
+	if (trash_dir_uri != NULL) {
+		gnome_vfs_uri_unref (trash_dir_uri);
+	}
+}
+
+static gboolean
+confirm_empty_trash (GtkWidget *parent_view)
+{
+	GnomeDialog *dialog;
+	GtkWindow *parent_window;
+
+	parent_window = GTK_WINDOW (gtk_widget_get_toplevel (parent_view));
+
+	dialog = nautilus_yes_no_dialog (
+		_("Are you sure you want to permanently delete "
+		  "all of the items in the trash?"),
+		_("Empty"),
+		GNOME_STOCK_BUTTON_CANCEL,
+		parent_window);
+
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Delete Trash Contents?"));
+	gnome_dialog_set_default (dialog, GNOME_CANCEL);
+
+	return gnome_dialog_run (dialog) == GNOME_OK;
+}
+
+void 
+fs_empty_trash (GtkWidget *parent_view)
+{
+	g_return_if_fail (parent_view != NULL);
+
+	/* 
+	 * I chose to use a modal confirmation dialog here. 
+	 * If we used a modeless dialog, we'd have to do work to
+	 * make sure that no more than one appears on screen at
+	 * a time. That one probably couldn't be parented, because
+	 * otherwise you'd get into weird layer-shifting problems
+	 * selecting "Empty Trash" from one window when there was
+	 * already a modeless "Empty Trash" dialog parented on a 
+	 * different window. And if the dialog were not parented, it
+	 * might show up in some weird place since window manager
+	 * placement is unreliable (i.e., sucks). So modal it is.
+	 */
+	if (confirm_empty_trash (parent_view)) {
+		do_empty_trash (parent_view);
+	}
 }

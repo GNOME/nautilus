@@ -1,3 +1,21 @@
+2000-08-15  John Sullivan  <sullivan@eazel.com>
+
+	Fixed task 1414 (Emptying the trash needs a warning dialog)
+
+	Implemented a simple confirmation dialog. Pavel said he and
+	Arlo agreed to defer the feature of including information
+	about the current trash contents in the dialog. I'll write up
+	a new deferred bug for that.
+
+	* src/file-manager/dfos-xfer.c: 
+	(do_empty_trash): New function, does all the work of
+	actually emptying the trash.
+	(confirm_empty_trash): New function, puts up a modal dialog
+	and returns whether user confirmed it. See comments in file
+	as to why it's modal.
+	(fs_empty_trash): Empties trash only if confirm_empty_trash
+	returns TRUE.
+
 2000-08-15  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:
