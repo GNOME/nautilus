@@ -66,6 +66,7 @@ if $PKG_CONFIG --atleast-version $STARTUP_NOTIFICATION_REQUIRED libstartup-notif
   AC_DEFINE(HAVE_STARTUP_NOTIFICATION)
   with_startup_notification=yes
   STARTUP_NOTIFICATION_PACKAGE=libstartup-notification-1.0
+  EXTRA_CORE_MODULES="$EXTRA_CORE_MODULES libstartup-notification-1.0"
 else
   echo "***** WARNING: Building without libstartup-notification"
   with_startup_notification=no
