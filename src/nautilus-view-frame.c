@@ -51,7 +51,6 @@ enum {
   REPORT_LOAD_FAILED,
   SET_TITLE,
   ZOOM_LEVEL_CHANGED,
-  ZOOM_PARAMETERS_CHANGED,
   CLIENT_GONE,
   LAST_SIGNAL
 };
@@ -161,15 +160,6 @@ nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
                                        zoom_level_changed),
                     nautilus_gtk_marshal_NONE__DOUBLE,
                     GTK_TYPE_NONE, 1, GTK_TYPE_DOUBLE);
-
-  signals[ZOOM_PARAMETERS_CHANGED] =
-    gtk_signal_new ("zoom_parameters_changed",
-                    GTK_RUN_LAST,
-                    object_class->type,
-                    GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
-                                       zoom_parameters_changed),
-                    nautilus_gtk_marshal_NONE__DOUBLE_DOUBLE_DOUBLE,
-                    GTK_TYPE_NONE, 3, GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE);
 
   signals[CLIENT_GONE] =
     gtk_signal_new ("client_gone",
@@ -516,28 +506,6 @@ nautilus_view_frame_get_max_zoom_level (NautilusViewFrame *view)
   return retval;
 }
 
-gboolean
-nautilus_view_frame_get_is_continuous (NautilusViewFrame *view)
-{
-  CORBA_Environment ev;
-  gboolean retval;
-
-  g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
-
-  CORBA_exception_init (&ev);
-
-  if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
-    retval = Nautilus_Zoomable__get_zoom_level (view->zoomable, &ev);
-  } else {
-    retval = FALSE;
-  }
-
-  CORBA_exception_free (&ev);
-
-  return retval;
-}
-
-
 void
 nautilus_view_frame_zoom_in (NautilusViewFrame *view)
 {
@@ -568,24 +536,6 @@ nautilus_view_frame_zoom_out (NautilusViewFrame *view)
 
   if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
     Nautilus_Zoomable_zoom_out (view->zoomable, &ev);
-  } else {
-    /* do nothing */
-  }
-
-  CORBA_exception_free (&ev);
-}
-
-void
-nautilus_view_frame_zoom_default (NautilusViewFrame *view)
-{
-  CORBA_Environment ev;
-
-  g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-
-  CORBA_exception_init (&ev);
-
-  if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
-    Nautilus_Zoomable_zoom_default (view->zoomable, &ev);
   } else {
     /* do nothing */
   }
@@ -716,16 +666,6 @@ nautilus_view_frame_zoom_level_changed (NautilusViewFrame *view,
 {
   g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
   gtk_signal_emit (GTK_OBJECT (view), signals[ZOOM_LEVEL_CHANGED], level);
-}
-
-void
-nautilus_view_frame_zoom_parameters_changed (NautilusViewFrame *view,
-					     double level,
-					     double min,
-					     double max)
-{
-  g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-  gtk_signal_emit (GTK_OBJECT (view), signals[ZOOM_PARAMETERS_CHANGED], level, min, max);
 }
 
 static gboolean

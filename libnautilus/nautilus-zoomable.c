@@ -50,7 +50,6 @@ enum {
 	SET_ZOOM_LEVEL,
 	ZOOM_IN,
 	ZOOM_OUT,
-	ZOOM_DEFAULT,
 	ZOOM_TO_FIT,
 	LAST_SIGNAL
 };
@@ -60,7 +59,7 @@ enum {
 	ARG_BONOBO_CONTROL,
 	ARG_MIN_ZOOM_LEVEL,
 	ARG_MAX_ZOOM_LEVEL,
-	ARG_IS_CONTINUOUS
+	ARG_IS_CONTINUOUS,
 };
 
 static guint signals[LAST_SIGNAL];
@@ -84,13 +83,11 @@ static CORBA_double  impl_Nautilus_Zoomable__get_min_zoom_level (impl_POA_Nautil
 								 CORBA_Environment          *ev);
 static CORBA_double  impl_Nautilus_Zoomable__get_max_zoom_level (impl_POA_Nautilus_Zoomable *servant,
 								 CORBA_Environment          *ev);
-static CORBA_boolean impl_Nautilus_Zoomable__get_is_continuous  (impl_POA_Nautilus_Zoomable *servant,
+static CORBA_boolean impl_Nautilus_Zoomable__get_is_continuous (impl_POA_Nautilus_Zoomable *servant,
 								 CORBA_Environment          *ev);
 static void          impl_Nautilus_Zoomable_zoom_in             (impl_POA_Nautilus_Zoomable *servant,
 								 CORBA_Environment          *ev);
 static void          impl_Nautilus_Zoomable_zoom_out            (impl_POA_Nautilus_Zoomable *servant,
-								 CORBA_Environment          *ev);
-static void          impl_Nautilus_Zoomable_zoom_default        (impl_POA_Nautilus_Zoomable *servant,
 								 CORBA_Environment          *ev);
 static void          impl_Nautilus_Zoomable_zoom_to_fit         (impl_POA_Nautilus_Zoomable *servant,
 								 CORBA_Environment          *ev);
@@ -105,7 +102,6 @@ POA_Nautilus_Zoomable__epv libnautilus_Nautilus_Zoomable_epv =
 	(gpointer) &impl_Nautilus_Zoomable__get_is_continuous,
 	(gpointer) &impl_Nautilus_Zoomable_zoom_in,
 	(gpointer) &impl_Nautilus_Zoomable_zoom_out,
-	(gpointer) &impl_Nautilus_Zoomable_zoom_default,
 	(gpointer) &impl_Nautilus_Zoomable_zoom_to_fit
 };
 
@@ -148,7 +144,7 @@ impl_Nautilus_Zoomable__get_max_zoom_level (impl_POA_Nautilus_Zoomable *servant,
 
 static CORBA_boolean
 impl_Nautilus_Zoomable__get_is_continuous (impl_POA_Nautilus_Zoomable *servant,
-					   CORBA_Environment      *ev)
+					    CORBA_Environment      *ev)
 {
 	return servant->gtk_object->details->is_continuous;
 }
@@ -166,14 +162,6 @@ impl_Nautilus_Zoomable_zoom_out (impl_POA_Nautilus_Zoomable *servant,
 {
 	gtk_signal_emit (GTK_OBJECT (servant->gtk_object), signals[ZOOM_OUT]);
 }
-
-static void
-impl_Nautilus_Zoomable_zoom_default (impl_POA_Nautilus_Zoomable *servant,
-				CORBA_Environment          *ev)
-{
-	gtk_signal_emit (GTK_OBJECT (servant->gtk_object), signals[ZOOM_DEFAULT]);
-}
-
 
 static void
 impl_Nautilus_Zoomable_zoom_to_fit (impl_POA_Nautilus_Zoomable *servant,
@@ -289,13 +277,6 @@ nautilus_zoomable_initialize_class (NautilusZoomableClass *klass)
 				GTK_SIGNAL_OFFSET (NautilusZoomableClass, zoom_out),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
-	signals[ZOOM_DEFAULT] = 
-		gtk_signal_new ("zoom_default",
-				GTK_RUN_LAST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (NautilusZoomableClass, zoom_default),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
 	signals[ZOOM_TO_FIT] = 
 		gtk_signal_new ("zoom_to_fit",
 				GTK_RUN_LAST,
@@ -371,7 +352,7 @@ nautilus_zoomable_get_arg (GtkObject      *object,
 		GTK_VALUE_DOUBLE (*arg) = NAUTILUS_ZOOMABLE (object)->details->max_zoom_level;
 		break;
 	case ARG_IS_CONTINUOUS:
-		GTK_VALUE_DOUBLE (*arg) = NAUTILUS_ZOOMABLE (object)->details->is_continuous;
+		GTK_VALUE_BOOL (*arg) = NAUTILUS_ZOOMABLE (object)->details->is_continuous;
 		break;
 	}
 }
@@ -455,37 +436,6 @@ nautilus_zoomable_ensure_zoomable_frame (NautilusZoomable *view)
 		CORBA_exception_free (&ev);
 		return TRUE;
 	}
-}
-
-void
-nautilus_zoomable_set_parameters (NautilusZoomable *view,
-				  double zoom_level,
-				  double min_zoom_level,
-				  double max_zoom_level)
-{
-	CORBA_Environment ev;
-	
-	g_return_if_fail (NAUTILUS_IS_ZOOMABLE (view));
-	
-	CORBA_exception_init (&ev);
-
-	view->details->zoom_level     = zoom_level;
-	view->details->min_zoom_level = min_zoom_level;
-	view->details->max_zoom_level = max_zoom_level;
-
-	if (nautilus_zoomable_ensure_zoomable_frame (view)) {
-		Nautilus_ZoomableFrame_report_zoom_parameters_changed (view->details->zoomable_frame,
-		                                                  view->details->zoom_level,
-		                                                  view->details->min_zoom_level,
-		                                                  view->details->max_zoom_level,
-		                                                  &ev);
-		if (ev._major != CORBA_NO_EXCEPTION) {
-			CORBA_Object_release (view->details->zoomable_frame, &ev);
-			view->details->zoomable_frame = CORBA_OBJECT_NIL;
-		}
-	}
-	
-	CORBA_exception_free (&ev);
 }
 
 void

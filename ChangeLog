@@ -1,3 +1,41 @@
+2000-06-27  Michael Engber  <engber@eazel.com>
+
+	* libnautilus/nautilus-view-component.idl:
+	* libnautilus/nautilus-zoomable.c:
+	(impl_Nautilus_Zoomable__get_is_continuous),
+	(nautilus_zoomable_initialize_class), (nautilus_zoomable_get_arg),
+	(nautilus_zoomable_ensure_zoomable_frame):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize), (zoomable_zoom_to_fit_callback),
+	(fm_directory_view_set_zoom_level):
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_begin_loading),
+	(fm_icon_view_set_zoom_level), (fm_icon_view_bump_zoom_level),
+	(fm_icon_view_zoom_to_level),
+	(fm_icon_view_restore_default_zoom_level):
+	* src/file-manager/fm-list-view.c: (fm_list_view_bump_zoom_level),
+	(fm_list_view_zoom_to_level),
+	(fm_list_view_restore_default_zoom_level),
+	(fm_list_view_begin_loading), (fm_list_view_set_zoom_level):
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_initialize_class),
+	(nautilus_view_frame_zoom_level_changed):
+	* src/nautilus-view-frame.h:
+	* src/nautilus-window.c: (zoom_to_fit_callback),
+	(nautilus_window_constructed),
+	(nautilus_window_zoom_level_changed_callback),
+	(nautilus_window_connect_view):
+	* src/nautilus-zoom-control.c:
+	(nautilus_zoom_control_class_initialize),
+	(nautilus_zoom_control_initialize),
+	(nautilus_zoom_control_button_press_event):
+	* src/nautilus-zoom-control.h:
+	* src/nautilus-zoomable-frame-corba.c:
+	(impl_Nautilus_ZoomableFrame_report_zoom_level_changed):
+	Removed zoom_to_default and zoom_parameters_changed.
+	The nautilus-window now queries the zoomable for max
+	and min before showing the zoom control.
+
 2000-06-27  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/rpmview/Makefile.am:

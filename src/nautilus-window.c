@@ -98,7 +98,7 @@ static void               zoom_out_callback                             (Nautilu
 static void               zoom_to_level_callback                        (NautilusZoomControl    *zoom_control,
 									 double			level,
 									 NautilusWindow         *window);
-static void               zoom_default_callback                         (NautilusZoomControl    *zoom_control,
+static void               zoom_to_fit_callback                         (NautilusZoomControl    *zoom_control,
 									 NautilusWindow         *window);
 static void               sidebar_panels_changed_callback               (gpointer                user_data);
 static NautilusViewFrame *window_find_sidebar_panel_by_identifier       (NautilusWindow         *window,
@@ -264,11 +264,11 @@ zoom_out_callback (NautilusZoomControl *zoom_control,
 }
 
 static void
-zoom_default_callback (NautilusZoomControl *zoom_control,
+zoom_to_fit_callback (NautilusZoomControl *zoom_control,
             	       NautilusWindow      *window)
 {
 	if (window->content_view != NULL) {
-		nautilus_view_frame_zoom_default (window->content_view);
+		nautilus_view_frame_zoom_to_fit (window->content_view);
 	}
 }
 
@@ -320,7 +320,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_in", zoom_in_callback, window);
 	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_out", zoom_out_callback, window);
 	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_to_level", zoom_to_level_callback, window);
-	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_default", zoom_default_callback, window);
+	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_to_fit", zoom_to_fit_callback, window);
 	gtk_box_pack_end (GTK_BOX (location_bar_box), window->zoom_control, FALSE, FALSE, 0);
 	
 	gtk_widget_show (location_bar_box);
@@ -1137,24 +1137,11 @@ nautilus_window_zoom_level_changed_callback (NautilusViewFrame *view,
 	/* We rely on the initial zoom_level_change signal to inform us that the
 	* view-frame is showing a new zoomable.
 	*/
-	gtk_widget_show (window->zoom_control);
-}
-
-static void
-nautilus_window_zoom_parameters_changed_callback (NautilusViewFrame *view,
-                                    	     	  double zoom_level,
-                                    	     	  double min_zoom_level,
-                                    	     	  double max_zoom_level,
-                                    	    	  NautilusWindow *window)
-{
-	nautilus_zoom_control_set_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control), zoom_level);
-	nautilus_zoom_control_set_min_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control), min_zoom_level);
-	nautilus_zoom_control_set_max_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control), max_zoom_level);
-
-	/* We rely on the initial zoom_level_change signal to inform us that the
-	* view-frame is showing a new zoomable.
-	*/
-	gtk_widget_show (window->zoom_control);
+	if (!GTK_WIDGET_VISIBLE(window->zoom_control)) {
+		nautilus_zoom_control_set_min_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control), nautilus_view_frame_get_min_zoom_level (view));
+		nautilus_zoom_control_set_max_zoom_level (NAUTILUS_ZOOM_CONTROL (window->zoom_control), nautilus_view_frame_get_max_zoom_level (view));
+		gtk_widget_show (window->zoom_control);
+	}
 }
 
 void
@@ -1177,7 +1164,6 @@ nautilus_window_connect_view (NautilusWindow *window, NautilusViewFrame *view)
 	CONNECT (report_load_failed);
 	CONNECT (set_title);
 	CONNECT (zoom_level_changed);
-	CONNECT (zoom_parameters_changed);
 
 	#undef CONNECT
 

@@ -45,7 +45,7 @@ enum {
 	ZOOM_IN,
 	ZOOM_OUT,
 	ZOOM_TO_LEVEL,
-	ZOOM_DEFAULT,
+	ZOOM_TO_FIT,
 	LAST_SIGNAL
 };
 
@@ -134,12 +134,12 @@ nautilus_zoom_control_class_initialize (NautilusZoomControlClass *class)
 				1,
 				GTK_TYPE_DOUBLE);
 
-	signals[ZOOM_DEFAULT] =
-		gtk_signal_new ("zoom_default",
+	signals[ZOOM_TO_FIT] =
+		gtk_signal_new ("zoom_to_fit",
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (NautilusZoomControlClass, 
-						   zoom_default),
+						   zoom_to_fit),
 				gtk_marshal_NONE__NONE,
 				GTK_TYPE_NONE, 0);
 
@@ -154,9 +154,9 @@ nautilus_zoom_control_initialize (NautilusZoomControl *zoom_control)
 	char *file_name;
 	GtkWidget *pix_widget;
 	
-	zoom_control->zoom_level = 1.0;
+	zoom_control->zoom_level     = 1.0;
 	zoom_control->min_zoom_level = 0.0;
-	zoom_control->max_zoom_level = 4.0;
+	zoom_control->max_zoom_level = 2.0;
 	
 	/* allocate the pixmap that holds the image */
 	
@@ -322,7 +322,7 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
 	} else if ((event->x > ((2 * width) / 3)) && (zoom_control->zoom_level < zoom_control->max_zoom_level)) {
 		gtk_signal_emit (GTK_OBJECT (widget), signals[ZOOM_IN]);			
 	} else if ((event->x >= (center - (width >> 3))) && (event->x <= (center + (width >> 3)))) {
-		gtk_signal_emit (GTK_OBJECT (widget), signals[ZOOM_DEFAULT]);			
+		gtk_signal_emit (GTK_OBJECT (widget), signals[ZOOM_TO_FIT]);			
 	}
 
 	/*
@@ -335,27 +335,6 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
   
 	return TRUE;
 }
-
-/*
- * FIXME bugzila.eazel.com 1425:
- * 
- * The term zoom level is overloaded in our sources:
- * 
- * The zoom control function APIs (e.g. nautilus_zoom_control_set_zoom_level)
- * uses doubles for zoom level (e.g. 1.5 = 150% zoom). This matches nicely with
- * nautilus-zoomable interface which uses doubles for zoom level too.
- * 
- * However, internally the zoom control keeps state (current_zoom) in terms of
- * NautilusZoomLevel's which are defined in nautilus-icon-factory.h as the 7
- * discrete icon sizes.
- * 
- * Furthermore, the signals the zoom control emits, specifically zoom_to_level,
- * passes a zoom level that's one of the NautilusZoomLevel's.
- * 
- * It would probably be cleaner to redo the zoom control APIs to all work on
- * doubles.
- */
- 
 
 void
 nautilus_zoom_control_set_zoom_level (NautilusZoomControl *zoom_control, double zoom_level)

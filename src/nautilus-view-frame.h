@@ -101,10 +101,6 @@ typedef struct {
         /* Part of Nautilus::ZoomableFrame CORBA interface. */
         void (* zoom_level_changed)         (NautilusViewFrame *view,
                                              double zoom_level);
-	void (* zoom_parameters_changed)    (NautilusViewFrame *view,
-					     double zoom_level,
-					     double min_zoom_level,
-					     double max_zoom_level);
 
         /* Error handling for when client goes away. */
         void (* client_gone)                (NautilusViewFrame *view);
@@ -137,7 +133,6 @@ gdouble            nautilus_view_frame_get_max_zoom_level (NautilusViewFrame   *
 gboolean           nautilus_view_frame_get_is_continuous  (NautilusViewFrame   *view);
 void               nautilus_view_frame_zoom_in            (NautilusViewFrame   *view);
 void               nautilus_view_frame_zoom_out           (NautilusViewFrame   *view);
-void	      	   nautilus_view_frame_zoom_default       (NautilusViewFrame   *view);
 void               nautilus_view_frame_zoom_to_fit        (NautilusViewFrame   *view);
 
 /* Other. */

@@ -162,7 +162,7 @@ static void           zoomable_zoom_in_callback                                 
 										   FMDirectoryView          *directory_view);
 static void           zoomable_zoom_out_callback                                  (NautilusZoomable         *zoomable,
 										   FMDirectoryView          *directory_view);
-static void           zoomable_zoom_default_callback                              (NautilusZoomable         *zoomable,
+static void           zoomable_zoom_to_fit_callback                              (NautilusZoomable         *zoomable,
 										   FMDirectoryView          *directory_view);
 static void           schedule_idle_display_of_pending_files                      (FMDirectoryView          *view);
 static void           unschedule_idle_display_of_pending_files                    (FMDirectoryView          *view);
@@ -731,8 +731,8 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 			    zoomable_set_zoom_level_callback,
 			    directory_view);
 	gtk_signal_connect (GTK_OBJECT (directory_view->details->zoomable), 
-			    "zoom_default", 
-			    zoomable_zoom_default_callback,
+			    "zoom_to_fit", 
+			    zoomable_zoom_to_fit_callback,
 			    directory_view);
 
 	gtk_widget_show (GTK_WIDGET (directory_view));
@@ -1090,9 +1090,12 @@ zoomable_set_zoom_level_callback (NautilusZoomable *zoomable, double level, FMDi
 }
 
 static void
-zoomable_zoom_default_callback (NautilusZoomable *zoomable, FMDirectoryView *directory_view)
+zoomable_zoom_to_fit_callback (NautilusZoomable *zoomable, FMDirectoryView *view)
 {
-	fm_directory_view_restore_default_zoom_level (directory_view);
+	/* FIXME
+	 * Need to really implement "zoom to fit"
+	 */
+	fm_directory_view_restore_default_zoom_level (view);
 }
 
 static gboolean
@@ -1430,19 +1433,6 @@ fm_directory_view_set_zoom_level (FMDirectoryView *view, int zoom_level)
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	nautilus_zoomable_set_zoom_level (view->details->zoomable,
 					 (double) nautilus_get_icon_size_for_zoom_level (zoom_level) / NAUTILUS_ICON_SIZE_STANDARD);
-}
-
-void
-fm_directory_view_set_zoom_parameters (FMDirectoryView *view,
-				       int zoom_level,
-				       int min_zoom_level,
-				       int max_zoom_level)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-	nautilus_zoomable_set_parameters (view->details->zoomable,
-					 (double) nautilus_get_icon_size_for_zoom_level (zoom_level) / NAUTILUS_ICON_SIZE_STANDARD,
-					 (double) nautilus_get_icon_size_for_zoom_level (min_zoom_level) / NAUTILUS_ICON_SIZE_STANDARD,
-					 (double) nautilus_get_icon_size_for_zoom_level (max_zoom_level) / NAUTILUS_ICON_SIZE_STANDARD);
 }
 
 /**
