@@ -1,3 +1,9 @@
+2004-10-06  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-async.c (directory_load_one):
+	Don't crash if info->name == NULL. (Not valid, but happened with
+	smb backend.)
+
 2004-10-05  Martin Wehner  <martin.wehner@epost.de>
 
 	* src/file-manager/fm-list-view.c (fm_list_view_set_selection):

@@ -962,7 +962,8 @@ static void
 directory_load_one (NautilusDirectory *directory,
 		    GnomeVFSFileInfo *info)
 {
-	if (info == NULL || is_dot_or_dot_dot (info->name)) {
+	if (info == NULL || info->name == NULL ||
+	    is_dot_or_dot_dot (info->name)) {
 		return;
 	}
 
