@@ -259,13 +259,10 @@ scrollkeeper-update
 %{prefix}/share/oaf/Nautilus_View_tree.oaf
 %{prefix}/share/oaf/Nautilus_shell.oaf
 %{prefix}/share/oaf/Nautilus_Control_throbber.oaf
-%{prefix}/share/gnome/help/nautilus-user-manual/C/*
-%{prefix}/share/gnome/help/nautilus-user-manual/es/*
-%{prefix}/share/gnome/help/nautilus-user-manual/ko/*
-%{prefix}/share/gnome/help/nautilus-quick-reference/C/*
-%{prefix}/share/gnome/help/gnufdl/C/*
-%{prefix}/share/gnome/help/gnugpl/C/*
 %{prefix}/share/omf/nautilus/*.omf
+
+%defattr (-, bin, bin)
+%{prefix}/share/gnome/help
 
 %files devel
 
