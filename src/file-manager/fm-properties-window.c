@@ -68,6 +68,9 @@ struct FMPropertiesWindowDetails {
 	NautilusFile *file;
 	GtkWidget *remove_image_button;
 	guint file_changed_handler_id;
+
+	NautilusEntry *name_field;
+	char *pending_name;
 };
 
 enum {
@@ -129,6 +132,7 @@ enum {
 #define EMBLEM_COLUMN_COUNT 2
 
 static void	  real_destroy 		     		     (GtkObject 	      *object);
+static void	  real_finalize		     		     (GtkObject 	      *object);
 static void	  real_shutdown	     		     	     (GtkObject 	      *object);
 static void       fm_properties_window_initialize_class      (FMPropertiesWindowClass *class);
 static void       fm_properties_window_initialize            (FMPropertiesWindow      *window);
@@ -154,6 +158,7 @@ fm_properties_window_initialize_class (FMPropertiesWindowClass *class)
 	
 	object_class->destroy = real_destroy;
 	object_class->shutdown = real_shutdown;
+	object_class->finalize = real_finalize;
 }
 
 static void
@@ -362,6 +367,7 @@ name_field_restore_original_name (NautilusEntry *name_field)
 	if (strcmp (original_name, displayed_name) != 0) {
 		gtk_entry_set_text (GTK_ENTRY (name_field), original_name);
 	}
+	nautilus_entry_select_all (name_field);
 
 	g_free (displayed_name);
 }
@@ -369,18 +375,35 @@ name_field_restore_original_name (NautilusEntry *name_field)
 static void
 rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
 {
+	FMPropertiesWindow *window;
 	char *new_name;
 
-	new_name = callback_data;
+	window = FM_PROPERTIES_WINDOW (callback_data);
 
 	/* Complain to user if rename failed. */
-	fm_report_error_renaming_file (file, new_name, result);
-	
-	g_free (new_name);
+	if (result != GNOME_VFS_OK) {
+		new_name = window->details->pending_name;
+		fm_report_error_renaming_file (file, 
+					       window->details->pending_name, 
+					       result);
+		/* This can trigger after window destroy, before finalize. */
+		if (!GTK_OBJECT_DESTROYED (window)) {
+			name_field_restore_original_name (window->details->name_field);
+		}
+	}
+
+	gtk_object_unref (GTK_OBJECT (window));
 }
 
 static void
-name_field_done_editing (NautilusEntry *name_field)
+set_pending_name (FMPropertiesWindow *window, const char *name)
+{
+	g_free (window->details->pending_name);
+	window->details->pending_name = g_strdup (name);
+}
+
+static void
+name_field_done_editing (NautilusEntry *name_field, FMPropertiesWindow *window)
 {
 	NautilusFile *file;
 	char *new_name;
@@ -404,8 +427,10 @@ name_field_done_editing (NautilusEntry *name_field)
 	if (strlen (new_name) == 0) {
 		name_field_restore_original_name (NAUTILUS_ENTRY (name_field));
 	} else {
+		set_pending_name (window, new_name);
+		gtk_object_ref (GTK_OBJECT (window));
 		nautilus_file_rename (file, new_name,
-				      rename_callback, g_strdup (new_name));
+				      rename_callback, window);
 	}
 
 	g_free (new_name);
@@ -414,22 +439,25 @@ name_field_done_editing (NautilusEntry *name_field)
 static gboolean
 name_field_focus_out (NautilusEntry *name_field,
 		      GdkEventFocus *event,
-		      gpointer user_data)
+		      gpointer callback_data)
 {
+	g_assert (FM_IS_PROPERTIES_WINDOW (callback_data));
+
 	if (GTK_WIDGET_SENSITIVE (name_field)) {
-		name_field_done_editing (name_field);
+		name_field_done_editing (name_field, FM_PROPERTIES_WINDOW (callback_data));
 	}
 
 	return TRUE;
 }
 
 static void
-name_field_activate (NautilusEntry *name_field)
+name_field_activate (NautilusEntry *name_field, gpointer callback_data)
 {
 	g_assert (NAUTILUS_IS_ENTRY (name_field));
+	g_assert (FM_IS_PROPERTIES_WINDOW (callback_data));
 
 	/* Accept changes. */
-	name_field_done_editing (name_field);
+	name_field_done_editing (name_field, FM_PROPERTIES_WINDOW (callback_data));
 
 	nautilus_entry_select_all_at_idle (name_field);
 }
@@ -1144,6 +1172,7 @@ create_basic_page (FMPropertiesWindow *window, GtkNotebook *notebook, NautilusFi
 
 	/* Name field */
 	name_field = nautilus_entry_new ();
+	window->details->name_field = NAUTILUS_ENTRY (name_field);
 	gtk_widget_show (name_field);
 	gtk_table_attach_defaults (GTK_TABLE (table),
 				   name_field,
@@ -1178,11 +1207,11 @@ create_basic_page (FMPropertiesWindow *window, GtkNotebook *notebook, NautilusFi
 
 	gtk_signal_connect (GTK_OBJECT (name_field), "focus_out_event",
       	              	    GTK_SIGNAL_FUNC (name_field_focus_out),
-                            NULL);
+                            window);
                       			    
 	gtk_signal_connect (GTK_OBJECT (name_field), "activate",
-      	              	    GTK_SIGNAL_FUNC (name_field_activate),
-                            NULL);
+      	              	    name_field_activate,
+                            window);
 
         /* Start with name field selected, if it's sensitive. */
         if (GTK_WIDGET_SENSITIVE (name_field)) {
@@ -2083,10 +2112,24 @@ real_destroy (GtkObject *object)
 	g_hash_table_remove (windows, window->details->file);
 	nautilus_file_unref (window->details->file);
 
+	/* Note that file_changed_handler_id is disconnected in shutdown,
+	 * and details are freed in finalize 
+	 */
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+static void
+real_finalize (GtkObject *object)
+{
+	FMPropertiesWindow *window;
+
+	window = FM_PROPERTIES_WINDOW (object);
+
 	/* Note that file_changed_handler_id is disconnected in shutdown */
+	g_free (window->details->pending_name);
 	g_free (window->details);
 
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, finalize, (object));
 }
 
 /* callbacks to handle adding and removing custom icons */

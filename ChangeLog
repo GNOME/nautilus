@@ -1,3 +1,33 @@
+2000-12-21  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 5282 (Two file-name-conflict dialogs renaming in
+	Properties window)
+
+	The problem was that the activate signal and the focus-out signal
+	were both trying to rename using the bad name. Fixed by restoring
+	the text in the name field to the original name when an error occurs.
+
+	* src/file-manager/fm-properties-window.c:
+	(fm_properties_window_initialize_class): Wire up finalize handler.
+	(name_field_restore_original_name): Select text of original name
+	after restoring it into text field.
+	(set_pending_name): Helper function to save pending name.
+	(name_field_done_editing): Remember pending name in case window
+	and name field get destroyed before callback. Ref window so it
+	won't be finalized before callback.
+	(rename_callback): Restore original name when rename fails, use
+	stored pending name for window, unref window.
+	(name_field_focus_out), (name_field_activate): Now take window
+	as callback data so it can be passed to done_editing.
+	(create_basic_page): Remember name field in window details struct
+	so it can be accessed in rename_callback; remove some unnecessary
+	casts; pass window as callback data to two signal handlers.
+	(real_destroy): Don't free details here; do so in finalize
+	(real_finalize): Free pending_name and details here, so pending
+	name is always accessible by rename_callback.
+
 2000-12-21  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>
