@@ -1,3 +1,13 @@
+2000-05-17  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/nautilus-music-view.c: (selection_callback),
+	(release_song_info), (is_mp3_file), (read_id_tag),
+	(scan_for_header), (fetch_bit_rate), (fetch_play_time),
+	(format_play_time), (fetch_song_info),
+	(nautilus_music_view_update_from_uri):
+	fixed bug 722, music view should use gnome-vfs for all file operations,
+	by rewriting the above routines to use gnome-vfs
+	
 2000-05-17  Gene Z. Ragan  <gzr@eazel.com>
 
 	First phase of modifying undo code.  These changes

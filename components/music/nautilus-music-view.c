@@ -76,7 +76,7 @@ typedef struct {
 	char *album;
 	char *year;
         char *comment;
-        char *path_name;
+        char *path_uri;
 } SongInfo;
 
 enum {
@@ -251,7 +251,7 @@ selection_callback(GtkCList * clist, int row, int column, GdkEventButton * event
 		
 	/* fork off a task to play the sound file */
 	if (!(play_pid = fork())) {
-		execlp ("xmms", "xmms", song_name, NULL);
+		execlp ("xmms", "xmms", song_name + 7, NULL);
    	   	exit (0); 
    	}		
 } 
@@ -294,42 +294,43 @@ release_song_info (SongInfo *info)
         g_free (info->album);
         g_free (info->year);
         g_free (info->comment);
-        g_free (info->path_name);
+        g_free (info->path_uri);
 	g_free (info);
 }
 
 /* determine if the passed in filename is an mp3 file by looking at the extension */
+/* FIXME: use mime-type for this? */
 static gboolean
-is_mp3_file(const char *song_path)
+is_mp3_file(const char *song_uri)
 {
-	return nautilus_str_has_suffix(song_path, ".mp3")
-                || nautilus_str_has_suffix(song_path, ".MP3");
+	return nautilus_str_has_suffix(song_uri, ".mp3")
+                || nautilus_str_has_suffix(song_uri, ".MP3");
 }
 
 /* read the id3 tag of the file if present */
-/* FIXME bugzilla.eazel.com 722: need to use gnome vfs for this */
 
 static gboolean
-read_id_tag (const char *song_path, SongInfo *song_info)
+read_id_tag (const char *song_uri, SongInfo *song_info)
 {
-	int mp3_file;
-
+	GnomeVFSHandle *mp3_file;
+	GnomeVFSResult result;
+	GnomeVFSFileSize bytes_read;
 	char tag_buffer[129];
 	char temp_str[31];
 
-	mp3_file = open(song_path, O_RDONLY);
-	if (mp3_file == 0) {
+	result = gnome_vfs_open(&mp3_file, song_uri, GNOME_VFS_OPEN_READ);
+	if (result != GNOME_VFS_OK) {
 		return FALSE;
         }
+ 
+ 	gnome_vfs_seek (mp3_file, GNOME_VFS_SEEK_END, -128);
   
-	lseek (mp3_file, -128, SEEK_END);
-  
-	if (read (mp3_file, tag_buffer, 129) <= 0) {
-  		close (mp3_file);
-  		return FALSE;
+	if (gnome_vfs_read (mp3_file, tag_buffer, 128, &bytes_read) != GNOME_VFS_OK) {
+  		gnome_vfs_close (mp3_file);
+ 		return FALSE;
 	}
-	close (mp3_file);
-
+	gnome_vfs_close (mp3_file);
+	
 	if (tag_buffer[0] != 'T' || tag_buffer[1] != 'A' || tag_buffer[2] != 'G')
 		return FALSE;
 	
@@ -365,11 +366,7 @@ static int
 scan_for_header(guchar  *buffer, int buffer_length)
 {
 	int index;
-	
-	/* make sure we've got enough to even look */
-	if (buffer_length < 3)
-		return -1;
-		
+			
 	for (index = 0; index < (buffer_length - 2); index++) {
 		if ((buffer[index] == 255) && 
 			((buffer[index + 1] & 224) != 0)) {
@@ -383,16 +380,18 @@ scan_for_header(guchar  *buffer, int buffer_length)
 /* fetch_bit_rate returns the bit rate of the file by scanning for a frame and extracting the
    information from the frame header */
 static int
-fetch_bit_rate (const char *song_path_name)
+fetch_bit_rate (const char *song_uri)
 {
 	guchar buffer[1024];
-	int mp3_file, length_read;
+	GnomeVFSHandle *mp3_file;
+	GnomeVFSResult result;
+	GnomeVFSFileSize length_read;
 	int bit_rate_index;
 
 	/* open the file */
 	
-	mp3_file = open(song_path_name, O_RDONLY);
-	if (mp3_file == 0) {
+	result = gnome_vfs_open(&mp3_file, song_uri, GNOME_VFS_OPEN_READ);
+	if (result != GNOME_VFS_OK) {
 		return -1;
         }
 	
@@ -400,13 +399,17 @@ fetch_bit_rate (const char *song_path_name)
 	   by a byte with the next 3 bits on */
     	
     	bit_rate_index = -1;
-    	while ((length_read = read(mp3_file, buffer, sizeof(buffer))) > 0) {
-    		bit_rate_index = scan_for_header(buffer, length_read);
+    	while (TRUE) {
+		result = gnome_vfs_read(mp3_file, buffer, sizeof(buffer), &length_read);
+		if ((result != GNOME_VFS_OK) || (length_read < 3)) {
+			break;
+		}
+		bit_rate_index = scan_for_header(buffer, length_read);
     		if (bit_rate_index >= 0)
     			break;
-    	}
-    	
-    	close(mp3_file);
+	};
+		
+    	gnome_vfs_close(mp3_file);
     	
     	/* fetch the bitrate field, and look up the actual bitrate in the table */
     	if (bit_rate_index < 0)
@@ -417,9 +420,9 @@ fetch_bit_rate (const char *song_path_name)
 
 /* fetch_play_time takes the pathname to a file and returns the play time in seconds */
 static int
-fetch_play_time (const char *song_path_name, int bitrate)
+fetch_play_time (const char *song_uri, int bitrate)
 {
-	NautilusFile *file = nautilus_file_get (song_path_name);
+	NautilusFile *file = nautilus_file_get (song_uri + 7);
  	GnomeVFSFileSize file_size = nautilus_file_get_size (file);       			
 	nautilus_file_unref(file);
 	
@@ -428,9 +431,9 @@ fetch_play_time (const char *song_path_name, int bitrate)
 
 /* format_play_time takes the pathname to a file and returns the play time formated as mm:ss */
 static char *
-format_play_time (const char *song_path_name, int bitrate)
+format_play_time (const char *song_uri, int bitrate)
 {
-	int seconds = fetch_play_time(song_path_name, bitrate);
+	int seconds = fetch_play_time(song_uri, bitrate);
 	int minutes = seconds / 60;
 	int remain_seconds = seconds - (60 * minutes);
 	char *result = g_strdup_printf ("%d:%02d", minutes, remain_seconds);
@@ -440,30 +443,28 @@ format_play_time (const char *song_path_name, int bitrate)
 /* allocate a return a song info record, from an mp3 tag if present, or from intrinsic info */
 
 static SongInfo *
-fetch_song_info (const char *song_path, int file_order) 
+fetch_song_info (const char *song_uri, int file_order) 
 {
 	gboolean has_info = FALSE;
 	SongInfo *info; 
 
-	if (!is_mp3_file (song_path)) {
+	if (!is_mp3_file (song_uri)) {
 		return NULL;
         }
 
 	info = g_new0 (SongInfo, 1); 
 	initialize_song_info (info);
 	
-	if (is_mp3_file (song_path)) {
-		has_info = read_id_tag (song_path, info);
-        }
-	
+	has_info = read_id_tag (song_uri, info);
+  	
 	/* there was no id3 tag, so set up the info heuristically from the file name and file order */
 	if (!has_info) {
-		info->title = g_strdup (g_basename (song_path));
+		info->title = g_strdup (g_basename (song_uri));
 		info->track_number = file_order;
 	}	
 	
-	info->bitrate = fetch_bit_rate(song_path);
-	info->track_time = fetch_play_time(song_path, info->bitrate);
+	info->bitrate = fetch_bit_rate(song_uri);
+	info->track_time = fetch_play_time(song_uri, info->bitrate);
 	return	info;
 }
 
@@ -628,13 +629,14 @@ sort_song_list(NautilusMusicView *music_view, GList* song_list)
 }
 
 /* here's where we do most of the real work of populating the view with info from the new uri */
-/* FIXME bugzilla.eazel.com 722: need to use gnome-vfs for iterating the directory */
 
 static void
 nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *uri)
 {
-	DIR *dir;
-	struct dirent *entry;
+	GnomeVFSResult result;
+	GnomeVFSFileInfo *current_file_info;
+	GnomeVFSDirectoryList *list;
+
 	char* clist_entry[4];
 	GList *p;
 	GdkPixbuf *pixbuf;
@@ -642,13 +644,13 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	GdkBitmap *mask;	
 	GList *song_list;
 	SongInfo *info;
-	char *path_name;
-	char *image_path_name;
+	char *path_uri;
+	char *image_path_uri;
 	int file_index;
 	int track_index;
 	
 	song_list = NULL;
-	image_path_name = NULL;
+	image_path_uri = NULL;
 	file_index = 1;
 	track_index = 0;
 
@@ -656,46 +658,54 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	nautilus_music_view_set_up_background(music_view, uri);
 	
 	/* iterate through the directory, collecting mp3 files and extracting id3 data if present */
-	/* soon we'll use gnomevfs, but at first just the standard unix stuff */
+
+	result = gnome_vfs_directory_list_load (&list, uri,
+						GNOME_VFS_FILE_INFO_GETMIMETYPE, 
+						NULL, NULL);
+	if (result != GNOME_VFS_OK) {
+		/* FIXME: need to show an alert here */
+		g_warning("cant open %s in music_view_update", uri);		
+		return;
+	}
 	
-	if ((dir = opendir (uri + 7)) == NULL)
-		g_warning("cant open %s in music_view_update", uri);
-	else {
-  		while ((entry = readdir(dir)) != NULL) {
-			/* skip invisible files, for now */
+	current_file_info = gnome_vfs_directory_list_first (list);
+	while (current_file_info != NULL) {
+		/* skip invisible files, for now */
 			
-			if (entry->d_name[0] == '.') {
+		if (current_file_info->name[0] == '.') {
+				current_file_info = gnome_vfs_directory_list_next(list);
 				continue;
-                        }
+                }
+		
+		path_uri = nautilus_make_path(uri, current_file_info->name);
 			
-			path_name = nautilus_make_path(uri + 7, entry->d_name);
+		/* fetch info and queue it if it's an mp3 file */
+		info = fetch_song_info (path_uri, file_index);
+		if (info) {
 			
-			/* fetch info and queue it if it's an mp3 file */
-			info = fetch_song_info (path_name, file_index);
-			if (info) {
-				info->path_name = path_name;
-				file_index += 1;
-                                song_list = g_list_append (song_list, info);
-			} else {
-		        	/* it's not an mp3 file, so see if it's an image */
-		        	NautilusFile *file = nautilus_file_get (path_name);
-        			char *mime_type = nautilus_file_get_mime_type (file);
+			info->path_uri = path_uri;
+			file_index += 1;
+                        song_list = g_list_append (song_list, info);
+		} else {
+		        /* it's not an mp3 file, so see if it's an image */
+		        NautilusFile *file = nautilus_file_get (path_uri + 7);
+        		char *mime_type = nautilus_file_get_mime_type (file);
 		        	
-		        	if (nautilus_str_has_prefix (mime_type, "image/")) {
-		        		/* for now, just keep the first image */
-		        		if (image_path_name == NULL) {
-		        			image_path_name = g_strdup (path_name);
-                                        }
-		        	}
+		        if (nautilus_str_has_prefix (mime_type, "image/")) {
+		        	/* for now, just keep the first image */
+		        	if (image_path_uri == NULL) {
+		        		image_path_uri = g_strdup (path_uri);
+                                }
+		        }
 		        	
-		        	nautilus_file_unref (file);
-		        	g_free (path_name);
-                                g_free (mime_type);
-			}
+		        nautilus_file_unref (file);
+		        g_free (path_uri);
+                        g_free (mime_type);
 		}
 		
-		closedir(dir);
-	 }
+		current_file_info = gnome_vfs_directory_list_next(list);
+	}
+	gnome_vfs_directory_list_destroy(list);
 	
 	song_list = sort_song_list(music_view, song_list);
 		
@@ -720,19 +730,20 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 			clist_entry[1] = g_strdup(info->title);
 		if (info->artist)
 			clist_entry[2] = g_strdup(info->artist);
-		if (info->path_name)
-		clist_entry[3] = format_play_time(info->path_name, info->bitrate);
+		if (info->path_uri)
+		clist_entry[3] = format_play_time(info->path_uri, info->bitrate);
 			
 		gtk_clist_append(GTK_CLIST(music_view->details->song_list), clist_entry);
-		gtk_clist_set_row_data(GTK_CLIST(music_view->details->song_list), track_index, g_strdup(info->path_name));
+		gtk_clist_set_row_data(GTK_CLIST(music_view->details->song_list),
+					track_index, g_strdup(info->path_uri));
 		
 		track_index += 1;
 	}
 	
 	/* install the album cover */
 		
-	if (image_path_name != NULL) {
-		pixbuf = gdk_pixbuf_new_from_file(image_path_name);
+	if (image_path_uri != NULL) {
+		pixbuf = gdk_pixbuf_new_from_file(image_path_uri + 7);
 		pixbuf = nautilus_gdk_pixbuf_scale_to_fit(pixbuf, 128, 128);
 
        		gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
@@ -748,7 +759,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 		}
 		
 		gtk_widget_show (music_view->details->album_image);
- 		g_free(image_path_name);
+ 		g_free(image_path_uri);
  	} else if (music_view->details->album_image != NULL) {
 		gtk_widget_hide (music_view->details->album_image);
         }
