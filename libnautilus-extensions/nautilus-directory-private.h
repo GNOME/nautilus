@@ -160,4 +160,3 @@ int           nautilus_directory_number_outstanding        (void);
 /* Shared functions not directly related to NautilusDirectory/File. */
 int           nautilus_compare_file_with_name              (gconstpointer              a,
 							    gconstpointer              b);
-gboolean      nautilus_uri_is_search_uri                   (const char                *canonical_uri);

@@ -65,7 +65,6 @@ static void               nautilus_directory_initialize_class (gpointer     klas
 static GnomeVFSResult     nautilus_make_directory_and_parents (GnomeVFSURI *uri,
 							       guint        permissions);
 static NautilusDirectory *nautilus_directory_new              (const char  *uri);
-static NautilusDirectory *nautilus_search_directory_new       (const char  *uri);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDirectory, nautilus_directory, GTK_TYPE_OBJECT)
 
@@ -171,7 +170,7 @@ nautilus_directory_destroy (GtkObject *object)
 	if (directory->details->dequeue_pending_idle_id != 0) {
 		gtk_idle_remove (directory->details->dequeue_pending_idle_id);
 	}
-
+ 
 	g_free (directory->details->uri_text);
 	if (directory->details->uri != NULL) {
 		gnome_vfs_uri_unref (directory->details->uri);
@@ -298,7 +297,7 @@ nautilus_directory_get (const char *uri)
 	NautilusDirectory *directory;
 
 	if (uri == NULL) {
-		return NULL;
+    		return NULL;
 	}
 
 	canonical_uri = make_uri_canonical (uri);
@@ -317,11 +316,7 @@ nautilus_directory_get (const char *uri)
 		nautilus_directory_ref (directory);
 	} else {
 		/* Create a new directory object instead. */
-		if (nautilus_uri_is_search_uri (canonical_uri)) {
-			directory = nautilus_search_directory_new (canonical_uri);
-		} else {
-			directory = nautilus_directory_new (canonical_uri);
-		}
+		directory = nautilus_directory_new (canonical_uri);
 		if (directory == NULL) {
 			return NULL;
 		}
@@ -422,24 +417,6 @@ construct_alternate_metafile_uri (GnomeVFSURI *uri)
 
 	return alternate_uri;
 }
-      
-static NautilusDirectory *
-nautilus_search_directory_new (const char* uri)
-{
-	NautilusDirectory *directory;
-
-	directory = gtk_type_new (NAUTILUS_TYPE_DIRECTORY);
-	/* We can assume lots of stuff about the directory, 
-	   since we know it is a local search */
-	/* this should be fixed when (if) searching
-	   becomes part of gnome-vfs */
-	directory->details->uri_text = g_strdup (uri);
-	directory->details->uri = NULL;
-	directory->details->metafile_uri = NULL;
-	directory->details->alternate_metafile_uri = NULL;
-
-	return directory;
-}
 
 static NautilusDirectory *
 nautilus_directory_new (const char* uri)
@@ -472,17 +449,9 @@ nautilus_directory_is_local (NautilusDirectory *directory)
 {
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 	
-	return nautilus_directory_is_search_directory (directory)
-		|| gnome_vfs_uri_is_local (directory->details->uri);
+	return gnome_vfs_uri_is_local (directory->details->uri);
 }
 
-gboolean
-nautilus_directory_is_search_directory (NautilusDirectory *directory)
-{
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
-	
-	return nautilus_uri_is_search_uri (directory->details->uri_text);
-}
 
 gboolean
 nautilus_directory_are_all_files_seen (NautilusDirectory *directory)
@@ -1012,13 +981,6 @@ nautilus_directory_file_monitor_remove (NautilusDirectory *directory,
 					gconstpointer client)
 {
 	nautilus_directory_monitor_remove_internal (directory, NULL, client);
-}
-
-gboolean
-nautilus_uri_is_search_uri (const char *uri)
-{
-	return FALSE;
-	//return nautilus_str_has_prefix (uri, "search:");
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

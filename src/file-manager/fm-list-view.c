@@ -778,6 +778,7 @@ fm_list_view_create_list (FMListView *list_view)
 	}
 	gtk_clist_set_auto_sort (clist, TRUE);
 	gtk_clist_set_compare_func (clist, compare_rows);
+	fm_list_view_set_instantiated (list_view);
 
 	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (list));
 	

@@ -215,6 +215,44 @@ nautilus_str_get_prefix (const char *source,
 	return g_strndup (source, prefix_start - source);
 }
 
+
+/**
+ * nautilus_str_get_after_prefix:
+ * Get a new string containing the part of the string
+ * after the prefix
+ * @source: The string whose prefix should be extracted.
+ * @delimiter: The string that marks the end of the prefix.
+ * 
+ * Return value: A newly-allocated string that that matches the end
+ * of @source, starting right after the first occurr
+ * @delimiter. If @source is NULL, returns NULL. If 
+ * @delimiter is NULL, returns a copy of @source.
+ * If @delimiter does not occur in @source, returns
+ * NULL
+ **/
+char *
+nautilus_str_get_after_prefix (const char *source,
+			       const char *delimiter)
+{
+	char *prefix_start;
+	
+	if (source == NULL) {
+		return NULL;
+	}
+	
+	if (delimiter == NULL) {
+		return g_strdup (source);
+	}
+	
+	prefix_start = strstr (source, delimiter);
+	
+	if (prefix_start == NULL) {
+		return NULL;
+	}
+	
+	return g_strdup (prefix_start);
+}
+
 gboolean
 nautilus_str_to_int (const char *string, int *integer)
 {

@@ -54,6 +54,10 @@ int      nautilus_istr_compare           (gconstpointer  string_a,
 gboolean nautilus_str_is_empty           (const char    *string_or_null);
 gboolean nautilus_str_has_prefix         (const char    *target,
 					  const char    *prefix);
+char *   nautilus_str_get_prefix         (const char    *source,
+					  const char    *delimiter);
+char *   nautilus_str_get_after_prefix   (const char    *source,
+					  const char    *delimiter);
 gboolean nautilus_istr_has_prefix        (const char    *target,
 					  const char    *prefix);
 gboolean nautilus_str_has_suffix         (const char    *target,

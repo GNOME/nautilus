@@ -1,3 +1,33 @@
+2000-07-20  Rebecca Schulman  <rebecka@eazel.com>
+
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(allow_metafile), (start_monitoring_file_list):
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_destroy), (nautilus_directory_get),
+	(construct_alternate_metafile_uri), (nautilus_directory_is_local),
+	(nautilus_directory_file_monitor_remove):
+	* libnautilus-extensions/nautilus-directory.h:
+	got rid of changes before made for putting medusa
+	communication into nautilus. that is all part of 
+	gnome-vfs now.
+
+	* libnautilus-extensions/nautilus-search-async.c:
+	* libnautilus-extensions/nautilus-search-async.h:
+	* libnautilus-extensions/Makefile.am:
+	Deprecated as they are no longer necessary  (see above)
+	
+	* libnautilus-extensions/nautilus-string.c:
+	* libnautilus-extensions/nautilus-string.h:
+	(nautilus_str_get_after_prefix):
+	added new function that nautilus-string-uri will use.
+	
+	* src/file-manager/fm-list-view.c: (fm_list_view_create_list):
+	fix list view bug that should have been in my last checkin
+	Someone needs beat me over the head and fix my extensive
+	cvs issues from the last few days!
+
 2000-07-20  Ali Abdin <aliabdin@aucegypt.edu>
 
 	* components/help/help-method.c:
