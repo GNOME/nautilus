@@ -792,7 +792,7 @@ fm_directory_view_icons_icon_moved_cb (GnomeIconContainer *container,
 				    NULL, 
 				    position_string);
 
-	scale_string = g_strdup_printf ("%lf,%lf", xscale, yscale);
+	scale_string = g_strdup_printf ("%f,%f", xscale, yscale);
 	nautilus_file_set_metadata (file,
 				    ICON_VIEW_ICON_SCALE_METADATA_KEY,
 				    NULL,

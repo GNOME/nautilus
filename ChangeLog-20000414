@@ -1,3 +1,11 @@
+2000-03-03  John Sullivan  <sullivan@eazel.com>
+
+        * configure.in: Turned -Werror back on. It had been turned 
+        off accidentally as part of the patch Maciej applied earlier today.
+        * src/file-manager/fm-directory-view-icons.c:
+        (fm_directory_view_icons_icon_moved_cb): Changed two %lf's to %f's
+        in g_strdup_printf to make compiler happy.
+
 2000-03-03  Elliot Lee  <sopwith@redhat.com>
 
 	* src/ntl-prefs.c: Default to showing help index (it's the parade of the meta views! :).
