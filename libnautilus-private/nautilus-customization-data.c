@@ -396,22 +396,29 @@ nautilus_customization_make_pattern_chit (GdkPixbuf *pattern_tile, GdkPixbuf *fr
 {
 	GdkPixbuf *pixbuf, *temp_pixbuf;
 	int frame_width, frame_height;
+	int pattern_width, pattern_height;
 	
 	
 	frame_width = gdk_pixbuf_get_width (frame);
 	frame_height = gdk_pixbuf_get_height (frame);
-	
+	pattern_width = gdk_pixbuf_get_width (pattern_tile);
+	pattern_height = gdk_pixbuf_get_height (pattern_tile);
+
+	pixbuf = gdk_pixbuf_copy (frame);
+
 	/* scale the pattern tile to the proper size */
-	pixbuf = gdk_pixbuf_scale_simple (pattern_tile, frame_width, frame_height, GDK_INTERP_BILINEAR);
-			
-	/* composite the mask on top of it */
-	gdk_pixbuf_composite (frame, pixbuf, 0, 0, frame_width, frame_height,
-			      0.0, 0.0, 1.0, 1.0, GDK_INTERP_BILINEAR, 255);
+	gdk_pixbuf_scale (pattern_tile,
+			  pixbuf,
+			  2, 2, frame_width - 8, frame_height - 8,
+			  0, 0,
+			  (double)(frame_width - 8 + 1)/pattern_width,
+			  (double)(frame_height - 8 + 1)/pattern_height,
+			  GDK_INTERP_BILINEAR);
 	
 	/* if we're dragging, get rid of the light-colored halo */
 	if (dragging) {
-		temp_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, frame_width - 6, frame_height - 6);
-		gdk_pixbuf_copy_area (pixbuf, 2, 2, frame_width - 6, frame_height - 6, temp_pixbuf, 0, 0);
+		temp_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, frame_width - 8, frame_height - 8);
+		gdk_pixbuf_copy_area (pixbuf, 2, 2, frame_width - 8, frame_height - 8, temp_pixbuf, 0, 0);
 		g_object_unref (pixbuf);
 		pixbuf = temp_pixbuf;
 	}
