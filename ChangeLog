@@ -1,3 +1,18 @@
+2000-10-09  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+
+	* src/nautilus-shell-ui.xml:
+	added a "min_width" attribute to the toolbar buttons, so they are
+	positioned better.  You need to get the latest Bonobo to see the
+	effects of this.
+		
+	* icons/gnome/gnome.xml:
+	made clicking on the throbber in the gnome theme go to www.gnome.org
+	
+	* libnautilus-extensions/nautilus-icon-factory.c: (set_theme):
+	changed the name of the theme property for default icon redirection
+	from "icons" to "icon-images" to disambiguate it from icon view
+	theme properies.
+	
 2000-10-09  Darin Adler  <darin@eazel.com>
 
 	* components/tree/nautilus-tree-view.c:

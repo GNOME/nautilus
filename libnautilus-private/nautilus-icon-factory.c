@@ -707,7 +707,7 @@ set_theme (const char *theme_name)
 
 	/* now set up the default theme */
         g_free (factory->default_theme_name);	
-	factory->default_theme_name = nautilus_theme_get_theme_data ("icons", "DEFAULT_THEME");
+	factory->default_theme_name = nautilus_theme_get_theme_data ("icon-images", "DEFAULT_THEME");
 	check_local_theme (factory->default_theme_name, &factory->local_default_theme);
 			
 	/* we changed the theme, so emit the icons_changed signal */
