@@ -987,7 +987,14 @@ get_themed_icon_file_path (const char *theme_name,
 			(doc, "icon", "size", size_as_string);
 		g_free (size_as_string);
 		
-		property = xmlGetProp (node, "embedded_text_rectangle");		
+		property = NULL;
+		if (aa_mode) {
+			property = xmlGetProp (node, "embedded_text_rectangle_aa");		
+		}
+		if (property == NULL) {
+			property = xmlGetProp (node, "embedded_text_rectangle");				
+		}
+		
 		if (property != NULL) {
 			
 			if (sscanf (property,
@@ -1001,7 +1008,14 @@ get_themed_icon_file_path (const char *theme_name,
 			xmlFree (property);
 		}
 
-		property = xmlGetProp (node, "attach_points");
+		property = NULL;
+		if (aa_mode) {
+			property = xmlGetProp (node, "attach_points_aa");
+		}
+		if (property == NULL) {
+			property = xmlGetProp (node, "attach_points");
+		}
+		
 		parse_attach_points (&details->attach_points, property);	
 		xmlFree (property);
 		

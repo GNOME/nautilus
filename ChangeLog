@@ -1,3 +1,31 @@
+2001-02-21  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 5939, margins in text icons are weirdly proportioned.
+	Fixed by distinguishing the rectangles for the anti-aliased and
+	non-aa icon types
+	
+	* icons/i-regular.xml:
+	added and tweaked both aa and non-aa text rectangles
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(get_themed_icon_file_path):
+	get a separate text rectangle for anti-aliased mode if present
+	
+	fixed bug 6708, Change "support" link in menus, by moving and
+	renamed the "support" item from the services menu to the help menu.
+	This bug isn't finished yet, since we still have to rename the
+	support uri, but it isn't ready on the service yet.
+	
+	* src/nautilus-service-ui.xml:
+	removed support item
+	* src/nautilus-shell-ui.xml:
+	added customer service item
+	* src/nautilus-window-menus.c: (help_menu_customer_service),
+	(nautilus_window_initialize_menus):
+	added code to handle the customer service command
+	* src/nautilus-window-service-ui.c:
+	(nautilus_window_install_service_ui):
+	removed callback for the support command
+
 2001-02-21  Dan Mueth  <dan@eazel.com>
 
 	reviewed by: Mike Fleming  <mfleming@eazel.com>
