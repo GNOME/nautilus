@@ -1,3 +1,13 @@
+2002-10-10  Dave Camp  <dave@ximian.com>
+
+	* src/file-manager/Makefile.am: Added egg-recent files.  
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_launch_application), (fm_directory_view_init),
+	(fm_directory_view_destroy): Add files to the EggRecentModel when
+	launching apps.
+
+	Patch from James Willcox <jwillcox@gnome.org>
+	
 2002-10-10  Alexander Larsson  <alexl@redhat.com>
 
 	* libnautilus-private/nautilus-theme.c (theme_list_prepend):

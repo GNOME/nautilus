@@ -30,6 +30,7 @@
 #include <config.h>
 #include "fm-directory-view.h"
 
+#include "egg-recent-model.h"
 #include "fm-desktop-icon-view.h"
 #include "fm-error-reporting.h"
 #include "fm-properties-window.h"
@@ -236,6 +237,8 @@ struct FMDirectoryViewDetails
 	gboolean send_selection_change_to_shell;
 
 	NautilusFile *file_monitored_for_open_with;
+
+	EggRecentModel *recent_model;
 };
 
 typedef enum {
@@ -572,6 +575,8 @@ fm_directory_view_launch_application (GnomeVFSMimeApplication *application,
 				      NautilusFile *file,
 				      FMDirectoryView *directory_view)
 {
+	char *uri;
+
 	g_assert (application != NULL);
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
@@ -579,6 +584,10 @@ fm_directory_view_launch_application (GnomeVFSMimeApplication *application,
 	nautilus_launch_application
 		(application, file, fm_directory_view_get_containing_window (directory_view));
 	
+	uri = nautilus_file_get_uri (file);
+	egg_recent_model_add (directory_view->details->recent_model, uri);
+
+	g_free (uri);
 }				      
 
 static void
@@ -1348,6 +1357,8 @@ fm_directory_view_init (FMDirectoryView *view)
 				      click_policy_changed_callback, view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST, 
 				      sort_directories_first_changed_callback, view);
+
+	view->details->recent_model = egg_recent_model_new (EGG_RECENT_MODEL_SORT_NONE);
 }
 
 static void
@@ -1358,6 +1369,11 @@ fm_directory_view_destroy (GtkObject *object)
 	view = FM_DIRECTORY_VIEW (object);
 
 	disconnect_model_handlers (view);
+
+	if (view->details->recent_model) {
+		g_object_unref (view->details->recent_model);
+		view->details->model = NULL;
+	}
 
 	/* Since we are owned by the NautilusView, if we're going it's
 	 * gone. It would be even better to NULL this out when the

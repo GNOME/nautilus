@@ -15,6 +15,13 @@ INCLUDES = 					\
 	-DGNOME_DISABLE_DEPRECATED \
 	$(NULL)	
 
+EGG_RECENT_FILES =		\
+	egg-recent-model.c	\
+	egg-recent-model.h	\
+	egg-recent-item.c	\
+	egg-recent-item.h       \
+	egg-recent-vfs-utils.c  \
+	egg-recent-vfs-utils.h
 
 libnautilus_file_manager_la_SOURCES=	\
 	fm-desktop-icon-view.c		\
@@ -38,6 +45,7 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-properties-window.h 		\
 	fm-search-list-view.h 		\
 	nautilus-indexing-info.h 	\
+	$(EGG_RECENT_FILES)		\
 	$(NULL)
 
 uidir = $(datadir)/gnome-2.0/ui
@@ -49,3 +57,8 @@ ui_DATA =					\
 	$(NULL)
 
 EXTRA_DIST = $(ui_DATA)
+
+EGG_DIR = $(srcdir)/../../../libegg/libegg/recent-files
+
+regenerate-built-sources:
+	EGGFILES="$(EGG_RECENT_FILES)" EGGDIR="$(EGG_DIR)" $(srcdir)/update-from-egg.sh
