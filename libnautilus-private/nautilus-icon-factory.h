@@ -69,6 +69,12 @@ typedef enum {
 #define NAUTILUS_ICON_SIZE_LARGER	96
 #define NAUTILUS_ICON_SIZE_LARGEST     192
 
+/* Icon size to use for menus. NAUTILUS_ICON_SIZE_SMALLEST
+ * is a little too small and NAUTILUS_ICON_SIZE_SMALLER is
+ * a little too big.
+ */
+#define NAUTILUS_ICON_SIZE_FOR_MENUS	20
+
 typedef struct NautilusScalableIcon NautilusScalableIcon;
 
 /* Instead of a class declaration here, I will just document

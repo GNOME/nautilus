@@ -242,7 +242,7 @@ create_pixmap_widget_for_bookmark (const NautilusBookmark *bookmark)
 	GdkBitmap *mask;
 
 	if (!nautilus_bookmark_get_pixmap_and_mask (bookmark, 
-						    NAUTILUS_ICON_SIZE_SMALLER,
+						    NAUTILUS_ICON_SIZE_FOR_MENUS,
 					  	    &gdk_pixmap, 
 					  	    &mask)) {
 		return NULL;

@@ -343,7 +343,7 @@ append_bookmark_to_menu (NautilusWindow *window,
 	char *name;
 
 	/* Attempt to retrieve icon and mask for bookmark */
-	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_SMALLER);
+	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS);
 
 	/* Set up pixmap type based on result of function.  If we fail, set pixmap type to none */
 	if (pixbuf != NULL) {

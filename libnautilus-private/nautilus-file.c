@@ -1409,6 +1409,26 @@ nautilus_file_get_mime_type (NautilusFile *file)
 }
 
 /**
+ * nautilus_file_is_mime_type
+ * 
+ * Check whether a file is of a particular MIME type.
+ * @file: NautilusFile representing the file in question.
+ * @mime_type: The MIME-type string to test (e.g. "text/plain")
+ * 
+ * Return value: TRUE if @mime_type exactly matches the
+ * file's MIME type.
+ * 
+ **/
+gboolean
+nautilus_file_is_mime_type (NautilusFile *file, const char *mime_type)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+	g_return_val_if_fail (mime_type != NULL, FALSE);
+
+	return nautilus_strcmp (file->details->info->mime_type, mime_type) == 0;
+}
+
+/**
  * nautilus_file_get_emblem_names
  * 
  * Return the list of names of emblems that this file should display,

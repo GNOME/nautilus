@@ -749,14 +749,6 @@ nautilus_scalable_icon_equal (gconstpointer a,
 		&& nautilus_strcmp (icon_a->modifier, icon_b->modifier) == 0; 
 }
 
-/* Return true if the given suffix is a scalable image. */
-static gboolean
-str_has_svg_suffix (const char *path)
-{
-	return nautilus_str_has_suffix (path, ".svg")
-		|| nautilus_str_has_suffix (path, ".SVG");
-}
-
 NautilusScalableIcon *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifier)
 {
@@ -797,12 +789,8 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 		}
 	}
 	
-	/* handle .svg files */
-	/* FIXME bugzilla.eazel.com 641: 
-	 * we should be checking the mime-type but for now we use the suffix, 
-	 * as the mime-type isn't defined in standard setups 
-	 */
-	if (uri == NULL && str_has_svg_suffix (file_uri)) {
+	/* handle SVG files */
+	if (uri == NULL && nautilus_file_is_mime_type (file, "image/svg")) {
 		uri = g_strdup (file_uri);
 	}
 	
@@ -1053,6 +1041,9 @@ get_larger_icon_size (guint size)
 	if (size < NAUTILUS_ICON_SIZE_SMALLEST) {
 		return NAUTILUS_ICON_SIZE_SMALLEST;
 	}
+	if (size < NAUTILUS_ICON_SIZE_FOR_MENUS) {
+		return NAUTILUS_ICON_SIZE_FOR_MENUS;
+	}
 	if (size < NAUTILUS_ICON_SIZE_SMALLER) {
 		return NAUTILUS_ICON_SIZE_SMALLER;
 	}
@@ -1091,6 +1082,9 @@ get_smaller_icon_size (guint size)
 	}
 	if (size > NAUTILUS_ICON_SIZE_SMALLER) {
 		return NAUTILUS_ICON_SIZE_SMALLER;
+	}
+	if (size > NAUTILUS_ICON_SIZE_FOR_MENUS) {
+		return NAUTILUS_ICON_SIZE_FOR_MENUS;
 	}
 	return NAUTILUS_ICON_SIZE_SMALLEST;
 }
@@ -1144,6 +1138,19 @@ load_specific_image_svg (const char *path, guint size_in_pixels)
 	return result;
 }
 
+static gboolean
+path_represents_svg_image (const char *path) 
+{
+	NautilusFile *file;
+	gboolean result;
+
+	file = nautilus_file_get (path);
+	result = file != NULL && nautilus_file_is_mime_type (file, "image/svg");
+	nautilus_file_unref (file);
+
+	return result;
+}
+
 /* This load function returns NULL if the icon is not available at this size. */
 static GdkPixbuf *
 load_specific_image (NautilusScalableIcon *scalable_icon,
@@ -1161,8 +1168,8 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 		 * and gdk-pixbuf. And there's the same problem with the rsvg_render_file library.
 		 */
 		if (nautilus_str_has_prefix (scalable_icon->uri, "file://")) {
-			/* FIXME bugzilla.eazel.com 641: should use MIME-type instead of suffix */
-			if (str_has_svg_suffix (scalable_icon->uri)) {
+			/* Handle SVG files */
+			if (path_represents_svg_image (scalable_icon->uri)) {
 				memset (text_rect, 0, sizeof (*text_rect));
 				return load_specific_image_svg (scalable_icon->uri + 7, size_in_pixels);
 			}
@@ -1187,8 +1194,7 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 			return NULL;
 		}
 
-		/* FIXME bugzilla.eazel.com 641: should use MIME-type instead of suffix */
-		if (str_has_svg_suffix (path)) {
+		if (path_represents_svg_image (path)) {
 			image = load_specific_image_svg (path, size_in_pixels);
 		} else {
 			image = gdk_pixbuf_new_from_file (path);

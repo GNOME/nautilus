@@ -1,3 +1,36 @@
+2000-05-02  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 641: should check MIME type for SVG files.
+	Fixed bug 438: Bookmark menu items need to limit icon size
+
+	* libnautilus-extensions/nautilus-icon-factory.h:
+	Defined a new standard icon size, NAUTILUS_ICON_SIZE_FOR_MENUS.
+	None of the existing standard sizes look good in menus.
+
+	* libnautilus-extensions/nautilus-file.h,
+	* libnautilus-extensions/nautilus-file.c
+	(nautilus_file_is_mime_type): New function, compares against
+	a particular MIME type so the caller doesn't have to get the
+	MIME type and worry about whether to free it or not.
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(get_larger_icon_size),
+	(get_smaller_icon_size): Include NAUTILUS_ICON_SIZE_FOR_MENUS
+	when looking for the next size.
+	(str_has_svg_suffix): Removed this function.
+	(nautilus_icon_factory_get_icon_for_file): Use
+	nautilus_file_is_mime_type to check for SVG instead
+	of checking file suffix.
+	(path_represents_svg_image): New function.
+	(load_specific_image): Use path_represents_svg_image to
+	check for SVG instead of checking file suffix.
+
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(create_pixmap_widget_for_bookmark): Use 
+	NAUTILUS_ICON_SIZE_FOR_MENUS.
+	* src/nautilus-window-menus.c (append_bookmark_to_menu):
+	Use NAUTILUS_ICON_SIZE_FOR_MENUS.
+
 2000-05-02  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c (icon_new),

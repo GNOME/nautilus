@@ -102,6 +102,8 @@ char *           nautilus_file_get_mapped_uri            (NautilusFile         *
 GnomeVFSFileSize nautilus_file_get_size                  (NautilusFile         *file);
 GnomeVFSFileType nautilus_file_get_file_type             (NautilusFile         *file);
 const char *     nautilus_file_get_mime_type             (NautilusFile         *file);
+gboolean	 nautilus_file_is_mime_type		 (NautilusFile	       *file,
+							  const char	       *mime_type);
 gboolean         nautilus_file_is_symbolic_link          (NautilusFile         *file);
 gboolean         nautilus_file_is_executable             (NautilusFile         *file);
 gboolean         nautilus_file_is_directory              (NautilusFile         *file);
