@@ -1,3 +1,14 @@
+2000-07-06  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_get_drop_action):
+	Fix a problem that I introduced with my recent change to 
+	drag&drop - colors, background images, etc would no longet
+	get accepted in the icon view.
+	Made nautilus_icon_container_get_drop_action only check
+	the selection list and the drop target if the dragged data
+	is a file operation drag&drop.
+
 2000-07-06  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar-tabs.c: (nautilus_sidebar_tabs_remove_view):

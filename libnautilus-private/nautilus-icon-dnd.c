@@ -739,24 +739,38 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 	char *drop_target;
 	gboolean icon_hit;
 
-	if (container->details->dnd_info->drag_info.selection_list == NULL) {
-		*default_action = 0;
-		*non_default_action = 0;
-		return;
+	g_assert (container->details->dnd_info->drag_info.got_drop_data_type);
+
+	switch (container->details->dnd_info->drag_info.data_type) {
+	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+		if (container->details->dnd_info->drag_info.selection_list == NULL) {
+			*default_action = 0;
+			*non_default_action = 0;
+			return;
+		}
+		drop_target = nautilus_icon_container_find_drop_target (container,
+			context, x, y, &icon_hit);
+		if (!drop_target) {
+			*default_action = 0;
+			*non_default_action = 0;
+			return;
+		}
+		nautilus_drag_default_drop_action (drop_target, 
+			container->details->dnd_info->drag_info.selection_list, 
+			default_action, non_default_action);
+		g_free (drop_target);
+		break;
+
+	case NAUTILUS_ICON_DND_COLOR:
+	case NAUTILUS_ICON_DND_BGIMAGE:
+	case NAUTILUS_ICON_DND_KEYWORD:
+		*default_action = GDK_ACTION_MOVE;
+		*default_action = GDK_ACTION_MOVE;
+		break;
+
+	default:
 	}
 
-	drop_target = nautilus_icon_container_find_drop_target (container,
-		context, x, y, &icon_hit);
-
-	if (!drop_target) {
-		*default_action = 0;
-		*non_default_action = 0;
-		return;
-	}
-	
-	nautilus_drag_default_drop_action (drop_target, 
-		container->details->dnd_info->drag_info.selection_list, default_action, non_default_action);
-	g_free (drop_target);
 }
 
 static void
