@@ -1,9 +1,11 @@
 <Root>
+
 <commands>
         <cmd name="Cut" accel="*Control*x" sensitive="1"/>
         <cmd name="Copy" accel="*Control*c" sensitive="1"/>
         <cmd name="Paste" accel="*Control*v" sensitive="1"/>
         <cmd name="Clear" sensitive="1"/>
+	<cmd name="Select All" accel="*Control*a" sensitive="1"/>
 </commands>
 
 <menu>
@@ -28,6 +30,9 @@
 				  _tip="Remove the selected text without putting it on the clipboard"
         			  pixtype="stock" pixname="Clear"
 				  verb="Clear"/>
+			<menuitem name="Select All"
+				  _label="Select _All"
+				  verb="Select All"/>
 	</submenu>
 </menu>
 </Root>

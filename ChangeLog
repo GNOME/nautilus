@@ -1,3 +1,79 @@
+2001-03-16  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix bug 6495 (Emacs-style keybindings not working in location bar
+	and other NautilusEntry fields) by adding an expert preference to
+	control whether the Emacs shortcuts or the ones in the menu bar
+	take precedence. I started with Maciej's patch and did many
+	refinements.
+
+	Fix bug 1788 ("Select All" needs to be implemented for text): I
+	had to add Select All so it won't do the icon view's Select All
+	when you do a select all with the location bar focused.
+
+	Fix bug 5612 (clicking to deselect causes incorrect menu
+	sensitivity) by adding another signal handler for button clicks.
+
+	Fix bug 7581 (When trying to restart Nautilus after crash from bug
+	7579 I get a Segmentation Fault). I was just lucky enough to run
+	into the problem on my machine.
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_descriptions),
+	(global_preferences_install_defaults),
+	(global_preferences_install_visibility),
+	(global_preferences_create_dialog): Added the new Emacs-shortcut
+	preference with the wording requested in the bug report.
+	
+	* libnautilus-extensions/nautilus-entry.h:
+	* libnautilus-extensions/nautilus-entry.c:
+	(emacs_shortcuts_preference_changed_callback): Track the
+	preference.
+	(nautilus_entry_initialize): Set up the callback to track the
+	preference.
+	(nautilus_entry_destroy): Tear down the callback to track the
+	preference.
+	(nautilus_entry_key_press): Allow the emacs shortcuts built into
+	GtkEntry to work if the preference is set that way. Also, only
+	emit the selection_changed signal if the key is actually handled.
+	(nautilus_entry_motion_notify): Simplify the logic, since it's
+	OK to send the selection_changed signal a little too often.
+	(select_all_at_idle): Handle the case where the object is
+	destroyed.
+	(nautilus_entry_select_all_at_idle): Ref the object to handle the
+	case where the object is destroyed before the idle happens.
+	(nautilus_entry_button_press): Send a selection_changed message,
+	since pressing the button can cause a selection change.
+	(nautilus_entry_button_release): Send a selection_changed message,
+	since pressing the button can cause a selection change.
+	(nautilus_entry_initialize_class): Add new default handlers. Also,
+	move to bottom of file so we don't need so many forward
+	declarations.
+
+	* libnautilus/nautilus-clipboard-ui.xml: Add a Select All Text
+	command.
+	* libnautilus/nautilus-clipboard.c: (select_all): New function to
+	select all the text in a GtkEditable. Sadly it needs a special
+	case for GtkText.
+	(select_all_idle_callback): Callback used to select the text from
+	idle.
+	(select_all_callback): Callback that sets up the idle. Called from
+	the bonobo verb.
+	(initialize_clipboard_component_with_callback_data): Add the
+	callback for Select All.
+	
+	* librsvg/rsvg.c: (rsvg_state_init): Initialize more fields,
+	including font_size.
+	(rsvg_text_handler_characters): Don't try to draw if the font
+	size is 0 or negative.
+	* librsvg/art_render_mask.c: (art_render_mask_render): Handle
+	cases where x1 < x0. The old code would seg. fault. This was the
+	reason we got a crash in bug 7581.
+	
+	* configure.in: Upped the required version of gnome-vfs.
+
 2001-03-16  Robey Pointer  <robey@eazel.com>
 
 	* nautilus-installer/src/main.c: (main):

@@ -217,6 +217,8 @@ global_preferences_install_descriptions (void)
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
 					      _("Don't include the built-in bookmarks in the Bookmarks menu"));
 	
+	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS,
+					      _("Use Emacs-style keyboard shortcuts in text fields"));
 
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_HOME_URI,
 					      _("Location:"));
@@ -333,6 +335,10 @@ global_preferences_install_defaults (void)
 						 "size|date_modified|type");
 	
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
+						  NAUTILUS_USER_LEVEL_NOVICE,
+						  FALSE);
+
+	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS,
 						  NAUTILUS_USER_LEVEL_NOVICE,
 						  FALSE);
 	
@@ -475,6 +481,9 @@ global_preferences_install_visibility (void)
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
 						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS,
+						     NAUTILUS_USER_LEVEL_ADVANCED);
 }
 
 /*
@@ -532,7 +541,8 @@ global_preferences_create_dialog (void)
 	appearance_pane = nautilus_preferences_box_add_pane (preference_box,
 							     _("Appearance"));
 	
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane), _("Smoother Graphics"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
+					     _("Smoother Graphics"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (appearance_pane),
 							 0,
@@ -551,13 +561,17 @@ global_preferences_create_dialog (void)
 	windows_and_desktop_pane = nautilus_preferences_box_add_pane (preference_box,
 								      _("Windows & Desktop"));
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane), _("Desktop"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane),
+					     _("Desktop"));
+
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane),
 							 0,
 							 NAUTILUS_PREFERENCES_SHOW_DESKTOP,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane), _("Opening New Windows"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane),
+					     _("Opening New Windows"));
+
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane),
 							 1,
 							 NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
@@ -580,35 +594,50 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_START_WITH_SIDEBAR,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane), _("Trash Behavior"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane),
+					     _("Trash Behavior"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane),
 							 2,
 							 NAUTILUS_PREFERENCES_CONFIRM_TRASH,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	
-	
+	/* FIXME: This group clearly doesn't belong in Windows &
+	 * Desktop, but there's no obviously-better place for it and
+	 * it probably doesn't deserve a pane of its own.
+	 */
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane),
+					     _("Keyboard Shortcuts"));
+
+	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane),
+							 3,
+							 NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS,
+							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+
 	/*
 	 * Folder Views pane
 	 */
 	directory_views_pane = nautilus_preferences_box_add_pane (preference_box,
 								 _("Icon & List Views"));
 	
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), _("Click Behavior"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
+					     _("Click Behavior"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
 							 0,
 							 NAUTILUS_PREFERENCES_CLICK_POLICY,
 							 NAUTILUS_PREFERENCE_ITEM_ENUM);
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), _("Executable Text Files"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
+					     _("Executable Text Files"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
 							 1,
 							 NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
 							 NAUTILUS_PREFERENCE_ITEM_ENUM);
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane), _("Show/Hide Options"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
+					     _("Show/Hide Options"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
 							 2,
@@ -683,14 +712,16 @@ global_preferences_create_dialog (void)
 	navigation_pane = nautilus_preferences_box_add_pane (preference_box,
 							    _("Navigation"));
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (navigation_pane), _("Home"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (navigation_pane),
+					     _("Home"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (navigation_pane),
 							 0,
 							 NAUTILUS_PREFERENCES_HOME_URI,
 							 NAUTILUS_PREFERENCE_ITEM_EDITABLE_STRING);
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (navigation_pane), _("HTTP Proxy Settings"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (navigation_pane),
+					     _("HTTP Proxy Settings"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (navigation_pane),
 							 1,
@@ -715,44 +746,47 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
-
 	/*
 	 * Tradeoffs
 	 */
 	tradeoffs_pane = nautilus_preferences_box_add_pane (preference_box,
 							    _("Speed Tradeoffs"));
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Show Text in Icons"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
+					     _("Show Text in Icons"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
 							 0,
 							 NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
 							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Show Count of Items in Folders"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
+					     _("Show Count of Items in Folders"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
 							 1,
 							 NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
 							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Show Thumbnails for Image Files"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
+					     _("Show Thumbnails for Image Files"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
 							 2,
 							 NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
 
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Preview Sound Files"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
+					     _("Preview Sound Files"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
 							 3,
 							 NAUTILUS_PREFERENCES_PREVIEW_SOUND,
 							 NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM);
 
-	
 	/* FIXME bugzilla.eazel.com 2560: This title phrase needs improvement. */
-	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane), _("Make Folder Appearance Details Public"));
+	nautilus_preferences_pane_add_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
+					     _("Make Folder Appearance Details Public"));
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (tradeoffs_pane),
 							 4,

@@ -140,21 +140,18 @@ rsvg_ctx_new (void)
 static void
 rsvg_state_init (RsvgState *state)
 {
+  memset (state, 0, sizeof (*state));
+
   art_affine_identity (state->affine);
 
   state->opacity = 0xff;
   state->fill = rsvg_paint_server_parse (NULL, "#000");
   state->fill_opacity = 0xff;
-  state->stroke = NULL;
   state->stroke_opacity = 0xff;
   state->stroke_width = 1;
   state->cap = ART_PATH_STROKE_CAP_BUTT;
   state->join = ART_PATH_STROKE_JOIN_MITER;
-  state->stop_color = 0;
   state->stop_opacity = 0xff;
-
-  state->in_defs = FALSE;
-  state->save_pixbuf = NULL;
 }
 
 static void
@@ -952,7 +949,7 @@ rsvg_text_handler_characters (RsvgSaxHandler *self, const xmlChar *ch, int len)
 
   state = &ctx->state[ctx->n_state - 1];
 
-  if (state->fill != NULL)
+  if (state->fill != NULL && state->font_size > 0)
     {
       pixbuf = ctx->pixbuf;
       has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);

@@ -28,14 +28,14 @@
  */
 
 #include <config.h>
-#include "nautilus-bonobo-ui.h"
 #include "nautilus-clipboard.h"
 
+#include "nautilus-bonobo-ui.h"
 #include <bonobo/bonobo-ui-util.h>
-#include <gtk/gtkeditable.h>
 #include <gtk/gtkinvisible.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtktext.h>
 
 typedef void (* EditableFunction) (GtkEditable *editable);
 
@@ -134,6 +134,54 @@ clear_callback (BonoboUIComponent *ui,
 }
 
 static void
+select_all (GtkEditable *editable)
+{
+	int end;
+
+	/* Workaround for bug in GtkText. It can't handle a -1
+	 * passed in to set_position.
+	 */
+	end = -1;
+	if (GTK_IS_TEXT (editable)) {
+		end = gtk_text_get_length (GTK_TEXT (editable));
+	}
+	
+	gtk_editable_set_position (editable, end);
+	gtk_editable_select_region (editable, 0, end);
+}
+
+static gboolean
+select_all_idle_callback (gpointer callback_data)
+{
+	GtkEditable *editable;
+
+	editable = GTK_EDITABLE (callback_data);
+
+	if (!GTK_OBJECT_DESTROYED (GTK_OBJECT (editable))) {
+		select_all (editable);
+	}
+
+	gtk_object_unref (GTK_OBJECT (editable));
+
+	return FALSE;
+}
+
+static void
+select_all_callback (BonoboUIComponent *ui,
+		     gpointer callback_data,
+		     const char *command_name)
+{
+	GtkEditable *editable;
+
+	g_assert (BONOBO_IS_UI_COMPONENT (ui));
+	g_assert (strcmp (command_name, "Select All") == 0);
+
+	editable = GTK_EDITABLE (callback_data);
+	gtk_object_ref (GTK_OBJECT (editable));
+	gtk_idle_add (select_all_idle_callback, editable);
+}
+
+static void
 set_menu_item_sensitive (BonoboUIComponent *component,
 			 const char *path,
 			 gboolean sensitive)
@@ -146,23 +194,25 @@ set_menu_item_sensitive (BonoboUIComponent *component,
 	
 }
 
+#if 0
 static void
 set_paste_sensitive_if_clipboard_contains_data (BonoboUIComponent *component)
 {
-#if 0
 	gboolean clipboard_contains_data;
 	
-	/* FIXME: This is wrong.  This will only return non-null if 
-	   the clipboard owner is in process, which may not be the case,
-	   and we may still be able to paste data */
-
+	/* FIXME: This check is wrong, because gdk_selection_owner_get
+	 * will only return non-null if the clipboard owner is in
+	 * process, which may not be the case, and we may still be
+	 * able to paste data.
+	 */
 	clipboard_contains_data = 
 		(gdk_selection_owner_get (GDK_SELECTION_PRIMARY) != NULL);
-#endif
+
 	set_menu_item_sensitive (component,
 				 NAUTILUS_COMMAND_PASTE,
-				 TRUE);
+				 clipboard_contains_data);
 }
+#endif
 
 static void
 set_clipboard_menu_items_sensitive (BonoboUIComponent *component)
@@ -176,13 +226,10 @@ set_clipboard_menu_items_sensitive (BonoboUIComponent *component)
 	set_menu_item_sensitive (component,
 				 NAUTILUS_COMMAND_CLEAR,
 				 TRUE);
-	set_paste_sensitive_if_clipboard_contains_data (component);
 }
 
-
 static void
-set_clipboard_menu_items_insensitive (BonoboUIComponent *component,
-				      gboolean enable_paste_for_full_clipboard)
+set_clipboard_menu_items_insensitive (BonoboUIComponent *component)
 {
        	set_menu_item_sensitive (component,
 				 NAUTILUS_COMMAND_CUT,
@@ -193,16 +240,7 @@ set_clipboard_menu_items_insensitive (BonoboUIComponent *component,
 	set_menu_item_sensitive (component,
 				 NAUTILUS_COMMAND_CLEAR,
 				 FALSE);
-	if (enable_paste_for_full_clipboard) {
-		set_paste_sensitive_if_clipboard_contains_data (component);
-	}
-	else {
-		set_menu_item_sensitive (component,
-					 NAUTILUS_COMMAND_PASTE,
-					 FALSE);
-	}
 }
-
 
 typedef struct {
 	BonoboUIComponent *component;
@@ -213,19 +251,21 @@ typedef struct {
 static gboolean
 clipboard_items_are_merged_in (GtkWidget *widget)
 {
-	return GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (widget), "clipboard_menu_items_merged"));
+	return GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (widget),
+						     "Nautilus:clipboard_menu_items_merged"));
 }
 
 static void
-set_clipboard_items_are_merged_in (GtkObject *widget_object,
+set_clipboard_items_are_merged_in (GtkObject *widget_as_object,
 				   gboolean merged_in)
 {
-	gtk_object_set_data (widget_object, "clipboard_menu_items_merged",
+	gtk_object_set_data (widget_as_object,
+			     "Nautilus:clipboard_menu_items_merged",
 			     GINT_TO_POINTER (merged_in));
 }
 
 static void
-merge_in_clipboard_menu_items (GtkObject *widget_object,
+merge_in_clipboard_menu_items (GtkObject *widget_as_object,
 			       TargetCallbackData *target_data)
 {
 	BonoboUIComponent *ui;
@@ -237,7 +277,6 @@ merge_in_clipboard_menu_items (GtkObject *widget_object,
 	container = target_data->container;
 	add_selection_callback = target_data->editable_shares_selection_changes;
 
-
 	bonobo_ui_component_set_container (ui,
 					   container);
 	bonobo_ui_component_freeze (ui, NULL);
@@ -245,25 +284,23 @@ merge_in_clipboard_menu_items (GtkObject *widget_object,
 			       DATADIR,
 			       "nautilus-clipboard-ui.xml",
 			       "nautilus");
-
 	
 	if (add_selection_callback) {
-		gtk_signal_connect_after (GTK_OBJECT (widget_object), "selection_changed",
+		gtk_signal_connect_after (GTK_OBJECT (widget_as_object), "selection_changed",
 					  selection_changed_callback, target_data);
-		selection_changed_callback (GTK_WIDGET (widget_object),
+		selection_changed_callback (GTK_WIDGET (widget_as_object),
 					    target_data);
 			
-	}
-	else {
+	} else {
 		/* If we don't use sensitivity, everything should be on */
 		set_clipboard_menu_items_sensitive (ui);
 	}
-	set_clipboard_items_are_merged_in (widget_object, TRUE);
+	set_clipboard_items_are_merged_in (widget_as_object, TRUE);
 	bonobo_ui_component_thaw (ui, NULL);
 }
 
 static void
-merge_out_clipboard_menu_items (GtkObject *widget_object,
+merge_out_clipboard_menu_items (GtkObject *widget_as_object,
 				TargetCallbackData *target_data)
 
 {
@@ -276,14 +313,12 @@ merge_out_clipboard_menu_items (GtkObject *widget_object,
 	bonobo_ui_component_unset_container (ui);
 
 	if (selection_callback_was_added) {
-		gtk_signal_disconnect_by_func (GTK_OBJECT (widget_object),
+		gtk_signal_disconnect_by_func (GTK_OBJECT (widget_as_object),
 					       selection_changed_callback,
 					       target_data);
 	}
-	set_clipboard_items_are_merged_in (widget_object, FALSE);
+	set_clipboard_items_are_merged_in (widget_as_object, FALSE);
 }
-
-
 
 static void
 focus_changed_callback (GtkWidget *widget,
@@ -301,7 +336,7 @@ focus_changed_callback (GtkWidget *widget,
 	/* Connect the component to the container if the widget has focus. */
 	ui = target_data->component;
 	if (GTK_WIDGET_HAS_FOCUS (widget)) {
-		if (clipboard_items_are_merged_in (widget) == FALSE) {
+		if (!clipboard_items_are_merged_in (widget)) {
 			merge_in_clipboard_menu_items (GTK_OBJECT (widget),
 						       target_data);
 		}
@@ -335,14 +370,11 @@ selection_changed_callback (GtkWidget *widget,
 	component = target_data->component;
 	editable = GTK_EDITABLE (widget);
 
-	if (editable->selection_start_pos !=  editable->selection_end_pos) {
+	if (editable->selection_start_pos != editable->selection_end_pos) {
 		set_clipboard_menu_items_sensitive (component);
+	} else {
+		set_clipboard_menu_items_insensitive (component);
 	}
-	else {
-		set_clipboard_menu_items_insensitive (component,
-						      TRUE);
-	}
-	
 }
 
 static void
@@ -374,6 +406,7 @@ initialize_clipboard_component_with_callback_data (GtkEditable *target,
 		BONOBO_UI_VERB ("Copy", copy_callback),
 		BONOBO_UI_VERB ("Paste", paste_callback),
 		BONOBO_UI_VERB ("Clear", clear_callback),
+		BONOBO_UI_VERB ("Select All", select_all_callback),
 		BONOBO_UI_VERB_END
 	};
 	BonoboUIComponent *ui;
@@ -433,7 +466,8 @@ nautilus_clipboard_set_up_editable (GtkEditable *target,
 static gboolean
 widget_was_set_up_with_selection_sensitivity (GtkWidget *widget)
 {
-	return GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (widget), "shares_selection_changes"));
+	return GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (widget),
+						     "Nautilus:shares_selection_changes"));
 }
 
 static void
@@ -479,7 +513,9 @@ nautilus_clipboard_set_up_editable_in_control (GtkEditable *target,
 	/* We'd like to use gtk_signal_connect_while_alive, but it's
 	 * not compatible with gtk_signal_disconnect calls.
 	 */
-	gtk_object_set_data (GTK_OBJECT (target), "shares_selection_changes", GINT_TO_POINTER (shares_selection_changes));
+	gtk_object_set_data (GTK_OBJECT (target),
+			     "Nautilus:shares_selection_changes",
+			     GINT_TO_POINTER (shares_selection_changes));
 	gtk_signal_connect (GTK_OBJECT (target),
 			    "focus_in_event",
 			    first_focus_callback,

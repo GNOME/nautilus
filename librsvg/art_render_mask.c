@@ -63,26 +63,25 @@ art_render_mask_render (ArtRenderCallback *self, ArtRender *render,
   int x0 = render->x0, x1 = render->x1;
   int z_x0 = z->x0, z_x1 = z->x1;
   int width = x1 - x0;
+  int z_width = z_x1 - z_x0;
   art_u8 *alpha_buf = render->alpha_buf;
 
-  if (y < z->y0 || y >= z->y1)
+  if (y < z->y0 || y >= z->y1 || z_width <= 0)
     memset (alpha_buf, 0, width);
   else
     {
       const art_u8 *src_line = z->mask_buf + (y - z->y0) * z->rowstride;
-      art_u8 *dst_line = alpha_buf + z->x0 - x0;
-      int z_width = z->x1 - z->x0;
+      art_u8 *dst_line = alpha_buf + z_x0 - x0;
 
       if (z_x0 > x0)
 	memset (alpha_buf, 0, z_x0 - x0);
+      
       if (z->first)
-	{
-	  memcpy (dst_line, src_line, z_width);
-	}
+	memcpy (dst_line, src_line, z_width);
       else
 	{
 	  int x;
-
+	  
 	  for (x = 0; x < z_width; x++)
 	    {
 	      int v;
@@ -99,6 +98,7 @@ art_render_mask_render (ArtRenderCallback *self, ArtRender *render,
 		}
 	    }
 	}
+      
       if (z_x1 < x1)
 	memset (alpha_buf + z_x1 - x0, 0, x1 - z_x1);
     }

@@ -43,33 +43,32 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_IS_ENTRY_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass),	NAUTILUS_TYPE_ENTRY))
 
-typedef struct NautilusEntry NautilusEntry;
-typedef struct NautilusEntryClass NautilusEntryClass;
+typedef struct NautilusEntryDetails NautilusEntryDetails;
 
-struct NautilusEntry {
+typedef struct {
 	GtkEntry parent;
-		
+	NautilusEntryDetails *details;
+	
+	/* FIXME: should be in details struct */
 	gboolean user_edit;
 	gboolean special_tab_handling;
 	gboolean cursor_obscured;
-};
+} NautilusEntry;
 
-struct NautilusEntryClass {
+typedef struct {
 	GtkEntryClass parent_class;
 
-	void (*user_changed) (NautilusEntry *entry);
-
+	void (*user_changed)      (NautilusEntry *entry);
 	void (*selection_changed) (NautilusEntry *entry);
+} NautilusEntryClass;
 
-};
-
-GtkType	   nautilus_entry_get_type           	(void);
-GtkWidget  *nautilus_entry_new                	(void);
-GtkWidget  *nautilus_entry_new_with_max_length 	(guint16 max);
-void 	   nautilus_entry_set_text 	     	(NautilusEntry *entry, 
-					      	 const gchar   *text);
-void       nautilus_entry_select_all         	(NautilusEntry *entry);
-void       nautilus_entry_select_all_at_idle 	(NautilusEntry *entry);
+GtkType     nautilus_entry_get_type            (void);
+GtkWidget  *nautilus_entry_new                 (void);
+GtkWidget  *nautilus_entry_new_with_max_length (guint16        max);
+void        nautilus_entry_set_text            (NautilusEntry *entry,
+						const char    *text);
+void        nautilus_entry_select_all          (NautilusEntry *entry);
+void        nautilus_entry_select_all_at_idle  (NautilusEntry *entry);
 
 END_GNOME_DECLS
 

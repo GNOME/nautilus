@@ -41,6 +41,9 @@ BEGIN_GNOME_DECLS
 /* Does the system have audio output capability */
 #define NAUTILUS_PREFERENCES_HAS_AUDIO_OUT			"preferences/audio_out"
 
+/* Text fields */
+#define NAUTILUS_PREFERENCES_USE_EMACS_SHORTCUTS                "preferences/use_emacs_shortcuts"
+
 /* Window options */
 #define NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW			"preferences/window_always_new"
 
