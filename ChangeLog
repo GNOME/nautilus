@@ -1,3 +1,12 @@
+2000-04-19  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 540 (need specific error message for "access denied"
+	when renaming)
+
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_renaming_file): Added case for
+	GNOME_VFS_ERROR_ACCESSDENIED
+
 2000-04-19  Shane Culpepper  <pepper@eazel.com>
 	
 	* components/services/install/eazel-install-lib-rpm.c

@@ -44,12 +44,15 @@ fm_report_error_renaming_file (const char *original_name,
 			message = g_strdup_printf ("The name \"%s\" is already used in this directory.\nPlease use a different name.", 
 						   new_name);
 			break;
+		case GNOME_VFS_ERROR_ACCESSDENIED:
+			message = g_strdup_printf ("You do not have the right permissions to rename\"%s.\"", original_name);
+			break;
 		default:
 			/* 
 			 * We should invent decent error messages for every case we actually experience.
 			 * If you hit this assert, please tell John Sullivan (sullivan@eazel.com).
 			 */
-			g_warning ("Hit unhandled case %d in fm_report_error_renaming_file", error);
+			g_warning ("Hit unhandled case %d in fm_report_error_renaming_file, tell sullivan@eazel.com", error);
 			message = g_strdup_printf ("Sorry, couldn't rename \"%s\" to \"%s\".", original_name, new_name);
 	}
 
