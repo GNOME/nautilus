@@ -864,7 +864,7 @@ jump_to_retry_page (EazelInstaller *installer)
 		break;
 		case REMOVE: {
 			char *required = packagedata_get_readable_name (rcase->u.remove.pack);
-			temp = g_strdup_printf ("%s could not be solved, will be forcefully removed.", 
+			temp = g_strdup_printf ("%s doesn't seem to have a more recent version -- will be forcefully removed.", 
 						required);
 			g_free (required);
 		}

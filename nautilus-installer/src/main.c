@@ -70,11 +70,13 @@ int
 main (int argc, char *argv[])
 {
 	EazelInstaller *installer;
+	char *fake_argv0 = "eazel-installer.sh";
 
 #ifdef ENABLE_NLS
 	bindtextdomain ("eazel-installer", GNOMELOCALEDIR);
 	textdomain ("eazel-installer");
 #endif
+	argv[0] = fake_argv0;
 	gnome_init_with_popt_table ("eazel-installer", VERSION, argc, argv, options, 0, NULL);
 
 	if (installer_show_build) {

@@ -1,3 +1,20 @@
+2000-11-05  Robey Pointer  <robey@eazel.com>
+
+	* nautilus-installer/src/Makefile:
+
+	Why is the Makefile checked in, anyway?  Oh well, this fixes all
+	the paths.  We should kill this file when we get time.
+	
+	* nautilus-installer/src/installer.c: (jump_to_retry_page):
+
+	Clean up explanation of a package that can't be upgraded (because
+	we don't have an upgrade for it).
+
+	* nautilus-installer/src/main.c: (main):
+
+	Insert a fake argv0 so that the popt error messages will give the
+	right executable name (and not the weird gunzipped one).
+
 2000-11-05  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* src/nautilus-shell.c: (display_caveat): updated to Bud's
