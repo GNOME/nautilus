@@ -965,6 +965,20 @@ nautilus_application_present_spatial_window (NautilusApplication *application,
 					     const char          *location,
 					     GdkScreen           *screen)
 {
+	return nautilus_application_present_spatial_window_with_selection (application,
+									   requesting_window,
+									   location,
+									   NULL,
+									   screen);
+}
+
+NautilusWindow *
+nautilus_application_present_spatial_window_with_selection (NautilusApplication *application,
+					     NautilusWindow      *requesting_window,
+					     const char          *location,
+					     GList		 *new_selection,
+					     GdkScreen           *screen)
+{
 	NautilusWindow *window;
 	GList *l;
 
@@ -984,6 +998,9 @@ nautilus_application_present_spatial_window (NautilusApplication *application,
 
 		if (eel_uris_match (existing_location, location)) {
 			gtk_window_present (GTK_WINDOW (existing_window));
+			if (new_selection) {
+				nautilus_view_frame_selection_changed (existing_window->content_view, new_selection);
+			}
 			return existing_window;
 		}
 	}
@@ -1016,7 +1033,7 @@ nautilus_application_present_spatial_window (NautilusApplication *application,
 	g_object_weak_ref (G_OBJECT (window), 
 			   spatial_window_destroyed_callback, NULL);
 	
-	nautilus_window_go_to (window, location);
+	nautilus_window_go_to_with_selection (window, location, new_selection);
 	
 	return window;
 }

@@ -76,6 +76,12 @@ NautilusWindow *     nautilus_application_present_spatial_window     (NautilusAp
 								      NautilusWindow      *requesting_window,
 								      const char          *location,
 								      GdkScreen           *screen);
+NautilusWindow *     nautilus_application_present_spatial_window_with_selection (NautilusApplication *application,
+										 NautilusWindow      *requesting_window,
+										 const char          *location,
+										 GList		     *new_selection,
+										 GdkScreen           *screen);
+
 NautilusWindow *     nautilus_application_create_navigation_window     (NautilusApplication *application,
 									GdkScreen           *screen);
 

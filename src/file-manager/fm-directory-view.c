@@ -1921,20 +1921,23 @@ selection_changed_callback (NautilusView *nautilus_view,
 {
 	GList *selection;
 
-	if (view->details->loading) {
-		eel_g_list_free_deep (view->details->pending_uris_selected);
-		view->details->pending_uris_selected = NULL;
-	}
-
 	if (!view->details->loading) {
-		/* If we aren't still loading, set the selection right now. */
+		/* If we aren't still loading, set the selection right now,
+		 * and reveal the new selection.
+		 */
 		selection = file_list_from_uri_list (selection_uris);
 		view->details->selection_change_is_due_to_shell = TRUE;
 		fm_directory_view_set_selection (view, selection);
 		view->details->selection_change_is_due_to_shell = FALSE;
+		fm_directory_view_reveal_selection (view);
 		nautilus_file_list_free (selection);
 	} else {
-		/* If we are still loading, add to the list of pending URIs instead. */
+		/* If we are still loading, set the list of pending URIs instead.
+		 * done_loading() will eventually select the pending URIs and reveal them.
+		 */
+		eel_g_list_free_deep (view->details->pending_uris_selected);
+		view->details->pending_uris_selected = NULL;
+
 		view->details->pending_uris_selected =
 			g_list_concat (view->details->pending_uris_selected,
 				       eel_g_str_list_copy (selection_uris));

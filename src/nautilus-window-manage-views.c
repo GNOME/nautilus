@@ -680,10 +680,11 @@ open_location (NautilusWindow *window,
 			}
 		} else if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
                         if (!NAUTILUS_SPATIAL_WINDOW (window)->affect_spatial_window_on_next_location_change) {
-                                target_window = nautilus_application_present_spatial_window (
+                                target_window = nautilus_application_present_spatial_window_with_selection (
                                         window->application,
 					window,
                                         location,
+					new_selection,
                                         gtk_window_get_screen (GTK_WINDOW (window)));
                                 do_load_location = FALSE;
                         } else {
@@ -1230,10 +1231,18 @@ load_directory_metadata_callback (NautilusFile *file,
                 }
                 g_free (geometry_string);
 
-		/* load the saved scroll position */
-		scroll_string = nautilus_file_get_metadata 
-			(file, NAUTILUS_METADATA_KEY_WINDOW_SCROLL_POSITION,
-			 NULL);
+		if (window->details->pending_selection == NULL) {
+			/* If there is no pending selection, then load the saved scroll position. */
+			scroll_string = nautilus_file_get_metadata 
+				(file, NAUTILUS_METADATA_KEY_WINDOW_SCROLL_POSITION,
+				 NULL);
+		} else {
+			/* If there is a pending selection, we want to scroll to an item in
+			 * the pending selection list. */
+			scroll_string = g_strdup (window->details->pending_selection->data);
+		}
+
+		/* scroll_string might be NULL if there was no saved scroll position. */
 		if (scroll_string != NULL) {
 			window->details->pending_scroll_to = scroll_string;
 		}

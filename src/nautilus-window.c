@@ -357,6 +357,12 @@ nautilus_window_go_to (NautilusWindow *window, const char *uri)
 }
 
 void
+nautilus_window_go_to_with_selection (NautilusWindow *window, const char *uri, GList *new_selection)
+{
+	nautilus_window_open_location_with_selection (window, uri, new_selection, FALSE);
+}
+
+void
 nautilus_window_go_up (NautilusWindow *window, gboolean close_behind)
 {
 	GnomeVFSURI *current_uri;

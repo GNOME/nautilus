@@ -119,6 +119,9 @@ void             nautilus_window_close                (NautilusWindow    *window
 char *           nautilus_window_get_location         (NautilusWindow    *window);
 void             nautilus_window_go_to                (NautilusWindow    *window,
                                                        const char        *location);
+void             nautilus_window_go_to_with_selection (NautilusWindow    *window,
+                                                       const char        *location,
+                                                       GList             *new_selection);
 void             nautilus_window_go_home              (NautilusWindow    *window);
 void             nautilus_window_go_up                (NautilusWindow    *window,
                                                        gboolean           close_behind);
