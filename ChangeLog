@@ -1,5 +1,11 @@
 2000-08-04  Mathieu Lacage  <mathieu@eazel.com>
 
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_get_uri_from_local_path): fixes bug 1936.
+	nautilus_get_uri_from_local_path has been made NULL proof.
+
+2000-08-04  Mathieu Lacage  <mathieu@eazel.com>
+
 	* src/nautilus-window.c: (nautilus_window_hide_sidebar),
 	(nautilus_window_show_sidebar): fixes bug 1881. add special
 	case tests.

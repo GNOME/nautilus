@@ -384,8 +384,11 @@ char *
 nautilus_get_uri_from_local_path (const char *local_path)
 {
 	char *escaped_path, *result;
+	
+	if (local_path == NULL) {
+		return NULL;
+	}
 
-	g_return_val_if_fail (local_path != NULL, NULL);
 	g_return_val_if_fail (local_path[0] == '/', NULL);
 
 	escaped_path = gnome_vfs_escape_path_string (local_path);
