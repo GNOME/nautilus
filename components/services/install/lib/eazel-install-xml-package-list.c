@@ -646,16 +646,51 @@ eazel_install_categorydata_to_xml (const CategoryData *category)
 	return node;
 }
 
+static GList *
+osd_parse_list (const char *text)
+{
+	GList *list = NULL;
+	const char *start, *comma;
+	char *item;
+
+	/* remove leading whitespace */
+	for (start = text; (start != NULL) && (*start != '\0') && (*start <= ' '); start++)
+		;
+	while ((start != NULL) && (*start != '\0')) {
+		comma = strchr (start, ',');
+		if (comma == NULL) {
+			comma = start + strlen (start);
+		}
+		item = g_strndup (start, comma - start);
+		list = g_list_prepend (list, item);
+		if (*comma != '\0') {
+			start = comma + 1;
+		} else {
+			start = comma;
+		}
+		while ((*start != '\0') && (*start <= ' ')) {
+			start++;
+		}
+	}
+
+	list = g_list_reverse (list);
+	return list;
+}
+
 static void
 osd_parse_dependency (PackageData *pack, xmlNodePtr node)
 {
 	xmlNodePtr child;
-	PackageData *softpack;
+	PackageData *softpack = NULL;
+	char *names;
+	GList *features = NULL;
 
 	child = node->xmlChildrenNode;
 	while (child) {
 		if (g_strcasecmp (child->name, "PROVIDES") == 0) {
-			/* do nothing yet.  maybe someday? */
+			names = xmlGetProp (child, "NAMES");
+			features = osd_parse_list (names);
+			free (names);
 		} else if (g_strcasecmp (child->name, "SOFTPKG") == 0) {
 			/* dependent softpkg */
 			softpack = osd_parse_softpkg (child);
@@ -668,6 +703,16 @@ osd_parse_dependency (PackageData *pack, xmlNodePtr node)
 			/* unparsed part of dependency */
 		}
 		child = child->next;
+	}
+
+	if ((features != NULL) && (softpack != NULL) && (softpack->features == NULL)) {
+		/* old-style (pre-Dec00) separate PROVIDES and SOFTPKG: connect them */
+		softpack->features = features;
+	} else if (features != NULL) {
+		g_warning ("stranded PROVIDES block in the dependency info!");
+		g_list_foreach (features, (GFunc)g_free, NULL);
+		g_list_free (features);
+		features = NULL;
 	}
 }
 
@@ -706,9 +751,6 @@ osd_parse_implementation (PackageData *pack,
 		}
 		child = child->next;
 	}
-	/* FIXME: bugzilla.eazel.com 2241
-	   we need the md5 in the xml, and then add it to the package here */
-	
 }
 
 static PackageData*
@@ -716,6 +758,7 @@ osd_parse_softpkg (xmlNodePtr softpkg)
 {
 	PackageData *result;
 	xmlNodePtr child;
+	char *tmp;
 
 	result = packagedata_new ();
 
@@ -726,12 +769,17 @@ osd_parse_softpkg (xmlNodePtr softpkg)
 	child = softpkg->xmlChildrenNode;
 	while (child) {
 		if (g_strcasecmp (child->name, "ABSTRACT")==0) {
-			char *tmp = xmlNodeGetContent (child);
-			result->description = g_strdup (tmp);
+			tmp = xmlNodeGetContent (child);
+			result->summary = g_strdup (tmp);
+			while ((strlen (result->summary) > 0) &&
+			       (result->summary[strlen (result->summary)-1] <= ' ')) {
+				result->summary[strlen (result->summary)-1] = '\0';
+			}
 			xmlFree (tmp);
-			
 		} else if (g_strcasecmp (child->name, "IMPLEMENTATION")==0) {
 			osd_parse_implementation (result, child);
+		} else if (g_strcasecmp (child->name, "EAZEL_ID") == 0) {
+			result->eazel_id = xml_get_value (child, "VALUE");
 		} else {
 			/* trilobite_debug ("unparsed tag \"%s\" in SOFTPKG", child->name); */
 		}
@@ -779,17 +827,17 @@ osd_parse_shared (xmlDocPtr doc)
 	return result;
 }
 
-GList*
-parse_osd_xml_from_memory (const char *mem, 
-			   int size)
+/* returns FALSE if the XML was all horked */
+gboolean
+eazel_install_packagelist_parse (GList **list, const char *mem, int size)
 {
 	xmlDocPtr doc;
-	GList *result;
 	char *ptr, *docptr, *end;
+	char *nextnl, *cur;
 
-	result = NULL;
-	if (mem==NULL) {
-		return result;
+	*list = NULL;
+	if (mem == NULL) {
+		return FALSE;
 	}
 
 	docptr = g_malloc (size+1);
@@ -797,27 +845,28 @@ parse_osd_xml_from_memory (const char *mem,
 	docptr [size] = 0;
 
 	/* libxml is very intolerant of whitespace */
-	ptr = docptr;
-	while ((size > 0) && (*ptr <= ' ')) {
-		ptr++, size--;
-	}
-	end = ptr + size - 1;
-	while ((size > 0) && (*end <= ' ')) {
-		*end-- = '\0', size--;
-	}
+	for (ptr = docptr; (size > 0) && (*ptr <= ' '); ptr++, size--)
+		;
+	for (end = ptr + size - 1; (size > 0) && (*end <= ' '); *end-- = '\0', size--)
+		;
 
 	doc = xmlParseMemory (ptr, size);
+
 	if (doc == NULL) {
-		trilobite_debug ("XML =\"%s\"", ptr);
 		g_warning (_("Could not parse the xml (length %d)"), size);
+		for (cur = ptr; (nextnl = strchr (cur, '\n')) != NULL; ) {
+			*nextnl = '\0';
+			trilobite_debug ("XML: %s", cur);
+			cur = nextnl + 1;
+		}
 		g_free (docptr);
-		return result;
+		return FALSE;
 	}
 
-	result = osd_parse_shared (doc);	
+	*list = osd_parse_shared (doc);	
 
 	xmlFreeDoc (doc);
 	g_free (docptr);
-	return result;
+	return TRUE;
 }
 
