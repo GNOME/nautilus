@@ -1,4 +1,37 @@
 2004-11-29  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-bookmark.c:
+	(nautilus_bookmark_get_pixbuf):
+	Force size for pixbufs.
+	
+	* libnautilus-private/nautilus-icon-factory.c: (load_icon_file):
+	Load force-sized svgs right.
+	(nautilus_icon_factory_get_pixbuf_from_name):
+	Allow force-size loading
+	
+	* libnautilus-private/nautilus-icon-factory.h:
+	Allow force-size loading in nautilus_icon_factory_get_pixbuf_from_name
+	
+	* libnautilus-private/nautilus-ui-utilities.c:
+	(nautilus_action_from_menu_item),
+	(nautilus_toolbar_action_from_menu_item):
+	* src/nautilus-emblem-sidebar.c: (create_emblem_widget):
+	* src/nautilus-property-browser.c: (make_drag_image),
+	(make_properties_from_directories):
+	* src/nautilus-sidebar-title.c: (update_icon):
+	* src/file-manager/fm-directory-view.c:
+	(add_extension_action_for_files):
+	* src/file-manager/fm-properties-window.c: (create_emblems_page):
+	* src/file-manager/fm-tree-model.c:
+	(tree_node_get_pixbuf_from_factory):
+	
+	Force-size load icons
+	
+	* src/nautilus-throbber.c: (nautilus_throbber_instance_init),
+	(nautilus_throbber_finalize):
+	Disconnect icon theme changed signal on finalize.
+
+2004-11-29  Alexander Larsson  <alexl@redhat.com>
 	
 	* libnautilus-private/nautilus-file-dnd.c:
 	(nautilus_drag_can_accept_item):

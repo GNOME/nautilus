@@ -217,8 +217,8 @@ nautilus_bookmark_get_pixbuf (NautilusBookmark *bookmark,
 	if (icon == NULL) {
 		return NULL;
 	}
-	
-	result = nautilus_icon_factory_get_pixbuf_for_icon
+
+	result = nautilus_icon_factory_get_pixbuf_for_icon_force_size
 		(icon, NULL,
 		 icon_size, NULL, NULL,
 		 TRUE, NULL);

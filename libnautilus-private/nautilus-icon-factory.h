@@ -155,6 +155,7 @@ GdkPixbuf *nautilus_icon_factory_get_pixbuf_for_file_force_size (NautilusFile *f
 GdkPixbuf *           nautilus_icon_factory_get_pixbuf_from_name         (const char                  *icon_name,
 									  const char                  *modifer,
 									  guint                        size_in_pixels,
+									  gboolean                     force_size,
 									  char                       **display_name);
 
 GtkIconTheme *         nautilus_icon_factory_get_icon_theme        (void);

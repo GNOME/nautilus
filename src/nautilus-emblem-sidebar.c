@@ -462,8 +462,8 @@ create_emblem_widget (NautilusEmblemSidebar *emblem_sidebar,
 	GdkPixbuf *pixbuf;
 	
 	pixbuf = nautilus_icon_factory_get_pixbuf_from_name (name, NULL,
-					     NAUTILUS_ICON_SIZE_STANDARD,
-					     &display_name);
+							     NAUTILUS_ICON_SIZE_STANDARD, TRUE,
+							     &display_name);
 
 	keyword = nautilus_emblem_get_keyword_from_icon_name (name);
 	if (display_name == NULL) {

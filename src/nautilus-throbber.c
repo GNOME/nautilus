@@ -55,6 +55,8 @@ struct NautilusThrobberDetails {
 	
 	gboolean ready;
 	gboolean small_mode;
+
+	guint icon_theme_changed_tag;
 };
 
 
@@ -132,10 +134,11 @@ nautilus_throbber_instance_init (NautilusThrobber *throbber)
 	
 	throbber->details->delay = THROBBER_DEFAULT_TIMEOUT;
 	
-	g_signal_connect (gtk_icon_theme_get_default (),
-			  "changed",
-			  G_CALLBACK (nautilus_throbber_theme_changed),
-			  throbber);
+	throbber->details->icon_theme_changed_tag =
+		g_signal_connect (gtk_icon_theme_get_default (),
+				  "changed",
+				  G_CALLBACK (nautilus_throbber_theme_changed),
+				  throbber);
 
 
 	nautilus_throbber_load_images (throbber);
@@ -478,6 +481,12 @@ nautilus_throbber_finalize (GObject *object)
 	
 	g_free (throbber->details);
 
+	if (throbber->details->icon_theme_changed_tag != 0) {
+		g_signal_handler_disconnect (gtk_icon_theme_get_default (),
+					     throbber->details->icon_theme_changed_tag);
+		throbber->details->icon_theme_changed_tag = 0;
+	}
+	
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 

@@ -1110,7 +1110,7 @@ load_icon_file (const char    *filename,
 	if (path_represents_svg_image (filename)) {
 		pixbuf = load_pixbuf_svg (filename,
 					  nominal_size,
-					  base_size,
+					  force_nominal ? 0 : base_size,
 					  scale_x, scale_y);
 	} else {
 		is_thumbnail = strstr (filename, "/.thumbnails/")  != NULL;
@@ -1566,12 +1566,13 @@ GdkPixbuf *
 nautilus_icon_factory_get_pixbuf_from_name (const char *icon_name,
 					    const char *modifier,
 					    guint size_in_pixels,
+					    gboolean force_size,
 					    char **display_name)
 {
-	return nautilus_icon_factory_get_pixbuf_for_icon (icon_name, modifier,
-							  size_in_pixels,
-							  NULL, NULL,
-							  TRUE, display_name);
+	return nautilus_icon_factory_get_pixbuf_for_icon_internal (icon_name, modifier,
+								   size_in_pixels, force_size,
+								   NULL, NULL,
+								   TRUE, display_name);
 }
 									  
 GdkPixbuf *

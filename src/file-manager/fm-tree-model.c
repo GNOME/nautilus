@@ -248,7 +248,7 @@ tree_node_get_pixbuf_from_factory (TreeNode *node,
 	if (node->parent == NULL) {
 		return nautilus_icon_factory_get_pixbuf_from_name
 			(node->icon_name, NULL,
-			 NAUTILUS_ICON_SIZE_FOR_MENUS, NULL);
+			 NAUTILUS_ICON_SIZE_FOR_MENUS, TRUE, NULL);
 	}
 	return nautilus_icon_factory_get_pixbuf_for_file_force_size
 		(node->file, modifier, NAUTILUS_ICON_SIZE_FOR_MENUS);

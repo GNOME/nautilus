@@ -693,7 +693,7 @@ make_drag_image (NautilusPropertyBrowser *property_browser, const char* file_nam
 		} else {
 			icon_name = nautilus_emblem_get_icon_name_from_keyword (file_name);
 			pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_name, NULL,
-									     NAUTILUS_ICON_SIZE_STANDARD,
+									     NAUTILUS_ICON_SIZE_STANDARD, TRUE,
 									     NULL);
 			g_free (icon_name);
 		}
@@ -1644,7 +1644,7 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 			}
 			object_name = nautilus_emblem_get_keyword_from_icon_name (icon_name);
 			object_pixbuf = nautilus_icon_factory_get_pixbuf_from_name (icon_name, NULL,
-										    NAUTILUS_ICON_SIZE_SMALL,
+										    NAUTILUS_ICON_SIZE_SMALL, TRUE,
 										    &object_label);
 			if (object_label == NULL) {
 				object_label = g_strdup (object_name);

@@ -2466,7 +2466,7 @@ create_emblems_page (FMPropertiesWindow *window)
 		}
 		
 		pixbuf = nautilus_icon_factory_get_pixbuf_from_name (emblem_name, NULL,
-								     NAUTILUS_ICON_SIZE_SMALL,
+								     NAUTILUS_ICON_SIZE_SMALL, TRUE,
 								     &label);
 
 		if (pixbuf == NULL) {

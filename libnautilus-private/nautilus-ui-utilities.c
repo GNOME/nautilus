@@ -138,7 +138,7 @@ nautilus_action_from_menu_item (NautilusMenuItem *item)
 		pixbuf = nautilus_icon_factory_get_pixbuf_from_name 
 			(icon,
 			 NULL,
-			 NAUTILUS_ICON_SIZE_FOR_MENUS,
+			 NAUTILUS_ICON_SIZE_FOR_MENUS, TRUE,
 			 NULL);
 		if (pixbuf != NULL) {
 			g_object_set_data_full (G_OBJECT (action), "menu-icon",
@@ -189,7 +189,7 @@ nautilus_toolbar_action_from_menu_item (NautilusMenuItem *item)
 		pixbuf = nautilus_icon_factory_get_pixbuf_from_name 
 			(icon,
 			 NULL,
-			 24,
+			 24, TRUE, 
 			 NULL);
 		if (pixbuf != NULL) {
 			g_object_set_data_full (G_OBJECT (action), "toolbar-icon",
