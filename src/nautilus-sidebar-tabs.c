@@ -323,6 +323,9 @@ get_property_bag (TabItem *item)
 	CORBA_Environment ev;
 	Bonobo_PropertyBag property_bag;
 
+	if (item->tab_view == NULL) {
+		return CORBA_OBJECT_NIL;
+	}
 	control = nautilus_view_frame_get_control (NAUTILUS_VIEW_FRAME (item->tab_view));	
 	if (control == NULL) {
 		return CORBA_OBJECT_NIL;
@@ -364,6 +367,8 @@ tab_item_destroy (TabItem *item)
 
 		CORBA_exception_free (&ev);
 	}
+
+	eel_remove_weak_pointer (&item->tab_view);
 
 	g_free (item);
 }
@@ -1406,7 +1411,7 @@ nautilus_sidebar_tabs_update_indicator (NautilusSidebarTabs *sidebar_tabs, GtkWi
 	for (node = sidebar_tabs->details->tab_items; node != NULL; node = node->next) {
 		tab_item = node->data;
 		if (tab_item->tab_view == view) {
-			nautilus_sidebar_tabs_update_tab_item (sidebar_tabs, tab_item);				
+			nautilus_sidebar_tabs_update_tab_item (sidebar_tabs, tab_item);
 			break;
 		}
 	}
@@ -1431,6 +1436,9 @@ nautilus_sidebar_tabs_connect_view (NautilusSidebarTabs *sidebar_tabs, GtkWidget
 {
 	TabItem *tab_item;
 	Bonobo_PropertyBag property_bag;
+
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 	
 	tab_item = get_tab_item_from_view (sidebar_tabs, view);
 	if (tab_item == NULL) {
@@ -1450,15 +1458,17 @@ nautilus_sidebar_tabs_connect_view (NautilusSidebarTabs *sidebar_tabs, GtkWidget
 }
 
 /* add a new tab entry, return TRUE if we succeed */
-
 gboolean
-nautilus_sidebar_tabs_add_view (NautilusSidebarTabs *sidebar_tabs, const char *name, GtkWidget *new_view, int page_num)
+nautilus_sidebar_tabs_add_view (NautilusSidebarTabs *sidebar_tabs,
+				const char *name,
+				GtkWidget *new_view,
+				int page_num)
 {
 	TabItem *new_tab_item;
 
 	g_return_val_if_fail (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs), FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
-	g_return_val_if_fail (new_view != NULL, FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (new_view), FALSE);
 
 	/* Check to see if we already have one with this name, if so, refuse to add it */   
 	if (tab_item_find_by_name (sidebar_tabs, name)) {
@@ -1472,6 +1482,7 @@ nautilus_sidebar_tabs_add_view (NautilusSidebarTabs *sidebar_tabs, const char *n
 	new_tab_item->visible = TRUE;
 	new_tab_item->tab_view = new_view;
 	new_tab_item->notebook_page = page_num;
+	eel_add_weak_pointer (&new_tab_item->tab_view);
 
 	/* add it to the list */
 	sidebar_tabs->details->tab_items = g_list_append (sidebar_tabs->details->tab_items, new_tab_item);
@@ -1484,8 +1495,7 @@ nautilus_sidebar_tabs_add_view (NautilusSidebarTabs *sidebar_tabs, const char *n
 }
 
 /* return the name of the tab with the passed in index */
-
-char*
+char *
 nautilus_sidebar_tabs_get_title_from_index (NautilusSidebarTabs *sidebar_tabs, int which_tab)
 {
 	GList *next_tab;
@@ -1498,12 +1508,11 @@ nautilus_sidebar_tabs_get_title_from_index (NautilusSidebarTabs *sidebar_tabs, i
 			return g_strdup (item->tab_text);
 	}
 	
-	/* shouldn't ever get here... */
+	/* shouldn't ever get here */
 	return g_strdup ("");
 }
 
 /* remove the specified tab entry */
-
 void
 nautilus_sidebar_tabs_remove_view (NautilusSidebarTabs *sidebar_tabs, const char *name)
 {
@@ -1516,7 +1525,6 @@ nautilus_sidebar_tabs_remove_view (NautilusSidebarTabs *sidebar_tabs, const char
 
 	/* Look up the item */
 	tab_item = tab_item_find_by_name (sidebar_tabs, name);
-
 	if (tab_item == NULL) {
 		g_warning ("nautilus_sidebar_tabs_remove_view: Trying to remove a non-existing item '%s'", name);
 		return;
@@ -1543,7 +1551,6 @@ nautilus_sidebar_tabs_remove_view (NautilusSidebarTabs *sidebar_tabs, const char
 
 /* prelight a tab, from its associated notebook page number, by setting the prelight flag of
    the proper tab and clearing the others */
-
 void
 nautilus_sidebar_tabs_prelight_tab (NautilusSidebarTabs *sidebar_tabs, int which_tab)
 {
@@ -1576,7 +1583,6 @@ nautilus_sidebar_tabs_prelight_tab (NautilusSidebarTabs *sidebar_tabs, int which
 
 /* select a tab, from its associated notebook page number, by making it invisible 
    and all the others visible */
-
 void
 nautilus_sidebar_tabs_select_tab (NautilusSidebarTabs *sidebar_tabs, int which_tab)
 {
@@ -1596,7 +1602,7 @@ nautilus_sidebar_tabs_select_tab (NautilusSidebarTabs *sidebar_tabs, int which_t
 
 /* utility routine that returns true if the passed-in color is lighter than average */   
 static gboolean
-is_light_color(GdkColor *color)
+is_light_color (GdkColor *color)
 {
 	int intensity = (((color->red >> 8) * 77) + ((color->green >> 8) * 150) + ((color->blue >> 8) * 28)) >> 8;	
 	return intensity > 160; /* biased slightly toward dark so default of 0x999999 uses light text light Susan specified */
@@ -1667,6 +1673,7 @@ void
 nautilus_sidebar_tabs_set_title_mode (NautilusSidebarTabs *sidebar_tabs, gboolean is_title_mode)
 {
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
+	g_return_if_fail (is_title_mode == FALSE || is_title_mode == TRUE);
 
 	if (sidebar_tabs->details->title_mode != !!is_title_mode) {
 		sidebar_tabs->details->title_mode = !!is_title_mode;
@@ -1676,7 +1683,6 @@ nautilus_sidebar_tabs_set_title_mode (NautilusSidebarTabs *sidebar_tabs, gboolea
 }
 
 /* set the visibility of the selected tab */
-
 void
 nautilus_sidebar_tabs_set_visible (NautilusSidebarTabs *sidebar_tabs,
 				   const char *name,
@@ -1686,10 +1692,10 @@ nautilus_sidebar_tabs_set_visible (NautilusSidebarTabs *sidebar_tabs,
 
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 	g_return_if_fail (name != NULL);
+	g_return_if_fail (is_visible == FALSE || is_visible == TRUE);
 
 	/* Look up the item */
 	tab_item = tab_item_find_by_name (sidebar_tabs, name);
-
 	if (tab_item == NULL) {
 		g_warning ("nautilus_sidebar_tabs_set_visible: Trying to munge a non-existing item '%s'", name);
 		return;

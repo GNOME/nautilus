@@ -1,5 +1,18 @@
 2002-03-04  Darin Adler  <darin@bentspoon.com>
 
+	* src/nautilus-sidebar-tabs.h:
+	* src/nautilus-sidebar-tabs.c: (get_property_bag): Check for a
+	NULL tab_view.
+	(tab_item_destroy): Remove the weak pointer we now use for the
+	tab_view lifetime.
+	(nautilus_sidebar_tabs_connect_view): Add g_return_if_fail.
+	(nautilus_sidebar_tabs_add_view): Add a weak pointer so we don't
+	have trouble outside the tab_view lifetime.
+	(nautilus_sidebar_tabs_set_title_mode): Check incoming boolean.
+	(nautilus_sidebar_tabs_set_visible): Check incoming boolean.
+
+2002-03-04  Darin Adler  <darin@bentspoon.com>
+
 	* libnautilus-private/nautilus-global-preferences.c:
 	* libnautilus-private/nautilus-global-preferences.h:
 	* src/nautilus-preferences-dialog.c:

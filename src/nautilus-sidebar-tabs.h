@@ -51,15 +51,14 @@ typedef struct
 	GtkMiscClass base_slot;
 } NautilusSidebarTabsClass;
 
-GtkType    nautilus_sidebar_tabs_get_type              (void);
+GType      nautilus_sidebar_tabs_get_type              (void);
 GtkWidget *nautilus_sidebar_tabs_new                   (void);
 gboolean   nautilus_sidebar_tabs_add_view              (NautilusSidebarTabs *sidebar_tabs,
 							const char          *name,
 							GtkWidget           *new_view,
 							int                  page_number);
-void	   nautilus_sidebar_tabs_connect_view 	       (NautilusSidebarTabs *sidebar_tabs,
-							GtkWidget *view);
-
+void       nautilus_sidebar_tabs_connect_view          (NautilusSidebarTabs *sidebar_tabs,
+							GtkWidget           *view);
 char *     nautilus_sidebar_tabs_get_title_from_index  (NautilusSidebarTabs *sidebar_tabs,
 							int                  which_tab);
 int        nautilus_sidebar_tabs_hit_test              (NautilusSidebarTabs *sidebar_tabs,
