@@ -68,6 +68,8 @@ execute_queued_functions (gpointer callback_data)
 			if (function->free_callback_data != NULL) {
 				(* function->free_callback_data) (function->callback_data);
 			}
+
+			g_free (function);
 		}
 
 		g_list_free (functions);
@@ -128,6 +130,8 @@ nautilus_idle_queue_destroy (NautilusIdleQueue *queue)
 		if (function->free_callback_data != NULL) {
 			(* function->free_callback_data) (function->callback_data);
 		}
+
+		g_free (function);
 	}
 	
 	g_list_free (queue->functions);

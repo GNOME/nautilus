@@ -760,7 +760,7 @@ nautilus_window_constructed (NautilusWindow *window)
 				    go_to_callback, window);
 		e_paned_pack1 (E_PANED (window->content_hbox),
 			       GTK_WIDGET (window->sidebar),
-			       FALSE, FALSE);
+			       FALSE, TRUE);
 #if 0
 		bonobo_ui_engine_add_sync (bonobo_window_get_ui_engine (BONOBO_WINDOW (window)),
 					   sidebar_sync);
@@ -992,6 +992,8 @@ nautilus_window_destroy (GtkObject *object)
 		gtk_idle_remove (window->details->location_change_at_idle_id);
 	}
 
+	g_free (window->details->title);
+	
 	g_free (window->details);
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));

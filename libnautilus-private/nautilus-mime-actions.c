@@ -486,7 +486,8 @@ nautilus_mime_get_short_list_applications_for_file (NautilusFile      *file)
 	result = eel_g_list_partition (result, application_supports_uri_scheme,
 					    uri_scheme, &removed);
 	gnome_vfs_mime_application_list_free (removed);
-
+	g_free (uri_scheme);
+	
 	metadata_application_add_ids = nautilus_file_get_metadata_list 
 		(file,
 		 NAUTILUS_METADATA_KEY_SHORT_LIST_APPLICATION_ADD,
@@ -1444,6 +1445,8 @@ make_oaf_query_with_uri_scheme_only (const char *uri_scheme,
                   , explicit_iid_query,
 		  extra_requirements != NULL ? extra_requirements : "true");
 
+	g_free (explicit_iid_query);
+	
         return result;
 }
 

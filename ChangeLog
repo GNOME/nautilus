@@ -1,3 +1,51 @@
+2001-08-23  Anders Carlsson  <andersca@gnu.org>
+
+	* nautilus.spec.in: Remove CONTROL_CENTER_REQUIRED since nautilus
+	doesn't require control-center anymore.
+
+ 	* configure.in: Remove CONTROL_CENTER_REQUIRED since nautilus
+ 	doesn't require control-center anymore.
+ 
+ 	* src/nautilus-window.c (nautilus_window_constructed): 
+ 	Set shrink to TRUE when adding the sidebar since it'll look
+ 	better when the splitter is collapsed.
+ 	(nautilus_window_destroy): Free the window title.
+ 
+ 	* src/nautilus-window-manage-views.c (begin_location_change): 
+ 	Unref the directory when we're done using it.
+ 
+ 	* src/nautilus-sidebar.c (nautilus_sidebar_destroy): Sink
+ 	the title tab so it'll destroyed even if it hasn't got a parent.
+ 
+ 	* libnautilus-private/nautilus-vfs-file.c (vfs_destroy): 
+ 	Free details struct.
+ 
+ 	* libnautilus-private/nautilus-vfs-directory.c (vfs_destroy): 
+ 	Free details struct.
+ 
+ 	* libnautilus-private/nautilus-mime-actions.c 
+ 	(nautilus_mime_get_short_list_applications_for_file): 
+ 	Free uri_scheme.
+ 	(make_oaf_query_with_uri_scheme_only): Free explicit_iid_query.
+ 
+ 	* libnautilus-private/nautilus-metafile.c (destroy): 
+ 	Unref the private vfs uri, and free the directory uri.
+ 
+ 	* libnautilus-private/nautilus-file.c (nautilus_file_get_internal): 
+ 	Free the string returned by nautilus_directory_get_name_for_self_as_new_file.
+ 
+ 	* libnautilus-private/nautilus-file-changes-queue.c 
+ 	(nautilus_file_changes_consume_changes): 
+ 	Free the change struct.
+ 
+ 	* libnautilus-private/nautilus-directory-async.c 
+ 	(nautilus_directory_invalidate_count_and_mime_list): 
+ 	Unref the file after using it.
+ 
+ 	* libnautilus/nautilus-idle-queue.c (execute_queued_functions): 
+ 	Free each list node.
+ 	(nautilus_idle_queue_destroy): Likewise.
+
 2001-08-22  Ramiro Estrugo  <ramiro@fateware.com>
 
 	reviewed by: <delete if not using a buddy>

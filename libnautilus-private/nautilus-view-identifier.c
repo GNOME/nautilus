@@ -184,6 +184,13 @@ nautilus_view_identifier_new_from_content_view (OAF_ServerInfo *server)
 }
 
 NautilusViewIdentifier *
+nautilus_view_identifier_new_from_property_page (OAF_ServerInfo *server)
+{
+	return nautilus_view_identifier_new_from_oaf_server_info
+		(server, "nautilus:property_page_name");
+}
+
+NautilusViewIdentifier *
 nautilus_view_identifier_new_from_sidebar_panel (OAF_ServerInfo *server)
 {
 	return nautilus_view_identifier_new_from_oaf_server_info

@@ -240,13 +240,18 @@ destroy (GtkObject *object)
 	if (metafile->details->private_vfs_uri != NULL) {
 		gnome_vfs_uri_unref (metafile->details->private_vfs_uri);
 	}
-	
+	if (metafile->details->directory_vfs_uri != NULL) {
+		gnome_vfs_uri_unref (metafile->details->directory_vfs_uri);
+	}
+
 	g_hash_table_remove (metafiles, metafile->details->directory_uri);
 	
 	metafile_free_metadata (metafile);
 	g_hash_table_destroy (metafile->details->node_hash);
 
 	g_assert (metafile->details->write_idle_id == 0);
+
+	g_free (metafile->details->directory_uri);
 
 	g_free (metafile->details);
 

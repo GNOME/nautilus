@@ -1015,6 +1015,7 @@ get_themed_icon_file_path (const char *theme_name,
 		
 			/* Return the path if the file exists. */
 			if (path != NULL) {
+				g_free (partial_path);
 				break;
 			}
 			
@@ -1512,6 +1513,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 			g_free (file_path);
 		}
 		g_free (directory);
+		g_free (directory_uri);
 		g_free (desktop_directory);
 	}
 	

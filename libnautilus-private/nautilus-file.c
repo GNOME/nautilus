@@ -299,7 +299,7 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
 static NautilusFile *
 nautilus_file_get_internal (const char *uri, gboolean create)
 {
-	char *canonical_uri, *directory_uri, *relative_uri;
+	char *canonical_uri, *directory_uri, *relative_uri, *file_name;
 	gboolean self_owned;
 	GnomeVFSURI *vfs_uri, *directory_vfs_uri;
 	NautilusDirectory *directory;
@@ -358,8 +358,9 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 	if (vfs_uri == NULL) {
 		g_assert (self_owned);
 		if (directory != NULL) {
-			relative_uri = gnome_vfs_escape_string
-				(nautilus_directory_get_name_for_self_as_new_file (directory));
+			file_name = nautilus_directory_get_name_for_self_as_new_file (directory);
+			relative_uri = gnome_vfs_escape_string (file_name);
+			g_free (file_name);
 		}
 	}
 

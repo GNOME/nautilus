@@ -545,7 +545,7 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 			g_assert_not_reached ();
 			break;
 		}
-		change->from_uri = NULL;
-		change->to_uri = NULL;
+
+		g_free (change);
 	}	
 }

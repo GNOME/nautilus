@@ -8,7 +8,6 @@ dnl
 dnl ==========================================================================
 
 BONOBO_REQUIRED=0.37
-CONTROL_CENTER_REQUIRED=1.3
 EEL_REQUIRED=1.0
 ESOUND_REQUIRED=0.2.22
 FREETYPE_LIBRARY_REQUIRED=6.1.0
@@ -420,9 +419,6 @@ _libs="$LIBS"
 LIBS=$GNOMEUI_LIBS
 AC_CHECK_FUNCS(gnome_canvas_set_dither)
 LIBS="$_libs"
-
-dnl control center
-NAUTILUS_VERSION_INSIST(control-center, $GNOME_CONFIG --modversion capplet | awk -F- '{print $2}', >=, CONTROL_CENTER_REQUIRED)
 
 dnl Bonobo
 NAUTILUS_VERSION_INSIST(bonobo, $GNOME_CONFIG --modversion bonobo | awk -F- '{print $2}', >=, BONOBO_REQUIRED)

@@ -315,6 +315,8 @@ nautilus_sidebar_destroy (GtkObject *object)
 		nautilus_file_unref (sidebar->details->file);
 	}
 
+	gtk_object_sink (GTK_OBJECT (sidebar->details->title_tab));
+	
 	g_free (sidebar->details->uri);
 	g_free (sidebar->details->default_background_color);
 	g_free (sidebar->details->default_background_image);

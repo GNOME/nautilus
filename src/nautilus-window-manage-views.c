@@ -1398,6 +1398,7 @@ begin_location_change (NautilusWindow *window,
 	} else {
 		force_reload = !nautilus_directory_is_local (directory);
 	}
+
 	if (force_reload) {
 		nautilus_directory_force_reload (directory);
 		file = nautilus_directory_get_corresponding_file (directory);
@@ -1405,6 +1406,8 @@ begin_location_change (NautilusWindow *window,
 		nautilus_file_unref (file);
 	}
 
+        nautilus_directory_unref (directory);
+        
         window->details->determine_view_handle = nautilus_determine_initial_view
                 (location,
                  determined_initial_view_callback,

@@ -192,6 +192,8 @@ add_volume (NautilusTrashDirectory *trash,
 		(&trash_volume->handle, &vfs_uri_as_list, 
 		 GNOME_VFS_DIRECTORY_KIND_TRASH, FALSE, TRUE, 0777,
 		 find_directory_callback, trash_volume);
+
+	gnome_vfs_uri_unref (volume_mount_uri);
 }
 
 static void

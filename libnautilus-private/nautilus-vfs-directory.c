@@ -55,6 +55,12 @@ nautilus_vfs_directory_initialize (gpointer object, gpointer klass)
 static void
 vfs_destroy (GtkObject *object)
 {
+	NautilusVFSDirectory *directory;
+
+	directory = NAUTILUS_VFS_DIRECTORY (object);
+
+	g_free (directory->details);
+
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 

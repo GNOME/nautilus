@@ -38,6 +38,7 @@ NautilusViewIdentifier *nautilus_view_identifier_new_from_oaf_server_info (OAF_S
 									   char                         *name_attribute);
 NautilusViewIdentifier *nautilus_view_identifier_new_from_content_view    (OAF_ServerInfo               *server);
 NautilusViewIdentifier *nautilus_view_identifier_new_from_sidebar_panel   (OAF_ServerInfo               *server);
+NautilusViewIdentifier *nautilus_view_identifier_new_from_property_page   (OAF_ServerInfo               *server);
 NautilusViewIdentifier *nautilus_view_identifier_copy                     (const NautilusViewIdentifier *identifier);
 void                    nautilus_view_identifier_free                     (NautilusViewIdentifier       *identifier);
 int                     nautilus_view_identifier_compare                  (const NautilusViewIdentifier *a,
