@@ -807,9 +807,6 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 			    temp_button, FALSE, FALSE, 0);
 }
 
-/* FIXME: This is a placeholder awaiting the real call. */
-static void gnome_vfs_mime_application_list_free (GList *list) {}
-
 /**
  * nautilus_sidebar_update_buttons:
  * 

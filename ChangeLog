@@ -1,3 +1,15 @@
+2000-05-31  John Sullivan  <sullivan@eazel.com>
+
+	* src/file-manager/fm-directory-view.c: 
+	(compute_menu_item_info): Initialize *return_sensitivity to
+	TRUE; it was uninitialized in some cases.
+	(add_application_to_gtk_menu), (create_open_with_gtk_menu):
+	Cleaned up list-handling using new gnome-vfs API.
+	
+	* src/nautilus-sidebar.c: Removed placeholder local implementation
+	of gnome_vfs_mime_application_list_free now that there's a real
+	one in gnome-vfs.
+
 2000-05-31  Darin Adler  <darin@eazel.com>
 
 	Another cut on the desktop. Way closer.

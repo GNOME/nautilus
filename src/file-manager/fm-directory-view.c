@@ -1661,12 +1661,14 @@ compute_menu_item_info (const char *path,
 	char *name, *stripped;
 	int count;
 
+	*return_sensitivity = TRUE;
+
         if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OPEN) == 0) {
                 name = g_strdup_printf (_("_Open"));
                 *return_sensitivity = nautilus_g_list_exactly_one_item (selection);
         } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH) == 0) {
 		name = g_strdup (_("Open With"));
-		*return_sensitivity = g_list_length (selection) == 1;
+		*return_sensitivity = nautilus_g_list_exactly_one_item (selection);
         } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION) == 0) {
 		name = g_strdup (_("Other Application..."));
         } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER) == 0) {
@@ -1914,7 +1916,7 @@ add_application_to_gtk_menu (GtkMenu *menu,
 
 	gtk_object_set_data_full (GTK_OBJECT (menu_item),
 				  "application",
-				  application,
+				  gnome_vfs_mime_application_copy (application),
 				  (GtkDestroyNotify)gnome_vfs_mime_application_free);
 
 	gtk_object_set_data_full (GTK_OBJECT (menu_item),
@@ -1986,13 +1988,7 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 			add_application_to_gtk_menu (open_with_menu, node->data, uri);
 		}
 
-		/* The list data is stored in menu items, and will be destroyed there. */
-		/* FIXME: Would be cleaner for add_application_to_gtk_menu to use
-		 * (currently nonexistent) gnome_vfs_mime_application_copy to make a
-		 * copy of data and destroy original here with (currently nonexistent)
-		 * gnome_vfs_mime_application_list_free.
-		 */
-		g_list_free (applications); 
+		gnome_vfs_mime_application_list_free (applications); 
 
 		append_gtk_menu_item_with_view (view,
 						open_with_menu,
@@ -2007,14 +2003,9 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
 
 		for (node = components; node != NULL; node = node->next) {
 			add_component_to_gtk_menu (open_with_menu, node->data, uri);
-			/* Destroy the OAF_ServerInfo that we're finished with. */
-			CORBA_free (node->data);
 		}
 
-		/* FIXME: Would be cleaner to destroy data here with (currently nonexistent)
-		 * gnome_vfs_mime_component_list_free instead of using CORBA_free above.
-		 */
-		g_list_free (components); 
+		gnome_vfs_mime_component_list_free (components); 
 
 		g_free (uri);
 
