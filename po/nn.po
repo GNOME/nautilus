@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-12-15 16:44+0100\n"
-"PO-Revision-Date: 2003-12-16 11:33+0100\n"
+"POT-Creation-Date: 2003-12-17 09:20+0100\n"
+"PO-Revision-Date: 2003-12-17 11:22+0100\n"
 "Last-Translator: Åsmund Skjæveland <aasmunds@fys.uio.no>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
 "MIME-Version: 1.0\n"
@@ -1306,8 +1306,8 @@ msgid ""
 "files are either dotfiles or are listed in the folder's .hidden file."
 msgstr ""
 "Dersom sann, vert skjulte filer vist i filhandsamaren. Skjulte filer har "
-"anten filnamn som startar med punktum eller som er lista opp i fila "
-"«.hidden» i katalogen."
+"anten filnamn som startar med punktum eller som er lista opp i fila «."
+"hidden» i katalogen."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
@@ -1501,9 +1501,9 @@ msgid ""
 "server. If set to \"local_only\" then only show counts for local "
 "filesystems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
-"Justering av når elementa i ein katalog skal teljast opp.Dersom verdien "
-"er «always», vert elementa alltid telte opp, sjølv om katalogen er på ein ekstern "
-"tenar. Dersom verdien er «local_only», vert berre katalogar som ligg "
+"Justering av når elementa i ein katalog skal teljast opp.Dersom verdien er "
+"«always», vert elementa alltid telte opp, sjølv om katalogen er på ein "
+"ekstern tenar. Dersom verdien er «local_only», vert berre katalogar som ligg "
 "lokalt på maskina telte opp. Dersom verdien er «never», vert katalogane "
 "aldri telte opp."
 
@@ -1575,8 +1575,9 @@ msgid ""
 "text files."
 msgstr ""
 "Kva som skal gjerast med køyrbare tekstfiler når dei vert aktiverte (enkelt- "
-"eller dobbeltklikka). Moglege verdiar er «launch» for å køyra dei som program, "
-"«ask» for å spørja i ein dialog, og «display» for å visa dei som tekstfiler."
+"eller dobbeltklikka). Moglege verdiar er «launch» for å køyra dei som "
+"program, «ask» for å spørja i ein dialog, og «display» for å visa dei som "
+"tekstfiler."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
 msgid ""
@@ -1584,9 +1585,9 @@ msgid ""
 "another view for that particular folder. Possible values are \"list_view\" "
 "and \"icon_view\"."
 msgstr ""
-"Når ei mappe vert vitja, vert denne framsynaren dersom du ikkje har "
-"valt ein annan framsynar for nett den mappa. Moglege verdiar "
-"er «list_view» og «icon_view»."
+"Når ei mappe vert vitja, vert denne framsynaren dersom du ikkje har valt ein "
+"annan framsynar for nett den mappa. Moglege verdiar er «list_view» og "
+"«icon_view»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
 msgid "When to show number of items in a folder"
@@ -1689,9 +1690,8 @@ msgid "JFS Volume"
 msgstr "JFS-volum"
 
 #: libnautilus-private/filesystem-attributes.xml.h:14
-#, fuzzy
 msgid "MSDOS Volume"
-msgstr "ESD lydmålar"
+msgstr "MSDOS-volum"
 
 #: libnautilus-private/filesystem-attributes.xml.h:15
 msgid "MacOS Volume"
@@ -1904,8 +1904,8 @@ msgid ""
 "\"%s\" cannot be deleted because you do not have permissions to modify its "
 "parent folder."
 msgstr ""
-"«%s» kan ikkje slettast avdi du ikkje har dei løyva som trengst for å "
-"endra forelderkatalogen."
+"«%s» kan ikkje slettast avdi du ikkje har dei løyva som trengst for å endra "
+"forelderkatalogen."
 
 #: libnautilus-private/nautilus-file-operations.c:567
 #, c-format
@@ -1918,8 +1918,8 @@ msgid ""
 "\"%s\" cannot be moved because you do not have permissions to change it or "
 "its parent folder."
 msgstr ""
-"«%s» kan ikkje flyttast, fordi du ikkje har dei løyva som trengst for å endra "
-"henne eller forelderkatalogen."
+"«%s» kan ikkje flyttast, fordi du ikkje har dei løyva som trengst for å "
+"endra henne eller forelderkatalogen."
 
 #: libnautilus-private/nautilus-file-operations.c:602
 msgid "Error while moving. "
@@ -2083,9 +2083,9 @@ msgid ""
 "The name is already used for a special item that cannot be removed or "
 "replaced.  If you still want to move the item, rename it and try again."
 msgstr ""
-"Namnet er allereie brukt til eit særskilt element som ikkje kan "
-"fjernast eller erstatta. Dersom du framleis vil flytta elementet, må "
-"du gje det nytt namn og prøva igjen."
+"Namnet er allereie brukt til eit særskilt element som ikkje kan fjernast "
+"eller erstatta. Dersom du framleis vil flytta elementet, må du gje det nytt "
+"namn og prøva igjen."
 
 #: libnautilus-private/nautilus-file-operations.c:1032
 #, c-format
@@ -2111,13 +2111,12 @@ msgstr "Fila %s finst frå før. Vil du skriva over henne?"
 #: libnautilus-private/nautilus-file-operations.c:1067
 #: libnautilus-private/nautilus-file-operations.c:1086
 msgid "If you replace an existing file, its contents will be overwritten."
-msgstr ""
+msgstr "Dersom du prøver å byta ut ei eksisterande fil, vert innhaldet i denne overskrive."
 
 #: libnautilus-private/nautilus-file-operations.c:1068
 #: libnautilus-private/nautilus-file-operations.c:1087
-#, fuzzy
 msgid "Conflict While Copying"
-msgstr "Feil ved lagring av fil."
+msgstr "Konflikt under kopiering"
 
 #: libnautilus-private/nautilus-file-operations.c:1069
 #: libnautilus-private/nautilus-file-operations.c:1088
@@ -2195,18 +2194,19 @@ msgstr ""
 
 #. localizers: tag used to detect the x1st copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1211
+# TRN: File bug. Engelsk konstruksjon.
 msgid "st copy)"
-msgstr " kopi)"
+msgstr ". kopi)"
 
 #. localizers: tag used to detect the x2nd copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1213
 msgid "nd copy)"
-msgstr ""
+msgstr ". kopi)"
 
 #. localizers: tag used to detect the x3rd copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1215
 msgid "rd copy)"
-msgstr " kopi)"
+msgstr ". kopi)"
 
 #. localizers: appended to first file copy
 #: libnautilus-private/nautilus-file-operations.c:1232
@@ -2218,7 +2218,7 @@ msgstr "%s (kopi)%s"
 #: libnautilus-private/nautilus-file-operations.c:1234
 #, c-format
 msgid "%s (another copy)%s"
-msgstr "%s (ein til kopi)%s"
+msgstr "%s (ein kopi til)%s"
 
 #. localizers: appended to x11th file copy
 #: libnautilus-private/nautilus-file-operations.c:1237
@@ -2227,25 +2227,25 @@ msgstr "%s (ein til kopi)%s"
 #: libnautilus-private/nautilus-file-operations.c:1250
 #, c-format
 msgid "%s (%dth copy)%s"
-msgstr ""
+msgstr "%s (%d. kopi)%s"
 
 #. localizers: appended to x1st file copy
 #: libnautilus-private/nautilus-file-operations.c:1244
 #, c-format
 msgid "%s (%dst copy)%s"
-msgstr ""
+msgstr "%s (%d. kopi)%s"
 
 #. localizers: appended to x2nd file copy
 #: libnautilus-private/nautilus-file-operations.c:1246
 #, c-format
 msgid "%s (%dnd copy)%s"
-msgstr ""
+msgstr "%s (%d. kopi)%s"
 
 #. localizers: appended to x3rd file copy
 #: libnautilus-private/nautilus-file-operations.c:1248
 #, c-format
 msgid "%s (%drd copy)%s"
-msgstr ""
+msgstr "%s (%d. kopi)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
 #: libnautilus-private/nautilus-file-operations.c:1348
@@ -2261,21 +2261,19 @@ msgstr " (%d"
 #: libnautilus-private/nautilus-file-operations.c:1541
 #: libnautilus-private/nautilus-file-operations.c:2123
 #: libnautilus-private/nautilus-file-operations.c:2284
-#, fuzzy, c-format
+#, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
-msgstr "Ukjend GnomeVFSSeekPosition %d"
+msgstr "Ukjend GnomeVFSXferProgressStatus %d"
 
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:1868
-#, fuzzy
 msgid "Moving files to the Trash"
-msgstr "Lagrar fil til straum."
+msgstr "Flytter filer til papirkorga."
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1870
-#, fuzzy
 msgid "Files thrown out:"
-msgstr "Gruppa til fileigar"
+msgstr "Filer kasta ut:"
 
 #. localizers: label prepended to the name of the current file moved
 #: libnautilus-private/nautilus-file-operations.c:1872
@@ -2285,9 +2283,8 @@ msgstr "Flyttar"
 
 # help-browser/window.c:244 panel/extern.c:471 panel/swallow.c:92
 #: libnautilus-private/nautilus-file-operations.c:1873
-#, fuzzy
 msgid "Preparing to Move to Trash..."
-msgstr "Førebur lagring ..."
+msgstr "Førebur flytting til papirkorga ..."
 
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:1879
@@ -2301,53 +2298,46 @@ msgstr "Filer flytta:"
 
 # help-browser/window.c:244 panel/extern.c:471 panel/swallow.c:92
 #: libnautilus-private/nautilus-file-operations.c:1884
-#, fuzzy
 msgid "Preparing To Move..."
-msgstr "Førebur lagring ..."
+msgstr "Førebur flytting ..."
 
 #: libnautilus-private/nautilus-file-operations.c:1885
 msgid "Finishing Move..."
-msgstr ""
+msgstr "Fullfører flytting ..."
 
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:1893
-#, fuzzy
 msgid "Creating links to files"
-msgstr "Byt ut streng i po-fil"
+msgstr "Lagar lenkjer til filer"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1895
-#, fuzzy
 msgid "Files linked:"
-msgstr "Første linje"
+msgstr "Filer lenkja:"
 
 #. localizers: label prepended to the name of the current file linked
 #: libnautilus-private/nautilus-file-operations.c:1897
-#, fuzzy
 msgid "Linking"
-msgstr "Bindande"
+msgstr "Lenkjer"
 
 # help-browser/window.c:244 panel/extern.c:471 panel/swallow.c:92
 #: libnautilus-private/nautilus-file-operations.c:1898
-#, fuzzy
 msgid "Preparing to Create Links..."
-msgstr "Førebur lagring ..."
+msgstr "Førebur å laga lenkjer ..."
 
 #: libnautilus-private/nautilus-file-operations.c:1899
 msgid "Finishing Creating Links..."
-msgstr ""
+msgstr "Fullfører å laga lenkjer ..."
 
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:1905
-#, fuzzy
 msgid "Copying files"
-msgstr "Kopierer"
+msgstr "Kopierer filer"
 
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:1907
-#, fuzzy
 msgid "Files copied:"
-msgstr "Filtype:"
+msgstr "Filer kopierte:"
 
 #. localizers: label prepended to the name of the current file copied
 #: libnautilus-private/nautilus-file-operations.c:1909
@@ -2356,48 +2346,43 @@ msgstr "Kopierer"
 
 # help-browser/window.c:244 panel/extern.c:471 panel/swallow.c:92
 #: libnautilus-private/nautilus-file-operations.c:1910
-#, fuzzy
 msgid "Preparing To Copy..."
-msgstr "Førebur lagring ..."
+msgstr "Førebur kopiering ..."
 
 # panel/menu.c:3920
 #: libnautilus-private/nautilus-file-operations.c:1927
-#, fuzzy
 msgid "You cannot copy items into the trash."
-msgstr "Du kan ikkje fjerne det siste panelet:"
+msgstr "Du kan ikkje kopiera element til papirkorga."
 
 #: libnautilus-private/nautilus-file-operations.c:1928
 msgid "Files and folders can only be moved into the trash."
-msgstr ""
+msgstr "Filer og katalogar kan berre flyttast til papirkorga."
 
 # panel/menu.c:3920
 #: libnautilus-private/nautilus-file-operations.c:1952
-#, fuzzy
 msgid "You cannot move this trash folder."
-msgstr "Du kan ikkje fjerne det siste panelet:"
+msgstr "Du kan ikkje flytta denne papirkorg-katalogen."
 
 #: libnautilus-private/nautilus-file-operations.c:1953
 msgid "You cannot copy this trash folder."
-msgstr ""
+msgstr "Du kan ikkje kopiera denne papirkorg-katalogen."
 
 #: libnautilus-private/nautilus-file-operations.c:1954
 msgid "A trash folder is used for storing items moved to the trash."
-msgstr ""
+msgstr "Ein papirkorg-katalog vert brukt til å lagra element som vert flytta til papirkorga."
 
 #: libnautilus-private/nautilus-file-operations.c:1956
 msgid "Can't Change Trash Location"
-msgstr ""
+msgstr "Kan ikkje endra plasseringa av papirkorga"
 
 #: libnautilus-private/nautilus-file-operations.c:1957
-#, fuzzy
 msgid "Can't Copy Trash"
-msgstr "Kan ikkje opne"
+msgstr "Kan ikkje kopiera papirkorga"
 
 # panel/menu.c:3920
 #: libnautilus-private/nautilus-file-operations.c:1981
-#, fuzzy
 msgid "You cannot move a folder into itself."
-msgstr "Du kan ikkje fjerne det siste panelet:"
+msgstr "Du kan ikkje flytta ein katalog inn i seg sjølv."
 
 #: libnautilus-private/nautilus-file-operations.c:1982
 msgid "You cannot copy a folder into itself."
@@ -2405,32 +2390,28 @@ msgstr "Du kan ikkje kopiera ein katalog inn i seg sjølv."
 
 #: libnautilus-private/nautilus-file-operations.c:1983
 msgid "The destination folder is inside the source folder."
-msgstr ""
+msgstr "Målmappa er inni kjeldemappa."
 
 #: libnautilus-private/nautilus-file-operations.c:1985
-#, fuzzy
 msgid "Can't Move Into Self"
-msgstr "Kan ikkje opne"
+msgstr "Kan ikkje flytta inn i seg sjølv"
 
 #: libnautilus-private/nautilus-file-operations.c:1986
-#, fuzzy
 msgid "Can't Copy Into Self"
-msgstr "Kan ikkje opne"
+msgstr "Kan ikkje kopiera inn i seg sjølv"
 
 # panel/menu.c:3920
 #: libnautilus-private/nautilus-file-operations.c:1999
-#, fuzzy
 msgid "You cannot copy a file over itself."
-msgstr "Du kan ikkje fjerne det siste panelet:"
+msgstr "Kan ikkje kopiera ei fil over seg sjølv."
 
 #: libnautilus-private/nautilus-file-operations.c:2000
 msgid "The destination and source are the same file."
-msgstr ""
+msgstr "Målet og kjelda er same fil."
 
 #: libnautilus-private/nautilus-file-operations.c:2001
-#, fuzzy
 msgid "Can't Copy Over Self"
-msgstr "Kan ikkje opne"
+msgstr "Kan ikkje kopiera over seg sjølv"
 
 #: libnautilus-private/nautilus-file-operations.c:2053
 #: libnautilus-private/nautilus-file-operations.c:2187
@@ -2440,7 +2421,7 @@ msgstr "Du har ikkje løyve til å skriva til målet."
 #: libnautilus-private/nautilus-file-operations.c:2055
 #: libnautilus-private/nautilus-file-operations.c:2189
 msgid "There is no space on the destination."
-msgstr ""
+msgstr "Ikkje plass på målet."
 
 #: libnautilus-private/nautilus-file-operations.c:2057
 #, c-format
@@ -2476,9 +2457,8 @@ msgid "Error Creating New Document"
 msgstr "Feil under oppretting av nytt dokument"
 
 #: libnautilus-private/nautilus-file-operations.c:2342
-#, fuzzy
 msgid "new file"
-msgstr "1 fil"
+msgstr "ny fil"
 
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:2414
@@ -2488,9 +2468,8 @@ msgstr "Slettar filer"
 #. localizers: label prepended to the progress count
 #: libnautilus-private/nautilus-file-operations.c:2416
 #: libnautilus-private/nautilus-file-operations.c:2451
-#, fuzzy
 msgid "Files deleted:"
-msgstr "XMMS: Filer sletta"
+msgstr "Filer sletta:"
 
 #. localizers: label prepended to the name of the current file deleted
 #: libnautilus-private/nautilus-file-operations.c:2418
@@ -2500,29 +2479,26 @@ msgstr "Slettar"
 
 # help-browser/window.c:244 panel/extern.c:471 panel/swallow.c:92
 #: libnautilus-private/nautilus-file-operations.c:2419
-#, fuzzy
 msgid "Preparing to Delete files..."
-msgstr "Førebur lagring ..."
+msgstr "Førebur sletting av filer ..."
 
 #. localizers: progress dialog title
 #: libnautilus-private/nautilus-file-operations.c:2449
 msgid "Emptying the Trash"
-msgstr ""
+msgstr "Tømmer papirkorga"
 
 # help-browser/window.c:244 panel/extern.c:471 panel/swallow.c:92
 #: libnautilus-private/nautilus-file-operations.c:2454
-#, fuzzy
 msgid "Preparing to Empty the Trash..."
-msgstr "Førebur lagring ..."
+msgstr "Førebur tømming av papirkorga ..."
 
 #: libnautilus-private/nautilus-file-operations.c:2517
-#, fuzzy
 msgid "Are you sure you want to empty all of the items from the trash?"
-msgstr "Er du sikker på at du vil sletta denne klassen?"
+msgstr "Er du sikker på at du vil fjerna alle elementa i papirkorga?"
 
 #: libnautilus-private/nautilus-file-operations.c:2531
 msgid "If you empty the trash, items will be permanently deleted."
-msgstr ""
+msgstr "Dersom du tømer papirkorga, vert elementa sletta for godt."
 
 #: libnautilus-private/nautilus-file-operations.c:2543
 msgid "_Empty"
@@ -2535,7 +2511,7 @@ msgstr "foo"
 #: libnautilus-private/nautilus-file-operations.c:2590
 #: libnautilus-private/nautilus-file-operations.c:2600
 msgid "foo (copy)"
-msgstr ""
+msgstr "foo (kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2591
 msgid ".bashrc"
@@ -2551,7 +2527,7 @@ msgstr ".foo.txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2592
 msgid ".foo (copy).txt"
-msgstr ""
+msgstr ".foo (kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2593
 msgid "foo foo"
@@ -2559,41 +2535,41 @@ msgstr "foo foo"
 
 #: libnautilus-private/nautilus-file-operations.c:2593
 msgid "foo foo (copy)"
-msgstr ""
+msgstr "foo foo (kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2594
 msgid "foo.txt"
-msgstr ""
+msgstr "foo.txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2594
 #: libnautilus-private/nautilus-file-operations.c:2601
 msgid "foo (copy).txt"
-msgstr ""
+msgstr "foo (kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2595
 msgid "foo foo.txt"
-msgstr ""
+msgstr "foo foo.txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2595
 #: libnautilus-private/nautilus-file-operations.c:2617
 msgid "foo foo (copy).txt"
-msgstr ""
+msgstr "foo foo (kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2596
 msgid "foo foo.txt txt"
-msgstr ""
+msgstr "foo foo.txt txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2596
 msgid "foo foo (copy).txt txt"
-msgstr ""
+msgstr "foo foo (kopi).txt txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2597
 msgid "foo...txt"
-msgstr ""
+msgstr "foo...txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2597
 msgid "foo.. (copy).txt"
-msgstr ""
+msgstr "foo.. (kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2598
 msgid "foo..."
@@ -2601,195 +2577,195 @@ msgstr "foo ..."
 
 #: libnautilus-private/nautilus-file-operations.c:2598
 msgid "foo... (copy)"
-msgstr ""
+msgstr "foo... (kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2599
 msgid "foo. (copy)"
-msgstr ""
+msgstr "foo. (kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2599
 msgid "foo. (another copy)"
-msgstr ""
+msgstr "foo. (ny kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2600
 #: libnautilus-private/nautilus-file-operations.c:2602
 msgid "foo (another copy)"
-msgstr ""
+msgstr "foo (ny kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2601
 #: libnautilus-private/nautilus-file-operations.c:2603
 msgid "foo (another copy).txt"
-msgstr ""
+msgstr "foo (ny kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2602
 msgid "foo (3rd copy)"
-msgstr ""
+msgstr "foo (3. kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2603
 msgid "foo (3rd copy).txt"
-msgstr ""
+msgstr "foo (3. kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2604
 msgid "foo foo (another copy).txt"
-msgstr ""
+msgstr "foo foo (ny kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2604
 msgid "foo foo (3rd copy).txt"
-msgstr ""
+msgstr "foo foo (3. kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2605
 #: libnautilus-private/nautilus-file-operations.c:2622
 msgid "foo (13th copy)"
-msgstr ""
+msgstr "foo (13. kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2605
 msgid "foo (14th copy)"
-msgstr ""
+msgstr "foo (14. kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2606
 #: libnautilus-private/nautilus-file-operations.c:2623
 msgid "foo (13th copy).txt"
-msgstr ""
+msgstr "foo (13. kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2606
 msgid "foo (14th copy).txt"
-msgstr ""
+msgstr "foo (14. kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2607
 msgid "foo (21st copy)"
-msgstr ""
+msgstr "foo (21. kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2607
 #: libnautilus-private/nautilus-file-operations.c:2609
 msgid "foo (22nd copy)"
-msgstr ""
+msgstr "foo (22. kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2608
 msgid "foo (21st copy).txt"
-msgstr ""
+msgstr "foo (21. kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2608
 #: libnautilus-private/nautilus-file-operations.c:2610
 msgid "foo (22nd copy).txt"
-msgstr ""
+msgstr "foo (22. kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2609
 #: libnautilus-private/nautilus-file-operations.c:2611
 msgid "foo (23rd copy)"
-msgstr ""
+msgstr "foo (23. kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2610
 #: libnautilus-private/nautilus-file-operations.c:2612
 msgid "foo (23rd copy).txt"
-msgstr ""
+msgstr "foo (23. kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2611
 #: libnautilus-private/nautilus-file-operations.c:2613
 msgid "foo (24th copy)"
-msgstr ""
+msgstr "foo (24. kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2612
 #: libnautilus-private/nautilus-file-operations.c:2614
 msgid "foo (24th copy).txt"
-msgstr ""
+msgstr "foo (24. kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2613
 msgid "foo (25th copy)"
-msgstr ""
+msgstr "foo (25. kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2614
 msgid "foo (25th copy).txt"
-msgstr ""
+msgstr "foo (25. kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2615
 msgid "foo foo (24th copy)"
-msgstr ""
+msgstr "foo foo (24. kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2615
 msgid "foo foo (25th copy)"
-msgstr ""
+msgstr "foo foo (25. kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2616
 msgid "foo foo (24th copy).txt"
-msgstr ""
+msgstr "foo foo (24. kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2616
 msgid "foo foo (25th copy).txt"
-msgstr ""
+msgstr "foo foo (25. kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2617
 msgid "foo foo (100000000000000th copy).txt"
-msgstr ""
+msgstr "foo foo (100000000000000. kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2618
 msgid "foo (10th copy)"
-msgstr ""
+msgstr "foo (10. kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2618
 #: libnautilus-private/nautilus-file-operations.c:2620
 msgid "foo (11th copy)"
-msgstr ""
+msgstr "foo (11. kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2619
 msgid "foo (10th copy).txt"
-msgstr ""
+msgstr "foo (10. kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2619
 #: libnautilus-private/nautilus-file-operations.c:2621
 msgid "foo (11th copy).txt"
-msgstr ""
+msgstr "foo (12. kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2620
 #: libnautilus-private/nautilus-file-operations.c:2622
 msgid "foo (12th copy)"
-msgstr ""
+msgstr "foo (12. kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2621
 #: libnautilus-private/nautilus-file-operations.c:2623
 msgid "foo (12th copy).txt"
-msgstr ""
+msgstr "foo (12. kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2624
 msgid "foo (110th copy)"
-msgstr ""
+msgstr "foo (110. kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2624
 msgid "foo (111th copy)"
-msgstr ""
+msgstr "foo (111. kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2625
 msgid "foo (110th copy).txt"
-msgstr ""
+msgstr "foo (110. kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2625
 msgid "foo (111th copy).txt"
-msgstr ""
+msgstr "foo (112. kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2626
 msgid "foo (122nd copy)"
-msgstr ""
+msgstr "foo (122. kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2626
 #: libnautilus-private/nautilus-file-operations.c:2628
 msgid "foo (123rd copy)"
-msgstr ""
+msgstr "foo (123. kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2627
 msgid "foo (122nd copy).txt"
-msgstr ""
+msgstr "foo (122. kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2627
 #: libnautilus-private/nautilus-file-operations.c:2629
 msgid "foo (123rd copy).txt"
-msgstr ""
+msgstr "foo (123. kopi).txt"
 
 #: libnautilus-private/nautilus-file-operations.c:2628
 msgid "foo (124th copy)"
-msgstr ""
+msgstr "foo (124. kopi)"
 
 #: libnautilus-private/nautilus-file-operations.c:2629
 msgid "foo (124th copy).txt"
-msgstr ""
+msgstr "foo (124. kopi).txt"
 
 #. Today, use special word.
 #. * strftime patterns preceeded with the widest
@@ -2808,31 +2784,30 @@ msgstr ""
 #.
 #: libnautilus-private/nautilus-file.c:2767
 msgid "today at 00:00:00 PM"
-msgstr ""
+msgstr "i dag kl. 00.00.00"
 
 # panel/menu.c:3522 panel/session.c:1541
 #: libnautilus-private/nautilus-file.c:2768
 msgid "today at %-I:%M:%S %p"
-msgstr "i dag klokka %-I:%M:%S %p"
+msgstr "i dag kl. %H.%M.%S"
 
 #: libnautilus-private/nautilus-file.c:2770
 msgid "today at 00:00 PM"
-msgstr ""
+msgstr "i dag kl. 00.00"
 
 # panel/foobar-widget.c:556
 #: libnautilus-private/nautilus-file.c:2771
-#, fuzzy
 msgid "today at %-I:%M %p"
-msgstr "I dag, %l:%M %p"
+msgstr "i dag kl. %H.%M"
 
 #: libnautilus-private/nautilus-file.c:2773
 msgid "today, 00:00 PM"
-msgstr "i dag, 00:00 PM"
+msgstr "i dag, 00.00"
 
 # panel/foobar-widget.c:556
 #: libnautilus-private/nautilus-file.c:2774
 msgid "today, %-I:%M %p"
-msgstr "i dag, %-I:%M %p"
+msgstr "i dag, %H.%M"
 
 #: libnautilus-private/nautilus-file.c:2776
 #: libnautilus-private/nautilus-file.c:2777
@@ -2844,30 +2819,27 @@ msgstr "i dag"
 #.
 #: libnautilus-private/nautilus-file.c:2786
 msgid "yesterday at 00:00:00 PM"
-msgstr ""
+msgstr "i går kl. 00.00.00"
 
 #: libnautilus-private/nautilus-file.c:2787
-#, fuzzy
 msgid "yesterday at %-I:%M:%S %p"
-msgstr "Seint i går %l:%M %p"
+msgstr "i går kl. %H.%M.%S"
 
 #: libnautilus-private/nautilus-file.c:2789
 msgid "yesterday at 00:00 PM"
-msgstr ""
+msgstr "i går kl. 00.00"
 
 #: libnautilus-private/nautilus-file.c:2790
-#, fuzzy
 msgid "yesterday at %-I:%M %p"
-msgstr "Seint i går %l:%M %p"
+msgstr "i går kl. %H.%M"
 
 #: libnautilus-private/nautilus-file.c:2792
 msgid "yesterday, 00:00 PM"
-msgstr "i går, 00:00 PM"
+msgstr "i går kl. 00.00"
 
 #: libnautilus-private/nautilus-file.c:2793
-#, fuzzy
 msgid "yesterday, %-I:%M %p"
-msgstr "Seint i går %l:%M %p"
+msgstr "i går, %H.%M"
 
 #: libnautilus-private/nautilus-file.c:2795
 #: libnautilus-private/nautilus-file.c:2796
@@ -2881,45 +2853,41 @@ msgstr "i går"
 #.
 #: libnautilus-private/nautilus-file.c:2807
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
-msgstr ""
+msgstr "Onsdag 0. september 0000 kl. 00.00.00"
 
 # applets/gen_util/clock.c:450
 #: libnautilus-private/nautilus-file.c:2808
-#, fuzzy
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
-msgstr "%a, %d  %b  %Y %H:%M:%S %z"
+msgstr "%A, %-d. %B %Y, %-H.%M.%S"
 
 #: libnautilus-private/nautilus-file.c:2810
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
-msgstr ""
+msgstr "Mån 0. Okt 0000 kl. 00.00.00"
 
 # applets/gen_util/clock.c:450
 #: libnautilus-private/nautilus-file.c:2811
-#, fuzzy
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
-msgstr "%a, %d  %b  %Y %H:%M:%S %z"
+msgstr "%a, %-d. %b %Y, %-H.%M.%S"
 
 #: libnautilus-private/nautilus-file.c:2813
 msgid "Mon, Oct 00 0000 at 00:00 PM"
-msgstr ""
+msgstr "Mån 00. okt 0000 kl. 00.00"
 
 #: libnautilus-private/nautilus-file.c:2814
-#, fuzzy
 msgid "%a, %b %-d %Y at %-I:%M %p"
-msgstr "%a %b %d, %I:%M %p"
+msgstr "%a, %-d. %b %Y kl. %-H.%M"
 
 #: libnautilus-private/nautilus-file.c:2816
 msgid "Oct 00 0000 at 00:00 PM"
-msgstr ""
+msgstr "00. okt 0000 kl. 00.00"
 
 #: libnautilus-private/nautilus-file.c:2817
-#, fuzzy
 msgid "%b %-d %Y at %-I:%M %p"
-msgstr "%b %d %l:%M %p"
+msgstr "%-d. %b %Y, %-H.%M"
 
 #: libnautilus-private/nautilus-file.c:2819
 msgid "Oct 00 0000, 00:00 PM"
-msgstr ""
+msgstr "00. okt 0000, 00.00"
 
 #: libnautilus-private/nautilus-file.c:2820
 msgid "%b %-d %Y, %-I:%M %p"
@@ -2927,12 +2895,11 @@ msgstr "%b %-d %Y, %-I:%M %p"
 
 #: libnautilus-private/nautilus-file.c:2822
 msgid "00/00/00, 00:00 PM"
-msgstr ""
+msgstr "00.00.00, 00.00"
 
 #: libnautilus-private/nautilus-file.c:2823
-#, fuzzy
 msgid "%m/%-d/%y, %-I:%M %p"
-msgstr "%a %b %d, %I:%M %p"
+msgstr "%-d.%m.%y kl. %-H.%M"
 
 #: libnautilus-private/nautilus-file.c:2825
 msgid "00/00/00"
@@ -2940,7 +2907,7 @@ msgstr "00/00/00"
 
 #: libnautilus-private/nautilus-file.c:2826
 msgid "%m/%d/%y"
-msgstr ""
+msgstr "%d.%m.%y"
 
 #: libnautilus-private/nautilus-file.c:4121
 msgid "0 items"
@@ -2948,7 +2915,7 @@ msgstr "0 element"
 
 #: libnautilus-private/nautilus-file.c:4121
 msgid "0 folders"
-msgstr "0 mappe"
+msgstr "0 mapper"
 
 #: libnautilus-private/nautilus-file.c:4122
 msgid "0 files"
@@ -2999,9 +2966,8 @@ msgid "unknown type"
 msgstr "ukjend type"
 
 #: libnautilus-private/nautilus-file.c:4467
-#, fuzzy
 msgid "unknown MIME type"
-msgstr "ukjend type"
+msgstr "ukjend MIME-type"
 
 # gtk/gtkfontsel.c:1960 gtk/gtkinputdialog.c:607
 #. Fallback, use for both unknown attributes and attributes
@@ -3015,9 +2981,8 @@ msgstr "ukjend"
 # gtk/gtkfontsel.c:664
 # gsm/gsm-client-list.c:122
 #: libnautilus-private/nautilus-file.c:4505
-#, fuzzy
 msgid "program"
-msgstr "Program"
+msgstr "program"
 
 #: libnautilus-private/nautilus-file.c:4517
 msgid ""
@@ -3025,6 +2990,8 @@ msgid ""
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
 "some other reason."
 msgstr ""
+"Kan ikkje finna skildring sjølv for «x-directory/normal». Det tyder truleg at "
+"«gnome-vfs.keys»-fila di er på feil stad eller ikkje vert funnen av ein annan grunn."
 
 #: libnautilus-private/nautilus-file.c:4521
 #, c-format
@@ -3032,6 +2999,8 @@ msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
 "gnome-vfs mailing list."
 msgstr ""
+"Fann inga skildring for MIME-typen «%s» (fila «%s»). Sei ifrå til "
+"gnome-vfs-lista."
 
 #: libnautilus-private/nautilus-file.c:4535
 msgid "link"
@@ -3039,7 +3008,7 @@ msgstr "lenkje"
 
 #: libnautilus-private/nautilus-file.c:4555
 msgid "link (broken)"
-msgstr ""
+msgstr "lenkje (broten)"
 
 #: libnautilus-private/nautilus-global-preferences.c:102
 msgid "_Always"
@@ -3047,7 +3016,7 @@ msgstr "_Alltid"
 
 #: libnautilus-private/nautilus-global-preferences.c:103
 msgid "_Local File Only"
-msgstr "Berre _lokale fil"
+msgstr "Berre _lokale filer"
 
 #: libnautilus-private/nautilus-global-preferences.c:104
 msgid "_Never"
@@ -3055,43 +3024,43 @@ msgstr "_Aldri"
 
 #: libnautilus-private/nautilus-global-preferences.c:110
 #: src/nautilus-file-management-properties.glade.h:14
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "25%"
 msgstr "25%"
 
 #: libnautilus-private/nautilus-global-preferences.c:112
 #: src/nautilus-file-management-properties.glade.h:20
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "50%"
 msgstr "50%"
 
 #: libnautilus-private/nautilus-global-preferences.c:114
 #: src/nautilus-file-management-properties.glade.h:23
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "75%"
 msgstr "75%"
 
 #: libnautilus-private/nautilus-global-preferences.c:116
 #: src/nautilus-file-management-properties.glade.h:8
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "100%"
 msgstr "100%"
 
 #: libnautilus-private/nautilus-global-preferences.c:118
 #: src/nautilus-file-management-properties.glade.h:10
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "150%"
 msgstr "150%"
 
 #: libnautilus-private/nautilus-global-preferences.c:120
 #: src/nautilus-file-management-properties.glade.h:12
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "200%"
 msgstr "200%"
 
 #: libnautilus-private/nautilus-global-preferences.c:122
 #: src/nautilus-file-management-properties.glade.h:17
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "400%"
 msgstr "400%"
 
@@ -3130,49 +3099,46 @@ msgstr "100 MB"
 
 #: libnautilus-private/nautilus-global-preferences.c:139
 msgid "Activate items with a _single click"
-msgstr ""
+msgstr "Aktiver oppføringar med _enkeltklikk"
 
 #: libnautilus-private/nautilus-global-preferences.c:143
 msgid "Activate items with a _double click"
-msgstr ""
+msgstr "Aktiver oppføringar med _dobbeltklikk"
 
 #: libnautilus-private/nautilus-global-preferences.c:151
 msgid "E_xecute files when they are clicked"
-msgstr ""
+msgstr "K_øyr filer når dei vert klikka"
 
 #: libnautilus-private/nautilus-global-preferences.c:155
 msgid "Display _files when they are clicked"
-msgstr ""
+msgstr "Vis _filer når dei vert klikka"
 
 #: libnautilus-private/nautilus-global-preferences.c:159
 #: src/nautilus-file-management-properties.glade.h:65
 msgid "_Ask each time"
-msgstr ""
+msgstr "_Spør kvar gong"
 
 #: libnautilus-private/nautilus-global-preferences.c:167
-#, fuzzy
 msgid "Search for files by file name only"
-msgstr "Søk kun i spesifisert område"
+msgstr "Søk etter filer berre på namn"
 
 #: libnautilus-private/nautilus-global-preferences.c:171
 msgid "Search for files by file name and file properties"
-msgstr ""
+msgstr "Søk etter filer på namn og fileigenskapar"
 
 #: libnautilus-private/nautilus-global-preferences.c:178
 #: src/file-manager/fm-icon-container.c:496
 #: src/nautilus-file-management-properties.glade.h:50
-#, fuzzy
 msgid "Icon View"
-msgstr "Månadsvising"
+msgstr "Ikonvising"
 
 #: libnautilus-private/nautilus-global-preferences.c:179
 #: src/file-manager/fm-list-view.c:863
 #: src/nautilus-file-management-properties.glade.h:51
 msgid "List View"
-msgstr "Vis liste"
+msgstr "Listevising"
 
 #: libnautilus-private/nautilus-global-preferences.c:184
-#, fuzzy
 msgid "Manually"
 msgstr "Manuell"
 
@@ -3181,7 +3147,7 @@ msgstr "Manuell"
 #: libnautilus-private/nautilus-global-preferences.c:195
 #: src/nautilus-file-management-properties.glade.h:41
 msgid "By Name"
-msgstr "På namn"
+msgstr "Etter namn"
 
 # panel/foobar-widget.c:324
 #: libnautilus-private/nautilus-global-preferences.c:187
@@ -3200,15 +3166,14 @@ msgstr "Etter type"
 #: libnautilus-private/nautilus-global-preferences.c:189
 #: libnautilus-private/nautilus-global-preferences.c:198
 #: src/nautilus-file-management-properties.glade.h:40
-#, fuzzy
 msgid "By Modification Date"
-msgstr "Siste endringstid"
+msgstr "Etter endringstid"
 
 #: libnautilus-private/nautilus-global-preferences.c:190
 #: libnautilus-private/nautilus-global-preferences.c:199
 #: src/nautilus-file-management-properties.glade.h:39
 msgid "By Emblems"
-msgstr ""
+msgstr "Etter merke"
 
 #: libnautilus-private/nautilus-global-preferences.c:204
 msgid "8"
@@ -3282,15 +3247,13 @@ msgstr "gruppe"
 
 #: libnautilus-private/nautilus-global-preferences.c:224
 #: src/nautilus-file-management-properties.glade.h:80
-#, fuzzy
 msgid "permissions"
-msgstr "Løyve: "
+msgstr "løyve"
 
 #: libnautilus-private/nautilus-global-preferences.c:225
 #: src/nautilus-file-management-properties.glade.h:78
-#, fuzzy
 msgid "octal permissions"
-msgstr "Løyve: "
+msgstr "oktale løyve"
 
 #: libnautilus-private/nautilus-global-preferences.c:226
 #: src/nautilus-file-management-properties.glade.h:53
@@ -3323,34 +3286,32 @@ msgid "Computer"
 msgstr "Datamaskin"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2758
-#, fuzzy
 msgid "editable text"
-msgstr "Meditative"
+msgstr "redigerbar tekst"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2759
 msgid "the editable label"
-msgstr ""
+msgstr "den redigerbare merkelappen"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2766
 msgid "additional text"
-msgstr ""
+msgstr "tilleggstekst"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2767
 msgid "some more text"
-msgstr ""
+msgstr "litt meir tekst"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2774
-#, fuzzy
 msgid "highlighted for selection"
-msgstr "Venstre seksjon:"
+msgstr "merka for utval"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2775
 msgid "whether we are highlighted for a selection"
-msgstr ""
+msgstr "om me er meirka for eit utval"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2782
 msgid "highlighted as keyboard focus"
-msgstr ""
+msgstr "merka som tataturfokus"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2783
 msgid "whether we are highlighted to render keyboard focus"
@@ -3358,40 +3319,35 @@ msgstr ""
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2791
 msgid "highlighted for drop"
-msgstr ""
+msgstr "merka for slepp"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2792
 msgid "whether we are highlighted for a D&D drop"
-msgstr ""
+msgstr "om me er merka for eit dra-og-slepp-slepp"
 
 #: libnautilus-private/nautilus-icon-container.c:2071
-#, fuzzy
 msgid "The selection rectangle"
-msgstr "Gøym valde kolonner"
+msgstr "Utvalsrektangelet"
 
 #: libnautilus-private/nautilus-icon-container.c:4165
-#, fuzzy
 msgid "Frame Text"
-msgstr "Lim inn tekst"
+msgstr "Teikn ramme rundt tekst"
 
 #: libnautilus-private/nautilus-icon-container.c:4166
 msgid "Draw a frame around unselected text"
-msgstr ""
+msgstr "Teikn ei ramme rundt tekst som ikkje er vald"
 
 #: libnautilus-private/nautilus-icon-container.c:4172
-#, fuzzy
 msgid "Selection Box Color"
-msgstr "Vel ikon for montert"
+msgstr "Farge på utvalsboksen"
 
 #: libnautilus-private/nautilus-icon-container.c:4173
-#, fuzzy
 msgid "Color of the selection box"
-msgstr "Gå til heimeplassering"
+msgstr "Farge på utvalsboksen"
 
 #: libnautilus-private/nautilus-icon-container.c:4178
-#, fuzzy
 msgid "Selection Box Alpha"
-msgstr "Vel alle"
+msgstr "Alfa i utvalsboksen"
 
 #: libnautilus-private/nautilus-icon-container.c:4179
 msgid "Opacity of the selection box"
@@ -3399,69 +3355,70 @@ msgstr ""
 
 #: libnautilus-private/nautilus-icon-container.c:4186
 msgid "Highlight Alpha"
-msgstr ""
+msgstr "Lys opp alfa"
 
 #: libnautilus-private/nautilus-icon-container.c:4187
-#, fuzzy
 msgid "Opacity of the highlight for selected icons"
-msgstr "Venstre seksjon:"
+msgstr ""
 
 #: libnautilus-private/nautilus-icon-container.c:4193
 msgid "Light Info Color"
-msgstr ""
+msgstr "Lys informasjonsfarge"
 
 #: libnautilus-private/nautilus-icon-container.c:4194
 msgid "Color used for information text against a dark background"
-msgstr ""
+msgstr "Farge brukt på informasjonstekst mot ein mørk bakgrunn"
 
 #: libnautilus-private/nautilus-icon-container.c:4199
-#, fuzzy
 msgid "Dark Info Color"
-msgstr "Mørk kork"
+msgstr "Mørk informasjonsfarge"
 
 #: libnautilus-private/nautilus-icon-container.c:4200
 msgid "Color used for information text against a light background"
-msgstr ""
+msgstr "Farge brukt på informasjonstekst mot ein lys bakgrunn"
 
 #: libnautilus-private/nautilus-icon-dnd.c:732
 msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it? This will clobber the stored manual layout."
 msgstr ""
+"Vil du byta til manuell plassering og la dette elementet liggja der du slapp det? "
+"Dette vil rota til den lagra manuelle plasseringa."
 
 #: libnautilus-private/nautilus-icon-dnd.c:734
 #: libnautilus-private/nautilus-icon-dnd.c:738
 #: libnautilus-private/nautilus-icon-dnd.c:743
 #: libnautilus-private/nautilus-icon-dnd.c:746
 msgid "This folder uses automatic layout."
-msgstr ""
+msgstr "Denne mappa brukar automatisk plassering."
 
 #: libnautilus-private/nautilus-icon-dnd.c:736
 msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them? This will clobber the stored manual layout."
 msgstr ""
+"Vil du byta til manuell plassering og la desse elementa liggja der du slapp dei? "
+"Dette vil rota til den lagra manuelle plasseringa."
 
 #: libnautilus-private/nautilus-icon-dnd.c:742
 msgid ""
 "Do you want to switch to manual layout and leave this item where you dropped "
 "it?"
-msgstr ""
+msgstr "Vil du byta til manuell plassering og la dette elementet liggja der du slapp det?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:745
 msgid ""
 "Do you want to switch to manual layout and leave these items where you "
 "dropped them?"
-msgstr ""
+msgstr "Vil du byta til manuell plassering og la desse elementa liggja der du slapp dei?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:751
 msgid "Switch to Manual Layout?"
-msgstr ""
+msgstr "Byta til manuell plassering?"
 
 #: libnautilus-private/nautilus-icon-dnd.c:752
-#, fuzzy
 msgid "Switch"
-msgstr "med"
+msgstr "Byt"
 
 #: libnautilus-private/nautilus-medusa-support.c:123
 #, c-format
@@ -3477,6 +3434,16 @@ msgid ""
 "Fast searches will not be available until an initial index of your files has "
 "been created.  This may take a long time."
 msgstr ""
+"For å slå på raskt søk, må du redigera fila «%s» som root. Du slår på "
+"medusa-tenesta ved å setja flagget «enabled» til «yes».\n"
+"For å starta indekseringa og søketenenesta med ein gong, må du også "
+"køyra følgjande kommandoar som root:\n"
+"\n"
+"medusa-indexd\n"
+"medusa-searchd\n"
+"\n"
+"Raske søk vil ikkje vera tilgjengelege før filene dine er indekserte. Det kan "
+"ta lang tid."
 
 #: libnautilus-private/nautilus-medusa-support.c:138
 msgid ""
@@ -3487,112 +3454,114 @@ msgid ""
 "If you are using a packaged version of Nautilus, fast searching is not "
 "available.\n"
 msgstr ""
+"Klarte ikkje å finna medusa, programmet som utfører søk, på systemet ditt. "
+"Dersom du har kompilert Nautilus sjølv, må du installera medusa og "
+"kompilera Nautilus på nytt. (Du kan finna medusa på ftp://ftp.gnome.org/)\n"
+"Dersom du bruker ein pakkeversjon av Nautilus vil ikkje raske søk vera "
+"tilgjengelege.\n"
 
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
-msgstr ""
+msgstr "Ein feil oppstod under framsyning av hjelp: %s"
 
 # panel/menu-properties.c:416
 #: libnautilus-private/nautilus-program-chooser.c:333
-#, fuzzy
 msgid "not in menu"
-msgstr "På hovudmenyen"
+msgstr "ikkje i menyen"
 
 #: libnautilus-private/nautilus-program-chooser.c:336
-#, fuzzy
 msgid "in menu for this file"
-msgstr "Ingen informasjon for dette filsystemet."
+msgstr "i menyen for denne fila"
 
 #: libnautilus-private/nautilus-program-chooser.c:339
 #: libnautilus-private/nautilus-program-chooser.c:342
-#, fuzzy, c-format
+#, c-format
 msgid "in menu for \"%s\""
-msgstr "Visning for \"%s\""
+msgstr "i menyen for «%s»"
 
 # applets/tasklist/tasklist_properties.c:196
 #: libnautilus-private/nautilus-program-chooser.c:345
-#, fuzzy
 msgid "default for this file"
-msgstr "Standard oppgåvestorleik:"
+msgstr "standard for denne fila"
 
 #: libnautilus-private/nautilus-program-chooser.c:348
 #: libnautilus-private/nautilus-program-chooser.c:351
-#, fuzzy, c-format
+#, c-format
 msgid "default for \"%s\""
-msgstr "Standardval - %s"
+msgstr "standard for «%s»"
 
 #: libnautilus-private/nautilus-program-chooser.c:396
 #, c-format
 msgid "Is not in the menu for \"%s\" items."
-msgstr ""
+msgstr "Er ikkje i menyen for «%s»-element."
 
 # panel/gnome-panel-properties.c:830
 #: libnautilus-private/nautilus-program-chooser.c:399
 #, c-format
 msgid "Is in the menu for \"%s\"."
-msgstr ""
+msgstr "Er i menyen for «%s»."
 
 #: libnautilus-private/nautilus-program-chooser.c:402
 #, c-format
 msgid "Is in the menu for \"%s\" items."
-msgstr ""
+msgstr "Er i menyen for «%s»-element."
 
 #: libnautilus-private/nautilus-program-chooser.c:405
 #, c-format
 msgid "Is in the menu for all \"%s\" items."
-msgstr ""
+msgstr "Er i menyen for alle element av typen «%s»."
 
 #: libnautilus-private/nautilus-program-chooser.c:408
 #, c-format
 msgid "Is the default for \"%s\"."
-msgstr ""
+msgstr "Er standard for «%s»."
 
 #: libnautilus-private/nautilus-program-chooser.c:411
 #, c-format
 msgid "Is the default for \"%s\" items."
-msgstr ""
+msgstr "Er standard for «%s»-element."
 
 #: libnautilus-private/nautilus-program-chooser.c:414
 #, c-format
 msgid "Is the default for all \"%s\" items."
-msgstr ""
+msgstr "Er standard for alle «%s»-element."
 
 #: libnautilus-private/nautilus-program-chooser.c:1030
-#, fuzzy, c-format
+#, c-format
 msgid "Modify \"%s\""
-msgstr "Flyttar %s"
+msgstr "Endra «%s»"
 
 #. Radio button for adding to short list for file type.
 #: libnautilus-private/nautilus-program-chooser.c:1056
 #, c-format
 msgid "Include in the menu for \"%s\" items"
-msgstr ""
+msgstr "Ta med i menyen for «%s»-element"
 
 #. Radio button for setting default for file type.
 #: libnautilus-private/nautilus-program-chooser.c:1063
 #, c-format
 msgid "Use as default for \"%s\" items"
-msgstr ""
+msgstr "Bruk som standard for «%s»-element"
 
 # panel/gnome-panel-properties.c:830
 #. Radio button for adding to short list for specific file.
 #: libnautilus-private/nautilus-program-chooser.c:1070
 #, c-format
 msgid "Include in the menu for \"%s\" only"
-msgstr ""
+msgstr "Ta med i menyen berre for «%s»"
 
 #. Radio button for setting default for specific file.
 #: libnautilus-private/nautilus-program-chooser.c:1076
 #, c-format
 msgid "Use as default for \"%s\" only"
-msgstr ""
+msgstr "Standard berre for «%s»"
 
 #. Radio button for not including program in short list for type or file.
 #: libnautilus-private/nautilus-program-chooser.c:1083
 #, c-format
 msgid "Don't include in the menu for \"%s\" items"
-msgstr ""
+msgstr "Ikkje ta med i menyen for «%s»-element"
 
 #: libnautilus-private/nautilus-program-chooser.c:1241
 #: src/file-manager/fm-search-list-view.c:501
@@ -3605,7 +3574,7 @@ msgstr "Status"
 
 #: libnautilus-private/nautilus-program-chooser.c:1341
 msgid "C_hoose"
-msgstr ""
+msgstr "_Vel"
 
 #: libnautilus-private/nautilus-program-chooser.c:1344
 msgid "Done"
@@ -3630,6 +3599,8 @@ msgid ""
 "You can configure which programs are offered for which file types in the "
 "File Types and Programs dialog."
 msgstr ""
+"Du kan setja opp kva for program som vert foreslått for kva slags filtypar i "
+"dialogen Filtypar og program."
 
 #: libnautilus-private/nautilus-program-chooser.c:1482
 msgid "Open with Other Application"
@@ -3638,26 +3609,25 @@ msgstr "Opna med eit anna program"
 #: libnautilus-private/nautilus-program-chooser.c:1483
 #, c-format
 msgid "Choose an application with which to open \"%s\":"
-msgstr ""
+msgstr "Vel eit program å opna «%s» med:"
 
 #: libnautilus-private/nautilus-program-chooser.c:1487
 msgid "Open with Other Viewer"
 msgstr "Opna med annan framsynar"
 
 #: libnautilus-private/nautilus-program-chooser.c:1488
-#, fuzzy, c-format
+#, c-format
 msgid "Choose a view for \"%s\":"
-msgstr "Visning for \"%s\""
+msgstr "Vel ei framsyning for «%s»"
 
 #: libnautilus-private/nautilus-program-chooser.c:1591
 #, c-format
 msgid "No viewers are available for \"%s\"."
-msgstr ""
+msgstr "Ingen framsynarar tilgjengelege for «%s»"
 
 #: libnautilus-private/nautilus-program-chooser.c:1592
-#, fuzzy
 msgid "No Viewers Available"
-msgstr "Inga skildring tilgjengeleg"
+msgstr "Ingen framsynarar tilgjengelege"
 
 #: libnautilus-private/nautilus-program-chooser.c:1594
 #, c-format
@@ -3665,19 +3635,17 @@ msgid "There is no application associated with \"%s\"."
 msgstr ""
 
 #: libnautilus-private/nautilus-program-chooser.c:1595
-#, fuzzy
 msgid "No Application Associated"
-msgstr "Inga skildring tilgjengeleg"
+msgstr "Ingen tilknytta program"
 
 #: libnautilus-private/nautilus-program-chooser.c:1597
 #, c-format
 msgid "There is no action associated with \"%s\"."
-msgstr ""
+msgstr "Det er ikkje knytt noko handling til «%s»."
 
 #: libnautilus-private/nautilus-program-chooser.c:1598
-#, fuzzy
 msgid "No Action Associated"
-msgstr "Inga skildring tilgjengeleg"
+msgstr "Inga handling tilknytta"
 
 #. Note: This might be misleading in the components case, since the
 #. * user can't add components to the complete list even from the capplet.
@@ -4602,7 +4570,7 @@ msgid "There is nothing on the clipboard to paste."
 msgstr ""
 
 #: src/file-manager/fm-directory-view.c:5151
-#: src/file-manager/fm-directory-view.c:6051
+#: src/file-manager/fm-directory-view.c:6055
 #, fuzzy
 msgid "Mount Error"
 msgstr "Ukjend feil"
@@ -4768,12 +4736,12 @@ msgstr "Dagleg"
 msgid "_Run"
 msgstr "Køyr"
 
-#: src/file-manager/fm-directory-view.c:6184
+#: src/file-manager/fm-directory-view.c:6188
 #, fuzzy, c-format
 msgid "Opening \"%s\"."
 msgstr "Opnar «%s»"
 
-#: src/file-manager/fm-directory-view.c:6190
+#: src/file-manager/fm-directory-view.c:6194
 #, fuzzy
 msgid "Cancel Open?"
 msgstr "Avbroten"
@@ -5000,26 +4968,26 @@ msgstr ""
 msgid "Restore Icon's Original Si_ze"
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:1961
+#: src/file-manager/fm-icon-view.c:1962
 #, fuzzy, c-format
 msgid "pointing at \"%s\""
 msgstr "Tastar inn \"%s%s\""
 
-#: src/file-manager/fm-icon-view.c:2544 src/file-manager/fm-icon-view.c:2568
+#: src/file-manager/fm-icon-view.c:2545 src/file-manager/fm-icon-view.c:2569
 #, fuzzy
 msgid "Drag and drop is not supported."
 msgstr "Drag og slepp handtak"
 
-#: src/file-manager/fm-icon-view.c:2545
+#: src/file-manager/fm-icon-view.c:2546
 msgid "Drag and drop is only supported on local file systems."
 msgstr ""
 
-#: src/file-manager/fm-icon-view.c:2546 src/file-manager/fm-icon-view.c:2570
+#: src/file-manager/fm-icon-view.c:2547 src/file-manager/fm-icon-view.c:2571
 #, fuzzy
 msgid "Drag and Drop Error"
 msgstr "Drag og slepp handtak"
 
-#: src/file-manager/fm-icon-view.c:2569
+#: src/file-manager/fm-icon-view.c:2570
 msgid "An invalid drag type was used."
 msgstr ""
 
