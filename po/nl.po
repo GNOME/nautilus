@@ -13,7 +13,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2003-01-03 06:04+0100\n"
+"POT-Creation-Date: 2003-01-08 06:06+0100\n"
 "PO-Revision-Date: 2003-01-03 18:37+0100\n"
 "Last-Translator: Reinout van Schouwen <reinout@cs.vu.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
@@ -65,12 +65,12 @@ msgid ""
 "Couldn't remove emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one you added yourself."
 msgstr ""
-"Kon het embleem met de naam '%s' niet verwijderen. Waarschijnlijk komt dit "
+"Kan het embleem met de naam '%s' niet verwijderen. Waarschijnlijk komt dit "
 "doordat het een permanent embleem is, en niet één die u zelf hebt toegevoegd."
 
 #: components/emblem/nautilus-emblem-view.c:203
 msgid "Couldn't remove emblem"
-msgstr "Kon het embleem niet verwijderen"
+msgstr "Kan het embleem niet verwijderen"
 
 #: components/emblem/nautilus-emblem-view.c:237
 #, c-format
@@ -78,12 +78,12 @@ msgid ""
 "Couldn't rename emblem with name '%s'.  This is probably because the emblem "
 "is a permanent one, and not one that you added yourself."
 msgstr ""
-"Kon het embleem met de naam '%s' niet hernoemen. Waarschijnlijk komt dit "
+"Kan het embleem met de naam '%s' niet hernoemen. Waarschijnlijk komt dit "
 "doordat het een permanent embleem is, en niet één die u zelf hebt toegevoegd."
 
 #: components/emblem/nautilus-emblem-view.c:238
 msgid "Couldn't rename emblem"
-msgstr "Kon het embleem niet hernoemen"
+msgstr "Kan het embleem niet hernoemen"
 
 #: components/emblem/nautilus-emblem-view.c:257
 msgid "Rename Emblem"
@@ -122,20 +122,20 @@ msgid ""
 "Some of the files could not be added as emblems because they did not appear "
 "to be valid images."
 msgstr ""
-"Sommige van de bestanden konden niet als emblemen worden toegevoegd omdat ze "
+"Sommige van de bestanden kunnen niet als emblemen worden toegevoegd omdat ze "
 "geen geldige bestanden lijken te zijn."
 
 #: components/emblem/nautilus-emblem-view.c:718
 #: components/emblem/nautilus-emblem-view.c:720
 msgid "Couldn't add emblems"
-msgstr "Kon emblemen niet toevoegen"
+msgstr "Kan emblemen niet toevoegen"
 
 #: components/emblem/nautilus-emblem-view.c:720
 msgid ""
 "None of the files could be added as emblems because they did not appear to "
 "be valid images."
 msgstr ""
-"Geen van de bestanden konden als emblemen worden toegevoegd omdat ze geen "
+"Geen van de bestanden kunnen als emblemen worden toegevoegd omdat ze geen "
 "geldige afbeeldingen lijken te zijn."
 
 #: components/emblem/nautilus-emblem-view.c:741
@@ -146,7 +146,7 @@ msgstr "De gesleepte tekst was geen geldige bestandslocatie."
 #: components/emblem/nautilus-emblem-view.c:765
 #: components/emblem/nautilus-emblem-view.c:814
 msgid "Couldn't add emblem"
-msgstr "Kon embleem niet toevoegen"
+msgstr "Kan embleem niet toevoegen"
 
 #: components/emblem/nautilus-emblem-view.c:760
 #: components/emblem/nautilus-emblem-view.c:813
@@ -296,16 +296,16 @@ msgid "URI currently displayed"
 msgstr "URI momenteel weergegeven"
 
 #: components/notes/Nautilus_View_notes.server.in.in.h:1
-msgid "Nodes side pane for Nautilus"
-msgstr "Opmerkingen-zijpaneel voor Nautilus"
-
-#: components/notes/Nautilus_View_notes.server.in.in.h:2
 msgid "Notes"
 msgstr "Opmerkingen"
 
-#: components/notes/Nautilus_View_notes.server.in.in.h:3
+#: components/notes/Nautilus_View_notes.server.in.in.h:2
 msgid "Notes side pane"
 msgstr "Opmerkingen-zijpaneel"
+
+#: components/notes/Nautilus_View_notes.server.in.in.h:3
+msgid "Notes side pane for Nautilus"
+msgstr "Opmerkingen-zijpaneel voor Nautilus"
 
 #: components/text/Nautilus_View_text.server.in.in.h:1
 msgid "Factory for text view"
@@ -1266,7 +1266,7 @@ msgstr ""
 #: libnautilus-private/nautilus-emblem-utils.c:230
 #: libnautilus-private/nautilus-emblem-utils.c:245
 msgid "Couldn't install emblem"
-msgstr "Kon het embleem niet installeren"
+msgstr "Kan het embleem niet installeren"
 
 #: libnautilus-private/nautilus-emblem-utils.c:198
 msgid ""
@@ -1627,7 +1627,7 @@ msgid ""
 "\n"
 "If you still want to move \"%s\", rename it and try again."
 msgstr ""
-"\"%s\" kon niet verplaatst worden naar de nieuwe lokatie, want de naam wordt "
+"\"%s\" kan niet verplaatst worden naar de nieuwe lokatie, want de naam wordt "
 "reeds gebruikt voor een speciaal item dat niet verplaatst of vervangen kan "
 "worden.\n"
 "\n"
@@ -1641,7 +1641,7 @@ msgid ""
 "\n"
 "If you still want to copy \"%s\", rename it and try again."
 msgstr ""
-"\"%s\" kon niet gekopiëerd worden naar de nieuwe lokatie, want de naam wordt "
+"\"%s\" kan niet gekopiëerd worden naar de nieuwe lokatie, want de naam wordt "
 "reeds gebruikt voor een speciaal item dat niet verplaatst of vervangen kan "
 "worden.\n"
 "\n"
@@ -1679,7 +1679,7 @@ msgstr "Alles vervangen"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1130
-#: libnautilus-private/nautilus-file.c:4285
+#: libnautilus-private/nautilus-file.c:4280
 #, c-format
 msgid "link to %s"
 msgstr "verwijzing naar %s"
@@ -2306,64 +2306,64 @@ msgstr "foo (124e kopie).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2529
+#: libnautilus-private/nautilus-file.c:2524
 msgid "today at 00:00:00 PM"
 msgstr "vandaag om 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2530
+#: libnautilus-private/nautilus-file.c:2525
 msgid "today at %-I:%M:%S %p"
 msgstr "vandaag om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2532
+#: libnautilus-private/nautilus-file.c:2527
 msgid "today at 00:00 PM"
 msgstr "vandaag om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2533
+#: libnautilus-private/nautilus-file.c:2528
 msgid "today at %-I:%M %p"
 msgstr "vandaag om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2535
+#: libnautilus-private/nautilus-file.c:2530
 msgid "today, 00:00 PM"
 msgstr "vandaag, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2536
+#: libnautilus-private/nautilus-file.c:2531
 msgid "today, %-I:%M %p"
 msgstr "vandaag om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2538
-#: libnautilus-private/nautilus-file.c:2539
+#: libnautilus-private/nautilus-file.c:2533
+#: libnautilus-private/nautilus-file.c:2534
 msgid "today"
 msgstr "vandaag"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2548
+#: libnautilus-private/nautilus-file.c:2543
 msgid "yesterday at 00:00:00 PM"
 msgstr "gisteren om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2549
+#: libnautilus-private/nautilus-file.c:2544
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "gisteren om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2551
+#: libnautilus-private/nautilus-file.c:2546
 msgid "yesterday at 00:00 PM"
 msgstr "gisteren om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2552
+#: libnautilus-private/nautilus-file.c:2547
 msgid "yesterday at %-I:%M %p"
 msgstr "gisteren om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2554
+#: libnautilus-private/nautilus-file.c:2549
 msgid "yesterday, 00:00 PM"
 msgstr "gisteren, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2555
+#: libnautilus-private/nautilus-file.c:2550
 msgid "yesterday, %-I:%M %p"
 msgstr "gisteren om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2557
-#: libnautilus-private/nautilus-file.c:2558
+#: libnautilus-private/nautilus-file.c:2552
+#: libnautilus-private/nautilus-file.c:2553
 msgid "yesterday"
 msgstr "Westers"
 
@@ -2372,132 +2372,132 @@ msgstr "Westers"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2569
+#: libnautilus-private/nautilus-file.c:2564
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Woensdag 00 September 00 0000 om 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2570
+#: libnautilus-private/nautilus-file.c:2565
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %-d %B %Y om %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2572
+#: libnautilus-private/nautilus-file.c:2567
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Maa 00 Oct 0000 om 00:00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2573
+#: libnautilus-private/nautilus-file.c:2568
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a %-d %b %Y om %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2575
+#: libnautilus-private/nautilus-file.c:2570
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Maa 00 Oct 0000 om 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2576
+#: libnautilus-private/nautilus-file.c:2571
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a %-d %b %Y at %-I:%M %"
 
-#: libnautilus-private/nautilus-file.c:2578
+#: libnautilus-private/nautilus-file.c:2573
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "00 Oct 0000 om 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2579
+#: libnautilus-private/nautilus-file.c:2574
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d %b %Y om %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2581
+#: libnautilus-private/nautilus-file.c:2576
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "00 Oct 0000, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2582
+#: libnautilus-private/nautilus-file.c:2577
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d %b %Y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2584
+#: libnautilus-private/nautilus-file.c:2579
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 PM"
 
-#: libnautilus-private/nautilus-file.c:2585
+#: libnautilus-private/nautilus-file.c:2580
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%m/%y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2587
+#: libnautilus-private/nautilus-file.c:2582
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2588
+#: libnautilus-private/nautilus-file.c:2583
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
-#: libnautilus-private/nautilus-file.c:3870
+#: libnautilus-private/nautilus-file.c:3865
 msgid "0 items"
 msgstr "0 items"
 
-#: libnautilus-private/nautilus-file.c:3870
+#: libnautilus-private/nautilus-file.c:3865
 msgid "0 folders"
 msgstr "0 mappen"
 
-#: libnautilus-private/nautilus-file.c:3871
+#: libnautilus-private/nautilus-file.c:3866
 msgid "0 files"
 msgstr "0 bestanden"
 
-#: libnautilus-private/nautilus-file.c:3875
+#: libnautilus-private/nautilus-file.c:3870
 msgid "1 item"
 msgstr "1 item"
 
-#: libnautilus-private/nautilus-file.c:3875
+#: libnautilus-private/nautilus-file.c:3870
 msgid "1 folder"
 msgstr "1 map"
 
-#: libnautilus-private/nautilus-file.c:3876
+#: libnautilus-private/nautilus-file.c:3871
 msgid "1 file"
 msgstr "1 bestand"
 
-#: libnautilus-private/nautilus-file.c:3879
+#: libnautilus-private/nautilus-file.c:3874
 #, c-format
 msgid "%u items"
 msgstr "%u items"
 
-#: libnautilus-private/nautilus-file.c:3879
+#: libnautilus-private/nautilus-file.c:3874
 #, c-format
 msgid "%u folders"
 msgstr "%u mappen"
 
-#: libnautilus-private/nautilus-file.c:3880
+#: libnautilus-private/nautilus-file.c:3875
 #, c-format
 msgid "%u files"
 msgstr "%u bestanden"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4187
-#: libnautilus-private/nautilus-file.c:4203
+#: libnautilus-private/nautilus-file.c:4182
+#: libnautilus-private/nautilus-file.c:4198
 msgid "? items"
 msgstr "? items"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4193
+#: libnautilus-private/nautilus-file.c:4188
 msgid "? bytes"
 msgstr "? bytes"
 
-#: libnautilus-private/nautilus-file.c:4208
+#: libnautilus-private/nautilus-file.c:4203
 msgid "unknown type"
 msgstr "onbekend type"
 
-#: libnautilus-private/nautilus-file.c:4211
+#: libnautilus-private/nautilus-file.c:4206
 msgid "unknown MIME type"
 msgstr "onbekend MIME-type"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4217
+#: libnautilus-private/nautilus-file.c:4212
 msgid "unknown"
 msgstr "onbekend"
 
-#: libnautilus-private/nautilus-file.c:4249
+#: libnautilus-private/nautilus-file.c:4244
 msgid "program"
 msgstr "programma"
 
-#: libnautilus-private/nautilus-file.c:4261
+#: libnautilus-private/nautilus-file.c:4256
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2507,7 +2507,7 @@ msgstr ""
 "waarschijnlijk dat uw gnome-vfs.keys bestand op de verkeerde plaats staat, "
 "of niet gevonden kon worden vanwege een andere reden."
 
-#: libnautilus-private/nautilus-file.c:4265
+#: libnautilus-private/nautilus-file.c:4260
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2516,266 +2516,266 @@ msgstr ""
 "Geen beschrijving gevonden voor MIME-type \"%s\" (bestand is \"%s\"), "
 "gelieve dit door te geven aan de gnome-vfs mailing lijst."
 
-#: libnautilus-private/nautilus-file.c:4279
+#: libnautilus-private/nautilus-file.c:4274
 msgid "link"
 msgstr "verwijzing"
 
-#: libnautilus-private/nautilus-file.c:4299
+#: libnautilus-private/nautilus-file.c:4294
 msgid "link (broken)"
 msgstr "verwijzing (gebroken)"
 
-#: libnautilus-private/nautilus-file.c:5366
+#: libnautilus-private/nautilus-file.c:5361
 #: libnautilus-private/nautilus-trash-directory.c:383
 #: src/file-manager/fm-desktop-icon-view.c:71
 msgid "Trash"
 msgstr "Prullenbak"
 
-#: libnautilus-private/nautilus-global-preferences.c:100
+#: libnautilus-private/nautilus-global-preferences.c:99
 msgid "_Always"
 msgstr "_Altijd"
 
-#: libnautilus-private/nautilus-global-preferences.c:101
+#: libnautilus-private/nautilus-global-preferences.c:100
 msgid "_Local File Only"
 msgstr "Alleen _lokaal bestand"
 
-#: libnautilus-private/nautilus-global-preferences.c:102
+#: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Never"
 msgstr "_Nooit"
 
-#: libnautilus-private/nautilus-global-preferences.c:108
+#: libnautilus-private/nautilus-global-preferences.c:107
 #: src/nautilus-file-management-properties.glade.h:13
 #, no-c-format
 msgid "25%"
 msgstr "25%"
 
-#: libnautilus-private/nautilus-global-preferences.c:110
+#: libnautilus-private/nautilus-global-preferences.c:109
 #: src/nautilus-file-management-properties.glade.h:19
 #, no-c-format
 msgid "50%"
 msgstr "50%"
 
-#: libnautilus-private/nautilus-global-preferences.c:112
+#: libnautilus-private/nautilus-global-preferences.c:111
 #: src/nautilus-file-management-properties.glade.h:22
 #, no-c-format
 msgid "75%"
 msgstr "75%"
 
-#: libnautilus-private/nautilus-global-preferences.c:114
+#: libnautilus-private/nautilus-global-preferences.c:113
 #: src/nautilus-file-management-properties.glade.h:7
 #, no-c-format
 msgid "100%"
 msgstr "100%"
 
-#: libnautilus-private/nautilus-global-preferences.c:116
+#: libnautilus-private/nautilus-global-preferences.c:115
 #: src/nautilus-file-management-properties.glade.h:9
 #, no-c-format
 msgid "150%"
 msgstr "150%"
 
-#: libnautilus-private/nautilus-global-preferences.c:118
+#: libnautilus-private/nautilus-global-preferences.c:117
 #: src/nautilus-file-management-properties.glade.h:11
 #, no-c-format
 msgid "200%"
 msgstr "200%"
 
-#: libnautilus-private/nautilus-global-preferences.c:120
+#: libnautilus-private/nautilus-global-preferences.c:119
 #: src/nautilus-file-management-properties.glade.h:16
 #, no-c-format
 msgid "400%"
 msgstr "400%"
 
-#: libnautilus-private/nautilus-global-preferences.c:125
+#: libnautilus-private/nautilus-global-preferences.c:124
 msgid "100 K"
 msgstr "100 K"
 
-#: libnautilus-private/nautilus-global-preferences.c:126
+#: libnautilus-private/nautilus-global-preferences.c:125
 msgid "500 K"
 msgstr "500 K"
 
-#: libnautilus-private/nautilus-global-preferences.c:127
+#: libnautilus-private/nautilus-global-preferences.c:126
 #: src/nautilus-file-management-properties.glade.h:2
 msgid "1 MB"
 msgstr "1 MB"
 
-#: libnautilus-private/nautilus-global-preferences.c:128
+#: libnautilus-private/nautilus-global-preferences.c:127
 #: src/nautilus-file-management-properties.glade.h:14
 msgid "3 MB"
 msgstr "3 MB"
 
-#: libnautilus-private/nautilus-global-preferences.c:129
+#: libnautilus-private/nautilus-global-preferences.c:128
 #: src/nautilus-file-management-properties.glade.h:17
 msgid "5 MB"
 msgstr "5 MB"
 
-#: libnautilus-private/nautilus-global-preferences.c:130
+#: libnautilus-private/nautilus-global-preferences.c:129
 #: src/nautilus-file-management-properties.glade.h:3
 msgid "10 MB"
 msgstr "10 MB"
 
-#: libnautilus-private/nautilus-global-preferences.c:131
+#: libnautilus-private/nautilus-global-preferences.c:130
 #: src/nautilus-file-management-properties.glade.h:5
 msgid "100 MB"
 msgstr "100 MB"
 
-#: libnautilus-private/nautilus-global-preferences.c:137
+#: libnautilus-private/nautilus-global-preferences.c:136
 msgid "Activate items with a _single click"
 msgstr "Items met _enkele klik activeren"
 
-#: libnautilus-private/nautilus-global-preferences.c:141
+#: libnautilus-private/nautilus-global-preferences.c:140
 msgid "Activate items with a _double click"
 msgstr "Items met _dubbelklik activeren"
 
-#: libnautilus-private/nautilus-global-preferences.c:149
+#: libnautilus-private/nautilus-global-preferences.c:148
 msgid "E_xecute files when they are clicked"
 msgstr "Bestanden _uitvoeren bij aanklikken"
 
-#: libnautilus-private/nautilus-global-preferences.c:153
+#: libnautilus-private/nautilus-global-preferences.c:152
 msgid "Display _files when they are clicked"
 msgstr "Bestanden _weergeven bij aanklikken"
 
-#: libnautilus-private/nautilus-global-preferences.c:157
+#: libnautilus-private/nautilus-global-preferences.c:156
 #: src/nautilus-file-management-properties.glade.h:66
 msgid "_Ask each time"
 msgstr "_Elke keer vragen"
 
-#: libnautilus-private/nautilus-global-preferences.c:165
+#: libnautilus-private/nautilus-global-preferences.c:164
 msgid "Search for files by file name only"
 msgstr "Bestanden zoeken uitsluitend op bestandsnaam"
 
-#: libnautilus-private/nautilus-global-preferences.c:169
+#: libnautilus-private/nautilus-global-preferences.c:168
 msgid "Search for files by file name and file properties"
 msgstr "Bestanden zoeken op bestandsnaam en eigenschappen"
 
-#: libnautilus-private/nautilus-global-preferences.c:176
+#: libnautilus-private/nautilus-global-preferences.c:175
 #: src/nautilus-file-management-properties.glade.h:49
 msgid "Icon View"
 msgstr "Pictogrammenweergave"
 
-#: libnautilus-private/nautilus-global-preferences.c:177
+#: libnautilus-private/nautilus-global-preferences.c:176
 #: src/nautilus-file-management-properties.glade.h:50
 msgid "List View"
 msgstr "Lijstweergave"
 
-#: libnautilus-private/nautilus-global-preferences.c:182
+#: libnautilus-private/nautilus-global-preferences.c:181
 msgid "Manually"
 msgstr "Handmatig"
 
-#: libnautilus-private/nautilus-global-preferences.c:184
-#: libnautilus-private/nautilus-global-preferences.c:193
+#: libnautilus-private/nautilus-global-preferences.c:183
+#: libnautilus-private/nautilus-global-preferences.c:192
 #: src/nautilus-file-management-properties.glade.h:40
 msgid "By Name"
 msgstr "Op naam"
 
-#: libnautilus-private/nautilus-global-preferences.c:185
-#: libnautilus-private/nautilus-global-preferences.c:194
+#: libnautilus-private/nautilus-global-preferences.c:184
+#: libnautilus-private/nautilus-global-preferences.c:193
 #: src/nautilus-file-management-properties.glade.h:41
 msgid "By Size"
 msgstr "Op grootte"
 
-#: libnautilus-private/nautilus-global-preferences.c:186
-#: libnautilus-private/nautilus-global-preferences.c:195
+#: libnautilus-private/nautilus-global-preferences.c:185
+#: libnautilus-private/nautilus-global-preferences.c:194
 #: src/nautilus-file-management-properties.glade.h:42
 msgid "By Type"
 msgstr "Op type"
 
-#: libnautilus-private/nautilus-global-preferences.c:187
-#: libnautilus-private/nautilus-global-preferences.c:196
+#: libnautilus-private/nautilus-global-preferences.c:186
+#: libnautilus-private/nautilus-global-preferences.c:195
 #: src/nautilus-file-management-properties.glade.h:39
 msgid "By Modification Date"
 msgstr "Op wijzigingsdatum"
 
-#: libnautilus-private/nautilus-global-preferences.c:188
-#: libnautilus-private/nautilus-global-preferences.c:197
+#: libnautilus-private/nautilus-global-preferences.c:187
+#: libnautilus-private/nautilus-global-preferences.c:196
 #: src/nautilus-file-management-properties.glade.h:38
 msgid "By Emblems"
 msgstr "Op embleem"
 
-#: libnautilus-private/nautilus-global-preferences.c:202
+#: libnautilus-private/nautilus-global-preferences.c:201
 msgid "8"
 msgstr "8"
 
-#: libnautilus-private/nautilus-global-preferences.c:203
+#: libnautilus-private/nautilus-global-preferences.c:202
 msgid "10"
 msgstr "10"
 
-#: libnautilus-private/nautilus-global-preferences.c:204
+#: libnautilus-private/nautilus-global-preferences.c:203
 msgid "12"
 msgstr "12"
 
-#: libnautilus-private/nautilus-global-preferences.c:205
+#: libnautilus-private/nautilus-global-preferences.c:204
 msgid "14"
 msgstr "14"
 
-#: libnautilus-private/nautilus-global-preferences.c:206
+#: libnautilus-private/nautilus-global-preferences.c:205
 msgid "16"
 msgstr "16"
 
-#: libnautilus-private/nautilus-global-preferences.c:207
+#: libnautilus-private/nautilus-global-preferences.c:206
 msgid "18"
 msgstr "18"
 
-#: libnautilus-private/nautilus-global-preferences.c:208
+#: libnautilus-private/nautilus-global-preferences.c:207
 msgid "20"
 msgstr "20"
 
-#: libnautilus-private/nautilus-global-preferences.c:209
+#: libnautilus-private/nautilus-global-preferences.c:208
 msgid "22"
 msgstr "22"
 
-#: libnautilus-private/nautilus-global-preferences.c:210
+#: libnautilus-private/nautilus-global-preferences.c:209
 msgid "24"
 msgstr "24"
 
-#: libnautilus-private/nautilus-global-preferences.c:215
+#: libnautilus-private/nautilus-global-preferences.c:214
 #: src/nautilus-file-management-properties.glade.h:82
 msgid "size"
 msgstr "grootte"
 
-#: libnautilus-private/nautilus-global-preferences.c:216
+#: libnautilus-private/nautilus-global-preferences.c:215
 #: src/nautilus-file-management-properties.glade.h:83
 msgid "type"
 msgstr "type"
 
-#: libnautilus-private/nautilus-global-preferences.c:217
+#: libnautilus-private/nautilus-global-preferences.c:216
 #: src/nautilus-file-management-properties.glade.h:76
 msgid "date modified"
 msgstr "wijzigingsdatum"
 
-#: libnautilus-private/nautilus-global-preferences.c:218
+#: libnautilus-private/nautilus-global-preferences.c:217
 msgid "date changed"
 msgstr "wijzigingsdatum"
 
-#: libnautilus-private/nautilus-global-preferences.c:219
+#: libnautilus-private/nautilus-global-preferences.c:218
 #: src/nautilus-file-management-properties.glade.h:75
 msgid "date accessed"
 msgstr "laatst benaderd"
 
-#: libnautilus-private/nautilus-global-preferences.c:220
+#: libnautilus-private/nautilus-global-preferences.c:219
 #: src/nautilus-file-management-properties.glade.h:80
 msgid "owner"
 msgstr "eigenaar"
 
-#: libnautilus-private/nautilus-global-preferences.c:221
+#: libnautilus-private/nautilus-global-preferences.c:220
 #: src/nautilus-file-management-properties.glade.h:77
 msgid "group"
 msgstr "groep"
 
-#: libnautilus-private/nautilus-global-preferences.c:222
+#: libnautilus-private/nautilus-global-preferences.c:221
 #: src/nautilus-file-management-properties.glade.h:81
 msgid "permissions"
 msgstr "rechten"
 
-#: libnautilus-private/nautilus-global-preferences.c:223
+#: libnautilus-private/nautilus-global-preferences.c:222
 #: src/nautilus-file-management-properties.glade.h:79
 msgid "octal permissions"
 msgstr "octale rechten"
 
-#: libnautilus-private/nautilus-global-preferences.c:224
+#: libnautilus-private/nautilus-global-preferences.c:223
 #: src/nautilus-file-management-properties.glade.h:52
 msgid "MIME type"
 msgstr "MIME-type"
 
-#: libnautilus-private/nautilus-global-preferences.c:225
+#: libnautilus-private/nautilus-global-preferences.c:224
 #: src/nautilus-file-management-properties.glade.h:78
 msgid "none"
 msgstr "geen"
@@ -2954,10 +2954,10 @@ msgid ""
 "If you are using a packaged version of Nautilus, fast searching is not "
 "available.\n"
 msgstr ""
-"Medusa - het programma dat de zoekopdrachten verricht - kon niet gevonden "
-"worden. Als u Nautilus zelf gecompileerd hebt, zal u een kopie van medusa "
-"moeten installeren en nautilus opnieuw compileren. (Een kopie van Medusa kan "
-"te vinden zijn op ftp://ftp.gnome.org)\n"
+"Medusa - het programma dat de zoekopdrachten verricht - is niet gevonden. "
+"Als u Nautilus zelf gecompileerd hebt, zal u een kopie van medusa moeten "
+"installeren en nautilus opnieuw compileren. (Een kopie van Medusa kan te "
+"vinden zijn op ftp://ftp.gnome.org)\n"
 "Als u een zogenaamde \"packaged versie\" (voorbeeld een RPM) van Nautilus "
 "gebruikt, zal snelzoeken niet beschikbaar zijn.\n"
 
@@ -3563,7 +3563,7 @@ msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
 msgstr ""
-"Nautilus kon het diskettestation niet aankoppelen. Waarschijnlijk zit erg "
+"Nautilus kan het diskettestation niet aankoppelen. Waarschijnlijk zit er "
 "geen diskette in het station."
 
 #. All others
@@ -3593,7 +3593,7 @@ msgstr ""
 
 #: libnautilus-private/nautilus-volume-monitor.c:1544
 msgid "Nautilus was unable to mount the selected floppy drive."
-msgstr "Nautilus kon de geselecteerde diskette niet aankoppelen."
+msgstr "Nautilus kan de geselecteerde diskette niet aankoppelen."
 
 #: libnautilus-private/nautilus-volume-monitor.c:1546
 msgid "Nautilus was unable to mount the selected volume."
@@ -3602,7 +3602,7 @@ msgstr "Nautilus kan het geselecteerde volume niet aankoppelen."
 #. FIXME: Should we parse this message and report something more meaningful?
 #: libnautilus-private/nautilus-volume-monitor.c:1551
 msgid "Nautilus was unable to unmount the selected volume."
-msgstr "Nautilus kon het geselecteerde volume niet ontkoppelen."
+msgstr "Nautilus kan het geselecteerde volume niet ontkoppelen."
 
 #: libnautilus-private/nautilus-volume-monitor.c:1756
 msgid "ISO 9660 Volume"
@@ -3979,11 +3979,11 @@ msgstr "Een _weergave..."
 #: src/file-manager/fm-directory-view.c:3573
 #, c-format
 msgid "Could not complete specified action:  %s"
-msgstr "Kon aangegeven actie niet voltooien: %s"
+msgstr "Kan aangegeven actie niet voltooien: %s"
 
 #: src/file-manager/fm-directory-view.c:3596
 msgid "Could not complete specified action."
-msgstr "Kon aangegeven actie niet voltooien."
+msgstr "Kan aangegeven actie niet voltooien."
 
 #: src/file-manager/fm-directory-view.c:4041
 #, c-format
@@ -4124,10 +4124,8 @@ msgstr "Verwijzingen ma_ken"
 msgid "Ma_ke Link"
 msgstr "Verwijzing ma_ken"
 
-#. FIXME: We don't use spaces to pad labels!
 #: src/file-manager/fm-directory-view.c:4735
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
-#: src/nautilus-information-panel.c:1018
 msgid "_Empty Trash"
 msgstr "Prullenbak _legen"
 
@@ -4263,12 +4261,12 @@ msgstr "De naam \"%s\" is ongeldig. Gelieve een andere naam te kiezen."
 #, c-format
 msgid "Couldn't change the name of \"%s\" because it is on a read-only disk"
 msgstr ""
-"Kon de naam van \"%s\" niet wijzigen, want het is een alleen-lezen schijf"
+"Kan de naam van \"%s\" niet wijzigen, want het is een alleen-lezen schijf"
 
 #: src/file-manager/fm-error-reporting.c:136
 #, c-format
 msgid "Sorry, couldn't rename \"%s\" to \"%s\"."
-msgstr "Sorry, kon \"%s\" niet hernoemen naar \"%s\"."
+msgstr "Sorry, kan \"%s\" niet hernoemen naar \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:143
 msgid "Renaming Error"
@@ -4284,7 +4282,7 @@ msgstr "U hebt de benodigde rechten niet om de groep van \"%s\" te veranderen."
 #, c-format
 msgid "Couldn't change the group of \"%s\" because it is on a read-only disk"
 msgstr ""
-"Kon de groep van \"%s\" niet wijzigen, want het is een alleen-lezen schijf"
+"Kan de groep van \"%s\" niet wijzigen, want het is een alleen-lezen schijf"
 
 #: src/file-manager/fm-error-reporting.c:175
 #, c-format
@@ -4299,12 +4297,12 @@ msgstr "Er is een fout opgetreden tijdens het instellen de groep"
 #, c-format
 msgid "Couldn't change the owner of \"%s\" because it is on a read-only disk"
 msgstr ""
-"Kon de eigenaar van \"%s\" niet wijzigen, want het is een alleen-lezen schijf"
+"Kan de eigenaar van \"%s\" niet wijzigen, want het is een alleen-lezen schijf"
 
 #: src/file-manager/fm-error-reporting.c:208
 #, c-format
 msgid "Sorry, couldn't change the owner of \"%s\"."
-msgstr "Sorry, kon de eigenaar van \"%s\" niet wijzigen."
+msgstr "Sorry, kan de eigenaar van \"%s\" niet wijzigen."
 
 #: src/file-manager/fm-error-reporting.c:211
 msgid "Error Setting Owner"
@@ -4315,12 +4313,12 @@ msgstr "Er is een fout opgetreden bij het instellen van de eigenaar"
 msgid ""
 "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
 msgstr ""
-"Kon de rechten van \"%s\" niet wijzigen, want het is een alleen-lezen schijf"
+"Kan de rechten van \"%s\" niet wijzigen, want het is een alleen-lezen schijf"
 
 #: src/file-manager/fm-error-reporting.c:240
 #, c-format
 msgid "Sorry, couldn't change the permissions of \"%s\"."
-msgstr "Sorry, kon de rechten van \"%s\" niet veranderen."
+msgstr "Sorry, kan de rechten van \"%s\" niet veranderen."
 
 #: src/file-manager/fm-error-reporting.c:243
 msgid "Error Setting Permissions"
@@ -4641,7 +4639,7 @@ msgstr "Laatst gewijzigd:"
 #: src/file-manager/fm-properties-window.c:2160
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
-msgstr "De eigenschappen van \"%s\" konden niet worden bepaald."
+msgstr "De eigenschappen van \"%s\" kunnen niet worden bepaald."
 
 #: src/file-manager/fm-properties-window.c:2357
 #: src/nautilus-bookmarks-window.c:138 src/nautilus-property-browser.c:1438
@@ -4656,7 +4654,7 @@ msgstr ""
 
 #: src/file-manager/fm-properties-window.c:2359
 msgid "Couldn't show help"
-msgstr "Kon hulptekst niet tonen"
+msgstr "Kan hulptekst niet tonen"
 
 #: src/file-manager/fm-properties-window.c:2623
 msgid "Cancel Showing Properties Window?"
@@ -5260,7 +5258,7 @@ msgstr "Indexeringsstatus tonen die gebruikt wordt bij het zoeken"
 
 #: src/nautilus-application.c:218
 msgid "Couldn't Create Required Folder"
-msgstr "Kon vereiste map niet aanmaken"
+msgstr "Kan vereiste map niet aanmaken"
 
 #: src/nautilus-application.c:219
 #, c-format
@@ -5269,13 +5267,13 @@ msgid ""
 "Nautilus, please create this folder, or set permissions such that Nautilus "
 "can create it."
 msgstr ""
-"Nautilus kon de vereiste map \"%s\" niet aanmaken. Gelieve deze map aan te "
+"Nautilus kan de vereiste map \"%s\" niet aanmaken. Gelieve deze map aan te "
 "maken alvorens Nautilus te starten, of de rechten zodanig in te stellen "
 "zodat Nautilus hem kan aanmaken."
 
 #: src/nautilus-application.c:224
 msgid "Couldn't Create Required Folders"
-msgstr "Kon vereiste mappen niet aanmaken"
+msgstr "Kan vereiste mappen niet aanmaken"
 
 #: src/nautilus-application.c:225
 #, c-format
@@ -5634,6 +5632,11 @@ msgstr "Openen met %s"
 msgid "Open with..."
 msgstr "Openen met..."
 
+#. FIXME: We don't use spaces to pad labels!
+#: src/nautilus-information-panel.c:1018
+msgid "Empty _Trash"
+msgstr "_Prullenbak legen"
+
 #: src/nautilus-location-bar.c:62
 msgid "Go To:"
 msgstr "Ga naar:"
@@ -5681,7 +5684,7 @@ msgstr "Nautilus herstarten"
 
 #. Set initial window title
 #: src/nautilus-main.c:184 src/nautilus-window-manage-views.c:231
-#: src/nautilus-window-menus.c:670 src/nautilus-window.c:182
+#: src/nautilus-window-menus.c:670 src/nautilus-window.c:181
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -5733,16 +5736,16 @@ msgstr "_Nieuwe toevoegen..."
 #: src/nautilus-property-browser.c:907
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
-msgstr "Patroon %s kon helaas niet worden verwijderd."
+msgstr "Patroon %s kan helaas niet worden verwijderd."
 
 #: src/nautilus-property-browser.c:908 src/nautilus-property-browser.c:937
 msgid "Couldn't delete pattern"
-msgstr "Kon patroon niet verwijderen."
+msgstr "Kan patroon niet verwijderen."
 
 #: src/nautilus-property-browser.c:936
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
-msgstr "Embleem %s kon helaas niet worden verwijderd."
+msgstr "Embleem %s kan helaas niet worden verwijderd."
 
 #: src/nautilus-property-browser.c:975
 msgid "Create a New Emblem:"
@@ -5786,7 +5789,7 @@ msgstr "Sorry, maar u hebt geen geldige bestandsnaam opgegeven."
 
 #: src/nautilus-property-browser.c:1099 src/nautilus-property-browser.c:1142
 msgid "Couldn't install pattern"
-msgstr "Kon patroon niet installeren!"
+msgstr "Kan patroon niet installeren!"
 
 #: src/nautilus-property-browser.c:1110
 msgid "Sorry, but you can't replace the reset image."
@@ -5800,7 +5803,7 @@ msgstr "Geen afbeelding"
 #: src/nautilus-property-browser.c:1141
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
-msgstr "Sorry, maar het patroon %s kon niet worden geïnstalleerd"
+msgstr "Sorry, maar het patroon %s kan niet worden geïnstalleerd"
 
 #: src/nautilus-property-browser.c:1161
 msgid "Select an image file to add as a pattern"
@@ -5812,7 +5815,7 @@ msgstr "Sorry, maar u moet een niet-lege naam voor de nieuwe kleur opgeven."
 
 #: src/nautilus-property-browser.c:1223
 msgid "Couldn't install color"
-msgstr "Kon de kleur niet installeren"
+msgstr "Kan de kleur niet installeren"
 
 #: src/nautilus-property-browser.c:1275
 msgid "Select a color to add"
@@ -6039,7 +6042,7 @@ msgid ""
 "Couldn't execute nautilus\n"
 "Make sure nautilus is in your path and correctly installed"
 msgstr ""
-"Kon Nautilus niet uitvoeren\n"
+"Kan Nautilus niet uitvoeren\n"
 "Zorg ervoor dat Nautilus in uw pad staat en correct geïnstalleerd is"
 
 #: src/nautilus-server-connect.c:392
@@ -6049,7 +6052,7 @@ msgid ""
 "Please make sure that the address is correct and alternatively, type in this "
 "address in the file manager directly"
 msgstr ""
-"Kon niet verbinden met de URI %s\n"
+"Kan niet verbinden met de URI %s\n"
 "Zorg er alstublieft voor dat het adres correct is. U kunt ook proberen dit "
 "adres direct in te voeren in het bestandsbeheer"
 
@@ -6176,7 +6179,7 @@ msgstr "Naar de Prullenbak-map gaan"
 
 #: src/nautilus-shell-ui.xml.h:27
 msgid "Go up one level"
-msgstr "Ga één niveau omhoog"
+msgstr "Eén niveau omhoog gaan"
 
 #: src/nautilus-shell-ui.xml.h:28
 msgid "Home"
@@ -6188,7 +6191,7 @@ msgstr "Lokatie_balk"
 
 #: src/nautilus-shell-ui.xml.h:30
 msgid "New _Window"
-msgstr "Nieuw _Venster"
+msgstr "Nieuw _venster"
 
 #: src/nautilus-shell-ui.xml.h:31
 msgid "Normal Si_ze"
@@ -6255,8 +6258,8 @@ msgid "Up"
 msgstr "Boven"
 
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-shell-ui.xml.h:49 src/nautilus-window.c:527
-#: src/nautilus-window.c:1478
+#: src/nautilus-shell-ui.xml.h:49 src/nautilus-window.c:518
+#: src/nautilus-window.c:1465
 msgid "View as..."
 msgstr "Bekijken als..."
 
@@ -6342,7 +6345,7 @@ msgstr "_Verversen"
 
 #: src/nautilus-shell-ui.xml.h:73
 msgid "_Report Profiling"
-msgstr "_Profilering rapporteren"
+msgstr "P_rofilering rapporteren"
 
 #: src/nautilus-shell-ui.xml.h:74
 msgid "_Reset Profiling"
@@ -6358,7 +6361,7 @@ msgstr "_Begin hier"
 
 #: src/nautilus-shell-ui.xml.h:77
 msgid "_Start Profiling"
-msgstr "_Start Profilering"
+msgstr "Profilering _starten"
 
 #: src/nautilus-shell-ui.xml.h:78
 msgid "_Stop"
@@ -6366,7 +6369,7 @@ msgstr "S_top"
 
 #: src/nautilus-shell-ui.xml.h:79
 msgid "_Stop Profiling"
-msgstr "_Stop Profilering"
+msgstr "Profilering _stoppen"
 
 #: src/nautilus-shell-ui.xml.h:80
 msgid "_Toolbar"
@@ -6655,28 +6658,28 @@ msgstr "Ga een paar pagina's terug"
 msgid "Go forward a number of pages"
 msgstr "Ga een paar pagina's vooruit"
 
-#: src/nautilus-window.c:670
+#: src/nautilus-window.c:661
 msgid "Information"
 msgstr "Informatie"
 
-#: src/nautilus-window.c:1184
+#: src/nautilus-window.c:1171
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Toon deze lokatie met \"%s\""
 
-#: src/nautilus-window.c:2211
+#: src/nautilus-window.c:2198
 msgid "Application ID"
 msgstr "Toepassings-ID"
 
-#: src/nautilus-window.c:2212
+#: src/nautilus-window.c:2199
 msgid "The application ID of the window."
 msgstr "Het toepassings-ID van het venster"
 
-#: src/nautilus-window.c:2218
+#: src/nautilus-window.c:2205
 msgid "Application"
 msgstr "Toepassing"
 
-#: src/nautilus-window.c:2219
+#: src/nautilus-window.c:2206
 msgid "The NautilusApplication associated with this window."
 msgstr "De NautilusToepassing geassocieerd met dit venster"
 
