@@ -1,5 +1,36 @@
 1999-12-30  John Sullivan  <sullivan@eazel.com>
 
+	Made NautilusBookmark use gchar * instead of GString
+	since it wasn't using any special GString features.
+
+	* src/nautilus-bookmark.h: changed definition in struct
+	* str/nautilus-bookmark.c:
+	  (nautilus_bookmark_destroy): changed g_string_free to g_free
+	  (init): eliminated g_string_new
+	  (nautilus_bookmark_get_name): replaced bookmark->uri->name
+	  with bookmark->name
+	  (nautilus_bookmark_get-uri): replaced bookmark->uri->str
+	  with bookmark->uri
+	  (nautilus_bookmark_new): changed initializers from
+	  GString style to gchar * style
+
+	Save/restore bookmarks across sessions with XML file.
+
+	* src/nautilus_bookmarklist.c:
+	  (append_bookmark_node): new foreach static function
+	  (destroy_bookmark): new foreach static function
+	  (nautilus_bookmarklist_get_file_path): new static function
+	  (nautilus_bookmarklist_load_file): new static function
+	  (nautilus_bookmarklist_save_file): new static function
+	  (init): renamed to nautilus_bookmark_init
+	  (class_init): renamed to nautilus_bookmark_class_init
+	  (nautilus_bookmarklist_contents_changed): now calls
+	  nautilus_bookmarklist_save_file
+	  (nautilus_bookmarklist_init): now calls
+	  nautilus_bookmarklist_load_file
+
+1999-12-30  John Sullivan  <sullivan@eazel.com>
+
 	Linked in GNOME-XML library, since I'll need it for bookmarks.
 
 	* configure.in: defined XML-related macros (copied from gconf)

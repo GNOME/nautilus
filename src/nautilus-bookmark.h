@@ -42,8 +42,8 @@ typedef struct _NautilusBookmark NautilusBookmark;
 
 struct _NautilusBookmark {
 	GtkObject object;
-	GString *name;
-	GString *uri;
+	gchar 	 *name;
+	gchar    *uri;
 };
 
 struct _NautilusBookmarkClass {

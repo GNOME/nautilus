@@ -38,8 +38,8 @@ nautilus_bookmark_destroy (GtkObject *object)
 	g_return_if_fail(NAUTILUS_IS_BOOKMARK (object));
 
 	bookmark = NAUTILUS_BOOKMARK(object);
-	g_string_free(bookmark->name, TRUE);
-	g_string_free(bookmark->uri, TRUE);
+	g_free(bookmark->name);
+	g_free(bookmark->uri);
 
 	/* Chain up */
 	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
@@ -74,9 +74,6 @@ init (NautilusBookmark *bookmark)
 {
 	g_assert(bookmark->name == NULL);
 	g_assert(bookmark->uri == NULL);
-
-	bookmark->name = g_string_new(NULL);
-	bookmark->uri = g_string_new(NULL);
 }
 
 
@@ -156,7 +153,7 @@ nautilus_bookmark_get_name (const NautilusBookmark *bookmark)
 {
 	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
-	return bookmark->name->str;
+	return bookmark->name;
 }
 
 const gchar *
@@ -164,7 +161,7 @@ nautilus_bookmark_get_uri (const NautilusBookmark *bookmark)
 {
 	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
-	return bookmark->uri->str;
+	return bookmark->uri;
 }
 
 NautilusBookmark *
@@ -173,8 +170,9 @@ nautilus_bookmark_new (const gchar *name, const gchar *uri)
 	NautilusBookmark *new_bookmark;
 
 	new_bookmark = gtk_type_new (NAUTILUS_TYPE_BOOKMARK);
-	g_string_assign(new_bookmark->name, name);
-	g_string_assign(new_bookmark->uri, uri);
+
+	new_bookmark->name = g_strdup(name);
+	new_bookmark->uri = g_strdup(uri);
 
 	return new_bookmark;
 }

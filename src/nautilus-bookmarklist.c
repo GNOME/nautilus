@@ -25,10 +25,23 @@
 #include "nautilus.h"
 #include "nautilus-bookmarklist.h"
 
+#include <gnome-xml/parser.h>
+#include <gnome-xml/tree.h>
+
 enum {
 	CONTENTS_CHANGED,
 	LAST_SIGNAL
 };
+
+
+/* forward declarations */
+static void 	    append_bookmark_node 		(gpointer list_element, 
+							 gpointer user_data);
+static void 	    destroy_bookmark	 		(gpointer list_element, 
+							 gpointer user_data);
+static const gchar *nautilus_bookmarklist_get_file_path (NautilusBookmarklist *bookmarks);
+static void 	    nautilus_bookmarklist_load_file 	(NautilusBookmarklist *bookmarks);
+static void 	    nautilus_bookmarklist_save_file 	(NautilusBookmarklist *bookmarks);
 
 
 static GtkObjectClass *parent_class = NULL;
@@ -55,7 +68,7 @@ nautilus_bookmarklist_finalize (GtkObject *object)
 /* Initialization.  */
 
 static void
-class_init (NautilusBookmarklistClass *class)
+nautilus_bookmarklist_class_init (NautilusBookmarklistClass *class)
 {
 	GtkObjectClass *object_class;
 
@@ -78,9 +91,10 @@ class_init (NautilusBookmarklistClass *class)
 }
 
 static void
-init (NautilusBookmarklist *bookmarks)
+nautilus_bookmarklist_init (NautilusBookmarklist *bookmarks)
 {
 	bookmarks->list = NULL;
+	nautilus_bookmarklist_load_file(bookmarks);
 }
 
 GtkType
@@ -93,8 +107,8 @@ nautilus_bookmarklist_get_type (void)
 			"NautilusBookmarklist",
 			sizeof (NautilusBookmarklist),
 			sizeof (NautilusBookmarklistClass),
-			(GtkClassInitFunc) class_init,
-			(GtkObjectInitFunc) init,
+			(GtkClassInitFunc) nautilus_bookmarklist_class_init,
+			(GtkObjectInitFunc) nautilus_bookmarklist_init,
 			NULL,
 			NULL,
 			NULL
@@ -107,6 +121,44 @@ nautilus_bookmarklist_get_type (void)
 }
 
 
+/**
+ * append_bookmark_node:
+ * 
+ * Foreach function; add a single bookmark xml node to a root node.
+ * @data: a NautilusBookmark * that is the data of a GList node
+ * @user_data: the xmlNodePtr to add a node to.
+ **/
+static void
+append_bookmark_node (gpointer data, gpointer user_data)
+{
+	xmlNodePtr	  root_node, bookmark_node;
+	NautilusBookmark *bookmark;
+
+	g_return_if_fail(NAUTILUS_IS_BOOKMARK(data));
+
+	bookmark = NAUTILUS_BOOKMARK(data);
+	root_node = (xmlNodePtr)user_data;	
+
+	bookmark_node = xmlNewChild(root_node, NULL, "bookmark", NULL);
+	xmlSetProp(bookmark_node, "name", nautilus_bookmark_get_name(bookmark));
+	xmlSetProp(bookmark_node, "uri", nautilus_bookmark_get_uri(bookmark));
+}
+
+/**
+ * destroy_bookmark:
+ * 
+ * Foreach function; destroy a bookmark that was the data of a GList node.
+ * @data: a NautilusBookmark * that is the data of a GList node.
+ * @user_data: ignored.
+ **/
+static void
+destroy_bookmark (gpointer data, gpointer user_data)
+{
+	g_return_if_fail(NAUTILUS_IS_BOOKMARK(data));
+
+	gtk_object_destroy(GTK_OBJECT(data));
+}
+
 /**
  * nautilus_bookmarklist_append:
  *
@@ -151,7 +203,7 @@ nautilus_bookmarklist_contains (NautilusBookmarklist *bookmarks,
 /**
  * nautilus_bookmarklist_contents_changed:
  * 
- * Emit the contents_changed signal.
+ * Save the bookmarklist to disk, and emit the contents_changed signal.
  * @bookmarks: NautilusBookmarklist whose contents have been modified.
  **/ 
 void
@@ -159,6 +211,7 @@ nautilus_bookmarklist_contents_changed (NautilusBookmarklist *bookmarks)
 {
 	g_return_if_fail (NAUTILUS_IS_BOOKMARKLIST (bookmarks));
 
+	nautilus_bookmarklist_save_file(bookmarks);
 	gtk_signal_emit(GTK_OBJECT (bookmarks), 
 			bookmarklist_signals[CONTENTS_CHANGED]);
 }
@@ -166,7 +219,7 @@ nautilus_bookmarklist_contents_changed (NautilusBookmarklist *bookmarks)
 /**
  * nautilus_bookmarklist_delete_item_at:
  * 
- * Deletes the bookmark at the specified position.
+ * Delete the bookmark at the specified position.
  * @bookmarks: the list of bookmarks.
  * @index: index, must be less than length of list.
  **/
@@ -186,10 +239,31 @@ nautilus_bookmarklist_delete_item_at (NautilusBookmarklist *bookmarks,
 	nautilus_bookmarklist_contents_changed(bookmarks);
 }
 
+static const gchar *
+nautilus_bookmarklist_get_file_path (NautilusBookmarklist *bookmarks)
+{
+	/* currently hardwired */
+	static gchar *file_path = NULL;
+	if (file_path == NULL)
+	{
+		/* FIXME: directory shouldn't be hardwired here; 
+		 * file name is debatable. 
+		 */   
+		file_path = g_strconcat(g_get_home_dir(), 
+				        G_DIR_SEPARATOR_S,
+				        ".gnomad",
+				        G_DIR_SEPARATOR_S,
+				        "bookmarks.xml", 
+				        NULL);
+	}
+
+	return file_path;
+}
+
 /**
  * nautilus_bookmarklist_insert_item:
  * 
- * Inserts a bookmark at a specified position.
+ * Insert a bookmark at a specified position.
  * @bookmarks: the list of bookmarks.
  * @index: the position to insert the bookmark at.
  * @new_bookmark: the bookmark to insert a copy of.
@@ -244,6 +318,47 @@ nautilus_bookmarklist_length (NautilusBookmarklist *bookmarks)
 }
 
 /**
+ * nautilus_bookmarklist_load_file:
+ * 
+ * Reads bookmarks from file, clobbering contents in memory.
+ * @bookmarks: the list of bookmarks to fill with file contents.
+ **/
+static void
+nautilus_bookmarklist_load_file (NautilusBookmarklist *bookmarks)
+{
+	xmlDocPtr	doc;
+	xmlNodePtr	node;
+
+	/* Wipe out old list. */
+	g_list_foreach(bookmarks->list, destroy_bookmark, NULL);
+	g_list_free(bookmarks->list);
+	bookmarks->list = NULL;
+
+	/* Read new list from file */
+	doc = xmlParseFile(nautilus_bookmarklist_get_file_path(bookmarks));
+
+	if (doc == NULL)
+		return;
+
+	node = doc->root->childs;
+	while (node != NULL)
+	{
+		if (strcmp(node->name, "bookmark") == 0)
+		{
+			/* FIXME: should only accept bookmarks with both a name and uri? */
+			bookmarks->list = g_list_append(
+				bookmarks->list,
+				nautilus_bookmark_new(
+					xmlGetProp(node, "name"),
+					xmlGetProp(node, "uri")));
+		}
+		node = node->next;
+	}
+
+	xmlFreeDoc(doc);
+}
+
+/**
  * nautilus_bookmarklist_new:
  * 
  * Create a new bookmarklist, initially empty.
@@ -253,10 +368,31 @@ nautilus_bookmarklist_length (NautilusBookmarklist *bookmarks)
  **/
 NautilusBookmarklist *
 nautilus_bookmarklist_new ()
-{
+ {
 	NautilusBookmarklist *new;
-
+	
 	new = gtk_type_new (NAUTILUS_TYPE_BOOKMARKLIST);
 
 	return new;
+}
+
+/**
+ * nautilus_bookmarklist_save_file:
+ * 
+ * Save bookmarks to disk.
+ * @bookmarks: the list of bookmarks to save.
+ **/
+static void
+nautilus_bookmarklist_save_file (NautilusBookmarklist *bookmarks)
+{
+	xmlDocPtr	doc;
+	xmlNodePtr	tree, subtree;
+
+	doc = xmlNewDoc("1.0");
+	doc->root = xmlNewDocNode(doc, NULL, "bookmarks", NULL);
+
+	g_list_foreach (bookmarks->list, append_bookmark_node, doc->root);
+
+	xmlSaveFile(nautilus_bookmarklist_get_file_path(bookmarks), doc);
+	xmlFreeDoc(doc);
 }
