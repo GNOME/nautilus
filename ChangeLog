@@ -1,5 +1,15 @@
 2001-02-11  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-viewport.h:
+	* libnautilus-extensions/nautilus-viewport.c:
+	(nautilus_viewport_draw), (nautilus_viewport_expose_event),
+	(nautilus_viewport_realize), (nautilus_viewport_set_is_smooth),
+	(nautilus_viewport_get_is_smooth): Add public is_smooth getter.
+	(nautilus_viewport_set_never_smooth): Add a 'never_smooth'
+	attribute.
+
+2001-02-11  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-customization-data.h:
 	Add comment clarifying API changes I made in my last checkin.
 	* src/file-manager/fm-properties-window.c: (create_emblems_page):

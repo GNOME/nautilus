@@ -61,6 +61,9 @@ GtkWidget *       nautilus_viewport_new               (GtkAdjustment          *h
 						       GtkAdjustment          *vadjustment);
 void              nautilus_viewport_set_is_smooth     (NautilusViewport       *nautilus_viewport,
 						       gboolean                is_smooth);
+gboolean          nautilus_viewport_get_is_smooth     (const NautilusViewport *nautilus_viewport);
+void              nautilus_viewport_set_never_smooth  (NautilusViewport       *nautilus_viewport,
+						       gboolean                never_smooth);
 NautilusArtIPoint nautilus_viewport_get_scroll_offset (const NautilusViewport *nautilus_viewport);
 
 END_GNOME_DECLS

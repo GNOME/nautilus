@@ -34,6 +34,7 @@
 struct NautilusViewportDetails
 {
 	gboolean is_smooth;
+	gboolean never_smooth;
 };
 
 /* GtkObjectClass methods */
@@ -169,7 +170,7 @@ nautilus_viewport_draw (GtkWidget *widget,
 	tmp_area.width += 2 * widget->style->klass->xthickness;
 	tmp_area.height += 2 * widget->style->klass->ythickness;
 	
-	if (!nautilus_viewport->details->is_smooth) {
+	if (!nautilus_viewport_get_is_smooth (nautilus_viewport)) {
 		gtk_paint_flat_box (widget->style, viewport->bin_window, 
 				    GTK_STATE_NORMAL, GTK_SHADOW_NONE,
 				    &tmp_area, widget, "viewportbin",
@@ -209,7 +210,7 @@ nautilus_viewport_expose_event (GtkWidget *widget,
 
 		child_event = *event;
 		
-		if (!nautilus_viewport->details->is_smooth) {
+		if (!nautilus_viewport_get_is_smooth (nautilus_viewport)) {
 			gtk_paint_flat_box (widget->style, viewport->bin_window, 
 					    GTK_STATE_NORMAL, GTK_SHADOW_NONE,
 					    &event->area, widget, "viewportbin",
@@ -237,7 +238,7 @@ nautilus_viewport_realize (GtkWidget *widget)
 	/* GtkViewport does the actual realization */
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
 	
-	nautilus_viewport_set_is_smooth (nautilus_viewport, nautilus_viewport->details->is_smooth);
+	nautilus_viewport_set_is_smooth (nautilus_viewport, nautilus_viewport_get_is_smooth (nautilus_viewport));
 }
 
 static void
@@ -301,6 +302,30 @@ nautilus_viewport_set_is_smooth (NautilusViewport *nautilus_viewport,
 	gdk_window_set_static_gravities (GTK_WIDGET (nautilus_viewport)->window, is_smooth);
 	gdk_window_set_static_gravities (GTK_VIEWPORT (nautilus_viewport)->bin_window, is_smooth);
 	gdk_window_set_static_gravities (GTK_VIEWPORT (nautilus_viewport)->view_window, is_smooth);
+}
+
+gboolean
+nautilus_viewport_get_is_smooth (const NautilusViewport *nautilus_viewport)
+{
+	g_return_val_if_fail (NAUTILUS_IS_VIEWPORT (nautilus_viewport), FALSE);
+	
+	if (nautilus_viewport->details->never_smooth) {
+		return FALSE;
+	}
+	
+	return nautilus_viewport->details->is_smooth;
+}
+
+void
+nautilus_viewport_set_never_smooth (NautilusViewport *nautilus_viewport,
+				    gboolean never_smooth)
+{
+	g_return_if_fail (NAUTILUS_IS_VIEWPORT (nautilus_viewport));
+
+	nautilus_viewport->details->never_smooth = never_smooth;
+
+	nautilus_viewport_set_is_smooth (NAUTILUS_VIEWPORT (nautilus_viewport),
+					 nautilus_viewport_get_is_smooth (nautilus_viewport));
 }
 
 NautilusArtIPoint
