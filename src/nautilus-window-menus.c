@@ -91,7 +91,7 @@
 #define SWITCH_TO_ADVANCED_VERB				"Switch to Advanced Level"
 
 
-#define USER_MANUAL_URI		"help:nautilus"
+#define USER_MANUAL_URI		"help:nautilus-user-manual"
 #define QUICK_REFERENCE_URI	"help:nautilus-quick-reference"
 #define RELEASE_NOTES_URI	"help:nautilus-release-notes"
 #define CUSTOMER_SUPPORT_URI	"http://support.eazel.com"
