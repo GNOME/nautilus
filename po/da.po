@@ -25,7 +25,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2002-04-06 15:50+0200\n"
+"POT-Creation-Date: 2002-04-14 12:44+0200\n"
 "PO-Revision-Date: 2002-04-06 15:50+0200\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
@@ -920,7 +920,7 @@ msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Beklager, men '%s' er ikke en brugbar billedfil."
 
 #: components/music/nautilus-music-view.c:746
-#: src/nautilus-property-browser.c:1040 src/nautilus-property-browser.c:1291
+#: src/nautilus-property-browser.c:1051 src/nautilus-property-browser.c:1302
 msgid "Not an Image"
 msgstr "Ikke et billede"
 
@@ -1333,15 +1333,6 @@ msgstr "_Helvetica"
 msgid "_Times"
 msgstr "_Times"
 
-#: components/text/nautilus-text-view.c:342
-#, c-format
-msgid "Sorry, but %s is too large for Nautilus to load all of it."
-msgstr "Beklager, men %s er for stor til at Nautilus kan indlæse det hele."
-
-#: components/text/nautilus-text-view.c:345
-msgid "File too large"
-msgstr "For stor fil"
-
 #: components/text/services/google.xml.h:1
 msgid "Search Google for Selected Text"
 msgstr "Søg på Google efter markeret tekst"
@@ -1363,6 +1354,7 @@ msgid "animation to indicate on-going activity"
 msgstr "animation til at vise aktivitet"
 
 #: components/throbber/Nautilus_Control_throbber.server.in.h:2
+#: components/throbber/nautilus-throbber.c:693
 msgid "throbber"
 msgstr "Throbber"
 
@@ -1373,6 +1365,10 @@ msgstr "Throbber-fabrik"
 #: components/throbber/Nautilus_Control_throbber.server.in.h:4
 msgid "throbber object factory"
 msgstr "Fabrik for Throbber-objektet"
+
+#: components/throbber/nautilus-throbber.c:694
+msgid "provides visual status"
+msgstr ""
 
 #: components/tree/Nautilus_View_tree.server.in.h:1
 msgid "Nautilus Tree sidebar panel"
@@ -2122,7 +2118,7 @@ msgstr "Adgangskoden vil blive overført krypteret."
 msgid "Authentication Required"
 msgstr "Brugerverifikation påkrævet"
 
-#: libnautilus-private/nautilus-customization-data.c:354
+#: libnautilus-private/nautilus-customization-data.c:369
 msgid "reset"
 msgstr "nulstil"
 
@@ -3353,7 +3349,7 @@ msgstr "henvisning (ødelagt)"
 
 #: libnautilus-private/nautilus-file.c:5289
 #: libnautilus-private/nautilus-trash-directory.c:373
-#: src/file-manager/fm-desktop-icon-view.c:68
+#: src/file-manager/fm-desktop-icon-view.c:69
 msgid "Trash"
 msgstr "Papirkurv"
 
@@ -3583,7 +3579,7 @@ msgstr "MIME-type"
 msgid "none"
 msgstr "ingen"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:1789
+#: libnautilus-private/nautilus-icon-canvas-item.c:1781
 msgid "file icon"
 msgstr "filikon"
 
@@ -3627,7 +3623,7 @@ msgstr "fremhævet for slip"
 msgid "whether we are highlighted for a D&D drop"
 msgstr "om der bliver fremhævet til en træk og slip-slipning"
 
-#: libnautilus-private/nautilus-icon-container.c:1606
+#: libnautilus-private/nautilus-icon-container.c:1603
 msgid "The selection rectangle"
 msgstr "Markeringsrektanglet"
 
@@ -4466,7 +4462,7 @@ msgstr "Vis som ikoner"
 msgid "View as List"
 msgstr "Vis som liste"
 
-#: src/file-manager/fm-desktop-icon-view.c:630
+#: src/file-manager/fm-desktop-icon-view.c:642
 msgid "Background"
 msgstr "Baggrund"
 
@@ -4493,22 +4489,22 @@ msgstr "Baggrund"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: src/file-manager/fm-desktop-icon-view.c:876
+#: src/file-manager/fm-desktop-icon-view.c:888
 #, c-format
 msgid "%s's Home"
 msgstr "Hjemmemappe%.0s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1158
+#: src/file-manager/fm-desktop-icon-view.c:1083
 msgid "Empty Trash..."
 msgstr "Tøm papirkurv..."
 
-#: src/file-manager/fm-desktop-icon-view.c:1160
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
+#: src/file-manager/fm-desktop-icon-view.c:1085
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
 msgid "Empty Trash"
 msgstr "Tøm papirkurv"
 
-#: src/file-manager/fm-desktop-icon-view.c:1180
+#: src/file-manager/fm-desktop-icon-view.c:1105
 msgid "Unmount Volume"
 msgstr "Afmontér arkiv"
 
@@ -5077,76 +5073,76 @@ msgstr "Omdøber '%s' til '%s'"
 msgid "Cancel Rename?"
 msgstr "Fortryd omdøbning?"
 
-#: src/file-manager/fm-icon-view.c:149
+#: src/file-manager/fm-icon-view.c:147
 msgid "by _Name"
 msgstr "efter _navn"
 
-#: src/file-manager/fm-icon-view.c:150
+#: src/file-manager/fm-icon-view.c:148
 #: src/file-manager/nautilus-icon-view-ui.xml.h:15
 msgid "Keep icons sorted by name in rows"
 msgstr "Hold ikoner sorteret efter navn i rækker"
 
-#: src/file-manager/fm-icon-view.c:156
+#: src/file-manager/fm-icon-view.c:154
 msgid "by _Size"
 msgstr "efter _størrelse"
 
-#: src/file-manager/fm-icon-view.c:157
+#: src/file-manager/fm-icon-view.c:155
 #: src/file-manager/nautilus-icon-view-ui.xml.h:16
 msgid "Keep icons sorted by size in rows"
 msgstr "Hold ikoner sorteret efter størrelse i rækker"
 
-#: src/file-manager/fm-icon-view.c:163
+#: src/file-manager/fm-icon-view.c:161
 msgid "by _Type"
 msgstr "efter _type"
 
-#: src/file-manager/fm-icon-view.c:164
+#: src/file-manager/fm-icon-view.c:162
 #: src/file-manager/nautilus-icon-view-ui.xml.h:17
 msgid "Keep icons sorted by type in rows"
 msgstr "Hold ikoner sorteret efter type i rækker"
 
-#: src/file-manager/fm-icon-view.c:170
+#: src/file-manager/fm-icon-view.c:168
 msgid "by Modification _Date"
 msgstr "efter ændrings_dato"
 
-#: src/file-manager/fm-icon-view.c:171
+#: src/file-manager/fm-icon-view.c:169
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Hold ikoner sorteret efter ændringsdato i rækker"
 
-#: src/file-manager/fm-icon-view.c:177
+#: src/file-manager/fm-icon-view.c:175
 msgid "by _Emblems"
 msgstr "efter _emblemer"
 
-#: src/file-manager/fm-icon-view.c:178
+#: src/file-manager/fm-icon-view.c:176
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Hold ikoner sorteret efter emblemer i rækker"
 
 # kortere, passer bedre i en popop-menu
-#: src/file-manager/fm-icon-view.c:1376
+#: src/file-manager/fm-icon-view.c:1287
 #: src/file-manager/nautilus-icon-view-ui.xml.h:34
 msgid "_Restore Icons' Original Sizes"
 msgstr "Nulstil ikon_størrelser"
 
 # ditto
-#: src/file-manager/fm-icon-view.c:1377
+#: src/file-manager/fm-icon-view.c:1288
 msgid "_Restore Icon's Original Size"
 msgstr "Nulstil ikon_størrelse"
 
-#: src/file-manager/fm-icon-view.c:1712
+#: src/file-manager/fm-icon-view.c:1623
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "peger på '%s'"
 
-#: src/file-manager/fm-icon-view.c:2492
+#: src/file-manager/fm-icon-view.c:2261
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Træk og slip er kun understøttet til lokale filsystemer."
 
-#: src/file-manager/fm-icon-view.c:2493 src/file-manager/fm-icon-view.c:2512
+#: src/file-manager/fm-icon-view.c:2262 src/file-manager/fm-icon-view.c:2281
 msgid "Drag and Drop error"
 msgstr "Træk og slip-fejl"
 
-#: src/file-manager/fm-icon-view.c:2511
+#: src/file-manager/fm-icon-view.c:2280
 msgid "An invalid drag type was used."
 msgstr "En ugyldig trækketype blev brugt."
 
@@ -5159,12 +5155,12 @@ msgstr "Filnavn"
 msgid "Size"
 msgstr "Størrelse"
 
-#: src/file-manager/fm-list-view.c:284
+#: src/file-manager/fm-list-view.c:285
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Type"
 
-#: src/file-manager/fm-list-view.c:293
+#: src/file-manager/fm-list-view.c:295
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Dato for ændring"
@@ -5618,37 +5614,47 @@ msgid "Change Desktop Background"
 msgstr "Skift baggrund"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:2
+#, fuzzy
+msgid "Create a new launcher"
+msgstr "Opret et nyt indeks"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:3
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "Delete all items in the Trash"
 msgstr "Slet alle elementer i papirkurven"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:3
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:4
 msgid "Disks"
 msgstr "Drev"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
 msgid "Mount or unmount disks"
 msgstr "Montér eller afmontér diske"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:7
+#, fuzzy
+msgid "New Launcher"
+msgstr "Nyhedspanel"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
 msgid "New Terminal"
 msgstr "Ny terminal"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:7
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
 msgid "Open a new GNOME terminal window"
 msgstr "Åbn et nyt Gnome terminalvindue"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
 msgid "Remove any custom pattern or color from the desktop background"
 msgstr ""
 "Fjern ethvert brugerdefineret mønster eller farve fra skrivebordsbaggrunden"
 
 # 'desktop' giver sig selv i konteksten og en kortere tekst giver en kønnere menu
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:11
 msgid "Reset Desktop Background"
 msgstr "Nulstil baggrund"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:12
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
@@ -6600,124 +6606,124 @@ msgid "Profile Dump"
 msgstr "Profileringsdump"
 
 #. set the title and standard close accelerator
-#: src/nautilus-property-browser.c:261
+#: src/nautilus-property-browser.c:262
 msgid "Backgrounds and Emblems"
 msgstr "Baggrunde og emblemer"
 
-#: src/nautilus-property-browser.c:364
+#: src/nautilus-property-browser.c:365
 msgid "_Add new..."
 msgstr "_Tilføj ny..."
 
 #. FIXME: Using spaces to add padding is not good design.
-#: src/nautilus-property-browser.c:380
+#: src/nautilus-property-browser.c:381
 msgid "_Remove..."
 msgstr "_Fjern..."
 
-#: src/nautilus-property-browser.c:847
+#: src/nautilus-property-browser.c:858
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "Beklager, men mønsteret %s kunne ikke slettes."
 
-#: src/nautilus-property-browser.c:848 src/nautilus-property-browser.c:877
+#: src/nautilus-property-browser.c:859 src/nautilus-property-browser.c:888
 msgid "Couldn't delete pattern"
 msgstr "Kunne ikke slette mønster"
 
-#: src/nautilus-property-browser.c:876
+#: src/nautilus-property-browser.c:887
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "Desværre, men emblem %s kunne ikke slettes."
 
-#: src/nautilus-property-browser.c:915
+#: src/nautilus-property-browser.c:926
 msgid "Create a New Emblem:"
 msgstr "Opret et nyt emblem:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:922
+#: src/nautilus-property-browser.c:933
 msgid "Keyword:"
 msgstr "Nøgleord:"
 
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:936
+#: src/nautilus-property-browser.c:947
 msgid "Image:"
 msgstr "Billede:"
 
-#: src/nautilus-property-browser.c:940
+#: src/nautilus-property-browser.c:951
 msgid "Select an image file for the new emblem:"
 msgstr "Vælg en billedfil for det nye emblem:"
 
-#: src/nautilus-property-browser.c:970
+#: src/nautilus-property-browser.c:981
 msgid "Create a New Color:"
 msgstr "Opret en ny farve:"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:977
+#: src/nautilus-property-browser.c:988
 msgid "Color name:"
 msgstr "Farvenavn:"
 
-#: src/nautilus-property-browser.c:989
+#: src/nautilus-property-browser.c:1000
 msgid "Color value:"
 msgstr "Farveværdi:"
 
-#: src/nautilus-property-browser.c:1025
+#: src/nautilus-property-browser.c:1036
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "Beklager, men \"%s\" er ikke et gyldigt filnavn."
 
-#: src/nautilus-property-browser.c:1027
+#: src/nautilus-property-browser.c:1038
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "Beklager, men du angav ikke et gyldigt filnavn."
 
-#: src/nautilus-property-browser.c:1029 src/nautilus-property-browser.c:1072
+#: src/nautilus-property-browser.c:1040 src/nautilus-property-browser.c:1083
 msgid "Couldn't install pattern"
 msgstr "Kunne ikke installere mønster"
 
-#: src/nautilus-property-browser.c:1040
+#: src/nautilus-property-browser.c:1051
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Beklager, men du kan ikke erstatte genstartsbilledet"
 
-#: src/nautilus-property-browser.c:1071
+#: src/nautilus-property-browser.c:1082
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Beklager, men mønsteret %s kunne ikke installeres."
 
-#: src/nautilus-property-browser.c:1094
+#: src/nautilus-property-browser.c:1105
 msgid "Select an image file to add as a pattern:"
 msgstr "Vælg en billedfil som skal tilføjes som et mønster:"
 
-#: src/nautilus-property-browser.c:1154
+#: src/nautilus-property-browser.c:1165
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Beklager, men du skal angive et ikke-tomt navn for den nye farve."
 
-#: src/nautilus-property-browser.c:1155
+#: src/nautilus-property-browser.c:1166
 msgid "Couldn't install color"
 msgstr "Kunne ikke installere farve"
 
-#: src/nautilus-property-browser.c:1210
+#: src/nautilus-property-browser.c:1221
 msgid "Select a color to add:"
 msgstr "Vælg en farve der skal tilføjes:"
 
-#: src/nautilus-property-browser.c:1290
+#: src/nautilus-property-browser.c:1301
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Beklager, men '%s' er ikke en brugbar billedfil!"
 
-#: src/nautilus-property-browser.c:1308
+#: src/nautilus-property-browser.c:1319
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Beklager, men du skal angive et ikke-tomt nøgleord for det nye emblem."
 
-#: src/nautilus-property-browser.c:1309 src/nautilus-property-browser.c:1312
-#: src/nautilus-property-browser.c:1316 src/nautilus-property-browser.c:1345
+#: src/nautilus-property-browser.c:1320 src/nautilus-property-browser.c:1323
+#: src/nautilus-property-browser.c:1327 src/nautilus-property-browser.c:1356
 msgid "Couldn't install emblem"
 msgstr "Kunne ikke installere emblem"
 
-#: src/nautilus-property-browser.c:1311
+#: src/nautilus-property-browser.c:1322
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Desværre, men emblem-nøgleord kan kun indeholde bogstaver, mellemrum og "
 "cifre."
 
-#: src/nautilus-property-browser.c:1314
+#: src/nautilus-property-browser.c:1325
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
@@ -6726,64 +6732,64 @@ msgstr ""
 "Desværre, navnet \"%s\" er et eksisterende nøgleord. Benyt venligst et andet "
 "navn."
 
-#: src/nautilus-property-browser.c:1344
+#: src/nautilus-property-browser.c:1355
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Beklager, men billedet på %s kunne ikke installeres som et emblem."
 
-#: src/nautilus-property-browser.c:1984
+#: src/nautilus-property-browser.c:1995
 msgid "Select A Category:"
 msgstr "Vælg en kategori:"
 
-#: src/nautilus-property-browser.c:1992 src/nautilus-theme-selector.c:524
+#: src/nautilus-property-browser.c:2003 src/nautilus-theme-selector.c:524
 msgid "Cancel Remove"
 msgstr "Fortryd Fjern"
 
-#: src/nautilus-property-browser.c:1997
+#: src/nautilus-property-browser.c:2008
 msgid "Add a New Pattern..."
 msgstr "Tilføj nyt mønster..."
 
-#: src/nautilus-property-browser.c:2000
+#: src/nautilus-property-browser.c:2011
 msgid "Add a New Color..."
 msgstr "Tilføj ny farve..."
 
-#: src/nautilus-property-browser.c:2003
+#: src/nautilus-property-browser.c:2014
 msgid "Add a New Emblem..."
 msgstr "Tilføj nyt emblem..."
 
-#: src/nautilus-property-browser.c:2026
+#: src/nautilus-property-browser.c:2037
 msgid "Click on a pattern to remove it"
 msgstr "Klik på et mønster for at fjerne det."
 
-#: src/nautilus-property-browser.c:2029
+#: src/nautilus-property-browser.c:2040
 msgid "Click on a color to remove it"
 msgstr "Klik på en farve for at fjerne den"
 
-#: src/nautilus-property-browser.c:2032
+#: src/nautilus-property-browser.c:2043
 msgid "Click on an emblem to remove it"
 msgstr "Klik på et emblem for at fjerne det."
 
-#: src/nautilus-property-browser.c:2041
+#: src/nautilus-property-browser.c:2052
 msgid "Patterns:"
 msgstr "Mønstre:"
 
-#: src/nautilus-property-browser.c:2044
+#: src/nautilus-property-browser.c:2055
 msgid "Colors:"
 msgstr "Farver:"
 
-#: src/nautilus-property-browser.c:2047
+#: src/nautilus-property-browser.c:2058
 msgid "Emblems:"
 msgstr "Emblemer:"
 
-#: src/nautilus-property-browser.c:2066
+#: src/nautilus-property-browser.c:2077
 msgid "Remove a Pattern..."
 msgstr "Fjern et mønster..."
 
-#: src/nautilus-property-browser.c:2069
+#: src/nautilus-property-browser.c:2080
 msgid "Remove a Color..."
 msgstr "Fjern en farve..."
 
-#: src/nautilus-property-browser.c:2072
+#: src/nautilus-property-browser.c:2083
 msgid "Remove an Emblem..."
 msgstr "Fjern et emblem..."
 
@@ -7620,6 +7626,12 @@ msgstr "Program"
 #: src/nautilus-window.c:2089
 msgid "The NautilusApplication associated with this window."
 msgstr "Den NautilusApplication som er associeret med dette vindue"
+
+#~ msgid "Sorry, but %s is too large for Nautilus to load all of it."
+#~ msgstr "Beklager, men %s er for stor til at Nautilus kan indlæse det hele."
+
+#~ msgid "File too large"
+#~ msgstr "For stor fil"
 
 #~ msgid "Keyboard Shortcuts"
 #~ msgstr "Tastaturgenveje"
@@ -8488,9 +8500,6 @@ msgstr "Den NautilusApplication som er associeret med dette vindue"
 
 #~ msgid "Move all selected items to the Trash"
 #~ msgstr "Flyt alle markerede ting til papirkurv"
-
-#~ msgid "Create a new index"
-#~ msgstr "Opret et nyt indeks"
 
 #~ msgid "Don't create index"
 #~ msgstr "Opret ikke index"
