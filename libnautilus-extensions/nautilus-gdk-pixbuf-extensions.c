@@ -174,6 +174,7 @@ file_opened_callback (GnomeVFSAsyncHandle *vfs_handle,
 	g_assert (handle->vfs_handle == vfs_handle);
 
 	if (result != GNOME_VFS_OK) {
+		handle->vfs_handle = NULL;
 		load_done (handle, result, FALSE);
 		return;
 	}
@@ -240,7 +241,9 @@ load_done (NautilusPixbufLoadHandle *handle, GnomeVFSResult result, gboolean get
 {
 	GdkPixbuf *pixbuf;
 
-	gdk_pixbuf_loader_close (handle->loader);
+	if (handle->loader != NULL) {
+		gdk_pixbuf_loader_close (handle->loader);
+	}
 
 	pixbuf = get_pixbuf ? gdk_pixbuf_loader_get_pixbuf (handle->loader) : NULL;
 	

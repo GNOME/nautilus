@@ -1,6 +1,6 @@
 NULL=
 
-backdir = $(datadir)/nautilus/backgrounds
+backdir = $(datadir)/nautilus/patterns
 
 back_DATA = \
 	.striated.png \

@@ -487,7 +487,7 @@ widget_set_nautilus_background_image (GtkWidget *widget, const char *image_name)
 
 	background = nautilus_get_widget_background (widget);
 	
-	background_uri = g_strdup_printf ("file://%s/backgrounds/%s", NAUTILUS_DATADIR, image_name);
+	background_uri = g_strdup_printf ("file://%s/patterns/%s", NAUTILUS_DATADIR, image_name);
 
 	nautilus_background_reset (background);
 	nautilus_background_set_image_uri (background, background_uri);

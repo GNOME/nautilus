@@ -56,7 +56,7 @@ struct NautilusCustomizationData {
 	GnomeVFSDirectoryList *private_file_list;
 	GnomeVFSDirectoryList *current_file_list;
 
-	GdkPixbuf *background_frame;
+	GdkPixbuf *pattern_frame;
 
 	gboolean started_reading_current_file_list;
 	gboolean private_data_was_displayed;
@@ -66,7 +66,7 @@ struct NautilusCustomizationData {
 };
 
 
-/* The Property here should be one of "emblems", "colors" or "backgrounds" */
+/* The Property here should be one of "emblems", "colors" or "patterns" */
 static char *            get_global_customization_uri        (const char *customization_name);
 static char *            get_private_customization_uri       (const char *customization_name);
 static char *            get_file_path_for_mode              (const NautilusCustomizationData *data,
@@ -121,12 +121,12 @@ nautilus_customization_data_new (const char *customization_name,
 	}
 
 	/* load the frame if necessary */
-	if (!strcmp(customization_name, "backgrounds")) {
+	if (!strcmp(customization_name, "patterns")) {
 		temp_str = nautilus_pixmap_file ("chit_frame.png");
-		data->background_frame = gdk_pixbuf_new_from_file (temp_str);
+		data->pattern_frame = gdk_pixbuf_new_from_file (temp_str);
 		g_free (temp_str);
 	} else {
-		data->background_frame = NULL;
+		data->pattern_frame = NULL;
 	}
 
 	
@@ -196,8 +196,8 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 
 	*emblem_name = g_strdup (current_file_info->name);
 	
-	if (!strcmp(data->customization_name, "backgrounds")) {
-		pixbuf = nautilus_customization_make_background_chit (orig_pixbuf, data->background_frame, FALSE);
+	if (!strcmp(data->customization_name, "patterns")) {
+		pixbuf = nautilus_customization_make_pattern_chit (orig_pixbuf, data->pattern_frame, FALSE);
 	} else {
 		pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, 
 								data->maximum_icon_width, 
@@ -244,8 +244,8 @@ nautilus_customization_data_destroy (NautilusCustomizationData *data)
 	g_assert (data->public_file_list != NULL ||
 		  data->private_file_list != NULL);
 
-	if (data->background_frame != NULL) {
-		gdk_pixbuf_unref (data->background_frame);
+	if (data->pattern_frame != NULL) {
+		gdk_pixbuf_unref (data->pattern_frame);
 	}
 
 	if (data->public_file_list != NULL) {
@@ -263,7 +263,7 @@ nautilus_customization_data_destroy (NautilusCustomizationData *data)
 /* get_global_customization_directory
    Get the path where a property's pixmaps are stored 
    @customization_name : the name of the customization to get.
-   Should be one of "emblems", "colors", or "backgrounds" 
+   Should be one of "emblems", "colors", or "paterns" 
 
    Return value: The directory name where the customization's 
    public pixmaps are stored */
@@ -286,7 +286,7 @@ get_global_customization_uri (const char *customization_name)
 /* get_private_customization_directory
    Get the path where a customization's pixmaps are stored 
    @customization_name : the name of the customization to get.
-   Should be one of "emblems", "colors", or "backgrounds" 
+   Should be one of "emblems", "colors", or "patterns" 
 
    Return value: The directory name where the customization's 
    user-specific pixmaps are stored */
@@ -327,9 +327,9 @@ get_file_path_for_mode (const NautilusCustomizationData *data,
 	return directory_name;
 }
 
-/* utility to make an attractive background image by compositing with a frame */
+/* utility to make an attractive pattern image by compositing with a frame */
 GdkPixbuf*
-nautilus_customization_make_background_chit (GdkPixbuf *background_tile, GdkPixbuf *frame, gboolean dragging)
+nautilus_customization_make_pattern_chit (GdkPixbuf *pattern_tile, GdkPixbuf *frame, gboolean dragging)
 {
 	GdkPixbuf *pixbuf, *temp_pixbuf;
 	int frame_width, frame_height;
@@ -338,8 +338,8 @@ nautilus_customization_make_background_chit (GdkPixbuf *background_tile, GdkPixb
 	frame_width = gdk_pixbuf_get_width (frame);
 	frame_height = gdk_pixbuf_get_height (frame);
 	
-	/* scale the background tile to the proper size */
-	pixbuf = gdk_pixbuf_scale_simple (background_tile, frame_width, frame_height, GDK_INTERP_BILINEAR);
+	/* scale the pattern tile to the proper size */
+	pixbuf = gdk_pixbuf_scale_simple (pattern_tile, frame_width, frame_height, GDK_INTERP_BILINEAR);
 			
 	/* composite the mask on top of it */
 	gdk_pixbuf_composite (frame, pixbuf, 0, 0, frame_width, frame_height,
@@ -353,7 +353,7 @@ nautilus_customization_make_background_chit (GdkPixbuf *background_tile, GdkPixb
 		pixbuf = temp_pixbuf;
 	}
 			      
-	gdk_pixbuf_unref (background_tile);
+	gdk_pixbuf_unref (pattern_tile);
 	return pixbuf;
 }
 

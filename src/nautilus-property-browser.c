@@ -82,7 +82,7 @@
 
 typedef enum {
 	NAUTILUS_PROPERTY_NONE,
-	NAUTILUS_PROPERTY_BACKGROUND,
+	NAUTILUS_PROPERTY_PATTERN,
 	NAUTILUS_PROPERTY_COLOR,
 	NAUTILUS_PROPERTY_EMBLEM
 } NautilusPropertyType;
@@ -238,8 +238,8 @@ nautilus_property_browser_initialize (GtkObject *object)
 
 	property_browser->details = g_new0 (NautilusPropertyBrowserDetails, 1);
 
-	property_browser->details->category = g_strdup ("backgrounds");
-	property_browser->details->category_type = NAUTILUS_PROPERTY_BACKGROUND;
+	property_browser->details->category = g_strdup ("patterns");
+	property_browser->details->category_type = NAUTILUS_PROPERTY_PATTERN;
 		
 	/* load the chit frame */
 	temp_str = nautilus_pixmap_file ("chit_frame.png");
@@ -251,7 +251,7 @@ nautilus_property_browser_initialize (GtkObject *object)
 	gtk_container_set_border_width (GTK_CONTAINER (widget), 0);				
 
 	/* set the title and standard close accelerator */
-	gtk_window_set_title(GTK_WINDOW(widget), _("Customization Options"));
+	gtk_window_set_title(GTK_WINDOW(widget), _("Backgrounds and Emblems"));
 	nautilus_gtk_window_set_up_close_accelerator (GTK_WINDOW (widget));
 	
 	/* set up the background */
@@ -573,7 +573,7 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 		
 		image_file_name = g_strdup_printf ("%s/%s/%s",
 						   NAUTILUS_DATADIR,
-						   is_reset ? "backgrounds" : property_browser->details->category,
+						   is_reset ? "patterns" : property_browser->details->category,
 						   property_browser->details->dragged_file);
 		
 		if (!g_file_exists (image_file_name)) {
@@ -658,8 +658,8 @@ make_drag_image (NautilusPropertyBrowser *property_browser, const char* file_nam
 	
 	orig_pixbuf = gdk_pixbuf_new_from_file (image_file_name);
 	
-	if (!strcmp(property_browser->details->category, "backgrounds")) {
-		pixbuf = nautilus_customization_make_background_chit (orig_pixbuf, property_browser->details->property_chit, TRUE);
+	if (!strcmp(property_browser->details->category, "patterns")) {
+		pixbuf = nautilus_customization_make_pattern_chit (orig_pixbuf, property_browser->details->property_chit, TRUE);
 	} else {
 		pixbuf = nautilus_gdk_pixbuf_scale_down_to_fit (orig_pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
 		gdk_pixbuf_unref (orig_pixbuf);
@@ -702,7 +702,7 @@ make_color_drag_image (NautilusPropertyBrowser *property_browser, const char *co
 		}
 	}
 	
-	return nautilus_customization_make_background_chit (color_square, 
+	return nautilus_customization_make_pattern_chit (color_square, 
 							    property_browser->details->property_chit,
 							    trim_edges);	
 }
@@ -864,33 +864,33 @@ remove_color (NautilusPropertyBrowser *property_browser, const char* color_value
 	xmlFreeDoc (document);
 }
 
-/* remove the background matching the passed in name */
+/* remove the pattern matching the passed in name */
 
 static void
-remove_background(NautilusPropertyBrowser *property_browser, const char* background_name)
+remove_pattern(NautilusPropertyBrowser *property_browser, const char* pattern_name)
 {
-	char *background_path, *background_uri;
+	char *pattern_path, *pattern_uri;
 	char *user_directory;
 
 	user_directory = nautilus_get_user_directory ();
 
-	/* build the pathname of the background */
-	background_path = g_strdup_printf ("%s/backgrounds/%s",
+	/* build the pathname of the pattern */
+	pattern_path = g_strdup_printf ("%s/patterns/%s",
 					   user_directory,
-					   background_name);
-	background_uri = gnome_vfs_get_uri_from_local_path (background_path);
-	g_free (background_path);
+					   pattern_name);
+	pattern_uri = gnome_vfs_get_uri_from_local_path (pattern_path);
+	g_free (pattern_path);
 
 	g_free (user_directory);	
 
-	/* delete the background from the background directory */
-	if (gnome_vfs_unlink (background_uri) != GNOME_VFS_OK) {
-		char *message = g_strdup_printf (_("Sorry, but background %s couldn't be deleted."), background_name);
-		nautilus_error_dialog (message, _("Couldn't delete background"), GTK_WINDOW (property_browser));
+	/* delete the pattern from the pattern directory */
+	if (gnome_vfs_unlink (pattern_uri) != GNOME_VFS_OK) {
+		char *message = g_strdup_printf (_("Sorry, but pattern %s couldn't be deleted."), pattern_name);
+		nautilus_error_dialog (message, _("Couldn't delete pattern"), GTK_WINDOW (property_browser));
 		g_free (message);
 	}
 	
-	g_free (background_uri);
+	g_free (pattern_uri);
 }
 
 /* remove the emblem matching the passed in name */
@@ -915,7 +915,7 @@ remove_emblem (NautilusPropertyBrowser *property_browser, const char* emblem_nam
 	/* delete the emblem from the emblem directory */
 	if (gnome_vfs_unlink (emblem_uri) != GNOME_VFS_OK) {
 		char *message = g_strdup_printf (_("Sorry, but emblem %s couldn't be deleted."), emblem_name);
-		nautilus_error_dialog (message, _("Couldn't delete background"), GTK_WINDOW (property_browser));
+		nautilus_error_dialog (message, _("Couldn't delete pattern"), GTK_WINDOW (property_browser));
 		g_free (message);
 	}
 	else {
@@ -931,8 +931,8 @@ nautilus_property_browser_remove_element (NautilusPropertyBrowser *property_brow
 {
 	/* lookup category and get mode, then case out and handle the modes */
 	switch (property_browser->details->category_type) {
-	case NAUTILUS_PROPERTY_BACKGROUND:
-		remove_background (property_browser, element_name);
+	case NAUTILUS_PROPERTY_PATTERN:
+		remove_pattern (property_browser, element_name);
 		break;
 	case NAUTILUS_PROPERTY_COLOR:
 		remove_color (property_browser, element_name);
@@ -1102,7 +1102,7 @@ nautilus_color_selection_dialog_new (NautilusPropertyBrowser *property_browser)
 
 /* add the newly selected file to the browser images */
 static void
-add_background_to_browser (GtkWidget *widget, gpointer *data)
+add_pattern_to_browser (GtkWidget *widget, gpointer *data)
 {
 	gboolean is_image;
 	char *directory_path, *source_file_name, *destination_name;
@@ -1134,7 +1134,7 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 
 	user_directory = nautilus_get_user_directory ();
 
-	/* copy the image file to the backgrounds directory */
+	/* copy the image file to the patterns directory */
 	directory_path = nautilus_make_path (user_directory, property_browser->details->category);
 	g_free (user_directory);
 	source_file_name = strrchr (path_name, '/');
@@ -1154,8 +1154,8 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 	
 	result = nautilus_copy_uri_simple (path_name, destination_name);		
 	if (result != GNOME_VFS_OK) {
-		char *message = g_strdup_printf (_("Sorry, but the background %s couldn't be installed."), path_name);
-		nautilus_error_dialog (message, _("Couldn't install background"), GTK_WINDOW (property_browser));
+		char *message = g_strdup_printf (_("Sorry, but the pattern %s couldn't be installed."), path_name);
+		nautilus_error_dialog (message, _("Couldn't install pattern"), GTK_WINDOW (property_browser));
 		g_free (message);
 	}
 				
@@ -1166,10 +1166,10 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 	nautilus_property_browser_update_contents(property_browser);
 }
 
-/* here's where we initiate adding a new background by putting up a file selector */
+/* here's where we initiate adding a new pattern by putting up a file selector */
 
 static void
-add_new_background (NautilusPropertyBrowser *property_browser)
+add_new_pattern (NautilusPropertyBrowser *property_browser)
 {
 	if (property_browser->details->dialog) {
 		gtk_widget_show(property_browser->details->dialog);
@@ -1180,7 +1180,7 @@ add_new_background (NautilusPropertyBrowser *property_browser)
 		GtkFileSelection *file_dialog;
 
 		property_browser->details->dialog = gtk_file_selection_new
-			(_("Select an image file to add as a background:"));
+			(_("Select an image file to add as a pattern:"));
 		file_dialog = GTK_FILE_SELECTION (property_browser->details->dialog);
 		
 		gtk_signal_connect (GTK_OBJECT (property_browser->details->dialog),
@@ -1189,7 +1189,7 @@ add_new_background (NautilusPropertyBrowser *property_browser)
 				    property_browser);
 		gtk_signal_connect (GTK_OBJECT (file_dialog->ok_button),
 				    "clicked",
-				    add_background_to_browser,
+				    add_pattern_to_browser,
 				    property_browser);
 		gtk_signal_connect_object (GTK_OBJECT (file_dialog->cancel_button),
 					   "clicked",
@@ -1490,8 +1490,8 @@ add_new_button_callback(GtkWidget *widget, NautilusPropertyBrowser *property_bro
 	}
 
 	switch (property_browser->details->category_type) {
-		case NAUTILUS_PROPERTY_BACKGROUND:
-			add_new_background (property_browser);
+		case NAUTILUS_PROPERTY_PATTERN:
+			add_new_pattern (property_browser);
 			break;
 		case NAUTILUS_PROPERTY_COLOR:
 			add_new_color (property_browser);
@@ -1575,7 +1575,7 @@ element_clicked_callback (GtkWidget *widget, GdkEventButton *event, char *elemen
 		/* fiddle with the category to handle the "reset" case properly */
 		char * save_category = property_browser->details->category;
 		if (nautilus_strcmp (property_browser->details->category, "colors") == 0) {
-			property_browser->details->category = "backgrounds";
+			property_browser->details->category = "patterns";
 		}
 		pixbuf = make_drag_image (property_browser, element_name);
 		property_browser->details->category = save_category;
@@ -1706,7 +1706,7 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 	int index, object_position = 0;
 
 	/* make room for the reset property if necessary */
-	if (property_browser->details->category_type == NAUTILUS_PROPERTY_BACKGROUND &&
+	if (property_browser->details->category_type == NAUTILUS_PROPERTY_PATTERN &&
 	    !property_browser->details->remove_mode) {
 		index = 1;
 	} else {
@@ -1741,7 +1741,7 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 				
 		/* put the reset item in the pole position or the erase image at the end */
 		object_position = index++;
-		if (property_browser->details->category_type == NAUTILUS_PROPERTY_BACKGROUND) {
+		if (property_browser->details->category_type == NAUTILUS_PROPERTY_PATTERN) {
 			if (nautilus_strcmp (object_name, RESET_IMAGE_NAME) == 0) {
 				object_position = 0;
 				index -= 1;	
@@ -1787,9 +1787,9 @@ add_reset_property (NautilusPropertyBrowser *property_browser)
 	GdkPixbuf *pixbuf, *reset_pixbuf;
 	GtkWidget *image_widget, *label;
 	
-	reset_path = g_strdup_printf ("%s/%s/%s", NAUTILUS_DATADIR, "backgrounds", RESET_IMAGE_NAME);
+	reset_path = g_strdup_printf ("%s/%s/%s", NAUTILUS_DATADIR, "patterns", RESET_IMAGE_NAME);
 	pixbuf = gdk_pixbuf_new_from_file (reset_path);			
-	reset_pixbuf = nautilus_customization_make_background_chit (pixbuf, property_browser->details->property_chit, FALSE);
+	reset_pixbuf = nautilus_customization_make_pattern_chit (pixbuf, property_browser->details->property_chit, FALSE);
 	g_free (reset_path);
 	
 	image_widget = nautilus_image_new ();
@@ -2093,8 +2093,8 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 			text = _("Cancel Remove");
 		} else {
 			switch (property_browser->details->category_type) {
-			case NAUTILUS_PROPERTY_BACKGROUND:
-				text = _("Add a new background");
+			case NAUTILUS_PROPERTY_PATTERN:
+				text = _("Add a new pattern");
 				break;
 			case NAUTILUS_PROPERTY_COLOR:
 				text = _("Add a new color");
@@ -2122,8 +2122,8 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		if (property_browser->details->remove_mode) {
 
 			switch (property_browser->details->category_type) {
-			case NAUTILUS_PROPERTY_BACKGROUND:
-				label_text = g_strdup (_("Click on a background to remove it"));
+			case NAUTILUS_PROPERTY_PATTERN:
+				label_text = g_strdup (_("Click on a pattern to remove it"));
 				break;
 			case NAUTILUS_PROPERTY_COLOR:
 				label_text = g_strdup (_("Click on a color to remove it"));
@@ -2137,8 +2137,8 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 			}
 		} else {	
 			switch (property_browser->details->category_type) {
-			case NAUTILUS_PROPERTY_BACKGROUND:
-				label_text = g_strdup (_("Backgrounds:"));
+			case NAUTILUS_PROPERTY_PATTERN:
+				label_text = g_strdup (_("Patterns:"));
 				break;
 			case NAUTILUS_PROPERTY_COLOR:
 				label_text = g_strdup (_("Colors:"));
@@ -2161,8 +2161,8 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		
 		/* case out instead of substituting to provide flexibilty for other languages */
 		switch (property_browser->details->category_type) {
-		case NAUTILUS_PROPERTY_BACKGROUND:
-			text = _("Remove a background");
+		case NAUTILUS_PROPERTY_PATTERN:
+			text = _("Remove a pattern");
 			break;
 		case NAUTILUS_PROPERTY_COLOR:
 			text = _("Remove a color");
@@ -2202,8 +2202,8 @@ nautilus_property_browser_set_category (NautilusPropertyBrowser *property_browse
 	property_browser->details->category = g_strdup (new_category);
 	
 	/* set up the property type enum */
-	if (nautilus_strcmp (new_category, "backgrounds") == 0) {
-		property_browser->details->category_type = NAUTILUS_PROPERTY_BACKGROUND;
+	if (nautilus_strcmp (new_category, "patterns") == 0) {
+		property_browser->details->category_type = NAUTILUS_PROPERTY_PATTERN;
 	} else if (nautilus_strcmp (new_category, "colors") == 0) {	
 		property_browser->details->category_type = NAUTILUS_PROPERTY_COLOR;
 	} else if (nautilus_strcmp (new_category, "emblems") == 0) {	

@@ -12,9 +12,9 @@ info_DATA = \
 EXTRA_DIST = $(info_DATA)
 
 SUBDIRS = \
-	backgrounds \
 	emblems \
-	linksets \
-	top \
 	fonts \
+	linksets \
+	patterns \
+	top \
 	$(NULL)

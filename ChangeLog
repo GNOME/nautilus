@@ -1,3 +1,92 @@
+2000-12-11  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Terminology change -- the window & menu item formerly known
+	as "Customization" are now known as "Backgrounds and Emblems";
+	the swatches of image formerly known as "backgrounds" are
+	now known as "patterns".
+
+	After 1.0 if this window acquires more varied content we will
+	have to redo the menu item & window label, though we will
+	continue to distinguish between "backgrounds" and "patterns", 
+	since "backgrounds" encompasses colors as well as images.
+
+	Note that this change will only appear in full (and your
+	"Backgrounds and Emblems" window work in full) after you've
+	deleted your ~/.nautilus directory and let Nautilus make you
+	a new one.
+
+	* libnautilus-extensions/nautilus-gdk-pixbuf-extensions.c:
+	(file_opened_callback): Set vfs_handle to NULL on failure.
+	(load_done): Don't try to close pixbuf loader if it's NULL.
+	These two bugs were flushed out by a temporary state on my
+	machine where the theme was using a non-existent file for
+	its background image.
+
+	* data/backgrounds/Makefile.am: removed this file, as well as
+	all the image files in this directory.
+
+	* data/patterns/.cvsignore:
+	* data/patterns/Makefile.am: New files, copied from data/backgrounds.
+	Also copied over all image files from data/backgrounds, which is now
+	obsolete.
+	
+	* data/Makefile.am: Changed "backgrounds" subdir to "patterns"
+
+	* configure.in: changed data/backgrounds/Makefile to
+	data/patterns/Makefile
+	
+	* nautilus.spec.in: Changed regular expressions with "backgrounds"
+	to use "patterns"
+
+	* data/browser.xml: Changed "background" to "pattern" in the
+	terminology in this file, which gets installed into ~/.nautilus.
+	You have to remove your ~/.nautilus to get a fresh one of these;
+	without doing so the "Backgrounds and Emblems" window will be
+	confused (won't crash, will use wrong terminology and sometimes
+	have blank content).
+
+	* icons/ardmore/ardmore.xml:
+	* icons/arlo/arlo.xml:
+	* icons/default.xml:
+	* icons/eazel/eazel.xml:
+	* icons/gnome/gnome.xml:
+	* icons/vector/vector.xml:
+	* icons/villanova/villanova.xml: Changed "backgrounds" directory
+	references to "patterns"
+	
+	* libnautilus-extensions/nautilus-customization-data.h:
+	* libnautilus-extensions/nautilus-customization-data.c:
+	(nautilus_customization_data_new),
+	(nautilus_customization_data_get_next_element_for_display),
+	(nautilus_customization_data_destroy),
+	(nautilus_customization_make_pattern_chit): Change "background" to
+	"pattern" in many places, including one public function name.
+
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize),
+	(nautilus_property_browser_drag_data_get), (make_drag_image),
+	(make_color_drag_image), (remove_pattern), (remove_emblem),
+	(nautilus_property_browser_remove_element),
+	(add_pattern_to_browser), (add_new_pattern),
+	(add_new_button_callback), (element_clicked_callback),
+	(make_properties_from_directories), (add_reset_property),
+	(nautilus_property_browser_update_contents),
+	(nautilus_property_browser_set_category): Change "background" to
+	"pattern" in many places. Also change window title from
+	"Customization Options" to "Backgrounds and Emblems".
+	
+	* src/nautilus-shell-ui.xml: Change "Customization..." to 
+	"Backgrounds and Emblems...".
+	
+	* test/test-nautilus-background.c: (main):
+	* test/test-nautilus-font.c: (create_named_background):
+	* test/test-nautilus-label.c:
+	(widget_set_nautilus_background_image): Changed test code that was
+	using sample images from backgrounds directory to look in patterns
+	directory instead.
+
 2000-12-11  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 2242, fstat /etc/mtab to check if needs

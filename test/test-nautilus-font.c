@@ -69,7 +69,7 @@ create_named_background (const char *name)
 	
 	g_return_val_if_fail (name != NULL, NULL);
 	
-	path = nautilus_make_path (NAUTILUS_DATADIR "/backgrounds", name);
+	path = nautilus_make_path (NAUTILUS_DATADIR "/patterns", name);
 
 	if (path == NULL) {
 		return NULL;

@@ -65,7 +65,7 @@ void                       nautilus_customization_data_destroy                  
 									     
 
 
-GdkPixbuf*                 nautilus_customization_make_background_chit              (GdkPixbuf *background_tile, 
+GdkPixbuf*                 nautilus_customization_make_pattern_chit                 (GdkPixbuf *pattern_tile, 
 										     GdkPixbuf *frame, 
 										     gboolean dragging);
 

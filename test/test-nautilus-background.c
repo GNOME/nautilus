@@ -4,7 +4,7 @@
 #include <libgnomevfs/gnome-vfs-init.h>
 #include <gtk/gtk.h>
 
-#define BACKGROUNDS_DIR "/gnome-source/nautilus/data/backgrounds"
+#define PATTERNS_DIR "/gnome-source/nautilus/data/patterns"
 
 int
 main  (int argc, char *argv[])
@@ -31,7 +31,7 @@ main  (int argc, char *argv[])
 	nautilus_background_set_color (background,
 				       "red-blue:h");
 
-	image_uri = g_strconcat ("file://", BACKGROUNDS_DIR, "/50s.png", NULL);
+	image_uri = g_strconcat ("file://", PATTERNS_DIR, "/50s.png", NULL);
 
 #if 1
 	nautilus_background_set_image_uri (background, image_uri);
