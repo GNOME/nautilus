@@ -1197,6 +1197,7 @@ add_new_pattern (NautilusPropertyBrowser *property_browser)
 					   GTK_OBJECT (file_dialog));
 
 		gtk_window_set_position (GTK_WINDOW (file_dialog), GTK_WIN_POS_MOUSE);
+		gtk_window_set_transient_for (GTK_WINDOW (file_dialog), GTK_WINDOW (property_browser));
 		gtk_widget_show (GTK_WIDGET (file_dialog));
 	}
 }

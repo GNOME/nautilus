@@ -1,3 +1,14 @@
+2000-12-13  John Harper  <jsh@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* src/file-manager/fm-properties-window.c:
+	(select_image_button_callback):
+	* src/nautilus-property-browser.c: (add_new_pattern):
+	* src/nautilus-theme-selector.c: (add_new_theme_button_callback):
+
+	Added calls to gtk_window_set_transient_for for file selectors
+
 2000-12-13  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/trilobite/libtrilobite/trilobite-md5-tools.c:
