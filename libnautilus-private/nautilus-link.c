@@ -69,20 +69,17 @@ get_link_style_for_mime_type (const char *mime_type)
 }
 
 static LinkStyle
-get_link_style_for_local_file (const char *path)
+get_link_style_for_local_file (const char *uri)
 {
 	LinkStyle type;
 	GnomeVFSFileInfo *info;
-	char *uri;
 	GnomeVFSResult result;
 
 	info = gnome_vfs_file_info_new ();
 
-	uri = gnome_vfs_get_uri_from_local_path (path);
 	result = gnome_vfs_get_file_info (uri, info,
 					  GNOME_VFS_FILE_INFO_GET_MIME_TYPE
 					  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-	g_free (uri);
 
 	if (result == GNOME_VFS_OK
 	    && (info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0) {
@@ -104,38 +101,38 @@ get_link_style_for_data (const char *file_contents, int file_size)
 }
 
 gboolean
-nautilus_link_local_create (const char *directory_path,
+nautilus_link_local_create (const char *directory_uri,
 			    const char *name,
 			    const char *image,
 			    const char *target_uri,
 			    const GdkPoint *point,
 			    NautilusLinkType type)
 {
-	return nautilus_link_desktop_file_local_create (directory_path,
+	return nautilus_link_desktop_file_local_create (directory_uri,
 							name, image,
 							target_uri, point,
 							type);
 }
 
 gboolean
-nautilus_link_local_set_icon (const char *path, const char *icon_name)
+nautilus_link_local_set_icon (const char *uri, const char *icon_name)
 {
 	gboolean result;
 	NautilusFile *file;
 	GList *attributes;
 
-	switch (get_link_style_for_local_file (path)) {
+	switch (get_link_style_for_local_file (uri)) {
 	case desktop:
-		result = nautilus_link_desktop_file_local_set_icon (path, icon_name);
+		result = nautilus_link_desktop_file_local_set_icon (uri, icon_name);
 		break;
 	case historical:
-		result = nautilus_link_historical_local_set_icon (path, icon_name);
+		result = nautilus_link_historical_local_set_icon (uri, icon_name);
 		break;
 	default:
 		result = FALSE;
 	}
 
-	file = nautilus_file_get (path);
+	file = nautilus_file_get (uri);
 	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
 	nautilus_file_invalidate_attributes (file, attributes);
 	nautilus_file_unref (file);
@@ -145,26 +142,26 @@ nautilus_link_local_set_icon (const char *path, const char *icon_name)
 }
 
 gboolean
-nautilus_link_local_set_link_uri (const char *path, const char *link_uri)
+nautilus_link_local_set_link_uri (const char *uri, const char *link_uri)
 {
 	gboolean result;
 	NautilusFile *file;
 	GList *attributes;
 
-	switch (get_link_style_for_local_file (path)) {
+	switch (get_link_style_for_local_file (uri)) {
 	case desktop:
 		/* FIXME: May want to implement this for desktop files too */
 		result = FALSE;
 		break;
 	case historical:
-		result = nautilus_link_historical_local_set_link_uri (path, link_uri);
+		result = nautilus_link_historical_local_set_link_uri (uri, link_uri);
 		break;
 	default:
 		result = FALSE;
 	}
 
 	
-	file = nautilus_file_get (path);
+	file = nautilus_file_get (uri);
 	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
 	nautilus_file_invalidate_attributes (file, attributes);
 	nautilus_file_unref (file);
@@ -174,15 +171,15 @@ nautilus_link_local_set_link_uri (const char *path, const char *link_uri)
 }
 
 gboolean
-nautilus_link_local_set_type (const char *path,
+nautilus_link_local_set_type (const char *uri,
 			      NautilusLinkType type)
 {
-	switch (get_link_style_for_local_file (path)) {
+	switch (get_link_style_for_local_file (uri)) {
 	case desktop:
 		/* FIXME: May want to implement this for desktop files too */
 		return FALSE;
 	case historical:
-		return nautilus_link_historical_local_set_type (path, type);
+		return nautilus_link_historical_local_set_type (uri, type);
 	default:
 		return FALSE;
 	}
@@ -190,13 +187,13 @@ nautilus_link_local_set_type (const char *path,
 
 /* returns additional text to display under the name, NULL if none */
 char *
-nautilus_link_local_get_additional_text (const char *path)
+nautilus_link_local_get_additional_text (const char *uri)
 {
-	switch (get_link_style_for_local_file (path)) {
+	switch (get_link_style_for_local_file (uri)) {
 	case desktop:
-		return nautilus_link_desktop_file_local_get_additional_text (path);
+		return nautilus_link_desktop_file_local_get_additional_text (uri);
 	case historical:
-		return nautilus_link_historical_local_get_additional_text (path);
+		return nautilus_link_historical_local_get_additional_text (uri);
 	default:
 		return NULL;
 	}
@@ -204,13 +201,13 @@ nautilus_link_local_get_additional_text (const char *path)
 
 /* Returns the link uri associated with a link file. */
 char *
-nautilus_link_local_get_link_uri (const char *path)
+nautilus_link_local_get_link_uri (const char *uri)
 {
-	switch (get_link_style_for_local_file (path)) {
+	switch (get_link_style_for_local_file (uri)) {
 	case desktop:
-		return nautilus_link_desktop_file_local_get_link_uri (path);
+		return nautilus_link_desktop_file_local_get_link_uri (uri);
 	case historical:
-		return nautilus_link_historical_local_get_link_uri (path);
+		return nautilus_link_historical_local_get_link_uri (uri);
 	default:
 		return NULL;
 	}
@@ -218,13 +215,13 @@ nautilus_link_local_get_link_uri (const char *path)
 
 /* Returns the link type of the link file. */
 NautilusLinkType
-nautilus_link_local_get_link_type (const char *path)
+nautilus_link_local_get_link_type (const char *uri)
 {
-	switch (get_link_style_for_local_file (path)) {
+	switch (get_link_style_for_local_file (uri)) {
 	case desktop:
-		return nautilus_link_desktop_file_local_get_link_type (path);
+		return nautilus_link_desktop_file_local_get_link_type (uri);
 	case historical:
-		return nautilus_link_historical_local_get_link_type (path);
+		return nautilus_link_historical_local_get_link_type (uri);
 	default:
 		return NAUTILUS_LINK_GENERIC;
 	}
@@ -276,27 +273,27 @@ nautilus_link_get_link_icon_given_file_contents (const char *uri,
 }
 
 gboolean
-nautilus_link_local_is_volume_link (const char *path)
+nautilus_link_local_is_volume_link (const char *uri)
 {
-	return (nautilus_link_local_get_link_type (path) == NAUTILUS_LINK_MOUNT);
+	return (nautilus_link_local_get_link_type (uri) == NAUTILUS_LINK_MOUNT);
 }
 
 gboolean
-nautilus_link_local_is_home_link (const char *path)
+nautilus_link_local_is_home_link (const char *uri)
 {
-	return (nautilus_link_local_get_link_type (path) == NAUTILUS_LINK_HOME);
+	return (nautilus_link_local_get_link_type (uri) == NAUTILUS_LINK_HOME);
 }
 
 gboolean
-nautilus_link_local_is_trash_link (const char *path)
+nautilus_link_local_is_trash_link (const char *uri)
 {
-	return (nautilus_link_local_get_link_type (path) == NAUTILUS_LINK_TRASH);
+	return (nautilus_link_local_get_link_type (uri) == NAUTILUS_LINK_TRASH);
 }
 
 gboolean
-nautilus_link_local_is_special_link (const char *path)
+nautilus_link_local_is_special_link (const char *uri)
 {
-	switch (nautilus_link_local_get_link_type (path)) {
+	switch (nautilus_link_local_get_link_type (uri)) {
 	case NAUTILUS_LINK_HOME:
 		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
  			return FALSE;
@@ -313,8 +310,8 @@ nautilus_link_local_is_special_link (const char *path)
 
 void
 nautilus_link_local_create_from_gnome_entry (GnomeDesktopItem *item,
-					     const char *dest_path,
+					     const char *dest_uri,
 					     const GdkPoint *position)
 {
-	nautilus_link_desktop_file_local_create_from_gnome_entry (item, dest_path, position);
+	nautilus_link_desktop_file_local_create_from_gnome_entry (item, dest_uri, position);
 }

@@ -2248,7 +2248,6 @@ get_target_file (NautilusFile *file)
 	NautilusFile *target_file;
 	char *uri;
 	char *uri_to_display;
-	char *local_path;
 
 	target_file = NULL;
 	if (nautilus_file_is_nautilus_link (file)) {
@@ -2256,15 +2255,15 @@ get_target_file (NautilusFile *file)
 		 * that seems fine since the links we care about are
 		 * all on the desktop.
 		 */
-		uri = nautilus_file_get_uri (file);
-		local_path = gnome_vfs_get_local_path_from_uri (uri);
-		if (local_path != NULL) {
-			switch (nautilus_link_local_get_link_type (local_path)) {
+		if (nautilus_file_is_local (file)) {
+			uri = nautilus_file_get_uri (file);
+
+			switch (nautilus_link_local_get_link_type (uri)) {
 			case NAUTILUS_LINK_MOUNT:
 			case NAUTILUS_LINK_TRASH:
 			case NAUTILUS_LINK_HOME:
 				/* map to linked URI for these types of links */
-				uri_to_display = nautilus_link_local_get_link_uri (local_path);
+				uri_to_display = nautilus_link_local_get_link_uri (uri);
 				target_file = nautilus_file_get (uri_to_display);
 				g_free (uri_to_display);
 				break;
@@ -2272,10 +2271,9 @@ get_target_file (NautilusFile *file)
 				/* don't for these types */
 				break;
 			}
-			g_free (local_path);
+			
+			g_free (uri);
 		}
-		
-		g_free (uri);
 	}
 
 	if (target_file != NULL) {

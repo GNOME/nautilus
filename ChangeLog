@@ -1,3 +1,44 @@
+2002-05-17  Alex Graveley  <alex@ximian.com>
+
+	* src/file-manager/fm-icon-view.c
+	(get_icon_drop_target_uri_callback): Pass file URI to
+	nautilus_link_*, instead of local path.
+	(icon_view_handle_uri_list): Ditto, for parent directory.
+	(icon_view_handle_uri_list): Ditto.
+
+	* src/file-manager/fm-icon-container.c
+	(fm_icon_container_get_icon_text): Pass file URI to
+	nautilus_link_*, instead of local path.
+	(get_sort_category): Ditto.
+
+	* src/file-manager/fm-directory-view.c
+	(fm_directory_link_type_in_selection): Pass file URI to
+	nautilus_link_*, instead of local path.
+	(special_link_in_selection): Ditto.
+
+	* src/file-manager/fm-desktop-icon-view.c (volume_ops_callback):
+	Pass file URI to nautilus_link_*, instead of local path.
+	(trash_link_is_selection): Ditto.
+	(volume_link_is_selection): Ditto
+	(volume_link_device_type): Ditto.
+
+	* libnautilus-private/nautilus-file.c (rename_guts): Pass file URI
+	to nautilus_link_desktop_file_local_set_text(), handle non-local
+	launchers gracefully.
+
+	* libnautilus-private/nautilus-link-desktop-file.c: Use URIs
+	throughout, and load desktop items using
+	gnome_desktop_item_new_from_uri.
+	(nautilus_link_desktop_file_local_create): Use
+	gnome_desktop_item_new_from_string, instead of using fputs
+	directly.
+
+	* libnautilus-private/nautilus-link-historical.c: Use URIs instead
+	of local paths throughout.
+
+	* libnautilus-private/nautilus-link.c: Use URIs instead of local
+	paths throughout.
+
 2002-05-17  Damon Chaplin  <damon@ximian.com>
 
 	* src/file-manager/fm-list-view.c (key_press_callback): new function

@@ -93,7 +93,7 @@ get_link_type (const char *tag)
 }
 
 gboolean
-nautilus_link_historical_local_create (const char       *directory_path,
+nautilus_link_historical_local_create (const char       *directory_uri,
 				       const char       *name,
 				       const char       *image,
 				       const char       *target_uri,
@@ -102,14 +102,14 @@ nautilus_link_historical_local_create (const char       *directory_path,
 {
 	xmlDocPtr output_document;
 	xmlNodePtr root_node;
-	char *path;
+	char *directory_path, *path;
 	int result;
 	char *uri;
 	GList dummy_list;
 	NautilusFileChangesQueuePosition item;
 
 	
-	g_return_val_if_fail (directory_path != NULL, FALSE);
+	g_return_val_if_fail (directory_uri != NULL, FALSE);
 	g_return_val_if_fail (name != NULL, FALSE);
 	g_return_val_if_fail (image != NULL, FALSE);
 	g_return_val_if_fail (target_uri != NULL, FALSE);
@@ -130,7 +130,15 @@ nautilus_link_historical_local_create (const char       *directory_path,
 	xmlSetProp (root_node, "link", target_uri);
 	
 	/* all done, so save the xml document as a link file */
+	directory_path = gnome_vfs_get_local_path_from_uri (directory_uri);
+	if (directory_uri == NULL) {
+		xmlFreeDoc (output_document);
+		return FALSE;
+	}
+
 	path = nautilus_make_path (directory_path, name);
+	g_free (directory_path);
+
 	result = xmlSaveFile (path, output_document);
 	
 	xmlFreeDoc (output_document);
@@ -182,11 +190,11 @@ xml_get_root_property (xmlDoc *doc,
 }
 
 static char *
-local_get_root_property (const char *path,
+local_get_root_property (const char *uri,
 			 const char *key)
 {
 	GnomeVFSFileInfo *info;
-	char *uri;
+	char *path;
 	GnomeVFSResult result;
 	gboolean is_link;
 	xmlDoc *document;
@@ -196,11 +204,9 @@ local_get_root_property (const char *path,
 
 	info = gnome_vfs_file_info_new ();
 
-	uri = gnome_vfs_get_uri_from_local_path (path);
 	result = gnome_vfs_get_file_info (uri, info,
 					  GNOME_VFS_FILE_INFO_GET_MIME_TYPE
 					  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
-	g_free (uri);
 
 	is_link = result == GNOME_VFS_OK
 		&& (info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE) != 0
@@ -212,7 +218,14 @@ local_get_root_property (const char *path,
 		return NULL;
 	}
 	
+	path = gnome_vfs_get_local_path_from_uri (uri);
+	if (path == NULL) {
+		return NULL;
+	}
+		
 	document = xmlParseFile (path);
+	g_free (path);
+
 	if (document == NULL) {
 		return NULL;
 	}
@@ -285,9 +298,9 @@ local_set_root_property (const char *uri,
  * paths, and only on files known to be link files.
  */
 gboolean
-nautilus_link_historical_local_set_icon (const char *path, const char *icon_name)
+nautilus_link_historical_local_set_icon (const char *uri, const char *icon_name)
 {
-	return local_set_root_property (path,
+	return local_set_root_property (uri,
 					NAUTILUS_METADATA_KEY_CUSTOM_ICON,
 					icon_name,
 					NULL);
@@ -298,19 +311,18 @@ nautilus_link_historical_local_set_icon (const char *path, const char *icon_name
  * paths, and only on files known to be link files.
  */
 gboolean
-nautilus_link_historical_local_set_link_uri (const char *path, const char *link_uri)
+nautilus_link_historical_local_set_link_uri (const char *uri, const char *link_uri)
 {
-	return local_set_root_property (path,
+	return local_set_root_property (uri,
 					"link",
 					link_uri,
 					NULL);
 }
 
 gboolean
-nautilus_link_historical_local_set_type (const char *path,
-				   NautilusLinkType type)
+nautilus_link_historical_local_set_type (const char *uri, NautilusLinkType type)
 {
-	return local_set_root_property (path,
+	return local_set_root_property (uri,
 					"nautilus_link",
 					get_tag (type),
 					NULL);
@@ -318,28 +330,28 @@ nautilus_link_historical_local_set_type (const char *path,
 
 /* returns additional text to display under the name, NULL if none */
 char *
-nautilus_link_historical_local_get_additional_text (const char *path)
+nautilus_link_historical_local_get_additional_text (const char *uri)
 {
 	return local_get_root_property
-		(path, NAUTILUS_METADATA_KEY_EXTRA_TEXT);
+		(uri, NAUTILUS_METADATA_KEY_EXTRA_TEXT);
 }
 
 
 /* Returns the link uri associated with a link file. */
 char *
-nautilus_link_historical_local_get_link_uri (const char *path)
+nautilus_link_historical_local_get_link_uri (const char *uri)
 {
-	return local_get_root_property (path, "link");
+	return local_get_root_property (uri, "link");
 }
 
 /* Returns the link type of the link file. */
 NautilusLinkType
-nautilus_link_historical_local_get_link_type (const char *path)
+nautilus_link_historical_local_get_link_type (const char *uri)
 {
 	char *property;
 	NautilusLinkType type;
 	
-	property = local_get_root_property (path, "nautilus_link");
+	property = local_get_root_property (uri, "nautilus_link");
 	type = get_link_type (property);
 	g_free (property);
 
@@ -377,13 +389,13 @@ nautilus_link_historical_get_link_icon_given_file_contents (const char *file_con
 }
 
 void
-nautilus_link_historical_local_create_from_gnome_entry (GnomeDesktopItem *entry, const char *dest_path, const GdkPoint *position)
+nautilus_link_historical_local_create_from_gnome_entry (GnomeDesktopItem *entry, const char *dest_uri, const GdkPoint *position)
 {
 	char *icon_name, *icon;
 	char *launch_string, *terminal_command;
 	const char *name, *arguments;
 
-	if (entry == NULL || dest_path == NULL) {
+	if (entry == NULL || dest_uri == NULL) {
 		return;
 	}
 	
@@ -418,7 +430,7 @@ nautilus_link_historical_local_create_from_gnome_entry (GnomeDesktopItem *entry,
 	}
 	
 	if (launch_string != NULL) {
-		nautilus_link_historical_local_create (dest_path, name, icon_name,
+		nautilus_link_historical_local_create (dest_uri, name, icon_name,
 						       launch_string, position, NAUTILUS_LINK_GENERIC);
 	}
 	

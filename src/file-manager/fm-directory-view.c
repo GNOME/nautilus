@@ -2800,7 +2800,7 @@ fm_directory_link_type_in_selection (FMDirectoryView *view,
 	gboolean saw_link;
 	GList *selection, *node;
 	NautilusFile *file;
-	char *uri, *path;
+	char *uri;
 
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
@@ -2812,13 +2812,11 @@ fm_directory_link_type_in_selection (FMDirectoryView *view,
 		file = NAUTILUS_FILE (node->data);
 
 		uri = nautilus_file_get_uri (file);
-		path = gnome_vfs_get_local_path_from_uri (uri);
 		/* FIXME: This reads the link file every single time. */
-		saw_link = path != NULL
+		saw_link = nautilus_file_is_local (file)
 			&& nautilus_file_is_nautilus_link (file)
-			&& nautilus_link_local_get_link_type (path) == link_type;
+			&& nautilus_link_local_get_link_type (uri) == link_type;
 		
-		g_free (path);
 		g_free (uri);
 		
 		if (saw_link) {
@@ -2844,7 +2842,7 @@ special_link_in_selection (FMDirectoryView *view)
 	gboolean saw_link;
 	GList *selection, *node;
 	NautilusFile *file;
-	char *uri, *path;
+	char *uri;
 
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
@@ -2856,14 +2854,12 @@ special_link_in_selection (FMDirectoryView *view)
 		file = NAUTILUS_FILE (node->data);
 
 		uri = nautilus_file_get_uri (file);
-		path = gnome_vfs_get_local_path_from_uri (uri);
 
 		/* FIXME: This reads the link file every single time. */
-		saw_link = path != NULL
+		saw_link = nautilus_file_is_local (file)
 			&& nautilus_file_is_nautilus_link (file)
-			&& nautilus_link_local_is_special_link (path);
+			&& nautilus_link_local_is_special_link (uri);
 		
-		g_free (path);
 		g_free (uri);
 		
 		if (saw_link) {

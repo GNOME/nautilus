@@ -1845,7 +1845,7 @@ get_icon_drop_target_uri_callback (NautilusIconContainer *container,
 		       		   NautilusFile *file,
 		       		   FMIconView *icon_view)
 {
-	char *uri, *path, *target_uri;
+	char *uri, *target_uri;
 	
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
@@ -1856,14 +1856,12 @@ get_icon_drop_target_uri_callback (NautilusIconContainer *container,
 	/* Check for Nautilus link */
 	if (nautilus_file_is_nautilus_link (file)) {
 		/* FIXME bugzilla.gnome.org 43020: This does sync. I/O and works only locally. */
-		path = gnome_vfs_get_local_path_from_uri (uri);
-		if (path != NULL) {
-			target_uri = nautilus_link_local_get_link_uri (path);
+		if (nautilus_file_is_local (file)) {
+			target_uri = nautilus_link_local_get_link_uri (uri);
 			if (target_uri != NULL) {
 				g_free (uri);
 				uri = target_uri;
 			}
-			g_free (path);
 		}
 	}
 
@@ -2149,7 +2147,6 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	char *uri;
 	char *stripped_uri;
 	char *container_uri_string;
-	char *container_path;
 	const char *last_slash, *link_name;
 	int n_uris;
 	gboolean all_local;
@@ -2186,8 +2183,8 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 		eel_show_warning_dialog (_("An invalid drag type was used."),
 					 _("Drag and Drop error"),
 					 fm_directory_view_get_containing_window (FM_DIRECTORY_VIEW (view)));
-		g_free (container_uri);
 		gnome_vfs_uri_unref (container_uri);
+		g_free (container_uri_string);
 		return;
 	}
 
@@ -2235,14 +2232,13 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 		if (points)
 			g_array_free (points, TRUE);
 	} else {
-		container_path = gnome_vfs_get_local_path_from_uri (container_uri_string);
 		for (node = real_uri_list; node != NULL; node = node->next) {
 			/* Make a link using the desktop file contents? */
 			uri = node->data;
 			entry = gnome_desktop_item_new_from_uri (uri, 0, NULL);
 			if (entry != NULL) {
 				/* FIXME: Handle name conflicts? */
-				nautilus_link_local_create_from_gnome_entry (entry, container_path, &point);
+				nautilus_link_local_create_from_gnome_entry (entry, container_uri_string, &point);
 
 				gnome_desktop_item_unref (entry);
 				continue;
@@ -2260,7 +2256,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			
 			if (!eel_str_is_empty (link_name)) {
 				/* FIXME: Handle name conflicts? */
-				nautilus_link_local_create (container_path, link_name,
+				nautilus_link_local_create (container_uri_string, link_name,
 							    "gnome-http-url", uri,
 							    &point, NAUTILUS_LINK_GENERIC);
 			}
@@ -2268,7 +2264,6 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			g_free (stripped_uri);
 			break;
 		}
-		g_free (container_path);
 	}
 	
 	nautilus_icon_dnd_uri_list_free_strings (real_uri_list);

@@ -27,20 +27,20 @@
 
 #include <libnautilus-private/nautilus-link.h>
 
-gboolean         nautilus_link_desktop_file_local_create                      (const char       *directory_path,
+gboolean         nautilus_link_desktop_file_local_create                      (const char       *directory_uri,
 									       const char       *name,
 									       const char       *image,
 									       const char       *target_uri,
 									       const GdkPoint   *point,
 									       NautilusLinkType  type);
-gboolean         nautilus_link_desktop_file_local_set_icon                    (const char       *path,
+gboolean         nautilus_link_desktop_file_local_set_icon                    (const char       *uri,
 									       const char       *icon_name);
-gboolean	 nautilus_link_desktop_file_local_set_text		      (const char	*path,
+gboolean	 nautilus_link_desktop_file_local_set_text		      (const char	*uri,
 									       const char	*text);
-char *           nautilus_link_desktop_file_local_get_text                    (const char       *path);
-char *           nautilus_link_desktop_file_local_get_additional_text         (const char       *path);
-NautilusLinkType nautilus_link_desktop_file_local_get_link_type               (const char       *path);
-char *           nautilus_link_desktop_file_local_get_link_uri                (const char       *path);
+char *           nautilus_link_desktop_file_local_get_text                    (const char       *uri);
+char *           nautilus_link_desktop_file_local_get_additional_text         (const char       *uri);
+NautilusLinkType nautilus_link_desktop_file_local_get_link_type               (const char       *uri);
+char *           nautilus_link_desktop_file_local_get_link_uri                (const char       *uri);
 char *           nautilus_link_desktop_file_get_link_uri_given_file_contents  (const char       *uri,
 									       const char       *link_file_contents,
 									       int               link_file_size);
@@ -51,7 +51,7 @@ char *           nautilus_link_desktop_file_get_link_icon_given_file_contents (c
 									       const char       *link_file_contents,
 									       int               link_file_size);
 void             nautilus_link_desktop_file_local_create_from_gnome_entry     (GnomeDesktopItem *entry,
-									       const char       *dest_path,
+									       const char       *dest_uri,
 									       const GdkPoint   *position);
 
 #endif /* NAUTILUS_LINK_DESKTOP_FILE_H */

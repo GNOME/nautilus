@@ -440,12 +440,12 @@ create_mount_link (FMDesktopIconView *icon_view,
 	}
 
 	target_uri = nautilus_volume_get_target_uri (volume);
-	
+
 	volume_name = create_unique_volume_name (volume);
-	
+
 	/* Create link */
 	nautilus_link_local_create (desktop_directory, volume_name, icon_name, target_uri, NULL, NAUTILUS_LINK_MOUNT);
-				    
+
 	g_free (target_uri);
 	g_free (volume_name);
 }
@@ -787,7 +787,7 @@ volume_ops_callback (BonoboUIComponent *component, gpointer data, const char *ve
 {
         FMDirectoryView *view;
 	NautilusFile *file;
-	char *uri, *path, *mount_uri, *mount_path;
+	char *uri, *mount_uri, *mount_path;
 	GList *selection;
 	char *command;
 	const char *device_path;
@@ -810,17 +810,15 @@ volume_ops_callback (BonoboUIComponent *component, gpointer data, const char *ve
 	selection = fm_directory_view_get_selection (view);
 	
 	file = NAUTILUS_FILE (selection->data);
-	uri = nautilus_file_get_uri (file);
-	path = gnome_vfs_get_local_path_from_uri (uri);
-	g_free (uri);
-	if (path == NULL) {
+	if (nautilus_file_is_local (file)) {
 		nautilus_file_list_free (selection);
 		return;
 	}
 		
-	mount_uri = nautilus_link_local_get_link_uri (path);
+	uri = nautilus_file_get_uri (file);
+	mount_uri = nautilus_link_local_get_link_uri (uri);
 	mount_path = gnome_vfs_get_local_path_from_uri (mount_uri);
-	g_free (path);
+	g_free (uri);
 	g_free (mount_uri);
 	if (mount_path == NULL) {
 		nautilus_file_list_free (selection);
@@ -902,7 +900,7 @@ trash_link_is_selection (FMDirectoryView *view)
 {
 	GList *selection;
 	gboolean result;
-	char *uri, *path;
+	char *uri;
 
 	result = FALSE;
 	
@@ -914,11 +912,9 @@ trash_link_is_selection (FMDirectoryView *view)
 		/* It's probably OK that this only works for local
 		 * items, since the trash we care about is on the desktop.
 		 */
-		path = gnome_vfs_get_local_path_from_uri (uri);
-		if (path != NULL && nautilus_link_local_is_trash_link (path)) {
+		if (nautilus_link_local_is_trash_link (uri)) {
 			result = TRUE;
 		}
-		g_free (path);
 		g_free (uri);
 	}
 	
@@ -932,7 +928,7 @@ volume_link_is_selection (FMDirectoryView *view)
 {
 	GList *selection;
 	gboolean result;
-	char *uri, *path;
+	char *uri;
 
 	result = FALSE;
 	
@@ -944,11 +940,9 @@ volume_link_is_selection (FMDirectoryView *view)
 		/* It's probably OK that this only works for local
 		 * items, since the volume we care about is on the desktop.
 		 */
-		path = gnome_vfs_get_local_path_from_uri (uri);
-		if (path != NULL && nautilus_link_local_is_volume_link (path)) {
+		if (nautilus_link_local_is_volume_link (uri)) {
 			result = TRUE;
 		}
-		g_free (path);
 		g_free (uri);
 	}
 	
@@ -965,7 +959,7 @@ static NautilusDeviceType
 volume_link_device_type (FMDirectoryView *view)
 {
 	GList *selection;
-	gchar *uri, *path, *mount_uri, *mount_path;
+	gchar *uri, *mount_uri, *mount_path;
 	NautilusVolume *volume;
 
 	selection = fm_directory_view_get_selection (view);
@@ -977,17 +971,13 @@ volume_link_device_type (FMDirectoryView *view)
 	volume = NULL;
 	
 	uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
-	path = gnome_vfs_get_local_path_from_uri (uri);
-	if (path != NULL) {
-		mount_uri = nautilus_link_local_get_link_uri (path);
-		mount_path = gnome_vfs_get_local_path_from_uri (mount_uri);
-		if(mount_path != NULL) {
-			volume = nautilus_volume_monitor_get_volume_for_path (nautilus_volume_monitor_get (), mount_path);
-			g_free (mount_path);
-		}
-		g_free (mount_uri);
-		g_free (path);
+	mount_uri = nautilus_link_local_get_link_uri (uri);
+	mount_path = gnome_vfs_get_local_path_from_uri (mount_uri);
+	if(mount_path != NULL) {
+		volume = nautilus_volume_monitor_get_volume_for_path (nautilus_volume_monitor_get (), mount_path);
+		g_free (mount_path);
 	}
+	g_free (mount_uri);
 	g_free (uri);
 	nautilus_file_list_free (selection);
 

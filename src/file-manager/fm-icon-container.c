@@ -170,7 +170,7 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
 				 char                 **editable_text,
 				 char                 **additional_text)
 {
-	char *actual_uri, *path;
+	char *actual_uri;
 	gchar *description;
 	char *attribute_names;
 	char **text_array;
@@ -198,16 +198,14 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
 	/* Handle link files specially. */
 	if (nautilus_file_is_nautilus_link (file)) {
 		/* FIXME bugzilla.gnome.org 42531: Does sync. I/O and works only locally. */
-		actual_uri = nautilus_file_get_uri (file);
-		path = gnome_vfs_get_local_path_from_uri (actual_uri);
-		g_free (actual_uri);
  		*additional_text = NULL;
-		if (path != NULL) {
-			description = nautilus_link_local_get_additional_text (path);
-			g_free (path);
+		if (nautilus_file_is_local (file)) {
+			actual_uri = nautilus_file_get_uri (file);
+			description = nautilus_link_local_get_additional_text (actual_uri);
 			if (description)
 				*additional_text = g_strdup_printf (" \n%s\n ", description);
 			g_free (description);
+			g_free (actual_uri);
 		}
 		/* Don't show the normal extra information for desktop files, it doesn't
 		 * make sense. */
@@ -251,17 +249,6 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
 	g_strfreev (text_array);
 }
 
-static char *
-get_local_path (NautilusFile *file)
-{
-	char *uri, *local_path;
-
-	uri = nautilus_file_get_uri (file);
-	local_path = gnome_vfs_get_local_path_from_uri (uri);
-	g_free (uri);
-	return local_path;
-}
-
 /* Sort as follows:
  *   1) home link
  *   2) mount links
@@ -278,16 +265,18 @@ typedef enum {
 static SortCategory
 get_sort_category (NautilusFile *file)
 {
-	char *path;
+	char *uri;
 	SortCategory category;
 
 	if (!nautilus_file_is_nautilus_link (file)) {
 		category = SORT_OTHER;
 	} else {
-		path = get_local_path (file);
-		g_return_val_if_fail (path != NULL, SORT_OTHER);
+		if (!nautilus_file_is_local (file))
+			return SORT_OTHER;
+
+		uri = nautilus_file_get_uri (file);
 		
-		switch (nautilus_link_local_get_link_type (path)) {
+		switch (nautilus_link_local_get_link_type (uri)) {
 		case NAUTILUS_LINK_HOME:
 			category = SORT_HOME_LINK;
 			break;
@@ -302,7 +291,7 @@ get_sort_category (NautilusFile *file)
 			break;
 		}
 		
-		g_free (path);
+		g_free (uri);
 	}
 	
 	return category;
