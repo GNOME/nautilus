@@ -208,8 +208,10 @@ static void start_playing_file 				      (NautilusMusicView      *music_view,
 static void stop_playing_file 				      (NautilusMusicView      *music_view);
 static PlayerState get_player_state 			      (NautilusMusicView      *music_view);
 static void set_player_state 				      (NautilusMusicView      *music_view, 
-							       PlayerState 	      state);
+							       PlayerState 	       state);
 static void sort_list 					      (NautilusMusicView      *music_view);
+static void list_reveal_row                                   (GtkCList               *clist, 
+                                                               int                     row_index);
 
 static void nautilus_music_view_load_uri (NautilusMusicView *view,
                                           const char        *uri);
@@ -688,6 +690,8 @@ click_column_callback (GtkCList *clist, int column, NautilusMusicView *music_vie
         music_view->details->sort_mode = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (clist->column[column].button), "SortMode"));
         
         sort_list (music_view);
+
+	list_reveal_row (GTK_CLIST(music_view->details->song_list), music_view->details->selected_index);
 }
 
 /* utility routine to check if the passed-in uri is an image file */

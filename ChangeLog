@@ -1,5 +1,12 @@
 2001-07-22  Maciej Stachowiak  <mjs@eazel.com>
 
+	* components/music/nautilus-music-view.c (click_column_callback):
+	Fix bug 5242 (Selection not kept on-screen after column resort) by
+	scrolling the selected item into view on a resort if it's not in
+	view already.
+
+2001-07-22  Maciej Stachowiak  <mjs@eazel.com>
+
 	* components/music/nautilus-music-view.c: (get_song_text): Fix the
 	remainer of bug 3769 (Music View window redraws upon clicking a
 	different song) by making songs with no title show up with "-" for
