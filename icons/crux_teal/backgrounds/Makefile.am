@@ -1,7 +1,7 @@
-arlodir = $(datadir)/pixmaps/nautilus/arlo/backgrounds
+crux_tealdir = $(datadir)/pixmaps/nautilus/crux_teal/backgrounds
 
-arlo_DATA =	\
+crux_teal_DATA =	\
 	background_pattern.png	\
 	window_pattern.png
-		
-EXTRA_DIST = $(arlo_DATA)
+
+EXTRA_DIST = $(crux_teal_DATA)

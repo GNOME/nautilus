@@ -1,8 +1,8 @@
 NULL=
 
-arlotabdir = $(datadir)/pixmaps/nautilus/arlo/sidebar_tab_pieces
+crux_tealtabdir = $(datadir)/pixmaps/nautilus/crux_teal/sidebar_tab_pieces
 
-arlotab_DATA = \
+crux_tealtab_DATA = \
 	fill-active.png				\
 	fill-active-prelight.png		\
 	fill-empty-space.png			\
@@ -23,5 +23,5 @@ arlotab_DATA = \
 	right-top-prelight.png			\
 	right-top.png				\
 	$(NULL)
-		
-EXTRA_DIST = $(arlotab_DATA)
+
+EXTRA_DIST = $(crux_tealtab_DATA)

@@ -1,6 +1,6 @@
 NULL=
 
-throbberdir = $(datadir)/pixmaps/nautilus/arlo/throbber
+throbberdir = $(datadir)/pixmaps/nautilus/crux_teal/throbber
 
 throbber_DATA = 	\
 	001.png		\
@@ -35,5 +35,5 @@ throbber_DATA = 	\
 	030.png         \
 	rest.png	\
 	$(NULL)
-		
+
 EXTRA_DIST = $(throbber_DATA)
