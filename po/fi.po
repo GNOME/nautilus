@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "POT-Creation-Date: 2001-02-26 23:21+0200\n"
-"PO-Revision-Date: 2001-02-26 23:45+02:00\n"
+"PO-Revision-Date: 2001-01-11 20:44+02:00\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@saunalahti.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -894,11 +894,9 @@ msgid ""
 "\n"
 "Try viewing the page in a different web browser, such as Mozilla or Netscape."
 msgstr ""
-"Javascript-funktio (pieni ohjelma) tällä sivulla yritti avata uuden ikkunan, "
-"mutta Nautilus ei tue tätä ominaisuutta.\n"
+"Javascript-funktio (pieni ohjelma) tällä sivulla yritti avata uuden ikkunan, mutta Nautilus ei tue tätä ominaisuutta, joten se ei onnistunut.\n"
 "\n"
-"Kokeile tämän sivun katsomista toisessa www-selaimessa, kuten Mozillassa tai "
-"Netscapessa."
+"Yritä katsoa tätä sivua toisella WWW-selaimella, kuten Mozillalla tai Netscapella."
 
 #: components/mozilla/nautilus-mozilla-content-view.c:843
 msgid "Nautilus Mozilla View Warning"
@@ -1718,7 +1716,7 @@ msgstr "Paketin nimi"
 
 #: components/rpmview/nautilus-rpm-view.c:190
 msgid "Installed Size: "
-msgstr "Asennuskoko: "
+msgstr "Asennettu koko: "
 
 #: components/rpmview/nautilus-rpm-view.c:196
 msgid "<size>"
@@ -1807,7 +1805,7 @@ msgstr "%s tarvitaan, mutta sitä ei löytynyt\n"
 #: components/rpmview/nautilus-rpm-view-install.c:132
 #, c-format
 msgid "%s was already installed\n"
-msgstr "%s on jo asennettu\n"
+msgstr "Paketti %s on jo asennettu\n"
 
 #: components/rpmview/nautilus-rpm-view-install.c:135
 #, c-format
@@ -2076,7 +2074,7 @@ msgstr "*** Voit antaa vain yhden protokollatyypin.\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:184
 msgid "*** Erase and revert ?  Somebody set up us the bomb!\n"
-msgstr "*** Poista ja palauta ?  Jokin asetti pommin!\n"
+msgstr "*** Poista ja palauta?  Joku asetti meille pommin!\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:293
 #, c-format
@@ -2111,7 +2109,7 @@ msgstr "Hakee paketin %s... (%d/%d) = %d%%"
 #: components/services/install/command-line/eazel-alt-install-corba.c:384
 #, c-format
 msgid "Downloading %s... (%d/%d) %.1f KB/s Done      \n"
-msgstr "Hakee paketin %s... (%d/%d) %.1f kt/s valmis  \n"
+msgstr "Hakee paketin %s... (%d/%d) %.1f kt/s valmis\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:389
 #, c-format
@@ -2132,7 +2130,7 @@ msgstr "Asentaa pakettia %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% valmis\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:454
 msgid "Unnstalling %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% Done\n"
-msgstr "Poistaa paketin %s asennusta %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% valmis\n"
+msgstr "Poistaa paketin %s (%d/%d), (%d/%d)b - (%d/%d) = %d%% valmis\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:462
 msgid "Done\n"
@@ -2390,14 +2388,14 @@ msgstr "MD5-summa ei sovi: pakettia %s voi olla käpälöity"
 #: components/services/install/lib/eazel-install-logic2.c:173
 #, c-format
 msgid "No MD5 available for %s"
-msgstr "MD5-summaa ei ole saatavilla paketille %s"
+msgstr "Ei MD5-summaa paketille %s"
 
 #. I18N note: "%is is ok" in the sense that %s=package name and the
 #. package is intact
 #: components/services/install/lib/eazel-install-logic2.c:357
 #, c-format
 msgid "%s is ok"
-msgstr "%s on ok"
+msgstr "Paketti %s on kunnossa"
 
 #: components/services/install/lib/eazel-install-logic2.c:462
 #, c-format
@@ -2438,21 +2436,21 @@ msgstr "%s asentaa version %s"
 #: components/services/install/lib/eazel-install-logic2.c:624
 #, c-format
 msgid "Loading package info from file %s"
-msgstr "Ladataan paketin tietoja tiedostosta %s"
+msgstr "Hakee paketin tietoja tiedostosta %s..."
 
 #. I18N note: ok is for "package dependencies are ok", "not ok".. well guess...
 #: components/services/install/lib/eazel-install-logic2.c:992
 msgid "ok"
-msgstr "ok"
+msgstr "kunnossa"
 
 #: components/services/install/lib/eazel-install-logic2.c:992
 msgid "not ok"
-msgstr "ei ok"
+msgstr "ei kunnossa"
 
 #: components/services/install/lib/eazel-install-logic2.c:1156
 #, c-format
 msgid "Checking dependencies for %s"
-msgstr "Tarkistetaan riippuvuuksia paketille %s"
+msgstr "Tarkastaa paketin %s riippuvuuksia"
 
 #. I18N note: both %s' are package names.
 #. related is in the sense that the two packages apparently
@@ -2460,17 +2458,18 @@ msgstr "Tarkistetaan riippuvuuksia paketille %s"
 #: components/services/install/lib/eazel-install-logic2.c:1715
 #, c-format
 msgid "%s is related to %s"
-msgstr "%s liittyy pakettiin %s"
+msgstr "Paketti %s liittyy pakettiin %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:1769
 #, c-format
 msgid "updating %s to version %s-%s solves conflict"
-msgstr "päivittämässä %s versioon %s-%s korjaa ristiriidan"
+msgstr "Paketin %s päivittäminen versioksi %s-%s ratkaisee ristiriidan"
 
 #: components/services/install/lib/eazel-install-logic2.c:1786
 #, c-format
 msgid "available update to %s (%s-%s) does not solves conflict"
-msgstr "saatavilla oleva päivitys pakettiin %s (%s-%s) ei korjaa ristiriitaa"
+msgstr ""
+"mahdollinen paketin %s päivitys versioksi (%s-%s) ei ratkaise ristiriitaa"
 
 #: components/services/install/lib/eazel-install-logic2.c:1793
 #, c-format
@@ -2480,50 +2479,53 @@ msgstr "ei voinut palauttaa pakettia %s"
 #: components/services/install/lib/eazel-install-logic2.c:1929
 #, c-format
 msgid "file uniqueness checking %s"
-msgstr "Tarkistaa tiedostojen ainoutta paketista %s"
+msgstr "tarkistaa tiedostojen ainoutta paketista %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:1950
 #, c-format
 msgid "Duplicate file : %s occurs in %s and %s"
-msgstr "Päällekkäinen tiedosto : %s löytyy paketista %s ja %s"
+msgstr "Moninkertainen tiedosto: %s on sekä paketissa %s että %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:1968
 #, c-format
 msgid "(there were %d other conflicts)"
-msgstr "(löytyi %d muita ristiriitoja)"
+msgstr "(muita ristiriitoja oli %d)"
 
 #: components/services/install/lib/eazel-install-logic2.c:2063
 #, c-format
 msgid "file conflict checking %s"
-msgstr "Tarkistaa tiedostoristiriitoja paketista %s"
+msgstr "tarkistaa tiedostoristiriitoja paketista %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:2111
 #, c-format
 msgid "file conflict : package %s already provides file %s also provided by %s"
-msgstr "tiedostoristiriita : paketin %s tiedosto %s löytyy jo paketista %s"
+msgstr ""
+"tiedostoristiriita : paketissa %s on tiedosto %s, joka on myös paketissa %s "
 
 #. the owner of this file is a package that we're upgrading, and the
 #. * new version no longer has this file, so everything's okay.
 #: components/services/install/lib/eazel-install-logic2.c:2121
 #, c-format
 msgid "...but it is okay, we're upgrading %s and it ditched that file"
-msgstr "...mutta se on ok, päivitetty paketti %s ei sisällä sitä tiedostoa"
+msgstr "...mutta se ei haittaa, sillä paketti %s päivittyy ja tiedosto poistuu"
 
 #: components/services/install/lib/eazel-install-logic2.c:2211
 #, c-format
 msgid "checking feature consistency of %s"
-msgstr "Tarkistaa ominaisuusyhtenäisyyttä paketista %s"
+msgstr "tarkistaa ominaisuusyhtenäisyyttä paketista %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:2277
 #, c-format
 msgid ""
 "feature missing : %s breaks if %s is installed (feature %s would be lost"
-msgstr "ominaisuus puuttuu : %s ei toimi, jos %s asennetaan (ominaisuus %s katoaisi)"
+msgstr ""
+"puuttuva ominaisuus : %s rikkoutuu, jos %s on asennettu (ominaisuus %s "
+"häviäisi"
 
 #: components/services/install/lib/eazel-install-logic2.c:2355
 #, c-format
 msgid "downloading %d packages"
-msgstr "lataa %d pakettia"
+msgstr "hakee %d pakettia"
 
 #: components/services/install/lib/eazel-install-logic2.c:2620
 #, c-format
@@ -2533,17 +2535,17 @@ msgstr "päivittää paketin %s"
 #: components/services/install/lib/eazel-install-logic2.c:2623
 #, c-format
 msgid "will downgrade %s"
-msgstr "päivittää paketin %s vanhemmaksi versioksi"
+msgstr "vaihtaa vanhemmaksi paketin %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:2626
 #, c-format
 msgid "will install %s"
-msgstr "asentaa \"%s\""
+msgstr "asentaa paketin %s"
 
 #: components/services/install/lib/eazel-install-logic2.c:2629
 #, c-format
 msgid "will uninstall %s"
-msgstr "poistaa paketin %s"
+msgstr "poistaa paketin %s asennuksen"
 
 #: components/services/install/lib/eazel-install-logic2.c:2712
 #: components/services/install/lib/eazel-install-problem.c:335
@@ -2555,7 +2557,7 @@ msgstr "Paketti %s vaatii paketin %s"
 #: components/services/install/lib/eazel-install-logic2.c:2876
 #, c-format
 msgid "failed %s"
-msgstr "Virhe tiedoston \"%s\" kohdalla"
+msgstr "paketti %s epäonnistui"
 
 #: components/services/install/lib/eazel-install-metadata.c:171
 msgid "Could not set URLType from config file!"
@@ -2922,7 +2924,7 @@ msgstr "Tiedostoa %s ei voi avata"
 #: components/services/install-view/nautilus-service-install-view.c:418
 #, c-format
 msgid " · %s is in the GNOME footprint menu under %s"
-msgstr " · %s on Gnomen jalanjälkivalikossa kohdassa %s"
+msgstr " · %s on Gnomen jalanjälkivalikossa %s alla."
 
 #: components/services/install-view/nautilus-service-install-view.c:436
 #, c-format
@@ -3261,7 +3263,7 @@ msgstr "Salasana:"
 #: components/services/summary/nautilus-summary-dialogs.c:146
 #: components/services/summary/nautilus-summary-dialogs.c:155
 msgid "Please log in to Eazel services"
-msgstr "Ole hyvä, ja kirjaudu sisään Eazel-palveluihin"
+msgstr "Ole hyvä, ja kirjaudu Eazel-palveluihin"
 
 #: components/services/summary/nautilus-summary-dialogs.c:150
 msgid "Your user name or password were not correct.  Please try again."
@@ -3274,7 +3276,7 @@ msgstr "Siirry sinne"
 
 #: components/services/summary/nautilus-summary-view.c:119
 msgid "More Info"
-msgstr "Info-sivut"
+msgstr "Lisätietoja"
 
 #: components/services/summary/nautilus-summary-view.c:130
 msgid "Account Preferences"
@@ -3874,7 +3876,7 @@ msgstr "Meren vaahto"
 
 #: data/browser.xml.h:68
 msgid "Secret"
-msgstr "Salainen"
+msgstr "Salaisuus"
 
 #: data/browser.xml.h:69
 msgid "Shale"
@@ -8996,7 +8998,7 @@ msgstr "_Pienennä"
 
 #: src/nautilus-shell-ui.xml.h:71
 msgid "_About Nautilus"
-msgstr "_Tietoja Nautiluksesta"
+msgstr "Tietoja _Nautiluksesta"
 
 #: src/nautilus-shell-ui.xml.h:72
 msgid "_Add Bookmark"
@@ -9457,10 +9459,11 @@ msgid ""
 "easy to manage your files\n"
 "and the rest of your system."
 msgstr ""
-"Nautilus on Gnomen graafinen\n"
-"komento-ohjelma, joka tekee \n"
-"tiedostojen ja järjestelmän \n"
-"hallinnasta helppoa."
+"Nautilus on Gnomen\n"
+"graafinen komento-ohjelma,\n"
+"joka tekee tiedostojen ja\n"
+"järjestelmän hallinnasta\n"
+"helppoa."
 
 #. translators should localize the following
 #. * string which will be displayed at the
@@ -9470,7 +9473,8 @@ msgstr ""
 #: src/nautilus-window-menus.c:578
 msgid "Translator Credits"
 msgstr ""
-"Suomennos: Pauli Virtanen\n"
+"Suomennos:\n"
+"Pauli Virtanen\n"
 "GNOME Finnish Translation Team\n"
 "http://gnome-fi.sourceforge.net/"
 
