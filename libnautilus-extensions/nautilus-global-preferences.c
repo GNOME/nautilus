@@ -389,14 +389,31 @@ nautilus_global_preferences_get_disabled_sidebar_panel_view_identifiers (void)
         return disabled_view_identifiers;
 }
 
+
+static void
+destroy_global_prefs_dialog (void)
+{
+	/* Free the dialog first, cause it has refs to preferences */
+	if (global_prefs_dialog != NULL) {
+		/* Since it's a top-level window, it's OK to destroy rather than unref'ing. */
+		gtk_widget_destroy (global_prefs_dialog);
+	}
+}
+
 static GtkWidget *
 global_preferences_get_dialog (void)
 {
+	static gboolean set_up_exit = FALSE;
+
 	nautilus_global_preferences_initialize ();
 
-	if (!global_prefs_dialog)
-	{
+	if (global_prefs_dialog == NULL) {
 		global_prefs_dialog = global_preferences_create_dialog ();
+	}
+
+	if (!set_up_exit) {
+		g_atexit (destroy_global_prefs_dialog);
+		set_up_exit = TRUE;
 	}
 
 	return global_prefs_dialog;
@@ -863,9 +880,10 @@ nautilus_global_preferences_dialog_update (void)
 		was_showing = GTK_WIDGET_VISIBLE (global_prefs_dialog);
 
 		gtk_widget_destroy (global_prefs_dialog);
+		global_prefs_dialog = NULL;
 	}
 	
-	global_prefs_dialog = global_preferences_create_dialog ();
+	global_preferences_get_dialog ();
 
 	if (was_showing) {
 		nautilus_global_preferences_show_dialog ();
@@ -885,16 +903,3 @@ nautilus_global_preferences_initialize (void)
 
 	initialized = TRUE;
 }
-
-void
-nautilus_global_preferences_shutdown (void)
-{
-	/* Free the dialog first, cause it has refs to preferences */
-	if (global_prefs_dialog != NULL) {
-		gtk_widget_destroy (global_prefs_dialog);
-	}
-
-	/* Now free the preferences tables and stuff */
-	nautilus_preferences_shutdown ();
-}
-

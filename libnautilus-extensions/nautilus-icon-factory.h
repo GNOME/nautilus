@@ -82,9 +82,9 @@ typedef struct NautilusScalableIcon NautilusScalableIcon;
 #define MAX_ATTACH_POINTS 8
 
 typedef struct {
-	gboolean has_attach_points;
-	GdkPoint attach_points[MAX_ATTACH_POINTS];		
-} EmblemAttachPoints;
+	int num_points;
+	GdkPoint points[MAX_ATTACH_POINTS];
+} NautilusEmblemAttachPoints;
 
 /* Instead of a class declaration here, I will just document
  * the signals.
@@ -98,19 +98,19 @@ typedef struct {
 GtkObject *           nautilus_icon_factory_get                          (void);
 
 /* Relationship between zoom levels and icons sizes. */
-guint                 nautilus_get_icon_size_for_zoom_level              (NautilusZoomLevel      zoom_level);
+guint                 nautilus_get_icon_size_for_zoom_level              (NautilusZoomLevel            zoom_level);
 
 /* Choose the appropriate icon, but don't render it yet. */
-NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file            (NautilusFile          *file,
-									  const char		*modifier,
-									  gboolean		anti_aliased);
-gboolean	      nautilus_icon_factory_is_icon_ready_for_file	 (NautilusFile		*file);
-GList *		      nautilus_icon_factory_get_required_file_attributes (void);
-GList *               nautilus_icon_factory_get_emblem_icons_for_file    (NautilusFile          *file,
-									  gboolean		 anti_aliased,
-									  NautilusStringList	*exclude);
-NautilusScalableIcon *nautilus_icon_factory_get_emblem_icon_by_name 	 (const char 		*emblem_name,
-									  gboolean		 anti_aliased);
+NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file            (NautilusFile                *file,
+									  const char                  *modifier,
+									  gboolean                     anti_aliased);
+gboolean              nautilus_icon_factory_is_icon_ready_for_file       (NautilusFile                *file);
+GList *               nautilus_icon_factory_get_required_file_attributes (void);
+GList *               nautilus_icon_factory_get_emblem_icons_for_file    (NautilusFile                *file,
+									  gboolean                     anti_aliased,
+									  NautilusStringList          *exclude);
+NautilusScalableIcon *nautilus_icon_factory_get_emblem_icon_by_name      (const char                  *emblem_name,
+									  gboolean                     anti_aliased);
 
 /* Render an icon to a particular size.
  * Ownership of a ref. count in this pixbuf comes with the deal.
@@ -118,59 +118,59 @@ NautilusScalableIcon *nautilus_icon_factory_get_emblem_icon_by_name 	 (const cha
  * that X and Y scaling are the same. Optionally, we also pass
  * back an array of emblem attach points, if the pointer is non-null
  */
-GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (NautilusScalableIcon  *scalable_icon,
-									  guint                  nominal_size_in_pixels_x,
-									  guint                  nominal_size_in_pixels_y,
-									  guint                  maximum_size_in_pixels_x,
-									  guint                  maximum_size_in_pixels_y, 
-									  EmblemAttachPoints	*attach_points);
+GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (NautilusScalableIcon        *scalable_icon,
+									  guint                        nominal_size_in_pixels_x,
+									  guint                        nominal_size_in_pixels_y,
+									  guint                        maximum_size_in_pixels_x,
+									  guint                        maximum_size_in_pixels_y,
+									  NautilusEmblemAttachPoints  *attach_points);
 									  
 /* Convenience functions for the common case where you want to choose
  * and render the icon into a pixbuf all at once.
  */
-GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_file          (NautilusFile          *file,
-									  const char		*modifer,
-									  guint                  size_in_pixels,
-									  gboolean		 anti_aliased);
+GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_file          (NautilusFile                *file,
+									  const char                  *modifer,
+									  guint                        size_in_pixels,
+									  gboolean                     anti_aliased);
 
 /* Convenience functions for legacy interfaces that require a pixmap and
  * bitmap. Maybe we can get rid of these one day.
  */
-void                  nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile          *file,
-									  const char		*modifer,
-									  guint                  size_in_pixels,
-									  GdkPixmap            **pixmap,
-									  GdkBitmap            **mask);
+void                  nautilus_icon_factory_get_pixmap_and_mask_for_file (NautilusFile                *file,
+									  const char                  *modifer,
+									  guint                        size_in_pixels,
+									  GdkPixmap                  **pixmap,
+									  GdkBitmap                  **mask);
 									  
 /* Manage a scalable icon.
  * Since the factory always passes out references to the same scalable
  * icon, you can compare two scalable icons to see if they are the same
  * with ==.
  */
-void                  nautilus_scalable_icon_ref                         (NautilusScalableIcon  *scalable_icon);
-void                  nautilus_scalable_icon_unref                       (NautilusScalableIcon  *scalable_icon);
+void                  nautilus_scalable_icon_ref                         (NautilusScalableIcon        *scalable_icon);
+void                  nautilus_scalable_icon_unref                       (NautilusScalableIcon        *scalable_icon);
 
 /* A scalable icon can be decomposed into text and reconstituted later
  * using nautilus_scalable_icon_new_from_text_pieces. This is the way 
  * to store scalable icons in metadata or other files.
  */
-void                  nautilus_scalable_icon_get_text_pieces             (NautilusScalableIcon  *scalable_icon,
-									  char		       **uri_return,
-									  char		       **name_return,
-									  char		       **modifier_return,
-									  char		       **embedded_text_return);
+void                  nautilus_scalable_icon_get_text_pieces             (NautilusScalableIcon        *scalable_icon,
+									  char                       **uri_return,
+									  char                       **name_return,
+									  char                       **modifier_return,
+									  char                       **embedded_text_return);
 /* Get a scalable icon using the earlier results of
  * nautilus_scalable_icon_get_text_pieces.
  */
-NautilusScalableIcon *nautilus_scalable_icon_new_from_text_pieces	 (const char		*uri,
-									  const char		*name,
-									  const char		*modifier,
-									  const char		*embedded_text,
-									  gboolean		 anti_aliased);
+NautilusScalableIcon *nautilus_scalable_icon_new_from_text_pieces        (const char                  *uri,
+									  const char                  *name,
+									  const char                  *modifier,
+									  const char                  *embedded_text,
+									  gboolean                     anti_aliased);
 
 /* Convenience function for freeing a list of scalable icons.
  * Unrefs all the icons before freeing the list.
  */
-void                  nautilus_scalable_icon_list_free                   (GList                 *scalable_icon_list);
+void                  nautilus_scalable_icon_list_free                   (GList                       *scalable_icon_list);
 
 #endif /* NAUTILUS_ICON_FACTORY_H */

@@ -40,9 +40,8 @@ char *                  nautilus_format_uri_for_display     (const char         
 char *                  nautilus_make_uri_from_input        (const char                *location);
 gboolean                nautilus_uri_is_trash               (const char                *uri);
 char *                  nautilus_make_uri_canonical         (const char                *uri);
-gboolean		nautilus_uris_match		    (const char		       *uri_1,
-							     const char		       *uri_2);
-
+gboolean                nautilus_uris_match                 (const char                *uri_1,
+							     const char                *uri_2);
 /* FIXME bugzilla.eazel.com 2424: 
  * This is the same as gnome-libs g_concat_dir_and_file except
  * for handling path == NULL.
@@ -88,5 +87,9 @@ NautilusReadFileHandle *nautilus_read_file_async            (const char         
 							     NautilusReadMoreCallback   read_more_callback,
 							     gpointer                   callback_data);
 void                    nautilus_read_file_cancel           (NautilusReadFileHandle    *handle);
+
+/* gnome-vfs cover to make a directory and parents */
+GnomeVFSResult          nautilus_make_directory_and_parents (GnomeVFSURI               *uri,
+							     guint                      permissions);
 
 #endif /* NAUTILUS_FILE_UTILITIES_H */

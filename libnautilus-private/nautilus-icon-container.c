@@ -3209,7 +3209,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	NautilusIconContainerDetails *details;
 	guint icon_size_x, icon_size_y, max_image_size, max_emblem_size;
 	NautilusScalableIcon *scalable_icon;
-	EmblemAttachPoints attach_points;
+	NautilusEmblemAttachPoints attach_points;
 	GdkPixbuf *pixbuf, *emblem_pixbuf;
 	GList *emblem_scalable_icons, *emblem_pixbufs, *p;
 	char *editable_text, *additional_text;

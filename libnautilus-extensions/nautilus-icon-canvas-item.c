@@ -68,7 +68,7 @@ struct NautilusIconCanvasItemDetails {
 	char *editable_text;		/* Text that can be modified by a renaming function */
 	char *additional_text;		/* Text that cannot be modifed, such as file size, etc. */
 	GdkFont *font;
-	EmblemAttachPoints *attach_pointer;
+	NautilusEmblemAttachPoints *attach_points;
 	
 	/* Size of the text at current font. */
 	int text_width;
@@ -301,7 +301,7 @@ nautilus_icon_canvas_item_destroy (GtkObject *object)
 	nautilus_gdk_pixbuf_list_free (details->emblem_pixbufs);
 	g_free (details->editable_text);
 	g_free (details->additional_text);
-	g_free (details->attach_pointer);
+	g_free (details->attach_points);
 	
 	if (details->font != NULL) {
 		gdk_font_unref (details->font);
@@ -531,14 +531,14 @@ nautilus_icon_canvas_item_set_emblems (NautilusIconCanvasItem *item,
 
 void 
 nautilus_icon_canvas_item_set_attach_points (NautilusIconCanvasItem *item,
-					     EmblemAttachPoints     *attach_points)
+					     NautilusEmblemAttachPoints *attach_points)
 {
-	g_free (item->details->attach_pointer);
-	item->details->attach_pointer = NULL;
+	g_free (item->details->attach_points);
+	item->details->attach_points = NULL;
 
-	if (attach_points && attach_points->has_attach_points) {
-		item->details->attach_pointer = g_new0 (EmblemAttachPoints, 1);
-		*item->details->attach_pointer = *attach_points;
+	if (attach_points != NULL && attach_points->num_points != 0) {
+		item->details->attach_points = g_new (NautilusEmblemAttachPoints, 1);
+		*item->details->attach_points = *attach_points;
 	}
 }
 
@@ -945,7 +945,7 @@ emblem_layout_next (EmblemLayout *layout,
 {
 	GdkPixbuf *pixbuf;
 	int width, height, x, y;
-	EmblemAttachPoints *attach_info   ;
+	NautilusEmblemAttachPoints *attach_points;
 	
 	/* Check if we have layed out all of the pixbufs. */
 	if (layout->emblem == NULL) {
@@ -961,13 +961,14 @@ emblem_layout_next (EmblemLayout *layout,
 	/* Advance to the next emblem. */
 	layout->emblem = layout->emblem->next;
 
-	if (layout->icon_item->details->attach_pointer) {
-		if (layout->index >= MAX_ATTACH_POINTS)
+	attach_points = layout->icon_item->details->attach_points;
+	if (attach_points != NULL) {
+		if (layout->index >= attach_points->num_points) {
 			return FALSE;
+		}
 		
-		attach_info = layout->icon_item->details->attach_pointer;
-		x = layout->icon_rect.x0 + attach_info->attach_points[layout->index].x;
-		y = layout->icon_rect.y0 + attach_info->attach_points[layout->index].y;
+		x = layout->icon_rect.x0 + attach_points->points[layout->index].x;
+		y = layout->icon_rect.y0 + attach_points->points[layout->index].y;
 
 		layout->index += 1;
 		

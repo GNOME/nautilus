@@ -1731,36 +1731,40 @@ band_select_ended_callback (NautilusIconContainer *container,
 /* here's the timer task that actually plays the file using mpg123. */
 /* FIXME bugzilla.eazel.com 1258: we should get the application from our mime-type stuff */
 
-static gint
-play_file (NautilusFile *file)
+static int
+play_file (gpointer callback_data)
 {
+	NautilusFile *file;
 	char *file_uri;
 	char *file_path, *mime_type;
-	
-	mp3_pid = fork ();
-	if (mp3_pid == (pid_t) 0) {
-		file_uri = nautilus_file_get_uri (file);
-		file_path = gnome_vfs_get_local_path_from_uri (file_uri);
-		
-		if (file_path != NULL) {
-			mime_type = nautilus_file_get_mime_type (file);
+	gboolean is_mp3;
 
-			/* set the group (session) id to this process for future killing */
+	file = NAUTILUS_FILE (callback_data);
+	file_uri = nautilus_file_get_uri (file);
+	file_path = gnome_vfs_get_local_path_from_uri (file_uri);
+	mime_type = nautilus_file_get_mime_type (file);
+	is_mp3 = nautilus_strcasecmp (mime_type, "audio/x-mp3") == 0;
+			
+	if (file_path != NULL) {
+		mp3_pid = fork ();
+		if (mp3_pid == (pid_t) 0) {
+			/* Set the group (session) id to this process for future killing. */
 			setsid();
-			if (nautilus_strcasecmp (mime_type, "audio/x-mp3") == 0) {
+			if (is_mp3) {
 				execlp ("mpg123", "mpg123", "-y", "-q", file_path, NULL);
 			} else {
 				execlp ("play", "play", file_path, NULL);
 			}
-		
+			
+			/* Who cares about storage leaks in the fork? */
+			_exit (0);
 		}
-		g_free (file_path);
-		g_free (mime_type);
-		g_free (file_uri);
-
-		_exit (0);
 	}
 
+	g_free (file_path);
+	g_free (file_uri);
+	g_free (mime_type);
+	
 	timeout = -1;
 	
 	return 0;
@@ -1777,19 +1781,17 @@ play_file (NautilusFile *file)
 static void
 preview_sound (NautilusFile *file, gboolean start_flag)
 {	
-	if (start_flag) {
-		timeout = gtk_timeout_add (1000, (GtkFunction) play_file, file);
-	} else {
-		if (mp3_pid) {
-			kill (-mp3_pid, SIGTERM);
-			mp3_pid = 0;
-		}
-		if (timeout >= 0) {
-			gtk_timeout_remove (timeout);
-			timeout = -1;
-		}
+	if (mp3_pid) {
+		kill (-mp3_pid, SIGTERM);
+		mp3_pid = 0;
 	}
-
+	if (timeout >= 0) {
+		gtk_timeout_remove (timeout);
+		timeout = -1;
+	}
+	if (start_flag) {
+		timeout = gtk_timeout_add (1000, play_file, file);
+	}
 }
 
 static int

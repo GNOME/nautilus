@@ -49,46 +49,72 @@
 #include <stdlib.h>
 
 /* Keeps track of everyone who wants the main event loop kept active */
-static GSList *nautilus_main_event_loop_registrants;
+static GSList *event_loop_registrants;
 
 static gboolean
-nautilus_main_is_event_loop_needed (void)
+is_event_loop_needed (void)
 {
-	return nautilus_main_event_loop_registrants != NULL;
+	return event_loop_registrants != NULL;
+}
+
+static int
+quit_if_in_main_loop (gpointer callback_data)
+{
+	guint level;
+
+	g_assert (callback_data == NULL);
+
+	level = gtk_main_level ();
+
+	/* We can be called even outside the main loop by gnome_vfs_shutdown,
+	 * so check that we are in a loop before calling quit.
+	 */
+	if (level != 0) {
+		gtk_main_quit ();
+	}
+
+	/* We need to be called again if we quit a nested loop. */
+	return level > 1;
 }
 
 static void
-nautilus_main_event_loop_unregister (GtkObject* object)
+nautilus_gtk_main_quit_all (void)
 {
-	g_assert (g_slist_find (nautilus_main_event_loop_registrants, object) != NULL);
-	nautilus_main_event_loop_registrants = g_slist_remove (nautilus_main_event_loop_registrants, object);
-	if (!nautilus_main_is_event_loop_needed ()) {
-		/* Calling gtk_main_quit directly only kills the current/top event loop.
-		 * This idler will be run by the current event loop, killing it, and then
-		 * by the next event loop, ...
-		 */
-		gtk_idle_add ((GtkFunction) gtk_main_quit, NULL);
+	/* Calling gtk_main_quit directly only kills the current/top event loop.
+	 * This idler will be run by the current event loop, killing it, and then
+	 * by the next event loop, ...
+	 */
+	gtk_idle_add (quit_if_in_main_loop, NULL);
+}
+
+static void
+event_loop_unregister (GtkObject* object)
+{
+	g_assert (g_slist_find (event_loop_registrants, object) != NULL);
+	event_loop_registrants = g_slist_remove (event_loop_registrants, object);
+	if (!is_event_loop_needed ()) {
+		nautilus_gtk_main_quit_all ();
 	}
 }
 
 void
 nautilus_main_event_loop_register (GtkObject* object)
 {
-	gtk_signal_connect (object, "destroy", nautilus_main_event_loop_unregister, NULL);
-	nautilus_main_event_loop_registrants = g_slist_prepend (nautilus_main_event_loop_registrants, object);
+	gtk_signal_connect (object, "destroy", event_loop_unregister, NULL);
+	event_loop_registrants = g_slist_prepend (event_loop_registrants, object);
 }
 
 gboolean
 nautilus_main_is_event_loop_mainstay (GtkObject* object)
 {
-	return g_slist_length (nautilus_main_event_loop_registrants) == 1 && nautilus_main_event_loop_registrants->data == object;
+	return g_slist_length (event_loop_registrants) == 1 && event_loop_registrants->data == object;
 }
 
 void
 nautilus_main_event_loop_quit (void)
 {
-	while (nautilus_main_event_loop_registrants != NULL) {
-		gtk_object_destroy (nautilus_main_event_loop_registrants->data);
+	while (event_loop_registrants != NULL) {
+		gtk_object_destroy (event_loop_registrants->data);
 	}
 }
 
@@ -203,7 +229,7 @@ main (int argc, char *argv[])
 			 kill_shell, restart_shell,
 			 stop_desktop, start_desktop,
 			 args);
-		if (nautilus_main_is_event_loop_needed ()) {
+		if (is_event_loop_needed ()) {
 			bonobo_main ();
 		}
 		bonobo_object_unref (BONOBO_OBJECT (application));

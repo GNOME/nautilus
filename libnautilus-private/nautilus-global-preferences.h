@@ -124,7 +124,6 @@ typedef enum
 
 
 void   nautilus_global_preferences_initialize                                  (void);
-void   nautilus_global_preferences_shutdown                                    (void);
 void   nautilus_global_preferences_show_dialog                                 (void);
 void   nautilus_global_preferences_hide_dialog                                 (void);
 void   nautilus_global_preferences_set_dialog_title                            (const char *title);

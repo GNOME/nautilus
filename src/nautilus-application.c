@@ -188,15 +188,6 @@ nautilus_application_new (void)
 static void
 nautilus_application_destroy (GtkObject *object)
 {
-	/* Shut down preferences. This is needed so that the global
-	 * preferences object and all its allocations are freed. Not
-	 * calling this function would NOT cause the user to lose
-	 * preferences.  The only effect would be to leak those
-	 * objects - which would be collected at exit() time anyway,
-	 * but it adds noise to memory profile tool runs.
-	 */
-	nautilus_global_preferences_shutdown ();
-
 	nautilus_bookmarks_exiting ();
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));

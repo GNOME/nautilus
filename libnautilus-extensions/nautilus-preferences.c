@@ -121,6 +121,7 @@ static void                     preferences_hash_node_remove_callback           
 static PreferencesHashNode *    preferences_hash_node_lookup                      (const char                  *name);
 static void                     preferences_register                              (const char                  *name);
 static gboolean                 preferences_initialize_if_needed                  (void);
+static void                     preferences_shutdown                              (void);
 static char *                   preferences_make_make_gconf_key                   (const char                  *preference_name);
 
 /* GConf callbacks */
@@ -130,7 +131,7 @@ static void                     preferences_gconf_by_user_level_callback        
 										   GConfValue                  *value,
 										   gboolean                     is_default,
 										   gpointer                     user_data);
-static void                     preferences_gconf_callback          (GConfClient                 *client,
+static void                     preferences_gconf_callback                        (GConfClient                 *client,
 										   guint                        cnxn_id,
 										   const gchar                 *key,
 										   GConfValue                  *value,
@@ -737,6 +738,8 @@ preferences_initialize_if_needed (void)
 			    user_level_changed_callback,
 			    NULL);
 
+	g_atexit (preferences_shutdown);
+
 	return TRUE;
 }
 
@@ -1048,8 +1051,8 @@ nautilus_preferences_get (const char	*name,
 	return value;
 }
 
-void
-nautilus_preferences_shutdown (void)
+static void
+preferences_shutdown (void)
 {
 	if (GLOBAL.preference_table == NULL && GLOBAL.gconf_client == NULL) {
 		return;

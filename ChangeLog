@@ -1,3 +1,72 @@
+2000-09-19  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 640 (icon cache never frees images (awaiting GdkPixbuf
+	fix)). Also took care of bug 3145 (zillions of 'main_loops !=
+	NULL' assertion failures when quitting) and bug 3138 (Some code in
+	the icon factory is cut and pasted from elsewhere). And a few
+	unrelated things that came up while I was busy working on these.
+
+	* configure.in: Applied patch from Dan Winship to fix handling of
+	CFLAGS and LDFLAGS. Fixes some missing quoting and other mistakes.
+	
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-icon-factory-private.h:
+	* libnautilus-extensions/nautilus-thumbnails.c:
+	* libnautilus-extensions/nautilus-thumbnails.h:
+	Broke out the thumbnailing code into its own source file for
+	clarity.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_make_directory_and_parents):
+	Moved nautilus_make_directory_and_parents into a place where the
+	thumbnail code can share it instead of requiring its own copy.
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(destroy_global_prefs_dialog), (global_preferences_get_dialog),
+	(nautilus_global_preferences_dialog_update),
+	(nautilus_global_preferences_initialize):
+	* libnautilus-extensions/nautilus-preferences.h:
+	* libnautilus-extensions/nautilus-preferences.c:
+	(preferences_initialize_if_needed), (preferences_shutdown):
+	* src/nautilus-application.c: (nautilus_application_destroy):
+	Changed code so that it cleans up with g_atexit instead of with an
+	explicit shutdown call. This makes it sequence correctly with
+	other atexit code.
+	
+	* libnautilus-extensions/nautilus-icon-canvas-item.h:
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_destroy),
+	(nautilus_icon_canvas_item_set_attach_points),
+	(emblem_layout_next):
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_update_icon):
+	Added a Nautilus prefix to the EmblemAttachPoints typedef, since
+	it's public.
+	
+	* libnautilus-extensions/nautilus-icon-factory.h:
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	Changed the icon factory structure so that it will actually free
+	pixbufs when done with them. Made some other small fixes to the
+	icon factory in passing, including removing some redundant code
+	and fixing the logic for getting custom icons and deleting the
+	icon factory and g_atexit time.
+	
+	* src/file-manager/fm-icon-view.c: (play_file), (preview_sound):
+	Restructured the logic for playing sound previews a little to get
+	rid of compiler warnings and close some loopholes in the old code.
+	
+	* src/nautilus-main.c: (is_event_loop_needed),
+	(quit_if_in_main_loop), (nautilus_gtk_main_quit_all),
+	(event_loop_unregister), (nautilus_main_event_loop_register),
+	(nautilus_main_is_event_loop_mainstay),
+	(nautilus_main_event_loop_quit), (main): Fixed the main loop
+	quitting logic so that it is a bit simpler and works with the
+	gnome-vfs code that runs event handling after the last main loop
+	is gone.
+
 2000-09-19  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 2519 (fix hideous queue_size_request hack)

@@ -117,6 +117,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-string.c			\
 	nautilus-text-caption.c			\
 	nautilus-theme.c			\
+	nautilus-thumbnails.c			\
 	nautilus-trash-directory.c		\
 	nautilus-undo-context.c			\
 	nautilus-undo-manager.c			\
@@ -177,6 +178,7 @@ noinst_HEADERS =				\
 	nautilus-icon-container.h		\
 	nautilus-icon-dnd.h			\
 	nautilus-icon-factory.h			\
+	nautilus-icon-factory-private.h		\
 	nautilus-icon-private.h			\
 	nautilus-icon-text-item.h		\
 	nautilus-image.h			\
@@ -213,6 +215,7 @@ noinst_HEADERS =				\
 	nautilus-string.h			\
 	nautilus-text-caption.h			\
 	nautilus-theme.h			\
+	nautilus-thumbnails.h			\
 	nautilus-trash-directory.h		\
 	nautilus-undo-context.h			\
 	nautilus-undo-manager.h			\

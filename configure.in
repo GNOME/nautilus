@@ -120,7 +120,7 @@ _save_cc="$CC"
 
 dnl Hack flags to find the mozilla stuff
 CFLAGS="$_save_cflags -I$_mozilla_include_place"
-LDFLAGS="$_save_cflags -L$_mozilla_lib_place"
+LDFLAGS="$_save_ldflags -L$_mozilla_lib_place"
 
 dnl Check for nspr and friends
 AC_CHECK_LIB(nspr4, PR_Init, [_mozilla_nspr_libs="-lnspr4"])
@@ -149,20 +149,20 @@ else
 fi  
 
 dnl The next two are pure from evil
-CC=$_save_cc
+CC="$_save_cc"
 
 dnl gtk superwin library
-LDFLAGS="$_save_cflags -L$_mozilla_lib_place $_mozilla_all_nspr_flags -lgtksuperwin"
+LDFLAGS="$_save_ldflags -L$_mozilla_lib_place $_mozilla_all_nspr_flags -lgtksuperwin"
 AC_CHECK_LIB(gtksuperwin, gdk_superwin_get_type, [_mozilla_gtk_super_win_libs="-lgtksuperwin"])
 
 dnl gtk moz embed library
-LDFLAGS="$_save_cflags -L$_mozilla_lib_place $_mozilla_all_nspr_flags -lgtkembedmoz $_mozilla_xpcom_libs"
+LDFLAGS="$_save_ldflags -L$_mozilla_lib_place $_mozilla_all_nspr_flags -lgtkembedmoz $_mozilla_xpcom_libs"
 AC_CHECK_LIB(gtkembedmoz, gtk_moz_embed_get_type, [_mozilla_gtk_moz_embed_libs="-lgtkembedmoz"])
 
 dnl Restore the flags and compiler
-CFLAGS=$_save_cflags
-LDFLAGS=$_save_ldflags
-CC=$_save_cc
+CFLAGS="$_save_cflags"
+LDFLAGS="$_save_ldflags"
+CC="$_save_cc"
 
 dnl Now make sure all the libraries are good
 AC_MSG_CHECKING(for Mozilla)
@@ -258,7 +258,6 @@ dnl =>
 AC_CHECK_LIB(popt, poptParseArgvString, [rpm_libs="$rpm_libs -lpopt"])
 AC_CHECK_LIB(rpm, rpmRunTransactions,[build_rpmview=true],
   [build_rpmview=false],-lz $rpm_libs -ldb)
-LDFLAGS="$save_LDFLAGS"
 if test "x$build_rpmview" = "xtrue" ; then
   AC_DEFINE(HAVE_RPM)
   RPM_LIBS="-lrpm -lz $rpm_libs -ldb"

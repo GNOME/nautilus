@@ -725,6 +725,42 @@ nautilus_read_file_cancel (NautilusReadFileHandle *handle)
 	g_free (handle);
 }
 
+GnomeVFSResult
+nautilus_make_directory_and_parents (GnomeVFSURI *uri, guint permissions)
+{
+	GnomeVFSResult result;
+	GnomeVFSURI *parent_uri;
+
+	/* Make the directory, and return right away unless there's
+	   a possible problem with the parent.
+	*/
+	result = gnome_vfs_make_directory_for_uri (uri, permissions);
+	if (result != GNOME_VFS_ERROR_NOT_FOUND) {
+		return result;
+	}
+
+	/* If we can't get a parent, we are done. */
+	parent_uri = gnome_vfs_uri_get_parent (uri);
+	if (parent_uri == NULL) {
+		return result;
+	}
+
+	/* If we can get a parent, use a recursive call to create
+	   the parent and its parents.
+	*/
+	result = nautilus_make_directory_and_parents (parent_uri, permissions);
+	gnome_vfs_uri_unref (parent_uri);
+	if (result != GNOME_VFS_OK) {
+		return result;
+	}
+
+	/* A second try at making the directory after the parents
+	   have all been created.
+	*/
+	result = gnome_vfs_make_directory_for_uri (uri, permissions);
+	return result;
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 void

@@ -67,8 +67,6 @@ static void               nautilus_directory_destroy          (GtkObject   *obje
 static void               nautilus_directory_initialize       (gpointer     object,
 							       gpointer     klass);
 static void               nautilus_directory_initialize_class (NautilusDirectoryClass *klass);
-static GnomeVFSResult     nautilus_make_directory_and_parents (GnomeVFSURI *uri,
-							       guint        permissions);
 static NautilusDirectory *nautilus_directory_new              (const char  *uri);
 
 static char		 *real_get_name_for_self_as_new_file  (NautilusDirectory *directory);
@@ -341,42 +339,6 @@ nautilus_directory_get_uri (NautilusDirectory *directory)
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
 	return g_strdup (directory->details->uri);
-}
-
-static GnomeVFSResult
-nautilus_make_directory_and_parents (GnomeVFSURI *uri, guint permissions)
-{
-	GnomeVFSResult result;
-	GnomeVFSURI *parent_uri;
-
-	/* Make the directory, and return right away unless there's
-	   a possible problem with the parent.
-	*/
-	result = gnome_vfs_make_directory_for_uri (uri, permissions);
-	if (result != GNOME_VFS_ERROR_NOT_FOUND) {
-		return result;
-	}
-
-	/* If we can't get a parent, we are done. */
-	parent_uri = gnome_vfs_uri_get_parent (uri);
-	if (parent_uri == NULL) {
-		return result;
-	}
-
-	/* If we can get a parent, use a recursive call to create
-	   the parent and its parents.
-	*/
-	result = nautilus_make_directory_and_parents (parent_uri, permissions);
-	gnome_vfs_uri_unref (parent_uri);
-	if (result != GNOME_VFS_OK) {
-		return result;
-	}
-
-	/* A second try at making the directory after the parents
-	   have all been created.
-	*/
-	result = gnome_vfs_make_directory_for_uri (uri, permissions);
-	return result;
 }
 
 static GnomeVFSURI *

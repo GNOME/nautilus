@@ -89,8 +89,6 @@ void                nautilus_preferences_set                  (const char       
 							       const char                   *value);
 char *              nautilus_preferences_get                  (const char                   *name,
 							       const gchar                  *default_value);
-void                nautilus_preferences_shutdown             (void);
-
 
 END_GNOME_DECLS
 
