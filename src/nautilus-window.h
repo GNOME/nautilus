@@ -114,7 +114,6 @@ gboolean         nautilus_window_get_search_mode      (NautilusWindow    *window
 void             nautilus_window_set_search_mode      (NautilusWindow    *window,
                                                        gboolean           search_mode);
 void             nautilus_window_go_home              (NautilusWindow    *window);
-void		 nautilus_window_go_web_search	      (NautilusWindow    *window);
 void             nautilus_window_display_error        (NautilusWindow    *window,
                                                        const char        *error_msg);
 void             nautilus_window_allow_back           (NautilusWindow    *window,

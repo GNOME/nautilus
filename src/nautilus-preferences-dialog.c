@@ -254,21 +254,16 @@ static EelPreferencesItemDescription view_preferences_items[] = {
 	{ NULL }
 };
 
-static EelPreferencesItemDescription search_items[] = {
 #ifdef HAVE_MEDUSA
+static EelPreferencesItemDescription search_items[] = {
 	{ N_("Search Complexity Options"),
 	  NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 	  N_("search type to do by default"),
 	  EEL_PREFERENCE_ITEM_ENUMERATION_VERTICAL_RADIO
 	},
-#endif
-	{ N_("Search Engines"),
-	  NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
-	  N_("Search Engine Location"),
-	  EEL_PREFERENCE_ITEM_EDITABLE_STRING
-	},
 	{ NULL }
 };
+#endif
 
 static EelPreferencesItemDescription navigation_items[] = {
 	{ N_("Home"),
@@ -397,7 +392,9 @@ static EelPreferencesPaneDescription panes[] = {
 	{ N_("Icon & List Views"),	  directory_views_items },
 	{ N_("Icon Captions"),		  icon_captions_items },
 	{ N_("Sidebar Panels"),		  sidebar_items },
+#ifdef HAVE_MEDUSA
 	{ N_("Search"),			  search_items },
+#endif
 	{ N_("Navigation"),		  navigation_items },
 	{ N_("Speed Tradeoffs"),	  tradeoffs_items },
 	{ N_("News Panel"),		  news_panel_items },

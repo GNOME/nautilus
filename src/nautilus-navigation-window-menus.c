@@ -261,14 +261,6 @@ go_menu_location_callback (BonoboUIComponent *component,
 }			   
 
 static void
-file_menu_web_search_callback (BonoboUIComponent *component, 
-			       gpointer user_data, 
-			       const char *verb)
-{
-	nautilus_window_go_web_search (NAUTILUS_WINDOW (user_data));
-}
-
-static void
 stop_button_callback (BonoboUIComponent *component, 
 			       gpointer user_data, 
 			       const char *verb)
@@ -1111,7 +1103,6 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("Find", file_menu_find_callback),
 		BONOBO_UI_VERB ("Toggle Find Mode", toolbar_toggle_find_mode_callback),
 #endif
-		BONOBO_UI_VERB ("Go to Web Search", file_menu_web_search_callback),
 		BONOBO_UI_VERB ("Undo", edit_menu_undo_callback),
 		BONOBO_UI_VERB ("Customize", customize_callback),
 		BONOBO_UI_VERB ("Back", go_menu_back_callback),

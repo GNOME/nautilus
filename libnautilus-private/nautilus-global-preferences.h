@@ -148,8 +148,6 @@ enum
 /* File Indexing */
 #define NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE				"preferences/search_bar_type"
 
-/* searching */
-#define NAUTILUS_PREFERENCES_SEARCH_WEB_URI				"preferences/search_web_uri"			
 enum
 {
 	NAUTILUS_CLICK_POLICY_SINGLE,

@@ -435,10 +435,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  PREFERENCE_INTEGER,
 	  GINT_TO_POINTER (148)
 	},
-	{ NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
-	  PREFERENCE_STRING,
-	  "http://www.google.com"
-	},
 	{ NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,
 	  PREFERENCE_BOOLEAN,
 	  GINT_TO_POINTER (TRUE)

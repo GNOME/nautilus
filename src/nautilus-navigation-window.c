@@ -1605,20 +1605,6 @@ nautilus_window_get_search_mode (NautilusWindow *window)
 }
 
 void
-nautilus_window_go_web_search (NautilusWindow *window)
-{
-	char *search_web_uri;
-
-	nautilus_window_set_search_mode (window, FALSE);
-
-	search_web_uri = eel_preferences_get (NAUTILUS_PREFERENCES_SEARCH_WEB_URI);
-	g_assert (search_web_uri != NULL);
-	
-	nautilus_window_go_to (window, search_web_uri);
-	g_free (search_web_uri);
-}
-
-void
 nautilus_window_go_home (NautilusWindow *window)
 {
 	char *home_uri;
