@@ -299,10 +299,8 @@ release_song_info(SongInfo *info)
 static gboolean
 is_mp3_file(gchar *song_path)
 {
-	gchar *last_dot = strrchr(song_path, '.');
-	if (last_dot == NULL)
-		return FALSE;
-	return !strcmp(last_dot, ".mp3") || !strcmp(last_dot, ".MP3");
+	return nautilus_has_suffix(song_path, ".mp3") || nautilus_has_suffix(song_path, ".MP3");
+
 }
 
 /* read the id3 tag of the file if present */

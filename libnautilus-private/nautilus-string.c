@@ -77,6 +77,29 @@ nautilus_has_prefix (const char *haystack_null_allowed, const char *needle_null_
 	return FALSE;
 }
 
+gboolean
+nautilus_has_suffix (const char *haystack_null_allowed, const char *needle_null_allowed)
+{
+	const char *h, *n;
+
+	if (haystack_null_allowed == NULL)
+		return TRUE;
+	if (needle_null_allowed == NULL)
+		return FALSE;
+		
+	/* Eat one character at a time. */
+	h = haystack_null_allowed + strlen(haystack_null_allowed);
+	n = needle_null_allowed + strlen(needle_null_allowed);
+	do {
+		if (n == needle_null_allowed)
+			return TRUE;
+		if (h == haystack_null_allowed)
+			return FALSE;
+	} while (*--h == *--n);
+	return FALSE;
+}
+
+
 /**
  * nautilus_strdup_prefix:
  * Get a new string containing the first part of an existing string.

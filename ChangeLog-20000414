@@ -1,5 +1,16 @@
 2000-03-05  Andy Hertzfeld <andy@eazel.com>
 
+	* libnautilus/nautilus-string.c,.h: added a nautilus_has_suffix routine in the style of
+	nautilus_has_prefix.
+	* components/music/nautilus-music-view: use nautilus_has_suffix in mp3 determination
+	
+	* libnautilus/nautilus-icon-factory.c:  make sure all thumbnails have a png suffix, since
+	they're always pngs now.
+	Also, made thumbnailing machinery call ImageMagick to handle the conversion if gdk-pixbuf
+	comes up empty, so we can handle many more formats
+	
+2000-03-05  Andy Hertzfeld <andy@eazel.com>
+
 	added a music view component for viewing directories of mp3 files.  This first cut only handles
  	only the case when the mp3 files have id3 tags present (most do these days)
  	

@@ -44,6 +44,8 @@ gboolean nautilus_has_prefix        (const char *target_null_allowed,
 				     const char *prefix_null_allowed);
 char *   nautilus_strdup_prefix     (const char *source_null_allowed,
 				     const char *delimiter_null_allowed);
+gboolean nautilus_has_suffix        (const char *target_null_allowed,
+				     const char *suffix_null_allowed);
 
 
 /* Conversions to and from strings. */

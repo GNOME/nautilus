@@ -666,17 +666,19 @@ make_thumbnail_path(const gchar *image_uri, gboolean directory_only)
 	
 	if (directory_only)
 		thumbnail_uri = g_strdup_printf("%s/.thumbnails", temp_str);
-	else
-		thumbnail_uri = g_strdup_printf("%s/.thumbnails/%s", temp_str, last_slash + 1);
-	
+	else {
+		if (nautilus_has_suffix(image_uri, ".png") || nautilus_has_suffix(image_uri, ".PNG"))
+			thumbnail_uri = g_strdup_printf("%s/.thumbnails/%s", temp_str, last_slash + 1);
+		else
+			thumbnail_uri = g_strdup_printf("%s/.thumbnails/%s.png", temp_str, last_slash + 1);
+	}
 	g_free(temp_str);
 	return thumbnail_uri;
 }
 
 /* routine that takes a uri of a large image file and returns the uri of its corresponding thumbnail.
-   If no thumbnail is available, put the image on the thumbnail queue so one is eventually made.
-   FIXME: thumbnails are always png images, so append the png prefix if it's not already there */
-   
+   If no thumbnail is available, put the image on the thumbnail queue so one is eventually made. */
+    
 static gchar *
 nautilus_icon_factory_get_thumbnail_uri(NautilusFile *file, NautilusIconsController *controller)
 {
@@ -1369,6 +1371,12 @@ nautilus_icon_factory_make_thumbnails(gpointer data)
 					g_warning("error saving thumbnail %s", factory->new_thumbnail_path + 7);	
 				gdk_pixbuf_unref(scaled_image);
 			}
+			else {
+				/* gdk-pixbuf couldn't load the image, so trying using ImageMagick */
+				gchar *temp_str = g_strdup_printf("png:%s", factory->new_thumbnail_path + 7);
+				execlp("convert", "convert", "-geometry",  "96x96", info->thumbnail_uri + 7, temp_str, NULL);
+			}
+			
 			_exit(0);
 		}
 			factory->thumbnail_in_progress = TRUE;
