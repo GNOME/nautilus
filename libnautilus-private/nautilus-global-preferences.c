@@ -911,7 +911,7 @@ void
 nautilus_global_preferences_init_with_folder_browsing (void)
 {
 	static gboolean browse_initialized = FALSE;
-	static const PreferenceDefault browse_def = {
+	static const PreferenceDefault browse_default = {
 		NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
 		PREFERENCE_INTEGER,
 		NULL, default_default_folder_viewer_callback, NULL,
@@ -925,9 +925,12 @@ nautilus_global_preferences_init_with_folder_browsing (void)
 	}
 	browse_initialized = TRUE;
 
-	global_preferences_install_one_default (browse_def.name,
-						browse_def.type,
-						&browse_def);
+	eel_preferences_set_enumeration_id (browse_default.name,
+					    browse_default.enumeration_id);
+	
+	global_preferences_install_one_default (browse_default.name,
+						browse_default.type,
+						&browse_default);
 
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, 
 				      default_folder_viewer_changed_callback, 
