@@ -755,6 +755,9 @@ nautilus_tree_view_model_done_loading_callback (NautilusTreeModel *model,
 	NautilusTreeView *view;
 	char *uri;
 
+	g_return_if_fail (NAUTILUS_IS_TREE_MODEL (model));
+	g_return_if_fail (NAUTILUS_IS_TREE_NODE (node));
+
 #ifdef DEBUG_TREE
 	puts ("XXX: done loading");
 #endif
@@ -1301,14 +1304,14 @@ reload_node_for_uri (NautilusTreeView *view,
 		     const char *uri)
 {
 	GList *p;
+	NautilusTreeNode *node;
 
-	nautilus_tree_model_monitor_node (view->details->model,
-					  nautilus_tree_model_get_node (view->details->model,
-									uri),
-					  view);
+	node = nautilus_tree_model_get_node (view->details->model, uri);
+	g_return_if_fail (node != NULL);
 
-	for (p = nautilus_tree_node_get_children 
-		(nautilus_tree_model_get_node (view->details->model, uri)); p != NULL; p = p->next) {
+	nautilus_tree_model_monitor_node (view->details->model, node, view);
+
+	for (p = nautilus_tree_node_get_children (node); p != NULL; p = p->next) {
 		nautilus_tree_view_update_model_node (view, (NautilusTreeNode *) p->data);
 	}
 }

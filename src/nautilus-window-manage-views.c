@@ -448,6 +448,17 @@ update_up_button (NautilusWindow *window)
         nautilus_window_allow_up (window, allowed);
 }
 
+static void
+viewed_file_changed_callback (NautilusWindow *window)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	/* Close window if the file it's viewing has been deleted. */
+	if (nautilus_file_is_gone (window->details->viewed_file)) {
+		nautilus_window_close (window);
+	}
+}
+
 /* Handle the changes for the NautilusWindow itself. */
 static void
 nautilus_window_update_internals (NautilusWindow *window)
@@ -477,6 +488,16 @@ nautilus_window_update_internals (NautilusWindow *window)
                 /* Set the new location. */
                 g_free (window->location);
                 window->location = g_strdup (new_location);
+
+                /* Create a NautilusFile for this location, so we can
+                 * check if it goes away.
+                 */
+                nautilus_file_unref (window->details->viewed_file);
+                window->details->viewed_file = nautilus_file_get (window->location);
+                gtk_signal_connect_object_while_alive (GTK_OBJECT (window->details->viewed_file),
+                		    		       "changed", 
+                		    		       viewed_file_changed_callback, 
+                		    		       GTK_OBJECT (window));
                 
                 /* Clear the selection. */
                 nautilus_g_list_free_deep (window->selection);
@@ -1305,7 +1326,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
 	 * though the dialog uses wrapped text, if the URI doesn't contain
 	 * white space then the text-wrapping code is too stupid to wrap it.
 	 */
-        uri_for_display = nautilus_str_middle_truncate (requested_uri, MAX_URI_IN_DIALOG_LENGTH);
+        uri_for_display = nautilus_str_middle_truncate (full_uri_for_display, MAX_URI_IN_DIALOG_LENGTH);
 	g_free (full_uri_for_display);
 
 	dialog_title = NULL;

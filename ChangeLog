@@ -1,3 +1,33 @@
+2000-09-26  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 382 (Deleting file viewed in other window leaves
+	other window in bad state)
+
+	Also ran into some tree view problems that I did not fix
+	but made less deadly so I could continue.
+
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_model_done_loading_callback),
+	(reload_node_for_uri):
+	Added g_return_if_fails checking the model and node parameters, 
+	so it won't segfault with a NULL node. I did not attempt to
+	debug why the nodes were NULL.
+	
+	* src/nautilus-window-private.h: Added viewed_file field to
+	details struct.
+
+	* src/nautilus-window-manage-views.c:
+	(viewed_file_changed_callback): New function, closes window if
+	viewed_file is gone.
+	(nautilus_window_update_internals): Set viewed_file to
+	NautilusFile for this location (after unreffing old one), and 
+	connect to its "changed" signal	with viewed_file_changed_callback.
+	(nautilus_window_end_location_change_callback): Truncate the 
+	"for display" version of the URI in error messages.
+	
+	* src/nautilus-window.c: (nautilus_window_destroy):
+	unref viewed_file.
+
 2000-09-26  Victor Lecha  <victor@eazel.com>
 
 	make it compile.
