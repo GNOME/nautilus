@@ -1,4 +1,54 @@
-This is nautilus 2.2.2. The file manager for the Gnome 2 desktop.
+This is nautilus 2.2.3. The file manager for the Gnome 2 desktop.
+
+Major changes since 2.2.2 are:
+
+* Lots of fixes to the list view keyboard and mouse handling
+
+* Lots of fixes to the icon view keyboard and mouse handling
+
+* Automatic notes emblem
+
+* Correctly scale icons in list view
+
+* Don't select the extension for rename in the list view
+
+* Easier to trigger auto scrolling during drag and drop in the icon
+  view 
+
+* Scroll to previous position on directory reload
+
+* Show volume and free space in the property dialog for directories
+
+* Clean up by name doesn't leave icons outside the screen anymore
+
+* Fix show backup/hidden files and some default view preferences
+
+* Set the Nautilus application name used when grouping in the task
+  list.
+
+* Converted NautilusFile to a GObject
+
+* Make the thumbnail size prefs not affect external thumbnailers, as
+  it makes little sense for e.g. videos.
+
+* Allow you to exit nautilus-file-management-properties
+
+* Fix crash when droping from other app to Nautilus
+
+* Use startup notification when launching Nautilus
+
+* Much better thumbnail queue handling. Visible thumbnails are
+  prioritized.
+
+* Don't save window geometry when maximized
+
+* Migrate Nautilus 1.0.x scripts
+
+* Added some docs about keyboard and mouse navigation in nautilus views.
+
+* Better accessibility support in the icon view
+
+* Lots of other small bugfixes and polish
 
 Major changes since 2.2.1 are:
 
