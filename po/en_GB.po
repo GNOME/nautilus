@@ -10,14 +10,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-07-29 00:17+0100\n"
-"PO-Revision-Date: 2004-07-29 00:19+0100\n"
+"POT-Creation-Date: 2004-07-29 00:56-0400\n"
+"PO-Revision-Date: 2004-07-29 01:01-0400\n"
 "Last-Translator: David Lodge <dave@cirt.net>\n"
 "Language-Team: English/GB <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);i"
+"Plural-Forms: nplurals=2; plural=(n != 1);i\n"
 
 #: components/adapter/main.c:101
 msgid "bonobo_ui_init() failed."
@@ -237,11 +237,13 @@ msgstr "Software"
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
+msgid_plural ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
-msgstr ""
+msgstr[0] ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
+msgstr[1] ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
 
@@ -2125,6 +2127,7 @@ msgstr "link"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
+#. appended to new link file
 #: libnautilus-private/nautilus-file.c:4744
 #: libnautilus-private/nautilus-file-operations.c:1187
 #, c-format
@@ -2458,6 +2461,9 @@ msgid " (another copy)"
 msgstr " (another copy)"
 
 #. localizers: tag used to detect the x11th copy of a file
+#. localizers: tag used to detect the x12th copy of a file
+#. localizers: tag used to detect the x13th copy of a file
+#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1245
 #: libnautilus-private/nautilus-file-operations.c:1247
 #: libnautilus-private/nautilus-file-operations.c:1249
@@ -2493,6 +2499,9 @@ msgid "%s (another copy)%s"
 msgstr "%s (another copy)%s"
 
 #. localizers: appended to x11th file copy
+#. localizers: appended to x12th file copy
+#. localizers: appended to x13th file copy
+#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1278
 #: libnautilus-private/nautilus-file-operations.c:1280
 #: libnautilus-private/nautilus-file-operations.c:1282
@@ -3463,6 +3472,7 @@ msgstr "Opening %s"
 #. TODO: These strings suck pretty badly, but we're in string-freeze,
 #. * and I found these in other places to reuse. We should make them
 #. * better later.
+#. Shouldn't have gotten this error unless there's a : separator.
 #: libnautilus-private/nautilus-program-choosing.c:591
 #: libnautilus-private/nautilus-program-choosing.c:599
 #: libnautilus-private/nautilus-program-choosing.c:604
@@ -3680,9 +3690,10 @@ msgstr "Are you sure you want to permanently delete \"%s\"?"
 #: src/file-manager/fm-directory-view.c:851
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
+msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items?"
-msgstr "Are you sure you want to permanently delete the %d selected item?"
-"Are you sure you want to permanently delete the %d selected items?"
+msgstr[0] "Are you sure you want to permanently delete the %d selected item?\""
+msgstr[1] "Are you sure you want to permanently delete the %d selected items?"
 
 #: src/file-manager/fm-directory-view.c:859
 msgid "If you delete an item, it is permanently lost."
@@ -3817,13 +3828,11 @@ msgstr ""
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
+msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr ""
-"Are you sure you want to permanently delete the %d selected item from the "
-"wastebasket?"
-"Are you sure you want to permanently delete the %d selected items from the "
-"wastebasket?"
+msgstr[0] "Are you sure you want to permanently delete the %d selected item from the wastebasket?"
+msgstr[1] "Are you sure you want to permanently delete the %d selected items from the wastebasket?"
 
 #: src/file-manager/fm-directory-view.c:3309
 msgid "If you delete an item, it will be permanently lost."
@@ -3986,19 +3995,19 @@ msgstr "\"%s\" will be copied if you select the Paste Files command"
 #, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
+msgid_plural ""
 "The %d selected items will be moved if you select the Paste Files command"
-msgstr ""
-"The %d selected item will be moved if you select the Paste Files command"
-"The %d selected items will be moved if you select the Paste Files command"
+msgstr[0] "The %d selected item will be moved if you select the Paste Files command"
+msgstr[1] "The %d selected items will be moved if you select the Paste Files command"
 
 #: src/file-manager/fm-directory-view.c:5077
 #, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
+msgid_plural ""
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr ""
-"The %d selected item will be copied if you select the Paste Files command"
-"The %d selected items will be copied if you select the Paste Files command"
+msgstr[0] "The %d selected item will be copied if you select the Paste Files command"
+msgstr[1] "The %d selected items will be copied if you select the Paste Files command"
 
 #: src/file-manager/fm-directory-view.c:5159
 #: src/file-manager/fm-tree-view.c:868
@@ -5179,6 +5188,7 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
+#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:542 src/nautilus-application.c:560
 #: src/nautilus-application.c:567
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -5664,10 +5674,12 @@ msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "nautilus: %s cannot be used with URIs.\n"
 
 #: src/nautilus-main.c:265
+#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check cannot be used with other options.\n"
 
 #: src/nautilus-main.c:279
+#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry cannot be used with more than one URI.\n"
 
@@ -6640,6 +6652,40 @@ msgstr "Network Servers"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "View your network servers in the Nautilus file manager"
+
+#~ msgid ""
+#~ "Are you sure you want to permanently delete the %d selected item?Are you "
+#~ "sure you want to permanently delete the %d selected items?"
+#~ msgstr ""
+#~ "Are you sure you want to permanently delete the %d selected item?Are you "
+#~ "sure you want to permanently delete the %d selected items?"
+
+#~ msgid ""
+#~ "Are you sure you want to permanently delete the %d selected item from the "
+#~ "trash?Are you sure you want to permanently delete the %d selected items "
+#~ "from the trash?"
+#~ msgstr ""
+#~ "Are you sure you want to permanently delete the %d selected item from the "
+#~ "wastebasket?Are you sure you want to permanently delete the %d selected "
+#~ "items from the wastebasket?"
+
+#~ msgid ""
+#~ "The %d selected item will be moved if you select the Paste Files "
+#~ "commandThe %d selected items will be moved if you select the Paste Files "
+#~ "command"
+#~ msgstr ""
+#~ "The %d selected item will be moved if you select the Paste Files "
+#~ "commandThe %d selected items will be moved if you select the Paste Files "
+#~ "command"
+
+#~ msgid ""
+#~ "The %d selected item will be copied if you select the Paste Files "
+#~ "commandThe %d selected items will be copied if you select the Paste Files "
+#~ "command"
+#~ msgstr ""
+#~ "The %d selected item will be copied if you select the Paste Files "
+#~ "commandThe %d selected items will be copied if you select the Paste Files "
+#~ "command"
 
 #~ msgid "Adjust your user environment"
 #~ msgstr "Adjust your user environment"
