@@ -1,3 +1,90 @@
+2000-12-14  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix bug 2807 (support metadata removal for cases where we
+	move/delete files) by implementing metadata removal.
+
+	Fix bug 2199 (Saved icon positions ruin desktop layout features)
+	by testing and fixing other bugs now that metadata removal is
+	implemented.
+
+	Fix bug 5164 (exception trying to drag file) by fixing a few
+	placeholders in XML files that were still transparent and should
+	not be.
+
+	Fix bug where we don't reveal the New Folder icon (reintroduced by
+	my changes yesterday) by computing the icon position in a way that
+	works even before the canvas item is updated.
+
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(get_file_node): Small change (not used for now) that might
+	help unify the "before metafile is read" case with the code
+	after the metafile is read.
+	(nautilus_directory_rename_file_metadata): Remove the old
+	file metadata before renaming the new data. Also change code
+	to avoid looking up things in the hash table twice.
+	(nautilus_directory_copy_file_metadata): Updated and added
+	FIXME comments.
+	(nautilus_directory_remove_file_metadata): Add code to
+	remove metadata, similar to the existing rename code.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_schedule_metadata_copy),
+	(nautilus_directory_schedule_metadata_move),
+	(nautilus_directory_schedule_metadata_remove): Fix code that was
+	using file names instead of relative URIs (essentially escaped
+	file names). This code was missed when we made the
+	switchover. Without this, changes to files with spaces in their
+	names didn't update metadata properly.
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(build_error_string): Added blank line between the intro sentence
+	and the rest of the error message.
+	(handle_xfer_overwrite): Added blank line between the intro
+	sentence and the rest of the error message.
+	(sync_xfer_callback): Fix metadata code to remove the metadata
+	when creating a new file, just as it copies metadata when copying
+	a file. This change helps the New Folder case, but requires a fix
+	in gnome-vfs to set the top level boolean for the New Folder case.
+	(handle_new_folder_vfs_error): Added blank line between the intro
+	sentence and the rest of the error message.
+	(nautilus_self_check_file_operations): Changed the self-check to
+	use the standard way of testing functions that return text instead
+	of rolling its own.
+	
+	* libnautilus-extensions/nautilus-gnome-extensions.h:
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	(nautilus_gnome_canvas_item_get_canvas_bounds): Added a function
+	that's like nautilus_gnome_canvas_item_get_current_canvas_bounds
+	but is accurate even before the icon is updated.
+	
+	* libnautilus-extensions/nautilus-icon-container.c: (reveal_icon):
+	Use nautilus_gnome_canvas_item_get_canvas_bounds instead of
+	nautilus_gnome_canvas_item_get_current_canvas_bounds. Fixes the
+	bug I reintroduced where New Folder icons would not be revealed.
+	
+	* libnautilus-extensions/nautilus-xml-extensions.h:
+	* libnautilus-extensions/nautilus-xml-extensions.c:
+	(nautilus_xml_remove_node): Add a remove-node function. This is
+	needed because gnome-xml doesn't have xmlRemoveNode
+	implemented. This implementation is not quite complete, but
+	probably good enough for our purposes. A complete implementation
+	might have to have some handling for removing the root node and
+	perhaps some stuff to remove unused namespaces. Maybe this can be
+	rolled into gnome-xml.
+	
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	* src/nautilus-shell-ui.xml:
+	Added some more delimit="none" entries to make it so that the
+	actual placeholder definitions are not "transparent".
+	
+	* libnautilus-extensions/nautilus-glib-extensions.c
+	(nautilus_self_check_glib_extensions): Marked some strings that
+	are part of a test translatable since the result might be
+	different in some locales. Translating the strings to the right
+	result makes "make check" work properly in that locale.
+
 2000-12-14  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-first-time-druid.c:

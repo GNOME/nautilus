@@ -388,10 +388,13 @@ nautilus_icon_container_scroll (NautilusIconContainer *container,
 }
 
 static void
-pending_icon_to_reveal_destroy_callback (NautilusIconCanvasItem *item, NautilusIconContainer *container)
+pending_icon_to_reveal_destroy_callback (NautilusIconCanvasItem *item,
+					 NautilusIconContainer *container)
 {
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (container->details->pending_icon_to_reveal != NULL);
 	g_assert (container->details->pending_icon_to_reveal->item == item);
+
 	container->details->pending_icon_to_reveal = NULL;
 }
 
@@ -419,7 +422,8 @@ set_pending_icon_to_reveal (NautilusIconContainer *container, NautilusIcon *icon
 	}
 	
 	if (icon != NULL) {
-		gtk_signal_connect (GTK_OBJECT (icon->item), "destroy", &pending_icon_to_reveal_destroy_callback, container);
+		gtk_signal_connect (GTK_OBJECT (icon->item), "destroy",
+				    pending_icon_to_reveal_destroy_callback, container);
 	}
 	
 	container->details->pending_icon_to_reveal = icon;
@@ -447,7 +451,7 @@ reveal_icon (NautilusIconContainer *container,
 	hadj = gtk_layout_get_hadjustment (GTK_LAYOUT (container));
 	vadj = gtk_layout_get_vadjustment (GTK_LAYOUT (container));
 
-	nautilus_gnome_canvas_item_get_current_canvas_bounds
+	nautilus_gnome_canvas_item_get_canvas_bounds
 		(GNOME_CANVAS_ITEM (icon->item), &bounds);
 
 	if (bounds.y0 < vadj->value) {

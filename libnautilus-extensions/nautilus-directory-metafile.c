@@ -98,26 +98,30 @@ get_file_node (NautilusDirectory *directory,
 	       const char *file_name,
 	       gboolean create)
 {
-	xmlNode *root, *child;
+	xmlNode *root, *node;
 	
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
 	if (directory->details->metafile_node_hash != NULL) {
-		child = g_hash_table_lookup (directory->details->metafile_node_hash,
+		node = g_hash_table_lookup (directory->details->metafile_node_hash,
 					     file_name);
-		if (child != NULL) {
-			return child;
+		if (node != NULL) {
+			return node;
 	 	}
 	}
 	
 	if (create) {
-		root = create_metafile_root (directory);
-		child = xmlNewChild (root, NULL, "FILE", NULL);
-		xmlSetProp (child, "NAME", file_name);
+		if (directory->details->metafile_read) {
+			root = create_metafile_root (directory);
+			node = xmlNewChild (root, NULL, "FILE", NULL);
+		} else {
+			node = xmlNewNode (NULL, "FILE");
+		}
+		xmlSetProp (node, "NAME", file_name);
 		g_hash_table_insert (directory->details->metafile_node_hash,
 				     xmlMemStrdup (file_name),
-				     child);
-		return child;
+				     node);
+		return node;
 	}
 	
 	return NULL;
@@ -550,8 +554,6 @@ nautilus_directory_get_file_metadata (NautilusDirectory *directory,
 	}
 }
 
-
-
 GList *
 nautilus_directory_get_file_metadata_list (NautilusDirectory *directory,
 					   const char *file_name,
@@ -574,7 +576,6 @@ nautilus_directory_get_file_metadata_list (NautilusDirectory *directory,
 			(directory, file_name, list_key, list_subkey);
 	}
 }
-
 
 gboolean
 nautilus_directory_set_file_metadata (NautilusDirectory *directory,
@@ -633,27 +634,27 @@ nautilus_directory_rename_file_metadata (NautilusDirectory *directory,
 					 const char *old_file_name,
 					 const char *new_file_name)
 {
-	xmlNode *file_node;
-	GHashTable *directory_table;
 	gboolean found;
 	gpointer key, value;
+	xmlNode *file_node;
+	GHashTable *directory_table;
 	char *old_file_uri, *new_file_uri;
+
+	nautilus_directory_remove_file_metadata (directory, new_file_name);
 
 	if (directory->details->metafile_read) {
 		/* Move data in XML document if present. */
-		file_node = get_file_node (directory, old_file_name, FALSE);
-		if (file_node != NULL) {
-			xmlSetProp (file_node, "NAME", new_file_name);
-			found = g_hash_table_lookup_extended (directory->details->metafile_node_hash,
-							      old_file_name, &key, &value);
-			g_assert (found);
+		found = g_hash_table_lookup_extended (directory->details->metafile_node_hash,
+						      old_file_name, &key, &value);
+		if (found) {
 			g_assert (strcmp (key, old_file_name) == 0);
-			g_assert (value == file_node);
+			file_node = value;
 			g_hash_table_remove (directory->details->metafile_node_hash,
 					     old_file_name);
 			xmlFree (key);
 			g_hash_table_insert (directory->details->metafile_node_hash,
 					     xmlMemStrdup (new_file_name), value);
+			xmlSetProp (file_node, "NAME", new_file_name);
 			nautilus_directory_request_write_metafile (directory);
 		}
 	} else {
@@ -740,8 +741,6 @@ nautilus_directory_metafile_apply_pending_changes (NautilusDirectory *directory)
 	g_hash_table_destroy (directory->details->metadata_changes);
 	directory->details->metadata_changes = NULL;
 }
-
-
 
 gboolean 
 nautilus_directory_get_boolean_file_metadata (NautilusDirectory *directory,
@@ -833,8 +832,6 @@ nautilus_directory_set_integer_file_metadata (NautilusDirectory *directory,
 	g_free (default_as_string);
 }
 
-
-
 static void
 copy_file_metadata_for_key (NautilusDirectory *source_directory,
 			    const char *source_file_name,
@@ -859,9 +856,12 @@ nautilus_directory_copy_file_metadata (NautilusDirectory *source_directory,
 				       NautilusDirectory *destination_directory,
 				       const char *destination_file_name)
 {
-	/* FIXME bugzilla.eazel.com 2808: This hard-coded set of keys is not right. */
 	/* FIXME bugzilla.eazel.com 3343: This does nothing to ensure
 	 * the source directory metadata is read in.
+	 */
+
+	/* FIXME bugzilla.eazel.com 2808: Change this to copy all the
+	 * metadata, not just a hard-coded set of keys.
 	 */
 	copy_file_metadata_for_key
 		(source_directory, source_file_name,
@@ -883,19 +883,50 @@ nautilus_directory_copy_file_metadata (NautilusDirectory *source_directory,
 		(source_directory, source_file_name,
 		 destination_directory, destination_file_name,
 		 NAUTILUS_METADATA_KEY_CUSTOM_ICON);
+
+	/* FIXME: Do we want to copy the thumbnail here like in the
+	 * rename and remove cases?
+	 */
 }
 
 void
 nautilus_directory_remove_file_metadata (NautilusDirectory *directory,
 					 const char *file_name)
 {
+	gboolean found;
+	gpointer key, value;
+	xmlNode *file_node;
+	GHashTable *directory_table;
 	char *file_uri;
 
-	file_uri = nautilus_directory_get_file_uri (directory, file_name);
-
-	/* FIXME bugzilla.eazel.com 2807: This is not implemented. */
+	if (directory->details->metafile_read) {
+		/* Remove data in XML document if present. */
+		found = g_hash_table_lookup_extended (directory->details->metafile_node_hash,
+						      file_name, &key, &value);
+		if (found) {
+			g_assert (strcmp (key, file_name) == 0);
+			file_node = value;
+			g_hash_table_remove (directory->details->metafile_node_hash,
+					     file_name);
+			xmlFree (key);
+			nautilus_xml_remove_node (file_node);
+			xmlFreeNode (file_node);
+			nautilus_directory_request_write_metafile (directory);
+		}
+	} else {
+		/* Remove data from hash table. */
+		directory_table = directory->details->metadata_changes;
+		found = g_hash_table_lookup_extended
+			(directory_table, file_name, &key, &value);
+		if (found) {
+			g_hash_table_remove (directory_table, file_name);
+			g_free (key);
+			metadata_value_destroy (value);
+		}
+	}
 
 	/* delete the thumbnails for the file, if any */
+	file_uri = nautilus_directory_get_file_uri (directory, file_name);
 	nautilus_remove_thumbnail_for_file (file_uri);
 	g_free (file_uri);
 }

@@ -195,6 +195,18 @@ nautilus_gnome_canvas_item_get_world_bounds (GnomeCanvasItem *item,
 	}
 }
 
+void
+nautilus_gnome_canvas_item_get_canvas_bounds (GnomeCanvasItem *item,
+					      ArtIRect *canvas_bounds)
+{
+	ArtDRect world_bounds;
+
+	nautilus_gnome_canvas_item_get_world_bounds
+		(item, &world_bounds);
+	nautilus_gnome_canvas_world_to_canvas_rectangle
+		(item->canvas, &world_bounds, canvas_bounds);
+}
+
 static void
 nautilus_gnome_canvas_draw_pixbuf_helper (art_u8 *dst, int dst_rowstride,
 					  const art_u8 *src, int src_rowstride,

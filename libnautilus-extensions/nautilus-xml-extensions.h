@@ -45,5 +45,6 @@ GList     *nautilus_xml_get_property_for_children           (xmlNodePtr  parent,
 							     const char *property_name);
 xmlChar   *nautilus_xml_get_property_translated             (xmlNodePtr  parent,
 							     const char *property_name);
+void       nautilus_xml_remove_node                         (xmlNodePtr  node);
 
 #endif /* NAUTILUS_XML_EXTENSIONS_H */

@@ -488,8 +488,8 @@ typedef enum {
 
 static char *
 build_error_string (const char *source_name, const char *target_name,
-	XferKind operation_kind, NautilusFileOperationsErrorKind error_kind,
-	NautilusFileOperationsErrorLocation error_location, GnomeVFSResult error)
+		    XferKind operation_kind, NautilusFileOperationsErrorKind error_kind,
+		    NautilusFileOperationsErrorLocation error_location, GnomeVFSResult error)
 {
 	/* Avoid clever message composing here, just use brute force and
 	 * duplicate the different flavors of error messages for all the
@@ -510,7 +510,7 @@ build_error_string (const char *source_name, const char *target_name,
 		case XFER_MOVE:
 		case XFER_MOVE_TO_TRASH:
 			if (error_kind == ERROR_READ_ONLY) {
-				error_string = _("Error while moving.\n"
+				error_string = _("Error while moving.\n\n"
 						 "\"%s\" cannot be moved because it is on "
 						 "a read-only disk.");
 			}
@@ -521,13 +521,13 @@ build_error_string (const char *source_name, const char *target_name,
 			switch (error_kind) {
 			case ERROR_NOT_ENOUGH_PERMISSIONS:
 			case ERROR_NOT_WRITABLE:
-				error_string = _("Error while deleting.\n"
+				error_string = _("Error while deleting.\n\n"
 						 "\"%s\" cannot be deleted because you do not have "
 						 "permissions to modify its parent folder.");
 				break;
 			
 			case ERROR_READ_ONLY:
-				error_string = _("Error while deleting.\n"
+				error_string = _("Error while deleting.\n\n"
 						 "\"%s\" cannot be deleted because it is on "
 						 "a read-only disk.");
 				break;
@@ -558,14 +558,14 @@ build_error_string (const char *source_name, const char *target_name,
 		switch (operation_kind) {
 		case XFER_MOVE:
 			if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
-				error_string = _("Error while moving.\n"
+				error_string = _("Error while moving.\n\n"
 						 "\"%s\" cannot be moved because you do not have "
 						 "permissions to change it or its parent folder.");
 			}
 			break;
 		case XFER_MOVE_TO_TRASH:
 			if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
-				error_string = _("Error while moving.\n"
+				error_string = _("Error while moving.\n\n"
 						 "\"%s\" cannot be moved to the trash because you do not have "
 						 "permissions to change it or its parent folder.");
 			}
@@ -589,7 +589,7 @@ build_error_string (const char *source_name, const char *target_name,
 		case XFER_COPY:
 		case XFER_DUPLICATE:
 			if (error_kind == ERROR_NOT_READABLE) {
-				error_string = _("Error while copying.\n"
+				error_string = _("Error while copying.\n\n"
 						 "\"%s\" cannot be copied because you do not have "
 						 "permissions to read it.");
 			}
@@ -611,16 +611,16 @@ build_error_string (const char *source_name, const char *target_name,
 			switch (operation_kind) {
 			case XFER_COPY:
 			case XFER_DUPLICATE:
-				error_string = _("Error while copying to \"%s\".\n"
+				error_string = _("Error while copying to \"%s\".\n\n"
 				   		 "There is not enough space on the destination.");
 				break;
 			case XFER_MOVE_TO_TRASH:
 			case XFER_MOVE:
-				error_string = _("Error while moving to \"%s\".\n"
+				error_string = _("Error while moving to \"%s\".\n\n"
 				   		 "There is not enough space on the destination.");
 				break;
 			case XFER_LINK:
-				error_string = _("Error while creating link in \"%s\".\n"
+				error_string = _("Error while creating link in \"%s\".\n\n"
 				   		 "There is not enough space on the destination.");
 				break;
 			default:
@@ -632,33 +632,33 @@ build_error_string (const char *source_name, const char *target_name,
 			case XFER_COPY:
 			case XFER_DUPLICATE:
 				if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
-					error_string = _("Error while copying to \"%s\".\n"
+					error_string = _("Error while copying to \"%s\".\n\n"
 					   		 "You do not have permissions to write to "
 					   		 "this folder.");
 				} else if (error_kind == ERROR_NOT_WRITABLE) {
-					error_string = _("Error while copying to \"%s\".\n"
+					error_string = _("Error while copying to \"%s\".\n\n"
 					   		 "The destination disk is read-only.");
 				} 
 				break;
 			case XFER_MOVE:
 			case XFER_MOVE_TO_TRASH:
 				if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
-					error_string = _("Error while moving items to \"%s\".\n"
+					error_string = _("Error while moving items to \"%s\".\n\n"
 					   		 "You do not have permissions to write to "
 					   		 "this folder.");
 				} else if (error_kind == ERROR_NOT_WRITABLE) {
-					error_string = _("Error while moving items to \"%s\".\n"
+					error_string = _("Error while moving items to \"%s\".\n\n"
 					   		 "The destination disk is read-only.");
 				} 
 
 				break;
 			case XFER_LINK:
 				if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
-					error_string = _("Error while creating links in \"%s\".\n"
+					error_string = _("Error while creating links in \"%s\".\n\n"
 					   		 "You do not have permissions to write to "
 					   		 "this folder.");
 				} else if (error_kind == ERROR_NOT_WRITABLE) {
-					error_string = _("Error while creating links in \"%s\".\n"
+					error_string = _("Error while creating links in \"%s\".\n\n"
 					   		 "The destination disk is read-only.");
 				} 
 				break;
@@ -687,21 +687,21 @@ build_error_string (const char *source_name, const char *target_name,
 			switch (operation_kind) {
 			case XFER_COPY:
 			case XFER_DUPLICATE:
-				error_string = _("Error \"%s\" while copying \"%s\".\n"
+				error_string = _("Error \"%s\" while copying \"%s\".\n\n"
 						 "Would you like to continue?");
 				break;
 			case XFER_MOVE:
-				error_string = _("Error \"%s\" while moving \"%s\".\n"
+				error_string = _("Error \"%s\" while moving \"%s\".\n\n"
 						 "Would you like to continue?");
 				break;
 			case XFER_LINK:
-				error_string = _("Error \"%s\" while creating a link to \"%s\".\n"
+				error_string = _("Error \"%s\" while creating a link to \"%s\".\n\n"
 						 "Would you like to continue?");
 				break;
 			case XFER_DELETE:
 			case XFER_EMPTY_TRASH:
 			case XFER_MOVE_TO_TRASH:
-				error_string = _("Error \"%s\" while deleting \"%s\".\n"
+				error_string = _("Error \"%s\" while deleting \"%s\".\n\n"
 						 "Would you like to continue?");
 				break;
 			default:
@@ -716,21 +716,21 @@ build_error_string (const char *source_name, const char *target_name,
 			switch (operation_kind) {
 			case XFER_COPY:
 			case XFER_DUPLICATE:
-				error_string = _("Error \"%s\" while copying.\n"
+				error_string = _("Error \"%s\" while copying.\n\n"
 						 "Would you like to continue?");
 				break;
 			case XFER_MOVE:
-				error_string = _("Error \"%s\" while moving.\n"
+				error_string = _("Error \"%s\" while moving.\n\n"
 						 "Would you like to continue?");
 				break;
 			case XFER_LINK:
-				error_string = _("Error \"%s\" while linking.\n"
+				error_string = _("Error \"%s\" while linking.\n\n"
 						 "Would you like to continue?");
 				break;
 			case XFER_DELETE:
 			case XFER_EMPTY_TRASH:
 			case XFER_MOVE_TO_TRASH:
-				error_string = _("Error \"%s\" while deleting.\n"
+				error_string = _("Error \"%s\" while deleting.\n\n"
 						 "Would you like to continue?");
 				break;
 			default:
@@ -938,7 +938,7 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 	char *unescaped_name;
 
 	unescaped_name = nautilus_format_name_for_display (progress_info->target_name);
-	text = g_strdup_printf (_("File \"%s\" already exists.\n"
+	text = g_strdup_printf (_("File \"%s\" already exists.\n\n"
 				  "Would you like to replace it?"), 
 				unescaped_name);
 	g_free (unescaped_name);
@@ -1409,13 +1409,17 @@ sync_xfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 				/* this is one of the selected copied or moved items -- we need
 				 * to make sure it's metadata gets copied over
 				 */
-				g_assert (progress_info->source_name != NULL);
-				nautilus_file_changes_queue_schedule_metadata_copy 
-					(progress_info->source_name, progress_info->target_name);
+				if (progress_info->source_name == NULL) {
+					/* remove any old metadata */
+					nautilus_file_changes_queue_schedule_metadata_remove 
+						(progress_info->target_name);
+				} else {
+					nautilus_file_changes_queue_schedule_metadata_copy 
+						(progress_info->source_name, progress_info->target_name);
 
-				apply_one_position (position_iterator, progress_info->source_name,
-					progress_info->target_name);
-
+					apply_one_position (position_iterator, progress_info->source_name,
+							    progress_info->target_name);
+				}
 				if (debuting_uris != NULL) {
 					g_hash_table_insert (debuting_uris, g_strdup (progress_info->target_name), NULL);
 				}
@@ -1426,20 +1430,21 @@ sync_xfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 		case GNOME_VFS_XFER_PHASE_MOVING:
 			if (progress_info->top_level_item) {
 				g_assert (progress_info->source_name != NULL);
+
 				nautilus_file_changes_queue_schedule_metadata_move 
 					(progress_info->source_name, progress_info->target_name);
-
+				
 				apply_one_position (position_iterator, progress_info->source_name,
-					progress_info->target_name);
-
+						    progress_info->target_name);
+				
 				if (debuting_uris != NULL) {
 					g_hash_table_insert (debuting_uris, g_strdup (progress_info->target_name), NULL);
 				}
 			}
 			nautilus_file_changes_queue_file_moved (progress_info->source_name,
-				progress_info->target_name);
+								progress_info->target_name);
 			break;
-
+			
 		case GNOME_VFS_XFER_PHASE_DELETESOURCE:
 			if (progress_info->top_level_item) {
 				g_assert (progress_info->source_name != NULL);
@@ -1448,7 +1453,7 @@ sync_xfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 			}
 			nautilus_file_changes_queue_file_removed (progress_info->source_name);
 			break;
-
+			
 		case GNOME_VFS_XFER_PHASE_COMPLETED:
 			/* done, clean up */
 			icon_position_iterator_free (position_iterator);
@@ -1775,8 +1780,8 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		gnome_vfs_async_xfer (&xfer_info->handle, source_uri_list, target_uri_list,
 		      		      move_options, GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
-		      		      &update_xfer_callback, xfer_info,
-		      		      &sync_xfer_callback, sync_xfer_info);
+		      		      update_xfer_callback, xfer_info,
+		      		      sync_xfer_callback, sync_xfer_info);
 	}
 
 	gnome_vfs_uri_list_free (source_uri_list);
@@ -1803,26 +1808,28 @@ handle_new_folder_vfs_error (const GnomeVFSXferProgressInfo *progress_info, NewF
 	error_string_to_free = NULL;
 
 	if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
-		error_string = _("Error creating new folder.\n"
-				"You do not have permissions to write to the destination.");
+		error_string = _("Error creating new folder.\n\n"
+				 "You do not have permissions to write to the destination.");
 	} else if (progress_info->vfs_status == GNOME_VFS_ERROR_NO_SPACE) {
-		error_string = _("Error creating new folder.\n"
-				"There is no space on the destination.");
+		error_string = _("Error creating new folder.\n\n"
+				 "There is no space on the destination.");
 	} else {
 		error_string = g_strdup_printf (_("Error \"%s\" creating new folder."), 
-			gnome_vfs_result_to_string(progress_info->vfs_status));
+						gnome_vfs_result_to_string(progress_info->vfs_status));
 	}
-
-	nautilus_error_dialog (error_string, _("Error creating new folder"), GTK_WINDOW (state->parent_view));
-
+	
+	nautilus_error_dialog (error_string, _("Error creating new folder"),
+			       GTK_WINDOW (state->parent_view));
+	
 	g_free (error_string_to_free);
-
+	
 	return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 }
 
 static int
 new_folder_xfer_callback (GnomeVFSAsyncHandle *handle,
-	GnomeVFSXferProgressInfo *progress_info, gpointer data)
+			  GnomeVFSXferProgressInfo *progress_info,
+			  gpointer data)
 {
 	NewFolderXferState *state;
 	char *temp_string;
@@ -1832,7 +1839,7 @@ new_folder_xfer_callback (GnomeVFSAsyncHandle *handle,
 	switch (progress_info->status) {
 	case GNOME_VFS_XFER_PROGRESS_STATUS_OK:
 		nautilus_file_changes_consume_changes (TRUE);
-		(state->done_callback) (progress_info->target_name, state->data);
+		(* state->done_callback) (progress_info->target_name, state->data);
 		g_free (state);
 		return 0;
 
@@ -1846,13 +1853,15 @@ new_folder_xfer_callback (GnomeVFSAsyncHandle *handle,
 			progress_info->duplicate_name[8] = '\0';
 			g_free (temp_string);
 			temp_string = progress_info->duplicate_name;
-			progress_info->duplicate_name = g_strdup_printf ("%s.%d", 
-				progress_info->duplicate_name,
-				progress_info->duplicate_count);
+			progress_info->duplicate_name = g_strdup_printf
+				("%s.%d", 
+				 progress_info->duplicate_name,
+				 progress_info->duplicate_count);
 		} else {
-			progress_info->duplicate_name = g_strdup_printf ("%s%%20%d", 
-				progress_info->duplicate_name,
-				progress_info->duplicate_count);
+			progress_info->duplicate_name = g_strdup_printf
+				("%s%%20%d", 
+				 progress_info->duplicate_name,
+				 progress_info->duplicate_count);
 		}
 		g_free (temp_string);
 		return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
@@ -1871,7 +1880,7 @@ new_folder_xfer_callback (GnomeVFSAsyncHandle *handle,
 void 
 nautilus_file_operations_new_folder (GtkWidget *parent_view, 
 				     const char *parent_dir,
-				     void (*done_callback)(const char *, gpointer),
+				     void (*done_callback) (const char *, gpointer),
 				     gpointer data)
 {
 	NewFolderXferState *state;
@@ -1893,8 +1902,8 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 	      		      GNOME_VFS_XFER_NEW_UNIQUE_DIRECTORY,
 	      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 	      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
-	      		      &new_folder_xfer_callback, state,
-	      		      &sync_xfer_callback, NULL);
+	      		      new_folder_xfer_callback, state,
+	      		      sync_xfer_callback, NULL);
 
 	gnome_vfs_uri_list_free (target_uri_list);
 	gnome_vfs_uri_unref (parent_uri);
@@ -2005,8 +2014,8 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 		      		      GNOME_VFS_XFER_REMOVESOURCE | GNOME_VFS_XFER_USE_UNIQUE_NAMES,
 		      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
-		      		      &update_xfer_callback, xfer_info,
-		      		      &sync_xfer_callback, NULL);
+		      		      update_xfer_callback, xfer_info,
+		      		      sync_xfer_callback, NULL);
 
 	}
 
@@ -2052,8 +2061,8 @@ nautilus_file_operations_delete (const GList *item_uris,
 	      		      GNOME_VFS_XFER_DELETE_ITEMS | GNOME_VFS_XFER_RECURSIVE,
 	      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 	      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
-	      		      &update_xfer_callback, xfer_info,
-	      		      &sync_xfer_callback, NULL);
+	      		      update_xfer_callback, xfer_info,
+	      		      sync_xfer_callback, NULL);
 
 	gnome_vfs_uri_list_free (uri_list);
 }
@@ -2088,8 +2097,8 @@ do_empty_trash (GtkWidget *parent_view)
 		      		      GNOME_VFS_XFER_EMPTY_DIRECTORIES,
 		      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
-		      		      &update_xfer_callback, xfer_info,
-		      		      &sync_xfer_callback, NULL);
+		      		      update_xfer_callback, xfer_info,
+		      		      sync_xfer_callback, NULL);
 	}
 
 	gnome_vfs_uri_list_free (trash_dir_list);
@@ -2145,53 +2154,37 @@ nautilus_file_operations_empty_trash (GtkWidget *parent_view)
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
-static gboolean
-test_next_duplicate_name (const char *name, const char *expected_next_name)
-{
-	gboolean result;
-	char *next_name;
-
-	next_name = get_duplicate_name (name, 1);
-	result = strcmp (expected_next_name, next_name) == 0;
-	if (!result) {
-		printf("expected %s, got %s\n", expected_next_name, next_name);
-	}
-	g_free (next_name);
-
-	return result;
-}
-
 void
 nautilus_self_check_file_operations (void)
 {
 	/* test the next duplicate name generator */
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_(" (copy)"), _(" (another copy)")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo"), _("foo (copy)")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_(".bashrc"), _(".bashrc (copy)")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_(".foo.txt"), _(".foo (copy).txt")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo foo"), _("foo foo (copy)")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo.txt"), _("foo (copy).txt")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo foo.txt"), _("foo foo (copy).txt")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo foo.txt txt"), _("foo foo (copy).txt txt")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo...txt"), _("foo.. (copy).txt")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo..."), _("foo... (copy)")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo. (copy)"), _("foo. (another copy)")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (copy)"), _("foo (another copy)")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (copy).txt"), _("foo (another copy).txt")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (another copy)"), _("foo (3rd copy)")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (another copy).txt"), _("foo (3rd copy).txt")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo foo (another copy).txt"), _("foo foo (3rd copy).txt")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (21st copy)"), _("foo (22nd copy)")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (21st copy).txt"), _("foo (22nd copy).txt")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (22nd copy)"), _("foo (23rd copy)")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (22nd copy).txt"), _("foo (23rd copy).txt")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (23rd copy)"), _("foo (24th copy)")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (23rd copy).txt"), _("foo (24th copy).txt")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (24th copy)"), _("foo (25th copy)")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo (24th copy).txt"), _("foo (25th copy).txt")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo foo (24th copy)"), _("foo foo (25th copy)")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo foo (24th copy).txt"), _("foo foo (25th copy).txt")), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (test_next_duplicate_name (_("foo foo (100000000000000th copy).txt"), _("foo foo (copy).txt")), TRUE);
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_(" (copy)"), 1), _(" (another copy)"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo"), 1), _("foo (copy)"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_(".bashrc"), 1), _(".bashrc (copy)"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_(".foo.txt"), 1), _(".foo (copy).txt"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo"), 1), _("foo foo (copy)"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo.txt"), 1), _("foo (copy).txt"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo.txt"), 1), _("foo foo (copy).txt"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo.txt txt"), 1), _("foo foo (copy).txt txt"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo...txt"), 1), _("foo.. (copy).txt"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo..."), 1), _("foo... (copy)"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo. (copy)"), 1), _("foo. (another copy)"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (copy)"), 1), _("foo (another copy)"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (copy).txt"), 1), _("foo (another copy).txt"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (another copy)"), 1), _("foo (3rd copy)"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (another copy).txt"), 1), _("foo (3rd copy).txt"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (another copy).txt"), 1), _("foo foo (3rd copy).txt"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (21st copy)"), 1), _("foo (22nd copy)"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (21st copy).txt"), 1), _("foo (22nd copy).txt"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (22nd copy)"), 1), _("foo (23rd copy)"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (22nd copy).txt"), 1), _("foo (23rd copy).txt"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (23rd copy)"), 1), _("foo (24th copy)"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (23rd copy).txt"), 1), _("foo (24th copy).txt"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (24th copy)"), 1), _("foo (25th copy)"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo (24th copy).txt"), 1), _("foo (25th copy).txt"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (24th copy)"), 1), _("foo foo (25th copy)"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (24th copy).txt"), 1), _("foo foo (25th copy).txt"));
+	NAUTILUS_CHECK_STRING_RESULT (get_duplicate_name (_("foo foo (100000000000000th copy).txt"), 1), _("foo foo (copy).txt"));
 }
 
 #endif

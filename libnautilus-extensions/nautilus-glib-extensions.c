@@ -30,8 +30,10 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-string.h"
 #include <ctype.h>
-#include <sys/time.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 /* Legal conversion specifiers, as specified in the C standard. */
 #define C_STANDARD_STRFTIME_CHARACTERS "aAbBcdHIjmMpSUwWxXyYZ"
@@ -1166,9 +1168,14 @@ nautilus_self_check_glib_extensions (void)
 	NAUTILUS_CHECK_STRING_RESULT (test_strftime (huge_string, 2000, 1, 1, 0, 0, 0), huge_string);
 	NAUTILUS_CHECK_STRING_RESULT (test_strftime ("%%", 2000, 1, 1, 1, 0, 0), "%");
 	NAUTILUS_CHECK_STRING_RESULT (test_strftime ("%%%%", 2000, 1, 1, 1, 0, 0), "%%");
-	NAUTILUS_CHECK_STRING_RESULT (test_strftime ("%m/%d/%y, %I:%M %p", 2000, 1, 1, 1, 0, 0), "01/01/00, 01:00 AM");
-	NAUTILUS_CHECK_STRING_RESULT (test_strftime ("%-m/%-d/%y, %-I:%M %p", 2000, 1, 1, 1, 0, 0), "1/1/00, 1:00 AM");
-	NAUTILUS_CHECK_STRING_RESULT (test_strftime ("%_m/%_d/%y, %_I:%M %p", 2000, 1, 1, 1, 0, 0), " 1/ 1/00,  1:00 AM");
+	/* localizers: These strings are part of the strftime
+	 * self-check code and must be changed to match what strtfime
+	 * yields -- usually just omitting the AM part is all that's
+	 * needed.
+	 */
+	NAUTILUS_CHECK_STRING_RESULT (test_strftime ("%m/%d/%y, %I:%M %p", 2000, 1, 1, 1, 0, 0), _("01/01/00, 01:00 AM"));
+	NAUTILUS_CHECK_STRING_RESULT (test_strftime ("%-m/%-d/%y, %-I:%M %p", 2000, 1, 1, 1, 0, 0), _("1/1/00, 1:00 AM"));
+	NAUTILUS_CHECK_STRING_RESULT (test_strftime ("%_m/%_d/%y, %_I:%M %p", 2000, 1, 1, 1, 0, 0), _(" 1/ 1/00,  1:00 AM"));
 
 	g_free (huge_string);
 

@@ -184,3 +184,33 @@ nautilus_xml_get_property_translated (xmlNodePtr parent,
 	xmlFree (untranslated_property);
 	return xmlStrdup (translated_property);
 }
+
+void
+nautilus_xml_remove_node (xmlNodePtr node)
+{
+	g_return_if_fail (node != NULL);
+	g_return_if_fail (node->doc != NULL);
+	g_return_if_fail (node->parent != NULL);
+	g_return_if_fail (node->doc->xmlRootNode != node);
+
+	if (node->prev == NULL) {
+		g_assert (node->parent->xmlChildrenNode == node);
+		node->parent->xmlChildrenNode = node->next;
+	} else {
+		g_assert (node->parent->xmlChildrenNode != node);
+		node->prev->next = node->next;
+	}
+
+	if (node->next == NULL) {
+		g_assert (node->parent->last == node);
+		node->parent->last = node->prev;
+	} else {
+		g_assert (node->parent->last != node);
+		node->next->prev = node->prev;
+	}
+
+	node->doc = NULL;
+	node->parent = NULL;
+	node->next = NULL;
+	node->prev = NULL;
+}
