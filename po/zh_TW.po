@@ -10,14 +10,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.7.92\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-09 06:19+0800\n"
-"PO-Revision-Date: 2004-09-09 06:20+0800\n"
+"POT-Creation-Date: 2004-09-11 19:26+0800\n"
+"PO-Revision-Date: 2004-09-11 19:31+0800\n"
 "Last-Translator: Woodman Tuen <woodman@culturecom.com.hk>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: components/adapter/main.c:101
 msgid "bonobo_ui_init() failed."
@@ -75,7 +75,7 @@ msgstr "無法將圖章重新命名"
 
 #: components/emblem/nautilus-emblem-view.c:260
 msgid "Rename Emblem"
-msgstr "圖章重新命名..."
+msgstr "圖章重新命名"
 
 #: components/emblem/nautilus-emblem-view.c:279
 msgid "Enter a new name for the displayed emblem:"
@@ -225,7 +225,7 @@ msgid "Software"
 msgstr "軟體"
 
 #: components/image_properties/nautilus-image-properties-view.c:222
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
@@ -233,13 +233,6 @@ msgid_plural ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
 msgstr[0] ""
-"<b>影像格式</b>： %s (%s)\n"
-"<b>解析度</b>： %d×%d 像素\n"
-"<b>影像格式</b>： %s (%s)\n"
-"<b>解析度</b>： %d×%d 像素\n"
-msgstr[1] ""
-"<b>影像格式</b>： %s (%s)\n"
-"<b>解析度</b>： %d×%d 像素\n"
 "<b>影像格式</b>： %s (%s)\n"
 "<b>解析度</b>： %d×%d 像素\n"
 
@@ -1085,7 +1078,7 @@ msgstr "每一個檔案都用新的視窗開啟"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:3
 msgid "Computer icon visible on desktop"
-msgstr "在桌面中顯示表示電腦的圖示"
+msgstr "在桌面中顯示表示「電腦」的圖示"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
 msgid "Criteria for search bar searching"
@@ -1115,9 +1108,8 @@ msgid "Custom Side Pane Background Set"
 msgstr "設定了自選側面窗格背景"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
-#, fuzzy
 msgid "Date Format"
-msgstr "格式化(_F)"
+msgstr "日期格式"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:10
 msgid "Default Background Color"
@@ -1176,9 +1168,8 @@ msgid "Default zoom level used by the list view."
 msgstr "清單顯示模式的預設縮放倍率"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
-#, fuzzy
 msgid "Desktop computer icon name"
-msgstr "桌面中個人資料夾圖示的名稱"
+msgstr "桌面中電腦圖示的名稱"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid "Desktop font"
@@ -1296,8 +1287,8 @@ msgid ""
 "file immediately and in-place, instead of moving it to the trash. This "
 "feature can be dangerous, so use caution."
 msgstr ""
-"如選用本選項，Nautilus 會提供另一種功能，讓您即時刪除檔案，而不是將檔案丟進垃"
-"圾筒。該功能是比較危險的，所以請小心使用。"
+"如選用本選項，Nautilus 會提供另一種功能，讓您即時刪除檔案，而不是將檔案丟進回"
+"收筒。該功能是比較危險的，所以請小心使用。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
@@ -1358,11 +1349,10 @@ msgid ""
 msgstr "如選用本選項，則桌面上會有一個圖示連結至回收筒。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
-#, fuzzy
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
-msgstr "如選用本選項，則桌面上會有一個圖示連結至回收筒。"
+msgstr "如選用本選項，則桌面上會出現連結到已裝載的檔案系統的圖示。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
@@ -1464,9 +1454,8 @@ msgid "Show location bar in new windows"
 msgstr "在新的視窗中顯示位置列"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
-#, fuzzy
 msgid "Show mounted volumes on the desktop"
-msgstr "回收筒必須留於桌面上。"
+msgstr "在桌面上顯示已裝載的檔案系統"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid "Show side pane in new windows"
@@ -1555,24 +1544,20 @@ msgid "The font description used for the icons on the desktop."
 msgstr "桌面圖示所使用的字型"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
-#, fuzzy
 msgid ""
 "The format of file dates. Possible values are \"locale\", \"iso\", and "
 "\"informal\"."
-msgstr ""
-"在清單顯示模式中，各項目的預設排列方式。可接受的值為\n"
-"“name”、“size”、“type”和“modification_date”。"
+msgstr "日期的格式。可接受的值為「本地」、「iso」 及、「非正式」。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
 msgid "The side pane view to show in newly opened windows."
 msgstr "在新的視窗中，側面窗格預設的顯示模式"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the computer icon on the "
 "desktop."
-msgstr "如果您想為桌面上的個人資料夾圖示命名，可以在這裡指定。"
+msgstr "如果您想為桌面上的「電腦」圖示命名，可以在這裡指定。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
 msgid ""
@@ -2328,9 +2313,9 @@ msgid "Unable to Replace File"
 msgstr "無法取代檔案"
 
 #: libnautilus-private/nautilus-file-operations.c:1090
-#, fuzzy, c-format
+#, c-format
 msgid "The folder \"%s\" already exists.  Would you like to replace it?"
-msgstr "檔案“%s”已經存在。您要取代它嗎？"
+msgstr "資料夾“%s”已經存在。您要取代它嗎？"
 
 #: libnautilus-private/nautilus-file-operations.c:1093
 #, c-format
@@ -2338,11 +2323,12 @@ msgid "The file \"%s\" already exists.  Would you like to replace it?"
 msgstr "檔案“%s”已經存在。您要取代它嗎？"
 
 #: libnautilus-private/nautilus-file-operations.c:1101
-#, fuzzy
 msgid ""
 "If you replace the existing folder, any files in it that conflicts with the "
 "files being copied will be overwritten."
-msgstr "如果您要覆蓋已存的檔案，那麼它的內容將會被覆寫。"
+msgstr ""
+"如果您要覆蓋已存的資料夾，在內的檔案如與複製的檔案發生衝突，那麼它將會被覆"
+"寫。"
 
 #: libnautilus-private/nautilus-file-operations.c:1103
 msgid "If you replace an existing file, its contents will be overwritten."
@@ -2729,12 +2715,12 @@ msgstr "清理(_E)"
 #: libnautilus-private/nautilus-file-operations-progress.c:402
 #, c-format
 msgid "(%d:%02d:%d Remaining)"
-msgstr ""
+msgstr "(剩餘 %d:%02d:%d)"
 
 #: libnautilus-private/nautilus-file-operations-progress.c:407
 #, c-format
 msgid "(%d:%02d Remaining)"
-msgstr ""
+msgstr "(剩餘 %d:%02d)"
 
 #: libnautilus-private/nautilus-file-operations-progress.c:520
 #, c-format
@@ -2760,18 +2746,16 @@ msgid "Themes"
 msgstr "佈景主題"
 
 #: libnautilus-private/nautilus-file-utilities.c:377
-#, fuzzy
 msgid "CD/DVD Creator"
-msgstr "光碟製作程序"
+msgstr "CD/DVD 光碟製作程序"
 
 #: libnautilus-private/nautilus-file-utilities.c:379
 msgid "Windows Network"
 msgstr "Windows 網路"
 
 #: libnautilus-private/nautilus-file-utilities.c:381
-#, fuzzy
 msgid "Services in"
-msgstr "網際網路服務"
+msgstr "服務在"
 
 #: libnautilus-private/nautilus-global-preferences.c:101
 msgid "_Always"
@@ -3335,9 +3319,8 @@ msgid "Browse the filesystem with the file manager"
 msgstr "使用檔案總管瀏覽檔案系統"
 
 #: nautilus.desktop.in.h:2
-#, fuzzy
 msgid "File Browser"
-msgstr "檔案瀏覽器：%s"
+msgstr "檔案瀏覽器"
 
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
@@ -3397,12 +3380,11 @@ msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "確定要將“%s”永久刪除嗎？"
 
 #: src/file-manager/fm-directory-view.c:858
-#, fuzzy, c-format
+#, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items?"
-msgstr[0] "確定要將“%s”永久刪除嗎？"
-msgstr[1] "確定要將“%s”永久刪除嗎？"
+msgstr[0] "確定要將 %d 個選定的項目永久地刪除嗎？"
 
 #: src/file-manager/fm-directory-view.c:866
 msgid "If you delete an item, it is permanently lost."
@@ -3418,7 +3400,7 @@ msgstr "選擇樣式"
 
 #: src/file-manager/fm-directory-view.c:1022
 msgid "_Pattern:"
-msgstr "樣式(_P)"
+msgstr "樣式(_P)："
 
 #: src/file-manager/fm-directory-view.c:1749
 #, c-format
@@ -3529,15 +3511,14 @@ msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "確定要將“%s”從回收筒中永久刪除嗎？"
 
 #: src/file-manager/fm-directory-view.c:3307
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
 msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr[0] "確定要將“%s”從回收筒中永久刪除嗎？"
-msgstr[1] "確定要將“%s”從回收筒中永久刪除嗎？"
+msgstr[0] "您確定要將 %d 個所選的項目從回收筒中永久地刪除嗎？"
 
 #: src/file-manager/fm-directory-view.c:3316
 msgid "If you delete an item, it will be permanently lost."
@@ -3548,9 +3529,9 @@ msgid "Delete From Trash?"
 msgstr "是否從回收筒中刪除？"
 
 #: src/file-manager/fm-directory-view.c:3692
-#, fuzzy, c-format
+#, c-format
 msgid "Open with \"%s\""
-msgstr "用 %s 開啟"
+msgstr "以“%s”開啟"
 
 #: src/file-manager/fm-directory-view.c:3693
 #, c-format
@@ -3683,22 +3664,20 @@ msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "如果選取「貼上檔案」指令將會複製“%s”"
 
 #: src/file-manager/fm-directory-view.c:5080
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
 msgid_plural ""
 "The %d selected items will be moved if you select the Paste Files command"
-msgstr[0] "如果選取「貼上檔案」指令將會移動“%s”"
-msgstr[1] "如果選取「貼上檔案」指令將會移動“%s”"
+msgstr[0] "如果選取「貼上檔案」指令則 %d 個已選的項目將會移動"
 
 #: src/file-manager/fm-directory-view.c:5087
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
 msgid_plural ""
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr[0] "如果選取「貼上檔案」指令將會複製“%s”"
-msgstr[1] "如果選取「貼上檔案」指令將會複製“%s”"
+msgstr[0] "如果選取「貼上檔案」指令則 %d 個已選取的項目將會複製"
 
 #: src/file-manager/fm-directory-view.c:5169
 #: src/file-manager/fm-tree-view.c:868
@@ -3719,9 +3698,9 @@ msgid "Unmount Error"
 msgstr "卸載錯誤"
 
 #: src/file-manager/fm-directory-view.c:5461
-#, fuzzy, c-format
+#, c-format
 msgid "Connect to Server %s"
-msgstr "連接伺服器"
+msgstr "連接伺服器 %s"
 
 #: src/file-manager/fm-directory-view.c:5466
 msgid "_Connect"
@@ -3741,9 +3720,9 @@ msgid "_Unmount Volume"
 msgstr "卸載檔案系統(_U)"
 
 #: src/file-manager/fm-directory-view.c:5936
-#, fuzzy, c-format
+#, c-format
 msgid "_Open with \"%s\""
-msgstr "用 %s 開啟"
+msgstr "以“%s”開啟(_O)"
 
 #: src/file-manager/fm-directory-view.c:5948
 #: src/file-manager/nautilus-directory-view-ui.xml.h:59
@@ -3850,28 +3829,24 @@ msgid "Cancel Open?"
 msgstr "取消開啟？"
 
 #: src/file-manager/fm-ditem-page.c:340 src/file-manager/fm-ditem-page.c:351
-#, fuzzy
 msgid "Comment"
-msgstr "Covalent"
+msgstr "備注"
 
 #: src/file-manager/fm-ditem-page.c:343
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: src/file-manager/fm-ditem-page.c:347
-#, fuzzy
 msgid "Link"
 msgstr "連結"
 
 #: src/file-manager/fm-ditem-page.c:354
-#, fuzzy
 msgid "Command"
-msgstr "Compaq"
+msgstr "命令"
 
 #: src/file-manager/fm-ditem-page.c:358
-#, fuzzy
 msgid "Launcher"
-msgstr "修改啟動圖示"
+msgstr "啟動圖示"
 
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
@@ -4356,9 +4331,8 @@ msgid "Couldn't Show Help"
 msgstr "無法顯示說明文件"
 
 #: src/file-manager/fm-properties-window.c:3291
-#, fuzzy
 msgid "Open With"
-msgstr "以其它方式開啟(_H)"
+msgstr "用指定軟體開啟"
 
 #: src/file-manager/fm-properties-window.c:3629
 msgid "Cancel Showing Properties Window?"
@@ -4465,9 +4439,8 @@ msgid "Choose another application with which to open the selected item"
 msgstr "請選取其它程式來開啟選定的項目"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:3
-#, fuzzy
 msgid "Connect To This Server"
-msgstr "連接伺服器"
+msgstr "連接這伺服器"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:5
 msgid "Create _Document"
@@ -4515,7 +4488,7 @@ msgstr "將選定的檔案系統格式化"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Make a permanent connection to this server"
-msgstr ""
+msgstr "永遠地連接到此伺服器"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:21
 msgid "Medi_a Properties"
@@ -4559,9 +4532,8 @@ msgid "Open the selected item in this window"
 msgstr "在本視窗中開啟選定的項目"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:32
-#, fuzzy
 msgid "Open with Other _Application..."
-msgstr "以其它程式開啟"
+msgstr "以其它程式開啟(_A)..."
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Prepare the selected files to be copied with a Paste Files command"
@@ -4612,9 +4584,8 @@ msgid "Select items in this window matching a given pattern"
 msgstr "選取本視窗中所有符合指定樣式的項目"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:45
-#, fuzzy
 msgid "Show _Hidden Files"
-msgstr "顯示隱藏檔及備份檔(_B)"
+msgstr "顯示隱藏檔(_H)"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:46
 msgid "Show media properties for the selected volume"
@@ -4626,7 +4597,7 @@ msgstr "顯示載有本選單中出現的指令稿的資料夾"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:48
 msgid "Toggles the display of hidden files in the current window"
-msgstr ""
+msgstr "在目前視窗中切換隱藏檔的顯示"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "Unmount the selected volume"
@@ -4953,48 +4924,41 @@ msgid "Please enter a name and try again."
 msgstr "請輸入名稱並再嘗試。"
 
 #: src/nautilus-connect-server-dialog.c:252 src/nautilus-window.c:1118
-#, fuzzy, c-format
+#, c-format
 msgid "%s on %s"
-msgstr "%s (copy)%s"
+msgstr "%2$s 上的 %1$s"
 
 #: src/nautilus-connect-server-dialog.c:380
-#, fuzzy
 msgid "_Location (URI):"
-msgstr "位置(UR_L)："
+msgstr "位置(_URI)："
 
 #: src/nautilus-connect-server-dialog.c:424
-#, fuzzy
 msgid "_Server:"
-msgstr "不會(_N)"
+msgstr "伺服器(_S)："
 
 #: src/nautilus-connect-server-dialog.c:443
-#, fuzzy
 msgid "Optional information:"
-msgstr "資訊"
+msgstr "可選的資訊："
 
 #: src/nautilus-connect-server-dialog.c:455
-#, fuzzy
 msgid "_Share:"
-msgstr "頁岩"
+msgstr "分享(_S)："
 
 #: src/nautilus-connect-server-dialog.c:476
-#, fuzzy
 msgid "_Port:"
-msgstr "格式化(_F)"
+msgstr "埠(_P)："
 
 #: src/nautilus-connect-server-dialog.c:496
-#, fuzzy
 msgid "_Folder:"
-msgstr "新資料夾(_N)"
+msgstr "資料夾(_F)："
 
 #: src/nautilus-connect-server-dialog.c:516
-#, fuzzy
 msgid "_User Name:"
-msgstr "名稱(_N)："
+msgstr "使用者名稱(_U）："
 
 #: src/nautilus-connect-server-dialog.c:539
 msgid "_Name to use for connection:"
-msgstr ""
+msgstr "連接用的名稱(_N)："
 
 #: src/nautilus-connect-server-dialog.c:597
 msgid "Connect to Server"
@@ -5002,42 +4966,39 @@ msgstr "連接伺服器"
 
 #: src/nautilus-connect-server-dialog.c:614
 msgid "Service _type:"
-msgstr ""
+msgstr "服務類型(_T)："
 
 #: src/nautilus-connect-server-dialog.c:623
 msgid "SSH"
-msgstr ""
+msgstr "SSH"
 
 #: src/nautilus-connect-server-dialog.c:625
 msgid "Public FTP"
-msgstr ""
+msgstr "公共 FTP"
 
 #: src/nautilus-connect-server-dialog.c:627
 msgid "FTP (with login)"
-msgstr ""
+msgstr "FTP（需登入）"
 
 #: src/nautilus-connect-server-dialog.c:629
-#, fuzzy
 msgid "Windows share"
-msgstr "Windows 分享檔案系統"
+msgstr "Windows 分享"
 
 #: src/nautilus-connect-server-dialog.c:631
 msgid "WebDAV (HTTP)"
-msgstr ""
+msgstr "WebDAV (HTTP)"
 
 #: src/nautilus-connect-server-dialog.c:633
 msgid "Secure WebDAV (HTTPS)"
-msgstr ""
+msgstr "Secure WebDAV (HTTPS)"
 
 #: src/nautilus-connect-server-dialog.c:635
-#, fuzzy
 msgid "Custom Location"
-msgstr "位置："
+msgstr "自訂位置"
 
 #: src/nautilus-connect-server-dialog.c:685
-#, fuzzy
 msgid "Browse _Network"
-msgstr "Windows 網路"
+msgstr "瀏覽網路(_N)"
 
 #: src/nautilus-connect-server-dialog.c:691
 msgid "C_onnect"
@@ -5068,14 +5029,12 @@ msgid "500 KB"
 msgstr "500 KB"
 
 #: src/nautilus-file-management-properties.glade.h:24
-#, fuzzy
 msgid "<span weight=\"bold\">Behavior</span>"
-msgstr "<span weight=\"bold\">處理方式</span>"
+msgstr "<span weight=\"bold\">行為</span>"
 
 #: src/nautilus-file-management-properties.glade.h:25
-#, fuzzy
 msgid "<span weight=\"bold\">Date</span>"
-msgstr "<span weight=\"bold\">回收筒</span>"
+msgstr "<span weight=\"bold\">日期</span>"
 
 #: src/nautilus-file-management-properties.glade.h:26
 msgid "<span weight=\"bold\">Default View</span>"
@@ -5130,9 +5089,8 @@ msgid "Always"
 msgstr "一定"
 
 #: src/nautilus-file-management-properties.glade.h:39
-#, fuzzy
 msgid "Always open in _browser windows"
-msgstr "開啟新的視窗。"
+msgstr "總是以瀏覽視窗開啟(_B)"
 
 #: src/nautilus-file-management-properties.glade.h:40
 msgid "Ask before _emptying the Trash or deleting files"
@@ -5163,9 +5121,8 @@ msgid "Default _zoom level:"
 msgstr "預設縮放程度(_Z)："
 
 #: src/nautilus-file-management-properties.glade.h:51
-#, fuzzy
 msgid "Display"
-msgstr "顯示(_D)"
+msgstr "顯示"
 
 #: src/nautilus-file-management-properties.glade.h:52
 msgid "File Management Preferences"
@@ -5240,9 +5197,8 @@ msgid "_Double click to activate items"
 msgstr "連按兩下會開啟項目(_D)"
 
 #: src/nautilus-file-management-properties.glade.h:73
-#, fuzzy
 msgid "_Format:"
-msgstr "格式化(_F)"
+msgstr "格式(_F)："
 
 #: src/nautilus-file-management-properties.glade.h:74
 msgid "_Only for files smaller than:"
@@ -5281,19 +5237,16 @@ msgid "group"
 msgstr "群組"
 
 #: src/nautilus-file-management-properties.glade.h:83
-#, fuzzy
 msgid "informal"
-msgstr "資訊"
+msgstr "非正式"
 
 #: src/nautilus-file-management-properties.glade.h:84
-#, fuzzy
 msgid "iso"
-msgstr "瀏覽記錄"
+msgstr "iso"
 
 #: src/nautilus-file-management-properties.glade.h:85
-#, fuzzy
 msgid "locale"
-msgstr "花卉"
+msgstr "本地"
 
 #: src/nautilus-file-management-properties.glade.h:86
 msgid "none"
@@ -5435,9 +5388,9 @@ msgstr "Nautilus"
 
 #. translators: %s is an option (e.g. --check)
 #: src/nautilus-main.c:260 src/nautilus-main.c:269 src/nautilus-main.c:274
-#, fuzzy, c-format
+#, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
-msgstr "nautilus：--quit 不適用於 URI。\n"
+msgstr "nautilus：%s 不適用於 URIs。\n"
 
 #: src/nautilus-main.c:265
 #, c-format
@@ -5591,9 +5544,8 @@ msgstr "前往樣版資料夾"
 
 #: src/nautilus-navigation-window-ui.xml.h:16
 #: src/nautilus-spatial-window-ui.xml.h:9
-#, fuzzy
 msgid "Go to the CD/DVD Creator"
-msgstr "前往光碟製作程序"
+msgstr "前往 CD/DVD 光碟製作程序"
 
 #: src/nautilus-navigation-window-ui.xml.h:17
 msgid "Go to the next visited location"
@@ -6109,9 +6061,8 @@ msgid "_Backgrounds and Emblems..."
 msgstr "背景及圖章(_B)..."
 
 #: src/nautilus-shell-ui.xml.h:30
-#, fuzzy
 msgid "_CD/DVD Creator"
-msgstr "光碟製作程式(_C)"
+msgstr "_CD/DVD 光碟製作程式"
 
 #: src/nautilus-shell-ui.xml.h:31
 msgid "_Close"
@@ -6175,18 +6126,16 @@ msgid "Show %s"
 msgstr "顯示 %s"
 
 #: src/nautilus-spatial-window-ui.xml.h:2
-#, fuzzy
 msgid "Clos_e All Folders"
-msgstr "關閉上一層的資料夾(_A)"
+msgstr "關閉所有資料夾(_E)"
 
 #: src/nautilus-spatial-window-ui.xml.h:3
 msgid "Close P_arent Folders"
 msgstr "關閉上一層的資料夾(_A)"
 
 #: src/nautilus-spatial-window-ui.xml.h:4
-#, fuzzy
 msgid "Close all folder windows"
-msgstr "關閉所有 Nautilus 視窗"
+msgstr "關閉所有資料夾視窗"
 
 #: src/nautilus-spatial-window-ui.xml.h:5
 msgid "Close this folder's parents"
@@ -6229,7 +6178,6 @@ msgid "the type of window the view is embedded in"
 msgstr "該顯示模式所嵌入的視窗的類型"
 
 #: src/nautilus-view-frame.c:641
-#, fuzzy
 msgid "whether to show hidden files in the view"
 msgstr "是否顯示隱藏檔案"
 
@@ -6411,1151 +6359,3 @@ msgstr "網路伺服器"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "在 Nautilus 檔案總管中瀏覽網路伺服器"
-
-#~ msgid "Adjust your user environment"
-#~ msgstr "調整使用者環境"
-
-#~ msgid "Desktop Preferences"
-#~ msgstr "桌面偏好設定"
-
-#~ msgid "Configure network services (web server, DNS server, etc.)"
-#~ msgstr "設定網路裝置 (網頁伺服器、DNS 伺服器等等)"
-
-#~ msgid "Server Settings"
-#~ msgstr "伺服器設定"
-
-#~ msgid "Configure network services"
-#~ msgstr "設定網路服務"
-
-#~ msgid "Start Here"
-#~ msgstr "起點"
-
-#~ msgid "Change systemwide settings (affects all users)"
-#~ msgstr "更改系統設定 (會影響所有使用者)"
-
-#~ msgid "System Settings"
-#~ msgstr "系統設定"
-
-#~ msgid "Add Nautilus to session"
-#~ msgstr "將 Nautilus 加入至作業階段"
-
-#~ msgid ""
-#~ "If this is set to true, Nautilus adds itself to the session when it "
-#~ "starts up. This means it will be started the next time you log in."
-#~ msgstr ""
-#~ "如選用本選項，Nautilus 會自動被加入至作業階段，即是說下次啟動 GNOME 時會自"
-#~ "動執行 Nautilus。"
-
-#~ msgid "Error while moving. "
-#~ msgstr "移動時發生錯誤。"
-
-#~ msgid "There was an error displaying help: %s"
-#~ msgstr "顯示說明文件時發生錯誤：%s"
-
-#~ msgid "not in menu"
-#~ msgstr "不會在選單內出現"
-
-#~ msgid "in menu for this file"
-#~ msgstr "會在這個檔案的選單中出現"
-
-#~ msgid "in menu for \"%s\""
-#~ msgstr "會在“%s”的選單中出現"
-
-#~ msgid "default for this file"
-#~ msgstr "是這個檔案的預設開啟方式"
-
-#~ msgid "default for \"%s\""
-#~ msgstr "是“%s”的預設開啟方式"
-
-#~ msgid "Is not in the menu for \"%s\" items."
-#~ msgstr "不會在“%s”的選單中出現。"
-
-#~ msgid "Is in the menu for \"%s\"."
-#~ msgstr "會在“%s”的選單中出現。"
-
-#~ msgid "Is in the menu for \"%s\" items."
-#~ msgstr "會在“%s”的選單中出現。"
-
-#~ msgid "Is in the menu for all \"%s\" items."
-#~ msgstr "會在所有“%s”的選單中出現。"
-
-#~ msgid "Is the default for \"%s\"."
-#~ msgstr "是“%s”的預設開啟方式。"
-
-#~ msgid "Is the default for \"%s\" items."
-#~ msgstr "是“%s”的預設開啟方式。"
-
-#~ msgid "Is the default for all \"%s\" items."
-#~ msgstr "是所有“%s”的預設開啟方式。"
-
-#~ msgid "Modify \"%s\""
-#~ msgstr "修改“%s”"
-
-#~ msgid "Include in the menu for \"%s\" items"
-#~ msgstr "會在“%s”的選單中出現"
-
-#~ msgid "Use as default for \"%s\" items"
-#~ msgstr "作為“%s”的預設開啟方式"
-
-#~ msgid "Include in the menu for \"%s\" only"
-#~ msgstr "只會在“%s”的選單中出現"
-
-#~ msgid "Use as default for \"%s\" only"
-#~ msgstr "只會作為“%s”的預設開啟方式"
-
-#~ msgid "Don't include in the menu for \"%s\" items"
-#~ msgstr "不會在“%s”的選單中出現"
-
-#~ msgid "Status"
-#~ msgstr "狀態"
-
-#~ msgid "Done"
-#~ msgstr "完成"
-
-#~ msgid "_Modify..."
-#~ msgstr "修改(_M)..."
-
-#~ msgid "File Types and Programs"
-#~ msgstr "檔案類型及程式"
-
-#~ msgid "_Go There"
-#~ msgstr "進行設定(_G)"
-
-#~ msgid ""
-#~ "You can configure which programs are offered for which file types in the "
-#~ "File Types and Programs dialog."
-#~ msgstr "請在「檔案類型及程式」對話方塊中選取對應每種檔案的處理程式。"
-
-#~ msgid "Choose an application with which to open \"%s\":"
-#~ msgstr "請選取用來開啟“%s”的程式："
-
-#~ msgid "Open with Other Viewer"
-#~ msgstr "以其它顯示模式開啟"
-
-#~ msgid "Choose a view for \"%s\":"
-#~ msgstr "請選取用來開啟“%s”的顯示模式："
-
-#~ msgid "No viewers are available for \"%s\"."
-#~ msgstr "沒有可開啟“%s”的顯示模式。"
-
-#~ msgid "No Viewers Available"
-#~ msgstr "沒有可用的顯示模式"
-
-#~ msgid "There is no application associated with \"%s\"."
-#~ msgstr "沒有任何和“%s”有關聯的程式。"
-
-#~ msgid "No Application Associated"
-#~ msgstr "沒有任何有關聯的程式"
-
-#~ msgid "There is no action associated with \"%s\"."
-#~ msgstr "沒有任何和“%s”有關聯的處理程序。"
-
-#~ msgid "No Action Associated"
-#~ msgstr "沒有任何有關聯的處理程序"
-
-#~ msgid ""
-#~ "You can configure GNOME to associate applications with file types. Do you "
-#~ "want to associate an application with this file type now?"
-#~ msgstr ""
-#~ "您可以在 GNOME 中將不同的檔案類型及程式建立聯繫。是否立刻將這種檔案和某個"
-#~ "程式建立聯繫？"
-
-#~ msgid "_Associate Application"
-#~ msgstr "和程式建立聯繫(_A)"
-
-#~ msgid "The viewer associated with \"%s\" is invalid."
-#~ msgstr "這個和“%s”有聯繫的顯示模式是無效的。"
-
-#~ msgid "Invalid Viewer Associated"
-#~ msgstr "聯繫了無效的顯示模式"
-
-#~ msgid "The application associated with \"%s\" is invalid."
-#~ msgstr "這個和“%s”有聯繫的程式是無效的。"
-
-#~ msgid "Invalid Application Associated"
-#~ msgstr "聯繫了無效的程式"
-
-#~ msgid "The action associated with \"%s\" is invalid."
-#~ msgstr "這個和“%s”有聯繫的處理方式是無效的。"
-
-#~ msgid "Invalid Action Associated"
-#~ msgstr "聯繫了無效的處理方式"
-
-#~ msgid ""
-#~ "You can configure GNOME to associate a different application or viewer "
-#~ "with this file type. Do you want to associate an application or viewer "
-#~ "with this file type now?"
-#~ msgstr ""
-#~ "您可以在 GNOME 中將這類檔案和不同的程式/顯示模式建立聯繫。是否立刻將這類檔"
-#~ "案和某個程式/顯示模式建立聯繫？"
-
-#~ msgid "_Associate Action"
-#~ msgstr "和其它處理方式建立聯繫(_A)"
-
-#~ msgid "Browse Filesystem"
-#~ msgstr "瀏覽檔案系統"
-
-#~ msgid ""
-#~ "Are you sure you want to permanently delete the %d selected item?Are you "
-#~ "sure you want to permanently delete the %d selected items?"
-#~ msgstr ""
-#~ "確定要將這 %d 個已選定的項目永久刪除嗎？確定要將這 %d 個已選定的項目永久刪"
-#~ "除嗎？"
-
-#~ msgid ""
-#~ "Are you sure you want to permanently delete the %d selected item from the "
-#~ "trash?Are you sure you want to permanently delete the %d selected items "
-#~ "from the trash?"
-#~ msgstr ""
-#~ "確定要將所選的 %d 個項目從回收筒中永久刪除嗎？確定要將所選的 %d 個項目從回"
-#~ "收筒中永久刪除嗎？"
-
-#~ msgid "Other _Application..."
-#~ msgstr "其它應用程式(_A)..."
-
-#~ msgid "An _Application..."
-#~ msgstr "應用程式(_A)..."
-
-#~ msgid ""
-#~ "The %d selected item will be moved if you select the Paste Files "
-#~ "commandThe %d selected items will be moved if you select the Paste Files "
-#~ "command"
-#~ msgstr ""
-#~ "如果您選取「貼上檔案」，將會移動 %d 個已選定的項目如果您選取「貼上檔案」，"
-#~ "將會移動 %d 個已選定的項目"
-
-#~ msgid ""
-#~ "The %d selected item will be copied if you select the Paste Files "
-#~ "commandThe %d selected items will be copied if you select the Paste Files "
-#~ "command"
-#~ msgstr ""
-#~ "如果選取「貼上檔案」，將會複製 %d 個已選定的項目如果選取「貼上檔案」，將會"
-#~ "複製 %d 個已選定的項目"
-
-#~ msgid "Example:"
-#~ msgstr "範例："
-
-#~ msgid "Icon Captions"
-#~ msgstr "圖示說明"
-
-#~ msgid "nautilus: --check cannot be used with URIs.\n"
-#~ msgstr "nautilus：--check 不適用於 URI。\n"
-
-#~ msgid "nautilus: --restart cannot be used with URIs.\n"
-#~ msgstr "nautilus：--restart 不適用於 URI。\n"
-
-#~ msgid "View as..."
-#~ msgstr "另選顯示模式..."
-
-#~ msgid "Choose a view for the current location, or modify the set of views"
-#~ msgstr "選取本位置的顯示模式，或是更改可使用的顯示模式"
-
-#~ msgid "_View as..."
-#~ msgstr "另選顯示模式(_V)..."
-
-#~ msgid ""
-#~ "If you would like to enable fast searches, you can edit the file %s as "
-#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-#~ "To start indexing and search services right away, you should also run the "
-#~ "following commands as root:\n"
-#~ "\n"
-#~ "medusa-indexd\n"
-#~ "medusa-searchd\n"
-#~ "\n"
-#~ "Fast searches will not be available until an initial index of your files "
-#~ "has been created.  This may take a long time."
-#~ msgstr ""
-#~ "如果想使用快速搜尋功能，必須以 root 的身分修改檔案 %s。修改 enabled 設定"
-#~ "為“yes”會開啟 medusa 服務。\n"
-#~ "如果要現在就啟用搜尋服務，應該以 root 的身分執行以下的指令：\n"
-#~ "\n"
-#~ "medusa-indexd\n"
-#~ "medusa-searchd\n"
-#~ "\n"
-#~ "未產生檔案索引之前，快速搜尋的功能是無法使用的。但是產生索引可能會需要較長"
-#~ "時間。"
-
-#~ msgid ""
-#~ "Medusa, the application that performs searches, cannot be found on your "
-#~ "system.  If you have compiled nautilus yourself, you will need to install "
-#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
-#~ "available at ftp://ftp.gnome.org)\n"
-#~ "If you are using a packaged version of Nautilus, fast searching is not "
-#~ "available.\n"
-#~ msgstr ""
-#~ "在系統中找不到 Medusa (用來進行搜尋的程式)。如果是自行編譯 nautilus 的，那"
-#~ "就需要安裝 medusa 並再編譯 nautilus。(Medusa 可在 ftp://ftp.gnome.org 中下"
-#~ "載)\n"
-#~ "如果使用的是已包裝好的 Nautilus，那麼表示快速搜尋功能現在無法使用。\n"
-
-#~ msgid "[Items ]containing \"%s\" in their names"
-#~ msgstr "名稱中包含“%s”"
-
-#~ msgid "[Items ]starting with \"%s\""
-#~ msgstr "以“%s”開始"
-
-#~ msgid "[Items ]ending with %s"
-#~ msgstr "以“%s”結束"
-
-#~ msgid "[Items ]not containing \"%s\" in their names"
-#~ msgstr "名稱中沒有“%s”"
-
-#~ msgid "[Items ]matching the regular expression \"%s\""
-#~ msgstr "符合正規表示式“%s”"
-
-#~ msgid "[Items ]matching the file pattern \"%s\""
-#~ msgstr "符合檔案樣式“%s”"
-
-#~ msgid "[Items that are ]regular files"
-#~ msgstr "普通檔案"
-
-#~ msgid "[Items that are ]text files"
-#~ msgstr "文字檔"
-
-#~ msgid "[Items that are ]applications"
-#~ msgstr "應用程式"
-
-#~ msgid "[Items that are ]folders"
-#~ msgstr "資料夾"
-
-#~ msgid "[Items that are ]music"
-#~ msgstr "音樂"
-
-#~ msgid "[Items ]that are not %s"
-#~ msgstr "不是%s"
-
-#~ msgid "[Items ]that are %s"
-#~ msgstr "是%s"
-
-#~ msgid "[Items ]not owned by \"%s\""
-#~ msgstr "擁有者不是“%s”"
-
-#~ msgid "[Items ]owned by \"%s\""
-#~ msgstr "擁有者是“%s”"
-
-#~ msgid "[Items ]with owner UID \"%s\""
-#~ msgstr "擁有者 UID 是“%s”"
-
-#~ msgid "[Items ]with owner UID other than \"%s\""
-#~ msgstr "擁有者 UID 不是“%s”"
-
-#~ msgid "[Items ]larger than %s bytes"
-#~ msgstr "大於 %s 位元組"
-
-#~ msgid "[Items ]smaller than %s bytes"
-#~ msgstr "小於 %s 位元組"
-
-#~ msgid "[Items ]of %s bytes"
-#~ msgstr "大小為 %s 位元組"
-
-#~ msgid "[Items ]modified today"
-#~ msgstr "於今天被修改"
-
-#~ msgid "[Items ]modified yesterday"
-#~ msgstr "於昨天被修改"
-
-#~ msgid "[Items ]modified on %s"
-#~ msgstr "於 %s 被修改"
-
-#~ msgid "[Items ]not modified on %s"
-#~ msgstr "於 %s 沒有被修改"
-
-#~ msgid "[Items ]modified before %s"
-#~ msgstr "於 %s 之前修改"
-
-#~ msgid "[Items ]modified after %s"
-#~ msgstr "於 %s 之後修改"
-
-#~ msgid "[Items ]modified within a week of %s"
-#~ msgstr "於 %s 的一星期內修改"
-
-#~ msgid "[Items ]modified within a month of %s"
-#~ msgstr "於 %s 的一個月內修改"
-
-#~ msgid "[Items ]marked with \"%s\""
-#~ msgstr "加上“%s”圖章"
-
-#~ msgid "[Items ]not marked with \"%s\""
-#~ msgstr "沒有加上“%s”圖章"
-
-#~ msgid "[Items ]with all the words \"%s\""
-#~ msgstr "含有“%s”中的所有字"
-
-#~ msgid "[Items ]containing one of the words \"%s\""
-#~ msgstr "含有“%s”中的其中一個字"
-
-#~ msgid "[Items ]without all the words \"%s\""
-#~ msgstr "不完全含有“%s”中的所有字"
-
-#~ msgid "[Items ]without any of the words \"%s\""
-#~ msgstr "不含“%s”中任何一個字"
-
-#~ msgid ""
-#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
-#~ msgstr "而且"
-
-#~ msgid ""
-#~ "[Items larger than 400K], [owned by root and without all the words "
-#~ "\"apple orange\"]"
-#~ msgstr "、"
-
-#~ msgid "Items %s"
-#~ msgstr "項目%s"
-
-#~ msgid "Items containing \"stuff\" in their names"
-#~ msgstr "項目名稱中包含“stuff”"
-
-#~ msgid "Items that are regular files"
-#~ msgstr "項目是普通檔案"
-
-#~ msgid "Items containing \"stuff\" in their names and that are regular files"
-#~ msgstr "項目名稱中包含“stuff”而且是普通檔案"
-
-#~ msgid ""
-#~ "Items containing \"stuff\" in their names, that are regular files and "
-#~ "smaller than 2000 bytes"
-#~ msgstr "項目名稱中包含“stuff”、是普通檔案而且小於 2000 位元組"
-
-#~ msgid "Items containing \"medusa\" in their names and that are folders"
-#~ msgstr "項目名稱中包含“medusa”而且是資料夾"
-
-#~ msgid ""
-#~ "Search results may not include items modified after %s, when your drive "
-#~ "was last indexed."
-#~ msgstr ""
-#~ "搜尋結果可能不會包括 %s 以後修改的項目，即是最後一次磁碟進行索引化的時間。"
-
-#~ msgid "Search Results"
-#~ msgstr "搜尋結果"
-
-#~ msgid "Search Service Not Available"
-#~ msgstr "無法提供搜尋服務"
-
-#~ msgid ""
-#~ "Your index files are available but the Medusa search daemon, which "
-#~ "handles index requests, isn't running.  To start this program, log in as "
-#~ "root and enter this command at the command line:\n"
-#~ "\n"
-#~ "medusa-searchd"
-#~ msgstr ""
-#~ "索引檔已經存在，但處理索引要求的 Medusa 搜尋伺服程式並沒有執行。如要執行該"
-#~ "程式，請先以 root 身分登入並輸入以下指令：\n"
-#~ "\n"
-#~ "medusa-searchd"
-
-#~ msgid ""
-#~ "To do a fast search, Find requires an index of the files on your system. "
-#~ "Your system administrator has disabled fast search on your computer, so "
-#~ "no index is available."
-#~ msgstr ""
-#~ "如果要進行快速搜尋，Find 需要使用一個包含系統中所有檔案的索引。但系統管理"
-#~ "員已關閉了快速搜尋功能，所以無法提供索引。"
-
-#~ msgid "Too Many Matches"
-#~ msgstr "符合的項目太多"
-
-#~ msgid "Indexing is %d%% complete."
-#~ msgstr "已經產生了 %d%% 索引。"
-
-#~ msgid ""
-#~ "Once a day your files and text content are indexed so your searches are "
-#~ "fast. "
-#~ msgstr "系統每天都會將檔案及檔案內容進行索引，因此可以提供快速的搜尋服務。"
-
-#~ msgid "Indexing Status"
-#~ msgstr "索引化狀態"
-
-#~ msgid "There is no index of your files right now."
-#~ msgstr "目前沒有檔案索引。"
-
-#~ msgid ""
-#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
-#~ "Fast searching is not enabled on your computer, so you do not have an "
-#~ "index right now."
-#~ msgstr ""
-#~ "當啟用快速搜尋功能時，Find 會產生索引來加快搜尋速度。但電腦中沒有啟用快速"
-#~ "搜尋功能，因此沒有檔案索引。"
-
-#~ msgid "Sorry, but the medusa search service is not available."
-#~ msgstr "抱歉，目前無法提供 medusa 搜尋服務。"
-
-#~ msgid "%I:%M %p, %x"
-#~ msgstr "%x %p %I:%M"
-
-#~ msgid "Reveal each selected item in its original folder"
-#~ msgstr "在原來的資料夾顯示每個選定的項目"
-
-#~ msgid "Reveal in New Window"
-#~ msgstr "以新視窗顯示"
-
-#~ msgid "Show Indexing Status"
-#~ msgstr "顯示索引化狀態"
-
-#~ msgid "Show _Indexing Status"
-#~ msgstr "顯示索引化狀態(_I)"
-
-#~ msgid "Show status of indexing used when searching"
-#~ msgstr "當搜尋時顯示索引的狀態"
-
-#~ msgid "More Options"
-#~ msgstr "較多選項"
-
-#~ msgid "Fewer Options"
-#~ msgstr "較少選項"
-
-#~ msgid "Find Them!"
-#~ msgstr "搜尋！"
-
-#~ msgid "[Search for] Name [contains \"fish\"]"
-#~ msgstr "名稱"
-
-#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
-#~ msgstr "內容"
-
-#~ msgid "[Search for] Type [is regular file]"
-#~ msgstr "格式"
-
-#~ msgid "[Search for] Size [larger than 400K]"
-#~ msgstr "檔案大小"
-
-#~ msgid "[Search for] With Emblem [includes \"Important\"]"
-#~ msgstr "配合圖章"
-
-#~ msgid "[Search for] Last Modified [before yesterday]"
-#~ msgstr "最後修改時間"
-
-#~ msgid "[Search for] Owner [is not root]"
-#~ msgstr "擁有者"
-
-#~ msgid "[File name] contains [help]"
-#~ msgstr "含有"
-
-#~ msgid "[File name] starts with [nautilus]"
-#~ msgstr "開始為"
-
-#~ msgid "[File name] ends with [.c]"
-#~ msgstr "結尾為"
-
-#~ msgid "[File name] matches glob [*.c]"
-#~ msgstr "符合萬用字元表示式"
-
-#~ msgid "[File name] matches regexp [\"e??l.$\"]"
-#~ msgstr "符合正規表示式"
-
-#~ msgid "[File content] includes all of [apple orange]"
-#~ msgstr "含有下列全部字串"
-
-#~ msgid "[File content] includes any of [apply orange]"
-#~ msgstr "含有下列任何字串"
-
-#~ msgid "[File content] does not include all of [apple orange]"
-#~ msgstr "含有下列一部份字串"
-
-#~ msgid "[File content] includes none of [apple orange]"
-#~ msgstr "完全不含有"
-
-#~ msgid "[File type] is [folder]"
-#~ msgstr "是"
-
-#~ msgid "[File type] is not [folder]"
-#~ msgstr "不是"
-
-#~ msgid "[File type is] regular file"
-#~ msgstr "普通檔案"
-
-#~ msgid "[File type is] text file"
-#~ msgstr "文字檔"
-
-#~ msgid "[File type is] application"
-#~ msgstr "應用程式"
-
-#~ msgid "[File type is] folder"
-#~ msgstr "資料夾"
-
-#~ msgid "[File type is] music"
-#~ msgstr "音樂"
-
-#~ msgid "[File size is] larger than [400K]"
-#~ msgstr "大於"
-
-#~ msgid "[File size is] smaller than [300K]"
-#~ msgstr "小於"
-
-#~ msgid "[With emblem] marked with [Important]"
-#~ msgstr "標示為"
-
-#~ msgid "[With emblem] not marked with [Important]"
-#~ msgstr "不標示為"
-
-#~ msgid "[Last modified date] is [1/24/00]"
-#~ msgstr "是"
-
-#~ msgid "[Last modified date] is not [1/24/00]"
-#~ msgstr "不是"
-
-#~ msgid "[Last modified date] is after [1/24/00]"
-#~ msgstr "是下列時間之後"
-
-#~ msgid "[Last modified date] is before [1/24/00]"
-#~ msgstr "是下列時間之前"
-
-#~ msgid "[Last modified date] is today"
-#~ msgstr "是今天"
-
-#~ msgid "[Last modified date] is yesterday"
-#~ msgstr "是昨天"
-
-#~ msgid "[Last modified date] is within a week of [1/24/00]"
-#~ msgstr "於下列時間一星期內"
-
-#~ msgid "[Last modified date] is within a month of [1/24/00]"
-#~ msgstr "於下列時間一個月內"
-
-#~ msgid "[File owner] is [root]"
-#~ msgstr "是"
-
-#~ msgid "[File owner] is not [root]"
-#~ msgstr "不是"
-
-#~ msgid "Find:"
-#~ msgstr "搜尋："
-
-#~ msgid "Factory for hardware view"
-#~ msgstr "硬體顯示模式工廠"
-
-#~ msgid "Hardware Viewer"
-#~ msgstr "硬體顯示模式"
-
-#~ msgid "Hardware view"
-#~ msgstr "硬體顯示模式"
-
-#~ msgid "View as Hardware"
-#~ msgstr "以硬體方式顯示"
-
-#~ msgid "hardware view"
-#~ msgstr "硬體顯示模式"
-
-#~ msgid "name of icon for the hardware view"
-#~ msgstr "硬體顯示模式的圖示名稱"
-
-#~ msgid "summary of hardware info"
-#~ msgstr "硬體資訊摘要"
-
-#~ msgid ""
-#~ "%s CPU\n"
-#~ "%s MHz\n"
-#~ "%s K cache size"
-#~ msgstr ""
-#~ "%s CPU\n"
-#~ "%s MHz\n"
-#~ "%s K 快取記憶"
-
-#~ msgid "%lu GB RAM"
-#~ msgstr "%lu GB 記憶體"
-
-#~ msgid "%lu MB RAM"
-#~ msgstr "%lu MB 記憶體"
-
-#~ msgid "%lu GB"
-#~ msgstr "%lu GB"
-
-#~ msgid "%lu MB"
-#~ msgstr "%lu MB"
-
-#~ msgid "Uptime is %d days, %d hours, %d minutes"
-#~ msgstr "系統連續運作了 %d 日 %d 時 %d 分"
-
-#~ msgid "Hardware Overview"
-#~ msgstr "硬體總覽"
-
-#~ msgid "This is a placeholder for the CPU page."
-#~ msgstr "這裡預留作日後顯示 CPU 資訊之用。"
-
-#~ msgid "This is a placeholder for the RAM page."
-#~ msgstr "這裡預留作日後顯示記憶體資訊之用。"
-
-#~ msgid "This is a placeholder for the IDE page."
-#~ msgstr "這裡預留作日後顯示 IDE 資訊之用。"
-
-#~ msgid "Search Google for Selected Text"
-#~ msgstr "在 Google 裡搜尋選定的文字"
-
-#~ msgid "Use Google to search the web for the selected text"
-#~ msgstr "使用 Google 來在網上搜尋選定的文字"
-
-#~ msgid "Look Up Selected Text in Dictionary"
-#~ msgstr "在字典裡檢索選定的文字"
-
-#~ msgid "Look up the selected text in the Merriam-Webster dictionary"
-#~ msgstr "在 Merriam-Webster 字典裡檢索選定的文字"
-
-#~ msgid "Can't find an hbox, using a normal file selection"
-#~ msgstr "找不到水平容器元件，改用一般的選取檔案對話方塊"
-
-#~ msgid "AFFS Volume"
-#~ msgstr "AFFS 檔案系統"
-
-#~ msgid "AFS Network Volume"
-#~ msgstr "AFS 網路檔案系統"
-
-#~ msgid "Auto-detected Volume"
-#~ msgstr "自動偵測的檔案系統"
-
-#~ msgid "CD Digital Audio"
-#~ msgstr "CD 數碼音效"
-
-#~ msgid "CD-ROM Drive"
-#~ msgstr "CD-ROM 光碟"
-
-#~ msgid "CDROM Volume"
-#~ msgstr "CDROM 檔案系統"
-
-#~ msgid "DVD Volume"
-#~ msgstr "DVD 檔案系統"
-
-#~ msgid "Enhanced DOS Volume"
-#~ msgstr "UMSDOS 檔案系統"
-
-#~ msgid "Ext2 Linux Volume"
-#~ msgstr "Ext2 Linux 檔案系統"
-
-#~ msgid "Ext3 Linux Volume"
-#~ msgstr "Ext3 Linux 檔案系統"
-
-#~ msgid "Hardware Device Volume"
-#~ msgstr "硬體裝置檔案系統"
-
-#~ msgid "Hsfs CDROM Volume"
-#~ msgstr "Hsfs CDROM 檔案系統"
-
-#~ msgid "JFS Volume"
-#~ msgstr "JFS 檔案系統"
-
-#~ msgid "MSDOS Volume"
-#~ msgstr "MSDOS 檔案系統"
-
-#~ msgid "MacOS Volume"
-#~ msgstr "MacOS 檔案系統"
-
-#~ msgid "Minix Volume"
-#~ msgstr "Minix 檔案系統"
-
-#~ msgid "NFS Network Volume"
-#~ msgstr "NFS 網路檔案系統"
-
-#~ msgid "Pcfs Solaris Volume"
-#~ msgstr "Pcfs Solaris 檔案系統"
-
-#~ msgid "ReiserFS Linux Volume"
-#~ msgstr "ReiserFS Linux 檔案系統"
-
-#~ msgid "Solaris/BSD Volume"
-#~ msgstr "Solaris/BSD 檔案系統"
-
-#~ msgid "SuperMount Volume"
-#~ msgstr "SuperMount 檔案系統"
-
-#~ msgid "System Volume"
-#~ msgstr "系統狀態檔案系統"
-
-#~ msgid "Udfs Solaris Volume"
-#~ msgstr "Udfs Solaris 檔案系統"
-
-#~ msgid "Windows NT Volume"
-#~ msgstr "Windows NT 檔案系統"
-
-#~ msgid "Windows VFAT Volume"
-#~ msgstr "Windows VFAT 檔案系統"
-
-#~ msgid "XFS Linux Volume"
-#~ msgstr "XFS Linux 檔案系統"
-
-#~ msgid "XIAFS Volume"
-#~ msgstr "XIAFS 檔案系統"
-
-#~ msgid "Xenix Volume"
-#~ msgstr "Xenix 檔案系統"
-
-#~ msgid ""
-#~ "Error while copying to \"%s\".\n"
-#~ "\n"
-#~ "There is not enough space on the destination."
-#~ msgstr ""
-#~ "複製至“%s”時發生錯誤。\n"
-#~ "\n"
-#~ "目的地空間不足。"
-
-#~ msgid ""
-#~ "Error while creating link in \"%s\".\n"
-#~ "\n"
-#~ "There is not enough space on the destination."
-#~ msgstr ""
-#~ "在“%s”建立鏈結時發生錯誤。\n"
-#~ "\n"
-#~ "目的地空間不足。"
-
-#~ msgid ""
-#~ "Error while moving items to \"%s\".\n"
-#~ "\n"
-#~ "You do not have permissions to write to this folder."
-#~ msgstr ""
-#~ "移動項目至“%s”時發生錯誤。\n"
-#~ "\n"
-#~ "沒有寫入此資料夾的權限。"
-
-#~ msgid ""
-#~ "Error while moving items to \"%s\".\n"
-#~ "\n"
-#~ "The destination disk is read-only."
-#~ msgstr ""
-#~ "移動項目至“%s”時發生錯誤。\n"
-#~ "\n"
-#~ "目的地是唯讀的磁碟。"
-
-#~ msgid ""
-#~ "Error while creating links in \"%s\".\n"
-#~ "\n"
-#~ "You do not have permissions to write to this folder."
-#~ msgstr ""
-#~ "在“%s”裡建立鏈結時發生錯誤。\n"
-#~ "\n"
-#~ "沒有寫入此資料夾的權限。"
-
-#~ msgid ""
-#~ "Error while creating links in \"%s\".\n"
-#~ "\n"
-#~ "The destination disk is read-only."
-#~ msgstr ""
-#~ "在“%s”裡建立鏈結時發生錯誤。\n"
-#~ "\n"
-#~ "目的地是唯讀的磁碟。"
-
-#~ msgid ""
-#~ "Error \"%s\" while copying \"%s\".\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "複製“%2$s”時發生錯誤“%1$s”。\n"
-#~ "\n"
-#~ "是否要繼續？"
-
-#~ msgid ""
-#~ "Error \"%s\" while moving \"%s\".\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "移動“%2$s”時發生錯誤“%1$s”。\n"
-#~ "\n"
-#~ "是否要繼續？"
-
-#~ msgid ""
-#~ "Error \"%s\" while deleting \"%s\".\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "刪除“%2$s”時發生錯誤“%1$s”。\n"
-#~ "\n"
-#~ "是否要繼續？"
-
-#~ msgid ""
-#~ "Error \"%s\" while copying.\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "複製時發生錯誤“%s”。\n"
-#~ "\n"
-#~ "是否要繼續？"
-
-#~ msgid ""
-#~ "Error \"%s\" while linking.\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "建立鏈結時發生錯誤“%s”。\n"
-#~ "\n"
-#~ "是否要繼續？"
-
-#~ msgid ""
-#~ "Error \"%s\" while deleting.\n"
-#~ "\n"
-#~ "Would you like to continue?"
-#~ msgstr ""
-#~ "刪除時發生錯誤“%s”。\n"
-#~ "\n"
-#~ "是否要繼續？"
-
-#~ msgid "Can't Copy to Trash"
-#~ msgstr "不可複製至回收筒"
-
-#~ msgid "date changed"
-#~ msgstr "最後更改日期"
-
-#~ msgid "file icon"
-#~ msgstr "檔案圖示"
-
-#~ msgid "C_hoose"
-#~ msgstr "選擇(_H)"
-
-#~ msgid ""
-#~ "The default action can't open \"%s\" because it can't access files at \"%s"
-#~ "\" locations.  No other actions are available to view this file.  If you "
-#~ "copy this file onto your computer, you may be able to open it."
-#~ msgstr ""
-#~ "預設的處理方式無法開啟“%s”，因為無法存取“%s”中的檔案。目前沒有其它方式可以"
-#~ "顯示該檔案。如果將該檔案複製至您的電腦中，也許可以開啟它。"
-
-#~ msgid "Searching Disks"
-#~ msgstr "正在搜尋磁碟"
-
-#~ msgid "Nautilus is searching your disks for trash folders."
-#~ msgstr "Nautilus 正在各磁碟中搜尋回收筒資料夾。"
-
-#~ msgid ""
-#~ "The %d selected items cannot be moved to the Trash. Do you want to delete "
-#~ "them immediately?"
-#~ msgstr "無法將選定的 %d 個項目移到回收筒。要立刻永久刪除嗎？"
-
-#~ msgid ""
-#~ "%d of the selected items cannot be moved to the Trash. Do you want to "
-#~ "delete those %d items immediately?"
-#~ msgstr ""
-#~ "無法將所選項目中的 %d 個項目移到回收筒。要立刻將這 %d 個項目永久刪除嗎？"
-
-#~ msgid "Other _Viewer..."
-#~ msgstr "其它顯示模式(_V)..."
-
-#~ msgid "A _Viewer..."
-#~ msgstr "顯示模式(_V)..."
-
-#~ msgid "Open in %d New Windows"
-#~ msgstr "用 %d 個新的視窗開啟"
-
-#~ msgid "File name"
-#~ msgstr "檔案名稱"
-
-#~ msgid ""
-#~ "The file that you dropped is not an image.  You can only use local images "
-#~ "as custom icons."
-#~ msgstr "所拖放的檔案並非影像檔案。只許使用本地的圖示作為自選圖示。"
-
-#~ msgid "%d items, totalling %s"
-#~ msgstr "%d 個項目，總共 %s"
-
-#~ msgid ""
-#~ "Sorry, but the Medusa search service is not available because it is not "
-#~ "installed."
-#~ msgstr "抱歉，Medusa 搜尋服務因並未安裝，所以無法使用。"
-
-#~ msgid "Reveal in %d _New Windows"
-#~ msgstr "以 %d 個新的視窗顯示(_N)"
-
-#~ msgid "Choose another viewer with which to view the selected item"
-#~ msgstr "請選取其它顯示模式來顯示選定的項目"
-
-#~ msgid ""
-#~ "Once a day your files and text content are indexed so your searches are "
-#~ "fast.  Your files are currently being indexed."
-#~ msgstr ""
-#~ "系統每天都會將檔案及檔案內容進行索引，因此可以提供快速的搜尋服務。檔案目前"
-#~ "已完成索引化。"
-
-#~ msgid ""
-#~ "\"%s\" is not a valid location. Please check the spelling and try again."
-#~ msgstr "“%s”不是有效的位置。請檢查錯字並再試一次。"
-
-#~ msgid "Name:"
-#~ msgstr "名稱："
-
-#~ msgid "Write to CD"
-#~ msgstr "寫入至光碟"
-
-#~ msgid ""
-#~ "Couldn't execute nautilus\n"
-#~ "Make sure nautilus is in your path and correctly installed"
-#~ msgstr ""
-#~ "無法執行 nautilus\n"
-#~ "請確定 nautilus 在執行檔路徑中，及已經正確地安裝"
-
-#~ msgid ""
-#~ "Couldn't connect to URI %s\n"
-#~ "Please make sure that the address is correct and alternatively, type in "
-#~ "this address in the file manager directly"
-#~ msgstr ""
-#~ "無法連上 URI %s\n"
-#~ "請確定地址正確，或者在檔案總管中直接輸入地址"
-
-#~ msgid ""
-#~ "Glade file for the connect to server program is missing.\n"
-#~ "Please check your installation of nautilus"
-#~ msgstr ""
-#~ "缺少了連接至伺服程式所需的 glade 檔案。\n"
-#~ "請檢查 nautilus 是否已正確安裝"
-
-#~ msgid "Add a new server to your Network Servers and connect to it"
-#~ msgstr "在「網路伺服器」中新增伺服器，並進行連線"
-
-#~ msgid "New Server"
-#~ msgstr "新增伺服程式"
-
-#~ msgid "*"
-#~ msgstr "*"
-
-#~ msgid "Write contents to a CD"
-#~ msgstr "將內容燒錄至光碟內"
-
-#~ msgid "_Write to CD"
-#~ msgstr "寫入至光碟(_W)"
-
-#~ msgid ""
-#~ "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
-#~ "browser.\n"
-#~ "Check that an SMB server is running in the local network."
-#~ msgstr ""
-#~ "無法顯示“%s”，因為 Nautilus 無法聯絡 SMB master browser。\n"
-#~ "請確保本地網路中已經有運行中的 SMB 伺服器。"
-
-#~ msgid ""
-#~ "Are you sure you want to permanently delete all of the items in the Trash?"
-#~ msgstr "確定要永久刪除回收筒內的所有項目嗎？"
-
-#~ msgid "Unknown"
-#~ msgstr "未知"
-
-#~ msgid "Floppy"
-#~ msgstr "軟碟"
-
-#~ msgid "CD-ROM"
-#~ msgstr "CD-ROM"
-
-#~ msgid "Zip Drive"
-#~ msgstr "Zip 碟機"
-
-#~ msgid "Audio CD"
-#~ msgstr "音樂 CD"
-
-#~ msgid "Root Volume"
-#~ msgstr "根目錄"
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the floppy drive. There is probably no "
-#~ "floppy in the drive."
-#~ msgstr "Nautilus 無法掛載軟碟機。可能是因為軟碟機內沒有插入碟片。"
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the volume. There is probably no media in "
-#~ "the device."
-#~ msgstr ""
-#~ "Nautilus 無法掛載檔案系統。可能是因為裝置檔所代表的儲存媒體根本不存在。"
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the floppy drive. The floppy is probably in "
-#~ "a format that cannot be mounted."
-#~ msgstr "Nautilus 無法掛載軟碟機。可能是因為使用了一種無法掛載的軟碟格式。"
-
-#~ msgid ""
-#~ "Nautilus was unable to mount the selected volume. The volume is probably "
-#~ "in a format that cannot be mounted."
-#~ msgstr ""
-#~ "Nautilus 無法掛載選定的檔案系統。可能是因為使用了一種無法掛載的檔案系統格"
-#~ "式。"
-
-#~ msgid "Nautilus was unable to mount the selected floppy drive."
-#~ msgstr "Nautilus 無法掛載選定的軟碟。"
-
-#~ msgid "Nautilus was unable to mount the selected volume."
-#~ msgstr "Nautilus 無法掛載選定的檔案系統。"
-
-#~ msgid "Nautilus was unable to unmount the selected volume."
-#~ msgstr "Nautilus 無法卸載選定的檔案系統。"
-
-#~ msgid "ISO 9660 Volume"
-#~ msgstr "ISO 9660 檔案系統"
-
-#~ msgid "Error executing utility program '%s': %s"
-#~ msgstr "執行公用程式‘%s’時出現錯誤：%s"
-
-#~ msgid "Open _in This Window"
-#~ msgstr "在此視窗開啟(_I)"
-
-#~ msgid "Open _in New Window"
-#~ msgstr "用新視窗開啟(_I)"
-
-#~ msgid "Open _in %d New Windows"
-#~ msgstr "用 %d 個新視窗開啟(_I)"
-
-#~ msgid "Dis_ks"
-#~ msgstr "磁碟(_K)"
-
-#~ msgid "Mount or unmount disks"
-#~ msgstr "將磁碟掛載或卸載"
-
-#~ msgid "Open each selected item in a new window"
-#~ msgstr "用新視窗開啟每一個選定的項目"
-
-#~ msgid "_Open activated item in a new window"
-#~ msgstr "在新的視窗中開啟選定的項目(_O)"
-
-#~ msgid "Change the visibility of this window's toolbar"
-#~ msgstr "顯示或隱藏本視窗的工具列"
-
-#~ msgid "Go to the Start Here folder"
-#~ msgstr "前往「起點」資料夾"
-
-#~ msgid "Open New _Window"
-#~ msgstr "開啟新的視窗(_W)"
-
-#~ msgid "Open another Nautilus window for the displayed location"
-#~ msgstr "開啟另一個 Nautilus 視窗顯示同一位置"
-
-#~ msgid "_Start Here"
-#~ msgstr "起點(_S)"
-
-#~ msgid "_Toolbar"
-#~ msgstr "工具列(_T)"
-
-#~ msgid ""
-#~ "One of the sidebar panels encountered an error and can't continue. "
-#~ "Unfortunately I couldn't tell which one."
-#~ msgstr ""
-#~ "側面窗格的其中一個面板遇到錯誤而且無法繼續。但很抱歉，不知道是哪一個出錯。"
-
-#~ msgid ""
-#~ "The %s sidebar panel encountered an error and can't continue. If this "
-#~ "keeps happening, you might want to turn this panel off."
-#~ msgstr ""
-#~ "側面窗格的 %s 面板遇到錯誤而且無法繼續。如果此情況持續發生，請關閉該面板。"
-
-#~ msgid "Sidebar Panel Failed"
-#~ msgstr "側面窗格發生錯誤"
-
-#~ msgid "Go to Nonexistent Location"
-#~ msgstr "嘗試瀏覽不存在的位置"
-
-#~ msgid "Default zoom level used by the icon view"
-#~ msgstr "圖示顯示模式的預設縮放倍率"
-
-#~ msgid ""
-#~ "If set to true, then hidden files (dotfiles) are shown in the file "
-#~ "manager."
-#~ msgstr "如選用本選項，所有隱藏檔 (檔名以 '.' 開始) 都會在檔案總管內顯示。"
-
-#~ msgid "Sort in _reverse"
-#~ msgstr "相反排列次序(_R)"
-
-#~ msgid "Use _manual layout"
-#~ msgstr "使用自選排列方式(_M)"
-
-#~ msgid "New _Window"
-#~ msgstr "新視窗(_W)"
-
-#~ msgid "Your password will be transmitted unencrypted."
-#~ msgstr "密碼會以不加密的方式傳送。"
-
-#~ msgid "Your password will be transmitted encrypted."
-#~ msgstr "密碼會以加密的方式傳送。"
-
-#~ msgid "Authentication Required"
-#~ msgstr "需要認證"
-
-#~ msgid "You cannot copy the Trash."
-#~ msgstr "不可複製回收筒。"
