@@ -83,9 +83,9 @@ nautilus_leak_symbol_map_get_offsets (NautilusLeakSymbolLookupMap *map)
 	FILE *in;
 	gchar perms[26];
 	gchar file[256];
-	guint64 start, end;
+	unsigned long start, end;
 	guint major, minor;
-	guint64 inode;
+	ino_t inode;
 	struct stat library_stat;
 	struct stat entry_stat;
 	int count;
@@ -103,15 +103,9 @@ nautilus_leak_symbol_map_get_offsets (NautilusLeakSymbolLookupMap *map)
 	
 	while (fgets(buffer, 1023, in)) {
 
-/* if long is in fact the int64 type */
-#if G_MAXLONG == 9223372036854775807
 		count = sscanf (buffer, "%lx-%lx %15s %*x %u:%u %lu %255s",
 				&start, &end, perms, &major, &minor, &inode, file);
-#else
-		count = sscanf (buffer, "%Lx-%Lx %15s %*x %u:%u %Lu %255s",
-				&start, &end, perms, &major, &minor, &inode, file);
-#endif
-				
+
 		if (count >= 6 && strcmp (perms, "r-xp") == 0) {
 			if (stat (file, &entry_stat) != 0) {
 				break;
@@ -119,8 +113,8 @@ nautilus_leak_symbol_map_get_offsets (NautilusLeakSymbolLookupMap *map)
 			/* check if this is the library we are loading */
 			if (library_stat.st_ino == entry_stat.st_ino
 				&& library_stat.st_dev == entry_stat.st_dev) {
-				map->start = (unsigned long)start;
-				map->end = (unsigned long)end;
+				map->start = start;
+				map->end = end;
 
 				break;
 			}

@@ -1,3 +1,9 @@
+2000-06-18  Pavel  <pavel@eazel.com>
+
+	* test/nautilus-leak-symbol-lookup.c:
+	(nautilus_leak_symbol_map_get_offsets):
+	Do a better 64-bit clean fix avoiding messy ifdefs.
+
 Sun Jun 18 02:50:47 2000  George Lebl <jirka@5z.com>
 
 	* components/help/help-method.c (file_in_info_path):
