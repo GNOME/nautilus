@@ -147,7 +147,7 @@ nautilus_label_initialize (NautilusLabel *label)
 	label->detail->text = NULL;
 
 	label->detail->font = nautilus_scalable_font_get_default_font ();
-	label->detail->font_size = 48;
+	label->detail->font_size = 12;
 
 	label->detail->text_color = NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 255);
 	label->detail->drop_shadow_color = NAUTILUS_RGBA_COLOR_PACK (255, 255, 255, 255);
