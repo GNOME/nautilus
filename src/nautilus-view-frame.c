@@ -1089,6 +1089,8 @@ nautilus_view_frame_get_first_visible_file (NautilusViewFrame *view)
 	Nautilus_URI uri;
 	char *ret;
 
+	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), NULL);
+
 	ret = NULL;
 	if (view->details->positionable) {
 		uri = Nautilus_ScrollPositionable_get_first_visible_file (view->details->positionable, NULL);
@@ -1102,6 +1104,8 @@ void
 nautilus_view_frame_scroll_to_file (NautilusViewFrame *view,
 				    const char        *uri)
 {
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
 	if (view->details->positionable) {
 		Nautilus_ScrollPositionable_scroll_to_file (view->details->positionable,
 							    uri,
