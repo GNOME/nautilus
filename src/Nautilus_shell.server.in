@@ -17,8 +17,7 @@
   <oaf_attribute name="name" type="string" value="Nautilus file manager icon view"/>
   <oaf_attribute name="description" type="string" value="Nautilus file manager component that shows a two-dimensional icon space"/>
   <oaf_attribute name="bonobo:supported_mime_types" type="stringv">
-    <item value="x-special/directory"/>
-    <item value="x-special/webdav-directory"/>
+    <item value="x-directory/*"/>
   </oaf_attribute>
   <oaf_attribute name="nautilus:view_as_name" type="string" value="Icons"/>
 </oaf_server>
@@ -42,8 +41,8 @@
   <oaf_attribute name="name" type="string" value="Nautilus file manager list view"/>
   <oaf_attribute name="description" type="string" value="Nautilus file manager component that shows a scrollable list"/>
   <oaf_attribute name="bonobo:supported_mime_types" type="stringv">
-    <item value="x-special/directory"/>
-    <item value="x-special/webdav-directory"/>
+    <item value="x-directory/normal"/>
+    <item value="x-directory/webdav"/>
   </oaf_attribute>
   <oaf_attribute name="nautilus:view_as_name" type="string" value="List"/>
 </oaf_server>
@@ -56,13 +55,8 @@
   </oaf_attribute>
   <oaf_attribute name="name" type="string" value="Nautilus file manager search results list view"/>
   <oaf_attribute name="description" type="string" value="Nautilus file manager component that shows a scrollable list for search results"/>
-    <oaf_attribute name="bonobo:supported_uri_schemes" type="stringv">
-      <item value="search"/>
-      <item value="gnome-search"/>
-      <item value="medusa"/>
-    </oaf_attribute>
   <oaf_attribute name="bonobo:supported_mime_types" type="stringv">
-    <item value="x-special/virtual-directory"/>
+    <item value="x-directory/search"/>
   </oaf_attribute>
   <oaf_attribute name="nautilus:view_as_name" type="string" value="Search List"/>
 </oaf_server>

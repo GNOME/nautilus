@@ -1,3 +1,22 @@
+2000-08-07  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/html/ntl-web-browser.oafinfo:
+	* components/mozilla/nautilus-mozilla-content-view.oafinfo:
+	* components/music/nautilus-music-view.oafinfo:
+	* components/shell/shell.oafinfo:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_is_search_directory):
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_type_as_string):
+	* src/nautilus.oafinfo:
+
+        Renamedirectory mime types: 
+
+	x-special/directory            =>   x-directory/normal
+	x-special/webdav-directory     =>   x-directory/webdav
+	x-special/virtual-directory    =>   x-directory/search
+	
+	
 2000-08-07  Andy Hertzfeld  <andy@eazel.com>
 
 	last minute tweak for demo release of info color text: now it

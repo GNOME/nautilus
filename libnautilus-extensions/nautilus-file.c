@@ -2976,8 +2976,8 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 	/* We want to update nautilus/data/nautilus.keys to include 
 	 * English (& localizable) versions of every mime type anyone ever sees.
 	 */
-	if (strcasecmp (mime_type, "x-special/directory") == 0) {
-		g_warning ("Can't find description even for \"x-special/directory\". This "
+	if (strcasecmp (mime_type, "x-directory/normal") == 0) {
+		g_warning ("Can't find description even for \"x-directory/normal\". This "
 			   "probably means that your gnome-vfs.keys file is in the wrong place "
 			   "or isn't being found for some other reason.");
 			

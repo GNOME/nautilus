@@ -484,7 +484,7 @@ nautilus_directory_is_search_directory (NautilusDirectory *directory)
 					      info,
 					      GNOME_VFS_FILE_INFO_GET_MIME_TYPE);
 	is_search_directory = result == GNOME_VFS_OK &&
-		nautilus_strcasecmp (info->mime_type, "x-special/virtual-directory") == 0;
+		nautilus_strcasecmp (info->mime_type, "x-directory/search") == 0;
 	
 	gnome_vfs_file_info_unref (info);
 
