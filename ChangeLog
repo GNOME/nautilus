@@ -1,5 +1,19 @@
 2003-03-18  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-emblem-utils.c:
+	(is_reserved_keyword), (nautilus_emblem_should_show_in_list):
+	notes emblem is a reserved name, and does not show up in lists.
+	
+	* libnautilus-private/nautilus-file.h:
+	Added notes emblem name
+	
+	* libnautilus-private/nautilus-file.c: (file_has_note),
+	(get_automatic_emblems_as_integer),
+	(prepend_automatic_emblem_names):
+	Implement automatic notes emblem.
+
+2003-03-18  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-container.c (handle_icon_button_press):
 	Don't activate on double click of any modifiers are used.
 

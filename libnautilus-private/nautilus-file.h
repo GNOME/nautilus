@@ -71,6 +71,7 @@ typedef enum {
 #define NAUTILUS_FILE_EMBLEM_NAME_CANT_READ "noread"
 #define NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE "nowrite"
 #define NAUTILUS_FILE_EMBLEM_NAME_TRASH "trash"
+#define NAUTILUS_FILE_EMBLEM_NAME_NOTE "note"
 
 typedef void (*NautilusFileCallback)          (NautilusFile  *file,
 				               gpointer       callback_data);

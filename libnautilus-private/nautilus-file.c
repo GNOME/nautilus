@@ -1668,6 +1668,19 @@ compare_by_directory_name (NautilusFile *file_1, NautilusFile *file_2)
 	return compare;
 }
 
+static gboolean
+file_has_note (NautilusFile *file)
+{
+	char *note;
+	gboolean res;
+
+	note = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_ANNOTATION, NULL);
+	res = note != NULL && note[0] != 0;
+	g_free (note);
+
+	return res;
+}
+
 static int
 get_automatic_emblems_as_integer (NautilusFile *file)
 {
@@ -1680,6 +1693,8 @@ get_automatic_emblems_as_integer (NautilusFile *file)
 	integer |= !nautilus_file_can_read (file);
 	integer <<= 1;
 	integer |= !nautilus_file_can_write (file);
+	integer <<= 1;
+	integer |= file_has_note (file);
 	integer <<= 1;
 #if TRASH_IS_FAST_ENOUGH
 	integer |= nautilus_file_is_in_trash (file);
@@ -1700,6 +1715,10 @@ prepend_automatic_emblem_names (NautilusFile *file,
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_TRASH));
 	}
 #endif
+	if (file_has_note (file)) {
+		names = g_list_prepend
+			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_NOTE));
+	}
 	if (!nautilus_file_can_write (file)) {
 		names = g_list_prepend
 			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE));
