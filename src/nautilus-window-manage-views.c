@@ -268,15 +268,19 @@ nautilus_window_load_content_view_menu (NautilusWindow *window, NautilusNavigati
   {
     GtkWidget *menu_item;
     NautilusViewIdentifier *identifier;
+    gchar *menu_label;
 
     identifier = (NautilusViewIdentifier *)iter_new->data;
-    menu_item = gtk_menu_item_new_with_label (identifier->name);
+    menu_label = g_strdup_printf (_("View as %s"), identifier->name);
+    menu_item = gtk_menu_item_new_with_label (menu_label);
+    g_free (menu_label);
+    
     if (strcmp (identifier->iid, ni->default_content_iid) == 0)
     {
       default_view_index = index;
     }
 
-    /* Free copy of string when signal disconnected. */
+    /* Free copy of iid string when signal disconnected. */
     nautilus_gtk_signal_connect_free_data (
     		GTK_OBJECT (menu_item), 
     		"activate", 
