@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-10-15 18:25+0200\n"
-"PO-Revision-Date: 2003-10-15 18:27+0200\n"
+"POT-Creation-Date: 2003-10-17 17:10+0200\n"
+"PO-Revision-Date: 2003-10-17 17:10+0200\n"
 "Last-Translator: Danilo Šegan <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -272,54 +272,58 @@ msgid "Nautilus Image Properties view"
 msgstr "Nautilusov pregled osobina slike"
 
 # foto-aparat?
-#: components/image_properties/nautilus-image-properties-view.c:198
-#: data/browser.xml.h:12
-msgid "Camera"
-msgstr "Foto-aparat"
+#: components/image_properties/nautilus-image-properties-view.c:192
+msgid "Camera Brand"
+msgstr "Proizvođač foto-aparata"
 
-#: components/image_properties/nautilus-image-properties-view.c:202
+# foto-aparat?
+#: components/image_properties/nautilus-image-properties-view.c:193
+msgid "Camera Model"
+msgstr "Model foto-aparata"
+
+#: components/image_properties/nautilus-image-properties-view.c:194
 msgid "Date Taken"
 msgstr "Datum snimka"
 
-#: components/image_properties/nautilus-image-properties-view.c:203
+#: components/image_properties/nautilus-image-properties-view.c:195
 msgid "Exposure Time"
 msgstr "Dužina ekspozicije"
 
-#: components/image_properties/nautilus-image-properties-view.c:204
+#: components/image_properties/nautilus-image-properties-view.c:196
 msgid "Exposure Program"
 msgstr "Program ekspozicije"
 
-#: components/image_properties/nautilus-image-properties-view.c:205
+#: components/image_properties/nautilus-image-properties-view.c:197
 msgid "Aperture Value"
 msgstr "Vrednost aparature"
 
-#: components/image_properties/nautilus-image-properties-view.c:206
+#: components/image_properties/nautilus-image-properties-view.c:198
 msgid "Metering Mode"
 msgstr "Način merenja"
 
-#: components/image_properties/nautilus-image-properties-view.c:207
+#: components/image_properties/nautilus-image-properties-view.c:199
 msgid "Flash Fired"
 msgstr "Blic korišćen"
 
-#: components/image_properties/nautilus-image-properties-view.c:208
+#: components/image_properties/nautilus-image-properties-view.c:200
 msgid "Focal Lenght"
 msgstr "Žižna daljina"
 
-#: components/image_properties/nautilus-image-properties-view.c:209
+#: components/image_properties/nautilus-image-properties-view.c:201
 msgid "Shutter Speed"
 msgstr "Brzina zatvarača"
 
-#: components/image_properties/nautilus-image-properties-view.c:210
+#: components/image_properties/nautilus-image-properties-view.c:202
 msgid "ISO Speed Rating"
 msgstr "ISO rang brzine"
 
-#: components/image_properties/nautilus-image-properties-view.c:211
+#: components/image_properties/nautilus-image-properties-view.c:203
 #: data/static_bookmarks.xml.h:36
 msgid "Software"
 msgstr "Programi"
 
 # bug: plural-forms
-#: components/image_properties/nautilus-image-properties-view.c:230
+#: components/image_properties/nautilus-image-properties-view.c:222
 #, c-format
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
@@ -328,15 +332,15 @@ msgstr ""
 "<b>Vrsta slike:</b> %s (%s)\n"
 "<b>Veličina:</b> %dx%d tačaka\n"
 
-#: components/image_properties/nautilus-image-properties-view.c:242
+#: components/image_properties/nautilus-image-properties-view.c:235
 msgid "Failed to load image information"
 msgstr "Nije uspeo da učita podatke o slici"
 
-#: components/image_properties/nautilus-image-properties-view.c:430
+#: components/image_properties/nautilus-image-properties-view.c:423
 msgid "loading..."
 msgstr "učitava..."
 
-#: components/image_properties/nautilus-image-properties-view.c:443
+#: components/image_properties/nautilus-image-properties-view.c:439
 msgid "URI currently displayed"
 msgstr "Adresa je trenutno prikazana"
 
@@ -507,6 +511,11 @@ msgstr "Šatorsko platno"
 #: data/browser.xml.h:11
 msgid "C_olors"
 msgstr "_Boje"
+
+# foto-aparat?
+#: data/browser.xml.h:12
+msgid "Camera"
+msgstr "Foto-aparat"
 
 #: data/browser.xml.h:13
 msgid "Camouflage"
@@ -7293,11 +7302,11 @@ msgstr "tekući izbor"
 msgid "the type of window the view is embedded in"
 msgstr "vrsta prozora u koji je pregled uključen"
 
-#: src/nautilus-window-manage-views.c:809
+#: src/nautilus-window-manage-views.c:817
 msgid "View Failed"
 msgstr "Neuspešan pregled"
 
-#: src/nautilus-window-manage-views.c:820
+#: src/nautilus-window-manage-views.c:828
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -7306,27 +7315,27 @@ msgstr ""
 "Pregled %s je naišao na grešku i ne može da nastavi. Možete da izaberete "
 "neki drugi pregled ili da odete na drugu lokaciju."
 
-#: src/nautilus-window-manage-views.c:831
+#: src/nautilus-window-manage-views.c:839
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "Pregled %s je naišao na grešku pri pokretanju."
 
-#: src/nautilus-window-manage-views.c:978
+#: src/nautilus-window-manage-views.c:986
 msgid "Content View"
 msgstr "Pregled sadržaja"
 
-#: src/nautilus-window-manage-views.c:979
+#: src/nautilus-window-manage-views.c:987
 msgid "View of the current file or folder"
 msgstr "Pregled tekuće datoteke ili direktorijuma"
 
-#: src/nautilus-window-manage-views.c:1231
+#: src/nautilus-window-manage-views.c:1239
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "Ne može da pronađe „%s“. Proverite da li ste dobro ukucali i pokušajte "
 "ponovo."
 
-#: src/nautilus-window-manage-views.c:1237
+#: src/nautilus-window-manage-views.c:1245
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
@@ -7334,7 +7343,7 @@ msgstr ""
 "„%s“ ne predstavlja ispravnu adresu. Proverite da li ste dobro ukucali i "
 "pokušajte ponovo."
 
-#: src/nautilus-window-manage-views.c:1251
+#: src/nautilus-window-manage-views.c:1259
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -7343,28 +7352,28 @@ msgstr ""
 "Ne može da prikaži „%s“, zato što Nautilus ne može da odredi koje je vrste "
 "datoteka."
 
-#: src/nautilus-window-manage-views.c:1259
+#: src/nautilus-window-manage-views.c:1267
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr "Nautilus nema postavljen pregledač za prikazivanje „%s“."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1271
+#: src/nautilus-window-manage-views.c:1279
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr "Ne može da prikaže „%s“, zato što Nautilus ne podržava %s: lokacije."
 
-#: src/nautilus-window-manage-views.c:1277
+#: src/nautilus-window-manage-views.c:1285
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "Ne može da prikaže „%s“, zato što je pokušaj prijave bio neuspešan."
 
-#: src/nautilus-window-manage-views.c:1282
+#: src/nautilus-window-manage-views.c:1290
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Ne može da prikaže „%s“, zato što je pristup odbijen."
 
-#: src/nautilus-window-manage-views.c:1293
+#: src/nautilus-window-manage-views.c:1301
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -7373,13 +7382,13 @@ msgstr ""
 "Ne može da prikaže „%s“, zato što ne može pronaći domaćina „%s“. Proverite "
 "da li ste dobro ukucali i da li su postavke vašeg proksija ispravne. "
 
-#: src/nautilus-window-manage-views.c:1301
+#: src/nautilus-window-manage-views.c:1309
 #, c-format
 msgid "Couldn't display \"%s\". Check that your proxy settings are correct."
 msgstr ""
 "Ne može da prikaže „%s“. Proverite da li je vaš proksi ispravno postavljen."
 
-#: src/nautilus-window-manage-views.c:1308
+#: src/nautilus-window-manage-views.c:1316
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -7390,7 +7399,7 @@ msgstr ""
 "glavnim SMB pretraživačem.\n"
 "Proverite da li je SMB server pokrenut u lokalnoj mreži."
 
-#: src/nautilus-window-manage-views.c:1320
+#: src/nautilus-window-manage-views.c:1328
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -7401,16 +7410,16 @@ msgstr ""
 "pretraživanja nije pokrenuta. Proverite da li ste pokrenuli Meduza uslugu "
 "pretraživanjam, ili ako nemate indeks, da Meduza indeksiranje radi."
 
-#: src/nautilus-window-manage-views.c:1324
+#: src/nautilus-window-manage-views.c:1332
 msgid "Searching Unavailable"
 msgstr "Pretraživanje nedostupno"
 
-#: src/nautilus-window-manage-views.c:1329
+#: src/nautilus-window-manage-views.c:1337
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus ne može da prikaže „%s“."
 
-#: src/nautilus-window-manage-views.c:1334
+#: src/nautilus-window-manage-views.c:1342
 msgid "Can't Display Location"
 msgstr "Ne može da prikaže lokaciju"
 
