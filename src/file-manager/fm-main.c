@@ -28,6 +28,8 @@
 #include <libnautilus/libnautilus.h>
 
 #include "fm-directory-view.h"
+#include "fm-directory-view-icons.h"
+#include "fm-directory-view-list.h"
 
 static int object_count = 0;
 
@@ -44,9 +46,17 @@ static GnomeObject * make_obj(GnomeGenericFactory *Factory, const char *goad_id,
   GtkObject *dir_view;
   GnomeObject *ctl;
   
-  g_return_val_if_fail(!strcmp(goad_id, "ntl_file_manager"), NULL);
+  g_return_val_if_fail(strcmp(goad_id, "ntl_file_manager_icon_view") == 0 ||
+  		       strcmp(goad_id, "ntl_file_manager_list_view") == 0, NULL);
 
-  dir_view = gtk_object_new(fm_directory_view_get_type(), NULL);
+  if (strcmp (goad_id, "ntl_file_manager_icon_view") == 0)
+  {
+    dir_view = gtk_object_new(fm_directory_view_icons_get_type(), NULL);
+  }
+  else
+  {
+    dir_view = gtk_object_new(fm_directory_view_list_get_type(), NULL);
+  }
 
   g_return_val_if_fail(dir_view, NULL);
   

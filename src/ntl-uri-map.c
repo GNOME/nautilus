@@ -321,14 +321,13 @@ nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
       else if(!strcmp(navinfo->navinfo.content_type, "special/directory")
               || !strcmp(navinfo->navinfo.content_type, "application/x-nautilus-vdir"))
         {
-          navinfo->default_content_iid = "ntl_file_manager";
+          navinfo->default_content_iid = "ntl_file_manager_icon_view";
           navinfo->content_identifiers = g_slist_append (
           	navinfo->content_identifiers, 
-          	nautilus_view_identifier_new (navinfo->default_content_iid, "Icons"));
-	  /* FIXME: Test of multiple items, replace with working case */
+          	nautilus_view_identifier_new ("ntl_file_manager_icon_view", "Icons"));
           navinfo->content_identifiers = g_slist_append (
           	navinfo->content_identifiers, 
-          	nautilus_view_identifier_new ("bogus_test_iid", "List"));
+          	nautilus_view_identifier_new ("ntl_file_manager_list_view", "List"));
         }
       else
         {

@@ -596,7 +596,6 @@ init (FMDirectoryView *directory_view)
 	gtk_widget_show(directory_view->scroll_frame);
 
 	gtk_container_add(GTK_CONTAINER(directory_view), directory_view->scroll_frame);
-	fm_directory_view_set_mode (directory_view, FM_DIRECTORY_VIEW_MODE_ICONS);
 }
 
 
@@ -746,9 +745,12 @@ setup_base_uri (FMDirectoryView *view)
 	if (txt_uri == NULL)
 		return;
 
-	icon_container = get_icon_container (view);
-	if (icon_container != NULL)
-		gnome_icon_container_set_base_uri (icon_container, txt_uri);
+	if (view_has_icon_container (view))
+	{
+		icon_container = get_icon_container (view);
+		if (icon_container != NULL)
+			gnome_icon_container_set_base_uri (icon_container, txt_uri);
+	}
 
 	g_free (txt_uri);
 }
@@ -914,7 +916,9 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 	fm_directory_view_stop (view);
 
 	if(view_has_icon_container(view))
+	{
 		gnome_icon_container_clear(get_icon_container(view));
+	}
 	if(view_has_flist(view))
 		gtk_clist_clear(GTK_CLIST(get_flist(view)));
 

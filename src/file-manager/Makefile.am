@@ -40,6 +40,10 @@ ntl_file_manager_SOURCES=		\
 	$(dfos_corba_srcs)		\
 	fm-directory-view.h		\
 	fm-directory-view.c		\
+	fm-directory-view-icons.h	\
+	fm-directory-view-icons.c	\
+	fm-directory-view-list.h	\
+	fm-directory-view-list.c	\
 	fm-directory.h			\
 	fm-directory.c			\
 	fm-vfs-directory.h		\

@@ -1,3 +1,35 @@
+2000-01-10  John Sullivan  <sullivan@eazel.com>
+
+	First step at splitting the directory view into separate
+	icon and list views. List view compiles and runs now,
+	but is still inaccessible from the UI.
+
+	* src/file-manager/fm-directory-view-icons.h:
+	* src/file-manager/fm-directory-view-icons.c:
+	* src/file-manager/fm-directory-view-list.h:
+	* src/file-manager/fm-directory-view-list.c:
+	New files. These implement two subclasses of FMDirectoryView.
+	Currently the subclasses are trivial; the only code in the 
+	subclasses other than boilerplate is the one line that sets 
+	the view mode. Later I'll push the rest of the relevant code
+	down into the subclasses.
+	* src/file-manager/Makefile.am
+	Added the four new files to the build.
+	* src/file-manager/fm-directory-view.c: (init): Removed the
+	call to fm_directory_view_set_mode since the subclasses are
+	responsible for this now.
+	(setup_base_uri): Don't call get_icon_container for non-icon
+	views, as it asserts if you do; this was broken but since
+	you couldn't switch to a non-icon view we didn't realize it.
+	* src/file-manager/fm-main.c: (make_obj): Now calls either
+	fm_directory_view_icons_get_type() or fm_directory_view_list_get_type()
+	depending on the goad_id.
+	* src/file-manager/ntl-file-manager.goad: Replaced entry for
+	ntl_file_manager with two, one for ntl_file_manager_icon_view
+	and one for ntl_file_manager_list_view
+	* src/ntl-uri-map.c: (nautilus_navinfo_new): Now it sets up
+	the two content views for directories with their new goad ids.
+
 2000-01-10  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus/ntl-view-frame.c, libnautilus/ntl-view-frame.c:
