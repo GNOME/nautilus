@@ -284,7 +284,9 @@ nautilus_make_uri_list_from_strv (const char * const *strv)
 
 gboolean
 nautilus_application_startup (NautilusApplication *application,
-			      gboolean manage_desktop,
+			      gboolean kill_shell,
+			      gboolean stop_desktop,
+			      gboolean start_desktop,
 			      const char *urls[])
 {
 	CORBA_Environment ev;
@@ -306,7 +308,7 @@ nautilus_application_startup (NautilusApplication *application,
 	 */
 	/* FIXME: You will get multiple druids if you invoke nautilus again. */
 	if (!nautilus_user_main_directory_exists ()) {
-		nautilus_first_time_druid_show (application, manage_desktop, urls);
+		nautilus_first_time_druid_show (application, start_desktop, urls);
 		return TRUE;
 	}
 
@@ -404,20 +406,25 @@ nautilus_application_startup (NautilusApplication *application,
 		}
 	}
 
-	/* Set up the desktop. */
-	if (manage_desktop) {
-		Nautilus_Shell_manage_desktop (shell, &ev);
-	}
+	if (kill_shell) {
+		Nautilus_Shell_quit (shell, &ev);
+	} else {
+		if (start_desktop) {
+			Nautilus_Shell_start_desktop (shell, &ev);
+		}
 
-  	/* Create the other windows. */
-	if (urls != NULL) {
-		url_list = nautilus_make_uri_list_from_strv (urls);
-		Nautilus_Shell_open_windows (shell, url_list, &ev);
-		CORBA_free (url_list);
-	}
+		if (stop_desktop) {
+			Nautilus_Shell_stop_desktop (shell, &ev);
+		}
 
-	if (!manage_desktop && urls == NULL) {
-		Nautilus_Shell_open_default_window (shell, &ev);
+	  	/* Create the other windows. */
+		if (urls != NULL) {
+			url_list = nautilus_make_uri_list_from_strv (urls);
+			Nautilus_Shell_open_windows (shell, url_list, &ev);
+			CORBA_free (url_list);
+		} else if (!start_desktop && !stop_desktop) {
+			Nautilus_Shell_open_default_window (shell, &ev);
+		}
 	}
 
 	/* We're done with the shell now, so let it go. */
@@ -470,8 +477,11 @@ nautilus_application_open_desktop (NautilusApplication *application)
 void
 nautilus_application_close_desktop (void)
 {
-	gtk_widget_destroy (GTK_WIDGET (nautilus_application_desktop));
-	if (nautilus_application_window_list == NULL) {
+	if (nautilus_application_desktop != NULL) {
+		gtk_widget_destroy (GTK_WIDGET (nautilus_application_desktop));
+	}
+	
+	if (nautilus_application_window_list == NULL && gtk_main_level () > 0) {
 		gtk_main_quit ();
 	}
 }
@@ -479,7 +489,7 @@ nautilus_application_close_desktop (void)
 void
 nautilus_application_close_all_windows (void)
 {
-	while (nautilus_application_window_list) {
+	while (nautilus_application_window_list != NULL) {
 		nautilus_window_close (NAUTILUS_WINDOW (nautilus_application_window_list->data));
 	}
 }

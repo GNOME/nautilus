@@ -82,10 +82,10 @@ druid_finished (GtkWidget *druid_page)
 		else
 			signup_uris[0] = "eazel:register";
 		signup_uris[1] = NULL;
-		nautilus_application_startup(save_application, save_manage_desktop, &signup_uris[0]);
+		nautilus_application_startup(save_application, FALSE, save_manage_desktop, FALSE, &signup_uris[0]);
 		
 	} else {
-		nautilus_application_startup(save_application, save_manage_desktop, NULL);
+		nautilus_application_startup(save_application, FALSE, save_manage_desktop, FALSE, NULL);
 	}
 }
 

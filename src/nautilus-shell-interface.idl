@@ -11,7 +11,9 @@ module Nautilus {
 	interface Shell : ::Bonobo::Unknown {
 		oneway void open_windows (in URIList uris);
 		oneway void open_default_window ();
-		oneway void manage_desktop ();
+		oneway void start_desktop ();
+		oneway void stop_desktop ();
+		oneway void quit ();
 	};
 
 };

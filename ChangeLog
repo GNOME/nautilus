@@ -1,3 +1,19 @@
+2000-08-02  Michael Engber  <engber@eazel.com>
+
+	* src/nautilus-application.c: (nautilus_application_startup),
+	(nautilus_application_close_desktop),
+	(nautilus_application_close_all_windows):
+	* src/nautilus-application.h:
+	* src/nautilus-first-time-druid.c: (druid_finished):
+	* src/nautilus-main.c: (main):
+	* src/nautilus-shell-interface.idl:
+	* src/nautilus-shell.c: (nautilus_shell_get_epv),
+	(corba_start_desktop), (corba_stop_desktop), (corba_quit):
+	Changed command line options: renamed --manage-destop to
+	--start-desktop, added --stop-desktop, added --quit. Bug#1847
+	2 new corba calls for nautilus shell, one for starting the
+	desktop and one for quitting.
+
 2000-08-02  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 1877 (Customize window doesn't come to front if

@@ -36,6 +36,7 @@
 #include "nautilus-desktop-window.h"
 #include <gtk/gtklabel.h>
 #include <gtk/gtkframe.h>
+#include <gtk/gtkmain.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
@@ -55,7 +56,11 @@ static void corba_open_windows              (PortableServer_Servant  servant,
 					     CORBA_Environment      *ev);
 static void corba_open_default_window       (PortableServer_Servant  servant,
 					     CORBA_Environment      *ev);
-static void corba_manage_desktop            (PortableServer_Servant  servant,
+static void corba_start_desktop             (PortableServer_Servant  servant,
+					     CORBA_Environment      *ev);
+static void corba_stop_desktop              (PortableServer_Servant  servant,
+					     CORBA_Environment      *ev);
+static void corba_quit	                    (PortableServer_Servant  servant,
 					     CORBA_Environment      *ev);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusShell, nautilus_shell, BONOBO_OBJECT_TYPE)
@@ -72,7 +77,9 @@ nautilus_shell_get_epv (void)
 	static POA_Nautilus_Shell__epv epv;
 	epv.open_windows = corba_open_windows;
 	epv.open_default_window = corba_open_default_window;
-	epv.manage_desktop = corba_manage_desktop;
+	epv.start_desktop = corba_start_desktop;
+	epv.stop_desktop = corba_stop_desktop;
+	epv.quit = corba_quit;
 	return &epv;
 }
 
@@ -256,7 +263,7 @@ corba_open_default_window (PortableServer_Servant servant,
 }
 
 static void
-corba_manage_desktop (PortableServer_Servant servant,
+corba_start_desktop (PortableServer_Servant servant,
 		      CORBA_Environment *ev)
 {
 	NautilusShell	      *shell;
@@ -266,4 +273,20 @@ corba_manage_desktop (PortableServer_Servant servant,
 	application = NAUTILUS_APPLICATION (shell->details->application);
 	
 	nautilus_application_open_desktop (application);
+}
+
+static void
+corba_stop_desktop (PortableServer_Servant servant,
+		      CORBA_Environment *ev)
+{	
+	nautilus_application_close_desktop ();
+}
+
+static void
+corba_quit (PortableServer_Servant servant,
+		      CORBA_Environment *ev)
+{
+	if (gtk_main_level () > 0) {
+		gtk_main_quit ();
+	}
 }

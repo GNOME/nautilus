@@ -47,16 +47,24 @@
 int
 main (int argc, char *argv[])
 {
+	gboolean kill_shell;
+	gboolean stop_desktop;
+	gboolean start_desktop;
 	gboolean perform_self_check;
-	gboolean manage_desktop;
+	
 	poptContext popt_context;
+	const char **args;
+	
 	CORBA_ORB orb;
 	NautilusApplication *application;
+	
 	struct poptOption options[] = {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
 		{ "check", '\0', POPT_ARG_NONE, &perform_self_check, 0, N_("Perform high-speed self-check tests."), NULL },
 #endif
-		{ "manage-desktop", '\0', POPT_ARG_NONE, &manage_desktop, 0, N_("Draw background and icons on desktop."), NULL },
+		{ "quit", '\0', POPT_ARG_NONE, &kill_shell, 0, N_("Quit Nautilus."), NULL },
+		{ "stop-desktop", '\0', POPT_ARG_NONE, &stop_desktop, 0, N_("Don't draw background and icons on desktop."), NULL },
+		{ "start-desktop", '\0', POPT_ARG_NONE, &start_desktop, 0, N_("Draw background and icons on desktop."), NULL },
 		{ NULL, '\0', POPT_ARG_INCLUDE_TABLE, &oaf_popt_options, 0, NULL, NULL },
 		POPT_AUTOHELP
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
@@ -77,11 +85,15 @@ main (int argc, char *argv[])
 #endif
 	
 	/* Initialize the services that we use. */
-	perform_self_check = FALSE;
-	manage_desktop = FALSE;
+	kill_shell		= FALSE;
+	stop_desktop		= FALSE;
+	start_desktop		= FALSE;
+	perform_self_check	= FALSE;
+
         gnome_init_with_popt_table ("nautilus", VERSION,
 				    argc, argv, options, 0,
 				    &popt_context);
+				    
 	g_thread_init (NULL);
 	orb = oaf_init (argc, argv);
 	gnome_vfs_init ();
@@ -98,15 +110,30 @@ main (int argc, char *argv[])
 #endif
 	} else {
 		/* Run the nautilus application. */
-		application = nautilus_application_new ();
-		if (nautilus_application_startup (application,
-						  manage_desktop,
-						  poptGetArgs (popt_context))) {
-			bonobo_main ();
+
+		args = poptGetArgs (popt_context);
+
+		if (kill_shell && args != NULL) {
+			fprintf(stderr, _("nautilus: --quit cannot be used with URIs.\n"));
+		} else if (kill_shell && start_desktop) {
+			fprintf(stderr, _("nautiluls: --quit and --start-desktop cannot be used together.\n"));
+		} else if (stop_desktop && start_desktop) {
+			fprintf(stderr, _("nautiluls: --stop-desktop and --start-desktop cannot be used together.\n"));
+		} else {
+			application = nautilus_application_new ();
+			if (nautilus_application_startup (application,
+							  kill_shell,
+							  stop_desktop,
+							  start_desktop,
+							  args)) {
+				bonobo_main ();
+			}
+			bonobo_object_unref (BONOBO_OBJECT (application));
 		}
-		bonobo_object_unref (BONOBO_OBJECT (application));
+		poptFreeContext(popt_context);
 	}
 
+	
 	gnome_vfs_shutdown ();
 
 	return EXIT_SUCCESS;
