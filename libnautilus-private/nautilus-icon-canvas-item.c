@@ -1278,6 +1278,7 @@ create_label_layout (NautilusIconCanvasItem *item,
 	pango_layout_set_width (layout, floor (nautilus_icon_canvas_item_get_max_text_width (item)) * PANGO_SCALE);
 	pango_layout_set_alignment (layout, PANGO_ALIGN_CENTER);
 	pango_layout_set_spacing (layout, LABEL_LINE_SPACING);
+	pango_layout_set_wrap (layout, PANGO_WRAP_WORD_CHAR);
 
 	/* Create a font description */
 	if (container->details->font) {

@@ -5009,6 +5009,7 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	if (details->rename_widget == NULL) {
 		details->rename_widget = eel_editable_label_new ("Test text");
 		eel_editable_label_set_line_wrap (EEL_EDITABLE_LABEL (details->rename_widget), TRUE);
+		eel_editable_label_set_line_wrap_mode (EEL_EDITABLE_LABEL (details->rename_widget), PANGO_WRAP_WORD_CHAR);
 		eel_editable_label_set_draw_outline (EEL_EDITABLE_LABEL (details->rename_widget), TRUE);
 		eel_editable_label_set_justify (EEL_EDITABLE_LABEL (details->rename_widget), GTK_JUSTIFY_CENTER);
 		gtk_misc_set_padding (GTK_MISC (details->rename_widget), 1, 1);
