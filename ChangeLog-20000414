@@ -1,5 +1,12 @@
 2000-01-04  John Sullivan  <sullivan@eazel.com>
 
+	* src/nautilus-bookmarks-window.c (create_bookmarks_window):
+	Replaced hardwired numbers with constants; specified a minimum
+	size separate from default size and changed parameter to
+	gtk_window_set_policy to prevent shrinking below minimum size.
+
+2000-01-04  John Sullivan  <sullivan@eazel.com>
+
 	After talking with Sopwith and Darin, removed
 	my changes from earlier today. The current framework
 	handles bogus URIs better than I thought, though still

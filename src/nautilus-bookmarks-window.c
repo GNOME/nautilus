@@ -68,6 +68,17 @@ static void	repopulate		      (void);
 
 
 
+/* layout constants */
+
+/* Keep window from shrinking down ridiculously small; numbers are somewhat arbitrary */
+#define BOOKMARKS_WINDOW_MIN_WIDTH	300
+#define BOOKMARKS_WINDOW_MIN_HEIGHT	100
+
+/* Larger size initially; user can stretch or shrink (but not shrink below min) */
+#define BOOKMARKS_WINDOW_INITIAL_WIDTH	500
+#define BOOKMARKS_WINDOW_INITIAL_HEIGHT	200
+
+
 /**
  * create_bookmarks_window:
  * 
@@ -82,7 +93,6 @@ create_bookmarks_window(NautilusBookmarklist *list)
 	GtkWidget *window;
 	GtkWidget *content_area;
 	GtkWidget *list_scroller;
-	GtkWidget *label1;
 	GtkWidget *right_side;
 	GtkWidget *vbox3;
 	GtkWidget *name_label;
@@ -93,12 +103,17 @@ create_bookmarks_window(NautilusBookmarklist *list)
 	bookmarks = list;
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_container_set_border_width (GTK_CONTAINER (window), 10);
+	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
 	gtk_window_set_title (GTK_WINDOW (window), _("nautilus: Bookmarks"));
-	gtk_window_set_default_size (GTK_WINDOW (window), 500, 200);
-	gtk_window_set_policy (GTK_WINDOW (window), TRUE, TRUE, FALSE);
+	gtk_window_set_default_size (GTK_WINDOW (window), 
+				     BOOKMARKS_WINDOW_INITIAL_WIDTH, 
+				     BOOKMARKS_WINDOW_INITIAL_HEIGHT);
+	gtk_widget_set_usize (window, 
+			      BOOKMARKS_WINDOW_MIN_WIDTH, 
+			      BOOKMARKS_WINDOW_MIN_HEIGHT);
+	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
 
-	content_area = gtk_hbox_new (TRUE, 10);
+	content_area = gtk_hbox_new (TRUE, GNOME_PAD);
 	gtk_widget_ref (content_area);
 	gtk_widget_show (content_area);
 	gtk_container_add (GTK_CONTAINER (window), content_area);
@@ -113,17 +128,11 @@ create_bookmarks_window(NautilusBookmarklist *list)
 	gtk_widget_ref (bookmark_list_widget);
 	gtk_widget_show (bookmark_list_widget);
 	gtk_container_add (GTK_CONTAINER (list_scroller), bookmark_list_widget);
-	gtk_clist_set_column_width (GTK_CLIST (bookmark_list_widget), 0, 80);
 	gtk_clist_column_titles_hide (GTK_CLIST (bookmark_list_widget));
 	gtk_clist_set_reorderable(GTK_CLIST (bookmark_list_widget), TRUE);
 	gtk_clist_set_use_drag_icons(GTK_CLIST (bookmark_list_widget), FALSE);
-	 
-	label1 = gtk_label_new (_("label1"));
-	gtk_widget_ref (label1);
-	gtk_widget_show (label1);
-	gtk_clist_set_column_widget (GTK_CLIST (bookmark_list_widget), 0, label1);
 
-	right_side = gtk_vbox_new (FALSE, 10);
+	right_side = gtk_vbox_new (FALSE, GNOME_PAD);
 	gtk_widget_ref (right_side);
 	gtk_widget_show (right_side);
 	gtk_box_pack_start (GTK_BOX (content_area), right_side, TRUE, TRUE, 0);
