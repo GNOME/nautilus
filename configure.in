@@ -632,7 +632,7 @@ AC_CHECK_FUNCS(gnome_canvas_set_dither)
 LIBS="$_libs"
 
 dnl control center
-EAZEL_VERSION_INSIST(control-center, gnomecc --version | awk -F- '{print $3}', >=, CONTROL_CENTER_REQUIRED)
+EAZEL_VERSION_INSIST(control-center, gnomecc --version | awk '{print $3}', >=, CONTROL_CENTER_REQUIRED)
 
 dnl Bonobo
 EAZEL_VERSION_INSIST(bonobo, $GNOME_CONFIG --modversion bonobo | awk -F- '{print $2}', >=, BONOBO_REQUIRED)
