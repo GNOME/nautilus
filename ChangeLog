@@ -1,4 +1,18 @@
-2001-03-26  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+2001-03-27  Andy Hertzfeld  <andy@eazel.com>
+
+	added fm-annotation-window class for adding and editing
+	annotations; only partially implemented at this point.
+
+	* src/file-manager/Makefile.am:
+	* src/file-manager/fm-annotation-window.c:
+	(fm_annotation_window_initialize_class),
+	(fm_annotation_window_initialize),
+	(update_annotation_window_title), (create_annotation_window),
+	(fm_annotation_window_present), (real_destroy):
+	* src/file-manager/fm-annotation-window.h:
+	* src/file-manager/fm-icon-view.c: (annotate_callback):
+
+2001-03-26  Andy Hertzfeld  <andy@eazel.com>
 
 	added frame to rss-control, and made it periodically update,
 	reflecting the last update time in the upper right corner.

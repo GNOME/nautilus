@@ -25,6 +25,7 @@
 #include <config.h>
 #include "fm-icon-view.h"
 
+#include "fm-annotation-window.h"
 #include "fm-desktop-icon-view.h"
 #include "fm-error-reporting.h"
 #include "fm-icon-text-window.h"
@@ -393,10 +394,18 @@ rename_icon_callback (BonoboUIComponent *component, gpointer callback_data, cons
 static void
 annotate_callback (BonoboUIComponent *component, gpointer callback_data, const char *verb)
 {
+	GList *selected_files;
+	NautilusFile *first_file;
+	
 	g_assert (FM_IS_ICON_VIEW (callback_data));
   		
 	/* show the annotation window */
-	g_message ("annotate invoked...");
+	selected_files = fm_directory_view_get_selection (FM_DIRECTORY_VIEW (callback_data));
+	if (selected_files != NULL) {
+		first_file = NAUTILUS_FILE (selected_files->data);
+		fm_annotation_window_present (first_file, FM_DIRECTORY_VIEW (callback_data));
+		g_list_free (selected_files);
+	}
 }
 
 static void
