@@ -1105,7 +1105,8 @@ nautilus_volume_monitor_each_mounted_volume (NautilusVolumeMonitor *monitor,
 
 gboolean
 nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
-						 const char *mount_point)
+						 const char *mount_point,
+						 gboolean should_mount)
 {
 	gboolean is_mounted, found_volume;
 	char *argv[3];
@@ -1130,14 +1131,15 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 	/* Get mount state and then decide to mount/unmount the volume */
 	if (found_volume) {
 		is_mounted = nautilus_volume_monitor_volume_is_mounted (volume);
+		if (should_mount != is_mounted) {
+			argv[0] = is_mounted ? "/bin/umount" : "/bin/mount";
+			argv[1] = (char *) mount_point;
+			argv[2] = NULL;
 
-		argv[0] = is_mounted ? "/bin/umount" : "/bin/mount";
-		argv[1] = (char *) mount_point;
-		argv[2] = NULL;
-
-		exec_err = gnome_execute_async (g_get_home_dir(), 2, argv);
-		if (exec_err == -1) {
-			is_mounted = !is_mounted;
+			exec_err = gnome_execute_async (g_get_home_dir(), 2, argv);
+			if (exec_err == -1) {
+				is_mounted = !is_mounted;
+			}
 		}
 	}
 

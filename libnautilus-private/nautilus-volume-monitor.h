@@ -103,7 +103,8 @@ char 			*nautilus_volume_monitor_get_volume_name 		(const NautilusVolume 		*volu
 
 gboolean               	nautilus_volume_monitor_volume_is_mounted          	(const NautilusVolume 		*volume);
 gboolean               	nautilus_volume_monitor_mount_unmount_removable    	(NautilusVolumeMonitor 		*monitor,
-									   	 const char            		*mount_point);
+									   	 const char            		*mount_point,
+									   	 gboolean			 should_mount);
 gboolean		nautilus_volume_monitor_volume_is_removable		(NautilusVolume 		*volume);
 gboolean               	nautilus_volume_monitor_is_volume_link             	(const char            		*path);
 void                   	nautilus_volume_monitor_each_volume                	(NautilusVolumeMonitor 		*monitor,

@@ -1,3 +1,25 @@
+2000-11-17  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug with "Disks" submenu in desktop context menu where
+	the volume-mounting behavior would sometimes run when the
+	context menu appeared.
+
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_mount_unmount_removable):
+	Added boolean parameter to specify whether to mount or
+	unmount; previously it always toggled the current state.
+
+	* src/file-manager/fm-desktop-icon-view.c: 
+	(mount_parameters_new),	(mount_parameters_free),
+	(mount_parameters_free_wrapper): New little helper functions
+	for dealing with the parameters to the mount_or_unmount callback.
+	(mount_or_unmount_removable_volume): Now specifies whether to
+	mount or unmount based on command state, rather than always
+	toggling; also updates the menu state after the mount/unmount.
+	(update_disks_menu): Pass view as well as mount_path for
+	callback data, using mount_parameters_new & _free.
+
 2000-11-16  Pavel Cisler <pavel@eazel.com>
 
 	reviewed by: Mathieu Lacage  <mathieu@eazel.com>

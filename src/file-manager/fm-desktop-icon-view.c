@@ -51,6 +51,7 @@
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
+#include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-volume-monitor.h>
 #include <src/nautilus-application.h>
 #include <limits.h>
@@ -80,6 +81,10 @@ typedef struct {
 	GnomeDesktopEntry *entry;
 } CallbackData;
 
+typedef struct {
+	FMDesktopIconView *view;
+	char *mount_path;
+} MountParameters;
 
 static void     fm_desktop_icon_view_initialize                           (FMDesktopIconView      *desktop_icon_view);
 static void     fm_desktop_icon_view_initialize_class                     (FMDesktopIconViewClass *klass);
@@ -109,6 +114,7 @@ static gboolean real_supports_auto_layout     	 		  	  (FMIconView  	    *view);
 static void	real_merge_menus 		     	 		  (FMDirectoryView  *view);
 static void	real_update_menus 		     	 		  (FMDirectoryView  *view);
 static gboolean real_supports_zooming 	     	 		  	  (FMDirectoryView  *view);
+static void	update_disks_menu 					  (FMDesktopIconView *view);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView,
@@ -929,6 +935,38 @@ desktop_icons_compare_callback (NautilusIconContainer *container,
 	}
 }
 
+static MountParameters *
+mount_parameters_new (FMDesktopIconView *view, const char *mount_path)
+{
+	MountParameters *new_parameters;
+
+	g_assert (FM_IS_DESKTOP_ICON_VIEW (view));
+	g_assert (!nautilus_str_is_empty (mount_path)); 
+
+	new_parameters = g_new (MountParameters, 1);
+	gtk_object_ref (GTK_OBJECT (view));
+	new_parameters->view = view;
+	new_parameters->mount_path = g_strdup (mount_path);
+
+	return new_parameters;
+}
+
+static void
+mount_parameters_free (MountParameters *parameters)
+{
+	g_assert (parameters != NULL);
+
+	gtk_object_unref (GTK_OBJECT (parameters->view));
+	g_free (parameters->mount_path);
+	g_free (parameters);
+}
+
+static void
+mount_parameters_free_wrapper (gpointer user_data)
+{
+	mount_parameters_free ((MountParameters *)user_data);
+}
+
 static void
 mount_or_unmount_removable_volume (BonoboUIComponent *component,
 	       			   const char *path,
@@ -936,6 +974,8 @@ mount_or_unmount_removable_volume (BonoboUIComponent *component,
 	       			   const char *state,
 	       			   gpointer user_data)
 {
+	MountParameters *parameters;
+
 	g_assert (BONOBO_IS_UI_COMPONENT (component));
 
 	if (strcmp (state, "") == 0) {
@@ -943,8 +983,10 @@ mount_or_unmount_removable_volume (BonoboUIComponent *component,
 		return;
 	}
 
+	parameters = (MountParameters *)user_data;
 	nautilus_volume_monitor_mount_unmount_removable 
-		(nautilus_volume_monitor_get (), (char *)user_data); 
+		(nautilus_volume_monitor_get (), parameters->mount_path, strcmp (state, "1") == 0);
+	update_disks_menu (parameters->view);
 }	       
 
 /* Fill in the context menu with an item for each disk that is or could be mounted */
@@ -1002,8 +1044,8 @@ update_disks_menu (FMDesktopIconView *view)
 			(view->details->ui,
 			 command_name,
 			 mount_or_unmount_removable_volume,
-			 g_strdup (volume->mount_path),
-			 g_free);
+			 mount_parameters_new (view, volume->mount_path),
+			 mount_parameters_free_wrapper);
 
 		g_free (command_name);
 	}
