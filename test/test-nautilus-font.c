@@ -25,6 +25,11 @@
 #include <libart_lgpl/art_svp_vpath_stroke.h>
 #include <libart_lgpl/art_rgb_svp.h>
 #include <libart_lgpl/art_svp_vpath.h>
+#include <libart_lgpl/art_rgb.h>
+
+#include <libgnomevfs/gnome-vfs-init.h>
+
+/* Danger! Many Gremlins live here. */
 
 /* FIXME: Need to account for word endianess in these macros */
 #define ART_OPACITY_NONE 255
@@ -54,67 +59,144 @@
 #define BLUE		ART_RGB_COLOR_PACK (0, 0, 255)
 #define WHITE		ART_RGB_COLOR_PACK (255, 255, 255)
 #define BLACK		ART_RGB_COLOR_PACK (0, 0, 0)
-#define TRANSPARENT	ART_RGB_COLOR_PACK (255, 255, 255)
+#define TRANSPARENT	ART_RGBA_COLOR_PACK (255, 255, 255, 0)
 
-static void
-gdk_pixbuf_draw_rectangle (GdkPixbuf		*pixbuf,
-			   const ArtIRect	*rectangle,
-			   guint32		color)
+static GdkPixbuf *
+create_named_background (const char *name) 
 {
-	ArtVpath vpath[6];
-	ArtSVP	 *svp;
-
-	g_return_if_fail (pixbuf != NULL);
-	g_return_if_fail (rectangle != NULL);
-	g_return_if_fail (rectangle->x1 >  rectangle->x0);
-	g_return_if_fail (rectangle->y1 >  rectangle->y0);
-
-	vpath[0].code = ART_MOVETO;
-	vpath[0].x = rectangle->x0;
-	vpath[0].y = rectangle->y0;
-
-	vpath[1].code = ART_LINETO;
-	vpath[1].x = rectangle->x1;
-	vpath[1].y = rectangle->y0;
-
-	vpath[2].code = ART_LINETO;
-	vpath[2].x = rectangle->x1;
-	vpath[2].y = rectangle->y1;
-
-	vpath[3].code = ART_LINETO;
-	vpath[3].x = rectangle->x0;
-	vpath[3].y = rectangle->y1;
-
-	vpath[4].code = ART_LINETO;
-	vpath[4].x = rectangle->x0;
-	vpath[4].y = rectangle->y0;
-
-	vpath[5].code = ART_END;
-
-	svp = art_svp_vpath_stroke (vpath,
-				    ART_PATH_STROKE_JOIN_BEVEL,
-				    ART_PATH_STROKE_CAP_SQUARE,
-				    1.0,
-				    1.0,
-				    1.0);
-
-	art_rgb_svp_alpha (svp,
-			   0,
-			   0,
-			   gdk_pixbuf_get_width (pixbuf),
-			   gdk_pixbuf_get_height (pixbuf),
-			   color,
-			   gdk_pixbuf_get_pixels (pixbuf),
-			   gdk_pixbuf_get_rowstride (pixbuf),
-			   NULL);
+	GdkPixbuf	*pixbuf;
+	char		*path;
 	
-	art_svp_free (svp);
+	g_return_val_if_fail (name != NULL, NULL);
+	
+	path = nautilus_make_path (NAUTILUS_DATADIR "/backgrounds", name);
+
+	if (path == NULL) {
+		return NULL;
+	}
+
+	pixbuf = gdk_pixbuf_new_from_file (path);
+	g_free (path);
+
+	return pixbuf;
 }
 
 static void
-draw_rectangle_around (GdkPixbuf	*pixbuf,
+rgba_run_alpha (art_u8 *buf, art_u8 r, art_u8 g, art_u8 b, int alpha, int n)
+{
+  int i;
+  int v;
+
+  for (i = 0; i < n; i++)
+    {
+      v = *buf;
+      *buf++ = v + (((r - v) * alpha + 0x80) >> 8);
+      v = *buf;
+      *buf++ = v + (((g - v) * alpha + 0x80) >> 8);
+      v = *buf;
+      *buf++ = v + (((b - v) * alpha + 0x80) >> 8);
+
+      *buf++ = 255;
+    }
+}
+
+typedef void (*RunFunc) (art_u8 *buf, art_u8 r, art_u8 g, art_u8 b, int alpha, int n);
+
+static void
+pixbuf_draw_rectangle (GdkPixbuf	*pixbuf,
 		       const ArtIRect	*rectangle,
-		       guint32		color)
+		       guint32		color,
+		       gboolean		filled)
+{
+	guchar		red;
+	guchar		green;
+	guchar		blue;
+	guchar		alpha;
+
+	guint		width;
+	guint		height;
+	guchar		*pixels;
+	guint		rowstride;
+ 	int		y;
+	gboolean	has_alpha;
+	guint		pixel_offset;
+	guchar		*offset;
+
+	guint		rect_width;
+	guint		rect_height;
+
+	ArtIRect	draw_area;
+
+	RunFunc		run_func;
+
+	g_return_if_fail (pixbuf != NULL);
+
+	width = gdk_pixbuf_get_width (pixbuf);
+	height = gdk_pixbuf_get_height (pixbuf);
+	pixels = gdk_pixbuf_get_pixels (pixbuf);
+	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+	has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
+	pixel_offset = has_alpha ? 4 : 3;
+
+	red = ART_RGBA_GET_R (color);
+	green = ART_RGBA_GET_G (color);
+	blue = ART_RGBA_GET_B (color);
+	alpha = ART_RGBA_GET_A (color);
+
+	run_func = has_alpha ? rgba_run_alpha : art_rgb_run_alpha;
+
+	if (rectangle != NULL) {
+		g_return_if_fail (rectangle->x1 >  rectangle->x0);
+		g_return_if_fail (rectangle->y1 >  rectangle->y0);
+		
+		rect_width = rectangle->x1 - rectangle->x0;
+		rect_height = rectangle->y1 - rectangle->y0;
+
+		draw_area = *rectangle;
+	}
+	else {
+		rect_width = width;
+		rect_height = height;
+
+		draw_area.x0 = 0;
+		draw_area.y0 = 0;
+		draw_area.x1 = width;
+		draw_area.y1 = height;
+	}
+
+	if (filled) {
+		offset = pixels + (draw_area.y0 * rowstride) + (draw_area.x0 * pixel_offset);
+
+		for (y = draw_area.y0; y < draw_area.y1; y++) {
+			(*run_func) (offset, red, green, blue, 255, rect_width);
+			offset += rowstride;
+		}
+	}
+	else {
+		/* top */
+		offset = pixels + (draw_area.y0 * rowstride) + (draw_area.x0 * pixel_offset);
+		(*run_func) (offset, red, green, blue, 255, rect_width);
+		
+		/* bottom */
+		offset += ((rect_height - 1) * rowstride);
+		(*run_func) (offset, red, green, blue, 255, rect_width);
+	
+		for (y = draw_area.y0 + 1; y < (draw_area.y1 - 1); y++) {
+			/* left */
+			offset = pixels + (y * rowstride) + (draw_area.x0 * pixel_offset);
+			(*run_func) (offset, red, green, blue, 255, 1);
+			
+			/* right */
+			offset += (rect_width - 1) * pixel_offset;
+			(*run_func) (offset, red, green, blue, 255, 1);
+		}
+	}
+}
+
+static void
+pixbuf_draw_rectangle_around (GdkPixbuf	*pixbuf,
+			      const ArtIRect	*rectangle,
+			      guint32		color)
 {
 	ArtIRect area;
 
@@ -129,7 +211,7 @@ draw_rectangle_around (GdkPixbuf	*pixbuf,
 	area.y0 -= 1;
 	area.x1 += 1;
 	area.y1 += 1;
-	gdk_pixbuf_draw_rectangle (pixbuf, &area, color);
+	pixbuf_draw_rectangle (pixbuf, &area, color, FALSE);
 	area.x0 += 1;
 	area.y0 += 1;
 	area.x1 -= 1;
@@ -159,6 +241,7 @@ main (int argc, char* argv[])
 
 	gtk_init (&argc, &argv);
 	gdk_rgb_init ();
+	gnome_vfs_init ();
 
 	font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("Nimbus Sans L", NULL, NULL, NULL));
 	g_assert (font != NULL);
@@ -166,7 +249,7 @@ main (int argc, char* argv[])
 	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, pixbuf_width, pixbuf_height);
 	g_assert (pixbuf != NULL);
 
-	nautilus_gdk_pixbuf_fill_rectangle_with_color (pixbuf, NULL, TRANSPARENT);
+	pixbuf_draw_rectangle (pixbuf, NULL, TRANSPARENT, TRUE);
 
 	multi_lines_area.x0 = multi_line_x;
 	multi_lines_area.y0 = multi_line_y;
@@ -213,14 +296,14 @@ main (int argc, char* argv[])
 	clip_area.x1 = clip_area.x0 + 100;
 	clip_area.y1 = clip_area.y0 + 30;
 	
-	draw_rectangle_around (pixbuf, &clip_area, RED);
+	pixbuf_draw_rectangle_around (pixbuf, &clip_area, RED);
 
 	whole_area.x0 = 0;
 	whole_area.y0 = 0;
 	whole_area.x1 = whole_area.x0 + pixbuf_width;
 	whole_area.y1 = whole_area.y0 + pixbuf_height;
 
-	draw_rectangle_around (pixbuf, &multi_lines_area, RED);
+	pixbuf_draw_rectangle_around (pixbuf, &multi_lines_area, RED);
 
 	/*
 	 * Multiple text lines test.
@@ -276,6 +359,67 @@ main (int argc, char* argv[])
 					  255,
 					  TRUE);
 
+
+	/*
+	 * Composited text lines test.
+	 */
+	{
+		ArtIRect composited_area;
+		GdkPixbuf *background_pixbuf;
+		GdkPixbuf *text_pixbuf;
+		GdkRectangle dest_rect;
+
+		const char *text = "Foo Bar";
+		const guint font_size = 50;
+
+		background_pixbuf = create_named_background ("pale_coins.png");
+		
+		composited_area.x0 = 270;
+		composited_area.y0 = 80;
+		composited_area.x1 = composited_area.x0 + 200;
+		composited_area.y1 = composited_area.y0 + 200;
+		
+		pixbuf_draw_rectangle_around (pixbuf, &composited_area, RED);
+		
+		dest_rect.x = composited_area.x0;
+		dest_rect.y = composited_area.y0;
+		dest_rect.width = composited_area.x1 - composited_area.x0;
+		dest_rect.height = composited_area.y1 - composited_area.y0;
+
+		nautilus_gdk_pixbuf_render_to_pixbuf_tiled (background_pixbuf,
+							    pixbuf,
+							    &dest_rect,
+							    0,
+							    0);
+
+		gdk_pixbuf_unref (background_pixbuf);
+
+		text_pixbuf = nautilus_gdk_pixbuf_new_from_text (font,
+								 font_size,
+								 font_size,
+								 text,
+								 strlen (text),
+								 BLACK,
+								 255,
+								 FALSE);
+		g_assert (text_pixbuf != NULL);
+
+		gdk_pixbuf_composite (text_pixbuf,
+				      pixbuf,
+				      composited_area.x0,
+				      composited_area.y0,
+				      gdk_pixbuf_get_width (text_pixbuf),
+				      gdk_pixbuf_get_height (text_pixbuf),
+				      (double) composited_area.x0,
+				      (double) composited_area.y0,
+				      1.0,
+				      1.0,
+				      GDK_INTERP_BILINEAR,
+				      255);
+
+		gdk_pixbuf_unref (text_pixbuf);
+	}
+
 	/*
 	 * Text layout test.
 	 */
@@ -300,7 +444,7 @@ main (int argc, char* argv[])
 		layout_area.x1 = layout_area.x0 + max_text_width;
 		layout_area.y1 = layout_area.y0 + 130;
 
-		draw_rectangle_around (pixbuf, &layout_area, RED);
+		pixbuf_draw_rectangle_around (pixbuf, &layout_area, RED);
 		
 		nautilus_text_layout_paint (text_layout,
 					    pixbuf,
@@ -314,7 +458,7 @@ main (int argc, char* argv[])
 		layout_area.x0 += (max_text_width + 20);
 		layout_area.x1 += (max_text_width + 20);
 
-		draw_rectangle_around (pixbuf, &layout_area, RED);
+		pixbuf_draw_rectangle_around (pixbuf, &layout_area, RED);
 		
 		nautilus_text_layout_paint (text_layout,
 					    pixbuf,
@@ -328,7 +472,7 @@ main (int argc, char* argv[])
 		layout_area.x0 += (max_text_width + 20);
 		layout_area.x1 += (max_text_width + 20);
 		
-		draw_rectangle_around (pixbuf, &layout_area, RED);
+		pixbuf_draw_rectangle_around (pixbuf, &layout_area, RED);
 		
 		nautilus_text_layout_paint (text_layout,
 					    pixbuf,
@@ -366,7 +510,7 @@ main (int argc, char* argv[])
 		layout_area.x1 = layout_area.x0 + text_layout->width;
 		layout_area.y1 = layout_area.y0 + text_layout->height;
 
-		draw_rectangle_around (pixbuf, &layout_area, RED);
+		pixbuf_draw_rectangle_around (pixbuf, &layout_area, RED);
 		
 		nautilus_text_layout_paint (text_layout,
 					    pixbuf,
@@ -385,6 +529,8 @@ main (int argc, char* argv[])
 	g_print ("saving test png file to font_test.png\n");
 		
 	gdk_pixbuf_unref (pixbuf);
+
+	gnome_vfs_shutdown ();
 
 	return 0;
 }

@@ -785,8 +785,7 @@ nautilus_scalable_font_draw_text (const NautilusScalableFont *font,
 			invert_area = glyph_area;
 		}
 
-		//if (!art_irect_empty (&invert_area)) {
-		{
+		if (!art_irect_empty (&invert_area)) {
 			guchar *glyph_pixels;
 			guint glyph_rowstride;
 
@@ -1703,7 +1702,7 @@ nautilus_text_layout_paint (const NautilusTextLayout	*text_layout,
 							  text_layout->font_size,
 							  row->text,
 							  row->text_length,
-							  color,
+							  NAUTILUS_RGBA_COLOR_PACK (255, 255, 255, 255),
 							  255,
 							  inverted);
 
@@ -1729,6 +1728,60 @@ nautilus_text_layout_paint (const NautilusTextLayout	*text_layout,
 		} else
 			y += text_layout->baseline_skip / 2;
 	}
+}
+
+GdkPixbuf *
+nautilus_gdk_pixbuf_new_from_text (const NautilusScalableFont  *font,
+				   guint                        font_width,
+				   guint                        font_height,
+				   const char                  *text,
+				   guint                        text_length,
+				   guint32                      color,
+				   guchar                       overall_alpha,
+				   gboolean			inverted)
+{
+	GdkPixbuf *pixbuf;
+	guint text_width;
+	guint text_height;
+
+	g_return_val_if_fail (NAUTILUS_IS_SCALABLE_FONT (font), NULL);
+	g_return_val_if_fail (font_width > 0, NULL);
+	g_return_val_if_fail (font_height > 0, NULL);
+
+	if (text == NULL || text[0] == '\0' || text_length == 0) {
+		return NULL;
+	}
+
+	g_return_val_if_fail (text_length <= strlen (text), NULL);
+
+	nautilus_scalable_font_measure_text (font,
+					     font_width,
+					     font_height,
+					     text,
+					     strlen (text),
+					     &text_width,
+					     &text_height);
+	g_assert (text_width > 0);
+	g_assert (text_height > 0);
+
+	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, text_width, text_height);
+
+	nautilus_gdk_pixbuf_fill_rectangle_with_color (pixbuf, NULL, NAUTILUS_RGBA_COLOR_PACK (0, 0, 0, 0));
+	
+	nautilus_scalable_font_draw_text (font,
+					  pixbuf,
+					  0,
+					  0,
+					  NULL,
+					  font_width,
+					  font_height,
+					  text,
+					  strlen (text),
+					  color,
+					  overall_alpha,
+					  inverted);
+
+	return pixbuf;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

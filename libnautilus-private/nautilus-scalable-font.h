@@ -100,13 +100,13 @@ void                   nautilus_scalable_font_draw_text                       (c
 									       guint                        text_length,
 									       guint32                      color,
 									       guchar                       overall_alpha,
-									       gboolean			    inverted);
+									       gboolean                     inverted);
 void                   nautilus_scalable_font_measure_text_lines              (const NautilusScalableFont  *font,
 									       guint                        font_width,
 									       guint                        font_height,
 									       const char                  *text,
 									       guint                        num_text_lines,
-									       double			    empty_line_height,
+									       double                       empty_line_height,
 									       guint                        text_line_widths[],
 									       guint                        text_line_heights[],
 									       guint                       *max_width_out,
@@ -124,10 +124,10 @@ void                   nautilus_scalable_font_draw_text_lines_with_dimensions (c
 									       const guint                 *text_line_heights,
 									       GtkJustification             justification,
 									       guint                        line_offset,
-									       double			    empty_line_height,
+									       double                       empty_line_height,
 									       guint32                      color,
 									       guchar                       overall_alpha,
-									       gboolean			    inverted);
+									       gboolean                     inverted);
 void                   nautilus_scalable_font_draw_text_lines                 (const NautilusScalableFont  *font,
 									       GdkPixbuf                   *destination_pixbuf,
 									       int                          x,
@@ -138,10 +138,10 @@ void                   nautilus_scalable_font_draw_text_lines                 (c
 									       const char                  *text,
 									       GtkJustification             justification,
 									       guint                        line_offset,
-									       double			    empty_line_height,
+									       double                       empty_line_height,
 									       guint32                      color,
 									       guchar                       overall_alpha,
-									       gboolean			    inverted);
+									       gboolean                     inverted);
 guint                  nautilus_scalable_font_largest_fitting_font_size       (const NautilusScalableFont  *font,
 									       const char                  *text,
 									       guint                        available_width,
@@ -157,6 +157,16 @@ gboolean               nautilus_scalable_font_query_font                      (c
 									       NautilusStringList         **weights,
 									       NautilusStringList         **slants,
 									       NautilusStringList         **set_widths);
+GdkPixbuf *            nautilus_gdk_pixbuf_new_from_text                      (const NautilusScalableFont  *font,
+									       guint                        font_width,
+									       guint                        font_height,
+									       const char                  *text,
+									       guint                        text_length,
+									       guint32                      color,
+									       guchar                       overall_alpha,
+									       gboolean                     inverted);
+
+
 
 /*
  * The following text_layout stuff was shamelessly plundered
@@ -198,7 +208,7 @@ void                nautilus_text_layout_paint (const NautilusTextLayout   *text
 						GdkPixbuf                  *pixbuf,
 						int                         x,
 						int                         y,
-						GtkJustification            just,
+						GtkJustification            justification,
 						guint32                     color,
 						gboolean		    inverted,
 						gboolean		    underlined);

@@ -1,3 +1,18 @@
+2000-09-07  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-scalable-font.h:
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_draw_text), (nautilus_text_layout_paint),
+	(nautilus_gdk_pixbuf_new_from_text):
+	Add function to create a GdkPixbuf from a string.  Also fixed a
+	debuggin typo from before.
+
+	* test/test-nautilus-font.c: (create_named_background),
+	(rgba_run_alpha), (pixbuf_draw_rectangle),
+	(pixbuf_draw_rectangle_around), (main):
+	Add text to GdkPixbuf to GdkPixbuf compositing test.  Also add a
+	bunch of hacks to make the tests more useful.
+	
 2000-09-07  Mathieu Lacage  <mathieu@eazel.com>
 
 	First work toward bug 2353, fixes bug 2570, 1289
