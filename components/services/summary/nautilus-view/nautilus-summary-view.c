@@ -530,6 +530,7 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	view->details->services_icon_widget = create_image_widget_from_uri (view->details->services_icon_name, 
 									    DEFAULT_SUMMARY_BACKGROUND_COLOR,
 									    MAX_IMAGE_WIDTH, MAX_IMAGE_HEIGHT);
+	
 	g_assert (view->details->services_icon_widget != NULL);
 	gtk_box_pack_start (GTK_BOX (view->details->services_icon_container), view->details->services_icon_widget, 0, 0, 0);
 	gtk_widget_show (view->details->services_icon_widget);
@@ -587,11 +588,14 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	
 	gtk_container_add (GTK_CONTAINER (view->details->services_goto_button), view->details->services_goto_label_widget);
 	gtk_box_pack_end (GTK_BOX (view->details->services_button_container), view->details->services_goto_button, FALSE, FALSE, 3);
+	
 	cbdata->nautilus_view = view->details->nautilus_view;
 	cbdata->uri = view->details->services_redirects[view->details->current_service_row - 1];
-	gtk_signal_connect (GTK_OBJECT (view->details->services_goto_button), "clicked", GTK_SIGNAL_FUNC (goto_service_cb), cbdata);
-	gtk_box_pack_start (GTK_BOX (temp_vbox), view->details->services_button_container, FALSE, FALSE, 2);
+	gtk_signal_connect_full (GTK_OBJECT (view->details->services_goto_button), "clicked",
+			         GTK_SIGNAL_FUNC (goto_service_cb), NULL,
+				 cbdata, g_free, FALSE, FALSE);
 	
+	gtk_box_pack_start (GTK_BOX (temp_vbox), view->details->services_button_container, FALSE, FALSE, 2);	
 	gtk_box_pack_end (GTK_BOX (view->details->services_row), temp_vbox, FALSE, FALSE, 2);
 
 }

@@ -1,5 +1,12 @@
 2000-10-20  Andy Hertzfeld  <andy@eazel.com>
 
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (generate_service_entry_row):
+	fixed a memory leak in the summary view, where it was allocating a
+	structure used in a callback but never releasing it.
+	
+2000-10-20  Andy Hertzfeld  <andy@eazel.com>
+
 	* components/hardware/icons/Makefile.am:
 	* components/hardware/icons/CD_drive.png:
 	* components/hardware/nautilus-hardware-view.c:
