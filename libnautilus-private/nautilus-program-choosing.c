@@ -366,13 +366,10 @@ add_startup_timeout (GdkScreen         *screen,
  * this should not be needed.
  */
 static Time
-slowly_and_stupidly_obtain_timestamp (SnDisplay *display)
+slowly_and_stupidly_obtain_timestamp (Display *xdisplay)
 {
 	Window xwindow;
-	Display *xdisplay;
 	XEvent event;
-	
-	xdisplay = sn_display_get_x_display (display);
 	
 	{
 		XSetWindowAttributes attrs;
@@ -511,7 +508,7 @@ void nautilus_launch_show_file (NautilusFile *file,
 			char **old_envp;
 			Time timestamp;
 
-			timestamp = slowly_and_stupidly_obtain_timestamp (sn_display);
+			timestamp = slowly_and_stupidly_obtain_timestamp (GDK_WINDOW_XDISPLAY (GTK_WIDGET (parent_window)->window));
 
 			binary_name = gnome_vfs_mime_application_get_binary_name (application);
 		
@@ -742,7 +739,7 @@ nautilus_launch_application (GnomeVFSMimeApplication *application,
 			char **old_envp;
 			Time timestamp;
 
-			timestamp = slowly_and_stupidly_obtain_timestamp (sn_display);
+			timestamp = slowly_and_stupidly_obtain_timestamp (GDK_WINDOW_XDISPLAY (GTK_WIDGET (parent_window)->window));
 			
 			binary_name = gnome_vfs_mime_application_get_binary_name (application);
 		
@@ -858,6 +855,7 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 	const GList *p;
 	int total, count;
 	char **envp;
+	Time timestamp;
 
 	/* strip the leading command specifier */
 	if (eel_str_has_prefix (desktop_file_uri, NAUTILUS_DESKTOP_COMMAND_SPECIFIER)) {
@@ -947,6 +945,9 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 	}
 
 	error = NULL;
+
+	timestamp = slowly_and_stupidly_obtain_timestamp (GDK_WINDOW_XDISPLAY (GTK_WIDGET (parent_window)->window));
+	gnome_desktop_item_set_launch_time (ditem, timestamp);
 	gnome_desktop_item_launch_with_env (ditem, (GList *) parameter_uris,
 					    flags, envp,
 					    &error);

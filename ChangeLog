@@ -1,5 +1,18 @@
 2005-02-06  Martin Wehner  <martin.wehner@epost.de>
 
+	* libnautilus-private/nautilus-program-choosing.c:
+	(slowly_and_stupidly_obtain_timestamp),
+	(nautilus_launch_show_file), (nautilus_launch_application),
+	(nautilus_launch_desktop_file):
+	Use new gnome_desktop_item_set_launch_time() API. (#166334)
+
+	* configure.in:
+	Require gnome-desktop 2.9.91
+		
+	Patch from Elijah Newren <newren@gmail.com>
+
+2005-02-06  Martin Wehner  <martin.wehner@epost.de>
+
 	* configure.in:
 	Make libexif dependency optional again. (#165773)
 
