@@ -126,6 +126,8 @@ static void nautilus_window_set_arg                (GtkObject           *object,
 static void nautilus_window_get_arg                (GtkObject           *object,
 						    GtkArg              *arg,
 						    guint                arg_id);
+static int  nautilus_window_key_press_event	   (GtkWidget		*widget,
+						    GdkEventKey		*event);
 static void nautilus_window_size_request           (GtkWidget           *widget,
 						    GtkRequisition      *requisition);
 static void nautilus_window_realize                (GtkWidget           *widget);
@@ -176,6 +178,7 @@ nautilus_window_initialize_class (NautilusWindowClass *klass)
 	
 	widget_class->realize = nautilus_window_realize;
 	widget_class->size_request = nautilus_window_size_request;
+	widget_class->key_press_event = nautilus_window_key_press_event;
 
 	klass->add_current_location_to_history_list
 		= real_add_current_location_to_history_list;
@@ -1057,6 +1060,38 @@ nautilus_window_realize (GtkWidget *widget)
 
 	/* Notify the launcher that our window has been realized */
 	nautilus_window_update_launcher (widget->window);
+}
+
+static int
+nautilus_window_key_press_event (GtkWidget *widget,
+		 		 GdkEventKey *event)
+{
+	NautilusWindow *window;
+	gboolean handled;
+
+	window = NAUTILUS_WINDOW (widget);
+
+	handled = FALSE;
+
+	/* Make Control-= an alternate shortcut for Zoom, since on U.S. keyboards
+	 * (at least) Control-+ requires typing the shift key, which is annoying.
+	 * For some reason I don't understand, if I don't test for GDK_plus here,
+	 * Control + Shift + (+/=) on a US keyboard doesn't activate the command,
+	 * though it does if this function is removed.
+	 */
+	if (event->keyval == GDK_equal || event->keyval == GDK_plus) {
+		if ((event->state & (GDK_CONTROL_MASK | GDK_MOD1_MASK)) == GDK_CONTROL_MASK) {
+			nautilus_window_zoom_in (window);
+			handled = TRUE;
+		}
+	}
+
+	if (!handled) {
+		handled = EEL_CALL_PARENT_WITH_RETURN_VALUE
+			(GTK_WIDGET_CLASS, key_press_event, (widget, event));
+	}
+
+	return handled;
 }
 
 static void

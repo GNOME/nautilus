@@ -1,3 +1,17 @@
+2001-05-03  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 8239 ("Zoom In" keyboard shortcut (Control-=) is
+	untypable on many non-US keyboards)
+
+	* src/nautilus-shell-ui.xml: Changed Zoom In shortcut to Control-+,
+	so the more-mnemonic + appears in the menu.
+	
+	* src/nautilus-window.c: (nautilus_window_initialize_class),
+	(nautilus_window_key_press_event):
+	Make Control-+ and Control-= both activate Zoom In.
+
 2001-05-03  Bart Decrem <bart@eazel.com>
 
 	Added more RSS feeds:
@@ -11,8 +25,6 @@
 	Fixed alphabetization error.
 
 	* components/news/news_channels.xml
-
-	
 
 2001-05-03  Darin Adler  <darin@eazel.com>
 
