@@ -1,5 +1,15 @@
 2000-10-10  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* src/nautilus-profiler.c:
+	(nautilus_profiler_bonobo_ui_reset_callback),
+	(nautilus_profiler_bonobo_ui_start_callback),
+	(nautilus_profiler_bonobo_ui_stop_callback),
+	(nautilus_profiler_bonobo_ui_report_callback):
+	* src/nautilus-profiler.h:
+	Make it compile with the new bonobo ui handler stuff.
+	
+2000-10-10  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* src/nautilus-property-browser.c:
 	(make_properties_from_directories):
 	Fix uninitialized variable.

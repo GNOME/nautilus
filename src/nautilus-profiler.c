@@ -39,8 +39,9 @@
 #include <gtk/gtkbutton.h>
 #include <gtk/gtktext.h>
 #include <gtk/gtkvbox.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtksignal.h>
 #include <gtk/gtkvscrollbar.h>
-#include <gtk/gtkhscrollbar.h>
 
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 
@@ -51,58 +52,27 @@ extern void profile_reset (void);
 extern void profile_dump (const char *file_name);
 
 void
-nautilus_profiler_bonobo_ui_reset_callback (BonoboUIHandler *ui_handler, 
-					    gpointer user_data,
-					    const char *path)
+nautilus_profiler_bonobo_ui_reset_callback (BonoboUIComponent *component, 
+					    gpointer user_data, 
+					    const char *verb)
 {
 	profile_reset ();
 }
 
 void
-nautilus_profiler_bonobo_ui_start_callback (BonoboUIHandler *ui_handler, 
-					    gpointer user_data,
-					    const char *path)
+nautilus_profiler_bonobo_ui_start_callback (BonoboUIComponent *component, 
+					    gpointer user_data, 
+					    const char *verb)
 {
 	profile_on ();
 }
+
 void
-nautilus_profiler_bonobo_ui_stop_callback (BonoboUIHandler *ui_handler, 
-					   gpointer user_data,
-					   const char *path)
+nautilus_profiler_bonobo_ui_stop_callback (BonoboUIComponent *component, 
+					   gpointer user_data, 
+					   const char *verb)
 {
 	profile_off ();
-}
-
-static GtkWidget *
-widget_find_ancestor_window (GtkWidget *widget)
-{
-	g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
-	
-	while (widget && !GTK_IS_WINDOW (widget)) {
-		widget = widget->parent;
-	}
-
-	return widget;
-}
-
-static GtkWidget *
-ui_handler_find_ancestor_window (BonoboUIHandler *ui_handler)
-{
-	GtkWidget *something;
-
-	g_return_val_if_fail (ui_handler != NULL, NULL);
-	
-	something = bonobo_ui_handler_get_statusbar (ui_handler);
-	
-	if (!something) {
-		something = bonobo_ui_handler_get_menubar (ui_handler);
-	}
-
-	if (!something) {
-		return NULL;
-	}
-	    
-	return widget_find_ancestor_window (something);
 }
 
 static void
@@ -286,7 +256,7 @@ dump_dialog_show (const char *dump_data, const char *title)
 }
 
 void
-nautilus_profiler_bonobo_ui_report_callback (BonoboUIHandler *ui_handler, 
+nautilus_profiler_bonobo_ui_report_callback (BonoboUIComponent *component, 
 					     gpointer user_data,
 					     const char *path)
 {
@@ -298,14 +268,17 @@ nautilus_profiler_bonobo_ui_report_callback (BonoboUIHandler *ui_handler,
 
 	GtkWidget *window = NULL;
 
+	g_return_if_fail (component != NULL);
+	g_return_if_fail (GTK_IS_WINDOW (user_data));
+
 	dump_file_name = g_strdup ("/tmp/nautilus-profile-log-XXXXXX");
 
 	if (mktemp (dump_file_name) != dump_file_name) {
 		g_free (dump_file_name);
 		dump_file_name = g_strdup_printf ("/tmp/nautilus-profile-log.%d", getpid ());
 	}
-
-	window = ui_handler_find_ancestor_window (ui_handler);
+	
+	window = GTK_WIDGET (user_data);
 
 	widget_set_busy_cursor (window);
 

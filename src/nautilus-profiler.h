@@ -28,19 +28,19 @@
 #ifndef NAUTILUS_PROFILER_H
 #define NAUTILUS_PROFILER_H
 
-#include <bonobo/bonobo-ui-handler.h>
+#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 
-void nautilus_profiler_bonobo_ui_reset_callback  (BonoboUIHandler *ui_handler,
-						  gpointer         user_data,
-						  const char      *path);
-void nautilus_profiler_bonobo_ui_start_callback  (BonoboUIHandler *ui_handler,
-						  gpointer         user_data,
-						  const char      *path);
-void nautilus_profiler_bonobo_ui_stop_callback   (BonoboUIHandler *ui_handler,
-						  gpointer         user_data,
-						  const char      *path);
-void nautilus_profiler_bonobo_ui_report_callback (BonoboUIHandler *ui_handler,
-						  gpointer         user_data,
-						  const char      *path);
+void nautilus_profiler_bonobo_ui_reset_callback  (BonoboUIComponent *component,
+						  gpointer           user_data,
+						  const char        *verb);
+void nautilus_profiler_bonobo_ui_start_callback  (BonoboUIComponent *component,
+						  gpointer           user_data,
+						  const char        *verb);
+void nautilus_profiler_bonobo_ui_stop_callback   (BonoboUIComponent *component,
+						  gpointer           user_data,
+						  const char        *verb);
+void nautilus_profiler_bonobo_ui_report_callback (BonoboUIComponent *component,
+						  gpointer           user_data,
+						  const char        *verb);
 
 #endif /* NAUTILUS_PROFILER_H */
