@@ -243,24 +243,32 @@ nautilus_monitor_process_fam_notifications (gpointer data, gint fd, GdkInputCond
                         g_list_free (uri_list);
                         break;
                 case FAMStartExecuting:
-                        printf ("FAMStartExecuting (unhandled) : %s\n", uri_string);
+			/* FAMStartExecuting is emitted when a file you are monitoring is
+			   executed. This should work for both binaries and shell scripts. It
+			   is unhandled because we don't do anything with this in Nautilus yet */
 			break;
                 case FAMStopExecuting:
-                        printf ("FAMStopExecuting (unhandled) : %s\n", uri_string);
+			/* FamStopExecuting is emitted when a file you are monitoring ceases
+			   execution. Unhandled because Nautilus doesn't do anything with execution
+			   of files yet. */
 			break;
                 case FAMAcknowledge:
-                        printf ("FAMAcknowledge (unhandled) : %s\n", uri_string);
+			/* Called in response to a successful CancelMonitor. Not sure why this
+			   is included in FAM, and hence it is unhandled. */
 			break;
                 case FAMExists:
-			/* Called when you start monitoring a directory, tells you what's
-			   in the directory */
-                        /* printf ("FAMExists (unhandled) : %s\n", uri_string); */
+			/* FAMExists is emmitted when you start monitoring a directory. It tells you 
+			   what's in the directory. Unhandled because we already handle this by
+			   calling gnome_vfs_directory_load, which gives us more information
+			   than merely the filename */
 			break;
                 case FAMEndExist:
-                        /* printf ("FAMEndExst (unhandled) : %s\n", uri_string); */
+			/* This event is emitted generated at the end of a FAMExists stream */
 			break;
                 case FAMMoved:
-                        printf ("FAMMoved (unhandled) : %s\n", uri_string);
+			/* FAMMoved is unhandled because FAM never seems to generate this
+			   event on Linux systems (w/ or w/o IMON). Instead it generates a
+			   FAMDeleted followed by a FAMCreated */
 			break;
                 }
         }
