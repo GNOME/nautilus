@@ -2158,14 +2158,14 @@ gnome_icon_container_initialize (GnomeIconContainer *container)
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
  
  	/* font table - this isnt exactly proportional, but it looks better than computed */
-        /* FIXME: read font from metadata */
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = gdk_font_load("-bitstream-charter-medium-r-normal-*-8-*-*-*-*-*-*-*");
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = gdk_font_load("-bitstream-charter-medium-r-normal-*-8-*-*-*-*-*-*-*");
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = gdk_font_load("-bitstream-charter-medium-r-normal-*-10-*-*-*-*-*-*-*");
-        details->label_font[NAUTILUS_ZOOM_LEVEL_STANDARD] = gdk_font_load("-bitstream-charter-medium-r-normal-*-12-*-*-*-*-*-*-*");
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGE] = gdk_font_load("-bitstream-charter-medium-r-normal-*-14-*-*-*-*-*-*-*");
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = gdk_font_load("-bitstream-charter-medium-r-normal-*-16-*-*-*-*-*-*-*");
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = gdk_font_load("-bitstream-charter-medium-r-normal-*-18-*-*-*-*-*-*-*");
+        /* FIXME: read font from metadata and/or preferences */
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = gdk_font_load("-*-helvetica-medium-r-normal-*-8-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = gdk_font_load("-*-helvetica-medium-r-normal-*-8-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = gdk_font_load("-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_STANDARD] = gdk_font_load("-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGE] = gdk_font_load("-*-helvetica-medium-r-normal-*-14-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = gdk_font_load("-*-helveticar-medium-r-normal-*-18-*-*-*-*-*-*-*");
+        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = gdk_font_load("-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*");
 
 	/* FIXME: Read these from preferences. */
 	details->linger_selection_mode = FALSE;

@@ -708,6 +708,70 @@ gnome_icon_container_dnd_fini (GnomeIconContainer *container)
 	g_free (dnd_info);
 }
 
+/* this routine takes the source pixbuf and returns a new one that's semi-transparent, by
+   clearing every other pixel's alpha value in a checkerboard grip.  We have to do the
+   checkerboard instead of reducing the alpha since it will be turned into an alpha-less
+   gdkpixmap and mask for the actual dragging */
+
+/* FIXME: this should probably be in a graphics effects library instead of here */
+
+static GdkPixbuf* 
+make_semi_transparent(GdkPixbuf* source_pixbuf)
+{
+	gint i, j, temp_alpha;
+	gint width, height, has_alpha, src_rowstride, dst_rowstride;
+	guchar *target_pixels;
+	guchar *original_pixels;
+	guchar *pixsrc;
+	guchar *pixdest;
+	guchar alpha_value;
+	GdkPixbuf *dest_pixbuf;
+	guchar start_alpha_value = 255;
+	
+	has_alpha = gdk_pixbuf_get_has_alpha (source_pixbuf);
+	width = gdk_pixbuf_get_width (source_pixbuf);
+	height = gdk_pixbuf_get_height (source_pixbuf);
+	src_rowstride = gdk_pixbuf_get_rowstride (source_pixbuf);
+	
+	/* allocate the destination pixbuf to be a clone of the source */
+
+	dest_pixbuf = gdk_pixbuf_new(gdk_pixbuf_get_format(source_pixbuf),
+			     TRUE,
+			     gdk_pixbuf_get_bits_per_sample(source_pixbuf),
+			     width,
+			     height);
+	dst_rowstride = gdk_pixbuf_get_rowstride (dest_pixbuf);
+	
+	/* set up pointers to the actual pixels */
+	target_pixels = gdk_pixbuf_get_pixels (dest_pixbuf);
+	original_pixels = gdk_pixbuf_get_pixels (source_pixbuf);
+
+	/* loop through the pixels to do the actual work, copying from the source to the destination */
+	
+	for (i = 0; i < height; i++) {
+		pixdest = target_pixels + i*dst_rowstride;
+		pixsrc = original_pixels + i*src_rowstride;
+		alpha_value = start_alpha_value;
+		for (j = 0; j < width; j++) {
+			*pixdest++ = *(pixsrc++); /* red */
+			*pixdest++ = *(pixsrc++); /* green */
+			*pixdest++ = *(pixsrc++); /* blue */
+			
+			if (has_alpha)
+				temp_alpha = *pixsrc++;
+			else
+				temp_alpha = 255;
+			*pixdest++ = temp_alpha & alpha_value;
+			
+			alpha_value = alpha_value ? 0 : 255;
+		}
+		
+		start_alpha_value = start_alpha_value ? 0 : 255;
+	}
+	
+	return dest_pixbuf;
+}
+
 void
 gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 				     GdkDragAction actions,
@@ -719,7 +783,7 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
 	GdkDragContext *context;
 	GtkArg pixbuf_arg;
 	GnomeCanvasItem *item;
-	GdkPixbuf *pixbuf;
+	GdkPixbuf *pixbuf, *transparent_pixbuf;
 	GdkPixmap *pixmap_for_dragged_file;
 	GdkBitmap *mask_for_dragged_file;
 	int x_offset, y_offset;
@@ -751,10 +815,13 @@ gnome_icon_container_dnd_begin_drag (GnomeIconContainer *container,
         pixbuf_arg.name = "NautilusIconsViewIconItem::pixbuf";
         gtk_object_getv (GTK_OBJECT (item), 1, &pixbuf_arg);
         pixbuf = GTK_VALUE_BOXED (pixbuf_arg);
-        gdk_pixbuf_render_pixmap_and_mask (pixbuf,
+        
+	transparent_pixbuf = make_semi_transparent(pixbuf);
+	gdk_pixbuf_render_pixmap_and_mask (transparent_pixbuf,
 					   &pixmap_for_dragged_file,
 					   &mask_for_dragged_file,
 					   128);
+	gdk_pixbuf_unref(transparent_pixbuf);
 	
         /* compute the image's offset */
 	nautilus_icons_view_icon_item_get_icon_window_rectangle

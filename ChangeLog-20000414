@@ -1,3 +1,15 @@
+2000-03-07  Andy Hertzfeld <andy@eazel.com>
+
+	* libnautilus/gnome-icon-container-dnd.c:
+	implemented semi-transparent dragging by writing a make-semi-transparent
+	routine that generates a gdk-pixbuf with a checkerboarded alpha channel.
+	The dragging is a bit too slow, so we might have to limit this to
+	small images, but for now it's there for all of them.
+	
+	*libnautilus/gnome-icon-container.c:
+	make the text beneath icons use a sans-serif font (helvetica) at Susan's
+	request.
+	
 2000-03-07  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/ntl-uri-map.c (my_notify_when_ready): Use eog-image-viewer,
@@ -131,7 +143,7 @@
 
 2000-03-06  Andy Hertzfeld <andy@eazel.com>
 
-	src/nautilus-index-title.c:
+	* src/nautilus-index-title.c:
 	made the icon displayed in the index panel be constrained to fit by scaling it down
 	proportionally if it exceeds predetermined limits.
 	
