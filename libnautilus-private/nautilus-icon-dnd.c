@@ -864,7 +864,6 @@ nautilus_icon_dnd_fini (NautilusIconContainer *container)
 		gtk_object_destroy (GTK_OBJECT (container->details->dnd_info->shadow));
 
 	nautilus_drag_finalize (&container->details->dnd_info->drag_info);
-	g_free (container->details->dnd_info);
 }
 
 

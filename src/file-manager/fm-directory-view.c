@@ -1948,7 +1948,7 @@ add_component_to_gtk_menu (GtkMenu *menu,
 
 	identifier = nautilus_view_identifier_new_from_content_view (component);
 
-	label = g_strdup_printf ("%s Viewer", identifier->name);
+	label = g_strdup_printf (_("%s Viewer"), identifier->name);
 	menu_item = gtk_menu_item_new_with_label (label);
 	g_free (label);
 
@@ -2204,9 +2204,10 @@ add_component_to_bonobo_menu (BonoboUIHandler *ui_handler,
 	launch_parameters = g_new0 (ViewerLaunchParameters, 1);
 	launch_parameters->identifier = 
 		nautilus_view_identifier_new_from_content_view (component);
-	launch_parameters->file_uri = g_strdup (uri);	
+	launch_parameters->file_uri = g_strdup (uri);
 
-	label = g_strdup_printf ("%s Viewer", launch_parameters->identifier->name);
+	label = g_strdup_printf (_("%s Viewer"),
+				 launch_parameters->identifier->name);
 	add_open_with_bonobo_menu_item (ui_handler, 
 					label, 
 					bonobo_open_location_with_viewer_callback, 
