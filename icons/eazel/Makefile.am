@@ -49,6 +49,7 @@ eazel_DATA =					\
 	i-regular.png				\
 	i-regular-aa.png			\
 	i-regular.xml				\
+	theme_preview.png			\
 	$(NULL)
 
 EXTRA_DIST = $(eazel_DATA)

@@ -4,6 +4,7 @@ arlo_DATA =					\
 	arlo.xml				\
 	i-directory.png				\
 	i-regular.png				\
-	sidebar_tab_pieces.png
+	sidebar_tab_pieces.png			\
+	theme_preview.png
 		
 EXTRA_DIST = $(arlo_DATA)

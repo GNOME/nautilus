@@ -133,7 +133,6 @@ static char *strip_extension                            (const char             
 static char *get_xml_path                               (NautilusPropertyBrowser *property_browser);
 
 #define BROWSER_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
-#define BROWSER_TITLE_COLOR "rgb:DDDD/DDDD/DDDD"
 #define THEME_SELECT_COLOR "rgb:FFFF/9999/9999"
 
 #define BUTTON_SELECT_COLOR "rgb:FFFF/9999/9999"
@@ -230,8 +229,6 @@ nautilus_property_browser_initialize (GtkObject *object)
 	gtk_viewport_set_shadow_type(GTK_VIEWPORT(viewport), GTK_SHADOW_OUT);
 	gtk_widget_set_usize (viewport, 70, -1);
 
-	background = nautilus_get_widget_background (viewport);
-	nautilus_background_set_color (background, BROWSER_TITLE_COLOR);	
 	gtk_box_pack_start (GTK_BOX (property_browser->details->container), property_browser->details->category_container, FALSE, FALSE, 0);
 	gtk_widget_show (property_browser->details->category_container);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (property_browser->details->category_container), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
@@ -253,10 +250,6 @@ nautilus_property_browser_initialize (GtkObject *object)
 	gtk_container_set_border_width (GTK_CONTAINER (property_browser->details->title_box), 0);				
  
   	gtk_widget_show(property_browser->details->title_box);
-	
-	background = nautilus_get_widget_background(property_browser->details->title_box);
-	nautilus_background_set_color(background, BROWSER_TITLE_COLOR);
-	
 	gtk_box_pack_start (GTK_BOX(property_browser->details->content_container), property_browser->details->title_box, FALSE, FALSE, 0);
   	
   	temp_frame = gtk_frame_new(NULL);
@@ -287,8 +280,6 @@ nautilus_property_browser_initialize (GtkObject *object)
   	temp_box = gtk_event_box_new();
 	gtk_container_set_border_width (GTK_CONTAINER (temp_box), 0);				
   	gtk_widget_show(temp_box);
-	background = nautilus_get_widget_background(temp_box);
-	nautilus_background_set_color(background, BROWSER_TITLE_COLOR);
 
   	temp_frame = gtk_frame_new(NULL);
   	gtk_frame_set_shadow_type(GTK_FRAME(temp_frame), GTK_SHADOW_IN);

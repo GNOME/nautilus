@@ -178,6 +178,17 @@ nautilus_theme_make_selector (const char *theme_name)
 	char *pixbuf_file, *temp_str ;
 	GdkPixbuf *pixbuf;
 	
+	/* first, see if we can find an explicit preview */
+	temp_str = g_strdup_printf ("%s/%s", theme_name, "theme_preview.png");
+	pixbuf_file = nautilus_pixmap_file(temp_str);
+	g_free (temp_str);
+	if (pixbuf_file != NULL) {
+		pixbuf = gdk_pixbuf_new_from_file (pixbuf_file);
+		g_free (pixbuf_file);
+		return pixbuf;
+	}
+	
+	/* now look for a directory */	
 	temp_str = g_strdup_printf ("%s/%s", theme_name, "i-directory.png");
 	pixbuf_file = nautilus_pixmap_file(temp_str);
 	g_free (temp_str);

@@ -1,3 +1,19 @@
+2000-07-24  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-theme.c:
+	(nautilus_theme_make_selector):
+	made it use a theme preview icon, if available
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize):
+	got rid of explicit backgrounds for the three panels, so they use whatever is
+	specified by the current theme
+	* icons/arlo/Makefile.am:
+	* icons/arlo/theme_preview.png:
+	added preview icon for arlo theme
+	* icons/eazel/Makefile.am:
+	* icons/eazel/theme_preview.png:
+	added preview icon for eazel theme
+
 2000-07-24  Pavel Cisler <pavel@eazel.com>
 
 	* RENAMING:
