@@ -30,7 +30,6 @@
 #include <config.h>
 #include "fm-directory-view.h"
 
-#include "fm-desktop-icon-view.h"
 #include "fm-error-reporting.h"
 #include "fm-properties-window.h"
 #include <libgnome/gnome-url.h>

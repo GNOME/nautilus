@@ -13,6 +13,7 @@ GNOME_DESKTOP_REQUIRED=2.1.0
 GNOME_REQUIRED=2.1.1
 GNOME_UI_REQUIRED=2.1.1
 GNOME_VFS_REQUIRED=2.1.5
+ORBIT_REQUIRED=2.4.0
 PANGO_REQUIRED=1.1.2
 GTK_REQUIRED=2.1.1
 MEDUSA_REQUIRED=0.5.1
@@ -44,8 +45,6 @@ AC_PROG_MAKE_SET
 AM_DISABLE_STATIC
 AM_PROG_LIBTOOL
 
-AM_PATH_ORBIT2
-
 PKG_CHECK_MODULES(ALL, \
 	esound >= $ESOUND_REQUIRED \
 	bonobo-activation-2.0 >= $BONOBO_ACTIVATION_REQUIRED \
@@ -53,6 +52,7 @@ PKG_CHECK_MODULES(ALL, \
 	glib-2.0 >= $GLIB_REQUIRED \
 	gnome-desktop-2.0 >= $GNOME_DESKTOP_REQUIRED \
 	gnome-vfs-2.0 >= $GNOME_VFS_REQUIRED \
+	ORBit-2.0 >= $ORBIT_REQUIRED\
 	pango >= $PANGO_REQUIRED \
 	gtk+-2.0 >= $GTK_REQUIRED \
 	libart-2.0 >= $ART_REQUIRED \
@@ -96,6 +96,11 @@ AM_CONDITIONAL(ENABLE_PROFILER, test "x$ENABLE_PROFILER" = "x1")
 dnl ==========================================================================
 
 AC_PATH_PROG(GLIB_GENMARSHAL, glib-genmarshal)
+
+dnl ==========================================================================
+
+ORBIT_IDL="`$PKG_CONFIG --variable=orbit_idl ORBit-2.0`"
+AC_SUBST(ORBIT_IDL)
 
 dnl ==========================================================================
 

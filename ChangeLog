@@ -1,3 +1,15 @@
+2003-01-08  Alex Duggan  <aldug@gnome.org>
+
+	* configure.in:
+	Use pkg-config instead of orbit2-config. (fixes #73299)
+
+	* libnautilus-private/nautilus-icon-container.c:
+	Remove unneccessary include of libnautilus/nautilus-clipboard.h
+
+	* src/file-manager/fm-directory-view.c:
+	Remove unnecessary include of fm-desktop-icon-view.h
+	Patch from David Bordoley <bordoley@msu.edu>
+
 2003-01-07  Alex Duggan  <aldug@gnome.org>
 
 	* components/notes/Nautilus_View_notes.server.in.in: s/Nodes/Notes/
@@ -667,7 +679,7 @@
 	* src/nautilus-window-menus.c: remove nautilus-preferences-dialog.h
 	from the includes
 
-2002-11-04  Diego Gonz·lez  <diego@pemas.net>
+2002-11-04  Diego Gonz√°lez  <diego@pemas.net>
 
 	* src/nautilus-window-toolbars.c: (throbber_set_throbbing):
 	Use bonobo_pbclient_set_value_async instead of 
@@ -3351,7 +3363,7 @@ Thu May 30 13:14:58 2002  George Lebl <jirka@5z.com>
 
 	* libnautilus-private/nautilus-icon-container.c (size_allocate):
 	Don't relayout when window height changes unless we need it.
-	Based on a patch by Jˆrgen Viksell <jorgen.viksell@telia.com>
+	Based on a patch by J√∂rgen Viksell <jorgen.viksell@telia.com>
 
 Thu May 30 10:02:30 2002  George Lebl <jirka@5z.com>
 
@@ -3499,7 +3511,7 @@ Thu May 30 10:02:30 2002  George Lebl <jirka@5z.com>
 	Move disconnect_model_handlers from finalize to destroy.
 	This fixes a problem with signals arrive after the view is destroyed.
 
-	Patch from Gustavo Gir·ldez <gustavo.giraldez@gmx.net>
+	Patch from Gustavo Gir√°ldez <gustavo.giraldez@gmx.net>
 
 2002-05-23  Alex Larsson  <alexl@redhat.com>
 
@@ -4442,7 +4454,7 @@ Thu Apr 25 12:22:57 2002  Jonathan Blandford  <jrb@gnome.org>
 	Now that BonoboWindow has been fixed, it is no longer necessary
 	to create and set the UIContainer. 
 	
-2002-04-22	Diego Gonz·lez  <diego@pemas.net>
+2002-04-22	Diego Gonz√°lez  <diego@pemas.net>
 
 	* src/file-manager/fm-list-model.[c-h]
 	  (fm_list_model_get_sort_column_id_from_attribute): fix typo
@@ -4510,7 +4522,7 @@ Tue Apr 23 16:18:05 2002  Owen Taylor  <otaylor@redhat.com>
 
 	* libnautilus-private/nautilus-directory-background.c:
 	Remove deprecated usage of gnome-config.
-	Patch by Diego Gonz·lez <diego@pemas.net>
+	Patch by Diego Gonz√°lez <diego@pemas.net>
 	
 2002-04-21  Alexander Larsson  <alla@lysator.liu.se>
 
@@ -4619,12 +4631,12 @@ Tue Apr 23 16:18:05 2002  Owen Taylor  <otaylor@redhat.com>
 	Don't show translator credits when we don't need to.
 	Also add myself as an author :)
 	
-2002-04-20  Diego Gonz·lez  <diego@pemas.net>
+2002-04-20  Diego Gonz√°lez  <diego@pemas.net>
 
 	* src/nautilus-preferences-dialog.c: split "Windows & Desktop" into two
 	  blocks "Windows" and "Desktop & Trash". Fixes bug 72931.
 
-2002-04-20  Diego Gonz·lez  <diego@pemas.net>
+2002-04-20  Diego Gonz√°lez  <diego@pemas.net>
 
 	* libnautilus-private/nautilus-find-icon-image.c (make_full_icon_path):
 	  if the path is not partial also check that the icon exists with the
@@ -4709,7 +4721,7 @@ Tue Apr 23 16:18:05 2002  Owen Taylor  <otaylor@redhat.com>
 	* src/nautilus-window.c: (nautilus_window_instance_init):
 	Set initial title to "Nautilus". Fixes #74627.
 
-2002-04-19	Diego Gonz·lez  <diego@pemas.net>
+2002-04-19	Diego Gonz√°lez  <diego@pemas.net>
 
 	* src/nautilus-window-menus.c (forget_history_if_confirmed):
 	  use eel_create_question_dialog to show the buttons with the
@@ -5527,12 +5539,12 @@ Tue Apr 23 16:18:05 2002  Owen Taylor  <otaylor@redhat.com>
 	the title is missing. This handles nice conversion to
 	utf8.
 
-2002-03-10  Diego Gonz·lez  <dggonz@yahoo.com>
+2002-03-10  Diego Gonz√°lez  <dggonz@yahoo.com>
 
 	* components/music/nautilus-music-vew.c (read_id_tag): convert
 	title, comments, artist and album to UTF-8
 
-2002-03-11 Diego Gonz·lez  <dggonz@yahoo.com>
+2002-03-11 Diego Gonz√°lez  <dggonz@yahoo.com>
 
 	* components/music/nautilus-music-view.c (go_to_next_track):
 	Fix a crash where the music view would crash after playing the
@@ -6375,7 +6387,7 @@ Tue Apr 23 16:18:05 2002  Owen Taylor  <otaylor@redhat.com>
 
 2002-03-03  Alexander Larsson  <alla@lysator.liu.se>
 
-	Patch from Diego Gonz·lez <dggonz@yahoo.com>.
+	Patch from Diego Gonz√°lez <dggonz@yahoo.com>.
 
 	* libnautilus-private/nautilus-horizontal-splitter.c:
 	(splitter_hide), (splitter_show), (splitter_is_hidden),
@@ -11263,7 +11275,7 @@ Tue Nov 20 21:45:43 2001  Owen Taylor  <otaylor@redhat.com>
 	Work around gcc bug with the directory named string. Switch to use
 	new calls in cases where the old ones are gone.
 	
-2001-10-13  Carlos PerellÛ MarÌn <carlos@gnome-db.org>
+2001-10-13  Carlos Perell√≥ Mar√≠n <carlos@gnome-db.org>
 
         * configure.in (ALL_LINGUAS): Added pt
 
@@ -12603,7 +12615,7 @@ Tue Nov 20 21:45:43 2001  Owen Taylor  <otaylor@redhat.com>
 	(services_button_callback): Removed.
 	(nautilus_window_initialize_menus_part_1): Removed eazel services.
 
-	* src/nautilus-window≠toolbars.c: Rmoved header includes for eazel
+	* src/nautilus-window¬≠toolbars.c: Rmoved header includes for eazel
 	services.
 	(set_up_toolbar_images): Services removed.
 
@@ -13547,7 +13559,7 @@ Tue Nov 20 21:45:43 2001  Owen Taylor  <otaylor@redhat.com>
 
 2001-06-25  Ramiro Estrugo  <ramiro@fateware.com>
 
-	Patch from Miguel RodrÌguez PÈrez  <migras@atlas.uvigo.es>
+	Patch from Miguel Rodr√≠guez P√©rez  <migras@atlas.uvigo.es>
  
  	* libnautilus-private/nautilus-thumbnails.c (obfuscate_password): 
  	New function to look for a password in una uri and change it
@@ -14188,7 +14200,7 @@ Tue Nov 20 21:45:43 2001  Owen Taylor  <otaylor@redhat.com>
 	press event. Do the work here now instead of at press time since
 	we are more like a real button.
 
-	Rolled in change by Miguel RodrÌguez PÈrez <migrax@terra.es> to
+	Rolled in change by Miguel Rodr√≠guez P√©rez <migrax@terra.es> to
 	fix volume mounting problems:
 
 	* configure.in: Check for hasmntopt.
@@ -14196,7 +14208,7 @@ Tue Nov 20 21:45:43 2001  Owen Taylor  <otaylor@redhat.com>
 	(get_removable_volumes): Fix typo (HAVE_MNTTENT_H ->
 	HAVE_MNTENT_H).
 	
-	Integrated patch by Miguel RodrÌguez PÈrez <migrax@terra.es> to
+	Integrated patch by Miguel Rodr√≠guez P√©rez <migrax@terra.es> to
 	make Nautilus not try to preview MPEG lists:
 
 	* src/file-manager/fm-icon-view.c:
