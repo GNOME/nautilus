@@ -3,29 +3,28 @@ NULL=
 backdir = $(datadir)/nautilus/backgrounds
 
 back_DATA = \
-	baize.png \
 	beige_tile.jpg \
+	blue_sky.png \
 	bricks.jpg \
+	brown_bag.png \
 	bubbles.png \
 	buffedwood.jpg \
 	burlap.jpg \
 	chalk.jpg \
-	cherrywood.jpg \
+	clouds.png \
 	cork.png \
 	dark-gnome.jpg \
-	darkwood.png \
 	frost.jpg \
 	gnome.jpg \
 	gold.jpg \
-	grass.png \
-	gray_fabric.png \
-	greenery.jpg \
 	ice.png \
-	manila.jpg \
+	irish_spring.png \
+	manila_paper.png \
+	pale_coins.png \
 	pink_fabric.png \
 	puzzle.jpg \
-	raindrops.png \
-	sky.jpg \
+	ridged_paper.png \
+	rough_paper.png \
 	stucco.jpg \
 	white_marble.jpg \
 	white_paper.jpg \
