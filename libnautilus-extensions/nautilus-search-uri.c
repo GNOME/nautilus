@@ -35,7 +35,6 @@
 static const char *       strip_uri_beginning         (const char *location_uri);
 static GSList *           tokenize_uri                (const char *string);
 static char *             get_translated_criterion    (const GSList *criterion);
-static char *             get_first_criterion_prefix  (GSList *criterion);
 static char *             get_nth_criterion_prefix    (GSList *criterion);
 static char *             parse_uri                   (const char *search_uri);
 static void               free_tokenized_uri          (GSList *list);
@@ -173,7 +172,6 @@ typedef field_criterion_item *field_criterion_table;
 /* toplevel structure each entry points to a level 2 structure */
 struct _field_criterion_item {
 	char *id;
-        char *prefix;
 	operand_criterion_table items;
 };
 /* second level structure. if items is NULL, the entry is a leaf
@@ -487,14 +485,12 @@ static field_criterion_item main_table[] = {
             preposition that precedes the clause describing the file
             name attribute matched.  Context is after "files" and
             before the translation for "containing xx in the name" */
-         N_(""),
          file_name2_table},
         {"file_type",
          /* Part of a window title for search results: Optional
             preposition that precedes the clause describing the file
             type attribute matched.  Context is after "files" and
             before the translation for "that are music" */
-         N_(""),
          file_type2_table},
         {"owner",
          /* Part of a window title for search results: Optional
@@ -502,7 +498,6 @@ static field_criterion_item main_table[] = {
             properties of the file's owner that the search matched.
             Context is after "files" and before the translation for
             "owned by xx" */
-         N_(""),
          owner2_table},
         {"size",
          /* Part of a window title for search results: Optional
@@ -510,7 +505,6 @@ static field_criterion_item main_table[] = {
             properties of the file's size that the search matched.
             Context is after "files" and before the translation for
             "larger than 500 bytes" */
-         N_(""),
          size2_table},
         {"content",
          /* Part of a window title for search results: Optional
@@ -518,7 +512,6 @@ static field_criterion_item main_table[] = {
             properties of the file's content that the search matched.
             Context is after "files" and before the translation for
             "containing all the words" */
-         N_(""),
          contains2_table},
         {"modified",
          /* Part of a window title for search results: Optional
@@ -526,7 +519,6 @@ static field_criterion_item main_table[] = {
             properties of the file's modification date that the search
             matched.  Context is after "files" and before the
             translation for "modified today" */
-         N_(""),
          mod_time2_table},
         {"keywords",
          /* Part of a window title for search results: Optional
@@ -534,9 +526,8 @@ static field_criterion_item main_table[] = {
             properties of the file's attached emblems that the search
             matched.  Context is after "files" and before the
             translation for "marked with Important" */
-         N_(""),
          emblem2_table},
-        {NULL, NULL, NULL}
+        {NULL, NULL}
 };
 
 
@@ -641,26 +632,6 @@ get_translated_criterion (const GSList *criterion)
         return g_strdup (_("are folders"));
 }
 
-/**
- * get_first_criterion_prefix:
- * @criterion: The GSList whose data field points to the criterion GSList.
- *
- * calculates the prefix for a given criterion */
-static char *
-get_first_criterion_prefix (GSList *criterion) 
-{
-        GSList *criterion_list;
-        char *criterion_type;
-        int item_number;
-        
-        criterion_list = (GSList *) criterion->data;
-        criterion_type = (char *) criterion_list->data;
-        
-
-        item_number = get_item_number (main_table, criterion_type);
-
-        return g_strdup (_(main_table[item_number].prefix));
-}
 
 /**
  * get_nth_criterion_prefix:
@@ -705,16 +676,9 @@ parse_uri (const char *search_uri)
                 free_tokenized_uri (criteria);
                 return NULL;
         }
-        translated_prefix = get_first_criterion_prefix (criteria);
-        if (strcmp (translated_prefix, "") == 0) {
-                ret_val = g_strdup_printf (_("Items %s"),
-                                           translated_criterion);
-        } else {
-                ret_val = g_strdup_printf (_("Items %s %s"),
-                                           translated_prefix, translated_criterion);
-        }
+        ret_val = g_strdup_printf (_("Items %s"),
+                                   translated_criterion);
         g_free (translated_criterion);
-        g_free (translated_prefix);
         
         /* processes the other criteria and add the necessary "and" prefixes */
         for (criterion = criteria->next; criterion != NULL; criterion = criterion->next) {

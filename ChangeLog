@@ -1,3 +1,11 @@
+2001-01-22  Rebecca Schulman  <rebecka@eazel.com>
+       Fix bug 5316, that search results code has
+	empty strings marked for translation.
+
+	* libnautilus-extensions/nautilus-search-uri.c: (parse_uri):
+	Remove "prefixes" for search criteria that were
+	always blank.
+
 2001-01-22  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
@@ -111,8 +119,7 @@
 2001-01-22  Rebecca Schulman  <rebecka@eazel.com>
         Fix bugzilla.eazel.com bug 2659, that behavior
 	with backup search is inconsistent, because content
-	backup searches are unavailable.  We now
-
+	backup searches are unavailable.  
 
 	* src/file-manager/fm-search-list-view.c: (load_location_callback),
 	(load_error_callback), (display_indexed_search_problems_dialog):
