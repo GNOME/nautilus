@@ -765,6 +765,29 @@ dnl = begin applet checks
 dnl ====================================
 
 dnl ====================================
+dnl = begin eazel-logos check
+dnl ====================================
+
+if test -d eazel-logos
+then
+	HAVE_EAZEL_LOGOS=yes
+	EAZEL_LOGOS_PNG='%{prefix}/share/pixmaps/nautilus/eazel-logos/*.png'
+	EAZEL_LOGOS_XML='%{prefix}/share/pixmaps/nautilus/eazel-logos/*.xml'
+	EAZEL_LOGOS_LICENSE='%{prefix}/share/pixmaps/nautilus/eazel-logos/LICENSE'
+	EAZEL_LOGOS_THROB='%{prefix}/share/pixmaps/nautilus/eazel-logos/throbber/*.png'
+fi
+
+AM_CONDITIONAL(HAVE_EAZEL_LOGOS, test "x$HAVE_EAZEL_LOGOS" = "xyes")
+AC_SUBST(EAZEL_LOGOS_PNG)
+AC_SUBST(EAZEL_LOGOS_XML)
+AC_SUBST(EAZEL_LOGOS_LICENSE)
+AC_SUBST(EAZEL_LOGOS_THROB)
+
+dnl ====================================
+dnl = end eazel-logos check
+dnl ====================================
+
+dnl ====================================
 dnl = begin gdk-pixbuf checks
 dnl ====================================
 AM_PATH_GDK_PIXBUF($GDK_PIXBUF_REQUIRED,,
@@ -961,8 +984,6 @@ data/emblems/Makefile
 data/linksets/Makefile
 data/fonts/Makefile
 data/fonts/urw/Makefile
-eazel-logos/Makefile
-eazel-logos/throbber/Makefile
 cut-n-paste-code/Makefile
 cut-n-paste-code/widgets/Makefile
 cut-n-paste-code/widgets/e-paned/Makefile

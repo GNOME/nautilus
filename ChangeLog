@@ -1,3 +1,26 @@
+2001-03-02  Eric Fischer  <eric@eazel.com>
+
+	reviewed by: Robin * Slomkowski <rslomkow@eazel.com>
+
+	(Fixes Bug 6927)
+
+	* Makefile.am:
+	Add eazel-logos installation and distribution rules, conditional
+	upon the presence of the eazel-logos directory.  Remove eazel-logos
+	from SUBDIRS.
+
+	* configure.in:
+	Add check for presence of eazel-logos directory.  Remove eazel-logos
+	Makefiles from list of files to be generated.
+
+	* eazel-logos/Makefile.am:
+	* eazel-logos/throbber/Makefile.am:
+	Removed.  Now takes place in main Makefile.am.
+
+	* nautilus.spec.in:
+	Only install eazel-logos files if the eazel-logos directory was
+	present at build time.
+
 2001-03-03  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* help/nautilus-quick-reference/no/index.html: Tweaks.
