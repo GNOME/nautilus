@@ -121,6 +121,73 @@ eazel_package_system_load_implementation (EazelPackageSystemId id, GList *roots)
 	return result;
 }
 
+static gboolean
+eazel_package_system_matches_versioning (EazelPackageSystem *package_system,
+					 PackageData *a, 
+					 const char *version,
+					 const char *minor,
+					 EazelSoftCatSense sense)
+{
+	int version_result = 0, minor_result = 0;
+
+	g_assert (!((version==NULL) && minor));
+
+	if (version) {
+		if (sense & EAZEL_SOFTCAT_SENSE_EQ) {
+			if (eazel_package_system_compare_version (package_system, a->version, version)==0) {
+				version_result = 1;
+			}
+		}
+		if ((version_result==0) && (sense & EAZEL_SOFTCAT_SENSE_GT)) {
+			if (sense & EAZEL_SOFTCAT_SENSE_EQ) {
+				if (eazel_package_system_compare_version (package_system, a->version, version)>=0) {
+					version_result = 1;
+				}
+			} else {
+				if (eazel_package_system_compare_version (package_system, a->version, version)>0) {
+					version_result = 1;
+				}
+			}			
+		}
+		if ((version_result==0) && (sense & EAZEL_SOFTCAT_SENSE_LT)) {
+			if (sense & EAZEL_SOFTCAT_SENSE_EQ) {
+				if (eazel_package_system_compare_version (package_system, a->version, version)<=0) {
+					version_result = 1;
+				}
+			} else {
+				if (eazel_package_system_compare_version (package_system, a->version, version)<0) {
+					version_result = 1;
+				}
+			}			
+		}
+	} else {
+		version_result = 1;
+	}
+
+	if (minor) {
+		if (sense & EAZEL_SOFTCAT_SENSE_EQ) {
+			if (eazel_package_system_compare_version (package_system, a->minor, minor)==0) {
+				minor_result = 1;
+			}
+		}
+		if ((minor_result==0) && (sense & EAZEL_SOFTCAT_SENSE_GT)) {
+			if (version_result) {
+				minor_result = 1;
+			}			
+		}
+		if ((minor_result==0) && (sense & EAZEL_SOFTCAT_SENSE_LT)) {
+			if (version_result) {
+				minor_result = 1;
+			}			
+		}
+	} else {
+		minor_result = 1;
+	}
+
+	return version_result && minor_result;
+}
+
+
 gboolean             
 eazel_package_system_is_installed (EazelPackageSystem *package_system,
 				   const char *dbpath,
@@ -143,12 +210,23 @@ eazel_package_system_is_installed (EazelPackageSystem *package_system,
 			GList *iterator;
 
 			for (iterator = matches; iterator && !result; iterator = g_list_next (iterator)) {
-				PackageData *pack = (PackageData*)iterator->data;
-				if (eazel_install_package_matches_versioning (pack, 
-									      version, 
-									      minor, 
-									      version_sense)) {
+				PackageData *pack = (PackageData*)iterator->data;				
+										  
+				if (eazel_package_system_matches_versioning (package_system,
+									     pack, 
+									     version, 
+									     minor, 
+									     version_sense)) {
 					result = TRUE;
+#if 0
+					g_message("is_installed (%s, %s, %s, %d) == (%s-%s %d %s-%s) %s", 
+						  name, version, minor, version_sense, 
+						  pack->version, pack->minor,
+						  version_sense, 
+						  version, minor, 
+						  result ? "TRUE" : "FALSE");
+#endif
+					
 				}
 			}
 		} else {
@@ -157,10 +235,6 @@ eazel_package_system_is_installed (EazelPackageSystem *package_system,
 		g_list_foreach (matches, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
 	}
 	g_list_free (matches);
-#if 0
-	info (system, "is_installed (%s, %s, %s, %d) == %s", 
-	      name, version, minor, version_sense, result ? "TRUE" : "FALSE");
-#endif
 	
 	return result;
 }

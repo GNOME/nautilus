@@ -1,3 +1,16 @@
+2001-01-25  Eskil Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(rpmmonitorpiggybag_new),
+	(monitor_rpm_process_pipe_percent_output):
+	Removed the debug output of locale decimal separator
+	spellfixed s/seperator/separator/
+	
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_matches_versioning),
+	(eazel_package_system_is_installed):
+	Fixed 6009.
+
 2001-01-24  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: updated documenation dirs

@@ -88,7 +88,7 @@ struct RpmMonitorPiggyBag {
 	GList *packages_seen;
 
 #ifdef USE_PERCENT
-	char seperator;
+	char separator;
 	char line[80];
 	/* state 1 waiting for package name
                  2 waiting for %%
@@ -119,8 +119,7 @@ rpmmonitorpiggybag_new (EazelPackageSystemRpm3 *system,
 
 #ifdef USE_PERCENT
 	lc = localeconv ();
-	pig.seperator = *(lc->decimal_point);
-	trilobite_debug ("I am in in a %c country",  pig.seperator);
+	pig.separator = *(lc->decimal_point);
 	pig.state = 1;
 	pig.bytes_read_in_line = 0;
 	pig.package_name = NULL;
@@ -377,7 +376,7 @@ monitor_rpm_process_pipe_percent_output (GIOChannel *source,
 				pig->state = 2;
 
 				/* Remove the decimal crap */
-				dot = strchr (pig->line, pig->seperator);
+				dot = strchr (pig->line, pig->separator);
 				if (dot) {
 					*dot = 0;
 				}
