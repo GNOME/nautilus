@@ -52,11 +52,15 @@ struct NautilusRPMVerifyWindow {
 
 struct NautilusRPMVerifyWindowClass {
 	GnomeDialogClass parent_class;
+	
+	/* signals */
+	void         (* continue_verify) (NautilusRPMVerifyWindow *window);
 };
 
 GtkType		nautilus_rpm_verify_window_get_type	(void);
 GtkWidget*	nautilus_rpm_verify_window_new	(const char *package_name);
 void		nautilus_rpm_verify_window_set_message (NautilusRPMVerifyWindow *window, const char *message);
+void		nautilus_rpm_verify_window_set_error_mode (NautilusRPMVerifyWindow *window, gboolean error_mode);
 
 #ifdef __cplusplus
 }

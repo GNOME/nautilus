@@ -1,3 +1,22 @@
+2000-09-03  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/rpmview/nautilus-rpm-verify-window.h:
+	added "continue" signal
+	* components/rpmview/nautilus-rpm-verify-window.c:
+	(nautilus_rpm_verify_window_initialize_class),
+	(continue_button_callback), (cancel_button_callback),
+	(nautilus_rpm_verify_window_initialize),
+	(nautilus_rpm_verify_window_set_error_mode):
+	implemented verify error presentation, by adding a continue and cancel button,
+	with a method to show them, and a signal to resume verification after errors
+	
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_verify_files),
+	(nautilus_rpm_view_verify_package_callback),
+	(rpm_view_continue_verify):
+	connect to the "continue" signal and resume verification; remember where we
+	left off in an instance variable.  We still need more descriptive messages.
+	
 2000-09-02  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/rpmview/Makefile.am:
@@ -12,7 +31,7 @@
 	(nautilus_rpm_view_destroy), (nautilus_rpm_view_update_from_uri),
 	(nautilus_rpm_view_verify_package_callback):
 	made the verify command work, but it's still needs to handle verification errors
-	made it list files with rpm version 3.0 or greater
+	made the file list work correctly with rpmlib version >= 3.0
 	
 	* src/nautilus-about.c: (nautilus_about_draw_info):
 	at Arlo's request, made the comment text in the about window have a white shadow

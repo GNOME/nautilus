@@ -49,9 +49,17 @@
 struct NautilusRPMVerifyWindowDetails {
 	GtkWidget *package_name;
 	GtkWidget *file_message;	
+		
+	gboolean error_mode;
 	GtkWidget *continue_button;
 	GtkWidget *cancel_button;
 };
+
+enum {
+	CONTINUE,
+	LAST_SIGNAL
+};
+static guint signals[LAST_SIGNAL];
 
 static void     nautilus_rpm_verify_window_initialize_class	(NautilusRPMVerifyWindowClass *klass);
 static void     nautilus_rpm_verify_window_initialize		(NautilusRPMVerifyWindow *rpm_verify_window);
@@ -63,6 +71,17 @@ static void
 nautilus_rpm_verify_window_initialize_class (NautilusRPMVerifyWindowClass *rpm_verify_window_class)
 {
 	GtkObjectClass *object_class = GTK_OBJECT_CLASS (rpm_verify_window_class);
+
+	signals[CONTINUE]
+		= gtk_signal_new ("continue",
+				  GTK_RUN_LAST,
+				  object_class->type,
+				  GTK_SIGNAL_OFFSET (NautilusRPMVerifyWindowClass,
+						     continue_verify),
+				  gtk_marshal_NONE__NONE,
+				  GTK_TYPE_NONE, 0);
+	
+	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 		
 	object_class->destroy = nautilus_rpm_verify_window_destroy;
 }
@@ -79,13 +98,29 @@ nautilus_rpm_verify_window_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
+/* handle the continue button  */
+static void
+continue_button_callback (GtkWidget *widget, NautilusRPMVerifyWindow *rpm_verify_window)
+{
+	gtk_signal_emit (GTK_OBJECT (rpm_verify_window),
+		signals[CONTINUE]);	
+}
+
+/* handle the cancel button */
+static void
+cancel_button_callback (GtkWidget *widget, NautilusRPMVerifyWindow *rpm_verify_window)
+{
+	nautilus_rpm_verify_window_set_error_mode (rpm_verify_window, FALSE);
+	gnome_dialog_close (GNOME_DIALOG (rpm_verify_window));
+	
+}
 
 /* initialize the rpm_verify_window */
 static void
 nautilus_rpm_verify_window_initialize (NautilusRPMVerifyWindow *rpm_verify_window)
 {	
 	GtkWidget *window_contents;
-	GtkWidget *label;
+	GtkWidget *label, *button_box;
 	
 	rpm_verify_window->details = g_new0 (NautilusRPMVerifyWindowDetails, 1);
 	
@@ -111,8 +146,21 @@ nautilus_rpm_verify_window_initialize (NautilusRPMVerifyWindow *rpm_verify_windo
 	gtk_box_pack_start (GTK_BOX (window_contents), label, FALSE, FALSE, 8);
 	rpm_verify_window->details->file_message = label;
 	
+	/* allocate the error mode buttons */
+	button_box = gtk_hbox_new (FALSE, 2);
+	gtk_widget_show (button_box);
+	gtk_box_pack_start (GTK_BOX (window_contents), button_box, FALSE, FALSE, 8);
+	
+	rpm_verify_window->details->continue_button = gtk_button_new_with_label ("Continue");
+	gtk_box_pack_start (GTK_BOX (button_box), rpm_verify_window->details->continue_button, FALSE, FALSE, 4);
+	gtk_signal_connect(GTK_OBJECT (rpm_verify_window->details->continue_button), "clicked", GTK_SIGNAL_FUNC (continue_button_callback), rpm_verify_window);
+	
+	rpm_verify_window->details->cancel_button = gtk_button_new_with_label ("Cancel");
+	gtk_box_pack_start (GTK_BOX (button_box), rpm_verify_window->details->cancel_button, FALSE, FALSE, 4);
+	gtk_signal_connect(GTK_OBJECT (rpm_verify_window->details->cancel_button), "clicked", GTK_SIGNAL_FUNC (cancel_button_callback), rpm_verify_window);
+	
 	/* configure the dialog */                                  
-	gtk_widget_set_usize (GTK_WIDGET (rpm_verify_window), 200, 140);
+	gtk_widget_set_usize (GTK_WIDGET (rpm_verify_window), 320, 180);
 	
 	gnome_dialog_append_button ( GNOME_DIALOG(rpm_verify_window),
 				     GNOME_STOCK_BUTTON_OK);
@@ -146,3 +194,19 @@ nautilus_rpm_verify_window_set_message (NautilusRPMVerifyWindow *window, const c
 {
 	nautilus_label_set_text (NAUTILUS_LABEL (window->details->file_message), message);
 }
+
+void
+nautilus_rpm_verify_window_set_error_mode (NautilusRPMVerifyWindow *window, gboolean error_mode)
+{
+	if (window->details->error_mode != error_mode) {
+		window->details->error_mode = error_mode;
+		if (error_mode) {
+			gtk_widget_show (window->details->continue_button);
+			gtk_widget_show (window->details->cancel_button);
+		} else {
+			gtk_widget_hide (window->details->continue_button);
+			gtk_widget_hide (window->details->cancel_button);
+		}
+	}
+}
+

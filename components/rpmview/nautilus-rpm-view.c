@@ -109,6 +109,7 @@ struct NautilusRPMViewDetails {
 	
 	int background_connection;
 	int file_count;
+	int last_file_index;
 	int selected_file;	
 };
 
@@ -147,6 +148,8 @@ static void file_selection_callback              (GtkCList             *clist,
 static void go_to_button_callback                (GtkWidget            *widget,
                                                   NautilusRPMView      *rpm_view);
 
+static void rpm_view_continue_verify (GtkWidget *window, NautilusRPMView *rpm_view);
+
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusRPMView, nautilus_rpm_view, GTK_TYPE_EVENT_BOX)
 
 static void
@@ -162,7 +165,7 @@ nautilus_rpm_view_initialize_class (NautilusRPMViewClass *klass)
 	widget_class->drag_data_received  = nautilus_rpm_view_drag_data_received;
 }
 
-/* initialize ourselves by connecting to the location change signal and allocating our subviews */
+/* initialize the rpm view */
 
 static void
 nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
@@ -821,12 +824,13 @@ rpm_view_load_location_callback (NautilusView *view,
         nautilus_view_report_load_complete (rpm_view->details->nautilus_view);
 }
 
-/* callback to handle the verify command */
+
+/* routine to handle the verify command */
 static void 
-nautilus_rpm_view_verify_package_callback (GtkWidget *widget,
+nautilus_rpm_view_verify_files (GtkWidget *widget,
                                            NautilusRPMView *rpm_view)
 {
-	int index;
+	int index, initial_index;
 	int file_result, info_result, file_count;
 	Header package_header, signature;
 	char *path_name, *file_message, *temp_str;
@@ -851,30 +855,65 @@ nautilus_rpm_view_verify_package_callback (GtkWidget *widget,
 	/* put up a window to give file handling feedback */
 	if (rpm_view->details->verify_window == NULL) {
 		rpm_view->details->verify_window = nautilus_rpm_verify_window_new (rpm_view->details->package_name);	
+		gtk_signal_connect (GTK_OBJECT (rpm_view->details->verify_window), 
+			    "continue",
+			    GTK_SIGNAL_FUNC (rpm_view_continue_verify), 
+			    rpm_view);
+	
 	}
 	
 	nautilus_gtk_window_present (GTK_WINDOW (rpm_view->details->verify_window));
 
 	/* iterate through the files, verifying one at a time and presenting the result
 	   in the verify window */	
-	for (index = 0; index < file_count; index++) {
+	
+	initial_index = rpm_view->details->last_file_index;
+	for (index = initial_index; index < file_count; index++) {
 		rpmVerifyFile ("", package_header, index, &file_result, 0);
-		/* FIXME - check result code soon */
 		gtk_clist_get_text (GTK_CLIST (rpm_view->details->package_file_list), index, 0, &temp_str);
-		file_message = g_strdup_printf (_("checking %s..."), temp_str);
-							
+		
+		if (file_result == 0) {
+			file_message = g_strdup_printf (_("checking %s..."), temp_str);
+		} else {
+			file_message = g_strdup_printf (_("file %s has an error!"), temp_str);		
+		}
+				
 		nautilus_rpm_verify_window_set_message (NAUTILUS_RPM_VERIFY_WINDOW (rpm_view->details->verify_window), file_message);		
 		g_free (file_message);
 
 		while (gtk_events_pending ())
 			gtk_main_iteration ();
+	
+		if (file_result != 0) {
+			nautilus_rpm_verify_window_set_error_mode (NAUTILUS_RPM_VERIFY_WINDOW (rpm_view->details->verify_window), TRUE);
+			rpm_view->details->last_file_index = index + 1;
+			fdClose (file_descriptor);
+			return; 
+		}
 	}
 	
+	nautilus_rpm_verify_window_set_error_mode (NAUTILUS_RPM_VERIFY_WINDOW (rpm_view->details->verify_window), FALSE);
 	nautilus_rpm_verify_window_set_message (NAUTILUS_RPM_VERIFY_WINDOW (rpm_view->details->verify_window), _("Verification completed."));
 	
 	fdClose (file_descriptor);
 }
 
+/* callback to handle the verify command */
+static void 
+nautilus_rpm_view_verify_package_callback (GtkWidget *widget,
+                                           NautilusRPMView *rpm_view)
+{
+	rpm_view->details->last_file_index = 0;
+	nautilus_rpm_view_verify_files (widget, rpm_view);
+}
+
+/* respond to the continue signal by continuing the verify command */
+static void
+rpm_view_continue_verify (GtkWidget *window, NautilusRPMView *rpm_view)
+{
+	nautilus_rpm_verify_window_set_error_mode (NAUTILUS_RPM_VERIFY_WINDOW (rpm_view->details->verify_window), FALSE);
+	nautilus_rpm_view_verify_files (window, rpm_view);
+}
 
 /* handle drag and drop */
 static void  
