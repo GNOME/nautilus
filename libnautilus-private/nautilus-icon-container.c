@@ -2292,6 +2292,10 @@ destroy (GtkObject *object)
 		gdk_pixbuf_unref (container->details->highlight_frame);
 	}
 
+	if (container->details->rename_widget != NULL) {
+		gtk_object_destroy (GTK_OBJECT (container->details->rename_widget));
+	}
+
 	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
 	 * The NautilusIconContainer class should simply provide calls to set the colors.
 	 */
@@ -4786,14 +4790,17 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	details->original_text = g_strdup (editable_text);
 
 	/* Create text renaming widget, if it hasn't been created already.
-	   We deal with the broken icon text item widget by keeping it around
-	   so its contents can still be cut and pasted as part of the clipboard */
-	g_assert (details->rename_widget == NULL);
-
-	details->rename_widget = NAUTILUS_ICON_TEXT_ITEM
-		(gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (container)),
-					nautilus_icon_text_item_get_type (),
-					NULL));
+	 * We deal with the broken icon text item widget by keeping it around
+	 * so its contents can still be cut and pasted as part of the clipboard
+	 */
+	if (details->rename_widget == NULL) {
+		details->rename_widget = NAUTILUS_ICON_TEXT_ITEM
+			(gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (container)),
+						nautilus_icon_text_item_get_type (),
+						NULL));
+	} else {
+		gnome_canvas_item_show (GNOME_CANVAS_ITEM (details->rename_widget));
+	}
 	
 	nautilus_icon_canvas_item_get_icon_rectangle (icon->item, &icon_rect);
 	gnome_canvas_item_w2i (GNOME_CANVAS_ITEM (details->rename_widget), &icon_rect.x0, &icon_rect.y0);
@@ -4809,6 +4816,7 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 		FALSE);								/* allocate local copy */
 
 	nautilus_icon_text_item_start_editing (details->rename_widget);
+	
 	nautilus_icon_container_update_icon (container, icon);
 	gtk_signal_emit (GTK_OBJECT (container),
 			 signals[RENAMING_ICON],
@@ -4845,8 +4853,7 @@ end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 	
 	nautilus_icon_text_item_stop_editing (container->details->rename_widget, TRUE);
 
-	gtk_object_destroy (GTK_OBJECT (container->details->rename_widget));
-	container->details->rename_widget = NULL;
+	gnome_canvas_item_hide (GNOME_CANVAS_ITEM (container->details->rename_widget));
 
 	g_free (container->details->original_text);
 

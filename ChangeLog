@@ -1,3 +1,15 @@
+2001-02-23  Michael Engber  <engber@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c: (destroy),
+	(nautilus_icon_container_start_renaming_selected_item),
+	(end_renaming_mode):
+	* libnautilus-extensions/nautilus-icon-text-item.c:
+	(iti_stop_editing), (iti_start_editing), (iti_destroy):
+	Keep the rename widget around so that it will continue to
+	work with the clipboard after the rename is over - bug 690.
+
 2001-02-23  J Shane Culpepper  <pepper@eazel.com>
 
 	reviewed by: vera@eazel.com

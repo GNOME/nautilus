@@ -100,10 +100,6 @@ iti_stop_editing (Iti *iti)
 
 	iti->editing = FALSE;
 
-	gtk_widget_destroy (priv->entry_top);
-	priv->entry = NULL;
-	priv->entry_top = NULL;
-
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 
 	gtk_signal_emit (GTK_OBJECT (iti), iti_signals[EDITING_STOPPED]);
@@ -230,20 +226,24 @@ iti_start_editing (Iti *iti)
 	 * which is placed offscreen.  That way we get all of the advantages
 	 * from NautilusEntry without duplicating code.  Yes, this is a hack.
 	 */
-	priv->entry = (NautilusEntry *) nautilus_entry_new ();
-	gtk_entry_set_text (GTK_ENTRY(priv->entry), iti->text);
-	gtk_signal_connect (GTK_OBJECT (priv->entry), "activate",
-			    GTK_SIGNAL_FUNC (iti_entry_activate), iti);
-	/* Make clipboard functions cause an update the appearance of 
-	   the icon text item iteself, since the clipboard functions 
-	   will change the offscreen entry */
-	gtk_signal_connect_after (GTK_OBJECT (priv->entry), "changed",
-				  GTK_SIGNAL_FUNC (iti_entry_text_changed_by_clipboard), iti);
 
-	priv->entry_top = gtk_window_new (GTK_WINDOW_POPUP);
-	gtk_container_add (GTK_CONTAINER (priv->entry_top), GTK_WIDGET (priv->entry));
-	gtk_widget_set_uposition (priv->entry_top, 20000, 20000);
-	gtk_widget_show_all (priv->entry_top);
+	if (priv->entry_top == NULL) {
+		priv->entry = (NautilusEntry *) nautilus_entry_new ();
+		gtk_signal_connect (GTK_OBJECT (priv->entry), "activate",
+				    GTK_SIGNAL_FUNC (iti_entry_activate), iti);
+		/* Make clipboard functions cause an update the appearance of 
+		   the icon text item iteself, since the clipboard functions 
+		   will change the offscreen entry */
+		gtk_signal_connect_after (GTK_OBJECT (priv->entry), "changed",
+					  GTK_SIGNAL_FUNC (iti_entry_text_changed_by_clipboard), iti);
+
+		priv->entry_top = gtk_window_new (GTK_WINDOW_POPUP);
+		gtk_container_add (GTK_CONTAINER (priv->entry_top), GTK_WIDGET (priv->entry));
+		gtk_widget_set_uposition (priv->entry_top, 20000, 20000);
+		gtk_widget_show_all (priv->entry_top);
+	}
+
+	gtk_entry_set_text (GTK_ENTRY(priv->entry), iti->text);
 
 	gtk_editable_select_region (GTK_EDITABLE (priv->entry), 0, -1);
 
@@ -288,6 +288,10 @@ iti_destroy (GtkObject *object)
 
 	if (priv->font)
 		gdk_font_unref (priv->font);
+
+	if (priv->entry_top) {
+		gtk_widget_destroy (priv->entry_top);
+	}
 
 	g_free (priv);
 
