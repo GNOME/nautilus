@@ -269,7 +269,7 @@ nautilus_spatial_window_show (GtkWidget *widget)
 	NautilusSpatialWindow *window;
 
 	window = NAUTILUS_SPATIAL_WINDOW (widget);
-
+	
 	GTK_WIDGET_CLASS (parent_class)->show (widget);
 }
 

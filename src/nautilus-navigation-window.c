@@ -1467,6 +1467,12 @@ nautilus_navigation_window_show (GtkWidget *widget)
 		nautilus_navigation_window_hide_sidebar (window);
 	}
 
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR)) {
+		nautilus_window_show_status_bar (NAUTILUS_WINDOW (window));
+	} else {
+		nautilus_window_hide_status_bar (NAUTILUS_WINDOW (window));
+	}
+
 	GTK_WIDGET_CLASS (parent_class)->show (widget);
 }
 
