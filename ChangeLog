@@ -1,3 +1,13 @@
+2000-10-02  John Sullivan  <sullivan@eazel.com>
+
+	* src/nautilus-applicable-views.c:
+	(get_nautilus_navigation_result_from_gnome_vfs_result):
+	* src/nautilus-applicable-views.h:
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_end_location_change_callback):
+	Added NAUTILUS_NAVIGATION_RESULT_ACCESS_DENIED and gave it
+	a unique error message.
+
 2000-10-01  Andy Hertzfeld  <andy@eazel.com>
 
 	changed the sound ability test to use esd_audio_open instead of

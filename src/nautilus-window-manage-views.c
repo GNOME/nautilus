@@ -1350,6 +1350,11 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                                                  uri_for_display);		
 		break;
 
+	case NAUTILUS_NAVIGATION_RESULT_ACCESS_DENIED:
+                error_message = g_strdup_printf (_("Couldn't display \"%s\", because access was denied."),
+                                                 uri_for_display);
+		break;
+
 	case NAUTILUS_NAVIGATION_RESULT_SERVICE_NOT_AVAILABLE:
 		if (nautilus_is_search_uri (requested_uri)) {
 			/* FIXME bugzilla.eazel.com 2458: Need to give the user some advice about what to do here. */

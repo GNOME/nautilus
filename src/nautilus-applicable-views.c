@@ -77,6 +77,8 @@ get_nautilus_navigation_result_from_gnome_vfs_result (GnomeVFSResult gnome_vfs_r
 		return NAUTILUS_NAVIGATION_RESULT_LOGIN_FAILED;
 	case GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE:	
 		return NAUTILUS_NAVIGATION_RESULT_SERVICE_NOT_AVAILABLE;
+	case GNOME_VFS_ERROR_ACCESS_DENIED:	
+		return NAUTILUS_NAVIGATION_RESULT_ACCESS_DENIED;
         case GNOME_VFS_ERROR_GENERIC:
                 /* This one has occurred at least once in the web browser component */
                 return NAUTILUS_NAVIGATION_RESULT_UNSPECIFIC_ERROR;
