@@ -26,6 +26,7 @@
 #include <gtkhtml/gtkhtml.h>
 #include <libgnorba/gnorba.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libnautilus/nautilus-debug.h>
 
 typedef struct {
   NautilusViewFrame *view_frame;
@@ -326,7 +327,7 @@ browser_vfs_read_callback(GnomeVFSAsyncHandle *h, GnomeVFSResult res, gpointer b
 {
   VFSHandle *vfsh = data;
 
-  g_message("browser_vfs_read_callback: %ld/%ld bytes", bytes_read, bytes_requested);
+  g_message("browser_vfs_read_callback: %ld/%ld bytes", (long) bytes_read, (long) bytes_requested);
   gtk_html_write(GTK_HTML(vfsh->bi->htmlw), vfsh->sh, buffer, bytes_read);
 
   if(res != GNOME_VFS_OK)
@@ -567,10 +568,6 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, void *closure)
     return NULL;
 
   bi = g_new0(BrowserInfo, 1);
-  gtk_signal_connect(GTK_OBJECT(bi->view_frame), "notify_location_change", browser_notify_location_change,
-		     bi);
-  gtk_signal_connect(GTK_OBJECT(bi->view_frame), "destroy", browser_do_destroy, NULL);
-  object_count++;
 
   bi->htmlw = gtk_html_new();
   gtk_signal_connect(GTK_OBJECT(bi->htmlw), "link_clicked", browser_goto_url, bi);
@@ -590,6 +587,11 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, void *closure)
 
   bi->view_frame = NAUTILUS_VIEW_FRAME (nautilus_content_view_frame_new (wtmp));
 
+  gtk_signal_connect(GTK_OBJECT(bi->view_frame), "notify_location_change", browser_notify_location_change,
+		     bi);
+  object_count++;
+  gtk_signal_connect(GTK_OBJECT(bi->view_frame), "destroy", browser_do_destroy, NULL);
+
   return BONOBO_OBJECT (bi->view_frame);
 }
 
@@ -599,9 +601,17 @@ int main(int argc, char *argv[])
   CORBA_ORB orb;
   CORBA_Environment ev;
 
+  if (getenv("NAUTILUS_DEBUG") != NULL)
+    nautilus_make_warnings_and_criticals_stop_in_debugger
+      (G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", 
+       "Nautilus-HTML", "gtkhtml", NULL);
+
+
   CORBA_exception_init(&ev);
   orb = gnome_CORBA_init_with_popt_table("ntl-web-browser", VERSION, &argc, argv, NULL, 0, NULL,
 					 GNORBA_INIT_SERVER_FUNC, &ev);
+
+
   gnome_vfs_init();
   gdk_rgb_init();
   glibwww_init("ntl-web-browser", VERSION);

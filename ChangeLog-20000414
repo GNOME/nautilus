@@ -1,3 +1,10 @@
+2000-03-03  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/html/ntl-web-browser.c (make_obj): Reorder to code to
+	avoid crashing.
+	(main): Drop to the debugger on warnings and criticals.
+	(browser_vfs_read_callback): Add some casts to avoid a warning.	
+
 2016-03-03  Elliot Lee  <sopwith@redhat.com>
 
 	* src/ntl-app.c, src/nautilus.goad: Make NautilusApp a factory for
