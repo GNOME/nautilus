@@ -349,7 +349,8 @@ static NautilusPreferencesType
 prefs_check_supported_type (NautilusPreferencesType pref_type)
 {
 	return ((pref_type == NAUTILUS_PREFERENCE_BOOLEAN) ||
-		(pref_type == NAUTILUS_PREFERENCE_ENUM));
+		(pref_type == NAUTILUS_PREFERENCE_ENUM) ||
+		(pref_type == NAUTILUS_PREFERENCE_STRING));
 }
 
 static gboolean
@@ -369,22 +370,22 @@ prefs_set_pref (NautilusPreferences     *prefs,
 		return FALSE;
 	}
 
-	/*
-	 * XXX FIXME: When we support GTK_TYPE_STRING, this
-	 * will have to strcpy() the given value
-	 */
-	pref_hash_info->pref_value = pref_value;
-
 	/* gnome-config for now ; in the future gconf */
 	switch (pref_hash_info->pref_info.pref_type) {
 
 	case NAUTILUS_PREFERENCE_BOOLEAN:
+		pref_hash_info->pref_value = pref_value;
 		gnome_config_set_bool (pref_name, GPOINTER_TO_INT (pref_hash_info->pref_value));
 		break;
 
 	case NAUTILUS_PREFERENCE_ENUM:
+		pref_hash_info->pref_value = pref_value;
 		gnome_config_set_int (pref_name, GPOINTER_TO_INT (pref_hash_info->pref_value));
 		break;
+
+	case NAUTILUS_PREFERENCE_STRING:
+		pref_hash_info->pref_value = g_strdup (pref_value);
+		gnome_config_set_string (pref_name, pref_hash_info->pref_value);
 	}
 
 	/* Sync all the damn time.  Yes it sucks.  it will be better with gconf */
@@ -483,6 +484,10 @@ nautilus_preferences_register_from_info (NautilusPreferences		*prefs,
 	case NAUTILUS_PREFERENCE_ENUM:
 		pref_hash_info->pref_value = GINT_TO_POINTER (gnome_config_get_int (gnome_config_string));
 		break;
+
+	case NAUTILUS_PREFERENCE_STRING:
+		pref_hash_info->pref_value = gnome_config_get_string (gnome_config_string);
+		break;
 	}
 
 	g_free (gnome_config_string);
@@ -515,6 +520,10 @@ make_gnome_config_string (const NautilusPreferencesInfo *pref_info)
 
 	case NAUTILUS_PREFERENCE_ENUM:
 		g_string_sprintfa  (tmp, "%d", GPOINTER_TO_INT (pref_info->pref_default_value));
+		break;
+	
+	case NAUTILUS_PREFERENCE_STRING:
+		g_string_append  (tmp, pref_info->pref_default_value);
 		break;
 	}
 	
@@ -718,6 +727,47 @@ nautilus_preferences_get_enum (NautilusPreferences  *prefs,
 	g_assert (pref_type == NAUTILUS_PREFERENCE_ENUM);
 
 	return GPOINTER_TO_INT (value);
+}
+
+void
+nautilus_preferences_set_string (NautilusPreferences     *prefs,
+				 const char		  *pref_name,
+				 const char		  *string_value)
+{
+	gboolean rv;
+
+	g_return_if_fail (prefs != NULL);
+	g_return_if_fail (NAUTILUS_IS_PREFS (prefs));
+	g_return_if_fail (pref_name != NULL);
+
+	/* Must cast away const on good faith that prefs_set_pref will make copy */
+	rv = prefs_set_pref (prefs, pref_name, (char *)string_value);
+
+	g_assert (rv);
+}
+
+char *
+nautilus_preferences_get_string (NautilusPreferences  *prefs,
+				 const char    *pref_name)
+{
+	gboolean		rv;
+	NautilusPreferencesType	pref_type;
+	gconstpointer           value;
+
+	g_return_val_if_fail (prefs != NULL, FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_PREFS (prefs), FALSE);
+	g_return_val_if_fail (pref_name != NULL, FALSE);
+
+	rv = prefs_get_pref (prefs, pref_name, &pref_type, &value);
+
+	if (!rv) {
+		g_warning ("could not get string preference '%s'\n", pref_name);
+		return FALSE;
+	}
+
+	g_assert (pref_type == NAUTILUS_PREFERENCE_STRING);
+
+	return g_strdup (value);
 }
 
 NautilusPreferences *

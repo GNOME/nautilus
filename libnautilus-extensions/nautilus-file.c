@@ -601,8 +601,6 @@ nautilus_file_get_owner_as_string (NautilusFile *file)
 	/* No need to free result of getpwuid */
 	password_info = getpwuid (file->info->uid);
 
-	g_print ("pointer to password info is %p\n", password_info);
-
 	if (password_info == NULL) {
 		return g_strdup (_("unknown owner"));
 	}

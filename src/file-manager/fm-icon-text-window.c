@@ -39,12 +39,14 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-uidefs.h>
-#include "fm-directory-view-icons.h"
+#include <libnautilus/nautilus-global-preferences.h>
 
-static void ensure_unique_attributes (int menu_index);
+static void 	ensure_unique_attributes 	    (int 	menu_index);
 static gboolean fm_icon_text_window_delete_event_cb (GtkWidget *widget,
 				  		     GdkEvent  *event,
 				  		     gpointer   user_data);
+static void     fm_icon_text_window_destroy_cb 	    (GtkObject *object,
+						     gpointer   user_data);
 
 
 #define PIECES_COUNT	4
@@ -82,6 +84,73 @@ get_attribute_index_from_option_menu (GtkOptionMenu *option_menu)
 	g_assert (GTK_IS_OPTION_MENU (option_menu));
 	return GPOINTER_TO_INT (gtk_object_get_user_data (
 		GTK_OBJECT (option_menu->menu_item)));
+}
+
+static int
+find_string_in_array (char **strings, const char *find_me)
+{
+	int index;
+	
+	for (index = 0; strings[index] != NULL; ++index) {
+		if (strcmp (strings[index], find_me) == 0) {
+			return index;
+		}
+	}
+
+	return -1;
+}
+
+static char *attribute_names_preference = NULL;
+
+static void
+set_preference_string (char *new_value) {
+	g_free (attribute_names_preference);
+	attribute_names_preference = new_value;
+}
+
+static void
+synch_menus_with_preference ()
+{
+	int menu_index;
+	char **text_array;
+
+	if (attribute_names_preference == NULL) {
+		set_preference_string (nautilus_preferences_get_string (nautilus_preferences_get_global_preferences (),
+						       	   	        NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES));
+
+	}
+	text_array = g_strsplit (attribute_names_preference, "|", 0);
+	
+	for (menu_index = 0; menu_index < MENU_COUNT; ++menu_index) {
+		int string_index;
+
+		/* Note that text_array includes initial "name" entry that's
+		 * skipped in the menu, so option_menus[i] corresponds to
+		 * text_array[i+1]
+		 */
+		g_assert (text_array[menu_index+1] != NULL);
+		string_index = find_string_in_array (attribute_names, text_array[menu_index+1]);
+		g_assert (string_index >= 0);
+	  	gtk_option_menu_set_history (option_menus[menu_index], string_index);
+	}
+
+	g_strfreev (text_array);
+}
+
+static void
+preference_changed_callback (const GtkObject *prefs,
+         		     const gchar                 *pref_name,
+         		     GtkFundamentalType           pref_type,
+         		     gconstpointer                pref_value,
+         		     gpointer                	    user_data)
+
+{
+	g_assert (user_data != NULL);
+	g_assert (prefs != NULL);
+	g_assert (pref_name != NULL);
+
+	set_preference_string (g_strdup ((char *)pref_value));
+	synch_menus_with_preference ();
 }
 
 static char *
@@ -123,7 +192,9 @@ changed_attributes_option_menu_cb (GtkMenuItem *menu_item, gpointer user_data)
 
 	attribute_names_string = g_strjoinv ("|", attribute_names_array);
 
-	fm_directory_view_icons_set_full_icon_text_attribute_names (NULL, attribute_names_string);
+	nautilus_preferences_set_string (nautilus_preferences_get_global_preferences (),
+					 NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+					 attribute_names_string);
 
 	g_free (attribute_names_string);
 	g_strfreev (attribute_names_array);
@@ -215,14 +286,25 @@ create_icon_text_window (void)
 	for (index = 0; index < MENU_COUNT; ++index)
 	{
 		option_menus[index] = create_attributes_option_menu (index);
-	  	gtk_option_menu_set_history (option_menus[index], index);
 	  	gtk_box_pack_start (GTK_BOX (menus_vbox), GTK_WIDGET (option_menus[index]), FALSE, FALSE, 0);
 		
 	}
 
+	synch_menus_with_preference ();
+
+	nautilus_preferences_add_callback (nautilus_preferences_get_global_preferences (),
+					   NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+					   preference_changed_callback,
+					   (gpointer) window);	
+	
+
 	gtk_signal_connect (GTK_OBJECT (window), "delete_event",
                     	    GTK_SIGNAL_FUNC (fm_icon_text_window_delete_event_cb),
                     	    NULL);
+
+        gtk_signal_connect (GTK_OBJECT (window), "destroy",
+        		    GTK_SIGNAL_FUNC (fm_icon_text_window_destroy_cb),
+        		    NULL);
 
   	return window;
 }
@@ -278,6 +360,16 @@ fm_icon_text_window_delete_event_cb (GtkWidget *widget,
 	/* Hide but don't destroy */
 	gtk_widget_hide(widget);
 	return TRUE;
+}
+
+static void
+fm_icon_text_window_destroy_cb (GtkObject *object,
+				gpointer   user_data)
+{
+	nautilus_preferences_remove_callback (nautilus_preferences_get_global_preferences (),
+					      NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+					      preference_changed_callback,
+					      user_data);
 }
 
 /**

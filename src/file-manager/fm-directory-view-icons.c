@@ -26,7 +26,6 @@
 #include "fm-directory-view-icons.h"
 
 #include "fm-icon-text-window.h"
-#include "fm-signaller.h"
 
 #include <ctype.h>
 #include <errno.h>
@@ -43,6 +42,7 @@
 #include <libnautilus/nautilus-string.h>
 #include <libnautilus/nautilus-background.h>
 #include <libnautilus/nautilus-directory.h>
+#include <libnautilus/nautilus-global-preferences.h>
 #include <libnautilus/nautilus-icon-factory.h>
 
 #define DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
@@ -90,6 +90,7 @@ static gboolean              fm_directory_view_icons_can_zoom_out               
 static void                  fm_directory_view_icons_clear                                (FMDirectoryView             *view);
 static void                  fm_directory_view_icons_destroy                              (GtkObject                   *view);
 static void                  fm_directory_view_icons_done_adding_files                    (FMDirectoryView             *view);
+static char *		     fm_directory_view_icons_get_icon_text_attribute_names 	  (FMDirectoryViewIcons        *view);
 static GList *               fm_directory_view_icons_get_selection                        (FMDirectoryView             *view);
 static NautilusZoomLevel     fm_directory_view_icons_get_zoom_level                       (FMDirectoryViewIcons        *view);
 static void                  fm_directory_view_icons_initialize                           (FMDirectoryViewIcons        *icon_view);
@@ -110,8 +111,6 @@ static void                  icon_container_context_click_selection_cb          
 											   FMDirectoryViewIcons        *icon_view);
 static void                  icon_container_context_click_background_cb                   (GnomeIconContainer          *container,
 											   FMDirectoryViewIcons        *icon_view);
-static void                  icon_text_changed_cb                                         (FMSignaller                 *signaller,
-											   FMDirectoryViewIcons        *icon_view);
 static NautilusScalableIcon *get_icon_images_cb                                           (GnomeIconContainer          *container,
 											   NautilusFile                *icon_data,
 											   GList                      **emblem_icons,
@@ -126,8 +125,11 @@ static char *                get_icon_property_cb                               
 											   NautilusFile                *icon_data,
 											   const char                  *property_name,
 											   FMDirectoryViewIcons        *icon_view);
-
-static char * default_icon_text_attribute_names = NULL;
+static void                  text_attribute_names_changed_callback                        (const GtkObject             *prefs,
+			         							   const gchar                 *pref_name,
+			         							   GtkFundamentalType           pref_type,
+			         							   gconstpointer            	pref_value,
+			         							   gpointer                 	user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryViewIcons, fm_directory_view_icons, FM_TYPE_DIRECTORY_VIEW);
 
@@ -136,6 +138,7 @@ struct _FMDirectoryViewIconsDetails
 {
 	GList *icons_not_positioned;
 	NautilusZoomLevel default_zoom_level;
+	char *text_attribute_names;
 
 	guint react_to_icon_change_idle_id;
 };
@@ -169,9 +172,6 @@ fm_directory_view_icons_initialize_class (FMDirectoryViewIconsClass *klass)
         fm_directory_view_class->append_selection_context_menu_items = fm_directory_view_icons_append_selection_context_menu_items;
         fm_directory_view_class->merge_menus = fm_directory_view_icons_merge_menus;
         fm_directory_view_class->update_menus = fm_directory_view_icons_update_menus;
-
-	/* FIXME: Read this from global preferences */
-	default_icon_text_attribute_names = g_strdup ("name|size|date_modified|type");
 }
 
 static void
@@ -183,14 +183,16 @@ fm_directory_view_icons_initialize (FMDirectoryViewIcons *icon_view)
 
 	icon_view->details = g_new0 (FMDirectoryViewIconsDetails, 1);
 	icon_view->details->default_zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
+	icon_view->details->text_attribute_names
+		= nautilus_preferences_get_string (nautilus_preferences_get_global_preferences (),
+					       	   NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES);	
+
+	nautilus_preferences_add_callback (nautilus_preferences_get_global_preferences (),
+					   NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+					   text_attribute_names_changed_callback,
+					   (gpointer) icon_view);	
 
 	icon_container = create_icon_container (icon_view);
-
-	gtk_signal_connect_while_alive (GTK_OBJECT (fm_signaller_get_current ()),
-			    	 	"icon_text_changed",
-			    		icon_text_changed_cb,
-			    		icon_view,
-			    		GTK_OBJECT (icon_view));
 }
 
 static void
@@ -200,10 +202,16 @@ fm_directory_view_icons_destroy (GtkObject *object)
 
 	icon_view = FM_DIRECTORY_VIEW_ICONS (object);
 
+	nautilus_preferences_remove_callback (nautilus_preferences_get_global_preferences (),
+					      NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+					      text_attribute_names_changed_callback,
+					      (gpointer) icon_view);
+
         if (icon_view->details->react_to_icon_change_idle_id != 0) {
                 gtk_idle_remove (icon_view->details->react_to_icon_change_idle_id);
         }
 
+	g_free (icon_view->details->text_attribute_names);
 	nautilus_file_list_free (icon_view->details->icons_not_positioned);
 	g_free (icon_view->details);
 
@@ -649,65 +657,6 @@ fm_directory_view_icons_can_zoom_out (FMDirectoryView *view)
 }
 
 /**
- * fm_directory_view_icons_get_full_icon_text_attribute_names:
- *
- * Get a string representing which text attributes should be displayed
- * beneath an icon at the highest zoom level. 
- * Use g_free to free the result.
- * @view: A FMDirectoryViewIcons object, or NULL to get the default.
- * 
- * Return value: A |-delimited string comprising attribute names, e.g. "name|size".
- * 
- **/
-char *
-fm_directory_view_icons_get_full_icon_text_attribute_names (FMDirectoryViewIcons *view)
-{
-	/* For now at least, there's only a global setting, not a per-directory one. 
-	 * So this routine doesn't need the first parameter, but it's in there
-	 * for consistency and possible future expansion.
-	 */
-
-	return g_strdup (default_icon_text_attribute_names);
-}
-
-/**
- * fm_directory_view_icons_set_full_icon_text_attribute_names:
- *
- * Sets the string representing which text attributes should be displayed
- * beneath an icon at the highest zoom level. 
- * @view: FMDirectoryViewIcons whose displayed text attributes should be changed,
- * or NULL to change the default. (Currently there is only one global setting, and
- * this parameter is ignored.)
- * @new_names: The |-delimited set of names to display at the highest zoom level,
- * e.g. "name|size|date_modified".
- * 
- **/
-void
-fm_directory_view_icons_set_full_icon_text_attribute_names (FMDirectoryViewIcons *view,
-							    char *new_names)
-{
-	/* For now at least, there's only a global setting, not a per-directory one. 
-	 * So this routine doesn't need the first parameter, but it's in there
-	 * for consistency and possible future expansion.
-	 */
-
-	g_return_if_fail (new_names != NULL);
-
-	if (strcmp (new_names, default_icon_text_attribute_names) == 0) {
-		return;
-	}
-
-	g_free (default_icon_text_attribute_names);
-	default_icon_text_attribute_names = g_strdup (new_names);
-
-	/* FIXME: save new choice in global preferences */
-
-	/* Send signal that will notify us and all other directory views to update */
-	gtk_signal_emit_by_name (GTK_OBJECT (fm_signaller_get_current ()),
-			 	 "icon_text_changed");
-}
-
-/**
  * fm_directory_view_icons_get_icon_text_attribute_names:
  *
  * Get a string representing which text attributes should be displayed
@@ -718,7 +667,7 @@ fm_directory_view_icons_set_full_icon_text_attribute_names (FMDirectoryViewIcons
  * Return value: A |-delimited string comprising attribute names, e.g. "name|size".
  * 
  **/
-char *
+static char *
 fm_directory_view_icons_get_icon_text_attribute_names (FMDirectoryViewIcons *view)
 {
 	char * all_names;
@@ -738,7 +687,7 @@ fm_directory_view_icons_get_icon_text_attribute_names (FMDirectoryViewIcons *vie
 
 	piece_count = pieces_by_level[fm_directory_view_icons_get_zoom_level (view)];
 
-	all_names = fm_directory_view_icons_get_full_icon_text_attribute_names (view);
+	all_names = view->details->text_attribute_names;
 	pieces_so_far = 0;
 
 	for (c = all_names; *c != '\0'; ++c)
@@ -754,7 +703,6 @@ fm_directory_view_icons_get_icon_text_attribute_names (FMDirectoryViewIcons *vie
 
 	/* Return an initial substring of the full set */
 	result = g_strndup (all_names, (c - all_names));
-	g_free (all_names);
 	
 	return result;
 }
@@ -914,15 +862,6 @@ icon_container_selection_changed_cb (GnomeIconContainer *container,
 	g_assert (container == get_icon_container (icon_view));
 
 	fm_directory_view_notify_selection_changed (FM_DIRECTORY_VIEW (icon_view));
-}
-
-static void
-icon_text_changed_cb (FMSignaller *signaller,
-		      FMDirectoryViewIcons *icon_view)
-{
-	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
-
-	gnome_icon_container_request_update_all (get_icon_container (icon_view));	
 }
 
 static void
@@ -1143,4 +1082,26 @@ get_icon_property_cb (GnomeIconContainer *container,
 	
 	/* nothing applied, so return nothing */
 	return NULL;		
+}
+
+static void
+text_attribute_names_changed_callback (const GtkObject *prefs,
+         			       const gchar                 *pref_name,
+         			       GtkFundamentalType           pref_type,
+         			       gconstpointer                pref_value,
+         			       gpointer                	    user_data)
+
+{
+	FMDirectoryViewIcons * icon_view;
+
+	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (user_data));
+	g_assert (prefs != NULL);
+	g_assert (pref_name != NULL);
+
+	icon_view = FM_DIRECTORY_VIEW_ICONS (user_data);
+
+	g_free (icon_view->details->text_attribute_names);
+	icon_view->details->text_attribute_names = g_strdup ((char *)pref_value);
+
+	gnome_icon_container_request_update_all (get_icon_container (icon_view));	
 }

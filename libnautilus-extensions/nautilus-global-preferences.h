@@ -46,6 +46,9 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_HISTORY		"/nautilus/metaviews/ntl_history_view"
 #define NAUTILUS_PREFERENCES_META_VIEWS_SHOW_WEB_SEARCH		"/nautilus/metaviews/ntl_websearch_view"
 
+/* Preferences not (currently?) displayed in dialog */
+#define NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES	"/nautilus/icon_view/text_attribute_names"
+
 enum
 {
 	NAUTILUS_USER_LEVEL_NOVICE,

@@ -98,6 +98,7 @@ struct _FMDirectoryViewDetails
 	gboolean loading;
 
 	gint user_level;
+	gboolean use_new_window;
 };
 
 /* forward declarations */
@@ -110,6 +111,9 @@ static void           fm_directory_view_initialize                              
 static void           fm_directory_view_delete_with_confirm                       (FMDirectoryView         *view,
 										   GList                   *files);
 static void           fm_directory_view_destroy                                   (GtkObject               *object);
+static void	      fm_directory_view_activate_file_internal 			  (FMDirectoryView 	   *view, 
+				 	  					   NautilusFile 	   *file,
+				 	  					   gboolean 	            use_new_window);
 static void           fm_directory_view_append_background_context_menu_items      (FMDirectoryView         *view,
 										   GtkMenu                 *menu);
 static void           fm_directory_view_merge_menus                               (FMDirectoryView         *view);
@@ -151,6 +155,11 @@ static void           unschedule_timeout_display_of_pending_files               
 static void           unschedule_display_of_pending_files                         (FMDirectoryView         *view);
 static void           disconnect_model_handlers                                   (FMDirectoryView         *view);
 static void           user_level_changed_callback                                 (const GtkObject         *prefs,
+										   const gchar             *pref_name,
+										   GtkFundamentalType       pref_type,
+										   gconstpointer            pref_value,
+										   gpointer                 user_data);
+static void           use_new_window_changed_callback                             (const GtkObject         *prefs,
 										   const gchar             *pref_name,
 										   GtkFundamentalType       pref_type,
 										   gconstpointer            pref_value,
@@ -275,9 +284,9 @@ bonobo_menu_open_cb (BonoboUIHandler *ui_handler, gpointer user_data, const char
          */
         g_assert (g_list_length(selection) == 1);
 
-	fm_directory_view_activate_file (view, 
-	                                  NAUTILUS_FILE (selection->data), 
-	                                  FALSE);        
+	fm_directory_view_activate_file_internal (view, 
+	                                  	  NAUTILUS_FILE (selection->data), 
+	                                  	  FALSE);        
 
 	nautilus_file_list_free (selection);
 }
@@ -411,7 +420,15 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 					   NAUTILUS_PREFERENCES_USER_LEVEL,
 					   user_level_changed_callback,
 					   (gpointer) directory_view);
-	
+
+	directory_view->details->use_new_window =
+		nautilus_preferences_get_boolean (nautilus_preferences_get_global_preferences (),
+						  NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW);
+
+	nautilus_preferences_add_callback (nautilus_preferences_get_global_preferences (),
+					   NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
+					   use_new_window_changed_callback,
+					   (gpointer) directory_view);	
 }
 
 static void
@@ -424,6 +441,10 @@ fm_directory_view_destroy (GtkObject *object)
 	nautilus_preferences_remove_callback (nautilus_preferences_get_global_preferences (),
 					      NAUTILUS_PREFERENCES_USER_LEVEL,
 					      user_level_changed_callback,
+					      (gpointer) view);
+	nautilus_preferences_remove_callback (nautilus_preferences_get_global_preferences (),
+					      NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
+					      use_new_window_changed_callback,
 					      (gpointer) view);
 	
 	if (view->details->model != NULL) {
@@ -1235,7 +1256,7 @@ open_cb (GtkMenuItem *item, GList *files)
 
 	directory_view = FM_DIRECTORY_VIEW (gtk_object_get_data (GTK_OBJECT (item), "directory_view"));
 
-	fm_directory_view_activate_file (directory_view, files->data, FALSE);
+	fm_directory_view_activate_file_internal (directory_view, files->data, FALSE);
 }
 
 static void
@@ -1244,7 +1265,7 @@ open_one_in_new_window (gpointer data, gpointer user_data)
 	g_assert (NAUTILUS_IS_FILE (data));
 	g_assert (FM_IS_DIRECTORY_VIEW (user_data));
 
-	fm_directory_view_activate_file (FM_DIRECTORY_VIEW (user_data), NAUTILUS_FILE (data), TRUE);
+	fm_directory_view_activate_file_internal (FM_DIRECTORY_VIEW (user_data), NAUTILUS_FILE (data), TRUE);
 }
 
 static void
@@ -1619,6 +1640,42 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 }
 
 /**
+ * fm_directory_view_activate_file_internal:
+ * 
+ * Activate an file in this view. This might involve switching the displayed
+ * location for the current window, or launching an application. The only
+ * difference between this private call and the public fm_directory_view_activate_file
+ * is that the public call combines the caller's new-window request with the
+ * user's preference to create the value for this call.
+ * @view: FMDirectoryView in question.
+ * @file: A NautilusFile representing the file in this view to activate.
+ * @use_new_window: Should this item be opened in a new window?
+ * 
+ **/
+static void
+fm_directory_view_activate_file_internal (FMDirectoryView *view, 
+				 	  NautilusFile *file,
+				 	  gboolean use_new_window)
+{
+	Nautilus_NavigationRequestInfo request;
+
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+
+	request.requested_uri = nautilus_file_get_uri (file);
+	request.new_window_default = Nautilus_V_FALSE;
+	request.new_window_suggested = use_new_window ? 
+				       Nautilus_V_TRUE : 
+				       Nautilus_V_FALSE;
+	request.new_window_enforced = Nautilus_V_UNKNOWN;
+	nautilus_view_frame_request_location_change
+		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &request);
+
+	g_free (request.requested_uri);
+}
+
+
+/**
  * fm_directory_view_activate_file:
  * 
  * Activate an file in this view. This might involve switching the displayed
@@ -1634,21 +1691,9 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 				 NautilusFile *file,
 				 gboolean request_new_window)
 {
-	Nautilus_NavigationRequestInfo request;
-
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-	g_return_if_fail (NAUTILUS_IS_FILE (file));
-
-	request.requested_uri = nautilus_file_get_uri (file);
-	request.new_window_default = Nautilus_V_FALSE;
-	request.new_window_suggested = request_new_window ? 
-				       Nautilus_V_TRUE : 
-				       Nautilus_V_FALSE;
-	request.new_window_enforced = Nautilus_V_UNKNOWN;
-	nautilus_view_frame_request_location_change
-		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &request);
-
-	g_free (request.requested_uri);
+	fm_directory_view_activate_file_internal (view,
+						  file,
+						  request_new_window || view->details->use_new_window);
 }
 
 /**
@@ -1796,6 +1841,22 @@ fm_directory_view_update_menus (FMDirectoryView *view)
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
 	(* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->update_menus) (view);
+}
+
+static void
+use_new_window_changed_callback (const GtkObject         *prefs,
+			         const gchar             *pref_name,
+			         GtkFundamentalType       pref_type,
+			         gconstpointer            pref_value,
+			         gpointer                 user_data)
+{
+	FMDirectoryView * directory_view = FM_DIRECTORY_VIEW (user_data);
+
+	g_assert (directory_view != NULL);
+	g_assert (prefs != NULL);
+	g_assert (pref_name != NULL);
+
+	directory_view->details->use_new_window = GPOINTER_TO_INT (pref_value);
 }
 
 static void

@@ -32,9 +32,7 @@ libntl_file_manager_la_SOURCES=	\
 	fm-icon-text-window.c		\
 	fm-icon-text-window.h		\
 	fm-properties-window.c		\
-	fm-properties-window.h		\
-        fm-signaller.c 			\
-        fm-signaller.h 		
+	fm-properties-window.h		
 
 # noinst_PROGRAMS=gnome-desktop
 

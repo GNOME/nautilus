@@ -260,6 +260,14 @@ preferences_item_construct (NautilusPreferencesItem	*item,
 	case NAUTILUS_PREFERENCE_ENUM:
 		preferences_item_create_enum (item, pref_info);
 		break;
+
+	case NAUTILUS_PREFERENCE_STRING:
+		/* This hasn't been implemented yet because our only
+		 * string preferences aren't displayed in the preferences
+		 * dialog.
+		 */
+		g_assert_not_reached ();
+		break;
 	}
 
 	g_assert (item->details->child != NULL);

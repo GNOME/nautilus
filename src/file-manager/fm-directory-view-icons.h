@@ -51,12 +51,6 @@ struct _FMDirectoryViewIconsClass {
 /* GtkObject support */
 GtkType fm_directory_view_icons_get_type                           (void);
 
-/* Functions for FMIconsController support. */
-char *  fm_directory_view_icons_get_icon_text_attribute_names      (FMDirectoryViewIcons *view);
-char *  fm_directory_view_icons_get_full_icon_text_attribute_names (FMDirectoryViewIcons *view);
-void	fm_directory_view_icons_set_full_icon_text_attribute_names (FMDirectoryViewIcons *view,
-							    	    char *new_names);
-
 /*
  * FIXME: None of the following are currently used. Remove them eventually if
  * we're not going to use them.

@@ -55,7 +55,8 @@ struct _NautilusPreferences
 typedef enum
 {
 	NAUTILUS_PREFERENCE_BOOLEAN,
-	NAUTILUS_PREFERENCE_ENUM
+	NAUTILUS_PREFERENCE_ENUM,
+	NAUTILUS_PREFERENCE_STRING
 } NautilusPreferencesType;
 
 /*
@@ -119,6 +120,11 @@ void                           nautilus_preferences_set_enum               (Naut
 									    const gchar                   *pref_name,
 									    gint                           enum_value);
 gint                           nautilus_preferences_get_enum               (NautilusPreferences           *prefs,
+									    const gchar                   *pref_name);
+void                           nautilus_preferences_set_string             (NautilusPreferences           *prefs,
+									    const gchar                   *pref_name,
+									    const char                    *string_value);
+char *                         nautilus_preferences_get_string             (NautilusPreferences           *prefs,
 									    const gchar                   *pref_name);
 NautilusPreferences *          nautilus_preferences_get_global_preferences (void);
 

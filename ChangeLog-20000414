@@ -1,3 +1,78 @@
+2000-03-15  John Sullivan  <sullivan@eazel.com>
+
+	Used preferences mechanism for icon views' text-under-icons
+	and directory views' open-in-new-window preference. The former
+	was not persistent previously and the latter wasn't
+	implemented.
+
+	* nautilus-widgets/nautilus-preferences.h,
+	* nautilus-widgets/nautilus-preferences.c:
+	added NAUTILUS_PREFERENCE_STRING to NautilusPreferencesType enum.
+	(nautilus_preferences_get_string), (nautilus_preferences_set_string):
+	New functions for string preferences.
+	(prefs_check_supported_type), (prefs_set_pref), 
+	(nautilus_preferences_register_from_info), (make_gnome_config_string):
+	Support for string preferences.
+	
+	* nautilus-widgets/nautilus-preferences-item.c:
+	(preferences_item_construct): added a g_assert_not_reached as the
+	NAUTILUS_PREFERENCE_STRING case in a switch statement to make the
+	compiler happy. I didn't implement a UI for string items in the
+	preferences dialog because the string items we're using now have
+	their own specialized UI.
+
+	* libnautilus/nautilus-global-preferences.h:
+	added #define for NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES
+	* libnautilus/nautilus-global-preferences.c:
+	(global_preferences_static_info[]): filled in initial value for
+	NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES
+
+	* src/file-manager/fm-icon-text-window.c:
+	(changed_attributes_option_menu_cb): Set new value using
+	preferences mechanism instead of calling fm_directory_view_icons.
+	(find_string_in_array), (set_preference_string),
+	(synch_menus_with_preference), (preference_changed_cb),
+	(fm_icon_text_window_destroy_cb):
+	New functions used to keep UI in synch with text-attribute 
+	preference.
+	(create_icon_text_window): wire up notifications about 
+	text-attribute preferences and get initial value.
+
+	* src/file-manager/fm-directory-view-icons.h,
+	* src/file-manager/fm-directory-view-icons.c:
+	Added text_attribute_names field to details struct.
+	(icon_text_changed_cb), (fm_directory_view_icons_initialize_class),
+	(fm_directory_view_icons_initialize), (fm_directory_view_icons_destroy), 
+	(text_attribute_names_changed_callback), 
+	(fm_directory_view_icons_get_full_icon_text_attribute_names), 
+	(fm_directory_view_icons_set_full_icon_text_attribute_names), 
+	(fm_directory_view_icons_get_icon_text_attribute_names): 
+	Replaced old mechanism that used FMSignaller to send notifications
+	about the text attribute names with new preferences mechanism.
+	
+	* src/file-manager/fm-directory-view.c:
+	Added user_new_window field to details structure.
+	(fm_directory_view_activate_file_internal): New function, does
+	what fm_directory_view_activate_file did before.
+	(fm_directory_view_activate_file): Now respects the use_new_window
+	preference.
+	(bonobo_menu_open_cb), (open_cb), (open_one_in_new_window): 
+	Changed callers to use fm_directory_view_activate_file_internal 
+	for those cases where the use_new_window preference should be 
+	ignored (e.g. "Open" and "Open in New Window" menu items).
+	(fm_directory_view_initialize): Get initial value of new-window
+	preference and set up notification for when value changes.
+	(use_new_window_changed_callback): Refresh local copy of preference.
+	(fm_directory_view_destroy): Remove preferences callback.
+	
+	* src/file-manager/fm-signaller.c,
+	* src/file-manager/fm-signaller.h: Removed these two files
+	that were handling the text-under-icons mechanism previously.
+	* src/file-manager/Makefile.am: Took removed files out of build.
+
+	* libnautilus/nautilus-file.c: (nautilus_file_get_owner_as_string):
+	Removed an old debugging g_print.
+
 2000-03-15  Darin Adler  <darin@eazel.com>
 
 	A quick cleanup of how we use gnome-xml.

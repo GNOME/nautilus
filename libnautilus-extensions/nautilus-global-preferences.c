@@ -117,6 +117,13 @@ static NautilusPreferencesInfo global_preferences_static_info[] =
 		FALSE,
 		NULL
 	},
+	{
+		NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
+		"",	/* No caption since not currently displayed in preferences dialog */
+		NAUTILUS_PREFERENCE_STRING,
+		"name|size|date_modified|type",
+		NULL
+	}
 };
 
 /*
