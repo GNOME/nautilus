@@ -200,3 +200,12 @@ nautilus_file_info_add_string_attribute (NautilusFileInfo *file,
 	NAUTILUS_FILE_INFO_GET_IFACE (file)->add_string_attribute 
 		(file, attribute_name, value);
 }
+
+void
+nautilus_file_info_invalidate_extension_info (NautilusFileInfo *file)
+{
+	g_return_if_fail (NAUTILUS_IS_FILE_INFO (file));
+	g_return_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->invalidate_extension_info != NULL);
+	
+	NAUTILUS_FILE_INFO_GET_IFACE (file)->invalidate_extension_info (file);
+}

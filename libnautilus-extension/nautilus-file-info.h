@@ -73,6 +73,7 @@ struct _NautilusFileInfoIface
 	void              (*add_string_attribute) (NautilusFileInfo *file,
 						   const char       *attribute_name,
 						   const char       *value);
+	void              (*invalidate_extension_info) (NautilusFileInfo *file);
 };
 
 GList            *nautilus_file_info_list_copy            (GList            *files);
@@ -109,6 +110,9 @@ char *            nautilus_file_info_get_string_attribute (NautilusFileInfo *fil
 void              nautilus_file_info_add_string_attribute (NautilusFileInfo *file,
 							   const char       *attribute_name,
 							   const char       *value);
+
+/* Invalidating file info */
+void              nautilus_file_info_invalidate_extension_info (NautilusFileInfo *file);
 
 G_END_DECLS
 

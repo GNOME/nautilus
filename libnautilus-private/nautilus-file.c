@@ -6034,6 +6034,12 @@ nautilus_file_add_string_attribute (NautilusFile *file,
 	nautilus_file_changed (file);
 }
 
+static void
+nautilus_file_invalidate_extension_info (NautilusFile *file)
+{
+	nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO);
+}
+
 void
 nautilus_file_info_providers_done (NautilusFile *file)
 {
@@ -6066,6 +6072,7 @@ nautilus_file_info_iface_init (NautilusFileInfoIface *iface)
 	iface->add_emblem = nautilus_file_add_emblem;
 	iface->get_string_attribute = nautilus_file_get_string_attribute;
 	iface->add_string_attribute = nautilus_file_add_string_attribute;
+	iface->invalidate_extension_info = nautilus_file_invalidate_extension_info;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
