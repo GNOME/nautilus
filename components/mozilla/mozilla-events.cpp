@@ -28,6 +28,12 @@
 #define nopeDEBUG_ramiro 1
 #define nopeDEBUG_mfleming 1
 
+#ifdef DEBUG_mfleming
+#define DEBUG_MSG(x)	g_print x
+#else
+#define DEBUG_MSG(x)
+#endif
+
 #include <config.h>
 
 #include "mozilla-events.h"
@@ -58,6 +64,19 @@
 #include "nsIDOMHTMLDocument.h"
 #include "nsIPresShell.h"
 
+
+static char *
+get_glib_str_from_ns_str (nsAutoString string)
+{
+
+	char *cstr = string.ToNewCString();
+	char *glib_str = g_strdup (cstr);
+
+	nsMemory::Free (cstr);
+
+	return glib_str;
+}
+
 extern "C" gboolean
 mozilla_events_is_key_return (gpointer dom_event)
 {
@@ -84,17 +103,75 @@ mozilla_events_is_key_return (gpointer dom_event)
 	return keyCode == nsIDOMKeyEvent::DOM_VK_RETURN || keyCode == nsIDOMKeyEvent::DOM_VK_ENTER;
 }
 
-extern "C" char *
-mozilla_events_get_href_for_event (gpointer dom_event)
+/*
+ * Return's the form's "action" URI or NULL this is not a form submission event
+ */
+static char *
+mozilla_events_get_form_uri_from_event (gpointer dom_event)
 {
-	g_return_val_if_fail (dom_event != NULL, NULL);
+	char * ret;
 
-	// This is the evil part of the process thanks to the fact that 
-	// this thing cant be exposed in a straight C api.
+	g_return_val_if_fail (dom_event != NULL, FALSE);
+
 	nsCOMPtr<nsIDOMEvent> aDOMEvent (do_QueryInterface ((nsIDOMEvent*) dom_event));
 
 	if (!aDOMEvent) {
-		return FALSE;
+		return NULL;
+	}
+	
+	nsCOMPtr<nsIDOMEventTarget> targetNode;
+	
+	aDOMEvent->GetTarget (getter_AddRefs (targetNode));
+	
+	if (!targetNode) {
+		return NULL;
+	}
+	
+	nsCOMPtr<nsIDOMHTMLInputElement> node = do_QueryInterface (targetNode);
+
+	if (!node) {
+		return NULL;
+	}
+
+	nsAutoString input_type_name;
+
+	node->GetType (input_type_name);
+
+	if ( ! ( input_type_name.EqualsWithConversion ("SUBMIT", PR_TRUE)
+		|| input_type_name.EqualsWithConversion ("IMAGE", PR_TRUE) )
+	) {
+		return NULL;
+	}
+
+	nsCOMPtr<nsIDOMHTMLFormElement> form_node;
+
+	node->GetForm (getter_AddRefs (form_node));
+
+	if (!form_node) {
+		return NULL;
+	}
+
+	nsAutoString form_action;
+
+	form_node->GetAction (form_action);
+
+	ret = get_glib_str_from_ns_str (form_action);
+
+	if (ret) {
+		DEBUG_MSG (("%s: form action is '%s'\n", ret));	
+	}
+	return ret;
+}
+
+static char *
+mozilla_events_get_anchor_uri_from_event (gpointer dom_event)
+{
+	g_return_val_if_fail (dom_event != NULL, NULL);
+
+	nsCOMPtr<nsIDOMEvent> aDOMEvent (do_QueryInterface ((nsIDOMEvent*) dom_event));
+
+	if (!aDOMEvent) {
+		return NULL;
 	}
 		
 	nsCOMPtr<nsIDOMEventTarget> targetNode;
@@ -122,9 +199,9 @@ mozilla_events_get_href_for_event (gpointer dom_event)
 			nsAutoString tag;
 			element->GetTagName (tag);
 			
-			// Look for anchors (A)
-			if (tag.EqualsWithConversion ("A", PR_TRUE))
-			{
+			// Anchor and Area tags both can have HREF's
+			if (tag.EqualsWithConversion ("A", PR_TRUE)
+			    || tag.EqualsWithConversion ("AREA", PR_TRUE)) {
 				// Test if the element has an associated link
 				nsCOMPtr<nsIDOMNamedNodeMap> attributes;
 
@@ -142,15 +219,8 @@ mozilla_events_get_href_for_event (gpointer dom_event)
 						nsAutoString nodeValue;
 						
 						hrefNode->GetNodeValue (nodeValue);
-						
-						// This nonsense is needed to make sure the right deallocator 
-						// is called on the Nautilus universe
-						char *cstr = nodeValue.ToNewCString();
-						char *lifeSucks = g_strdup (cstr);
-		
-						nsMemory::Free (cstr);
-						
-						return lifeSucks;
+
+						return get_glib_str_from_ns_str (nodeValue);
 					}
 				}
 			}
@@ -169,8 +239,24 @@ mozilla_events_get_href_for_event (gpointer dom_event)
 		node = parentNode;
 
 	} while (node);
-	
+
 	return NULL;
+}
+
+extern "C" char *
+mozilla_events_get_href_for_event (gpointer dom_event)
+{
+	char *ret;
+
+	/* Check for anchor and area tags first, then check for form submits */
+
+	ret = mozilla_events_get_anchor_uri_from_event (dom_event);
+
+	if (ret == NULL) {
+		ret = mozilla_events_get_form_uri_from_event (dom_event);
+	}
+
+	return ret;
 }
 
 

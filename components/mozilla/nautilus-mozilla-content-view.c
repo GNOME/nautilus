@@ -34,9 +34,9 @@
 #define nopeDEBUG_pepper 1
 
 #ifdef DEBUG_mfleming
-#define DEBUG_MSG(x)	g_print x;
+#define DEBUG_MSG(x)	g_print x
 #else
-#define DEBUG_MSG(x)	;
+#define DEBUG_MSG(x)
 #endif
 
 #include <config.h>
@@ -96,6 +96,13 @@ struct NautilusMozillaContentViewDetails {
 	GdkCursor 	*busy_cursor;
 	char		*vfs_read_buffer;
 	GnomeVFSAsyncHandle *vfs_handle;
+						/* set to TRUE during the DOM callbacks
+						 * To work around bug 6580, non-user initiated navigations
+						 * are not recorded in history
+						 */
+	gboolean	user_initiated_navigation;
+	BonoboUIComponent *ui;
+
 
 	/* For async NautilusView messages */
 	char		*pending_title;		/*for set_title*/
@@ -113,7 +120,6 @@ struct NautilusMozillaContentViewDetails {
 	gboolean	is_pending_report_load_progress :1;
 	gboolean	is_pending_open_location :1;
 
-	BonoboUIComponent *ui;
 };
 
 /* GTK Type System */
@@ -184,8 +190,10 @@ static char *	translate_uri_nautilus_to_mozilla 		(NautilusMozillaContentView 	*
 static char * 	translate_uri_mozilla_to_nautilus 		(NautilusMozillaContentView 	*view,
 								 const char 			*uri);
 
+#ifdef BUSY_CURSOR
 static void     set_busy_cursor           			(NautilusMozillaContentView     *view);
 static void     clear_busy_cursor				(NautilusMozillaContentView     *view);
+#endif
 
 static void	navigate_mozilla_to_nautilus_uri		(NautilusMozillaContentView     *view,
 								 const char			*uri);
@@ -196,6 +204,8 @@ static void	update_nautilus_uri				(NautilusMozillaContentView	*view,
 static void	cancel_pending_vfs_operation			(NautilusMozillaContentView	*view);
 
 /* Utility functions */
+
+static gboolean	is_uri_relative					(const char 			*uri);
 
 static char *	make_full_uri_from_relative			(const char			*base_uri,
 								 const char			*uri);
@@ -317,71 +327,60 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 	post_widget_initialize ();
 
 	/* Add callbacks to the beast */
-	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
-					"title",
-					GTK_SIGNAL_FUNC (mozilla_title_changed_callback),
-					view,
-					GTK_OBJECT (view->details->mozilla));
+	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+				"title",
+				GTK_SIGNAL_FUNC (mozilla_title_changed_callback),
+				view);
 
-	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
-					"location",
-					GTK_SIGNAL_FUNC (mozilla_location_callback),
-					view,
-					GTK_OBJECT (view->details->mozilla));
+	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+				"location",
+				GTK_SIGNAL_FUNC (mozilla_location_callback),
+				view);
 
-	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
-					"net_state",
-					GTK_SIGNAL_FUNC (mozilla_net_state_callback),
-					view,
-					GTK_OBJECT (view->details->mozilla));
+	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+				"net_state",
+				GTK_SIGNAL_FUNC (mozilla_net_state_callback),
+				view);
 
-	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
-					"net_start",
-					GTK_SIGNAL_FUNC (mozilla_net_start_callback),
-					view,
-					GTK_OBJECT (view->details->mozilla));
+	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+				"net_start",
+				GTK_SIGNAL_FUNC (mozilla_net_start_callback),
+				view);
 
-	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
-					"net_stop",
-					GTK_SIGNAL_FUNC (mozilla_net_stop_callback),
-					view,
-					GTK_OBJECT (view->details->mozilla));
+	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+				"net_stop",
+				GTK_SIGNAL_FUNC (mozilla_net_stop_callback),
+				view);
 	
-	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
-					"link_message",
-					GTK_SIGNAL_FUNC (mozilla_link_message_callback),
-					view,
-					GTK_OBJECT (view->details->mozilla));
+	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+				"link_message",
+				GTK_SIGNAL_FUNC (mozilla_link_message_callback),
+				view);
 	
-	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
-					"progress",
-					GTK_SIGNAL_FUNC (mozilla_progress_callback),
-					view,
-					GTK_OBJECT (view->details->mozilla));
+	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+				"progress",
+				GTK_SIGNAL_FUNC (mozilla_progress_callback),
+				view);
 	
-	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
-					"dom_key_press",
-					GTK_SIGNAL_FUNC (mozilla_dom_key_press_callback),
-					view,
-					GTK_OBJECT (view->details->mozilla));
+	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+				"dom_key_press",
+				GTK_SIGNAL_FUNC (mozilla_dom_key_press_callback),
+				view);
 	
-	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
-					"dom_mouse_click",
-					GTK_SIGNAL_FUNC (mozilla_dom_mouse_click_callback),
-					view,
-					GTK_OBJECT (view->details->mozilla));
+	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+				"dom_mouse_click",
+				GTK_SIGNAL_FUNC (mozilla_dom_mouse_click_callback),
+				view);
 
-	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
-					"js_status",
-					GTK_SIGNAL_FUNC (mozilla_js_status_callback),
-					view,
-					GTK_OBJECT (view->details->mozilla));
+	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+				"js_status",
+				GTK_SIGNAL_FUNC (mozilla_js_status_callback),
+				view);
 
-	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
-					"new_window",
-					GTK_SIGNAL_FUNC (mozilla_new_window_callback),
-					view,
-					GTK_OBJECT (view->details->mozilla));
+	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+				"new_window",
+				GTK_SIGNAL_FUNC (mozilla_new_window_callback),
+				view);
 
 	
 	gtk_box_pack_start (GTK_BOX (view), GTK_WIDGET (view->details->mozilla), TRUE, TRUE, 1);
@@ -390,11 +389,10 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 	
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 	
-	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->nautilus_view), 
-					"load_location",
-					GTK_SIGNAL_FUNC (view_load_location_callback), 
-					view,
-					GTK_OBJECT (view));
+	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
+				"load_location",
+				GTK_SIGNAL_FUNC (view_load_location_callback), 
+				view);
 
 	/* Connect to the active signal of the view to merge our menus */
         gtk_signal_connect (GTK_OBJECT (nautilus_view_get_bonobo_control (view->details->nautilus_view)),
@@ -471,7 +469,7 @@ try_transform_nautilus_uri_to_file_scheme (const char *uri)
 	GnomeVFSURI *vfs_uri;
 	char *real_uri;
 
- 	if (0 == strncmp ("file:///", uri, strlen ("file:///"))) {
+ 	if (strncasecmp ("file:///", uri, strlen ("file:///")) == 0) {
  		return NULL;
 	} 
 
@@ -503,12 +501,18 @@ view_load_location_callback (NautilusView *nautilus_view,
 
 	DEBUG_MSG ((">nautilus_view_report_load_underway\n"));
 
+	/* set to FALSE here so any URI reported in mozilla_location_callback
+	 * will not be sent back to nautilus
+	 */
+	view->details->user_initiated_navigation = FALSE;
+
 	file_uri = try_transform_nautilus_uri_to_file_scheme (location);
 
 	if (file_uri != NULL) {
 		/* if this is a gnome-help: uri, transform it into a file: uri
 		 * and load again to get around the fact that the help translater doesn't
 		 * know how to deal with paths such as "gnome-help:control-center/foo"
+		 * FIXME this results in an extraneous entry in the nautilus history
 		 */
 		nautilus_view_open_location_in_this_window (view->details->nautilus_view, file_uri);
 		g_free (file_uri);
@@ -863,21 +867,45 @@ mozilla_location_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 	DEBUG_MSG (("=%s : current='%s' new='%s'\n", __FUNCTION__, view->details->uri, new_location_translated));
 
-	/* FIXME bugzilla.eazel.com 6736
-	 * Often times, we get a location callback with the uri being ex "http://www.eazel.com/"
-	 * when the current uri is "http://www.eazel.com".  this causes report_location_change
-	 * to fire and the throbber to cut out early.
+	/*
+	 * FIXME bug 6965
+	 * The user-initiated navigation check here is an attempt to be able
+	 * to prevent redirects that were handled by Mozilla from showing
+	 * up in the Nautilus history.
 	 * 
-	 * The best thing here (since there may be other URI comparison/cononicalization
-	 * rules that differ between nautilus and mozilla) might be just to keep track
-	 * of whether the throbber should be spinnig and go call report_load_underway immediately
-	 */ 
+	 * The typical flow is like this:
+	 * 1) view_load_location_callback is called with uri eg "http://www.amazon.com"
+	 * 2) Mozilla goes to that URI and recieves a 302 eg "http://www.amazon.com/crap"
+	 * 3) the mozilla wrapper calls report_location_change on the new URI, which
+	 *    is given a second entry in the history.
+	 *    
+	 * To work around this, we only call report_location_change when
+	 * the navigation was initiated with a DOM event.
+	 * 
+	 * This means we don't record certain navigation events (eg,
+	 * javascript-initiated) in the history.
+	 */
 
-	if (view->details->uri == NULL || !uris_identical (new_location_translated, view->details->uri)) {
-		update_nautilus_uri (view, new_location_translated);
+	if (view->details->uri == NULL 
+	    || (!uris_identical (new_location_translated, view->details->uri))) {
+		if (view->details->user_initiated_navigation) {
+			update_nautilus_uri (view, new_location_translated);
+		} else {
+			/* We still need to update our concept of the URI
+			 * so that our handling of relative URI's is correct.
+			 * This means a Nautilus-initiated reload will actually
+			 * fail to be communicated to mozilla as a special reload
+			 * event in view_load_location_callback.
+			 */
+			g_free (view->details->uri);
+			view->details->uri = g_strdup (new_location_translated);
+			DEBUG_MSG (("=%s : Navigation not user initiated, not reporting to nautilus\n", __FUNCTION__));
+		}
 	} else {
 		DEBUG_MSG (("=%s : URI's identical, ignoring request\n", __FUNCTION__));
 	}
+
+	view->details->user_initiated_navigation = FALSE;
 
 	g_free (new_location_translated);
 	new_location_translated = NULL;	
@@ -947,6 +975,10 @@ mozilla_net_state_callback (GtkMozEmbed	*mozilla,
 	g_print ("\n\n");
 #endif
 
+/* FIXME: Busy cursor code removed because the cursor can stay
+ * up on man: pages
+ */
+#ifdef BUSY_CURSOR
 	/* win_start */
 	if (state_flags & GTK_MOZ_EMBED_FLAG_START) {
 		set_busy_cursor (view);
@@ -956,6 +988,7 @@ mozilla_net_state_callback (GtkMozEmbed	*mozilla,
 	if (state_flags & GTK_MOZ_EMBED_FLAG_STOP) {
 		clear_busy_cursor (view);
 	}
+#endif
 
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
 }
@@ -1012,7 +1045,8 @@ mozilla_link_message_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 	/* You could actually use make_full_uri_from_relative here
 	 * to translate things like fragment links to full URI's.
-	 * I just didn't.
+	 * I just didn't.  Usually, Mozilla sends back full URI's here (except
+	 * for fragments inside a document).
 	 */
 
 	/* This is actually not that efficient */
@@ -1142,7 +1176,7 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 		 *   "href" is a relative link inside an eazel-services page
 		 *   href_full is "eazel-services:///<whatever>"
 		 *   href_mozilla is "http://localhost:160xx/<whatever>"
-		 *   We unnecessarally interrupt the navigate
+		 *   We let the navigate continue w/o interrupting
 		 * 
 		 * Case 3)
 		 *   "href" is a full eazel-services: URI
@@ -1170,23 +1204,28 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 			ret = NS_DOM_EVENT_CONSUMED;
 		} else if (href[0] == '#') {
 			/* a navigation to an anchor within the same page, let it pass */
+			view->details->user_initiated_navigation = TRUE;
 			ret = NS_DOM_EVENT_IGNORED;
 		} else if (0 == strncmp (href, "javascript:", strlen ("javascript:"))) {
 			/* This is a bullshit javascript uri, let it pass */
 			ret = NS_DOM_EVENT_IGNORED;			
 		} else if (should_uri_navigate_bypass_nautilus (href_full)) {
-			if (should_mozilla_load_uri_directly (href_full) 
-			    && 0 == strcmp (href_full, href_mozilla)) {
+			view->details->user_initiated_navigation = TRUE;
+
+			if ((should_mozilla_load_uri_directly (href_full) 
+			     && 0 == strcmp (href_full, href_mozilla))
+			     || is_uri_relative (href)) {
 				/* If the URI doesn't need to be translated and we can load it directly,
 				 * then just keep going...report_location_change will happen in the
 				 * mozilla_location_callback.
 				 */
-				/* This is cases (0) and (1) above */
+				/* This is cases (0), (1), and (2) above */
 				DEBUG_MSG (("=%s : allowing navigate to continue\n", __FUNCTION__));
 				ret = NS_DOM_EVENT_IGNORED;
 			} else {
 				/* Otherwise, cancel the current navigation and do it ourselves */
-				/* This is cases (2) and (3) above */
+				/* This is case (3) above */
+				/* FIXME: form posting in this case does not work */
 				DEBUG_MSG (("=%s : handling navigate ourselves\n", __FUNCTION__));
 
 				navigate_mozilla_to_nautilus_uri (view, href_full);
@@ -1337,6 +1376,7 @@ translate_uri_mozilla_to_nautilus (NautilusMozillaContentView *view, const char 
 #endif /* EAZEL_SERVICES */
 }
 
+#ifdef BUSY_CURSOR
 static void
 set_busy_cursor (NautilusMozillaContentView *view)
 {
@@ -1364,6 +1404,7 @@ clear_busy_cursor (NautilusMozillaContentView *view)
 	
 	gdk_window_set_cursor (GTK_WIDGET (view->details->mozilla)->window, NULL);
 }
+#endif
 
 static void
 cancel_pending_vfs_operation (NautilusMozillaContentView *view)
@@ -1433,7 +1474,7 @@ update_nautilus_uri (NautilusMozillaContentView *view, const char *nautilus_uri)
 /***********************************************************************************/
 
 static gboolean
-is_uri_partial (const char *uri)
+is_uri_relative (const char *uri)
 {
 	const char *current;
 
@@ -1547,7 +1588,7 @@ make_full_uri_from_relative (const char *base_uri, const char *uri)
 	 * functionality differs from what Mozilla itself would do.
 	 */
 
-	if (is_uri_partial (uri)) {
+	if (is_uri_relative (uri)) {
 		char *mutable_base_uri;
 		char *mutable_uri;
 
@@ -1736,7 +1777,7 @@ uris_identical (const char *uri1, const char *uri2)
 {
 	/*
 	 * FIXME: the dns portion of the authority is case-insensitive,
-	 * but the rest of the URI is case-sensitive.  We just
+	 * as is the scheme, but the rest of the URI is case-sensitive.  We just
 	 * treat the whole thing as case-sensitive, which is mostly
 	 * OK, especially since false negatives here aren't the end
 	 * of the world
@@ -1806,7 +1847,7 @@ string_list_get_index_of_string (const char *string_list[], guint num_strings, c
 	for (i = 0; i < num_strings; i++) {
 		g_assert (string_list[i] != NULL);
 		if (strlen (string) >= strlen (string_list[i]) 
-		    && (strncmp (string, string_list[i], strlen (string_list[i])) == 0)) {
+		    && (strncasecmp (string, string_list[i], strlen (string_list[i])) == 0)) {
 			return i;
 		}
 	}
@@ -1996,6 +2037,8 @@ eazel_services_scheme_from_http	(NautilusMozillaContentView	*view,
  * 
  * Note: outbound ORBit calls that do not occur as a result of a mozilla callback
  * do not need to be so wrapped
+ *
+ * FIXME:  We want to move this type of thing into libnautilus
  */
 
 /*

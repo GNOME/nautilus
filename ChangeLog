@@ -1,3 +1,34 @@
+2001-02-23  Mike Fleming  <mfleming@eazel.com>
+
+	reviewed by: Eskil Olsen  <eskil@eazel.com>
+
+	Bug 6480: extranous history items due to redirects
+	Bug 6736: (as a side-effect) "throbber cuts out early because of redirects"
+
+	I ifdef'd out the busy cursor stuff since it seems to interact
+	poorly with Mozilla 0.8.  Actually, even when I took it out, I still
+	saw a busy cursor at the wrong times.
+
+	changed many gtk_signal_connect_while_alive's to gtk_signal_connect's
+	per Darin feedback
+
+	Made some URI scheme comparisons case-insensitive, added FIXME
+	on remaining one
+
+	* components/mozilla/mozilla-events.cpp:
+
+	mozilla_events_get_href_for_event now gets href's from AREA tags
+	and form submits.
+	
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize),
+	(try_transform_nautilus_uri_to_file_scheme),
+	(view_load_location_callback), (mozilla_location_callback),
+	(mozilla_net_state_callback), (mozilla_link_message_callback),
+	(mozilla_dom_mouse_click_callback), (is_uri_relative),
+	(make_full_uri_from_relative), (uris_identical),
+	(string_list_get_index_of_string):
+
 2001-02-23  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: John Harper  <jsh@eazel.com>
