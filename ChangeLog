@@ -1,3 +1,27 @@
+2000-06-21  Andy Hertzfeld  <andy@eazel.com>
+
+	added two different ways to reset sidebar background customizations:
+	a context menu and a reset background property to reset it via
+	drag and drop
+	
+	* data/backgrounds/Makefile.am:
+	added a new background image for resetting
+	* data/backgrounds/reset.png:
+	new image for resetting the background
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_set_tile_image_uri):
+	special-case the reset image to reset the background
+	* src/nautilus-property-browser.c: (element_clicked_callback),
+	(make_properties_from_directory_path),
+	(make_properties_from_directory):
+	scaled background properties to the nominal size, so they line
+	up better
+	* src/nautilus-sidebar.c,h: (reset_background_callback),
+	(nautilus_sidebar_create_context_menu),
+	(nautilus_sidebar_press_event):
+	added a context menu for the sidebar that has a reset background
+	item.  Soon, it will also allow enabling/disabling of sidebar views.
+	
 2000-06-21  John Sullivan  <sullivan@eazel.com>
 
 	Made nautilus_file_get_string_attribute return NULL

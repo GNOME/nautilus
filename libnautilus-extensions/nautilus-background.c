@@ -63,6 +63,8 @@ enum {
 	LAST_SIGNAL
 };
 
+#define	RESET_BACKGROUND_IMAGE	"reset.png"
+
 static guint signals[LAST_SIGNAL];
 
 struct NautilusBackgroundDetails
@@ -364,6 +366,13 @@ nautilus_background_set_tile_image_uri (NautilusBackground *background,
 	background->details->load_tile_image_handle = NULL;
 
 	g_free (background->details->tile_image_uri);
+	
+	/* special case the reset background image */
+	if (nautilus_str_has_suffix(image_uri, RESET_BACKGROUND_IMAGE)) {
+		nautilus_background_set_color (background, NULL);
+		image_uri = NULL;
+	}
+	
 	if (background->details->tile_image != NULL) {
 		gdk_pixbuf_unref (background->details->tile_image);
 		background->details->tile_image = NULL;

@@ -1075,7 +1075,6 @@ element_clicked_callback(GtkWidget *widget, GdkEventButton *event, char *element
 	/* set up the drag and drop type corresponding to the category */
 	drag_types[0].target = property_browser->details->drag_type;
 	target_list = gtk_target_list_new (drag_types, NAUTILUS_N_ELEMENTS (drag_types));	
-	
 	nautilus_property_browser_set_dragged_file(property_browser, element_name);
 	
 	context = gtk_drag_begin (GTK_WIDGET (property_browser),
@@ -1199,8 +1198,12 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 			pixbuf = gdk_pixbuf_new_from_file(image_file_name);
 			g_free(image_file_name);
 			
-			pixbuf = nautilus_gdk_pixbuf_scale_to_fit(pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
-				
+			if (!strcmp(property_browser->details->category, "backgrounds")) {
+				pixbuf = gdk_pixbuf_scale_simple (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT, GDK_INTERP_BILINEAR);
+			} else {
+				pixbuf = nautilus_gdk_pixbuf_scale_to_fit (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
+			}
+
 			/* make a pixmap and mask to pass to the widget */
       			gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
 			gdk_pixbuf_unref (pixbuf);
@@ -1250,7 +1253,7 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 /* make_properties_from_directory generates widgets corresponding all of the objects in both the home and shared directories */
 
 static void
-make_properties_from_directory(NautilusPropertyBrowser *property_browser, const char* path)
+make_properties_from_directory (NautilusPropertyBrowser *property_browser, const char* path)
 {
 	char *directory_uri;
 	int new_index;

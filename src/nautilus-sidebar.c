@@ -66,6 +66,8 @@ struct NautilusSidebarDetails {
     int old_width;
 };
 
+/* button assignments */
+#define CONTEXTUAL_MENU_BUTTON 3
 
 static void     nautilus_sidebar_initialize_class   (GtkObjectClass   *object_klass);
 static void     nautilus_sidebar_initialize         (GtkObject        *object);
@@ -261,6 +263,40 @@ nautilus_sidebar_destroy (GtkObject *object)
 	g_free (sidebar->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+/* callback to handle resetting the background */
+static void
+reset_background_callback(GtkWidget *menu_item, GtkWidget *sidebar)
+{
+	NautilusBackground *background;
+	background = nautilus_get_widget_background(sidebar);
+	if (background) { 
+		nautilus_background_reset(background); 
+	}
+}
+
+/* create the context menu */
+GtkWidget *
+nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar)
+{
+	GtkWidget *menu, *menu_item;
+	NautilusBackground *background;
+	gboolean has_background;
+
+	background = nautilus_get_widget_background (GTK_WIDGET(sidebar));
+	has_background = background && nautilus_background_is_set (background);
+	
+	menu = gtk_menu_new ();
+	
+	/* add the reset background item, possibly disabled */
+	menu_item = gtk_menu_item_new_with_label (_("Reset Background"));
+ 	gtk_widget_show (menu_item);
+	gtk_menu_append (GTK_MENU(menu), menu_item);
+        gtk_widget_set_sensitive (menu_item, has_background);
+	gtk_signal_connect (GTK_OBJECT (menu_item), "activate", reset_background_callback, sidebar);
+
+	return menu;
 }
 
 /* create a new instance */
@@ -665,6 +701,7 @@ static gboolean
 nautilus_sidebar_press_event (GtkWidget *widget, GdkEventButton *event)
 {
 	int title_top, title_bottom;
+	GtkWidget *menu;
 	NautilusSidebar *sidebar;
 	NautilusSidebarTabs *sidebar_tabs;
 	NautilusSidebarTabs *title_tab;
@@ -672,6 +709,16 @@ nautilus_sidebar_press_event (GtkWidget *widget, GdkEventButton *event)
 	int which_tab;
 		
 	sidebar = NAUTILUS_SIDEBAR (widget);
+
+	/* handle the context menu */
+	if (event->button == CONTEXTUAL_MENU_BUTTON) {
+		menu = nautilus_sidebar_create_context_menu (sidebar);	
+		nautilus_pop_up_context_menu (GTK_MENU(menu),
+				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
+				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT);
+		return TRUE;
+	}
+	
 	sidebar_tabs = sidebar->details->sidebar_tabs;
 	title_tab = sidebar->details->title_tab;
 	rounded_y = floor (event->y + .5);

@@ -58,6 +58,8 @@ GtkType          nautilus_sidebar_get_type     (void);
 NautilusSidebar *nautilus_sidebar_new          (void);
 void             nautilus_sidebar_add_panel    (NautilusSidebar   *sidebar,
 						NautilusViewFrame *panel);
+GtkWidget 	*nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar);
+
 void             nautilus_sidebar_remove_panel (NautilusSidebar   *sidebar,
 						NautilusViewFrame *panel);
 void             nautilus_sidebar_set_uri      (NautilusSidebar   *sidebar,

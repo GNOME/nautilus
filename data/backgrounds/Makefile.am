@@ -23,6 +23,7 @@ back_DATA = \
 	pale_coins.png \
 	pink_fabric.png \
 	puzzle.jpg \
+	reset.png \
 	ridged_paper.png \
 	rough_paper.png \
 	stucco.jpg \
