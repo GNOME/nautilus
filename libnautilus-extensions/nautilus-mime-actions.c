@@ -28,7 +28,6 @@
 #include "nautilus-file-attributes.h"
 #include "nautilus-file.h"
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-lib-self-check-functions.h>
 #include "nautilus-metadata.h"
 #include <eel/eel-string.h>
 #include <libgnomevfs/gnome-vfs-application-registry.h>
