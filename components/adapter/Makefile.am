@@ -49,4 +49,4 @@ nautilus_adapter_LDADD =				\
 	$(COMPONENT_LIBS)				\
 	$(NULL)
 
-EXTRA_DIST = $(server_in_files)
+EXTRA_DIST = $(server_in_files).in
