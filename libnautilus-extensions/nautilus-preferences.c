@@ -463,7 +463,7 @@ preferences_register (char			*name,
 }
 
 /**
- * nautilus_preferences_get_preference
+ * nautilus_preferences_find_preference
  *
  * Search for a named preference in the given preferences and return it.
  * @preferences: The preferences to search
@@ -473,7 +473,7 @@ preferences_register (char			*name,
  * value of this function.
  **/
 NautilusPreference *
-nautilus_preferences_get_preference (const char *name)
+nautilus_preferences_find_preference (const char *name)
 {
 	PreferencesHashNode *node;
 

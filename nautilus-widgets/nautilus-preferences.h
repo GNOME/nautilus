@@ -38,7 +38,7 @@ BEGIN_GNOME_DECLS
  */
 typedef void (*NautilusPreferencesCallback) (gpointer                callback_data);
 
-NautilusPreference *nautilus_preferences_get_preference       (const char                   *name);
+NautilusPreference *nautilus_preferences_find_preference      (const char                   *name);
 void                nautilus_preferences_set_info             (const char                   *name,
 							       const char                   *description,
 							       NautilusPreferenceType        type,

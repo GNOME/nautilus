@@ -210,7 +210,7 @@ nautilus_preferences_group_add_item (NautilusPreferencesGroup		*group,
 
 	g_return_val_if_fail (preference_name != NULL, NULL);
 
-	preference = nautilus_preferences_get_preference (preference_name);
+	preference = nautilus_preferences_find_preference (preference_name);
 
 	g_assert (preference != NULL);
 

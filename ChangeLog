@@ -1,5 +1,19 @@
 2000-05-30  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* nautilus-widgets/nautilus-preferences-group.c:
+	(nautilus_preferences_group_add_item):
+	* nautilus-widgets/nautilus-preferences-item.c:
+	(preferences_item_construct), (enum_radio_group_changed_callback):
+	* nautilus-widgets/nautilus-preferences.c:
+	(nautilus_preferences_find_preference):
+	* nautilus-widgets/nautilus-preferences.h:
+
+	Rename (nautilus_preferences_find_preference) to 
+	(nautilus_preferences_find_preference) to avoid confusion with a
+	function ill add next.
+	
+2000-05-30  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-global-preferences.c:
 	(nautilus_global_preferences_startup):
 	* nautilus-widgets/nautilus-preferences.c:
