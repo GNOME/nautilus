@@ -259,7 +259,9 @@ update_title (NautilusWindow *window)
                 g_free (window_title);
         }
 
-        nautilus_sidebar_set_title (window->sidebar, title);
+	if (window->sidebar != NULL) {
+        	nautilus_sidebar_set_title (window->sidebar, title);
+	}
         nautilus_bookmark_set_name (window->current_location_bookmark, title);
 
         g_free (title);

@@ -1,5 +1,11 @@
 2001-05-31  Darin Adler  <darin@bentspoon.com>
 
+	* src/nautilus-window-manage-views.c: (update_title): Missed a
+	place that required a non-NULL sidebar. Thanks to Miguel
+	Rodriguez Perez <migras@atlas.uvigo.es> for pointing it out.
+
+2001-05-31  Darin Adler  <darin@bentspoon.com>
+
 	Fixed a bug where the MIME type components short list query was
 	not sorted. This could result in the wrong default component being
 	selected, and may be the problem that caused some users to get the
