@@ -48,6 +48,7 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus-extensions/nautilus-search-uri.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
@@ -469,30 +470,55 @@ append_and_eat (GString *string, const char *separator, char *new_string)
 	g_free (new_string);
 }
 
+static gboolean
+file_is_search_location (NautilusFile *file)
+{
+	char *uri;
+	gboolean is_search_uri;
+
+	uri = nautilus_file_get_uri (file);
+	is_search_uri = nautilus_is_search_uri (uri);
+	g_free (uri);
+
+	return is_search_uri;
+}
+
 static void
 update_more_info (NautilusSidebarTitle *sidebar_title)
 {
 	NautilusFile *file;
 	GString *info_string;
-	char *type_string;
-
+	char *type_string, *search_string, *search_uri;
+	
 	file = sidebar_title->details->file;
 	
 	/* FIXME bugzilla.eazel.com 2500: We could defer showing info until the icon is ready. */
-
-	info_string = g_string_new (NULL);
-	type_string = nautilus_file_get_string_attribute (file, "type");
-	if (type_string != NULL) {
-		append_and_eat (info_string, NULL, type_string);
-		append_and_eat (info_string, ", ",
-				nautilus_file_get_string_attribute (file, "size"));
-	} else {
-		append_and_eat (info_string, NULL,
+	/* Adding this special case for search results to 
+	   correspond to the fix for bug 2341.  */
+	if (file != NULL && file_is_search_location (file)) {
+		search_uri = nautilus_file_get_uri (file);
+		search_string = nautilus_search_uri_to_human (search_uri);
+		g_free (search_uri);
+		info_string = g_string_new (search_string);
+		g_free (search_string);
+		append_and_eat (info_string, "\n ",
 				nautilus_file_get_string_attribute (file, "size"));
 	}
-	append_and_eat (info_string, "\n",
-			nautilus_file_get_string_attribute (file, "date_modified"));
-	g_string_append_c (info_string, '\0');
+	else {
+		info_string = g_string_new (NULL);
+		type_string = nautilus_file_get_string_attribute (file, "type");
+		if (type_string != NULL) {
+			append_and_eat (info_string, NULL, type_string);
+			append_and_eat (info_string, ", ",
+					nautilus_file_get_string_attribute (file, "size"));
+		} else {
+			append_and_eat (info_string, NULL,
+					nautilus_file_get_string_attribute (file, "size"));
+		}
+		append_and_eat (info_string, "\n",
+				nautilus_file_get_string_attribute (file, "date_modified"));
+		g_string_append_c (info_string, '\0');
+	}
 
 	if (sidebar_title->details->smooth_graphics) {
 		nautilus_label_set_text (NAUTILUS_LABEL (sidebar_title->details->smooth_more_info_label),

@@ -550,15 +550,13 @@ get_nth_criterion_prefix (GSList *criterion)
  * calculates the "." suffix for any criterion.
  *
  * return value: the translated suffix.
+ * FIXME bugzilla.eazel.com 5019: This function should be removed.
  */
 static char *
 get_nth_criterion_suffix (GSList *criterion)
 {
         /* if we are the last criterion, put it here. */
 
-        if (criterion->next == NULL) {
-                return g_strdup (".");
-        }
         return g_strdup ("");
 }
 

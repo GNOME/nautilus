@@ -1,3 +1,28 @@
+2000-12-07 Rebecca Schulman  <rebecka@eazel.com>
+	Changes to fix bugs 2341, to match the sidebar
+	to Arlo's design for search results, and 3488
+	that the human readable description of search
+	results ends in a period.
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	* libnautilus-extensions/nautilus-search-uri.c:
+	(get_nth_criterion_suffix):
+	Remove "." from this function.  Eventually,
+	this function should be deprecated, but it will
+	require some data structure changes, so I left a
+	FIXME and an associated bug 5019.
+	* src/file-manager/fm-search-list-view.c: (load_location_callback):
+	Set the search results title to be "Search Results" instead of
+	the human readable description
+	* src/nautilus-sidebar-title.c: (file_is_search),
+	(update_more_info):
+	Special case search uri's for the "more_info" part
+	of the sidebar to be in accordance with Arlo's design.
+	This is an annoying way of doing things, but until
+	a better framework is in place, John Sullivan and 
+	I agreed this was ok to do for now.
+
 2000-12-07  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 4679, Double clicking on an MP3 in music view should play it
@@ -269,6 +294,7 @@
 	* components/music/tabinit.c: (mpg123_make_decode_tables),
 	(mpg123_make_conv16to8_table):
 
+>>>>>>> 1.3051
 2000-12-06  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
