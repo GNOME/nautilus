@@ -1,5 +1,11 @@
 2004-08-19  Martin Wehner  <martin.wehner@epost.de>
 
+	* libnautilus-private/nautilus-file-operations-progress.c (time_remaining_callback):
+	Don't crash over a division by zero when the transfer rate approaches zero.
+	Fixes bug #148791.
+
+2004-08-19  Martin Wehner  <martin.wehner@epost.de>
+
 	* src/file-manager/fm-list-view.c (fm_list_view_clear):
 	Stop cell editing mode when changing directories.
 	Fixes bug #143830.

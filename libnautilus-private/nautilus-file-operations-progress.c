@@ -388,6 +388,13 @@ time_remaining_callback (gpointer callback_data)
 	
 	transfer_rate = progress->details->bytes_copied / elapsed_time;
 
+	if (transfer_rate == 0) {
+		progress->details->time_remaining_timeout_id =
+			g_timeout_add (TIME_REMAINING_TIMEOUT, time_remaining_callback, progress);
+
+		return FALSE;
+	}
+
 	time_remaining = (progress->details->bytes_total -
 			  progress->details->bytes_copied) / transfer_rate;
 
