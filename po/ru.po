@@ -10,8 +10,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2000-11-03 16:56+0300\n"
-"PO-Revision-Date: 2000-11-03 17:01+03:00\n"
+"POT-Creation-Date: 2000-11-04 13:21+0300\n"
+"PO-Revision-Date: 2000-11-04 13:24+03:00\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -385,59 +385,59 @@ msgstr "%s -- %s"
 msgid "Verifying %s..."
 msgstr "Проверка %s..."
 
-#: components/rpmview/nautilus-rpm-view-install.c:108
+#: components/rpmview/nautilus-rpm-view-install.c:107
 #, c-format
 msgid "%s would not work anymore\n"
 msgstr ""
 
-#: components/rpmview/nautilus-rpm-view-install.c:111
+#: components/rpmview/nautilus-rpm-view-install.c:110
 #, c-format
 msgid "%s would break other installed packages\n"
 msgstr "%s будет разрушать другие установленные пакеты\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:116
+#: components/rpmview/nautilus-rpm-view-install.c:115
 #, c-format
 msgid "%s is needed, but could not be found\n"
 msgstr "%s нужен, но не найден\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:121
+#: components/rpmview/nautilus-rpm-view-install.c:120
 #, c-format
 msgid "%s was already installed\n"
 msgstr "%s уже было установлено\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:124
+#: components/rpmview/nautilus-rpm-view-install.c:123
 #, c-format
 msgid "%s causes a circular dependency problem\n"
 msgstr "%s вызывает проблему круговой зависимости\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:143
+#: components/rpmview/nautilus-rpm-view-install.c:142
 #, c-format
 msgid "Installing %s failed because of the following issue(s):\n"
 msgstr "Сбой установки %s по следующим причинам:\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:145
+#: components/rpmview/nautilus-rpm-view-install.c:144
 #, c-format
 msgid "Uninstalling %s failed because of the following issue(s):\n"
 msgstr "Сбой удаления %s по следующим причинам:\n"
 
-#: components/rpmview/nautilus-rpm-view-install.c:240
+#: components/rpmview/nautilus-rpm-view-install.c:241
 msgid "Uninstall failed..."
 msgstr "Сбой удаления..."
 
-#: components/rpmview/nautilus-rpm-view-install.c:241
+#: components/rpmview/nautilus-rpm-view-install.c:242
 msgid "Uninstall Failed"
 msgstr "Сбой удаления пакета"
 
-#: components/rpmview/nautilus-rpm-view-install.c:243
+#: components/rpmview/nautilus-rpm-view-install.c:244
 msgid "Install failed..."
 msgstr "Сбой установки..."
 
-#: components/rpmview/nautilus-rpm-view-install.c:244
+#: components/rpmview/nautilus-rpm-view-install.c:245
 msgid "Install Failed"
 msgstr "Сбой установки"
 
-#: components/rpmview/nautilus-rpm-view-install.c:288
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1084
+#: components/rpmview/nautilus-rpm-view-install.c:297
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1112
 msgid "Incorrect password."
 msgstr "Неправильный пароль."
 
@@ -749,31 +749,47 @@ msgstr "Удаление пакета %s (0x%x) %s"
 msgid "Preparing package system"
 msgstr "Подготовка системы пакетов"
 
-#: components/services/install/lib/eazel-install-logic.c:1475
+#: components/services/install/lib/eazel-install-logic.c:1478
+#, c-format
+msgid "%s-%s version %s-%s already installed"
+msgstr "%s-%s версия %s-%s уже установлена"
+
+#: components/services/install/lib/eazel-install-logic.c:1482
 #, c-format
 msgid "%s version %s already installed"
 msgstr "%s версия %s уже установлена"
 
-#: components/services/install/lib/eazel-install-logic.c:1481
+#: components/services/install/lib/eazel-install-logic.c:1491
+#: components/services/install/lib/eazel-install-logic.c:1496
 #, c-format
-msgid "%s upgrades from version %s to %s"
-msgstr "%s обновляется с версии %s до %s"
+msgid "%s upgrades from version %s-%s to %s-%s"
+msgstr "%s обновляется с версии %s-%s до %s-%s"
 
-#: components/services/install/lib/eazel-install-logic.c:1488
+#: components/services/install/lib/eazel-install-logic.c:1505
+#, c-format
+msgid "%s downgrades from version %s-%s to %s-%s"
+msgstr "%s заменяется с версии %s-%s на %s-%s"
+
+#: components/services/install/lib/eazel-install-logic.c:1510
 #, c-format
 msgid "%s downgrades from version %s to %s"
 msgstr "%s заменяется с версии %s на %s"
 
-#: components/services/install/lib/eazel-install-logic.c:1508
+#: components/services/install/lib/eazel-install-logic.c:1532
+#, c-format
+msgid "%s installs version %s-%s"
+msgstr "%s устанавливается версия %s-%s"
+
+#: components/services/install/lib/eazel-install-logic.c:1537
 #, c-format
 msgid "%s installs version %s"
 msgstr "%s устанавливается версия %s"
 
-#: components/services/install/lib/eazel-install-logic.c:2102
+#: components/services/install/lib/eazel-install-logic.c:2134
 msgid "Dependencies appear ok"
 msgstr "Зависимости в порядке"
 
-#: components/services/install/lib/eazel-install-logic.c:2105
+#: components/services/install/lib/eazel-install-logic.c:2137
 msgid "But there are file conflicts"
 msgstr "Но существуют файловые конфликты"
 
@@ -781,34 +797,34 @@ msgstr "Но существуют файловые конфликты"
 msgid "Could not set URLType from config file!"
 msgstr "Невозможно установить URLType из файла настроек!"
 
-#: components/services/install/lib/eazel-install-object.c:564
+#: components/services/install/lib/eazel-install-object.c:582
 #, c-format
 msgid "Transactions are stored in %s"
 msgstr "Транзакции сохранены в %s"
 
-#: components/services/install/lib/eazel-install-object.c:567
+#: components/services/install/lib/eazel-install-object.c:585
 msgid "Transactions are not stored, could not find home dir"
 msgstr "Транзакции не сохранены, невозможно найти домашний каталог"
 
-#: components/services/install/lib/eazel-install-object.c:753
+#: components/services/install/lib/eazel-install-object.c:772
 msgid "Getting package list from remote server ...\n"
 msgstr "Получение списка пакетов с удаленного сервера...\n"
 
-#: components/services/install/lib/eazel-install-object.c:773
+#: components/services/install/lib/eazel-install-object.c:792
 msgid "Unable to retrieve package-list.xml!\n"
 msgstr "Невозможно получить package-list.xml!\n"
 
-#: components/services/install/lib/eazel-install-object.c:818
+#: components/services/install/lib/eazel-install-object.c:863
 #, c-format
 msgid "Cannot write to file %s, using default log handler"
 msgstr ""
 "Невозможна запись в файл %s, используется обработчик журнала по умолчанию"
 
-#: components/services/install/lib/eazel-install-object.c:930
+#: components/services/install/lib/eazel-install-object.c:983
 msgid "Install failed"
 msgstr "Сбой установки"
 
-#: components/services/install/lib/eazel-install-object.c:973
+#: components/services/install/lib/eazel-install-object.c:1026
 msgid "Uninstall failed"
 msgstr "Сбой удаления пакета"
 
@@ -899,13 +915,13 @@ msgstr "Пакет %s должен иметь версию %s, а не %s"
 msgid "File download failed"
 msgstr "Сбой скачивания файла"
 
-#: components/services/install/lib/eazel-install-protocols.c:736
-#: components/services/install/lib/eazel-install-protocols.c:741
+#: components/services/install/lib/eazel-install-protocols.c:749
+#: components/services/install/lib/eazel-install-protocols.c:754
 #, c-format
 msgid "Could not retrieve a URL for %s"
 msgstr "Невозможно запросить URL для %s"
 
-#: components/services/install/lib/eazel-install-protocols.c:746
+#: components/services/install/lib/eazel-install-protocols.c:759
 #, c-format
 msgid "Could not retrieve a URL for id %s"
 msgstr "Невозможно запросить URL для идентификатора %s"
@@ -916,45 +932,45 @@ msgstr ""
 "Активирован режим сухого запуска. В действительности пакеты установлены не "
 "будут..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:250
+#: components/services/install/lib/eazel-install-rpm-glue.c:251
 #, c-format
 msgid "Closing db for %s (open)"
 msgstr "Закрытие db для %s (открыто)"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:255
+#: components/services/install/lib/eazel-install-rpm-glue.c:256
 #, c-format
 msgid "Closing db for %s (not open)"
 msgstr "Закрытие db для %s (не открыто)"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:316
+#: components/services/install/lib/eazel-install-rpm-glue.c:317
 #, c-format
 msgid "Opened packages database in %s"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:321
+#: components/services/install/lib/eazel-install-rpm-glue.c:322
 #, c-format
 msgid "Opening packages database in %s failed"
 msgstr "Сбой открытия базы данных пакетов в %s"
 
 #. Possibly the implest case, we're installing package A, which requires
 #. B that is not installed.
-#: components/services/install/lib/eazel-install-rpm-glue.c:480
+#: components/services/install/lib/eazel-install-rpm-glue.c:481
 #, c-format
 msgid "%s requires %s"
 msgstr "%s требует %s"
 
 #. If we end here, it's a conflict is going to break something
-#: components/services/install/lib/eazel-install-rpm-glue.c:616
+#: components/services/install/lib/eazel-install-rpm-glue.c:617
 #, c-format
 msgid "Package %s conflicts with %s-%s"
 msgstr "Пакет %s конфликтует с %s-%s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:630
+#: components/services/install/lib/eazel-install-rpm-glue.c:631
 #, c-format
 msgid "Processing dep for %s, requires library %s"
 msgstr "Обработка зависимостей для %s, требуется библиотека %s"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:637
+#: components/services/install/lib/eazel-install-rpm-glue.c:638
 #, c-format
 msgid "Processing dep for %s, requires package %s"
 msgstr "Обработка зависимостей для %s, требуется пакет %s"
@@ -1157,34 +1173,46 @@ msgstr "Установка \"%s\""
 msgid "Version: %s"
 msgstr "Версия: %s"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:857
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:853
 #, c-format
 msgid " ╥ %s is in the KDE menu.\n"
 msgstr " ╥ %s есть в меню KDE.\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:868
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:864
 #, c-format
 msgid " ╥ %s is in the Gnome menu under %s.\n"
 msgstr " ╥ %s есть в меню Gnome для %s.\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:872
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:868
 #, c-format
 msgid " ╥ %s is in the Gnome menu.\n"
 msgstr " ╥ %s есть в меню Gnome.\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:918
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:904
+msgid "I ran into problems while installing."
+msgstr ""
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:905
+msgid "I'd like to try the following :"
+msgstr "Планируется установить следующие пакеты:"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:914
+msgid "Is this ok ?"
+msgstr "Это правильно?"
+
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:955
 msgid "Installation complete!"
 msgstr "Установка завершена!"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:920
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:957
 msgid "Installation aborted."
 msgstr "Установка прервана."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:922
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:959
 msgid "Installation failed!"
 msgstr "Сбой установки!"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:928
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:972
 #, c-format
 msgid ""
 "%s\n"
@@ -1192,14 +1220,14 @@ msgid ""
 "Erase the leftover RPM files?"
 msgstr ""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:932
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:976
 #, c-format
 msgid ""
 "%s\n"
 "Erase the leftover RPM files?"
 msgstr ""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:952
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:996
 msgid ""
 "\n"
 "A core package of Nautilus has been\n"
@@ -1213,44 +1241,39 @@ msgstr ""
 "\n"
 "Хотите сделать это сейчас?\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1009
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1072
 msgid "This package has already been installed."
 msgstr "Этот пакет уже установлен."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1022
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1086
+#, c-format
 msgid ""
-"Installation Failed!\n"
+"Installation failed on %s\n"
 "\n"
-msgstr ""
-"Сбой установки!\n"
-"\n"
+msgstr "Сбой установки на %s\n\n"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1047
-msgid "Should I delete the leftover RPM files?"
-msgstr ""
-
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1203
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1231
 msgid "Downloading remote package"
 msgstr "Скачивание пакета"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1205
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1233
 #, c-format
 msgid "Downloading \"%s\""
 msgstr "Скачивание \"%s\""
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1207
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1235
 msgid "Downloading some package"
 msgstr "Скачивание пакета"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1249
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1277
 msgid "Contacting install server ..."
 msgstr "Подключение к установочному серверу ..."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1301
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1329
 msgid "Package download aborted."
 msgstr "Скачивание пакета прервано."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1303
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1331
 msgid "Aborted."
 msgstr "Прервано."
 
@@ -1376,6 +1399,7 @@ msgstr "Дополнительные сервисы"
 
 #: components/services/summary/nautilus-view/nautilus-summary-view.c:527
 msgid ""
+"\n"
 "Check back here for new system management\n"
 "services that will help make Linux easier to use."
 msgstr ""
@@ -2609,7 +2633,7 @@ msgid "Don't include in the menu for \"%s\" items"
 msgstr "Нет включать в меню для элементов \"%s\""
 
 #: libnautilus-extensions/nautilus-program-chooser.c:1182
-#: src/file-manager/fm-list-view.c:1885
+#: src/file-manager/fm-list-view.c:1890
 #: src/file-manager/fm-search-list-view.c:272
 #: src/nautilus-bookmarks-window.c:161 src/nautilus-search-bar-criterion.c:66
 msgid "Name"
@@ -3554,19 +3578,19 @@ msgstr "вручную"
 msgid "pointing at \"%s\""
 msgstr "указание на \"%s\""
 
-#: src/file-manager/fm-list-view.c:1891
+#: src/file-manager/fm-list-view.c:1896
 #: src/file-manager/fm-search-list-view.c:284
 #: src/nautilus-search-bar-criterion.c:69
 msgid "Size"
 msgstr "Размер"
 
-#: src/file-manager/fm-list-view.c:1897
+#: src/file-manager/fm-list-view.c:1902
 #: src/file-manager/fm-search-list-view.c:290
 #: src/nautilus-search-bar-criterion.c:68
 msgid "Type"
 msgstr "Тип"
 
-#: src/file-manager/fm-list-view.c:1903
+#: src/file-manager/fm-list-view.c:1908
 #: src/file-manager/fm-search-list-view.c:296
 msgid "Date Modified"
 msgstr "Дата модификации"
@@ -4987,7 +5011,7 @@ msgstr ""
 
 #: src/nautilus-shell.c:203
 msgid ""
-"Thank you for your interest in Nautilus Preview Release 2.\n"
+"Thank you for your interest in Nautilus.\n"
 " \n"
 "As with any software under development, you should exercise caution when "
 "using Nautilus.  Eazel does not provide any guarantee that it will work "
