@@ -9,7 +9,8 @@ test_rsvg_LDADD =\
 
 lib_LTLIBRARIES=librsvg.la
 
-INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
+INCLUDES=-I$(top_srcdir) -I$(top_srcdir)/cut-n-paste-code/ \
+	-I$(top_builddir) -I$(top_builddir)/cut-n-paste-code/ \
 	$(GNOME_CFLAGS) \
 	$(GDK_PIXBUF_CFLAGS) \
 	$(XML_CFLAGS) \
@@ -48,6 +49,7 @@ librsvg_la_SOURCES=	\
 	$(NULL)
 
 test_rsvg_LIBS =\
+	$(top_builddir)/cut-n-paste-code/freetype2/libfreetype2.la \
 	$(GDK_PIXBUF_LIBS)
 
 test_rsvg_SOURCES =\

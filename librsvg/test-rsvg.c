@@ -30,6 +30,8 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
+#include <freetype/freetype.h>
+
 #include "rsvg.h"
 
 

@@ -1,0 +1,21 @@
+This directory contains a beta version of freetype2, bludgeoned into
+building with autoconf and libtool in such a way that the resulting
+library can be reasonably linked from librsvg.
+
+The files were adapted from the following freetype2 beta release:
+
+675570 Jul 17 23:42 freetype2-current.tar.gz
+2070c12bfe81f66271a0f053123bb6f8  freetype2-current.tar.gz
+
+Because automake has a very difficult time dealing with source files
+in more than one directory, I decided to flatten everything. Thus,
+FT_FLAT_COMPILE is turned on. In most cases, use of this is #ifdef'd,
+so that files can go back into the main freetype2 build tree without
+breaking that.
+
+The plan, at least as far as I understand it, is to move to an RPM'ed
+version of this library as soon as it goes into full release. In the
+meantime, this version should suffice, more or less unmodified.
+
+Please see http://www.freetype.org/ for definitive releases and
+information about freetype.
