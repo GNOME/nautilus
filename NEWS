@@ -1,13 +1,10 @@
-Nautilus 1.0.3 was released May 8. We have some speedups to do and
-some other small problems to fix, and then perhaps we'll release a
-Nautilus 1.0.4. We may also want to remove some Eazel-specific stuff
-that doesn't make sense any more.
+Nautilus 1.0.4 contains some speedups, largely due to the work done by
+Yoann Vandoorselaere to investigate what makes it slow. There's still
+plenty of room for more work there.
 
-We won't be porting Nautilus to GNOME 2 until the library freeze date
-(at the request of the library developers, Michael Meeks mainly) so
-this is still a GNOME 1 source tree for now.
+There are also lots of other minor improvements since Nautilus 1.0.3.
 
-Changes since Nautilus 1.0.3:
+A partial list of changes since Nautilus 1.0.3:
 
 	Fixes to bugs and other changes to speed up Nautilus's
 	display of new directories (Yoann, Darin, Maciej)
@@ -21,8 +18,8 @@ Changes since Nautilus 1.0.3:
 	component work in more configurations. (peter@ximian.com, Darin)
 
 	Make thumbnails always go in the home directory if "Make
-	Folder Appearance Details
-	Public" is set to Never (John, Michael Rothwell)
+	Folder Appearance Details Public" is set to Never (John,
+	Michael Rothwell)
 
 	Fixed a few small i18n problems. (Darin)
 
@@ -52,12 +49,32 @@ Changes since Nautilus 1.0.3:
 	(Johan Dahlin, Darin)
 
 	Install IDL files for non-C component programmers (Johan
-	Dahlin, Darin)
+	Dahlin, Darin, Ramiro)
 
 	Support trash on XFS volumes (Caleb J. Land, Darin)
 
 	Updated lots of icons, including most of the ones in the
 	classic GNOME theme (Ben FrantzDale, Seth Nickell)
 
-	Some other small bug fixes (Juan Pablo Mendoza,
-	limval@yahoo.com, Frederic Devernay, Darin)
+	Updated quick reference, release notes, and user manual in
+	help. (Dan Mueth)
+
+	Obfuscate passwords in URIs in thumbnail directories.
+	(Miguel Rodríguez Pérez)
+
+	Dumb down run-nautilus so it doesn't start Nautilus slowly.
+	It is really obsolete (Darin).
+
+	Get rid of Eazel home page and Eazel services in first-time
+	druid (Havoc)
+
+	Make standard view components hang around for 30 seconds,
+	making it faster to use the same viewer repeatedly (Zbigniew
+	Chyla).
+
+	Other bug fixes (Juan Pablo Mendoza, limval@yahoo.com,
+	Frederic Devernay, Darin, Benedikt Roth, Andy)
+
+We won't be porting Nautilus to GNOME 2 until the library freeze date
+(at the request of the library developers, Michael Meeks mainly) so
+this is still a GNOME 1 source tree for now.
