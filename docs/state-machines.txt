@@ -18,55 +18,51 @@ X: this stimulus is guaranteed impossible in this state
 
 Things I was unsure about:
 
-?1: It's theoretically possible to call load_client on a ViewFrame
-more than once, thus loading a new component into an existing
-ViewFrame, although Nautilus never does this. Is it better to forbid
-this, or clearly define the effects?
-
 ?2: Once a load has failed at some stage, should it be OK for Nautilus
 to try to make further calls of any kind?
 
-?3: A component making calls on the ViewFrame interface before it has
-ever been told even an initial location to load is weird but, I
-suppose, not excluded by contract - what should be done here? Should
-such calls be taken as errors, or handled in some way?
+Missing:
+
+1) "Component stops responding" stimulus.
+2) Distinction of failure loading vs. crash of the component.
+
+Note:
+
+A "*" means htat this is illegal but non-fatal, so we want to use g_warning.
 
 
-                                            State Transision Chart
+                                            State Transition Chart
 
 
-                                                                 Initial State
-
+                                                             Initial State
 
                                                   |  E  |  N  |  W  |  U  |  L  |  F  |
           ----------------------------------------|-----|-----|-----|-----|-----|-----|
-          successful load_client call             |  N  | ?1  | ?1  | ?1  | ?1  | ?2  |
+          successful load_client call             |  N  |  X  |  X  |  X  |  X  | ?2  |
           ----------------------------------------|-----|-----|-----|-----|-----|-----|
-          unsuccessful load_client call           |  F  | ?1  | ?1  | ?1  | ?1  | ?2  |
+          unsuccessful load_client call           |  F  |  X  |  X  |  X  |  X  | ?2  |
           ----------------------------------------|-----|-----|-----|-----|-----|-----|
           nautilus_view_frame_load_location call  |  F  |  W  |  W  |  W  |  W  | ?2  |
           ----------------------------------------|-----|-----|-----|-----|-----|-----|
-          open_location call from component       |  X  | ?3  |  U  |  U  |  L  |  X  |
+          open_location call from component       |  X  |  N* |  U  |  U  |  L  |  X  |
           ----------------------------------------|-----|-----|-----|-----|-----|-----|
-          open_location_in_new_window             |  X  | ?3  |  U  |  U  |  L  |  X  |
+          open_location_in_new_window             |  X  |  N* |  U  |  U  |  L  |  X  |
           ----------------------------------------|-----|-----|-----|-----|-----|-----|
-          report_location_change                  |  X  | ?3  |  U  |  U  |  U  |  X  |
+          report_location_change                  |  X  |  N* |  U  |  U  |  U  |  X  |
 S         ----------------------------------------|-----|-----|-----|-----|-----|-----|
-t         report_selection_change                 |  X  | ?3  |  U  |  U  |  L  |  X  |
+t         report_selection_change                 |  X  |  N* |  U  |  U  |  L  |  X  |
 i         ----------------------------------------|-----|-----|-----|-----|-----|-----|
-m         report_status                           |  X  | ?3  |  U  |  U  |  L  |  X  |
+m         report_status                           |  X  |  N* |  U  |  U  |  L  |  X  |
 u         ----------------------------------------|-----|-----|-----|-----|-----|-----|
-l         report_load_underway                    |  X  | ?3  |  U  |  U  |  U  |  X  |
+l         report_load_underway                    |  X  |  N* |  U  |  U  |  U  |  X  |
 u         ----------------------------------------|-----|-----|-----|-----|-----|-----|
-s         report_load_progress                    |  X  | ?3  |  U  |  U  |  U  |  X  |
+s         report_load_progress                    |  X  |  N* |  U  |  U  |  U  |  X  |
           ----------------------------------------|-----|-----|-----|-----|-----|-----|
-          report_load_complete                    |  X  | ?3  |  L  |  L  |  L  |  X  |
+          report_load_complete                    |  X  |  N* |  L  |  L  |  L  |  X  |
           ----------------------------------------|-----|-----|-----|-----|-----|-----|
-          report_load_failed                      |  X  | ?3  |  F  |  F  |  F  |  X  |
+          report_load_failed                      |  X  |  N* |  F  |  F  |  F  |  X  |
           ----------------------------------------|-----|-----|-----|-----|-----|-----|
-          set_title                               |  X  | ?3  |  U  |  U  |  L  |  X  |
+          set_title                               |  X  |  N* |  U  |  U  |  L  |  X  |
           ----------------------------------------|-----|-----|-----|-----|-----|-----|
           user hits cancel on timer dialog        |  X  |  X  |  F  |  X  |  X  |  X  |
           ----------------------------------------|-----|-----|-----|-----|-----|-----|
-
-
