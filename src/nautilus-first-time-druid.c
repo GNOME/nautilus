@@ -37,8 +37,10 @@
 
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
+#include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-radio-button-group.h>
 #include <libnautilus-extensions/nautilus-user-level-manager.h>
 
@@ -163,10 +165,13 @@ set_up_background (NautilusDruidPageEazel *page, const char *background_color)
 
 /* handler for user level buttons changing */
 static void
-user_level_selection_changed (GtkWidget *radio_buttons, gpointer user_data)
+user_level_selection_changed (GtkWidget *radio_button, gpointer user_data)
 {
-	nautilus_user_level_manager_set_user_level (
-		nautilus_radio_button_group_get_active_index (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons)));
+	int user_level = GPOINTER_TO_INT (user_data);
+
+	if (GTK_TOGGLE_BUTTON (radio_button)->active) {
+		nautilus_user_level_manager_set_user_level (user_level);
+	}
 }
 
 /* handler for signup buttons changing */
@@ -204,68 +209,146 @@ create_named_pixbuf (const char *name)
 	return pixbuf;
 }
 
+static void
+make_label_bold (GtkWidget *label)
+{
+	GdkFont *bold_font;
+
+	bold_font = nautilus_gdk_font_get_bold (label->style->font);
+
+	if (bold_font != NULL) {
+		nautilus_gtk_widget_set_font (label, bold_font);
+	}
+}
+
+static GtkWidget *
+make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
+				   const char *icon_name, const char *text,
+				   const char *comment, const char *background)
+{
+	GtkWidget *hbox, *label_box, *icon, *label, *alignment;
+	GtkWidget *comment_vbox, *comment_hbox;
+	GdkPixbuf *icon_pixbuf;
+
+	hbox = gtk_hbox_new (FALSE, 0);
+
+	/* Add an "indent" */
+	alignment = gtk_alignment_new (1.0, 1.0, 1.0, 1.0);
+	gtk_widget_show (alignment);
+	gtk_widget_set_usize (alignment, 50, -1);
+	gtk_box_pack_start (GTK_BOX (hbox), alignment, FALSE, FALSE, 0);
+
+	/* make new box for radiobutton/comment */
+	comment_vbox = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), comment_vbox, FALSE, FALSE, 0);
+
+	/* Make new radio button */
+	if (index > 0) {
+		radio_buttons[index] = gtk_radio_button_new_from_widget
+			(GTK_RADIO_BUTTON (radio_buttons[0]));
+	} else {
+		radio_buttons[0] = gtk_radio_button_new (NULL);
+	}
+	gtk_box_pack_start (GTK_BOX (comment_vbox), radio_buttons[index], FALSE, FALSE, 0);
+
+	/* Make label */
+	label_box = gtk_hbox_new (FALSE, 5);
+
+	icon_pixbuf = create_named_pixbuf (icon_name);
+	icon = nautilus_image_new ();
+	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (icon), icon_pixbuf);
+	gtk_box_pack_start (GTK_BOX (label_box), icon, FALSE, FALSE, 0);
+	label = gtk_label_new (text);
+	make_label_bold (label);
+	gtk_box_pack_start (GTK_BOX (label_box), label, FALSE, FALSE, 0);
+
+	/* add label to radio button */
+	gtk_container_add (GTK_CONTAINER (radio_buttons[index]), label_box);
+
+	/* make new hbox for comment */
+	comment_hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (comment_vbox), comment_hbox, FALSE, FALSE, 0);
+
+	/* Add an "indent" */
+	alignment = gtk_alignment_new (1.0, 1.0, 1.0, 1.0);
+	gtk_widget_show (alignment);
+	gtk_widget_set_usize (alignment, 50, -1);
+	gtk_box_pack_start (GTK_BOX (comment_hbox), alignment, FALSE, FALSE, 0);
+
+	/* Make comment label */
+	label = gtk_label_new (comment);
+	gtk_box_pack_start (GTK_BOX (comment_hbox), label, FALSE, FALSE, 0);
+	gtk_label_set_justify (GTK_LABEL (label),
+			       GTK_JUSTIFY_LEFT);
+
+	gtk_widget_show_all (hbox);
+	return hbox;
+}
+
 /* set up the user level page */
 static void
 set_up_user_level_page (NautilusDruidPageEazel *page)
 {
-	GtkWidget *radio_buttons, *frame, *label;
-	GtkWidget *container, *main_box;
-	GdkPixbuf *user_level_icons[3];
+	GtkWidget *radio_buttons[3], *label;
+	GtkWidget *container, *main_box, *hbox;
+	int user_level, index;
 
 	container = set_up_background (page, "rgb:ffff/ffff/ffff:h");
 
 	/* allocate a vbox to hold the description and the widgets */
 	main_box = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (main_box);
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* allocate a descriptive label */
-	label = gtk_label_new (_("User levels provide a way to adjust the software to your level of technical expertise.  Pick an initial level that you feel comfortable with; you can always change it later."));
-	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
 
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
-	
-	frame = gtk_frame_new (_("User Levels"));
-	gtk_widget_show (frame);
-	gtk_container_set_border_width (GTK_CONTAINER (frame), 8);
+	label = gtk_label_new (NULL);
+	gtk_label_set (GTK_LABEL (label),
+			    _("User levels provide a way to adjust the software to\nyour level of technical expertise.  Pick an initial level that you\nfeel comfortable with; you can always change it later."));
+	gtk_label_set_justify (GTK_LABEL (label),
+			       GTK_JUSTIFY_LEFT);
 
-	radio_buttons = nautilus_radio_button_group_new (FALSE);
-	gtk_container_add (GTK_CONTAINER (frame),
-					radio_buttons);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
-	user_level_icons[0] = create_named_pixbuf ("novice.png");
-	g_assert (user_level_icons[0] != NULL);
+	/* Make the user level radio buttons and fill the radio_buttons
+	 * array */
+	hbox = make_hbox_user_level_radio_button
+		(0, radio_buttons, "novice.png",
+		 _("Beginner"),
+		 _("For beginner users that are not yet\n"
+		   "familiar with the working of "
+		   "GNOME and Linux."),
+		 NULL);
+	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
+	hbox = make_hbox_user_level_radio_button
+		(1, radio_buttons, "intermediate.png",
+		 _("Intermediate"),
+		 _("For non-techincal users that are comfortable with\n"
+		   "their GNOME and Linux environment."),
+				       NULL);
+	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
+	hbox = make_hbox_user_level_radio_button
+		(2, radio_buttons, "expert.png",
+		 _("Advanced"),
+		 _("For techincal users that have the need to be exposed\n"
+		   "to every detail of their operating system"),
+		 NULL);
+	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
 
-	user_level_icons[1] = create_named_pixbuf ("intermediate.png");
-	g_assert (user_level_icons[1] != NULL);
+	user_level = nautilus_user_level_manager_get_user_level ();
+	g_assert (user_level >= 0 && user_level < 3);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (radio_buttons[user_level]), TRUE);
 
-	user_level_icons[2] = create_named_pixbuf ("expert.png");
-	g_assert (user_level_icons[2] != NULL);
 
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Novice"));
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Intermediate"));
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("Hacker"));
+	for (index = 0; index < 3; index ++) {
+		gtk_signal_connect (GTK_OBJECT (radio_buttons[index]),
+				    "toggled",
+				    GTK_SIGNAL_FUNC (user_level_selection_changed),
+				    GINT_TO_POINTER (index));
+	}
 
-	nautilus_radio_button_group_set_entry_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), 0, user_level_icons[0]);
-	nautilus_radio_button_group_set_entry_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), 1, user_level_icons[1]);
-	nautilus_radio_button_group_set_entry_pixbuf (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), 2, user_level_icons[2]);
-
-	nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), 0, _("For beginning users"));
-	nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), 1, _("For non-technical users"));
-	nautilus_radio_button_group_set_entry_description_text (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), 2, _("For expert users"));
-
-	nautilus_radio_button_group_set_active_index (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons),
-						      nautilus_user_level_manager_get_user_level ());
-
-	gtk_signal_connect (GTK_OBJECT (radio_buttons),
-			    "changed",
-			    GTK_SIGNAL_FUNC (user_level_selection_changed),
-			    (gpointer) NULL);
-
-	gtk_box_pack_start (GTK_BOX (main_box), frame, FALSE, FALSE, 2);
-	gtk_widget_show (radio_buttons);
-
+	gtk_widget_show_all (main_box);
 }
 
 /* set up the user level page */

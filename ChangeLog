@@ -1,3 +1,18 @@
+Fri Aug 25 18:13:09 2000  George Lebl <jirka@5z.com>
+
+	* cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-eazel.c,
+	  cut-n-paste-code/widgets/nautilus-druid/nautilus-druid.c
+	  (nautilus_druid_size_request):
+	  Fix height issue in size_request and set the druid page height back
+	  to the correct size (322 pixels)
+
+	* src/nautilus-first-time-druid.c (user_level_selection_changed),
+	  (make_label_bold) (make_hbox_user_level_radio_button)
+	  (set_up_user_level_page):  Partial arloyfication of the
+	  user level page.  Not yet using NautilusLabel because
+	  that appears to be broken (or I'm using it wrong, will
+	  investigate).
+
 2000-08-25  Michael Engber  <engber@eazel.com>
 
 	Refactored draw_pixbuf_aa.

@@ -69,7 +69,7 @@ static NautilusDruidPageClass *parent_class = NULL;
 #define TITLE_Y 60.0
 #define CONTENT_PADDING 15.0
 #define DEFAULT_CONTENT_X 34.0
-#define DRUID_PAGE_HEIGHT 365
+#define DRUID_PAGE_HEIGHT 322
 #define DRUID_PAGE_WIDTH 516
 
 

@@ -285,6 +285,7 @@ nautilus_druid_size_request (GtkWidget *widget,
 
 	/* pick which is bigger, the buttons, or the NautilusDruidPages */
 	requisition->width = MAX (temp_width, requisition->width);
+	requisition->height += temp_height;
 }
 static void
 nautilus_druid_size_allocate (GtkWidget *widget,
