@@ -67,9 +67,9 @@
 #define DEFAULT_SUMMARY_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
 
 #define	URL_REDIRECT_TABLE_HOME			"eazel-services://anonymous/services/urls"
-#define	URL_REDIRECT_TABLE_HOME_2		"eazel-services:///services/urls"
+#define	URL_REDIRECT_TABLE_HOME_2		"eazel-services:/services/urls"
 #define	SUMMARY_CONFIG_XML			"eazel-services://anonymous/services"
-#define	SUMMARY_CONFIG_XML_2			"eazel-services:///services"
+#define	SUMMARY_CONFIG_XML_2			"eazel-services:/services"
 
 #define SUMMARY_TERMS_OF_USE_URI		"eazel-services://anonymous/aboutus/terms_of_use"
 #define SUMMARY_PRIVACY_STATEMENT_URI		"eazel-services://anonymous/aboutus/privacy"
@@ -396,7 +396,7 @@ generate_summary_form (NautilusSummaryView	*view)
 			eazel_news_node = iterator->data;
 			view->details->news_icon_name = eazel_news_node->icon;
 			view->details->news_date = eazel_news_node->date;
-			view->details->news_description_body = g_strdup_printf ("- %s", eazel_news_node->message);
+			view->details->news_description_body = g_strdup(eazel_news_node->message);
 
 			generate_eazel_news_entry_row (view, view->details->current_news_row);
 			gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->service_news_row), FALSE, FALSE, 0);
@@ -406,6 +406,7 @@ generate_summary_form (NautilusSummaryView	*view)
 				gtk_box_pack_start (GTK_BOX (temp_box), separator, FALSE, FALSE, 8);
 				gtk_widget_show (separator);
 			}
+			/* FIXME: is this a leak?  who frees the constituent strings? */
 			g_free (eazel_news_node);
 		}
 
@@ -746,6 +747,8 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 static void
 generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 {
+	GtkWidget *item_box;
+	
 	/* Generate first box with icon */
 	view->details->news_icon_container = gtk_vbox_new (FALSE, 2);
 	gtk_widget_show (view->details->news_icon_container);
@@ -756,7 +759,11 @@ generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_box_pack_start (GTK_BOX (view->details->news_icon_container), view->details->news_icon_widget, 0, 0, 0);
 	gtk_widget_show (view->details->news_icon_widget);
 	gtk_box_pack_start (GTK_BOX (view->details->service_news_row), view->details->news_icon_container, FALSE, FALSE, 3);
-	/* generate second box with bold type date */
+	
+	/* generate second box with bold type date and the actual contents */
+	item_box = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (item_box);
+	
 	view->details->news_date_widget = nautilus_label_new (view->details->news_date);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->news_date_widget), 12);
 	nautilus_label_set_font_from_components (NAUTILUS_LABEL (view->details->news_date_widget),
@@ -764,17 +771,22 @@ generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 						 "bold",
 						 NULL,
 						 NULL);
+	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->news_date_widget), GTK_JUSTIFY_LEFT);
 
-	gtk_box_pack_start (GTK_BOX (view->details->service_news_row), view->details->news_date_widget, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (item_box), view->details->news_date_widget, FALSE, FALSE, 2);
+	gtk_box_pack_start (GTK_BOX (view->details->service_news_row), item_box, TRUE, TRUE, 2);
 	gtk_widget_show (view->details->news_date_widget);
+	
 	g_free (view->details->news_date);
 	view->details->news_date = NULL;
 	
-	/* Generate third box with news content */
+	/* Generate the actual content */
 	view->details->news_description_body_widget = nautilus_label_new (view->details->news_description_body);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->news_description_body_widget), 12);
 	nautilus_label_set_line_wrap (NAUTILUS_LABEL (view->details->news_description_body_widget), TRUE);
-	gtk_box_pack_start (GTK_BOX (view->details->service_news_row), view->details->news_description_body_widget, FALSE, FALSE, 2);
+	nautilus_label_set_text_justification (NAUTILUS_LABEL (view->details->news_description_body_widget), GTK_JUSTIFY_LEFT);
+	gtk_box_pack_start (GTK_BOX (item_box), view->details->news_description_body_widget, TRUE, TRUE, 2);
+
 	
 	gtk_widget_show (view->details->news_description_body_widget);
 	g_free (view->details->news_description_body);
@@ -919,7 +931,6 @@ authn_cb_succeeded (const EazelProxy_User *user, gpointer state, CORBA_Environme
 
 	view->details->pending_operation = Pending_None;
 	
-	g_message ("Login succeeded");
 	timeout = gtk_timeout_add (0, logged_in_callback, view);
 
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
@@ -936,7 +947,6 @@ authn_cb_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *in
 
 	view->details->pending_operation = Pending_None;
 
-	g_message ("Login FAILED");
 	view->details->logged_in = FALSE;
 	
 	update_menu_items (view, FALSE);
