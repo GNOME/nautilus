@@ -1,3 +1,16 @@
+2000-11-29  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/text/nautilus-text-view.c:
+	(nautilus_text_view_load_uri), (text_view_load_location_callback),
+	(handle_service_menu_item), (service_menu_item_parameters_new),
+	(service_menu_item_parameters_free), (add_one_service):
+	added the ability for a text view service to operate on the entire
+	document and return a mapped version, which replaces the original.
+
+	* components/text/services/google.xml:
+	* components/text/services/webster.xml:
+	marked the existing services, which operate on the selection, as such
+	
 2000-11-28  Andy Hertzfeld  <andy@eazel.com>
 
 	implementated data-driven framework for text view services. The text

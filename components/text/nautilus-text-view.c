@@ -69,6 +69,8 @@ struct _NautilusTextViewDetails {
 typedef struct {
 	NautilusTextView *text_view;
 	char *service_template;
+	char *source_mode;
+	
 } ServiceMenuItemParameters;
 
 #define ADDITIONAL_SERVICES_MENU_PATH	"/menu/Services Placeholder/Services/Service Items"
@@ -258,8 +260,8 @@ void
 nautilus_text_view_load_uri (NautilusTextView *text_view, const char *uri)
 {
  
-        detach_file (text_view);
-        text_view->details->file = nautilus_file_get (uri);
+	detach_file (text_view);
+	text_view->details->file = nautilus_file_get (uri);
 	
 	nautilus_text_view_update (text_view);
 }
@@ -269,9 +271,9 @@ text_view_load_location_callback (NautilusView *view,
                                    const char *location,
                                    NautilusTextView *text_view)
 {
-        nautilus_view_report_load_underway (text_view->details->nautilus_view);
+	nautilus_view_report_load_underway (text_view->details->nautilus_view);
 	nautilus_text_view_load_uri (text_view, location);
-        nautilus_view_report_load_complete (text_view->details->nautilus_view);
+	nautilus_view_report_load_complete (text_view->details->nautilus_view);
 }
 
 /* update the font and redraw */
@@ -304,29 +306,56 @@ get_selected_text (GtkEditable *text_widget)
 }
 
 /* here's the callback to handle the actual work for service menu items */
-
 static void
 handle_service_menu_item (BonoboUIComponent *ui, gpointer user_data, const char *verb)
 {
 	char *selected_text, *mapped_text, *uri;
 	ServiceMenuItemParameters *parameters;
+	int text_size;
+	char *text_ptr;
 	
 	parameters = (ServiceMenuItemParameters *) user_data;
-	selected_text = get_selected_text (GTK_EDITABLE (parameters->text_view->details->text_display));
 	
-	if (selected_text) {
-		/* formulate the url */
-		mapped_text = gnome_vfs_escape_string (selected_text);
-		uri = g_strdup_printf (parameters->service_template, mapped_text);
+	/* determine if we should operate on the whole document or just the selection */
+	if (nautilus_strcmp (parameters->source_mode, "document") == 0) {
+		selected_text = gtk_editable_get_chars (GTK_EDITABLE (parameters->text_view->details->text_display), 0, -1);
+		if (selected_text && strlen (selected_text) > 0) {
+			/* formulate the url */
+			mapped_text = gnome_vfs_escape_string (selected_text);
+			uri = g_strdup_printf (parameters->service_template, mapped_text);
+			g_free (mapped_text);
 			
-		/* goto the url */	
-		nautilus_view_open_location (parameters->text_view->details->nautilus_view, uri);
+			/* load the resultant page through gnome-vfs */
 
-		g_free (uri);
+			if (nautilus_read_entire_file (uri, &text_size, &text_ptr) == GNOME_VFS_OK) {
+ 				gtk_editable_delete_text (GTK_EDITABLE (parameters->text_view->details->text_display), 0, -1);   
+				gtk_text_insert (GTK_TEXT (parameters->text_view->details->text_display),
+			 					NULL, NULL, NULL,
+			 					text_ptr, text_size);
+        			
+				g_free (text_ptr);
+			}
+			
+			g_free (uri);
+		}
 		g_free (selected_text);
-		g_free (mapped_text);
-	}
+	} else {
+		selected_text = get_selected_text (GTK_EDITABLE (parameters->text_view->details->text_display));
+	
+		if (selected_text != NULL) {
+			/* formulate the url */
+			mapped_text = gnome_vfs_escape_string (selected_text);
+			uri = g_strdup_printf (parameters->service_template, mapped_text);
+			
+			/* goto the url */	
+			nautilus_view_open_location (parameters->text_view->details->nautilus_view, uri);
+
+			g_free (uri);
+			g_free (selected_text);
+			g_free (mapped_text);
+		}
 		
+	}
 }
 
 /* handle the font menu items */
@@ -359,14 +388,19 @@ handle_ui_event (BonoboUIComponent *ui,
 /* utility routines to add service items to the services menu by iterating the services/text directory */
 
 static ServiceMenuItemParameters *
-service_menu_item_parameters_new (NautilusTextView *text_view, const char *service_template)
+service_menu_item_parameters_new (NautilusTextView *text_view, const char *service_template, const char *source_mode)
 {
 	ServiceMenuItemParameters *result;
 
 	result = g_new0 (ServiceMenuItemParameters, 1);
 	result->text_view = text_view;
 	result->service_template = g_strdup (service_template);
-
+	if (source_mode != NULL) {
+		result->source_mode = g_strdup (source_mode);
+	} else {
+		result->source_mode = NULL;
+	}
+	
 	return result;
 }
 
@@ -374,6 +408,7 @@ static void
 service_menu_item_parameters_free (ServiceMenuItemParameters *parameters)
 {
 	g_free (parameters->service_template);
+	g_free (parameters->source_mode);
 	g_free (parameters);
 }			      
 
@@ -385,7 +420,7 @@ add_one_service (NautilusTextView *text_view, BonoboControl *control, const char
 	xmlNodePtr service_node;
 	char *label, *escaped_label;
 	char *tooltip, *template;
-	char *verb_name, *item_path;
+	char *verb_name, *item_path, *source_mode;
 	ServiceMenuItemParameters *parameters;
 	BonoboUIComponent *ui;
 	
@@ -400,13 +435,14 @@ add_one_service (NautilusTextView *text_view, BonoboControl *control, const char
 		label = xmlGetProp (service_node, "label");
 		template = xmlGetProp (service_node, "template");
 		tooltip = xmlGetProp (service_node, "tooltip");
+		source_mode = xmlGetProp (service_node, "source");
 		
 		if (label != NULL && template != NULL) {
 		
 			/* allocate a structure containing the text_view and template to pass in as the user data */
 
 			escaped_label = nautilus_str_double_underscores (label);
-			parameters = service_menu_item_parameters_new (text_view, template);
+			parameters = service_menu_item_parameters_new (text_view, template, source_mode);
 		
 			/* use bonobo to add the menu item */
 			nautilus_bonobo_add_numbered_menu_item 
