@@ -1,3 +1,14 @@
+2001-03-29  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Josh noticed that the special "thumbnail is loading" icon
+	was no longer used. Darin and I found the problem.
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file): Store URI rather
+	than local path for special "loading" image.
+
 2001-03-29  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

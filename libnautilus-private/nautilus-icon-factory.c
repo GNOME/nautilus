@@ -1416,9 +1416,11 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 				   && file_size < cached_thumbnail_limit) {
 				uri = nautilus_get_thumbnail_uri (file, anti_aliased);
 				if (uri == NULL) {
-					uri = get_icon_file_path
+					file_path = get_icon_file_path
 						(ICON_NAME_THUMBNAIL_LOADING, NULL,
 						 NAUTILUS_ICON_SIZE_STANDARD, anti_aliased, NULL);
+					uri = gnome_vfs_get_uri_from_local_path (file_path);
+					g_free (file_path);
 				}
 			}
 		}
