@@ -1,3 +1,16 @@
+2002-03-26  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(nautilus_icon_canvas_item_class_init): kill nasty gconf
+	re-enterancy hazard moving the auto_enum to
+	(nautilus_icon_canvas_item_init): here.
+	(nautilus_icon_canvas_item_class_init): add the a11y
+	factory & instantiate the factory boilerplate.
+	(nautilus_icon_canvas_item_accessibile_create),
+	(nautilus_icon_canvas_item_accessible_get_name),
+	(nautilus_icon_canvas_item_accessible_class_init),
+	(nautilus_icon_canvas_item_accessible_get_type): impl.
+
 2002-03-25  Mark McLoughlin  <mark@skynet.ie>
 
 	* src/file-manager/fm-directory-view.c: (update_scripts_menu): also

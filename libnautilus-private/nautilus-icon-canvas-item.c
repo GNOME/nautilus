@@ -39,6 +39,7 @@
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-pango-extensions.h>
 #include <eel/eel-string.h>
+#include <eel/eel-accessibility.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtksignal.h>
 #include <libart_lgpl/art_rgb.h>
@@ -189,7 +190,15 @@ EEL_CLASS_BOILERPLATE (NautilusIconCanvasItem,
 static void
 nautilus_icon_canvas_item_init (NautilusIconCanvasItem *icon_item)
 {
+	static gboolean setup_auto_enums = FALSE;
 	NautilusIconCanvasItemDetails *details;
+
+	if (!setup_auto_enums) {
+		eel_preferences_add_auto_enum
+			(NAUTILUS_PREFERENCES_CLICK_POLICY,
+			 &click_policy_auto_value);
+		setup_auto_enums = TRUE;
+	}
 
 	details = g_new0 (NautilusIconCanvasItemDetails, 1);
 
@@ -1674,6 +1683,74 @@ nautilus_icon_canvas_item_get_max_text_width (NautilusIconCanvasItem *item)
 
 }
 
+static G_CONST_RETURN gchar *
+nautilus_icon_canvas_item_accessible_get_name (AtkObject *accessible)
+{
+	NautilusIconCanvasItem *item;
+
+	item = eel_accessibility_get_gobject (accessible);
+	if (!item) {
+		return NULL;
+	}
+
+	return item->details->editable_text;
+}
+
+static G_CONST_RETURN gchar*
+nautilus_icon_canvas_item_accessible_get_description (AtkObject *accessible)
+{
+	NautilusIconCanvasItem *item;
+
+	item = eel_accessibility_get_gobject (accessible);
+	if (!item) {
+		return NULL;
+	}
+
+	return item->details->additional_text;
+}
+
+static void
+nautilus_icon_canvas_item_accessible_class_init (AtkObjectClass *klass)
+{
+	klass->get_name = nautilus_icon_canvas_item_accessible_get_name;
+	klass->get_description = nautilus_icon_canvas_item_accessible_get_description;
+}
+
+static GType
+nautilus_icon_canvas_item_accessible_get_type (void)
+{
+	static GType type = 0;
+
+	if (!type) {
+		type = eel_accessibility_create_derived_type (
+			"NautilusIconCanvasItemAccessibility",
+			GNOME_TYPE_CANVAS_ITEM,
+			nautilus_icon_canvas_item_accessible_class_init);
+	}
+
+	return type;
+}
+
+static AtkObject *
+nautilus_icon_canvas_item_accessible_create (GObject *for_object)
+{
+	AtkObject *accessible;
+	NautilusIconCanvasItem *item;
+
+	item = NAUTILUS_ICON_CANVAS_ITEM (for_object);
+	g_return_val_if_fail (item != NULL, NULL);
+
+	accessible = g_object_new
+		(nautilus_icon_canvas_item_accessible_get_type (), NULL);
+
+	return eel_accessibility_set_atk_object_return
+		(for_object, accessible);
+}
+
+EEL_ACCESSIBLE_FACTORY (nautilus_icon_canvas_item_accessible_get_type (),
+			nautilus_icon_canvas_item_accessible,
+			nautilus_icon_canvas_item_accessible_create);
+
 /* Class initialization function for the icon canvas item. */
 static void
 nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
@@ -1744,8 +1821,8 @@ nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 	item_class->render = nautilus_icon_canvas_item_render;
 	item_class->point = nautilus_icon_canvas_item_point;
 	item_class->bounds = nautilus_icon_canvas_item_bounds;
-	item_class->event = nautilus_icon_canvas_item_event;
+	item_class->event = nautilus_icon_canvas_item_event;	
 
-	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
-				       &click_policy_auto_value);
+	EEL_OBJECT_SET_FACTORY (NAUTILUS_TYPE_ICON_CANVAS_ITEM,
+				nautilus_icon_canvas_item_accessible);
 }
