@@ -596,7 +596,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	int width_so_far, height_so_far;
 	GdkGC* gc;
 	GdkGCValues save_gc;
-	GdkColor *label_color;
+	guint32 label_color;
 	GnomeCanvasItem *canvas_item;
 	int max_text_width;
 	int icon_width, text_left, box_left;
@@ -640,10 +640,10 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	
 	max_text_width = floor (MAX_TEXT_WIDTH * canvas_item->canvas->pixels_per_unit);
 	
+	gdk_gc_get_values (gc, &save_gc);
+				
 	/* if the icon is highlighted, do some set-up */
 	if (needs_highlight && drawable != NULL && !details->is_renaming) {
-		gdk_gc_get_values (gc, &save_gc);
-				
 		gdk_colormap_alloc_color
 			(gtk_widget_get_colormap (GTK_WIDGET (canvas_item->canvas)),
 			 &highlight_background_color, FALSE, TRUE);
@@ -664,7 +664,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	
 	if (!needs_highlight && drawable != NULL) {
 		label_color = nautilus_icon_container_get_label_color (NAUTILUS_ICON_CONTAINER (canvas_item->canvas));
-		gdk_gc_set_foreground (gc, label_color);
+		gdk_rgb_gc_set_foreground (gc, label_color);
 	}
 	
 	pieces = g_strsplit (combined_text, "\n", 0);
@@ -712,11 +712,9 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	}
 	g_strfreev (pieces);
 	
-	if (needs_highlight) {
-		if (drawable != NULL) {
-			gdk_gc_set_foreground(gc, &save_gc.foreground);
-		}
+	gdk_gc_set_foreground (gc, &save_gc.foreground);
 
+	if (needs_highlight) {
 		height_so_far += 2; /* extra slop for nicer highlighting */	
 		width_so_far += 4; /* account for emboldening, plus extra to make it look nicer */
 	}	

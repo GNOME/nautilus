@@ -1,3 +1,20 @@
+2000-07-31  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text): Use RGB value for the label color.
+	Also fix bug where we would not restore the old foreground color
+	value in one case.
+	* libnautilus-extensions/nautilus-icon-private.h:
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_initialize),
+	(nautilus_icon_container_get_label_color), (update_label_color):
+	Use an RGB color instead of allocating one. It's simpler.
+	
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	(timed_wait_free): Fixed backward assert that caused a core dump
+	any time you attempted to change an owner or group.
+
 2000-07-31  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory.c:

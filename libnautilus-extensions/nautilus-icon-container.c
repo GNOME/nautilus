@@ -110,8 +110,8 @@ static void          end_renaming_mode                        (NautilusIconConta
 static void          hide_rename_widget                       (NautilusIconContainer      *container,
 							       NautilusIcon               *icon);
 static void          finish_adding_new_icons                  (NautilusIconContainer      *container);
-static void	     nautilus_icon_container_update_label_color (NautilusBackground *background,
-                             					NautilusIconContainer *icon_container);
+static void          update_label_color                       (NautilusBackground         *background,
+							       NautilusIconContainer      *icon_container);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer, nautilus_icon_container, GNOME_TYPE_CANVAS)
 
@@ -2497,7 +2497,7 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 	gtk_signal_connect
 		(GTK_OBJECT(background),
 		 "appearance_changed",
-		 nautilus_icon_container_update_label_color,
+		 update_label_color,
 		 GTK_OBJECT (container));	
 	
 	container->details->rename_widget = NULL;
@@ -3791,29 +3791,26 @@ nautilus_icon_container_set_single_click_mode (NautilusIconContainer *container,
 
 /* update the label color when the background changes */
 
-GdkColor*
+guint32
 nautilus_icon_container_get_label_color (NautilusIconContainer *container)
 {
-	return &container->details->label_color;
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), 0);
+	return container->details->label_color;
 }
 
 static void
-nautilus_icon_container_update_label_color (NautilusBackground *background,
-                             		    NautilusIconContainer *icon_container)
+update_label_color (NautilusBackground *background,
+		    NautilusIconContainer *container)
 {
-	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
-	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (icon_container));
-
-	if (nautilus_background_is_dark (background)) {
-		gdk_color_parse ("rgb:EE/EE/EE", &icon_container->details->label_color);
-	} else {
-		gdk_color_parse ("rgb:00/00/00", &icon_container->details->label_color);
-	}
+	g_assert (NAUTILUS_IS_BACKGROUND (background));
+	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	
-	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (icon_container)),
-			 	  &icon_container->details->label_color, FALSE, TRUE);
+	if (nautilus_background_is_dark (background)) {
+		container->details->label_color = 0xEEEEEE;
+	} else {
+		container->details->label_color = 0x000000;
+	}
 }
-
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
 
