@@ -1,3 +1,15 @@
+2000-10-26  Mathieu Lacage  <mathieu@eazel.com>
+
+        Make prelighted icons not prelighted when you leave the list 
+	view without dropping. Also, move the actual prelighting
+	operation from fm-list-view to nautilus-list.
+	Also, remove FIXME about this bug since it is fixed.
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_drag_leave),
+	(nautilus_list_find_icon_list_drop_target),
+	(nautilus_list_prelight_if_necessary):
+	* src/file-manager/fm-list-view.c: (fm_list_handle_dragged_items):
+
 2000-10-25  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/mozilla/Makefile.am:

@@ -606,32 +606,25 @@ fm_list_handle_dragged_items (NautilusList *list,
 	gboolean ret_val;
 	NautilusFile *target_item;
 
-	ret_val = FALSE;
-
 	switch (info) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
 	case NAUTILUS_ICON_DND_URI_LIST:
 		/* Find the item we dragged over and determine if it can accept dropped items */
 		target_item = fm_list_nautilus_file_at (list, x, y);
 		if (target_item != NULL && nautilus_drag_can_accept_items (target_item, drop_data)) {
-			/* Mark this item to be prelit */
-			NautilusCListRow *row;
-
-			row = nautilus_list_row_at (list, y);
-			nautilus_list_set_drag_prelight_row (list, y);
+			ret_val = TRUE;
 		} else {
-			nautilus_list_set_drag_prelight_row (list, -1);
+			ret_val = FALSE;
 		}
 		
-		ret_val = FALSE;
 		break;
 	case NAUTILUS_ICON_DND_KEYWORD:	
 		ret_val = TRUE;
 		break;
 	case NAUTILUS_ICON_DND_COLOR:
 	case NAUTILUS_ICON_DND_BGIMAGE:	
-		break;
 	default:
+		ret_val = FALSE;
 		break;
 	}
 

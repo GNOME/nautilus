@@ -2869,6 +2869,8 @@ nautilus_list_drag_leave (GtkWidget *widget, GdkDragContext *context, guint time
 	drag_info = list->details->drag_info;
 
 	nautilus_list_stop_auto_scroll (NAUTILUS_LIST (list));
+
+	nautilus_list_set_drag_prelight_row (list, -1);
 }
 
 gboolean
@@ -2899,7 +2901,7 @@ nautilus_list_find_icon_list_drop_target (NautilusList *list,
 	   be moved there too.
 	 */
 
-	return g_strdup ("file:///");	
+	return g_strdup ("file:///");
 }
 
 static void
@@ -3041,9 +3043,6 @@ nautilus_list_prelight_if_necessary (NautilusList *list, GdkDragContext *context
 {
 	gboolean is_prelight_necessary;
 	
-	/* FIXME: bugzilla.eazel.com 2948 
-	   pavel will finish it */
-
 	/* should we prelight the current row ? */
 	gtk_signal_emit (GTK_OBJECT (list), 
 			 list_signals[HANDLE_DRAGGED_ITEMS],
@@ -3052,6 +3051,16 @@ nautilus_list_prelight_if_necessary (NautilusList *list, GdkDragContext *context
 			 x, y, 
 			 list->details->drag_info->data_type, 
 		 	 &is_prelight_necessary);
+
+	if (is_prelight_necessary) {
+		/* Mark this item to be prelit */
+		NautilusCListRow *row;
+		
+		row = nautilus_list_row_at (list, y);
+		nautilus_list_set_drag_prelight_row (list, y);
+	} else {
+		nautilus_list_set_drag_prelight_row (list, -1);
+	}
 }
 
 
