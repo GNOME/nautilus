@@ -42,6 +42,7 @@
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
+#include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -1248,6 +1249,8 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	GnomeVFSFileInfo *current_file_info;
 	GnomeVFSDirectoryList *list;
 
+	NautilusFile *file;
+	
 	char* clist_entry[10];
 	GList *p;
 	GdkPixbuf *pixbuf;
@@ -1258,14 +1261,18 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	SongInfo *info;
 	char *path_uri, *escaped_name;
 	char *image_path, *image_path_uri;
+	char *album_path;
+	
 	int file_index;
 	int track_index;
+	int image_count;
 	gboolean got_image;
 	
 	song_list = NULL;
 	image_path_uri = NULL;
 	file_index = 1;
 	track_index = 0;
+	image_count = 0;
 	
 	/* connect the music view background to directory metadata */	
 	nautilus_connect_background_to_directory_metadata_by_uri (GTK_WIDGET (music_view), uri);
@@ -1312,7 +1319,8 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 		        	/* for now, just keep the first image */
 		        	if (image_path_uri == NULL) {
 		        		image_path_uri = g_strdup (path_uri);
-                                }
+				}
+				image_count += 1;
 		        }
                         
 		        g_free (path_uri);
@@ -1371,6 +1379,23 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 	/* install the album cover */
 	
 	got_image = FALSE;	
+	/* first, see if we can get it from metadata */
+	file = nautilus_file_get (music_view->details->uri);
+	album_path = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
+		
+	nautilus_file_unref (file);
+	if (album_path != NULL) {
+		g_free (image_path_uri);
+		image_path_uri = gnome_vfs_get_local_path_from_uri (album_path);
+		g_free (album_path);
+		image_count = 1;
+	}
+	
+	if (image_count > 1) {
+		g_free (image_path_uri);
+		image_path_uri = NULL;
+	}
+	
 	if (image_path_uri != NULL) {
   		image_path = gnome_vfs_get_local_path_from_uri(image_path_uri);
   		pixbuf = gdk_pixbuf_new_from_file(image_path);

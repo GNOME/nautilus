@@ -33,6 +33,8 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
+#include "libnautilus-extensions/nautilus-sound.h"
+
 #include "mpg123_handler.h"
 
 
@@ -116,7 +118,6 @@ static gint read_data();
 int get_play_status ()
 {
 	return mpg123_status;
-
 }
 
 int get_current_frame ()
@@ -498,6 +499,7 @@ if (debug_mode) printf("closed\n");
 
 static void song_finished()
 {
+	nautilus_sound_kill_sound ();
 	stop_data();
 	
 	mpg123_status = STATUS_NEXT;
@@ -770,6 +772,7 @@ void start_playing_file(gchar* filename, gboolean start_from_beginning)
 		{
 		/* This is the parent process. */
 		mp3_pid = (gint) frk_pid;
+		nautilus_sound_register_sound (mp3_pid);
 		close(mypipe[1]);
 		}
 
@@ -781,8 +784,6 @@ void start_playing_file(gchar* filename, gboolean start_from_beginning)
 
 void stop_playing_file ()
 {
-	pid_t child;
-	gint  status_result;
 	if (mpg123_status == STATUS_STOP) 
 		return;
 
@@ -790,14 +791,10 @@ void stop_playing_file ()
 
 	/* kill the entire mpg123 group to work around mpg123 buffer bug */
 
-	kill(-mp3_pid, SIGINT);
-
-    signal(SIGCHLD, SIG_IGN);
- 	child = waitpid(mp3_pid, &status_result, 0);       
- 	signal(SIGCHLD, sigchld_handler);
-
+	nautilus_sound_kill_sound ();
+	
 	stop_data();
-    mpg123_status = STATUS_STOP;
+	mpg123_status = STATUS_STOP;
 }
 
 void pause_playing_file ()

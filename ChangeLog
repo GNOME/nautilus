@@ -1,3 +1,15 @@
+2000-10-03  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/mpg123_handler.c: (get_play_status),
+	(song_finished), (start_playing_file), (stop_playing_file):
+	made the music view use nautilus_sound for process management
+	
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_update_from_uri):
+	get the album cover to display from the CUSTOM_ICON metadata,
+	ehich is preferred; otherwise, draft one if there's exactly
+	one image in the directory.  The metadata part isn't working yet.
+	
 2000-10-03  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-rpm-glue.c:
