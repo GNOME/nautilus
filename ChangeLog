@@ -1,3 +1,10 @@
+2003-09-18  Alexander Larsson  <alexl@redhat.com>
+
+	* src/nautilus-main.c (main):
+	Call gnome_vfs_shutdown before unreffing application to
+	avoid crashes on shutdown.
+	Patch by Martin Wehner <martin.wehner@epost.de>
+
 2003-09-17  Fatih Demir <kabalak@gtranslator.org>
 
 	* configure.in: Re-added (?) "ta" (Tamil) to ALL_LINGUAS.
