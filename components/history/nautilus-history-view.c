@@ -263,8 +263,6 @@ int main(int argc, char *argv[])
   BonoboGenericFactory *factory;
   CORBA_ORB orb;
 
-  puts ("history view");
-
   gnome_init_with_popt_table("ntl-history-view", VERSION, 
                              argc, argv,
                              oaf_popt_options, 0, NULL); 
