@@ -1,3 +1,28 @@
+2001-03-21  Ramiro Estrugo  <ramiro@eazel.com>
+ 
+ 	reviewed by: Pavel Cisler <pavel@eazel.com>
+ 
+ 	Fix bug 7686 - nautilus crashing on startup with the hu_HU
+ 	(Hungarian) locale (and probably other locales as well)
+ 	
+ 	* libnautilus-extensions/nautilus-gdk-font-extensions.c:
+ 	(nautilus_gdk_font_get_fixed):
+ 	The issue is that it is lame to use the localization system to
+ 	pick a default font.  We have to do better in 1.2.  Bugs 7204 
+ 	and 7345 have details about this.
+ 
+ 	For 1.0, we make Nautilus' default font finding code more robust
+ 	by trying unlocalized 'font sets' and 'fonts' if a
+ 	localized font cannot be found.
+ 
+ 	If the localized fixed font failed to load, then we try an
+ 	unlocalized fixed font.  This (in theory) should always work but
+ 	it does not for some locales (hu_HU for example)
+ 
+ 	If we still were not able to load the font set, then try just the
+ 	"fixed" font which in theory always be available regardless of x
+ 	server font setup or locale.
+
 2001-03-19  Robin * Slomkowski  <rslomkow@eazel.com>
 
         * components/music/Makefile.am: added non-i386 files

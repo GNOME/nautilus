@@ -954,6 +954,34 @@ nautilus_gdk_font_get_fixed (void)
 		 * to exist, * even in the most limited user environment
 		 */
 		fixed_font = gdk_fontset_load (_("fixed"));
+
+		/* FIXME bugzilla.eazel.com 7204:
+		 * Bug 7345 is related too.  The issue is that it is lame to 
+		 * use the localization system to pick a default font.  We have
+		 * to do better in 1.2.  The bugs above have details about this.
+		 *
+		 * For 1.0, we make Nautilus' default font finding code more
+		 * robust by trying unlocalized 'font sets' and 'fonts' if a
+		 * localized font cannot be found.
+		 */
+
+		/* If the localized fixed font failed to load, then 
+		 * try an unlocalized fixed font.  This (in theory) 
+		 * should always work but it does not for some 
+		 * locales (hu_HU for example)
+		 */
+		if (fixed_font == NULL) {
+			fixed_font = gdk_fontset_load ("fixed");
+		}
+
+		/* If we still were not able to load the font set, then
+		 * try just the "fixed" font which in theory always will
+		 * be available regardless of x server font setup or
+		 * locale.
+		 */
+		if (fixed_font == NULL) {
+			fixed_font = gdk_font_load ("fixed");
+		}
 		g_assert (fixed_font != NULL);
 		g_atexit (unref_fixed_font);
 	}
