@@ -446,6 +446,7 @@ nautilus_view_load_client(NautilusView *view, const char *iid)
   CORBA_exception_init(&ev);
 
   frame = gnome_bonobo_widget_get_control_frame(GNOME_BONOBO_WIDGET(view->client));
+  
   gnome_object_add_interface(GNOME_OBJECT(frame), view->view_frame);
   view->view_client = GNOME_Unknown_query_interface(gnome_control_frame_get_control(GNOME_CONTROL_FRAME(frame)),
 						    "IDL:Nautilus/View:1.0", &ev);
