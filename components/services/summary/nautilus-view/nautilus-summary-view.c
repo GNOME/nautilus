@@ -261,7 +261,6 @@ generate_summary_form (NautilusSummaryView	*view)
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (view), view->details->form);
-	gtk_widget_show (view->details->form);
 
 	/* setup the title */
 	if (!view->details->logged_in) {
@@ -277,6 +276,7 @@ generate_summary_form (NautilusSummaryView	*view)
 		g_free (title_string);
 	}
 	gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
+
 	gtk_widget_show (title);
 
 	/* Create the Parent Table to hold the 4 frames */
@@ -284,7 +284,9 @@ generate_summary_form (NautilusSummaryView	*view)
 	g_print ("main\n");
 	/* Create the Services Listing Box */
 	frame = gtk_vbox_new (FALSE, 0);
+
 	gtk_widget_show (frame);
+
 	g_print ("services start\n");
 	gtk_table_attach (GTK_TABLE (parent), frame,
 			  0, 1,
@@ -304,6 +306,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	/* setup the title */
 	title = create_summary_service_large_grey_header_widget ("Services");
 	gtk_box_pack_start (GTK_BOX (temp_box), title, FALSE, FALSE, 0);
+
 	gtk_widget_show (title);
 
 	/* Create the parent table to hold 5 rows */
@@ -329,9 +332,11 @@ generate_summary_form (NautilusSummaryView	*view)
 	/* draw parent vbox and connect it to the login frame */
 	gtk_box_pack_start (GTK_BOX (temp_box), GTK_WIDGET (view->details->services_table), 0, 0, 0);
 	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (temp_scrolled_window), GTK_WIDGET (temp_box));
+
 	gtk_widget_show (GTK_WIDGET (view->details->services_table));
 	gtk_widget_show (temp_box);
 	gtk_widget_show (temp_scrolled_window);
+
 	gtk_box_pack_start (GTK_BOX (frame), temp_scrolled_window, TRUE, TRUE, 0);
 	g_print ("services end\n");
 
@@ -339,6 +344,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	g_print ("login start\n");
 	frame = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (frame);
+
 	gtk_table_attach (GTK_TABLE (parent), frame,
 			  1, 2,
 			  0, 1,
@@ -586,6 +592,10 @@ generate_summary_form (NautilusSummaryView	*view)
 	gtk_widget_show (GTK_WIDGET (parent));
 	g_print ("update news end\n");
 
+	/*Finally, show the form that hold everything */
+	gtk_widget_show (view->details->form);
+
+
 }
 
 static void
@@ -604,7 +614,6 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_box_pack_start (GTK_BOX (view->details->services_icon_container), view->details->services_icon_widget, 0, 0, 0);
 	gtk_widget_show (view->details->services_icon_widget);
 	gtk_table_attach (view->details->services_table, view->details->services_icon_container, 0, 1, row - 1 , row, GTK_FILL, GTK_FILL, 0, 0);
-	gtk_widget_show (view->details->services_icon_container);
 
 	/* Generate second Column with service title and summary */
 	temp_vbox = gtk_vbox_new (FALSE, 0);
@@ -629,7 +638,6 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_container_add (GTK_CONTAINER (temp_hbox), view->details->services_description_body_widget);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), temp_hbox, FALSE, FALSE, 0);
 	gtk_widget_show (temp_hbox);
-
 	gtk_table_attach (view->details->services_table, temp_vbox, 1, 2, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_widget_show (temp_vbox);
 
@@ -652,6 +660,9 @@ generate_service_entry_row  (NautilusSummaryView	*view, int	row)
 
 	gtk_widget_show (view->details->services_goto_button);
 	gtk_table_attach (view->details->services_table, view->details->services_button_container, 2, 3, row - 1, row, 0, 0, 0, 0);
+
+	gtk_widget_show (view->details->services_icon_container);
+
 	gtk_widget_show (view->details->services_button_container);
 
 }
@@ -668,7 +679,6 @@ generate_eazel_news_entry_row  (NautilusSummaryView	*view, int	row)
 	gtk_widget_show (view->details->news_icon_widget);
 	gtk_table_attach (view->details->service_news_table, view->details->news_icon_container, 0, 1, row - 1, row, GTK_FILL, GTK_FILL, 0, 0);
 	gtk_widget_show (view->details->news_icon_container);
-
 	/* Generate second Column with news content */
 	view->details->news_description_body_widget = nautilus_label_new (view->details->news_description_body);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (view->details->news_description_body_widget), 12);
@@ -786,7 +796,7 @@ authn_cb_succeeded (const EazelProxy_User *user, gpointer state, CORBA_Environme
 	gtk_widget_set_sensitive (view->details->login_button, TRUE);
 	
 	g_message ("Login succeeded");
-	timeout = gtk_timeout_add (100, logged_in_callback, view);
+	timeout = gtk_timeout_add (0, logged_in_callback, view);
 
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 	g_print ("finish success callback\n");
@@ -803,9 +813,35 @@ authn_cb_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *in
 
 	view->details->pending_operation = Pending_None;
 
+	/* MKF--why is this set sensitive and then unset again? */
 	gtk_widget_set_sensitive (view->details->login_button, TRUE);
+
+	/* Clear out the username and password field */
+	gtk_signal_handler_block_by_func (
+		GTK_OBJECT(view->details->username_entry),
+		(GtkSignalFunc) entry_changed_cb,
+		view
+	);
+	gtk_signal_handler_block_by_func (
+		GTK_OBJECT(view->details->password_entry),
+		(GtkSignalFunc) entry_changed_cb,
+		view
+	);
+	
 	gtk_entry_set_text (GTK_ENTRY (view->details->username_entry), "");
 	gtk_entry_set_text (GTK_ENTRY (view->details->password_entry), "");
+
+	gtk_signal_handler_unblock_by_func (
+		GTK_OBJECT(view->details->username_entry),
+		(GtkSignalFunc) entry_changed_cb,
+		view
+	);
+	gtk_signal_handler_unblock_by_func (
+		GTK_OBJECT(view->details->password_entry),
+		(GtkSignalFunc) entry_changed_cb,
+		view
+	);
+
 	g_message ("Login FAILED");
 	view->details->logged_in = FALSE;
 	gtk_widget_set_sensitive (view->details->login_button, FALSE);
@@ -912,7 +948,7 @@ logout_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 		CORBA_free (users);
 	}
 
-	timeout = gtk_timeout_add (100, logged_out_callback, view);
+	timeout = gtk_timeout_add (0, logged_out_callback, view);
 
 	CORBA_exception_free (&ev);
 }
@@ -928,7 +964,6 @@ am_i_logged_in (NautilusSummaryView	*view)
 	CORBA_exception_init (&ev);
 
 	if (CORBA_OBJECT_NIL != view->details->user_control) {
-		/* Get list of currently active users */
 
 		user = EazelProxy_UserControl_get_default_user (
 			view->details->user_control, &ev);
@@ -1158,4 +1193,5 @@ summary_load_location_callback (NautilusView		*nautilus_view,
 	nautilus_view_report_load_complete (nautilus_view);
 
 }
+
 
