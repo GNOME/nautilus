@@ -22,8 +22,9 @@
    Author: Darin Adler <darin@eazel.com>
 */
 
-#include "nautilus-file.h"
 #include "nautilus-directory.h"
+#include "nautilus-file.h"
+#include "nautilus-monitor.h"
 #include <eel/eel-glib-extensions.h>
 
 #define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE 80
@@ -48,14 +49,12 @@ struct NautilusFileDetails
 {
 	NautilusDirectory *directory;
 	char *relative_uri;
-	
-	/* Set by the NautilusDirectory while it's loading the file
-	 * list so the file knows not to do redundant I/O.
-	 */
 
 	GnomeVFSFileInfo *info;
 	GnomeVFSResult get_info_error;
 
+	NautilusMonitor *monitor;
+	
 	guint directory_count;
 
 	guint deep_directory_count;
@@ -83,6 +82,9 @@ struct NautilusFileDetails
 
 	eel_boolean_bit unconfirmed                   : 1;
 	eel_boolean_bit is_gone                       : 1;
+	/* Set by the NautilusDirectory while it's loading the file
+	 * list so the file knows not to do redundant I/O.
+	 */
 	eel_boolean_bit loading_directory             : 1;
 	/* got_info known from info field being non-NULL */
 	eel_boolean_bit get_info_failed               : 1;
@@ -92,7 +94,7 @@ struct NautilusFileDetails
 	eel_boolean_bit directory_count_failed        : 1;
 	eel_boolean_bit directory_count_is_up_to_date : 1;
 
-	NautilusRequestStatus deep_counts_status           : 2;
+	NautilusRequestStatus deep_counts_status      : 2;
 	/* no deep_counts_are_up_to_date field; since we expose
            intermediate values for this attribute, we do actually
            forget it rather than invalidating. */

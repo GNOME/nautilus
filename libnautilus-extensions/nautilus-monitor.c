@@ -81,7 +81,7 @@ get_request_hash_table (void)
 
 	if (table == NULL) {
 		table = eel_g_hash_table_new_free_at_exit
-			(NULL, NULL, "FAM hash table");
+			(NULL, NULL, "nautilus-monitor.c: FAM requests");
 	}
 	return table;
 }
@@ -104,7 +104,7 @@ get_event_uri (const FAMEvent *event)
 	 * notification and tack that on.
 	 */
 	base_path = g_hash_table_lookup (get_request_hash_table (),
-					 GINT_TO_POINTER (event->fr.reqnum));
+					 GINT_TO_POINTER (FAMREQUEST_GETREQNUM (&event->fr)));
 	g_return_val_if_fail (base_path != NULL, NULL);
 	path = g_concat_dir_and_file (base_path, event->filename);
 	uri = gnome_vfs_get_uri_from_local_path (path);
@@ -139,7 +139,6 @@ process_fam_notifications (gpointer callback_data, int fd, GdkInputCondition con
 			if (uri == NULL) {
 				break;
 			}
-                        g_message ("FAMChanged: %s", uri);
                         nautilus_file_changes_queue_file_changed (uri);
 			g_free (uri);
                         break;
@@ -149,7 +148,6 @@ process_fam_notifications (gpointer callback_data, int fd, GdkInputCondition con
 			if (uri == NULL) {
 				break;
 			}
-                        g_message ("FAMDeleted: %s", uri);
                         nautilus_file_changes_queue_file_removed (uri);
 			g_free (uri);
                         break;
@@ -159,7 +157,6 @@ process_fam_notifications (gpointer callback_data, int fd, GdkInputCondition con
 			if (uri == NULL) {
 				break;
 			}
-                        g_message ("FAMCreated: %s", uri);
                         nautilus_file_changes_queue_file_added (uri);
 			g_free (uri);
                         break;
@@ -211,6 +208,8 @@ process_fam_notifications (gpointer callback_data, int fd, GdkInputCondition con
 			break;
                 }
         }
+
+	nautilus_file_changes_consume_changes (TRUE);
 }
 
 #endif /* HAVE_FAM_H */
@@ -239,9 +238,6 @@ nautilus_monitor_file (const char *uri)
 	FAMMonitorFile (connection, path, &monitor->request, NULL);
 
 	g_free (path);
-
-	g_message ("ADDED: %d) file monitor for %s",
-		   monitor->request.reqnum, path);
 
 	return monitor;
 #endif
@@ -273,14 +269,11 @@ nautilus_monitor_directory (const char *uri)
 	FAMMonitorDirectory (connection, path, &monitor->request, NULL);
 
 	g_assert (g_hash_table_lookup (get_request_hash_table (),
-				       GINT_TO_POINTER (monitor->request.reqnum)) == NULL);
+				       GINT_TO_POINTER (FAMREQUEST_GETREQNUM (&monitor->request))) == NULL);
 
 	g_hash_table_insert (get_request_hash_table (),
-			     GINT_TO_POINTER (monitor->request.reqnum),
+			     GINT_TO_POINTER (FAMREQUEST_GETREQNUM (&monitor->request)),
 			     path);
-
-	g_message ("ADDED: %d) directory monitor for %s",
-		   monitor->request.reqnum, path);
 
 	return monitor;
 #endif
@@ -300,21 +293,17 @@ nautilus_monitor_cancel (NautilusMonitor *monitor)
 		return;
 	}
 
-	reqnum = monitor->request.reqnum;
+	reqnum = FAMREQUEST_GETREQNUM (&monitor->request);
 	path = g_hash_table_lookup (get_request_hash_table (),
 				    GINT_TO_POINTER (reqnum));
 	g_hash_table_remove (get_request_hash_table (),
 			     GINT_TO_POINTER (reqnum));
+	g_free (path);
 
         connection = get_fam_connection ();
 	g_return_if_fail (connection != NULL);
 
 	FAMCancelMonitor (connection, &monitor->request);
 	g_free (monitor);
-
-	g_message ("REMOVED: %d) directory monitor for %s",
-		   reqnum, path);
-
-	g_free (path);
 #endif
 }

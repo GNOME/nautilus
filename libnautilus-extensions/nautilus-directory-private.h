@@ -22,18 +22,16 @@
    Author: Darin Adler <darin@eazel.com>
 */
 
+#include "nautilus-directory-metafile-monitor.h"
 #include "nautilus-directory.h"
-
+#include "nautilus-file.h"
+#include "nautilus-metafile-server.h"
+#include "nautilus-monitor.h"
+#include <eel/eel-vfs-extensions.h>
+#include <gnome-xml/tree.h>
+#include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
-#include <libgnomevfs/gnome-vfs-file-info.h>
-
-#include <gnome-xml/tree.h>
-
-#include "nautilus-file.h"
-#include <eel/eel-vfs-extensions.h>
-#include "nautilus-directory-metafile-monitor.h"
-#include "nautilus-metafile-server.h"
 #include <libnautilus/nautilus-idle-queue.h>
 
 typedef struct ActivationURIReadState ActivationURIReadState;
@@ -55,6 +53,8 @@ struct NautilusDirectoryDetails
 	 */
 	GList *call_when_ready_list;
 	GList *monitor_list;
+
+	NautilusMonitor *monitor;
 
 	NautilusIdleQueue *idle_queue;
 	NautilusMetafileMonitor *metafile_monitor;

@@ -431,20 +431,43 @@ find_monitor (NautilusDirectory *directory,
 	      NautilusFile *file,
 	      gconstpointer client)
 {
-	GList *result;
-	Monitor *monitor;
+	Monitor monitor;
 
-	monitor = g_new0 (Monitor, 1);
-	monitor->client = client;
-	monitor->file = file;
+	monitor.client = client;
+	monitor.file = file;
 
-	result = g_list_find_custom (directory->details->monitor_list,
-				     monitor,
-				     monitor_key_compare);
+	return g_list_find_custom (directory->details->monitor_list,
+				   &monitor,
+				   monitor_key_compare);
+}
 
-	g_free (monitor);
+static int
+monitor_file_compare (gconstpointer a,
+		      gconstpointer data)
+{
+	const Monitor *monitor;
+	NautilusFile *file;
+
+	monitor = a;
+	file = (NautilusFile *) data;
 	
-	return result;
+	if (monitor->file < file) {
+		return -1;
+	}
+	if (monitor->file > file) {
+		return +1;
+	}
+	
+	return 0;
+}
+
+static gboolean
+find_any_monitor (NautilusDirectory *directory,
+		  NautilusFile *file)
+{
+	return g_list_find_custom (directory->details->monitor_list,
+				   file,
+				   monitor_file_compare) != NULL;
 }
 
 static void
@@ -573,6 +596,7 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 {
 	Monitor *monitor;
 	GList *file_list;
+	char *file_uri;
 
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
@@ -604,13 +628,26 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 		}
 	}
 	
+	/* Start the "real" monitoring (FAM or whatever). */
+	if (file == NULL) {
+		if (directory->details->monitor == NULL) {
+			directory->details->monitor = nautilus_monitor_directory (directory->details->uri);
+		}
+	} else {
+		if (file->details->monitor == NULL) {
+			file_uri = nautilus_file_get_uri (file);
+			file->details->monitor = nautilus_monitor_file (file_uri);
+			g_free (file_uri);
+		}
+	}
+	
 	/* We could just call update_metadata_monitors here, but we can be smarter
 	 * since we know what monitor was just added.
 	 */
 	if (monitor->request.metafile && directory->details->metafile_monitor == NULL) {
 		nautilus_directory_register_metadata_monitor (directory);	
 	}
-	
+
 	/* Kick off I/O. */
 	nautilus_directory_async_state_changed (directory);
 }
@@ -1028,6 +1065,20 @@ nautilus_directory_monitor_remove_internal (NautilusDirectory *directory,
 	g_assert (client != NULL);
 
 	remove_monitor (directory, file, client);
+
+	if (file == NULL) {
+		if (directory->details->monitor != NULL
+		    && !find_any_monitor (directory, NULL)) {
+			nautilus_monitor_cancel (directory->details->monitor);
+			directory->details->monitor = NULL;
+		}
+	} else {
+		if (file->details->monitor != NULL
+		    && !find_any_monitor (directory, file)) {
+			nautilus_monitor_cancel (file->details->monitor);
+			file->details->monitor = NULL;
+		}
+	}
 
 	update_metadata_monitors (directory);
 

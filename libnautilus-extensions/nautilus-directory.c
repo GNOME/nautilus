@@ -170,6 +170,10 @@ nautilus_directory_destroy (GtkObject *object)
 		eel_g_list_free_deep (directory->details->monitor_list);
 	}
 
+	if (directory->details->monitor != NULL) {
+		nautilus_monitor_cancel (directory->details->monitor);
+	}
+
 	if (directory->details->metafile_monitor != NULL) {
 		nautilus_directory_unregister_metadata_monitor (directory);
 	}
