@@ -1401,8 +1401,13 @@ fm_list_view_get_emblem_pixbufs_for_file (FMListView *list_view,
 	GList *emblem_icons, *emblem_pixbufs, *p;
 	GdkPixbuf *emblem_pixbuf;
 	int emblem_size;
+	NautilusStringList *emblems_to_ignore;
 
-	emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, FALSE);
+	emblems_to_ignore =  fm_directory_view_get_emblem_names_to_exclude 
+		(FM_DIRECTORY_VIEW (list_view));
+	emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, FALSE, emblems_to_ignore);
+	nautilus_string_list_free (emblems_to_ignore);
+	
 	emblem_pixbufs = NULL;
 	emblem_size = MAX (LIST_VIEW_MINIMUM_EMBLEM_SIZE, 
 			   fm_list_view_get_icon_size (list_view));

@@ -64,6 +64,7 @@ static char *   real_get_default_sort_attribute      	 (FMListView       *view);
 static void 	real_get_column_specification        	 (FMListView       *list_view,
 						      	  int               column_number,
 						      	  FMListViewColumn *specification);
+static NautilusStringList * real_get_emblem_names_to_exclude         (FMDirectoryView  *view);
 static void	real_merge_menus 		     	 (FMDirectoryView  *view);
 static gboolean real_supports_properties 	     	 (FMDirectoryView  *view);
 static void 	load_location_callback               	 (NautilusView 	   *nautilus_view, 
@@ -104,6 +105,8 @@ fm_search_list_view_initialize_class (gpointer klass)
 		real_supports_properties;
 	fm_directory_view_class->create_selection_context_menu_items = 
 		real_create_selection_context_menu_items;
+	fm_directory_view_class->get_emblem_names_to_exclude = 
+		real_get_emblem_names_to_exclude;
 
 	fm_list_view_class->adding_file = real_adding_file;
 	fm_list_view_class->removing_file = real_removing_file;
@@ -180,6 +183,15 @@ real_get_default_sort_attribute (FMListView *view)
 	}
 
 	return sort_attribute;
+}
+
+static NautilusStringList *
+real_get_emblem_names_to_exclude (FMDirectoryView *view)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	/* Overridden to show even the trash emblem here */
+	return NULL;
 }
 
 static int

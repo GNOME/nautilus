@@ -1,3 +1,76 @@
+2000-08-11  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1743 (Deleting a file in search results should cause
+	it to update appropriately).
+
+	The fix for this involved fixing bugs in nautilus_file_is_in_trash
+	and making emblems behave more flexibly. We now have the ability
+	to exclude certain emblems when displaying a file, so that
+	the trash emblem shows up in search results but not regular
+	list view. A happy side effect of the way this works is that
+	the trash emblem now shows up in the sidebar for items (including
+	directories) that are anywhere in the trash.
+
+	* libnautilus-extensions/nautilus-file.h: Publicized names
+	of emblems NautilusFile adds based on file state, so that
+	file-displaying code could choose to exclude some of them.
+	This included changing their names to start with NAUTILUS_
+	* libnautilus-extensions/nautilus-file.c: 
+	(compare_emblem_names): updated for emblem name changes.
+	(nautilus_file_get_emblem_names): updated for name changes.
+	Also, always include EMBLEM_NAME_TRASH for files in trash,
+	not just when the file is a search result. Soon we will be
+	able to eliminate nautilus_file_is_search_result entirely.
+	(nautilus_file_is_in_trash): Fixed several problems here.
+	Don't bother checking for NULL; use _get_uri not
+	_get_activation_uri so the test works at any point in the
+	life of a NautilusFile; free the uri string; initialize
+	trash_dir_uri so we don't try to unref an uninitialized
+	variable in some cases.
+	
+	* libnautilus-extensions/nautilus-icon-factory.h,
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_emblem_icons_for_file): Added
+	parameter for emblem names to exclude when creating icons.
+
+	* libnautilus-extensions/nautilus-string-list.c:
+	(nautilus_string_list_new_from_string_list),
+	(nautilus_string_list_free), (nautilus_string_list_contains):
+	Made these functions allow NULL, as GList does.
+	(nautilus_self_check_string_list): Added tests of NULL handling.
+
+	* src/file-manager/fm-directory-view.h: 
+	(get_emblem_names_to_exclude): New function pointer for subclasses
+	to override.
+	(fm_directory_view_get_emblem_names_to_exclude): New function for
+	subclasses to call.
+	* src/file-manager/fm-directory-view.c:
+	(real_get_emblem_names_to_exclude): New function, returns list
+	containing NAUTILUS_FILE_EMBLEM_NAME_TRASH, so directory views by
+	default don't show the trash emblem.
+	(fm_directory_view_initialize_class): Wire up 
+	get_emblem_names_to_exclude.
+	(fm_directory_view_get_emblem_names_to_exclude): New function,
+	returns result of possibly overridden function pointer.
+	
+	* src/file-manager/fm-icon-view.c: (get_icon_images_callback):
+	Use fm_directory_view_get_emblem_names_to_exclude when getting
+	emblems for each icon.
+	
+	* src/file-manager/fm-list-view.c:
+	(fm_list_view_get_emblem_pixbufs_for_file):
+	Use fm_directory_view_get_emblem_names_to_exclude when getting
+	emblems for each icon.
+
+	* src/file-manager/fm-search-list-view.c:
+	(fm_search_list_view_initialize_class): Override 
+	get_emblem_names_to_exclude with our real_get_emblem_names_to_exclude.
+	(real_get_emblem_names_to_exclude): New function, returns NULL, so
+	all emblems including the trash emblem will be displayed.
+
+	* src/nautilus-sidebar-title.c: (update_emblems):
+	Pass NULL for emblems-to-exclude when getting emblems for sidebar.
+
 2000-08-11  Darin Adler <darin@eazel.com>
 
 	* HACKING:

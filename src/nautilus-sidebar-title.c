@@ -365,7 +365,7 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 			       NULL);
 
 	/* fetch the emblem icons from metadata */
-	icons = nautilus_icon_factory_get_emblem_icons_for_file (sidebar_title->details->file, FALSE);
+	icons = nautilus_icon_factory_get_emblem_icons_for_file (sidebar_title->details->file, FALSE, NULL);
 
 	/* loop through the list of emblems, installing them in the box */
 	for (p = icons; p != NULL; p = p->next) {

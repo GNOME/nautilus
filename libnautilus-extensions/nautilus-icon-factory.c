@@ -1124,7 +1124,7 @@ nautilus_icon_factory_get_emblem_icon_by_name (const char *emblem_name, gboolean
 }
 
 GList *
-nautilus_icon_factory_get_emblem_icons_for_file (NautilusFile *file, gboolean anti_aliased)
+nautilus_icon_factory_get_emblem_icons_for_file (NautilusFile *file, gboolean anti_aliased, NautilusStringList *exclude)
 {
 	GList *icons, *emblem_names, *p;
 	NautilusScalableIcon *icon;
@@ -1133,6 +1133,9 @@ nautilus_icon_factory_get_emblem_icons_for_file (NautilusFile *file, gboolean an
 
 	emblem_names = nautilus_file_get_emblem_names (file);
 	for (p = emblem_names; p != NULL; p = p->next) {
+		if (nautilus_string_list_contains (exclude, p->data)) {
+			continue;
+		}
 		icon = nautilus_icon_factory_get_emblem_icon_by_name (p->data, anti_aliased);
 		icons = g_list_prepend (icons, icon);
 	}

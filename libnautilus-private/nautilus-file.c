@@ -56,11 +56,6 @@ typedef enum {
 	NAUTILUS_DATE_TYPE_PERMISSIONS_CHANGED
 } NautilusDateType;
 
-#define EMBLEM_NAME_SYMBOLIC_LINK "symbolic-link"
-#define EMBLEM_NAME_CANT_READ "noread"
-#define EMBLEM_NAME_CANT_WRITE "nowrite"
-#define EMBLEM_NAME_TRASH "trash"
-
 enum {
 	CHANGED,
 	LAST_SIGNAL
@@ -1134,11 +1129,11 @@ compare_emblem_names (const char *name_1, const char *name_2)
 		return 0;
 	}
 
-	if (nautilus_strcmp (name_1, EMBLEM_NAME_SYMBOLIC_LINK) == 0) {
+	if (nautilus_strcmp (name_1, NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK) == 0) {
 		return -1;
 	}
 
-	if (nautilus_strcmp (name_2, EMBLEM_NAME_SYMBOLIC_LINK) == 0) {
+	if (nautilus_strcmp (name_2, NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK) == 0) {
 		return +1;
 	}
 
@@ -3171,26 +3166,25 @@ nautilus_file_get_emblem_names (NautilusFile *file)
 
 	names = nautilus_file_get_keywords (file);
 						    					    
-	if (nautilus_file_is_search_result (file)
-	    && nautilus_file_is_in_trash (file)) {
+	if (nautilus_file_is_in_trash (file)) {
 		names = g_list_append 
-			(names, g_strdup (EMBLEM_NAME_TRASH));
+			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_TRASH));
 	}
 
 	if (nautilus_file_is_symbolic_link (file)) {
 		names = g_list_append 
-			(names, g_strdup (EMBLEM_NAME_SYMBOLIC_LINK));
+			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK));
 	}
 	
 	if (!nautilus_file_can_write (file)) {
 		names = g_list_append 
-			(names, g_strdup (EMBLEM_NAME_CANT_WRITE));
+			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE));
 
 	}
 
 	if (!nautilus_file_can_read (file)) {
 		names = g_list_append 
-			(names, g_strdup (EMBLEM_NAME_CANT_READ));
+			(names, g_strdup (NAUTILUS_FILE_EMBLEM_NAME_CANT_READ));
 
 	}
 	
@@ -3356,22 +3350,17 @@ gboolean
 nautilus_file_is_in_trash (NautilusFile *file)
 {
 	GnomeVFSURI *file_uri, *trash_dir_uri;
-	char * uri;
+	char *uri_string;
 	gboolean result;
 
-	if (file == NULL) {
-		return FALSE;
-	}
-		
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	uri = nautilus_file_get_activation_uri (file);
-	if (uri == NULL) {
-		/* we don't have loaded the data yet. */
-		return FALSE;
-	}
+	uri_string = nautilus_file_get_uri (file);
+	file_uri = gnome_vfs_uri_new (uri_string);
+	g_free (uri_string);
 
-	file_uri = gnome_vfs_uri_new (uri);
+	/* Start with NULL so we don't try to unref uninitialized garbage later */
+	trash_dir_uri = NULL;
 
 	result = gnome_vfs_find_directory (file_uri, GNOME_VFS_DIRECTORY_KIND_TRASH,
 					   &trash_dir_uri, FALSE, FALSE, 0777) == GNOME_VFS_OK;

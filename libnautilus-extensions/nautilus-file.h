@@ -66,6 +66,12 @@ typedef enum {
 	NAUTILUS_REQUEST_DONE
 } NautilusRequestStatus;
 
+/* Emblems sometimes displayed for NautilusFiles. Do not localize. */ 
+#define NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK "symbolic-link"
+#define NAUTILUS_FILE_EMBLEM_NAME_CANT_READ "noread"
+#define NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE "nowrite"
+#define NAUTILUS_FILE_EMBLEM_NAME_TRASH "trash"
+
 typedef void (*NautilusFileCallback)          (NautilusFile  *file,
 				               gpointer       callback_data);
 typedef void (*NautilusFileOperationCallback) (NautilusFile  *file,

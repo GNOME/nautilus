@@ -1464,6 +1464,7 @@ get_icon_images_callback (NautilusIconContainer *container,
 			  FMIconView *icon_view)
 {
 	gboolean anti_aliased;
+	NautilusStringList *emblems_to_ignore;
 	
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
@@ -1471,7 +1472,10 @@ get_icon_images_callback (NautilusIconContainer *container,
 
 	anti_aliased = nautilus_icon_container_get_anti_aliased_mode (container);
 	if (emblem_icons != NULL) {
-		*emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, anti_aliased);
+		emblems_to_ignore =  fm_directory_view_get_emblem_names_to_exclude 
+			(FM_DIRECTORY_VIEW (icon_view));
+		*emblem_icons = nautilus_icon_factory_get_emblem_icons_for_file (file, anti_aliased, emblems_to_ignore);
+		nautilus_string_list_free (emblems_to_ignore);
 	}
 	return nautilus_icon_factory_get_icon_for_file (file, modifier, anti_aliased);
 }

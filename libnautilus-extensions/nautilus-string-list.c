@@ -92,7 +92,9 @@ nautilus_string_list_new_from_string_list (const NautilusStringList *other)
 	GList *other_iterator;
 	const char *other_string;
 
-	g_return_val_if_fail (other != NULL, NULL);
+	if (other == NULL) {
+		return NULL;
+	}
 
 	string_list = nautilus_string_list_new ();
 
@@ -140,7 +142,9 @@ nautilus_string_list_new_from_tokens (const char *string,
 void
 nautilus_string_list_free (NautilusStringList *string_list)
 {
-	g_return_if_fail (string_list != NULL);
+	if (string_list == NULL) {
+		return;
+	}
 
 	nautilus_string_list_clear (string_list);
 	g_free (string_list);
@@ -181,7 +185,10 @@ nautilus_string_list_contains (const NautilusStringList *string_list,
 {
 	GList *find;
 
-	g_return_val_if_fail (string_list != NULL, FALSE);
+	if (string_list == NULL) {
+		return FALSE;
+	}
+
 	g_return_val_if_fail (string != NULL, FALSE);
 
 	find = g_list_find_custom (string_list->strings, (gpointer) string, (GCompareFunc) strcmp);
@@ -360,6 +367,7 @@ nautilus_self_check_string_list (void)
 
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (empty), 0);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_contains (empty, "something"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_contains (NULL, "something"), FALSE);
 
 	/********/
 
@@ -380,6 +388,8 @@ nautilus_self_check_string_list (void)
  	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_equals (cities, cities_copy), TRUE);
 
 	nautilus_string_list_free (cities_copy);
+
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_string_list_new_from_string_list (NULL) == NULL, TRUE);
 
 	/********/
 

@@ -180,6 +180,7 @@ static void           show_hidden_files_changed_callback                        
 static void           get_required_metadata_keys                                  (FMDirectoryView          *view,
 										   GList                   **directory_keys_result,
 										   GList                   **file_keys_result);
+static NautilusStringList * real_get_emblem_names_to_exclude                      (FMDirectoryView          *view);
 static void           start_renaming_item                   	                  (FMDirectoryView          *view,
 										   const char 		    *uri);
 static void           metadata_ready_callback                                     (NautilusDirectory        *directory,
@@ -274,6 +275,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
         klass->merge_menus = fm_directory_view_real_merge_menus;
         klass->update_menus = fm_directory_view_real_update_menus;
 	klass->get_required_metadata_keys = get_required_metadata_keys;
+	klass->get_emblem_names_to_exclude = real_get_emblem_names_to_exclude;
 	klass->start_renaming_item = start_renaming_item;
 	klass->supports_properties = fm_directory_view_real_supports_properties;
 
@@ -3349,6 +3351,22 @@ get_required_metadata_keys (FMDirectoryView *view,
 
 	*directory_keys_result = directory_keys;
 	*file_keys_result = NULL;
+}
+
+NautilusStringList *
+fm_directory_view_get_emblem_names_to_exclude (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
+
+	return (* FM_DIRECTORY_VIEW_CLASS (GTK_OBJECT (view)->klass)->get_emblem_names_to_exclude) (view);
+}
+
+static NautilusStringList *
+real_get_emblem_names_to_exclude (FMDirectoryView *view)
+{
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+
+	return nautilus_string_list_new_from_string (NAUTILUS_FILE_EMBLEM_NAME_TRASH);
 }
 
 /**

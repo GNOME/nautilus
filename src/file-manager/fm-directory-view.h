@@ -32,6 +32,7 @@
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-icon-container.h>
+#include <libnautilus-extensions/nautilus-string-list.h>
 
 typedef struct FMDirectoryView FMDirectoryView;
 typedef struct FMDirectoryViewClass FMDirectoryViewClass;
@@ -202,6 +203,13 @@ struct FMDirectoryViewClass {
 					  	 GList           **directory_metadata_keys,
 					  	 GList           **file_metadata_keys);
 
+	/* get_emblem_names_to_exclude is a function pointer that subclasses
+	 * may override to specify a set of emblem names that should not
+	 * be displayed with each file. By default, all emblems returned by
+	 * NautilusFile are displayed.
+	 */
+	NautilusStringList * (* get_emblem_names_to_exclude)	(FMDirectoryView *view);
+
 	/* supports_properties is a function pointer that subclasses may
 	 * override to control whether the "Show Properties" menu item
 	 * should be enabled for selected items. The default implementation 
@@ -282,6 +290,7 @@ void		   fm_directory_view_queue_file_change	    	    (FMDirectoryView	   *view,
 								     NautilusFile 	   *file);
 void               fm_directory_view_notify_selection_changed       (FMDirectoryView       *view);
 BonoboUIHandler *  fm_directory_view_get_bonobo_ui_handler          (FMDirectoryView       *view);
+NautilusStringList *fm_directory_view_get_emblem_names_to_exclude   (FMDirectoryView	   *view);
 NautilusDirectory *fm_directory_view_get_model                      (FMDirectoryView       *view);
 void               fm_directory_view_pop_up_background_context_menu (FMDirectoryView       *view);
 void               fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView       *view); 

@@ -28,6 +28,7 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-string-list.h>
 #include <gtk/gtkobject.h>
 
 /* NautilusIconFactory is a class that knows how to hand out icons to be
@@ -106,7 +107,8 @@ NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file            (Nautil
 gboolean	      nautilus_icon_factory_is_icon_ready_for_file	 (NautilusFile		*file);
 GList *		      nautilus_icon_factory_get_required_file_attributes (void);
 GList *               nautilus_icon_factory_get_emblem_icons_for_file    (NautilusFile          *file,
-									  gboolean		 anti_aliased);
+									  gboolean		 anti_aliased,
+									  NautilusStringList	*exclude);
 NautilusScalableIcon *nautilus_icon_factory_get_emblem_icon_by_name 	 (const char 		*emblem_name,
 									  gboolean		 anti_aliased);
 
