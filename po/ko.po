@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2000-05-03 14:24+0900\n"
-"PO-Revision-Date: 2000-05-03 18:10+0900\n"
+"POT-Creation-Date: 2000-05-10 21:34+0900\n"
+"PO-Revision-Date: 2000-05-10 23:59+0900\n"
 "Last-Translator: Young-Ho,Cha <ganadist@dacome.co.kr>\n"
 "Language-Team: Korean <ko@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -432,6 +432,7 @@ msgid ""
 msgstr ""
 "%s 파일이 이미 존재합니다. \n"
 "파일을 바꾸시겠습니까?"
+
 #: src/file-manager/dfos-xfer.c:241 src/file-manager/dfos-xfer.c:251
 msgid "File copy conflict"
 msgstr "파일 복사 충돌"
@@ -603,7 +604,7 @@ msgstr "새창으로 열기(_N)"
 #: src/file-manager/fm-directory-view.c:1575
 #, c-format
 msgid "Open in %d _New Windows"
-msgstr "%d 에서 새창으로 열기"
+msgstr "%d개의 항목을 새창으로 열기"
 
 #: src/file-manager/fm-directory-view.c:1583
 msgid "_Delete..."
@@ -618,8 +619,8 @@ msgid "_Duplicate"
 msgstr "복사(_D)"
 
 #: src/file-manager/fm-directory-view.c:1593
-msgid "Set _Properties..."
-msgstr "속성 설정(_P)"
+msgid "Show _Properties"
+msgstr "속성 보기(_P)"
 
 #: src/file-manager/fm-directory-view.c:1596
 #: src/file-manager/fm-directory-view.c:1768
@@ -628,23 +629,23 @@ msgstr "쓰레기통 비우기(_E)"
 
 #: src/file-manager/fm-directory-view.c:1601
 msgid "R_emove Custom Images"
-msgstr ""
+msgstr "설정한 이미지 제거(_e)"
 
 #: src/file-manager/fm-directory-view.c:1603
 msgid "R_emove Custom Image"
-msgstr ""
+msgstr "설정한 이미지 제거(_e)"
 
 #: src/file-manager/fm-directory-view.c:1688
 msgid "Open the selected item in this window"
-msgstr ""
+msgstr "선택한 항목을 이 창에서 엽니다"
 
 #: src/file-manager/fm-directory-view.c:1699
 msgid "Open in New Window"
-msgstr "새 창을 엽니다"
+msgstr "새창에서 열기"
 
 #: src/file-manager/fm-directory-view.c:1700
 msgid "Open each selected item in a new window"
-msgstr ""
+msgstr "각각 선택한 항목을 새창에서 엽니다"
 
 #: src/file-manager/fm-directory-view.c:1715
 msgid "Set Properties..."
@@ -652,15 +653,15 @@ msgstr "속성 설정"
 
 #: src/file-manager/fm-directory-view.c:1716
 msgid "View or modify the properties of the selected items"
-msgstr ""
+msgstr "선택한 항목의 설정을 보거나 고칩니다"
 
 #: src/file-manager/fm-directory-view.c:1731
 msgid "Delete..."
-msgstr ""
+msgstr "지움..."
 
 #: src/file-manager/fm-directory-view.c:1732
 msgid "Delete all selected items"
-msgstr ""
+msgstr "선택한 항목을 모두 지웁니다"
 
 #: src/file-manager/fm-directory-view.c:1744
 msgid "Move to Trash"
@@ -688,11 +689,11 @@ msgstr "이 창에 있는 모든 항목을 선택합니다"
 
 #: src/file-manager/fm-directory-view.c:1797
 msgid "Remove Custom Image"
-msgstr ""
+msgstr "설정한 이미지 제거"
 
 #: src/file-manager/fm-directory-view.c:1798
 msgid "Remove the custom image from each selected icon"
-msgstr ""
+msgstr "각각 선택한 아이콘의 설정한 이미지를 제거합니다"
 
 #: src/file-manager/fm-icon-text-window.c:72
 msgid "size"
@@ -739,18 +740,20 @@ msgid ""
 "Choose the order for information to appear beneath icon names. More "
 "information appears as you zoom in closer."
 msgstr ""
+"아이콘 이름밑에 나타낼 정보의 순서를 선택합니다. 크게 확대할수록 "
+"많은 정보가 나타날것 입니다."
 
 #: src/file-manager/fm-icon-view.c:440
 msgid "_Stretch Icon"
-msgstr ""
+msgstr "아이콘 확장(_R)"
 
 #: src/file-manager/fm-icon-view.c:448
 msgid "_Restore Icons to Unstretched Size"
-msgstr ""
+msgstr "확장하지 않은 아이콘으로 저장(_R)"
 
 #: src/file-manager/fm-icon-view.c:450
 msgid "_Restore Icon to Unstretched Size"
-msgstr ""
+msgstr "확장하지 않은 아이콘으로 저장(_R)"
 
 #: src/file-manager/fm-icon-view.c:455
 msgid "Customize _Icon Text..."
@@ -763,15 +766,15 @@ msgstr "이름 바꾸기(_R)"
 
 #: src/file-manager/fm-icon-view.c:891
 msgid "Make the selected icon stretchable"
-msgstr ""
+msgstr "선택한 아이콘을 확장합니다"
 
 #: src/file-manager/fm-icon-view.c:895
 msgid "Restore each selected icon to its original size"
-msgstr ""
+msgstr "각각 선택한 아이콘은 원래 크기로 저장합니다"
 
 #: src/file-manager/fm-icon-view.c:904
 msgid "Choose which information appears beneath each icon's name"
-msgstr ""
+msgstr "각각 아이콘의 이름 바로밑에 나타낼 정보를 선택합니다"
 
 #: src/file-manager/fm-icon-view.c:915
 msgid "Auto Layout"
@@ -818,16 +821,60 @@ msgstr "노틸러스: %s 속성"
 msgid "Basic"
 msgstr "기본"
 
+#: src/file-manager/fm-properties-window.c:527
+msgid "Type:"
+msgstr "형식:"
+
+#: src/file-manager/fm-properties-window.c:529
+msgid "Size:"
+msgstr "크기:"
+
+#: src/file-manager/fm-properties-window.c:531
+msgid "Date Modified:"
+msgstr "변경일:"
+
 #: src/file-manager/fm-properties-window.c:425
 msgid "Emblems"
-msgstr "상징"
+msgstr "무늬"
 
 #. The prompt.
-#: src/file-manager/fm-properties-window.c:429
-msgid ""
-"This is a placeholder for the final emblems design. For now, you can turn "
-"some hard-wired properties with corresponding emblems on and off."
-msgstr ""
+#: src/file-manager/fm-properties-window.c:590
+msgid "Images and a complete list of available emblems coming soon."
+msgstr "곧 그림과 완벽한 목록의 무늬를 볼수 있습니다"
+
+#: src/file-manager/fm-properties-window.c:611
+msgid "Permissions"
+msgstr "허가권"
+
+#: src/file-manager/fm-properties-window.c:617
+msgid "as string:"
+msgstr "문자열:"
+
+#: src/file-manager/fm-properties-window.c:619
+msgid "Owner:"
+msgstr "소유자:"
+
+#: src/file-manager/fm-properties-window.c:621
+msgid "Group:"
+msgstr "그룹:"
+
+#. Here's some temporary stuff to avoid frightening the masses.
+#: src/file-manager/fm-properties-window.c:624
+msgid "Don't panic. This is not the final permissions user interface."
+msgstr "당황하지 마세요. 이것은 허가권 사용자 인터페이스의 최종판이 아닙니다."
+
+#: src/file-manager/fm-properties-window.c:645
+msgid "More"
+msgstr "기타"
+
+#: src/file-manager/fm-properties-window.c:651
+msgid "MIME type:"
+msgstr "MIME 형식:"
+
+#. The prompt.
+#: src/file-manager/fm-properties-window.c:654
+msgid "Tell sullivan@eazel.com all your good ideas for what should go here."
+msgstr "여기에 들어갈 좋은 생각이 있으면 sullivan@eazel.com에게 연락주십시오."
 
 #: nautilus-widgets/nautilus-preferences-dialog.c:201
 msgid "Prefs Box"
@@ -888,6 +935,10 @@ msgstr "프로그램"
 #: libnautilus-extensions/nautilus-file.c:1360
 msgid "unknown type"
 msgstr "알수없는 형태"
+
+#: libnautilus-extensions/nautilus-file.c:1702
+msgid " --"
+msgstr ""
 
 #: libnautilus/nautilus-meta-view-frame.c:144
 msgid "Label"
@@ -1094,13 +1145,47 @@ msgstr "문자를 입력하세요"
 msgid "Enter Password"
 msgstr "암호를 입력하세요"
 
+#: components/music/nautilus-music-view.c:125
+msgid "Track"
+msgstr "트랙"
+
+#: components/music/nautilus-music-view.c:125
+msgid "Title"
+msgstr "제목"
+
+#: components/music/nautilus-music-view.c:125
+msgid "Artist"
+msgstr "가수"
+
+#: components/music/nautilus-music-view.c:125
+msgid "Time"
+msgstr "시간"
+
+#. allocate a widget for the album title
+#: components/music/nautilus-music-view.c:144
+msgid "Album Title"
+msgstr "앨범 제목"
+
 #: components/notes/ntl-notes.c:194
 msgid "Notes"
 msgstr "노트"
 
+#: components/rpmview/nautilus-rpm-view.c:138
+msgid "Package Contents"
+msgstr "꾸러미 내용"
+
+#. allocate the name field
+#: components/rpmview/nautilus-rpm-view.c:178
+msgid "Package Title"
+msgstr "꾸러미 제목"
+
 #: components/rpmview/nautilus-rpm-view.c:218
 msgid "Size: "
 msgstr "크기: "
+
+#: components/rpmview/nautilus-rpm-view.c:222
+msgid "<size>"
+msgstr "<크기>"
 
 #: components/rpmview/nautilus-rpm-view.c:227
 msgid "Install Date: "
@@ -1126,6 +1211,58 @@ msgstr "배포: "
 msgid "Vendor: "
 msgstr "만든곳: "
 
+#: components/rpmview/nautilus-rpm-view.c:295
+msgid "Install"
+msgstr "설치"
+
+#: components/rpmview/nautilus-rpm-view.c:303
+msgid "Update"
+msgstr "갱신"
+
+#: components/rpmview/nautilus-rpm-view.c:311
+msgid "Uninstall"
+msgstr "제거"
+
+#. add the description
+#: components/rpmview/nautilus-rpm-view.c:332
+msgid "Description"
+msgstr "설명"
+
+#: components/rpmview/nautilus-rpm-view.c:460
+#, c-format
+msgid "Package \"%s\" "
+msgstr "\"%s\" 꾸러미 "
+
+#: components/rpmview/nautilus-rpm-view.c:511
+#, c-format
+msgid "version %s-%s"
+msgstr "버젼 %s-%s"
+
+#: components/rpmview/nautilus-rpm-view.c:570
+#, c-format
+msgid "Package Contents: %d files"
+msgstr "꾸러미 내용: %d 파일"
+
+#: components/sample/nautilus-sample-content-view.c:141
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"This is a sample Nautilus content view component."
+msgstr ""
+"%s\n"
+"\n"
+"이것은 노틸러스 항목 보기 컴포넌트 예제 입니다."
+#: components/sample/nautilus-sample-content-view.c:202
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"You clicked the Sample toolbar button."
+msgstr ""
+"%s\n"
+"\n"
+"예제 도구막대 버튼을 클릭하였습니다."
 #.
 #. * Create our sample menu item.
 #. *
