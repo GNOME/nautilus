@@ -354,7 +354,7 @@ nautilus_window_has_really_changed(NautilusWindow *window)
 static void
 nautilus_window_free_load_info(NautilusWindow *window)
 {
-#ifdef EXTREME_DEBUGGING
+#if defined(EXTREME_DEBUGGING)
   g_message("-> FREE_LOAD_INFO <-");
 #endif
 
@@ -369,7 +369,6 @@ nautilus_window_free_load_info(NautilusWindow *window)
   window->made_changes = 0;
   window->state = NW_IDLE;
   window->changes_pending =
-    window->is_back =
     window->views_shown =
     window->view_bombed_out =
     window->view_activation_complete =

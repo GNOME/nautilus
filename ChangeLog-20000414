@@ -1,7 +1,8 @@
 2000-01-21  Elliot Lee  <sopwith@redhat.com>
-
+	* libnautilus/nautilus-directory.c: Allocate an extra byte in the
+	  buffer, for safety's sake.
+	* src/ntl-window-msgs.c: Fix back/fwd buttons.
 	* src/ntl-window-msgs.c: Remove debugging printouts, and display error dialogs.
-
 	* src/ntl-window-msgs.c, src/ntl-window.h: Fix the bug that was causing list view to be blank.
 
 2000-01-21  Darin Adler  <darin@eazel.com>
