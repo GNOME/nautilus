@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.1\n"
-"POT-Creation-Date: 2000-05-02 13:44+0200\n"
-"PO-Revision-Date: 2000-05-02 13:44+02:00\n"
+"POT-Creation-Date: 2000-05-02 21:01+0200\n"
+"PO-Revision-Date: 2000-05-02 20:48+02:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1092,19 +1092,36 @@ msgstr "Tid"
 msgid "Album Title"
 msgstr "Albumtittel"
 
-#: components/notes/ntl-notes.c:194
+#: components/notes/ntl-notes.c:185 components/notes/ntl-notes.c:194
 msgid "Notes"
 msgstr "Notater"
+
+#: components/rpmview/nautilus-rpm-view.c:138
+msgid "Package Contents"
+msgstr "Pakkeinnhold"
+
+#. allocate the name field
+#: components/rpmview/nautilus-rpm-view.c:178
+msgid "Package Title"
+msgstr "Pakketittel"
 
 #: components/rpmview/nautilus-rpm-view.c:218
 msgid "Size: "
 msgstr "Størrelse: "
+
+#: components/rpmview/nautilus-rpm-view.c:222
+msgid "<size>"
+msgstr "<størrelse>"
 
 #: components/rpmview/nautilus-rpm-view.c:227
 msgid "Install Date: "
 msgstr "Installasjonsdato: "
 
 #: components/rpmview/nautilus-rpm-view.c:231
+#: components/rpmview/nautilus-rpm-view.c:240
+#: components/rpmview/nautilus-rpm-view.c:249
+#: components/rpmview/nautilus-rpm-view.c:258
+#: components/rpmview/nautilus-rpm-view.c:268
 msgid "<unknown>"
 msgstr "<ukjent>"
 
@@ -1123,6 +1140,60 @@ msgstr "Distribusjon: "
 #: components/rpmview/nautilus-rpm-view.c:264
 msgid "Vendor: "
 msgstr "Forhandler: "
+
+#: components/rpmview/nautilus-rpm-view.c:295
+msgid "Install"
+msgstr "Installer"
+
+#: components/rpmview/nautilus-rpm-view.c:303
+msgid "Update"
+msgstr "Oppdater"
+
+#: components/rpmview/nautilus-rpm-view.c:311
+msgid "Uninstall"
+msgstr "Avinstalller"
+
+#. add the description
+#: components/rpmview/nautilus-rpm-view.c:332
+msgid "Description"
+msgstr "Beskrivelse"
+
+#: components/rpmview/nautilus-rpm-view.c:460
+#, c-format
+msgid "Package \"%s\" "
+msgstr "Pakke \"%s\""
+
+#: components/rpmview/nautilus-rpm-view.c:511
+#, c-format
+msgid "version %s-%s"
+msgstr "versjon %s-%s"
+
+#: components/rpmview/nautilus-rpm-view.c:570
+#, c-format
+msgid "Package Contents: %d files"
+msgstr "Pakkeinnhold: %d filer"
+
+#: components/sample/nautilus-sample-content-view.c:141
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"This is a sample Nautilus content view component."
+msgstr ""
+"%s\n"
+"\n"
+"Dette er et eksempel på en innholdsvisningskomponent for Nautilus."
+
+#: components/sample/nautilus-sample-content-view.c:202
+#, c-format
+msgid ""
+"%s\n"
+"\n"
+"You clicked the Sample toolbar button."
+msgstr ""
+"%s\n"
+"\n"
+"Du klikket på eksempel-verktøylinjeknappen."
 
 #.
 #. * Create our sample menu item.
@@ -1177,6 +1248,7 @@ msgstr "Søk"
 msgid "Results"
 msgstr "Resultater"
 
+#: components/websearch/ntl-web-search.c:228
 #: components/websearch/ntl-web-search.c:237
 msgid "WebSearch"
 msgstr "WebSøk"
