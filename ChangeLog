@@ -1,3 +1,15 @@
+2001-01-25  Arik Devens  <arik@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 5490, Preferences dialog "OK" button does not work when
+	preferences window content is clipped:
+	
+	* libnautilus-extensions/nautilus-preferences-dialog.c
+	(nautilus_preferences_dialog_construct): Temporary fix by removing
+	the dialogs usize and letting it resize itself based on
+	content. The longer fix is detailed in #5627.
+
 2001-01-25  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-thumbnails.c:
