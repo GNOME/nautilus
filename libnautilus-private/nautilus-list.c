@@ -2312,6 +2312,46 @@ nautilus_list_track_new_column_width (GtkCList *clist, int column_index, int new
 	}
 }
 
+static void
+nautilus_list_drag_start (GtkWidget *widget, GdkEventMotion *event)
+{
+	NautilusList *list;
+	GdkDragContext *context;
+	GdkPixbuf *pixbuf;
+	GdkPixmap *pixmap_for_dragged_file;
+	GdkBitmap *mask_for_dragged_file;
+	int x_offset, y_offset;
+
+	g_return_if_fail (NAUTILUS_IS_LIST (widget));
+	list = NAUTILUS_LIST (widget);
+
+	pixbuf = NULL;
+	
+	list->details->drag_started = TRUE;
+	list->details->dnd_select_pending = FALSE;
+	context = gtk_drag_begin (widget, list->details->drag_info->target_list,
+		GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK,
+		list->details->dnd_press_button,
+		(GdkEvent *) event);
+
+	x_offset = 10;
+	y_offset = 10;
+
+	if (pixbuf) {
+		gdk_pixbuf_render_pixmap_and_mask (pixbuf,
+						   &pixmap_for_dragged_file,
+						   &mask_for_dragged_file,
+						   2);
+
+	        /* set the pixmap and mask for dragging */
+	        gtk_drag_set_icon_pixmap (context,
+					  gtk_widget_get_colormap (widget),
+					  pixmap_for_dragged_file,
+					  mask_for_dragged_file,
+					  x_offset, y_offset);
+	}
+}
+
 /* Our handler for motion_notify events.  We override all of GtkCList's broken
  * behavior.
  */
@@ -2342,12 +2382,7 @@ nautilus_list_motion (GtkWidget *widget, GdkEventMotion *event)
 	}
 
 	if (!list->details->drag_started) {
-		list->details->drag_started = TRUE;
-		list->details->dnd_select_pending = FALSE;
-		gtk_drag_begin (widget, list->details->drag_info->target_list,
-			GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK,
-			list->details->dnd_press_button,
-			(GdkEvent *) event);
+		nautilus_list_drag_start (widget, event);
 	}
 	
 	return TRUE;
