@@ -1884,16 +1884,34 @@ compare_icons_horizontal_first (NautilusIconContainer *container,
 				NautilusIcon *icon_a,
 				NautilusIcon *icon_b)
 {
-	if (icon_a->x < icon_b->x) {
+	ArtDRect world_rect;
+	int ax, ay, bx, by;
+
+	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon_a->item);
+	eel_canvas_w2c
+		(EEL_CANVAS (container),
+		 (world_rect.x0 + world_rect.x1) / 2,
+		 world_rect.y1,
+		 &ax,
+		 &ay);
+	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon_b->item);
+	eel_canvas_w2c
+		(EEL_CANVAS (container),
+		 (world_rect.x0 + world_rect.x1) / 2,
+		 world_rect.y1,
+		 &bx,
+		 &by);
+	
+	if (ax < bx) {
 		return -1;
 	}
-	if (icon_a->x > icon_b->x) {
+	if (ax > bx) {
 		return +1;
 	}
-	if (icon_a->y < icon_b->y) {
+	if (ay < by) {
 		return -1;
 	}
-	if (icon_a->y > icon_b->y) {
+	if (ay > by) {
 		return +1;
 	}
 	return compare_icons_by_uri (container, icon_a, icon_b);
@@ -1904,16 +1922,34 @@ compare_icons_vertical_first (NautilusIconContainer *container,
 			      NautilusIcon *icon_a,
 			      NautilusIcon *icon_b)
 {
-	if (icon_a->y < icon_b->y) {
+	ArtDRect world_rect;
+	int ax, ay, bx, by;
+
+	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon_a->item);
+	eel_canvas_w2c
+		(EEL_CANVAS (container),
+		 (world_rect.x0 + world_rect.x1) / 2,
+		 world_rect.y1,
+		 &ax,
+		 &ay);
+	world_rect = nautilus_icon_canvas_item_get_icon_rectangle (icon_b->item);
+	eel_canvas_w2c
+		(EEL_CANVAS (container),
+		 (world_rect.x0 + world_rect.x1) / 2,
+		 world_rect.y1,
+		 &bx,
+		 &by);
+	
+	if (ay < by) {
 		return -1;
 	}
-	if (icon_a->y > icon_b->y) {
+	if (ay > by) {
 		return +1;
 	}
-	if (icon_a->x < icon_b->x) {
+	if (ax < bx) {
 		return -1;
 	}
-	if (icon_a->x > icon_b->x) {
+	if (ax > bx) {
 		return +1;
 	}
 	return compare_icons_by_uri (container, icon_a, icon_b);
@@ -1926,10 +1962,6 @@ leftmost_in_top_row (NautilusIconContainer *container,
 		     NautilusIcon *candidate,
 		     void *data)
 {
-	if (container->details->auto_layout) {
-		return (container->details->icons->data == candidate);
-	}
-	
 	if (best_so_far == NULL) {
 		return TRUE;
 	}
@@ -1943,13 +1975,6 @@ rightmost_in_bottom_row (NautilusIconContainer *container,
 			 NautilusIcon *candidate,
 			 void *data)
 {
-	GList *last;
-	
-	if (container->details->auto_layout) {
-		last = g_list_last (container->details->icons);
-		return (last->data == candidate);
-	}
-	
 	if (best_so_far == NULL) {
 		return TRUE;
 	}
@@ -2389,11 +2414,26 @@ static void
 keyboard_space (NautilusIconContainer *container,
 		GdkEventKey *event)
 {
+	NautilusIcon *icon;
+	
 	/* Control-space toggles the selection state of the current icon. */
-	if (container->details->keyboard_focus != NULL &&
-	    (event->state & GDK_CONTROL_MASK) != 0) {
-		icon_toggle_selected (container, container->details->keyboard_focus);
-		g_signal_emit (container, signals[SELECTION_CHANGED], 0);
+	if ((event->state & GDK_CONTROL_MASK) != 0) {
+		if (container->details->keyboard_focus != NULL) {
+			icon_toggle_selected (container, container->details->keyboard_focus);
+			g_signal_emit (container, signals[SELECTION_CHANGED], 0);
+		} else {
+			icon = find_best_selected_icon (container,
+							NULL,
+							leftmost_in_top_row,
+							NULL);
+			if (icon == NULL) {
+				icon = find_best_icon (container,
+						       NULL,
+						       leftmost_in_top_row,
+						       NULL);
+			}
+			set_keyboard_focus (container, icon);
+		}
 	} else {
 		activate_selected_items (container);
 	}

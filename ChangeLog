@@ -1,3 +1,14 @@
+2003-03-26  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.c (handle_icon_button_press):
+	Re-Fix Home/End.
+	Make Ctrl-space create a keyboar focus if none exists instead of activating
+	the selection.
+
+	* docs/Makefile.am:
+	* docs/key_mouse_navigation.txt:
+	Add some key/mouse docs for views.
+
 2003-03-26  Dave Camp  <dave@ximian.com>
 
 	* src/file-manager/fm-list-view.c: (activate_selected_items),

@@ -10,4 +10,5 @@ EXTRA_DIST = \
 	smoketests.html \
 	state-machines.txt \
 	style-guide.html \
+	key_mouse_navigation.txt \
 	$(NULL)
