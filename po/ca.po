@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.9.91\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-03-25 15:27+0100\n"
-"PO-Revision-Date: 2005-03-25 17:32+0100\n"
+"POT-Creation-Date: 2005-03-29 13:09+0200\n"
+"PO-Revision-Date: 2005-03-29 13:16+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -830,8 +830,8 @@ msgstr ""
 msgid ""
 "If true, labels will be placed beside icons rather than underneath them."
 msgstr ""
-"Si és veritat, les etiquetes es ficaran al costat de les icones en comptes "
-"de sota d'elles."
+"Si és cert, les etiquetes es ficaran al costat de les icones en comptes de "
+"sota d'elles."
 
 #: ../libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 msgid "If true, new windows will use manual layout by default."
@@ -1214,7 +1214,7 @@ msgstr "Tipus"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:59
 msgid "The type of the file."
-msgstr "El tipus del fitxer"
+msgstr "El tipus del fitxer."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:65
 msgid "Date Modified"
@@ -1283,11 +1283,12 @@ msgstr "reinicia"
 msgid "on the desktop"
 msgstr "a l'escriptori"
 
-#: ../libnautilus-private/nautilus-desktop-link-monitor.c:105
-msgid "You cannot delete a volume icon."
-msgstr "No podeu suprimir una icona de volum."
+#: ../libnautilus-private/nautilus-desktop-link-monitor.c:114
+#, c-format
+msgid "You cannot move the volume \"%s\" to the trash."
+msgstr "No podeu moure el volum «%s» a la paperera."
 
-#: ../libnautilus-private/nautilus-desktop-link-monitor.c:106
+#: ../libnautilus-private/nautilus-desktop-link-monitor.c:124
 msgid ""
 "If you want to eject the volume, please use Eject in the right-click menu of "
 "the volume."
@@ -1295,9 +1296,13 @@ msgstr ""
 "Si voleu expulsar el volum utilitzeu «Expulsa» al menú del botó dret del "
 "volum."
 
-#: ../libnautilus-private/nautilus-desktop-link-monitor.c:108
-msgid "Can't Delete Volume"
-msgstr "No es pot suprimir el volum"
+#: ../libnautilus-private/nautilus-desktop-link-monitor.c:133
+msgid ""
+"If you want to unmount the volume, please use Unmount Volume in the right-"
+"click menu of the volume."
+msgstr ""
+"Si voleu desmuntar el volum, utilitzeu «Desmunta el volum» del menú del botó "
+"dret del volum."
 
 #: ../libnautilus-private/nautilus-dnd.c:631
 msgid "_Move here"
@@ -2941,8 +2946,8 @@ msgstr "Obre una nova finestra de terminal del GNOME"
 #. name, stock id
 #: ../src/file-manager/fm-desktop-icon-view.c:702
 #: ../src/file-manager/fm-directory-view.c:5737
-msgid "Create L_auncher"
-msgstr "Crea una nova llenç_adora"
+msgid "Create L_auncher..."
+msgstr "Crea una llenç_adora..."
 
 #. label, accelerator
 #: ../src/file-manager/fm-desktop-icon-view.c:703
@@ -6120,3 +6125,9 @@ msgstr "Servidors de xarxa"
 msgid "View your network servers in the Nautilus file manager"
 msgstr ""
 "Visualitzeu els vostres servidors de xarxa en el gestor de fitxers Nautilus"
+
+#~ msgid "You cannot delete a volume icon."
+#~ msgstr "No podeu suprimir una icona de volum."
+
+#~ msgid "Can't Delete Volume"
+#~ msgstr "No es pot suprimir el volum"
