@@ -455,8 +455,9 @@ fm_list_model_sort (FMListModel *model)
 
 	/* generate new order */
 	new_order = g_new (int, length);
+	/* Note: new_order[newpos] = oldpos */
 	for (i = 0; i < length; ++i) {
-		new_order[i] = g_sequence_ptr_get_position (old_order[i]);
+		new_order[g_sequence_ptr_get_position(old_order[i])] = i;
 	}
 
 	/* Let the world know about our new order */
