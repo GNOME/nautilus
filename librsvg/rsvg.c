@@ -39,7 +39,8 @@
 #include <libart_lgpl/art_svp_vpath_stroke.h>
 #include <libart_lgpl/art_svp_vpath.h>
 #include <libart_lgpl/art_svp_wind.h>
-#include <libart_lgpl/art_rgba.h>
+
+#include "art_rgba.h"
 
 #include "art_render.h"
 #include "art_render_gradient.h"
