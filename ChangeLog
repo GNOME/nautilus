@@ -1,3 +1,23 @@
+2000-09-29  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3322 (context menus don't work in FTP site
+	that wasn't typed with a trailing slash)
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_make_uri_canonical): New function, calls
+	nautilus_make_uri_canonical and then strips off the trailing
+	slash if any.
+	(nautilus_directory_get_internal): Call this new slightly
+	stricter function instead of nautilus_make_uri_canonical, to
+	guarantee that we'll never get two NautilusDirectory objects
+	for uris that match other than the trailing slash.
+	(nautilus_self_check_directory): Add test cases for new function.
+	
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_make_uri_canonical): Removed #if 0 code whose
+	equivalent is now in the NautilusDirectory version,
+	replaced with comment.
+
 2000-09-29  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-private.h:

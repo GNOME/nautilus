@@ -249,6 +249,41 @@ remove_filtering_callbacks (void)
 					      NULL);
 }
 
+static char *
+nautilus_directory_make_uri_canonical (const char *uri)
+{
+	char *canonical_maybe_trailing_slash;
+	char *canonical;
+	char *with_slashes;
+	size_t length;
+
+	canonical_maybe_trailing_slash = nautilus_make_uri_canonical (uri);
+
+	/* To NautilusDirectory, a uri with or without a trailing
+	 * / is equivalent. This is necessary to prevent separate
+	 * NautilusDirectories for the same location from being
+	 * created. (See bugzilla.eazel.com 3322 for an example.)
+	 */
+	canonical = nautilus_str_strip_trailing_chr (canonical_maybe_trailing_slash, '/');
+	if (strcmp (canonical, canonical_maybe_trailing_slash) != 0) {
+		/* If some trailing '/' were stripped, there's the possibility,
+		 * that we stripped away all the '/' from a uri that has only
+		 * '/' characters. If you change this code, check to make sure
+		 * that "file:///" still works as a URI.
+		 */
+		length = strlen (canonical);
+		if (length == 0 || canonical[length - 1] == ':') {
+			with_slashes = g_strconcat (canonical, "///", NULL);
+			g_free (canonical);
+			canonical = with_slashes;
+		}
+	}
+
+	g_free (canonical_maybe_trailing_slash);
+	
+	return canonical;
+}
+
 
 /**
  * nautilus_directory_get:
@@ -269,7 +304,7 @@ nautilus_directory_get_internal (const char *uri, gboolean create)
     		return NULL;
 	}
 
-	canonical_uri = nautilus_make_uri_canonical (uri);
+	canonical_uri = nautilus_directory_make_uri_canonical (uri);
 
 	/* Create the hash table first time through. */
 	if (directories == NULL) {
@@ -1297,6 +1332,24 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("a%a"), "a%25a");
 	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("%25"), "%2525");
 	NAUTILUS_CHECK_STRING_RESULT (gnome_vfs_escape_slashes ("%2F"), "%252F");
+
+	/* nautilus_directory_make_uri_canonical */
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical (""), "file:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:/"), "file:///");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:///"), "file:///");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("TRASH:XXX"), "trash:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("trash:xxx"), "trash:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("GNOME-TRASH:XXX"), "trash:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("gnome-trash:xxx"), "trash:");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:///home/mathieu/"), "file:///home/mathieu");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("file:///home/mathieu"), "file:///home/mathieu");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("ftp://mathieu:password@le-hackeur.org"), "ftp://mathieu:password@le-hackeur.org");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("ftp://mathieu:password@le-hackeur.org/"), "ftp://mathieu:password@le-hackeur.org");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org"), "http://le-hackeur.org");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org/"), "http://le-hackeur.org");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org/dir"), "http://le-hackeur.org/dir");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("http://le-hackeur.org/dir/"), "http://le-hackeur.org/dir");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_make_uri_canonical ("search://[file://]file_name contains stuff"), "search://[file://]file_name contains stuff");
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

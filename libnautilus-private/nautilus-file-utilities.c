@@ -272,25 +272,15 @@ nautilus_make_uri_canonical (const char *uri)
 	 */
 
 	canonical_uri = nautilus_handle_trailing_slashes (uri);
-#if 0
-	char *with_slashes;
-	size_t length;
-	/* Strip the trailing "/" characters. */
-	canonical_uri = nautilus_str_strip_trailing_chr (uri, '/');
-	if (strcmp (canonical_uri, uri) != 0) {
-		/* If some trailing '/' were stripped, there's the possibility,
-		 * that we stripped away all the '/' from a uri that has only
-		 * '/' characters. If you change this code, check to make sure
-		 * that "file:///" still works as a URI.
-		 */
-		length = strlen (canonical_uri);
-		if (length == 0 || canonical_uri[length - 1] == ':') {
-			with_slashes = g_strconcat (canonical_uri, "///", NULL);
-			g_free (canonical_uri);
-			canonical_uri = with_slashes;
-		}
-	}
-#endif
+
+	/* Note: In some cases, a trailing slash means nothing, and can
+	 * be considered equivalent to no trailing slash. But this is
+	 * not true in every case; specifically not for web addresses passed
+	 * to a web-browser. So we don't have the trailing-slash-equivalence
+	 * logic here, but we do use that logic in NautilusDirectory where
+	 * the rules are more strict.
+	 */
+
 	/* Add file: if there is no scheme. */
 	if (strchr (canonical_uri, ':') == NULL) {
 		old_uri = canonical_uri;
