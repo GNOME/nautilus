@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "POT-Creation-Date: 2000-05-03 01:04+0200\n"
-"PO-Revision-Date: 2000-05-05 12:38+02:00\n"
+"PO-Revision-Date: 2000-05-06 12:38+02:00\n"
 "Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -31,7 +31,7 @@ msgstr "Placering"
 msgid "Remove"
 msgstr "Fjern"
 
-#: src/file-manager/fm-properties-window.c:488 src/nautilus-location-bar.c:212
+#: src/file-manager/fm-properties-window.c:525 src/nautilus-location-bar.c:212
 msgid "Location:"
 msgstr "Placering:"
 
@@ -87,7 +87,7 @@ msgid "_Edit"
 msgstr "_Redigér"
 
 #. Allow undo if text has been edited
-#: src/file-manager/fm-list-view.c:1063 src/nautilus-window-menus.c:645
+#: src/file-manager/fm-list-view.c:1013 src/nautilus-window-menus.c:645
 msgid "_Undo"
 msgstr "Fortryd"
 
@@ -296,7 +296,7 @@ msgstr "Stop"
 msgid "Interrupt loading"
 msgstr "Afbryd indlæsning"
 
-#: src/ntl-main.c:57
+#: src/ntl-main.c:56
 msgid "Perform high-speed self-check tests."
 msgstr "Udfør hurtig selvtest"
 
@@ -374,12 +374,12 @@ msgstr "Nautilus kan ikke vise '%s'."
 msgid "Gathering information"
 msgstr "Samler oplysninger"
 
-#: src/ntl-window.c:724
+#: src/ntl-window.c:710
 #, c-format
 msgid "View as %s"
 msgstr "Vis som %s"
 
-#: src/ntl-window.c:1035
+#: src/ntl-window.c:1021
 msgid "Close"
 msgstr "Luk"
 
@@ -744,60 +744,60 @@ msgstr ""
 "Vælg rækkefølgen for information der skal vises under ikonnavnene. Mere "
 "information kommer frem når du zoomer nærmere ind."
 
-#: src/file-manager/fm-icon-view.c:438
+#: src/file-manager/fm-icon-view.c:235
 msgid "_Stretch Icon"
 msgstr "_Stræk ikon"
 
-#: src/file-manager/fm-icon-view.c:446
+#: src/file-manager/fm-icon-view.c:243
 msgid "_Restore Icons to Unstretched Size"
 msgstr "_Genskab ikoner i ustrakt størrelse"
 
-#: src/file-manager/fm-icon-view.c:448
+#: src/file-manager/fm-icon-view.c:245
 msgid "_Restore Icon to Unstretched Size"
 msgstr "_Genskab ikon i ustrakt størrelse"
 
-#: src/file-manager/fm-icon-view.c:453
+#: src/file-manager/fm-icon-view.c:250
 msgid "Customize _Icon Text..."
 msgstr "Tilpas _ikontekst..."
 
 #. Modify file name. We only allow this on a single file selection.
-#: src/file-manager/fm-icon-view.c:457 src/file-manager/fm-list-view.c:1058
+#: src/file-manager/fm-icon-view.c:254 src/file-manager/fm-list-view.c:1008
 msgid "_Rename"
 msgstr "Omdøb"
 
-#: src/file-manager/fm-icon-view.c:889
+#: src/file-manager/fm-icon-view.c:686
 msgid "Make the selected icon stretchable"
 msgstr "Gør the valgte ikon strækbar"
 
-#: src/file-manager/fm-icon-view.c:893
+#: src/file-manager/fm-icon-view.c:690
 msgid "Restore each selected icon to its original size"
 msgstr "Genskab hvert valgt ikon i dets oprindelige størrelse"
 
-#: src/file-manager/fm-icon-view.c:902
+#: src/file-manager/fm-icon-view.c:699
 msgid "Choose which information appears beneath each icon's name"
 msgstr "Vælg hvilken information der skal vises underhvert ikonnavn"
 
-#: src/file-manager/fm-icon-view.c:913
+#: src/file-manager/fm-icon-view.c:710
 msgid "Auto Layout"
 msgstr "Auto-udseende"
 
-#: src/file-manager/fm-icon-view.c:914
+#: src/file-manager/fm-icon-view.c:711
 msgid "Keep icons sorted in rows and columns"
 msgstr "Hold ikoner sorteret i rækker og kolonner"
 
-#: src/file-manager/fm-icon-view.c:920
+#: src/file-manager/fm-icon-view.c:717
 msgid "Manual Layout"
 msgstr "Manuel-udseende"
 
-#: src/file-manager/fm-icon-view.c:921
+#: src/file-manager/fm-icon-view.c:718
 msgid "Leave icons wherever they are dropped"
 msgstr "Lad ikoner være hvor de pladseres"
 
-#: src/file-manager/fm-icon-view.c:929 src/file-manager/fm-list-view.c:917
+#: src/file-manager/fm-icon-view.c:726 src/file-manager/fm-list-view.c:904
 msgid "Rename"
 msgstr "Omdøb"
 
-#: src/file-manager/fm-icon-view.c:930 src/file-manager/fm-list-view.c:918
+#: src/file-manager/fm-icon-view.c:727 src/file-manager/fm-list-view.c:905
 msgid "Rename selected item"
 msgstr "Omdøb de valgte punkter"
 
@@ -813,103 +813,139 @@ msgstr "Type"
 msgid "Date Modified"
 msgstr "Dato for ændring"
 
-#: src/file-manager/fm-properties-window.c:331
+#: src/file-manager/fm-properties-window.c:343
 #, c-format
 msgid "Nautilus: %s Properties"
 msgstr "Nautilus: %s egenskaber"
 
-#: src/file-manager/fm-properties-window.c:428
+#: src/file-manager/fm-properties-window.c:464
 msgid "Basic"
 msgstr "Basal"
 
-#: src/file-manager/fm-properties-window.c:492
+#: src/file-manager/fm-properties-window.c:527
 msgid "Type:"
 msgstr "Type:"
 
-#: src/file-manager/fm-properties-window.c:496
+#: src/file-manager/fm-properties-window.c:529
 msgid "Size:"
 msgstr "Størrelse:"
 
-#: src/file-manager/fm-properties-window.c:500
+#: src/file-manager/fm-properties-window.c:531
 msgid "Date Modified:"
 msgstr "Dato for ændring:"
 
-#: src/file-manager/fm-properties-window.c:516
+#: src/file-manager/fm-properties-window.c:544
 msgid "Emblems"
 msgstr "Emblemer"
 
 #. The prompt.
-#: src/file-manager/fm-properties-window.c:520
-msgid ""
-"This is a placeholder for the final emblems design. For now, you can turn "
-"some hard-wired properties with corresponding emblems on and off."
-msgstr ""
-"Dette er en holdeplads for detendelige emblem design. For nuværende kan du "
-"slå nogen foruddefinerede egenskaber med tilsvarende emblemer til og fra."
+#: src/file-manager/fm-properties-window.c:590
+msgid "Images and a complete list of available emblems coming soon."
+msgstr "Billeder og en fuldstændig liste over tilgængelige emblemer "
+"kommer snart."
+
+#: src/file-manager/fm-properties-window.c:611
+msgid "Permissions"
+msgstr "Rettigheder"
+
+#: src/file-manager/fm-properties-window.c:617
+msgid "as string:"
+msgstr "som streng:"
+
+#: src/file-manager/fm-properties-window.c:619
+msgid "Owner:"
+msgstr "Ejer:"
+
+#: src/file-manager/fm-properties-window.c:621
+msgid "Group:"
+msgstr "Gruppe:"
+
+#. Here's some temporary stuff to avoid frightening the masses.
+#: src/file-manager/fm-properties-window.c:624
+msgid "Don't panic. This is not the final permissions user interface."
+msgstr "Rolig nu. Dette er ikke den endegyldige grænseflade for rettigheder."
+
+#: src/file-manager/fm-properties-window.c:645
+msgid "More"
+msgstr "Mere"
+
+#: src/file-manager/fm-properties-window.c:651
+msgid "MIME type:"
+msgstr "MIME-type:"
+
+#. The prompt.
+#: src/file-manager/fm-properties-window.c:654
+msgid "Tell sullivan@eazel.com all your good ideas for what should go here."
+msgstr "Fortæl sullivan@eazel.com alle dine gode idéer om "
+"hvad der skal være hér."
 
 #: nautilus-widgets/nautilus-preferences-dialog.c:201
 msgid "Prefs Box"
 msgstr "Boks for indstillinger"
 
 #. today, use special word
-#: libnautilus-extensions/nautilus-file.c:1061
+#: libnautilus-extensions/nautilus-file.c:1062
 msgid "today %-I:%M %p"
-msgstr "i dag  %-I:%M %p"
+msgstr "i dag %H:%M"
 
 #. yesterday, use special word
-#: libnautilus-extensions/nautilus-file.c:1064
+#: libnautilus-extensions/nautilus-file.c:1065
 msgid "yesterday %-I:%M %p"
-msgstr "i går %-I:%M %p"
+msgstr "i går %H:%M"
 
 #. current week, include day of week
-#: libnautilus-extensions/nautilus-file.c:1067
+#: libnautilus-extensions/nautilus-file.c:1068
 msgid "%A %-m/%-d/%y %-I:%M %p"
-msgstr "%A %Y-%-m-%-d %-I:%M %p"
+msgstr "%A %Y-%-m-%-d %H:%M"
 
-#: libnautilus-extensions/nautilus-file.c:1069
+#: libnautilus-extensions/nautilus-file.c:1070
 msgid "%-m/%-d/%y %-I:%M %p"
-msgstr "%Y-%-m-%-d %-I:%M %p"
+msgstr "%Y-%-m-%-d %H:%M"
 
-#: libnautilus-extensions/nautilus-file.c:1187
+#: libnautilus-extensions/nautilus-file.c:1188
 msgid "unknown owner"
 msgstr "ukendt ejer"
 
-#: libnautilus-extensions/nautilus-file.c:1218
+#: libnautilus-extensions/nautilus-file.c:1219
 msgid "unknown group"
 msgstr "ukendt gruppe"
 
-#: libnautilus-extensions/nautilus-file.c:1247
+#: libnautilus-extensions/nautilus-file.c:1248
 msgid "unknown MIME type"
 msgstr "ukendt MIME type"
 
-#: libnautilus-extensions/nautilus-file.c:1271
+#: libnautilus-extensions/nautilus-file.c:1272
 msgid "xxx"
 msgstr "xxx"
 
-#: libnautilus-extensions/nautilus-file.c:1271
+#: libnautilus-extensions/nautilus-file.c:1272
 msgid "--"
 msgstr "--"
 
-#: libnautilus-extensions/nautilus-file.c:1274
+#: libnautilus-extensions/nautilus-file.c:1275
 msgid "0 items"
 msgstr "0 ting"
 
-#: libnautilus-extensions/nautilus-file.c:1277
+#: libnautilus-extensions/nautilus-file.c:1278
 msgid "1 item"
 msgstr "1 ting"
 
-#: libnautilus-extensions/nautilus-file.c:1279
+#: libnautilus-extensions/nautilus-file.c:1280
 #, c-format
 msgid "%u items"
 msgstr "%u ting"
 
-#: libnautilus-extensions/nautilus-file.c:1388
+#: libnautilus-extensions/nautilus-file.c:1389
 msgid "program"
 msgstr "program"
 
-#: libnautilus-extensions/nautilus-file.c:1391
+#: libnautilus-extensions/nautilus-file.c:1392
 msgid "unknown type"
 msgstr "ukendt type"
+
+#: libnautilus-extensions/nautilus-file.c:1707
+msgid " --"
+msgstr " --"
 
 #: libnautilus/nautilus-meta-view-frame.c:144
 msgid "Label"
