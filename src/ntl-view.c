@@ -324,12 +324,8 @@ nautilus_view_get_arg (GtkObject      *object,
 static void
 nautilus_view_init (NautilusView *view)
 {
-  CORBA_Environment ev;
   GTK_WIDGET_SET_FLAGS (view, GTK_NO_WINDOW);
-
-  CORBA_exception_init(&ev);
-  view->view_frame = impl_Nautilus_ViewFrame__create(view, &ev);
-  CORBA_exception_free(&ev);
+  view->type = NV_NONE;
 }
 
 static void
@@ -426,39 +422,158 @@ nautilus_view_activate_uri(GnomeControlFrame *frame, const char *uri, gboolean r
   nautilus_view_request_location_change(view, &nri);
 }
 
-void
+gboolean /* returns TRUE if successful */
 nautilus_view_load_client(NautilusView *view, const char *iid)
 {
-  GnomeControlFrame *frame;
   CORBA_Environment ev;
 
-  g_return_if_fail(iid);
+  g_return_val_if_fail(iid, FALSE);
 
-  if(view->client)
-    {
-      g_free(view->iid); view->iid = NULL;
-      gtk_container_remove(GTK_CONTAINER(view), view->client); view->client = NULL;
-      CORBA_Object_release(view->view_client, &ev);
-    }
-
-  view->client = gnome_bonobo_widget_new_control((char *)iid);
-  g_return_if_fail(view->client);
   CORBA_exception_init(&ev);
 
-  frame = gnome_bonobo_widget_get_control_frame(GNOME_BONOBO_WIDGET(view->client));
-  
-  gnome_object_add_interface(GNOME_OBJECT(frame), view->view_frame);
-  view->view_client = GNOME_Unknown_query_interface(gnome_control_frame_get_control(GNOME_CONTROL_FRAME(frame)),
-						    "IDL:Nautilus/View:1.0", &ev);
+  if(view->type != NV_NONE)
+    {
+      g_free(view->iid); view->iid = NULL;
+      gtk_container_remove(GTK_CONTAINER(view), view->client_widget); view->client_widget = NULL;
+
+      switch(view->type)
+        {
+        case NV_NAUTILUS_VIEW:
+          CORBA_Object_release(view->u.nautilus_view_info.view_client, &ev);
+          gnome_object_destroy(view->u.nautilus_view_info.control_frame);
+          break;
+        case NV_BONOBO_SUBDOC:
+          gnome_object_destroy(view->u.bonobo_subdoc_info.container);
+          break;
+        case NV_BONOBO_CONTROL:
+          gnome_object_destroy(view->u.bonobo_control_info.control_frame);
+          break;
+        default:
+          break;
+        }
+      view->type = NV_NONE;
+      gnome_object_destroy(GNOME_OBJECT(view->client_object)); view->client_object = NULL;
+    }
+
+  view->client_object = gnome_object_activate(iid, 0);
+  if(!view->client_object)
+    return FALSE;
+
+  view->view_frame = impl_Nautilus_ViewFrame__create(view, &ev);
+
+  /* Now figure out which type of embedded object it is: */
+  view->u.nautilus_view_info.view_client =
+    GNOME_Unknown_query_interface(gnome_object_corba_objref(GNOME_OBJECT(view->client_object)),
+                                  "IDL:Nautilus/View:1.0", &ev);
   if(ev._major != CORBA_NO_EXCEPTION)
-    view->view_client = CORBA_OBJECT_NIL;
+    view->u.nautilus_view_info.view_client = CORBA_OBJECT_NIL;
+
+  if(!CORBA_Object_is_nil(view->u.nautilus_view_info.view_client, &ev))
+    {
+      GNOME_Control control;
+
+      view->type = NV_NAUTILUS_VIEW;
+      control =
+        GNOME_Unknown_query_interface(gnome_object_corba_objref(GNOME_OBJECT(view->client_object)), "IDL:GNOME/Control:1.0", &ev);
+      if(ev._major != CORBA_NO_EXCEPTION)
+        control = CORBA_OBJECT_NIL;
+
+      if(CORBA_Object_is_nil(control, &ev))
+        {
+          gnome_object_unref(GNOME_OBJECT(view->client_object));
+          GNOME_Unknown_unref(view->u.nautilus_view_info.view_client, &ev);
+          CORBA_Object_release(view->u.nautilus_view_info.view_client, &ev);
+          gnome_object_destroy(view->view_frame);
+          view->type = NV_NONE;
+          return FALSE;
+        }
+
+      view->u.nautilus_view_info.control_frame = GNOME_OBJECT(gnome_control_frame_new());
+      gnome_object_add_interface(GNOME_OBJECT(view->u.nautilus_view_info.control_frame), view->view_frame);
+
+      gnome_control_frame_bind_to_control(GNOME_CONTROL_FRAME(view->u.nautilus_view_info.control_frame), control);
+      GNOME_Unknown_unref(control, &ev);
+      view->client_widget = gnome_control_frame_get_widget(GNOME_CONTROL_FRAME(view->u.nautilus_view_info.control_frame));
+    }
+  else
+    {
+      CORBA_Object tmp_objref;
+
+      tmp_objref = 
+        GNOME_Unknown_query_interface(gnome_object_corba_objref(GNOME_OBJECT(view->client_object)),
+                                      "IDL:GNOME/Embeddable:1.0", &ev);
+      if(ev._major != CORBA_NO_EXCEPTION)
+        tmp_objref = CORBA_OBJECT_NIL;
+
+      if(!CORBA_Object_is_nil(tmp_objref, &ev))
+        {
+          view->type = NV_BONOBO_SUBDOC;
+
+          view->u.bonobo_subdoc_info.container = GNOME_OBJECT(gnome_container_new());
+          gnome_object_add_interface(GNOME_OBJECT(view->u.bonobo_subdoc_info.container), view->view_frame);
+
+          view->u.bonobo_subdoc_info.client_site =
+            GNOME_OBJECT(gnome_client_site_new(GNOME_CONTAINER(view->u.bonobo_subdoc_info.container)));
+          gnome_client_site_bind_embeddable(GNOME_CLIENT_SITE(view->u.bonobo_subdoc_info.client_site),
+                                            view->client_object);
+          gnome_container_add(GNOME_CONTAINER(view->u.bonobo_subdoc_info.container), view->u.bonobo_subdoc_info.client_site);
+          view->u.bonobo_subdoc_info.view_frame =
+            GNOME_OBJECT(gnome_client_site_new_view(GNOME_CLIENT_SITE(view->u.bonobo_subdoc_info.client_site)));
+          if(!view->u.bonobo_subdoc_info.view_frame)
+            {
+              gnome_object_destroy(GNOME_OBJECT(view->client_object));
+              gnome_object_destroy(view->u.bonobo_subdoc_info.container);
+              gnome_object_destroy(view->u.bonobo_subdoc_info.client_site);
+              GNOME_Unknown_unref(tmp_objref, &ev);
+              CORBA_Object_release(tmp_objref, &ev);
+              gnome_object_destroy(view->view_frame);
+              view->type = NV_NONE;
+              return FALSE;
+            }
+
+          view->client_widget = gnome_view_frame_get_wrapper(GNOME_VIEW_FRAME(view->u.bonobo_subdoc_info.view_frame));
+        }
+      else
+        {
+          GNOME_Control control;
+
+          control =
+            GNOME_Unknown_query_interface(gnome_object_corba_objref(GNOME_OBJECT(view->client_object)),
+                                          "IDL:GNOME/Control:1.0", &ev);
+          if(ev._major != CORBA_NO_EXCEPTION)
+            control = CORBA_OBJECT_NIL;
+
+          if(CORBA_Object_is_nil(control, &ev))
+            {
+              g_warning("We don't know how to embed implementation %s", iid);
+              gnome_object_destroy(GNOME_OBJECT(view->client_object));
+              gnome_object_destroy(view->view_frame);
+              view->type = NV_NONE;
+              return FALSE;
+            }
+
+          view->u.nautilus_view_info.control_frame = GNOME_OBJECT(gnome_control_frame_new());
+          gnome_object_add_interface(GNOME_OBJECT(view->u.bonobo_control_info.control_frame), view->view_frame);
+
+          gnome_control_frame_bind_to_control(GNOME_CONTROL_FRAME(view->u.bonobo_control_info.control_frame),
+                                              control);
+          GNOME_Unknown_unref(control, &ev);
+          view->client_widget =
+            gnome_control_frame_get_widget(GNOME_CONTROL_FRAME(view->u.bonobo_control_info.control_frame));
+
+          view->type = NV_BONOBO_CONTROL;
+          gtk_signal_connect(GTK_OBJECT(view->u.bonobo_control_info.control_frame),
+                             "activate_uri", GTK_SIGNAL_FUNC(nautilus_view_activate_uri), view);
+        }
+    }
 
   view->iid = g_strdup(iid);
 
-  gtk_signal_connect(GTK_OBJECT(frame), "activate_uri", GTK_SIGNAL_FUNC(nautilus_view_activate_uri), view);
-  gtk_widget_show(view->client);
-  gtk_container_add(GTK_CONTAINER(view), view->client);
+  gtk_widget_show(view->client_widget);
+  gtk_container_add(GTK_CONTAINER(view), view->client_widget);
   CORBA_exception_free(&ev);
+
+  return TRUE;
 }
 
 static void
@@ -466,24 +581,22 @@ nautilus_view_notify_location_change(NautilusView *view,
 				     Nautilus_NavigationInfo *nav_context)
 {
   CORBA_Environment ev;
+  Nautilus_NavigationInfo real_nav_ctx;
+
+  g_return_if_fail(view->type == NV_NAUTILUS_VIEW);
 
   CORBA_exception_init(&ev);
 
-  if(!CORBA_Object_is_nil(view->view_client, &ev))
-    {
-      Nautilus_NavigationInfo real_nav_ctx;
-
-      real_nav_ctx = *nav_context;
-      g_assert(real_nav_ctx.requested_uri);
+  real_nav_ctx = *nav_context;
+  g_assert(real_nav_ctx.requested_uri);
 #define DEFAULT_STRING(x) if(!real_nav_ctx.x) real_nav_ctx.x = ""
 
-      DEFAULT_STRING(actual_uri);
-      DEFAULT_STRING(referring_uri);
-      DEFAULT_STRING(actual_referring_uri);
-      DEFAULT_STRING(referring_content_type);
+  DEFAULT_STRING(actual_uri);
+  DEFAULT_STRING(referring_uri);
+  DEFAULT_STRING(actual_referring_uri);
+  DEFAULT_STRING(referring_content_type);
 
-      Nautilus_View_notify_location_change(view->view_client, &real_nav_ctx, &ev);
-    }
+  Nautilus_View_notify_location_change(view->u.nautilus_view_info.view_client, &real_nav_ctx, &ev);
 
   CORBA_exception_free(&ev);
 }
@@ -495,8 +608,9 @@ nautilus_view_notify_selection_change(NautilusView *view,
   CORBA_Environment ev;
   CORBA_exception_init(&ev);
 
-  if(!CORBA_Object_is_nil(view->view_client, &ev))
-    Nautilus_View_notify_selection_change(view->view_client, nav_context, &ev);
+  g_return_if_fail(view->type == NV_NAUTILUS_VIEW);
+
+  Nautilus_View_notify_selection_change(view->u.nautilus_view_info.view_client, nav_context, &ev);
 
   CORBA_exception_free(&ev);
 }
@@ -505,10 +619,12 @@ static void
 nautilus_view_load_state(NautilusView *view, const char *config_path)
 {
   CORBA_Environment ev;
-  CORBA_exception_init(&ev);
-  g_return_if_fail(!CORBA_Object_is_nil(view->view_client, &ev));
 
-  Nautilus_View_load_state(view->view_client, (char *)config_path, &ev);
+  g_return_if_fail(view->type == NV_NAUTILUS_VIEW);
+
+  CORBA_exception_init(&ev);
+
+  Nautilus_View_load_state(view->u.nautilus_view_info.view_client, (char *)config_path, &ev);
 
   CORBA_exception_free(&ev);
 }
@@ -517,10 +633,12 @@ static void
 nautilus_view_save_state(NautilusView *view, const char *config_path)
 {
   CORBA_Environment ev;
-  CORBA_exception_init(&ev);
-  g_return_if_fail(!CORBA_Object_is_nil(view->view_client, &ev));
 
-  Nautilus_View_save_state(view->view_client, (char *)config_path, &ev);
+  g_return_if_fail(view->type == NV_NAUTILUS_VIEW);
+
+  CORBA_exception_init(&ev);
+
+  Nautilus_View_save_state(view->u.nautilus_view_info.view_client, (char *)config_path, &ev);
 
   CORBA_exception_free(&ev);
 }
@@ -531,9 +649,9 @@ nautilus_view_show_properties(NautilusView *view)
   CORBA_Environment ev;
   CORBA_exception_init(&ev);
 
-  g_return_if_fail(!CORBA_Object_is_nil(view->view_client, &ev));
+  g_return_if_fail(view->type == NV_NAUTILUS_VIEW);
 
-  Nautilus_View_show_properties(view->view_client, &ev);
+  Nautilus_View_show_properties(view->u.nautilus_view_info.view_client, &ev);
 
   CORBA_exception_free(&ev);
 }
@@ -547,5 +665,36 @@ nautilus_view_get_iid(NautilusView *view)
 CORBA_Object
 nautilus_view_get_client_objref(NautilusView *view)
 {
-  return view->view_client;
+  if(view->type == NV_NAUTILUS_VIEW)
+    return view->u.nautilus_view_info.view_client;
+  else
+    return CORBA_OBJECT_NIL;
+}
+
+GnomeObject *
+nautilus_view_get_control_frame(NautilusView *view)
+{
+  switch(view->type)
+    {
+    case NV_NAUTILUS_VIEW:
+      return view->u.nautilus_view_info.control_frame;
+      break;
+    case NV_BONOBO_CONTROL:
+      return view->u.bonobo_control_info.control_frame;
+      break;
+    case NV_BONOBO_SUBDOC:
+      return view->u.bonobo_subdoc_info.view_frame;
+      break;
+    default:
+      g_warning("Can't get the control frame for this type of view (%d)", view->type);
+      break;
+    }
+
+  return NULL;
+}
+
+CORBA_Object
+nautilus_view_get_objref(NautilusView *view)
+{
+  return gnome_object_corba_objref(view->view_frame);
 }
