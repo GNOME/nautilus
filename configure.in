@@ -341,15 +341,18 @@ dnl EVIL1:
 
 	if test $? -eq 0
 	then
-		MOZILLA_MILESTONE=19
+		MOZILLA_MILESTONE=VERSION_0_8
+		MOZILLA_PROFILES_CFLAGS="-DMOZILLA_HAVE_PROFILES_SUPPORT"
+
+		AC_SUBST(MOZILLA_PROFILES_CFLAGS)
 	else
 		grep -w GetName $_mozilla_include_place/nsIRequest.h > /dev/null 2>&1
 
 		if test $? -eq 0
 		then
-			MOZILLA_MILESTONE=18
+			MOZILLA_MILESTONE=VERSION_0_7
 		else
-			MOZILLA_MILESTONE=17
+			MOZILLA_MILESTONE=MILESTONE_17
 		fi
 	fi
 
@@ -372,12 +375,12 @@ dnl EVIL2:
 
 	AC_SUBST(MOZILLA_COMPONENT_DEBUG_FLAGS)
 
-	if test "$MOZILLA_MILESTONE" != "18" -a "$MOZILLA_MILESTONE" != "19"
+	if test "$MOZILLA_MILESTONE" != "VERSION_0_8" -a "$MOZILLA_MILESTONE" != "VERSION_0_7"
 	then
 
 	AC_MSG_ERROR([
-*** Mozilla M18 or greater is required to build the Nautilus Mozilla component.
-*** A package for M18 is available here:
+*** Mozilla 0.7 or greater is required to build the Nautilus Mozilla component.
+*** A package for 0.7 is available here:
 *** http://developer.eazel.com/eazel-hacking/updates/mozilla/.])
 
 	fi
@@ -909,6 +912,7 @@ Mozilla component	: YES
    mozilla libraries              : $_mozilla_lib_place
    mozilla includes               : $_mozilla_include_place
    MOZILLA_MILESTONE              : $MOZILLA_MILESTONE
+   MOZILLA_PROFILES_CFLAGS        : $MOZILLA_PROFILES_CFLAGS
    MOZILLA_COMPONENT_RPATH_FLAGS  : $MOZILLA_COMPONENT_RPATH_FLAGS
    MOZILLA_COMPONENT_DEBUG_FLAGS  : $MOZILLA_COMPONENT_DEBUG_FLAGS"
 ;;

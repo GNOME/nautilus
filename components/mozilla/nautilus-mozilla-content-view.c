@@ -1351,7 +1351,7 @@ string_list_get_index_of_string (const char *string_list[], guint num_strings, c
  * things like cookies and cache.  Here we tell the mozilla embedding
  * widget to use ~/.nautilus/MozillaProfile for this purpose.
  *
- * We need mozilla M19 to support this feature.
+ * We need mozilla 0.8 to support this feature.
  */
 
 static void
@@ -1370,7 +1370,7 @@ pre_widget_initialize (void)
 	mkdir (profile_path, 0777);
 	mkdir (cache_path, 0777);
 
-#if (MOZILLA_MILESTONE >= 19)
+#ifdef MOZILLA_HAVE_PROFILES_SUPPORT
 	/* this will be in Mozilla 0.8 */
 	/* Its a bug in mozilla embedding that we need to cast the const away */
 	gtk_moz_embed_set_profile_path (profile_base_path, (char *) profile_directory_name);

@@ -5,6 +5,7 @@ INCLUDES = \
 	-DG_LOG_DOMAIN=\"Nautilus-Mozilla\" \
 	-DDATADIR=\"$(datadir)\" \
 	$(MOZILLA_COMPONENT_DEBUG_FLAGS) \
+	$(MOZILLA_PROFILES_CFLAGS) \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
 	$(BONOBO_CFLAGS) \
@@ -67,12 +68,3 @@ ui_DATA =					\
 	$(NULL)
 
 EXTRA_DIST = $(oaf_DATA) $(ui_DATA) $(oaf_in_files)
-
-
-
-
-
-
-
-
-

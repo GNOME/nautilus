@@ -1,3 +1,14 @@
+2001-02-16  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* README: Update Mozilla requirements.
+	* configure.in: Update the Mozilla milestone names to match the
+	current Mozilla naming scheme.  Add a flag indicating whether the
+	version of Mozilla we use has profiles support.
+	* components/mozilla/Makefile.am:
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(pre_widget_initialize): 
+	Add better profile support ifdef hackery.
+
 2001-02-15  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/idl/trilobite-eazel-install.idl:
