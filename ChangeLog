@@ -1,3 +1,12 @@
+2002-05-03  David Emory Watson  <dwatson@cs.ucr.edu>
+
+	* src/nautilus-location-bar.c:
+	(try_to_expand_path): Remove extranious check (we always expand "~/"
+	before we get here) and call set_position_and_selection_to_end () since
+	the behavior of gtk_entry_set_text () has changed.
+	(editable_event_after_callback): Useless optimization.
+	(nautilus_location_bar_set_location): Call set_position_and_selectio...
+
 2002-05-01  David Emory Watson  <dwatson@cs.ucr.edu>
 
 	Implement zooming for the list view and other small cleanups.

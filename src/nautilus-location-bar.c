@@ -322,6 +322,7 @@ static void
 get_file_info_list (NautilusLocationBar *bar, const char* dir_name)
 {
 	GnomeVFSResult result;
+
 	if (eel_strcmp (bar->details->current_directory, dir_name) != 0) {
 		g_free (bar->details->current_directory);
 		if (bar->details->file_info_list) {
@@ -376,9 +377,8 @@ try_to_expand_path (gpointer callback_data)
 	user_location = gtk_editable_get_chars (editable, 0, -1);
 	bar->details->idle_id = 0;
 
-	/* if it's just '~' or '~/', don't expand because slash shouldn't be appended */
-	if (eel_strcmp (user_location, "~") == 0
-	    || eel_strcmp (user_location, "~/") == 0) {
+	/* if it's just '~' don't expand because slash shouldn't be appended */
+	if (eel_strcmp (user_location, "~") == 0) {
 		g_free (user_location);
 		return FALSE;
 	}
@@ -605,18 +605,12 @@ editable_event_after_callback (GtkEntry *entry,
 	if (position_and_selection_are_at_end (editable)) {
 		if (entry_would_have_inserted_characters (keyevent)) {
 			if (keyevent->keyval == GDK_slash
-			    && has_exactly_one_slash (editable)) {
-				/* It's OK for us to call
-				 * gtk_entry_set_text here, even
-				 * though it has a side effect of
-				 * putting the position and selection
-				 * at the end, since the position and
-				 * selection are already at the end.
-				 */
+				&& has_exactly_one_slash (editable)) {
 				unexpanded_text = gtk_entry_get_text (GTK_ENTRY (editable));
 				expanded_text = gnome_vfs_expand_initial_tilde (unexpanded_text);
 				if (strcmp (unexpanded_text, expanded_text) != 0) {
 					gtk_entry_set_text (GTK_ENTRY (editable), expanded_text);
+					set_position_and_selection_to_end (editable);
 				}
 				g_free (expanded_text);
 			}
@@ -630,8 +624,8 @@ editable_event_after_callback (GtkEntry *entry,
 		 */
 		if (bar->details->idle_id != 0) {
 			gtk_idle_remove (bar->details->idle_id);
+			bar->details->idle_id = 0;
 		}
-		bar->details->idle_id = 0;
 	}
 
 	nautilus_location_bar_update_label (bar);
@@ -801,11 +795,12 @@ nautilus_location_bar_set_location (NautilusNavigationBar *navigation_bar,
 	bar = NAUTILUS_LOCATION_BAR (navigation_bar);
 
 	/* Note: This is called in reaction to external changes, and 
-	 * thus should not emit the LOCATION_CHANGED signal.*/
+	 * thus should not emit the LOCATION_CHANGED signal. */
 	
 	formatted_location = eel_format_uri_for_display (location);
 	nautilus_entry_set_text (NAUTILUS_ENTRY (bar->details->entry),
 				 formatted_location);
+	set_position_and_selection_to_end (GTK_EDITABLE (bar->details->entry));
 	g_free (formatted_location);
 
 	/* free up the cached file info from the previous location */
