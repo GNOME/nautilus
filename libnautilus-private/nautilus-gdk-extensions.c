@@ -720,36 +720,6 @@ nautilus_set_mini_icon (GdkWindow *window,
                              (guchar *) data, 2);
 }
 
-GdkGC *
-nautilus_gdk_create_copy_area_gc (GdkWindow	*window)
-{
-	GdkGC *copy_area_gc;
-	
-	g_return_val_if_fail (window != NULL, NULL);
-
-	copy_area_gc = gdk_gc_new (window);
-
-	gdk_gc_set_function (copy_area_gc, GDK_COPY);
-
-	return copy_area_gc;
-}
-
-void
-nautilus_gdk_gc_ref_if_not_null (GdkGC *gc_or_null)
-{
-	if (gc_or_null != NULL) {
-		gdk_gc_ref (gc_or_null);
-	}
-}
-
-void
-nautilus_gdk_gc_unref_if_not_null (GdkGC *gc_or_null)
-{
-	if (gc_or_null != NULL) {
-		gdk_gc_unref (gc_or_null);
-	}
-}
-
 /**
  * nautilus_gdk_window_set_wm_hints_input:
  * 

@@ -161,9 +161,6 @@ void			 nautilus_gdk_window_set_wm_protocols	     (GdkWindow		 *window,
 void                     nautilus_set_mini_icon                      (GdkWindow           *window,
 								      GdkPixmap           *pixmap,
 								      GdkBitmap           *mask);
-GdkGC *                  nautilus_gdk_create_copy_area_gc            (GdkWindow           *window);
-void                     nautilus_gdk_gc_ref_if_not_null             (GdkGC               *gc_or_null);
-void                     nautilus_gdk_gc_unref_if_not_null           (GdkGC               *gc_or_null);
 void                     nautilus_gdk_window_set_wm_hints_input      (GdkWindow           *w,
 								      gboolean             status);
 

@@ -168,24 +168,18 @@ debug_pixbuf_viewer_expose_event (GtkWidget *widget, GdkEventExpose *event)
 		art_irect_intersect (&clipped_bounds, &bounds, &clipped_dirty_area);
 
 		if (!art_irect_empty (&clipped_bounds)) {
-			GdkGC *gc;
-			
 			g_assert (clipped_bounds.x0 >= bounds.x0);
 			g_assert (clipped_bounds.y0 >= bounds.y0);
 			
-			gc = nautilus_gdk_create_copy_area_gc (event->window);
-			
 			nautilus_gdk_pixbuf_draw_to_drawable (viewer->pixbuf,
 							      event->window,
-							      gc,
+							      widget->style->white_gc,
 							      clipped_bounds.x0 - bounds.x0,
 							      clipped_bounds.y0 - bounds.y0,
 							      &clipped_bounds,
 							      GDK_RGB_DITHER_NONE,
 							      GDK_PIXBUF_ALPHA_BILEVEL,
 							      NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
-			
-			gdk_gc_unref (gc);
 		}
 	}
 
