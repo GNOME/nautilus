@@ -1,3 +1,15 @@
+2000-01-20  Darin Adler  <darin@eazel.com>
+
+	* src/gnome-icon-container.c:
+	(gnome_icon_container_xlate_selected):
+	Fixed a bug where dragging an icon would cause the "kbd_selected"
+	icon to scroll into view. Just passed FALSE instead of TRUE for
+	"schedule_visibility".
+
+	* libnautilus/nautilus-background.c:
+	(nautilus_background_draw_flat_box):
+	Tiny change, to fit our style rule against initializing.
+
 2000-01-20  Jonathan Blandford  <jrb@redhat.com>
 
 	* libnautilus/nautilus-background.c

@@ -3022,7 +3022,7 @@ gnome_icon_container_xlate_selected (GnomeIconContainer *container,
 		}
 	}
 
-	set_kbd_current (container, priv->kbd_current, TRUE);
+	set_kbd_current (container, priv->kbd_current, FALSE);
 }
 
 
