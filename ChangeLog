@@ -1,3 +1,18 @@
+2000-08-04  John Sullivan  <sullivan@eazel.com>
+
+	Fixed unreported crash-at-boot bug I ran into when
+	I turned MALLOC_CHECK_=2 on. This is a good thing for
+	everyone to run with (unless it slows things down hideously,
+	which it doesn't seem to).
+
+	* src/nautilus-simple-search-bar.c:
+	(nautilus_simple_search_criteria_to_search_uri):
+	This function (apologies to Pavel) crashed like a Russian
+	helicopter and leaked like a Russian submarine. Fixed an off-by-one
+	bug in a g_new0 that was trashing memory; removed another g_new0
+	call that was just leaking its results; called g_strfreev to
+	free the results of a g_strsplit call.
+
 2000-08-04  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:

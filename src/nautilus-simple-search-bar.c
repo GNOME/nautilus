@@ -140,7 +140,6 @@ nautilus_simple_search_criteria_to_search_uri (const char *search_criteria)
 
 	g_return_val_if_fail (search_criteria != NULL, NULL);
 
-	words = g_new0 (char *, strlen (search_criteria));
 	words = g_strsplit (search_criteria, " ", strlen (search_criteria));
 	/* FIXME: this should eventually be: length = strlen ("[file%3A%2F%2F%2F]"); */
 	length = strlen ("[file:///]");
@@ -148,7 +147,7 @@ nautilus_simple_search_criteria_to_search_uri (const char *search_criteria)
 	for (i = 0; words[i] != NULL; i++) {
 		length += strlen (words[i]) + strlen ("file_name contains & ");
 	}
-	fragment = g_new0 (char, length);
+	fragment = g_new0 (char, length + 1);
 	/* FIXME: this should eventually be: sprintf (fragment, "[file%%3A%%2F%%2F%%2F]"); */
 	sprintf (fragment, "[file:///]");
 	if (words[0] != NULL) {
@@ -157,9 +156,10 @@ nautilus_simple_search_criteria_to_search_uri (const char *search_criteria)
 			strcat (fragment, words[i]);
 			strcat (fragment, " & ");
 		}
-	strcat (fragment, "file_name contains ");
-		strcat (fragment, words[i]);
+		strcat (fragment, "file_name contains ");
+			strcat (fragment, words[i]);
 	}
+	g_strfreev (words);
 	escaped_fragment = gnome_vfs_escape_string (fragment);
 	g_free (fragment);
 	search_uri = g_strconcat ("search:", escaped_fragment, NULL);
