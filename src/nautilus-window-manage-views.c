@@ -1969,23 +1969,26 @@ set_side_panel_image (NautilusWindow *window,
                       NautilusViewFrame *side_panel,
                       const char *image_name)
 {
-        GtkWidget *image;
+        GdkPixbuf *pixbuf;
         char *image_path;
 
-        image = NULL;
+        pixbuf = NULL;
         
         if (image_name && image_name[0]) {
                 image_path = nautilus_theme_get_image_path (image_name);
                 if (image_path) {
-                        image = gtk_image_new_from_file (image_path);
-                        gtk_widget_show (image);
+                        pixbuf = gdk_pixbuf_new_from_file (image_path, NULL);
                         g_free (image_path);
                 }
         }
 
         nautilus_side_pane_set_panel_image (window->sidebar,
                                             GTK_WIDGET (side_panel),
-                                            image);
+                                            pixbuf);
+        
+        if (pixbuf) {
+                g_object_unref (pixbuf);
+        }
 }
 
 static void

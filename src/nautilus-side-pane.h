@@ -51,14 +51,16 @@ typedef struct {
 
 GType                  nautilus_side_pane_get_type        (void);
 NautilusSidePane      *nautilus_side_pane_new             (void);
-void                   nautilus_side_pane_add_panel       (NautilusSidePane *sidebar,
+void                   nautilus_side_pane_add_panel       (NautilusSidePane *side_pane,
 							   GtkWidget        *widget,
 							   const char       *title);
-void                   nautilus_side_pane_remove_panel    (NautilusSidePane *sidebar,
+void                   nautilus_side_pane_remove_panel    (NautilusSidePane *side_pane,
+							   GtkWidget        *widget);
+void                   nautilus_side_pane_show_panel      (NautilusSidePane *side_pane,
 							   GtkWidget        *widget);
 void                   nautilus_side_pane_set_panel_image (NautilusSidePane *side_pane,
 							   GtkWidget        *widget,
-							   GtkWidget        *image);
+							   GdkPixbuf        *pixbuf);
 
 G_END_DECLS
 

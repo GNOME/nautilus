@@ -36,12 +36,15 @@
 #include <gtk/gtkimagemenuitem.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkstock.h>
+#include <gtk/gtktooltips.h>
 #include <gtk/gtktogglebutton.h>
+#include <libgnome/gnome-i18n.h>
 
 typedef struct {
 	char *title;
 	GtkWidget *widget;
 	GtkWidget *menu_item;
+	GtkWidget *shortcut;
 } SidePanel;
 
 struct _NautilusSidePaneDetails {
@@ -49,7 +52,8 @@ struct _NautilusSidePaneDetails {
 	GtkWidget *menu;
 	
 	GtkWidget *title_label;
-	GtkWidget *current_image;
+	GtkWidget *shortcut_box;
+	GtkTooltips *tooltips;
 	GList *panels;
 };
 
@@ -92,28 +96,6 @@ side_panel_free (SidePanel *panel)
 }
 
 static void
-update_current_image (NautilusSidePane *side_pane,
-		      SidePanel *panel)
-{
-	GtkWidget *image;
-
-	image = gtk_image_menu_item_get_image 
-		(GTK_IMAGE_MENU_ITEM (panel->menu_item));
-
-	if (image) {
-		gtk_image_set_from_pixbuf 
-			(GTK_IMAGE (side_pane->details->current_image),
-			 gtk_image_get_pixbuf (GTK_IMAGE (image)));
-		gtk_widget_show (side_pane->details->current_image);
-	} else {
-		gtk_image_set_from_pixbuf 
-			(GTK_IMAGE (side_pane->details->current_image),
-			 NULL);
-		gtk_widget_hide (side_pane->details->current_image);
-	}	
-}
-
-static void
 switch_page_callback (GtkWidget *notebook,
 		      GtkNotebookPage *page,
 		      guint page_num,
@@ -127,10 +109,6 @@ switch_page_callback (GtkWidget *notebook,
 	panel = panel_for_widget (side_pane,
 				  gtk_notebook_get_nth_page (GTK_NOTEBOOK (side_pane->details->notebook),
 							     page_num));
-
-	if (panel && side_pane->details->current_image) {
-		update_current_image (side_pane, panel);
-	}
 
 	if (panel && side_pane->details->title_label) {
 		gtk_label_set_text (GTK_LABEL (side_pane->details->title_label),
@@ -374,12 +352,11 @@ nautilus_side_pane_init (GtkObject *object)
 	gtk_container_add (GTK_CONTAINER (close_button), image);
 	
 	gtk_box_pack_end (GTK_BOX (hbox), close_button, FALSE, FALSE, 0);
-	
-	side_pane->details->current_image = gtk_image_new ();
-	eel_add_weak_pointer (&side_pane->details->current_image);
-	gtk_widget_show (side_pane->details->current_image);
-	gtk_box_pack_end (GTK_BOX (hbox), 
-			  side_pane->details->current_image,
+
+	side_pane->details->shortcut_box = gtk_hbox_new (TRUE, 0);
+	gtk_widget_show (side_pane->details->shortcut_box);
+	gtk_box_pack_end (GTK_BOX (hbox),
+			  side_pane->details->shortcut_box,
 			  FALSE, FALSE, 0);
 
 	side_pane->details->notebook = gtk_notebook_new ();
@@ -409,6 +386,13 @@ nautilus_side_pane_init (GtkObject *object)
 				   menu_detach_callback);
 	
 	gtk_widget_show (side_pane->details->menu);
+
+	side_pane->details->tooltips = gtk_tooltips_new ();
+	g_object_ref (side_pane->details->tooltips);
+	gtk_object_sink (GTK_OBJECT (side_pane->details->tooltips));
+
+	gtk_tooltips_set_tip (side_pane->details->tooltips, close_button,
+			      _("Close the side pane"), NULL);
 }
 
 static void
@@ -421,6 +405,11 @@ nautilus_side_pane_destroy (GtkObject *object)
 	if (side_pane->details->menu) {
 		gtk_menu_detach (GTK_MENU (side_pane->details->menu));
 		side_pane->details->menu = NULL;
+	}
+
+	if (side_pane->details->tooltips) {
+		g_object_unref (side_pane->details->tooltips);
+		side_pane->details->tooltips = NULL;
 	}
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
@@ -522,32 +511,108 @@ nautilus_side_pane_remove_panel (NautilusSidePane *side_pane,
 }
 
 void
-nautilus_side_pane_set_panel_image (NautilusSidePane *side_pane,
-				    GtkWidget *widget,
-				    GtkWidget *image)
+nautilus_side_pane_show_panel (NautilusSidePane *side_pane,
+			       GtkWidget        *widget)
 {
 	SidePanel *panel;
-	int current_page;
+	int page_num;
 
 	g_return_if_fail (side_pane != NULL);
 	g_return_if_fail (NAUTILUS_IS_SIDE_PANE (side_pane));
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (GTK_IS_WIDGET (widget));
-	g_return_if_fail (image == NULL || GTK_IS_IMAGE (image));
+
+	panel = panel_for_widget (side_pane, widget);
+
+	g_return_if_fail (panel != NULL);
+	
+	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (side_pane->details->notebook),
+					  widget);
+	gtk_notebook_set_current_page (GTK_NOTEBOOK (side_pane->details->notebook),
+				       page_num);
+}
+
+
+static void
+shortcut_clicked_callback (GtkWidget *button,
+			   gpointer user_data)
+{
+	NautilusSidePane *side_pane;
+	GtkWidget *page;
+	
+	side_pane = NAUTILUS_SIDE_PANE (user_data);
+
+	page = GTK_WIDGET (g_object_get_data (G_OBJECT (button), "side-page"));
+	
+	nautilus_side_pane_show_panel (side_pane, page);
+}
+
+static GtkWidget *
+create_shortcut (NautilusSidePane *side_pane,
+		 SidePanel *panel,
+		 GdkPixbuf *pixbuf)
+{
+	GtkWidget *button;
+	GtkWidget *image;
+	char *tip;
+	
+	button = gtk_button_new ();
+	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
+
+	g_object_set_data (G_OBJECT (button), "side-page", panel->widget);
+	g_signal_connect (button, "clicked", 
+			  G_CALLBACK (shortcut_clicked_callback), side_pane);
+
+	tip = g_strdup_printf (_("Show %s"), panel->title);
+	gtk_tooltips_set_tip (side_pane->details->tooltips, button, tip, NULL);
+	g_free (tip);
+
+	image = gtk_image_new_from_pixbuf (pixbuf);
+	gtk_widget_show (image);
+	gtk_container_add (GTK_CONTAINER (button), image);
+
+	return button;
+}
+
+void
+nautilus_side_pane_set_panel_image (NautilusSidePane *side_pane,
+				    GtkWidget *widget,
+				    GdkPixbuf *pixbuf)
+{
+	SidePanel *panel;
+	GtkWidget *image;
+
+	g_return_if_fail (side_pane != NULL);
+	g_return_if_fail (NAUTILUS_IS_SIDE_PANE (side_pane));
+	g_return_if_fail (widget != NULL);
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+	g_return_if_fail (pixbuf == NULL || GDK_IS_PIXBUF (pixbuf));
 
 	panel = panel_for_widget (side_pane, widget);
 	
 	g_return_if_fail (panel != NULL);
 	
-	if (panel) {
-		gtk_image_menu_item_set_image 
-			(GTK_IMAGE_MENU_ITEM (panel->menu_item), image);
+	if (pixbuf) {
+		image = gtk_image_new_from_pixbuf (pixbuf);
+		gtk_widget_show (image);
+	} else {
+		image = NULL;
+	}
+		
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (panel->menu_item), 
+				       image);
+	
+	if (panel->shortcut) {
+		gtk_widget_destroy (panel->shortcut);
+		panel->shortcut = NULL;
+	}
 
-		current_page = gtk_notebook_get_current_page 
-			(GTK_NOTEBOOK (side_pane->details->notebook));
-		if (gtk_notebook_page_num (GTK_NOTEBOOK (side_pane->details->notebook), widget) == current_page) {
-			update_current_image (side_pane, panel);
-		}
+	if (pixbuf) {
+		panel->shortcut = create_shortcut (side_pane, panel, pixbuf);
+		gtk_widget_show (panel->shortcut);
+		gtk_box_pack_start (GTK_BOX (side_pane->details->shortcut_box),
+				    panel->shortcut,
+				    FALSE, FALSE, 0);
 	}
 }
 

@@ -1,3 +1,18 @@
+2002-09-23  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-side-pane.c: (switch_page_callback): Removed the
+	current image indicator.
+	(nautilus_side_pane_init), (nautilus_side_pane_destroy): Put a
+	tooltip on the close button.
+	(nautilus_side_pane_show_panel): New function.
+	(shortcut_clicked_callback),
+	(create_shortcut), (nautilus_side_pane_set_panel_image): Take a
+	GdkPixbuf instead of a GtkImage.  Create a shortcut on the side
+	pane for panels with images.
+	* src/nautilus-side-pane.h:
+	* src/nautilus-window-manage-views.c: (set_side_panel_image): Pass
+	a pixbuf rather than a GtkImage.
+
 2002-09-22  Dave Camp  <dave@ximian.com>
 
 	* src/nautilus-side-pane.h:
