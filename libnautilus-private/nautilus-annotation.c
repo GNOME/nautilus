@@ -471,7 +471,9 @@ calculate_checksum_callback (GnomeVFSAsyncHandle *handle,
 	}
 
 	/* accumulate the recently read data into the checksum */
-	md5_update (&digest_handle->digest_context, buffer, bytes_read);
+	if (bytes_read > 0) {
+		md5_update (&digest_handle->digest_context, buffer, bytes_read);
+	}
 	
 	/* Read more unless we are at the end of the file. */
 	if (bytes_read > 0 && result == GNOME_VFS_OK) {
@@ -572,9 +574,9 @@ process_digest_requests (void)
 			
 			/* dispose of queue entry */
 			nautilus_file_unref (file);
-			g_list_free_1 (current_entry);
-						
-			digests_in_progress	 += 1;
+				
+			g_list_free_1 (current_entry);		
+			digests_in_progress += 1;
 		}
 }
 
@@ -589,7 +591,7 @@ queue_file_digest_request (NautilusFile *file)
 		return;
 	}
 	nautilus_file_ref (file);
-	digest_request_queue = g_list_prepend (digest_request_queue, file);
+	digest_request_queue = g_list_append (digest_request_queue, file);
 	process_digest_requests ();
 }
 

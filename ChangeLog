@@ -1,5 +1,13 @@
 2001-03-22  Andy Hertzfeld  <andy@eazel.com>
 
+
+	* libnautilus-extensions/nautilus-annotation.c:
+	(calculate_checksum_callback), (process_digest_requests),
+	(queue_file_digest_request):
+	fixed race condition problem in the digest queuing
+	
+2001-03-22  Andy Hertzfeld  <andy@eazel.com>
+
 	merged with head to create post-1_0_8 branch
 	
 	* Makefile.am:
