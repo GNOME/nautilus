@@ -40,4 +40,14 @@ rsvg_ft_render_string (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 		       const double affine[6], int xy[2]);
 
 void
+rsvg_ft_measure_string (RsvgFTCtx *ctx,
+			RsvgFTFontHandle fh,
+			const char *str, 
+			unsigned int length,
+			double sx, double sy,
+			const double affine[6], 
+			int xy[2],
+			unsigned int dimensions[2]);
+
+void
 rsvg_ft_glyph_unref (RsvgFTGlyph *glyph);

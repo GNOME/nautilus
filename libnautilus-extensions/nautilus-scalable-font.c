@@ -613,9 +613,9 @@ nautilus_scalable_font_measure_text (const NautilusScalableFont	*font,
 				     guint			*text_width_out,
 				     guint			*text_height_out)
 {
-	RsvgFTGlyph	*glyph;
- 	double		affine[6];
-	int		glyph_xy[2];
+ 	double	affine[6];
+	int	glyph_xy[2];
+	unsigned int dimensions[2];
 
 	g_return_if_fail (NAUTILUS_IS_SCALABLE_FONT (font));
 	g_return_if_fail (text_width_out != NULL);
@@ -634,24 +634,18 @@ nautilus_scalable_font_measure_text (const NautilusScalableFont	*font,
 
 	art_affine_identity (affine);
 
-	/* FIXME bugzilla.eazel.com 2544: We need to change rsvg_ft_render_string() to accept 
-	 * a 'do_render' flag so that we can use to to compute metrics
-	 * without actually having to render
-	 */
-	glyph = rsvg_ft_render_string (global_rsvg_ft_context,
-				       font->detail->font_handle,
-				       text,
-				       text_length,
-				       font_width,
-				       font_height,
-				       affine,
-				       glyph_xy);
-	g_assert (glyph != NULL);
+	rsvg_ft_measure_string (global_rsvg_ft_context,
+				font->detail->font_handle,
+				text,
+				text_length,
+				font_width,
+				font_height,
+				affine,
+				glyph_xy,
+				dimensions);
 
-	*text_width_out = glyph->width;
-	*text_height_out = glyph->height;
-
-	rsvg_ft_glyph_unref (glyph);
+	*text_width_out = dimensions[0];
+	*text_height_out = dimensions[1];
 }
 
 guint

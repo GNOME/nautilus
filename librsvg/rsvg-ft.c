@@ -761,7 +761,7 @@ rsvg_ft_get_glyph_cached (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 }
 
 /**
- * rsvg_ft_render_string: Render a string into a glyph image.
+ * rsvg_ft_measure_or_render_string: Render a string into a glyph image.
  * @ctx: The Rsvg FT context.
  * @fh: Font handle for the font.
  * @str: String, in ISO-8859-1 encoding.
@@ -769,15 +769,27 @@ rsvg_ft_get_glyph_cached (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
  * @sy: Height of em in pixels.
  * @affine: Affine transformation.
  * @xy: Where to store the top left coordinates.
+ * &do_render: A boolean value indicating whether we should render the string.
+ * &dimensions: Where to store the resulting glyph's dimensions.
  *
  * Return value: A glyph containing the rendered string.
+ *
+ * This function does the rendering of a string into a glyph.  It can
+ * also work in measure only mode, so that no time is spent compositing
+ * bitmaps.  This is useful for callers that only want to measure a
+ * string.
+ * 
  **/
-RsvgFTGlyph *
-rsvg_ft_render_string (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
-		       const char *str, 
-		       unsigned int length,
-		       double sx, double sy,
-		       const double affine[6], int xy[2])
+static RsvgFTGlyph *
+rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx, 
+				  RsvgFTFontHandle fh,
+				  const char *str, 
+				  unsigned int length,
+				  double sx, double sy,
+				  const double affine[6], 
+				  int xy[2],
+				  gboolean do_render,
+				  unsigned int dimensions[2])
 {
 	RsvgFTFont *font;
 	RsvgFTGlyph *result;
@@ -796,6 +808,9 @@ rsvg_ft_render_string (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 	g_return_val_if_fail (ctx != NULL, NULL);
 	g_return_val_if_fail (str != NULL, NULL);
 	g_return_val_if_fail (length <= strlen (str), NULL);
+
+	dimensions[0] = 0;
+	dimensions[1] = 0;
 
 	font = rsvg_ft_font_resolve (ctx, fh);
 	if (font == NULL)
@@ -879,6 +894,24 @@ rsvg_ft_render_string (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 		}
 	}
 
+	xy[0] = bbox.x0;
+	xy[1] = bbox.y0;
+
+	dimensions[0] = (bbox.x1 - bbox.x0);
+	dimensions[1] = (bbox.y1 - bbox.y0);
+	
+	/* Skip the glyph compositing loop for the case when all we
+	 * are doing is measuring strings.
+	 */
+	if (!do_render) {
+		for (i = 0; i < n_glyphs; i++) {
+			rsvg_ft_glyph_unref (glyphs[i]);
+		}
+		g_free (glyphs);
+		g_free (glyph_xy);
+		return NULL;
+	}
+
 	rowstride = (bbox.x1 - bbox.x0 + 3) & -4;
 	buf = g_malloc0 (rowstride * (bbox.y1 - bbox.y0));
 
@@ -886,8 +919,6 @@ rsvg_ft_render_string (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 	result->refcnt = 1;
 	result->width = bbox.x1 - bbox.x0;
 	result->height = bbox.y1 - bbox.y0;
-	xy[0] = bbox.x0;
-	xy[1] = bbox.y0;
 	result->xpen = glyph_affine[4] - init_x;
 	result->ypen = glyph_affine[5] - init_y;
 	result->rowstride = rowstride;
@@ -904,6 +935,55 @@ rsvg_ft_render_string (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 	g_free (glyph_xy);
 
 	return result;
+}
+
+/**
+ * rsvg_ft_render_string: Render a string into a glyph image.
+ * @ctx: The Rsvg FT context.
+ * @fh: Font handle for the font.
+ * @str: String, in ISO-8859-1 encoding.
+ * @sx: Width of em in pixels.
+ * @sy: Height of em in pixels.
+ * @affine: Affine transformation.
+ * @xy: Where to store the top left coordinates.
+ *
+ * Return value: A glyph containing the rendered string.
+ **/
+RsvgFTGlyph *
+rsvg_ft_render_string (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
+		       const char *str, 
+		       unsigned int length,
+		       double sx, double sy,
+		       const double affine[6], int xy[2])
+{
+	unsigned int unused[2];
+	return rsvg_ft_measure_or_render_string (ctx, fh, str, length,
+						 sx, sy, affine, xy,
+						 TRUE, unused);
+}
+
+/**
+ * rsvg_ft_measure_string: Measure a string.
+ * @ctx: The Rsvg FT context.
+ * @fh: Font handle for the font.
+ * @str: String, in ISO-8859-1 encoding.
+ * @sx: Width of em in pixels.
+ * @sy: Height of em in pixels.
+ * @affine: Affine transformation.
+ * @xy: Where to store the top left coordinates.
+ * @dimensions: Where to store the string dimensions.
+ **/
+void
+rsvg_ft_measure_string (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
+			const char *str, 
+			unsigned int length,
+			double sx, double sy,
+			const double affine[6], 
+			int xy[2],
+			unsigned int dimensions[2])
+{
+	rsvg_ft_measure_or_render_string (ctx, fh, str, length, sx, sy,
+					  affine, xy, FALSE, dimensions);
 }
 
 #if 0

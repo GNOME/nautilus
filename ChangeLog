@@ -1,5 +1,19 @@
 2000-10-18  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* librsvg/rsvg-ft.c: (rsvg_ft_measure_or_render_string),
+	(rsvg_ft_render_string), (rsvg_ft_measure_string):
+	* librsvg/rsvg-ft.h:
+	Add new function to only measure a string without doing all the
+	rendering work.
+	
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_measure_text):
+	Use the new rsvg_ft string measuring api.
+
+	Fixes bug 2544.
+	
+2000-10-18  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-font-factory.c:
 	(font_hash_node_lookup_with_insertion),
 	(nautilus_font_factory_get_fallback_font):
