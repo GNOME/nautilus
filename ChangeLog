@@ -1,3 +1,14 @@
+2001-01-17  Rebecca Schulman  <rebecka@eazel.com>
+
+	* src/file-manager/nautilus-indexing-info.c:
+	(update_file_index_callback), (show_indexing_info_dialog):
+	Make changes necessary because of the slight change in the
+	medusa_indexing_service api, and change "hide when closed"
+	on the index status dialig to TRUE.  We still need to free
+	the dialog when we exit nautilus (Added a fixme) but 
+	setting this value to false caused us to reference
+	 the freed dialog. 
+
 2001-01-17  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bugs 5674, 5697 and 5699, Nautilus shows a broken image

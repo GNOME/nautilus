@@ -99,9 +99,9 @@ update_file_index_callback (GtkWidget *widget, gpointer data)
 	case MEDUSA_INDEXER_ERROR_NO_RESPONSE:
 		error = _("Error while trying to reindex: No response");
 		break;
-	case MEDUSA_INDEXER_ERROR_NO_INDEXER_PRESENT:
-		error = _("Error while trying to reindex: No indexer present");
-		break;
+	case MEDUSA_INDEXER_ERROR_INVALID_RESPONSE:
+                error = _("Error while trying to reindex: Internal Indexer Error.  Tell rebecka@eazel.com");
+                break;
 	}
 
 	if (error != NULL) {
@@ -220,7 +220,8 @@ show_indexing_info_dialog (void)
 	gnome_dialog = GNOME_DIALOG (indexing_info_dialog);
 
 	gnome_dialog_set_close (gnome_dialog, TRUE /*click_closes*/);
-	gnome_dialog_close_hides (gnome_dialog, FALSE /*just_hide*/);
+        /* FIXME: The dialog should be freed at exit */
+	gnome_dialog_close_hides (gnome_dialog, TRUE /*just_hide*/);
 
 	gtk_signal_connect (GTK_OBJECT (gnome_dialog), "destroy",
 			    GTK_SIGNAL_FUNC (gtk_widget_destroyed),
