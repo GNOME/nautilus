@@ -19,16 +19,25 @@
 #define USE_FILE_URLS
 
 char *BaseFilename=NULL;
+char *OverrideBaseFilename=NULL;
 
 /* print out the url for a info file */
 char *form_info_tag_href( char *nodefile, char *nodename )
 {
   char tmp[1024];
   char *escaped_nodename;
+  char *filename;
 
   escaped_nodename = escape_html_chars( nodename );
-  snprintf(tmp,sizeof(tmp),"HREF=\"info:%s#%s\"", 
-	   ((BaseFilename) ? BaseFilename : nodefile), escaped_nodename );
+  if (!strcmp(BaseFilename, nodefile))
+	  if (OverrideBaseFilename)
+		  filename = OverrideBaseFilename;
+	  else 
+		  filename = BaseFilename;
+  else
+	  filename = nodefile;
+
+  snprintf(tmp,sizeof(tmp),"HREF=\"info:%s#%s\"", filename, escaped_nodename );
   if (escaped_nodename)
     g_free(escaped_nodename);
   return g_strdup(tmp);
@@ -112,28 +121,17 @@ void write_node_link_html( FILE *f, char *nodefile, char *refname, char *ref )
   char *converted_nodename;
   char *href;
 
-  if (ref)
-    {
-      if (strcasecmp(ref, "(dir)"))
-	{
+  if (ref) {
+      if (strcasecmp(ref, "(dir)")) {
 	  converted_nodename = g_strdup( ref );
 	  map_spaces_to_underscores( converted_nodename );
 	  href = form_info_tag_href(nodefile, converted_nodename);
 	  fprintf(f,"<A %s>%s%s</A>\n", href, refname, ref);
 	  g_free(href);
-#if 0
-	  fprintf(f,"<A HREF=\"../%s/%s.html\">%s%s</A>\n", 
-	      nodefile, converted_nodename, refname, ref);
-#endif
 	  g_free(converted_nodename);
-	}
-      else
-	{
-#if 0
-	  fprintf(f,"<A HREF=\"../dir/Top.html\">%s(dir)</A>\n",refname);
-#endif
+	} else {
 	  href = form_info_tag_href("dir", "Top");
-	  fprintf(f,"<A %s>%s(dir)</A>\n", href, refname);
+	  fprintf(f,"<A %s>%s(dir)</A>\n",href, refname);
 	  g_free(href);
 
 	}
@@ -545,6 +543,8 @@ void dump_html_for_node( NODE *node )
   else if (body_open)
     close_body_text_html( f );
 
+  /* put nav links at the bottom */
+  make_nav_links(f, node);
 #if 0
   fprintf(f,"</BODY>\n</HTML>\n");
 #endif

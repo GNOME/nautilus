@@ -40,11 +40,14 @@ NODE *parse_node_line( NODE *node, char * line )
 
   temp = line;
 
+  /* have trouble on (dir) file which has a slightly diferrent 'File:' line */
+  /* so currently we have a hack here                                       */
   if (!(result=parse_node_label( &temp, "File:", 0)))
     return NULL;
   node->filename = result;
 
-  if (!(result=parse_node_label( &temp, "Node:", 1)))
+  /* don't allow_eof if we are looking at the 'dir' file, its a special case */
+  if (!(result=parse_node_label(&temp,"Node:",strcmp(node->filename, "dir"))))
     return NULL;
   node->nodename = result;
 
@@ -86,8 +89,11 @@ char *parse_node_label( char **line, char *label, int allow_eof )
       if (end == NULL)
 	end = strstr( start, "\n" );
     }
-  else
+  else {
     end = strstr( start, "," );
+    if (!end)
+	    end = strstr( start, "\t" ); /* might help (dir) files */
+  }
 
   if (end == NULL)
     return NULL;

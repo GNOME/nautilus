@@ -21,6 +21,8 @@ main(int argc, char **argv)
 	int result;
 	int foundit=0;
 
+	char convanc[1024];
+
 	NODE *node;
 	
 	if (!be_quiet)
@@ -46,16 +48,18 @@ main(int argc, char **argv)
 
 			*(t+1) = '\0';
 
+			/* convert anchor so matching works */
+			map_spaces_to_underscores(requested_nodename);
 #ifdef DEBUG			
 			fprintf(stderr, "outputting node %s\n",
 				requested_nodename);
 #endif			
 			aptr -= 2;
 		} else if (!strcmp(argv[argc-aptr+1], "-b")) {
-			BaseFilename = strdup(argv[argc-aptr+2]);
+			OverrideBaseFilename = strdup(argv[argc-aptr+2]);
 #ifdef DEBUG			
 			fprintf(stderr, "outputting basefile %s\n",
-			        BaseFilename);
+			        OverrideBaseFilename);
 #endif			
 			aptr -= 2;
 		}
@@ -116,8 +120,10 @@ main(int argc, char **argv)
 			}
 			
 			/* see if this is the requested node name */
+			strncpy(convanc, node->nodename, sizeof(convanc));
+			map_spaces_to_underscores(convanc);
 			if (requested_nodename && 
-			    strcmp(requested_nodename, node->nodename)) {
+			    strcmp(requested_nodename, convanc)) {
 #ifdef DEBUG			    
 				fprintf(stderr, "skipping ->%s<-\n",
 					node->nodename);
@@ -128,7 +134,8 @@ main(int argc, char **argv)
 
 			foundit = 1;
 			strcpy(work_node,node->nodename);
-			
+
+			BaseFilename = node->filename;
 #ifdef DEBUG
 			printf("NEW NODE\n");
 			printf("\tFile:|%s|\n\tNode:|%s|\n\tNext:|%s|\n",
@@ -146,6 +153,7 @@ main(int argc, char **argv)
 					free(node->contents);
 				
 				free(node);
+				BaseFilename = NULL;
 			}
 		}
 		else

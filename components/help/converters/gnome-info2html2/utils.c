@@ -241,7 +241,7 @@ void map_spaces_to_underscores( char *str )
       case '\t':
       case '`':
       case '\'':
-      case '/':
+      case '/': 
       case '\\':
       case '"':
       case '.':

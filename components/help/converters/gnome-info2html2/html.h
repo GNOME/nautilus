@@ -7,6 +7,7 @@
 #define HEADER_SIZE_2 "H2"
 
 extern char *BaseFilename;
+extern char *OverrideBaseFilename;
 
 void dump_html_for_node( NODE *node );
 
