@@ -110,9 +110,14 @@ nautilus_clipboard_info_initialize_class (NautilusClipboardInfoClass *klass)
 void
 nautilus_clipboard_info_destroy (NautilusClipboardInfo *info)
 {
-	
+
 	g_free (info->details->component_name);
 	gtk_widget_unref (info->details->clipboard_owner);
+
+	if (info->details->view != NULL) {
+		bonobo_object_unref (BONOBO_OBJECT (info->details->view));
+	}
+
 	g_free (info->details);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (GTK_OBJECT (info))); 
@@ -163,7 +168,15 @@ nautilus_clipboard_info_get_clipboard_owner (NautilusClipboardInfo *info)
 void
 nautilus_clipboard_info_set_view_frame (NautilusClipboardInfo *info, NautilusViewFrame *view)
 {
+	g_return_if_fail (info != NULL);
+	g_return_if_fail (NAUTILUS_CLIPBOARD_INFO (info));
+	g_return_if_fail (view != NULL);
+	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
+
+	bonobo_object_ref (BONOBO_OBJECT (view));
+	
 	info->details->view = view;
+
 }
 
 NautilusViewFrame*

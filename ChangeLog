@@ -1,5 +1,17 @@
 2000-05-08  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus/nautilus-clipboard.c:
+	(nautilus_clipboard_info_destroy),
+	(nautilus_clipboard_info_set_view_frame): 
+	Reference the view on set_view_frame() and unreference on
+	destruction.  This fixes a problem where the clipboard code was
+	trying to use a view that has already been trashed.
+	
+	Thanks to Carbamide <linuxfan@ionet.net> for finding the problem.
+	
+
+2000-05-08  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* configure.in,
 	  HACKING: Remove libglade check and hacking blurb.  We dont
 	use libglade no more,
