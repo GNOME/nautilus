@@ -12,13 +12,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-06-01 09:36+0200\n"
-"PO-Revision-Date: 2004-02-24 23:27+0900\n"
+"POT-Creation-Date: 2004-06-03 00:59+0900\n"
+"PO-Revision-Date: 2004-06-03 00:56+0900\n"
 "Last-Translator: Takeshi AIHANA <aihana@gnome.gr.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -1379,11 +1380,12 @@ msgid ""
 msgstr "TRUE にすると、ゴミ箱を指すアイコンがデスクトップ上に表示されます。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
-#, fuzzy
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
-msgstr "TRUE にすると、ゴミ箱を指すアイコンがデスクトップ上に表示されます。"
+msgstr ""
+"TRUE にすると、マウント済みのボリュームを指すアイコンがデスクトップ上に表示さ"
+"れます。"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
@@ -1488,9 +1490,8 @@ msgid "Show location bar in new windows"
 msgstr "新しいウィンドウに場所バーを表示する"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
-#, fuzzy
 msgid "Show mounted volumes on the desktop"
-msgstr "デスクトップにホーム・アイコンを表示する"
+msgstr "デスクトップにマウントしたボリュームを表示する"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid "Show side pane in new windows"
@@ -2145,6 +2146,10 @@ msgid "Replace _All"
 msgstr "全て置き換える(_A)"
 
 #. appended to new link file
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4735
 #, c-format
@@ -2199,6 +2204,9 @@ msgid " (another copy)"
 msgstr " (別のコピー)"
 
 #. localizers: tag used to detect the x11th copy of a file
+#. localizers: tag used to detect the x12th copy of a file
+#. localizers: tag used to detect the x13th copy of a file
+#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2234,6 +2242,9 @@ msgid "%s (another copy)%s"
 msgstr "%s (別のコピー)%s"
 
 #. localizers: appended to x11th file copy
+#. localizers: appended to x12th file copy
+#. localizers: appended to x13th file copy
+#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -2862,7 +2873,7 @@ msgid "Display _files when they are clicked"
 msgstr "クリック時にファイルを表示する(_F)"
 
 #: libnautilus-private/nautilus-global-preferences.c:159
-#: src/nautilus-file-management-properties.glade.h:68
+#: src/nautilus-file-management-properties.glade.h:69
 msgid "_Ask each time"
 msgstr "毎回確認する(_A)"
 
@@ -2876,13 +2887,13 @@ msgstr "ファイル名と属性でファイルを検索します"
 
 #: libnautilus-private/nautilus-global-preferences.c:178
 #: src/file-manager/fm-icon-container.c:499
-#: src/nautilus-file-management-properties.glade.h:52
+#: src/nautilus-file-management-properties.glade.h:53
 msgid "Icon View"
 msgstr "アイコン表示"
 
 #: libnautilus-private/nautilus-global-preferences.c:179
 #: src/file-manager/fm-list-view.c:1120
-#: src/nautilus-file-management-properties.glade.h:54
+#: src/nautilus-file-management-properties.glade.h:55
 msgid "List View"
 msgstr "リスト表示"
 
@@ -2891,27 +2902,27 @@ msgid "Manually"
 msgstr "手動"
 
 #: libnautilus-private/nautilus-global-preferences.c:186
-#: src/nautilus-file-management-properties.glade.h:42
+#: src/nautilus-file-management-properties.glade.h:43
 msgid "By Name"
 msgstr "名前順"
 
 #: libnautilus-private/nautilus-global-preferences.c:187
-#: src/nautilus-file-management-properties.glade.h:43
+#: src/nautilus-file-management-properties.glade.h:44
 msgid "By Size"
 msgstr "サイズ順"
 
 #: libnautilus-private/nautilus-global-preferences.c:188
-#: src/nautilus-file-management-properties.glade.h:44
+#: src/nautilus-file-management-properties.glade.h:45
 msgid "By Type"
 msgstr "種類順"
 
 #: libnautilus-private/nautilus-global-preferences.c:189
-#: src/nautilus-file-management-properties.glade.h:41
+#: src/nautilus-file-management-properties.glade.h:42
 msgid "By Modification Date"
 msgstr "更新日時順"
 
 #: libnautilus-private/nautilus-global-preferences.c:190
-#: src/nautilus-file-management-properties.glade.h:40
+#: src/nautilus-file-management-properties.glade.h:41
 msgid "By Emblems"
 msgstr "エンブレム順"
 
@@ -3407,6 +3418,7 @@ msgstr "%s のオープン中"
 #. TODO: These strings suck pretty badly, but we're in string-freeze,
 #. * and I found these in other places to reuse. We should make them
 #. * better later.
+#. Shouldn't have gotten this error unless there's a : separator.
 #: libnautilus-private/nautilus-program-choosing.c:969
 #: libnautilus-private/nautilus-program-choosing.c:977
 #: libnautilus-private/nautilus-program-choosing.c:982
@@ -4081,7 +4093,7 @@ msgid "There is nothing on the clipboard to paste."
 msgstr "貼り付けるものがクリップボードにはありません。"
 
 #: src/file-manager/fm-directory-view.c:5050
-#: src/file-manager/fm-directory-view.c:6128
+#: src/file-manager/fm-directory-view.c:6134
 msgid "Mount Error"
 msgstr "マウント・エラー"
 
@@ -4218,38 +4230,34 @@ msgstr "表示する(_D)"
 msgid "_Run"
 msgstr "実行する(_R)"
 
-#: src/file-manager/fm-directory-view.c:6264
+#: src/file-manager/fm-directory-view.c:6270
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "\"%s\" を開いています。"
 
-#: src/file-manager/fm-directory-view.c:6271
+#: src/file-manager/fm-directory-view.c:6277
 msgid "Cancel Open?"
 msgstr "キャンセルしますか？"
 
 #: src/file-manager/fm-ditem-page.c:338 src/file-manager/fm-ditem-page.c:349
-#, fuzzy
 msgid "Comment"
-msgstr "Covalent"
+msgstr "コメント"
 
 #: src/file-manager/fm-ditem-page.c:341
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: src/file-manager/fm-ditem-page.c:345
-#, fuzzy
 msgid "Link"
 msgstr "リンク"
 
 #: src/file-manager/fm-ditem-page.c:352
-#, fuzzy
 msgid "Command"
-msgstr "コンパック"
+msgstr "コマンド"
 
 #: src/file-manager/fm-ditem-page.c:356
-#, fuzzy
 msgid "Launcher"
-msgstr "ランチャの編集"
+msgstr "ランチャ"
 
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
@@ -5250,6 +5258,7 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
+#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:583 src/nautilus-application.c:601
 #: src/nautilus-application.c:608
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -5284,7 +5293,7 @@ msgstr ""
 "Nautilus を再起動することで問題が解決するかもしれません。"
 
 #: src/nautilus-bookmarks-window.c:150
-#: src/nautilus-file-management-properties.c:219
+#: src/nautilus-file-management-properties.c:220
 #: src/nautilus-property-browser.c:1456 src/nautilus-window-menus.c:647
 #, c-format
 msgid ""
@@ -5351,7 +5360,7 @@ msgstr "接続(_O)"
 msgid "Desktop"
 msgstr "デスクトップ"
 
-#: src/nautilus-file-management-properties.c:297
+#: src/nautilus-file-management-properties.c:298
 msgid "None"
 msgstr "なし"
 
@@ -5372,7 +5381,6 @@ msgid "500 KB"
 msgstr "500 Kバイト"
 
 #: src/nautilus-file-management-properties.glade.h:24
-#, fuzzy
 msgid "<span weight=\"bold\">Behavior</span>"
 msgstr "<span weight=\"bold\">動作</span>"
 
@@ -5429,14 +5437,18 @@ msgid "Always"
 msgstr "常に"
 
 #: src/nautilus-file-management-properties.glade.h:38
+msgid "Always open in _browser windows"
+msgstr "常にブラウザ・ウィンドウで開く(_B)"
+
+#: src/nautilus-file-management-properties.glade.h:39
 msgid "Ask before _emptying the Trash or deleting files"
 msgstr "ゴミ箱を空にするまたはファイルを削除する前に確認する(_A)"
 
-#: src/nautilus-file-management-properties.glade.h:39
+#: src/nautilus-file-management-properties.glade.h:40
 msgid "Behavior"
 msgstr "動作"
 
-#: src/nautilus-file-management-properties.glade.h:45
+#: src/nautilus-file-management-properties.glade.h:46
 msgid ""
 "Choose the order of information to appear beneath icon names. More "
 "information will appear when zooming in closer."
@@ -5445,151 +5457,151 @@ msgstr ""
 "情報の順序を選択して下さい。\n"
 "拡大するとより多くの情報が表示されます。"
 
-#: src/nautilus-file-management-properties.glade.h:46
+#: src/nautilus-file-management-properties.glade.h:47
 msgid "Choose the order of information to appear in the list view."
 msgstr "このフォルダで表示する情報の順番を選択して下さい。"
 
-#: src/nautilus-file-management-properties.glade.h:47
+#: src/nautilus-file-management-properties.glade.h:48
 msgid "Count _number of items:"
 msgstr "アイテム数のカウント(_N):"
 
-#: src/nautilus-file-management-properties.glade.h:48
+#: src/nautilus-file-management-properties.glade.h:49
 msgid "Default _zoom level:"
 msgstr "デフォルトのズームレベル(_Z):"
 
-#: src/nautilus-file-management-properties.glade.h:49
+#: src/nautilus-file-management-properties.glade.h:50
 msgid "File Management Preferences"
 msgstr "ファイル管理の設定"
 
-#: src/nautilus-file-management-properties.glade.h:50
+#: src/nautilus-file-management-properties.glade.h:51
 msgid "I_nclude a Delete command that bypasses Trash"
 msgstr "ゴミ箱を経由しない削除コマンドを含める(_I)"
 
-#: src/nautilus-file-management-properties.glade.h:51
+#: src/nautilus-file-management-properties.glade.h:52
 msgid "Icon Captions"
 msgstr "アイコンの見出し"
 
-#: src/nautilus-file-management-properties.glade.h:53
+#: src/nautilus-file-management-properties.glade.h:54
 msgid "List Columns"
 msgstr "一覧の項目"
 
-#: src/nautilus-file-management-properties.glade.h:55
+#: src/nautilus-file-management-properties.glade.h:56
 msgid "Local Files Only"
 msgstr "ローカルのファイルのみ"
 
-#: src/nautilus-file-management-properties.glade.h:56
+#: src/nautilus-file-management-properties.glade.h:57
 msgid "MIME type"
 msgstr "MIME 型"
 
-#: src/nautilus-file-management-properties.glade.h:57
+#: src/nautilus-file-management-properties.glade.h:58
 msgid "Never"
 msgstr "しない"
 
-#: src/nautilus-file-management-properties.glade.h:58
+#: src/nautilus-file-management-properties.glade.h:59
 msgid "Preview"
 msgstr "プレビュー"
 
-#: src/nautilus-file-management-properties.glade.h:59
+#: src/nautilus-file-management-properties.glade.h:60
 msgid "Preview _sound files:"
 msgstr "サウンド・ファイルの演奏(_S):"
 
-#: src/nautilus-file-management-properties.glade.h:60
+#: src/nautilus-file-management-properties.glade.h:61
 msgid "Show _only folders"
 msgstr "フォルダのみ表示する(_O)"
 
-#: src/nautilus-file-management-properties.glade.h:61
+#: src/nautilus-file-management-properties.glade.h:62
 msgid "Show _thumbnails:"
 msgstr "サムネイルの表示(_T):"
 
-#: src/nautilus-file-management-properties.glade.h:62
+#: src/nautilus-file-management-properties.glade.h:63
 msgid "Show hidden and _backup files"
 msgstr "隠しファイルとバックアップ・ファイルを表示する(_B)"
 
-#: src/nautilus-file-management-properties.glade.h:63
+#: src/nautilus-file-management-properties.glade.h:64
 msgid "Show te_xt in icons:"
 msgstr "アイコン内のテキスト表示(_X):"
 
-#: src/nautilus-file-management-properties.glade.h:64
+#: src/nautilus-file-management-properties.glade.h:65
 msgid "Sort _folders before files"
 msgstr "フォルダをファイルより前に配置する(_F)"
 
-#: src/nautilus-file-management-properties.glade.h:65
+#: src/nautilus-file-management-properties.glade.h:66
 msgid "View _new folders using:"
 msgstr "新しいフォルダの表示形式(_N):"
 
-#: src/nautilus-file-management-properties.glade.h:66
+#: src/nautilus-file-management-properties.glade.h:67
 msgid "Views"
 msgstr "表示"
 
-#: src/nautilus-file-management-properties.glade.h:67
+#: src/nautilus-file-management-properties.glade.h:68
 msgid "_Arrange items:"
 msgstr "アイテムの配置方式(_A):"
 
-#: src/nautilus-file-management-properties.glade.h:69
+#: src/nautilus-file-management-properties.glade.h:70
 msgid "_Default zoom level:"
 msgstr "デフォルトのズームレベル(_D):"
 
-#: src/nautilus-file-management-properties.glade.h:70
+#: src/nautilus-file-management-properties.glade.h:71
 msgid "_Double click to activate items"
 msgstr "ダブル・クリックでアイテムを起動する(_D)"
 
-#: src/nautilus-file-management-properties.glade.h:71
+#: src/nautilus-file-management-properties.glade.h:72
 msgid "_Only for files smaller than:"
 msgstr "ファイルの最大サイズ(_O):"
 
-#: src/nautilus-file-management-properties.glade.h:72
+#: src/nautilus-file-management-properties.glade.h:73
 msgid "_Run executable text files when they are clicked"
 msgstr "クリックしたら実行可能なテキストファイルを実行する(_R)"
 
-#: src/nautilus-file-management-properties.glade.h:73
+#: src/nautilus-file-management-properties.glade.h:74
 msgid "_Single click to activate items"
 msgstr "シングル・クリックでアイテムを起動する(_S)"
 
-#: src/nautilus-file-management-properties.glade.h:74
+#: src/nautilus-file-management-properties.glade.h:75
 msgid "_Text beside icons"
 msgstr "アイコンの横にラベルを配置する(_T)"
 
-#: src/nautilus-file-management-properties.glade.h:75
+#: src/nautilus-file-management-properties.glade.h:76
 msgid "_Use compact layout"
 msgstr "コンパクトな配置にする(_U)"
 
-#: src/nautilus-file-management-properties.glade.h:76
+#: src/nautilus-file-management-properties.glade.h:77
 msgid "_View executable text files when they are clicked"
 msgstr "クリックしたら中身を表示する(_V)"
 
-#: src/nautilus-file-management-properties.glade.h:77
+#: src/nautilus-file-management-properties.glade.h:78
 msgid "date accessed"
 msgstr "アクセス日"
 
-#: src/nautilus-file-management-properties.glade.h:78
+#: src/nautilus-file-management-properties.glade.h:79
 msgid "date modified"
 msgstr "更新日時"
 
-#: src/nautilus-file-management-properties.glade.h:79
+#: src/nautilus-file-management-properties.glade.h:80
 msgid "group"
 msgstr "グループ"
 
-#: src/nautilus-file-management-properties.glade.h:80
+#: src/nautilus-file-management-properties.glade.h:81
 msgid "none"
 msgstr "なし"
 
-#: src/nautilus-file-management-properties.glade.h:81
+#: src/nautilus-file-management-properties.glade.h:82
 msgid "octal permissions"
 msgstr "8 進数表記のアクセス権"
 
-#: src/nautilus-file-management-properties.glade.h:82
+#: src/nautilus-file-management-properties.glade.h:83
 msgid "owner"
 msgstr "所有者"
 
-#: src/nautilus-file-management-properties.glade.h:83
+#: src/nautilus-file-management-properties.glade.h:84
 msgid "permissions"
 msgstr "アクセス権"
 
-#: src/nautilus-file-management-properties.glade.h:84
+#: src/nautilus-file-management-properties.glade.h:85
 msgid "size"
 msgstr "サイズ"
 
-#: src/nautilus-file-management-properties.glade.h:85
+#: src/nautilus-file-management-properties.glade.h:86
 msgid "type"
 msgstr "タイプ"
 
@@ -5708,22 +5720,27 @@ msgid "Nautilus"
 msgstr "Nautilus"
 
 #: src/nautilus-main.c:259
+#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus: --check オプションには URI を指定できません。\n"
 
 #: src/nautilus-main.c:263
+#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check オプションには他のオプションを指定できません。\n"
 
 #: src/nautilus-main.c:267
+#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus: --quit オプションには URI を指定できません。\n"
 
 #: src/nautilus-main.c:271
+#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus: --restart オプションには URI を指定できません。\n"
 
 #: src/nautilus-main.c:275
+#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry オプションには複数の URI を指定できません。\n"
 
@@ -6355,18 +6372,16 @@ msgid "Show %s"
 msgstr "%s の表示"
 
 #: src/nautilus-spatial-window-ui.xml.h:2
-#, fuzzy
 msgid "Clos_e All Folders"
-msgstr "全ての親フォルダを閉じる(_A)"
+msgstr "全てのフォルダを閉じる(_E)"
 
 #: src/nautilus-spatial-window-ui.xml.h:3
 msgid "Close P_arent Folders"
 msgstr "全ての親フォルダを閉じる(_A)"
 
 #: src/nautilus-spatial-window-ui.xml.h:4
-#, fuzzy
 msgid "Close all folder windows"
-msgstr "全てのナビゲーション・ウィンドウを閉じます"
+msgstr "全てのフォルダ・ウィンドウを閉じます"
 
 #: src/nautilus-spatial-window-ui.xml.h:5
 msgid "Close this folder's parents"
@@ -6546,9 +6561,9 @@ msgid "Display this location with \"%s\""
 msgstr "\"%s\" でこの場所を表示します"
 
 #: src/nautilus-window.c:1157
-#, fuzzy, c-format
+#, c-format
 msgid "%s on %s"
-msgstr "%s (コピー)%s"
+msgstr "%s / %s"
 
 #: src/nautilus-window.c:1598
 msgid "Application ID"
@@ -6597,562 +6612,3 @@ msgstr "ネットワーク・サーバ"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Nautilus でお使いのネットワークのサーバを表示します"
-
-#~ msgid "Error while moving. "
-#~ msgstr "移動中にエラーが発生しました。"
-
-#~ msgid ""
-#~ "If you would like to enable fast searches, you can edit the file %s as "
-#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-#~ "To start indexing and search services right away, you should also run the "
-#~ "following commands as root:\n"
-#~ "\n"
-#~ "medusa-indexd\n"
-#~ "medusa-searchd\n"
-#~ "\n"
-#~ "Fast searches will not be available until an initial index of your files "
-#~ "has been created.  This may take a long time."
-#~ msgstr ""
-#~ "高速検索を有効すると、root でファイル %s を編集することができます。フラグ"
-#~ "を \"はい\" に設定すると、Medusa サービスが ON になります。\n"
-#~ "インデックス生成と検索サービスを起動する場合は root になって次のコマンドを"
-#~ "実行して下さい:\n"
-#~ "\n"
-#~ "medusa-indexd\n"
-#~ "medusa-searchd\n"
-#~ "\n"
-#~ "ファイルのインデックスが生成されるまで高速検索は有効になりません。この作業"
-#~ "は時間がかかります。"
-
-#~ msgid ""
-#~ "Medusa, the application that performs searches, cannot be found on your "
-#~ "system.  If you have compiled nautilus yourself, you will need to install "
-#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
-#~ "available at ftp://ftp.gnome.org)\n"
-#~ "If you are using a packaged version of Nautilus, fast searching is not "
-#~ "available.\n"
-#~ msgstr ""
-#~ "お使いのシステムに検索を行うアプリケーション Medusa が見つかりません。も"
-#~ "し Nautilus をご自身でコンパイルした場合、Medusa をインストールして "
-#~ "Nautilus を再コンパイルする必要があります (Medusa は ftp://ftp.gnome.org/ "
-#~ "にあります)。\n"
-#~ "もしパッケージ式の Nautilus を使っている場合は、高速検索は利用できませ"
-#~ "ん。\n"
-
-#~ msgid "[Items ]containing \"%s\" in their names"
-#~ msgstr "[Items ]名前に \"%s\" を含む"
-
-#~ msgid "[Items ]starting with \"%s\""
-#~ msgstr "[Items ] \"%s\" で始まる"
-
-#~ msgid "[Items ]ending with %s"
-#~ msgstr "[Items ] \"%s\" で終わる"
-
-#~ msgid "[Items ]not containing \"%s\" in their names"
-#~ msgstr "[Items ] 名前に \"%s\" を含まない"
-
-#~ msgid "[Items ]matching the regular expression \"%s\""
-#~ msgstr "[Items ] 正規表現 \"%s\" にマッチする"
-
-#~ msgid "[Items ]matching the file pattern \"%s\""
-#~ msgstr "[Items ] ファイル・パターン \"%s\" にマッチする"
-
-#~ msgid "[Items that are ]regular files"
-#~ msgstr "[Items that are ]普通のファイル"
-
-#~ msgid "[Items that are ]text files"
-#~ msgstr "[Items that are ]テキスト・ファイル"
-
-#~ msgid "[Items that are ]applications"
-#~ msgstr "[Items that are ]アプリケーション"
-
-#~ msgid "[Items that are ]folders"
-#~ msgstr "[Items that are ]フォルダ"
-
-#~ msgid "[Items that are ]music"
-#~ msgstr "[Items that are ]音楽"
-
-#~ msgid "[Items ]that are not %s"
-#~ msgstr "[Items ]%s ではないもの"
-
-#~ msgid "[Items ]that are %s"
-#~ msgstr "[Items ]%s であるもの"
-
-#~ msgid "[Items ]not owned by \"%s\""
-#~ msgstr "[Items ]\"%s\" が所有者ではないもの"
-
-#~ msgid "[Items ]owned by \"%s\""
-#~ msgstr "[Items ]\"%s\" が所有者であるもの"
-
-#~ msgid "[Items ]with owner UID \"%s\""
-#~ msgstr "[Items ]所有者 UID が \"%s\" であるもの"
-
-#~ msgid "[Items ]with owner UID other than \"%s\""
-#~ msgstr "[Items ]所有者 UID が \"%s\" 以外のもの"
-
-#~ msgid "[Items ]larger than %s bytes"
-#~ msgstr "[Items ]%s バイトより大きいもの"
-
-#~ msgid "[Items ]smaller than %s bytes"
-#~ msgstr "[Items ]%s バイトより小さいもの"
-
-#~ msgid "[Items ]of %s bytes"
-#~ msgstr "[Items ]%s バイトのもの"
-
-#~ msgid "[Items ]modified today"
-#~ msgstr "[Items ]今日修正されたもの"
-
-#~ msgid "[Items ]modified yesterday"
-#~ msgstr "[Items ]昨日修正されたもの"
-
-#~ msgid "[Items ]modified on %s"
-#~ msgstr "[Items ]%sに修正されたもの"
-
-#~ msgid "[Items ]not modified on %s"
-#~ msgstr "[Items ]%sに修正されていないもの"
-
-#~ msgid "[Items ]modified before %s"
-#~ msgstr "[Items ]%sより前に修正されたもの"
-
-#~ msgid "[Items ]modified after %s"
-#~ msgstr "[Items ]%sより後に修正されたもの"
-
-#~ msgid "[Items ]modified within a week of %s"
-#~ msgstr "[Items ]%sの週に修正されたもの"
-
-#~ msgid "[Items ]modified within a month of %s"
-#~ msgstr "[Items ]%sの月に修正されたもの"
-
-#~ msgid "[Items ]marked with \"%s\""
-#~ msgstr "[Items ]\"%s\"でマークされたもの"
-
-#~ msgid "[Items ]not marked with \"%s\""
-#~ msgstr "[Items ]\"%s\"でマークされていないもの"
-
-#~ msgid "[Items ]with all the words \"%s\""
-#~ msgstr "[Items ]\"%s\" が全て含まれるもの"
-
-#~ msgid "[Items ]containing one of the words \"%s\""
-#~ msgstr "[Items ]名前に \"%s\" を一つ含むもの"
-
-#~ msgid "[Items ]without all the words \"%s\""
-#~ msgstr "[Items ]\"%s\" が一つも含まれないもの"
-
-#~ msgid "[Items ]without any of the words \"%s\""
-#~ msgstr "[Items ]\"%s\" のどの単語も含まないもの"
-
-#~ msgid ""
-#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
-#~ msgstr "[Items 400K より大きい] と [単語 \"apple orange\" がないもの]"
-
-#~ msgid ""
-#~ "[Items larger than 400K], [owned by root and without all the words "
-#~ "\"apple orange\"]"
-#~ msgstr ""
-#~ "[Items 400K より大きい] と [root が所有していて単語 \"apple orange\" がな"
-#~ "いもの]"
-
-#~ msgid "Items %s"
-#~ msgstr "アイテム %s"
-
-#~ msgid "Items containing \"stuff\" in their names"
-#~ msgstr "名前の中に \"stuff\" を含むアイテム"
-
-#~ msgid "Items that are regular files"
-#~ msgstr "普通のファイル"
-
-#~ msgid "Items containing \"stuff\" in their names and that are regular files"
-#~ msgstr "アイテムの名前に \"stuff\" を含む普通のファイル"
-
-#~ msgid ""
-#~ "Items containing \"stuff\" in their names, that are regular files and "
-#~ "smaller than 2000 bytes"
-#~ msgstr ""
-#~ "名前の中に \"stuff\" を含むアイテムで 2000 バイト以下の普通のファイル"
-
-#~ msgid "Items containing \"medusa\" in their names and that are folders"
-#~ msgstr "名前の中に \"medusa\" を含むアイテムでフォルダ"
-
-#~ msgid ""
-#~ "Search results may not include items modified after %s, when your drive "
-#~ "was last indexed."
-#~ msgstr ""
-#~ "検索結果には最後にインデックス生成した際に、%s した後に変更したアイテムは"
-#~ "含まれていません。"
-
-#~ msgid "Search Results"
-#~ msgstr "検索結果"
-
-#~ msgid "Sorry, but the Medusa search service is not available."
-#~ msgstr "Medusa 検索サービスは利用できません。"
-
-#~ msgid "Medusa is not installed."
-#~ msgstr "Medusa がインストールされていません。"
-
-#~ msgid "Search Service Not Available"
-#~ msgstr "検索サービスはご利用になれません"
-
-#~ msgid ""
-#~ "The search you have selected is newer than the index on your system.  The "
-#~ "search will return no results right now."
-#~ msgstr ""
-#~ "お使いのシステムのインデックスよりも新しい検索を選択しました。すぐに検索し"
-#~ "ても結果は何もありません。"
-
-#~ msgid ""
-#~ "You can create a new index by running \"medusa-indexd\" as root on the "
-#~ "command line."
-#~ msgstr ""
-#~ "コマンド・ラインから root 権限にて \"medusa-indexd\" を実行して、新しいイ"
-#~ "ンデックスを生成することができます。"
-
-#~ msgid "Search For Items That Are Too New"
-#~ msgstr "新しすぎるアイテムの検索"
-
-#~ msgid ""
-#~ "Every indexed file on your computer matches the criteria you selected. "
-#~ msgstr ""
-#~ "お使いのコンピュータで作成したファイルのインデックスは選択した検索基準に一"
-#~ "致します。"
-
-#~ msgid ""
-#~ "You can check the spelling on your selections or add more criteria to "
-#~ "narrow your results."
-#~ msgstr ""
-#~ "選択したもののスペルチェック、または検索結果を増やすために検索基準をさらに"
-#~ "追加することができます。"
-
-#~ msgid "Error During Search"
-#~ msgstr "検索エラー"
-
-#~ msgid ""
-#~ "Find cannot open your file system index.  Your index may be missing or "
-#~ "corrupt."
-#~ msgstr ""
-#~ "インデックスが存在しないか壊れているため、検索システムがインデックスを開け"
-#~ "ません。"
-
-#~ msgid "Error Reading File Index"
-#~ msgstr "ファイル・インデックスの読み込みエラー"
-
-#~ msgid "An error occurred while loading this search's contents."
-#~ msgstr "検索内容の読み込み中にエラーが発生しました。"
-
-#~ msgid ""
-#~ "To do a fast search, Find requires an index of the files on your system."
-#~ msgstr ""
-#~ "高速検索を利用するには、お使いのシステムに格納されたファイルのインデックス"
-#~ "が必要です。"
-
-#~ msgid ""
-#~ "To do a content search, Find requires an index of the files on your "
-#~ "system."
-#~ msgstr ""
-#~ "内容検索を利用するには、お使いのシステムに格納されたファイルのインデックス"
-#~ "が必要です。"
-
-#~ msgid ""
-#~ "Find can't access your index right now so a slower search will be "
-#~ "performed that doesn't use the index."
-#~ msgstr ""
-#~ "今すぐインデックスにアクセスはできません。インデックスを使わない低速検索を"
-#~ "実行します。"
-
-#~ msgid "Find can't access your index right now."
-#~ msgstr "すぐに検索インデックスにアクセスできません。"
-
-#~ msgid "Fast Searches Are Not Available"
-#~ msgstr "高速検索は利用できません"
-
-#~ msgid "Content Searches Are Not Available"
-#~ msgstr "内容検索は利用できません"
-
-#~ msgid ""
-#~ "Your index files are available but the Medusa search daemon, which "
-#~ "handles index requests, isn't running.  To start this program, log in as "
-#~ "root and enter this command at the command line:\n"
-#~ "\n"
-#~ "medusa-searchd"
-#~ msgstr ""
-#~ "インデックス・ファイルは利用可能ですが、インデックス要求を処理する Medusa "
-#~ "検索デーモンが起動されていません。このデーモンを起動する場合は root 権限に"
-#~ "て次のコマンドを入力して下さい:\n"
-#~ "\n"
-#~ "medusa-searchd"
-
-#~ msgid ""
-#~ "To do a fast search, Find requires an index of the files on your system.  "
-#~ "Your computer is currently creating that index."
-#~ msgstr ""
-#~ "高速検索を利用するには、お使いのシステムに格納されたファイルのインデックス"
-#~ "が必要です。"
-
-#~ msgid ""
-#~ "To do a content search, Find requires an index of the content on your "
-#~ "system.  Your computer is currently creating that index."
-#~ msgstr ""
-#~ "内容検索を利用するには、お使いのシステムに格納されたファイル内容のインデッ"
-#~ "クスが必要です。現在インデックスの生成中です。"
-
-#~ msgid ""
-#~ "Because Find cannot use an index, this search may take several minutes."
-#~ msgstr ""
-#~ "検索インデックスを利用できないので、この検索には数分間かかるかもしれませ"
-#~ "ん。"
-
-#~ msgid "Content searches will be available when the index is complete."
-#~ msgstr "インデックス作成が完了したら内容検索を利用できます。"
-
-#~ msgid "Indexed Searches Are Not Available"
-#~ msgstr "インデックス検索は利用できません"
-
-#~ msgid ""
-#~ "To do a fast search, Find requires an index of the files on your system.  "
-#~ "No index is available right now."
-#~ msgstr ""
-#~ "高速検索を利用するには、お使いのシステムに格納されたファイルのインデックス"
-#~ "が必要です。今すぐ利用可能なインデックスはありません。"
-
-#~ msgid ""
-#~ "To do a content search, Find requires an index of the content on your "
-#~ "system.  No index is available right now."
-#~ msgstr ""
-#~ "内容検索を利用するには、お使いのシステムに格納されたファイル内容のインデッ"
-#~ "クスが必要です。今すぐ利用可能なインデックスはありません。"
-
-#~ msgid ""
-#~ "You can create an index by running \"medusa-indexd\" as root on the "
-#~ "command line.  Until a complete index is available, searches will take "
-#~ "several minutes."
-#~ msgstr ""
-#~ "コマンド・ライン \"medusa-indexd\" を root 権限にて実行することでインデッ"
-#~ "クスの生成は可能です。インデックスが利用可能になるまで、検索には数分かかり"
-#~ "ます。"
-
-#~ msgid ""
-#~ "You can create an index by running \"medusa-indexd\" as root on the "
-#~ "command line.  Until a complete index is available, content searches "
-#~ "cannot be performed."
-#~ msgstr ""
-#~ "コマンドライン \"medusa-indexd\" を root 権限にて実行することでインデック"
-#~ "スの生成は可能です。インデックスが利用可能になるまで、内容検索は実行できま"
-#~ "せん。"
-
-#~ msgid "Fast searches are not enabled on your computer."
-#~ msgstr "お使いのコンピュータでは、高速検索が有効になっていません。"
-
-#~ msgid ""
-#~ "To do a fast search, Find requires an index of the files on your system. "
-#~ "Your system administrator has disabled fast search on your computer, so "
-#~ "no index is available."
-#~ msgstr ""
-#~ "高速検索を利用するには、お使いのシステムに格納されたファイルのインデックス"
-#~ "が必要です。あなたのシステムの管理者が高速検索を無効にしているため、イン"
-#~ "デックスを利用できません。"
-
-#~ msgid "Fast Searches Not Enabled"
-#~ msgstr "高速検索は利用不可"
-
-#~ msgid "Where"
-#~ msgstr "場所"
-
-#~ msgid "_Reveal in New Window"
-#~ msgid_plural "Reveal in %d _New Windows"
-#~ msgstr[0] "新しいウィンドウで表示(_R)"
-#~ msgstr[1] "新しい %d 個のウィンドウで表示(_R)"
-
-#~ msgid "Nautilus found more search results than it can display."
-#~ msgstr "表示可能な件数を越えた検索結果になりました。"
-
-#~ msgid "Some matching items will not be displayed. "
-#~ msgstr "この一致したアイテムのいくつかは表示されません。"
-
-#~ msgid "Too Many Matches"
-#~ msgstr "検索結果が多すぎます"
-
-#~ msgid "Indexing is %d%% complete."
-#~ msgstr "インデックスの生成: %d%% 完了"
-
-#~ msgid "Your files were last indexed at %s."
-#~ msgstr "そのファイルは %s にインデックス化されました。"
-
-#~ msgid ""
-#~ "Once a day your files and text content are indexed so your searches are "
-#~ "fast. "
-#~ msgstr ""
-#~ "ファイルとその内容が一日に一度インデックス化されるので検索が高速になりま"
-#~ "す。"
-
-#~ msgid "Indexing Status"
-#~ msgstr "インデクス生成状況"
-
-#~ msgid "Your files are currently being indexed."
-#~ msgstr "そのファイルは現在インデックス化しています。"
-
-#~ msgid ""
-#~ "Once a day your files and text content are indexed so your searches are "
-#~ "fast."
-#~ msgstr ""
-#~ "一日に一度、ファイルとその内容がインデックス化されるので検索が高速になりま"
-#~ "す。"
-
-#~ msgid "There is no index of your files right now."
-#~ msgstr "お使いのシステムにはインデックスがありません。"
-
-#~ msgid ""
-#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
-#~ "Fast searching is not enabled on your computer, so you do not have an "
-#~ "index right now."
-#~ msgstr ""
-#~ "高速検索が有効な場合、検索速度を上げるためにインデックスを生成します。お使"
-#~ "いのシステムでは高速検索が有効ではないので、インデックスはありません。"
-
-#~ msgid "No Index of Files"
-#~ msgstr "ファイルのインデックスがありません"
-
-#~ msgid "Sorry, but the medusa search service is not available."
-#~ msgstr "Medusa 検索サービスは利用できません。"
-
-#~ msgid "Please verify medusa has been setup correctly."
-#~ msgstr "Medusa が正しく設定されているか確認下さい。"
-
-#~ msgid "%I:%M %p, %x"
-#~ msgstr "%p %I:%M, %x"
-
-#~ msgid "Reveal each selected item in its original folder"
-#~ msgstr "選択したアイテムをオリジナルのフォルダの中に表示します"
-
-#~ msgid "Reveal in New Window"
-#~ msgstr "新しいウィンドウの中に表示する"
-
-#~ msgid "Show Indexing Status"
-#~ msgstr "インデックス生成状況の表示"
-
-#~ msgid "Show _Indexing Status"
-#~ msgstr "インデックス生成状況の表示(_I)"
-
-#~ msgid "Show status of indexing used when searching"
-#~ msgstr "検索に使用するインデックス生成の状況を表示します"
-
-#~ msgid "More Options"
-#~ msgstr "オプションを多く"
-
-#~ msgid "Fewer Options"
-#~ msgstr "オプションを少なく"
-
-#~ msgid "Find Them!"
-#~ msgstr "検索開始！"
-
-#~ msgid "[Search for] Name [contains \"fish\"]"
-#~ msgstr "[Search for] 名前が [\"fish\" を含む]"
-
-#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
-#~ msgstr "[Search for] 内容が [\"fish tree\"の全てを含む]"
-
-#~ msgid "[Search for] Type [is regular file]"
-#~ msgstr "[Search for] 種類が [通常のファイル]"
-
-#~ msgid "[Search for] Size [larger than 400K]"
-#~ msgstr "[Search for] サイズが [400 KB以上]"
-
-#~ msgid "[Search for] With Emblem [includes \"Important\"]"
-#~ msgstr "[Search for] エンブレムに [\"重要\" を含む]"
-
-#~ msgid "[Search for] Last Modified [before yesterday]"
-#~ msgstr "[Search for] 最終更新日が [昨日より前]"
-
-#~ msgid "[Search for] Owner [is not root]"
-#~ msgstr "[Search for] 所有者が [root ではない]"
-
-#~ msgid "[File name] contains [help]"
-#~ msgstr "[File name] 内容が [ヘルプ]"
-
-#~ msgid "[File name] starts with [nautilus]"
-#~ msgstr "[File name] 開始が [nautilus]"
-
-#~ msgid "[File name] ends with [.c]"
-#~ msgstr "[File name] 終了が [.c]"
-
-#~ msgid "[File name] matches glob [*.c]"
-#~ msgstr "[File name] ワイルドカードが [*.c]"
-
-#~ msgid "[File name] matches regexp [\"e??l.$\"]"
-#~ msgstr "[File name] 正規表現が [\"e??l.$\"]"
-
-#~ msgid "[File content] includes all of [apple orange]"
-#~ msgstr "[File content] 全てを含む [apple orange]"
-
-#~ msgid "[File content] includes any of [apply orange]"
-#~ msgstr "[File content] いずれかを含む [apply orange]"
-
-#~ msgid "[File content] does not include all of [apple orange]"
-#~ msgstr "[File content] 全てを含まない [apple orange]"
-
-#~ msgid "[File content] includes none of [apple orange]"
-#~ msgstr "[File content] 何も含まない [apple orange]"
-
-#~ msgid "[File type] is [folder]"
-#~ msgstr "[File type] は [フォルダ]"
-
-#~ msgid "[File type] is not [folder]"
-#~ msgstr "[File type] でない [フォルダ]"
-
-#~ msgid "[File type is] regular file"
-#~ msgstr "[ファイルタイプ] 普通のファイル"
-
-#~ msgid "[File type is] text file"
-#~ msgstr "[ファイルタイプ] テキスト・ファイル"
-
-#~ msgid "[File type is] application"
-#~ msgstr "[ファイルタイプ] アプリケーション"
-
-#~ msgid "[File type is] folder"
-#~ msgstr "[File type is] フォルダ"
-
-#~ msgid "[File type is] music"
-#~ msgstr "[File type is] 音楽"
-
-#~ msgid "[File size is] larger than [400K]"
-#~ msgstr "[File size is] が次より大きい [400K]"
-
-#~ msgid "[File size is] smaller than [300K]"
-#~ msgstr "[File size is] が次より小さい [300K]"
-
-#~ msgid "[With emblem] marked with [Important]"
-#~ msgstr "[With emblem] に次のマークがある [重要]"
-
-#~ msgid "[With emblem] not marked with [Important]"
-#~ msgstr "[With emblem] に次のマークがない [重要]"
-
-#~ msgid "[Last modified date] is [1/24/00]"
-#~ msgstr "[Last modified date] が [1/24/00]"
-
-#~ msgid "[Last modified date] is not [1/24/00]"
-#~ msgstr "[Last modified date] が次ではない [1/24/00]"
-
-#~ msgid "[Last modified date] is after [1/24/00]"
-#~ msgstr "[Last modified date] が次より後ろ [1/24/00]"
-
-#~ msgid "[Last modified date] is before [1/24/00]"
-#~ msgstr "[Last modified date] が次より前 [1/24/00]"
-
-#~ msgid "[Last modified date] is today"
-#~ msgstr "[Last modified date] は今日"
-
-#~ msgid "[Last modified date] is yesterday"
-#~ msgstr "[Last modified date] は昨日"
-
-#~ msgid "[Last modified date] is within a week of [1/24/00]"
-#~ msgstr "[Last modified date] が次の週の中にある [1/24/00]"
-
-#~ msgid "[Last modified date] is within a month of [1/24/00]"
-#~ msgstr "[Last modified date] が次の月の中にある [1/24/00]"
-
-#~ msgid "[File owner] is [root]"
-#~ msgstr "[File owner] が [root]"
-
-#~ msgid "[File owner] is not [root]"
-#~ msgstr "[File owner] が次ではない [root]"
-
-#~ msgid "Find:"
-#~ msgstr "検索:"
