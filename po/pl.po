@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2002-07-08 12:36+0200\n"
-"PO-Revision-Date: 2002-07-08 15:00+0200\n"
+"POT-Creation-Date: 2002-07-17 11:26+0200\n"
+"PO-Revision-Date: 2002-07-17 11:36+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2086,6 +2086,10 @@ msgid "Solaris/BSD Volume"
 msgstr "Wolumin Solarisa/BSD"
 
 #: libnautilus-private/filesystem-attributes.xml.h:1
+msgid "SuperMount Volume"
+msgstr "Wolumin SuperMount"
+
+#: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "System Volume"
 msgstr "Wolumin systemowy"
 
@@ -2241,8 +2245,8 @@ msgid ""
 msgstr ""
 "Błąd podczas przenoszenia.\n"
 "\n"
-"Nie można przenieść \"%s\" do kosza z powodu braku uprawnień do modyfikacji "
-"folderu nadrzędnego lub jego samego."
+"Nie można przenieść \"%s\" do śmietnika z powodu braku uprawnień do "
+"modyfikacji folderu nadrzędnego lub jego samego."
 
 #: libnautilus-private/nautilus-file-operations.c:1
 #, c-format
@@ -2862,17 +2866,19 @@ msgid "Preparing to Empty the Trash..."
 msgstr "Przygotowywanie do opróżnienia śmietnika..."
 
 #: libnautilus-private/nautilus-file-operations.c:1
+#: src/file-manager/fm-desktop-icon-view.c:1
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:1
+msgid "Empty Trash"
+msgstr "Opróżnij śmietnik"
+
+#: libnautilus-private/nautilus-file-operations.c:1
 msgid ""
 "Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr "Czy na pewno chcesz trwale usunąć wszystkie elementy ze śmietnika?"
 
 #: libnautilus-private/nautilus-file-operations.c:1
-msgid "Empty Trash?"
-msgstr "Czy opróżnić śmietnik?"
-
-#: libnautilus-private/nautilus-file-operations.c:1
-msgid "Empty"
-msgstr "Opróżnij"
+msgid "_Empty"
+msgstr "Op_różnij"
 
 #: libnautilus-private/nautilus-file-operations.c:1
 msgid "foo"
@@ -3381,8 +3387,8 @@ msgid "_Always"
 msgstr "_Zawsze"
 
 #: libnautilus-private/nautilus-global-preferences.c:1
-msgid "_Local Files Only"
-msgstr "Tylko _lokalne pliki"
+msgid "_Local File Only"
+msgstr "Tylko plik _lokalny"
 
 #: libnautilus-private/nautilus-global-preferences.c:1
 msgid "_Never"
@@ -3730,6 +3736,11 @@ msgstr ""
 "dostępna pod adresem ftp://ftp.gnome.org)\n"
 "Jeśli używana kopia Nautilusa została zainstalowana z pakietu, szybkie "
 "wyszukiwanie nie jest dostępne.\n"
+
+#: libnautilus-private/nautilus-program-chooser.c:1
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr "Przy wyświetlaniu pomocy wystąpił błąd: %s"
 
 #: libnautilus-private/nautilus-program-chooser.c:1
 msgid "not in menu"
@@ -4302,6 +4313,7 @@ msgid "Floppy"
 msgstr "Dyskietka"
 
 #: libnautilus-private/nautilus-volume-monitor.c:1
+#: libnautilus-private/nautilus-volume-monitor.c:1
 msgid "CD-ROM"
 msgstr "CD-ROM"
 
@@ -4565,11 +4577,6 @@ msgstr "Folder użytkownika %s"
 #: src/file-manager/fm-desktop-icon-view.c:1
 msgid "Empty Trash..."
 msgstr "Opróżnij śmietnik..."
-
-#: src/file-manager/fm-desktop-icon-view.c:1
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:1
-msgid "Empty Trash"
-msgstr "Opróżnij śmietnik"
 
 #: src/file-manager/fm-directory-view.c:1
 #, c-format
@@ -5312,6 +5319,12 @@ msgstr "Zawartość:"
 msgid "Basic"
 msgstr "Proste"
 
+#. Name label
+#: src/file-manager/fm-properties-window.c:1
+#: src/nautilus-bookmarks-window.glade.h:1
+msgid "_Name:"
+msgstr "_Nazwa:"
+
 #: src/file-manager/fm-properties-window.c:1
 msgid "Type:"
 msgstr "Typ:"
@@ -5325,11 +5338,11 @@ msgid "Location:"
 msgstr "Położenie:"
 
 #: src/file-manager/fm-properties-window.c:1
-msgid "Link Target:"
+msgid "Link target:"
 msgstr "Cel dowiązania:"
 
 #: src/file-manager/fm-properties-window.c:1
-msgid "MIME Type:"
+msgid "MIME type:"
 msgstr "Typ MIME:"
 
 #: src/file-manager/fm-properties-window.c:1
@@ -5354,20 +5367,32 @@ msgid "Emblems"
 msgstr "Symbole"
 
 #: src/file-manager/fm-properties-window.c:1
-msgid "Set User ID"
-msgstr "Ustawianie ID użytkownika"
+msgid "_Read"
+msgstr "Od_czyt"
 
 #: src/file-manager/fm-properties-window.c:1
-msgid "Special Flags:"
-msgstr "Specjalne znaczniki:"
+msgid "_Write"
+msgstr "_Zapis"
 
 #: src/file-manager/fm-properties-window.c:1
-msgid "Set Group ID"
-msgstr "Ustawianie ID grupy"
+msgid "E_xecute"
+msgstr "_Wykonanie"
 
 #: src/file-manager/fm-properties-window.c:1
-msgid "Sticky"
-msgstr "Przyklejone"
+msgid "Set _user ID"
+msgstr "Ustawianie ID _użytkownika"
+
+#: src/file-manager/fm-properties-window.c:1
+msgid "Special flags:"
+msgstr "Znaczniki specjalne:"
+
+#: src/file-manager/fm-properties-window.c:1
+msgid "Set gro_up ID"
+msgstr "Ustawianie ID g_rupy"
+
+#: src/file-manager/fm-properties-window.c:1
+msgid "_Sticky"
+msgstr "_Przyklejony"
 
 #: src/file-manager/fm-properties-window.c:1
 msgid "Permissions"
@@ -5378,11 +5403,15 @@ msgid "You are not the owner, so you can't change these permissions."
 msgstr "Nie będąc właścicielem nie możesz zmienić tych uprawnień."
 
 #: src/file-manager/fm-properties-window.c:1
-msgid "File Owner:"
+msgid "File owner:"
 msgstr "Właściciel pliku:"
 
 #: src/file-manager/fm-properties-window.c:1
-msgid "File Group:"
+msgid "_File group:"
+msgstr "Właśc_iciel grupowy:"
+
+#: src/file-manager/fm-properties-window.c:1
+msgid "File group:"
 msgstr "Właściciel grupowy:"
 
 #: src/file-manager/fm-properties-window.c:1
@@ -5398,27 +5427,15 @@ msgid "Others:"
 msgstr "Inni:"
 
 #: src/file-manager/fm-properties-window.c:1
-msgid "Read"
-msgstr "Odczyt"
-
-#: src/file-manager/fm-properties-window.c:1
-msgid "Write"
-msgstr "Zapis"
-
-#: src/file-manager/fm-properties-window.c:1
-msgid "Execute"
-msgstr "Wykonanie"
-
-#: src/file-manager/fm-properties-window.c:1
-msgid "Text View:"
+msgid "Text view:"
 msgstr "Zapis tekstowy:"
 
 #: src/file-manager/fm-properties-window.c:1
-msgid "Number View:"
+msgid "Number view:"
 msgstr "Zapis liczbowy:"
 
 #: src/file-manager/fm-properties-window.c:1
-msgid "Last Changed:"
+msgid "Last changed:"
 msgstr "Ostatnia zmiana:"
 
 #: src/file-manager/fm-properties-window.c:1
@@ -6201,10 +6218,6 @@ msgstr "_Ulubione"
 msgid "_Location:"
 msgstr "_Położenie:"
 
-#: src/nautilus-bookmarks-window.glade.h:1
-msgid "_Name:"
-msgstr "_Nazwa:"
-
 #: src/nautilus-complex-search-bar.c:1
 msgid "More Options"
 msgstr "Więcej opcji"
@@ -6300,34 +6313,37 @@ msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry nie może być użyte z więcej niż jednym URI.\n"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "Nautilus Themes"
-msgstr "Motywy Nautilusa"
-
-#: src/nautilus-preferences-dialog.c:1 src/nautilus-preferences-dialog.c:1
-#: src/nautilus-preferences-dialog.c:1 src/nautilus-preferences-dialog.c:1
-#: src/nautilus-preferences-dialog.c:1
-msgid "Opening New Windows"
-msgstr "Otwieranie nowych okien"
+msgid "Themes"
+msgstr "Motywy"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "_Open each file or folder in a separate window"
+msgid "New Window Behavior"
+msgstr "Zachowanie nowych okien"
+
+#: src/nautilus-preferences-dialog.c:1
+msgid "_Open each file or folder in a new window"
 msgstr "_Otwieranie każdego pliku lub folderu w osobnym oknie"
 
-#: src/nautilus-preferences-dialog.c:1
-msgid "Display _side pane in new windows"
-msgstr "Wyświetlanie paska _bocznego w nowych oknach"
+#: src/nautilus-preferences-dialog.c:1 src/nautilus-preferences-dialog.c:1
+#: src/nautilus-preferences-dialog.c:1 src/nautilus-preferences-dialog.c:1
+msgid "New Window Display"
+msgstr "Wyświetlanie nowych okien"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "Display _toolbar in new windows"
-msgstr "Wyświetlanie paska _narzędziowego w nowych oknach"
+msgid "Display _side pane"
+msgstr "Wyświetlanie paska _bocznego"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "Display location _bar in new windows"
-msgstr "Wyświetlanie paska p_ołożenia w nowych oknach"
+msgid "Display _toolbar"
+msgstr "Wyświetlanie paska _narzędziowego"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "Display st_atus bar in new windows"
-msgstr "Wyświetlanie paska _stanu w nowych oknach"
+msgid "Display location _bar"
+msgstr "Wyświetlanie paska p_ołożenia"
+
+#: src/nautilus-preferences-dialog.c:1
+msgid "Display st_atusbar"
+msgstr "Wyświetlanie paska _stanu"
 
 #: src/nautilus-preferences-dialog.c:1 src/nautilus-preferences-dialog.c:1
 msgid "Desktop"
@@ -6363,28 +6379,28 @@ msgstr "Wykonywalne pliki tekstowe"
 
 #: src/nautilus-preferences-dialog.c:1 src/nautilus-preferences-dialog.c:1
 #: src/nautilus-preferences-dialog.c:1
-msgid "Show/Hide Options"
-msgstr "Opcje wyświetlania/ukrywania"
+msgid "Show Options"
+msgstr "Opcje wyświetlania"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "Show _hidden files (file names start with \".\")"
-msgstr "Wyświetlanie _ukrytych plików (rozpoczynających się od \".\")"
+msgid "_Hidden files (filenames starting with \".\")"
+msgstr "Wyświetlanie _ukrytych plików (rozpoczynających się kropką)"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "Show _backup files (file names end with \"~\")"
-msgstr "Wyświetlanie _zapasowych kopii plików (kończących się na \"~\")"
+msgid "_Backup files (filenames ending with \"~\")"
+msgstr "Wyświetlanie _zapasowych kopii plików (kończących się znakiem \"~\")"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "Show special flags in _Properties window"
-msgstr "Wyświetlanie specjalnych znaczników w oknie _właściwości"
+msgid "Special flags in _Properties dialog"
+msgstr "Wyświetlanie znaczników specjalnych w oknie _właściwości"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "Sorting Order"
-msgstr "Porządek sortowania"
+msgid "Sort"
+msgstr "Porządek"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "Always _list folders before files"
-msgstr "Wyświetlanie f_olderów przed plikami"
+msgid "Fo_lders before files"
+msgstr "F_oldery przed plikami"
 
 #: src/nautilus-preferences-dialog.c:1 src/nautilus-preferences-dialog.c:1
 msgid "Icon Captions"
@@ -6414,11 +6430,11 @@ msgid "Icon View Defaults"
 msgstr "Domyślne ustawienia widoku ikon"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "_Arrange Items:"
+msgid "_Arrange items:"
 msgstr "_Porządek elementów:"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "_Sort in reversed order"
+msgid "_Sort in reverse"
 msgstr "_Odwrócony porządek sortowania"
 
 #: src/nautilus-preferences-dialog.c:1
@@ -6426,8 +6442,8 @@ msgid "_Default zoom level:"
 msgstr "_Domyślne powiększenie:"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "Use _tighter layout"
-msgstr "_Ciaśniejszy układ"
+msgid "Use co_mpact layout"
+msgstr "Ciaśniejszy _układ"
 
 #. List View Defaults
 #: src/nautilus-preferences-dialog.c:1 src/nautilus-preferences-dialog.c:1
@@ -6436,11 +6452,11 @@ msgid "List View Defaults"
 msgstr "Domyślne ustawienia widoku listy"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "Arrange _Items:"
+msgid "Arrange _items:"
 msgstr "Uporządkowanie _elementów:"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "Sort in _reversed order"
+msgid "Sort in _reverse"
 msgstr "Od_wrócony porządek sortowania"
 
 #: src/nautilus-preferences-dialog.c:1
@@ -6472,7 +6488,7 @@ msgid "Show Text in Icons"
 msgstr "Wyświetlanie tekstu wewnątrz ikon"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "Show Count of Items in Folders"
+msgid "Show Number of Items in Folders"
 msgstr "Wyświetlanie liczby elementów w folderach"
 
 #: src/nautilus-preferences-dialog.c:1 src/nautilus-preferences-dialog.c:1
@@ -6480,7 +6496,7 @@ msgid "Show Thumbnails for Image Files"
 msgstr "Wyświetlanie miniaturek plików graficznych"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "_Don't make thumbnails for files larger than:"
+msgid "_Do not make thumbnails for files larger than:"
 msgstr "_Tworzenie miniaturek plików nie większych niż:"
 
 #: src/nautilus-preferences-dialog.c:1
@@ -6492,8 +6508,8 @@ msgid "Tabs"
 msgstr "Zakładki"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "_Show only folders (no files) in the tree"
-msgstr "_Wyświetlanie w drzewie tylko folderów (bez plików)"
+msgid "_Show folders only"
+msgstr "Tylko f_oldery"
 
 #: src/nautilus-preferences-dialog.c:1
 msgid "Maximum items per site"
@@ -6512,8 +6528,8 @@ msgid "_Update frequency in minutes"
 msgstr "_Okres pomiędzy odświeżeniami w minutach"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "View Defaults"
-msgstr "Domyślne ustawienia widoku"
+msgid "Views"
+msgstr "Widoki"
 
 #: src/nautilus-preferences-dialog.c:1
 msgid "Appearance"
@@ -6544,7 +6560,7 @@ msgid "Navigation"
 msgstr "Nawigacja"
 
 #: src/nautilus-preferences-dialog.c:1
-msgid "Speed Tradeoffs"
+msgid "Performance"
 msgstr "Wydajność"
 
 #: src/nautilus-preferences-dialog.c:1
@@ -6554,11 +6570,6 @@ msgstr "Panel nowości"
 #: src/nautilus-preferences-dialog.c:1
 msgid "Preferences"
 msgstr "Preferencje"
-
-#: src/nautilus-preferences-dialog.c:1
-#, c-format
-msgid "Display %s tab in side pane"
-msgstr "Wyświetlanie na pasku bocznym zakładki %s"
 
 #: src/nautilus-profiler.c:1
 msgid "Print"
@@ -7291,16 +7302,16 @@ msgid "Couldn't remove theme"
 msgstr "Nie można usunąć motywu"
 
 #: src/nautilus-theme-selector.c:1
-msgid "Add New Theme..."
-msgstr "Dodaj nowy motyw..."
+msgid "_Add Theme..."
+msgstr "_Dodaj motyw..."
 
 #: src/nautilus-theme-selector.c:1
-msgid "Remove Theme..."
-msgstr "Usuń motyw..."
+msgid "_Remove Theme..."
+msgstr "_Usuń motyw..."
 
 #: src/nautilus-theme-selector.c:1
-msgid "Cancel Remove"
-msgstr "Anuluj usunięcie"
+msgid "Cancel _Remove"
+msgstr "Anuluj _usunięcie"
 
 #: src/nautilus-view-frame.c:1
 msgid "a title"
@@ -7331,6 +7342,14 @@ msgstr ""
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "Podczas uruchamiania widoku \"%s\" wystąpił błąd."
+
+#: src/nautilus-window-manage-views.c:1
+msgid "Content View"
+msgstr "Widok zawartości"
+
+#: src/nautilus-window-manage-views.c:1
+msgid "View of the current file or directory"
+msgstr "Widok zawartości bieżącego pliku lub katalogu"
 
 #: src/nautilus-window-manage-views.c:1
 msgid ""
@@ -7448,6 +7467,14 @@ msgstr "Nie można wyświetlić \"%s\"."
 #: src/nautilus-window-manage-views.c:1
 msgid "Can't Display Location"
 msgstr "Nie można wyświetlić położenia"
+
+#: src/nautilus-window-manage-views.c:1
+msgid "Side Pane"
+msgstr "Pasek boczny"
+
+#: src/nautilus-window-manage-views.c:1
+msgid "Contains a side pane view"
+msgstr "Zawiera widok paska bocznego"
 
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
