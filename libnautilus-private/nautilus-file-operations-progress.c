@@ -33,6 +33,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkprogressbar.h>
@@ -154,6 +155,7 @@ static void
 set_text_unescaped_trimmed (EelEllipsizingLabel *label, const char *text)
 {
 	char *unescaped_text;
+	char *unescaped_utf8;
 	
 	if (text == NULL || text[0] == '\0') {
 		eel_ellipsizing_label_set_text (label, "");
@@ -161,7 +163,9 @@ set_text_unescaped_trimmed (EelEllipsizingLabel *label, const char *text)
 	}
 	
 	unescaped_text = gnome_vfs_unescape_string_for_display (text);
-	eel_ellipsizing_label_set_text (label, unescaped_text);
+	unescaped_utf8 = eel_make_valid_utf8 (unescaped_text);
+	eel_ellipsizing_label_set_text (label, unescaped_utf8);
+	g_free (unescaped_utf8);
 	g_free (unescaped_text);
 }
 
