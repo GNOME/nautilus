@@ -158,10 +158,10 @@ global_preferences_install_descriptions (void)
 					      _("Use smoother (but slower) graphics"));
 
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
-					      _("Use this font family to display file names:"));
+					      _("Use this font to display non-smooth text:"));
 
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT,
-					      _("Use this font family to display file names:"));
+					      _("Use this font to display smooth text:"));
 	
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR,
 					      _("Display toolbar in new windows"));

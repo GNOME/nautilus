@@ -82,7 +82,23 @@
 
 #define NAUTILUS_COMMAND_SPECIFIER "command:"
 
-/* Paths to use when referring to bonobo menu items. */
+/* Paths to use when referring to bonobo menu items. Paths used by
+ * subclasses are in fm-directory-view.h 
+ */
+#define FM_DIRECTORY_VIEW_COMMAND_OPEN                      		"/commands/Open"
+#define FM_DIRECTORY_VIEW_COMMAND_OPEN_IN_NEW_WINDOW        		"/commands/OpenNew"
+#define FM_DIRECTORY_VIEW_COMMAND_OPEN_WITH				"/commands/Open With"
+#define FM_DIRECTORY_VIEW_COMMAND_NEW_FOLDER				"/commands/New Folder"
+#define FM_DIRECTORY_VIEW_COMMAND_DELETE                    		"/commands/Delete"
+#define FM_DIRECTORY_VIEW_COMMAND_TRASH                    		"/commands/Trash"
+#define FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH                   	"/commands/Empty Trash"
+#define FM_DIRECTORY_VIEW_COMMAND_DUPLICATE                		"/commands/Duplicate"
+#define FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK                		"/commands/Create Link"
+#define FM_DIRECTORY_VIEW_COMMAND_SHOW_PROPERTIES         		"/commands/Show Properties"
+#define FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS			"/commands/Remove Custom Icons"
+#define FM_DIRECTORY_VIEW_COMMAND_OTHER_APPLICATION    			"/commands/OtherApplication"
+#define FM_DIRECTORY_VIEW_COMMAND_OTHER_VIEWER	   			"/commands/OtherViewer"
+
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW        		"/menu/File/Open Placeholder/OpenNew"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH				"/menu/File/Open Placeholder/Open With"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS				"/menu/File/Open Placeholder/Scripts"
@@ -91,7 +107,9 @@
 #define FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK                	 	"/menu/File/File Items Placeholder/Create Link"
 #define FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS			"/menu/Edit/Edit Items Placeholder/Remove Custom Icons"
 #define FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER    	"/menu/File/Open Placeholder/Open With/Applications Placeholder"
+#define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION		    	"/menu/File/Open Placeholder/Open With/OtherApplication"
 #define FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER    		"/menu/File/Open Placeholder/Open With/Viewers Placeholder"
+#define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER		    	"/menu/File/Open Placeholder/Open With/OtherViewer"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS_PLACEHOLDER    		"/menu/File/Open Placeholder/Scripts/Scripts Placeholder"
 #define FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS_SEPARATOR    		"/menu/File/Open Placeholder/Scripts/After Scripts"
 
@@ -3170,6 +3188,8 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 	GList *applications, *components, *node;
 	NautilusFile *file;
 	gboolean sensitive;
+	gboolean any_applications;
+	gboolean any_viewers;
 	char *uri;
 	int index;
 	
@@ -3189,6 +3209,9 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 		monitor_file_for_open_with (view, NULL);
 	} else {
 		sensitive = TRUE;
+		any_applications = FALSE;
+		any_viewers = FALSE;
+		
 		file = NAUTILUS_FILE (selection->data);
 		
 		monitor_file_for_open_with (view, file);
@@ -3197,15 +3220,29 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 		
 		applications = nautilus_mime_get_short_list_applications_for_file (NAUTILUS_FILE (selection->data));
 		for (node = applications, index = 0; node != NULL; node = node->next, index++) {
+			any_applications = TRUE;
 			add_application_to_bonobo_menu (view, node->data, file, index);
 		}
 		gnome_vfs_mime_application_list_free (applications); 
 		
 		components = nautilus_mime_get_short_list_components_for_file (NAUTILUS_FILE (selection->data));
 		for (node = components, index = 0; node != NULL; node = node->next, index++) {
+			any_viewers = TRUE;
 			add_component_to_bonobo_menu (view, node->data, uri, index);
 		}
 		gnome_vfs_mime_component_list_free (components); 
+
+		nautilus_bonobo_set_label_for_menu_item_and_command 
+			(view->details->ui,
+			 FM_DIRECTORY_VIEW_MENU_PATH_OTHER_APPLICATION,
+			 FM_DIRECTORY_VIEW_COMMAND_OTHER_APPLICATION,
+			 any_applications ? _("Other _Application...") : _("An _Application..."));
+
+		nautilus_bonobo_set_label_for_menu_item_and_command 
+			(view->details->ui,
+			 FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER,
+			 FM_DIRECTORY_VIEW_COMMAND_OTHER_VIEWER,
+			 any_applications ? _("Other _Viewer...") : _("A _Viewer..."));
 
 		g_free (uri);
 	}

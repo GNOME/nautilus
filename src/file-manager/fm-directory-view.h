@@ -43,27 +43,9 @@
 typedef struct FMDirectoryView FMDirectoryView;
 typedef struct FMDirectoryViewClass FMDirectoryViewClass;
 
-/* Paths to use when referring to bonobo menu items.
- * These are the new ones defined by FMDirectoryView. The
- * Nautilus-wide ones are in <libnautilus/nautilus-bonobo-ui.h>
- * Note that this may change as we complete the switchover to the
- * new Bonobo UI code.
- */
-#define FM_DIRECTORY_VIEW_COMMAND_OPEN                      	"/commands/Open"
-#define FM_DIRECTORY_VIEW_COMMAND_OPEN_IN_NEW_WINDOW        	"/commands/OpenNew"
-#define FM_DIRECTORY_VIEW_COMMAND_OPEN_WITH			"/commands/Open With"
-#define FM_DIRECTORY_VIEW_COMMAND_NEW_FOLDER			"/commands/New Folder"
-#define FM_DIRECTORY_VIEW_COMMAND_DELETE                    	"/commands/Delete"
-#define FM_DIRECTORY_VIEW_COMMAND_TRASH                    	"/commands/Trash"
-#define FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH                   "/commands/Empty Trash"
-#define FM_DIRECTORY_VIEW_COMMAND_DUPLICATE                	"/commands/Duplicate"
-#define FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK                	"/commands/Create Link"
-#define FM_DIRECTORY_VIEW_COMMAND_SHOW_PROPERTIES         	"/commands/Show Properties"
-#define FM_DIRECTORY_VIEW_COMMAND_RESET_BACKGROUND		"/commands/Reset Background"
-#define FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS		"/commands/Remove Custom Icons"
-#define FM_DIRECTORY_VIEW_COMMAND_OTHER_APPLICATION    		"/commands/OtherApplication"
-#define FM_DIRECTORY_VIEW_COMMAND_OTHER_VIEWER	   		"/commands/OtherViewer"
 
+/* Bonobo command paths that are used by subclasses. Others are defined in fm-directory-view.c */
+#define FM_DIRECTORY_VIEW_COMMAND_RESET_BACKGROUND		"/commands/Reset Background"
 
 #define FM_TYPE_DIRECTORY_VIEW			(fm_directory_view_get_type ())
 #define FM_DIRECTORY_VIEW(obj)			(GTK_CHECK_CAST ((obj), FM_TYPE_DIRECTORY_VIEW, FMDirectoryView))

@@ -1023,7 +1023,6 @@ set_up_cron_information_page (NautilusDruidPageEazel *page)
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
 
-	/* Translators: Do not translate this text.  It has not been edited yet, and will be altered shortly. */
 	label = new_body_label (cron_status == NAUTILUS_CRON_STATUS_OFF ? 
 				_("Indexing is turned on, enabling the fast search feature. However, indexing\n"
 				  "currently can't be performed because the program crond, which does\n"

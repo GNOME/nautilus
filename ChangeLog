@@ -1,3 +1,35 @@
+2001-03-21  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 7506 (Font preference has silly, overly-specific
+	label)
+
+	Fixed bug 4049 ("Other Application" is bad terminology when
+	there are no applications listed)
+	
+	Fixed bug 6193 (Users confused by lack of title on "ski" menu)
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_descriptions): Changed wording
+	for font choices.	
+
+	* src/file-manager/fm-directory-view.c:
+	(reset_bonobo_open_with_menu): Changed "Other Application..."
+	to "An Application..." if there aren't any listed.
+	
+	* src/nautilus-shell-ui.xml: Add "Preferences" title to Preferences
+	menu.
+
+
+	Other changes
+
+	* src/file-manager/fm-directory-view.h: Moved some #defines
+	only used in fm-directory-view.c into that file.
+	
+	* src/nautilus-first-time-druid.c: (set_up_cron_information_page):
+	Removed obsolete comment.	
+
 2001-03-20  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Ian McKellar  <ian@eazel.com>
