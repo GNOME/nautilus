@@ -183,13 +183,12 @@ nautilus_timed_wait_start (NautilusCancelCallback cancel_callback,
 	g_return_if_fail (parent_window == NULL || GTK_IS_WINDOW (parent_window));
 
 	/* Create the timed wait record. */
-	wait = g_new (TimedWait, 1);
+	wait = g_new0 (TimedWait, 1);
 	wait->window_title = g_strdup (window_title);
 	wait->wait_message = g_strdup (wait_message);
 	wait->cancel_callback = cancel_callback;
 	wait->callback_data = callback_data;
 	wait->parent_window = parent_window;
-	wait->dialog = NULL;
 	
 	if (parent_window != NULL) {
 		gtk_widget_ref (GTK_WIDGET (parent_window));

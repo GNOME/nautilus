@@ -266,7 +266,5 @@ NautilusDirectory *fm_directory_view_get_model                      (FMDirectory
 void               fm_directory_view_pop_up_background_context_menu (FMDirectoryView       *view);
 void               fm_directory_view_pop_up_selection_context_menu  (FMDirectoryView       *view); 
 void               fm_directory_view_update_menus                   (FMDirectoryView       *view);
-void		   fm_directory_view_close_desktop		    (FMDirectoryView	   *view);
-
 
 #endif /* FM_DIRECTORY_VIEW_H */

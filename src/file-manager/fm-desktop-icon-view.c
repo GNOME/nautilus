@@ -24,9 +24,10 @@
 
 #include <config.h>
 #include "fm-desktop-icon-view.h"
-#include "fm-icon-view.h"
 
-#include <gnome.h>
+#include "fm-icon-view.h"
+#include "src/nautilus-application.h"
+#include <libgnome/gnome-i18n.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 
 static void fm_desktop_icon_view_initialize		(FMDesktopIconView        *desktop_icon_view);
@@ -70,12 +71,6 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 }
 
 static void
-fm_desktop_icon_view_close_desktop_menu_item_callback (GtkMenuItem *item, gpointer callback_data)
-{
-	fm_directory_view_close_desktop (FM_DIRECTORY_VIEW (callback_data));
-}
-
-static void
 fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view, GtkMenu *menu)
 {
 	GtkWidget *menu_item;
@@ -91,8 +86,8 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
         menu_item = gtk_menu_item_new_with_label (_("Close Nautilus Desktop"));
 	gtk_signal_connect (GTK_OBJECT (menu_item),
 			    "activate",
-			    GTK_SIGNAL_FUNC (fm_desktop_icon_view_close_desktop_menu_item_callback),
-			    view);
+			    GTK_SIGNAL_FUNC (nautilus_application_close_desktop),
+			    NULL);
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 }

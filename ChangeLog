@@ -1,3 +1,28 @@
+2000-07-18  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-stock-dialogs.c:
+	(nautilus_timed_wait_start): Another field needed to be
+	initialized to 0, so I used g_new0.
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_create_background_context_menu_items):
+	Call nautilus_application_close_desktop directly instead of
+	doing it through FMDirectoryView.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_get_uri),
+	(fm_directory_view_can_accept_item): g_return_val_if_fail
+	is better than g_assert for parameter checking on public
+	calls.
+	(fm_directory_view_get_context_menu_index): Menu paths are
+	hard-coded strings, so use strcmp, not g_strcasecmp.
+
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view.c:
+	Get rid of the FMDirectoryView cover for turning off
+	Nautilus's desktop management. Callers can just use the
+	NautilusApplication call directly.
+
 2000-07-18  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/tree/nautilus-tree-model.c,
@@ -230,7 +255,7 @@
 	and applications currently use 'ghelp:' prefix to bring up help
 	files we should handle it just like 'help:').
 
-	We might want to emit a 'warning' message saying its deprecated.
+	We might want to emit a 'warning' message saying it's deprecated.
 
 2000-07-14  Gene Z. Ragan  <gzr@eazel.com>
 
@@ -257,20 +282,15 @@
 
 2000-07-14  Robey Pointer  <robey@eazel.com>
 
-	*
-	components/services/trilobite/libtrilobite/trilobite-root-client-pu
-	blic.h:
-	*
-	components/services/trilobite/libtrilobite/trilobite-root-client.c:
+	* components/services/trilobite/libtrilobite/trilobite-root-client-public.h:
+	* components/services/trilobite/libtrilobite/trilobite-root-client.c:
 	(trilobite_root_client_unref), (trilobite_root_client_finalize),
 	(trilobite_root_client_class_initialize),
 	(trilobite_root_client_initialize):
-	*
-	components/services/trilobite/libtrilobite/trilobite-service-passwo
-	rdquery.c: (trilobite_passwordquery_get_password):
+	* components/services/trilobite/libtrilobite/trilobite-service-passwordquery.c:
+	(trilobite_passwordquery_get_password):
 	* components/services/trilobite/sample/command-line/main.c: (main):
-	*
-	components/services/trilobite/sample/service/sample-service-impl.c:
+	* components/services/trilobite/sample/service/sample-service-impl.c:
 	(impl_Trilobite_Eazel_Sample_list_it):
 
 	Fix up TrilobiteRootClient implementation (destroy -> unref) to

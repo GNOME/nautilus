@@ -35,7 +35,6 @@
 #include <gtk/gtkcheckmenuitem.h>
 
 #include <bonobo/bonobo-control.h>
-#include <gnome.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-directory-list.h>
@@ -2897,7 +2896,7 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	if (nautilus_file_activate_custom(file, use_new_window)) {
+	if (nautilus_file_activate_custom (file, use_new_window)) {
 		return;
 	}
 
@@ -2909,9 +2908,11 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 		fm_directory_view_launch_application (application, uri, view);
 		gnome_vfs_mime_application_free (application);
 	} else {
-		/* If the action type is unspecified, treat it like the component case.
-		 * This is most likely to happen (only happens?) when there's no
-		 * registered viewers or apps, or there are errors in the mime.keys files.
+		/* If the action type is unspecified, treat it like
+		 * the component case. This is most likely to happen
+		 * (only happens?) when there are no registered
+		 * viewers or apps, or there are errors in the
+		 * mime.keys files.
 		 */
 		g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_NONE ||
 			  action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
@@ -3198,7 +3199,7 @@ show_hidden_files_changed_callback (gpointer		user_data)
 char *
 fm_directory_view_get_uri (FMDirectoryView *view)
 {
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), g_strdup (""));
 	return nautilus_directory_get_uri (view->details->model);
 }
 
@@ -3219,8 +3220,9 @@ fm_directory_view_can_accept_item (NautilusFile *target_item,
 				   const char *item_uri,
 				   FMDirectoryView *view)
 {
-	g_assert (NAUTILUS_IS_FILE (target_item));
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_return_val_if_fail (NAUTILUS_IS_FILE (target_item), FALSE);
+	g_return_val_if_fail (item_uri != NULL, FALSE);
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
 	return nautilus_drag_can_accept_item (target_item, item_uri);
 }
@@ -3234,40 +3236,38 @@ fm_directory_view_can_accept_item (NautilusFile *target_item,
  * Return -1 if item is not found
  * 
  * @menu_name: Item index to be returned.
- * 
- * 
  */
-gint
-fm_directory_view_get_context_menu_index(const char *menu_name)
+int
+fm_directory_view_get_context_menu_index (const char *menu_name)
 {
-	if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_OPEN, menu_name) == 0) {
+	g_return_val_if_fail (menu_name != NULL, -1);
+
+	/* FIXME: It's very bad to have this redundant information
+         * here that replicates what's done in the function above that
+	 * creates the context menu. We should make a cleaner way of
+	 * doing this.
+	 */
+	if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_OPEN, menu_name) == 0) {
 		return 0;
-	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW, menu_name) == 0) {
+	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW, menu_name) == 0) {
 		return 1;
-	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH, menu_name) == 0) {
+	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH, menu_name) == 0) {
 		return 2;
-	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_DELETE, menu_name) == 0) {
+	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_DELETE, menu_name) == 0) {
 		return 3;
-	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_TRASH, menu_name) == 0) {
+	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_TRASH, menu_name) == 0) {
 		return 3;
-	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE, menu_name) == 0) {
+	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE, menu_name) == 0) {
 		return 4;
-	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES, menu_name) == 0) {
+	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES, menu_name) == 0) {
 		return 5;
-	} else if (g_strcasecmp(FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS, menu_name) == 0) {
+	} else if (strcmp (FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS, menu_name) == 0) {
 		return 6;
 	/* Separator at position 7 */
-	} else if (g_strcasecmp(NAUTILUS_MENU_PATH_SELECT_ALL_ITEM, menu_name) == 0) {
+	} else if (strcmp (NAUTILUS_MENU_PATH_SELECT_ALL_ITEM, menu_name) == 0) {
 		return 8;
 	} else {
 		/* No match found */
 		return -1;
 	}
-}
-
-void
-fm_directory_view_close_desktop (FMDirectoryView *view)
-{
-	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	nautilus_application_close_desktop ();
 }
