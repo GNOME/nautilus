@@ -26,35 +26,6 @@
 
 #include "config.h"
 #include "nautilus.h"
-#include <gnome.h>
-#include <libgnorba/gnorba.h>
-#include <bonobo/gnome-bonobo.h>
-#include <file-manager/fm-public-api.h>
-
-static GnomeObject *
-nautilus_make_object(GnomeGenericFactory *gfact, const char *goad_id, gpointer closure)
-{
-  GtkObject *theobj = NULL;
-
-  if(!strcmp(goad_id, "ntl_file_manager"))
-    theobj = gtk_object_new(fm_directory_view_get_type(), NULL);
-
-  if(!theobj)
-    return NULL;
-
-  if(GNOME_IS_OBJECT(theobj))
-    return GNOME_OBJECT(theobj);
-
-  if(NAUTILUS_IS_VIEW_CLIENT(theobj))
-    {
-      gtk_widget_show(GTK_WIDGET(theobj));
-      return nautilus_view_client_get_gnome_object(NAUTILUS_VIEW_CLIENT(theobj));
-    }
-
-  gtk_object_destroy(theobj);
-
-  return NULL;
-}
 
 int main(int argc, char *argv[])
 {
@@ -64,8 +35,6 @@ int main(int argc, char *argv[])
   struct poptOption options[] = {
     { NULL, '\0', 0, NULL, 0, NULL, NULL }
   };
-  GtkWidget *mainwin;
-  GnomeGenericFactory *gfact;
 
   /* FIXME: This should also include G_LOG_LEVEL_WARNING, but I had to take it
    * out temporarily so we could continue to work on other parts of the software
@@ -79,12 +48,7 @@ int main(int argc, char *argv[])
   g_thread_init(NULL);
   gnome_vfs_init();
 
-  gfact = gnome_generic_factory_new_multi("nautilus_factory", nautilus_make_object, NULL);
-
-  mainwin = gtk_widget_new(nautilus_window_get_type(), "app_id", "nautilus", NULL);
-  bonobo_activate();
-  nautilus_window_set_initial_state(NAUTILUS_WINDOW(mainwin));
-  gtk_widget_show(mainwin);
+  nautilus_app_init();
 
   bonobo_main();
   return 0;

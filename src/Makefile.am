@@ -18,6 +18,8 @@ LDADD=	file-manager/libntl-file-manager.la \
 	$(VFS_LIBS)
 
 nautilus_SOURCES=		\
+	ntl-app.h		\
+	ntl-app.c		\
 	ntl-content-view.h	\
 	ntl-content-view.c	\
 	ntl-main.c 		\

@@ -1,3 +1,13 @@
+1999-12-16  Elliot Lee  <sopwith@redhat.com>
+	* libnautilus/{gdk-extensions.c,gnome-icon-container.c}: Fix warnings
+	* libnautilus/gnome-icon-container.c: Try (unsuccessfully) to get
+	  proper icon reflow by calling icon_grid_resize() instead of
+	  icon_grid_set_visible_width(), in size_allocate().
+	* src/*.*: Add ntl-app.[ch].
+	* src/file-manager/desktop-*.c: Fix warnings.
+	* src/file-manager/fm-directory-view.c: Remove incorrect warning,
+	  allow turning off use of icon_layout altogether.
+	
 1999-12-16  John Sullivan  <sullivan@eazel.com>
 
 	* src/ntl-window.c:

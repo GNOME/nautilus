@@ -96,7 +96,6 @@ gdk_fill_rectangle_with_gradient (GdkDrawable *drawable,
 				  const GdkColor *end_color,
 				  gboolean horizontal)
 {
-	GdkGCValues saved_values;
 	GdkRectangle band_box;
 	gint16 *position;
 	guint16 *size;

@@ -207,6 +207,8 @@ desktop_layout_new (void)
 
         layout->hpadding = 8;
         layout->vpadding = 8;
+
+	return layout;
 }
 
 void

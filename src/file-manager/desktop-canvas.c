@@ -22,8 +22,7 @@
 
 #include <config.h>
 #include "desktop-canvas.h"
-#include <libgnomeui/gnome-canvas-rect-ellipse.h>
-#include <libgnomeui/gnome-canvas-text.h>
+#include <gnome.h>
 #include <gtk/gtk.h>
 #include "desktop-menu.h"
 
@@ -95,7 +94,7 @@ desktop_canvas_init (DesktopCanvas *dcanvas)
 
         /* the attachment holds a refcount and eventually destroys
            the popup */
-        gnome_popup_menu_attach(dcanvas->popup, dcanvas, NULL);
+        gnome_popup_menu_attach(dcanvas->popup, GTK_WIDGET(dcanvas), NULL);
 }
 
 static void

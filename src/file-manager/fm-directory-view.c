@@ -37,6 +37,7 @@
 
 #define FM_DEBUG(x) g_message x
 
+#define WITH_LAYOUT TRUE
 #define DISPLAY_TIMEOUT_INTERVAL 500
 #define ENTRIES_PER_CB 1
 
@@ -250,7 +251,7 @@ load_icon_container (FMDirectoryView *view,
 
 			g_return_if_fail(info);
 			add_to_icon_container (view, icm,
-					       icon_container, info, TRUE);
+					       icon_container, info, WITH_LAYOUT);
 
 			position = gnome_vfs_directory_list_position_next
 				(position);
@@ -628,7 +629,7 @@ display_pending_entries (FMDirectoryView *view)
 
 		if (icon_container != NULL)
 			add_to_icon_container (view, icon_manager,
-					       icon_container, info, TRUE);
+					       icon_container, info, WITH_LAYOUT);
 		else
 			add_to_flist (icon_manager, flist, info);
 
@@ -731,22 +732,14 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 	g_assert(entries_read <= ENTRIES_PER_CB);
 
 	FM_DEBUG (("Entering function, %d entries read: %s",
-			 entries_read, gnome_vfs_result_to_string (result)));
+		   entries_read, gnome_vfs_result_to_string (result)));
 
 	view = FM_DIRECTORY_VIEW (callback_data);
-
-	/* FIXME: This should be an assert, changed to a warning for now
-	 * so we can continue developing other features until this is resolved.
- 	 */
-	if (!view->directory_list || view->directory_list == list) {
-		g_warning("unexpected view->directory_list!");
-	}
 
 	if (view->directory_list == NULL) {
 		if (result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_EOF) {
 
 			setup_base_uri (view);
-
 			view->directory_list = list;
 
 			/* FIXME just to make sure.  But these should be
@@ -769,16 +762,12 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 		}
 	}
 
-	if (view->current_position == GNOME_VFS_DIRECTORY_LIST_POSITION_NONE
-	    && list) {
+	if(!view->current_position && list)
 		view->current_position
-			= gnome_vfs_directory_list_get_first_position (list);
-		g_message("Reset current position, length now %d",
-			  g_list_length(view->current_position));
-	}
+			= gnome_vfs_directory_list_get_position (list);
 
 	view->entries_to_display += entries_read;
-	g_message("%d new entries makes %d total (%d real total)\n",
+	g_message("%d new entries makes %d total (%d real total)",
 		  entries_read, view->entries_to_display,
 		  g_list_length(view->current_position));
 
@@ -970,7 +959,7 @@ fm_directory_view_get_icon_layout (FMDirectoryView *view)
 
 void
 fm_directory_view_set_icon_layout (FMDirectoryView *view,
-					 const GnomeIconContainerLayout *layout)
+				   const GnomeIconContainerLayout *layout)
 {
 	g_return_if_fail (view != NULL);
 
