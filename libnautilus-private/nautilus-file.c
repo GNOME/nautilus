@@ -2341,7 +2341,9 @@ nautilus_file_compare_for_sort_by_attribute     (NautilusFile                   
 		value_2 = nautilus_file_get_string_attribute (file_2, 
 							      attribute);
 
-		result = strcmp (value_1, value_2);
+		if (value_1 != NULL && value_2 != NULL) {
+			result = strcmp (value_1, value_2);
+		}
 
 		g_free (value_1);
 		g_free (value_2);

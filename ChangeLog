@@ -1,3 +1,10 @@
+2005-01-27  Martin Wehner  <martin.wehner@epost.de>
+
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_compare_for_sort_by_attribute):
+	Don't compare NULL values from files we can't get permissions for.
+	Fixes bug #153890.
+
 2005-01-27  Chris Lahey  <clahey@ximian.com>
 
 	* acconfig.h, configure.in, src/nautilus-image-properties-page.c:
