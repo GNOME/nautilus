@@ -356,10 +356,10 @@ nautilus_link_desktop_file_get_link_name_from_desktop (NautilusDesktopFile *desk
 
 	name = NULL;
 
-	if (nautilus_desktop_file_get_string (desktop_file,
-					      "Desktop Entry",
-					      "Name",
-					      &name)) {
+	if (nautilus_desktop_file_get_locale_string (desktop_file,
+						     "Desktop Entry",
+						     "Name",
+						     &name)) {
 		return name;
 	} else {
 		return NULL;
