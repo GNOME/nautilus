@@ -14,6 +14,9 @@
 	sidebar panel, and on the content view.
 	(nautilus_window_connect_view): Added comment and updated
 	for a name change.
+	(nautilus_window_connect_content_view): Removed this wrapper
+	for _connect_view, which no longer did anything other than
+	call through.
 	* src/nautilus-window-manage-views.c:
 	(nautilus_window_view_failed): Renamed from
 	"nautilus_window_view_destroyed" since it's (now) only
