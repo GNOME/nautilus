@@ -106,7 +106,8 @@ directory_changed_callback (NautilusDirectory *directory,
                             NautilusBackground *background)
 {
         char *color, *image, *combine;
-
+	char *theme_source;
+	
         g_assert (NAUTILUS_IS_DIRECTORY (directory));
         g_assert (NAUTILUS_IS_BACKGROUND (background));
         g_assert (gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_directory")
@@ -119,6 +120,15 @@ directory_changed_callback (NautilusDirectory *directory,
                                           background_changed_callback,
                                           directory);
         
+	
+	/* set up the theme source by checking if the background is attached to the desktop */
+	if (gtk_object_get_data (GTK_OBJECT (background), "desktop")) {
+		theme_source = "desktop";
+	} else {
+		theme_source = "directory";
+	}
+	g_message ("theme source is %s", theme_source);
+	
         /* Update color and tile image based on metadata. */
 	color = nautilus_directory_get_metadata (directory,
                                                  NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR,
@@ -130,9 +140,9 @@ directory_changed_callback (NautilusDirectory *directory,
 	
 	/* if there's none, read the default from the theme */
 	if (color == NULL && image == NULL) {
-		color = nautilus_theme_get_theme_data ("directory", NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR);
-		image = nautilus_theme_get_theme_data ("directory", NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE);
-		combine = nautilus_theme_get_theme_data ("directory", "COMBINE");		
+		color = nautilus_theme_get_theme_data (theme_source, NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR);
+		image = nautilus_theme_get_theme_data (theme_source, NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE);
+		combine = nautilus_theme_get_theme_data (theme_source, "COMBINE");		
 		
 		image = local_data_file_to_uri(image);
 	}
@@ -172,10 +182,18 @@ background_reset_callback (NautilusBackground *background,
                            NautilusDirectory *directory)
 {
 	char *color, *image, *combine;
+	char *theme_source;
 	
-	color = nautilus_theme_get_theme_data ("directory", NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR);
-	image = nautilus_theme_get_theme_data ("directory", NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE);		
-	combine = nautilus_theme_get_theme_data ("directory", "COMBINE");		
+	/* set up the theme source by checking if the background is attached to the desktop */
+	if (gtk_object_get_data (GTK_OBJECT (background), "desktop")) {
+		theme_source = "desktop";
+	} else {
+		theme_source = "directory";
+	}
+	
+	color = nautilus_theme_get_theme_data (theme_source, NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_COLOR);
+	image = nautilus_theme_get_theme_data (theme_source, NAUTILUS_METADATA_KEY_DIRECTORY_BACKGROUND_IMAGE);		
+	combine = nautilus_theme_get_theme_data (theme_source, "COMBINE");		
 	
 	image = local_data_file_to_uri(image);
 	/* block the handler so we don't write metadata */

@@ -24,6 +24,7 @@
 
 #include <config.h>
 #include "fm-icon-view.h"
+#include "fm-desktop-icon-view.h"
 
 #include "fm-error-reporting.h"
 #include "fm-icon-text-window.h"
@@ -39,6 +40,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-xfer.h>
+#include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
@@ -710,19 +712,26 @@ static void
 fm_icon_view_begin_loading (FMDirectoryView *view)
 {
 	FMIconView *icon_view;
+	GtkWidget *icon_container;
 	NautilusDirectory *directory;
 	int level;
 	char *sort_name;
-
+	NautilusBackground *background;
+	
 	g_return_if_fail (FM_IS_ICON_VIEW (view));
 
 	icon_view = FM_ICON_VIEW (view);
 	directory = fm_directory_view_get_model (view);
+	icon_container = GTK_WIDGET (get_icon_container (icon_view));
 
-	nautilus_connect_background_to_directory_metadata
-		(GTK_WIDGET (get_icon_container (icon_view)),
-		 directory);
-
+	/* hackish way to tag the desktop so it can use a different background.  */	
+	if (FM_IS_DESKSTOP_ICON_VIEW (view)) {
+		background = nautilus_get_widget_background (icon_container);
+		gtk_object_set_data (GTK_OBJECT (background), "desktop", view); 
+	}
+	nautilus_connect_background_to_directory_metadata (icon_container, directory);
+	
+	
 	/* Set up the zoom level from the metadata. */
 	level = nautilus_directory_get_integer_metadata
 		(directory, 

@@ -1,3 +1,19 @@
+2000-07-26  Andy Hertzfeld  <andy@eazel.com>
+
+	completed task 1774, desktop needs separate background in theme
+
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(directory_changed_callback), (background_reset_callback):
+	check for desktop tag when fetching from the theme
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_begin_loading):
+	tag the desktop background so we can treat it specially
+	* icons/arlo/arlo.xml:
+	* icons/default.xml:
+	* icons/eazel/eazel.xml:
+	* icons/vector/vector.xml:
+	added separate desktop backgrounds to the themes, which I'm sure Arlo and Susan
+	will both want to change as soon as I show it to them
+
 2000-07-26  Mathieu Lacage <mathieu@eazel.com>
 
 	* src/file-manager/fm-desktop-icon-view.c:
