@@ -1,3 +1,13 @@
+2001-02-26  Rebecca Schulman  <rebecka@eazel.com>
+
+	reviewed by: Laszlo Kovacs  <laszlo.kovacs@sun.com>
+
+	* components/help/hyperbola-filefmt.c:
+	(fmt_scrollkeeper_tree_empty):
+	Fix missing braces that hid a bug which 
+	was exposed by the "may be used uninitialized"
+	error in C.  
+
 2001-02-26  Laszlo Kovacs  <laszlo.kovacs@sun.com>
 
 	reviewed by Ramiro Estrugo

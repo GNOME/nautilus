@@ -1307,13 +1307,15 @@ fmt_scrollkeeper_tree_empty (xmlNodePtr cl_node)
 		next = node->next;
 
 		if (!strcmp (node->name, "sect") &&
-		    node->childs->next != NULL) 
-		    ret_val = fmt_scrollkeeper_tree_empty (node->childs->next);
-		    if (!ret_val)
-		    	return ret_val;
+		    node->childs->next != NULL) {
+			ret_val = fmt_scrollkeeper_tree_empty (node->childs->next);
+			if (!ret_val)
+				return ret_val;
+		}
 
-		if (!strcmp (node->name, "doc"))
+		if (!strcmp (node->name, "doc")) {
 			return 0;
+		}
 	}
 	
 	return 1;
