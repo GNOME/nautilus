@@ -31,7 +31,6 @@
 #include "nautilus-icon-factory.h"
 #include "nautilus-sidebar-functions.h"
 #include <eel/eel-enumeration.h>
-#include <eel/eel-font-manager.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-smooth-widget.h>
@@ -53,16 +52,8 @@ static const char SYSTEM_GNOME_VFS_PATH[] = "/system/gnome-vfs";
 static void     global_preferences_install_defaults      (void);
 static void     global_preferences_register_enumerations (void);
 static gpointer default_font_callback                    (int  user_level);
-static gpointer default_smooth_font_callback             (int  user_level);
 static gpointer default_home_location_callback           (int  user_level);
 static gpointer default_default_folder_viewer_callback	 (int  user_level);
-
-#if GNOME2_CONVERSION_COMPLETE
-
-static const char *default_smooth_font_auto_value;
-static const char *icon_view_smooth_font_auto_value;
-
-#endif
 
 /* An enumeration used for installing type specific preferences defaults. */
 typedef enum
@@ -553,12 +544,6 @@ static const PreferenceDefault preference_defaults[] = {
 	  { EEL_USER_LEVEL_NOVICE, NULL, default_font_callback, g_free },
 	  { USER_LEVEL_NONE }
 	},
-	{ NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
-	  PREFERENCE_STRING,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, NULL, default_smooth_font_callback, g_free },
-	  { USER_LEVEL_NONE }
-	},
 	{ NAUTILUS_PREFERENCES_DEFAULT_FONT_SIZE,
 	  PREFERENCE_INTEGER,
 	  EEL_USER_LEVEL_NOVICE,
@@ -577,12 +562,6 @@ static const PreferenceDefault preference_defaults[] = {
 	},
 
 	/* Icon View Default Preferences */
-	{ NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
-	  PREFERENCE_STRING,
-	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, NULL, default_smooth_font_callback, g_free },
-	  { USER_LEVEL_NONE }
-	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
 	  PREFERENCE_STRING,
 	  EEL_USER_LEVEL_NOVICE,
@@ -855,13 +834,6 @@ default_font_callback (int user_level)
 	return g_strdup ("helvetica");
 }
 
-static gpointer
-default_smooth_font_callback (int user_level)
-{
-	g_return_val_if_fail (eel_preferences_user_level_is_valid (user_level), NULL);
-	return eel_font_manager_get_default_font ();
-}
-
 static int
 get_default_folder_viewer_preference_from_iid (const char *iid)
 {
@@ -906,82 +878,6 @@ default_home_location_callback (int user_level)
 /*
  * Public functions
  */
-
-#if GNOME2_CONVERSION_COMPLETE
-
-static EelScalableFont *
-global_preferences_get_smooth_font (const char *smooth_font_file_name)
-{
-	EelScalableFont *smooth_font;
-
-	smooth_font = (smooth_font_file_name != NULL && g_file_exists (smooth_font_file_name)) ?
-		eel_scalable_font_new (smooth_font_file_name) :
-		eel_scalable_font_get_default_font ();
-	
-	g_assert (EEL_IS_SCALABLE_FONT (smooth_font));
-	return smooth_font;
-}
-
-static EelScalableFont *
-global_preferences_get_smooth_bold_font (const char *file_name)
-{
-	EelScalableFont *plain_font;
-	EelScalableFont *bold_font;
-
-	plain_font = global_preferences_get_smooth_font (file_name);
-	g_assert (EEL_IS_SCALABLE_FONT (plain_font));
-
-	bold_font = eel_scalable_font_make_bold (plain_font);
-
-	if (bold_font == NULL) {
-		bold_font = plain_font;
-	} else {
-		g_object_unref (plain_font);
-	}
-
-	g_assert (EEL_IS_SCALABLE_FONT (bold_font));
-	return bold_font;
-}
-
-/**
- * nautilus_global_preferences_get_icon_view_smooth_font
- *
- * Return value: The user's smooth font for icon file names.  Need to 
- *               unref the returned GtkObject when done with it.
- */
-EelScalableFont *
-nautilus_global_preferences_get_icon_view_smooth_font (void)
-{
-	return global_preferences_get_smooth_font (icon_view_smooth_font_auto_value);
-}
-
-/**
- * nautilus_global_preferences_get_default_smooth_font
- *
- * Return value: The user's smooth font for default text.
- *               Need to unref the returned GtkObject when done with it.
- */
-EelScalableFont *
-nautilus_global_preferences_get_default_smooth_font (void)
-{
-	return global_preferences_get_smooth_font (default_smooth_font_auto_value);
-}
-
-/**
- * nautilus_global_preferences_get_default_smooth_bold_font
- *
- * Return value: A bold flavor on the user's default text font.  If
- *               no bold font is found, then the plain preffered font is
- *               used. Need to unref the returned GtkObject when done
- *               with it.
- */
-EelScalableFont *
-nautilus_global_preferences_get_default_smooth_bold_font (void)
-{
-	return global_preferences_get_smooth_bold_font (default_smooth_font_auto_value);
-}
-
-#endif
 
 /* Let the smooth widget machinery know about smoothness changes */
 static void
@@ -1095,13 +991,6 @@ nautilus_global_preferences_init (void)
 	eel_preferences_monitor_directory (SYSTEM_GNOME_VFS_PATH);
 
 	/* Set up storage for values accessed in this file */
-#if GNOME2_CONVERSION_COMPLETE
-	eel_preferences_add_auto_string (NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
-					 &icon_view_smooth_font_auto_value);
-	eel_preferences_add_auto_string (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
-					 &default_smooth_font_auto_value);
-#endif
-
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
 				      smooth_graphics_mode_changed_callback, 
 				      NULL);

@@ -1,5 +1,14 @@
 2002-01-03  Darin Adler  <darin@bentspoon.com>
 
+	* libnautilus-private/nautilus-global-preferences.c:
+	(nautilus_global_preferences_init):
+	Remove some smooth-font related stuff to get rid of the
+	dependency on EelFontManager.
+
+	* TODO: Quick update.
+
+2002-01-03  Darin Adler  <darin@bentspoon.com>
+
 	* test/test.c: (test_text_caption_get_text_as_int):
 	Don't use the eel_eat function.
 
