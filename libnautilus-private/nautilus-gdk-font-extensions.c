@@ -63,94 +63,39 @@
 #define XLFD_WILDCARD_VALUE			-2
 
 /* Font functions that could be public */
-static NautilusStringList *nautilus_gdk_font_list_fonts             (const char               *pattern);
-static char *              nautilus_gdk_font_get_name               (const GdkFont            *font);
-static guint               nautilus_gdk_font_get_size_in_pixels               (const GdkFont            *font);
+static NautilusStringList *      font_list_fonts                          (const char               *pattern);
+static const NautilusStringList *font_list_fonts_cached                   (const char               *pattern,
+									   GCompareFunc              compare_function);
+static char *                    font_get_name                            (const GdkFont            *font);
+static guint                     font_get_size_in_pixels                  (const GdkFont            *font);
+static GdkFont *                 font_get_bold                            (GdkFont                  *font);
 
 /* XLFD string operations */
-static char *              xlfd_string_get_nth                      (const char               *xlfd_string,
-								     guint                     n);
-static char *              xlfd_string_replace_nth                  (const char               *xlfd_string,
-								     guint                     n,
-								     const char               *replace_string);
-static int                 xlfd_string_get_nth_as_int               (const char               *xlfd_string,
-								     guint                     n);
-static gboolean            xlfd_string_is_scalable_non_bitmap       (const char               *xlfd_string);
-static gboolean            xlfd_string_could_be_scalable_non_bitmap (const char               *xlfd_string);
+static char *                    xlfd_string_get_nth                      (const char               *xlfd_string,
+									   guint                     n);
+static char *                    xlfd_string_replace_nth                  (const char               *xlfd_string,
+									   guint                     n,
+									   const char               *replace_string);
+static int                       xlfd_string_get_nth_as_int               (const char               *xlfd_string,
+									   guint                     n);
+static gboolean                  xlfd_string_is_scalable_non_bitmap       (const char               *xlfd_string);
+static gboolean                  xlfd_string_could_be_scalable_non_bitmap (const char               *xlfd_string);
 
 /* Test functions for searching font lists */
-static gboolean            font_entry_has_bold_weight_test          (const NautilusStringList *string_list,
-								     const char               *string,
-								     gpointer                  callback_data);
-static gboolean            font_entry_has_italic_slant_test         (const NautilusStringList *string_list,
-								     const char               *string,
-								     gpointer                  callback_data);
-static gboolean            font_entry_is_scalable_non_bitmap_test   (const NautilusStringList *string_list,
-								     const char               *string,
-								     gpointer                  callback_data);
+static gboolean                  font_entry_has_bold_weight_test          (const NautilusStringList *string_list,
+									   const char               *string,
+									   gpointer                  callback_data);
+static gboolean                  font_entry_has_italic_slant_test         (const NautilusStringList *string_list,
+									   const char               *string,
+									   gpointer                  callback_data);
+static gboolean                  font_entry_is_scalable_non_bitmap_test   (const NautilusStringList *string_list,
+									   const char               *string,
+									   gpointer                  callback_data);
 /* Comparison functions for sorting fonts lists */
-static int                 compare_xlfd_by_size_in_points           (gconstpointer             string_a,
-								     gconstpointer             string_b);
-static int                 compare_xlfd_by_size_in_pixels           (gconstpointer             string_a,
-								     gconstpointer             string_b);
-
-/**
- * nautilus_gdk_font_get_bold
- * @plain_font: A font.
- * Returns: A bold variant of @plain_font or NULL.
- *
- * Tries to find a bold flavor of a given font.  Return the same font
- * if no bold font is found.
- */
-GdkFont *
-nautilus_gdk_font_get_bold (GdkFont *font)
-{
-	char *name;
-	char *weight_pattern;
-	GdkFont *result = NULL;
-	char *pattern_match;
-	NautilusStringList *font_list;
-
-	name = nautilus_gdk_font_get_name (font);
-
-	/* Replace the weight with a wildard */
-	weight_pattern = xlfd_string_replace_nth (name, XLFD_WEIGHT_INDEX, "*");
-
-	font_list = nautilus_gdk_font_list_fonts (weight_pattern);
-	
-	/* Find one with a bold weight */
-	pattern_match = nautilus_string_list_find_by_function (font_list,
-							       font_entry_has_bold_weight_test,
-							       NULL);
-
-	if (pattern_match != NULL) {
-		char *weight_name;
-		char *bold_name;
-
-		/* Find out the bold weight */
-		weight_name = xlfd_string_get_nth (pattern_match, XLFD_WEIGHT_INDEX);
-		
-		/* Set the bold weight on the original name */
-		bold_name = xlfd_string_replace_nth (name, XLFD_WEIGHT_INDEX, weight_name);
-		
-		result = gdk_fontset_load (bold_name);
-		g_assert (result != NULL);
-
-		g_free (bold_name);
-		g_free (weight_name);
-	} else {
-		/* If no font was found, return the source font */
-		gdk_font_ref ((GdkFont *) font);
-		result = (GdkFont *) font;
-	}
-
-	nautilus_string_list_free (font_list);	
-	g_free (pattern_match);
-	g_free (weight_pattern);
-	g_free (name);
-
-	return result;
-}
+static int                       compare_xlfd_by_size_in_points           (gconstpointer             string_a,
+									   gconstpointer             string_b);
+static int                       compare_xlfd_by_size_in_pixels           (gconstpointer             string_a,
+									   gconstpointer             string_b);
 
 /**
  * nautilus_gdk_font_get_italic
@@ -169,12 +114,12 @@ nautilus_gdk_font_get_italic (GdkFont *font)
 	char *pattern_match;
 	NautilusStringList *font_list;
 
-	name = nautilus_gdk_font_get_name (font);
+	name = font_get_name (font);
 
 	/* Replace the slant with a wildard */
 	slant_pattern = xlfd_string_replace_nth (name, XLFD_SLANT_INDEX, "*");
 
-	font_list = nautilus_gdk_font_list_fonts (slant_pattern);
+	font_list = font_list_fonts (slant_pattern);
 	
 	/* Find one with an italic slant */
 	pattern_match = nautilus_string_list_find_by_function (font_list,
@@ -192,7 +137,10 @@ nautilus_gdk_font_get_italic (GdkFont *font)
 		italic_name = xlfd_string_replace_nth (name, XLFD_SLANT_INDEX, slant_name);
 		
 		result = gdk_fontset_load (italic_name);
-		g_assert (result != NULL);
+		if (result == NULL) {
+			gdk_font_ref (font);
+			result = font;
+		}
 
 		g_free (italic_name);
 		g_free (slant_name);
@@ -208,6 +156,92 @@ nautilus_gdk_font_get_italic (GdkFont *font)
 	g_free (name);
 
 	return result;
+}
+
+static GHashTable *bold_font_table = NULL;
+
+typedef struct {
+	char *name;
+	GdkFont *bold_font;
+} BoldFontEntry;
+
+static void
+bold_font_table_free_one_node (gpointer key,
+			       gpointer value,
+			       gpointer callback_data)
+{
+	BoldFontEntry *entry;
+
+	g_return_if_fail (key != NULL);
+	g_return_if_fail (value != NULL);
+
+	entry = value;
+	g_free (entry->name);
+	gdk_font_unref (entry->bold_font);
+	g_free (entry);
+}
+
+static void
+bold_font_table_free (void)
+{
+	if (bold_font_table != NULL) {
+		g_hash_table_foreach (bold_font_table, bold_font_table_free_one_node, NULL);
+		g_hash_table_destroy (bold_font_table);
+	}
+
+	bold_font_table = NULL;
+}
+
+/**
+ * nautilus_gdk_font_get_bold
+ * @plain_font: A font.
+ * Returns: A bold variant of @plain_font or NULL.
+ *
+ * Tries to find a bold flavor of a given font.  Return the same font
+ * if no bold font is found.
+ */
+GdkFont *
+nautilus_gdk_font_get_bold (GdkFont *font)
+{
+	char *name;
+	BoldFontEntry *entry;
+
+	g_return_val_if_fail (font != NULL, NULL);
+
+	if (bold_font_table == NULL) {
+		bold_font_table = g_hash_table_new (g_str_hash, g_str_equal);
+		g_atexit (bold_font_table_free);
+	}
+
+	g_assert (bold_font_table != NULL);
+
+	name = font_get_name (font);
+	entry = g_hash_table_lookup (bold_font_table, name);
+
+	if (entry != NULL) {
+		g_assert (entry->bold_font != NULL);
+		gdk_font_ref (entry->bold_font);
+		g_free (name);
+		return entry->bold_font;
+	}
+
+	entry = g_new0 (BoldFontEntry, 1);
+	entry->name = g_strdup (name);
+	entry->bold_font = font_get_bold (font);
+
+	if (entry->bold_font == NULL) {
+		g_free (entry->name);
+		g_free (entry);
+		gdk_font_ref (font);
+		return font;
+	}
+	g_free (name);
+	g_hash_table_insert (bold_font_table, entry->name, entry);
+
+	g_assert (g_hash_table_lookup (bold_font_table, entry->name) == entry);
+
+	gdk_font_ref (entry->bold_font);
+	return entry->bold_font;
 }
 
 /* Return a scalable font matching the given target size */
@@ -250,7 +284,7 @@ font_bitmap_get_by_size (const char *xlfd_string,
  	char *last_entry;
 	guint max_size;
  	char *larger_pattern_xlfd = NULL;
-	NautilusStringList *font_list;
+	const NautilusStringList *font_list;
 	
 	g_return_val_if_fail (xlfd_string != NULL, NULL);
 	g_return_val_if_fail (target_size > 0, NULL);
@@ -260,11 +294,8 @@ font_bitmap_get_by_size (const char *xlfd_string,
  	larger_pattern_xlfd = xlfd_string_replace_nth (xlfd_string, index, "*");
 
 	/* Make a query */
-	font_list = nautilus_gdk_font_list_fonts (larger_pattern_xlfd);
+	font_list = font_list_fonts_cached (larger_pattern_xlfd, compare_function);
 
-	/* Sort the fonts by size */
-	nautilus_string_list_sort_by_function (font_list, compare_function);
-	
 	last_entry = nautilus_string_list_nth (font_list, nautilus_string_list_get_length (font_list) - 1);
 	max_size = xlfd_string_get_nth_as_int (last_entry, index);
 	g_free (last_entry);
@@ -280,7 +311,7 @@ font_bitmap_get_by_size (const char *xlfd_string,
 		larger_font = gdk_fontset_load (larger_font_name);
 		g_free (larger_font_name);
 	} else {
-		/* Look for the closes matching font */
+		/* Look for the closest matching font */
 		guint i = 0;
 		int found_size = 0;
 		char *larger_font_name;
@@ -312,7 +343,6 @@ font_bitmap_get_by_size (const char *xlfd_string,
 		
 	}
 	
-	nautilus_string_list_free (font_list);
  	g_free (larger_pattern_xlfd);
 	
 	return larger_font;
@@ -340,7 +370,7 @@ nautilus_gdk_font_get_larger (GdkFont *font,
 	g_return_val_if_fail (ABS (num_steps) >= MIN_NUM_STEPS, NULL);
 	g_return_val_if_fail (ABS (num_steps) <= MAX_NUM_STEPS, NULL);
 
-	name = nautilus_gdk_font_get_name (font);
+	name = font_get_name (font);
 
 	size_in_points = xlfd_string_get_nth_as_int (name, XLFD_SIZE_IN_POINTS_INDEX);
 	size_in_pixels = xlfd_string_get_nth_as_int (name, XLFD_SIZE_IN_PIXELS_INDEX);
@@ -508,12 +538,12 @@ nautilus_gdk_font_get_largest_fitting (GdkFont *font,
 	longest_string_length = strlen (longest_string);
 
 	/* Make sure the font was specified in pixels */
-	if (nautilus_gdk_font_get_size_in_pixels (font) > 0) {
+	if (font_get_size_in_pixels (font) > 0) {
 		int candidate_size;
 		char *font_name;
 		gboolean done;
 		
-		font_name = nautilus_gdk_font_get_name (font);
+		font_name = font_get_name (font);
 		
 		/* Iterate through the fonts until we find one that works */
 		candidate_size = maximum_acceptable_font_size;
@@ -602,9 +632,62 @@ nautilus_string_ellipsize_start (const char *string, GdkFont *font, int width)
 
 /* Private font things */
 
+/* Find a bold flavor of a font */
+static GdkFont *
+font_get_bold (GdkFont *font)
+{
+	char *name;
+	char *weight_pattern;
+	GdkFont *result = NULL;
+	char *pattern_match;
+	NautilusStringList *font_list;
+
+	name = font_get_name (font);
+
+	/* Replace the weight with a wildard */
+	weight_pattern = xlfd_string_replace_nth (name, XLFD_WEIGHT_INDEX, "*");
+
+	font_list = font_list_fonts (weight_pattern);
+	
+	/* Find one with a bold weight */
+	pattern_match = nautilus_string_list_find_by_function (font_list,
+							       font_entry_has_bold_weight_test,
+							       NULL);
+
+	if (pattern_match != NULL) {
+		char *weight_name;
+		char *bold_name;
+
+		/* Find out the bold weight */
+		weight_name = xlfd_string_get_nth (pattern_match, XLFD_WEIGHT_INDEX);
+		
+		/* Set the bold weight on the original name */
+		bold_name = xlfd_string_replace_nth (name, XLFD_WEIGHT_INDEX, weight_name);
+		
+		result = gdk_fontset_load (bold_name);
+		if (result == NULL) {
+			gdk_font_ref (font);
+			result = font;
+		}
+
+		g_free (bold_name);
+		g_free (weight_name);
+	} else {
+		/* If no font was found, return the source font */
+		gdk_font_ref ((GdkFont *) font);
+		result = (GdkFont *) font;
+	}
+
+	g_free (pattern_match);
+	g_free (weight_pattern);
+	g_free (name);
+
+	return result;
+}
+
 /* A wrapper for XListFonts() */
 static NautilusStringList *
-nautilus_gdk_font_list_fonts (const char *pattern)
+font_list_fonts (const char *pattern)
 {
 	NautilusStringList *list;
 	char **font_names;
@@ -628,9 +711,102 @@ nautilus_gdk_font_list_fonts (const char *pattern)
 	return list;
 }
 
+/* A version of list_fonts that returns a cached value.  In general
+ * I dont hesitate to copy string lists around to avoid the caller
+ * having to decide to free or not.  However, list_fonts is a very 
+ * special case.  It is an expensive operation, and one that can
+ * be liberally called from Nautilus.  For example, the sidebar title
+ * results in many such queries being made.  Further, we have profiler
+ * evidence to indicate that the specific operation of listing fonts
+ * is responsible for a not insignificant amount of starvation of the 
+ * gnome vfs working thread.  So there.
+ */
+static GHashTable *font_list_table = NULL;
+
+typedef struct
+{
+	char *pattern;
+	NautilusStringList *font_list;
+} FontListEntry;
+
+static void
+font_list_table_free_one_node (gpointer key,
+			       gpointer value,
+			       gpointer callback_data)
+{
+	FontListEntry *entry;
+
+	g_return_if_fail (key != NULL);
+	g_return_if_fail (value != NULL);
+
+	entry = value;
+	g_free (entry->pattern);
+	nautilus_string_list_free (entry->font_list);
+	g_free (entry);
+}
+
+static void
+font_list_table_free (void)
+{
+	if (font_list_table != NULL) {
+		g_hash_table_foreach (font_list_table, font_list_table_free_one_node, NULL);
+		g_hash_table_destroy (font_list_table);
+	}
+
+	font_list_table = NULL;
+}
+
+/* Return a cached list of fonts.  If a compare_function is given, the
+ * list will be sorted accordingly.  As such, the sorting state of the 
+ * cached font list is undefined if the compare_function is NULL.
+ */
+static const NautilusStringList *
+font_list_fonts_cached (const char *pattern,
+			GCompareFunc compare_function)
+{
+	FontListEntry *entry;
+
+	g_return_val_if_fail (pattern != NULL, NULL);
+
+	if (font_list_table == NULL) {
+		font_list_table = g_hash_table_new (g_str_hash, g_str_equal);
+		g_atexit (font_list_table_free);
+	}
+
+	g_assert (font_list_table != NULL);
+	entry = g_hash_table_lookup (font_list_table, pattern);
+
+	if (entry != NULL) {
+		g_assert (entry->font_list != NULL);
+		if (compare_function != NULL) {
+			nautilus_string_list_sort_by_function (entry->font_list, compare_function);
+		}
+		return entry->font_list;
+	}
+
+	entry = g_new0 (FontListEntry, 1);
+	entry->pattern = g_strdup (pattern);
+	entry->font_list = font_list_fonts (pattern);
+
+	if (entry->font_list == NULL) {
+		g_free (entry->pattern);
+		g_free (entry);
+		return NULL;
+	}
+
+	g_hash_table_insert (font_list_table, entry->pattern, entry);
+
+	g_assert (g_hash_table_lookup (font_list_table, entry->pattern) == entry);
+
+	if (compare_function != NULL) {
+		nautilus_string_list_sort_by_function (entry->font_list, compare_function);
+	}
+	return entry->font_list;
+}
+
 /* Return the font name - an xlfd string used by Gdk to allocate the font */
 static char *
-nautilus_gdk_font_get_name (const GdkFont *font)
+font_get_name (const GdkFont *font)
 {
 	GdkFontPrivate *font_private;
 	const char *font_name;
@@ -658,14 +834,14 @@ nautilus_gdk_font_get_name (const GdkFont *font)
  * bitmap fonts. 
  */
 static guint
-nautilus_gdk_font_get_size_in_pixels (const GdkFont *font)
+font_get_size_in_pixels (const GdkFont *font)
 {
 	char *name;
 	int size_in_pixels = 0;
 
 	g_return_val_if_fail (font != NULL, 0);
 
-	name = nautilus_gdk_font_get_name (font);
+	name = font_get_name (font);
 
 	size_in_pixels = xlfd_string_get_nth_as_int (name, XLFD_SIZE_IN_PIXELS_INDEX);
 
@@ -828,7 +1004,7 @@ xlfd_string_could_be_scalable_non_bitmap (const char *xlfd_string)
 {
 	char *temp[4];
 	gboolean is_scalable_non_bitmap;
-	NautilusStringList *font_list;
+	const NautilusStringList *font_list;
 	char *scalable_non_bitmap_match;
 	
 	g_return_val_if_fail (xlfd_string != NULL, FALSE);
@@ -839,7 +1015,7 @@ xlfd_string_could_be_scalable_non_bitmap (const char *xlfd_string)
 	temp[2] = xlfd_string_replace_nth (temp[1], XLFD_HORIZONTAL_RESOLUTION_INDEX, "*");
 	temp[3] = xlfd_string_replace_nth (temp[2], XLFD_VERTICAL_RESOLUTION_INDEX, "*");
 	
-	font_list = nautilus_gdk_font_list_fonts (temp[3]);
+	font_list = font_list_fonts_cached (temp[3], NULL);
 
 	/* Look for the entry that indicate this is a scalable non bitmap font */
 	scalable_non_bitmap_match = nautilus_string_list_find_by_function (font_list,
@@ -849,7 +1025,6 @@ xlfd_string_could_be_scalable_non_bitmap (const char *xlfd_string)
 	is_scalable_non_bitmap = scalable_non_bitmap_match != NULL;
 	g_free (scalable_non_bitmap_match);
 
-	nautilus_string_list_free (font_list);
 	g_free (temp[0]);
 	g_free (temp[1]);
 	g_free (temp[2]);

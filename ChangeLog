@@ -1,3 +1,23 @@
+2001-02-26  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: John Harper  <jsh@eazel.com>
+
+	* libnautilus-extensions/nautilus-gdk-font-extensions.c:
+	(nautilus_gdk_font_get_italic), (bold_font_table_free_one_node),
+	(bold_font_table_free), (nautilus_gdk_font_get_bold),
+	(font_bitmap_get_by_size), (nautilus_gdk_font_get_larger),
+	(nautilus_gdk_font_get_largest_fitting), (font_get_bold),
+	(font_list_fonts), (font_list_table_free_one_node),
+	(font_list_table_free), (font_list_fonts_cached), (font_get_name),
+	(font_get_size_in_pixels),
+	(xlfd_string_could_be_scalable_non_bitmap):
+	Rename some private files (remove the nautilus_ prefix) to make it
+	clear they are not public.
+	Add caching of the expensive list_fonts () call.  Also cache the
+	results of get_bold_font ().
+	Always return a valid font for get_bold_font() even if a bold font
+	is not found.
+	
 2001-02-26  Arlo Rose  <arlo@eazel.com>
 
 	* icons/arlo/Makefile.am:
