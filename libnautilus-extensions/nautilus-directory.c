@@ -156,9 +156,7 @@ nautilus_directory_destroy (GtkObject *object)
 	nautilus_metafile_read_cancel (directory);
 	g_assert (directory->details->read_state == NULL);
 
-	if (nautilus_directory_is_file_list_monitored (directory)) {
-		nautilus_directory_stop_monitoring_file_list (directory);
-	}
+	nautilus_directory_stop_monitoring_file_list (directory);
 
 	if (directory->details->monitor_list != NULL) {
 		g_warning ("destroying a NautilusDirectory while it's being monitored");
@@ -1123,7 +1121,9 @@ nautilus_directory_call_when_ready (NautilusDirectory *directory,
 				    gpointer callback_data)
 {
 	g_return_if_fail (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
-	g_return_if_fail (directory_metadata_keys != NULL || file_metadata_keys != NULL);
+	g_return_if_fail (directory_metadata_keys != NULL
+			  || file_attributes != NULL
+			  || file_metadata_keys != NULL);
 	g_return_if_fail (callback != NULL);
 
 	nautilus_directory_call_when_ready_internal
@@ -1142,14 +1142,8 @@ nautilus_directory_cancel_callback (NautilusDirectory *directory,
 				    NautilusDirectoryCallback callback,
 				    gpointer callback_data)
 {
+	g_return_if_fail (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (callback != NULL);
-
-	if (directory == NULL) {
-		return;
-	}
-
-	/* NULL is OK here for non-vfs protocols */
-	g_return_if_fail (!directory || NAUTILUS_IS_DIRECTORY (directory));
 
 	nautilus_directory_cancel_callback_internal
 		(directory,
@@ -1190,9 +1184,12 @@ nautilus_directory_file_monitor_remove (NautilusDirectory *directory,
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
+#include "nautilus-file-attributes.h"
+
 static int data_dummy;
 static guint file_count;
 static gboolean got_metadata_flag;
+static gboolean got_files_flag;
 
 static void
 get_files_callback (NautilusDirectory *directory, GList *files, gpointer callback_data)
@@ -1214,6 +1211,16 @@ got_metadata_callback (NautilusDirectory *directory, GList *files, gpointer call
 	got_metadata_flag = TRUE;
 }
 
+static void
+got_files_callback (NautilusDirectory *directory, GList *files, gpointer callback_data)
+{
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	g_assert (g_list_length (files) > 10);
+	g_assert (callback_data == &data_dummy);
+
+	got_files_flag = TRUE;
+}
+
 /* Return the number of extant NautilusDirectories */
 int
 nautilus_directory_number_outstanding (void)
@@ -1225,9 +1232,9 @@ void
 nautilus_self_check_directory (void)
 {
 	NautilusDirectory *directory;
-	GList *list;
+	GList *keys, *attributes;
 
-	list = g_list_prepend (NULL, "TEST");
+	keys = g_list_prepend (NULL, "TEST");
 
 	directory = nautilus_directory_get ("file:///etc");
 
@@ -1239,7 +1246,7 @@ nautilus_self_check_directory (void)
 					     get_files_callback, &data_dummy);
 
 	got_metadata_flag = FALSE;
-	nautilus_directory_call_when_ready (directory, list, NULL, NULL,
+	nautilus_directory_call_when_ready (directory, keys, NULL, NULL,
 					    got_metadata_callback, &data_dummy);
 
 	while (!got_metadata_flag) {
@@ -1286,7 +1293,7 @@ nautilus_self_check_directory (void)
 	directory = nautilus_directory_get ("file:///etc");
 
 	got_metadata_flag = FALSE;
-	nautilus_directory_call_when_ready (directory, list, NULL, NULL,
+	nautilus_directory_call_when_ready (directory, keys, NULL, NULL,
 					    got_metadata_callback, &data_dummy);
 
 	while (!got_metadata_flag) {
@@ -1294,6 +1301,19 @@ nautilus_self_check_directory (void)
 	}
 
 	NAUTILUS_CHECK_BOOLEAN_RESULT (directory->details->metafile != NULL, TRUE);
+
+	got_files_flag = FALSE;
+
+	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_FAST_MIME_TYPE);
+	nautilus_directory_call_when_ready (directory, NULL, attributes, NULL,
+					    got_files_callback, &data_dummy);
+	g_list_free (attributes);
+
+	while (!got_files_flag) {
+		gtk_main_iteration ();
+	}
+
+	NAUTILUS_CHECK_BOOLEAN_RESULT (directory->details->files == NULL, TRUE);
 
 	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directory_objects), 1);
 
@@ -1316,7 +1336,7 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("file:/"), "file:///");
 	NAUTILUS_CHECK_STRING_RESULT (make_uri_canonical ("file:///"), "file:///");
 
-	g_list_free (list);
+	g_list_free (keys);
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

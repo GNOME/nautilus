@@ -1,3 +1,26 @@
+2000-04-27  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	Rewrite of the state machine. This adds the new feature that Maciej
+	needs where you can call "call_when_ready" to get file attributes.
+	
+	* libnautilus-extensions/nautilus-directory-private.h:
+	Added a file_list_monitored boolean to simplify the logic.
+	
+	* libnautilus-extensions/nautilus-directory.c
+	(nautilus_directory_destroy): Took advantage of file_list_monitored
+	simplification.
+	(nautilus_directory_call_when_ready),
+	(nautilus_directory_cancel_callback): Tweaked the return_if_fail
+	calls to match changes in the async.c file.
+	(got_files_callback), (nautilus_self_check_directory):
+	Added self-check code to test the new feature.
+	
+	* libnautilus-extensions/nautilus-string.h:
+	* libnautilus-extensions/nautilus-string.c (nautilus_str_compare):
+	Added a new function for use with things that take a GCompareFunc
+	to avoid a function type cast.
+
 2000-04-27  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-undoable.c
@@ -8,32 +31,33 @@
 	* libnautilus-extensions/nautilus-undo-transaction.h
 	* libnautilus-extensions/nautilus-undo-manager-private.h
 	Added architecture for undo mechanism.
-	NautilusUndoManager maintains undo and redo queues of NautilusUndoTransactions
-	as well as maintaining various state information pertinant to the user interface.
-	NautilusUndoTransaction contains a transaction name and a list of NautilusUndoables.
-	NautilusUndoable is a object that contains a pointer to an object and a GData object.
-	The GData object contains named data that can be added and retrieved during an undo/
-	redo operation.  The NautilusUndoable also emits signals to the object that enables it
-	to perform the undo and redo operations.  I will write up more complete documents when the
-	code has matured.
+	NautilusUndoManager maintains undo and redo queues of
+	NautilusUndoTransactions as well as maintaining various state
+	information pertinant to the user interface.
+	NautilusUndoTransaction contains a transaction name and a list of
+	NautilusUndoables. NautilusUndoable is a object that contains a
+	pointer to an object and a GData object. The GData object
+	contains named data that can be added and retrieved during an
+	undo/ redo operation. The NautilusUndoable also emits signals to
+	the object that enables it to perform the undo and redo
+	operations. I will write up more complete documents when the code
+	has matured.
 	
 	* libnautilus-extensions/nautilus-icon-container.c
 	* libnautilus-extensions/nautilus-icon-container.h
 	* src/file-manager/fm-icon-view.c
-	Removed obsolete undo functions and callbacks.  These were invalidated
-	by the new undo mechanism.
+	Removed obsolete undo functions and callbacks. These were
+	invalidated by the new undo mechanism.
 
 	* src/ntl-main.c
-	Added call to nautilus_undo_manager_initialize_global_manager() in main.
-	This call initializes a Nautilus global undo manager.
-	Also fixed some minor coding style issues. 
+	Added call to nautilus_undo_manager_initialize_global_manager() in
+	main. This call initializes a Nautilus global undo manager. Also
+	fixed some minor coding style issues.
 	
-	* nautilus-window-menus.c
-	edit_menu_undo_callback():
-	Added callback to handle selection of Undo item form edit menu.  Callback
-	checks with Undo Manager for a current undo transaction and asks manager to
-	perform an undo if there is one.
-
+	* nautilus-window-menus.c (edit_menu_undo_callback):
+	Added callback to handle selection of Undo item form edit menu.
+	Callback checks with Undo Manager for a current undo transaction
+	and asks manager to perform an undo if there is one.
 
 2000-04-27  Darin Adler  <darin@eazel.com>
 

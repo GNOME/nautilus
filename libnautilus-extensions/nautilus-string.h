@@ -41,6 +41,10 @@ char *   nautilus_strchr                 (const char *haystack,
 int      nautilus_strcmp                 (const char *string_a,
 					  const char *string_b);
 
+/* GCompareFunc version. */
+int      nautilus_str_compare            (gconstpointer string_a,
+					  gconstpointer string_b);
+
 /* Versions of basic string functions that free their parameters. */
 int      nautilus_eat_strcmp             (char       *string_a_gets_freed,
 					  const char *string_b);

@@ -61,11 +61,12 @@ struct NautilusDirectoryDetails
 	GList *call_when_ready_list;
 	GList *monitor_list;
 
+	gboolean file_list_monitored;
 	gboolean directory_loaded;
 	GnomeVFSAsyncHandle *directory_load_in_progress;
 	GnomeVFSDirectoryListPosition directory_load_list_last_handled;
 
-	GList *pending_file_info; /* list of GnomeVFSFileInfo */
+	GList *pending_file_info; /* list of GnomeVFSFileInfo's that are pending */
         guint dequeue_pending_idle_id;
 
 	GList *get_file_infos_in_progress; /* list of GnomeVFSAsyncHandle* */

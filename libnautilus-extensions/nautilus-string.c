@@ -51,6 +51,13 @@ nautilus_strcmp (const char *string_a, const char *string_b)
 }
 
 int
+nautilus_str_compare (gconstpointer string_a, gconstpointer string_b)
+{
+	return nautilus_strcmp ((const char *) string_a,
+				(const char *) string_b);
+}
+
+int
 nautilus_eat_strcmp (char *string_a, const char *string_b)
 {
 	int result;
