@@ -133,7 +133,9 @@ icon_DATA =\
 	gnome-video-mpeg.png \
 	gnome-video-quicktime.png \
 	gnome-video-x-msvideo.png \
-	hand.svg \
+	hand.png \
+	hand-72.png \
+	hand-96.png \
 	home.png \
 	i-blockdev.png \
 	i-bookmark-20.png \
