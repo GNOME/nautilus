@@ -141,24 +141,35 @@ main (int argc, char *argv[])
 	char **argv_copy;
 	GnomeProgram *program;
 	GValue context_as_value = { 0 };
+	int i;
 
 	struct poptOption options[] = {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
-		{ "check", 'c', POPT_ARG_NONE, &perform_self_check, 0,
+		{ "check", 'c', POPT_ARG_NONE, NULL, 0,
 		  N_("Perform a quick set of self-check tests."), NULL },
 #endif
-		{ "geometry", 'g', POPT_ARG_STRING, &geometry, 0,
+		{ "geometry", 'g', POPT_ARG_STRING, NULL, 0,
 		  N_("Create the initial window with the given geometry."), N_("GEOMETRY") },
-		{ "no-default-window", 'n', POPT_ARG_NONE, &no_default_window, 0,
+		{ "no-default-window", 'n', POPT_ARG_NONE, NULL, 0,
 		  N_("Only create windows for explicitly specified URIs."), NULL },
-		{ "no-desktop", '\0', POPT_ARG_NONE, &no_desktop, 0,
+		{ "no-desktop", '\0', POPT_ARG_NONE, NULL, 0,
 		  N_("Do not manage the desktop (ignore the preference set in the preferences dialog)."), NULL },
-		{ "quit", 'q', POPT_ARG_NONE, &kill_shell, 0,
+		{ "quit", 'q', POPT_ARG_NONE, NULL, 0,
 		  N_("Quit Nautilus."), NULL },
-		{ "restart", '\0', POPT_ARG_NONE | POPT_ARGFLAG_DOC_HIDDEN, &restart_shell, 0,
+		{ "restart", '\0', POPT_ARG_NONE | POPT_ARGFLAG_DOC_HIDDEN, NULL, 0,
 		  N_("Restart Nautilus."), NULL },
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
 	};
+
+	i = 0;
+#ifndef NAUTILUS_OMIT_SELF_CHECK
+	options[i++].arg = &perform_self_check;
+#endif
+	options[i++].arg = &geometry;
+	options[i++].arg = &no_default_window;
+	options[i++].arg = &no_desktop;
+	options[i++].arg = &kill_shell;
+	options[i++].arg = &restart_shell;
 
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
 		eel_make_warnings_and_criticals_stop_in_debugger ();

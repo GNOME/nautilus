@@ -122,7 +122,9 @@ gnome_vfs_make_directory_with_parents (const gchar * text_uri, guint perm)
 static void
 browse (char *uri)
 {
-	char *argv[3] = {"nautilus", uri, NULL};
+	char *argv[3] = {"nautilus", NULL, NULL};
+
+	argv[1] = uri;
 
 	D (("browse (%s)", uri));
 	if (gnome_execute_async (g_get_home_dir (), 2, argv) < 0)

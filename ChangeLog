@@ -1,3 +1,17 @@
+2003-04-16  Alexander Larsson  <alexl@redhat.com>
+
+	* components/emblem/Nautilus_View_emblem.server.in.in:
+	* components/history/Nautilus_View_history.server.in.in:
+	* components/image_properties/Nautilus_View_image_properties.server.in.in:
+	* components/notes/Nautilus_View_notes.server.in.in:
+	* components/tree/Nautilus_View_tree.server.in.in:
+	Don't add .so to the server files. This makes it work on systems that
+	don't use .so as the library name.
+	
+	* src/nautilus-main.c: (main):
+	* src/nautilus-server-connect.c: (browse):
+	Don't initialize array to a non-constant value.
+	   
 2003-04-07  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-directory-view.c (unschedule_timeout_display_of_pending_files) 
