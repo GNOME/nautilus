@@ -19,6 +19,8 @@ eazel_proxy_util_SOURCES = \
 
 eazel_proxy_util_LDADD = \
 	$(top_srcdir)/components/services/trilobite/libammonite-gtk/libammonite-gtk.a \
+	$(top_builddir)/libnautilus/libnautilus.la \
+	$(top_builddir)/libnautilus-extensions/libnautilus-extensions.la \
 	$(AMMONITE_LIBS) 				\
 	$(GLIB_LIBS)					\
 	$(ORBIT_LIBS)					\

@@ -25,7 +25,7 @@
 
 #include <config.h>
 #include "ammonite-login-dialog.h"
-#include "nautilus-caption-table.h"
+#include <nautilus-caption-table.h>
 
 #include <libgnomeui/gnome-stock.h>
 #include <gtk/gtkmain.h>
