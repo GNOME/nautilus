@@ -186,6 +186,7 @@ nautilus_adapter_control_embed_strategy_new (Bonobo_Control control,
 	    !CORBA_Object_is_nil (corba_zoomable, &ev)) {
 		strategy->details->zoomable = nautilus_zoomable_proxy_get
 			(corba_zoomable);
+		bonobo_object_release_unref (corba_zoomable, &ev);
 	}
 
 	CORBA_exception_free (&ev);

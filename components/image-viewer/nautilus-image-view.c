@@ -94,10 +94,6 @@ release_pixbuf (bonobo_object_data_t *bod)
 static void
 control_destroy_callback (BonoboControl *control, bonobo_object_data_t *bod)
 {
-	/* FIXME bugzilla.eazel.com 5966:
-	 * This fn never gets called. This means we are leaking.
-	 */
-
         if (bod == NULL) {
 		return;
 	}
