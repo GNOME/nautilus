@@ -44,6 +44,7 @@
 
 /* Constants */
 #define STRING_LIST_DEFAULT_TOKENS_DELIMETER ","
+#define PREFERENCES_SORT_ORDER_MANUALLY 100
 
 /* base path for NAUTILUS_PREFERENCES_HTTP_* */
 static const char SYSTEM_GNOME_VFS_PATH[] = "/system/gnome-vfs";
@@ -144,11 +145,22 @@ static EelEnumerationEntry default_folder_viewer_enum_entries[] = {
 	{ NULL }
 };
 
-static EelEnumerationEntry default_sort_order_enum_entries[] = {
+static EelEnumerationEntry default_icon_view_sort_order_enum_entries[] = {
+	{ "manually",	       N_("Manually"),		    PREFERENCES_SORT_ORDER_MANUALLY },
+	{ "--------",             "--------" },
 	{ "name",	       N_("By Name"),		    NAUTILUS_FILE_SORT_BY_NAME },
 	{ "size",	       N_("By Size"),		    NAUTILUS_FILE_SORT_BY_SIZE },
 	{ "type",	       N_("By Type"),		    NAUTILUS_FILE_SORT_BY_TYPE },
-	{ "modification date", N_("By Modification Date"),  NAUTILUS_FILE_SORT_BY_MTIME }, 
+	{ "modification_date", N_("By Modification Date"),  NAUTILUS_FILE_SORT_BY_MTIME }, 
+	{ "emblems",	       N_("By Emblems"),	    NAUTILUS_FILE_SORT_BY_EMBLEMS },
+	{ NULL }
+};
+
+static EelEnumerationEntry default_list_view_sort_order_enum_entries[] = {
+	{ "name",	       N_("By Name"),		    NAUTILUS_FILE_SORT_BY_NAME },
+	{ "size",	       N_("By Size"),		    NAUTILUS_FILE_SORT_BY_SIZE },
+	{ "type",	       N_("By Type"),		    NAUTILUS_FILE_SORT_BY_TYPE },
+	{ "modification_date", N_("By Modification Date"),  NAUTILUS_FILE_SORT_BY_MTIME }, 
 	{ "emblems",	       N_("By Emblems"),	    NAUTILUS_FILE_SORT_BY_EMBLEMS },
 	{ NULL }
 };
@@ -186,16 +198,17 @@ static EelEnumerationEntry icon_captions_enum_entries[] = {
  * storage (GConf) and the displayed values.
  */
 static EelEnumerationInfo enumerations[] = {
-	{ "click_policy",		click_policy_enum_entries },
-	{ "default_folder_viewer",	default_folder_viewer_enum_entries },
-	{ "default_sort_order",		default_sort_order_enum_entries },
-	{ "default_zoom_level",		default_zoom_level_enum_entries },
-	{ "executable_text_activation",	executable_text_activation_enum_entries },
-	{ "file_size",			file_size_enum_entries },
-	{ "search_bar_type",		search_bar_type_enum_entries },
-	{ "speed_tradeoff",		speed_tradeoff_enum_entries },
-	{ "standard_font_size",		standard_font_size_entries },
-	{ "icon_captions",		icon_captions_enum_entries },
+	{ "click_policy",		   click_policy_enum_entries },
+	{ "default_folder_viewer",	   default_folder_viewer_enum_entries },
+	{ "default_icon_view_sort_order",  default_icon_view_sort_order_enum_entries },
+	{ "default_list_view_sort_order",  default_list_view_sort_order_enum_entries },
+	{ "default_zoom_level",		   default_zoom_level_enum_entries },
+	{ "executable_text_activation",	   executable_text_activation_enum_entries },
+	{ "file_size",			   file_size_enum_entries },
+	{ "icon_captions",		   icon_captions_enum_entries },
+	{ "search_bar_type",		   search_bar_type_enum_entries },
+	{ "speed_tradeoff",		   speed_tradeoff_enum_entries },
+	{ "standard_font_size",		   standard_font_size_entries },
 	{ NULL }
 };
 
@@ -577,7 +590,14 @@ static const PreferenceDefault preference_defaults[] = {
 	  NAUTILUS_USER_LEVEL_NOVICE,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_NAME) },
 	  { USER_LEVEL_NONE },
-	  "default_sort_order"
+	  "default_icon_view_sort_order"
+	},
+	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
+	  PREFERENCE_INTEGER,
+	  NAUTILUS_USER_LEVEL_NOVICE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_NAME) },
+	  { USER_LEVEL_NONE },
+	  "default_icon_view_sort_order"
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
 	  PREFERENCE_BOOLEAN,
@@ -586,6 +606,12 @@ static const PreferenceDefault preference_defaults[] = {
 	  { USER_LEVEL_NONE }
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
+	  PREFERENCE_BOOLEAN,
+	  NAUTILUS_USER_LEVEL_NOVICE,
+	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
+	  { USER_LEVEL_NONE }
+	},
+	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
 	  PREFERENCE_BOOLEAN,
 	  NAUTILUS_USER_LEVEL_NOVICE,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
@@ -618,7 +644,7 @@ static const PreferenceDefault preference_defaults[] = {
 	  NAUTILUS_USER_LEVEL_NOVICE,
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_NAME) },
 	  { USER_LEVEL_NONE },
-	  "default_sort_order"
+	  "default_list_view_sort_order"
 	},
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
 	  PREFERENCE_BOOLEAN,
@@ -1013,6 +1039,36 @@ nautilus_global_preferences_set_default_folder_viewer (const char *iid)
 					  viewer_preference);
 }
 
+/* The icon view uses 2 variables to store the sort order and
+ * whether to use manual layout.  However, the UI for these
+ * preferences presensts them as single option menu.  So we
+ * use the following preference as a proxy for the other two.
+ * In nautilus-global-preferences.c we install callbacks for
+ * the proxy preference and update the other 2 when it changes 
+ */
+static void
+default_icon_view_sort_order_or_manual_layout_changed_callback (gpointer callback_data)
+{
+ 	int default_sort_order_or_manual_layout;
+ 	int default_sort_order;
+
+ 	default_sort_order_or_manual_layout = 
+ 		nautilus_preferences_get_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT);
+
+	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
+					  default_sort_order_or_manual_layout == PREFERENCES_SORT_ORDER_MANUALLY);
+
+	if (default_sort_order_or_manual_layout != PREFERENCES_SORT_ORDER_MANUALLY) {
+		default_sort_order = default_sort_order_or_manual_layout;
+
+		g_return_if_fail (default_sort_order >= NAUTILUS_FILE_SORT_BY_NAME);
+		g_return_if_fail (default_sort_order <= NAUTILUS_FILE_SORT_BY_EMBLEMS);
+
+		nautilus_preferences_set_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
+						  default_sort_order);
+	}
+}
+
 void
 nautilus_global_preferences_initialize (void)
 {
@@ -1043,10 +1099,14 @@ nautilus_global_preferences_initialize (void)
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
 					   smooth_graphics_mode_changed_callback, 
 					   NULL);
-
+	
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, 
 					   default_folder_viewer_changed_callback, 
 					   NULL);
+
+ 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
+ 					   default_icon_view_sort_order_or_manual_layout_changed_callback, 
+ 					   NULL);
 
 	/* Keep track of smooth graphics mode changes in order to notify the smooth
 	 * widget machinery.

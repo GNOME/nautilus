@@ -152,6 +152,7 @@ static void                 update_layout_menus                                (
 static void                 default_sort_in_reverse_order_changed_callback     (gpointer              callback_data);
 static void                 default_sort_order_changed_callback                (gpointer              callback_data);
 static void                 default_use_tighter_layout_changed_callback        (gpointer              callback_data);
+static void                 default_use_manual_layout_changed_callback         (gpointer              callback_data);
 static void                 default_zoom_level_changed_callback                (gpointer              callback_data);
 static void                 default_zoom_level_font_size_changed_callback      (gpointer              callback_data);
 static void                 font_changed_callback                              (gpointer              callback_data);
@@ -729,6 +730,21 @@ fm_icon_view_real_set_directory_sort_reversed (FMIconView *icon_view,
 }
 
 /* maintainence of auto layout boolean */
+static gboolean default_directory_manual_layout = FALSE;
+
+static gboolean
+get_default_directory_manual_layout (void)
+{
+	static gboolean auto_storaged_added = FALSE;
+	
+	if (auto_storaged_added == FALSE) {
+		auto_storaged_added = TRUE;
+		nautilus_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
+						       &default_directory_manual_layout);
+	}
+
+	return default_directory_manual_layout;
+}
 
 static gboolean
 fm_icon_view_get_directory_auto_layout (FMIconView *icon_view,
@@ -743,12 +759,13 @@ fm_icon_view_get_directory_auto_layout (FMIconView *icon_view,
 		 get_directory_auto_layout, (icon_view, file));
 }
 
+
 static gboolean
 fm_icon_view_real_get_directory_auto_layout (FMIconView *icon_view,
 					     NautilusFile *file)
 {
 	return nautilus_file_get_boolean_metadata
-		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT, TRUE);
+		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT, !get_default_directory_manual_layout ());
 }
 
 static void
@@ -770,7 +787,8 @@ fm_icon_view_real_set_directory_auto_layout (FMIconView *icon_view,
 					     gboolean auto_layout)
 {
 	nautilus_file_set_boolean_metadata
-		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT, TRUE,
+		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT,
+		 !get_default_directory_manual_layout (),
 		 auto_layout);
 }
 /* maintainence of tighter layout boolean */
@@ -1425,12 +1443,16 @@ fm_icon_view_reset_to_defaults (FMDirectoryView *view)
 	nautilus_icon_container_set_tighter_layout
 		(icon_container, get_default_directory_tighter_layout ());
 
-	/* FIXME bugzilla.eazel.com 8023:
-	 * There's currently no way to specify manual layout as the default.
-	 */
-	nautilus_icon_container_set_auto_layout (icon_container, FALSE);
-
 	nautilus_icon_container_sort (icon_container);
+
+	/* Switch to manual layout of the default calls for it.
+	 * This needs to happen last for the sort order menus
+	 * to be in sync.
+	 */
+ 	if (get_default_directory_manual_layout ()) {
+ 		switch_to_manual_layout (icon_view);
+ 	}
+
 	update_layout_menus (icon_view);
 
 	fm_icon_view_restore_default_zoom_level (view);
@@ -2171,6 +2193,28 @@ default_use_tighter_layout_changed_callback (gpointer callback_data)
 }
 
 static void
+default_use_manual_layout_changed_callback (gpointer callback_data)
+{
+	FMIconView *icon_view;
+	NautilusFile *file;
+	NautilusIconContainer *icon_container;
+
+	g_return_if_fail (FM_IS_ICON_VIEW (callback_data));
+
+	icon_view = FM_ICON_VIEW (callback_data);
+
+	file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (icon_view));
+	icon_container = get_icon_container (icon_view);
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (icon_container));
+
+	nautilus_icon_container_set_auto_layout (
+		icon_container,
+		fm_icon_view_get_directory_auto_layout (icon_view, file));
+
+	nautilus_icon_container_request_update_all (icon_container);
+}
+
+static void
 default_zoom_level_changed_callback (gpointer callback_data)
 {
 	FMIconView *icon_view;
@@ -2297,6 +2341,10 @@ fm_icon_view_initialize (FMIconView *icon_view)
 						       GTK_OBJECT (icon_view));
 	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT,
 						       default_use_tighter_layout_changed_callback,
+						       icon_view,
+						       GTK_OBJECT (icon_view));
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT,
+						       default_use_manual_layout_changed_callback,
 						       icon_view,
 						       GTK_OBJECT (icon_view));
 	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,

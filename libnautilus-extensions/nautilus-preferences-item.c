@@ -42,9 +42,8 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 
-static const guint PREFERENCES_ITEM_TITLE_SPACING = 4;
-static const guint PREFERENCES_ITEM_FRAME_BORDER_WIDTH = 6;
-static const NautilusPreferencesItemType PREFERENCES_ITEM_UNDEFINED_ITEM = -1U;
+#define PREFERENCES_ITEM_UNDEFINED_ITEM -1U
+
 static gboolean text_idle_handler = FALSE;
 static gboolean integer_idle_handler = FALSE;
 
@@ -490,8 +489,12 @@ preferences_item_create_enumeration_list (NautilusPreferencesItem *item,
 		for (i = 0; i < eel_enumeration_id_get_length (enumeration_id); i++) {
 			enum_description = eel_enumeration_id_get_nth_description_translated (enumeration_id, i);
 			g_assert (enum_description != NULL);
-			
-			eel_string_picker_insert_string (EEL_STRING_PICKER (string_picker), enum_description);
+
+			if (enum_description[0] == '-') {
+				eel_string_picker_insert_separator (EEL_STRING_PICKER (string_picker));
+			} else {
+				eel_string_picker_insert_string (EEL_STRING_PICKER (string_picker), enum_description);
+			}
 			g_free (enum_description);
 		}
 
@@ -704,7 +707,11 @@ preferences_item_create_enumeration_menu (NautilusPreferencesItem *item)
 		description = eel_enumeration_id_get_nth_description_translated (enumeration_id, i);
 		g_assert (description != NULL);
 		
-		eel_string_picker_insert_string (EEL_STRING_PICKER (child), description);
+		if (description[0] == '-') {
+			eel_string_picker_insert_separator (EEL_STRING_PICKER (child));
+		} else {
+			eel_string_picker_insert_string (EEL_STRING_PICKER (child), description);
+		}
 		
 		g_free (description);
 	}

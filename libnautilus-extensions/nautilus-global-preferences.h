@@ -118,8 +118,18 @@ enum
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_TIGHTER_LAYOUT	"icon-view/default_use_tighter_layout"
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL		"icon-view/default_zoom_level"
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE	"icon-view/default_zoom_level_font_size"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT	"icon-view/default_use_manual_layout"
 #define NAUTILUS_PREFERENCES_ICON_VIEW_FONT				"icon-view/font"
 #define NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT			"icon-view/smooth_font"
+
+/* The icon view uses 2 variables to store the sort order and
+ * whether to use manual layout.  However, the UI for these
+ * preferences presensts them as single option menu.  So we
+ * use the following preference as a proxy for the other two.
+ * In nautilus-global-preferences.c we install callbacks for
+ * the proxy preference and update the other 2 when it changes 
+ */
+#define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT "icon-view/default_sort_order_or_manual_layout"
 
 /* Which text attributes appear beneath icon names */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS				"icon-view/captions"

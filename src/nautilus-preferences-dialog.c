@@ -193,7 +193,7 @@ static NautilusPreferencesItemDescription view_preferences_items[] = {
 
 	/* Icon View Defaults */
 	{ N_("Icon View Defaults"),
-	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
+	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
 	  N_("Lay Out Items:"),
 	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_MENU
 	},

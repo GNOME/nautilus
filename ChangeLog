@@ -1,3 +1,36 @@
+2001-04-30  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	Add preferences for default manual layout support.
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(default_icon_view_sort_order_or_manual_layout_changed_callback),
+	(nautilus_global_preferences_initialize):
+	Use different enumerations for icon view and list view default
+	sort order since only icon view supports manual layout.  Add
+	entries for default manual layout preference.  Add proxy
+	preference for both icon view sort order and manual layout so that
+	it can be presented to the user as one choice and thus just one
+	menu.  This also matches the view menu.
+
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(preferences_item_create_enumeration_list),
+	(preferences_item_create_enumeration_menu):
+	Add support for separators in string pickers.
+	
+	* src/file-manager/fm-icon-view.c:
+	(get_default_directory_manual_layout),
+	(fm_icon_view_real_get_directory_auto_layout),
+	(fm_icon_view_real_set_directory_auto_layout),
+	(fm_icon_view_reset_to_defaults),
+	(default_use_manual_layout_changed_callback),
+	(fm_icon_view_initialize):
+	Add support for a default "use manual layout" preference.
+	
+	* src/nautilus-preferences-dialog.c:
+	Make the default sort order preference use the proxy prefernece
+	instead of the real one.
+	
 2001-04-29  Dan Mueth  <dan@eazel.com>
 
 	Fixing some markup errors.
