@@ -401,7 +401,7 @@ fill_canvas_from_gradient_buffer (const GnomeCanvasBuf *buf, const NautilusBackg
 {
 	g_return_if_fail (background->details->gradient_buffer != NULL);
 
-	/* FIXME bugzilla.eazel.com 415: This hack is needed till we fix background
+	/* FIXME bugzilla.eazel.com 4876: This hack is needed till we fix background
 	 * scolling.
 	 *
 	 * I.e. currently you can scroll off the end of the gradient - and we
@@ -482,7 +482,7 @@ fill_drawable_from_gradient_buffer (GdkDrawable *drawable, GdkGC *gc,
 	
 	g_return_if_fail (background->details->gradient_buffer != NULL);
 
-	/* FIXME bugzilla.eazel.com 415: This hack is needed till we fix background
+	/* FIXME bugzilla.eazel.com 4876: This hack is needed till we fix background
 	 * scolling.
 	 *
 	 * I.e. currently you can scroll off the end of the gradient - and we
@@ -572,10 +572,10 @@ update_drawable_with_pixbuf (GdkDrawable *dst, GdkGC *gc,
 		copy_y1 = MIN (src_y1, dst_y1);
 		
 		gdk_pixbuf_render_to_drawable (src, dst, gc,
-									   src_offset_x, src_offset_y,
-									   dst_offset_x, dst_offset_y,
-									   copy_x1 - copy_x0, copy_y1 - copy_y0,
-									   GDK_RGB_DITHER_NONE, 0, 0);
+					       src_offset_x, src_offset_y,
+					       dst_offset_x, dst_offset_y,
+					       copy_x1 - copy_x0, copy_y1 - copy_y0,
+					       GDK_RGB_DITHER_NONE, 0, 0);
 	}
 }
 
@@ -596,9 +596,9 @@ draw_pixbuf_tiled (GdkPixbuf *pixbuf, GdkDrawable *drawable, GdkGC *gc, int draw
 	for (y = start_y; y < drawable_bottom; y += tile_height) {
 		for (x = start_x; x < drawable_right; x += tile_width) {
 			update_drawable_with_pixbuf (drawable, gc,
-										 drawable_x, drawable_y, drawable_right, drawable_bottom,
-										 pixbuf,
-										 x, y, x + tile_width, y + tile_height);
+						     drawable_x, drawable_y, drawable_right, drawable_bottom,
+						     pixbuf,
+						     x, y, x + tile_width, y + tile_height);
 		}
 	}
 }
