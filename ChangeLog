@@ -1,5 +1,13 @@
 2002-05-23  Alex Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-directory-view.c:
+	Move disconnect_model_handlers from finalize to destroy.
+	This fixes a problem with signals arrive after the view is destroyed.
+
+	Patch from Gustavo Giráldez <gustavo.giraldez@gmx.net>
+
+2002-05-23  Alex Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-link-historical.c (nautilus_link_historical_local_create_from_gnome_entry):
 	Update to new gnome-desktop api.
 

@@ -1286,6 +1286,8 @@ fm_directory_view_destroy (GtkObject *object)
 
 	view = FM_DIRECTORY_VIEW (object);
 
+	disconnect_model_handlers (view);
+
 	/* Since we are owned by the NautilusView, if we're going it's
 	 * gone. It would be even better to NULL this out when the
 	 * NautilusView goes away, but this is good enough for our
@@ -1315,7 +1317,6 @@ fm_directory_view_finalize (GObject *object)
 		remove_directory_from_scripts_directory_list (view, node->data);
 	}
 
-	disconnect_model_handlers (view);
 	nautilus_directory_unref (view->details->model);
 	view->details->model = NULL;
 	nautilus_file_unref (view->details->directory_as_file);
