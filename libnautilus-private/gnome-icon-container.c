@@ -2206,6 +2206,20 @@ handle_icon_button_press (GnomeIconContainer *container,
 	GnomeIconContainerPrivate *priv;
 	gdouble world_x, world_y;
 
+	if (event->button == 3) {
+		/* FIXME this means you cannot drag with right click.  Instead,
+                   we should setup a timeout and emit this signal if the
+                   timeout expires without movement.  */
+		priv->drag_button = 0;
+		priv->drag_icon = NULL;
+
+		gtk_signal_emit (GTK_OBJECT (container),
+				 signals[CONTEXT_CLICK],
+				 icon->text, icon->data);
+
+		return TRUE;
+	}
+
 	if (event->button != 1)
 		return FALSE;
 
@@ -2232,20 +2246,6 @@ handle_icon_button_press (GnomeIconContainer *container,
 
 		gtk_signal_emit (GTK_OBJECT (container),
 				 signals[ACTIVATE],
-				 icon->text, icon->data);
-
-		return TRUE;
-	}
-
-	if (event->button == 3) {
-		/* FIXME this means you cannot drag with right click.  Instead,
-                   we should setup a timeout and emit this signal if the
-                   timeout expires without movement.  */
-		priv->drag_button = 0;
-		priv->drag_icon = NULL;
-
-		gtk_signal_emit (GTK_OBJECT (container),
-				 signals[CONTEXT_CLICK],
 				 icon->text, icon->data);
 
 		return TRUE;

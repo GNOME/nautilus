@@ -1,5 +1,9 @@
 2000-01-10  Maciej Stachowiak  <mjs@eazel.com>
 
+	* libnautilus/gnome-icon-container.c (handle_icon_button_press):
+	Reorder code so "context_click" is actually emitted on a button 3
+	press.
+
 	* src/file-manager/fm-main.c,
 	src/file-manager/fm-directory-view.c,
 	src/file-manager/fm-directory-view.h: Changed FMDirectoryView to
