@@ -1,3 +1,23 @@
+Tue Mar 27 15:56:00 2001  George Lebl <jirka@5z.com>
+
+	Reviewed by a bunch of people on bugzilla, and according to everyone
+	it actually works, despite being written by me.
+
+	* libnautilus-extensions/nautilus-icon-container.c
+	  (nautilus_icon_container_update_scroll_region)
+	  (lay_down_icons_horizontal) (lay_down_icons_tblr)
+	  (nautilus_icon_container_set_margins)
+	  libnautilus-extensions/nautilus-icon-container.h
+	  libnautilus-extensions/nautilus-icon-private.h
+	  src/file-manager/fm-desktop-icon-view.c (panel_desktop_area_changed)
+	  (desktop_icon_view_property_filter) (fm_desktop_icon_view_destroy)
+	  (fm_desktop_icon_view_initialize):  Reads GNOME_PANEL_DESKTOP_AREA
+	  hint from the root window, which the panel sets to give the area
+	  not covered by panels.  Then set margins on the icon container so
+	  that the icons are shifted away from the panels.  Also when
+	  relaying out icons the new size is taken into account.
+	  Fix #1447, the infamous showstopper uber bug.
+
 2001-03-27  Gene Z. Ragan  <gzr@eazel.com>
 
 	Use the proper automake defined conditional to

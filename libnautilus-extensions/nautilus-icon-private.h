@@ -213,6 +213,12 @@ struct NautilusIconContainerDetails {
 	/* The position we are scaling to on stretch */
 	int window_x;
 	int window_y;
+
+	/* margins to follow, used for the desktop panel avoidance */
+	int left_margin;
+	int right_margin;
+	int top_margin;
+	int bottom_margin;
 };
 
 /* Private functions shared by mutiple files. */

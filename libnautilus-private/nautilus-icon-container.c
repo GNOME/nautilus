@@ -627,10 +627,14 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 			allocation = &GTK_WIDGET (container)->allocation;			
 			nautilus_gnome_canvas_set_scroll_region_left_justify
 				(GNOME_CANVAS (container),
-		 		(double) allocation->x,
-		 		(double) allocation->y,
-		 		(double) allocation->width-1,
-		 		(double) allocation->height-1);		
+		 		(double) - container->details->left_margin,
+		 		(double) - container->details->top_margin,
+		 		(double) allocation->width - 1
+					- container->details->left_margin
+					- container->details->right_margin,
+		 		(double) allocation->height - 1
+					- container->details->top_margin
+					- container->details->bottom_margin);
 		return;
 	}
 
@@ -840,7 +844,10 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 	double canvas_width, line_width, space_width, y;
 
 	/* Lay out icons a line at a time. */
-	canvas_width = GTK_WIDGET (container)->allocation.width / GNOME_CANVAS (container)->pixels_per_unit;
+	canvas_width = (GTK_WIDGET (container)->allocation.width
+			- container->details->left_margin
+			- container->details->right_margin)
+		       / GNOME_CANVAS (container)->pixels_per_unit;
 	line_width = 0;
 	line_start = icons;
 	y = start_y;
@@ -1022,8 +1029,12 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 	int row, column;
 
 	/* Get container dimensions */
-	width  = GTK_WIDGET (container)->allocation.width;
-	height = GTK_WIDGET (container)->allocation.height;
+	width  = GTK_WIDGET (container)->allocation.width
+		- container->details->left_margin
+		- container->details->right_margin;
+	height = GTK_WIDGET (container)->allocation.height
+		- container->details->top_margin
+		- container->details->bottom_margin;
 
 	/* Determine which icons have and have not been placed */
 	placed_icons = NULL;
@@ -5080,6 +5091,24 @@ nautilus_icon_container_set_is_fixed_size (NautilusIconContainer *container,
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	container->details->is_fixed_size = is_fixed_size;
+}
+
+void
+nautilus_icon_container_set_margins (NautilusIconContainer *container,
+				     int left_margin,
+				     int right_margin,
+				     int top_margin,
+				     int bottom_margin)
+{
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	container->details->left_margin = left_margin;
+	container->details->right_margin = right_margin;
+	container->details->top_margin = top_margin;
+	container->details->bottom_margin = bottom_margin;
+
+	/* redo layout of icons as the margins have changed */
+	schedule_redo_layout (container);
 }
 
 /* handle theme changes */

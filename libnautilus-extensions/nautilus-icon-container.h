@@ -222,4 +222,11 @@ void       nautilus_icon_container_set_is_fixed_size             (NautilusIconCo
 								  gboolean                is_fixed_size);
 
 void	   nautilus_icon_container_reset_scroll_region	 	 (NautilusIconContainer	 *container);
+
+void       nautilus_icon_container_set_margins			 (NautilusIconContainer  *container,
+								  int                     left_margin,
+								  int                     right_margin,
+								  int                     top_margin,
+								  int                     bottom_margin);
+
 #endif /* NAUTILUS_ICON_CONTAINER_H */

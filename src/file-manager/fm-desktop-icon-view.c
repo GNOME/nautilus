@@ -130,11 +130,91 @@ get_icon_container (FMDesktopIconView *icon_view)
 }
 
 static void
+panel_desktop_area_changed (FMDesktopIconView *icon_view)
+{
+	long *borders = NULL;
+	GdkAtom type_returned;
+	int format_returned;
+	unsigned long items_returned;
+	unsigned long bytes_after_return;
+	NautilusIconContainer *icon_container;
+
+	g_return_if_fail (FM_IS_DESKTOP_ICON_VIEW (icon_view));
+
+	icon_container = get_icon_container (icon_view);
+
+	gdk_error_trap_push ();
+	if (XGetWindowProperty (GDK_DISPLAY (),
+				GDK_ROOT_WINDOW (),
+				gdk_atom_intern ("GNOME_PANEL_DESKTOP_AREA",
+						 FALSE),
+				0 /* long_offset */, 
+				4 /* long_length */,
+				False /* delete */,
+				XA_CARDINAL,
+				&type_returned,
+				&format_returned,
+				&items_returned,
+				&bytes_after_return,
+				(unsigned char **)&borders) != Success) {
+		if (borders != NULL)
+			XFree (borders);
+		borders = NULL;
+	}
+			    
+	if (gdk_error_trap_pop ()
+	    || borders == NULL
+	    || type_returned != XA_CARDINAL
+	    || items_returned != 4
+	    || format_returned != 32) {
+		nautilus_icon_container_set_margins (icon_container,
+						     0, 0, 0, 0);
+	} else {
+		nautilus_icon_container_set_margins (icon_container,
+						     borders[0 /* left */],
+						     borders[1 /* right */],
+						     borders[2 /* top */],
+						     borders[3 /* bottom */]);
+	}
+
+	if (borders != NULL)
+		XFree (borders);
+}
+
+static GdkFilterReturn
+desktop_icon_view_property_filter (GdkXEvent *gdk_xevent,
+				   GdkEvent *event,
+				   gpointer data)
+{
+	XEvent *xevent = gdk_xevent;
+	FMDesktopIconView *icon_view;
+
+	icon_view = FM_DESKTOP_ICON_VIEW (data);
+  
+	switch (xevent->type) {
+	case PropertyNotify:
+		if (xevent->xproperty.atom == gdk_atom_intern ("GNOME_PANEL_DESKTOP_AREA", FALSE)) {
+			panel_desktop_area_changed (icon_view);
+		}
+		break;
+	default:
+		break;
+	}
+
+	return GDK_FILTER_CONTINUE;
+}
+
+static void
 fm_desktop_icon_view_destroy (GtkObject *object)
 {
 	FMDesktopIconView *icon_view;
 
 	icon_view = FM_DESKTOP_ICON_VIEW (object);
+
+	/* Remove the property filter */
+	gdk_window_remove_filter (GDK_ROOT_PARENT (),
+				  desktop_icon_view_property_filter,
+				  icon_view);
 
 	/* Delete all of the link files. */
 	delete_all_mount_links ();
@@ -445,6 +525,15 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_HOME_URI,
 					   home_uri_changed,
 				  	   desktop_icon_view);
+
+	/* Read out the panel desktop area and update the icon container
+	 * accordingly */
+	panel_desktop_area_changed (desktop_icon_view);
+
+	/* Setup the property filter */
+	gdk_window_add_filter (GDK_ROOT_PARENT (),
+			       desktop_icon_view_property_filter,
+			       desktop_icon_view);
 }
 
 static void
