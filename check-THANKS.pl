@@ -203,5 +203,3 @@ if (@double_credited) {
 
 # FIXME bugzilla.eazel.com 3453: we should also make sure that AUTHORS matches the contents of
 # the About dialog.
-
-print "\n";

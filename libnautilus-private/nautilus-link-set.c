@@ -114,42 +114,44 @@ nautilus_link_set_install (const char *directory_path, const char *link_set_name
 {
 	xmlDocPtr document;
 	xmlNodePtr node;
-	char *link_name, *image_name, *uri, *full_uri;	
+	char *link_name, *image_name, *uri, *full_uri;
+	gboolean created;
 
 	/* load and parse the link set document */
-	document = get_link_set_document(link_set_name);
-	
+	document = get_link_set_document (link_set_name);
 	if (document == NULL) {
-		g_warning("couldnt load %s", link_set_name);
+		g_warning ("could not load %s", link_set_name);
 		return FALSE;
 	}
 	
 	/* loop through the entries, generating link files */
-	
 	for (node = nautilus_xml_get_children (xmlDocGetRootElement (document));
 	     node != NULL; node = node->next) {
 		if (strcmp (node->name, "link") == 0) {
-			link_name = xmlGetProp (node, "name");
+			link_name = nautilus_xml_get_property_translated (node, "name");
 			image_name = xmlGetProp (node, "image");
 			uri = xmlGetProp (node, "uri");
 
 			/* Expand special URIs */
-			full_uri = expand_uri(uri);
+			full_uri = expand_uri (uri);
 			
 			/* create the link file */
-			if (!create_new_link (directory_path, link_name, image_name, full_uri)) {
-				g_free (full_uri);
+			created = create_new_link (directory_path, link_name,
+						   image_name, full_uri);
+			
+			xmlFree (link_name);
+			xmlFree (image_name);
+			xmlFree (uri);
+			g_free (full_uri);
+
+			if (!created) {
 				xmlFreeDoc (document);
 				return FALSE;
 			}
-			
-			g_free (full_uri);
 		}
 	}
 	
 	xmlFreeDoc (document);
-
-	/* all done so return TRUE */
 	return TRUE;
 }
 
@@ -163,10 +165,9 @@ nautilus_link_set_is_installed (const char *directory_path, const char *link_set
 	char *link_name, *file_name;	
 
 	/* load and parse the link set document */
-	document = get_link_set_document(link_set_name);
-	
+	document = get_link_set_document (link_set_name);
 	if (document == NULL) {
-		g_warning("couldnt load %s", link_set_name);
+		g_warning ("could not load %s", link_set_name);
 		return FALSE;
 	}
 	
@@ -174,13 +175,16 @@ nautilus_link_set_is_installed (const char *directory_path, const char *link_set
 	for (node = nautilus_xml_get_children (xmlDocGetRootElement (document));
 	     node != NULL; node = node->next) {
 		if (strcmp (node->name, "link") == 0) {
-			link_name = xmlGetProp (node, "name");
+			link_name = nautilus_xml_get_property_translated (node, "name");
 			file_name = nautilus_make_path (directory_path, link_name);
-			if (!g_file_exists(file_name)) {
-				g_free(file_name);
+			xmlFree (link_name);
+
+			if (!g_file_exists (file_name)) {
+				g_free (file_name);
+				xmlFreeDoc (document);
 				return FALSE;
 			}
-			g_free(file_name);
+			g_free (file_name);
 		}
 	}
 	
@@ -197,9 +201,8 @@ nautilus_link_set_remove (const char *directory_path, const char *link_set_name)
 	char *link_name, *file_name;	
 	
 	document = get_link_set_document(link_set_name);
-
 	if (document == NULL) {	
-		g_message("couldnt load %s", link_set_name);
+		g_message ("could not load %s", link_set_name);
 		return;
 	}
 	
@@ -208,12 +211,14 @@ nautilus_link_set_remove (const char *directory_path, const char *link_set_name)
 	for (node = nautilus_xml_get_children (xmlDocGetRootElement (document));
 	     node != NULL; node = node->next) {
 		if (strcmp (node->name, "link") == 0) {
-			link_name = xmlGetProp (node, "name");
 			/* formulate the link file path name */
-			file_name = nautilus_make_path (directory_path, link_name); 
+			link_name = nautilus_xml_get_property_translated (node, "name");
+			file_name = nautilus_make_path (directory_path, link_name);
+			xmlFree (link_name);
+			
 			/* delete the file */
-			unlink(file_name);
-			g_free(link_name);
+			unlink (file_name);
+			g_free (link_name);
 		}   
 	}
 	

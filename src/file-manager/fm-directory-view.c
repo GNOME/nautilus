@@ -838,6 +838,7 @@ bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointe
         if (state) {
                 /* Add new menu items and perhaps whole menus */
                 fm_directory_view_merge_menus (view);
+
 	        /* Set initial sensitivity, wording, toggle state, etc. */       
                 fm_directory_view_update_menus (view);
         }
@@ -1725,10 +1726,16 @@ display_selection_info_idle_callback (gpointer data)
 	
 	view = FM_DIRECTORY_VIEW (data);
 
-	view->details->display_selection_idle_id = 0;
+	/* Ref the view so that the widget can't be destroyed during
+	 * idle processing.
+	 */
+	bonobo_object_ref (BONOBO_OBJECT (view->details->nautilus_view));
 
+	view->details->display_selection_idle_id = 0;
 	fm_directory_view_display_selection_info (view);
 	fm_directory_view_send_selection_change (view);
+
+	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 
 	return FALSE;
 }
@@ -1740,9 +1747,15 @@ update_menus_idle_callback (gpointer data)
 	
 	view = FM_DIRECTORY_VIEW (data);
 
-	fm_directory_view_update_menus (view);
-	
+	/* Ref the view so that the widget can't be destroyed during
+	 * idle processing.
+	 */
+	bonobo_object_ref (BONOBO_OBJECT (view->details->nautilus_view));
+
 	view->details->update_menus_idle_id = 0;
+	fm_directory_view_update_menus (view);
+
+	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 
 	return FALSE;
 }
@@ -1756,9 +1769,15 @@ display_pending_idle_callback (gpointer data)
 
 	view = FM_DIRECTORY_VIEW (data);
 
-	view->details->display_pending_idle_id = 0;
+	/* Ref the view so that the widget can't be destroyed during
+	 * idle processing.
+	 */
+	bonobo_object_ref (BONOBO_OBJECT (view->details->nautilus_view));
 
+	view->details->display_pending_idle_id = 0;
 	display_pending_files (view);
+
+	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 
 	return FALSE;
 }

@@ -455,7 +455,7 @@ nautilus_str_capitalize (const char *string)
 	capitalized = g_strdup (string);
 
 	if (islower (capitalized[0])) {
-		capitalized[0] = toupper (capitalized[0]);
+		capitalized[0] = toupper ((guchar) capitalized[0]);
 	}
 
 	return capitalized;

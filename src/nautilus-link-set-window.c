@@ -87,7 +87,7 @@ make_link_set_check_box(const char *directory_path, GtkWidget *checkbox_table,
 	/* add a checkbox and a label */
 		
 	checkbox = gtk_check_button_new ();				
-	gtk_widget_show(checkbox);
+	gtk_widget_show (checkbox);
 	
 	label = gtk_label_new (name);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
@@ -128,10 +128,9 @@ make_link_set_check_box(const char *directory_path, GtkWidget *checkbox_table,
 		}
 }
 
-/* utility routine t o return a list of link set names by iterating the link set directory */
-
+/* utility routine to return a list of link set names by iterating the link set directory */
 static GList *
-get_link_set_names()
+get_link_set_names (void)
 {
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *current_file_info;
@@ -146,16 +145,16 @@ get_link_set_names()
 					 NAUTILUS_DATADIR);
 	
 	/* get the directory info */
-
 	result = gnome_vfs_directory_list_load (&list, link_set_uri, 
 						GNOME_VFS_FILE_INFO_GET_MIME_TYPE, NULL);
 	if (result != GNOME_VFS_OK) {
 		return NULL;
 	}
 
+	/* FIXME: The names should really come from the names inside the files. */
 	/* build the list by iterating through the directory info */	
 	for (current_file_info = gnome_vfs_directory_list_first(list); current_file_info != NULL; 
-	    current_file_info = gnome_vfs_directory_list_next(list)) {
+	     current_file_info = gnome_vfs_directory_list_next(list)) {
 		link_set_name = g_strdup(current_file_info->name);
 			
 		/* strip file type suffix */
@@ -166,8 +165,8 @@ get_link_set_names()
 		link_set_list = g_list_prepend(link_set_list, link_set_name);
 	}
 
-	gnome_vfs_directory_list_destroy(list);	
-	g_free(link_set_uri);
+	gnome_vfs_directory_list_destroy (list);	
+	g_free (link_set_uri);
 
 	return link_set_list;	
 }
@@ -253,16 +252,15 @@ GtkWindow *
 nautilus_link_set_toggle_configure_window (const char *directory_path, GtkWindow *window_to_update)
 {
 	if (link_set_window != NULL) {
-		gtk_widget_destroy(GTK_WIDGET(link_set_window));
+		gtk_widget_destroy (GTK_WIDGET (link_set_window));
 		link_set_window = NULL;
 	} else {
 		link_set_window = nautilus_link_set_configure_window (directory_path, 
-					window_to_update);
+								      window_to_update);
 		
 		gtk_signal_connect (GTK_OBJECT (link_set_window), "delete_event",
-                    	    GTK_SIGNAL_FUNC (delete_window_callback), NULL);
+				    GTK_SIGNAL_FUNC (delete_window_callback), NULL);
 	}
 									
 	return link_set_window;		
 }
-

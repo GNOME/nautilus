@@ -1,3 +1,75 @@
+2000-11-14  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(display_selection_info_idle_callback),
+	(update_menus_idle_callback), (display_pending_idle_callback): Add
+	code to ref the BonoboControl around all three of these idle
+	functions to eliminate the problem where the directory view would
+	get destroyed in the middle of an idle.
+	
+	* data/browser.xml:
+	* data/linksets/apps.xml:
+	* data/linksets/desktop.xml:
+	* data/linksets/portals.xml:
+	* data/linksets/search_engines.xml:
+	* data/static_bookmarks.xml:
+	Used "_" prefix on all localizable fields of XML files.
+	
+	* po/POTFILES.in: Add all these XML files that need translation.
+	
+	* libnautilus-extensions/nautilus-link-set.c:
+	(nautilus_link_set_install), (nautilus_link_set_is_installed),
+	(nautilus_link_set_remove): Fix storage leaks, also use
+	nautilus_xml_get_property_translated to get the property for the
+	"name" property so it can be translated if desired.
+	
+	* libnautilus-extensions/nautilus-xml-extensions.h:
+	* libnautilus-extensions/nautilus-xml-extensions.c:
+	(nautilus_xml_get_property_translated): Add a version of
+	xmlGetProp that looks for an untranslated version of the property
+	and runs it through gettext if there is not a pre-translated
+	version present.  For strings downloaded from the service, for
+	example, we'll probably use a pre-translated string, but for
+	things in the Nautilus source tree we can use an untranslated
+	string.
+	
+	* src/nautilus-bookmark-parsing.c:
+	(nautilus_bookmark_new_from_node): Use
+	nautilus_xml_get_property_translated to get the bookmark name so
+	that static bookmarks can have names translated with gettext. New
+	versions of the static bookmarks downloaded from the service can
+	use either kind of name. And user-created bookmarks are not run
+	through the gettext mechanism.
+	
+	* src/nautilus-window-menus.c: (create_menu_item_from_node): Use
+	nautilus_xml_get_property_translated to get the folder names
+	translated just as the bookmarks themselves.
+
+	* src/nautilus-link-set-window.c: (get_link_set_names): Added a
+	FIXME. The link set names should come from inside the XML, not
+	from the file names.
+	
+	* src/nautilus-property-browser.c: (get_xml_path),
+	(read_browser_xml), (write_browser_xml), (get_color_category):
+	(remove_color), (add_color_to_file): Factor out some shared code.
+	(add_reset_property): Make hard-wired font size with FIXME.
+	(make_properties_from_xml_node): Fix storage leaks and get the
+	name of the color using nautilus_xml_get_property_translated so
+	the names can be translated.
+	(set_up_category_width): Fix storage leaks
+	(nautilus_property_browser_update_contents): Fix storage leaks and
+	get the display name and description with
+	nautilus_xml_get_property_translated so they can be translated.
+
+	* check-THANKS.pl: Got rid of extra blank line at end.
+
+	* libnautilus-extensions/nautilus-customization-data.c:
+	(format_name_for_display): Add FIXME to bad-for-localization
+	function that turns "_" into " " and capitalizes the first letter
+	after each " ".
+	
 2000-11-14  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed a bug where changing the Nautilus theme would cause

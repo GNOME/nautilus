@@ -30,38 +30,39 @@
 
 #include <gnome-xml/xmlmemory.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-xml-extensions.h>
 
 NautilusBookmark *
 nautilus_bookmark_new_from_node (xmlNodePtr node)
 {
-	xmlChar *xml_name;
-	xmlChar *xml_uri;
-	xmlChar *xml_icon_uri;
-	xmlChar *xml_icon_name;
+	xmlChar *name;
+	xmlChar *uri;
+	xmlChar *icon_uri;
+	xmlChar *icon_name;
 	NautilusScalableIcon *icon;
 	NautilusBookmark *new_bookmark;
 
 	/* Maybe should only accept bookmarks with both a name and uri? */
-	xml_name = xmlGetProp (node, "name");
-	xml_uri = xmlGetProp (node, "uri");
-	xml_icon_uri = xmlGetProp (node, "icon_uri");
-	xml_icon_name = xmlGetProp (node, "icon_name");
+	name = nautilus_xml_get_property_translated (node, "name");
+	uri = xmlGetProp (node, "uri");
+	icon_uri = xmlGetProp (node, "icon_uri");
+	icon_name = xmlGetProp (node, "icon_name");
 
-	if (xml_icon_uri == NULL && xml_icon_name == NULL) {
+	if (icon_uri == NULL && icon_name == NULL) {
 		icon = NULL;
 	} else {
 		icon = nautilus_scalable_icon_new_from_text_pieces
-			(xml_icon_uri, xml_icon_name, NULL, NULL, FALSE);
+			(icon_uri, icon_name, NULL, NULL, FALSE);
 	}
-	new_bookmark = nautilus_bookmark_new_with_icon (xml_uri, xml_name, icon);
+	new_bookmark = nautilus_bookmark_new_with_icon (uri, name, icon);
 	if (icon != NULL) {
 		nautilus_scalable_icon_unref (icon);
 	}
 
-	xmlFree (xml_name);
-	xmlFree (xml_uri);
-	xmlFree (xml_icon_uri);
-	xmlFree (xml_icon_name);
+	xmlFree (name);
+	xmlFree (uri);
+	xmlFree (icon_uri);
+	xmlFree (icon_name);
 
 	return new_bookmark;
 }

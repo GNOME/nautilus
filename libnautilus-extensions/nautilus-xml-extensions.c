@@ -27,7 +27,10 @@
 
 #include "nautilus-string.h"
 #include <glib.h>
+#include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include <stdlib.h>
 
 xmlNodePtr
@@ -125,9 +128,9 @@ nautilus_xml_get_property_for_children (xmlNodePtr parent,
 	GList *properties;
 	xmlNode *child;
 	xmlChar *property;
-
+	
 	properties = NULL;
-
+	
 	for (child = nautilus_xml_get_children (parent);
 	     child != NULL;
 	     child = child->next) {
@@ -141,19 +144,43 @@ nautilus_xml_get_property_for_children (xmlNodePtr parent,
 		}
 	}
 
-	/* 
-	 * Reverse so you get them in the same order as the XML file.
-	 */
-	properties = g_list_reverse (properties);
-
-	return properties;
+	/* Reverse so you get them in the same order as the XML file. */
+	return g_list_reverse (properties);
 }
 
+xmlChar *
+nautilus_xml_get_property_translated (xmlNodePtr parent,
+				      const char *property_name)
+{
+	xmlChar *property, *untranslated_property;
+	char *untranslated_property_name;
+	const char *translated_property;
 
+	/* Try for the already-translated version. */
+	property = xmlGetProp (parent, property_name);
+	if (property != NULL) {
+		return property;
+	}
 
+	/* Try for the untranslated version. */
+	untranslated_property_name = g_strconcat ("_", property_name, NULL);
+	untranslated_property = xmlGetProp (parent, untranslated_property_name);
+	g_free (untranslated_property_name);
+	if (untranslated_property == NULL) {
+		return NULL;
+	}
 
+	/* Try to translate. */
+	translated_property = _(untranslated_property);
 
-
-
-
-
+	/* If not translation is found, return untranslated property as-is. */
+	if (translated_property == (char *) untranslated_property) {
+		return untranslated_property;
+	}
+	
+	/* If a translation happened, make a copy to match the normal
+	 * behavior of this function (returning a string you xmlFree).
+	 */
+	xmlFree (untranslated_property);
+	return xmlStrdup (translated_property);
+}

@@ -932,7 +932,7 @@ create_menu_item_from_node (NautilusWindow *window,
 	} else if (strcmp (node->name, "separator") == 0) {
 		append_separator (window, menu_path);
 	} else if (strcmp (node->name, "folder") == 0) {
-		xml_folder_name = xmlGetProp (node, "name");
+		xml_folder_name = nautilus_xml_get_property_translated (node, "name");
 		nautilus_bonobo_add_submenu (window->details->shell_ui, menu_path, xml_folder_name);
 
 		/* Construct path and make sure it is escaped properly */

@@ -376,14 +376,20 @@ format_name_for_display (const char* name)
 		
 	formatted_str = strip_extension (name);
 	
+	/* FIXME: Not appropriate to upper-case the letter of the name
+	 * after a space for all languages. A potential translation
+	 * nightmare.
+	 */
 	need_to_cap = TRUE;
 	length = strlen (formatted_str);
 	for (index = 0; index < length; index++) {
-		if (need_to_cap && islower (formatted_str[index]))
-			formatted_str[index] = toupper (formatted_str[index]);
+		if (need_to_cap) {
+			formatted_str[index] = toupper ((guchar) formatted_str[index]);
+		}
 		
-		if (formatted_str[index] == '_')
+		if (formatted_str[index] == '_') {
 			formatted_str[index] = ' ';
+		}
 		need_to_cap = formatted_str[index] == ' ';
 	}
 	
