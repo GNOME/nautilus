@@ -1,5 +1,13 @@
 2000-06-09  John Sullivan  <sullivan@eazel.com>
 
+	* src/nautilus-window.c: (nautilus_window_destroy):
+	Changed the way the window->action_tag is destroyed.
+	I think this actually fixes the occasional "set_sensitive
+	called on bad GTK_WIDGET" errors that Darin tried to
+	fix yesterday.
+
+2000-06-09  John Sullivan  <sullivan@eazel.com>
+
 	Fixed bugs related to selection and activation in directory
 	views, including 881 (right-click on selected item in list
 	view shouldn't change selection), 918 (mouse activation

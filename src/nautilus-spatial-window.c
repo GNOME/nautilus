@@ -546,7 +546,7 @@ nautilus_window_destroy (NautilusWindow *window)
 	}
 
 	if (window->action_tag != 0) {
-		g_idle_remove_by_data (window);
+		g_source_remove (window->action_tag);
 	}
 	
 	if (GTK_OBJECT_CLASS(klass->parent_class)->destroy)
