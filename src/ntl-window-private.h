@@ -10,10 +10,11 @@ typedef enum {
   CV_PROGRESS_DONE,
   CV_PROGRESS_ERROR,
   VIEW_ERROR,
-  RESET_TO_IDLE,
+  RESET_TO_IDLE, /* Not a real item - a command */
   NAVINFO_RECEIVED,
   NEW_CONTENT_VIEW_ACTIVATED,
-  NEW_META_VIEW_ACTIVATED
+  NEW_META_VIEW_ACTIVATED,
+  SYNC_STATE /* Not a real item - a flag */
 } NautilusWindowStateItem;
 
 void nautilus_window_set_state_info(NautilusWindow *window, ... /* things to set, plus optional params */);

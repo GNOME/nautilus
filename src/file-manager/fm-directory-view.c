@@ -36,7 +36,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus/nautilus-gtk-macros.h>
-#include <libnautilus/nautilus-alloc.h>
+#include <libnautilus/libnautilus.h>
 
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
 

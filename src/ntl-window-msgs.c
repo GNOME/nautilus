@@ -492,6 +492,10 @@ nautilus_window_update_state(gpointer data)
 
   if(window->making_changes)
     {
+#ifdef EXTREME_DEBUGGING
+      g_message("In the middle of making changes %d (action_tag %d) - RETURNING",
+                window->making_changes, window->action_tag);
+#endif
       return FALSE;
     }
 
@@ -499,7 +503,7 @@ nautilus_window_update_state(gpointer data)
   window->making_changes++;
 
 #ifdef EXTREME_DEBUGGING
-  g_message(">>> nautilus_window_update_state:");
+  g_message(">>> nautilus_window_update_state (action tag is %d):", window->action_tag);
   g_print("made_changes %d, making_changes %d\n", window->made_changes, window->making_changes);
   g_print("changes_pending %d, is_back %d, views_shown %d, view_bombed_out %d, view_activation_complete %d\n",
           window->changes_pending, window->is_back, window->views_shown,
@@ -694,11 +698,12 @@ nautilus_window_update_state(gpointer data)
   else
     window->action_tag = 0;
 
-#ifdef EXTREME_DEBUGGING
-  g_message("update_state done <<<");
-#endif
-
   window->making_changes--;
+
+#ifdef EXTREME_DEBUGGING
+  g_message("update_state done (new action tag is %d, making_changes is %d) <<<", window->action_tag,
+            window->making_changes);
+#endif
 
   return retval;
 }
@@ -709,6 +714,7 @@ nautilus_window_set_state_info(NautilusWindow *window, ...)
   va_list args;
   NautilusWindowStateItem item_type;
   NautilusView *new_view;
+  gboolean do_sync = FALSE;
 
   if(window->made_changes) /* Ensure that changes happen in-order */
     {
@@ -772,6 +778,7 @@ nautilus_window_set_state_info(NautilusWindow *window, ...)
           g_message("CV_PROGRESS_INITIAL");
 #endif
           window->cv_progress_initial = TRUE;
+          window->cv_progress_done = window->cv_progress_error = FALSE;
           window->changes_pending = TRUE;
           break;
         case CV_PROGRESS_ERROR: /* We have received a load error from the content view */
@@ -792,14 +799,42 @@ nautilus_window_set_state_info(NautilusWindow *window, ...)
           g_message("RESET_TO_IDLE");
 #endif
           break;
+        case SYNC_STATE:
+          do_sync = TRUE;
+#ifdef EXTREME_DEBUGGING
+          g_message("SYNC_STATE");
+#endif
+          break;
+        default:
+          break;
         }
     }
 
   va_end(args);
 
-  if(!window->action_tag)
-    window->action_tag = g_idle_add_full(G_PRIORITY_LOW, nautilus_window_update_state, window, NULL);
   window->made_changes++;
+  if(!window->making_changes)
+    {
+      if(do_sync)
+        {
+          if(window->action_tag)
+            {
+              g_message("Doing sync - action_tag was %d", window->action_tag);
+              g_source_remove(window->action_tag);
+              window->action_tag = 0;
+            }
+          if(nautilus_window_update_state(window))
+            do_sync = FALSE;
+        }
+
+      if(!window->action_tag && !do_sync)
+        {
+          window->action_tag = g_idle_add_full(G_PRIORITY_LOW, nautilus_window_update_state, window, NULL);
+#ifdef EXTREME_DEBUGGING
+          g_message("Added callback to update_state - tag is %d", window->action_tag);
+#endif
+        }
+    }
 }
 
 static void
@@ -841,17 +876,17 @@ nautilus_window_change_location(NautilusWindow *window,
 				gboolean is_back,
                                 gboolean is_reload)
 {
-  nautilus_window_set_state_info(window, (NautilusWindowStateItem)RESET_TO_IDLE, (NautilusWindowStateItem)0);
+  nautilus_window_set_state_info(window, (NautilusWindowStateItem)RESET_TO_IDLE, (NautilusWindowStateItem)SYNC_STATE, (NautilusWindowStateItem)0);
 
   while (gdk_events_pending())
     gtk_main_iteration();
-
-  nautilus_window_allow_stop(window, TRUE);
 
   nautilus_window_progress_indicate(window, PROGRESS_INITIAL, 0, _("Gathering information"));
   window->is_back = is_back;
   window->is_reload = is_reload;
   window->new_requesting_view = requesting_view;
+
+  nautilus_window_allow_stop(window, TRUE);
 
   window->cancel_tag =
     nautilus_navinfo_new(loc, window->ni, nautilus_window_change_location_2, window);

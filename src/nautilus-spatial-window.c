@@ -905,7 +905,7 @@ nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
 void
 nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 {
-   gtk_widget_set_sensitive(toolbar_info[7].widget, allow); 
+  gtk_widget_set_sensitive(toolbar_info[7].widget, allow); 
 }
 
 

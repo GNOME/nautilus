@@ -1,3 +1,15 @@
+2000-01-31  Elliot Lee  <sopwith@redhat.com>
+
+	* src/ntl-window-msgs.c, src/ntl-window-private.h: Update debugging messages. Allow
+	synchronous state changes (needed to avoid race conditions), and
+	don't reset the idle handler if the idle handler is already running.
+
+	* src/file-manager/fm-directory-view.c: Include
+	<libnautilus/libnautilus.h> rather than just
+	<libnautilus/nautilus-alloc.h> - nitpick in passing.
+
+	* src/ntl-uri-map.c: OK, don't check for NULL here, in an attempt to flush out bugs elsewhere.
+
 2000-01-31  Darin Adler  <darin@eazel.com>
 
 	* nautilus-icons-view-icon-item.c:
