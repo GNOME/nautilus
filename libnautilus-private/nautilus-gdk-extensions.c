@@ -26,6 +26,7 @@
 #include "nautilus-gdk-extensions.h"
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include "nautilus-glib-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-string.h"
 
