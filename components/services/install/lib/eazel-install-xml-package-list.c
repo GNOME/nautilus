@@ -542,6 +542,9 @@ eazel_install_packagedata_to_xml (const PackageData *pack,
 	xmlNodePtr root, node;
 	char *tmp;
 	GList *iterator;
+	/* This is a horrible crackpatch for PR3 used to check for recursive
+	   depends... */
+	static GList *path = NULL;
 
 	if (droot) {
 		g_assert (title != NULL);
@@ -587,12 +590,16 @@ eazel_install_packagedata_to_xml (const PackageData *pack,
 		}
 		node = xmlNewChild (root, NULL, "PROVIDES", tmp);
 	}
-
+	
 	for (iterator = pack->depends; iterator; iterator = iterator->next) {
-		eazel_install_packagedata_to_xml (((PackageDependency*)iterator->data)->package, 
-						  "SOFT_DEPEND", 
-						  root, 
-						  include_provides);
+		if (g_list_find (path, ((PackageDependency*)iterator->data)->package) == NULL) {
+			path = g_list_prepend (path, ((PackageDependency*)iterator->data)->package);
+			eazel_install_packagedata_to_xml (((PackageDependency*)iterator->data)->package, 
+							  "SOFT_DEPEND", 
+							  root, 
+							  include_provides);
+			path = g_list_remove (path, ((PackageDependency*)iterator->data)->package);
+		}
 	}
 	for (iterator = pack->soft_depends; iterator; iterator = iterator->next) {
 		eazel_install_packagedata_to_xml ((PackageData*)iterator->data, 

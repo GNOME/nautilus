@@ -28,10 +28,6 @@
 #include "libtrilobite/libtrilobite.h"
 #include "nautilus-rpm-view-private.h"
 
-/* don't try to access a remote server for install */
-#define DEFAULT_SERVICES_HOST	""
-#define DEFAULT_SERVICES_PORT	80
-
 #define OAF_ID "OAFIID:trilobite_eazel_install_service:8ff6e815-1992-437c-9771-d932db3b4a17"
 
 static void 
@@ -254,7 +250,7 @@ nautilus_rpm_view_install_done (EazelInstallCallback *service,
 							detailed,
 							GTK_WINDOW (window));
 							
-		/* gnome_dialog_run_and_close (d); */
+		gnome_dialog_run_and_close (d);
 		g_free (terse);
 		g_free (dialog_title);
 		g_free (detailed);
@@ -270,9 +266,8 @@ nautilus_rpm_view_install_done (EazelInstallCallback *service,
 		CORBA_exception_free (&ev);
 	}
 	
-
 	nautilus_rpm_view_finished_working (rpm_view);
-
+	
 	tmp = g_strdup (nautilus_rpm_view_get_uri (rpm_view));
 	nautilus_rpm_view_load_uri (rpm_view, tmp);
 	g_free (tmp);
@@ -390,6 +385,29 @@ preflight_check (EazelInstallCallback *cb, const GList *packages,
 	return TRUE;
 }
 
+static void
+nautilus_rpm_view_set_server (NautilusRPMView *rpm_view,
+			      EazelInstallCallback *cb,
+			      CORBA_Environment *ev)
+{
+	int port;
+	char *host, *p;
+
+	/* get default host/port */
+	host = g_strdup (trilobite_get_services_address ());
+	if ((p = strchr (host, ':')) != NULL) {
+		*p = 0;
+	}
+	/* always go for the no auth port */
+	port = 80;
+
+	GNOME_Trilobite_Eazel_Install__set_server (eazel_install_callback_corba_objref (cb), host, ev);
+	GNOME_Trilobite_Eazel_Install__set_server_port (eazel_install_callback_corba_objref (cb), port, ev);
+
+	/* For now always set auth to FALSE, so users are not required to 
+	   login to services to install local rpm files */
+	GNOME_Trilobite_Eazel_Install__set_auth (eazel_install_callback_corba_objref (cb), FALSE, ev);
+}
 
 void 
 nautilus_rpm_view_install_package_callback (GtkWidget *widget,
@@ -419,9 +437,8 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 	rpm_view->details->root_client = set_root_client (eazel_install_callback_bonobo (cb), rpm_view);
 	
 	GNOME_Trilobite_Eazel_Install__set_protocol (eazel_install_callback_corba_objref (cb), GNOME_Trilobite_Eazel_PROTOCOL_HTTP, &ev);
-	GNOME_Trilobite_Eazel_Install__set_server (eazel_install_callback_corba_objref (cb), DEFAULT_SERVICES_HOST, &ev);
-	GNOME_Trilobite_Eazel_Install__set_server_port (eazel_install_callback_corba_objref (cb), DEFAULT_SERVICES_PORT, &ev);
-	
+	nautilus_rpm_view_set_server (rpm_view, cb, &ev);
+
 	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", nautilus_rpm_view_download_progress_signal, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "install_progress", nautilus_rpm_view_install_progress_signal, rpm_view);
 	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", nautilus_rpm_view_dependency_check, rpm_view);
@@ -434,7 +451,7 @@ nautilus_rpm_view_install_package_callback (GtkWidget *widget,
 	eazel_install_callback_install_packages (cb, categories, NULL, &ev);
 
 	/* Leak the categories here */
-	
+
 	CORBA_exception_free (&ev);               
 }
 

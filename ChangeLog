@@ -1,3 +1,54 @@
+2001-01-26  Eskil Olsen  <eskil@eazel.com>
+
+	reviewed by: Ramiro & Pavel
+
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(nautilus_rpm_view_install_done), (nautilus_rpm_view_set_server),
+	(nautilus_rpm_view_install_package_callback):
+	Don't set servername to "", but get the configured services
+	server. Always set port to 80 and auth to FALSE.
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(dump_tree_helper), (prune_failed_packages_helper),
+	(prune_failed_packages), (eazel_install_check_existing_packages),
+	(get_softcat_info), (dedupe_foreach_depends), (is_satisfied),
+	(check_tree_helper), (check_tree_for_conflicts),
+	(download_packages), (set_toplevel), (install_packages):
+	Check status of package if info is loaded using
+	EazelPackageSystem (badbad)
+	Fake an eazel_id if none is set to ensure deduping in case user
+	adds the same package several times.
+	Added some checks for eazel_id==NULL.
+	Only call fetch_package if filename==NULL.
+	Set toplevel to TRUE on all packages on start
+	(fixes problem in emit_preflight)   
+	Much recursion tests on the dependencies.
+
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_emit_preflight_check):
+	whitespace diff
+
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package):
+	If the package as a remote_uri set, don't get it again.
+
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(eazel_install_packagedata_to_xml):
+	A real nasty recursion test.
+
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(make_rpm_argument_list),
+	(eazel_package_system_rpm3_packagedata_fill_from_header),
+	(rpm_packagedata_new_from_file),
+	(eazel_package_system_rpm3_load_package):
+	Don't add --percent if uninstalling.
+	Specialcase ld-linux.so so it's never added as a feature..
+	Saner use of the load_package return val.	
+	
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_load_package):
+	Add MD5 when loading package from file.
+
 2001-01-26  Ramiro Estrugo  <ramiro@eazel.com>
 
         reviewed by: Pavel Cisler  <pavel@eazel.com>

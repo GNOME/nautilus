@@ -203,10 +203,6 @@ make_rpm_argument_list (EazelPackageSystemRpm3 *system,
 		}
 	}
 
-#ifdef USE_PERCENT
-	(*args) = g_list_prepend (*args, g_strdup ("--percent"));
-#endif
-
 	if (op == EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL) {
 		(*args) = g_list_prepend (*args, g_strdup ("-e"));
 	} else  {
@@ -215,12 +211,14 @@ make_rpm_argument_list (EazelPackageSystemRpm3 *system,
 		}
 		if (flags & EAZEL_PACKAGE_SYSTEM_OPERATION_UPGRADE) {
 #ifdef USE_PERCENT
+			(*args) = g_list_prepend (*args, g_strdup ("--percent"));
 			(*args) = g_list_prepend (*args, g_strdup ("-Uv"));
 #else
 			(*args) = g_list_prepend (*args, g_strdup ("-Uvh"));
 #endif
 		} else {
 #ifdef USE_PERCENT
+			(*args) = g_list_prepend (*args, g_strdup ("--percent"));
 			(*args) = g_list_prepend (*args, g_strdup ("-iv"));
 #else
 			(*args) = g_list_prepend (*args, g_strdup ("-ivh"));
@@ -859,14 +857,15 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 		for (index = 0; index < count; index++) {
 			PackageData *package = packagedata_new ();
 			PackageDependency *pack_dep = packagedependency_new ();
-			
+
 			/* If it's a lib*.so* or a /yadayada, add to provides */
 			if ((strncmp (requires_name[index], "lib", 3)==0 && 
 			     strstr (requires_name[index], ".so")) ||
-			    *requires_name[index]=='/') {
+			    (strncmp (requires_name[index], "ld-linux.so",11)==0) ||
+			    (*requires_name[index]=='/')) {
 				/* Unless it has a ( in the name */
 				if (strchr (requires_name[index], '(')==NULL) {
-					package->provides = g_list_prepend (package->provides, 
+					package->features = g_list_prepend (package->features, 
 									    g_strdup (requires_name[index]));
 				}
 			} else {
@@ -943,7 +942,10 @@ rpm_packagedata_new_from_file (EazelPackageSystemRpm3 *system,
 	PackageData *pack;
 
 	pack = packagedata_new ();
-	rpm_packagedata_fill_from_file (system, pack, file, detail_level);
+	if (rpm_packagedata_fill_from_file (system, pack, file, detail_level)==FALSE) {
+		gtk_object_unref (GTK_OBJECT (pack));
+		pack = NULL;
+	}
 	return pack;
 }
 
@@ -957,7 +959,9 @@ eazel_package_system_rpm3_load_package (EazelPackageSystemRpm3 *system,
 
 	if (in_package) {
 		result = in_package;
-		rpm_packagedata_fill_from_file (system, result, filename, detail_level);
+		if (rpm_packagedata_fill_from_file (system, result, filename, detail_level)==FALSE) {
+			result = NULL;
+		}
 	} else {
 		result = rpm_packagedata_new_from_file (system, filename, detail_level);
 	}
