@@ -1,5 +1,11 @@
 2004-02-11  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-canvas-item.c (compute_text_rectangle): 
+	Fix bounds for text, #125558
+	Patch from  Martin Wehner
+	
+2004-02-11  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-file.c:
 	Correctly rename desktop files when G_BROKEN_FILENAMES is set
 
