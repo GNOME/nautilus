@@ -182,6 +182,7 @@ trilobite_close_log (void)
 	}
 }
 
+
 #ifndef TRILOBITE_SLIM
 static GnomeVFSHandle *
 trilobite_open_uri (const char *uri_text)
@@ -218,6 +219,8 @@ trilobite_open_uri (const char *uri_text)
 /* fetch a file from an url, using gnome-vfs
  * (using gnome-vfs allows urls of the type "eazel-auth:/etc" to work)
  * generally this will be used to fetch XML files.
+ * on success, the body will be null-terminated (this helps work around bugs in libxml,
+ * and also makes it easy to manipulate a small body using string operations).
  */
 gboolean
 trilobite_fetch_uri (const char *uri_text, char **body, int *length)
@@ -361,8 +364,9 @@ gboolean trilobite_fetch_uri (const char *uri_text,
         }
 	if (result && (ghttp_status_code (request) != 404)) {
 		(*length) = ghttp_get_body_len (request);
-		(*body) = g_new0 (char, *length);
+		(*body) = g_new0 (char, *length + 1);
 		memcpy (*body, ghttp_get_body (request), *length);
+		(*body)[*length] = 0;
 	} else {
 		result = FALSE;
 	}
@@ -479,7 +483,7 @@ trilobite_get_useragent_string (gboolean version, char *suffix)
 	return result;
 }
 
-const char*
+const char *
 trilobite_get_config_dir_string ()
 {
 	static const char *res = NULL;
