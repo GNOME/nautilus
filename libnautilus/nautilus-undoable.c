@@ -200,11 +200,17 @@ nautilus_undo_register (GtkObject *target,
 }
 
 static void
-undo_atom_destroy (NautilusUndoAtom *atom)
+undo_atom_destroy_callback_data (NautilusUndoAtom *atom)
 {
 	if (atom->callback_data_destroy_notify != NULL) {
 		(* atom->callback_data_destroy_notify) (atom->callback_data);
 	}
+}
+
+static void
+undo_atom_destroy (NautilusUndoAtom *atom)
+{
+	undo_atom_destroy_callback_data (atom);
 	g_free (atom);
 }
 
@@ -215,9 +221,9 @@ undo_atom_destroy_notify_cover (gpointer data)
 }
 
 static void
-undo_atom_destroy_g_func_cover (gpointer data, gpointer callback_data)
+undo_atom_destroy_callback_data_g_func_cover (gpointer data, gpointer callback_data)
 {
-	undo_atom_destroy (data);
+	undo_atom_destroy_callback_data (data);
 }
 
 /* This is a temporary hack to make things work with NautilusUndoable. */
@@ -271,7 +277,7 @@ nautilus_undo_register_full (GList *atoms,
 
 	manager = nautilus_get_undo_manager (undo_manager_search_start_object);
 	if (manager == NULL) {
-		g_list_foreach (atoms, undo_atom_destroy_g_func_cover, NULL);
+		g_list_foreach (atoms, undo_atom_destroy_callback_data_g_func_cover, NULL);
 		return;
 	}
 

@@ -407,6 +407,29 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 	object_class->destroy = nautilus_list_destroy;
 }
 
+static void
+set_single_click_mode (NautilusList *list,
+		       gboolean single_click_mode)
+{
+	if (list->details->single_click_mode == single_click_mode) {
+		return;
+	}
+
+	list->details->single_click_mode = single_click_mode;
+	gtk_widget_queue_draw (GTK_WIDGET (list));
+}
+
+static void
+update_single_click_mode_from_preferences (NautilusList *list)
+{
+	int click_policy;
+
+	click_policy = nautilus_preferences_get_enum
+		(NAUTILUS_PREFERENCES_CLICK_POLICY,
+		 NAUTILUS_CLICK_POLICY_SINGLE);
+	set_single_click_mode (list, click_policy == NAUTILUS_CLICK_POLICY_SINGLE);
+}
+
 /* Standard object initialization function */
 static void
 nautilus_list_initialize (NautilusList *list)
@@ -440,9 +463,7 @@ nautilus_list_initialize (NautilusList *list)
 	list->details->last_typeselect_time = 0LL;
 
 	/* Initialize the single click mode from preferences */
-	list->details->single_click_mode = 
-		(nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
-						NAUTILUS_CLICK_POLICY_SINGLE) == NAUTILUS_CLICK_POLICY_SINGLE);
+	update_single_click_mode_from_preferences (list);
 
 	/* Keep track of changes in clicking policy */
 	nautilus_preferences_add_enum_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
@@ -2382,15 +2403,7 @@ nautilus_list_clear (GtkCList *clist)
 static void
 click_policy_changed_callback (gpointer user_data)
 {
-	NautilusList *list;
-
-	g_assert (NAUTILUS_IS_LIST (user_data));
-	
-	list = NAUTILUS_LIST (user_data);
-
-	list->details->single_click_mode = 
-		(nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
-						NAUTILUS_CLICK_POLICY_SINGLE) == NAUTILUS_CLICK_POLICY_SINGLE);
+	update_single_click_mode_from_preferences (NAUTILUS_LIST (user_data));
 }
 
 

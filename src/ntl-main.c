@@ -41,20 +41,18 @@
 int
 main(int argc, char *argv[])
 {
-	poptContext ctx;
-	CORBA_Environment ev;
+	gboolean perform_self_check;
+	gboolean show_desktop;
+	poptContext popt_context;
 	CORBA_ORB orb;
-	gboolean preferences_result;
-#if !defined (NAUTILUS_OMIT_SELF_CHECK)
-	gboolean check = FALSE;
-#endif
+	gboolean preferences_initialized;
+	NautilusApp *application;
 	const char **args;
-	NautilusApp *app;
-
 	struct poptOption options[] = {
-#if !defined (NAUTILUS_OMIT_SELF_CHECK)
-		{ "check", '\0', POPT_ARG_NONE, &check, 0, N_("Perform high-speed self-check tests."), NULL },
+#ifndef NAUTILUS_OMIT_SELF_CHECK
+		{ "check", '\0', POPT_ARG_NONE, &perform_self_check, 0, N_("Perform high-speed self-check tests."), NULL },
 #endif
+		{ "desktop", '\0', POPT_ARG_NONE, &show_desktop, 0, N_("Draw background and icons on desktop."), NULL },
 		{ NULL, '\0', POPT_ARG_INCLUDE_TABLE, &oaf_popt_options, 0, NULL, NULL },
 		POPT_AUTOHELP
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
@@ -75,46 +73,37 @@ main(int argc, char *argv[])
 #endif
 	
 	/* Initialize the services that we use. */
-	CORBA_exception_init (&ev);
-
-        gnome_init_with_popt_table ("nautilus", VERSION, 
-				   argc, argv,
-				   options, 0, &ctx); 
-	orb = oaf_init (argc, argv);
-
-	preferences_result = nautilus_preferences_initialize (argc, argv);
-
-	/* FIXME bugzilla.eazel.com 672: 
-	 * Need better error reporting if this fails.  BUT, is it too
-	 * early to post a dialog here ? */
-	g_assert (preferences_result);
-	
-	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+	perform_self_check = FALSE;
+	show_desktop = FALSE;
+        gnome_init_with_popt_table ("nautilus", VERSION, argc, argv, options, 0, &popt_context);
 	g_thread_init (NULL);
+	orb = oaf_init (argc, argv);
 	gnome_vfs_init ();
-		
-	args = poptGetArgs (ctx);
+	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
-#if !defined (NAUTILUS_OMIT_SELF_CHECK)
-	if (check) {
+	/* Initialize parts of Nautilus (move to NautilusApplication?). */
+	preferences_initialized = nautilus_preferences_initialize (argc, argv);
+	/* FIXME bugzilla.eazel.com 672: 
+	 * Need error reporting if this fails instead of a core dump.
+	 */
+	g_assert (preferences_initialized);
+	
+	if (perform_self_check) {
+#ifndef NAUTILUS_OMIT_SELF_CHECK
 		/* Run the checks for nautilus and libnautilus. */
 		nautilus_run_self_checks ();
 		nautilus_run_lib_self_checks ();
 		nautilus_widgets_run_self_checks ();
 		nautilus_exit_if_self_checks_failed ();
+#endif
 	} else {
-#endif
-
 		/* Run the nautilus application. */
-		app = NAUTILUS_APP (nautilus_app_new ());
-		nautilus_app_startup (app, args ? args[0] : NULL);
-		bonobo_main();
-		bonobo_object_unref (BONOBO_OBJECT (app));
-
-#if !defined (NAUTILUS_OMIT_SELF_CHECK)
+		application = NAUTILUS_APP (nautilus_app_new ());
+		args = poptGetArgs (popt_context);
+		nautilus_app_startup (application, args == NULL ? NULL : args[0]);
+		bonobo_main ();
+		bonobo_object_unref (BONOBO_OBJECT (application));
 	}
-#endif
 
 	return EXIT_SUCCESS;
 }
-

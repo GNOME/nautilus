@@ -617,6 +617,17 @@ call_files_changed_free_list (gpointer key, gpointer value, gpointer user_data)
 }
 
 static void
+call_files_changed_unref_free_list (gpointer key, gpointer value, gpointer user_data)
+{
+	g_assert (NAUTILUS_IS_DIRECTORY (key));
+	g_assert (value != NULL);
+	g_assert (user_data == NULL);
+
+	nautilus_directory_emit_files_changed (key, value);
+	nautilus_file_list_free (value);
+}
+
+static void
 call_get_file_info_free_list (gpointer key, gpointer value, gpointer user_data)
 {
 	g_assert (NAUTILUS_IS_DIRECTORY (key));
@@ -690,6 +701,7 @@ nautilus_directory_notify_files_removed (GList *uris)
 		}
 
 		/* Mark it gone and prepare to send the changed signal. */
+		nautilus_file_ref (file);
 		nautilus_file_mark_gone (file);
 		hash_table_list_prepend (changed_lists,
 					 file->details->directory,
@@ -697,7 +709,7 @@ nautilus_directory_notify_files_removed (GList *uris)
 	}
 
 	/* Now send out the changed signals. */
-	g_hash_table_foreach (changed_lists, call_files_changed_free_list, NULL);
+	g_hash_table_foreach (changed_lists, call_files_changed_unref_free_list, NULL);
 	g_hash_table_destroy (changed_lists);
 }
 
@@ -753,6 +765,7 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 			 */
 			if (new_directory != old_directory) {
 				/* Remove from old directory. */
+				g_message ("moved: editing files list");
 				files = &old_directory->details->files;
 				g_assert (g_list_find (*files, file) != NULL);
 				*files = g_list_remove (*files, file);
@@ -866,11 +879,16 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (callback != NULL);
 
+	if (force_reload) {
+		nautilus_directory_force_reload (directory);
+	}
+
 	nautilus_directory_monitor_add_internal
 		(directory, NULL,
 		 client,
 		 file_attributes, monitor_metadata,
-		 callback, callback_data);
+		 force_reload ? NULL : callback,
+		 callback_data);
 }
 
 void

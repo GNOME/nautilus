@@ -198,7 +198,7 @@ nautilus_file_get (const char *uri)
 	} else {
 		file = nautilus_file_new (directory, file_info);
 		directory->details->files =
-			g_list_append (directory->details->files, file);
+			g_list_prepend (directory->details->files, file);
 	}
 
 	gnome_vfs_file_info_unref (file_info);
@@ -211,17 +211,18 @@ static void
 destroy (GtkObject *object)
 {
 	NautilusFile *file;
+	GList **files;
 
 	file = NAUTILUS_FILE (object);
 
 	nautilus_async_destroying_file (file);
 	
+	files = &file->details->directory->details->files;
 	if (file->details->is_gone) {
-		g_assert (g_list_find (file->details->directory->details->files, file) == NULL);
+		g_assert (g_list_find (*files, file) == NULL);
 	} else {
-		g_assert (g_list_find (file->details->directory->details->files, file) != NULL);
-		file->details->directory->details->files
-			= g_list_remove (file->details->directory->details->files, file);
+		g_assert (g_list_find (*files, file) != NULL);
+		*files = g_list_remove (*files, file);
 	}
 
 	nautilus_directory_unref (file->details->directory);
@@ -1115,16 +1116,14 @@ nautilus_file_monitor_add (NautilusFile *file,
 }   
 			   
 void
-nautilus_file_monitor_remove (NautilusFile         *file,
-			      gconstpointer         client)
+nautilus_file_monitor_remove (NautilusFile *file,
+			      gconstpointer client)
 {
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (client != NULL);
 
 	nautilus_directory_monitor_remove_internal
-		(file->details->directory,
-		 file,
-		 client);
+		(file->details->directory, file, client);
 }			      
 
 
@@ -2034,22 +2033,29 @@ nautilus_file_delete (NautilusFile *file)
 
 	/* Mark the file gone. */
 	if (result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_NOTFOUND) {
+		nautilus_file_ref (file);
 		nautilus_file_mark_gone (file);
 		nautilus_file_changed (file);
+		nautilus_file_unref (file);
 	}
 }
 
 void
 nautilus_file_mark_gone (NautilusFile *file)
 {
+	NautilusDirectory *directory;
 	GList **files;
 
 	file->details->is_gone = TRUE;
 	
 	/* Let the directory know it's gone. */
-	files = &file->details->directory->details->files;
+	directory = file->details->directory;
+	files = &directory->details->files;
 	g_assert (g_list_find (*files, file) != NULL);
 	*files = g_list_remove (*files, file);
+	if (nautilus_directory_is_file_list_monitored (directory)) {
+		nautilus_file_unref (file);
+	}
 }
 
 /**
@@ -2061,13 +2067,14 @@ nautilus_file_mark_gone (NautilusFile *file)
 void
 nautilus_file_changed (NautilusFile *file)
 {
-	GList *changed_files;
+	GList fake_list;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	changed_files = g_list_prepend (NULL, file);
-	nautilus_directory_emit_files_changed (file->details->directory, changed_files);
-	g_list_free (changed_files);
+	fake_list.data = file;
+	fake_list.next = NULL;
+	fake_list.prev = NULL;
+	nautilus_directory_emit_files_changed (file->details->directory, &fake_list);
 }
 
 /**
@@ -2085,9 +2092,7 @@ nautilus_file_emit_changed (NautilusFile *file)
 	g_assert (NAUTILUS_IS_FILE (file));
 
 	/* Send out a signal. */
-	gtk_signal_emit (GTK_OBJECT (file),
-			 signals[CHANGED],
-			 file);
+	gtk_signal_emit (GTK_OBJECT (file), signals[CHANGED], file);
 }
 
 /**

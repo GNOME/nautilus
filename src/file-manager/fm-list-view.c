@@ -788,7 +788,10 @@ fm_list_view_add_file (FMDirectoryView *view, NautilusFile *file)
 {
 	g_return_if_fail (FM_IS_LIST_VIEW (view));
 
-	add_to_list (FM_LIST_VIEW (view), file);
+	/* We are allowed to get the same icon twice, so don't re-add it. */
+	if (gtk_clist_find_row_from_data (GTK_CLIST (get_list (FM_LIST_VIEW (view))), file) < 0) {
+		add_to_list (FM_LIST_VIEW (view), file);
+	}
 }
 
 static gboolean

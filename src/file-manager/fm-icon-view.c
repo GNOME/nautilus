@@ -450,10 +450,10 @@ fm_icon_view_add_file (FMDirectoryView *view, NautilusFile *file)
 {
 	g_assert (NAUTILUS_IS_FILE (file));
 
-	nautilus_file_ref (file);
-	nautilus_icon_container_add
-		(get_icon_container (FM_ICON_VIEW (view)),
-		 NAUTILUS_ICON_CONTAINER_ICON_DATA (file));
+	if (nautilus_icon_container_add (get_icon_container (FM_ICON_VIEW (view)),
+					 NAUTILUS_ICON_CONTAINER_ICON_DATA (file))) {
+		nautilus_file_ref (file);
+	}
 }
 
 static void

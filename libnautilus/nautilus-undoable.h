@@ -60,9 +60,6 @@ struct NautilusUndoableClass {
 				     gpointer data);
 	void (* restore_from_undo_snapshot) (GtkObject *object,
 					     gpointer data);
-
-	void (* obsoleted) (NautilusUndoable *object,
-			    gpointer user_data);
 };
 
 /* GtkObject */
@@ -75,9 +72,6 @@ void       nautilus_undoable_save_undo_snapshot         (NautilusUndoTransaction
 							 GtkSignalFunc            save_function,
 							 GtkSignalFunc            restore_function);
 void       nautilus_undoable_restore_from_undo_snapshot (NautilusUndoable        *undoable);
-
-/* A change that makes this atom no longer apply. */
-void       nautilus_undoable_mark_obsolete              (NautilusUndoable        *undoable);
 
 typedef void (* NautilusUndoCallback) (GtkObject *target, gpointer callback_data);
 

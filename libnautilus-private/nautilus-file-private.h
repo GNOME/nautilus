@@ -28,6 +28,7 @@
 struct NautilusFileDetails
 {
 	NautilusDirectory *directory;
+	gboolean unconfirmed;
 	gboolean is_gone;
 	GnomeVFSFileInfo *info;
 

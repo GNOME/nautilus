@@ -2815,21 +2815,33 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
  * @container: A NautilusIconContainer
  * @data: Icon data.
  * 
- * Add @image with caption @text and data @data to @container.
+ * Add icon to represent @data to container.
+ * Returns FALSE if there was already such an icon.
  **/
-void
+gboolean
 nautilus_icon_container_add (NautilusIconContainer *container,
 			     NautilusIconData *data)
 {
 	NautilusIconContainerDetails *details;
+	GList *p;
 	NautilusIcon *icon;
 	gboolean have_stored_position;
 	NautilusIconPosition position;
 
-	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_return_if_fail (data != NULL);
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
+	g_return_val_if_fail (data != NULL, FALSE);
 
 	details = container->details;
+
+	/* FIXME: I guess we need to use an indexed data structure to
+	 * avoid this loop.
+	 */
+	for (p = details->icons; p != NULL; p = p->next) {
+		icon = p->data;
+		if (icon->data == data) {
+			return FALSE;
+		}
+	}
 
 	have_stored_position = FALSE;
 	position.scale_x = 1.0;
@@ -2876,6 +2888,8 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 			    GTK_SIGNAL_FUNC (bounds_changed_callback), container);
 
 	request_idle (container);
+
+	return TRUE;
 }
 
 /**
@@ -2895,6 +2909,9 @@ nautilus_icon_container_remove (NautilusIconContainer *container,
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
 	g_return_val_if_fail (data != NULL, FALSE);
 
+	/* FIXME: I guess we need to use an indexed data structure to
+	 * avoid this loop.
+	 */
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		icon = p->data;
 		if (icon->data == data) {

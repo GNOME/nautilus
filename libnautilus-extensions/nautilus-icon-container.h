@@ -125,7 +125,7 @@ GtkWidget *nautilus_icon_container_new                     (void);
 
 /* adding, removing, and managing icons */
 void       nautilus_icon_container_clear                   (NautilusIconContainer *view);
-void       nautilus_icon_container_add                     (NautilusIconContainer *view,
+gboolean   nautilus_icon_container_add                     (NautilusIconContainer *view,
 							    NautilusIconData      *data);
 gboolean   nautilus_icon_container_remove                  (NautilusIconContainer *view,
 							    NautilusIconData      *data);

@@ -547,12 +547,6 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
-	/* If monitoring everything (file == NULL) then there must be
-	 * a callback. If not, there must not be.
-	 */
-	g_assert (file != NULL || callback != NULL);
-	g_assert (file == NULL || callback == NULL);
-
 	/* Replace any current monitor for this client/file pair. */
 	remove_monitor (directory, file, client);
 
@@ -569,7 +563,8 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 	/* Tell the new monitor-er about the current set of
 	 * files, which may or may not be all of them.
 	 */
-	if (directory->details->files != NULL && file == NULL) {
+	if (directory->details->files != NULL && callback != NULL) {
+		g_assert (file == NULL);
 		(* callback) (directory,
 			      directory->details->files,
 			      callback_data);
@@ -611,10 +606,10 @@ dequeue_pending_idle_callback (gpointer callback_data)
 {
 	NautilusDirectory *directory;
 	GList *pending_file_info;
-	GList *p;
+	GList *p, *next;
 	NautilusFile *file;
-	GList *pending_files;
-	GList *changed_files;
+	GList *pending_files, *changed_files, *saw_again_files;
+	GnomeVFSFileInfo *file_info;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
@@ -636,33 +631,64 @@ dequeue_pending_idle_callback (gpointer callback_data)
 
 	pending_files = NULL;
 	changed_files = NULL;
+	saw_again_files = NULL;
 
 	/* Build a list of NautilusFile objects. */
 	for (p = pending_file_info; p != NULL; p = p->next) {
+		file_info = p->data;
+
 		/* check if the file already exists */
-		file = nautilus_directory_find_file (directory, 
-						     ((const GnomeVFSFileInfo *)p->data)->name);
+		file = nautilus_directory_find_file (directory, file_info->name);
 		if (file != NULL) {
 			/* file already exists, check if it changed */
-			if (nautilus_file_update (file, p->data)) {
+			file->details->unconfirmed = FALSE;
+			if (nautilus_file_update (file, file_info)) {
 				/* File changed, notify about the change. */
+				nautilus_file_ref (file);
 				changed_files = g_list_prepend (changed_files, file);
 			}
-		} else if (!update_file_info_in_list_if_needed (pending_files, p->data)) {
+			nautilus_file_ref (file);
+			saw_again_files = g_list_prepend (saw_again_files, file);
+		} else if (!update_file_info_in_list_if_needed (pending_files, file_info)) {
 			/* new file, create a nautilus file object and add it to the list */
-			file = nautilus_file_new (directory, p->data);
+			file = nautilus_file_new (directory, file_info);
 			pending_files = g_list_prepend (pending_files, file);
 		}
 	}
 	gnome_vfs_file_info_list_free (pending_file_info);
 
+	/* If we are done loading, then we assume that any unconfirmed
+         * files are gone.
+	 */
+	if (directory->details->directory_loaded) {
+		for (p = directory->details->files; p != NULL; p = next) {
+			file = p->data;
+			next = p->next;
+
+			if (file->details->unconfirmed) {
+				file->details->is_gone = TRUE;
+				directory->details->files = g_list_remove_link
+					(directory->details->files, p);
+				g_list_free (p);
+
+				if (!nautilus_directory_is_file_list_monitored (directory)) {
+					nautilus_file_ref (file);
+				}
+				changed_files = g_list_prepend (changed_files, file);
+			}
+		}
+	}
+
+	/* Tell the objects that are monitoring about changed files.
+	 * Send out added signals too, for the reload case.
+	 */
+	nautilus_directory_emit_files_added (directory, saw_again_files);
+	nautilus_directory_emit_files_changed (directory, changed_files);
+	nautilus_file_list_free (saw_again_files);
+	nautilus_file_list_free (changed_files);
+	
 	/* Tell the objects that are monitoring about these new files. */
 	nautilus_directory_emit_files_added (directory, pending_files);
-
-	/* Tell the objects that are monitoring about changed files. */
-	nautilus_directory_emit_files_changed (directory, changed_files);
-	
-	/* Remember them for later. */
 	directory->details->files = g_list_concat
 		(directory->details->files, pending_files);
 
@@ -692,13 +718,19 @@ directory_load_one (NautilusDirectory *directory,
 }
 
 static void
-directory_load_done (NautilusDirectory *directory,
-		     GnomeVFSResult result)
+cancel_directory_load (NautilusDirectory *directory)
 {
 	if (directory->details->directory_load_in_progress != NULL) {
 		gnome_vfs_async_cancel (directory->details->directory_load_in_progress);
 		directory->details->directory_load_in_progress = NULL;
 	}
+}
+
+static void
+directory_load_done (NautilusDirectory *directory,
+		     GnomeVFSResult result)
+{
+	cancel_directory_load (directory);
 	directory->details->directory_loaded = TRUE;
 
 	/* Call the idle function right away. */
@@ -768,6 +800,7 @@ nautilus_directory_monitor_remove_internal (NautilusDirectory *directory,
 	g_assert (client != NULL);
 
 	remove_monitor (directory, file, client);
+
 	state_changed (directory);
 }
 
@@ -877,8 +910,7 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory *directory,
 	/* Add the new callback to the list. */
 	directory->details->call_when_ready_list = g_list_prepend
 		(directory->details->call_when_ready_list,
-		 g_memdup (&callback,
-			   sizeof (callback)));
+		 g_memdup (&callback, sizeof (callback)));
 
 	state_changed (directory);
 }
@@ -1226,20 +1258,35 @@ nautilus_directory_is_file_list_monitored (NautilusDirectory *directory)
 	return directory->details->file_list_monitored;
 }
 
+static void
+mark_all_files_unconfirmed (NautilusDirectory *directory)
+{
+	GList *p;
+	NautilusFile *file;
+
+	for (p = directory->details->files; p != NULL; p = p->next) {
+		file = p->data;
+
+		file->details->unconfirmed = TRUE;
+	}
+}
+
 /* Start monitoring the file list if it isn't already. */
 static void
 start_monitoring_file_list (NautilusDirectory *directory)
 {
-	if (directory->details->file_list_monitored) {
+	if (!directory->details->file_list_monitored) {
+		g_assert (directory->details->directory_load_in_progress == NULL);
+		directory->details->file_list_monitored = TRUE;
+		nautilus_file_list_ref (directory->details->files);
+	}
+
+	if (directory->details->directory_loaded
+	    || directory->details->directory_load_in_progress != NULL) {
 		return;
 	}
 
-	g_assert (directory->details->directory_load_in_progress == NULL);
-
-	directory->details->file_list_monitored = TRUE;
-
-	nautilus_file_list_ref (directory->details->files);
-
+	mark_all_files_unconfirmed (directory);
 	g_assert (directory->details->uri->text != NULL);
 	directory->details->directory_load_list_last_handled
 		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
@@ -1270,14 +1317,18 @@ nautilus_directory_stop_monitoring_file_list (NautilusDirectory *directory)
 		return;
 	}
 
-	if (directory->details->directory_load_in_progress != NULL) {
-		gnome_vfs_async_cancel (directory->details->directory_load_in_progress);
-		directory->details->directory_load_in_progress = NULL;
-	}
-
-	nautilus_file_list_unref (directory->details->files);
-	
 	directory->details->file_list_monitored = FALSE;
+	cancel_directory_load (directory);
+	nautilus_file_list_unref (directory->details->files);
+}
+
+void
+nautilus_directory_force_reload (NautilusDirectory *directory)
+{
+	cancel_directory_load (directory);
+	directory->details->directory_loaded = FALSE;
+
+	state_changed (directory);
 }
 
 static gboolean

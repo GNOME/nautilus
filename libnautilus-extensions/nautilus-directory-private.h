@@ -129,6 +129,7 @@ void          nautilus_directory_stop_monitoring_file_list (NautilusDirectory   
 void          nautilus_metafile_read_cancel                (NautilusDirectory         *directory);
 void          nautilus_metafile_write_start                (NautilusDirectory         *directory);
 void          nautilus_async_destroying_file               (NautilusFile              *file);
+void          nautilus_directory_force_reload              (NautilusDirectory         *directory);
 
 /* Calls shared between directory, file, and async. code. */
 NautilusFile *nautilus_directory_find_file                 (NautilusDirectory         *directory,

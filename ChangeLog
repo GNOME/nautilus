@@ -1,3 +1,62 @@
+2000-05-22  Darin Adler  <darin@eazel.com>
+
+	Implemented Reload for directory views.
+	
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(nautilus_directory_monitor_add_internal),
+	(dequeue_pending_idle_callback), (cancel_directory_load),
+	(directory_load_done),
+	(nautilus_directory_monitor_remove_internal),
+	(nautilus_directory_call_when_ready_internal),
+	(mark_all_files_unconfirmed), (start_monitoring_file_list),
+	(nautilus_directory_stop_monitoring_file_list),
+	(nautilus_directory_force_reload):
+	* libnautilus-extensions/nautilus-directory.c:
+	(call_files_changed_unref_free_list),
+	(nautilus_directory_notify_files_removed),
+	(nautilus_directory_notify_files_moved),
+	(nautilus_directory_file_monitor_add):
+	* libnautilus-extensions/nautilus-file-private.h:
+	* libnautilus-extensions/nautilus-file.c: (nautilus_file_get),
+	(destroy), (nautilus_file_monitor_remove), (nautilus_file_delete),
+	(nautilus_file_mark_gone), (nautilus_file_changed),
+	(nautilus_file_emit_changed):
+	Added the necessary tweaks to the async. I/O so we can handle
+	a reload, not just the initial load.
+	
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_add): Changed API so it will detect if
+	you try to add the same item twice and indicate it with a return
+	value; needed so we can handle reload.
+	
+	* libnautilus-extensions/nautilus-list.c: (set_single_click_mode),
+	(update_single_click_mode_from_preferences),
+	(nautilus_list_initialize), (click_policy_changed_callback):
+	Fixed bug where a change in single click mode would chang the
+	appearance of the names in the list, but not cause a redraw when
+	the setting was changed.
+	
+	* libnautilus/nautilus-undoable.c:
+	(undo_atom_destroy_callback_data), (undo_atom_destroy),
+	(undo_atom_destroy_callback_data_g_func_cover),
+	(nautilus_undo_register_full):
+	Fixed a bug where it would try to destroy the undo atom even when
+	it didn't own it.
+	
+	* libnautilus/nautilus-undoable.h:
+	Got rid of some cruft I left in here by accident.
+	
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_add_file):
+	* src/file-manager/fm-list-view.c: (fm_list_view_add_file):
+	Only add the files if they are not already in the list. This is
+	needed for reload.
+	
+	* src/ntl-main.c: (main): Tweaked this function to be easier to
+	understand and better organized. Also added a "desktop" option
+	as a start for my next task.
+
 2000-05-22  Eskil Heyn Olsen  <eskil@eazel.om>
 
 	* components/services/trilobite/src/trilobite-service-private.h: 
