@@ -225,6 +225,9 @@ void              nautilus_icon_container_enable_linger_selection       (Nautilu
 gboolean          nautilus_icon_container_get_is_fixed_size             (NautilusIconContainer  *container);
 void              nautilus_icon_container_set_is_fixed_size             (NautilusIconContainer  *container,
 									 gboolean                is_fixed_size);
+gboolean          nautilus_icon_container_get_is_desktop                (NautilusIconContainer  *container);
+void              nautilus_icon_container_set_is_desktop                (NautilusIconContainer  *container,
+									 gboolean                is_desktop);
 void              nautilus_icon_container_reset_scroll_region           (NautilusIconContainer  *container);
 void              nautilus_icon_container_set_font                      (NautilusIconContainer  *container,
 									 const char             *font); 

@@ -2393,7 +2393,6 @@ destroy (GtkObject *object)
 
 	container = NAUTILUS_ICON_CONTAINER (object);
 
-	nautilus_icon_dnd_fini (container);
         nautilus_icon_container_clear (container);
 
 	if (container->details->rubberband_info.timer_id != 0) {
@@ -2484,6 +2483,9 @@ realize (GtkWidget *widget)
 
 	GTK_WIDGET_CLASS (parent_class)->realize (widget);
 
+	/* Set up DnD.  */
+	nautilus_icon_dnd_init (NAUTILUS_ICON_CONTAINER (widget), NULL);
+
 	setup_label_gcs (NAUTILUS_ICON_CONTAINER (widget));
 
  	/* make us the focused widget */
@@ -2516,6 +2518,8 @@ unrealize (GtkWidget *widget)
 			container->details->label_gcs [i] = NULL;
 		}
 	}
+
+	nautilus_icon_dnd_fini (container);
 
 	GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
 }
@@ -3576,9 +3580,6 @@ nautilus_icon_container_instance_init (NautilusIconContainer *container)
         details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST] = 4 * PANGO_SCALE;
 
 	container->details = details;
-
-	/* Set up DnD.  */
-	nautilus_icon_dnd_init (container, NULL);
 
 	/* Make sure that we find out if the icons change. */
 	g_signal_connect_object 
@@ -5355,6 +5356,23 @@ nautilus_icon_container_set_is_fixed_size (NautilusIconContainer *container,
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
 	container->details->is_fixed_size = is_fixed_size;
+}
+
+gboolean
+nautilus_icon_container_get_is_desktop (NautilusIconContainer *container)
+{
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), FALSE);
+
+	return container->details->is_desktop;
+}
+
+void
+nautilus_icon_container_set_is_desktop (NautilusIconContainer *container,
+					   gboolean is_desktop)
+{
+	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
+
+	container->details->is_desktop = is_desktop;
 }
 
 void

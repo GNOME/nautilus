@@ -1,3 +1,19 @@
+2002-10-16  Alexander Larsson  <alexl@redhat>
+
+	* libnautilus-private/nautilus-dnd.h:
+	Add application/x-rootwindow-drop.
+	
+	* libnautilus-private/nautilus-icon-private.h:
+	* libnautilus-private/nautilus-icon-container.[ch]:
+	Moved dnd init/fini to realize/unrealize.
+	Add nautilus_icon_container_set/get_is_desktop().
+	
+	* libnautilus-private/nautilus-icon-dnd.[ch]:
+	Implement rootwindow drops.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	call nautilus_icon_container_set_is_desktop()
+
 2002-10-15  Bastien Nocera  <hadess@hadess.net>
 
         * src/nautilus-shell-ui.xml: add BackSpace as a key shortcut for

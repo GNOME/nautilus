@@ -38,6 +38,7 @@
 #define NAUTILUS_ICON_DND_BGIMAGE_TYPE          "property/bgimage"
 #define NAUTILUS_ICON_DND_KEYWORD_TYPE          "property/keyword"
 #define NAUTILUS_ICON_DND_RESET_BACKGROUND_TYPE "x-special/gnome-reset-background"
+#define NAUTILUS_ICON_DND_ROOTWINDOW_DROP_TYPE  "application/x-rootwindow-drop"
 
 /* Item of the drag selection list */
 typedef struct {
@@ -56,7 +57,8 @@ typedef enum {
 	NAUTILUS_ICON_DND_BGIMAGE,
 	NAUTILUS_ICON_DND_KEYWORD,
 	NAUTILUS_ICON_DND_TEXT,
-	NAUTILUS_ICON_DND_RESET_BACKGROUND
+	NAUTILUS_ICON_DND_RESET_BACKGROUND,
+	NAUTILUS_ICON_DND_ROOTWINDOW_DROP
 } NautilusIconDndTargetType;
 
 typedef enum {

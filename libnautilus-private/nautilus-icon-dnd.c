@@ -73,10 +73,13 @@ static GtkTargetEntry drop_types [] = {
 	{ NAUTILUS_ICON_DND_COLOR_TYPE, 0, NAUTILUS_ICON_DND_COLOR },
 	{ NAUTILUS_ICON_DND_BGIMAGE_TYPE, 0, NAUTILUS_ICON_DND_BGIMAGE },
 	{ NAUTILUS_ICON_DND_KEYWORD_TYPE, 0, NAUTILUS_ICON_DND_KEYWORD },
-	{ NAUTILUS_ICON_DND_RESET_BACKGROUND_TYPE,  0, NAUTILUS_ICON_DND_RESET_BACKGROUND }
+	{ NAUTILUS_ICON_DND_RESET_BACKGROUND_TYPE,  0, NAUTILUS_ICON_DND_RESET_BACKGROUND },
+	/* Must be last: */
+	{ NAUTILUS_ICON_DND_ROOTWINDOW_DROP_TYPE,  0, NAUTILUS_ICON_DND_ROOTWINDOW_DROP }
 };
 
 static GtkTargetList *drop_types_list = NULL;
+static GtkTargetList *drop_types_list_root = NULL;
 
 static EelCanvasItem *
 create_selection_shadow (NautilusIconContainer *container,
@@ -366,21 +369,43 @@ static void
 get_data_on_first_target_we_support (GtkWidget *widget, GdkDragContext *context, guint32 time)
 {
 	GList *target;
-
+	GtkTargetList *list;
+	
 	if (drop_types_list == NULL)
 		drop_types_list = gtk_target_list_new (drop_types,
-						       G_N_ELEMENTS (drop_types));
+						       G_N_ELEMENTS (drop_types) - 1);
+	if (drop_types_list_root == NULL)
+		drop_types_list_root = gtk_target_list_new (drop_types,
+							    G_N_ELEMENTS (drop_types));
 
+	if (nautilus_icon_container_get_is_desktop (NAUTILUS_ICON_CONTAINER (widget))) {
+		list = drop_types_list_root;
+	} else {
+		list = drop_types_list;
+	}
+	
 	for (target = context->targets; target != NULL; target = target->next) {
-		guint dummy_info;
+		guint info;
 		GdkAtom target_atom = GDK_POINTER_TO_ATOM (target->data);
+		NautilusDragInfo *drag_info;
 
-		if (gtk_target_list_find (drop_types_list, 
+		drag_info = &(NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info->drag_info);
+
+		if (gtk_target_list_find (list, 
 					  target_atom,
-					  &dummy_info)) {
-			gtk_drag_get_data (GTK_WIDGET (widget), context,
-					   target_atom,
-					   time);
+					  &info)) {
+			/* Don't get_data for rootwindow drops unless it's the actual drop */
+			if (info == NAUTILUS_ICON_DND_ROOTWINDOW_DROP &&
+			    !drag_info->drop_occured) {
+				/* We can't call get_data here, because that would
+				   make the source execute the rootwin action */
+				drag_info->got_drop_data_type = TRUE;
+				drag_info->data_type = NAUTILUS_ICON_DND_ROOTWINDOW_DROP;
+			} else {
+				gtk_drag_get_data (GTK_WIDGET (widget), context,
+						   target_atom,
+						   time);
+			}
 			break;
 		}
 	}
@@ -934,7 +959,7 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 	gboolean icon_hit;
 	NautilusIcon *icon;
 	double world_x, world_y;
-	
+
 	icon_hit = FALSE;
 	if (!container->details->dnd_info->drag_info.got_drop_data_type) {
 		/* drag_data_received_callback didn't get called yet */
@@ -983,6 +1008,7 @@ nautilus_icon_container_get_drop_action (NautilusIconContainer *container,
 	
 	case NAUTILUS_ICON_DND_URI_LIST:
 	case NAUTILUS_ICON_DND_URL:
+	case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
 		*action = context->suggested_action;
 		break;
 
@@ -1297,7 +1323,7 @@ drag_data_received_callback (GtkWidget *widget,
     	NautilusDragInfo *drag_info;
 	EelBackground *background;
 	gboolean success;
-	
+
 	drag_info = &(NAUTILUS_ICON_CONTAINER (widget)->details->dnd_info->drag_info);
 
 	drag_info->got_drop_data_type = TRUE;
@@ -1325,6 +1351,9 @@ drag_data_received_callback (GtkWidget *widget,
 			gtk_selection_data_free (drag_info->selection_data);
 			drag_info->selection_data = gtk_selection_data_copy (data);
 		}
+		break;
+	case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
+		/* Do nothing, this won't even happen, since we don't want to call get_data twice */
 		break;
 	}
 
@@ -1371,6 +1400,9 @@ drag_data_received_callback (GtkWidget *widget,
 			}
 			gtk_drag_finish (context, FALSE, FALSE, time);			
 			break;
+		case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
+			/* Do nothing, everything is done by the sender */
+			break;
 		}
 		gtk_drag_finish (context, success, FALSE, time);
 		
@@ -1403,6 +1435,8 @@ void
 nautilus_icon_dnd_init (NautilusIconContainer *container,
 			GdkBitmap *stipple)
 {
+	int n_elements;
+	
 	g_return_if_fail (container != NULL);
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
@@ -1415,9 +1449,14 @@ nautilus_icon_dnd_init (NautilusIconContainer *container,
 	 * (But not a source, as drags starting from this widget will be
          * implemented by dealing with events manually.)
 	 */
+	n_elements = G_N_ELEMENTS (drop_types);
+	if (!nautilus_icon_container_get_is_desktop (container)) {
+		/* Don't set up rootwindow drop */
+		n_elements -= 1;
+	}
 	gtk_drag_dest_set (GTK_WIDGET (container),
 			   0,
-			   drop_types, G_N_ELEMENTS (drop_types),
+			   drop_types, n_elements,
 			   GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK | GDK_ACTION_ASK);
 
 	/* Messages for outgoing drag. */

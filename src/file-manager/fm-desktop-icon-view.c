@@ -683,6 +683,7 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	}
 	
 	nautilus_icon_container_set_is_fixed_size (icon_container, TRUE);
+	nautilus_icon_container_set_is_desktop (icon_container, TRUE);
 
 	/* Set up default mount black list */
 	list = g_list_prepend (NULL, g_strdup ("/proc"));
