@@ -29,14 +29,14 @@
 #define EAZEL_PACKAGE_SYSTEM_PROGRESS_LONGS 6
 
 #define EPS_SANE(val) g_return_if_fail (val!=NULL); \
-                      g_return_if_fail (IS_EAZEL_PACKAGE_SYSTEM (val)); \
+                      g_return_if_fail (EAZEL_IS_PACKAGE_SYSTEM (val)); \
                       g_return_if_fail (val->private); 
 
 #define EPS_SANE_VAL(val, v) g_return_val_if_fail (val!=NULL, v); \
-                             g_return_val_if_fail (IS_EAZEL_PACKAGE_SYSTEM (val), v); \
+                             g_return_val_if_fail (EAZEL_IS_PACKAGE_SYSTEM (val), v); \
                              g_return_val_if_fail (val->private, v); 
 
-#define EPS_API(val) g_assert (val!=NULL); g_assert (IS_EAZEL_PACKAGE_SYSTEM (val)); g_assert (val->private);
+#define EPS_API(val) g_assert (val!=NULL); g_assert (EAZEL_IS_PACKAGE_SYSTEM (val)); g_assert (val->private);
 
 #define info(system, s...) if (eazel_package_system_get_debug (EAZEL_PACKAGE_SYSTEM (system)) & EAZEL_PACKAGE_SYSTEM_DEBUG_INFO) { trilobite_debug (s); }
 #define fail(system, s...) if (eazel_package_system_get_debug (EAZEL_PACKAGE_SYSTEM (system)) & EAZEL_PACKAGE_SYSTEM_DEBUG_FAIL) { trilobite_debug (s); }

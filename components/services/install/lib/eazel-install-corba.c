@@ -506,7 +506,7 @@ eazel_install_create_corba_object (BonoboObject *service) {
 	CORBA_Environment ev;
 
 	g_assert (service != NULL);
-	g_assert (IS_EAZEL_INSTALL (service));
+	g_assert (EAZEL_IS_INSTALL (service));
 	
 	CORBA_exception_init (&ev);
 	

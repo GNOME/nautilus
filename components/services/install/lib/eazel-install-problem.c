@@ -27,13 +27,13 @@
 static GtkObjectClass *eazel_install_problem_parent_class;
 
 #define ASSERT_SANITY(s) g_assert (s!=NULL); \
-                         g_assert (IS_EAZEL_INSTALL_PROBLEM(s));
+                         g_assert (EAZEL_IS_INSTALL_PROBLEM(s));
 
 #define P_SANITY(s) g_return_if_fail (s!=NULL); \
-                    g_return_if_fail (IS_EAZEL_INSTALL_PROBLEM(s));
+                    g_return_if_fail (EAZEL_IS_INSTALL_PROBLEM(s));
 
 #define P_SANITY_VAL(s,val) g_return_val_if_fail (s!=NULL, val); \
-                            g_return_val_if_fail (IS_EAZEL_INSTALL_PROBLEM(s), val);
+                            g_return_val_if_fail (EAZEL_IS_INSTALL_PROBLEM(s), val);
 
 
 #undef EIP_DEBUG

@@ -33,8 +33,8 @@ extern "C" {
 #define TYPE_EAZEL_PACKAGE_SYSTEM           (eazel_package_system_get_type ())
 #define EAZEL_PACKAGE_SYSTEM(obj)           (GTK_CHECK_CAST ((obj), TYPE_EAZEL_PACKAGE_SYSTEM, EazelPackageSystem))
 #define EAZEL_PACKAGE_SYSTEM_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TYPE_EAZEL_PACKAGE_SYSTEM, EazelPackageSystemClass))
-#define IS_EAZEL_PACKAGE_SYSTEM(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_PACKAGE_SYSTEM))
-#define IS_EAZEL_PACKAGE_SYSTEM_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_PACKAGE_SYSTEM))
+#define EAZEL_IS_PACKAGE_SYSTEM(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_PACKAGE_SYSTEM))
+#define EAZEL_IS_PACKAGE_SYSTEM_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_PACKAGE_SYSTEM))
 
 typedef struct _EazelPackageSystem EazelPackageSystem;
 typedef struct _EazelPackageSystemClass EazelPackageSystemClass;

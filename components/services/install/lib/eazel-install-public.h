@@ -45,8 +45,8 @@ extern "C" {
 #define TYPE_EAZEL_INSTALL           (eazel_install_get_type ())
 #define EAZEL_INSTALL(obj)           (GTK_CHECK_CAST ((obj), TYPE_EAZEL_INSTALL, EazelInstall))
 #define EAZEL_INSTALL_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TYPE_EAZEL_INSTALL, EazelInstallClass))
-#define IS_EAZEL_INSTALL(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_INSTALL))
-#define IS_EAZEL_INSTALL_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_INSTALL))
+#define EAZEL_IS_INSTALL(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_INSTALL))
+#define EAZEL_IS_INSTALL_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_INSTALL))
 
 typedef enum {
 	EAZEL_INSTALL_USE_RPM
@@ -194,18 +194,18 @@ void eazel_install_delete_downloads (EazelInstall *service);
 
 #define EAZEL_INSTALL_SANITY_VAL(name, ret)\
 	g_return_val_if_fail (name != NULL, ret); \
-	g_return_val_if_fail (IS_EAZEL_INSTALL (name), ret); \
+	g_return_val_if_fail (EAZEL_IS_INSTALL (name), ret); \
 	g_return_val_if_fail (name->private->softcat != NULL, ret); \
-	g_return_val_if_fail (IS_EAZEL_SOFTCAT (name->private->softcat), ret); \
+	g_return_val_if_fail (EAZEL_IS_SOFTCAT (name->private->softcat), ret); \
 	g_assert (name->private != NULL); \
 	g_assert (name->private->iopts != NULL); \
 	g_assert (name->private->topts != NULL) 
 
 #define EAZEL_INSTALL_SANITY(name)\
 	g_return_if_fail (name != NULL); \
-	g_return_if_fail (IS_EAZEL_INSTALL (name)); \
+	g_return_if_fail (EAZEL_IS_INSTALL (name)); \
 	g_return_if_fail (name->private->softcat != NULL); \
-	g_return_if_fail (IS_EAZEL_SOFTCAT (name->private->softcat)); \
+	g_return_if_fail (EAZEL_IS_SOFTCAT (name->private->softcat)); \
 	g_assert (name->private != NULL); \
 	g_assert (name->private->iopts != NULL); \
 	g_assert (name->private->topts != NULL) 

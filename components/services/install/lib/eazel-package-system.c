@@ -386,7 +386,7 @@ eazel_package_system_class_initialize (EazelPackageSystemClass *klass)
 static void
 eazel_package_system_initialize (EazelPackageSystem *system) {
 	g_assert (system!=NULL); 
-	g_assert (IS_EAZEL_PACKAGE_SYSTEM (system));
+	g_assert (EAZEL_IS_PACKAGE_SYSTEM (system));
 	
 	system->private = g_new0 (EazelPackageSystemPrivate, 1);
 }

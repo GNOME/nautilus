@@ -273,7 +273,7 @@ eazel_install_callback_create_corba_object (BonoboObject *service) {
 	CORBA_Environment ev;
 
 	g_assert (service != NULL);
-	g_assert (IS_EAZEL_INSTALL_CALLBACK (service));
+	g_assert (EAZEL_IS_INSTALL_CALLBACK (service));
 	
 	CORBA_exception_init (&ev);
 	
@@ -440,7 +440,7 @@ eazel_install_callback_initialize (EazelInstallCallback *service) {
 	CORBA_Environment ev;
 
 	g_assert (service != NULL);
-	g_assert (IS_EAZEL_INSTALL_CALLBACK (service));
+	g_assert (EAZEL_IS_INSTALL_CALLBACK (service));
 
 	CORBA_exception_init (&ev);
 	service->cb = eazel_install_callback_create_corba_object (BONOBO_OBJECT (service));

@@ -235,7 +235,7 @@ eazel_package_system_rpm4_class_initialize (EazelPackageSystemRpm4Class *klass)
 static void
 eazel_package_system_rpm4_initialize (EazelPackageSystemRpm4 *system) {
 	g_assert (system != NULL);
-	g_assert (IS_EAZEL_PACKAGE_SYSTEM_RPM4 (system));
+	g_assert (EAZEL_IS_PACKAGE_SYSTEM_RPM4 (system));
 }
 
 GtkType

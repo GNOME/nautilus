@@ -33,8 +33,8 @@ extern "C" {
 #define TYPE_EAZEL_PACKAGE_SYSTEM_SKELETON           (eazel_package_system_skeleton_get_type ())
 #define EAZEL_PACKAGE_SYSTEM_SKELETON(obj)           (GTK_CHECK_CAST ((obj), TYPE_EAZEL_PACKAGE_SYSTEM_SKELETON, EazelPackageSystemSkeleton))
 #define EAZEL_PACKAGE_SYSTEM_SKELETON_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TYPE_EAZEL_PACKAGE_SYSTEM_SKELETON, EazelPackageSystemSkeletonClass))
-#define IS_EAZEL_PACKAGE_SYSTEM_SKELETON(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_PACKAGE_SYSTEM_SKELETON))
-#define IS_EAZEL_PACKAGE_SYSTEM_SKELETON_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_PACKAGE_SYSTEM_SKELETON))
+#define EAZEL_IS_PACKAGE_SYSTEM_SKELETON(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_PACKAGE_SYSTEM_SKELETON))
+#define EAZEL_IS_PACKAGE_SYSTEM_SKELETON_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_PACKAGE_SYSTEM_SKELETON))
 
 typedef struct _EazelPackageSystemSkeleton EazelPackageSystemSkeleton;
 typedef struct _EazelPackageSystemSkeletonClass EazelPackageSystemSkeletonClass;

@@ -222,7 +222,7 @@ eazel_install_finalize (GtkObject *object)
 	EazelInstall *service;
 
 	g_return_if_fail (object != NULL);
-	g_return_if_fail (EAZEL_INSTALL (object));
+	g_return_if_fail (EAZEL_IS_INSTALL (object));
 
 	service = EAZEL_INSTALL (object);
 
@@ -263,10 +263,11 @@ eazel_install_finalize (GtkObject *object)
 	trilobite_debug ("out eazel_install_finalize");
 }
 
-void eazel_install_unref (GtkObject *object) 
+void
+eazel_install_unref (GtkObject *object) 
 {
 	g_return_if_fail (object != NULL);
-	g_return_if_fail (EAZEL_INSTALL (object));
+	g_return_if_fail (EAZEL_IS_INSTALL (object));
 #ifndef EAZEL_INSTALL_SLIM
 	bonobo_object_unref (BONOBO_OBJECT (object));
 #else
@@ -283,7 +284,7 @@ eazel_install_set_arg (GtkObject *object,
 	EazelInstall *service;
 
 	g_assert (object != NULL);
-	g_assert (IS_EAZEL_INSTALL (object));
+	g_assert (EAZEL_IS_INSTALL (object));
 
 	service = EAZEL_INSTALL (object);
 
@@ -561,7 +562,7 @@ eazel_install_initialize (EazelInstall *service) {
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
 	g_assert (service != NULL);
-	g_assert (IS_EAZEL_INSTALL (service));
+	g_assert (EAZEL_IS_INSTALL (service));
 
 #ifndef EAZEL_INSTALL_NO_CORBA
 	corba_service = eazel_install_create_corba_object (BONOBO_OBJECT (service));

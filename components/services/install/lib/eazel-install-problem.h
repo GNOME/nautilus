@@ -52,8 +52,8 @@ extern "C" {
 #define TYPE_EAZEL_INSTALL_PROBLEM           (eazel_install_problem_get_type ())
 #define EAZEL_INSTALL_PROBLEM(obj)           (GTK_CHECK_CAST ((obj), TYPE_EAZEL_INSTALL_PROBLEM, EazelInstallProblem))
 #define EAZEL_INSTALL_PROBLEM_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TYPE_EAZEL_INSTALL_PROBLEM, EazelInstallProblemClass))
-#define IS_EAZEL_INSTALL_PROBLEM(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_INSTALL_PROBLEM))
-#define IS_EAZEL_INSTALL_PROBLEM_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_INSTALL_PROBLEM))
+#define EAZEL_IS_INSTALL_PROBLEM(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_INSTALL_PROBLEM))
+#define EAZEL_IS_INSTALL_PROBLEM_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_INSTALL_PROBLEM))
 	
 typedef enum _EazelInstallProblemEnum EazelInstallProblemEnum;
 typedef struct _EazelInstallProblemCase EazelInstallProblemCase;

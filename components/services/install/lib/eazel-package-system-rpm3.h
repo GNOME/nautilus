@@ -33,8 +33,8 @@ extern "C" {
 #define TYPE_EAZEL_PACKAGE_SYSTEM_RPM3           (eazel_package_system_rpm3_get_type ())
 #define EAZEL_PACKAGE_SYSTEM_RPM3(obj)           (GTK_CHECK_CAST ((obj), TYPE_EAZEL_PACKAGE_SYSTEM_RPM3, EazelPackageSystemRpm3))
 #define EAZEL_PACKAGE_SYSTEM_RPM3_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TYPE_EAZEL_PACKAGE_SYSTEM_RPM3, EazelPackageSystemRpm3Class))
-#define IS_EAZEL_PACKAGE_SYSTEM_RPM3(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_PACKAGE_SYSTEM_RPM3))
-#define IS_EAZEL_PACKAGE_SYSTEM_RPM3_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_PACKAGE_SYSTEM_RPM3))
+#define EAZEL_IS_PACKAGE_SYSTEM_RPM3(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_PACKAGE_SYSTEM_RPM3))
+#define EAZEL_IS_PACKAGE_SYSTEM_RPM3_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_PACKAGE_SYSTEM_RPM3))
 
 typedef struct _EazelPackageSystemRpm3 EazelPackageSystemRpm3;
 typedef struct _EazelPackageSystemRpm3Class EazelPackageSystemRpm3Class;

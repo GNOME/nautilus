@@ -40,7 +40,7 @@ eazel_package_system_skeleton_load_package (EazelPackageSystemSkeleton *system,
 {
 	PackageData *result = NULL;
 	g_assert (system);
-	g_assert (IS_EAZEL_PACKAGE_SYSTEM_SKELETON (system));
+	g_assert (EAZEL_IS_PACKAGE_SYSTEM_SKELETON (system));
 	trilobite_debug ("eazel_package_system_skeleton_load_package");
 	/* Code Here */
 	return result;
@@ -55,7 +55,7 @@ eazel_package_system_skeleton_query (EazelPackageSystemSkeleton *system,
 {
 	GList *result = NULL;
 	g_assert (system);
-	g_assert (IS_EAZEL_PACKAGE_SYSTEM_SKELETON (system));
+	g_assert (EAZEL_IS_PACKAGE_SYSTEM_SKELETON (system));
 	trilobite_debug ("eazel_package_system_skeleton_query");
 	/* Code Here */
 	return result;
@@ -68,7 +68,7 @@ eazel_package_system_skeleton_install (EazelPackageSystemSkeleton *system,
 				       unsigned long flags)
 {
 	g_assert (system);
-	g_assert (IS_EAZEL_PACKAGE_SYSTEM_SKELETON (system));
+	g_assert (EAZEL_IS_PACKAGE_SYSTEM_SKELETON (system));
 	trilobite_debug ("eazel_package_system_skeleton_install");
 	/* Code Here */
 }
@@ -80,7 +80,7 @@ eazel_package_system_skeleton_uninstall (EazelPackageSystemSkeleton *system,
 					 unsigned long flags)
 {
 	g_assert (system);
-	g_assert (IS_EAZEL_PACKAGE_SYSTEM_SKELETON (system));
+	g_assert (EAZEL_IS_PACKAGE_SYSTEM_SKELETON (system));
 	trilobite_debug ("eazel_package_system_skeleton_uninstall");
 	/* Code Here */
 }
@@ -90,7 +90,7 @@ eazel_package_system_skeleton_verify (EazelPackageSystemSkeleton *system,
 				      GList* packages)
 {
 	g_assert (system);
-	g_assert (IS_EAZEL_PACKAGE_SYSTEM_SKELETON (system));
+	g_assert (EAZEL_IS_PACKAGE_SYSTEM_SKELETON (system));
 	trilobite_debug ("eazel_package_system_skeleton_verify");
 	/* Code Here */
 }
@@ -129,7 +129,7 @@ eazel_package_system_skeleton_class_initialize (EazelPackageSystemSkeletonClass 
 static void
 eazel_package_system_skeleton_initialize (EazelPackageSystemSkeleton *system) {
 	g_assert (system != NULL);
-	g_assert (IS_EAZEL_PACKAGE_SYSTEM_SKELETON (system));
+	g_assert (EAZEL_IS_PACKAGE_SYSTEM_SKELETON (system));
 }
 
 GtkType

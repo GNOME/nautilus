@@ -382,7 +382,7 @@ eazel_package_system_rpm3_create_dbs (EazelPackageSystemRpm3 *system,
 	GList *iterator;
 
 	g_assert (system);
-	g_assert (IS_EAZEL_PACKAGE_SYSTEM_RPM3 (system));
+	g_assert (EAZEL_IS_PACKAGE_SYSTEM_RPM3 (system));
 	g_assert (system->private->dbs);
 
 	system->private->dbpaths = dbpaths;
@@ -426,7 +426,7 @@ void
 eazel_package_system_rpm3_open_dbs (EazelPackageSystemRpm3 *system)
 {
 	g_assert (system);
-	g_assert (IS_EAZEL_PACKAGE_SYSTEM_RPM3 (system));
+	g_assert (EAZEL_IS_PACKAGE_SYSTEM_RPM3 (system));
 	g_assert (system->private->dbs);
 
 	g_hash_table_foreach (system->private->db_to_root, 
@@ -1264,7 +1264,7 @@ static void
 eazel_package_system_rpm3_initialize (EazelPackageSystemRpm3 *system) 
 {
 	g_assert (system != NULL);
-	g_assert (IS_EAZEL_PACKAGE_SYSTEM_RPM3 (system));
+	g_assert (EAZEL_IS_PACKAGE_SYSTEM_RPM3 (system));
 	
 	system->private = g_new0 (EazelPackageSystemRpm3Private, 1);
 	system->private->dbs = g_hash_table_new (g_str_hash, g_str_equal);

@@ -33,8 +33,8 @@ extern "C" {
 #define TYPE_EAZEL_PACKAGE_SYSTEM_RPM4           (eazel_package_system_rpm4_get_type ())
 #define EAZEL_PACKAGE_SYSTEM_RPM4(obj)           (GTK_CHECK_CAST ((obj), TYPE_EAZEL_PACKAGE_SYSTEM_RPM4, EazelPackageSystemRpm4))
 #define EAZEL_PACKAGE_SYSTEM_RPM4_CLASS(klass)   (GTK_CHECK_CLASS_CAST ((klass), TYPE_EAZEL_PACKAGE_SYSTEM_RPM4, EazelPackageSystemRpm4Class))
-#define IS_EAZEL_PACKAGE_SYSTEM_RPM4(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_PACKAGE_SYSTEM_RPM4))
-#define IS_EAZEL_PACKAGE_SYSTEM_RPM4_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_PACKAGE_SYSTEM_RPM4))
+#define EAZEL_IS_PACKAGE_SYSTEM_RPM4(obj)        (GTK_CHECK_TYPE ((obj), TYPE_EAZEL_PACKAGE_SYSTEM_RPM4))
+#define EAZEL_IS_PACKAGE_SYSTEM_RPM4_CLASS(klass)(GTK_CHECK_CLASS_TYPE ((klass), TYPE_EAZEL_PACKAGE_SYSTEM_RPM4))
 
 typedef struct _EazelPackageSystemRpm4 EazelPackageSystemRpm4;
 typedef struct _EazelPackageSystemRpm4Class EazelPackageSystemRpm4Class;
