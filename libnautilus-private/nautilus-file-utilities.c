@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-file-utilities..c - implementation of file manipulation routines.
+/* nautilus-file-utilities.c - implementation of file manipulation routines.
 
    Copyright (C) 1999, 2000, 2001 Eazel, Inc.
 
@@ -792,26 +792,35 @@ nautilus_make_uri_canonical (const char *uri)
 	return canonical_uri;
 }
 
+char *
+nautilus_make_uri_canonical_strip_fragment (const char *uri)
+{
+	const char *fragment;
+	char *without_fragment, *canonical;
+
+	fragment = strchr (uri, '#');
+	if (fragment == NULL) {
+		return nautilus_make_uri_canonical (uri);
+	}
+
+	without_fragment = g_strndup (uri, fragment - uri);
+	canonical = nautilus_make_uri_canonical (without_fragment);
+	g_free (without_fragment);
+	return canonical;
+}
+
 static gboolean
 uris_match (const char *uri_1, const char *uri_2, gboolean ignore_fragments)
 {
-	char *canonical_1;
-	char *canonical_2;
-	char *fragment;
+	char *canonical_1, *canonical_2;
 	gboolean result;
 
-	canonical_1 = nautilus_make_uri_canonical (uri_1);
-	canonical_2 = nautilus_make_uri_canonical (uri_2);
-
 	if (ignore_fragments) {
-		fragment = strchr (canonical_1, '#');
-		if (fragment != NULL) {
-			*fragment = '\0';
-		}
-		fragment = strchr (canonical_2, '#');
-		if (fragment != NULL) {
-			*fragment = '\0';
-		}
+		canonical_1 = nautilus_make_uri_canonical_strip_fragment (uri_1);
+		canonical_2 = nautilus_make_uri_canonical_strip_fragment (uri_2);
+	} else {
+		canonical_1 = nautilus_make_uri_canonical (uri_1);
+		canonical_2 = nautilus_make_uri_canonical (uri_2);
 	}
 
 	result = nautilus_str_is_equal (canonical_1, canonical_2);
@@ -1808,6 +1817,7 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:///?"), "http:///?");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http:///x"), "http:///x");
 
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com"), "http://www.eazel.com");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com/xXx"), "http://www.eazel.com/xXx");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("ftp://Darin@www.Eazel.Com/xXx"), "ftp://Darin@www.eazel.com/xXx");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com:80/xXx"), "http://www.eazel.com:80/xXx");
@@ -1833,15 +1843,14 @@ nautilus_self_check_file_utilities (void)
 
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("pipe:gnome-info2html2 as"), "pipe:gnome-info2html2 as");
 
-	/*
-	 * Most of these test cases are from rfc 2396 (except for the NULL checks)
-	 */
-#define BASE_URI "http://a/b/c/d;p?q"
-#define TEST_PARTIAL(partial, result) NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_make_full_from_relative (BASE_URI, partial), result)
-
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_make_full_from_relative (NULL, NULL), NULL);
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_make_full_from_relative (BASE_URI, NULL), BASE_URI);
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_make_full_from_relative (NULL, BASE_URI), BASE_URI);
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_make_full_from_relative ("http://a/b/c/d;p?q", NULL), "http://a/b/c/d;p?q");
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_make_full_from_relative (NULL, "http://a/b/c/d;p?q"), "http://a/b/c/d;p?q");
+
+	/* These test cases are from RFC 2396. */
+#define TEST_PARTIAL(partial, result) \
+	NAUTILUS_CHECK_STRING_RESULT (nautilus_uri_make_full_from_relative \
+		("http://a/b/c/d;p?q", partial), result)
 
 	TEST_PARTIAL ("g", "http://a/b/c/g");
 	TEST_PARTIAL ("./g", "http://a/b/c/g");
@@ -1873,6 +1882,8 @@ nautilus_self_check_file_utilities (void)
 	TEST_PARTIAL ("g/../", "http://a/b/c/");
 	TEST_PARTIAL ("g/../g", "http://a/b/c/g");
 
+#undef TEST_PARTIAL
+
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display (""), "/");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display (":"), ":");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///h/user"), "/h/user");
@@ -1886,10 +1897,22 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///%20%23"), "/ #");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_format_uri_for_display ("file:///%20%23#"), "file:///%20%23#");
 
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("", ""), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match (":", ":"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("file:///h/user/file#gunzip:///", "file:///h/user/file#gunzip:///"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("file:///h/user/file#gunzip:///", "file:///h/user/file#gzip:///"), FALSE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("http://www.Eazel.Com", "http://www.eazel.com"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("http://www.Eazel.Com:80", "http://www.eazel.com:80"), TRUE);
+
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("", ""), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments (":", ":"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file#gunzip:///", "file:///h/user/file#gunzip:///"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file#gunzip:///", "file:///h/user/file#gzip:///"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("http://www.Eazel.Com", "http://www.eazel.com"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("http://www.Eazel.Com:80", "http://www.eazel.com:80"), TRUE);
+
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user", "file:///h/user"), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user#frag", "file:///h/user"), TRUE);
-	/* FIXME 6799 this should return TRUE */
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/#frag", "file:///h/user/"), FALSE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user#frag", "file:///h/user/"), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user#frag", "file:///h/user%23frag"), FALSE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/", "file:///h/user"), TRUE);
@@ -1898,23 +1921,11 @@ nautilus_self_check_file_utilities (void)
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file#gunzip:///", "file:///h/user/file"), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file#gunzip:///", "file:///h/user/file"), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/file.html.gz#gunzip:///#fragment", "file:///h/user/file.html.gz"), TRUE);
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("file:///h/user/#frag", "file:///h/user/"), TRUE);
 
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("http://www.Eazel.Com:80", "http://www.eazel.com:80"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("http://www.Eazel.Com:80", "http://www.eazel.com:80"), TRUE);
-
-	/* Note that it's illegal to have a # in a scheme name */
+	/* Since it's illegal to have a # in a scheme name, it doesn't really matter what these cases do */
+	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("fi#le:///h/user/file", "fi"), TRUE);
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("fi#le:///h/user/file", "fi#le:"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("fi#le:///h/user/file", "fi"), FALSE);
-
-	/* FIXME bugzilla.eazel.com 6798: Host names don't compare case-insensitive in this case. */
-	NAUTILUS_CHECK_STRING_RESULT (nautilus_make_uri_canonical ("http://www.Eazel.Com"), "http://www.Eazel.Com");
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("http://www.Eazel.Com", "http://www.eazel.com"), FALSE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match_ignore_fragments ("http://www.Eazel.Com", "http://www.eazel.com"), FALSE);
-
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("", ""), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match (":", ":"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("file:///h/user/file#gunzip:///", "file:///h/user/file#gunzip:///"), TRUE);
-	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_uris_match ("file:///h/user/file#gunzip:///", "file:///h/user/file#gzip:///"), FALSE);
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

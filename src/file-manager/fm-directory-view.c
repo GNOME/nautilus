@@ -156,6 +156,7 @@ struct FMDirectoryViewDetails
 	gboolean send_selection_change_to_shell;
 
 	NautilusFile *file_monitored_for_open_with;
+	NautilusDirectory *directory_monitored_for_activation;
 };
 
 typedef enum {
@@ -254,6 +255,8 @@ static void                fm_directory_view_trash_state_changed_callback       
 static void                fm_directory_view_select_file                          (FMDirectoryView      *view,
 										   NautilusFile         *file);
 static void                monitor_file_for_open_with                             (FMDirectoryView      *view,
+										   NautilusFile         *file);
+static void                monitor_file_for_activation                            (FMDirectoryView      *view,
 										   NautilusFile         *file);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
@@ -1071,6 +1074,8 @@ fm_directory_view_destroy (GtkObject *object)
 	 * purposes.
 	 */
 	view->details->nautilus_view = NULL;
+
+	monitor_file_for_activation (view, NULL);
 
 	nautilus_file_list_free (view->details->pending_files_added);
 	view->details->pending_files_added = NULL;
@@ -3527,8 +3532,11 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	GnomeVFSMimeActionType action_type;
 	GnomeVFSMimeApplication *application;
 	ActivationAction action;
+	gboolean need_to_continue_monitoring_file_for_activation;
 	
 	parameters = callback_data;
+
+	need_to_continue_monitoring_file_for_activation = FALSE;
 
 	nautilus_timed_wait_stop (cancel_activate_callback, parameters);
 
@@ -3546,19 +3554,24 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		report_broken_symbolic_link (view, file);
 		action = ACTIVATION_ACTION_DO_NOTHING;
 	} else if (nautilus_istr_has_prefix (uri, NAUTILUS_COMMAND_SPECIFIER)) {
-		/* don't allow command execution from remote uris to partially mitigate
-		 * the security risk of executing arbitrary commands. */	
+		/* Don't allow command execution from remote locations
+		 * to partially mitigate the security risk of
+		 * executing arbitrary commands.
+		 */
 		if (!nautilus_file_is_local (file)) {
-			nautilus_show_error_dialog (_("Sorry, but you can't execute commands from a remote site due to security considerations."), 
-						    _("Can't execute remote links"),
-						    fm_directory_view_get_containing_window (view));
+			nautilus_show_error_dialog
+				(_("Sorry, but you can't execute commands from "
+				   "a remote site due to security considerations."), 
+				 _("Can't execute remote links"),
+				 fm_directory_view_get_containing_window (view));
 			action = ACTIVATION_ACTION_DO_NOTHING;
 		} else {
-			/* as an additional security precaution, we only execute commands without
-			 * any parameters, which is enforced by using fork/execlp instead of system
+			/* As an additional precaution, only execute
+			 * commands without any parameters, which is
+			 * enforced by using a call that uses
+			 * fork/execlp instead of system.
 			 */
-			g_assert (strncmp (uri, NAUTILUS_COMMAND_SPECIFIER, sizeof (NAUTILUS_COMMAND_SPECIFIER) - 1) == 0);
-			command = uri + sizeof (NAUTILUS_COMMAND_SPECIFIER) - 1;
+			command = uri + strlen (NAUTILUS_COMMAND_SPECIFIER);
 			nautilus_gnome_shell_execute (command);
 			action = ACTIVATION_ACTION_DO_NOTHING;
 		}
@@ -3574,11 +3587,8 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		 * need to check the X bit on the target file, not on
 		 * the original.
 		 */
+
 		/* Launch executables to activate them. */
-		/* FIXME bugzilla.eazel.com 1773: This is a lame way
-		 * to run command-line tools, since there's no
-		 * terminal for the output.
-		 */
 		executable_path = gnome_vfs_get_local_path_from_uri (uri);
 
 		/* Non-local executables don't get launched. They act like non-executables. */
@@ -3593,26 +3603,21 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 		if (action == ACTIVATION_ACTION_LAUNCH) {
 			quoted_path = nautilus_shell_quote (executable_path);
+			/* FIXME bugzilla.eazel.com 1773: This is a
+			 * lame way to run command-line tools, since
+			 * there's no terminal for the output.
+			 */
 			nautilus_launch_application_from_command (quoted_path, NULL, FALSE);
-			g_free (executable_path);
 			g_free (quoted_path);
 		}
+		
+		g_free (executable_path);
 	}
 
 	if (action == ACTIVATION_ACTION_DISPLAY) {
-		action_type = nautilus_mime_get_default_action_type_for_file (file);
-		application = nautilus_mime_get_default_application_for_file (file);
-
-		/* We need to check for the case of having
-		 * GNOME_VFS_MIME_ACTION_TYPE_APPLICATION as the
-		 * action but having a NULL application returned.
-		 */
-		if (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION && application == NULL) {			
-			action_type = GNOME_VFS_MIME_ACTION_TYPE_COMPONENT;
-		}
-		
-		if (action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
-			fm_directory_view_launch_application (application, uri, view);
+		if (nautilus_mime_get_default_action_type_for_file (file)
+		    == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
+			application = nautilus_mime_get_default_application_for_file (file);
 		} else {
 			/* If the action type is unspecified, treat it like
 			 * the component case. This is most likely to happen
@@ -3620,15 +3625,20 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 			 * viewers or apps, or there are errors in the
 			 * mime.keys files.
 			 */
-			g_assert (action_type == GNOME_VFS_MIME_ACTION_TYPE_NONE
-				  || action_type == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT);
-			
-			open_location (view, uri, parameters->choice);
+			application = NULL;
 		}
-		
+
 		if (application != NULL) {
+			fm_directory_view_launch_application (application, uri, view);
 			gnome_vfs_mime_application_free (application);
+		} else {
+			open_location (view, uri, parameters->choice);
+			need_to_continue_monitoring_file_for_activation = TRUE;
 		}
+	}
+
+	if (!need_to_continue_monitoring_file_for_activation) {
+		monitor_file_for_activation (view, NULL);
 	}
 
 	g_free (uri);
@@ -3645,6 +3655,9 @@ cancel_activate_callback (gpointer callback_data)
 	nautilus_file_cancel_call_when_ready (parameters->file, 
 					      activate_callback, 
 					      parameters);
+
+	monitor_file_for_activation (parameters->view, NULL);
+
 	g_free (parameters);
 }
 
@@ -3670,6 +3683,8 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
+
+	monitor_file_for_activation (view, file);
 
 	/* Might have to read some of the file to activate it. */
 	attributes = nautilus_mime_actions_get_full_file_attributes ();
@@ -3809,7 +3824,8 @@ load_directory (FMDirectoryView *view,
 	 */
 	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CAPABILITIES);
 	nautilus_file_monitor_add (view->details->directory_as_file,
-				   view, attributes);
+				   &view->details->directory_as_file,
+				   attributes);
 	g_list_free (attributes);
 
 	view->details->file_changed_handler_id = gtk_signal_connect
@@ -3871,7 +3887,7 @@ finish_loading (FMDirectoryView *view)
 				     NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
 
 	nautilus_directory_file_monitor_add (view->details->model,
-					     view,
+					     &view->details->model,
 					     view->details->show_hidden_files,
 					     view->details->show_backup_files,
 					     attributes);
@@ -3994,7 +4010,8 @@ disconnect_model_handlers (FMDirectoryView *view)
 	disconnect_directory_handler (view, &view->details->done_loading_handler_id);
 	disconnect_directory_handler (view, &view->details->load_error_handler_id);
 	disconnect_directory_as_file_handler (view, &view->details->file_changed_handler_id);
-	nautilus_directory_file_monitor_remove (view->details->model, view);
+	nautilus_directory_file_monitor_remove (view->details->model,
+						&view->details->model);
 	nautilus_file_cancel_call_when_ready (view->details->directory_as_file,
 					      metadata_for_directory_as_file_ready_callback,
 					      view);
@@ -4002,7 +4019,7 @@ disconnect_model_handlers (FMDirectoryView *view)
 					    metadata_for_files_in_directory_ready_callback,
 					    view);
 	nautilus_file_monitor_remove (view->details->directory_as_file,
-				      view);
+				      &view->details->directory_as_file);
 }
 
 /**
@@ -4364,29 +4381,71 @@ fm_directory_view_stop_batching_selection_changes (FMDirectoryView *view)
 static void
 monitor_file_for_open_with (FMDirectoryView *view, NautilusFile *file)
 {
+	NautilusFile **file_spot;
 	NautilusFile *old_file;
 	GList *attributes;
 
 	/* Quick out when not changing. */
-	old_file = view->details->file_monitored_for_open_with;
+	file_spot = &view->details->file_monitored_for_open_with;
+	old_file = *file_spot;
 	if (old_file == file) {
 		return;
 	}
 
 	/* Point at the new file. */
 	nautilus_file_ref (file);
-	view->details->file_monitored_for_open_with = file;
+	*file_spot = file;
 
 	/* Stop monitoring the old file. */
 	if (old_file != NULL) {
-		nautilus_file_monitor_remove (old_file, view);
+		nautilus_file_monitor_remove (old_file, file_spot);
 		nautilus_file_unref (old_file);
 	}
 
 	/* Start monitoring the new file. */
 	if (file != NULL) {
 		attributes = nautilus_mime_actions_get_full_file_attributes ();
-		nautilus_file_monitor_add (file, view, attributes);
+		nautilus_file_monitor_add (file, file_spot, attributes);
 		g_list_free (attributes);
+	}
+}
+
+static void
+monitor_file_for_activation (FMDirectoryView *view,
+			     NautilusFile *file)
+{
+	char *uri;
+	NautilusDirectory **directory_spot;
+	NautilusDirectory *directory, *old_directory;
+
+	if (file == NULL) {
+		directory = NULL;
+	} else {
+		uri = nautilus_file_get_uri (file);
+		directory = nautilus_directory_get (uri);
+		g_free (uri);
+	}
+
+	/* Quick out when not changing. */
+	directory_spot = &view->details->directory_monitored_for_activation;
+	old_directory = *directory_spot;
+	if (old_directory == directory) {
+		nautilus_directory_unref (directory);
+		return;
+	}
+
+	/* Point at the new directory. */
+	view->details->directory_monitored_for_activation = directory;
+
+	/* Stop monitoring the old directory. */
+	if (old_directory != NULL) {
+		nautilus_directory_file_monitor_remove (old_directory, directory_spot);
+		nautilus_directory_unref (old_directory);
+	}
+
+	/* Start monitoring the new directory. */
+	if (directory != NULL) {
+		nautilus_directory_file_monitor_add (directory, directory_spot,
+						     TRUE, TRUE, NULL);
 	}
 }

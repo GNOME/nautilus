@@ -1,3 +1,55 @@
+2001-02-21  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fix bug 6286 (get 3 directory loads instead of 1 when you activate
+	file in directory view [as opposed to typing location]). This is
+	mostly right, but there's still a relatively common case where we
+	get a 2nd directory load. I'll have to write a bug report about
+	that case, but it's no worse than before and quite a bit better.
+
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_destroy): Stop monitoring. Also change the old
+	monitoring code to use different "client" pointers so multiple
+	monitors don't interfere with each other.
+	(activate_callback): Stop monitoring when we get to the point of
+	actually activating (unless we are opening through the shell).
+	Also do some small cleanup to "command:" handling code and fix
+	minor storage leak.
+	(cancel_activate_callback): Stop monitoring if we cancel.
+	(fm_directory_view_activate_file): Start monitoring so the load
+	can be shared between all who need it. This is the same
+	optimization done at the shell level.
+	(load_directory): Use the new client pointer approach so multiple
+	monitors don't interfere with each other.
+	(finish_loading): Use the new client pointer approach so multiple
+	monitors don't interfere with each other.
+	(disconnect_model_handlers): Use the new client pointer approach
+	so multiple monitors don't interfere with each other.
+	(monitor_file_for_open_with): Use the new client pointer approach
+	so multiple monitors don't interfere with each other.
+	(monitor_file_for_activation): New function that monitors the
+	file list so we don't get multiple directory loads.
+
+	Fix tests now that gnome-vfs has a fix for bug 6798 (URI functions
+	don't always treat domain names as case-insensitive) and fix bug
+	6799 (nautilus_uris_match_ignore_fragments gives wrong result for
+	URIs with trailing "/" characters).
+
+	* libnautilus-extensions/nautilus-file-utilities.h:
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_make_uri_canonical_strip_fragment): New function.
+	(uris_match): Use new function to handle fragments better.
+	(nautilus_self_check_file_utilities): Update checks to
+	expect fixes in gnome-vfs and here. Note that both bugs
+	6798 and 6799 are now fixed.
+	
+	* help/.cvsignore:
+	* help/nautilus-user-manual/.cvsignore:
+	* help/nautilus-user-manual/C/.cvsignore:
+	* omf-install/.cvsignore:
+	Ignore generated files in some new directories.
+	
 2001-02-21  Michael Engber  <engber@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>
