@@ -1,3 +1,19 @@
+2000-03-10  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* nautilus-widgets:
+	New directory.  A place to put generic widgets that are not
+	necessarily coupled to nautilus.
+
+	* configure.in: Added nautilus-widgets
+	* Makefile.am: Added nautilus-widgets
+
+	* nautilus-widgets/nautilus-radio-button-group.h,
+	* nautilus-widgets/nautilus-radio-button-group.c: Added a radio 
+	group widget.
+
+	* nautilus-widgets/test-nautilus-widgets.c: Test program for 
+	nautilus-widgets.
+
 2000-03-10  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/ntl-window.c, src/ntl-window.h: store zoom_control object in
