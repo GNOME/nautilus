@@ -1,3 +1,20 @@
+2001-03-06  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix bug 7475 (No applications are offered in sidebar for local
+	files):
+
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(application_supports_uri_scheme_strcmp_style): Renamed
+	function so it's more clear how it relates to the existing
+	one and share code with the existing one, because that
+	one handles the "file" special case (and this one needs to).
+	(nautilus_mime_has_any_applications_for_file): Change to
+	use function by new name.
+	(application_supports_uri_scheme): Use case-insensitive
+	comparisons since URI schemes are case insensitive.
+
 2001-03-06  John Harper  <jsh@eazel.com>
 
 	Merged change from `nautilus-1' branch:
@@ -39,6 +56,7 @@
 	high and 1 pixel wide. This fixes the crash and looks better.
 
 2001-03-06  Eskil Heyn Olsen  <eskil@eazel.com>	
+
 
 	reviewed by: Robey Pointer <robey@eazel.com>
 
