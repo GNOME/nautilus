@@ -1,3 +1,16 @@
+2004-01-10  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-icon-container.h:
+	* libnautilus-private/nautilus-icon-container.c:
+	(handle_typeahead): Moved the typeahead duration to a
+	public header.
+	* src/file-manager/fm-list-view.c: (select_matching_name),
+	(fm_list_view_flush_typeselect_state), (handle_typeahead),
+	(key_press_callback), (fm_list_view_finalize),
+	(fm_list_view_instance_init): Implement icon-view-style 
+	typeahead for the list view.  Patch from 
+	Jürg Billeter <j@bitron.ch>
+
 2004-01-10  Sebastien Bacher  <seb128@debian.org>
 
 	* src/nautilus-spatial-window-ui.xml: typo fix (Closes: #128318).

@@ -66,6 +66,8 @@ typedef enum {
 	NAUTILUS_ICON_LABEL_POSITION_BESIDE
 } NautilusIconLabelPosition;
 
+#define	NAUTILUS_ICON_CONTAINER_TYPESELECT_FLUSH_DELAY 1000000
+
 typedef struct NautilusIconContainerDetails NautilusIconContainerDetails;
 
 typedef struct {

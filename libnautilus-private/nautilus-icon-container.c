@@ -131,14 +131,6 @@
 #define SNAP_CEIL_VERTICAL(y) SNAP_VERTICAL (ceil, y)
 
 enum {
-	NAUTILUS_TYPESELECT_FLUSH_DELAY = 1000000
-	/* After this time the current typeselect buffer will be
-	 * thrown away and the new pressed character will be made
-	 * the the start of a new pattern.
-	 */
-};
-
-enum {
 	ACTION_ACTIVATE,
 	LAST_ACTION
 };
@@ -3671,7 +3663,7 @@ handle_typeahead (NautilusIconContainer *container, const char *key_string)
 	/* find out how long since last character was typed */
 	now = eel_get_system_time ();
 	time_delta = now - container->details->type_select_state->last_typeselect_time;
-	if (time_delta < 0 || time_delta > NAUTILUS_TYPESELECT_FLUSH_DELAY) {
+	if (time_delta < 0 || time_delta > NAUTILUS_ICON_CONTAINER_TYPESELECT_FLUSH_DELAY) {
 		/* the typeselect state is too old, start with a fresh one */
 		g_free (container->details->type_select_state->type_select_pattern);
 		container->details->type_select_state->type_select_pattern = NULL;

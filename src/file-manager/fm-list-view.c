@@ -28,6 +28,7 @@
 #include <config.h>
 #include "fm-list-view.h"
 
+#include <string.h>
 #include "fm-error-reporting.h"
 #include "fm-list-model.h"
 #include <eel/eel-cell-renderer-pixbuf-list.h>
@@ -53,6 +54,14 @@
 #include <libnautilus-private/nautilus-tree-view-drag-dest.h>
 #include <libnautilus/nautilus-scroll-positionable.h>
 #include <libnautilus-private/nautilus-cell-renderer-pixbuf-emblem.h>
+
+/* Included for the typeselect flush delay */
+#include <libnautilus-private/nautilus-icon-container.h>
+
+typedef struct {
+	char *type_select_pattern;
+	guint64 last_typeselect_time;
+} TypeSelectState;
 
 struct FMListViewDetails {
 	GtkTreeView *tree_view;
@@ -82,6 +91,9 @@ struct FMListViewDetails {
 
 	gboolean drag_started;
 	gboolean row_selected_on_button_down;
+
+	/* typeahead selection state */
+	TypeSelectState *type_select_state;
 };
 
 /*
@@ -571,6 +583,110 @@ button_release_callback (GtkWidget *widget,
 }
 
 static gboolean
+select_matching_name (FMListView *view,
+		      const char *match_name)
+{
+	GtkTreeIter iter;
+	GtkTreePath *path;
+	gboolean match_found;
+	GValue value = { 0 };
+	const gchar *file_name;
+	
+	match_found = FALSE;
+	
+	if (!gtk_tree_model_get_iter_first (GTK_TREE_MODEL (view->details->model), &iter)) {
+		return FALSE;
+	}
+	
+	do {
+		gtk_tree_model_get_value (GTK_TREE_MODEL (view->details->model), &iter, FM_LIST_MODEL_NAME_COLUMN, &value);
+		file_name = g_value_get_string (&value);
+		match_found = (g_ascii_strncasecmp (match_name, file_name, MIN (strlen (match_name), strlen (file_name))) == 0);
+		g_value_unset (&value);
+
+		if (match_found) {
+			path = gtk_tree_model_get_path (GTK_TREE_MODEL (view->details->model), &iter);
+			gtk_tree_view_set_cursor (view->details->tree_view, path, NULL, FALSE);
+			gtk_tree_view_scroll_to_cell (view->details->tree_view, path, NULL, FALSE, 0, 0);
+			gtk_tree_path_free (path);
+			
+			return TRUE;
+		}
+	} while (gtk_tree_model_iter_next (GTK_TREE_MODEL (view->details->model), &iter));
+	
+	return FALSE;
+}
+
+static void
+fm_list_view_flush_typeselect_state (FMListView *view)
+{
+	if (view->details->type_select_state == NULL) {
+		return;
+	}
+	
+	g_free (view->details->type_select_state->type_select_pattern);
+	g_free (view->details->type_select_state);
+	view->details->type_select_state = NULL;
+}
+
+static gboolean
+handle_typeahead (FMListView *view, const char *key_string)
+{
+	char *new_pattern;
+	gint64 now;
+	gint64 time_delta;
+	int key_string_length;
+	int index;
+
+	g_assert (key_string != NULL);
+	g_assert (strlen (key_string) < 5);
+
+	key_string_length = strlen (key_string);
+
+	if (key_string_length == 0) {
+		/* can be an empty string if the modifier was held down, etc. */
+		return FALSE;
+	}
+
+	/* only handle if printable keys typed */
+	for (index = 0; index < key_string_length; index++) {
+		if (!g_ascii_isprint (key_string[index])) {
+			return FALSE;
+		}
+	}
+
+	/* lazily allocate the typeahead state */
+	if (view->details->type_select_state == NULL) {
+		view->details->type_select_state = g_new0 (TypeSelectState, 1);
+	}
+
+	/* find out how long since last character was typed */
+	now = eel_get_system_time ();
+	time_delta = now - view->details->type_select_state->last_typeselect_time;
+	if (time_delta < 0 || time_delta > NAUTILUS_ICON_CONTAINER_TYPESELECT_FLUSH_DELAY) {
+		/* the typeselect state is too old, start with a fresh one */
+		g_free (view->details->type_select_state->type_select_pattern);
+		view->details->type_select_state->type_select_pattern = NULL;
+	}
+
+	if (view->details->type_select_state->type_select_pattern != NULL) {
+		new_pattern = g_strconcat
+			(view->details->type_select_state->type_select_pattern,
+			 key_string, NULL);
+		g_free (view->details->type_select_state->type_select_pattern);
+	} else {
+		new_pattern = g_strdup (key_string);
+	}
+
+	view->details->type_select_state->type_select_pattern = new_pattern;
+	view->details->type_select_state->last_typeselect_time = now;
+
+	select_matching_name (view, new_pattern);
+
+	return TRUE;
+}
+
+static gboolean
 popup_menu_callback (GtkWidget *widget, gpointer callback_data)
 {
  	FMListView *view;
@@ -587,8 +703,12 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 {
 	FMDirectoryView *view;
 	GdkEventButton button_event = { 0 };
+	gboolean handled;
+	gboolean flush_typeahead;
 
 	view = FM_DIRECTORY_VIEW (callback_data);
+	handled = FALSE;
+	flush_typeahead = TRUE;
 	
 	switch (event->keyval) {
 	case GDK_F10:
@@ -598,23 +718,37 @@ key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_dat
 		break;
 	case GDK_space:
 		if (event->state & GDK_CONTROL_MASK) {
-			return FALSE;
+			handled = FALSE;
+			break;
 		}
 		if (!GTK_WIDGET_HAS_FOCUS (GTK_WIDGET (FM_LIST_VIEW (view)->details->tree_view))) {
-			return FALSE;
+			handled = FALSE;
+			break;
 		}
 		activate_selected_items (FM_LIST_VIEW (view));
-		return TRUE;
+		handled = TRUE;
+		break;
 	case GDK_Return:
 	case GDK_KP_Enter:
 		activate_selected_items (FM_LIST_VIEW (view));
-		return TRUE;
+		handled = TRUE;
+		break;
 
 	default:
+		/* Don't use Control or Alt keys for type-selecting, because they
+		 * might be used for menus.
+		 */
+		handled = (event->state & (GDK_CONTROL_MASK | GDK_MOD1_MASK)) == 0 &&
+			handle_typeahead (FM_LIST_VIEW (view), event->string);
+		flush_typeahead = !handled;
 		break;
 	}
+	if (flush_typeahead) {
+		/* any non-ascii key will force the typeahead state to be forgotten */
+		fm_list_view_flush_typeselect_state (FM_LIST_VIEW (view));
+	}
 
-	return FALSE;
+	return handled;
 }
 
 static void
@@ -1437,6 +1571,8 @@ fm_list_view_finalize (GObject *object)
 	}	
 
 	gtk_target_list_unref (list_view->details->source_target_list);
+	
+	fm_list_view_flush_typeselect_state (list_view);
 
 	g_free (list_view->details);
 
@@ -1604,4 +1740,6 @@ fm_list_view_instance_init (FMListView *list_view)
 				 G_CALLBACK (list_view_get_first_visible_file_callback), list_view, 0);
 	g_signal_connect_object (list_view->details->positionable, "scroll_to_file",
 				 G_CALLBACK (list_view_scroll_to_file_callback), list_view, 0);
+	
+	list_view->details->type_select_state = NULL;
 }
