@@ -37,6 +37,7 @@
 #include "nautilus-icon-private.h"
 #include "nautilus-icon-text-item.h"
 #include "nautilus-lib-self-check-functions.h"
+#include "nautilus-string.h"
 #include "nautilus-theme.h"
 #include <ctype.h>
 #include <gdk-pixbuf/gnome-canvas-pixbuf.h>
@@ -1861,7 +1862,14 @@ match_best_name (NautilusIconContainer *container,
 
 	match_state = (BestNameMatch *) data;
 
-	name = nautilus_icon_canvas_item_get_editable_text (candidate->item);	
+	name = nautilus_icon_canvas_item_get_editable_text (candidate->item);
+
+	/* This can happen if a key event is handled really early while loading
+	 * the icon container, before the items have all been updated once.
+	 */
+	if (name == NULL) {
+		return FALSE;
+	}
 
 	for (match_length = 0; ; match_length++) {
 		if (name[match_length] == '\0'
@@ -1937,7 +1945,10 @@ compare_icons_by_name (gconstpointer a, gconstpointer b)
 	icon_a = a;
 	icon_b = b;
 
-	return g_strcasecmp
+	/* _get_editable_text might return NULL here if called while the
+	 * icon container is loading, before each icon has been updated once. 
+	 */
+	return nautilus_strcasecmp
 		(nautilus_icon_canvas_item_get_editable_text (icon_a->item),
 		 nautilus_icon_canvas_item_get_editable_text (icon_b->item));
 }
@@ -4227,6 +4238,12 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 
 	/* Make a copy of the original editable text for a later compare */
 	editable_text = nautilus_icon_canvas_item_get_editable_text (icon->item);
+
+	/* This could conceivably be NULL if a rename was triggered really early. */
+	if (editable_text == NULL) {
+		return;
+	}
+	
 	details->original_text = g_strdup (editable_text);
 
 	/* Create text renaming widget */	

@@ -1,3 +1,15 @@
+2000-09-28  John Sullivan  <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(match_best_name), (compare_icons_by_name),
+	(nautilus_icon_container_start_renaming_selected_item):
+	Fixed a segfault I ran into by accidentally typing
+	into a Nautilus window before it was fully displayed.
+	Some icon-container code was assuming that 
+	nautilus_icon_canvas_item_get_editable_text never
+	returned NULL, but right after the directory is loaded
+	this assumption is valid. Fixed all similar offenders.
+
 2000-09-28  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c
