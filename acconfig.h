@@ -1,3 +1,14 @@
+#undef bzread
+#undef bzopen
+#undef bzdopen
+#undef bzwrite
+#undef bzerror
+#undef bzclose
+#undef bzflush
+#undef bzCompress
+#undef bzCompressInit
+#undef bzDecompress
+#undef bzDecompressInit
 #undef EAZEL_SERVICES
 #undef ENABLE_NLS
 #undef HAVE_CATGETS
