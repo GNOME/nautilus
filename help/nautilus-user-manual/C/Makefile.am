@@ -4,6 +4,8 @@ figs = \
 	figures/home_folder_num.png		\
 	figures/sidebar_num.png			\
 	figures/nautilus_window_full_num.png	\
+	figures/news_num.png			\
+	figures/help_num.png			\
 	figures/locationbar_nqr.png		\
 	figures/full-1.png		\
 	figures/full-2.png		\
