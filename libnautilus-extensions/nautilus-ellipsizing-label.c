@@ -100,9 +100,9 @@ recompute_ellipsized_text (NautilusEllipsizingLabel *label, int width)
 	if (label->details->full_text == NULL) {
 		ellipsized_text = NULL;
 	} else {
-		ellipsized_text = nautilus_string_ellipsize_start (label->details->full_text, 
-								   GTK_WIDGET (label)->style->font, 
-								   width);
+		ellipsized_text = nautilus_string_ellipsize_middle (label->details->full_text, 
+								    GTK_WIDGET (label)->style->font, 
+								    width);
 	}
 
 	gtk_label_set_text (GTK_LABEL (label), ellipsized_text);

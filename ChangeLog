@@ -1,5 +1,12 @@
 2001-04-03  John Sullivan  <sullivan@eazel.com>
 
+	* libnautilus-extensions/nautilus-ellipsizing-label.c:
+	(recompute_ellipsized_text): Made ellipsizing labels
+	use middle-truncation, now that it's available (added
+	by Pavel recently, yay!).
+
+2001-04-03  John Sullivan  <sullivan@eazel.com>
+
 	reviewed by: Darin Adler  <darin@eazel.com>
 
 	Fixed bug 7949 (Nautilus allows Cut/Copy on icons that
