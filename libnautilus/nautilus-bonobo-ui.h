@@ -76,6 +76,7 @@
 #define NAUTILUS_MENU_PATH_HELP_MENU			"/Help"
 #define NAUTILUS_MENU_PATH_ABOUT_ITEM			"/Help/About Nautilus"
 #define NAUTILUS_MENU_PATH_FEEDBACK_ITEM		"/Help/Nautilus Feedback"
+#define NAUTILUS_MENU_PATH_HELP_INFO_ITEM		"/Help/Nautilus Info"
 
 /* Components can use these paths with BonoboUIHandler calls to
  * locate toolbars and toolbar items for the purpose of merging.
