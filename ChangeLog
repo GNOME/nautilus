@@ -1,5 +1,17 @@
 2001-06-25  Ramiro Estrugo  <ramiro@fateware.com>
 
+	Patch from Miguel Rodríguez Pérez  <migras@atlas.uvigo.es>
+ 
+ 	* libnautilus-private/nautilus-thumbnails.c (obfuscate_password): 
+ 	New function to look for a password in una uri and change it
+ 	for 6 asterisks.
+ 	(make_thumbnail_uri): Call obfuscate_passwd before generating the
+ 	final uri.
+ 	This prevents the password to be saved in cleartext in 
+ 	~/.nautilus/thumbnails if the user accesses some remote server.
+
+2001-06-25  Ramiro Estrugo  <ramiro@fateware.com>
+
 	* configure.in:
 	Patch from David Sainty <dsainty@redhat.com>.
 

@@ -121,6 +121,33 @@ prefer_global_thumbnails_location (const char *image_uri)
 	return !uri_is_local (image_uri);
 }
 
+/* this functions looks for a password in a uri and changes it for 6 'x' */
+
+static char *
+obfuscate_password (const char *escaped_uri)
+{
+	const char *passwd_start, *passwd_end;
+        char *new_uri, *new_uri_temp;
+
+	passwd_start = strchr (escaped_uri, ':');
+	g_assert (passwd_start != NULL);
+	passwd_start = strchr (passwd_start + 1, ':'); /* The fisrt ':' is for the protocol */
+	if (passwd_start == NULL) { /* There's no password */
+		return g_strdup (escaped_uri);
+	}
+	passwd_end = strchr (passwd_start, '@');
+
+	/* This URL has no valid password */
+	if (passwd_end == NULL || passwd_start == NULL || passwd_end <= passwd_start) {
+		return g_strdup (escaped_uri);
+	} else {
+		new_uri_temp = g_strndup (escaped_uri, passwd_start - escaped_uri);
+		new_uri = g_strdup_printf ("%s:xxxxxx%s", new_uri_temp, passwd_end);
+		g_free (new_uri_temp);
+		return new_uri;
+	}
+}
+
 /* utility routine that, given the uri of an image, constructs the uri to the corresponding thumbnail */
 
 static char *
@@ -148,11 +175,13 @@ make_thumbnail_uri (const char *image_uri, gboolean directory_only, gboolean use
 		GnomeVFSResult result;
 		GnomeVFSURI *thumbnail_directory_uri;
 	        	
-		char *escaped_uri = gnome_vfs_escape_slashes (directory_name);		
-		thumbnail_path = g_strdup_printf ("%s/.nautilus/thumbnails/%s", g_get_home_dir(), escaped_uri);
+		char *escaped_uri = gnome_vfs_escape_slashes (directory_name);
+		char *protected_uri = obfuscate_password (escaped_uri);
+		g_free (escaped_uri);
+		thumbnail_path = g_strdup_printf ("%s/.nautilus/thumbnails/%s", g_get_home_dir(), protected_uri);
 		thumbnail_uri = gnome_vfs_get_uri_from_local_path (thumbnail_path);
 		g_free (thumbnail_path);
-		g_free(escaped_uri);
+		g_free (protected_uri);
 		
 		/* we must create the directory if it doesn't exist */
 			
