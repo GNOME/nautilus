@@ -33,11 +33,11 @@
 
 static FMDirectoryViewClass *parent_class = NULL;
 
-
 
 /* forward declarations */
 static GnomeIconContainer *create_icon_container (FMDirectoryViewIcons *view);
 static gint display_icon_container_selection_info_idle_cb (gpointer data);
+static void fm_directory_view_icons_clear (FMDirectoryView *view);
 static void icon_container_activate_cb (GnomeIconContainer *icon_container,
 					const gchar *name,
 					gpointer icon_data,
@@ -61,11 +61,15 @@ static void
 fm_directory_view_icons_class_init (FMDirectoryViewIconsClass *class)
 {
 	GtkObjectClass *object_class;
+	FMDirectoryViewClass *fm_directory_view_class;
 
 	object_class = GTK_OBJECT_CLASS (class);
+	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (class);
 
 	parent_class = gtk_type_class (gtk_type_parent(object_class->type));
+	
 	object_class->destroy = fm_directory_view_icons_destroy;
+	fm_directory_view_class->clear = fm_directory_view_icons_clear;
 }
 
 static void
@@ -158,6 +162,58 @@ display_icon_container_selection_info_idle_cb (gpointer data)
 	view->display_selection_idle_id = 0;
 
 	return FALSE;
+}
+
+static void
+fm_directory_view_icons_clear (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
+
+	gnome_icon_container_clear (get_icon_container (view));
+}
+
+
+/* WARNING WARNING WARNING
+
+   These two functions actually do completely different things, although they
+   have similiar name.  (Actually, maybe I should change these names: FIXME.)
+
+   The `get' function retrieves the current *actual* layout from the icon
+   container.  The `set' function, instead, specifies the layout that will be
+   used when adding new files to the view.  */
+
+GnomeIconContainerLayout *
+fm_directory_view_icons_get_icon_layout (FMDirectoryViewIcons *view)
+{
+	GnomeIconContainer *icon_container;
+
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view), NULL);
+
+	icon_container = get_icon_container (FM_DIRECTORY_VIEW (view));
+	return gnome_icon_container_get_layout (icon_container);
+}
+
+void
+fm_directory_view_icons_set_icon_layout (FMDirectoryViewIcons *view,
+				   const GnomeIconContainerLayout *layout)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
+
+	FM_DIRECTORY_VIEW (view)->icon_layout = layout;
+}
+
+void
+fm_directory_view_icons_line_up_icons (FMDirectoryViewIcons *view)
+{
+	GnomeIconContainer *container;
+
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
+	/* FIXME: Get rid of FM_DIRECTORY_VIEW_ICONS casts after
+	 * get_icon_container is moved into this subclass.
+	 */
+	g_return_if_fail (get_icon_container (FM_DIRECTORY_VIEW (view)) != NULL);
+
+	gnome_icon_container_line_up (get_icon_container (FM_DIRECTORY_VIEW (view)));
 }
 
 static void

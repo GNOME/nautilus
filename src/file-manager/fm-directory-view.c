@@ -42,12 +42,22 @@
 #define DISPLAY_TIMEOUT_INTERVAL 500
 #define ENTRIES_PER_CB 1
 
+enum 
+{
+	CLEAR,
+	LAST_SIGNAL
+};
+
+static guint fm_directory_view_signals[LAST_SIGNAL] = { 0 };
 static GtkScrolledWindowClass *parent_class = NULL;
 
 /* FIXME this no longer has any reason to be global,
    given fm_get_current_icon_cache()
 */
 static FMIconCache *icm = NULL;
+
+/* forward declarations */
+static void fm_directory_view_real_clear (FMDirectoryView *view);
 
 void
 display_selection_info (FMDirectoryView *view,
@@ -122,16 +132,10 @@ display_selection_info (FMDirectoryView *view,
 /* GnomeIconContainer handling.  */
 
 static gboolean
-mode_uses_icon_container (FMDirectoryViewMode mode)
-{
-	return (mode == FM_DIRECTORY_VIEW_MODE_ICONS
-		|| mode == FM_DIRECTORY_VIEW_MODE_SMALLICONS);
-}
-
-static gboolean
 view_has_icon_container (FMDirectoryView *view)
 {
-	return mode_uses_icon_container (view->mode);
+	return (view->mode == FM_DIRECTORY_VIEW_MODE_ICONS
+		|| view->mode == FM_DIRECTORY_VIEW_MODE_SMALLICONS);
 }
 
 GnomeIconContainer *
@@ -215,16 +219,10 @@ load_icon_container (FMDirectoryView *view,
 /* GtkFList handling.  */
 
 static gboolean
-mode_uses_flist (FMDirectoryViewMode mode)
-{
-	return (mode == FM_DIRECTORY_VIEW_MODE_DETAILED
-		|| mode == FM_DIRECTORY_VIEW_MODE_CUSTOM);
-}
-
-static gboolean
 view_has_flist (FMDirectoryView *view)
 {
-	return mode_uses_flist (view->mode);
+	return (view->mode == FM_DIRECTORY_VIEW_MODE_DETAILED
+		|| view->mode == FM_DIRECTORY_VIEW_MODE_CUSTOM);
 }
 
 GtkFList *
@@ -317,6 +315,16 @@ class_init (FMDirectoryViewClass *class)
 
 	parent_class = gtk_type_class (gtk_type_parent(object_class->type));
 	object_class->destroy = destroy;
+
+	fm_directory_view_signals[CLEAR] =
+		gtk_signal_new ("clear",
+       				GTK_RUN_LAST,
+                    		object_class->type,
+                    		GTK_SIGNAL_OFFSET (FMDirectoryViewClass, clear),
+		    		gtk_marshal_NONE__NONE,
+		    		GTK_TYPE_NONE, 0);
+
+	class->clear = fm_directory_view_real_clear;
 }
 
 static void
@@ -662,6 +670,24 @@ fm_directory_view_set_mode (FMDirectoryView *view,
 
 
 void
+fm_directory_view_clear (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+	g_print ("called fm_directory_view_clear");
+
+	gtk_signal_emit (GTK_OBJECT (view), fm_directory_view_signals[CLEAR]);
+}
+
+static void
+fm_directory_view_real_clear (FMDirectoryView *view)
+{
+	/* FIXME: Create and deploy macros to handle this common debug-only error
+	 * such that nondebug code doesn't have any function at all.
+	 */
+	g_warning("Bogus! Subclass should've replaced this default signal handler");
+}
+
+void
 fm_directory_view_load_uri (FMDirectoryView *view,
 			    const char *uri)
 {
@@ -679,12 +705,7 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 
 	fm_directory_view_stop (view);
 
-	if(view_has_icon_container(view))
-	{
-		gnome_icon_container_clear(get_icon_container(view));
-	}
-	if(view_has_flist(view))
-		gtk_clist_clear(GTK_CLIST(get_flist(view)));
+	fm_directory_view_clear (view);
 
 	if (view->uri != NULL)
 		gnome_vfs_uri_unref (view->uri);
@@ -727,55 +748,6 @@ fm_directory_view_stop (FMDirectoryView *view)
 	display_pending_entries (view);
 	display_icons_not_in_layout (view);
 	stop_load (view, FALSE);
-}
-
-
-/* WARNING WARNING WARNING
-
-   These two functions actually do completely different things, although they
-   have similiar name.  (Actually, maybe I should change these names: FIXME.)
-
-   The `get' function retrieves the current *actual* layout from the icon
-   container.  The `set' function, instead, specifies the layout that will be
-   used when adding new files to the view.  */
-
-GnomeIconContainerLayout *
-fm_directory_view_get_icon_layout (FMDirectoryView *view)
-{
-	g_return_val_if_fail (view != NULL, NULL);
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
-
-	if (mode_uses_icon_container (view->mode)) {
-		GnomeIconContainer *icon_container;
-
-		icon_container = get_icon_container (view);
-		return gnome_icon_container_get_layout (icon_container);
-	}
-
-	return NULL;
-}
-
-void
-fm_directory_view_set_icon_layout (FMDirectoryView *view,
-				   const GnomeIconContainerLayout *layout)
-{
-	g_return_if_fail (view != NULL);
-
-	view->icon_layout = layout;
-}
-
-void
-fm_directory_view_line_up_icons (FMDirectoryView *view)
-{
-	GnomeIconContainer *container;
-
-	g_return_if_fail (view != NULL);
-
-	container = get_icon_container (view);
-	if (container == NULL)
-		return;
-
-	gnome_icon_container_line_up (container);
 }
 
 

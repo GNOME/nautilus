@@ -47,4 +47,16 @@ struct _FMDirectoryViewIconsClass {
 
 GtkType    fm_directory_view_icons_get_type (void);
 GtkWidget *fm_directory_view_icons_new      (void);
+
+GnomeIconContainerLayout *
+	   fm_directory_view_icons_get_icon_layout
+				            (FMDirectoryViewIcons *view);
+void	   fm_directory_view_icons_set_icon_layout
+					    (FMDirectoryViewIcons *view,
+					     const GnomeIconContainerLayout
+					     *icon_layout);
+void	   fm_directory_view_icons_line_up_icons
+					    (FMDirectoryViewIcons *view);
+
+
 #endif /* __FM_DIRECTORY_VIEW_ICONS_H__ */

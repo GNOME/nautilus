@@ -44,6 +44,7 @@ static void flist_activate_cb (GtkFList *flist,
 			       gpointer entry_data,
 			       gpointer data);
 static void flist_selection_changed_cb (GtkFList *flist, gpointer data);
+static void fm_directory_view_list_clear (FMDirectoryView *view);
 
 
 
@@ -62,11 +63,15 @@ static void
 fm_directory_view_list_class_init (FMDirectoryViewListClass *class)
 {
 	GtkObjectClass *object_class;
+	FMDirectoryViewClass *fm_directory_view_class;
 
 	object_class = GTK_OBJECT_CLASS (class);
+	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (class);
 
 	parent_class = gtk_type_class (gtk_type_parent(object_class->type));
+	
 	object_class->destroy = fm_directory_view_list_destroy;
+	fm_directory_view_class->clear = fm_directory_view_list_clear;	
 }
 
 static void
@@ -223,3 +228,12 @@ flist_selection_changed_cb (GtkFList *flist,
 			= gtk_idle_add (display_flist_selection_info_idle_cb,
 					view);
 }
+
+static void
+fm_directory_view_list_clear (FMDirectoryView *view)
+{
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view));
+
+	gtk_clist_clear(GTK_CLIST(get_flist(view)));
+}
+

@@ -83,6 +83,8 @@ struct _FMDirectoryView {
 
 struct _FMDirectoryViewClass {
 	GtkScrolledWindowClass parent_class;
+
+	void (* clear)	(FMDirectoryView *view);
 };
 
 
@@ -97,18 +99,8 @@ FMDirectoryViewMode
 	   fm_directory_view_get_mode (FMDirectoryView *view);
 void       fm_directory_view_load_uri (FMDirectoryView *view,
 				       const char *uri);
+void	   fm_directory_view_clear    (FMDirectoryView *view);
 void	   fm_directory_view_stop      (FMDirectoryView *view);
-
-GnomeIconContainerLayout *
-	   fm_directory_view_get_icon_layout
-				            (FMDirectoryView *view);
-void	   fm_directory_view_set_icon_layout
-					    (FMDirectoryView *view,
-					     const GnomeIconContainerLayout
-					     *icon_layout);
-
-void	   fm_directory_view_line_up_icons
-					    (FMDirectoryView *view);
 
 void	   fm_directory_view_sort     (FMDirectoryView *view,
 				       FMDirectoryViewSortType sort_type);

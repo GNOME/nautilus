@@ -1,5 +1,49 @@
 2000-01-12  John Sullivan  <sullivan@eazel.com>
 
+	More work at pushing appropriate fm_directory_view code
+	into subclasses.
+
+	* src/file-manager/fm-directory-view.c:
+	(class_init): Register "clear" signal, make 
+	fm_directory_view_real_clear be default handler.
+	(fm_directory_view_real_clear): New function, does
+	nothing but complain when it's called. (I'm going to
+	replace this with a debug-only mechanism soon.)
+	(fm_directory_view_clear): New function, emits "clear" signal.
+	(fm_directory_view_load_uri): Replaced "if icons clear this way,
+	if list clear that way" code with call to fm_directory_view_clear.
+	(mode_uses_flist): Eliminated, wrapped into only remaining caller
+	view_has_flist (which will itself go away soon).
+	(mode_uses_icon_container): Eliminated, wrapped into only remaining caller
+	view_has_icon_container (which will itself go away soon).
+
+	* src/file-manager/fm-directory-view-icons.c:
+	(fm_directory_view_icons_clear): New function, erases icon container.
+	(fm_directory_view_icons_init): Replace fm_directory_view's
+	"clear" signal handler with fm_directory_view_icons_clear
+	(fm_directory_view_icons_get_icon_layout): Moved to here.
+	(fm_directory_view_icons_set_icon_layout): Moved to here.
+	(fm_directory_view_icons_line_up_icons): Moved to here.
+	
+	* src/file-manager/fm-directory-view-list.c:
+	(fm_directory_view_list_clear): New function, erases list contents.
+	(fm_directory_view_list_init): Replace fm_directory_view's
+	"clear" signal handler with fm_directory_view_list_clear
+	
+	* src/file-manager/fm-directory-view.h:
+	(fm_directory_view_clear): Added "clear" signal, and
+	fm_directory_view_clear prototype.
+	(fm_directory_view_icons_get_icon_layout): Moved out of here.
+	(fm_directory_view_icons_set_icon_layout): Moved out of here.
+	(fm_directory_view_icons_line_up_icons): Moved out of here.
+	
+	* src/file-manager/fm-directory-view-icons.h:
+	(fm_directory_view_icons_get_icon_layout): Moved to here.
+	(fm_directory_view_icons_set_icon_layout): Moved to here.
+	(fm_directory_view_icons_line_up_icons): Moved to here.
+
+2000-01-12  John Sullivan  <sullivan@eazel.com>
+
 	* src/ntl-window-msgs.c (nautilus_window_load_content_view_menu):
 	Made option menu say "View as Icons" (e.g.) instead of just "Icons"
 
