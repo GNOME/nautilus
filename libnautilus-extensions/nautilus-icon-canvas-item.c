@@ -950,8 +950,8 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 	if (details->is_highlighted_for_selection) {
 		old_pixbuf = temp_pixbuf;
 		temp_pixbuf = nautilus_create_darkened_pixbuf (temp_pixbuf,
-							       0.6 * 255,
-							       0.6 * 255);
+							       0.8 * 255,
+							       0.8 * 255);
 		if (old_pixbuf != details->pixbuf) {
 			gdk_pixbuf_unref (old_pixbuf);
 		}

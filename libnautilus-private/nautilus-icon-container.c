@@ -808,9 +808,10 @@ start_rubberbanding (NautilusIconContainer *container,
 					 "y1", band_info->start_y,
 					 "x2", band_info->start_x,
 					 "y2", band_info->start_y,
-					 "outline_color", "black",
-					 "outline_stipple", stipple,
-					 "width_pixels", 2,
+					 "fill_color", "lightblue",
+					 "fill_stipple", stipple,
+					 "outline_color", "lightblue",
+					 "width_pixels", 1,
 					 NULL);
 
 	band_info->prev_x = event->x;
