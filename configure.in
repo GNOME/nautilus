@@ -205,35 +205,6 @@ fi
 
 dnl ==========================================================================
 
-dnl libpng
-
-  if test -z "$LIBPNG"; then
-    AC_CHECK_LIB(png, png_read_info,
-      [AC_CHECK_HEADER(png.h,
-        png_ok=yes,
-        png_ok=no)],
-      AC_MSG_ERROR(*** (PNG library not found) ***), -lz -lm)
-    if test "$png_ok" = yes; then
-      AC_MSG_CHECKING([for png_structp in png.h])
-      AC_TRY_COMPILE([#include <png.h>],
-        [png_structp pp; png_infop info; png_colorp cmap; png_create_read_struct;],
-        png_ok=yes,
-        png_ok=no)
-      AC_MSG_RESULT($png_ok)
-      if test "$png_ok" = yes; then
-        PNG='png'; LIBPNG='-lpng -lz'
-      else
-        AC_MSG_WARN(*** PNG loader will not be built (PNG library is too old) ***)
-      fi
-    else
-     AC_MSG_WARN(*** PNG loader will not be built (PNG header file not found) ***)
-    fi
-  fi
-
-AC_SUBST(LIBPNG)
-
-dnl ==========================================================================
-
 dnl libjpeg
 
   if test -z "$LIBJPEG"; then
