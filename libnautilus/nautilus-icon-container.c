@@ -574,7 +574,7 @@ request_idle (NautilusIconContainer *container)
 static gboolean
 button_event_modifies_selection (GdkEventButton *event)
 {
-	return event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK);
+	return (event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) != 0;
 }
 
 static gboolean
@@ -1148,13 +1148,13 @@ keyboard_move_to (NautilusIconContainer *container,
 		return;
 	}
 
-	if ((event->state & GDK_CONTROL_MASK) == 0) {
+	if ((event->state & GDK_CONTROL_MASK) != 0) {
 		/* Select icons and get rid of the special keyboard focus. */
+		clear_keyboard_focus (container);
 		if (select_one_unselect_others (container, icon)) {
 			gtk_signal_emit (GTK_OBJECT (container),
 					 signals[SELECTION_CHANGED]);
 		}
-		clear_keyboard_focus (container);
 	} else {
 		/* Move the keyboard focus. */
 		set_keyboard_focus (container, icon);
@@ -1318,7 +1318,7 @@ keyboard_space (NautilusIconContainer *container,
 {
 	/* Control-space toggles the selection state of the current icon. */
 	if (container->details->keyboard_focus != NULL &&
-	    (event->state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK) {
+	    (event->state & GDK_CONTROL_MASK) != 0) {
 		icon_toggle_selected (container, container->details->keyboard_focus);
 		gtk_signal_emit (GTK_OBJECT (container), signals[SELECTION_CHANGED]);
 	}

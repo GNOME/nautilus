@@ -1071,7 +1071,7 @@ hit_test_pixbuf (GdkPixbuf *pixbuf, const ArtIRect *pixbuf_location, const ArtIR
 	int x, y;
 	guint8 *pixel;
 	
-	/* You can get here without a pixbuf in some strage cases. */
+	/* You can get here without a pixbuf in some strange cases. */
 	if (pixbuf == NULL) {
 		return FALSE;
 	}
@@ -1097,8 +1097,8 @@ hit_test_pixbuf (GdkPixbuf *pixbuf, const ArtIRect *pixbuf_location, const ArtIR
 	g_assert (gdk_pixbuf_get_n_channels (pixbuf) == 4);
 	
 	/* Check the alpha channel of the pixel to see if we have a hit. */
-	for (x = pixbuf_rect.x0; x < pixbuf_rect.x1; x++) {
-		for (y = pixbuf_rect.y0; y < pixbuf_rect.y1; y++) {
+	for (x = relative_rect.x0; x < relative_rect.x1; x++) {
+		for (y = relative_rect.y0; y < relative_rect.y1; y++) {
 			pixel = gdk_pixbuf_get_pixels (pixbuf)
 				+ y * gdk_pixbuf_get_rowstride (pixbuf)
 				+ x * 4;

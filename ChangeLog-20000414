@@ -1,3 +1,13 @@
+2000-03-22  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 334 (Need proper hit detection when hit-testing icons.
+
+	* libnautilus/nautilus-icon-canvas-item.c: (hit_test_pixbuf):
+	Fixed a typo-type error where we were checking every pixel of the
+	pixbuf instead of only the pixels that we were hit testing against.
+
+	* libnautilus/nautilus-icon-container.c: Tweaks.
+
 2000-03-22  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 308 (Straighten out the new_window situation
@@ -23,12 +33,8 @@
 	* src/file-manager/fm-directory-view.c:
 	Simplified all users of Nautilus_NavigationRequestInfo to match.
 
-
-	
-
 	* components/music/main.c: Added a #include to kill 
 	warning about gnome_vfs_init being undefined.
-	
 
 2000-03-21  John Sullivan  <sullivan@eazel.com>
 
