@@ -1467,7 +1467,7 @@ sect_infobox_start_element (Context *context,
 
 	logo = sect_get_infobox_logo (name);
 
-	sect_print (context, "<TABLE BORDER=\"0\"  WIDTH=\"100%%\">\n<tr><TD WIDTH=\"25%%\" ALIGN=\"CENTER\" VALIGN=\"TOP\">");
+	sect_print (context, "<TABLE BORDER=\"0\"  WIDTH=\"100%%\">\n<tr><TD WIDTH=\"10%%\" ALIGN=\"CENTER\" VALIGN=\"TOP\">");
 	if (logo != NULL)
 		sect_print (context, "<IMG ALT=\"%s\" SRC=\"file://%s\">", name, logo);
 	else
