@@ -1,3 +1,19 @@
+2001-12-09  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-file-operations.c:
+	(handle_transfer_ok): Do fix based on patch from Martin Wehner
+	<mwehner@tfh-berlin.de> to prevent cancel of emptying trash or
+	deleting from core dumping.
+	
+	* Makefile.am:
+	* configure.in:
+	* docs/.cvsignore:
+	* docs/Makefile.am:
+	Add files in the docs directory to tarball.
+	
+	* libnautilus/nautilus-view-standard-main.c:
+	(nautilus_view_standard_main_multi): Whitespace tweak.
+
 2001-12-08  Anders Carlsson  <andersca@gnu.org>
 
 	* components/throbber/nautilus-throbber.c:

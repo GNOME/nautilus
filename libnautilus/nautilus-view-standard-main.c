@@ -210,8 +210,8 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	gnome_vfs_init ();
 #if GNOME2_CONVERSION_COMPLETE
 	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-
 #endif
+
 	bonobo_ui_init (executable_name, version, &argc, argv);
 
 	if (post_initialize_callback != NULL) {
@@ -238,6 +238,7 @@ nautilus_view_standard_main_multi (const char *executable_name,
 #ifdef GNOME2_CONVERSION_COMPLETE
 	g_free (registration_id);
 #endif
+
 	if (factory != NULL) {
 		/* Loop until we have no more objects. */
 		do {

@@ -18,6 +18,7 @@ SUBDIRS =			\
 	user-guide		\
 	help			\
 	omf-install		\
+	docs			\
 	$(NULL)
 
 XXX = \
