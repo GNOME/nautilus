@@ -42,7 +42,6 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-keep-last-vertical-box.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
-#include <libnautilus-extensions/nautilus-mime-type.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <nautilus-widgets/nautilus-preferences.h>

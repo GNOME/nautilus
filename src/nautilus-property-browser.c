@@ -49,7 +49,6 @@
 #include <libnautilus-extensions/nautilus-gnome-extensions.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
-#include <libnautilus-extensions/nautilus-mime-type.h>
 
 struct NautilusPropertyBrowserDetails {
 	GtkVBox *container;

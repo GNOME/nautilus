@@ -1,4 +1,15 @@
-2000-05-31  John Sullivan  <set EMAIL_ADDRESS environment variable>
+2000-05-31  John Sullivan  <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-mime-type.c,
+	* libnautilus-extensions/nautilus-mime-type.h:
+	Removed these files, which had contained the old stopgap
+	mime-type-to-application table.
+	* libnautilus-extensions/Makefile.am: Take removed files out
+	of build.
+	* src/nautilus-property-browser.c,
+	* src/nautilus-sidebar.c: Remove #includes for removed files.
+
+2000-05-31  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-program-chooser.c:
 	(populate_program_list): Change the way data from program lists
