@@ -116,7 +116,7 @@ goto_services_support (BonoboUIComponent *component,
 	 * that is available.
 	 */
 	nautilus_window_goto_uri (NAUTILUS_WINDOW (callback_data),
-				  "http://gegl2089.test.eazel.com/support");
+				  "http://services.eazel.com/support");
 
 }
 
