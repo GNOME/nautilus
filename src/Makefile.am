@@ -35,6 +35,7 @@ nautilus_SOURCES=			\
 	nautilus-signaller.c		\
 	nautilus-signaller.h		\
         nautilus-window-menus.c         \
+	nautilus-zoomable-frame-svr.c	\
 	nautilus-zoom-control.c		\
 	nautilus-zoom-control.h		\
 	ntl-app.c			\
