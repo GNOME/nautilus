@@ -179,6 +179,7 @@ fi
 
 %defattr (0444, bin, bin)
 %config %{sysconfdir}/vfs/modules/*.conf
+%config %{sysconfdir}/CORBA/servers/nautilus-launcher-applet.gnorba
 %{prefix}/share/gnome/apps/Applications/*.desktop
 %{prefix}/share/gnome/ui/*.xml
 %{prefix}/share/hyperbola/maps/*.map
