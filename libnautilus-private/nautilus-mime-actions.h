@@ -43,7 +43,6 @@ OAF_ServerInfo *         nautilus_mime_get_default_component_for_file           
 gboolean                 nautilus_mime_is_default_component_for_file_user_chosen   (NautilusFile           *file);
 GList *                  nautilus_mime_get_short_list_applications_for_file        (NautilusFile           *file);
 GList *                  nautilus_mime_get_short_list_components_for_file          (NautilusFile           *file);
-gchar *                  nautilus_mime_get_short_list_methods_for_file             (NautilusFile           *file);
 GList *                  nautilus_mime_get_all_applications_for_file               (NautilusFile           *file);
 GList *                  nautilus_mime_get_all_components_for_file                 (NautilusFile           *file);
 gboolean                 nautilus_mime_has_any_components_for_file                 (NautilusFile           *file);

@@ -1,3 +1,13 @@
+2001-02-18  Ian McKellar  <ian@eazel.com>
+
+	reviewed by: Robey Pointer  <robey@eazel.com>
+
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	* libnautilus-extensions/nautilus-mime-actions.h:
+	* src/nautilus-window.c: (load_view_as_menu_callback):
+	Removed all the code related to Gnome-VFS sub-methods in Nautilus.
+	(Bug 5086)
+
 2001-02-18  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	reviewed by: Ian McKellar  <ian@eazel.com>
@@ -310,7 +320,6 @@
 	* po/POTFILES.in:
 	added the selection-based services
 	
->>>>>>> 1.3813
 2001-02-16  Robey Pointer  <robey@eazel.com>
 
 	* components/mozilla/nautilus-mozilla-embed-extensions.cpp:

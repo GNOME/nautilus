@@ -1080,37 +1080,13 @@ view_as_menu_choose_view_callback (GtkWidget *widget, gpointer data)
 }
 
 static void
-view_as_menu_vfs_method_callback (GtkWidget *widget, gpointer callback_data)
-{
-	gpointer object_data;
-        NautilusWindow *window;
-	char *new_location;
-	const char *method;
-        
-        g_return_if_fail (GTK_IS_MENU_ITEM (widget));
-
-	object_data = gtk_object_get_data (GTK_OBJECT (widget), "window");
-        g_return_if_fail (NAUTILUS_IS_WINDOW (object_data));
-        window = NAUTILUS_WINDOW (object_data);
-
-        method = (const char *) gtk_object_get_data (GTK_OBJECT (widget), "method");
-	g_return_if_fail (method != NULL);
-
-	new_location = g_strdup_printf ("%s#%s:/", window->details->location, method);
-	nautilus_window_go_to (window, new_location);
-	g_free (new_location);
-}
-
-static void
 load_view_as_menu_callback (NautilusFile *file, 
 			    gpointer callback_data)
 {	
 	GList *components;
-	char *method;
         GList *p;
         GtkWidget *new_menu;
         GtkWidget *menu_item;
-	char *label;
 	NautilusWindow *window;
 
 	window = NAUTILUS_WINDOW (callback_data);
@@ -1128,38 +1104,8 @@ load_view_as_menu_callback (NautilusFile *file,
         }
 	gnome_vfs_mime_component_list_free (components);
 
-	/* FIXME bugzilla.eazel.com 5086: This feature has not been
-	 * thoroughly tested and we need to finish it or delete it.
-	 */
-	/* Add a menu item for each special GNOME-VFS method for this
-	 * URI. This is a questionable user interface, since it's a
-	 * one way trip if you choose one of these view menu items, but
-	 * it's better than nothing.
-	 */
-	/* FIXME bugzilla.eazel.com 2466: The name of the following
-	 * function is plural, but it returns only one item. That must
-	 * be fixed.
-	 */
-	method = nautilus_mime_get_short_list_methods_for_file (window->details->viewed_file);
-	if (method != NULL) {
-		label = g_strdup_printf (_("View as %s"), method);
-		menu_item = gtk_menu_item_new_with_label (label);
-		g_free (label);
-
-        	gtk_object_set_data (GTK_OBJECT (menu_item), "window", window);
-        	gtk_object_set_data_full (GTK_OBJECT (menu_item), "method",
-					  g_strdup (method), g_free);
-        	gtk_signal_connect (GTK_OBJECT (menu_item),
-				    "activate",
-				    view_as_menu_vfs_method_callback,
-				    NULL);
-       		gtk_widget_show (menu_item);
-       		gtk_menu_append (GTK_MENU (new_menu), menu_item);
-		g_free (method);
-	}
-
         /* Add separator before "Other" if there are any other viewers in menu. */
-        if (components != NULL || method != NULL) {
+        if (components != NULL) {
 	        gtk_menu_append (GTK_MENU (new_menu), new_gtk_separator ());
         }
 

@@ -634,24 +634,6 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile      *file)
 	return result;
 }
 
-/* FIXME bugzilla.eazel.com 5086: we should disable this for 1.0 I think */
-
-char *
-nautilus_mime_get_short_list_methods_for_file (NautilusFile      *file)
-{
-	char *mime_type;
-	const char *method;
-
-	if (!nautilus_mime_actions_check_if_minimum_attributes_ready (file)) {
-		return NULL;
-	}
-
-	mime_type = nautilus_file_get_mime_type (file);
-	method = gnome_vfs_mime_get_value (mime_type, "vfs_method");
-	g_free (mime_type);
-	return g_strdup (method);
-}
-
 GList *
 nautilus_mime_get_all_applications_for_file (NautilusFile      *file)
 {
