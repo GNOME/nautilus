@@ -1,3 +1,12 @@
+2001-03-06  Ian McKellar  <ian@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com> 
+
+	* components/services/install-view/nautilus-service-install-view.c:
+	(nautilus_install_service_add_menu_launchers):
+	Fix bug 7429 - don't try to print the menu path if one does not
+	exist.
+
 Wed Mar 07 00:35:04 2001  George Lebl <jirka@5z.com>
 
 	Ramiro Estrugo <ramiro@eazel.com> said without this patch

@@ -671,6 +671,17 @@ nautilus_install_service_add_menu_launchers (NautilusServiceInstallView *view, G
 		fname = (char*)(iterator->data);
 		have_icon = FALSE;
 		dentry = gnome_desktop_entry_load (fname);
+		menu_description = describe_dentry (dentry, fname);
+
+		if (menu_description == NULL) {
+			/* Hmmm - we can't find where in the menu this lives.
+			 * This probably means its something like an applet.
+			 * We can't show much useable info here.
+			 * Lets just skip this entry.
+			 */
+			gnome_desktop_entry_free (dentry);
+			continue;
+		}
 
 		hseparator = gtk_hseparator_new ();
 		gtk_widget_show (hseparator);
@@ -693,7 +704,6 @@ nautilus_install_service_add_menu_launchers (NautilusServiceInstallView *view, G
 		}
 
 		/* set up the text */
-		menu_description = describe_dentry (dentry, fname);
 		if (iconwell != NULL) {
 			label_text = g_strdup_printf (_("%sTo start %s, click "
 					"the Launch button below, or to create "
