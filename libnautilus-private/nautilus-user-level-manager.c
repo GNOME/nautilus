@@ -291,7 +291,7 @@ nautilus_user_level_manager_get_user_level (void)
 	char			 *user_level_string;
 	gint			 index;
 
-	user_level_string = nautilus_user_level_manager_get_user_level_string ();
+	user_level_string = nautilus_user_level_manager_get_user_level_as_string ();
 	/* FIXME: Asserting based on something that's read from GConf
 	 * seems like a bad idea. It means we core dump if
 	 * something's wrong.
@@ -330,7 +330,7 @@ nautilus_user_level_manager_get_user_level_names (void)
 
 char *
 nautilus_user_level_manager_make_gconf_key (const char *preference_name,
-					    int user_level)
+					    guint user_level)
 {
 	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
 
@@ -357,26 +357,12 @@ nautilus_user_level_manager_make_gconf_key (const char *preference_name,
 char *
 nautilus_user_level_manager_make_current_gconf_key (const char *preference_name)
 {
-	char *key;
-	char *user_level_string;
-
-	g_return_val_if_fail (preference_name != NULL, NULL);
-
-	user_level_string = nautilus_user_level_manager_get_user_level_string ();
-	g_assert (user_level_string != NULL);
-
-	key = g_strdup_printf ("%s/%s/%s",
-			       USER_LEVEL_PATH,
-			       user_level_string,
-			       preference_name);
-
-	g_free (user_level_string);
-
-	return key;
+	return nautilus_user_level_manager_make_gconf_key (preference_name,
+							   nautilus_user_level_manager_get_user_level ());
 }
 
 char *
-nautilus_user_level_manager_get_user_level_string (void)
+nautilus_user_level_manager_get_user_level_as_string (void)
 {
 	NautilusUserLevelManager *manager = nautilus_user_level_manager_get ();
 	char			 *user_level_string;

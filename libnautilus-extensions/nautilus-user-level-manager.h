@@ -46,8 +46,8 @@ guint                        nautilus_user_level_manager_get_num_user_levels    
 NautilusStringList          *nautilus_user_level_manager_get_user_level_names   (void);
 char			    *nautilus_user_level_manager_make_current_gconf_key (const char *preference_name);
 char			    *nautilus_user_level_manager_make_gconf_key         (const char *preference_name,
-										 int         user_level);
-char			    *nautilus_user_level_manager_get_user_level_string  (void);
+										 guint         user_level);
+char			    *nautilus_user_level_manager_get_user_level_as_string  (void);
 
 
 BEGIN_GNOME_DECLS

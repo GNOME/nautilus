@@ -1217,7 +1217,7 @@ get_customize_user_level_string (void)
 	char *capitalized_user_level_string;
 	char *title;
 	
-	user_level_string = nautilus_user_level_manager_get_user_level_string ();
+	user_level_string = nautilus_user_level_manager_get_user_level_as_string ();
 	g_assert (user_level_string != NULL);
 
 	capitalized_user_level_string = nautilus_str_capitalize (user_level_string);

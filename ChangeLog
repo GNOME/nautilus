@@ -1,3 +1,16 @@
+2000-06-02  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* nautilus-widgets/nautilus-user-level-manager.c:
+	(nautilus_user_level_manager_get_user_level),
+	(nautilus_user_level_manager_make_gconf_key),
+	(nautilus_user_level_manager_make_current_gconf_key),
+	(nautilus_user_level_manager_get_user_level_as_string):
+	* nautilus-widgets/nautilus-user-level-manager.h:
+	* src/nautilus-window-menus.c: (get_customize_user_level_string):
+	Some dumb fixes.  Use proper guint type for user_level arguments.
+	Fix some cut-n-pasted code.  Rename "get_user_level_string" to
+	"get_user_level_as_string"
+	
 2000-06-02  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-install-rpm-glue.c:
