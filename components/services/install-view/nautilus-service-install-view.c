@@ -849,7 +849,7 @@ nautilus_install_service_locate_menu_entries (NautilusServiceInstallView *view)
 
 	for (iterator = view->details->desktop_files; iterator; iterator = g_list_next (iterator)) {
 		char *fname = (char*)(iterator->data);
-		char *addition;
+		char *addition = NULL;
 		char *tmp;
 		GnomeDesktopEntry *dentry = gnome_desktop_entry_load (fname);
 
