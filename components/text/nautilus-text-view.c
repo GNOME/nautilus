@@ -39,8 +39,8 @@
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-xml-extensions.h>
 #include <ghttp.h>
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
 #include <gnome.h>
 #include <gtk/gtkeventbox.h>
 #include <libgnome/gnome-i18n.h>

@@ -40,7 +40,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-self-checks.h>
 #include <gdk/gdkx.h>
-#include <gnome-xml/parser.h>
+#include <libxml/parser.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>

@@ -32,8 +32,8 @@
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-i18n.h>
 
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
 
 #include <glib.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>

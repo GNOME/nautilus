@@ -41,8 +41,8 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
 
 #include <libgnomevfs/gnome-vfs-utils.h>
 

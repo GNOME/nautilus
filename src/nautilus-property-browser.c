@@ -49,8 +49,8 @@
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-viewport.h>
 #include <eel/eel-xml-extensions.h>
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
 #include <gtk/gtkcolorsel.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkentry.h>

@@ -1,3 +1,31 @@
+2001-09-20  Darin Adler  <darin@bentspoon.com>
+
+	* components/help/hyperbola-nav-index.c:
+	* components/help/hyperbola-nav-search.c:
+	* components/news/nautilus-news.c:
+	* components/text/nautilus-text-view.c:
+	* libnautilus-private/nautilus-customization-data.c:
+	* libnautilus-private/nautilus-directory-async.c:
+	* libnautilus-private/nautilus-directory-private.h:
+	* libnautilus-private/nautilus-file.c:
+	* libnautilus-private/nautilus-icon-factory.c:
+	* libnautilus-private/nautilus-link-set.c:
+	* libnautilus-private/nautilus-link.c:
+	* libnautilus-private/nautilus-metafile.c:
+	* libnautilus-private/nautilus-metafile.h:
+	* libnautilus-private/nautilus-theme.c:
+	* libnautilus-private/nautilus-volume-monitor.c:
+	* src/nautilus-bookmark-list.c:
+	* src/nautilus-bookmark-parsing.c:
+	* src/nautilus-bookmark-parsing.h:
+	* src/nautilus-link-set-window.c:
+	* src/nautilus-main.c:
+	* src/nautilus-property-browser.c:
+	* src/nautilus-sidebar.c:
+	* src/nautilus-window-menus.c:
+	Change all libxml includes to use #include <libxml/*>
+	instead of #include <gnome-xml/*>.
+
 2001-09-15  Darin Adler  <darin@bentspoon.com>
 
 	Updated bugzilla.eazel.com references to refer to the

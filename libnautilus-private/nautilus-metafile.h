@@ -27,7 +27,7 @@
 
 #include <bonobo/bonobo-object.h>
 #include <bonobo/bonobo-xobject.h>
-#include <gnome-xml/tree.h>
+#include <libxml/tree.h>
 
 #include "nautilus-directory.h"
 #include "nautilus-file-utilities.h"

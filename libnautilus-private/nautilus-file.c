@@ -43,7 +43,7 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-string.h>
-#include <gnome-xml/parser.h>
+#include <libxml/parser.h>
 #include <grp.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-defs.h>

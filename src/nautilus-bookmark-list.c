@@ -41,9 +41,9 @@
 #include <eel/eel-string.h>
 #include <eel/eel-xml-extensions.h>
 
-#include <gnome-xml/parser.h>
-#include <gnome-xml/tree.h>
-#include <gnome-xml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+#include <libxml/xmlmemory.h>
 
 enum {
 	CONTENTS_CHANGED,

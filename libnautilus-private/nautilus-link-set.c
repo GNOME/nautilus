@@ -33,8 +33,8 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-xml-extensions.h>
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-util.h>

@@ -5,7 +5,7 @@
 #include <gtk/gtk.h>
 #include <string.h>
 #include <limits.h>
-#include <gnome-xml/parser.h>
+#include <libxml/parser.h>
 #include <dirent.h>
 #include <ctype.h>
 

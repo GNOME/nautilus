@@ -40,9 +40,9 @@
 #include <eel/eel-xml-extensions.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <gnome-xml/parser.h>
-#include <gnome-xml/xmlmemory.h>
-#include <gnome-xml/tree.h>
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
+#include <libxml/tree.h>
 #include <gtk/gtkmain.h>
 #include <libgnome/gnome-config.h>
 #include <libgnome/gnome-defs.h>

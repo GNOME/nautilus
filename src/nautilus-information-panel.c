@@ -46,7 +46,7 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gnome-xml/parser.h>
+#include <libxml/parser.h>
 #include <gtk/gtkcheckmenuitem.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkhbox.h>

@@ -28,7 +28,7 @@
 #include "nautilus-metafile-server.h"
 #include "nautilus-monitor.h"
 #include <eel/eel-vfs-extensions.h>
-#include <gnome-xml/tree.h>
+#include <libxml/tree.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
