@@ -102,14 +102,19 @@ NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMSearchListView,
 static void
 load_location_callback (NautilusView *nautilus_view, char *location)
 {
-	char *human_string;
+	char *search_view_title, *last_indexing_time, *status_string;
 	
-	human_string = nautilus_search_uri_to_human (location);
+	search_view_title = nautilus_search_uri_to_human (location);
+	nautilus_view_set_title (nautilus_view, search_view_title);
+	g_free (search_view_title);
 
-	nautilus_view_set_title (nautilus_view, human_string);
+	last_indexing_time = nautilus_indexing_info_get_last_index_time ();
+	status_string = g_strdup_printf ("Search results may not include items modified after %s, when your drive was last indexed.",
+					 last_indexing_time);
+	g_free (last_indexing_time);
 
-	g_free (human_string);
-
+	nautilus_view_report_status (nautilus_view, status_string);
+	g_free (status_string);
 }
 
 /* FIXME: GnomeVFSResults may not be the

@@ -149,8 +149,8 @@ make_label_helvetica_medium (NautilusLabel *label)
         nautilus_label_set_font (NAUTILUS_LABEL (label),
                                  scalable_font);
 }
-static char *
-get_file_index_time (void)
+char *
+nautilus_indexing_info_get_last_index_time (void)
 {
         struct tm *time_struct;
 	time_t the_time;
@@ -175,7 +175,7 @@ show_reindex_request_information (GnomeDialog *gnome_dialog)
         GtkWidget *hbox;
 
 
-        time_str = get_file_index_time ();
+        time_str = nautilus_indexing_info_get_last_index_time ();
         label_str = g_strdup_printf (_("Your files were last indexed at %s"),
                                      time_str);
         g_free (time_str);

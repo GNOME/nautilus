@@ -84,7 +84,7 @@
 #include "nautilus-desktop-window.h"
 
 /* Milliseconds */
-#define STATUS_BAR_CLEAR_TIMEOUT 5000
+#define STATUS_BAR_CLEAR_TIMEOUT 10000
 
 /* dock items */
 #define LOCATION_BAR_PATH	"/Location Bar"
