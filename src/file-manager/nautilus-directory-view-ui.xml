@@ -16,10 +16,10 @@
          _label="_Empty Trash"
 	 _tip="Delete all items in the Trash"/>
 	<cmd name="New Folder"
-         _label="_New Folder"
+         _label="Create _Folder"
 	 _tip="Create a new empty folder inside this folder"/>
         <cmd name="New Launcher"
-         _label="New L_auncher"
+         _label="Create L_auncher"
          _tip="Create a new launcher"/>
         <cmd name="Edit Launcher"
          _label="Edit Launcher"
@@ -54,6 +54,9 @@
 	<cmd name="Paste Files"
          _label="_Paste Files"
 	 _tip="Move or copy files previously selected by a Cut Files or Copy Files command"/>
+	<cmd name="Paste Files Into"
+         _label="_Paste Files Into Folder"
+	 _tip="Move or copy files previously selected by a Cut Files or Copy Files command into the selected folder"/>
 	<cmd name="Select All"
          _label="Select _All Files"
 	 _tip="Select all items in this window"/>
@@ -174,7 +177,7 @@
 <popups>
 	<popup name="background">
 		<placeholder name="Before Zoom Items">
-			<placeholder name="New Items">
+			<placeholder name="New Object Items">
 				<menuitem name="New Folder" 
 				 verb="New Folder"/>
 				<menuitem name="New Launcher"
@@ -191,12 +194,6 @@
 			</submenu>
 			<placeholder name="View Items" delimit="top"/>
 			<placeholder name="File Clipboard Actions" delimit="top">
-				<menuitem name="Cut Files" 
-				 pixtype="stock" pixname="gtk-cut"
-				 verb="Cut Files"/>
-				<menuitem name="Copy Files" 
-				 pixtype="stock" pixname="gtk-copy"
-				 verb="Copy Files"/>
 				<menuitem name="Paste Files" 
 				 pixtype="stock" pixname="gtk-paste"
 				 verb="Paste Files"/>
@@ -245,12 +242,11 @@
 			<menuitem name="Copy Files" 
 			 pixtype="stock" pixname="gtk-copy"
 			 verb="Copy Files"/>
-			<menuitem name="Paste Files" 
+			<menuitem name="Paste Files Into" 
 			 pixtype="stock" pixname="gtk-paste"
-			 verb="Paste Files"/>
+			 verb="Paste Files Into"/>
 		</placeholder>
 		<placeholder name="File Actions" delimit="top">
-			<menuitem name="Duplicate" verb="Duplicate"/>
 			<menuitem name="Create Link" verb="Create Link"/>
 			<menuitem name="Rename" verb="Rename"/>
 		</placeholder>

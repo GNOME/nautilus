@@ -92,6 +92,10 @@
 
 #define POPUP_PATH_LAY_OUT			"/popups/background/Before Zoom Items/View Items/Arrange Items"
 
+#define POPUP_PATH_ICON_APPEARANCE		"/popups/selection/Icon Appearance Items"
+#define POPUP_PATH_STRETCH_ICON		        "/popups/selection/Icon Appearance Items/Stretch"
+#define POPUP_PATH_UNSTRETCH_ICON	        "/popups/selection/Icon Appearance Items/Unstretch"
+
 #define COMMAND_PREFIX                          "/commands/"
 #define COMMAND_STRETCH_ICON 			"/commands/Stretch"
 #define COMMAND_UNSTRETCH_ICONS 		"/commands/Unstretch"
@@ -1546,6 +1550,13 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 		nautilus_bonobo_set_hidden 
 			(icon_view->details->ui, POPUP_PATH_LAY_OUT, TRUE);
 	}
+
+	nautilus_bonobo_set_hidden
+		(icon_view->details->ui, POPUP_PATH_ICON_APPEARANCE, TRUE);
+
+	nautilus_bonobo_set_hidden
+		(icon_view->details->ui, POPUP_PATH_ICON_APPEARANCE, 
+		 !FM_IS_DESKTOP_ICON_VIEW (view));
 
 	update_layout_menus (icon_view);
 

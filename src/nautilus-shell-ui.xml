@@ -20,7 +20,7 @@
 	 _label="Find"
 	 _tip="Search this computer for files"/>
 	<cmd name="New Window"
-	 _label="New _Window"
+	 _label="Open New _Window"
 	 _tip="Open another Nautilus window for the displayed location"/>
 	<cmd name="Home"
 	 _tip="Go to the home location"/>
@@ -369,9 +369,11 @@
 <popups>
 	<popup name="background" tearoff="0">
 		<placeholder name="Before Zoom Items" delimit="none">
-			<placeholder name="New Items" delimit="none">
+			<placeholder name="New Window Items" delimit="none">
 				<menuitem name="New Window" 
 				 verb="New Window"/>
+			</placeholder>
+			<placeholder name="New Object Items" delimit="none">
 			</placeholder>
 		</placeholder>
 		<placeholder name="Zoom Items" delimit="top">

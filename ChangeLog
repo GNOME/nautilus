@@ -1,3 +1,18 @@
+2003-06-27  Dave Camp  <dave@ximian.com>
+
+	* src/file-manager/fm-desktop-icon-view.c: (update_disks_menu):
+	* src/file-manager/fm-directory-view.c: (update_scripts_menu),
+	(paste_clipboard_data), (paste_clipboard_received_callback),
+	(paste_into_clipboard_received_callback), (paste_files_callback),
+	(paste_files_into_callback), (real_merge_menus),
+	(clipboard_targets_received), (real_update_menus):
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_merge_menus):
+	* src/file-manager/nautilus-shell-ui.xml: 
+	* src/file-manager/nautilus-directory-view-ui.xml:  
+	Trimmed up the context menu, and changed the New items to be 
+	Open (for things that create windows) and Create (for things that
+	create files).
+
 2003-06-27  Alexander Larsson  <alexl@redhat.com>
 
 	* components/tree/nautilus-tree-model.c (nautilus_tree_model_get_flags):

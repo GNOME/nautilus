@@ -129,6 +129,7 @@
 #define FM_DIRECTORY_VIEW_COMMAND_CUT_FILES	    			"/commands/Cut Files"
 #define FM_DIRECTORY_VIEW_COMMAND_COPY_FILES				"/commands/Copy Files"
 #define FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES	   			"/commands/Paste Files"
+#define FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES_INTO   			"/commands/Paste Files Into"
 
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_ALTERNATE        		"/menu/File/Open Placeholder/OpenAlternate"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH				"/menu/File/Open Placeholder/Open With"
@@ -150,6 +151,7 @@
 #define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND				"/popups/background"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_SELECTION				"/popups/selection"
 
+#define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND_SCRIPTS         	"/popups/background/Before Zoom Items/Scripts"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND_SCRIPTS_PLACEHOLDER	"/popups/background/Before Zoom Items/Scripts/Scripts Placeholder"
 #define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND_SCRIPTS_SEPARATOR	"/popups/background/Before Zoom Items/Scripts/After Scripts"
 
@@ -4304,6 +4306,15 @@ update_scripts_menu (FMDirectoryView *view)
 	nautilus_directory_list_free (sorted_copy);
 
 	nautilus_bonobo_set_hidden (view->details->ui, 
+				    FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS, 
+				    !any_scripts);
+	nautilus_bonobo_set_hidden (view->details->ui, 
+				    FM_DIRECTORY_VIEW_POPUP_PATH_SCRIPTS, 
+				    !any_scripts);
+	nautilus_bonobo_set_hidden (view->details->ui, 
+				    FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND_SCRIPTS, 
+				    !any_scripts);
+	nautilus_bonobo_set_hidden (view->details->ui, 
 				    FM_DIRECTORY_VIEW_MENU_PATH_SCRIPTS_SEPARATOR, 
 				    !any_scripts);
 	nautilus_bonobo_set_hidden (view->details->ui, 
@@ -4520,17 +4531,13 @@ convert_lines_to_str_list (char **lines, gboolean *cut)
 }
 
 static void
-clipboard_received_callback (GtkClipboard     *clipboard,
-			     GtkSelectionData *selection_data,
-			     gpointer          data)
+paste_clipboard_data (FMDirectoryView *view,
+		      GtkSelectionData *selection_data,
+		      char *destination_uri)
 {
-	FMDirectoryView *view;
 	char **lines;
 	gboolean cut;
 	GList *item_uris;
-	char *view_uri;
-
-	view = FM_DIRECTORY_VIEW (data);
 	
 	if (selection_data->type != copied_files_atom
 	    || selection_data->length <= 0) {
@@ -4547,17 +4554,53 @@ clipboard_received_callback (GtkClipboard     *clipboard,
 		g_strfreev (lines);
 	}
 
-	view_uri = fm_directory_view_get_backing_uri (view);
-
-	if (item_uris == NULL|| view_uri == NULL) {
+	if (item_uris == NULL|| destination_uri == NULL) {
 		nautilus_view_report_status (view->details->nautilus_view,
 					     _("There is nothing on the clipboard to paste."));
 	} else {
-		fm_directory_view_move_copy_items (item_uris, NULL, view_uri,
+		fm_directory_view_move_copy_items (item_uris, NULL, destination_uri,
 						   cut ? GDK_ACTION_MOVE : GDK_ACTION_COPY,
 						   0, 0,
 						   view);
 	}
+}
+
+static void
+paste_clipboard_received_callback (GtkClipboard     *clipboard,
+				   GtkSelectionData *selection_data,
+				   gpointer          data)
+{
+	FMDirectoryView *view;
+	char *view_uri;
+
+	view = FM_DIRECTORY_VIEW (data);
+
+	view_uri = fm_directory_view_get_backing_uri (view);
+
+	paste_clipboard_data (view, selection_data, view_uri);
+
+	g_free (view_uri);
+}
+
+static void
+paste_into_clipboard_received_callback (GtkClipboard     *clipboard,
+					GtkSelectionData *selection_data,
+					gpointer          data)
+{
+	GList *selection;
+	FMDirectoryView *view;
+	char *directory_uri;
+
+	view = FM_DIRECTORY_VIEW (data);
+
+	selection = fm_directory_view_get_selection (view);
+
+	directory_uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
+
+	paste_clipboard_data (view, selection_data, directory_uri);
+
+	g_free (directory_uri);
+	nautilus_file_list_free (selection);
 }
 
 static void
@@ -4571,7 +4614,22 @@ paste_files_callback (BonoboUIComponent *component,
 	
 	gtk_clipboard_request_contents (get_clipboard (view),
 					copied_files_atom,
-					clipboard_received_callback,
+					paste_clipboard_received_callback,
+					callback_data);
+}
+
+static void
+paste_files_into_callback (BonoboUIComponent *component,
+			   gpointer callback_data,
+			   const char *verb)
+{
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (callback_data);
+	
+	gtk_clipboard_request_contents (get_clipboard (view),
+					copied_files_atom,
+					paste_into_clipboard_received_callback,
 					callback_data);
 }
 
@@ -4612,6 +4670,7 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("OtherViewer", other_viewer_callback),
 		BONOBO_UI_VERB ("Edit Launcher", edit_launcher_callback),
 		BONOBO_UI_VERB ("Paste Files", paste_files_callback),
+		BONOBO_UI_VERB ("Paste Files Into", paste_files_into_callback),
 		BONOBO_UI_VERB ("Reset Background", reset_background_callback),
 		BONOBO_UI_VERB ("Reset to Defaults", reset_to_defaults_callback),
 		BONOBO_UI_VERB ("Select All", bonobo_menu_select_all_callback),
@@ -4651,7 +4710,6 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 	GdkAtom *targets;
 	int n_targets;
 	int i;
-
 	
 	view = FM_DIRECTORY_VIEW (user_data);
 	can_paste = FALSE;
@@ -4666,10 +4724,22 @@ clipboard_targets_received (GtkClipboard     *clipboard,
 		g_free (targets);
 	}
 
-	if (view->details->ui != NULL)
+	if (view->details->ui != NULL) {
+		GList *selection;
+		int count;
+
+		selection = fm_directory_view_get_selection (view);
+		count = g_list_length (selection);
+		
 		nautilus_bonobo_set_sensitive (view->details->ui,
 					       FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES,
-					       can_paste);
+					       can_paste && !fm_directory_view_is_read_only (view));
+		nautilus_bonobo_set_sensitive (view->details->ui,
+					       FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES_INTO,
+					       can_paste && count == 1 && nautilus_file_is_directory (NAUTILUS_FILE (selection->data)) && nautilus_file_can_write (NAUTILUS_FILE (selection->data)));
+
+		nautilus_file_list_free (selection);
+	}
 	g_object_unref (view);
 }
 
@@ -4682,9 +4752,11 @@ real_update_menus (FMDirectoryView *view)
 	char *label_with_underscore;
 	gboolean selection_contains_special_link;
 	gboolean is_read_only;
+	gboolean selection_is_read_only;
 	gboolean can_create_files;
 	gboolean can_delete_files;
 	gboolean can_copy_files;
+	gboolean can_paste_files_into;
 	gboolean can_link_files;
 	gboolean can_duplicate_files;
 	gboolean show_separate_delete_command;
@@ -4701,12 +4773,18 @@ real_update_menus (FMDirectoryView *view)
 	selection_contains_special_link = special_link_in_selection (view);
 	is_read_only = fm_directory_view_is_read_only (view);
 
+	selection_is_read_only = selection_count == 1
+		&& !nautilus_file_can_write (NAUTILUS_FILE (selection->data));
+
 	can_create_files = fm_directory_view_supports_creating_files (view);
 	can_delete_files = !is_read_only
 		&& selection_count != 0
 		&& !selection_contains_special_link;
 	can_copy_files = selection_count != 0
-		&& !selection_contains_special_link;
+		&& !selection_contains_special_link;	
+	can_paste_files_into = selection_count == 1 && 
+		nautilus_file_is_directory (NAUTILUS_FILE (selection->data));
+
 	can_duplicate_files = can_create_files && can_copy_files;
 	can_link_files = can_create_files && can_copy_files;
 	
@@ -4848,15 +4926,21 @@ real_update_menus (FMDirectoryView *view)
 		 selection_count == 1
 		 ? _("_Copy File")
 		 : _("_Copy Files"));
+
 	nautilus_bonobo_set_sensitive (view->details->ui,
 				       FM_DIRECTORY_VIEW_COMMAND_COPY_FILES,
 				       can_copy_files);
 
-	if (is_read_only) {
-		nautilus_bonobo_set_sensitive (view->details->ui,
-					       FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES,
-					       FALSE);
-	} else {
+	nautilus_bonobo_set_hidden (view->details->ui,
+				    FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES_INTO,
+				    !can_paste_files_into);
+	nautilus_bonobo_set_sensitive (view->details->ui,
+				       FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES_INTO,
+				       !selection_is_read_only);
+	nautilus_bonobo_set_sensitive (view->details->ui,
+				       FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES,
+				       is_read_only);
+	if (!selection_is_read_only || !is_read_only) {
 		/* Ask the clipboard */
 		g_object_ref (view); /* Need to keep the object alive until we get the reply */
 		gtk_clipboard_request_contents (get_clipboard (view),

@@ -76,6 +76,7 @@
 #define DESKTOP_COMMAND_MEDIA_PROPERTIES_VOLUME_CONDITIONAL     "/commands/Media Properties Conditional"
 
 #define DESKTOP_BACKGROUND_POPUP_PATH_DISKS	"/popups/background/Before Zoom Items/Volume Items/Disks"
+#define DESKTOP_BACKGROUND_POPUP_PATH_VOLUME_ITEMS	"/popups/background/Before Zoom Items/Volume Items"
 
 /* Timeout to check the desktop directory for updates */
 #define RESCAN_TIMEOUT 4000
@@ -947,6 +948,13 @@ update_disks_menu (FMDesktopIconView *view)
 					 mount_parameters_free_wrapper));
 		g_free (command_name);
 	}
+
+	nautilus_bonobo_set_hidden (view->details->ui,
+				    DESKTOP_BACKGROUND_POPUP_PATH_DISKS,
+				    (disk_list == NULL));
+	nautilus_bonobo_set_hidden (view->details->ui,
+				    DESKTOP_BACKGROUND_POPUP_PATH_VOLUME_ITEMS,
+				    (disk_list == NULL));
 }
 
 static void
