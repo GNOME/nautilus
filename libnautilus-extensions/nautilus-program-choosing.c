@@ -608,7 +608,7 @@ get_xalf_prefix (const char *name)
 		return g_strdup ("");
 	}
 	xalf_executable = gnome_is_program_in_path ("xalf");
-	if (xalf_executable != NULL) {
+	if (xalf_executable == NULL) {
 		return g_strdup ("");
 	}
 

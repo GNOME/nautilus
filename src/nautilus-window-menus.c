@@ -76,6 +76,9 @@
  * don't want other code relying on their existence.
  */
 
+#define COMMAND_PATH_TOGGLE_FIND_MODE                   "/commands/Find"
+#define COMMAND_PATH_TOGGLE_FIND_MODE_WITH_STATE        "/commands/Toggle Find Mode"
+
 #define MENU_PATH_SHOW_HIDE_SIDEBAR			"/menu/View/Show Hide Placeholder/Show Hide Sidebar"
 #define MENU_PATH_SHOW_HIDE_TOOLBAR			"/menu/View/Show Hide Placeholder/Show Hide Toolbar"
 #define MENU_PATH_SHOW_HIDE_LOCATION_BAR		"/menu/View/Show Hide Placeholder/Show Hide Location Bar"
@@ -228,6 +231,7 @@ nautilus_window_show_location_bar_temporarily (NautilusWindow *window,
 		(NAUTILUS_SWITCHABLE_NAVIGATION_BAR (window->navigation_bar));
 }
 
+#ifdef HAVE_MEDUSA
 static void
 file_menu_find_callback (BonoboUIComponent *component, 
 			 gpointer user_data, 
@@ -257,6 +261,7 @@ toolbar_toggle_find_mode_callback (BonoboUIComponent *component,
 			(window, !nautilus_window_get_search_mode (window));
 	}
 }
+#endif
 
 static void
 go_menu_location_callback (BonoboUIComponent *component,
@@ -1267,8 +1272,10 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("New Window", file_menu_new_window_callback),
 		BONOBO_UI_VERB ("Close", file_menu_close_window_callback),
 		BONOBO_UI_VERB ("Close All Windows", file_menu_close_all_windows_callback),
+#ifdef HAVE_MEDUSA
 		BONOBO_UI_VERB ("Find", file_menu_find_callback),
 		BONOBO_UI_VERB ("Toggle Find Mode", toolbar_toggle_find_mode_callback),
+#endif
 		BONOBO_UI_VERB ("Go to Web Search", file_menu_web_search_callback),
 		BONOBO_UI_VERB ("Undo", edit_menu_undo_callback),
 		BONOBO_UI_VERB ("Customize", customize_callback),
@@ -1352,6 +1359,23 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 	nautilus_bonobo_set_hidden (window->details->shell_ui, NAUTILUS_MENU_PATH_PROFILER, TRUE);
 #endif
 
+#ifndef HAVE_MEDUSA
+	nautilus_bonobo_set_hidden (window->details->shell_ui,
+				    COMMAND_PATH_TOGGLE_FIND_MODE,
+				    TRUE);
+	nautilus_bonobo_set_hidden (window->details->shell_ui,
+				    COMMAND_PATH_TOGGLE_FIND_MODE_WITH_STATE,
+				    TRUE);
+	/* Also set these items insensitive so that keyboard shortcuts do not trigger
+	   warnings */
+	nautilus_bonobo_set_sensitive (window->details->shell_ui,
+				       COMMAND_PATH_TOGGLE_FIND_MODE,
+				       FALSE);
+	nautilus_bonobo_set_sensitive (window->details->shell_ui,
+				       COMMAND_PATH_TOGGLE_FIND_MODE_WITH_STATE,
+				       FALSE);
+
+#endif
 	nautilus_window_ui_thaw (window);
 }
 

@@ -262,11 +262,13 @@ static NautilusPreferencesItemDescription view_preferences_items[] = {
 };
 
 static NautilusPreferencesItemDescription search_items[] = {
+#ifdef HAVE_MEDUSA
 	{ N_("Search Complexity Options"),
 	  NAUTILUS_PREFERENCES_SEARCH_BAR_TYPE,
 	  N_("search type to do by default"),
 	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_VERTICAL_RADIO
 	},
+#endif
 	{ N_("Search Engines"),
 	  NAUTILUS_PREFERENCES_SEARCH_WEB_URI,
 	  N_("Search Engine Location"),

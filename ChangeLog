@@ -1,3 +1,35 @@
+2001-04-26  John Sullivan  <sullivan@eazel.com>
+
+	Moved over a few changes from the nautilus-1 branch. 
+	I've reviewed all the changes in the branch ChangeLog now,
+	so I think we can kiss it goodbye.
+	
+	* configure.in: Bumped a bunch of version numbers to match
+	branch. Robin may have to do some more bumping before 
+	shipping 1.0.3.
+
+	* help/nautilus-user-manual/C/figures/custicon.png:
+	* help/nautilus-user-manual/C/figures/full.png:
+	* help/nautilus-user-manual/C/figures/part.png:
+	Smaller versions of screenshots which were too big to
+	fit in the Nautilus main panel, by Arlo. (For some reason
+	nautilus-quick-reference on HEAD had smaller figures than
+	on nautilus-1, but vice-versa for nautilus-user-manual.)
+
+	* src/nautilus-preferences-dialog.c:
+	* src/nautilus-shell-ui.xml:
+	* src/nautilus-window-menus.c:
+	(nautilus_window_initialize_menus_part_1): Made Medusa stuff not
+	appear when HAVE_MEDUSA is not defined.
+
+	Other changes:
+	
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(get_xalf_prefix): Bug fix from Darin (!= -> ==) that
+	was breaking launching applications unless you had xalf
+	installed (not from branch)
+	
+
 2001-04-26  Dan Mueth  <dan@eazel.com>
 
 	Cleaning up documentation build system.  Now there should
