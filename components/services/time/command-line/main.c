@@ -49,12 +49,27 @@ static const struct poptOption options[] = {
 CORBA_Environment ev;
 CORBA_ORB orb;
 
+
+static char *
+get_password (GtkObject *object, const char *prompt)
+{
+	char password[80];
+
+	fprintf (stderr, "%s: ", prompt);
+	fflush (stderr);
+	fgets (password, 80, stdin);
+	password[79] = 0;
+	return g_strdup (password);
+}
+
+
 /* This is basically ripped from empty-client */
 
 int main(int argc, char *argv[]) {
 	BonoboObjectClient *service;
 	Trilobite_Eazel_Time timeservice;
 	CORBA_long diff;
+	TrilobiteRootClient *root_client;
 
 	CORBA_exception_init (&ev);
 	gnomelib_register_popt_table (oaf_popt_options, "OAF options");
@@ -91,6 +106,12 @@ int main(int argc, char *argv[]) {
 		Trilobite_Service_unref (trilobite, &ev);
 		CORBA_Object_release (trilobite, &ev);
 	} 
+
+	/* set callbacks to get the root password */
+	root_client = trilobite_root_client_new ();
+	trilobite_root_client_attach (root_client, service);
+	gtk_signal_connect (GTK_OBJECT (root_client), "need_password",
+			    GTK_SIGNAL_FUNC (get_password), NULL);
 
 	timeservice = bonobo_object_query_interface (BONOBO_OBJECT (service), "IDL:Trilobite/Eazel/Time:1.0");
 
@@ -130,12 +151,13 @@ int main(int argc, char *argv[]) {
 		Trilobite_Eazel_Time_update_time (timeservice, &ev);
 		if (ev._major == CORBA_USER_EXCEPTION) {
 			if (strcmp (ex_Trilobite_Eazel_Time_NotPermitted, CORBA_exception_id (&ev)) == 0) {
-				fprintf (stderr, "You are not permitted to change system time");
+				fprintf (stderr, "You are not permitted to change system time\n");
 			}
 			CORBA_exception_free (&ev);
 		}
 	}
 
+	trilobite_root_client_unref (GTK_OBJECT (root_client));
 	Bonobo_Unknown_unref (timeservice, &ev);
 	CORBA_Object_release (timeservice, &ev);
 	bonobo_object_unref (BONOBO_OBJECT (service)); 
