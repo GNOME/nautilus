@@ -43,6 +43,16 @@ static void nautilus_window_notify_selection_change(NautilusWindow *window,
 static void nautilus_window_refresh_title (NautilusWindow *window);
 static void nautilus_window_load_content_view_menu (NautilusWindow *window, NautilusNavigationInfo *ni);
 
+typedef enum { PROGRESS_INITIAL, PROGRESS_VIEWS, PROGRESS_DONE, PROGRESS_ERROR } ProgressType;
+
+/* Indicate progress to user interface */
+static void
+nautilus_window_progress_indicate(NautilusWindow *window, ProgressType type, double percent,
+                                  const char *msg)
+{
+  /* Do nothing for now */
+}
+
 /* Stays alive */
 static void
 Nautilus_SelectionInfo__copy(Nautilus_SelectionInfo *dest_si, Nautilus_SelectionInfo *src_si)
@@ -128,6 +138,10 @@ nautilus_window_request_progress_change(NautilusWindow *window,
       break;
     case Nautilus_PROGRESS_UNDERWAY:
       item = CV_PROGRESS_INITIAL;
+      break;
+    default:
+      g_assert_not_reached();
+      item = -1;
       break;
     }
 
@@ -351,16 +365,6 @@ nautilus_window_free_load_info(NautilusWindow *window)
     window->reset_to_idle = FALSE;
 }
 
-typedef enum { PROGRESS_INITIAL, PROGRESS_VIEWS, PROGRESS_DONE, PROGRESS_ERROR } ProgressType;
-
-/* Indicate progress to user interface */
-static void
-nautilus_window_progress_indicate(NautilusWindow *window, ProgressType type, double percent,
-                                  const char *msg)
-{
-  /* Do nothing for now */
-}
-
 /* Meta view handling */
 static NautilusView *
 nautilus_window_load_meta_view(NautilusWindow *window,
@@ -555,7 +559,9 @@ nautilus_window_update_state(gpointer data)
         gtk_widget_unref(GTK_WIDGET(cur->data));
       g_slist_free(window->new_meta_views);
   
-      nautilus_window_free_load_info(window); /* Zap it all */
+      nautilus_window_free_load_info(window);
+
+      nautilus_window_allow_stop(window, FALSE);
     }
 
   if(window->changes_pending)
@@ -564,7 +570,8 @@ nautilus_window_update_state(gpointer data)
 
       g_message("Changes pending");
 
-      if(window->pending_ni && !window->new_content_view && !window->cv_progress_error)
+      if(window->pending_ni && !window->new_content_view && !window->cv_progress_error
+         && !window->view_activation_complete)
         {
           window->new_content_view = nautilus_window_load_content_view(window, window->pending_ni->default_content_iid,
                                                                        &window->pending_ni->navinfo,
@@ -583,7 +590,8 @@ nautilus_window_update_state(gpointer data)
           window->made_changes++;
         }
 
-      if(window->view_activation_complete)
+      if(window->view_activation_complete
+         && !window->cv_progress_initial)
         {
           Nautilus_NavigationInfo *ni;
           Nautilus_SelectionInfo *si;
@@ -608,6 +616,7 @@ nautilus_window_update_state(gpointer data)
           for(cur = window->new_meta_views; cur; cur = cur->next)
             nautilus_window_update_view(window, cur->data, ni, si,
                                         window->new_requesting_view, window->new_content_view);
+
         }
 
       if(!window->cv_progress_error
@@ -733,8 +742,32 @@ static void
 nautilus_window_change_location_2(NautilusNavigationInfo *navi, gpointer data)
 {
   NautilusWindow *window = data;
+  char *errmsg;
+
+  /* Do various error checking here */
+
+  window->cancel_tag = 0;
+
+  if(!navi)
+    {
+      errmsg = _("The chosen page could not be retrieved.");
+      goto errout;
+    }
+
+  if(!navi->default_content_iid)
+    {
+      errmsg = _("The chosen page could not be retrieved.");
+      goto errout;
+    }
 
   nautilus_window_set_state_info(window, (NautilusWindowStateItem)NAVINFO_RECEIVED, navi, (NautilusWindowStateItem)0);
+  return;
+
+ errout:
+  nautilus_window_allow_stop(window, FALSE);
+  nautilus_navinfo_free(navi);
+  window->is_back = FALSE;
+  nautilus_window_progress_indicate(window, PROGRESS_ERROR, 0, errmsg);
 }
 
 void
@@ -775,6 +808,8 @@ view_menu_switch_views_cb (GtkWidget *widget, gpointer data)
   g_assert (window->ni != NULL);
 
   iid = (char *)data;
+  nautilus_window_allow_stop(window, TRUE);
+
   view = nautilus_window_load_content_view (window, iid, window->ni, NULL);
   nautilus_window_set_state_info(window, (NautilusWindowStateItem)NEW_CONTENT_VIEW_ACTIVATED, view, (NautilusWindowStateItem)0);
 }
