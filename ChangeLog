@@ -1,5 +1,21 @@
 2001-04-16  Darin Adler  <darin@eazel.com>
 
+	* src/nautilus-view-frame.c: (destroy_view), (attach_view): Fixed
+	the problem that was making the image view crash. We want to unref
+	right away, but not release the CORBA object reference until we
+	are done.
+
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_initialize_class),
+	(get_removable_volumes), (volume_is_removable),
+	(volume_is_read_only), (mount_volume_get_cdrom_name),
+	(mount_volume_activate_cdda), (mount_volume_activate_cdrom),
+	(get_current_mount_list), (verify_current_mount_state),
+	(get_cdrom_type), (load_additional_mount_list_info):
+	Some code cleanups. Got rid of a few ifdefs.
+	
+2001-04-16  Darin Adler  <darin@eazel.com>
+
 	Fixed API to icon factory that took an anti-aliased parameter when
 	creating a scalable icon. Instead it should be possible to get a
 	scalable icon and then get either an anti-aliased-optimized or

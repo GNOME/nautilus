@@ -322,13 +322,18 @@ stop_activation (NautilusViewFrame *view)
 static void
 destroy_view (NautilusViewFrame *view)
 {
+	CORBA_Environment ev;
+
 	if (view->details->view == CORBA_OBJECT_NIL) {
 		return;
 	}
 	
 	g_free (view->details->view_iid);
 	view->details->view_iid = NULL;
-	
+
+	CORBA_exception_init (&ev);
+	CORBA_Object_release (view->details->view, &ev);
+	CORBA_exception_free (&ev);
 	view->details->view = CORBA_OBJECT_NIL;
 
 	nautilus_bonobo_object_call_when_remote_object_disappears
@@ -755,6 +760,7 @@ static void
 attach_view (NautilusViewFrame *view,
 	     BonoboObjectClient *client)
 {
+	CORBA_Environment ev;
 	GtkWidget *widget;
   	
 	/* Either create an adapter or query for the Nautilus:View
@@ -771,7 +777,10 @@ attach_view (NautilusViewFrame *view,
     	}
 
 	create_corba_objects (view);
-	bonobo_object_release_unref (view->details->view, NULL);
+
+	CORBA_exception_init (&ev);
+	Bonobo_Unknown_unref (view->details->view, &ev);
+	CORBA_exception_free (&ev);
 
 	widget = bonobo_control_frame_get_widget (view->details->control_frame);
 
