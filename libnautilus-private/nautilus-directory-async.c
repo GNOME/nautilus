@@ -1119,13 +1119,6 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 	nautilus_directory_async_state_changed (directory);
 }
 
-int
-nautilus_compare_file_with_name (gconstpointer a, gconstpointer b)
-{
-	return strcmp (NAUTILUS_FILE (a)->details->name,
-		       (const char *) b);
-}
-
 static void
 set_file_unconfirmed (NautilusFile *file, gboolean unconfirmed)
 {
@@ -1207,7 +1200,8 @@ dequeue_pending_idle_callback (gpointer callback_data)
 
 	directory->details->dequeue_pending_idle_id = 0;
 
-	pending_file_info = directory->details->pending_file_info;
+	/* Handle the files in the order we saw them. */
+	pending_file_info = g_list_reverse (directory->details->pending_file_info);
 	directory->details->pending_file_info = NULL;
 
 	/* If we are no longer monitoring, then throw away these. */
@@ -1225,17 +1219,25 @@ dequeue_pending_idle_callback (gpointer callback_data)
 		file_info = node->data;
 
 		/* Update the file count. */
+		/* FIXME: This could count a file twice if we get it
+		 * from both load_directory and from
+		 * new_files_callback. Not too hard to fix by moving
+		 * this into the actual callback instead of waiting
+		 * for the idle function.
+		 */
 		if (gnome_vfs_directory_filter_apply (directory->details->load_file_count_filter,
 						      file_info)) {
 			directory->details->load_file_count += 1;
 		}
 
 		/* Add the MIME type to the set. */
-		istr_set_insert (directory->details->load_mime_list_hash,
-				 file_info->mime_type);
+		if (directory->details->load_mime_list_hash != NULL) {
+			istr_set_insert (directory->details->load_mime_list_hash,
+					 file_info->mime_type);
+		}
 		
 		/* check if the file already exists */
-		file = nautilus_directory_find_file (directory, file_info->name);
+		file = nautilus_directory_find_file_by_name (directory, file_info->name);
 		if (file != NULL) {
 			/* file already exists, check if it changed */
 			set_file_unconfirmed (file, FALSE);

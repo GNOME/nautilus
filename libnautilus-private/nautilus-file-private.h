@@ -31,7 +31,7 @@ struct NautilusFileDetails
 	gboolean unconfirmed;
 
 	gboolean is_gone;
-	char *name;
+	char *relative_uri;
 	
 	/* Set by the NautilusDirectory while it's loading the file
 	 * list so the file knows not to do redundant I/O.

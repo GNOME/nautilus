@@ -1,9 +1,107 @@
+2000-11-01  Darin Adler  <darin@eazel.com>
+
+	Fix bug 4305 (Nautilus can't find myplay.com (default bookmark)
+	URL). As Mike Fleming and Pavel suggested, changed NautilusFile to
+	keep relative URIs around instead of file names. This may also fix
+	two other Mozilla-component-related bugs, bug 3438 and 4220. I'll
+	check that later.
+
+	Also fix bugs 4128, 4311, and 4344, which are all about a hash
+	table NULL critical assertion.
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(dequeue_pending_idle_callback): Handle info in the order it gets
+	queued. That requires a call to g_list_reverse since we add things
+	with g_list_prepend. Check for NULL to handle case where the info
+	is not part of a directory load. Use the new
+	nautilus_directory_find_file_by_name to keep it clearly separate
+	from code that would find files given relative URIs.
+	
+	* libnautilus-extensions/nautilus-directory-private.h: RIP
+	nautilus_compare_file_with_name. We haven't used it since we've
+	been using a hash table.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(add_to_hash_table): Put the relative URI in the hash table, not
+	the name.
+	(extract_from_hash_table): Look up in the hash table by relative
+	URI, not name.
+	(nautilus_directory_add_file), (nautilus_directory_remove_file):
+	Assertions are based on the relative URI, not the name.
+	(nautilus_directory_find_file_by_name): Turn the name into a
+	relative URI and search for that.
+	(nautilus_directory_find_file_by_relative_uri): Look up in the
+	hash table by relative URI, not name.
+	
+	* libnautilus-extensions/nautilus-file-private.h: Replace the name
+	field with a relative_uri field. There aren't always names for
+	files.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_new_from_relative_uri): Mechanical changes to make
+	it create a file given a directory and relative_uri. Uses the new
+	update_info_and_name instead of the old nautilus_update_file_info
+	(which no longer updates names).
+	(nautilus_file_new_from_info). Use the new update_info_and_name
+	instead of the old nautilus_update_file_info (which no longer
+	updates names).
+	(nautilus_file_get_internal): Call nautilus_uri_make_canonical on
+	the URI before using it. This is needed now to make the escaping
+	of characters in the relative URI uniform. Also made mechanical
+	changes to deal with relative URIs instead of file names.
+	(destroy): Always free the relative URI. We no longer share the
+	name inside the file info, so the logic is now simpler.
+	(nautilus_file_get_gnome_vfs_uri): Append the relative URI instead
+	of appending a file name to make the full URI.
+	(rename_callback): Use the new update_info_and_name instead of the
+	old nautilus_update_file_info (which no longer updates
+	names). Also call nautilus_find_file_by_name under its new name.
+	(name_is): New helper function for checking the file name quickly
+	without requiring a local variable.
+	(nautilus_file_rename): Use name_is instead of strcmp since the
+	name is no longer so readily available.
+	(update_info_internal): Moved the guts of nautilus_file_update_info
+	in here and made the name-updating part optional. Logic is a bit
+	simpler since we don't share the name in the file info any more.
+	(update_info_and_name), (nautilus_file_update_info): Covers that
+	call the internal call with the "update_name" flag set.
+	(nautilus_file_update_name): Use name_is and update_info_and_name.
+	Also fix the info == NULL case to handle relative URIs, not names.
+	(nautilus_file_compare_for_sort): Add a FIXME about using the name
+	in the info when sorting. Also change the info == NULL case to get
+	the names with nautilus_file_get_name.
+	(nautilus_file_compare_name): Use nautilus_file_get_name to get
+	the names to compare.
+	(nautilus_file_get_metadata), (nautilus_file_get_metadata_list),
+	(nautilus_file_set_metadata), (nautilus_file_set_metadata_list),
+	(nautilus_file_get_boolean_metadata),
+	(nautilus_file_get_integer_metadata),
+	(nautilus_file_set_boolean_metadata),
+	(nautilus_file_set_integer_metadata): Store metadata using the
+	relative URI as the key instead of the name. This amounts to a
+	minor metadata file format change.
+	(nautilus_file_get_name): Create the name by unescaping the
+	relative URI. If this fails, just return the relative URI
+	itself. In some cases the URI instead of the name would represent
+	a terrible error (but the unescaping will not fail in those
+	cases), but in other cases we just need some kind of name.
+	(nautilus_file_get_uri): Some broken code in here was just
+	appending the name to the parent URI. Now it appends the relative
+	URI so it's no longer broken.
+	(get_description): Use the relative URI instead of the name in the
+	warning message.
+	(nautilus_file_mark_gone): Since we always keep the relative URI
+	around now, can get rid of the logic that copies the name out of
+	the file info for this case.
+	(nautilus_file_dump): Since we already dump the URI, don't bother
+	dumping the name any more.
+
 2000-11-01  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-image.c: (render_buffer_pixbuf):
 	Change '=+' to the more common '+=' when adding integers.
 	
-2000-11-01 John Fleck <jfleck@inkstain.net>
+2000-11-01  John Fleck  <jfleck@inkstain.net>
 
 	* change to sect-elements.c in gnome-db2html2 to change display of
 	<note> elements

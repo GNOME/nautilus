@@ -108,73 +108,71 @@ struct NautilusDirectoryDetails
 };
 
 /* async. interface */
-void               nautilus_directory_async_state_changed            (NautilusDirectory         *directory);
-void               nautilus_directory_call_when_ready_internal       (NautilusDirectory         *directory,
-								      NautilusFile              *file,
-								      GList                     *file_attributes,
-								      NautilusDirectoryCallback  directory_callback,
-								      NautilusFileCallback       file_callback,
-								      gpointer                   callback_data);
-gboolean           nautilus_directory_check_if_ready_internal        (NautilusDirectory         *directory,
-								      NautilusFile              *file,
-								      GList                     *file_attributes);
-void               nautilus_directory_cancel_callback_internal       (NautilusDirectory         *directory,
-								      NautilusFile              *file,
-								      NautilusDirectoryCallback  directory_callback,
-								      NautilusFileCallback       file_callback,
-								      gpointer                   callback_data);
-void               nautilus_directory_monitor_add_internal           (NautilusDirectory         *directory,
-								      NautilusFile              *file,
-								      gconstpointer              client,
-								      GList                     *attributes);
-void               nautilus_directory_monitor_remove_internal        (NautilusDirectory         *directory,
-								      NautilusFile              *file,
-								      gconstpointer              client);
-void               nautilus_directory_get_info_for_new_files         (NautilusDirectory         *directory,
-								      GList                     *vfs_uris);
-NautilusFile	  *nautilus_directory_get_existing_corresponding_file(NautilusDirectory	*directory);
-void		   nautilus_directory_invalidate_counts 	     (NautilusDirectory		*directory);
-gboolean           nautilus_directory_is_file_list_monitored         (NautilusDirectory         *directory);
-gboolean           nautilus_directory_is_anyone_monitoring_file_list (NautilusDirectory         *directory);
-void               nautilus_directory_remove_file_monitor_link       (NautilusDirectory         *directory,
-								      GList                     *link);
-void               nautilus_directory_request_write_metafile         (NautilusDirectory         *directory);
-void               nautilus_directory_schedule_dequeue_pending       (NautilusDirectory         *directory);
-void               nautilus_directory_stop_monitoring_file_list      (NautilusDirectory         *directory);
-void               nautilus_directory_cancel                         (NautilusDirectory         *directory);
-void               nautilus_metafile_write_start                     (NautilusDirectory         *directory);
-void               nautilus_async_destroying_file                    (NautilusFile              *file);
-void               nautilus_directory_force_reload                   (NautilusDirectory         *directory);
+void               nautilus_directory_async_state_changed             (NautilusDirectory         *directory);
+void               nautilus_directory_call_when_ready_internal        (NautilusDirectory         *directory,
+								       NautilusFile              *file,
+								       GList                     *file_attributes,
+								       NautilusDirectoryCallback  directory_callback,
+								       NautilusFileCallback       file_callback,
+								       gpointer                   callback_data);
+gboolean           nautilus_directory_check_if_ready_internal         (NautilusDirectory         *directory,
+								       NautilusFile              *file,
+								       GList                     *file_attributes);
+void               nautilus_directory_cancel_callback_internal        (NautilusDirectory         *directory,
+								       NautilusFile              *file,
+								       NautilusDirectoryCallback  directory_callback,
+								       NautilusFileCallback       file_callback,
+								       gpointer                   callback_data);
+void               nautilus_directory_monitor_add_internal            (NautilusDirectory         *directory,
+								       NautilusFile              *file,
+								       gconstpointer              client,
+								       GList                     *attributes);
+void               nautilus_directory_monitor_remove_internal         (NautilusDirectory         *directory,
+								       NautilusFile              *file,
+								       gconstpointer              client);
+void               nautilus_directory_get_info_for_new_files          (NautilusDirectory         *directory,
+								       GList                     *vfs_uris);
+NautilusFile	  *   nautilus_directory_get_existing_corresponding_file (NautilusDirectory         *directory);
+void               nautilus_directory_invalidate_counts               (NautilusDirectory         *directory);
+gboolean           nautilus_directory_is_file_list_monitored          (NautilusDirectory         *directory);
+gboolean           nautilus_directory_is_anyone_monitoring_file_list  (NautilusDirectory         *directory);
+void               nautilus_directory_remove_file_monitor_link        (NautilusDirectory         *directory,
+								       GList                     *link);
+void               nautilus_directory_request_write_metafile          (NautilusDirectory         *directory);
+void               nautilus_directory_schedule_dequeue_pending        (NautilusDirectory         *directory);
+void               nautilus_directory_stop_monitoring_file_list       (NautilusDirectory         *directory);
+void               nautilus_directory_cancel                          (NautilusDirectory         *directory);
+void               nautilus_metafile_write_start                      (NautilusDirectory         *directory);
+void               nautilus_async_destroying_file                     (NautilusFile              *file);
+void               nautilus_directory_force_reload                    (NautilusDirectory         *directory);
 
 /* Calls shared between directory, file, and async. code. */
-void               nautilus_directory_emit_metadata_changed          (NautilusDirectory         *directory);
-void               nautilus_directory_emit_files_added               (NautilusDirectory         *directory,
-								      GList                     *added_files);
-void               nautilus_directory_emit_files_changed             (NautilusDirectory         *directory,
-								      GList                     *changed_files);
-void               nautilus_directory_emit_change_signals_deep       (NautilusDirectory         *directory,
-								      GList                     *changed_files);
-void               nautilus_directory_emit_done_loading              (NautilusDirectory         *directory);
-NautilusDirectory *nautilus_directory_get_internal                   (const char                *uri,
-								      gboolean                   create);
-char		  *nautilus_directory_get_name_for_self_as_new_file  (NautilusDirectory		*directory);
+void               nautilus_directory_emit_metadata_changed           (NautilusDirectory         *directory);
+void               nautilus_directory_emit_files_added                (NautilusDirectory         *directory,
+								       GList                     *added_files);
+void               nautilus_directory_emit_files_changed              (NautilusDirectory         *directory,
+								       GList                     *changed_files);
+void               nautilus_directory_emit_change_signals_deep        (NautilusDirectory         *directory,
+								       GList                     *changed_files);
+void               nautilus_directory_emit_done_loading               (NautilusDirectory         *directory);
+NautilusDirectory *nautilus_directory_get_internal                    (const char                *uri,
+								       gboolean                   create);
+char		  *          nautilus_directory_get_name_for_self_as_new_file   (NautilusDirectory         *directory);
 
 /* Interface to the file list. */
-NautilusFile *     nautilus_directory_find_file                      (NautilusDirectory         *directory,
-								      const char                *file_name);
-void               nautilus_directory_add_file                       (NautilusDirectory         *directory,
-								      NautilusFile              *file);
-void               nautilus_directory_remove_file                    (NautilusDirectory         *directory,
-								      NautilusFile              *file);
-GList *            nautilus_directory_begin_file_name_change         (NautilusDirectory         *directory,
-								      NautilusFile              *file);
-void               nautilus_directory_end_file_name_change           (NautilusDirectory         *directory,
-								      NautilusFile              *file,
-								      GList                     *node);
+NautilusFile *     nautilus_directory_find_file_by_name               (NautilusDirectory         *directory,
+								       const char                *relative_uri);
+NautilusFile *     nautilus_directory_find_file_by_relative_uri       (NautilusDirectory         *directory,
+								       const char                *relative_uri);
+void               nautilus_directory_add_file                        (NautilusDirectory         *directory,
+								       NautilusFile              *file);
+void               nautilus_directory_remove_file                     (NautilusDirectory         *directory,
+								       NautilusFile              *file);
+GList *            nautilus_directory_begin_file_name_change          (NautilusDirectory         *directory,
+								       NautilusFile              *file);
+void               nautilus_directory_end_file_name_change            (NautilusDirectory         *directory,
+								       NautilusFile              *file,
+								       GList                     *node);
 
 /* debugging functions */
-int                nautilus_directory_number_outstanding             (void);
-
-/* Shared functions not directly related to NautilusDirectory/File. */
-int                nautilus_compare_file_with_name                   (gconstpointer              a,
-								      gconstpointer              b);
+int                nautilus_directory_number_outstanding              (void);
