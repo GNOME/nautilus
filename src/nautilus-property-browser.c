@@ -521,7 +521,7 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 			guint16 colorArray[4];
 			
 			/* handle the "reset" case as an image */
-			if (nautilus_strcmp (property_browser->details->dragged_file, "reset.png") != 0) {
+			if (nautilus_strcmp (property_browser->details->dragged_file, RESET_IMAGE_NAME) != 0) {
 				gdk_color_parse(property_browser->details->dragged_file, &color);
 				colorArray[0] = color.red;
 				colorArray[1] = color.green;
@@ -1367,7 +1367,7 @@ element_clicked_callback (GtkWidget *widget, GdkEventButton *event, char *elemen
 	
 	/* treat the reset property in the colors section specially */	
 	if (strcmp (property_browser->details->drag_type, "application/x-color") == 0 &&
-		nautilus_strcmp (element_name, "reset.png") == 0) {
+		nautilus_strcmp (element_name, RESET_IMAGE_NAME) == 0) {
 		drag_types[0].target = "property/bgimage";	
 	}
 	
@@ -1389,7 +1389,9 @@ element_clicked_callback (GtkWidget *widget, GdkEventButton *event, char *elemen
 		/*it's not a color, so, for now, it must be an image */
 		/* fiddle with the category to handle the "reset" case properly */
 		char * save_category = property_browser->details->category;
-		property_browser->details->category = "backgrounds";
+		if (nautilus_strcmp (property_browser->details->category, "colors") == 0) {
+			property_browser->details->category = "backgrounds";
+		}
 		pixbuf = make_drag_image (property_browser, element_name);
 		property_browser->details->category = save_category;
 		
@@ -1599,7 +1601,7 @@ add_reset_property (NautilusPropertyBrowser *property_browser)
 	label = nautilus_label_new ("");
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 
-	new_property = make_property_tile (property_browser, image_widget, label, "reset.png");
+	new_property = make_property_tile (property_browser, image_widget, label, RESET_IMAGE_NAME);
 	add_to_content_table (property_browser, new_property, 0, 2);
 }
 	

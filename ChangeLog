@@ -1,3 +1,11 @@
+2000-11-09  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_drag_data_get),
+	(element_clicked_callback), (add_reset_property):
+	fixed recently introduced bug where emblems wouldn't drag
+	properly; also, used defined constant for reset image name.
+	
 2000-11-09  Darin Adler  <darin@eazel.com>
 
 	buddy: John Sullivan <sullivan@eazel.com>
