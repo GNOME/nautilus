@@ -45,6 +45,7 @@ struct _NautilusImageDetail
 {
 	GdkPixbuf	*pixbuf;
 	guchar		overall_alpha;
+	NautilusImageAlphaMode alpha_mode;
 };
 
 /* GtkObjectClass methods */
@@ -65,7 +66,9 @@ static void nautilus_image_size_request     (GtkWidget              *widget,
 
 /* NautilusBufferedWidgetClass methods */
 static void render_buffer_pixbuf            (NautilusBufferedWidget *buffered_widget,
-					     GdkPixbuf              *buffer);
+					     GdkPixbuf              *buffer,
+					     int		    horizontal_offset,
+					     int		    vertical_offset);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusImage, nautilus_image, NAUTILUS_TYPE_BUFFERED_WIDGET)
@@ -120,6 +123,7 @@ nautilus_image_initialize (NautilusImage *image)
 
 	image->detail->pixbuf = NULL;
 	image->detail->overall_alpha = 255;
+	image->detail->alpha_mode = NAUTILUS_IMAGE_FULL_ALPHA;
 }
 
 /* GtkObjectClass methods */
@@ -217,12 +221,12 @@ nautilus_image_get_arg (GtkObject	*object,
 }
 
 /* GtkWidgetClass methods */
-
 static void
 nautilus_image_size_request (GtkWidget		*widget,
 			     GtkRequisition	*requisition)
 {
 	NautilusImage	*image;
+	GtkMisc		*misc;
 	guint		pixbuf_width = 0;
 	guint		pixbuf_height = 0;
 
@@ -231,6 +235,7 @@ nautilus_image_size_request (GtkWidget		*widget,
 	g_return_if_fail (requisition != NULL);
 
 	image = NAUTILUS_IMAGE (widget);
+	misc = GTK_MISC (widget);
 
 	if (image->detail->pixbuf != NULL) {
 		pixbuf_width = gdk_pixbuf_get_width (image->detail->pixbuf);
@@ -239,11 +244,17 @@ nautilus_image_size_request (GtkWidget		*widget,
 
    	requisition->width = MAX (2, pixbuf_width);
    	requisition->height = MAX (2, pixbuf_height);
+
+   	requisition->width += misc->xpad * 2;
+   	requisition->height += misc->ypad * 2;
 }
 
 /* Private NautilusImage things */
 static void
-render_buffer_pixbuf (NautilusBufferedWidget *buffered_widget, GdkPixbuf *buffer)
+render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
+		      GdkPixbuf			*buffer,
+		      int			horizontal_offset,
+		      int			vertical_offset)
 {
 	NautilusImage	*image;
 	GtkWidget	*widget;
@@ -332,4 +343,49 @@ nautilus_image_set_overall_alpha (NautilusImage	*image,
 	nautilus_buffered_widget_clear_buffer (NAUTILUS_BUFFERED_WIDGET (image));
 	
 	gtk_widget_queue_draw (GTK_WIDGET (image));
+}
+
+/**
+ * nautilus_image_set_alpha_mode:
+ *
+ * @image: A NautilusImage
+ * @alpha_mode:      The new alpha mode
+ *
+ * Change the rendering mode for the widget.  In FULL_ALPHA mode, the
+ * widget's background will be peeked to do full alpha compositing.
+ * In THRESHOLD_ALPHA mode, all compositing is done by thresholding 
+ * GdkPixbuf operations - this is more effecient, but doesnt look as 
+ * smooth.
+ */
+void
+nautilus_image_set_alpha_mode (NautilusImage			*image,
+			       NautilusImageAlphaMode	alpha_mode)
+{
+	g_return_if_fail (NAUTILUS_IS_IMAGE (image));
+	g_return_if_fail (alpha_mode >= NAUTILUS_IMAGE_FULL_ALPHA);
+	g_return_if_fail (alpha_mode <= NAUTILUS_IMAGE_THRESHOLD_ALPHA);
+	
+	if (alpha_mode != image->detail->alpha_mode)
+	{
+		image->detail->alpha_mode = alpha_mode;
+	}
+
+	nautilus_buffered_widget_clear_buffer (NAUTILUS_BUFFERED_WIDGET (image));
+
+	gtk_widget_queue_draw (GTK_WIDGET (image));
+}
+
+/**
+ * nautilus_image_get_alpha_mode:
+ *
+ * @image: A NautilusImage
+ *
+ * Return value: The current alpha mode.
+ */
+NautilusImageAlphaMode
+nautilus_image_get_alpha_mode (const NautilusImage *image)
+{
+	g_return_val_if_fail (NAUTILUS_IS_IMAGE (image), 0);
+
+	return image->detail->alpha_mode;
 }

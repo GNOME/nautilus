@@ -62,9 +62,11 @@ enum
 /* Detail member struct */
 struct _NautilusBufferedWidgetDetail
 {
-	GdkGC			*copy_area_gc;
-	GdkPixbuf		*buffer_pixbuf;
-	GdkPixbuf		*tile_pixbuf;
+	GdkGC		*copy_area_gc;
+	GdkPixbuf	*buffer_pixbuf;
+	GdkPixbuf	*tile_pixbuf;
+	int		horizontal_offset;	
+	int		vertical_offset;	
 };
 
 /* GdkGC refcounting macros */			\
@@ -156,6 +158,8 @@ nautilus_buffered_widget_initialize (NautilusBufferedWidget *buffered_widget)
 	buffered_widget->detail->copy_area_gc = NULL;
 	buffered_widget->detail->buffer_pixbuf = NULL;
 	buffered_widget->detail->tile_pixbuf = NULL;
+	buffered_widget->detail->horizontal_offset = 0;
+	buffered_widget->detail->vertical_offset = 0;
 }
 
 /* GtkObjectClass methods */
@@ -519,7 +523,10 @@ buffered_widget_update_pixbuf (NautilusBufferedWidget *buffered_widget)
 	}
 
   	NAUTILUS_CALL_VIRTUAL (NAUTILUS_BUFFERED_WIDGET_CLASS, buffered_widget, render_buffer_pixbuf, 
-  			       (buffered_widget, buffered_widget->detail->buffer_pixbuf));
+  			       (buffered_widget, 
+				buffered_widget->detail->buffer_pixbuf,
+				buffered_widget->detail->horizontal_offset,
+				buffered_widget->detail->vertical_offset));
 }
 
 static GdkPixbuf*
@@ -656,9 +663,11 @@ nautilus_buffered_widget_set_tile_pixbuf (NautilusBufferedWidget          *buffe
 		nautilus_gdk_pixbuf_ref_if_not_null (pixbuf);
 		
 		buffered_widget->detail->tile_pixbuf = pixbuf;
-	}
 
-	gtk_widget_queue_resize (GTK_WIDGET (buffered_widget));
+		nautilus_buffered_widget_clear_buffer (buffered_widget);
+		
+		gtk_widget_queue_draw (GTK_WIDGET (buffered_widget));
+	}
 }
 
 /**
@@ -702,4 +711,86 @@ nautilus_buffered_get_tile_pixbuf_size (const NautilusBufferedWidget *buffered_w
 	}
 
 	return size;
+}
+
+/**
+ * nautilus_buffered_widget_set_horizontal_offset:
+ *
+ * @buffered_widget: A NautilusBufferedWidget
+ * @horizontal_offset: The new horizontal offset
+ *
+ * Change the horizontal offset.  The horizontal offset should be honored by sublcasses.
+ * It is meant as a either postive or negavitve x offset for whatever is rendered in
+ * render_buffer_pixbuf.
+ */
+void
+nautilus_buffered_widget_set_horizontal_offset (NautilusBufferedWidget	*buffered_widget,
+						int			horizontal_offset)
+{
+	g_return_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget));
+
+	if (horizontal_offset != buffered_widget->detail->horizontal_offset)
+	{
+		buffered_widget->detail->horizontal_offset = horizontal_offset;
+
+		nautilus_buffered_widget_clear_buffer (buffered_widget);
+		
+		gtk_widget_queue_draw (GTK_WIDGET (buffered_widget));
+	}
+}
+
+/**
+ * nautilus_buffered_widget_get_horizontal_offset:
+ *
+ * @buffered_widget: A NautilusBufferedWidget
+ *
+ * Return value: The horizontal offset.
+ */
+int
+nautilus_buffered_widget_get_horizontal_offset (const NautilusBufferedWidget *buffered_widget)
+{
+	g_return_val_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget), 0);
+	
+	return buffered_widget->detail->horizontal_offset;
+}
+
+/**
+ * nautilus_buffered_widget_set_vertical_offset:
+ *
+ * @buffered_widget: A NautilusBufferedWidget
+ * @vertical_offset: The new vertical offset
+ *
+ * Change the vertical offset.  The vertical offset should be honored by sublcasses.
+ * It is meant as a either postive or negavitve x offset for whatever is rendered in
+ * render_buffer_pixbuf.
+ */
+void
+nautilus_buffered_widget_set_vertical_offset (NautilusBufferedWidget	*buffered_widget,
+						int			vertical_offset)
+{
+	g_return_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget));
+
+	if (vertical_offset != buffered_widget->detail->vertical_offset)
+	{
+		buffered_widget->detail->vertical_offset = vertical_offset;
+
+		nautilus_buffered_widget_clear_buffer (buffered_widget);
+		
+		gtk_widget_queue_resize (GTK_WIDGET (buffered_widget));
+	}
+}
+
+/**
+ * nautilus_buffered_widget_get_vertical_offset:
+ *
+ * @buffered_widget: A NautilusBufferedWidget
+ *
+ * Return value: The vertical offset.
+ */
+int
+nautilus_buffered_widget_get_vertical_offset (const NautilusBufferedWidget *buffered_widget)
+{
+	g_return_val_if_fail (NAUTILUS_IS_BUFFERED_WIDGET (buffered_widget), 0);
+	
+	return buffered_widget->detail->vertical_offset;
 }

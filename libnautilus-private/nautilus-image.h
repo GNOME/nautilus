@@ -69,13 +69,22 @@ struct _NautilusImageClass
 	NautilusBufferedWidgetClass	parent_class;
 };
 
-GtkType    nautilus_image_get_type          (void);
-GtkWidget *nautilus_image_new               (void);
-void       nautilus_image_set_pixbuf        (NautilusImage       *image,
-					     GdkPixbuf           *pixbuf);
-GdkPixbuf* nautilus_image_get_pixbuf        (const NautilusImage *image);
-void       nautilus_image_set_overall_alpha (NautilusImage       *image,
-					     guchar               pixbuf_alpha);
+typedef enum 
+{
+	NAUTILUS_IMAGE_FULL_ALPHA,
+	NAUTILUS_IMAGE_THRESHOLD_ALPHA
+} NautilusImageAlphaMode;
+
+GtkType                nautilus_image_get_type          (void);
+GtkWidget *            nautilus_image_new               (void);
+void                   nautilus_image_set_pixbuf        (NautilusImage          *image,
+							 GdkPixbuf              *pixbuf);
+GdkPixbuf*             nautilus_image_get_pixbuf        (const NautilusImage    *image);
+void                   nautilus_image_set_overall_alpha (NautilusImage          *image,
+							 guchar                  pixbuf_alpha);
+void                   nautilus_image_set_alpha_mode    (NautilusImage          *image,
+							 NautilusImageAlphaMode  alpha_mode);
+NautilusImageAlphaMode nautilus_image_get_alpha_mode    (const NautilusImage    *image);
 
 END_GNOME_DECLS
 

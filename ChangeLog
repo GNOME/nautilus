@@ -1,3 +1,43 @@
+2000-08-25  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-buffered-widget.c:
+	(nautilus_buffered_widget_initialize),
+	(buffered_widget_update_pixbuf),
+	(nautilus_buffered_widget_set_tile_pixbuf),
+	(nautilus_buffered_get_tile_pixbuf_size),
+	(nautilus_buffered_widget_set_horizontal_offset),
+	(nautilus_buffered_widget_get_horizontal_offset),
+	(nautilus_buffered_widget_set_vertical_offset),
+	(nautilus_buffered_widget_get_vertical_offset):
+	* libnautilus-extensions/nautilus-buffered-widget.h:
+
+	Add suport for a vertical and horizontal offset.  Pass these on to
+	the pixbuf render function so that the subclasses can do stuff
+	with them.
+
+	* libnautilus-extensions/nautilus-image.c:
+	(nautilus_image_initialize), (nautilus_image_size_request),
+	(render_buffer_pixbuf), (nautilus_image_set_overall_alpha),
+	(nautilus_image_set_alpha_mode), (nautilus_image_get_alpha_mode):
+	* libnautilus-extensions/nautilus-image.h:
+
+	Use the GtkMisc xpad/ypad into account when computing the
+	requested geometry.
+	
+	Add preliminary support an alpha mode so that the image widget can
+	server as a regular thresholded pixbuf display without doing the
+	full and expensive compositing on the background.  Not hooked up yet.
+
+	Update for vertical/horizontal offset support.
+
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_size_request), (render_buffer_pixbuf):
+	
+	Use the GtkMisc xpad/ypad into account when computing the
+	requested geometry.
+
+	Update for vertical/horizontal offset support.
+	
 2000-08-25  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/tree/Makefile.am:

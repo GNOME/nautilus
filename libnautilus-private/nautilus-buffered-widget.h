@@ -71,7 +71,10 @@ struct _NautilusBufferedWidgetClass
 {
 	GtkMiscClass		parent_class;
 
-	void (*render_buffer_pixbuf) (NautilusBufferedWidget *buffered_widget, GdkPixbuf *buffer);
+	void (*render_buffer_pixbuf) (NautilusBufferedWidget	*buffered_widget, 
+				      GdkPixbuf			*buffer,
+				      int			horizontal_offset,
+				      int			vertical_offset);
 };
 
 typedef struct
@@ -80,12 +83,19 @@ typedef struct
 	guint height;
 } NautilusPixbufSize;
 
-GtkType            nautilus_buffered_widget_get_type        (void);
-void               nautilus_buffered_widget_clear_buffer    (NautilusBufferedWidget       *buffered_widget);
-void               nautilus_buffered_widget_set_tile_pixbuf (NautilusBufferedWidget       *image,
-							     GdkPixbuf                    *pixbuf);
-GdkPixbuf*         nautilus_buffered_widget_get_tile_pixbuf (const NautilusBufferedWidget *image);
-NautilusPixbufSize nautilus_buffered_get_tile_pixbuf_size   (const NautilusBufferedWidget *buffered_widget);
+GtkType            nautilus_buffered_widget_get_type              (void);
+void               nautilus_buffered_widget_clear_buffer          (NautilusBufferedWidget       *buffered_widget);
+void               nautilus_buffered_widget_set_tile_pixbuf       (NautilusBufferedWidget       *buffered_widget,
+								   GdkPixbuf                    *pixbuf);
+GdkPixbuf*         nautilus_buffered_widget_get_tile_pixbuf       (const NautilusBufferedWidget *buffered_widget);
+NautilusPixbufSize nautilus_buffered_get_tile_pixbuf_size         (const NautilusBufferedWidget *buffered_widget);
+void               nautilus_buffered_widget_set_vertical_offset   (NautilusBufferedWidget       *image,
+								   int                           vertical_offset);
+int                nautilus_buffered_widget_get_vertical_offset   (const NautilusBufferedWidget *buffered_widget);
+void               nautilus_buffered_widget_set_horizontal_offset (NautilusBufferedWidget       *image,
+								   int                           horizontal_offset);
+int                nautilus_buffered_widget_get_horizontal_offset (const NautilusBufferedWidget *buffered_widget);
+
 
 END_GNOME_DECLS
 

@@ -85,8 +85,10 @@ static void nautilus_label_size_request     (GtkWidget              *widget,
 					     GtkRequisition         *requisition);
 
 /* NautilusBufferedWidgetClass methods */
-static void render_buffer_pixbuf            (NautilusBufferedWidget *buffered_widget,
-					     GdkPixbuf              *buffer);
+static void render_buffer_pixbuf            (NautilusBufferedWidget	*buffered_widget,
+					     GdkPixbuf			*buffer,
+					     int			horizontal_offset,
+					     int			vertical_offset);
 
 /* Private NautilusLabel things */
 static void label_recompute_line_geometries (NautilusLabel          *label);
@@ -267,6 +269,7 @@ static void
 nautilus_label_size_request (GtkWidget		*widget,
 			     GtkRequisition	*requisition)
 {
+	GtkMisc			*misc;
 	NautilusLabel		*label;
 	guint			text_width = 0;
 	guint			text_height = 0;
@@ -277,6 +280,7 @@ nautilus_label_size_request (GtkWidget		*widget,
 	g_return_if_fail (requisition != NULL);
 
 	label = NAUTILUS_LABEL (widget);
+	misc = GTK_MISC (widget);
 
 	tile_size = nautilus_buffered_get_tile_pixbuf_size (NAUTILUS_BUFFERED_WIDGET (label));
 
@@ -292,11 +296,17 @@ nautilus_label_size_request (GtkWidget		*widget,
 
    	requisition->width = MAX (2, text_width);
    	requisition->height = MAX (2, MAX (text_height, tile_size.height));
+
+   	requisition->width += misc->xpad * 2;
+   	requisition->height += misc->ypad * 2;
 }
 
 /* Private NautilusLabel things */
 static void
-render_buffer_pixbuf (NautilusBufferedWidget *buffered_widget, GdkPixbuf *buffer)
+render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
+		      GdkPixbuf			*buffer,
+		      int			horizontal_offset,
+		      int			vertical_offset)
 {
 	NautilusLabel	*label;
 	GtkWidget	*widget;
@@ -335,8 +345,13 @@ render_buffer_pixbuf (NautilusBufferedWidget *buffered_widget, GdkPixbuf *buffer
 		area.y0 = - ((int) total_text_height - (int) widget->allocation.height) / 2;
 	}
 
+	area.x0 += horizontal_offset;
+	area.y0 += vertical_offset;
+
 	area.x1 = area.x0 + total_text_width + label->detail->drop_shadow_offset;
 	area.y1 = area.y0 + total_text_width + label->detail->drop_shadow_offset;
+
+	g_print ("vertical_offset = %d\n", vertical_offset);
 	
 	if (label->detail->num_text_lines > 0) {
 		if (label->detail->drop_shadow_offset > 0) {
