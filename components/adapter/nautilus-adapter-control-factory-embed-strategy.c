@@ -156,7 +156,6 @@ nautilus_adapter_control_factory_embed_strategy_new (Bonobo_ControlFactory contr
 {
 	NautilusAdapterControlFactoryEmbedStrategy *strategy;
 	Bonobo_Control  control;
-	Bonobo_Zoomable corba_zoomable;
 	CORBA_Environment ev;
 
 	strategy = NAUTILUS_ADAPTER_CONTROL_FACTORY_EMBED_STRATEGY (g_object_new (NAUTILUS_TYPE_ADAPTER_CONTROL_FACTORY_EMBED_STRATEGY, NULL));
@@ -171,7 +170,8 @@ nautilus_adapter_control_factory_embed_strategy_new (Bonobo_ControlFactory contr
 		ui_container, &ev);
 
 	if ((ev._major == CORBA_NO_EXCEPTION) &&
-	    !CORBA_Object_is_nil (corba_zoomable, &ev)) {
+	    !CORBA_Object_is_nil (control, &ev)) {
+		Bonobo_Zoomable corba_zoomable;
 		strategy->details->client_widget = bonobo_control_frame_get_widget (
 			strategy->details->control_frame);
 		g_signal_connect (strategy->details->control_frame,
