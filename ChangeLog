@@ -1,3 +1,35 @@
+2001-01-09  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/nautilus-view/Nautilus_View_install.o
+	af.in:
+
+	Give the install view a reasonable name that won't make people's
+	heads explode.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (line_expose), (horizontal_line_new),
+	(install_message_destroy), (install_message_new),
+	(generate_install_form), (show_overall_feedback),
+	(nautilus_service_install_view_initialize), (deps_destroy_foreach),
+	(nautilus_service_install_view_destroy),
+	(nautilus_service_install_view_get_nautilus_view),
+	(nautilus_install_parse_uri), (current_progress_bar_complete),
+	(nautilus_service_install_downloading),
+	(nautilus_service_install_dependency_check),
+	(nautilus_service_install_download_failed),
+	(nautilus_service_install_installing),
+	(nautilus_service_install_failed),
+	(nautilus_service_install_view_update_from_uri),
+	(nautilus_service_install_view_load_uri),
+	(service_install_stop_loading_callback):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.h:
+	* components/services/nautilus-dependent-shared/eazel-services-exte
+	nsions.h:
+
+	Many changes to make the install view prettier and less annoying
+	-- mostly Arlo'ified now, with some tweaking left to do.
+
 2001-01-09  John Harper  <jsh@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

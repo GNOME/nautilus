@@ -51,6 +51,16 @@ struct _NautilusServiceInstallViewClass {
         GtkVBoxClass				parent_class;
 };
 
+typedef struct {
+	char *package_name;
+	GtkWidget *label;
+	GtkWidget *progress_bar;
+	GtkWidget *progress_label;
+	GtkWidget *vbox;	/* [ progress_bar, progress_label ] */
+	GtkWidget *hbox;	/* [ label, padding, vbox ] */
+	GtkWidget *line;
+} InstallMessage;
+
 /* A NautilusContentView's private information. */
 struct _NautilusServiceInstallViewDetails {
 	char            *uri;
@@ -64,10 +74,9 @@ struct _NautilusServiceInstallViewDetails {
 	GtkWidget       *total_progress_bar;
 	GtkWidget       *overall_feedback_text;
 	GtkWidget	*message_box;
-	GList		*message_left;
-	GList		*message_right;
 	GtkWidget       *current_feedback_text;
-	GtkWidget       *current_progress_bar;
+	InstallMessage	*current_im;
+	GtkWidget	*pane;
 
 	char		*current_rpm;
 	int		current_package;
@@ -88,6 +97,9 @@ struct _NautilusServiceInstallViewDetails {
 
 	GList *problem_cases;
 	GList *desktop_files;
+
+	GList *message;		/* GList<InstallMessage *> */
+	GHashTable *deps;	/* package(char *) => package that needs it(char *) */
 };
 
 
