@@ -1605,7 +1605,7 @@ load_icon_for_scaling (NautilusScalableIcon *scalable_icon,
 		REQUEST_PICKY_BY_NAME_SECOND_CHOICE
 	};
 
-	size_request.maximum_width = MAXIMUM_ICON_SIZE * requested_size / NAUTILUS_ZOOM_LEVEL_STANDARD;
+	size_request.maximum_width = MAXIMUM_ICON_SIZE * requested_size / NAUTILUS_ICON_SIZE_STANDARD;
 	size_request.maximum_height = size_request.maximum_width;
 
 	for (i = 0; i < G_N_ELEMENTS (requests); i++) {
@@ -1947,13 +1947,20 @@ get_icon_from_cache (NautilusScalableIcon *scalable_icon,
 
 		/* Create the key and icon for the hash table. */
 		key = g_new (CacheKey, 1);
-		nautilus_scalable_icon_ref (scalable_icon);
 		key->scalable_icon = scalable_icon;
 		key->size = *size;
 
+		/* recursive get_icon_from_cache might already have placed icon
+		 * in hash table if there was an exact match */
+		if (g_hash_table_lookup (hash_table, key) != NULL) {
+			g_free (key);
+			return icon;
+		}
+		
 		/* Add the item to the hash table. */
-		g_assert (g_hash_table_lookup (hash_table, key) == NULL);
+		nautilus_scalable_icon_ref (scalable_icon);
 		g_hash_table_insert (hash_table, key, icon);
+			
 	}
 
 	/* Hand back a ref to the caller. */
