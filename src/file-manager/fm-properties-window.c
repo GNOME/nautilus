@@ -1156,7 +1156,7 @@ get_property_names_from_uri (const char *directory_uri, GList *property_list)
 			
 	result = gnome_vfs_directory_list_load
 		(&list, directory_uri, 
-		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE, NULL, NULL);
+		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE, NULL);
 	if (result != GNOME_VFS_OK) {
 		return property_list;
 	}

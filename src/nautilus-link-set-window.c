@@ -141,7 +141,7 @@ get_link_set_names()
 	/* get the directory info */
 
 	result = gnome_vfs_directory_list_load (&list, link_set_uri, 
-						GNOME_VFS_FILE_INFO_GET_MIME_TYPE, NULL, NULL);
+						GNOME_VFS_FILE_INFO_GET_MIME_TYPE, NULL);
 	if (result != GNOME_VFS_OK) {
 		return NULL;
 	}

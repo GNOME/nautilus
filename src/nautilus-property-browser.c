@@ -445,7 +445,7 @@ ensure_uri_is_image(const char *uri)
 	result = gnome_vfs_get_file_info
 		(uri, file_info,
 		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE
-		 | GNOME_VFS_FILE_INFO_FOLLOW_LINKS, NULL);
+		 | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
         is_image = nautilus_istr_has_prefix (file_info->mime_type, "image/");
 	gnome_vfs_file_info_unref (file_info);
 	return is_image;
@@ -1302,7 +1302,7 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 		
 		
 	result = gnome_vfs_directory_list_load (&list, directory_uri,
-						GNOME_VFS_FILE_INFO_GET_MIME_TYPE, NULL, NULL);
+						GNOME_VFS_FILE_INFO_GET_MIME_TYPE, NULL);
 	if (result != GNOME_VFS_OK) {
 		return index;
 	}
@@ -1549,7 +1549,7 @@ vfs_file_exists (const char *file_uri)
 	GnomeVFSFileInfo *file_info;
 	
 	file_info = gnome_vfs_file_info_new ();
-	result = gnome_vfs_get_file_info (file_uri, file_info, 0, NULL);
+	result = gnome_vfs_get_file_info (file_uri, file_info, 0);
 	gnome_vfs_file_info_unref (file_info);
 
 	return result == GNOME_VFS_OK;
@@ -1663,7 +1663,7 @@ make_properties_from_themes (NautilusPropertyBrowser *property_browser, xmlNodeP
 	g_free (pixmap_directory);
 			
 	result = gnome_vfs_directory_list_load (&list, directory_uri,
-					       GNOME_VFS_FILE_INFO_DEFAULT, NULL, NULL);
+					       GNOME_VFS_FILE_INFO_DEFAULT, NULL);
 	if (result != GNOME_VFS_OK) {
 		g_free (directory_uri);
 		g_free (current_theme);

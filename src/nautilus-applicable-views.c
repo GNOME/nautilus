@@ -293,7 +293,6 @@ async_get_file_info_text (GnomeVFSAsyncHandle **handle,
         gnome_vfs_async_get_file_info (handle,
                                        &uri_list,
                                        options,
-                                       NULL,
                                        callback,
                                        callback_data);
         

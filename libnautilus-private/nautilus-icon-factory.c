@@ -1078,7 +1078,7 @@ vfs_file_exists (const char *file_uri)
 	GnomeVFSFileInfo *file_info;
 
 	file_info = gnome_vfs_file_info_new ();
-	result = gnome_vfs_get_file_info (file_uri, file_info, 0, NULL);
+	result = gnome_vfs_get_file_info (file_uri, file_info, 0);
 	gnome_vfs_file_info_unref (file_info);
 	return result == GNOME_VFS_OK;
 }
@@ -1192,10 +1192,10 @@ first_file_more_recent(const char* file_uri, const char* other_file_uri)
 	
 	/* gather the info and then compare modification times */
 	gnome_vfs_file_info_init (&file_info);
-	gnome_vfs_get_file_info (file_uri, &file_info, GNOME_VFS_FILE_INFO_DEFAULT, NULL);
+	gnome_vfs_get_file_info (file_uri, &file_info, GNOME_VFS_FILE_INFO_DEFAULT);
 	
 	gnome_vfs_file_info_init (&other_file_info);
-	gnome_vfs_get_file_info (other_file_uri, &other_file_info, GNOME_VFS_FILE_INFO_DEFAULT, NULL);
+	gnome_vfs_get_file_info (other_file_uri, &other_file_info, GNOME_VFS_FILE_INFO_DEFAULT);
 
 	more_recent = file_info.mtime > other_file_info.mtime;
 
@@ -1452,7 +1452,7 @@ path_represents_svg_image (const char *path)
 
 	uri = nautilus_get_uri_from_local_path (path);
 	gnome_vfs_file_info_init (&file_info);
-	gnome_vfs_get_file_info (uri, &file_info, GNOME_VFS_FILE_INFO_GET_MIME_TYPE, NULL);
+	gnome_vfs_get_file_info (uri, &file_info, GNOME_VFS_FILE_INFO_GET_MIME_TYPE);
 	g_free (uri);
 	is_svg = nautilus_strcmp (file_info.mime_type, "image/svg") == 0;
 	gnome_vfs_file_info_clear (&file_info);
@@ -1774,7 +1774,7 @@ mark_recently_used (NautilusCircularList *node)
 	
 	/* gather the info and then compare modification times */
 	gnome_vfs_file_info_init (&file_info);
-	gnome_vfs_get_file_info (file_uri, &file_info, GNOME_VFS_FILE_INFO_DEFAULT, NULL);
+	gnome_vfs_get_file_info (file_uri, &file_info, GNOME_VFS_FILE_INFO_DEFAULT);
 	
 	is_valid = file_info.mtime <= cached_time;
 	gnome_vfs_file_info_clear (&file_info);

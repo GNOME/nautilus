@@ -279,7 +279,7 @@ try_to_expand_path(GtkEditable *editable)
 	/* get file info for the directory */
 
 	result = gnome_vfs_directory_list_load (&list, dir_name,
-					       GNOME_VFS_FILE_INFO_DEFAULT, NULL, NULL);
+					       GNOME_VFS_FILE_INFO_DEFAULT, NULL);
 	if (result != GNOME_VFS_OK) {
 		g_free(dir_name);
 		gnome_vfs_uri_unref(uri);

@@ -58,7 +58,7 @@ static GnomeVFSResult vault_list(GList *args, gchar *uri, gboolean debug, gchar 
 		text_uri = uri;
 	}
 
-	result = gnome_vfs_directory_list_load (&list, text_uri, (GNOME_VFS_FILE_INFO_GET_MIME_TYPE | GNOME_VFS_FILE_INFO_FORCE_FAST_MIME_TYPE | GNOME_VFS_FILE_INFO_FOLLOW_LINKS), NULL, NULL);
+	result = gnome_vfs_directory_list_load (&list, text_uri, (GNOME_VFS_FILE_INFO_GET_MIME_TYPE | GNOME_VFS_FILE_INFO_FORCE_FAST_MIME_TYPE | GNOME_VFS_FILE_INFO_FOLLOW_LINKS), NULL);
 
 	if(result == GNOME_VFS_OK) {
 

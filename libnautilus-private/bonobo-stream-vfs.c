@@ -215,7 +215,7 @@ vfs_length (BonoboStream *stream,
 	CORBA_long retval;
 
 	gnome_vfs_file_info_init(&fi);
-	if(gnome_vfs_get_file_info_from_handle(sfs->fd, &fi, GNOME_VFS_FILE_INFO_DEFAULT, NULL) != GNOME_VFS_OK)
+	if(gnome_vfs_get_file_info_from_handle(sfs->fd, &fi, GNOME_VFS_FILE_INFO_DEFAULT) != GNOME_VFS_OK)
 	  return 0;
 	retval = fi.size;
 	gnome_vfs_file_info_clear(&fi);

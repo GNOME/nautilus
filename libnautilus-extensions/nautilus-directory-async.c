@@ -1132,7 +1132,6 @@ nautilus_directory_get_info_for_new_files (NautilusDirectory *directory,
 		 vfs_uri_list,
 		 (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
 		  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
-		 NULL,
 		 new_files_callback,
 		 directory);
 
@@ -1437,8 +1436,7 @@ start_monitoring_file_list (NautilusDirectory *directory)
 		 directory->details->uri_text,                    /* uri */
 		 (GNOME_VFS_FILE_INFO_GET_MIME_TYPE	          /* options */
 		  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
-		 NULL, 					          /* meta_keys */
-			 NULL, 					          /* sort_rules */
+		 NULL, 					          /* sort_rules */
 		 FALSE, 				          /* reverse_order */
 		 GNOME_VFS_DIRECTORY_FILTER_NONE,                 /* filter_type */
 		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR            /* filter_options */
@@ -1597,7 +1595,6 @@ start_getting_directory_counts (NautilusDirectory *directory)
 		 uri,
 		 GNOME_VFS_FILE_INFO_DEFAULT,
 		 NULL,
-		 NULL,
 		 FALSE,
 		 GNOME_VFS_DIRECTORY_FILTER_NONE,
 		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR
@@ -1714,7 +1711,6 @@ deep_count_load (NautilusDirectory *directory, const char *uri)
 		(&directory->details->deep_count_in_progress,
 		 uri,
 		 GNOME_VFS_FILE_INFO_DEFAULT,
-		 NULL,
 		 NULL,
 		 FALSE,
 		 GNOME_VFS_DIRECTORY_FILTER_NONE,
@@ -2005,7 +2001,6 @@ start_getting_file_info (NautilusDirectory *directory)
 		 &fake_list,
 		 (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
 		  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
-		 NULL,
 		 get_info_callback,
 		 directory);
 	gnome_vfs_uri_unref (vfs_uri);

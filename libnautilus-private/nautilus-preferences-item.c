@@ -477,7 +477,7 @@ has_image_file(const char *directory_uri, const char *dir_name, const char *requ
 	for (index = 0; index < NAUTILUS_N_ELEMENTS (icon_file_name_suffixes); index++) {
 		temp_str = g_strconcat (base_uri, icon_file_name_suffixes[index], NULL);
 		gnome_vfs_file_info_init (file_info);
-		result = gnome_vfs_get_file_info (temp_str, file_info, 0, NULL);
+		result = gnome_vfs_get_file_info (temp_str, file_info, 0);
 		g_free(temp_str);
 		if (result == GNOME_VFS_OK) {
 			g_free(base_uri);
@@ -509,7 +509,7 @@ add_icon_themes(NautilusStringList *theme_list, char *required_file)
 	g_free (pixmap_directory);
 			
 	result = gnome_vfs_directory_list_load (&list, directory_uri,
-					       GNOME_VFS_FILE_INFO_DEFAULT, NULL, NULL);
+					       GNOME_VFS_FILE_INFO_DEFAULT, NULL);
 	if (result != GNOME_VFS_OK) {
 		g_free(directory_uri);
 		return;

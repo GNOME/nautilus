@@ -827,7 +827,7 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
                             music_view->details->selected_index, 9, &temp_str);
 	music_view->details->current_samprate = atoi (temp_str);
         result = gnome_vfs_get_file_info (song_uri, &file_info,
-                                          GNOME_VFS_FILE_INFO_DEFAULT, NULL);
+                                          GNOME_VFS_FILE_INFO_DEFAULT);
  	music_view->details->current_file_size =
                 (result == GNOME_VFS_OK
                  && (file_info.valid_fields & GNOME_VFS_FILE_INFO_FIELDS_SIZE) != 0)
@@ -1205,7 +1205,7 @@ nautilus_music_view_update_from_uri (NautilusMusicView *music_view, const char *
 
 	result = gnome_vfs_directory_list_load (&list, uri,
 						GNOME_VFS_FILE_INFO_GET_MIME_TYPE, 
-						NULL, NULL);
+						NULL);
 	if (result != GNOME_VFS_OK) {
 		/* FIXME bugzilla.eazel.com 1280: need to show an alert here */
 		g_warning("cant open %s in music_view_update", uri);		
