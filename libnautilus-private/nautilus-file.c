@@ -1241,6 +1241,7 @@ update_info_internal (NautilusFile *file,
 	GList *node;
 	GnomeVFSFileInfo *info_copy;
 	char *new_relative_uri;
+	GList name_attribute = {0, };
 
 	if (file->details->is_gone) {
 		return FALSE;
@@ -1281,6 +1282,9 @@ update_info_internal (NautilusFile *file,
 			g_free (file->details->relative_uri);
 			file->details->relative_uri = new_relative_uri;
 			nautilus_file_clear_cached_display_name (file);
+			name_attribute.data = NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME;
+			nautilus_file_invalidate_attributes (file, 
+							     &name_attribute);
 			nautilus_directory_end_file_name_change
 				(file->details->directory, file, node);
 		}

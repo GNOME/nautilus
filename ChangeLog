@@ -1,3 +1,15 @@
+2002-09-15  Dave Camp  <dave@ximian.com>
+
+        Fixes bug #89616. 
+	
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_directory_notify_files_added): If a NautilusFile already
+	exists for this file, send a changed notification rather than an
+	added notification.
+	* libnautilus-private/nautilus-directory.h:
+	* libnautilus-private/nautilus-file.c: (update_info_internal):
+	Invalidate the display name.
+	
 2002-09-10  Dave Camp  <dave@ximian.com>
 
 	* libnautilus-private/nautilus-icon-container.c: (realize):
