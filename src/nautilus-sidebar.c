@@ -396,9 +396,9 @@ toggle_sidebar_panel (GtkWidget *widget,
 
 	g_return_if_fail (GTK_IS_CHECK_MENU_ITEM (widget));
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (widget))));
-	g_return_if_fail (gtk_object_get_data (GTK_OBJECT (widget), "preference-key") != NULL);
+	g_return_if_fail (gtk_object_get_data (GTK_OBJECT (widget), "nautilus-sidebar/preference-key") != NULL);
 
-	preference_key = gtk_object_get_data (GTK_OBJECT (widget), "preference-key");
+	preference_key = gtk_object_get_data (GTK_OBJECT (widget), "nautilus-sidebar/preference-key");
 
 	sidebar = NAUTILUS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (widget)));
 
@@ -431,6 +431,7 @@ sidebar_for_each_sidebar_panel (const char *name,
 {
 	ForEachPanelData *data;
 	GtkWidget *menu_item;
+	gboolean panel_visible;
 
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (iid != NULL);
@@ -445,7 +446,8 @@ sidebar_for_each_sidebar_panel (const char *name,
 	/* If the panel is not visible in the current user level, then
 	 * we dont need to create a menu item for it.
 	 */
-	if (!nautilus_preferences_is_visible (preference_key)) {
+	panel_visible = any_panel_matches_iid (data->sidebar, iid);
+	if (!panel_visible && !nautilus_preferences_is_visible (preference_key)) {
 		return;
 	}
 
@@ -453,8 +455,7 @@ sidebar_for_each_sidebar_panel (const char *name,
 	menu_item = gtk_check_menu_item_new_with_label (name);
 
 	gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM (menu_item), TRUE);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item),
-					any_panel_matches_iid (data->sidebar, iid));
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), panel_visible);
 	gtk_widget_show (menu_item);
 	gtk_object_set_user_data (GTK_OBJECT (menu_item), data->sidebar);
 	gtk_menu_append (data->menu, menu_item);
@@ -468,7 +469,7 @@ sidebar_for_each_sidebar_panel (const char *name,
 				 FALSE);
 
 	gtk_object_set_data_full (GTK_OBJECT (menu_item),
-				  "preference-key",
+				  "nautilus-sidebar/preference-key",
 				  g_strdup (preference_key),
 				  g_free);
 }

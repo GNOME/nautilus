@@ -625,18 +625,18 @@ nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 	gboolean reset_scroll_region;
 
 	if (nautilus_icon_container_get_is_fixed_size (container)) {
-			/* Set the scroll region to the size of the container allocation */
-			allocation = &GTK_WIDGET (container)->allocation;			
-			nautilus_gnome_canvas_set_scroll_region_left_justify
-				(GNOME_CANVAS (container),
-		 		(double) - container->details->left_margin,
-		 		(double) - container->details->top_margin,
-		 		(double) allocation->width - 1
-					- container->details->left_margin
-					- container->details->right_margin,
-		 		(double) allocation->height - 1
-					- container->details->top_margin
-					- container->details->bottom_margin);
+		/* Set the scroll region to the size of the container allocation */
+		allocation = &GTK_WIDGET (container)->allocation;			
+		nautilus_gnome_canvas_set_scroll_region_left_justify
+			(GNOME_CANVAS (container),
+			 (double) - container->details->left_margin,
+			 (double) - container->details->top_margin,
+			 (double) allocation->width - 1
+			 - container->details->left_margin
+			 - container->details->right_margin,
+			 (double) allocation->height - 1
+			 - container->details->top_margin
+			 - container->details->bottom_margin);
 		return;
 	}
 

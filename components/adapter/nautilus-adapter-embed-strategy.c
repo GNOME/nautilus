@@ -3,7 +3,7 @@
 /*
  * Nautilus
  *
- * Copyright (C) 2000 Eazel, Inc.
+ * Copyright (C) 2000, 2001 Eazel, Inc.
  *
  * Nautilus is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -29,12 +29,11 @@
 
 
 #include <config.h>
-
 #include "nautilus-adapter-embed-strategy.h"
-#include "nautilus-adapter-embed-strategy-private.h"
-#include "nautilus-adapter-control-embed-strategy.h"
-#include "nautilus-adapter-embeddable-embed-strategy.h"
 
+#include "nautilus-adapter-control-embed-strategy.h"
+#include "nautilus-adapter-embed-strategy-private.h"
+#include "nautilus-adapter-embeddable-embed-strategy.h"
 #include <gtk/gtkobject.h>
 #include <gtk/gtksignal.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -49,12 +48,12 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-
 static void nautilus_adapter_embed_strategy_initialize_class (NautilusAdapterEmbedStrategyClass *klass);
 static void nautilus_adapter_embed_strategy_initialize       (NautilusAdapterEmbedStrategy      *strategy);
-static void nautilus_adapter_embed_strategy_destroy          (GtkObject                        *object);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusAdapterEmbedStrategy, nautilus_adapter_embed_strategy, GTK_TYPE_OBJECT)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusAdapterEmbedStrategy,
+				   nautilus_adapter_embed_strategy,
+				   GTK_TYPE_OBJECT)
 
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_embed_strategy, get_widget)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (nautilus_adapter_embed_strategy, get_zoomable)
@@ -65,8 +64,6 @@ nautilus_adapter_embed_strategy_initialize_class (NautilusAdapterEmbedStrategyCl
 	GtkObjectClass *object_class;
 
 	object_class = (GtkObjectClass *) klass;
-
-	object_class->destroy = nautilus_adapter_embed_strategy_destroy;
 
 	signals[ACTIVATE] =
 		gtk_signal_new ("activate",
@@ -101,49 +98,39 @@ nautilus_adapter_embed_strategy_initialize (NautilusAdapterEmbedStrategy *strate
 {
 }
 
-static void
-nautilus_adapter_embed_strategy_destroy (GtkObject *object)
-{
-	NautilusAdapterEmbedStrategy *strategy;
-
-	strategy = NAUTILUS_ADAPTER_EMBED_STRATEGY (object);
-
-	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
-}
-
-
-
 NautilusAdapterEmbedStrategy *
 nautilus_adapter_embed_strategy_get (Bonobo_Unknown component)
 {
 	Bonobo_Control    control;
 	Bonobo_Embeddable embeddable;
 	CORBA_Environment ev;
+	NautilusAdapterEmbedStrategy *strategy;
 
 	CORBA_exception_init (&ev);
 
-	control = Bonobo_Unknown_queryInterface (component,
-						 "IDL:Bonobo/Control:1.0", &ev);
-	
+	strategy = NULL;
 
+	control = Bonobo_Unknown_queryInterface
+		(component, "IDL:Bonobo/Control:1.0", &ev);
 	if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (control, &ev)) {
-		CORBA_exception_free (&ev);
-		
-		return nautilus_adapter_control_embed_strategy_new (control, CORBA_OBJECT_NIL);
+		strategy = nautilus_adapter_control_embed_strategy_new
+			(control, CORBA_OBJECT_NIL);
+		bonobo_object_release_unref (control, NULL);
 	}
-
-	embeddable = Bonobo_Unknown_queryInterface (component,
-						    "IDL:Bonobo/Embeddable:1.0", &ev);
 	
-	if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (embeddable, &ev)) {
-		CORBA_exception_free (&ev);
-		
-		return nautilus_adapter_embeddable_embed_strategy_new (embeddable, CORBA_OBJECT_NIL);		
+	if (strategy != NULL) {
+		embeddable = Bonobo_Unknown_queryInterface
+			(component, "IDL:Bonobo/Embeddable:1.0", &ev);
+		if (ev._major == CORBA_NO_EXCEPTION && !CORBA_Object_is_nil (embeddable, &ev)) {
+			strategy = nautilus_adapter_embeddable_embed_strategy_new
+				(embeddable, CORBA_OBJECT_NIL);
+			bonobo_object_release_unref (embeddable, NULL);
+		}
 	}
 
 	CORBA_exception_free (&ev);
 
-	return NULL;
+	return strategy;
 }
 
 GtkWidget *
@@ -187,4 +174,3 @@ nautilus_adapter_embed_strategy_emit_open_location (NautilusAdapterEmbedStrategy
 			 signals[OPEN_LOCATION],
 			 uri);
 }
-

@@ -41,7 +41,6 @@
 
 
 struct NautilusAdapterControlEmbedStrategyDetails {
-	Bonobo_Control      control;
 	BonoboControlFrame *control_frame;
 	BonoboObject       *zoomable;
 	GtkWidget          *widget;
@@ -90,15 +89,8 @@ static void
 nautilus_adapter_control_embed_strategy_destroy (GtkObject *object)
 {
 	NautilusAdapterControlEmbedStrategy *strategy;
-	CORBA_Environment ev;
 
 	strategy = NAUTILUS_ADAPTER_CONTROL_EMBED_STRATEGY (object);
-
-	if (strategy->details->control != CORBA_OBJECT_NIL) {
-		CORBA_exception_init (&ev);
-		bonobo_object_release_unref (strategy->details->control, &ev);
-		CORBA_exception_free (&ev);
-	}
 
 	if (strategy->details->control_frame != NULL) {
 		bonobo_object_unref (BONOBO_OBJECT (strategy->details->control_frame));
@@ -168,7 +160,6 @@ nautilus_adapter_control_embed_strategy_new (Bonobo_Control control,
 	gtk_object_ref (GTK_OBJECT (strategy));
 	gtk_object_sink (GTK_OBJECT (strategy));
 
-	strategy->details->control = control;
 	strategy->details->control_frame = bonobo_control_frame_new (ui_container);
 
 	bonobo_control_frame_bind_to_control (strategy->details->control_frame, control);

@@ -122,12 +122,13 @@ timed_wait_delayed_close_timeout_callback (gpointer callback_data)
 {
 	guint handler_id;
 
-	handler_id = GPOINTER_TO_UINT (gtk_object_get_data (GTK_OBJECT (callback_data), "delayed_close_handler_timeout_id"));
+	handler_id = GPOINTER_TO_UINT (gtk_object_get_data (GTK_OBJECT (callback_data),
+							    "nautilus-stock-dialogs/delayed_close_handler_timeout_id"));
 	
 	gtk_signal_disconnect_by_func (GTK_OBJECT (callback_data),
 			    	       timed_wait_delayed_close_destroy_dialog_callback,
 			    	       GUINT_TO_POINTER (handler_id));
-			    	       
+	
 	gtk_object_destroy (GTK_OBJECT (callback_data));
 
 	return FALSE;
@@ -167,7 +168,7 @@ timed_wait_free (TimedWait *wait)
 			                                            timed_wait_delayed_close_timeout_callback,
 			                                            wait->dialog);
 			gtk_object_set_data (GTK_OBJECT (wait->dialog),
-					     "delayed_close_handler_timeout_id",
+					     "nautilus-stock-dialogs/delayed_close_handler_timeout_id",
 					     GUINT_TO_POINTER (delayed_close_handler_id));
 			gtk_signal_connect (GTK_OBJECT (wait->dialog), "destroy",
 					    timed_wait_delayed_close_destroy_dialog_callback,

@@ -965,8 +965,11 @@ get_current_mount_list (void)
 	if (fh == NULL) {
 		fh = fopen ("/proc/mounts", "r");
 		separator = " ";
+		if (fh == NULL) {
+			g_warning ("can't open /etc/mnttab or /proc/mounts");
+			return NULL;
+		}
 	}
-	g_return_val_if_fail (fh != NULL, NULL);
 
 	while (fgets (line, sizeof(line), fh)) {
 		if (sscanf (line, "%s", device_name) == 1) {
@@ -975,7 +978,7 @@ get_current_mount_list (void)
 				/* The string list needs to have at least 3 items per line.
 				 * We need to find at least device path, mount path and file system type.
 				 */
-				if (nautilus_string_list_get_length (list) >= 3) {				
+				if (nautilus_string_list_get_length (list) >= 3) {
 					device_path = nautilus_string_list_nth (list, 0);
 					mount_path = nautilus_string_list_nth (list, 1);
 					filesystem = nautilus_string_list_nth (list, 2);

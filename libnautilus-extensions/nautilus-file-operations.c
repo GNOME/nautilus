@@ -60,7 +60,7 @@ typedef enum {
 /* Copy engine callback state */
 typedef struct {
 	GnomeVFSAsyncHandle *handle;
-	GtkWidget *progress_dialog;
+	NautilusFileOperationsProgress *progress_dialog;
 	const char *operation_title;	/* "Copying files" */
 	const char *action_label;	/* "Files copied:" */
 	const char *progress_verb;	/* "Copying" */
@@ -96,7 +96,7 @@ transfer_info_destroy (TransferInfo *transfer_info)
 	nautilus_nullify_cancel (&transfer_info->parent_view);
 	
 	if (transfer_info->progress_dialog != NULL) {
-		gtk_widget_destroy (transfer_info->progress_dialog);
+		nautilus_file_operations_progress_done (transfer_info->progress_dialog);
 	}
 	
 	if (transfer_info->debuting_uris != NULL) {
@@ -273,7 +273,7 @@ static GtkWidget *
 parent_for_error_dialog (TransferInfo *transfer_info)
 {
 	if (transfer_info->progress_dialog != NULL) {
-		return transfer_info->progress_dialog;
+		return GTK_WIDGET (transfer_info->progress_dialog);
 	}
 
 	return transfer_info->parent_view;
@@ -375,12 +375,12 @@ create_transfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
 	gtk_signal_connect (GTK_OBJECT (transfer_info->progress_dialog), "close",
                            (GtkSignalFunc) handle_close_callback, transfer_info);
 
-	gtk_widget_show (transfer_info->progress_dialog);
+	gtk_widget_show (GTK_WIDGET (transfer_info->progress_dialog));
 
 	/* Make the progress dialog show up over the window we are copying into */
 	if (transfer_info->parent_view != NULL) {
 		center_dialog_over_window (GTK_WINDOW (transfer_info->progress_dialog), 
-			GTK_WINDOW (gtk_widget_get_toplevel (transfer_info->parent_view)));
+					   GTK_WINDOW (gtk_widget_get_toplevel (transfer_info->parent_view)));
 	}
 }
 
@@ -455,7 +455,7 @@ progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
 
 static int
 handle_transfer_ok (const GnomeVFSXferProgressInfo *progress_info,
-		TransferInfo *transfer_info)
+		    TransferInfo *transfer_info)
 {
 	if (transfer_info->cancelled
 		&& progress_info->phase != GNOME_VFS_XFER_PHASE_COMPLETED) {
@@ -483,43 +483,40 @@ handle_transfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 	case GNOME_VFS_XFER_PHASE_COLLECTING:
 		if (transfer_info->progress_dialog != NULL) {
 			nautilus_file_operations_progress_set_operation_string
-				(NAUTILUS_FILE_OPERATIONS_PROGRESS
-					 (transfer_info->progress_dialog),
-					 transfer_info->preparation_name);
+				(transfer_info->progress_dialog,
+				 transfer_info->preparation_name);
 		}
 		return 1;
 
 	case GNOME_VFS_XFER_PHASE_READYTOGO:
 		if (transfer_info->progress_dialog != NULL) {
-			nautilus_file_operations_progress_set_operation_string (
-				NAUTILUS_FILE_OPERATIONS_PROGRESS (transfer_info->progress_dialog),
-					 transfer_info->action_label);
+			nautilus_file_operations_progress_set_operation_string
+				(transfer_info->progress_dialog,
+				 transfer_info->action_label);
 			nautilus_file_operations_progress_set_total
-				(NAUTILUS_FILE_OPERATIONS_PROGRESS
-					 (transfer_info->progress_dialog),
-					 progress_info->files_total,
-					 progress_info->bytes_total);
+				(transfer_info->progress_dialog,
+				 progress_info->files_total,
+				 progress_info->bytes_total);
 		}
 		return 1;
 				 
 	case GNOME_VFS_XFER_PHASE_DELETESOURCE:
 		nautilus_file_changes_consume_changes (FALSE);
 		if (transfer_info->progress_dialog != NULL) {
-			progress_dialog_set_to_from_item_text (
-				NAUTILUS_FILE_OPERATIONS_PROGRESS (transfer_info->progress_dialog),
-				transfer_info->progress_verb,
-				progress_info->source_name,
-				NULL,
-				progress_info->file_index,
-				progress_info->file_size);
+			progress_dialog_set_to_from_item_text
+				(transfer_info->progress_dialog,
+				 transfer_info->progress_verb,
+				 progress_info->source_name,
+				 NULL,
+				 progress_info->file_index,
+				 progress_info->file_size);
 
 			nautilus_file_operations_progress_update_sizes
-				(NAUTILUS_FILE_OPERATIONS_PROGRESS
-				 (transfer_info->progress_dialog),
+				(transfer_info->progress_dialog,
 				 MIN (progress_info->bytes_copied, 
-				 	progress_info->bytes_total),
+				      progress_info->bytes_total),
 				 MIN (progress_info->total_bytes_copied,
-				 	progress_info->bytes_total));
+				      progress_info->bytes_total));
 		}
 		return 1;
 
@@ -532,34 +529,31 @@ handle_transfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 		if (transfer_info->progress_dialog != NULL) {
 				
 			if (progress_info->bytes_copied == 0) {
-				progress_dialog_set_to_from_item_text (
-					NAUTILUS_FILE_OPERATIONS_PROGRESS (transfer_info->progress_dialog),
-					transfer_info->progress_verb,
-					progress_info->source_name,
-					progress_info->target_name,
-					progress_info->file_index,
-					progress_info->file_size);
+				progress_dialog_set_to_from_item_text
+					(transfer_info->progress_dialog,
+					 transfer_info->progress_verb,
+					 progress_info->source_name,
+					 progress_info->target_name,
+					 progress_info->file_index,
+					 progress_info->file_size);
 			} else {
 				nautilus_file_operations_progress_update_sizes
-					(NAUTILUS_FILE_OPERATIONS_PROGRESS
-					 (transfer_info->progress_dialog),
+					(transfer_info->progress_dialog,
 					 MIN (progress_info->bytes_copied, 
-					 	progress_info->bytes_total),
+					      progress_info->bytes_total),
 					 MIN (progress_info->total_bytes_copied,
-					 	progress_info->bytes_total));
+					      progress_info->bytes_total));
 			}
 		}
 		return 1;
 
 	case GNOME_VFS_XFER_PHASE_CLEANUP:
 		if (transfer_info->progress_dialog != NULL) {
-			nautilus_file_operations_progress_clear(
-				NAUTILUS_FILE_OPERATIONS_PROGRESS
-					 (transfer_info->progress_dialog));
+			nautilus_file_operations_progress_clear
+				(transfer_info->progress_dialog);
 			nautilus_file_operations_progress_set_operation_string
-				(NAUTILUS_FILE_OPERATIONS_PROGRESS
-					 (transfer_info->progress_dialog),
-					 transfer_info->cleanup_name);
+				(transfer_info->progress_dialog,
+				 transfer_info->cleanup_name);
 		}
 		return 1;
 
@@ -861,7 +855,7 @@ build_error_string (const char *source_name, const char *target_name,
 
 static int
 handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
-		       TransferInfo *transfer_info)
+			   TransferInfo *transfer_info)
 {
 	/* Notice that the error mode in `transfer_info' is the one we have been
          * requested, but the transfer is always performed in mode
@@ -1042,11 +1036,8 @@ handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 	case GNOME_VFS_XFER_ERROR_MODE_ABORT:
 	default:
 		if (transfer_info->progress_dialog != NULL) {
-			nautilus_file_operations_progress_freeze
-				(NAUTILUS_FILE_OPERATIONS_PROGRESS (transfer_info->progress_dialog));
-			nautilus_file_operations_progress_thaw
-				(NAUTILUS_FILE_OPERATIONS_PROGRESS (transfer_info->progress_dialog));
-			gtk_widget_destroy (transfer_info->progress_dialog);
+			nautilus_file_operations_progress_done
+				(transfer_info->progress_dialog);
 		}
 		return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 	}

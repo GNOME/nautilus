@@ -438,12 +438,22 @@ nautilus_view_construct (NautilusView   *view,
 }
 
 static void
+set_frame_callback (BonoboControl *control,
+		    gpointer callback_data)
+{
+	nautilus_bonobo_object_force_destroy_when_owner_disappears
+		(BONOBO_OBJECT (control),
+		 bonobo_control_get_control_frame (control));
+}
+
+static void
 widget_destroyed_callback (GtkWidget *widget,
 			   gpointer callback_data)
 {
 	g_assert (NAUTILUS_IS_VIEW (callback_data));
 
-	nautilus_bonobo_object_force_destroy_at_idle (BONOBO_OBJECT (callback_data));
+	nautilus_bonobo_object_force_destroy_at_idle
+		(BONOBO_OBJECT (callback_data));
 }
 
 NautilusView *
@@ -458,6 +468,9 @@ nautilus_view_construct_from_bonobo_control (NautilusView   *view,
 	view->details->control = control;
 	bonobo_object_add_interface (BONOBO_OBJECT (view), BONOBO_OBJECT (control));
 	nautilus_undo_set_up_bonobo_control (control);
+
+	gtk_signal_connect (GTK_OBJECT (control), "set_frame",
+			    set_frame_callback, NULL);
 
 	widget = bonobo_control_get_widget (control);
 	gtk_signal_connect_while_alive (GTK_OBJECT (widget), "destroy",

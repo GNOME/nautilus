@@ -1,3 +1,5 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /*
  * Generic image loading embeddable using gdk-pixbuf.
  *
@@ -57,8 +59,8 @@ typedef struct {
         GtkWidget        *scrolled_window;
 	GdkPixbuf        *scaled;
         gboolean          size_allocated;
-	gboolean	  initial_flag;
-	gboolean	  resize_flag;
+	gboolean	  got_initial_size;
+	gboolean	  got_penultimate_allocation;
 	
 	GdkPixbuf        *zoomed;
 	float             zoom_level;
@@ -210,7 +212,7 @@ redraw_control (bonobo_object_data_t *bod, GdkRectangle *rect)
 	 * so we don't screw up the size allocation process by drawing
 	 * an unscaled image too early.
 	 */
-	if (bod->size_allocated) {
+	if (bod->got_initial_size) {
 		render_pixbuf (buf, bod->drawing_area, rect);
 	}
 }
@@ -580,7 +582,6 @@ control_size_allocate_callback (GtkWidget *drawing_area, GtkAllocation *allocati
 	control_update (bod);
 }
 
-
 /*
  * This callback will be invoked when the container assigns us a size.
  */
@@ -615,23 +616,28 @@ image_fits_in_container (bonobo_object_data_t *bod)
  */
 static void
 scrolled_window_size_allocate_callback (GtkWidget *drawing_area,
-					 GtkAllocation *allocation,
-					 bonobo_object_data_t *bod)
+					GtkAllocation *allocation,
+					bonobo_object_data_t *bod)
 {	
-	/* implement initial shrink-to-fit if necessary.  It's hard to tell when resizing
-	 * is complete, inspiring this hackish solution determining when; it should
-	 * be replaced with a cleaner approach when the framework is improved.
+	/* Implement initial shrink-to-fit if necessary. It's hard to
+	 * tell when resizing is complete, inspiring this hackish
+	 * solution determining when; it should be replaced with a
+	 * cleaner approach when the framework is improved.
 	 */
 
-	if (bod->resize_flag && bod->initial_flag && allocation->width > 1 && allocation->height > 1)
-	 {
-		bod->initial_flag = FALSE;
+	if (bod->got_penultimate_allocation
+	    && !bod->got_initial_size
+	    && allocation->width > 1
+	    && allocation->height > 1) {
+		bod->got_initial_size = TRUE;
 	 	if (!image_fits_in_container (bod)) {
 			zoomable_zoom_to_fit_callback (bod->zoomable, bod);
 	 	}
-	 }
-	 else if (!bod->resize_flag && allocation->width == 1 && allocation->height == 1) {
-		bod->resize_flag = TRUE;
+		gtk_widget_queue_draw (bod->drawing_area);
+	} else if (!bod->got_penultimate_allocation
+		   && allocation->width == 1
+		   && allocation->height == 1) {
+		bod->got_penultimate_allocation = TRUE;
 	}
 }
 
@@ -652,17 +658,10 @@ control_factory_common (GtkWidget *scrolled_window)
 	bonobo_object_data_t *bod;
 
 	bod = g_new0 (bonobo_object_data_t, 1);
-	bod->scaled = NULL;
-	bod->zoomed = NULL;
 	bod->zoom_level = 1.0;
 	bod->drawing_area = gtk_drawing_area_new ();
-	bod->size_allocated = FALSE;
 	bod->scrolled_window = scrolled_window;
 
-	/* set flags that control initial shrink-to-fit */
-	bod->initial_flag = TRUE;
-	bod->resize_flag = FALSE;
-	
 	gtk_signal_connect (GTK_OBJECT (bod->drawing_area),
 			    "expose_event",
 			    GTK_SIGNAL_FUNC (drawing_area_exposed), bod);
@@ -671,8 +670,10 @@ control_factory_common (GtkWidget *scrolled_window)
 		bod->root = scrolled_window;
 		gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (bod->root), 
 						       bod->drawing_area);
-	} else
+	} else {
 		bod->root = bod->drawing_area;
+		bod->got_initial_size = TRUE;
+	}
 
 	gtk_widget_show_all (bod->root);
 	bod->control = bonobo_control_new (bod->root);
@@ -802,7 +803,8 @@ init_bonobo_image_generic_factory (void)
 {
         char *registration_id;
 
-	registration_id = oaf_make_registration_id ("OAFIID:nautilus_image_view_factory:61ea9ab1-e4b4-4da8-8f54-61cf6f33c4f6", g_getenv ("DISPLAY"));
+	registration_id = oaf_make_registration_id ("OAFIID:nautilus_image_view_factory:61ea9ab1-e4b4-4da8-8f54-61cf6f33c4f6",
+						    g_getenv ("DISPLAY"));
 
 	image_factory = bonobo_generic_factory_new_multi 
 		(registration_id,

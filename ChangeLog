@@ -1,3 +1,97 @@
+2001-04-02  Darin Adler  <darin@eazel.com>
+
+	Make file operations progress dialog always stay up for at least 1
+	second total so it doesn't just appear and disappear.
+	
+	Preparing for a fix to the nautilus-adapter process leaking when
+	Nautilus is terminated by Ctrl-C, I cleaned up some of the code
+	inside the adapter.
+
+	Improved the warning you get when neither /etc/mnttab nor
+	/proc/mounts can be opened.
+
+	Fix bug 6888 (when I view a large image, it appears first at 100%,
+	then zoomed to fit).
+
+	Re-added part of the code to make components go away when the main
+	program that is hosting them goes away. The X-window-based
+	solution is not working as well as I had hoped, so I'm re-adding
+	the 20-second-timeout-based solution.
+
+	* components/adapter/nautilus-adapter-embed-strategy.c:
+	(nautilus_adapter_embed_strategy_initialize_class),
+	(nautilus_adapter_embed_strategy_get),
+	(nautilus_adapter_embed_strategy_emit_open_location): Change the
+	strategy new functions to use more-normal reference rules. The
+	caller no longer expects them to "use up" a reference.
+	
+	* components/adapter/nautilus-adapter-control-embed-strategy.c:
+	(nautilus_adapter_control_embed_strategy_destroy),
+	(nautilus_adapter_control_embed_strategy_new): Don't keep a
+	reference to the BonoboControl around after creating the frame.
+	
+	* components/adapter/nautilus-adapter-embeddable-embed-strategy.c:
+	(nautilus_adapter_embeddable_embed_strategy_destroy),
+	(nautilus_adapter_embeddable_embed_strategy_new): Don't keep a
+	reference to the BonoboEmeddable around after creating the frame.
+	
+	* components/image-viewer/nautilus-image-view.c: (redraw_control),
+	(scrolled_window_size_allocate_callback),
+	(control_factory_common), (init_bonobo_image_generic_factory):
+	Some name changes, and a fix so that we don't show the image first
+	at 100%, and then shrink to fit. The downside is that this might
+	be too hard-coded to the current behavior of Nautilus, but it's
+	better than flashing every time you open an image.
+	
+	* components/services/trilobite/utils/.cvsignore: Ignore some
+	files in this new directory.
+	
+	* libnautilus-extensions/nautilus-file-operations-progress.h:
+	* libnautilus-extensions/nautilus-file-operations-progress.c:
+	(nautilus_file_operations_progress_update), (close_callback),
+	(nautilus_file_operations_progress_destroy), (map_callback),
+	(delete_event_callback),
+	(nautilus_file_operations_progress_initialize),
+	(nautilus_file_operations_progress_initialize_class),
+	(nautilus_file_operations_progress_new),
+	(nautilus_file_operations_progress_set_total),
+	(nautilus_file_operations_progress_set_operation_string),
+	(nautilus_file_operations_progress_new_file),
+	(nautilus_file_operations_progress_clear),
+	(nautilus_file_operations_progress_update_sizes),
+	(delayed_close_callback), (nautilus_file_operations_progress_done):
+	Did a lot of code cleanups throughout the file, and added a new
+	call nautilus_file_operations_progress_done. Use this instead of
+	gtk_object_destroy so that the window can linger long enough for
+	the user to see it, if a copy was really fast.
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(transfer_info_destroy), (parent_for_error_dialog),
+	(create_transfer_dialog), (handle_transfer_ok),
+	(handle_transfer_vfs_error): Change to use the new
+	nautilus_file_operations_progress_done call instead of
+	gtk_object_destroy when done with the progress dialog.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_update_scroll_region): Fix indentation.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(get_current_mount_list): Replace cryptic g_return_if_fail message
+	with better-worded g_warning.
+	
+	* libnautilus/nautilus-view.c: (set_frame_callback),
+	(widget_destroyed_callback),
+	(nautilus_view_construct_from_bonobo_control): Re-added code to
+	monitor the lifetime of the frame and self-destruct when the frame
+	goes away. The X-window-based solution wasn't working 100%, and
+	this solution does.
+	
+	* src/nautilus-sidebar.c: (toggle_sidebar_panel),
+	(sidebar_for_each_sidebar_panel): Change object data key to use a
+	prefix that includes the word "nautilus". Tweak code that builds
+	the menu so that it always includes any panel that's displayed,
+	even if the user level says it shouldn't be there.
+
 2001-04-02  Michael Engber  <engber@eazel.com>
 
 	reviewed by: John Harper  <jsh@eazel.com>
