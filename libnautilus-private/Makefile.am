@@ -48,6 +48,7 @@ libnautilus_extensions_la_LDFLAGS =	\
 	$(GNOMECANVASPIXBUF_LIBS)	\
 	$(GNOME_LIBS) 			\
 	$(LIBPNG) 			\
+	$(LIBJPEG) 			\
 	$(MEDUSA_LIBS) 			\
 	$(OAF_LIBS) 			\
 	$(VFS_LIBS) 			\
@@ -117,6 +118,7 @@ libnautilus_extensions_la_SOURCES = \
 	nautilus-sound.c \
 	nautilus-theme.c \
 	nautilus-thumbnails.c \
+	nautilus-thumbnails-jpeg.c \
 	nautilus-trash-directory.c \
 	nautilus-trash-file.c \
 	nautilus-trash-monitor.c \
@@ -192,6 +194,7 @@ noinst_HEADERS = \
 	nautilus-sound.h \
 	nautilus-theme.h \
 	nautilus-thumbnails.h \
+	nautilus-thumbnails-jpeg.h \
 	nautilus-trash-directory.h \
 	nautilus-trash-file.h \
 	nautilus-trash-monitor.h \

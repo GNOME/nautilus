@@ -1,8 +1,43 @@
+2001-04-26  Darin Adler  <darin@eazel.com>
+
+	Integrated a patch by Alexander Larsson <alla@lysator.liu.se> that
+	adds a JPEG-specific thumbnailing function that's faster than the
+	exiting thumbnail code. This new code is only included if the
+	libjpeg library is present at configure time. We still need RPM
+	spec file changes to require this library if we are going to build
+	RPMs on systems that have libjpeg. I fixed a few bugs in Alex's
+	original patch and made some coding style tweaks as well.
+
+	* acconfig.h:
+	* configure.in:
+	Added a check for libjpeg.
+	
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-thumbnails-jpeg.c:
+	* libnautilus-extensions/nautilus-thumbnails-jpeg.h:
+	Add new source files with JPEG thumbnailer.
+	
+	* libnautilus-extensions/nautilus-thumbnails.c: (make_thumbnails):
+	Call the new function for JPEG files.
+
+	Other changes.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c: Change
+	interval back to 2 seconds.
+
+	* libnautilus-extensions/nautilus-preferences.c:
+	(preferences_set_storage_path): Fix storage leak.
+	(nautilus_self_check_preferences): Added more checks.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file): Tiny code tweak.
+
 2001-04-26  Rebecca Schulman  <rebecka@eazel.com>
+	
 	Fix bugzilla.eazel.com bug 7934, to remove the ability
 	to make an index using Nautilus.  
 
-	reviewed by: Darin Adler <darin@eazle.com>
+	reviewed by: Darin Adler <darin@eazel.com>
 
 	* src/file-manager/fm-list-view.c: (get_cell_text):
 	* src/file-manager/fm-search-list-view.c: (real_load_error),

@@ -162,6 +162,7 @@ preferences_set_storage_path (const char *new_storage_path)
 	/* Stop monitoring the old path */
 	nautilus_gconf_monitor_remove (storage_path);
 
+	g_free (storage_path);
 	storage_path = g_strdup (new_storage_path);
 
 	/* Start monitoring the new path */
@@ -1806,8 +1807,6 @@ nautilus_preferences_initialize (const char *path)
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
-#define CONSTANT_STORAGE_PATH "/apps/self-check-nautilus"
-
 #define CHECK_BOOLEAN(name__, value__)								\
 G_STMT_START {											\
 	nautilus_preferences_set_boolean ((name__), (value__));					\
@@ -1823,7 +1822,7 @@ G_STMT_START {											\
 #define CHECK_STRING(name__, value__)							\
 G_STMT_START {										\
 	nautilus_preferences_set ((name__), (value__));					\
-	EEL_CHECK_STRING_RESULT (nautilus_preferences_get (name__), (value__));	\
+	EEL_CHECK_STRING_RESULT (nautilus_preferences_get (name__), (value__));		\
 } G_STMT_END
 
 void
@@ -1839,8 +1838,12 @@ nautilus_self_check_preferences (void)
 
 	nautilus_preferences_set_user_level (0);
 
+	/* FIXME: Fails if you add the commented-out lines. */
+	/* CHECK_INTEGER ("self-check/i", 0); */
 	CHECK_INTEGER ("self-check/i", 666);
+	/* CHECK_BOOLEAN ("self-check/b", FALSE); */
 	CHECK_BOOLEAN ("self-check/b", TRUE);
+	/* CHECK_STRING ("self-check/s", ""); */
 	CHECK_STRING ("self-check/s", "foo");
 
 	/* Restore the original user level */

@@ -28,6 +28,7 @@
 #include "nautilus-directory-notify.h"
 #include "nautilus-icon-factory-private.h"
 #include "nautilus-theme.h"
+#include "nautilus-thumbnails-jpeg.h"
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-string.h>
@@ -593,9 +594,17 @@ make_thumbnails (gpointer data)
 						fclose (f);
 					}
 				}
+#ifdef HAVE_LIBJPEG
+			} else if (nautilus_file_is_mime_type (file, "image/jpeg")) {
+				if (info->thumbnail_uri != NULL) {
+					full_size_image = nautilus_thumbnail_load_scaled_jpeg
+						(info->thumbnail_uri, 96, 96);
+				}
+#endif
 			} else {
-				if (info->thumbnail_uri != NULL)
-					full_size_image = eel_gdk_pixbuf_load (info->thumbnail_uri);						
+				if (info->thumbnail_uri != NULL) {
+					full_size_image = eel_gdk_pixbuf_load (info->thumbnail_uri);
+				}
 			}
 			nautilus_file_unref (file);
 			
@@ -603,7 +612,7 @@ make_thumbnails (gpointer data)
 				thumbnail_image_frame = load_thumbnail_frame (info->anti_aliased);
 									
 				/* scale the content image as necessary */	
-				scaled_image = eel_gdk_pixbuf_scale_down_to_fit(full_size_image, 96, 96);	
+				scaled_image = eel_gdk_pixbuf_scale_down_to_fit (full_size_image, 96, 96);	
 				gdk_pixbuf_unref (full_size_image);
 				
 				/* embed the content image in the frame, if necessary  */
@@ -611,15 +620,16 @@ make_thumbnails (gpointer data)
 
 					frame_offset_str = nautilus_theme_get_theme_data ("thumbnails", "FRAME_OFFSETS");
 					if (frame_offset_str != NULL) {
-						sscanf (frame_offset_str," %d , %d , %d , %d %*s", &left_offset, &top_offset, &right_offset, &bottom_offset);
+						sscanf (frame_offset_str," %d , %d , %d , %d %*s",
+							&left_offset, &top_offset, &right_offset, &bottom_offset);
 					} else {
 						/* use nominal values since the info in the theme couldn't be found */
 						left_offset = 3; top_offset = 3;
 						right_offset = 6; bottom_offset = 6;
 					}
-				
+					
 					framed_image = eel_embed_image_in_frame (scaled_image, thumbnail_image_frame,
-									      left_offset, top_offset, right_offset, bottom_offset);
+										 left_offset, top_offset, right_offset, bottom_offset);
 					g_free (frame_offset_str);
 				
 					gdk_pixbuf_unref (scaled_image);

@@ -793,6 +793,27 @@ dnl =======================
 dnl = End tests for libpng
 dnl =======================
 
+dnl ====================================
+dnl = Begin tests for libjpeg
+dnl ====================================
+  if test -z "$LIBJPEG"; then
+    AC_CHECK_LIB(jpeg, jpeg_start_decompress,
+      AC_CHECK_HEADER(jpeglib.h,
+        jpeg_ok=yes,
+        jpeg_ok=no),
+      AC_MSG_WARN(*** (jpeg library not found) ***), -lm)
+    if test "$jpeg_ok" = yes; then
+      JPEG='jpeg'; LIBJPEG='-ljpeg'
+      AC_DEFINE(HAVE_LIBJPEG)
+    else
+     AC_MSG_WARN(*** JPEG loader will not be built (jpeg header file not found) ***)
+    fi
+  fi
+
+AC_SUBST(LIBJPEG)
+dnl =======================
+dnl = End tests for libjpeg
+dnl =======================
 
 dnl =======================
 dnl = Set up for library directories
@@ -968,6 +989,8 @@ help/nautilus-quick-reference/sv/Makefile
 help/nautilus-quick-reference/ko/Makefile
 help/nautilus-release-notes/Makefile
 help/nautilus-release-notes/C/Makefile
+help/nautilus-screenshot-guidelines/Makefile
+help/nautilus-screenshot-guidelines/C/Makefile
 applets/Makefile
 applets/launcher/Makefile
 applets/preferences-applet/Makefile

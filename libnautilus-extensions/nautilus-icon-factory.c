@@ -1429,7 +1429,6 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 			}
 			
 			g_free (file_path);
-			file_path = NULL;
 		}
 		g_free (directory);
 		g_free (desktop_directory);
@@ -1478,7 +1477,6 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 				}
 			}
 			g_free (file_path);
-			file_path = NULL;
 		}
 	}
 
@@ -1493,7 +1491,6 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 				gnome_desktop_entry_free (entry);
 			}
 			g_free (file_path);
-			file_path = NULL;
 		}
 	}
 	
