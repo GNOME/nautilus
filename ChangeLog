@@ -1,8 +1,21 @@
 2001-08-30  Darin Adler  <darin@bentspoon.com>
 
+	* src/nautilus-main.c: (main): Add workaround for gnome-metadata bug
+	that was causing a stat and mkdir of NULL. (Yoann helped me find this).
+
+	* src/nautilus-window-manage-views.c: (update_title): Fix code that
+	was freeing the title and then using it afterward. (Yoann helped me
+	find this).
+
+	* src/nautilus-window.c: (refresh_stored_viewers): Fix code so that
+	it uses g_list_prepend and g_list_reverse instead of using
+	g_list_append, which is a bad habit.
+
+2001-08-30  Darin Adler  <darin@bentspoon.com>
+
 	* src/nautilus-search-bar-criterion.c:
 	(nautilus_search_bar_criterion_new_from_values): Fix a storage
-	leak that Yoann found.
+	leak that Yoann helped me find.
 
 2001-08-28  Darin Adler  <darin@bentspoon.com>
 

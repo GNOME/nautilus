@@ -264,8 +264,6 @@ update_title (NautilusWindow *window)
         	nautilus_sidebar_set_title (window->sidebar, title);
 	}
         nautilus_bookmark_set_name (window->current_location_bookmark, title);
-
-        g_free (title);
         
         /* Name of item in history list may have changed, tell listeners. */
         nautilus_send_history_list_changed ();
@@ -283,6 +281,8 @@ update_title (NautilusWindow *window)
                 nautilus_view_frame_title_changed (node->data, title);
         }
 	g_list_free (sidebar_panels);
+
+        g_free (title);
 }
 
 /* set_displayed_location:

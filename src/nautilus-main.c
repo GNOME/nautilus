@@ -36,23 +36,24 @@
 #include "nautilus-window.h"
 #include <bonobo/bonobo-main.h>
 #include <dlfcn.h>
+#include <eel/eel-debug.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-self-checks.h>
+#include <gdk/gdkx.h>
 #include <gnome-xml/parser.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-metadata.h>
 #include <libgnomeui/gnome-init.h>
 #include <libgnomevfs/gnome-vfs-init.h>
-#include <eel/eel-debug.h>
-#include <eel/eel-glib-extensions.h>
-#include <libnautilus-private/nautilus-lib-self-check-functions.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
-#include <eel/eel-self-checks.h>
 #include <libnautilus-private/nautilus-directory-metafile.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-lib-self-check-functions.h>
 #include <liboaf/liboaf.h>
-#include <gdk/gdkx.h>
-#include <X11/Xlib.h>
 #include <popt.h>
 #include <stdlib.h>
+#include <X11/Xlib.h>
 
 /* Keeps track of everyone who wants the main event loop kept active */
 static GSList *event_loop_registrants;
@@ -206,6 +207,12 @@ main (int argc, char *argv[])
 	eel_setenv ("DISPLAY", DisplayString (GDK_DISPLAY ()), TRUE);
 	orb = oaf_init (argc, argv);
         gdk_rgb_init ();
+
+	/* Workaround for gnome-libs bug.
+	 * If the first call is gnome_metadata_get, it doesn't initialize properly.
+	 */
+	gnome_metadata_lock ();
+	gnome_metadata_unlock ();
 
 	/* Check for argument consistency. */
 	args = poptGetArgs (popt_context);

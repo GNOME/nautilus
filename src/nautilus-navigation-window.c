@@ -1469,19 +1469,19 @@ view_as_menu_choose_view_callback (GtkWidget *widget, gpointer data)
 static void
 refresh_stored_viewers (NautilusWindow *window)
 {
-	GList *components;
-        GList *node;
+	GList *components, *node, *viewers;
 	NautilusViewIdentifier *identifier;
 
-        free_stored_viewers (window);
-
         components = nautilus_mime_get_short_list_components_for_file (window->details->viewed_file);
+	viewers = NULL;
         for (node = components; node != NULL; node = node->next) {
         	identifier = nautilus_view_identifier_new_from_content_view (node->data);
-        	window->details->short_list_viewers = 
-        		g_list_append (window->details->short_list_viewers, identifier);
+        	viewers = g_list_prepend (viewers, identifier);
         }
 	gnome_vfs_mime_component_list_free (components);
+
+        free_stored_viewers (window);
+	window->details->short_list_viewers = g_list_reverse (viewers);
 }
 
 static void
