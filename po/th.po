@@ -1,12 +1,13 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Free Software Foundation, Inc.
+# Thai nautilus translation.
+# Copyright (C) 2003 Free Software Foundation, Inc.
+# This file is distributed under the same license as the nautilus package.
 # Paisa Seeluangsawat <paisa@colorado.edu>, 2003.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "POT-Creation-Date: 2003-02-03 20:09+0100\n"
-"PO-Revision-Date: 2003-02-03 23:22-0700\n"
+"PO-Revision-Date: 2003-02-04 20:35-0700\n"
 "Last-Translator: Paisa Seeluangsawat <paisa@colorado.edu>\n"
 "Language-Team: Thai\n"
 "MIME-Version: 1.0\n"
@@ -43,11 +44,11 @@ msgstr "ตรา"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:2
 msgid "Nautilus Emblem side pane"
-msgstr ""
+msgstr "แถบข้างสำหรับตรา ของ Nautilus"
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:3
 msgid "Nautilus Emblem view"
-msgstr ""
+msgstr "มุมมองตรา ของ Nautilus"
 
 #: components/emblem/nautilus-emblem-view.c:202
 #, c-format
@@ -217,15 +218,15 @@ msgstr "ข้อมูลฮาร์ดแวร์โดยรวม"
 
 #: components/hardware/nautilus-hardware-view.c:632
 msgid "This is a placeholder for the CPU page."
-msgstr ""
+msgstr "นี่เป็นที่สำหรับหน้า CPU"
 
 #: components/hardware/nautilus-hardware-view.c:657
 msgid "This is a placeholder for the RAM page."
-msgstr ""
+msgstr "นี่เป็นที่สำหรับหน้า RAM"
 
 #: components/hardware/nautilus-hardware-view.c:682
 msgid "This is a placeholder for the IDE page."
-msgstr ""
+msgstr "นี่เป็นที่สำหรับหน้า IDE"
 
 #: components/history/Nautilus_View_history.server.in.in.h:1
 msgid "History"
@@ -768,7 +769,7 @@ msgstr "Wavy White"
 
 #: data/browser.xml.h:86
 msgid "Web"
-msgstr ""
+msgstr "Web"
 
 #: data/browser.xml.h:87
 msgid "White"
@@ -800,7 +801,7 @@ msgstr "ปรับแต่่งสภาพแวดล้อมสำหร
 
 #: data/preferences.desktop.in.h:2
 msgid "Desktop Preferences"
-msgstr ""
+msgstr "ปรับแต่งพื้นโต๊ะ"
 
 #: data/serverconfig.desktop.in.h:1
 msgid "Configure network services (web server, DNS server, etc.)"
@@ -1037,7 +1038,7 @@ msgstr "Sierra"
 
 #: icons/sierra/sierra.xml.h:2
 msgid "Uses manila folders and gray-green backgrounds."
-msgstr ""
+msgstr "โฟลเดอร์สีมะนิลา และพื้นสีเทาเขียว"
 
 #: icons/tahoe/tahoe.xml.h:1
 msgid "Tahoe"
@@ -1045,7 +1046,7 @@ msgstr "Tahoe"
 
 #: icons/tahoe/tahoe.xml.h:2
 msgid "This theme uses photo-realistic folders."
-msgstr ""
+msgstr "ใช้โฟลเดอร์รูปเหมือนจริง"
 
 #: libbackground/preview-file-selection.c:207
 msgid "Can't find an hbox, using a normal file selection"
@@ -1054,7 +1055,7 @@ msgstr ""
 #: libbackground/preview-file-selection.c:212
 #: src/nautilus-file-management-properties.glade.h:54
 msgid "Preview"
-msgstr ""
+msgstr "ตัวอย่าง"
 
 #: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "AFFS Volume"
@@ -1330,13 +1331,16 @@ msgstr ""
 "ย้าย \"%s\" ไม่ได้เพราะคุณไม่มีสิทธิ์ที่จะแก้ไขแฟ้มนี้หรือโฟลเดอร์ที่มันอยู่"
 
 #: libnautilus-private/nautilus-file-operations.c:595
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "Error while moving.\n"
 "\n"
 "\"%s\" cannot be moved because it or its parent folder are contained in the "
 "destination."
 msgstr ""
+"เกิดข้อผิดพลาดขณะย้าย\n"
+"\n"
+"ไม่สามารถย้าย \"%s\" ได้เพราะ parent folder อยู่ในข้างในจุดหมาย"
 
 #: libnautilus-private/nautilus-file-operations.c:605
 #, c-format
@@ -2763,13 +2767,16 @@ msgstr "เน้นตัวที่ถูกเลือก"
 msgid "whether we are highlighted for a selection"
 msgstr "ว่าจะเน้นตัวที่ถูกเลือกหรือไม่"
 
+# Don't know what this is for
 #: libnautilus-private/nautilus-icon-canvas-item.c:2055
+#, fuzzy
 msgid "highlighted as keyboard focus"
-msgstr ""
+msgstr "เน้นเมื่อได้รับโฟกัสแป้นพิมพ์"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2056
+#, fuzzy
 msgid "whether we are highlighted to render keyboard focus"
-msgstr ""
+msgstr "ว่าจะเน้นเมื่อได้รับโฟกัสแป้นพิมพ์หรือไม่"
 
 #: libnautilus-private/nautilus-icon-canvas-item.c:2064
 msgid "highlighted for drop"
@@ -2889,6 +2896,15 @@ msgid ""
 "Fast searches will not be available until an initial index of your files has "
 "been created.  This may take a long time."
 msgstr ""
+"ถ้าคุณต้องการทำให้ใช้การค้นหาแบบเร็วได้ โปรดแก้แฟ้ม %s ขณะเป็นผู้ใช้ root แล้วแก้ enabled "
+"flag เป็น \"yes\"  นี่จะเปิดใช้บริการสร้างดัชนี (Medusa).\n"
+"\n"
+"ถ้าจะเริ่มสร้างดัชนีแฟ้มและเริ่มใช้บริการค้นหาแบบเร็วทันที โปรดใช้คำสั่งต่อไปนี้ขณะเป็น root\n"
+"\n"
+"medusa-indexd\n"
+"medusa-searchd\n"
+"\n"
+"การค้นหาแบบเร็วจะใช้ได้หลังจากดัชนีของแฟ้มคุณถูกสร้างเสร็จเรียบร้อย  นี่อาจจะใช้เวลานานพอสมควร"
 
 #: libnautilus-private/nautilus-medusa-support.c:138
 #, fuzzy
@@ -2908,7 +2924,7 @@ msgstr ""
 #: libnautilus-private/nautilus-program-chooser.c:193
 #, c-format
 msgid "There was an error displaying help: %s"
-msgstr "เกิดข้อผิดพลาดขณะแสดงข้อความช่วยเหลือ: %s"
+msgstr "เกิดข้อผิดพลาดขณะแสดงวิธีใช้: %s"
 
 #: libnautilus-private/nautilus-program-chooser.c:333
 msgid "not in menu"
@@ -3132,7 +3148,7 @@ msgstr "เพื่อความปลอดภัย จะเรียก�
 
 #: libnautilus-private/nautilus-program-choosing.c:672
 msgid "Can't execute remote links"
-msgstr ""
+msgstr "เรียกใช้โปรแกรมจากเครื่องอื่นไม่ได้"
 
 #: libnautilus-private/nautilus-program-choosing.c:682
 #: libnautilus-private/nautilus-program-choosing.c:748
@@ -3328,12 +3344,12 @@ msgstr "[Items ]ที่ถูกแก้ไขหลัง %s"
 #: libnautilus-private/nautilus-search-uri.c:342
 #, c-format
 msgid "[Items ]modified within a week of %s"
-msgstr "[Items ]ที่ถูกแก้ไขในสัปดาห์ %s"
+msgstr "[Items ]ที่ถูกแก้ไขภายในหนึ่งสัปดาห์จาก %s"
 
 #: libnautilus-private/nautilus-search-uri.c:345
 #, c-format
 msgid "[Items ]modified within a month of %s"
-msgstr "[Items ]ที่ถูกแก้ไขในเดือน %s"
+msgstr "[Items ]ที่ถูกแก้ไขภายในหนึ่งเดือนจาก %s"
 
 #. "%s" here is the name of an Emblem
 #: libnautilus-private/nautilus-search-uri.c:358
@@ -3612,15 +3628,15 @@ msgstr "สัญลักษ์"
 
 #: src/Nautilus_shell.server.in.h:3
 msgid "Icons Viewer"
-msgstr ""
+msgstr "ตัวแสดงมุมมองสัญลักษ์"
 
 #: src/Nautilus_shell.server.in.h:4
 msgid "List"
-msgstr "เรียงรายการ"
+msgstr "รายชื่อ"
 
 #: src/Nautilus_shell.server.in.h:5
 msgid "List Viewer"
-msgstr ""
+msgstr "ตัวแสดงมุมมองรายชื่อ"
 
 #: src/Nautilus_shell.server.in.h:6
 msgid "Nautilus factory"
@@ -3628,37 +3644,37 @@ msgstr ""
 
 #: src/Nautilus_shell.server.in.h:7
 msgid "Nautilus file manager component that shows a scrollable list"
-msgstr ""
+msgstr "Component ของ Nautilus ที่แสดงมุมมองรายชื่อ"
 
 #: src/Nautilus_shell.server.in.h:8
 msgid ""
 "Nautilus file manager component that shows a scrollable list for search "
 "results"
-msgstr ""
+msgstr "Component ของ Nautilus ที่แสดงมุมมองรายชื่อสำหรับผลการค้นหา"
 
 #: src/Nautilus_shell.server.in.h:9
 msgid "Nautilus file manager component that shows a two-dimensional icon space"
-msgstr ""
+msgstr "Component ของ Nautilus ที่แสดงพื้นที่สองมิติสำหรับสัญลักษ์ (มุมมองสัญลักษ์)"
 
 #: src/Nautilus_shell.server.in.h:10
 msgid "Nautilus file manager component that shows icons on the desktop"
-msgstr ""
+msgstr "Component ของ Nautilus ที่แสดงสัญลักษ์บนพื้นโต๊ะ"
 
 #: src/Nautilus_shell.server.in.h:11
 msgid "Nautilus file manager desktop icon view"
-msgstr ""
+msgstr "มุมมองสัญลักษ์บนพื้นโต๊ะ ของ Nautilus"
 
 #: src/Nautilus_shell.server.in.h:12
 msgid "Nautilus file manager icon view"
-msgstr ""
+msgstr "มุมมองสัญลักษ์ ของ Nautilus"
 
 #: src/Nautilus_shell.server.in.h:13
 msgid "Nautilus file manager list view"
-msgstr ""
+msgstr "มุมมองเรียงรายชื่อ ของ Nautilus"
 
 #: src/Nautilus_shell.server.in.h:14
 msgid "Nautilus file manager search results list view"
-msgstr ""
+msgstr "มุมมองเรียงรายชื่อผลการค้นหา ของ Nautilus"
 
 #: src/Nautilus_shell.server.in.h:15
 msgid "Nautilus metafile factory"
@@ -3666,7 +3682,7 @@ msgstr ""
 
 #: src/Nautilus_shell.server.in.h:16
 msgid "Nautilus shell"
-msgstr ""
+msgstr "Nautilus shell"
 
 #: src/Nautilus_shell.server.in.h:17
 msgid ""
@@ -3688,7 +3704,7 @@ msgstr "มุมมองสัญลักษ์"
 
 #: src/Nautilus_shell.server.in.h:21
 msgid "View as List"
-msgstr "มุมมองเรียงรายการ"
+msgstr "มุมมองรายชื่อ"
 
 #: src/Nautilus_shell.server.in.h:22
 msgid "View as _Icons"
@@ -3696,7 +3712,7 @@ msgstr "มุมมองสัญลักษ์ (_I)"
 
 #: src/Nautilus_shell.server.in.h:23
 msgid "View as _List"
-msgstr "มุมมองเรียงรายการ (_L)"
+msgstr "มุมมองรายชื่อ (_L)"
 
 #: src/file-manager/fm-desktop-icon-view.c:785
 msgid "Background"
@@ -3917,7 +3933,7 @@ msgstr "ทำคำสั่งที่ให้ไม่สำเร็จ"
 #: src/file-manager/fm-directory-view.c:4042
 #, c-format
 msgid "Run \"%s\" on any selected items"
-msgstr ""
+msgstr "เรียกใช้ \"%s\" บนแต่ละรายการที่เลือก"
 
 #: src/file-manager/fm-directory-view.c:4252
 msgid ""
@@ -3925,10 +3941,12 @@ msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
 msgstr ""
+"ทุกแฟ้มในโฟลเดอร์นี้ที่เป็นโปรแกรมจะโผล่ขึ้นมาในเมนูสคริปต์ "
+"ถ้าคุณเลือกสคริปต์จากเมนูนี้สคริปต์นั้นจะถูกเรียกใช้โดยมีรายการที่เลือกไว้เป็นค่านำเข้า (input)"
 
 #: src/file-manager/fm-directory-view.c:4255
 msgid "About Scripts"
-msgstr ""
+msgstr "เกี่ยวกับสคริปต์"
 
 #: src/file-manager/fm-directory-view.c:4256
 msgid ""
@@ -4460,7 +4478,7 @@ msgstr "ตั้งหมายเลขผู้ใช้(UID) (_U)"
 
 #: src/file-manager/fm-properties-window.c:2009
 msgid "Special flags:"
-msgstr ""
+msgstr "ป้ายบอกสถานะพิเศษ:"
 
 #: src/file-manager/fm-properties-window.c:2012
 msgid "Set gro_up ID"
@@ -4528,12 +4546,12 @@ msgid ""
 "There was an error displaying help: \n"
 "%s"
 msgstr ""
-"เกิดข้อผิดพลาดขณะแสดงข้อความช่วยเหลือ: \n"
+"เกิดข้อผิดพลาดขณะแสดงวิธีใช้: \n"
 "%s"
 
 #: src/file-manager/fm-properties-window.c:2359
 msgid "Couldn't show help"
-msgstr "แสดงข้อความช่วยเหลือไม่ได้"
+msgstr "แสดงวิธีใช้ไม่ได้"
 
 #: src/file-manager/fm-properties-window.c:2623
 msgid "Cancel Showing Properties Window?"
@@ -4583,7 +4601,6 @@ msgid "Search for items that are too new"
 msgstr "สิ่งที่หานั้นใหม่เกินไป"
 
 #: src/file-manager/fm-search-list-view.c:200
-#, fuzzy
 msgid ""
 "Every indexed file on your computer matches the criteria you selected. You "
 "can check the spelling on your selections or add more criteria to narrow "
@@ -4884,7 +4901,6 @@ msgid "Open each selected item in a new window"
 msgstr "เปิดรายการที่เลือกในหน้าต่างใหม่"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:22
-#, fuzzy
 msgid "Open the selected item in this window"
 msgstr "เปิดรายการที่เลือกในหน้าต่างนี้"
 
@@ -5209,15 +5225,15 @@ msgstr ""
 
 #: src/nautilus-bookmarks-window.c:171
 msgid "No bookmarks defined"
-msgstr "ยังไม่มีที่คั่นหนังสือ"
+msgstr "ยังไม่มีที่คั่นหน้า"
 
 #: src/nautilus-bookmarks-window.glade.h:1
 msgid "Edit Bookmarks"
-msgstr "แก้ไขที่คั่นหนังสือ"
+msgstr "แก้ไขที่คั่นหน้า"
 
 #: src/nautilus-bookmarks-window.glade.h:2 src/nautilus-shell-ui.xml.h:56
 msgid "_Bookmarks"
-msgstr "ที่คั่นหนังสือ (_B)"
+msgstr "ที่คั่นหน้า (_B)"
 
 #: src/nautilus-bookmarks-window.glade.h:3
 msgid "_Location:"
@@ -5238,7 +5254,7 @@ msgstr "ค้นหา"
 
 #: src/nautilus-file-management-properties.glade.h:1
 msgid "    "
-msgstr ""
+msgstr "    "
 
 #: src/nautilus-file-management-properties.glade.h:4
 msgid "100 KB"
@@ -5250,47 +5266,47 @@ msgstr "500 KB"
 
 #: src/nautilus-file-management-properties.glade.h:23
 msgid "<span weight=\"bold\">Behaviour</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">พฤติกรรม</span>"
 
 #: src/nautilus-file-management-properties.glade.h:24
 msgid "<span weight=\"bold\">Default View</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">มุมมองปริยาย</span>"
 
 #: src/nautilus-file-management-properties.glade.h:25
 msgid "<span weight=\"bold\">Executable Text Files</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">แฟ้ม text ที่เรียกใช้ได้</span>"
 
 #: src/nautilus-file-management-properties.glade.h:26
 msgid "<span weight=\"bold\">Folders</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">แฟ้ม</span>"
 
 #: src/nautilus-file-management-properties.glade.h:27
 msgid "<span weight=\"bold\">Icon Captions</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">คำบรรยายสัญลักษ์</span>"
 
 #: src/nautilus-file-management-properties.glade.h:28
 msgid "<span weight=\"bold\">Icon View Defaults</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">ค่าปริยายของมุมมองสัญลักษ์</span>"
 
 #: src/nautilus-file-management-properties.glade.h:29
 msgid "<span weight=\"bold\">Image Files</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">แฟ้มภาพ</span>"
 
 #: src/nautilus-file-management-properties.glade.h:30
 msgid "<span weight=\"bold\">List View Defaults</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">ค่าปริยายของมุมมองรายชื่อ</span>"
 
 #: src/nautilus-file-management-properties.glade.h:31
 msgid "<span weight=\"bold\">Sound Files</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">แฟ้มเสียง</span>"
 
 #: src/nautilus-file-management-properties.glade.h:32
 msgid "<span weight=\"bold\">Text Files</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">แฟ้ม text</span>"
 
 #: src/nautilus-file-management-properties.glade.h:33
 msgid "<span weight=\"bold\">Trash</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">ถังขยะ</span>"
 
 #: src/nautilus-file-management-properties.glade.h:34
 msgid "<span weight=\"bold\">Tree View Defaults</span>"
@@ -5588,117 +5604,106 @@ msgstr "ค่าสี (_V):"
 #: src/nautilus-property-browser.c:1095
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
-msgstr ""
+msgstr "ใช้ชื่อ \"%s\" ไม่ได้"
 
 #: src/nautilus-property-browser.c:1097
 msgid "Sorry, but you did not supply a valid file name."
-msgstr ""
+msgstr "ชื่อที่คุณให้ใช้ไม่ได้"
 
 #: src/nautilus-property-browser.c:1099 src/nautilus-property-browser.c:1142
 msgid "Couldn't install pattern"
-msgstr ""
+msgstr "ติดตั้งลวดลายไม่สำเร็จ"
 
 #: src/nautilus-property-browser.c:1110
 msgid "Sorry, but you can't replace the reset image."
-msgstr ""
+msgstr "เปลี่ยนภาพสำหรับปุ่ม \"เริ่มใหม่\" ไม่ได้"
 
 #: src/nautilus-property-browser.c:1110 src/nautilus-property-browser.c:1313
 #: src/nautilus-property-browser.c:1329
-#, fuzzy
 msgid "Not an Image"
-msgstr "สแกนภาพ..."
+msgstr "ไม่ใช่ภาพ"
 
 #: src/nautilus-property-browser.c:1141
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
-msgstr ""
+msgstr "ติดตั้งลวดลาย %s ไม่สำเร็จ"
 
 #: src/nautilus-property-browser.c:1161
 msgid "Select an image file to add as a pattern"
-msgstr ""
+msgstr "เลือกแฟ้มภาพที่รวมไว้ใช้สำหรับลวดลาย"
 
 #: src/nautilus-property-browser.c:1222
 msgid "Sorry, but you must specify a non-blank name for the new color."
-msgstr ""
+msgstr "คุณต้องตั้งชื่อสำหรับสีใหม่"
 
 #: src/nautilus-property-browser.c:1223
 msgid "Couldn't install color"
-msgstr ""
+msgstr "ติดตั้งสีไม่สำเร็จ"
 
 #: src/nautilus-property-browser.c:1275
-#, fuzzy
 msgid "Select a color to add"
-msgstr "พื้นหลัง"
+msgstr "เลือกสีที่จะเพิ่ม"
 
 #: src/nautilus-property-browser.c:1312 src/nautilus-property-browser.c:1328
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
-msgstr ""
+msgstr "\"%s\" ไม่ใช่แฟ้มรูปที่ใช้ได้"
 
 #: src/nautilus-property-browser.c:2035
-#, fuzzy
 msgid "Select A Category:"
-msgstr "เลือกรูปแบบ:"
+msgstr ""
 
 #: src/nautilus-property-browser.c:2044
-#, fuzzy
 msgid "C_ancel Remove"
-msgstr "ยกเลิกแล้ว"
+msgstr "ยกเลิกการลบ (_A)"
 
 #: src/nautilus-property-browser.c:2050
-#, fuzzy
 msgid "_Add a New Pattern..."
-msgstr "รูปแบบใหม่"
+msgstr "เพิ่มลวดลายใหม่ (_A)..."
 
 #: src/nautilus-property-browser.c:2053
-#, fuzzy
 msgid "_Add a New Color..."
-msgstr "เปลี่ยนสี..."
+msgstr "เพิ่มสีใหม่ (_A)..."
 
 #: src/nautilus-property-browser.c:2056
 msgid "_Add a New Emblem..."
-msgstr ""
+msgstr "เพิ่มตราใหม่ (_A)..."
 
 #: src/nautilus-property-browser.c:2079
 msgid "Click on a pattern to remove it"
-msgstr ""
+msgstr "คลิกบนลวดลายที่จะลบ"
 
 #: src/nautilus-property-browser.c:2082
 msgid "Click on a color to remove it"
-msgstr ""
+msgstr "คลิกบนสีที่จะลบ"
 
 #: src/nautilus-property-browser.c:2085
 msgid "Click on an emblem to remove it"
-msgstr ""
+msgstr "คลิกบนตราที่จะลบ"
 
 #: src/nautilus-property-browser.c:2094
-#, fuzzy
 msgid "Patterns:"
-msgstr "รูปแบบ"
+msgstr "ลวดลาย:"
 
 #: src/nautilus-property-browser.c:2097
-#, fuzzy
 msgid "Colors:"
-msgstr "สี"
+msgstr "สี:"
 
 #: src/nautilus-property-browser.c:2100
 msgid "Emblems:"
-msgstr ""
+msgstr "ตรา:"
 
 #: src/nautilus-property-browser.c:2120
-#, fuzzy
 msgid "_Remove a Pattern..."
-msgstr "เปลี่ยนชื่อหน้า..."
+msgstr "ลบลวดลาย (_R)..."
 
 #: src/nautilus-property-browser.c:2123
-#, fuzzy
 msgid "_Remove a Color..."
-msgstr "ลบ..."
+msgstr "ลบสี (_R)..."
 
 #: src/nautilus-property-browser.c:2126
-#, fuzzy
 msgid "_Remove an Emblem..."
-msgstr "ลบ..."
+msgstr "ลบตรา (_R)..."
 
 #. Menu item in the search bar.
 #. Bracketed items are context, and are message
@@ -5709,262 +5714,259 @@ msgstr "ลบ..."
 #. will not be used.
 #: src/nautilus-search-bar-criterion.c:73
 msgid "[Search for] Name [contains \"fish\"]"
-msgstr ""
+msgstr "[Search for] ชื่อ [contains \"fish\"]"
 
 #: src/nautilus-search-bar-criterion.c:74
 msgid "[Search for] Content [includes all of \"fish tree\"]"
-msgstr ""
+msgstr "[Search for] เนื้อหา [includes all of \"fish tree\"]"
 
 #: src/nautilus-search-bar-criterion.c:75
 msgid "[Search for] Type [is regular file]"
-msgstr ""
+msgstr "[Search for] ชนิด [is regular file]"
 
 #: src/nautilus-search-bar-criterion.c:76
 msgid "[Search for] Size [larger than 400K]"
-msgstr ""
+msgstr "[Search for] ขนาด [larger than 400K]"
 
 #: src/nautilus-search-bar-criterion.c:77
 msgid "[Search for] With Emblem [includes \"Important\"]"
-msgstr ""
+msgstr "[Search for] แฟ้มที่ตรา [includes \"Important\"]"
 
 #: src/nautilus-search-bar-criterion.c:78
 msgid "[Search for] Last Modified [before yesterday]"
-msgstr ""
+msgstr "[Search for] แก้ไขครั้งสุดท้าย [before yesterday]"
 
 #: src/nautilus-search-bar-criterion.c:79
 msgid "[Search for] Owner [is not root]"
-msgstr ""
+msgstr "[Search for] เจ้าของ [is not root]"
 
 #: src/nautilus-search-bar-criterion.c:85
 msgid "[File name] contains [help]"
-msgstr ""
+msgstr "[File name] มีคำว่า [help]"
 
 #: src/nautilus-search-bar-criterion.c:86
 msgid "[File name] starts with [nautilus]"
-msgstr ""
+msgstr "[File name] เริ่มด้วย [nautilus]"
 
 #: src/nautilus-search-bar-criterion.c:87
 msgid "[File name] ends with [.c]"
-msgstr ""
+msgstr "[File name] จบด้วย [.c]"
 
 #: src/nautilus-search-bar-criterion.c:88
 msgid "[File name] matches glob [*.c]"
-msgstr ""
+msgstr "[File name] ตรงกับ glob [*.c]"
 
 #: src/nautilus-search-bar-criterion.c:89
 msgid "[File name] matches regexp [\"e??l.$\"]"
-msgstr ""
+msgstr "[File name] ตรงกับ regexp [\"e??l.$\"]"
 
 #: src/nautilus-search-bar-criterion.c:94
 msgid "[File content] includes all of [apple orange]"
-msgstr ""
+msgstr "[File content] มีทุกคำจาก [apple orange]"
 
 #: src/nautilus-search-bar-criterion.c:95
 msgid "[File content] includes any of [apply orange]"
-msgstr ""
+msgstr "[File content] มีอย่างน้อยหนึ่งคำจาก [apply orange]"
 
 #: src/nautilus-search-bar-criterion.c:96
 msgid "[File content] does not include all of [apple orange]"
-msgstr ""
+msgstr "[File content] ไม่มีอย่างน้อยหนึ่งคำจาก [apple orange]"
 
 #: src/nautilus-search-bar-criterion.c:97
 msgid "[File content] includes none of [apple orange]"
-msgstr ""
+msgstr "[File content] ไม่มีสักคำจาก [apple orange]"
 
 #: src/nautilus-search-bar-criterion.c:103
 msgid "[File type] is [folder]"
-msgstr ""
+msgstr "[File type] เป็น [folder]"
 
 #: src/nautilus-search-bar-criterion.c:104
 msgid "[File type] is not [folder]"
-msgstr ""
+msgstr "[File type] ไม่ใช่ [folder]"
 
 #: src/nautilus-search-bar-criterion.c:109
 msgid "[File type is] regular file"
-msgstr ""
+msgstr "[File type is] แฟ้มปกติ"
 
 #: src/nautilus-search-bar-criterion.c:110
-#, fuzzy
 msgid "[File type is] text file"
-msgstr "ล้มเหลวในการเขียนแฟ้ม"
+msgstr "[File type is] แฟ้ม text"
 
 #: src/nautilus-search-bar-criterion.c:111
-#, fuzzy
 msgid "[File type is] application"
-msgstr "ออกจากโปรแกรม"
+msgstr "[File type is] โปรแกรม"
 
 #: src/nautilus-search-bar-criterion.c:112
 msgid "[File type is] folder"
-msgstr ""
+msgstr "[File type is] โฟลเดอร์"
 
 #: src/nautilus-search-bar-criterion.c:113
 msgid "[File type is] music"
-msgstr ""
+msgstr "[File type is] เพลง"
 
 #: src/nautilus-search-bar-criterion.c:118
 msgid "[File size is] larger than [400K]"
-msgstr ""
+msgstr "[File size is] ใหญ่กว่า [400K]"
 
 #: src/nautilus-search-bar-criterion.c:119
 msgid "[File size is] smaller than [300K]"
-msgstr ""
+msgstr "[File size is] เล็กกว่า [300K]"
 
 #: src/nautilus-search-bar-criterion.c:124
 msgid "[With emblem] marked with [Important]"
-msgstr ""
+msgstr "[With emblem] ประกอบด้วย [Important]"
 
 #: src/nautilus-search-bar-criterion.c:125
 msgid "[With emblem] not marked with [Important]"
-msgstr ""
+msgstr "[With emblem] ไม่ประกอบด้วย [Important]"
 
 #: src/nautilus-search-bar-criterion.c:130
 msgid "[Last modified date] is [1/24/00]"
-msgstr ""
+msgstr "[Last modified date] เมื่อ [1/24/00]"
 
 #: src/nautilus-search-bar-criterion.c:131
 msgid "[Last modified date] is not [1/24/00]"
-msgstr ""
+msgstr "[Last modified date] ไม่ใช่เมื่อ [1/24/00]"
 
 #: src/nautilus-search-bar-criterion.c:132
 msgid "[Last modified date] is after [1/24/00]"
-msgstr ""
+msgstr "[Last modified date] หลังจาก [1/24/00]"
 
 #: src/nautilus-search-bar-criterion.c:133
 msgid "[Last modified date] is before [1/24/00]"
-msgstr ""
+msgstr "[Last modified date] ก่อน [1/24/00]"
 
 #: src/nautilus-search-bar-criterion.c:135
-#, fuzzy
 msgid "[Last modified date] is today"
-msgstr "ถูกแก้ไข"
+msgstr "[Last modified date] วันนี้"
 
 #: src/nautilus-search-bar-criterion.c:136
 msgid "[Last modified date] is yesterday"
-msgstr ""
+msgstr "[Last modified date] เมื่อวาน"
 
 #: src/nautilus-search-bar-criterion.c:138
 msgid "[Last modified date] is within a week of [1/24/00]"
-msgstr ""
+msgstr "[Last modified date] ภายในหนึ่งสัปดาห์จาก [1/24/00]"
 
 #: src/nautilus-search-bar-criterion.c:139
 msgid "[Last modified date] is within a month of [1/24/00]"
-msgstr ""
+msgstr "[Last modified date] ภายในหนึ่งเดือนจาก [1/24/00]"
 
 #: src/nautilus-search-bar-criterion.c:158
 msgid "[File owner] is [root]"
-msgstr ""
+msgstr "[File owner] คือ [root]"
 
 #: src/nautilus-search-bar-criterion.c:159
 msgid "[File owner] is not [root]"
-msgstr ""
+msgstr "[File owner] ไม่ใช่ [root]"
 
 #: src/nautilus-server-connect.c:129
 msgid ""
 "Couldn't execute nautilus\n"
 "Make sure nautilus is in your path and correctly installed"
 msgstr ""
+"เรียกใช้ Nautilus ไม่สำเร็จ โปรดสำรวจให้แน่ใจว่า Nautilus อยู่ใน path "
+"ของคุณและถูกติดตั้งอย่างเรียบร้อย"
 
 #: src/nautilus-server-connect.c:392
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "Couldn't connect to URI %s\n"
 "Please make sure that the address is correct and alternatively, type in this "
 "address in the file manager directly"
 msgstr ""
+"ไม่สามารถติดต่อไปที่ URI %s\n"
+"โปรดตรวจดูว่าที่นี้อยู่ถูกต้อง ถ้าไม่ดีขึ้นโปรดลองพิมพ์ที่อยู่นี้ลงใน file manager โดยตรง"
 
 #: src/nautilus-server-connect.c:457
 msgid ""
 "Glade file for the connect to server program is missing.\n"
 "Please check your installation of nautilus"
 msgstr ""
+"ไม่เจอแฟ้ม Glade ของโปรแกรมสำหรับติดต่อไปเซิร์ฟเวอร์  Nautilus อาจจะถูกติดตั้งอย่างไม่ถูกต้อง"
 
 #: src/nautilus-server-connect.desktop.in.h:1
 msgid "Add a new server to your Network Servers and connect to it"
-msgstr ""
+msgstr "เพิ่มเซิร์ฟเวอร์ลงในรายชื่อ Network Servers แล้วเชื่อมต่อไปที่นั่น"
 
 #: src/nautilus-server-connect.desktop.in.h:2
 #: src/nautilus-server-connect.glade.h:2
-#, fuzzy
 msgid "New Server"
-msgstr "เซิร์ฟเวอร์"
+msgstr "เซิร์ฟเวอร์ใหม่"
 
 #: src/nautilus-server-connect.glade.h:1
 msgid "*"
-msgstr ""
+msgstr "*"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
-msgstr ""
+msgstr "เพิ่มที่คั่นหน้าสำหรับที่อยู่ปัจจุบันลงในเมนูนี้"
 
 #: src/nautilus-shell-ui.xml.h:2
-#, fuzzy
 msgid "Back"
-msgstr "ย้อนกลับ"
+msgstr "ก่อนหน้า"
 
 #: src/nautilus-shell-ui.xml.h:4
 msgid "Change the visibility of this window's location bar"
-msgstr ""
+msgstr "เปลี่ยนทัศนวิสัยของที่แถบที่อยู่ของหน้าต่างนี้"
 
 #: src/nautilus-shell-ui.xml.h:5
 msgid "Change the visibility of this window's sidebar"
-msgstr ""
+msgstr "เปลี่ยนทัศนวิสัยของที่แถบข้างของหน้าต่างนี้"
 
 #: src/nautilus-shell-ui.xml.h:6
 msgid "Change the visibility of this window's statusbar"
-msgstr ""
+msgstr "เปลี่ยนทัศนวิสัยของที่แถบสถานะของหน้าต่างนี้"
 
 #: src/nautilus-shell-ui.xml.h:7
 msgid "Change the visibility of this window's toolbar"
-msgstr ""
+msgstr "เปลี่ยนทัศนวิสัยของที่แถบเครื่องมือของหน้าต่างนี้"
 
 #: src/nautilus-shell-ui.xml.h:8
 msgid "Choose a view for the current location, or modify the set of views"
-msgstr ""
+msgstr "เลือกมุมมองสำหรับตำแหน่งนี้ หรือมุมมองที่ใช้โดยทั่วไป"
 
 #: src/nautilus-shell-ui.xml.h:9
 msgid "Clear contents of Go menu and Back/Forward lists"
-msgstr ""
+msgstr "ล้างเนื้อหาของเมนู ไป, ก่อนหน้า, ถัดไป"
 
 #: src/nautilus-shell-ui.xml.h:10
-#, fuzzy
 msgid "Close _All Windows"
-msgstr "ปิดหน้าต่าง"
+msgstr "ปิดทุกหน้าต่าง (_A)"
 
 #: src/nautilus-shell-ui.xml.h:11
 msgid "Close all Nautilus windows"
-msgstr ""
+msgstr "ปิดหน้าต่าง Nautilus ทุกบาน"
 
 #: src/nautilus-shell-ui.xml.h:12
-#, fuzzy
 msgid "Close this window"
-msgstr "ปิดหน้าต่าง"
+msgstr "ปิดหน้าต่างนี้"
 
 #: src/nautilus-shell-ui.xml.h:14
 msgid "Display Nautilus help"
-msgstr ""
+msgstr "แสดงวิธีใช้ Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:15
 msgid "Display a window that allows editing the bookmarks in this menu"
-msgstr ""
+msgstr "แสดงหน้าต่างสำหรับแก้ไขที่คั่นหน้าที่อยู่ในเมนูนี้"
 
 #: src/nautilus-shell-ui.xml.h:16
 msgid "Display credits for the creators of Nautilus"
-msgstr ""
+msgstr "แสดงรายชื่อผู้เขียน Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:17
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
-msgstr ""
+msgstr "แสดงลวดลาย สี และ ตรา ที่ใช้ตกแต่ง Nautilus ได้"
 
 #: src/nautilus-shell-ui.xml.h:18
-#, fuzzy
 msgid "Display the latest contents of the current location"
-msgstr "Comment=การกรองข้อความง่ายๆ"
+msgstr "แสดงเนื้อหาปัจจุบันของตำแหน่งปัจจุบัน"
 
 #: src/nautilus-shell-ui.xml.h:19
 msgid "Edit Nautilus preferences"
-msgstr ""
+msgstr "แก้ไขลักษณะที่ปรากฏของ Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:20
 msgid "Find"
@@ -5976,59 +5978,53 @@ msgstr "ถัดไป"
 
 #: src/nautilus-shell-ui.xml.h:22
 msgid "Go to the Start Here folder"
-msgstr ""
+msgstr "ไปที่โฟลเดอร์ \"เริ่มที่นี่\""
 
 #: src/nautilus-shell-ui.xml.h:23
 msgid "Go to the home location"
-msgstr ""
+msgstr "ไปที่ตำแหน่งบ้าน"
 
 #: src/nautilus-shell-ui.xml.h:24
 msgid "Go to the next visited location"
-msgstr ""
+msgstr "ไปตำแหน่งที่ไปเยี่ยมมาถัดจากนี้"
 
 #: src/nautilus-shell-ui.xml.h:25
 msgid "Go to the previous visited location"
-msgstr ""
+msgstr "ไปตำแหน่งที่ไปเยี่ยมมาก่อนจากนี้"
 
 #: src/nautilus-shell-ui.xml.h:26
 msgid "Go to the trash folder"
-msgstr ""
+msgstr "ไปโฟลเดอร์ถังขยะ"
 
 #: src/nautilus-shell-ui.xml.h:27
-#, fuzzy
 msgid "Go up one level"
-msgstr "ขึ้นหนึ่งระดับ"
+msgstr "ขึ้นไปหนึ่งระดับ"
 
 #: src/nautilus-shell-ui.xml.h:28
 msgid "Home"
 msgstr "บ้าน"
 
 #: src/nautilus-shell-ui.xml.h:29
-#, fuzzy
 msgid "Location _Bar"
-msgstr "ตำแหน่ง"
+msgstr "แถบตำแหน่ง (_B)"
 
 #: src/nautilus-shell-ui.xml.h:30
-#, fuzzy
 msgid "New _Window"
-msgstr "เปิดหน้าต่างใหม่"
+msgstr "หน้าต่างใหม่ (_W)"
 
 #: src/nautilus-shell-ui.xml.h:31
-#, fuzzy
 msgid "Normal Si_ze"
-msgstr "ขนาดปกติ"
+msgstr "ขนาดปกติ (_Z)"
 
 #: src/nautilus-shell-ui.xml.h:32
 msgid "Open another Nautilus window for the displayed location"
-msgstr ""
+msgstr "เปิดหน้าต่างใหม่สำหรับตำแหน่งปัจจุบัน"
 
 #: src/nautilus-shell-ui.xml.h:33
-#, fuzzy
 msgid "Prefere_nces"
-msgstr "ปรับแต่ง"
+msgstr "ปรับแต่ง (_N)"
 
 #: src/nautilus-shell-ui.xml.h:34
-#, fuzzy
 msgid "Reload"
 msgstr "เรียกใหม่"
 
@@ -6042,46 +6038,43 @@ msgstr ""
 
 #: src/nautilus-shell-ui.xml.h:37
 msgid "Search this computer for files"
-msgstr ""
+msgstr "ค้นหาแฟ้มในเครื่องนี้"
 
 #: src/nautilus-shell-ui.xml.h:39
 msgid "Show the contents at the normal size"
-msgstr ""
+msgstr "แสดงผลที่ขนาดปกติ"
 
 #: src/nautilus-shell-ui.xml.h:40 src/nautilus-zoom-control.c:108
 msgid "Show the contents in less detail"
-msgstr ""
+msgstr "แสดงผลด้วยรายละเอียดน้อยลง"
 
 #: src/nautilus-shell-ui.xml.h:41 src/nautilus-zoom-control.c:107
 msgid "Show the contents in more detail"
-msgstr ""
+msgstr "แสดงผลด้วยรายละเอียดมากขึ้น"
 
 #: src/nautilus-shell-ui.xml.h:42
-#, fuzzy
 msgid "St_atusbar"
-msgstr "สถานะ"
+msgstr "แถบสถานะ (_A)"
 
 #: src/nautilus-shell-ui.xml.h:43
-#, fuzzy
 msgid "Start Profiling"
-msgstr "เริ่มบรรทัด"
+msgstr ""
 
 #: src/nautilus-shell-ui.xml.h:44
 msgid "Stop"
 msgstr "หยุด"
 
 #: src/nautilus-shell-ui.xml.h:45
-#, fuzzy
 msgid "Stop Profiling"
-msgstr "สายอักขระ"
+msgstr ""
 
 #: src/nautilus-shell-ui.xml.h:46
 msgid "Stop loading this location"
-msgstr ""
+msgstr "หยุดโหลดตำแหน่งนี้"
 
 #: src/nautilus-shell-ui.xml.h:47
 msgid "Undo the last text change"
-msgstr ""
+msgstr "ยกเลิกการแก้ไขข้อความครั้งล่าสุด"
 
 #: src/nautilus-shell-ui.xml.h:48
 msgid "Up"
@@ -6090,109 +6083,88 @@ msgstr "ขึ้น"
 #. Add "View as..." extra bonus choice.
 #: src/nautilus-shell-ui.xml.h:49 src/nautilus-window.c:518
 #: src/nautilus-window.c:1467
-#, fuzzy
 msgid "View as..."
-msgstr "บันทึกเป็น..."
+msgstr "ดูเป็น..."
 
 #: src/nautilus-shell-ui.xml.h:50
-#, fuzzy
 msgid "Zoom _In"
-msgstr "ขยายเข้า"
+msgstr "ขยาย (_I)"
 
 #: src/nautilus-shell-ui.xml.h:51
-#, fuzzy
 msgid "Zoom _Out"
-msgstr "ขยายออก"
+msgstr "ย่อ (_O)"
 
 #: src/nautilus-shell-ui.xml.h:52
-#, fuzzy
 msgid "_About"
-msgstr "เกี่ยวกับ"
+msgstr "เกี่ยวกับ (_A)"
 
 #: src/nautilus-shell-ui.xml.h:53
-#, fuzzy
 msgid "_Add Bookmark"
-msgstr "ที่คั่นหนังสือ"
+msgstr "เพิ่มที่คั่นหน้า (_A)"
 
 #: src/nautilus-shell-ui.xml.h:54
-#, fuzzy
 msgid "_Back"
-msgstr "ย้อนกลับ"
+msgstr "ก่อนหน้า (_B)"
 
 #: src/nautilus-shell-ui.xml.h:55
-#, fuzzy
 msgid "_Backgrounds and Emblems"
-msgstr "ใช้โปรแกรมสร้าง"
+msgstr "พื้นหลังและตรา (_B)"
 
 #: src/nautilus-shell-ui.xml.h:57
-#, fuzzy
 msgid "_Clear History"
-msgstr "ล้างแป้นพิมพ์ลัด"
+msgstr "ล้างประวัติ (_C)"
 
 #: src/nautilus-shell-ui.xml.h:58
-#, fuzzy
 msgid "_Close Window"
-msgstr "ปิดหน้าต่าง"
+msgstr "ปิดหน้าต่าง (_C)"
 
 #: src/nautilus-shell-ui.xml.h:59
-#, fuzzy
 msgid "_Contents"
-msgstr "เนื้อหา"
+msgstr "เนื้อหา (_C)"
 
 #: src/nautilus-shell-ui.xml.h:61
-#, fuzzy
 msgid "_Edit"
-msgstr "แก้ไขข้อความ"
+msgstr "แก้ไข (_E)"
 
 #: src/nautilus-shell-ui.xml.h:62
-#, fuzzy
 msgid "_Edit Bookmarks"
-msgstr "ที่คั่นหนังสือ"
+msgstr "แก้ไขที่คั่นหน้า (_E)"
 
 #: src/nautilus-shell-ui.xml.h:63
-#, fuzzy
 msgid "_File"
-msgstr "ตัวกรอง"
+msgstr "แฟ้ม (_F)"
 
 #: src/nautilus-shell-ui.xml.h:64
-#, fuzzy
 msgid "_Find"
-msgstr "ค้นหา"
+msgstr "ค้นหา (_F)"
 
 #: src/nautilus-shell-ui.xml.h:65
-#, fuzzy
 msgid "_Forward"
-msgstr "ถัดไป"
+msgstr "ถัดไป (_F)"
 
 #: src/nautilus-shell-ui.xml.h:66
-#, fuzzy
 msgid "_Go"
-msgstr "ไป"
+msgstr "ไป (_G)"
 
 #: src/nautilus-shell-ui.xml.h:67
-#, fuzzy
 msgid "_Help"
-msgstr "ช่วยเหลือ"
+msgstr "วิธีใช้ (_H)"
 
 #: src/nautilus-shell-ui.xml.h:68
-#, fuzzy
 msgid "_Home"
-msgstr "บ้าน"
+msgstr "บ้าน (_H)"
 
 #: src/nautilus-shell-ui.xml.h:69
-#, fuzzy
 msgid "_Location..."
-msgstr "ตำแหน่ง"
+msgstr "ตำแหน่ง (_L)..."
 
 #: src/nautilus-shell-ui.xml.h:71
-#, fuzzy
 msgid "_Profiler"
-msgstr "เครื่องพิมพ์"
+msgstr ""
 
 #: src/nautilus-shell-ui.xml.h:72
-#, fuzzy
 msgid "_Reload"
-msgstr "เรียกใหม่"
+msgstr "เรียกใหม่ (_R)"
 
 #: src/nautilus-shell-ui.xml.h:73
 msgid "_Report Profiling"
@@ -6204,110 +6176,97 @@ msgstr ""
 
 #: src/nautilus-shell-ui.xml.h:75
 msgid "_Side Pane"
-msgstr ""
+msgstr "แถบข้าง (_S)"
 
 #: src/nautilus-shell-ui.xml.h:76
-#, fuzzy
 msgid "_Start Here"
-msgstr "สถานะ:"
+msgstr "เริ่มที่นี่ (_S)"
 
 #: src/nautilus-shell-ui.xml.h:77
-#, fuzzy
 msgid "_Start Profiling"
-msgstr "เริ่มบรรทัด"
+msgstr ""
 
 #: src/nautilus-shell-ui.xml.h:78
-#, fuzzy
 msgid "_Stop"
-msgstr "หยุด"
+msgstr "หยุด (_S)"
 
 #: src/nautilus-shell-ui.xml.h:79
 msgid "_Stop Profiling"
 msgstr ""
 
 #: src/nautilus-shell-ui.xml.h:80
-#, fuzzy
 msgid "_Toolbar"
-msgstr "แถบเครื่องมือ"
+msgstr "แถบเครื่องมือ (_T)"
 
 #: src/nautilus-shell-ui.xml.h:81
-#, fuzzy
 msgid "_Trash"
-msgstr "ถังขยะ"
+msgstr "ถังขยะ (_T)"
 
 #: src/nautilus-shell-ui.xml.h:82
-#, fuzzy
 msgid "_Undo"
-msgstr "เลิกทำ"
+msgstr "เรียกคืน (_U)"
 
 #: src/nautilus-shell-ui.xml.h:83
-#, fuzzy
 msgid "_Up"
-msgstr "ขึ้น"
+msgstr "ขึ้น (_U)"
 
 #: src/nautilus-shell-ui.xml.h:84
-#, fuzzy
 msgid "_View"
-msgstr "KView"
+msgstr "มุมมอง (_V)"
 
 #: src/nautilus-shell-ui.xml.h:85
-#, fuzzy
 msgid "_View as..."
-msgstr "บันทึกเป็น..."
+msgstr "ดูเป็น (_V)..."
 
 #: src/nautilus-side-pane.c:395
 msgid "Close the side pane"
-msgstr ""
+msgstr "ปิดแถบข้าง"
 
 #: src/nautilus-side-pane.c:566
-#, fuzzy, c-format
+#, c-format
 msgid "Show %s"
-msgstr "แสดง %1"
+msgstr "แสดง %s"
 
 #: src/nautilus-switchable-search-bar.c:129
 msgid "Find:"
 msgstr "ค้นหา:"
 
 #: src/nautilus-view-frame.c:549
-#, fuzzy
 msgid "a title"
-msgstr "ยังไม่มีหัวเรื่อง"
+msgstr "หัวเรื่อง"
 
 #: src/nautilus-view-frame.c:558
 msgid "the browse history"
-msgstr ""
+msgstr "ประวัติการเรียกดู"
 
 #: src/nautilus-view-frame.c:567
-#, fuzzy
 msgid "the current selection"
-msgstr "เลือกเป็นตรงกันข้าม"
+msgstr "สิ่งที่เลือกไว้"
 
 #. Special Desktop window title (displayed in the Ctrl-Alt-Tab window)
 #: src/nautilus-window-manage-views.c:191
 msgid "Desktop"
-msgstr "พื้นที่ทำงาน"
+msgstr "พื้นโต๊ะ"
 
 #: src/nautilus-window-manage-views.c:849
-#, fuzzy
 msgid "View Failed"
-msgstr "เปิดแฟ้ม"
+msgstr "ใช้มุมมองไม่สำเร็จ"
 
 #: src/nautilus-window-manage-views.c:860
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
 "view or go to a different location."
-msgstr ""
+msgstr "เกิดข้อผิดพลาดในมุมมอง %s โปรดเลือกมุมมองอื่นหรือไปที่ตำแหน่งอื่น"
 
 #: src/nautilus-window-manage-views.c:871
 #, c-format
 msgid "The %s view encountered an error while starting up."
-msgstr ""
+msgstr "เกิดข้อผิดพลาดขณะเตรียมตัวมุมมอง %s "
 
 #: src/nautilus-window-manage-views.c:1028
-#, fuzzy
 msgid "Content View"
-msgstr "เนื้อหา"
+msgstr ""
 
 #: src/nautilus-window-manage-views.c:1029
 msgid "View of the current file or folder"
@@ -6317,57 +6276,57 @@ msgstr ""
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
-msgstr ""
+msgstr "แถบข้างอันใดสักอันเกิดข้อผิดพลาดขึ้น แต่ไม่รู้ว่าอันไหน"
 
 #: src/nautilus-window-manage-views.c:1056
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
 "happening, you might want to turn this panel off."
-msgstr ""
+msgstr "เกิดข้อผิดพลาดในแถบข้าง %s ถ้านี่เกิดขึ้นบ่อยๆ เลิกใช้แถบข้างนี้ไปเลยก็ดี"
 
 #: src/nautilus-window-manage-views.c:1061
 msgid "Sidebar Panel Failed"
-msgstr ""
+msgstr "เกิดข้อผิดพลาดในแถบข้าง"
 
 #: src/nautilus-window-manage-views.c:1304
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
-msgstr ""
+msgstr "หา \"%s\" ไม่เจอ โปรดตรวจดูว่าพิมพ์อะไรผิดหรือเปล่า"
 
 #: src/nautilus-window-manage-views.c:1310
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
-msgstr ""
+msgstr "\"%s\" ไม่ใช่ตำแหน่งที่ใช้ได้ โปรดตรวจดูว่าพิมพ์อะไรผิดหรือเปล่า"
 
 #: src/nautilus-window-manage-views.c:1324
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
 "it is."
-msgstr ""
+msgstr "แสดง \"%s\" ไม่สำเร็จเพราะ Nautilus ไม่รู้ว่านี่เป็นแฟ้มประเภทไหน"
 
 #: src/nautilus-window-manage-views.c:1332
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
-msgstr ""
+msgstr "Nautilus ไม่มีตัวอ่านสำหรับ \"%s\" ติดตั้งอยู่"
 
 #. Shouldn't have gotten this error unless there's a : separator.
 #: src/nautilus-window-manage-views.c:1344
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
-msgstr ""
+msgstr "แสดง \"%s\" ไม่สำเร็จเพราะ Nautilus จัดการตำแหน่ง %s: ไม่เป็น"
 
 #: src/nautilus-window-manage-views.c:1350
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
-msgstr ""
+msgstr "แสดง \"%s\" ไม่สำเร็จเพราะล็อกอินไม่สำเร็จ"
 
 #: src/nautilus-window-manage-views.c:1355
-#, c-format
+#, fuzzy, c-format
 msgid "Couldn't display \"%s\", because access was denied."
-msgstr ""
+msgstr "แสดง \"%s\" ไม่สำเร็จเพราะ access was denied"
 
 #: src/nautilus-window-manage-views.c:1366
 #, c-format
@@ -6390,6 +6349,8 @@ msgid ""
 "browser.\n"
 "Check that an SMB server is running in the local network."
 msgstr ""
+"แสดง \"%s\" ไม่สำเร็จเพราะ Nautilus ไม่สามารถติดต่อ SMB master browser\n"
+"ตรวจสอบดูให้แน่ว่ามี SMB server เปิดใช้งานอยู่ในระบบเครือข่ายท้องถิ่น"
 
 #: src/nautilus-window-manage-views.c:1393
 msgid ""
@@ -6398,26 +6359,25 @@ msgid ""
 "search service, and if you don't have an index, that the Medusa indexer is "
 "running."
 msgstr ""
+"ใช้การค้นหาไม่ได้เพราะคุณไม่มีดัชนีแฟ้ม หรือไม่มีบริการค้นหาเปิดอยู่  ตรวจสอบดูให้แน่ว่าบริการค้นหา "
+"(Medusa) เปิดอยู่ และถ้าคุณไม่มีดัชนี ตรวจดูว่า Medusa indexer เปิดอยู่"
 
 #: src/nautilus-window-manage-views.c:1397
-#, fuzzy
 msgid "Searching Unavailable"
-msgstr "ไม่มีข้อมูลรายละเอียด"
+msgstr "การค้นหาไม่มีให้ใช้"
 
 #: src/nautilus-window-manage-views.c:1402
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
-msgstr ""
+msgstr "Nautilus แสดง \"%s\" ไม่สำเร็จ"
 
 #: src/nautilus-window-manage-views.c:1407
-#, fuzzy
 msgid "Can't Display Location"
-msgstr "Name=ปรับแต่งการแสดงผล"
+msgstr "แสดงตำแหน่งไม่สำเร็จ"
 
 #: src/nautilus-window-manage-views.c:1643
-#, fuzzy
 msgid "Side Pane"
-msgstr "วิทยาศาสตร์"
+msgstr "แถบข้าง"
 
 #: src/nautilus-window-manage-views.c:1645
 msgid "Contains a side pane view"
@@ -6433,14 +6393,12 @@ msgid ""
 msgstr ""
 
 #: src/nautilus-window-menus.c:365
-#, fuzzy
 msgid "Are you sure you want to clear the list of locations you have visited?"
-msgstr "คุณต้องการที่จะลบรูปแบบ `%1' จริงหรือไม่ ?"
+msgstr "แน่ใจนะว่าจะล้างรายชื่อของตำแหน่งที่คุณไปเยี่ยมมา ?"
 
 #: src/nautilus-window-menus.c:370
-#, fuzzy
 msgid "Clear History"
-msgstr "ล้างแป้นพิมพ์ลัด"
+msgstr "ล้างประวัติ"
 
 #. Localize to deal with issues in the copyright
 #. * symbol characters -- do not translate the company
@@ -6462,68 +6420,64 @@ msgstr "แปลโดย ไพศาข์ สีเหลืองสวั�
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
-msgstr ""
+msgstr "Nautilus เป็นโปรแกรมของ GNOME ที่ช่วยคุณจัดการแฟ้มบนเครื่องของคุณ"
 
 #: src/nautilus-window-menus.c:754
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
 "this location from your list?"
-msgstr ""
+msgstr "ตำแหน่ง \"%s\" ไม่มีตัวตน คุณต้องการลบที่คั่นหน้าทั้งหมดของคุณที่อ้างอิงถึงตำแหน่งนี้หรือไม่ ?"
 
 #: src/nautilus-window-menus.c:758
 msgid "Bookmark for Nonexistent Location"
-msgstr ""
+msgstr "ที่คั่นหน้าสำหรับตำแหน่งที่ไม่มีตัวตน"
 
 #: src/nautilus-window-menus.c:759
-#, fuzzy
 msgid "Remove"
 msgstr "ลบ"
 
 #: src/nautilus-window-menus.c:770
 #, c-format
 msgid "The location \"%s\" no longer exists."
-msgstr ""
+msgstr "ตำแหน่ง \"%s\" ไม่มีตัวตนอีกต่อไป"
 
 #: src/nautilus-window-menus.c:771
 msgid "Go to Nonexistent Location"
-msgstr ""
+msgstr "ไปที่ตำแหน่งที่ไม่มีตัวตน"
 
 #: src/nautilus-window-menus.c:840
 msgid "Go to the location specified by this bookmark"
-msgstr ""
+msgstr "ไปที่ตำแหน่งที่ตั้งไว้ในที่คั่นหน้านี้"
 
 #: src/nautilus-window-toolbars.c:422
 msgid "Go back a few pages"
-msgstr ""
+msgstr "ถอยกลับไปหน้าก่อนๆ"
 
 #: src/nautilus-window-toolbars.c:425
 msgid "Go forward a number of pages"
-msgstr ""
+msgstr "เดินหน้าไปหน้าถัดๆไป"
 
 #: src/nautilus-window.c:661
-#, fuzzy
 msgid "Information"
 msgstr "ข้อมูลรายละเอียด"
 
 #: src/nautilus-window.c:1173
 #, c-format
 msgid "Display this location with \"%s\""
-msgstr ""
+msgstr "แสดงตำแหน่งนี้ด้วย \"%s\""
 
 #: src/nautilus-window.c:2200
-#, fuzzy
 msgid "Application ID"
-msgstr "แอพพลิเคชัน"
+msgstr ""
 
 #: src/nautilus-window.c:2201
-#, fuzzy
 msgid "The application ID of the window."
-msgstr "เปิดหน้าต่างแอพพลิเคชันใหม่"
+msgstr ""
 
 #: src/nautilus-window.c:2207
 msgid "Application"
-msgstr "แอพพลิเคชัน"
+msgstr ""
 
 #: src/nautilus-window.c:2208
 msgid "The NautilusApplication associated with this window."
@@ -6531,11 +6485,11 @@ msgstr ""
 
 #: src/nautilus-zoom-control.c:95
 msgid "Zoom In"
-msgstr "ขยายเข้า"
+msgstr "ขยาย"
 
 #: src/nautilus-zoom-control.c:96
 msgid "Zoom Out"
-msgstr "ขยายออก"
+msgstr "ย่อ"
 
 #: src/nautilus-zoom-control.c:97
 msgid "Zoom to Fit"
@@ -6551,7 +6505,7 @@ msgstr "ย่อ/ขยาย"
 
 #: src/nautilus-zoom-control.c:1090
 msgid "Set the zoom level of the current view"
-msgstr ""
+msgstr "ตั้งขนาดย่อขยายสำหรับมุมมองปัจจุบัน"
 
 #: src/network-scheme.desktop.in.h:1
 #, fuzzy
@@ -6560,4 +6514,4 @@ msgstr "เครือข่าย"
 
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
-msgstr ""
+msgstr "ดูเซิร์ฟเวอร์เครือข่ายใน Nautilus"
