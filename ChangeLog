@@ -1,5 +1,18 @@
 2000-12-20  Gene Z. Ragan  <gzr@eazel.com>
 
+	Fixed bug 5186, Music View (and then Nautilus) crashes playing 0-length MP3
+	
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Crash was caused by using an unitialized variable.  Initializing the
+	variable to NULL and then checking th eresult after the function
+	is called solved the problem.
+	
+	* components/music/nautilus-music-view.c: (get_song_text),
+	(music_view_set_selected_song_title):
+
+2000-12-20  Gene Z. Ragan  <gzr@eazel.com>
+
 	Fixed bug 5172, Music View doesn't always scroll when
 	active song off-screen
 

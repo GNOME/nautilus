@@ -395,6 +395,8 @@ get_song_text (NautilusMusicView *music_view, int row)
 {
 	char *song_text, *song_name, *album_name, *year;
 		
+	song_text = NULL;
+	song_name = NULL;
 	album_name = NULL;
 	year = NULL;
 	
@@ -428,6 +430,9 @@ music_view_set_selected_song_title (NautilusMusicView *music_view, int row)
 {
 	char *label_text;
 	char *temp_str;
+	
+	label_text = NULL;
+	temp_str = NULL;
 
 	music_view->details->selected_index = row;
 	
@@ -435,10 +440,12 @@ music_view_set_selected_song_title (NautilusMusicView *music_view, int row)
 	nautilus_label_set_text (NAUTILUS_LABEL(music_view->details->song_label), label_text);
 	g_free (label_text);
         
-        gtk_clist_get_text (GTK_CLIST(music_view->details->song_list), row, 5, &temp_str);
-	nautilus_label_set_text (NAUTILUS_LABEL (music_view->details->total_track_time), temp_str);
-        /* FIXME: Hard-coded font size. */
-	nautilus_label_set_font_size (NAUTILUS_LABEL (music_view->details->total_track_time), 14);
+	gtk_clist_get_text (GTK_CLIST(music_view->details->song_list), row, 5, &temp_str);
+        if (temp_str != NULL && strlen (temp_str) > 0) {
+		nautilus_label_set_text (NAUTILUS_LABEL (music_view->details->total_track_time), temp_str);
+        	/* FIXME: Hard-coded font size. */
+		nautilus_label_set_font_size (NAUTILUS_LABEL (music_view->details->total_track_time), 14);
+	}
 }
 
 
