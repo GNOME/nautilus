@@ -1,5 +1,14 @@
 2001-03-07  Darin Adler  <darin@eazel.com>
 
+	* fr.po: Use 'Loser' instead of "Loser", since gnome-xml
+	(I think the problem is gnome-xml) can't handle parsing a
+	string with an entity-escaped quote in it, even if the
+	quote is entity-escaped. We can only change this back once
+	OAF has been updated to require a new gnome-xml and we have
+	beep updated to require a new OAF.
+
+2001-03-07  Darin Adler  <darin@eazel.com>
+
 	* da.po: Fixed recently-changed da.po (checked in without a
 	ChangeLog entry) to get rid of entries where the original text
 	does not end with "\n", but the translated text does. Apparently,
