@@ -187,13 +187,6 @@ nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
 
   navinfo->navinfo.requested_uri = g_strdup(nri->requested_uri);
 
-  /* FIXME: Either remove distinctions between default, suggested, & enforced, or
-   * deal with them somehow.
-   */
-  navinfo->use_new_window = (nri->new_window_default == Nautilus_V_TRUE ||
-  			     nri->new_window_suggested == Nautilus_V_TRUE ||
-  			     nri->new_window_enforced == Nautilus_V_TRUE);
-
   res = gnome_vfs_async_get_file_info(&navinfo->ah, navinfo->navinfo.requested_uri,
                                       GNOME_VFS_FILE_INFO_GETMIMETYPE
                                       |GNOME_VFS_FILE_INFO_FOLLOWLINKS,

@@ -916,17 +916,6 @@ nautilus_window_change_location_2(NautilusNavigationInfo *navi, gpointer data)
       goto errout;
     }
 
-  if (navi->use_new_window)
-  {
-  	/* Reset state of old window before creating new window. */
-	nautilus_window_set_state_info(window, 
-				       (NautilusWindowStateItem)RESET_TO_IDLE, 
-				       (NautilusWindowStateItem)SYNC_STATE, 
-				       (NautilusWindowStateItem)0);
-
-  	window = nautilus_app_create_window ();
-  }
-
   /* Show the window to handle the new-window case. 
    * Doesn't hurt if window already showing. Maybe this should
    * go sometime later so the gray window isn't on screen so long.

@@ -1,5 +1,20 @@
 2000-02-24  John Sullivan  <sullivan@eazel.com>
 
+	Cleaned up after fix to bug 14 from yesterday.
+
+	* src/ntl-types.h: Removed use_new_window field from
+	NautilusNavigationInfo struct; the new-window spawning
+	now happens early enough that this struct is not involved.
+	
+	* src/ntl-uri-map.c: (nautilus_navinfo_new): Don't set the
+	now non-existent use_new_window field.
+	
+	* src/ntl-window-msgs.c: (nautilus_window_change_location_2):
+	Don't make any decisions based on the now non-existent
+	use_new_window field.
+
+2000-02-24  John Sullivan  <sullivan@eazel.com>
+
 	* src/file-manager/fm-directory-view.c:
 	(fm_directory_view_real_append_selection_context_menu_items):
 	Made "Open in New Window" menu item label be "Open in n New Windows"
