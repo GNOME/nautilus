@@ -636,6 +636,14 @@ create_image_widget_for_emblem (const char *emblem_name)
 }
 
 static void
+remove_default_viewport_shadow (GtkViewport *viewport)
+{
+	g_return_if_fail (GTK_IS_VIEWPORT (viewport));
+	
+	gtk_viewport_set_shadow_type (viewport, GTK_SHADOW_NONE);
+}
+
+static void
 create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 {
 	GtkWidget *emblems_table, *button, *scroller;
@@ -656,12 +664,14 @@ create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
 					       emblems_table);
 	gtk_widget_show (scroller);
 
-	/* Get rid of default lowered shadow appearance. */
-	
-#if 0	/* FIXME: bugzilla.eazel.com 853 */
-	gtk_viewport_set_shadow_type (GTK_VIEWPORT (GTK_BIN (scroller)->child), 
-				      GTK_SHADOW_NONE);
-#endif				      
+	/* Get rid of default lowered shadow appearance. 
+	 * This must be done after the widget is realized, due to
+	 * an apparent bug in gtk_viewport_set_shadow_type.
+	 */
+	gtk_signal_connect (GTK_OBJECT (GTK_BIN (scroller)->child), 
+			    "realize", 
+			    remove_default_viewport_shadow, 
+			    NULL);
 
 	gtk_notebook_append_page (notebook, scroller, gtk_label_new (_("Emblems")));
 	

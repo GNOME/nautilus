@@ -1,3 +1,14 @@
+2000-05-10  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 853 (assert and weird window behavior in Properties)
+
+	* src/file-manager/fm-properties-window.c:
+	(remove_default_viewport_shadow): New function, sets the viewport
+	shadow to the no-shadow style.
+	(create_emblems_page): Call remove_default_viewport_shadow
+	at "realize" signal time, since Gtk bug causes trouble if
+	it's called before realizing.
+
 2000-05-10  Darin Adler  <darin@eazel.com>
 
 	* components/services/trilobite/src/.cvsignore:
@@ -51,7 +62,7 @@
 	the updated signal parameters. Added a signal handler to update the
 	layout menu to match the layout when the layout is changed elsewhere.
 
-2000-05-10  John Sullivan  <set EMAIL_ADDRESS environment variable>
+2000-05-10  John Sullivan  <sullivan@eazel.com>
 
 	* src/file-manager/fm-properties-window.c: (create_emblems_page):
 	Commented out shadow-setting line that causes asserts and
