@@ -40,14 +40,14 @@ trilobite_eazel_install_service_SOURCES =	\
 	main.c					\
 	$(NULL)
 
-trilobite_eazel_install_service_LDADD =							\
-	$(top_builddir)/components/services/install/lib/libeazelinstall.la 		\
-	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la	 \
-	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite-service.la \
-	$(GNOMEUI_LIBS) \
-	$(VFS_LIBS)	\
-	$(RPM_LIBS)
-	$(BONOBO_LIBS) \
+trilobite_eazel_install_service_LDADD =								\
+	$(RPM_LIBS)										\
+	$(top_builddir)/components/services/install/lib/libeazelinstall.la 			\
+	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la	 	\
+	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite-service.la 	\
+	$(GNOMEUI_LIBS) 									\
+	$(VFS_LIBS)										\
+	$(BONOBO_LIBS) 										\
 	$(NULL)
 
 
