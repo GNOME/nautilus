@@ -1335,7 +1335,7 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 	bonobo_ui_util_set_ui (icon_view->details->ui,
 			       DATADIR,
 			       "nautilus-icon-view-ui.xml",
-			       "nautilus");
+			       "nautilus", NULL);
 
 	bonobo_ui_component_add_verb_list_with_data (icon_view->details->ui, verbs, view);
 	

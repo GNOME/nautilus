@@ -279,7 +279,7 @@ merge_in_clipboard_menu_items (GtkObject *widget_as_object,
 	bonobo_ui_util_set_ui (ui,
 			       DATADIR,
 			       "nautilus-clipboard-ui.xml",
-			       "nautilus");
+			       "nautilus", NULL);
 	
 	if (add_selection_callback) {
 		gtk_signal_connect_after (GTK_OBJECT (widget_as_object), "selection_changed",

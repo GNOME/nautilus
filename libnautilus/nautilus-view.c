@@ -796,7 +796,7 @@ nautilus_view_set_up_ui (NautilusView *view,
 	bonobo_object_release_unref (ui_container, NULL);
 
 	/* Set up the UI from an XML file. */
-	bonobo_ui_util_set_ui (ui_component, datadir, ui_file_name, application_name);
+	bonobo_ui_util_set_ui (ui_component, datadir, ui_file_name, application_name, NULL);
 
 	return ui_component;
 }

@@ -1,3 +1,29 @@
+2001-11-06  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: update bonobo requirement to 1.106.0
+	bump bonobo-activation to 0.9.3, bump canvas and libgnome[ui]
+	to 1.105, ORBit2 >= 2.3.97, glib, gtk+, gdk-pixbuf >= 1.3.10,
+	gconf >= 1.1.3
+
+	* components/adapter/nautilus-adapter-control-embed-strategy.c
+	(nautilus_adapter_control_embed_strategy_activate): add NULL opt_ev
+	to bonobo_ui_util_set_ui and/or bonobo_control_frame_set_ui_container
+
+	* components/adapter/nautilus-adapter-embeddable-embed-strategy.c
+	(nautilus_adapter_embeddable_embed_strategy_activate): ditto.
+
+	* libnautilus/nautilus-view.c (nautilus_view_set_up_ui): ditto.
+
+	* libnautilus/nautilus-clipboard.c (merge_in_clipboard_menu_items): ditto.
+
+	* src/nautilus-window.c (nautilus_window_constructed): ditto.
+
+	* src/file-manager/fm-desktop-icon-view.c (real_merge_menus): ditto.
+
+	* src/file-manager/fm-search-list-view.c (real_merge_menus): ditto.
+
+	* libnautilus/nautilus-view.c (nautilus_view_set_up_ui): ditto.
+
 2001-11-05  Darin Adler  <darin@bentspoon.com>
 
 	* cut-n-paste-code/widgets/e-paned/e-paned.c:

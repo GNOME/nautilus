@@ -1257,7 +1257,7 @@ real_merge_menus (FMDirectoryView *view)
 	bonobo_ui_util_set_ui (desktop_view->details->ui,
 			       DATADIR,
 			       "nautilus-desktop-icon-view-ui.xml",
-			       "nautilus");
+			       "nautilus", NULL);
 	bonobo_ui_component_add_verb_list_with_data (desktop_view->details->ui, verbs, view);
 }
 

@@ -623,7 +623,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	bonobo_ui_util_set_ui (window->details->shell_ui,
 			       DATADIR,
 			       "nautilus-shell-ui.xml",
-			       "nautilus");
+			       "nautilus", NULL);
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 	
 	/* set up location bar */

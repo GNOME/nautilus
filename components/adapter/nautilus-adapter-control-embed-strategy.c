@@ -114,7 +114,7 @@ nautilus_adapter_control_embed_strategy_activate (NautilusAdapterEmbedStrategy *
 	strategy = NAUTILUS_ADAPTER_CONTROL_EMBED_STRATEGY (object);
 
 	bonobo_control_frame_set_ui_container (strategy->details->control_frame,
-					       corba_container);
+					       corba_container, NULL);
 
 	bonobo_control_frame_control_activate (strategy->details->control_frame);
 }
