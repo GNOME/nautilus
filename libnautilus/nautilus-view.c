@@ -301,7 +301,7 @@ nautilus_view_destroy (GtkObject *object)
 static Nautilus_ViewFrame
 view_frame_call_begin (NautilusView *view, CORBA_Environment *ev)
 {
-	Nautilus_ViewFrame *view_frame;
+	Nautilus_ViewFrame view_frame;
 
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), CORBA_OBJECT_NIL);
 	

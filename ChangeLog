@@ -1,3 +1,12 @@
+2000-09-10  Maciej Stachowiak  <mjs@eazel.com>
+
+	* configure.in: Add AM_PATH_GTK check
+
+	* libnautilus/Makefile.am: include GTK_CFLAGS in INCLUDES
+
+	* libnautilus/nautilus-view.c (view_frame_call_begin): Fix yet
+	another screwup.
+
 2000-09-11  Mathieu Lacage  <mathieu@eazel.com>
 
 	* libnautilus/nautilus-view.c: (view_frame_call_begin),

@@ -4,6 +4,7 @@ lib_LTLIBRARIES=libnautilus.la
 
 INCLUDES=-I$(top_srcdir) -I$(top_builddir) -I. \
 	$(GNOME_CFLAGS) \
+	$(GTK_CFLAGS) \
 	$(BONOBOX_CFLAGS) \
 	$(OAF_CFLAGS) \
 	$(VFS_CFLAGS) \

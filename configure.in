@@ -267,6 +267,12 @@ AC_MSG_ERROR([
 *** GLIB 1.2.0 or better is required. The latest version of GLIB
 *** is always available from ftp://ftp.gtk.org/.]))
 
+AM_PATH_GTK(1.2.0,,
+AC_MSG_ERROR([
+*** Gtk+ 1.2.0 or better is required. The latest version of GTK
+*** is always available from ftp://ftp.gtk.org/.]))
+
+
 AM_PATH_GNOME(1.0.0,,AC_MSG_ERROR([*** GNOME 1.0.0 or better is required.]), gnomecanvaspixbuf bonobo bonobox bonobox_print vfs idl)
 AC_SUBST(GNOMECANVASPIXBUF_LIBS)
 AC_SUBST(GNOMECANVASPIXBUF_INCLUDEDIR)
