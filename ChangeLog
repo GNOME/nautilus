@@ -1,5 +1,15 @@
 2001-03-31  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* src/nautilus-window.c: (nautilus_window_initialize),
+	(nautilus_window_destroy):
+	Fix a bug introduced by my last checkin.  No longer need to remove
+	callback for builtin bookmark menu, as this is done
+	automatically.  This was causing a preferences critical.
+	Also changed the other preference callback to be automatically
+	removed.
+	
+2001-03-31  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* src/nautilus-window-menus.c:
 	(nautilus_window_initialize_bookmarks_menu): Use _while_alive
 	for the preferences callback to avoid potential problem.

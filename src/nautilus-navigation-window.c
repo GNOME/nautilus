@@ -193,9 +193,10 @@ nautilus_window_initialize (NautilusWindow *window)
 	gtk_quit_add_destroy (1, GTK_OBJECT (window));
 	
 	/* Keep track of any sidebar panel changes */
-	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE,
-					   sidebar_panels_changed_callback,
-					   window);
+	nautilus_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE,
+						       sidebar_panels_changed_callback,
+						       window,
+						       GTK_OBJECT (window));
 
 	/* Keep the main event loop alive as long as the window exists */
 	nautilus_main_event_loop_register (GTK_OBJECT (window));
@@ -882,12 +883,6 @@ nautilus_window_destroy (GtkObject *object)
 	/* Get rid of all callbacks. */
 
 	cancel_view_as_callback (window);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE,
-					      sidebar_panels_changed_callback,
-					      window);
-	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
-					      nautilus_window_bookmarks_preference_changed_callback,
-					      window);
 	nautilus_window_remove_bookmarks_menu_callback (window);
 	nautilus_window_remove_go_menu_callback (window);
 	nautilus_window_toolbar_remove_theme_callback (window);
