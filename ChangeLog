@@ -1,3 +1,22 @@
+2003-08-27  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-async.c:
+	* libnautilus-private/nautilus-directory-private.h:
+	New function nautilus_set_kde_trash_name.
+	Auto hide KDE trash dir in desktop dir
+	
+	* libnautilus-private/nautilus-directory.[ch]:
+	New function nautilus_directory_is_desktop_directory()
+
+	* libnautilus-private/nautilus-file-utilities.[ch]:
+	* libnautilus-private/nautilus-file.c:
+	Tweak the is_desktop_directory a bit so it works for
+	both Files and Directories.
+
+	* src/nautilus-application.c:
+	On initialization, read the kde config to figure out the kde
+	trash directory name.
+
 === nautilus 2.3.9 ===
 
 2003-08-25  Alexander Larsson  <alexl@redhat.com>

@@ -71,6 +71,7 @@
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-private/nautilus-volume-monitor.h>
 #include <libnautilus-private/nautilus-desktop-link-monitor.h>
+#include <libnautilus-private/nautilus-directory-private.h>
 #include <bonobo-activation/bonobo-activation.h>
 
 /* Needed for the is_kdesktop_present check */
@@ -366,6 +367,53 @@ finish_startup (NautilusApplication *application)
 	nautilus_desktop_link_monitor_get ();
 }
 
+static void
+initialize_kde_trash_hack (void)
+{
+	char *trash_dir;
+	char *desktop_dir, *desktop_uri, *kde_trash_dir;
+	char *dir, *basename;
+	char *kde_conf_file;
+	char *key;
+	gboolean def;
+	
+	trash_dir = NULL;
+
+	desktop_uri = nautilus_get_desktop_directory_uri_no_create ();
+	desktop_dir = gnome_vfs_get_local_path_from_uri (desktop_uri);
+	g_free (desktop_uri);
+	
+	if (g_file_test (desktop_dir, G_FILE_TEST_EXISTS)) {
+		/* Look for trash directory */
+		kde_conf_file = g_build_filename (g_get_home_dir(), ".kde/share/config/kdeglobals", NULL);
+		key = g_strconcat ("=", kde_conf_file, "=/Paths/Trash", NULL);
+		kde_trash_dir = gnome_config_get_string_with_default (key, &def);
+		gnome_config_drop_file (kde_conf_file);
+		g_free (kde_conf_file);
+		g_free (key);
+
+		if (kde_trash_dir != NULL) {
+			basename = g_path_get_basename (kde_trash_dir);
+			g_free (kde_trash_dir);
+			
+			dir = g_build_filename (desktop_dir, basename, NULL);
+
+			if (g_file_test (dir, G_FILE_TEST_IS_DIR)) {
+				trash_dir = g_strdup (basename);
+			} 
+			g_free (basename);
+			g_free (dir);
+		} 
+
+		if (trash_dir != NULL) {
+			nautilus_set_kde_trash_name (trash_dir);
+		}
+
+		g_free (trash_dir);
+	}
+	g_free (desktop_dir);
+}
+
 void
 nautilus_application_startup (NautilusApplication *application,
 			      gboolean kill_shell,
@@ -403,6 +451,8 @@ nautilus_application_startup (NautilusApplication *application,
 		g_idle_add (create_starthere_link_callback, NULL);
 		nautilus_set_first_time_file_flag ();
 	}
+
+	initialize_kde_trash_hack ();
 
 	CORBA_exception_init (&ev);
 

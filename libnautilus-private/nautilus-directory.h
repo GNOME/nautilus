@@ -212,4 +212,8 @@ void               nautilus_directory_list_free                (GList           
 GList *            nautilus_directory_list_copy                (GList                     *directory_list);
 GList *            nautilus_directory_list_sort_by_uri         (GList                     *directory_list);
 
+/* Fast way to check if a directory is the desktop directory */
+gboolean           nautilus_directory_is_desktop_directory     (NautilusDirectory         *directory);
+
+
 #endif /* NAUTILUS_DIRECTORY_H */

@@ -103,6 +103,9 @@ static GHashTable *waiting_directories;
 static GHashTable *async_jobs;
 #endif
 
+/* Hide kde trashcan directory */
+static char *kde_trash_dir_name = NULL;
+
 /* Forward declarations for functions that need them. */
 static void     deep_count_load             (NautilusDirectory      *directory,
 					     const char             *uri);
@@ -125,6 +128,12 @@ static void     move_file_to_low_priority_queue    (NautilusDirectory *directory
 						    NautilusFile      *file);
 
 
+void
+nautilus_set_kde_trash_name (const char *trash_dir)
+{
+	g_free (kde_trash_dir_name);
+	kde_trash_dir_name = g_strdup (trash_dir);
+}
 
 /* Some helpers for case-insensitive strings.
  * Move to nautilus-glib-extensions?
@@ -2044,6 +2053,15 @@ start_monitoring_file_list (NautilusDirectory *directory)
 	directory->details->load_mime_list_hash = istr_set_new ();
 
 	read_dot_hidden_file (directory);
+	
+	/* Hack to work around kde trash dir */
+	if (kde_trash_dir_name != NULL && nautilus_directory_is_desktop_directory (directory)) {
+		char *escaped;
+		escaped = gnome_vfs_escape_string (kde_trash_dir_name);
+		g_hash_table_insert (directory->details->hidden_file_hash,
+				     escaped, escaped);
+	}
+
 	
 #ifdef DEBUG_LOAD_DIRECTORY
 	g_message ("load_directory called to monitor file list of %s", directory->details->uri);

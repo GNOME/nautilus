@@ -432,8 +432,10 @@ theme_changed_callback (GObject *icon_factory, gpointer callback_data)
 {
         NautilusTreeView *view; 
 
-        view = NAUTILUS_TREE_VIEW (callback_data); 
-        nautilus_tree_model_set_theme (NAUTILUS_TREE_MODEL (view->details->child_model));  
+        view = NAUTILUS_TREE_VIEW (callback_data);
+	if (view->details->child_model != NULL) {
+		nautilus_tree_model_set_theme (NAUTILUS_TREE_MODEL (view->details->child_model));
+	}
 }
 
 static void

@@ -1704,6 +1704,21 @@ nautilus_directory_list_sort_by_uri (GList *list)
 	return g_list_sort (list, compare_by_uri_cover);
 }
 
+gboolean
+nautilus_directory_is_desktop_directory (NautilusDirectory   *directory)
+{
+	GnomeVFSURI *dir_vfs_uri;
+
+	dir_vfs_uri = directory->details->vfs_uri;
+
+	if (dir_vfs_uri == NULL ||
+	    strcmp (dir_vfs_uri->method_string, "file") != 0) {
+		return FALSE;
+	}
+
+	return nautilus_is_desktop_directory_escaped (dir_vfs_uri->text);
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 #include <eel/eel-debug.h>

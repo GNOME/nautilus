@@ -1724,8 +1724,8 @@ file_is_desktop (NautilusFile *file)
 		return FALSE;
 	}
 
-	return nautilus_is_desktop_directory_escaped (dir_vfs_uri->text,
-						      file->details->relative_uri);
+	return nautilus_is_desktop_directory_file_escaped (dir_vfs_uri->text,
+							   file->details->relative_uri);
 }
 
 static int
