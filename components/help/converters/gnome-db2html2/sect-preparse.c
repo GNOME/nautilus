@@ -139,11 +139,3 @@ sect_preparse_title_characters (Context *context,
 		atrs_ptr += 2;
 	}
 }
-
-static void
-sect_preparse_para_chars (Context *context,
-			  const gchar *chars,
-			  gint len)
-{
-	
-}

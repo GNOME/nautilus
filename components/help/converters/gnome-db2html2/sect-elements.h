@@ -18,10 +18,10 @@ typedef enum SectContextState {
 typedef struct _SectFuncProtoInfo SectFuncProtoInfo;
 struct _SectFuncProtoInfo {
 	gchar *retval;
-	gchar *func;
-	GList *prams;
+	GString *func;
+	GSList *params;
 };
-	
+
 typedef struct _SectContext SectContext;
 struct _SectContext {
 	HeaderInfo *header;
@@ -32,8 +32,8 @@ struct _SectContext {
 	SectContextState state;
 	GHashTable *title_hash;
 	GString *legalpara;
-	/* A list full of GStrings. */
-	GList *func_synopsis;
+	/* A list full of protos. */
+	GSList *func_synopsis;
 };
 
 void sect_print (Context *context, gchar *format, ...);
@@ -92,7 +92,8 @@ void sect_funcprototype_start_element (Context *context, const gchar *name, cons
 void sect_funcdef_characters (Context *context, const gchar *chars, int len);
 void sect_funcparams_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void sect_funcparams_end_element (Context *context, const gchar *name);
-void sect_paramdef_characters (Context *context, const gchar *chars, int len);
+void sect_paramdef_start_element (Context *context, const gchar *chars, int len);
 void sect_parameter_characters (Context *context, const gchar *chars, int len);
+void sect_void_start_element (Context *context, const gchar *chars, int len);
 
 #endif

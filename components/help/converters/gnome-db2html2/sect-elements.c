@@ -1,4 +1,3 @@
-
 #include "sect-elements.h"
 #include "gnome.h"
 
@@ -77,10 +76,10 @@ ElementInfo sect_elements[] = {
 	{ STRUCTFIELD, "structfield", NULL, NULL, (charactersSAXFunc) sect_write_characters},
 	{ FUNCSYNOPSIS, "funcsynopsis", (startElementSAXFunc) sect_funcsynopsis_start_element, (endElementSAXFunc) sect_funcsynopsis_end_element, NULL},
 	{ FUNCPROTOTYPE, "funcprototype", (startElementSAXFunc) sect_funcprototype_start_element, NULL, NULL},
-	{ FUNCDEF, "funcdef", NULL, NULL, (charactersSAXFunc) sect_funcdef_characters},
-	{ FUNCPARAMS, "funcparams", (startElementSAXFunc) sect_funcparams_start_element, (startElementSAXFunc) sect_funcparams_end_element, NULL},
-	{ PARAMDEF, "paramdef", NULL, NULL, (charactersSAXFunc) sect_write_characters},
-	{ VOID, "void", NULL, NULL, NULL},
+	{ FUNCDEF, "funcdef", NULL, NULL, (charactersSAXFunc) sect_write_characters},
+	{ FUNCPARAMS, "funcparams", (startElementSAXFunc) sect_funcparams_start_element, (endElementSAXFunc) sect_funcparams_end_element, (charactersSAXFunc) sect_write_characters},
+	{ PARAMDEF, "paramdef", (startElementSAXFunc) sect_paramdef_start_element, NULL, (charactersSAXFunc) sect_write_characters},
+	{ VOID, "void", (startElementSAXFunc) sect_void_start_element, NULL, NULL },
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -92,6 +91,8 @@ sect_print (Context *context, gchar *format, ...)
 	GSList *list;
 	ElementIndex index;
 	GString *footnote;
+	SectFuncProtoInfo *proto;
+	StackElement *stack_el;
 
 	g_return_if_fail (format != NULL);
 
@@ -100,16 +101,57 @@ sect_print (Context *context, gchar *format, ...)
 	va_end (args);
 
 	list = g_slist_prepend (NULL, GINT_TO_POINTER (FOOTNOTE));
-	list = g_slist_prepend (list, GINT_TO_POINTER (FUNCSYNOPSIS));
+	list = g_slist_prepend (list, GINT_TO_POINTER (FUNCPROTOTYPE));
+	list = g_slist_prepend (list, GINT_TO_POINTER (FUNCDEF));
+	list = g_slist_prepend (list, GINT_TO_POINTER (PARAMDEF));
 	index = find_first_parent (context, list);
 
 	switch (index) {
-	case FUNCSYNOPSIS:
+	case FUNCDEF:
+		stack_el = (StackElement *) context->stack->data;
+		if (stack_el->info->index == FUNCTION) {
+			list = g_slist_last (((SectContext *)(context->data))->func_synopsis);
+			proto = (SectFuncProtoInfo *) list->data;
+			if (proto->func)
+				g_string_append (proto->func, string);
+			else
+				proto->func = g_string_new (string);
+			g_free (string);
+		} else {
+			list = g_slist_last (((SectContext *)(context->data))->func_synopsis);
+			proto = (SectFuncProtoInfo *) list->data;
+			if (proto->retval)
+				g_free (string);
+			else
+				proto->retval = string;
+		}
+		break;
+	case PARAMDEF:
+		list = g_slist_last (((SectContext *)(context->data))->func_synopsis);
+		proto = (SectFuncProtoInfo *) list->data;
+		list = g_slist_last (proto->params);
+		if (list->data) {
+			GString *gstr = (GString *) list->data;
+			g_string_append (gstr, string);
+		}
 		break;
 	case FOOTNOTE:
 		list = g_slist_last (context->footnotes);
 		footnote = (GString *) list->data;
 		g_string_append (footnote, string);
+		g_free (string);
+		break;
+	case FUNCPROTOTYPE:
+		stack_el = (StackElement *) context->stack->data;
+		if (stack_el->info->index == VOID) {
+			list = g_slist_last (((SectContext *)(context->data))->func_synopsis);
+			proto = (SectFuncProtoInfo *) list->data;
+			if (proto->params == NULL) {
+				proto->params = g_slist_append (proto->params,
+							       g_string_new (string));
+			} /* else <void> was incorrectly used */
+		}
+		g_free (string);
 		break;
 	default:
 		if ((*string == '<') && (*(string +1) == '\000'))
@@ -118,8 +160,8 @@ sect_print (Context *context, gchar *format, ...)
 			printf ("&amp;");
 		else
 			printf (string);
+		g_free (string);
 	}
-	g_free (string);
 }
 
 gpointer
@@ -1088,7 +1130,7 @@ sect_infobox_start_element (Context *context,
 
 	logo = sect_get_infobox_logo (name);
 
-	sect_print (context, "<TABLE BORDER=\"0\" WIDTH=\"100%%\">\n<tr><TD WIDTH=\"25\" ALIGN=\"CENTER\" VALIGN=\"TOP\"><IMG ALT=\"%s\" SRC=\"%s\"><TH ALIGN=\"LEFT\" VALIGN=\"CENTER\"></TD>\n", name, logo);
+	sect_print (context, "<TABLE BORDER=\"0\"  WIDTH=\"100%%\">\n<tr><TD WIDTH=\"25%%\" ALIGN=\"CENTER\" VALIGN=\"TOP\"><IMG ALT=\"%s\" SRC=\"%s\"><TH ALIGN=\"LEFT\" VALIGN=\"CENTER\"></TD>\n", name, logo);
 	sect_print (context, "<TD>&nbsp;</TD>\n<TD ALIGN=\"LEFT\" VALIGN=\"TOP\">\n");
 	g_free (logo);
 }
@@ -1153,7 +1195,46 @@ void
 sect_funcsynopsis_end_element (Context        *context,
 			       const gchar    *name)
 {
-	
+	GSList *list;
+	GSList *list2;
+	SectFuncProtoInfo *proto;
+
+	if (!IS_IN_SECT (context))
+		return;
+
+	list = ((SectContext *) context->data)->func_synopsis;
+
+	sect_print (context, "<TABLE BGCOLOR=\"#E0E0E0\" CELLSPACING=\"0\" CELLPADDING=\"0\" BORDER=\"0\">\n");
+	while (list) {
+		proto = (SectFuncProtoInfo *) list->data;
+		if (proto == NULL)
+			continue;
+
+		sect_print (context, "<TR BGCOLOR=\"#E0E0E0\" >");
+		if (proto->retval)
+			sect_print (context, "<TD VALIGN=TOP BGCOLOR=\"#E0E0E0\">%s</TD>\n", proto->retval);
+		else
+			sect_print (context, "<TD VALIGN=TOP BGCOLOR=\"#E0E0E0\"></TD>\n");
+		if (proto->func)
+			sect_print (context, "<TD VALIGN=TOP BGCOLOR=\"#E0E0E0\">&nbsp;%s</TD><TD VALIGN=TOP BGCOLOR=\"#E0E0E0\">&nbsp;(</TD>\n", proto->func->str);
+		else
+			sect_print (context, "<TD VALIGN=TOP BGCOLOR=\"#E0E0E0\"></TD>\n");
+		sect_print (context, "<TD VALIGN=TOP BGCOLOR=\"#E0E0E0\">\n");
+		list2 = proto->params;
+		if (list2 && list2->data) {
+			sect_print (context, "%s", ((GString *)list2->data)->str);
+			list2 = list2->next;
+		}
+		for (;list2; list2 = list2->next) {
+			if (list2->data)
+				sect_print (context, ",<BR>\n%s", ((GString *)list2->data)->str);
+		}
+		sect_print (context, ")</TD></TR>\n");
+		list = list->next;
+	}
+	g_slist_free (((SectContext *) context->data)->func_synopsis);
+	((SectContext *) context->data)->func_synopsis = NULL;
+	sect_print (context, "</TABLE><BR>\n");
 }
 
 void
@@ -1168,8 +1249,8 @@ sect_funcprototype_start_element (Context        *context,
 
 	proto = g_new0 (SectFuncProtoInfo, 1);
 	((SectContext *) context->data)->func_synopsis =
-		g_list_append (((SectContext *) context->data)->func_synopsis,
-			       proto);
+		g_slist_append (((SectContext *) context->data)->func_synopsis,
+				proto);
 }
 
 
@@ -1179,6 +1260,7 @@ sect_funcdef_characters (Context        *context,
 			 int             len)
 {
 	SectFuncProtoInfo *proto;
+	GSList *list;
 
 	if (!IS_IN_SECT (context))
 		return;
@@ -1187,7 +1269,8 @@ sect_funcdef_characters (Context        *context,
 		return;
 
 	proto = g_new0 (SectFuncProtoInfo, 1);
-	proto = (SectFuncProtoInfo *) ((SectContext *) context->data)->func_synopsis->data;
+	list = g_slist_last (((SectContext *) context->data)->func_synopsis);
+	proto = (SectFuncProtoInfo *) list->data;
 	if (proto->retval == NULL)
 		proto->retval = g_strndup (chars, len);
 }
@@ -1197,28 +1280,52 @@ sect_funcparams_start_element (Context        *context,
 			       const gchar    *name,
 			       const xmlChar **atrs)
 {
-	
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "(");
 }
 
 void
 sect_funcparams_end_element (Context        *context,
 			     const gchar    *name)
 {
-	
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, ")");
 }
 
 void
-sect_paramdef_characters (Context        *context,
-			  const gchar    *chars,
-			  int             len)
+sect_paramdef_start_element (Context        *context,
+			     const gchar    *chars,
+			     int             len)
 {
+	SectFuncProtoInfo *proto;
+	GSList *list;
 	
-}
+	if (!IS_IN_SECT (context))
+		return;
 
+	if (((SectContext *) context->data)->func_synopsis == NULL)
+		return;
+
+	list = g_slist_last (((SectContext *)(context->data))->func_synopsis);
+
+	proto = (SectFuncProtoInfo *) list->data;
+
+	if (proto == NULL)
+		return;
+
+	proto->params = g_slist_append (proto->params, g_string_new (""));
+}
 void
-sect_parameter_characters (Context        *context,
-			   const gchar    *chars,
-			   int             len)
+sect_void_start_element (Context        *context,
+			 const gchar    *chars,
+			 int             len)
 {
-	
+	if (!IS_IN_SECT (context))
+		return;
+
+	sect_print (context, "void");
 }
