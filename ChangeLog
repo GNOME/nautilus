@@ -1,3 +1,19 @@
+2000-10-10  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(rubberband_timeout_callback),(cancel_stretching),
+	(key_press_event), (nautilus_icon_container_show_stretch_handles):
+	fixed bug 3241, escape key should cancel stretching, by remember
+	original icon size and restoring it when the escape key is stretched.
+	Also, fixed bug where the selection box was behind the icons it
+	was selecting by raising it to the top.
+	
+	* libnautilus-extensions/nautilus-icon-private.h:
+	added field to store the initial stretch value
+	
+	* src/nautilus-sidebar-title.c: (add_emblem):
+	fixed bug 2295, sidebar emblems should be anti-aliased.
+	
 2000-10-10  John Sullivan  <sullivan@eazel.com>
 
 	* src/nautilus-window.c: 

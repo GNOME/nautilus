@@ -1247,6 +1247,9 @@ rubberband_timeout_callback (gpointer data)
 	rubberband_select (container,
 			   &band_info->prev_rect,
 			   &selection_rect);
+	
+	gnome_canvas_item_raise_to_top (band_info->selection_rectangle);
+	
 
 	band_info->prev_x = x;
 	band_info->prev_y = y;
@@ -2387,6 +2390,15 @@ end_stretching (NautilusIconContainer *container,
 	relayout (container);
 }
 
+static void
+cancel_stretching (NautilusIconContainer *container)
+{
+	ungrab_stretch_icon (container);
+	
+	container->details->drag_icon = NULL;
+	container->details->drag_state = DRAG_STATE_INITIAL;
+}
+
 static gboolean
 button_release_event (GtkWidget *widget,
 		      GdkEventButton *event)
@@ -2664,7 +2676,24 @@ key_press_event (GtkWidget *widget,
 			}
 			handled = TRUE;
 			break;
+		
+		case GDK_Escape:
+			if (container->details->stretch_icon != NULL) {
+				if (container->details->drag_state == DRAG_STATE_STRETCH) {
+					cancel_stretching (container);		
+				}
+				nautilus_icon_canvas_item_set_show_stretch_handles
+					(container->details->stretch_icon->item, FALSE);
 
+				icon_set_size (container, container->details->stretch_icon, 
+					       container->details->initial_stretch_size, FALSE);
+				
+				container->details->stretch_icon = NULL;				
+			}
+			
+			handled = TRUE;
+			break;
+			
 		default:
 			/* Don't use Control or Alt keys for type-selecting, because they
 			 * might be used for menus.
@@ -3988,7 +4017,8 @@ nautilus_icon_container_show_stretch_handles (NautilusIconContainer *container)
 {
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
-
+	int initial_size_x, initial_size_y;
+	
 	icon = get_first_selected_icon (container);
 	if (icon == NULL) {
 		return;
@@ -4008,6 +4038,10 @@ nautilus_icon_container_show_stretch_handles (NautilusIconContainer *container)
 	}
 	nautilus_icon_canvas_item_set_show_stretch_handles (icon->item, TRUE);
 	details->stretch_icon = icon;
+	
+	icon_get_size (container, icon, &initial_size_x, &initial_size_y);
+	/* only need to keep size in one dimension, since they are constrained to be the same */
+	container->details->initial_stretch_size = initial_size_x;
 }
 
 /**

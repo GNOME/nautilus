@@ -432,14 +432,12 @@ update_more_info (NautilusSidebarTitle *sidebar_title)
 static void
 add_emblem (NautilusSidebarTitle *sidebar_title, GdkPixbuf *pixbuf)
 {
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
-	GtkWidget *pixmap_widget;
-	
-        gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
-	pixmap_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
-	gtk_widget_show (pixmap_widget);
-	gtk_container_add (GTK_CONTAINER (sidebar_title->details->emblem_box), pixmap_widget);	
+	GtkWidget *image_widget;
+
+	image_widget = nautilus_image_new ();
+	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image_widget), pixbuf);	
+  	gtk_widget_show (image_widget);
+	gtk_container_add (GTK_CONTAINER (sidebar_title->details->emblem_box), image_widget);	
 }
 
 static void
