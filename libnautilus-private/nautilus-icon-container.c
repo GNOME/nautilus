@@ -3206,6 +3206,10 @@ button_press_event (GtkWidget *widget,
 	
 	/* Button 2 may be passed to the window manager. */
 	if (event->button == MIDDLE_BUTTON) {
+		selection_changed = unselect_all (container);
+		if (selection_changed) {
+			g_signal_emit (container, signals[SELECTION_CHANGED], 0);
+		}
 		g_signal_emit (widget, signals[MIDDLE_CLICK], 0, event);
 		return TRUE;
 	}
@@ -3213,6 +3217,10 @@ button_press_event (GtkWidget *widget,
 	/* Button 3 does a contextual menu. */
 	if (event->button == CONTEXTUAL_MENU_BUTTON) {
 		end_renaming_mode (container, TRUE);
+		selection_changed = unselect_all (container);
+		if (selection_changed) {
+			g_signal_emit (container, signals[SELECTION_CHANGED], 0);
+		}
 		g_signal_emit (widget, signals[CONTEXT_CLICK_BACKGROUND], 0, event);
 		return TRUE;
 	}

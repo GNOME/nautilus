@@ -1,4 +1,10 @@
-2004-05-05    <alexl@cgf.boston.redhat.com>
+2004-05-07  Christian Neumair  <chris@gnome-de.org>
+
+	* libnautilus-private/nautilus-icon-container.c (button_press_event):
+	Unselect currently selected items on middle or right click on
+	background. Fixes #130087.
+
+2004-05-05  Alexander Larsson  <alexl@cgf.boston.redhat.com>
 
 	* libnautilus-private/nautilus-icon-dnd.h: 
 	* libnautilus-private/nautilus-icon-dnd.c (nautilus_icon_dnd_begin_drag): 
