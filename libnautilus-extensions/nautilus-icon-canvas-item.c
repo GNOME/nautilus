@@ -30,6 +30,7 @@
 #include <gtk/gtksignal.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomeui/gnome-canvas-rect-ellipse.h>
 #include <libgnomeui/gnome-canvas-util.h>
 #include <libgnomeui/gnome-icon-text.h>
 #include <libart_lgpl/art_rgb.h>
@@ -52,9 +53,6 @@
 #include "nautilus-theme.h"
 #include "nautilus-text-layout.h"
 
-/* Comment this out if the new smooth fonts code give you problems
- * This isnt meant to be permanent.  Its just a precaution.
- */
 #define EMBLEM_SPACING 2
 
 /* gap between bottom of icon and start of text box */
@@ -77,9 +75,13 @@ struct NautilusIconCanvasItemDetails {
 	GdkFont *font;
 	NautilusEmblemAttachPoints *attach_points;
 	
-	/* stuff for controls; if this gets too big, we've put it in a separate struct */
+	/* stuff for controls; if this gets too big, we'll put it in a separate struct */
 	GtkWidget *control;		/* optional Bonobo control*/
 	guint control_destroy_id;
+	
+	/* stuff for annotations */
+	GnomeCanvasItem *annotation;
+	int note_state;
 		
 	/* Size of the text at current font. */
 	int text_width;
@@ -122,6 +124,14 @@ typedef enum {
 	LEFT_SIDE,
 	TOP_SIDE
 } RectangleSide;
+
+typedef enum {
+	NO_HIT,
+	ICON_HIT,
+	LABEL_HIT,
+	STRETCH_HANDLE_HIT,
+	EMBLEM_HIT
+} HitType;
 
 typedef struct {
 	NautilusIconCanvasItem *icon_item;
@@ -213,6 +223,12 @@ static void     draw_pixbuf                                (GdkPixbuf           
 							    int                            y);
 static gboolean hit_test_stretch_handle                    (NautilusIconCanvasItem        *item,
 							    const ArtIRect                *canvas_rect);
+static gboolean hit_test				   (NautilusIconCanvasItem 	  *icon_item,
+							    const ArtIRect 		  *canvas_rect,
+							    HitType 			  *hit_type,
+							    int 			  *hit_index);
+
+
 static gboolean icon_canvas_item_is_smooth                 (const NautilusIconCanvasItem  *icon_item);
 
 
@@ -1166,6 +1182,7 @@ emblem_layout_next (EmblemLayout *layout,
 
 	/* Advance to the next emblem. */
 	layout->emblem = layout->emblem->next;
+	layout->index += 1;	
 
 	attach_points = layout->icon_item->details->attach_points;
 	if (attach_points != NULL) {
@@ -1176,8 +1193,6 @@ emblem_layout_next (EmblemLayout *layout,
 		x = layout->icon_rect.x0 + attach_points->points[layout->index].x;
 		y = layout->icon_rect.y0 + attach_points->points[layout->index].y;
 
-		layout->index += 1;
-		
 		/* Return the rectangle and pixbuf. */
 		*emblem_pixbuf = pixbuf;
 		emblem_rect->x0 = x - width / 2;
@@ -1769,6 +1784,77 @@ nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 	draw_label_text_aa (icon_item, buf, icon_rect.x0, icon_rect.y1, x_delta);
 }
 
+/* create an annotation for the emblem designated by the passed-in index */
+static void
+create_annotation (NautilusIconCanvasItem *icon_item, int emblem_index)
+{
+	uint fill_color, outline_color;
+	double top, left, bottom, right;
+	ArtDRect icon_rect;
+	
+	/* compute the position for the top left of the annotation */
+
+	nautilus_icon_canvas_item_get_icon_rectangle (icon_item, &icon_rect);
+	left = icon_rect.x0 + 8.0;
+	top = icon_rect.y0 + 8.0;
+	right = left + 220.0;
+	bottom = top + 24.0;
+	
+	fill_color = 0xDDDD99E0;
+	outline_color = 0x000000FF;
+	
+	g_message ("making note - %f %f %f %f", left, top, right, bottom);
+	
+	icon_item->details->annotation = gnome_canvas_item_new
+			(gnome_canvas_root (GNOME_CANVAS_ITEM (icon_item)->canvas),
+		 	gnome_canvas_rect_get_type (),
+		 	"x1", left,
+		 	"y1", top,
+		 	"x2", right,
+		 	"y2", bottom,
+		 	"fill_color_rgba", fill_color,
+		 	"outline_color_rgba", outline_color,
+		 	"width_pixels", 1,
+		 	NULL);
+
+	gnome_canvas_item_raise_to_top (icon_item->details->annotation);	
+}
+
+/* remove any annotation that's showing */
+static void
+remove_annotation (NautilusIconCanvasItem *icon_item)
+{
+	if (icon_item->details->annotation != NULL) {
+		g_message ("remove annotation");
+
+		gtk_object_destroy (GTK_OBJECT (icon_item->details->annotation));
+		icon_item->details->annotation = NULL;	
+		icon_item->details->note_state = 0;
+
+	}
+}
+
+/* manage showing and hiding annotations, based on mouse-over the passed-in emblem */
+static void
+nautilus_icon_canvas_item_set_note_state (NautilusIconCanvasItem *icon_item, int new_state)
+{
+	/* nothing to do if nothing changed */
+	if (new_state == icon_item->details->note_state) {
+		return;
+	}
+	/* get rid of the old annotation, if there was one */
+	if (icon_item->details->annotation) {
+		remove_annotation (icon_item);
+	}
+	
+	/* create a new annotation, if necessary */
+	if (new_state > 0) {
+		create_annotation (icon_item, new_state);
+	}
+	
+	icon_item->details->note_state = new_state;
+}
+
 
 /* handle events */
 
@@ -1776,7 +1862,12 @@ static int
 nautilus_icon_canvas_item_event (GnomeCanvasItem *item, GdkEvent *event)
 {
 	NautilusIconCanvasItem *icon_item;
-
+	GdkEventMotion *motion_event;
+	ArtIRect hit_rect;
+	ArtDRect world_rect;
+	HitType hit_type;
+	int hit_index, emblem_state;
+	
 	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
 
 	switch (event->type) {
@@ -1823,10 +1914,28 @@ nautilus_icon_canvas_item_event (GnomeCanvasItem *item, GdkEvent *event)
 			icon_item->details->is_prelit = FALSE;
 			icon_item->details->is_active = 0;			
 			icon_item->details->is_highlighted_for_drop = FALSE;
+			remove_annotation (icon_item);
 			gnome_canvas_item_request_update (item);
 		}
 		return TRUE;
+	
+	case GDK_MOTION_NOTIFY:
+		motion_event = (GdkEventMotion*) event;
+
+		world_rect.x0 =  motion_event->x;
+		world_rect.y0 =  motion_event->y;
+		world_rect.x1 = world_rect.x0 + 1.0;
+		world_rect.y1 = world_rect.y0 + 1.0;
+	
+		nautilus_gnome_canvas_world_to_canvas_rectangle
+			(GNOME_CANVAS_ITEM (item)->canvas, &world_rect, &hit_rect);
 		
+		/* hit-test so we can handle tooltips for emblems */
+		hit_test (icon_item, &hit_rect, &hit_type, &hit_index);
+		emblem_state = hit_type == EMBLEM_HIT ? hit_index : 0;
+		nautilus_icon_canvas_item_set_note_state (icon_item, emblem_state);		
+		return TRUE;
+			
 	default:
 		/* Don't eat up other events; icon container might use them. */
 		return FALSE;
@@ -1892,7 +2001,7 @@ hit_test_pixbuf (GdkPixbuf *pixbuf, const ArtIRect *pixbuf_location, const ArtIR
 }
 
 static gboolean
-hit_test (NautilusIconCanvasItem *icon_item, const ArtIRect *canvas_rect)
+hit_test (NautilusIconCanvasItem *icon_item, const ArtIRect *canvas_rect, HitType *hit_type, int *hit_index)
 {
 	NautilusIconCanvasItemDetails *details;
 	ArtIRect icon_rect, text_rect, emblem_rect;
@@ -1901,13 +2010,25 @@ hit_test (NautilusIconCanvasItem *icon_item, const ArtIRect *canvas_rect)
 	
 	details = icon_item->details;
 
+	/* default to -1, which means nothing was hit */
+	if (hit_index != NULL) {
+		*hit_index = -1;
+	}
+	
 	/* Check for hits in the stretch handles. */
 	if (hit_test_stretch_handle (icon_item, canvas_rect)) {
+		if (hit_type != NULL) {
+			*hit_type = STRETCH_HANDLE_HIT;
+		}
 		return TRUE;
 	}
 	
 	/* Check for hit in the icon. If we're highlighted for dropping, anywhere in the rect is OK */
 	get_icon_canvas_rectangle (icon_item, &icon_rect);
+	if (hit_type != NULL) {
+		*hit_type = ICON_HIT;
+	}
+
 	if (icon_item->details->is_highlighted_for_drop) {
 		if (nautilus_art_irect_hits_irect (&icon_rect, canvas_rect)) {
 			return TRUE;
@@ -1922,6 +2043,9 @@ hit_test (NautilusIconCanvasItem *icon_item, const ArtIRect *canvas_rect)
 	compute_text_rectangle (icon_item, &icon_rect, &text_rect);
 	if (nautilus_art_irect_hits_irect (&text_rect, canvas_rect)
 	    && !icon_item->details->is_renaming) {
+		if (hit_type != NULL) {
+			*hit_type = LABEL_HIT;
+		}
 		return TRUE;
 	}
 
@@ -1929,8 +2053,19 @@ hit_test (NautilusIconCanvasItem *icon_item, const ArtIRect *canvas_rect)
 	emblem_layout_reset (&emblem_layout, icon_item, &icon_rect);
 	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {
 		if (hit_test_pixbuf (emblem_pixbuf, &emblem_rect, canvas_rect)) {
+			if (hit_type != NULL) {
+				*hit_type = EMBLEM_HIT;
+			}
+			if (hit_index != NULL) {
+				*hit_index = emblem_layout.index;
+			}
 			return TRUE;
 		}
+	}
+
+	/* there wasn't a hit, so indicate that */
+	if (hit_type != NULL) {
+		*hit_type = NO_HIT;
 	}
 
 	return FALSE;
@@ -1948,7 +2083,7 @@ nautilus_icon_canvas_item_point (GnomeCanvasItem *item, double x, double y, int 
 	canvas_rect.y0 = cy;
 	canvas_rect.x1 = cx + 1;
 	canvas_rect.y1 = cy + 1;
-	if (hit_test (NAUTILUS_ICON_CANVAS_ITEM (item), &canvas_rect)) {
+	if (hit_test (NAUTILUS_ICON_CANVAS_ITEM (item), &canvas_rect, NULL, NULL)) {
 		return 0.0;
 	} else {
 		/* This value means not hit.
@@ -2161,7 +2296,7 @@ nautilus_icon_canvas_item_hit_test_rectangle (NautilusIconCanvasItem *item,
 
 	nautilus_gnome_canvas_world_to_canvas_rectangle
 		(GNOME_CANVAS_ITEM (item)->canvas, world_rect, &canvas_rect);
-	return hit_test (item, &canvas_rect);
+	return hit_test (item, &canvas_rect, NULL, NULL);
 }
 
 const char *

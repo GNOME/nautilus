@@ -3,7 +3,7 @@
    nautilus-annotation.c: routines for getting and setting xml-based annotations associated
    with the digest of a file.
   
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 2001 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
