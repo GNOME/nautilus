@@ -1,5 +1,12 @@
 2001-10-25  Alex Larsson  <alexl@redhat.com>
 
+	* configure.in:
+	* libnautilus-private/Makefile.am:
+	Check for libiconv. I couldn't test it, but
+	Remi@Cohen-Scali.com says it works.
+	
+2001-10-25  Alex Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-directory.c (nautilus_directory_notify_files_changed):
 	Call nautilus_directory_add_file_to_work_queue() when file_info is invalidated.
 	Otherwise it will not be read again.

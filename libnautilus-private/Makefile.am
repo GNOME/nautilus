@@ -31,6 +31,7 @@ libnautilus_private_la_LDFLAGS =	\
 	$(LIBJPEG) 			\
 	$(MEDUSA_LIBS) 			\
 	$(FAM_LIBS) 			\
+	$(ICONV_LIBS)			\
 	$(CDDALIBADD)			\
 	$(NULL)
 
