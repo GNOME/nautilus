@@ -232,7 +232,7 @@ nautilus_index_title_set_up_label (NautilusIndexTitle *index_title, const char *
 	            split_offset = mid_point - index;
 	        
 	        if (split_offset != 0) {
-	            char *buffer = (char *) g_malloc(strlen(file_name) + 1);
+	            char *buffer = (char *) g_malloc(strlen(file_name) + 2);
 	            
 	            /* build the new string, with a CR inserted, also remembering them separately for measuring */
 	            
