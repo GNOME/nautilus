@@ -6,14 +6,15 @@
 # Andras Timar <timar@gnome.hu>, 2001, 2002, 2003.
 # Gabor Sari <saga@gnome.hu>, 2003.
 # Laszlo Dvornik <dvornik@gnome.hu>, 2004.
+# Gabor Kelemen <kelemeng@gnome.hu>, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-07 12:18+0200\n"
-"PO-Revision-Date: 2004-09-07 18:46+0200\n"
-"Last-Translator: Laszlo Dvornik <dvornik@gnome.hu>\n"
+"POT-Creation-Date: 2004-09-12 12:15+0200\n"
+"PO-Revision-Date: 2004-09-12 13:04+0200\n"
+"Last-Translator: Gabor Kelemen <kelemeng@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@gnome.hu>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -186,7 +187,7 @@ msgstr "Matricák"
 # components/tree/Nautilus_View_tree.oaf.in.h:1
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:2
 msgid "Nautilus Emblem side pane"
-msgstr "Nautilus matrica-oldalpanel"
+msgstr "Nautilus matrica-oldalsáv"
 
 # components/sample/Nautilus_View_sample.oaf.in.h:1
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:3
@@ -201,12 +202,12 @@ msgstr "Előzmények"
 # components/history/Nautilus_View_history.oaf.in.h:3
 #: components/history/Nautilus_View_history.server.in.in.h:2
 msgid "History side pane"
-msgstr "Előzmények oldalpanel"
+msgstr "Előzmények oldalsáv"
 
 # components/history/Nautilus_View_history.oaf.in.h:4
 #: components/history/Nautilus_View_history.server.in.in.h:3
 msgid "History side pane for Nautilus"
-msgstr "A Nautilus előzmény-oldalpanele"
+msgstr "A Nautilus előzmény-oldalsávja"
 
 # src/nautilus-shell.c:188
 #: components/image_properties/nautilus-image-properties-view.c:192
@@ -310,17 +311,17 @@ msgstr "Nautilus képtulajdonság-nézet"
 # components/notes/Nautilus_View_notes.oaf.in.h:2
 #: components/notes/Nautilus_View_notes.server.in.in.h:1
 msgid "Notes"
-msgstr "Jegyzetek"
+msgstr "Feljegyzések"
 
 # components/notes/Nautilus_View_notes.oaf.in.h:3
 #: components/notes/Nautilus_View_notes.server.in.in.h:2
 msgid "Notes side pane"
-msgstr "Feljegyzés-oldalpanel"
+msgstr "Feljegyzések-oldalsáv"
 
 # components/notes/Nautilus_View_notes.oaf.in.h:4
 #: components/notes/Nautilus_View_notes.server.in.in.h:3
 msgid "Notes side pane for Nautilus"
-msgstr "A Nautilus feljegyzés-oldalpanele"
+msgstr "A Nautilus feljegyzések-oldalsávja"
 
 # libnautilus/nautilus-clipboard-ui.xml.h:2 src/nautilus-shell-ui.xml.h:14
 #: components/text/nautilus-text-view-ui.xml.h:1
@@ -1352,11 +1353,11 @@ msgstr "Alapértelmezett háttér fájlneve"
 # src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:12
 msgid "Default Side Pane Background Color"
-msgstr "Alapértelmezett oldalsávháttérszín"
+msgstr "Alapértelmezett oldalsávháttér-szín"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:13
 msgid "Default Side Pane Background Filename"
-msgstr "Az oldalpanel alapértelmezett háttere"
+msgstr "Az oldalsáv alapértelmezett háttere"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
 msgid "Default column order in the list view"
@@ -1440,8 +1441,8 @@ msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
 msgstr ""
-"Fájlnév az alapértelmezett oldalpanel hátteréhez. Csak akkor van használva, "
-"ha a side_pane_background_set be van kapcsolva."
+"Fájlnév az alapértelmezett oldalsáv hátteréhez. Csak akkor van használva, ha "
+"a side_pane_background_set be van kapcsolva."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
 msgid ""
@@ -1465,7 +1466,7 @@ msgid ""
 "Otherwise it will show both folders and files."
 msgstr ""
 "Ha be van kapcsolva, akkor a Nautilus csak a mappákat jeleníti meg a fa "
-"oldalpanelen. Ellenkező esetben a mappákat és a fájlokat is megjeleníti."
+"oldalsávján. Ellenkező esetben a mappákat és a fájlokat is megjeleníti."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
 msgid ""
@@ -1476,7 +1477,7 @@ msgstr ""
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
 msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr ""
-"Ha be van kapcsolva, akkor az újonnan megnyitott ablakokban az oldalpanel "
+"Ha be van kapcsolva, akkor az újonnan megnyitott ablakokban az oldalsáv "
 "látható."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
@@ -1619,8 +1620,8 @@ msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
 msgstr ""
-"Ha be van kapcsolva, akkor csatolt kötetekre hivatkozó ikonok lesznek "
-"elhelyezve a munkaasztalon."
+"Ha be van kapcsolva, akkor a csatlakoztatott kötetekre hivatkozó ikonok "
+"lesznek elhelyezve a munkaasztalon."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
@@ -1702,7 +1703,7 @@ msgstr "A Nautilus a felhasználók saját mappáját használja munkaasztalkén
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid "Only show folders in the tree sidebar"
-msgstr "Csak mappák megjelenítése a fa oldalpanelen"
+msgstr "Csak mappák megjelenítése a fa oldalsávján"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid ""
@@ -1732,11 +1733,11 @@ msgstr "Címsor megjelenítése az új ablakokban"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid "Show mounted volumes on the desktop"
-msgstr "Csatolt kötetek megjelenítése a munkaasztalon"
+msgstr "Csatlakoztatott kötetek megjelenítése a munkaasztalon"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
 msgid "Show side pane in new windows"
-msgstr "Oldalpanel megjelenítése az új ablakokban"
+msgstr "Oldalsáv megjelenítése az új ablakokban"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "Show status bar in new windows"
@@ -1749,7 +1750,7 @@ msgstr "Eszköztár megjelenítése az új ablakokban"
 # libnautilus-private/nautilus-global-preferences.c:628
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
 msgid "Side pane view"
-msgstr "Oldalpanel nézet"
+msgstr "Oldalsáv nézet"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid ""
@@ -1804,7 +1805,7 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid "The default width of the side pane in new windows."
-msgstr "Az oldalpanel alapértelmezett szélessége az új ablakokban."
+msgstr "Az oldalsáv alapértelmezett szélessége az új ablakokban."
 
 # libnautilus-private/nautilus-file-operations.c:1899
 # libnautilus-private/nautilus-file-operations.c:2157
@@ -1822,7 +1823,7 @@ msgstr ""
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
 msgid "The side pane view to show in newly opened windows."
-msgstr "Az újonnan megnyitott ablakokban megjelenítendő oldalpanel-nézet."
+msgstr "Az újonnan megnyitott ablakokban megjelenítendő oldalsáv-nézet."
 
 # libnautilus-private/nautilus-file-operations.c:1899
 # libnautilus-private/nautilus-file-operations.c:2157
@@ -1920,7 +1921,7 @@ msgstr "Be legyen-e állítva egyéni mappaháttér."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:102
 msgid "Whether a custom default side pane background has been set."
-msgstr "Be legyen-e állítva egyéni oldalpanel háttér."
+msgstr "Be legyen-e állítva egyéni oldalsáv háttér."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:103
 msgid "Whether to ask for confirmation when moving files to trash"
@@ -1945,7 +1946,7 @@ msgstr "Megjelenítse-e a rejtett fájlokat"
 # components/notes/Nautilus_View_notes.oaf.in.h:3
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:108
 msgid "Width of the side pane"
-msgstr "Az oldalpanel szélessége"
+msgstr "Az oldalsáv szélessége"
 
 #: libnautilus-private/nautilus-column-chooser.c:365
 msgid "Move _Up"
@@ -2691,7 +2692,7 @@ msgstr "Hiba törléskor"
 #: libnautilus-private/nautilus-file-operations.c:1117
 #: libnautilus-private/nautilus-file-operations.c:1136
 msgid "_Skip"
-msgstr "_Mellőz"
+msgstr "_Kihagyás"
 
 # libnautilus-private/nautilus-file-operations.c:979
 #: libnautilus-private/nautilus-file-operations.c:968
@@ -3569,7 +3570,7 @@ msgstr "A kijelölődoboz alfa csatornája"
 
 #: libnautilus-private/nautilus-icon-container.c:4216
 msgid "Opacity of the selection box"
-msgstr "A kijelölődoboz átlátszósága"
+msgstr "A kijelölődoboz átlátszatlansága"
 
 #: libnautilus-private/nautilus-icon-container.c:4223
 msgid "Highlight Alpha"
@@ -3578,7 +3579,7 @@ msgstr "Kivilágítás alfája"
 # components/help/converters/gnome-db2html2/sect-elements.c:1030
 #: libnautilus-private/nautilus-icon-container.c:4224
 msgid "Opacity of the highlight for selected icons"
-msgstr "A kijelölt ikonok kivilágításának átlátszósága"
+msgstr "A kijelölt ikonok kivilágításának átlátszatlansága"
 
 #: libnautilus-private/nautilus-icon-container.c:4230
 msgid "Light Info Color"
@@ -4342,7 +4343,7 @@ msgstr "Nincs semmi a vágólapon."
 #: src/file-manager/fm-directory-view.c:5272
 #: src/file-manager/fm-directory-view.c:6507
 msgid "Mount Error"
-msgstr "Beillesztés hiba"
+msgstr "Csatlakoztatási hiba"
 
 # libnautilus-private/nautilus-volume-monitor.c:1306
 #: src/file-manager/fm-directory-view.c:5334
@@ -4352,7 +4353,7 @@ msgstr "Kiadás hiba"
 # libnautilus-private/nautilus-volume-monitor.c:1308
 #: src/file-manager/fm-directory-view.c:5337
 msgid "Unmount Error"
-msgstr "Leválasztás hiba"
+msgstr "Leválasztási hiba"
 
 # libnautilus-private/nautilus-global-preferences.c:995
 #: src/file-manager/fm-directory-view.c:5461
@@ -5355,7 +5356,7 @@ msgstr "_Adathordozó tulajdonságai"
 # libnautilus-private/nautilus-volume-monitor.c:1366
 #: src/file-manager/nautilus-directory-view-ui.xml.h:23
 msgid "Mount the selected volume"
-msgstr "A kijelölt kötet beillesztése"
+msgstr "A kijelölt kötet csatlakoztatása"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:25
 msgid ""
@@ -5482,7 +5483,7 @@ msgstr "A rejtett fájlok megjelenítésének átváltása a jelenlegi ablakban"
 # libnautilus-private/nautilus-volume-monitor.c:1366
 #: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "Unmount the selected volume"
-msgstr "A kijelölt kötet lecsatolása"
+msgstr "A kijelölt kötet leválasztása"
 
 # src/nautilus-shell-ui.xml.h:40
 #: src/file-manager/nautilus-directory-view-ui.xml.h:51
@@ -5507,7 +5508,7 @@ msgstr "_Formázás"
 # src/file-manager/fm-desktop-icon-view.c:1042
 #: src/file-manager/nautilus-directory-view-ui.xml.h:58
 msgid "_Mount Volume"
-msgstr "Kötet _beillesztése"
+msgstr "Kötet _csatlakoztatása"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:60
 msgid "_Open Scripts Folder"
@@ -5860,7 +5861,7 @@ msgstr "Írjon be egy nevet és próbálja meg újra."
 #: src/nautilus-connect-server-dialog.c:252 src/nautilus-window.c:1118
 #, c-format
 msgid "%s on %s"
-msgstr ""
+msgstr "%s ezen: %s"
 
 # src/nautilus-location-bar.c:62
 #: src/nautilus-connect-server-dialog.c:380
@@ -6435,17 +6436,17 @@ msgstr "Fájlböngésző: %s"
 # src/nautilus-window-manage-views.c:925
 #: src/nautilus-navigation-window.c:1070
 msgid "One of the side panels encountered an error and can't continue."
-msgstr "Az egyik oldalpanel hibát észlelt és nem tud tovább futni."
+msgstr "Az egyik oldalsáv hibát észlelt és nem tud tovább futni."
 
 #: src/nautilus-navigation-window.c:1071
 msgid "Unfortunately I couldn't tell which one."
-msgstr "Sajnos nem állapítható meg, hogy melyik oldalpanelről van szó."
+msgstr "Sajnos nem állapítható meg, hogy melyik oldalsávról van szó."
 
 # src/nautilus-window-manage-views.c:776
 #: src/nautilus-navigation-window.c:1074
 #, c-format
 msgid "The %s side panel encountered an error and can't continue."
-msgstr "A(z) %s oldalpanel hibát észlelt és nem tud tovább futni."
+msgstr "A(z) %s oldalsáv hibát észlelt és nem tud tovább futni."
 
 # src/nautilus-window-manage-views.c:929
 #: src/nautilus-navigation-window.c:1075
@@ -6455,16 +6456,16 @@ msgstr "Ha a hiba továbbra is fennáll, kapcsolja ki a panelt."
 # src/nautilus-window-manage-views.c:934
 #: src/nautilus-navigation-window.c:1078
 msgid "Side Panel Failed"
-msgstr "Oldalpanel hibát észlelt"
+msgstr "Oldalsáv hibát észlelt"
 
 # libnautilus-private/nautilus-global-preferences.c:628
 #: src/nautilus-navigation-window.c:1209
 msgid "Side Pane"
-msgstr "Oldalpanel"
+msgstr "Oldalsáv"
 
 #: src/nautilus-navigation-window.c:1211
 msgid "Contains a side pane view"
-msgstr "Az oldalpanel nézetet tartalmazza"
+msgstr "Az oldalsáv nézetet tartalmazza"
 
 # src/file-manager/fm-directory-view.c:2637
 #. This is a little joke, shows up occasionally. I only
@@ -6541,7 +6542,7 @@ msgstr "Megváltoztatja ezen ablak címsávjának láthatóságát"
 # src/nautilus-shell-ui.xml.h:7
 #: src/nautilus-navigation-window-ui.xml.h:5
 msgid "Change the visibility of this window's sidebar"
-msgstr "Megváltoztatja ezen ablak oldalpanelének láthatóságát"
+msgstr "Megváltoztatja ezen ablak oldalsávének láthatóságát"
 
 # src/nautilus-shell-ui.xml.h:8
 #: src/nautilus-navigation-window-ui.xml.h:6
@@ -6709,7 +6710,7 @@ msgstr "He_ly..."
 # libnautilus-private/nautilus-global-preferences.c:628
 #: src/nautilus-navigation-window-ui.xml.h:37
 msgid "_Side Pane"
-msgstr "_Oldalpanel"
+msgstr "_Oldalsáv"
 
 #: src/nautilus-navigation-window-ui.xml.h:38
 #: src/nautilus-spatial-window-ui.xml.h:17
@@ -7012,7 +7013,7 @@ msgstr "Nautilus fanézet"
 # components/tree/Nautilus_View_tree.oaf.in.h:1
 #: src/Nautilus_shell.server.in.h:7
 msgid "Nautilus Tree side pane"
-msgstr "Nautilus fanézet-oldalpanel"
+msgstr "Nautilus fanézet-oldalsáv"
 
 # src/Nautilus_shell.oaf.in.h:4
 #: src/Nautilus_shell.server.in.h:8
@@ -7323,7 +7324,7 @@ msgstr "_Visszavonás"
 # components/notes/Nautilus_View_notes.oaf.in.h:3
 #: src/nautilus-side-pane.c:426
 msgid "Close the side pane"
-msgstr "Oldalpanel bezárása"
+msgstr "Oldalsáv bezárása"
 
 # libnautilus-private/nautilus-global-preferences.c:607
 #: src/nautilus-side-pane.c:597
