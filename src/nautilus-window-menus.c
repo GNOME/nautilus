@@ -421,26 +421,26 @@ nautilus_window_update_show_hide_menu_items (NautilusWindow *window)
 	nautilus_bonobo_set_label (window->details->shell_ui,
 				   MENU_PATH_SHOW_HIDE_STATUS_BAR,
 				   nautilus_window_status_bar_showing (window)
-				   ? _("Hide Status Bar")
-				   : _("Show Status Bar"));
+				   ? _("Hide St_atus Bar")
+				   : _("Show St_atus Bar"));
 		
 	nautilus_bonobo_set_label (window->details->shell_ui,
 				   MENU_PATH_SHOW_HIDE_SIDEBAR,
 				   nautilus_window_sidebar_showing (window)
-				   ? _("Hide Sidebar")
-				   : _("Show Sidebar"));
+				   ? _("Hide _Sidebar")
+				   : _("Show _Sidebar"));
 
 	nautilus_bonobo_set_label (window->details->shell_ui,
 				   MENU_PATH_SHOW_HIDE_TOOLBAR,
 				   nautilus_window_toolbar_showing (window)
-				   ? _("Hide Toolbar")
-				   : _("Show Toolbar"));
+				   ? _("Hide _Toolbar")
+				   : _("Show _Toolbar"));
 		
 	nautilus_bonobo_set_label (window->details->shell_ui,
 				   MENU_PATH_SHOW_HIDE_LOCATION_BAR,
 				   nautilus_window_location_bar_showing (window)
-				   ? _("Hide Location Bar")
-				   : _("Show Location Bar"));
+				   ? _("Hide Location _Bar")
+				   : _("Show Location _Bar"));
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 
 	nautilus_window_ui_thaw (window);

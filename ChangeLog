@@ -1,3 +1,34 @@
+2001-03-05  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 7303 (some menu items use duplicate, thus
+	non-working, underline accelerators)
+
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	New _Folder -> _New Folder to avoid conflict with _Find.
+	_Open in New Window -> Open _in New Window to avoid conflict
+	with _Open.
+	Open With -> Open Wit_h
+	_Select All Files -> Select _All Files to avoid conflict with
+	_Stretch Icon
+	
+	* src/nautilus-shell-ui.xml:
+	_New Window -> New _Window to avoid conflict with _New Folder.
+	_Web Search -> We_b Search to avoid conflict with New _Window.
+	_Select All -> Select _All to avoid conflict with _Stretch Icon
+	Hide Sidebar -> Hide _Sidebar
+	Hide Toolbar -> Hide _Toolbar
+	Hide Location Bar -> Hide Location _Bar
+	Hide Status Bar -> Hide St_atus Bar
+
+	* src/file-manager/fm-directory-view.c: (real_update_menus):
+	Open in <n> _New Window(s) -> Open _in <n> New Windows to match xml.
+	
+	* src/nautilus-window-menus.c:
+	(nautilus_window_update_show_hide_menu_items):
+	Add Show/Hide xxx accelerators to match xml.
+
 2001-03-05  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Maciej Stachowiak  <mjs@eazel.com>

@@ -3189,9 +3189,9 @@ real_update_menus (FMDirectoryView *view)
 				       selection_count == 1);
 	
 	if (selection_count <= 1) {
-		label_with_underscore = g_strdup (_("Open in _New Window"));
+		label_with_underscore = g_strdup (_("Open _in New Window"));
 	} else {
-		label_with_underscore = g_strdup_printf (_("Open in %d _New Windows"), selection_count);
+		label_with_underscore = g_strdup_printf (_("Open _in %d New Windows"), selection_count);
 	}
 	nautilus_bonobo_set_label_for_menu_item_and_command 
 		(view->details->ui,
