@@ -528,6 +528,8 @@ theme_selector_finalize (GObject *object)
 	theme_selector = NAUTILUS_THEME_SELECTOR (object);
 	theme_selector->details->theme_selector_changed_connection = 0;
 
+	g_free (theme_selector->details);
+
 	/* Chain finalize */
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }

@@ -1,5 +1,10 @@
 2002-01-07  Dave Camp  <dave@ximian.com>
 
+	* src/nautilus-theme-selector.c (theme_selector_finalize): Put
+	back the accidentally removed g_free (theme_selector)->details.
+
+2002-01-07  Dave Camp  <dave@ximian.com>
+
 	* src/nautilus-preferences-dialog.c
 	(preferences_dialog_populate_themes_group): Take out the return.
 	The EelLabel exorcism did in fact mostly fix the theme selector.
