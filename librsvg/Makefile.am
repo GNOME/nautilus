@@ -41,6 +41,7 @@ librsvg_la_SOURCES =\
 	rsvg-path.c 		\
 	rsvg-path.h 		\
 	art_rgba.c		\
+	art_rgba.h		\
 	art_render.c		\
 	art_render.h		\
 	art_render_gradient.c	\
