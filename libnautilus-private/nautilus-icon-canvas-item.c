@@ -55,7 +55,9 @@
 
 #define STRETCH_HANDLE_THICKNESS 5
 #define EMBLEM_SPACING 2
-#define MAX_TEXT_WIDTH 80
+
+#define MAX_TEXT_WIDTH_STANDARD 135
+#define MAX_TEXT_WIDTH_TIGHTER 80
 
 /* Private part of the NautilusIconCanvasItem structure. */
 struct NautilusIconCanvasItemDetails {
@@ -710,8 +712,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		gdk_gc_get_values (gc, &save_gc);
 	}
 	
-	max_text_width = floor (MAX_TEXT_WIDTH * canvas_item->canvas->pixels_per_unit);
-	
+	max_text_width = floor (nautilus_icon_canvas_item_get_max_text_width (item));
 				
 	/* if the icon is highlighted, do some set-up */
 	if (needs_highlight && drawable != NULL && !details->is_renaming) {
@@ -1283,7 +1284,7 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 		icon_width = details->pixbuf == NULL ? 0 : gdk_pixbuf_get_width (details->pixbuf);
 	}
 	
-	max_text_width = floor (MAX_TEXT_WIDTH * canvas_item->canvas->pixels_per_unit);
+	max_text_width = floor (nautilus_icon_canvas_item_get_max_text_width (item));
 
 	label_name_color = nautilus_icon_container_get_label_color (NAUTILUS_ICON_CONTAINER (canvas_item->canvas), TRUE);
 	label_info_color = nautilus_icon_container_get_label_color (NAUTILUS_ICON_CONTAINER (canvas_item->canvas), FALSE);
@@ -2014,7 +2015,15 @@ nautilus_icon_canvas_item_set_renaming (NautilusIconCanvasItem *item, gboolean s
 double
 nautilus_icon_canvas_item_get_max_text_width (NautilusIconCanvasItem *item)
 {
-	return MAX_TEXT_WIDTH * GNOME_CANVAS_ITEM (item)->canvas->pixels_per_unit;
+	GnomeCanvasItem *canvas_item;
+	
+	canvas_item = GNOME_CANVAS_ITEM (item);
+	if (nautilus_icon_container_is_tighter_layout (NAUTILUS_ICON_CONTAINER (canvas_item->canvas))) {
+		return MAX_TEXT_WIDTH_TIGHTER * canvas_item->canvas->pixels_per_unit;
+	} else {
+		return MAX_TEXT_WIDTH_STANDARD * canvas_item->canvas->pixels_per_unit;
+	}
+
 }
 
 void

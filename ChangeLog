@@ -1,3 +1,12 @@
+2000-09-09  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_or_measure_label_text), (draw_or_measure_label_text_aa),
+	(nautilus_icon_canvas_item_get_max_text_width):
+	fixed bug 2060, implement Arlo's text layout scheme, which is now 135 pixel
+	instead of 80 in the standard layout mode; it's still 80 in the tighter
+	layout mode.
+	 
 2000-09-07  Rebecca Schulman  <rebecka@eazel.com>
 
 	* components/tree/nautilus-tree-view.c:
