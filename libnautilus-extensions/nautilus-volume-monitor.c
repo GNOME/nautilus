@@ -252,12 +252,12 @@ nautilus_volume_monitor_initialize_class (NautilusVolumeMonitorClass *klass)
 	if (g_file_exists ("/vol/dev")) {
 		floppy_device_path_prefix = "/vol/dev/diskette/";
 	} else {
-		floppy_device_path_prefix = "/dev/fd/";
+		floppy_device_path_prefix = "/dev/fd";
 	}
 	if (g_file_exists ("/vol")) {
 		noauto_string = "/vol/";
 	} else {
-		noauto_string = "/dev/fd/";
+		noauto_string = "/dev/fd";
 	}
 	mnttab_exists = g_file_exists ("/etc/mnttab");
 }
@@ -1112,7 +1112,6 @@ verify_current_mount_state (NautilusVolumeMonitor *monitor)
 	free_mount_list (saved_mount_list);
 }
 
-
 static int
 mount_volumes_check_status (NautilusVolumeMonitor *monitor)
 {
@@ -1244,7 +1243,7 @@ mount_volume_affs_add (NautilusVolume *volume)
 static gboolean
 mount_volume_auto_add (NautilusVolume *volume)
 {
-	if (strcmp (volume->mount_path, "/mnt/floppy") == 0) {
+	if (eel_str_has_prefix (volume->device_path, floppy_device_path_prefix)) {	
 		volume->type = NAUTILUS_VOLUME_FLOPPY;
 	} else {
 		volume->type = NAUTILUS_VOLUME_AUTO;

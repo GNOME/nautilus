@@ -1,3 +1,21 @@
+2001-04-18  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fix an error that was introduced that caused floppy
+	devices to not get identified.  The floppy prefix
+	should be /dev/fd not /dev/fd/
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_initialize_class),
+	(mount_volume_auto_add):
+
+2001-04-18  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: <delete if not using a buddy>
+
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(volume_is_floppy), (mount_volume_auto_add):
+	* src/file-manager/fm-desktop-icon-view.c: (create_mount_link):
+
 2001-04-18  Darin Adler  <darin@eazel.com>
 
 	* nautilus.spec.in: Checked in spec file changes contributed
