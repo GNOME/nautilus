@@ -1,3 +1,15 @@
+2001-04-19  Christopher James Lahey  <clahey@ximian.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c
+	(real_map_pixbuf): Changed map_pixbuf to real_map_pixbuf.
+	(map_pixbuf): This now checks if rendered_pixbuf exists and
+	matches the needed pixbuf.  If not, it calls real_map_pixbuf.
+	Changed the semantics of map_pixbuf to always return a reffed
+	object and changed all calls to map_pixbuf to always unref the
+	object returned.
+
 2001-04-19  Darin Adler  <darin@eazel.com>
 
 	Fix bug 8000 (Can get two identical "View as" items in "View as"

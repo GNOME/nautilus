@@ -74,6 +74,7 @@ static const char untranslated_line_break_characters[] = N_(" -_,;.?/&");
 struct NautilusIconCanvasItemDetails {
 	/* The image, text, font. */
 	GdkPixbuf *pixbuf;
+	GdkPixbuf *rendered_pixbuf;
 	GList *emblem_pixbufs;
 	char *editable_text;		/* Text that can be modified by a renaming function */
 	char *additional_text;		/* Text that cannot be modifed, such as file size, etc. */
@@ -93,6 +94,11 @@ struct NautilusIconCanvasItemDetails {
    	guint is_highlighted_for_drop : 1;
 	guint show_stretch_handles : 1;
 	guint is_prelit : 1;
+
+	guint rendered_is_active : 1;
+	guint rendered_is_highlighted_for_selection : 1;
+	guint rendered_is_highlighted_for_drop : 1;
+	guint rendered_is_prelit : 1;
 	
 	gboolean is_renaming;
 
@@ -341,6 +347,10 @@ nautilus_icon_canvas_item_destroy (GtkObject *object)
 
 	gtk_object_unref (GTK_OBJECT (icon_item->details->smooth_font));
 	icon_item->details->smooth_font = NULL;
+
+	if (details->rendered_pixbuf != NULL) {
+		gdk_pixbuf_unref (details->rendered_pixbuf);
+	}
 	
 	g_free (details);
 
@@ -542,6 +552,10 @@ nautilus_icon_canvas_item_set_image (NautilusIconCanvasItem *item,
 	}
 	if (details->pixbuf != NULL) {
 		gdk_pixbuf_unref (details->pixbuf);
+	}
+	if (details->rendered_pixbuf != NULL) {
+		gdk_pixbuf_unref (details->rendered_pixbuf);
+		details->rendered_pixbuf = NULL;
 	}
 
 	details->pixbuf = image;
@@ -1253,7 +1267,7 @@ draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
 
 /* shared code to highlight or dim the passed-in pixbuf */
 static GdkPixbuf *
-map_pixbuf (NautilusIconCanvasItem *icon_item)
+real_map_pixbuf (NautilusIconCanvasItem *icon_item)
 {
 	GnomeCanvas *canvas;
 	char *audio_filename;
@@ -1261,10 +1275,14 @@ map_pixbuf (NautilusIconCanvasItem *icon_item)
 	
 	temp_pixbuf = icon_item->details->pixbuf;
 	canvas = GNOME_CANVAS_ITEM(icon_item)->canvas;
-	
+
+	gdk_pixbuf_ref (temp_pixbuf);
+
 	if (icon_item->details->is_prelit) {
-		temp_pixbuf = eel_create_spotlight_pixbuf (icon_item->details->pixbuf);
-		
+		old_pixbuf = temp_pixbuf;
+		temp_pixbuf = eel_create_spotlight_pixbuf (temp_pixbuf);
+		gdk_pixbuf_unref (old_pixbuf);
+
 		/* FIXME bugzilla.eazel.com 2471: This hard-wired image is inappropriate to
 		 * this level of code, which shouldn't know that the
 		 * preview is audio, nor should it have an icon
@@ -1306,14 +1324,35 @@ map_pixbuf (NautilusIconCanvasItem *icon_item)
 	    || icon_item->details->is_highlighted_for_drop) {
 		old_pixbuf = temp_pixbuf;
 		temp_pixbuf = eel_create_darkened_pixbuf (temp_pixbuf,
-							       0.8 * 255,
-							       0.8 * 255);
-		if (old_pixbuf != icon_item->details->pixbuf) {
-			gdk_pixbuf_unref (old_pixbuf);
-		}
+							  0.8 * 255,
+							  0.8 * 255);
+		gdk_pixbuf_unref (old_pixbuf);
 	} 
 
 	return temp_pixbuf;
+}
+
+static GdkPixbuf *
+map_pixbuf (NautilusIconCanvasItem *icon_item)
+{
+	if (!(icon_item->details->rendered_pixbuf != NULL
+	      && icon_item->details->rendered_is_active == icon_item->details->is_active
+	      && icon_item->details->rendered_is_prelit == icon_item->details->is_prelit
+	      && icon_item->details->rendered_is_highlighted_for_selection == icon_item->details->is_highlighted_for_selection
+	      && icon_item->details->rendered_is_highlighted_for_drop == icon_item->details->is_highlighted_for_drop)) {
+		if (icon_item->details->rendered_pixbuf != NULL) {
+			gdk_pixbuf_unref (icon_item->details->rendered_pixbuf);
+		}
+		icon_item->details->rendered_pixbuf = real_map_pixbuf (icon_item);
+		icon_item->details->rendered_is_active = icon_item->details->is_active;
+		icon_item->details->rendered_is_prelit = icon_item->details->is_prelit;
+		icon_item->details->rendered_is_highlighted_for_selection = icon_item->details->is_highlighted_for_selection;
+		icon_item->details->rendered_is_highlighted_for_drop = icon_item->details->is_highlighted_for_drop;
+	}
+
+	gdk_pixbuf_ref (icon_item->details->rendered_pixbuf);
+
+	return icon_item->details->rendered_pixbuf;
 }
 
 /* Draw the icon item for non-anti-aliased mode. */
@@ -1345,9 +1384,7 @@ nautilus_icon_canvas_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 	/* if the pre-lit or selection flag is set, make a pre-lit or darkened pixbuf and draw that instead */
 	temp_pixbuf = map_pixbuf (icon_item);
 	draw_pixbuf (temp_pixbuf, drawable, icon_rect.x0, icon_rect.y0);
-	if (temp_pixbuf != details->pixbuf) {
-		gdk_pixbuf_unref (temp_pixbuf);
-	}
+	gdk_pixbuf_unref (temp_pixbuf);
 
 	/* Draw the emblem pixbufs. */
 	emblem_layout_reset (&emblem_layout, icon_item, &icon_rect);
@@ -1710,9 +1747,7 @@ nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 	/* draw the icon */
 	eel_gnome_canvas_draw_pixbuf (buf, temp_pixbuf, icon_rect.x0, icon_rect.y0);
 
-	if (temp_pixbuf != icon_item->details->pixbuf) {
-		gdk_pixbuf_unref (temp_pixbuf);
-	}
+	gdk_pixbuf_unref (temp_pixbuf);
 
 	/* draw the emblems */	
 	emblem_layout_reset (&emblem_layout, icon_item, &icon_rect);
