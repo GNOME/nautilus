@@ -1267,7 +1267,8 @@ load_directory_metadata_callback (NautilusFile *file,
         if (NAUTILUS_IS_NAVIGATION_WINDOW (window)) {
 		geometry_string = eel_preferences_get
 				(NAUTILUS_PREFERENCES_NAVIGATION_WINDOW_SAVED_GEOMETRY);
-                if (geometry_string != NULL) {
+                if (geometry_string != NULL &&
+		    geometry_string[0] != 0) {
 			/* Ignore saved window position if a window with the same
 			 * location is already showing. That way the two windows
 			 * wont appear at the exact same location on the screen.
