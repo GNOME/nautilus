@@ -235,7 +235,7 @@ desktop_icon_view_property_filter (GdkXEvent *gdk_xevent,
   
 	switch (xevent->type) {
 	case PropertyNotify:
-		if (xevent->xproperty.atom == gdk_x11_get_xatom_by_name ("_NET_WM_WORKAREA"))
+		if (xevent->xproperty.atom == gdk_x11_get_xatom_by_name ("_NET_WORKAREA"))
 			net_workarea_changed (icon_view);
 		break;
 	default:
