@@ -551,13 +551,17 @@ static void
 add_to_dedupe_hash (EazelInstall *service,
 		    PackageData *package)
 {
+	if (g_hash_table_lookup (service->private->dedupe_hash, 
+				 package->md5) != NULL) {
+		return;
+	}
 #if EI2_DEBUG & 0x4
 	trilobite_debug ("(adding %p %s %s to dedupe)", 
 			 package, package->name, package->md5);
 #endif
 	gtk_object_ref (GTK_OBJECT (package));
 	g_hash_table_insert (service->private->dedupe_hash, 
-			     package->md5, 
+			     g_strdup (package->md5), 
 			     package);
 }
 
@@ -594,9 +598,8 @@ post_get_softcat_info (EazelInstall *service,
 		/* Don't dedupe yourself */
 		if (p1 != (*package)) {
 #if EI2_DEBUG & 0x4
-			trilobite_debug ("\tdeduping %p %s to %p", *package, (*package)->name, p1);
-#endif		
-			
+			trilobite_debug ("\tdeduping(a) %p %s is already at %p %s", *package, (*package)->name, p1, p1->name);
+#endif
 			gtk_object_ref (GTK_OBJECT (p1));
 			gtk_object_unref (GTK_OBJECT (*package)); 
 			(*package) = p1;
@@ -804,7 +807,9 @@ dedupe_foreach_depends (PackageDependency *d,
 	if (p11) {
 		if (p11 != p1) {
 #if EI2_DEBUG & 0x4
-			trilobite_debug ("\tdeduping(b) %p %s to %p", p11, p11->name, p1);
+			trilobite_debug ("\tdeduping(b) %s", p1->md5);
+			trilobite_debug ("\tdeduping(b) %s", p11->md5);
+			trilobite_debug ("\tdeduping(b) %p %s is already read at %p %s", p1, p1->name, p11, p11->name);
 #endif         
 			gtk_object_ref (GTK_OBJECT (p11));
 			gtk_object_unref (GTK_OBJECT (p1)); 
@@ -1586,6 +1591,16 @@ check_if_related_package (EazelInstall *service,
 			 dep, dep->name, dep->version);
 #endif 	
 
+	/* If the versions do not match, its not related */
+	if (eazel_package_system_compare_version (service->private->package_system,
+						  package->version,
+						  dep->version) != 0) {
+#if EI2_DEBUG & 0x4
+		trilobite_debug ("versions do not match, not related");
+#endif		
+		return FALSE;
+	}
+
 	dep_name_elements = g_strsplit (dep->name, "-", 80);		
 	mod_name_elements = g_strsplit (package->name, "-", 80);
 		
@@ -1755,20 +1770,27 @@ check_tree_helper (EazelInstall *service,
 #endif			
 		}
 #if EI2_DEBUG & 0x4
-		trilobite_debug ("trying to revive %s", pack->name);
+		trilobite_debug ("trying to revive %p %s", pack, pack->name);
 #else
 		g_message ("trying to revive %s", pack->name);
 #endif
+		/* Iterate over all the breakages registered so far */
 		for (iterator = pack->breaks; iterator; iterator = g_list_next (iterator)) {
 			PackageBreaks *breakage = PACKAGEBREAKS (iterator->data);
 
 			PackageData *pack_broken = packagebreaks_get_package (breakage);
 			PackageData *pack_update = NULL;
 			gboolean update_available = FALSE;
-			
-			if (check_if_modified_related_package (service,
-							       pack,
-							       pack_broken)) {
+			gboolean related = FALSE;
+
+			related = check_if_modified_related_package (service,
+								     pack,
+								     pack_broken);
+				
+			/* If the packae we're operating on modifies somehthing that is related,
+			   get an exact (matching) version instead of just checking for an 
+			   update. This is typicall for recovering from breaking a -devel package */
+			if (related) {
 				char *a, *b;
 				a = packagedata_get_readable_name (pack);
 				b = packagedata_get_readable_name (pack_broken);
@@ -1778,24 +1800,24 @@ check_tree_helper (EazelInstall *service,
 				g_message (_("%s is related to %s"),
 					   a, b);
 				
-					/* Create the pack_update */
+				/* Create the pack_update */
 				pack_update = packagedata_new ();
 				pack_update->name = g_strdup (pack_broken->name);
 				pack_update->version = g_strdup (pack->version);
 				pack_update->distribution = pack_broken->distribution;
 				pack_update->archtype = g_strdup (pack_broken->archtype);
 				
-					/* Try and get the info */
+				/* Try and get the info */
 				if (eazel_softcat_get_info (service->private->softcat,
 							    pack_update,
 							    EAZEL_SOFTCAT_SENSE_EQ,
 							    MUST_HAVE) 
 				    != EAZEL_SOFTCAT_SUCCESS) {
 					update_available = FALSE;
-					        /* if we failed, delete the package object */
+					/* if we failed, delete the package object */
 					gtk_object_unref (GTK_OBJECT (pack_update));
 				} else {
-						update_available = TRUE;
+					update_available = TRUE;
 				}
 				
 				g_free (a);
@@ -1808,6 +1830,10 @@ check_tree_helper (EazelInstall *service,
 									MUST_HAVE);
 			}
 			
+			/* If we got the update, do the post_softcat_get_info check,
+			   which sets the modifies list and checks for dupes in the
+			   dedupe hash, also checks to see if a possible upgrade/downgrade
+			   is allowed */
 			if (update_available) {
 				if (post_get_softcat_info (service, &pack_update, SOFTCAT_HIT_OK) !=
 				    SOFTCAT_HIT_OK) {
@@ -1815,39 +1841,58 @@ check_tree_helper (EazelInstall *service,
 				}								
 			} 
 
+			/* So far so good... */
 			if (update_available) {
 				gboolean proceed = TRUE;
+
+				/* Now we need to see if the proposed package 
+				   resolves the current problem */
 				if (IS_PACKAGEFILECONFLICT (breakage)) {
 					PackageFileConflict *conflict = PACKAGEFILECONFLICT (breakage); 
 					
-					if (!check_update_for_no_more_file_conflicts (conflict, pack_update)) {
+					/* If they're not related, check that the proposed update no
+					   longer has the offending file(s).
+					   If they're related, it will typically be foo and foo-devel with
+					   same version number, and the double ownership of the file
+					   will be ok */
+					if (related==FALSE && check_update_for_no_more_file_conflicts (conflict, pack_update)==FALSE) {
 						proceed = FALSE;
 					}
 				} else if (IS_PACKAGEFEATUREMISSING (breakage)) {
 					PackageFeatureMissing *missing = PACKAGEFEATUREMISSING (breakage);
 					
-					if (!check_for_no_more_missing_features (missing, pack_update)) {
+					/* Check that the package we're proposing to update to does not
+					   require the feature that would be lost */
+					if (check_for_no_more_missing_features (missing, pack_update)==FALSE) {
 						proceed = FALSE;
 					}					
 				} 
 				if (proceed) {
+					/* The proposed package did indeed resolve this problem... */
 #if EI2_DEBUG & 0x4
-					trilobite_debug ("adding %s to packages to be installed", 
+					trilobite_debug ("adding %s to packages to be installed, conflicts resolved", 
 							 pack_update->name);
 #else
 					g_message (_("updating %s to version %s-%s solves conflict"),
 						pack_update->name, pack_update->version,
 						pack_update->minor);
 #endif
-					/* ref the package and add it to the extra_packages list */
-					gtk_object_ref (GTK_OBJECT (pack_update));
-					(*extra_packages) = g_list_prepend (*extra_packages, 
-									    pack_update);
-					pack_update->status = PACKAGE_PARTLY_RESOLVED;
+					/* If not already in extra_packages, add it.
+					   Since post_softcat_get_info dedupes, even multiple 
+					   resolves to the same package will at this point be
+					   the same package */
+					if (g_list_find ((*extra_packages), pack_update)==NULL) {
+						/* ref the package and add it to the extra_packages list */
+						gtk_object_ref (GTK_OBJECT (pack_update));
+						(*extra_packages) = g_list_prepend (*extra_packages, 
+										    pack_update);
+						pack_update->status = PACKAGE_PARTLY_RESOLVED;
+					}
 					remove = g_list_prepend (remove, breakage);
 					/* reset pack_broken to some sane values */
 					pack_update->toplevel = TRUE;
 				} else {
+					/* Nope, proposed package did not help... */
 #if EI2_DEBUG & 0x4
 					trilobite_debug ("%s still has conflict", pack_update->name);
 #else
@@ -2460,8 +2505,9 @@ download_packages (EazelInstall *service,
 /***********************************************************************************/
 
 static gboolean
-clean_up_dedupe_hash (const char *id, PackageData *pack)
+clean_up_dedupe_hash (char *md5, PackageData *pack)
 {
+	g_free (md5);
 	gtk_object_unref (GTK_OBJECT (pack));
 	return TRUE;
 }

@@ -214,12 +214,12 @@ get_detailed_messages_foreach (GtkObject *foo, GetErrorsForEachData *data)
 		break;
 	case PACKAGE_CIRCULAR_DEPENDENCY: 
 		if (previous_pack == NULL) {
-			message = g_strdup_printf ("%s depends on itself. Possibly SoftCat is updating...",
+			message = g_strdup_printf ("%s depends on itself...",
 						   required);
 		} else {
 			if (previous_pack->status == PACKAGE_CIRCULAR_DEPENDENCY) {
 				if (strcmp (required_by, required)==0) {
-					message = g_strdup_printf ("%s depends on itself. Possibly SoftCat is updating...",
+					message = g_strdup_printf ("%s depends on itself...",
 								   required);					
 				} else {
 					if (g_list_length (data->path) >= 3) {

@@ -1,6 +1,21 @@
 2001-03-10  Robey Pointer  <robey@eazel.com>
 
 	reviewed by: Eskil Heyn Olsen <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(add_to_dedupe_hash), (post_get_softcat_info),
+	(dedupe_foreach_depends), (check_if_related_package),
+	(check_tree_helper), (clean_up_dedupe_hash):
+	* components/services/install/lib/eazel-install-problem.c:
+	(get_detailed_messages_foreach):
+
+	Backport Eskil's dedupe changes to head, so we can build the
+	installer here.  This fixes the "softcat is updating" bug (which
+	turned out to have nothing to do with softcat).
+
+2001-03-10  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen <eskil@eazel.com>
 	(implicitly)
 
 	Backport a few patches that appear to have only made it to the 1.0
