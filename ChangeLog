@@ -1,3 +1,21 @@
+2001-01-24  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (install_message_new), (generate_install_form),
+	(nautilus_service_install_downloading),
+	(nautilus_service_install_preflight_check),
+	(nautilus_service_install_download_failed),
+	(nautilus_service_install_done), (nautilus_service_install_failed),
+	(nautilus_service_install_view_update_from_uri),
+	(nautilus_service_install_view_load_uri),
+	(service_install_stop_loading_callback):
+
+	Turn off annoying cylon when the throbber is sufficient.  Use
+	Nautilus viewport instead of GTK one, so that the redraw is
+	correct for AA labels (yay!).  Set cancelled flag immediately on
+	getting the stop signal, so we can abort preflight if it was hit
+	that early.
+
 2001-01-24  Michael Engber  <engber@eazel.com>
 
 	[checkin for engber -ramiro ]

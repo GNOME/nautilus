@@ -45,6 +45,7 @@
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-password-dialog.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
+#include <libnautilus-extensions/nautilus-viewport.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <dirent.h>
@@ -179,7 +180,7 @@ install_message_new (NautilusServiceInstallView *view, const char *package_name)
 	gtk_widget_set_usize (im->progress_bar, -2, PROGRESS_BAR_HEIGHT);
 	gtk_widget_show (im->progress_bar);
 
-	im->progress_label = eazel_services_label_new (NULL, 0, 0.0, 0.0, 0, 2,
+	im->progress_label = eazel_services_label_new (NULL, 0, 0.0, 0.0, 0, 0,
 						       EAZEL_SERVICES_BODY_TEXT_COLOR_RGB,
 						       EAZEL_SERVICES_BACKGROUND_COLOR_RGB,
 						       NULL, -2, TRUE);
@@ -335,7 +336,7 @@ generate_install_form (NautilusServiceInstallView	*view)
 
 	view->details->pane = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view->details->pane), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	viewport = gtk_viewport_new (NULL, NULL);
+	viewport = nautilus_viewport_new (NULL, NULL);
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT (viewport), GTK_SHADOW_NONE);
 	gtk_container_add (GTK_CONTAINER (view->details->pane), viewport);
 	gtk_widget_show (viewport);
@@ -613,6 +614,8 @@ nautilus_install_parse_uri (const char *uri, NautilusServiceInstallView *view,
 }
 
 
+/* don't like cylon mode anymore */
+#if 0
 /* when the overall progress bar is in cylon mode, this will tap it to keep it spinning. */
 static gint
 spin_cylon (NautilusServiceInstallView *view)
@@ -640,6 +643,7 @@ turn_cylon_off (NautilusServiceInstallView *view, float progress)
 		view->details->cylon_timer = 0;
 	}
 }
+#endif
 
 /* replace the current progress bar (in the message box) with a centered label saying "Complete!" */
 static void
@@ -674,7 +678,6 @@ nautilus_service_install_downloading (EazelInstallCallback *cb, const PackageDat
 	if (amount == 0) {
 		/* could be a redundant zero-trigger for the same rpm... */
 		if (view->details->current_rpm && (strcmp (view->details->current_rpm, pack->name) == 0)) {
-			/* spin_cylon (view); */
 			return;
 		}
 
@@ -857,8 +860,11 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 	char *out;
 	unsigned long total_k;
 
-	/* turn off the cylon and show "real" progress */
-	turn_cylon_off (view, 0.0);
+	if (view->details->cancelled) {
+		/* user has already hit the cancel button */
+		view->details->cancelled_before_downloads = TRUE;
+		return FALSE;
+	}
 
 	/* assemble initial list of packages to browse */
 	package_list = NULL;
@@ -939,8 +945,6 @@ nautilus_service_install_download_failed (EazelInstallCallback *cb, const Packag
 					  NautilusServiceInstallView *view)
 {
 	char *out, *tmp;
-
-	turn_cylon_off (view, 0.0);
 
 	/* no longer "loading" anything */
 	nautilus_view_report_load_complete (view->details->nautilus_view);
@@ -1260,7 +1264,7 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 		/* we have already indicated failure elsewhere.  good day to you, sir. */
 	}
 
-	turn_cylon_off (view, success ? 1.0 : 0.0);
+	gtk_progress_set_percentage (GTK_PROGRESS (view->details->total_progress_bar), success ? 1.0 : 0.0);
 	g_free (view->details->current_rpm);
 	view->details->current_rpm = NULL;
 
@@ -1369,8 +1373,6 @@ nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *pa
 	char *tmp, *message;
 
 	g_assert (NAUTILUS_IS_SERVICE_INSTALL_VIEW (view));
-
-	turn_cylon_off (view, 0.0);
 
 	/* override the "success" result for install_done signal */
 	view->details->failure = TRUE;
@@ -1594,10 +1596,7 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 	CORBA_exception_free (&ev);
 
 	show_overall_feedback (view, _("Contacting the software catalog ..."));
-
-	/* might take a while... cylon a bit */
-	gtk_progress_set_activity_mode (GTK_PROGRESS (view->details->total_progress_bar), TRUE);
-	view->details->cylon_timer = gtk_timeout_add (100, (GtkFunction)spin_cylon, view);
+	/* let the throbber spin... */
 }
 
 void
@@ -1629,9 +1628,10 @@ nautilus_service_install_view_load_uri (NautilusServiceInstallView	*view,
 	view->details->already_installed = FALSE;
 	view->details->cancelled = FALSE;
 	view->details->failure = FALSE;
-	
 
 	generate_install_form (view);
+
+	nautilus_view_report_load_underway (NAUTILUS_VIEW (view->details->nautilus_view));
 	nautilus_service_install_view_update_from_uri (view, uri);
 }
 
@@ -1654,6 +1654,15 @@ service_install_stop_loading_callback (NautilusView *nautilus_view, NautilusServ
 	GNOME_Trilobite_Eazel_Install	service;
 	CORBA_Environment ev;
 
+	view->details->cancelled = TRUE;
+	show_overall_feedback (view, _("Aborting package downloads..."));
+	while (gtk_events_pending ()) {
+		gtk_main_iteration ();
+	}
+	/* have to set these up here, because if they hit STOP before any downloads have started, the
+	 * call to _stop below will freeze until we get the preflight signal later.
+	 */
+
 	g_assert (nautilus_view == view->details->nautilus_view);
 
 	CORBA_exception_init (&ev);
@@ -1662,8 +1671,5 @@ service_install_stop_loading_callback (NautilusView *nautilus_view, NautilusServ
 	CORBA_exception_free (&ev);
 
 	show_overall_feedback (view, _("Package download aborted."));
-	turn_cylon_off (view, 0.0);
 	current_progress_bar_complete (view, _("Aborted"));
-
-	view->details->cancelled = TRUE;
 }
