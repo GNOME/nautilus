@@ -1,3 +1,20 @@
+2000-06-16  John Sullivan  <sullivan@eazel.com>
+
+	More work towards bug 1401 (bookmark icon never updates).
+	You can avoid some warnings if you get the latest Bonobo.
+
+	* libnautilus-extensions/nautilus-bookmark.h:
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_initialize_class), (nautilus_bookmark_set_name):
+	Define "changed" signal for bookmarks and wire it up (though
+	not yet to the icon-changing case). Remove never-implemented
+	and never-to-be-implemented "nautilus_bookmark_get_file" since
+	I changed my mind on the design.
+	* src/nautilus-window-menus.c: (append_bookmark_to_menu),
+	(clear_appended_bookmark_items): Connect and disconnect
+	signals from the window to the bookmarks in the Go and
+	Bookmarks menus.
+
 2000-06-16  Arlo Rose  <arlo@eazel.com>
 	* icons/eazel/search.png
 	* icons/About_Image.png

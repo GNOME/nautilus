@@ -26,6 +26,7 @@
 #include "nautilus-bookmark.h"
 
 #include <gtk/gtkaccellabel.h>
+#include <gtk/gtksignal.h>
 #include <libgnomeui/gtkpixmapmenuitem.h>
 
 #include "nautilus-icon-factory.h"
@@ -35,6 +36,12 @@
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 
+enum {
+	CHANGED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
 
 struct NautilusBookmarkDetails
 {
@@ -81,6 +88,17 @@ nautilus_bookmark_initialize_class (NautilusBookmarkClass *class)
 	object_class = GTK_OBJECT_CLASS (class);
 
 	object_class->destroy = nautilus_bookmark_destroy;
+
+	signals[CHANGED] =
+		gtk_signal_new ("changed",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusBookmarkClass, changed),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE, 0);
+
+	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+				
 }
 
 static void
@@ -210,8 +228,14 @@ nautilus_bookmark_set_name (NautilusBookmark *bookmark, const char *new_name)
 	g_return_if_fail(NAUTILUS_IS_BOOKMARK (bookmark));
 	g_return_if_fail (new_name != NULL);
 
+	if (strcmp (new_name, bookmark->details->name) == 0) {
+		return;
+	}
+
 	g_free (bookmark->details->name);
 	bookmark->details->name = g_strdup (new_name);
+
+	gtk_signal_emit (GTK_OBJECT (bookmark), signals[CHANGED]);
 }
 
 static NautilusScalableIcon *

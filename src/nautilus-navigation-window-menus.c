@@ -453,11 +453,6 @@ append_bookmark_to_menu (NautilusWindow *window,
 	BonoboUIHandlerPixmapType pixmap_type;
 	char *raw_name, *name;
 
-	/* FIXME bugzilla.eazel.com 705:
-	 * This can make remote calls to try to get the icon. We
-	 * need to save the icon in some way that it isn't retrieved each
-	 * time, at least for remote ones.
-	 */
 	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS);
 
 	/* Set up pixmap type based on result of function.  If we fail, set pixmap type to none */
@@ -495,6 +490,14 @@ append_bookmark_to_menu (NautilusWindow *window,
 		(window->ui_handler, menu_item_path,
 		 activate_bookmark_in_menu_item,
 		 bookmark_holder, (GDestroyNotify) bookmark_holder_free);
+
+	/* Let's get notified whenever a bookmark changes. */
+	gtk_signal_connect_object (GTK_OBJECT (bookmark),
+			    	   "changed",
+			    	   is_bookmarks_menu 
+			    		? schedule_refresh_bookmarks_menu
+			    		: schedule_refresh_go_menu,
+			    	   GTK_OBJECT (window));
 }
 
 /**
@@ -514,6 +517,8 @@ clear_appended_bookmark_items (NautilusWindow *window,
 {
 	GList *children, *p;
 	gboolean found_dynamic_items;
+	gpointer callback_data;
+	BookmarkHolder *bookmark_holder;
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
@@ -522,6 +527,10 @@ clear_appended_bookmark_items (NautilusWindow *window,
 
 	for (p = children; p != NULL; p = p->next) {
                 if (found_dynamic_items) {
+                	bonobo_ui_handler_menu_get_callback (window->ui_handler, p->data, 
+                					     NULL, &callback_data, NULL);
+                	bookmark_holder = (BookmarkHolder *)callback_data;
+                	gtk_signal_disconnect_by_data (GTK_OBJECT (bookmark_holder->bookmark), window);
                         bonobo_ui_handler_menu_remove (window->ui_handler, p->data);
 		} else if (strcmp ((const char *) p->data, last_static_item_path) == 0) {
 			found_dynamic_items = TRUE;
