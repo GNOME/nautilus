@@ -2045,7 +2045,7 @@ fm_properties_window_present (NautilusFile *file, FMDirectoryView *directory_vie
 	nautilus_timed_wait_start
 		(cancel_create_properties_window_callback,
 		 file_to_display,
-		 _("Cancel Showing Properties Window??"),
+		 _("Cancel Showing Properties Window?"),
 		 _("Creating Properties window"),
 		 parent_window == NULL ? NULL : GTK_WINDOW (parent_window));
 	attribute_list.data = NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY;

@@ -1,5 +1,26 @@
 2000-12-19  John Sullivan  <sullivan@eazel.com>
 
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 2392 (need timed wait when activating file)
+
+	* src/file-manager/fm-directory-view.c: 
+	(get_containing_window): Rewrote to avoid applying
+	GTK_WINDOW () cast on potential NULL object.
+	(fm_directory_view_activate_file): Start timed-wait when
+	activating file, so user can cancel it if the call_when_ready
+	takes a really long time.
+	(activate_callback): Cancel timed-wait when we hear back from
+	the call_when_ready.
+	(cancel_activate_callback): Cancel call_when_ready if the user
+	clicks the Cancel button in the timed-wait dialog.
+	
+	* src/file-manager/fm-properties-window.c:
+	(fm_properties_window_present): Fixed a doubled character in
+	a string from my previous checkin.
+
+2000-12-19  John Sullivan  <sullivan@eazel.com>
+
 	reviewed by: Darin Adler  <darin@eazel.com>
 
 	Fixed bug 2292 (no way to cancel opening a Properties window,

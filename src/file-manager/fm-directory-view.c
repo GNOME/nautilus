@@ -171,7 +171,8 @@ typedef struct {
 
 /* forward declarations */
 
-static int                 display_selection_info_idle_callback                   (gpointer              data);
+static void		   cancel_activate_callback 				  (gpointer 	         callback_data);
+static gboolean            display_selection_info_idle_callback                   (gpointer              data);
 static gboolean            file_is_launchable                                     (NautilusFile         *file);
 static void                fm_directory_view_initialize_class                     (FMDirectoryViewClass *klass);
 static void                fm_directory_view_initialize                           (FMDirectoryView      *view);
@@ -413,9 +414,16 @@ viewer_launch_parameters_free (ViewerLaunchParameters *parameters)
 static GtkWindow *
 get_containing_window (FMDirectoryView *view)
 {
+	GtkWidget *window;
+
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	
-	return GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view)));
+	window = gtk_widget_get_ancestor (GTK_WIDGET (view), GTK_TYPE_WINDOW);
+	if (window == NULL) {
+		return NULL;
+	}
+
+	return GTK_WINDOW (window);
 }
 
 gboolean
@@ -3403,6 +3411,8 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	parameters = callback_data;
 
+	nautilus_timed_wait_stop (cancel_activate_callback, parameters);
+
 	view = FM_DIRECTORY_VIEW (parameters->view);
 
 	uri = nautilus_file_get_activation_uri (file);
@@ -3492,8 +3502,21 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	}
 
 	g_free (uri);
+	g_free (parameters);
 }
 
+static void
+cancel_activate_callback (gpointer callback_data)
+{
+	ActivateParameters *parameters;
+
+	parameters = (ActivateParameters *) callback_data;
+
+	nautilus_file_cancel_call_when_ready (parameters->file, 
+					      activate_callback, 
+					      parameters);
+	g_free (parameters);
+}
 
 /**
  * fm_directory_view_activate_file:
@@ -3512,6 +3535,8 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 {
 	ActivateParameters *parameters;
 	GList *attributes;
+	char *file_name;
+	char *timed_wait_prompt;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
@@ -3525,10 +3550,19 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	parameters->file = file;
 	parameters->choice = choice;
 
+	file_name = nautilus_file_get_name (file);
+	timed_wait_prompt = g_strdup_printf (_("Opening \"%s\""), file_name);
+	g_free (file_name);
+	
+	nautilus_timed_wait_start
+		(cancel_activate_callback,
+		 parameters,
+		 _("Cancel Open?"),
+		 timed_wait_prompt,
+		 get_containing_window (view));
+	g_free (timed_wait_prompt);
 	nautilus_file_call_when_ready
 		(file, attributes, activate_callback, parameters);
-
-	/* FIXME bugzilla.eazel.com 2392: Need a timed wait here too. */
 
 	g_list_free (attributes);
 }
