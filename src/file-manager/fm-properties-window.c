@@ -2711,7 +2711,7 @@ select_image_button_callback (GtkWidget *widget, FMPropertiesWindow *properties_
 
 	g_assert (FM_IS_PROPERTIES_WINDOW (properties_window));
 
-	dialog = eel_gnome_icon_selector_new (_("Select an icon:"),
+	dialog = eel_gnome_icon_selector_new (_("Select an icon"),
 					      NULL,
 					      GTK_WINDOW (properties_window),
 					      (EelIconSelectionFunction) set_icon_callback,

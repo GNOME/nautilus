@@ -2034,7 +2034,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	/* update the title and button */
 
 	if (property_browser->details->category == NULL) {
-		gtk_label_set_text (GTK_LABEL (property_browser->details->title_label), _("Select A Category:"));
+		gtk_label_set_text (GTK_LABEL (property_browser->details->title_label), _("Select a Category:"));
 		gtk_widget_hide(property_browser->details->add_button);
 		gtk_widget_hide(property_browser->details->remove_button);
 	

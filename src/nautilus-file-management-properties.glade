@@ -2,8 +2,10 @@
 <!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd">
 
 <glade-interface>
+<requires lib="gnome"/>
 
 <widget class="GtkDialog" id="file_management_dialog">
+  <property name="border_width">5</property>
   <property name="visible">True</property>
   <property name="title" translatable="yes">File Management Preferences</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
@@ -17,7 +19,7 @@
     <widget class="GtkVBox" id="dialog-vbox1">
       <property name="visible">True</property>
       <property name="homogeneous">False</property>
-      <property name="spacing">0</property>
+      <property name="spacing">2</property>
 
       <child internal-child="action_area">
 	<widget class="GtkHButtonBox" id="dialog-action_area1">
@@ -65,8 +67,6 @@
 	  <property name="show_border">True</property>
 	  <property name="tab_pos">GTK_POS_TOP</property>
 	  <property name="scrollable">False</property>
-	  <property name="tab_hborder">2</property>
-	  <property name="tab_vborder">2</property>
 	  <property name="enable_popup">False</property>
 
 	  <child>
