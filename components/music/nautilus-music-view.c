@@ -578,8 +578,8 @@ is_mp3_file (GnomeVFSFileInfo *file_info)
 		&& nautilus_istr_has_suffix (file_info->mime_type, "mp3");
 }
 
-/* read the id3 tag of the file if present */
 
+/* read the id3 tag of the file if present */
 static gboolean
 read_id_tag (const char *song_uri, SongInfo *song_info)
 {
@@ -703,7 +703,8 @@ fetch_song_info (const char *song_uri, GnomeVFSFileInfo *file_info, int file_ord
 	GnomeVFSHandle *mp3_file;
 	GnomeVFSResult result;
 	GnomeVFSFileSize length_read;
-
+	ID3V2Header v2header;
+	long header_size;
 
 	if (!is_mp3_file (file_info)) {
 		return NULL;
@@ -727,16 +728,39 @@ fetch_song_info (const char *song_uri, GnomeVFSFileInfo *file_info, int file_ord
 
 	result = gnome_vfs_open (&mp3_file, song_uri, GNOME_VFS_OPEN_READ);
 	if (result == GNOME_VFS_OK) {
-  		result = gnome_vfs_read (mp3_file, buffer, sizeof(buffer), &length_read);
+  		result = gnome_vfs_read (mp3_file, buffer, sizeof (buffer), &length_read);
 		if ((result == GNOME_VFS_OK) && (length_read > 512)) {
-			info->bitrate = get_bitrate (buffer,length_read);
-			info->samprate = get_samprate (buffer,length_read);
-			info->stereo = get_stereo (buffer,length_read);
+			/* Make sure ID3v2 tag is not at start of file */
+			if ( buffer[0] == 'I' && buffer[1] == 'D' && buffer[2] == '3' ) {
+				/* Read in header and determine size */
+				gnome_vfs_seek (mp3_file, GNOME_VFS_SEEK_START, 0);
+				result = gnome_vfs_read (mp3_file, &v2header, sizeof (ID3V2Header), &length_read);
+				if (result != GNOME_VFS_OK) {
+					return info;
+				}
+
+				header_size = ((long) v2header.size[3] | 
+					      ((long) v2header.size[2] << (8 - 1)) |
+	    				      ((long) v2header.size[1] << (16 - 2)) | 
+	    				      ((long) v2header.size[0] << (24 - 3))) 
+	    				      + sizeof (ID3V2Header);
+
+				/* Seek past the tag to the mp3 data */
+				gnome_vfs_seek (mp3_file, GNOME_VFS_SEEK_START, header_size);
+				result = gnome_vfs_read (mp3_file, buffer, sizeof (buffer), &length_read);
+				if (result != GNOME_VFS_OK) {
+					return info;
+				}
+			}
+
+			info->bitrate = get_bitrate (buffer, length_read);
+			info->samprate = get_samprate (buffer, length_read);
+			info->stereo = get_stereo (buffer, length_read);
 			info->track_time = fetch_play_time (file_info, info->bitrate);
 		}
 		gnome_vfs_close (mp3_file);
 	}
-
+	
 	return	info;
 }
 
@@ -1498,7 +1522,6 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 	nautilus_connect_background_to_file_metadata_by_uri (GTK_WIDGET (music_view), uri);
 	
 	/* iterate through the directory, collecting mp3 files and extracting id3 data if present */
-
 	result = gnome_vfs_directory_list_load (&list, uri,
 						GNOME_VFS_FILE_INFO_GET_MIME_TYPE, 
 						NULL);
@@ -1553,8 +1576,7 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 	
 	song_list = sort_song_list(music_view, song_list);
 		
-	/* populate the clist */
-	
+	/* populate the clist */	
 	gtk_clist_clear (GTK_CLIST (music_view->details->song_list));
 	
 	for (p = song_list; p != NULL; p = p->next) {
@@ -1612,8 +1634,7 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 	nautilus_file_call_when_ready (music_view->details->file, attributes, metadata_callback, music_view);
 	g_list_free (attributes);
         
-	/* determine the album title/artist line */
-	
+	/* determine the album title/artist line */	
 	if (music_view->details->album_title) {
 		char *album_name, *artist_name, *temp_str;
 

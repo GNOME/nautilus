@@ -1,3 +1,23 @@
+2000-11-29  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed part of bug 2171. Garbage was appearing in the song
+	duration text field. This was cause by not reading in the 
+	MP3 header data. In most cases this is due to the presence 
+	of an ID3v2 at the start off the file.  We check for this and
+	hop over it if such data is present.
+	
+	* components/music/mp3head.c: (get_bitrate), (get_samprate),
+	(get_stereo), (compare), (sync_scan), (sync_test), (find_sync),
+	(get_header_info), (get_header_info_extended):
+	Some addition header handling functions for better diagnostics.
+	
+	* components/music/mp3head.h:
+	Added function prototypes and ID3v2 header structure.
+	
+	* components/music/nautilus-music-view.c: 
+	(fetch_song_info),
+	(nautilus_music_view_update):
+
 2000-11-30  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/text/nautilus-text-view.c:
