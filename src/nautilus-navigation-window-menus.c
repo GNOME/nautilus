@@ -564,6 +564,12 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 					      "for GNOME that makes it\n"
 					      "easy to manage your files\n"
 					      "and the rest of your system."),
+					    /* translators should localize the following
+					     * string which will be displayed at the
+					     * bottom of the about box to give credit
+					     * to the translator(s)
+					     */
+					     _("Translator Credits"),
 					    time_stamp);
 		
 		g_free (time_stamp);
@@ -591,12 +597,12 @@ help_menu_nautilus_quick_reference_callback (BonoboUIComponent *component,
 }
 
 static void
-help_menu_customer_service (BonoboUIComponent *component, 
+help_menu_support (BonoboUIComponent *component, 
 		       gpointer callback_data, 
 		       const char *verb)
 {
 	nautilus_window_go_to (NAUTILUS_WINDOW (callback_data),
-			       "http://services.eazel.com/support");
+			       "http://support.eazel.com");
 }
 
 static void
@@ -1188,7 +1194,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 		BONOBO_UI_VERB ("About Nautilus", help_menu_about_nautilus_callback),
 		BONOBO_UI_VERB ("Nautilus Manual", help_menu_nautilus_manual_callback),
 		BONOBO_UI_VERB ("Nautilus Quick Reference", help_menu_nautilus_quick_reference_callback),
-		BONOBO_UI_VERB ("Customer Service", help_menu_customer_service),
+		BONOBO_UI_VERB ("Support", help_menu_support),
 		BONOBO_UI_VERB ("Nautilus Feedback", help_menu_nautilus_feedback_callback),
 
 		BONOBO_UI_VERB ("Switch to Beginner Level", user_level_menu_item_callback),

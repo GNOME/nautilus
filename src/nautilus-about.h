@@ -56,6 +56,7 @@ GtkWidget *nautilus_about_new            (const char     *title,
 					  const char     *copyright,
 					  const char    **authors,
 					  const char     *comments,
+					  const char	 *translators,
 					  const char     *time_stamp);
 void       nautilus_about_update_authors (NautilusAbout  *about);
 

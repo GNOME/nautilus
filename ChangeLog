@@ -1,3 +1,26 @@
+2001-02-22  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 6312, information about translation in the about box,
+	by adding a localizable string that is displayed in the lower
+	left of the about box if it's changed from the default.
+	
+	fixed bug 6708, support link in help menu, by changing the uri to
+	the real one we want to ship with, that currently points to a
+	placeholder page.  Also, due to popular demand, renamed it back
+	to "Support".
+	
+	* src/nautilus-about.c: (nautilus_about_new),
+	(nautilus_about_draw_info):
+	added a translators parameter, and used it to draw the translators
+	credits if present.
+	* src/nautilus-about.h:
+	added translator parameter to nautilus_about_new
+	* src/nautilus-shell-ui.xml:
+	changed menu name to "support"
+	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback),
+	(help_menu_support), (nautilus_window_initialize_menus):
+	renamed verb to support, changed link to point to intended support site.
+	
 2001-02-22  Michael Engber  <engber@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

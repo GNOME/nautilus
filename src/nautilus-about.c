@@ -48,6 +48,7 @@
 #include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-scalable-font.h>
+#include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 
 struct NautilusAboutDetails {
@@ -73,6 +74,7 @@ static void     nautilus_about_draw_info        (NautilusAbout       *about,
 						 const char          *copyright,
 						 const char         **authors,
 						 const char          *comments,
+						 const char	     *translators,
 						 const char          *time_stamp);
 static int      update_authors_if_necessary     (gpointer             callback_data);
 
@@ -187,6 +189,7 @@ nautilus_about_new (const char *title,
 		    const char *copyright,
 		    const char **authors,
 		    const char *comments,
+		    const char *translators,
 		    const char *time_stamp)
 {
 	NautilusAbout *about;
@@ -194,7 +197,8 @@ nautilus_about_new (const char *title,
 	about = NAUTILUS_ABOUT (gtk_widget_new (nautilus_about_get_type (), NULL));
 	
 	/* draw the info onto the pixbuf, once and for all */
-	nautilus_about_draw_info (about, title, version, copyright, authors, comments, time_stamp);
+	nautilus_about_draw_info (about, title, version, copyright,
+					authors, comments, translators, time_stamp);
 	
 	return GTK_WIDGET (about);
 }
@@ -323,6 +327,7 @@ nautilus_about_draw_info (NautilusAbout	*about,
 			  const char *copyright,
 			  const char **authors,
 			  const char *comments,
+			  const char *translators,
 			  const char *time_stamp)
 {
 	char *display_str, *temp_str;
@@ -356,6 +361,26 @@ nautilus_about_draw_info (NautilusAbout	*about,
 	
 	/* draw the time stamp */
 	draw_aa_string (plain_font, pixbuf, 11, 284, total_height - 14, grey, black, time_stamp, 0);
+
+	/* draw the translator's credit, if necessary */
+	if (nautilus_strcmp (translators, "Translator Credits") != 0) {
+		comment_array = g_strsplit (translators, "\n", 10);
+		index = 0;
+		while (comment_array[index] != NULL) {
+			index += 1;
+		}
+		
+		xpos = 6;
+		ypos = total_height - (14 * index);
+		
+		index = 0;
+		while (comment_array[index] != NULL) {
+			draw_aa_string (plain_font, pixbuf, 11, xpos, ypos, black, black, comment_array[index], 0);
+			ypos += 14;
+			index++;	
+		}
+		g_strfreev (comment_array);
+	}
 	
 	/* remember the authors */
 	g_strfreev (about->details->authors);
@@ -378,7 +403,7 @@ nautilus_about_draw_info (NautilusAbout	*about,
 		index++;	
 	}
 	g_strfreev (comment_array);
-	
+		
 	/* release the fonts */	
 	gtk_object_unref (GTK_OBJECT(plain_font));
 	gtk_object_unref (GTK_OBJECT(bold_font));
