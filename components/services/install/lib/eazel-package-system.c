@@ -62,7 +62,12 @@ eazel_package_system_suggest_id ()
 		}
 		break;
 	case DISTRO_MANDRAKE: 
-		result = EAZEL_PACKAGE_SYSTEM_RPM_3;
+               if (dist.version_major >= 8) {
+                       result = EAZEL_PACKAGE_SYSTEM_RPM_4;
+               }
+               else {
+                       result = EAZEL_PACKAGE_SYSTEM_RPM_3;
+               }
 		break;
 	case DISTRO_YELLOWDOG:
 		result = EAZEL_PACKAGE_SYSTEM_UNSUPPORTED;

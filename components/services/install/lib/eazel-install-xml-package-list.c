@@ -221,7 +221,8 @@ parse_category (xmlNode* cat) {
 } /* end parse_category */
 
 /* parse the contents of the CATEGORIES node */
-static GList* parse_shared (xmlNodePtr base) 
+static GList* 
+parse_shared (xmlNodePtr base) 
 {
 	xmlNodePtr category;
 	GList* rv;
@@ -576,13 +577,21 @@ eazel_install_packagedata_to_xml_int (const PackageData *pack,
 		g_free (tmp);
 	}
 
-	tmp = g_strdup_printf ("%u", pack->bytesize);
-	node = xmlNewChild (root, NULL, "BYTESIZE", tmp);
-	g_free (tmp);
+	if (pack->bytesize==0) {
+		node = xmlNewChild (root, NULL, "BYTESIZE", NULL);
+	} else {
+		tmp = g_strdup_printf ("%u", pack->bytesize);
+		node = xmlNewChild (root, NULL, "BYTESIZE", tmp);
+		g_free (tmp);
+	}
 
-	tmp = g_strdup_printf ("%u", pack->filesize);
-	node = xmlNewChild (root, NULL, "FILESIZE", tmp);
-	g_free (tmp);
+	if (pack->filesize==0) {
+		node = xmlNewChild (root, NULL, "FILESIZE", NULL);
+	} else {
+		tmp = g_strdup_printf ("%u", pack->filesize);
+		node = xmlNewChild (root, NULL, "FILESIZE", tmp);
+		g_free (tmp);
+	}
 
 	if (include_provides && pack->provides) {
 		tmp = g_strdup ((char*)(pack->provides->data));

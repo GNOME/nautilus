@@ -2032,7 +2032,7 @@ eazel_package_system_implementation (GList *dbpaths)
 	EazelPackageSystem *result;
 	GList *tdbpaths = dbpaths;
 
-	g_message ("Eazel Package System - rpm3");
+	g_message ("Eazel Package System - rpm3 (root %s is db %s)", DEFAULT_ROOT, DEFAULT_DB_PATH);
 	
 	tdbpaths = g_list_prepend (tdbpaths, g_strdup (DEFAULT_ROOT));
 	tdbpaths = g_list_prepend (tdbpaths, g_strdup (DEFAULT_DB_PATH));

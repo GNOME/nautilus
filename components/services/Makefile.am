@@ -1,7 +1,7 @@
 NULL=
 
 if BUILD_RPM_COMPONENTS
-INSTALL_SERVICE=install inventory install-view inventory-view
+INSTALL_SERVICE=install inventory install-view inventory-view clone
 endif
 
 

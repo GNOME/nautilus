@@ -122,8 +122,7 @@ static const struct poptOption options[] = {
 	{"packagefile", '\0', POPT_ARG_STRING, &arg_package_list, 0, N_("Specify package file"), NULL},
 	{"provides", '\0', POPT_ARG_NONE, &arg_provides, 0, N_("RPM args are needed files"), NULL},
 	{"query", 'q', POPT_ARG_NONE, &arg_query, 0, N_("Run Query"), NULL},
-	/* Disabled for 1.0 */
-	/* {"revert", 'r', POPT_ARG_NONE, &arg_revert, 0, N_("Revert"), NULL}, */
+	{"revert", 'r', POPT_ARG_NONE, &arg_revert, 0, N_("Revert"), NULL}, 
 	{"root", '\0', POPT_ARG_STRING, &arg_root, 0, N_("Set root"), NULL},
 	{"server", '\0', POPT_ARG_STRING, &arg_server, 0, N_("Specify server"), NULL},
 	{"silent", '\0', POPT_ARG_NONE, &arg_silent, 0, N_("Dont print too much, just problems and download"), NULL},

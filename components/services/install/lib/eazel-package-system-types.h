@@ -18,7 +18,9 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Authors: J Shane Culpepper <pepper@eazel.com>
+ * Authors: Eskil Heyn Olsen <eskil@eazel.com>
+ *          Robey Pointer <robey@eazel.com>
+ *          J Shane Culpepper <pepper@eazel.com>
  *          Joe Shaw <joe@helixcode.com>
  */
 

@@ -1,3 +1,53 @@
+2001-03-26  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	Initial commit of machine cloning.
+	
+	* components/services/Makefile.am:
+	* components/services/clone/Makefile.am:
+	* configure.in:
+	The usual makefile trickery etc.
+	
+	* components/services/clone/eazel-clone-lib.h:
+	* components/services/clone/eazel-clone-lib.c:
+	(eazel_install_clone_load_inventory),
+	(eazel_install_clone_check_existing),
+	(eazel_install_clone_compare_inventory),
+	(eazel_install_clone_create_inventory):
+	The lib that generates an inventory and does inventory compare.
+	
+	* components/services/clone/eazel-clone.c:
+	(set_parameters_from_command_line),
+	(eazel_file_conflict_check_signal),
+	(eazel_file_uniqueness_check_signal),
+	(eazel_feature_consistency_check_signal),
+	(eazel_download_progress_signal), (eazel_install_progress_signal),
+	(eazel_uninstall_progress_signal), (download_failed),
+	(install_failed), (uninstall_failed),
+	(eazel_preflight_check_signal), (eazel_save_transaction_signal),
+	(dep_check), (md5_check_failed), (delete_files), (done),
+	(get_password_dude), (set_root_client), (do_clone), (main):
+	Rehack of eazel-alt-install-corba.c to act as cli clone util.
+	
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c:
+	Reenabled --revert...
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_shared), (eazel_install_packagedata_to_xml_int):
+	Tighter FILESIZE and BYTESIZE in xml.
+	
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(eazel_package_system_implementation):
+	Spew root and DB when starting.
+	
+	* components/services/install/lib/eazel-package-system-types.c:
+	* components/services/install/lib/eazel-package-system-types.h:	
+	Authors stuff.
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_suggest_id):
+	Committed patch from fcrozat@mandrakesoft.com to correctly set
+	RPM4 for Mandrake 8.0
+
 Mon Mar 26 01:39:43 2001  George Lebl <jirka@5z.com>
 
 	This patch killed two people, but Seth says it's not that bad

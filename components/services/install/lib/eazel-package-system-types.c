@@ -19,6 +19,7 @@
  * Boston, MA 02111-1307, USA.
  *
  * Authors: Eskil Heyn Olsen <eskil@eazel.com>
+ *          Robey Pointer <robey@eazel.com>
  */
 
 /*
