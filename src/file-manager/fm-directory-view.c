@@ -144,8 +144,10 @@ static void           fm_directory_view_real_create_selection_context_menu_items
 										   GList                    *files);
 static void           fm_directory_view_real_merge_menus                          (FMDirectoryView          *view);
 static void           fm_directory_view_real_update_menus                         (FMDirectoryView          *view);
-static gboolean	      fm_directory_view_real_supports_properties 		  (FMDirectoryView 	    *view);
+static gboolean	      fm_directory_view_real_is_read_only	 		  (FMDirectoryView 	    *view);
+static gboolean	      fm_directory_view_real_supports_creating_files		  (FMDirectoryView 	    *view);
 static gboolean	      fm_directory_view_real_supports_zooming	 		  (FMDirectoryView 	    *view);
+static gboolean	      fm_directory_view_real_supports_properties 		  (FMDirectoryView 	    *view);
 static GtkMenu *      create_selection_context_menu                               (FMDirectoryView          *view);
 static GtkMenu *      create_background_context_menu                              (FMDirectoryView          *view);
 static BonoboControl *get_bonobo_control                                          (FMDirectoryView          *view);
@@ -282,8 +284,10 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	klass->get_required_metadata_keys = get_required_metadata_keys;
 	klass->get_emblem_names_to_exclude = real_get_emblem_names_to_exclude;
 	klass->start_renaming_item = start_renaming_item;
-	klass->supports_properties = fm_directory_view_real_supports_properties;
+	klass->is_read_only = fm_directory_view_real_is_read_only;
+	klass->supports_creating_files = fm_directory_view_real_supports_creating_files;
 	klass->supports_zooming = fm_directory_view_real_supports_zooming;
+	klass->supports_properties = fm_directory_view_real_supports_properties;
 
 	/* Function pointers that subclasses must override */
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, add_file);
@@ -2369,22 +2373,23 @@ compute_menu_item_info (FMDirectoryView *directory_view,
 		}
         } else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER) == 0) {
 		name = g_strdup (_("New Folder"));
+		*return_sensitivity = fm_directory_view_supports_creating_files (directory_view);
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_DELETE) == 0) {
 		name = g_strdup (_("Delete from _Trash"));
 		*return_sensitivity = selection != NULL;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_TRASH) == 0) {
 		name = g_strdup (_("Move to _Trash"));
-		*return_sensitivity = selection != NULL;
+		*return_sensitivity = !fm_directory_view_is_read_only (directory_view) && selection != NULL;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE) == 0) {
 		name = g_strdup (_("_Duplicate"));
-		*return_sensitivity = selection != NULL;
+		*return_sensitivity = fm_directory_view_supports_creating_files (directory_view) && selection != NULL;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK) == 0) {
 		if (selection != NULL && !nautilus_g_list_exactly_one_item (selection)) {
 			name = g_strdup (_("Create _Links"));
 		} else {
 			name = g_strdup (_("Create _Link"));
 		}
-		*return_sensitivity = selection != NULL;
+		*return_sensitivity = fm_directory_view_supports_creating_files (directory_view) && selection != NULL;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_SHOW_PROPERTIES) == 0) {
 		/* No ellipses here because this command does not require further
 		 * information to be completed.
@@ -3215,6 +3220,8 @@ fm_directory_view_real_update_menus (FMDirectoryView *view)
 	selection = fm_directory_view_get_selection (view);
 
 	update_one_menu_item (view, handler, selection,
+			      FM_DIRECTORY_VIEW_MENU_PATH_NEW_FOLDER);
+	update_one_menu_item (view, handler, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN);
 	update_one_menu_item (view, handler, selection,
 			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW);
@@ -3768,6 +3775,78 @@ fm_directory_view_stop (FMDirectoryView *view)
 	done_loading (view);
 }
 
+gboolean
+fm_directory_view_is_read_only (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	return NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 is_read_only, (view));
+}
+
+static NautilusFile *
+get_directory_as_file (FMDirectoryView *view)
+{
+	NautilusDirectory *directory;
+	NautilusFile *directory_as_file;
+	char *uri;
+
+	directory = fm_directory_view_get_model (view);
+	uri = nautilus_directory_get_uri (directory);
+	directory_as_file = nautilus_file_get (uri);
+	g_free (uri);
+
+	return directory_as_file;
+}
+
+static gboolean
+fm_directory_view_real_is_read_only (FMDirectoryView *view)
+{
+	NautilusFile *directory_as_file;
+	gboolean result;
+
+	directory_as_file = get_directory_as_file (view);
+
+	result = !nautilus_file_can_write (directory_as_file);
+	
+	nautilus_file_unref (directory_as_file);
+
+	return result;
+}
+
+gboolean
+fm_directory_view_supports_creating_files (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	return NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 supports_creating_files, (view));
+}
+
+static gboolean
+showing_trash_directory (FMDirectoryView *view)
+{
+	NautilusFile *directory_as_file;
+	gboolean result;
+
+	directory_as_file = get_directory_as_file (view);
+
+	result = nautilus_file_is_in_trash (directory_as_file);
+	
+	nautilus_file_unref (directory_as_file);
+
+	return result;
+}
+
+static gboolean
+fm_directory_view_real_supports_creating_files (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	return !fm_directory_view_is_read_only (view) && !showing_trash_directory (view);
+}
 
 gboolean
 fm_directory_view_supports_properties (FMDirectoryView *view)

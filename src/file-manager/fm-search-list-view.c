@@ -73,6 +73,7 @@ static void 	real_get_column_specification        	 (FMListView       *list_view
 						      	  FMListViewColumn *specification);
 static NautilusStringList * real_get_emblem_names_to_exclude         (FMDirectoryView  *view);
 static void	real_merge_menus 		     	 (FMDirectoryView  *view);
+static gboolean real_supports_creating_files		 (FMDirectoryView  *view);
 static gboolean real_supports_properties 	     	 (FMDirectoryView  *view);
 static void 	load_location_callback               	 (NautilusView 	   *nautilus_view, 
 						      	  char 		   *location);
@@ -108,14 +109,16 @@ fm_search_list_view_initialize_class (gpointer klass)
 	fm_list_view_class = FM_LIST_VIEW_CLASS (klass);
 
   	fm_directory_view_class->add_file = real_add_file;
-  	fm_directory_view_class->merge_menus = real_merge_menus;
-  	fm_directory_view_class->update_menus =	real_update_menus;
-	fm_directory_view_class->supports_properties = 
-		real_supports_properties;
 	fm_directory_view_class->create_selection_context_menu_items = 
 		real_create_selection_context_menu_items;
 	fm_directory_view_class->get_emblem_names_to_exclude = 
 		real_get_emblem_names_to_exclude;
+  	fm_directory_view_class->merge_menus = real_merge_menus;
+	fm_directory_view_class->supports_creating_files = 
+		real_supports_creating_files;
+	fm_directory_view_class->supports_properties = 
+		real_supports_properties;
+  	fm_directory_view_class->update_menus =	real_update_menus;
 
 	fm_list_view_class->adding_file = real_adding_file;
 	fm_list_view_class->removing_file = real_removing_file;
@@ -469,6 +472,14 @@ real_merge_menus (FMDirectoryView *view)
         nautilus_file_list_free (selected_files);
 }
 
+static gboolean
+real_supports_creating_files (FMDirectoryView *view)
+{
+	/* The user is not allowed to modify the contents of a search
+	 * results view.
+	 */
+	return FALSE;
+}
 
 static gboolean
 real_supports_properties (FMDirectoryView *view)

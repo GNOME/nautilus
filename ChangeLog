@@ -1,9 +1,54 @@
+2000-09-08  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2120 (Shouldn't be able to create new files in
+	search view) and most of bug 2916 (Shouldn't be able to
+	create new files in Trash). Also fixed the more general
+	but unreported bug: Shouldn't be able to create new
+	files in read-only directories.
+
+	* src/file-manager/fm-directory-view.h,
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_is_read_only): New function, overridable via
+	function pointer, that reports whether the contents of a 
+	directory view are entirely read-only. 		
+	(fm_directory_view_real_is_read_only): Default implementation of
+	is_read_only, checks the permissions of the model NautilusDirectory.
+	(fm_directory_view_supports_creating_files): New function,
+	overridable via function pointer, that reports whether a
+	directory supports creating new files inside it
+	(fm_directory_view_real_supports_creating_files): Default
+	implementation of supports_creating_files, returns TRUE unless
+	is_read_only is true or the displayed directory is in the trash.
+	The remaining part of bug 2916 is that the NautilusFile for 
+	"trash:" doesn't think it's in the trash.
+	(fm_directory_view_initialize_class): Wire up default function
+	pointers.
+	(compute_menu_item_info): Make sensitivity of "Move to Trash"
+	depend on is_read_only; make sensitivity of "New Folder",
+	"Duplicate", and "Create Link" depend on supports_creating_files.
+	(fm_directory_view_real_update_menus): Add "New Folder" to the
+	set of dynamic ones.
+	(get_directory_as_file): New helper function to get a NautilusFile
+	object for the displayed directory.
+	(showing_trash_directory): New helper function to check whether
+	the displayed directory is trash.
+	
+	* src/file-manager/fm-icon-view.c:
+	(get_stored_icon_position_callback): Removed call to
+	fm_directory_view_get_model whose result was not used.
+	(tighter_layout_callback): Removed an unnecessary cast.
+	
+	* src/file-manager/fm-search-list-view.c:
+	(real_supports_creating_files): Overridden to return FALSE.
+	(fm_search_list_view_initialize_class): Wire up overridden
+	function pointer.
+
 2000-09-08  Josh Barrow  <linuxfan@ionet.net>
 
 	* components/hardware/nautilus-hardware-view.c: (setup_form_title),
 	(setup_overview_form), (setup_CPU_form), (setup_RAM_form),
 	(setup_IDE_form): 
-	Change all text to aa text using nautilus_label and it's friends.
+	Change all text to aa text using nautilus_label and its friends.
 
 2000-09-08  Andy Hertzfeld  <andy@eazel.com>
 

@@ -219,7 +219,6 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 				   NautilusIconPosition *position,
 				   FMIconView *icon_view)
 {
-	NautilusDirectory *directory;
 	char *position_string, *scale_string;
 	gboolean position_good, scale_good;
 	char *locale;
@@ -238,7 +237,6 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 	locale = setlocale (LC_NUMERIC, "C");
 
 	/* Get the current position of this icon from the metadata. */
-	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view));
 	position_string = nautilus_file_get_metadata
 		(file, NAUTILUS_METADATA_KEY_ICON_POSITION, "");
 	position_good = sscanf
@@ -372,7 +370,7 @@ tighter_layout_callback (gpointer ignored, gpointer view)
 		return;
 	
 	icon_container = get_icon_container (FM_ICON_VIEW (view));
-	directory = NAUTILUS_DIRECTORY (fm_directory_view_get_model (FM_DIRECTORY_VIEW (view)));
+	directory = fm_directory_view_get_model (FM_DIRECTORY_VIEW (view));
 	is_tighter_layout = fm_icon_view_get_directory_tighter_layout (FM_ICON_VIEW (view), directory);
 	
 	fm_icon_view_set_directory_tighter_layout (FM_ICON_VIEW (view), directory, !is_tighter_layout);

@@ -228,6 +228,22 @@ struct FMDirectoryViewClass {
 	 */
 	gboolean (* supports_zooming)		(FMDirectoryView *view);
 
+	/* is_read_only is a function pointer that subclasses may
+	 * override to control whether or not the user is allowed to
+	 * change the contents of the currently viewed directory. The
+	 * default implementation checks the permissions of the
+	 * directory.
+	 */
+	gboolean (* is_read_only)	(FMDirectoryView *view);
+
+	/* supports_creating_files is a function pointer that subclasses may
+	 * override to control whether or not new items can be created.
+	 * be accepted. The default implementation checks whether the
+	 * user has write permissions for the viewed directory, and whether
+	 * the viewed directory is in the trash.
+	 */
+	gboolean (* supports_creating_files)	(FMDirectoryView *view);
+
 	void	(* start_renaming_item)	 	(FMDirectoryView *view,
 					  	 const char *uri);
 
@@ -270,6 +286,8 @@ void               fm_directory_view_restore_default_zoom_level     (FMDirectory
 void               fm_directory_view_select_all                     (FMDirectoryView       *view);
 void               fm_directory_view_set_selection                  (FMDirectoryView       *view,
 								     GList                 *selection);
+gboolean	   fm_directory_view_is_read_only		    (FMDirectoryView	   *view);
+gboolean	   fm_directory_view_supports_creating_files	    (FMDirectoryView	   *view);
 gboolean	   fm_directory_view_supports_properties	    (FMDirectoryView	   *view);
 gboolean	   fm_directory_view_supports_zooming	    	    (FMDirectoryView	   *view);
 void               fm_directory_view_move_copy_items                (const GList           *item_uris,
