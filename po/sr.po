@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-12 23:33+0100\n"
-"PO-Revision-Date: 2004-01-12 23:59+0100\n"
+"POT-Creation-Date: 2004-01-13 03:02+0100\n"
+"PO-Revision-Date: 2004-01-13 02:07+0100\n"
 "Last-Translator: Данило Шеган <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -44,7 +44,7 @@ msgid "bonobo_ui_init() failed."
 msgstr "Неуспешан bonobo_ui_init()."
 
 #: components/emblem/Nautilus_View_emblem.server.in.in.h:1
-#: src/file-manager/fm-properties-window.c:2403
+#: src/file-manager/fm-properties-window.c:2400
 #: src/file-manager/fm-search-list-view.c:507
 msgid "Emblems"
 msgstr "Обележја"
@@ -247,25 +247,33 @@ msgstr "ИСО ранг брзине"
 msgid "Software"
 msgstr "Програми"
 
-# bug: plural-forms
 #: components/image_properties/nautilus-image-properties-view.c:222
 #, c-format
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
-msgstr ""
+msgid_plural ""
+"<b>Image Type:</b> %s (%s)\n"
+"<b>Resolution:</b> %dx%d pixels\n"
+msgstr[0] ""
+"<b>Врста слике:</b> %s (%s)\n"
+"<b>Величина:</b> %dx%d тачка\n"
+msgstr[1] ""
+"<b>Врста слике:</b> %s (%s)\n"
+"<b>Величина:</b> %dx%d тачке\n"
+msgstr[2] ""
 "<b>Врста слике:</b> %s (%s)\n"
 "<b>Величина:</b> %dx%d тачака\n"
 
-#: components/image_properties/nautilus-image-properties-view.c:235
+#: components/image_properties/nautilus-image-properties-view.c:237
 msgid "Failed to load image information"
 msgstr "Није успео да учита податке о слици"
 
-#: components/image_properties/nautilus-image-properties-view.c:423
+#: components/image_properties/nautilus-image-properties-view.c:425
 msgid "loading..."
 msgstr "учитава..."
 
-#: components/image_properties/nautilus-image-properties-view.c:439
+#: components/image_properties/nautilus-image-properties-view.c:441
 msgid "URI currently displayed"
 msgstr "Адреса је тренутно приказана"
 
@@ -1868,7 +1876,7 @@ msgid "The group of the file."
 msgstr "Група датотеке."
 
 #: libnautilus-private/nautilus-column-utilities.c:97
-#: src/file-manager/fm-properties-window.c:2868
+#: src/file-manager/fm-properties-window.c:2865
 msgid "Permissions"
 msgstr "Овлашћења"
 
@@ -1919,7 +1927,7 @@ msgid "Can't Delete Volume"
 msgstr "Не могу да уклоним диск"
 
 #: libnautilus-private/nautilus-desktop-link.c:169
-#: libnautilus-private/nautilus-file.c:5966
+#: libnautilus-private/nautilus-file.c:5958
 #: libnautilus-private/nautilus-global-preferences.c:539
 #: libnautilus-private/nautilus-trash-directory.c:343
 msgid "Trash"
@@ -2003,7 +2011,6 @@ msgstr "Нажалост, не може да сачува прилагођено
 msgid "Sorry, unable to save custom emblem name."
 msgstr "Нажалост, не може да сачува име прилагођеног обележја."
 
-# bug: plural-forms
 #: libnautilus-private/nautilus-file-operations-progress.c:457
 #, c-format
 msgid "%ld of %ld"
@@ -2274,7 +2281,7 @@ msgstr "Замени _све"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1148
-#: libnautilus-private/nautilus-file.c:4672
+#: libnautilus-private/nautilus-file.c:4664
 #, c-format
 msgid "link to %s"
 msgstr "веза на %s"
@@ -2797,79 +2804,62 @@ msgid "%m/%d/%y"
 msgstr "%-d.%m.'%y."
 
 #: libnautilus-private/nautilus-file.c:4239
-msgid "0 items"
-msgstr "0 ставки"
-
-#: libnautilus-private/nautilus-file.c:4239
-msgid "0 folders"
-msgstr "0 директоријума"
+#: src/file-manager/fm-directory-view.c:1818
+#, c-format
+msgid "%u item"
+msgid_plural "%u items"
+msgstr[0] "%u ставка"
+msgstr[1] "%u ставке"
+msgstr[2] "%u ставки"
 
 #: libnautilus-private/nautilus-file.c:4240
-msgid "0 files"
-msgstr "0 датотека"
-
-#: libnautilus-private/nautilus-file.c:4244
-msgid "1 item"
-msgstr "1 датотека"
-
-#: libnautilus-private/nautilus-file.c:4244
-msgid "1 folder"
-msgstr "1 директоријум"
-
-#: libnautilus-private/nautilus-file.c:4245
-msgid "1 file"
-msgstr "1 датотека"
-
-# bug: plural-forms
-#: libnautilus-private/nautilus-file.c:4248
 #, c-format
-msgid "%u items"
-msgstr "%u ставки"
+msgid "%u folder"
+msgid_plural "%u folders"
+msgstr[0] "%u директоријум"
+msgstr[1] "%u директоријума"
+msgstr[2] "%u директоријума"
 
-# bug: plural-forms
-#: libnautilus-private/nautilus-file.c:4248
+#: libnautilus-private/nautilus-file.c:4241
 #, c-format
-msgid "%u folders"
-msgstr "%u директоријума"
-
-# bug: plural-forms
-#: libnautilus-private/nautilus-file.c:4249
-#, c-format
-msgid "%u files"
-msgstr "%u датотека"
+msgid "%u file"
+msgid_plural "%u files"
+msgstr[0] "%u датотека"
+msgstr[1] "%u датотеке"
+msgstr[2] "%u датотека"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4574
-#: libnautilus-private/nautilus-file.c:4590
+#: libnautilus-private/nautilus-file.c:4566
+#: libnautilus-private/nautilus-file.c:4582
 msgid "? items"
 msgstr "? ставки"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4580
+#: libnautilus-private/nautilus-file.c:4572
 msgid "? bytes"
 msgstr "? бајтова"
 
-#: libnautilus-private/nautilus-file.c:4595
+#: libnautilus-private/nautilus-file.c:4587
 msgid "unknown type"
 msgstr "непознат тип"
 
-#: libnautilus-private/nautilus-file.c:4598
+#: libnautilus-private/nautilus-file.c:4590
 msgid "unknown MIME type"
 msgstr "непознат МИМЕ тип"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4604
+#: libnautilus-private/nautilus-file.c:4596
 #: src/file-manager/fm-properties-window.c:1147
 msgid "unknown"
 msgstr "непознато"
 
-#: libnautilus-private/nautilus-file.c:4636
+#: libnautilus-private/nautilus-file.c:4628
 msgid "program"
 msgstr "програм"
 
-#: libnautilus-private/nautilus-file.c:4648
+#: libnautilus-private/nautilus-file.c:4640
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2879,7 +2869,7 @@ msgstr ""
 "да је ваша датотека gnome-vfs.keys на погрешном мести, или је не може "
 "пронаћи из неких других разлога."
 
-#: libnautilus-private/nautilus-file.c:4652
+#: libnautilus-private/nautilus-file.c:4644
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2888,12 +2878,12 @@ msgstr ""
 "Није нашао опис за МИМЕ тип „%s“ (датотека је „%s“), обавестите дописно "
 "друштво за gnome-vfs."
 
-#: libnautilus-private/nautilus-file.c:4666
+#: libnautilus-private/nautilus-file.c:4658
 msgid "link"
 msgstr "веза"
 
 # Не показује на право место
-#: libnautilus-private/nautilus-file.c:4686
+#: libnautilus-private/nautilus-file.c:4678
 msgid "link (broken)"
 msgstr "веза (неисправна)"
 
@@ -4116,124 +4106,107 @@ msgstr "Позадина"
 msgid "Empty Trash"
 msgstr "Испразни Смеће"
 
-# bug: plural-forms
 #: src/file-manager/fm-directory-view.c:542
 #, c-format
-msgid "Open %d Windows?"
-msgstr "Отвори %d прозора?"
+msgid "Open %d Window?"
+msgid_plural "Open %d Windows?"
+msgstr[0] "Отвори %d прозор?"
+msgstr[1] "Отвори %d прозора?"
+msgstr[2] "Отвори %d прозора?"
 
 #: src/file-manager/fm-directory-view.c:543
 msgid "Are you sure you want to open all files?"
 msgstr "Сигурно желите да отворите све датотеке?"
 
-# bug: plural-forms
-#: src/file-manager/fm-directory-view.c:544 src/nautilus-location-bar.c:156
+#: src/file-manager/fm-directory-view.c:544 src/nautilus-location-bar.c:158
 #, c-format
-msgid "This will open %d separate windows."
-msgstr "Ово ће отворити %d одвојених прозора."
+msgid "This will open %d separate window."
+msgid_plural "This will open %d separate windows."
+msgstr[0] "Ово ће отворити %d одвојени прозор."
+msgstr[1] "Ово ће отворити %d одвојена прозора."
+msgstr[2] "Ово ће отворити %d одвојених прозора."
 
-#: src/file-manager/fm-directory-view.c:899
+#: src/file-manager/fm-directory-view.c:900
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Сигурно желите да трајно уклоните „%s“?"
 
-# bug: plural-forms
-#: src/file-manager/fm-directory-view.c:903
+#: src/file-manager/fm-directory-view.c:904
 #, c-format
-msgid "Are you sure you want to permanently delete the %d selected items?"
-msgstr "Сигурно желите да трајно уклоните %d изабраних ставки?"
+msgid "Are you sure you want to permanently delete the %d selected item?"
+msgid_plural ""
+"Are you sure you want to permanently delete the %d selected items?"
+msgstr[0] "Сигурно желите да трајно уклоните %d изабрану ставку?"
+msgstr[1] "Сигурно желите да трајно уклоните %d изабране ставке?"
+msgstr[2] "Сигурно желите да трајно уклоните %d изабраних ставки?"
 
-#: src/file-manager/fm-directory-view.c:909
+#: src/file-manager/fm-directory-view.c:912
 msgid "If you delete an item, it is permanently lost."
 msgstr "Уколико обришете ставку, она ће бити трајно уклоњена."
 
-#: src/file-manager/fm-directory-view.c:910
+#: src/file-manager/fm-directory-view.c:913
 msgid "Delete?"
 msgstr "Уклони?"
 
-#: src/file-manager/fm-directory-view.c:1049
+#: src/file-manager/fm-directory-view.c:1052
 msgid "Select Pattern"
 msgstr "Изаберите образац"
 
-#: src/file-manager/fm-directory-view.c:1065
+#: src/file-manager/fm-directory-view.c:1068
 msgid "_Pattern:"
 msgstr "Об_расци:"
 
-#: src/file-manager/fm-directory-view.c:1748
+#: src/file-manager/fm-directory-view.c:1750
 #, c-format
 msgid "\"%s\" selected"
 msgstr "„%s“ изабран"
 
-#: src/file-manager/fm-directory-view.c:1750
-msgid "1 folder selected"
-msgstr "1 директоријум изабран"
-
-# bug: plural-forms
-#: src/file-manager/fm-directory-view.c:1753
+#: src/file-manager/fm-directory-view.c:1752
 #, c-format
-msgid "%d folders selected"
-msgstr "%d директоријума изабрано"
-
-#: src/file-manager/fm-directory-view.c:1760
-msgid " (containing 0 items)"
-msgstr " (садржи 0 ставки)"
+msgid "%d folder selected"
+msgid_plural "%d folders selected"
+msgstr[0] "%d директоријум изабран"
+msgstr[1] "%d директоријума изабрана"
+msgstr[2] "%d директоријума изабрано"
 
 #: src/file-manager/fm-directory-view.c:1762
-msgid " (containing 1 item)"
-msgstr " (садржи 1 ставку)"
-
-# bug: plural-forms
-#: src/file-manager/fm-directory-view.c:1764
 #, c-format
-msgid " (containing %d items)"
-msgstr " (садржи %d ставки)"
+msgid " (containing %d item)"
+msgid_plural " (containing %d items)"
+msgstr[0] " (садржи %d ставку)"
+msgstr[1] " (садржи %d ставке)"
+msgstr[2] " (садржи %d ставки)"
 
-# bug: plural-forms
-#: src/file-manager/fm-directory-view.c:1771
-msgid " (containing a total of 0 items)"
-msgstr " (садржи укупно 0 ставки)"
-
-# bug: plural-forms
+#. translators: this is preceded with a string of form 'N folders' (N more than 1)
 #: src/file-manager/fm-directory-view.c:1773
-msgid " (containing a total of 1 item)"
-msgstr " (садржи укупно 1 ставку)"
-
-# bug: plural-forms
-#: src/file-manager/fm-directory-view.c:1775
 #, c-format
-msgid " (containing a total of %d items)"
-msgstr " (садржи укупно %d ставки)"
+msgid " (containing a total of %d item)"
+msgid_plural " (containing a total of %d items)"
+msgstr[0] " (садрже укупно %d ставку)"
+msgstr[1] " (садрже укупно %d ставке)"
+msgstr[2] " (садрже укупно %d ставки)"
 
-#: src/file-manager/fm-directory-view.c:1788
+#: src/file-manager/fm-directory-view.c:1789
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "„%s“ изабран (%s)"
 
-# bug: plural-forms
-#: src/file-manager/fm-directory-view.c:1792
+#: src/file-manager/fm-directory-view.c:1793
 #, c-format
-msgid "%d items selected (%s)"
-msgstr "%d ставки изабрано (%s)"
+msgid "%d item selected (%s)"
+msgid_plural "%d items selected (%s)"
+msgstr[0] "%d ставка изабрана (%s)"
+msgstr[1] "%d ставке изабране (%s)"
+msgstr[2] "%d ставки изабрано (%s)"
 
-# bug: plural-forms
-#: src/file-manager/fm-directory-view.c:1799
+#. Folders selected also, use "other" terminology
+#: src/file-manager/fm-directory-view.c:1801
 #, c-format
-msgid "1 other item selected (%s)"
-msgstr "Још једна ставка изабрана (%s)"
-
-# bug: plural-forms
-#: src/file-manager/fm-directory-view.c:1802
-#, c-format
-msgid "%d other items selected (%s)"
-msgstr "%d других ставки изабрано (%s)"
-
-#: src/file-manager/fm-directory-view.c:1818
-#, c-format
-msgid "%u item"
-msgid_plural "%u items"
-msgstr[0] "%u ставка"
-msgstr[1] "%u ставке"
-msgstr[2] "%u ставки"
+msgid "%d other item selected (%s)"
+msgid_plural "%d other items selected (%s)"
+msgstr[0] "%d друга ставка изабрана (%s)"
+msgstr[1] "%d друге ставке изабране (%s)"
+msgstr[2] "%d других ставки изабрано (%s)"
 
 #: src/file-manager/fm-directory-view.c:1822
 #, c-format
@@ -4298,62 +4271,66 @@ msgstr "Обриши одмах?"
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Сигурно желите да трајно избаците „%s“ из смећа?"
 
-# bug: plural-forms
 #: src/file-manager/fm-directory-view.c:3298
 #, c-format
 msgid ""
+"Are you sure you want to permanently delete the %d selected item from the "
+"trash?"
+msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr "Сигурно желите да трајно избаците %d изабраних ставки из смећа?"
+msgstr[0] "Сигурно желите да трајно избаците %d изабрану ставку из смећа?"
+msgstr[1] "Сигурно желите да трајно избаците %d изабране ставке из смећа?"
+msgstr[2] "Сигурно желите да трајно избаците %d изабраних ставки из смећа?"
 
-#: src/file-manager/fm-directory-view.c:3303
+#: src/file-manager/fm-directory-view.c:3307
 msgid "If you delete an item, it will be permanently lost."
 msgstr "Уколико обришете ставку, она ће бити трајно уклоњена."
 
-#: src/file-manager/fm-directory-view.c:3304
+#: src/file-manager/fm-directory-view.c:3308
 msgid "Delete From Trash?"
 msgstr "Избаци из Смећа?"
 
-#: src/file-manager/fm-directory-view.c:3679
-#: src/file-manager/fm-directory-view.c:3721
+#: src/file-manager/fm-directory-view.c:3683
+#: src/file-manager/fm-directory-view.c:3725
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Користи „%s“ за отварање изабране ставке"
 
-#: src/file-manager/fm-directory-view.c:3797
+#: src/file-manager/fm-directory-view.c:3801
 #: src/file-manager/nautilus-directory-view-ui.xml.h:31
 msgid "Other _Application..."
 msgstr "Други _програм..."
 
-#: src/file-manager/fm-directory-view.c:3797
+#: src/file-manager/fm-directory-view.c:3801
 msgid "An _Application..."
 msgstr "_Програм..."
 
-#: src/file-manager/fm-directory-view.c:3819
+#: src/file-manager/fm-directory-view.c:3823
 #: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Other _Viewer..."
 msgstr "Други пре_гледач..."
 
-#: src/file-manager/fm-directory-view.c:3819
+#: src/file-manager/fm-directory-view.c:3823
 msgid "A _Viewer..."
 msgstr "Пре_гледач..."
 
-#: src/file-manager/fm-directory-view.c:4180
+#: src/file-manager/fm-directory-view.c:4184
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Покрени „%s“ на свакој изабраној ставци"
 
-#: src/file-manager/fm-directory-view.c:4414
+#: src/file-manager/fm-directory-view.c:4418
 #, c-format
 msgid "Create Document from template \"%s\""
 msgstr "Направи документ према шаблону „%s“"
 
-#: src/file-manager/fm-directory-view.c:4598
+#: src/file-manager/fm-directory-view.c:4602
 msgid "All executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "Све извршне датотеке у овом директоријуму ће се појавити у менију „Скрипте“."
 
-#: src/file-manager/fm-directory-view.c:4600
+#: src/file-manager/fm-directory-view.c:4604
 msgid ""
 "Choosing a script from the menu will run that script with any selected items "
 "as input."
@@ -4361,11 +4338,11 @@ msgstr ""
 "Избором скрипте из менија се она покреће, а све изабране ставке ће јој бити "
 "улаз."
 
-#: src/file-manager/fm-directory-view.c:4602
+#: src/file-manager/fm-directory-view.c:4606
 msgid "About Scripts"
 msgstr "О скриптама"
 
-#: src/file-manager/fm-directory-view.c:4603
+#: src/file-manager/fm-directory-view.c:4607
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4406,188 +4383,198 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: место и величина текућег прозора"
 
-#: src/file-manager/fm-directory-view.c:4733
+#: src/file-manager/fm-directory-view.c:4737
 #: src/file-manager/fm-tree-view.c:786
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "„%s“ ће бити премештен уколико изаберете наредбу Убаци датотеке"
 
-#: src/file-manager/fm-directory-view.c:4737
+#: src/file-manager/fm-directory-view.c:4741
 #: src/file-manager/fm-tree-view.c:790
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "„%s“ ће бити умножен уколико изаберете наредбу Убаци датотеке"
 
-# bug: plural-forms
-#: src/file-manager/fm-directory-view.c:4744
-#, c-format
-msgid ""
-"The %d selected items will be moved if you select the Paste Files command"
-msgstr ""
-"%d изабраних ставки ће бити премештено уколико изаберете наредбу Убаци "
-"датотеке"
-
-# bug: plural-forms
 #: src/file-manager/fm-directory-view.c:4748
 #, c-format
 msgid ""
+"The %d selected item will be moved if you select the Paste Files command"
+msgid_plural ""
+"The %d selected items will be moved if you select the Paste Files command"
+msgstr[0] ""
+"%d изабрана ставка ће бити премештена уколико изаберете наредбу Убаци "
+"датотеке"
+msgstr[1] ""
+"%d изабране ставке ће бити премештене уколико изаберете наредбу Убаци "
+"датотеке"
+msgstr[2] ""
+"%d изабраних ставки ће бити премештено уколико изаберете наредбу Убаци "
+"датотеке"
+
+#: src/file-manager/fm-directory-view.c:4755
+#, c-format
+msgid ""
+"The %d selected item will be copied if you select the Paste Files command"
+msgid_plural ""
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr ""
+msgstr[0] ""
+"%d изабрана ставка ће бити умножена уколико изаберете наредбу Убаци датотеке"
+msgstr[1] ""
+"%d изабране ставке ће бити умножене уколико изаберете наредбу Убаци датотеке"
+msgstr[2] ""
 "%d изабраних ставки ће бити умножено уколико изаберете наредбу Убаци датотеке"
 
-#: src/file-manager/fm-directory-view.c:4827
+#: src/file-manager/fm-directory-view.c:4837
 #: src/file-manager/fm-tree-view.c:866
 msgid "There is nothing on the clipboard to paste."
 msgstr "Нема ништа у списку исечака за убацивање"
 
-#: src/file-manager/fm-directory-view.c:4929
-#: src/file-manager/fm-directory-view.c:5874
+#: src/file-manager/fm-directory-view.c:4939
+#: src/file-manager/fm-directory-view.c:5883
 msgid "Mount Error"
 msgstr "Грешка монтирања"
 
-#: src/file-manager/fm-directory-view.c:4991
+#: src/file-manager/fm-directory-view.c:5001
 msgid "Unmount Error"
 msgstr "Грешка демонтирања"
 
-#: src/file-manager/fm-directory-view.c:4994
+#: src/file-manager/fm-directory-view.c:5004
 msgid "Eject Error"
 msgstr "Грешка при избацивању"
 
-#: src/file-manager/fm-directory-view.c:5219
+#: src/file-manager/fm-directory-view.c:5229
 msgid "E_ject"
 msgstr "И_збаци"
 
-#: src/file-manager/fm-directory-view.c:5219
+#: src/file-manager/fm-directory-view.c:5229
 #: src/file-manager/nautilus-directory-view-ui.xml.h:64
 msgid "_Unmount Volume"
 msgstr "_Демонтирај диск"
 
 #. add the "open in new window" menu item
-#: src/file-manager/fm-directory-view.c:5299
+#: src/file-manager/fm-directory-view.c:5308
 #: src/file-manager/fm-tree-view.c:958
-msgid "Open in New Window"
-msgstr "Отвори у новом прозору"
-
-# bug: plural-forms
-#: src/file-manager/fm-directory-view.c:5301
 #, c-format
-msgid "Open in %d New Windows"
-msgstr "Отвори у %d нових прозора"
+msgid "Open in New Window"
+msgid_plural "Open in %d New Windows"
+msgstr[0] "Отвори у новом прозору"
+msgstr[1] "Отвори у %d нова прозора"
+msgstr[2] "Отвори у %d нових прозора"
 
-#: src/file-manager/fm-directory-view.c:5306
+#: src/file-manager/fm-directory-view.c:5315
 msgid "Browse Folder"
 msgstr "Разгледај директоријум"
 
-#: src/file-manager/fm-directory-view.c:5308
+#: src/file-manager/fm-directory-view.c:5317
 msgid "Browse Folders"
 msgstr "Разгледај директоријуме"
 
-#: src/file-manager/fm-directory-view.c:5331
+#: src/file-manager/fm-directory-view.c:5340
 msgid "_Delete from Trash"
 msgstr "_Избаци из смећа"
 
-#: src/file-manager/fm-directory-view.c:5333
+#: src/file-manager/fm-directory-view.c:5342
 msgid "Delete all selected items permanently"
 msgstr "Трајно обриши све изабране ставке"
 
-#: src/file-manager/fm-directory-view.c:5336
-#: src/file-manager/fm-directory-view.c:5668
+#: src/file-manager/fm-directory-view.c:5345
+#: src/file-manager/fm-directory-view.c:5677
 #: src/file-manager/nautilus-directory-view-ui.xml.h:21
 msgid "Mo_ve to Trash"
 msgstr "Пре_мести у смеће"
 
-#: src/file-manager/fm-directory-view.c:5338
+#: src/file-manager/fm-directory-view.c:5347
 #: src/file-manager/nautilus-directory-view-ui.xml.h:23
 msgid "Move each selected item to the Trash"
 msgstr "Премести сваку изабрану ставку у смеће"
 
-#: src/file-manager/fm-directory-view.c:5362
+#: src/file-manager/fm-directory-view.c:5371
 #: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "_Delete"
 msgstr "_Обриши"
 
-#: src/file-manager/fm-directory-view.c:5382
+#: src/file-manager/fm-directory-view.c:5391
 msgid "Ma_ke Links"
 msgstr "_Направи везе"
 
-#: src/file-manager/fm-directory-view.c:5383
+#: src/file-manager/fm-directory-view.c:5392
 #: src/file-manager/nautilus-directory-view-ui.xml.h:19
 msgid "Ma_ke Link"
 msgstr "Направи везу"
 
-#: src/file-manager/fm-directory-view.c:5396
+#: src/file-manager/fm-directory-view.c:5405
 #: src/file-manager/nautilus-directory-view-ui.xml.h:54
 msgid "_Empty Trash"
 msgstr "_Избаци смеће"
 
-#: src/file-manager/fm-directory-view.c:5412
+#: src/file-manager/fm-directory-view.c:5421
 msgid "Cu_t File"
 msgstr "И_сеци датотеку"
 
-#: src/file-manager/fm-directory-view.c:5413
+#: src/file-manager/fm-directory-view.c:5422
 #: src/file-manager/nautilus-directory-view-ui.xml.h:11
 msgid "Cu_t Files"
 msgstr "И_сеци датотеке"
 
-#: src/file-manager/fm-directory-view.c:5422
+#: src/file-manager/fm-directory-view.c:5431
 msgid "_Copy File"
 msgstr "_Умножи датотеку"
 
-#: src/file-manager/fm-directory-view.c:5423
+#: src/file-manager/fm-directory-view.c:5432
 #: src/file-manager/nautilus-directory-view-ui.xml.h:51
 msgid "_Copy Files"
 msgstr "_Умножи датотеке"
 
 # bug: s/borken/broken/, though, one can always wonder :)
-#: src/file-manager/fm-directory-view.c:5659
+#: src/file-manager/fm-directory-view.c:5668
 msgid "The link is borken, do you want to move it to the Trash?"
 msgstr "Ова веза је забрљана, желите ли да је баците у смеће?"
 
-#: src/file-manager/fm-directory-view.c:5661
+#: src/file-manager/fm-directory-view.c:5670
 msgid "This link can't be used, because it has no target."
 msgstr "Ова веза се не може користити, зато што нема одредиште."
 
-#: src/file-manager/fm-directory-view.c:5663
+#: src/file-manager/fm-directory-view.c:5672
 #, c-format
 msgid "This link can't be used, because its target \"%s\" doesn't exist."
 msgstr "Ова веза се не може користити, зато њено одредиште „%s“ не постоји."
 
-#: src/file-manager/fm-directory-view.c:5668
+#: src/file-manager/fm-directory-view.c:5677
 msgid "Broken Link"
 msgstr "Прекинута веза"
 
-#: src/file-manager/fm-directory-view.c:5726
+#: src/file-manager/fm-directory-view.c:5735
 #, c-format
 msgid "Do you want to run \"%s\", or display its contents?"
 msgstr "Желите ли да покренете „%s“, или прикажете њен садржај?"
 
-#: src/file-manager/fm-directory-view.c:5728
+#: src/file-manager/fm-directory-view.c:5737
 #, c-format
 msgid "\"%s\" is an executable text file."
 msgstr "„%s“ је извршна текстуална датотека."
 
-#: src/file-manager/fm-directory-view.c:5734
+#: src/file-manager/fm-directory-view.c:5743
 msgid "Run or Display?"
 msgstr "Покрени или прикажи?"
 
-#: src/file-manager/fm-directory-view.c:5735
+#: src/file-manager/fm-directory-view.c:5744
 msgid "Run in _Terminal"
 msgstr "Покрени у _терминалу"
 
-#: src/file-manager/fm-directory-view.c:5736
+#: src/file-manager/fm-directory-view.c:5745
 msgid "_Display"
 msgstr "_Прикажи"
 
-#: src/file-manager/fm-directory-view.c:5739
+#: src/file-manager/fm-directory-view.c:5748
 msgid "_Run"
 msgstr "По_крени"
 
-#: src/file-manager/fm-directory-view.c:6007
+#: src/file-manager/fm-directory-view.c:6016
 #, c-format
 msgid "Opening \"%s\"."
 msgstr "Отварам „%s“."
 
-#: src/file-manager/fm-directory-view.c:6013
+#: src/file-manager/fm-directory-view.c:6022
 msgid "Cancel Open?"
 msgstr "Откажи отварање?"
 
@@ -4816,6 +4803,7 @@ msgstr "Употребљена је неисправна врста превла
 msgid "File name"
 msgstr "Име датотеке"
 
+# bug: plural-forms?
 #: src/file-manager/fm-list-view.c:1512
 #, c-format
 msgid "%s Visible Columns"
@@ -4899,18 +4887,15 @@ msgstr "ништа"
 msgid "unreadable"
 msgstr "нечитљив"
 
-#: src/file-manager/fm-properties-window.c:1760
+#: src/file-manager/fm-properties-window.c:1759
 #, c-format
-msgid "1 item, with size %s"
-msgstr "1 ставка, величине %s"
+msgid "%d item, with size %s"
+msgid_plural "%d items, totalling %s"
+msgstr[0] "%d ставка, величине %s"
+msgstr[1] "%d ставке, укупне величине %s"
+msgstr[2] "%d ставки, укупне величине %s"
 
-# bug: plural-forms
-#: src/file-manager/fm-properties-window.c:1763
-#, c-format
-msgid "%d items, totalling %s"
-msgstr "%d ставки, укупне величине %s"
-
-#: src/file-manager/fm-properties-window.c:1771
+#: src/file-manager/fm-properties-window.c:1768
 msgid "(some contents unreadable)"
 msgstr "(део садржаја нечитљив)"
 
@@ -4920,183 +4905,183 @@ msgstr "(део садржаја нечитљив)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1788
+#: src/file-manager/fm-properties-window.c:1785
 msgid "Contents:"
 msgstr "Садржај:"
 
-#: src/file-manager/fm-properties-window.c:2179
+#: src/file-manager/fm-properties-window.c:2176
 msgid "Basic"
 msgstr "Основно"
 
-#: src/file-manager/fm-properties-window.c:2207
+#: src/file-manager/fm-properties-window.c:2204
 msgid "_Names:"
 msgstr "_Имена:"
 
-#: src/file-manager/fm-properties-window.c:2209
+#: src/file-manager/fm-properties-window.c:2206
 #: src/nautilus-connect-server-dialog.c:190
 msgid "_Name:"
 msgstr "_Име:"
 
-#: src/file-manager/fm-properties-window.c:2258
+#: src/file-manager/fm-properties-window.c:2255
 msgid "Type:"
 msgstr "Врста:"
 
 # bug: is em-dash suitable in here?
-#: src/file-manager/fm-properties-window.c:2260
-#: src/file-manager/fm-properties-window.c:2270
-#: src/file-manager/fm-properties-window.c:2276
-#: src/file-manager/fm-properties-window.c:2283
-#: src/file-manager/fm-properties-window.c:2287
-#: src/file-manager/fm-properties-window.c:2295
-#: src/file-manager/fm-properties-window.c:2301
-#: src/file-manager/fm-properties-window.c:2310
-#: src/file-manager/fm-properties-window.c:2316
-#: src/file-manager/fm-properties-window.c:2903
-#: src/file-manager/fm-properties-window.c:2924
-#: src/file-manager/fm-properties-window.c:3015
-#: src/file-manager/fm-properties-window.c:3019
-#: src/file-manager/fm-properties-window.c:3023
+#: src/file-manager/fm-properties-window.c:2257
+#: src/file-manager/fm-properties-window.c:2267
+#: src/file-manager/fm-properties-window.c:2273
+#: src/file-manager/fm-properties-window.c:2280
+#: src/file-manager/fm-properties-window.c:2284
+#: src/file-manager/fm-properties-window.c:2292
+#: src/file-manager/fm-properties-window.c:2298
+#: src/file-manager/fm-properties-window.c:2307
+#: src/file-manager/fm-properties-window.c:2313
+#: src/file-manager/fm-properties-window.c:2900
+#: src/file-manager/fm-properties-window.c:2921
+#: src/file-manager/fm-properties-window.c:3012
+#: src/file-manager/fm-properties-window.c:3016
+#: src/file-manager/fm-properties-window.c:3020
 msgid "--"
 msgstr "—"
 
-#: src/file-manager/fm-properties-window.c:2268
+#: src/file-manager/fm-properties-window.c:2265
 msgid "Size:"
 msgstr "Величина:"
 
-#: src/file-manager/fm-properties-window.c:2274 src/nautilus-location-bar.c:60
+#: src/file-manager/fm-properties-window.c:2271 src/nautilus-location-bar.c:60
 msgid "Location:"
 msgstr "Путања:"
 
-#: src/file-manager/fm-properties-window.c:2281
+#: src/file-manager/fm-properties-window.c:2278
 msgid "Volume:"
 msgstr "Диск:"
 
-#: src/file-manager/fm-properties-window.c:2285
+#: src/file-manager/fm-properties-window.c:2282
 msgid "Free space:"
 msgstr "Слободан простор:"
 
-#: src/file-manager/fm-properties-window.c:2293
+#: src/file-manager/fm-properties-window.c:2290
 msgid "Link target:"
 msgstr "Мета везе:"
 
-#: src/file-manager/fm-properties-window.c:2299
+#: src/file-manager/fm-properties-window.c:2296
 msgid "MIME type:"
 msgstr "МИМЕ тип:"
 
-#: src/file-manager/fm-properties-window.c:2308
+#: src/file-manager/fm-properties-window.c:2305
 msgid "Modified:"
 msgstr "Измењен:"
 
-#: src/file-manager/fm-properties-window.c:2314
+#: src/file-manager/fm-properties-window.c:2311
 msgid "Accessed:"
 msgstr "Последњи приступ:"
 
-#: src/file-manager/fm-properties-window.c:2330
+#: src/file-manager/fm-properties-window.c:2327
 msgid "_Select Custom Icon..."
 msgstr "_Изабери икону..."
 
-#: src/file-manager/fm-properties-window.c:2336
+#: src/file-manager/fm-properties-window.c:2333
 msgid "_Remove Custom Icon"
 msgstr "_Уклони засебну икону"
 
-#: src/file-manager/fm-properties-window.c:2682
+#: src/file-manager/fm-properties-window.c:2679
 msgid "_Read"
 msgstr "_Читање"
 
-#: src/file-manager/fm-properties-window.c:2684
+#: src/file-manager/fm-properties-window.c:2681
 msgid "_Write"
 msgstr "_Писање"
 
-#: src/file-manager/fm-properties-window.c:2686
+#: src/file-manager/fm-properties-window.c:2683
 msgid "E_xecute"
 msgstr "_Извршавање"
 
-#: src/file-manager/fm-properties-window.c:2769
+#: src/file-manager/fm-properties-window.c:2766
 msgid "Set _user ID"
 msgstr "Постави _ID корисника (SUID)"
 
-#: src/file-manager/fm-properties-window.c:2774
+#: src/file-manager/fm-properties-window.c:2771
 msgid "Special flags:"
 msgstr "Нарочите ознаке:"
 
-#: src/file-manager/fm-properties-window.c:2777
+#: src/file-manager/fm-properties-window.c:2774
 msgid "Set gro_up ID"
 msgstr "Постави ID _групе (SGID)"
 
-#: src/file-manager/fm-properties-window.c:2779
+#: src/file-manager/fm-properties-window.c:2776
 msgid "_Sticky"
 msgstr "_Лепљив"
 
-#: src/file-manager/fm-properties-window.c:2878
+#: src/file-manager/fm-properties-window.c:2875
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Нисте власник, па не можете изменити ова овлашћења"
 
-#: src/file-manager/fm-properties-window.c:2892
+#: src/file-manager/fm-properties-window.c:2889
 msgid "File _owner:"
 msgstr "_Власник датотеке:"
 
-#: src/file-manager/fm-properties-window.c:2898
+#: src/file-manager/fm-properties-window.c:2895
 msgid "File owner:"
 msgstr "Власник датотеке:"
 
-#: src/file-manager/fm-properties-window.c:2909
+#: src/file-manager/fm-properties-window.c:2906
 msgid "_File group:"
 msgstr "_Група датотеке:"
 
-#: src/file-manager/fm-properties-window.c:2918
+#: src/file-manager/fm-properties-window.c:2915
 msgid "File group:"
 msgstr "Група датотеке:"
 
-#: src/file-manager/fm-properties-window.c:2930
+#: src/file-manager/fm-properties-window.c:2927
 msgid "Owner:"
 msgstr "Власник:"
 
-#: src/file-manager/fm-properties-window.c:2931
+#: src/file-manager/fm-properties-window.c:2928
 msgid "Group:"
 msgstr "Група:"
 
-#: src/file-manager/fm-properties-window.c:2932
+#: src/file-manager/fm-properties-window.c:2929
 msgid "Others:"
 msgstr "Остали:"
 
-#: src/file-manager/fm-properties-window.c:3014
+#: src/file-manager/fm-properties-window.c:3011
 msgid "Text view:"
 msgstr "Текстуални преглед:"
 
-#: src/file-manager/fm-properties-window.c:3018
+#: src/file-manager/fm-properties-window.c:3015
 msgid "Number view:"
 msgstr "Бројевни преглед:"
 
-#: src/file-manager/fm-properties-window.c:3022
+#: src/file-manager/fm-properties-window.c:3019
 msgid "Last changed:"
 msgstr "Последња промена:"
 
-#: src/file-manager/fm-properties-window.c:3028
+#: src/file-manager/fm-properties-window.c:3025
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Не може утврдити овлашћења за „%s“."
 
-#: src/file-manager/fm-properties-window.c:3031
+#: src/file-manager/fm-properties-window.c:3028
 msgid "The permissions of the selected file could not be determined."
 msgstr "Не може утврдити овлашћења за изабрану датотеку."
 
-#: src/file-manager/fm-properties-window.c:3189
+#: src/file-manager/fm-properties-window.c:3186
 msgid "There was an error displaying help."
 msgstr "Дошло је до грешке при приказивању помоћи."
 
-#: src/file-manager/fm-properties-window.c:3189
+#: src/file-manager/fm-properties-window.c:3186
 msgid "Couldn't Show Help"
 msgstr "Не могу да прикажем помоћ"
 
-#: src/file-manager/fm-properties-window.c:3525
+#: src/file-manager/fm-properties-window.c:3522
 msgid "Cancel Showing Properties Window?"
 msgstr "Одустани од приказивања прозора са особинама?"
 
-#: src/file-manager/fm-properties-window.c:3526
+#: src/file-manager/fm-properties-window.c:3523
 msgid "Creating Properties window."
 msgstr "Образујем прозор са особинама."
 
-#: src/file-manager/fm-properties-window.c:3652
+#: src/file-manager/fm-properties-window.c:3649
 msgid "Select an icon"
 msgstr "Изаберите икону"
 
@@ -5318,41 +5303,34 @@ msgstr "Брза претрага није укључена"
 msgid "Where"
 msgstr "Где"
 
-#. "Reveal in New Window" means open the parent folder for the
-#. * selected item in a new window, select the item in that window,
-#. * and scroll as necessary to make that item visible (this comment
-#. * is to inform translators of this tricky concept).
-#.
-#: src/file-manager/fm-search-list-view.c:567
-#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
-msgid "_Reveal in New Window"
-msgstr "_Разоткри у новом прозору"
-
-# bug: plural-forms
 #. "Reveal in n New Windows" means open the parent folder for each
 #. * selected item in a separate new window, select each selected
 #. * item in its new window, and scroll as necessary to make those
 #. * items visible (this comment is to inform translators of this
 #. * tricky concept).
 #.
-#: src/file-manager/fm-search-list-view.c:575
+#: src/file-manager/fm-search-list-view.c:567
+#: src/file-manager/nautilus-search-list-view-ui.xml.h:6
 #, c-format
-msgid "Reveal in %d _New Windows"
-msgstr "Разоткри у %d _нових прозора"
+msgid "_Reveal in New Window"
+msgid_plural "Reveal in %d _New Windows"
+msgstr[0] "_Разоткри у новом прозору"
+msgstr[1] "_Разоткри у %d нова прозора"
+msgstr[2] "_Разоткри у %d нових прозора"
 
 #. Note that the number of items actually displayed varies somewhat due
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-search-list-view.c:691
+#: src/file-manager/fm-search-list-view.c:685
 msgid "Nautilus found more search results than it can display."
 msgstr "Наутилус је пронашао више резултата него што може да прикаже."
 
-#: src/file-manager/fm-search-list-view.c:692
+#: src/file-manager/fm-search-list-view.c:686
 msgid "Some matching items will not be displayed. "
 msgstr "Неки резултати неће бити приказани."
 
-#: src/file-manager/fm-search-list-view.c:693
+#: src/file-manager/fm-search-list-view.c:687
 msgid "Too Many Matches"
 msgstr "Превише поклапања"
 
@@ -5787,10 +5765,6 @@ msgstr "Проверите да ли је Медуза исправно пост
 #: src/file-manager/nautilus-indexing-info.c:315
 msgid "%I:%M %p, %x"
 msgstr "%H:%M, %x"
-
-#: src/file-manager/nautilus-list-view-ui.xml.h:1
-msgid "Select the columns visible in this volder"
-msgstr "Изаберите колоне приказане у овом директоријуму"
 
 #: src/file-manager/nautilus-list-view-ui.xml.h:1
 msgid "Select the columns visible in this folder"
@@ -6351,13 +6325,15 @@ msgstr "_Упиши садржај на ЦД"
 msgid "Go To:"
 msgstr "Иди у:"
 
-# bug: plural-forms
 #: src/nautilus-location-bar.c:154
 #, c-format
-msgid "Do you want to view %d locations?"
-msgstr "Желите ли да видите %d путања?"
+msgid "Do you want to view %d location?"
+msgid_plural "Do you want to view %d locations?"
+msgstr[0] "Желите ли да видите %d путању?"
+msgstr[1] "Желите ли да видите %d путање?"
+msgstr[2] "Желите ли да видите %d путања?"
 
-#: src/nautilus-location-bar.c:166
+#: src/nautilus-location-bar.c:170
 msgid "View in Multiple Windows?"
 msgstr "Прегледај у више прозора?"
 
@@ -6406,8 +6382,8 @@ msgid "File Manager"
 msgstr "Управник датотека"
 
 #. Set initial window title
-#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:302
-#: src/nautilus-window-menus.c:600 src/nautilus-window.c:174
+#: src/nautilus-main.c:240 src/nautilus-spatial-window.c:301
+#: src/nautilus-window-menus.c:600 src/nautilus-window.c:173
 msgid "Nautilus"
 msgstr "Наутилус"
 
@@ -7473,24 +7449,24 @@ msgstr "Иди назад за неколико страница"
 msgid "Go forward a number of pages"
 msgstr "Иди напред за неколико страница"
 
-#: src/nautilus-window.c:875
+#: src/nautilus-window.c:874
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Прикажи ову локацију помоћу „%s“"
 
-#: src/nautilus-window.c:1607
+#: src/nautilus-window.c:1606
 msgid "Application ID"
 msgstr "ID програма"
 
-#: src/nautilus-window.c:1608
+#: src/nautilus-window.c:1607
 msgid "The application ID of the window."
 msgstr "ID програма овог прозора"
 
-#: src/nautilus-window.c:1614
+#: src/nautilus-window.c:1613
 msgid "Application"
 msgstr "Програм"
 
-#: src/nautilus-window.c:1615
+#: src/nautilus-window.c:1614
 msgid "The NautilusApplication associated with this window."
 msgstr "Наутилус Програм везан за овај прозор."
 
@@ -7525,6 +7501,64 @@ msgstr "Мрежни сервери"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Прегледајте ваше мрежне сервере у Наутилусовом управнику датотека"
+
+#~ msgid "0 items"
+#~ msgstr "0 ставки"
+
+#~ msgid "0 folders"
+#~ msgstr "0 директоријума"
+
+#~ msgid "0 files"
+#~ msgstr "0 датотека"
+
+#~ msgid "1 item"
+#~ msgstr "1 датотека"
+
+#~ msgid "1 folder"
+#~ msgstr "1 директоријум"
+
+#~ msgid "1 file"
+#~ msgstr "1 датотека"
+
+# bug: plural-forms
+#~ msgid "%u items"
+#~ msgstr "%u ставки"
+
+#~ msgid "1 folder selected"
+#~ msgstr "1 директоријум изабран"
+
+#~ msgid " (containing 0 items)"
+#~ msgstr " (садржи 0 ставки)"
+
+#~ msgid " (containing 1 item)"
+#~ msgstr " (садржи 1 ставку)"
+
+# bug: plural-forms
+#~ msgid " (containing a total of 0 items)"
+#~ msgstr " (садржи укупно 0 ставки)"
+
+# bug: plural-forms
+#~ msgid " (containing a total of 1 item)"
+#~ msgstr " (садржи укупно 1 ставку)"
+
+# bug: plural-forms
+#~ msgid "1 other item selected (%s)"
+#~ msgstr "Још једна ставка изабрана (%s)"
+
+# bug: plural-forms
+#~ msgid "Open in %d New Windows"
+#~ msgstr "Отвори у %d нових прозора"
+
+# bug: plural-forms
+#~ msgid "%d items, totalling %s"
+#~ msgstr "%d ставки, укупне величине %s"
+
+# bug: plural-forms
+#~ msgid "Reveal in %d _New Windows"
+#~ msgstr "Разоткри у %d _нових прозора"
+
+#~ msgid "Select the columns visible in this volder"
+#~ msgstr "Изаберите колоне приказане у овом директоријуму"
 
 #~ msgid "date changed"
 #~ msgstr "датум промене"
