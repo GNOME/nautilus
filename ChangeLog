@@ -1,5 +1,20 @@
 2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* nautilus-widgets/nautilus-preferences.c: (pref_hash_node_alloc),
+	(pref_hash_node_free), (pref_hash_node_add_callback),
+	(pref_hash_node_remove_callback), (pref_callback_info_alloc),
+	(preferences_gconf_callback):
+
+	Install only ONE gconf notification for each preference or
+	namespace that we care about.  Otherwise we get an exponential
+	number of notifications.  Move the gconf_connection from the
+	callback list info to the preference hash node.
+
+	Remove lingering gconf notifications on destruction of hash
+	nodes. 
+	
+2000-05-26  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* components/help/hyperbola-nav-index.c:
 	(hyperbola_navigation_index_new):
 	* components/help/hyperbola-nav-search.c:

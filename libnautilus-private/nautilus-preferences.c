@@ -45,6 +45,7 @@ static const char PREFERENCES_GCONF_PATH[] = "/nautilus";
 typedef struct {
 	NautilusPreference	*preference;
 	GList			*callback_list;
+	int			gconf_connection;
 } PrefHashNode;
 
 /*
@@ -58,7 +59,6 @@ typedef struct {
 	NautilusPreferencesCallback	callback_proc;
 	gpointer			callback_data;
 	const PrefHashNode		*hash_node;
-	int				gconf_connection;
 } PrefCallbackInfo;
 
 static GHashTable	  *preference_hash_table = NULL;
@@ -144,6 +144,8 @@ pref_hash_node_alloc (char			*name,
 
 	pref_hash_node->callback_list = NULL;
 
+	pref_hash_node->gconf_connection = 0;
+
 	return pref_hash_node;
 }
 
@@ -159,6 +161,15 @@ pref_hash_node_free (PrefHashNode *pref_hash_node)
 	g_assert (pref_hash_node != NULL);
 
 	g_assert (pref_hash_node->preference != NULL);
+
+	/* Remove the gconf notification if its still lingering */
+	if (pref_hash_node->gconf_connection != 0)
+	{
+		gconf_client_notify_remove (preference_gconf_client,
+					    pref_hash_node->gconf_connection);
+
+		pref_hash_node->gconf_connection = 0;
+	}
 
 	nautilus_g_list_free_deep_custom (pref_hash_node->callback_list,
 					  pref_callback_info_free_func,
@@ -186,7 +197,6 @@ pref_hash_node_add_callback (PrefHashNode			*pref_hash_node,
 			     NautilusPreferencesCallback	callback_proc,
 			     gpointer				callback_data)
 {
-	char			*name = NULL;	
 	PrefCallbackInfo	*pref_callback_info;
 
 	g_assert (pref_hash_node != NULL);
@@ -202,27 +212,35 @@ pref_hash_node_add_callback (PrefHashNode			*pref_hash_node,
 	pref_hash_node->callback_list = g_list_append (pref_hash_node->callback_list, 
 						       (gpointer) pref_callback_info);
 
-
-	name = nautilus_preference_get_name (pref_hash_node->preference);
-	
-	g_assert (name != NULL);
-
 	/*
-	 * Ref the preference here, cause we use for the gconf callback data.
-	 * See pref_hash_node_remove_callback() to make sure the ref is balanced.
+	 * We install only one gconf notification for each preference node.
+	 * Otherwise, we would invoke the installed callbacks more than once
+	 * per registered callback.
 	 */
-	g_assert (pref_hash_node->preference != NULL);
-	gtk_object_ref (GTK_OBJECT (pref_hash_node->preference));
-	
-	pref_callback_info->gconf_connection = 
-		gconf_client_notify_add (preference_gconf_client,
-					 name,
-					 preferences_gconf_callback,
-					 pref_hash_node->preference,
-					 NULL,
-					 NULL);
+	if (pref_hash_node->gconf_connection == 0) {
+		char *name = nautilus_preference_get_name (pref_hash_node->preference);
+		
+		g_assert (name != NULL);
+		
+		/*
+		 * Ref the preference here, cause we use for the gconf callback data.
+		 * See pref_hash_node_remove_callback() to make sure the ref is balanced.
+		 */
+		g_assert (pref_hash_node->preference != NULL);
+		gtk_object_ref (GTK_OBJECT (pref_hash_node->preference));
+		
+		g_assert (pref_hash_node->gconf_connection == 0);
+		
+		pref_hash_node->gconf_connection = 
+			gconf_client_notify_add (preference_gconf_client,
+						 name,
+						 preferences_gconf_callback,
+						 pref_hash_node->preference,
+						 NULL,
+						 NULL);
 
-	g_free (name);
+		g_free (name);
+	}
 }
 
 /**
@@ -257,27 +275,33 @@ pref_hash_node_remove_callback (PrefHashNode			*pref_hash_node,
 
 		if (callback_info->callback_proc == callback_proc &&
 		    callback_info->callback_data == callback_data) {
-
-			g_assert (callback_info->gconf_connection != 0);
-			
-			gconf_client_notify_remove  (preference_gconf_client,
-						     callback_info->gconf_connection);
-
-			/*
-			 * Unref the preference here to balance the ref added in 
-			 * pref_hash_node_add_callback().
-			 */
-			g_assert (pref_hash_node->preference != NULL);
-			gtk_object_unref (GTK_OBJECT (pref_hash_node->preference));
-			
 			pref_hash_node->callback_list = 
 				g_list_remove (pref_hash_node->callback_list, 
 					       (gpointer) callback_info);
 			
-
-
 			pref_callback_info_free (callback_info);
 		}
+	}
+
+	/*
+	 * If there are no callbacks left in the node, remove the gconf 
+	 * notification as well.
+	 */
+	if (pref_hash_node->callback_list == NULL) {
+		g_assert (pref_hash_node->gconf_connection != 0);
+		
+		gconf_client_notify_remove (preference_gconf_client,
+					    pref_hash_node->gconf_connection);
+		
+
+		pref_hash_node->gconf_connection = 0;
+
+		/*
+		 * Unref the preference here to balance the ref added in 
+		 * pref_hash_node_add_callback().
+		 */
+		g_assert (pref_hash_node->preference != NULL);
+		gtk_object_unref (GTK_OBJECT (pref_hash_node->preference));
 	}
 }
 
@@ -330,7 +354,6 @@ pref_callback_info_alloc (NautilusPreferencesCallback	callback_proc,
 	pref_callback_info->callback_proc = callback_proc;
 	pref_callback_info->callback_data = callback_data;
 	pref_callback_info->hash_node = hash_node;
-	pref_callback_info->gconf_connection = 0;
 
 	return pref_callback_info;
 }
@@ -649,7 +672,7 @@ preferences_gconf_callback (GConfClient	*client,
 	expected_key = nautilus_preference_get_name (expected_preference);
 	
 	g_assert (expected_key != NULL);
-	
+
 	if (strcmp (key, expected_key) != 0) {
 		/* The prefix should be the same */
 		g_assert (strncmp (key, expected_key, strlen (expected_key)) == 0);
@@ -872,8 +895,7 @@ nautilus_preferences_initialize (int argc, char **argv)
 {
 	GConfError *error = NULL;
 	
-	if (!gconf_init (argc, argv, &error))
-	{
+	if (!gconf_init (argc, argv, &error)) {
 		g_assert (error != NULL);
 
 		/* FIXME bugzilla.eazel.com 672: Need better error reporting here */
