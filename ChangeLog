@@ -1,3 +1,18 @@
+2000-07-25  Gene Z. Ragan  <gzr@eazel.com>
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_destroy),
+	(fm_desktop_icon_view_initialize_class),
+	(mount_device_cdrom_set_state), (mount_device_mount),
+	(mount_device_activate_cdrom), (mount_device_deactivate),
+	(mount_device_check_change), (mount_device_iso9660_add),
+	(mount_device_add_aliases), (add_mount_device),
+	(remove_mount_link), (remove_mount_symlinks),
+	(get_iso9660_volume_name), (get_ext2_volume_name):
+	More work on desktop volume mounting.  Added symbolic link
+	cleanup in destroy function.  Symbolic mount links are also
+	verified when a new volume mount is detected.
+
 2000-07-25  John Sullivan  <sullivan@eazel.com>
 
 	First simple cut at addressing 1469 (clicking on executables

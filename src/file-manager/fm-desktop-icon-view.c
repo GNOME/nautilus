@@ -81,16 +81,18 @@ const char * const type_names[] = {
 typedef struct {
 	DeviceType type;
 	DeviceState state;
-	int fd;
-
+	int device_fd;
+	
 	char *fsname;
 	char *mount_path;
 	char *mount_type;
 	char *volume_name;
+	char *link_uri;
 	
-	NautilusFile *file;
 	gboolean is_mounted;
 	gboolean did_mount;
+
+	NautilusFile *file;	
 } DeviceInfo;
 
 struct FMDesktopIconViewDetails
@@ -115,8 +117,11 @@ static void		find_mount_devices 			 (FMDesktopIconView 	*icon_view,
 								  const char 		*fstab_path);
 static GnomeVFSResult	make_mount_link 			 (const char 		*uri, 
 								  const char 		*target_uri);
+static void		remove_mount_link 			 (DeviceInfo 		*device);								  
 static void		get_iso9660_volume_name 		 (DeviceInfo 		*device);
 static void		get_ext2_volume_name 			 (DeviceInfo 		*device);
+static void		remove_mount_symlinks 			 (DeviceInfo 		*device, 
+								  FMDesktopIconView 	*icon_view);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView, fm_desktop_icon_view, FM_TYPE_ICON_VIEW);
@@ -131,6 +136,23 @@ get_icon_container (FMDesktopIconView *icon_view)
 }
 
 static void
+fm_desktop_icon_view_destroy (GtkObject *object)
+{
+	FMDesktopIconView *icon_view;
+
+	icon_view = FM_DESKTOP_ICON_VIEW (object);
+
+	/* Remove symlink mount files */
+	g_list_foreach (icon_view->details->devices, (GFunc)remove_mount_symlinks, icon_view);
+	
+	/* Clean up details FIXME: More cleanup needed here */	 
+	g_free (icon_view->details);
+
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+
+static void
 fm_desktop_icon_view_initialize_class (FMDesktopIconViewClass *klass)
 {
 	GtkObjectClass		*object_class;
@@ -140,6 +162,8 @@ fm_desktop_icon_view_initialize_class (FMDesktopIconViewClass *klass)
 	object_class		= GTK_OBJECT_CLASS (klass);
 	fm_directory_view_class	= FM_DIRECTORY_VIEW_CLASS (klass);
 	fm_icon_view_class	= FM_ICON_VIEW_CLASS (klass);
+
+	object_class->destroy = fm_desktop_icon_view_destroy;
 
         fm_directory_view_class->create_background_context_menu_items = fm_desktop_icon_view_create_background_context_menu_items;
 
@@ -234,14 +258,14 @@ mount_device_is_mounted (DeviceInfo *device)
 static void
 mount_device_cdrom_set_state (FMDesktopIconView *icon_view, DeviceInfo *device)
 {
-	if (device->fd < 0) {
-		device->fd = open (device->fsname, O_RDONLY|O_NONBLOCK);
+	if (device->device_fd < 0) {
+		device->device_fd = open (device->fsname, O_RDONLY|O_NONBLOCK);
 	}
 
-	if (ioctl (device->fd, CDROM_DRIVE_STATUS, CDSL_CURRENT) == CDS_DISC_OK) {
+	if (ioctl (device->device_fd, CDROM_DRIVE_STATUS, CDSL_CURRENT) == CDS_DISC_OK) {
 		int disctype;
 
-		disctype = ioctl (device->fd, CDROM_DISC_STATUS, CDSL_CURRENT);
+		disctype = ioctl (device->device_fd, CDROM_DISC_STATUS, CDSL_CURRENT);
 		switch (disctype) {
 			case CDS_AUDIO:
 				/* It's pretty hard to know whether it is actually in use */
@@ -269,9 +293,9 @@ mount_device_cdrom_set_state (FMDesktopIconView *icon_view, DeviceInfo *device)
 		device->state = STATE_EMPTY;
 	}
 
-	if(device->fd >= 0) {
-		close (device->fd);
-		device->fd = -1;
+	if(device->device_fd >= 0) {
+		close (device->device_fd);
+		device->device_fd = -1;
 	}
 }
 
@@ -343,7 +367,7 @@ typedef gboolean (*ChangeFunc)(FMDesktopIconView *view, DeviceInfo *device);
 static void
 mount_device_mount (FMDesktopIconView *view, DeviceInfo *device)
 {
-	char *link_uri, *target_uri, *view_uri;
+	char *target_uri, *view_uri;
 	NautilusIconContainer *container;
 	GnomeVFSResult result;
 	int index;
@@ -376,19 +400,25 @@ mount_device_mount (FMDesktopIconView *view, DeviceInfo *device)
 		}
 	}
 
-	link_uri = g_strdup_printf ("%s/%s", view_uri, device->volume_name);
+	/* Clean up old link, This should have been done earlier, but
+	 * we double check to be sure. */
+	remove_mount_link (device);
 
-	result = make_mount_link (link_uri, target_uri);
+	/* Create link */
+	device->link_uri = g_strdup_printf ("%s/%s", view_uri, device->volume_name);
+
+	result = make_mount_link (device->link_uri, target_uri);
 	if (result == GNOME_VFS_OK) {
-		device->file = nautilus_file_get (link_uri);
+		device->file = nautilus_file_get (device->link_uri);
 		gtk_object_set_data (GTK_OBJECT (device->file), "mount_type", device->mount_type);	
 		nautilus_icon_container_add (container, NAUTILUS_ICON_CONTAINER_ICON_DATA (device->file));
 	} else {
-		g_message ("Unable to create mount link: %s", gnome_vfs_result_to_string (result));		
+		g_message ("Unable to create mount link: %s", gnome_vfs_result_to_string (result));
+		g_free (device->link_uri);
+		device->link_uri = NULL;
 	}
 	
 	g_free (view_uri);
-	g_free (link_uri);
 	g_free (target_uri);
 	
 	device->did_mount = TRUE;
@@ -400,11 +430,11 @@ mount_device_activate_cdrom (FMDesktopIconView *icon_view, DeviceInfo *device)
 {
 	int disctype;
 
-	if(device->fd < 0) {
-		device->fd = open (device->fsname, O_RDONLY|O_NONBLOCK);
+	if(device->device_fd < 0) {
+		device->device_fd = open (device->fsname, O_RDONLY|O_NONBLOCK);
 	}
 
-	disctype = ioctl (device->fd, CDROM_DISC_STATUS, CDSL_CURRENT);
+	disctype = ioctl (device->device_fd, CDROM_DISC_STATUS, CDSL_CURRENT);
 	switch (disctype) {
 		case CDS_AUDIO:
 			/* Should we run a CD player here? */
@@ -425,9 +455,9 @@ mount_device_activate_cdrom (FMDesktopIconView *icon_view, DeviceInfo *device)
     			break;
   	}
 
-	if (device->fd >= 0) {
-		close (device->fd);
-		device->fd = -1;
+	if (device->device_fd >= 0) {
+		close (device->device_fd);
+		device->device_fd = -1;
 	}
 }
 
@@ -475,7 +505,8 @@ mount_device_deactivate (FMDesktopIconView *icon_view, DeviceInfo *device)
 {
 	NautilusIconContainer *container;
 	
-	device->did_mount = FALSE;
+	/* Clean up old link */
+	remove_mount_link (device);
 
 	/* Remove mounted device icon from desktop */
 	if (device->file != NULL) {
@@ -484,6 +515,8 @@ mount_device_deactivate (FMDesktopIconView *icon_view, DeviceInfo *device)
 		nautilus_file_unref (device->file);
 		device->file = NULL;
 	}
+
+	device->did_mount = FALSE;
 
 	return TRUE;
 }
@@ -495,9 +528,9 @@ mount_device_check_change (DeviceInfo *device, FMDesktopIconView *icon_view)
 	static ChangeFunc state_transitions[STATE_LAST][STATE_LAST] = {
 		/************  from: ACTIVE                 	INACTIVE                 EMPTY */
 		/* to */
-		/* ACTIVE */   {     NULL,                  	mount_device_activate,	mount_device_activate  	},
-		/* INACTIVE */ {     mount_device_deactivate, 	NULL              ,    	mount_device_activate 	},
-		/* EMPTY */    {     mount_device_deactivate, 	NULL              ,    	NULL               	}
+		/* ACTIVE */   {     NULL,                  	mount_device_activate,	 mount_device_activate  },
+		/* INACTIVE */ {     mount_device_deactivate, 	NULL,   	 	 mount_device_activate 	},
+		/* EMPTY */    {     mount_device_deactivate, 	mount_device_deactivate, NULL               	}
 	};	
 
 	DeviceState old_state;
@@ -642,20 +675,20 @@ cdrom_ioctl_frenzy (int fd)
 static gboolean
 mount_device_iso9660_add (FMDesktopIconView *icon_view, DeviceInfo *device)
 {
-	device->fd = open (device->fsname, O_RDONLY|O_NONBLOCK);
-	if(device->fd < 0) {
+	device->device_fd = open (device->fsname, O_RDONLY|O_NONBLOCK);
+	if(device->device_fd < 0) {
 		return FALSE;
 	}
 
 	device->type = DEVICE_CDROM;
 
 	/* It's probably not a CD-ROM drive */
-	if(ioctl (device->fd, CDROM_DRIVE_STATUS, CDSL_CURRENT) < 0) {
+	if(ioctl (device->device_fd, CDROM_DRIVE_STATUS, CDSL_CURRENT) < 0) {
     		return FALSE;
     	}
 
-	cdrom_ioctl_frenzy (device->fd);
-	close (device->fd); device->fd = -1;
+	cdrom_ioctl_frenzy (device->device_fd);
+	close (device->device_fd); device->device_fd = -1;
 
 	return TRUE;
 }
@@ -668,9 +701,9 @@ mount_device_add_aliases (FMDesktopIconView *icon_view, const char *alias, Devic
 	char buf[PATH_MAX];
 	int buflen;
 
-	g_hash_table_insert(icon_view->details->devices_by_fsname, (gpointer)alias, device);
+	g_hash_table_insert (icon_view->details->devices_by_fsname, (gpointer)alias, device);
 
-	buflen = readlink(alias, buf, sizeof(buf));
+	buflen = readlink (alias, buf, sizeof(buf));
 	if(buflen < 1) {
     		return;
     	}
@@ -698,11 +731,12 @@ add_mount_device (FMDesktopIconView *icon_view, struct mntent *ent)
 
 	newdev = g_new0 (DeviceInfo, 1);
 	g_assert (newdev);
-	newdev->fd 	    = -1;
+	newdev->device_fd   = -1;
 	newdev->file 	    = NULL;
 	newdev->fsname 	    = g_strdup (ent->mnt_fsname);
 	newdev->mount_path  = g_strdup (ent->mnt_dir);
 	newdev->volume_name = NULL;
+	newdev->link_uri    = NULL;
 	newdev->state 	    = STATE_EMPTY;
 
 	mounted = FALSE;
@@ -725,7 +759,7 @@ add_mount_device (FMDesktopIconView *icon_view, struct mntent *ent)
 		mount_device_add_aliases (icon_view, newdev->fsname, newdev);
 		g_message ("Device %s came through (type %s)", newdev->fsname, type_names[newdev->type]);
 	} else {
-		close (newdev->fd);
+		close (newdev->device_fd);
 		g_free (newdev->fsname);
 		g_free (newdev->mount_path);
 		g_free (newdev);		
@@ -826,13 +860,36 @@ make_mount_link (const char *uri, const char *target_uri)
 	return result;
 }
 
+
+static void
+remove_mount_link (DeviceInfo *device)
+{
+	GnomeVFSResult result;
+	
+	if (device->link_uri != NULL) {
+		result = gnome_vfs_unlink (device->link_uri);
+		if (result != GNOME_VFS_OK) {
+			g_message ("Unable to remove mount link: %s", gnome_vfs_result_to_string (result));
+		}
+		g_free (device->link_uri);
+		device->link_uri = NULL;
+	}
+}
+
+
+static void
+remove_mount_symlinks (DeviceInfo *device, FMDesktopIconView *icon_view)
+{
+	remove_mount_link (device);
+}
+
 static void
 get_iso9660_volume_name (DeviceInfo *device)
 {
 	struct iso_primary_descriptor iso_buffer;
 
-	lseek (device->fd, (off_t) 2048*16, SEEK_SET);
-	read (device->fd, &iso_buffer, 2048);
+	lseek (device->device_fd, (off_t) 2048*16, SEEK_SET);
+	read (device->device_fd, &iso_buffer, 2048);
 	
 	if (device->volume_name != NULL) {
 		g_free (device->volume_name);
@@ -848,5 +905,5 @@ get_iso9660_volume_name (DeviceInfo *device)
 static void
 get_ext2_volume_name (DeviceInfo *device)
 {
-	device->volume_name = g_strdup ("loser");
+	device->volume_name = g_strdup ("Ext2 Volume");
 }
