@@ -76,6 +76,9 @@
 #define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
 #define SILENT_WINDOW_OPEN_LIMIT	5
 
+#define DUPLICATE_HORIZONTAL_ICON_OFFSET 70
+#define DUPLICATE_VERTICAL_ICON_OFFSET   30
+
 /* Paths to use when referring to bonobo menu items. */
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN                      		"/menu/File/Open Placeholder/Open"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW        		"/menu/File/Open Placeholder/OpenNew"
@@ -159,7 +162,8 @@ static gboolean            file_is_launchable                                   
 static void                fm_directory_view_initialize_class                     (FMDirectoryViewClass *klass);
 static void                fm_directory_view_initialize                           (FMDirectoryView      *view);
 static void                fm_directory_view_duplicate_selection                  (FMDirectoryView      *view,
-										   GList                *files);
+										   GList                *files,
+										   GArray		*item_locations);
 static void                fm_directory_view_create_links_for_files               (FMDirectoryView      *view,
 										   GList                *files);
 static void                fm_directory_view_trash_or_delete_files                (FMDirectoryView      *view,
@@ -237,6 +241,7 @@ NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, is_empty)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, select_all)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, set_selection)
+NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selected_icon_locations)
 
 static void
 fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
@@ -322,6 +327,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, is_empty);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, select_all);
 	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, set_selection);
+	NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_selected_icon_locations);
 
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
@@ -690,13 +696,20 @@ duplicate_callback (BonoboUIComponent *component, gpointer callback_data, const 
 {
         FMDirectoryView *view;
         GList *selection;
-        
-        g_assert (FM_IS_DIRECTORY_VIEW (callback_data));
-
+        GArray *selected_item_locations;
+ 
         view = FM_DIRECTORY_VIEW (callback_data);
 	selection = fm_directory_view_get_selection (view);
 	if (selection_not_empty_in_menu_callback (view, selection)) {
-	        fm_directory_view_duplicate_selection (view, selection);
+		/* FIXME:
+		 * should change things here so that we use a get_icon_locations (view, selection).
+		 * Not a problem in this case but in other places the selection may change by
+		 * the time we go and retrieve the icon positions, relying on the selection
+		 * staying intact to ensure the right sequence and count of positions is fragile.
+		 */
+		selected_item_locations = fm_directory_get_selected_icon_locations (view);
+	        fm_directory_view_duplicate_selection (view, selection, selected_item_locations);
+	        g_array_free (selected_item_locations, TRUE);
 	}
 
         nautilus_file_list_free (selection);
@@ -2203,18 +2216,33 @@ fm_directory_view_create_links_for_files (FMDirectoryView *view, GList *files)
         g_assert (g_list_length (uris) == g_list_length (files));
 
         copy_move_done_data = pre_copy_move (view);
-	nautilus_file_operations_copy_move (uris, NULL, NULL, GDK_ACTION_LINK, GTK_WIDGET (view), copy_move_done_callback, copy_move_done_data);
+	nautilus_file_operations_copy_move (uris, NULL, NULL, GDK_ACTION_LINK, GTK_WIDGET (view),
+		copy_move_done_callback, copy_move_done_data);
 	nautilus_g_list_free_deep (uris);
 }
 
 static void
-fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files)
+offset_drop_points (GArray *relative_item_points,
+		    int x_offset, int y_offset)
+{
+	guint index;
+
+	for (index = 0; index < relative_item_points->len; index++) {
+		g_array_index (relative_item_points, GdkPoint, index).x += x_offset;
+		g_array_index (relative_item_points, GdkPoint, index).y += y_offset;
+	}
+}
+
+static void
+fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files,
+				       GArray *relative_item_points)
 {
 	GList *uris;
 	CopyMoveDoneData *copy_move_done_data;
 
         g_assert (FM_IS_DIRECTORY_VIEW (view));
         g_assert (files != NULL);
+	g_assert (g_list_length (files) == relative_item_points->len);
 
 	/* create a list of URIs */
 	uris = NULL;
@@ -2222,8 +2250,15 @@ fm_directory_view_duplicate_selection (FMDirectoryView *view, GList *files)
 
         g_assert (g_list_length (uris) == g_list_length (files));
         
+	/* offset the drop locations a bit so that we don't pile
+	 * up the icons on top of each other
+	 */
+	offset_drop_points (relative_item_points, DUPLICATE_HORIZONTAL_ICON_OFFSET,
+		DUPLICATE_VERTICAL_ICON_OFFSET);
+
         copy_move_done_data = pre_copy_move (view);
-	nautilus_file_operations_copy_move (uris, NULL, NULL, GDK_ACTION_COPY, GTK_WIDGET (view), copy_move_done_callback, copy_move_done_data);
+	nautilus_file_operations_copy_move (uris, relative_item_points, NULL, GDK_ACTION_COPY,
+		GTK_WIDGET (view), copy_move_done_callback, copy_move_done_data);
 	nautilus_g_list_free_deep (uris);
 }
 
@@ -3651,6 +3686,23 @@ fm_directory_view_select_file (FMDirectoryView *view, NautilusFile *file)
 }
 
 /**
+ * fm_directory_get_selected_icon_locations:
+ *
+ * return an array of locations of selected icons if available
+ * Return value: GArray of GdkPoints
+ * 
+ **/
+GArray *
+fm_directory_get_selected_icon_locations (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
+
+	return NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 get_selected_icon_locations, (view));
+}
+
+/**
  * fm_directory_view_reveal_selection:
  *
  * Scroll as necessary to reveal the selected items.
@@ -3853,24 +3905,20 @@ fm_directory_view_get_uri (FMDirectoryView *view)
 
 void
 fm_directory_view_move_copy_items (const GList *item_uris,
-				   GdkPoint *relative_item_points,
+				   GArray *relative_item_points,
 				   const char *target_dir,
 				   int copy_action,
-				   int x,
-				   int y,
+				   int x, int y,
 				   FMDirectoryView *view)
 {
-	int index, count;
 	CopyMoveDoneData *copy_move_done_data;
 	
-	if (relative_item_points) {
-		/* add the drop location to the icon offsets */
-		count = g_list_length ((GList *)item_uris);
-		for (index = 0; index < count; index++ ){
-			relative_item_points[index].x += x;
-			relative_item_points[index].y += y;
-		}
-	}
+	g_assert (relative_item_points == NULL 
+		|| g_list_length ((GList *)item_uris) == relative_item_points->len);
+
+	/* add the drop location to the icon offsets */
+	offset_drop_points (relative_item_points, x, y);
+
 	copy_move_done_data = pre_copy_move (view);
 	nautilus_file_operations_copy_move
 		(item_uris, relative_item_points, 

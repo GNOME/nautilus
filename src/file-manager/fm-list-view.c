@@ -122,6 +122,7 @@ static void                 fm_list_view_font_family_changed          (FMDirecto
 static void                 fm_list_view_set_selection                (FMDirectoryView   *view,
 								       GList             *selection);
 static void                 fm_list_view_reveal_selection             (FMDirectoryView   *view);
+static GArray * 	    fm_list_view_get_selected_icon_locations  (FMDirectoryView   *view);
 static void                 fm_list_view_set_zoom_level               (FMListView        *list_view,
 								       NautilusZoomLevel  new_level,
 								       gboolean           always_set_level);
@@ -201,6 +202,7 @@ fm_list_view_initialize_class (gpointer klass)
 	fm_directory_view_class->select_all = fm_list_view_select_all;
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
 	fm_directory_view_class->reveal_selection = fm_list_view_reveal_selection;
+	fm_directory_view_class->get_selected_icon_locations = fm_list_view_get_selected_icon_locations;
         fm_directory_view_class->click_policy_changed = fm_list_view_update_click_mode;
         fm_directory_view_class->embedded_text_policy_changed = fm_list_view_embedded_text_policy_changed;
         fm_directory_view_class->image_display_policy_changed = fm_list_view_image_display_policy_changed;
@@ -1519,6 +1521,16 @@ fm_list_view_reveal_selection (FMDirectoryView *view)
         nautilus_file_list_free (selection);
 }
 
+static GArray *
+fm_list_view_get_selected_icon_locations (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_LIST_VIEW (view), NULL);
+
+	/* icon locations are not stored in the list view,
+	 * just return an empty list
+	 */
+	return g_array_new (FALSE, TRUE, sizeof (GdkPoint));
+}
 
 static void
 fm_list_view_sort_items (FMListView *list_view, 
@@ -1534,8 +1546,7 @@ fm_list_view_sort_items (FMListView *list_view,
 	g_return_if_fail (column < NAUTILUS_CLIST (get_list (list_view))->columns);
 
 	if (column == list_view->details->sort_column &&
-	    reversed == list_view->details->sort_reversed)
-	{
+	    reversed == list_view->details->sort_reversed) {
 		return;
 	}
 
@@ -1556,8 +1567,7 @@ fm_list_view_sort_items (FMListView *list_view,
 
 	list_view->details->sort_column = column;
 
-	if (reversed != list_view->details->sort_reversed)
-	{
+	if (reversed != list_view->details->sort_reversed) {
 		nautilus_clist_set_sort_type (clist, reversed
 					 ? GTK_SORT_DESCENDING
 					 : GTK_SORT_ASCENDING);

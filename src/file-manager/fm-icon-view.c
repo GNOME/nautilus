@@ -1246,15 +1246,23 @@ fm_icon_view_reveal_selection (FMDirectoryView *view)
         nautilus_file_list_free (selection);
 }
 
+static GArray *
+fm_icon_view_get_selected_icon_locations (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_ICON_VIEW (view), NULL);
+
+	return nautilus_icon_container_get_selected_icon_locations
+		(get_icon_container (FM_ICON_VIEW (view)));
+}
+
+
 static void
 fm_icon_view_set_selection (FMDirectoryView *view, GList *selection)
 {
-	NautilusIconContainer *icon_container;
-
 	g_return_if_fail (FM_IS_ICON_VIEW (view));
 
-	icon_container = get_icon_container (FM_ICON_VIEW (view));
-	nautilus_icon_container_set_selection (icon_container, selection);
+	nautilus_icon_container_set_selection
+		(get_icon_container (FM_ICON_VIEW (view)), selection);
 }
 
 static void
@@ -1822,6 +1830,7 @@ fm_icon_view_initialize_class (FMIconViewClass *klass)
 	fm_directory_view_class->select_all = fm_icon_view_select_all;
 	fm_directory_view_class->set_selection = fm_icon_view_set_selection;
 	fm_directory_view_class->reveal_selection = fm_icon_view_reveal_selection;
+	fm_directory_view_class->get_selected_icon_locations = fm_icon_view_get_selected_icon_locations;
         fm_directory_view_class->merge_menus = fm_icon_view_merge_menus;
         fm_directory_view_class->update_menus = fm_icon_view_update_menus;
         fm_directory_view_class->start_renaming_item = fm_icon_view_start_renaming_item;
@@ -1876,7 +1885,7 @@ icon_view_get_container_uri (NautilusIconContainer *container,
 static void
 icon_view_move_copy_items (NautilusIconContainer *container,
 			   const GList *item_uris,
-			   GdkPoint *relative_item_points,
+			   GArray *relative_item_points,
 			   const char *target_dir,
 			   int copy_action,
 			   int x, int y,

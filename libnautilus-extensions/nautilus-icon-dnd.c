@@ -795,8 +795,8 @@ handle_nonlocal_move (NautilusIconContainer *container,
 		      gboolean icon_hit)
 {
 	GList *source_uris, *p;
-	GdkPoint *source_item_locations;
-	int i;
+	GArray *source_item_locations;
+	int index;
 
 	if (container->details->dnd_info->drag_info.selection_list == NULL) {
 		return;
@@ -809,16 +809,20 @@ handle_nonlocal_move (NautilusIconContainer *container,
 	}
 	source_uris = g_list_reverse (source_uris);
 	
-	source_item_locations = NULL;
+	source_item_locations = g_array_new (FALSE, TRUE, sizeof (GdkPoint));
 	if (!icon_hit) {
 		/* Drop onto a container. Pass along the item points to allow placing
 		 * the items in their same relative positions in the new container.
 		 */
-		source_item_locations = g_new (GdkPoint, g_list_length (source_uris));
-		for (i = 0, p = container->details->dnd_info->drag_info.selection_list;
-		     p != NULL; i++, p = p->next) {
-			source_item_locations[i].x = ((DragSelectionItem *)p->data)->icon_x;
-			source_item_locations[i].y = ((DragSelectionItem *)p->data)->icon_y;
+		source_item_locations = g_array_set_size (source_item_locations,
+			g_list_length (container->details->dnd_info->drag_info.selection_list));
+			
+		for (index = 0, p = container->details->dnd_info->drag_info.selection_list;
+			p != NULL; index++, p = p->next) {
+		     	g_array_index (source_item_locations, GdkPoint, index).x =
+		     		((DragSelectionItem *)p->data)->icon_x;
+		     	g_array_index (source_item_locations, GdkPoint, index).y =
+				((DragSelectionItem *)p->data)->icon_y;
 		}
 	}
 		
@@ -829,8 +833,9 @@ handle_nonlocal_move (NautilusIconContainer *container,
 				 target_uri,
 				 context->action,
 				 x, y);
+
 	g_list_free (source_uris);
-	g_free (source_item_locations);
+	g_array_free (source_item_locations, TRUE);
 }
 
 static char *
@@ -865,7 +870,7 @@ nautilus_icon_container_find_drop_target (NautilusIconContainer *container,
 		if (icon_uri != NULL) {
 			file = nautilus_file_get (icon_uri);
 
-			if ( !nautilus_drag_can_accept_items (file, 
+			if (!nautilus_drag_can_accept_items (file, 
 					container->details->dnd_info->drag_info.selection_list)) {
 			 	/* the item we dropped our selection on cannot accept the items,
 			 	 * do the same thing as if we just dropped the items on the canvas

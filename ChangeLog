@@ -1,3 +1,72 @@
+2000-12-01  Pavel Cisler <pavel@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(progress_dialog_set_to_from_item_text), (handle_xfer_ok),
+	(handle_xfer_vfs_error), (handle_xfer_overwrite), (get_link_name),
+	(nautilus_file_operations_copy_move),
+	(nautilus_file_operations_new_folder),
+	(nautilus_file_operations_move_to_trash),
+	(nautilus_file_operations_delete), (do_empty_trash):
+	
+	Fixed 3392 - Messages in nautilus-file-operations hard to localize.
+
+	Replaced all the cases that did "clever" string composition from
+	parts depending on the specific file operation with full texts of
+	the respective error alerts and progress dialog label texts and
+	titles.
+	Changed action_verb to action_label.
+	Got rid of progress_dialog_set_files_done_text because the the
+	"Files copied:" etc. label is no longer composed.
+	Added switch statements in handle_xfer_vfs_error that choose the
+	right error text based on the xfer operation kind.
+	
+	Fixed 3139 - Add comments to all the localizable strings to make them
+	easier to localize. 
+	
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(icon_position_iterator_new),
+	* libnautilus-extensions/nautilus-file-operations.h:
+	(nautilus_file_operations_copy_move),
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_get_icon_locations),
+	(nautilus_icon_container_get_selected_icon_locations):
+	* libnautilus-extensions/nautilus-icon-container.h:
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(handle_nonlocal_move), (nautilus_icon_container_find_drop_target):
+	* libnautilus-extensions/nautilus-icon-private.h:
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize_class), (duplicate_callback),
+	(fm_directory_view_create_links_for_files), (offset_drop_points),
+	(fm_directory_view_duplicate_selection),
+	(fm_directory_get_selected_icon_locations),
+	(fm_directory_view_move_copy_items):
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_get_selected_icon_locations),
+	(fm_icon_view_set_selection), (fm_icon_view_initialize_class),
+	(icon_view_move_copy_items):
+	* src/file-manager/fm-list-view.c: (fm_list_view_initialize_class),
+	(fm_list_view_get_selected_icon_locations),
+	(fm_list_view_sort_items):
+
+	Fixed 2817 - when you duplicate a file, it doesn't end up in the correct
+	position.
+
+	Redid the icon position array to use GArray instead of a simple vector of
+	GdkPoints. GArray contains the count of all the contained points
+	which is now needed.
+	Added new calls to get the icon locations of selected icons and
+	of a list of NautilusIcon objects.
+	Passed the list of icon locations to the duplicate method.
+	Added a default signal handler that returns the list of
+	icon locations of selected icons.
+	Added code to fm_directory_view_duplicate_selection that
+	offsets the new duplicates to the left and bottom of the
+	original item.
+	
+
 2000-12-01  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>

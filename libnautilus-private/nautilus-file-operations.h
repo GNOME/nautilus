@@ -33,7 +33,7 @@ typedef void (* NautilusNewFolderCallback) (const char *new_folder_uri,
 					    gpointer    callback_data);
 
 void  nautilus_file_operations_copy_move               (const GList               *item_uris,
-							const GdkPoint            *target_item_points,
+							GArray            	  *target_item_points,
 							const char                *target_dir_uri,
 							int                        copy_action,
 							GtkWidget                 *parent_view,

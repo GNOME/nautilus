@@ -133,6 +133,20 @@ struct FMDirectoryViewClass {
 	 */
 	GList *	(* get_selection) 	 	(FMDirectoryView *view);
 	
+        /* select_all is a function pointer that subclasses must override to
+         * select all of the items in the view */
+        void     (* select_all)	         	(FMDirectoryView *view);
+
+        /* set_selection is a function pointer that subclasses must
+         * override to select the specified items (and unselect all
+         * others). The argument is a list of NautilusFiles. */
+
+        void     (* set_selection)	 	(FMDirectoryView *view, 
+        					 GList *selection);
+
+	/* Return an array of locations of selected icons in their view. */
+	GArray * (* get_selected_icon_locations) (FMDirectoryView *view);
+
         /* bump_zoom_level is a function pointer that subclasses must override
          * to change the zoom level of an object. */
         void    (* bump_zoom_level)      	(FMDirectoryView *view,
@@ -155,17 +169,6 @@ struct FMDirectoryViewClass {
          * return whether the view is at minimum size (furthest-out zoom level) */
         gboolean (* can_zoom_out)	 	(FMDirectoryView *view);
         
-        /* select_all is a function pointer that subclasses must override to
-         * select all of the items in the view */
-        void     (* select_all)	         	(FMDirectoryView *view);
-
-        /* set_selection is a function pointer that subclasses must
-         * override to select the specified items (and unselect all
-         * others). The argument is a list of NautilusFiles. */
-
-        void     (* set_selection)	 	(FMDirectoryView *view, 
-        					 GList *selection);
-
         /* reveal_selection is a function pointer that subclasses may
          * override to make sure the selected items are sufficiently
          * apparent to the user (e.g., scrolled into view). By default,
@@ -281,6 +284,7 @@ void               fm_directory_view_restore_default_zoom_level     (FMDirectory
 void               fm_directory_view_select_all                     (FMDirectoryView       *view);
 void               fm_directory_view_set_selection                  (FMDirectoryView       *view,
 								     GList                 *selection);
+GArray * 	   fm_directory_get_selected_icon_locations         (FMDirectoryView       *view);
 void               fm_directory_view_reveal_selection               (FMDirectoryView       *view);
 gboolean	   fm_directory_view_is_empty			    (FMDirectoryView	   *view);
 gboolean	   fm_directory_view_is_read_only		    (FMDirectoryView	   *view);
@@ -289,7 +293,7 @@ gboolean	   fm_directory_view_accepts_dragged_files	    (FMDirectoryView	   *vie
 gboolean	   fm_directory_view_supports_properties	    (FMDirectoryView	   *view);
 gboolean	   fm_directory_view_supports_zooming	    	    (FMDirectoryView	   *view);
 void               fm_directory_view_move_copy_items                (const GList           *item_uris,
-								     GdkPoint              *relative_item_points,
+								     GArray                *relative_item_points,
 								     const char            *target_uri,
 								     int                    copy_action,
 								     int                    x,

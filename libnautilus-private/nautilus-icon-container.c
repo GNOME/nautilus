@@ -3956,6 +3956,58 @@ nautilus_icon_container_get_selection (NautilusIconContainer *container)
 	return list;
 }
 
+/* Returns an array of GdkPoints of locations of the icons. */
+static GArray *
+nautilus_icon_container_get_icon_locations (NautilusIconContainer *container,
+					    GList *icons)
+{
+	GArray *result;
+	GList *node;
+	int index;
+		
+	result = g_array_new (FALSE, TRUE, sizeof (GdkPoint));
+	result = g_array_set_size (result, g_list_length (icons));
+		
+	for (index = 0, node = icons; node != NULL; index++, node = node->next) {
+	     	g_array_index (result, GdkPoint, index).x =
+	     		((NautilusIcon *)node->data)->x;
+	     	g_array_index (result, GdkPoint, index).y =
+			((NautilusIcon *)node->data)->y;
+	}
+
+	return result;
+}
+
+/**
+ * nautilus_icon_container_get_selected_icon_locations:
+ * @container: An icon container widget.
+ * 
+ * Returns an array of GdkPoints of locations of the selected icons.
+ **/
+GArray *
+nautilus_icon_container_get_selected_icon_locations (NautilusIconContainer *container)
+{
+	GArray *result;
+	GList *icons, *node;
+
+	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), NULL);
+
+	icons = NULL;
+	for (node = container->details->icons; node != NULL; node = node->next) {
+		NautilusIcon *icon;
+
+		icon = node->data;
+		if (icon->is_selected) {
+			icons = g_list_prepend (icons, icon);
+		}
+	}
+
+	result = nautilus_icon_container_get_icon_locations (container, icons);
+	g_list_free (icons);
+	
+	return result;
+}
+
 /**
  * nautilus_icon_container_select_all:
  * @container: An icon container widget.
