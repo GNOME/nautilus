@@ -1,5 +1,12 @@
 2005-02-07  Martin Wehner  <martin.wehner@epost.de>
 
+	* src/file-manager/fm-properties-window.c: (get_original_file),
+	(name_field_done_editing), (update_properties_window_title):
+	Handle disappearing original_files without crashing.
+	Fixes bug #151024/158904.
+
+2005-02-07  Martin Wehner  <martin.wehner@epost.de>
+
 	* configure.in:
 	Revert libexif change as it breaks the build with new libexif.
         
