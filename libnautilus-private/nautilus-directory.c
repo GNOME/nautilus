@@ -1507,6 +1507,105 @@ nautilus_directory_is_not_empty (NautilusDirectory *directory)
 		 is_not_empty, (directory));
 }
 
+static gboolean
+is_tentative (gpointer data, gpointer callback_data)
+{
+	NautilusFile *file;
+
+	g_assert (callback_data == NULL);
+
+	file = NAUTILUS_FILE (data);
+	return file->details->info == NULL;
+}
+
+GList *
+nautilus_directory_get_file_list (NautilusDirectory *directory)
+{
+	GList *tentative_files, *non_tentative_files;
+
+	tentative_files = eel_g_list_partition
+		(g_list_copy (directory->details->file_list),
+		 is_tentative, NULL, &non_tentative_files);
+	g_list_free (tentative_files);
+
+	nautilus_file_list_ref (non_tentative_files);
+	return non_tentative_files;
+}
+
+/**
+ * nautilus_directory_list_ref
+ *
+ * Ref all the directories in a list.
+ * @list: GList of directories.
+ **/
+GList *
+nautilus_directory_list_ref (GList *list)
+{
+	g_list_foreach (list, (GFunc) nautilus_directory_ref, NULL);
+	return list;
+}
+
+/**
+ * nautilus_directory_list_unref
+ *
+ * Unref all the directories in a list.
+ * @list: GList of directories.
+ **/
+void
+nautilus_directory_list_unref (GList *list)
+{
+	eel_g_list_safe_for_each (list, (GFunc) nautilus_directory_unref, NULL);
+}
+
+/**
+ * nautilus_directory_list_free
+ *
+ * Free a list of directories after unrefing them.
+ * @list: GList of directories.
+ **/
+void
+nautilus_directory_list_free (GList *list)
+{
+	nautilus_directory_list_unref (list);
+	g_list_free (list);
+}
+
+/**
+ * nautilus_directory_list_copy
+ *
+ * Copy the list of directories, making a new ref of each,
+ * @list: GList of directories.
+ **/
+GList *
+nautilus_directory_list_copy (GList *list)
+{
+	return g_list_copy (nautilus_directory_list_ref (list));
+}
+
+static int
+compare_by_uri (NautilusDirectory *a, NautilusDirectory *b)
+{
+	return strcmp (a->details->uri, b->details->uri);
+}
+
+static int
+compare_by_uri_cover (gconstpointer a, gconstpointer b)
+{
+	return compare_by_uri (NAUTILUS_DIRECTORY (a), NAUTILUS_DIRECTORY (b));
+}
+
+/**
+ * nautilus_directory_list_sort_by_uri
+ * 
+ * Sort the list of directories by directory uri.
+ * @list: GList of directories.
+ **/
+GList *
+nautilus_directory_list_sort_by_uri (GList *list)
+{
+	return g_list_sort (list, compare_by_uri_cover);
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 #include <eel/eel-debug.h>

@@ -1,3 +1,55 @@
+2001-08-24  Darin Adler  <darin@bentspoon.com>
+
+	Added support for nested directories inside the scripts directory,
+	starting with a patch by David Emory Watson <dwatson@cs.ucr.edu>.
+
+	* src/file-manager/fm-directory-view.c: (get_scripts_directory):
+	Keep the scripts directory URI and string length in a global
+	variable.
+	(add_scripts_directory): New function, replaces
+	connect_script_handlers. Refs the directory, puts it on the
+	scripts directory list, and monitors more attributes than before.
+	(fm_directory_view_initialize): Use add_scripts_directory instead
+	of connect_script_handlers.
+	(fm_directory_view_destroy): Use remove_scripts_directory on the
+	entire list instead of disconnect_script_handlers.
+	(add_submenu): New function.
+	(add_script_to_script_menus): Change name, pass in path.
+	(add_submenu_to_script_menus): New function.
+	(directory_belongs_in_scripts_menu): New function.
+	(add_directory_to_scripts_directory_list): New function, high
+	level call used to turn a NautilusFile into a NautilusDirectory
+	and call add_scripts_directory.
+	(update_directory_in_scripts_menu): New function.
+	(update_scripts_menu): New function, replaces reset_scripts_menu
+	and uses new nautilus_directory_get_files_list rather than
+	nautilus_directory_call_when_ready.
+	(open_scripts_folder_callback): Use new global variable instead
+	of calling get_scripts_directory.
+	(real_update_menus): Call update_scripts_menu instead of
+	schedule_reset_scripts_menu.
+	(remove_scripts_directory): New function, replaces
+	disconnect_script_handlers. Removes the directory from the scripts
+	directory list and unrefs it after disconnecting handlers.
+
+	* libnautilus-private/nautilus-directory.h:
+	* libnautilus-private/nautilus-directory.c: (is_tentative): Moved
+	from nautilus-directory-async.c.
+	(nautilus_directory_get_file_list): New, made from formerly-
+	private get_non_tentative_file_list in nautilus-directory-async.c.
+	(nautilus_directory_list_ref): New.
+	(nautilus_directory_list_unref): New.
+	(nautilus_directory_list_free): New.
+	(nautilus_directory_list_copy): New.
+	(compare_by_uri), (compare_by_uri_cover),
+	(nautilus_directory_list_sort_by_uri): New. Sorrts directories by
+	URI, parents before children, and children sorted as if by
+	nautilus_file_list_sort_by_name.
+	* libnautilus-private/nautilus-directory-async.c:
+	(nautilus_directory_monitor_add_internal), (ready_callback_call):
+	Use nautilus_directory_get_file_list instead of
+	get_non_tentative_file_list.
+	
 2001-08-23  Anders Carlsson  <andersca@gnu.org>
 
 	* nautilus.spec.in: Remove CONTROL_CENTER_REQUIRED since nautilus

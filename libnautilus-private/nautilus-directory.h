@@ -160,8 +160,8 @@ gboolean           nautilus_directory_contains_file            (NautilusDirector
 								NautilusFile              *file);
 
 /* Get the uri of the file in the directory, NULL if not found */
-char *		   nautilus_directory_get_file_uri	       (NautilusDirectory	  *directory,
-								const char 		  *file_name);
+char *             nautilus_directory_get_file_uri             (NautilusDirectory         *directory,
+								const char                *file_name);
 
 /* Get (and ref) a NautilusFile object for this directory. */
 NautilusFile *     nautilus_directory_get_corresponding_file   (NautilusDirectory         *directory);
@@ -191,6 +191,9 @@ void               nautilus_directory_file_monitor_remove      (NautilusDirector
 								gconstpointer              client);
 void               nautilus_directory_force_reload             (NautilusDirectory         *directory);
 
+/* Get a list of all files currently known in the directory. */
+GList *            nautilus_directory_get_file_list            (NautilusDirectory         *directory);
+
 /* Return true if the directory has information about all the files.
  * This will be false until the directory has been read at least once.
  */
@@ -204,7 +207,15 @@ gboolean           nautilus_directory_is_local                 (NautilusDirector
  */
 gboolean           nautilus_directory_is_not_empty             (NautilusDirectory         *directory);
 gboolean           nautilus_directory_file_list_length_reached (NautilusDirectory         *directory);
+char *             nautilus_directory_make_uri_canonical       (const char                *uri);
 
-char *		   nautilus_directory_make_uri_canonical       (const char *uri);
+/* Convenience functions for dealing with a list of NautilusDirectory objects that each have a ref.
+ * These are just convenient names for functions that work on lists of GtkObject *.
+ */
+GList *            nautilus_directory_list_ref                 (GList                     *directory_list);
+void               nautilus_directory_list_unref               (GList                     *directory_list);
+void               nautilus_directory_list_free                (GList                     *directory_list);
+GList *            nautilus_directory_list_copy                (GList                     *directory_list);
+GList *            nautilus_directory_list_sort_by_uri         (GList                     *directory_list);
 
 #endif /* NAUTILUS_DIRECTORY_H */

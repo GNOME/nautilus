@@ -561,31 +561,6 @@ nautilus_directory_set_up_request (Request *request,
 		 eel_strcmp_compare_func) != NULL;
 }
 
-static gboolean
-is_tentative (gpointer data, gpointer callback_data)
-{
-	NautilusFile *file;
-
-	g_assert (callback_data == NULL);
-
-	file = NAUTILUS_FILE (data);
-	return file->details->info == NULL;
-}
-
-static GList *
-get_non_tentative_file_list (NautilusDirectory *directory)
-{
-	GList *tentative_files, *non_tentative_files;
-
-	tentative_files = eel_g_list_partition
-		(g_list_copy (directory->details->file_list),
-		 is_tentative, NULL, &non_tentative_files);
-	g_list_free (tentative_files);
-
-	nautilus_file_list_ref (non_tentative_files);
-	return non_tentative_files;
-}
-
 void
 nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 					 NautilusFile *file,
@@ -618,7 +593,7 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 		g_list_prepend (directory->details->monitor_list, monitor);
 
 	if (callback != NULL) {
-		file_list = get_non_tentative_file_list (directory);
+		file_list = nautilus_directory_get_file_list (directory);
 		(* callback) (directory, file_list, callback_data);
 		nautilus_file_list_free (file_list);
 	}
@@ -1183,7 +1158,7 @@ ready_callback_call (NautilusDirectory *directory,
 		if (directory == NULL || !callback->request.file_list) {
 			file_list = NULL;
 		} else {
-			file_list = get_non_tentative_file_list (directory);
+			file_list = nautilus_directory_get_file_list (directory);
 		}
 
 		/* Pass back the file list if the user was waiting for it. */
