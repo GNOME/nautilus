@@ -2017,12 +2017,14 @@ nautilus_window_hide_location_bar (NautilusWindow *window)
 {
 	window->details->temporary_navigation_bar = FALSE;
 	hide_dock_item (window, LOCATION_BAR_PATH);
+	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR, FALSE);
 }
 
 void 
 nautilus_window_show_location_bar (NautilusWindow *window)
 {
 	show_dock_item (window, LOCATION_BAR_PATH);
+	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR, TRUE);
 }
 
 gboolean
@@ -2035,6 +2037,7 @@ void
 nautilus_window_hide_toolbar (NautilusWindow *window)
 {
 	hide_dock_item (window, TOOLBAR_PATH);
+	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR, FALSE);
 }
 
 void 
@@ -2042,6 +2045,7 @@ nautilus_window_show_toolbar (NautilusWindow *window)
 {
 	nautilus_window_activate_throbber (window);
 	show_dock_item (window, TOOLBAR_PATH);
+	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_TOOLBAR, TRUE);
 }
 
 gboolean
@@ -2059,6 +2063,7 @@ nautilus_window_hide_sidebar (NautilusWindow *window)
 
 	nautilus_window_tear_down_sidebar (window);
 	nautilus_window_update_show_hide_menu_items (window);
+	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR, FALSE);
 }
 
 void 
@@ -2070,6 +2075,7 @@ nautilus_window_show_sidebar (NautilusWindow *window)
 
 	nautilus_window_set_up_sidebar (window);
 	nautilus_window_update_show_hide_menu_items (window);
+	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_SIDEBAR, TRUE);
 }
 
 gboolean
@@ -2087,6 +2093,7 @@ nautilus_window_hide_status_bar (NautilusWindow *window)
 	hide_dock_item (window, STATUS_BAR_PATH);
 
 	nautilus_window_update_show_hide_menu_items (window);
+	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR, FALSE);
 }
 
 void 
@@ -2095,6 +2102,7 @@ nautilus_window_show_status_bar (NautilusWindow *window)
 	show_dock_item (window, STATUS_BAR_PATH);
 
 	nautilus_window_update_show_hide_menu_items (window);
+	eel_preferences_set_boolean (NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR, TRUE);
 }
 
 gboolean

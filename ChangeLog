@@ -1,3 +1,24 @@
+2002-10-31  Dave Camp  <dave@ximian.com>
+
+	* Makefile.am:
+	* nautilus-file-management-properties.desktop.in:
+	* src/Makefile.am:
+	* src/nautilus-file-management-properties-main.c:
+	* src/nautilus-file-management-properties.c:
+	* src/nautilus-file-management-properties.h: New preferences
+	dialog.
+	* src/nautilus-window-menus.c: (preferences_respond_callback),
+	(preferences_callback): Use the new prefs dialog.
+	* src/nautilus-window.c: (nautilus_window_hide_location_bar),
+	(nautilus_window_show_location_bar),
+	(nautilus_window_hide_toolbar), (nautilus_window_show_toolbar),
+	(nautilus_window_hide_sidebar), (nautilus_window_show_sidebar),
+	(nautilus_window_hide_status_bar),	
+	(nautilus_window_show_status_bar): As things are toggled, save
+	them as the default for new windows.
+
+	Patch from Jan Arne Petersen <jpetersen@uni-bonn.de>.
+
 2002-10-31  Bastien Nocera  <hadess@hadess.net>
 
 	* icons/Makefile.am: upd

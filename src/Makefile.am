@@ -2,7 +2,10 @@ include $(top_srcdir)/Makefile.shared
 
 SUBDIRS=file-manager
 
-bin_PROGRAMS=nautilus nautilus-server-connect
+bin_PROGRAMS=					\
+	nautilus				\
+	nautilus-file-management-properties     \
+	nautilus nautilus-server-connect
 
 INCLUDES =\
 	-I$(top_srcdir) \
@@ -117,6 +120,14 @@ nautilus_SOURCES = \
 	nautilus-window-private.h		\
 	nautilus-window.h			\
 	nautilus-zoom-control.h			\
+	nautilus-file-management-properties.c	\
+	nautilus-file-management-properties.h	\
+	$(NULL)
+
+nautilus_file_management_properties_SOURCES= \
+	nautilus-file-management-properties.c		\
+	nautilus-file-management-properties.h		\
+	nautilus-file-management-properties-main.c	\
 	$(NULL)
 
 $(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp
@@ -140,7 +151,11 @@ ui_DATA = 					\
 	$(NULL)
 
 gladedir = $(datadir)/nautilus/glade
-glade_DATA = nautilus-bookmarks-window.glade nautilus-server-connect.glade
+glade_DATA = \
+	nautilus-bookmarks-window.glade			\
+	nautilus-file-management-properties.glade	\
+	nautilus-server-connect.glade                   \
+	$(NULL)
 
 CLEANFILES = \
 	$(nautilus_shell_interface_idl_sources)	\

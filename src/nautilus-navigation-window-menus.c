@@ -33,6 +33,7 @@
 #include "nautilus-bookmark-list.h"
 #include "nautilus-bookmark-parsing.h"
 #include "nautilus-bookmarks-window.h"
+#include "nautilus-file-management-properties.h"
 #include "nautilus-preferences-dialog.h"
 #include "nautilus-property-browser.h"
 #include "nautilus-signaller.h"
@@ -64,7 +65,6 @@
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-private/egg-screen-help.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
-
 
 #ifdef ENABLE_PROFILER
 #include "nautilus-profiler.h"
@@ -567,6 +567,15 @@ bookmarks_menu_edit_bookmarks_callback (BonoboUIComponent *component,
 }
 
 static void
+preferences_respond_callback (GtkDialog *dialog,
+			      gint response_id)
+{
+	if (response_id == GTK_RESPONSE_CLOSE) {
+		gtk_widget_destroy (GTK_WIDGET (dialog));
+	}
+}
+
+static void
 preferences_callback (BonoboUIComponent *component, 
 		      gpointer user_data, 
 		      const char *verb)
@@ -575,7 +584,7 @@ preferences_callback (BonoboUIComponent *component,
 
 	window = GTK_WINDOW (user_data);
 
-	nautilus_preferences_dialog_show (gtk_window_get_screen (window));
+	nautilus_file_management_properties_dialog_show (G_CALLBACK (preferences_respond_callback));
 }
 
 static void

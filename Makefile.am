@@ -2,7 +2,9 @@ include $(top_srcdir)/Makefile.shared
 
 @INTLTOOL_DESKTOP_RULE@
 
-DESKTOP_IN_FILES=nautilus.desktop.in
+DESKTOP_IN_FILES= 					\
+	nautilus.desktop.in				\
+	nautilus-file-management-properties.desktop
 DESKTOP_FILES=$(DESKTOP_IN_FILES:.desktop.in=.desktop)
 
 SUBDIRS =			\
