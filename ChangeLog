@@ -1,3 +1,36 @@
+2001-02-27  Mike Fleming  <mfleming@eazel.com>
+
+	reviewed by: Eskil Olsen <eskil@eazel.com>
+
+	Bug 7008: Navigation to anchors inside a document opened through
+	gnome-vfs does not work.
+
+	Fixed by manually navigating to anchors inside those documents.
+
+	Note that this means anchor links only work inside the same document;
+	external anchor links to gnome-vfs pages still do not work.
+
+	* components/mozilla/mozilla-events.cpp:
+	* components/mozilla/mozilla-events.h:
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(mozilla_dom_mouse_click_callback)
+
+2001-02-26  Mike Fleming  <mfleming@eazel.com>
+
+	reviewed by: Ramiro Estrugo  <ramiro@eazel.com>
+	
+	Bug 6958: Calling gtk_moz_embed_open_stream before control has realized
+	will eventually cause crash, so all opens are postponed until after the
+	stream has realized.
+
+	Also changed "reload" code to eliminate case where the component and
+	mozilla could get out of sync
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize),
+	(mozilla_realize_callback), (mozilla_dom_mouse_click_callback),
+	(vfs_open_callback), (navigate_mozilla_to_nautilus_uri):
+
 2001-02-26  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* configure.in: upped version to 0.8.3 for development

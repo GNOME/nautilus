@@ -61,8 +61,10 @@
 #include "nsIDocument.h"
 #include "nsIContent.h"
 #include "nsIDOMHTMLElement.h"
+#include "nsIDOMHTMLAnchorElement.h"
 #include "nsIDOMHTMLDocument.h"
 #include "nsIPresShell.h"
+#include "nsIMarkupDocumentViewer.h"
 
 
 static char *
@@ -259,73 +261,171 @@ mozilla_events_get_href_for_event (gpointer dom_event)
 	return ret;
 }
 
-
-#if 0
-
-/*
- * returns TRUE if the given event occurs in a SUBMIT button to a form with method=POST
- */
-extern "C" gboolean
-mozilla_events_is_in_form_POST_submit (gpointer dom_event)
+static nsIDocShell* 
+get_primary_docshell (GtkMozEmbed *b)
 {
-	g_return_val_if_fail (dom_event != NULL, FALSE);
+	nsresult result;
+	nsIWebBrowser *wb;
+	gtk_moz_embed_get_nsIWebBrowser (b, &wb);
 
-	nsCOMPtr<nsIDOMEvent> aDOMEvent (do_QueryInterface ((nsIDOMEvent*) dom_event));
+	nsCOMPtr<nsIDocShell> ds;
 
-	if (!aDOMEvent) {
-		return FALSE;
-	}
-	
-	nsCOMPtr<nsIDOMEventTarget> targetNode;
-	
-	aDOMEvent->GetTarget (getter_AddRefs (targetNode));
-	
-	if (!targetNode) {
-		return FALSE;
-	}
-	
-	nsCOMPtr<nsIDOMHTMLInputElement> node = do_QueryInterface (targetNode);
+        nsCOMPtr<nsIDocShellTreeItem> browserAsItem = do_QueryInterface(wb);
+	if (!browserAsItem) return NULL;
 
-	if (!node) {
-		return FALSE;
-	}
+	// get the tree owner for that item
+	nsCOMPtr<nsIDocShellTreeOwner> treeOwner;
+	result = browserAsItem->GetTreeOwner(getter_AddRefs(treeOwner));
+	if (!NS_SUCCEEDED (result) || ! treeOwner) return NULL;
 
-	nsAutoString input_type_name;
+	// get the primary content shell as an item
+	nsCOMPtr<nsIDocShellTreeItem> contentItem;
+	result = treeOwner->GetPrimaryContentShell(getter_AddRefs(contentItem));
+	if (!NS_SUCCEEDED (result) || ! contentItem) return NULL;
 
-	node->GetType (input_type_name);
+	// QI that back to a docshell
+	ds = do_QueryInterface(contentItem);
 
-#ifdef DEBUG_mfleming
-	char *cstr = input_type_name.ToNewCString();
-	g_print ("input node of type '%s'\n", cstr);
-	nsMemory::Free (cstr);
-#endif
-
-	if ( ! ( input_type_name.EqualsWithConversion ("SUBMIT", PR_TRUE)
-		|| input_type_name.EqualsWithConversion ("IMAGE", PR_TRUE) )
-	) {
-		return FALSE;
-	}
-
-	nsCOMPtr<nsIDOMHTMLFormElement> form_node;
-
-	node->GetForm (getter_AddRefs (form_node));
-
-	if (!form_node) {
-		return FALSE;
-	}
-
-	nsAutoString form_method;
-
-	form_node->GetMethod (form_method);
-
-	if (form_method.EqualsWithConversion ("POST", PR_TRUE)) {
-		return TRUE;
-	}
-
-	return FALSE;
+	return ds;
 }
 
-#endif /* 0 */
+nsIDOMElement *
+get_toplevel_doc_element (GtkMozEmbed *embed)
+{
+
+	nsCOMPtr<nsIDocShell> ds;
+	nsresult rv, result;
+
+	ds = get_primary_docshell (embed);
+
+	if ( ! ds ) {
+		return NULL;
+	}
+
+	/* get nsIPresShell */
+
+	nsCOMPtr<nsIPresShell> presShell;
+	result = ds->GetPresShell(getter_AddRefs(presShell));
+	if (!NS_SUCCEEDED(result) || (!presShell)) return NULL;
+
+	/* get nsIDocument */
+
+	nsCOMPtr<nsIDocument> document;
+	result = presShell->GetDocument(getter_AddRefs(document));
+	if (!NS_SUCCEEDED(result) || (!document)) return NULL;
+
+	/* get nsIDOMDocument */
+
+	nsCOMPtr<nsIDOMDocument> domDoc = do_QueryInterface(document);
+	if (!domDoc) return NULL;
+
+	nsCOMPtr<nsIDOMElement> documentElement;
+
+	domDoc->GetDocumentElement (getter_AddRefs (documentElement));
+
+	return documentElement;
+}
+
+static void
+navigate_to_node (GtkMozEmbed *mozilla_embed, nsIDOMNode *node)
+{
+	nsresult rv;
+	nsCOMPtr<nsIDocShell> docShell;
+
+	docShell = get_primary_docshell (mozilla_embed);
+
+	if (!docShell) {
+		return;
+	}
+
+	nsCOMPtr<nsIContentViewer> contentViewer;
+	rv = docShell->GetContentViewer (getter_AddRefs (contentViewer));
+	if (!NS_SUCCEEDED (rv) || !contentViewer) {
+		return;
+	}
+
+	nsCOMPtr<nsIMarkupDocumentViewer> markupDocumentViewer = do_QueryInterface (contentViewer, &rv);
+	if (!NS_SUCCEEDED (rv) || !markupDocumentViewer) {
+		return;
+	}
+	markupDocumentViewer->ScrollToNode (node);
+}
+
+/* Why can't I use GetElementsByTagName?  I couldn't get it to work for me */
+static nsIDOMNode *
+get_anchor_named (nsIDOMNode *top_node, const nsAReadableString& aName)
+{
+	nsresult rv;
+	nsAutoString src_string;
+	nsCOMPtr<nsIDOMNodeList> nodes_list;
+	PRUint32 i;
+	nsCOMPtr<nsIDOMNode> child_node;
+
+	top_node->GetChildNodes (getter_AddRefs(nodes_list));
+
+	for ( i = 0 
+		; nodes_list && NS_SUCCEEDED (nodes_list->Item (i, getter_AddRefs (child_node))) 
+		  && child_node
+		; i++
+	) {
+		nsAutoString currentNodeName;
+//		nsAutoString currentNodeType;
+		nsCOMPtr<nsIDOMHTMLAnchorElement> child_html_node = do_QueryInterface (child_node);
+
+		PRBool has_children;
+
+		if (child_html_node
+		    && NS_SUCCEEDED (child_html_node->GetName (currentNodeName)) 
+		    && currentNodeName.Equals (aName)) {
+			return child_node;
+		}
+
+		rv = child_node->HasChildNodes (&has_children);
+
+		if ( NS_SUCCEEDED (rv) && has_children) {
+			nsCOMPtr<nsIDOMNode> ret;
+
+			ret = get_anchor_named (child_node, aName);
+			
+			if (ret != nsnull) {
+				return ret;
+			}
+		}
+	}
+
+	return nsnull;
+}
+
+extern "C" void
+mozilla_navigate_to_anchor (GtkMozEmbed *mozilla_embed, const char *anchor)
+{
+	nsCOMPtr<nsIDOMNode> anchor_node;
+
+	DEBUG_MSG (("+%s", __FUNCTION__));
+
+	nsCOMPtr<nsIDOMNode> top_node;
+	nsCOMPtr<nsIDOMElement> top_element;
+
+	top_node = get_toplevel_doc_element (mozilla_embed);
+
+	if (!top_node) {
+		return;
+	}
+
+	top_element = do_QueryInterface (top_node);
+
+	nsAutoString anchor_string;
+	anchor_string.AssignWithConversion (anchor);
+
+	anchor_node = get_anchor_named (top_node, anchor_string);
+
+	if (anchor_node) {
+		DEBUG_MSG (("=%s found anchor node", __FUNCTION__));
+		navigate_to_node (mozilla_embed, anchor_node);
+	}
+
+	DEBUG_MSG (("-%s", __FUNCTION__));
+}
 
 #if 0
 static void
@@ -396,9 +496,71 @@ debug_dom_dump (nsIDOMElement *element, int depth)
 		debug_dom_dump (child_element, depth + 1);
 	}
 }
-#endif /* 0 */
 
-#if 0
+/*
+ * returns TRUE if the given event occurs in a SUBMIT button to a form with method=POST
+ */
+extern "C" gboolean
+mozilla_events_is_in_form_POST_submit (gpointer dom_event)
+{
+	g_return_val_if_fail (dom_event != NULL, FALSE);
+
+	nsCOMPtr<nsIDOMEvent> aDOMEvent (do_QueryInterface ((nsIDOMEvent*) dom_event));
+
+	if (!aDOMEvent) {
+		return FALSE;
+	}
+	
+	nsCOMPtr<nsIDOMEventTarget> targetNode;
+	
+	aDOMEvent->GetTarget (getter_AddRefs (targetNode));
+	
+	if (!targetNode) {
+		return FALSE;
+	}
+	
+	nsCOMPtr<nsIDOMHTMLInputElement> node = do_QueryInterface (targetNode);
+
+	if (!node) {
+		return FALSE;
+	}
+
+	nsAutoString input_type_name;
+
+	node->GetType (input_type_name);
+
+#ifdef DEBUG_mfleming
+	char *cstr = input_type_name.ToNewCString();
+	g_print ("input node of type '%s'\n", cstr);
+	nsMemory::Free (cstr);
+#endif
+
+	if ( ! ( input_type_name.EqualsWithConversion ("SUBMIT", PR_TRUE)
+		|| input_type_name.EqualsWithConversion ("IMAGE", PR_TRUE) )
+	) {
+		return FALSE;
+	}
+
+	nsCOMPtr<nsIDOMHTMLFormElement> form_node;
+
+	node->GetForm (getter_AddRefs (form_node));
+
+	if (!form_node) {
+		return FALSE;
+	}
+
+	nsAutoString form_method;
+
+	form_node->GetMethod (form_method);
+
+	if (form_method.EqualsWithConversion ("POST", PR_TRUE)) {
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+
 /* Why can't I use GetElementsByTagName?  I couldn't get it to work for me */
 static gboolean
 find_node_named_with_src (nsIDOMNode *top_node, const nsAReadableString& aName, const nsAReadableString& uri)
@@ -460,73 +622,6 @@ find_node_named_with_src (nsIDOMNode *top_node, const nsAReadableString& aName, 
 
 	return FALSE;
 }
-
-
-static nsIDocShell* 
-get_primary_docshell (GtkMozEmbed *b)
-{
-	nsresult result;
-	nsIWebBrowser *wb;
-	gtk_moz_embed_get_nsIWebBrowser (b, &wb);
-
-	nsCOMPtr<nsIDocShell> ds;
-
-        nsCOMPtr<nsIDocShellTreeItem> browserAsItem = do_QueryInterface(wb);
-	if (!browserAsItem) return NULL;
-
-	// get the tree owner for that item
-	nsCOMPtr<nsIDocShellTreeOwner> treeOwner;
-	result = browserAsItem->GetTreeOwner(getter_AddRefs(treeOwner));
-	if (!NS_SUCCEEDED (result) || ! treeOwner) return NULL;
-
-	// get the primary content shell as an item
-	nsCOMPtr<nsIDocShellTreeItem> contentItem;
-	result = treeOwner->GetPrimaryContentShell(getter_AddRefs(contentItem));
-	if (!NS_SUCCEEDED (result) || ! contentItem) return NULL;
-
-	// QI that back to a docshell
-	ds = do_QueryInterface(contentItem);
-
-	return ds;
-}
-
-nsIDOMElement *
-get_toplevel_doc_element (GtkMozEmbed *embed)
-{
-
-	nsCOMPtr<nsIDocShell> ds;
-	nsresult rv, result;
-
-	ds = get_primary_docshell (embed);
-
-	if ( ! ds ) {
-		return NULL;
-	}
-
-	/* get nsIPresShell */
-
-	nsCOMPtr<nsIPresShell> presShell;
-	result = ds->GetPresShell(getter_AddRefs(presShell));
-	if (!NS_SUCCEEDED(result) || (!presShell)) return NULL;
-
-	/* get nsIDocument */
-
-	nsCOMPtr<nsIDocument> document;
-	result = presShell->GetDocument(getter_AddRefs(document));
-	if (!NS_SUCCEEDED(result) || (!document)) return NULL;
-
-	/* get nsIDOMDocument */
-
-	nsCOMPtr<nsIDOMDocument> domDoc = do_QueryInterface(document);
-	if (!domDoc) return NULL;
-
-	nsCOMPtr<nsIDOMElement> documentElement;
-
-	domDoc->GetDocumentElement (getter_AddRefs (documentElement));
-
-	return documentElement;
-}
-
 
 gboolean
 mozilla_events_is_url_in_iframe (GtkMozEmbed *embed, const char *uri)

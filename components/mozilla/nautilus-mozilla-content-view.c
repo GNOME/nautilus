@@ -101,8 +101,8 @@ struct NautilusMozillaContentViewDetails {
 						 * are not recorded in history
 						 */
 	gboolean	user_initiated_navigation;
-	BonoboUIComponent *ui;
 
+	BonoboUIComponent *ui;
 
 	/* For async NautilusView messages */
 	char		*pending_title;		/*for set_title*/
@@ -146,6 +146,9 @@ static void	view_load_location_callback			(NautilusView 			*nautilus_view,
 								 gpointer 			data);
 
 /* GtkEmbedMoz callback functions */
+
+static void	mozilla_realize_callback			(GtkWidget 			*mozilla,
+								 gpointer			user_data);
 
 static void	mozilla_title_changed_callback			(GtkMozEmbed 			*mozilla,
 								 gpointer			user_data);
@@ -326,6 +329,11 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 	post_widget_initialize ();
 
 	/* Add callbacks to the beast */
+	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
+				"realize",
+				GTK_SIGNAL_FUNC (mozilla_realize_callback),
+				view);
+
 	gtk_signal_connect (GTK_OBJECT (view->details->mozilla), 
 				"title",
 				GTK_SIGNAL_FUNC (mozilla_title_changed_callback),
@@ -769,6 +777,25 @@ bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointe
 /***********************************************************************************/
 
 static void
+mozilla_realize_callback (GtkWidget *mozilla, gpointer user_data)
+{
+	NautilusMozillaContentView	*view;
+
+	DEBUG_MSG (("+%s\n", __FUNCTION__));
+
+	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
+
+	g_assert (GTK_MOZ_EMBED (mozilla) == view->details->mozilla);
+
+	if (view->details->uri != NULL) {
+		DEBUG_MSG (("=%s navigating to uri after realize '%s'\n", __FUNCTION__, view->details->uri));
+		navigate_mozilla_to_nautilus_uri (view, view->details->uri);
+	}
+
+	DEBUG_MSG (("-%s\n", __FUNCTION__));
+}
+
+static void
 mozilla_title_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 {
  	NautilusMozillaContentView	*view;
@@ -1179,11 +1206,32 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 			async_report_load_failed (view);
 			ret = NS_DOM_EVENT_CONSUMED;
 		} else if (href[0] == '#') {
-			/* a navigation to an anchor within the same page, let it pass */
+			/* a navigation to an anchor within the same page */
 			view->details->user_initiated_navigation = TRUE;
-			ret = NS_DOM_EVENT_IGNORED;
+
+			/* Anchor navigation is busted for documents that have 
+			 * been streamed into embedded mozilla.
+			 * So, for stuff we've loaded over gnome-vfs,
+			 * we do it by hand
+			 */ 
+			if (should_mozilla_load_uri_directly (href_full)) {
+				DEBUG_MSG (("=%s : anchor navigation in normal uri, allowing navigate to continue\n", __FUNCTION__));
+				ret = NS_DOM_EVENT_IGNORED;
+			} else {
+				char *unescaped_anchor;
+				
+				/* href+1 to skip the fragment identifier */
+				unescaped_anchor = gnome_vfs_unescape_string (href+1, NULL);
+
+				DEBUG_MSG (("=%s : anchor navigation in gnome-vfs uri, navigate by hand to anchor '%s'\n", __FUNCTION__, unescaped_anchor));
+
+				mozilla_navigate_to_anchor (view->details->mozilla, unescaped_anchor);
+				g_free (unescaped_anchor);
+				ret = NS_DOM_EVENT_CONSUMED;
+			}
 		} else if (0 == strncmp (href, "javascript:", strlen ("javascript:"))) {
 			/* This is a bullshit javascript uri, let it pass */
+			DEBUG_MSG (("=%s : javascript uri, allowing navigate to continue\n", __FUNCTION__));
 			ret = NS_DOM_EVENT_IGNORED;			
 		} else if (should_uri_navigate_bypass_nautilus (href_full)) {
 			view->details->user_initiated_navigation = TRUE;
@@ -1257,7 +1305,7 @@ vfs_open_callback (GnomeVFSAsyncHandle *handle, GnomeVFSResult result, gpointer 
 		if (view->details->vfs_read_buffer == NULL) {
 			view->details->vfs_read_buffer = g_malloc (VFS_READ_BUFFER_SIZE);
 		}
-		gtk_moz_embed_open_stream (view->details->mozilla, "file://", "text/html");
+		gtk_moz_embed_open_stream (view->details->mozilla, "file:///", "text/html");
 		gnome_vfs_async_read (handle, view->details->vfs_read_buffer, VFS_READ_BUFFER_SIZE, vfs_read_callback, view);
 	}
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
@@ -1402,6 +1450,8 @@ navigate_mozilla_to_nautilus_uri (NautilusMozillaContentView     *view,
 			 	  const char			*nautilus_uri)
 {
 	char *mozilla_uri;
+	char *old_mozilla_uri;
+	char *old_nautilus_uri;
 
 	mozilla_uri = translate_uri_nautilus_to_mozilla (view, nautilus_uri);
 
@@ -1410,19 +1460,51 @@ navigate_mozilla_to_nautilus_uri (NautilusMozillaContentView     *view,
 	if (mozilla_uri == NULL) {
 		async_report_load_failed (view);
 		goto error;
-	} else if (should_mozilla_load_uri_directly (nautilus_uri)) {
-		if (view->details->uri != NULL && uris_identical (nautilus_uri, view->details->uri)) {
-			DEBUG_MSG (("=%s uri's identical, telling mozilla to reload\n", __FUNCTION__));
-			gtk_moz_embed_reload (view->details->mozilla,
-				GTK_MOZ_EMBED_FLAG_RELOADBYPASSCACHE);
+	}
 
-		} else {
-			gtk_moz_embed_load_url (view->details->mozilla,
-						mozilla_uri);
-		}
+	if (!GTK_WIDGET_REALIZED (view->details->mozilla)) {
+
+		/* Doing certain things to gtkmozembed before
+		 * the widget has realized (specifically, opening
+		 * content streams) can cause crashes.  To avoid
+		 * this, we postpone all navigations
+		 * until the widget has realized (we believe
+		 * premature realization may cause other issues)
+		 */
+
+		DEBUG_MSG (("=%s: Postponing navigation request to widget realization\n", __FUNCTION__));
+		/* Note that view->details->uri is still set below */
 	} else {
-		DEBUG_MSG (("=%s loading URI via gnome-vfs\n", __FUNCTION__));
-		gnome_vfs_async_open (&(view->details->vfs_handle), nautilus_uri, GNOME_VFS_OPEN_READ, vfs_open_callback, view);
+		if (should_mozilla_load_uri_directly (nautilus_uri)) {
+
+			/* See if the current URI is the same as what mozilla already
+			 * has.  If so, issue a reload rather than a load.
+			 * We ask mozilla for it's uri rather than using view->details->uri because,
+			 * from time to time, our understanding of mozilla's URI can become inaccurate
+			 * (in particular, certain errors may cause embedded mozilla to not change
+			 * locations)
+			 */
+
+			old_mozilla_uri = gtk_moz_embed_get_location (view->details->mozilla);
+			old_nautilus_uri = translate_uri_mozilla_to_nautilus (view, old_mozilla_uri);
+
+			if (old_nautilus_uri != NULL && uris_identical (nautilus_uri, old_nautilus_uri)) {
+				DEBUG_MSG (("=%s uri's identical, telling mozilla to reload\n", __FUNCTION__));
+				gtk_moz_embed_reload (view->details->mozilla,
+					GTK_MOZ_EMBED_FLAG_RELOADBYPASSCACHE);
+			} else {
+				gtk_moz_embed_load_url (view->details->mozilla,
+							mozilla_uri);
+			}
+
+			g_free (old_mozilla_uri);
+			old_mozilla_uri = NULL;
+			g_free (old_nautilus_uri);
+			old_nautilus_uri = NULL;
+		} else {
+			DEBUG_MSG (("=%s loading URI via gnome-vfs\n", __FUNCTION__));
+			gnome_vfs_async_open (&(view->details->vfs_handle), nautilus_uri, GNOME_VFS_OPEN_READ, vfs_open_callback, view);
+		}
 	}
 
 	g_free (view->details->uri);

@@ -39,6 +39,8 @@ gboolean mozilla_events_is_key_return (gpointer dom_event);
 
 char *mozilla_events_get_href_for_event (gpointer dom_event);
 
+void mozilla_navigate_to_anchor (GtkMozEmbed *mozilla_embed, const char *anchor);
+
 #if 0
 gboolean mozilla_events_is_in_form_POST_submit (gpointer dom_event);
 
