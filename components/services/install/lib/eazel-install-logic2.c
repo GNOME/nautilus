@@ -240,6 +240,9 @@ eazel_install_check_existing_packages (EazelInstall *service,
 	GList *existing_packages;
 	EazelInstallStatus result;
 
+#if EI2_DEBUG & 0x4
+	trilobite_debug ("check_existing %s", pack->name);
+#endif
 	result = EAZEL_INSTALL_STATUS_NEW_PACKAGE;
 	/* query for existing package of same name */
 	existing_packages = eazel_package_system_query (service->private->package_system,
@@ -289,7 +292,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			/* check against minor version */
 			if (res==0) {
 #if EI2_DEBUG & 0x4
-				trilobite_debug ("versions are equal, comparing minors");
+				trilobite_debug ("versions are equal (%s), comparing minors", pack->version);
 #endif
 				if (pack->minor && existing_package->minor) {
 #if EI2_DEBUG & 0x4
@@ -391,7 +394,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			} else {
 				pack->status = PACKAGE_ALREADY_INSTALLED;
 			}
-			//gtk_object_unref (GTK_OBJECT (existing_package));
+			gtk_object_unref (GTK_OBJECT (existing_package));
 		}
 
 		/* Free the list structure from _simple_query */
@@ -477,6 +480,10 @@ get_softcat_info (EazelInstall *service,
 		p1 = g_hash_table_lookup (service->private->dedupe_hash, (*package)->eazel_id);
 
 		if (p1) {
+#if EI2_DEBUG & 0x4
+			trilobite_debug ("deduping %p %s", *package, (*package)->name);
+#endif		
+			
 			gtk_object_ref (GTK_OBJECT (p1));
 			gtk_object_unref (GTK_OBJECT (*package)); 
 			(*package) = p1;
@@ -495,8 +502,10 @@ get_softcat_info (EazelInstall *service,
 			case EAZEL_INSTALL_STATUS_DOWNGRADES:
 			case EAZEL_INSTALL_STATUS_QUO:
 				(*package)->status = PACKAGE_ALREADY_INSTALLED;
+/*
 				eazel_install_emit_install_failed (service, *package);
 				gtk_object_unref (GTK_OBJECT (*package));
+*/
 				result = PACKAGE_SKIPPED;
 				break;
 			}
@@ -666,11 +675,22 @@ is_satisfied (EazelInstall *service,
 							       NULL,
 							       dep->sense)) {
 #if EI2_DEBUG & 0x4
-				trilobite_debug ("\t--> installed");
+				trilobite_debug ("\t--> installed with version");
 #endif
 				result = TRUE;
 			}
+		} else if (eazel_package_system_is_installed (service->private->package_system,
+							      service->private->cur_root,
+							      dep->package->name,
+							      NULL, 
+							      NULL,
+							      EAZEL_SOFTCAT_SENSE_ANY)) {
+#if EI2_DEBUG & 0x4
+			trilobite_debug ("\t--> installed");
+#endif
+			result = TRUE;
 		} else {
+
 			if (dep->package->features && is_satisfied_features (service, dep->package)) {
 #if EI2_DEBUG & 0x4
 				trilobite_debug ("\t--> features of package are satisfied");

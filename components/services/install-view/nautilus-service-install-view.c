@@ -1504,7 +1504,7 @@ nautilus_service_install_view_update_from_uri (NautilusServiceInstallView *view,
 		*p = 0;
 		port = atoi (p+1);
 	} else {
-		port = 443;
+		port = 80;
 	}
 	username = NULL;
 	set_auth = !(nautilus_install_parse_uri (uri, view, &host, &port, &username));

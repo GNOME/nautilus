@@ -1,3 +1,47 @@
+2001-01-22  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (set_parameters_from_command_line), (something_failed):
+	Removed the --port argument (since --server is now in server:port
+	form).
+	Removed --tmp as you shouldn't set it anymore.
+	Rename --noauth to --no-auth and --ssl_rename to --ssl-rename.
+	Default behaviour is now that no server or no-auth argument causes
+	eazel-install to use trilobite server setting and proxy. --no-auth
+	just uses trilobite server and no proxy, --server sets the server
+	and no proxy.
+	Changed output in something_failed.
+	
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_start_signal), (eazel_install_failed_signal):
+	Don't emit progress in uninstall (since the EazelInstall object
+	didn't have them, I was currently emitting install progress
+	signals)	
+	Only emit failed signals on the toplevel.
+	
+	* components/services/install/lib/eazel-install-logic2.c:
+	(eazel_install_check_existing_packages), (get_softcat_info),
+	(is_satisfied):
+	More ifdeffed debug.
+	Uncommented a commented out gtk_object_unref.
+	Commented out a unref and emit_failed, since the pruner is doing
+	this.
+	In is_satisifed, if no version in dep, check if package is
+	installed before checking features list. Faster and safer.
+	
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(make_rpm_argument_list),
+	(monitor_rpm_process_pipe_percent_output),
+	(monitor_rpm_process_pipe), (eazel_package_system_rpm3_execute):
+	Some ifdeffed code for --percent handling.
+	Set go==FALSE in execute if root helper fails (fixes a bug where
+	the installer would hang if wrong password was entered).
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_view_update_from_uri):
+	Default to port 80 if trilobite_get_services_address did not
+	include a port.
+	
 2001-01-22  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

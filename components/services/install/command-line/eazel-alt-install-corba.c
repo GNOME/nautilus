@@ -57,7 +57,6 @@ int     arg_dry_run,
 	arg_ftp,
 	arg_local,
 	arg_debug,
-	arg_port,
 	arg_delay,
 	arg_file,
 	arg_force,
@@ -77,7 +76,6 @@ char    *arg_server,
 	*arg_cgi,
 	*arg_config_file,
 	*arg_package_list,
-	*arg_tmp_dir,
 	*arg_username,
 	*arg_root,
 	*arg_batch;
@@ -106,17 +104,15 @@ static const struct poptOption options[] = {
 	{"http", 'h', POPT_ARG_NONE, &arg_http, 0, N_("Use http"), NULL},
 	{"id", 'i', POPT_ARG_NONE, &arg_id, 0, N_("RPM args are Eazel Ids"), NULL},
 	{"no-percent", '\0', POPT_ARG_NONE, &arg_no_pct, 0, N_("Don't print fancy percent output"), NULL},
-	{"noauth", '\0', POPT_ARG_NONE, &arg_no_auth, 0, N_("don't use eazel auth stuff"), NULL},
+	{"no-auth", '\0', POPT_ARG_NONE, &arg_no_auth, 0, N_("don't use eazel auth stuff"), NULL},
 	{"packagefile", '\0', POPT_ARG_STRING, &arg_package_list, 0, N_("Specify package file"), NULL},
-	{"port", '\0', POPT_ARG_INT, &arg_port, 0 , N_("Set port numer (80)"), NULL},
 	{"provides", '\0', POPT_ARG_NONE, &arg_provides, 0, N_("RPM args are needed files"), NULL},
 	{"query", 'q', POPT_ARG_NONE, &arg_query, 0, N_("Run Query"), NULL},
 	{"revert", 'r', POPT_ARG_NONE, &arg_revert, 0, N_("Revert"), NULL},
 	{"root", '\0', POPT_ARG_STRING, &arg_root, 0, N_("Set root"), NULL},
 	{"server", '\0', POPT_ARG_STRING, &arg_server, 0, N_("Specify server"), NULL},
-	{"ssl_rename", 's', POPT_ARG_NONE, &arg_ssl_rename, 0, N_("Perform ssl renaming"), NULL},
+	{"ssl-rename", 's', POPT_ARG_NONE, &arg_ssl_rename, 0, N_("Perform ssl renaming"), NULL},
 	{"test", 't', POPT_ARG_NONE, &arg_dry_run, 0, N_("Test run"), NULL},
-	{"tmp", '\0', POPT_ARG_STRING, &arg_tmp_dir, 0, N_("Set tmp dir (/tmp)"), NULL},
 	{"username", '\0', POPT_ARG_STRING, &arg_username, 0, N_("Allow username"), NULL},
 	{"upgrade", 'u', POPT_ARG_NONE, &arg_upgrade, 0, N_("Allow upgrades"), NULL},
 	{"verbose", 'v', POPT_ARG_NONE, &arg_verbose, 0, N_("Verbose output"), NULL},
@@ -184,12 +180,34 @@ set_parameters_from_command_line (GNOME_Trilobite_Eazel_Install service)
 			colon++;
 			port = atoi (colon);
 			GNOME_Trilobite_Eazel_Install__set_server (service, host, &ev);
+			check_ev ("set_server");
 			GNOME_Trilobite_Eazel_Install__set_server_port (service, port, &ev);
+			check_ev ("set_port");
 			g_free (host);
 		} else {
 			GNOME_Trilobite_Eazel_Install__set_server (service, arg_server, &ev);
+			check_ev ("set_server");
 		}
+		GNOME_Trilobite_Eazel_Install__set_auth (service, FALSE, &ev);
+		check_ev ("set_auth");
+	} else if (arg_no_auth==0) {
+		char *host, *p;
+		int port;
+
+		host = g_strdup (trilobite_get_services_address ());
+		if ((p = strchr (host, ':')) != NULL) {
+			*p = 0;
+			port = atoi (p+1);
+		} else {
+			port = 80;
+		}
+		GNOME_Trilobite_Eazel_Install__set_auth (service, TRUE, &ev);
+		check_ev ("set_auth");
+		GNOME_Trilobite_Eazel_Install__set_server (service, host, &ev);
 		check_ev ("set_server");
+		GNOME_Trilobite_Eazel_Install__set_server_port (service, port, &ev);
+		check_ev ("set_port");
+		g_free (host);
 	}
 	if (arg_username) {
 		GNOME_Trilobite_Eazel_Install__set_username (service, arg_username, &ev);
@@ -211,33 +229,7 @@ set_parameters_from_command_line (GNOME_Trilobite_Eazel_Install service)
 	if (arg_no_auth) {
 		GNOME_Trilobite_Eazel_Install__set_auth (service, FALSE, &ev);
 		check_ev ("set_auth");
-	} else {
-		GNOME_Trilobite_Eazel_Install__set_auth (service, TRUE, &ev);
-		check_ev ("set_auth");
-	}
-
-#define RANDCHAR ('A' + (rand () % 23))
-	if (arg_tmp_dir == NULL) {
-		int tries;
-		srand (time (NULL));
-		for (tries = 0; tries < 50; tries++) {
-			arg_tmp_dir = g_strdup_printf ("/tmp/eazel-installer.%c%c%c%c%c%c%d",
-						  RANDCHAR, RANDCHAR, RANDCHAR, RANDCHAR,
-						  RANDCHAR, RANDCHAR, (rand () % 1000));
-			if (g_file_test (arg_tmp_dir, G_FILE_TEST_ISDIR)==0) {
-				break;
-			}
-			g_free (arg_tmp_dir);
-		}
-	}
-/*
-	GNOME_Trilobite_Eazel_Install__set_tmp_dir (service, arg_tmp_dir, &ev);
-	check_ev ("set_tmp_dir");
-*/
-	if (arg_port) {
-		GNOME_Trilobite_Eazel_Install__set_server_port (service, arg_port, &ev);
-		check_ev ("set_server_port");
-	}
+	} 
 	if (arg_dry_run) {
 		GNOME_Trilobite_Eazel_Install__set_test_mode (service, TRUE, &ev);
 	}
@@ -465,19 +457,19 @@ something_failed (EazelInstallCallback *service,
 	char *title;
 	GList *stuff = NULL;	
 
-	fprintf (stderr, "\nin something failed\n");
-
 	gtk_object_ref (GTK_OBJECT (pd));
 
 	if (uninstall) {
-		title = g_strdup_printf ("\nPackage %s failed to uninstall. Here's the tree...\n", pd->name);
+		title = g_strdup_printf ("\nPackage %s failed to uninstall.\n", pd->name);
 	} else {
-		title = g_strdup_printf ("\nPackage %s failed to install. Here's the tree...\n", pd->name);
+		title = g_strdup_printf ("\nPackage %s failed to install.\n", pd->name);
 	}
 
 	if (arg_debug) {
 		tree_helper (service, pd, "", "", 4, title);
 		fprintf (stdout, "\n");
+	} else {
+		fprintf (stdout, "%s", title);
 	}
 
 	g_free (title);

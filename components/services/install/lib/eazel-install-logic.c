@@ -803,6 +803,7 @@ gboolean eazel_install_start_signal (EazelPackageSystem *system,
 	service->private->infoblock[2]++;
 	switch (op) {
 	case EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL:
+		break;
 	case EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL:
 		eazel_install_emit_install_progress (service, 
 						     pack,
@@ -866,10 +867,13 @@ gboolean eazel_install_failed_signal (EazelPackageSystem *system,
 				      EazelInstall *service)
 {
 	trilobite_debug ("*** %s failed", pack->name);
-	if (op==EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL) {
-		eazel_install_emit_install_failed (service, pack);
-	} else if (op==EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL) {
-		eazel_install_emit_uninstall_failed (service, pack);
+	if (pack->toplevel) {
+		trilobite_debug ("emiting failed for %s", pack->name);
+		if (op==EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL) {
+			eazel_install_emit_install_failed (service, pack);
+		} else if (op==EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL) {
+			eazel_install_emit_uninstall_failed (service, pack);
+		}
 	}
 	return TRUE;
 }

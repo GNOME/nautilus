@@ -62,6 +62,8 @@
 #define DEFAULT_DB_PATH "/var/lib/rpm"
 #define DEFAULT_ROOT "/"
 
+#undef USE_PERCENT
+
 EazelPackageSystem* eazel_package_system_implementation (GList*);
 
 /* This is the parent class pointer */
@@ -156,6 +158,10 @@ make_rpm_argument_list (EazelPackageSystemRpm3 *system,
 		}
 	}
 
+#ifdef USE_PERCENT
+	(*args) = g_list_prepend (*args, g_strdup ("--percent"));
+#endif
+
 	if (op == EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL) {
 		(*args) = g_list_prepend (*args, g_strdup ("-e"));
 	} else  {
@@ -222,6 +228,36 @@ get_total_size_of_packages (const GList *packages)
 	return result;
 }
 
+#ifdef USE_PERCENT
+/* This monitors an rpm process pipe and emits
+   signals during execution */
+static gboolean
+monitor_rpm_process_pipe_percent_output (GIOChannel *source,
+					 GIOCondition condition,
+					 struct RpmMonitorPiggyBag *pig)
+{
+	char tmp;
+	ssize_t bytes_read;
+	char line[80];
+	int bytes_read_in_line = 0;
+	gboolean result = TRUE;
+
+	g_io_channel_read (source, &tmp, 1, &bytes_read);
+	
+	if (bytes_read) {
+		if (tmp=='\n') {
+			trilobite_debug ("RPM: %s", line);
+		} else {
+			line[bytes_read_in_line] = tmp;
+			bytes_read_in_line++;
+		}
+	}
+	
+	return result;
+}
+#endif
+
+#ifndef USE_PERCENT
 /* This monitors an rpm process pipe and emits
    signals during execution */
 static gboolean
@@ -232,7 +268,7 @@ monitor_rpm_process_pipe (GIOChannel *source,
 	char         tmp;
 	ssize_t      bytes_read;
 	gboolean result = TRUE;
-	
+
 	g_io_channel_read (source, &tmp, 1, &bytes_read);
 	
 	if (bytes_read) {
@@ -361,6 +397,7 @@ monitor_rpm_process_pipe (GIOChannel *source,
 
 	return result;
 }
+#endif
 
 static void
 rpm_create_db (char *dbpath,
@@ -1041,19 +1078,26 @@ eazel_package_system_rpm3_execute (EazelPackageSystemRpm3 *system,
 		root_helper_stat = trilobite_root_helper_start (root_helper);
 		if (root_helper_stat != TRILOBITE_ROOT_HELPER_SUCCESS) {
 			g_warning ("Error in starting trilobite_root_helper");			
+			go = FALSE;
 		} else if (trilobite_root_helper_run (root_helper, 
 						      TRILOBITE_ROOT_HELPER_RUN_RPM, args, &fd) != 
 			   TRILOBITE_ROOT_HELPER_SUCCESS) {
 			g_warning ("Error in running trilobite_root_helper");
 			trilobite_root_helper_destroy (GTK_OBJECT (root_helper));
+			go = FALSE;
 		}
 	} else {
 		/* FIXME:
 		   ugh, start /bin/rpm manually, see code in eazel-install-logic.c rev 1.26 */
 		g_assert (root_helper);
+		go = FALSE;
 	}
 	if (go) {
+#ifdef USE_PERCENT
+		monitor_subcommand_pipe (system, fd, (GIOFunc)monitor_rpm_process_pipe_percent_output, pig);
+#else
 		monitor_subcommand_pipe (system, fd, (GIOFunc)monitor_rpm_process_pipe, pig);
+#endif
 	} else {
 		/* FIXME: fail all the packages in pig */
 	}
