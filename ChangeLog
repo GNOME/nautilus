@@ -1,3 +1,9 @@
+2001-02-18  Darin Adler  <darin@eazel.com>
+
+	* components/mozilla/nautilus-mozilla-embed-extensions.cpp:
+	Get rid of initialization of nsString object to NULL
+	to fix Tinderbox.
+
 2001-02-17  Michael K. Fleming  <mfleming@eazel.com>
 
 	reviewed by: <ramiro@eazel.com>
@@ -33,8 +39,7 @@
 	(dispatch_report_location_change):
 
 	* src/nautilus-sidebar.c: (add_command_buttons):
-
-	Fixed improper assumtion that nautilus_file_is_local being TRUE
+	Fixed improper assumption that nautilus_file_is_local being TRUE
 	means gnome_vfs_get_local_path will return a file path.  The "local"
 	concept seems to apply to expected latancy, not URI schemes.  This
 	was causing assertion failures when browsing to help: schemes (as

@@ -189,23 +189,19 @@ encoding_entry_list_populate_once (void)
 		nsCOMPtr<nsISupports> cssupports = (dont_AddRef)(cs_list->ElementAt(i));
 		nsCOMPtr<nsIAtom> csatom ( do_QueryInterface(cssupports) );
 
-		nsString ns_charset = NULL;
-		nsString ns_charset_title = NULL;
-		
+		nsString ns_charset;
 		rv = csatom->ToString (ns_charset);
 		g_assert (NS_SUCCEEDED (rv));
 		char *charset = convert_ns_string_to_c_string (ns_charset);
 		g_assert (charset != NULL);
 
+		nsString ns_charset_title;
 		rv = ccm2->GetCharsetTitle2 (csatom, &ns_charset_title);
-		
 		char *charset_title = NULL;
-		
 		if (NS_SUCCEEDED (rv)) {
 			charset_title = convert_ns_string_to_c_string (ns_charset_title);
 		}
-		
-		if (charset_title == NULL || strlen (charset_title) == 0) {
+		if (charset_title == NULL || charset_title[0] == '\0') {
 			g_free (charset_title);
 			charset_title = g_strdup (charset);
 		}
