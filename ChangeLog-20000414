@@ -1,5 +1,27 @@
 2000-02-23  Maciej Stachowiak  <mjs@eazel.com>
 
+	* libnautilus/nautilus-icons-view-icon-item.c
+	(nautilus_icons_view_icon_item_set_emblems): Nautilus was getting
+	an assertion failure on startup, so I weakened the
+	assertion. Darin should look at my fix.
+
+	* idl/nautilus.idl (ViewWindow): Added `application' readonly
+	attribute.
+	(Application): Renamed attribute from `windows' to `view_windows'
+	and made it a sequence<ViewWindow> rather than
+	sequence<Object>. Renamed `new_window' method to
+	`new_view_window'.
+	* src/ntl-window.h: Miscellaneous reformatting.
+	(nautilus_window_close): Added prototype
+	* src/ntl-window.c: Added implementations of
+	Nautilus::ViewWindow's methods. For now, _get_application just
+	returns CORBA_OBJECT_NIL because the Application object has not
+	yet been implemented.
+	(nautilus_window_close): New function used by `file_menu_close_cb'
+	and `impl_POA_Nautilus_ViewWindow_close'.
+	(would_be_in_gdk_pixbuf_if_federico_wasnt_stubborn_pixbuf_render):
+	Added an explanatory comment.
+
 	* idl/nautilus.idl: Added Nautilus::Zoomable and
 	Nautilus::ZoomableFrame interfaces.
 	* nautilus-zoomable.c, nautilus-zoomable.h: New files for the

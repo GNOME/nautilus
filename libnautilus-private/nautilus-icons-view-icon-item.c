@@ -356,7 +356,7 @@ nautilus_icons_view_icon_item_set_emblems (NautilusIconsViewIconItem *item,
 {
 	g_return_if_fail (NAUTILUS_IS_ICONS_VIEW_ICON_ITEM (item));
 	
-	g_assert (item->details->emblem_pixbufs != emblem_pixbufs);
+	g_assert (item->details->emblem_pixbufs != emblem_pixbufs || emblem_pixbufs == NULL);
 
 	/* The case where the emblems are identical is fairly common,
 	 * so lets take the time to check for it.
