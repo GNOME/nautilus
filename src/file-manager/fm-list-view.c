@@ -38,6 +38,7 @@
 #include <eel/eel-gtk-macros.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkdialog.h>
+#include <gtk/gtkbindings.h>
 #include <gtk/gtkcellrendererpixbuf.h>
 #include <gtk/gtkcellrenderertext.h>
 #include <gtk/gtkentry.h>
@@ -1004,6 +1005,7 @@ create_and_set_up_tree_view (FMListView *view)
 	GtkCellRenderer *cell;
 	GtkTreeViewColumn *column;
 	GtkTargetEntry *drag_types;
+	GtkBindingSet *binding_set;
 	AtkObject *atk_obj;
 	int num_drag_types;	
 	GList *nautilus_columns;
@@ -1014,6 +1016,10 @@ create_and_set_up_tree_view (FMListView *view)
 							g_str_equal,
 							(GDestroyNotify)g_free,
 							NULL);
+
+	/* Don't handle backspace key. It's used to open the parent folder. */
+	binding_set = gtk_binding_set_by_class (GTK_WIDGET_GET_CLASS (view->details->tree_view));
+	gtk_binding_entry_clear (binding_set, GDK_BackSpace, 0);
 
 	fm_list_model_get_drag_types (&drag_types, &num_drag_types);
 	

@@ -1,5 +1,12 @@
 2005-02-27  Martin Wehner  <martin.wehner@gmail.com>
 
+	* src/file-manager/fm-list-view.c: (create_and_set_up_tree_view):
+	Make the backspace key open the parent folder in the
+	list view like it does in the icon view. (#142891)
+	Patch from Christian Neumair <chris@gnome-de.org>
+
+2005-02-27  Martin Wehner  <martin.wehner@gmail.com>
+
 	* libnautilus-private/nautilus-desktop-link.c:
 	(nautilus_desktop_link_can_rename):
 	Make Computer icon renameable. (#154122)
