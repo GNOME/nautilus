@@ -678,8 +678,12 @@ get_theme_description_and_display_name (const char *theme_name, const char *them
 	
 	theme_file_name = g_strdup_printf ("%s.xml", theme_name);	
 	theme_local_path = gnome_vfs_get_local_path_from_uri (theme_path_uri);
-	theme_path = nautilus_make_path (theme_local_path, theme_file_name);
-	g_free (theme_local_path);
+	if (theme_local_path == NULL) {
+		theme_path = NULL;
+	} else {
+		theme_path = nautilus_make_path (theme_local_path, theme_file_name);
+		g_free (theme_local_path);
+	}
 		
 	if (theme_path != NULL) {
 		/* read the xml document */
@@ -798,7 +802,11 @@ add_pixbuf_to_theme_list (GtkCList *list, int row, int column, GdkPixbuf *pixbuf
 
 /* utility to add a theme folder to the list */
 static void
-add_theme (NautilusThemeSelector *theme_selector, const char *theme_path_uri, const char *theme_name, const char *current_theme, int theme_index)
+add_theme (NautilusThemeSelector *theme_selector,
+	   const char *theme_path_uri,
+	   const char *theme_name,
+	   const char *current_theme,
+	   int theme_index)
 {
 	char *theme_description, *theme_display_name;
 	GdkPixbuf *theme_pixbuf;
@@ -911,12 +919,11 @@ populate_list_with_themes (NautilusThemeSelector *theme_selector)
 
 		pixmap_directory = nautilus_get_pixmap_directory ();
 		directory_uri = gnome_vfs_get_uri_from_local_path (pixmap_directory);
+		g_free (pixmap_directory);
 		
 		/* add a theme element for the default theme */
 		current_theme = nautilus_theme_get_theme();	
-
-		add_theme (theme_selector, pixmap_directory, "default", current_theme, index++);
-		g_free (pixmap_directory);
+		add_theme (theme_selector, directory_uri, "default", current_theme, index++);
 		g_free (current_theme);
 		
 		/* process the built-in themes */

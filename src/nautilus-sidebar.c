@@ -1386,6 +1386,7 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 	/* here is a hack to provide an "empty trash" button when displaying the trash.  Eventually, we
 	 * need a framework to allow protocols to add commands buttons */
 	if (nautilus_istr_has_prefix (sidebar->details->uri, "trash:")) {
+		/* FIXME: We don't use spaces to pad labels! */
 		temp_button = gtk_button_new_with_label (_("  Empty Trash  "));		    
 		gtk_box_pack_start (GTK_BOX (sidebar->details->button_box), 
 					temp_button, FALSE, FALSE, 0);

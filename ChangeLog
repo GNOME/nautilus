@@ -1,3 +1,21 @@
+2001-02-21  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Mike Engber <engber@eazel.com>
+
+	Fixed bug 6839 (Nautilus crashes with a segmentation fault when
+	clicking Edit->Nautilus Themes).
+	
+	* src/nautilus-theme-selector.c:
+	(get_theme_description_and_display_name): Make a bad URI be
+	non-fatal (not really needed for bug fix).
+	(populate_list_with_themes): Pass the URI for the URI parameter,
+	not the local path.
+
+	Other stuff.
+
+	* src/nautilus-sidebar.c: (nautilus_sidebar_update_buttons): Added
+	a FIXME to some questionable code.
+
 2001-02-21  John Harper  <jsh@eazel.com>
 
 	* src/file-manager/fm-directory-view.c (activate_callback):
