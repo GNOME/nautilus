@@ -376,7 +376,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 
 typedef struct {
 	GnomeVFSMimeApplication *application;
-	char *uri;
+	NautilusFile *file;
 	FMDirectoryView *directory_view;
 } ApplicationLaunchParameters;
 
@@ -388,7 +388,7 @@ typedef struct {
 
 static ApplicationLaunchParameters *
 application_launch_parameters_new (GnomeVFSMimeApplication *application,
-			      	   const char *uri,
+			      	   NautilusFile *file,
 			           FMDirectoryView *directory_view)
 {
 	ApplicationLaunchParameters *result;
@@ -397,7 +397,8 @@ application_launch_parameters_new (GnomeVFSMimeApplication *application,
 	result->application = gnome_vfs_mime_application_copy (application);
 	gtk_widget_ref (GTK_WIDGET (directory_view));
 	result->directory_view = directory_view;
-	result->uri = g_strdup (uri);
+	nautilus_file_ref (file);
+	result->file = file;
 
 	return result;
 }
@@ -407,7 +408,7 @@ application_launch_parameters_free (ApplicationLaunchParameters *parameters)
 {
 	gnome_vfs_mime_application_free (parameters->application);
 	gtk_widget_unref (GTK_WIDGET (parameters->directory_view));
-	g_free (parameters->uri);
+	nautilus_file_unref (parameters->file);
 	g_free (parameters);
 }			      
 
@@ -558,15 +559,15 @@ open_in_new_window_callback (BonoboUIComponent *component, gpointer callback_dat
 
 static void
 fm_directory_view_launch_application (GnomeVFSMimeApplication *application,
-				      const char *uri,
+				      NautilusFile *file,
 				      FMDirectoryView *directory_view)
 {
 	g_assert (application != NULL);
-	g_assert (uri != NULL);
+	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
 
 	nautilus_launch_application
-		(application, uri, fm_directory_view_get_containing_window (directory_view));
+		(application, file, fm_directory_view_get_containing_window (directory_view));
 	
 }				      
 
@@ -584,7 +585,7 @@ fm_directory_view_chose_application_callback (GnomeVFSMimeApplication *applicati
 	if (application != NULL) {
 		fm_directory_view_launch_application 
 			(application, /* NOT the (empty) application in launch_parameters */
-			 launch_parameters->uri, 
+			 launch_parameters->file,
 			 launch_parameters->directory_view);
 	}
 
@@ -693,7 +694,7 @@ choose_program (FMDirectoryView *view,
 			 fm_directory_view_get_containing_window (view),
 			 fm_directory_view_chose_application_callback,
 			 application_launch_parameters_new
-			 	(NULL, uri, view));
+			 	(NULL, file, view));
 	}
 
 	g_free (uri);
@@ -2463,7 +2464,6 @@ fm_directory_link_type_in_selection (FMDirectoryView *view,
 
 		uri = nautilus_file_get_uri (file);
 		path = gnome_vfs_get_local_path_from_uri (uri);
-
 		/* FIXME: This reads the link file every single time. */
 		saw_link = path != NULL
 			&& nautilus_file_is_nautilus_link (file)
@@ -2873,7 +2873,7 @@ bonobo_launch_application_callback (BonoboUIComponent *component, gpointer callb
 	launch_parameters = (ApplicationLaunchParameters *) callback_data;
 	fm_directory_view_launch_application 
 		(launch_parameters->application,
-		 launch_parameters->uri,
+		 launch_parameters->file,
 		 launch_parameters->directory_view);
 }				    
 
@@ -2926,14 +2926,14 @@ add_open_with_program_menu_item (BonoboUIComponent *ui,
 static void
 add_application_to_bonobo_menu (FMDirectoryView *directory_view,
 				GnomeVFSMimeApplication *application, 
-				const char *uri,
+				NautilusFile *file,
 				int index)
 {
 	ApplicationLaunchParameters *launch_parameters;
 	char *tip;
 
 	launch_parameters = application_launch_parameters_new 
-		(application, uri, directory_view);
+		(application, file, directory_view);
 	tip = g_strdup_printf (_("Use \"%s\" to open the selected item"), application->name);
 
 	add_open_with_program_menu_item (directory_view->details->ui, 
@@ -3034,7 +3034,7 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 		
 		applications = nautilus_mime_get_short_list_applications_for_file (NAUTILUS_FILE (selection->data));
 		for (node = applications, index = 0; node != NULL; node = node->next, index++) {
-			add_application_to_bonobo_menu (view, node->data, uri, index);
+			add_application_to_bonobo_menu (view, node->data, file, index);
 		}
 		gnome_vfs_mime_application_list_free (applications); 
 		
@@ -3628,7 +3628,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		}
 
 		if (application != NULL) {
-			fm_directory_view_launch_application (application, uri, view);
+			fm_directory_view_launch_application (application, file, view);
 			gnome_vfs_mime_application_free (application);
 		} else {
 			open_location (view, uri, parameters->choice);

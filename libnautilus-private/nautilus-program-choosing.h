@@ -51,7 +51,7 @@ void nautilus_cancel_choose_component_for_file   (NautilusFile                  
 						  NautilusComponentChoiceCallback    callback,
 						  gpointer                           callback_data);
 void nautilus_launch_application                 (GnomeVFSMimeApplication           *application,
-						  const char                        *uri,
+						  NautilusFile                      *file,
 						  GtkWindow                         *parent_window);
 void nautilus_launch_application_from_command    (const char                        *command_string,
 						  const char                        *parameter,

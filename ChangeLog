@@ -1,3 +1,43 @@
+2001-02-22  Rebecca Schulman  <rebecka@eazel.com>
+	Fix bug 6058, that opening a file with a default
+	application that cannot access a location (in the specific
+	case of the bug, eazel-services) should explain the problem,
+	and offer another application, rather than simply failing.
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-program-choosing.h:	
+	* libnautilus-extensions/nautilus-program-choosing.c:
+	(nautilus_choose_application_for_file),
+	(application_can_handle_uri), (application_cannot_open_location),
+	(nautilus_launch_application),	
+	(launch_application_callback),
+	(launch_parameters_new),
+	(launch_parameters_free), (launch_application_callback):
+	Change nautilus_launch_application to take a NautilusFile rather
+	than a uri, so that we can find out whether other applications
+	are available for the location, using the mime type as well
+	as uri scheme.  Change the dialogs that come up when an application
+	is not available for a particular location to explain more of what
+	we know.  If another application is available to open the uri,
+	open the program chooser dialog.
+
+	* src/file-manager/fm-directory-view.c:
+	(application_launch_parameters_new),
+	(application_launch_parameters_free),
+	(fm_directory_view_launch_application),
+	(fm_directory_view_chose_application_callback), (choose_program),
+	(bonobo_launch_application_callback),
+	(add_application_to_bonobo_menu), (reset_bonobo_open_with_menu),
+	(activate_callback):
+	Change the parameters sent to nautilus_launch_application, and 
+	so change data sent to callbacks used to later call 
+	nautilus_launch_application
+	
+	* src/nautilus-sidebar.c: (command_button_callback),
+	(nautilus_sidebar_chose_application_callback):
+	Call nautilus_launch_application with the new arguments
+	
 2001-02-22  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
@@ -88,6 +128,7 @@
 	(nautilus_art_drect_scale_by), (nautilus_art_drect_inset):
 	Add a few convenience calls.
 
+>>>>>>> 1.3901
 2001-02-22  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	reviewed by: Robey Pointer  <robey@eazel.com>

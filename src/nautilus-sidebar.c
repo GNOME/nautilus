@@ -1168,7 +1168,7 @@ command_button_callback (GtkWidget *button, char *id_str)
 	application = gnome_vfs_application_registry_get_mime_application (id_str);
 
 	if (application != NULL) {
-		nautilus_launch_application (application, sidebar->details->uri,
+		nautilus_launch_application (application, sidebar->details->file,
 					     nautilus_sidebar_get_window (sidebar));	
 
 		gnome_vfs_mime_application_free (application);
@@ -1207,7 +1207,7 @@ nautilus_sidebar_chose_application_callback (GnomeVFSMimeApplication *applicatio
 	if (application != NULL) {
 		nautilus_launch_application
 			(application, 
-			 sidebar->details->uri,
+			 sidebar->details->file,
 			 nautilus_sidebar_get_window (sidebar));
 	}
 }
