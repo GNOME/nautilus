@@ -1,3 +1,25 @@
+2000-10-30  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* components/mozilla/mozilla-preferences.cpp:
+	* components/mozilla/mozilla-preferences.h:
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(nautilus_mozilla_content_view_initialize),
+	(nautilus_mozilla_content_view_destroy),
+	(eazel_services_scheme_translate),
+	(test_make_full_uri_from_relative),
+	(mozilla_content_view_one_time_happenings):
+	Fix bug 4112 - Mozilla component does not listen for proxy
+	configuration changes.
+
+	Move all the gconf and proxy related things to
+	mozilla-preferences.cpp, makes the main view implementation a
+	little less convoluted.
+
+	Add gconf notifications for changes in the proxy and route these
+	changes to the mozilla universe.
+
+	Also some minor style changes.
+
 2000-10-30  Darin Adler  <darin@eazel.com>
 
 	Fix bug 4202 (rename a file to an existing file will crash

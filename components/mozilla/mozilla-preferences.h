@@ -29,17 +29,30 @@
 #define MOZILLA_PREFERENCES_H
 
 #include <glib.h>
+#include <gconf/gconf.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-gboolean mozilla_preference_set         (const char *preference_name,
-					 const char *new_value);
-gboolean mozilla_preference_set_boolean (const char *preference_name,
-					 gboolean    new_boolean_value);
-gboolean mozilla_preference_set_int     (const char *preference_name,
-					 gint        new_int_value);
+gboolean mozilla_preference_set                 (const char  *preference_name,
+						 const char  *new_value);
+gboolean mozilla_preference_set_boolean         (const char  *preference_name,
+						 gboolean     new_boolean_value);
+gboolean mozilla_preference_set_int             (const char  *preference_name,
+						 gint         new_int_value);
+
+
+/* Handle a gconf error.  Post an error dialog only the first time an error occurs.
+ * Return TRUE if there was an error.  FALSE if there was no error.
+ */
+gboolean mozilla_gconf_handle_gconf_error       (GError     **error);
+
+
+/* Listen for proxy changes on the gconf end of things and route the changes to
+ * the mozilla universe.
+ */
+void     mozilla_gconf_listen_for_proxy_changes (void);
 
 #ifdef __cplusplus
 }

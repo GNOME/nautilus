@@ -42,8 +42,6 @@
 #include "mozilla-events.h"
 
 #include <bonobo/bonobo-control.h>
-#include <gconf/gconf.h>
-#include <gconf/gconf-client.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
@@ -61,15 +59,15 @@
 #define NUM_ELEMENTS_IN_ARRAY(_a) (sizeof (_a) / sizeof ((_a)[0]))
 
 #ifdef EAZEL_SERVICES
-EazelProxy_UserControl		  gl_user_control = CORBA_OBJECT_NIL;
+static EazelProxy_UserControl global_user_control = CORBA_OBJECT_NIL;
 #endif
 
 struct NautilusMozillaContentViewDetails {
-	char				 *uri;
-	GtkWidget			 *mozilla;
-	NautilusView	                 *nautilus_view;
-	GdkCursor			 *busy_cursor;
-	gboolean                          got_called_by_nautilus;
+	char *uri;
+	GtkWidget *mozilla;
+	NautilusView *nautilus_view;
+	GdkCursor *busy_cursor;
+	gboolean got_called_by_nautilus;
 };
 
 static void     nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass *klass);
@@ -78,6 +76,7 @@ static void     nautilus_mozilla_content_view_destroy          (GtkObject       
 static void     mozilla_load_location_callback                 (NautilusView                    *nautilus_view,
 								const char                      *location,
 								NautilusMozillaContentView      *view);
+
 /* Mozilla embed widget callbacks */
 static void     mozilla_title_changed_callback                 (GtkMozEmbed                     *mozilla,
 								gpointer                         user_data);
@@ -100,17 +99,18 @@ static  gint    mozilla_dom_mouse_click_callback               (GtkMozEmbed     
 								gpointer                         dom_event,
 								gpointer                         user_data);
 
+
 /* Other mozilla content view functions */
 static void     mozilla_content_view_set_busy_cursor           (NautilusMozillaContentView      *view);
 static void     mozilla_content_view_clear_busy_cursor         (NautilusMozillaContentView      *view);
 static gboolean mozilla_is_uri_handled_by_nautilus             (const char                      *uri);
 static gboolean mozilla_is_uri_handled_by_mozilla              (const char                      *uri);
-
 static char *   mozilla_translate_uri_if_needed                (NautilusMozillaContentView      *view,
 								const char                      *uri);
-
-static char *   mozilla_untranslate_uri_if_needed              (NautilusMozillaContentView	*view,
+static char *   mozilla_untranslate_uri_if_needed              (NautilusMozillaContentView      *view,
 								const char                      *uri);
+static void     mozilla_content_view_one_time_happenings       (void);
+
 
 #ifdef EAZEL_SERVICES
 
@@ -158,155 +158,20 @@ nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass 
 	object_class->destroy = nautilus_mozilla_content_view_destroy;
 }
 
-/* Handle a gconf error.  Post an error dialog only the first time an error occurs.
- * Return TRUE if there was an error.  FALSE if there was no error.
- */
-static gboolean
-handle_gconf_error (GError **error)
-{
-	static gboolean shown_dialog = FALSE;
-	
-	g_return_val_if_fail (error != NULL, FALSE);
-
-	if (*error != NULL) {
-		g_warning (_("GConf error:\n  %s"), (*error)->message);
-		if (!shown_dialog) {
-			char *message;
-			GtkWidget *dialog;
-			
-			shown_dialog = TRUE;
-
-			message = g_strdup_printf (_("GConf error:\n  %s\n"
-						     "All further errors shown "
-						     "only on terminal"),
-						   (*error)->message);
-			
-			dialog = gnome_error_dialog (message);
-		}
-		g_error_free (*error);
-		*error = NULL;
-		
-		return TRUE;
-	}
-	
-	return FALSE;
-}
-
-/* Setup http proxy prefrecens.  This is done by using gconf to read the 
- * /system/gnome-vfs/proxy preference and then seting this information
- * for the mozilla networking library via mozilla preferences. 
- */
-static void
-mozilla_content_view_set_proxy_preferences (NautilusMozillaContentView *view)
-{
-	GConfClient *gconf_client;
-	char *proxy_string = NULL;
-	static const char PROXY_KEY[] = "/system/gnome-vfs/http-proxy";
-	static const char USE_PROXY_KEY[] = "/system/gnome-vfs/use-http-proxy";
-	
-        g_return_if_fail (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (view));
-	
-	/* Initialize gconf if needed */
-	if (!gconf_is_initialized ()) {
-		GError *error = NULL;
-		char *argv[] = { "nautilus-mozilla-component", NULL };
-		
-		if (!gconf_init (1, argv, &error)) {
-			
-			if (handle_gconf_error (&error)) {
-				return;
-			}
-		}
-	}
-	
-	gconf_client = gconf_client_get_default ();
-
-	if (gconf_client != NULL) {
-		GError *error = NULL;
-
-		if (gconf_client_get_bool (gconf_client, USE_PROXY_KEY, &error)) {
-			proxy_string = gconf_client_get_string (gconf_client, PROXY_KEY, &error);
-			if (handle_gconf_error (&error)) {
-				return;
-			}
-
-			if (proxy_string != NULL) {
-				char *proxy, *port;						
-				port = strchr (proxy_string, ':');
-				if (port != NULL) {
-					proxy = g_strdup (proxy_string);
-					proxy [port - proxy_string] = '\0';
-					port++;							
-					
-					mozilla_preference_set ("network.proxy.http", proxy);
-					mozilla_preference_set_int ("network.proxy.http_port", atoi (port));
-					
-					/* 1, Configure proxy settings manually */
-					mozilla_preference_set_int ("network.proxy.type", 1);
-					
-					g_free (proxy_string);
-					g_free (proxy);
-				}
-			}
-		}
-		else {
-			/* Default is 3, which conects to internet hosts directly */
-			mozilla_preference_set_int ("network.proxy.type", 3);
-		}
-		
-		gtk_object_unref (GTK_OBJECT (gconf_client));
-	}
-}
-
-static void
-mozilla_content_view_one_time_happenings (NautilusMozillaContentView *view)
-{
-	static gboolean once = FALSE;
-
-	if (once == TRUE) {
-		return;
-	}
-
-	once = TRUE;
-
-	/* Tell the gecko layout engine to use GTK scrollbars.  Currently BROKEN. */
-	mozilla_preference_set_boolean ("nglayout.widget.gfxscrollbars", FALSE);
-
-	/* Tell the security manager to allow ftp:// and file:// content through. */
-	mozilla_preference_set_boolean ("security.checkloaduri", FALSE);
-
-	/* Change http protocol user agent to include the string 'Nautilus' */
-	mozilla_preference_set ("general.useragent.misc", "Nautilus/1.0");
-
-	/* We dont want to use the proxy for localhost */
-	mozilla_preference_set ("network.proxy.no_proxies_on", "localhost");
-
-	/* Locate and set proxy preferences */
-	mozilla_content_view_set_proxy_preferences (view);
-
-
-#ifdef EAZEL_SERVICES
-	if (ammonite_init ((PortableServer_POA) bonobo_poa)) {
-		gl_user_control = ammonite_get_user_control ();
-	}
-#endif 
-
-}
-
 static void
 nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 {
 	view->details = g_new0 (NautilusMozillaContentViewDetails, 1);
 
-	view->details->uri = NULL;
-
-	view->details->got_called_by_nautilus = FALSE;
-
 	/* Conjure up the beast.  May God have mercy on our souls. */
 	view->details->mozilla = gtk_moz_embed_new ();
 
-	/* Do preference/environment setup that needs to happen only once */
-	mozilla_content_view_one_time_happenings (view);
+	/* Do preference/environment setup that needs to happen only once.
+	 * We need to do this right after the first gtkmozembed widget gets
+	 * created, otherwise the mozilla runtime environment is not properly
+	 * setup.
+	 */
+	mozilla_content_view_one_time_happenings ();
 
 	/* Add callbacks to the beast */
 	gtk_signal_connect_while_alive (GTK_OBJECT (view->details->mozilla), 
@@ -376,7 +241,7 @@ nautilus_mozilla_content_view_destroy (GtkObject *object)
 #endif
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (object);
-	
+
 	g_free (view->details->uri);
 
 	if (view->details->busy_cursor != NULL) {
@@ -1233,7 +1098,7 @@ eazel_services_scheme_translate	(NautilusMozillaContentView	*view,
 	char *ret = NULL;
 	AmmoniteError err;
 
-	if (CORBA_OBJECT_NIL == gl_user_control) {
+	if (CORBA_OBJECT_NIL == global_user_control) {
 		return NULL;
 	}
 
@@ -1389,5 +1254,37 @@ test_make_full_uri_from_relative (void)
 	TEST_PARTIAL ("../../g", "http://a/g");
 
 	return success;
+}
+
+static void
+mozilla_content_view_one_time_happenings (void)
+{
+	static gboolean once = FALSE;
+
+	if (once == TRUE) {
+		return;
+	}
+
+	once = TRUE;
+
+	g_print ("%s()\n", __FUNCTION__);
+
+	/* Tell the security manager to allow ftp:// and file:// content through. */
+	mozilla_preference_set_boolean ("security.checkloaduri", FALSE);
+
+	/* Change http protocol user agent to include the string 'Nautilus' */
+	mozilla_preference_set ("general.useragent.misc", "Nautilus/1.0");
+
+	/* We dont want to use the proxy for localhost */
+	mozilla_preference_set ("network.proxy.no_proxies_on", "localhost");
+
+	/* Setup routing of proxy preferences from gconf to mozilla */
+	mozilla_gconf_listen_for_proxy_changes ();
+
+#ifdef EAZEL_SERVICES
+	if (ammonite_init ((PortableServer_POA) bonobo_poa)) {
+		global_user_control = ammonite_get_user_control ();
+	}
+#endif 
 }
 
