@@ -10,7 +10,8 @@ and file manager.
 2: Introduction
 3: Distribution-specific notes
 4: Compiling
-5: Running
+5: Issues when running Nautilus
+6: Mozilla support
 
 ==========
 1: Hacking
@@ -215,3 +216,60 @@ script to get Nautilus to work properly. One way to invoke it is
 like this:
 
         ./nautilus-clean.sh -x
+
+===============================
+6: Mozilla support
+===============================
+
+Nautilus includes support for browsing HTML content on the local
+computer as well as remote web servers.  HTML content is handled by
+the Nautilus Mozilla Component.  This component can be optionally
+built with Nautilus.  It is automatically enabled at configure time if
+Mozilla development libraries are detected on your system.
+
+The easiest way to get the Mozilla development libraries, is to use
+Chris Blizzard's Mozilla rpms.  These can be fetched over here:
+
+http://download.eazel.com/rpms/i386/pr1/Mozilla-M17-2.i386.rpm
+http://download.eazel.com/rpms/i386/pr1/Mozilla-devel-M17-2.i386.rpm
+
+After installing these rpms, you can build nautilus with Mozilla
+support as follows:
+
+cd nautilus
+rm -f config.cache config.status
+./configure
+
+The configure script should automatically detect and use the Mozilla
+development libraries.
+
+Alternatively, you can build Mozilla from source and use that.  Lets
+say that you built Mozilla in /foo/bar.  You can build nautilus with
+support for that Mozilla build as follows:
+
+cd nautilus
+rm -f config.cache config.status
+./configure --with-mozilla-lib-place=/foo/bar/mozilla/dist/bin
+            --with-mozilla-include-place=/foo/bar/mozilla/dist/include
+
+NOTE:   The above command should be issued in one line.  It is split
+        into two lines in this document for readability.
+
+
+Before running Nautilus, you need to do some environment setup for the
+Mozilla component:
+
+Using RPMS:
+
+export MOZILLA_FIVE_HOME=/usr/lib/mozilla
+export LD_LIBRARY_PATH=/usr/lib/mozilla:$LD_LIBRARY_PATH
+
+Using Mozilla built in /foo/bar:
+
+export MOZILLA_FIVE_HOME=/foo/bar/mozilla/dist/bin
+export LD_LIBRARY_PATH=/foo/bar/mozilla/dist/bin:$LD_LIBRARY_PATH
+
+Finally, you can disable the Mozilla component (even if Mozilla
+development libraries are installed in your system) as follows:
+
+./configure --disable-mozilla-component
