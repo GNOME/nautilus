@@ -92,10 +92,10 @@ struct RpmMonitorPiggyBag {
 
 /* Code to get and set a string field from
    a Header */
-static void
-get_and_set_string_tag (Header hd,
-			int tag, 
-			char **str)
+void
+eazel_package_system_rpm3_get_and_set_string_tag (Header hd,
+						  int tag, 
+						  char **str)
 {
 	char *tmp;
 
@@ -496,13 +496,13 @@ eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemRpm3 *
 {
 	unsigned long *sizep;
 
-	get_and_set_string_tag (hd, RPMTAG_NAME, &pack->name);
-	get_and_set_string_tag (hd, RPMTAG_VERSION, &pack->version);
-	get_and_set_string_tag (hd, RPMTAG_RELEASE, &pack->minor);
-	get_and_set_string_tag (hd, RPMTAG_ARCH, &pack->archtype);
+	eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_NAME, &pack->name);
+	eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_VERSION, &pack->version);
+	eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_RELEASE, &pack->minor);
+	eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_ARCH, &pack->archtype);
 	if (~detail_level & PACKAGE_FILL_NO_TEXT) {
-		get_and_set_string_tag (hd, RPMTAG_DESCRIPTION, &pack->description);
-		get_and_set_string_tag (hd, RPMTAG_SUMMARY, &pack->summary);
+		eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_DESCRIPTION, &pack->description);
+		eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_SUMMARY, &pack->summary);
 	}
 
 	headerGetEntry (hd,
@@ -660,6 +660,20 @@ eazel_package_system_rpm3_load_package (EazelPackageSystemRpm3 *system,
  Query implemementation
 *************************************************************/
 
+rpmdb
+eazel_package_system_rpm3_get_db (EazelPackageSystemRpm3 *system,
+				  const char *dbpath)
+{
+	rpmdb db;
+
+	db = g_hash_table_lookup (system->private->dbs, dbpath);
+	if (!db) {
+		fail (system, "query could not access db in %s", dbpath);
+		return NULL;
+	}
+	return db;
+}
+
 #ifdef HAVE_RPM_30
 static void
 eazel_package_system_rpm3_query_impl (EazelPackageSystemRpm3 *system,
@@ -669,13 +683,11 @@ eazel_package_system_rpm3_query_impl (EazelPackageSystemRpm3 *system,
 				      int detail_level,
 				      GList **result)
 {
-	rpmdb db;
+	rpmdb db = eazel_package_system_rpm3_get_db (system, dbpath);
 	int rc = 1;
 	dbiIndexSet matches;
 
-	db = g_hash_table_lookup (system->private->dbs, dbpath);
-	if (db==NULL) {
-		fail (system, "query could not access db in %s", dbpath);
+	if (!db) {
 		return;
 	}
 
@@ -692,12 +704,17 @@ eazel_package_system_rpm3_query_impl (EazelPackageSystemRpm3 *system,
 		info (system, "query (in %s) MATCHES %s", dbpath, key);
 		rc = rpmdbFindPackage (db, key, &matches);
 		break;
+	case EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES:
+		info (system, "query (in %s) REQUIRES %s", dbpath, key);
+		rc = rpmdbFindByRequiredBy (db, key, &matches);
+		break;
 	default:
-		g_warning ("Unknown query");
+		g_warning ("Unknown query flag %d", flag);
+		g_assert_not_reached ();
 	}
 	       
 	if (rc == 0) {
-		unsigned int i;
+		unsigned int i;		
 
 		info (system, "%d hits", dbiIndexSetCount (matches));
 		for (i = 0; i < dbiIndexSetCount (matches); i++) {
@@ -737,69 +754,34 @@ eazel_package_system_rpm3_query_substr (EazelPackageSystemRpm3 *system,
 					GList **result)
 {
 	int offset;
-	rpmdb db;
-	
-	db = g_hash_table_lookup (system->private->dbs, dbpath);
-	if (db==NULL) {
-		fail (system, "db == NULL");
+	rpmdb db = eazel_package_system_rpm3_get_db (system, dbpath);
+ 
+	if (!db) {
 		return;
 	}
 
-	offset = rpmdbFirstRecNum (db);
-
-	while (offset) {
+	for (offset = rpmdbFirstRecNum (db); offset; offset = rpmdbNextRecNum (db, offset)) {
 		Header hd;
-		PackageData *pack;
-
+		char *name = NULL;
+		
 		hd = rpmdbGetRecord (db, offset);
-		pack = packagedata_new ();
 
-		if (strstr (pack->name, key)) {
+		eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_NAME, &name);
+
+		/* If key occurs in name, create package and add to result */
+		if (strstr (name, key)) {
+			PackageData *pack = packagedata_new ();			
 			eazel_package_system_rpm3_packagedata_fill_from_header (system, 
 										pack, 
 										hd, 
 										detail_level);
 			(*result) = g_list_prepend (*result, pack);
 		} else {
-			packagedata_destroy (pack, TRUE);
+			headerFree (hd);
 		}
-		offset = rpmdbNextRecNum (db, offset);
+		g_free (name);
 	}
-}
-
-static void
-eazel_package_system_rpm3_query_requires (EazelPackageSystemRpm3 *system,
-					  const char *dbpath,
-					  const gpointer *key,
-					  int detail_level,
-					  GList **result)
-{
-	const PackageData *pack = (PackageData*)key;
-
-	if (pack->name) {
-		eazel_package_system_rpm3_query_impl (system,
-						      dbpath,
-						      pack->name,
-						      EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
-						      detail_level,
-						      result);
-	}
-	if (pack->provides) {
-		GList *iterator;
-		/* FIXME: ideally, this could use package->features instead, that would
-		   be safer then doing the strstr check */
-		for (iterator = pack->provides; iterator; iterator = g_list_next (iterator)) {
-			const char *fkey = (const char*)iterator->data;
-			if (strstr (fkey, ".so")) {
-				eazel_package_system_rpm3_query_impl (system,
-								      dbpath,
-								      g_basename (fkey),
-								      EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
-								      detail_level,
-								      result);
-			}
-		}
-	}
+	
 }
 
 static void
@@ -807,6 +789,7 @@ eazel_package_system_rpm3_query_foreach (char *dbpath,
 					 rpmdb db,
 					 struct RpmQueryPiggyBag *pig)
 {
+	info (pig->system, "eazel_package_system_rpm3_query_foreach");
 	switch (pig->flag) {
 	case EAZEL_PACKAGE_SYSTEM_QUERY_OWNS:		
 	case EAZEL_PACKAGE_SYSTEM_QUERY_PROVIDES:		
@@ -833,10 +816,49 @@ eazel_package_system_rpm3_query_foreach (char *dbpath,
 							pig->result);
 		break;
 	default:
-		g_warning ("Unknown query");
+		g_warning ("Unknown query flag %d", pig->flag);
+		g_assert_not_reached ();
 	}
 }
 #endif /* HAVE_RPM_30 */
+
+void
+eazel_package_system_rpm3_query_requires (EazelPackageSystemRpm3 *system,
+					  const char *dbpath,
+					  const gpointer *key,
+					  int detail_level,
+					  GList **result)
+{
+	const PackageData *pack = (PackageData*)key;
+
+	if (pack->name) {
+		(EAZEL_PACKAGE_SYSTEM_RPM3_CLASS (GTK_OBJECT (system)->klass)->query_impl) (EAZEL_PACKAGE_SYSTEM (system),
+											    dbpath,
+											    pack->name,
+											    EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
+											    detail_level,
+											    result);
+	}
+	if (pack->provides) {
+		GList *iterator;
+		/* FIXME: ideally, this could use package->features instead, that would
+		   be safer then doing the strstr check. But for now, I just check if
+		   fkey is "lib.*\.so.*", or "/bin/.*" or "/sbin/.*" */
+		for (iterator = pack->provides; iterator; iterator = g_list_next (iterator)) {
+			const char *fkey = (const char*)iterator->data;
+			if ((strncmp (fkey, "lib", 3) && strstr (fkey, ".so")) ||
+			    strncmp (fkey, "/bin", 4) ||
+			    strncmp (fkey, "/sbin", 5)) {
+				(EAZEL_PACKAGE_SYSTEM_RPM3_CLASS (GTK_OBJECT (system)->klass)->query_impl) (EAZEL_PACKAGE_SYSTEM (system),
+													    dbpath,
+													    g_basename (fkey),
+													    EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
+													    detail_level,
+													    result);
+			}
+		}
+	}
+}
 
 GList*               
 eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
@@ -847,6 +869,9 @@ eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
 {
 	GList *result = NULL;
 	struct RpmQueryPiggyBag pig;
+
+	info (system, "eazel_package_system_rpm3_query (dbpath=\"%s\", key=%p, flag=%d, detail=%d)", 
+	      dbpath, key, flag, detail_level);
 	
 	pig.system = system;
 	pig.key = key;
@@ -857,10 +882,10 @@ eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
 	eazel_package_system_rpm3_open_dbs (system);
 	if (dbpath==NULL) {
 		g_hash_table_foreach (system->private->dbs, 
-				      (GHFunc)(system->private->query_foreach),
+				      (GHFunc)(EAZEL_PACKAGE_SYSTEM_RPM3_CLASS (GTK_OBJECT (system)->klass)->query_foreach),
 				      &pig);
 	} else {
-		(system->private->query_foreach) ((char*)dbpath, NULL, (gpointer)&pig);
+		(EAZEL_PACKAGE_SYSTEM_RPM3_CLASS (GTK_OBJECT (system)->klass)->query_foreach) (dbpath, NULL, &pig);
 	}
 	eazel_package_system_rpm3_close_dbs (system);
 
@@ -1226,6 +1251,13 @@ eazel_package_system_rpm3_class_initialize (EazelPackageSystemRpm3Class *klass)
 	object_class->finalize = eazel_package_system_rpm3_finalize;
 	
 	eazel_package_system_rpm3_parent_class = gtk_type_class (eazel_package_system_get_type ());
+#ifdef HAVE_RPM_30
+	klass->query_foreach = (EazelPackageSystemRpmQueryForeachFunc)eazel_package_system_rpm3_query_foreach;
+	klass->query_impl = (EazelPackageSystemRpmQueryImplFunc)eazel_package_system_rpm3_query_impl;
+#else
+	klass->query_foreach = NULL;
+	klass->query_impl = NULL;
+#endif /* HAVE_RPM_30 */
 }
 
 static void
@@ -1237,9 +1269,6 @@ eazel_package_system_rpm3_initialize (EazelPackageSystemRpm3 *system)
 	system->private = g_new0 (EazelPackageSystemRpm3Private, 1);
 	system->private->dbs = g_hash_table_new (g_str_hash, g_str_equal);
 	system->private->db_to_root = g_hash_table_new (g_str_hash, g_str_equal);
-#ifdef HAVE_RPM_30
-	system->private->query_foreach = (EazelPackageSystemRpmQueryForeach)eazel_package_system_rpm3_query_foreach;
-#endif
 }
 
 GtkType
@@ -1278,6 +1307,8 @@ eazel_package_system_rpm3_new (GList *dbpaths)
 
 	gtk_object_ref (GTK_OBJECT (system));
 	gtk_object_sink (GTK_OBJECT (system));
+
+	eazel_package_system_rpm3_create_dbs (system, dbpaths);
 
 	return system;
 }

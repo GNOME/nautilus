@@ -39,10 +39,22 @@ extern "C" {
 typedef struct _EazelPackageSystemRpm3 EazelPackageSystemRpm3;
 typedef struct _EazelPackageSystemRpm3Class EazelPackageSystemRpm3Class;
 
+typedef void (*EazelPackageSystemRpmQueryForeachFunc) (const char *dbpath, 
+						       gpointer db, 
+						       gpointer pig);
+typedef void (*EazelPackageSystemRpmQueryImplFunc) (EazelPackageSystem *system,
+						    const char *dbpath,
+						    const char* key,
+						    EazelPackageSystemQueryEnum flag,
+						    int detail_level,
+						    GList **result);
+
 struct _EazelPackageSystemRpm3Class
 {
 	EazelPackageSystemClass parent_class;
-	
+
+	EazelPackageSystemRpmQueryForeachFunc query_foreach;
+	EazelPackageSystemRpmQueryImplFunc query_impl;	
 };
 
 typedef struct _EazelPackageSystemRpm3Private EazelPackageSystemRpm3Private;

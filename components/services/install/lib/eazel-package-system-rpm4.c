@@ -53,56 +53,107 @@ eazel_package_system_rpm4_query_impl (EazelPackageSystemRpm4 *system,
 				      int detail_level,
 				      GList **result)
 {
-	rpmdb db;
+	rpmdb db = eazel_package_system_rpm3_get_db (EAZEL_PACKAGE_SYSTEM_RPM3 (system), dbpath);
 	rpmdbMatchIterator rpm_iterator = NULL;
 
-	db = g_hash_table_lookup (EAZEL_PACKAGE_SYSTEM_RPM3 (system)->private->dbs, dbpath);
 	if (db==NULL) {
-		fail (system, "query could not access db in %s", dbpath);
 		return;
 	}
 
 	switch (flag) {
 	case EAZEL_PACKAGE_SYSTEM_QUERY_OWNS:		
+		info (system, "query (in %s) OWNS %s", dbpath, key);
 		rpm_iterator = rpmdbInitIterator (db, RPMTAG_BASENAMES, key, 0);
 		break;
 	case EAZEL_PACKAGE_SYSTEM_QUERY_PROVIDES:		
+		info (system, "query (in %s) PROVIDES %s", dbpath, key);
 		rpm_iterator = rpmdbInitIterator (db, RPMTAG_PROVIDENAME, key, 0);
 		break;
 	case EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES:
+		info (system, "query (in %s) MATCHES %s", dbpath, key);
 		rpm_iterator = rpmdbInitIterator (db, RPMDBI_LABEL, key, 0);
 		break;
+	case EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES:
+		info (system, "query (in %s) REQUIRS %s", dbpath, key);
+		rpm_iterator = rpmdbInitIterator (db, RPMTAG_REQUIRENAME, key, 0);
+		break;
 	default:
+		g_warning ("Unknown query flag %d", flag);
 		g_assert_not_reached ();
 		break;
 	}
 
-	info (system, "rpm_iterator = 0x%p", rpm_iterator);
-		
-	if (rpm_iterator) {
+	if (rpm_iterator) {		
 		Header hd;
-		PackageData *pack;
+		info (system, "%d hits", rpmdbGetIteratorCount (rpm_iterator));
+
+		for (hd = rpmdbNextIterator (rpm_iterator); 
+		     hd; 
+		     hd = rpmdbNextIterator (rpm_iterator))  {
+			PackageData *pack = packagedata_new ();
+
+			eazel_package_system_rpm3_packagedata_fill_from_header (EAZEL_PACKAGE_SYSTEM_RPM3 (system), 
+										pack, 
+										hd, 
+										detail_level);
+			g_free (pack->install_root);
+			pack->install_root = g_strdup (dbpath);
+			if (g_list_find_custom (*result, 
+						pack, 
+						(GCompareFunc)eazel_install_package_compare)!=NULL) {
+				info (system, "%s already in set", pack->name);
+				packagedata_destroy (pack, TRUE);
+			} else {
+				(*result) = g_list_prepend (*result, pack);
+			}
+		} 
+
+		rpmdbFreeIterator (rpm_iterator);
+	}
+}
+
+static void
+eazel_package_system_rpm4_query_substr (EazelPackageSystemRpm4 *system,
+					const char *dbpath,
+					const char *key,
+					int detail_level,
+					GList **result)
+{
+	rpmdbMatchIterator rpm_iterator = NULL;
+	rpmdb db = eazel_package_system_rpm3_get_db (EAZEL_PACKAGE_SYSTEM_RPM3 (system), dbpath);
+
+	if (!db) {
+		return;
+	}
+
+	rpm_iterator = rpmdbInitIterator (db, RPMDBI_PACKAGES, NULL, 0);
+
+	if (rpm_iterator) {
+		Header hd;		
 
 		info (system, "%d hits", rpmdbGetIteratorCount (rpm_iterator));
-		
-		hd = rpmdbNextIterator (rpm_iterator);
-		
-		pack = packagedata_new ();
-		eazel_package_system_rpm3_packagedata_fill_from_header (EAZEL_PACKAGE_SYSTEM_RPM3 (system), 
-									pack, 
-									hd, 
-									detail_level);
-		g_free (pack->install_root);
-		pack->install_root = g_strdup (dbpath);
-		if (g_list_find_custom (*result, 
-					pack, 
-					(GCompareFunc)eazel_install_package_compare)!=NULL) {
-			info (system, "%s already in set", pack->name);
-			packagedata_destroy (pack, TRUE);
-		} else {
-			(*result) = g_list_prepend (*result, pack);
-		}
-		rpmdbFreeIterator (rpm_iterator);
+
+		for (hd = rpmdbNextIterator (rpm_iterator); 
+		     hd; 
+		     hd = rpmdbNextIterator (rpm_iterator))  {
+			char *name = NULL;
+
+			eazel_package_system_rpm3_get_and_set_string_tag (hd, RPMTAG_NAME, &name);
+
+			/* If key occurs in name, create package and add to result */
+			if (strstr (name, key)) {
+				PackageData *pack = packagedata_new ();
+				eazel_package_system_rpm3_packagedata_fill_from_header (EAZEL_PACKAGE_SYSTEM_RPM3 (system), 
+											pack, 
+											hd, 
+											detail_level);
+				(*result) = g_list_prepend (*result, pack);
+			} else {
+				headerFree (hd);
+			}
+
+			g_free (name);
+		}			
 	}
 }
 
@@ -124,13 +175,22 @@ eazel_package_system_rpm4_query_foreach (const char *dbpath,
 						      pig->result);
 		break;
 	case EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES:
-		g_assert_not_reached ();
+		eazel_package_system_rpm3_query_requires (EAZEL_PACKAGE_SYSTEM_RPM3 (pig->system),
+							  dbpath,
+							  pig->key,
+							  pig->detail_level,
+							  pig->result);
 		break;
 	case EAZEL_PACKAGE_SYSTEM_QUERY_SUBSTR:
-		g_assert_not_reached ();
+		eazel_package_system_rpm4_query_substr (EAZEL_PACKAGE_SYSTEM_RPM4 (pig->system),
+							dbpath,
+							pig->key,
+							pig->detail_level,
+							pig->result);
 		break;
 	default:
-		g_warning ("Unknown query");
+		g_warning ("Unknown query flag %d", pig->flag);
+		g_assert_not_reached ();
 	}
 	
 }
@@ -159,20 +219,23 @@ static void
 eazel_package_system_rpm4_class_initialize (EazelPackageSystemRpm4Class *klass) 
 {
 	GtkObjectClass *object_class;
+	EazelPackageSystemRpm3Class *rpm3_class;
 
 	object_class = (GtkObjectClass*)klass;
+	rpm3_class = (EazelPackageSystemRpm3Class*)klass;
+
+	eazel_package_system_rpm4_parent_class = gtk_type_class (eazel_package_system_rpm3_get_type ());
+
 	object_class->finalize = eazel_package_system_rpm4_finalize;
 	
-	eazel_package_system_rpm4_parent_class = gtk_type_class (eazel_package_system_rpm3_get_type ());
+	rpm3_class->query_foreach = (EazelPackageSystemRpmQueryForeachFunc)eazel_package_system_rpm4_query_foreach;
+	rpm3_class->query_impl = (EazelPackageSystemRpmQueryImplFunc)eazel_package_system_rpm4_query_impl;
 }
 
 static void
 eazel_package_system_rpm4_initialize (EazelPackageSystemRpm4 *system) {
 	g_assert (system != NULL);
 	g_assert (IS_EAZEL_PACKAGE_SYSTEM_RPM4 (system));
-	
-	EAZEL_PACKAGE_SYSTEM_RPM3 (system)->private->query_foreach = 
-		(EazelPackageSystemRpmQueryForeach)eazel_package_system_rpm4_query_foreach;	
 }
 
 GtkType

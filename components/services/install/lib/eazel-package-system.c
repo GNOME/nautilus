@@ -179,6 +179,7 @@ eazel_package_system_query (EazelPackageSystem *system,
 	GList *result = NULL;
 	EPS_SANE_VAL (system, NULL);
 	g_assert (system->private->query);
+	g_assert (key);
 	result = (*system->private->query) (system, root, key, flag, detail_level);
 	return result;
 }

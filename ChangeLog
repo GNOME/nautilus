@@ -1,3 +1,51 @@
+2000-12-13  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	reviewed by: Pavel Cisler  <pavel@eazel.com>
+
+	This should fix 4891 and 4892 & 4454.
+	
+	* components/services/install/command-line/eazel-test-packsys.c:
+	(test_query), (progress_signal), (main):
+	Also does a test on QUERY_FLAG_REQUIRES, by checking if more then
+	10 packages require glibc.
+	Fixed the wrong order of arguments for progress_signal.
+	main can now take a --debug=<int> which sets the debug level in
+	the EazelPackageSystem.
+	
+	* components/services/install/lib/eazel-package-system-rpm3.h:
+	* components/services/install/lib/eazel-package-system-rpm3-private
+	.h:
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(eazel_package_system_rpm3_get_and_set_string_tag),
+	(eazel_package_system_rpm3_packagedata_fill_from_header),
+	(eazel_package_system_rpm3_get_db),
+	(eazel_package_system_rpm3_query_impl),
+	(eazel_package_system_rpm3_query_substr),
+	(eazel_package_system_rpm3_query_foreach),
+	(eazel_package_system_rpm3_query_requires),
+	(eazel_package_system_rpm3_query),
+	(eazel_package_system_rpm3_class_initialize),
+	(eazel_package_system_rpm3_initialize),
+	(eazel_package_system_rpm3_new):
+	Mindnumbing amounts of boilerplate code to make query_foreach and
+	query_impl virtual functions which the rpm4 class can override. I
+	weep for gnome and it's C usage of OO and long for the good ole
+	days of C++.
+	Also made the loops more unreadable but safer (I hope).
+	
+	* components/services/install/lib/eazel-package-system-rpm4.c:
+	(eazel_package_system_rpm4_query_impl),
+	(eazel_package_system_rpm4_query_substr),
+	(eazel_package_system_rpm4_query_foreach),
+	(eazel_package_system_rpm4_class_initialize),
+	(eazel_package_system_rpm4_initialize):	
+	The final juju to implement the EazelPackageSystemRpm4 class. I
+	will not bore you with more details.
+	
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_query):
+	assert that the key is non-null.
+
 2000-12-13  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/loser/content/.cvsignore,

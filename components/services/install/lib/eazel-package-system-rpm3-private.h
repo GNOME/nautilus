@@ -35,6 +35,11 @@ void eazel_package_system_rpm3_packagedata_fill_from_header (EazelPackageSystemR
 							     PackageData *pack, 
 							     Header hd,
 							     int detail_level);
+rpmdb eazel_package_system_rpm3_get_db (EazelPackageSystemRpm3 *system,
+					const char *dbpath);
+void eazel_package_system_rpm3_get_and_set_string_tag (Header hd,
+ 						       int tag, 
+ 						       char **str);
 
 PackageData* eazel_package_system_rpm3_load_package (EazelPackageSystemRpm3 *system,
 						     PackageData *in_package,
@@ -56,8 +61,11 @@ GList* eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
 					const gpointer key,
 					EazelPackageSystemQueryEnum flag,
 					int detail_level);
-
-typedef void (*EazelPackageSystemRpmQueryForeach)(char *dbpath, gpointer db, gpointer pig);
+void eazel_package_system_rpm3_query_requires (EazelPackageSystemRpm3 *system,
+					       const char *dbpath,
+					       const gpointer *key,
+					       int detail_level,
+					       GList **result);
 
 struct RpmQueryPiggyBag {
 	EazelPackageSystemRpm3 *system;
@@ -73,7 +81,6 @@ struct _EazelPackageSystemRpm3Private
 	GHashTable *db_to_root;
 	GHashTable *dbs;
 
-	EazelPackageSystemRpmQueryForeach query_foreach;
 };
 
 #endif /* EAZEL_PACKAGE_SYSTEM_RPM3_PRIVATE_H */

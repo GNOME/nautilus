@@ -99,7 +99,7 @@ init_package_system (char *a_dbpath, char *a_root)
 }
 
 static void
-test_matches_query (EazelPackageSystem *packsys) 
+test_query (EazelPackageSystem *packsys) 
 {
 	GList *result;
 
@@ -111,7 +111,7 @@ test_matches_query (EazelPackageSystem *packsys)
 	if (g_list_length (result)==1) {
 		g_message ("Query matches ok");
 	} else {
-		g_message ("Query matches fail");
+		g_message ("Query matches fail (got %d, not 1)", g_list_length (result));
 	}
 	g_list_free (result);
 	
@@ -123,7 +123,7 @@ test_matches_query (EazelPackageSystem *packsys)
 	if (g_list_length (result)>10) {
 		g_message ("Query substr ok (%d hits)", g_list_length (result));
 	} else {
-		g_message ("Query substr fail");
+		g_message ("Query substr fail (%d hits, too few)", g_list_length (result));
 	}
 	
 /*
@@ -139,6 +139,34 @@ test_matches_query (EazelPackageSystem *packsys)
 	}
 */
 	g_list_free (result);
+
+	{		
+		GList *glibc_result;
+
+		glibc_result = eazel_package_system_query (packsys,
+							   NULL,
+							   "glibc",
+							   EAZEL_PACKAGE_SYSTEM_QUERY_MATCHES,
+							   0);
+
+		if (g_list_length (glibc_result) > 0) {
+			PackageData *pack = (PackageData*)glibc_result->data;
+			
+			result = eazel_package_system_query (packsys,
+							     NULL,
+							     pack,
+							     EAZEL_PACKAGE_SYSTEM_QUERY_REQUIRES,
+							     0);
+			if (g_list_length (result)>50) {
+				g_message ("Query requries ok (%d hits)", g_list_length (result));
+			} else {
+				g_message ("Query requires fail (%d hits, too few)",  g_list_length (result));
+			}
+			g_list_free (result);
+		} else {
+			g_message ("Can't test query requires");
+		}
+	}
 }
 
 static GList*
@@ -185,8 +213,8 @@ end_signal (EazelPackageSystem *system,
 static gboolean  
 progress_signal (EazelPackageSystem *system,
 		 EazelPackageSystemOperation op,
-		 unsigned long *info,
 		 const PackageData *pack,
+		 unsigned long *info,
 		 gboolean *signals)
 {
 	if (op==EAZEL_PACKAGE_SYSTEM_OPERATION_VERIFY) {
@@ -371,24 +399,37 @@ test_verify (EazelPackageSystem *packsys,
 	g_free (signals);
 }
 
+/*******************************************************************************************/
+int arg_debug;
+
+static const struct poptOption options[] = {
+	{"debug", '\0', POPT_ARG_INT, &arg_debug, 0 , N_("Show debug output"), NULL},
+	{NULL, '\0', 0, NULL, 0}
+};
+
+
 int main(int argc, char *argv[]) {
 	EazelPackageSystem *packsys;
 	char *home_dbpath; 
+	char *filename;
+	poptContext ctxt;
 
-	if (argc <=1 ) {
-		g_error ("usage: %s <package file name>", argv[0]);
-	}
-
-	gnome_init ("Eazel Test Packsys", "1.0", argc, argv);
+	gnome_init_with_popt_table ("Eazel Test Packsys", "1.0", argc, argv, options, 0, &ctxt);
 	home_dbpath = g_strdup_printf ("/tmp/packagedb");
 	packsys = init_package_system (home_dbpath, g_strdup (g_get_home_dir ()));
-	eazel_package_system_set_debug (packsys, EAZEL_PACKAGE_SYSTEM_DEBUG_VERBOSE);
 
-	test_package_load (packsys, argv[1]);
-	test_matches_query (packsys);
-	test_install (packsys, home_dbpath, argv[1]);
-	test_verify (packsys, home_dbpath, argv[1]);
-	test_uninstall (packsys, home_dbpath, argv[1]);
+	filename= poptGetArg (ctxt);
+	if (filename==NULL) {
+		g_error ("usage : %s [options (-h for help)] filename", argv[1]);
+	}
+
+	eazel_package_system_set_debug (packsys, arg_debug);
+
+	test_package_load (packsys, filename);
+	test_query (packsys);
+	test_install (packsys, home_dbpath, filename);
+	test_verify (packsys, home_dbpath, filename);
+	test_uninstall (packsys, home_dbpath, filename);
 
 	return 0;
 };
