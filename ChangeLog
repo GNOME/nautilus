@@ -1,3 +1,14 @@
+2004-02-10  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-tree-view.c (copy_or_cut_files): 
+	* src/file-manager/fm-directory-view.c:
+	Tell the clipboard monitor of changes.
+	Update paste menus on clipboard changes.
+
+	* libnautilus-private/Makefile.am: 
+	* libnautilus-private/nautilus-clipboard-monitor.[ch]
+	New files.
+
 2004-02-10  Balamurali Viswanathan  <balamurali.viswanathan@wipro.com>
 
 	* src/file-manager/fm-icon-view.c (play_file): Use the AUDIODEV env,

@@ -56,6 +56,7 @@
 #include <libgnomeui/gnome-popup-menu.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libgnomevfs/gnome-vfs-volume-monitor.h>
+#include <libnautilus-private/nautilus-clipboard-monitor.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
@@ -780,6 +781,7 @@ copy_or_cut_files (FMTreeView *view,
 				     clipboard_targets, G_N_ELEMENTS (clipboard_targets),
 				     get_clipboard_callback, clear_clipboard_callback,
 				     clipboard_string);
+	nautilus_clipboard_monitor_emit_changed ();
 	
 	name = nautilus_file_get_display_name (view->details->popup_file);
 	if (cut) {

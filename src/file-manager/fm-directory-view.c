@@ -71,6 +71,7 @@
 #include <libegg/egg-screen-exec.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-private/nautilus-bonobo-extensions.h>
+#include <libnautilus-private/nautilus-clipboard-monitor.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <libnautilus-private/nautilus-desktop-directory.h>
 #include <libnautilus-private/nautilus-directory-background.h>
@@ -322,6 +323,8 @@ static void     stop_loading_callback                          (NautilusView    
 static void     load_location_callback                         (NautilusView         *nautilus_view,
 								const char           *location,
 								FMDirectoryView      *directory_view);
+static void     clipboard_changed_callback                     (NautilusClipboardMonitor *monitor,
+								FMDirectoryView      *view);
 static void     selection_changed_callback                     (NautilusView         *nautilus_view,
 								GList                *selection,
 								FMDirectoryView      *directory_view);
@@ -1566,6 +1569,10 @@ fm_directory_view_init (FMDirectoryView *view)
 				 G_CALLBACK (icons_changed_callback),
 				 view, G_CONNECT_SWAPPED);
 
+	/* React to clipboard changes */
+	g_signal_connect_object (nautilus_clipboard_monitor_get (), "clipboard_changed",
+				 G_CALLBACK (clipboard_changed_callback), view, 0);
+	
 	gtk_widget_show (GTK_WIDGET (view));
 
 	filtering_changed_callback (view);
@@ -4618,6 +4625,7 @@ copy_or_cut_files (FMDirectoryView *view,
 				     clipboard_targets, G_N_ELEMENTS (clipboard_targets),
 				     get_clipboard_callback, clear_clipboard_callback,
 				     clipboard_string);
+	nautilus_clipboard_monitor_emit_changed ();
 	
 	
 	count = g_list_length (clipboard_contents);
@@ -5130,6 +5138,65 @@ real_update_menus_volumes (FMDirectoryView *view,
 }
 
 static void
+real_update_paste_menu (FMDirectoryView *view,
+			GList *selection,
+			gint selection_count)
+{
+	selection_count = g_list_length (selection);
+	gboolean can_paste_files_into;
+	gboolean selection_is_read_only;
+	gboolean is_read_only;
+
+	selection_is_read_only = selection_count == 1
+		&& !nautilus_file_can_write (NAUTILUS_FILE (selection->data));
+	
+	is_read_only = fm_directory_view_is_read_only (view);
+	
+	can_paste_files_into = selection_count == 1 && 
+		nautilus_file_is_directory (NAUTILUS_FILE (selection->data));
+	
+	nautilus_bonobo_set_hidden (view->details->ui,
+				    FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES_INTO,
+				    !can_paste_files_into);
+	nautilus_bonobo_set_sensitive (view->details->ui,
+				       FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES_INTO,
+				       !selection_is_read_only);
+	nautilus_bonobo_set_sensitive (view->details->ui,
+				       FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES,
+				       is_read_only);
+	if (!selection_is_read_only || !is_read_only) {
+		/* Ask the clipboard */
+		g_object_ref (view); /* Need to keep the object alive until we get the reply */
+		gtk_clipboard_request_contents (get_clipboard (view),
+						gdk_atom_intern ("TARGETS", FALSE),
+						clipboard_targets_received,
+						view);
+	}
+}
+
+static void
+clipboard_changed_callback (NautilusClipboardMonitor *monitor, FMDirectoryView *view)
+{
+	GList *selection;
+	gint selection_count;
+	
+	if (view->details->ui == NULL) {
+		return;
+	}
+	selection = fm_directory_view_get_selection (view);
+	selection_count = g_list_length (selection);
+
+	bonobo_ui_component_freeze (view->details->ui, NULL);
+	
+	real_update_paste_menu (view, selection, selection_count);
+	
+	bonobo_ui_component_thaw (view->details->ui, NULL);
+
+	nautilus_file_list_free (selection);
+	
+}
+
+static void
 real_update_menus (FMDirectoryView *view)
 {
 	GList *selection;
@@ -5138,11 +5205,9 @@ real_update_menus (FMDirectoryView *view)
 	char *label_with_underscore;
 	gboolean selection_contains_special_link;
 	gboolean is_read_only;
-	gboolean selection_is_read_only;
 	gboolean can_create_files;
 	gboolean can_delete_files;
 	gboolean can_copy_files;
-	gboolean can_paste_files_into;
 	gboolean can_link_files;
 	gboolean can_duplicate_files;
 	gboolean show_separate_delete_command;
@@ -5160,17 +5225,12 @@ real_update_menus (FMDirectoryView *view)
 	selection_contains_special_link = special_link_in_selection (view);
 	is_read_only = fm_directory_view_is_read_only (view);
 
-	selection_is_read_only = selection_count == 1
-		&& !nautilus_file_can_write (NAUTILUS_FILE (selection->data));
-
 	can_create_files = fm_directory_view_supports_creating_files (view);
 	can_delete_files = !is_read_only
 		&& selection_count != 0
 		&& !selection_contains_special_link;
 	can_copy_files = selection_count != 0
 		&& !selection_contains_special_link;	
-	can_paste_files_into = selection_count == 1 && 
-		nautilus_file_is_directory (NAUTILUS_FILE (selection->data));
 
 	can_duplicate_files = can_create_files && can_copy_files;
 	can_link_files = can_create_files && can_copy_files;
@@ -5324,23 +5384,7 @@ real_update_menus (FMDirectoryView *view)
 				       FM_DIRECTORY_VIEW_COMMAND_COPY_FILES,
 				       can_copy_files);
 
-	nautilus_bonobo_set_hidden (view->details->ui,
-				    FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES_INTO,
-				    !can_paste_files_into);
-	nautilus_bonobo_set_sensitive (view->details->ui,
-				       FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES_INTO,
-				       !selection_is_read_only);
-	nautilus_bonobo_set_sensitive (view->details->ui,
-				       FM_DIRECTORY_VIEW_COMMAND_PASTE_FILES,
-				       is_read_only);
-	if (!selection_is_read_only || !is_read_only) {
-		/* Ask the clipboard */
-		g_object_ref (view); /* Need to keep the object alive until we get the reply */
-		gtk_clipboard_request_contents (get_clipboard (view),
-						gdk_atom_intern ("TARGETS", FALSE),
-						clipboard_targets_received,
-						view);
-	}
+	real_update_paste_menu (view, selection, selection_count);
 
 	nautilus_bonobo_set_hidden (view->details->ui, 
 				    FM_DIRECTORY_VIEW_COMMAND_NEW_LAUNCHER,

@@ -55,6 +55,8 @@ libnautilus_private_la_SOURCES = \
 	nautilus-cell-renderer-pixbuf-emblem.c \
 	nautilus-cell-renderer-pixbuf-emblem.h \
 	nautilus-cdrom-extensions.h \
+	nautilus-clipboard-monitor.c \
+	nautilus-clipboard-monitor.h \
 	nautilus-column-chooser.c \
 	nautilus-column-chooser.h \
 	nautilus-column-utilities.c \
