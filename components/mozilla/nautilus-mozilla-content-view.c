@@ -503,13 +503,17 @@ view_load_location_callback (NautilusView *nautilus_view,
 
 	DEBUG_MSG ((">nautilus_view_report_load_underway\n"));
 
-	nautilus_view_report_load_underway (nautilus_view);
+	file_uri = try_transform_nautilus_uri_to_file_scheme (location);
 
-	if ((file_uri = try_transform_nautilus_uri_to_file_scheme (location)) != NULL) {
-		navigate_mozilla_to_nautilus_uri (view, file_uri);
-		/* Immediately redirect nautilus to the file: uri */
-		update_nautilus_uri (view, file_uri);
+	if (file_uri != NULL) {
+		/* if this is a gnome-help: uri, transform it into a file: uri
+		 * and load again to get around the fact that the help translater doesn't
+		 * know how to deal with paths such as "gnome-help:control-center/foo"
+		 */
+		nautilus_view_open_location_in_this_window (view->details->nautilus_view, file_uri);
+		g_free (file_uri);
 	} else {
+		nautilus_view_report_load_underway (nautilus_view);
 		navigate_mozilla_to_nautilus_uri (view, location);
 	}
 
@@ -1904,6 +1908,7 @@ eazel_services_scheme_to_http (NautilusMozillaContentView	*view,
 	char *new_uri = NULL;
 	char *ret = NULL;
 	AmmoniteError err;
+	GnomeVFSURI *vfs_uri;
 
 	/* Chew off the the scheme, leave the colon */
 	uri_minus_scheme = strchr (uri, (unsigned char)':');
@@ -1917,6 +1922,29 @@ eazel_services_scheme_to_http (NautilusMozillaContentView	*view,
 		ret = g_strconcat ("http", new_uri, NULL);
 		g_free (new_uri);
 		new_uri = NULL;
+	break;
+	case ERR_UserNotLoggedIn:
+		/* Rather than try to use the ammonite login dialog directly here,
+		 * we're going to coax the ammonite autoprompter to come
+		 * up by using gnome-vfs
+		 */
+		vfs_uri = gnome_vfs_uri_new (uri);
+		if (vfs_uri != NULL) {
+			/* Don't remove: no-op to force ammonite login */
+			gnome_vfs_uri_is_local (vfs_uri);
+			gnome_vfs_uri_unref (vfs_uri);
+			vfs_uri = NULL;
+		}
+
+		err = ammonite_http_url_for_eazel_url (uri_minus_scheme, &new_uri);
+
+		if (err == ERR_Success) {
+			ret = g_strconcat ("http", new_uri, NULL);
+			g_free (new_uri);
+			new_uri = NULL;
+		} else {
+			ret = NULL;
+		}
 	break;
 	default:
 		ret = NULL;

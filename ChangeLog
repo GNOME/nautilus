@@ -1,3 +1,22 @@
+2001-02-22  Mike Fleming  <mfleming@eazel.com>
+
+	reviewed by: <pavel@eazel.com>
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(view_load_location_callback), (eazel_services_scheme_to_http):
+
+	Bug 6810 -- Throbber keeps spinning on gnome-help URI's
+	The mozilla wrapper was confusing nautilus by trying to be too clever--
+	redirecting nauitilus while loading in mozilla.  Now it just pumps
+	a new open_location request through nautilus.
+
+	Bug 6902 -- Ammonite URI's wouldn't work if you weren't logged in,
+	even if the specified user was "anonymous".
+
+	Rather than trying to use the real ammonite login stuff, which is async
+	and would be hard to integerate, just force the ammonite login dialog
+	to pop up by performing a gnome-vfs operation.
+	
 2001-02-22  Rebecca Schulman  <rebecka@eazel.com>
 	Fix bug 6058, that opening a file with a default
 	application that cannot access a location (in the specific
@@ -128,7 +147,6 @@
 	(nautilus_art_drect_scale_by), (nautilus_art_drect_inset):
 	Add a few convenience calls.
 
->>>>>>> 1.3901
 2001-02-22  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	reviewed by: Robey Pointer  <robey@eazel.com>
@@ -299,6 +317,7 @@
 	src/nautilus-zoom-control.c, src/nautilus-first-time-druid.c:
 	added comments before localized fonts and font components
 
+>>>>>>> 1.3902
 2001-02-22  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/text/services/google.xml:
