@@ -1,3 +1,11 @@
+2003-03-17  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-icon-container.c (nautilus_icon_container_start_renaming_selected_item):
+	Move rename widget left one pixel to handle frame width.
+
+	* libnautilus-private/nautilus-icon-canvas-item.c (compute_text_rectangle):
+	Make the LABEL_OFFSET be part of the text rect to avoid a gap.
+
 2003-03-14  Dave Camp  <dave@ximian.com>
 
 	* src/file-manager/fm-list-view.c (fm_list_view_start_renaming_file): 

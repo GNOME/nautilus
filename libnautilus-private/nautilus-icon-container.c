@@ -5333,7 +5333,8 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 
 	gtk_layout_move (GTK_LAYOUT (container),
 			 details->rename_widget,
-			 x - width/2, y);
+			 x - width/2 - 1, y);
+	
 	gtk_widget_set_size_request (details->rename_widget,
 				     width, -1);
 	eel_editable_label_set_text (EEL_EDITABLE_LABEL (details->rename_widget),

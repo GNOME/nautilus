@@ -581,9 +581,9 @@ compute_text_rectangle (NautilusIconCanvasItem *item,
 
 	/* Compute text rectangle. */
 	text_rectangle.x0 = (icon_rectangle.x0 + icon_rectangle.x1) / 2 - text_width / 2;
-	text_rectangle.y0 = icon_rectangle.y1 + LABEL_OFFSET / pixels_per_unit;
+	text_rectangle.y0 = icon_rectangle.y1;
 	text_rectangle.x1 = text_rectangle.x0 + text_width;
-	text_rectangle.y1 = text_rectangle.y0 + text_height;
+	text_rectangle.y1 = text_rectangle.y0 + text_height + LABEL_OFFSET / pixels_per_unit;
 
 	return text_rectangle;
 }
