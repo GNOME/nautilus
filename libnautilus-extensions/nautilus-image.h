@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_IMAGE_H
 #define NAUTILUS_IMAGE_H
 
-#include <gtk/gtkwidget.h>
+#include <gtk/gtkmisc.h>
 #include <libgnome/gnome-defs.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
@@ -49,7 +49,7 @@ typedef struct _NautilusImageDetail	  NautilusImageDetail;
 struct _NautilusImage
 {
 	/* Superclass */
-	GtkWidget		widget;
+	GtkMisc			misc;
 
 	/* Private things */
 	NautilusImageDetail	*detail;
@@ -57,7 +57,7 @@ struct _NautilusImage
 
 struct _NautilusImageClass
 {
-	GtkWidgetClass parent_class;
+	GtkMiscClass		parent_class;
 };
 
 typedef enum

@@ -112,14 +112,6 @@ static gint        nautilus_image_expose                      (GtkWidget        
 static void        ensure_buffer_size                         (NautilusImage      *image,
 							       guint               width,
 							       guint               height);
-static  GdkWindow* create_child_window                        (GdkWindow          *parent,
-							       GdkVisual          *visual,
-							       GdkColormap        *colormap,
-							       gint                x,
-							       gint                y,
-							       guint               width,
-							       guint               height,
-							       gint                event_mask);
 static GdkGC *     nautilus_gdk_create_copy_area_gc           (GdkWindow          *window);
 static void        nautilus_gdk_pixbuf_render_to_drawable     (const GdkPixbuf    *pixbuf,
 							       GdkDrawable        *drawable,
@@ -208,7 +200,7 @@ NAUTILUS_MACRO_BEGIN				\
 	}					\
 NAUTILUS_MACRO_END
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusImage, nautilus_image, GTK_TYPE_WIDGET)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusImage, nautilus_image, GTK_TYPE_MISC)
 
 /* Class init methods */
 static void
@@ -249,8 +241,8 @@ nautilus_image_initialize_class (NautilusImageClass *image_class)
 	object_class->get_arg = nautilus_image_get_arg;
 
 	/* GtkWidgetClass */
-	widget_class->realize = nautilus_image_realize;
-	widget_class->unrealize = nautilus_image_unrealize;
+ 	widget_class->realize = nautilus_image_realize;
+ 	widget_class->unrealize = nautilus_image_unrealize;
 	widget_class->draw = nautilus_image_draw;
 	widget_class->map = nautilus_image_map;
 	widget_class->unmap = nautilus_image_unmap;
@@ -322,8 +314,8 @@ nautilus_image_destroy (GtkObject *object)
 
 static void
 nautilus_image_set_arg (GtkObject	*object,
-			  GtkArg		*arg,
-			  guint		arg_id)
+			GtkArg		*arg,
+			guint		arg_id)
 {
 	NautilusImage		*image;
 
@@ -361,8 +353,8 @@ nautilus_image_set_arg (GtkObject	*object,
 
 static void
 nautilus_image_get_arg (GtkObject	*object,
-			  GtkArg		*arg,
-			  guint		arg_id)
+			GtkArg		*arg,
+			guint		arg_id)
 {
 	NautilusImage	*image;
 
@@ -409,25 +401,9 @@ nautilus_image_realize (GtkWidget *widget)
 	
 	image = NAUTILUS_IMAGE (widget);
 
-	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
-	
-	widget->window = create_child_window (gtk_widget_get_parent_window (widget),
-					      gtk_widget_get_visual (widget),
-					      gtk_widget_get_colormap (widget),
-					      widget->allocation.x,
-					      widget->allocation.y,
-					      widget->allocation.width,
-					      widget->allocation.height,
-					      gtk_widget_get_events (widget) | GDK_EXPOSURE_MASK);
-	
-	gdk_window_set_user_data (widget->window, widget);
-	
-	widget->style = gtk_style_attach (widget->style, widget->window);
+	/* Chain realize */
+	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
 
- 	gtk_style_set_background (widget->style, widget->window, GTK_STATE_NORMAL);
-
-	gdk_window_set_static_gravities (widget->window, TRUE);
-	
 	/* Create GCs */
 	image->detail->copy_area_gc = nautilus_gdk_create_copy_area_gc (widget->window);
 }
@@ -442,9 +418,10 @@ nautilus_image_unrealize (GtkWidget *widget)
 	
 	image = NAUTILUS_IMAGE (widget);
 
+	NAUTILUS_GDK_GC_UNREF_IF (image->detail->copy_area_gc);
+
 	/* Chain unrealize */
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, unrealize, (widget));
-
 }
 
 static void
@@ -755,41 +732,6 @@ ensure_buffer_size (NautilusImage	*image,
 		
 		image->detail->buffer = new_pixbuf;
 	}
-}
-
-static  GdkWindow*
-create_child_window (GdkWindow   *parent,
-		     GdkVisual   *visual,
-		     GdkColormap *colormap,
-		     gint	x,
-		     gint	y,
-		     guint	width,
-		     guint	height,
-		     gint	event_mask)
-{
-	GdkWindow	*window = NULL;
-	GdkWindowAttr	attrib;
-	gint		attrib_mask;
-	
-	g_return_val_if_fail (parent != NULL, NULL);
-	g_return_val_if_fail (visual != NULL, NULL);
-	g_return_val_if_fail (colormap != NULL, NULL);
-	
-	attrib.window_type = GDK_WINDOW_CHILD;
-	attrib.x	   = x;
-	attrib.y	   = y;
-	attrib.width	   = MAX (1, width);
-	attrib.height	   = MAX (1, height);
-	attrib.wclass	   = GDK_INPUT_OUTPUT;
-	attrib.visual	   = visual;
-	attrib.colormap	   = colormap;
-	attrib.event_mask  = event_mask;
-
-	attrib_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
-	
-	window = gdk_window_new (parent, &attrib, attrib_mask);
-
-	return window;
 }
 
 static GdkGC *

@@ -1,5 +1,13 @@
 2000-07-18  Ramiro Estrugo  <ramiro@eazel.com>
 
+	* libnautilus-extensions/nautilus-image.c:
+	(nautilus_image_initialize_class), (nautilus_image_realize),
+	(nautilus_image_unrealize), (ensure_buffer_size):
+	* libnautilus-extensions/nautilus-image.h:
+	Subclass from GtkMisc instead of GtkWidget.
+	
+2000-07-18  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-radio-button-group.c:
 	(nautilus_radio_button_group_initialize_class),
 	(nautilus_radio_button_group_initialize),
