@@ -1,3 +1,44 @@
+2000-01-14  Darin Adler  <darin@eazel.com>
+
+	First cut at some actual saving of metadata.
+	Neither the interface nor the implementation is great yet.
+	But it's a start.
+
+	* libnautilus/Makefile.am:
+	libnautilus/nautilus-directory.h:
+	libnautilus/nautilus-directory.c:
+	libnautilus/nautilus-lib-self-check-functions.h:
+	libnautilus/nautilus-lib-self-check-functions.c:
+	src/file-manager/Makefile.am:
+	src/file-manager/fm-directory-protected.h:
+	src/file-manager/fm-directory.h:
+	src/file-manager/fm-directory.c:
+	src/file-manager/fm-vfs-directory.h:
+	src/file-manager/fm-vfs-directory.c:
+	Moved the old FMDirectory class into the library and named it
+	NautilusDirectory. Added functions for reading and writing
+	metadata.
+
+	* src/ntl-index-panel.c: Added the code to save the index panel's
+	background color in metadata.
+	
+	* libnautilus/Makefile.am: Added gnome-vfs and gnome-xml,
+	since the new code uses them.
+
+	* libnautilus/nautilus-self-checks.h:
+	libnautilus/nautilus-lib-self-check-functions.h:
+	libnautilus/nautilus-lib-self-check-functions.c:
+	src/nautilus-self-check-functions.h:
+	src/nautilus-self-check-functions.c:
+	Added macros to the self-check framework so the list of self check
+	functions appears in exactly one place for each directory/module.
+
+	* src/ntl-index-panel.h: src/ntl-index-panel.c: Moved the fields
+	of the index panel inside a private details structure so they can
+	change without affecting clients.
+
+	* libnautilus/nautilus-background.c: Just some reformatting.
+
 2000-01-13  John Sullivan  <sullivan@eazel.com>
 
 	More work pushing code from FMDirectoryView into subclasses.

@@ -29,11 +29,20 @@
 #include "ntl-meta-view.h"
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libnautilus/nautilus-background.h>
+#include <libnautilus/nautilus-directory.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-string.h>
 
 #define ARRAY_LENGTH(array) \
 	(sizeof (array) / sizeof ((array)[0]))
+
+struct _NautilusIndexPanelDetails {
+	GtkWidget *index_container;
+	GtkWidget *per_uri_container;
+	GtkWidget *meta_tabs;
+	gchar *uri;
+	NautilusDirectory *directory;
+};
 
 static void nautilus_index_panel_initialize_class (gpointer klass);
 static void nautilus_index_panel_initialize (gpointer object, gpointer klass);
@@ -52,6 +61,8 @@ static void nautilus_index_panel_set_up_logo (NautilusIndexPanel *index_panel, c
 static GdkFont *select_font(const gchar *text_to_format, gint width, const gchar* font_template);
 
 static GtkObjectClass *parent_class;
+
+#define DEFAULT_BACKGROUND_COLOR "rgb:DDDD/DDDD/FFFF"
 
 /* drag and drop definitions */
 
@@ -87,10 +98,11 @@ nautilus_index_panel_initialize_class (gpointer klass)
 
 static void make_per_uri_container(NautilusIndexPanel *index_panel)
 {
-	index_panel->per_uri_container = gtk_vbox_new (FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (index_panel->per_uri_container), 0);				
-	gtk_widget_show (index_panel->per_uri_container);
-	gtk_box_pack_start (GTK_BOX (index_panel->index_container), index_panel->per_uri_container, FALSE, FALSE, 0);
+	index_panel->details->per_uri_container = gtk_vbox_new (FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (index_panel->details->per_uri_container), 0);				
+	gtk_widget_show (index_panel->details->per_uri_container);
+	gtk_box_pack_start (GTK_BOX (index_panel->details->index_container),
+			    index_panel->details->per_uri_container, FALSE, FALSE, 0);
 }
 
 /* initialize the instance's fields, create the necessary subviews, etc. */
@@ -103,25 +115,27 @@ nautilus_index_panel_initialize (gpointer object, gpointer klass)
 	
 	index_panel = NAUTILUS_INDEX_PANEL (object);
 	widget = GTK_WIDGET (object);
+
+	index_panel->details = g_new0 (NautilusIndexPanelDetails, 1);
 	
 	/* set the size of the index panel */
 	gtk_widget_set_usize (widget, 136, 400);
  
 	/* create the container box */
-  	index_panel->index_container = gtk_vbox_new (FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (index_panel->index_container), 0);				
-	gtk_widget_show (index_panel->index_container);
-	gtk_container_add (GTK_CONTAINER (index_panel), index_panel->index_container);
+  	index_panel->details->index_container = gtk_vbox_new (FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (index_panel->details->index_container), 0);				
+	gtk_widget_show (index_panel->details->index_container);
+	gtk_container_add (GTK_CONTAINER (index_panel), index_panel->details->index_container);
 
 	/* allocate and install the vbox to hold the per-uri information */ 
 	make_per_uri_container (index_panel);
 
 	/* allocate and install the meta-tabs (for now it's a notebook) */
   
-	index_panel->meta_tabs = gtk_notebook_new ();
-	gtk_widget_set_usize (index_panel->meta_tabs, 136, 200);
-	gtk_widget_show (index_panel->meta_tabs);
-	gtk_box_pack_end (GTK_BOX (index_panel->index_container), index_panel->meta_tabs, FALSE, FALSE, 0);
+	index_panel->details->meta_tabs = gtk_notebook_new ();
+	gtk_widget_set_usize (index_panel->details->meta_tabs, 136, 200);
+	gtk_widget_show (index_panel->details->meta_tabs);
+	gtk_box_pack_end (GTK_BOX (index_panel->details->index_container), index_panel->details->meta_tabs, FALSE, FALSE, 0);
  
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (index_panel),
@@ -146,7 +160,8 @@ nautilus_index_panel_finalize (GtkObject *object)
 
 	index_panel = NAUTILUS_INDEX_PANEL (object);
 
-	g_free (index_panel->uri);
+	g_free (index_panel->details->uri);
+	g_free (index_panel->details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, finalize, (object));
 }
@@ -190,8 +205,14 @@ nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 		case TARGET_COLOR:
 			data = (guint16 *)selection_data->data;
 			color_spec = g_strdup_printf ("rgb:%04hX/%04hX/%04hX", data[0], data[1], data[2]);
+
+			nautilus_directory_set_metadata (NAUTILUS_INDEX_PANEL (widget)->details->directory,
+							 "index_panel_background_color",
+							  DEFAULT_BACKGROUND_COLOR,
+							 color_spec);
 			background = nautilus_get_widget_background (widget);
 			nautilus_background_set_color (background, color_spec);
+
 			g_free (color_spec);
 			break;
       
@@ -224,7 +245,7 @@ void nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, Nautil
 	                     GTK_SIGNAL_FUNC(nautilus_window_send_show_properties), meta_view);
 	*/
   
-	gtk_notebook_prepend_page (GTK_NOTEBOOK (index_panel->meta_tabs), GTK_WIDGET (meta_view), label);
+	gtk_notebook_prepend_page (GTK_NOTEBOOK (index_panel->details->meta_tabs), GTK_WIDGET (meta_view), label);
 	gtk_widget_show (GTK_WIDGET (meta_view));
 }
 
@@ -233,9 +254,9 @@ void nautilus_index_panel_remove_meta_view (NautilusIndexPanel *index_panel, Nau
 {
 	gint page_num;
 
-	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (index_panel->meta_tabs), GTK_WIDGET (meta_view));
+	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (index_panel->details->meta_tabs), GTK_WIDGET (meta_view));
 	g_return_if_fail (page_num >= 0);
-	gtk_notebook_remove_page (GTK_NOTEBOOK (index_panel->meta_tabs), page_num);
+	gtk_notebook_remove_page (GTK_NOTEBOOK (index_panel->details->meta_tabs), page_num);
 }
 
 /* set up the logo image */
@@ -247,7 +268,7 @@ void nautilus_index_panel_set_up_logo (NautilusIndexPanel *index_panel, const gc
 	file_name = gnome_pixmap_file (logo_path);
 	pix_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
 	gtk_widget_show (pix_widget);
-	gtk_box_pack_start (GTK_BOX (index_panel->per_uri_container), pix_widget, 0, 0, 0);
+	gtk_box_pack_start (GTK_BOX (index_panel->details->per_uri_container), pix_widget, 0, 0, 0);
 	g_free (file_name);
 }
 
@@ -326,7 +347,7 @@ nautilus_index_panel_set_up_label (NautilusIndexPanel *index_panel, const gchar 
 		return;
 
 	label_widget = gtk_label_new (file_name);
-	gtk_box_pack_start (GTK_BOX (index_panel->per_uri_container), label_widget, 0, 0, 0);
+	gtk_box_pack_start (GTK_BOX (index_panel->details->per_uri_container), label_widget, 0, 0, 0);
 	
 	label_font = select_font(file_name, GTK_WIDGET (index_panel)->allocation.width - 4,
 				 "-bitstream-courier-medium-r-normal-*-%d-*-*-*-*-*-*-*");
@@ -348,11 +369,22 @@ nautilus_index_panel_set_up_label (NautilusIndexPanel *index_panel, const gchar 
 
 void nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const gchar* new_uri)
 {
+	NautilusDirectory *directory;
 	NautilusBackground *background;
+	char *background_color;
+
+	directory = nautilus_directory_get (new_uri);
+	if (index_panel->details->directory != NULL)
+		gtk_object_unref (GTK_OBJECT (index_panel->details->directory));
+	index_panel->details->directory = directory;
 	
-	/* set up the background from the metadata.  At first, just use hardwired backgrounds */
+	/* Set up the background from the metadata. */
 	background = nautilus_get_widget_background (GTK_WIDGET (index_panel));
-	nautilus_background_set_color (background, "rgb:DDDD/DDDD/FFFF");
+	background_color = nautilus_directory_get_metadata (directory,
+							    "index_panel_background_color",
+							    DEFAULT_BACKGROUND_COLOR);
+	nautilus_background_set_color (background, background_color);
+	g_free (background_color);
 	
 	/* next, install the logo image. */
 	/* For now, just use a fixed folder image */	
@@ -375,14 +407,14 @@ void nautilus_index_panel_set_uri (NautilusIndexPanel *index_panel, const gchar*
 {       
 	/* there's nothing to do if the uri is the same as the current one */ 
 	
-	if (nautilus_strcmp (index_panel->uri, new_uri) == 0)
+	if (nautilus_strcmp (index_panel->details->uri, new_uri) == 0)
 		return;
 	
-	g_free (index_panel->uri);
-	index_panel->uri = g_strdup (new_uri);
+	g_free (index_panel->details->uri);
+	index_panel->details->uri = g_strdup (new_uri);
 	
 	/* get rid of the old widgets in the per_uri container */
-	gtk_widget_destroy (index_panel->per_uri_container);
+	gtk_widget_destroy (index_panel->details->per_uri_container);
 	make_per_uri_container (index_panel);
 	
 	/* populate the per-uri box with the info */

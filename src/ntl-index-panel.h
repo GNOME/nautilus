@@ -43,13 +43,12 @@ typedef struct _NautilusIndexPanelClass  NautilusIndexPanelClass;
 #define NAUTILUS_IS_INDEX_PANEL_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_INDEX_PANEL))
 
+typedef struct _NautilusIndexPanelDetails NautilusIndexPanelDetails;
+
 struct _NautilusIndexPanel
 {
 	GtkEventBox event_box;
-	GtkWidget *index_container;
-	GtkWidget *per_uri_container;
-	GtkWidget *meta_tabs;
-	gchar *uri;
+	NautilusIndexPanelDetails *details;
 };
 
 struct _NautilusIndexPanelClass

@@ -44,10 +44,6 @@ ntl_file_manager_SOURCES=		\
 	fm-directory-view-icons.c	\
 	fm-directory-view-list.h	\
 	fm-directory-view-list.c	\
-	fm-directory.h			\
-	fm-directory.c			\
-	fm-vfs-directory.h		\
-	fm-vfs-directory.c              \
 	fm-main.c
 
 # noinst_PROGRAMS=gnome-desktop

@@ -33,8 +33,7 @@
 
 void nautilus_run_lib_self_checks ()
 {
-	nautilus_self_check_background ();
-	nautilus_self_check_gdk_extensions ();
+	NAUTILUS_LIB_FOR_EACH_SELF_CHECK_FUNCTION (NAUTILUS_CALL_SELF_CHECK_FUNCTION)
 }
 
 #endif /* ! NAUTILUS_OMIT_SELF_CHECK */

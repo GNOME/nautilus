@@ -51,4 +51,10 @@ G_STMT_START { \
 #define NAUTILUS_CHECK_STRING_RESULT(expression, expected_value) \
 	NAUTILUS_CHECK_RESULT(string, expression, expected_value)
 
+#define NAUTILUS_SELF_CHECK_FUNCTION_PROTOTYPE(function) \
+	void function (void);
+
+#define NAUTILUS_CALL_SELF_CHECK_FUNCTION(function) \
+	function ();
+
 #endif /* NAUTILUS_SELF_CHECKS_H */

@@ -30,7 +30,14 @@ void nautilus_run_self_checks (void);
    the self-check framework take way too long (since one file would
    have to include everything).
 
-   So we put the prototypes here instead.
+   So we put the list of functions here instead.
+
+   Instead of just putting prototypes here, we put this macro that
+   can be used to do operations on the whole list of functions.
 */
 
-void nautilus_self_check_fm_directory (void);
+#define NAUTILUS_FOR_EACH_SELF_CHECK_FUNCTION(macro) \
+/* Add new self-check functions to the list above this line. */
+
+/* Generate prototypes for all the functions. */
+NAUTILUS_FOR_EACH_SELF_CHECK_FUNCTION (NAUTILUS_SELF_CHECK_FUNCTION_PROTOTYPE)

@@ -185,7 +185,8 @@ nautilus_gtk_style_get_default_class (void)
 	return default_class;
 }
 
-static void nautilus_gdk_window_update_sizes (GdkWindow *window, int *width, int *height)
+static void
+nautilus_gdk_window_update_sizes (GdkWindow *window, int *width, int *height)
 {
 	g_return_if_fail (window != NULL);
 	g_return_if_fail (width != NULL);
@@ -199,17 +200,18 @@ static void nautilus_gdk_window_update_sizes (GdkWindow *window, int *width, int
 		gdk_window_get_size (window, NULL, height);
 }
 
-static void nautilus_background_draw_flat_box    (GtkStyle      *style,
-						  GdkWindow     *window,
-						  GtkStateType   state_type,
-						  GtkShadowType  shadow_type,
-						  GdkRectangle  *area,
-						  GtkWidget     *widget,
-						  gchar         *detail,
-						  gint           x,
-						  gint           y,
-						  gint           width,
-						  gint           height)
+static void
+nautilus_background_draw_flat_box (GtkStyle *style,
+				   GdkWindow *window,
+				   GtkStateType state_type,
+				   GtkShadowType shadow_type,
+				   GdkRectangle *area,
+				   GtkWidget *widget,
+				   char *detail,
+				   int x,
+				   int y,
+				   int width,
+				   int height)
 {
 	gboolean call_parent;
 	NautilusBackground *background;
