@@ -55,6 +55,11 @@
  */
 #include "nautilus-desktop-window.h"
 
+enum {
+	TOOLBAR_ITEM_STYLE_PROP,
+	TOOLBAR_ITEM_ORIENTATION_PROP
+};
+
 static void
 activate_back_or_forward_menu_item (GtkMenuItem *menu_item, 
 				    NautilusWindow *window,
@@ -314,14 +319,27 @@ back_or_forward_toolbar_item_property_set_cb (BonoboPropertyBag *bag,
 {
 	BonoboControl *control;
 	BonoboUIToolbarItem *item;
+	GtkOrientation orientation;
 	BonoboUIToolbarItemStyle style;
 
 	control = BONOBO_CONTROL (user_data);
 	item = BONOBO_UI_TOOLBAR_ITEM (
 		bonobo_control_get_widget (control));
-	style = BONOBO_ARG_GET_INT (arg);
-	
-	bonobo_ui_toolbar_item_set_style (item, style);
+
+	switch (arg_id) {
+	case TOOLBAR_ITEM_ORIENTATION_PROP:
+		orientation = BONOBO_ARG_GET_INT (arg);
+		bonobo_ui_toolbar_item_set_orientation (item, orientation);
+
+		if (GTK_WIDGET (item)->parent) {
+			gtk_widget_queue_resize (GTK_WIDGET (item)->parent);
+		}
+		break;
+	case TOOLBAR_ITEM_STYLE_PROP:
+		style = BONOBO_ARG_GET_INT (arg);
+		bonobo_ui_toolbar_item_set_style (item, style);
+		break;
+	}
 }
 
 static BonoboUIToolbarButtonItem *
@@ -351,9 +369,15 @@ create_back_or_forward_toolbar_item (NautilusWindow *window,
 	wrapper = bonobo_control_new (GTK_WIDGET (item));
 	pb = bonobo_property_bag_new (
 		NULL, back_or_forward_toolbar_item_property_set_cb, wrapper);
-	bonobo_property_bag_add (pb, "style", 0,
+	bonobo_property_bag_add (pb, "style",
+				 TOOLBAR_ITEM_STYLE_PROP,
 				 BONOBO_ARG_INT, NULL,
 				 _("Toolbar item style"),
+				 Bonobo_PROPERTY_WRITEABLE);
+	bonobo_property_bag_add (pb, "orientation",
+				 TOOLBAR_ITEM_ORIENTATION_PROP,
+				 BONOBO_ARG_INT, NULL,
+				 _("Toolbar item orientation"),
 				 Bonobo_PROPERTY_WRITEABLE);
 	bonobo_control_set_properties (wrapper, BONOBO_OBJREF (pb), NULL);
 	bonobo_object_unref (BONOBO_OBJECT (pb));
