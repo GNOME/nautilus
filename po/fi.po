@@ -23,7 +23,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.1.2\n"
-"POT-Creation-Date: 2002-07-17 13:15+0200\n"
+"POT-Creation-Date: 2002-07-22 23:44-0400\n"
 "PO-Revision-Date: 2002-07-19 18:16+0200\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -60,7 +60,7 @@ msgid "Factory for hardware view"
 msgstr "Tehdas, joka tuottaa laitteistonäkymiä"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:2
-#: components/hardware/nautilus-hardware-view.c:757
+#: components/hardware/nautilus-hardware-view.c:754
 #: data/static_bookmarks.xml.h:15
 msgid "Hardware"
 msgstr "Laitteisto"
@@ -81,15 +81,15 @@ msgstr "Näytä laitteisto"
 msgid "hardware view"
 msgstr "laitteistonäkymä"
 
-#: components/hardware/nautilus-hardware-view.c:175
+#: components/hardware/nautilus-hardware-view.c:172
 msgid "name of icon for the hardware view"
 msgstr "laitteistonäkymän kuvakkeen nimi"
 
-#: components/hardware/nautilus-hardware-view.c:177
+#: components/hardware/nautilus-hardware-view.c:174
 msgid "summary of hardware info"
 msgstr "laitteistotietojen yhteenveto"
 
-#: components/hardware/nautilus-hardware-view.c:309
+#: components/hardware/nautilus-hardware-view.c:306
 #, c-format
 msgid ""
 "%s CPU\n"
@@ -100,45 +100,45 @@ msgstr ""
 "%s MHz\n"
 "%s k välimuistia"
 
-#: components/hardware/nautilus-hardware-view.c:344
+#: components/hardware/nautilus-hardware-view.c:341
 #, c-format
 msgid "%lu GB RAM"
 msgstr "%lu Gt RAM"
 
-#: components/hardware/nautilus-hardware-view.c:346
+#: components/hardware/nautilus-hardware-view.c:343
 #, c-format
 msgid "%lu MB RAM"
 msgstr "%lu Mt RAM"
 
-#: components/hardware/nautilus-hardware-view.c:404
+#: components/hardware/nautilus-hardware-view.c:401
 #, c-format
 msgid "%lu GB"
 msgstr "%lu Gt"
 
-#: components/hardware/nautilus-hardware-view.c:406
+#: components/hardware/nautilus-hardware-view.c:403
 #, c-format
 msgid "%lu MB"
 msgstr "%lu Mt"
 
-#: components/hardware/nautilus-hardware-view.c:486
+#: components/hardware/nautilus-hardware-view.c:483
 #, c-format
 msgid "Uptime is %d days, %d hours, %d minutes"
 msgstr "Käyntiaika on %d päivää, %d tuntia, %d minuuttia"
 
 #. set up the title
-#: components/hardware/nautilus-hardware-view.c:512
+#: components/hardware/nautilus-hardware-view.c:509
 msgid "Hardware Overview"
 msgstr "Laitteisto"
 
-#: components/hardware/nautilus-hardware-view.c:635
+#: components/hardware/nautilus-hardware-view.c:632
 msgid "This is a placeholder for the CPU page."
 msgstr "Tämä on prosessorisivun korvike."
 
-#: components/hardware/nautilus-hardware-view.c:660
+#: components/hardware/nautilus-hardware-view.c:657
 msgid "This is a placeholder for the RAM page."
 msgstr "Tämä on muistisivun korvike."
 
-#: components/hardware/nautilus-hardware-view.c:685
+#: components/hardware/nautilus-hardware-view.c:682
 msgid "This is a placeholder for the IDE page."
 msgstr "Tämä on IDE-sivun korvike."
 
@@ -914,7 +914,7 @@ msgid "Sorry, but '%s' is not a usable image file."
 msgstr "'%s' ei ole kelvollinen kuvatiedosto."
 
 #: components/music/nautilus-music-view.c:736
-#: src/nautilus-property-browser.c:1100 src/nautilus-property-browser.c:1348
+#: src/nautilus-property-browser.c:1094 src/nautilus-property-browser.c:1342
 msgid "Not an Image"
 msgstr "Ei ole kuva"
 
@@ -2401,7 +2401,7 @@ msgstr "Korvaa kaikki"
 # This is very hard to do in Finnish...
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1109
-#: libnautilus-private/nautilus-file.c:4219
+#: libnautilus-private/nautilus-file.c:4226
 #, c-format
 msgid "link to %s"
 msgstr "linkki tyyppiin %s"
@@ -2736,7 +2736,7 @@ msgid "Preparing to Empty the Trash..."
 msgstr "Valmistellaan roskakorin tyhjentämistä..."
 
 #: libnautilus-private/nautilus-file-operations.c:2221
-#: src/file-manager/fm-desktop-icon-view.c:1355
+#: src/file-manager/fm-desktop-icon-view.c:1354
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 msgid "Empty Trash"
 msgstr "Tyhjennä roskakori"
@@ -3029,64 +3029,64 @@ msgstr "jokin (124. kopio).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2470
+#: libnautilus-private/nautilus-file.c:2477
 msgid "today at 00:00:00 PM"
 msgstr "tänään 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2471
+#: libnautilus-private/nautilus-file.c:2478
 msgid "today at %-I:%M:%S %p"
 msgstr "tänään %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2473
+#: libnautilus-private/nautilus-file.c:2480
 msgid "today at 00:00 PM"
 msgstr "tänään 00:00"
 
-#: libnautilus-private/nautilus-file.c:2474
+#: libnautilus-private/nautilus-file.c:2481
 msgid "today at %-I:%M %p"
 msgstr "tänään %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2476
+#: libnautilus-private/nautilus-file.c:2483
 msgid "today, 00:00 PM"
 msgstr "tänään 00:00"
 
-#: libnautilus-private/nautilus-file.c:2477
+#: libnautilus-private/nautilus-file.c:2484
 msgid "today, %-I:%M %p"
 msgstr "tänään %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2479
-#: libnautilus-private/nautilus-file.c:2480
+#: libnautilus-private/nautilus-file.c:2486
+#: libnautilus-private/nautilus-file.c:2487
 msgid "today"
 msgstr "tänään"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2489
+#: libnautilus-private/nautilus-file.c:2496
 msgid "yesterday at 00:00:00 PM"
 msgstr "eilen 00:00"
 
-#: libnautilus-private/nautilus-file.c:2490
+#: libnautilus-private/nautilus-file.c:2497
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "eilen %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2492
+#: libnautilus-private/nautilus-file.c:2499
 msgid "yesterday at 00:00 PM"
 msgstr "eilen 00:00"
 
-#: libnautilus-private/nautilus-file.c:2493
+#: libnautilus-private/nautilus-file.c:2500
 msgid "yesterday at %-I:%M %p"
 msgstr "eilen %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2495
+#: libnautilus-private/nautilus-file.c:2502
 msgid "yesterday, 00:00 PM"
 msgstr "eilen 00:00"
 
-#: libnautilus-private/nautilus-file.c:2496
+#: libnautilus-private/nautilus-file.c:2503
 msgid "yesterday, %-I:%M %p"
 msgstr "eilen %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2498
-#: libnautilus-private/nautilus-file.c:2499
+#: libnautilus-private/nautilus-file.c:2505
+#: libnautilus-private/nautilus-file.c:2506
 msgid "yesterday"
 msgstr "eilen"
 
@@ -3095,132 +3095,132 @@ msgstr "eilen"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2510
+#: libnautilus-private/nautilus-file.c:2517
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Keskiviikko, syyskuu 00 0000, 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2511
+#: libnautilus-private/nautilus-file.c:2518
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %-d. %Bta %Y, %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2513
+#: libnautilus-private/nautilus-file.c:2520
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Ma loka 00 0000, 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2514
+#: libnautilus-private/nautilus-file.c:2521
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a %-d. %b %Y, %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2516
+#: libnautilus-private/nautilus-file.c:2523
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Ma loka 00 0000, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2517
+#: libnautilus-private/nautilus-file.c:2524
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a %-d. %b %Y, %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2519
+#: libnautilus-private/nautilus-file.c:2526
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "Loka 00 0000, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2520
+#: libnautilus-private/nautilus-file.c:2527
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d. %b %Y, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2522
+#: libnautilus-private/nautilus-file.c:2529
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "Loka 00 0000, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2523
+#: libnautilus-private/nautilus-file.c:2530
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d. %b %Y, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2525
+#: libnautilus-private/nautilus-file.c:2532
 msgid "00/00/00, 00:00 PM"
 msgstr "00.00.00, 00:00"
 
-#: libnautilus-private/nautilus-file.c:2526
+#: libnautilus-private/nautilus-file.c:2533
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d.%m.%y, %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2528
+#: libnautilus-private/nautilus-file.c:2535
 msgid "00/00/00"
 msgstr "00.00.00"
 
-#: libnautilus-private/nautilus-file.c:2529
+#: libnautilus-private/nautilus-file.c:2536
 msgid "%m/%d/%y"
 msgstr "%d.%m.%y"
 
-#: libnautilus-private/nautilus-file.c:3804
+#: libnautilus-private/nautilus-file.c:3811
 msgid "0 items"
 msgstr "0 kohdetta"
 
-#: libnautilus-private/nautilus-file.c:3804
+#: libnautilus-private/nautilus-file.c:3811
 msgid "0 folders"
 msgstr "0 hakemistoa"
 
-#: libnautilus-private/nautilus-file.c:3805
+#: libnautilus-private/nautilus-file.c:3812
 msgid "0 files"
 msgstr "0 tiedostoa"
 
-#: libnautilus-private/nautilus-file.c:3809
+#: libnautilus-private/nautilus-file.c:3816
 msgid "1 item"
 msgstr "1 kohde"
 
-#: libnautilus-private/nautilus-file.c:3809
+#: libnautilus-private/nautilus-file.c:3816
 msgid "1 folder"
 msgstr "1 hakemisto"
 
-#: libnautilus-private/nautilus-file.c:3810
+#: libnautilus-private/nautilus-file.c:3817
 msgid "1 file"
 msgstr "1 tiedosto"
 
-#: libnautilus-private/nautilus-file.c:3813
+#: libnautilus-private/nautilus-file.c:3820
 #, c-format
 msgid "%u items"
 msgstr "%u kohdetta"
 
-#: libnautilus-private/nautilus-file.c:3813
+#: libnautilus-private/nautilus-file.c:3820
 #, c-format
 msgid "%u folders"
 msgstr "%u hakemistoa"
 
-#: libnautilus-private/nautilus-file.c:3814
+#: libnautilus-private/nautilus-file.c:3821
 #, c-format
 msgid "%u files"
 msgstr "%u tiedostoa"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4121
-#: libnautilus-private/nautilus-file.c:4137
+#: libnautilus-private/nautilus-file.c:4128
+#: libnautilus-private/nautilus-file.c:4144
 msgid "? items"
 msgstr "? kohdetta"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4127
+#: libnautilus-private/nautilus-file.c:4134
 msgid "? bytes"
 msgstr "? tavua"
 
-#: libnautilus-private/nautilus-file.c:4142
+#: libnautilus-private/nautilus-file.c:4149
 msgid "unknown type"
 msgstr "tuntematon tyyppi"
 
-#: libnautilus-private/nautilus-file.c:4145
+#: libnautilus-private/nautilus-file.c:4152
 msgid "unknown MIME type"
 msgstr "tuntematon MIME-tyyppi"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4151
+#: libnautilus-private/nautilus-file.c:4158
 msgid "unknown"
 msgstr "tuntematon"
 
-#: libnautilus-private/nautilus-file.c:4183
+#: libnautilus-private/nautilus-file.c:4190
 msgid "program"
 msgstr "ohjelma"
 
-#: libnautilus-private/nautilus-file.c:4195
+#: libnautilus-private/nautilus-file.c:4202
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -3230,7 +3230,7 @@ msgstr ""
 "tarkoittanee, että tiedosto gnome-vfs.keys on väärässä paikassa tai ei löydy "
 "muusta syystä."
 
-#: libnautilus-private/nautilus-file.c:4199
+#: libnautilus-private/nautilus-file.c:4206
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -3239,15 +3239,15 @@ msgstr ""
 "Mime-tyypillä \"%s\" (tiedosto on \"%s\") ei ole kuvausta. Ilmoita tästä "
 "gnome-vfs:n postituslistalle."
 
-#: libnautilus-private/nautilus-file.c:4213
+#: libnautilus-private/nautilus-file.c:4220
 msgid "link"
 msgstr "linkki"
 
-#: libnautilus-private/nautilus-file.c:4233
+#: libnautilus-private/nautilus-file.c:4240
 msgid "link (broken)"
 msgstr "linkki (rikki)"
 
-#: libnautilus-private/nautilus-file.c:5276
+#: libnautilus-private/nautilus-file.c:5283
 #: libnautilus-private/nautilus-trash-directory.c:373
 #: src/file-manager/fm-desktop-icon-view.c:70
 msgid "Trash"
@@ -4439,9 +4439,15 @@ msgstr "Virhe käynnistäessä apuohjelmaa \"%s\": %s"
 msgid "%s's Home"
 msgstr "Kotihakemisto %.0s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1353
-msgid "Empty Trash..."
-msgstr "Tyhjennä roskakori..."
+#: src/file-manager/fm-desktop-icon-view.c:1372
+#, fuzzy
+msgid "E_ject"
+msgstr "_Suoritus"
+
+#: src/file-manager/fm-desktop-icon-view.c:1472
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
+msgid "_Unmount Volume"
+msgstr "_Irrota osio"
 
 #: src/file-manager/fm-directory-view.c:476
 #, c-format
@@ -4736,10 +4742,6 @@ msgid "Open _in %d New Windows"
 msgstr "Avaa %d uutta _ikkunaa näyttämistä varten"
 
 #: src/file-manager/fm-directory-view.c:4386
-msgid "_Delete from Trash..."
-msgstr "Poista _roskakorista..."
-
-#: src/file-manager/fm-directory-view.c:4386
 msgid "_Delete from Trash"
 msgstr "Poista _roskakorista"
 
@@ -4757,62 +4759,55 @@ msgstr "_Siirrä roskakoriin"
 msgid "Move each selected item to the Trash"
 msgstr "Siirrä jokainen valittu kohde roskakoriin"
 
-#: src/file-manager/fm-directory-view.c:4418
-msgid "_Delete..."
-msgstr "_Poista..."
-
-#: src/file-manager/fm-directory-view.c:4418
+#: src/file-manager/fm-directory-view.c:4417
 #: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "_Delete"
 msgstr "_Poista"
 
-#: src/file-manager/fm-directory-view.c:4438
+#: src/file-manager/fm-directory-view.c:4437
 msgid "Ma_ke Links"
 msgstr "_Tee linkit"
 
-#: src/file-manager/fm-directory-view.c:4439
+#: src/file-manager/fm-directory-view.c:4438
 #: src/file-manager/nautilus-directory-view-ui.xml.h:14
 msgid "Ma_ke Link"
 msgstr "_Tee linkki"
 
-#: src/file-manager/fm-directory-view.c:4453 src/nautilus-sidebar.c:1487
-msgid "_Empty Trash..."
-msgstr "_Tyhjennä roskakori..."
-
-#: src/file-manager/fm-directory-view.c:4454
+#. FIXME: We don't use spaces to pad labels!
+#: src/file-manager/fm-directory-view.c:4451
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
-#: src/nautilus-sidebar.c:1488
+#: src/nautilus-sidebar.c:1490
 msgid "_Empty Trash"
 msgstr "_Tyhjennä roskakori"
 
-#: src/file-manager/fm-directory-view.c:4464
+#: src/file-manager/fm-directory-view.c:4461
 #: src/file-manager/nautilus-directory-view-ui.xml.h:27
 msgid "Re_move Custom Icons"
 msgstr "Poista _omat kuvakkeet"
 
-#: src/file-manager/fm-directory-view.c:4465
+#: src/file-manager/fm-directory-view.c:4462
 msgid "Re_move Custom Icon"
 msgstr "Poista _oma kuvake"
 
-#: src/file-manager/fm-directory-view.c:4478
+#: src/file-manager/fm-directory-view.c:4475
 msgid "Cu_t File"
 msgstr "_Leikkaa tiedosto"
 
-#: src/file-manager/fm-directory-view.c:4479
+#: src/file-manager/fm-directory-view.c:4476
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "_Leikkaa tiedostoja"
 
-#: src/file-manager/fm-directory-view.c:4488
+#: src/file-manager/fm-directory-view.c:4485
 msgid "_Copy File"
 msgstr "_Kopioi tiedosto"
 
-#: src/file-manager/fm-directory-view.c:4489
+#: src/file-manager/fm-directory-view.c:4486
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "_Copy Files"
 msgstr "Kopioi tiedostoja"
 
-#: src/file-manager/fm-directory-view.c:4671
+#: src/file-manager/fm-directory-view.c:4668
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
@@ -4820,7 +4815,7 @@ msgstr ""
 "Tätä linkkiä ei voi käyttää, koska sillä ei ole kohdetta. Haluatko heittää "
 "tämän linkin roskakoriin?"
 
-#: src/file-manager/fm-directory-view.c:4674
+#: src/file-manager/fm-directory-view.c:4671
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -4829,15 +4824,15 @@ msgstr ""
 "Tätä linkkiä ei voi käyttää, koska sen kohdetta \"%s\" ei ole olemassa. "
 "Haluatko heittää tämän linkin roskakoriin?"
 
-#: src/file-manager/fm-directory-view.c:4680
+#: src/file-manager/fm-directory-view.c:4677
 msgid "Broken Link"
 msgstr "Rikkinäinen linkki"
 
-#: src/file-manager/fm-directory-view.c:4680
+#: src/file-manager/fm-directory-view.c:4677
 msgid "Throw Away"
 msgstr "Heitä pois"
 
-#: src/file-manager/fm-directory-view.c:4737
+#: src/file-manager/fm-directory-view.c:4734
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -4846,28 +4841,28 @@ msgstr ""
 "\"%s\" on suoritettava tekstitiedosto. Haluatko käynnistää sen vai nähdä sen "
 "sisällön?"
 
-#: src/file-manager/fm-directory-view.c:4743
+#: src/file-manager/fm-directory-view.c:4740
 msgid "Run or Display?"
 msgstr "Käynnistä vai näytä?"
 
-#: src/file-manager/fm-directory-view.c:4744
+#: src/file-manager/fm-directory-view.c:4741
 msgid "_Display"
 msgstr "_Näytä"
 
-#: src/file-manager/fm-directory-view.c:4745
+#: src/file-manager/fm-directory-view.c:4742
 msgid "Run in _Terminal"
 msgstr "Suorita _päätteessä"
 
-#: src/file-manager/fm-directory-view.c:4748
+#: src/file-manager/fm-directory-view.c:4745
 msgid "_Run"
 msgstr "_Suorita"
 
-#: src/file-manager/fm-directory-view.c:4919
+#: src/file-manager/fm-directory-view.c:4916
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Avaa tiedostoa \"%s\""
 
-#: src/file-manager/fm-directory-view.c:4925
+#: src/file-manager/fm-directory-view.c:4922
 msgid "Cancel Open?"
 msgstr "Perutaanko avaaminen?"
 
@@ -5095,7 +5090,7 @@ msgstr "Tyyppi"
 msgid "Date Modified"
 msgstr "Muokattu"
 
-#: src/file-manager/fm-properties-window.c:314 src/nautilus-sidebar.c:734
+#: src/file-manager/fm-properties-window.c:314 src/nautilus-sidebar.c:738
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
 "image to set a custom icon."
@@ -5103,11 +5098,11 @@ msgstr ""
 "Voit asettaa vain yhden oman kuvakkeen kerrallaan. Vedä yhtä kuvaa "
 "asettaaksesi sen kuvakkeeksi."
 
-#: src/file-manager/fm-properties-window.c:316 src/nautilus-sidebar.c:736
+#: src/file-manager/fm-properties-window.c:316 src/nautilus-sidebar.c:740
 msgid "More Than One Image"
 msgstr "Useampi kuin yksi kuva"
 
-#: src/file-manager/fm-properties-window.c:325 src/nautilus-sidebar.c:755
+#: src/file-manager/fm-properties-window.c:325 src/nautilus-sidebar.c:759
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
 "custom icons."
@@ -5115,11 +5110,11 @@ msgstr ""
 "Pudottamasi tiedosto ei ole paikallinen. Vain paikallisia tiedostoja voi "
 "käyttää omina kuvakkeina."
 
-#: src/file-manager/fm-properties-window.c:327 src/nautilus-sidebar.c:757
+#: src/file-manager/fm-properties-window.c:327 src/nautilus-sidebar.c:761
 msgid "Local Images Only"
 msgstr "Vain paikalliset kuvat"
 
-#: src/file-manager/fm-properties-window.c:332 src/nautilus-sidebar.c:762
+#: src/file-manager/fm-properties-window.c:332 src/nautilus-sidebar.c:766
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
 "custom icons."
@@ -5127,7 +5122,7 @@ msgstr ""
 "Pudottamasi tiedosto ei ole kuva. Vain paikallisia kuvia voi käyttää omina "
 "kuvakkeina."
 
-#: src/file-manager/fm-properties-window.c:334 src/nautilus-sidebar.c:764
+#: src/file-manager/fm-properties-window.c:334 src/nautilus-sidebar.c:768
 msgid "Images Only"
 msgstr "Vain kuvat"
 
@@ -5609,7 +5604,7 @@ msgstr "Irrota valittu osio"
 #. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:17
 #: src/file-manager/nautilus-directory-view-ui.xml.h:36
-#: src/nautilus-sidebar.c:560
+#: src/nautilus-sidebar.c:564
 msgid "Use _Default Background"
 msgstr "Käytä _oletustaustaa"
 
@@ -5620,10 +5615,6 @@ msgstr "Käytä työpöydän oletustaustaa"
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:19
 msgid "_Format"
 msgstr "_Alusta"
-
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
-msgid "_Unmount Volume"
-msgstr "_Irrota osio"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
 msgid "Choose a program with which to open the selected item"
@@ -5754,7 +5745,8 @@ msgid "_Properties"
 msgstr "_Ominaisuudet"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:47
-msgid "_Rename"
+#, fuzzy
+msgid "_Rename..."
 msgstr "_Nimeä uudelleen"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:48
@@ -5903,11 +5895,11 @@ msgstr "Näytä _luetteloinnin tila"
 msgid "Show status of indexing used when searching"
 msgstr "Näytä etsinnässä käytettävän luetteloinnin tila"
 
-#: src/nautilus-application.c:216
+#: src/nautilus-application.c:217
 msgid "Couldn't Create Required Folder"
 msgstr "Vaadittua hakemistoa ei voitu luoda"
 
-#: src/nautilus-application.c:217
+#: src/nautilus-application.c:218
 #, c-format
 msgid ""
 "Nautilus could not create the required folder \"%s\". Before running "
@@ -5918,11 +5910,11 @@ msgstr ""
 "käynnistämistä luo tämä hakemisto tai aseta oikeudet siten, että Nautilus "
 "voi luoda sen."
 
-#: src/nautilus-application.c:222
+#: src/nautilus-application.c:223
 msgid "Couldn't Create Required Folders"
 msgstr "Vaadittuja hakemistoja ei voitu luoda"
 
-#: src/nautilus-application.c:223
+#: src/nautilus-application.c:224
 #, c-format
 msgid ""
 "Nautilus could not create the following required folders:\n"
@@ -5949,7 +5941,7 @@ msgstr ""
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:441
+#: src/nautilus-application.c:442
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5960,7 +5952,7 @@ msgstr ""
 "käynnistää tietokoneesi uudelleen tai asentaa Nautiluksen uudestaan."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:447
+#: src/nautilus-application.c:448
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -6005,12 +5997,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:477 src/nautilus-application.c:495
-#: src/nautilus-application.c:502
+#: src/nautilus-application.c:478 src/nautilus-application.c:496
+#: src/nautilus-application.c:503
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilusta ei voi käyttää nyt odottamattoman virheen takia."
 
-#: src/nautilus-application.c:478
+#: src/nautilus-application.c:479
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -6018,7 +6010,7 @@ msgstr ""
 "Nautilusta ei voi käyttää nyt, koska Bonobo ilmoitti odottamattomasta "
 "virheestä tiedostonhallintanäkymäpalvelinta rekisteröidessä."
 
-#: src/nautilus-application.c:496
+#: src/nautilus-application.c:497
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -6028,7 +6020,7 @@ msgstr ""
 "virheestä tehdasta paikantaessa. bonobo-activation-server'n sulkeminen ja "
 "Nautiluksen käynnistäminen uudelleen saattaa korjata ongelman."
 
-#: src/nautilus-application.c:503
+#: src/nautilus-application.c:504
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -6039,7 +6031,7 @@ msgstr ""
 "sulkeminen ja Nautiluksen käynnistäminen uudelleen saattaa korjata ongelman."
 
 #: src/nautilus-bookmarks-window.c:137 src/nautilus-preferences-dialog.c:371
-#: src/nautilus-property-browser.c:1504 src/nautilus-window-menus.c:688
+#: src/nautilus-property-browser.c:1498 src/nautilus-window-menus.c:688
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -6134,8 +6126,8 @@ msgid "Restart Nautilus."
 msgstr "Käynnistä Nautilus uudelleen."
 
 #. Set initial window title
-#: src/nautilus-main.c:184 src/nautilus-window-manage-views.c:222
-#: src/nautilus-window-menus.c:651 src/nautilus-window.c:183
+#: src/nautilus-main.c:184 src/nautilus-window-manage-views.c:223
+#: src/nautilus-window-menus.c:651 src/nautilus-window.c:186
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -6432,187 +6424,187 @@ msgid "Profile Dump"
 msgstr "Profiilin tallennus"
 
 #. set the title and standard close accelerator
-#: src/nautilus-property-browser.c:273
+#: src/nautilus-property-browser.c:268
 msgid "Backgrounds and Emblems"
 msgstr "Taustat ja tunnusmerkit"
 
-#: src/nautilus-property-browser.c:390
+#: src/nautilus-property-browser.c:384
 msgid "_Remove..."
 msgstr "_Poista..."
 
-#: src/nautilus-property-browser.c:411
+#: src/nautilus-property-browser.c:405
 msgid "_Add new..."
 msgstr "_Lisää uusi..."
 
-#: src/nautilus-property-browser.c:897
+#: src/nautilus-property-browser.c:891
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "Valitettavasti kuviota %s ei voitu poistaa."
 
-#: src/nautilus-property-browser.c:898 src/nautilus-property-browser.c:927
+#: src/nautilus-property-browser.c:892 src/nautilus-property-browser.c:921
 msgid "Couldn't delete pattern"
 msgstr "Kuviota ei voitu poistaa"
 
-#: src/nautilus-property-browser.c:926
+#: src/nautilus-property-browser.c:920
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "Valitettavasti tunnusmerkkiä %s ei voitu poistaa."
 
-#: src/nautilus-property-browser.c:965
+#: src/nautilus-property-browser.c:959
 msgid "Create a New Emblem:"
 msgstr "Lisää uusi tunnusmerkki:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:978
+#: src/nautilus-property-browser.c:972
 msgid "_Keyword:"
 msgstr "_Avainsana:"
 
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:996
+#: src/nautilus-property-browser.c:990
 msgid "_Image:"
 msgstr "_Kuva:"
 
-#: src/nautilus-property-browser.c:1000
+#: src/nautilus-property-browser.c:994
 msgid "Select an image file for the new emblem:"
 msgstr "Valitse uuden tunnusmerkin kuva:"
 
-#: src/nautilus-property-browser.c:1024
+#: src/nautilus-property-browser.c:1018
 msgid "Create a New Color:"
 msgstr "Luo uusi väri:"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:1038
+#: src/nautilus-property-browser.c:1032
 msgid "Color _name:"
 msgstr "Värin _nimi:"
 
-#: src/nautilus-property-browser.c:1054
+#: src/nautilus-property-browser.c:1048
 msgid "Color _value:"
 msgstr "_Väriarvo:"
 
-#: src/nautilus-property-browser.c:1085
+#: src/nautilus-property-browser.c:1079
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "\"%s\" ei ole kelvollinen tiedoston nimi."
 
-#: src/nautilus-property-browser.c:1087
+#: src/nautilus-property-browser.c:1081
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "Et antanut kelvollista tiedoston nimeä."
 
-#: src/nautilus-property-browser.c:1089 src/nautilus-property-browser.c:1132
+#: src/nautilus-property-browser.c:1083 src/nautilus-property-browser.c:1126
 msgid "Couldn't install pattern"
 msgstr "Kuviota ei voitu asentaa"
 
-#: src/nautilus-property-browser.c:1100
+#: src/nautilus-property-browser.c:1094
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Et voi vaihtaa uudelleenasetuskuvaa."
 
-#: src/nautilus-property-browser.c:1131
+#: src/nautilus-property-browser.c:1125
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Valitettavasti kuviota %s ei voitu asentaa."
 
-#: src/nautilus-property-browser.c:1151
+#: src/nautilus-property-browser.c:1145
 msgid "Select an image file to add as a pattern"
 msgstr "Valitse kuviona lisättävä kuva"
 
-#: src/nautilus-property-browser.c:1212
+#: src/nautilus-property-browser.c:1206
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Uudelle värille pitää antaa nimi."
 
-#: src/nautilus-property-browser.c:1213
+#: src/nautilus-property-browser.c:1207
 msgid "Couldn't install color"
 msgstr "Väriä ei voitu asentaa"
 
-#: src/nautilus-property-browser.c:1265
+#: src/nautilus-property-browser.c:1259
 msgid "Select a color to add"
 msgstr "Valitse lisättävä väri"
 
-#: src/nautilus-property-browser.c:1347
+#: src/nautilus-property-browser.c:1341
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Valitettavasti '%s' ei ole kelvollinen kuvatiedosto."
 
-#: src/nautilus-property-browser.c:1365
+#: src/nautilus-property-browser.c:1359
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Uudelle tunnusmerkille pitää antaa avainsana."
 
-#: src/nautilus-property-browser.c:1366 src/nautilus-property-browser.c:1369
-#: src/nautilus-property-browser.c:1373 src/nautilus-property-browser.c:1404
+#: src/nautilus-property-browser.c:1360 src/nautilus-property-browser.c:1363
+#: src/nautilus-property-browser.c:1367 src/nautilus-property-browser.c:1398
 msgid "Couldn't install emblem"
 msgstr "Tunnusmerkkiä ei voitu asentaa"
 
-#: src/nautilus-property-browser.c:1368
+#: src/nautilus-property-browser.c:1362
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Valitettavasti tunnusmerkkien avainsanat voivat sisältää vain kirjaimia, "
 "tyhjää sekä numeroita."
 
-#: src/nautilus-property-browser.c:1371
+#: src/nautilus-property-browser.c:1365
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
 "for it."
 msgstr "Avainsana \"%s\" on olemassa. Valitsepa jokin toinen."
 
-#: src/nautilus-property-browser.c:1403
+#: src/nautilus-property-browser.c:1397
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Valitettavasti kuvaa %s ei voitu asentaa tunnusmerkiksi."
 
-#: src/nautilus-property-browser.c:2072
+#: src/nautilus-property-browser.c:2063
 msgid "Select A Category:"
 msgstr "Valitse kategoria:"
 
-#: src/nautilus-property-browser.c:2081
+#: src/nautilus-property-browser.c:2072
 msgid "C_ancel Remove"
 msgstr "Pe_ru poisto"
 
-#: src/nautilus-property-browser.c:2087
+#: src/nautilus-property-browser.c:2078
 msgid "_Add a New Pattern..."
 msgstr "_Lisää uusi kuvio..."
 
-#: src/nautilus-property-browser.c:2090
+#: src/nautilus-property-browser.c:2081
 msgid "_Add a New Color..."
 msgstr "_Lisää uusi väri..."
 
-#: src/nautilus-property-browser.c:2093
+#: src/nautilus-property-browser.c:2084
 msgid "_Add a New Emblem..."
 msgstr "_Lisää uusi tunnusmerkki..."
 
-#: src/nautilus-property-browser.c:2116
+#: src/nautilus-property-browser.c:2107
 msgid "Click on a pattern to remove it"
 msgstr "Napsauta kuviota poistaaksesi sen."
 
-#: src/nautilus-property-browser.c:2119
+#: src/nautilus-property-browser.c:2110
 msgid "Click on a color to remove it"
 msgstr "Napsauta väriä poistaaksesi sen"
 
-#: src/nautilus-property-browser.c:2122
+#: src/nautilus-property-browser.c:2113
 msgid "Click on an emblem to remove it"
 msgstr "Napsauta tunnusmerkkiä poistaaksesi sen"
 
-#: src/nautilus-property-browser.c:2131
+#: src/nautilus-property-browser.c:2122
 msgid "Patterns:"
 msgstr "Kuviot:"
 
-#: src/nautilus-property-browser.c:2134
+#: src/nautilus-property-browser.c:2125
 msgid "Colors:"
 msgstr "Värit:"
 
-#: src/nautilus-property-browser.c:2137
+#: src/nautilus-property-browser.c:2128
 msgid "Emblems:"
 msgstr "Tunnusmerkit:"
 
-#: src/nautilus-property-browser.c:2157
+#: src/nautilus-property-browser.c:2148
 msgid "_Remove a Pattern..."
 msgstr "_Poista kuvio..."
 
-#: src/nautilus-property-browser.c:2160
+#: src/nautilus-property-browser.c:2151
 msgid "_Remove a Color..."
 msgstr "_Poista väri..."
 
-#: src/nautilus-property-browser.c:2163
+#: src/nautilus-property-browser.c:2154
 msgid "_Remove an Emblem..."
 msgstr "_Poista tunnusmerkki..."
 
@@ -6949,8 +6941,8 @@ msgid "Up"
 msgstr "Ylös"
 
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-shell-ui.xml.h:49 src/nautilus-window.c:521
-#: src/nautilus-window.c:1349
+#: src/nautilus-shell-ui.xml.h:49 src/nautilus-window.c:524
+#: src/nautilus-window.c:1353
 msgid "View as..."
 msgstr "Näytä muodossa..."
 
@@ -6975,8 +6967,9 @@ msgid "_Back"
 msgstr "_Takaisin"
 
 #: src/nautilus-shell-ui.xml.h:55
-msgid "_Backgrounds and Emblems..."
-msgstr "_Taustat ja tunnusmerkit..."
+#, fuzzy
+msgid "_Backgrounds and Emblems"
+msgstr "Taustat ja tunnusmerkit"
 
 #: src/nautilus-shell-ui.xml.h:57
 msgid "_Clear History"
@@ -7082,13 +7075,13 @@ msgstr "_Näytä"
 msgid "_View as..."
 msgstr "_Näytä muodossa..."
 
-#: src/nautilus-sidebar.c:1350
+#: src/nautilus-sidebar.c:1354
 #, c-format
 msgid "Open with %s"
 msgstr "Avaa ohjelmalla %s"
 
 #. Catch-all button after all the others.
-#: src/nautilus-sidebar.c:1379
+#: src/nautilus-sidebar.c:1383
 msgid "Open with..."
 msgstr "Avaa ohjelmalla..."
 
@@ -7175,11 +7168,11 @@ msgstr "selaushistoriikki"
 msgid "the current selection"
 msgstr "nykyinen valinta"
 
-#: src/nautilus-window-manage-views.c:799
+#: src/nautilus-window-manage-views.c:800
 msgid "View Failed"
 msgstr "Katselu epäonnistui"
 
-#: src/nautilus-window-manage-views.c:810
+#: src/nautilus-window-manage-views.c:811
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -7188,20 +7181,20 @@ msgstr ""
 "Näkymä %s ei voi jatkaa toimintaansa, koska tapahtui virhe. Voit valita muun "
 "näkymän tai siirtyä toiseen sijaintiin."
 
-#: src/nautilus-window-manage-views.c:821
+#: src/nautilus-window-manage-views.c:822
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "Näkymässä %s tapahtui virhe sen käynnistyessä."
 
-#: src/nautilus-window-manage-views.c:978
+#: src/nautilus-window-manage-views.c:979
 msgid "Content View"
 msgstr "Sisältönäkymä"
 
-#: src/nautilus-window-manage-views.c:979
+#: src/nautilus-window-manage-views.c:980
 msgid "View of the current file or folder"
 msgstr "Nykyisen tiedoston tai hakemiston näkymä"
 
-#: src/nautilus-window-manage-views.c:1002
+#: src/nautilus-window-manage-views.c:1003
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -7209,7 +7202,7 @@ msgstr ""
 "Jossakin sivupaneelissa tapahtui virhe, joten se ei voi jatkaa. "
 "Valitettavasti ei saatu selville, mikä se niistä oli."
 
-#: src/nautilus-window-manage-views.c:1006
+#: src/nautilus-window-manage-views.c:1007
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -7218,17 +7211,17 @@ msgstr ""
 "Sivupaneeli %s ei voi jatkaa toimintaansa, koska tapahtui virhe. Jos tätä "
 "ilmenee jatkuvasti, voit poistaa kyseisen paneelin käytöstä."
 
-#: src/nautilus-window-manage-views.c:1011
+#: src/nautilus-window-manage-views.c:1012
 msgid "Sidebar Panel Failed"
 msgstr "Virhe sivupaneelissa"
 
-#: src/nautilus-window-manage-views.c:1224
+#: src/nautilus-window-manage-views.c:1258
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "Sijaintia \"%s\" ei löytynyt. Tarkasta oikeinkirjoitus ja yritä uudelleen."
 
-#: src/nautilus-window-manage-views.c:1230
+#: src/nautilus-window-manage-views.c:1264
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
@@ -7236,7 +7229,7 @@ msgstr ""
 "\"%s\" ei ole kelvollinen sijainti. Tarkasta oikeinkirjoitus ja yritä "
 "uudelleen."
 
-#: src/nautilus-window-manage-views.c:1244
+#: src/nautilus-window-manage-views.c:1278
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -7244,32 +7237,32 @@ msgid ""
 msgstr ""
 "Sijaintia \"%s\" ei voitu näyttää, koska Nautilus ei tiedä sen tyyppiä."
 
-#: src/nautilus-window-manage-views.c:1252
+#: src/nautilus-window-manage-views.c:1286
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr ""
 "Nautilukseen ei ole asennettu katselinta, joka voisi näyttää kohteen \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1264
+#: src/nautilus-window-manage-views.c:1298
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Ei voitu näyttää kohdetta \"%s\", koska Nautilus ei voi käsitellä %s: -"
 "sijainteja."
 
-#: src/nautilus-window-manage-views.c:1270
+#: src/nautilus-window-manage-views.c:1304
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr ""
 "Ei voitu näyttää kohdetta \"%s\", koska sisään kirjautuminen epäonnistui."
 
-#: src/nautilus-window-manage-views.c:1275
+#: src/nautilus-window-manage-views.c:1309
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Ei voitu näyttää kohdetta \"%s\", koska oikeudet eivät riittäneet."
 
-#: src/nautilus-window-manage-views.c:1286
+#: src/nautilus-window-manage-views.c:1320
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -7279,7 +7272,7 @@ msgstr ""
 "löytynyt. Varmista että se on oikein kirjoitettu ja että "
 "välityspalvelinasetukset ovat kunnossa."
 
-#: src/nautilus-window-manage-views.c:1294
+#: src/nautilus-window-manage-views.c:1328
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -7288,7 +7281,7 @@ msgstr ""
 "Ei voitu näyttää kohdetta \"%s\", koska isäntäkoneen nimi oli tyhjä. "
 "Varmista, että välityspalvelinasetukset ovat kunnossa."
 
-#: src/nautilus-window-manage-views.c:1306
+#: src/nautilus-window-manage-views.c:1340
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -7299,11 +7292,11 @@ msgstr ""
 "ei ole käynnissä. Varmista, että olet käynnistänyt Medusa-etsintäpalvelun. "
 "Jos sinulla ei ole luetteloa vielä, niin käynnistä myös Medusa-luettelin."
 
-#: src/nautilus-window-manage-views.c:1310
+#: src/nautilus-window-manage-views.c:1344
 msgid "Searching Unavailable"
 msgstr "Etsintäpalvelu ei ole saatavilla"
 
-#: src/nautilus-window-manage-views.c:1317
+#: src/nautilus-window-manage-views.c:1351
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -7314,20 +7307,20 @@ msgstr ""
 "pääselaajaan.\n"
 "Tarkista, että lähiverkossasi toimii SMB-palvelin."
 
-#: src/nautilus-window-manage-views.c:1325
+#: src/nautilus-window-manage-views.c:1359
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus ei voi näyttää sijaintia \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1330
+#: src/nautilus-window-manage-views.c:1364
 msgid "Can't Display Location"
 msgstr "Sijaintia ei voi näyttää"
 
-#: src/nautilus-window-manage-views.c:1569
+#: src/nautilus-window-manage-views.c:1603
 msgid "Side Pane"
 msgstr "Sivupaneeli"
 
-#: src/nautilus-window-manage-views.c:1571
+#: src/nautilus-window-manage-views.c:1605
 msgid "Contains a side pane view"
 msgstr "Sisältää sivupaneelinäkymän"
 
@@ -7415,24 +7408,24 @@ msgstr "Siirry muutama sivu taaksepäin"
 msgid "Go forward a number of pages"
 msgstr "Siirry muutama sivu eteenpäin"
 
-#: src/nautilus-window.c:1055
+#: src/nautilus-window.c:1059
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Näytä tämä sijainti katselimella \"%s\""
 
-#: src/nautilus-window.c:2083
+#: src/nautilus-window.c:2087
 msgid "Application ID"
 msgstr "Sovellus-ID"
 
-#: src/nautilus-window.c:2084
+#: src/nautilus-window.c:2088
 msgid "The application ID of the window."
 msgstr "Ikkunan sovellus-ID."
 
-#: src/nautilus-window.c:2090
+#: src/nautilus-window.c:2094
 msgid "Application"
 msgstr "Sovellus"
 
-#: src/nautilus-window.c:2091
+#: src/nautilus-window.c:2095
 msgid "The NautilusApplication associated with this window."
 msgstr "Tähän ikkunaan kytketty NautilusApplication."
 
@@ -7459,3 +7452,18 @@ msgstr "Suurenna"
 #: src/nautilus-zoom-control.c:1090
 msgid "Set the zoom level of the current view"
 msgstr "Aseta nykyisen näkymän suurennos"
+
+#~ msgid "Empty Trash..."
+#~ msgstr "Tyhjennä roskakori..."
+
+#~ msgid "_Delete from Trash..."
+#~ msgstr "Poista _roskakorista..."
+
+#~ msgid "_Delete..."
+#~ msgstr "_Poista..."
+
+#~ msgid "_Empty Trash..."
+#~ msgstr "_Tyhjennä roskakori..."
+
+#~ msgid "_Backgrounds and Emblems..."
+#~ msgstr "_Taustat ja tunnusmerkit..."

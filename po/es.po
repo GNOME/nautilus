@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 2.x\n"
-"POT-Creation-Date: 2002-07-19 17:11+0200\n"
+"POT-Creation-Date: 2002-07-22 23:44-0400\n"
 "PO-Revision-Date: 2002-07-19 16:18GMT-03:00\n"
 "Last-Translator: Pablo del Campo <pablodc@bigfoot.com>\n"
 "Language-Team: Español <traductores@es.gnome.org>\n"
@@ -47,7 +47,7 @@ msgid "Factory for hardware view"
 msgstr "Origen para vista de hardware"
 
 #: components/hardware/Nautilus_View_hardware.server.in.in.h:2
-#: components/hardware/nautilus-hardware-view.c:757
+#: components/hardware/nautilus-hardware-view.c:754
 #: data/static_bookmarks.xml.h:15
 msgid "Hardware"
 msgstr "Hardware"
@@ -68,15 +68,15 @@ msgstr "Ver como hardware"
 msgid "hardware view"
 msgstr "vista de hardware"
 
-#: components/hardware/nautilus-hardware-view.c:175
+#: components/hardware/nautilus-hardware-view.c:172
 msgid "name of icon for the hardware view"
 msgstr "nombre del icono para la vista de hardware"
 
-#: components/hardware/nautilus-hardware-view.c:177
+#: components/hardware/nautilus-hardware-view.c:174
 msgid "summary of hardware info"
 msgstr "resumen de información de hardware"
 
-#: components/hardware/nautilus-hardware-view.c:309
+#: components/hardware/nautilus-hardware-view.c:306
 #, c-format
 msgid ""
 "%s CPU\n"
@@ -87,45 +87,45 @@ msgstr ""
 "%s MHz\n"
 "%s KB de memoria caché"
 
-#: components/hardware/nautilus-hardware-view.c:344
+#: components/hardware/nautilus-hardware-view.c:341
 #, c-format
 msgid "%lu GB RAM"
 msgstr "%lu GB de RAM"
 
-#: components/hardware/nautilus-hardware-view.c:346
+#: components/hardware/nautilus-hardware-view.c:343
 #, c-format
 msgid "%lu MB RAM"
 msgstr "%lu MB de RAM"
 
-#: components/hardware/nautilus-hardware-view.c:404
+#: components/hardware/nautilus-hardware-view.c:401
 #, c-format
 msgid "%lu GB"
 msgstr "%lu GB"
 
-#: components/hardware/nautilus-hardware-view.c:406
+#: components/hardware/nautilus-hardware-view.c:403
 #, c-format
 msgid "%lu MB"
 msgstr "%lu MB"
 
-#: components/hardware/nautilus-hardware-view.c:486
+#: components/hardware/nautilus-hardware-view.c:483
 #, c-format
 msgid "Uptime is %d days, %d hours, %d minutes"
 msgstr "El tiempo en marcha es de %d días, %d horas, %d minutos"
 
 #. set up the title
-#: components/hardware/nautilus-hardware-view.c:512
+#: components/hardware/nautilus-hardware-view.c:509
 msgid "Hardware Overview"
 msgstr "Visión general del hardware"
 
-#: components/hardware/nautilus-hardware-view.c:635
+#: components/hardware/nautilus-hardware-view.c:632
 msgid "This is a placeholder for the CPU page."
 msgstr "Este es un contenedor para colocar la página de la CPU."
 
-#: components/hardware/nautilus-hardware-view.c:660
+#: components/hardware/nautilus-hardware-view.c:657
 msgid "This is a placeholder for the RAM page."
 msgstr "Este es un contenedor para colocar la página de RAM."
 
-#: components/hardware/nautilus-hardware-view.c:685
+#: components/hardware/nautilus-hardware-view.c:682
 msgid "This is a placeholder for the IDE page."
 msgstr "Este es un contenedor para la página IDE."
 
@@ -981,7 +981,7 @@ msgstr "Lo siento, pero «%s» no es un archivo de imagen utilizable."
 
 # libnautilus-private/nautilus-program-chooser.c:216
 #: components/music/nautilus-music-view.c:736
-#: src/nautilus-property-browser.c:1100 src/nautilus-property-browser.c:1348
+#: src/nautilus-property-browser.c:1094 src/nautilus-property-browser.c:1342
 msgid "Not an Image"
 msgstr "No es una imagen"
 
@@ -2619,7 +2619,7 @@ msgstr "Reemplazar todos"
 # src/nautilus-link-set-window.c:185
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1109
-#: libnautilus-private/nautilus-file.c:4219
+#: libnautilus-private/nautilus-file.c:4226
 #, c-format
 msgid "link to %s"
 msgstr "enlace hacia %s"
@@ -2990,14 +2990,15 @@ msgstr "Preparandose para vaciar la Papelera..."
 
 # src/file-manager/fm-directory-view.c:2154
 #: libnautilus-private/nautilus-file-operations.c:2221
-#: src/file-manager/fm-desktop-icon-view.c:1355
+#: src/file-manager/fm-desktop-icon-view.c:1354
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 msgid "Empty Trash"
 msgstr "Vaciar Papelera"
 
 # src/file-manager/fm-directory-view.c:1855
 #: libnautilus-private/nautilus-file-operations.c:2237
-msgid "Are you sure you want to permanently delete all of the items in the Trash?"
+msgid ""
+"Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr ""
 "¿Está seguro que desea eliminar permanentemente todos los elementos de la "
 "Papelera?"
@@ -3287,36 +3288,36 @@ msgstr "foo (copia 124).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2470
+#: libnautilus-private/nautilus-file.c:2477
 msgid "today at 00:00:00 PM"
 msgstr "hoy a las 00:00:00 PM"
 
 # libnautilus-private/nautilus-file.c:1557
-#: libnautilus-private/nautilus-file.c:2471
+#: libnautilus-private/nautilus-file.c:2478
 msgid "today at %-I:%M:%S %p"
 msgstr "hoy a las %-I:%M:%S %p"
 
 # libnautilus-private/nautilus-file.c:1557
-#: libnautilus-private/nautilus-file.c:2473
+#: libnautilus-private/nautilus-file.c:2480
 msgid "today at 00:00 PM"
 msgstr "hoy a las 00:00 PM"
 
 # libnautilus-private/nautilus-file.c:1557
-#: libnautilus-private/nautilus-file.c:2474
+#: libnautilus-private/nautilus-file.c:2481
 msgid "today at %-I:%M %p"
 msgstr "hoy a las %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2476
+#: libnautilus-private/nautilus-file.c:2483
 msgid "today, 00:00 PM"
 msgstr "hoy, 00:00 PM"
 
 # libnautilus-private/nautilus-file.c:1557
-#: libnautilus-private/nautilus-file.c:2477
+#: libnautilus-private/nautilus-file.c:2484
 msgid "today, %-I:%M %p"
 msgstr "hoy, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2479
-#: libnautilus-private/nautilus-file.c:2480
+#: libnautilus-private/nautilus-file.c:2486
+#: libnautilus-private/nautilus-file.c:2487
 msgid "today"
 msgstr "hoy"
 
@@ -3324,39 +3325,39 @@ msgstr "hoy"
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2489
+#: libnautilus-private/nautilus-file.c:2496
 msgid "yesterday at 00:00:00 PM"
 msgstr "ayer a las 00:00:00 PM"
 
 # libnautilus-private/nautilus-file.c:1560
-#: libnautilus-private/nautilus-file.c:2490
+#: libnautilus-private/nautilus-file.c:2497
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "ayer a las %-I:%M:%S %p"
 
 # libnautilus-private/nautilus-file.c:1560
-#: libnautilus-private/nautilus-file.c:2492
+#: libnautilus-private/nautilus-file.c:2499
 msgid "yesterday at 00:00 PM"
 msgstr "ayer a las 00:00 PM"
 
 # libnautilus-private/nautilus-file.c:1560
-#: libnautilus-private/nautilus-file.c:2493
+#: libnautilus-private/nautilus-file.c:2500
 msgid "yesterday at %-I:%M %p"
 msgstr "ayer a las %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2495
+#: libnautilus-private/nautilus-file.c:2502
 msgid "yesterday, 00:00 PM"
 msgstr "ayer, 00:00 PM"
 
 # libnautilus-private/nautilus-file.c:1560
-#: libnautilus-private/nautilus-file.c:2496
+#: libnautilus-private/nautilus-file.c:2503
 msgid "yesterday, %-I:%M %p"
 msgstr "ayer, %-I:%M %p"
 
 # components/services/install/command-line/eazel-alt-install-corba.c:94
 # components/services/install/command-line/eazel-revert.c:78
 # components/services/install/command-line/eazel-uninstall.c:69
-#: libnautilus-private/nautilus-file.c:2498
-#: libnautilus-private/nautilus-file.c:2499
+#: libnautilus-private/nautilus-file.c:2505
+#: libnautilus-private/nautilus-file.c:2506
 msgid "yesterday"
 msgstr "ayer"
 
@@ -3365,136 +3366,136 @@ msgstr "ayer"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2510
+#: libnautilus-private/nautilus-file.c:2517
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "Miércoles, Septiembre 00 0000 a las 00:00:00 PM"
 
 # libnautilus-private/nautilus-file.c:1563
-#: libnautilus-private/nautilus-file.c:2511
+#: libnautilus-private/nautilus-file.c:2518
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A, %B %-d %Y a las %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2513
+#: libnautilus-private/nautilus-file.c:2520
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "Lun, Oct 00 0000 a las 00:00:00 PM"
 
 # libnautilus-private/nautilus-file.c:1563
-#: libnautilus-private/nautilus-file.c:2514
+#: libnautilus-private/nautilus-file.c:2521
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a, %b %-d %Y a las %-I:%M:%S %p"
 
-#: libnautilus-private/nautilus-file.c:2516
+#: libnautilus-private/nautilus-file.c:2523
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "Lun, Oct 00 0000 a las 00:00 PM"
 
 # libnautilus-private/nautilus-file.c:1563
-#: libnautilus-private/nautilus-file.c:2517
+#: libnautilus-private/nautilus-file.c:2524
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a, %b %-d %Y a las %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2519
+#: libnautilus-private/nautilus-file.c:2526
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "Oct 00 0000 a las 00:00 PM"
 
 # libnautilus-private/nautilus-file.c:1565
-#: libnautilus-private/nautilus-file.c:2520
+#: libnautilus-private/nautilus-file.c:2527
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%b %-d %Y a las %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2522
+#: libnautilus-private/nautilus-file.c:2529
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "Oct 00 0000, 00:00 PM"
 
 # libnautilus-private/nautilus-file.c:1565
-#: libnautilus-private/nautilus-file.c:2523
+#: libnautilus-private/nautilus-file.c:2530
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%b %-d %Y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2525
+#: libnautilus-private/nautilus-file.c:2532
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00/00, 00:00 PM"
 
 # libnautilus-private/nautilus-file.c:1565
-#: libnautilus-private/nautilus-file.c:2526
+#: libnautilus-private/nautilus-file.c:2533
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%m/%-d/%y, %-I:%M %p"
 
-#: libnautilus-private/nautilus-file.c:2528
+#: libnautilus-private/nautilus-file.c:2535
 msgid "00/00/00"
 msgstr "00/00/00"
 
-#: libnautilus-private/nautilus-file.c:2529
+#: libnautilus-private/nautilus-file.c:2536
 msgid "%m/%d/%y"
 msgstr "%d/%m/%y"
 
 # libnautilus-private/nautilus-file.c:2585
-#: libnautilus-private/nautilus-file.c:3804
+#: libnautilus-private/nautilus-file.c:3811
 msgid "0 items"
 msgstr "0 elementos"
 
 # libnautilus-private/nautilus-file.c:2586
-#: libnautilus-private/nautilus-file.c:3804
+#: libnautilus-private/nautilus-file.c:3811
 msgid "0 folders"
 msgstr "0 carpetas"
 
 # libnautilus-private/nautilus-file.c:2586
-#: libnautilus-private/nautilus-file.c:3805
+#: libnautilus-private/nautilus-file.c:3812
 msgid "0 files"
 msgstr "0 archivos"
 
 # libnautilus-private/nautilus-file.c:2590
-#: libnautilus-private/nautilus-file.c:3809
+#: libnautilus-private/nautilus-file.c:3816
 msgid "1 item"
 msgstr "1 elemento"
 
 # libnautilus-private/nautilus-file.c:2591
-#: libnautilus-private/nautilus-file.c:3809
+#: libnautilus-private/nautilus-file.c:3816
 msgid "1 folder"
 msgstr "1 carpeta"
 
 # libnautilus-private/nautilus-file.c:2591
-#: libnautilus-private/nautilus-file.c:3810
+#: libnautilus-private/nautilus-file.c:3817
 msgid "1 file"
 msgstr "1 archivo"
 
 # libnautilus-private/nautilus-file.c:2594
-#: libnautilus-private/nautilus-file.c:3813
+#: libnautilus-private/nautilus-file.c:3820
 #, c-format
 msgid "%u items"
 msgstr "%u elementos"
 
 # libnautilus-private/nautilus-file.c:2595
-#: libnautilus-private/nautilus-file.c:3813
+#: libnautilus-private/nautilus-file.c:3820
 #, c-format
 msgid "%u folders"
 msgstr "%u carpetas"
 
 # libnautilus-private/nautilus-file.c:2595
-#: libnautilus-private/nautilus-file.c:3814
+#: libnautilus-private/nautilus-file.c:3821
 #, c-format
 msgid "%u files"
 msgstr "%u archivos"
 
 # libnautilus-private/nautilus-file.c:2585
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4121
-#: libnautilus-private/nautilus-file.c:4137
+#: libnautilus-private/nautilus-file.c:4128
+#: libnautilus-private/nautilus-file.c:4144
 msgid "? items"
 msgstr "? elementos"
 
 # libnautilus-private/nautilus-file.c:2585
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4127
+#: libnautilus-private/nautilus-file.c:4134
 msgid "? bytes"
 msgstr "? bytes"
 
 # libnautilus-private/nautilus-file.c:2929
-#: libnautilus-private/nautilus-file.c:4142
+#: libnautilus-private/nautilus-file.c:4149
 msgid "unknown type"
 msgstr "tipo desconocido"
 
 # libnautilus-private/nautilus-file.c:2931
-#: libnautilus-private/nautilus-file.c:4145
+#: libnautilus-private/nautilus-file.c:4152
 msgid "unknown MIME type"
 msgstr "Tipo MIME desconocido"
 
@@ -3502,16 +3503,16 @@ msgstr "Tipo MIME desconocido"
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4151
+#: libnautilus-private/nautilus-file.c:4158
 msgid "unknown"
 msgstr "desconocido"
 
 # libnautilus-private/nautilus-file.c:2965
-#: libnautilus-private/nautilus-file.c:4183
+#: libnautilus-private/nautilus-file.c:4190
 msgid "program"
 msgstr "programa"
 
-#: libnautilus-private/nautilus-file.c:4195
+#: libnautilus-private/nautilus-file.c:4202
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -3521,7 +3522,7 @@ msgstr ""
 "esto signifique que su archivo gnome-vfs.keys está en un lugar incorrecto o "
 "que no esta siendo encontrada por alguna otra razón."
 
-#: libnautilus-private/nautilus-file.c:4199
+#: libnautilus-private/nautilus-file.c:4206
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -3531,15 +3532,15 @@ msgstr ""
 "avise a la lista de correo de gnome-vfs."
 
 # src/file-manager/dfos-xfer.c:714
-#: libnautilus-private/nautilus-file.c:4213
+#: libnautilus-private/nautilus-file.c:4220
 msgid "link"
 msgstr "enlace"
 
-#: libnautilus-private/nautilus-file.c:4233
+#: libnautilus-private/nautilus-file.c:4240
 msgid "link (broken)"
 msgstr "enlace (roto)"
 
-#: libnautilus-private/nautilus-file.c:5276
+#: libnautilus-private/nautilus-file.c:5283
 #: libnautilus-private/nautilus-trash-directory.c:373
 #: src/file-manager/fm-desktop-icon-view.c:70
 msgid "Trash"
@@ -4462,7 +4463,8 @@ msgstr "[Elementos ]sin ninguna de las palabras «%s»"
 
 #: libnautilus-private/nautilus-search-uri.c:555
 msgid "[Items larger than 400K] and [without all the words \"apple orange\"]"
-msgstr "[Elementos mayores de 400K] y [sin ninguna de las palabras «manzana naranja»]"
+msgstr ""
+"[Elementos mayores de 400K] y [sin ninguna de las palabras «manzana naranja»]"
 
 #. Human readable description for a criterion in a search for
 #. files. Bracketed items are context, and are message
@@ -4864,15 +4866,24 @@ msgstr "Error al ejecutar el programa utilitario «%s» : %s"
 msgid "%s's Home"
 msgstr "Carpeta de inicio de %s"
 
-# src/file-manager/fm-directory-view.c:2154
-#: src/file-manager/fm-desktop-icon-view.c:1353
-msgid "Empty Trash..."
-msgstr "Vaciar Papelera..."
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# src/file-manager/fm-properties-window.c:1581
+#: src/file-manager/fm-desktop-icon-view.c:1372
+#, fuzzy
+msgid "E_ject"
+msgstr "E_jecución"
+
+# components/html/gnome-dialogs.c:234
+#: src/file-manager/fm-desktop-icon-view.c:1472
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
+msgid "_Unmount Volume"
+msgstr "_Desmontar volumen"
 
 #: src/file-manager/fm-directory-view.c:476
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
-msgstr "Esto abrirá %d ventanas separadas. ¿Está seguro de que quiere hacer esto?"
+msgstr ""
+"Esto abrirá %d ventanas separadas. ¿Está seguro de que quiere hacer esto?"
 
 # src/file-manager/fm-directory-view.c:2128
 #: src/file-manager/fm-directory-view.c:478
@@ -5012,8 +5023,10 @@ msgstr "Demasiados archivos"
 
 #: src/file-manager/fm-directory-view.c:3033
 #, c-format
-msgid "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
-msgstr "«%s» no puede ser movido a la Papelera. ¿Quiere eliminarlo directamente?"
+msgid ""
+"\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
+msgstr ""
+"«%s» no puede ser movido a la Papelera. ¿Quiere eliminarlo directamente?"
 
 #: src/file-manager/fm-directory-view.c:3038
 #, c-format
@@ -5159,14 +5172,16 @@ msgstr "«%s» será copiado si selecciona la orden «Pegar Archivos»"
 
 #: src/file-manager/fm-directory-view.c:4095
 #, c-format
-msgid "The %d selected items will be moved if you select the Paste Files command"
+msgid ""
+"The %d selected items will be moved if you select the Paste Files command"
 msgstr ""
 "Los %d elementos seleccionados serán movidos si selecciona la orden «Pegar "
 "Archivos»"
 
 #: src/file-manager/fm-directory-view.c:4099
 #, c-format
-msgid "The %d selected items will be copied if you select the Paste Files command"
+msgid ""
+"The %d selected items will be copied if you select the Paste Files command"
 msgstr ""
 "Los %d elementos seleccionados serán copiados si selecciona la orden «Pegar "
 "Archivos»"
@@ -5193,10 +5208,6 @@ msgid "Open _in %d New Windows"
 msgstr "Abr_ir en %d nuevas ventanas"
 
 #: src/file-manager/fm-directory-view.c:4386
-msgid "_Delete from Trash..."
-msgstr "Eliminar de la _Papelera..."
-
-#: src/file-manager/fm-directory-view.c:4386
 msgid "_Delete from Trash"
 msgstr "Eliminar de la _Papelera"
 
@@ -5217,72 +5228,63 @@ msgstr "Mo_ver a la Papelera"
 msgid "Move each selected item to the Trash"
 msgstr "Mueve cada elemento seleccionado a la Papelera"
 
-# src/file-manager/fm-directory-view.c:1865
-#: src/file-manager/fm-directory-view.c:4418
-msgid "_Delete..."
-msgstr "_Eliminar..."
-
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-directory-view.c:1865
-#: src/file-manager/fm-directory-view.c:4418
+#: src/file-manager/fm-directory-view.c:4417
 #: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "_Delete"
 msgstr "_Eliminar"
 
-#: src/file-manager/fm-directory-view.c:4438
+#: src/file-manager/fm-directory-view.c:4437
 msgid "Ma_ke Links"
 msgstr "Crear en_laces"
 
-#: src/file-manager/fm-directory-view.c:4439
+#: src/file-manager/fm-directory-view.c:4438
 #: src/file-manager/nautilus-directory-view-ui.xml.h:14
 msgid "Ma_ke Link"
 msgstr "Crear en_lace"
 
 # src/file-manager/fm-directory-view.c:2154
-#: src/file-manager/fm-directory-view.c:4453 src/nautilus-sidebar.c:1487
-msgid "_Empty Trash..."
-msgstr "_Vaciar la Papelera..."
-
-# src/file-manager/fm-directory-view.c:2154
-#: src/file-manager/fm-directory-view.c:4454
+#. FIXME: We don't use spaces to pad labels!
+#: src/file-manager/fm-directory-view.c:4451
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
-#: src/nautilus-sidebar.c:1488
+#: src/nautilus-sidebar.c:1490
 msgid "_Empty Trash"
 msgstr "_Vaciar la Papelera"
 
 # src/file-manager/fm-directory-view.c:2163
-#: src/file-manager/fm-directory-view.c:4464
+#: src/file-manager/fm-directory-view.c:4461
 #: src/file-manager/nautilus-directory-view-ui.xml.h:27
 msgid "Re_move Custom Icons"
 msgstr "Q_uitar los iconos personalizados"
 
 # src/file-manager/fm-directory-view.c:2163
-#: src/file-manager/fm-directory-view.c:4465
+#: src/file-manager/fm-directory-view.c:4462
 msgid "Re_move Custom Icon"
 msgstr "Q_uitar el icono personalizado"
 
 # components/music/nautilus-music-view.c:198
-#: src/file-manager/fm-directory-view.c:4478
+#: src/file-manager/fm-directory-view.c:4475
 msgid "Cu_t File"
 msgstr "Cor_tar archivo"
 
 # components/music/nautilus-music-view.c:198
-#: src/file-manager/fm-directory-view.c:4479
+#: src/file-manager/fm-directory-view.c:4476
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "Cor_tar archivos"
 
-#: src/file-manager/fm-directory-view.c:4488
+#: src/file-manager/fm-directory-view.c:4485
 msgid "_Copy File"
 msgstr "_Copiar archivo"
 
 # src/file-manager/dfos-xfer.c:723
-#: src/file-manager/fm-directory-view.c:4489
+#: src/file-manager/fm-directory-view.c:4486
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "_Copy Files"
 msgstr "_Copiar archivos"
 
-#: src/file-manager/fm-directory-view.c:4671
+#: src/file-manager/fm-directory-view.c:4668
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
@@ -5290,7 +5292,7 @@ msgstr ""
 "Este enlace no puede ser utilizado ya que no tiene destino. ¿Quiere poner "
 "este enlace en la Papelera?"
 
-#: src/file-manager/fm-directory-view.c:4674
+#: src/file-manager/fm-directory-view.c:4671
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -5299,15 +5301,15 @@ msgstr ""
 "Este enlace no puede ser usado porque el destino «%s» no existe. ¿Quiere "
 "poner este enlace en la Papelera?"
 
-#: src/file-manager/fm-directory-view.c:4680
+#: src/file-manager/fm-directory-view.c:4677
 msgid "Broken Link"
 msgstr "Enlace roto"
 
-#: src/file-manager/fm-directory-view.c:4680
+#: src/file-manager/fm-directory-view.c:4677
 msgid "Throw Away"
 msgstr "Descartar"
 
-#: src/file-manager/fm-directory-view.c:4737
+#: src/file-manager/fm-directory-view.c:4734
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -5317,46 +5319,48 @@ msgstr ""
 "contenido?"
 
 # libnautilus-private/nautilus-global-preferences.c:149
-#: src/file-manager/fm-directory-view.c:4743
+#: src/file-manager/fm-directory-view.c:4740
 msgid "Run or Display?"
 msgstr "¿Ejecutar o ver?"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # libnautilus-private/nautilus-global-preferences.c:149
-#: src/file-manager/fm-directory-view.c:4744
+#: src/file-manager/fm-directory-view.c:4741
 msgid "_Display"
 msgstr "_Mostrar"
 
 # src/file-manager/fm-desktop-icon-view.c:222
-#: src/file-manager/fm-directory-view.c:4745
+#: src/file-manager/fm-directory-view.c:4742
 msgid "Run in _Terminal"
 msgstr "Ejecutar en una _Terminal"
 
-#: src/file-manager/fm-directory-view.c:4748
+#: src/file-manager/fm-directory-view.c:4745
 msgid "_Run"
 msgstr "E_jecutar"
 
 # src/file-manager/fm-icon-view.c:1277
-#: src/file-manager/fm-directory-view.c:4919
+#: src/file-manager/fm-directory-view.c:4916
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Abriendo «%s»"
 
 # src/file-manager/fm-error-reporting.c:226
-#: src/file-manager/fm-directory-view.c:4925
+#: src/file-manager/fm-directory-view.c:4922
 msgid "Cancel Open?"
 msgstr "¿Cancelar abrir?"
 
 # src/nautilus-window-manage-views.c:648
 #: src/file-manager/fm-error-reporting.c:57
 #, c-format
-msgid "You do not have the permissions necessary to view the contents of \"%s\"."
+msgid ""
+"You do not have the permissions necessary to view the contents of \"%s\"."
 msgstr "No tiene los permisos suficientes para ver el contenido de «%s»."
 
 #: src/file-manager/fm-error-reporting.c:61
 #, c-format
 msgid "\"%s\" couldn't be found. Perhaps it has recently been deleted."
-msgstr "«%s» no ha podido ser encontrado. Quizás haya sido eliminado recientemente."
+msgstr ""
+"«%s» no ha podido ser encontrado. Quizás haya sido eliminado recientemente."
 
 # src/file-manager/fm-error-reporting.c:115
 #: src/file-manager/fm-error-reporting.c:68
@@ -5371,14 +5375,16 @@ msgstr "Error al mostrar la carpeta"
 # src/file-manager/fm-error-reporting.c:50
 #: src/file-manager/fm-error-reporting.c:102
 #, c-format
-msgid "The name \"%s\" is already used in this folder. Please use a different name."
+msgid ""
+"The name \"%s\" is already used in this folder. Please use a different name."
 msgstr ""
 "El nombre «%s» ya está siendo usado en esta carpeta. Por favor seleccione un "
 "nombre distinto."
 
 #: src/file-manager/fm-error-reporting.c:107
 #, c-format
-msgid "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
+msgid ""
+"There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
 msgstr ""
 "No existe un «%s» en esta carpeta. Quizás fué movido o eliminado "
 "recientemente."
@@ -5426,7 +5432,8 @@ msgstr "Error al cambiar el nombre"
 # src/file-manager/fm-error-reporting.c:85
 #: src/file-manager/fm-error-reporting.c:163
 #, c-format
-msgid "You do not have the permissions necessary to change the group of \"%s\"."
+msgid ""
+"You do not have the permissions necessary to change the group of \"%s\"."
 msgstr "No tiene los permisos suficientes para cambiar el grupo de «%s»."
 
 #: src/file-manager/fm-error-reporting.c:167
@@ -5466,7 +5473,8 @@ msgstr "Error al cambiar el propietario"
 # src/file-manager/fm-error-reporting.c:137
 #: src/file-manager/fm-error-reporting.c:233
 #, c-format
-msgid "Couldn't change the permissions of \"%s\" because it is on a read-only disk"
+msgid ""
+"Couldn't change the permissions of \"%s\" because it is on a read-only disk"
 msgstr ""
 "No se ha podido cambiar los permisos de «%s» porque está en un disco de sólo "
 "lectura"
@@ -5567,7 +5575,8 @@ msgstr "apuntando hacia «%s»"
 
 #: src/file-manager/fm-icon-view.c:2254
 msgid "Drag and drop is only supported to local file systems."
-msgstr "Arrastrar y soltar solo está soportado para sistemas de archivos locales."
+msgstr ""
+"Arrastrar y soltar solo está soportado para sistemas de archivos locales."
 
 #: src/file-manager/fm-icon-view.c:2255 src/file-manager/fm-icon-view.c:2273
 msgid "Drag and Drop error"
@@ -5606,7 +5615,7 @@ msgstr "Tipo"
 msgid "Date Modified"
 msgstr "Fecha de modificación"
 
-#: src/file-manager/fm-properties-window.c:314 src/nautilus-sidebar.c:734
+#: src/file-manager/fm-properties-window.c:314 src/nautilus-sidebar.c:738
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
 "image to set a custom icon."
@@ -5614,11 +5623,11 @@ msgstr ""
 "¡No puede asignar más de un icono personalizado a la vez! Por favor arrastre "
 "sólo una imagen para usarla como icono personalizado."
 
-#: src/file-manager/fm-properties-window.c:316 src/nautilus-sidebar.c:736
+#: src/file-manager/fm-properties-window.c:316 src/nautilus-sidebar.c:740
 msgid "More Than One Image"
 msgstr "Más de una Imagen"
 
-#: src/file-manager/fm-properties-window.c:325 src/nautilus-sidebar.c:755
+#: src/file-manager/fm-properties-window.c:325 src/nautilus-sidebar.c:759
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
 "custom icons."
@@ -5627,11 +5636,11 @@ msgstr ""
 "como iconos personalizados"
 
 # libnautilus-private/nautilus-global-preferences.c:587
-#: src/file-manager/fm-properties-window.c:327 src/nautilus-sidebar.c:757
+#: src/file-manager/fm-properties-window.c:327 src/nautilus-sidebar.c:761
 msgid "Local Images Only"
 msgstr "Sólo imágenes locales"
 
-#: src/file-manager/fm-properties-window.c:332 src/nautilus-sidebar.c:762
+#: src/file-manager/fm-properties-window.c:332 src/nautilus-sidebar.c:766
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
 "custom icons."
@@ -5639,7 +5648,7 @@ msgstr ""
 "El archivo que a soltado no es una imagen. Sólo use imágenes locales como "
 "iconos personalizados."
 
-#: src/file-manager/fm-properties-window.c:334 src/nautilus-sidebar.c:764
+#: src/file-manager/fm-properties-window.c:334 src/nautilus-sidebar.c:768
 msgid "Images Only"
 msgstr "Sólo imágenes"
 
@@ -6180,7 +6189,8 @@ msgid "Protect the selected volume"
 msgstr "Proteger el volumen seleccionado"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:14
-msgid "Show a window that lets you set your desktop background's pattern or color"
+msgid ""
+"Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
 "Muestra una ventana que le deja configurar el patrón de fondo o el color de "
 "su escritorio"
@@ -6197,7 +6207,7 @@ msgstr "Desmontar el volumen seleccionado"
 #. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:17
 #: src/file-manager/nautilus-directory-view-ui.xml.h:36
-#: src/nautilus-sidebar.c:560
+#: src/nautilus-sidebar.c:564
 msgid "Use _Default Background"
 msgstr "Usar el fondo _predeterminado"
 
@@ -6209,11 +6219,6 @@ msgstr "Usar el fondo de escritorio predeterminado"
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:19
 msgid "_Format"
 msgstr "_Formato"
-
-# components/html/gnome-dialogs.c:234
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
-msgid "_Unmount Volume"
-msgstr "_Desmontar volumen"
 
 # libnautilus-private/nautilus-program-chooser.c:1248
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
@@ -6262,7 +6267,8 @@ msgid "Edit the launcher information"
 msgstr "Edita la información del lanzador"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
-msgid "Move or copy files previously selected by a Cut Files or Copy Files command"
+msgid ""
+"Move or copy files previously selected by a Cut Files or Copy Files command"
 msgstr ""
 "Mueve o copia archivos previamente seleccionados por una orden «Cortar» o "
 "«Copiar archivos»"
@@ -6338,7 +6344,8 @@ msgstr "Usa el fondo predeterminado para esta dirección"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:38
 msgid "View or modify the properties of each selected item"
-msgstr "Muestra o permite modificar las propiedades de cada elemento seleccionado"
+msgstr ""
+"Muestra o permite modificar las propiedades de cada elemento seleccionado"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-directory-view.c:2140
@@ -6369,7 +6376,8 @@ msgstr "_Propiedades"
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-icon-view.c:328
 #: src/file-manager/nautilus-directory-view-ui.xml.h:47
-msgid "_Rename"
+#, fuzzy
+msgid "_Rename..."
 msgstr "_Renombrar"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:48
@@ -6674,7 +6682,7 @@ msgstr ""
 "server y reiniciar Nautilus quizá ayude a arreglar el problema."
 
 #: src/nautilus-bookmarks-window.c:137 src/nautilus-preferences-dialog.c:371
-#: src/nautilus-property-browser.c:1504 src/nautilus-window-menus.c:688
+#: src/nautilus-property-browser.c:1498 src/nautilus-window-menus.c:688
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -7132,140 +7140,142 @@ msgid "Profile Dump"
 msgstr "Volcado de perfil"
 
 #. set the title and standard close accelerator
-#: src/nautilus-property-browser.c:273
+#: src/nautilus-property-browser.c:268
 msgid "Backgrounds and Emblems"
 msgstr "Fondos y emblemas"
 
 # src/nautilus-property-browser.c:307
-#: src/nautilus-property-browser.c:390
+#: src/nautilus-property-browser.c:384
 msgid "_Remove..."
 msgstr "_Quitar..."
 
 # src/nautilus-property-browser.c:296
-#: src/nautilus-property-browser.c:411
+#: src/nautilus-property-browser.c:405
 msgid "_Add new..."
 msgstr "_Agregar nuevo..."
 
-#: src/nautilus-property-browser.c:897
+#: src/nautilus-property-browser.c:891
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "Lo siento, pero el fondo %s no ha podido ser eliminado."
 
 # components/services/install/lib/eazel-install-protocols.c:116
-#: src/nautilus-property-browser.c:898 src/nautilus-property-browser.c:927
+#: src/nautilus-property-browser.c:892 src/nautilus-property-browser.c:921
 msgid "Couldn't delete pattern"
 msgstr "No se ha podido eliminar el fondo"
 
-#: src/nautilus-property-browser.c:926
+#: src/nautilus-property-browser.c:920
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "Lo siento, pero el emblema %s no ha podido ser eliminado."
 
 # src/nautilus-property-browser.c:853
-#: src/nautilus-property-browser.c:965
+#: src/nautilus-property-browser.c:959
 msgid "Create a New Emblem:"
 msgstr "Crear un emblema nuevo:"
 
 # src/nautilus-property-browser.c:858
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:978
+#: src/nautilus-property-browser.c:972
 msgid "_Keyword:"
 msgstr "_Descripción:"
 
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:996
+#: src/nautilus-property-browser.c:990
 msgid "_Image:"
 msgstr "_Imagen:"
 
 # src/nautilus-property-browser.c:875
-#: src/nautilus-property-browser.c:1000
+#: src/nautilus-property-browser.c:994
 msgid "Select an image file for the new emblem:"
 msgstr "Seleccione un archivo de imagen para el nuevo emblema:"
 
 # src/nautilus-property-browser.c:853
-#: src/nautilus-property-browser.c:1024
+#: src/nautilus-property-browser.c:1018
 msgid "Create a New Color:"
 msgstr "Crear un color nuevo:"
 
 # libnautilus-private/nautilus-icon-text-item.c:1487
 # src/file-manager/fm-icon-view.c:1105
 #. make the name label and field
-#: src/nautilus-property-browser.c:1038
+#: src/nautilus-property-browser.c:1032
 msgid "Color _name:"
 msgstr "Nombre del _color:"
 
-#: src/nautilus-property-browser.c:1054
+#: src/nautilus-property-browser.c:1048
 msgid "Color _value:"
 msgstr "_Valor del color:"
 
 # src/nautilus-property-browser.c:826 src/nautilus-property-browser.c:920
-#: src/nautilus-property-browser.c:1085
+#: src/nautilus-property-browser.c:1079
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "Lo siento, pero «%s» no es un nombre de archivo válido."
 
 # src/nautilus-property-browser.c:826 src/nautilus-property-browser.c:920
-#: src/nautilus-property-browser.c:1087
+#: src/nautilus-property-browser.c:1081
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "Lo siento, pero no escribió un archivo de nombre válido."
 
 # components/services/install/lib/eazel-install-protocols.c:116
-#: src/nautilus-property-browser.c:1089 src/nautilus-property-browser.c:1132
+#: src/nautilus-property-browser.c:1083 src/nautilus-property-browser.c:1126
 msgid "Couldn't install pattern"
 msgstr "No se ha podido instalar el fondo"
 
-#: src/nautilus-property-browser.c:1100
+#: src/nautilus-property-browser.c:1094
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Lo siento, pero usted no puede cambiar la imagen de reinicio"
 
-#: src/nautilus-property-browser.c:1131
+#: src/nautilus-property-browser.c:1125
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Lo siento, pero el fondo %s no ha podido ser instalado."
 
 # src/nautilus-property-browser.c:985
-#: src/nautilus-property-browser.c:1151
+#: src/nautilus-property-browser.c:1145
 msgid "Select an image file to add as a pattern"
 msgstr "Seleccione un archivo de imagen para agregar como fondo"
 
-#: src/nautilus-property-browser.c:1212
+#: src/nautilus-property-browser.c:1206
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Lo siento, pero debe especificar un nombre para el nuevo color."
 
 # components/services/trilobite/libtrilobite/trilobite-core-utils.c:197
-#: src/nautilus-property-browser.c:1213
+#: src/nautilus-property-browser.c:1207
 msgid "Couldn't install color"
 msgstr "No se ha podido instalar el color"
 
 # src/nautilus-property-browser.c:1083
-#: src/nautilus-property-browser.c:1265
+#: src/nautilus-property-browser.c:1259
 msgid "Select a color to add"
 msgstr "Seleccione un color a agregar"
 
 # src/nautilus-property-browser.c:826 src/nautilus-property-browser.c:920
-#: src/nautilus-property-browser.c:1347
+#: src/nautilus-property-browser.c:1341
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Lo siento, pero «%s» no es un archivo de imagen que se pueda usar"
 
-#: src/nautilus-property-browser.c:1365
+#: src/nautilus-property-browser.c:1359
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
-msgstr "Lo siento, pero debe especificar una descripción para el nuevo emblema."
+msgstr ""
+"Lo siento, pero debe especificar una descripción para el nuevo emblema."
 
 # components/services/trilobite/libtrilobite/trilobite-core-utils.c:197
-#: src/nautilus-property-browser.c:1366 src/nautilus-property-browser.c:1369
-#: src/nautilus-property-browser.c:1373 src/nautilus-property-browser.c:1404
+#: src/nautilus-property-browser.c:1360 src/nautilus-property-browser.c:1363
+#: src/nautilus-property-browser.c:1367 src/nautilus-property-browser.c:1398
 msgid "Couldn't install emblem"
 msgstr "No se ha podido instalar el emblema"
 
-#: src/nautilus-property-browser.c:1368
-msgid "Sorry, but emblem keywords can only contain letters, spaces and numbers."
+#: src/nautilus-property-browser.c:1362
+msgid ""
+"Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Lo siento, pero la descripción del emblema sólo puede contener letras, "
 "espacios y números."
 
 # src/file-manager/fm-error-reporting.c:50
-#: src/nautilus-property-browser.c:1371
+#: src/nautilus-property-browser.c:1365
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
@@ -7274,78 +7284,79 @@ msgstr ""
 "Lo siento, pero «%s» es una descripción existente. Por favor escoja un "
 "nombre diferente."
 
-#: src/nautilus-property-browser.c:1403
+#: src/nautilus-property-browser.c:1397
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
-msgstr "Lo siento, pero la imagen en %s no ha podido ser instalada como un emblema."
+msgstr ""
+"Lo siento, pero la imagen en %s no ha podido ser instalada como un emblema."
 
 # src/nautilus-property-browser.c:263 src/nautilus-property-browser.c:1977
-#: src/nautilus-property-browser.c:2072
+#: src/nautilus-property-browser.c:2063
 msgid "Select A Category:"
 msgstr "Seleccione una categoría"
 
 # src/nautilus-property-browser.c:1985
-#: src/nautilus-property-browser.c:2081
+#: src/nautilus-property-browser.c:2072
 msgid "C_ancel Remove"
 msgstr "C_ancelar quitar"
 
 # src/nautilus-property-browser.c:1987
-#: src/nautilus-property-browser.c:2087
+#: src/nautilus-property-browser.c:2078
 msgid "_Add a New Pattern..."
 msgstr "_Agregar un fondo nuevo..."
 
 # src/nautilus-property-browser.c:1987
-#: src/nautilus-property-browser.c:2090
+#: src/nautilus-property-browser.c:2081
 msgid "_Add a New Color..."
 msgstr "_Agregar un color nuevo..."
 
 # src/nautilus-property-browser.c:1987
-#: src/nautilus-property-browser.c:2093
+#: src/nautilus-property-browser.c:2084
 msgid "_Add a New Emblem..."
 msgstr "_Agregar un emblema nuevo..."
 
 # src/nautilus-property-browser.c:2002
-#: src/nautilus-property-browser.c:2116
+#: src/nautilus-property-browser.c:2107
 msgid "Click on a pattern to remove it"
 msgstr "Haga clic sobre un fondo para quitarlo"
 
 # src/nautilus-property-browser.c:2002
-#: src/nautilus-property-browser.c:2119
+#: src/nautilus-property-browser.c:2110
 msgid "Click on a color to remove it"
 msgstr "Haga clic en un color para quitarlo"
 
 # src/nautilus-property-browser.c:2002
-#: src/nautilus-property-browser.c:2122
+#: src/nautilus-property-browser.c:2113
 msgid "Click on an emblem to remove it"
 msgstr "Haga clic en un emblema para quitarlo"
 
 # src/file-manager/fm-properties-window.c:1560
-#: src/nautilus-property-browser.c:2131
+#: src/nautilus-property-browser.c:2122
 msgid "Patterns:"
 msgstr "Fondos:"
 
 # src/nautilus-window.c:1267
-#: src/nautilus-property-browser.c:2134
+#: src/nautilus-property-browser.c:2125
 msgid "Colors:"
 msgstr "Colores:"
 
 # src/file-manager/fm-properties-window.c:1237
-#: src/nautilus-property-browser.c:2137
+#: src/nautilus-property-browser.c:2128
 msgid "Emblems:"
 msgstr "Emblemas:"
 
 # src/nautilus-sidebar.c:424
-#: src/nautilus-property-browser.c:2157
+#: src/nautilus-property-browser.c:2148
 msgid "_Remove a Pattern..."
 msgstr "_Quitar un fondo..."
 
 # src/nautilus-property-browser.c:2014
-#: src/nautilus-property-browser.c:2160
+#: src/nautilus-property-browser.c:2151
 msgid "_Remove a Color..."
 msgstr "_Quitar un color..."
 
 # src/nautilus-property-browser.c:2014
-#: src/nautilus-property-browser.c:2163
+#: src/nautilus-property-browser.c:2154
 msgid "_Remove an Emblem..."
 msgstr "_Quitar un emblema..."
 
@@ -7534,7 +7545,8 @@ msgstr "Cambia la visibilidad de la barra de herramientas de esta ventana"
 
 #: src/nautilus-shell-ui.xml.h:8
 msgid "Choose a view for the current location, or modify the set of views"
-msgstr "Elige una vista para la dirección actual o modificar el conjunto de vistas"
+msgstr ""
+"Elige una vista para la dirección actual o modificar el conjunto de vistas"
 
 #: src/nautilus-shell-ui.xml.h:9
 msgid "Clear contents of Go menu and Back/Forward lists"
@@ -7561,7 +7573,8 @@ msgstr "Muestra la ayuda de Nautilus"
 
 #: src/nautilus-shell-ui.xml.h:15
 msgid "Display a window that allows editing the bookmarks in this menu"
-msgstr "Muestra una ventana que permite editar los marcadores que hay en este menú"
+msgstr ""
+"Muestra una ventana que permite editar los marcadores que hay en este menú"
 
 #: src/nautilus-shell-ui.xml.h:16
 msgid "Display credits for the creators of Nautilus"
@@ -7735,8 +7748,9 @@ msgid "_Back"
 msgstr "_Atrás"
 
 #: src/nautilus-shell-ui.xml.h:55
-msgid "_Backgrounds and Emblems..."
-msgstr "Fondos y em_blemas..."
+#, fuzzy
+msgid "_Backgrounds and Emblems"
+msgstr "Fondos y emblemas"
 
 #: src/nautilus-shell-ui.xml.h:57
 msgid "_Clear History"
@@ -7863,14 +7877,14 @@ msgid "_View as..."
 msgstr "_Ver como..."
 
 # src/nautilus-sidebar.c:1145
-#: src/nautilus-sidebar.c:1350
+#: src/nautilus-sidebar.c:1354
 #, c-format
 msgid "Open with %s"
 msgstr "Abrir con %s"
 
 # src/nautilus-sidebar.c:1174
 #. Catch-all button after all the others.
-#: src/nautilus-sidebar.c:1379
+#: src/nautilus-sidebar.c:1383
 msgid "Open with..."
 msgstr "Abrir con..."
 
@@ -8029,7 +8043,8 @@ msgstr ""
 # src/nautilus-window-manage-views.c:1247
 #: src/nautilus-window-manage-views.c:1264
 #, c-format
-msgid "\"%s\" is not a valid location. Please check the spelling and try again."
+msgid ""
+"\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
 "«%s» no es una dirección válida. Por favor verifique lo que ha escrito y "
 "pruébelo de nuevo."
@@ -8063,7 +8078,8 @@ msgstr ""
 #: src/nautilus-window-manage-views.c:1304
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
-msgstr "No se ha podido mostrar «%s», porque ha fallado el intento de registración."
+msgstr ""
+"No se ha podido mostrar «%s», porque ha fallado el intento de registración."
 
 # src/nautilus-window-manage-views.c:1287
 #: src/nautilus-window-manage-views.c:1309
@@ -8284,6 +8300,24 @@ msgstr "Ampliar"
 #: src/nautilus-zoom-control.c:1090
 msgid "Set the zoom level of the current view"
 msgstr "Configura el nivel de acercamiento de la vista actual"
+
+# src/file-manager/fm-directory-view.c:2154
+#~ msgid "Empty Trash..."
+#~ msgstr "Vaciar Papelera..."
+
+#~ msgid "_Delete from Trash..."
+#~ msgstr "Eliminar de la _Papelera..."
+
+# src/file-manager/fm-directory-view.c:1865
+#~ msgid "_Delete..."
+#~ msgstr "_Eliminar..."
+
+# src/file-manager/fm-directory-view.c:2154
+#~ msgid "_Empty Trash..."
+#~ msgstr "_Vaciar la Papelera..."
+
+#~ msgid "_Backgrounds and Emblems..."
+#~ msgstr "Fondos y em_blemas..."
 
 #~ msgid "Factory for news view"
 #~ msgstr "Origen para vista de noticias"
@@ -8831,4 +8865,3 @@ msgstr "Configura el nivel de acercamiento de la vista actual"
 # src/nautilus-first-time-druid.c:272
 #~ msgid "Nautilus Release _Notes"
 #~ msgstr "_Notas de Liberación de Nautilus"
-
