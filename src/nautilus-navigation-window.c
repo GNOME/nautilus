@@ -867,8 +867,8 @@ nautilus_window_unrealize (GtkWidget *widget)
 			property_bag = Bonobo_Control_getProperties (window->details->throbber, &ev);
 			if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {	
 				bonobo_event_source_client_remove_listener
-					(property_bag, window->details->throbber_listener, NULL);
-				bonobo_object_release_unref (property_bag, NULL);	
+					(property_bag, window->details->throbber_listener, &ev);
+				bonobo_object_release_unref (property_bag, &ev);
 			}
 
 			CORBA_Object_release (window->details->throbber_listener, &ev);

@@ -1,3 +1,15 @@
+2002-02-20  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus/nautilus-view.c
+	(nautilus_view_set_frame): don't spew debug as we
+	disconnect from a dead parent.
+
+	* src/nautilus-sidebar-tabs.c
+	(tab_item_destroy): ditto.
+
+	* src/nautilus-window.
+	(nautilus_window_unrealize): ditto.
+
 2002-02-19  Bastien Nocera  <hadess@hadess.net>
 
 	* src/nautilus-window-manage-views.c:

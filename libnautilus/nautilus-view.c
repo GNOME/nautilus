@@ -328,10 +328,12 @@ nautilus_view_set_frame (NautilusView       *view,
 
 		bonobo_event_source_client_remove_listener (
 			view->details->event_source,
-			BONOBO_OBJREF (listener), NULL);
+			BONOBO_OBJREF (listener), &ev);
 
 		CORBA_Object_release (view->details->event_source, &ev);
 		bonobo_object_unref (BONOBO_OBJECT (listener));
+
+		CORBA_exception_free (&ev);
 	}
 
 	if (frame != CORBA_OBJECT_NIL) {

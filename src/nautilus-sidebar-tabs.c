@@ -359,14 +359,16 @@ tab_item_destroy (TabItem *item)
 	}
 
 	if (item->listener != CORBA_OBJECT_NIL) {
+		CORBA_exception_init (&ev);
+
 		property_bag = get_property_bag (item);
 		if (property_bag != CORBA_OBJECT_NIL) {
 			bonobo_event_source_client_remove_listener
-				(property_bag, item->listener, NULL);
-			bonobo_object_release_unref (property_bag, NULL);
+				(property_bag, item->listener, &ev);
+			bonobo_object_release_unref (property_bag, &ev);
 		}
-		CORBA_exception_init (&ev);
 		CORBA_Object_release (item->listener, &ev);
+
 		CORBA_exception_free (&ev);
 	}
 
