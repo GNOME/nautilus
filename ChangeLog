@@ -1,3 +1,21 @@
+2000-09-05  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-notify.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_direcotry_copy_move_metadata_key),
+	(nautilus_directory_move_metadata),
+	(nautilus_directory_copy_metadata),
+	(nautilus_directory_schedule_metadata_copy),
+	(nautilus_directory_schedule_metadata_move),
+	(nautilus_directory_schedule_metadata_remove):
+	* libnautilus-extensions/nautilus-file-changes-queue.c:
+	(nautilus_file_changes_queue_schedule_metadata_remove),
+	(nautilus_file_changes_consume_changes):
+	* libnautilus-extensions/nautilus-file-changes-queue.h:
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(sync_xfer_callback):
+	Add hooks for metadata removal.
+
 2000-09-05  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-lib-self-check-functions.h:

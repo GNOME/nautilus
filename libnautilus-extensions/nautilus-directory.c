@@ -821,7 +821,9 @@ nautilus_direcotry_copy_move_metadata_key (NautilusDirectory *source_directory,
 	nautilus_directory_set_file_metadata (destination_directory,
 		destination_file, key, NULL, metadata);
 
-	/* FIXME: add metadata removal here */
+	/* FIXME bugzilla.eazel.com 2807: 
+	 * add metadata removal here 
+	 */
 	g_free (metadata);
 }
 
@@ -858,7 +860,9 @@ nautilus_directory_move_metadata (const char *source_uri, const char *dest_uri)
 	source_file_name = uri_get_basename (source_uri);
 	destination_file_name = uri_get_basename (dest_uri);
 
-	/* FIXME: should have a way of iterating all significant file metadata keys */
+	/* FIXME bugzilla.eazel.com 2808: 
+	 * should have a way of iterating all significant file metadata keys 
+	 */
 	nautilus_directory_move_metadata_key (source_directory, source_file_name,
 		destination_directory, destination_file_name, NAUTILUS_METADATA_KEY_NOTES);
 	nautilus_directory_move_metadata_key (source_directory, source_file_name,
@@ -889,7 +893,9 @@ nautilus_directory_copy_metadata (const char *source_uri, const char *dest_uri)
 	source_file_name = uri_get_basename (source_uri);
 	destination_file_name = uri_get_basename (dest_uri);
 
-	/* FIXME: should have a way of iterating all significant file metadata keys */
+	/* FIXME bugzilla.eazel.com 2808: 
+	 * should have a way of iterating all significant file metadata keys 
+	 */
 	nautilus_directory_copy_metadata_key (source_directory, source_file_name,
 		destination_directory, destination_file_name, NAUTILUS_METADATA_KEY_NOTES);
 	nautilus_directory_copy_metadata_key (source_directory, source_file_name,
@@ -915,7 +921,7 @@ nautilus_directory_schedule_metadata_copy (GList *uri_pairs)
 	URIPair *pair;
 
 	for (p = uri_pairs; p != NULL; p = p->next) {
-		pair = p->data;
+		pair = (URIPair *)p->data;
 #ifdef METADATA_COPY_DEBUG
 		g_print ("copy metadata from %s to %s\n", pair->from_uri, pair->to_uri);
 #endif
@@ -930,11 +936,28 @@ nautilus_directory_schedule_metadata_move (GList *uri_pairs)
 	URIPair *pair;
 
 	for (p = uri_pairs; p != NULL; p = p->next) {
-		pair = p->data;
+		pair = (URIPair *)p->data;
 #ifdef METADATA_COPY_DEBUG
 		g_print ("move metadata from %s to %s\n", pair->from_uri, pair->to_uri);
 #endif
 		nautilus_directory_move_metadata (pair->from_uri, pair->to_uri);
+	}
+}
+
+void 
+nautilus_directory_schedule_metadata_remove (GList *uris)
+{
+	GList *p;
+	const char *uri;
+
+	for (p = uris; p != NULL; p = p->next) {
+		uri = (const char *)p->data;
+#ifdef METADATA_COPY_DEBUG
+		g_print ("removing metadata from %s\n", uri);
+#endif
+		/* FIXME bugzilla.eazel.com 2807: 
+		 * call the metadata removal call here 
+		 */
 	}
 }
 

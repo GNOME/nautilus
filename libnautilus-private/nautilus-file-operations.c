@@ -605,6 +605,11 @@ sync_xfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 			break;
 
 		case GNOME_VFS_XFER_PHASE_DELETESOURCE:
+			if (progress_info->top_level_item) {
+				g_assert (progress_info->source_name != NULL);
+				nautilus_file_changes_queue_schedule_metadata_remove 
+					(progress_info->source_name);
+			}
 			nautilus_file_changes_queue_file_removed (progress_info->source_name);
 			break;
 

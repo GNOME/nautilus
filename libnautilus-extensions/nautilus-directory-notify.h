@@ -30,9 +30,10 @@ typedef struct {
 } URIPair;
 
 /* Almost-public change notification calls */
-void nautilus_directory_notify_files_added	(GList *uris);
-void nautilus_directory_notify_files_moved	(GList *uri_pairs);
-void nautilus_directory_notify_files_removed	(GList *uris);
-void nautilus_directory_schedule_metadata_copy	(GList *uri_pairs);
-void nautilus_directory_schedule_metadata_move	(GList *uri_pairs);
+void nautilus_directory_notify_files_added	 (GList *uris);
+void nautilus_directory_notify_files_moved	 (GList *uri_pairs);
+void nautilus_directory_notify_files_removed	 (GList *uris);
+void nautilus_directory_schedule_metadata_copy	 (GList *uri_pairs);
+void nautilus_directory_schedule_metadata_move	 (GList *uri_pairs);
+void nautilus_directory_schedule_metadata_remove (GList *uris);
 
