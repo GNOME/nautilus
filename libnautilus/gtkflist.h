@@ -36,10 +36,10 @@ struct _GtkFListClass {
 	GtkCListClass parent_class;
 
 	/* Signal: invoke the popup menu for rows */
-	void (* row_popup_menu) (GtkFList *flist, GdkEventButton *event);
+	void (* context_click_row) (GtkFList *flist, gint row);
 
 	/* Signal: invoke the popup menu for empty areas */
-	void (* empty_popup_menu) (GtkFList *flist, GdkEventButton *event);
+	void (* context_click_background) (GtkFList *flist);
 
 	/* Signal: open the file in the selected row */
 	void (* activate) (GtkFList *flist, gpointer data);

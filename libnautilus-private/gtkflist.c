@@ -48,8 +48,8 @@ struct _GtkFListDetails
 #define MAX_CLICK_TIME 1500
 
 enum {
-	ROW_POPUP_MENU,
-	EMPTY_POPUP_MENU,
+	CONTEXT_CLICK_ROW,
+	CONTEXT_CLICK_BACKGROUND,
 	ACTIVATE,
 	START_DRAG,
 	SELECTION_CHANGED,
@@ -104,22 +104,21 @@ gtk_flist_initialize_class (GtkFListClass *class)
 	widget_class = (GtkWidgetClass *) class;
 	clist_class = (GtkCListClass *) class;
 
-	flist_signals[ROW_POPUP_MENU] =
-		gtk_signal_new ("row_popup_menu",
+	flist_signals[CONTEXT_CLICK_ROW] =
+		gtk_signal_new ("context_click_row",
 				GTK_RUN_FIRST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (GtkFListClass, row_popup_menu),
-				gtk_marshal_NONE__POINTER,
+				GTK_SIGNAL_OFFSET (GtkFListClass, context_click_row),
+				gtk_marshal_NONE__INT,
 				GTK_TYPE_NONE, 1,
-				GTK_TYPE_GDK_EVENT);
-	flist_signals[EMPTY_POPUP_MENU] =
-		gtk_signal_new ("empty_popup_menu",
+				GTK_TYPE_INT);
+	flist_signals[CONTEXT_CLICK_BACKGROUND] =
+		gtk_signal_new ("context_click_background",
 				GTK_RUN_FIRST,
 				object_class->type,
-				GTK_SIGNAL_OFFSET (GtkFListClass, empty_popup_menu),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE, 1,
-				GTK_TYPE_GDK_EVENT);
+				GTK_SIGNAL_OFFSET (GtkFListClass, context_click_background),
+				gtk_marshal_NONE__NONE,
+				GTK_TYPE_NONE, 0);
 	flist_signals[ACTIVATE] =
 		gtk_signal_new ("activate",
 				GTK_RUN_FIRST,
@@ -318,14 +317,12 @@ gtk_flist_button_press (GtkWidget *widget, GdkEventButton *event)
 			retval = TRUE;
 		} else if (event->button == 3) {
 			if (on_row) {
-				select_row (flist, row, event->state);
 				gtk_signal_emit (GTK_OBJECT (flist),
-						 flist_signals[ROW_POPUP_MENU],
-						 event);
+						 flist_signals[CONTEXT_CLICK_ROW],
+						 row);
 			} else
 				gtk_signal_emit (GTK_OBJECT (flist),
-						 flist_signals[EMPTY_POPUP_MENU],
-						 event);
+						 flist_signals[CONTEXT_CLICK_BACKGROUND]);
 
 			retval = TRUE;
 		}
