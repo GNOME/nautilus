@@ -126,8 +126,9 @@ void
 nautilus_background_draw (NautilusBackground *background,
 			  GdkDrawable *drawable,
 			  GdkGC *gc,
-			  GdkColormap *colormap,
-			  const GdkRectangle *rectangle)
+			  const GdkRectangle *rectangle,
+			  int origin_x,
+			  int origin_y)
 {
 	char *start_color_spec, *end_color_spec;
 	guint32 start_rgb, end_rgb;
@@ -139,7 +140,7 @@ nautilus_background_draw (NautilusBackground *background,
 							      gc,
 							      rectangle,
 							      GDK_RGB_DITHER_NORMAL,
-							      0, 0);
+							      origin_x, origin_y);
 	} else {
 		start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
 		end_color_spec = nautilus_gradient_get_end_color_spec (background->details->color);
@@ -153,7 +154,6 @@ nautilus_background_draw (NautilusBackground *background,
 		
 		nautilus_fill_rectangle_with_gradient (drawable,
 						       gc,
-						       colormap,
 						       rectangle,
 						       start_rgb,
 						       end_rgb,
@@ -333,8 +333,7 @@ nautilus_background_draw_flat_box (GtkStyle *style,
 	rectangle.height = height;
 	
 	nautilus_background_draw (background, window, gc,
-				  gtk_widget_get_colormap (widget),
-				  &rectangle);
+				  &rectangle, 0, 0);
 	
 	gdk_gc_unref (gc);
 }

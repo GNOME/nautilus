@@ -645,6 +645,23 @@ nautilus_icon_canvas_item_can_accept_items (NautilusIconContainer *container,
 }
 
 static void
+receive_dropped_tile_image (NautilusIconContainer *container)
+{
+	GList *list;
+	
+	/* We only accept the image if it's the only thing dragged. */
+	list = container->details->dnd_info->selection_list;
+	g_assert (list != NULL);
+	if (list->next != NULL) {
+		return;
+	}
+
+	nautilus_background_set_tile_image_uri
+		(nautilus_get_widget_background (GTK_WIDGET (container)),
+		 ((DndSelectionItem *) list->data)->uri);
+}
+
+static void
 nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 					       GdkDragContext *context,
 					       int x, int y)
@@ -660,20 +677,27 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 	GdkPoint *source_item_locations;
 	int index;
 	int count;
+	GdkModifierType modifiers;
 	
-	local_move_only = FALSE;
-
-	if (container->details->dnd_info->selection_list == NULL)
+	if (container->details->dnd_info->selection_list == NULL) {
 		return;
+	}
 
+	/* If the shift key is down, then this is a drag that customizes
+	 * the background tile image.
+	 */
+	gdk_window_get_pointer (GTK_WIDGET (container)->window,
+				NULL, NULL, &modifiers);
+	if ((modifiers & GDK_SHIFT_MASK) != 0) {
+		receive_dropped_tile_image (container);
+		return;
+	}
 
   	gnome_canvas_window_to_world (GNOME_CANVAS (container),
 				      x, y, &world_x, &world_y);
 
 	/* find the item we hit with our drop, if any */
 	drop_target_icon = nautilus_icon_container_item_at (container, world_x, world_y);
-
-
 	if (drop_target_icon != NULL && !nautilus_icon_canvas_item_can_accept_items 
 		(container, drop_target_icon, container->details->dnd_info->selection_list)) {
 		/* the item we dropped our selection on cannot accept the items,
@@ -682,6 +706,7 @@ nautilus_icon_container_receive_dropped_icons (NautilusIconContainer *container,
 		drop_target_icon = NULL;
 	}
 
+	local_move_only = FALSE;
 	if (drop_target_icon == NULL && context->action == GDK_ACTION_MOVE) {
 		/* we can just move the icon positions if the move ended up in
 		 * the item's parent container

@@ -1,5 +1,3 @@
-
-
 CPPFLAGS =					\
 	-DPREFIX=\"$(prefix)\"
 	-DG_LOG_DOMAIN=\"Nautilus-Services\"
@@ -8,7 +6,8 @@ INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
 	-I/usr/include/rpm 			\
-	$(GNOMEUI_CFLAGS)
+	$(GNOMEUI_CFLAGS)                       \
+	$(WERROR)
 
 gnorbadir = $(sysconfdir)/CORBA/servers
 

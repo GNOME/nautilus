@@ -81,17 +81,14 @@ nautilus_background_canvas_group_draw (GnomeCanvasItem *item, GdkDrawable *drawa
 	background = nautilus_get_widget_background(GTK_WIDGET (item->canvas));
 	if (background != NULL) {
 		GdkGC *gc;
-		GdkColormap *colormap;
 		GdkRectangle rectangle;
 
 		/* Create a new gc each time.
 		   If this is a speed problem, we can create one and keep it around,
 		   but it's a bit more complicated to ensure that it's always compatible
-		   with whatever drawable is passed in to use.
+		   with whatever drawable is passed in.
 		*/
 		gc = gdk_gc_new (drawable);
-
-		colormap = gtk_widget_get_colormap (GTK_WIDGET (item->canvas));
 
 		/* The rectangle is the size of the entire viewed area of the canvas.
 		   The corner is determined by the current scroll position of the
@@ -104,7 +101,8 @@ nautilus_background_canvas_group_draw (GnomeCanvasItem *item, GdkDrawable *drawa
 		rectangle.width = GTK_WIDGET (item->canvas)->allocation.width;
 		rectangle.height = GTK_WIDGET (item->canvas)->allocation.height;
 
-		nautilus_background_draw (background, drawable, gc, colormap, &rectangle);
+		nautilus_background_draw (background, drawable, gc, &rectangle,
+					  -drawable_corner_x, -drawable_corner_y);
 
 		gdk_gc_unref (gc);
 	}

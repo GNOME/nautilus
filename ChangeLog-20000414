@@ -1,3 +1,53 @@
+2000-04-04  Darin Adler  <darin@eazel.com>
+
+	Finished task 54 (Set background image by drag/drop).
+	Fixed bug 346 (Bad icon positions when you change user level).
+	Fixed bug 372 (Better icons for common file types).
+
+	* libnautilus/nautilus-background-canvas-group.c:
+	(nautilus_background_canvas_group_draw): Got rid of the colormap
+	which is not needed now that we use gtk_rgb instead of gtk_color
+	calls. Passed in the corner of the canvas as a parameter to
+	nautilus_background_draw so it knows where the origin of any
+	repeating pattern should be.
+	* libnautilus/nautilus-background.h:
+	* libnautilus/nautilus-background.c: (nautilus_background_draw):
+	Added parameters to determine where the origin of any repeating
+	pattern should be. Removed colormap parameter (see above).
+	(nautilus_background_draw_flat_box): Passed in origin parameters
+	in call to nautilus_background_draw.
+	* libnautilus/nautilus-gdk-extensions.h:
+	* libnautilus/nautilus-gdk-extensions.c:
+	(nautilus_fill_rectangle_with_gradient): Removed colormap
+	parameter (see above).
+	* libnautilus/nautilus-gdk-pixbuf-extensions.c:
+	(nautilus_gdk_pixbuf_render_to_drawable_tiled): Fixed the tiling
+	so it will use the dither parameters to set the origin of the
+	tiles as well.
+
+	* libnautilus/nautilus-icon-dnd.c: (receive_dropped_tile_image),
+	(nautilus_icon_container_receive_dropped_icons): Added code so that
+	dropping an image file on the window with the shift key held down
+	will customize the background tile image.
+
+	* libnautilus/nautilus-icon-factory.c: (make_full_icon_path),
+	(get_themed_icon_file_path): Fixed two bugs that prevented
+	MIME-type-based icons from working correctly. First, got rid of
+	code that tried to prepend the theme name and "nautilus/" to the
+	beginning of a full path. Then made sure that it tries the file
+	name without adding a suffix before it starts trying out suffixes.
+
+	* libnautilus/nautilus-icon-grid.c: (nautilus_icon_grid_clear):
+	Fixed bug where clearing the grid was resetting the visible width.
+	
+	* components/sample/Makefile.am:
+	* components/services/startup/Makefile.am:
+	Turned on -Werror for these two directories.
+	* components/sample/nautilus-sample-content-view.h:
+	* components/sample/nautilus-sample-content-view.c:
+	(nautilus_sample_content_view_destroy), (bonobo_sample_callback):
+	Fixed warnings and did some small cleanup.
+
 2000-04-04  John Sullivan <sullivan@eazel.com>
 
 	Renaming a file from its Set Properties dialog now works, though

@@ -53,6 +53,7 @@
 /* List of suffixes to search when looking for an icon file. */
 static const char *icon_file_name_suffixes[] =
 {
+	"",
 	".png",
 	".PNG",
 	".gif",
@@ -467,6 +468,22 @@ nautilus_icon_factory_get_icon_name_for_file (NautilusFile *file)
         }
 }
 
+static char *
+make_full_icon_path (const char *path, const char *suffix)
+{
+	char *partial_path, *full_path;
+
+	if (path[0] == '/') {
+		return g_strconcat (path, suffix, NULL);
+	}
+
+	/* Build a path for this icon. */
+	partial_path = g_strconcat ("nautilus/", path, suffix, NULL);
+	full_path = gnome_pixmap_file (partial_path);
+	g_free (partial_path);
+	return full_path;
+}
+
 /* Pick a particular icon to use, trying all the various suffixes.
  * Return the path of the icon or NULL if no icon is found.
  */
@@ -484,7 +501,7 @@ get_themed_icon_file_path (const char *theme_name,
 	char *size_as_string, *property;
 	ArtIRect parsed_rect;
 
-	if (theme_name == NULL) {
+	if (theme_name == NULL || icon_name[0] == '/') {
 		themed_icon_name = g_strdup (icon_name);
 	} else {
 		themed_icon_name = g_strconcat (theme_name, "/", icon_name, NULL);
@@ -496,12 +513,13 @@ get_themed_icon_file_path (const char *theme_name,
 	for (i = 0; i < NAUTILUS_N_ELEMENTS (icon_file_name_suffixes); i++) {
 
 		/* Build a path for this icon. */
-		partial_path = g_strdup_printf ("nautilus/%s%s%.0u%s",
+		partial_path = g_strdup_printf ("%s%s%.0u",
 						themed_icon_name,
 						include_size ? "-" : "",
-						include_size ? icon_size : 0,
-						icon_file_name_suffixes[i]);
-		path = gnome_pixmap_file (partial_path);
+						include_size ? icon_size : 0);
+						
+		path = make_full_icon_path (partial_path,
+					    icon_file_name_suffixes[i]);
 		g_free (partial_path);
 
 		/* Return the path if the file exists. */
@@ -509,16 +527,14 @@ get_themed_icon_file_path (const char *theme_name,
 			break;
 		}
 		g_free (path);
+		path = NULL;
 	}
 
 	/* Open the XML file to get the text rectangle. */
 	if (path != NULL && text_rect != NULL) {
 		memset (text_rect, 0, sizeof (*text_rect));
 
-		partial_path = g_strdup_printf ("nautilus/%s.xml",
-						themed_icon_name);
-		xml_path = gnome_pixmap_file (partial_path);
-		g_free (partial_path);
+		xml_path = make_full_icon_path (themed_icon_name, ".xml");
 
 		doc = xmlParseFile (xml_path);
 		g_free (xml_path);

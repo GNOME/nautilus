@@ -74,8 +74,9 @@ char *              nautilus_background_get_tile_image_uri    (NautilusBackgroun
 void                nautilus_background_draw                  (NautilusBackground     *background,
 							       GdkDrawable            *drawable,
 							       GdkGC                  *gc,
-							       GdkColormap            *colormap,
-							       const GdkRectangle     *rectangle);
+							       const GdkRectangle     *rectangle,
+							       int                     origin_x,
+							       int                     origin_y);
 
 /* Handles a dragged color being dropped on a widget to change the background color. */
 void		    nautilus_background_receive_dropped_color (NautilusBackground     *background,

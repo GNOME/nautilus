@@ -70,7 +70,6 @@ void     nautilus_fill_rectangle_with_color          (GdkDrawable        *drawab
 						      guint32             rgb);
 void     nautilus_fill_rectangle_with_gradient       (GdkDrawable        *drawable,
 						      GdkGC              *gc,
-						      GdkColormap        *colormap,
 						      const GdkRectangle *rectangle,
 						      guint32             start_rgb,
 						      guint32             end_rgb,

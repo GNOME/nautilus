@@ -1,4 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /* 
  * Copyright (C) 2000 Eazel, Inc
  *
@@ -17,7 +18,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Author: Maciej Stachowiak
+ * Author: Maciej Stachowiak <mjs@eazel.com>
  */
 
 /* nautilus-sample-content-view.c - sample content view
@@ -27,7 +28,6 @@
  */
 
 #include <config.h>
-
 #include "nautilus-sample-content-view.h"
 
 #include <bonobo/bonobo-control.h>
@@ -37,25 +37,24 @@
 #include <libnautilus/nautilus-gtk-macros.h>
 
 /* A NautilusContentViewFrame's private information. */
-struct _NautilusSampleContentViewDetails {
-	gchar                     *uri;
-	NautilusContentViewFrame  *view_frame;
+struct NautilusSampleContentViewDetails {
+	char *uri;
+	NautilusContentViewFrame *view_frame;
 };
 
-
 static void nautilus_sample_content_view_initialize_class (NautilusSampleContentViewClass *klass);
-static void nautilus_sample_content_view_initialize       (NautilusSampleContentView *view);
-static void nautilus_sample_content_view_destroy          (GtkObject *object);
+static void nautilus_sample_content_view_initialize       (NautilusSampleContentView      *view);
+static void nautilus_sample_content_view_destroy          (GtkObject                      *object);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusSampleContentView, nautilus_sample_content_view, GTK_TYPE_LABEL)
      
-static void sample_notify_location_change_callback        (NautilusContentViewFrame  *view_frame, 
-							   Nautilus_NavigationInfo   *navinfo, 
-							   NautilusSampleContentView *view);
-static void sample_merge_bonobo_items_callback 		  (BonoboObject 	     *control, 
-							   gboolean 		      state, 
-							   gpointer 		      user_data);
-     
+static void sample_notify_location_change_callback (NautilusContentViewFrame  *view_frame,
+						    Nautilus_NavigationInfo   *navinfo,
+						    NautilusSampleContentView *view);
+static void sample_merge_bonobo_items_callback     (BonoboObject              *control,
+						    gboolean                   state,
+						    gpointer                   user_data);
+ 
      
 static void
 nautilus_sample_content_view_initialize_class (NautilusSampleContentViewClass *klass)
@@ -85,8 +84,8 @@ nautilus_sample_content_view_initialize (NautilusSampleContentView *view)
 	 * Get notified when our bonobo control is activated so we
 	 * can merge menu & toolbar items into Nautilus's UI.
 	 */
-        gtk_signal_connect (GTK_OBJECT (nautilus_view_frame_get_bonobo_control (
-        					NAUTILUS_VIEW_FRAME (view->details->view_frame))),
+        gtk_signal_connect (GTK_OBJECT (nautilus_view_frame_get_bonobo_control
+					(NAUTILUS_VIEW_FRAME (view->details->view_frame))),
                             "activate",
                             sample_merge_bonobo_items_callback,
                             view);
@@ -101,7 +100,7 @@ nautilus_sample_content_view_destroy (GtkObject *object)
 	
 	view = NAUTILUS_SAMPLE_CONTENT_VIEW (object);
 	
-	bonobo_object_unref (view->details->view_frame);
+	bonobo_object_unref (BONOBO_OBJECT (view->details->view_frame));
 	
 	g_free (view->details->uri);
 	g_free (view->details);
@@ -132,9 +131,9 @@ nautilus_sample_content_view_get_view_frame (NautilusSampleContentView *view)
  **/
 void
 nautilus_sample_content_view_load_uri (NautilusSampleContentView *view,
-				       const gchar               *uri)
+				       const char               *uri)
 {
-	gchar *label_text;
+	char *label_text;
 	
 	g_free (view->details->uri);
 	view->details->uri = g_strdup (uri);
@@ -149,11 +148,11 @@ sample_notify_location_change_callback (NautilusContentViewFrame  *view_frame,
 				  	Nautilus_NavigationInfo   *navinfo, 
 				  	NautilusSampleContentView *view)
 {
-	Nautilus_ProgressRequestInfo pri;
+	Nautilus_ProgressRequestInfo request;
 
 	g_assert (view_frame == view->details->view_frame);
 	
-	memset(&pri, 0, sizeof(pri));
+	memset(&request, 0, sizeof(request));
 	
 	/* 
 	 * It's mandatory to send a PROGRESS_UNDERWAY message once the
@@ -164,9 +163,9 @@ sample_notify_location_change_callback (NautilusContentViewFrame  *view_frame,
 	 * gives the progrss update here.  
 	 */
 	
-	pri.type = Nautilus_PROGRESS_UNDERWAY;
-	pri.amount = 0.0;
-	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (view_frame), &pri);
+	request.type = Nautilus_PROGRESS_UNDERWAY;
+	request.amount = 0.0;
+	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (view_frame), &request);
 	
 	/* Do the actual load. */
 	nautilus_sample_content_view_load_uri (view, navinfo->actual_uri);
@@ -181,16 +180,15 @@ sample_notify_location_change_callback (NautilusContentViewFrame  *view_frame,
 	 * the progrss upodate here. 
 	 */
 
-	pri.type = Nautilus_PROGRESS_DONE_OK;
-	pri.amount = 100.0;
-	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (view_frame), &pri);
+	request.type = Nautilus_PROGRESS_DONE_OK;
+	request.amount = 100.0;
+	nautilus_view_frame_request_progress_change (NAUTILUS_VIEW_FRAME (view_frame), &request);
 }
 
 static void
 bonobo_sample_callback (BonoboUIHandler *ui_handler, gpointer user_data, const char *path)
 {
  	NautilusSampleContentView *view;
-        BonoboUIHandler *local_ui_handler;
 	char *label_text;
 
         g_assert (NAUTILUS_IS_SAMPLE_CONTENT_VIEW (user_data));
@@ -207,7 +205,6 @@ bonobo_sample_callback (BonoboUIHandler *ui_handler, gpointer user_data, const c
 	gtk_label_set_text (GTK_LABEL (view), label_text);
 	g_free (label_text);
 }
-
 
 static void
 sample_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpointer user_data)
@@ -272,6 +269,3 @@ sample_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoin
          * which removes its merged menu & toolbar items.
          */
 }
-
-
-

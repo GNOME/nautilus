@@ -73,8 +73,14 @@ nautilus_icon_grid_clear (NautilusIconGrid *grid)
 		g_list_free (grid->elements[i]);
 	}
 	g_free (grid->elements);
+	grid->elements = 0;
 
-	memset (grid, 0, sizeof (*grid));
+	grid->bounds.x0 = 0;
+	grid->bounds.y0 = 0;
+	grid->bounds.x1 = 0;
+	grid->bounds.y1 = 0;
+	grid->first_free_x = 0;
+	grid->first_free_y = 0;
 }
 
 void
@@ -178,7 +184,7 @@ nautilus_icon_grid_set_visible_width (NautilusIconGrid *grid,
 	int visible_width;
 	ArtIRect bounds;
 
-	visible_width = floor (world_visible_width / GRID_CELL_WIDTH);
+	visible_width = MAX(1, floor (world_visible_width / GRID_CELL_WIDTH));
 
 	if (visible_width > grid->bounds.x1) {
 		bounds = grid->bounds;

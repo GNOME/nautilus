@@ -77,7 +77,6 @@ nautilus_fill_rectangle_with_color (GdkDrawable *drawable,
  * nautilus_fill_rectangle_with_gradient:
  * @drawable: Target to draw into.
  * @gc: Graphics context (mainly for clip).
- * @colormap: Map to use to allocate colors for gradient.
  * @rectangle: Rectangle to draw gradient in.
  * @start_color: Color for the left or top; pixel value does not matter.
  * @end_color: Color for the right or bottom; pixel value does not matter.
@@ -85,13 +84,11 @@ nautilus_fill_rectangle_with_color (GdkDrawable *drawable,
  *
  * Fill the rectangle with a gradient.
  * The color changes from start_color to end_color.
- * A colormap is necessary because a gradient uses many different colors.
  * This effect works best on true color displays.
  */
 void
 nautilus_fill_rectangle_with_gradient (GdkDrawable *drawable,
 				       GdkGC *gc,
-				       GdkColormap *colormap,
 				       const GdkRectangle *rectangle,
 				       guint32 start_rgb,
 				       guint32 end_rgb,
