@@ -635,6 +635,9 @@ wrap_table_get_content_dimensions (const NautilusWrapTable *wrap_table)
 		
 		content_dimensions.width = dimensions.width;
 		content_dimensions.height = num_rows * max_child_dimensions.height;
+
+		content_dimensions.width += (num_cols - 1) * wrap_table->details->x_spacing;
+		content_dimensions.height += (num_rows - 1) * wrap_table->details->y_spacing;
 	}
 
 	return content_dimensions;
