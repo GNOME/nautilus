@@ -33,7 +33,6 @@
 #include "nautilus-metadata.h"
 #include "nautilus-file-attributes.h"
 #include <eel/eel-string.h>
-#include "nautilus-theme.h"
 #include <X11/Xatom.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtkmain.h>
@@ -87,9 +86,6 @@ desktop_background_realized (NautilusIconContainer *icon_container, void *discon
 	nautilus_file_update_desktop_pixmaps (background);
 }
 
-static const char *default_theme_source = "directory";
-static const char *desktop_theme_source = "desktop";
-
 void
 nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *icon_container,
                                                       NautilusFile *file)
@@ -98,7 +94,7 @@ nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *ico
 
 	background = eel_get_widget_background (GTK_WIDGET (icon_container));
 
-	g_object_set_data (G_OBJECT (background), "theme_source", (gpointer) desktop_theme_source);
+	g_object_set_data (G_OBJECT (background), "is_desktop", (gpointer)1);
 
 	/* Strictly speaking, we don't need to know about metadata changes, since
 	 * the desktop setting aren't stored there. But, hooking up to metadata
@@ -123,18 +119,7 @@ nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *ico
 static gboolean
 background_is_desktop (EelBackground *background)
 {
-	/* == works because we're carful to always use the same string.
-	 */
-	return g_object_get_data (G_OBJECT (background), "theme_source") == desktop_theme_source;
-}
-
-static const char *nautilus_file_background_peek_theme_source (EelBackground *background)
-{
-	char *theme_source;
-
-	theme_source = g_object_get_data (G_OBJECT (background), "theme_source");
-
-	return theme_source != NULL ? theme_source : default_theme_source;
+	return g_object_get_data (G_OBJECT (background), "is_desktop") != 0;
 }
 
 static GdkWindow *
@@ -146,104 +131,65 @@ background_get_desktop_background_window (EelBackground *background)
 	return layout != NULL ? GTK_LAYOUT (layout)->bin_window : NULL;
 }
 
-/* utility routine to handle mapping local image files in themes to a uri */
-static char*
-theme_image_path_to_uri (char *image_file, const char *theme_name)
-{
-	char *image_path;
-	char *image_uri;
-
-	if (image_file != NULL && !eel_istr_has_prefix (image_file, "file://")) {
-		
-		if (eel_str_has_prefix (image_file, "./")) {
-			image_path = nautilus_theme_get_image_path_from_theme (image_file + 2, theme_name);
-		} else {
-			image_path = g_strdup_printf ("%s/%s", NAUTILUS_DATADIR, image_file);
-		}
-		
-		if (image_path && g_file_test (image_path, G_FILE_TEST_EXISTS)) {
-			image_uri = gnome_vfs_get_uri_from_local_path (image_path);
-		} else {
-			image_uri = NULL;
-		}
-		
-		g_free (image_path);
-	} else {
-		image_uri = g_strdup (image_file);
-	}
-
-	return image_uri;
-}
- 
 static void
-nautilus_file_background_get_default_settings_for_theme (const char* theme_name,
-							  const char* theme_source,
-							  char **color,
-							  char **image,
-							  EelBackgroundImagePlacement *placement)
-{
-	char *image_local_path;
-
-	if (placement != NULL) {
-		*placement = EEL_BACKGROUND_TILED;
-	}
-
-	if (color != NULL) {
-		*color = nautilus_theme_get_theme_data_from_theme (theme_source, NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR, theme_name);
-	}
-
-	if (image != NULL) {
-		image_local_path = nautilus_theme_get_theme_data_from_theme (theme_source, NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_IMAGE, theme_name);
-		*image = theme_image_path_to_uri (image_local_path, theme_name);
-		g_free (image_local_path);
-	}
-}
-
-static void
-nautilus_file_background_get_default_settings (const char* theme_source,
-                                               char **color,
+nautilus_file_background_get_default_settings (char **color,
                                                char **image,
                                                EelBackgroundImagePlacement *placement)
 {
-	char *theme_name;
-	theme_name = nautilus_theme_get_theme ();
-	nautilus_file_background_get_default_settings_for_theme
-		(theme_name, theme_source, color, image, placement);
-	g_free (theme_name);
+        static gboolean setup_autos = FALSE;
+        static gboolean background_set;
+        static const char *background_color;
+        static const char *background_filename;
+
+        if (!setup_autos) {
+                setup_autos = TRUE;
+                eel_preferences_add_auto_boolean
+                        (NAUTILUS_PREFERENCES_BACKGROUND_SET,
+                         &background_set);
+                eel_preferences_add_auto_string
+                        (NAUTILUS_PREFERENCES_BACKGROUND_COLOR,
+                         &background_color);
+                eel_preferences_add_auto_string
+                        (NAUTILUS_PREFERENCES_BACKGROUND_FILENAME,
+                         &background_filename);
+        }
+
+        if (color) {
+                *color = background_set ? g_strdup (background_color) : NULL;
+        }
+
+        if (image) {
+                *image = background_set ? g_strdup (background_filename) : NULL;
+        }
+
+        if (placement) {
+                *placement = EEL_BACKGROUND_TILED;
+        }
 }
+
 
 static void
 nautilus_file_background_read_desktop_settings (char **color,
                                                 char **image,
                                                 EelBackgroundImagePlacement *placement)
 {
-	char*	 default_image_uri;
-	EelBackgroundImagePlacement default_placement;
-	
 	char	*end_color;
 	char	*start_color;
-	char	*default_color;
 	gboolean use_gradient;
 	gboolean is_horizontal;
 
-	char *theme_name;
 	BGPreferences *prefs;
 
         prefs = BG_PREFERENCES (bg_preferences_new ());
 
 	bg_preferences_load (prefs);
 
-	theme_name = nautilus_theme_get_theme ();
-
-	nautilus_file_background_get_default_settings_for_theme
-		(theme_name, desktop_theme_source, &default_color, &default_image_uri, &default_placement);
-
         if (prefs->wallpaper_enabled) {
                 if (prefs->wallpaper_filename != NULL &&
                     prefs->wallpaper_filename [0] != '\0') {
                         *image = gnome_vfs_get_uri_from_local_path (prefs->wallpaper_filename);
                 } else {
-                        *image = g_strdup (default_image_uri);
+                        *image = NULL;
                 }
 	}
         else {
@@ -286,10 +232,6 @@ nautilus_file_background_read_desktop_settings (char **color,
 	g_free (start_color);
 	g_free (end_color);
 
-	g_free (theme_name);	
-	g_free (default_color);
-	g_free (default_image_uri);
-
 	g_object_unref (prefs);
 }
 
@@ -298,7 +240,7 @@ nautilus_file_background_write_desktop_settings (char *color, char *image, EelBa
 {
 	char *end_color;
 	char *start_color;
-	char *default_image_uri;
+        char *original_filename;
 
 	wallpaper_type_t wallpaper_align;
 	BGPreferences *prefs;
@@ -333,7 +275,7 @@ nautilus_file_background_write_desktop_settings (char *color, char *image, EelBa
 		prefs->orientation = ORIENTATION_SOLID;
 	}
 
-	g_free (prefs->wallpaper_filename);
+        original_filename = prefs->wallpaper_filename;
 	if (image != NULL) {
 		prefs->wallpaper_filename = gnome_vfs_get_local_path_from_uri (image);
                 prefs->wallpaper_enabled = TRUE;
@@ -359,12 +301,9 @@ nautilus_file_background_write_desktop_settings (char *color, char *image, EelBa
 		prefs->wallpaper_type = wallpaper_align;
 	} else {
                 prefs->wallpaper_enabled = FALSE;
-                /* Need to set something, or libbackground will barf */
-                nautilus_file_background_get_default_settings
-			(desktop_theme_source, NULL, &default_image_uri, NULL);
-		prefs->wallpaper_filename = gnome_vfs_get_local_path_from_uri (default_image_uri);
-                g_free (default_image_uri);
-	}
+                prefs->wallpaper_filename = g_strdup (original_filename);
+        }
+        g_free (original_filename);
 
 	bg_preferences_save (prefs);
 	g_object_unref (prefs);
@@ -373,11 +312,33 @@ nautilus_file_background_write_desktop_settings (char *color, char *image, EelBa
 static void
 nautilus_file_background_write_desktop_default_settings ()
 {
-	char *color;
-	char *image;
-	EelBackgroundImagePlacement placement;
-	nautilus_file_background_get_default_settings (desktop_theme_source, &color, &image, &placement);
-	nautilus_file_background_write_desktop_settings (color, image, placement);
+	/* We just unset all the gconf keys so they go back to
+	 * defaults
+	 */
+	GConfClient *client;
+	GConfChangeSet *set;
+
+	client = gconf_client_get_default ();
+	set = gconf_change_set_new ();
+
+	/* the list of keys here has to be kept in sync with libgnome
+	 * schemas, which isn't the most maintainable thing ever.
+	 */
+ 	gconf_change_set_unset (set, "/desktop/gnome/background/picture_options");
+	gconf_change_set_unset (set, "/desktop/gnome/background/picture_filename");
+	gconf_change_set_unset (set, "/desktop/gnome/background/picture_opacity");
+	gconf_change_set_unset (set, "/desktop/gnome/background/primary_color");
+	gconf_change_set_unset (set, "/desktop/gnome/background/secondary_color");
+	gconf_change_set_unset (set, "/desktop/gnome/background/color_shading_type");
+
+	/* this isn't atomic yet so it'll be a bit inefficient, but
+	 * someday it might be atomic.
+	 */
+ 	gconf_client_commit_change_set (client, set, FALSE, NULL);
+
+	gconf_change_set_unref (set);
+	
+	g_object_unref (G_OBJECT (client));
 }
 
 static int
@@ -587,13 +548,9 @@ nautilus_file_background_matches_default_settings (
 	gboolean match_color;
 	gboolean match_image;
 
-	/* A NULL default color or image is not considered when determining a match.
-	 */
+	match_color = (eel_strcmp (color, default_color) == 0);
 	
-	match_color = (default_color == NULL) || eel_strcmp (color, default_color) == 0;
-	
-	match_image = (default_image == NULL) ||
-		      ((eel_strcmp (image, default_image) == 0) && (placement == default_placement));
+	match_image = (eel_strcmp (image, default_image) == 0) && (placement == default_placement);
 	return match_color && match_image;
 }
 
@@ -616,7 +573,6 @@ nautilus_file_background_is_set (EelBackground *background)
 	placement = eel_background_get_image_placement (background);
 	
 	nautilus_file_background_get_default_settings (
-		nautilus_file_background_peek_theme_source (background),
 		&default_color, &default_image, &default_placement);
 		 			    
 	matches = nautilus_file_background_matches_default_settings (color, default_color,
@@ -705,9 +661,8 @@ initialize_background_from_settings (NautilusFile *file,
 
 		/* if there's none, read the default from the theme */
 		if (color == NULL && image == NULL) {
-			nautilus_file_background_get_default_settings 
-                                (nautilus_file_background_peek_theme_source (background),
-                                 &color, &image, &placement);	
+			nautilus_file_background_get_default_settings
+                                (&color, &image, &placement);	
 		}
 	}
 
@@ -879,8 +834,13 @@ nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
 
 		/* arrange for notification when the theme changes */
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
-                                              nautilus_file_background_theme_changed, background);	
-
+                                              nautilus_file_background_theme_changed, background);
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_BACKGROUND_SET,
+                                              nautilus_file_background_theme_changed, background);
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_BACKGROUND_COLOR,
+                                              nautilus_file_background_theme_changed, background);
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_BACKGROUND_FILENAME,
+                                              nautilus_file_background_theme_changed, background);
 	}
 
         /* Update the background based on the file metadata. */

@@ -1,3 +1,34 @@
+2002-10-05  Dave Camp  <dave@ximian.com>
+	
+	* libnautilus-private/nautilus-directory-background.c:
+	(initialize_background_from_settings),
+	(nautilus_file_background_get_default_settings): Don't read
+	settings from the nautilus theme.  Return the globally configured
+	background if it is set, otherwise return empty settings (in which
+	case the EelBackground will use colors from the gtk theme).
+	(nautilus_file_background_read_desktop_settings):
+	(nautilus_file_background_write_desktop_settings): Don't read
+	defaults from the theme.
+	(nautilus_file_background_write_desktop_default_settings): Just
+	unset the desktop gconf keys.
+	(nautilus_file_background_is_set),
+	(nautilus_file_background_matches_default_settings): Compare
+	against the globally configured background rather than the theme
+	settings.
+	(nautilus_connect_background_to_file_metadata): Respond to changes
+	in the globally configured background.
+	(nautilus_connect_desktop_background_to_file_metadata),
+	(background_is_desktop): Use a boolean value to identify the
+	desktop, instead of the theme_source.  *
+	libnautilus-private/nautilus-global-preferences.h: *
+	src/file-manager/fm-desktop-icon-view.c:
+	(reset_background_callback): Removed the code to unset gconf keys,
+	this has been moved to
+	nautilus_file_background_write_desktop_default_settings.  Reset
+	the EelBackground.  
+	* libnautilus-private/apps_nautilus_preferences.schemas: Add the
+	background configuration keys.
+
 2002-10-04  Alexander Larsson  <alexl@redhat.com>
 
 	* configure.in:

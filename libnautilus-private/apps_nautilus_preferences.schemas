@@ -363,6 +363,40 @@
       </locale>
     </schema>
 
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/background_set</key>
+      <applyto>/apps/nautilus/preferences/background_set</applyto>
+      <owner>nautilus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+      <short>Custom Background Set</short>
+      <long>Whether a custom default directory background has been set.</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/background_color</key>
+      <applyto>/apps/nautilus/preferences/background_color</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default>#ffffff</default>
+      <locale name="C">
+      <short>Default Background Color</short>
+      <long>Filename for the default directory background.  Only used if background_set is true.</long>
+      </locale>
+    </schema>
+    <schema>
+      <key>/schemas/apps/nautilus/preferences/background_filename</key>
+      <applyto>/apps/nautilus/preferences/background_filename</applyto>
+      <owner>nautilus</owner>
+      <type>string</type>
+      <default></default>
+      <locale name="C">
+      <short>Default Background Filename</short>
+      <long>Filename for the default directory background.  Only used if background_set is true.</long>
+      </locale>
+    </schema>
+
     <!-- Icon View -->
 
     <schema>

@@ -802,33 +802,9 @@ reset_background_callback (BonoboUIComponent *component,
 			   gpointer data, 
 			   const char *verb)
 {
-	/* We just unset all the gconf keys so they go back to
-	 * defaults
-	 */
-	GConfClient *client;
-	GConfChangeSet *set;
-
-	client = gconf_client_get_default ();
-	set = gconf_change_set_new ();
-
-	/* the list of keys here has to be kept in sync with libgnome
-	 * schemas, which isn't the most maintainable thing ever.
-	 */
- 	gconf_change_set_unset (set, "/desktop/gnome/background/picture_options");
-	gconf_change_set_unset (set, "/desktop/gnome/background/picture_filename");
-	gconf_change_set_unset (set, "/desktop/gnome/background/picture_opacity");
-	gconf_change_set_unset (set, "/desktop/gnome/background/primary_color");
-	gconf_change_set_unset (set, "/desktop/gnome/background/secondary_color");
-	gconf_change_set_unset (set, "/desktop/gnome/background/color_shading_type");
-
-	/* this isn't atomic yet so it'll be a bit inefficient, but
-	 * someday it might be atomic.
-	 */
- 	gconf_client_commit_change_set (client, set, FALSE, NULL);
-
-	gconf_change_set_unref (set);
-	
-	g_object_unref (G_OBJECT (client));
+	eel_background_reset 
+		(fm_directory_view_get_background 
+		 (FM_DIRECTORY_VIEW (data)));
 }
 
 static gboolean

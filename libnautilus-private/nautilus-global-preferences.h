@@ -33,6 +33,11 @@ G_BEGIN_DECLS
 /* Which theme is active */
 #define NAUTILUS_PREFERENCES_THEME				"/desktop/gnome/file_views/icon_theme"
 
+/* Desktop Background options */
+#define NAUTILUS_PREFERENCES_BACKGROUND_SET                     "preferences/background_set" 
+#define NAUTILUS_PREFERENCES_BACKGROUND_COLOR                   "preferences/background_color" 
+#define NAUTILUS_PREFERENCES_BACKGROUND_FILENAME                "preferences/background_filename" 
+
 /* How wide the sidebar is (or how wide it will be when expanded) */
 #define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"preferences/sidebar_width"
 
