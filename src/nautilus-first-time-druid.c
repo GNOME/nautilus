@@ -1265,8 +1265,7 @@ initiate_file_download (GnomeDruid *druid)
 	prevent_re_entry = TRUE;
 
 	/* disable the next and previous buttons during the file loading process */
-	gtk_widget_set_sensitive (druid->next, FALSE);
-	gtk_widget_set_sensitive (druid->back, FALSE);
+	gnome_druid_set_buttons_sensitive (druid, FALSE, FALSE, TRUE);
 
 	/* Cancel any download already in progress. */
 	gtk_object_remove_data (GTK_OBJECT (druid), READ_FILE_HANDLE_TAG);

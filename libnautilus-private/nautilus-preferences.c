@@ -1286,7 +1286,7 @@ nautilus_preferences_get_user_level_name_for_display (int user_level)
 {
 	user_level = preferences_user_level_check_range (user_level);
 	
-	return g_strdup (user_level_names_for_display[user_level]);
+	return g_strdup (gettext (user_level_names_for_display[user_level]));
 }
 
 char *

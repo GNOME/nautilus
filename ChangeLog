@@ -1,3 +1,26 @@
+2001-02-24  Arik Devens  <arik@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	Fixed bug 6924, User level strings not properly translated in
+	first time druid.
+	
+	* libnautilus-extensions/nautilus-preferences.c:
+	(nautilus_preferences_get_user_level_name_for_display): Added a
+	gettext call to translate the N_'d user level strings.
+
+2001-02-24  Arik Devens  <arik@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	Fixed bug 4567, Druid does not desensitize "next" button when
+	checking the network connection.
+	
+	* src/nautilus-first-time-druid.c: (initiate_file_download):
+	Changed to using gnome_druid_set_sensitive instead of
+	gtk_widget_set_sensitive to stop the druid from clobering our
+	sensitivity preference.
+
 2001-02-24  Ian McKellar  <ian@eazel.com>
 
 	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
