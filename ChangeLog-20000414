@@ -1,3 +1,35 @@
+2000-02-14  John Sullivan <sullivan@eazel.com>
+
+	Back and Forward buttons now sprout right-click menus.
+	Still work to do to put small icons in them, and to 
+	make them keep the back/forward chain intact.
+
+	* libnautilus/nautilus-gtk-extensions.h:
+	* libnautilus/nautilus-gtk-extensions.c:
+	(nautilus_pop_up_context_menu): New helper function used
+	when displaying right-click context menus.
+
+	* src/file-manager/fm-directory-view.c:
+	(popup_context_menu): Removed (moved & renamed to
+	nautilus_pop_up_context_menu).
+	(fm_directory_view_popup_item_context_menu),
+	(fm_directory_view_popup_background_context_menu): 
+	Now use nautilus_pop_up_context_menu.
+	
+	* src/ntl-window.c:
+	(activate_back_or_forward_menu_item): New function, go to the
+	appropriate location.
+	(activate_back_menu_item_cb): New function, call
+	activate_back_or_forward_menu_item.
+	(activate_forward_menu_item_cb): New function, call
+	activate_back_or_forward_menu_item.
+	(create_back_or_forward_menu): New function, create and populate a
+	menu from the back list or the forward list.
+	(back_or_forward_button_clicked_cb): New function, pop up the result
+	of create_back_or_forward_menu.
+	(nautilus_window_constructed): Wire up context menu code to
+	back and forward buttons.
+
 2000-02-14  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/nautilus-icon-factory.c:

@@ -35,6 +35,7 @@
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libnautilus/nautilus-gtk-extensions.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-alloc.h>
 
@@ -778,18 +779,6 @@ open_in_new_window_cb (GtkMenuItem *item, NautilusFile *file)
 
 
 static void
-popup_context_menu (GtkMenu *menu)
-{
-	gtk_object_ref (GTK_OBJECT(menu));
-	gtk_object_sink (GTK_OBJECT(menu));
-
-	gtk_menu_popup (menu, NULL, NULL, NULL,
-			NULL, 3, GDK_CURRENT_TIME);
-
-	gtk_object_unref (GTK_OBJECT(menu));
-}
-
-static void
 fm_directory_view_real_append_background_context_menu_items (FMDirectoryView *view, 
 							     GtkMenu *menu)
 {
@@ -931,7 +920,7 @@ fm_directory_view_popup_item_context_menu  (FMDirectoryView *view,
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	g_assert (NAUTILUS_IS_FILE (file));
 	
-	popup_context_menu (create_item_context_menu (view, file));
+	nautilus_pop_up_context_menu (create_item_context_menu (view, file));
 }
 
 /**
@@ -948,7 +937,7 @@ fm_directory_view_popup_background_context_menu  (FMDirectoryView *view)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	
-	popup_context_menu (create_background_context_menu (view));
+	nautilus_pop_up_context_menu (create_background_context_menu (view));
 }
 
 

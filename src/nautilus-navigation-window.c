@@ -460,6 +460,97 @@ nautilus_window_goto_uri_cb (GtkWidget *widget,
 }
 
 static void
+activate_back_or_forward_menu_item (GtkMenuItem *menu_item, 
+				    NautilusWindow *window,
+				    gboolean back)
+{
+	int index;
+	const char *uri;
+	
+	g_assert (GTK_IS_MENU_ITEM (menu_item));
+	g_assert (NAUTILUS_IS_WINDOW (window));
+
+	index = GPOINTER_TO_INT (gtk_object_get_user_data (GTK_OBJECT (menu_item)));
+	uri = g_slist_nth_data (back ? window->uris_prev : window->uris_next, index);
+
+	/* FIXME: This should do the equivalent of going back or forward n times,
+	 * rather than just going to the right uri. This is needed to
+	 * keep the back/forward chain intact.
+	 */	
+	nautilus_window_goto_uri (window, uri);
+}
+
+static void
+activate_back_menu_item_cb (GtkMenuItem *menu_item, NautilusWindow *window)
+{
+	activate_back_or_forward_menu_item (menu_item, window, TRUE);
+}
+
+static void
+activate_forward_menu_item_cb (GtkMenuItem *menu_item, NautilusWindow *window)
+{
+	activate_back_or_forward_menu_item (menu_item, window, FALSE);
+}
+
+static GtkMenu *
+create_back_or_forward_menu (NautilusWindow *window, gboolean back)
+{
+	GtkMenu *menu;
+	GtkWidget *menu_item;
+	GSList *uri_in_list;
+	int index;
+
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	
+	menu = GTK_MENU (gtk_menu_new ());
+
+	uri_in_list = back ? window->uris_prev : window->uris_next;
+	index = 0;
+	while (uri_in_list != NULL)
+	{
+		menu_item = gtk_menu_item_new_with_label (uri_in_list->data);
+		gtk_object_set_user_data (GTK_OBJECT (menu_item), GINT_TO_POINTER (index));
+		gtk_widget_show (GTK_WIDGET (menu_item));
+  		gtk_signal_connect(GTK_OBJECT(menu_item), 
+  			"activate",
+                     	back ? activate_back_menu_item_cb : activate_forward_menu_item_cb, 
+                     	window);
+		
+		gtk_menu_append (menu, menu_item);
+		uri_in_list = g_slist_next (uri_in_list);
+		++index;
+	}
+
+	return menu;
+}
+
+static int
+back_or_forward_button_clicked_cb (GtkWidget *widget, 
+				   GdkEventButton *event, 
+				   gpointer *user_data)
+{
+	gboolean back;
+
+	g_return_val_if_fail (GTK_IS_BUTTON (widget), FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_WINDOW (user_data), FALSE);
+	g_return_val_if_fail (event != NULL, FALSE);
+
+	back = NAUTILUS_WINDOW (user_data)->back_button == widget;
+	g_assert (back || NAUTILUS_WINDOW (user_data)->forward_button == widget);
+
+	if (event->button == 3)
+	{
+		nautilus_pop_up_context_menu (
+			create_back_or_forward_menu (NAUTILUS_WINDOW (user_data),
+						     back));
+		return TRUE;
+	}
+
+	return FALSE;
+	
+}
+
+static void
 nautilus_window_constructed(NautilusWindow *window)
 {
   GnomeApp *app;
@@ -584,6 +675,15 @@ nautilus_window_constructed(NautilusWindow *window)
   window->forward_menu_item = go_menu_info[GO_MENU_FORWARD_ITEM_INDEX].widget;
   window->up_menu_item = go_menu_info[GO_MENU_UP_ITEM_INDEX].widget;
 
+  gtk_signal_connect (GTK_OBJECT (window->back_button),
+		      "button_press_event",
+		      GTK_SIGNAL_FUNC (back_or_forward_button_clicked_cb), 
+		      window);
+
+  gtk_signal_connect (GTK_OBJECT (window->forward_button),
+		      "button_press_event",
+		      GTK_SIGNAL_FUNC (back_or_forward_button_clicked_cb), 
+		      window);
 
   /* Set initial sensitivity of some buttons & menu items 
    * now that they're all created.

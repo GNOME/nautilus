@@ -133,3 +133,32 @@ nautilus_gtk_selection_data_free_deep (GtkSelectionData *data)
 	g_free (data->data);
 	gtk_selection_data_free (data);
 }
+
+/**
+ * nautilus_pop_up_context_menu:
+ * 
+ * Pop up a context menu under the mouse. This assumes that
+ * a mouse down event just occurred, with the 3rd button pressed.
+ * (Context menus only appear with the 3rd mouse button, by UI
+ * convention.) The menu is sunk after use, so it will be destroyed
+ * unless the caller first ref'ed it.
+ * 
+ * This function is more of a helper function than a gtk extension,
+ * so perhaps it belongs in a different file.
+ * 
+ * @menu: The menu to pop up under the mouse.
+ **/
+void 
+nautilus_pop_up_context_menu (GtkMenu *menu)
+{
+	g_return_if_fail (GTK_IS_MENU (menu));
+
+	/* We pass current time here instead of extracting it from
+	 * the event, for API simplicity. This does not seem to make
+	 * any practical difference. See man XGrabPointer for details.
+	 */
+	gtk_menu_popup (menu, NULL, NULL, NULL,
+			NULL, 3, GDK_CURRENT_TIME);
+
+	gtk_object_sink (GTK_OBJECT(menu));
+}
