@@ -45,10 +45,6 @@ EXTRA_DIST=					\
 	$(DESKTOP_FILES)			\
 	$(NULL)
 
-appicondir = $(datadir)/pixmaps
-appicon_DATA = 	gnome-starthere-96.png		\
-		gnome-starthere.png
-
 Applicationsdir = $(datadir)/applications
 Applications_DATA = $(DESKTOP_FILES)
 

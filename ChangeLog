@@ -1,5 +1,22 @@
 2002-12-12  Alexander Larsson  <alexl@redhat.com>
 
+	* data/preferences.desktop.in:
+	* data/serverconfig.desktop.in:
+	* data/serverconfig.directory.in:
+	* data/starthere-link.desktop.in:
+	* data/starthere.desktop.in:
+	* data/starthere.directory.in:
+	* data/sysconfig.desktop.in:
+	* data/sysconfig.directory.in:
+	Use the new icons in gnome-icon-theme for these.
+	
+	* Makefile.am:
+	* gnome-starthere-96.png:
+	* gnome-starthere.png:
+	Remove the icons. They moved to gnome-icon-theme.
+
+2002-12-12  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-file.c:
 	Special case the display name for the root of non-local files.
 	This means we show e.g. fonts:// instead of / as the title.
