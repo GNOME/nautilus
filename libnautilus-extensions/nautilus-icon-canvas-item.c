@@ -1864,6 +1864,7 @@ create_annotation (NautilusIconCanvasItem *icon_item, int emblem_index)
 	ArtDRect icon_rect;
 	char *note_text;
 	GnomeCanvas *canvas;
+	GnomeCanvasItem *item;
 	
 	/* compute the position for the top left of the annotation */
 	nautilus_icon_canvas_item_get_icon_rectangle (icon_item, &icon_rect);
@@ -1874,31 +1875,23 @@ create_annotation (NautilusIconCanvasItem *icon_item, int emblem_index)
 	outline_color = 0x000000FF;
 	
 	canvas = GNOME_CANVAS_ITEM (icon_item)->canvas;
+	item = GNOME_CANVAS_ITEM (icon_item);
+	
 	note_text = nautilus_icon_container_get_note_text (NAUTILUS_ICON_CONTAINER (canvas), icon_item->user_data, emblem_index);		
 
-	g_message ("creating annotation, text is %s", note_text);
-		
 	icon_item->details->annotation = gnome_canvas_item_new
 			(gnome_canvas_root (canvas),
 		 	nautilus_canvas_note_item_get_type (),
 		 	"x1", left,
 		 	"y1", top,
-		 	"x2", left + 100,
-		 	"y2", top + 100,
 		 	"fill_color_rgba", fill_color,
 		 	"outline_color_rgba", outline_color,
 		 	"note_text", note_text,
 		 	"width_pixels", 1,
 		 	NULL);
 
-	g_free (note_text);
-	
-	gnome_canvas_item_show (icon_item->details->annotation);
-	gnome_canvas_item_raise_to_top (icon_item->details->annotation);	
-	gnome_canvas_item_request_update (icon_item->details->annotation);
-	
-	gnome_canvas_request_redraw	(canvas, icon_item->details->annotation->x1, icon_item->details->annotation->y1, icon_item->details->annotation->x2, icon_item->details->annotation->y2);
-	g_message ("redrawing left %f, top %f, right %f, bottom %f",  icon_item->details->annotation->x1, icon_item->details->annotation->y1, icon_item->details->annotation->x2, icon_item->details->annotation->y2);
+	g_free (note_text);	
+	gnome_canvas_item_raise_to_top (icon_item->details->annotation);		
 }
 
 /* remove any annotation that's showing */

@@ -47,7 +47,6 @@ typedef struct _NautilusCanvasNoteItemClass NautilusCanvasNoteItemClass;
 struct _NautilusCanvasNoteItem {
 	GnomeCanvasItem item;
 
-	double x1, y1, x2, y2;		/* Corners of item */
 	double width;			/* Outline width */
 
 	guint fill_color;		/* Fill color, RGBA */
