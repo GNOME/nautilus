@@ -452,7 +452,7 @@ nautilus_index_panel_activate_meta_view (NautilusIndexPanel *index_panel, int wh
 		if (GTK_WIDGET (notebook)->parent == NULL) {
 			gtk_box_pack_end (GTK_BOX (index_panel->details->container),
 					  GTK_WIDGET (notebook),
-					  TRUE, TRUE, 2);
+					  TRUE, TRUE, 0);
 		}
 		
 		gtk_widget_show (GTK_WIDGET (index_panel->details->title_tab));
@@ -742,7 +742,6 @@ nautilus_index_panel_update_info (NautilusIndexPanel *index_panel,
 	color_spec = nautilus_directory_get_metadata (directory,
 							    NAUTILUS_METADATA_KEY_SIDEBAR_TAB_COLOR,
 							    DEFAULT_TAB_COLOR);
-	g_message("setting tab color to %s", color_spec);
 	nautilus_index_tabs_set_color(index_panel->details->index_tabs, color_spec);
 	g_free (color_spec);
 
