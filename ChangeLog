@@ -1,5 +1,10 @@
 2003-09-05  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-application.c (migrate_old_nautilus_files):
+	Don't migrate .gnome-desktop if its a symlink.
+
+2003-09-05  Alexander Larsson  <alexl@redhat.com>
+
 	* src/file-manager/fm-desktop-icon-view.c (realized_callback):
 	Hack to workaround messed up desktop icons.
 

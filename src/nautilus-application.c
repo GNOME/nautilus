@@ -290,7 +290,8 @@ migrate_old_nautilus_files (void)
 	int fd;
 	
 	old_desktop_dir = nautilus_get_gmc_desktop_directory ();
-	if (!g_file_test (old_desktop_dir, G_FILE_TEST_IS_DIR)) {
+	if (!g_file_test (old_desktop_dir, G_FILE_TEST_IS_DIR) ||
+	    g_file_test (old_desktop_dir, G_FILE_TEST_IS_SYMLINK)) {
 		g_free (old_desktop_dir);
 		return;
 	}
