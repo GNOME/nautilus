@@ -643,20 +643,14 @@ set_theme (const char *theme_name)
 {
 	NautilusIconFactory *factory;
 
-	if (factory->theme_name == NULL) {
-		if (theme_name == NULL) {
-			return;
-		}
-	} else {
-		if (theme_name != NULL
-		    && strcmp (theme_name, factory->theme_name) == 0) {
-			return;
-		}
-	}
-
 	factory = get_icon_factory ();
 
         nautilus_icon_factory_clear ();
+
+	if ((factory->theme_name == NULL && theme_name == NULL) ||
+	    nautilus_strcmp (theme_name, factory->theme_name) == 0) {
+		return;
+	}
 
         g_free (factory->theme_name);
         factory->theme_name = g_strdup (theme_name);

@@ -205,7 +205,6 @@ main (int argc, char *argv[])
 	orb = oaf_init (argc, argv);
 
 	if (getenv ("NAUTILUS_ENABLE_TEST_COMPONENTS") != NULL) {
-		puts ("XXX enabling test components.");
 		oaf_set_test_components_enabled (TRUE);
 	}
 

@@ -1,3 +1,11 @@
+2000-09-19  Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c (set_theme):
+	Fixed an uninitialized variable use and cleaned up some nearby
+	logic while I was at it.
+
+	* src/nautilus-main.c (main): Removed a gratuitous puts call.
+
 2000-09-19  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-object.c:
