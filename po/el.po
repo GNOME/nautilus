@@ -18,8 +18,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 0.8.3\n"
-"POT-Creation-Date: 2001-03-01 23:41+0000\n"
-"PO-Revision-Date: 2001-03-02 00:00:01+0900\n"
+"POT-Creation-Date: 2001-03-02 18:37+0000\n"
+"PO-Revision-Date: 2001-03-02 20:07:53+0900\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
@@ -156,7 +156,7 @@ msgid "Previous"
 msgstr "Προηγούμενο"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:719
-#: libnautilus-extensions/nautilus-global-preferences.c:684
+#: libnautilus-extensions/nautilus-global-preferences.c:679
 #: src/nautilus-shell-ui.xml.h:38
 msgid "Home"
 msgstr "Αρχή"
@@ -1844,7 +1844,7 @@ msgstr "Κατασκευαστής: "
 #: components/rpmview/nautilus-rpm-view.c:279
 #: components/services/install-view/Nautilus_View_install.oaf.in.h:1
 #: components/services/install/server/Trilobite_Service_install.oaf.in.h:2
-#: components/services/summary/nautilus-summary-view.c:122
+#: components/services/summary/nautilus-summary-view.c:123
 msgid "Install"
 msgstr "Εγκατάσταση"
 
@@ -2221,7 +2221,7 @@ msgstr "Μεταφόρτωση του %s... (%d/%d) %.1f KB/s Ολοκληρώθηκε\n"
 #: components/services/install/command-line/eazel-alt-install-corba.c:380
 #, c-format
 msgid "Downloading %s... %3.1f KB/s Done\n"
-msgstr "\rΜεταφόρτωση του %s... %3.1f KB/s Ολοκληρώθηκε\n"
+msgstr "Μεταφόρτωση του %s... %3.1f KB/s Ολοκληρώθηκε\n"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:408
 msgid "Installing %s (%d/%d), (%d/%d)b - (%d/%d) = %d%%"
@@ -2301,25 +2301,43 @@ msgstr "\t· το %s και οι εξαρτήσεις του\n"
 msgid "\t· %s\n"
 msgstr "\t· %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:631
+#. I18N note: the (y/n) is translateable. There is later a 1 character
+#. string with the context "y" which is the "yes" indicator.
+#. If you eg. translate this to Danish : "Fortsζt (j/n) " and
+#. translated the "y" later to "j", da_DK users can respond with
+#. "j" "ja" "JA" etc.
+#: components/services/install/command-line/eazel-alt-install-corba.c:634
+msgid "Save transaction report ? (y/n) "
+msgstr "Αποθήκευση αναφοράς συναλλαγής; (ν/ο) "
+
+#. I18N note: y is the letter for the word Yes. This is
+#. used in the response for a yes/no questions. Your translation
+#. must be 1 character only.
+#: components/services/install/command-line/eazel-alt-install-corba.c:645
+#: components/services/install/command-line/eazel-alt-install-corba.c:765
+#: components/services/install/command-line/eazel-alt-install-corba.c:807
+msgid "y"
+msgstr "ν"
+
+#: components/services/install/command-line/eazel-alt-install-corba.c:666
 #, c-format
 msgid "Dependency : %s needs %s\n"
 msgstr "Εξάρτηση : το %s απαιτεί το %s\n"
 
 #. I18N note: %s is a package name
-#: components/services/install/command-line/eazel-alt-install-corba.c:649
+#: components/services/install/command-line/eazel-alt-install-corba.c:684
 #, c-format
 msgid "Package %s failed md5 check!\n"
 msgstr "Αποτυχία ελέγχου md5 από το πακέτο %s!\n"
 
 #. I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:651
+#: components/services/install/command-line/eazel-alt-install-corba.c:686
 #, c-format
 msgid "\t· server MD5 checksum is %s\n"
 msgstr "\t· το άθροισμα ελέγχου MD5 του εξυπηρετητή είναι %s\n"
 
 #. I18N note: %s is a 32 bytes hex numbers, \xB7 is a dot
-#: components/services/install/command-line/eazel-alt-install-corba.c:653
+#: components/services/install/command-line/eazel-alt-install-corba.c:688
 #, c-format
 msgid "\t· actual MD5 checksum is %s\n"
 msgstr "\t· το πραγματικό άθροισμα ελέγχου MD5 είναι %s\n"
@@ -2329,102 +2347,94 @@ msgstr "\t· το πραγματικό άθροισμα ελέγχου MD5 είναι %s\n"
 #. If you eg. translate this to Danish : "Fortsζt (j/n " and
 #. translated the "y" later to "j", da_DK users can respond with
 #. "j" "ja" "JA" etc.
-#: components/services/install/command-line/eazel-alt-install-corba.c:719
+#: components/services/install/command-line/eazel-alt-install-corba.c:754
 msgid "Continue? (y/n) "
 msgstr "Συνέχιση; (ν/ο) "
-
-#. I18N note: y is the letter for the word Yes. This is
-#. used in the response for a yes/no questions. Your translation
-#. must be 1 character only.
-#: components/services/install/command-line/eazel-alt-install-corba.c:730
-#: components/services/install/command-line/eazel-alt-install-corba.c:772
-msgid "y"
-msgstr "ν"
 
 #. I18N note: the (y/n) is translateable. There is later a 1 character
 #. string with the context "y" which is the "yes" indicator.
 #. If you eg. translate this to Danish : "Fortsζt (j/n " and
 #. translated the "y" later to "j", da_DK users can respond with
 #. "j" "ja" "JA" etc.
-#: components/services/install/command-line/eazel-alt-install-corba.c:760
+#: components/services/install/command-line/eazel-alt-install-corba.c:795
 msgid "Should I delete the RPM files? (y/n) "
 msgstr "Να διαγραφούν τα αρχεία RPM; (ν/ο) "
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:792
+#: components/services/install/command-line/eazel-alt-install-corba.c:827
 msgid "Operation ok\n"
 msgstr "Η λειτουργία ολοκληρώθηκε\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:794
+#: components/services/install/command-line/eazel-alt-install-corba.c:829
 msgid "Operation failed\n"
 msgstr "Αποτυχία λειτουργίας\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:911
+#: components/services/install/command-line/eazel-alt-install-corba.c:949
 msgid "Installing"
 msgstr "Γίνετε εγκατάσταση"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:920
+#: components/services/install/command-line/eazel-alt-install-corba.c:958
 msgid "Uninstalling"
 msgstr "Γίνετε απεγκατάσταση"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:935
+#: components/services/install/command-line/eazel-alt-install-corba.c:973
 msgid "Only one operation at a time please."
 msgstr "Μόνο μία λειτουργία τη φορά παρακαλώ."
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:940
-#: components/services/install/command-line/eazel-alt-install-corba.c:948
-#: components/services/install/command-line/eazel-alt-install-corba.c:992
-#: components/services/install/command-line/eazel-alt-install-corba.c:999
+#: components/services/install/command-line/eazel-alt-install-corba.c:978
+#: components/services/install/command-line/eazel-alt-install-corba.c:986
+#: components/services/install/command-line/eazel-alt-install-corba.c:1030
+#: components/services/install/command-line/eazel-alt-install-corba.c:1037
 #, c-format
 msgid "%s: --help for usage\n"
 msgstr "%s: --help για βοήθεια\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:964
+#: components/services/install/command-line/eazel-alt-install-corba.c:1002
 #, c-format
 msgid "Name         : %s\n"
 msgstr "Όνομα        : %s\n"
 
 #
-#: components/services/install/command-line/eazel-alt-install-corba.c:965
+#: components/services/install/command-line/eazel-alt-install-corba.c:1003
 #, c-format
 msgid "Version      : %s\n"
 msgstr "Έκδοση:      : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:966
+#: components/services/install/command-line/eazel-alt-install-corba.c:1004
 #, c-format
 msgid "Minor        : %s\n"
 msgstr "Eλάσσων      : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:968
+#: components/services/install/command-line/eazel-alt-install-corba.c:1006
 #, c-format
 msgid "Size         : %d\n"
 msgstr "Μέγεθος      : %d\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:969
+#: components/services/install/command-line/eazel-alt-install-corba.c:1007
 #, c-format
 msgid "Arch         : %s\n"
 msgstr "Αρχιτεκτονική: %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:970
+#: components/services/install/command-line/eazel-alt-install-corba.c:1008
 #, c-format
 msgid "Distribution : %s\n"
 msgstr "Διανομή      : %s\n"
 
 #
-#: components/services/install/command-line/eazel-alt-install-corba.c:971
+#: components/services/install/command-line/eazel-alt-install-corba.c:1009
 #, c-format
 msgid "Description  : %s\n"
 msgstr "Περιγραφή    : %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:973
+#: components/services/install/command-line/eazel-alt-install-corba.c:1011
 #, c-format
 msgid "Install root : %s\n"
 msgstr "Διαδρομή εγκατ/σης: %s\n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:976
+#: components/services/install/command-line/eazel-alt-install-corba.c:1014
 msgid "Provides     : \n"
 msgstr "Παροχείς     : \n"
 
-#: components/services/install/command-line/eazel-alt-install-corba.c:1018
+#: components/services/install/command-line/eazel-alt-install-corba.c:1056
 #, c-format
 msgid "exit code %d\n"
 msgstr "αποτέλεσμα ενέργειας %d\n"
@@ -2557,7 +2567,7 @@ msgstr "εντάξει"
 msgid "not ok"
 msgstr "δεν είναι εντάξει"
 
-#: components/services/install/lib/eazel-install-logic2.c:1137
+#: components/services/install/lib/eazel-install-logic2.c:1139
 #, c-format
 msgid "Checking dependencies for %s"
 msgstr "Ελεγχος εξαρτήσεων για το %s"
@@ -2565,48 +2575,48 @@ msgstr "Ελεγχος εξαρτήσεων για το %s"
 #. I18N note: both %s' are package names.
 #. related is in the sense that the two packages apparently
 #. are connected somehow, eg. foo and foo-devel
-#: components/services/install/lib/eazel-install-logic2.c:1698
+#: components/services/install/lib/eazel-install-logic2.c:1700
 #, c-format
 msgid "%s is related to %s"
 msgstr "Το %s σχετίζεται με το %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1758
+#: components/services/install/lib/eazel-install-logic2.c:1760
 #, c-format
 msgid "updating %s to version %s-%s solves conflict"
 msgstr "η ενημέρωση του %s στην έκδοση %s-%s επιλύει τη σύγκρουση"
 
-#: components/services/install/lib/eazel-install-logic2.c:1774
+#: components/services/install/lib/eazel-install-logic2.c:1776
 #, c-format
 msgid "available update to %s (%s-%s) does not solves conflict"
 msgstr "η διαθέσιμη ανανέωση στο %s (%s-%s) δεν επιλύει τη σύγκρουση"
 
 #
-#: components/services/install/lib/eazel-install-logic2.c:1781
+#: components/services/install/lib/eazel-install-logic2.c:1783
 #, c-format
 msgid "could not revive %s"
 msgstr "αδύνατη η αναζωογόνηση του %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1917
+#: components/services/install/lib/eazel-install-logic2.c:1919
 #, c-format
 msgid "file uniqueness checking %s"
 msgstr "έλεγχος μοναδικότητας αρχείου %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1938
+#: components/services/install/lib/eazel-install-logic2.c:1940
 #, c-format
 msgid "Duplicate file : %s occurs in %s and %s"
 msgstr "Διπλό αρχείο : το %s υπάρχει στο %s και στο %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:1956
+#: components/services/install/lib/eazel-install-logic2.c:1958
 #, c-format
 msgid "(there were %d other conflicts)"
 msgstr "(υπήρξαν %d άλλες συγκρούσεις)"
 
-#: components/services/install/lib/eazel-install-logic2.c:2051
+#: components/services/install/lib/eazel-install-logic2.c:2053
 #, c-format
 msgid "file conflict checking %s"
 msgstr "έλεγχος σύγκρουσης αρχείου %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2088
+#: components/services/install/lib/eazel-install-logic2.c:2090
 #, c-format
 msgid "file conflict : package %s already provides file %s also provided by %s"
 msgstr ""
@@ -2615,17 +2625,17 @@ msgstr ""
 
 #. the owner of this file is a package that we're upgrading, and the
 #. * new version no longer has this file, so everything's okay.
-#: components/services/install/lib/eazel-install-logic2.c:2098
+#: components/services/install/lib/eazel-install-logic2.c:2100
 #, c-format
 msgid "...but it is okay, we're upgrading %s and it ditched that file"
 msgstr "...αλλά είναι εντάξει διότι αναβαθμίζουμε το %s και το διαγράφει"
 
-#: components/services/install/lib/eazel-install-logic2.c:2188
+#: components/services/install/lib/eazel-install-logic2.c:2190
 #, c-format
 msgid "checking feature consistency of %s"
 msgstr "έλεγχος αυτοτέλειας χαρακτηριστικού του %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2256
+#: components/services/install/lib/eazel-install-logic2.c:2258
 #, c-format
 msgid ""
 "feature missing : %s breaks if %s is installed (feature %s would be lost"
@@ -2633,39 +2643,39 @@ msgstr ""
 "λείπει χαρακτηριστικό : το %s έχει πρόβλημα αν εγκατασταθεί το %s (το "
 "χαρακτ. %s θα χαθεί"
 
-#: components/services/install/lib/eazel-install-logic2.c:2334
+#: components/services/install/lib/eazel-install-logic2.c:2336
 #, c-format
 msgid "downloading %d packages"
 msgstr "μεταφόρτωση %d πακέτων"
 
-#: components/services/install/lib/eazel-install-logic2.c:2599
+#: components/services/install/lib/eazel-install-logic2.c:2605
 #, c-format
 msgid "will upgrade %s"
 msgstr "θα γίνει αναβάθμιση του %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2602
+#: components/services/install/lib/eazel-install-logic2.c:2608
 #, c-format
 msgid "will downgrade %s"
 msgstr "θα γίνει υποβάθμιση του %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2605
+#: components/services/install/lib/eazel-install-logic2.c:2611
 #, c-format
 msgid "will install %s"
 msgstr "θα γίνει εγκατάσταση του %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2608
+#: components/services/install/lib/eazel-install-logic2.c:2614
 #, c-format
 msgid "will uninstall %s"
 msgstr "θα γίνει απεγκατάσταση του %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2691
+#: components/services/install/lib/eazel-install-logic2.c:2697
 #: components/services/install/lib/eazel-install-problem.c:335
 #: components/services/install/lib/eazel-install-problem.c:338
 #, c-format
 msgid "%s requires %s"
 msgstr "Το %s απαιτεί το %s"
 
-#: components/services/install/lib/eazel-install-logic2.c:2855
+#: components/services/install/lib/eazel-install-logic2.c:2861
 #, c-format
 msgid "failed %s"
 msgstr "αποτυχία του %s"
@@ -2674,45 +2684,45 @@ msgstr "αποτυχία του %s"
 msgid "Could not set URLType from config file!"
 msgstr "Ανεπιτυχής προσπάθεια καθορισμού του URLType από το αρχείο ρυθμίσεων!"
 
-#: components/services/install/lib/eazel-install-object.c:701
+#: components/services/install/lib/eazel-install-object.c:713
 msgid "Transactions are not stored, could not find home dir"
 msgstr ""
 "Οι συναλλαγές δεν αποθηκεύονται, δε μπόρεσε να βρεθεί αρχικός κατάλογος"
 
 #
-#: components/services/install/lib/eazel-install-object.c:729
+#: components/services/install/lib/eazel-install-object.c:741
 #, c-format
 msgid "Transactions are stored in %s"
 msgstr "Οι συναλλαγές αποθηκεύονται στο %s"
 
-#: components/services/install/lib/eazel-install-object.c:986
+#: components/services/install/lib/eazel-install-object.c:998
 msgid "Getting package list from remote server ...\n"
 msgstr "Λήψη λίστας πακέτων από τον απομακρυσμένο εξυπηρετητή ...\n"
 
-#: components/services/install/lib/eazel-install-object.c:1002
+#: components/services/install/lib/eazel-install-object.c:1014
 msgid "Unable to retrieve package-list.xml!\n"
 msgstr "Ανεπιτυχής προσπάθεια ανάκτησης του package-list.xml!\n"
 
-#: components/services/install/lib/eazel-install-object.c:1075
+#: components/services/install/lib/eazel-install-object.c:1087
 #, c-format
 msgid "Cannot write to file %s, using default log handler"
 msgstr ""
 "Αδύνατο το γράψιμο του αρχείου %s, χρήση του εξ' ορισμού χειριστή καταγραφών"
 
-#: components/services/install/lib/eazel-install-object.c:1206
+#: components/services/install/lib/eazel-install-object.c:1218
 msgid "Install failed"
 msgstr "Αποτυχία εγκατάστασης"
 
-#: components/services/install/lib/eazel-install-object.c:1252
+#: components/services/install/lib/eazel-install-object.c:1264
 msgid "Uninstall failed"
 msgstr "Αποτυχία εγκατάστασης!"
 
-#: components/services/install/lib/eazel-install-object.c:1373
+#: components/services/install/lib/eazel-install-object.c:1387
 #, c-format
 msgid "Could not create transaction directory (%s)! ***\n"
 msgstr "Αδύνατη η δημιουργία καταλόγου συναλλαγών (%s)!: ***\n"
 
-#: components/services/install/lib/eazel-install-object.c:1396
+#: components/services/install/lib/eazel-install-object.c:1410
 #, c-format
 msgid "Writing transaction to %s"
 msgstr "Εγγραφή συναλλαγής στο %s"
@@ -3054,67 +3064,71 @@ msgstr "Λήψη πληροφοριών πακέτου..."
 msgid "Checking \"%s\" for conflicts..."
 msgstr "Έλεγχος του \"%s\" για συγκρούσεις..."
 
-#: components/services/install-view/callbacks.c:174
+#: components/services/install-view/callbacks.c:184
 #, c-format
 msgid "Downloading 1 package (%s)"
 msgstr "Λήψη 1 πακέτου (%s)"
 
-#: components/services/install-view/callbacks.c:176
+#: components/services/install-view/callbacks.c:186
 #, c-format
 msgid "Downloading %d packages (%s)"
 msgstr "Λήψη %d πακέτων (%s)"
 
-#: components/services/install-view/callbacks.c:225
+#: components/services/install-view/callbacks.c:235
 #, c-format
 msgid "Downloading \"%s\""
 msgstr "Λήψη του \"%s\""
 
-#: components/services/install-view/callbacks.c:231
+#: components/services/install-view/callbacks.c:241
 #, c-format
 msgid "0K of %dK"
 msgstr "Εντάξει από %dK"
 
-#: components/services/install-view/callbacks.c:238
+#: components/services/install-view/callbacks.c:248
 #, c-format
 msgid ""
 "The package \"%s\" requires \"%s\" to run.\n"
 "Downloading \"%s\" now."
 msgstr ""
+"Το πακέτο \"%s\" απαιτεί το \"%s\" για να εκτελεστεί.\n"
+"Το \"%s\" μεταφορτώνετε τώρα."
 
-#: components/services/install-view/callbacks.c:241
+#: components/services/install-view/callbacks.c:251
 #, c-format
 msgid "Attempting to download package \"%s\"."
 msgstr "Προσπάθεια μεταφόρτωσης του πακέτου \"%s\"."
 
-#: components/services/install-view/callbacks.c:251
-#: components/services/install-view/callbacks.c:322
+#: components/services/install-view/callbacks.c:261
+#: components/services/install-view/callbacks.c:332
 msgid "Complete"
 msgstr "Ολοκληρώθηκε"
 
-#: components/services/install-view/callbacks.c:255
+#: components/services/install-view/callbacks.c:265
 #, c-format
 msgid ""
 "The package \"%s\" requires \"%s\" to run.\n"
 "\"%s\" has been successfully downloaded."
 msgstr ""
+"Το πακέτο \"%s\" απαιτεί το \"%s\" για να εκτελεστεί.\n"
+"Το \"%s\" έχει μεταφορτωθεί επιτυχώς."
 
-#: components/services/install-view/callbacks.c:258
+#: components/services/install-view/callbacks.c:268
 #, c-format
 msgid "The package \"%s\" has been successfully downloaded."
 msgstr "Το πακέτο \"%s\" εγκαταστάθηκε με επιτυχία."
 
 #
-#: components/services/install-view/callbacks.c:276
+#: components/services/install-view/callbacks.c:286
 #, c-format
 msgid "%dK of %dK"
 msgstr "%dΚ από %dΚ"
 
-#: components/services/install-view/callbacks.c:305
+#: components/services/install-view/callbacks.c:315
 #, c-format
 msgid "Download of package \"%s\" failed!"
 msgstr "Αποτυχία μεταφόρτωσης του πακέτου \"%s\"!"
 
-#: components/services/install-view/callbacks.c:327
+#: components/services/install-view/callbacks.c:337
 #, c-format
 msgid ""
 "The package \"%s\" requires \"%s\" to run.\n"
@@ -3123,79 +3137,81 @@ msgstr ""
 "Το πακέτο \"%s\" απαιτεί το \"%s\" για να εκτελεστεί.\n"
 "Το \"%s\" μεταφορτώθηκε και εγκαταστάθηκε με επιτυχία."
 
-#: components/services/install-view/callbacks.c:330
+#: components/services/install-view/callbacks.c:340
 #, c-format
 msgid "\"%s\" has been successfully downloaded and installed."
 msgstr "Επιτυχία μεταφόρτωσης και εγκατάστασης του \"%s\"."
 
 #. starting a new package -- create new progress indicator
-#: components/services/install-view/callbacks.c:358
+#: components/services/install-view/callbacks.c:368
 #, c-format
 msgid "Installing package %d of %d"
 msgstr "Εγκατάσταση πακέτου %d από %d"
 
-#: components/services/install-view/callbacks.c:385
+#: components/services/install-view/callbacks.c:395
 #, c-format
 msgid ""
 "The package \"%s\" requires \"%s\" to run.\n"
 "\"%s\" is now being installed."
 msgstr ""
+"Το πακέτο \"%s\" απαιτεί το \"%s\" για να εκτελεστεί.\n"
+"Το \"%s\" εγκαθίσταται αυτή τη στιγμή."
 
-#: components/services/install-view/callbacks.c:388
+#: components/services/install-view/callbacks.c:398
 #, c-format
 msgid "Now installing package \"%s\"."
 msgstr "Τώρα εγκαθίσταται τώρα το πακέτο \"%s\"."
 
-#: components/services/install-view/callbacks.c:396
+#: components/services/install-view/callbacks.c:406
 #: components/services/install-view/nautilus-service-install-view.c:640
 #, c-format
 msgid "Installing \"%s\""
 msgstr "Εγκατάσταση του \"%s\""
 
-#: components/services/install-view/callbacks.c:404
+#: components/services/install-view/callbacks.c:414
 #: src/nautilus-zoom-control.c:592
 msgid "%d%%"
 msgstr "%d%%"
 
-#: components/services/install-view/callbacks.c:432
+#: components/services/install-view/callbacks.c:442
 #, c-format
 msgid "Installation failed on %s"
 msgstr "Η εγκατάσταση του %s απέτυχε"
 
-#: components/services/install-view/callbacks.c:460
+#: components/services/install-view/callbacks.c:470
 msgid "I ran into problems while installing."
-msgstr ""
+msgstr "Συνέβησαν προβλήματα κατά την εγκατάσταση."
 
-#: components/services/install-view/callbacks.c:461
+#: components/services/install-view/callbacks.c:471
 msgid "I'd like to try the following :"
 msgstr "Θα ήθελα να δοκιμάσω το παρακάτω :"
 
-#: components/services/install-view/callbacks.c:470
+#: components/services/install-view/callbacks.c:480
 msgid "Is this ok ?"
 msgstr "Είναι αυτό εντάξει;"
 
-#: components/services/install-view/callbacks.c:544
+#: components/services/install-view/callbacks.c:554
 msgid "Installation cancelled."
 msgstr "Ακύρωση εγκατάστασης."
 
-#: components/services/install-view/callbacks.c:546
+#: components/services/install-view/callbacks.c:556
 msgid "This package has already been installed."
 msgstr "Αυτό το πακέτο έχει ήδη εγκατασταθεί."
 
-#: components/services/install-view/callbacks.c:548
+#: components/services/install-view/callbacks.c:558
 msgid "Installation complete."
 msgstr "Η εγκατάσταση ολοκληρώθηκε."
 
-#: components/services/install-view/callbacks.c:552
+#: components/services/install-view/callbacks.c:562
 msgid "Installation failed."
 msgstr "Αποτυχία εγκατάστασης."
 
 #. some succeeded; some failed
-#: components/services/install-view/callbacks.c:556
+#: components/services/install-view/callbacks.c:566
 msgid "Some packages installed successfully:"
 msgstr "Μερικά πακέτα εγκαταστάθηκαν με επιτυχία:"
 
-#: components/services/install-view/callbacks.c:565
+#: components/services/install-view/callbacks.c:575
 msgid ""
 "\n"
 "Some packages failed:"
@@ -3203,21 +3219,25 @@ msgstr ""
 "\n"
 "Μερικά πακέτα απέτυχαν:"
 
-#: components/services/install-view/callbacks.c:608
+#: components/services/install-view/callbacks.c:618
 msgid "Erase the RPM files?"
 msgstr "Διαγραφή των αρχείων RPM;"
 
-#: components/services/install-view/callbacks.c:610
+#: components/services/install-view/callbacks.c:620
 msgid "Erase the leftover RPM files?"
 msgstr "Διαγραφή των αρχείων RPM που απέμειναν;"
 
-#: components/services/install-view/callbacks.c:644
+#: components/services/install-view/callbacks.c:654
 msgid ""
 "A core package of Nautilus has been\n"
 "updated.  You should restart Nautilus.\n"
 "\n"
 "Do you wish to do that now?"
 msgstr ""
+"Ένα κεντρικό πακέτο του Ναυτίλου έχει\n"
+"ανανεωθεί. Πρέπει να επανεκκινήσετε το Ναυτίλο.\n"
+"\n"
+"Θέλετε να το κάνετε τώρα;"
 
 #. Setup the title
 #: components/services/install-view/forms.c:201
@@ -3235,7 +3255,7 @@ msgstr "Μηνύματα"
 
 #
 #: components/services/install-view/forms.c:358
-#: components/services/summary/nautilus-summary-view.c:643
+#: components/services/summary/nautilus-summary-view.c:647
 #, c-format
 msgid "Version: %s"
 msgstr "Έκδοση: %s"
@@ -3246,7 +3266,9 @@ msgstr "Αυτά τα πακέτα είναι έτοιμα να μεταφορτωθούν και να εγκατασταθούν:"
 
 #: components/services/install-view/forms.c:408
 msgid "If you wish to download and install these packages, click Continue."
-msgstr "Αν επιθυμείτε να μεταφορτώσετε και να εγκαταστήσετε αυτά τα πακέτα, πατήστε Συνέχεια."
+msgstr ""
+"Αν επιθυμείτε να μεταφορτώσετε και να εγκαταστήσετε αυτά τα πακέτα, πατήστε "
+"Συνέχεια."
 
 #: components/services/install-view/forms.c:411
 msgid "These packages are ready to be uninstalled:"
@@ -3313,23 +3335,23 @@ msgstr ""
 "Λείπει η υπηρεσία εγκατάστασης Eazel:\n"
 "Η εγκατάσταση δε θα λειτουργήσει."
 
-#: components/services/install-view/nautilus-service-install-view.c:706
+#: components/services/install-view/nautilus-service-install-view.c:708
 msgid "Contacting the Eazel Software Catalog ..."
 msgstr "Σύνδεση με τον Κατάλογο Λογισμικού Eazel ..."
 
-#: components/services/install-view/nautilus-service-install-view.c:764
+#: components/services/install-view/nautilus-service-install-view.c:766
 msgid "Checking for authorization..."
 msgstr "Έλεγχος άδειας σύνδεσης..."
 
-#: components/services/install-view/nautilus-service-install-view.c:836
+#: components/services/install-view/nautilus-service-install-view.c:838
 msgid "Aborting package downloads (please wait) ..."
 msgstr "Εγκατάλειψη μεταφορτώσεων πακέτων (παρακαλώ περιμένετε) ..."
 
-#: components/services/install-view/nautilus-service-install-view.c:856
+#: components/services/install-view/nautilus-service-install-view.c:858
 msgid "Package download aborted."
 msgstr "Η μεταφόρτωση πακέτων διακόπηκε."
 
-#: components/services/install-view/nautilus-service-install-view.c:857
+#: components/services/install-view/nautilus-service-install-view.c:859
 msgid "Aborted"
 msgstr "Διακόπηκε."
 
@@ -3626,66 +3648,66 @@ msgstr "Παρακαλώ συνδεθείτε στις Υπηρεσίες Eazel"
 msgid "Your user name or password were not correct.  Please try again."
 msgstr "Το όνομα χρήστη ή ο κωδικός δεν είναι σωστά. Παρακαλώ ξαναδοκιμάστε."
 
-#: components/services/summary/nautilus-summary-view.c:116
+#: components/services/summary/nautilus-summary-view.c:117
 #: libnautilus-extensions/nautilus-program-chooser.c:1361
 msgid "Go There"
 msgstr "Πήγαινε Εκεί"
 
-#: components/services/summary/nautilus-summary-view.c:119
+#: components/services/summary/nautilus-summary-view.c:120
 msgid "More Info"
 msgstr "Περισσότερες Πληροφορίες"
 
-#: components/services/summary/nautilus-summary-view.c:130
+#: components/services/summary/nautilus-summary-view.c:131
 msgid "Account Preferences"
 msgstr "Προτιμήσεις Λογαριασμού"
 
-#: components/services/summary/nautilus-summary-view.c:131
+#: components/services/summary/nautilus-summary-view.c:132
 msgid "Logout"
 msgstr "Τερματισμός"
 
-#: components/services/summary/nautilus-summary-view.c:132
-#: components/services/summary/nautilus-summary-view.c:140
+#: components/services/summary/nautilus-summary-view.c:133
+#: components/services/summary/nautilus-summary-view.c:141
 msgid "Terms of Use"
 msgstr "Συνθήκες Χρήσης"
 
-#: components/services/summary/nautilus-summary-view.c:133
-#: components/services/summary/nautilus-summary-view.c:141
+#: components/services/summary/nautilus-summary-view.c:134
+#: components/services/summary/nautilus-summary-view.c:142
 msgid "Privacy Statement"
 msgstr "Δήλωση Απορρήτου"
 
-#: components/services/summary/nautilus-summary-view.c:138
+#: components/services/summary/nautilus-summary-view.c:139
 msgid "Register"
 msgstr "Καταχώρηση"
 
-#: components/services/summary/nautilus-summary-view.c:139
+#: components/services/summary/nautilus-summary-view.c:140
 msgid "Login"
 msgstr "Login"
 
 #
-#: components/services/summary/nautilus-summary-view.c:169
+#: components/services/summary/nautilus-summary-view.c:170
 #, c-format
 msgid "Welcome, %s!"
 msgstr "Καλώς ήλθες, %s!"
 
-#: components/services/summary/nautilus-summary-view.c:174
+#: components/services/summary/nautilus-summary-view.c:175
 msgid "You are not logged in"
 msgstr "Δεν είστε συνδεδεμένος στο σύστημα"
 
 #
-#: components/services/summary/nautilus-summary-view.c:181
+#: components/services/summary/nautilus-summary-view.c:182
 msgid "Connecting to Eazel Services..."
 msgstr "Σύνδεση στις Υπηρεσίες Eazel..."
 
-#: components/services/summary/nautilus-summary-view.c:737
+#: components/services/summary/nautilus-summary-view.c:741
 #: data/linksets/home.xml.h:3 src/nautilus-service-ui.xml.h:4
 msgid "Services"
 msgstr "Υπηρεσίες"
 
-#: components/services/summary/nautilus-summary-view.c:748
+#: components/services/summary/nautilus-summary-view.c:752
 msgid "Featured Downloads"
 msgstr "Ξεχωριστές Μεταφορτώσεις"
 
-#: components/services/summary/nautilus-summary-view.c:875
+#: components/services/summary/nautilus-summary-view.c:883
 msgid ""
 "Unable to get services data from Eazel's server. The server might be "
 "unavailable right now, or your computer might be configured incorrectly. "
@@ -3695,7 +3717,7 @@ msgstr ""
 "εξυπηρετητής μπορεί να είναι μη προσβάσιμος αυτή τη στιγμή ή ο υπολογιστής "
 "να μην έχει ρυθμιστεί σωστά. Παρακαλώ επικοινωνείστε με support@eazel.com."
 
-#: components/services/summary/nautilus-summary-view.c:885
+#: components/services/summary/nautilus-summary-view.c:893
 msgid ""
 "Found a problem with services data on Eazel servers. Please contact "
 "support@eazel.com."
@@ -3703,7 +3725,7 @@ msgstr ""
 "Βρέθηκε πρόβλημα με τα δεδομένα υπηρεσιών στους εξυπηρετητές της Eazel. "
 "Παρακαλώ επικοινωνείστε με support@eazel.com."
 
-#: components/services/summary/nautilus-summary-view.c:908
+#: components/services/summary/nautilus-summary-view.c:916
 msgid ""
 "Information is missing from the redirect data on Eazel servers. Please "
 "contact support@eazel.com."
@@ -3711,7 +3733,7 @@ msgstr ""
 "Λείπουν πληροφορίες από τα δεδομένα που έχουν επανακατευθυνθεί στους "
 "εξυπηρετητές της Eazel. Παρακαλώ επικοινωνείστε με support@eazel.com."
 
-#: components/services/summary/nautilus-summary-view.c:950
+#: components/services/summary/nautilus-summary-view.c:958
 msgid ""
 "Unable to connect to Eazel's server. The server might be unavailable right "
 "now, or your computer might be configured incorrectly. You could try again "
@@ -3721,7 +3743,7 @@ msgstr ""
 "μπορεί να είναι μη προσβάσιμος αυτή τη στιγμή ή ο υπολογιστής να μην έχει "
 "ρυθμιστεί σωστά. Μπορείτε να δοκιμάσετε ξανά αργότερα."
 
-#: components/services/summary/nautilus-summary-view.c:960
+#: components/services/summary/nautilus-summary-view.c:968
 msgid ""
 "Found a problem with redirect data on Eazel servers. Please contact "
 "support@eazel.com."
@@ -3729,12 +3751,12 @@ msgstr ""
 "Εμφανίστηκε πρόβλημα με δεδομένα που έχουν επανακατευθυνθεί στους "
 "εξυπηρετητές της Eazel. Παρακαλώ επικοινωνείστε με support@eazel.com."
 
-#: components/services/summary/nautilus-summary-view.c:977
+#: components/services/summary/nautilus-summary-view.c:985
 msgid "Failed to upload system inventory."
 msgstr "Αποτυχία αποστολής απογραφής συστήματος."
 
 #
-#: components/services/summary/nautilus-summary-view.c:1040
+#: components/services/summary/nautilus-summary-view.c:1048
 #: src/nautilus-first-time-druid.c:250
 msgid "Eazel Services"
 msgstr "Υπηρεσίες Eazel"
@@ -3848,14 +3870,23 @@ msgstr "όψη-δείγμα υπηρεσιών eazel"
 msgid "Factory for the sample service"
 msgstr "Εργοστάσιο για την υπηρεσία-δείγμα"
 
-#: components/text/nautilus-text-view.c:329
+#. FIXME: eventually, get this from preferences
+#. set up the default font
+#: components/text/nautilus-text-view.c:188
+#: libnautilus-extensions/nautilus-global-preferences.c:267
+#: libnautilus-extensions/nautilus-preferences-item.c:472
+#: src/nautilus-first-time-druid.c:342
+msgid "helvetica"
+msgstr "helveticagr"
+
+#: components/text/nautilus-text-view.c:330
 #, c-format
 msgid "Sorry, but %s is too large for Nautilus to load all of it."
 msgstr ""
 "Συγγνώμη, αλλά το %s είναι υπερβολικά μεγάλο για να το φορτώσει όλο ο "
 "Ναυτίλος."
 
-#: components/text/nautilus-text-view.c:330
+#: components/text/nautilus-text-view.c:331
 msgid "File too large"
 msgstr "Το αρχείο είναι πολύ μεγάλο"
 
@@ -3965,7 +3996,7 @@ msgid "Nautilus Tree view"
 msgstr "Όψη Δέντρου του Ναυτίλου"
 
 #: components/tree/Nautilus_View_tree.oaf.in.h:3
-#: libnautilus-extensions/nautilus-global-preferences.c:635
+#: libnautilus-extensions/nautilus-global-preferences.c:631
 msgid "Tree"
 msgstr "Δέντρο"
 
@@ -4322,7 +4353,7 @@ msgid "The Gimp"
 msgstr "Το Gimp"
 
 #: data/linksets/desktop.xml.h:1
-#: libnautilus-extensions/nautilus-global-preferences.c:549
+#: libnautilus-extensions/nautilus-global-preferences.c:547
 msgid "Desktop"
 msgstr "Επιφάνεια εργασίας"
 
@@ -4364,7 +4395,7 @@ msgid "Google"
 msgstr "Google"
 
 #: data/linksets/search_engines.xml.h:3
-#: libnautilus-extensions/nautilus-global-preferences.c:808
+#: libnautilus-extensions/nautilus-global-preferences.c:801
 msgid "Search Engines"
 msgstr "Μηχανές Αναζήτησης"
 
@@ -5076,6 +5107,11 @@ msgid ""
 "\n"
 "If you still want to copy \"%s\", rename it and try again."
 msgstr ""
+"Το \"%s\" δε μπόρεσε να αντιγραφεί στη νέα θέση διότι το όνομά του "
+"χρησιμοποιείται για ένα ειδικό αντικείμενο που δε μπορεί να "
+"διαγραφεί ή να αντικατασταθεί.\n"
+"\n"
+"Αν θέλετε σίγουρα να αντιγράψετε το \"%s\", μετονομάστε το και δοκιμάστε ξανά."
 
 #: libnautilus-extensions/nautilus-file-operations.c:1071
 msgid "Unable to replace file."
@@ -5703,7 +5739,7 @@ msgid "Ask before emptying the Trash"
 msgstr "Ερώτηση πριν το άδειασμα των Απορριμμάτων"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:99
-#: libnautilus-extensions/nautilus-global-preferences.c:593
+#: libnautilus-extensions/nautilus-global-preferences.c:590
 msgid "Click Behavior"
 msgstr "Συμπεριφορά Πατήματος"
 
@@ -5724,7 +5760,7 @@ msgid "Activate items with a double click"
 msgstr "Ενεργοποίηση αντικειμένων με διπλό πάτημα"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:112
-#: libnautilus-extensions/nautilus-global-preferences.c:600
+#: libnautilus-extensions/nautilus-global-preferences.c:597
 msgid "Executable Text Files"
 msgstr "Εκτελέσιμα Αρχεία Κειμένου"
 
@@ -5754,28 +5790,28 @@ msgid "Ask each time"
 msgstr "Ερώτηση κάθε φορά"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:136
-#: libnautilus-extensions/nautilus-global-preferences.c:724
+#: libnautilus-extensions/nautilus-global-preferences.c:718
 msgid "Show Text in Icons"
 msgstr "Εμφάνιση Κειμένου στα Εικονίδια"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:139
-#: libnautilus-extensions/nautilus-global-preferences.c:731
+#: libnautilus-extensions/nautilus-global-preferences.c:725
 msgid "Show Count of Items in Folders"
 msgstr "Εμφάνιση Μετρητή Αντικειμένων στους Φακέλους"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:142
-#: libnautilus-extensions/nautilus-global-preferences.c:738
+#: libnautilus-extensions/nautilus-global-preferences.c:732
 msgid "Show Thumbnails for Image Files"
 msgstr "Εμφάνιση Δειγμάτων για Αρχεία Εικόνων"
 
 #. FIXME bugzilla.eazel.com 2560: This title phrase needs improvement.
 #: libnautilus-extensions/nautilus-global-preferences.c:145
-#: libnautilus-extensions/nautilus-global-preferences.c:754
+#: libnautilus-extensions/nautilus-global-preferences.c:748
 msgid "Make Folder Appearance Details Public"
 msgstr "Να γίνουν οι Λεπτομέρειες Παρουσιαστικού του Φακέλου Δημόσιες"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:148
-#: libnautilus-extensions/nautilus-global-preferences.c:745
+#: libnautilus-extensions/nautilus-global-preferences.c:739
 msgid "Preview Sound Files"
 msgstr "Προεπισκόπιση Αρχείων Ήχου"
 
@@ -5884,134 +5920,107 @@ msgstr "Θύρα:"
 msgid "Appearance"
 msgstr "Εμφάνιση"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:526
-msgid "Appearance Settings"
-msgstr "Ρυθμίσεις Εμφάνισης"
-
-#: libnautilus-extensions/nautilus-global-preferences.c:528
+#: libnautilus-extensions/nautilus-global-preferences.c:527
 msgid "Smoother Graphics"
 msgstr "Ομαλότερα Γραφικά"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:535
+#: libnautilus-extensions/nautilus-global-preferences.c:534
 msgid "Fonts"
 msgstr "Γραμματοσειρές"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:546
+#: libnautilus-extensions/nautilus-global-preferences.c:545
 msgid "Windows & Desktop"
 msgstr "Παράθυρα & Επιφάνεια Εργασίας"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:547
-msgid "Windows & Desktop Settings"
-msgstr "Παράθυρα & Ρυθμίσεις Επιφάνειας Εργασίας"
-
-#: libnautilus-extensions/nautilus-global-preferences.c:555
+#: libnautilus-extensions/nautilus-global-preferences.c:553
 msgid "Opening New Windows"
 msgstr "Άνοιγμα Νέων Παραθύρων"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:578
+#: libnautilus-extensions/nautilus-global-preferences.c:576
 msgid "Trash Behavior"
 msgstr "Συμπεριφορά Απορριμμάτων"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:590
+#: libnautilus-extensions/nautilus-global-preferences.c:588
 msgid "Icon & List Views"
 msgstr "Όψεις Εικονιδίων και Λιστών"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:591
-msgid "Icon & List Views Settings"
-msgstr "Ρυθμίσεις Όψεων Εικονιδίων και Λιστών"
-
-#: libnautilus-extensions/nautilus-global-preferences.c:607
+#: libnautilus-extensions/nautilus-global-preferences.c:604
 msgid "Show/Hide Options"
 msgstr "Εμφάνιση/Απόκρυψη Επιλογών"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:628
+#: libnautilus-extensions/nautilus-global-preferences.c:625
 msgid "Sidebar Panels"
 msgstr "Πλευρικά Ταμπλώ"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:629
-msgid "Sidebar Panels Settings"
-msgstr "Ρυθμίσεις Πλευρικών Ταμπλώ"
-
 #
-#: libnautilus-extensions/nautilus-global-preferences.c:632
+#: libnautilus-extensions/nautilus-global-preferences.c:628
 msgid "Tabs"
 msgstr "Καρτέλες"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:681
+#: libnautilus-extensions/nautilus-global-preferences.c:677
 msgid "Navigation"
 msgstr "Περιήγηση"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:682
-msgid "Navigation Settings"
-msgstr "Ρυθμίσεις Περιήγησης"
-
-#: libnautilus-extensions/nautilus-global-preferences.c:691
+#: libnautilus-extensions/nautilus-global-preferences.c:686
 msgid "HTTP Proxy Settings"
 msgstr "Ρυθμίσεις Διαμεσολαβητή HTTP"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:710
+#: libnautilus-extensions/nautilus-global-preferences.c:705
 msgid "Built-in Bookmarks"
 msgstr "Σελιδοδείκτες Συστήματος"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:721
+#: libnautilus-extensions/nautilus-global-preferences.c:716
 msgid "Speed Tradeoffs"
 msgstr "Αντισταθμίσεις Ταχύτητας"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:722
-msgid "Speed Tradeoffs Settings"
-msgstr "Ρυθμίσεις Αντιστάθμισης Ταχύτητας"
-
-#: libnautilus-extensions/nautilus-global-preferences.c:793
+#: libnautilus-extensions/nautilus-global-preferences.c:787
 msgid "Search"
 msgstr "Αναζήτηση"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:794
-msgid "Search Settings"
-msgstr "Ρυθμίσεις Αναζήτησης"
-
-#: libnautilus-extensions/nautilus-global-preferences.c:796
+#: libnautilus-extensions/nautilus-global-preferences.c:789
 msgid "Search Complexity Options"
 msgstr "Επιλογές Πολυπλοκότητας Αναζητήσεων"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:802
+#: libnautilus-extensions/nautilus-global-preferences.c:795
 msgid "Fast Search"
 msgstr "Γρήγορη Αναζήτηση"
 
 #
-#: libnautilus-extensions/nautilus-global-preferences.c:975
+#: libnautilus-extensions/nautilus-global-preferences.c:968
 #, c-format
 msgid "Display %s tab in sidebar"
 msgstr "Εμφάνιση της καρτέλας %s στην πλευρική μπάρα"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1022
+#: libnautilus-extensions/nautilus-global-preferences.c:1015
 msgid "always"
 msgstr "πάντα"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1023
+#: libnautilus-extensions/nautilus-global-preferences.c:1016
 msgid "Always"
 msgstr "Πάντα"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1026
+#: libnautilus-extensions/nautilus-global-preferences.c:1019
 msgid "local only"
 msgstr "τοπικά μόνο"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:1027
+#: libnautilus-extensions/nautilus-global-preferences.c:1020
 msgid "Local Files Only"
 msgstr "Μόνο Τοπικά Αρχεία"
 
 #
-#: libnautilus-extensions/nautilus-global-preferences.c:1030
+#: libnautilus-extensions/nautilus-global-preferences.c:1023
 msgid "never"
 msgstr "ποτέ"
 
 #
-#: libnautilus-extensions/nautilus-global-preferences.c:1031
+#: libnautilus-extensions/nautilus-global-preferences.c:1024
 msgid "Never"
 msgstr "Ποτέ"
 
 #: libnautilus-extensions/nautilus-gnome-extensions.c:640
 msgid "No image was selected.  You must click on an image to select it."
-msgstr "Δεν επιλέχθηκε εικόνα. Πρέπει να κάντε κλικ στην εικόνα για να την επιλέξτε."
+msgstr ""
+"Δεν επιλέχθηκε εικόνα. Πρέπει να κάντε κλικ στην εικόνα για να την επιλέξτε."
 
 #: libnautilus-extensions/nautilus-gnome-extensions.c:641
 msgid "No selection made"
@@ -6028,6 +6037,9 @@ msgid ""
 "and leave this item where you dropped it? This will clobber the stored "
 "manual layout."
 msgstr ""
+"Αυτός ο φάκελος χρησιμοποιεί την αυτόματη διάταξη. Θέλετε να μεταβείτε σε "
+"χειρωνακτική διάταξη και να αφήσετε το αντικείμενο εκεί που το ρίξατε; " 
+"Αυτό θα επιφέρει αλλαγές στην αποθηκευμένη χειρωνακτική διάταξη."
 
 #: libnautilus-extensions/nautilus-icon-dnd.c:745
 msgid ""
@@ -6035,18 +6047,25 @@ msgid ""
 "and leave these items where you dropped them? This will clobber the stored "
 "manual layout."
 msgstr ""
+"Αυτός ο φάκελος χρησιμοποιεί την αυτόματη διάταξη. Θέλετε να μεταβείτε σε "
+"χειρωνακτική διάταξη και να αφήσετε τα αντικείμενα εκεί που τα ρίξατε; "
+"Αυτό θα επιφέρει αλλαγές στην αποθηκευμένη χειρωνακτική διάταξη."
 
 #: libnautilus-extensions/nautilus-icon-dnd.c:751
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
 msgstr ""
+"Αυτός ο φάκελος χρησιμοποιεί την αυτόματη διάταξη. Θέλετε να μεταβείτε σε "
+"χειρωνακτική διάταξη και να αφήσετε το αντικείμενο εκεί που το ρίξατε; "
 
 #: libnautilus-extensions/nautilus-icon-dnd.c:754
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
 msgstr ""
+"Αυτός ο φάκελος χρησιμοποιεί την αυτόματη διάταξη. Θέλετε να μεταβείτε σε "
+"χειρωνακτική διάταξη και να αφήσετε τα αντικείμενα εκεί που τα ρίξατε; "
 
 #: libnautilus-extensions/nautilus-icon-dnd.c:759
 msgid "Switch to Manual Layout?"
@@ -6082,9 +6101,21 @@ msgstr "Επαναφορά του αλλαγμένου ονόματος"
 msgid "Remember this password"
 msgstr "Απομνημόνευση αυτού του κωδικού"
 
+#: libnautilus-extensions/nautilus-preferences-item.c:473
+msgid "times"
+msgstr "times"
+
+#: libnautilus-extensions/nautilus-preferences-item.c:474
+msgid "courier"
+msgstr "courier"
+
+#: libnautilus-extensions/nautilus-preferences-item.c:475
+msgid "lucida"
+msgstr "lucida"
+
 #: libnautilus-extensions/nautilus-preferences.c:76
 msgid "Beginner"
-msgstr "Αρχάριο"
+msgstr "Αρχάριος"
 
 #: libnautilus-extensions/nautilus-preferences.c:77
 msgid "Intermediate"
@@ -6283,9 +6314,9 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"Μπορείτε να ρυθμίσετε ποια προγράμματα να αντιστοιχούνται με ποια είδη αρχείων "
-"στο \"Είδη Αρχείων και Προγράμματα\", μέρος του Κέντρου Ελέγχου του GNOME. "
-"Θέλετε να πάτε εκεί τώρα;"
+"Μπορείτε να ρυθμίσετε ποια προγράμματα να αντιστοιχούνται με ποια είδη "
+"αρχείων στο \"Είδη Αρχείων και Προγράμματα\", μέρος του Κέντρου Ελέγχου του "
+"GNOME. Θέλετε να πάτε εκεί τώρα;"
 
 #: libnautilus-extensions/nautilus-program-choosing.c:516
 #, c-format
@@ -6909,6 +6940,8 @@ msgid ""
 "The folder \"%s\" contains more files than Nautilus can handle. Some files "
 "will not be displayed."
 msgstr ""
+"Ο φάκελος \"%s\" περιέχει περισσότερα αρχεία από τον αριθμό που ο Ναυτίλος μπορεί "
+"να χειριστεί. Μερικά αρχεία δε θα εμφανιστούν."
 
 #: src/file-manager/fm-directory-view.c:1402
 msgid "Too Many Files"
@@ -6919,6 +6952,7 @@ msgstr "Πάρα Πολλά Αρχεία"
 msgid ""
 "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr ""
+"Το \"%s\" δε μπορεί να μετακινηθεί στα Απορρίμματα. Θέλετε να το διαγράψετε αμέσως;"
 
 #: src/file-manager/fm-directory-view.c:2604
 #, c-format
@@ -6926,6 +6960,7 @@ msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
 "them immediately?"
 msgstr ""
+"Τα %d επιλεγμένα αντικείμενα δε μπορούν να μετακινηθούν στα Απορρίμματα. Θέλετε να τα διαγράψετε αμέσως;"
 
 #: src/file-manager/fm-directory-view.c:2608
 #, c-format
@@ -6933,6 +6968,8 @@ msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
 "those %d items immediately?"
 msgstr ""
+"%d από τα επιλεγμένα αντικείμενα δε μπορούν να μετακινηθούν στα Απορρίμματα. Θέλετε "
+"να διαγράψετε αυτά τα %d αντικείμενα αμέσως;"
 
 #
 #: src/file-manager/fm-directory-view.c:2616
@@ -7036,6 +7073,8 @@ msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
 msgstr ""
+"Αυτός ο σύνδεσμος δε μπορεί να χρησιμοποιηθεί διότι δεν έχει στόχο. Θέλετε "
+"να τοποθετήσετε αυτόν το σύνδεσμο στα Απορρίμματα;"
 
 #: src/file-manager/fm-directory-view.c:3432
 #, c-format
@@ -7043,6 +7082,8 @@ msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
 "want to put this link in the Trash?"
 msgstr ""
+"Αυτός ο σύνδεσμος δε μπορεί να χρησιμοποιηθεί διότι ο στόχος του \"%s\" "
+"δεν υπάρχει. Θέλετε να τον τοποθετήσετε στα Απορρίμματα;"
 
 #: src/file-manager/fm-directory-view.c:3438
 msgid "Broken Link"
@@ -7058,6 +7099,8 @@ msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
 "contents?"
 msgstr ""
+"Το \"%s\" είναι ένα εκτελέσιμο αρχείο κειμένου. Θέλετε να το εκτελέσετε ή "
+"να εμφανίσετε τα περιεχόμενά του;"
 
 #
 #: src/file-manager/fm-directory-view.c:3498
@@ -7078,6 +7121,8 @@ msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
 msgstr ""
+"Συγγνώμη, αλλά δε μπορείτε να εκτελέσετε εντολές από ένα απομακρυσμένο "
+"σύστημα λόγω των συνεπειών ασφάλειας."
 
 #: src/file-manager/fm-directory-view.c:3556
 msgid "Can't execute remote links"
@@ -7097,6 +7142,7 @@ msgstr "Ακύρωση Ανοίγματος;"
 msgid ""
 "You do not have the permissions necessary to view the contents of \"%s\"."
 msgstr ""
+"Δεν έχετε τα απαραίτητα δικαιώματα για να εμφανίσετε τα περιεχόμενα του \"%s\"."
 
 #: src/file-manager/fm-error-reporting.c:65
 #, c-format
@@ -7134,6 +7180,8 @@ msgid ""
 "The name \"%s\" is not valid because it contains the character \"/\". Please "
 "use a different name."
 msgstr ""
+"Το όνομα \"%s\" δεν είναι έγκυρο διότι περιέχει το χαρακτήρα \"/\". Παρακαλώ "
+"χρησιμοποιήστε διαφορετικό όνομα."
 
 #: src/file-manager/fm-error-reporting.c:118
 #, c-format
@@ -7567,6 +7615,9 @@ msgid ""
 "search will return no results right now.  Would you like to create a new "
 "index now?"
 msgstr ""
+"Η αναζήτηση που επιλέξατε είναι νεώτερη από το ευρετήριο του συστήματός σας. "
+"Η αναζήτηση δε θα επιστρέψει αποτελέσματα τώρα. Θέλετε να δημιουργήσετε νέο "
+"ευρετήριο τώρα;"
 
 #: src/file-manager/fm-search-list-view.c:189
 msgid "Search for items that are too new"
@@ -7586,6 +7637,9 @@ msgid ""
 "can check the spelling on your selections or add more criteria to narrow "
 "your results."
 msgstr ""
+"Κάθε αντιστοιχισμένο αρχείο στον υπολοηγιστή σας ταιριάζει με τα κριτήρια που "
+"επιλέξατε. Μπορείτε να ελέγξετε την ορθογραφία των επιλογών σας ή να προσθέσετε "
+"συνθήκες για να περιορίσετε τα αποτελέσματα."
 
 #: src/file-manager/fm-search-list-view.c:204
 #: src/file-manager/fm-search-list-view.c:218
@@ -7603,12 +7657,17 @@ msgid ""
 "Find can't access your index right now so a slower search will be performed "
 "that doesn't use the index."
 msgstr ""
+"Για να κάνετε μια γρήγορη αναζήτηση, το Ευρετήριο απαιτεί ένα πίνακα από τα αρχεία "
+"του συστήματός σας. Το Ευρετήριο δε μπορεί να χρησιμοποιήσει τον πίνακα αυτή τη φορά "
+"οπότε θα πραγματοποιηθεί μια πιο αργή αναζήτηση που δεν κάνει χρήση πίνακα."
 
 #: src/file-manager/fm-search-list-view.c:246
 msgid ""
 "To do a content search, Find requires an index of the files on your system.  "
 "Find can't access your index right now. "
 msgstr ""
+"Για να κάνετε μια αναζήτηση περιεχομένου, η Εύρεση απαιταί ένα πίνακα των αρχείων του "
+"συστήματός σας. Το Ευρετήριο δε μπορεί να προσπελάσει τον πίνακα αυτή τη στιγμή."
 
 #: src/file-manager/fm-search-list-view.c:250
 msgid "Fast searches are not available"
@@ -7627,6 +7686,10 @@ msgid ""
 "index requests, isn't running.  To start this program, log in as root and "
 "enter this command at the command line: medusa-searchd"
 msgstr ""
+"Οι πίνακες αρχείων είναι διαθέσιμοι αλλά η υπηρεσία αναζήτησης Μέδουσα, που "
+"χειρίζετε τις αιτήσεις, δεν είναι ενεργή. Για να την εκκινήσετε, συνδεθείτε "
+"ως διαχειριστής και εκτελέστε την επόμενη εντολή από την γραμμή εντολών: "
+"medusa-searchd"
 
 #: src/file-manager/fm-search-list-view.c:274
 msgid ""
@@ -7636,6 +7699,11 @@ msgid ""
 "index? Creating an index will be done while you are not actively using your "
 "computer."
 msgstr ""
+"Για να κάνετε μια γρήγορη αναζήτηση, το Ευρετήριο απαιτεί ένα πίνακα των αρχείων "
+"του συστήματός σας. Ο υπολογιστής σας δεν έχει ένα τέτοιο πίνακα αυτή τη στιγμή. "
+"Επειδή το Ευρετήριο δε μπορεί να χρησιμοποιήσει έναν πίνακα, η αναζήτηση ίσως "
+"διαρκέσει μερικά λεπτά. Θέλετε να δημιουργήσετε έναν πίνακα; Η δημιουργία του "
+"πίνακα θα γίνει όταν δε χρησιμοποιείτε ενεργά τον υπολογιστή σας."
 
 #: src/file-manager/fm-search-list-view.c:283
 msgid ""
@@ -7644,6 +7712,10 @@ msgid ""
 "create an index?  Creating an index will be done while you are not actively "
 "using your computer."
 msgstr ""
+"Για να κάνετε μια αναζήτηση περιεχομένου, το Ευρετήριο απαιτεί ένα πίνακα των "
+"περιεχομένων του συστήματός σας. Ο υπολογιστής σας δεν έχει τέτοιο πίνακα αυτή "
+"τη στιγμή. Θέλετε να δημιουργήσετε έναν πίνακα; Η δημιουργία του "
+"πίνακα θα γίνει όταν δε χρησιμοποιείτε ενεργά τον υπολογιστή σας."
 
 #: src/file-manager/fm-search-list-view.c:290
 #: src/file-manager/fm-search-list-view.c:318
@@ -7666,6 +7738,10 @@ msgid ""
 "Your computer is currently creating that index.   Because Find cannot use an "
 "index, this search may take several minutes."
 msgstr ""
+"Για να κάνετε μια γρήγορη αναζήτηση, το Ευρετήριο απαιτεί ένα πίνακα των "
+"αρχείων του συστήματός σας. Ο υπολογιστή σας δημιουργεί αυτή τη στιγμή αυτό "
+"το ευρετήριο. Επειδή το Ευρετήριο δε μπορεί να χρησιμοποιήσει ένα πίνακα, "
+"η αναζήτηση μπορεί να διαρκέσει μερικά λεπτά."
 
 #: src/file-manager/fm-search-list-view.c:312
 msgid ""
@@ -8358,12 +8434,6 @@ msgid ""
 "\n"
 msgstr ""
 
-#. Note to localizers: this font is used for title text in
-#. * the first time druid
-#: src/nautilus-first-time-druid.c:342
-msgid "helvetica"
-msgstr "helveticagr"
-
 #: src/nautilus-first-time-druid.c:342
 msgid "medium"
 msgstr "medium"
@@ -8704,7 +8774,7 @@ msgstr "Τιμή χρώματος:"
 #: src/nautilus-property-browser.c:1042
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
-msgstr "Συγγνώμη, αλλά το \" δεν είναι έγκυρο όνομα αρχείου."
+msgstr "Συγγνώμη, αλλά το \"%s\" δεν είναι έγκυρο όνομα αρχείου."
 
 #: src/nautilus-property-browser.c:1044
 msgid "Sorry, but you did not supply a valid file name."
@@ -8776,60 +8846,60 @@ msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Συγγνώμη, αλλά η εικόνα στο %s δε μπόρεσε να εγκατασταθεί ως έμβλημα."
 
 #
-#: src/nautilus-property-browser.c:2021
+#: src/nautilus-property-browser.c:2026
 msgid "Select A Category:"
 msgstr "Επιλέξτε Μια Κατηγορία:"
 
-#: src/nautilus-property-browser.c:2029 src/nautilus-theme-selector.c:494
+#: src/nautilus-property-browser.c:2034 src/nautilus-theme-selector.c:494
 msgid "Cancel Remove"
 msgstr "Ακύρωση Αφαίρεσης"
 
-#: src/nautilus-property-browser.c:2033
+#: src/nautilus-property-browser.c:2038
 msgid "  Add a New Pattern  "
 msgstr " Προσθήκη Νέου Σχεδίου "
 
-#: src/nautilus-property-browser.c:2036
+#: src/nautilus-property-browser.c:2041
 msgid "  Add a New Color  "
 msgstr " Προσθήκη Νέου Χρώματος "
 
 #
-#: src/nautilus-property-browser.c:2039
+#: src/nautilus-property-browser.c:2044
 msgid "  Add a New Emblem  "
 msgstr " Προσθήκη Νέου Εμβλήματος "
 
-#: src/nautilus-property-browser.c:2062
+#: src/nautilus-property-browser.c:2067
 msgid "Click on a pattern to remove it"
 msgstr " Κάντε κλικ στο σχέδιο για να το αφαιρέσετε"
 
-#: src/nautilus-property-browser.c:2065
+#: src/nautilus-property-browser.c:2070
 msgid "Click on a color to remove it"
 msgstr "Κάντε κλικ στο χρώμα για να το αφαιρέσετε"
 
-#: src/nautilus-property-browser.c:2068
+#: src/nautilus-property-browser.c:2073
 msgid "Click on an emblem to remove it"
 msgstr "Κάντε κλικ στο έμβλημα για να το αφαιρέσετε"
 
-#: src/nautilus-property-browser.c:2077
+#: src/nautilus-property-browser.c:2082
 msgid "Patterns:"
 msgstr "Σχέδια:"
 
-#: src/nautilus-property-browser.c:2080
+#: src/nautilus-property-browser.c:2085
 msgid "Colors:"
 msgstr "Χρώματα:"
 
-#: src/nautilus-property-browser.c:2083
+#: src/nautilus-property-browser.c:2088
 msgid "Emblems:"
 msgstr "Εμβλήματα:"
 
-#: src/nautilus-property-browser.c:2101
+#: src/nautilus-property-browser.c:2106
 msgid "  Remove a Pattern  "
 msgstr " Αφαίρεση Σχεδίου "
 
-#: src/nautilus-property-browser.c:2104
+#: src/nautilus-property-browser.c:2109
 msgid "  Remove a Color  "
 msgstr " Αφαίρεση Χρώματος "
 
-#: src/nautilus-property-browser.c:2107
+#: src/nautilus-property-browser.c:2112
 msgid "  Remove an Emblem  "
 msgstr " Αφαίρεση Εμβλήματος "
 
@@ -9917,6 +9987,27 @@ msgstr "Μπροστά"
 #: src/nautilus-zoom-control.c:531
 msgid "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 msgstr "-greek-courier-medium-r-normal-*-12-*-*-*-m-*-*-*"
+
+#~ msgid "Appearance Settings"
+#~ msgstr "Ρυθμίσεις Εμφάνισης"
+
+#~ msgid "Windows & Desktop Settings"
+#~ msgstr "Παράθυρα & Ρυθμίσεις Επιφάνειας Εργασίας"
+
+#~ msgid "Icon & List Views Settings"
+#~ msgstr "Ρυθμίσεις Όψεων Εικονιδίων και Λιστών"
+
+#~ msgid "Sidebar Panels Settings"
+#~ msgstr "Ρυθμίσεις Πλευρικών Ταμπλώ"
+
+#~ msgid "Navigation Settings"
+#~ msgstr "Ρυθμίσεις Περιήγησης"
+
+#~ msgid "Speed Tradeoffs Settings"
+#~ msgstr "Ρυθμίσεις Αντιστάθμισης Ταχύτητας"
+
+#~ msgid "Search Settings"
+#~ msgstr "Ρυθμίσεις Αναζήτησης"
 
 #
 #~ msgid "System"
