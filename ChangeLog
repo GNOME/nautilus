@@ -1,3 +1,16 @@
+2001-01-18  John Harper  <jsh@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fix bug 5666 (dragging to directory in the tree view always
+	crashes)
+
+	* libnautilus-extensions/nautilus-file-operations.c
+	(nautilus_file_operations_copy_move): check that
+	relative_item_points isn't null before dereferencing it (since
+	nautilus_tree_view_move_copy_files passes NULL as this
+	parameter)
+
 2001-01-18  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-thumbnails.c:

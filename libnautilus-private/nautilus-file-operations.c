@@ -1737,7 +1737,10 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	transfer_info->parent_view = view;
 	transfer_info->progress_dialog = NULL;
 
-	if (relative_item_points->len > 0) {
+	if (relative_item_points != NULL && relative_item_points->len > 0) {
+		/* FIXME: we probably don't need an icon_position_iterator
+		 * here at all.
+		 */
 		icon_position_iterator = icon_position_iterator_new (relative_item_points, item_uris);
 	}
 	
