@@ -71,6 +71,8 @@ static void 	service_load_location_callback			(NautilusView 				*view,
 static gboolean	is_location					(char 					*document_str,
 								 const char				*place_str);
 static void	generate_form_logo				(NautilusServiceStartupView		*view);
+static void	set_widget_color				(GtkWidget				*widget,
+								 const char				*color_spec);
 static void	go_to_uri					(NautilusServiceStartupView		*view,
 								 char					*uri);
 static void	show_feedback					(NautilusServiceStartupView			*view,
@@ -89,6 +91,8 @@ generate_startup_form (NautilusServiceStartupView	*view) {
 	GdkBitmap		*mask;
 	GtkWidget		*align;
 	int			counter;
+	char			*font_color;
+	GdkFont			*font;
 
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -119,6 +123,12 @@ generate_startup_form (NautilusServiceStartupView	*view) {
 
 	/* Add a label for error status messages */
 	view->details->feedback_text = gtk_label_new ("");
+	font = nautilus_font_factory_get_font_from_preferences (12);
+	font_color = g_strdup ("rgb:FFFF/FFFF/FFFF");
+	set_widget_color (view->details->feedback_text, font_color);
+	g_free (font_color);
+	nautilus_gtk_widget_set_font (view->details->feedback_text, font);
+	gdk_font_unref (font);
 	gtk_box_pack_end (GTK_BOX (view->details->form), view->details->feedback_text, 0, 0, 15);
 
 	/* Create a center alignment object */
@@ -180,6 +190,30 @@ show_feedback (NautilusServiceStartupView        *view, char     *error_message)
 
 }
 
+/* utility routine to change a font color */
+
+static void
+set_widget_color (GtkWidget *widget, const char* color_spec) {
+
+	GtkStyle *style;
+	GdkColor color;
+
+	style = gtk_widget_get_style (widget);
+
+	/* Make a copy of the style. */
+	style = gtk_style_copy (style);
+
+	nautilus_gdk_color_parse_with_white_default (color_spec, &color);
+	style->fg[GTK_STATE_NORMAL] = color;
+	style->base[GTK_STATE_NORMAL] = color;
+	style->fg[GTK_STATE_ACTIVE] = color; 
+	style->base[GTK_STATE_ACTIVE] = color;
+
+	/* Put the style in the widget. */ 
+	gtk_widget_set_style (widget, style);
+	gtk_style_unref (style);
+
+}
 
 /* shared utility to allocate a title for a form */
 
