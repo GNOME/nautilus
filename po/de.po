@@ -33,7 +33,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.7.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-02 18:34+0000\n"
+"POT-Creation-Date: 2004-09-13 10:55+0200\n"
 "PO-Revision-Date: 2004-07-24 11:46+0200\n"
 "Last-Translator: Hendrik Richter <hendrik@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -2199,6 +2199,7 @@ msgstr "Verknüpfung"
 #. * (e.g. "folder", "plain text") to file type for symbolic link
 #. * to that kind of file (e.g. "link to folder").
 #.
+#. appended to new link file
 #: libnautilus-private/nautilus-file.c:4732
 #: libnautilus-private/nautilus-file-operations.c:1194
 #, c-format
@@ -2541,6 +2542,9 @@ msgid " (another copy)"
 msgstr " (noch eine Kopie)"
 
 #. localizers: tag used to detect the x11th copy of a file
+#. localizers: tag used to detect the x12th copy of a file
+#. localizers: tag used to detect the x13th copy of a file
+#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1252
 #: libnautilus-private/nautilus-file-operations.c:1254
 #: libnautilus-private/nautilus-file-operations.c:1256
@@ -2576,6 +2580,9 @@ msgid "%s (another copy)%s"
 msgstr "%s (noch eine Kopie)%s"
 
 #. localizers: appended to x11th file copy
+#. localizers: appended to x12th file copy
+#. localizers: appended to x13th file copy
+#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1285
 #: libnautilus-private/nautilus-file-operations.c:1287
 #: libnautilus-private/nautilus-file-operations.c:1289
@@ -3329,6 +3336,7 @@ msgstr "%s wird geöffnet"
 #. TODO: These strings suck pretty badly, but we're in string-freeze,
 #. * and I found these in other places to reuse. We should make them
 #. * better later.
+#. Shouldn't have gotten this error unless there's a : separator.
 #: libnautilus-private/nautilus-program-choosing.c:591
 #: libnautilus-private/nautilus-program-choosing.c:599
 #: libnautilus-private/nautilus-program-choosing.c:604
@@ -5114,6 +5122,7 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
+#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:542 src/nautilus-application.c:560
 #: src/nautilus-application.c:567
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -5677,10 +5686,12 @@ msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "nautilus: %s kann nicht mit URIs verwendet werden.\n"
 
 #: src/nautilus-main.c:265
+#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check kann nicht mit anderen Optionen verwendet werden.\n"
 
 #: src/nautilus-main.c:279
+#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr ""
 "nautilus: --geometry kann nicht mit mehr als einer URI verwendet werden.\n"
