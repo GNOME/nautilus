@@ -1,10 +1,17 @@
 2000-05-25  Darin Adler  <darin@eazel.com>
 
+	* libnautilus/nautilus-clipboard.c:
+	(nautilus_clipboard_set_up_editable): Instead of ref'ing the
+	control we want to do a "while_alive". The old way could be
+	dangerous, so I'm glad I caught this.
+
+2000-05-25  Darin Adler  <darin@eazel.com>
+
 	* libnautilus/nautilus-view-frame.c:
-	(nautilus_view_get_bonobo_control):
-	Took out an extra bonobo_object_ref that was wreaking havoc.
-	If we want to make this ref the thing before returning it,
-	we'll have to get it right.
+	(nautilus_view_get_bonobo_control): Took out an extra
+	bonobo_object_ref that was wreaking havoc.  If we want to make
+	this ref the thing before returning it, we'll have to get it
+	right.
 
 2000-05-25  Darin Adler  <darin@eazel.com>
 

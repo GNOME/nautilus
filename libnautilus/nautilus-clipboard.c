@@ -163,20 +163,14 @@ nautilus_clipboard_set_up_editable (GtkEditable *target,
 	g_return_if_fail (BONOBO_IS_CONTROL (control));
 
 	/* Attach code to add menus when it gets the focus. */
-	bonobo_object_ref (BONOBO_OBJECT (control));
-        gtk_signal_connect_full
+        gtk_signal_connect_while_alive
 		(GTK_OBJECT (target), "focus_in_event",
 		 GTK_SIGNAL_FUNC (add_menu_items_callback),
-		 NULL, control,
-		 (GtkDestroyNotify) bonobo_object_unref,
-		 FALSE, FALSE);
+		 control, GTK_OBJECT (control));
 
 	/* Attach code to remove menus when it loses the focus. */
-	bonobo_object_ref (BONOBO_OBJECT (control));
- 	gtk_signal_connect_full
+ 	gtk_signal_connect_while_alive
 		(GTK_OBJECT (target), "focus_out_event",
 		 GTK_SIGNAL_FUNC (remove_menu_items_callback),
-		 NULL, control,
-		 (GtkDestroyNotify) bonobo_object_unref,
-		 FALSE, FALSE); 
+		 control, GTK_OBJECT (control));
 }
