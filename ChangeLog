@@ -1,3 +1,12 @@
+2000-10-27  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_rpm_set_settings):
+	Output which rpmrc file I read.
+	* configure.in:
+	Attempt at fixing the install view breaking on rpm builds and not
+	eazel-hacking builds.
+
 2000-10-27  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 4087 (crash leaving Summary view)

@@ -92,6 +92,7 @@ eazel_install_rpm_set_settings (EazelInstall *service) {
 	}
 	rpmSetVerbosity (RPMMESS_DEBUG);
 
+	trilobite_debug ("Read rpmrc file %s", eazel_install_get_rpmrc_file (service));
 	rpmReadConfigFiles (eazel_install_get_rpmrc_file (service), NULL);
 
 }
