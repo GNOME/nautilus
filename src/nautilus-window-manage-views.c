@@ -1395,7 +1395,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
 		break;
 
 	case NAUTILUS_DETERMINE_VIEW_HOST_HAS_NO_ADDRESS:
-                error_message = g_strdup_printf (_("Couldn't display \"%s\", because the host name was empty. "
+                error_message = g_strdup_printf (_("Couldn't display \"%s\". "
                 				   "Check that your proxy settings are correct."),
                                                  uri_for_display);
 		break;
