@@ -39,37 +39,34 @@ static FMDirectoryViewClass *parent_class = NULL;
 
 
 /* forward declarations */
-static GtkFList *create_flist (FMDirectoryViewList *view);
-static GtkFList *get_flist (FMDirectoryViewList *view);
-void add_to_flist (FMIconCache *icon_manager,
-		   GtkFList *flist,
-		   GnomeVFSFileInfo *info);
-static gint display_flist_selection_info_idle_cb (gpointer data);
-static void flist_activate_cb (GtkFList *flist,
-			       gpointer entry_data,
-			       gpointer data);
-static void flist_selection_changed_cb (GtkFList *flist, gpointer data);
+void add_to_flist 				    (FMIconCache *icon_manager,
+		   		 		     GtkFList *flist,
+		   		 		     GnomeVFSFileInfo *info);
+static GtkFList *create_flist 			    (FMDirectoryViewList *list_view);
+static void flist_activate_cb 			    (GtkFList *ignored,
+			       	 		     gpointer entry_data,
+			       	 		     gpointer data);
+static void flist_selection_changed_cb 	  	    (GtkFList *flist, gpointer data);
+static void fm_directory_view_list_initialize_class (gpointer klass);
+static void fm_directory_view_list_initialize 	    (gpointer object, gpointer klass);
+static void fm_directory_view_list_destroy 	    (GtkObject *object);
+static void fm_directory_view_list_add_entry 	    (FMDirectoryView *view, 
+				 		     GnomeVFSFileInfo *info);
 static void fm_directory_view_list_begin_adding_entries 
-				       (FMDirectoryView *view);
-static void fm_directory_view_list_add_entry 
-				       (FMDirectoryView *view, 
-					GnomeVFSFileInfo *info);
+						    (FMDirectoryView *view);
+static void fm_directory_view_list_clear 	    (FMDirectoryView *view);
 static void fm_directory_view_list_done_adding_entries 
-				       (FMDirectoryView *view);
-static void fm_directory_view_list_clear (FMDirectoryView *view);
+						    (FMDirectoryView *view);
+static GList * fm_directory_view_list_get_selection (FMDirectoryView *view);
+static GtkFList *get_flist 			    (FMDirectoryViewList *list_view);
 
 
 
 
 /* GtkObject methods.  */
 
-static void
-fm_directory_view_list_destroy (GtkObject *object)
-{
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
-}
+NAUTILUS_DEFINE_GET_TYPE_FUNCTION (FMDirectoryViewList, fm_directory_view_list, FM_TYPE_DIRECTORY_VIEW);
 
-
 static void
 fm_directory_view_list_initialize_class (gpointer klass)
 {
@@ -87,6 +84,7 @@ fm_directory_view_list_initialize_class (gpointer klass)
 	fm_directory_view_class->begin_adding_entries = fm_directory_view_list_begin_adding_entries;	
 	fm_directory_view_class->add_entry = fm_directory_view_list_add_entry;	
 	fm_directory_view_class->done_adding_entries = fm_directory_view_list_done_adding_entries;	
+	fm_directory_view_class->get_selection = fm_directory_view_list_get_selection;	
 }
 
 static void
@@ -98,7 +96,11 @@ fm_directory_view_list_initialize (gpointer object, gpointer klass)
 	create_flist (object);
 }
 
-NAUTILUS_DEFINE_GET_TYPE_FUNCTION (FMDirectoryViewList, fm_directory_view_list, FM_TYPE_DIRECTORY_VIEW);
+static void
+fm_directory_view_list_destroy (GtkObject *object)
+{
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+}
 
 GtkWidget *
 fm_directory_view_list_new (void)
@@ -108,13 +110,15 @@ fm_directory_view_list_new (void)
 
 
 static GtkFList *
-create_flist (FMDirectoryViewList *view)
+create_flist (FMDirectoryViewList *list_view)
 {
 	GtkFList *flist;
 	gchar *titles[] = {
 		"Name",
 		NULL
 	};
+
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_LIST (list_view), NULL);
 
 	flist = GTK_FLIST (gtk_flist_new_with_titles (2, titles));
 	gtk_clist_set_column_width (GTK_CLIST (flist), 0, 150); /* FIXME */
@@ -123,100 +127,40 @@ create_flist (FMDirectoryViewList *view)
 	gtk_signal_connect (GTK_OBJECT (flist),
 			    "activate",
 			    GTK_SIGNAL_FUNC (flist_activate_cb),
-			    view);
+			    list_view);
 	gtk_signal_connect (GTK_OBJECT (flist),
 			    "selection_changed",
 			    GTK_SIGNAL_FUNC (flist_selection_changed_cb),
-			    view);
-	gtk_container_add (GTK_CONTAINER (view), GTK_WIDGET (flist));
+			    list_view);
+	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (flist));
 
 	gtk_widget_show (GTK_WIDGET (flist));
 
-	if (FM_DIRECTORY_VIEW (view)->directory_list != NULL) {
-		GnomeVFSDirectoryListPosition *position;
-		FMIconCache *icon_manager;
-
-		icon_manager = fm_get_current_icon_cache();
-
-		position = gnome_vfs_directory_list_get_first_position
-			(FM_DIRECTORY_VIEW (view)->directory_list);
-
-		gtk_clist_freeze (GTK_CLIST (flist));
-
-		while (position != FM_DIRECTORY_VIEW (view)->current_position) {
-			GnomeVFSFileInfo *info;
-
-			info = gnome_vfs_directory_list_get
-				(FM_DIRECTORY_VIEW (view)->directory_list, position);
-			add_to_flist (icon_manager, flist, info);
-
-			position = gnome_vfs_directory_list_position_next
-				(position);
-		}
-
-		gtk_clist_thaw (GTK_CLIST (flist));
-	}
+	fm_directory_view_populate (FM_DIRECTORY_VIEW (list_view));
 
 	return flist;
 }
- 
-
-
-static gint
-display_flist_selection_info_idle_cb (gpointer data)
-{
-	FMDirectoryView *view;
-	GtkFList *flist;
-	GList *selection;
-
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_LIST (data), FALSE);
-
-	view = FM_DIRECTORY_VIEW (data);
-	flist = get_flist (FM_DIRECTORY_VIEW_LIST (view));
-
-	selection = gtk_flist_get_selection (flist);
-	fm_directory_view_display_selection_info (view, selection);
-	g_list_free (selection);
-
-	view->display_selection_idle_id = 0;
-
-	return FALSE;
-}
 
 static void
-flist_activate_cb (GtkFList *flist,
+flist_activate_cb (GtkFList *ignored,
 		   gpointer entry_data,
 		   gpointer data)
 {
-	FMDirectoryView *directory_view;
-	GnomeVFSURI *new_uri;
-	GnomeVFSFileInfo *info;
-	Nautilus_NavigationRequestInfo nri;
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (data));
+	g_return_if_fail (entry_data != NULL);
 
-	info = (GnomeVFSFileInfo *) entry_data;
-	directory_view = FM_DIRECTORY_VIEW (data);
-
-	new_uri = gnome_vfs_uri_append_path (directory_view->uri, info->name);
-	nri.requested_uri = gnome_vfs_uri_to_string(new_uri, 0);
-	nri.new_window_default = nri.new_window_suggested = Nautilus_V_FALSE;
-	nri.new_window_enforced = Nautilus_V_UNKNOWN;
-	nautilus_view_frame_request_location_change(NAUTILUS_VIEW_FRAME(directory_view->view_frame),
-						     &nri);
-	g_free(nri.requested_uri);
-	gnome_vfs_uri_unref (new_uri);
+	fm_directory_view_activate_entry (FM_DIRECTORY_VIEW (data), 
+					  (GnomeVFSFileInfo *) entry_data);
 }
 
 static void
 flist_selection_changed_cb (GtkFList *flist,
 			    gpointer data)
 {
-	FMDirectoryView *view;
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_LIST (data));
+	g_return_if_fail (flist == get_flist (FM_DIRECTORY_VIEW_LIST (data)));
 
-	view = FM_DIRECTORY_VIEW (data);
-	if (view->display_selection_idle_id == 0)
-		view->display_selection_idle_id
-			= gtk_idle_add (display_flist_selection_info_idle_cb,
-					view);
+	fm_directory_view_notify_selection_changed (FM_DIRECTORY_VIEW (data));
 }
 
 void
@@ -236,12 +180,12 @@ add_to_flist (FMIconCache *icon_manager,
 }
 
 static GtkFList *
-get_flist (FMDirectoryViewList *view)
+get_flist (FMDirectoryViewList *list_view)
 {
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view), NULL);
-	g_return_val_if_fail (GTK_IS_FLIST (GTK_BIN (view)->child), NULL);
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_LIST (list_view), NULL);
+	g_return_val_if_fail (GTK_IS_FLIST (GTK_BIN (list_view)->child), NULL);
 
-	return GTK_FLIST (GTK_BIN (view)->child);
+	return GTK_FLIST (GTK_BIN (list_view)->child);
 }
 
 static void
@@ -275,4 +219,13 @@ fm_directory_view_list_done_adding_entries (FMDirectoryView *view)
 
 	gtk_clist_thaw (GTK_CLIST (get_flist (FM_DIRECTORY_VIEW_LIST (view))));
 }
+
+static GList *
+fm_directory_view_list_get_selection (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_LIST (view), NULL);
+
+	return gtk_flist_get_selection (get_flist (FM_DIRECTORY_VIEW_LIST (view)));
+}
+
 

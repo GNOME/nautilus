@@ -34,39 +34,43 @@
 #include "fm-directory-view-icons.h"
 #include "fm-icon-cache.h"
 
-static FMDirectoryViewClass *parent_class = NULL;
-
 
 /* forward declarations */
-static GnomeIconContainer *create_icon_container (FMDirectoryViewIcons *view);
-static gint display_icon_container_selection_info_idle_cb 
-						 (gpointer data);
-static void display_icons_not_in_layout 	 (FMDirectoryView *view);
+static void add_to_icon_container 		 (FMDirectoryViewIcons *icon_view,
+		       				  FMIconCache *icon_manager,
+		       				  GnomeIconContainer *icon_container,
+		       				  GnomeVFSFileInfo *info,
+		       				  gboolean with_layout);
+static GnomeIconContainer *create_icon_container (FMDirectoryViewIcons *icon_view);
+static void display_icons_not_in_layout 	 (FMDirectoryViewIcons *icon_view);
 static void fm_directory_view_icons_add_entry    (FMDirectoryView *view, 
 					          GnomeVFSFileInfo *info);
 static void fm_directory_view_icons_done_adding_entries 
 				          	 (FMDirectoryView *view);
-static void fm_directory_view_icons_done_sorting_entries 
-				          	 (FMDirectoryView *view);
 static void fm_directory_view_icons_begin_loading
 				          	 (FMDirectoryView *view);
 static void fm_directory_view_icons_clear 	 (FMDirectoryView *view);
-static void icon_container_activate_cb 		 (GnomeIconContainer *icon_container,
+static GList * fm_directory_view_icons_get_selection
+						 (FMDirectoryView *view);
+static GnomeIconContainer *get_icon_container 	 (FMDirectoryViewIcons *icon_view);
+static void icon_container_activate_cb 		 (GnomeIconContainer *ignored,
 						  const gchar *name,
 						  gpointer icon_data,
 						  gpointer data);
 static void icon_container_selection_changed_cb  (GnomeIconContainer *container,
 						  gpointer data);
 
-static GnomeIconContainer *get_icon_container 	 (FMDirectoryView *view);
-static void add_to_icon_container 		 (FMDirectoryView *view,
-		       				  FMIconCache *icon_manager,
-		       				  GnomeIconContainer *icon_container,
-		       				  GnomeVFSFileInfo *info,
-		       				  gboolean with_layout);
-static void load_icon_container 		 (FMDirectoryView *view,
-		     				  GnomeIconContainer *icon_container);
-static void set_up_base_uri			 (FMDirectoryView *view);
+static void set_up_base_uri			 (FMDirectoryViewIcons *icon_view);
+
+
+
+static FMDirectoryViewClass *parent_class = NULL;
+
+struct _FMDirectoryViewIconsDetails
+{
+	const GnomeIconContainerLayout *icon_layout;
+	GList *icons_not_in_layout;
+};
 
 
 /* GtkObject methods.  */
@@ -74,6 +78,14 @@ static void set_up_base_uri			 (FMDirectoryView *view);
 static void
 fm_directory_view_icons_destroy (GtkObject *object)
 {
+	FMDirectoryViewIcons *icon_view;
+
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (object));
+
+	icon_view = FM_DIRECTORY_VIEW_ICONS (object);
+	g_list_free (icon_view->details->icons_not_in_layout);
+	icon_view->details->icons_not_in_layout = NULL;
+
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
@@ -97,27 +109,39 @@ fm_directory_view_icons_initialize_class (gpointer klass)
 		= fm_directory_view_icons_add_entry;
 	fm_directory_view_class->done_adding_entries 
 		= fm_directory_view_icons_done_adding_entries;	
-	fm_directory_view_class->done_sorting_entries 
-		= fm_directory_view_icons_done_sorting_entries;
 	fm_directory_view_class->begin_loading 
 		= fm_directory_view_icons_begin_loading;
+	fm_directory_view_class->get_selection 
+		= fm_directory_view_icons_get_selection;	
 }
 
 static void
 fm_directory_view_icons_initialize (gpointer object, gpointer klass)
 {
+	FMDirectoryViewIcons *directory_view_icons;
 	GnomeIconContainer *icon_container;
 	
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (object));
 	g_return_if_fail (GTK_BIN (object)->child == NULL);
+
+	directory_view_icons = FM_DIRECTORY_VIEW_ICONS (object);
 	
-	icon_container = create_icon_container (object);
+	icon_container = create_icon_container (directory_view_icons);
 	gnome_icon_container_set_icon_mode
 		(icon_container, GNOME_ICON_CONTAINER_NORMAL_ICONS);
+
+	directory_view_icons->details = g_new0 (FMDirectoryViewIconsDetails, 1);
 }
 
 NAUTILUS_DEFINE_GET_TYPE_FUNCTION (FMDirectoryViewIcons, fm_directory_view_icons, FM_TYPE_DIRECTORY_VIEW);
 
+/**
+ * fm_directory_view_icons_new:
+ *
+ * Create a new FMDirectoryViewIcons.
+ * 
+ * Return value: The newly-allocated FMDirectoryViewIcons.
+ **/
 GtkWidget *
 fm_directory_view_icons_new (void)
 {
@@ -126,7 +150,7 @@ fm_directory_view_icons_new (void)
 
 
 static GnomeIconContainer *
-create_icon_container (FMDirectoryViewIcons *view)
+create_icon_container (FMDirectoryViewIcons *icon_view)
 {
 	GnomeIconContainer *icon_container;
 
@@ -135,47 +159,29 @@ create_icon_container (FMDirectoryViewIcons *view)
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "activate",
 			    GTK_SIGNAL_FUNC (icon_container_activate_cb),
-			    view);
+			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "selection_changed",
 			    GTK_SIGNAL_FUNC (icon_container_selection_changed_cb),
-			    view);
+			    icon_view);
 
-	gtk_container_add (GTK_CONTAINER (view), GTK_WIDGET (icon_container));
+	gtk_container_add (GTK_CONTAINER (icon_view), GTK_WIDGET (icon_container));
 
 	gtk_widget_show (GTK_WIDGET (icon_container));
-	load_icon_container (FM_DIRECTORY_VIEW (view), icon_container);
+	
+	fm_directory_view_populate (FM_DIRECTORY_VIEW (icon_view));
 
 	return icon_container;
 }
 
-static gint
-display_icon_container_selection_info_idle_cb (gpointer data)
-{
-	FMDirectoryView *view;
-	GnomeIconContainer *icon_container;
-	GList *selection;
-
-	view = FM_DIRECTORY_VIEW (data);
-	icon_container = get_icon_container (view);
-
-	selection = gnome_icon_container_get_selection (icon_container);
-	fm_directory_view_display_selection_info (view, selection);
-	g_list_free (selection);
-
-	view->display_selection_idle_id = 0;
-
-	return FALSE;
-}
-
 static void
-display_icons_not_in_layout (FMDirectoryView *view)
+display_icons_not_in_layout (FMDirectoryViewIcons *view)
 {
 	FMIconCache *icon_manager;
 	GnomeIconContainer *icon_container;
 	GList *p;
 
-	if (view->icons_not_in_layout == NULL)
+	if (view->details->icons_not_in_layout == NULL)
 		return;
 
 	icon_manager = fm_get_current_icon_cache();
@@ -185,7 +191,7 @@ display_icons_not_in_layout (FMDirectoryView *view)
 
 	/* FIXME: This will block if there are many files.  */
 
-	for (p = view->icons_not_in_layout; p != NULL; p = p->next) {
+	for (p = view->details->icons_not_in_layout; p != NULL; p = p->next) {
 		GnomeVFSFileInfo *info;
 
 		info = p->data;
@@ -193,22 +199,22 @@ display_icons_not_in_layout (FMDirectoryView *view)
 				       icon_container, info, FALSE);
 	}
 
-	g_list_free (view->icons_not_in_layout);
-	view->icons_not_in_layout = NULL;
+	g_list_free (view->details->icons_not_in_layout);
+	view->details->icons_not_in_layout = NULL;
 }
 
 
 static GnomeIconContainer *
-get_icon_container (FMDirectoryView *view)
+get_icon_container (FMDirectoryViewIcons *icon_view)
 {
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view), NULL);
-	g_return_val_if_fail (GNOME_IS_ICON_CONTAINER (GTK_BIN (view)->child), NULL);
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (icon_view), NULL);
+	g_return_val_if_fail (GNOME_IS_ICON_CONTAINER (GTK_BIN (icon_view)->child), NULL);
 
-	return GNOME_ICON_CONTAINER (GTK_BIN (view)->child);
+	return GNOME_ICON_CONTAINER (GTK_BIN (icon_view)->child);
 }
 
 static void
-add_to_icon_container (FMDirectoryView *view,
+add_to_icon_container (FMDirectoryViewIcons *icon_view,
 		       FMIconCache *icon_manager,
 		       GnomeIconContainer *icon_container,
 		       GnomeVFSFileInfo *info,
@@ -220,7 +226,7 @@ add_to_icon_container (FMDirectoryView *view,
 
 	image = fm_icon_cache_get_icon (icon_manager, info);
 
-	if (! with_layout || view->icon_layout == NULL) {
+	if (! with_layout || icon_view->details->icon_layout == NULL) {
 		gnome_icon_container_add_pixbuf_auto (icon_container,
 						     image,
 						     info->name,
@@ -230,58 +236,26 @@ add_to_icon_container (FMDirectoryView *view,
 
 		result = gnome_icon_container_add_pixbuf_with_layout
 			(icon_container, image, info->name, info,
-			 view->icon_layout);
+			 icon_view->details->icon_layout);
 		if (! result)
-			view->icons_not_in_layout = g_list_prepend
-				(view->icons_not_in_layout, info);
+			icon_view->details->icons_not_in_layout = g_list_prepend
+				(icon_view->details->icons_not_in_layout, info);
 	}
-}
-
-static void
-load_icon_container (FMDirectoryView *view,
-		     GnomeIconContainer *icon_container)
-{
-	gnome_icon_container_clear (icon_container);
-
-	if (view->directory_list != NULL) {
-		GnomeVFSDirectoryListPosition *position;
-		FMIconCache *icon_manager;
-
-		icon_manager = fm_get_current_icon_cache();
-
-		position = gnome_vfs_directory_list_get_first_position
-			(view->directory_list);
-
-		while (position != view->current_position) {
-			GnomeVFSFileInfo *info;
-
-			info = gnome_vfs_directory_list_get
-				(view->directory_list, position);
-
-			g_return_if_fail(info);
-			add_to_icon_container (view, icon_manager,
-					       icon_container, info, TRUE);
-
-			position = gnome_vfs_directory_list_position_next
-				(position);
-		}
-	}
-
 }
 
 /* Set up the base URI for Drag & Drop operations.  */
 static void
-set_up_base_uri (FMDirectoryView *view)
+set_up_base_uri (FMDirectoryViewIcons *icon_view)
 {
 	gchar *txt_uri;
 
-	g_return_if_fail (get_icon_container(view) != NULL);
+	g_return_if_fail (get_icon_container(icon_view) != NULL);
 
-	txt_uri = gnome_vfs_uri_to_string (view->uri, 0);
+	txt_uri = gnome_vfs_uri_to_string (fm_directory_view_get_uri (FM_DIRECTORY_VIEW (icon_view)), 0);
 	if (txt_uri == NULL)
 		return;
 
-	gnome_icon_container_set_base_uri (get_icon_container (view), txt_uri);
+	gnome_icon_container_set_base_uri (get_icon_container (icon_view), txt_uri);
 
 	g_free (txt_uri);
 }
@@ -291,17 +265,21 @@ fm_directory_view_icons_clear (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
 
-	gnome_icon_container_clear (get_icon_container (view));
+	gnome_icon_container_clear (get_icon_container (FM_DIRECTORY_VIEW_ICONS (view)));
 }
 
 static void
 fm_directory_view_icons_add_entry (FMDirectoryView *view, GnomeVFSFileInfo *info)
 {
+	FMDirectoryViewIcons *icon_view;
+
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
 
-	add_to_icon_container (view, 
+	icon_view = FM_DIRECTORY_VIEW_ICONS (view);
+
+	add_to_icon_container (icon_view, 
 			       fm_get_current_icon_cache(), 
-			       get_icon_container (view), 
+			       get_icon_container (icon_view), 
 			       info, 
 			       TRUE);
 }
@@ -311,20 +289,7 @@ fm_directory_view_icons_done_adding_entries (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
 
-	display_icons_not_in_layout (view);
-}
-
-static void
-fm_directory_view_icons_done_sorting_entries (FMDirectoryView *view)
-{
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
-
-	/* This will make sure icons are re-laid out according to the new
-           order.  */
-	if (view->icon_layout != NULL)
-		view->icon_layout = NULL;
-
-	load_icon_container (view, get_icon_container (view));
+	display_icons_not_in_layout (FM_DIRECTORY_VIEW_ICONS (view));
 }
 
 static void
@@ -332,7 +297,18 @@ fm_directory_view_icons_begin_loading (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
 
-	set_up_base_uri (view);
+	set_up_base_uri (FM_DIRECTORY_VIEW_ICONS (view));
+}
+
+static GList *
+fm_directory_view_icons_get_selection (FMDirectoryView *view)
+{
+	FMDirectoryViewIcons *icon_view;
+
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view), NULL);
+
+	icon_view = FM_DIRECTORY_VIEW_ICONS (view);
+	return gnome_icon_container_get_selection (get_icon_container (icon_view));
 }
 
 
@@ -343,8 +319,23 @@ fm_directory_view_icons_begin_loading (FMDirectoryView *view)
 
    The `get' function retrieves the current *actual* layout from the icon
    container.  The `set' function, instead, specifies the layout that will be
-   used when adding new files to the view.  */
+   used when adding new files to the view.  
 
+   These two functions might become entirely obsolete. They are currently unused.
+*/
+
+/**
+ * fm_directory_view_get_icon_layout:
+ *
+ * Get a GnomeIconContainerLayout representing how icons are 
+ * currently positioned in this view. The caller is responsible for destroying
+ * this object.
+ * @view: FMDirectoryViewIcons in question.
+ * 
+ * Return value: A newly-allocated GnomeIconContainerLayout object specifying
+ * positions for the currently-displayed set of icons.
+ * 
+ **/
 GnomeIconContainerLayout *
 fm_directory_view_icons_get_icon_layout (FMDirectoryViewIcons *view)
 {
@@ -352,68 +343,68 @@ fm_directory_view_icons_get_icon_layout (FMDirectoryViewIcons *view)
 
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view), NULL);
 
-	icon_container = get_icon_container (FM_DIRECTORY_VIEW (view));
+	icon_container = get_icon_container (view);
 	return gnome_icon_container_get_layout (icon_container);
 }
 
+/**
+ * fm_directory_view_set_icon_layout:
+ *
+ * Supply a GnomeIconContainerLayout object to use for positioning
+ * icons that are added to this view in the future.
+ * @view: FMDirectoryViewIcons in question.
+ * @layout: GnomeIconContainerLayout to use in future.
+ * 
+ **/
 void
 fm_directory_view_icons_set_icon_layout (FMDirectoryViewIcons *view,
 				   const GnomeIconContainerLayout *layout)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
 
-	FM_DIRECTORY_VIEW (view)->icon_layout = layout;
+	view->details->icon_layout = layout;
 }
 
+/**
+ * fm_directory_view_icons_line_up_icons:
+ *
+ * Line up the icons in this view.
+ * @icon_view: FMDirectoryViewIcons whose ducks should be in a row.
+ * 
+ **/
 void
-fm_directory_view_icons_line_up_icons (FMDirectoryViewIcons *view)
+fm_directory_view_icons_line_up_icons (FMDirectoryViewIcons *icon_view)
 {
 	GnomeIconContainer *container;
 
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
-	/* FIXME: Get rid of FM_DIRECTORY_VIEW_ICONS casts after
-	 * get_icon_container is moved into this subclass.
-	 */
-	g_return_if_fail (get_icon_container (FM_DIRECTORY_VIEW (view)) != NULL);
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
+	g_return_if_fail (get_icon_container (icon_view) != NULL);
 
-	gnome_icon_container_line_up (get_icon_container (FM_DIRECTORY_VIEW (view)));
+	gnome_icon_container_line_up (get_icon_container (icon_view));
 }
 
 static void
-icon_container_activate_cb (GnomeIconContainer *icon_container,
+icon_container_activate_cb (GnomeIconContainer *ignored,
 			    const gchar *name,
-			    gpointer icon_data,
+			    gpointer entry_data,
 			    gpointer data)
 {
-	FMDirectoryView *directory_view;
-	GnomeVFSURI *new_uri;
-	GnomeVFSFileInfo *info;
-	Nautilus_NavigationRequestInfo nri;
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (data));
+	g_return_if_fail (entry_data != NULL);
+	/* Name from icon container had better match name in file info */
+	g_return_if_fail (strcmp (name, ((GnomeVFSFileInfo *)entry_data)->name) == 0);
 
-	info = (GnomeVFSFileInfo *) icon_data;
-	directory_view = FM_DIRECTORY_VIEW (data);
-
-	new_uri = gnome_vfs_uri_append_path (directory_view->uri, name);
-
-	nri.requested_uri = gnome_vfs_uri_to_string(new_uri, 0);
-	nri.new_window_default = nri.new_window_suggested = Nautilus_V_FALSE;
-	nri.new_window_enforced = Nautilus_V_UNKNOWN;
-	nautilus_view_frame_request_location_change(NAUTILUS_VIEW_FRAME(directory_view->view_frame),
-						     &nri);
-	g_free(nri.requested_uri);
-	gnome_vfs_uri_unref (new_uri);
+	fm_directory_view_activate_entry (FM_DIRECTORY_VIEW (data),
+					  (GnomeVFSFileInfo *) entry_data);
 }
 
 static void
 icon_container_selection_changed_cb (GnomeIconContainer *container,
 				     gpointer data)
 {
-	FMDirectoryView *view;
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (data));
+	g_return_if_fail (container == get_icon_container (FM_DIRECTORY_VIEW_ICONS (data)));
 
-	view = FM_DIRECTORY_VIEW (data);
-	if (view->display_selection_idle_id == 0)
-		view->display_selection_idle_id = gtk_idle_add
-			(display_icon_container_selection_info_idle_cb,
-			 view);
+	fm_directory_view_notify_selection_changed (FM_DIRECTORY_VIEW (data));
 }
 

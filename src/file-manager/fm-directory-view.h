@@ -25,10 +25,7 @@
 #define __FM_DIRECTORY_VIEW_H__
 
 #include <libgnomevfs/gnome-vfs.h>
-
 #include <libnautilus/libnautilus.h>
-#include <libnautilus/gnome-icon-container.h>
-#include <libnautilus/gtkscrollframe.h>
 
 
 enum _FMDirectoryViewSortType {
@@ -45,75 +42,96 @@ typedef struct _FMDirectoryViewClass FMDirectoryViewClass;
 #define FM_TYPE_DIRECTORY_VIEW			(fm_directory_view_get_type ())
 #define FM_DIRECTORY_VIEW(obj)			(GTK_CHECK_CAST ((obj), FM_TYPE_DIRECTORY_VIEW, FMDirectoryView))
 #define FM_DIRECTORY_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_CAST ((klass), FM_TYPE_DIRECTORY_VIEW, FMDirectoryViewClass))
-#define FM_IS_DIRECTORY_VIEW(obj)			(GTK_CHECK_TYPE ((obj), FM_TYPE_DIRECTORY_VIEW))
-#define FM_IS_DIRECTORY_VIEW_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), FM_TYPE_DIRECTORY_VIEW))
+#define FM_IS_DIRECTORY_VIEW(obj)		(GTK_CHECK_TYPE ((obj), FM_TYPE_DIRECTORY_VIEW))
+#define FM_IS_DIRECTORY_VIEW_CLASS(klass)	(GTK_CHECK_CLASS_TYPE ((obj), FM_TYPE_DIRECTORY_VIEW))
+
+typedef struct _FMDirectoryViewDetails FMDirectoryViewDetails;
 
 struct _FMDirectoryView {
-	GtkScrolledWindow scroll_frame;
-
-	NautilusContentViewFrame *view_frame;
-
-	GnomeVFSDirectoryList *directory_list;
-	GnomeVFSDirectoryListPosition current_position;
-
-	guint display_timeout_id;
-
-	GnomeVFSAsyncHandle *vfs_async_handle;
-	GnomeVFSURI *uri;
-
-	const GnomeIconContainerLayout *icon_layout;
-	GList *icons_not_in_layout;
-
-	/* Idle ID for displaying information about the current selection at
-           idle time.  */
-	gint display_selection_idle_id;
+	GtkScrolledWindow parent;
+	FMDirectoryViewDetails *details;
 };
 
 struct _FMDirectoryViewClass {
 	GtkScrolledWindowClass parent_class;
 
-	void (* clear)	(FMDirectoryView *view);
-	void (* begin_adding_entries) (FMDirectoryView *view);
-	void (* add_entry) (FMDirectoryView *view, GnomeVFSFileInfo *info);
-	void (* done_adding_entries) (FMDirectoryView *view);
-	void (* done_sorting_entries) (FMDirectoryView *view);
-	void (* begin_loading) (FMDirectoryView *view);
+	/* The 'clear' signal is emitted to empty the view of its contents.
+	 * It must be replaced by each subclass.
+	 */
+	void 	(* clear) 		 (FMDirectoryView *view);
+	
+	/* The 'begin_adding_entries' signal is emitted before a set of entries
+	 * are added to the view. It can be replaced by a subclass to do any 
+	 * necessary preparation for a set of new entries. The default
+	 * implementation does nothing.
+	 */
+	void 	(* begin_adding_entries) (FMDirectoryView *view);
+	
+	/* The 'add_entry' signal is emitted to add one entry to the view.
+	 * It must be replaced by each subclass.
+	 */
+	void 	(* add_entry) 		 (FMDirectoryView *view, 
+					  GnomeVFSFileInfo *info);
+	/* The 'done_adding_entries' signal is emitted after a set of entries
+	 * are added to the view. It can be replaced by a subclass to do any 
+	 * necessary cleanup (typically, cleanup for code in begin_adding_entries).
+	 * The default implementation does nothing.
+	 */
+	void 	(* done_adding_entries)  (FMDirectoryView *view);
+	
+	/* The 'begin_loading' signal is emitted before any of the contents
+	 * of a directory are added to the view. It can be replaced by a 
+	 * subclass to do any necessary preparation to start dealing with a
+	 * new directory. The default implementation does nothing.
+	 */
+	void 	(* begin_loading) 	 (FMDirectoryView *view);
+
+	/* get_selection is not a signal; it is just a function pointer for
+	 * subclasses to replace (override). Subclasses must replace it
+	 * with a function that returns a newly-allocated GList of
+	 * GnomeVFSFileInfo pointers.
+	 */
+	GList * (* get_selection) 	 (FMDirectoryView *view);
 };
 
 
 
-GtkType    fm_directory_view_get_type (void);
-GtkWidget *fm_directory_view_new      (void);
-void       fm_directory_view_load_uri (FMDirectoryView *view,
-				       const char *uri);
-void	   fm_directory_view_clear    (FMDirectoryView *view);
-void	   fm_directory_view_begin_adding_entries    
-				      (FMDirectoryView *view);
-void	   fm_directory_view_add_entry
-				      (FMDirectoryView *view, GnomeVFSFileInfo *info);
-void	   fm_directory_view_done_adding_entries
-				      (FMDirectoryView *view);
+/* GtkObject support */
+GtkType     fm_directory_view_get_type 			(void);
+GtkWidget  *fm_directory_view_new      			(void);
 
-void	   fm_directory_view_done_sorting_entries
-				      (FMDirectoryView *view);
+/* Component embedding support */
+NautilusContentViewFrame 
+	    *fm_directory_view_get_view_frame 		(FMDirectoryView *view);
 
-void	   fm_directory_view_begin_loading
-				      (FMDirectoryView *view);
+/* URI handling */
+void         fm_directory_view_load_uri 		(FMDirectoryView *view,
+				       			 const char *uri);
+GnomeVFSURI *fm_directory_view_get_uri 			(FMDirectoryView *view);
 
-void	   fm_directory_view_stop     (FMDirectoryView *view);
+/* Functions callable from the user interface and elsewhere. */
+GList *	     fm_directory_view_get_selection		(FMDirectoryView *view);
+void	     fm_directory_view_stop     		(FMDirectoryView *view);
+void	     fm_directory_view_sort     		(FMDirectoryView *view,
+				       			 FMDirectoryViewSortType sort_type);
 
-void	   fm_directory_view_sort     (FMDirectoryView *view,
-				       FMDirectoryViewSortType sort_type);
-
-NautilusContentViewFrame *
-           fm_directory_view_get_view_frame (FMDirectoryView *view);
-
-
-
-/* display_selection_info is used by subclasses. No one else should call it. */
-void 	   fm_directory_view_display_selection_info 
-				       (FMDirectoryView *view, GList *selection);
-
-
+/* Wrappers for signal emitters. These are normally called 
+ * only by FMDirectoryView itself. They have corresponding signals
+ * that observers might want to connect with.
+ */
+void	     fm_directory_view_clear    		(FMDirectoryView *view);
+void	     fm_directory_view_begin_adding_entries 	(FMDirectoryView *view);
+void	     fm_directory_view_add_entry 		(FMDirectoryView *view, 
+							 GnomeVFSFileInfo *info);
+void	     fm_directory_view_done_adding_entries 	(FMDirectoryView *view);
+void	     fm_directory_view_begin_loading 		(FMDirectoryView *view);
+				       			 
+/* Hooks for subclasses to call. These are normally called only by 
+ * FMDirectoryView and its subclasses 
+ */
+void	     fm_directory_view_activate_entry 		(FMDirectoryView *view,
+				       			 GnomeVFSFileInfo *info);
+void	     fm_directory_view_notify_selection_changed (FMDirectoryView *view);
+void	     fm_directory_view_populate 		(FMDirectoryView *view);
 
 #endif /* __FM_DIRECTORY_VIEW_H__ */

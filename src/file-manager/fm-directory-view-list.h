@@ -45,6 +45,8 @@ struct _FMDirectoryViewListClass {
 };
 
 
+/* GtkObject support */
 GtkType    fm_directory_view_list_get_type (void);
 GtkWidget *fm_directory_view_list_new      (void);
+
 #endif /* __FM_DIRECTORY_VIEW_LIST_H__ */

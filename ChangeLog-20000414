@@ -1,3 +1,53 @@
+2000-01-14  John Sullivan  <sullivan@eazel.com>
+
+	Finished refactoring FMDirectoryView and subclasses. I
+	don't plan any more major reworking on these files, so
+	feel free to change things without fear of stomping on
+	me.
+
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-directory-view-icons.c:
+	* src/file-manager/fm-directory-view-icons.h:
+	* src/file-manager/fm-directory-view-list.c:
+	* src/file-manager/fm-directory-view-list.h:
+ 	Moved icon_layout and icons_not_in_layout fields from
+ 	FMDirectoryView to FMDirectoryViewIcons (where they hide
+ 	inside a details structure in fm-directory-view-icons.c)
+ 	Commented .h files and all public functions in .c files.
+ 	Removed unnecessary #includes.
+ 	Changed signatures on many static functions in subclasses
+ 	to take subclass type instead of superclass type.
+ 	(display_selection_info_idle_cb):
+ 	(fm_directory_view_get_selection): 
+ 	(fm_directory_view_icons_get_selection):
+ 	(fm_directory_view_list_get_selection):
+ 	(fm_directory_view_notify_selection_changed):
+ 	New functions used to handle subclasses telling
+ 	superclass about the selection, so superclass can
+ 	display info about it.
+ 	(display_icon_container_selection_info_idle_cb):
+ 	(display_flist_selection_info_idle_cb): Removed these
+ 	old functions in favor of new cleaner mechanism.
+ 	(flist_activate_cb), (icon_container_activate_cb): Moved
+ 	common code into new superclass function...
+ 	(fm_directory_view_activate_entry): New home of that common
+ 	code.
+
+	* src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-directory-view.h:
+ 	Moved remaining fields of FMDirectoryView inside a private 
+ 	details structure so they can change without affecting clients.
+ 	(fm_directory_view_get_uri): (fm_directory_view_get_view_frame): 
+ 	New functions to use instead of peeking at structure directly.
+ 	(init): (class_init): (fm_directory_view_get_type): Renamed
+ 	the former two functions and removed the latter while
+ 	deploying NAUTILUS_DEFINE_GET_TYPE_FUNCTION macro.
+		
+	* src/file-manager/fm-main.c:
+	(make_obj): Use fm_directory_view_get_view_frame() where it
+	had been peeking at structure directly.
+
 2000-01-14  Darin Adler  <darin@eazel.com>
 
 	Fixed our handling of warnings and criticals.
@@ -108,7 +158,7 @@
 
 	(fm_directory_view_display_selection_info): Newly exposed function.
 
-	*src/file-manager/fm-directory-view.c:
+	* src/file-manager/fm-directory-view.c:
 	Removed some now-unnecessary #includes.
 	Added constants for new signals to enum.
 	Removed global variable for icon cache in favor of already-extant
@@ -145,7 +195,7 @@
 	(fm_directory_view_sort): Replaced some icon-container-specific
 	code with fm_directory_view_done_sorting_entries().
 
-	*src/file-manager/fm-directory-view-icons.c:
+	* src/file-manager/fm-directory-view-icons.c:
 	(fm_directory_view_icons_initialize_class): Wired up signal handlers
 	for add_entry, done_adding_entries, done_sorting_entries, and begin_loading.
 	(fm_directory_view_icons_initialize): Removed set_mode call.
@@ -163,7 +213,7 @@
 	(fm_directory_view_icons_begin_loading): New signal handler function, 
 	code taken and simplified from superclass FMDirectoryView.
 	
-	*src/file-manager/fm-directory-view-list.c:
+	* src/file-manager/fm-directory-view-list.c:
 	(fm_directory_view_list_initialize_class): Wired up signal handlers
 	for begin_adding_entries, add_entry, and done_adding_entries
 	(fm_directory_view_list_initialize): Removed set_mode call.

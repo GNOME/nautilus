@@ -25,6 +25,7 @@
 #ifndef __FM_DIRECTORY_VIEW_ICONS_H__
 #define __FM_DIRECTORY_VIEW_ICONS_H__
 
+#include <libnautilus/gnome-icon-container.h>
 
 
 typedef struct _FMDirectoryViewIcons      FMDirectoryViewIcons;
@@ -36,8 +37,11 @@ typedef struct _FMDirectoryViewIconsClass FMDirectoryViewIconsClass;
 #define FM_IS_DIRECTORY_VIEW_ICONS(obj)			(GTK_CHECK_TYPE ((obj), FM_TYPE_DIRECTORY_VIEW_ICONS))
 #define FM_IS_DIRECTORY_VIEW_ICONS_CLASS(klass)		(GTK_CHECK_CLASS_TYPE ((obj), FM_TYPE_DIRECTORY_VIEW_ICONS))
 
+typedef struct _FMDirectoryViewIconsDetails FMDirectoryViewIconsDetails;
+
 struct _FMDirectoryViewIcons {
 	FMDirectoryView parent;
+	FMDirectoryViewIconsDetails *details;
 };
 
 struct _FMDirectoryViewIconsClass {
@@ -45,18 +49,21 @@ struct _FMDirectoryViewIconsClass {
 };
 
 
+/* GtkObject support */
 GtkType    fm_directory_view_icons_get_type (void);
 GtkWidget *fm_directory_view_icons_new      (void);
 
+
+/* User interface related calls.
+ * FIXME: None of these are currently used. Remove them eventually if
+ * we're not going to use them.
+ */
 GnomeIconContainerLayout *
-	   fm_directory_view_icons_get_icon_layout
-				            (FMDirectoryViewIcons *view);
-void	   fm_directory_view_icons_set_icon_layout
-					    (FMDirectoryViewIcons *view,
-					     const GnomeIconContainerLayout
-					     *icon_layout);
-void	   fm_directory_view_icons_line_up_icons
-					    (FMDirectoryViewIcons *view);
+	   fm_directory_view_icons_get_icon_layout (FMDirectoryViewIcons *view);
+void	   fm_directory_view_icons_set_icon_layout (FMDirectoryViewIcons *view,
+					     	    const GnomeIconContainerLayout
+					     	    *icon_layout);
+void	   fm_directory_view_icons_line_up_icons   (FMDirectoryViewIcons *view);
 
 
 #endif /* __FM_DIRECTORY_VIEW_ICONS_H__ */
