@@ -190,7 +190,8 @@ static void
 nautilus_entry_changed (GtkEditable *editable)
 {
 	NautilusEntry *entry;
-	NautilusUndoTransactionInProgress *tip;
+	NautilusUndoTransaction *transaction;
+	NautilusUndoManager *manager;
 	
 	g_assert (GTK_IS_EDITABLE (editable));
 	g_assert (NAUTILUS_IS_ENTRY (editable));
@@ -199,10 +200,13 @@ nautilus_entry_changed (GtkEditable *editable)
 
 	/* Register undo transaction */	
 	if (!entry->undo_registered && entry->use_undo) {
-		tip = nautilus_undo_manager_begin_transaction (GTK_OBJECT (entry), _("Edit"));
-		nautilus_undoable_save_undo_snapshot (tip->transaction, GTK_OBJECT(entry), save_undo_snapshot_callback,
+
+		manager = nautilus_get_undo_manager (GTK_OBJECT (entry));
+		g_assert (manager);
+		transaction = nautilus_undo_manager_begin_transaction (manager, _("Edit"));
+		nautilus_undoable_save_undo_snapshot (transaction, GTK_OBJECT(entry), save_undo_snapshot_callback,
 					      	      restore_from_undo_snapshot_callback);
-		nautilus_undo_manager_end_transaction (tip);
+		nautilus_undo_manager_end_transaction (manager, transaction);
 
 		entry->undo_registered = TRUE;
 	}

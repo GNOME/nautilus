@@ -26,18 +26,40 @@
 #define NAUTILUS_UNDO_TRANSACTION_H
 
 #include <glib.h>
+#include <bonobo/bonobo-object.h>
 #include "nautilus-undoable.h"
+#include "nautilus-undo.h"
 
+#define NAUTILUS_TYPE_UNDO_TRANSACTION \
+	(nautilus_undo_transaction_get_type ())
+#define NAUTILUS_UNDO_TRANSACTION(obj) \
+	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_UNDO_TRANSACTION, NautilusUndoTransaction))
+#define NAUTILUS_UNDO_TRANSACTION_CLASS(klass) \
+	(GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_UNDO_TRANSACTION, NautilusUndoTransactionClass))
+#define NAUTILUS_IS_UNDO_TRANSACTION(obj) \
+        (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_UNDO_TRANSACTION))
+#define NAUTILUS_IS_UNDO_TRANSACTION_CLASS(klass) \
+	(GTK_CHECK_CLASS_TYPE ((klass),	NAUTILUS_TYPE_UNDO_TRANSACTION))
+
+typedef struct NautilusUndoTransactionClass NautilusUndoTransactionClass;
+
+	
 struct NautilusUndoTransaction {
+	BonoboObject parent;
 	gchar *name;
 	GList *transaction_list;
 };
 
+struct NautilusUndoTransactionClass {
+	BonoboObjectClass parent_class;	
+	gpointer servant_init_func, servant_destroy_func, vepv;
+};
+
+GtkType			nautilus_undo_transaction_get_type 	  (void);
 NautilusUndoTransaction *nautilus_undo_transaction_new		  (const gchar *name);
-void			nautilus_undo_transaction_destroy  	  (NautilusUndoTransaction *transaction);
+
 gboolean		nautilus_undo_transaction_add_undoable	  (NautilusUndoTransaction *transaction, 
 								   NautilusUndoable *undoable);
-gboolean 		nautilus_undo_transaction_undo 		  (NautilusUndoTransaction *transaction);
 const gchar 		*nautilus_undo_transaction_get_name	  (NautilusUndoTransaction *transaction);
 gboolean		nautilus_undo_transaction_contains_object (NautilusUndoTransaction *transaction,
 								   GtkObject *object);

@@ -802,9 +802,9 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 	int idx;
 	double x, y;
 	int cx, cy;
-	NautilusUndoTransactionInProgress *tip;
+	NautilusUndoTransaction *transaction;
+	NautilusUndoManager *manager;
 	
-
 	iti = ITI (item);
 	priv = iti->priv;
 
@@ -838,10 +838,11 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 			if (!priv->undo_registered) {
 				priv->undo_registered = TRUE;
 
-				tip = nautilus_undo_manager_begin_transaction ( GTK_OBJECT(iti), "Rename");
-				nautilus_undoable_save_undo_snapshot (tip->transaction, GTK_OBJECT(iti),
+				manager = gtk_object_get_data (GTK_OBJECT (iti), NAUTILUS_UNDO_MANAGER_NAME);
+				transaction = nautilus_undo_manager_begin_transaction ( manager, "Rename");
+				nautilus_undoable_save_undo_snapshot (transaction, GTK_OBJECT(iti),
 								      save_undo_snapshot_callback, restore_from_undo_snapshot_callback);
-				nautilus_undo_manager_end_transaction (tip);
+				nautilus_undo_manager_end_transaction (manager, transaction);
 			}
 
 			/* Handle any events that reach us */
@@ -1370,16 +1371,18 @@ restore_from_undo_snapshot_callback(NautilusUndoable *undoable)
 	char *undo_text;
 	NautilusIconTextItem *iti;
 	ItiPrivate *priv;
-	NautilusUndoTransactionInProgress *tip;
+	NautilusUndoTransaction *transaction;
+	NautilusUndoManager *manager;
 	
 	iti = NAUTILUS_ICON_TEXT_ITEM(undoable->undo_target_class);
 	priv = iti->priv;
 
-	/* Register undo transaction */	
-	tip = nautilus_undo_manager_begin_transaction (GTK_OBJECT(iti), _("Rename"));
-	nautilus_undoable_save_undo_snapshot (tip->transaction, GTK_OBJECT(iti), 
+	/* Register undo transaction */
+	manager = gtk_object_get_data (GTK_OBJECT (iti), NAUTILUS_UNDO_MANAGER_NAME);
+	transaction = nautilus_undo_manager_begin_transaction (manager, _("Rename"));
+	nautilus_undoable_save_undo_snapshot (transaction, GTK_OBJECT(iti), 
 					      save_undo_snapshot_callback, restore_from_undo_snapshot_callback);
-	nautilus_undo_manager_end_transaction (tip);
+	nautilus_undo_manager_end_transaction (manager, transaction);
 		
 	undo_text = g_datalist_get_data(&undoable->undo_data, "undo_text");
 	if (undo_text != NULL) {

@@ -1,3 +1,45 @@
+2000-05-19  Gene Z. Ragan  <gzr@eazel.com>
+
+	More undo framework work.  Still incomplete.
+	
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_changed):
+	Modified to use new undo manager location API
+	
+	* libnautilus-extensions/nautilus-icon-text-item.c: 
+	(iti_event),
+	(restore_from_undo_snapshot_callback):
+	Modified to use new undo manager location API
+
+	* libnautilus/nautilus-undo-manager.c:
+	* libnautilus/nautilus-undo-manager.h:
+	(impl_Nautilus_Undo_Manager__create),
+	(impl_Nautilus_Undo_Manager__append),
+	(impl_Nautilus_Undo_Manager__forget),
+	(nautilus_undo_manager_begin_transaction),
+	(nautilus_undo_manager_end_transaction),
+	(nautilus_undo_manager_undo), (nautilus_undo_manager_redo),
+	(nautilus_undo_manager_add_transaction),
+	(nautilus_undo_manager_unregister_object),
+	(free_undo_manager_list_data), (prune_undo_manager_list):
+	Modified to use new API and Undo::Manager::Transaction 
+
+	* libnautilus/nautilus-undo-transaction.c:
+	* libnautilus/nautilus-undo-transaction.h:
+	(impl_Nautilus_Undo_Transaction__destroy),
+	(impl_Nautilus_Undo_Transaction__create),
+	(impl_Nautilus_Undo_Transaction__get_undo_description),
+	(impl_Nautilus_Undo_Transaction__get_redo_description),
+	(impl_Nautilus_Undo_Transaction__get_base_description),
+	(impl_Nautilus_Undo_Transaction__undo),
+	(nautilus_undo_transaction_new),
+	(nautilus_undo_transaction_initialize),
+	(nautilus_undo_transaction_destroy),
+	(nautilus_undo_transaction_initialize_class),
+	(nautilus_undo_transaction_undo),
+	(nautilus_undo_transaction_contains_object):
+	Added support for new Undo::Manager::Transaction object
+
 2000-05-19  Ali Abdin  <aliabdin@aucegypt.edu>
 
 	* components/help/converters/gnome-db2html2/gdb3html.c:

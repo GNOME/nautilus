@@ -39,6 +39,8 @@
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-debug.h>
 #include <libnautilus/nautilus-clipboard.h>
+#include <libnautilus/nautilus-undo-manager.h>
+#include <libnautilus/nautilus-undo.h>
 #define NOTES_DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/BBBB"
 
 
@@ -120,6 +122,36 @@ notes_notify_location_change (NautilusViewFrame *view,
                 notes->uri = g_strdup (loci->requested_uri);
                 notes_load_metainfo (notes);
         }
+
+#if 0
+	{
+		CORBA_Environment ev;
+		Nautilus_Undo_Manager undo_manager;
+		Nautilus_Undo_Transaction undo_transaction;
+		NautilusUndoTransaction *transaction;
+		BonoboObject *view_control;
+		
+		CORBA_exception_init(&ev);
+
+		view_control = nautilus_view_frame_get_bonobo_control (view);
+		g_assert (view_control);
+		
+		undo_manager = bonobo_object_query_interface (view_control, 
+      						"IDL:Nautilus/Undo/Context:1.0");
+      		g_assert (undo_manager);
+
+		transaction = nautilus_undo_transaction_new ("Test");
+		g_assert (transaction);
+
+		undo_transaction = bonobo_object_corba_objref (BONOBO_OBJECT (transaction));
+		g_assert (undo_transaction);
+		
+   		Nautilus_Undo_Manager_append (undo_manager, undo_transaction, &ev);
+				      
+		CORBA_exception_free(&ev);	
+	}
+#endif
+
 }
 
 
