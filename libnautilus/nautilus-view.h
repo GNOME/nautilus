@@ -78,6 +78,11 @@ void               nautilus_view_report_location_change               (NautilusV
 								       const char             *location_uri,
 								       GList                  *selection, /* list of URI char *s */
 								       const char             *title);
+void               nautilus_view_report_redirect                      (NautilusView           *view,
+								       const char             *from_location_uri,
+								       const char             *to_location_uri,
+								       GList                  *selection, /* list of URI char *s */
+								       const char             *title);
 void               nautilus_view_report_selection_change              (NautilusView           *view,
 								       GList                  *selection); /* list of URI char *s */
 void               nautilus_view_report_status                        (NautilusView           *view,

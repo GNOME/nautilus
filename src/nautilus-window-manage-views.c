@@ -1808,7 +1808,7 @@ report_location_change_callback (NautilusViewFrame *view,
         g_assert (NAUTILUS_IS_WINDOW (window));
 
         if (view != window->content_view) {
-                /* Do we need to do anything in this case. */
+                /* Do we need to do anything in this case? */
                 return;
         }
 
@@ -1819,10 +1819,44 @@ report_location_change_callback (NautilusViewFrame *view,
                                         selection,
                                         view);
         
-        /* Setting the change type to reload here is a hack. */
         window->details->location_change_type = NAUTILUS_LOCATION_CHANGE_STANDARD;
         window->details->pending_location = g_strdup (location);
         update_for_new_location (window);
+}
+
+static void
+report_redirect_callback (NautilusViewFrame *view,
+                          const char *from_location,
+                          const char *to_location,
+                          GList *selection,
+                          const char *title,
+                          NautilusWindow *window)
+{
+        g_assert (NAUTILUS_IS_WINDOW (window));
+
+        if (view != window->content_view) {
+                /* Do we need to do anything in this case? */
+                return;
+        }
+
+        /* FIXME bugzilla.eazel.com 6950: Ignore redirect if we aren't
+         * at "from_location".
+         */
+
+        end_location_change (window);
+
+        load_new_location_in_all_views (window,
+                                        to_location,
+                                        selection,
+                                        view);
+        
+        window->details->location_change_type = NAUTILUS_LOCATION_CHANGE_STANDARD;
+        window->details->pending_location = g_strdup (to_location);
+        update_for_new_location (window);
+
+        /* FIXME bugzilla.eazel.com 6950: Make the history element for
+         * this location overwrite the old one.
+         */
 }
 
 static void
@@ -1870,6 +1904,7 @@ view_loaded_callback (NautilusViewFrame *view,
 	macro (open_location_in_this_window)		\
 	macro (open_location_prefer_existing_window)	\
 	macro (report_location_change)			\
+	macro (report_redirect)				\
 	macro (title_changed)				\
 	macro (view_loaded)				\
 	macro (zoom_level_changed)			\

@@ -64,6 +64,11 @@ void          nautilus_view_frame_report_location_change               (Nautilus
                                                                         const char                *location,
                                                                         GList                     *selection,
                                                                         const char                *title);
+void          nautilus_view_frame_report_redirect                      (NautilusViewFrame         *view,
+                                                                        const char                *from_location,
+                                                                        const char                *to_location,
+                                                                        GList                     *selection,
+                                                                        const char                *title);
 void          nautilus_view_frame_report_selection_change              (NautilusViewFrame         *view,
                                                                         GList                     *selection);
 void          nautilus_view_frame_report_status                        (NautilusViewFrame         *view,

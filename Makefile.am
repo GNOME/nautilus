@@ -12,6 +12,7 @@ endif
 SUBDIRS =			\
 	data 			\
 	icons 			\
+	eazel-logos		\
 	intl 			\
 	cut-n-paste-code 	\
 	librsvg 		\

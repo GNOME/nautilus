@@ -103,11 +103,17 @@ module Nautilus {
 		 * also it treats the load as "already underway" and
 		 * does not send a "load_location",
 		 * "selection_changed", or "title_changed" to the view
-		 * that initiates this.
+		 * that initiates this. The redirect version should be
+		 * used when the location change does not deserve its
+		 * own element in history.
 		 */
 		oneway void report_location_change (in URI location,
 						    in URIList selection,
 						    in string title);
+		oneway void report_redirect (in URI from_location,
+					     in URI to_location,
+					     in URIList selection,
+					     in string title);
 
 		/* Called by a view component to announce a change in the
 		 * selection. This selection change will be reported back

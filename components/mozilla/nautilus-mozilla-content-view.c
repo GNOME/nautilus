@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 /*
- *  Copyright (C) 2000 Eazel, Inc.
+ *  Copyright (C) 2000, 2001 Eazel, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -103,23 +103,6 @@ struct NautilusMozillaContentViewDetails {
 	gboolean	user_initiated_navigation;
 
 	BonoboUIComponent *ui;
-
-	/* For async NautilusView messages */
-	char		*pending_title;		/*for set_title*/
-	char		*pending_report_uri;	/*for report_location_change*/
-	char		*pending_link_message;	/*for report_status*/
-	double		pending_load_progress;	/*for load_progress*/
-	char		*pending_open_uri;	/*for open_location*/
-
-	gboolean	is_pending_set_title :1;
-	gboolean	is_pending_report_load_failed :1;
-	gboolean	is_pending_report_load_underway :1;
-	gboolean	is_pending_report_load_complete :1;
-	gboolean	is_pending_report_location_change :1;
-	gboolean	is_pending_report_status :1;
-	gboolean	is_pending_report_load_progress :1;
-	gboolean	is_pending_open_location :1;
-
 };
 
 /* GTK Type System */
@@ -141,7 +124,7 @@ static void	vfs_read_callback				(GnomeVFSAsyncHandle		*handle,
 								 gpointer			data);
 
 /* NautilusView callback functions */
-static void	view_load_location_callback			(NautilusView 			*nautilus_view, 
+static void	view_load_location_callback			(NautilusView 			*nautilus_view,
 								 const char 			*location,
 								 gpointer 			data);
 
@@ -236,33 +219,9 @@ static void	post_widget_initialize				(void);
 static char *	eazel_services_scheme_to_http			(NautilusMozillaContentView	*view,
 								 const char			*uri);
 
-static char *	eazel_services_scheme_from_http			(NautilusMozillaContentView	*view, 
+static char *	eazel_services_scheme_from_http			(NautilusMozillaContentView	*view,
 				  				 const char			*uri);
 #endif /* EAZEL_SERVICES */
-
-/*
- * Async NautilusView message dispatchers
- */
-
-static void	async_set_title 				(NautilusMozillaContentView 	*view,
-								 const char 			*title);
-static void	async_report_load_failed 			(NautilusMozillaContentView 	*view);
-
-static void	async_report_load_underway 			(NautilusMozillaContentView 	*view);
-
-static void	async_report_load_complete 			(NautilusMozillaContentView 	*view);
-
-static void 	async_report_location_change			(NautilusMozillaContentView	*view,
-								 const char 			*report_uri);
-static void 	async_report_status	 			(NautilusMozillaContentView	*view,
-								 const char 			*link_message);
-
-static void	async_report_load_progress 			(NautilusMozillaContentView 	*view,
-								 double 			load_progress);
-
-static void 	async_open_location	 			(NautilusMozillaContentView	*view,
-								 const char 			*open_uri);
-
 
 /* BonoboControl callbacks */
 static void bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointer callback_data);
@@ -490,7 +449,7 @@ try_transform_nautilus_uri_to_file_scheme (const char *uri)
 }
 
 static void
-view_load_location_callback (NautilusView *nautilus_view, 
+view_load_location_callback (NautilusView *nautilus_view,
 			     const char *location,
 			     gpointer data)
 {
@@ -812,7 +771,7 @@ mozilla_title_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 	DEBUG_MSG (("=%s : new title='%s'\n", __FUNCTION__, new_title));
 
 	if (new_title != NULL && strcmp (new_title, "") != 0) {
-		async_set_title (view, new_title);
+		nautilus_view_set_title (view->details->nautilus_view, new_title);
 	}
 	
 	g_free (new_title);
@@ -1008,7 +967,7 @@ mozilla_net_start_callback (GtkMozEmbed 	*mozilla,
 
 	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
 
-	async_report_load_underway (view);
+	nautilus_view_report_load_underway (view->details->nautilus_view);
 
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
 }
@@ -1025,7 +984,7 @@ mozilla_net_stop_callback (GtkMozEmbed 	*mozilla,
 
 	g_assert (GTK_MOZ_EMBED (mozilla) == view->details->mozilla);
 
-	async_report_load_complete (view);
+	nautilus_view_report_load_complete (view->details->nautilus_view);
 
 	DEBUG_MSG (("-%s\n", __FUNCTION__));
 }
@@ -1057,7 +1016,7 @@ mozilla_link_message_callback (GtkMozEmbed *mozilla, gpointer user_data)
 
 	/* DEBUG_MSG (("=%s new link message '%s'\n", __FUNCTION__, translated_link_message)); */
 
-	async_report_status (view, translated_link_message);
+	nautilus_view_report_status (view->details->nautilus_view, translated_link_message);
 	g_free (translated_link_message);
 	g_free (link_message);
 
@@ -1085,11 +1044,11 @@ mozilla_progress_callback (GtkMozEmbed *mozilla,
 	 */
 
 	if (max_progress == -1 || max_progress == 0) {
-		async_report_load_progress (view, 0);
+		nautilus_view_report_load_progress (view->details->nautilus_view, 0);
 	} else if (max_progress < current_progress) {
-		async_report_load_progress (view, 1.0);
+		nautilus_view_report_load_progress (view->details->nautilus_view, 1.0);
 	} else {
-		async_report_load_progress (view, current_progress / max_progress);
+		nautilus_view_report_load_progress (view->details->nautilus_view, current_progress / max_progress);
 	}
 }
 
@@ -1203,7 +1162,7 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 			 * Right now, we report a load error.  But we
 			 * could tell ammonite to prompt for login
 			 */
-			async_report_load_failed (view);
+			nautilus_view_report_load_failed (view->details->nautilus_view);
 			ret = NS_DOM_EVENT_CONSUMED;
 		} else if (href[0] == '#') {
 			/* a navigation to an anchor within the same page */
@@ -1260,7 +1219,7 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 		} else {
 			/* With some schemes, navigation needs to be funneled through nautilus. */
 			DEBUG_MSG (("=%s : funnelling navigation through nautilus\n", __FUNCTION__));
-			async_open_location (view, href_full);
+			nautilus_view_open_location_in_this_window (view->details->nautilus_view, href_full);
 
 			ret = NS_DOM_EVENT_CONSUMED;
 		}
@@ -1458,7 +1417,7 @@ navigate_mozilla_to_nautilus_uri (NautilusMozillaContentView     *view,
 	cancel_pending_vfs_operation (view);
 
 	if (mozilla_uri == NULL) {
-		async_report_load_failed (view);
+		nautilus_view_report_load_failed (view->details->nautilus_view);
 		goto error;
 	}
 
@@ -1525,7 +1484,10 @@ update_nautilus_uri (NautilusMozillaContentView *view, const char *nautilus_uri)
 
 	DEBUG_MSG (("=%s current URI is now '%s'\n", __FUNCTION__, view->details->uri));
 
-	async_report_location_change (view, view->details->uri);
+	nautilus_view_report_location_change (view->details->nautilus_view,
+					      nautilus_uri,
+					      NULL,
+					      nautilus_uri);
 }
 
 /***********************************************************************************/
@@ -2054,7 +2016,7 @@ eazel_services_scheme_to_http (NautilusMozillaContentView	*view,
 }
 
 static char *
-eazel_services_scheme_from_http	(NautilusMozillaContentView	*view, 
+eazel_services_scheme_from_http	(NautilusMozillaContentView	*view,
 				 const char			*uri)
 {
 	AmmoniteError err;
@@ -2072,227 +2034,3 @@ eazel_services_scheme_from_http	(NautilusMozillaContentView	*view,
 }
 
 #endif /* EAZEL_SERVICES */
-
-
-/***********************************************************************************/
-/***********************************************************************************/
-
-/*
- * What's going on here?
- * 
- * Below are wrapper functions that delay outbound NautilusViewFrame callbacks
- * until we return to the GTK idle loop.  The problem is this:
- * 
- * o Any outbound ORBit call, including oneway calls, may result in a
- *   pending inbound call being dispatched
- * o Some inbound calls, particularly Bonobo::Control::realize, cannot safely
- *   be handled away from the event loop.  Indeed, if Bonobo::Control::realize
- *   gets called during a callback from Mozilla, the mozilla view will deadlock.
- *   
- * By postponing all outbound ORBit calls invoked as a result of mozilla callback
- * to the event loop, we eliminated the possibility that inbound calls can occur
- * during callbacks from Mozilla
- * 
- * Note: outbound ORBit calls that do not occur as a result of a mozilla callback
- * do not need to be so wrapped
- *
- * FIXME:  We want to move this type of thing into libnautilus
- */
-
-/*
- * Note that the "unref" in the calls below matches the "ref" in the async_
- * calls below
- */ 
-
-#define DISPATCH_NOARG_TMPL(FUNCNAME) \
-	static int /* GtkFunction */								\
-	dispatch_##FUNCNAME (gpointer data)							\
-	{											\
-		NautilusMozillaContentView *view;						\
-												\
-		view = NAUTILUS_MOZILLA_CONTENT_VIEW (data);					\
-												\
-		view->details->is_pending_##FUNCNAME = FALSE;					\
-												\
-		if (!GTK_OBJECT_DESTROYED (view)) {						\
-			DEBUG_MSG ((">>nautilus_view_" #FUNCNAME "\n")); 			\
-			nautilus_view_##FUNCNAME (view->details->nautilus_view); 		\
-		}										\
-		gtk_object_unref (GTK_OBJECT (view));						\
-												\
-		return 0;									\
-	}
-
-#define DISPATCH_STRING_TMPL(FUNCNAME, REALFUNCNAME, ARGNAME) \
-	static int /* GtkFunction */								\
-	dispatch_##FUNCNAME (gpointer data)							\
-	{											\
-		NautilusMozillaContentView *view;						\
-												\
-		view = NAUTILUS_MOZILLA_CONTENT_VIEW (data);					\
-												\
-		view->details->is_pending_##FUNCNAME = FALSE;					\
-												\
-		if (!GTK_OBJECT_DESTROYED (view)) {						\
-			DEBUG_MSG ((">>nautilus_view_" #REALFUNCNAME " '%s'\n", view->details->pending_##ARGNAME)); \
-			nautilus_view_##REALFUNCNAME (view->details->nautilus_view, view->details->pending_##ARGNAME); \
-			g_free (view->details->pending_##ARGNAME);				\
-			view->details->pending_##ARGNAME = NULL;				\
-		}										\
-		gtk_object_unref (GTK_OBJECT (view));						\
-												\
-		return 0;									\
-	}
-
-#define DISPATCH_STRING_NO_DEBUG_TMPL(FUNCNAME, REALFUNCNAME, ARGNAME) \
-	static int /* GtkFunction */								\
-	dispatch_##FUNCNAME (gpointer data)							\
-	{											\
-		NautilusMozillaContentView *view;						\
-												\
-		view = NAUTILUS_MOZILLA_CONTENT_VIEW (data);					\
-												\
-		view->details->is_pending_##FUNCNAME = FALSE;					\
-												\
-		if (!GTK_OBJECT_DESTROYED (view)) {						\
-			nautilus_view_##REALFUNCNAME (view->details->nautilus_view, view->details->pending_##ARGNAME); \
-			g_free (view->details->pending_##ARGNAME);				\
-			view->details->pending_##ARGNAME = NULL;				\
-		}										\
-		gtk_object_unref (GTK_OBJECT (view));						\
-												\
-		return 0;									\
-	}
-
-DISPATCH_NOARG_TMPL (report_load_failed)
-
-DISPATCH_NOARG_TMPL (report_load_underway)
-
-DISPATCH_NOARG_TMPL (report_load_complete)
-
-DISPATCH_STRING_TMPL (set_title, set_title, title)
-
-DISPATCH_STRING_NO_DEBUG_TMPL (report_status, report_status, link_message)
-
-DISPATCH_STRING_TMPL (open_location, open_location_in_this_window, open_uri)
-
-static int /* GtkFunction */
-dispatch_report_location_change (gpointer data)
-{
-	NautilusMozillaContentView *view;
-
-	view = NAUTILUS_MOZILLA_CONTENT_VIEW (data);
-
-	view->details->is_pending_report_location_change = FALSE;
-
-	if (!GTK_OBJECT_DESTROYED (view)) {
-		nautilus_view_report_location_change (view->details->nautilus_view, view->details->pending_report_uri, NULL, view->details->pending_report_uri);
-		DEBUG_MSG ((">>nautilus_view_report_location_change\n"));
-
-		g_free (view->details->pending_report_uri);
-		view->details->pending_report_uri = NULL;
-	}
-
-	gtk_object_unref (GTK_OBJECT (view));
-
-	return 0;
-}
-
-static int /* GtkFunction */
-dispatch_report_load_progress (gpointer data)
-{
-	NautilusMozillaContentView *view;
-
-	view = NAUTILUS_MOZILLA_CONTENT_VIEW (data);
-
-	view->details->is_pending_report_load_progress = FALSE;
-
-	if (!GTK_OBJECT_DESTROYED (view)) {
-		DEBUG_MSG ((">>nautilus_view_report_load_progress %f\n", 
-			view->details->pending_load_progress));
-		nautilus_view_report_load_progress (view->details->nautilus_view, view->details->pending_load_progress);
-	}
-
-	gtk_object_unref (GTK_OBJECT (view));
-
-	return 0;
-}
-
-/*
- * These async_ functions delay CORBA calls by registering a gtk_timeout
- * with the callbacks being the dispatch functions above.
- * 
- * Note that a gtk reference is kept across the timeout callbacks
- * to ensure the object is still valid
- */
-
-#define ASYNC_NOARG_WRAPPER_TMPL(FUNCNAME)  \
-	static void									\
-	async_##FUNCNAME (NautilusMozillaContentView *view)	\
-	{										\
-		DEBUG_MSG (("~" #FUNCNAME "\n")); 					\
-											\
-		if (!view->details->is_pending_##FUNCNAME) {				\
-			view->details->is_pending_##FUNCNAME = TRUE;			\
-			gtk_object_ref (GTK_OBJECT (view));				\
-			gtk_timeout_add (0, dispatch_##FUNCNAME, view);			\
-		}									\
-	}
-
-#define ASYNC_STRING_WRAPPER_TMPL(FUNCNAME, ARGNAME)  \
-	static void									\
-	async_##FUNCNAME (NautilusMozillaContentView *view, const char *ARGNAME)	\
-	{										\
-		g_free (view->details->pending_##ARGNAME);				\
-		view->details->pending_##ARGNAME = g_strdup (ARGNAME);			\
-											\
-		DEBUG_MSG (("~" #FUNCNAME " '%s'\n", view->details->pending_##ARGNAME)); \
-											\
-		if (!view->details->is_pending_##FUNCNAME) {				\
-			view->details->is_pending_##FUNCNAME = TRUE;			\
-			gtk_object_ref (GTK_OBJECT (view));				\
-			gtk_timeout_add (0, dispatch_##FUNCNAME, view);			\
-		}									\
-	}
-
-#define ASYNC_STRING_WRAPPER_NO_DEBUG_TMPL(FUNCNAME, ARGNAME)  \
-	static void									\
-	async_##FUNCNAME (NautilusMozillaContentView *view, const char *ARGNAME)	\
-	{										\
-		g_free (view->details->pending_##ARGNAME);				\
-		view->details->pending_##ARGNAME = g_strdup (ARGNAME);			\
-											\
-		if (!view->details->is_pending_##FUNCNAME) {				\
-			view->details->is_pending_##FUNCNAME = TRUE;			\
-			gtk_object_ref (GTK_OBJECT (view));				\
-			gtk_timeout_add (0, dispatch_##FUNCNAME, view);			\
-		}									\
-	}
-
-ASYNC_NOARG_WRAPPER_TMPL (report_load_failed)
-
-ASYNC_NOARG_WRAPPER_TMPL (report_load_underway)
-
-ASYNC_NOARG_WRAPPER_TMPL (report_load_complete)
-
-ASYNC_STRING_WRAPPER_TMPL (set_title, title)
-
-ASYNC_STRING_WRAPPER_TMPL (report_location_change, report_uri)
-
-ASYNC_STRING_WRAPPER_NO_DEBUG_TMPL (report_status, link_message)
-
-ASYNC_STRING_WRAPPER_TMPL (open_location, open_uri)
-
-static void
-async_report_load_progress (NautilusMozillaContentView *view, double load_progress)
-{
-	view->details->pending_load_progress = load_progress;
-	
-	if (!view->details->is_pending_report_load_progress) {
-		DEBUG_MSG (("~report_load_progress %f\n", 
-			view->details->pending_load_progress));
-		view->details->is_pending_report_load_progress = TRUE;
-		gtk_object_ref (GTK_OBJECT (view));
-		gtk_timeout_add (0, dispatch_report_load_progress, view);
-	}
-}

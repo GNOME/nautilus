@@ -39,6 +39,7 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 
 typedef struct {
+	char *from_location;
 	char *location;
 	GList *selection;
 	char *title;
@@ -56,6 +57,12 @@ static void impl_Nautilus_ViewFrame_open_location_force_new_window       (Portab
 									  CORBA_Environment      *ev);
 static void impl_Nautilus_ViewFrame_report_location_change               (PortableServer_Servant  servant,
 									  Nautilus_URI            location,
+									  const Nautilus_URIList *selection,
+									  const CORBA_char       *title,
+									  CORBA_Environment      *ev);
+static void impl_Nautilus_ViewFrame_report_redirect                      (PortableServer_Servant  servant,
+									  Nautilus_URI            from_location,
+									  Nautilus_URI            to_location,
 									  const Nautilus_URIList *selection,
 									  const CORBA_char       *title,
 									  CORBA_Environment      *ev);
@@ -87,6 +94,7 @@ POA_Nautilus_ViewFrame__epv impl_Nautilus_ViewFrame_epv =
 	&impl_Nautilus_ViewFrame_open_location_prefer_existing_window,
 	&impl_Nautilus_ViewFrame_open_location_force_new_window,
 	&impl_Nautilus_ViewFrame_report_location_change,
+	&impl_Nautilus_ViewFrame_report_redirect,
 	&impl_Nautilus_ViewFrame_report_selection_change,
 	&impl_Nautilus_ViewFrame_report_status,
 	&impl_Nautilus_ViewFrame_report_load_underway,
@@ -161,6 +169,7 @@ free_location_plus_callback (gpointer callback_data)
 	LocationPlus *location_plus;
 
 	location_plus = callback_data;
+	g_free (location_plus->from_location);
 	g_free (location_plus->location);
 	nautilus_g_list_free_deep (location_plus->selection);
 	g_free (location_plus->title);
@@ -203,6 +212,21 @@ report_location_change (NautilusViewFrame *view,
 	location_plus = callback_data;
 	nautilus_view_frame_report_location_change
 		(view,
+		 location_plus->location,
+		 location_plus->selection,
+		 location_plus->title);
+}
+
+static void
+report_redirect (NautilusViewFrame *view,
+		 gpointer callback_data)
+{
+	LocationPlus *location_plus;
+
+	location_plus = callback_data;
+	nautilus_view_frame_report_redirect
+		(view,
+		 location_plus->from_location,
 		 location_plus->location,
 		 location_plus->selection,
 		 location_plus->title);
@@ -324,6 +348,29 @@ impl_Nautilus_ViewFrame_report_location_change (PortableServer_Servant servant,
 	nautilus_view_frame_queue_incoming_call
 		(servant,
 		 report_location_change,
+		 location_plus,
+		 free_location_plus_callback);
+}
+
+static void
+impl_Nautilus_ViewFrame_report_redirect (PortableServer_Servant servant,
+					 Nautilus_URI from_location,
+					 Nautilus_URI to_location,
+					 const Nautilus_URIList *selection,
+					 const CORBA_char *title,
+					 CORBA_Environment *ev)
+{
+	LocationPlus *location_plus;
+
+	location_plus = g_new0 (LocationPlus, 1);
+	location_plus->from_location = g_strdup (from_location);
+	location_plus->location = g_strdup (to_location);
+	location_plus->selection = nautilus_g_list_from_uri_list (selection);
+	location_plus->title = g_strdup (title);
+
+	nautilus_view_frame_queue_incoming_call
+		(servant,
+		 report_redirect,
 		 location_plus,
 		 free_location_plus_callback);
 }

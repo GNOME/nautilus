@@ -77,6 +77,11 @@ typedef struct {
                                                                      const char        *location,
                                                                      GList             *selection, /* list of char * */
                                                                      const char        *title);
+        void               (* report_redirect)                      (NautilusViewFrame *view,
+                                                                     const char        *from_location,
+                                                                     const char        *to_location,
+                                                                     GList             *selection, /* list of char * */
+                                                                     const char        *title);
         void               (* change_selection)                     (NautilusViewFrame *view,
                                                                      GList             *selection); /* list of char * */
         void               (* change_status)                        (NautilusViewFrame *view,

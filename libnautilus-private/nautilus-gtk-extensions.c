@@ -1021,16 +1021,17 @@ nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER (GtkObject *object,
 }
 
 void
-nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER (GtkObject *object,
-						    GtkSignalFunc func,
-						    gpointer func_data,
-						    GtkArg *args)
+nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER_POINTER (GtkObject *object,
+							    GtkSignalFunc func,
+							    gpointer func_data,
+							    GtkArg *args)
 {
-	(* (void (*)(GtkObject *, gpointer, gpointer, gpointer, gpointer)) func)
+	(* (void (*)(GtkObject *, gpointer, gpointer, gpointer, gpointer, gpointer)) func)
 		(object,
 		 GTK_VALUE_POINTER (args[0]),
 		 GTK_VALUE_POINTER (args[1]),
 		 GTK_VALUE_POINTER (args[2]),
+		 GTK_VALUE_POINTER (args[3]),
 		 func_data);
 }
 

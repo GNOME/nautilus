@@ -1,3 +1,130 @@
+2001-02-27  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Did most of the work for bug 5779, separating out the Eazel logos
+	so they won't be used by non-Eazel folks making changes to
+	Nautilus if they choose to do "non-approved" changes (allowed by
+	GPL of course).
+	
+	* nautilus.spec.in: Add new logos.
+	* configure.in: Add eazel-logos and eazel-logos/throbber.
+	* Makefile.am: Add the eazel-logos subdirectory.
+	* eazel-logos/Makefile.am: Created.
+	* eazel-logos/throbber/Makefile.am: Created.
+	
+	* components/services/nautilus-dependent-shared/icons/eazel-logo-right-side-logo.png:
+	* icons/About_Image.png:
+	* icons/about_background.png:
+	* icons/default.xml:
+	* icons/druid_header.png:
+	* icons/throbber/001.png:
+	* icons/throbber/002.png:
+	* icons/throbber/003.png:
+	* icons/throbber/004.png:
+	* icons/throbber/005.png:
+	* icons/throbber/006.png:
+	* icons/throbber/007.png:
+	* icons/throbber/008.png:
+	* icons/throbber/009.png:
+	* icons/throbber/010.png:
+	* icons/throbber/011.png:
+	* icons/throbber/012.png:
+	* icons/throbber/013.png:
+	* icons/throbber/014.png:
+	* icons/throbber/015.png:
+	* icons/throbber/016.png:
+	* icons/throbber/017.png:
+	* icons/throbber/018.png:
+	* icons/throbber/019.png:
+	* icons/throbber/020.png:
+	* icons/throbber/021.png:
+	* icons/throbber/022.png:
+	* icons/throbber/023.png:
+	* icons/throbber/024.png:
+	* icons/throbber/025.png:
+	* icons/throbber/026.png:
+	* icons/throbber/027.png:
+	* icons/throbber/028.png:
+	* icons/throbber/029.png:
+	* icons/throbber/030.png:
+	* icons/throbber/Makefile.am:
+	* icons/throbber/rest.png:
+	Updated with non-logo versions.
+
+	Did 90% of the work for bug 6950 (need new report_redirect call in
+	addition to report_location_change). While working on that, I also
+	moved the deferral of outgoing calls that is done in the Mozilla
+	component so that it is done by the NautilusView class instead.
+
+	* libnautilus/nautilus-view-component.idl: Added report_redirect.
+	* libnautilus/nautilus-view.h: Added report_redirect.
+	* libnautilus/nautilus-view.c: (queue_outgoing_call): Added
+	queing for the outgoing side.
+	(nautilus_view_initialize): Allocate queue.
+	(nautilus_view_destroy): Deallocate queue.
+	(str_list_copy): Utility needed here because we can't use
+	libnautilus-extensions.
+	(list_free_deep_callback): New. Used in queuing code.
+	(free_location_plus_callback): New. Used in queueing code.
+	(call_open_location_in_this_window),
+	(call_open_location_prefer_existing_window),
+	(call_open_location_force_new_window),
+	(call_report_location_change), (call_report_redirect),
+	(call_report_selection_change), (call_report_status),
+	(call_report_load_underway), (call_report_load_progress),
+	(call_report_load_complete), (call_report_load_failed),
+	(call_set_title), (call_go_back): Functions that get queued.
+	These have the bulk of the code to do work.
+	(nautilus_view_open_location_in_this_window),
+	(nautilus_view_open_location_prefer_existing_window),
+	(nautilus_view_open_location_force_new_window),
+	(nautilus_view_report_location_change),
+	(nautilus_view_report_redirect),
+	(nautilus_view_report_selection_change),
+	(nautilus_view_report_status),
+	(nautilus_view_report_load_underway),
+	(nautilus_view_report_load_progress),
+	(nautilus_view_report_load_complete),
+	(nautilus_view_report_load_failed), (nautilus_view_set_title),
+	(nautilus_view_go_back): These functions now simply queue the work
+	that needs to be done.
+	
+	* src/nautilus-view-frame-corba.c: (free_location_plus_callback):
+	Add a new field for the "from_location" needed for redirect.
+	(report_redirect): The actual function to do the work.
+	(impl_Nautilus_ViewFrame_report_redirect): Queue function.
+	* src/nautilus-view-frame.h:
+	* src/nautilus-view-frame-private.h:
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_initialize_class): Create report_redirect
+	signal.
+	(nautilus_view_frame_report_redirect): Emit the signal.
+	* src/nautilus-window-manage-views.c: (report_redirect_callback):
+	Code to implement the redirect. For now this does the exact same
+	thing as report_location_change. This is where all the remaining
+	work to fix the bug goes.
+
+	* components/mozilla/nautilus-mozilla-content-view.c:
+	(view_load_location_callback), (mozilla_title_changed_callback),
+	(mozilla_net_start_callback), (mozilla_net_stop_callback),
+	(mozilla_link_message_callback), (mozilla_progress_callback),
+	(mozilla_dom_mouse_click_callback),
+	(navigate_mozilla_to_nautilus_uri), (update_nautilus_uri),
+	(eazel_services_scheme_from_http): Remove the "async" calls that
+	defer calls until timeout time now that NautilusView itself does
+	that for all components.
+
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_marshal_NONE__POINTER_POINTER_POINTER_POINTER):
+	Added new marshal function needed for report_redirect.
+	
+	Other changes.
+	
+	* THANKS: Add some more contributors, after running the script
+	to detect new ChangeLog entries.
+	
 2001-02-27  John Harper  <jsh@eazel.com>
 
 	* cut-n-paste-code/widgets/e-paned/README.changes: updated this
