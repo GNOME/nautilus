@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2001-01-24 22:35+0100\n"
-"PO-Revision-Date: 2001-01-24 22:39+0100\n"
+"POT-Creation-Date: 2001-01-25 21:15+0100\n"
+"PO-Revision-Date: 2001-01-25 21:30+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -128,7 +128,7 @@ msgid "Internal use only"
 msgstr "Endast för internt bruk"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:708
-#: components/music/nautilus-music-view.c:1536
+#: components/music/nautilus-music-view.c:1546
 msgid "Previous"
 msgstr "Föregående"
 
@@ -138,7 +138,7 @@ msgid "Home"
 msgstr "Hem"
 
 #: components/help/converters/gnome-db2html2/gdb3html.c:726
-#: components/music/nautilus-music-view.c:1594
+#: components/music/nautilus-music-view.c:1604
 msgid "Next"
 msgstr "Nästa"
 
@@ -265,50 +265,54 @@ msgstr "APPENDIX"
 #. GNU Public  License  and  many  people  are
 #. working on changes to the kernel)
 #. **
-#: components/help/hyperbola-filefmt.c:468
+#: components/help/hyperbola-filefmt.c:479
+#: components/help/hyperbola-filefmt.c:480
+#: components/help/hyperbola-filefmt.c:481
+#: components/help/hyperbola-filefmt.c:482
+#: components/help/hyperbola-filefmt.c:483
 msgid "Manual"
 msgstr "Manual"
 
-#: components/help/hyperbola-filefmt.c:469
+#: components/help/hyperbola-filefmt.c:480
 msgid "System"
 msgstr "System"
 
-#: components/help/hyperbola-filefmt.c:469
+#: components/help/hyperbola-filefmt.c:480
 msgid "Configuration"
 msgstr "Konfiguration"
 
-#: components/help/hyperbola-filefmt.c:469
+#: components/help/hyperbola-filefmt.c:480
 msgid "Config files"
 msgstr "Konfigurationsfiler"
 
-#: components/help/hyperbola-filefmt.c:470
-#: components/help/hyperbola-filefmt.c:758 data/linksets/apps.xml.h:1
+#: components/help/hyperbola-filefmt.c:481
+#: components/help/hyperbola-filefmt.c:772 data/linksets/apps.xml.h:1
 msgid "Applications"
 msgstr "Program"
 
-#: components/help/hyperbola-filefmt.c:470
+#: components/help/hyperbola-filefmt.c:481
 msgid "Command Line"
 msgstr "Kommandorad"
 
-#: components/help/hyperbola-filefmt.c:471
-#: components/help/hyperbola-filefmt.c:472
+#: components/help/hyperbola-filefmt.c:482
+#: components/help/hyperbola-filefmt.c:483
 msgid "Development"
 msgstr "Utveckling"
 
-#: components/help/hyperbola-filefmt.c:471
-#: components/help/hyperbola-filefmt.c:472
+#: components/help/hyperbola-filefmt.c:482
+#: components/help/hyperbola-filefmt.c:483
 msgid "APIs"
 msgstr "Programmeringsgränssnitt"
 
-#: components/help/hyperbola-filefmt.c:471
+#: components/help/hyperbola-filefmt.c:482
 msgid "Miscellaneous"
 msgstr "Diverse"
 
-#: components/help/hyperbola-filefmt.c:472
+#: components/help/hyperbola-filefmt.c:483
 msgid "System Calls"
 msgstr "Systemanrop"
 
-#: components/help/hyperbola-filefmt.c:630
+#: components/help/hyperbola-filefmt.c:641
 #: libnautilus-extensions/nautilus-stock-dialogs.c:446
 msgid "Info"
 msgstr "Info"
@@ -369,7 +373,7 @@ msgstr "Nautilus-bildvisaren"
 msgid "Nautilus Image viewer factory"
 msgstr "Nautilus-bilvisarfabriken"
 
-#: components/image-viewer/nautilus-image-view.c:846
+#: components/image-viewer/nautilus-image-view.c:820
 msgid "I could not initialize Bonobo"
 msgstr "Jag kunde inte initiera Bonobo"
 
@@ -1179,27 +1183,27 @@ msgstr "Kanaler"
 msgid "Sample Rate"
 msgstr "Samplingsfrekvens"
 
-#: components/music/nautilus-music-view.c:337
+#: components/music/nautilus-music-view.c:341
 msgid "Set Cover Image"
 msgstr "Ställ in framsidesbild"
 
-#: components/music/nautilus-music-view.c:684
+#: components/music/nautilus-music-view.c:688
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file."
 msgstr "Tyvärr, \"%s\" är inte en användbar bildfil."
 
-#: components/music/nautilus-music-view.c:686
+#: components/music/nautilus-music-view.c:690
 #: src/file-manager/fm-properties-window.c:2157
 #: src/nautilus-property-browser.c:964 src/nautilus-property-browser.c:1100
 #: src/nautilus-property-browser.c:1113 src/nautilus-property-browser.c:1381
 msgid "Not an Image"
 msgstr "Inte en bild"
 
-#: components/music/nautilus-music-view.c:734
+#: components/music/nautilus-music-view.c:738
 msgid "Select an image file for the album cover:"
 msgstr "Välj en bildfil för skivomslaget:"
 
-#: components/music/nautilus-music-view.c:1184
+#: components/music/nautilus-music-view.c:1188
 msgid ""
 "Sorry, but the music view is unable to play back sound right now. Either "
 "another program is using or blocking the sound card, or your sound card is "
@@ -1211,31 +1215,31 @@ msgstr ""
 "konfigurerat rätt. Försök att avsluta alla program som kan tänkas blockera "
 "användandet av ljudkortet."
 
-#: components/music/nautilus-music-view.c:1188
+#: components/music/nautilus-music-view.c:1192
 msgid "Unable to Play File"
 msgstr "Kan inte spela fil"
 
-#: components/music/nautilus-music-view.c:1209
+#: components/music/nautilus-music-view.c:1213
 msgid "Sorry, but the music view can't play non-local files yet."
 msgstr "Tyvärr, musikvyn kan inte spela icke-lokala filer än."
 
-#: components/music/nautilus-music-view.c:1210
+#: components/music/nautilus-music-view.c:1214
 msgid "Can't Play Remote Files"
 msgstr "Kan inte spela fjärrfiler"
 
-#: components/music/nautilus-music-view.c:1514
+#: components/music/nautilus-music-view.c:1524
 msgid "Drag to seek within track"
 msgstr "Dra för att spola inom spåret"
 
-#: components/music/nautilus-music-view.c:1551
+#: components/music/nautilus-music-view.c:1561
 msgid "Play"
 msgstr "Spela"
 
-#: components/music/nautilus-music-view.c:1566
+#: components/music/nautilus-music-view.c:1576
 msgid "Pause"
 msgstr "Paus"
 
-#: components/music/nautilus-music-view.c:1580
+#: components/music/nautilus-music-view.c:1590
 #: libnautilus-extensions/nautilus-file-operations.c:895
 #: libnautilus-extensions/nautilus-file-operations.c:910
 #: libnautilus-extensions/nautilus-file-operations.c:929
@@ -1243,28 +1247,28 @@ msgstr "Paus"
 msgid "Stop"
 msgstr "Stopp"
 
-#: components/music/nautilus-music-view.c:1607
+#: components/music/nautilus-music-view.c:1617
 msgid "Sound hardware missing or busy!"
 msgstr "Ljudhårdvara saknas eller är upptaget!"
 
-#: components/music/nautilus-music-view.c:1709
+#: components/music/nautilus-music-view.c:1719
 #, c-format
 msgid "Sorry, but there was an error reading %s."
 msgstr "Tyvärr, det inträffade ett fel vid läsning av %s."
 
-#: components/music/nautilus-music-view.c:1710
+#: components/music/nautilus-music-view.c:1720
 msgid "Can't Read Folder"
 msgstr "Kan inte läsa mapp"
 
-#: components/music/nautilus-music-view.c:1781
+#: components/music/nautilus-music-view.c:1791
 msgid "Stereo"
 msgstr "Stereo"
 
-#: components/music/nautilus-music-view.c:1781
+#: components/music/nautilus-music-view.c:1791
 msgid "Mono"
 msgstr "Mono"
 
-#: components/music/nautilus-music-view.c:1823
+#: components/music/nautilus-music-view.c:1833
 #, c-format
 msgid "%s by %s"
 msgstr "%s av %s"
@@ -1533,7 +1537,7 @@ msgstr "Ange sök-cgi"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:95
 #: components/services/install/command-line/eazel-gen-xml.c:43
-#: components/services/install/command-line/eazel-test-packsys.c:488
+#: components/services/install/command-line/eazel-test-packsys.c:566
 #: components/services/install/command-line/eazel-test-softcat.c:45
 msgid "Show debug output"
 msgstr "Visa felsökningsutdata"
@@ -2081,27 +2085,27 @@ msgstr "*** Hoppar ur osd-tolkningen! ***\n"
 msgid "Could not parse the xml (length %d)"
 msgstr "Kunde inte tolka xml:en (längd %d)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:453
+#: components/services/install/lib/eazel-package-system-rpm3.c:643
 #, c-format
 msgid "Opened packages database in %s"
 msgstr "Öppnade paketdatabasen i %s"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:458
+#: components/services/install/lib/eazel-package-system-rpm3.c:648
 #, c-format
 msgid "Opening packages database in %s failed"
 msgstr "Öppning av paketdatabasen i %s misslyckades"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:481
+#: components/services/install/lib/eazel-package-system-rpm3.c:671
 #, c-format
 msgid "Closing db for %s (open)"
 msgstr "Stänger databas för %s (öppen)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:486
+#: components/services/install/lib/eazel-package-system-rpm3.c:676
 #, c-format
 msgid "Closing db for %s (not open)"
 msgstr "Stänger databas för %s (inte öppen)"
 
-#: components/services/install/lib/eazel-package-system-rpm3.c:734
+#: components/services/install/lib/eazel-package-system-rpm3.c:925
 #, c-format
 msgid "Cannot open %s"
 msgstr "Kan inte öppna %s"
@@ -2137,7 +2141,7 @@ msgid "Messages"
 msgstr "Meddelanden"
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:694
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1534
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1533
 #, c-format
 msgid "Downloading \"%s\""
 msgstr "Hämtar \"%s\""
@@ -2373,15 +2377,15 @@ msgstr ""
 msgid "Installation failed on %s"
 msgstr "Installationen misslyckades vid %s"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1532
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1531
 msgid "Downloading remote package"
 msgstr "Hämtar fjärrpaket"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1536
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1535
 msgid "Downloading some package"
 msgstr "Hämtar något paket"
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1553
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1552
 msgid ""
 "The Eazel install service is missing:\n"
 "Installs will not work."
@@ -2389,15 +2393,15 @@ msgstr ""
 "Eazel-installationstjänsten saknas:\n"
 "Installationer kommer inte att fungera."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1598
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1597
 msgid "Contacting the software catalog ..."
 msgstr "Kontaktar programvarukatalogen..."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1666
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1665
 msgid "Package download aborted."
 msgstr "Pakethämtningen avbröts."
 
-#: components/services/install/nautilus-view/nautilus-service-install-view.c:1668
+#: components/services/install/nautilus-view/nautilus-service-install-view.c:1667
 msgid "Aborted"
 msgstr "Avbruten"
 
@@ -3302,7 +3306,7 @@ msgstr "Gimp"
 msgid "Desktop"
 msgstr "Skrivbord"
 
-#: data/linksets/desktop.xml.h:2 libnautilus-extensions/nautilus-file.c:4688
+#: data/linksets/desktop.xml.h:2 libnautilus-extensions/nautilus-file.c:4686
 #: libnautilus-extensions/nautilus-trash-directory.c:301
 #: src/file-manager/fm-desktop-icon-view.c:66
 msgid "Trash"
@@ -3730,7 +3734,7 @@ msgstr "Ersätt alla"
 
 #. appended to new link file
 #: libnautilus-extensions/nautilus-file-operations.c:1106
-#: libnautilus-extensions/nautilus-file.c:3722
+#: libnautilus-extensions/nautilus-file.c:3720
 #, c-format
 msgid "link to %s"
 msgstr "länk till %s"
@@ -4256,100 +4260,124 @@ msgstr "test test (kopia nummer 100000000000000).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-extensions/nautilus-file.c:2264
+#: libnautilus-extensions/nautilus-file.c:2261
 msgid "today at %-I:%M %p"
 msgstr "idag klockan %H.%M"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2269
+#: libnautilus-extensions/nautilus-file.c:2266
 msgid "yesterday at %-I:%M %p"
 msgstr "igår klockan %H.%M"
 
 #. Current week, include day of week.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2274
+#: libnautilus-extensions/nautilus-file.c:2271
 msgid "%A %-m/%-d/%y at %-I:%M %p"
 msgstr "%A %y-%m-%d kl. %H.%M"
 
 #. Other dates.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-extensions/nautilus-file.c:2279
+#: libnautilus-extensions/nautilus-file.c:2276
 msgid "%-m/%-d/%y at %-I:%M %p"
 msgstr "%y-%m-%d klockan %H.%M"
 
-#: libnautilus-extensions/nautilus-file.c:3316
+#: libnautilus-extensions/nautilus-file.c:3313
 msgid "0 items"
 msgstr "0 objekt"
 
-#: libnautilus-extensions/nautilus-file.c:3316
+#: libnautilus-extensions/nautilus-file.c:3313
 msgid "0 folders"
 msgstr "0 mappar"
 
-#: libnautilus-extensions/nautilus-file.c:3317
+#: libnautilus-extensions/nautilus-file.c:3314
 msgid "0 files"
 msgstr "0 filer"
 
-#: libnautilus-extensions/nautilus-file.c:3321
+#: libnautilus-extensions/nautilus-file.c:3318
 msgid "1 item"
 msgstr "1 objekt"
 
-#: libnautilus-extensions/nautilus-file.c:3321
+#: libnautilus-extensions/nautilus-file.c:3318
 msgid "1 folder"
 msgstr "1 mapp"
 
-#: libnautilus-extensions/nautilus-file.c:3322
+#: libnautilus-extensions/nautilus-file.c:3319
 msgid "1 file"
 msgstr "1 fil"
 
-#: libnautilus-extensions/nautilus-file.c:3325
+#: libnautilus-extensions/nautilus-file.c:3322
 #, c-format
 msgid "%u items"
 msgstr "%u objekt"
 
-#: libnautilus-extensions/nautilus-file.c:3325
+#: libnautilus-extensions/nautilus-file.c:3322
 #, c-format
 msgid "%u folders"
 msgstr "%u mappar"
 
-#: libnautilus-extensions/nautilus-file.c:3326
+#: libnautilus-extensions/nautilus-file.c:3323
 #, c-format
 msgid "%u files"
 msgstr "%u filer"
 
 #. This means no contents at all were readable
-#: libnautilus-extensions/nautilus-file.c:3626
-#: libnautilus-extensions/nautilus-file.c:3640
+#: libnautilus-extensions/nautilus-file.c:3623
+#: libnautilus-extensions/nautilus-file.c:3637
 msgid "? items"
 msgstr "? objekt"
 
-#: libnautilus-extensions/nautilus-file.c:3644
+#. This means no contents at all were readable
+#: libnautilus-extensions/nautilus-file.c:3628
+msgid "? bytes"
+msgstr "? byte"
+
+#: libnautilus-extensions/nautilus-file.c:3641
 msgid "unknown type"
 msgstr "okänd typ"
 
-#: libnautilus-extensions/nautilus-file.c:3646
+#: libnautilus-extensions/nautilus-file.c:3643
 msgid "unknown MIME type"
 msgstr "okänd MIME-typ"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-extensions/nautilus-file.c:3651
+#: libnautilus-extensions/nautilus-file.c:3648
 msgid "unknown"
 msgstr "okänd"
 
-#: libnautilus-extensions/nautilus-file.c:3687
+#: libnautilus-extensions/nautilus-file.c:3684
 msgid "program"
 msgstr "program"
 
-#: libnautilus-extensions/nautilus-file.c:3716
+#: libnautilus-extensions/nautilus-file.c:3696
+msgid ""
+"Can't find description even for \"x-directory/normal\". This probably means "
+"that your gnome-vfs.keys file is in the wrong place or isn't being found for "
+"some other reason."
+msgstr ""
+"Kan inte hitta beskrivningen även för \"x-directory/normal\". Detta betyder "
+"troligtvis att din gnome-vfs.keys-fil finns på fel plats eller inte kan "
+"hittas av någon annan anledning."
+
+#: libnautilus-extensions/nautilus-file.c:3700
+#, c-format
+msgid ""
+"No description found for mime type \"%s\" (file is \"%s\"), tell "
+"sullivan@eazel.com"
+msgstr ""
+"Ingen beskrivning kunde hittas för mime-typen \"%s\" (filen är \"%s\"), "
+"tala om det för sullivan@eazel.com"
+
+#: libnautilus-extensions/nautilus-file.c:3714
 msgid "link"
 msgstr "länk"
 
-#: libnautilus-extensions/nautilus-file.c:3736
+#: libnautilus-extensions/nautilus-file.c:3734
 msgid "link (broken)"
 msgstr "länk (trasig)"
 
@@ -4770,7 +4798,7 @@ msgid "Advanced"
 msgstr "Avancerad"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:186
-#: src/nautilus-window.c:860 src/nautilus-window.c:1096
+#: src/nautilus-window.c:889 src/nautilus-window.c:1125
 #, c-format
 msgid "View as %s"
 msgstr "Visa som %s"
@@ -5537,61 +5565,61 @@ msgstr "Töm papperskorgen"
 msgid "Unmount Volume"
 msgstr "Avmontera volym"
 
-#: src/file-manager/fm-directory-view.c:461
+#: src/file-manager/fm-directory-view.c:462
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
 msgstr ""
 "Detta kommer att öppna %d separata fönster. Är du säker på att du vill göra "
 "detta?"
 
-#: src/file-manager/fm-directory-view.c:463
+#: src/file-manager/fm-directory-view.c:464
 #, c-format
 msgid "Open %d Windows?"
 msgstr "Öppna %d fönster?"
 
-#: src/file-manager/fm-directory-view.c:1217
+#: src/file-manager/fm-directory-view.c:1216
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" markerad"
 
-#: src/file-manager/fm-directory-view.c:1219
+#: src/file-manager/fm-directory-view.c:1218
 msgid "1 folder selected"
 msgstr "1 mapp markerad"
 
-#: src/file-manager/fm-directory-view.c:1222
+#: src/file-manager/fm-directory-view.c:1221
 #, c-format
 msgid "%d folders selected"
 msgstr "%d mappar markerade"
 
-#: src/file-manager/fm-directory-view.c:1228
+#: src/file-manager/fm-directory-view.c:1227
 msgid " (containing 0 items)"
 msgstr " (innehåller 0 objekt)"
 
-#: src/file-manager/fm-directory-view.c:1230
+#: src/file-manager/fm-directory-view.c:1229
 msgid " (containing 1 item)"
 msgstr " (innehåller 1 objekt)"
 
-#: src/file-manager/fm-directory-view.c:1232
+#: src/file-manager/fm-directory-view.c:1231
 #, c-format
 msgid " (containing %d items)"
 msgstr " (innehåller %d objekt)"
 
-#: src/file-manager/fm-directory-view.c:1243
+#: src/file-manager/fm-directory-view.c:1242
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" markerad (%s)"
 
-#: src/file-manager/fm-directory-view.c:1247
+#: src/file-manager/fm-directory-view.c:1246
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d objekt markerade (%s)"
 
-#: src/file-manager/fm-directory-view.c:1254
+#: src/file-manager/fm-directory-view.c:1253
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 annat objekt markerat (%s)"
 
-#: src/file-manager/fm-directory-view.c:1257
+#: src/file-manager/fm-directory-view.c:1256
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d andra objekt markerade (%s)"
@@ -5603,7 +5631,7 @@ msgstr "%d andra objekt markerade (%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1286
+#: src/file-manager/fm-directory-view.c:1285
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -5612,7 +5640,7 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1409
+#: src/file-manager/fm-directory-view.c:1408
 #, c-format
 msgid ""
 "The folder \"%s\" contains more files than Nautilus can handle. Some files "
@@ -5621,18 +5649,18 @@ msgstr ""
 "Mappen \"%s\" innehåller fler filer än Nautilus kan visa. En del filer "
 "kommer inte att visas."
 
-#: src/file-manager/fm-directory-view.c:1416
+#: src/file-manager/fm-directory-view.c:1415
 msgid "Too Many Files"
 msgstr "För många filer"
 
-#: src/file-manager/fm-directory-view.c:2597
+#: src/file-manager/fm-directory-view.c:2616
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the trash. Do you want to delete it immediately?"
 msgstr ""
 "\"%s\" kan inte flyttas till papperskorgen. Vill du ta bort det omedelbart?"
 
-#: src/file-manager/fm-directory-view.c:2602
+#: src/file-manager/fm-directory-view.c:2621
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the trash. Do you want to delete "
@@ -5641,7 +5669,7 @@ msgstr ""
 "De %d markerade objekten kan inte flyttas till papperskorgen. Vill du ta "
 "bort dem omedelbart?"
 
-#: src/file-manager/fm-directory-view.c:2606
+#: src/file-manager/fm-directory-view.c:2625
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the trash. Do you want to delete "
@@ -5650,21 +5678,21 @@ msgstr ""
 "%d av de markerade objekten kan inte flyttas till papperskorgen. Vill du ta "
 "bort de %d objekten omedelbart?"
 
-#: src/file-manager/fm-directory-view.c:2614
+#: src/file-manager/fm-directory-view.c:2633
 msgid "Delete Immediately?"
 msgstr "Ta bort omedelbart?"
 
-#: src/file-manager/fm-directory-view.c:2615
-#: src/file-manager/fm-directory-view.c:2656
+#: src/file-manager/fm-directory-view.c:2634
+#: src/file-manager/fm-directory-view.c:2675
 msgid "Delete"
 msgstr "Ta bort"
 
-#: src/file-manager/fm-directory-view.c:2645
+#: src/file-manager/fm-directory-view.c:2664
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Är du säker att du vill ta bort \"%s\" permanent från papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:2649
+#: src/file-manager/fm-directory-view.c:2668
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
@@ -5672,79 +5700,79 @@ msgid ""
 msgstr ""
 "Är du säker att du vill ta bort de %d objekten i papperskorgen permanent?"
 
-#: src/file-manager/fm-directory-view.c:2655
+#: src/file-manager/fm-directory-view.c:2674
 msgid "Delete From Trash?"
 msgstr "Ta bort från papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:2928
-#: src/file-manager/fm-directory-view.c:2969
+#: src/file-manager/fm-directory-view.c:2947
+#: src/file-manager/fm-directory-view.c:2988
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Använd \"%s\" för att öppna det markerade objektet"
 
-#: src/file-manager/fm-directory-view.c:2967
+#: src/file-manager/fm-directory-view.c:2986
 #, c-format
 msgid "%s Viewer"
 msgstr "%svisare"
 
-#: src/file-manager/fm-directory-view.c:3154
+#: src/file-manager/fm-directory-view.c:3173
 msgid "Open in _New Window"
 msgstr "Öppna i _nytt fönster"
 
-#: src/file-manager/fm-directory-view.c:3156
+#: src/file-manager/fm-directory-view.c:3175
 #, c-format
 msgid "Open in %d _New Windows"
 msgstr "Öppna i %d _nya fönster"
 
-#: src/file-manager/fm-directory-view.c:3182
+#: src/file-manager/fm-directory-view.c:3201
 msgid "Delete all selected items permanently"
 msgstr "Ta bort alla markerade objekt permanent"
 
-#: src/file-manager/fm-directory-view.c:3187
+#: src/file-manager/fm-directory-view.c:3206
 msgid "Delete from _Trash..."
 msgstr "Ta bort från _papperskorgen..."
 
-#: src/file-manager/fm-directory-view.c:3188
+#: src/file-manager/fm-directory-view.c:3207
 msgid "Delete from _Trash"
 msgstr "Ta bort från _papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:3192
+#: src/file-manager/fm-directory-view.c:3211
 msgid "Move all selected items to the Trash"
 msgstr "Flytta alla markerade objekt till papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:3196
+#: src/file-manager/fm-directory-view.c:3215
 #: src/file-manager/nautilus-directory-view-ui.xml.h:14
 msgid "Move to _Trash"
 msgstr "Flytta till _papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:3225
+#: src/file-manager/fm-directory-view.c:3244
 msgid "Create _Links"
 msgstr "Skapa _länkar"
 
-#: src/file-manager/fm-directory-view.c:3226
+#: src/file-manager/fm-directory-view.c:3245
 #: src/file-manager/nautilus-directory-view-ui.xml.h:5
 msgid "Create _Link"
 msgstr "Skapa _länk"
 
-#: src/file-manager/fm-directory-view.c:3244
+#: src/file-manager/fm-directory-view.c:3263
 msgid "_Empty Trash..."
 msgstr "_Töm papperskorgen..."
 
-#: src/file-manager/fm-directory-view.c:3245
+#: src/file-manager/fm-directory-view.c:3264
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "_Empty Trash"
 msgstr "_Töm papperskorgen"
 
-#: src/file-manager/fm-directory-view.c:3256
+#: src/file-manager/fm-directory-view.c:3275
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "R_emove Custom Images"
 msgstr "Ta bort _anpassade bilder"
 
-#: src/file-manager/fm-directory-view.c:3257
+#: src/file-manager/fm-directory-view.c:3276
 msgid "R_emove Custom Image"
 msgstr "Ta bort _anpassad bild"
 
-#: src/file-manager/fm-directory-view.c:3396
+#: src/file-manager/fm-directory-view.c:3425
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the trash?"
@@ -5752,7 +5780,7 @@ msgstr ""
 "Denna länk kan inte användas eftersom den inte har något mål. Vill du kasta "
 "denna länk i papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:3399
+#: src/file-manager/fm-directory-view.c:3428
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -5761,15 +5789,15 @@ msgstr ""
 "Denna länk kan inte användas eftersom dess mål \"%s\" inte finns. Vill du "
 "kasta denna länk i papperskorgen?"
 
-#: src/file-manager/fm-directory-view.c:3405
+#: src/file-manager/fm-directory-view.c:3434
 msgid "Broken Link"
 msgstr "Trasig länk"
 
-#: src/file-manager/fm-directory-view.c:3406
+#: src/file-manager/fm-directory-view.c:3435
 msgid "Throw Away"
 msgstr "Kasta"
 
-#: src/file-manager/fm-directory-view.c:3462
+#: src/file-manager/fm-directory-view.c:3491
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -5777,16 +5805,16 @@ msgstr ""
 "Tyvärr, men du kan inte köra kommandon från en fjärrplats på grund av "
 "säkerhetsskäl."
 
-#: src/file-manager/fm-directory-view.c:3463
+#: src/file-manager/fm-directory-view.c:3492
 msgid "Can't execute remote links"
 msgstr "Kunde inte köra fjärrlänkar"
 
-#: src/file-manager/fm-directory-view.c:3583
+#: src/file-manager/fm-directory-view.c:3612
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Öppnar \"%s\""
 
-#: src/file-manager/fm-directory-view.c:3589
+#: src/file-manager/fm-directory-view.c:3618
 msgid "Cancel Open?"
 msgstr "Avbryt öppning?"
 
@@ -6006,16 +6034,16 @@ msgstr "efter _emblem"
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Sortera ikoner i rader efter emblem"
 
-#: src/file-manager/fm-icon-view.c:1241
+#: src/file-manager/fm-icon-view.c:1220
 #: src/file-manager/nautilus-icon-view-ui.xml.h:27
 msgid "_Restore Icons' Original Sizes"
 msgstr "_Återställ ikoner till originalstorlekarna"
 
-#: src/file-manager/fm-icon-view.c:1242
+#: src/file-manager/fm-icon-view.c:1221
 msgid "_Restore Icon's Original Size"
 msgstr "_Återställ ikon till originalstorlek"
 
-#: src/file-manager/fm-icon-view.c:1457
+#: src/file-manager/fm-icon-view.c:1435
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "pekar på \"%s\""
@@ -6953,7 +6981,7 @@ msgstr "Bokmärken"
 msgid "Location"
 msgstr "Plats"
 
-#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:721
+#: src/nautilus-bookmarks-window.c:190 src/nautilus-window-menus.c:722
 msgid "Remove"
 msgstr "Ta bort"
 
@@ -7748,19 +7776,19 @@ msgstr "Gå till nästa besökta plats"
 msgid "Go to the previous visited location"
 msgstr "Gå till föregående besökta plats"
 
-#: src/nautilus-shell-ui.xml.h:33 src/nautilus-window-menus.c:433
+#: src/nautilus-shell-ui.xml.h:33 src/nautilus-window-menus.c:434
 msgid "Hide Location Bar"
 msgstr "Göm platsrad"
 
-#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:421
+#: src/nautilus-shell-ui.xml.h:34 src/nautilus-window-menus.c:422
 msgid "Hide Sidebar"
 msgstr "Göm sidorad"
 
-#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:415
+#: src/nautilus-shell-ui.xml.h:35 src/nautilus-window-menus.c:416
 msgid "Hide Status Bar"
 msgstr "Göm statusrad"
 
-#: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:427
+#: src/nautilus-shell-ui.xml.h:36 src/nautilus-window-menus.c:428
 msgid "Hide Tool Bar"
 msgstr "Göm verktygsrad"
 
@@ -7914,7 +7942,7 @@ msgstr "_Redigera bokmärken..."
 msgid "_Feedback..."
 msgstr "_Feedback..."
 
-#: src/nautilus-shell-ui.xml.h:79 src/nautilus-window-menus.c:1239
+#: src/nautilus-shell-ui.xml.h:79 src/nautilus-window-menus.c:1271
 msgid "_Find"
 msgstr "_Sök"
 
@@ -8006,7 +8034,7 @@ msgid ""
 "Please visit http://www.eazel.com/feedback.html to provide feedback, "
 "comments, and suggestions."
 msgstr ""
-"Tack för ditt intresse av Nautilus.\n"
+"Tack för ditt intresse för Nautilus.\n"
 " \n"
 "Precis som med annan programvara som är under utveckling bör du vara "
 "försiktig när du använder Nautilus. Eazel garanterar inte att programmet "
@@ -8162,7 +8190,7 @@ msgstr "Förhandsversion %s: %s"
 #. * Latin-1 encoding, but not for UTF-8, so we have
 #. * to change it when we upgrade to GTK 2.0.
 #.
-#: src/nautilus-window-manage-views.c:235 src/nautilus-window-menus.c:552
+#: src/nautilus-window-manage-views.c:235 src/nautilus-window-menus.c:553
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -8306,7 +8334,7 @@ msgstr "Kan inte visa plats"
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:306
+#: src/nautilus-window-menus.c:307
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
@@ -8314,38 +8342,38 @@ msgstr ""
 "Är du säker på att du vill glömma historien? I så fall kommer du att vara "
 "dömd att återuppleva den."
 
-#: src/nautilus-window-menus.c:309
+#: src/nautilus-window-menus.c:310
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr ""
 "Är du säker på att du vill att Nautilus ska glömma de platser som du har "
 "besökt?"
 
-#: src/nautilus-window-menus.c:314
+#: src/nautilus-window-menus.c:315
 msgid "Forget History?"
 msgstr "Glöm historik?"
 
-#: src/nautilus-window-menus.c:315
+#: src/nautilus-window-menus.c:316
 msgid "Forget"
 msgstr "Glöm"
 
-#: src/nautilus-window-menus.c:416
+#: src/nautilus-window-menus.c:417
 msgid "Show Status Bar"
 msgstr "Visa statusrad"
 
-#: src/nautilus-window-menus.c:422
+#: src/nautilus-window-menus.c:423
 msgid "Show Sidebar"
 msgstr "Visa sidorad"
 
-#: src/nautilus-window-menus.c:428
+#: src/nautilus-window-menus.c:429
 msgid "Show Tool Bar"
 msgstr "Visa verktygsrad"
 
-#: src/nautilus-window-menus.c:434
+#: src/nautilus-window-menus.c:435
 msgid "Show Location Bar"
 msgstr "Visa platsrad"
 
-#: src/nautilus-window-menus.c:483
+#: src/nautilus-window-menus.c:484
 msgid "Preferences"
 msgstr "Inställningar"
 
@@ -8355,11 +8383,11 @@ msgstr "Inställningar"
 #. * not translate the
 #. * company name, please.
 #.
-#: src/nautilus-window-menus.c:560
+#: src/nautilus-window-menus.c:561
 msgid "Copyright © 1999-2001 Eazel, Inc."
 msgstr "Copyright © 1999-2001 Eazel, Inc."
 
-#: src/nautilus-window-menus.c:562
+#: src/nautilus-window-menus.c:563
 msgid ""
 "Nautilus is a graphical shell\n"
 "for GNOME that makes it\n"
@@ -8371,7 +8399,7 @@ msgstr ""
 "enkelt att hantera dina filer\n"
 "och resten av ditt system."
 
-#: src/nautilus-window-menus.c:716
+#: src/nautilus-window-menus.c:717
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -8380,24 +8408,24 @@ msgstr ""
 "Platsen \"%s\" finns inte. Vill du ta bort alla bokmärken med denna plats "
 "från din lista?"
 
-#: src/nautilus-window-menus.c:720
+#: src/nautilus-window-menus.c:721
 msgid "Bookmark for Nonexistent Location"
 msgstr "Bokmärke för icke-existerande plats"
 
-#: src/nautilus-window-menus.c:734
+#: src/nautilus-window-menus.c:735
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Platsen \"%s\" finns inte längre."
 
-#: src/nautilus-window-menus.c:735
+#: src/nautilus-window-menus.c:736
 msgid "Go to Nonexistent Location"
 msgstr "Gå till ickeexisterande plats"
 
-#: src/nautilus-window-menus.c:802
+#: src/nautilus-window-menus.c:803
 msgid "Go to the location specified by this bookmark"
 msgstr "Gå till platsen som detta bokmärke anger"
 
-#: src/nautilus-window-menus.c:1238
+#: src/nautilus-window-menus.c:1270
 msgid "_Browse"
 msgstr "_Bläddra"
 
@@ -8410,11 +8438,11 @@ msgid "Forward"
 msgstr "Framåt"
 
 #. Add "View as Other..." extra bonus choice.
-#: src/nautilus-window.c:1118
+#: src/nautilus-window.c:1147
 msgid "View as Other..."
 msgstr "Visa som annat...."
 
-#: src/nautilus-window.c:1483
+#: src/nautilus-window.c:1511
 msgid "Close"
 msgstr "Stäng"
 
