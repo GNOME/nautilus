@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-01-15 21:52+0100\n"
-"PO-Revision-Date: 2005-01-15 21:52+0100\n"
+"POT-Creation-Date: 2005-01-20 16:58+0100\n"
+"PO-Revision-Date: 2005-01-20 16:58+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1409,23 +1409,23 @@ msgstr "Markera _allt"
 msgid "Select all the text in a text field"
 msgstr "Markera all text i ett textfält"
 
-#: libnautilus-private/nautilus-column-chooser.c:365
+#: libnautilus-private/nautilus-column-chooser.c:394
 msgid "Move _Up"
 msgstr "Flytta _upp"
 
-#: libnautilus-private/nautilus-column-chooser.c:374
+#: libnautilus-private/nautilus-column-chooser.c:404
 msgid "Move _Down"
 msgstr "Flytta _ned"
 
-#: libnautilus-private/nautilus-column-chooser.c:383
+#: libnautilus-private/nautilus-column-chooser.c:413
 msgid "_Show"
 msgstr "_Visa"
 
-#: libnautilus-private/nautilus-column-chooser.c:393
+#: libnautilus-private/nautilus-column-chooser.c:423
 msgid "_Hide"
 msgstr "_Dölj"
 
-#: libnautilus-private/nautilus-column-chooser.c:406
+#: libnautilus-private/nautilus-column-chooser.c:436
 msgid "_Use Default"
 msgstr "_Använd standard"
 
@@ -4332,15 +4332,12 @@ msgstr "Återställ varje markerad ikon till dess originalstorlek"
 msgid "Clean _Up by Name"
 msgstr "St_äda upp efter namn"
 
-# "avoaction" är konstigt...
-# Felrapporterat som http://bugzilla.gnome.org/show_bug.cgi?id=161907
-# Under tiden översätter jag det kreativt.
 #. label, accelerator
 #: src/file-manager/fm-icon-view.c:1402
-msgid "Reposition icons to better fit in the window and avoaction overlapping"
+msgid "Reposition icons to better fit in the window and avoid overlapping"
 msgstr ""
-"Positionera om ikonerna så att de passar bättre i fönstret och avoaktionera "
-"överlappning"
+"Positionera om ikonerna så att de passar bättre i fönstret och så att "
+"överlappning undviks"
 
 #. name, stock id
 #: src/file-manager/fm-icon-view.c:1408
@@ -4918,7 +4915,7 @@ msgstr ""
 
 #: src/nautilus-bookmarks-window.c:154
 #: src/nautilus-file-management-properties.c:229
-#: src/nautilus-property-browser.c:1446 src/nautilus-window-menus.c:484
+#: src/nautilus-property-browser.c:1446 src/nautilus-window-menus.c:474
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -4960,84 +4957,84 @@ msgstr "Du måste ange namnet på servern."
 msgid "Please enter a name and try again."
 msgstr "Ange ett namn och försök igen."
 
-#: src/nautilus-connect-server-dialog.c:269 src/nautilus-window.c:990
+#: src/nautilus-connect-server-dialog.c:269 src/nautilus-window.c:959
 #, c-format
 msgid "%s on %s"
 msgstr "%s på %s"
 
-#: src/nautilus-connect-server-dialog.c:387
+#: src/nautilus-connect-server-dialog.c:388
 msgid "_Location (URI):"
 msgstr "_Plats (URI):"
 
-#: src/nautilus-connect-server-dialog.c:431
+#: src/nautilus-connect-server-dialog.c:432
 msgid "_Server:"
 msgstr "_Server:"
 
-#: src/nautilus-connect-server-dialog.c:450
+#: src/nautilus-connect-server-dialog.c:451
 msgid "Optional information:"
 msgstr "Valfri information:"
 
-#: src/nautilus-connect-server-dialog.c:462
+#: src/nautilus-connect-server-dialog.c:463
 msgid "_Share:"
 msgstr "_Utdelning:"
 
-#: src/nautilus-connect-server-dialog.c:483
+#: src/nautilus-connect-server-dialog.c:484
 msgid "_Port:"
 msgstr "_Port:"
 
-#: src/nautilus-connect-server-dialog.c:503
+#: src/nautilus-connect-server-dialog.c:504
 msgid "_Folder:"
 msgstr "_Mapp:"
 
-#: src/nautilus-connect-server-dialog.c:523
+#: src/nautilus-connect-server-dialog.c:524
 msgid "_User Name:"
 msgstr "_Användarnamn:"
 
-#: src/nautilus-connect-server-dialog.c:546
+#: src/nautilus-connect-server-dialog.c:547
 msgid "_Name to use for connection:"
 msgstr "_Namn att använda på anslutningen:"
 
-#: src/nautilus-connect-server-dialog.c:604
+#: src/nautilus-connect-server-dialog.c:605
 msgid "Connect to Server"
 msgstr "Anslut till server"
 
-#: src/nautilus-connect-server-dialog.c:621
+#: src/nautilus-connect-server-dialog.c:622
 msgid "Service _type:"
 msgstr "_Typ av tjänst:"
 
-#: src/nautilus-connect-server-dialog.c:630
+#: src/nautilus-connect-server-dialog.c:631
 msgid "SSH"
 msgstr "SSH"
 
-#: src/nautilus-connect-server-dialog.c:632
+#: src/nautilus-connect-server-dialog.c:633
 msgid "Public FTP"
 msgstr "Publik FTP"
 
-#: src/nautilus-connect-server-dialog.c:634
+#: src/nautilus-connect-server-dialog.c:635
 msgid "FTP (with login)"
 msgstr "FTP (med inloggning)"
 
-#: src/nautilus-connect-server-dialog.c:636
+#: src/nautilus-connect-server-dialog.c:637
 msgid "Windows share"
 msgstr "Windows-utdelning"
 
-#: src/nautilus-connect-server-dialog.c:638
+#: src/nautilus-connect-server-dialog.c:639
 msgid "WebDAV (HTTP)"
 msgstr "WebDAV (HTTP)"
 
-#: src/nautilus-connect-server-dialog.c:640
+#: src/nautilus-connect-server-dialog.c:641
 msgid "Secure WebDAV (HTTPS)"
 msgstr "Säker WebDAV (HTTPS)"
 
-#: src/nautilus-connect-server-dialog.c:642
+#: src/nautilus-connect-server-dialog.c:643
 msgid "Custom Location"
 msgstr "Anpassad plats"
 
-#: src/nautilus-connect-server-dialog.c:692
+#: src/nautilus-connect-server-dialog.c:693
 msgid "Browse _Network"
 msgstr "Bläddra i _nätverket"
 
-#: src/nautilus-connect-server-dialog.c:698
+#: src/nautilus-connect-server-dialog.c:699
 msgid "C_onnect"
 msgstr "_Anslut"
 
@@ -5597,22 +5594,22 @@ msgstr "Filhanterare"
 
 #. Set initial window title
 #: src/nautilus-main.c:262 src/nautilus-spatial-window.c:330
-#: src/nautilus-window-menus.c:432 src/nautilus-window.c:178
+#: src/nautilus-window-menus.c:417 src/nautilus-window.c:147
 msgid "Nautilus"
 msgstr "Nautilus"
 
 #. translators: %s is an option (e.g. --check)
-#: src/nautilus-main.c:282 src/nautilus-main.c:291 src/nautilus-main.c:296
+#: src/nautilus-main.c:285 src/nautilus-main.c:294 src/nautilus-main.c:299
 #, c-format
 msgid "nautilus: %s cannot be used with URIs.\n"
 msgstr "nautilus: %s kan inte användas med URI:er.\n"
 
-#: src/nautilus-main.c:287
+#: src/nautilus-main.c:290
 #, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr "nautilus: --check kan inte användas med andra flaggor.\n"
 
-#: src/nautilus-main.c:301
+#: src/nautilus-main.c:304
 #, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr "nautilus: --geometry kan inte användas med mer än en URI.\n"
@@ -5773,7 +5770,7 @@ msgstr "_Framåt"
 msgid "Go to the next visited location"
 msgstr "Gå till nästa besökta plats"
 
-#: src/nautilus-navigation-window.c:613 src/nautilus-window.c:683
+#: src/nautilus-navigation-window.c:613 src/nautilus-window.c:652
 #, c-format
 msgid "View as %s"
 msgstr "Visa som %s"
@@ -6109,27 +6106,7 @@ msgstr "Välj en annan visare och försök igen."
 msgid "Go to the location specified by this bookmark"
 msgstr "Gå till platsen som detta bokmärke anger"
 
-#. Localize to deal with issues in the copyright
-#. * symbol characters -- do not translate the company
-#. * name, please.
-#.
-#: src/nautilus-window-menus.c:422
-msgid "Copyright (C) 1999-2001 Eazel, Inc."
-msgstr "Copyright © 1999-2001 Eazel, Inc."
-
-#. Translators should localize the following string
-#. * which will be displayed at the bottom of the about
-#. * box to give credit to the translator(s).
-#.
-#: src/nautilus-window-menus.c:429 src/nautilus-window-menus.c:430
-msgid "Translator Credits"
-msgstr ""
-"Christian Rose\n"
-"Martin Norbäck\n"
-"Richard Hult\n"
-"Skicka synpunkter på översättningen till sv@li.org"
-
-#: src/nautilus-window-menus.c:435
+#: src/nautilus-window-menus.c:419
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
@@ -6137,207 +6114,227 @@ msgstr ""
 "Nautilus är ett grafiskt skal till GNOME som gör det enkelt att hantera dina "
 "filer och resten av ditt system."
 
-#: src/nautilus-window-menus.c:572
+#: src/nautilus-window-menus.c:423
+msgid ""
+"Copyright © 2002-2005 Red Hat, Inc\n"
+"Copyright © 2002-2004 Novell, Inc\n"
+"Copyright © 1999-2001 Eazel, Inc.\n"
+"And all the other authors"
+msgstr ""
+"Copyright © 2002-2005 Red Hat, Inc\n"
+"Copyright © 2002-2004 Novell, Inc\n"
+"Copyright © 1999-2001 Eazel, Inc.\n"
+"Och alla andra författare"
+
+#: src/nautilus-window-menus.c:429
+msgid "translator-credits"
+msgstr ""
+"Christian Rose\n"
+"Martin Norbäck\n"
+"Richard Hult\n"
+"Skicka synpunkter på översättningen till sv@li.org"
+
+#: src/nautilus-window-menus.c:562
 msgid "_File"
 msgstr "_Arkiv"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:573
+#: src/nautilus-window-menus.c:563
 msgid "_Edit"
 msgstr "_Redigera"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:574
+#: src/nautilus-window-menus.c:564
 msgid "_View"
 msgstr "_Visa"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:575
+#: src/nautilus-window-menus.c:565
 msgid "_Help"
 msgstr "_Hjälp"
 
 #. name, stock id, label
 #. name, stock id
-#: src/nautilus-window-menus.c:577
+#: src/nautilus-window-menus.c:567
 msgid "_Close"
 msgstr "S_täng"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:578
+#: src/nautilus-window-menus.c:568
 msgid "Close this folder"
 msgstr "Stäng denna mapp"
 
-#: src/nautilus-window-menus.c:581
+#: src/nautilus-window-menus.c:571
 msgid "_Backgrounds and Emblems..."
 msgstr "Bakgrunder och _emblem..."
 
-#: src/nautilus-window-menus.c:582
+#: src/nautilus-window-menus.c:572
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
 msgstr ""
 "Visa mönster, färger och emblem som kan användas för att ändra utseendet"
 
-#: src/nautilus-window-menus.c:585
+#: src/nautilus-window-menus.c:575
 msgid "Prefere_nces"
 msgstr "_Inställningar"
 
-#: src/nautilus-window-menus.c:586
+#: src/nautilus-window-menus.c:576
 msgid "Edit Nautilus preferences"
 msgstr "Redigera inställningar för Nautilus"
 
-#: src/nautilus-window-menus.c:588
+#: src/nautilus-window-menus.c:578
 msgid "_Undo"
 msgstr "_Ångra"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:589
+#: src/nautilus-window-menus.c:579
 msgid "Undo the last text change"
 msgstr "Ångra den senaste textändringen"
 
-#: src/nautilus-window-menus.c:591
+#: src/nautilus-window-menus.c:581
 msgid "Open _Parent"
 msgstr "Öppna _förälder"
 
 #. name, stock id, label
-#: src/nautilus-window-menus.c:592
+#: src/nautilus-window-menus.c:582
 msgid "Open the parent folder"
 msgstr "Öppna föräldermappen"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:598
+#: src/nautilus-window-menus.c:588
 msgid "_Stop"
 msgstr "_Stopp"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:602
+#: src/nautilus-window-menus.c:592
 msgid "_Reload"
 msgstr "_Läs om"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:606
+#: src/nautilus-window-menus.c:596
 msgid "_Contents"
 msgstr "_Innehåll"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:607
+#: src/nautilus-window-menus.c:597
 msgid "Display Nautilus help"
 msgstr "Visa hjälp för Nautilus"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:610
+#: src/nautilus-window-menus.c:600
 msgid "_About"
 msgstr "_Om"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:611
+#: src/nautilus-window-menus.c:601
 msgid "Display credits for the creators of Nautilus"
 msgstr "Visa lista över skaparna av Nautilus"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:614
+#: src/nautilus-window-menus.c:604
 msgid "Zoom _In"
 msgstr "Zooma _in"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:615 src/nautilus-zoom-control.c:97
+#: src/nautilus-window-menus.c:605 src/nautilus-zoom-control.c:97
 msgid "Show the contents in more detail"
 msgstr "Visa innehållet mer detaljerat"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:618
+#: src/nautilus-window-menus.c:608
 msgid "Zoom _Out"
 msgstr "Zooma _ut"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:619 src/nautilus-zoom-control.c:98
+#: src/nautilus-window-menus.c:609 src/nautilus-zoom-control.c:98
 msgid "Show the contents in less detail"
 msgstr "Visa innehållet mindre detaljerat"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:622
+#: src/nautilus-window-menus.c:612
 msgid "Normal Si_ze"
 msgstr "_Normal storlek"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:623
+#: src/nautilus-window-menus.c:613
 msgid "Show the contents at the normal size"
 msgstr "Visa innehållet i normal storlek"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:626
+#: src/nautilus-window-menus.c:616
 msgid "Connect to _Server..."
 msgstr "Anslut till _server..."
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:627
+#: src/nautilus-window-menus.c:617
 msgid "Set up a connection to a network server"
 msgstr "Konfigurera en anslutning till en nätverksserver"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:630
+#: src/nautilus-window-menus.c:620
 msgid "_Home"
 msgstr "_Hem"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:631
+#: src/nautilus-window-menus.c:621
 msgid "Go to the home folder"
 msgstr "Gå till hemmappen"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:634
+#: src/nautilus-window-menus.c:624
 msgid "_Computer"
 msgstr "_Dator"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:635
+#: src/nautilus-window-menus.c:625
 msgid "Go to the computer location"
 msgstr "Gå till datorplatsen"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:638
+#: src/nautilus-window-menus.c:628
 msgid "T_emplates"
 msgstr "_Mallar"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:639
+#: src/nautilus-window-menus.c:629
 msgid "Go to the templates folder"
 msgstr "Gå till mallmappen"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:642
+#: src/nautilus-window-menus.c:632
 msgid "_Trash"
 msgstr "_Papperskorg"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:643
+#: src/nautilus-window-menus.c:633
 msgid "Go to the trash folder"
 msgstr "Gå till papperskorgsmappen"
 
 #. name, stock id
-#: src/nautilus-window-menus.c:646
+#: src/nautilus-window-menus.c:636
 msgid "CD/_DVD Creator"
 msgstr "Cd/_dvd-skapare"
 
 #. label, accelerator
-#: src/nautilus-window-menus.c:647
+#: src/nautilus-window-menus.c:637
 msgid "Go to the CD/DVD Creator"
 msgstr "Gå till cd/dvd-skaparen"
 
-#: src/nautilus-window-menus.c:673
+#: src/nautilus-window-menus.c:663
 msgid "_Up"
 msgstr "_Upp"
 
-#: src/nautilus-window.c:684
+#: src/nautilus-window.c:653
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Visa denna plats med \"%s\""
 
-#: src/nautilus-window.c:1481
+#: src/nautilus-window.c:1450
 msgid "Application"
 msgstr "Program"
 
-#: src/nautilus-window.c:1482
+#: src/nautilus-window.c:1451
 msgid "The NautilusApplication associated with this window."
 msgstr "Den NautilusApplication som är associerad med detta fönster."
 
@@ -6378,6 +6375,25 @@ msgstr "Visa dina nätverksservrar i filhanteraren Nautilus"
 msgid "Can't display location \"%s\""
 msgstr "Kan inte visa platsen \"%s\""
 
+#~ msgid "translator_credits"
+#~ msgstr ""
+#~ "Christian Rose\n"
+#~ "Martin Norbäck\n"
+#~ "Richard Hult\n"
+#~ "Skicka synpunkter på översättningen till sv@li.org"
+
+# "avoaction" är konstigt...
+# Felrapporterat som http://bugzilla.gnome.org/show_bug.cgi?id=161907
+# Under tiden översätter jag det kreativt.
+#~ msgid ""
+#~ "Reposition icons to better fit in the window and avoaction overlapping"
+#~ msgstr ""
+#~ "Positionera om ikonerna så att de passar bättre i fönstret och "
+#~ "avoaktionera överlappning"
+
+#~ msgid "Copyright (C) 1999-2001 Eazel, Inc."
+#~ msgstr "Copyright © 1999-2001 Eazel, Inc."
+
 #~ msgid "Can't display location"
 #~ msgstr "Kan inte visa plats"
 
@@ -6416,11 +6432,6 @@ msgstr "Kan inte visa platsen \"%s\""
 
 #~ msgid "Run or manage scripts from %s"
 #~ msgstr "Kör eller hantera skript från %s"
-
-#~ msgid "Reposition icons to better fit in the window and avoid overlapping"
-#~ msgstr ""
-#~ "Positionera om ikonerna så att de passar bättre i fönstret och så att "
-#~ "överlappning undviks"
 
 #~ msgid "Templates"
 #~ msgstr "Mallar"
