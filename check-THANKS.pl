@@ -126,10 +126,13 @@ while (<CHANGELOGS>)
             # Old style ChangeLog comment 
             s/^.*20\d\d\s*//;
           }
+        elsif (/^\s+Patch from.+<\S+\@\S+>/i)
+          {
+            # Body of comment says 'Patch from', followed by name and email.
+	    s/^\s+Patch from:?\s+//i;
+          }
         else
           {
-            # FIXME bugzilla.gnome.org 43452: we should also try to extract
-            # names & addresses from entry body text.
             next; # ignore unknown lines for now
           }
         
