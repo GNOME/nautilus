@@ -69,7 +69,7 @@ bonobo_subdoc_notify_location_change(NautilusViewFrame *view, Nautilus_Navigatio
            */
           Bonobo_PersistStream_load (persist,
                                      (Bonobo_Stream) bonobo_object_corba_objref (BONOBO_OBJECT (stream)),
-                                     NULL,
+                                     "",
                                      ev);
           Bonobo_Unknown_unref(persist, ev);
           CORBA_Object_release(persist, ev);

@@ -2,6 +2,13 @@
 
 	* src/ntl-view-bonobo-subdoc.c:
 	(bonobo_subdoc_notify_location_change):
+	Changed the NULL to a "", now text files work. I think
+	it's back to normal now.
+
+2000-05-26  John Sullivan  <sullivan@eazel.com>
+
+	* src/ntl-view-bonobo-subdoc.c:
+	(bonobo_subdoc_notify_location_change):
 	Added a NULL parameter to a Bonobo_PersistStream_load call
 	to get the build to finish. The API for this call changed.
 	I have no idea whether this is the correct change, but with it
