@@ -111,7 +111,7 @@ eazel_softcat_initialize (EazelSoftCat *softcat) {
 
 	softcat->private = g_new0 (EazelSoftCatPrivate, 1);
 	softcat->private->retries = 3;
-	softcat->private->retries = 100;
+	softcat->private->delay = 100;
 }
 
 GtkType
@@ -221,6 +221,9 @@ eazel_softcat_get_authn (const EazelSoftCat *softcat, const char **username)
 void
 eazel_softcat_set_retry (EazelSoftCat *softcat, unsigned int retries, unsigned int delay_us)
 {
+	if (retries == 0) {
+		retries = 1;
+	}
 	softcat->private->retries = retries;
 	softcat->private->delay = delay_us;
 }
@@ -430,8 +433,6 @@ eazel_softcat_get_info (EazelSoftCat *softcat, PackageData *package, int sense_f
 
 	trilobite_setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (FALSE, NULL), TRUE);
 
-	tries_left = softcat->private->retries;
-	got_happy = FALSE;
 	for (got_happy = FALSE, tries_left = softcat->private->retries;
 	     !got_happy && (tries_left > 0);
 	     tries_left--) {
@@ -440,6 +441,7 @@ eazel_softcat_get_info (EazelSoftCat *softcat, PackageData *package, int sense_f
 			got_happy = eazel_install_packagelist_parse (&packages, body, length);
 			if (! got_happy) {
 				/* boo.  bogus xml.  long live softcat! */
+				trilobite_debug ("bogus xml.");
 				g_free (body);
 			}
 		}
@@ -484,4 +486,24 @@ eazel_softcat_get_info (EazelSoftCat *softcat, PackageData *package, int sense_f
 	g_free (body);
 	g_free (search_url);
 	return EAZEL_SOFTCAT_SUCCESS;
+}
+
+/* Check if there's a newer version in SoftCat.
+ * Returns TRUE and fills in 'newpack' if there is, returns FALSE otherwise.
+ */
+gboolean
+eazel_softcat_available_update (EazelSoftCat *softcat, PackageData *oldpack, PackageData **newpack, int fill_flags)
+{
+	*newpack = packagedata_new ();
+	(*newpack)->name = g_strdup (oldpack->name);
+	(*newpack)->version = g_strdup (oldpack->version);
+	(*newpack)->distribution = oldpack->distribution;
+	(*newpack)->archtype = g_strdup (oldpack->archtype);
+
+	if (eazel_softcat_get_info (softcat, *newpack, EAZEL_SOFTCAT_SENSE_GT, fill_flags) != EAZEL_SOFTCAT_SUCCESS) {
+		packagedata_destroy (*newpack, TRUE);
+		*newpack = NULL;
+		return FALSE;
+	}
+	return TRUE;
 }

@@ -1,3 +1,19 @@
+2000-12-04  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/command-line/eazel-test-softcat.c:
+	(main):
+
+	Add -V (version), --gt (greater-than), and -C (check for new
+	version) options to eazel-softcat.  (The -C/--gt options won't work
+	until the softcat java-side supports it.)
+	
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_initialize), (eazel_softcat_set_retry),
+	(eazel_softcat_get_info), (eazel_softcat_available_update):
+	* components/services/install/lib/eazel-softcat.h:
+
+	Finish softcat API (check for new version of a package).
+
 2000-12-04  Maciej Stachowiak  <mjs@eazel.com>
 
 	* README: Updated ORBit version.

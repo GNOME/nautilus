@@ -77,14 +77,6 @@ void eazel_softcat_set_retry (EazelSoftCat *softcat, unsigned int retries, unsig
 
 const char *eazel_softcat_error_string (EazelSoftCatError err);
 
-/* Check if theres a newer version in SoftCat.
-   Returns TRUE and fill in new if there is, returns
-   FALSE otherwise. new is filled by calling get_info */
-EazelSoftCatError  eazel_softcat_available_update (EazelSoftCat*, 
-						   PackageData *old, 
-						   PackageData **new,
-						   int fill_flags);
-
 /* Given a partially filled packagedata object, 
    check softcat, and fill it with the desired info */
 EazelSoftCatError  eazel_softcat_get_info (EazelSoftCat*,
@@ -92,5 +84,12 @@ EazelSoftCatError  eazel_softcat_get_info (EazelSoftCat*,
 					   int sense_flags,
 					   int fill_flags);
 
-#endif /* EAZEL_SOFTCAT_PUBLIC_H */
+/* Check if there's a newer version in SoftCat.
+ * Returns TRUE and fills in 'newpack' if there is, returns FALSE otherwise.
+ */
+gboolean eazel_softcat_available_update (EazelSoftCat *softcat,
+					 PackageData *oldpack,
+					 PackageData **newpack,
+					 int fill_flags);
 
+#endif /* EAZEL_SOFTCAT_PUBLIC_H */

@@ -29,12 +29,15 @@
 char *arg_server = NULL;
 char *arg_cgi_path = NULL;
 char *arg_username = NULL;
+char *arg_version = NULL;
 int arg_debug = 0;
 int arg_by_id = 0;
 int arg_by_provides = 0;
 int arg_retries = 0;
 int arg_delay = 0;
 int arg_verbose = 0;
+int arg_version_ge = 0;
+int arg_check = 0;
 
 static const struct poptOption options[] = {
 	{"server", 's', POPT_ARG_STRING, &arg_server, 0, N_("Softcat server to connect to"), "server[:port]"},
@@ -45,6 +48,9 @@ static const struct poptOption options[] = {
 	{"delay", 'd', POPT_ARG_INT, &arg_delay, 0, N_("Delay between request retries, in usec"), "delay"},
 	{"by-id", 'i', POPT_ARG_NONE, &arg_by_id, 0, N_("Lookup by Eazel package id"), NULL},
 	{"by-provides", 'p', POPT_ARG_NONE, &arg_by_provides, 0, N_("Lookup package that provides a feature/file"), NULL},
+	{"version", 'V', POPT_ARG_STRING, &arg_version, 0, N_("Lookup package with a specific version"), "version"},
+	{"ge", '\0', POPT_ARG_NONE, &arg_version_ge, 0, N_("(with --version) Use >= comparison"), NULL},
+	{"check", 'C', POPT_ARG_NONE, &arg_check, 0, N_("use check function (for debugging)"), NULL},
 	{"verbose", 'v', POPT_ARG_NONE, &arg_verbose, 0, N_("Show detailed sub-package info"), NULL},
 	{NULL, '\0', 0, NULL, 0}
 };
@@ -57,7 +63,7 @@ main (int argc, char **argv)
 	poptContext popt;
 	EazelSoftCat *softcat;
 	const char *username;
-	PackageData *package;
+	PackageData *package, *newpack;
 	char *name;
 	char *info;
 	GList *package_list;
@@ -78,6 +84,12 @@ main (int argc, char **argv)
 		} else {
 			package->name = g_strdup (name);
 		}
+
+		if (arg_version != NULL) {
+			package->version = g_strdup (arg_version);
+			sense_flags = (arg_version_ge ? EAZEL_SOFTCAT_SENSE_GE : EAZEL_SOFTCAT_SENSE_EQ);
+		}
+
 		package_list = g_list_prepend (package_list, package);
 	}
 	package_list = g_list_reverse (package_list);
@@ -107,15 +119,28 @@ main (int argc, char **argv)
 		printf ("...\n");
 
 		package = (PackageData *)(package_list->data);
-		err = eazel_softcat_get_info (softcat, package, sense_flags, PACKAGE_FILL_EVERYTHING);
-		if (err != EAZEL_SOFTCAT_SUCCESS) {
-			printf ("FAILED: %s\n\n", eazel_softcat_error_string (err));
+		if (arg_check) {
+			if (eazel_softcat_available_update (softcat, package, &newpack, PACKAGE_FILL_EVERYTHING)) {
+				printf ("New package available!\n");
+				info = packagedata_dump (newpack, arg_verbose ? TRUE : FALSE);
+				printf ("%s\n", info);
+				g_free (info);
+				packagedata_destroy (newpack, TRUE);
+			} else {
+				printf ("No new package available.\n");
+			}
 		} else {
-			printf ("\n");
-			info = packagedata_dump (package, arg_verbose ? TRUE : FALSE);
-			printf ("%s\n", info);
-			g_free (info);
+			err = eazel_softcat_get_info (softcat, package, sense_flags, PACKAGE_FILL_EVERYTHING);
+			if (err != EAZEL_SOFTCAT_SUCCESS) {
+				printf ("FAILED: %s\n\n", eazel_softcat_error_string (err));
+			} else {
+				printf ("\n");
+				info = packagedata_dump (package, arg_verbose ? TRUE : FALSE);
+				printf ("%s\n", info);
+				g_free (info);
+			}
 		}
+
 		package_list = g_list_remove (package_list, package);
 		packagedata_destroy (package, TRUE);
 	}
