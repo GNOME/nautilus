@@ -733,18 +733,8 @@ draw_item_aa_text (GnomeCanvasBuf *buf, GnomeCanvasItem *item, const char *note_
 		 NAUTILUS_OPACITY_FULLY_OPAQUE);
 	
 	gtk_object_destroy (GTK_OBJECT (smooth_text_layout));
-	
-	/*			 
-	nautilus_scalable_font_draw_text (font, text_pixbuf, 
-				0, font_size - 4,
-				NULL,
-				font_size,
-				note_text, strlen (note_text),
-				NAUTILUS_RGBA_COLOR_OPAQUE_BLACK,
-				NAUTILUS_OPACITY_FULLY_OPAQUE);
-	*/
-	
-	nautilus_gnome_canvas_draw_pixbuf (buf, text_pixbuf, item_bounds.x0 + 4, item_bounds.y0 + 4);
+		
+	nautilus_gnome_canvas_draw_pixbuf (buf, text_pixbuf, item_bounds.x0 + 4, item_bounds.y0 + 12);
 	
 	gdk_pixbuf_unref (text_pixbuf);	
 	gtk_object_unref (GTK_OBJECT (font));

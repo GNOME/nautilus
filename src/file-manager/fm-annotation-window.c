@@ -121,7 +121,7 @@ get_pixbuf_for_annotation_window (NautilusFile *file)
 {
 	g_assert (NAUTILUS_IS_FILE (file));
 		
-	return nautilus_icon_factory_get_pixbuf_for_file (file, NULL, NAUTILUS_ICON_SIZE_STANDARD, TRUE);
+	return nautilus_icon_factory_get_pixbuf_for_file (file, NULL, NAUTILUS_ICON_SIZE_LARGE, TRUE);
 }
 
 
@@ -247,6 +247,16 @@ create_options_table (FMAnnotationWindow *window)
 	return table;
 }
 
+/* this callback is invoked when the OK or Cancel buttons are clicked, to add an annotation and dismiss the window */
+static void
+annotation_clicked_callback (GtkWidget *dialog, int which_button, gpointer user_data)
+{
+	if (which_button == GNOME_OK) {
+		g_message ("OK button %d clicked", which_button);	
+	}
+	gtk_widget_destroy (dialog);
+}
+
 /* create the annotation window, and allocate its widgets */
 static FMAnnotationWindow *
 create_annotation_window (NautilusFile *file,  FMDirectoryView *directory_view)
@@ -265,10 +275,13 @@ create_annotation_window (NautilusFile *file,  FMDirectoryView *directory_view)
 	
   	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
   	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
+	gnome_dialog_set_default( GNOME_DIALOG (window), GNOME_OK);
 	gtk_window_set_wmclass (GTK_WINDOW (window), "file_annotation", "Nautilus");
 
 	/* add the buttons */
 	gnome_dialog_append_buttons  (GNOME_DIALOG (window), GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL);
+
+	gtk_signal_connect (GTK_OBJECT (window), "clicked", (GtkSignalFunc) annotation_clicked_callback, NULL);
 
 	/* get the container box of the dialog */
 	content_box = GTK_BOX (GNOME_DIALOG (window)->vbox);
@@ -282,7 +295,7 @@ create_annotation_window (NautilusFile *file,  FMDirectoryView *directory_view)
 	gtk_box_pack_start (GTK_BOX (hbox), window->details->file_icon, FALSE, FALSE, GNOME_PAD);
 
 	file_name = nautilus_file_get_name (window->details->file);
-	title = g_strdup_printf (_("Add Annotation to\n%s"), file_name);
+	title = g_strdup_printf (_("Add Annotation to %s"), file_name);
 	label = gtk_label_new (title);
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, GNOME_PAD);
@@ -297,7 +310,7 @@ create_annotation_window (NautilusFile *file,  FMDirectoryView *directory_view)
 	/* at first, there is only one hardwired type, so just add it here */
 	window->details->text_field = gtk_text_new (NULL, NULL);
         
-	font = nautilus_font_factory_get_font_from_preferences (12);
+	font = nautilus_font_factory_get_font_from_preferences (14);
 	nautilus_gtk_widget_set_font (window->details->text_field, font);
 	gdk_font_unref (font);
 

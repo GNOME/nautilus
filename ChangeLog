@@ -1,5 +1,16 @@
 2001-03-28  Andy Hertzfeld  <andy@eazel.com>
 
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(draw_item_aa_text):
+	adjusted aa text position
+	
+	* src/file-manager/fm-annotation-window.c:
+	(get_pixbuf_for_annotation_window), (annotation_clicked_callback),
+	(create_annotation_window):
+	added a callback to respond to dialog button clicks
+	
+2001-03-28  Andy Hertzfeld  <andy@eazel.com>
+
 	* src/file-manager/fm-annotation-window.c:
 	(create_annotation_window):
 	* src/file-manager/fm-annotation-window.h:
