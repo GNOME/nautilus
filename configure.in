@@ -988,7 +988,6 @@ fi
 
 AC_DEFINE_UNQUOTED(NAUTILUS_BUILD_MESSAGE, "$NAUTILUS_BUILD_MESSAGE")
 
-
 dnl
 dnl Define the build timestamp if given in the environment.
 dnl
@@ -1121,81 +1120,68 @@ omf-install/Makefile
 
 dnl <= Configuration summary =>
 
-echo "<= Nautilus configuration summary :"
+echo "Nautilus configuration summary:"
+echo ""
+
+dnl <= CFLAGS and LDFLAGS =>
+echo "CFLAGS : $CFLAGS" | tr -s [:blank:] " "
+echo "LDFLAGS : $LDFLAGS"
+echo ""
+
 dnl <= Rpm-view integrated? =>
 case x$build_rpmview in
-xyes)
-echo "
-RPMview component	: YES ($rpmversion)"
-;;
-*)
-echo "
-RPMview component	: NO"
-;;
-esac
-dnl <= Mozilla component integrated? =>
-case $found_mozilla in
-t*)
-echo "
-Mozilla component	: YES
-   mozilla libraries              : $_mozilla_lib_place
-   mozilla includes               : $_mozilla_include_place
-   MOZILLA_MILESTONE              : $MOZILLA_MILESTONE
-   MOZILLA_PROFILES_CFLAGS        : $MOZILLA_PROFILES_CFLAGS
-   MOZILLA_COMPONENT_RPATH_FLAGS  : $MOZILLA_COMPONENT_RPATH_FLAGS
-   MOZILLA_COMPONENT_DEBUG_FLAGS  : $MOZILLA_COMPONENT_DEBUG_FLAGS"
-;;
-*)
-echo "
-Mozilla component	: NO"
-;;
-esac
-dnl <= Do we want Eazel Services =>
-case "X$EAZEL_SERVICES_ENABLED" in
-Xyes)
-echo "
-Eazel Services		: YES"
-;;
-*)
-echo "
-Eazel Services          : NO"
-;;
+  xyes)
+	echo "RPM view component                : YES ($rpmversion)"
+	;;
+  *)
+	echo "RPM view component                : NO"
+	;;
 esac
 
-echo "=>"
+dnl <= Mozilla component integrated? =>
+case $found_mozilla in
+  t*)
+	echo "Mozilla component                 : YES"
+	echo "   mozilla libraries              : $_mozilla_lib_place"
+	echo "   mozilla includes               : $_mozilla_include_place"
+	echo "   MOZILLA_MILESTONE              : $MOZILLA_MILESTONE"
+	echo "   MOZILLA_PROFILES_CFLAGS        : $MOZILLA_PROFILES_CFLAGS"
+	echo "   MOZILLA_COMPONENT_RPATH_FLAGS  : $MOZILLA_COMPONENT_RPATH_FLAGS"
+	echo "   MOZILLA_COMPONENT_DEBUG_FLAGS  : $MOZILLA_COMPONENT_DEBUG_FLAGS"
+	;;
+  *)
+	echo "Mozilla component                 : NO"
+	;;
+esac
+
+dnl <= Do we want Eazel Services =>
+case "X$EAZEL_SERVICES_ENABLED" in
+  Xyes)
+	echo "Eazel Services                    : YES"
+	;;
+  *)
+	echo "Eazel Services                    : NO"
+	;;
+esac
+
 dnl <= Profile support? =>
 case "X$ENABLE_PROFILER" in
-X1)
-echo "
-Enable profiler         : YES"
-;;
-*)
-echo "
-Enable profiler         : NO"
-;;
+  X1)
+	echo "Enable profiler                   : YES"
+	;;
+  *)
+	echo "Enable profiler                   : NO"
+	;;
 esac
 
 dnl <= FreeType2 =>
-echo "
-FREETYPE2_CFLAGS        : $FREETYPE2_CFLAGS
-FREETYPE2_LIBS          : $FREETYPE2_LIBS
-"
-
-dnl <= CFLAGS and LDFLAGS =>
-echo "
-CFLAGS                  : $CFLAGS
-LDFLAGS                 : $LDFLAGS"
-echo
+echo "FREETYPE2_CFLAGS                  : $FREETYPE2_CFLAGS"
+echo "FREETYPE2_LIBS                    : $FREETYPE2_LIBS"
 
 dnl <= Snapshot things =>
-echo "
-EAZEL_BUILD_TIMESTAMP   : $EAZEL_BUILD_TIMESTAMP"
-echo "
-NAUTILUS_BUILD_MESSAGE  : $NAUTILUS_BUILD_MESSAGE"
-echo
-
-echo "
-HAVE_APPLETS   : $HAVE_APPLETS"
-echo
+echo "EAZEL_BUILD_TIMESTAMP             : $EAZEL_BUILD_TIMESTAMP"
+echo "NAUTILUS_BUILD_MESSAGE            : $NAUTILUS_BUILD_MESSAGE"
+echo "NAUTILUS_BUILD_LOCATION           : $NAUTILUS_BUILD_LOCATION"
+echo "HAVE_APPLETS                      : $HAVE_APPLETS"
 
 dnl <= End of configuration summary =>
