@@ -283,6 +283,8 @@ async_data_preference_changed_callback (gpointer callback_data)
 static void
 add_preferences_callbacks (void)
 {
+	nautilus_global_preferences_init ();
+
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
 				      filtering_changed_callback,
 				      NULL);

@@ -587,7 +587,7 @@ nautilus_directory_unregister_metadata_monitor (NautilusDirectory *directory)
 	CORBA_exception_free (&ev);
 	bonobo_object_release_unref (metafile, NULL);
 
-	bonobo_object_unref (BONOBO_OBJECT (directory->details->metafile_monitor));
+	bonobo_object_unref (directory->details->metafile_monitor);
 	directory->details->metafile_monitor = NULL;
 }
 

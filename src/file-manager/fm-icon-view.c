@@ -244,7 +244,7 @@ fm_icon_view_finalize (GObject *object)
 
 	if (icon_view->details->ui != NULL) {
 		bonobo_ui_component_unset_container (icon_view->details->ui, NULL);
-		bonobo_object_unref (BONOBO_OBJECT (icon_view->details->ui));
+		bonobo_object_unref (icon_view->details->ui);
 	}
 
         if (icon_view->details->react_to_icon_change_idle_id != 0) {

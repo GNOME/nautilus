@@ -342,8 +342,8 @@ do_destroy (GtkObject *obj, Notes *notes)
 	 * this because it exposes a bonobo bug.
 	 */
 	if (!GTK_OBJECT_DESTROYED (GTK_OBJECT (notes->view))) {
-		bonobo_object_ref (BONOBO_OBJECT (notes->view));
-		bonobo_object_idle_unref (BONOBO_OBJECT (notes->view));
+		bonobo_object_ref (notes->view);
+		bonobo_object_idle_unref (notes->view);
         }
 #endif
 	

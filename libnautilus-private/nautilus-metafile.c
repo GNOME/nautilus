@@ -285,7 +285,7 @@ nautilus_metafile_get (const char *directory_uri)
 	metafile = g_hash_table_lookup (metafiles, canonical_uri);
 	
 	if (metafile != NULL) {
-		bonobo_object_ref (BONOBO_OBJECT (metafile));
+		bonobo_object_ref (metafile);
 	} else {
 		metafile = nautilus_metafile_new (canonical_uri);
 		
@@ -528,7 +528,7 @@ corba_copy (PortableServer_Servant   servant,
 	copy_file_metadata (source_metafile, source_file_name,
 			    destination_metafile, destination_file_name);
 			    
-	bonobo_object_unref (BONOBO_OBJECT (destination_metafile));
+	bonobo_object_unref (destination_metafile);
 }
 
 static void
@@ -1876,7 +1876,7 @@ metafile_write_done (NautilusMetafile *metafile)
 	xmlFree (metafile->details->write_state->buffer);
 	g_free (metafile->details->write_state);
 	metafile->details->write_state = NULL;
-	bonobo_object_unref (BONOBO_OBJECT (metafile));
+	bonobo_object_unref (metafile);
 }
 
 static void
@@ -2002,11 +2002,11 @@ metafile_write (NautilusMetafile *metafile)
 	
 	g_assert (NAUTILUS_IS_METAFILE (metafile));
 
-	bonobo_object_ref (BONOBO_OBJECT (metafile));
+	bonobo_object_ref (metafile);
 
 	/* If we are already writing, then just remember to do it again. */
 	if (metafile->details->write_state != NULL) {
-		bonobo_object_unref (BONOBO_OBJECT (metafile));
+		bonobo_object_unref (metafile);
 		metafile->details->write_state->write_again = TRUE;
 		return;
 	}
@@ -2016,7 +2016,7 @@ metafile_write (NautilusMetafile *metafile)
 	 * the metafile in this case.
 	 */
 	if (metafile->details->xml == NULL) {
-		bonobo_object_unref (BONOBO_OBJECT (metafile));
+		bonobo_object_unref (metafile);
 		return;
 	}
 
@@ -2041,7 +2041,7 @@ metafile_write_idle_callback (gpointer callback_data)
 	metafile->details->write_idle_id = 0;
 	metafile_write (metafile);
 
-	bonobo_object_unref (BONOBO_OBJECT (metafile));
+	bonobo_object_unref (metafile);
 
 	return FALSE;
 }
@@ -2057,10 +2057,9 @@ directory_request_write_metafile (NautilusMetafile *metafile)
 
 	/* Set up an idle task that will write the metafile. */
 	if (metafile->details->write_idle_id == 0) {
-		bonobo_object_ref (BONOBO_OBJECT (metafile));
+		bonobo_object_ref (metafile);
 		metafile->details->write_idle_id =
-			gtk_idle_add (metafile_write_idle_callback,
-				      metafile);
+			gtk_idle_add (metafile_write_idle_callback, metafile);
 	}
 }
 

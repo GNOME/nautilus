@@ -401,7 +401,7 @@ real_destroy (GtkObject *object)
 
 	if (search_view->details->ui != NULL) {
 		bonobo_ui_component_unset_container (search_view->details->ui, NULL);
-		bonobo_object_unref (BONOBO_OBJECT (search_view->details->ui));
+		bonobo_object_unref (search_view->details->ui);
 	}
 	g_free (search_view->details);
 

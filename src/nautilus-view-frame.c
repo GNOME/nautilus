@@ -35,9 +35,9 @@
 #include "nautilus-signaller.h"
 #include "nautilus-view-frame-private.h"
 #include "nautilus-window.h"
-#include <nautilus-marshal.h>
-#include <bonobo/bonobo-event-source.h>
 #include <bonobo/bonobo-control-frame.h>
+#include <bonobo/bonobo-event-source.h>
+#include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-zoomable-frame.h>
 #include <bonobo/bonobo-zoomable.h>
 #include <eel/eel-gtk-extensions.h>
@@ -50,6 +50,7 @@
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus/nautilus-idle-queue.h>
 #include <libnautilus/nautilus-view.h>
+#include <nautilus-marshal.h>
 #include <string.h>
 
 enum {
@@ -192,7 +193,7 @@ destroy_view (NautilusViewFrame *view)
 	if (engine != NULL) {
 		bonobo_ui_engine_deregister_dead_components (engine);
 	}
-	bonobo_object_unref (BONOBO_OBJECT (view->details->ui_container));
+	bonobo_object_unref (view->details->ui_container);
 	view->details->ui_container = NULL;
 }
 
@@ -428,7 +429,7 @@ nautilus_view_frame_new (BonoboUIContainer *ui_container,
 	
 	view_frame = NAUTILUS_VIEW_FRAME (gtk_widget_new (nautilus_view_frame_get_type (), NULL));
 	
-	bonobo_object_ref (BONOBO_OBJECT (ui_container));
+	bonobo_object_ref (ui_container);
 	view_frame->details->ui_container = ui_container;
 	view_frame->details->undo_manager = undo_manager;
 	
@@ -495,8 +496,8 @@ get_history_list (NautilusViewFrame *view)
 	
 	history_list = NULL;
 	g_signal_emit (view, 
-  			 signals[GET_HISTORY_LIST], 0,
-			 &history_list);
+		       signals[GET_HISTORY_LIST], 0,
+		       &history_list);
   	return history_list;
 }
 
@@ -534,42 +535,40 @@ nautilus_view_frame_get_prop (BonoboPropertyBag *bag,
 static BonoboPropertyBag *
 create_ambient_properties (NautilusViewFrame *view)
 {
-	BonoboPropertyBag *pbag;
+	BonoboPropertyBag *bag;
 
-	pbag = bonobo_property_bag_new (
-		nautilus_view_frame_get_prop,
-		NULL, view);
+	bag = bonobo_property_bag_new (nautilus_view_frame_get_prop, NULL, view);
 	
-	bonobo_property_bag_add (
-		pbag,
-		"title",
-		BONOBO_PROPERTY_TITLE,
-		TC_CORBA_string,
-		NULL,
-		_("a title"),
-		BONOBO_PROPERTY_READABLE);
+	bonobo_property_bag_add
+		(bag,
+		 "title",
+		 BONOBO_PROPERTY_TITLE,
+		 TC_CORBA_string,
+		 NULL,
+		 _("a title"),
+		 BONOBO_PROPERTY_READABLE);
 
-	bonobo_property_bag_add (
-		pbag,
-		"history",
-		BONOBO_PROPERTY_HISTORY,
-		TC_Nautilus_History,
-		NULL,
-		_("the browse history"),
-		BONOBO_PROPERTY_READABLE);
+	bonobo_property_bag_add
+		(bag,
+		 "history",
+		 BONOBO_PROPERTY_HISTORY,
+		 TC_Nautilus_History,
+		 NULL,
+		 _("the browse history"),
+		 BONOBO_PROPERTY_READABLE);
 
-	bonobo_property_bag_add (
-		pbag,
-		"selection",
-		BONOBO_PROPERTY_SELECTION,
-		TC_Nautilus_URIList,
-		NULL,
-		_("the current selection"),
-		BONOBO_PROPERTY_READABLE);
+	bonobo_property_bag_add
+		(bag,
+		 "selection",
+		 BONOBO_PROPERTY_SELECTION,
+		 TC_Nautilus_URIList,
+		 NULL,
+		 _("the current selection"),
+		 BONOBO_PROPERTY_READABLE);
 
-	view->details->event_source = pbag->es;
+	view->details->event_source = bag->es;
 
-	return pbag;
+	return bag;
 }
 
 static void
@@ -578,6 +577,7 @@ create_corba_objects (NautilusViewFrame *view)
 	CORBA_Environment ev;
 	Bonobo_Control control;
 	Bonobo_Zoomable zoomable;
+	BonoboPropertyBag *bag;
 
 	CORBA_exception_init (&ev);
 
@@ -587,26 +587,28 @@ create_corba_objects (NautilusViewFrame *view)
 	/* Create a control frame. */
 	control = Bonobo_Unknown_queryInterface
 		(view->details->view, "IDL:Bonobo/Control:1.0", &ev);
-	g_assert (ev._major == CORBA_NO_EXCEPTION);
-	view->details->control_frame = bonobo_control_frame_new (
-		BONOBO_OBJREF (view->details->ui_container));
+	g_assert (! BONOBO_EX (&ev));
 
-	bonobo_control_frame_set_propbag (
-		view->details->control_frame,
-		create_ambient_properties (view));
+	view->details->control_frame = bonobo_control_frame_new
+		(BONOBO_OBJREF (view->details->ui_container));
+
+	bag = create_ambient_properties (view);
+	bonobo_control_frame_set_propbag (view->details->control_frame, bag);
+	bonobo_object_unref (bag);
 
 	bonobo_control_frame_bind_to_control (view->details->control_frame, control, NULL);
+
 	bonobo_object_release_unref (control, NULL);
 
 	/* Create a zoomable frame. */
 	zoomable = Bonobo_Unknown_queryInterface
 		(view->details->view, "IDL:Bonobo/Zoomable:1.0", &ev);
-	if (ev._major == CORBA_NO_EXCEPTION
+	if (!BONOBO_EX (&ev)
 	    && !CORBA_Object_is_nil (zoomable, &ev)
-	    && ev._major == CORBA_NO_EXCEPTION) {
+	    && !BONOBO_EX (&ev)) {
 		view->details->zoomable_frame = bonobo_zoomable_frame_new ();
-		bonobo_zoomable_frame_bind_to_zoomable (
-			view->details->zoomable_frame, zoomable, NULL);
+		bonobo_zoomable_frame_bind_to_zoomable
+			(view->details->zoomable_frame, zoomable, NULL);
 		bonobo_object_release_unref (zoomable, NULL);
 	}
 
@@ -810,11 +812,9 @@ nautilus_view_frame_load_location (NautilusViewFrame *view,
 
 	view_frame_wait (view);
 	
-	/* ORBit does a bad job with Nautilus_URI, so it's not const char *. */
 	CORBA_exception_init (&ev);
-	Nautilus_View_load_location (view->details->view,
-				     (Nautilus_URI) location, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION) {
+	Nautilus_View_load_location (view->details->view, location, &ev);
+	if (BONOBO_EX (&ev)) {
 		view_frame_failed (view);
 	}
 	CORBA_exception_free (&ev);
@@ -836,7 +836,7 @@ nautilus_view_frame_stop (NautilusViewFrame *view)
 	if (view->details->view != CORBA_OBJECT_NIL) {
 		CORBA_exception_init (&ev);
 		Nautilus_View_stop_loading (view->details->view, &ev);
-		if (ev._major != CORBA_NO_EXCEPTION) {
+		if (BONOBO_EX (&ev)) {
 			view_frame_failed (view);
 		}
 		CORBA_exception_free (&ev);
@@ -864,16 +864,17 @@ nautilus_view_frame_selection_changed (NautilusViewFrame *view,
 	arg = bonobo_arg_new_from (TC_Nautilus_URIList, uri_list);
 	CORBA_free (uri_list);
 	
-	bonobo_event_source_notify_listeners (
-		view->details->event_source,
-		"Bonobo/Property:change:selection", arg, &ev);
-
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		view_frame_failed (view);
-	}
-	CORBA_exception_free (&ev);
+	bonobo_event_source_notify_listeners
+		(view->details->event_source,
+		 "Bonobo/Property:change:selection", arg, &ev);
 	
 	CORBA_free (arg);
+
+	if (BONOBO_EX (&ev)) {
+		view_frame_failed (view);
+	}
+
+	CORBA_exception_free (&ev);
 }
 
 void
@@ -894,11 +895,11 @@ nautilus_view_frame_title_changed (NautilusViewFrame *view,
 	arg._type = TC_CORBA_string;
 	arg._value = &title;
 
-	bonobo_event_source_notify_listeners (
-		view->details->event_source,
-		"Bonobo/Property:change:title", &arg, &ev);
+	bonobo_event_source_notify_listeners
+		(view->details->event_source,
+		 "Bonobo/Property:change:title", &arg, &ev);
 
-	if (ev._major != CORBA_NO_EXCEPTION) {
+	if (BONOBO_EX (&ev)) {
 		view_frame_failed (view);
 	}
 
@@ -922,7 +923,7 @@ nautilus_view_frame_get_zoom_level (NautilusViewFrame *view)
 		return 0.0;
 	}
 
-	return (double) bonobo_zoomable_frame_get_zoom_level (view->details->zoomable_frame);
+	return bonobo_zoomable_frame_get_zoom_level (view->details->zoomable_frame);
 }
 
 void
@@ -947,7 +948,7 @@ nautilus_view_frame_get_min_zoom_level (NautilusViewFrame *view)
 		return 0.0;
 	}
 
-	return (double) bonobo_zoomable_frame_get_min_zoom_level (view->details->zoomable_frame);
+	return bonobo_zoomable_frame_get_min_zoom_level (view->details->zoomable_frame);
 }
 
 double
@@ -959,7 +960,7 @@ nautilus_view_frame_get_max_zoom_level (NautilusViewFrame *view)
 		return 0.0;
 	}
 
-	return (double) bonobo_zoomable_frame_get_max_zoom_level (view->details->zoomable_frame);
+	return bonobo_zoomable_frame_get_max_zoom_level (view->details->zoomable_frame);
 }
 
 gboolean
@@ -1065,8 +1066,7 @@ nautilus_view_frame_open_location_in_this_window (NautilusViewFrame *view,
 	}
 
 	view_frame_wait_is_over (view);
-	g_signal_emit (view,
-			 signals[OPEN_LOCATION_IN_THIS_WINDOW], 0, location);
+	g_signal_emit (view, signals[OPEN_LOCATION_IN_THIS_WINDOW], 0, location);
 }
 
 void
@@ -1080,8 +1080,7 @@ nautilus_view_frame_open_location_prefer_existing_window (NautilusViewFrame *vie
 	}
 
 	view_frame_wait_is_over (view);
-	g_signal_emit (view,
-			 signals[OPEN_LOCATION_PREFER_EXISTING_WINDOW], 0, location);
+	g_signal_emit (view, signals[OPEN_LOCATION_PREFER_EXISTING_WINDOW], 0, location);
 }
 
 void
@@ -1097,8 +1096,8 @@ nautilus_view_frame_open_location_force_new_window (NautilusViewFrame *view,
 
 	view_frame_wait_is_over (view);
 	g_signal_emit (view,
-			 signals[OPEN_LOCATION_FORCE_NEW_WINDOW], 0,
-			 location, selection);
+		       signals[OPEN_LOCATION_FORCE_NEW_WINDOW], 0,
+		       location, selection);
 }
 
 void
@@ -1118,8 +1117,8 @@ nautilus_view_frame_report_location_change (NautilusViewFrame *view,
 
 	view_frame_wait_is_over (view);
 	g_signal_emit (view,
-			 signals[REPORT_LOCATION_CHANGE], 0,
-			 location, selection, title);
+		       signals[REPORT_LOCATION_CHANGE], 0,
+		       location, selection, title);
 }
 
 void
@@ -1140,8 +1139,8 @@ nautilus_view_frame_report_redirect (NautilusViewFrame *view,
 
 	view_frame_wait_is_over (view);
 	g_signal_emit (view,
-			 signals[REPORT_REDIRECT], 0,
-			 from_location, to_location, selection, title);
+		       signals[REPORT_REDIRECT], 0,
+		       from_location, to_location, selection, title);
 }
 
 void
@@ -1171,7 +1170,7 @@ nautilus_view_frame_report_status (NautilusViewFrame *view,
 
 	view_frame_wait_is_over (view);
 	g_signal_emit (view,
-			 signals[CHANGE_STATUS], 0, status);
+		       signals[CHANGE_STATUS], 0, status);
 }
 
 void
@@ -1194,7 +1193,7 @@ nautilus_view_frame_report_load_progress (NautilusViewFrame *view,
 
 	view_frame_underway (view);
 	g_signal_emit (view,
-			 signals[LOAD_PROGRESS_CHANGED], 0);
+		       signals[LOAD_PROGRESS_CHANGED], 0);
 }
 
 void
@@ -1324,7 +1323,7 @@ send_history (NautilusViewFrame *view)
 	}
 
 	history = get_history_list (view);
-	if (history == NULL) {
+	if (history == CORBA_OBJECT_NIL) {
 		return;
 	}
 
@@ -1334,16 +1333,17 @@ send_history (NautilusViewFrame *view)
 
 	CORBA_free (history);
 	
-	bonobo_event_source_notify_listeners (
-		view->details->event_source,
-		"Bonobo/Property:change:history", arg, &ev);
-
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		view_frame_failed (view);
-	}
-	CORBA_exception_free (&ev);
+	bonobo_event_source_notify_listeners
+		(view->details->event_source,
+		 "Bonobo/Property:change:history", arg, &ev);
 	
 	CORBA_free (arg);
+
+	if (BONOBO_EX (&ev)) {
+		view_frame_failed (view);
+	}
+
+	CORBA_exception_free (&ev);
 }
 
 gboolean

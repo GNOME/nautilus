@@ -3710,11 +3710,11 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 
 	/* Get the icons. */
 	g_signal_emit (container,
-			 signals[GET_ICON_IMAGES], 0,
-			 icon->data,
-			 (icon == details->drop_target) ? "accept" : "",
-			 &emblem_scalable_icons,
-			 &scalable_icon);
+		       signals[GET_ICON_IMAGES], 0,
+		       icon->data,
+		       (icon == details->drop_target) ? "accept" : "",
+		       &emblem_scalable_icons,
+		       &scalable_icon);
 
 	/* compute the maximum size based on the scale factor */
 	min_image_size = MINIMUM_IMAGE_SIZE * GNOME_CANVAS (container)->pixels_per_unit;
@@ -3733,8 +3733,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	
 	nautilus_scalable_icon_unref (scalable_icon);
 
-	/*  in the rare case an image is too small, scale it up */
-	
+	/* in the rare case an image is too small, scale it up */
 	width = gdk_pixbuf_get_width (pixbuf);
 	height = gdk_pixbuf_get_height (pixbuf);
 	if (width < min_image_size || height < min_image_size) {
@@ -3801,10 +3800,6 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	nautilus_icon_canvas_item_set_attach_points (icon->item, &attach_points);
 	nautilus_icon_canvas_item_set_emblems (icon->item, emblem_pixbufs);
 
-	if (container->details->update_icon_font == TRUE) {
-		nautilus_icon_canvas_item_invalidate_label_size (icon->item);
-	}
-	
 	/* Let the pixbufs go. */
 	g_object_unref (pixbuf);
 	eel_gdk_pixbuf_list_free (emblem_pixbufs);
@@ -4028,9 +4023,7 @@ nautilus_icon_container_set_zoom_level (NautilusIconContainer *container, int ne
 		/ NAUTILUS_ICON_SIZE_STANDARD;
 	gnome_canvas_set_pixels_per_unit (GNOME_CANVAS (container), pixels_per_unit);
 
-	/* We need to update the icon font too */
-	container->details->update_icon_font = TRUE;
-	
+	invalidate_label_sizes (container);
 	nautilus_icon_container_request_update_all (container);
 }
 
@@ -4044,16 +4037,16 @@ nautilus_icon_container_set_zoom_level (NautilusIconContainer *container, int ne
 void
 nautilus_icon_container_request_update_all (NautilusIconContainer *container)
 {
-	GList *p;
+	GList *node;
+	NautilusIcon *icon;
 
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
-	for (p = container->details->icons; p != NULL; p = p->next) {
-		nautilus_icon_container_update_icon (container, p->data);
+	for (node = container->details->icons; node != NULL; node = node->next) {
+		icon = node->data;
+		nautilus_icon_container_update_icon (container, icon);
 	}
 
-	container->details->update_icon_font = FALSE;
-	
 	redo_layout (container);
 }
 
@@ -5081,39 +5074,45 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 }
 
 void
-nautilus_icon_container_set_font_name (NautilusIconContainer  *container,
-				       const char             *font_name)
+nautilus_icon_container_set_font_name (NautilusIconContainer *container,
+				       const char *font_name)
 {
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 
+	if (eel_strcmp (container->details->font_name, font_name) == 0) {
+		return;
+	}
+
 	g_free (container->details->font_name);
+	container->details->font_name = g_strdup (font_name);
 
-	g_print ("new font name is: %s\n", font_name);
-	
-	if (font_name != NULL) {
-		container->details->font_name = g_strdup (font_name);
-	}
-	else {
-		container->details->font_name = NULL;
-	}
-
-	container->details->update_icon_font = TRUE;
+	invalidate_label_sizes (container);
+	nautilus_icon_container_request_update_all (container);
 }
 
 void
 nautilus_icon_container_set_font_size_table (NautilusIconContainer *container,
 					     const int font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1])
 {
+	int old_font_size;
 	int i;
 	
 	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_return_if_fail (font_size_table != NULL);
 	
+	old_font_size = container->details->font_size_table[container->details->zoom_level];
+
 	for (i = 0; i <= NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
-		container->details->font_size_table[i] = font_size_table[i];
+		if (container->details->font_size_table[i] != font_size_table[i]) {
+			container->details->font_size_table[i] = font_size_table[i];
+			changed = TRUE;
+		}
 	}
 
-	container->details->update_icon_font = TRUE;
+	if (old_font_size != container->details->font_size_table[container->details->zoom_level]) {
+		invalidate_label_sizes (container);
+		nautilus_icon_container_request_update_all (container);
+	}
 }
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)

@@ -176,7 +176,7 @@ nautilus_application_destroy (BonoboObject *object)
 
 	nautilus_bookmarks_exiting ();
 	
-	bonobo_object_unref (BONOBO_OBJECT (application->undo_manager));
+	bonobo_object_unref (application->undo_manager);
 
 	EEL_CALL_PARENT (BONOBO_OBJECT_CLASS, destroy, (object));
 }
@@ -642,12 +642,12 @@ nautilus_application_create_window (NautilusApplication *application)
 						  "app_id", "nautilus", NULL));
 	
 	g_signal_connect (window, 
-			    "delete_event", G_CALLBACK (nautilus_window_delete_event_callback),
-                    	    NULL);
+			  "delete_event", G_CALLBACK (nautilus_window_delete_event_callback),
+			  NULL);
 
 	g_signal_connect (window,
-			    "destroy", G_CALLBACK (nautilus_application_destroyed_window),
-			    application);
+			  "destroy", G_CALLBACK (nautilus_application_destroyed_window),
+			  application);
 
 	nautilus_application_window_list = g_list_prepend (nautilus_application_window_list, window);
 
@@ -1017,9 +1017,8 @@ is_kdesktop_present (void)
 }
 
 static void
-nautilus_application_class_init (NautilusApplicationClass *klass)
+nautilus_application_class_init (NautilusApplicationClass *class)
 {
-	BONOBO_OBJECT_CLASS (klass)->destroy = nautilus_application_destroy;
-	
-	BONOBO_GENERIC_FACTORY_CLASS (klass)->epv.createObject = create_object;
+	BONOBO_OBJECT_CLASS (class)->destroy = nautilus_application_destroy;
+	BONOBO_GENERIC_FACTORY_CLASS (class)->epv.createObject = create_object;
 }

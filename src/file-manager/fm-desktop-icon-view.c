@@ -255,7 +255,7 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 	/* Clean up details */	
 	if (icon_view->details->ui != NULL) {
 		bonobo_ui_component_unset_container (icon_view->details->ui, NULL);
-		bonobo_object_unref (BONOBO_OBJECT (icon_view->details->ui));
+		bonobo_object_unref (icon_view->details->ui);
 		icon_view->details->ui = NULL;
 	}
 	

@@ -108,7 +108,7 @@ nautilus_undo_register_full (GList *atoms,
 	/* Now we are done with the transaction.
 	 * If the undo manager is holding it, then this will not destroy it.
 	 */
-	bonobo_object_unref (BONOBO_OBJECT (transaction));
+	bonobo_object_unref (transaction);
 }
 
 /* Cover for forgetting about all undo relating to a particular target. */

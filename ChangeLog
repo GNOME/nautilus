@@ -1,3 +1,57 @@
+2002-02-26  Darin Adler  <darin@bentspoon.com>
+
+	* Many files:
+	Simplified calls to bonobo_object_ref/unref.
+	
+	* components/history/nautilus-history-view.c: (update_history):
+	Fixed so that a history update while one is already in progress
+	will work properly.
+	
+	* libnautilus/nautilus-view.c:
+	(remove_listener): New.
+	(update_listener): Renamed from nautilus_view_set_frame, made it
+	handle various cases better. Fixed leak of property bag.
+	(forget_cached_view_frame): New.
+	(nautilus_view_set_frame_callback): Use new forget_cached_view_frame
+	and update_listener.
+	(nautilus_view_construct_from_bonobo_control): Use
+	g_signal_connect_object.  Not sure if this is better, since they
+	are part of the same aggregate.
+	(nautilus_view_finalize): Use new forget_cached_view_frame and
+	remove_listener.
+	(nautilus_view_dispose): Use new forget_cached_view_frame and
+	remove_listener.
+	(nautilus_view_get_view_frame): Fixed leak of control frame.
+	(nautilus_view_set_listener_mask): Simplified, and made it work even
+	if you call it multiple times, by calling new update_listener.
+
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(create_label_layout): Handle NULL font_name case just in case.
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_set_zoom_level): Use
+	invalidate_label_sizes instead of setting update_icon_font.
+	(nautilus_icon_container_set_font_name): Do nothing if font name
+	doesn't change. If it does, use invalidate_label_sizes rather than
+	setting update_icon_font.
+	(nautilus_icon_container_set_font_size_table): Only redraw if font
+	size changes. Also, use invalidate_label_sizes rather than setting
+	update_icon_font.
+
+	* libnautilus-private/nautilus-directory.c:
+	(add_preferences_callbacks):
+	* libnautilus-private/nautilus-icon-factory.c: (get_icon_factory):
+	Initialize global preferences as needed.
+	
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_finalize):
+	* src/file-manager/fm-search-list-view.c: (real_destroy):
+	* src/nautilus-application.c: (nautilus_application_destroy),
+	(nautilus_application_create_window),
+	(nautilus_application_class_init):
+	* src/nautilus-main.c: (main):
+
+	* src/nautilus-view-frame.c: (create_corba_objects): Fix property
+	bag leak.
+
 2002-02-26  Michael Meeks  <michael@ximian.com>
 
 	* components/history/nautilus-history-view.c
@@ -24,6 +78,8 @@
 	(nautilus_file_get_display_name): Patch from Havard Wigtil
 	that makes us return the right name, rather than returning
 	an already-freed pointer.
+
+=== nautilus 1.1.6 ===
 
 2002-02-25  Darin Adler  <darin@bentspoon.com>
 

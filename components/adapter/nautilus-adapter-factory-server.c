@@ -89,7 +89,7 @@ static void
 adapter_object_weak_notify (gpointer server,
 			    GObject *adapter)
 {
-	bonobo_object_unref (BONOBO_OBJECT (server));
+	bonobo_object_unref (server);
 }
 
 
@@ -108,7 +108,7 @@ impl_Nautilus_ComponentAdapterFactory_create_adapter (PortableServer_Servant  se
 	if (adapter == NULL) {
 		return CORBA_OBJECT_NIL;
 	} else {
-		bonobo_object_ref (BONOBO_OBJECT (factory_servant));
+		bonobo_object_ref (factory_servant);
 
 		adapter_view = nautilus_adapter_get_nautilus_view (adapter);
 		g_object_weak_ref (G_OBJECT (adapter_view), 

@@ -653,9 +653,7 @@ nautilus_throbber_finalize (GObject *object)
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
 					 nautilus_throbber_theme_changed, object);
 	
-	if (throbber->details->property_bag != NULL) {
-		bonobo_object_unref (BONOBO_OBJECT (throbber->details->property_bag));
-	}
+	bonobo_object_unref (throbber->details->property_bag);
 	
 	if (throbber->details->control != NULL) {
 		g_object_remove_weak_pointer (G_OBJECT (throbber->details->control),

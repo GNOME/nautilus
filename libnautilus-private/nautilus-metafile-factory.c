@@ -69,7 +69,7 @@ static NautilusMetafileFactory *the_factory;
 static void
 free_factory_instance (void)
 {
-	bonobo_object_unref (BONOBO_OBJECT (the_factory));
+	bonobo_object_unref (the_factory);
 	the_factory = NULL;
 }
 
@@ -81,7 +81,7 @@ nautilus_metafile_factory_get_instance (void)
 		eel_debug_call_at_shutdown (free_factory_instance);
 	}
 
-	return bonobo_object_ref (BONOBO_OBJECT (the_factory));
+	return bonobo_object_ref (the_factory);
 }
 
 static Nautilus_Metafile

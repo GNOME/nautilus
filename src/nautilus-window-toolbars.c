@@ -392,14 +392,14 @@ create_back_or_forward_toolbar_item (NautilusWindow *window,
 				 _("Toolbar item orientation"),
 				 Bonobo_PROPERTY_WRITEABLE);
 	bonobo_control_set_properties (wrapper, BONOBO_OBJREF (pb), NULL);
-	bonobo_object_unref (BONOBO_OBJECT (pb));
+	bonobo_object_unref (pb);
 
 	bonobo_ui_component_object_set (window->details->shell_ui,
 					control_path,
 					BONOBO_OBJREF (wrapper),
 					NULL);
 
-	bonobo_object_unref (BONOBO_OBJECT (wrapper));
+	bonobo_object_unref (wrapper);
 
 	return item;
 }

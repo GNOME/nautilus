@@ -93,10 +93,7 @@ nautilus_adapter_control_embed_strategy_destroy (GtkObject *object)
 
 	strategy = NAUTILUS_ADAPTER_CONTROL_EMBED_STRATEGY (object);
 
-	if (strategy->details->control_frame != NULL) {
-		bonobo_object_unref (BONOBO_OBJECT (strategy->details->control_frame));
-	}
-
+	bonobo_object_unref (strategy->details->control_frame);
 	g_free (strategy->details);
 
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));

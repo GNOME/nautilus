@@ -227,7 +227,7 @@ nautilus_view_standard_main_multi (const char *executable_name,
 		do {
 			gtk_main ();
 		} while (callback_data.object_count > 0 || callback_data.delayed_quit_timeout_id != 0);
-		bonobo_object_unref (BONOBO_OBJECT (factory));
+		bonobo_object_unref (factory);
 	}
 
 	gnome_vfs_shutdown ();

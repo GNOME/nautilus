@@ -267,6 +267,8 @@ static NautilusIconFactory *
 get_icon_factory (void)
 {
         if (global_icon_factory == NULL) {
+		nautilus_global_preferences_init ();
+
 		global_icon_factory = NAUTILUS_ICON_FACTORY
 			(g_object_new (nautilus_icon_factory_get_type (), NULL));
 		g_object_ref (global_icon_factory);
@@ -276,7 +278,7 @@ get_icon_factory (void)
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
 					      icon_theme_changed_callback,
 					      NULL);
-						   
+
 		thumbnail_limit_changed_callback (NULL);
 		eel_preferences_add_callback (NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
 					      thumbnail_limit_changed_callback,
@@ -1022,7 +1024,7 @@ should_display_image_file_as_itself (NautilusFile *file)
 
 	if (!show_thumbnail_auto_value_registered) {
 		eel_preferences_add_auto_integer (NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
-						       &show_thumbnails_auto_value);
+						  &show_thumbnails_auto_value);
 		show_thumbnail_auto_value_registered = TRUE;
 	}
 	

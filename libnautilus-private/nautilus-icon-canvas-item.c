@@ -1145,7 +1145,11 @@ create_label_layout (NautilusIconCanvasItem *item,
 	pango_layout_set_spacing (layout, LABEL_LINE_SPACING);
 
 	/* Create a font description */
-	desc = pango_font_description_from_string (container->details->font_name);
+	if (container->details->font_name == NULL) {
+		desc = pango_font_description_new ();
+	} else {
+		desc = pango_font_description_from_string (container->details->font_name);
+	}
 	pango_font_description_set_size (desc, container->details->font_size_table [container->details->zoom_level] * PANGO_SCALE);
 	pango_layout_set_font_description (layout, desc);
 	pango_font_description_free (desc);

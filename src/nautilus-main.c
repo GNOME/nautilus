@@ -267,7 +267,7 @@ main (int argc, char *argv[])
 		if (is_event_loop_needed ()) {
 			gtk_main ();
 		}
-		bonobo_object_unref (BONOBO_OBJECT (application));
+		bonobo_object_unref (application);
 	}
 
 	poptFreeContext (popt_context);

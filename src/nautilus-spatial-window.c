@@ -765,7 +765,7 @@ nautilus_window_constructed (NautilusWindow *window)
 					BONOBO_OBJREF (location_bar_wrapper),
 					NULL);
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
-	bonobo_object_unref (BONOBO_OBJECT (location_bar_wrapper));
+	bonobo_object_unref (location_bar_wrapper);
 
 	/* initalize the menus and toolbars */
 	nautilus_window_initialize_menus_part_1 (window);
@@ -934,7 +934,7 @@ nautilus_window_destroy (GtkObject *object)
 
 		if (window->details->shell_ui != NULL) {
 			bonobo_ui_component_unset_container (window->details->shell_ui, NULL);
-			bonobo_object_unref (BONOBO_OBJECT (window->details->shell_ui));
+			bonobo_object_unref (window->details->shell_ui);
 		}
 
 		nautilus_file_unref (window->details->viewed_file);
@@ -961,9 +961,7 @@ nautilus_window_destroy (GtkObject *object)
 			g_source_remove (window->status_bar_clear_id);
 		}
 
-		if (window->details->ui_container != NULL) {
-			bonobo_object_unref (BONOBO_OBJECT (window->details->ui_container));
-		}
+		bonobo_object_unref (window->details->ui_container);
 
 		if (window->details->location_change_at_idle_id != 0) {
 			gtk_idle_remove (window->details->location_change_at_idle_id);

@@ -117,7 +117,7 @@ main (int argc, char *argv[])
 	} while (object_count > 0);
 
 	/* Let the factory go. */
-	bonobo_object_unref (BONOBO_OBJECT (factory));
+	bonobo_object_unref (factory);
 
         gnome_vfs_shutdown ();
 

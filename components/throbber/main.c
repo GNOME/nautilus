@@ -103,7 +103,7 @@ main (int argc, char *argv[])
 			gtk_main ();
 		} while (object_count > 0);
 		
-		bonobo_object_unref (BONOBO_OBJECT (factory));
+		bonobo_object_unref (factory);
 	}
 
 	gnome_vfs_shutdown ();

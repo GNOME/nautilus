@@ -193,12 +193,8 @@ nautilus_hardware_view_destroy (GtkObject *object)
 
         hardware_view = NAUTILUS_HARDWARE_VIEW (object);
 
-	/* free the property bag */
-	if (hardware_view->details->property_bag != NULL) {
-		bonobo_object_unref (BONOBO_OBJECT (hardware_view->details->property_bag));
-	}
+        bonobo_object_unref (hardware_view->details->property_bag);
 	
-	/* remove the timer task */
 	if (hardware_view->details->timer_task != 0) {
 		gtk_timeout_remove (hardware_view->details->timer_task);
 	}

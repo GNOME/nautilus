@@ -345,9 +345,7 @@ do_destroy (GtkObject *obj, News *news)
 	nautilus_news_free_channel_list (news);
 
 	/* free the property bag */
-	if (news->property_bag != NULL) {
-		bonobo_object_unref (BONOBO_OBJECT (news->property_bag));
-	}
+        bonobo_object_unref (news->property_bag);
 	
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS,
                                          max_items_changed,
