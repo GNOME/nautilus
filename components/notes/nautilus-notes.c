@@ -23,23 +23,25 @@
  *
  */
 
-/* annotation metaview - allows you to annotate a directory or file */
+/* notes sidebar panel -- allows editing per-directory notes */
 
 #include <config.h>
 
-#include <bonobo/bonobo-generic-factory.h>
-#include <bonobo/bonobo-main.h>
-#include <ctype.h>
-#include <gnome.h>
-#include <libgnomevfs/gnome-vfs.h>
 #include <eel/eel-background.h>
 #include <eel/eel-debug.h>
-#include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-file-attributes.h>
-#include <libnautilus-extensions/nautilus-metadata.h>
-#include <libnautilus-extensions/nautilus-font-factory.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-string.h>
+#include <gtk/gtkmain.h>
+#include <gtk/gtktext.h>
+#include <gtk/gtkvbox.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include <libnautilus-extensions/nautilus-file-attributes.h>
+#include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-font-factory.h>
+#include <libnautilus-extensions/nautilus-metadata.h>
+#include <libnautilus/nautilus-clipboard.h>
+#include <libnautilus/nautilus-view-standard-main.h>
 
 /* FIXME bugzilla.eazel.com 4436: 
  * Undo not working in notes-view.
@@ -47,12 +49,15 @@
 #if 0
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
 #endif
-#include <libnautilus/libnautilus.h>
-#include <libnautilus/nautilus-clipboard.h>
-#include <liboaf/liboaf.h>
-#include <limits.h>
 
 #define NOTES_DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/BBBB"
+
+#define SAVE_TIMEOUT (3 * 1000)
+
+/* property bag getting and setting routines */
+enum {
+	TAB_IMAGE,
+};
 
 typedef struct {
 	NautilusView *view;
@@ -61,21 +66,13 @@ typedef struct {
 	char *uri;
 	NautilusFile *file;
 	guint save_timeout_id;
-	char* previous_saved_text;
+	char *previous_saved_text;
 } Notes;
 
-static void  notes_save_metainfo (Notes *notes);
-static char* notes_get_indicator_image (const char *notes_text);
-static void  notify_listeners_if_changed (Notes *notes, char *new_notes);
-
-static int notes_object_count = 0;
-
-#define SAVE_TIMEOUT (3 * 1000)
-
-/* property bag getting and setting routines */
-enum {
-	TAB_IMAGE,
-};
+static void  notes_save_metainfo         (Notes      *notes);
+static char *notes_get_indicator_image   (const char *notes_text);
+static void  notify_listeners_if_changed (Notes      *notes,
+                                          char       *new_notes);
 
 static void
 get_bonobo_properties (BonoboPropertyBag *bag,
@@ -324,7 +321,7 @@ on_changed (GtkEditable *editable, Notes *notes)
 {
 	schedule_save (notes);
 }
-                              
+
 static void
 do_destroy (GtkObject *obj, Notes *notes)
 {
@@ -343,33 +340,25 @@ do_destroy (GtkObject *obj, Notes *notes)
         g_free (notes->uri);
         g_free (notes->previous_saved_text);
         g_free (notes);
-
-        notes_object_count--;
-        if (notes_object_count <= 0) {
-                gtk_main_quit();
-        }
 }
 
 static char *
 notes_get_indicator_image (const char *notes_text)
 {
-	if (notes_text != NULL && strlen (notes_text) > 0) {
+	if (notes_text != NULL && notes_text[0] != '\0') {
 		return g_strdup ("note-indicator.png");
 	}
-	
 	return NULL;
 }
 
-static BonoboObject *
-make_notes_view (BonoboGenericFactory *Factory, const char *iid, gpointer closure)
+static NautilusView *
+make_notes_view (const char *iid, gpointer callback_data)
 {
         GtkWidget *vbox;
         Notes *notes;
         EelBackground *background;
         GdkFont *font;
          
-        g_return_val_if_fail (strcmp (iid, "OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185") == 0, NULL);
-
         notes = g_new0 (Notes, 1);
         notes->uri = g_strdup ("");
         
@@ -407,7 +396,6 @@ make_notes_view (BonoboGenericFactory *Factory, const char *iid, gpointer closur
 	
 	bonobo_property_bag_add (notes->property_bag, "tab_image", TAB_IMAGE, BONOBO_ARG_STRING, NULL,
 				 "image indicating that a note is present", 0);
-        notes_object_count++;
         
         /* handle events */
         gtk_signal_connect (GTK_OBJECT (notes->view), "load_location",
@@ -427,16 +415,12 @@ make_notes_view (BonoboGenericFactory *Factory, const char *iid, gpointer closur
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (notes->note_text_field), TRUE);
 #endif
 
-        return BONOBO_OBJECT (notes->view);
+        return notes->view;
 }
 
 int
 main(int argc, char *argv[])
 {
-        BonoboGenericFactory *factory;
-        CORBA_ORB orb;
-        char *registration_id;
-
 	/* Make criticals and warnings stop in the debugger if NAUTILUS_DEBUG is set.
 	 * Unfortunately, this has to be done explicitly for each domain.
 	 */
@@ -451,36 +435,10 @@ main(int argc, char *argv[])
 	textdomain (PACKAGE);
 #endif
 	
-	/* Disable session manager connection */
-	gnome_client_disable_master_connection ();
-	
-        /* initialize CORBA and Bonobo */
-	gnomelib_register_popt_table (oaf_popt_options, oaf_get_popt_table_name ());
-	orb = oaf_init (argc, argv);
-
-        gnome_init ("nautilus-notes", VERSION,
-                    argc, argv); 	
-	gdk_rgb_init ();
-
-        bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
-        
-        /* initialize gnome-vfs, etc */
-        g_thread_init (NULL);
-        gnome_vfs_init ();
-        
-        registration_id = oaf_make_registration_id ("OAFIID:nautilus_notes_view_factory:4b39e388-3ca2-4d68-9f3d-c137ee62d5b0",
-                                                    g_getenv ("DISPLAY"));
-
-        factory = bonobo_generic_factory_new_multi
-                (registration_id,
-                 make_notes_view, NULL);
-
-        g_free (registration_id);
-
-        do {
-                bonobo_main();
-        } while (notes_object_count > 0);
-        
-        gnome_vfs_shutdown ();
-        return EXIT_SUCCESS;
+        return nautilus_view_standard_main ("nautilus-notes", VERSION,
+                                            argc, argv,
+                                            "OAFIID:nautilus_notes_view_factory:4b39e388-3ca2-4d68-9f3d-c137ee62d5b0",
+                                            "OAFIID:nautilus_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185",
+                                            make_notes_view,
+                                            NULL);
 }

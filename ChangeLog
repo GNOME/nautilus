@@ -1,3 +1,14 @@
+2001-04-03  Darin Adler  <darin@eazel.com>
+
+	* components/notes/nautilus-notes.c: (do_destroy),
+	(notes_get_indicator_image), (make_notes_view), (main):
+	Use nautilus_view_standard_main to simplify and remove code.
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_populate_pane): Code had N_() wrapped around
+	an empty string. That's a no-no. Calling _("") on empty string
+	gives you the complete translator info, which must be avoided.
+
 2001-04-03  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* Makefile.am:

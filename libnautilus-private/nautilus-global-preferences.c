@@ -851,7 +851,7 @@ static PreferenceDialogItem navigation_items[] = {
 static PreferenceDialogItem tradeoffs_items[] = {
 	{ N_("Show Text in Icons"),
 	  NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
-	  N_(""),
+	  NULL,
 	  NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM,
 	  NULL,
 	  0,
@@ -859,7 +859,7 @@ static PreferenceDialogItem tradeoffs_items[] = {
 	},
 	{ N_("Show Count of Items in Folders"),
 	  NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
-	  N_(""),
+	  NULL,
 	  NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM,
 	  NULL,
 	  0,
@@ -867,7 +867,7 @@ static PreferenceDialogItem tradeoffs_items[] = {
 	},
 	{ N_("Show Thumbnails for Image Files"),
 	  NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
-	  N_(""),
+	  NULL,
 	  NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM,
 	  NULL,
 	  0,
@@ -885,7 +885,7 @@ static PreferenceDialogItem tradeoffs_items[] = {
 	},
 	{ N_("Preview Sound Files"),
 	  NAUTILUS_PREFERENCES_PREVIEW_SOUND,
-	  N_(""),
+	  NULL,
 	  NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM,
 	  NULL,
 	  0,
@@ -895,7 +895,7 @@ static PreferenceDialogItem tradeoffs_items[] = {
 	/* FIXME bugzilla.eazel.com 2560: This title phrase needs improvement. */
 	{ N_("Make Folder Appearance Details Public"),
 	  NAUTILUS_PREFERENCES_USE_PUBLIC_METADATA,
-	  N_(""),
+	  NULL,
 	  NAUTILUS_PREFERENCE_ITEM_SHORT_ENUM,
 	  NULL,
 	  0,
@@ -1392,8 +1392,10 @@ global_preferences_populate_pane (NautilusPreferencesBox *preference_box,
 		group_index = start_group_index + 
 			eel_string_list_get_index_for_string (group_names, preference_dialog_item[i].group_name);
 
-		nautilus_preferences_set_description (preference_dialog_item[i].preference_name,
-						      _(preference_dialog_item[i].preference_description));
+		if (preference_dialog_item[i].preference_description != NULL) {
+			nautilus_preferences_set_description (preference_dialog_item[i].preference_name,
+							      _(preference_dialog_item[i].preference_description));
+		}
 
 		enumeration_values = preference_dialog_item[i].enumeration_values;
 		while (enumeration_values != NULL && enumeration_values->stored_value != NULL) {
