@@ -3,7 +3,7 @@ if test x$DISPLAY = x; then
 fi
 if test $UID -ne 0; then
     echo ""
-    echo "Nautilus-Installer v 0.1c"
+    echo "Nautilus-Installer v 0.1d"
     echo ""
     echo "argle bargle glob glyf muhainapuniua bork bork bork"
     echo "fisk er dumme og heste er grimme"
@@ -14,7 +14,7 @@ if test $UID -ne 0; then
     echo ""
     echo "Please enter root password at the prompt"
     xhost + localhost
-    su - -c "export DISPLAY=$DISPLAY && cd $PWD && echo Uncompressing... && sh $0"
+    su - -c "export DISPLAY=$DISPLAY && cd $PWD && echo Uncompressing... && sh $0 $USER"
     xhost - localhost
     exit
 fi

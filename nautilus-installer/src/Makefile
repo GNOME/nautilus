@@ -66,6 +66,7 @@ CATALOGS =
 CATOBJEXT = .gmo
 CC = gcc
 CPP = gcc -E
+CXX = c++
 DATADIRNAME = share
 DLLTOOL = @DLLTOOL@
 EAZEL_SERVICES = 1
@@ -84,6 +85,8 @@ GLIB_CONFIG = /gnome/bin/glib-config
 GLIB_LIBS = -L/gnome/lib -lglib
 GMOFILES =  da.gmo de.gmo fr.gmo gl.gmo ja.gmo ko.gmo no.gmo ru.gmo sv.gmo tr.gmo
 GMSGFMT = /usr/bin/msgfmt
+GNOMECANVASPIXBUF_INCLUDEDIR = 
+GNOMECANVASPIXBUF_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -lgdk_pixbuf -ltiff -ljpeg -lpng -lz -lgtk -lgdk -lgmodule -lglib -ldl -lXext -lX11 -lm -lgnomecanvaspixbuf
 GNOMEUI_CFLAGS = -I/gnome/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/lib/glib/include -I/usr/X11R6/include
 GNOMEUI_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb1 -lglib -ldl
 GNOME_CFLAGS = -I/gnome/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/lib/glib/include -I/usr/X11R6/include
@@ -91,7 +94,7 @@ GNOME_CONFIG = /gnome/bin/gnome-config
 GNOME_LIBS = -L/gnome/lib -L/usr/lib -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb1 -lglib -ldl
 GNORBA_CFLAGS = 
 GNORBA_LIBS = 
-GTKHTML_CFLAGS = -I/gnome/include -I/gnome/lib/glib/include -I/usr/X11R6/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/include/gnome-xml
+GTKHTML_CFLAGS = -I/gnome/include -I/gnome/lib/glib/include -I/usr/X11R6/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/include/gnome-xml -DGTKHTML_HAVE_GCONF
 GTKHTML_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lgtkhtml -lgnomeprint -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgnome -lgnomesupport -lesd -laudiofile -ldb1 -lgdk_pixbuf -ltiff -ljpeg -lpng -lxml -lz -lgconf -lgconf-gtk -lgtk -lgdk -lgmodule -lglib -ldl -lXext -lX11 -lm
 GTK_CFLAGS = 
 GTK_LIBS = 
@@ -117,9 +120,9 @@ MOZILLA_COMPONENT_CFLAGS = -I/usr/include/mozilla
 MOZILLA_COMPONENT_LDFLAGS = -L/usr/lib/mozilla
 MOZILLA_COMPONENT_LIBS = -lgtkembedmoz 				-lgtksuperwin 				-lxpcom 				-lnspr4 				-lplc4 				-lplds4
 NM = /usr/bin/nm -B
-OAF_CFLAGS = -I/gnome/include -I/gnome/lib/glib/include
+OAF_CFLAGS = 
 OAF_CONFIG = /gnome/bin/oaf-config
-OAF_LIBS = -L/gnome/lib -loaf -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
+OAF_LIBS = 
 OBJDUMP = @OBJDUMP@
 ORBIT_CFLAGS = -I/gnome/lib/glib/include -I/gnome/include
 ORBIT_CONFIG = /gnome/bin/orbit-config
@@ -156,7 +159,7 @@ CFLAGS = -g $(WERROR)
 
 bin_PROGRAMS = nautilus-installer
 
-nautilus_installer_SOURCES =  	main.c 	support.c support.h 	interface.c interface.h 	callbacks.c callbacks.h 	installer.c installer h 
+nautilus_installer_SOURCES =  	main.c 	support.c support.h 	interface.c interface.h 	callbacks.c callbacks.h 	installer.c installer.h 
 
 
 nautilus_installer_LDFLAGS = -static

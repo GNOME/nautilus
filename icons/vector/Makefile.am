@@ -6,6 +6,5 @@ vector_DATA =					\
 	i-regular.svg				\
 	i-regular.xml				\
 	vector.xml
-	
-	
+
 EXTRA_DIST = $(vector_DATA)

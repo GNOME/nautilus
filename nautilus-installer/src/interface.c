@@ -225,7 +225,7 @@ create_window (void)
   gtk_widget_show (vbox5);
   gtk_box_pack_start (GTK_BOX (druid_vbox2), vbox5, TRUE, TRUE, 0);
 
-  label11 = gtk_label_new (_("Press the big begin button, and watch the installer do it's thing..."));
+  label11 = gtk_label_new (_("Press the big begin button, and watch the installer do it's thing...\n(between download and install, we'll take a small break)"));
   gtk_widget_set_name (label11, "label11");
   gtk_widget_ref (label11);
   gtk_object_set_data_full (GTK_OBJECT (window), "label11", label11,
@@ -233,14 +233,14 @@ create_window (void)
   gtk_widget_show (label11);
   gtk_box_pack_start (GTK_BOX (vbox5), label11, TRUE, FALSE, 0);
 
-  table2 = gtk_table_new (2, 2, TRUE);
+  table2 = gtk_table_new (2, 2, FALSE);
   set_white_stuff (GTK_WIDGET (table2));
   gtk_widget_set_name (table2, "table2");
   gtk_widget_ref (table2);
   gtk_object_set_data_full (GTK_OBJECT (window), "table2", table2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table2);
-  gtk_box_pack_start (GTK_BOX (vbox5), table2, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox5), table2, FALSE, FALSE, 16);
   gtk_table_set_row_spacings (GTK_TABLE (table2), 16);
 
   label12 = gtk_label_new (_("Package :"));
@@ -290,7 +290,7 @@ create_window (void)
   gtk_object_set_data_full (GTK_OBJECT (window), "fixed1", fixed1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (fixed1);
-  gtk_box_pack_start (GTK_BOX (vbox5), fixed1, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox5), fixed1, FALSE, FALSE, 16);
 
   begin_button = gtk_button_new_with_label (_("Begin"));
   gtk_widget_set_name (begin_button, "begin_button");
@@ -314,7 +314,7 @@ create_window (void)
   gnome_druid_page_finish_set_logo_bg_color (GNOME_DRUID_PAGE_FINISH (finish_page), &finish_page_logo_bg_color);
   gnome_druid_page_finish_set_title_color (GNOME_DRUID_PAGE_FINISH (finish_page), &finish_page_title_color);
   gnome_druid_page_finish_set_title (GNOME_DRUID_PAGE_FINISH (finish_page), _("Finished"));
-  gnome_druid_page_finish_set_text (GNOME_DRUID_PAGE_FINISH (finish_page), _("Thanks for taking the time to try out Nautilus.\n\nMay your life be a healthy and happy one."));
+  gnome_druid_page_finish_set_text (GNOME_DRUID_PAGE_FINISH (finish_page), _("If the installation was successfull, you can\n findthe nautilus icon in the applications menu.\n\nThanks for taking the time to try out Nautilus.\n\nMay your life be a healthy and happy one."));
 
   gtk_signal_connect (GTK_OBJECT (druid), "cancel",
                       GTK_SIGNAL_FUNC (druid_cancel),

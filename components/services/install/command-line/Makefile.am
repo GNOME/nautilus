@@ -38,6 +38,5 @@ eazel_uninstall_SOURCES = 	\
 	$(NULL)
 
 eazel_gen_xml_SOURCES = 	\
-	eazel-gen-xml.c	\
+	eazel-gen-xml.c		\
 	$(NULL)
-

@@ -49,7 +49,15 @@ parse_package (xmlNode* package, gboolean set_toplevel) {
 	rv->version = g_strdup (xml_get_value (package, "VERSION"));
 	rv->minor = g_strdup (xml_get_value (package, "MINOR"));
 	rv->archtype = g_strdup (xml_get_value (package, "ARCH"));
-	rv->bytesize = atoi (xml_get_value (package, "BYTESIZE"));
+	{
+		char *tmp;
+		tmp = xml_get_value (package, "BYTESIZE");
+		if (tmp) {
+			rv->bytesize = atoi (tmp);
+		} else {
+			rv->bytesize = 0;
+		}
+	}
 	rv->summary = g_strdup (xml_get_value (package, "SUMMARY"));
 	rv->distribution = trilobite_get_distribution ();
 	if (set_toplevel) {

@@ -1,3 +1,65 @@
+2000-07-07  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/genpkg_list.example:
+	Represents the july 5th milestone.
+	
+	(create_default_metadata):	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(rpm_show_progress), (do_rpm_install),	
+	(eazel_install_fetch_rpm_dependencies):
+	Added some FIXME's. Fixed a horrible mem bug. It now leaks, but
+	rpm install works. 
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(parse_package):
+	Added a check so the strtol isn't a risk anymore
+	
+	* components/services/trilobite/idl/trilobite-service.idl:
+	Added the interface for the password query hell.
+	
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	*
+	components/services/trilobite/libtrilobite/trilobite-service-passwo
+	rdquery-private.h:
+	*
+	components/services/trilobite/libtrilobite/trilobite-service-passwo
+	rdquery-public.h:
+	*
+	components/services/trilobite/libtrilobite/trilobite-service-passwo
+	rdquery.c: (trilobite_passwordquery_get_epv),
+	(trilobite_passwordquery_destroy),
+	(trilobite_passwordquery_set_arg),
+	(trilobite_passwordquery_class_initialize),
+	(trilobite_passwordquery_construct),
+	(trilobite_passwordquery_create_corba_object),
+	(trilobite_passwordquery_initialize),
+	(trilobite_passwordquery_get_type), (trilobite_passwordquery_new):
+	Did the initial passwordquery corba object by cp & s/x/y/ on
+	trilobite-service*[ch].
+	
+	* data/emblems/Makefile.am:
+	removed personal.png from _DATA, as it does not exists
+	
+	* icons/Makefile.am:
+	removed emblem-personal.svg
+	
+	* icons/vector/Makefile.am:
+	icons/Makefile.am
+	
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/installer.c: (eazel_install_progress),
+	(make_dirs), (installer):
+	Now creates the /var/eazel/services dir. Sets the proper flags for
+	the install object and again prints the package name during
+	progress display.
+	
+	* nautilus-installer/src/interface.c: (create_window):
+	Fiddled with the layout, everything doesn't jump around anymore,
+	just a few things.
+	
+	* nautilus-installer/src/prescript:
+	Inc'ed the version to 0.1d
+
 2000-07-07  Andy Hertzfeld  <andy@eazel.com>
 
 	* data/emblems/Makefile.am:

@@ -416,6 +416,9 @@ rpm_show_progress (const Header h,
 		break;
 			
 	case RPMCALLBACK_INST_PROGRESS: {
+		/* FIXME: bugzilla.eazel.com 1585
+		   Need a hash between filenames and packages, so I can lookup the
+		   real package here */
 		PackageData *pack;
 		pack = packagedata_new ();
 		pack->name = g_strdup (filename);		
@@ -483,8 +486,13 @@ do_rpm_install (EazelInstall *service,
 	binary_headers = g_new (Header, pkg_count + 1);
 	/* First load all rpm headers */
 	for (iterator = packages; iterator ; iterator = iterator->next) {
-		pkg_file = g_strdup_printf ("%s", 
-					    rpmfilename_from_packagedata ((PackageData*)iterator->data));
+		/* RPM keeps this var (pkg_file), so don't use a g_ func to alloc it, 
+		   nor should it be freed */
+		/* FIXME: bugzilla.eazel.com 1602
+		   I should remember these pointers and free them at the end, 
+		   except that mayby RPM does, I'm just not sure. And anyways, being the service
+		   "it's not that important" :-( */
+		pkg_file = strdup (rpmfilename_from_packagedata ((PackageData*)iterator->data));
 		g_message ("Installing %s...", pkg_file);
 		fd = fdOpen (pkg_file, O_RDONLY, 0644);
 		if (fdFileno (fd) < 0) {
@@ -548,6 +556,7 @@ do_rpm_install (EazelInstall *service,
 		}
 		/* Ensure the order */
 		if (!(eazel_install_get_interface_flags (service) & INSTALL_NOORDER)) {
+			g_message ("Reordering...");
 			if (rpmdepOrder(rpmdep)) {
 				num_failed = num_packages;
 				stop_install = 1;
@@ -609,7 +618,9 @@ do_rpm_install (EazelInstall *service,
                                          &probs,
                                          eazel_install_get_interface_flags (service),
                                          eazel_install_get_problem_filters (service));
-
+		rpmProblemSetPrint (stderr, probs);
+		rpmProblemSetPrint (stdout, probs);
+		g_message ("rpmRunTransactions = %d", rc);
 		rpmProblemSetFree(probs);
 		if (rc == -1) {
 			 /* some error */
@@ -1206,14 +1217,21 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 		if (pack_entry == NULL) {
 			switch (conflict.sense) {
 			case RPMDEP_SENSE_REQUIRES:
-				g_warning (_("%s needs %s %s"), conflict.byName, conflict.needsName, conflict.needsVersion);
+				/* FIXME: bugzilla.eazel.com 1584
+				   This sigsegvs...
+				*/
+				g_warning (_("%s %s breaks %s"), conflict.needsName, conflict.needsVersion, conflict.byName);
 				pack_entry = g_list_find_custom (*packages, 
 								 (gpointer)conflict.needsName,
 								 (GCompareFunc)eazel_install_package_name_compare);
+				g_message ("step 1");
 				dep = packagedata_new_from_rpm_conflict_reversed (conflict);
+				g_message ("step 2");
 				dep->archtype = g_strdup (pack->archtype);
 				pack = (PackageData*)(pack_entry->data);
+				g_message ("step 3");
 				pack->status = PACKAGE_BREAKS_DEPENDENCY;
+				g_message ("step assertion");
 				g_assert (dep!=NULL);
 				/* FIXME: bugzilla.eazel.com 1363
 				   Here, it'd be cool to compare dep->name to pack->name to see if

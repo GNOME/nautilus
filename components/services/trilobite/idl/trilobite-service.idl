@@ -32,6 +32,14 @@ module Trilobite {
 		 */
 		string get_icon ();
 	};
+	
+	interface PasswordQueryClient : Bonobo::Unknown {
+		string get_password (in string prompt);
+	};
+
+	interface PasswordQuery : Bonobo::Unknown {
+		void set_query_client (in PasswordQueryClient client);
+	};
 };
 
 #endif

@@ -7,7 +7,16 @@
 #include <eazel-install-public.h>
 #include <libtrilobite/helixcode-utils.h>
 
+#include <errno.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <unistd.h>
+
 #include <sys/utsname.h>
+
+#define EAZEL_SERVICES_DIR_HOME "/var/eazel"
+#define EAZEL_SERVICES_DIR EAZEL_SERVICES_DIR_HOME "/services"
 
 #define HOSTNAME "testmachine.eazel.com"
 #define PORT_NUMBER 80
@@ -28,7 +37,7 @@ char *failure_info;
 
 static void 
 eazel_install_progress (EazelInstall *service, 
-			const char *name,
+			const PackageData *pack,
 			int amount, 
 			int total,
 			GtkWidget *widget) 
@@ -39,14 +48,14 @@ eazel_install_progress (EazelInstall *service,
 	float pct;
  
 	pct = ( (total > 0) ? ((float) ((((float) amount) / total) * 100)): 100.0);
-	/* fprintf (stdout, "Install Progress - %s - %d %d %% %f\n", name?name:"(null)", amount, total, pct); */
+	fprintf (stdout, "Install Progress - %s - %d %d %% %f\r", pack->name?pack->name:"(null)", amount, total, pct);
 
 	action_label = gtk_object_get_data (GTK_OBJECT (widget), "action_label");
 	package_label = gtk_object_get_data (GTK_OBJECT (widget), "package_label");
 	progressbar = gtk_object_get_data (GTK_OBJECT (widget), "progressbar");
 
 	gtk_label_set_text (action_label, "Install :");
-	gtk_label_set_text (package_label, name + strlen (TMP_DIR) + 1);
+	gtk_label_set_text (package_label, pack->name + strlen (TMP_DIR) + 1);
 	gtk_progress_bar_update (progressbar, pct/100);
 
 	fflush (stdout);
@@ -167,12 +176,37 @@ install_failed (EazelInstall *service,
 	}
 }
 
+static void
+make_dirs ()
+{
+	int retval;
+	if (! g_file_test (EAZEL_SERVICES_DIR, G_FILE_TEST_ISDIR)) {
+		if (! g_file_test (EAZEL_SERVICES_DIR_HOME, G_FILE_TEST_ISDIR)) {
+			retval = mkdir (EAZEL_SERVICES_DIR_HOME, 0755);		       
+			if (retval < 0) {
+				if (errno != EEXIST) {
+					g_error (_("*** Could not create services directory (%s)! ***\n"), EAZEL_SERVICES_DIR_HOME);
+				}
+			}
+		}
+
+		retval = mkdir (EAZEL_SERVICES_DIR, 0755);
+		if (retval < 0) {
+			if (errno != EEXIST) {
+				g_error (_("*** Could not create services directory (%s)! ***\n"), EAZEL_SERVICES_DIR);
+			}
+		}
+	}
+}
+
 void installer (GtkWidget *window,
 		gint method) 
 {
 	EazelInstall *service;
 	GtkProgressBar *progressbar;
 	GtkLabel *package_label;
+
+	make_dirs ();
 
 	if (method==UPGRADE) {
 		gnome_warning_dialog ("We don't do UPGRADE yet");
@@ -184,21 +218,19 @@ void installer (GtkWidget *window,
 						 "silent", FALSE,
 						 "debug", TRUE,
 						 "test", check_for_root_user () ? FALSE : TRUE,
-						 "force", FALSE,
+						 "force", TRUE,
 						 "depend", FALSE,
-						 "update", method==UPGRADE ? TRUE : FALSE,
+						 "update", TRUE,
 						 "uninstall", method==UNINSTALL ? TRUE : FALSE,
 						 "downgrade", FALSE,
 						 "protocol", PROTOCOL,
 						 "tmp_dir", TMP_DIR,
 						 "rpmrc_file", RPMRC,
-						 "hostname", HOSTNAME,
+						 "server", HOSTNAME,
 						 "rpm_storage_path", REMOTE_RPM_DIR,
 						 "package_list_storage_path", package_list [ method ],
-						 "port_number", PORT_NUMBER,
+						 "server_port", PORT_NUMBER,
 						 NULL));
-
-	service = eazel_install_new_with_config ("/var/eazel/services/eazel-services-config.xml");
 	g_assert (service != NULL);
 
 	eazel_install_set_server (service, HOSTNAME);
@@ -226,7 +258,7 @@ void installer (GtkWidget *window,
 		eazel_install_install_packages (service, NULL);
 		break;
 	case UNINSTALL:
-		eazel_install_uninstall (service);
+		eazel_install_uninstall_packages (service, NULL);
 		break;
 	};
 	eazel_install_destroy (GTK_OBJECT (service));

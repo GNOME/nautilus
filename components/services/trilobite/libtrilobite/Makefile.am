@@ -36,6 +36,8 @@ libtrilobiteinclude_HEADERS =			\
 	trilobite-service.h			\
 	trilobite-service-public.h		\
 	trilobite-service-private.h		\
+	trilobite-service-passwordquery-public.h	\
+	trilobite-service-passwordquery-private.h	\
 	trilobite-core-messaging.h		\
 	trilobite-core-distribution.h		\
 	trilobite-core-metadata-manager.h	\
@@ -52,6 +54,7 @@ libtrilobite_la_SOURCES =			\
 	trilobite-service-stubs.c		\
 	trilobite-service-skels.c		\
 	trilobite-service.c			\
+	trilobite-service-passwordquery.c	\
 	trilobite-core-messaging.c		\
 	trilobite-core-distribution.c		\
 	trilobite-core-metadata-manager.c	\

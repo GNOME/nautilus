@@ -63,6 +63,7 @@ create_default_metadata (const char* config_file) {
 			}
 		}
 	}
+
 	rv = create_default_configuration_metafile (config_file);
 	if (rv == FALSE) {
 		g_error (_("*** Could not create the default configuration file! ***\n"));
