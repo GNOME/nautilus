@@ -55,14 +55,18 @@
 #include <libnautilus-extensions/nautilus-icon-container.h>
 
 /* Paths to use when creating & referring to Bonobo menu items */
-#define MENU_PATH_STRETCH_ICON "/Settings/Stretch"
-#define MENU_PATH_UNSTRETCH_ICONS "/Settings/Unstretch"
-#define MENU_PATH_AFTER_STRETCH_SEPARATOR "/Settings/After Stretch Separator"
-#define MENU_PATH_CUSTOMIZE_ICON_TEXT "/Settings/Icon Text"
-#define MENU_PATH_LAYOUT_MENU "/Layout"
-#define MENU_PATH_MANUAL_LAYOUT "/Layout/Manual Layout"
-#define MENU_PATH_LAYOUT_SEPARATOR "/Layout/Separator"
-#define MENU_PATH_RENAME "/File/Rename"
+#define MENU_PATH_STRETCH_ICON 			"/Settings/Stretch"
+#define MENU_PATH_UNSTRETCH_ICONS 		"/Settings/Unstretch"
+#define MENU_PATH_AFTER_STRETCH_SEPARATOR 	"/Settings/After Stretch Separator"
+#define MENU_PATH_CUSTOMIZE_ICON_TEXT 		"/Settings/Icon Text"
+#define MENU_PATH_LAYOUT_MENU 			"/Layout"
+#define MENU_PATH_MANUAL_LAYOUT 		"/Layout/Manual Layout"
+#define MENU_PATH_LAYOUT_SEPARATOR 		"/Layout/Separator"
+#define MENU_PATH_SORT_DIRECTION_SEPARATOR 	"/Layout/SortDirectionSeparator"
+#define MENU_PATH_SORT_DIRECTION_RADIO_GROUP 	"/Layout/SortDirectionRadioGroup"
+#define MENU_PATH_SORT_ASCENDING	   	"/Layout/Ascending"
+#define MENU_PATH_SORT_DESCENDING	   	"/Layout/Descending"
+#define MENU_PATH_RENAME 			"/File/Rename"
 
 /* forward declarations */
 static NautilusIconContainer *create_icon_container                 (FMIconView        *icon_view);
@@ -133,6 +137,7 @@ struct FMIconViewDetails
 	gboolean menus_ready;
 
 	const SortCriterion *sort;
+	gboolean sort_reversed;
 
 	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
 	gboolean updating_bonobo_radio_menu_item;
@@ -475,6 +480,8 @@ static void
 update_layout_menus (FMIconView *view)
 {
 	const char *path;
+	BonoboUIHandler *ui_handler;
+	gboolean is_auto_layout;
 
 	if (!view->details->menus_ready) {
 		return;
@@ -482,13 +489,37 @@ update_layout_menus (FMIconView *view)
 
 	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
 	view->details->updating_bonobo_radio_menu_item = TRUE;
+
+	is_auto_layout = nautilus_icon_container_is_auto_layout 
+		(get_icon_container (view));
+	ui_handler = fm_directory_view_get_bonobo_ui_handler 
+		(FM_DIRECTORY_VIEW (view));
+
+	/* Mark sort criterion. */
 	path = MENU_PATH_MANUAL_LAYOUT;
-	if (nautilus_icon_container_is_auto_layout (get_icon_container (view))) {
+	if (is_auto_layout) {
 		path = view->details->sort->menu_path;
 	}
-	bonobo_ui_handler_menu_set_radio_state
-		(fm_directory_view_get_bonobo_ui_handler (FM_DIRECTORY_VIEW (view)),
-		 path, TRUE);
+	bonobo_ui_handler_menu_set_radio_state (ui_handler, path, TRUE);
+
+	/* Sort order isn't relevant for manual layout. */
+	/* Note that sensitivity must be set before setting which radio
+	 * item is active, or the active state might be changed (Bonobo
+	 * bug)
+	 */
+	bonobo_ui_handler_menu_set_sensitivity
+		(ui_handler, MENU_PATH_SORT_DESCENDING, is_auto_layout);
+	bonobo_ui_handler_menu_set_sensitivity
+		(ui_handler, MENU_PATH_SORT_ASCENDING, is_auto_layout);
+		 
+	/* Mark sort order. */
+	if (view->details->sort_reversed) {
+		path = MENU_PATH_SORT_DESCENDING;
+	} else {
+		path = MENU_PATH_SORT_ASCENDING;
+	}
+	bonobo_ui_handler_menu_set_radio_state (ui_handler, path, TRUE);
+
 	view->details->updating_bonobo_radio_menu_item = FALSE;
 }
 
@@ -511,6 +542,27 @@ set_sort_criterion (FMIconView *icon_view, const SortCriterion *sort)
 		 sort->metadata_text);
 
 	/* Update the layout menus to match the new sort setting. */
+	update_layout_menus (icon_view);
+
+	return TRUE;
+}
+
+static gboolean
+set_sort_reversed (FMIconView *icon_view, gboolean new_value)
+{
+	if (icon_view->details->sort_reversed == new_value) {
+		return FALSE;
+	}
+	icon_view->details->sort_reversed = new_value;
+
+	/* Store the new sort setting in the metafile. */
+	nautilus_directory_set_boolean_metadata
+		(fm_directory_view_get_model (FM_DIRECTORY_VIEW (icon_view)),
+		 NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
+		 FALSE,
+		 new_value);
+
+	/* Update the layout menus to match the new sort-order setting. */
 	update_layout_menus (icon_view);
 
 	return TRUE;
@@ -542,6 +594,19 @@ get_sort_criterion_by_menu_path (const char *path)
 		}
 	}
 	return NULL;
+}
+
+static gboolean
+get_sort_reversed_from_menu_path (const char *path)
+{
+	if (strcmp (path, MENU_PATH_SORT_DESCENDING) == 0) {
+		return TRUE;
+	}
+
+	/* Complain softly about unexpected parameter. */
+	g_return_val_if_fail (strcmp (path, MENU_PATH_SORT_ASCENDING) == 0, FALSE);
+
+	return FALSE;
 }
 
 static void
@@ -579,6 +644,12 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 		 sort_criteria[0].metadata_text);
 	set_sort_criterion (icon_view, get_sort_criterion_by_metadata_text (sort_name));
 	g_free (sort_name);
+
+	/* Set the sort direction from the metadata. */
+	set_sort_reversed (icon_view, nautilus_directory_get_boolean_metadata
+		(directory,
+		 NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
+		 FALSE));
 
 	/* Set the layout mode from the metadata.
 	 * We must do this after getting the sort mode,
@@ -766,6 +837,23 @@ sort_callback (BonoboUIHandler *handler, gpointer user_data, const char *path)
 }
 
 static void
+sort_direction_callback (BonoboUIHandler *handler, gpointer user_data, const char *path)
+{
+	FMIconView *icon_view;
+
+	icon_view = FM_ICON_VIEW (user_data);
+
+	/* FIXME bugzilla.eazel.com 916: Workaround for Bonobo bug. */
+	if (icon_view->details->updating_bonobo_radio_menu_item) {
+		return;
+	}
+
+	set_sort_reversed (icon_view, get_sort_reversed_from_menu_path (path));
+	nautilus_icon_container_sort (get_icon_container (icon_view));
+
+}
+
+static void
 manual_layout_callback (BonoboUIHandler *handler,
 			gpointer user_data,
 			const char *path)
@@ -871,6 +959,24 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 			 -1, 0, 0,
 			 sort_callback, view);
 	}
+	bonobo_ui_handler_menu_new_separator
+		(ui_handler, MENU_PATH_SORT_DIRECTION_SEPARATOR, -1);
+	bonobo_ui_handler_menu_new_radiogroup 
+		(ui_handler, MENU_PATH_SORT_DIRECTION_RADIO_GROUP);
+	bonobo_ui_handler_menu_new_radioitem
+		(ui_handler,
+		 MENU_PATH_SORT_ASCENDING,
+		 _("_Ascending"),
+		 _("Sort icons from \"smallest\" to \"largest\" according to sort criteria"),
+		 -1, 0, 0,
+		 sort_direction_callback, view);
+	bonobo_ui_handler_menu_new_radioitem
+		(ui_handler,
+		 MENU_PATH_SORT_DESCENDING,
+		 _("Des_cending"),
+		 _("Sort icons from \"largest\" to \"smallest\" according to sort criteria"),
+		 -1, 0, 0,
+		 sort_direction_callback, view);
 	icon_view->details->updating_bonobo_radio_menu_item = FALSE;
 
 	/* File menu. */
@@ -979,13 +1085,21 @@ icon_container_compare_icons_callback (NautilusIconContainer *container,
 				       NautilusFile *file_b,
 				       FMIconView *icon_view)
 {
+	int result;
+
 	g_assert (FM_IS_ICON_VIEW (icon_view));
 	g_assert (container == get_icon_container (icon_view));
 	g_assert (NAUTILUS_IS_FILE (file_a));
 	g_assert (NAUTILUS_IS_FILE (file_b));
 
-	return nautilus_file_compare_for_sort
+	result = nautilus_file_compare_for_sort
 		(file_a, file_b, icon_view->details->sort->sort_type);
+
+	if (icon_view->details->sort_reversed) {
+		result = -1 * result;
+	}
+
+	return result;
 }
 
 static void

@@ -1,3 +1,27 @@
+2000-05-18  John Sullivan  <sullivan@eazel.com>
+
+	Added the ability to switch sort order in Icons view. Note
+	that one time while developing this I saw a problem at startup
+	where the icons all danced back and forth a few pixels forever.
+	I can't reproduce this, so I don't think my changes caused it,
+	but be wary of the evil jig-dancing icons.
+
+	* libnautilus-extensions/nautilus-metadata.h:
+	Added #define for icon view sort direction.
+	
+	* src/file-manager/fm-icon-view.c: 
+	Added sort_reversed to FMIconViewDetails;
+	(update_layout_menus): Set sensitivity of "Ascending"/"Descending"
+	menu items appropriately, and activate the right one.
+	(set_sort_reversed), (get_sort_reversed_from_menu_path),
+	(sort_direction_callback): New functions used for setting
+	the sort direction.
+	(fm_icon_view_begin_loading): Read sort direction from metadata.
+	(fm_icon_view_merge_menus): Add sort-direction menu items to 
+	Layout menu.
+	(icon_container_compare_icons_callback): Take sort direction
+	into account.
+
 2000-05-18  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/Makefile.am:
@@ -7,8 +31,9 @@
 	(slider_moved_callback), (slider_release_callback),
 	(volume_callback), (xpm_label_box), (add_play_controls),
 	(nautilus_music_view_update_from_uri):
-	added a "bitrate" column to the music view, started adding the play controls, but
-	not yet finished, so they're disabled for now
+	added a "bitrate" column to the music view, started adding 
+	the play controls, but not yet finished, so they're 
+	disabled for now
 	* components/music/pixmaps.h:
 	some inline images for the buttons
 		
