@@ -1001,6 +1001,11 @@ nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
  		return;
  	}
 
+	/* FIXME bugzilla.eazel.com 2785: We need to optimize this code to measure a minimum
+	 * number of text lines.  We need to look at the clip rectangle and compute the 
+	 * maximum number of text lines that actually fit.
+	 */
+
  	num_text_lines = nautilus_str_count_characters (text, '\n') + 1;
 	text_line_widths = g_new (guint, num_text_lines);
 	text_line_heights = g_new (guint, num_text_lines);
