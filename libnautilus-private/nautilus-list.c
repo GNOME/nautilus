@@ -2234,7 +2234,7 @@ draw_row (NautilusCList *clist, GdkRectangle *area, int row_index, NautilusCList
 	extended_row_rectangle.x = 0;
 	extended_row_rectangle.y = row_rectangle.y - CELL_SPACING;
 	extended_row_rectangle.width = row_rectangle.width;
-	extended_row_rectangle.height += CELL_SPACING;
+	extended_row_rectangle.height = row_rectangle.height + CELL_SPACING;
 
 	if (row->state == GTK_STATE_NORMAL) {
 		if (row->fg_set) {
