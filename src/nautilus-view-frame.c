@@ -41,6 +41,9 @@
 #include <libnautilus/nautilus-view.h>
 #include <libnautilus/nautilus-zoomable.h>
 
+/* FIXME bugzilla.eazel.com 917: This should be removed. See below. */
+void bonobo_object_destroy (BonoboObject *object);
+
 enum {
 	OPEN_LOCATION,
 	OPEN_LOCATION_IN_NEW_WINDOW,
@@ -197,11 +200,11 @@ nautilus_view_frame_destroy_client (NautilusViewFrame *view)
 	CORBA_Environment ev;
 	CORBA_exception_init(&ev);
 	
-	if (view->component_class == 0) {
+	if (view->component_class == NULL) {
 		return;
 	}
 	
-	g_free(view->iid);
+	g_free (view->iid);
 	view->iid = NULL;
 	
 	bonobo_object_unref (BONOBO_OBJECT (view->client_object));
@@ -213,19 +216,20 @@ nautilus_view_frame_destroy_client (NautilusViewFrame *view)
 	if (!CORBA_Object_is_nil (view->zoomable, &ev)) {
 		Bonobo_Unknown_unref (view->zoomable, &ev);
 		CORBA_Object_release (view->zoomable, &ev);
-		view->zoomable = CORBA_OBJECT_NIL;
 	}
+	view->zoomable = CORBA_OBJECT_NIL;
 
 	if (view->component_class->destroy != NULL) {
 		view->component_class->destroy (view, &ev);
 	}
 	
-	/* FIXME bugzilla.eazel.com 917: This should be bonobo_object_unref,
-	 * but there is a circular reference between Bonobo_Control and
-	 * Bonobo_ControlFrame that prevents it from working. Once that's
-	 * fixed, we'd really like to change it to unref instead of destroy.
+	/* FIXME bugzilla.eazel.com 917: This should be removed, but
+	 * there is a circular reference between Bonobo_Control and
+	 * Bonobo_ControlFrame that prevents it from working. Once
+	 * that's fixed, we'd really like to remove it.
 	 */
 	bonobo_object_destroy (view->view_frame);
+
 	view->view_frame = NULL;
 	
 	view->component_class = NULL;
@@ -241,7 +245,7 @@ nautilus_view_frame_destroy (GtkObject *object)
 
 	frame = NAUTILUS_VIEW_FRAME (object);
 	
-	if(frame->timer_id != 0) {
+	if (frame->timer_id != 0) {
 		g_source_remove (frame->timer_id);
 		frame->timer_id = 0;
 	}
@@ -255,11 +259,11 @@ extern NautilusViewComponentType nautilus_view_component_type; /* ntl-view-nauti
 extern NautilusViewComponentType bonobo_subdoc_component_type; /* ntl-view-bonobo-subdoc.c */
 extern NautilusViewComponentType bonobo_control_component_type; /* ntl-view-bonobo-control.c */
 
-static gboolean
+static void
 nautilus_view_frame_handle_client_destroy (GtkWidget *widget, NautilusViewFrame *view)
 {
-	gtk_object_destroy (GTK_OBJECT(view));
-	return TRUE;
+	/* FIXME: Is a destroy really sufficient here? Who does the unref? */
+	gtk_object_destroy (GTK_OBJECT (view));
 }
 
 static void
@@ -289,7 +293,6 @@ gboolean /* returns TRUE if successful */
 nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 {
 	CORBA_Object obj;
-	CORBA_Object zoomable;
 	CORBA_Environment ev;
   	int i;
   	
@@ -302,11 +305,11 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
 
+	nautilus_view_frame_destroy_client (view);
+
 	if (iid == NULL) {
 		return FALSE;
         }
-
-	nautilus_view_frame_destroy_client (view);
 
 	view->client_object = bonobo_object_activate (iid, 0);
 	if (view->client_object == NULL) {
@@ -315,66 +318,73 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 
 	CORBA_exception_init (&ev);
 
+	/* Start with a view frame interface. */
 	view->view_frame = impl_Nautilus_ViewFrame__create(view, &ev);
+
+	/* Add a zoomable frame interface. */
 	view->zoomable_frame = impl_Nautilus_ZoomableFrame__create(view, &ev);
 	bonobo_object_add_interface (BONOBO_OBJECT (view->view_frame), 
 	                             BONOBO_OBJECT (view->zoomable_frame));
+
+	/* Add a history frame interface. */
 	view->history_frame = impl_Nautilus_HistoryFrame__create(view, &ev);
 	bonobo_object_add_interface (BONOBO_OBJECT (view->view_frame), 
 	                             BONOBO_OBJECT (view->history_frame));
 
-	/* Add undo manager to component */
+	/* Add an undo context interface. */
 	nautilus_undo_manager_add_interface
         	(view->undo_manager, BONOBO_OBJECT (view->view_frame));
 	
-	/* Now figure out which type of embedded object it is: */
-	for(i = 0; component_types[i] && !view->component_class; i++) {
-		obj = Bonobo_Unknown_query_interface (bonobo_object_corba_objref(BONOBO_OBJECT(view->client_object)),
-						      component_types[i]->primary_repoid, &ev);
+	/* Get at our client's zoomable interface. */
+	view->zoomable = bonobo_object_query_interface
+		(BONOBO_OBJECT (view->client_object), 
+		 "IDL:Nautilus/Zoomable:1.0");
+	
+	/* Now figure out which type of embedded object we have so we
+	 * can host it appropriately:
+	 */
+	for (i = 0; component_types[i] != NULL && view->component_class == NULL; i++) {
+		obj = Bonobo_Unknown_query_interface
+			(bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object)),
+			 component_types[i]->primary_repoid, &ev);
 		if (ev._major != CORBA_NO_EXCEPTION) {
         		obj = CORBA_OBJECT_NIL;
 		}
-			
-		if (CORBA_Object_is_nil(obj, &ev)) {
+		if (CORBA_Object_is_nil (obj, &ev)) {
 			continue;
 		}
 
-		zoomable = bonobo_object_query_interface (BONOBO_OBJECT (view->client_object), 
-							  "IDL:Nautilus/Zoomable:1.0");
-
-      		view->zoomable = zoomable;
-
-      		if(component_types[i]->try_load(view, obj, &ev))
+      		if (component_types[i]->try_load (view, obj, &ev)) {
         		view->component_class = component_types[i];
-
-      		Bonobo_Unknown_unref(obj, &ev);
-      		CORBA_Object_release(obj, &ev);
-
-      		if (view->component_class) {
-        		break;
 		}
+
+      		Bonobo_Unknown_unref (obj, &ev);
+      		CORBA_Object_release (obj, &ev);
     	}
 
-  	if (!view->component_class) {
-     		/* Nothing matched */
-      		nautilus_view_frame_destroy_client(view);
+	/* Handle case where we don't know how to host this component. */
+  	if (view->component_class == NULL) {
+      		nautilus_view_frame_destroy_client (view);
       		return FALSE;
     	}
-      
-	view->iid = g_strdup(iid);
+	
+	view->iid = g_strdup (iid);
 
-	gtk_signal_connect_while_alive (GTK_OBJECT (view->client_object), "destroy",
-					GTK_SIGNAL_FUNC (nautilus_view_frame_handle_client_destroy), view,
-					GTK_OBJECT (view));
-	gtk_signal_connect_while_alive (GTK_OBJECT (view->client_object), "object_gone",
-					GTK_SIGNAL_FUNC (nautilus_view_frame_handle_client_destroy_2), view,
-					GTK_OBJECT (view));
-	gtk_signal_connect_while_alive (GTK_OBJECT (view->client_object), "system_exception",
-					GTK_SIGNAL_FUNC (nautilus_view_frame_handle_client_destroy_2), view,
-					GTK_OBJECT (view));
+	gtk_signal_connect_while_alive
+		(GTK_OBJECT (view->client_object), "destroy",
+		 GTK_SIGNAL_FUNC (nautilus_view_frame_handle_client_destroy), view,
+		 GTK_OBJECT (view));
+	gtk_signal_connect_while_alive
+		(GTK_OBJECT (view->client_object), "object_gone",
+		 GTK_SIGNAL_FUNC (nautilus_view_frame_handle_client_destroy_2), view,
+		 GTK_OBJECT (view));
+	gtk_signal_connect_while_alive
+		(GTK_OBJECT (view->client_object), "system_exception",
+		 GTK_SIGNAL_FUNC (nautilus_view_frame_handle_client_destroy_2), view,
+		 GTK_OBJECT (view));
 	gtk_container_add (GTK_CONTAINER (view), view->client_widget);
-	gtk_widget_show(view->client_widget);
-	CORBA_exception_free(&ev);
+	gtk_widget_show (view->client_widget);
+	CORBA_exception_free (&ev);
 
 	return TRUE;
 }
@@ -579,7 +589,6 @@ nautilus_view_frame_zoom_in (NautilusViewFrame *view)
 	CORBA_exception_free (&ev);
 }
 
-
 void
 nautilus_view_frame_zoom_out (NautilusViewFrame *view)
 {
@@ -615,7 +624,6 @@ nautilus_view_frame_zoom_to_fit (NautilusViewFrame *view)
 	
 	CORBA_exception_free (&ev);
 }
-
 
 const char *
 nautilus_view_frame_get_iid(NautilusViewFrame *view)
@@ -733,16 +741,18 @@ check_object (gpointer data)
 	view = NAUTILUS_VIEW_FRAME (data);
 	g_assert (!view->checking);
 
-	CORBA_exception_init(&ev);
+	CORBA_exception_init (&ev);
 	view->checking++;
 	ok = TRUE;
 	if (CORBA_Object_non_existent (bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object)), &ev)) {
+		/* FIXME: Is a destroy really sufficient here? Who does the unref? */
+		gtk_object_destroy (GTK_OBJECT (view));
+
 		view->timer_id = 0;
-		gtk_object_destroy(GTK_OBJECT(view));
 		ok = FALSE;
 	}
 	view->checking--;
-	CORBA_exception_free(&ev);
+	CORBA_exception_free (&ev);
 	
 	return ok;
 }
@@ -751,14 +761,14 @@ void
 nautilus_view_frame_set_active_errors (NautilusViewFrame *view, gboolean enabled)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
-	if(enabled) {
-		if(view->timer_id == 0) {
-			/* FIXME: hard-coded 2 seconds? */
+	if (enabled) {
+		if (view->timer_id == 0) {
+			/* FIXME: Is a hard-coded 2-second timeout acceptable? */
 			view->timer_id = g_timeout_add (2000, check_object, view);
 		}
 	} else {
-		if(view->timer_id != 0) {
-			g_source_remove(view->timer_id);
+		if (view->timer_id != 0) {
+			g_source_remove (view->timer_id);
 			view->timer_id = 0;
 		}
 	}

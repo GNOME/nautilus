@@ -329,6 +329,7 @@ nautilus_icon_container_dropped_icon_feedback (GtkWidget *widget,
 
 	/* Delete old shadow if any. */
 	if (dnd_info->shadow != NULL) {
+		/* FIXME: Is a destroy really sufficient here? Who does the unref? */
 		gtk_object_destroy (GTK_OBJECT (dnd_info->shadow));
 	}
 
@@ -1002,6 +1003,7 @@ nautilus_icon_container_free_drag_data (NautilusIconContainer *container)
 	dnd_info->drag_info.got_drop_data_type = FALSE;
 	
 	if (dnd_info->shadow != NULL) {
+		/* FIXME: Is a destroy really sufficient here? Who does the unref? */
 		gtk_object_destroy (GTK_OBJECT (dnd_info->shadow));
 		dnd_info->shadow = NULL;
 	}
@@ -1077,8 +1079,10 @@ nautilus_icon_dnd_fini (NautilusIconContainer *container)
 	g_return_if_fail (container->details->dnd_info != NULL);
 
 	stop_auto_scroll (container);
-	if (container->details->dnd_info->shadow != NULL)
+	if (container->details->dnd_info->shadow != NULL) {
+		/* FIXME: Is a destroy really sufficient here? Who does the unref? */
 		gtk_object_destroy (GTK_OBJECT (container->details->dnd_info->shadow));
+	}
 
 	nautilus_drag_finalize (&container->details->dnd_info->drag_info);
 }

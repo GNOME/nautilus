@@ -422,8 +422,10 @@ static void
 nautilus_property_browser_drag_end (GtkWidget *widget, GdkDragContext *context)
 {
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(widget);
-	if (!property_browser->details->keep_around)
+	if (!property_browser->details->keep_around) {
+		/* FIXME: Is a destroy really sufficient here? Who does the unref? */
 		gtk_object_destroy (GTK_OBJECT (widget));
+	}
 }
 
 /* utility routine to check if the passed-in uri is an image file */

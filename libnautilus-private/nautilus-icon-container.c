@@ -138,6 +138,7 @@ static char stipple_bits[] = { 0x02, 0x01 };
 static void
 icon_free (NautilusIcon *icon)
 {
+	/* FIXME: Is a destroy really sufficient here? Who does the unref? */
 	gtk_object_destroy (GTK_OBJECT (icon->item));
 	g_free (icon);
 }
@@ -958,6 +959,7 @@ stop_rubberbanding (NautilusIconContainer *container,
 	band_info->active = FALSE;
 
 	gnome_canvas_item_ungrab (band_info->selection_rectangle, event->time);
+	/* FIXME: Is a destroy really sufficient here? Who does the unref? */
 	gtk_object_destroy (GTK_OBJECT (band_info->selection_rectangle));
 	band_info->selection_rectangle = NULL;
 }
@@ -1630,6 +1632,7 @@ destroy (GtkObject *object)
 		gtk_timeout_remove (container->details->rubberband_info.timer_id);
 	}
 	if (container->details->rubberband_info.selection_rectangle != NULL) {
+		/* FIXME: Is a destroy really sufficient here? Who does the unref? */
 		gtk_object_destroy (GTK_OBJECT (container->details->rubberband_info.selection_rectangle));
 	}
 
@@ -3622,6 +3625,7 @@ hide_rename_widget (NautilusIconContainer *container, NautilusIcon *icon)
 	nautilus_icon_text_item_stop_editing (container->details->rename_widget, TRUE);
 
 	/* Destroy renaming widget */
+	/* FIXME: Is a destroy really sufficient here? Who does the unref? */
 	gtk_object_destroy (GTK_OBJECT (container->details->rename_widget));
 	container->details->rename_widget = NULL;
 

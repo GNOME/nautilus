@@ -1,3 +1,34 @@
+2000-07-11  Darin Adler  <darin@eazel.com>
+
+	* src/nautilus-view-frame.c:
+	Fixed to compile with latest Bonobo. Doesn't work quite as well
+	as before -- we get some Bonobo ref. count asserts all the time --
+	but it's better than nothing I guess. Also did some other code
+	cleanup.
+
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-alloc.h: [removed]
+	Removed an unused source file.
+	
+	* libnautilus-extensions/nautilus-icon-container.c: (icon_free),
+	(stop_rubberbanding), (destroy), (hide_rename_widget):
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(nautilus_icon_container_dropped_icon_feedback),
+	(nautilus_icon_container_free_drag_data), (nautilus_icon_dnd_fini):
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_drag_end):
+	* src/nautilus-view-frame-nautilus-view.c: (load_location),
+	(stop_loading), (selection_changed):
+	* src/nautilus-view-frame.c: (nautilus_view_frame_handle_client_destroy),
+	(nautilus_view_frame_load_client), (check_object),
+	(nautilus_view_frame_set_active_errors):
+	* src/nautilus-window-manage-views.c:
+	(nautilus_window_end_location_change_callback):
+	Added FIXMEs to various questionable uses of gtk_object_destroy.
+	
+	* src/Makefile.am:
+	Added missing source file and replaced use of .. with $(top_srcdir).
+
 2000-07-11  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* test/Makefile.am:
@@ -38,14 +69,12 @@
 		
 2000-07-10  J Shane Culpepper  <pepper@eazel.com>
 
-	*
-	components/services/install/nautilus-view/nautilus-service-install-
-	view.c: (generate_install_form), (generate_current_progress),
+	* components/services/install/nautilus-view/nautilus-service-install-view.c:
+	(generate_install_form), (generate_current_progress),
 	(go_to_uri), (nautilus_service_install_view_update_from_uri):
 	* components/services/login/nautilus-view/nautilus-login-view.c:
-	*
-	components/services/startup/nautilus-view/nautilus-service-startup-
-	view.c: (generate_startup_form):
+	* components/services/startup/nautilus-view/nautilus-service-startup-view.c:
+	(generate_startup_form):
 
 	Fixed the startup view progress meter.  Various changes to get flow
 	correct for the first cut at the services demo rpms.
@@ -66,11 +95,9 @@
 
 	* components/services/trilobite/helper/eazel-helper.c:
 	(do_command), (main):
-	*
-	components/services/trilobite/libtrilobite/trilobite-root-helper.c:
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.c:
 	(trilobite_root_helper_run_program), (trilobite_root_helper_run):
-	*
-	components/services/trilobite/libtrilobite/trilobite-root-helper.h:
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.h:
 
 	Add _RUN_LS command to TrilobiteRootHelper and eazel-helper, for
 	Eskil to use for testing.
@@ -104,12 +131,10 @@
 2000-07-10  Robey Pointer  <robey@eazel.com>
 
 	* components/services/trilobite/helper/eazel-helper.c: (main):
-	*
-	components/services/trilobite/libtrilobite/trilobite-root-helper.c:
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.c:
 	(trilobite_root_helper_start), (trilobite_root_helper_rpm),
 	(trilobite_root_helper_set_time), (trilobite_root_helper_run):
-	*
-	components/services/trilobite/libtrilobite/trilobite-root-helper.h:
+	* components/services/trilobite/libtrilobite/trilobite-root-helper.h:
 
 	Make sure TrilobiteRootHelper can be restarted after each use
 	(same object, new session).  Add _set_time function.
@@ -169,8 +194,7 @@
 	* components/services/docs/installer-rpmsearch:
 	text file on how the rpmsearch.cgi should work.
 		
-	*
-	components/services/install/command-line/eazel-alt-install-corba.c:
+	* components/services/install/command-line/eazel-alt-install-corba.c:
 	(set_parameters_from_command_line),
 	(eazel_download_progress_signal), (eazel_install_progress_signal),
 	(install_failed), (create_package), (done):

@@ -1259,6 +1259,7 @@ nautilus_window_end_location_change_callback (NautilusNavigationResult result_co
                 /* Destroy never-had-a-chance-to-be-seen window. This case
                  * happens when a new window cannot display its initial URI. 
                  */
+                /* FIXME: Is a destroy really sufficient here? Who does the unref? */
                 gtk_object_destroy (GTK_OBJECT (window));
                 nautilus_error_dialog (error_message, NULL);
         } else {

@@ -53,6 +53,7 @@ noinst_HEADERS = \
 	nautilus-complex-search-bar.h		\
 	nautilus-desktop-window.h		\
 	nautilus-first-time-druid.h		\
+	nautilus-history-frame.h		\
 	nautilus-link-set-window.h		\
 	nautilus-location-bar.h			\
 	nautilus-navigation-bar.h		\
@@ -119,7 +120,7 @@ nautilus_SOURCES = \
 	$(NULL)
 
 $(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp
-nautilus_shell_interface_idl_stamp: nautilus-shell-interface.idl ../libnautilus/nautilus-view-component.idl
+nautilus_shell_interface_idl_stamp: nautilus-shell-interface.idl $(top_srcdir)/libnautilus/nautilus-view-component.idl
 	$(ORBIT_IDL) $(IDL_CFLAGS) -I.. nautilus-shell-interface.idl
 	touch nautilus_shell_interface_idl_stamp
 

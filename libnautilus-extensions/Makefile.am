@@ -102,7 +102,6 @@ libnautilus_extensions_la_SOURCES = \
 # Everything is private for now
 noinst_HEADERS =				\
 	bonobo-stream-vfs.h			\
-	nautilus-alloc.h			\
 	nautilus-background-canvas-group.h	\
 	nautilus-background.h			\
 	nautilus-bonobo-extensions.h		\
