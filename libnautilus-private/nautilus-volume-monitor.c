@@ -56,6 +56,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+
 #ifdef HAVE_SYS_VFSTAB_H
 #include <sys/vfstab.h>
 #else
@@ -65,18 +66,35 @@
 #ifdef HAVE_MNTENT_H
 #include <mntent.h>
 #define MOUNT_TABLE_PATH _PATH_MNTTAB
-#endif
-
-#ifdef HAVE_SYS_MNTTAB_H
+#elif defined (HAVE_SYS_MNTTAB_H)
 #define SOLARIS_MNT 1
 #include <sys/mnttab.h>
 #define MOUNT_TABLE_PATH "/etc/mnttab"
+#else
+/* FIXME: How does this help anything? */
+#define MOUNT_TABLE_PATH ""
 #endif
 
 #ifdef SOLARIS_MNT
 #define USE_VOLRMMOUNT 1
-#else
-#define USE_VOLRMMOUNT 0
+#endif
+
+#ifdef HAVE_SYS_PARAM_H
+#ifdef MIN
+#undef MIN
+#endif
+#ifdef MAX
+#undef MAX
+#endif
+#include <sys/param.h>
+#endif
+
+#ifdef HAVE_SYS_UCRED_H
+#include <sys/ucred.h>
+#endif
+
+#ifdef HAVE_SYS_MOUNT_H
+#include <sys/mount.h>
 #endif
 
 #ifndef MNTOPT_RO
@@ -119,6 +137,8 @@ char **broken_cdda_interface_h_workaround = strerror_tr;
 
 #ifdef HAVE_SYS_MNTTAB_H
 typedef struct mnttab MountTableEntry;
+#elif defined (HAVE_GETMNTINFO)
+typedef struct statfs MountTableEntry;
 #else
 typedef struct mntent MountTableEntry;
 #endif
@@ -346,15 +366,19 @@ nautilus_volume_monitor_get_removable_volumes (NautilusVolumeMonitor *monitor)
 }
 
 
+#if defined (HAVE_GETMNTINFO) || defined (HAVE_MNTENT_H) || defined (SOLARIS_MNT)
+
 static gboolean
 has_removable_mntent_options (MountTableEntry *ent)
 {
+#ifdef HAVE_HASMNTOPT
 	/* Use "owner" or "user" or "users" as our way of determining a removable volume */
 	if (hasmntopt (ent, "user") != NULL
 	    || hasmntopt (ent, "users") != NULL
 	    || hasmntopt (ent, "owner") != NULL) {
 		return TRUE;
 	}
+#endif
 
 #ifdef SOLARIS_MNT
 	if (eel_str_has_prefix (ent->mnt_special, "/vol/")) {
@@ -365,6 +389,7 @@ has_removable_mntent_options (MountTableEntry *ent)
 	return FALSE;
 }
 
+#endif
 
 /* get_removable_volumes
  *	
@@ -382,8 +407,27 @@ get_removable_volumes (void)
 #ifdef HAVE_SYS_MNTTAB_H
         MountTableEntry ent_storage;
 #endif
-	
+	ent = NULL;
+	volume = NULL;
 	volumes = NULL;
+
+#ifdef HAVE_GETMNTINFO
+	int count, index;
+	
+	count = getmntinfo (&ent, MNT_WAIT);
+	/* getmentinfo returns a pointer to static data. Do not free. */
+	for (index = 0; index < count; index++) {
+		if (has_removable_mntent_options (ent + 1)) {
+			volume = g_new (NautilusVolume, 1);
+			volume->device_path = g_strdup (ent[index].f_mntfromname);
+			volume->mount_path = g_strdup (ent[index].f_mntoname);
+			volume->filesystem = g_strdup (ent[index].f_fstyename);
+			volume->is_removable = TRUE;
+			volume->is_read_only = ((ent[index].f_flags & MNT_RDONLY) != 0);
+			volume = mount_volume_add_filesystem (volume, volumes);				
+		}
+	}
+#endif
 	
 	file = setmntent (MOUNT_TABLE_PATH, "r");
 	if (file == NULL) {
@@ -401,14 +445,14 @@ get_removable_volumes (void)
 			volumes = mount_volume_add_filesystem (volume, volumes);
 		}
 	}
-#else
+#elif defined (HAVE_MNTTENT_H)
 	while ((ent = getmntent (file)) != NULL) {
 		if (has_removable_mntent_options (ent)) {
 			volume = create_volume (ent->mnt_fsname, ent->mnt_dir, ent->mnt_type);
 			volumes = mount_volume_add_filesystem (volume, volumes);
 		}
 	}
-#endif /* HAVE_SYS_MNTTAB_H */
+#endif
 			
 	fclose (file);
 	
@@ -433,6 +477,8 @@ volume_is_removable (const NautilusVolume *volume)
 	MountTableEntry ent_storage;
 #endif
 
+	ent = NULL;
+
 	file = setmntent (MOUNT_TABLE_PATH, "r");
 	if (file == NULL) {
 		return FALSE;
@@ -440,7 +486,7 @@ volume_is_removable (const NautilusVolume *volume)
 	
 	/* Search for our device in the fstab */
 #ifdef HAVE_SYS_MNTTAB_H
-	MountTableEntry *ent = &ent_storage;
+	ent = &ent_storage;
 	while (!getmntent (file, ent)) {
 		if (strcmp (volume->device_path, ent->mnt_special) == 0) {
   			/* On Solaris look for /vol/ for determining
@@ -451,7 +497,7 @@ volume_is_removable (const NautilusVolume *volume)
 			}
 		}	
 	}
-#else
+#elif defined (HAVE_MNTENT_H)
 	while ((ent = getmntent (file)) != NULL) {
 		if (strcmp (volume->device_path, ent->mnt_fsname) == 0
 		    && has_removable_mntent_options (ent)) {
@@ -459,7 +505,7 @@ volume_is_removable (const NautilusVolume *volume)
 			return TRUE;
 		}	
 	}
-#endif /* HAVE_SYS_MNTTAB_H */
+#endif
 	
 	fclose (file);
 	return FALSE;
@@ -474,7 +520,7 @@ volume_is_read_only (const NautilusVolume *volume)
 #ifdef HAVE_SYS_MNTTAB_H
  	MountTableEntry ent_storage;
 
- 	file = setmntent (MOUNT_TABLE_PATH, "r");
+	file = setmntent (MOUNT_TABLE_PATH, "r");
  	if (file == NULL) {
  		return FALSE;
  	}
@@ -489,7 +535,7 @@ volume_is_read_only (const NautilusVolume *volume)
  			}
  		}
  	}
-#else
+#elif defined (HAVE_MNTENT_H)
 	file = setmntent (MOUNT_TABLE_PATH, "r");
 	if (file == NULL) {
 		return FALSE;
@@ -504,6 +550,9 @@ volume_is_read_only (const NautilusVolume *volume)
 			}
         	 }
 	}
+#else
+	ent = NULL;	
+	file = NULL;
 #endif
 				
 	fclose (file);
@@ -1413,7 +1462,7 @@ nautilus_volume_monitor_volume_is_mounted (NautilusVolumeMonitor *monitor,
 }						 
 
 
-#if USE_VOLRMMOUNT
+#ifdef USE_VOLRMMOUNT
 
 static const char *volrmmount_locations [] = {
        "/usr/bin/volrmmount",
@@ -1671,7 +1720,7 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 		}
 	}
 	
-#if USE_VOLRMMOUNT
+#ifdef USE_VOLRMMOUNT
        name = strrchr (mount_point, '/');
        if (name != NULL) {
                name = name + 1;
@@ -1680,7 +1729,7 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
        }
 #else
        name = mount_point;
-#endif /* USE_VOLRMMOUNT */
+#endif
        
        if (should_mount) {
                command = find_command (MOUNT_COMMAND);
@@ -1994,7 +2043,8 @@ mount_volume_add_filesystem (NautilusVolume *volume, GList *volume_list)
 }
 
 char *
-nautilus_volume_monitor_get_mount_name_for_display (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
+nautilus_volume_monitor_get_mount_name_for_display (NautilusVolumeMonitor *monitor,
+						    NautilusVolume *volume)
 {
 	const char *name, *found_name;
 	

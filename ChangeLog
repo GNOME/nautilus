@@ -1,5 +1,18 @@
 2001-05-08  Darin Adler  <darin@eazel.com>
 
+	Integrated a fixed version of Gene's patch to compile under
+	FreeBSD.
+
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(has_removable_mntent_options), (get_removable_volumes),
+	(volume_is_removable), (volume_is_read_only),
+	(nautilus_volume_monitor_mount_unmount_removable),
+	(nautilus_volume_monitor_get_mount_name_for_display): Added more
+	ifdefs all over the place. This could be done more elegantly some
+	day.
+
+2001-05-08  Darin Adler  <darin@eazel.com>
+
 	Integrated patch by Yoann Vandoorselaere <yoann@mandrakesoft.com>
 	to fix a problem where we would try to get metadata for all files
 	in the home directory if it was set to be used as the desktop
