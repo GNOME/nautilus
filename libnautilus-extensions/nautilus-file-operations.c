@@ -114,7 +114,8 @@ char *
 nautilus_convert_to_unescaped_string_for_display  (char *escaped)
 {
 	char *result;
-	if (!escaped) {
+
+	if (escaped == NULL) {
 		return NULL;
 	}
 	result = gnome_vfs_unescape_string_for_display (escaped);

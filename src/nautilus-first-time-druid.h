@@ -29,12 +29,11 @@
 #ifndef NAUTILUS_FIRST_TIME_DRUID_H
 #define NAUTILUS_FIRST_TIME_DRUID_H
 
-#include <glib.h>
 #include <gtk/gtkwidget.h>
 #include "nautilus-application.h"
 
 GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application,
-			      gboolean manage_desktop,
-			      const char *urls[]);
+					   gboolean manage_desktop,
+					   const char *urls[]);
 
 #endif /* NAUTILUS_FIRST_TIME_DRUID_H */

@@ -1,5 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
-/* nautilus-file-operatoins: execute file operations.
+
+/* nautilus-file-operations: execute file operations.
 
    Copyright (C) 1999, 2000 Free Software Foundation
 
@@ -21,34 +22,37 @@
    Author: Ettore Perazzoli <ettore@gnu.org>
 */
 
-#ifndef _NAUTILUS_FILE_OPERATIONS_H
-#define _NAUTILUS_FILE_OPERATIONS_H
+#ifndef NAUTILUS_FILE_OPERATIONS_H
+#define NAUTILUS_FILE_OPERATIONS_H
 
 #include <libgnomevfs/gnome-vfs.h>
 
-void 	nautilus_file_operations_copy_move      (const GList *item_uris,
-						 const GdkPoint *target_item_points,
-						 const char *target_dir,
-						 int copy_action,
-						 GtkWidget *parent_view,
-						 void (*done_callback) (GHashTable *debuting_uris, gpointer data),
-				    		 gpointer done_callback_data);
+typedef void (* NautilusCopyCallback)      (GHashTable *debuting_uris,
+					    gpointer    callback_data);
+typedef void (* NautilusNewFolderCallback) (const char *new_folder_uri,
+					    gpointer    callback_data);
 
-void 	nautilus_file_operations_move_to_trash (const GList *item_uris,
-						GtkWidget *parent_view);
-
-void    nautilus_file_operations_empty_trash 	(GtkWidget *parent_view);
-void 	nautilus_file_operations_new_folder 	(GtkWidget *parent_view,
-						 const char *parent_dir,
-						 void (*done_callback)(const char *new_folder_uri, gpointer data),
-						 gpointer data);
-void	nautilus_file_operations_delete 	(const GList *item_uris, GtkWidget *parent_view);
-
+void  nautilus_file_operations_copy_move               (const GList               *item_uris,
+							const GdkPoint            *target_item_points,
+							const char                *target_dir_uri,
+							int                        copy_action,
+							GtkWidget                 *parent_view,
+							NautilusCopyCallback       done_callback,
+							gpointer                   done_callback_data);
+void  nautilus_file_operations_move_to_trash           (const GList               *item_uris,
+							GtkWidget                 *parent_view);
+void  nautilus_file_operations_empty_trash             (GtkWidget                 *parent_view);
+void  nautilus_file_operations_new_folder              (GtkWidget                 *parent_view,
+							const char                *parent_dir_uri,
+							NautilusNewFolderCallback  done_callback,
+							gpointer                   done_callback_data);
+void  nautilus_file_operations_delete                  (const GList               *item_uris,
+							GtkWidget                 *parent_view);
 
 /* Prepare an escaped string for display. Unescapes a string in place.
- * Frees the original string.
+ * Like gnome_vfs_unescape_string_for_display but frees the original
+ * string.
  */
-char *nautilus_convert_to_unescaped_string_for_display  (char *escaped);
-#endif /* _NAUTILUS_FILE_OPERATIONS_H */
+char *nautilus_convert_to_unescaped_string_for_display (char                      *escaped);
 
-
+#endif /* NAUTILUS_FILE_OPERATIONS_H */

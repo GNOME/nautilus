@@ -24,36 +24,37 @@
  */
 
 #include <config.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <string.h>
+#include "nautilus-first-time-druid.h"
+
 #include <ctype.h>
-#include <netdb.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-
-#include <gnome.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gnome.h>
 #include <libgnomevfs/gnome-vfs.h>
-
-#include <nautilus-main.h>
 #include <libnautilus-extensions/nautilus-background.h>
-#include <libnautilus-extensions/nautilus-druid.h>
 #include <libnautilus-extensions/nautilus-druid-page-eazel.h>
+#include <libnautilus-extensions/nautilus-druid.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
-#include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-label.h>
-#include <libnautilus-extensions/nautilus-radio-button-group.h>
-#include <libnautilus-extensions/nautilus-user-level-manager.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
+#include <libnautilus-extensions/nautilus-radio-button-group.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-user-level-manager.h>
+#include <nautilus-main.h>
+#include <netdb.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
-#include "nautilus-first-time-druid.h"
+#define SERVICE_UPDATE_ARCHIVE_PATH "/tmp/nautilus_update.tgz"
+#define WELCOME_PACKAGE_URI "http://services.eazel.com/downloads/eazel/updates.tgz"
 
 #define NUMBER_OF_STANDARD_PAGES 5
 
@@ -66,15 +67,21 @@
 /* Preference for http proxy settings */
 #define GNOME_VFS_PREFERENCES_HTTP_PROXY "/system/gnome-vfs/http-proxy"
 
+#define READ_FILE_HANDLE_TAG "Nautilus first time druid read file handle"
+
 /* The number of seconds we'll wait for our experimental DNS resolution */
 #define NETWORK_CHECK_TIMEOUT_SECONDS 15
 #define DEFAULT_DNS_CHECK_HOST "services.eazel.com"
 
+#define GALEON_PREFS_PATH "/.gnome/galeon"
 
-static void     initiate_file_download           (GnomeDruid *druid);
-static gboolean set_http_proxy                   (const char *proxy_url);
-static gboolean attempt_http_proxy_autoconfigure (void);
-static gboolean check_network_connectivity	 (void);
+#define GETLINE_INITIAL_BUFFER_SIZE 256
+
+#define NETSCAPE_PREFS_PATH "/.netscape/preferences.js"
+
+#define EAZEL_SERVICES_LEARN_MORE_URL "http://services.eazel.com/services"
+#define EAZEL_SERVICES_SIGN_UP_URL "http://services.eazel.com/account/register/form"
+#define EAZEL_SERVICES_LOG_IN_URL "eazel:"
 
 
 /* globals */
@@ -94,12 +101,11 @@ static int last_proxy_choice = 1;
 static GtkWidget *port_number_entry;
 static GtkWidget *proxy_address_entry;
 
-/* FIXME -- for the download callback if it returns after the druid has exited */
-static gboolean has_druid_exited = FALSE;
-
 /* Set by set_http_proxy; used by check_network_connectivity */
+
 /* NULL indicates no HTTP proxy */
 static char *http_proxy_host = NULL;
+
 /* The result of the last check_network_connectivity call */
 static enum {
 	Untested,
@@ -107,11 +113,26 @@ static enum {
 	Fail
 } network_status = Untested;
 
+/* Globals used to implement DNS timeout. */
+static gboolean sigalrm_occurred;
+static pid_t child_pid;
+
+
+static void     initiate_file_download           (GnomeDruid *druid);
+static gboolean set_http_proxy                   (const char *proxy_url);
+static gboolean attempt_http_proxy_autoconfigure (void);
+static gboolean check_network_connectivity	 (void);
+
 
 static void
 druid_cancel (GtkWidget *druid)
 {
-	gtk_widget_destroy(gtk_widget_get_toplevel(druid));
+	gtk_widget_destroy (gtk_widget_get_toplevel (druid));
+
+	/* FIXME: Why _exit instead of a plain exit? It might be OK
+	 * to do nothing here now that Nautilus knows to quit when
+	 * windows go away.
+	 */
 	_exit (0);
 }
 
@@ -150,72 +171,70 @@ druid_finished (GtkWidget *druid_page)
 	char *user_main_directory;
 	const char *signup_uris[2];
 	
-
-	user_main_directory = nautilus_get_user_main_directory();
+	user_main_directory = nautilus_get_user_main_directory ();
 
 	/* FIXME bugzilla.eazel.com 1555:
 	 * Need to post a error dialog if the user's main directory was not created
 	 */
 	if (!g_file_exists (user_main_directory)) {
-		g_print ("FIXME bugzilla.eazel.com 1555\n");
-		g_print ("Need to post a error dialog if the user's main directory was not created\n");
+		g_warning ("Need to post a error dialog since the user's main directory was not created");
 	}
 	g_free (user_main_directory);
 
 	/* write out the first time file to indicate that we've successfully traversed the druid */
 	druid_set_first_time_file_flag ();
-	signup_uris[1] = NULL;
 
-	/* FIXME Here we check to see if we can resolve hostnames in a timely
-	 * fashion.  If we can't then we silently tell nautilus to start up
+	/* Here we check to see if we can resolve hostnames in a timely
+	 * fashion. If we can't then we silently tell nautilus to start up
 	 * pointing to the home directory and not any of the HTTP addresses--
 	 * we don't want Nautilus to hang indefinitely trying to resolve
-	 * an HTTP address 
+	 * an HTTP address.
 	 */
-
-	if ( Untested == network_status
-		&& (last_signup_choice == 0 || last_signup_choice == 1 )) {
+	/* FIXME: Perhaps we can fix the underlying problem instead of
+	 * having this hack here to guess whether the network is broken.
+	 */
+	if (Untested == network_status
+	    && (last_signup_choice == 0 || last_signup_choice == 1)) {
 		check_network_connectivity ();
 	}
-
-	if ( Fail == network_status ) {
+	if (Fail == network_status) {
 		last_signup_choice = 3;
 	}
 	
+	/* Choose the URL based on the signup choice. */
 	switch (last_signup_choice) {
-		case 0:
-			signup_uris[0] = "http://services.eazel.com/services";
-			break;
-		case 1:
-			signup_uris[0] = "http://services.eazel.com/account/register/form";
-			break;
-		case 2:
-			signup_uris[0] = "eazel:";
-			break;
-		case 3:
-		default:
-			signup_uris[0]	= NULL;	
-			break;
+	case 0:
+		signup_uris[0] = EAZEL_SERVICES_LEARN_MORE_URL;
+		break;
+	case 1:
+		signup_uris[0] = EAZEL_SERVICES_SIGN_UP_URL;
+		break;
+	case 2:
+		signup_uris[0] = EAZEL_SERVICES_LOG_IN_URL;
+		break;
+	case 3:
+	default:
+		signup_uris[0]	= NULL;	
+		break;
 	}
-
-	has_druid_exited = TRUE;
+	signup_uris[1] = NULL;
 	
-	nautilus_application_startup(save_application, FALSE, FALSE, save_manage_desktop, 
-					     FALSE, (signup_uris[0] != NULL) ? &signup_uris[0] : NULL);
-
+	nautilus_application_startup (save_application, FALSE, FALSE, save_manage_desktop, 
+				      FALSE, (signup_uris[0] != NULL) ? signup_uris : NULL);
+	
 	/* Destroy druid last because it may be the only thing keeping the main event loop alive. */
-	gtk_widget_destroy(gtk_widget_get_toplevel(druid_page));
+	gtk_widget_destroy (gtk_widget_get_toplevel (druid_page));
 }
 
 /* set up an event box to serve as the background */
 
-static GtkWidget*
+static GtkWidget *
 set_up_background (NautilusDruidPageEazel *page, const char *background_color)
 {
 	GtkWidget *event_box;
 	NautilusBackground *background;
 	
-	event_box = gtk_event_box_new();
+	event_box = gtk_event_box_new ();
 	
 	background = nautilus_get_widget_background (event_box);
 	nautilus_background_set_color (background, background_color);
@@ -242,21 +261,18 @@ user_level_selection_changed (GtkWidget *radio_button, gpointer user_data)
 static void
 signup_selection_changed (GtkWidget *radio_buttons, gpointer user_data)
 {
-
 	last_signup_choice = nautilus_radio_button_group_get_active_index (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons));
 }
 
 static void
 update_selection_changed (GtkWidget *radio_buttons, gpointer user_data)
 {
-
 	last_update_choice = nautilus_radio_button_group_get_active_index (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons));
 }
 
 static void
 proxy_selection_changed (GtkWidget *radio_buttons, gpointer user_data)
 {
-
 	last_proxy_choice = nautilus_radio_button_group_get_active_index (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons));
 }
 
@@ -270,10 +286,11 @@ make_anti_aliased_label (const char *text)
 	
 	label = nautilus_label_new (text);
 
+	/* FIXME: Hardcoded font and size. */
 	nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", "medium", NULL, NULL);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 	nautilus_label_set_text_justification (NAUTILUS_LABEL (label),
-			       GTK_JUSTIFY_LEFT);
+					       GTK_JUSTIFY_LEFT);
 
 	return label;
 }
@@ -343,6 +360,7 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 	label = make_anti_aliased_label (user_level_name);
 	g_free (user_level_name);
 
+	/* FIXME: Hardcoded font. */
 	nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", "bold", NULL, NULL);
 
 	gtk_box_pack_start (GTK_BOX (label_box), label, FALSE, FALSE, 0);
@@ -387,7 +405,10 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
 
-	label = make_anti_aliased_label (_("User levels provide a way to adjust the software to your\nlevel of technical expertise.  Pick an initial level that you\nfeel comfortable with; you can always change it later."));
+	label = make_anti_aliased_label (_("User levels provide a way to adjust the software to your\n"
+					   "level of technical expertise. Pick an initial level that you\n"
+					   "feel comfortable with; you can always change it later."));
+	/* FIXME: Hardcoded font size. */
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 
 	gtk_widget_show (label);
@@ -445,7 +466,11 @@ set_up_service_signup_page (NautilusDruidPageEazel *page)
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* allocate a descriptive label */
-	label = make_anti_aliased_label (_("Eazel offers a growing number of services to help you\n install and maintain new software and manage your files\n across the network.  Choose an option below, and the\ninformation will be presented in Nautilus after you've\nfinished setting up."));
+	label = make_anti_aliased_label (_("Eazel offers a growing number of services to help you\n"
+					   "install and maintain new software and manage your files\n"
+					   "across the network.  Choose an option below, and the\n"
+					   "information will be presented in Nautilus after you've\n"
+					   "finished setting up."));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
 	
@@ -457,10 +482,14 @@ set_up_service_signup_page (NautilusDruidPageEazel *page)
 	gtk_container_add (GTK_CONTAINER (frame),
 					radio_buttons);
 
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("I want to learn more about Eazel services."));
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("I want to sign up for Eazel services now."));	
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("I've already signed up and want to login now."));
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("I don't want to learn about Eazel services at this time."));
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons),
+					    _("I want to learn more about Eazel services."));
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons),
+					    _("I want to sign up for Eazel services now."));	
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons),
+					    _("I've already signed up and want to login now."));
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons),
+					    _("I don't want to learn about Eazel services at this time."));
 
 	gtk_signal_connect (GTK_OBJECT (radio_buttons),
 			    "changed",
@@ -641,6 +670,7 @@ next_update_page_callback (GtkWidget *button, GnomeDruid *druid)
 {
 	if (last_update_choice == 0) {
 		/* initiate the file transfer and launch a timer task to track feedback */
+		/* FIXME: There's no timer task! */
 		initiate_file_download (druid);
 		
 		/* return FALSE to display the feedback page */
@@ -667,13 +697,13 @@ next_proxy_configuration_page_callback (GtkWidget *button, GnomeDruid *druid)
 {
 	const char *proxy_text;
 	const char *port_text;
+	char *proxy_url;
 
 	proxy_text = gtk_entry_get_text (GTK_ENTRY (proxy_address_entry));
 	port_text = gtk_entry_get_text (GTK_ENTRY (port_number_entry));
 
 	/* Update the http proxy only if there is some user input */
 	if (nautilus_strlen (proxy_text) > 0 && nautilus_strlen (port_text) > 0) {
-		char *proxy_url;
 		proxy_url = g_strdup_printf ("http://%s:%s", proxy_text, port_text);
 		set_http_proxy (proxy_url);
 		g_free (proxy_url);
@@ -712,7 +742,8 @@ set_page_sidebar (NautilusDruidPageEazel *page)
 	}
 }
 
-GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gboolean manage_desktop, const char *urls[])
+GtkWidget *
+nautilus_first_time_druid_show (NautilusApplication *application, gboolean manage_desktop, const char *urls[])
 {	
 	GtkWidget *dialog;
 	GtkWidget *druid;
@@ -869,17 +900,12 @@ download_callback (GnomeVFSResult result,
 	GnomeDruid *druid;
 	char *temporary_file;
 	char *remove_command;
-
-	/* FIXME this is a cheap work-around to the problem
-	 * that the user can get beyond the download
-	 * page and leave the druid before the download is complete
-	 */
-	if (!has_druid_exited) {
-		druid = GNOME_DRUID (callback_data);
-	} else {
-		druid = NULL;
-	}
 	
+	druid = GNOME_DRUID (callback_data);
+	
+	/* Let the caller know we're done. */
+	gtk_object_remove_no_notify (GTK_OBJECT (druid), READ_FILE_HANDLE_TAG);
+
 	/* check for errors */
 	if (result == GNOME_VFS_OK) {
 		/* there was no error, so write out the file into the /tmp directory */
@@ -891,10 +917,8 @@ download_callback (GnomeVFSResult result,
 		fclose (outfile);
 		g_free (file_contents);
 
-		if (!has_druid_exited) {
-			/* change the message to expanding file */
-			nautilus_label_set_text (NAUTILUS_LABEL (download_label), _("Decoding Update..."));
-		}
+		/* change the message to expanding file */
+		nautilus_label_set_text (NAUTILUS_LABEL (download_label), _("Decoding Update..."));
 		
 		/* expand the directory into the proper place */
 		/* first, formulate the command string */
@@ -911,25 +935,19 @@ download_callback (GnomeVFSResult result,
 		/* Remove the temporary file */
 		expand_result = system (remove_command);
 
-		if (!has_druid_exited) {
-			nautilus_label_set_text (NAUTILUS_LABEL (download_label), _("Update Completed... Press Next to Continue."));
-		}
+		nautilus_label_set_text (NAUTILUS_LABEL (download_label), _("Update Completed... Press Next to Continue."));
 			
 		g_free (user_directory_path);
 		g_free (untar_command);
 		g_free (remove_command);
 
-		if (!has_druid_exited) {
-			/* now that we're done, reenable the buttons */
-			gtk_widget_set_sensitive (druid->next, TRUE);
-			gtk_widget_set_sensitive (druid->back, TRUE);
-		}
-	} else if (has_druid_exited) {
-		return;
+		/* now that we're done, reenable the buttons */
+		gtk_widget_set_sensitive (druid->next, TRUE);
+		gtk_widget_set_sensitive (druid->back, TRUE);
 	} else {
 		/* there was an error; see if we can't find some HTTP proxy config info */
-		/* note that attempt_http_proxy_autoconfigure() returns FALSE if its already been tried */ 
-		if (attempt_http_proxy_autoconfigure()) {
+		/* note that attempt_http_proxy_autoconfigure returns FALSE if it's already been tried */ 
+		if (attempt_http_proxy_autoconfigure ()) {
 			initiate_file_download (druid);
 		} else {
 			/* Autoconfiguration didn't work; prompt the user */
@@ -942,31 +960,45 @@ download_callback (GnomeVFSResult result,
 /* Note that this may be invoked more than once, if the first time fails */
 
 static void
+read_file_handle_cancel_cover (gpointer data)
+{
+	NautilusReadFileHandle *handle;
+
+	handle = data;
+	nautilus_read_file_cancel (handle);
+}
+
+static void
 initiate_file_download (GnomeDruid *druid)
 {
-	NautilusReadFileHandle *file_handle;
-	const char *file_uri = "http://services.eazel.com/downloads/eazel/updates.tgz";
+	NautilusReadFileHandle *handle;
 
-	/* disable the next and previous buttons during the  file loading process */
+	/* disable the next and previous buttons during the file loading process */
 	gtk_widget_set_sensitive (druid->next, FALSE);
 	gtk_widget_set_sensitive (druid->back, FALSE);
 
+	/* Cancel any download already in progress. */
+	gtk_object_remove_data (GTK_OBJECT (druid), READ_FILE_HANDLE_TAG);
+			
 	/* FIXME We might hang here for a while; if we do, we don't want
 	 * the user to get forced through the druid again
 	 */
-	druid_set_first_time_file_flag();
+	druid_set_first_time_file_flag ();
 
-#if 0
-	/* initiate the file transfer */
-	file_handle = nautilus_read_entire_file_async (file_uri, download_callback, druid);
-#else
-	if (check_network_connectivity()) {
+	if (check_network_connectivity ()) {
 		/* initiate the file transfer */
-		file_handle = nautilus_read_entire_file_async (file_uri, download_callback, druid);
+		handle = nautilus_read_entire_file_async
+			(WELCOME_PACKAGE_URI, download_callback, druid);
+		if (handle != NULL) {
+			/* cancel the transfer if the druid goes away */
+			gtk_object_set_data_full (GTK_OBJECT (druid),
+						  READ_FILE_HANDLE_TAG,
+						  handle,
+						  read_file_handle_cancel_cover);
+		}
 	} else {
 		download_callback (GNOME_VFS_ERROR_GENERIC, 0, NULL, druid);
 	}
-#endif /* 0 */
 }
 
 /**
@@ -1025,10 +1057,10 @@ set_http_proxy (const char *proxy_url)
 /**
  * getline_dup
  *
- * reads newline or EOF terminated line from stream, allocating the return
+ * reads newline (or CR) or EOF terminated line from stream, allocating the return
  * buffer as appropriate
- */ 
-#define GETLINE_INITIAL 256
+ **/
+/* FIXME: Belongs in a library, not here. */
 static char * 
 getline_dup (FILE* stream)
 {
@@ -1038,13 +1070,13 @@ getline_dup (FILE* stream)
 	int char_read;
 	gboolean done;
 
-	ret = g_malloc( GETLINE_INITIAL * sizeof(char) );
-	ret_size = GETLINE_INITIAL;
+	ret = g_malloc (GETLINE_INITIAL_BUFFER_SIZE);
+	ret_size = GETLINE_INITIAL_BUFFER_SIZE;
 
 	for ( ret_used = 0, done = FALSE ;
 	      !done && (EOF != (char_read = fgetc (stream))) ; 
-	      ret_used++
-	) {
+	      ret_used++) {
+		
 		if (ret_size == (ret_used + 1)) {
 			ret_size *= 2;
 			ret = g_realloc (ret, ret_size); 
@@ -1057,7 +1089,7 @@ getline_dup (FILE* stream)
 		}
 	}
 
-	if ( 0 == ret_used ) {
+	if (ret_used == 0) {
 		g_free (ret);
 		ret = NULL;
 	} else {
@@ -1067,29 +1099,32 @@ getline_dup (FILE* stream)
 	return ret;
 }
 
-#define NETSCAPE_PREFS_PATH "/.netscape/preferences.js"
-
 /* user_pref("network.proxy.http", "localhost");
  * user_pref("network.proxy.http_port", 8080);
  * user_pref("network.proxy.type", 1);
  */
 static char *
-load_nscp_proxy_settings ()
+load_netscape_proxy_settings (void)
 {
-	char * prefs_path = NULL;
-	char * ret = NULL;
-	char * proxy_host = NULL;
-	guint32 proxy_port = 8080;
-	gboolean has_proxy_type = FALSE;
+	char *prefs_path;
+	char *ret ;
+	char *proxy_host;
+	guint32 proxy_port;
+	gboolean has_proxy_type;
 
-	char * line;
-	char * current, *end;
-	FILE * prefs_file;
+	char *line;
+	char *current, *end;
+	FILE *prefs_file;
+
+	ret = NULL;
+	proxy_host = NULL;
+	proxy_port = 8080;
+	has_proxy_type = FALSE;
 
 	prefs_path = g_strconcat (g_get_home_dir (), NETSCAPE_PREFS_PATH, NULL);
-	prefs_file = fopen (prefs_path, "r");
 
-	if ( NULL == prefs_file ) {
+	prefs_file = fopen (prefs_path, "r");
+	if (prefs_file == NULL) {
 		goto error;
 	}
 
@@ -1143,13 +1178,10 @@ load_nscp_proxy_settings ()
 error:
 	g_free (proxy_host);
 	g_free (prefs_path);
-	prefs_path = NULL;
 
 	return ret;
 }
 
-
-#define GALEON_PREFS_PATH "/.gnome/galeon"
 
 /* http_proxy=localhost
  * http_proxy_port=4128
@@ -1223,7 +1255,7 @@ attempt_http_proxy_autoconfigure (void)
 	}
 
 	/* Check Netscape 4.x settings */
-	proxy_url = load_nscp_proxy_settings ();
+	proxy_url = load_netscape_proxy_settings ();
 	if (NULL != proxy_url) {
 		success = TRUE;
 		set_http_proxy (proxy_url);
@@ -1247,15 +1279,11 @@ done:
 	return success;
 }
 
-static gboolean sigalrm_occurred = FALSE;
-static pid_t child_pid;
-
-static void my_sigalrm_handler (int sig)
+static void
+sigalrm_handler (int sig)
 {
 	sigalrm_occurred = TRUE;
 	kill (child_pid, SIGKILL);
-
-	return;
 }
 
 /* Do a simple DNS lookup wrapped in sigalrm to check the presense of the network
@@ -1270,30 +1298,26 @@ check_dns_resolution (const char *host)
 {
 	struct hostent *my_hostent;
 	int child_status;
+	void *sigalrm_old;
 
 	sigalrm_occurred = FALSE;
 
-	if ( 0 == (child_pid = fork())) {
+	child_pid = fork ();
+	if (child_pid == 0) {
 		my_hostent = gethostbyname (host);
 		_exit (0);
 	}
 
-	if (child_pid > 0 ) {
-		void *sigalrm_old;
-		sigalrm_old = signal (SIGALRM, my_sigalrm_handler);
-
+	if (child_pid > 0) {
+		sigalrm_old = signal (SIGALRM, sigalrm_handler);
 		alarm (NETWORK_CHECK_TIMEOUT_SECONDS);
-
 		waitpid (child_pid, &child_status, 0);
-		
 		alarm (0);
-
 		signal (SIGALRM, sigalrm_old);	
 	}
-
-	return ! sigalrm_occurred;
+	
+	return !sigalrm_occurred;
 }
-
 
 static gboolean
 check_network_connectivity (void) 
@@ -1310,8 +1334,7 @@ check_network_connectivity (void)
 		ret = check_dns_resolution (DEFAULT_DNS_CHECK_HOST);
 	}
 
-	network_status = ret ? Success : Fail ;
+	network_status = ret ? Success : Fail;
 
 	return ret;
 }
-

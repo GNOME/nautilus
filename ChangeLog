@@ -1,3 +1,30 @@
+2000-11-07  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-file-operations.h:
+	* libnautilus-extensions/nautilus-file-operations.c:
+	* src/nautilus-first-time-druid.h:
+	Tweak to match Nautilus coding style.
+	
+	* src/nautilus-first-time-druid.c: (druid_cancel): Added FIXME
+	about the way it quits Nautilus when you cancel.
+	(druid_finished): Use #define constants instead of hard-coded
+	URLs.
+	(make_anti_aliased_label): Put FIXME where a font and size are
+	hard-coded.
+	(make_hbox_user_level_radio_button): Put FIXME where a font is
+	hard-coded.
+	(set_up_user_level_page): Put FIXME where a font size is
+	hard-coded.
+	(next_update_page_callback): Put FIXME where a comment mentions
+	a "timer task" that does not exist.
+	(nautilus_first_time_druid_show), (download_callback),
+	(read_file_handle_cancel_cover), (initiate_file_download): Got rid
+	of "cheap workaround" for when the druid goes away; instead, we
+	cancel the I/O.
+	
+	Other tweaks to be at least in the vicinity of Nautilus coding
+	style.
+
 2000-11-07  Maciej Stachowiak  <mjs@eazel.com>
 
 	* nautilus-installer/src/prescript: Make the installer run
