@@ -99,7 +99,7 @@
 #define CONTAINER_PAD_TOP 4
 #define CONTAINER_PAD_BOTTOM 4
 
-#define STANDARD_ICON_GRID_WIDTH 145
+#define STANDARD_ICON_GRID_WIDTH 155
 
 /* Desktop layout mode defines */
 #define DESKTOP_PAD_HORIZONTAL 	30
@@ -827,22 +827,9 @@ resort (NautilusIconContainer *container)
 	sort_icons (container, &container->details->icons);
 }
 
-/* Given an icon's bounds, compute the width of the space it should be
- * placed in.
- */
-static int
-get_icon_space_width (NautilusIconContainer *container, const ArtDRect *bounds)
+static double
+get_grid_width (NautilusIconContainer *container)
 {
-	double world_width;
-
-	world_width = ICON_PAD_LEFT + (bounds->x1 - bounds->x0) + ICON_PAD_RIGHT;
-	if (container->details->tighter_layout) {
-		return world_width + 8; /* 8 pixels extra for fancy selection box */
-	}
-	
-	if (world_width > STANDARD_ICON_GRID_WIDTH)
-		return world_width;
-	
 	return STANDARD_ICON_GRID_WIDTH;
 }
 
@@ -884,7 +871,6 @@ lay_down_one_line (NautilusIconContainer *container,
 	}
 }
 
-
 static void
 lay_down_icons_horizontal (NautilusIconContainer *container,
 			   GList *icons,
@@ -892,7 +878,7 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 {
 	GList *p, *line_start;
 	NautilusIcon *icon;
-	double canvas_width, line_width, space_width, y;
+	double canvas_width, y;
 	GArray *positions;
 	IconPositions *position;
 	ArtDRect bounds;
@@ -900,6 +886,11 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 	EelCanvasItem *item;
 	double max_height_above, max_height_below;
 	double height_above, height_below;
+	int icons_per_line;
+	double line_width;
+	gboolean gridded_layout;
+	double grid_width;
+	int icon_width;
 	int i;
 
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
@@ -911,10 +902,18 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 			- container->details->left_margin
 			- container->details->right_margin)
 		/ EEL_CANVAS (container)->pixels_per_unit;
+
+	icon = icons->data;
+	grid_width = get_grid_width (container);
+	icons_per_line = floor (canvas_width / grid_width);
+
+	gridded_layout = !nautilus_icon_container_is_tighter_layout (container);
+	
 	line_width = 0;
 	line_start = icons;
 	y = start_y;
 	i = 0;
+	
 	max_height_above = 0;
 	max_height_below = 0;
 	for (p = icons; p != NULL; p = p->next) {
@@ -927,8 +926,12 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 		eel_canvas_item_get_bounds (item,
 					      &bounds.x0, &bounds.y0,
 					      &bounds.x1, &bounds.y1);
-		
-		space_width = get_icon_space_width (container, &bounds);
+
+		if (gridded_layout) {
+			icon_width = ceil ((bounds.x1 - bounds.x0)/grid_width) * grid_width;
+		} else {
+			icon_width = ICON_PAD_LEFT + (bounds.x1 - bounds.x0) + ICON_PAD_RIGHT + 8; /* 8 pixels extra for fancy selection box */
+		}
 		
 		icon_bounds = nautilus_icon_canvas_item_get_icon_rectangle (icon->item);
 
@@ -942,7 +945,7 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 		 * the last column just like we guarantee a small white space to the left of
 		 * the first column?
 		 */
-		if (line_start != p && line_width + space_width - ICON_PAD_RIGHT > canvas_width) {
+		if (line_start != p && line_width + icon_width - ICON_PAD_RIGHT > canvas_width ) {
 			/* Advance to the baseline. */
 			y += ICON_PAD_TOP + max_height_above;
 			
@@ -968,12 +971,12 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 		
 		g_array_set_size (positions, i + 1);
 		position = &g_array_index (positions, IconPositions, i++);
-		position->width = space_width;
-		position->x_offset = (space_width - (icon_bounds.x1 - icon_bounds.x0)) / 2;
+		position->width = icon_width;
+		position->x_offset = (icon_width - (icon_bounds.x1 - icon_bounds.x0)) / 2;
 		position->y_offset = icon_bounds.y0 - icon_bounds.y1;
 
 		/* Add this icon. */
-		line_width += space_width;
+		line_width += icon_width;
 	}
 
 	/* Lay down that last line of icons. */
