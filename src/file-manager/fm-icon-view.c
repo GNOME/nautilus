@@ -1185,7 +1185,7 @@ icon_container_preview_callback (NautilusIconContainer *container,
 				 FMIconView *icon_view)
 {
 	int result;
-	char *mime_type;
+	char *mime_type, *file_name, *message;
 
 	mime_type = nautilus_file_get_mime_type(file);
 	result = 0;
@@ -1196,10 +1196,22 @@ icon_container_preview_callback (NautilusIconContainer *container,
 	if (nautilus_str_has_prefix(mime_type, "audio/")) {   	
 		result = 1;
 		preview_sound(file, start_flag);
-	}
-	
+	}	
 	g_free(mime_type);
 
+	/* display file name in status area at low zoom levels, since the name is not displayed or hard to read */
+	if (fm_icon_view_get_zoom_level (icon_view) <= NAUTILUS_ZOOM_LEVEL_SMALLER) {
+		if (start_flag) {
+			file_name = nautilus_file_get_name(file);
+			message = g_strdup_printf(_("pointing at \"%s\""), file_name);
+			nautilus_view_report_status (fm_directory_view_get_nautilus_view(FM_DIRECTORY_VIEW(icon_view)), message);
+			g_free(message);
+			g_free(file_name);
+		} else {
+			fm_directory_view_display_selection_info(FM_DIRECTORY_VIEW(icon_view));
+		}
+	}
+	
 	return result;
 }
 
