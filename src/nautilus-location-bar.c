@@ -445,6 +445,7 @@ editable_key_press_callback (GtkObject *object,
 	int position;
 	gboolean *return_value_location;
 	NautilusLocationBar *bar;
+	char *unexpanded_text;
 	char *expanded_text;
 	
 	g_assert (n_args == 1);
@@ -473,9 +474,13 @@ editable_key_press_callback (GtkObject *object,
 	}
 
 	if (event->keyval == GDK_slash) {
-		expanded_text = gnome_vfs_expand_initial_tilde (gtk_entry_get_text (GTK_ENTRY (editable)));
+		unexpanded_text = gtk_entry_get_text (GTK_ENTRY (editable));
+		expanded_text = gnome_vfs_expand_initial_tilde (unexpanded_text);
 
-		gtk_entry_set_text (GTK_ENTRY (editable), expanded_text);
+		if (strcmp (unexpanded_text, expanded_text) != 0) {
+			gtk_entry_set_text (GTK_ENTRY (editable), expanded_text);
+		}
+
 		g_free (expanded_text);
 	}
 	
