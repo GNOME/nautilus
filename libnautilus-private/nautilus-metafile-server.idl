@@ -35,6 +35,7 @@ module Nautilus {
 	 */
 	interface MetafileMonitor : ::Bonobo::Unknown {
 		void metafile_changed (in FileNameList file_names);
+		void metafile_ready ();
 	};
 
 	typedef sequence<string> MetadataList;

@@ -180,6 +180,7 @@ void               nautilus_directory_emit_files_changed              (NautilusD
 								       GList                     *changed_files);
 void               nautilus_directory_emit_change_signals             (NautilusDirectory         *directory,
 								       GList                     *changed_files);
+void               emit_change_signals_for_all_files		      (NautilusDirectory	 *directory);
 void               nautilus_directory_emit_done_loading               (NautilusDirectory         *directory);
 void               nautilus_directory_emit_load_error                 (NautilusDirectory         *directory,
 								       GnomeVFSResult             error_result);
@@ -193,6 +194,8 @@ void               nautilus_directory_set_up_request                  (Request  
 NautilusFile *     nautilus_directory_find_file_by_name               (NautilusDirectory         *directory,
 								       const char                *relative_uri);
 NautilusFile *     nautilus_directory_find_file_by_relative_uri       (NautilusDirectory         *directory,
+								       const char                *relative_uri);
+NautilusFile *     nautilus_directory_find_file_by_internal_uri       (NautilusDirectory         *directory,
 								       const char                *relative_uri);
 void               nautilus_directory_add_file                        (NautilusDirectory         *directory,
 								       NautilusFile              *file);

@@ -1,3 +1,28 @@
+2001-02-28  Michael Engber  <engber@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(metafile_read_mark_done):
+	* libnautilus-extensions/nautilus-directory-metafile-monitor.c:
+	(nautilus_metafile_monitor_get_epv), (corba_metafile_changed),
+	(corba_metafile_ready):
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_find_file_by_relative_uri),
+	(nautilus_directory_find_file_by_internal_uri):
+	* libnautilus-extensions/nautilus-metafile-server.idl:
+	* libnautilus-extensions/nautilus-metafile.c: (corba_set),
+	(corba_set_list),
+	(nautilus_metafile_notify_metafile_ready),
+	(call_metafile_changed),
+	(call_metafile_changed_for_all_files_mentioned_in_metafile),
+	(call_metafile_changed_for_one_file):
+	* libnautilus-extensions/nautilus-metafile.h:
+	When a metafile is read in - change signals are sent to all
+	files rather than just the ones with metadata. Also fixed
+	it so change notifications to the "." file will happen. Bug 7044.
+
 2001-02-28  Andy Hertzfeld  <andy@eazel.com>
 
 	fixed bug 7138, non-ASCII characters in author's names causes

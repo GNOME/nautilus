@@ -121,7 +121,7 @@ static void copy_file_metadata   (NautilusDirectory *source_directory,
 static void remove_file_metadata (NautilusDirectory *directory,
 				  const char *file_name);
 
-static void call_metatfile_changed_for_one_file (NautilusDirectory *directory,
+static void call_metafile_changed_for_one_file (NautilusDirectory *directory,
 						 const CORBA_char  *file_name);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMetafile, nautilus_metafile, BONOBO_OBJECT_TYPE)
@@ -325,7 +325,7 @@ corba_set (PortableServer_Servant  servant,
 	directory = metafile->details->directory;
 
 	if (set_file_metadata (directory, file_name, key, default_value, metadata)) {
-		call_metatfile_changed_for_one_file (directory, file_name);
+		call_metafile_changed_for_one_file (directory, file_name);
 	}
 }
 
@@ -353,7 +353,7 @@ corba_set_list (PortableServer_Servant      servant,
 	metadata_list = g_list_reverse (metadata_list);
 	
 	if (set_file_metadata_list (directory, file_name, list_key, list_subkey, metadata_list)) {
-		call_metatfile_changed_for_one_file (directory, file_name);
+		call_metafile_changed_for_one_file (directory, file_name);
 	}
 	
 	g_list_free (metadata_list);
@@ -534,8 +534,31 @@ corba_unregister_monitor (PortableServer_Servant          servant,
 	}
 }
 
+void
+nautilus_metafile_notify_metafile_ready (NautilusDirectory *directory)
+{
+	GList                     *node;
+	CORBA_Environment          ev;
+	Nautilus_MetafileMonitor   monitor;		
+	DirectoryMonitorListEntry *entry;
+
+	entry = g_hash_table_lookup (directory_monitor_lists, directory);
+	
+	if (entry != NULL) {
+		CORBA_exception_init (&ev);
+		
+		for (node = entry->monitors; node != NULL; node = node->next) {
+			monitor = node->data;
+			Nautilus_MetafileMonitor_metafile_ready (monitor, &ev);
+			/* FIXME bugzilla.eazel.com 6664: examine ev for errors */
+		}
+		
+		CORBA_exception_free (&ev);
+	}
+}
+
 static void
-call_metatfile_changed (NautilusDirectory *directory,
+call_metafile_changed (NautilusDirectory *directory,
 	                const Nautilus_FileNameList  *file_names)
 {
 	GList                     *node;
@@ -589,23 +612,23 @@ call_metafile_changed_for_all_files_mentioned_in_metafile (NautilusDirectory *di
 				      file_list_filler_ghfunc,
 				      &file_names);
 
-		call_metatfile_changed (directory, &file_names);
+		call_metafile_changed (directory, &file_names);
 
 		g_free (file_names._buffer);
 	}
 }
 
 static void
-call_metatfile_changed_for_one_file (NautilusDirectory *directory,
+call_metafile_changed_for_one_file (NautilusDirectory *directory,
 				     const CORBA_char  *file_name)
 {
-	Nautilus_FileNameList file_names;
+	Nautilus_FileNameList file_names = {0};
 	
 	file_names._maximum =  1;
 	file_names._length  =  1;
 	file_names._buffer  =  (CORBA_char **) &file_name;
 
-	call_metatfile_changed (directory, &file_names);
+	call_metafile_changed (directory, &file_names);
 }
 
 typedef struct {
@@ -1451,3 +1474,4 @@ nautilus_metafile_set_metafile_contents (NautilusDirectory *directory,
 		}
 	}
 }
+

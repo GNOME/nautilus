@@ -458,7 +458,7 @@ metafile_read_mark_done (NautilusDirectory *directory)
 	nautilus_metafile_apply_pending_changes (directory);
 
 	/* Tell change-watchers that we have update information. */
-	call_metafile_changed_for_all_files_mentioned_in_metafile (directory);
+	nautilus_metafile_notify_metafile_ready (directory);
 
 	/* Let the callers that were waiting for the metafile know. */
 	nautilus_directory_async_state_changed (directory);

@@ -44,6 +44,9 @@ static void corba_metafile_changed (PortableServer_Servant       servant,
 				    const Nautilus_FileNameList *file_names,
 				    CORBA_Environment           *ev);
 
+static void corba_metafile_ready   (PortableServer_Servant       servant,
+				    CORBA_Environment           *ev);
+
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusMetafileMonitor, nautilus_metafile_monitor, BONOBO_OBJECT_TYPE)
 
 static void
@@ -58,6 +61,7 @@ nautilus_metafile_monitor_get_epv (void)
 	static POA_Nautilus_MetafileMonitor__epv epv;
 
 	epv.metafile_changed = corba_metafile_changed;
+	epv.metafile_ready = corba_metafile_ready;
 	
 	return &epv;
 }
@@ -139,7 +143,7 @@ corba_metafile_changed (PortableServer_Servant       servant,
 	file_list = NULL;
 	
 	for (buf_pos = 0; buf_pos < file_names->_length; ++buf_pos) {
-		file = nautilus_directory_find_file_by_relative_uri
+		file = nautilus_directory_find_file_by_internal_uri
 			(monitor->details->directory, file_names->_buffer [buf_pos]);
 
 		if (file != NULL) {
@@ -156,4 +160,15 @@ corba_metafile_changed (PortableServer_Servant       servant,
 		nautilus_directory_emit_change_signals (monitor->details->directory, file_list);
 		g_list_free (file_list);
 	}
+}
+
+static void
+corba_metafile_ready (PortableServer_Servant       servant,
+		      CORBA_Environment           *ev)
+{
+	NautilusMetafileMonitor *monitor;
+
+	monitor = NAUTILUS_METAFILE_MONITOR (bonobo_object_from_servant (servant));
+
+	emit_change_signals_for_all_files (monitor->details->directory);
 }
