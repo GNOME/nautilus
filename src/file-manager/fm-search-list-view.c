@@ -147,8 +147,7 @@ load_error_callback (FMDirectoryView *nautilus_view,
 		generic_error_string = g_strdup_printf (_("Every indexed file on your computer "
 							  "matches the criteria you selected. "
 							  "You can check the spelling on your selections "
-							  "or add more criteria to narrow your results."),
-							NULL);
+							  "or add more criteria to narrow your results."));
 		load_error_dialog = nautilus_error_dialog (generic_error_string,
 							   "Error during directory load",
 							   NULL);
