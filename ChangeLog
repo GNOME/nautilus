@@ -1,3 +1,18 @@
+2001-01-23  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	* src/nautilus-theme-selector.c:
+	(nautilus_theme_selector_initialize):
+	Band aid fix for bug 5910 - Font size for Theme name is too large
+	in "Nautilus Theme Selector" dialog.  I made the column larger to
+	fit up to and including the length of the currently largest known
+	theme name "Crux-Eggplant"
+
+	There are many reason why this is a lame band aid fix.  The real
+	fix is to not hard code any geometry in this code.  I filed a bug
+	for that (5951).
+
 2001-01-22  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/eazel-alt-install-corba.
