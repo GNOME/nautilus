@@ -116,6 +116,9 @@ enum
 #define NAUTILUS_PREFERENCES_ICON_VIEW_FONT				"icon-view/font"
 #define NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT			"icon-view/smooth_font"
 
+/* Which text attributes appear beneath icon names */
+#define NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS				"icon-view/captions"
+
 /* List View */
 #define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"list-view/default_sort_in_reverse_order"
 #define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER		"list-view/default_sort_order"

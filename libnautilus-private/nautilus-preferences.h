@@ -104,12 +104,16 @@ void           nautilus_preferences_remove_callback                 (const char 
 /* Variables that are automatically updated (lightweight "callbacks") */
 void           nautilus_preferences_add_auto_string                 (const char                   *name,
 								     const char                  **storage);
+void           nautilus_preferences_add_auto_string_list            (const char                   *name,
+								     const EelStringList         **storage);
 void           nautilus_preferences_add_auto_integer                (const char                   *name,
 								     int                          *storage);
 void           nautilus_preferences_add_auto_boolean                (const char                   *name,
 								     gboolean                     *storage);
 void           nautilus_preferences_remove_auto_string              (const char                   *name,
 								     const char                  **storage);
+void           nautilus_preferences_remove_auto_string_list         (const char                   *name,
+								     const EelStringList         **storage);
 void           nautilus_preferences_remove_auto_integer             (const char                   *name,
 								     int                          *storage);
 void           nautilus_preferences_remove_auto_boolean             (const char                   *name,

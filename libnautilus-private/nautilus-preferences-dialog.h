@@ -36,25 +36,22 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_IS_PREFERENCES_DIALOG(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_PREFERENCES_DIALOG))
 #define NAUTILUS_IS_PREFERENCES_DIALOG_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_PREFERENCES_DIALOG))
 
+typedef struct NautilusPreferencesDialog	    NautilusPreferencesDialog;
+typedef struct NautilusPreferencesDialogClass	    NautilusPreferencesDialogClass;
+typedef struct NautilusPreferencesDialogDetails	    NautilusPreferencesDialogDetails;
 
-typedef struct _NautilusPreferencesDialog	      NautilusPreferencesDialog;
-typedef struct _NautilusPreferencesDialogClass      NautilusPreferencesDialogClass;
-typedef struct _NautilusPreferencesDialogDetails    NautilusPreferencesDialogDetails;
-
-struct _NautilusPreferencesDialog
+struct NautilusPreferencesDialog
 {
 	/* Super Class */
-	GnomeDialog				gnome_dialog;
-
+	GnomeDialog gnome_dialog;
+	
 	/* Private stuff */
-	NautilusPreferencesDialogDetails	*details;
+	NautilusPreferencesDialogDetails *details;
 };
 
-struct _NautilusPreferencesDialogClass
+struct NautilusPreferencesDialogClass
 {
 	GnomeDialogClass parent_class;
-
-	void (*activate) (GtkWidget * prefs_dialog, gint entry_number);
 };
 
 GtkType    nautilus_preferences_dialog_get_type      (void);

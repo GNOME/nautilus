@@ -48,6 +48,7 @@
 /* Constants */
 static const char untranslated_global_preferences_dialog_title[] = N_("Nautilus Preferences");
 #define GLOBAL_PREFERENCES_DIALOG_TITLE _(untranslated_global_preferences_dialog_title)
+#define STRING_LIST_DEFAULT_TOKENS_DELIMETER ","
 
 /* Preference names for known sidebar panels.  These are used to install the default
  * enabled state for the panel.  Unknown panels will have a default enabled state of FALSE.
@@ -90,7 +91,8 @@ typedef enum
 {
 	PREFERENCE_BOOLEAN = 1,
 	PREFERENCE_INTEGER,
-	PREFERENCE_STRING
+	PREFERENCE_STRING,
+	PREFERENCE_STRING_LIST
 } PreferenceType;
 
 /* Enumerations used to qualify some INTEGER preferences */
@@ -191,6 +193,21 @@ static EelEnumerationEntry standard_font_size_entries[] = {
 	{ NULL }
 };
 
+static EelEnumerationEntry icon_captions_enum_entries[] = {
+	{ "size",	       N_("size"),		0 },
+	{ "type",	       N_("type"),		1 },
+	{ "date_modified",     N_("date modified"),	2 },
+	{ "date_changed",      N_("date changed"),	3 }, 
+	{ "date_accessed",     N_("date accessed"),	4 }, 
+	{ "owner",	       N_("owner"),		5 }, 
+	{ "group",	       N_("group"),		6 }, 
+	{ "permissions",       N_("permissions"),	7 }, 
+	{ "octal_permissions", N_("octal permissions"),	8 }, 
+	{ "mime_type",	       N_("MIME type"),		9 }, 
+	{ "none",	       N_("none"),		10 }, 
+	{ NULL }
+};
+
 /* These enumerations are used in the preferences dialog to 
  * populate widgets and route preferences changes between the
  * storage (GConf) and the displayed values.
@@ -205,6 +222,7 @@ static EelEnumerationInfo enumerations[] = {
 	{ "search_bar_type",		search_bar_type_enum_entries },
 	{ "speed_tradeoff",		speed_tradeoff_enum_entries },
 	{ "standard_font_size",		standard_font_size_entries },
+	{ "icon_captions",		icon_captions_enum_entries },
 	{ NULL }
 };
 
@@ -255,6 +273,7 @@ typedef struct
  *	PREFERENCE_BOOLEAN
  *	PREFERENCE_INTEGER
  *	PREFERENCE_STRING
+ *	PREFERENCE_STRING_LIST
  * 
  * 3. visible_user_level
  *    The visible user level is the first user level at which the
@@ -433,11 +452,12 @@ static const PreferenceDefault preference_defaults[] = {
 	  { NAUTILUS_USER_LEVEL_NOVICE, GINT_TO_POINTER (FALSE) },
 	  { USER_LEVEL_NONE }
 	},
-	{ NAUTILUS_PREFERENCES_ICON_CAPTIONS,
-	  PREFERENCE_STRING,
+	{ NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
+	  PREFERENCE_STRING_LIST,
 	  NAUTILUS_USER_LEVEL_NOVICE,
-	  { NAUTILUS_USER_LEVEL_NOVICE, "size|date_modified|type" },
-	  { USER_LEVEL_NONE }
+	  { NAUTILUS_USER_LEVEL_NOVICE, "size,date_modified,type", },
+	  { USER_LEVEL_NONE },
+	  "icon_captions"
 	},
 	{ NAUTILUS_PREFERENCES_HIDE_BUILT_IN_BOOKMARKS,
 	  PREFERENCE_BOOLEAN,
@@ -683,8 +703,9 @@ global_preferences_register_enumerations (void)
 
 	/* Set the enumeration ids for preferences that need them */
 	for (i = 0; preference_defaults[i].name != NULL; i++) {
-		if (preference_defaults[i].type == PREFERENCE_INTEGER
-		    && eel_strlen (preference_defaults[i].enumeration_id) > 0) {
+		if (eel_strlen (preference_defaults[i].enumeration_id) > 0) {
+			g_assert (preference_defaults[i].type == PREFERENCE_INTEGER
+				  || preference_defaults[i].type == PREFERENCE_STRING_LIST);
 			nautilus_preferences_set_enumeration_id (preference_defaults[i].name,
 								 preference_defaults[i].enumeration_id);
 		}
@@ -697,10 +718,11 @@ global_preferences_install_one_default (const char *preference_name,
 					const PreferenceUserLevelDefault *user_level_default)
 {
 	gpointer value = NULL;
+	EelStringList *string_list_value;
 
 	g_return_if_fail (preference_name != NULL);
 	g_return_if_fail (preference_type >= PREFERENCE_BOOLEAN);
-	g_return_if_fail (preference_type <= PREFERENCE_STRING);
+	g_return_if_fail (preference_type <= PREFERENCE_STRING_LIST);
 	g_return_if_fail (user_level_default != NULL);
 
 	if (user_level_default->user_level == USER_LEVEL_NONE) {
@@ -731,6 +753,16 @@ global_preferences_install_one_default (const char *preference_name,
 		nautilus_preferences_default_set_string (preference_name,
 							 user_level_default->user_level,
 							 value);
+		break;
+		
+	case PREFERENCE_STRING_LIST:
+		string_list_value = eel_string_list_new_from_tokens (value,
+								     STRING_LIST_DEFAULT_TOKENS_DELIMETER,
+								     TRUE);
+		nautilus_preferences_default_set_string_list (preference_name,
+							      user_level_default->user_level,
+							      string_list_value);
+		eel_string_list_free (string_list_value);
 		break;
 		
 	default:
@@ -958,6 +990,16 @@ static PreferenceDialogItem directory_views_items[] = {
 	  NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
 	  N_("Always list folders before files"),
 	  NAUTILUS_PREFERENCE_ITEM_BOOLEAN
+	},
+	{ NULL }
+};
+
+static PreferenceDialogItem icon_captions_items[] = {
+	{ N_("Icon Captions"),
+	  NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
+	  N_("Choose the order for information to appear beneath icon names.\n"
+	     "More information appears as you zoom in closer"),
+	  NAUTILUS_PREFERENCE_ITEM_ENUMERATION_LIST_VERTICAL
 	},
 	{ NULL }
 };
@@ -1191,10 +1233,15 @@ global_preferences_create_dialog (void)
 					  _("Windows & Desktop"),
 					  windows_and_desktop_items);
 
-	/* Folder Views */
+	/* Directory Views */
 	global_preferences_populate_pane (preference_box,
 					  _("Icon & List Views"),
 					  directory_views_items);
+
+	/* Icon Captions */
+	global_preferences_populate_pane (preference_box,
+					  _("Icon Captions"),
+					  icon_captions_items);
 
 	/* Sidebar Panels */
 	global_preferences_create_sidebar_panels_pane (preference_box);

@@ -1,3 +1,71 @@
+2001-04-17  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-gconf-extensions.c:
+	(simple_value_is_equal), (nautilus_gconf_value_is_equal):
+	Implement the missing GconfValue comparison for lists.
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	More consistent name for the icon captions preference.
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_register_enumerations): Allow enumeration ids
+	to be installed for string lists.  A bit of a hack to let
+	enumeration lists work in the NautilusPreferencesItem object.
+	(global_preferences_install_one_default): Add support for string
+	lists.
+	(global_preferences_create_dialog):
+	Move the icon captions widgetry from its own lonesome dialog into
+	the preferences dialog.
+	
+	* libnautilus-extensions/nautilus-preferences-box.h:
+	* libnautilus-extensions/nautilus-preferences-box.c:
+	(nautilus_preferences_box_new):
+	Remove unused parameter from constructor.  Remove some crufty
+	unused code.  Match the Nautilus style more.
+	
+	* libnautilus-extensions/nautilus-preferences-dialog.h:
+	* libnautilus-extensions/nautilus-preferences-dialog.c:
+	(nautilus_preferences_dialog_construct):
+	Remove some crufty unused signals, defines and code.  Match the
+	Nautilus style more.  Dont hard code the default size.  Let Gtk do
+	that work for us.  Remove unused dialog_destroy callback.
+
+	* libnautilus-extensions/nautilus-preferences-item.h:
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(preferences_item_destroy),
+	(preferences_item_update_enumeration_list),
+	(preferences_item_set_main_child),
+	(preferences_item_add_connection_child),
+	(preferences_item_create_enumeration_radio),
+	(preferences_item_create_enumeration_list),
+	(preferences_item_create_boolean),
+	(preferences_item_update_editable_string),
+	(preferences_item_create_editable_string),
+	(preferences_item_create_editable_integer),
+	(preferences_item_create_enumeration_menu),
+	(preferences_item_create_font), (preferences_item_create_padding),
+	(preferences_item_create_smooth_font),
+	(nautilus_preferences_item_new),
+	(enumeration_list_changed_callback),
+	(preferences_item_update_displayed_value):
+	Add support for enumerations lists.
+	Cleanup the way children are added to the main box.  Allow for
+	more than one child (for enum list support).  Keep a list of
+	widgets and their respective changed signal ids, so they can all
+	be blocked and unblocked when needed.
+	
+	* libnautilus-extensions/nautilus-preferences.h:
+	* libnautilus-extensions/nautilus-preferences.c:
+	(update_auto_string_list), (preferences_entry_update_auto_storage),
+	(preferences_entry_remove_auto_storage),
+	(nautilus_preferences_add_auto_string_list),
+	(nautilus_preferences_remove_auto_string),
+	(nautilus_preferences_remove_auto_string_list):
+	Add support for auto storage of string lists.  
+
+	* src/nautilus-application.c: (check_required_directories): Update
+	for EelStringList _as_string changes.
+
 2001-04-17  Josh Barrow  <josh@whitecape.org>
 
 	* AUTHORS:

@@ -363,21 +363,12 @@ nautilus_gconf_get_value (const char *key)
 	return value;
 }
 
-gboolean
-nautilus_gconf_value_is_equal (const GConfValue *a,
-			       const GConfValue *b)
+static gboolean
+simple_value_is_equal (const GConfValue *a,
+		       const GConfValue *b)
 {
-	if (a == NULL && b == NULL) {
-		return TRUE;
-	}
-
-	if (a == NULL || b == NULL) {
-		return FALSE;
-	}
-
-	if (a->type != b->type) {
-		return FALSE;
-	}
+	g_return_val_if_fail (a != NULL, FALSE);
+	g_return_val_if_fail (b != NULL, FALSE);
 
 	switch (a->type) {
 	case GCONF_VALUE_STRING:
@@ -395,14 +386,73 @@ nautilus_gconf_value_is_equal (const GConfValue *a,
 	case GCONF_VALUE_BOOL:
 		return a->d.bool_data == b->d.bool_data;
 		break;
-		
-	case GCONF_VALUE_LIST:
-		/* FIXME */
-		g_assert (0);
-		return FALSE;
 	default:
+		g_assert_not_reached ();
+	}
+	
+	return FALSE;
+}
+
+gboolean
+nautilus_gconf_value_is_equal (const GConfValue *a,
+			       const GConfValue *b)
+{
+	GSList *node_a;
+	GSList *node_b;
+
+	if (a == NULL && b == NULL) {
+		return TRUE;
 	}
 
+	if (a == NULL || b == NULL) {
+		return FALSE;
+	}
+
+	if (a->type != b->type) {
+		return FALSE;
+	}
+
+	switch (a->type) {
+	case GCONF_VALUE_STRING:
+	case GCONF_VALUE_INT:
+	case GCONF_VALUE_FLOAT:
+	case GCONF_VALUE_BOOL:
+		return simple_value_is_equal (a, b);
+		break;
+		
+	case GCONF_VALUE_LIST:
+		if (a->d.list_data.type != b->d.list_data.type) {
+			return FALSE;
+		}
+
+		if (a->d.list_data.list == NULL && b->d.list_data.list == NULL) {
+			return TRUE;
+		}
+
+		if (a->d.list_data.list != NULL || b->d.list_data.list != NULL) {
+			return FALSE;
+		}
+
+		if (g_slist_length (a->d.list_data.list) != g_slist_length (b->d.list_data.list)) {
+			return FALSE;
+		}
+		
+		for (node_a = a->d.list_data.list,node_b = b->d.list_data.list;
+		     node_a != NULL && node_b != NULL;
+		     node_a = node_a->next, node_b = node_b->next) {
+			g_assert (node_a->data != NULL);
+			g_assert (node_b->data != NULL);
+			if (!simple_value_is_equal (node_a->data, node_b->data)) {
+				return FALSE;
+			}
+		}
+		
+		return TRUE;
+	default:
+		/* FIXME: pair ? */
+		g_assert (0);
+	}
+	
 	g_assert_not_reached ();
 	return FALSE;
 }

@@ -32,15 +32,9 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
 
-enum
+struct NautilusPreferencesDialogDetails
 {
-	ACTIVATE,
-	LAST_SIGNAL
-};
-
-struct _NautilusPreferencesDialogDetails
-{
-	GtkWidget	*prefs_box;
+	GtkWidget *prefs_box;
 };
 
 static const gchar * stock_buttons[] =
@@ -54,9 +48,6 @@ static const gint OK_BUTTON = 0;
 static const gint DEFAULT_BUTTON = 0;
 static const guint DEFAULT_BORDER_WIDTH = 0;
 
-static const guint PREFS_DIALOG_DEFAULT_WIDTH = 500;
-static const guint PREFS_DIALOG_DEFAULT_HEIGHT = 403;
-
 enum 
 {
 	COMMAND_ROW = 0,
@@ -69,24 +60,22 @@ static void nautilus_preferences_dialog_initialize_class (NautilusPreferencesDia
 static void nautilus_preferences_dialog_initialize       (NautilusPreferencesDialog      *prefs_dialog);
 
 /* GtkObjectClass methods */
-static void nautilus_preferences_dialog_destroy          (GtkObject                *object);
-static void dialog_clicked                         (GtkWidget                *widget,
-						    gint                      n,
-						    gpointer                  data);
-static void dialog_show                            (GtkWidget                *widget,
-						    gpointer                  data);
-static void dialog_destroy                         (GtkWidget                *widget,
-						    gpointer                  data);
+static void nautilus_preferences_dialog_destroy          (GtkObject                      *object);
+static void dialog_clicked                               (GtkWidget                      *widget,
+							  gint                            n,
+							  gpointer                        data);
+static void dialog_show                                  (GtkWidget                      *widget,
+							  gpointer                        data);
 
 /* Misc private stuff */
 static void nautilus_preferences_dialog_construct        (NautilusPreferencesDialog      *prefs_dialog,
-						    const gchar              *dialog_title);
-static void user_level_changed_callback (gpointer callback_data);
+							  const gchar                    *dialog_title);
+static void user_level_changed_callback                  (gpointer                        callback_data);
 
 
 EEL_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesDialog, 
-				   nautilus_preferences_dialog, 
-				   gnome_dialog_get_type ())
+			      nautilus_preferences_dialog, 
+			      gnome_dialog_get_type ())
 
 /*
  * NautilusPreferencesDialogClass methods
@@ -136,14 +125,6 @@ dialog_show (GtkWidget * widget, gpointer data)
 }
 
 static void
-dialog_destroy (GtkWidget * widget, gpointer data)
-{
-	NautilusPreferencesDialog * prefs_dialog = (NautilusPreferencesDialog *) data;
-
-	g_assert(prefs_dialog);
-}
-
-static void
 nautilus_preferences_dialog_construct (NautilusPreferencesDialog *prefs_dialog,
 				       const gchar *dialog_title)
 {
@@ -164,16 +145,6 @@ nautilus_preferences_dialog_construct (NautilusPreferencesDialog *prefs_dialog,
 			       TRUE,			 /* allow_grow */
 			       FALSE);			 /* auto_shrink */
 
-	gtk_window_set_default_size (GTK_WINDOW (prefs_dialog),
-				     510,
-				     406);
-
-	/* Doesnt work in enlightenment or sawmill */
-#if 0
-	/* This is supposed to setup the window manager functions */
-	gdk_window_set_functions (GTK_WIDGET (prefs_dialog)->window, GDK_FUNC_MOVE | GDK_FUNC_RESIZE);
-#endif
-
  	gtk_container_set_border_width (GTK_CONTAINER(prefs_dialog), 
 					DEFAULT_BORDER_WIDTH);
 	
@@ -192,15 +163,10 @@ nautilus_preferences_dialog_construct (NautilusPreferencesDialog *prefs_dialog,
 			    GTK_SIGNAL_FUNC(dialog_show),
 			    prefs_dialog);
 	
-	gtk_signal_connect (GTK_OBJECT (prefs_dialog),
-			    "destroy",
-			    GTK_SIGNAL_FUNC (dialog_destroy),
-			    prefs_dialog);
-
 	/* Configure the GNOME_DIALOG's vbox */
  	g_assert (gnome_dialog->vbox);
 
-	prefs_dialog->details->prefs_box = nautilus_preferences_box_new (_("Prefs Box"));
+	prefs_dialog->details->prefs_box = nautilus_preferences_box_new ();
 	
 	gtk_box_set_spacing (GTK_BOX (gnome_dialog->vbox), 10);
 	

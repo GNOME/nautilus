@@ -41,7 +41,7 @@ typedef struct
 	GtkWidget *pane_widget;
 } PaneInfo;
 
-struct _NautilusPreferencesBoxDetails
+struct NautilusPreferencesBoxDetails
 {
 	GtkWidget *category_list;
 	GtkWidget *pane_notebook;
@@ -299,7 +299,7 @@ category_list_select_row_callback (GtkCList *clist,
  * NautilusPreferencesBox public methods
  */
 GtkWidget*
-nautilus_preferences_box_new (const char *box_title)
+nautilus_preferences_box_new (void)
 {
 	NautilusPreferencesBox *preferences_box;
 

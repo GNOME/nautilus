@@ -49,7 +49,8 @@ typedef enum
 {
 	PREFERENCE_BOOLEAN = 1,
 	PREFERENCE_INTEGER,
-	PREFERENCE_STRING
+	PREFERENCE_STRING,
+	PREFERENCE_STRING_LIST
 } PreferenceType;
 
 /*
@@ -784,6 +785,22 @@ update_auto_string (gpointer data, gpointer callback_data)
 }
 
 static void
+update_auto_string_list (gpointer data, gpointer callback_data)
+{
+	EelStringList **storage;
+	const EelStringList *value;
+	
+	g_return_if_fail (data != NULL);
+	g_return_if_fail (callback_data != NULL);
+
+	storage = (EelStringList **)data;
+	value = (const EelStringList *)callback_data;
+	
+	eel_string_list_free (*storage);
+	*(EelStringList **)storage = eel_string_list_copy (value);
+}
+
+static void
 update_auto_integer_or_boolean (gpointer data, gpointer callback_data)
 {
 	g_return_if_fail (data != NULL);
@@ -795,6 +812,7 @@ static void
 preferences_entry_update_auto_storage (PreferencesEntry *entry)
 {
 	char *new_string_value;
+	EelStringList *new_string_list_value;
 	int new_int_value;
 	gboolean new_boolean_value;
 
@@ -805,6 +823,13 @@ preferences_entry_update_auto_storage (PreferencesEntry *entry)
 				update_auto_string,
 				new_string_value);
 		g_free (new_string_value);
+		break;
+	case PREFERENCE_STRING_LIST:
+		new_string_list_value = nautilus_preferences_get_string_list (entry->name);
+		g_list_foreach (entry->auto_storage_list,
+				update_auto_string_list,
+				new_string_list_value);
+		eel_string_list_free (new_string_list_value);
 		break;
 	case PREFERENCE_INTEGER:
 		new_int_value = nautilus_preferences_get_integer (entry->name);
@@ -1070,6 +1095,9 @@ preferences_entry_remove_auto_storage (PreferencesEntry *entry,
 			case PREFERENCE_STRING:
 				update_auto_string (storage, NULL);
 				break;
+			case PREFERENCE_STRING_LIST:
+				update_auto_string_list (storage, NULL);
+				break;
 			case PREFERENCE_BOOLEAN:
 			case PREFERENCE_INTEGER:
 				update_auto_integer_or_boolean (storage, 0);
@@ -1303,6 +1331,27 @@ nautilus_preferences_add_auto_string (const char *name,
 }
 
 void
+nautilus_preferences_add_auto_string_list (const char *name,
+					   const EelStringList **storage)
+{
+	PreferencesEntry *entry;
+	EelStringList *value;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (storage != NULL);
+	g_return_if_fail (preferences_is_initialized ());
+
+	entry = preferences_global_table_lookup_or_insert (name);
+	g_assert (entry != NULL);
+
+	preferences_entry_add_auto_storage (entry, storage, PREFERENCE_STRING_LIST);
+
+	value = nautilus_preferences_get_string_list (entry->name);
+	update_auto_string_list (storage, value);
+	eel_string_list_free (value);
+}
+
+void
 nautilus_preferences_add_auto_integer (const char *name,
 				       int *storage)
 {
@@ -1345,6 +1394,25 @@ nautilus_preferences_add_auto_boolean (const char *name,
 void
 nautilus_preferences_remove_auto_string (const char *name,
 				         const char **storage)
+{
+	PreferencesEntry *entry;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (storage != NULL);
+	g_return_if_fail (preferences_is_initialized ());
+
+	entry = preferences_global_table_lookup (name);
+	if (entry == NULL) {
+		g_warning ("Trying to remove auto-string for %s without adding it first.", name);
+		return;
+	}
+
+	preferences_entry_remove_auto_storage (entry, storage);
+}
+
+void
+nautilus_preferences_remove_auto_string_list (const char *name,
+					      const EelStringList **storage)
 {
 	PreferencesEntry *entry;
 
