@@ -1,5 +1,18 @@
 2002-04-21  Anders Carlsson  <andersca@gnu.org>
 
+	* libnautilus-private/nautilus-icon-container.c:
+	(icon_set_position),
+	(nautilus_icon_container_update_scroll_region):
+	Take pixels_per_unit into account when dealing with widget
+	coordinates in the fixed mode.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_finalize), (get_default_zoom_level),
+	(default_zoom_level_changed), (fm_desktop_icon_view_init):
+	Have the desktop view use the default icon view zoom level.
+	
+2002-04-21  Anders Carlsson  <andersca@gnu.org>
+
 	* src/nautilus-zoom-control.c 
 	(nautilus_zoom_control_button_press_event): 
 	Don't do anything with double-click or triple-click events.

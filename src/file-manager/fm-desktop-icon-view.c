@@ -100,6 +100,7 @@ static void     fm_desktop_icon_view_trash_state_changed_callback (NautilusTrash
 								   gboolean                state,
 								   gpointer                callback_data);
 static void     home_uri_changed                                  (gpointer                user_data);
+static void     default_zoom_level_changed                        (gpointer                user_data);
 static void     volume_mounted_callback                           (NautilusVolumeMonitor  *monitor,
 								   NautilusVolume         *volume,
 								   FMDesktopIconView      *icon_view);
@@ -237,7 +238,10 @@ fm_desktop_icon_view_finalize (GObject *object)
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_HOME_URI,
 					 home_uri_changed,
 					 icon_view);
-
+	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+					 default_zoom_level_changed,
+					 icon_view);
+	
 	/* Clean up details */	
 	if (icon_view->details->ui != NULL) {
 		bonobo_ui_component_unset_container (icon_view->details->ui, NULL);
@@ -452,6 +456,35 @@ event_callback (GtkWidget *widget, GdkEvent *event, FMDesktopIconView *desktop_i
 {
 }
 
+
+static NautilusZoomLevel
+get_default_zoom_level (void)
+{
+	static gboolean auto_storage_added = FALSE;
+	static NautilusZoomLevel default_zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
+
+	if (!auto_storage_added) {
+		auto_storage_added = TRUE;
+		eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+					       (int *) &default_zoom_level);
+	}
+
+	return CLAMP (default_zoom_level, NAUTILUS_ZOOM_LEVEL_SMALLEST, NAUTILUS_ZOOM_LEVEL_LARGEST);
+}
+
+static void
+default_zoom_level_changed (gpointer user_data)
+{
+	NautilusZoomLevel new_level;
+	FMDesktopIconView *desktop_icon_view;
+
+	desktop_icon_view = FM_DESKTOP_ICON_VIEW (user_data);
+	new_level = get_default_zoom_level ();
+
+	nautilus_icon_container_set_zoom_level (get_icon_container (desktop_icon_view),
+						new_level);
+}
+
 /* Update home link to point to new home uri */
 static void
 home_uri_changed (gpointer callback_data)
@@ -521,6 +554,8 @@ delayed_init (FMDesktopIconView *desktop_icon_view)
 	desktop_icon_view->details->delayed_init_signal = 0;
 }
 
+
+
 static void
 fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 {
@@ -553,7 +588,7 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	}
 	
 	nautilus_icon_container_set_is_fixed_size (icon_container, TRUE);
-	
+
 	/* Set up default mount black list */
 	list = g_list_prepend (NULL, g_strdup ("/proc"));
 	list = g_list_prepend (list, g_strdup ("/boot"));
@@ -563,6 +598,7 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	allocation = &GTK_WIDGET (icon_container)->allocation;
 	allocation->x = 0;
 	allocation->y = 0;
+	
 	gtk_widget_queue_resize (GTK_WIDGET (icon_container));
 
 	hadj = GTK_LAYOUT (icon_container)->hadjustment;
@@ -601,6 +637,11 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_HOME_URI,
 				      home_uri_changed,
 				      desktop_icon_view);
+
+	eel_preferences_add_callback (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+				      default_zoom_level_changed,
+				      desktop_icon_view);
+	default_zoom_level_changed (desktop_icon_view);
 
 	/* Read out the panel desktop area and update the icon container
 	 * accordingly */

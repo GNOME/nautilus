@@ -234,7 +234,7 @@ icon_set_position (NautilusIcon *icon,
 		   double x, double y)
 {	
 	NautilusIconContainer *container;
-	
+	double pixels_per_unit;	
 	int left, top, right, bottom;
 	int width, height;
 	int x1, y1, x2, y2;
@@ -250,11 +250,12 @@ icon_set_position (NautilusIcon *icon,
 	}
 
 	if (nautilus_icon_container_get_is_fixed_size (container)) {
+		pixels_per_unit = GNOME_CANVAS (container)->pixels_per_unit;
 		/* Clip the position of the icon within our desktop bounds */
-		left = GTK_WIDGET (container)->allocation.x;
-		top = GTK_WIDGET (container)->allocation.y;
-		right = left + GTK_WIDGET (container)->allocation.width;
-		bottom = top + GTK_WIDGET (container)->allocation.height;
+		left = GTK_WIDGET (container)->allocation.x / pixels_per_unit;
+		top = GTK_WIDGET (container)->allocation.y / pixels_per_unit;
+		right = left + GTK_WIDGET (container)->allocation.width / pixels_per_unit;
+		bottom = top + GTK_WIDGET (container)->allocation.height / pixels_per_unit;
 
 		icon_get_bounding_box (icon, &x1, &y1, &x2, &y2);
 		width = x2 - x1;
@@ -650,22 +651,25 @@ void
 nautilus_icon_container_update_scroll_region (NautilusIconContainer *container)
 {
 	double x1, y1, x2, y2;
+	double pixels_per_unit;
 	GtkAdjustment *hadj, *vadj;
 	float step_increment;
 	GtkAllocation *allocation;
 	gboolean reset_scroll_region;
 
 	if (nautilus_icon_container_get_is_fixed_size (container)) {
+		pixels_per_unit = GNOME_CANVAS (container)->pixels_per_unit;
+		
 		/* Set the scroll region to the size of the container allocation */
 		allocation = &GTK_WIDGET (container)->allocation;			
 		eel_gnome_canvas_set_scroll_region_left_justify
 			(GNOME_CANVAS (container),
 			 (double) - container->details->left_margin,
 			 (double) - container->details->top_margin,
-			 (double) allocation->width - 1
+			 (double) (allocation->width - 1) / pixels_per_unit
 			 - container->details->left_margin
 			 - container->details->right_margin,
-			 (double) allocation->height - 1
+			 (double) (allocation->height - 1) / pixels_per_unit
 			 - container->details->top_margin
 			 - container->details->bottom_margin);
 		return;
