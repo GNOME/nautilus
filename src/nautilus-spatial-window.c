@@ -48,6 +48,7 @@
 #include <eel/eel-string.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdkx.h>
+#include <gtk/gtkdnd.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenubar.h>
 #include <gtk/gtkmenuitem.h>
@@ -63,6 +64,7 @@
 #include <libgnomeui/gnome-window-icon.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
@@ -89,6 +91,10 @@ struct _NautilusSpatialWindowDetails {
 	GtkWidget *location_label;
 
 	GnomeVFSURI *location;
+};
+
+static GtkTargetEntry location_button_drag_types[] = {
+	{ NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST }
 };
 
 GNOME_CLASS_BOILERPLATE (NautilusSpatialWindow, nautilus_spatial_window,
@@ -536,6 +542,80 @@ location_button_clicked_callback (GtkWidget *widget, NautilusSpatialWindow *wind
  	gtk_object_sink (GTK_OBJECT (popup));
 }
 
+static int
+get_dnd_icon_size (NautilusSpatialWindow *window)
+{
+	NautilusWindow *parent;
+	NautilusZoomLevel zoom_level;
+
+	parent = NAUTILUS_WINDOW(window);
+
+	if (parent->content_view == NULL) {
+		return NAUTILUS_ICON_SIZE_STANDARD;
+	} else {
+		zoom_level = nautilus_view_get_zoom_level (parent->content_view);
+		return nautilus_get_icon_size_for_zoom_level (zoom_level);
+	}
+	
+}
+
+static void
+location_button_drag_begin_callback (GtkWidget             *widget,
+				     GdkDragContext        *context,
+				     NautilusSpatialWindow *window)
+{
+	GdkPixbuf *pixbuf;
+
+	pixbuf = nautilus_icon_factory_get_pixbuf_for_file (NAUTILUS_WINDOW (window)->details->viewed_file,
+							    "open", get_dnd_icon_size (window));
+
+	gtk_drag_set_icon_pixbuf (context, pixbuf, 0, 0);
+
+	g_object_unref (pixbuf);
+}
+
+/* build GNOME icon list, which only contains the window's URI.
+ * If we just used URIs, moving the folder to trash
+ * wouldn't work */
+static void
+get_data_binder (NautilusDragEachSelectedItemDataGet iteratee,
+		 gpointer                            iterator_context,
+		 gpointer                            data)
+{
+	NautilusSpatialWindow *window;
+	int icon_size;
+	char *uri;
+
+	g_assert (NAUTILUS_IS_SPATIAL_WINDOW (iterator_context));
+	window = NAUTILUS_SPATIAL_WINDOW (iterator_context);
+
+	uri = gnome_vfs_uri_to_string (window->details->location,
+				       GNOME_VFS_URI_HIDE_NONE);
+
+	icon_size = get_dnd_icon_size (window);
+
+	iteratee (uri,
+		  0,
+		  0,
+		  icon_size,
+		  icon_size,
+		  data);
+
+	g_free (uri);
+}
+
+static void
+location_button_drag_data_get_callback (GtkWidget             *widget,
+					GdkDragContext        *context,
+					GtkSelectionData      *selection_data,
+					guint                  info,
+					guint                  time,
+					NautilusSpatialWindow *window)
+{
+	nautilus_drag_drag_data_get (widget, context, selection_data,
+				     info, time, window, get_data_binder); 
+}
+
 void
 nautilus_spatial_window_set_location_button  (NautilusSpatialWindow *window,
 					      const char            *location)
@@ -642,6 +722,18 @@ nautilus_spatial_window_instance_init (NautilusSpatialWindow *window)
 	gtk_box_pack_start (GTK_BOX (hbox), arrow, FALSE, FALSE, 0);
 	gtk_widget_show (arrow);
 
+	gtk_drag_source_set (window->details->location_button,
+			     GDK_BUTTON1_MASK | GDK_BUTTON2_MASK, location_button_drag_types,
+			     G_N_ELEMENTS (location_button_drag_types),
+			     GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK);
+	g_signal_connect (window->details->location_button,
+			  "drag_begin",
+			  G_CALLBACK (location_button_drag_begin_callback),
+			  window);
+	g_signal_connect (window->details->location_button,
+			  "drag_data_get",
+			  G_CALLBACK (location_button_drag_data_get_callback),
+			  window);
 	
 	gtk_widget_set_sensitive (window->details->location_button, FALSE);
 	g_signal_connect (window->details->location_button, 
