@@ -132,6 +132,7 @@ static int thumbnail_limit_values[] = {
 	5242880,
 	10485760,
 	104857600,
+	1073741824,
 	-1
 };
 
