@@ -1,3 +1,16 @@
+2001-02-26  Laszlo Kovacs  <laszlo.kovacs@sun.com>
+
+	reviewed by Ramiro Estrugo
+
+	* components/help/hyperbola-filefmt.c:
+	fixed bug 7030
+	I added the fallback to the English (C) tree in the
+	sidebar if the current locale tree is empty. This is 
+	only about tree fallback, not document fallback, ie 
+	the docs will not individually fallback to English 
+	(this has to be implemented later on after Nautilus
+	1.0).
+
 2001-02-26  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-property-browser.c: (add_reset_property):
