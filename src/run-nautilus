@@ -26,7 +26,7 @@ if [ $ps_rv -eq 1 ]
 then
   ## Do a sanity check on the nautilus RPM
   nautilus-verify-rpm.sh
-  if [ $? -ne 1 ]
+  if [ $? -ne 0 ]
   then
     exit 1
   fi
