@@ -1,3 +1,12 @@
+2001-10-02  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* libnautilus-private/filesystem-attributes.xml: add support for JFS
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(close_error_pipe), (mount_unmount_callback): Set locale to "C"
+	before running mount/umoun to be able to parse mount message in english
+	* po/fr.po: Add missing '\n' in one translation which was
+	oversizing Nautilus Preference Dialog
+
 2001-10-01  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-directory-async.c:

@@ -31,6 +31,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-iso9660.h"
 #include "nautilus-volume-monitor.h"
+#include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
@@ -1438,14 +1439,12 @@ close_error_pipe (gboolean mount, const char *mount_path)
 	is_floppy = strstr (mount_path, "floppy") != NULL;
 		
 	/* Determine a user readable message from the obscure pipe error */
-	/* Attention localizers: The strings being examined by strstr need to be identical
-	   to the errors returned to the terminal by mount. */
 	if (mount) {
-		if (strstr (detailed_msg, _("is write-protected, mounting read-only")) != NULL) {
+		if (strstr (detailed_msg, "is write-protected, mounting read-only") != NULL) {
 			/* This is not an error. Just an informative message from mount. */
 			return;
-		} else if ((strstr (detailed_msg, _("is not a valid block device")) != NULL) ||
-			   (strstr (detailed_msg, _("No medium found")) != NULL)) {
+		} else if ((strstr (detailed_msg, "is not a valid block device") != NULL) ||
+			   (strstr (detailed_msg, "No medium found") != NULL)) {
 			/* No media in drive */
 			if (is_floppy) {
 				/* Handle floppy case */
@@ -1456,7 +1455,7 @@ close_error_pipe (gboolean mount, const char *mount_path)
 				message = g_strdup_printf (_("Nautilus was unable to mount the volume. "
 							     "There is probably no media in the device."));
 			}
-		} else if (strstr (detailed_msg, _("wrong fs type, bad option, bad superblock on")) != NULL) {
+		} else if (strstr (detailed_msg, "wrong fs type, bad option, bad superblock on") != NULL) {
 			/* Unknown filesystem */
 			if (is_floppy) {
 				message = g_strdup_printf (_("Nautilus was unable to mount the floppy drive. "
@@ -1493,14 +1492,24 @@ mount_unmount_callback (void *arg)
 {
 	FILE *file;
 	MountThreadInfo *info;
+	gchar *old_locale;
+
 	info = arg;
 	
 	if (info != NULL) {	
 		open_error_pipe ();
+		old_locale = g_getenv("LC_ALL");
+		eel_setenv("LC_ALL", "C", TRUE);
 		file = popen (info->command, "r");
 		close_error_pipe (info->should_mount, info->mount_point);
 		pclose (file);
 		
+		if (old_locale != NULL) {
+			eel_setenv("LC_ALL", old_locale, TRUE);
+		}
+		else {
+			eel_unsetenv("LC_ALL");
+		}
 		g_free (info->command);
 		g_free (info->mount_point);
 		g_free (info);
