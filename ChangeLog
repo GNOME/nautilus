@@ -1,5 +1,11 @@
 2001-06-02  Darin Adler  <darin@bentspoon.com>
 
+	* src/nautilus-window-manage-views.c: (update_for_new_location),
+	(handle_view_failure), (nautilus_window_set_sidebar_panels):
+	Check the sidebar for NULL in a few more places.
+
+2001-06-02  Darin Adler  <darin@bentspoon.com>
+
 	* libnautilus-private/nautilus-volume-monitor.c:
 	(modify_volume_name_for_display),
 	(nautilus_volume_monitor_get_target_uri),
