@@ -23,13 +23,10 @@
 #ifndef NAUTILUS_METAFILE_H
 #define NAUTILUS_METAFILE_H
 
-#include "nautilus-metafile-server.h"
-
 #include <bonobo/bonobo-object.h>
+#include <libnautilus-private/nautilus-directory.h>
+#include <libnautilus-private/nautilus-metafile-server.h>
 #include <libxml/tree.h>
-
-#include "nautilus-directory.h"
-#include "nautilus-file-utilities.h"
 
 #define NAUTILUS_TYPE_METAFILE	          (nautilus_metafile_get_type ())
 #define NAUTILUS_METAFILE(obj)	          (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_METAFILE, NautilusMetafile))

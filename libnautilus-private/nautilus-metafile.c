@@ -27,6 +27,7 @@
 #include "nautilus-directory.h"
 #include "nautilus-directory.h"
 #include "nautilus-file-private.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
 #include "nautilus-search-uri.h"

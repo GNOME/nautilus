@@ -28,7 +28,6 @@
 #ifndef NAUTILUS_ZOOM_CONTROL_H
 #define NAUTILUS_ZOOM_CONTROL_H
 
-#include <gdk/gdk.h>
 #include <gtk/gtkeventbox.h>
 
 #ifdef __cplusplus

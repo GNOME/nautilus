@@ -30,9 +30,8 @@
 
 #include <gtk/gtkdialog.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
-
-#include "nautilus-file.h"
-#include "nautilus-view-identifier.h"
+#include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-view-identifier.h>
 
 #define NAUTILUS_TYPE_PROGRAM_CHOOSER            (nautilus_program_chooser_get_type ())
 #define NAUTILUS_PROGRAM_CHOOSER(obj)            (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_PROGRAM_CHOOSER, NautilusProgramChooser))

@@ -25,12 +25,12 @@
 #ifndef NAUTILUS_SOUND_H
 #define NAUTILUS_SOUND_H
 
-#include <glib.h>
+#include <glib/gtypes.h>
 #include <sys/wait.h>
 
-void		nautilus_sound_init (void);
-gboolean	nautilus_sound_can_play_sound (void);
-void		nautilus_sound_kill_sound (void);
-void		nautilus_sound_register_sound (pid_t sound_process);
+void     nautilus_sound_init           (void);
+gboolean nautilus_sound_can_play_sound (void);
+void     nautilus_sound_kill_sound     (void);
+void     nautilus_sound_register_sound (pid_t sound_process);
 
 #endif /* NAUTILUS_SOUND_H */

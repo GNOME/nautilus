@@ -22,8 +22,7 @@
    Author: Darin Adler <darin@bentspoon.com>
 */
 
-#include <glib.h>
-#include <gdk/gdk.h>
+#include <gdk/gdktypes.h>
 #include <libnautilus-private/nautilus-file.h>
 
 typedef struct {

@@ -1,16 +1,15 @@
 #ifndef ESD_AUDIO_H
 #define ESD_AUDIO_H
 
-#include <gnome.h>
 #include <esd.h>
-#include <config.h>
+#include <glib/gtypes.h>
 
 typedef struct {
 	gboolean use_remote;
-	gchar *server;
-	gint port;
-	gint buffer_size;
-	gint prebuffer;
+	char *server;
+	int port;
+	int buffer_size;
+	int prebuffer;
 }
 ESDConfig;
 
@@ -28,17 +27,17 @@ typedef enum {
 }
 AFormat;
 
-gint 	esdout_open (AFormat fmt, gint rate, gint nch);
+int 	esdout_open (AFormat fmt, int rate, int nch);
 void 	esdout_set_audio_params (void);
-gint 	esdout_get_written_time (void);
-gint 	esdout_used (void);
-gint 	esdout_playing (void);
-gint 	esdout_free (void);
-void 	esdout_write (gpointer ptr, gint length);
+int 	esdout_get_written_time (void);
+int 	esdout_used (void);
+int 	esdout_playing (void);
+int 	esdout_free (void);
+void 	esdout_write (gpointer ptr, int length);
 void 	esdout_close (void);
-void 	esdout_flush (gint time);
+void 	esdout_flush (int time);
 void 	esdout_pause (gboolean p);
-gint 	esdout_get_output_time (void);
+int 	esdout_get_output_time (void);
 
 /* esd-mixer.c */
 void esdout_get_volume(int *l, int *r);

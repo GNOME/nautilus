@@ -24,7 +24,7 @@
 #ifndef NAUTILUS_SEARCH_URI_H
 #define NAUTILUS_SEARCH_URI_H
 
-#include <glib.h>
+#include <glib/gtypes.h>
 
 /* These strings are used programatically; they must not be translated */
 #define NAUTILUS_SEARCH_URI_TEXT_NAME		"file_name"

@@ -37,6 +37,7 @@
 #include <libgnomevfs/gnome-vfs-find-directory.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 
 struct NautilusTrashMonitorDetails {
 	NautilusDirectory *trash_directory;

@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_VFS_DIRECTORY_H
 #define NAUTILUS_VFS_DIRECTORY_H
 
-#include "nautilus-directory.h"
+#include <libnautilus-private/nautilus-directory.h>
 
 #define NAUTILUS_TYPE_VFS_DIRECTORY \
 	(nautilus_vfs_directory_get_type ())

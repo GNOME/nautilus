@@ -30,10 +30,8 @@
 #ifndef NAUTILUS_CUSTOMIZATION_DATA_H
 #define NAUTILUS_CUSTOMIZATION_DATA_H
 
-#include <glib.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtklabel.h>
-#include <gtk/gtkwidget.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 
 #define RESET_IMAGE_NAME "reset.png"

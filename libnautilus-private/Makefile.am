@@ -47,8 +47,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-customization-data.h \
 	nautilus-default-file-icon.c \
 	nautilus-default-file-icon.h \
-	nautilus-desktop-file-loader.c \
-	nautilus-desktop-file-loader.h \
 	nautilus-directory-async.c \
 	nautilus-directory-background.c \
 	nautilus-directory-background.h \

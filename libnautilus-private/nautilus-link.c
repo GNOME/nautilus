@@ -230,12 +230,13 @@ nautilus_link_local_get_link_type (const char *path)
 }
 
 char *
-nautilus_link_get_link_uri_given_file_contents (const char *file_contents,
+nautilus_link_get_link_uri_given_file_contents (const char *uri,
+						const char *file_contents,
 						int file_size)
 {
 	switch (get_link_style_for_data (file_contents, file_size)) {
 	case desktop:
-		return nautilus_link_desktop_file_get_link_uri_given_file_contents (file_contents, file_size);
+		return nautilus_link_desktop_file_get_link_uri_given_file_contents (uri, file_contents, file_size);
 	case historical:
 		return nautilus_link_historical_get_link_uri_given_file_contents (file_contents, file_size);
 	default:
@@ -244,12 +245,13 @@ nautilus_link_get_link_uri_given_file_contents (const char *file_contents,
 }
 
 char *
-nautilus_link_get_link_name_given_file_contents (const char *file_contents,
+nautilus_link_get_link_name_given_file_contents (const char *uri,
+						 const char *file_contents,
 						 int file_size)
 {
 	switch (get_link_style_for_data (file_contents, file_size)) {
 	case desktop:
-		return nautilus_link_desktop_file_get_link_name_given_file_contents (file_contents, file_size);
+		return nautilus_link_desktop_file_get_link_name_given_file_contents (uri, file_contents, file_size);
 	case historical:
 		return NULL;
 	default:
@@ -258,12 +260,13 @@ nautilus_link_get_link_name_given_file_contents (const char *file_contents,
 }
 
 char *
-nautilus_link_get_link_icon_given_file_contents (const char *file_contents,
-						int file_size)
+nautilus_link_get_link_icon_given_file_contents (const char *uri,
+						 const char *file_contents,
+						 int file_size)
 {
 	switch (get_link_style_for_data (file_contents, file_size)) {
 	case desktop:
-		return nautilus_link_desktop_file_get_link_icon_given_file_contents (file_contents, file_size);
+		return nautilus_link_desktop_file_get_link_icon_given_file_contents (uri, file_contents, file_size);
 	case historical:
 		return nautilus_link_historical_get_link_icon_given_file_contents (file_contents, file_size);
 	default:

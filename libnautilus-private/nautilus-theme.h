@@ -25,8 +25,6 @@
 #ifndef NAUTILUS_THEME_H
 #define NAUTILUS_THEME_H
 
-
-#include <glib.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 

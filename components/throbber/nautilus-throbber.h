@@ -28,7 +28,6 @@
 #ifndef NAUTILUS_THROBBER_H
 #define NAUTILUS_THROBBER_H
 
-#include <gdk/gdk.h>
 #include <gtk/gtkeventbox.h>
 #include <bonobo.h>
 

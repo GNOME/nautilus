@@ -22,7 +22,7 @@
    Author: Darin Adler <darin@bentspoon.com>
 */
 
-#include "nautilus-directory.h"
+#include <libnautilus-private/nautilus-directory.h>
 
 /* Interface for file metadata. */
 gboolean nautilus_directory_is_metadata_read	      (NautilusDirectory *directory);

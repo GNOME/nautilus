@@ -56,6 +56,7 @@
 #include <libgnomevfs/gnome-vfs-mime-monitor.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-types.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <librsvg/rsvg.h>
 #include <stdio.h>
 #include <string.h>

@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_TRASH_FILE_H
 #define NAUTILUS_TRASH_FILE_H
 
-#include "nautilus-file.h"
+#include <libnautilus-private/nautilus-file.h>
 
 #define NAUTILUS_TYPE_TRASH_FILE \
 	(nautilus_trash_file_get_type ())

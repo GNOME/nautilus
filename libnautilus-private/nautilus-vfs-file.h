@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_VFS_FILE_H
 #define NAUTILUS_VFS_FILE_H
 
-#include "nautilus-file.h"
+#include <libnautilus-private/nautilus-file.h>
 
 #define NAUTILUS_TYPE_VFS_FILE \
 	(nautilus_vfs_file_get_type ())

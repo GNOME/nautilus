@@ -41,6 +41,7 @@
 #include <eel/eel-string.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 
 enum {
 	FILES_ADDED,

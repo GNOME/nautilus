@@ -19,8 +19,6 @@
 
 #include <math.h>
 
-#include <gtk/gtk.h>
-
 #include "dxhead.h"
 #include "id3.h"
 

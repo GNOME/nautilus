@@ -23,7 +23,6 @@
 */
 
 #include <config.h>
-#include "nautilus-link.h"
 #include "nautilus-link-historical.h"
 
 #include "nautilus-directory-notify.h"

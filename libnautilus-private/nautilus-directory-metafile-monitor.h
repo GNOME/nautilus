@@ -23,10 +23,9 @@
 #ifndef NAUTILUS_METAFILE_MONITOR_H
 #define NAUTILUS_METAFILE_MONITOR_H
 
-#include "nautilus-metafile-server.h"
-
 #include <bonobo/bonobo-object.h>
 #include <libnautilus-private/nautilus-directory.h>
+#include <libnautilus-private/nautilus-metafile-server.h>
 
 #define NAUTILUS_TYPE_METAFILE_MONITOR	          (nautilus_metafile_monitor_get_type ())
 #define NAUTILUS_METAFILE_MONITOR(obj)	          (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_METAFILE_MONITOR, NautilusMetafileMonitor))

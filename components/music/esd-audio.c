@@ -1,9 +1,13 @@
 
 #include <config.h>
-#include <string.h>
-#include <pthread.h>
-
 #include "esd-audio.h"
+
+#include <glib/gmem.h>
+#include <glib/gstrfuncs.h>
+#include <pthread.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 static gint fd = 0;
 static gpointer buffer;

@@ -48,6 +48,7 @@
 #include <libgnome/gnome-macros.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <libxml/parser.h>
 #include <pwd.h>
 #include <stdlib.h>

@@ -27,15 +27,15 @@
 #include "nautilus-trash-directory.h"
 
 #include "nautilus-directory-private.h"
-#include "nautilus-file.h"
 #include "nautilus-trash-monitor.h"
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-stock-dialogs.h>
-#include <eel/eel-gtk-macros.h>
 #include "nautilus-volume-monitor.h"
-#include <gtk/gtksignal.h>
+#include <eel/eel-glib-extensions.h>
+#include <eel/eel-gtk-macros.h>
+#include <eel/eel-stock-dialogs.h>
 #include <gtk/gtkmain.h>
+#include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
 
 struct NautilusTrashDirectoryDetails {
 	GHashTable *volumes;

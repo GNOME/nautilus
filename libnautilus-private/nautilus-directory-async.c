@@ -24,22 +24,24 @@
 
 #include <config.h>
 
-#include "nautilus-metafile.h"
 #include "nautilus-directory-metafile.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-private.h"
-#include <eel/eel-glib-extensions.h>
+#include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-link.h"
+#include "nautilus-metafile.h"
 #include "nautilus-search-uri.h"
+#include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
-#include <libgnomevfs/gnome-vfs-ops.h>
-#include <libxml/parser.h>
 #include <gtk/gtkmain.h>
-#include <stdlib.h>
+#include <libgnomevfs/gnome-vfs-ops.h>
+#include <libgnomevfs/gnome-vfs-utils.h>
+#include <libxml/parser.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 /* turn this on to see messages about each load_directory call: */
 #if 0
@@ -2785,9 +2787,9 @@ link_info_nautilus_link_read_callback (GnomeVFSResult result,
 		/* The libxml parser requires a zero-terminated array. */
 		buffer = g_realloc (file_contents, bytes_read + 1);
 		buffer[bytes_read] = '\0';
-		uri = nautilus_link_get_link_uri_given_file_contents (buffer, bytes_read);
-                name = nautilus_link_get_link_name_given_file_contents (buffer, bytes_read);
-                icon = nautilus_link_get_link_icon_given_file_contents (buffer, bytes_read);
+		uri = nautilus_link_get_link_uri_given_file_contents (NULL, buffer, bytes_read);
+                name = nautilus_link_get_link_name_given_file_contents (NULL, buffer, bytes_read);
+                icon = nautilus_link_get_link_icon_given_file_contents (NULL, buffer, bytes_read);
 		g_free (buffer);
 	}
 

@@ -26,9 +26,7 @@
 #ifndef NAUTILUS_LINK_HISTORICAL_H
 #define NAUTILUS_LINK_HISTORICAL_H
 
-#include "nautilus-file.h"
-#include <gdk/gdk.h>
-#include <libgnome/gnome-desktop-item.h>
+#include <libnautilus-private/nautilus-link.h>
 
 gboolean         nautilus_link_historical_local_create                      (const char        *directory_path,
 									     const char        *name,

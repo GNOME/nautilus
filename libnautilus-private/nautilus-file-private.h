@@ -25,9 +25,9 @@
 #ifndef NAUTILUS_FILE_PRIVATE_H
 #define NAUTILUS_FILE_PRIVATE_H
 
-#include "nautilus-directory.h"
-#include "nautilus-file.h"
-#include "nautilus-monitor.h"
+#include <libnautilus-private/nautilus-directory.h>
+#include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-monitor.h>
 #include <eel/eel-glib-extensions.h>
 
 #define NAUTILUS_FILE_TOP_LEFT_TEXT_MAXIMUM_CHARACTERS_PER_LINE 80

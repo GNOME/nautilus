@@ -104,7 +104,7 @@
 #define NAUTILUS_MENU_PATH_EXTRA_VIEWER_PLACEHOLDER	"/menu/View/View Choices/Extra Viewer"
 #define NAUTILUS_MENU_PATH_BEFORE_SHORT_LIST_SEPARATOR  "/menu/View/View Choices/Before Short List"
 #define NAUTILUS_MENU_PATH_SHORT_LIST_PLACEHOLDER  	"/menu/View/View Choices/Short List"
-#define NAUTILUS_MENU_PATH_AFTER_SHORT_LIST_SEPARATOR   "/menu/View/View Choices/Before Short List"
+#define NAUTILUS_MENU_PATH_AFTER_SHORT_LIST_SEPARATOR   "/menu/View/View Choices/After Short List"
 
 enum {
 	ARG_0,

@@ -22,22 +22,23 @@
    Authors: Gene Z. Ragan <gzr@eazel.com>
 */
 
-#ifndef NAUTILUS_AUDIO_PLAYER__
-#define NAUTILUS_AUDIO_PLAYER__
+#ifndef NAUTILUS_AUDIO_PLAYER_H
+#define NAUTILUS_AUDIO_PLAYER_H
 
 #include <config.h>
 #include <sys/types.h>
 
 #include <audiofile.h>
 #include <pthread.h>
-#include <glib.h>
+
+#include <glib/gtypes.h>
 
 typedef struct {
 	gboolean use_remote;
-	gchar *server;
-	gint port;
-	gint buffer_size;
-	gint prebuffer;
+	char *server;
+	int port;
+	int buffer_size;
+	int prebuffer;
 } ESDConfig;
 
 typedef struct {
@@ -48,8 +49,7 @@ typedef struct {
 } NautilusAudioPlayerData;
 
 
-NautilusAudioPlayerData	*nautilus_audio_player_play	(const char			*filename);
-void			nautilus_audio_player_stop 	(NautilusAudioPlayerData 	*data);
-
+NautilusAudioPlayerData	*nautilus_audio_player_play (const char              *filename);
+void                     nautilus_audio_player_stop (NautilusAudioPlayerData *data);
 
 #endif

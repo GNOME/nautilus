@@ -1,10 +1,11 @@
-
+#include <config.h>
 #include "mpg123.h"
-//#include "audio.h"
+
 #include "esd-audio.h"
 #include <string.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <libgnome/gnome-i18n.h>
 
 static long outscale = 32768;
 

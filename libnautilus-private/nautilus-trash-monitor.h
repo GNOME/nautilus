@@ -27,9 +27,7 @@
 #define NAUTILUS_TRASH_MONITOR_H
 
 #include <gtk/gtkobject.h>
-#include <libgnomevfs/gnome-vfs.h>
-
-#include "nautilus-volume-monitor.h"
+#include <libnautilus-private/nautilus-volume-monitor.h>
 
 typedef struct NautilusTrashMonitor NautilusTrashMonitor;
 typedef struct NautilusTrashMonitorClass NautilusTrashMonitorClass;

@@ -19,6 +19,8 @@
 #include "id3.h"
 #include "id3_header.h"
 
+#include <glib/gmem.h>
+
 /* max = 1728 */
 #define MAXFRAMESIZE 1792
 

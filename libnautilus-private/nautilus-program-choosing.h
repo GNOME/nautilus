@@ -26,10 +26,10 @@
 #ifndef NAUTILUS_PROGRAM_CHOOSING_H
 #define NAUTILUS_PROGRAM_CHOOSING_H
 
-#include "nautilus-file.h"
-#include "nautilus-view-identifier.h"
 #include <gtk/gtkwindow.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
+#include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-view-identifier.h>
 
 typedef void (*NautilusApplicationChoiceCallback) (GnomeVFSMimeApplication	 *application,
 						   gpointer			  callback_data);

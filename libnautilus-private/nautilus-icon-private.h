@@ -25,13 +25,12 @@
 #ifndef NAUTILUS_ICON_CONTAINER_PRIVATE_H
 #define NAUTILUS_ICON_CONTAINER_PRIVATE_H
 
-#include "nautilus-entry.h"
 #include <eel/eel-glib-extensions.h>
 #include <libgnomeui/gnome-icon-item.h>
-#include "nautilus-icon-container.h"
-#include "nautilus-icon-dnd.h"
-#include "nautilus-icon-factory.h"
-#include "nautilus-icon-canvas-item.h"
+#include <libnautilus-private/nautilus-icon-canvas-item.h>
+#include <libnautilus-private/nautilus-icon-container.h>
+#include <libnautilus-private/nautilus-icon-dnd.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
 
 /* An Icon. */
 

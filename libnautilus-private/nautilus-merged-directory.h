@@ -27,7 +27,7 @@
 #ifndef NAUTILUS_MERGED_DIRECTORY_H
 #define NAUTILUS_MERGED_DIRECTORY_H
 
-#include "nautilus-directory.h"
+#include <libnautilus-private/nautilus-directory.h>
 
 #define NAUTILUS_TYPE_MERGED_DIRECTORY \
 	(nautilus_merged_directory_get_type ())

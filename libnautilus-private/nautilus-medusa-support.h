@@ -28,7 +28,7 @@
 #ifndef NAUTILUS_MEDUSA_SUPPORT_H
 #define NAUTILUS_MEDUSA_SUPPORT_H
 
-#include <glib.h>
+#include <glib/gtypes.h>
 
 typedef void (* NautilusMedusaChangedCallback)     (gpointer data);
 

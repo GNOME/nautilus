@@ -25,8 +25,8 @@
 #ifndef NAUTILUS_THUMBNAILS_H
 #define NAUTILUS_THUMBNAILS_H
 
-#include "nautilus-file.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <libnautilus-private/nautilus-file.h>
 
 /* Returns NULL if there's no thumbnail yet. */
 char *     nautilus_get_thumbnail_uri               (NautilusFile *file);

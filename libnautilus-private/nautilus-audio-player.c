@@ -23,14 +23,15 @@
 */
 
 #include <config.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <unistd.h>
+#include "nautilus-audio-player.h"
 
 #include <esd.h>
+#include <glib/gmem.h>
+#include <glib/gstrfuncs.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
-#include "nautilus-audio-player.h"
 
 /* BUFFER_FRAMES represents the size of the buffer in frames. */
 #define BUFFER_FRAMES 		4096
@@ -322,27 +323,26 @@ esdout_setup_format (ESDInfo *info, AudioFormat format, gint rate, gint nch)
 	}
 
 #ifdef WORDS_BIGENDIAN
-	if (format == FORMAT_U16_LE || format == FORMAT_S16_LE) {
+	if (format == FORMAT_U16_LE || format == FORMAT_S16_LE)
 #else
-	if (format == FORMAT_U16_BE || format == FORMAT_S16_BE) {
+	if (format == FORMAT_U16_BE || format == FORMAT_S16_BE)
 #endif
 		swap_16 = TRUE;
-	}
 
 	info->esd_translate = (void*(*)())NULL;
 	if (info->esd_format == ESD_BITS8) {
-		if (swap_sign == TRUE) {
+		if (swap_sign) {
 			info->esd_translate = esd_stou8;
 		}
 	} else {
-		if (swap_sign == TRUE) {
-			if (swap_16 == TRUE) {
+		if (swap_sign) {
+			if (swap_16) {
 				info->esd_translate = esd_utos16sw;
 			} else {
 				info->esd_translate = esd_utos16;
 			}
 		} else {
-			if (swap_16 == TRUE) {
+			if (swap_16) {
 				info->esd_translate = esd_16sw;
 			}
 		}

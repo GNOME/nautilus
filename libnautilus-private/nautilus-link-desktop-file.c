@@ -22,25 +22,25 @@
    Authors: Jonathan Blandford <jrb@redhat.com>
             Alexander Larsson <alexl@redhat.com>
 */
+
 #include <config.h>
-#include "nautilus-link.h"
 #include "nautilus-link-desktop-file.h"
+
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory.h"
 #include "nautilus-file-attributes.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
 #include "nautilus-metadata.h"
-#include "nautilus-file-utilities.h"
-#include "nautilus-desktop-file-loader.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-xml-extensions.h>
-#include <libxml/parser.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
+#include <libxml/parser.h>
 #include <stdlib.h>
 
 #define NAUTILUS_LINK_GENERIC_TAG	"Link"
@@ -66,49 +66,30 @@ get_tag (NautilusLinkType type)
 	}
 }
 
-static gchar *
+static char *
 slurp_key_string (const char *path,
 		  const char *keyname,
                   gboolean    localize)
 {
-	NautilusDesktopFile *desktop_file = NULL;
-	gchar *text;
-	gboolean set;
-	GnomeVFSResult result;
-	gchar *uri;
+	GnomeDesktopItem *desktop_file;
+	const char *text;
+	char *result;
 
-	uri = gnome_vfs_get_uri_from_local_path (path);
-	if (uri == NULL) {
-		return NULL;
-	}
-
-	result = nautilus_desktop_file_load (uri, &desktop_file);
-	
-	g_free (uri);
-
-	if (result != GNOME_VFS_OK) {
+	desktop_file = gnome_desktop_item_new_from_file (path, 0, NULL);
+	if (desktop_file == NULL) {
 		return NULL;
 	}
 
         if (localize) {
-                set = nautilus_desktop_file_get_locale_string (desktop_file,
-							       "Desktop Entry",
-							       keyname,
-							       &text);
+                text = gnome_desktop_item_get_localestring (desktop_file, keyname);
 	} else {
-                set = nautilus_desktop_file_get_string (desktop_file,
-							"Desktop Entry",
-							keyname,
-							&text);
+                text = gnome_desktop_item_get_string (desktop_file, keyname);
 	}
 	
-	nautilus_desktop_file_free (desktop_file);
-	
-	if (set == FALSE) {
-		return NULL;
-	}
+	result = g_strdup (text);
+	gnome_desktop_item_unref (desktop_file);
 
-	return text;
+	return result;
 }
 
 gboolean
@@ -119,7 +100,7 @@ nautilus_link_desktop_file_local_create (const char        *directory_path,
 					 const GdkPoint    *point,
 					 NautilusLinkType   type)
 {
-	gchar *path;
+	char *path;
 	FILE *file;
 	char *uri;
 	GList dummy_list;
@@ -182,34 +163,19 @@ gboolean
 nautilus_link_desktop_file_local_set_icon (const char *path,
 					   const char *icon_name)
 {
-	NautilusDesktopFile *desktop_file;
-	GnomeVFSResult result;
-	char *uri;
+	GnomeDesktopItem *desktop_file;
+	gboolean success;
 
-	uri = gnome_vfs_get_uri_from_local_path (path);
-	if (uri == NULL) {
-		return FALSE;
-	}
-	
-	result = nautilus_desktop_file_load (uri, &desktop_file);
-
-	if (result != GNOME_VFS_OK) {
-		g_free (uri);
+	desktop_file = gnome_desktop_item_new_from_file (path, 0, NULL);
+	if (desktop_file == NULL) {
 		return FALSE;
 	}
 
-	nautilus_desktop_file_set_string (desktop_file, "Desktop Entry", "X-Nautilus-Icon", icon_name);
+	gnome_desktop_item_set_string (desktop_file, "X-Nautilus-Icon", icon_name);
+	success = gnome_desktop_item_save (desktop_file, NULL, FALSE, NULL);
+	gnome_desktop_item_unref (desktop_file);
 	
-	result = nautilus_desktop_file_save (desktop_file, uri);
-	nautilus_desktop_file_free (desktop_file);
-	
-	g_free (uri);
-	
-	if (result != GNOME_VFS_OK) {
-		return FALSE;
-	}
-
-	return TRUE;
+	return success;
 }
 
 char *
@@ -227,8 +193,8 @@ nautilus_link_desktop_file_local_get_additional_text (const char *path)
 	 */
 	return NULL;
 #ifdef THIS_IS_NOT_USED_RIGHT_NOW
-	gchar *type;
-	gchar *retval;
+	char *type;
+	char *retval;
 
 	type = slurp_key_string (path, "Type", FALSE);
 	retval = NULL;
@@ -249,7 +215,7 @@ nautilus_link_desktop_file_local_get_additional_text (const char *path)
 NautilusLinkType
 nautilus_link_desktop_file_local_get_link_type (const char *path)
 {
-	gchar *type;
+	char *type;
 	NautilusLinkType retval;
 
 	type = slurp_key_string (path, "Type", FALSE);
@@ -289,39 +255,29 @@ nautilus_link_desktop_file_local_is_trash_link (const char *path)
 	return (nautilus_link_desktop_file_local_get_link_type (path) ==  NAUTILUS_LINK_TRASH);
 }
 
-static gchar *
-nautilus_link_desktop_file_get_link_uri_from_desktop (NautilusDesktopFile *desktop_file)
+static char *
+nautilus_link_desktop_file_get_link_uri_from_desktop (GnomeDesktopItem *desktop_file)
 {
-	gchar *terminal_command;
-	gchar *launch_string;
+	char *terminal_command;
+	const char *launch_string;
 	gboolean need_term;
-	gchar *type;
-	gchar *retval;
+	const char *type;
+	char *retval;
 
 	retval = NULL;
 
-	type = NULL;
-	if (! nautilus_desktop_file_get_string (desktop_file,
-						"Desktop Entry",
-						"Type",
-						&type)) {
+	type = gnome_desktop_item_get_string (desktop_file, "Type");
+	if (type == NULL) {
 		return NULL;
 	}
 
 	if (strcmp (type, "Application") == 0) {
-		if (! nautilus_desktop_file_get_string (desktop_file,
-							"Desktop Entry",
-							"Exec",
-							&launch_string)) {
-			g_free (type);
+		launch_string = gnome_desktop_item_get_string (desktop_file, "Exec");
+		if (launch_string == NULL) {
 			return NULL;
 		}
 
-		need_term = FALSE;
-		nautilus_desktop_file_get_boolean (desktop_file,
-					      "Desktop Entry",
-					      "Terminal",
-					      &need_term);
+		need_term = gnome_desktop_item_get_boolean (desktop_file, "Terminal");
 		if (need_term) {
 			terminal_command = eel_gnome_make_terminal_command (launch_string);
 			retval = g_strconcat ("command:", terminal_command, NULL);
@@ -329,165 +285,124 @@ nautilus_link_desktop_file_get_link_uri_from_desktop (NautilusDesktopFile *deskt
 		} else {
 			retval = g_strconcat ("command:", launch_string, NULL);
 		}
-		g_free (launch_string);
 	} else if (strcmp (type, "URL") == 0) {
 		/* Some old broken desktop files use this nonstandard feature, we need handle it though */
-		nautilus_desktop_file_get_string (desktop_file,
-						  "Desktop Entry",
-						  "Exec",
-						  &retval);
+		retval = g_strdup (gnome_desktop_item_get_string (desktop_file, "Exec"));
 	} else if ((strcmp (type, NAUTILUS_LINK_GENERIC_TAG) == 0) ||
 		   (strcmp (type, NAUTILUS_LINK_MOUNT_TAG) == 0) ||
 		   (strcmp (type, NAUTILUS_LINK_TRASH_TAG) == 0) ||
 		   (strcmp (type, NAUTILUS_LINK_HOME_TAG) == 0)) {
-		nautilus_desktop_file_get_string (desktop_file,
-						  "Desktop Entry",
-						  "URL",
-						  &retval);
+		retval = g_strdup (gnome_desktop_item_get_string (desktop_file, "URL"));
 	}
 
-	g_free (type);
 	return retval;
 }
 
-static gchar *
-nautilus_link_desktop_file_get_link_name_from_desktop (NautilusDesktopFile *desktop_file)
+static char *
+nautilus_link_desktop_file_get_link_name_from_desktop (GnomeDesktopItem *desktop_file)
 {
-	gchar *name;
-
-	name = NULL;
-
-	if (nautilus_desktop_file_get_locale_string (desktop_file,
-						     "Desktop Entry",
-						     "Name",
-						     &name)) {
-		return name;
-	} else {
-		return NULL;
-	}
+	return g_strdup (gnome_desktop_item_get_localestring (desktop_file, "Name"));
 }
 
-static gchar *
-nautilus_link_desktop_file_get_link_icon_from_desktop (NautilusDesktopFile *desktop_file)
+static char *
+nautilus_link_desktop_file_get_link_icon_from_desktop (GnomeDesktopItem *desktop_file)
 {
 	char *icon_uri;
-	gchar *absolute;
-	gchar *icon_name;
+	char *absolute;
+	char *icon_name;
 
-	if (nautilus_desktop_file_get_string (desktop_file, "Desktop Entry", "X-Nautilus-Icon", &icon_uri)) {
+	icon_uri = g_strdup (gnome_desktop_item_get_string (desktop_file, "X-Nautilus-Icon"));
+	if (icon_uri != NULL) {
 		return icon_uri;
 	}
 
 	/* Fall back to a standard icon. */
-	if (nautilus_desktop_file_get_string (desktop_file, "Desktop Entry", "Icon", &icon_name)) {
-		if (icon_name == NULL) {
-			return NULL;
-		}
+	icon_name = g_strdup (gnome_desktop_item_get_string (desktop_file, "Icon"));
+	if (icon_name == NULL) {
+		return NULL;
+	}
 	
-		absolute = gnome_program_locate_file (
-			NULL, GNOME_FILE_DOMAIN_PIXMAP, icon_name, TRUE, NULL);
-		if (absolute != NULL) {
-			g_free (icon_name);
-			icon_name = absolute;
-		}
-		if (icon_name[0] == '/') {
-			icon_uri = gnome_vfs_get_uri_from_local_path (icon_name);
-		} else {
-			icon_uri = NULL;
-		}
+	absolute = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, icon_name, TRUE, NULL);
+	if (absolute != NULL) {
 		g_free (icon_name);
-
-		return icon_uri;
+		icon_name = absolute;
 	}
 
-	return NULL;
+	icon_uri = gnome_vfs_get_uri_from_local_path (icon_name);
+	g_free (icon_name);
+	
+	return icon_uri;
 }
 
 char *
 nautilus_link_desktop_file_local_get_link_uri (const char *path)
 {
-	NautilusDesktopFile *desktop_file = NULL;
-	gchar *retval;
-	GnomeVFSResult result;
-	char *uri;
+	GnomeDesktopItem *desktop_file;
+	char *retval;
 
-	uri = gnome_vfs_get_uri_from_local_path (path);
-	if (uri == NULL) {
-		return FALSE;
-	}
-
-	result = nautilus_desktop_file_load (uri, &desktop_file);
-	
-	g_free (uri);
-
-	if (result != GNOME_VFS_OK) {
+	desktop_file = gnome_desktop_item_new_from_file (path, 0, NULL);
+	if (desktop_file == NULL) {
 		return NULL;
 	}
 	
 	retval = nautilus_link_desktop_file_get_link_uri_from_desktop (desktop_file);
-	
-	nautilus_desktop_file_free (desktop_file);
+	gnome_desktop_item_unref (desktop_file);
+
 	return retval;
 }
 
 char *
-nautilus_link_desktop_file_get_link_uri_given_file_contents (const char *link_file_contents,
+nautilus_link_desktop_file_get_link_uri_given_file_contents (const char *uri,
+							     const char *link_file_contents,
 							     int         link_file_size)
 {
-	NautilusDesktopFile *desktop_file;
-	gchar *slurp;
-	gchar *retval;
+	GnomeDesktopItem *desktop_file;
+	char *retval;
 
-	slurp = g_strndup (link_file_contents, link_file_size);
-	desktop_file = nautilus_desktop_file_from_string (slurp);
-	g_free (slurp);
+	desktop_file = gnome_desktop_item_new_from_string (uri, link_file_contents, link_file_size, 0, NULL);
 	if (desktop_file == NULL) {
 		return NULL; 
 	}
 	retval = nautilus_link_desktop_file_get_link_uri_from_desktop (desktop_file);
 
-	nautilus_desktop_file_free (desktop_file);
+	gnome_desktop_item_unref (desktop_file);
 	return retval;
 }
 
 char *
-nautilus_link_desktop_file_get_link_name_given_file_contents (const char *link_file_contents,
+nautilus_link_desktop_file_get_link_name_given_file_contents (const char *uri,
+							      const char *link_file_contents,
 							      int         link_file_size)
 {
-	NautilusDesktopFile *desktop_file;
-	gchar *slurp;
-	gchar *retval;
+	GnomeDesktopItem *desktop_file;
+	char *retval;
 
-	slurp = g_strndup (link_file_contents, link_file_size);
-	desktop_file = nautilus_desktop_file_from_string (slurp);
-	g_free (slurp);
+	desktop_file = gnome_desktop_item_new_from_string (uri, link_file_contents, link_file_size, 0, NULL);
 	if (desktop_file == NULL) {
 		return NULL; 
 	}
 	retval = nautilus_link_desktop_file_get_link_name_from_desktop (desktop_file);
 
-	nautilus_desktop_file_free (desktop_file);
+	gnome_desktop_item_unref (desktop_file);
 	return retval;
 }
 
 
 char *
-nautilus_link_desktop_file_get_link_icon_given_file_contents (const char *link_file_contents,
+nautilus_link_desktop_file_get_link_icon_given_file_contents (const char *uri,
+							      const char *link_file_contents,
 							      int         link_file_size)
 {
-	NautilusDesktopFile *desktop_file;
-	gchar *slurp;
-	gchar *retval;
+	GnomeDesktopItem *desktop_file;
+	char *retval;
 
-	slurp = g_strndup (link_file_contents, link_file_size);
-	desktop_file = nautilus_desktop_file_from_string (slurp);
-	g_free (slurp);
+	desktop_file = gnome_desktop_item_new_from_string (uri, link_file_contents, link_file_size, 0, NULL);
 	if (desktop_file == NULL) {
 		return NULL; 
 	}
 	retval = nautilus_link_desktop_file_get_link_icon_from_desktop (desktop_file);
 
-	nautilus_desktop_file_free (desktop_file);
+	gnome_desktop_item_unref (desktop_file);
 	return retval;
 }
 

@@ -26,8 +26,7 @@
 #define NAUTILUS_ICON_CANVAS_ITEM_H
 
 #include <libgnomecanvas/gnome-canvas.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include "nautilus-icon-factory.h"
+#include <libnautilus-private/nautilus-icon-factory.h>
 
 G_BEGIN_DECLS
 

@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_TRASH_DIRECTORY_H
 #define NAUTILUS_TRASH_DIRECTORY_H
 
-#include "nautilus-merged-directory.h"
+#include <libnautilus-private/nautilus-merged-directory.h>
 
 #define NAUTILUS_TYPE_TRASH_DIRECTORY \
 	(nautilus_trash_directory_get_type ())

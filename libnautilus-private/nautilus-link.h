@@ -26,8 +26,7 @@
 #ifndef NAUTILUS_LINK_H
 #define NAUTILUS_LINK_H
 
-#include "nautilus-file.h"
-#include <gdk/gdk.h>
+#include <gdk/gdktypes.h>
 #include <libgnome/gnome-desktop-item.h>
 
 /* Link types */
@@ -41,62 +40,62 @@ typedef enum {
 /* Create a new link file. Takes a path, works locally, and uses sync. I/O.
  * Returns TRUE if it succeeds, FALSE if it fails.
  */
-gboolean         nautilus_link_local_create                     (const char       *directory_path,
-								 const char       *name,
-								 const char       *image,
-								 const char       *target_uri,
-								 const GdkPoint   *point,
-								 NautilusLinkType  type);
+gboolean         nautilus_link_local_create                      (const char       *directory_path,
+								  const char       *name,
+								  const char       *image,
+								  const char       *target_uri,
+								  const GdkPoint   *point,
+								  NautilusLinkType  type);
 
 /* Change the icon of an existing link file. Takes a path, works
  * locally, and uses sync. I/O. Returns TRUE if it succeeds, FALSE if
  * it fails. Does not check and see if it is a link file.
  */
-gboolean         nautilus_link_local_set_icon                   (const char       *path,
-								 const char       *icon_name);
+gboolean         nautilus_link_local_set_icon                    (const char       *path,
+								  const char       *icon_name);
 
 /* Specify the type of link that is represented
  * Takes a path, works locally, and uses sync. I/O. 
  * Returns TRUE if it succeeds, FALSE if
  * it fails. Does not check and see if it is a link file.
  */
-gboolean         nautilus_link_local_set_type                   (const char       *path,
-								 NautilusLinkType  type);
+gboolean         nautilus_link_local_set_type                    (const char       *path,
+								  NautilusLinkType  type);
 
 /* Specify the link uri of link that is represented
  * Takes a path, works locally, and uses sync. I/O. 
  * Returns TRUE if it succeeds, FALSE if
  * it fails. Does not check and see if it is a link file.
  */
-gboolean         nautilus_link_local_set_link_uri               (const char       *path,
-								 const char       *uri);
+gboolean         nautilus_link_local_set_link_uri                (const char       *path,
+								  const char       *uri);
 
 /* Returns additional text to display under the name, NULL if
  * none. Despite the fact that it takes a URI parameter, works only if
  * the file is local and does sync. I/O.
  */
-char *           nautilus_link_local_get_additional_text        (const char       *path);
+char *           nautilus_link_local_get_additional_text         (const char       *path);
 
 /* Returns the link type of a link file.
  * Works only if the file is local and does sync. I/O
  */
-NautilusLinkType nautilus_link_local_get_link_type              (const char       *path);
+NautilusLinkType nautilus_link_local_get_link_type               (const char       *path);
 
 
 /* Returns if a link is a mount link.
  * Works only if the file is local and does sync. I/O
  */
-gboolean         nautilus_link_local_is_volume_link             (const char       *path);
+gboolean         nautilus_link_local_is_volume_link              (const char       *path);
 
 /* Returns if a link is a home link.
  * Works only if the file is local and does sync. I/O
  */
-gboolean         nautilus_link_local_is_home_link               (const char       *path);
+gboolean         nautilus_link_local_is_home_link                (const char       *path);
 
 /* Returns if a link is a trash link.
  * Works only if the file is local and does sync. I/O
  */
-gboolean         nautilus_link_local_is_trash_link              (const char       *path);
+gboolean         nautilus_link_local_is_trash_link               (const char       *path);
 
 
 /* Returns the link uri associated with a link file. The first version
@@ -104,16 +103,18 @@ gboolean         nautilus_link_local_is_trash_link              (const char     
  * fact that it takes a URI parameter. The second version takes the
  * contents of a file already in memory.
  */
-char *           nautilus_link_local_get_link_uri               (const char       *path);
-char *           nautilus_link_get_link_uri_given_file_contents (const char       *link_file_contents,
-								 int               link_file_size);
-char *           nautilus_link_get_link_name_given_file_contents (const char      *file_contents,
-								  int              link_file_size);
-char *           nautilus_link_get_link_icon_given_file_contents (const char      *file_contents,
-								  int              link_file_size);
+char *           nautilus_link_local_get_link_uri                (const char       *path);
+char *           nautilus_link_get_link_uri_given_file_contents  (const char       *uri,
+								  const char       *link_file_contents,
+								  int               link_file_size);
+char *           nautilus_link_get_link_name_given_file_contents (const char       *uri,
+								  const char       *file_contents,
+								  int               link_file_size);
+char *           nautilus_link_get_link_icon_given_file_contents (const char       *uri,
+								  const char       *file_contents,
+								  int               link_file_size);
+void             nautilus_link_local_create_from_gnome_entry     (GnomeDesktopItem *item,
+								  const char       *dest_path,
+								  const GdkPoint   *position);
 
-void		 nautilus_link_local_create_from_gnome_entry 	 (GnomeDesktopItem *item,
-								  const char 	   *dest_path,
-								  const GdkPoint    *position);
-								 								 
 #endif /* NAUTILUS_LINK_H */
