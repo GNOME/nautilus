@@ -1,3 +1,9 @@
+2003-09-19  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file.c (nautilus_file_get_internal):
+	Don't assert_not_reached for unsupported URIs when create == FALSE.
+	Fixes bug #122265.
+
 2003-09-19  Dennis Cranston <dennis_cranston at yahoo com>
 
 	* libnautilus-private/nautilus-file-operations.c:  HIGify
