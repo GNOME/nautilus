@@ -1383,7 +1383,7 @@ get_next_icon_size_to_try (guint target_size, guint *current_size)
 static GdkPixbuf *
 load_pixbuf_svg (const char *path, guint size_in_pixels, gboolean is_emblem)
 {
-	double actual_size_in_pixels, zoom;
+	double actual_size_in_pixels;
 	
 	/* FIXME: the nominal size of .svg emblems is too large, so we scale it
 	 * down here if the file is an emblem. This code should be removed
@@ -1394,9 +1394,8 @@ load_pixbuf_svg (const char *path, guint size_in_pixels, gboolean is_emblem)
 	} else {
 		actual_size_in_pixels = size_in_pixels;
 	}
-	zoom = actual_size_in_pixels / NAUTILUS_ICON_SIZE_STANDARD;
-	
-	return rsvg_pixbuf_from_file_at_zoom (path, zoom, zoom, NULL);
+
+	return rsvg_pixbuf_from_file_at_max_size (path, actual_size_in_pixels, actual_size_in_pixels, NULL);
 }
 
 static gboolean
