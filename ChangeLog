@@ -1,3 +1,10 @@
+2001-10-24  Anders Carlsson  <andersca@gnu.org>
+ 
+ 	* libnautilus-private/nautilus-file.c 
+ 	(nautilus_file_get_activation_uri): If the file is a symbolic link, 
+ 	return the uri the file points at. Fixes bug #48353. The fix is not
+	perfect though, so the bug is still open.
+ 
 2001-10-21  Benedikt Roth  <Benedikt.Roth@gmx.net>
 
 	* libnautilus-private/nautilus-link-desktop-file.c:
