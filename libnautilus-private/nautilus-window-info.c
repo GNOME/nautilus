@@ -168,6 +168,14 @@ nautilus_window_info_open_location (NautilusWindowInfo      *window,
 }
 
 void
+nautilus_window_info_show_window (NautilusWindowInfo      *window)
+{
+	g_return_if_fail (NAUTILUS_IS_WINDOW_INFO (window));
+
+	(* NAUTILUS_WINDOW_INFO_GET_IFACE (window)->show_window) (window);
+}
+
+void
 nautilus_window_info_close (NautilusWindowInfo      *window)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW_INFO (window));

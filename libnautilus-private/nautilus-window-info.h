@@ -127,6 +127,7 @@ struct _NautilusWindowInfoIface
 				       NautilusWindowOpenMode mode,
 				       NautilusWindowOpenFlags flags,
 				       GList *selection);
+	void   (* show_window)        (NautilusWindowInfo *window);
 	void   (* close_window)       (NautilusWindowInfo *window);
 	GtkUIManager *     (* get_ui_manager)   (NautilusWindowInfo *window);
 };
@@ -144,6 +145,7 @@ void                              nautilus_window_info_open_location            
 										 NautilusWindowOpenMode             mode,
 										 NautilusWindowOpenFlags            flags,
 										 GList                             *selection);
+void                              nautilus_window_info_show_window              (NautilusWindowInfo                *window);
 void                              nautilus_window_info_close                    (NautilusWindowInfo                *window);
 void                              nautilus_window_info_set_status               (NautilusWindowInfo                *window,
 										 const char                        *status);

@@ -74,6 +74,7 @@ typedef struct {
                                         gboolean active);
         void   (* prompt_for_location) (NautilusWindow *window);
         void   (* get_default_size) (NautilusWindow *window, guint *default_width, guint *default_height);
+        void   (* show_window)  (NautilusWindow *window);
         void   (* close) (NautilusWindow *window);
 
         /* Signals used only for keybindings */
@@ -110,6 +111,7 @@ struct NautilusWindow {
 };
 
 GType            nautilus_window_get_type             (void);
+void             nautilus_window_show_window          (NautilusWindow    *window);
 void             nautilus_window_close                (NautilusWindow    *window);
 char *           nautilus_window_get_location         (NautilusWindow    *window);
 void             nautilus_window_go_to                (NautilusWindow    *window,

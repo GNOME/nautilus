@@ -7069,6 +7069,9 @@ finish_loading (FMDirectoryView *view)
 	 * Subclasses use this to know that the new metadata is now available.
 	 */
 	fm_directory_view_begin_loading (view);
+	
+	/* Assume we have now all information to show window */
+	nautilus_window_info_show_window  (view->details->window);
 
 	if (nautilus_directory_are_all_files_seen (view->details->model)) {
 		schedule_idle_display_of_pending_files (view);		

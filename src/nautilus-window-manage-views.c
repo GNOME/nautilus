@@ -1106,11 +1106,6 @@ location_has_really_changed (NautilusWindow *window)
 
         free_location_change (window);
 
-        nautilus_window_update_title (window);
-	nautilus_window_update_icon (window);
-
-	gtk_widget_show (GTK_WIDGET (window));
-
 	if (location_copy != NULL) {
 		g_signal_emit_by_name (window, "loading_uri",
 				       location_copy);

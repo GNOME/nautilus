@@ -559,6 +559,26 @@ nautilus_window_finalize (GObject *object)
 }
 
 void
+nautilus_window_show_window (NautilusWindow *window)
+{
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+
+	EEL_CALL_METHOD (NAUTILUS_WINDOW_CLASS, window,
+			 show_window, (window));
+
+	nautilus_window_update_title (window);
+	nautilus_window_update_icon (window);
+
+	gtk_widget_show (GTK_WIDGET (window));
+
+	if (window->details->viewed_file) {
+		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
+			nautilus_file_set_has_open_window (window->details->viewed_file, TRUE);
+		}
+	}
+}
+
+void
 nautilus_window_close (NautilusWindow *window)
 {
 	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
@@ -1186,9 +1206,6 @@ nautilus_window_set_viewed_file (NautilusWindow *window,
 	}
 
 	if (file != NULL) {
-		if (NAUTILUS_IS_SPATIAL_WINDOW (window)) {
-			nautilus_file_set_has_open_window (file, TRUE);
-		}
 		attributes = NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME | NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE;
 		nautilus_file_monitor_add (file, window, attributes);
 	}
@@ -1407,6 +1424,7 @@ nautilus_window_info_iface_init (NautilusWindowInfoIface *iface)
 	iface->report_selection_changed = nautilus_window_report_selection_changed;
 	iface->report_view_failed = nautilus_window_report_view_failed;
 	iface->open_location = nautilus_window_open_location_full;
+	iface->show_window = nautilus_window_show_window;
 	iface->close_window = nautilus_window_close;
 	iface->set_status = nautilus_window_set_status;
 	iface->get_window_type = nautilus_window_get_window_type;
