@@ -33,9 +33,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include <widgets/nautilus-druid/nautilus-druid.h>
-#include <widgets/nautilus-druid/nautilus-druid-page-start.h>
-#include <widgets/nautilus-druid/nautilus-druid-page-standard.h>
-#include <widgets/nautilus-druid/nautilus-druid-page-finish.h>
+#include <widgets/nautilus-druid/nautilus-druid-page-eazel.h>
 
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
@@ -146,18 +144,19 @@ druid_finished (GtkWidget *druid_page)
 /* set up an event box to serve as the background */
 
 static GtkWidget*
-set_up_background (NautilusDruidPageStandard *page, const char *background_color)
+set_up_background (NautilusDruidPageEazel *page, const char *background_color)
 {
 	GtkWidget *event_box;
 	NautilusBackground *background;
 	
 	event_box = gtk_event_box_new();
-	gtk_container_add (GTK_CONTAINER (page->vbox), event_box);
 	
 	background = nautilus_get_widget_background (event_box);
 	nautilus_background_set_color (background, background_color);
 	
 	gtk_widget_show (event_box);
+
+	nautilus_druid_page_eazel_put_widget (page, event_box);
 
 	return event_box;
 }
@@ -207,13 +206,13 @@ create_named_pixbuf (const char *name)
 
 /* set up the user level page */
 static void
-set_up_user_level_page (NautilusDruidPageStandard *page)
+set_up_user_level_page (NautilusDruidPageEazel *page)
 {
 	GtkWidget *radio_buttons, *frame, *label;
 	GtkWidget *container, *main_box;
 	GdkPixbuf *user_level_icons[3];
 
-	container = set_up_background (page, "rgb:bbbb/bbbb/eeee-rgb:ffff/ffff/ffff:h");
+	container = set_up_background (page, "rgb:ffff/ffff/ffff:h");
 
 	/* allocate a vbox to hold the description and the widgets */
 	main_box = gtk_vbox_new (FALSE, 0);
@@ -271,12 +270,12 @@ set_up_user_level_page (NautilusDruidPageStandard *page)
 
 /* set up the user level page */
 static void
-set_up_service_signup_page (NautilusDruidPageStandard *page)
+set_up_service_signup_page (NautilusDruidPageEazel *page)
 {
 	GtkWidget *radio_buttons, *frame, *label;
 	GtkWidget *container, *main_box;
 
-	container = set_up_background (page, "rgb:bbbb/bbbb/eeee-rgb:ffff/ffff/ffff:h");
+	container = set_up_background (page, "rgb:ffff/ffff/ffff:h");
 
 	/* allocate a vbox to hold the description and the widgets */
 	main_box = gtk_vbox_new (FALSE, 0);
@@ -315,12 +314,12 @@ set_up_service_signup_page (NautilusDruidPageStandard *page)
 
 /* set up the "Nautilus Update" page */
 static void
-set_up_update_page (NautilusDruidPageStandard *page)
+set_up_update_page (NautilusDruidPageEazel *page)
 {
 	GtkWidget *radio_buttons, *frame, *label;
 	GtkWidget *container, *main_box;
 
-	container = set_up_background (page, "rgb:bbbb/bbbb/eeee-rgb:ffff/ffff/ffff:h");
+	container = set_up_background (page, "rgb:ffff/ffff/ffff:h");
 
 	/* allocate a vbox to hold the description and the widgets */
 	main_box = gtk_vbox_new (FALSE, 0);
@@ -357,13 +356,13 @@ set_up_update_page (NautilusDruidPageStandard *page)
 
 /* set up the update feedback page */
 static void
-set_up_update_feedback_page (NautilusDruidPageStandard *page)
+set_up_update_feedback_page (NautilusDruidPageEazel *page)
 {
 	GtkWidget *frame, *label;
 	GtkWidget *container, *main_box;
 	GtkWidget *progress_box, *temp_box;
 	
-	container = set_up_background (page, "rgb:bbbb/bbbb/eeee-rgb:ffff/ffff/ffff:h");
+	container = set_up_background (page, "rgb:ffff/ffff/ffff:h");
 
 	/* allocate a vbox to hold the description and the widgets */
 	main_box = gtk_vbox_new (FALSE, 0);
@@ -433,61 +432,99 @@ finish_page_back_callback (GtkWidget *button, NautilusDruid *druid)
 
 /* create the initial preferences druid */
 
+static void
+set_page_sidebar (NautilusDruidPageEazel *page)
+{
+	GdkPixbuf *pixbuf;
+	char *file;
+
+	file = nautilus_pixmap_file ("druid_sidebar.png");
+	if (file != NULL) {
+		pixbuf = gdk_pixbuf_new_from_file (file);
+	} else {
+		pixbuf = NULL;
+	}
+	g_free (file);
+
+	if (pixbuf != NULL) {
+		nautilus_druid_page_eazel_set_sidebar_image (page, pixbuf);
+		gdk_pixbuf_unref (pixbuf);
+	}
+}
+
 GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gboolean manage_desktop, const char *urls[])
 {	
-	int index;
 	GtkWidget *dialog;
 	GtkWidget *druid;
+	char *file;
+	int i;
 
-	GdkPixbuf *logo;
-	GdkColor logo_bg_color;
+	GdkPixbuf *pixbuf;
 	
 	/* remember parameters for later window invocation */
 	save_application = application;
 	save_manage_desktop = manage_desktop;
 	
-	dialog = gnome_dialog_new (_("Nautilus: Initial Preferences"),
-				   NULL);
-  	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);
+	dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title (GTK_WINDOW (dialog),
+			      _("Nautilus: Initial Preferences"));
+  	gtk_container_set_border_width (GTK_CONTAINER (dialog), 0);
   	gtk_window_set_policy (GTK_WINDOW (dialog), FALSE, FALSE, FALSE);
 
 	druid = nautilus_druid_new ();
+  	gtk_container_set_border_width (GTK_CONTAINER (druid), 0);
 
-	start_page = nautilus_druid_page_start_new ();
-	finish_page = nautilus_druid_page_finish_new ();
+	start_page = nautilus_druid_page_eazel_new (NAUTILUS_DRUID_START);
+	set_page_sidebar (NAUTILUS_DRUID_PAGE_EAZEL (start_page));
+	finish_page = nautilus_druid_page_eazel_new (NAUTILUS_DRUID_FINISH);
+	set_page_sidebar (NAUTILUS_DRUID_PAGE_EAZEL (finish_page));
 
-	pages[0] = nautilus_druid_page_standard_new ();
-	pages[1] = nautilus_druid_page_standard_new ();
-	pages[2] = nautilus_druid_page_standard_new ();
-	pages[3] = nautilus_druid_page_standard_new ();
+	for (i = 0; i < NUMBER_OF_STANDARD_PAGES; i++) {
+		pages[i] = nautilus_druid_page_eazel_new (NAUTILUS_DRUID_OTHER);
+		set_page_sidebar (NAUTILUS_DRUID_PAGE_EAZEL (pages[i]));
+	}
 		
 	/* set up the initial page */
-	nautilus_druid_page_start_set_title (NAUTILUS_DRUID_PAGE_START (start_page), _("Welcome to Nautilus!"));
-	nautilus_druid_page_start_set_text (NAUTILUS_DRUID_PAGE_START(start_page), _("Welcome to Nautilus!\n\nSince this is the first time that you've launched\nNautilus, we'd like to ask you a few questions\nto help personalize it for your use.\n\nPress the next button to continue."));
+	file = nautilus_pixmap_file ("druid_welcome.png");
+	if (file != NULL) {
+		pixbuf = gdk_pixbuf_new_from_file (file);
+	} else {
+		pixbuf = NULL;
+	}
+	g_free (file);
+
+	if (pixbuf != NULL) {
+		nautilus_druid_page_eazel_set_title_image (NAUTILUS_DRUID_PAGE_EAZEL (start_page), pixbuf);
+		gdk_pixbuf_unref (pixbuf);
+	} else {
+		nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (start_page), _("Welcome to Nautilus!"));
+	}
+
+	nautilus_druid_page_eazel_set_text (NAUTILUS_DRUID_PAGE_EAZEL(start_page), _("Welcome to Nautilus!\n\nSince this is the first time that you've launched\nNautilus, we'd like to ask you a few questions\nto help personalize it for your use.\n\nPress the next button to continue."));
 	
 	/* set up the final page */
-	nautilus_druid_page_finish_set_title (NAUTILUS_DRUID_PAGE_FINISH (finish_page), _("Finished"));
-	nautilus_druid_page_finish_set_text (NAUTILUS_DRUID_PAGE_FINISH(finish_page), _("Click to finish button to launch Nautilus.\n\nWe hope that you enjoying using it!"));
+	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (finish_page), _("Finished"));
+	nautilus_druid_page_eazel_set_text (NAUTILUS_DRUID_PAGE_EAZEL(finish_page), _("Click to finish button to launch Nautilus.\n\nWe hope that you enjoying using it!"));
 
 	/* set up the user level page */
-	nautilus_druid_page_standard_set_title (NAUTILUS_DRUID_PAGE_STANDARD (pages[0]), _("Select A User Level"));
-	set_up_user_level_page (NAUTILUS_DRUID_PAGE_STANDARD (pages[0]));
+	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[0]), _("Select A User Level"));
+	set_up_user_level_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[0]));
 				
 	/* set up the service sign-up page */
-	nautilus_druid_page_standard_set_title (NAUTILUS_DRUID_PAGE_STANDARD (pages[1]), _("Sign Up for Eazel Services"));
-	set_up_service_signup_page (NAUTILUS_DRUID_PAGE_STANDARD (pages[1]));
+	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[1]), _("Sign Up for Eazel Services"));
+	set_up_service_signup_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[1]));
 
 	/* set up the update page */
-	nautilus_druid_page_standard_set_title (NAUTILUS_DRUID_PAGE_STANDARD (pages[2]), _("Nautilus Update"));
-	set_up_update_page (NAUTILUS_DRUID_PAGE_STANDARD (pages[2]));
+	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[2]), _("Nautilus Update"));
+	set_up_update_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[2]));
 
 	gtk_signal_connect (GTK_OBJECT (pages[2]), "next",
 			    GTK_SIGNAL_FUNC (next_update_page_callback),
 			    druid);
 
 	/* set up the update feedback page */
-	nautilus_druid_page_standard_set_title (NAUTILUS_DRUID_PAGE_STANDARD (pages[3]), _("Updating Nautilus..."));
-	set_up_update_feedback_page (NAUTILUS_DRUID_PAGE_STANDARD (pages[3]));
+	nautilus_druid_page_eazel_set_title (NAUTILUS_DRUID_PAGE_EAZEL (pages[3]), _("Updating Nautilus..."));
+	set_up_update_feedback_page (NAUTILUS_DRUID_PAGE_EAZEL (pages[3]));
 
 	/* capture the "back" signal from the finish page to skip the feedback page */
 	gtk_signal_connect (GTK_OBJECT (finish_page), "back",
@@ -503,31 +540,7 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 	
 	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (finish_page));
 
-	/* set up the logo background and image */	
-
-	nautilus_gdk_color_parse_with_white_default ("rgb:1838/1838/7000", &logo_bg_color);
-
-	logo = create_named_pixbuf ("nautilus-logo.png");
-	g_assert (logo != NULL);
-	
-	nautilus_druid_page_start_set_logo_bg_color (NAUTILUS_DRUID_PAGE_START (start_page), &logo_bg_color);		
-	nautilus_druid_page_start_set_logo (NAUTILUS_DRUID_PAGE_START (start_page), logo);	
-	
-	for (index = 0; index < NUMBER_OF_STANDARD_PAGES; index++) {
-		nautilus_druid_page_standard_set_logo_bg_color (NAUTILUS_DRUID_PAGE_STANDARD (pages[index]), &logo_bg_color);		
-		nautilus_druid_page_standard_set_logo (NAUTILUS_DRUID_PAGE_STANDARD (pages[index]), logo);
-	}
-	
-	nautilus_druid_page_finish_set_logo_bg_color (NAUTILUS_DRUID_PAGE_FINISH (finish_page), &logo_bg_color);		
-	nautilus_druid_page_finish_set_logo (NAUTILUS_DRUID_PAGE_FINISH (finish_page), logo);
-
-	gdk_pixbuf_unref (logo);
-		
-  	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox), 
-  			    druid,
-  			    TRUE,
-			    TRUE,
-			    0);
+	gtk_container_add (GTK_CONTAINER (dialog), druid);
 
 	/* set up the signals */
   	gtk_signal_connect (GTK_OBJECT (druid), "cancel",

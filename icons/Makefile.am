@@ -14,6 +14,10 @@ icon_DATA =\
 	computer.svg \
 	decrement.png \
 	default.xml \
+	druid_sidebar.png \
+	druid_header.png \
+	druid_header_stretch.png \
+	druid_welcome.png \
 	eazel-logo.gif \
 	emblem-certified.gif \
 	emblem-changed.gif \

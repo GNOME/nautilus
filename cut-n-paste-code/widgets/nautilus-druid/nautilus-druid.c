@@ -139,6 +139,8 @@ nautilus_druid_init (NautilusDruid *druid)
 
 	druid->_priv = g_new0(NautilusDruidPrivate, 1);
 
+	GTK_CONTAINER (druid)->border_width = GNOME_PAD_SMALL;
+
 	/* set up the buttons */
 	GTK_WIDGET_SET_FLAGS (GTK_WIDGET (druid), GTK_NO_WINDOW);
 	pixmap =  gnome_stock_new_with_icon(GNOME_STOCK_BUTTON_PREV);
@@ -222,9 +224,12 @@ nautilus_druid_size_request (GtkWidget *widget,
 	NautilusDruid *druid;
 	GtkRequisition child_requisition;
 	NautilusDruidPage *child;
+	int border;
 	
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (NAUTILUS_IS_DRUID (widget));
+
+	border = GTK_CONTAINER(widget)->border_width;
 
 	druid = NAUTILUS_DRUID (widget);
 	temp_height = temp_width = 0;
@@ -241,8 +246,8 @@ nautilus_druid_size_request (GtkWidget *widget,
 		}
 	}
 	
-        requisition->width = temp_width + 2 * GNOME_PAD_SMALL;
-        requisition->height = temp_height + 2 * GNOME_PAD_SMALL;
+        requisition->width = temp_width + 2 * border;
+        requisition->height = temp_height + 2 * border;
 
 	/* In an Attempt to show how the widgets are packed,
 	 * here's a little diagram.
@@ -273,16 +278,13 @@ nautilus_druid_size_request (GtkWidget *widget,
 	temp_width = MAX (temp_width, child_requisition.width);
 	temp_height = MAX (temp_height, child_requisition.height);
 
-	temp_width += GNOME_PAD_SMALL * 2;
+	temp_width += border * 2;
 	temp_height += GNOME_PAD_SMALL;
 	/* FIXME. do we need to do something with the buttons requisition? */
 	temp_width = temp_width * 17/4  + GNOME_PAD_SMALL * 3;
 
 	/* pick which is bigger, the buttons, or the NautilusDruidPages */
 	requisition->width = MAX (temp_width, requisition->width);
-	requisition->height += temp_height + GNOME_PAD_SMALL * 2;
-	/* And finally, put the side padding in */
-	requisition->width += GNOME_PAD_SMALL *2;
 }
 static void
 nautilus_druid_size_allocate (GtkWidget *widget,
@@ -292,6 +294,7 @@ nautilus_druid_size_allocate (GtkWidget *widget,
 	GtkAllocation child_allocation;
 	gint button_height;
 	GList *list;
+	int border;
 	
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (NAUTILUS_IS_DRUID (widget));
@@ -327,15 +330,17 @@ nautilus_druid_size_allocate (GtkWidget *widget,
 	child_allocation.x -= (GNOME_PAD_SMALL + child_allocation.width);
 	gtk_widget_size_allocate (druid->back, &child_allocation);
 
+	border = GTK_CONTAINER(widget)->border_width;
+
 	/* Put up the NautilusDruidPage */
-	child_allocation.x = allocation->x + GNOME_PAD_SMALL;
-	child_allocation.y = allocation->y + GNOME_PAD_SMALL;
+	child_allocation.x = allocation->x + border;
+	child_allocation.y = allocation->y + border;
 	child_allocation.width =
-		((allocation->width - 2* GNOME_PAD_SMALL) > 0) ?
-		(allocation->width - 2* GNOME_PAD_SMALL):0;
+		((allocation->width - 2 * border) > 0) ?
+		(allocation->width - 2 * border):0;
 	child_allocation.height =
-		((allocation->height - 3 * GNOME_PAD_SMALL - button_height) > 0) ?
-		(allocation->height - 3 * GNOME_PAD_SMALL - button_height):0;
+		((allocation->height - 2 * border - GNOME_PAD_SMALL - button_height) > 0) ?
+		(allocation->height - 2 * border - GNOME_PAD_SMALL - button_height):0;
 	for (list = druid->_priv->children; list; list=list->next) {
 		if (GTK_WIDGET_VISIBLE (list->data)) {
 			gtk_widget_size_allocate (GTK_WIDGET (list->data), &child_allocation);

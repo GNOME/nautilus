@@ -1,3 +1,35 @@
+Fri Aug 25 02:17:17 2000  George Lebl <jirka@5z.com>
+
+	* cut-n-paste-code/widgets/nautilus-druid/Makefile.am,
+	  cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-finish.c,
+	  cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-finish.h,
+	  cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-start.c,
+	  cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-start.h:
+	  Remove these as they are obscolete anyway.
+
+	* cut-n-paste-code/widgets/nautilus-druid/nautilus-druid.c
+	  (nautilus_druid_init), (nautilus_druid_size_request),
+	  (nautilus_druid_size_allocate):
+	  Fix calculating of size and borders
+
+	* icons/Makefile.am, icons/druid_*.png: Add Arlo's druid images.
+
+	* po/POTFILES.in,
+	  cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-eazel.c,
+	  cut-n-paste-code/widgets/nautilus-druid/nautilus-druid-page-eazel.h:
+	  Add the eazel druid page.  Theoretically this should move to
+	  libnautilus-extentions soon, including deriving nautilus-druid from
+	  gnome-druid, in which way we can eliminate the entire
+	  cut-n-paste mess for the druid.  Likely to do this tommorrow with
+	  the rest of the arloification.
+
+	* src/nautilus-first-time-druid.c (set_up_background),
+	  (set_up_user_level_page), (set_up_service_signup_page),
+	  (set_up_update_page), (set_up_update_feedback_page),
+	  (set_page_sidebar), (nautilus_first_time_druid_show):
+	  Use the eazel page for the druid and set up the sidebar image
+	  to the standard one.
+
 2000-08-25  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/Makefile.am:
