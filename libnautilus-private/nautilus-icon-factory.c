@@ -52,6 +52,7 @@
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-mime-info.h>
+#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <librsvg/rsvg.h>
@@ -735,7 +736,7 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 	is_text_file = mime_type != NULL && !nautilus_strcasecmp (mime_type, "text/plain");
 	
 	if (mime_type != NULL && !is_text_file) {
-		icon_name = gnome_vfs_mime_get_value (mime_type, "icon-filename");
+		icon_name = gnome_vfs_mime_get_icon (mime_type);
 		if (icon_name != NULL) {
 			g_free (mime_type);
 			return icon_name;
@@ -995,6 +996,10 @@ get_themed_icon_file_path (const char *theme_name,
 	}
 	g_free (themed_icon_name);
 
+	if (path == NULL) {
+		path = gnome_vfs_icon_path_from_filename (icon_name);
+	}
+
 	return path;
 }
 
@@ -1038,10 +1043,10 @@ get_icon_file_path (const char *name,
 			g_free (path);
 		} else if (icon_factory->default_theme_name != NULL) {
 			path = get_themed_icon_file_path (icon_factory->default_theme_name,
-						  name,
-						  NAUTILUS_ICON_SIZE_STANDARD,
-						  aa_mode,
-						  details);		
+							  name,
+							  NAUTILUS_ICON_SIZE_STANDARD,
+							  aa_mode,
+							  details);
 			if (path != NULL) {
 				theme_to_use = icon_factory->default_theme_name;
 				g_free (path);
@@ -1142,7 +1147,7 @@ nautilus_scalable_icon_new_from_text_pieces (const char *uri,
 	}
 
 	/* Get at the hash table. */
-	hash_table = get_icon_factory ()->scalable_icons;
+	hash_table = factory->scalable_icons;
 
 	/* Check to see if it's already in the table. */
 	cache_key.uri = (char *) uri;

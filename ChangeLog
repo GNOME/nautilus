@@ -1,3 +1,16 @@
+2000-11-17  Mathieu Lacage  <mathieu@eazel.om>
+
+	reviewed by: Sullivan
+
+	update nautilus to the latest gnome-vfs mime/type icon handling.
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_name_for_regular_file): use
+	gnome_vfs_mime_get_icon instead of the raw get_value call.
+	(get_themed_icon_file_path): if cannot find the pixmap through
+	the standard theme code, fallback on gnome-vfs to find the icon.
+	(get_icon_file_path): beautification.
+	(nautilus_scalable_icon_new_from_text_pieces): idem.
+
 2000-11-17  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Mathieu Lacage  <mathieu@eazel.com>
