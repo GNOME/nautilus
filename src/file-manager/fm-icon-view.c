@@ -283,9 +283,11 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 	char *position_string, *scale_string;
 	gboolean position_good, scale_good;
 	char *locale;
+#ifdef READ_GMC_METADATA
 	char *path, *uri;
 	int res, size;
 	char *buf;
+#endif
 
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
 	g_assert (NAUTILUS_IS_FILE (file));
@@ -310,6 +312,7 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 
 	/* If it is the desktop directory, maybe the gnome-libs metadata has information about it */
 
+#ifdef READ_GMC_METADATA
 	if (!position_good) {
 		if (nautilus_file_is_local (file) && nautilus_file_is_in_desktop (file)) {
 			uri = nautilus_file_get_uri (file);
@@ -328,6 +331,7 @@ get_stored_icon_position_callback (NautilusIconContainer *container,
 			g_free (uri);
 		}
 	}
+#endif	
 	
 	/* Get the scale of the icon from the metadata. */
 	scale_string = nautilus_file_get_metadata
@@ -2686,7 +2690,9 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	char *stripped_uri;
 	char *container_uri_string;
 	const char *last_slash, *link_name;
+	int n_uris;
 	gboolean all_local;
+	GArray *points;
 
 	if (item_uris == NULL) {
 		return;
@@ -2733,6 +2739,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	 * them.  Otherwise, we just make links.
 	 */
 	all_local = TRUE;
+	n_uris = 0;
 	uri_list = gnome_uri_list_extract_uris (item_uris);
 	for (node = uri_list; node != NULL; node = node->next) {
 		gchar *sanitized_uri;
@@ -2743,6 +2750,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 		real_uri_list = g_list_append (real_uri_list, sanitized_uri);
 		if (strncmp (sanitized_uri, "file", 4) != 0)
 			all_local = FALSE;
+		n_uris++;
 	}
 	gnome_uri_list_free_strings (uri_list);
 
@@ -2750,9 +2758,21 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	    (action == GDK_ACTION_COPY ||
 	     action == GDK_ACTION_MOVE)) {
 		/* Copying files */
-		fm_directory_view_move_copy_items (real_uri_list, NULL,
+		if (n_uris == 1) {
+			GdkPoint tmp_point = { 0, 0 };
+
+			/* pass in a 1-item array of icon positions, relative to x, y */
+			points = g_array_new (FALSE, TRUE, sizeof (GdkPoint));
+			g_array_append_val (points, tmp_point);
+		} else {
+			points = NULL;
+		}
+		fm_directory_view_move_copy_items (real_uri_list, points,
 						   container_uri_string,
-						   action, 0, 0, FM_DIRECTORY_VIEW (view));
+						   action, x, y, FM_DIRECTORY_VIEW (view));
+		
+		if (points)
+			g_array_free (points, TRUE);
 	} else {
 		for (node = real_uri_list; node != NULL; node = node->next) {
 			/* Make a link using the desktop file contents? */

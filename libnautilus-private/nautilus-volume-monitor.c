@@ -360,6 +360,39 @@ nautilus_volume_monitor_get_removable_volumes (NautilusVolumeMonitor *monitor)
 	return monitor->details->removable_volumes;
 }
 
+/**
+ * nautilus_volume_monitor_get_volume_for_path:
+ * @path: a local filesystem path
+ * 
+ * Find the volume in which @path resides.
+ * 
+ * Return value: a NautilusVolume for @path, or %NULL if the operation
+ *   fails, probably because stat() fails on @path.
+ *    
+ **/
+NautilusVolume *
+nautilus_volume_monitor_get_volume_for_path (NautilusVolumeMonitor *monitor,
+					     const char            *path)
+{
+	struct stat statbuf;
+	dev_t device;
+	GList *p;
+	NautilusVolume *volume;
+
+	if (stat (path, &statbuf) != 0)
+		return NULL;
+
+	device = statbuf.st_dev;
+
+	for (p = monitor->details->mounts; p != NULL; p = p->next) {
+		volume = (NautilusVolume *) p->data;
+
+		if (stat (volume->mount_path, &statbuf) == 0 && statbuf.st_dev == device)
+			return volume;
+	}
+
+	return NULL;
+}
 
 #if defined (HAVE_GETMNTINFO) || defined (HAVE_MNTENT_H) || defined (SOLARIS_MNT)
 
@@ -970,6 +1003,28 @@ get_mount_list (void)
 
 #else /* !SOLARIS_MNT */
 
+static gboolean
+option_list_has_option (const char *optlist,
+			const char *option)
+{
+        gboolean retval = FALSE;
+        char **options;
+        int i;
+
+        options = g_strsplit (optlist, ",", -1);
+
+        for (i = 0; options[i]; i++) {
+                if (!strcmp (options[i], option)) {
+                        retval = TRUE;
+                        break;
+                }
+        }
+
+        g_strfreev (options);
+
+        return retval;
+}
+
 static GList *
 get_mount_list (void) 
 {
@@ -1041,6 +1096,10 @@ get_mount_list (void)
                         mount_path = eel_string_list_nth (list, 1);
                         filesystem = eel_string_list_nth (list, 2);
                         volume = create_volume (device_path, mount_path, filesystem);
+			if (eel_string_list_get_length (list) >= 4 &&
+			    option_list_has_option (eel_string_list_nth (list, 3), "ro"))
+				volume->is_read_only = TRUE;
+			
                         g_free (device_path);
                         g_free (mount_path);
                         g_free (filesystem);

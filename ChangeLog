@@ -1,3 +1,28 @@
+Mon Aug 13 18:16:23 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* libnautilus-private/nautilus-volume-monitor.[ch]: Add
+	function nautilus_volume_monitor_get_volume_for_path()
+	to get path holding specified file.
+
+	* libnautilus-private/nautilus-volume-monitor.c: Correctly
+	set the is_readonly_flag based on information from
+	/proc/mounts. (look for the 'ro' flag)
+
+	* libnautilus-private/nautilus-monitor.c: Don't add
+	monitors for read-only directories -- that will keep
+	cdroms from being unmounted because fam has open file
+	descriptors on them.
+
+	* src/file-manager/fm-icon-view.c: Don't read GMC
+	position meta data -- it is never right for nautilus,
+	due to different size icons, additional icons, different
+	placement policies, so falling back to normal automatic
+	placement works better.	
+
+	* src/file-manager/fm-icon-view.c: When copying a single
+	file uri-list not from GNOME, use the drop position
+	to set the new position for the resulting icon.
+	
 2001-08-13  Havoc Pennington  <hp@redhat.com>
 
 	* libnautilus-private/nautilus-thumbnails.c (is_nfs_filesystem):

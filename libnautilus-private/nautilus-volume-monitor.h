@@ -121,6 +121,8 @@ gboolean		nautilus_volume_monitor_volume_is_mounted 		(NautilusVolumeMonitor 		*
 					   					const NautilusVolume 		*mount_point);
 gboolean		nautilus_volume_monitor_volume_is_removable		(const NautilusVolume 		*volume);
 gboolean               	nautilus_volume_monitor_is_volume_link             	(const char            		*path);
+NautilusVolume         *nautilus_volume_monitor_get_volume_for_path 	        (NautilusVolumeMonitor          *monitor,
+										 const char                     *path);
 
 gboolean		nautilus_volume_monitor_should_integrate_trash		(const NautilusVolume 		*volume);
 const char		*nautilus_volume_monitor_get_volume_mount_uri 		(const NautilusVolume 		*volume);
