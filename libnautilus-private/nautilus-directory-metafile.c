@@ -100,8 +100,7 @@ get_factory (void)
 		if (get_factory_from_oaf) {
 			CORBA_exception_init (&ev);
 
-			factory = bonobo_activation_activate_from_id (METAFILE_FACTORY_IID, 0,
-							NULL, &ev);
+			factory = bonobo_activation_activate_from_id (METAFILE_FACTORY_IID, 0, NULL, &ev);
 			if (ev._major != CORBA_NO_EXCEPTION || factory == CORBA_OBJECT_NIL) {
 				die_on_failed_activation ("Nautilus_MetafileFactory", &ev);
 			}
@@ -151,7 +150,7 @@ get_metafile (NautilusDirectory *directory)
 		uri = nautilus_directory_get_uri (directory);
 
 		directory->details->metafile_corba_object = open_metafile (uri, !get_factory_from_oaf);
-		if (directory->details->metafile_corba_object == NULL) {
+		if (directory->details->metafile_corba_object == CORBA_OBJECT_NIL) {
 			g_assert (get_factory_from_oaf);
 			factory = CORBA_OBJECT_NIL;
 			directory->details->metafile_corba_object = open_metafile (uri, TRUE);
@@ -587,6 +586,7 @@ nautilus_directory_unregister_metadata_monitor (NautilusDirectory *directory)
 	CORBA_exception_free (&ev);
 	bonobo_object_release_unref (metafile, NULL);
 
+	bonobo_object_unref (BONOBO_OBJECT (directory->details->metafile_monitor));
 	directory->details->metafile_monitor = NULL;
 }
 

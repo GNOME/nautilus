@@ -59,6 +59,7 @@ NautilusMetafileMonitor *
 nautilus_metafile_monitor_new (NautilusDirectory *directory)
 {
 	NautilusMetafileMonitor *monitor;
+	
 	monitor = NAUTILUS_METAFILE_MONITOR (g_object_new (NAUTILUS_TYPE_METAFILE_MONITOR, NULL));
 	monitor->details->directory = directory;
 	/* The monitor is owned by the directory, so we don't ref the directory. */

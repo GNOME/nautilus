@@ -174,34 +174,26 @@ nautilus_directory_finalize (GObject *object)
 	if (directory->details->monitor_list != NULL) {
 		g_warning ("destroying a NautilusDirectory while it's being monitored");
 		eel_g_list_free_deep (directory->details->monitor_list);
-		directory->details->monitor_list = NULL;
 	}
 
 	if (directory->details->monitor != NULL) {
 		nautilus_monitor_cancel (directory->details->monitor);
-		directory->details->monitor = NULL;
 	}
 
 	if (directory->details->metafile_monitor != NULL) {
 		nautilus_directory_unregister_metadata_monitor (directory);
-		directory->details->metafile_monitor = NULL;
 	}
 
-	directory->details->metafile_corba_object =
-		bonobo_object_release_unref (
-			directory->details->metafile_corba_object, NULL);
+	bonobo_object_release_unref (directory->details->metafile_corba_object, NULL);
 
 	if (directory->details->dequeue_pending_idle_id != 0) {
 		gtk_idle_remove (directory->details->dequeue_pending_idle_id);
-		directory->details->dequeue_pending_idle_id = 0;
 	}
  
 	g_free (directory->details->uri);
-	directory->details->uri = NULL;
 
 	if (directory->details->vfs_uri != NULL) {
 		gnome_vfs_uri_unref (directory->details->vfs_uri);
-		directory->details->vfs_uri = NULL;
 	}
 
 	g_assert (directory->details->file_list == NULL);

@@ -1,3 +1,17 @@
+2002-01-18  Darin Adler  <darin@bentspoon.com>
+
+	* libnautilus-private/nautilus-directory-metafile.c: 
+	(nautilus_directory_unregister_metadata_monitor): Fix storage leak by
+	unrefing the metafile monitor before dropping it on the floor.
+
+	* libnautilus-private/nautilus-directory-metafile-monitor.h: Remove
+	uneeded BonoboXObject stuff.
+
+	* libnautilus-private/nautilus-directory.c:
+	(nautilus_directory_finalize): Remove unneeded NULLing.
+
+	* libnautilus-private/nautilus-directory-metafile-monitor.c: Whitespace tweak.
+
 2002-01-18  Johan Dahlin  <jdahlin@telia.com>
 
 	* components/history/nautilus-history-view.c: Port to GtkTreeView.
