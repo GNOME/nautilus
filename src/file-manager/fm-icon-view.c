@@ -41,6 +41,7 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-xfer.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
+#include <libnautilus/nautilus-bonobo-ui.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
@@ -785,12 +786,17 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 		 (BonoboUIHandlerCallbackFunc) customize_icon_text_callback, view);
 
 	/* Layout menu. */
-	/* FIXME: We want the laytout menu to be before the help menu. */
+	/* Put it just after the Settings menu, which is just before
+	 * the Help menu assuming nobody else has snuck a menu in there.
+	 */
+	position = bonobo_ui_handler_menu_get_pos
+		(ui_handler,
+		 NAUTILUS_MENU_PATH_SETTINGS_MENU) + 1,
  	bonobo_ui_handler_menu_new_subtree
 		(ui_handler,
 		 MENU_PATH_LAYOUT_MENU,
 		 _("_Layout"),
-		 NULL, -1,
+		 NULL, position,
 		 BONOBO_UI_HANDLER_PIXMAP_NONE,
 		 NULL, 0, 0);
 	icon_view->details->updating_bonobo_radio_menu_item = TRUE;
