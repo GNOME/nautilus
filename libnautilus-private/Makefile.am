@@ -226,7 +226,6 @@ EXTRA_DIST = 				\
 	$(fsattributes_DATA)		\
 	nautilus-metafile-server.idl	\
 	nautilus-marshal.list		\
-	$(schema_DATA)			\
 	$(NULL)
 
 CLEANFILES = \

@@ -1,5 +1,10 @@
 2004-02-06  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/Makefile.am (EXTRA_DIST):
+	Don't dist .scemans files. Fixes #133284.
+
+2004-02-06  Alexander Larsson  <alexl@redhat.com>
+
 	* cut-n-paste-code/libegg/egg-recent-model.c (egg_recent_model_lock_file):
 	Update to latest to fix locking issue.
 
