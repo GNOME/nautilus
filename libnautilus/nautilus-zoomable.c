@@ -23,7 +23,7 @@
  *
  */
 
-/* nautilus-zoomable.c: FIXME bugzilla.eazel.com 681 */
+/* nautilus-zoomable.c */
 
 #include <config.h>
 #include "nautilus-zoomable.h"
