@@ -118,7 +118,7 @@ get_event_uri (const FAMEvent *event)
 		return NULL;
 	}
 
-	path = g_concat_dir_and_file (base_path, event->filename);
+	path = g_build_filename (base_path, event->filename, NULL);
 	uri = gnome_vfs_get_uri_from_local_path (path);
 	g_free (path);
         return uri;

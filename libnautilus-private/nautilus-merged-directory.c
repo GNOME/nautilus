@@ -586,7 +586,9 @@ merged_remove_real_directory (NautilusMergedDirectory *merged,
 		 real_directory);
 
 	/* Disconnect all the signals. */
-	gtk_signal_disconnect_by_data (GTK_OBJECT (real_directory), merged);
+	g_signal_handlers_disconnect_matched (
+		real_directory, G_SIGNAL_MATCH_DATA,
+		0, 0, NULL, NULL, merged);
 
 	/* Remove from our list of directories. */
 	merged->details->directories = g_list_remove
@@ -651,17 +653,17 @@ nautilus_merged_directory_class_init (gpointer klass)
 		                G_TYPE_FROM_CLASS (object_class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusMergedDirectoryClass, 
-						     add_real_directory),
+						 add_real_directory),
 		                NULL, NULL,
-		                gtk_marshal_VOID__POINTER,
+		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals[REMOVE_REAL_DIRECTORY] 
 		= g_signal_new ("remove_real_directory",
 		                G_TYPE_FROM_CLASS (object_class),
 		                G_SIGNAL_RUN_LAST,
 		                G_STRUCT_OFFSET (NautilusMergedDirectoryClass, 
-						     remove_real_directory),
+						 remove_real_directory),
 		                NULL, NULL,
-		                gtk_marshal_VOID__POINTER,
+		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1, G_TYPE_POINTER);
 }

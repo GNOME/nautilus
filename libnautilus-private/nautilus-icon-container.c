@@ -445,14 +445,16 @@ set_pending_icon_to_reveal (NautilusIconContainer *container, NautilusIcon *icon
 	}
 	
 	if (cur_pending != NULL) {
-		gtk_signal_disconnect_by_func (GTK_OBJECT (cur_pending->item),
-					       G_CALLBACK (pending_icon_to_reveal_destroy_callback),
-					       container);
+		g_signal_handlers_disconnect_by_func (
+			cur_pending->item,
+			G_CALLBACK (pending_icon_to_reveal_destroy_callback),
+			container);
 	}
 	
 	if (icon != NULL) {
 		g_signal_connect (icon->item, "destroy",
-				    G_CALLBACK (pending_icon_to_reveal_destroy_callback), container);
+				  G_CALLBACK (pending_icon_to_reveal_destroy_callback),
+				  container);
 	}
 	
 	container->details->pending_icon_to_reveal = icon;
@@ -2363,6 +2365,33 @@ size_allocate (GtkWidget *widget,
 }
 
 static void
+alloc_colors (NautilusIconContainer *container)
+{
+	GtkWidget *widget = GTK_WIDGET (container);
+
+	gdk_colormap_alloc_color (
+		gtk_widget_get_colormap	(widget),
+		&container->details->highlight_color,
+		TRUE, TRUE);
+	gdk_colormap_alloc_color (
+		gtk_widget_get_colormap	(widget),
+		&container->details->label_color,
+		TRUE, TRUE);
+	g_assert (gdk_colormap_alloc_color (
+		gtk_widget_get_colormap	(widget),
+		&container->details->label_color_highlight,
+		TRUE, TRUE));
+	g_assert (gdk_colormap_alloc_color (
+		gtk_widget_get_colormap	(widget),
+		&container->details->label_info_color,
+		TRUE, TRUE));
+	g_assert (gdk_colormap_alloc_color (
+		gtk_widget_get_colormap	(widget),
+		&container->details->label_info_color_highlight,
+		TRUE, TRUE));
+}
+
+static void
 realize (GtkWidget *widget)
 {
 	GtkStyle *style;
@@ -2386,6 +2415,8 @@ realize (GtkWidget *widget)
  	g_assert (GTK_IS_WINDOW (gtk_widget_get_toplevel (widget)));
 	window = GTK_WINDOW (gtk_widget_get_toplevel (widget));
 	gtk_window_set_focus (window, widget);
+
+	alloc_colors (NAUTILUS_ICON_CONTAINER (widget));
 }
 
 static void
@@ -3016,7 +3047,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 selection_changed),
 		                NULL, NULL,
-		                gtk_marshal_VOID__VOID,
+		                g_cclosure_marshal_VOID__VOID,
 		                G_TYPE_NONE, 0);
 	signals[BUTTON_PRESS]
 		= g_signal_new ("button_press",
@@ -3035,9 +3066,9 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 activate),
 		                NULL, NULL,
-		                gtk_marshal_VOID__POINTER,
+		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
-				  G_TYPE_POINTER);
+				G_TYPE_POINTER);
 	signals[CONTEXT_CLICK_SELECTION]
 		= g_signal_new ("context_click_selection",
 		                G_TYPE_FROM_CLASS (class),
@@ -3045,9 +3076,9 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 context_click_selection),
 		                NULL, NULL,
-		                gtk_marshal_VOID__POINTER,
+		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
-				  G_TYPE_POINTER);
+				G_TYPE_POINTER);
 	signals[CONTEXT_CLICK_BACKGROUND]
 		= g_signal_new ("context_click_background",
 		                G_TYPE_FROM_CLASS (class),
@@ -3055,7 +3086,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 context_click_background),
 		                NULL, NULL,
-		                gtk_marshal_VOID__POINTER,
+		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
 				G_TYPE_POINTER);
 	signals[MIDDLE_CLICK]
@@ -3065,7 +3096,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 middle_click),
 		                NULL, NULL,
-		                gtk_marshal_VOID__POINTER,
+		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
 				G_TYPE_POINTER);
 	signals[ICON_POSITION_CHANGED]
@@ -3097,7 +3128,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 icon_stretch_started),
 		                NULL, NULL,
-		                gtk_marshal_VOID__POINTER,
+		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
 				G_TYPE_POINTER);
 	signals[ICON_STRETCH_ENDED]
@@ -3107,7 +3138,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     icon_stretch_ended),
 		                NULL, NULL,
-		                gtk_marshal_VOID__POINTER,
+		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
 				G_TYPE_POINTER);
 	signals[RENAMING_ICON]
@@ -3117,7 +3148,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 renaming_icon),
 		                NULL, NULL,
-		                gtk_marshal_VOID__POINTER,
+		                g_cclosure_marshal_VOID__POINTER,
 		                G_TYPE_NONE, 1,
 				G_TYPE_POINTER);
 	signals[GET_ICON_IMAGES]
@@ -3139,7 +3170,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 get_icon_text),
 		                NULL, NULL,
-		                gtk_marshal_VOID__POINTER_POINTER_POINTER,
+		                eel_marshal_VOID__POINTER_POINTER_POINTER,
 		                G_TYPE_NONE, 3,
 				G_TYPE_POINTER,
 				G_TYPE_POINTER,
@@ -3253,7 +3284,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 layout_changed),
 		                NULL, NULL,
-		                gtk_marshal_VOID__VOID,
+		                g_cclosure_marshal_VOID__VOID,
 		                G_TYPE_NONE, 0);
 	signals[PREVIEW]
 		= g_signal_new ("preview",
@@ -3273,7 +3304,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						 band_select_started),
 		                NULL, NULL,
-		                gtk_marshal_VOID__VOID,
+		                g_cclosure_marshal_VOID__VOID,
 		                G_TYPE_NONE, 0);
 	signals[BAND_SELECT_ENDED]
 		= g_signal_new ("band_select_ended",
@@ -3282,7 +3313,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 		                G_STRUCT_OFFSET (NautilusIconContainerClass,
 						     band_select_ended),
 		                NULL, NULL,
-		                gtk_marshal_VOID__VOID,
+		                g_cclosure_marshal_VOID__VOID,
 		                G_TYPE_NONE, 0);
 
 	/* GtkWidget class.  */
@@ -3332,24 +3363,20 @@ nautilus_icon_container_init (NautilusIconContainer *container)
 	nautilus_icon_dnd_init (container, stipple);
 
 	/* Make sure that we find out if the icons change. */
-	gtk_signal_connect_object_while_alive
+	g_signal_connect_object
 		(nautilus_icon_factory_get (),
 		 "icons_changed",
 		 G_CALLBACK (nautilus_icon_container_request_update_all),
-		 GTK_OBJECT (container));	
+		 container, 0);
 
 	/* when the background changes, we must set up the label text color */
 	background = eel_get_widget_background (GTK_WIDGET (container));
 	
-	gtk_signal_connect
-		(GTK_OBJECT (background),
-		 "appearance_changed",
-		 G_CALLBACK (update_label_color),
-		 GTK_OBJECT (container));	
-
+	g_signal_connect (background, "appearance_changed",
+			  G_CALLBACK (update_label_color), container);
 
 	g_signal_connect (container, "focus-out-event",
-			    G_CALLBACK (handle_focus_out_event), NULL);
+			  G_CALLBACK (handle_focus_out_event), NULL);
 
 	/* FIXME: The code to extract colors from the theme should be
 	 * in FMDirectoryView, not here. The NautilusIconContainer
@@ -3528,15 +3555,7 @@ item_event_callback (GnomeCanvasItem *item,
 GtkWidget *
 nautilus_icon_container_new (void)
 {
-	GtkWidget *container;
-
-	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
-
-	container = gtk_widget_new (nautilus_icon_container_get_type (), NULL);
-	
-	gtk_widget_pop_colormap ();
-
-	return container;
+	return gtk_widget_new (nautilus_icon_container_get_type (), NULL);
 }
 
 /* Clear all of the icons in the container. */
@@ -4693,9 +4712,10 @@ set_pending_icon_to_rename (NautilusIconContainer *container, NautilusIcon *icon
 	}
 	
 	if (cur_pending != NULL) {
-		gtk_signal_disconnect_by_func (GTK_OBJECT (cur_pending->item),
-					       G_CALLBACK (pending_icon_to_rename_destroy_callback),
-					       container);
+		g_signal_handlers_disconnect_by_func
+			(cur_pending->item,
+			 G_CALLBACK (pending_icon_to_rename_destroy_callback),
+			 container);
 	}
 	
 	if (icon != NULL) {
@@ -4928,22 +4948,34 @@ nautilus_icon_container_set_single_click_mode (NautilusIconContainer *container,
 
 /* update the label color when the background changes */
 
-guint32
+GdkColor *
 nautilus_icon_container_get_label_color (NautilusIconContainer *container,
-					 gboolean is_name)
+					 gboolean               is_name,
+					 gboolean               is_highlight)
 {
+	GtkStyle *style;
+
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CONTAINER (container), 0);
 
+	style = gtk_widget_get_style (GTK_WIDGET (container));
+
 	if (is_name) {
-		return container->details->label_color;
+		if (is_highlight) {
+			return &container->details->label_color_highlight;
+		} else {
+			return &container->details->label_color;
+		}
 	} else {
-		return container->details->label_info_color;
+		if (is_highlight) {
+			return &container->details->label_color_highlight;
+		} else {
+			return &container->details->label_info_color;
+		}
 	}
-	
 }
 
 static void
-update_label_color (EelBackground *background,
+update_label_color (EelBackground         *background,
 		    NautilusIconContainer *container)
 {
 	char *light_info_color, *dark_info_color;
@@ -4951,7 +4983,7 @@ update_label_color (EelBackground *background,
 	
 	g_assert (EEL_IS_BACKGROUND (background));
 	g_assert (NAUTILUS_IS_ICON_CONTAINER (container));
-	
+
 	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
 	 * The NautilusIconContainer class should simply provide calls to set the colors.
 	 */
@@ -4973,12 +5005,19 @@ update_label_color (EelBackground *background,
 	}
 	
 	if (eel_background_is_dark (background)) {
-		container->details->label_color = 0xEFEFEF;
-		container->details->label_info_color = light_info_value;
-	} else {
-		container->details->label_color = 0x000000;
-		container->details->label_info_color = dark_info_value;
+		container->details->label_color = eel_gdk_rgb_to_color (0xEFEFEF);
+		container->details->label_color_highlight = eel_gdk_rgb_to_color (0x000000);
+		container->details->label_info_color = eel_gdk_rgb_to_color (light_info_value);
+		container->details->label_info_color_highlight = eel_gdk_rgb_to_color (dark_info_value);
+	} else { /* converse */
+		container->details->label_color = eel_gdk_rgb_to_color (0x000000);
+		container->details->label_color_highlight = eel_gdk_rgb_to_color (0xEFEFEF);
+		container->details->label_info_color = eel_gdk_rgb_to_color (dark_info_value);
+		container->details->label_info_color_highlight = eel_gdk_rgb_to_color (light_info_value);
 	}
+
+	if (GTK_WIDGET_REALIZED (container))
+		alloc_colors (container);
 }
 
 
@@ -5045,11 +5084,13 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 	highlight_color_str = nautilus_theme_get_theme_data ("directory", "highlight_color_rgba");
 	
 	if (highlight_color_str == NULL) {
-		container->details->highlight_color = EEL_RGBA_COLOR_PACK (0, 0, 0, 102);
+		container->details->highlight_color_rgba = EEL_RGBA_COLOR_PACK (0, 0, 0, 102);
 	} else {
-		container->details->highlight_color = strtoul (highlight_color_str, NULL, 0);
+		container->details->highlight_color_rgba = strtoul (highlight_color_str, NULL, 0);
 		g_free (highlight_color_str);
 	}
+	container->details->highlight_color = eel_gdk_rgb_to_color (
+		container->details->highlight_color_rgba);
 }
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)

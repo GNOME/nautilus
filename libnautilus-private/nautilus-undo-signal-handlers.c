@@ -94,9 +94,10 @@ nautilus_undo_tear_down_nautilus_entry_for_undo (NautilusEntry *entry)
 	}
 
 	/* Disconnect from entry signals */
-	gtk_signal_disconnect_by_func (GTK_OBJECT (entry), 
-		    G_CALLBACK (nautilus_entry_user_changed_callback),		    
-		    NULL);
+	g_signal_handlers_disconnect_by_func
+		(entry, 
+		 G_CALLBACK (nautilus_entry_user_changed_callback),		    
+		 NULL);
 
 }
 
@@ -217,11 +218,11 @@ nautilus_undo_tear_down_editable_for_undo (GtkEditable *editable)
 	}
 
 	/* Disconnect from entry signals */
-	gtk_signal_disconnect_by_func (GTK_OBJECT (editable), 
+	g_signal_handlers_disconnect_by_func (editable,
 		    G_CALLBACK (editable_insert_text_callback),		    
 		    NULL);
 
-	gtk_signal_disconnect_by_func (GTK_OBJECT (editable), 
+	g_signal_handlers_disconnect_by_func (editable,
 		    G_CALLBACK (editable_delete_text_callback),		    
 		    NULL);
 }

@@ -1,3 +1,172 @@
+2002-02-17  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_theme_changed): setup both
+	the rgba and GdkColor variants.
+	(update_label_color): upd. color handling.
+	(alloc_colors): allocate the colors on realize
+
+2002-02-15  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_get_label_color): return
+	the colors we need, grab them from the style's text
+	information though.
+
+2002-02-14  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-canvas-item.c
+	(nautilus_icon_canvas_item_get_property),
+	(nautilus_icon_canvas_item_set_property): port to
+	properties.
+	(draw_or_measure_label_text): update color handling,
+	could we re-use the gc here ?
+	(draw_stretch_handles): upd gc unref.
+	(nautilus_icon_canvas_item_class_init): upd.
+
+	* libnautilus-private/nautilus-theme.c
+	(nautilus_pixmap_file_may_be_local),
+	(nautilus_theme_install_user_theme),
+	(nautilus_theme_make_preview_pixbuf),
+	(theme_get_property),
+	(load_theme_document): upd. file tests.
+
+	* libnautilus-private/nautilus-monitor.c
+	(get_event_uri): use g_build_filename.
+
+	* libnautilus-private/nautilus-find-icon-image.c
+	(get_user_emblem_path, make_full_icon_path),
+	(make_full_icon_path): upd. file test.
+
+	* libnautilus-private/nautilus-file-utilities.c
+	(nautilus_pixmap_file),
+	(nautilus_get_data_file_path), 
+	(nautilus_get_user_directory),
+	(nautilus_get_desktop_directory): upd. file tests.
+
+	* libnautilus-private/nautilus-directory-metafile.c
+	(nautilus_directory_get_boolean_file_metadata): use
+	strcasecmp not ascii_strdown to save yet more malloc
+	locking penalty.
+
+	* libnautilus-private/nautilus-directory-background.c
+	(nautilus_file_background_receive_root_window_changes),
+	(desktop_background_destroyed_callback): upd. root
+	window macro.
+	(nautilus_connect_background_to_file_metadata),
+	(initialize_background_from_settings),
+	(image_loading_done_callback): upd g_signal bits.
+
+	* libnautilus-private/nautilus-volume-monitor.c
+	(nautilus_volume_monitor_class_init): upd file test.
+
+	* libnautilus-private/nautilus-undo-signal-handlers.c
+	(nautilus_undo_tear_down_nautilus_entry_for_undo): upd.
+
+	* libnautilus-private/nautilus-undo-manager.c
+	(nautilus_undo_manager_class_init): upd. signal bits.
+
+	* libnautilus-private/nautilus-trash-monitor.c
+	(nautilus_trash_monitor_class_init): g_cclosureize.
+	(nautilus_trash_monitor_init): g_signal upds.
+
+	* libnautilus-private/nautilus-trash-file.c
+	(trash_destroy, nautilus_trash_file_init),
+	(remove_real_file): upd. g_signal bits.
+
+	* libnautilus-private/nautilus-trash-directory.c
+	(nautilus_trash_directory_init): upd. signal connect.
+	(trash_destroy): upd. signal bits.
+
+	* libnautilus-private/nautilus-program-choosing.c
+	(get_xalf_prefix): upd. find_program_in_path.
+
+	* libnautilus-private/nautilus-program-chooser.c
+	(nautilus_program_chooser_init): upd. window policy
+
+	* libnautilus-private/nautilus-merged-directory.c
+	(merged_remove_real_directory): upd. g_signal.
+	(nautilus_merged_directory_class_init): upd. g_closure
+
+	* libnautilus-private/nautilus-link-desktop-file.c
+	(nautilus_link_desktop_file_get_link_icon_from_desktop):
+	upd. pixmap location.
+
+	* libnautilus-private/nautilus-icon-factory.c
+	(nautilus_icon_factory_class_init): upd. marshallers
+	(is_theme_in_user_directory): upd. file test.
+
+	* libnautilus-private/nautilus-icon-dnd.c
+	(auto_scroll_timeout_callback): do a queue_draw_area
+	instead of a widget_draw.
+
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_init),
+	(set_pending_icon_to_reveal): g_signal updates.
+	(nautilus_icon_container_new): remove visual
+	push/pop.
+
+	* libnautilus-private/nautilus-file.c
+	(nautilus_file_fit_date_as_string): upd. julian date get.
+	(nautilus_file_class_init): upd. marshallers.
+	
+	* libnautilus-private/nautilus-file-operations.c
+	(extract_and_ellipsize_file_name_for_dialog): use
+	get_basename.
+	(nautilus_file_operations_copy_move): use gtk stock.
+
+
+	* libnautilus-private/nautilus-file-operations-progress.c
+	(nautilus_file_operations_progress_update): use
+	progress_bar_set_fraction.
+	(nautilus_file_operations_progress_init): prune
+	progress setup - these are the defaults.
+
+	* libnautilus-private/nautilus-entry.c
+	(nautilus_entry_key_press): upd select_region.
+
+	* libnautilus-private/nautilus-drag-window.c
+	(get_ancestor_blocked_by): upd type_is_a.
+
+	* libnautilus-private/nautilus-dnd.c
+	(nautilus_drag_finalize),
+	(nautilus_drag_init): g_object ref upd.
+
+	* libnautilus-private/nautilus-directory.c
+	(nautilus_directory_class_init): marshaller upd..
+	(nautilus_directory_schedule_metadata_remove),
+	(nautilus_directory_schedule_metadata_copy),
+	(nautilus_directory_schedule_metadata_move):
+	basename upd.
+
+	* libnautilus-private/nautilus-directory-background.c
+	(desktop_background_realized): g_signal upd.
+	(theme_image_path_to_uri): file test upd.
+	(image_loading_done_callback): object unref on gc & pixmap.
+	(background_changed_callback): g_signal upd.
+
+	* libnautilus-private/nautilus-bookmark.c
+	(nautilus_bookmark_disconnect_file): g_signal upd.
+	(nautilus_bookmark_uri_known_not_to_exist): upd
+	file test.
+
+	* libnautilus-private/nautilus-authn-manager.c
+	(authentication_dialog_button_clicked): use
+	GTK_RESPONSE_OK
+
+	* libnautilus-private/Makefile.am: add deprc.
+	CFLAGS.
+
+	* libnautilus/Makefile.am: ditto.
+
+	* configure.in (DISABLE_DEPRECATED_CFLAGS): add.
+
+2002-02-13  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-icon-dnd.c
+	(nautilus_icon_container_free_drag_data):
+	re-enterancy protection.
+
 2002-02-17  Kjartan Maraas  <kmaraas@gnome.org>
 
 	* libnautilus-private/nautilus-icon-container.c: Remove calls to

@@ -6,6 +6,7 @@ INCLUDES = 						\
 	-I$(top_srcdir) 				\
 	-I$(top_builddir) 				\
 	$(CORE_CFLAGS)					\
+	$(DISABLE_DEPRECATED_CFLAGS)			\
 	-DDATADIR=\""$(datadir)"\" 			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
 	$(NULL)

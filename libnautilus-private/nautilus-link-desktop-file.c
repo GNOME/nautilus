@@ -384,7 +384,8 @@ nautilus_link_desktop_file_get_link_icon_from_desktop (NautilusDesktopFile *desk
 			return NULL;
 		}
 	
-		absolute = gnome_pixmap_file (icon_name);
+		absolute = gnome_program_locate_file (
+			NULL, GNOME_FILE_DOMAIN_PIXMAP, icon_name, TRUE, NULL);
 		if (absolute != NULL) {
 			g_free (icon_name);
 			icon_name = absolute;

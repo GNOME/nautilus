@@ -366,10 +366,9 @@ nautilus_directory_get_boolean_file_metadata (NautilusDirectory *directory,
 		(directory, file_name, key,
 		 default_metadata ? "true" : "false");
 	
-	g_strdown (result_as_string);
-	if (strcmp (result_as_string, "true") == 0) {
+	if (g_ascii_strcasecmp (result_as_string, "true") == 0) {
 		result = TRUE;
-	} else if (strcmp (result_as_string, "false") == 0) {
+	} else if (g_ascii_strcasecmp (result_as_string, "false") == 0) {
 		result = FALSE;
 	} else {
 		if (result_as_string != NULL) {

@@ -74,7 +74,7 @@ nautilus_trash_monitor_class_init (NautilusTrashMonitorClass *klass)
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusTrashMonitorClass, trash_state_changed),
 		 NULL, NULL,
-		 gtk_marshal_VOID__BOOLEAN,
+		 g_cclosure_marshal_VOID__BOOLEAN,
 		 G_TYPE_NONE, 1,
 		 G_TYPE_BOOLEAN);
 
@@ -84,7 +84,7 @@ nautilus_trash_monitor_class_init (NautilusTrashMonitorClass *klass)
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusTrashMonitorClass, check_trash_directory_added),
 		 NULL, NULL,
-		 gtk_marshal_VOID__POINTER,
+		 g_cclosure_marshal_VOID__POINTER,
 		 G_TYPE_NONE, 1,
 		 G_TYPE_POINTER);
 }
@@ -145,18 +145,14 @@ nautilus_trash_monitor_init (gpointer object, gpointer klass)
 
 	g_list_free (attributes);
 
-    	gtk_signal_connect_while_alive
-		(GTK_OBJECT (trash_directory),
-		 "files_added",
+    	g_signal_connect_object
+		(trash_directory, "files_added",
 		 G_CALLBACK (nautilus_trash_files_changed_callback),
-		 trash_monitor,
-		 GTK_OBJECT (trash_monitor));
-    	gtk_signal_connect_while_alive
-		(GTK_OBJECT (trash_directory),
-		 "files_changed",
+		 trash_monitor, 0);
+    	g_signal_connect_object
+		(trash_directory, "files_changed",
 		 G_CALLBACK (nautilus_trash_files_changed_callback),
-		 trash_monitor,
-		 GTK_OBJECT (trash_monitor));
+		 trash_monitor, 0);
 }
 
 static void

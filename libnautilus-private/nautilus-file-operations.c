@@ -25,6 +25,7 @@
  */
 
 #include <config.h>
+#include <string.h>
 #include "nautilus-file-operations.h"
 
 #include "nautilus-file-operations-progress.h"
@@ -269,15 +270,16 @@ format_and_ellipsize_uri_for_dialog (const char *uri)
 static char *
 extract_and_ellipsize_file_name_for_dialog (const char *uri)
 {
-	const char *last_part;
+	char *basename;
 	char *unescaped, *result;
 	
-	last_part = g_basename (uri);
-	g_return_val_if_fail (last_part != NULL, NULL);
+	basename = g_path_get_basename (uri);
+	g_return_val_if_fail (basename != NULL, NULL);
 
-	unescaped = gnome_vfs_unescape_string_for_display (last_part);
+	unescaped = gnome_vfs_unescape_string_for_display (basename);
 	result = ellipsize_string_for_dialog (unescaped);
 	g_free (unescaped);
+	g_free (basename);
 
 	return result;
 }
@@ -292,6 +294,8 @@ parent_for_error_dialog (TransferInfo *transfer_info)
 	return transfer_info->parent_view;
 }
 
+#ifdef GNOME2_CONVERSION_COMPLETE
+/* This needs testing with a working WM - metacity ? */
 static void
 fit_rect_on_screen (GdkRectangle *rect)
 {
@@ -325,10 +329,12 @@ center_dialog_over_rect (GtkWindow *window, GdkRectangle rect)
 		rect.y + rect.height / 2
 			- GTK_WIDGET (window)->allocation.height / 2);
 }
+#endif
 
 static void
 center_dialog_over_window (GtkWindow *window, GtkWindow *over)
 {
+#ifdef GNOME2_CONVERSION_COMPLETE
 	GdkRectangle rect;
 	int x, y, w, h;
 
@@ -343,6 +349,15 @@ center_dialog_over_window (GtkWindow *window, GtkWindow *over)
 	rect.height = h;
 
 	center_dialog_over_rect (window, rect);
+#endif
+	GdkGeometry geometry = { 0 };
+
+	geometry.win_gravity = GDK_GRAVITY_CENTER;
+
+	gtk_window_set_geometry_hints (window,
+				       GTK_WIDGET (over),
+				       &geometry,
+				       GDK_HINT_WIN_GRAVITY);
 }
 
 static void
@@ -1968,7 +1983,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 				 FALSE,
 				 _("You cannot copy items into the Trash."), 
 				 _("Can't Copy to Trash"),
-				 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
+				 GTK_STOCK_OK, NULL);
 			result = GNOME_VFS_ERROR_NOT_PERMITTED;
 		}
 	}
@@ -2002,7 +2017,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0)
 						 ? _("Can't Change Trash Location")
 						 : _("Can't Copy Trash"),
-					 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
+					 GTK_STOCK_OK, NULL, NULL);			
 
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;
 				break;
@@ -2029,7 +2044,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
 					 ? _("Can't Move Into Self")
 					 : _("Can't Copy Into Self"),
-					 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
+					 GTK_STOCK_OK, NULL, NULL);			
 
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;
 				break;
@@ -2042,7 +2057,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 					 FALSE,
 					 _("You cannot copy a file over itself."), 
 					 _("Can't Copy Over Self"), 
-					 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
+					 GTK_STOCK_OK, NULL, NULL);			
 
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;
 				break;
@@ -2302,7 +2317,7 @@ confirm_empty_trash (GtkWidget *parent_view)
 		  "all of the items in the Trash?"),
 		_("Delete Trash Contents?"),
 		_("Empty"),
-		GNOME_STOCK_BUTTON_CANCEL,
+		GTK_STOCK_CANCEL,
 		parent_window);
 
 	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_CANCEL);

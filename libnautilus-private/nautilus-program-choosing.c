@@ -614,7 +614,7 @@ get_xalf_prefix (const char *name)
 	if (!gnome_config_get_bool ("/xalf/settings/enabled=true")) {
 		return g_strdup ("");
 	}
-	xalf_executable = gnome_is_program_in_path ("xalf");
+	xalf_executable = g_find_program_in_path ("xalf");
 	if (xalf_executable == NULL) {
 		return g_strdup ("");
 	}

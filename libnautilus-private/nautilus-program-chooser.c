@@ -1292,7 +1292,8 @@ nautilus_program_chooser_init (NautilusProgramChooser *program_chooser)
 								       _("Done"), GTK_RESPONSE_CANCEL);
 
 	gtk_container_set_border_width (GTK_CONTAINER (program_chooser), GNOME_PAD);
-  	gtk_window_set_policy (GTK_WINDOW (program_chooser), FALSE, TRUE, FALSE);
+
+	gtk_window_set_resizable (GTK_WINDOW (program_chooser), TRUE);
 	gtk_window_set_default_size (GTK_WINDOW (program_chooser), -1, PROGRAM_CHOOSER_DEFAULT_HEIGHT);
 	gtk_window_set_wmclass (GTK_WINDOW (program_chooser), "program_chooser", "Nautilus");
 

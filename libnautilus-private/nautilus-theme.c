@@ -113,7 +113,7 @@ load_theme_document (const char *theme_name)
 		g_free (user_themes_directory);
 		g_free (temp_str);
 	
-		if (!g_file_exists (theme_path)) {
+		if (!g_file_test (theme_path, G_FILE_TEST_EXISTS)) {
 			g_free (theme_path);
 			theme_path = NULL;
 		}
@@ -209,7 +209,7 @@ nautilus_pixmap_file_may_be_local (const char *themed_image)
 		user_themes_directory = nautilus_theme_get_user_themes_directory ();
 		
 		image_path = nautilus_make_path (user_themes_directory, themed_image);
-		if (!g_file_exists (image_path)) {
+		if (!g_file_test (image_path, G_FILE_TEST_EXISTS)) {
 			g_free (image_path);
 			image_path = NULL;
 		}
@@ -308,7 +308,7 @@ nautilus_theme_make_preview_pixbuf (const char *theme_name)
 		pixbuf_file = nautilus_make_path (user_themes_directory, theme_preview_name);
 		g_free (user_themes_directory);
 		
-		if (g_file_exists (pixbuf_file)) {
+		if (g_file_test (pixbuf_file, G_FILE_TEST_EXISTS)) {
 			pixbuf = gdk_pixbuf_new_from_file (pixbuf_file, NULL);
 			g_free (pixbuf_file);
 			return pixbuf;
@@ -336,13 +336,13 @@ nautilus_theme_make_preview_pixbuf (const char *theme_name)
 		pixbuf_file = nautilus_make_path (user_themes_directory, theme_preview_name);
 		g_free (theme_preview_name);
 		
-		if (!g_file_exists (pixbuf_file)) {
+		if (!g_file_test (pixbuf_file, G_FILE_TEST_EXISTS)) {
 			g_free (pixbuf_file);
 			theme_preview_name = g_strdup_printf ("%s/i-directory.svg", theme_name);
 			pixbuf_file = nautilus_make_path (user_themes_directory, theme_preview_name);
 			g_free (theme_preview_name);
 		
-			if (!g_file_exists (pixbuf_file)) {
+			if (!g_file_test (pixbuf_file, G_FILE_TEST_EXISTS)) {
 				g_free (pixbuf_file);
 				pixbuf_file = NULL;
 			}
@@ -444,7 +444,8 @@ theme_get_property (const char *themes_location_uri,
 	theme_file_name = gnome_vfs_get_local_path_from_uri (theme_file_uri);
 	g_free (theme_file_uri);
 
-	g_return_val_if_fail (g_file_exists (theme_file_name), NULL);
+	g_return_val_if_fail (g_file_test (theme_file_name,
+					   G_FILE_TEST_EXISTS), NULL);
 	
 	/* read the xml document */
 	theme_document = xmlParseFile (theme_file_name);
@@ -733,7 +734,7 @@ nautilus_theme_install_user_theme (const char *theme_to_install_path)
 					  theme_to_install_path,
 					  theme_name);
 
-	if (!g_file_exists (theme_xml_path)) {
+	if (!g_file_test (theme_xml_path, G_FILE_TEST_EXISTS)) {
 		g_free (theme_name);
 		return NAUTILUS_THEME_INSTALL_NOT_A_THEME_DIRECTORY;
 	}
@@ -742,7 +743,7 @@ nautilus_theme_install_user_theme (const char *theme_to_install_path)
 	user_themes_directory = nautilus_theme_get_user_themes_directory ();
 
 	/* Create the user themes directory if it doesn't exist */
-	if (!g_file_exists (user_themes_directory)) {
+	if (!g_file_test (user_themes_directory, G_FILE_TEST_EXISTS)) {
 		result = gnome_vfs_make_directory (user_themes_directory,
 						   GNOME_VFS_PERM_USER_ALL
 						   | GNOME_VFS_PERM_GROUP_ALL

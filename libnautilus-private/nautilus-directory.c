@@ -90,7 +90,7 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusDirectoryClass, files_added),
 		              NULL, NULL,
-		              gtk_marshal_VOID__POINTER,
+		              g_cclosure_marshal_VOID__POINTER,
 		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals[FILES_CHANGED] =
 		g_signal_new ("files_changed",
@@ -98,7 +98,7 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusDirectoryClass, files_changed),
 		              NULL, NULL,
-		              gtk_marshal_VOID__POINTER,
+		              g_cclosure_marshal_VOID__POINTER,
 		              G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals[DONE_LOADING] =
 		g_signal_new ("done_loading",
@@ -106,7 +106,7 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusDirectoryClass, done_loading),
 		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
+		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 	signals[LOAD_ERROR] =
 		g_signal_new ("load_error",
@@ -114,7 +114,7 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusDirectoryClass, load_error),
 		              NULL, NULL,
-		              gtk_marshal_VOID__INT,
+		              g_cclosure_marshal_VOID__INT,
 		              G_TYPE_NONE, 1, G_TYPE_INT);
 
 	klass->get_name_for_self_as_new_file = real_get_name_for_self_as_new_file;
@@ -1301,7 +1301,7 @@ nautilus_directory_schedule_metadata_copy (GList *uri_pairs)
 	GList *p;
 	URIPair *pair;
 	NautilusDirectory *source_directory, *destination_directory;
-	const char *source_relative_uri, *destination_relative_uri;
+	char *source_relative_uri, *destination_relative_uri;
 
 	for (p = uri_pairs; p != NULL; p = p->next) {
 		pair = (URIPair *) p->data;
@@ -1309,13 +1309,16 @@ nautilus_directory_schedule_metadata_copy (GList *uri_pairs)
 		source_directory = get_parent_directory (pair->from_uri);
 		destination_directory = get_parent_directory (pair->to_uri);
 		
-		source_relative_uri = g_basename (pair->from_uri);
-		destination_relative_uri = g_basename (pair->to_uri);
+		source_relative_uri = g_path_get_basename (pair->from_uri);
+		destination_relative_uri = g_path_get_basename (pair->to_uri);
 		
 		nautilus_directory_copy_file_metadata (source_directory,
 						       source_relative_uri,
 						       destination_directory,
 						       destination_relative_uri);
+
+		g_free (source_relative_uri);
+		g_free (destination_relative_uri);
 		
 		nautilus_directory_unref (source_directory);
 		nautilus_directory_unref (destination_directory);
@@ -1328,7 +1331,7 @@ nautilus_directory_schedule_metadata_move (GList *uri_pairs)
 	GList *p;
 	URIPair *pair;
 	NautilusDirectory *source_directory, *destination_directory;
-	const char *source_relative_uri, *destination_relative_uri;
+	char *source_relative_uri, *destination_relative_uri;
 
 	for (p = uri_pairs; p != NULL; p = p->next) {
 		pair = (URIPair *) p->data;
@@ -1336,8 +1339,8 @@ nautilus_directory_schedule_metadata_move (GList *uri_pairs)
 		source_directory = get_parent_directory (pair->from_uri);
 		destination_directory = get_parent_directory (pair->to_uri);
 		
-		source_relative_uri = g_basename (pair->from_uri);
-		destination_relative_uri = g_basename (pair->to_uri);
+		source_relative_uri = g_path_get_basename (pair->from_uri);
+		destination_relative_uri = g_path_get_basename (pair->to_uri);
 		
 		nautilus_directory_copy_file_metadata (source_directory,
 						       source_relative_uri,
@@ -1346,6 +1349,9 @@ nautilus_directory_schedule_metadata_move (GList *uri_pairs)
 		nautilus_directory_remove_file_metadata (source_directory,
 							 source_relative_uri);
 		
+		g_free (source_relative_uri);
+		g_free (destination_relative_uri);
+
 		nautilus_directory_unref (source_directory);
 		nautilus_directory_unref (destination_directory);
 	}
@@ -1357,16 +1363,18 @@ nautilus_directory_schedule_metadata_remove (GList *uris)
 	GList *p;
 	const char *uri;
 	NautilusDirectory *directory;
-	const char *relative_uri;
+	char *relative_uri;
 
 	for (p = uris; p != NULL; p = p->next) {
 		uri = (const char *) p->data;
 
 		directory = get_parent_directory (uri);
-		relative_uri = g_basename (uri);
+		relative_uri = g_path_get_basename (uri);
 		
 		nautilus_directory_remove_file_metadata (directory,
 							 relative_uri);
+
+		g_free (relative_uri);
 		
 		nautilus_directory_unref (directory);
 	}

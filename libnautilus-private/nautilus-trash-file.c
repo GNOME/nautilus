@@ -330,9 +330,8 @@ remove_real_file (NautilusTrashFile *trash,
 		 monitor_remove_file,
 		 real_file);
 
-	gtk_signal_disconnect_by_func (GTK_OBJECT (real_file),
-				       G_CALLBACK (real_file_changed_callback),
-				       trash);
+	g_signal_handlers_disconnect_by_func (
+		real_file, G_CALLBACK (real_file_changed_callback), trash);
 
 	trash->details->files = g_list_remove
 		(trash->details->files, real_file);
@@ -751,13 +750,13 @@ nautilus_trash_file_init (gpointer object, gpointer klass)
 		(trash_callback_hash, trash_callback_equal);
 	trash_file->details->monitors = g_hash_table_new (NULL, NULL);
 
-	trash_file->details->add_directory_connection_id = gtk_signal_connect
-		(GTK_OBJECT (trash_directory),
+	trash_file->details->add_directory_connection_id = g_signal_connect
+		(trash_directory,
 		 "add_real_directory",
 		 G_CALLBACK (add_directory_callback),
 		 trash_file);
-	trash_file->details->remove_directory_connection_id = gtk_signal_connect
-		(GTK_OBJECT (trash_directory),
+	trash_file->details->remove_directory_connection_id = g_signal_connect
+		(trash_directory,
 		 "remove_real_directory",
 		 G_CALLBACK (remove_directory_callback),
 		 trash_file);
@@ -788,10 +787,10 @@ trash_destroy (GtkObject *object)
 		g_warning ("file monitor still active when trash virtual file is destroyed");
 	}
 
-	gtk_signal_disconnect (GTK_OBJECT (trash_directory),
-			       trash_file->details->add_directory_connection_id);
-	gtk_signal_disconnect (GTK_OBJECT (trash_directory),
-			       trash_file->details->remove_directory_connection_id);
+	g_signal_handler_disconnect (trash_directory,
+				     trash_file->details->add_directory_connection_id);
+	g_signal_handler_disconnect (trash_directory,
+				     trash_file->details->remove_directory_connection_id);
 
 	g_hash_table_destroy (trash_file->details->callbacks);
 	g_hash_table_destroy (trash_file->details->monitors);

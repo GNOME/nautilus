@@ -69,9 +69,10 @@ desktop_background_realized (NautilusIconContainer *icon_container, void *discon
 	EelBackground *background;
 
         if ((gboolean) GPOINTER_TO_INT (disconnect_signal)) {
-		gtk_signal_disconnect_by_func (GTK_OBJECT (icon_container),
-					       G_CALLBACK (desktop_background_realized),
-					       disconnect_signal);
+                g_signal_handlers_disconnect_by_func (
+                        icon_container,
+                        G_CALLBACK (desktop_background_realized),
+                        disconnect_signal);
 	}
 
 	background = eel_get_widget_background (GTK_WIDGET (icon_container));
@@ -154,7 +155,7 @@ theme_image_path_to_uri (char *image_file, const char *theme_name)
 			image_path = g_strdup_printf ("%s/%s", NAUTILUS_DATADIR, image_file);
 		}
 		
-		if (image_path && g_file_exists (image_path)) {
+		if (image_path && g_file_test (image_path, G_FILE_TEST_EXISTS)) {
 			image_uri = gnome_vfs_get_uri_from_local_path (image_path);
 		} else {
 			image_uri = NULL;
@@ -519,7 +520,9 @@ nautilus_file_background_event_filter (GdkXEvent *gdk_xevent, GdkEvent *event, g
 static void
 desktop_background_destroyed_callback (EelBackground *background, void *georgeWBush)
 {
-	gdk_window_remove_filter (GDK_ROOT_PARENT(), nautilus_file_background_event_filter, background);
+	gdk_window_remove_filter (
+                gdk_get_default_root_window (),
+                nautilus_file_background_event_filter, background);
 }
 
 static void
@@ -528,7 +531,9 @@ nautilus_file_background_receive_root_window_changes (EelBackground *background)
 	XWindowAttributes attribs = { 0 };
 
 	/* set up a filter on the root window to get notified about property changes */
-	gdk_window_add_filter (GDK_ROOT_PARENT(), nautilus_file_background_event_filter, background);
+	gdk_window_add_filter (
+                gdk_get_default_root_window (),
+                nautilus_file_background_event_filter, background);
 
 	gdk_error_trap_push ();
 
@@ -640,9 +645,10 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
 	GdkWindow    *background_window;
 
         if ((gboolean) GPOINTER_TO_INT (disconnect_signal)) {
-		gtk_signal_disconnect_by_func (GTK_OBJECT (background),
-					       G_CALLBACK (image_loading_done_callback),
-					       disconnect_signal);
+		g_signal_handlers_disconnect_by_func
+                        (background,
+                         G_CALLBACK (image_loading_done_callback),
+                         disconnect_signal);
 	}
 
 	width  = gdk_screen_width ();
@@ -651,7 +657,7 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
 	pixmap = make_root_pixmap (width, height);
 	gc = gdk_gc_new (pixmap);
 	eel_background_draw_to_drawable (background, pixmap, gc, 0, 0, width, height, width, height);
-	gdk_gc_unref (gc);
+	g_object_unref (gc);
 
 	set_root_pixmap (pixmap);
 
@@ -662,7 +668,7 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
 #endif
 	}
 
-        gdk_pixmap_unref (pixmap);
+        g_object_unref (pixmap);
 }
 
 static void
@@ -753,9 +759,8 @@ background_changed_callback (EelBackground *background,
 	        /* Block the other handler while we are writing metadata so it doesn't
 	         * try to change the background.
 	         */
-	        gtk_signal_handler_block_by_func (GTK_OBJECT (file),
-	                                          G_CALLBACK (saved_settings_changed_callback),
-	                                          background);
+                g_signal_handlers_block_by_func (
+                        file, G_CALLBACK (saved_settings_changed_callback), background);
 
 		nautilus_file_set_metadata (file,
                                             NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR,
@@ -768,9 +773,8 @@ background_changed_callback (EelBackground *background,
                                             image);
 						 
 	        /* Unblock the handler. */
-	        gtk_signal_handler_unblock_by_func (GTK_OBJECT (file),
-	                                            G_CALLBACK (saved_settings_changed_callback),
-	                                            background);
+                g_signal_handlers_unblock_by_func (
+                        file, G_CALLBACK (saved_settings_changed_callback), background);
 	}
 
 	g_free (color);
@@ -816,9 +820,10 @@ initialize_background_from_settings (NautilusFile *file,
         /* Block the other handler while we are responding to changes
          * in the metadata so it doesn't try to change the metadata.
          */
-        gtk_signal_handler_block_by_func (GTK_OBJECT (background),
-                                          G_CALLBACK (background_changed_callback),
-                                          file);
+        g_signal_handlers_block_by_func
+                (background,
+                 G_CALLBACK (background_changed_callback),
+                 file);
 
 	eel_background_set_color (background, color);     
         if (background_is_desktop(background)) {
@@ -830,9 +835,10 @@ initialize_background_from_settings (NautilusFile *file,
         eel_background_set_image_placement (background, placement);
 	
 	/* Unblock the handler. */
-	gtk_signal_handler_unblock_by_func (GTK_OBJECT (background),
-                                            G_CALLBACK (background_changed_callback),
-                                            file);
+        g_signal_handlers_unblock_by_func
+                (background,
+                 G_CALLBACK (background_changed_callback),
+                 file);
 	
 	g_free (color);
 	g_free (image);
@@ -867,7 +873,7 @@ nautilus_file_background_theme_changed (gpointer user_data)
 /* handle the background reset signal by setting values from the current theme */
 static void
 background_reset_callback (EelBackground *background,
-                           NautilusFile       *file)
+                           NautilusFile  *file)
 {
 	if (background_is_desktop (background)) {
 		nautilus_file_background_write_desktop_default_settings ();
@@ -875,9 +881,10 @@ background_reset_callback (EelBackground *background,
 	        /* Block the other handler while we are writing metadata so it doesn't
 	         * try to change the background.
 	         */
-	        gtk_signal_handler_block_by_func (GTK_OBJECT (file),
-	                                          G_CALLBACK (saved_settings_changed_callback),
-	                                          background);
+	        g_signal_handlers_block_by_func (
+                        file,
+                        G_CALLBACK (saved_settings_changed_callback),
+                        background);
 
 		/* reset the metadata */
 		nautilus_file_set_metadata (file,
@@ -890,9 +897,10 @@ background_reset_callback (EelBackground *background,
                                             NULL,
                                             NULL);
 	        /* Unblock the handler. */
-	        gtk_signal_handler_unblock_by_func (GTK_OBJECT (file),
-	                                            G_CALLBACK (saved_settings_changed_callback),
-	                                            background);
+	        g_signal_handlers_unblock_by_func (
+                        file,
+                        G_CALLBACK (saved_settings_changed_callback),
+                        background);
 	}
 
 	saved_settings_changed_callback (file, background);
@@ -903,9 +911,10 @@ static void
 background_destroyed_callback (EelBackground *background,
                                NautilusFile       *file)
 {
-        gtk_signal_disconnect_by_func (GTK_OBJECT (file),
-                                       G_CALLBACK (saved_settings_changed_callback),
-                                       background);
+        g_signal_handlers_disconnect_by_func (
+                file,
+                G_CALLBACK (saved_settings_changed_callback),
+                background);
         nautilus_file_monitor_remove (file, background);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
                                          nautilus_file_background_theme_changed,
@@ -933,18 +942,22 @@ nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
 	/* Disconnect old signal handlers. */
 	if (old_file != NULL) {
 		g_assert (NAUTILUS_IS_FILE (old_file));
-		gtk_signal_disconnect_by_func (GTK_OBJECT (background),
-                                               G_CALLBACK (background_changed_callback),
-                                               old_file);
-		gtk_signal_disconnect_by_func (GTK_OBJECT (background),
-                                               G_CALLBACK (background_destroyed_callback),
-                                               old_file);
-		gtk_signal_disconnect_by_func (GTK_OBJECT (background),
-                                               G_CALLBACK (background_reset_callback),
-                                               old_file);
-		gtk_signal_disconnect_by_func (GTK_OBJECT (old_file),
-                                               G_CALLBACK (saved_settings_changed_callback),
-                                               background);
+		g_signal_handlers_disconnect_by_func
+                        (background,
+                         G_CALLBACK (background_changed_callback),
+                         old_file);
+		g_signal_handlers_disconnect_by_func
+                        (background,
+                         G_CALLBACK (background_destroyed_callback),
+                         old_file);
+		g_signal_handlers_disconnect_by_func
+                        (background,
+                         G_CALLBACK (background_reset_callback),
+                         old_file);
+		g_signal_handlers_disconnect_by_func
+                        (old_file,
+                         G_CALLBACK (saved_settings_changed_callback),
+                         background);
 		nautilus_file_monitor_remove (old_file, background);
 		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_THEME,
                                                  nautilus_file_background_theme_changed,

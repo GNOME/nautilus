@@ -124,7 +124,7 @@ authentication_dialog_button_clicked (GtkDialog *dialog,
 {
 	DEBUG_MSG (("+%s button: %d\n", G_GNUC_FUNCTION, button_number));
 
-	if (button_number == GNOME_OK) {
+	if (button_number == GTK_RESPONSE_OK) {
 		info->out_args->username 
 			= eel_password_dialog_get_username (EEL_PASSWORD_DIALOG (dialog));
 		info->out_args->password

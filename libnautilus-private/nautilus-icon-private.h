@@ -169,11 +169,14 @@ struct NautilusIconContainerDetails {
 	
 	/* pixbuf and color for label highlighting */
 	GdkPixbuf *highlight_frame;
-	guint32 highlight_color;
+	GdkColor   highlight_color;
+	guint32    highlight_color_rgba;
 	
 	/* color for text labels */
-	guint32 label_color;
-	guint32 label_info_color;
+	GdkColor label_color;
+	GdkColor label_color_highlight;
+	GdkColor label_info_color;
+	GdkColor label_info_color_highlight;
 	
 	/* State used so arrow keys don't wander if icons aren't lined up.
 	 * Keeps track of last axis arrow key was used on.
@@ -239,7 +242,8 @@ gboolean      nautilus_icon_container_scroll                      (NautilusIconC
 void          nautilus_icon_container_update_scroll_region        (NautilusIconContainer *container);
 
 /* label color for items */
-guint32       nautilus_icon_container_get_label_color             (NautilusIconContainer *container,
-								   gboolean               first_line);
+GdkColor     *nautilus_icon_container_get_label_color             (NautilusIconContainer *container,
+								   gboolean               first_line,
+								   gboolean               needs_highlight);
 
 #endif /* NAUTILUS_ICON_CONTAINER_PRIVATE_H */

@@ -317,11 +317,11 @@ nautilus_trash_directory_init (gpointer object, gpointer klass)
 
 	volume_monitor = nautilus_volume_monitor_get ();
 
-	gtk_signal_connect
-		(GTK_OBJECT (volume_monitor), "volume_mounted",
+	g_signal_connect
+		(volume_monitor, "volume_mounted",
 		 G_CALLBACK (volume_mounted_callback), trash);
-	gtk_signal_connect
-		(GTK_OBJECT (volume_monitor), "volume_unmount_started",
+	g_signal_connect
+		(volume_monitor, "volume_unmount_started",
 		 G_CALLBACK (volume_unmount_started_callback), trash);
 }
 
@@ -337,8 +337,8 @@ nautilus_trash_directory_finish_initializing (NautilusTrashDirectory *trash)
 	
 	volume_monitor = nautilus_volume_monitor_get ();
 
-	gtk_signal_connect
-		(GTK_OBJECT (nautilus_trash_monitor_get ()), "check_trash_directory_added",
+	g_signal_connect
+		(nautilus_trash_monitor_get (), "check_trash_directory_added",
 		 G_CALLBACK (check_trash_directory_added_callback), trash);
 	nautilus_volume_monitor_each_mounted_volume
 		(volume_monitor, add_one_volume, trash);
@@ -368,8 +368,10 @@ trash_destroy (GtkObject *object)
 
 	trash = NAUTILUS_TRASH_DIRECTORY (object);
 
-	gtk_signal_disconnect_by_data
-		(GTK_OBJECT (nautilus_volume_monitor_get ()), trash);
+	g_signal_handlers_disconnect_matched (
+		nautilus_volume_monitor_get (),
+		G_SIGNAL_MATCH_DATA,
+		0, 0, NULL, NULL, trash);
 
 	eel_g_hash_table_safe_for_each
 		(trash->details->volumes,

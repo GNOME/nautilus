@@ -472,9 +472,10 @@ nautilus_bookmark_disconnect_file (NautilusBookmark *bookmark)
 	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
 	
 	if (bookmark->details->file != NULL) {
-		gtk_signal_disconnect_by_func (GTK_OBJECT (bookmark->details->file),
-					       G_CALLBACK (bookmark_file_changed_callback),
-					       bookmark);
+		g_signal_handlers_disconnect_by_func (
+			bookmark->details->file,
+			G_CALLBACK (bookmark_file_changed_callback),
+			bookmark);
 		nautilus_file_unref (bookmark->details->file);
 		bookmark->details->file = NULL;
 	}
@@ -601,7 +602,8 @@ nautilus_bookmark_uri_known_not_to_exist (NautilusBookmark *bookmark)
 	}
 
 	/* Now check if the file exists (sync. call OK because it is local). */
-	exists = g_file_exists (path_name);
+	exists = g_file_test (path_name, G_FILE_TEST_EXISTS);
 	g_free (path_name);
+
 	return !exists;
 }

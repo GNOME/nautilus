@@ -65,18 +65,19 @@ static Atom sawfish_wm_raise_window = 0;
  */
 static GtkWidget *
 get_ancestor_blocked_by (GtkWidget *widget,
-			 GtkType widget_type,
-			 GtkType blocking_type)
+			 GType      widget_type,
+			 GType      blocking_type)
 {
-	g_return_val_if_fail (widget != NULL, NULL);
 	g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
 
 	while (widget != NULL)
 	{
-		if (gtk_type_is_a (GTK_WIDGET_TYPE (widget), widget_type))
+		if (g_type_is_a (GTK_WIDGET_TYPE (widget), widget_type))
 			return widget;
-		else if (gtk_type_is_a (GTK_WIDGET_TYPE (widget), blocking_type))
+
+		else if (g_type_is_a (GTK_WIDGET_TYPE (widget), blocking_type))
 			return NULL;
+
 		widget = widget->parent;
 	}
 

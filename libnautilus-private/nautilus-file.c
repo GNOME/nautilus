@@ -2451,7 +2451,8 @@ nautilus_file_fit_date_as_string (NautilusFile *file,
 	g_date_set_time (today, time (NULL));
 
 	/* Overflow results in a large number; fine for our purposes. */
-	file_date_age = g_date_julian (today) - g_date_julian (file_date);
+	file_date_age = (g_date_get_julian (today) -
+			 g_date_get_julian (file_date));
 
 	g_date_free (file_date);
 	g_date_free (today);
@@ -5041,7 +5042,7 @@ nautilus_file_class_init (NautilusFileClass *class)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusFileClass, changed),
 		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
+		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 
 	signals[UPDATED_DEEP_COUNT_IN_PROGRESS] =
@@ -5050,7 +5051,7 @@ nautilus_file_class_init (NautilusFileClass *class)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (NautilusFileClass, updated_deep_count_in_progress),
 		              NULL, NULL,
-		              gtk_marshal_VOID__VOID,
+			      g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 }
 

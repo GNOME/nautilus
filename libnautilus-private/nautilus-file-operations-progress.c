@@ -97,10 +97,10 @@ nautilus_file_operations_progress_update (NautilusFileOperationsProgress *progre
 		return;
 	}
 
-	gtk_progress_configure (GTK_PROGRESS (progress->details->progress_bar),
-				progress->details->bytes_copied,
-				0.0,
-				progress->details->bytes_total);
+	gtk_progress_bar_set_fraction
+		(GTK_PROGRESS_BAR (progress->details->progress_bar),
+		 (double) progress->details->bytes_copied /
+		 progress->details->bytes_total);
 }
 
 static void
@@ -240,11 +240,9 @@ nautilus_file_operations_progress_init (NautilusFileOperationsProgress *progress
 
 	/* progress bar */
 	progress->details->progress_bar = gtk_progress_bar_new ();
-	gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR (progress->details->progress_bar),
-					GTK_PROGRESS_CONTINUOUS);
-	gtk_progress_bar_set_orientation (GTK_PROGRESS_BAR (progress->details->progress_bar),
-					  GTK_PROGRESS_LEFT_TO_RIGHT);
+#ifdef GNOME2_CONVERSION_COMPLETE
 	gtk_widget_set_usize (progress->details->progress_bar, PROGRESS_BAR_WIDTH, -1);
+#endif
 	gtk_box_pack_start (vbox, progress->details->progress_bar, FALSE, TRUE, 0);
 	gtk_widget_show (progress->details->progress_bar);
 

@@ -68,13 +68,13 @@ make_full_icon_path (const char *path,
 		g_free (user_directory);
 		g_free (themes_directory);
 
-		if (!g_file_exists (full_path)) {
+		if (!g_file_test (full_path, G_FILE_TEST_EXISTS)) {
 			g_free (full_path);
 			full_path = NULL;
 		}
 	} else if (document_type_icon) {
 		full_path = nautilus_make_path (DATADIR "/pixmaps/document-icons/", partial_path);
-		if (!g_file_exists (full_path)) {
+		if (!g_file_test (full_path, G_FILE_TEST_EXISTS)) {
 			g_free (full_path);
 			full_path = NULL;
 		}
@@ -310,7 +310,7 @@ get_user_emblem_path (const char *name, guint icon_size)
 					user_directory,
 					name + strlen (NAUTILUS_EMBLEM_NAME_PREFIX), 
 					icon_file_name_suffixes[i]);
-		if (g_file_exists (path)) {
+		if (g_file_test (path, G_FILE_TEST_EXISTS)) {
 			break;
 		}
 		g_free (path);

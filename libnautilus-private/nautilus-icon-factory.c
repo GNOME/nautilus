@@ -371,7 +371,7 @@ nautilus_icon_factory_class_init (NautilusIconFactoryClass *class)
 		                G_SIGNAL_RUN_LAST,
 		                0,
 		                NULL, NULL,
-		                gtk_marshal_VOID__VOID,
+		                g_cclosure_marshal_VOID__VOID,
 		                G_TYPE_NONE, 0);
 
 	object_class->destroy = nautilus_icon_factory_destroy;
@@ -661,7 +661,7 @@ is_theme_in_user_directory (const char *theme_name)
 	themes_directory = nautilus_make_path (user_directory, "themes");
 	this_theme_directory = nautilus_make_path (themes_directory, theme_name);
 	
-	result = g_file_exists (this_theme_directory);
+	result = g_file_test (this_theme_directory, G_FILE_TEST_EXISTS);
 	
 	g_free (user_directory);
 	g_free (themes_directory);
@@ -1901,7 +1901,7 @@ get_icon_from_cache (NautilusScalableIcon *scalable_icon,
 			icon = NULL;
 		}
 	}
-	
+
 	if (icon == NULL) {
 		/* Not in the table, so load the image. */
 		/* If we're picky, then we want the image only if this exact
@@ -1948,7 +1948,7 @@ get_icon_from_cache (NautilusScalableIcon *scalable_icon,
 		nautilus_scalable_icon_ref (scalable_icon);
 		key->scalable_icon = scalable_icon;
 		key->size = *size;
-		
+
 		/* Add the item to the hash table. */
 		g_assert (g_hash_table_lookup (hash_table, key) == NULL);
 		g_hash_table_insert (hash_table, key, icon);

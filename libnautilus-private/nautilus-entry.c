@@ -139,7 +139,7 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 		 */
 		if (entry->details->special_tab_handling && gtk_editable_get_selection_bounds (editable, NULL, NULL)) {
 			position = strlen (gtk_entry_get_text (GTK_ENTRY (editable)));
-			gtk_entry_select_region (GTK_ENTRY (editable), position, position);
+			gtk_editable_select_region (editable, position, position);
 			return TRUE;
 		}
 		break;
@@ -424,7 +424,7 @@ nautilus_entry_class_init (NautilusEntryClass *class)
 		 G_STRUCT_OFFSET (NautilusEntryClass,
 				    user_changed),
 		 NULL, NULL,
-		 gtk_marshal_VOID__VOID,
+		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 	signals[SELECTION_CHANGED] = g_signal_new
 		("selection_changed",
@@ -433,7 +433,7 @@ nautilus_entry_class_init (NautilusEntryClass *class)
 		 G_STRUCT_OFFSET (NautilusEntryClass,
 				    selection_changed),
 		 NULL, NULL,
-		 gtk_marshal_VOID__VOID,
+		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 }
 

@@ -60,10 +60,6 @@
 #define MAX_TEXT_WIDTH_STANDARD 135
 #define MAX_TEXT_WIDTH_TIGHTER 80
 
-/* The list of characters that cause line breaks can be localized. */
-static const char untranslated_line_break_characters[] = N_(" -_,;.?/&");
-#define LINE_BREAK_CHARACTERS _(untranslated_line_break_characters)
-
 /* Private part of the NautilusIconCanvasItem structure. */
 struct NautilusIconCanvasItemDetails {
 	/* The image, text, font. */
@@ -106,13 +102,13 @@ struct NautilusIconCanvasItemDetails {
 
 /* Object argument IDs. */
 enum {
-	ARG_0,
-	ARG_EDITABLE_TEXT,
-	ARG_ADDITIONAL_TEXT,
-    	ARG_HIGHLIGHTED_FOR_SELECTION,
-    	ARG_HIGHLIGHTED_AS_KEYBOARD_FOCUS,
-    	ARG_HIGHLIGHTED_FOR_DROP,
-    	ARG_MODIFIER,
+	PROP_0,
+	PROP_EDITABLE_TEXT,
+	PROP_ADDITIONAL_TEXT,
+    	PROP_HIGHLIGHTED_FOR_SELECTION,
+    	PROP_HIGHLIGHTED_AS_KEYBOARD_FOCUS,
+    	PROP_HIGHLIGHTED_FOR_DROP,
+    	PROP_MODIFIER,
 };
 
 typedef enum {
@@ -139,9 +135,6 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 static  gboolean antialias_selection_rectangle = TRUE;
-static	guint32 highlight_background_color = EEL_RGBA_COLOR_PACK (0x00, 0x00, 0x00, 0xFF);
-static	guint32 highlight_text_color	   = EEL_RGBA_COLOR_PACK (0xFF, 0xFF, 0xFF, 0xFF);
-static  guint32 highlight_text_info_color  = EEL_RGBA_COLOR_PACK (0xCC, 0xCC, 0xCC, 0xFF);
 
 static int click_policy_auto_value;
 
@@ -263,59 +256,64 @@ nautilus_icon_canvas_item_invalidate_label_size (NautilusIconCanvasItem *item)
 	}
 }
 
-/* Set_arg handler for the icon item. */
+/* Set property handler for the icon item. */
 static void
-nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
+nautilus_icon_canvas_item_set_property (GObject        *object,
+					guint           property_id,
+					const GValue   *value,
+					GParamSpec     *pspec)
 {
 	NautilusIconCanvasItem *item;
 	NautilusIconCanvasItemDetails *details;
 
-	item =  NAUTILUS_ICON_CANVAS_ITEM (object);
+	item = NAUTILUS_ICON_CANVAS_ITEM (object);
 	details = item->details;
 
-	switch (arg_id) {
+	switch (property_id) {
 
-	case ARG_EDITABLE_TEXT:
-		if (eel_strcmp (details->editable_text, GTK_VALUE_STRING (*arg)) == 0) {
+	case PROP_EDITABLE_TEXT:
+		if (eel_strcmp (details->editable_text,
+				g_value_get_string (value)) == 0) {
 			return;
 		}
 
 		g_free (details->editable_text);
-		details->editable_text = g_strdup (GTK_VALUE_STRING (*arg));
+		details->editable_text = g_strdup (g_value_get_string (value));
 		
 		nautilus_icon_canvas_item_invalidate_label_size (item);		
 		break;
 
-	case ARG_ADDITIONAL_TEXT:
-		if (eel_strcmp (details->additional_text, GTK_VALUE_STRING (*arg)) == 0) {
+	case PROP_ADDITIONAL_TEXT:
+		if (eel_strcmp (details->additional_text,
+				g_value_get_string (value)) == 0) {
 			return;
 		}
 
 		g_free (details->additional_text);
-		details->additional_text = g_strdup (GTK_VALUE_STRING (*arg));
+		details->additional_text = g_strdup (g_value_get_string (value));
 		
 		nautilus_icon_canvas_item_invalidate_label_size (item);		
 		break;
 
-	case ARG_HIGHLIGHTED_FOR_SELECTION:
-		if (!details->is_highlighted_for_selection == !GTK_VALUE_BOOL (*arg)) {
+	case PROP_HIGHLIGHTED_FOR_SELECTION:
+		if (!details->is_highlighted_for_selection == !g_value_get_boolean (value)) {
 			return;
 		}
-		details->is_highlighted_for_selection = GTK_VALUE_BOOL (*arg);
+		details->is_highlighted_for_selection = g_value_get_boolean (value);
 		break;
          
-        case ARG_HIGHLIGHTED_AS_KEYBOARD_FOCUS:
-		if (!details->is_highlighted_as_keyboard_focus == !GTK_VALUE_BOOL (*arg)) {
+        case PROP_HIGHLIGHTED_AS_KEYBOARD_FOCUS:
+		if (!details->is_highlighted_as_keyboard_focus == !g_value_get_boolean (value)) {
 			return;
 		}
-		details->is_highlighted_as_keyboard_focus = GTK_VALUE_BOOL (*arg);
+		details->is_highlighted_as_keyboard_focus = g_value_get_boolean (value);
 		break;
 		
-        case ARG_HIGHLIGHTED_FOR_DROP:
-		if (!details->is_highlighted_for_drop == !GTK_VALUE_BOOL (*arg)) {
+        case PROP_HIGHLIGHTED_FOR_DROP:
+		if (!details->is_highlighted_for_drop == !g_value_get_boolean (value)) {
 			return;
 		}
-		details->is_highlighted_for_drop = GTK_VALUE_BOOL (*arg);
+		details->is_highlighted_for_drop = g_value_get_boolean (value);
 		break;
 
 	default:
@@ -326,38 +324,41 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (object));
 }
 
-/* Get_arg handler for the icon item */
+/* Get property handler for the icon item */
 static void
-nautilus_icon_canvas_item_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
+nautilus_icon_canvas_item_get_property (GObject        *object,
+					guint           property_id,
+					GValue         *value,
+					GParamSpec     *pspec)
 {
 	NautilusIconCanvasItemDetails *details;
 	
 	details = NAUTILUS_ICON_CANVAS_ITEM (object)->details;
 	
-	switch (arg_id) {
+	switch (property_id) {
 		
-	case ARG_EDITABLE_TEXT:
-		GTK_VALUE_STRING (*arg) = g_strdup (details->editable_text);
+	case PROP_EDITABLE_TEXT:
+		g_value_set_string (value, details->editable_text);
 		break;
 
-	case ARG_ADDITIONAL_TEXT:
-		GTK_VALUE_STRING (*arg) = g_strdup (details->additional_text);
+	case PROP_ADDITIONAL_TEXT:
+		g_value_set_string (value, details->additional_text);
 		break;
 		
-        case ARG_HIGHLIGHTED_FOR_SELECTION:
-                GTK_VALUE_BOOL (*arg) = details->is_highlighted_for_selection;
+        case PROP_HIGHLIGHTED_FOR_SELECTION:
+		g_value_set_boolean (value, details->is_highlighted_for_selection);
                 break;
 		
-        case ARG_HIGHLIGHTED_AS_KEYBOARD_FOCUS:
-                GTK_VALUE_BOOL (*arg) = details->is_highlighted_as_keyboard_focus;
+        case PROP_HIGHLIGHTED_AS_KEYBOARD_FOCUS:
+		g_value_set_boolean (value, details->is_highlighted_as_keyboard_focus);
                 break;
 		
-        case ARG_HIGHLIGHTED_FOR_DROP:
-                GTK_VALUE_BOOL (*arg) = details->is_highlighted_for_drop;
+        case PROP_HIGHLIGHTED_FOR_DROP:
+		g_value_set_boolean (value, details->is_highlighted_for_drop);
                 break;
 
         default:
-		arg->type = G_TYPE_INVALID;
+		g_warning ("invalid property %d", property_id);
 		break;
 	}
 }
@@ -576,7 +577,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	GnomeCanvasItem *canvas_item;
 	GdkPixbuf *selection_pixbuf;
 	PangoLayout *layout;
-	guint32 label_color;
+	GdkColor *label_color;
 	int layout_width, layout_height;
 	int icon_width;
 	gboolean have_editable, have_additional, needs_highlight;
@@ -631,6 +632,8 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	height_so_far = 0;
 
 	max_text_width = floor (nautilus_icon_canvas_item_get_max_text_width (item));
+
+	container = NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (item)->canvas);	
 				
 	/* if the icon is highlighted, do some set-up */
 	if (needs_highlight && drawable != NULL && !details->is_renaming &&
@@ -641,17 +644,16 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 							   8,
 							   details->text_width,
 							   details->text_height);
-			container = NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (item)->canvas);	
 			eel_gdk_pixbuf_fill_rectangle_with_color (selection_pixbuf,
 								  eel_gdk_pixbuf_whole_pixbuf,
-								  container->details->highlight_color);
+								  container->details->highlight_color_rgba);
 			clear_rounded_corners (selection_pixbuf, container->details->highlight_frame, 5);
 			draw_pixbuf (selection_pixbuf, drawable, 
 				     icon_left + (icon_width - details->text_width) / 2,
 				     icon_bottom);
 			g_object_unref (selection_pixbuf);
 		} else {
-			gdk_rgb_gc_set_foreground (gc, highlight_background_color);
+			gdk_gc_set_foreground (gc, &container->details->highlight_color);
 			
 			gdk_draw_rectangle
 				(drawable, GTK_WIDGET (GNOME_CANVAS_ITEM (item)->canvas)->style->black_gc, TRUE,
@@ -666,13 +668,11 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		layout = get_label_layout (&details->editable_text_layout, item, details->editable_text);
 
 		if (drawable != NULL) {
-			if (needs_highlight) {
-				label_color = highlight_text_color;
-			} else {
-				label_color = nautilus_icon_container_get_label_color (NAUTILUS_ICON_CONTAINER (canvas_item->canvas), TRUE);
-			}
+			label_color = nautilus_icon_container_get_label_color
+				(NAUTILUS_ICON_CONTAINER (canvas_item->canvas),
+				 TRUE, needs_highlight);
 
-			gdk_rgb_gc_set_foreground (gc, label_color);
+			gdk_gc_set_foreground (gc, label_color);
 			
 			draw_label_layout (item, drawable,
 					   layout, needs_highlight,
@@ -692,13 +692,11 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		layout = get_label_layout (&details->additional_text_layout, item, details->additional_text);
 
 		if (drawable != NULL) {
-			if (needs_highlight) {
-				label_color = highlight_text_info_color;
-			} else {
-				label_color = nautilus_icon_container_get_label_color (NAUTILUS_ICON_CONTAINER (canvas_item->canvas), FALSE);
-			}
+			label_color = nautilus_icon_container_get_label_color
+				(NAUTILUS_ICON_CONTAINER (canvas_item->canvas),
+				 FALSE, needs_highlight);
 
-			gdk_rgb_gc_set_foreground (gc, label_color);
+			gdk_gc_set_foreground (gc, label_color);
 			
 			draw_label_layout (item, drawable,
 					   layout, needs_highlight,
@@ -818,7 +816,7 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 	g_free (knob_filename);
 	g_object_unref (knob_pixbuf);	
 
-	gdk_gc_unref (gc);
+	g_object_unref (gc);
 }
 
 static void
@@ -1668,27 +1666,56 @@ nautilus_icon_canvas_item_get_max_text_width (NautilusIconCanvasItem *item)
 static void
 nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	GnomeCanvasItemClass *item_class;
 
-	object_class = GTK_OBJECT_CLASS (class);
+	object_class = G_OBJECT_CLASS (class);
 	item_class = GNOME_CANVAS_ITEM_CLASS (class);
 
-	gtk_object_add_arg_type	("NautilusIconCanvasItem::editable_text",
-				 G_TYPE_STRING, GTK_ARG_READWRITE, ARG_EDITABLE_TEXT);
-	gtk_object_add_arg_type	("NautilusIconCanvasItem::additional_text",
-				 G_TYPE_STRING, GTK_ARG_READWRITE, ARG_ADDITIONAL_TEXT);
-	gtk_object_add_arg_type	("NautilusIconCanvasItem::highlighted_for_selection",
-				 G_TYPE_BOOLEAN, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_FOR_SELECTION);
-	gtk_object_add_arg_type	("NautilusIconCanvasItem::highlighted_as_keyboard_focus",
-				 G_TYPE_BOOLEAN, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_AS_KEYBOARD_FOCUS);
-	gtk_object_add_arg_type	("NautilusIconCanvasItem::highlighted_for_drop",
-				 G_TYPE_BOOLEAN, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_FOR_DROP);
+	object_class->finalize = nautilus_icon_canvas_item_finalize;
+	object_class->set_property = nautilus_icon_canvas_item_set_property;
+	object_class->get_property = nautilus_icon_canvas_item_get_property;
 
-	G_OBJECT_CLASS (class)->finalize = nautilus_icon_canvas_item_finalize;
+        g_object_class_install_property (
+		object_class,
+		PROP_EDITABLE_TEXT,
+		g_param_spec_string ("editable_text",
+				     _("editable text"),
+				     _("the editable label"),
+				     "", G_PARAM_READWRITE));
 
-	object_class->set_arg = nautilus_icon_canvas_item_set_arg;
-	object_class->get_arg = nautilus_icon_canvas_item_get_arg;
+        g_object_class_install_property (
+		object_class,
+		PROP_ADDITIONAL_TEXT,
+		g_param_spec_string ("additional_text",
+				     _("additional text"),
+				     _("some more text"),
+				     "", G_PARAM_READWRITE));
+
+        g_object_class_install_property (
+		object_class,
+		PROP_HIGHLIGHTED_FOR_SELECTION,
+		g_param_spec_boolean ("highlighted_for_selection",
+				      _("highlighted for selection"),
+				      _("whether we are highlighted for a selection"),
+				      FALSE, G_PARAM_READWRITE)); 
+
+        g_object_class_install_property (
+		object_class,
+		PROP_HIGHLIGHTED_AS_KEYBOARD_FOCUS,
+		g_param_spec_boolean ("highlighted_as_keyboard_focus",
+				      _("highlighted as keyboard focus"),
+				      _("whether we are highlighted to render keyboard focus"),
+				      FALSE, G_PARAM_READWRITE)); 
+
+
+        g_object_class_install_property (
+		object_class,
+		PROP_HIGHLIGHTED_FOR_DROP,
+		g_param_spec_boolean ("highlighted_for_drop",
+				      _("highlighted for drop"),
+				      _("whether we are highlighted for a D&D drop"),
+				      FALSE, G_PARAM_READWRITE)); 
 
 	signals[BOUNDS_CHANGED]
 		= g_signal_new ("bounds_changed",
@@ -1697,7 +1724,7 @@ nautilus_icon_canvas_item_class_init (NautilusIconCanvasItemClass *class)
 		                G_STRUCT_OFFSET (NautilusIconCanvasItemClass,
 						     bounds_changed),
 		                NULL, NULL,
-		                gtk_marshal_VOID__VOID,
+		                g_cclosure_marshal_VOID__VOID,
 		                G_TYPE_NONE, 0);
 
 	item_class->update = nautilus_icon_canvas_item_update;

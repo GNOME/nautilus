@@ -340,9 +340,9 @@ nautilus_undo_manager_class_init (NautilusUndoManagerClass *class)
 		 G_TYPE_FROM_CLASS (class),
 		 G_SIGNAL_RUN_LAST,
 		 G_STRUCT_OFFSET (NautilusUndoManagerClass,
-				    changed),
+				  changed),
 		 NULL, NULL,
-		 gtk_marshal_NONE__NONE,
+		 g_cclosure_marshal_VOID__VOID,
 		 G_TYPE_NONE, 0);
 
 	class->epv.append = corba_append;

@@ -339,17 +339,18 @@ nautilus_volume_monitor_class_init (NautilusVolumeMonitorClass *klass)
 		                G_TYPE_NONE, 1, G_TYPE_POINTER);
 
 	/* Check environment a bit. */
-	if (g_file_exists ("/vol/dev")) {
+	if (g_file_test ("/vol/dev", G_FILE_TEST_EXISTS)) {
 		floppy_device_path_prefix = "/vol/dev/diskette/";
 	} else {
 		floppy_device_path_prefix = "/dev/fd";
 	}
-	if (g_file_exists ("/vol")) {
+	if (g_file_test ("/vol", G_FILE_TEST_EXISTS)) {
 		noauto_string = "/vol/";
 	} else {
 		noauto_string = "/dev/fd";
 	}
-	mnttab_exists = g_file_exists ("/etc/mnttab");
+	mnttab_exists = g_file_test ("/etc/mnttab",
+				     G_FILE_TEST_EXISTS);
 }
 
 static void
@@ -1378,7 +1379,7 @@ find_command (const char **known_locations)
 	int i;
 
 	for (i = 0; known_locations [i]; i++){
-		if (g_file_exists (known_locations [i]))
+		if (g_file_test (known_locations [i], G_FILE_TEST_EXISTS))
 			return known_locations [i];
 	}
 	return NULL;

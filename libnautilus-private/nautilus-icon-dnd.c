@@ -736,7 +736,11 @@ auto_scroll_timeout_callback (gpointer data)
 	exposed_area.x -= widget->allocation.x;
 	exposed_area.y -= widget->allocation.y;
 
-	gtk_widget_draw (widget, &exposed_area);
+	gtk_widget_queue_draw_area (widget,
+				    exposed_area.x,
+				    exposed_area.y,
+				    exposed_area.width,
+				    exposed_area.height);
 
 	return TRUE;
 }
@@ -1180,7 +1184,7 @@ nautilus_icon_container_free_drag_data (NautilusIconContainer *container)
 	dnd_info = container->details->dnd_info;
 	
 	dnd_info->drag_info.got_drop_data_type = FALSE;
-	
+
 	if (dnd_info->shadow != NULL) {
 		gtk_object_destroy (GTK_OBJECT (dnd_info->shadow));
 		dnd_info->shadow = NULL;

@@ -111,7 +111,7 @@ nautilus_get_user_directory (void)
 	user_directory = nautilus_make_path (g_get_home_dir (),
 					     NAUTILUS_USER_DIRECTORY_NAME);
 
-	if (!g_file_exists (user_directory)) {
+	if (!g_file_test (user_directory, G_FILE_TEST_EXISTS)) {
 		mkdir (user_directory, DEFAULT_NAUTILUS_DIRECTORY_MODE);
 		/* FIXME bugzilla.gnome.org 41286: 
 		 * How should we handle the case where this mkdir fails? 
@@ -141,7 +141,7 @@ nautilus_get_desktop_directory (void)
 		desktop_directory = g_strdup (g_get_home_dir());
 	} else {
 		desktop_directory = nautilus_get_gmc_desktop_directory ();
-		if (!g_file_exists (desktop_directory)) {
+		if (!g_file_test (desktop_directory, G_FILE_TEST_EXISTS)) {
 			mkdir (desktop_directory, DEFAULT_DESKTOP_DIRECTORY_MODE);
 			/* FIXME bugzilla.gnome.org 41286: 
 			 * How should we handle the case where this mkdir fails? 
@@ -192,7 +192,7 @@ nautilus_pixmap_file (const char *partial_path)
 	char *path;
 
 	path = nautilus_make_path (DATADIR "/pixmaps/nautilus", partial_path);
-	if (g_file_exists (path)) {
+	if (g_file_test (path, G_FILE_TEST_EXISTS)) {
 		return path;
 	}
 	g_free (path);
@@ -209,14 +209,14 @@ nautilus_get_data_file_path (const char *partial_path)
 	user_directory = nautilus_get_user_directory ();
 	path = nautilus_make_path (user_directory, partial_path);
 	g_free (user_directory);
-	if (g_file_exists (path)) {
+	if (g_file_test (path, G_FILE_TEST_EXISTS)) {
 		return path;
 	}
 	g_free (path);
 	
 	/* next try the shared directory */
 	path = nautilus_make_path (NAUTILUS_DATADIR, partial_path);
-	if (g_file_exists (path)) {
+	if (g_file_test (path, G_FILE_TEST_EXISTS)) {
 		return path;
 	}
 	g_free (path);
