@@ -1,5 +1,12 @@
 2000-05-18  Andy Hertzfeld  <andy@eazel.com>
 
+	* components/music/nautilus-music-view.c: (extract_initial_number),
+	(fetch_song_info):
+	put in heuristic to grab the track number from the beginning of
+	the file name if it's present there and not encoded in the id3 tag
+	
+2000-05-18  Andy Hertzfeld  <andy@eazel.com>
+
 	* libnautilus-extensions/nautilus-graphic-effects.c,h:
 	(nautilus_draw_frame):
 	added routine to draw a frame with a drop-shadow into a pixbuf

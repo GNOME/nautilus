@@ -31,6 +31,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <dirent.h>
+#include <ctype.h>
 
 #include <libnautilus/libnautilus.h>
 #include <libnautilus-extensions/nautilus-background.h>
@@ -453,6 +454,33 @@ format_play_time (const char *song_uri, int bitrate)
 	return result;
 }
 
+/* utility routine to pull an initial number from the beginning of the passed in name.
+   return -1 if there wasn't any */
+static int
+extract_initial_number(const char *name_str)
+{
+	char *temp_str;
+	gboolean found_digit;
+	int accumulator;
+	
+	found_digit = FALSE;
+	accumulator = 0;
+	temp_str = (char*) name_str;
+	
+	while (*temp_str) {
+		if (isdigit(*temp_str)) {
+			found_digit = TRUE;
+			accumulator = (10 * accumulator) + *temp_str - 48;
+		} else
+			break;
+		temp_str += 1;
+	}		
+	
+	if (found_digit)
+		return accumulator;
+	return -1;
+}
+
 /* allocate a return a song info record, from an mp3 tag if present, or from intrinsic info */
 
 static SongInfo *
@@ -469,11 +497,16 @@ fetch_song_info (const char *song_uri, int file_order)
 	initialize_song_info (info);
 	
 	has_info = read_id_tag (song_uri, info);
+
+	/* if we couldn't get a track number, see if we can pull one from
+	   the beginning of the file name */
+	if (info->track_number <= 0) {
+		info->track_number = extract_initial_number(g_basename(song_uri));
+	}
   	
 	/* there was no id3 tag, so set up the info heuristically from the file name and file order */
 	if (!has_info) {
 		info->title = g_strdup (g_basename (song_uri));
-		info->track_number = file_order;
 	}	
 	
 	info->bitrate = fetch_bit_rate(song_uri);
