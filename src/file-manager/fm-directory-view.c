@@ -3248,30 +3248,32 @@ add_numbered_menu_item (BonoboUIComponent *ui,
 			gpointer callback_data,
 			GDestroyNotify destroy_notify)
 {
-	char *escaped_label, *verb_name, *item_path;
+	char *escaped_parent_path, *escaped_label, *verb_name, *item_path;
 	
-	escaped_label = eel_str_double_underscores (label);
+	escaped_parent_path = eel_str_double_underscores (parent_path);
 
+	escaped_label = eel_str_double_underscores (label);
 	nautilus_bonobo_add_numbered_menu_item 
 		(ui, 
-		 parent_path,
+		 escaped_parent_path,
 		 index,
 		 escaped_label, 
 		 pixbuf);
 	g_free (escaped_label);
 
 	item_path = nautilus_bonobo_get_numbered_menu_item_path
-		(ui, parent_path, index);
-
+		(ui, escaped_parent_path, index);
 	nautilus_bonobo_set_tip (ui, item_path, tip);
 	g_free (item_path);
 
 	verb_name = nautilus_bonobo_get_numbered_menu_item_command 
-		(ui, parent_path, index);	
+		(ui, escaped_parent_path, index);	
 	bonobo_ui_component_add_verb_full (ui, verb_name,
 					   g_cclosure_new (callback, callback_data,
 							   (GClosureNotify) destroy_notify));	   
 	g_free (verb_name);
+
+	g_free (escaped_parent_path);
 }
 
 static void
@@ -3280,11 +3282,13 @@ add_submenu (BonoboUIComponent *ui,
 	     const char *label,
 	     GdkPixbuf *pixbuf)
 {
-	char *escaped_label;
+	char *escaped_parent_path, *escaped_label;
 
+	escaped_parent_path = eel_str_double_underscores (parent_path);
 	escaped_label = eel_str_double_underscores (label);
-	nautilus_bonobo_add_submenu (ui, parent_path, escaped_label, pixbuf);
+	nautilus_bonobo_add_submenu (ui, escaped_parent_path, escaped_label, pixbuf);
 	g_free (escaped_label);
+	g_free (escaped_parent_path);
 }
 
 static void
@@ -3681,9 +3685,9 @@ add_script_to_script_menus (FMDirectoryView *directory_view,
 
 static void
 add_submenu_to_script_menus (FMDirectoryView *directory_view,
-			  NautilusFile *file,
-			  const char *menu_path,
-			  const char *popup_path)
+			     NautilusFile *file,
+			     const char *menu_path,
+			     const char *popup_path)
 {
 	char *name;
 	GdkPixbuf *pixbuf;
