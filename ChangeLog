@@ -1,3 +1,29 @@
+2001-01-24  Eskil Olsen  <eskil@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+		     Ramiro Estrugo <ramiro@eazel.com>
+
+	* components/services/install/lib/Makefile.am:
+	Fix for 5978
+
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(rpmmonitorpiggybag_new), (make_rpm_argument_list),
+	(monitor_rpm_process_pipe_percent_output),
+	(rpm_packagedata_fill_from_file),
+	(eazel_package_system_rpm3_install_uninstall):
+	* components/services/install/lib/eazel-package-system-rpm4.c:
+	Fix for 5978 and 5979.
+	This makes the rpm object parse the --percent output of rpm
+	and thereby makes eazel-install work on RH70 with RedHat versions
+	of rpm.	
+
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedata_finalize):
+	If HAVE_PRM_40, don't free the rpm headers as it'll crash (bug 6007)
+
+	* configure.in:
+	One more dbopen check, for libdb-3.1
+
 2001-01-24  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: changed >= for ORBit to =

@@ -326,7 +326,9 @@ packagedata_finalize (GtkObject *obj)
 	pack->modifies = NULL;
 
 	if (pack->packsys_struc) {
-		headerFree ((Header) pack->packsys_struc);
+#ifdef HAVE_RPM_30
+		headerFree ((Header) pack->packsys_struc); 
+#endif /* HAVE_RPM_30 */
 		pack->packsys_struc = NULL;
 	}
 }

@@ -43,6 +43,9 @@
 */
 
 #include <config.h>
+
+#ifdef HAVE_RPM
+
 #include <gnome.h>
 #include "eazel-package-system-rpm3-private.h"
 #include "eazel-package-system-private.h"
@@ -62,7 +65,7 @@
 #define DEFAULT_DB_PATH "/var/lib/rpm"
 #define DEFAULT_ROOT "/"
 
-#undef USE_PERCENT
+#define USE_PERCENT
 
 EazelPackageSystem* eazel_package_system_implementation (GList*);
 
@@ -84,14 +87,57 @@ struct RpmMonitorPiggyBag {
 	GList *packages_to_expect;
 	GList *packages_seen;
 
-	int pct;
-	PackageData *pack;
+#ifdef USE_PERCENT
+	char seperator;
+	char line[80];
+	/* state 1 waiting for package name
+                 2 waiting for %%
+                 3 reading percentages
+	*/
+	int state;
+	int bytes_read_in_line;
+	char *package_name;
+#else
 	GString *package_name;
+#endif
+	PackageData *pack;
+	int pct;
 
 	GHashTable *name_to_package;
 
 	volatile gboolean subcommand_running;
 };
+
+static struct RpmMonitorPiggyBag 
+rpmmonitorpiggybag_new (EazelPackageSystemRpm3 *system, 
+			EazelPackageSystemOperation op) 
+{
+	struct RpmMonitorPiggyBag pig;
+#ifdef USE_PERCENT
+	struct lconv *lc;
+#endif
+
+#ifdef USE_PERCENT
+	lc = localeconv ();
+	pig.seperator = *(lc->decimal_point);
+	trilobite_debug ("I am in in a %c country",  pig.seperator);
+	pig.state = 1;
+	pig.bytes_read_in_line = 0;
+	pig.package_name = NULL;
+#else
+	pig.pack = NULL;
+	pig.package_name = NULL;
+#endif
+	pig.pct = 0;
+	pig.system = system;
+	pig.op = op;
+
+	pig.packages_seen = NULL;
+	pig.packages_installed = 0;	
+	pig.bytes_installed = 0;	
+
+	return pig;
+}
 
 /* Code to get and set a string field from
    a Header */
@@ -169,9 +215,17 @@ make_rpm_argument_list (EazelPackageSystemRpm3 *system,
 			(*args) = g_list_prepend (*args, g_strdup ("--oldpackage"));
 		}
 		if (flags & EAZEL_PACKAGE_SYSTEM_OPERATION_UPGRADE) {
+#ifdef USE_PERCENT
+			(*args) = g_list_prepend (*args, g_strdup ("-Uv"));
+#else
 			(*args) = g_list_prepend (*args, g_strdup ("-Uvh"));
+#endif
 		} else {
+#ifdef USE_PERCENT
+			(*args) = g_list_prepend (*args, g_strdup ("-iv"));
+#else
 			(*args) = g_list_prepend (*args, g_strdup ("-ivh"));
+#endif
 		}
 	}
 }
@@ -231,6 +285,9 @@ get_total_size_of_packages (const GList *packages)
 #ifdef USE_PERCENT
 /* This monitors an rpm process pipe and emits
    signals during execution */
+/* Ahhh, the joy of not having C++ and not just be able
+   to define a function class, but instead I get to carry
+   the pig around.... */
 static gboolean
 monitor_rpm_process_pipe_percent_output (GIOChannel *source,
 					 GIOCondition condition,
@@ -238,21 +295,154 @@ monitor_rpm_process_pipe_percent_output (GIOChannel *source,
 {
 	char tmp;
 	ssize_t bytes_read;
-	char line[80];
-	int bytes_read_in_line = 0;
 	gboolean result = TRUE;
 
+	bytes_read = 0;
 	g_io_channel_read (source, &tmp, 1, &bytes_read);
 	
 	if (bytes_read) {
-		if (tmp=='\n') {
-			trilobite_debug ("RPM: %s", line);
+		if (isspace (tmp)) {
+			switch (pig->state) {
+			case 1:
+				if (pig->package_name) {
+					g_free (pig->package_name);
+				}
+				/* Reset */
+				pig->pack = NULL;
+				pig->package_name = NULL;
+				pig->pct = 0;
+				
+				pig->package_name = g_strdup (pig->line);
+				pig->pack = g_hash_table_lookup (pig->name_to_package, pig->package_name);
+
+				if (pig->pack==NULL) {
+					char *dash;
+					dash = strrchr (pig->package_name, '-');
+					while (dash && pig->pack==NULL) {
+						*dash = '\0';
+						pig->pack = g_hash_table_lookup (pig->name_to_package, 
+										 pig->package_name);
+						dash = strrchr (pig->package_name, '-');
+					}
+				}
+
+				if (pig->pack==NULL) {
+					if (pig->package_name && 
+					    ((strcmp (pig->package_name, "warning:") == 0) ||
+					     (strcmp (pig->package_name, "error:") == 0) ||
+					     (strcmp (pig->package_name, "cannot") == 0))) {
+						fail (pig->system, "rpm says \"%s\"", pig->package_name);
+					} else if (pig->package_name) {
+						verbose (pig->system, "lookup \"%s\" failed", 
+							 pig->package_name);
+					}
+				} else {
+					unsigned long longs[EAZEL_PACKAGE_SYSTEM_PROGRESS_LONGS];
+
+					info (pig->system, "matched \"%s\"", pig->package_name);
+
+					pig->packages_installed ++;
+					
+					longs[0] = 0;
+					longs[1] = pig->pack->bytesize;
+					longs[2] = pig->packages_installed;
+					longs[3] = pig->total_packages;
+					longs[4] = pig->bytes_installed;
+					longs[5] = pig->total_bytes;
+					
+					eazel_package_system_emit_start (EAZEL_PACKAGE_SYSTEM (pig->system),
+									 pig->op,
+									 pig->pack);
+					eazel_package_system_emit_progress (EAZEL_PACKAGE_SYSTEM (pig->system),
+									    pig->op,
+									    pig->pack,
+									    longs);
+					/* switch state */
+					pig->state = 2;
+				}
+
+
+				break;
+
+			case 2:
+				if (strncmp (pig->line, "%%", 2) == 0) {
+					pig->state = 3;
+				} 
+				break;
+			case 3: {
+				char *dot;
+				int pct;
+
+				/* Assume we don't go to state 1 */
+				pig->state = 2;
+
+				/* Remove the decimal crap */
+				dot = strchr (pig->line, pig->seperator);
+				if (dot) {
+					*dot = 0;
+				}
+				/* Grab the percentage */
+				pct = atol (pig->line);
+				/* Higher ? */
+				if (pct > pig->pct) {
+					unsigned long longs[EAZEL_PACKAGE_SYSTEM_PROGRESS_LONGS];
+					int amount;
+
+					pig->pct = pct;
+					if (pig->pct == 100) {
+						amount = pig->pack->bytesize;
+					} else {
+						amount = (pig->pack->bytesize/100) * pig->pct;
+					}
+
+					longs[0] = amount;
+					longs[1] = pig->pack->bytesize;
+					longs[2] = pig->packages_installed;
+					longs[3] = pig->total_packages;
+					longs[4] = pig->bytes_installed + amount;
+					longs[5] = pig->total_bytes;
+					
+					eazel_package_system_emit_progress (EAZEL_PACKAGE_SYSTEM (pig->system),
+									    pig->op,
+									    pig->pack, 
+									    longs);
+					/* Done with package ? */
+					if (pig->pct==100) {
+						pig->state = 1;
+						pig->bytes_installed += pig->pack->bytesize;
+						pig->packages_seen = g_list_prepend (pig->packages_seen,
+										     pig->pack);
+						eazel_package_system_emit_end (EAZEL_PACKAGE_SYSTEM (pig->system),
+									       pig->op,
+									       pig->pack);
+						
+						pig->pack = NULL;
+						pig->pct = 0;
+						g_free (pig->package_name);
+						pig->package_name = NULL;
+					}
+					
+				}
+			}
+			break;
+			default:
+				g_assert_not_reached ();
+			}
+			pig->bytes_read_in_line = 0;
 		} else {
-			line[bytes_read_in_line] = tmp;
-			bytes_read_in_line++;
+			if (pig->bytes_read_in_line > 79) {
+				trilobite_debug ("Ugh, read too much");
+			} else {
+				pig->line[pig->bytes_read_in_line] = tmp;
+				pig->bytes_read_in_line++;
+				pig->line[pig->bytes_read_in_line] = '\0';
+			}
 		}
+	} else {
+		result = FALSE;
 	}
 	
+	pig->subcommand_running = result;
 	return result;
 }
 #endif
@@ -725,6 +915,7 @@ rpm_packagedata_fill_from_file (EazelPackageSystemRpm3 *system,
 	/* FIXME: Would be better to call a package_data_ function to do this. */
 	if (pack->packsys_struc) {
 		headerFree ((Header) pack->packsys_struc);
+		pack->packsys_struc = NULL;
 	}
 
 	/* Open rpm */
@@ -1159,21 +1350,15 @@ eazel_package_system_rpm3_install_uninstall (EazelPackageSystemRpm3 *system,
 					     GList* packages,
 					     unsigned long flags)
 {
-	struct RpmMonitorPiggyBag pig;
+	struct RpmMonitorPiggyBag pig = rpmmonitorpiggybag_new (system, op);
 	GList *args = NULL;
 
 	pig.system = system;
 	pig.op = op;
 
-	pig.packages_installed = 0;	
 	pig.total_packages = g_list_length (packages);
-	pig.bytes_installed = 0;
 	pig.total_bytes = get_total_size_of_packages (packages);
 	pig.packages_to_expect = packages;
-	pig.packages_seen = NULL;
-	pig.pct = 0;
-	pig.pack = NULL;
-	pig.package_name = NULL;
 	pig.name_to_package = rpm_make_names_to_package_hash (packages);
 
 	make_rpm_argument_list (system, op, flags, dbpath, packages, &args);
@@ -1465,4 +1650,6 @@ eazel_package_system_implementation (GList *dbpaths)
 
 	return result;
 }
-#endif
+#endif /* HAVE_RPM_30 */
+
+#endif /* HAVE_RPM */
