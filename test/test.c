@@ -251,7 +251,9 @@ test_text_caption_get_text_as_int (const EelTextCaption *text_caption)
 
 	text = eel_text_caption_get_text (text_caption);
 
-	eel_eat_str_to_int (text, &result);
+	eel_str_to_int (text, &result);
+
+	g_free (text);
 
 	return result;
 }
