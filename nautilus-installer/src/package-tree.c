@@ -79,6 +79,10 @@ struct _PackageCustomizerPrivate {
         int upgrades;
         int downgrades;
         int largest_desc_width;
+	gboolean have_focus;
+	int focus_hbox;		/* hbox & row combine to give y coords */
+	int focus_row;
+	int focus_col;		/* 0: checkbox, 1: info button */
 };
 
 
@@ -610,21 +614,21 @@ package_customizer_set_package_list (PackageCustomizer *table, GList *package_tr
                 gtk_widget_show (label);
                 gtk_box_pack_start (GTK_BOX (private->vbox), gtk_label_as_hbox (label), FALSE, FALSE, 5);
                 normalize_labels (table, private->hbox_install);
-                gtk_box_pack_start (GTK_BOX (private->vbox), private->hbox_install, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (private->vbox), private->hbox_install, FALSE, FALSE, 0);
         }
         if (private->upgrades > 0) {
                 label = gtk_label_new_with_font (_("Packages to upgrade"), FONT_TITLE);
                 gtk_widget_show (label);
                 gtk_box_pack_start (GTK_BOX (private->vbox), gtk_label_as_hbox (label), FALSE, FALSE, 5);
                 normalize_labels (table, private->hbox_upgrade);
-                gtk_box_pack_start (GTK_BOX (private->vbox), private->hbox_upgrade, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (private->vbox), private->hbox_upgrade, FALSE, FALSE, 0);
         }
         if (private->downgrades > 0) {
                 label = gtk_label_new_with_font (_("Packages to downgrade"), FONT_TITLE);
                 gtk_widget_show (label);
                 gtk_box_pack_start (GTK_BOX (private->vbox), gtk_label_as_hbox (label), FALSE, FALSE, 5);
                 normalize_labels (table, private->hbox_downgrade);
-                gtk_box_pack_start (GTK_BOX (private->vbox), private->hbox_downgrade, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (private->vbox), private->hbox_downgrade, FALSE, FALSE, 0);
         }
 
         gtk_widget_show (private->vbox);
@@ -637,6 +641,137 @@ package_customizer_get_widget (PackageCustomizer *table)
         g_return_val_if_fail (IS_PACKAGE_CUSTOMIZER (table), NULL);
 
         return table->private->vbox;
+}
+
+static GtkWidget *
+table_hbox_nth (PackageCustomizer *table, int n)
+{
+	switch (n) {
+	case 0:
+		return table->private->hbox_install;
+	case 1:
+		return table->private->hbox_upgrade;
+	case 2:
+		return table->private->hbox_downgrade;
+	default:
+		return NULL;
+	}
+}
+
+static gboolean
+focus_next (PackageCustomizer *table, int incr)
+{
+	GtkWidget *hbox, *vbox, *item;
+	int col, row, box;
+
+	col = table->private->focus_col;
+	row = table->private->focus_row;
+	box = table->private->focus_hbox;
+
+	switch (incr) {
+	case 1:
+		col++;
+		break;
+	case 2:
+		row++;
+		break;
+	case -1:
+		col--;
+		break;
+	case -2:
+		row--;
+		break;
+	}
+
+	if (col > 1) {
+		col = 0;
+		row++;
+	}
+	if (col < 0) {
+		col = 1;
+		row--;
+	}
+	while (row < 0) {
+		box--;
+		if (box < 0) {
+			box = 2;
+		}
+		hbox = table_hbox_nth (table, box);
+		vbox = gtk_box_nth (hbox, 2);
+		row = g_list_length (GTK_BOX (vbox)->children) - 1;
+	}
+
+	hbox = table_hbox_nth (table, box);
+	if (hbox == NULL) {
+		return FALSE;
+	}
+
+	while (gtk_box_nth (gtk_box_nth (hbox, 0), row) == NULL) {
+		row = 0;
+		box++;
+		hbox = table_hbox_nth (table, box);
+		if (hbox == NULL) {
+			box = 0;
+			hbox = table_hbox_nth (table, box);
+		}
+	}
+
+	vbox = gtk_box_nth (hbox, 2 + col);
+	item = gtk_box_nth (vbox, row);
+	gtk_widget_grab_focus (item);
+
+	table->private->focus_col = col;
+	table->private->focus_row = row;
+	table->private->focus_hbox = box;
+
+	return TRUE;
+}
+
+static gboolean
+handle_focus (GtkContainer *container, GtkDirectionType direction)
+{
+	PackageCustomizer *table;
+	int incr = 0;
+
+	table = PACKAGE_CUSTOMIZER (gtk_object_get_data (GTK_OBJECT (container), "table"));
+
+	switch (direction) {
+	case GTK_DIR_TAB_FORWARD:
+	case GTK_DIR_TAB_BACKWARD:
+		if (table->private->have_focus) {
+			/* tab always leaves the frame */
+			table->private->have_focus = FALSE;
+			return FALSE;
+		} else {
+			table->private->have_focus = focus_next (table, 0);
+			return table->private->have_focus;
+		}
+	case GTK_DIR_UP:
+		incr = -2;
+		break;
+	case GTK_DIR_DOWN:
+		incr = 2;
+		break;
+	case GTK_DIR_LEFT:
+		incr = -1;
+		break;
+	case GTK_DIR_RIGHT:
+		incr = 1;
+		break;
+	}
+
+	if (table->private->have_focus) {
+		if (! focus_next (table, incr)) {
+			focus_next (table, 0);
+		}
+		return TRUE;
+	} else {
+		table->private->focus_hbox = 0;
+		table->private->focus_row = 0;
+		table->private->focus_col = 0;
+		table->private->have_focus = focus_next (table, 0);
+		return table->private->have_focus;
+	}
 }
 
 void
@@ -667,10 +802,15 @@ jump_to_package_tree_page (EazelInstaller *installer, GList *packages)
         gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (pane), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
         gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (pane), hbox);
         gtk_widget_show (pane);
-
+	/* gtk_window_set_focus (window, widget); */
 	nautilus_druid_page_eazel_put_widget (NAUTILUS_DRUID_PAGE_EAZEL (page), pane);
 
         gtk_widget_show (page);
+
+	/* ----- wow, why isn't there a better way to do this? ----- */
+	gtk_object_set_data (GTK_OBJECT (page), "table", table);
+	GTK_CONTAINER_CLASS (GTK_OBJECT (page)->klass)->focus = handle_focus;
+
 	gnome_druid_append_page (installer->druid, GNOME_DRUID_PAGE (page));
 	gnome_druid_set_page (installer->druid, GNOME_DRUID_PAGE (page));
 }

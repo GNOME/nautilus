@@ -671,8 +671,6 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 	/* turn off the cylon and show "real" progress */
 	turn_cylon_off (view, 0.0);
 
-	toplevel = gtk_widget_get_toplevel (view->details->message_box);
-
 	/* assemble initial list of packages to browse */
 	package_list = NULL;
 	for (iter = g_list_first ((GList *)packages); iter; iter = g_list_next (iter)) {
@@ -704,6 +702,7 @@ nautilus_service_install_preflight_check (EazelInstallCallback *cb, const GList 
 	}	
 
 	message = g_string_append (message, _("\nIs this okay?"));
+	toplevel = gtk_widget_get_toplevel (view->details->message_box);
 
 	if (GTK_IS_WINDOW (toplevel)) {
 		dialog = gnome_ok_cancel_dialog_parented (message->str, (GnomeReplyCallback)reply_callback,
@@ -767,9 +766,14 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 		show_overall_feedback (view, out);
 		g_free (out);
 
-		/* Crude fix. See bugzilla.eazel.com bug 3431 for details. */
+		/* if you're looking for the place where we notice that one of nautilus's core
+		 * packages is being upgraded, this is it.  this is an evil, evil way to do it,
+		 * but nobody's come up with anything better yet.
+		 */
 		if (pack->name) {		
-			if (g_strncasecmp (pack->name, "nautilus", 8)==0) {
+			if ((g_strncasecmp (pack->name, "nautilus", 8) == 0) ||
+			    (g_strncasecmp (pack->name, "gnome-vfs", 9) == 0) ||
+			    (g_strncasecmp (pack->name, "oaf", 3) == 0)) {
 				view->details->core_package = TRUE;
 			} 
 		}

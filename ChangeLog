@@ -1,3 +1,22 @@
+2001-01-08  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_preflight_check),
+	(nautilus_service_install_installing):
+
+	Add gnome-vfs and oaf to the list of packages that trigger a
+	Nautilus restart.
+	
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/gtk-hackery.c: (gtk_box_nth):
+	* nautilus-installer/src/installer.c: (find_old_tmpdir):
+	* nautilus-installer/src/package-tree.c:
+	(package_customizer_set_package_list), (table_hbox_nth),
+	(focus_next), (handle_focus), (jump_to_package_tree_page):
+
+	Add mondo code to do keyboard focus management (as well as GTK
+	will let us) in the package selector.
+
 2001-01-08  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-background.c:

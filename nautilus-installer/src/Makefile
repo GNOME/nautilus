@@ -130,8 +130,9 @@ MEDUSA_LIBS = -rdynamic -L/gnome/lib -lmedusa -lgnomevfs -lgmodule -lgthread -lg
 MKINSTALLDIRS = ./mkinstalldirs
 MOZILLA_COMPONENT_CFLAGS = -I/usr/include/mozilla -fno-rtti -fno-exceptions
 MOZILLA_COMPONENT_DEBUG_FLAGS = 
-MOZILLA_COMPONENT_LDFLAGS = -L/usr/lib/mozilla
+MOZILLA_COMPONENT_LDFLAGS = -L/gnome-source/MOZILLA/mozilla/dist/bin
 MOZILLA_COMPONENT_LIBS = -lgtkembedmoz 				-lgtksuperwin 				-lxpcom 				-lnspr4 				-lplc4 				-lplds4
+MOZILLA_COMPONENT_RPATH_FLAGS = -Wl,-rpath=/gnome-source/MOZILLA/mozilla/dist/bin
 MOZILLA_MILESTONE = 18
 OAF_CFLAGS = -I/gnome/include -I/gnome/include/glib-1.2 -I/gnome/lib/glib/include
 OAF_CONFIG = /gnome/bin/oaf-config
@@ -174,7 +175,7 @@ eazel_installer_SOURCES =  	main.c 	package-tree.c 	gtk-hackery.c 	callbacks.c c
 
 eazel_installer_LDFLAGS = -static
 
-eazel_installer_LDADD =          $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o 			        $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 		$(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a				$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite_minimal.a			$(top_builddir)/libnautilus-extensions/nautilus-druid.o							$(top_builddir)/libnautilus-extensions/nautilus-druid-page-eazel.o					-L/gnome/lib 	-lgdk_pixbuf		-lgnomecanvaspixbuf 	-lgnomeui 	-lgnome 	-lart_lgpl 	-lgdk_imlib 	-lgtk 	-lgdk 	-lgmodule 	-lglib 	-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE 	-lghttp 	-L/usr/lib -lrpm -lz -ldb1 	-lpopt 	-lxml 
+eazel_installer_LDADD =          $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 		$(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a				$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite_minimal.a			$(top_builddir)/libnautilus-extensions/nautilus-druid.o							$(top_builddir)/libnautilus-extensions/nautilus-druid-page-eazel.o					-L/gnome/lib 	-lgdk_pixbuf		-lgnomecanvaspixbuf 	-lgnomeui 	-lgnome 	-lart_lgpl 	-lgdk_imlib 	-lgtk 	-lgdk 	-lgmodule 	-lglib 	-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE 	-lghttp 	-L/usr/lib -lrpm -lz -ldb1 	-lpopt 	-lxml 
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -189,7 +190,6 @@ LIBS =
 eazel_installer_OBJECTS =  main.o package-tree.o gtk-hackery.o \
 callbacks.o proxy.o installer.o
 eazel_installer_DEPENDENCIES =  \
-$(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o \
 $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o \
 $(top_builddir)/components/services/install/lib/libeazelinstall_minimal.a \
 $(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite_minimal.a \
@@ -446,7 +446,6 @@ mostlyclean distclean maintainer-clean
 #
 #	/usr/lib/libesd.a \
 #	/usr/lib/libaudiofile.a \
-#        /gnome-source/nautilus/components/services/trilobite/libtrilobite/helixcode-utils.o 	\
 #	/gnome-source/nautilus/components/services/install/lib/libinstall.a			\
 #	$(GNOME_LIBDIR) 	\
 #	$(GNOMEUI_LIBS) 	\

@@ -1922,7 +1922,7 @@ find_old_tmpdir (void)
 		if ((old_tmpdir == NULL) && (strlen (file->d_name) > strlen (TMPDIR_PREFIX)) &&
 		    (strncmp (file->d_name, TMPDIR_PREFIX, strlen (TMPDIR_PREFIX)) == 0)) {
 			old_tmpdir = g_strdup_printf ("%s/%s", installer_tmpdir, file->d_name);
-			if ((stat (old_tmpdir, &statbuf) == 0) &&
+			if ((lstat (old_tmpdir, &statbuf) == 0) &&
 			    ((statbuf.st_mode & 0077) == 0) &&
 			    (statbuf.st_mode & S_IFDIR) &&
 			    ((statbuf.st_mode & S_IFLNK) != S_IFLNK) &&

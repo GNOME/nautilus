@@ -171,9 +171,14 @@ gtk_label_as_hbox (GtkWidget *label)
 GtkWidget *
 gtk_box_nth (GtkWidget *box, int n)
 {
+	GList *list;
         GtkBoxChild *child;
 
-        child = (GtkBoxChild *)(g_list_nth (GTK_BOX (box)->children, n)->data);
+	list = GTK_BOX (box)->children;
+	if ((n < 0) || (n >= g_list_length (list))) {
+		return NULL;
+	}
+        child = (GtkBoxChild *)(g_list_nth (list, n)->data);
         return GTK_WIDGET (child->widget);
 }
 
