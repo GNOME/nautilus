@@ -51,4 +51,8 @@ nautilus_rpm_view_LDADD =			\
 	$(RPM_LIBS) 				\
 	$(NULL)
 
-EXTRA_DIST = $(oaf_DATA) $(extra_sources)
+EXTRA_DIST = \
+	$(oaf_DATA) \
+	nautilus-rpm-view-install.h		\
+	nautilus-rpm-view-install.c		 \
+	$(NULL)
