@@ -24,6 +24,7 @@
 
 #include <gtk/gtktreemodel.h>
 #include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
 
 #ifndef FM_LIST_MODEL_H
 #define FM_LIST_MODEL_H
@@ -36,7 +37,13 @@
 
 enum {
 	FM_LIST_MODEL_FILE_COLUMN,
-	FM_LIST_MODEL_ICON_COLUMN,
+	FM_LIST_MODEL_SMALLEST_ICON_COLUMN,
+	FM_LIST_MODEL_SMALLER_ICON_COLUMN,
+	FM_LIST_MODEL_SMALL_ICON_COLUMN,
+	FM_LIST_MODEL_STANDARD_ICON_COLUMN,
+	FM_LIST_MODEL_LARGE_ICON_COLUMN,
+	FM_LIST_MODEL_LARGER_ICON_COLUMN,
+	FM_LIST_MODEL_LARGEST_ICON_COLUMN,
 	FM_LIST_MODEL_NAME_COLUMN,
 	FM_LIST_MODEL_SIZE_COLUMN,
 	FM_LIST_MODEL_TYPE_COLUMN,
@@ -73,5 +80,8 @@ void     fm_list_model_set_should_sort_directories_first (FMListModel          *
 int      fm_list_model_get_sort_column_id_from_attribute (const char           *attribute);
 int      fm_list_model_get_sort_column_id_from_sort_type (NautilusFileSortType  sort_type);
 char    *fm_list_model_get_attribute_from_sort_column_id (int                   sort_column_id);
+
+NautilusZoomLevel fm_list_model_get_zoom_level_from_column_id (int               column);
+int               fm_list_model_get_column_id_from_zoom_level (NautilusZoomLevel zoom_level);
 
 #endif /* FM_LIST_MODEL_H */

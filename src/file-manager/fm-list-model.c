@@ -94,7 +94,13 @@ fm_list_model_get_column_type (GtkTreeModel *tree_model, int index)
 	case FM_LIST_MODEL_TYPE_COLUMN:
 	case FM_LIST_MODEL_DATE_MODIFIED_COLUMN:
 		return G_TYPE_STRING;
-	case FM_LIST_MODEL_ICON_COLUMN:
+	case FM_LIST_MODEL_SMALLEST_ICON_COLUMN:
+	case FM_LIST_MODEL_SMALLER_ICON_COLUMN:
+	case FM_LIST_MODEL_SMALL_ICON_COLUMN:
+	case FM_LIST_MODEL_STANDARD_ICON_COLUMN:
+	case FM_LIST_MODEL_LARGE_ICON_COLUMN:
+	case FM_LIST_MODEL_LARGER_ICON_COLUMN:
+	case FM_LIST_MODEL_LARGEST_ICON_COLUMN:
 		return GDK_TYPE_PIXBUF;
 	case FM_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN:
 		return G_TYPE_BOOLEAN;
@@ -158,7 +164,6 @@ fm_list_model_get_path (GtkTreeModel *tree_model, GtkTreeIter *iter)
 	return path;
 }
 
-
 static void
 fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column, GValue *value)
 {
@@ -166,7 +171,9 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 	NautilusFile *file;
 	char *str;
 	GdkPixbuf *icon;
-	
+	int icon_size;
+	NautilusZoomLevel zoom_level;
+
 	model = (FMListModel *)tree_model;
 
 	g_return_if_fail (model->details->stamp == iter->stamp);
@@ -185,10 +192,18 @@ fm_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int column
 		str = nautilus_file_get_string_attribute_with_default (file, "name");
 		g_value_set_string_take_ownership (value, str);
 		break;
-	case FM_LIST_MODEL_ICON_COLUMN:
+	case FM_LIST_MODEL_SMALLEST_ICON_COLUMN:
+	case FM_LIST_MODEL_SMALLER_ICON_COLUMN:
+	case FM_LIST_MODEL_SMALL_ICON_COLUMN:
+	case FM_LIST_MODEL_STANDARD_ICON_COLUMN:
+	case FM_LIST_MODEL_LARGE_ICON_COLUMN:
+	case FM_LIST_MODEL_LARGER_ICON_COLUMN:
+	case FM_LIST_MODEL_LARGEST_ICON_COLUMN:
 		g_value_init (value, GDK_TYPE_PIXBUF);
 
-		icon = nautilus_icon_factory_get_pixbuf_for_file (file, NULL, NAUTILUS_ICON_SIZE_SMALLER);
+		zoom_level = fm_list_model_get_zoom_level_from_column_id (column);
+		icon_size = nautilus_get_icon_size_for_zoom_level (zoom_level);
+		icon = nautilus_icon_factory_get_pixbuf_for_file (file, NULL, icon_size);
 		g_value_set_object (value, icon);
 		g_object_unref (icon);
 		break;
@@ -751,6 +766,52 @@ fm_list_model_get_sort_column_id_from_sort_type (NautilusFileSortType sort_type)
 	}
 
 	g_return_val_if_reached (-1);
+}
+
+NautilusZoomLevel
+fm_list_model_get_zoom_level_from_column_id (int column)
+{
+	switch (column) {
+	case FM_LIST_MODEL_SMALLEST_ICON_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_SMALLEST;
+	case FM_LIST_MODEL_SMALLER_ICON_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_SMALLER;
+	case FM_LIST_MODEL_SMALL_ICON_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_SMALL;
+	case FM_LIST_MODEL_STANDARD_ICON_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_STANDARD;
+	case FM_LIST_MODEL_LARGE_ICON_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_LARGE;
+	case FM_LIST_MODEL_LARGER_ICON_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_LARGER;
+	case FM_LIST_MODEL_LARGEST_ICON_COLUMN:
+		return NAUTILUS_ZOOM_LEVEL_LARGEST;
+	}
+
+	g_return_val_if_reached (NAUTILUS_ZOOM_LEVEL_STANDARD);
+}
+
+int
+fm_list_model_get_column_id_from_zoom_level (NautilusZoomLevel zoom_level)
+{
+	switch (zoom_level) {
+	case NAUTILUS_ZOOM_LEVEL_SMALLEST:
+		return FM_LIST_MODEL_SMALLEST_ICON_COLUMN;
+	case NAUTILUS_ZOOM_LEVEL_SMALLER:
+		return FM_LIST_MODEL_SMALLER_ICON_COLUMN;
+	case NAUTILUS_ZOOM_LEVEL_SMALL:
+		return FM_LIST_MODEL_SMALL_ICON_COLUMN;
+	case NAUTILUS_ZOOM_LEVEL_STANDARD:
+		return FM_LIST_MODEL_STANDARD_ICON_COLUMN;
+	case NAUTILUS_ZOOM_LEVEL_LARGE:
+		return FM_LIST_MODEL_LARGE_ICON_COLUMN;
+	case NAUTILUS_ZOOM_LEVEL_LARGER:
+		return FM_LIST_MODEL_LARGER_ICON_COLUMN;
+	case NAUTILUS_ZOOM_LEVEL_LARGEST:
+		return FM_LIST_MODEL_LARGEST_ICON_COLUMN;
+	}
+
+	g_return_val_if_reached (FM_LIST_MODEL_STANDARD_ICON_COLUMN);
 }
 
 static void

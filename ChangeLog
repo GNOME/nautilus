@@ -1,3 +1,32 @@
+2002-05-01  David Emory Watson  <dwatson@cs.ucr.edu>
+
+	Implement zooming for the list view and other small cleanups.
+
+	* src/file-manager/fm-list-view.c:
+	(create_and_set_up_tree_view): Keep track of cell renderers.
+	(fm_list_view_begin_loading): Set initial zoom level.
+	(set_zoom_level_from_metadata_and_preferences),
+	(fm_list_view_set_zoom_level),
+	(fm_list_view_bump_zoom_level),
+	(fm_list_view_zoom_to_level),
+	(fm_list_view_restore_default_zoom_level),
+	(fm_list_view_can_zoom_in),
+	(fm_list_view_can_zoom_out),
+	(default_zoom_level_changed): Impl.
+	(fm_list_view_class_init): Hook up zoom auto value.
+	(fm_list_view_instance_init): Use while_alive to monitor changes to
+	default_zoom_level and click_policy.
+	(fm_list_view_finalize): Update click_policy callback.
+
+	Added a column for each pixbuf size to the model.
+
+	* src/file-manager/fm-list-model.c,
+	src/file-manager/fm-list-model.h:
+	(fm_list_model_get_column_type): Update.
+	(fm_list_model_get_column_id_from_zoom_level),
+	(fm_list_model_get_zoom_level_from_column_id): Impl.
+	(fm_list_model_get_value): Update.
+
 2002-05-01  David Bordoley <bordoley@msu.edu>
 
 	* src/nautilus-shell-ui.xml

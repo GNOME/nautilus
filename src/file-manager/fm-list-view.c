@@ -22,6 +22,7 @@
 
    Authors: John Sullivan <sullivan@eazel.com>
             Anders Carlsson <andersca@gnu.org>
+	    David Emory Watson <dwatson@cs.ucr.edu>
 */
 
 #include <config.h>
@@ -46,7 +47,14 @@ struct FMListViewDetails {
 	FMListModel *model;
 
 	GtkTreeViewColumn   *file_name_column;
-	GtkCellRendererText *file_name_cell;
+
+	GtkCellRendererPixbuf *pixbuf_cell;
+	GtkCellRendererText   *file_name_cell;
+	GtkCellRendererText   *size_cell;
+	GtkCellRendererText   *type_cell;
+	GtkCellRendererText   *date_modified_cell;
+
+	NautilusZoomLevel zoom_level;
 };
 
 static GtkTargetEntry drag_types [] = {
@@ -64,9 +72,12 @@ static GtkTargetEntry drag_types [] = {
 
 static NautilusFileSortType	default_sort_order_auto_value;
 static gboolean			default_sort_reversed_auto_value;
+static NautilusZoomLevel        default_zoom_level_auto_value;
 
-static GList *     fm_list_view_get_selection         (FMDirectoryView *view);
-
+static GList *              fm_list_view_get_selection         (FMDirectoryView *view);
+static void                 fm_list_view_set_zoom_level        (FMListView *view,
+								NautilusZoomLevel new_level,
+								gboolean always_set_level);
 
 GNOME_CLASS_BOILERPLATE (FMListView, fm_list_view,
 			 FMDirectoryView, FM_TYPE_DIRECTORY_VIEW)
@@ -227,7 +238,7 @@ cell_renderer_edited (GtkCellRendererText *cell,
 }
 
 static void
-click_policy_changed (gpointer callback_data)
+click_policy_changed_callback (gpointer callback_data)
 {
 	FMListView *view;
 
@@ -275,11 +286,13 @@ create_and_set_up_tree_view (FMListView *view)
 	gtk_tree_selection_set_mode (gtk_tree_view_get_selection (view->details->tree_view), GTK_SELECTION_MULTIPLE);
 	gtk_tree_view_set_rules_hint (view->details->tree_view, TRUE);
 
-	gtk_tree_view_enable_model_drag_source (view->details->tree_view, 0, drag_types, G_N_ELEMENTS (drag_types),
+	gtk_tree_view_enable_model_drag_source (view->details->tree_view, 0,
+						drag_types, G_N_ELEMENTS (drag_types),
 						GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
-	
+
 	/* Create the file name column */
 	cell = gtk_cell_renderer_pixbuf_new ();
+	view->details->pixbuf_cell = (GtkCellRendererPixbuf *)cell;
 	
 	view->details->file_name_column = gtk_tree_view_column_new ();
 	gtk_tree_view_column_set_sort_column_id (view->details->file_name_column, FM_LIST_MODEL_NAME_COLUMN);
@@ -287,11 +300,9 @@ create_and_set_up_tree_view (FMListView *view)
 	gtk_tree_view_column_set_resizable (view->details->file_name_column, TRUE);
 
 	gtk_tree_view_column_pack_start (view->details->file_name_column, cell, FALSE);
-	gtk_tree_view_column_set_attributes (view->details->file_name_column, cell,
-					     "pixbuf", FM_LIST_MODEL_ICON_COLUMN,
-					     NULL);
 
 	cell = gtk_cell_renderer_text_new ();
+	view->details->file_name_cell = (GtkCellRendererText *)cell;
 	g_signal_connect (cell, "edited", G_CALLBACK (cell_renderer_edited), view);
 
 	gtk_tree_view_column_pack_start (view->details->file_name_column, cell, TRUE);
@@ -301,14 +312,9 @@ create_and_set_up_tree_view (FMListView *view)
 					     NULL);
 	gtk_tree_view_append_column (view->details->tree_view, view->details->file_name_column);
 
-	/* Set up underline of file name. */
-	view->details->file_name_cell = (GtkCellRendererText *)cell;
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-				      click_policy_changed, view);
-	click_policy_changed (view);
-
 	/* Create the size column */
 	cell = gtk_cell_renderer_text_new ();
+	view->details->size_cell = (GtkCellRendererText *)cell;
 	g_object_set (G_OBJECT (cell),
 		      "xalign", 1.0,
 		      NULL);
@@ -322,6 +328,7 @@ create_and_set_up_tree_view (FMListView *view)
 
 	/* Create the type column */
 	cell = gtk_cell_renderer_text_new ();
+	view->details->type_cell = (GtkCellRendererText *)cell;
 	column = gtk_tree_view_column_new_with_attributes (_("Type"),
 							   cell,
 							   "text", FM_LIST_MODEL_TYPE_COLUMN,
@@ -332,6 +339,7 @@ create_and_set_up_tree_view (FMListView *view)
 
 	/* Create the date modified column */
 	cell = gtk_cell_renderer_text_new ();
+	view->details->date_modified_cell = (GtkCellRendererText *)cell;
 	column = gtk_tree_view_column_new_with_attributes (_("Date Modified"),
 							   cell,
 							   "text", FM_LIST_MODEL_DATE_MODIFIED_COLUMN,
@@ -380,6 +388,21 @@ set_sort_order_from_metadata_and_preferences (FMListView *list_view)
 }
 
 static void
+set_zoom_level_from_metadata_and_preferences (FMListView *list_view)
+{
+	NautilusFile *file;
+	int level;
+
+	if (fm_directory_view_supports_zooming (FM_DIRECTORY_VIEW (list_view))) {
+		file = fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (list_view));
+		level = nautilus_file_get_integer_metadata (file,
+							    NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
+							    default_zoom_level_auto_value);
+		fm_list_view_set_zoom_level (list_view, level, TRUE);
+	}
+}
+
+static void
 fm_list_view_begin_loading (FMDirectoryView *view)
 {
 	FMListView *list_view;
@@ -390,6 +413,7 @@ fm_list_view_begin_loading (FMDirectoryView *view)
 						      fm_directory_view_get_directory_as_file (view));
 
 	set_sort_order_from_metadata_and_preferences (list_view);
+	set_zoom_level_from_metadata_and_preferences (list_view);
 }
 
 static void
@@ -496,7 +520,125 @@ fm_list_view_reset_to_defaults (FMDirectoryView *view)
 		(GTK_TREE_SORTABLE (FM_LIST_VIEW (view)->details->model),
 		 fm_list_model_get_sort_column_id_from_sort_type (default_sort_order_auto_value),
 		 default_sort_reversed_auto_value ? GTK_SORT_DESCENDING : GTK_SORT_ASCENDING);
+
         fm_directory_view_restore_default_zoom_level (view);
+}
+
+static void
+fm_list_view_set_zoom_level (FMListView *view,
+			     NautilusZoomLevel new_level,
+			     gboolean always_set_level)
+{
+	static double pango_scale[7] = { PANGO_SCALE_XX_SMALL, PANGO_SCALE_X_SMALL, PANGO_SCALE_SMALL,
+					 PANGO_SCALE_MEDIUM,
+					 PANGO_SCALE_LARGE, PANGO_SCALE_X_LARGE, PANGO_SCALE_XX_LARGE };
+	int icon_size;
+	int column;
+
+	g_return_if_fail (FM_IS_LIST_VIEW (view));
+	g_return_if_fail (new_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
+			  new_level <= NAUTILUS_ZOOM_LEVEL_LARGEST);
+
+	if (view->details->zoom_level == new_level) {
+		if (always_set_level) {
+			fm_directory_view_set_zoom_level (FM_DIRECTORY_VIEW(view), new_level);
+		}
+		return;
+	}
+
+	view->details->zoom_level = new_level;
+	fm_directory_view_set_zoom_level (FM_DIRECTORY_VIEW(view), new_level);
+
+	nautilus_file_set_integer_metadata
+		(fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (view)), 
+		 NAUTILUS_METADATA_KEY_LIST_VIEW_ZOOM_LEVEL, 
+		 default_zoom_level_auto_value,
+		 new_level);
+
+	/* Select correctly scaled icons. */
+	column = fm_list_model_get_column_id_from_zoom_level (new_level);
+	gtk_tree_view_column_set_attributes (view->details->file_name_column,
+					     GTK_CELL_RENDERER (view->details->pixbuf_cell),
+					     "pixbuf", column,
+					     NULL);
+
+	/* Scale text. */
+	g_object_set (G_OBJECT (view->details->file_name_cell),
+		      "scale", pango_scale[new_level],
+		      NULL);
+	g_object_set (G_OBJECT (view->details->size_cell),
+		      "scale", pango_scale[new_level],
+		      NULL);
+	g_object_set (G_OBJECT (view->details->type_cell),
+		      "scale", pango_scale[new_level],
+		      NULL);
+	g_object_set (G_OBJECT (view->details->date_modified_cell),
+		      "scale", pango_scale[new_level],
+		      NULL);
+
+	/* Make all rows the same size. */
+	icon_size = nautilus_get_icon_size_for_zoom_level (new_level);
+	gtk_cell_renderer_set_fixed_size (GTK_CELL_RENDERER (view->details->pixbuf_cell),
+					  -1, icon_size);
+
+	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
+}
+
+static void
+fm_list_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
+{
+	FMListView *list_view;
+	NautilusZoomLevel new_level;
+
+	g_return_if_fail (FM_IS_LIST_VIEW (view));
+
+	list_view = FM_LIST_VIEW (view);
+	new_level = list_view->details->zoom_level + zoom_increment;
+
+	if (new_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
+	    new_level <= NAUTILUS_ZOOM_LEVEL_LARGEST) {
+		fm_list_view_set_zoom_level (list_view, new_level, FALSE);
+	}
+}
+
+static void
+fm_list_view_zoom_to_level (FMDirectoryView *view, int zoom_level)
+{
+	FMListView *list_view;
+
+	g_return_if_fail (FM_IS_LIST_VIEW (view));
+
+	list_view = FM_LIST_VIEW (view);
+
+	fm_list_view_set_zoom_level (list_view, zoom_level, FALSE);
+}
+
+static void
+fm_list_view_restore_default_zoom_level (FMDirectoryView *view)
+{
+	FMListView *list_view;
+
+	g_return_if_fail (FM_IS_LIST_VIEW (view));
+
+	list_view = FM_LIST_VIEW (view);
+
+	fm_list_view_set_zoom_level (list_view, default_zoom_level_auto_value, FALSE);
+}
+
+static gboolean 
+fm_list_view_can_zoom_in (FMDirectoryView *view) 
+{
+	g_return_val_if_fail (FM_IS_LIST_VIEW (view), FALSE);
+
+	return FM_LIST_VIEW (view)->details->zoom_level	< NAUTILUS_ZOOM_LEVEL_LARGEST;
+}
+
+static gboolean 
+fm_list_view_can_zoom_out (FMDirectoryView *view) 
+{
+	g_return_val_if_fail (FM_IS_LIST_VIEW (view), FALSE);
+
+	return FM_LIST_VIEW (view)->details->zoom_level > NAUTILUS_ZOOM_LEVEL_SMALLEST;
 }
 
 static void
@@ -521,6 +663,16 @@ fm_list_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 }
 
 static void
+default_zoom_level_changed_callback (gpointer callback_data)
+{
+	FMListView *list_view;
+
+	list_view = FM_LIST_VIEW (callback_data);
+
+	set_zoom_level_from_metadata_and_preferences (list_view);
+}
+
+static void
 fm_list_view_sort_directories_first_changed (FMDirectoryView *view)
 {
 	FMListView *list_view;
@@ -537,9 +689,6 @@ fm_list_view_finalize (GObject *object)
 	FMListView *list_view;
 
 	list_view = FM_LIST_VIEW (object);
-
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
-					 click_policy_changed, list_view);
 
 	g_free (list_view->details);
 
@@ -569,20 +718,17 @@ fm_list_view_class_init (FMListViewClass *class)
 
 	fm_directory_view_class->add_file = fm_list_view_add_file;
 	fm_directory_view_class->begin_loading = fm_list_view_begin_loading;
-#if GNOME2_CONVERSION_COMPLETE
-	fm_directory_view_class->bump_zoom_level = xxx;
-	fm_directory_view_class->can_zoom_in = xxx;
-	fm_directory_view_class->can_zoom_out = xxx;
-#endif
+	fm_directory_view_class->bump_zoom_level = fm_list_view_bump_zoom_level;
+	fm_directory_view_class->zoom_to_level = fm_list_view_zoom_to_level;
+	fm_directory_view_class->can_zoom_in = fm_list_view_can_zoom_in;
+	fm_directory_view_class->can_zoom_out = fm_list_view_can_zoom_out;
 	fm_directory_view_class->clear = fm_list_view_clear;
 	fm_directory_view_class->file_changed = fm_list_view_file_changed;
 	fm_directory_view_class->get_background_widget = fm_list_view_get_background_widget;
 	fm_directory_view_class->get_selection = fm_list_view_get_selection;
 	fm_directory_view_class->is_empty = fm_list_view_is_empty;
 	fm_directory_view_class->reset_to_defaults = fm_list_view_reset_to_defaults;
-#if GNOME2_CONVERSION_COMPLETE
-	fm_directory_view_class->restore_default_zoom_level = xxx;
-#endif
+	fm_directory_view_class->restore_default_zoom_level = fm_list_view_restore_default_zoom_level;
 	fm_directory_view_class->remove_file = fm_list_view_remove_file;
 	fm_directory_view_class->select_all = fm_list_view_select_all;
 	fm_directory_view_class->set_selection = fm_list_view_set_selection;
@@ -594,6 +740,8 @@ fm_list_view_class_init (FMListViewClass *class)
 				       (int *) &default_sort_order_auto_value);
 	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER,
 					  &default_sort_reversed_auto_value);
+	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
+				       (int *) &default_zoom_level_auto_value);
 }
 
 static void
@@ -602,6 +750,15 @@ fm_list_view_instance_init (FMListView *list_view)
 	list_view->details = g_new0 (FMListViewDetails, 1);
 
 	create_and_set_up_tree_view (list_view);
+
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
+						  default_zoom_level_changed_callback,
+						  list_view, G_OBJECT (list_view));
+	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_CLICK_POLICY,
+						  click_policy_changed_callback,
+						  list_view, G_OBJECT (list_view));
+
+	click_policy_changed_callback (list_view);
 
 	fm_list_view_sort_directories_first_changed (FM_DIRECTORY_VIEW (list_view));
 }
