@@ -1,3 +1,8 @@
+2001-04-16  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-monitor.c:
+	Add #include <stdio.h> to fix undefined NULL error on tinderbox.
+	
 2001-04-16  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 7767, umounting a volume should abort finding trash dir.
