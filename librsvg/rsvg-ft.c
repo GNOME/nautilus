@@ -492,9 +492,11 @@ rsvg_ft_font_evict (RsvgFTCtx *ctx)
 	ctx->last = victim->prev;
 
 	font = victim->font;
-	FT_Done_Face (font->face);
-	g_free (font);
-	victim->font = NULL;
+	if (font != NULL) {
+		FT_Done_Face (font->face);
+		g_free (font);
+		victim->font = NULL;
+	}
 
 	ctx->n_loaded_fonts--;
 }
