@@ -50,6 +50,16 @@ labeled_image_window_new (const char *title,
 	return window;
 }
 
+static void
+button_callback (GtkWidget *button,
+		 gpointer callback_data)
+{
+	const char *info = callback_data;
+	g_return_if_fail (GTK_IS_BUTTON (button));
+	
+	g_print ("%s(%p)\n", info, button);
+}
+
 static GtkWidget *
 labeled_image_button_window_new (const char *title,
 				 GdkPixbuf *pixbuf)
@@ -71,6 +81,14 @@ labeled_image_button_window_new (const char *title,
 	if (button) gtk_box_pack_start (GTK_BOX (vbox), button, TRUE, TRUE, 0);
 	if (toggle_button) gtk_box_pack_start (GTK_BOX (vbox), toggle_button, TRUE, TRUE, 0);
 	if (check_button) gtk_box_pack_start (GTK_BOX (vbox), check_button, TRUE, TRUE, 0);
+
+	if (button) {
+		gtk_signal_connect (GTK_OBJECT (button), "enter", GTK_SIGNAL_FUNC (button_callback), "enter");
+		gtk_signal_connect (GTK_OBJECT (button), "leave", GTK_SIGNAL_FUNC (button_callback), "leave");
+		gtk_signal_connect (GTK_OBJECT (button), "pressed", GTK_SIGNAL_FUNC (button_callback), "pressed");
+		gtk_signal_connect (GTK_OBJECT (button), "released", GTK_SIGNAL_FUNC (button_callback), "released");
+		gtk_signal_connect (GTK_OBJECT (button), "clicked", GTK_SIGNAL_FUNC (button_callback), "clicked");
+	}
 
 	gtk_widget_show_all (vbox);
 	

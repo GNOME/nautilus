@@ -461,7 +461,7 @@ test_text_caption_set_text_for_string_preferences (NautilusTextCaption *text_cap
 
 void
 test_text_caption_set_text_for_default_int_preferences (NautilusTextCaption *text_caption,
-						 const char *name)
+							const char *name)
 {
 	int int_value;
 	char *text;
@@ -469,7 +469,7 @@ test_text_caption_set_text_for_default_int_preferences (NautilusTextCaption *tex
 	g_return_if_fail (NAUTILUS_IS_TEXT_CAPTION (text_caption));
 	g_return_if_fail (name != NULL);
 	
-	int_value = nautilus_preferences_default_get_integer (name, nautilus_preferences_get_user_level ());
+	int_value = 0;
 
 	text = g_strdup_printf ("%d", int_value);
 
@@ -487,7 +487,7 @@ test_text_caption_set_text_for_default_string_preferences (NautilusTextCaption *
 	g_return_if_fail (NAUTILUS_IS_TEXT_CAPTION (text_caption));
 	g_return_if_fail (name != NULL);
 	
-	text = nautilus_preferences_default_get_string (name, nautilus_preferences_get_user_level ());
+	text = g_strdup ("");
 
 	nautilus_text_caption_set_text (NAUTILUS_TEXT_CAPTION (text_caption), text);
 
