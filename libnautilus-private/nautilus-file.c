@@ -2773,7 +2773,7 @@ nautilus_file_fit_date_as_string (NautilusFile *file,
 	format = NULL;
 	
 	for (i = 0; ; i += 2) {
-		width_template = _(formats [i]);
+		width_template = (formats [i] ? _(formats [i]) : NULL);
 		if (width_template == NULL) {
 			/* no more formats left */
 			g_assert (format != NULL);

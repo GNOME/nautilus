@@ -1,3 +1,10 @@
+2003-06-12  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file.c (nautilus_file_fit_date_as_string):
+	Don't call gettext on NULL string.
+	Patch from hidetoshi.tajima@sun.com
+	Fixes #113930
+	
 2003-06-11  Alexander Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-properties-window.c (fm_properties_window_present):
