@@ -814,7 +814,8 @@ view_menu_vfs_method_callback (GtkWidget *widget, gpointer data)
 void
 nautilus_window_load_content_view_menu (NautilusWindow *window)
 {	
-	GList *components, *methods;
+	GList *components;
+	gchar *method;
         GList *p;
         GtkWidget *new_menu;
         GtkWidget *menu_item;
@@ -834,14 +835,14 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
         }
 
 	/* Add a menu item for each GNOME-VFS method for this URI */
-	methods = nautilus_mime_get_short_list_methods_for_uri(window->location);
-	for (p = methods; p != NULL; p = p->next) {
-		gchar *label = g_strdup_printf(_("View as %s..."), (gchar *)p->data);
+	method = nautilus_mime_get_short_list_methods_for_uri(window->location);
+	if (method) {
+		gchar *label = g_strdup_printf(_("View as %s..."), method);
 		menu_item = gtk_menu_item_new_with_label (label);
 		g_free(label);
 
         	gtk_object_set_data (GTK_OBJECT (menu_item), "window", window);
-        	gtk_object_set_data (GTK_OBJECT (menu_item), "method", (gchar *)p->data);
+        	gtk_object_set_data (GTK_OBJECT (menu_item), "method", method);
         	gtk_signal_connect (GTK_OBJECT (menu_item),
         		    	"activate",
         		    	GTK_SIGNAL_FUNC (view_menu_vfs_method_callback),
@@ -853,7 +854,7 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
         /* Add "View as Other..." extra bonus choice, with separator before it.
          * Leave separator out if there are no viewers in menu by default. 
          */
-        if (components != NULL || methods != NULL) {
+        if (components != NULL || method != NULL) {
 	        menu_item = gtk_menu_item_new ();
 	        gtk_widget_show (menu_item);
 	        gtk_menu_append (GTK_MENU (new_menu), menu_item);
