@@ -156,6 +156,8 @@ nautilus_location_dialog_init (NautilusLocationDialog *dialog)
 	
 	gtk_widget_show (dialog->details->entry);
 	
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), dialog->details->entry);
+
 	gtk_box_pack_start (GTK_BOX (box), dialog->details->entry, 
 			    TRUE, TRUE, 0);
 	
