@@ -190,7 +190,7 @@ get_themed_icon_file_path (const NautilusIconTheme *icon_theme,
 		in_user_directory = FALSE;
 	} else {
 		themed_icon_name = g_strconcat (icon_theme->name, "/", icon_name, NULL);
-		in_user_directory = icon_theme->in_user_directory;
+		in_user_directory = icon_theme->is_in_user_directory;
 	}
 
 	include_size = icon_size != NAUTILUS_ICON_SIZE_STANDARD;
@@ -278,6 +278,10 @@ static const NautilusIconTheme *
 choose_theme (const NautilusIconThemeSpecifications *theme_specs,
 	      const char *name)
 {
+	if (name[0] == '/') {
+		return NULL;
+	}
+
 	if (theme_has_icon (&theme_specs->current, name)) {
 		return &theme_specs->current;
 	}
