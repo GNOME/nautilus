@@ -32,6 +32,7 @@
 
 #include <gtk/gtklabel.h>
 #include <gtk/gtkpixmap.h>
+#include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libnautilus/nautilus-glib-extensions.h>
@@ -50,16 +51,12 @@ static GdkFont *select_font                             (const char             
 							 const char              *font_template);
 static void     set_up_font                             (GtkWidget               *widget,
 							 GdkFont                 *font);
-void            nautilus_index_title_set_uri            (NautilusIndexTitle      *index_title,
-							 const char              *new_uri);
-static void     nautilus_index_title_set_up_icon        (NautilusIndexTitle      *index_title,
-							 NautilusFile            *file_object);
-static void     nautilus_index_title_set_up_label       (NautilusIndexTitle      *index_title,
-							 const char              *uri);
-static void     nautilus_index_title_set_up_info        (NautilusIndexTitle      *index_title,
-							 NautilusFile            *file_object);
+static void     nautilus_index_title_set_up_icon        (NautilusIndexTitle      *index_title);
+static void     nautilus_index_title_set_up_label       (NautilusIndexTitle      *index_title);
+static void     nautilus_index_title_set_up_info        (NautilusIndexTitle      *index_title);
 
 struct _NautilusIndexTitleDetails {
+	char *uri;
 	GtkWidget *icon;
 	GtkWidget *title;
 	GtkWidget *more_info;
@@ -92,6 +89,12 @@ static void
 nautilus_index_title_initialize (NautilusIndexTitle *index_title)
 { 
 	index_title->details = g_new0 (NautilusIndexTitleDetails, 1);
+
+	/* Register to find out about icon theme changes */
+	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
+					       "icons_changed",
+					       nautilus_index_title_set_up_icon,
+					       GTK_OBJECT (index_title));
 }
 
 /* finalize by throwing away private storage */
@@ -100,8 +103,9 @@ static void
 nautilus_index_title_finalize (GtkObject *object)
 {
 	NautilusIndexTitle *index_title = NAUTILUS_INDEX_TITLE (object);
-	
-	g_free(index_title->details);
+
+	g_free (index_title->details->uri);
+	g_free (index_title->details);
   	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, finalize, (object));
 }
@@ -115,9 +119,10 @@ nautilus_index_title_new (void)
 }
 
 /* set up the icon image */
-void
-nautilus_index_title_set_up_icon (NautilusIndexTitle *index_title, NautilusFile *file_object)
+static void
+nautilus_index_title_set_up_icon (NautilusIndexTitle *index_title)
 {
+	NautilusFile *file_object;
 	gint width, height;
 	GdkPixmap *pixmap;
 	GdkBitmap *mask;
@@ -125,11 +130,14 @@ nautilus_index_title_set_up_icon (NautilusIndexTitle *index_title, NautilusFile 
 	double scale_factor;
 	double h_scale = 1.0;
 	double v_scale = 1.0;
+
+	file_object = nautilus_file_get (index_title->details->uri);
 	
 	if (file_object == NULL)
 		return;
 	
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_file(file_object, NAUTILUS_ICON_SIZE_STANDARD);
+	nautilus_file_unref (file_object);
 
 	/* even though we asked for standard size, it might still be really huge, if it's not
 	   part of the standard set, so scale it down if necessary */
@@ -235,13 +243,13 @@ set_up_font(GtkWidget *widget, GdkFont *font)
 /* set up the filename label */
 
 void
-nautilus_index_title_set_up_label (NautilusIndexTitle *index_title, const char *uri)
+nautilus_index_title_set_up_label (NautilusIndexTitle *index_title)
 {
 	GnomeVFSURI *vfs_uri;
 	GdkFont *label_font;
 	char *file_name;
 		
-	vfs_uri = gnome_vfs_uri_new (uri);
+	vfs_uri = gnome_vfs_uri_new (index_title->details->uri);
 	if (vfs_uri == NULL)
 		return;
 	
@@ -305,77 +313,80 @@ nautilus_index_title_set_up_label (NautilusIndexTitle *index_title, const char *
 /* set up more info about the file */
 
 void
-nautilus_index_title_set_up_info (NautilusIndexTitle *index_title, NautilusFile *file_object)
+nautilus_index_title_set_up_info (NautilusIndexTitle *index_title)
 {
+	NautilusFile *file_object;
 	GdkFont *label_font;
 	char *notes_text;
 	char *temp_string = NULL;
 	char *info_string;
+	
+	file_object = nautilus_file_get (index_title->details->uri);
 	
 	if (file_object == NULL)
 		return;
 	
 	info_string = nautilus_file_get_string_attribute(file_object, "type");
 	
-	if (info_string == NULL)
-		return;
-	
-	/* combine the type and the size */
-  
-	temp_string = nautilus_file_get_string_attribute(file_object, "size");
-	if (temp_string != NULL) {
-		char *new_info_string = g_strconcat(info_string, ", ", temp_string, NULL);
-		g_free (info_string);
-		g_free (temp_string);
-		info_string = new_info_string; 
-	}
-	
-	/* append the date modified */
-	temp_string = nautilus_file_get_string_attribute(file_object, "date_modified");
-	if (temp_string != NULL) {
-		char *new_info_string = g_strconcat(info_string, "\n", temp_string, NULL);
-		g_free (info_string);
-		g_free (temp_string);
-		info_string = new_info_string; 
-	}
-	
-	if (index_title->details->more_info)
-		gtk_label_set_text(GTK_LABEL(index_title->details->more_info), info_string);
-	else {  
-		index_title->details->more_info = GTK_WIDGET(gtk_label_new(info_string));
-		gtk_widget_show (index_title->details->more_info);
-		gtk_box_pack_start (GTK_BOX (index_title), index_title->details->more_info, 0, 0, 0);
-		gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->more_info, 2);
-	}   
-	
-	/* FIXME: shouldn't use hardwired font */     	
-	label_font = gdk_font_load("-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");	
-	set_up_font(index_title->details->more_info, label_font);	
-	
-	g_free(info_string);
-	
-	/* see if there are any notes for this file. If so, display them */
-	notes_text = nautilus_file_get_metadata(file_object, NAUTILUS_NOTES_METADATA_KEY, NULL);
-	if (notes_text)	{
-		if (index_title->details->notes != NULL)
-			gtk_label_set_text(GTK_LABEL(index_title->details->notes), notes_text);
-		else  {  
-			index_title->details->notes = GTK_WIDGET(gtk_label_new(notes_text));
-			gtk_label_set_line_wrap(GTK_LABEL(index_title->details->notes), TRUE);
-			gtk_widget_show (index_title->details->notes);
-			gtk_box_pack_start (GTK_BOX (index_title), index_title->details->notes, 0, 0, 0);
-			gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->notes, 3);
+	if (info_string != NULL) {
+		/* combine the type and the size */
+	  
+		temp_string = nautilus_file_get_string_attribute(file_object, "size");
+		if (temp_string != NULL) {
+			char *new_info_string = g_strconcat(info_string, ", ", temp_string, NULL);
+			g_free (info_string);
+			g_free (temp_string);
+			info_string = new_info_string; 
 		}
 		
-		/* FIXME: don't use hardwired font like this */    	
-		label_font = gdk_font_load("-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");	 
-		set_up_font(index_title->details->notes, label_font);	
+		/* append the date modified */
+		temp_string = nautilus_file_get_string_attribute(file_object, "date_modified");
+		if (temp_string != NULL) {
+			char *new_info_string = g_strconcat(info_string, "\n", temp_string, NULL);
+			g_free (info_string);
+			g_free (temp_string);
+			info_string = new_info_string; 
+		}
 		
-		g_free (notes_text);     
-	}
-	else
-		if (index_title->details->notes)
+		if (index_title->details->more_info)
+			gtk_label_set_text(GTK_LABEL(index_title->details->more_info), info_string);
+		else {  
+			index_title->details->more_info = GTK_WIDGET(gtk_label_new(info_string));
+			gtk_widget_show (index_title->details->more_info);
+			gtk_box_pack_start (GTK_BOX (index_title), index_title->details->more_info, 0, 0, 0);
+			gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->more_info, 2);
+		}   
+		
+		/* FIXME: shouldn't use hardwired font */     	
+		label_font = gdk_font_load("-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");	
+		set_up_font(index_title->details->more_info, label_font);	
+		
+		g_free(info_string);
+		
+		/* see if there are any notes for this file. If so, display them */
+		notes_text = nautilus_file_get_metadata(file_object, NAUTILUS_NOTES_METADATA_KEY, NULL);
+		if (notes_text)	{
+			if (index_title->details->notes != NULL)
+				gtk_label_set_text(GTK_LABEL(index_title->details->notes), notes_text);
+			else  {  
+				index_title->details->notes = GTK_WIDGET(gtk_label_new(notes_text));
+				gtk_label_set_line_wrap(GTK_LABEL(index_title->details->notes), TRUE);
+				gtk_widget_show (index_title->details->notes);
+				gtk_box_pack_start (GTK_BOX (index_title), index_title->details->notes, 0, 0, 0);
+				gtk_box_reorder_child (GTK_BOX (index_title), index_title->details->notes, 3);
+			}
+			
+			/* FIXME: don't use hardwired font like this */    	
+			label_font = gdk_font_load("-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");	 
+			set_up_font(index_title->details->notes, label_font);	
+			
+			g_free (notes_text);     
+		}
+		else if (index_title->details->notes)
 			gtk_label_set_text(GTK_LABEL(index_title->details->notes), "");
+	}
+
+	nautilus_file_unref (file_object);
 }
 
 /* here's the place where we set everything up passed on the passed in uri */
@@ -385,16 +396,21 @@ nautilus_index_title_set_uri(NautilusIndexTitle *index_title, const char* new_ur
 {
 	NautilusFile *file_object;
 
+	if (index_title->details->uri != NULL) {
+		g_free (index_title->details->uri);
+	}
+	index_title->details->uri = g_strdup (new_uri);
+
 	file_object = nautilus_file_get(new_uri);
 
 	/* add the icon */
-	nautilus_index_title_set_up_icon (index_title, file_object);
+	nautilus_index_title_set_up_icon (index_title);
 
 	/* add the name, in a variable-sized label */
-	nautilus_index_title_set_up_label (index_title, new_uri);
+	nautilus_index_title_set_up_label (index_title);
 
 	/* add various info */
-	nautilus_index_title_set_up_info(index_title, file_object);
+	nautilus_index_title_set_up_info(index_title);
 
 	/* FIXME: file_object can be NULL if this is a bad url, or one that
 	 * NautilusFile can't handle (e.g. http). The UI here needs to

@@ -1,3 +1,21 @@
+2000-03-16  John Sullivan  <sullivan@eazel.com>
+
+	* src/nautilus-index-title.c:
+	store uri in details struct.
+	(nautilus_index_title_set_uri), (nautilus_index_title_set_up_icon),
+	(nautilus_index_title_set_up_label), (nautilus_index_title_set_up_info):
+	Read uri from details struct instead of passing in parameter.
+	(nautilus_index_title_initialize): Connect with "icons_changed"
+	signal so nautilus_index_title_set_up_icon gets called again,
+	refreshing the icon appearance when the theme changes.
+	(nautilus_index_title_finalize): free details->uri.
+
+	* src/ntl-uri-map.c:
+	(get_nautilus-navigation_result_from_gnome_vfs_result):
+	Handle GNOME_VFS_ERROR_GENERIC case, since diskzero ran
+	into it. Unfortunately we can't put up a very specific error
+	message for that case!
+
 2000-03-16  Darin Adler  <darin@eazel.com>
 
 	Did some of the renamings that were queued in RENAMING.
