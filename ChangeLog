@@ -1,3 +1,65 @@
+2001-03-21  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	This implements feature for bug 6960 - queries to softcat are now
+	done for a variable number of packages at a time, radically
+	speeding up dependency resolution.
+	
+	Also did a s/DistributionInfo/TrilobiteDistributionInfo/ for the
+	Less Namespace Pollution Compaign 2001.
+
+	* components/services/install/command-line/eazel-test-softcat.c:
+	(main):
+	Added a --funk=<int> which uses the new get_info_plural methods.
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(prune_failed_packages_helper), (post_check), (get_package_info),
+	(dedupe_foreach_depends), (check_tree_helper),
+	(check_no_two_packages_has_same_file), (install_packages):
+	Moved a lot of code around to use the new
+	eazel_softcat_get_info_plural  feature.
+
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_initialize):
+	Set packages pr query to a sane value (50 pr query)
+
+	* components/services/install/lib/eazel-package-system-types.h:
+	* components/services/install/lib/eazel-package-system-types.c:
+	(eazel_install_package_provides_compare),
+	(eazel_install_package_feature_compare),
+	(eazel_install_package_name_compare),
+	(eazel_install_package_id_compare):
+	Added package_id_compare and package_feature_compare.
+	Removed some debug output.
+	
+	* components/services/install/lib/eazel-softcat-private.h:
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_initialize), (eazel_softcat_set_packages_pr_query),
+	(get_search_url_for_package), (warn_about_packages_failing),
+	(eazel_softcat_query), (eazel_softcat_get_info),
+	(split_by_multiple), (eazel_softcat_get_info_plural_helper),
+	(eazel_softcat_get_info_plural):
+	Added a packages_pr_query field to softcat->private.
+	Voodoo to do the multiple packages pr. query. Pseudokode and
+	stuff in comments.
+
+	* components/services/install/lib/eazel-softcat.h:
+	* components/services/inventory/eazel-inventory-collect-software.c:
+	(eazel_inventory_collect_software):
+	* components/services/trilobite/libtrilobite/trilobite-core-distrib
+	ution.c: (determine_turbolinux_version),
+	(determine_mandrake_version), (determine_suse_version),
+	(determine_debian_version), (determine_redhat_version),
+	(trilobite_get_distribution), (trilobite_get_distribution_name),
+	(trilobite_get_distribution_arch),
+	(trilobite_distribution_compare):
+	* components/services/trilobite/libtrilobite/trilobite-core-distrib
+	ution.h:
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_suggest_id):
+	* components/services/install/lib/eazel-install-corba-types.c:
+	(corba_packagedatastruct_fill_from_packagedata):
+	s/DistributionInfo/TrilobiteDistributionInfo/	
+
 2001-03-21  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>

@@ -68,7 +68,7 @@ corba_packagedatastruct_fill_from_packagedata (GNOME_Trilobite_Eazel_PackageData
 	corbapack->md5 = pack->md5 ? CORBA_string_dup (pack->md5) : CORBA_string_dup ("");
 
 	if (pack->distribution.name == DISTRO_UNKNOWN) {
-		DistributionInfo dist;
+		TrilobiteDistributionInfo dist;
 		dist = trilobite_get_distribution ();
 		corbapack->distribution.name = 
 			CORBA_string_dup (trilobite_get_distribution_name (dist, FALSE, FALSE));

@@ -731,7 +731,10 @@ eazel_install_initialize (EazelInstall *service) {
 	service->private->revert = FALSE;
 	service->private->ssl_rename = FALSE;
 	service->private->ignore_file_conflicts = FALSE;
+
 	service->private->softcat = eazel_softcat_new ();
+	eazel_softcat_set_packages_pr_query (service->private->softcat, 50);
+
 	eazel_install_set_rpmrc_file (service, "/usr/lib/rpm/rpmrc");
 
 	/* when running as part of trilobite, don't catch logs */

@@ -124,7 +124,7 @@ eazel_inventory_collect_packages (void) {
 
 xmlNodePtr
 eazel_inventory_collect_software (void) {
-	DistributionInfo	distro;
+	TrilobiteDistributionInfo distro;
 	char			*distro_string;
 	xmlNodePtr              node;
 	

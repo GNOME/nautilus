@@ -51,7 +51,7 @@ EazelPackageSystemId
 eazel_package_system_suggest_id ()
 {
 	EazelPackageSystemId  result = EAZEL_PACKAGE_SYSTEM_UNSUPPORTED;
-	DistributionInfo dist = trilobite_get_distribution ();
+	TrilobiteDistributionInfo dist = trilobite_get_distribution ();
 
 	switch (dist.name) {
 	case DISTRO_REDHAT: 

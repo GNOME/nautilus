@@ -43,7 +43,7 @@ typedef enum {
 	EAZEL_SOFTCAT_ERROR_SERVER_UNREACHABLE,
 	EAZEL_SOFTCAT_ERROR_MULTIPLE_RESPONSES,
 	EAZEL_SOFTCAT_ERROR_SERVER_UPDATED,
-	EAZEL_SOFTCAT_ERROR_NO_SUCH_PACKAGE
+	EAZEL_SOFTCAT_ERROR_NO_SUCH_PACKAGE,
 } EazelSoftCatError;
 
 struct _EazelSoftCatClass
@@ -65,17 +65,23 @@ void		eazel_softcat_unref (GtkObject *object);
 
 /* set and get fields */
 void eazel_softcat_set_server (EazelSoftCat *softcat, const char *server);
-void eazel_softcat_set_server_host (EazelSoftCat *softcat, const char *server);
-void eazel_softcat_set_server_port (EazelSoftCat *softcat, int port);
 const char *eazel_softcat_get_server (EazelSoftCat *softcat);
+
+void eazel_softcat_set_server_host (EazelSoftCat *softcat, const char *server);
 const char *eazel_softcat_get_server_host (EazelSoftCat *softcat);
+
+void eazel_softcat_set_server_port (EazelSoftCat *softcat, int port);
 int eazel_softcat_get_server_port (EazelSoftCat *softcat);
+
 void eazel_softcat_set_cgi_path (EazelSoftCat *softcat, const char *cgi_path);
 const char *eazel_softcat_get_cgi_path (const EazelSoftCat *softcat);
+
 void eazel_softcat_set_authn (EazelSoftCat *softcat, gboolean use_authn, const char *username);
+gboolean eazel_softcat_get_authn (const EazelSoftCat *softcat, const char **username);
+
+void eazel_softcat_set_packages_pr_query (EazelSoftCat *softcat, int number);
 void eazel_softcat_set_authn_flag (EazelSoftCat *softcat, gboolean use_authn);
 void eazel_softcat_set_username (EazelSoftCat *softcat, const char *username);
-gboolean eazel_softcat_get_authn (const EazelSoftCat *softcat, const char **username);
 void eazel_softcat_set_retry (EazelSoftCat *softcat, unsigned int retries, unsigned int delay_us);
 void eazel_softcat_reset_server_update_flag (EazelSoftCat *softcat);
 
@@ -89,7 +95,7 @@ const char *eazel_softcat_error_string (EazelSoftCatError err);
  * (because there may be more than one if the package refers to a suite).
  */
 EazelSoftCatError eazel_softcat_query (EazelSoftCat *softcat,
-				       PackageData *package,
+				       GList *packages,
 				       int sense_flags,
 				       int fill_flags,
 				       GList **result);
@@ -100,6 +106,15 @@ EazelSoftCatError  eazel_softcat_get_info (EazelSoftCat *softcat,
 					   PackageData *partial,
 					   int sense_flags,
 					   int fill_flags);
+
+/* Given a partially filled packagedata object, 
+   check softcat, and fill it with the desired info */
+EazelSoftCatError  eazel_softcat_get_info_plural (EazelSoftCat *softcat,
+						  GList *partials,
+						  GList **out, 
+						  GList **error,
+						  int sense_flags,
+						  int fill_flags);
 
 /* Check if there's a newer version in SoftCat.
  * Returns TRUE and fills in 'newpack' if there is, returns FALSE otherwise.

@@ -25,10 +25,10 @@
 
 #include <glib.h>
 
-typedef struct _DistributionInfo DistributionInfo; 
-typedef enum _DistributionName DistributionName;
+typedef struct _TrilobiteDistributionInfo TrilobiteDistributionInfo; 
+typedef enum _TrilobiteDistributionName TrilobiteDistributionName;
 
-enum _DistributionName {
+enum _TrilobiteDistributionName {
 	DISTRO_UNKNOWN = 0,
 	DISTRO_REDHAT,
 	DISTRO_DEBIAN,
@@ -41,8 +41,8 @@ enum _DistributionName {
 	DISTRO_YELLOWDOG
 };
 
-struct _DistributionInfo {
-	DistributionName name;
+struct _TrilobiteDistributionInfo {
+	TrilobiteDistributionName name;
 	int version_major; /* -1 equals unset */
 	int version_minor; /* -1 equals unset */
 };
@@ -50,12 +50,12 @@ struct _DistributionInfo {
 /*
   Returns a structure containing the distribution
 */
-DistributionInfo trilobite_get_distribution (void);
+TrilobiteDistributionInfo trilobite_get_distribution (void);
 
 /* Return the distribution name, optinally with version number
    Return value must be freed 
 */
-char* trilobite_get_distribution_name (DistributionInfo distinfo,
+char* trilobite_get_distribution_name (TrilobiteDistributionInfo distinfo,
 				       gboolean show_version,
 				       gboolean compact);
 
@@ -65,12 +65,18 @@ char* trilobite_get_distribution_name (DistributionInfo distinfo,
   returns. The version part (if show_version = TRUE was used) is
   _not_ parsed */
 
-DistributionName trilobite_get_distribution_enum (const char *name, gboolean compact);
+TrilobiteDistributionName trilobite_get_distribution_enum (const char *name, gboolean compact);
 
 /* Return an allocated string holding this machine's architecture name
  * (usually "i386" for now, but who knows what the future holds?)
  * caller must deallocate returned string
  */
 char *trilobite_get_distribution_arch (void);
+
+/*
+  Distribution comparison 
+*/
+gboolean trilobite_distribution_compare (TrilobiteDistributionInfo a,
+					 TrilobiteDistributionInfo b);
 
 #endif /* EAZEL_SERVICES_DISTRIBUTION_H */

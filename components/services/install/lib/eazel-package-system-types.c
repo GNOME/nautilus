@@ -1094,7 +1094,7 @@ packagerequirement_new (PackageData *pack,
 /* The funky compare functions */
 
 
-int
+static int
 eazel_install_package_provides_basename_compare (char *a,
 						 char *b)
 {
@@ -1110,7 +1110,20 @@ eazel_install_package_provides_compare (PackageData *pack,
 				  (gpointer)name, 
 				  (GCompareFunc)eazel_install_package_provides_basename_compare);
 	if (ptr) {
-		trilobite_debug ("package %s supplies %s", pack->name, name);
+		return 0;
+	} 
+	return -1;
+}
+
+int
+eazel_install_package_feature_compare (PackageData *pack,
+				       char *feature)
+{
+	GList *ptr = NULL;
+	ptr = g_list_find_custom (pack->features, 
+				  (gpointer)feature, 
+				  (GCompareFunc)eazel_install_package_provides_basename_compare);
+	if (ptr) {
 		return 0;
 	} 
 	return -1;
@@ -1124,6 +1137,16 @@ eazel_install_package_name_compare (PackageData *pack,
 		return -1;
 	}
 	return strcmp (pack->name, name);
+}
+
+int
+eazel_install_package_id_compare (PackageData *pack,
+				  char *id)
+{
+	if (pack->eazel_id == NULL) {
+		return -1;
+	}
+	return strcmp (pack->eazel_id, id);
 }
 
 /* This does a slow and painful comparison of all the major fields */

@@ -64,7 +64,7 @@
    need to implement the rest of the determine_FOO_version
 */
 static void
-determine_turbolinux_version (DistributionInfo *distinfo)
+determine_turbolinux_version (TrilobiteDistributionInfo *distinfo)
 {
 	FILE *f;
 	char buf[1024];
@@ -94,7 +94,7 @@ determine_turbolinux_version (DistributionInfo *distinfo)
 }
 
 static void
-determine_mandrake_version (DistributionInfo *distinfo)
+determine_mandrake_version (TrilobiteDistributionInfo *distinfo)
 {
 	FILE *f;
 	char buf[1024];
@@ -124,7 +124,7 @@ determine_mandrake_version (DistributionInfo *distinfo)
 }
 
 static void
-determine_suse_version (DistributionInfo *distinfo)
+determine_suse_version (TrilobiteDistributionInfo *distinfo)
 {
 	FILE *fd;
 	char buf[1024];
@@ -162,7 +162,7 @@ determine_suse_version (DistributionInfo *distinfo)
 }
 
 static void
-determine_debian_version (DistributionInfo *distinfo)
+determine_debian_version (TrilobiteDistributionInfo *distinfo)
 {
 	FILE *fd;
 	char buf[1024];
@@ -192,7 +192,7 @@ determine_debian_version (DistributionInfo *distinfo)
 }
 
 static void
-determine_redhat_version (DistributionInfo *distinfo)
+determine_redhat_version (TrilobiteDistributionInfo *distinfo)
 {
 	FILE *fd;
 	char buf[1024];
@@ -235,10 +235,10 @@ determine_redhat_version (DistributionInfo *distinfo)
 	}
 }
 
-DistributionInfo 
+TrilobiteDistributionInfo 
 trilobite_get_distribution ()
 {
-	DistributionInfo distinfo;
+	TrilobiteDistributionInfo distinfo;
 
 	distinfo.name = DISTRO_UNKNOWN;
 	distinfo.version_major = -1;
@@ -282,7 +282,7 @@ trilobite_get_distribution ()
 }
 
 char* 
-trilobite_get_distribution_name (DistributionInfo distinfo,
+trilobite_get_distribution_name (TrilobiteDistributionInfo distinfo,
 				 gboolean show_version,
 				 gboolean compact)
 {
@@ -359,7 +359,7 @@ trilobite_get_distribution_name (DistributionInfo distinfo,
 	return result;
 }
 
-static DistributionName 
+static TrilobiteDistributionName 
 trilobite_get_distribution_enum_compact (const char *name)
 {
 	g_return_val_if_fail (name!=NULL, DISTRO_UNKNOWN);
@@ -383,7 +383,7 @@ trilobite_get_distribution_enum_compact (const char *name)
 	return DISTRO_UNKNOWN;
 }
 
-static DistributionName 
+static TrilobiteDistributionName 
 trilobite_get_distribution_enum_verbose (const char *name)
 {
 	g_return_val_if_fail (name!=NULL, DISTRO_UNKNOWN);
@@ -407,7 +407,7 @@ trilobite_get_distribution_enum_verbose (const char *name)
 	return DISTRO_UNKNOWN;
 }
 
-DistributionName 
+TrilobiteDistributionName 
 trilobite_get_distribution_enum (const char *name, gboolean compact)
 {
 	if (compact) {
@@ -437,4 +437,22 @@ trilobite_get_distribution_arch (void)
 #endif
 
 	return arch;
+}
+
+gboolean 
+trilobite_distribution_compare (TrilobiteDistributionInfo a,
+				TrilobiteDistributionInfo b)
+{
+	if (a.name == b.name) {
+		if (a.version_major == b.version_major) {
+			if (a.version_minor == b.version_minor) {
+				return 0;
+			} else {
+				return a.version_minor > b.version_minor ? a.version_minor : b.version_minor;
+			}			
+		} else {
+			return a.version_major > b.version_major ? a.version_major : b.version_major;
+		}
+	}
+	return -1;
 }

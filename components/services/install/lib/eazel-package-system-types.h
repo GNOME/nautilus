@@ -184,7 +184,7 @@ struct _PackageData {
 	char* version;
 	char* minor;
 	char* archtype;
-	DistributionInfo distribution;
+	TrilobiteDistributionInfo distribution;
 	guint32 bytesize;
 	guint32 filesize;
 
@@ -419,13 +419,15 @@ PackageRequirement* packagerequirement_new (PackageData *pack, PackageData *req)
 
 /* glib style ompares */
 
-int eazel_install_package_provides_basename_compare (char *a, char *b);
-int eazel_install_package_provides_compare (PackageData *pack, char *name);
-int eazel_install_package_name_compare (PackageData *pack, char *name);
 int eazel_install_package_compare (PackageData *pack, PackageData *other);
+int eazel_install_package_name_compare (PackageData *pack, char *name);
+int eazel_install_package_version_compare (PackageData *pack, char *version);
+int eazel_install_package_id_compare (PackageData *pack, char *id);
+int eazel_install_package_feature_compare (PackageData *pack, char *feature);
+int eazel_install_package_provides_compare (PackageData *pack, char *name);
+
 int eazel_install_requirement_dep_name_compare (PackageRequirement *req, const char *name);
 int eazel_install_requirement_dep_compare (PackageRequirement *req, PackageData *pack);
-int eazel_install_package_version_compare (PackageData *pack, char *version);
 int eazel_install_package_other_version_compare (PackageData *pack, PackageData *other);
 
 /* Other compare functions */
