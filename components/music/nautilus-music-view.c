@@ -390,36 +390,62 @@ nautilus_music_view_destroy (GtkObject *object)
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
+static gboolean
+string_non_empty (char *str)
+{
+        return (str != NULL && str[0] != '\0');
+}
+
 /* utility to return the text describing a song */
 static char *
 get_song_text (NautilusMusicView *music_view, int row)
 {
-	char *song_text, *song_name, *album_name, *year;
+	char *song_text;
+        char *song_name;
+        char *song_artist;
+        char *album_name;
+        char *year;
+        char *artist_album_string; 
 		
 	song_text = NULL;
 	song_name = NULL;
+        song_artist = NULL;
 	album_name = NULL;
 	year = NULL;
-	
+	artist_album_string = NULL;
+        
 	gtk_clist_get_text (GTK_CLIST(music_view->details->song_list), row, 1, &song_name);
+	gtk_clist_get_text (GTK_CLIST(music_view->details->song_list), row, 2, &song_artist);
 	gtk_clist_get_text (GTK_CLIST(music_view->details->song_list), row, 3, &year);
 	gtk_clist_get_text (GTK_CLIST(music_view->details->song_list), row, 6, &album_name);
 	
-	if (album_name != NULL) {
-		/* Ignore year if string is NULL or empty */
-		if (year != NULL && strlen (year) > 0) {
-			song_text = g_strdup_printf ("%s\n%s (%s)", song_name, album_name, year);
-		} else {
-			song_text = g_strdup_printf ("%s\n%s", song_name, album_name);
-                }
-	} else {
-		/* Ignore year if string is NULL or empty */
-		if (year != NULL && strlen (year) > 0) {
-                        song_text = g_strdup_printf ("%s (%s)", song_name, year);
+	if (string_non_empty (album_name)) {
+                if (string_non_empty (song_artist)) {
+                        artist_album_string = g_strdup_printf ("%s / %s", song_artist, album_name);
                 } else {
-                        song_text = g_strdup (song_name);
+                        artist_album_string = g_strdup (album_name);
+                }
+        } else {
+                if (string_non_empty (song_artist)) {
+                        artist_album_string = g_strdup (song_artist);
                 }
         }
+                
+	if (string_non_empty (artist_album_string)) {
+		if (string_non_empty (year)) {
+			song_text = g_strdup_printf ("%s\n%s (%s)", song_name, artist_album_string, year);
+		} else {
+			song_text = g_strdup_printf ("%s\n%s", song_name, artist_album_string);
+                }
+	} else {
+		if (string_non_empty (year)) {
+                        song_text = g_strdup_printf ("%s (%s)\n-", song_name, year);
+                } else {
+                        song_text = g_strdup_printf ("%s\n-", song_name);
+                }
+        }
+
+        g_free (artist_album_string);
 	
 	return song_text;
 }
@@ -1200,7 +1226,7 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 	}
        	
 	gtk_clist_select_row (GTK_CLIST(music_view->details->song_list), music_view->details->selected_index, 0);
-	
+
 	/* Scroll the list to display the current new selection */
 	list_reveal_row (GTK_CLIST(music_view->details->song_list), music_view->details->selected_index);
 	

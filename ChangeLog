@@ -1,3 +1,14 @@
+2001-07-22  Maciej Stachowiak  <mjs@eazel.com>
+
+	* components/music/nautilus-music-view.c: (string_non_empty),
+	(get_song_text), (play_current_file): Add artist to the info
+	displayed about the currently selected song. Also, fix a bug where
+	a song entry does not get scrolled into view when the player
+	switches to it sometimes. This happened because the song list
+	would resize depending on whether or not there was an album
+	name. Now if there is no album name (or artist) `-' is displayed
+	in the second line.
+
 2001-07-21  Darin Adler  <darin@bentspoon.com>
 
 	* README: Update cvs tags for gnome-vfs, librsvg, eel.
