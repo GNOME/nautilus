@@ -2013,7 +2013,7 @@ start_rubberbanding (NautilusIconContainer *container,
 	AtkObject *accessible;
 	NautilusIconContainerDetails *details;
 	NautilusIconRubberbandInfo *band_info;
-	uint fill_color, outline_color;
+	guint fill_color, outline_color;
 	GdkColor *fill_color_gdk;
 	guchar fill_color_alpha;
 	GList *p;
