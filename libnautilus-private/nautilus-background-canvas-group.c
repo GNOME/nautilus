@@ -36,32 +36,32 @@
 
 #include <stdio.h>
 
-static void nautilus_background_canvas_group_initialize_class (gpointer         klass);
-static void nautilus_background_canvas_group_initialize       (gpointer         object,
+static void nautilus_background_canvas_group_initialize_class (gpointer	klass);
+static void nautilus_background_canvas_group_initialize       (gpointer	object,
 															   gpointer         klass);
 
 static void nautilus_background_canvas_group_update (GnomeCanvasItem	*item,
-													 double				 affine[6],
-													 ArtSVP				*clip_path,
-													 gint				 flags);
+						     double		 affine[6],
+						     ArtSVP		*clip_path,
+						     gint		 flags);
 													 
-static void nautilus_background_canvas_group_draw	(GnomeCanvasItem	*item,
-							       					 GdkDrawable		*drawable,
-											         int				 x,
-											         int				 y,
-											         int				 width,
-											         int				 height);
-static void nautilus_background_canvas_group_render	(GnomeCanvasItem	*item,
-													 GnomeCanvasBuf		*buffer);
+static void nautilus_background_canvas_group_draw (GnomeCanvasItem	*item,
+						   GdkDrawable		*drawable,
+						   int			 x,
+						   int			 y,
+						   int			 width,
+						   int			 height);
+static void nautilus_background_canvas_group_render (GnomeCanvasItem	*item,
+						     GnomeCanvasBuf	*buffer);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBackgroundCanvasGroup, nautilus_background_canvas_group, GNOME_TYPE_CANVAS_GROUP)
 
 static void
 nautilus_background_canvas_group_initialize_class (gpointer klass)
 {
-	GNOME_CANVAS_ITEM_CLASS (klass)->update = nautilus_background_canvas_group_update;
-	GNOME_CANVAS_ITEM_CLASS (klass)->draw = nautilus_background_canvas_group_draw;
+	GNOME_CANVAS_ITEM_CLASS (klass)->draw   = nautilus_background_canvas_group_draw;
 	GNOME_CANVAS_ITEM_CLASS (klass)->render = nautilus_background_canvas_group_render;
+	GNOME_CANVAS_ITEM_CLASS (klass)->update = nautilus_background_canvas_group_update;
 }
 
 static void
@@ -70,27 +70,27 @@ nautilus_background_canvas_group_initialize (gpointer object, gpointer klass)
 }
 
 static void
-nautilus_background_canvas_group_update (GnomeCanvasItem	*item,
-										 double				 affine[6],
-										 ArtSVP				*clip_path,
-										 gint				 flags)
+nautilus_background_canvas_group_update (GnomeCanvasItem *item,
+					 double affine[6],
+					 ArtSVP *clip_path,
+					 gint flags)
 {
 	NautilusBackground *background = nautilus_get_widget_background (GTK_WIDGET (item->canvas));
 
 	nautilus_background_pre_draw (background,
-								  GTK_WIDGET (item->canvas)->allocation.width,
-								  GTK_WIDGET (item->canvas)->allocation.height);
+				      GTK_WIDGET (item->canvas)->allocation.width,
+				      GTK_WIDGET (item->canvas)->allocation.height);
 
 	NAUTILUS_CALL_PARENT_CLASS (GNOME_CANVAS_ITEM_CLASS, update, (item, affine, clip_path, flags));				     
 }
 
 static void
 nautilus_background_canvas_group_draw (GnomeCanvasItem *item,
-									   GdkDrawable *drawable,
-									   int x,
-									   int y,
-									   int width,
-									   int height)
+				       GdkDrawable *drawable,
+				       int x,
+				       int y,
+				       int width,
+				       int height)
 {
 	NautilusBackground *background;
 	GdkGC *gc;
@@ -116,8 +116,8 @@ nautilus_background_canvas_group_draw (GnomeCanvasItem *item,
 		 * called prior to all drawing.
 		 */
 		nautilus_background_pre_draw (background,
-									  GTK_WIDGET (item->canvas)->allocation.width,
-									  GTK_WIDGET (item->canvas)->allocation.height);
+					      GTK_WIDGET (item->canvas)->allocation.width,
+					      GTK_WIDGET (item->canvas)->allocation.height);
 
 		nautilus_background_draw (background, drawable, gc, x, y, width, height);
 
@@ -146,8 +146,8 @@ nautilus_background_canvas_group_render (GnomeCanvasItem *item, GnomeCanvasBuf *
 		 * called prior to all drawing.
 		 */
 		nautilus_background_pre_draw (background,
-									  GTK_WIDGET (item->canvas)->allocation.width,
-									  GTK_WIDGET (item->canvas)->allocation.height);
+					      GTK_WIDGET (item->canvas)->allocation.width,
+					      GTK_WIDGET (item->canvas)->allocation.height);
 
 		nautilus_background_draw_aa (background, buffer);
 	}

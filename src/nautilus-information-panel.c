@@ -115,7 +115,7 @@ static void     nautilus_sidebar_update_buttons     (NautilusSidebar  *sidebar);
 static void     add_command_buttons                 (NautilusSidebar  *sidebar,
 						     GList            *application_list);
 
-static void	nautilus_sidebar_update_all	    (NautilusSidebar  *sidebar);
+static void	background_metadata_changed_callback	    (NautilusSidebar  *sidebar);
 
 #define DEFAULT_TAB_COLOR "rgb:9999/9999/9999"
 
@@ -681,13 +681,22 @@ receive_dropped_color (NautilusSidebar *sidebar,
 		nautilus_sidebar_tabs_receive_dropped_color
 			(sidebar->details->sidebar_tabs,
 			 x, y, selection_data);
-		
+
+		/* Block so we don't respond to our own metadata changes.
+		 */
+		gtk_signal_handler_block_by_func (GTK_OBJECT (sidebar->details->file),
+						  background_metadata_changed_callback,
+						  sidebar);
+						  
 		nautilus_file_set_metadata
 			(sidebar->details->file,
 			 NAUTILUS_METADATA_KEY_SIDEBAR_TAB_COLOR,
 			 DEFAULT_TAB_COLOR,
 			 color_spec);
-		
+
+		gtk_signal_handler_unblock_by_func (GTK_OBJECT (sidebar->details->file),
+						    background_metadata_changed_callback,
+						    sidebar);
 		break;
 	case TITLE_TAB_PART:
 		/* color dropped on title tab */
@@ -695,11 +704,21 @@ receive_dropped_color (NautilusSidebar *sidebar,
 			(sidebar->details->title_tab,
 			 x, y, selection_data);
 		
+		/* Block so we don't respond to our own metadata changes.
+		 */
+		gtk_signal_handler_block_by_func (GTK_OBJECT (sidebar->details->file),
+						  background_metadata_changed_callback,
+						  sidebar);
+
 		nautilus_file_set_metadata
 			(sidebar->details->file,
 			 NAUTILUS_METADATA_KEY_SIDEBAR_TITLE_TAB_COLOR,
 			 DEFAULT_TAB_COLOR,
 			 color_spec);
+
+		gtk_signal_handler_unblock_by_func (GTK_OBJECT (sidebar->details->file),
+						    background_metadata_changed_callback,
+						    sidebar);
 		break;
 	case ICON_PART:
 	case BACKGROUND_PART:
@@ -707,10 +726,6 @@ receive_dropped_color (NautilusSidebar *sidebar,
 		nautilus_background_receive_dropped_color
 			(nautilus_get_widget_background (GTK_WIDGET (sidebar)),
 			 GTK_WIDGET (sidebar), x, y, selection_data);
-		
-		/* regenerate the display */
-		nautilus_sidebar_update_appearance (sidebar);  	
-		
 		break;
 	}
 	g_free(color_spec);
@@ -987,20 +1002,13 @@ nautilus_sidebar_press_event (GtkWidget *widget, GdkEventButton *event)
 	return TRUE;
 }
 
-static void
-setting_change_metadata_callback (NautilusFile *file ,gboolean *metadata_changed)
-{
-	*metadata_changed = TRUE;
-}
-
-/* handle the background changed signal by writing out the settings to metadata */
+/* Handle the background changed signal by writing out the settings to metadata.
+ */
 static void
 background_settings_changed_callback (NautilusBackground *background, NautilusSidebar *sidebar)
 {
 	char *image;
-	char *color_spec;
-	gboolean metadata_changed;
-	guint metadata_changed_connection;
+	char *color;
 
 	g_assert (NAUTILUS_IS_BACKGROUND (background));
 	g_assert (NAUTILUS_IS_SIDEBAR (sidebar));
@@ -1009,67 +1017,30 @@ background_settings_changed_callback (NautilusBackground *background, NautilusSi
 		return;
 	}
 	
-	/* We don't want to respond twice to the 2 metadata changes we're about to
-	 * make. We block the normal signal handler, and install our own.
+	/* Block so we don't respond to our own metadata changes.
 	 */
-	 
-	gtk_signal_handler_block_by_func (GTK_OBJECT (sidebar->details->file),  nautilus_sidebar_update_all, sidebar);
-	metadata_changed_connection = gtk_signal_connect (GTK_OBJECT (sidebar->details->file),
-							  "changed",
-							  setting_change_metadata_callback,
-							  &metadata_changed);
+	gtk_signal_handler_block_by_func (GTK_OBJECT (sidebar->details->file),
+					  background_metadata_changed_callback,
+					  sidebar);
 
-				   
-	metadata_changed = FALSE;
-
-	color_spec = nautilus_background_get_color (background);
+	color = nautilus_background_get_color (background);
+	image = nautilus_background_get_image_uri (background);
+	
 	nautilus_file_set_metadata (sidebar->details->file,
 				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
-				    sidebar->details->default_background_color,
-				    color_spec);
-	g_free (color_spec);
+				    NULL,
+				    color);
 
-	image = nautilus_background_get_image_uri (background);
 	nautilus_file_set_metadata (sidebar->details->file,
 				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
-				    sidebar->details->default_background_image,
+				    NULL,
 				    image);
+	g_free (color);
 	g_free (image);
 
-	gtk_signal_disconnect (GTK_OBJECT (sidebar->details->file), metadata_changed_connection);
-	gtk_signal_handler_unblock_by_func (GTK_OBJECT (sidebar->details->file),  nautilus_sidebar_update_all, sidebar);
-
- 	if (metadata_changed) {
-		nautilus_sidebar_update_all (sidebar);
-	}
-}
-
-/* we generally want to ignore the appearance changed signal, but we need it to redraw the
-   the sidebar in the case where we're loading the background image, so check for that */
-static void
-background_appearance_changed_callback (NautilusBackground *background, NautilusSidebar *sidebar)
-{
-	gboolean is_default_color, is_default_image;
-	char *background_image, *background_color;
-
-	background_color = nautilus_file_get_metadata (sidebar->details->file,
-						       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
-						       sidebar->details->default_background_color);
-
-	background_image = nautilus_file_get_metadata (sidebar->details->file,
-						       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
-						       sidebar->details->default_background_image);
-	
-	nautilus_sidebar_title_select_text_color (sidebar->details->title);
-	
-	is_default_color = !nautilus_strcmp(background_color, sidebar->details->default_background_color);
-	is_default_image = !nautilus_strcmp(background_image, sidebar->details->default_background_image);
-	
-	if (is_default_color && is_default_image) {
-		nautilus_sidebar_update_appearance (sidebar);  	
-	}
-	g_free (background_color);
-	g_free (background_image);
+	gtk_signal_handler_unblock_by_func (GTK_OBJECT (sidebar->details->file),
+					    background_metadata_changed_callback,
+					    sidebar);
 }
 
 /* handle the background reset signal by writing out NULL to metadata and setting the backgrounds
@@ -1077,39 +1048,36 @@ background_appearance_changed_callback (NautilusBackground *background, Nautilus
 static void
 background_reset_callback (NautilusBackground *background, NautilusSidebar *sidebar)
 {
-	char *combine_mode;
-	
+	g_assert (NAUTILUS_IS_BACKGROUND (background));
+	g_assert (NAUTILUS_IS_SIDEBAR (sidebar));
+
 	if (sidebar->details->file == NULL) {
 		return;
 	}
-	
-	/* set up the defaults, but don't write the metdata */
-	gtk_signal_handler_block_by_func (GTK_OBJECT (background),
-					  background_settings_changed_callback,
+
+	/* Block so we don't respond to our own metadata changes.
+	 */
+	gtk_signal_handler_block_by_func (GTK_OBJECT (sidebar->details->file),
+					  background_metadata_changed_callback,
 					  sidebar);
-	nautilus_background_set_color (background, sidebar->details->default_background_color);	
-	nautilus_background_set_image_uri (background, sidebar->details->default_background_image);
-	
-	combine_mode = nautilus_theme_get_theme_data ("sidebar", "COMBINE");
-	nautilus_background_set_combine_mode (background, combine_mode != NULL);
-	g_free (combine_mode);
-	
-	gtk_signal_handler_unblock_by_func (GTK_OBJECT(background),
-					    background_settings_changed_callback,
-					    sidebar);
-					   
-	/* reset the metadata */
+
 	nautilus_file_set_metadata (sidebar->details->file,
 				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
-				    sidebar->details->default_background_color,
-				    NULL);
-	nautilus_file_set_metadata (sidebar->details->file,
-				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
-				    sidebar->details->default_background_image,
+				    NULL,
 				    NULL);
 
-	gtk_signal_emit_stop_by_name (GTK_OBJECT (background),
-				      "reset");
+	nautilus_file_set_metadata (sidebar->details->file,
+				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
+				    NULL,
+				    NULL);
+
+	gtk_signal_handler_unblock_by_func (GTK_OBJECT (sidebar->details->file),
+					    background_metadata_changed_callback,
+					    sidebar);
+
+	/* Force a read from the metadata to set the defaults
+	 */
+	background_metadata_changed_callback (sidebar);
 }
 
 static GtkWindow *
@@ -1353,8 +1321,10 @@ static void
 nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 {
 	NautilusBackground *background;
-	char *background_color, *color_spec;
-	char *background_image, *combine_mode;
+	char *color_spec;
+	char *background_color;
+	char *background_image;
+	gboolean combine;
 
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR (sidebar));
 	
@@ -1367,44 +1337,42 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 				    background_settings_changed_callback,
 				    sidebar);
 		gtk_signal_connect (GTK_OBJECT (background),
-				    "appearance_changed",
-				    background_appearance_changed_callback,
-				    sidebar);
-		gtk_signal_connect (GTK_OBJECT (background),
 				    "reset",
 				    background_reset_callback,
 				    sidebar);
 	}
 	
 	/* Set up the background color and image from the metadata. */
-	background_image = NULL;
-	background_color = nautilus_file_get_metadata (sidebar->details->file,
-						       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
-						       NULL);
-	if (background_color == NULL) {
+
+	if (nautilus_sidebar_background_is_default (sidebar)) {
+		char* combine_str;
 		background_color = g_strdup (sidebar->details->default_background_color);
+		background_image = g_strdup (sidebar->details->default_background_image);
+		combine_str = nautilus_theme_get_theme_data ("sidebar", "COMBINE");
+		combine = combine_str != NULL;
+		g_free (combine_str);
+	} else {
+		background_color = nautilus_file_get_metadata (sidebar->details->file,
+							       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
+							       NULL);
 		background_image = nautilus_file_get_metadata (sidebar->details->file,
 							       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
-							       sidebar->details->default_background_image);
-	}	
+							       NULL);
+		combine = FALSE; /* only from theme, at least for now */
+	}
 		
-	/* disable the settings_changed callback, so the background doesn't get
-	   written out, since it might be the theme-dependent default */
+	/* Block so we don't write these settings out in response to our set calls below */
 	gtk_signal_handler_block_by_func (GTK_OBJECT (background),
 					  background_settings_changed_callback,
 					  sidebar);
-	
-	nautilus_background_set_color (background, background_color);	
-	g_free (background_color);
-	
-	nautilus_background_set_image_uri (background, background_image);
-	g_free (background_image);
 
-	combine_mode = nautilus_theme_get_theme_data ("sidebar", "COMBINE");
-	nautilus_background_set_combine_mode (background, combine_mode != NULL);
-	g_free (combine_mode);
+	nautilus_background_set_image_uri (background, background_image);
+	nautilus_background_set_color (background, background_color);
+	nautilus_background_set_combine_mode (background, combine);
+
+	g_free (background_color);
+	g_free (background_image);
 	
-	/* set up the color for the tabs */
 	color_spec = nautilus_file_get_metadata (sidebar->details->file,
 						 NAUTILUS_METADATA_KEY_SIDEBAR_TAB_COLOR,
 						 DEFAULT_TAB_COLOR);
@@ -1417,7 +1385,6 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 	nautilus_sidebar_tabs_set_color(sidebar->details->title_tab, color_spec);
 	g_free (color_spec);
 
-	/* re-enable the background_changed signal */
 	gtk_signal_handler_unblock_by_func (GTK_OBJECT (background),
 					    background_settings_changed_callback,
 					    sidebar);
@@ -1425,7 +1392,7 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 
 
 static void
-nautilus_sidebar_update_all (NautilusSidebar *sidebar)
+background_metadata_changed_callback (NautilusSidebar *sidebar)
 {
 	GList *attributes;
 	gboolean ready;
@@ -1481,14 +1448,14 @@ nautilus_sidebar_set_uri (NautilusSidebar *sidebar,
 	sidebar->details->file_changed_connection =
 		gtk_signal_connect_object (GTK_OBJECT (sidebar->details->file),
 					   "changed",
-					   nautilus_sidebar_update_all,
+					   background_metadata_changed_callback,
 					   GTK_OBJECT (sidebar));
 
 	attributes = nautilus_mime_actions_get_minimum_file_attributes ();
 	nautilus_file_monitor_add (sidebar->details->file, sidebar, attributes);
 	g_list_free (attributes);
 
-	nautilus_sidebar_update_all (sidebar);
+	background_metadata_changed_callback (sidebar);
 
 	/* tell the title widget about it */
 	nautilus_sidebar_title_set_file (sidebar->details->title,

@@ -467,33 +467,6 @@ nautilus_sidebar_tabs_size_allocate(GtkWidget *widget, GtkAllocation *allocation
     }
 }
 
-/* utility to allocate a gdk_pixbuf and fill it with a specified color */
-
-static GdkPixbuf*
-make_colored_pixbuf (int pixbuf_width, int pixbuf_height, GdkColor *color)
-{
-	GdkPixbuf *pixbuf;
-	int row, col, stride;
-	char *pixels, *row_pixels;
-	
-	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, pixbuf_width, pixbuf_height);
-	
-	pixels = gdk_pixbuf_get_pixels (pixbuf);
-	stride = gdk_pixbuf_get_rowstride (pixbuf);
-	
-	/* loop through and set each pixel */
-	for (row = 0; row < pixbuf_height; row++) {
-		row_pixels =  (pixels + (row * stride));
-		for (col = 0; col < pixbuf_width; col++) {		
-			*row_pixels++ = color->red;
-			*row_pixels++ = color->green;
-			*row_pixels++ = color->blue;
-			*row_pixels++ = 255;
-		}
-	}
-	return pixbuf;
-}
-
 /* draw a single tab using the default, non-themed approach */
 static int
 draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
@@ -505,6 +478,7 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 	int		total_width;
 	GtkWidget	*widget;
 	GdkPixbuf	*temp_pixbuf;
+	GdkColor	*foreground_color;
 	
 	g_assert (NAUTILUS_IS_SIDEBAR_TABS (sidebar_tabs));
 
@@ -532,9 +506,11 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 	/* FIXME bugzilla.eazel.com 668: 
 	 * we must "ellipsize" the name if it doesn't fit, for now, assume it does 
 	 */
+	 
+	foreground_color = prelight_flag ? &sidebar_tabs->details->prelight_color : &sidebar_tabs->details->tab_color;
 		
 	/* fill the tab rectangle with the tab color */
-	gdk_gc_set_foreground (gc, prelight_flag ? &sidebar_tabs->details->prelight_color : &sidebar_tabs->details->tab_color);
+	gdk_gc_set_foreground (gc, foreground_color);
 	gdk_draw_rectangle (widget->window, gc, TRUE, x, y + 1, total_width, sidebar_tabs->details->tab_height - 1); 
 	
 
@@ -550,7 +526,8 @@ draw_one_tab_plain (NautilusSidebarTabs *sidebar_tabs, GdkGC *gc,
 	gdk_draw_line(widget->window, gc, x + 2, y + 2, x + 2, y + sidebar_tabs->details->tab_height - 1);
 	
 	/* allocate the pixbuf and fill it with the background color */
-	temp_pixbuf = make_colored_pixbuf (name_width + 1, name_height + 1, prelight_flag ? &sidebar_tabs->details->prelight_color : &sidebar_tabs->details->tab_color);
+	temp_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, name_width + 1, name_height + 1);
+	nautilus_gdk_pixbuf_fill_rectangle_with_color (temp_pixbuf, NULL, nautilus_gdk_color_to_rgb (foreground_color));
 	
 	/* draw the name into the pixbuf using anti-aliased text */
 	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, temp_pixbuf, 

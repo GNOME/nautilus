@@ -1,3 +1,34 @@
+2000-12-04  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-background-canvas-group.c:
+	(nautilus_background_canvas_group_initialize_class),
+	(nautilus_background_canvas_group_update),
+	(nautilus_background_canvas_group_draw),
+	(nautilus_background_canvas_group_render):
+	Code formatting changes.
+	
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_initialize_class),
+	(nautilus_background_set_combine_mode),
+	(nautilus_background_ensure_image_scaled),
+	(nautilus_background_load_image_callback),
+	(nautilus_background_start_loading_image),
+	(nautilus_background_set_image_uri_helper),
+	(nautilus_background_set_image_uri),
+	(set_image_and_color_image_loading_done_callback),
+	(nautilus_background_set_image_uri_and_color),
+	(nautilus_background_reset):
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(background_changed_callback), (saved_settings_changed_callback),
+	(background_reset_callback):
+	* src/nautilus-sidebar-tabs.c: (draw_one_tab_plain):
+	* src/nautilus-sidebar.c: (receive_dropped_color),
+	(background_settings_changed_callback),
+	(background_reset_callback), (nautilus_sidebar_update_appearance),
+	(background_metadata_changed_callback), (nautilus_sidebar_set_uri):
+	Fixed various issues with dropping colors on the sidebare.
+	Osetensibly, the problem was with dropping white - bug 4880.
+
 2000-12-04  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed broken build.

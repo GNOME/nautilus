@@ -585,12 +585,12 @@ static void
 background_changed_callback (NautilusBackground *background,
                              NautilusFile       *file)
 {
-  	char *color, *image;
+  	char *color;
+  	char *image;
         
         g_assert (NAUTILUS_IS_BACKGROUND (background));
         g_assert (NAUTILUS_IS_FILE (file));
-        g_assert (gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_file")
-                  == file);
+        g_assert (gtk_object_get_data (GTK_OBJECT (background), "nautilus_background_file") == file);
         
 
 	color = nautilus_background_get_color (background);
@@ -672,8 +672,8 @@ saved_settings_changed_callback (NautilusFile *file,
                                           background_changed_callback,
                                           file);
 
-		nautilus_background_set_color (background, color);     
-		nautilus_background_set_image_uri (background, image);
+	nautilus_background_set_color (background, color);     
+	nautilus_background_set_image_uri (background, image);
         nautilus_background_set_combine_mode (background, combine);
         nautilus_background_set_image_placement (background, placement);
 	
@@ -732,11 +732,6 @@ background_reset_callback (NautilusBackground *background,
 	}
 
 	saved_settings_changed_callback (file, background);
-
-	/* We don't want the default reset handler running.
-	 * It will set color and image_uri  to NULL.
-	 */
-	gtk_signal_emit_stop_by_name (GTK_OBJECT (background), "reset");
 
 	if (nautilus_file_background_is_desktop (background)) {
 		nautilus_file_update_root_window (background);
