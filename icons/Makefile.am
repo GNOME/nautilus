@@ -177,7 +177,6 @@ icon_DATA =\
 	leftarrow.png \
 	loading.png \
 	multi-ok.png \
-	nautilus-launch-icon.png \
 	nautilus-logo.png \
 	nautilus-mini-logo.png \
 	netscape.png \

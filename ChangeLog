@@ -1,3 +1,15 @@
+2000-10-28  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* Makefile.am:
+	* icons/Makefile.am:
+	* nautilus-launch-icon.png:
+	Fix bug 4155.  Nautilus Panel launching icon installed in the
+	wrong place.  Needs to be $prefix/share/pixmaps, not
+	$prefix/share/pixmaps/nautilus.
+
+	Also added more ChangeLog files to EXTRA_DIST so they can be
+	availalble in tarballs.
+	
 2000-10-28  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

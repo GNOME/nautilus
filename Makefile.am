@@ -25,13 +25,15 @@ EXTRA_DIST=			\
 	nautilus.spec.in 	\
 	nautilus-clean.sh	\
 	nautilus.desktop	\
-	nautilus.png		\
+	nautilus-launch-icon.png \
+	ChangeLog-200001018	\
 	ChangeLog-20000414	\
 	ChangeLog-20000625	\
+	ChangeLog-20000831	\
 	$(NULL)
 
 appicondir = $(datadir)/pixmaps
-appicon_DATA = nautilus.png
+appicon_DATA = nautilus-launch-icon.png
 
 Applicationsdir = $(datadir)/gnome/apps/Applications
 Applications_DATA = nautilus.desktop
