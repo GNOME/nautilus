@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.2\n"
-"POT-Creation-Date: 2001-02-28 11:16+0100\n"
-"PO-Revision-Date: 2001-02-28 11:16+01:00\n"
+"POT-Creation-Date: 2001-03-01 00:43+0100\n"
+"PO-Revision-Date: 2001-03-01 00:46+01:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1691,83 +1691,91 @@ msgstr "Feilet på \"%s\""
 msgid "Checking \"%s\" (%ld/%ld)"
 msgstr "Sjekker \"%s\" (%ld/%ld)"
 
-#: components/rpmview/nautilus-rpm-view.c:122
+#: components/rpmview/nautilus-rpm-view.c:118
 msgid "Package Contents"
 msgstr "Pakkeinnhold"
 
 #. allocate the name field
-#: components/rpmview/nautilus-rpm-view.c:169
+#: components/rpmview/nautilus-rpm-view.c:165
 msgid "Package Title"
 msgstr "Pakketittel"
 
-#: components/rpmview/nautilus-rpm-view.c:190
+#: components/rpmview/nautilus-rpm-view.c:186
 msgid "Installed Size: "
 msgstr "Installert størrelse: "
 
-#: components/rpmview/nautilus-rpm-view.c:196
+#: components/rpmview/nautilus-rpm-view.c:192
 msgid "<size>"
 msgstr "<størrelse>"
 
-#: components/rpmview/nautilus-rpm-view.c:202
+#: components/rpmview/nautilus-rpm-view.c:198
 msgid "Install Date: "
 msgstr "Installasjonsdato: "
 
-#: components/rpmview/nautilus-rpm-view.c:208
-#: components/rpmview/nautilus-rpm-view.c:220
-#: components/rpmview/nautilus-rpm-view.c:232
-#: components/rpmview/nautilus-rpm-view.c:244
-#: components/rpmview/nautilus-rpm-view.c:256
+#: components/rpmview/nautilus-rpm-view.c:204
+#: components/rpmview/nautilus-rpm-view.c:216
+#: components/rpmview/nautilus-rpm-view.c:228
+#: components/rpmview/nautilus-rpm-view.c:240
+#: components/rpmview/nautilus-rpm-view.c:252
 msgid "<unknown>"
 msgstr "<ukjent>"
 
-#: components/rpmview/nautilus-rpm-view.c:214
+#: components/rpmview/nautilus-rpm-view.c:210
 msgid "License: "
 msgstr "Lisens: "
 
-#: components/rpmview/nautilus-rpm-view.c:226
+#: components/rpmview/nautilus-rpm-view.c:222
 msgid "Build Date: "
 msgstr "Byggedato: "
 
-#: components/rpmview/nautilus-rpm-view.c:238
+#: components/rpmview/nautilus-rpm-view.c:234
 msgid "Distribution: "
 msgstr "Distribusjon: "
 
-#: components/rpmview/nautilus-rpm-view.c:250
+#: components/rpmview/nautilus-rpm-view.c:246
 msgid "Vendor: "
 msgstr "Forhandler: "
 
-#: components/rpmview/nautilus-rpm-view.c:283
+#: components/rpmview/nautilus-rpm-view.c:279
 #: components/services/install-view/Nautilus_View_install.oaf.in.h:1
 #: components/services/install/server/Trilobite_Service_install.oaf.in.h:2
 #: components/services/summary/nautilus-summary-view.c:122
 msgid "Install"
 msgstr "Installer"
 
-#: components/rpmview/nautilus-rpm-view.c:299
+#: components/rpmview/nautilus-rpm-view.c:295
 msgid "Update"
 msgstr "Oppdatér"
 
-#: components/rpmview/nautilus-rpm-view.c:308
+#: components/rpmview/nautilus-rpm-view.c:304
 msgid "Uninstall"
 msgstr "Avinstallér"
 
-#: components/rpmview/nautilus-rpm-view.c:324
+#: components/rpmview/nautilus-rpm-view.c:320
 msgid "Verify"
 msgstr "Verifisér"
 
-#: components/rpmview/nautilus-rpm-view.c:375
+#: components/rpmview/nautilus-rpm-view.c:372
 msgid "Description"
 msgstr "Beskrivelse"
 
-#: components/rpmview/nautilus-rpm-view.c:570
+#: components/rpmview/nautilus-rpm-view.c:567
 #, c-format
 msgid "Package Contents: %d files"
 msgstr "Pakkeinnhold: %d filer"
 
-#: components/rpmview/nautilus-rpm-view.c:576
+#: components/rpmview/nautilus-rpm-view.c:573
 #, c-format
 msgid "Package \"%s\" "
 msgstr "Pakke \"%s\""
+
+#: components/rpmview/nautilus-rpm-view.c:616
+msgid "This package is currently installed"
+msgstr "Denne pakken er allerede installert"
+
+#: components/rpmview/nautilus-rpm-view.c:619
+msgid "This package is currently not installed"
+msgstr "Denne pakken er ikke installert"
 
 #: components/rpmview/nautilus-rpm-view.c:762
 msgid "Verification completed, package ok."
@@ -7748,9 +7756,33 @@ msgstr "Forfattere"
 msgid "Couldn't Create Required Folder"
 msgstr "Kunne ikke opprette nødvendig mappe"
 
-#: src/nautilus-application.c:279
+#: src/nautilus-application.c:275
+#, c-format
+msgid ""
+"Nautilus could not create the required folder \"%s\". Before running "
+"Nautilus, please create this folder, or set permissions such that Nautilus "
+"can create it."
+msgstr "Nautilus kunne ikke opprette den nødvendige mappen \"%s\". Opprett denne mappen før du kjører Nautilus, eller endre rettighetene slik at Nautilus kan opprette den."
+
+#: src/nautilus-application.c:280
 msgid "Couldn't Create Required Folders"
 msgstr "Kunne ikke opprette nødvendige mapper"
+
+#: src/nautilus-application.c:281
+#, c-format
+msgid ""
+"Nautilus could not create the following required folders:\n"
+"\n"
+"%s\n"
+"\n"
+"Before running Nautilus, please create these folders, or set permissions "
+"such that Nautilus can create them."
+msgstr ""
+"Nautilus kunne ikke opprette følgende nødvendige mapper:\n"
+"\n"
+"%s\n"
+"\n"
+"Vennligst opprett disse mappene før du kjører Nautilus, eller sett rettigheter slik at Nautilus kan opprette dem."
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.oaf file. This has happened when you
@@ -7762,7 +7794,7 @@ msgstr "Kunne ikke opprette nødvendige mapper"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:404
+#: src/nautilus-application.c:406
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
 "from the console may fix the problem. If not, you can try rebooting the "
@@ -7773,7 +7805,7 @@ msgstr ""
 "starte datamaskinen på nytt eller installere Nautilus en gang til."
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:410
+#: src/nautilus-application.c:412
 msgid ""
 "Nautilus can't be used now. Running the command \"nautilus-clean.sh -x\" "
 "from the console may fix the problem. If not, you can try rebooting the "
@@ -7817,12 +7849,12 @@ msgstr ""
 #. * wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:441 src/nautilus-application.c:459
-#: src/nautilus-application.c:466
+#: src/nautilus-application.c:443 src/nautilus-application.c:461
+#: src/nautilus-application.c:468
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus kan ikke brukes nå, pga en uventet feil."
 
-#: src/nautilus-application.c:442
+#: src/nautilus-application.c:444
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to register the file manager view server."
@@ -7830,7 +7862,7 @@ msgstr ""
 "Nautilus kan ikke brukes nå pga en uventet feil fra OAF under forsøk på å "
 "registrere visningstjeneren i filbehandleren."
 
-#: src/nautilus-application.c:460
+#: src/nautilus-application.c:462
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the factory.Killing oafd and restarting Nautilus may "
@@ -7840,7 +7872,7 @@ msgstr ""
 "finne factory. Du kan fikse problemet ved å drepe oafd og starte Nautilus på "
 "nytt."
 
-#: src/nautilus-application.c:467
+#: src/nautilus-application.c:469
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from OAF when "
 "attempting to locate the shell object. Killing oafd and restarting Nautilus "
@@ -7850,7 +7882,7 @@ msgstr ""
 "finne factory. Hvis du dreper oafd og starter Nautilus på nytt vil dette "
 "kunne fikse problemet."
 
-#: src/nautilus-application.c:632
+#: src/nautilus-application.c:634
 msgid ""
 "You are about to run Nautilus as root.\n"
 "\n"
@@ -7862,7 +7894,7 @@ msgstr ""
 "Du kan, som root, ødelegge ditt system hvis du ikke er forsiktig, og\n"
 "Nautilus vil ikke hindre deg i å gjøre dette."
 
-#: src/nautilus-application.c:636
+#: src/nautilus-application.c:638
 msgid "Quit"
 msgstr "Avslutt"
 
@@ -9825,13 +9857,6 @@ msgstr "%d%%"
 #~ "\n"
 #~ msgstr ""
 #~ "Disse pakkene er i ferd med å bli lastet ned og installert:\n"
-#~ "\n"
-
-#~ msgid ""
-#~ "These packages are about to be uninstalled:\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Disse pakkene er i ferd med å bli avinstallert:\n"
 #~ "\n"
 
 #~ msgid ""
