@@ -93,6 +93,8 @@ typedef struct {
 #define NAUTILUS_ICON_DND_BGIMAGE_TYPE         "property/bgimage"
 #define NAUTILUS_ICON_DND_KEYWORD_TYPE         "property/keyword"
 
+#define ERASE_KEYWORD "erase"
+
 typedef void 		(* NautilusDragEachSelectedItemDataGet)		(const char *url, 
 									 int x, int y, int w, int h, 
 									 gpointer data);

@@ -247,7 +247,28 @@ static void    nautilus_tree_view_real_scroll             (NautilusTreeView     
 							   float                  y_delta);
 
 static void    nautilus_tree_view_free_drag_data          (NautilusTreeView      *tree_view);
+static void    nautilus_tree_view_receive_dropped_icons   (NautilusTreeView      *view,
+							   GdkDragContext        *context,
+							   int                    x, 
+							   int                    y);
+static void    nautilus_tree_view_receive_dropped_keyword (NautilusTreeView      *tree_view, 
+							   char                  *keyword, 
+							   int                    x, 
+							   int                    y);
 
+static void  nautilus_tree_view_make_prelight_if_keyword (NautilusTreeView *tree_view, 
+							  int x, 
+							  int y);
+static void  nautilus_tree_view_make_prelight_if_file_operation (NautilusTreeView *tree_view, 
+								 int x, 
+								 int y);
+static void  nautilus_tree_view_ensure_drag_data (NautilusTreeView *tree_view,
+						  GdkDragContext *context,
+						  guint32 time);
+static void  nautilus_tree_view_expand_maybe_later (NautilusTreeView *tree_view,
+						    int x, 
+						    int y,
+						    gpointer user_data);
 
 
 static void nautilus_tree_view_initialize_class (NautilusTreeViewClass *klass);
@@ -1431,37 +1452,9 @@ nautilus_tree_view_drag_leave (GtkWidget *widget,
 
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
 				      "drag_leave");
-
-}
-
-static int motion_time_callback (gpointer data);
-
-static gint 
-motion_time_callback (gpointer data)
-{
-	NautilusTreeView *tree_view;
-	NautilusQueue *motion_queue;
-	int first_y;
-
-	tree_view = NAUTILUS_TREE_VIEW (data);
-
-	motion_queue = tree_view->details->dnd->motion_queue;
-
-	first_y = GPOINTER_TO_INT (nautilus_queue_remove (motion_queue));
 	
-	if (abs (first_y - tree_view->details->dnd->current_y) <= 10) {
-		int row, column;
-		/* we have almost not moved. so we can say we want to 
-		 expand the place we are in. */
-		gtk_clist_get_selection_info (GTK_CLIST (tree_view->details->tree), 
-					      tree_view->details->dnd->current_x, 
-					      tree_view->details->dnd->current_y, 
-					      &row, &column);
-		nautilus_tree_view_expand_row (GTK_CTREE (tree_view->details->tree), row);
-	}
-
-	/* never be called again for this "y" value so return FALSE */
-	return FALSE;
+	/* reinit for next dnd */
+	dnd->drag_info->got_drop_data_type = FALSE;
 }
 
 static gboolean 
@@ -1470,51 +1463,36 @@ nautilus_tree_view_drag_motion (GtkWidget *widget, GdkDragContext *context,
 {
 	NautilusTreeView *tree_view;
 	NautilusTreeViewDndDetails *dnd;
-	GtkCTreeNode *node;
-	gboolean is_directory;
+	NautilusDragInfo *drag_info;
 #if 0
 	int resulting_action;
 #endif
 	tree_view = NAUTILUS_TREE_VIEW (user_data);
 	dnd = (NautilusTreeViewDndDetails *) (tree_view->details->dnd);
+	drag_info = dnd->drag_info;
 
-	/* update for expanding the thing under us if we stay long 
-	   enough above it. */
-	dnd->current_x = x;
-	dnd->current_y = y;
-	/* add the current move to the list of moves to be tested by our
-	   timeout handler later */
-	nautilus_queue_add (dnd->motion_queue, GINT_TO_POINTER(y));
-	g_timeout_add (EXPAND_TIMEOUT, motion_time_callback, user_data);
+	/* get the data from the other side of the dnd */
+	nautilus_tree_view_ensure_drag_data (tree_view, context, time);	
 
 
-
-	/* make the thing under us prelighted. */
-	/* FIXME: we should do this only for certain kinds
-	   of drags. ie: files, keywords... not colors or backgrounds */
-	node = nautilus_tree_view_tree_node_at (NAUTILUS_TREE_VIEW (tree_view), x, y);
-	is_directory = nautilus_tree_view_is_tree_node_directory (NAUTILUS_TREE_VIEW (tree_view), node);
-
-	if (is_directory == FALSE) {
-		NautilusTreeNode *parent_node, *current_node;
-		current_node = view_node_to_model_node (tree_view, node);
-		parent_node = nautilus_tree_node_get_parent (current_node);
-		node = model_node_to_view_node (tree_view, parent_node);
-	} 
-
-	/* get the current cell's parent */
-	if (node != dnd->current_prelighted_node 
-	    && dnd->current_prelighted_node != NULL) {
-		gtk_ctree_node_set_row_style (GTK_CTREE (tree_view->details->tree), 
-					      dnd->current_prelighted_node,
-					      tree_view->details->dnd->normal_style);
+	/* prelight depending on the type of drop. */
+	if (drag_info->got_drop_data_type == TRUE) {
+		switch (drag_info->data_type) {
+		case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+		case NAUTILUS_ICON_DND_URI_LIST:
+			nautilus_tree_view_expand_maybe_later (NAUTILUS_TREE_VIEW (tree_view), x, y, user_data);
+			nautilus_tree_view_make_prelight_if_file_operation (NAUTILUS_TREE_VIEW (tree_view), x, y);
+			break;
+		case NAUTILUS_ICON_DND_KEYWORD:	
+			nautilus_tree_view_expand_maybe_later (NAUTILUS_TREE_VIEW (tree_view), x, y, user_data);
+			nautilus_tree_view_make_prelight_if_keyword (NAUTILUS_TREE_VIEW (tree_view), x, y);
+			break;
+		case NAUTILUS_ICON_DND_COLOR:
+		case NAUTILUS_ICON_DND_BGIMAGE:	
+		default:
+			break;
+		}
 	}
-	gtk_ctree_node_set_row_style (GTK_CTREE (tree_view->details->tree), 
-				      node,
-				      tree_view->details->dnd->highlight_style);
-	dnd->current_prelighted_node = node;
-
-
 
 	/* update dragging cursor. */
 	/* FIXME bugzilla.eazel.com 2417: this does not work */
@@ -1563,86 +1541,6 @@ nautilus_tree_view_drag_drop (GtkWidget *widget,
 	return TRUE;
 }
 
-
-static void
-nautilus_tree_view_receive_dropped_icons (NautilusTreeView *view,
-					  GdkDragContext *context,
-					  int x, int y)
-{
-	NautilusDragInfo *drag_info;
-	NautilusTreeView *tree_view;
-	gboolean local_move_only;
-	char *drop_target_uri;
-
-	tree_view = NAUTILUS_TREE_VIEW (view);
-	drag_info = tree_view->details->dnd->drag_info;
-
-	drop_target_uri = NULL;
-
-	if (drag_info->selection_list == NULL) {
-		return;
-	}
-
-	if (context->action == GDK_ACTION_ASK) {
-		context->action = nautilus_drag_drop_action_ask 
-			(GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
-	}
-
-	if (context->action > 0) {
-		drop_target_uri = nautilus_tree_view_find_drop_target (tree_view, 
-								       drag_info->selection_list,
-								       context, 
-								       x, y);
-		if (drop_target_uri == NULL) {
-			nautilus_drag_destroy_selection_list (drag_info->selection_list);
-			return;
-		}
-
-		local_move_only = FALSE;
-		/* calculate if we ended to drop into the orignal source... */
-		local_move_only = nautilus_drag_items_local (drop_target_uri, 
-							     drag_info->selection_list);
-		
-		/* do nothing for the local case: we do not reorder. */
-		if (!local_move_only) {
-			{
-				char *action_string;
-				switch (context->action) {
-				case GDK_ACTION_MOVE:
-					action_string = "move";
-					break;
-				case GDK_ACTION_COPY:
-					action_string = "copy";
-					break;
-				case GDK_ACTION_LINK:
-					action_string = "link";
-					break;
-				default:
-					g_assert_not_reached ();
-					action_string = "error";
-					break;
-				}
-				
-				g_print ("%s selection in %s\n", 
-					 action_string, drop_target_uri);
-			}
-			nautilus_tree_view_move_copy_files (tree_view, drag_info->selection_list, 
-							    context, drop_target_uri);
-		}
-		g_free (drop_target_uri);
-		nautilus_drag_destroy_selection_list (drag_info->selection_list);
-		drag_info->selection_list = NULL;
-	}
-}
-
-
-static void
-nautilus_tree_view_dropped_keyword (NautilusTreeView *tree_view, const char *keyword, int x, int y)
-{
-	/* FIXME: implementing this is going to be some kind of pain.
-	   Need to think about it.
-	 */
-}
 
 static void 
 nautilus_tree_view_drag_data_received (GtkWidget *widget,
@@ -1707,13 +1605,13 @@ nautilus_tree_view_drag_data_received (GtkWidget *widget,
 		case NAUTILUS_ICON_DND_BGIMAGE:
 			nautilus_background_receive_dropped_background_image
 				(nautilus_get_widget_background (widget),
-				 (char *)data);
+				 (char *)data->data);
 			gtk_drag_finish (context, FALSE, FALSE, time);
 			break;
 		case NAUTILUS_ICON_DND_KEYWORD:
-			nautilus_tree_view_dropped_keyword
+			nautilus_tree_view_receive_dropped_keyword
 				(NAUTILUS_TREE_VIEW (tree_view),
-				 (char *)data, x, y);
+				 (char *)data->data, x, y);
 			gtk_drag_finish (context, FALSE, FALSE, time);
 			break;
 		default:
@@ -1724,6 +1622,7 @@ nautilus_tree_view_drag_data_received (GtkWidget *widget,
 		
 		/* reinitialise it for the next dnd */
 		drag_info->drop_occured = FALSE;
+		drag_info->got_drop_data_type = FALSE;
 	}
 
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
@@ -1952,6 +1851,70 @@ nautilus_tree_view_motion_notify (GtkWidget *widget, GdkEventButton *event)
    -----------------------------------------------------------------------
 */
 
+static void 
+nautilus_tree_view_make_prelight_if_keyword (NautilusTreeView *tree_view, int x, int y)
+{
+	NautilusTreeViewDndDetails *dnd;
+	GtkCTreeNode *node;
+
+	g_assert (NAUTILUS_IS_TREE_VIEW (tree_view));
+	dnd = tree_view->details->dnd;
+
+	node = nautilus_tree_view_tree_node_at (NAUTILUS_TREE_VIEW (tree_view), x, y);
+
+	if (node != dnd->current_prelighted_node 
+	    && dnd->current_prelighted_node != NULL) {
+		gtk_ctree_node_set_row_style (GTK_CTREE (tree_view->details->tree), 
+					      dnd->current_prelighted_node,
+					      tree_view->details->dnd->normal_style);
+	}
+	gtk_ctree_node_set_row_style (GTK_CTREE (tree_view->details->tree), 
+				      node,
+				      tree_view->details->dnd->highlight_style);
+	dnd->current_prelighted_node = node;
+}
+
+
+static void 
+nautilus_tree_view_make_prelight_if_file_operation (NautilusTreeView *tree_view, 
+						    int x, int y)
+{
+	NautilusTreeViewDndDetails *dnd;
+	GtkCTreeNode *node;
+	gboolean is_directory;
+
+	g_assert (NAUTILUS_IS_TREE_VIEW (tree_view));
+	dnd = tree_view->details->dnd;
+
+	/* make the thing under us prelighted. */
+	/* FIXME: we should do this only for certain kinds
+	   of drags. ie: files, keywords... not colors or backgrounds */
+	node = nautilus_tree_view_tree_node_at (NAUTILUS_TREE_VIEW (tree_view), x, y);
+	is_directory = nautilus_tree_view_is_tree_node_directory (NAUTILUS_TREE_VIEW (tree_view), node);
+
+	if (is_directory == FALSE) {
+		NautilusTreeNode *parent_node, *current_node;
+		current_node = view_node_to_model_node (tree_view, node);
+		parent_node = nautilus_tree_node_get_parent (current_node);
+		node = model_node_to_view_node (tree_view, parent_node);
+	} 
+
+	if (node != dnd->current_prelighted_node 
+	    && dnd->current_prelighted_node != NULL) {
+		gtk_ctree_node_set_row_style (GTK_CTREE (tree_view->details->tree), 
+					      dnd->current_prelighted_node,
+					      tree_view->details->dnd->normal_style);
+	}
+	gtk_ctree_node_set_row_style (GTK_CTREE (tree_view->details->tree), 
+				      node,
+				      tree_view->details->dnd->highlight_style);
+	dnd->current_prelighted_node = node;
+
+}
+
+
+
+
 static void
 nautilus_tree_view_expand_row (GtkCTree *tree, int row)
 {
@@ -2064,7 +2027,6 @@ nautilus_tree_view_find_drop_target (NautilusTreeView *tree_view,
 		file = nautilus_tree_node_get_file (current_node);
 	}
 
-
 	if ( !nautilus_drag_can_accept_items 
 	     (file, selection_list)) {	
 		return NULL;
@@ -2158,9 +2120,71 @@ nautilus_tree_view_get_drag_uri  (NautilusTreeView *tree_view)
 					   tree_view->details->dnd->press_y);
 }
 
+static void
+nautilus_tree_view_ensure_drag_data (NautilusTreeView *tree_view,
+				     GdkDragContext *context,
+				     guint32 time)
+{
+	NautilusDragInfo *drag_info;
+
+	drag_info = tree_view->details->dnd->drag_info;
+
+	if (drag_info->got_drop_data_type == FALSE) {
+		gtk_drag_get_data (GTK_WIDGET (tree_view->details->tree), context,
+				   GPOINTER_TO_INT (context->targets->data),
+				   time);
+	}
+}
 
 
+static int motion_time_callback (gpointer data);
 
+static gint 
+motion_time_callback (gpointer data)
+{
+	NautilusTreeView *tree_view;
+	NautilusQueue *motion_queue;
+	int first_y;
+
+	tree_view = NAUTILUS_TREE_VIEW (data);
+
+	motion_queue = tree_view->details->dnd->motion_queue;
+
+	first_y = GPOINTER_TO_INT (nautilus_queue_remove (motion_queue));
+	
+	if (abs (first_y - tree_view->details->dnd->current_y) <= 10) {
+		int row, column;
+		/* we have almost not moved. so we can say we want to 
+		 expand the place we are in. */
+		gtk_clist_get_selection_info (GTK_CLIST (tree_view->details->tree), 
+					      tree_view->details->dnd->current_x, 
+					      tree_view->details->dnd->current_y, 
+					      &row, &column);
+		nautilus_tree_view_expand_row (GTK_CTREE (tree_view->details->tree), row);
+	}
+
+	/* never be called again for this "y" value so return FALSE */
+	return FALSE;
+}
+
+
+static void
+nautilus_tree_view_expand_maybe_later (NautilusTreeView *tree_view,
+				       int x, int y, gpointer user_data)
+{
+	NautilusTreeViewDndDetails *dnd;
+
+	g_assert (NAUTILUS_IS_TREE_VIEW (tree_view));
+	dnd = tree_view->details->dnd;
+
+	dnd->current_x = x;
+	dnd->current_y = y;
+	/* add the current move to the list of moves to be tested by our
+	   timeout handler later */
+	nautilus_queue_add (dnd->motion_queue, GINT_TO_POINTER(y));
+	g_timeout_add (EXPAND_TIMEOUT, motion_time_callback, user_data);
+
+}
 
 
 
@@ -2200,7 +2224,7 @@ auto_scroll_timeout_callback (gpointer data)
 
 	drag_info->waiting_to_autoscroll = FALSE;
 
-	nautilus_drag_autoscroll_calculate_delta (widget, &x_scroll_delta, &y_scroll_delta);
+	nautilus_drag_autoscroll_calculate_delta (tree_view->details->tree, &x_scroll_delta, &y_scroll_delta);
 
 	/* make the GtkScrolledWindow actually scroll */
 	nautilus_tree_view_real_scroll (tree_view, x_scroll_delta, y_scroll_delta);
@@ -2279,4 +2303,132 @@ nautilus_tree_view_free_drag_data (NautilusTreeView *tree_view)
 		nautilus_gtk_selection_data_free_deep (drag_info->selection_data);
 		drag_info->selection_data = NULL;
 	}
+}
+
+
+
+
+
+
+
+
+
+
+/******************************************
+ * Handle the data dropped on the tree view 
+ ******************************************/
+
+
+
+
+static void
+nautilus_tree_view_receive_dropped_icons (NautilusTreeView *view,
+					  GdkDragContext *context,
+					  int x, int y)
+{
+	NautilusDragInfo *drag_info;
+	NautilusTreeView *tree_view;
+	gboolean local_move_only;
+	char *drop_target_uri;
+
+	tree_view = NAUTILUS_TREE_VIEW (view);
+	drag_info = tree_view->details->dnd->drag_info;
+
+	drop_target_uri = NULL;
+
+	if (drag_info->selection_list == NULL) {
+		return;
+	}
+
+	if (context->action == GDK_ACTION_ASK) {
+		context->action = nautilus_drag_drop_action_ask 
+			(GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
+	}
+
+	if (context->action > 0) {
+		drop_target_uri = nautilus_tree_view_find_drop_target (tree_view, 
+								       drag_info->selection_list,
+								       context, 
+								       x, y);
+		if (drop_target_uri == NULL) {
+			nautilus_drag_destroy_selection_list (drag_info->selection_list);
+			return;
+		}
+
+		local_move_only = FALSE;
+		/* calculate if we ended to drop into the orignal source... */
+		local_move_only = nautilus_drag_items_local (drop_target_uri, 
+							     drag_info->selection_list);
+		
+		/* do nothing for the local case: we do not reorder. */
+		if (!local_move_only) {
+			{
+				char *action_string;
+				switch (context->action) {
+				case GDK_ACTION_MOVE:
+					action_string = "move";
+					break;
+				case GDK_ACTION_COPY:
+					action_string = "copy";
+					break;
+				case GDK_ACTION_LINK:
+					action_string = "link";
+					break;
+				default:
+					g_assert_not_reached ();
+					action_string = "error";
+					break;
+				}
+				
+				g_print ("%s selection in %s\n", 
+					 action_string, drop_target_uri);
+			}
+			nautilus_tree_view_move_copy_files (tree_view, drag_info->selection_list, 
+							    context, drop_target_uri);
+		}
+		g_free (drop_target_uri);
+		nautilus_drag_destroy_selection_list (drag_info->selection_list);
+		drag_info->selection_list = NULL;
+	}
+}
+
+/* handle dropped keywords */
+static void
+nautilus_tree_view_receive_dropped_keyword (NautilusTreeView *tree_view, char* keyword, int x, int y)
+{
+	GList *keywords, *word;
+	GtkCTreeNode *view_node;
+	NautilusTreeNode *model_node;
+
+	NautilusFile *file;
+	
+	g_assert (keyword != NULL);
+
+	/* find the item we hit with our drop, if any */
+
+	view_node = nautilus_tree_view_tree_node_at (tree_view, x, y);
+	model_node = view_node_to_model_node (tree_view, view_node);
+
+	file = nautilus_tree_node_get_file (model_node);
+
+	/* special case the erase emblem */
+	if (!nautilus_strcmp (keyword, ERASE_KEYWORD)) {
+		keywords = NULL;
+	} else {
+		keywords = nautilus_file_get_keywords (file);
+		word = g_list_find_custom (keywords, keyword, (GCompareFunc) strcmp);
+		if (word == NULL) {
+			keywords = g_list_append (keywords, g_strdup (keyword));
+		} else {
+			keywords = g_list_remove_link (keywords, word);
+			g_free (word->data);
+			g_list_free (word);
+		}
+	}
+	
+	nautilus_file_set_keywords (file, keywords);
+
+#if 0
+	nautilus_icon_container_update_icon (container, drop_target_icon);
+#endif
 }

@@ -1,3 +1,13 @@
+2000-09-08  Mathieu Lacage  <mathieu@eazel.com>
+
+	* components/tree/nautilus-tree-view.c: fix many bugs.
+	The tree view now receives drops as colors, backgrounds,
+	and emblems. I am supposed to remove emblems per Arlo
+	request but will do so later after having moved the code 
+	to the list view.
+	* libnautilus-extensions/nautilus-drag.h: add a shared 
+	declaration
+
 2000-09-08  Arlo Rose  <arlo@eazel.com>
 
 	* icons/i-web-72.png:
