@@ -28,6 +28,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <libtrilobite/trilobite-core-utils.h>
+
 #undef _MD5_STANDALONE
 
 
@@ -339,9 +341,14 @@ md5_get_digest_from_file (const char *filename, unsigned char digest[16])
 	int nb_bytes_read;
 	FILE *fp;
 
+	if (filename == NULL) {
+		return;
+	}
+
 	md5_init (&ctx);
 	fp = fopen(filename, "r");
 	if (!fp) {
+		trilobite_debug ("could not open \"%s\" for md5 digest", filename);
 		return;
 	}
 	

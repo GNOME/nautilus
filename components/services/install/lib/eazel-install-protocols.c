@@ -547,7 +547,6 @@ eazel_install_fetch_package (EazelInstall *service,
 		targetname = g_strdup_printf ("%s/%s",
 					      eazel_install_get_tmp_dir (service),
 					      filename_from_url (url));
-		trilobite_debug ("%s resolved", package->name);
 #ifndef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
 		result = eazel_install_fetch_file (service, url, package->name, targetname);
 #else /*  EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
@@ -559,6 +558,7 @@ eazel_install_fetch_package (EazelInstall *service,
 #endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 		if (result) {
 			packagedata_fill_from_file (package, targetname); 
+			trilobite_debug ("%s resolved", package->name);
 		} else {
 			g_warning (_("File download failed"));
 			unlink (targetname);

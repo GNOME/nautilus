@@ -299,27 +299,27 @@ tree_helper (EazelInstallCallback *service,
 	case PACKAGE_DEPENDENCY_FAIL:
 		fprintf (stdout, "%s%s%s, which FAILED\n", 
 			 indent,  indent_type, 
-			 rpmfilename_from_packagedata (pd));
+			 rpmname_from_packagedata (pd));
 		break;
 	case PACKAGE_CANNOT_OPEN:
 		fprintf (stdout, "%s%s%s,which was NOT FOUND\n", 
 			 indent,  indent_type,
-			 rpmfilename_from_packagedata (pd));
+			 rpmname_from_packagedata (pd));
 		break;		
 	case PACKAGE_SOURCE_NOT_SUPPORTED:
 		fprintf (stdout, "%s%s%s, which is a source package\n", 
 			 indent,  indent_type,
-			 rpmfilename_from_packagedata (pd));
+			 rpmname_from_packagedata (pd));
 		break;
 	case PACKAGE_BREAKS_DEPENDENCY:
 		fprintf (stdout, "%s%s%s, which breaks deps\n", 
 			 indent,  indent_type,
-			 rpmfilename_from_packagedata (pd));
+			 rpmname_from_packagedata (pd));
 		break;
 	case PACKAGE_FILE_CONFLICT:
 		fprintf (stdout, "%s%s%s, which has file conflict\n", 
 			 indent,  indent_type,
-			 rpmfilename_from_packagedata (pd));
+			 rpmname_from_packagedata (pd));
 		break;
 	default:
 		fprintf (stdout, "%s%s%s-%s %s(status %d)\n", 

@@ -1,3 +1,58 @@
+2000-10-04  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (tree_helper):
+	Just print the rpmname and not the file anme
+	* components/services/install/lib/eazel-install-md5.c:
+	(md5_get_digest_from_file):
+	Handle filename==null
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_emit_dependency_check_default):
+	Hack that should be removed when 3460 is fixed
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_package):
+	Indention...
+	
+	* components/services/install/lib/eazel-install-query.c:
+	(eazel_install_simple_query):
+	Variable init
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_pre_install_packages),
+	(eazel_install_download_packages),
+	(eazel_install_check_for_file_conflicts),
+	(eazel_install_monitor_subcommand_pipe),
+	(eazel_install_do_transaction_md5_check),
+	(eazel_install_prepare_package_system),
+	(eazel_install_free_package_system),
+	(eazel_install_check_existing_packages),
+	(eazel_install_fetch_dependencies),
+	(eazel_install_do_rpm_dependency_check),
+	(eazel_install_do_file_conflict_check),
+	(eazel_install_do_dependency_check), (eazel_install_ensure_deps),
+	(eazel_uninstall_upward_traverse),
+	(eazel_uninstall_downward_traverse),
+	(eazel_uninstall_check_for_install):
+	Variable init, removed some old fixme comments.
+	Fixed 3373. Slightly better packagesystem modularity now.
+	
+	* components/services/install/lib/eazel-install-rpm-signature.c:
+	(trilobite_check_rpm_signature):
+	variable init.
+	* components/services/install/lib/eazel-install-types.c:
+	(packagedata_new), (packagedata_fill_from_rpm_header),
+	(packagedata_fill_from_file), (packagedata_destroy),
+	Fixed 3458.
+	Fixed 3465.
+	(packagedata_modstatus_enum_to_str),
+	(packagedata_modstatus_str_to_enum):
+	Var initializing.
+	
+	* nautilus-installer/src/Makefile:
+	Yeah..
+	
 2000-10-04  Andy Hertzfeld  <andy@eazel.com>
 
 	* icons/i-music.png:

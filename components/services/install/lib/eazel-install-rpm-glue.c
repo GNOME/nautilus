@@ -172,6 +172,7 @@ eazel_install_pre_install_packages (EazelInstall *service,
 			g_list_foreach (pack->modifies, 
 					(GFunc)packagedata_destroy, 
 					GINT_TO_POINTER (TRUE));
+			g_list_free (pack->modifies);
 			pack->modifies = NULL;
 
 			/* Add it to the list of packages to nuke at the end
@@ -319,6 +320,7 @@ eazel_install_download_packages (EazelInstall *service,
 				g_list_foreach (package->modifies, 
 						(GFunc)packagedata_destroy, 
 						GINT_TO_POINTER (TRUE));
+				g_list_free (package->modifies);
 				package->modifies = NULL;
 				/* don't fecth the package */
 				fetch_package = FALSE;
@@ -330,7 +332,7 @@ eazel_install_download_packages (EazelInstall *service,
 		} 
 
 		if (fetch_package) {
-			/* FIXME: bugzilla.eazel.com
+			/* FIXME: bugzilla.eazel.com 3413
 			   Ugh, this isn't very nice. Not that there's a chance
 			   that any package will have the name "id%3D", but... */
 			if (strncmp (package->name, "id%3D", 5) == 0) {
@@ -424,6 +426,7 @@ eazel_install_check_for_file_conflicts (EazelInstall *service,
 						(GCompareFunc)eazel_install_package_name_compare)) {
 				trilobite_debug ("already breaking %s", owner->name);
 				packagedata_destroy (owner, FALSE);
+				owner = NULL;
 				continue;
 			}
 
@@ -991,6 +994,7 @@ eazel_install_monitor_subcommand_pipe (EazelInstall *service,
 				       int fd, 
 				       GIOFunc monitor_func)
 {
+	int result = 0;
 	GIOChannel *channel;
 
 	service->private->subcommand_running = TRUE;
@@ -1008,11 +1012,10 @@ eazel_install_monitor_subcommand_pipe (EazelInstall *service,
 
 	switch (eazel_install_get_package_system (service)) {
 	case EAZEL_INSTALL_USE_RPM:
-		return service->private->packsys.rpm.packages_installed;
+		result =  service->private->packsys.rpm.packages_installed;
 		break;
-	default:
-		return 0;
 	}
+	return result;
 }
 
 static gboolean
@@ -1041,6 +1044,8 @@ eazel_install_do_transaction_md5_check (EazelInstall *service,
 
 			if (memcmp (pmd5, md5, 16) != 0) {
 				g_warning (_("MD5 mismatch, package %s may be compromised"), pack->name);
+				trilobite_debug ("read md5 from file %s", pack->filename);
+				trilobite_debug ("for package %s version %s", pack->name, pack->version);
 				eazel_install_emit_md5_check_failed (service, 
 								     pack, 
 								     md5_get_string_from_md5_digest (md5));
@@ -1397,16 +1402,13 @@ eazel_install_prepare_rpm_system(EazelInstall *service)
 gboolean
 eazel_install_prepare_package_system (EazelInstall *service)
 {
-	gboolean result;
+	gboolean result = FALSE;
 
 	trilobite_debug (_("Preparing package system"));
 
 	switch (eazel_install_get_package_system (service)) {
 	case EAZEL_INSTALL_USE_RPM:
 		result = eazel_install_prepare_rpm_system (service);	       
-		break;
-	default:
-		result = FALSE;
 		break;
 	}
 	return result;
@@ -1415,14 +1417,11 @@ eazel_install_prepare_package_system (EazelInstall *service)
 gboolean
 eazel_install_free_package_system (EazelInstall *service)
 {
-	gboolean result;
+	gboolean result = FALSE;
 
 	switch (eazel_install_get_package_system (service)) {
 	case EAZEL_INSTALL_USE_RPM:
 		result = eazel_install_free_rpm_system (service);	       
-		break;
-	default:
-		result = FALSE;
 		break;
 	}
 	return result;
@@ -1612,6 +1611,7 @@ eazel_install_check_existing_packages (EazelInstall *service,
 						(GCompareFunc)eazel_install_package_name_compare)) {
 				trilobite_debug ("%s already marked as modified", existing_package->name);
 				packagedata_destroy (existing_package, TRUE);
+				existing_package = NULL;
 				continue;
 			}
 			pack->modifies = g_list_prepend (pack->modifies, existing_package);
@@ -1738,15 +1738,12 @@ eazel_install_check_if_related_package (EazelInstall *service,
 	return result;
 }
 
-/* FIXME bugzilla.eazel.com 1698:
-   This function needs some refactoring. It's getting too huge */
 static gboolean
-eazel_install_fetch_rpm_dependencies (EazelInstall *service, 
-				      GList **packages,
-				      GList **extrapackages,
-				      GList **failedpackages,
-				      GList *requirements)
-
+eazel_install_fetch_dependencies (EazelInstall *service, 
+				  GList **packages,
+				  GList **extrapackages,
+				  GList **failedpackages,
+				  GList *requirements)
 {
 	GList *iterator;
 	/* Contains the packages downloaded when handling the list of requirements */
@@ -1763,6 +1760,9 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 		PackageData *pack = req->package;
 		PackageData *dep = req->required;
 
+		/* Emit the signal here, since then we won't have to make that
+		   call in for every package system (when I say every, we know
+		   I mean "both"...) */
 		eazel_install_emit_dependency_check (service, pack, dep);
 		pack->soft_depends = g_list_prepend (pack->soft_depends, dep);
 
@@ -1777,16 +1777,20 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 			/* Check if a previous requirement download solved this
 			   Note, we don't check till after download, since only a download
 			   will reveal the packagename in case we need to download
-			   using fetch_package_which_provides.
+			   using fetch_package using the pack->provides.
 			   This is a paranoia check in addition to a check done
-			   in do_dependency_check */
+			   in do_dependency_check, since a dep check might say
+			   that we require two files that are provided by the same
+			   package, and we only want to get the package once.
+			   Eg. nautilus requires libgconf-gtk-1.so and libgconf-1.so,
+			   both provided by gconf, so we fetch gconf twice */
 			if (g_list_find_custom (extras_in_this_batch,
 						dep->name,
 						(GCompareFunc)eazel_install_package_name_compare)) {
 				trilobite_debug ("already handled %s", dep->name);
 				trilobite_debug ("This verifies the existence of 5 lines of code...");
-				packagedata_remove_soft_dep (dep, pack);
-				packagedata_destroy (dep, FALSE);
+				packagedata_remove_soft_dep (dep, pack); 
+				dep = NULL;
 				continue;
 			}
 
@@ -1869,31 +1873,6 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 	}
 }
 
-static gboolean
-eazel_install_fetch_dependencies (EazelInstall *service, 
-				  GList **packages,
-				  GList **extrapackages,
-				  GList **failedpackages,
-				  GList *requirements)
-{
-	gboolean result;
-
-	switch (eazel_install_get_package_system (service)) {
-	case EAZEL_INSTALL_USE_RPM:
-		result = eazel_install_fetch_rpm_dependencies (service, 
-							       packages,
-							       extrapackages,
-							       failedpackages,
-							       requirements);
-		break;
-	default:
-		result = FALSE;
-		break;
-	}
-	
-	return result;
-}
-
 static void
 dump_one_package (PackageData *pack, char *prefix)
 {
@@ -1967,6 +1946,7 @@ print_package_list (char *str, GList *packages, gboolean show_deps)
 	}
 }
 
+/* This is the function to do the RPM system dependency check */
 static void
 eazel_install_do_rpm_dependency_check (EazelInstall *service,
 				       GList **packages,
@@ -1979,6 +1959,8 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 	struct rpmDependencyConflict *conflicts;
 	struct rpmDependencyConflict conflict;
 	rpmdb db;
+
+	trilobite_debug ("eazel_install_do_rpm_dependency_check");
 
 	db = (rpmdb)g_hash_table_lookup (service->private->packsys.rpm.dbs,
 					 service->private->cur_root);
@@ -2110,20 +2092,28 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 			}
 		}
 		
-		/* Check if a previous conflict solve has fixed this conflict. */
-		if (g_list_find_custom (*requirements,
-					dep,
-					(GCompareFunc)eazel_install_requirement_dep_compare)) {
-			trilobite_debug ("Already created requirement for %s", dep->name);
-			packagedata_destroy (dep, FALSE);
-			dep = NULL;
-		}
 		
 		if (pack && dep) {
-			/* We've got both ? Hopefully... */
-			PackageRequirement *req;
-			req = packagerequirement_new (pack, dep);
-			(*requirements) = g_list_prepend (*requirements, req);
+			/* Check if a previous conflict solve has fixed this conflict. */
+			if (g_list_find_custom (*requirements,
+						dep,
+						(GCompareFunc)eazel_install_requirement_dep_compare)) {
+				trilobite_debug ("Already created requirement for %s", dep->name);
+				packagedata_destroy (dep, FALSE);
+				dep = NULL;
+			} else {
+				PackageRequirement *req;
+				req = packagerequirement_new (pack, dep);				
+				(*requirements) = g_list_prepend (*requirements, req);
+				/* debug output code */
+				if (dep->name) {
+					trilobite_debug ("%s requires package %s", pack->name, dep->name);
+				} else {
+					trilobite_debug ("%s requires file %s", 
+							 pack->name, 
+							 (char*)dep->provides->data);
+				}
+			}
 		} else {
 			/* We shouldn't end here */
 			g_assert_not_reached ();
@@ -2133,29 +2123,17 @@ eazel_install_do_rpm_dependency_check (EazelInstall *service,
 	rpmdepFreeConflicts (conflicts, num_conflicts);
 }
 
-/* 
-   Use package system to do the dependency check
- */
+/*
+  Helperfunction to create PackageRequirements for fileconflicts. Should be
+  used for packagesystems that don't do this (eg. RPM) */
 static void
-eazel_install_do_dependency_check (EazelInstall *service,
-				   GList **packages,
-				   GList **failedpackages,
-				   GList **requirements)
+eazel_install_do_file_conflict_check (EazelInstall *service,
+				      GList **packages,
+				      GList **failedpackages,
+				      GList **requirements)
 {
 	GList *iterator;
 	GList *tmp_failed = NULL;
-
-	trilobite_debug ("into eazel_install_do_dependency_check");
-
-	switch (eazel_install_get_package_system (service)) {
-	case EAZEL_INSTALL_USE_RPM: {
-		eazel_install_do_rpm_dependency_check (service, 
-						       packages,
-						       failedpackages,
-						       requirements);
-	}
-	break;
-	}	
 
 	/* Now do file conflicts on all packages */
 	for (iterator = *packages; iterator; glist_step (iterator)) {
@@ -2191,6 +2169,32 @@ eazel_install_do_dependency_check (EazelInstall *service,
 	}
 }
 
+/* 
+   Use package system to do the dependency check
+ */
+static void
+eazel_install_do_dependency_check (EazelInstall *service,
+				   GList **packages,
+				   GList **failedpackages,
+				   GList **requirements)
+{
+	switch (eazel_install_get_package_system (service)) {
+	case EAZEL_INSTALL_USE_RPM: {
+		eazel_install_do_rpm_dependency_check (service, 
+						       packages,
+						       failedpackages,
+						       requirements);
+		/* RPM's depCheck doens't do fileconflicts, so we do
+		   them ourselves */
+		eazel_install_do_file_conflict_check (service, 
+						      packages,
+						      failedpackages,
+						      requirements);
+	}
+	break;
+	}	
+}
+
 /*
   Given a glist of PackageData's, ensure_deps_are_fetched checks deps
   for them all, if deps fail, fetch the depency and add to packages.
@@ -2217,100 +2221,99 @@ eazel_install_ensure_deps (EazelInstall *service,
 	   The datastructures depend on the packagesystem,
 	   and are places in service->private->packsys.
 	*/
-	/* Weak attempt at making it easy to extend to other
-	   package formats (debian). 
-	*/
-	switch (eazel_install_get_package_system (service)) {
-	case EAZEL_INSTALL_USE_RPM: {
 		
-		eazel_install_do_dependency_check (service, 
-						   packages, 
-						   failedpackages,
-						   &requirements);		
-
-		if (requirements != NULL) {
-			GList *extrapackages;
-			GList *iterator;
-
-			extrapackages = NULL;
-
-			/* For all the packages, set state to partly_resolved. */
-			for (iterator=*packages; iterator; iterator = g_list_next (iterator)) {
-				PackageData *pack;
-				pack = (PackageData*)iterator->data;
-				pack->status = PACKAGE_PARTLY_RESOLVED;
-			}
-
-			trilobite_debug ("%d dependency failure(s)", g_list_length (requirements));
-			
-			/* Fetch the needed stuff. 
-			   "extrapackages" gets the new packages added,
-			   packages in "failedpackages" are packages moved from 
-			   "packages" that could not be resolved. */
-			eazel_install_fetch_dependencies (service, 
-							  packages,
-							  &extrapackages,
-							  failedpackages,
-							  requirements);
-
-			/* Some debug printing */
-			print_package_list ("Packages to install (a)", *packages, FALSE);
-			print_package_list ("Packages that were fetched", extrapackages, FALSE);
-			print_package_list ("Packages that failed", *failedpackages, TRUE);		       		       
-
-			/* If there was failedpackages, prune them from the tree 
-			   and the "extrapackages".
-			   We need to strip from "extrapackages" as well, since :
-			   while installing A & B, C was added for A, D was
-			   added for B but B also needs E (but not found). Therefore
-			   we strip D from "extrapackages" and B is stripped
-			   from "packages". Keeping D around would
-			   install a non-needed package
-			*/
-			if (*failedpackages) {
-				GList *iterator;
-				
-				for (iterator = *failedpackages; iterator; iterator = g_list_next (iterator)) {
-					PackageData *pack;
-					pack = (PackageData*)iterator->data;
-					eazel_install_prune_packages (service, pack, packages, 
-								      &extrapackages, NULL);
-				}			
-			} 
-			if (extrapackages) {
-				GList *iterator;
-
-				/* Add to "packages" */
-				for (iterator = extrapackages; iterator; iterator = g_list_next (iterator)) {
-					(*packages) = g_list_append (*packages, iterator->data);
-				}
-				
-				/* Now recurse into eazel_install_ensure_deps with
-				   the new "packages" list */
-				eazel_install_ensure_deps (service, packages, failedpackages);
-
-				/* Now remove the packages that failed from "packages" 
-				   and copy them into "failedpackages".  */
-				for (iterator = *failedpackages; iterator; iterator = g_list_next (iterator)) {
-					PackageData *pack;
-					pack = (PackageData*)iterator->data;
-					(*packages) = g_list_remove (*packages, pack);					
-				}
-			}
-dump_packages (*packages);
-		} else {
-			GList *iterator;
-
-			/* Deps are fine, set all packages to resolved */
-			for (iterator=*packages; iterator; iterator = g_list_next (iterator)) {
-				PackageData *pack;
-				pack = (PackageData*)iterator->data;
-				pack->status = PACKAGE_RESOLVED;
-			}
-			trilobite_debug (_("Dependencies are ok"));
+	eazel_install_do_dependency_check (service, 
+					   packages, 
+					   failedpackages,
+					   &requirements);		
+	
+	if (requirements != NULL) {
+		GList *extrapackages;
+		GList *iterator;
+		
+		extrapackages = NULL;
+		
+		/* For all the packages, set state to partly_resolved. */
+		for (iterator=*packages; iterator; iterator = g_list_next (iterator)) {
+			PackageData *pack;
+			pack = (PackageData*)iterator->data;
+			pack->status = PACKAGE_PARTLY_RESOLVED;
 		}
-	}
-	break;
+		
+		trilobite_debug ("%d dependency failure(s)", g_list_length (requirements));
+		
+		/* Fetch the needed stuff. 
+		   "extrapackages" gets the new packages added,
+		   packages in "failedpackages" are packages moved from 
+		   "packages" that could not be resolved. */
+		eazel_install_fetch_dependencies (service, 
+						  packages,
+						  &extrapackages,
+						  failedpackages,
+						  requirements);
+
+		/* Delete the PackageRequirements.
+		   Note, that we just need to free the structure, both elements
+		   are kept, req->package in extrapackages or failedpackages and
+		   req->required will be in req->package's breaks/soft_depends.
+		*/
+		g_list_foreach (requirements, (GFunc)g_free, NULL);
+		
+		/* Some debug printing */
+		print_package_list ("Packages to install (a)", *packages, FALSE);
+		print_package_list ("Packages that were fetched", extrapackages, FALSE);
+		print_package_list ("Packages that failed", *failedpackages, TRUE);		       		       
+		
+		/* If there was failedpackages, prune them from the tree 
+		   and the "extrapackages".
+		   We need to strip from "extrapackages" as well, since :
+		   while installing A & B, C was added for A, D was
+		   added for B but B also needs E (but not found). Therefore
+		   we strip D from "extrapackages" and B is stripped
+		   from "packages". Keeping D around would
+		   install a non-needed package
+		*/
+		if (*failedpackages) {
+			GList *iterator;
+			
+			for (iterator = *failedpackages; iterator; iterator = g_list_next (iterator)) {
+				PackageData *pack;
+				pack = (PackageData*)iterator->data;
+				eazel_install_prune_packages (service, pack, packages, 
+							      &extrapackages, NULL);
+			}			
+		} 
+		if (extrapackages) {
+			GList *iterator;
+			
+			/* Add to "packages" */
+			for (iterator = extrapackages; iterator; iterator = g_list_next (iterator)) {
+				(*packages) = g_list_append (*packages, iterator->data);
+			}
+			
+			/* Now recurse into eazel_install_ensure_deps with
+			   the new "packages" list */
+			eazel_install_ensure_deps (service, packages, failedpackages);
+			
+			/* Now remove the packages that failed from "packages" 
+			   and copy them into "failedpackages".  */
+			for (iterator = *failedpackages; iterator; iterator = g_list_next (iterator)) {
+				PackageData *pack;
+				pack = (PackageData*)iterator->data;
+				(*packages) = g_list_remove (*packages, pack);					
+			}
+		}
+		dump_packages (*packages);
+	} else {
+		GList *iterator;
+		
+		/* Deps are fine, set all packages to resolved */
+		for (iterator=*packages; iterator; iterator = g_list_next (iterator)) {
+			PackageData *pack;
+			pack = (PackageData*)iterator->data;
+			pack->status = PACKAGE_RESOLVED;
+		}
+		trilobite_debug (_("Dependencies are ok"));
 	}
 	      
 	return result;
@@ -2366,6 +2369,7 @@ eazel_uninstall_upward_traverse (EazelInstall *service,
 						(GCompareFunc)eazel_install_package_name_compare)) {
 				trilobite_debug ("skip %s", requiredby->name);
 				packagedata_destroy (requiredby, TRUE);
+				requiredby = NULL;
 				continue;
 			}
 
@@ -2476,7 +2480,8 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 						    g_list_find_custom (*packages, isrequired->name,
 									(GCompareFunc)eazel_install_package_name_compare)) {
 							trilobite_debug ("skipped %s", isrequired->name);
-							packagedata_destroy (isrequired, TRUE);
+							packagedata_destroy (isrequired, TRUE);\
+							isrequired = NULL;
 							continue;
 						}		
 						trilobite_debug ("** %s requires %s", pack->name, isrequired->name);
@@ -2503,7 +2508,10 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 								g_list_foreach (third_matches, 
 										(GFunc)packagedata_destroy, 
 										GINT_TO_POINTER (TRUE));
+								g_list_free (third_matches);
+								third_matches = NULL;
 								packagedata_destroy (isrequired, TRUE);
+								isrequired = NULL;
 							} else {
 								trilobite_debug ("Also nuking %s", isrequired->name);
 								tmp_requires = g_list_prepend (tmp_requires, 
@@ -2525,6 +2533,7 @@ eazel_uninstall_downward_traverse (EazelInstall *service,
 		}
 		g_list_foreach (matches, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
 		g_list_free (matches);
+		matches = NULL;
 	}
 
 	if (tmp_requires) {
@@ -2581,13 +2590,15 @@ eazel_uninstall_check_for_install (EazelInstall *service,
 		(*packages) = g_list_remove (*packages, iterator->data);
 		(*failed) = g_list_prepend (*failed, iterator->data);
 	}
+	g_list_free (remove);
+	remove = NULL;
+
 	trilobite_debug ("g_list_length (*packages) = %d", g_list_length (*packages)); 
 	trilobite_debug ("g_list_length (result) = %d", g_list_length (result)); 
+
 	g_list_foreach (*packages, (GFunc)packagedata_destroy, FALSE);
-	g_list_free (remove);
 	g_list_free (*packages);
-	(*packages) = g_list_copy (result);
-	g_list_free (result);
+	(*packages) = result;
 
 	trilobite_debug ("out eazel_uninstall_check_for_install");
 }

@@ -137,6 +137,7 @@ packagedata_new ()
 	pack->status = PACKAGE_UNKNOWN_STATUS;
 	pack->modify_status = PACKAGE_MOD_UNTOUCHED;
 	pack->md5 = NULL;
+	pack->packsys_struc = NULL;
 	return pack;
 }
 
@@ -232,6 +233,7 @@ packagedata_fill_from_rpm_header (PackageData *pack,
 
 	g_list_foreach (pack->provides, (GFunc)g_free, NULL);
 	g_list_free (pack->provides);
+	pack->provides = NULL;
 
 	{
 		char **paths = NULL;
@@ -286,15 +288,26 @@ packagedata_new_from_file (const char *file)
 
 /* FIXME bugzilla.eazel.com 1532:
    RPM specific code */
+/* 
+   This fills the fields from a given file.
+*/
 gboolean 
 packagedata_fill_from_file (PackageData *pack, const char *filename)
 {
 	static FD_t fd;
 	Header *hd;
 
+	/* Set filename field */
+	if (pack->filename != filename) {
+		g_free (pack->filename);
+		pack->filename = g_strdup (filename);
+	}
+
 	/* Already loaded a packsys struc ? */
 	if (pack->packsys_struc) {
-		return TRUE;
+		/* FIXME bugzilla.eazel.com
+		   This probably is a leak... */
+		g_free (pack->packsys_struc);
 	}
 
 	/* Open rpm */
@@ -311,12 +324,6 @@ packagedata_fill_from_file (PackageData *pack, const char *filename)
 	rpmReadPackageHeader (fd, hd, &pack->source_package, NULL, NULL);
 	packagedata_fill_from_rpm_header (pack, hd);	
 
-	/* Set filename field */
-	if (pack->filename != filename) {
-		g_free (pack->filename);
-		pack->filename = g_strdup (filename);
-	}
-
 	pack->status = PACKAGE_UNKNOWN_STATUS;
 
 	fdClose (fd);
@@ -328,7 +335,18 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 {
 #ifdef DEBUG_PACKAGE_ALLOCS
 	package_allocs --;
-	trilobite_debug ("package_allocs = %d (0x%x) %s", package_allocs, pack, pack ? pack->name: "?");
+	if (pack) {
+		if (pack->name) {
+			trilobite_debug ("package_allocs = %d (0x%x) %s", package_allocs, pack,pack->name);
+		} else if (pack->provides) {
+			trilobite_debug ("package_allocs = %d (0x%x) providing %s", package_allocs, pack,
+					 (char*)pack->provides->data);
+		} else {
+			trilobite_debug ("package_allocs = %d (0x%x) ?", package_allocs, pack);
+		}
+	} else {
+		trilobite_debug ("package_allocs = %d (0x%x) ??", package_allocs, pack);
+	}
 #endif /* DEBUG_PACKAGE_ALLOCS */
 
 
@@ -355,7 +373,7 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 	pack->install_root = NULL;
 	g_free (pack->md5);
 	pack->md5 = NULL;
-	g_list_foreach (pack->provides, (GFunc)g_free, NULL);
+	g_list_foreach (pack->provides, (GFunc)g_free, NULL); 
 	pack->provides = NULL;
 
 	if (deep) {
@@ -378,7 +396,6 @@ packagedata_destroy (PackageData *pack, gboolean deep)
 	}
 
 	g_free (pack);
-	pack = NULL;
 }
 
 void 
@@ -546,10 +563,8 @@ packagedata_modstatus_enum_to_str (PackageSystemStatus st)
 		result = g_strdup ("UNINSTALLED");
 		break;
 	case PACKAGE_MOD_UNTOUCHED:
-		result = g_strdup ("UNTOUCHED");
-		break;
 	default:
-		result = NULL;
+		result = g_strdup ("UNTOUCHED");
 		break;
 	}
 	return result;
@@ -567,7 +582,9 @@ packagedata_modstatus_str_to_enum (const char *st)
 	else if (strcmp (st, "UNINSTALLED")==0) { result = PACKAGE_MOD_UNINSTALLED; } 
 	else if (strcmp (st, "UPGRADED")==0) { result = PACKAGE_MOD_UPGRADED; } 
 	else if (strcmp (st, "DOWNGRADED")==0) { result = PACKAGE_MOD_DOWNGRADED; } 
-	else { result = PACKAGE_MOD_UNTOUCHED; }
+	else { 
+		result = PACKAGE_MOD_UNTOUCHED;
+	}
 
 	return result;
 }

@@ -139,13 +139,11 @@ eazel_install_simple_query (EazelInstall *service,
 			    int neglist_count, 
 			    ...)
 {
-	GList *result;
-	GList *remove;
-	GList *iterator;
-	GList *root_dirs;
-	GHashTable *names_to_ignore;
-
-	names_to_ignore = NULL; /* make compiler happy */
+	GList *result = NULL;
+	GList *remove = NULL;
+	GList *iterator = NULL;
+	GList *root_dirs = NULL;
+	GHashTable *names_to_ignore = NULL;
 
 	if (neglist_count) {
 		int i;
@@ -165,8 +163,6 @@ eazel_install_simple_query (EazelInstall *service,
 			}
 		}
 	}
-
-	result = NULL;
 
 	/* query in one root ? */
 	if (service->private->cur_root) {

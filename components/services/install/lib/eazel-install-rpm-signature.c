@@ -240,7 +240,7 @@ trilobite_check_rpm_signature (const char *filename, const char *keyring_filenam
 	int key_fd = -1;
 	int rpm_fd = -1;
 	int stdin_fd, stdout_fd, stderr_fd;
-	char *temp_filename;
+	char *temp_filename = NULL;
 	char *p;
 	char *signature = NULL;
 	int err;
@@ -254,10 +254,9 @@ trilobite_check_rpm_signature (const char *filename, const char *keyring_filenam
 			 NULL };
 	char buffer[1024];
 	char line[128];
-	FILE *gnupg_file;
+	FILE *gnupg_file = NULL;
 
 	*signer_name = NULL;
-	temp_filename = NULL;
 
 	/* read the signature out of the RPM */
 	rpm_fd = open (filename, O_RDONLY);

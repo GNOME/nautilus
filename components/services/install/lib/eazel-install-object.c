@@ -1219,6 +1219,13 @@ eazel_install_emit_dependency_check_default (EazelInstall *service,
 		corbapack = corba_packagedatastruct_from_packagedata (pack);
 		corbaneeds = corba_packagedatastruct_from_packagedata (needs);
 
+		/* FIXME: bugzilla.eazel.com 3460
+		   once 3460 is fixed, remove this hack */
+		if (needs->name == NULL && needs->provides) {
+			CORBA_free (corbaneeds->name);
+			corbaneeds->name = CORBA_string_dup (needs->provides->data);
+		}
+
 		Trilobite_Eazel_InstallCallback_dependency_check (service->callback, 
 								  corbapack, 
 								  corbaneeds, &ev);	
