@@ -1,3 +1,24 @@
+2000-05-23  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus/nautilus-undo-context.c:
+	(impl_Nautilus_Undo_Context__get_undo_manager):
+	Added call to CORBA_Object_duplicate().  This
+	fixed an explosive bug.
+	
+	* libnautilus/nautilus-undo-manager.c:
+	* libnautilus/nautilus-undo-manager.h:
+	(nautilus_undo_manager_stash_global_undo),
+	(nautilus_undo_manager_get_global_undo):
+	New functions to save application global instance of Nautilus_Undo_Manager
+	
+	* src/ntl-app.c: (nautilus_app_init):
+	Add call to nautilus_undo_manager_stash_global_undo.
+	
+	* src/ntl-view.c:
+	(nautilus_view_frame_load_client):
+	Coonected Nautilus_Undo_Context interface to view frame.
+	
+
 2000-05-23  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* icons/Makefile.am:

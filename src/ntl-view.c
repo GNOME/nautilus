@@ -293,10 +293,10 @@ nautilus_view_frame_construct_arg_set(NautilusViewFrame *view)
   if(view->construct_arg_count >= nca)
     return;
 
-  view->construct_arg_count++;
-  if((view->construct_arg_count >= nca)
-     && klass->view_constructed)
-    klass->view_constructed(view);
+	view->construct_arg_count++;
+	if((view->construct_arg_count >= nca) && klass->view_constructed) {
+		klass->view_constructed(view);
+	}
 }
 
 static void
@@ -359,85 +359,90 @@ nautilus_view_frame_handle_client_destroy_2(GtkObject *object, CORBA_Object cobj
 gboolean /* returns TRUE if successful */
 nautilus_view_frame_load_client(NautilusViewFrame *view, const char *iid)
 {
-  CORBA_Object obj;
-  CORBA_Object zoomable;
+	CORBA_Object obj;
+	CORBA_Object zoomable;
+	Nautilus_Undo_Manager undo_manager;
+	NautilusUndoContext *undo_context;
+	CORBA_Environment ev;
+  	int i;
+  	
+  	NautilusViewComponentType *component_types[] = {
+    		&nautilus_view_component_type,
+    		&bonobo_subdoc_component_type,
+    		&bonobo_control_component_type,
+    		NULL
+  	};
 
-  CORBA_Environment ev;
-  int i;
-  NautilusViewComponentType *component_types[] = {
-    &nautilus_view_component_type,
-    &bonobo_subdoc_component_type,
-    &bonobo_control_component_type,
-    NULL
-  };
+	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
 
-  g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
+	if (iid == NULL)
+		return FALSE;
 
-  if (iid == NULL)
-    return FALSE;
+	CORBA_exception_init(&ev);
 
-  CORBA_exception_init(&ev);
+	nautilus_view_frame_destroy_client(view);
 
-  nautilus_view_frame_destroy_client(view);
+	view->client_object = bonobo_object_activate(iid, 0);
+	if(!view->client_object)
+		return FALSE;
 
-  view->client_object = bonobo_object_activate(iid, 0);
-  if(!view->client_object)
-    return FALSE;
+	view->view_frame = impl_Nautilus_ViewFrame__create(view, &ev);
+	view->zoomable_frame = impl_Nautilus_ZoomableFrame__create(view, &ev);
 
-  view->view_frame = impl_Nautilus_ViewFrame__create(view, &ev);
-  view->zoomable_frame = impl_Nautilus_ZoomableFrame__create(view, &ev);
+	/* Add undo manager to component */
+	undo_manager = nautilus_undo_manager_get_global_undo ();
+	g_assert (undo_manager);
+	undo_context = nautilus_undo_context_new (undo_manager);
+	bonobo_object_add_interface (BONOBO_OBJECT (view->view_frame), BONOBO_OBJECT (undo_context));
 
-  /* Now figure out which type of embedded object it is: */
-
-  for(i = 0; component_types[i] && !view->component_class; i++)
-    {
-      obj = Bonobo_Unknown_query_interface(bonobo_object_corba_objref(BONOBO_OBJECT(view->client_object)),
+	/* Now figure out which type of embedded object it is: */
+	for(i = 0; component_types[i] && !view->component_class; i++)
+	{
+		obj = Bonobo_Unknown_query_interface(bonobo_object_corba_objref(BONOBO_OBJECT(view->client_object)),
                                           component_types[i]->primary_repoid, &ev);
-      if(ev._major != CORBA_NO_EXCEPTION)
-        obj = CORBA_OBJECT_NIL;
+		if(ev._major != CORBA_NO_EXCEPTION)
+        		obj = CORBA_OBJECT_NIL;
 
-      if(CORBA_Object_is_nil(obj, &ev))
-        continue;
+		if(CORBA_Object_is_nil(obj, &ev))
+			continue;
 
-      zoomable = bonobo_object_query_interface (BONOBO_OBJECT (view->client_object), 
+		zoomable = bonobo_object_query_interface (BONOBO_OBJECT (view->client_object), 
                                                 "IDL:Nautilus/Zoomable:1.0");
 
-      view->zoomable = zoomable;
+      		view->zoomable = zoomable;
 
-      if(component_types[i]->try_load(view, obj, &ev))
-        view->component_class = component_types[i];
+      		if(component_types[i]->try_load(view, obj, &ev))
+        		view->component_class = component_types[i];
 
-      Bonobo_Unknown_unref(obj, &ev);
-      CORBA_Object_release(obj, &ev);
+      		Bonobo_Unknown_unref(obj, &ev);
+      		CORBA_Object_release(obj, &ev);
 
-      if (view->component_class)
-        break;
-    }
+      		if (view->component_class)
+        		break;
+    	}
 
-  if (!view->component_class)
-    {
-      /* Nothing matched */
-      nautilus_view_frame_destroy_client(view);
-
-      return FALSE;
-    }
+  	if (!view->component_class) {
+     		/* Nothing matched */
+      		nautilus_view_frame_destroy_client(view);
+      		return FALSE;
+    	}
       
-  view->iid = g_strdup(iid);
+	view->iid = g_strdup(iid);
 
-  gtk_signal_connect_while_alive(GTK_OBJECT(view->client_object), "destroy",
+	gtk_signal_connect_while_alive(GTK_OBJECT(view->client_object), "destroy",
                                  GTK_SIGNAL_FUNC(nautilus_view_frame_handle_client_destroy), view,
                                  GTK_OBJECT(view));
-  gtk_signal_connect_while_alive(GTK_OBJECT(view->client_object), "object_gone",
+	gtk_signal_connect_while_alive(GTK_OBJECT(view->client_object), "object_gone",
                                  GTK_SIGNAL_FUNC(nautilus_view_frame_handle_client_destroy_2), view,
                                  GTK_OBJECT(view));
-  gtk_signal_connect_while_alive(GTK_OBJECT(view->client_object), "system_exception",
+	gtk_signal_connect_while_alive(GTK_OBJECT(view->client_object), "system_exception",
                                  GTK_SIGNAL_FUNC(nautilus_view_frame_handle_client_destroy_2), view,
                                  GTK_OBJECT(view));
-  gtk_container_add(GTK_CONTAINER(view), view->client_widget);
-  gtk_widget_show(view->client_widget);
-  CORBA_exception_free(&ev);
+	gtk_container_add(GTK_CONTAINER(view), view->client_widget);
+	gtk_widget_show(view->client_widget);
+	CORBA_exception_free(&ev);
 
-  return TRUE;
+	return TRUE;
 }
 
 void

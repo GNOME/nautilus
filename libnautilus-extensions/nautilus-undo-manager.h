@@ -75,4 +75,8 @@ void                  nautilus_share_undo_manager             (GtkObject        
 void                  nautilus_undo_set_up_bonobo_control     (BonoboControl         *control);
 Nautilus_Undo_Manager nautilus_get_undo_manager               (GtkObject             *start_object);
 
+void		      nautilus_undo_manager_stash_global_undo (Nautilus_Undo_Manager undo_manager);
+Nautilus_Undo_Manager nautilus_undo_manager_get_global_undo   (void);
+
+
 #endif

@@ -38,6 +38,10 @@
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 
+
+/* Gloabl instance of undo manager */
+Nautilus_Undo_Manager global_undo_manager;
+
 enum {
 	UNDO_TRANSACTION_OCCURED,
 	LAST_SIGNAL
@@ -210,7 +214,7 @@ nautilus_undo_manager_initialize (NautilusUndoManager *manager)
 	manager->details->queue_depth = 1;
 	
 	bonobo_object_construct (BONOBO_OBJECT (manager), impl_Nautilus_Undo_Manager__create (manager, &ev));
-
+	
   	CORBA_exception_free(&ev);
 }
 
@@ -705,3 +709,18 @@ nautilus_undo_set_up_bonobo_control (BonoboControl *control)
 	gtk_signal_connect (GTK_OBJECT (control), "set_frame",
 			    GTK_SIGNAL_FUNC (set_up_bonobo_control), NULL);
 }
+
+
+void
+nautilus_undo_manager_stash_global_undo (Nautilus_Undo_Manager undo_manager)
+{
+	global_undo_manager = undo_manager;
+}
+
+Nautilus_Undo_Manager
+nautilus_undo_manager_get_global_undo (void)
+{
+	return global_undo_manager;
+}
+
+

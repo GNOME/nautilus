@@ -234,8 +234,13 @@ nautilus_app_init (NautilusApp *app)
 	/* Init undo manager */
 	app->undo_manager = BONOBO_OBJECT (nautilus_undo_manager_new ());
 	undo_manager = bonobo_object_corba_objref (BONOBO_OBJECT (app->undo_manager));
+	/* Fix this */
 	Bonobo_Unknown_ref (undo_manager, &ev);
 
+	/* Stash a global reference to the object */
+	nautilus_undo_manager_stash_global_undo (undo_manager);
+
+	/* Add it to the application object*/
 	nautilus_attach_undo_manager ( GTK_OBJECT (app), undo_manager);
 
 	CORBA_exception_free (&ev);

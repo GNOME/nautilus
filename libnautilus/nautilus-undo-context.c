@@ -123,6 +123,8 @@ impl_Nautilus_Undo_Context__get_undo_manager (impl_POA_Nautilus_Undo_Context *se
 	g_assert (NAUTILUS_IS_UNDO_CONTEXT (servant->gtk_object));
 	context = NAUTILUS_UNDO_CONTEXT (servant->gtk_object);
 
+	CORBA_Object_duplicate (servant->gtk_object->undo_manager, ev);
+	
 	return servant->gtk_object->undo_manager;
 }
 
