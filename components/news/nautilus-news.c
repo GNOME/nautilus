@@ -180,6 +180,7 @@ typedef struct {
 #define LOGO_GAP_SIZE 2
 #define DISCLOSURE_RIGHT_POSITION 16
 #define LOGO_LEFT_OFFSET 15
+#define INITIAL_Y_OFFSET 2
 #define ITEM_POSITION 31
 #define RIGHT_ITEM_MARGIN 4
 #define ITEM_FONT_SIZE 11
@@ -558,9 +559,9 @@ draw_rss_items (RSSChannelData *channel_data,
 
 		if (item_index == channel_data->prelight_index) {
 			text_color = EEL_RGBA_COLOR_PACK (0, 0, 128, 255);
+			bullet_alpha = 192;
 		} else {
 			text_color = EEL_RGB_COLOR_BLACK;
-			bullet_alpha = 192;
 		}
 		
 		if (item_data->new_item && (channel_data->owner->changed_bullet != NULL)) {
@@ -658,7 +659,7 @@ nautilus_news_update_display (News *news_data, gboolean measure_only)
 	GList *channel_item;
 	RSSChannelData *channel_data;
 	
-	v_offset = 2;
+	v_offset = INITIAL_Y_OFFSET;
 	
 	if (news_data->pixbuf == NULL && !measure_only) {
 		return v_offset;
@@ -857,6 +858,12 @@ nautilus_news_motion_notify_event (GtkWidget *widget, GdkEventMotion *event, New
 	current_channel = news_data->channel_list;
 	while (current_channel != NULL) {
 		channel_data = (RSSChannelData*) current_channel->data;	
+
+		/* if the channel isn't showing, skip hit-test */
+		if (!channel_data->is_showing) {
+			current_channel = current_channel->next;
+			continue;
+		}
 
 		/* see if it's in the items for this channel */
 		if (event->y >= channel_data->items_start_y && event->y <= channel_data->items_end_y) {
@@ -1413,7 +1420,6 @@ rss_read_done_callback (GnomeVFSResult result,
 
 	/* make sure there wasn't in error parsing the document */
 	if (rss_document == NULL) {
-		g_message ("couldnt parse rss file for %s", channel_data->name);
 		rss_read_error (channel_data);
 		return;
 	}
@@ -2099,12 +2105,16 @@ nautilus_news_size_allocate (GtkWidget *widget, GtkAllocation *allocation, News 
 
 /* code-saving utility to allocate a left-justified anti-aliased label */
 static GtkWidget *
-news_label_new (const char *label_text)
+news_label_new (const char *label_text, gboolean title_mode)
 {
 	GtkWidget *label;
 	
-	label = eel_label_new (label_text);
-	eel_label_set_justify (EEL_LABEL (label), GTK_JUSTIFY_LEFT);
+	label = gtk_label_new (label_text);
+	if (title_mode) {
+		eel_gtk_label_make_bold (GTK_LABEL (label));
+	}
+	
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 
 	return label;	
@@ -2167,7 +2177,7 @@ make_add_widgets (News *news, GtkWidget *container)
 	gtk_box_pack_start (GTK_BOX (container), temp_vbox, FALSE, FALSE, 0);
 
 	/* allocate the name field */
-	label = news_label_new (_("Site Name:"));
+	label = news_label_new (_("Site Name:"), FALSE);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), label, FALSE, FALSE, 0);
 
 	news->item_name_field = nautilus_entry_new ();
@@ -2178,7 +2188,7 @@ make_add_widgets (News *news, GtkWidget *container)
 	temp_vbox = gtk_vbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (container), temp_vbox, FALSE, FALSE, 0);
 
-	label = news_label_new (_("Site RSS URL:"));
+	label = news_label_new (_("Site RSS URL:"), FALSE);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), label, FALSE, FALSE, 0);
 
 	news->item_location_field = nautilus_entry_new ();
@@ -2216,8 +2226,7 @@ set_up_edit_widgets (News *news, GtkWidget *container)
 	gtk_container_set_border_width (GTK_CONTAINER (expand_box), 4);
 
 	/* make the add new site label */
-	label = news_label_new (_("Add A New Site:"));
-	eel_label_set_smooth_font_size (EEL_LABEL (label), 18);
+	label = news_label_new (_("Add a New Site:"), TRUE);
 	gtk_box_pack_start (GTK_BOX (expand_box), label, FALSE, FALSE, 0);
 	
 	/* allocate the add new site widgets */
@@ -2226,8 +2235,7 @@ set_up_edit_widgets (News *news, GtkWidget *container)
 	/* allocate the remove label */
 	temp_vbox = gtk_vbox_new (FALSE, 0);
 	
-	label = news_label_new (_("Remove A Site:"));
-	eel_label_set_smooth_font_size (EEL_LABEL (label), 18);
+	label = news_label_new (_("Remove a Site:"), TRUE);
 	gtk_box_pack_start (GTK_BOX (temp_vbox), label, FALSE, FALSE, 0);
 	
 	/* allocate the remove widgets */
@@ -2252,8 +2260,7 @@ set_up_configure_widgets (News *news, GtkWidget *container)
 	gtk_box_pack_start (GTK_BOX (container), news->configure_box, TRUE, TRUE, 0);
 
 	/* add a descriptive label */
-	label = news_label_new (_("Select Sites:"));
-	eel_label_set_smooth_font_size (EEL_LABEL (label), 18);
+	label = news_label_new (_("Select Sites:"), TRUE);
 	gtk_box_pack_start (GTK_BOX (news->configure_box), label, FALSE, FALSE, 0);
 	
 	/* allocate a table to hold the check boxes */

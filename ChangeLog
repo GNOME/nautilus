@@ -1,3 +1,22 @@
+2001-04-30  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/news/nautilus-news.c: (draw_rss_items),
+	(nautilus_news_update_display),
+	(nautilus_news_motion_notify_event), (rss_read_done_callback),
+	(news_label_new), (make_add_widgets), (set_up_edit_widgets),
+	(set_up_configure_widgets):
+	
+	fixed bug where things wouldn't prelight properly; fixed by not
+	hit-testing channels that aren't visible in motion_notify
+	
+	made a bunch of layout changes at Arlo's request, including no
+	longer using aa text for widgets.
+	
+	* components/news/changed_bullet.png:
+	* components/news/nautilus-news-pixmaps.h:
+	* components/news/news_bullet.png:
+	new images from Arlo
+	
 2001-04-30  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* NEWS:
