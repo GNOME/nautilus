@@ -1,5 +1,17 @@
 2000-07-10  Gene Z. Ragan  <gzr@eazel.com>
 
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	* libnautilus-extensions/nautilus-gdk-extensions.h:
+	(nautilus_gdk_window_bring_to_front):
+	Added genric function that brings a GdkWindow to the
+	front and activates it.  There is no GDK API that
+	does this.
+	
+	* src/nautilus-window-manage-views.c: (open_location):
+	Removed case specific code and repalced wirth new function.
+	
+2000-07-10  Gene Z. Ragan  <gzr@eazel.com>
+
 	* src/nautilus-window-manage-views.c: 
 	(open_location):
 	Modified function to handle the folloing case:
@@ -162,7 +174,7 @@
 
 2000-07-08  Gene Z. Ragan  <gzr@eazel.com>
 
-	Work on bug 1021, should ba bale to open smaller Nautilus windows.
+	Work on bug 1021, should be able to open smaller Nautilus windows.
 	
 
 	* src/nautilus-window.c: (nautilus_window_constructed),

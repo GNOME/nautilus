@@ -24,8 +24,8 @@
 
 #include <config.h>
 #include "nautilus-gdk-extensions.h"
-
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gdk/gdkx.h>
 #include "nautilus-glib-extensions.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-string.h"
@@ -540,6 +540,26 @@ nautilus_stipple_bitmap ()
 
 	return stipple;
 }
+
+/**
+ * nautilus_gdk_window_bring_to_front:
+ * 
+ * Raise window and give it focus.
+ */
+void 
+nautilus_gdk_window_bring_to_front (GdkWindow *window)
+{
+	gdk_window_raise (window);
+
+	gdk_error_trap_push ();
+	XSetInputFocus (GDK_DISPLAY (),
+	 	GDK_WINDOW_XWINDOW (window),
+	    	RevertToPointerRoot,
+	     	GDK_CURRENT_TIME);
+	gdk_flush();
+	gdk_error_trap_pop ();
+}
+
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
 

@@ -34,18 +34,17 @@
 #include "nautilus-window-manage-views.h"
 
 #include <stdarg.h>
-#include <gdk/gdkx.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dialog-util.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
-#include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-string.h>
 
 #include "nautilus-application.h"
@@ -670,16 +669,7 @@ open_location (NautilusWindow *window,
 			traverse_window = element->data;
 			if (strcmp (traverse_window->location, location) == 0) {
 				gtk_widget_show_now (GTK_WIDGET (traverse_window));
-				gdk_window_raise (GTK_WIDGET (traverse_window)->window);
-
-				/* doesn't seem to be a better way to do this without an xlib call */
-				gdk_error_trap_push ();
-				XSetInputFocus (GDK_DISPLAY (),
-				 	GDK_WINDOW_XWINDOW (GTK_WIDGET (traverse_window)->window),
-				    	RevertToPointerRoot,
-				     	GDK_CURRENT_TIME);
-				gdk_flush();
-				gdk_error_trap_pop ();
+				nautilus_gdk_window_bring_to_front (GTK_WIDGET (traverse_window)->window);								
 				return;
 			}
 		}

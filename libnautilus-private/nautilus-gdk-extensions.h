@@ -103,4 +103,7 @@ GdkFont *nautilus_get_largest_fitting_font	     (const char	 *text_to_format,
 						      int		  width,
 						      const char	 *font_format);
 
+/* Misc GdkWindow helper functions */
+void	nautilus_gdk_window_bring_to_front 	     (GdkWindow 	 *window);
+
 #endif /* NAUTILUS_GDK_EXTENSIONS_H */
