@@ -427,10 +427,10 @@ server_matches_content_requirements (OAF_ServerInfo *server, GHashTable *type_ta
 }
 
 
-static GList *
+static GSList *
 get_lang_list (void)
 {
-        GList *retval;
+        GSList *retval;
         char *lang;
 
         retval = NULL;
@@ -442,7 +442,7 @@ get_lang_list (void)
         }
 
         if (lang) {
-                retval = g_list_prepend (retval, lang);
+                retval = g_slist_prepend (retval, lang);
         }
                 
         return retval;
@@ -452,7 +452,7 @@ static NautilusViewIdentifier *
 nautilus_view_identifier_new_from_oaf_server_info (OAF_ServerInfo *server)
 {
         const char *view_as_name;
-        GList *langs;
+        GSList *langs;
 
         langs = get_lang_list ();
         
