@@ -1,3 +1,16 @@
+2001-01-19  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix for bug 5475 (assertion and crash trying to return using Up
+	from web link):
+
+	* libnautilus-extensions/nautilus-file.c: (get_description): Instead
+	of asserting that the MIME type is not NULL or empty string, just
+	change the code  to return an empty description for those cases.
+
+	* autogen.sh: Fix one silly "ignore non-fatal errors" message.
+
 2001-01-19  Andy Hertzfeld  <andy@eazel.com>
 
 	* nautilus.spec.in:

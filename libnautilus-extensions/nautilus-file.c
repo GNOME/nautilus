@@ -3669,16 +3669,17 @@ get_description (NautilusFile *file)
 	}
 	
 	mime_type = file->details->info->mime_type;
-
-	g_assert (mime_type != NULL && mime_type[0] != '\0');
+	if (nautilus_str_is_empty (mime_type)) {
+		return NULL;
+	}
 
 	if (g_strcasecmp (mime_type, GNOME_VFS_MIME_TYPE_UNKNOWN) == 0
-		&& nautilus_file_is_executable (file)) {
+	    && nautilus_file_is_executable (file)) {
 		return _("program");
 	}
 
 	description = gnome_vfs_mime_get_description (mime_type);
-	if (nautilus_strlen (description) > 0) {
+	if (!nautilus_str_is_empty (description)) {
 		return description;
 	}
 

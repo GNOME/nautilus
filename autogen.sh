@@ -66,7 +66,7 @@ echo "Running gettextize...  Ignore non-fatal messages."
 # while making dist.
 echo "no" | gettextize --copy --force
 
-echo "Running xml-i18n-toolize... Ignore non-fatal messages."
+echo "Running xml-i18n-toolize"
 xml-i18n-toolize --copy --force --automake
 
 echo "Running libtoolize"
