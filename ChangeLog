@@ -1,3 +1,15 @@
+2000-09-01  Robey Pointer  <robey@eazel.com>
+
+	* components/services/login/nautilus-view/Makefile.am:
+	* components/services/login/nautilus-view/nautilus-login-view.c:
+	(generate_login_form), (entry_changed_cb), (authn_succeeded),
+	(authn_failed), (start_login), (login_button_cb),
+	(nautilus_login_view_initialize), (nautilus_login_view_destroy):
+
+	Fix the "login view" so that it's really the change-password
+	view.  Another bug (2710) has been filed on cleaning this up and
+	possibly renaming it.
+
 2000-09-01  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-private.h:
