@@ -831,10 +831,12 @@ eazel_install_free_rpm_system (EazelInstall *service)
 
 	if (*db) {
 		rpmdbClose (*db);
+		(*db) = NULL;
 	}
 /*
 	if (*set != NULL) {
 		rpmtransFree (*set);
+		(*set) = NULL;
 	}
 */
 	return TRUE;
@@ -1034,13 +1036,20 @@ eazel_install_check_existing_packages (EazelInstall *service,
 			int res;
 			PackageData *existing_package;
 
-			existing_package = (PackageData*)existing_iterator->data;
-			existing_package->modify_status = PACKAGE_MOD_UPGRADED;
+			existing_package = (PackageData*)existing_iterator->data;			
 			pack->modifies = g_list_prepend (pack->modifies, existing_package);
-			
+			existing_package->status = PACKAGE_RESOLVED;
 			/* The order of arguments to rpmvercmp is important... */
 			res = rpmvercmp (pack->version, existing_package->version);
 			
+			if (res == 0) {
+				existing_package->modify_status = PACKAGE_MOD_UNTOUCHED;
+			} else if (res > 0) {
+				existing_package->modify_status = PACKAGE_MOD_UPGRADED;
+			} else {
+				existing_package->modify_status = PACKAGE_MOD_DOWNGRADED;				
+			}
+
 			if (res == 0 && result > 0) {
 				result = 0;
 			} else if (res > 0 && result > 1) {

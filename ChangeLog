@@ -1,3 +1,23 @@
+2000-07-26  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/docs/install-user-settings:
+	Added some more settings
+	
+	* components/services/install/lib/eazel-install-query.c:
+	(eazel_install_simple_rpm_query):
+	Some debug output
+	
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(eazel_install_free_rpm_system),
+	(eazel_install_check_existing_packages):
+	free_rpm_system null's the pointers, prevents horrible rpm
+	crashes. Check_existing correctly sets the modify flag.
+	Better transaction reports.
+	
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(eazel_install_packagedata_to_xml):
+	cutn''pasta typo.
+	
 2000-07-26  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-directory-async.c:

@@ -359,7 +359,7 @@ eazel_install_packagedata_to_xml (const PackageData *pack, char *title, xmlNodeP
 	node = xmlNewChild (root, NULL, "ARCH", pack->archtype);
 	node = xmlNewChild (root, NULL, "SUMMARY", pack->summary);
 	node = xmlNewChild (root, NULL, "STATUS", packagedata_status_enum_to_str (pack->status));
-	node = xmlNewChild (root, NULL, "MODSTATUS", packagedata_modstatus_enum_to_str (pack->status));
+	node = xmlNewChild (root, NULL, "MODSTATUS", packagedata_modstatus_enum_to_str (pack->modify_status));
 
 	tmp = trilobite_get_distribution_name(pack->distribution, FALSE);
 	node = xmlNewChild (root, NULL, "DISTRIBUTION", tmp);
