@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2000-07-30 21:16+0000\n"
-"PO-Revision-Date: 2000-07-31 12:38+00:00\n"
+"POT-Creation-Date: 2000-07-31 21:08+0000\n"
+"PO-Revision-Date: 2000-07-31 21:31+00:00\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -60,7 +60,9 @@ msgstr "Использовать локальную копию"
 #: components/services/install/command-line/eazel-alt-install.c:82
 #: components/services/install/command-line/eazel-gen-xml.c:41
 msgid "Specify package list to use (/var/eazel/service/package-list.xml)"
-msgstr "Указать список пакетов для использования (/var/eazel/service/package-list.xml)"
+msgstr ""
+"Указать список пакетов для использования "
+"(/var/eazel/service/package-list.xml)"
 
 #: components/services/install/command-line/eazel-alt-install-corba.c:88
 #: components/services/install/command-line/eazel-alt-install.c:83
@@ -71,7 +73,7 @@ msgstr "Указать файл настроек (/var/eazel/service/eazel-services-config.xml)"
 #: components/services/install/command-line/eazel-alt-install.c:84
 #: components/services/install/command-line/eazel-gen-xml.c:42
 msgid "Use specified file to generate a package list, requires --packagelist"
-msgstr ""
+msgstr "Использовать указанный файл для создания списка пакетов, требует --packagelist"
 
 #: components/services/install/command-line/eazel-install.c:112
 msgid "*** Could not generate xml package list! ***\n"
@@ -100,11 +102,11 @@ msgstr "*** Вы должны запустить eazel-install как root! ***\n"
 
 #: components/services/install/command-line/eazel-install.c:270
 msgid "*** eazel-install can only be used on RedHat! ***\n"
-msgstr ""
+msgstr "*** eazel-install может быть использован только в RedHat! ***\n"
 
 #: components/services/install/command-line/eazel-install.c:274
 msgid "*** Downgrade Mode not supported yet! ***\n"
-msgstr ""
+msgstr "*** Режим понижения версий пока не поддерживается ***\n"
 
 #. Initialize iopts and topts with defaults from the configuration file
 #: components/services/install/command-line/eazel-install.c:278
@@ -113,7 +115,7 @@ msgstr "Чтение файла настроек сервисов eazel...\n"
 
 #: components/services/install/command-line/eazel-install.c:287
 msgid "*** Logging not currently supported! ***\n"
-msgstr ""
+msgstr "*** Журналирование пока не поддерживается! ***\n"
 
 #: components/services/install/command-line/eazel-install.c:292
 msgid "*** FTP installs are not currently supported! ***\n"
@@ -483,6 +485,8 @@ msgid ""
 "You have several choices for what you would like the installer to do.\n"
 "Please choose one and click on the \"Next\" button."
 msgstr ""
+"У вас несколько вариантов выбора того, что должен сделать установщик.\n"
+"Выберите что-нибудь одно и нажмите кнопку \"Следующий\"."
 
 #: nautilus-installer/src/interface.c:141
 msgid "Most recent build"
@@ -545,16 +549,16 @@ msgstr "Невозможно найти файл изображения: %s"
 msgid "Couldn't create pixmap from file: %s"
 msgstr "Невозможно создать картинку из файла: %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:268
+#: src/file-manager/fm-desktop-icon-view.c:311
 msgid "New Terminal"
 msgstr "Новый терминал"
 
-#: src/file-manager/fm-desktop-icon-view.c:280
+#: src/file-manager/fm-desktop-icon-view.c:323
 msgid "Rescan Floppy"
 msgstr "Перечитать дискету"
 
 #. Close desktop
-#: src/file-manager/fm-desktop-icon-view.c:293
+#: src/file-manager/fm-desktop-icon-view.c:336
 msgid "Close Nautilus Desktop"
 msgstr "Закрыть рабочий стол Наутилус"
 
@@ -575,7 +579,10 @@ msgid ""
 "User levels provide a way to adjust the software to your level of technical "
 "expertise.  Pick an initial level that you feel comfortable with; you can "
 "always change it later."
-msgstr "Уровни пользователя предоставляют возможность подстроить программу под ваш уровень технических знаний. Выберите начальный уровень, удобный для вас; вы сможете изменить его позднее."
+msgstr ""
+"Уровни пользователя предоставляют возможность подстроить программу под ваш "
+"уровень технических знаний. Выберите начальный уровень, удобный для вас; вы "
+"сможете изменить его позднее."
 
 #: src/nautilus-first-time-druid.c:167
 msgid "User Levels"
@@ -648,6 +655,13 @@ msgid ""
 "\n"
 "Press the next button to continue."
 msgstr ""
+"Добро пожаловать в Наутилус!\n"
+"\n"
+"Кажется это ващ первый запуск Наутилус, мы бы\n"
+"хотели задать вам несколько вопросов, чтобы\n"
+"помочь настроить программу для вас.\n"
+"\n"
+"Нажмите кнопку \"Следующий\" для продолжения."
 
 #: src/nautilus-first-time-druid.c:291
 msgid ""
@@ -655,6 +669,9 @@ msgid ""
 "\n"
 "We hope that you enjoying using it!"
 msgstr ""
+"Щелкните по кнопке \"Закончить\", чтобы запустить Наутилус.\n"
+"\n"
+"Мы надеемся, что вам понравится использовать его!"
 
 #: src/nautilus-shell.c:149
 msgid "Nautilus: caveat"
@@ -1435,7 +1452,7 @@ msgstr "*** Конец дампа пакета ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:122
 msgid "*** No package nodes! ***\n"
-msgstr ""
+msgstr "*** Нет узлов пакета! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:124
 msgid "*** Bailing from package parse! ***\n"
@@ -1447,7 +1464,7 @@ msgstr "*** Файл списка пакетов не содержит данных! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:153
 msgid "*** Cannot find the CATEGORIES xmlnode! ***\n"
-msgstr ""
+msgstr "*** Не удалось найти xml-узел CATEGORIES! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:155
 msgid "*** Bailing from categories parse! ***\n"
@@ -2739,6 +2756,10 @@ msgid ""
 "As root, you can damage your system if you are not careful, and\n"
 "Nautilus will not stop you from doing it."
 msgstr ""
+"Вы запустили Наутилус как root.\n"
+"\n"
+"Как root, вы можете разрушить вашу систему если вы не осторожны и\n"
+"Наутилус не остановит вас."
 
 #: src/nautilus-bookmarks-window.c:136
 msgid "Nautilus: Bookmarks"
