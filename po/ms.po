@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus HEAD\n"
-"POT-Creation-Date: 2002-04-21 20:29+0200\n"
+"POT-Creation-Date: 2002-04-28 20:43+0200\n"
 "PO-Revision-Date: 2002-01-15 08:13+0800\n"
 "Last-Translator: Hasbullah Bin Pit (sebol) <sebol@ikhlas.com>\n"
 "Language-Team: Projek Gabai <gabai-penyumbang@lists.sourceforge.org>\n"
@@ -901,7 +901,7 @@ msgstr "Maaf, tapi '%s' bukan fail imej yang sah"
 
 # ui/galeon.glade.h:176
 #: components/music/nautilus-music-view.c:746
-#: src/nautilus-property-browser.c:1060 src/nautilus-property-browser.c:1313
+#: src/nautilus-property-browser.c:1068 src/nautilus-property-browser.c:1321
 msgid "Not an Image"
 msgstr "Bukan Imej"
 
@@ -1720,17 +1720,19 @@ msgstr "Kegemaran"
 msgid "Adjust your user environment"
 msgstr "Ubahsuai persekitaran pengguna"
 
-#: data/preferences.desktop.in.h:2 src/nautilus-preferences-dialog.c:421
-msgid "Preferences"
-msgstr "Keutamaan"
+#: data/preferences.desktop.in.h:2
+#, fuzzy
+msgid "Desktop Preferences"
+msgstr "Lihat Keutamaan"
 
 #: data/serverconfig.desktop.in.h:1
 msgid "Configure network services (web server, DNS server, etc.)"
 msgstr "Konfigurasikan servis rangkaian (pelayan Web, DNS, dll.)"
 
 #: data/serverconfig.desktop.in.h:2 data/serverconfig.directory.in.h:2
-msgid "Server Configuration"
-msgstr "Konfigurasi Pelayan"
+#, fuzzy
+msgid "Server Settings"
+msgstr "Tetapan Sistem"
 
 #: data/serverconfig.directory.in.h:1
 msgid "Configure network services"
@@ -2104,19 +2106,24 @@ msgstr "Authentikasi diperlukan"
 msgid "reset"
 msgstr "ulangtetap"
 
-#: libnautilus-private/nautilus-dnd.c:563
+#: libnautilus-private/nautilus-dnd.c:548
 msgid "_Move here"
 msgstr "_Pindah ke sini"
 
-#: libnautilus-private/nautilus-dnd.c:568
+#: libnautilus-private/nautilus-dnd.c:553
 msgid "_Copy here"
 msgstr "_Salin ke sini"
 
-#: libnautilus-private/nautilus-dnd.c:573
+#: libnautilus-private/nautilus-dnd.c:558
 msgid "_Link here"
 msgstr "_Pautkan ke sini"
 
-#: libnautilus-private/nautilus-dnd.c:582
+#: libnautilus-private/nautilus-dnd.c:563
+#, fuzzy
+msgid "Set as _Background"
+msgstr "Ulangtetap Latar Belakang"
+
+#: libnautilus-private/nautilus-dnd.c:572
 msgid "Cancel"
 msgstr "Batal"
 
@@ -3290,7 +3297,7 @@ msgstr "pautan (rosak)"
 
 #: libnautilus-private/nautilus-file.c:5289
 #: libnautilus-private/nautilus-trash-directory.c:373
-#: src/file-manager/fm-desktop-icon-view.c:69
+#: src/file-manager/fm-desktop-icon-view.c:70
 msgid "Trash"
 msgstr "Sampah"
 
@@ -3564,11 +3571,11 @@ msgstr "terserlah bagi jatuhan"
 msgid "whether we are highlighted for a D&D drop"
 msgstr "samada terserlah bagi jatuhan DND"
 
-#: libnautilus-private/nautilus-icon-container.c:1642
+#: libnautilus-private/nautilus-icon-container.c:1644
 msgid "The selection rectangle"
 msgstr "Segi empat pilihan"
 
-#: libnautilus-private/nautilus-icon-dnd.c:624
+#: libnautilus-private/nautilus-icon-dnd.c:625
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
@@ -3578,7 +3585,7 @@ msgstr ""
 "susunatur manual dan biarkan item ini dimana anda jatuhkannya? Ia akan "
 "melanyak susunatur manual yang tersimpan."
 
-#: libnautilus-private/nautilus-icon-dnd.c:628
+#: libnautilus-private/nautilus-icon-dnd.c:629
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
@@ -3588,7 +3595,7 @@ msgstr ""
 "susuna tur manual dan biarkan item ini dimana anda jatuhkannya? Ia akan "
 "melanyak susunatur manual yang tersimpan."
 
-#: libnautilus-private/nautilus-icon-dnd.c:634
+#: libnautilus-private/nautilus-icon-dnd.c:635
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
@@ -3596,7 +3603,7 @@ msgstr ""
 "Folder ini menggunakan susunatur automatik. Adakah anda ingin menukar ke "
 "susunatur manual dan biarkan item ini dimana anda jatuhkannya?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:637
+#: libnautilus-private/nautilus-icon-dnd.c:638
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
@@ -3604,11 +3611,11 @@ msgstr ""
 "Folder ini menggunakan susunatur automatik. Adakah anda ingin menukar ke "
 "susunatur manual dan biarkan item ini dimana anda jatuhkannya?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:642
+#: libnautilus-private/nautilus-icon-dnd.c:643
 msgid "Switch to Manual Layout?"
 msgstr "Tukar ke Susunatur Manual?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:643
+#: libnautilus-private/nautilus-icon-dnd.c:644
 msgid "Switch"
 msgstr "Tukar"
 
@@ -3733,7 +3740,7 @@ msgstr ""
 
 #: libnautilus-private/nautilus-program-chooser.c:1200
 #: src/file-manager/fm-search-list-view.c:494
-#: src/nautilus-bookmarks-window.c:207
+#: src/nautilus-bookmarks-window.c:202
 msgid "Name"
 msgstr "Nama"
 
@@ -4079,7 +4086,7 @@ msgstr ""
 msgid "Items containing \"medusa\" in their names and that are folders"
 msgstr ""
 
-#: libnautilus-private/nautilus-theme.c:500
+#: libnautilus-private/nautilus-theme.c:501
 #, c-format
 msgid "No description available for the \"%s\" theme"
 msgstr ""
@@ -4127,75 +4134,75 @@ msgid "%s Viewer"
 msgstr "Pelihat %s"
 
 #. Populate table with items we know localized names for.
-#: libnautilus-private/nautilus-volume-monitor.c:788
+#: libnautilus-private/nautilus-volume-monitor.c:796
 msgid "Floppy"
 msgstr "Liut"
 
-#: libnautilus-private/nautilus-volume-monitor.c:789
+#: libnautilus-private/nautilus-volume-monitor.c:797
 msgid "CD-ROM"
 msgstr "CD-ROM"
 
-#: libnautilus-private/nautilus-volume-monitor.c:790
+#: libnautilus-private/nautilus-volume-monitor.c:798
 msgid "Zip Drive"
 msgstr "Pemacu Zip"
 
-#: libnautilus-private/nautilus-volume-monitor.c:805
-#: libnautilus-private/nautilus-volume-monitor.c:849
+#: libnautilus-private/nautilus-volume-monitor.c:813
+#: libnautilus-private/nautilus-volume-monitor.c:857
 msgid "Audio CD"
 msgstr "CD Audio"
 
-#: libnautilus-private/nautilus-volume-monitor.c:840
+#: libnautilus-private/nautilus-volume-monitor.c:848
 msgid "Root Volume"
 msgstr ""
 
-#: libnautilus-private/nautilus-volume-monitor.c:1442
+#: libnautilus-private/nautilus-volume-monitor.c:1450
 msgid "Mount Error"
 msgstr "Ralat Lekapan"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1442
+#: libnautilus-private/nautilus-volume-monitor.c:1450
 msgid "Unmount Error"
 msgstr "Ralat NyahLekap"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1515
+#: libnautilus-private/nautilus-volume-monitor.c:1523
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
 msgstr ""
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1519
+#: libnautilus-private/nautilus-volume-monitor.c:1527
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
 msgstr ""
 
-#: libnautilus-private/nautilus-volume-monitor.c:1525
+#: libnautilus-private/nautilus-volume-monitor.c:1533
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
 msgstr ""
 
-#: libnautilus-private/nautilus-volume-monitor.c:1528
+#: libnautilus-private/nautilus-volume-monitor.c:1536
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
 msgstr ""
 
-#: libnautilus-private/nautilus-volume-monitor.c:1533
+#: libnautilus-private/nautilus-volume-monitor.c:1541
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr ""
 
-#: libnautilus-private/nautilus-volume-monitor.c:1535
+#: libnautilus-private/nautilus-volume-monitor.c:1543
 msgid "Nautilus was unable to mount the selected volume."
 msgstr ""
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1540
+#: libnautilus-private/nautilus-volume-monitor.c:1548
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr ""
 
-#: libnautilus-private/nautilus-volume-monitor.c:1729
+#: libnautilus-private/nautilus-volume-monitor.c:1737
 msgid "ISO 9660 Volume"
 msgstr "Volum ISO 9660"
 
@@ -4358,9 +4365,14 @@ msgstr "Lihat sebagai Ikon"
 msgid "View as List"
 msgstr "Lihat sebagai Senarai"
 
-#: src/file-manager/fm-desktop-icon-view.c:683
+#: src/file-manager/fm-desktop-icon-view.c:689
 msgid "Background"
 msgstr "LatarBelakang"
+
+#: src/file-manager/fm-desktop-icon-view.c:857
+#, c-format
+msgid "Error executing utility program '%s': %s"
+msgstr ""
 
 #. Note to translators: If it's hard to compose a good home
 #. * icon name from the user name, you can use a string without
@@ -4370,24 +4382,20 @@ msgstr "LatarBelakang"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: src/file-manager/fm-desktop-icon-view.c:929
+#: src/file-manager/fm-desktop-icon-view.c:1099
 #, c-format
 msgid "%s's Home"
 msgstr "Rumah %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1124
+#: src/file-manager/fm-desktop-icon-view.c:1294
 msgid "Empty Trash..."
 msgstr "Kosongkan Sampah..."
 
-#: src/file-manager/fm-desktop-icon-view.c:1126
+#: src/file-manager/fm-desktop-icon-view.c:1296
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
 msgid "Empty Trash"
 msgstr "Sampah Kosong"
-
-#: src/file-manager/fm-desktop-icon-view.c:1146
-msgid "Unmount Volume"
-msgstr "NyahLekap Volum"
 
 #: src/file-manager/fm-directory-view.c:475
 #, c-format
@@ -4703,19 +4711,20 @@ msgid "_Empty Trash..."
 msgstr "_Kosongkan Sampah..."
 
 #: src/file-manager/fm-directory-view.c:4364
-#: src/file-manager/nautilus-directory-view-ui.xml.h:60
+#: src/file-manager/nautilus-directory-view-ui.xml.h:59
 #: src/nautilus-sidebar.c:1502
 msgid "_Empty Trash"
 msgstr "_Kosongkan Sampah"
 
 #: src/file-manager/fm-directory-view.c:4375
-#: src/file-manager/nautilus-directory-view-ui.xml.h:37
-msgid "R_emove Custom Images"
-msgstr "_Buang Imej Sendiri"
+#, fuzzy
+msgid "R_emove Custom Icons"
+msgstr "_Buang Ikon Tersendiri"
 
 #: src/file-manager/fm-directory-view.c:4376
-msgid "R_emove Custom Image"
-msgstr "_Buang Imej Sendiri"
+#, fuzzy
+msgid "R_emove Custom Icon"
+msgstr "_Buang Ikon Tersendiri"
 
 #: src/file-manager/fm-directory-view.c:4390
 msgid "Cu_t File"
@@ -4731,7 +4740,7 @@ msgid "_Copy File"
 msgstr "_Salin Fail"
 
 #: src/file-manager/fm-directory-view.c:4402
-#: src/file-manager/nautilus-directory-view-ui.xml.h:58
+#: src/file-manager/nautilus-directory-view-ui.xml.h:57
 msgid "_Copy Files"
 msgstr "_Salin Fail"
 
@@ -4999,22 +5008,22 @@ msgstr "Ralat Heret dan Jatuh"
 msgid "An invalid drag type was used."
 msgstr "Jenis heretan tidak sah digunakan."
 
-#: src/file-manager/fm-list-view.c:260
+#: src/file-manager/fm-list-view.c:286
 msgid "File name"
 msgstr "Nama fail"
 
 # Saiz bra
-#: src/file-manager/fm-list-view.c:289
+#: src/file-manager/fm-list-view.c:315
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Saiz"
 
-#: src/file-manager/fm-list-view.c:299
+#: src/file-manager/fm-list-view.c:325
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Jenis"
 
-#: src/file-manager/fm-list-view.c:309
+#: src/file-manager/fm-list-view.c:335
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Tarikh Ubahsuai"
@@ -5447,37 +5456,73 @@ msgid "Disks"
 msgstr "Cakera"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
+#, fuzzy
+msgid "Format"
+msgstr "Lupa"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:7
+msgid "Format Conditionally"
+msgstr ""
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
+#, fuzzy
+msgid "Media Properties"
+msgstr "Ciri-ciri %s"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
+#, fuzzy
+msgid "Media Properties Conditionally"
+msgstr "Mencipta Tetingkap Ciri-ciri"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
 msgid "Mount or unmount disks"
 msgstr "Lekap atau nyahlekap cakera"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:7
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:11
 #, fuzzy
 msgid "New Launcher"
 msgstr "Panel Berita"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:12
 msgid "New Terminal"
 msgstr "Terminal Baru"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:13
 msgid "Open a new GNOME terminal window"
 msgstr "Buka tetingkap terminal GNOME baru"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:14
+msgid "Protect"
+msgstr ""
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:15
+msgid "Protect Conditionally"
+msgstr ""
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:16
 msgid "Remove any custom pattern or color from the desktop background"
 msgstr "Buang corak atau warna sendiri dari latarbelakang desktop"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:11
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:17
 #, fuzzy
 msgid "Reset Desktop Background"
 msgstr "Ulangtetap  Latarbelakang Desktop"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:12
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:18
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
 "Papar tetingkap yang membolehkan anda menetapkan corak atau warna bagi "
 "latarbelakang desktop"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:19
+msgid "Unmount Volume"
+msgstr "NyahLekap Volum"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
+#, fuzzy
+msgid "Unmount Voulme Conditionally"
+msgstr "NyahLekap Volum"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
 msgid "Choose a program with which to open the selected item"
@@ -5586,120 +5631,122 @@ msgstr "Menyedia fail dipilih untuk disalinkan dengan arahan Tepek Fail"
 msgid "Prepare the selected files to be moved with a Paste Files command"
 msgstr "Menyedia fail dipilih untuk dipindahkan dengan arahan Tepek Fail"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:38
-msgid "Remove Custom Images"
-msgstr "Buang Imej Sendiri"
+#: src/file-manager/nautilus-directory-view-ui.xml.h:37
+#, fuzzy
+msgid "Remove Custom Icons"
+msgstr "_Buang Ikon Tersendiri"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:39
+#: src/file-manager/nautilus-directory-view-ui.xml.h:38
 msgid "Remove any custom images from selected icons"
 msgstr "Buang sebarang imej sendiri dari ikon dipilih"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:40
+#: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "Remove any custom pattern or color from the background of this location"
 msgstr "Buang sebarang corak atau warna sendiri dari latarbelakang lokasi ini"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:41
+#: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "Rename"
 msgstr "Tukarnama"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:42
+#: src/file-manager/nautilus-directory-view-ui.xml.h:41
 msgid "Rename selected item"
 msgstr "Tukarnama item dipilih"
 
 #. add the reset background item, possibly disabled
-#: src/file-manager/nautilus-directory-view-ui.xml.h:43
+#: src/file-manager/nautilus-directory-view-ui.xml.h:42
 #: src/nautilus-sidebar.c:567
 msgid "Reset Background"
 msgstr "Ulangtetap Latar Belakang"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:44
+#: src/file-manager/nautilus-directory-view-ui.xml.h:43
 #, fuzzy
 msgid "Reset View to Default"
 msgstr "Paparan Senarai Default"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:45
-msgid "Reset View to Match _Preferences"
-msgstr "Ulangtetap Paparan supaya Padan _Keutamaan"
+#: src/file-manager/nautilus-directory-view-ui.xml.h:44
+#, fuzzy
+msgid "Reset View to _Defaults"
+msgstr "Paparan Senarai Default"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:46
+#: src/file-manager/nautilus-directory-view-ui.xml.h:45
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 "Ulangtetap turutan isihan dan aras zoom supaya padan keutamaan bagi paparan "
 "ini"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:47
+#: src/file-manager/nautilus-directory-view-ui.xml.h:46
 msgid "Run or manage scripts from ~/Nautilus/scripts"
 msgstr "Laksana atau urus skrip dari ~/Nautilus/scripts"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:48
+#: src/file-manager/nautilus-directory-view-ui.xml.h:47
 msgid "Scripts"
 msgstr "Skrip"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:49
+#: src/file-manager/nautilus-directory-view-ui.xml.h:48
 msgid "Select All Files"
 msgstr "Semua Semua Fail"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:50
+#: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "Select _All Files"
 msgstr "Pilih Semu_a Fail"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:51
+#: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "Select all items in this window"
 msgstr "Pilih semua item pada tetingkap ini"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:52
+#: src/file-manager/nautilus-directory-view-ui.xml.h:51
 msgid "Show Properties"
 msgstr "Papar Ciri-ciri"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:53
+#: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "Show Trash"
 msgstr "Papar Sampah"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:54
+#: src/file-manager/nautilus-directory-view-ui.xml.h:53
 msgid "Show _Properties"
 msgstr "Papar _Ciri-ciri"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:55
+#: src/file-manager/nautilus-directory-view-ui.xml.h:54
 msgid "Show the contents of the Trash"
 msgstr "Papar kandungan Sampah"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:56
+#: src/file-manager/nautilus-directory-view-ui.xml.h:55
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Papar folder mengandungi skrip yang tampak pada menu ini"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:57
+#: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "View or modify the properties of each selected item"
 msgstr "Lihat atau ubahsuai ciri-ciri setiap item dipilih"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:59
+#: src/file-manager/nautilus-directory-view-ui.xml.h:58
 msgid "_Duplicate"
 msgstr "_Gandakan"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:61
+#: src/file-manager/nautilus-directory-view-ui.xml.h:60
 msgid "_Make Link"
 msgstr "Cipta _Pautan"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:62
+#: src/file-manager/nautilus-directory-view-ui.xml.h:61
 msgid "_New Folder"
 msgstr "Folder _Baru"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:63
+#: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "_Open"
 msgstr "_Buka"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:64
+#: src/file-manager/nautilus-directory-view-ui.xml.h:63
 msgid "_Open Scripts Folder"
 msgstr "_Buka Folder Skrip"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:65
+#: src/file-manager/nautilus-directory-view-ui.xml.h:64
 msgid "_Paste Files"
 msgstr "_Tepek Fail"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:66
+#: src/file-manager/nautilus-directory-view-ui.xml.h:65
 msgid "_Rename"
 msgstr "_Tukarnama"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:67
+#: src/file-manager/nautilus-directory-view-ui.xml.h:66
 msgid "_Show Trash"
 msgstr "Papar _Sampah"
 
@@ -5967,11 +6014,11 @@ msgstr ""
 msgid "Bookmarks"
 msgstr "Tandabuku"
 
-#: src/nautilus-bookmarks-window.c:220
+#: src/nautilus-bookmarks-window.c:215
 msgid "Location"
 msgstr "Lokasi"
 
-#: src/nautilus-bookmarks-window.c:233
+#: src/nautilus-bookmarks-window.c:228
 msgid "_Remove"
 msgstr "_Buang"
 
@@ -6045,7 +6092,7 @@ msgstr "Ulanghidup Nautilus."
 
 #. Set initial window title
 #: src/nautilus-main.c:185 src/nautilus-window-manage-views.c:221
-#: src/nautilus-window-menus.c:613 src/nautilus-window.c:185
+#: src/nautilus-window-menus.c:613 src/nautilus-window.c:184
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -6361,7 +6408,11 @@ msgstr ""
 msgid "News Panel"
 msgstr "Panel Berita"
 
-#: src/nautilus-preferences-dialog.c:447
+#: src/nautilus-preferences-dialog.c:422
+msgid "Preferences"
+msgstr "Keutamaan"
+
+#: src/nautilus-preferences-dialog.c:448
 #, c-format
 msgid "Display %s tab in sidebar"
 msgstr "Papar tab %s pada sidebar"
@@ -6379,127 +6430,129 @@ msgid "Profile Dump"
 msgstr ""
 
 #. set the title and standard close accelerator
-#: src/nautilus-property-browser.c:263
+#: src/nautilus-property-browser.c:265
 msgid "Backgrounds and Emblems"
 msgstr "Latarbelakang dan Emblem"
 
-#: src/nautilus-property-browser.c:367
-msgid "_Add new..."
-msgstr "_Tambah..."
-
-#: src/nautilus-property-browser.c:389
+#: src/nautilus-property-browser.c:369
 msgid "_Remove..."
 msgstr "_Buang..."
 
-#: src/nautilus-property-browser.c:863
+#: src/nautilus-property-browser.c:390
+msgid "_Add new..."
+msgstr "_Tambah..."
+
+#: src/nautilus-property-browser.c:866
 #, c-format
 msgid "Sorry, but pattern %s couldn't be deleted."
 msgstr "Maaf, corak %s tak dapat dipadam."
 
-#: src/nautilus-property-browser.c:864 src/nautilus-property-browser.c:893
+#: src/nautilus-property-browser.c:867 src/nautilus-property-browser.c:896
 msgid "Couldn't delete pattern"
 msgstr "Tak dapat padam corak"
 
-#: src/nautilus-property-browser.c:892
+#: src/nautilus-property-browser.c:895
 #, c-format
 msgid "Sorry, but emblem %s couldn't be deleted."
 msgstr "Maaf, emblem %s tak dapat dipadam."
 
-#: src/nautilus-property-browser.c:931
+#: src/nautilus-property-browser.c:934
 msgid "Create a New Emblem:"
 msgstr "Cipta Emblem Baru:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:944
+#: src/nautilus-property-browser.c:947
 #, fuzzy
 msgid "_Keyword:"
 msgstr "Katakunci:"
 
 # ui/galeon.glade.h:176
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:960
+#: src/nautilus-property-browser.c:965
 #, fuzzy
 msgid "_Image:"
 msgstr "Imej:"
 
-#: src/nautilus-property-browser.c:964
+#: src/nautilus-property-browser.c:969
 msgid "Select an image file for the new emblem:"
 msgstr "Pilih fail imej bagi emblem baru:"
 
-#: src/nautilus-property-browser.c:989
+#: src/nautilus-property-browser.c:993
 msgid "Create a New Color:"
 msgstr "Cipta Warna Baru:"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:996
+#: src/nautilus-property-browser.c:1006
 #, fuzzy
 msgid "Color _name:"
 msgstr "Nama warna:"
 
-#: src/nautilus-property-browser.c:1009
+#: src/nautilus-property-browser.c:1022
 #, fuzzy
 msgid "Color _value:"
 msgstr "Nilai warna:"
 
-#: src/nautilus-property-browser.c:1045
+#: src/nautilus-property-browser.c:1053
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "Maaf,  \"%s\" bukannya nama fail yang sah."
 
-#: src/nautilus-property-browser.c:1047
+#: src/nautilus-property-browser.c:1055
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "Maaf, anda tidak membekalkan nama fail yang sah."
 
-#: src/nautilus-property-browser.c:1049 src/nautilus-property-browser.c:1092
+#: src/nautilus-property-browser.c:1057 src/nautilus-property-browser.c:1100
 msgid "Couldn't install pattern"
 msgstr "Tak dapat memasang corak"
 
-#: src/nautilus-property-browser.c:1060
+#: src/nautilus-property-browser.c:1068
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Maaf, anda tak boleh menggantikan imej ulangtetap."
 
-#: src/nautilus-property-browser.c:1091
+#: src/nautilus-property-browser.c:1099
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Maaf, tapi corak %s tak dapat dipasang."
 
-#: src/nautilus-property-browser.c:1114
-msgid "Select an image file to add as a pattern:"
+#: src/nautilus-property-browser.c:1122
+#, fuzzy
+msgid "Select an image file to add as a pattern"
 msgstr "Pilih fail imeh untuk ditambah sebagai corak:"
 
-#: src/nautilus-property-browser.c:1174
+#: src/nautilus-property-browser.c:1182
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Maaf, anda mesti nyatakan nama bukan-kosong bagi warna baru."
 
-#: src/nautilus-property-browser.c:1175
+#: src/nautilus-property-browser.c:1183
 msgid "Couldn't install color"
 msgstr "Tak dapat memasang warna"
 
-#: src/nautilus-property-browser.c:1230
-msgid "Select a color to add:"
+#: src/nautilus-property-browser.c:1238
+#, fuzzy
+msgid "Select a color to add"
 msgstr "Pilih warna untuk ditambah:"
 
-#: src/nautilus-property-browser.c:1312
+#: src/nautilus-property-browser.c:1320
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Maaf, '%s' bukanlah fail imej yang boleh digunakan!"
 
-#: src/nautilus-property-browser.c:1330
+#: src/nautilus-property-browser.c:1338
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Maaf anda mesti nyatakan katakunci bukan-kosong untuk emblem baru."
 
-#: src/nautilus-property-browser.c:1331 src/nautilus-property-browser.c:1334
-#: src/nautilus-property-browser.c:1338 src/nautilus-property-browser.c:1367
+#: src/nautilus-property-browser.c:1339 src/nautilus-property-browser.c:1342
+#: src/nautilus-property-browser.c:1346 src/nautilus-property-browser.c:1375
 msgid "Couldn't install emblem"
 msgstr "Tak dapat memasang emblem"
 
-#: src/nautilus-property-browser.c:1333
+#: src/nautilus-property-browser.c:1341
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Maaf, katakunci emblem hanya boleh mengandungi huruf, ruang dan nombor."
 
-#: src/nautilus-property-browser.c:1336
+#: src/nautilus-property-browser.c:1344
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
@@ -6507,70 +6560,70 @@ msgid ""
 msgstr ""
 "Maaf, \"%s\" adalah katakunci tersedia ada. Sila pilih nama lain baginya."
 
-#: src/nautilus-property-browser.c:1366
+#: src/nautilus-property-browser.c:1374
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Maaf, imej pada %s tak dapat di pasang sebagai emblem."
 
-#: src/nautilus-property-browser.c:1998
+#: src/nautilus-property-browser.c:2006
 msgid "Select A Category:"
 msgstr "Pilih kategori:"
 
-#: src/nautilus-property-browser.c:2006
+#: src/nautilus-property-browser.c:2015
 #, fuzzy
 msgid "C_ancel Remove"
 msgstr "Batal Buang"
 
-#: src/nautilus-property-browser.c:2011
+#: src/nautilus-property-browser.c:2021
 #, fuzzy
 msgid "_Add a New Pattern..."
 msgstr "Tambah Corak Baru..."
 
-#: src/nautilus-property-browser.c:2014
+#: src/nautilus-property-browser.c:2024
 #, fuzzy
 msgid "_Add a New Color..."
 msgstr "Tambah Warna Baru"
 
-#: src/nautilus-property-browser.c:2017
+#: src/nautilus-property-browser.c:2027
 #, fuzzy
 msgid "_Add a New Emblem..."
 msgstr "Tambah Emblem Baru..."
 
-#: src/nautilus-property-browser.c:2037
+#: src/nautilus-property-browser.c:2050
 msgid "Click on a pattern to remove it"
 msgstr "Klik pada corak untuk membuangnya"
 
-#: src/nautilus-property-browser.c:2040
+#: src/nautilus-property-browser.c:2053
 msgid "Click on a color to remove it"
 msgstr "Klik pada warna untuk membuangnya"
 
-#: src/nautilus-property-browser.c:2043
+#: src/nautilus-property-browser.c:2056
 msgid "Click on an emblem to remove it"
 msgstr "Klik pada emblem untuk membuangnya"
 
-#: src/nautilus-property-browser.c:2052
+#: src/nautilus-property-browser.c:2065
 msgid "Patterns:"
 msgstr "Corak:"
 
-#: src/nautilus-property-browser.c:2055
+#: src/nautilus-property-browser.c:2068
 msgid "Colors:"
 msgstr "Warna:"
 
-#: src/nautilus-property-browser.c:2058
+#: src/nautilus-property-browser.c:2071
 msgid "Emblems:"
 msgstr "Emblem:"
 
-#: src/nautilus-property-browser.c:2077
+#: src/nautilus-property-browser.c:2090
 #, fuzzy
 msgid "_Remove a Pattern..."
 msgstr "Buang Corak..."
 
-#: src/nautilus-property-browser.c:2080
+#: src/nautilus-property-browser.c:2093
 #, fuzzy
 msgid "_Remove a Color..."
 msgstr "Buang Warna..."
 
-#: src/nautilus-property-browser.c:2083
+#: src/nautilus-property-browser.c:2096
 #, fuzzy
 msgid "_Remove an Emblem..."
 msgstr "Buang Emblem..."
@@ -6875,8 +6928,9 @@ msgid "P_references..."
 msgstr "_Keutamaan..."
 
 #: src/nautilus-shell-ui.xml.h:38
-msgid "Refresh"
-msgstr "Segarkan"
+#, fuzzy
+msgid "Reload"
+msgstr "Baca"
 
 #: src/nautilus-shell-ui.xml.h:39
 msgid "Report Profiling"
@@ -6923,8 +6977,8 @@ msgid "Up"
 msgstr "Naik"
 
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-shell-ui.xml.h:52 src/nautilus-window.c:517
-#: src/nautilus-window.c:1355
+#: src/nautilus-shell-ui.xml.h:52 src/nautilus-window.c:516
+#: src/nautilus-window.c:1354
 msgid "View as..."
 msgstr "Lihat sebagai..."
 
@@ -7014,8 +7068,9 @@ msgid "_Profiler"
 msgstr "_Pemprofil"
 
 #: src/nautilus-shell-ui.xml.h:77
-msgid "_Refresh"
-msgstr "_Segarkan"
+#, fuzzy
+msgid "_Reload"
+msgstr "Baca"
 
 #: src/nautilus-shell-ui.xml.h:78
 msgid "_Report Profiling"
@@ -7067,37 +7122,42 @@ msgstr "_Buka dengan..."
 msgid "Find:"
 msgstr "Cari:"
 
-#: src/nautilus-theme-selector.c:113
+#: src/nautilus-theme-selector.c:115
 msgid "Click on a theme to remove it."
 msgstr "Klik pada tema untuk membuangnya."
 
-#: src/nautilus-theme-selector.c:116
+#: src/nautilus-theme-selector.c:118
 msgid "Click on a theme to change the appearance of Nautilus."
 msgstr "Klik pada tema untuk menukar penampilan Nautilus."
 
-#: src/nautilus-theme-selector.c:138
+#: src/nautilus-theme-selector.c:140
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid theme folder."
 msgstr "Maaf, tapu \"%s\" adalah bukan folder tema yang sah."
 
-#: src/nautilus-theme-selector.c:140
+#: src/nautilus-theme-selector.c:142 src/nautilus-theme-selector.c:158
 msgid "Couldn't add theme"
 msgstr "Tak dapat menambah tema"
 
-#: src/nautilus-theme-selector.c:147
+#: src/nautilus-theme-selector.c:149
 #, c-format
 msgid "Sorry, but the \"%s\" theme couldn't be installed."
 msgstr "Maaf, tapi tema  \"%s\" tak dapat dipasang."
 
-#: src/nautilus-theme-selector.c:149
+#: src/nautilus-theme-selector.c:151
 msgid "Couldn't install theme"
 msgstr "Tak dapat memasang tema"
 
-#: src/nautilus-theme-selector.c:188
+#: src/nautilus-theme-selector.c:156
+#, fuzzy, c-format
+msgid "Sorry, but \"%s\" is not a valid theme file."
+msgstr "Maaf, tapu \"%s\" adalah bukan folder tema yang sah."
+
+#: src/nautilus-theme-selector.c:196
 msgid "Select a theme folder to add as a new theme:"
 msgstr "Pilih folder tema untuk ditambah sebagai tema baru:"
 
-#: src/nautilus-theme-selector.c:298
+#: src/nautilus-theme-selector.c:306
 msgid ""
 "Sorry, but you can't remove the current theme. Please change to another "
 "theme before removing this one."
@@ -7105,27 +7165,27 @@ msgstr ""
 "Maaf, anda tak boleh membuang tema semasa. Sila tukar ke tema lain sebelum "
 "membiang yang ini."
 
-#: src/nautilus-theme-selector.c:300
+#: src/nautilus-theme-selector.c:308
 msgid "Can't delete current theme"
 msgstr "Tak dapat memadam tema semasa"
 
-#: src/nautilus-theme-selector.c:308
+#: src/nautilus-theme-selector.c:316
 msgid "Sorry, but that theme could not be removed!"
 msgstr "Maaf, tapi tema tak dapat dibuang"
 
-#: src/nautilus-theme-selector.c:309
+#: src/nautilus-theme-selector.c:317
 msgid "Couldn't remove theme"
 msgstr "Tak dapat membuang tema"
 
-#: src/nautilus-theme-selector.c:514
+#: src/nautilus-theme-selector.c:545
 msgid "Add New Theme..."
 msgstr "Tambah Tema Baru..."
 
-#: src/nautilus-theme-selector.c:519
+#: src/nautilus-theme-selector.c:552
 msgid "Remove Theme..."
 msgstr "Buang Tema..."
 
-#: src/nautilus-theme-selector.c:524
+#: src/nautilus-theme-selector.c:558
 msgid "Cancel Remove"
 msgstr "Batal Buang"
 
@@ -7377,26 +7437,47 @@ msgstr "Undur"
 msgid "Forward"
 msgstr "Maju"
 
-#: src/nautilus-window.c:1061
+#: src/nautilus-window.c:1060
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Papar lokasi ini dengan \"%s\""
 
-#: src/nautilus-window.c:2084
+#: src/nautilus-window.c:2083
 msgid "Application ID"
 msgstr "ID Aplikasi"
 
-#: src/nautilus-window.c:2085
+#: src/nautilus-window.c:2084
 msgid "The application ID of the window."
 msgstr "ID aplikasi bagi tetingkap"
 
-#: src/nautilus-window.c:2091
+#: src/nautilus-window.c:2090
 msgid "Application"
 msgstr "Aplikasi"
 
-#: src/nautilus-window.c:2092
+#: src/nautilus-window.c:2091
 msgid "The NautilusApplication associated with this window."
 msgstr ""
+
+#~ msgid "Server Configuration"
+#~ msgstr "Konfigurasi Pelayan"
+
+#~ msgid "R_emove Custom Images"
+#~ msgstr "_Buang Imej Sendiri"
+
+#~ msgid "R_emove Custom Image"
+#~ msgstr "_Buang Imej Sendiri"
+
+#~ msgid "Remove Custom Images"
+#~ msgstr "Buang Imej Sendiri"
+
+#~ msgid "Reset View to Match _Preferences"
+#~ msgstr "Ulangtetap Paparan supaya Padan _Keutamaan"
+
+#~ msgid "Refresh"
+#~ msgstr "Segarkan"
+
+#~ msgid "_Refresh"
+#~ msgstr "_Segarkan"
 
 #~ msgid "Lay Out Items"
 #~ msgstr "Susun Atur Item"
@@ -7404,17 +7485,11 @@ msgstr ""
 #~ msgid "Lay Out Items:"
 #~ msgstr "Susun Atur Item:"
 
-#~ msgid "View Preferences"
-#~ msgstr "Lihat Keutamaan"
-
 #~ msgid "Windows & Desktop"
 #~ msgstr "Tetingkap & Desktop"
 
 #~ msgid "Preview Release %s: %s"
 #~ msgstr "Keluaran %s: %s"
-
-#~ msgid "Forget"
-#~ msgstr "Lupa"
 
 #~ msgid "Sorry, but %s is too large for Nautilus to load all of it."
 #~ msgstr "Maaf, tetapi %s adalah terlalu besar untuk dimuatkan Nautilus"

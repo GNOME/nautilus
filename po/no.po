@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.2\n"
-"POT-Creation-Date: 2002-04-23 22:26+0200\n"
+"POT-Creation-Date: 2002-04-28 20:43+0200\n"
 "PO-Revision-Date: 2002-04-23 22:27+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -1717,17 +1717,19 @@ msgstr "Favoritter"
 msgid "Adjust your user environment"
 msgstr "Tilpass ditt brukermiljø"
 
-#: data/preferences.desktop.in.h:2 src/nautilus-preferences-dialog.c:421
-msgid "Preferences"
-msgstr "Brukervalg"
+#: data/preferences.desktop.in.h:2
+#, fuzzy
+msgid "Desktop Preferences"
+msgstr "Brukervalg for visning"
 
 #: data/serverconfig.desktop.in.h:1
 msgid "Configure network services (web server, DNS server, etc.)"
 msgstr "Konfigurer nettverkstjenester (webtjener, DNS-tjener, etc.)"
 
 #: data/serverconfig.desktop.in.h:2 data/serverconfig.directory.in.h:2
-msgid "Server Configuration"
-msgstr "Tjenerkonfigurasjon"
+#, fuzzy
+msgid "Server Settings"
+msgstr "Systeminnstillinger"
 
 #: data/serverconfig.directory.in.h:1
 msgid "Configure network services"
@@ -2102,19 +2104,24 @@ msgstr "Autentisering forespurt"
 msgid "reset"
 msgstr "nullstill"
 
-#: libnautilus-private/nautilus-dnd.c:563
+#: libnautilus-private/nautilus-dnd.c:548
 msgid "_Move here"
 msgstr "_Flytt hit"
 
-#: libnautilus-private/nautilus-dnd.c:568
+#: libnautilus-private/nautilus-dnd.c:553
 msgid "_Copy here"
 msgstr "_Kopier hit"
 
-#: libnautilus-private/nautilus-dnd.c:573
+#: libnautilus-private/nautilus-dnd.c:558
 msgid "_Link here"
 msgstr "_Lag lenke hit"
 
-#: libnautilus-private/nautilus-dnd.c:582
+#: libnautilus-private/nautilus-dnd.c:563
+#, fuzzy
+msgid "Set as _Background"
+msgstr "Nulltill bakgrunn"
+
+#: libnautilus-private/nautilus-dnd.c:572
 msgid "Cancel"
 msgstr "Avbryt"
 
@@ -3325,7 +3332,7 @@ msgstr "lenke (ødelagt)"
 
 #: libnautilus-private/nautilus-file.c:5289
 #: libnautilus-private/nautilus-trash-directory.c:373
-#: src/file-manager/fm-desktop-icon-view.c:69
+#: src/file-manager/fm-desktop-icon-view.c:70
 msgid "Trash"
 msgstr "Søppelkurv"
 
@@ -3603,7 +3610,7 @@ msgstr "om vi er merket for slipp"
 msgid "The selection rectangle"
 msgstr "Utvalgsrektangelet"
 
-#: libnautilus-private/nautilus-icon-dnd.c:624
+#: libnautilus-private/nautilus-icon-dnd.c:625
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
@@ -3613,7 +3620,7 @@ msgstr ""
 "plassering og la oppføringen bli hvor du slapp den? Dette vil ødelegge den "
 "lagrede manuelle plasseringen."
 
-#: libnautilus-private/nautilus-icon-dnd.c:628
+#: libnautilus-private/nautilus-icon-dnd.c:629
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
@@ -3623,7 +3630,7 @@ msgstr ""
 "plassering og la disse oppføringene bli hvor du slapp dem? Dette vil "
 "ødelegge den lagrede manuelle plasseringen."
 
-#: libnautilus-private/nautilus-icon-dnd.c:634
+#: libnautilus-private/nautilus-icon-dnd.c:635
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
@@ -3631,7 +3638,7 @@ msgstr ""
 "Denne katalogen bruker automatisk plassering. Ønsker du å bytte til manuell "
 "plassering og la denne oppføringen bli hvor du slapp den?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:637
+#: libnautilus-private/nautilus-icon-dnd.c:638
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
@@ -3639,11 +3646,11 @@ msgstr ""
 "Denne katalogen bruker automatisk plassering. Ønsker du å bytte til manuell "
 "plassering og la disse oppføringene bli hvor du slapp dem?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:642
+#: libnautilus-private/nautilus-icon-dnd.c:643
 msgid "Switch to Manual Layout?"
 msgstr "Bytt til manuell plassering?"
 
-#: libnautilus-private/nautilus-icon-dnd.c:643
+#: libnautilus-private/nautilus-icon-dnd.c:644
 msgid "Switch"
 msgstr "Bytt"
 
@@ -3783,7 +3790,7 @@ msgstr "Ikke ta med i menyen for \"%s\"-oppføringer"
 
 #: libnautilus-private/nautilus-program-chooser.c:1200
 #: src/file-manager/fm-search-list-view.c:494
-#: src/nautilus-bookmarks-window.c:207
+#: src/nautilus-bookmarks-window.c:202
 msgid "Name"
 msgstr "Navn"
 
@@ -4145,7 +4152,7 @@ msgstr ""
 msgid "Items containing \"medusa\" in their names and that are folders"
 msgstr "Oppføringer som har \"medusa\" i navnet og er mapper"
 
-#: libnautilus-private/nautilus-theme.c:500
+#: libnautilus-private/nautilus-theme.c:501
 #, c-format
 msgid "No description available for the \"%s\" theme"
 msgstr "Ingen beskrivelse tilgjengelig for \"%s\"-temaet"
@@ -4193,37 +4200,37 @@ msgid "%s Viewer"
 msgstr "%s-visning"
 
 #. Populate table with items we know localized names for.
-#: libnautilus-private/nautilus-volume-monitor.c:788
+#: libnautilus-private/nautilus-volume-monitor.c:796
 msgid "Floppy"
 msgstr "Diskett"
 
-#: libnautilus-private/nautilus-volume-monitor.c:789
+#: libnautilus-private/nautilus-volume-monitor.c:797
 msgid "CD-ROM"
 msgstr "CD-ROM"
 
-#: libnautilus-private/nautilus-volume-monitor.c:790
+#: libnautilus-private/nautilus-volume-monitor.c:798
 msgid "Zip Drive"
 msgstr "Zip-disk"
 
-#: libnautilus-private/nautilus-volume-monitor.c:805
-#: libnautilus-private/nautilus-volume-monitor.c:849
+#: libnautilus-private/nautilus-volume-monitor.c:813
+#: libnautilus-private/nautilus-volume-monitor.c:857
 msgid "Audio CD"
 msgstr "Lyd-CD"
 
-#: libnautilus-private/nautilus-volume-monitor.c:840
+#: libnautilus-private/nautilus-volume-monitor.c:848
 msgid "Root Volume"
 msgstr "Rot-volum"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1442
+#: libnautilus-private/nautilus-volume-monitor.c:1450
 msgid "Mount Error"
 msgstr "Monteringsfeil"
 
-#: libnautilus-private/nautilus-volume-monitor.c:1442
+#: libnautilus-private/nautilus-volume-monitor.c:1450
 msgid "Unmount Error"
 msgstr "Feil under avmontering"
 
 #. Handle floppy case
-#: libnautilus-private/nautilus-volume-monitor.c:1515
+#: libnautilus-private/nautilus-volume-monitor.c:1523
 msgid ""
 "Nautilus was unable to mount the floppy drive. There is probably no floppy "
 "in the drive."
@@ -4232,7 +4239,7 @@ msgstr ""
 "i stasjonen."
 
 #. All others
-#: libnautilus-private/nautilus-volume-monitor.c:1519
+#: libnautilus-private/nautilus-volume-monitor.c:1527
 msgid ""
 "Nautilus was unable to mount the volume. There is probably no media in the "
 "device."
@@ -4240,7 +4247,7 @@ msgstr ""
 "Nautilus klarte ikke å montere volumet. Det er sannsynligvis ikke noe media "
 "i enheten."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1525
+#: libnautilus-private/nautilus-volume-monitor.c:1533
 msgid ""
 "Nautilus was unable to mount the floppy drive. The floppy is probably in a "
 "format that cannot be mounted."
@@ -4248,7 +4255,7 @@ msgstr ""
 "Nautilus klarte ikke å montere diskettstasjonen. Disketten er sannsynligvis "
 "i et format som ikke kan monteres."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1528
+#: libnautilus-private/nautilus-volume-monitor.c:1536
 msgid ""
 "Nautilus was unable to mount the selected volume. The volume is probably in "
 "a format that cannot be mounted."
@@ -4256,20 +4263,20 @@ msgstr ""
 "Nautilus klarte ikke å montere det valgte volumet. Volumet er sannsynligvis "
 "i et format som ikke kan monteres."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1533
+#: libnautilus-private/nautilus-volume-monitor.c:1541
 msgid "Nautilus was unable to mount the selected floppy drive."
 msgstr "Nautilus klarte ikke å montere valgt diskettstasjon."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1535
+#: libnautilus-private/nautilus-volume-monitor.c:1543
 msgid "Nautilus was unable to mount the selected volume."
 msgstr "Nautilus kunne ikke montere det valgte volumet."
 
 #. FIXME: Should we parse this message and report something more meaningful?
-#: libnautilus-private/nautilus-volume-monitor.c:1540
+#: libnautilus-private/nautilus-volume-monitor.c:1548
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilus kunne ikke avmontere det valgte volumet."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1729
+#: libnautilus-private/nautilus-volume-monitor.c:1737
 msgid "ISO 9660 Volume"
 msgstr "ISO 9660 volum"
 
@@ -4434,9 +4441,14 @@ msgstr "Vis som ikoner"
 msgid "View as List"
 msgstr "Vis som liste"
 
-#: src/file-manager/fm-desktop-icon-view.c:683
+#: src/file-manager/fm-desktop-icon-view.c:689
 msgid "Background"
 msgstr "Bakgrunn"
+
+#: src/file-manager/fm-desktop-icon-view.c:857
+#, c-format
+msgid "Error executing utility program '%s': %s"
+msgstr ""
 
 #. Note to translators: If it's hard to compose a good home
 #. * icon name from the user name, you can use a string without
@@ -4446,24 +4458,20 @@ msgstr "Bakgrunn"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: src/file-manager/fm-desktop-icon-view.c:929
+#: src/file-manager/fm-desktop-icon-view.c:1099
 #, c-format
 msgid "%s's Home"
 msgstr "Hjem til %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1124
+#: src/file-manager/fm-desktop-icon-view.c:1294
 msgid "Empty Trash..."
 msgstr "Tøm søppelkurv..."
 
-#: src/file-manager/fm-desktop-icon-view.c:1126
+#: src/file-manager/fm-desktop-icon-view.c:1296
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
 msgid "Empty Trash"
 msgstr "Tøm søppelkurv"
-
-#: src/file-manager/fm-desktop-icon-view.c:1146
-msgid "Unmount Volume"
-msgstr "Avmonter volum"
 
 #: src/file-manager/fm-directory-view.c:475
 #, c-format
@@ -4804,19 +4812,20 @@ msgid "_Empty Trash..."
 msgstr "_Tøm søppelkurv..."
 
 #: src/file-manager/fm-directory-view.c:4364
-#: src/file-manager/nautilus-directory-view-ui.xml.h:60
+#: src/file-manager/nautilus-directory-view-ui.xml.h:59
 #: src/nautilus-sidebar.c:1502
 msgid "_Empty Trash"
 msgstr "_Tøm søppelkurv"
 
 #: src/file-manager/fm-directory-view.c:4375
-#: src/file-manager/nautilus-directory-view-ui.xml.h:37
-msgid "R_emove Custom Images"
-msgstr "Fje_rn egendefinerte bilder"
+#, fuzzy
+msgid "R_emove Custom Icons"
+msgstr "_Fjern egendefinert ikon"
 
 #: src/file-manager/fm-directory-view.c:4376
-msgid "R_emove Custom Image"
-msgstr "Fj_ern egendefinert bilde"
+#, fuzzy
+msgid "R_emove Custom Icon"
+msgstr "_Fjern egendefinert ikon"
 
 #: src/file-manager/fm-directory-view.c:4390
 msgid "Cu_t File"
@@ -4832,7 +4841,7 @@ msgid "_Copy File"
 msgstr "_Kopier fil"
 
 #: src/file-manager/fm-directory-view.c:4402
-#: src/file-manager/nautilus-directory-view-ui.xml.h:58
+#: src/file-manager/nautilus-directory-view-ui.xml.h:57
 msgid "_Copy Files"
 msgstr "_Kopier filer"
 
@@ -5104,21 +5113,21 @@ msgstr "Feil ved dra-og-slipp"
 msgid "An invalid drag type was used."
 msgstr "En ugyldig type ble brukt for draoperasjon."
 
-#: src/file-manager/fm-list-view.c:260
+#: src/file-manager/fm-list-view.c:286
 msgid "File name"
 msgstr "Filnavn"
 
-#: src/file-manager/fm-list-view.c:289
+#: src/file-manager/fm-list-view.c:315
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Størrelse"
 
-#: src/file-manager/fm-list-view.c:299
+#: src/file-manager/fm-list-view.c:325
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Type"
 
-#: src/file-manager/fm-list-view.c:309
+#: src/file-manager/fm-list-view.c:335
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Dato endret"
@@ -5577,35 +5586,71 @@ msgid "Disks"
 msgstr "Disker"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
+#, fuzzy
+msgid "Format"
+msgstr "Glem"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:7
+msgid "Format Conditionally"
+msgstr ""
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
+#, fuzzy
+msgid "Media Properties"
+msgstr "Egenskaper for %s"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
+#, fuzzy
+msgid "Media Properties Conditionally"
+msgstr "Oppretter egenskaper-vindu"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
 msgid "Mount or unmount disks"
 msgstr "Monter eller avmonter disker"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:7
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:11
 msgid "New Launcher"
 msgstr "Ny oppstarter"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:12
 msgid "New Terminal"
 msgstr "Ny terminal"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:13
 msgid "Open a new GNOME terminal window"
 msgstr "Åpne et nytt GNOME terminalvindu"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:10
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:14
+msgid "Protect"
+msgstr ""
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:15
+msgid "Protect Conditionally"
+msgstr ""
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:16
 msgid "Remove any custom pattern or color from the desktop background"
 msgstr ""
 "Fjern ethvert egendefinert mønster eller farge fra skrivebordsbakgrunnen"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:11
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:17
 msgid "Reset Desktop Background"
 msgstr "Nulltill skrivebordsbakgrunn"
 
-#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:12
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:18
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
 "Vis et vindu som lar deg velge mønster eller farge for skrivebordsbakgrunnen"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:19
+msgid "Unmount Volume"
+msgstr "Avmonter volum"
+
+#: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
+#, fuzzy
+msgid "Unmount Voulme Conditionally"
+msgstr "Avmonter volum"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
 msgid "Choose a program with which to open the selected item"
@@ -5714,121 +5759,123 @@ msgstr "Gjør klar valgte filer for kopiering med kommandoen Lim inn filer"
 msgid "Prepare the selected files to be moved with a Paste Files command"
 msgstr "Gjør klar valgte filer for flytting med kommandoen Lim inn filer"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:38
-msgid "Remove Custom Images"
-msgstr "Fjern egendefinerte bilder"
+#: src/file-manager/nautilus-directory-view-ui.xml.h:37
+#, fuzzy
+msgid "Remove Custom Icons"
+msgstr "_Fjern egendefinert ikon"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:39
+#: src/file-manager/nautilus-directory-view-ui.xml.h:38
 msgid "Remove any custom images from selected icons"
 msgstr "Fjern egendefinerte bilder fra valgte ikoner"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:40
+#: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "Remove any custom pattern or color from the background of this location"
 msgstr ""
 "Fjern ethvert egendefinert mønster eller farge fra bakgrunnen for denne "
 "plasseringen"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:41
+#: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "Rename"
 msgstr "Gi nytt navn"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:42
+#: src/file-manager/nautilus-directory-view-ui.xml.h:41
 msgid "Rename selected item"
 msgstr "Endre navn på valgt oppføring"
 
 #. add the reset background item, possibly disabled
-#: src/file-manager/nautilus-directory-view-ui.xml.h:43
+#: src/file-manager/nautilus-directory-view-ui.xml.h:42
 #: src/nautilus-sidebar.c:567
 msgid "Reset Background"
 msgstr "Nulltill bakgrunn"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:44
+#: src/file-manager/nautilus-directory-view-ui.xml.h:43
 msgid "Reset View to Default"
 msgstr "Nullstill visning til forvalg"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:45
-msgid "Reset View to Match _Preferences"
-msgstr "Sett visning til å være lik _brukervalg"
+#: src/file-manager/nautilus-directory-view-ui.xml.h:44
+#, fuzzy
+msgid "Reset View to _Defaults"
+msgstr "Nullstill visning til forvalg"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:46
+#: src/file-manager/nautilus-directory-view-ui.xml.h:45
 msgid "Reset sorting order and zoom level to match preferences for this view"
 msgstr ""
 "Nullstill sorteringsrekkefølge og zoom-nivå til brukervalg for denne "
 "visningen"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:47
+#: src/file-manager/nautilus-directory-view-ui.xml.h:46
 msgid "Run or manage scripts from ~/Nautilus/scripts"
 msgstr "Kjør eller håndter skript fra ~/Nautilus/scripts"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:48
+#: src/file-manager/nautilus-directory-view-ui.xml.h:47
 msgid "Scripts"
 msgstr "Skript"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:49
+#: src/file-manager/nautilus-directory-view-ui.xml.h:48
 msgid "Select All Files"
 msgstr "Velg alle filer"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:50
+#: src/file-manager/nautilus-directory-view-ui.xml.h:49
 msgid "Select _All Files"
 msgstr "Velg _alle filer"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:51
+#: src/file-manager/nautilus-directory-view-ui.xml.h:50
 msgid "Select all items in this window"
 msgstr "Velg alle oppføringer i dette vinduet"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:52
+#: src/file-manager/nautilus-directory-view-ui.xml.h:51
 msgid "Show Properties"
 msgstr "Vis egenskaper"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:53
+#: src/file-manager/nautilus-directory-view-ui.xml.h:52
 msgid "Show Trash"
 msgstr "Vis søppelkurv"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:54
+#: src/file-manager/nautilus-directory-view-ui.xml.h:53
 msgid "Show _Properties"
 msgstr "Vis egenska_per"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:55
+#: src/file-manager/nautilus-directory-view-ui.xml.h:54
 msgid "Show the contents of the Trash"
 msgstr "Vis innholdet i søppelkurven"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:56
+#: src/file-manager/nautilus-directory-view-ui.xml.h:55
 msgid "Show the folder containing the scripts that appear in this menu"
 msgstr "Vis mappen som inneholder skriptene som vises i denne menyen"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:57
+#: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "View or modify the properties of each selected item"
 msgstr "Vis eller modifiser egenskapene for hver av de valgte oppføringene"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:59
+#: src/file-manager/nautilus-directory-view-ui.xml.h:58
 msgid "_Duplicate"
 msgstr "_Dupliser"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:61
+#: src/file-manager/nautilus-directory-view-ui.xml.h:60
 msgid "_Make Link"
 msgstr "Opprett _lenke"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:62
+#: src/file-manager/nautilus-directory-view-ui.xml.h:61
 msgid "_New Folder"
 msgstr "_Ny mappe"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:63
+#: src/file-manager/nautilus-directory-view-ui.xml.h:62
 msgid "_Open"
 msgstr "_Åpne"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:64
+#: src/file-manager/nautilus-directory-view-ui.xml.h:63
 msgid "_Open Scripts Folder"
 msgstr "_Åpne skript-mappe"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:65
+#: src/file-manager/nautilus-directory-view-ui.xml.h:64
 msgid "_Paste Files"
 msgstr "_Lim inn filer"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:66
+#: src/file-manager/nautilus-directory-view-ui.xml.h:65
 msgid "_Rename"
 msgstr "End_re"
 
-#: src/file-manager/nautilus-directory-view-ui.xml.h:67
+#: src/file-manager/nautilus-directory-view-ui.xml.h:66
 msgid "_Show Trash"
 msgstr "_Vis søppelkurv"
 
@@ -6139,11 +6186,11 @@ msgstr ""
 msgid "Bookmarks"
 msgstr "Bokmerker"
 
-#: src/nautilus-bookmarks-window.c:220
+#: src/nautilus-bookmarks-window.c:215
 msgid "Location"
 msgstr "Adresse"
 
-#: src/nautilus-bookmarks-window.c:233
+#: src/nautilus-bookmarks-window.c:228
 msgid "_Remove"
 msgstr "Fje_<rn"
 
@@ -6219,7 +6266,7 @@ msgstr "Start Nautilus på nytt."
 
 #. Set initial window title
 #: src/nautilus-main.c:185 src/nautilus-window-manage-views.c:221
-#: src/nautilus-window-menus.c:613 src/nautilus-window.c:185
+#: src/nautilus-window-menus.c:613 src/nautilus-window.c:184
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -6531,7 +6578,11 @@ msgstr "Forsak hastighet"
 msgid "News Panel"
 msgstr "Nyhetspanel"
 
-#: src/nautilus-preferences-dialog.c:447
+#: src/nautilus-preferences-dialog.c:422
+msgid "Preferences"
+msgstr "Brukervalg"
+
+#: src/nautilus-preferences-dialog.c:448
 #, c-format
 msgid "Display %s tab in sidebar"
 msgstr "Vis fanen %s på sidelinjen"
@@ -7030,8 +7081,9 @@ msgid "P_references..."
 msgstr "B_rukervalg..."
 
 #: src/nautilus-shell-ui.xml.h:38
-msgid "Refresh"
-msgstr "Oppdater"
+#, fuzzy
+msgid "Reload"
+msgstr "Lese"
 
 #: src/nautilus-shell-ui.xml.h:39
 msgid "Report Profiling"
@@ -7078,8 +7130,8 @@ msgid "Up"
 msgstr "Opp"
 
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-shell-ui.xml.h:52 src/nautilus-window.c:517
-#: src/nautilus-window.c:1355
+#: src/nautilus-shell-ui.xml.h:52 src/nautilus-window.c:516
+#: src/nautilus-window.c:1354
 msgid "View as..."
 msgstr "Vis som..."
 
@@ -7168,8 +7220,9 @@ msgid "_Profiler"
 msgstr "_Profilering"
 
 #: src/nautilus-shell-ui.xml.h:77
-msgid "_Refresh"
-msgstr "Oppf_risk"
+#, fuzzy
+msgid "_Reload"
+msgstr "Lese"
 
 #: src/nautilus-shell-ui.xml.h:78
 msgid "_Report Profiling"
@@ -7234,7 +7287,7 @@ msgstr "Klikk på et tema for å endre utseende for Nautilus."
 msgid "Sorry, but \"%s\" is not a valid theme folder."
 msgstr "Beklager, men \"%s\" er ikke en gyldig temakatalog."
 
-#: src/nautilus-theme-selector.c:142
+#: src/nautilus-theme-selector.c:142 src/nautilus-theme-selector.c:158
 msgid "Couldn't add theme"
 msgstr "Kunne ikke legge til tema"
 
@@ -7247,11 +7300,16 @@ msgstr "Beklager, men temaet \"%s\" kunne ikke installeres."
 msgid "Couldn't install theme"
 msgstr "Kunne ikke installere tema"
 
-#: src/nautilus-theme-selector.c:190
+#: src/nautilus-theme-selector.c:156
+#, fuzzy, c-format
+msgid "Sorry, but \"%s\" is not a valid theme file."
+msgstr "Beklager, men \"%s\" er ikke en gyldig temakatalog."
+
+#: src/nautilus-theme-selector.c:196
 msgid "Select a theme folder to add as a new theme:"
 msgstr "Velg en temakatalog som skal legges til som nytt tema:"
 
-#: src/nautilus-theme-selector.c:300
+#: src/nautilus-theme-selector.c:306
 msgid ""
 "Sorry, but you can't remove the current theme. Please change to another "
 "theme before removing this one."
@@ -7259,27 +7317,27 @@ msgstr ""
 "Beklager, men du kan ikke fjerne aktivt tema. Vennligst bytt til et annet "
 "tema før du fjerner dette."
 
-#: src/nautilus-theme-selector.c:302
+#: src/nautilus-theme-selector.c:308
 msgid "Can't delete current theme"
 msgstr "Kan ikke slette aktivt tema"
 
-#: src/nautilus-theme-selector.c:310
+#: src/nautilus-theme-selector.c:316
 msgid "Sorry, but that theme could not be removed!"
 msgstr "Beklager, men det temaet kunne ikke fjernes!"
 
-#: src/nautilus-theme-selector.c:311
+#: src/nautilus-theme-selector.c:317
 msgid "Couldn't remove theme"
 msgstr "Kunne ikke fjerne tema"
 
-#: src/nautilus-theme-selector.c:539
+#: src/nautilus-theme-selector.c:545
 msgid "Add New Theme..."
 msgstr "Legg til nytt tema..."
 
-#: src/nautilus-theme-selector.c:546
+#: src/nautilus-theme-selector.c:552
 msgid "Remove Theme..."
 msgstr "Fjern tema..."
 
-#: src/nautilus-theme-selector.c:552
+#: src/nautilus-theme-selector.c:558
 msgid "Cancel Remove"
 msgstr "Avbryt fjern"
 
@@ -7539,26 +7597,47 @@ msgstr "Tilbake"
 msgid "Forward"
 msgstr "Fremover"
 
-#: src/nautilus-window.c:1061
+#: src/nautilus-window.c:1060
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Vis denne lokasjonen med \"%s\""
 
-#: src/nautilus-window.c:2084
+#: src/nautilus-window.c:2083
 msgid "Application ID"
 msgstr "Applikasjons-ID"
 
-#: src/nautilus-window.c:2085
+#: src/nautilus-window.c:2084
 msgid "The application ID of the window."
 msgstr "Applikasjons-ID for vinduet"
 
-#: src/nautilus-window.c:2091
+#: src/nautilus-window.c:2090
 msgid "Application"
 msgstr "Applikasjon"
 
-#: src/nautilus-window.c:2092
+#: src/nautilus-window.c:2091
 msgid "The NautilusApplication associated with this window."
 msgstr "NautilusApplication assosiert med dette vinduet."
+
+#~ msgid "Server Configuration"
+#~ msgstr "Tjenerkonfigurasjon"
+
+#~ msgid "R_emove Custom Images"
+#~ msgstr "Fje_rn egendefinerte bilder"
+
+#~ msgid "R_emove Custom Image"
+#~ msgstr "Fj_ern egendefinert bilde"
+
+#~ msgid "Remove Custom Images"
+#~ msgstr "Fjern egendefinerte bilder"
+
+#~ msgid "Reset View to Match _Preferences"
+#~ msgstr "Sett visning til å være lik _brukervalg"
+
+#~ msgid "Refresh"
+#~ msgstr "Oppdater"
+
+#~ msgid "_Refresh"
+#~ msgstr "Oppf_risk"
 
 #~ msgid "Reset View to Match Preferences"
 #~ msgstr "Sett visning lik brukervalg"
@@ -7572,17 +7651,11 @@ msgstr "NautilusApplication assosiert med dette vinduet."
 #~ msgid "Lay Out Items:"
 #~ msgstr "Plasser oppføringer:"
 
-#~ msgid "View Preferences"
-#~ msgstr "Brukervalg for visning"
-
 #~ msgid "Windows & Desktop"
 #~ msgstr "Vinduer og skrivebord"
 
 #~ msgid "Preview Release %s: %s"
 #~ msgstr "Preview versjon %s: %s"
-
-#~ msgid "Forget"
-#~ msgstr "Glem"
 
 #~ msgid "Sorry, but %s is too large for Nautilus to load all of it."
 #~ msgstr "Beklager, men %s er for stor til at Nautilus kan lese inn alt."
