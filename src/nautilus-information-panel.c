@@ -1112,18 +1112,6 @@ background_settings_changed_callback (NautilusBackground *background, NautilusSi
 				    NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
 				    NULL,
 				    image);
-				    
-	/* Block so this fn is not reinvoked due to nautilus_background_set_combine_mode */
-	gtk_signal_handler_block_by_func (GTK_OBJECT (background),
-					  background_settings_changed_callback,
-					  sidebar);
-	/* Combine mode uses dithering to avoid striations in gradients.
-	 */
-	nautilus_background_set_combine_mode (background, nautilus_gradient_is_gradient (color));
-	
-	gtk_signal_handler_unblock_by_func (GTK_OBJECT (background),
-					    background_settings_changed_callback,
-					    sidebar);
 
 	g_free (color);
 	g_free (image);
@@ -1455,7 +1443,6 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 	char *color_spec;
 	char *background_color;
 	char *background_image;
-	gboolean combine;
 
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR (sidebar));
 	
@@ -1476,12 +1463,8 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 	/* Set up the background color and image from the metadata. */
 
 	if (nautilus_sidebar_background_is_default (sidebar)) {
-		char* combine_str;
 		background_color = g_strdup (sidebar->details->default_background_color);
 		background_image = g_strdup (sidebar->details->default_background_image);
-		combine_str = nautilus_theme_get_theme_data ("sidebar", "combine");
-		combine = combine_str != NULL;
-		g_free (combine_str);
 	} else {
 		background_color = nautilus_file_get_metadata (sidebar->details->file,
 							       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR,
@@ -1489,10 +1472,6 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 		background_image = nautilus_file_get_metadata (sidebar->details->file,
 							       NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE,
 							       NULL);
-		       
-		/* Combine mode uses dithering to avoid striations in gradients.
-		 */
-		combine = nautilus_gradient_is_gradient (background_color);
 	}
 		
 	/* Block so we don't write these settings out in response to our set calls below */
@@ -1502,7 +1481,6 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 
 	nautilus_background_set_image_uri (background, background_image);
 	nautilus_background_set_color (background, background_color);
-	nautilus_background_set_combine_mode (background, combine);
 
 	g_free (background_color);
 	g_free (background_image);

@@ -77,14 +77,11 @@ void                             nautilus_background_set_color                  
 void                             nautilus_background_set_image_uri                    (NautilusBackground               *background,
 										       const char                       *image_uri);
 void                             nautilus_background_reset                            (NautilusBackground               *background);
-void                             nautilus_background_set_combine_mode                 (NautilusBackground               *background,
-										       gboolean                          combine);
 void                             nautilus_background_set_image_placement              (NautilusBackground               *background,
 										       NautilusBackgroundImagePlacement  placement);
 /* Calls to interrogate the current state of a background. */
 char *                           nautilus_background_get_color                        (NautilusBackground               *background);
 char *                           nautilus_background_get_image_uri                    (NautilusBackground               *background);
-gboolean                         nautilus_background_get_combine_mode                 (NautilusBackground               *background);
 NautilusBackgroundImagePlacement nautilus_background_get_image_placement              (NautilusBackground               *background);
 gboolean                         nautilus_background_is_dark                          (NautilusBackground               *background);
 gboolean                         nautilus_background_is_set                           (NautilusBackground               *background);

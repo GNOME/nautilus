@@ -88,10 +88,17 @@ nautilus_background_canvas_group_initialize_class (gpointer klass)
 static void
 nautilus_background_canvas_group_initialize_common (NautilusBackgroundCanvasGroup *canvas_group)
 {
+#if 0
 	/* gnome_canvas_set_dither is only available in gnome-libs > v 1.2.8
+	 * We're not doing this now because:
+	 *  - currently a version of gnome-libs > 1.2.8 is not widely available
+	 *  - originally, this dithering was to avoid striations in background
+	 *    gradients in 16 bit mode. This is no longer an issue because
+	 *    background now dither themselves (in both aa and non-aa mode).
 	 */
 #ifdef HAVE_GNOME_CANVAS_SET_DITHER
 	gnome_canvas_set_dither (GNOME_CANVAS_ITEM (canvas_group)->canvas, GDK_RGB_DITHER_MAX);
+#endif
 #endif
 }
 

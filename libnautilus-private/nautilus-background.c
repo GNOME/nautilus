@@ -94,7 +94,6 @@ struct NautilusBackgroundDetails {
 	int image_height_unscaled;
 	NautilusPixbufLoadHandle *load_image_handle;
 	gboolean emit_after_load;
-	gboolean combine_mode;
 	NautilusBackgroundImagePlacement image_placement;
 
 	/* The image_rect is the area (canvas relative) the image will cover.
@@ -201,30 +200,6 @@ nautilus_background_destroy (GtkObject *object)
 	g_free (background->details);
 
 	NAUTILUS_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
-}
-
-/* handle the combine mode getting and setting */
-
-gboolean
-nautilus_background_get_combine_mode (NautilusBackground *background)
-{
-	g_return_val_if_fail (NAUTILUS_IS_BACKGROUND (background),
-			      FALSE);
-
-	return background->details->combine_mode;
-}
-
-void
-nautilus_background_set_combine_mode (NautilusBackground *background, gboolean new_combine_mode)
-{
-	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
-	g_return_if_fail (new_combine_mode == FALSE || new_combine_mode == TRUE);
-
-	if (new_combine_mode != background->details->combine_mode) {
-		background->details->combine_mode = new_combine_mode;
-		gtk_signal_emit (GTK_OBJECT (background), signals[SETTINGS_CHANGED]);
-		gtk_signal_emit (GTK_OBJECT (background), signals[APPEARANCE_CHANGED]);
-	}
 }
 
 NautilusBackgroundImagePlacement

@@ -1,3 +1,29 @@
+2001-03-29  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-background-canvas-group.c:
+	Comment out call to gnome_canvas_set_dither because it no
+	longer serves a useful purpose and it removes our dependancy
+	on using a gnome-libs > 1.2.8 - bug 7922.
+
+	(nautilus_background_canvas_group_initialize_common):
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_destroy):
+	* libnautilus-extensions/nautilus-background.h:
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(theme_image_path_to_uri),
+	(nautilus_file_background_get_default_settings_for_theme),
+	(nautilus_file_background_get_default_settings),
+	(nautilus_file_background_read_desktop_settings),
+	(nautilus_file_background_write_desktop_settings),
+	(nautilus_file_background_write_desktop_default_settings),
+	(nautilus_file_background_matches_default_settings),
+	(nautilus_file_background_is_set), (background_changed_callback),
+	(initialize_background_from_settings):
+	* src/nautilus-sidebar.c: (background_settings_changed_callback),
+	(nautilus_sidebar_update_appearance):
+	Remove combine mode from nautilus-background. It no longer serves
+	any purpose (background always draw dithered now) - bug 2190 & 5516.
+
 2001-03-29  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>
