@@ -35,529 +35,41 @@
 
 #include <stdio.h>
 
-/* FIXME: free the mallocs */
 
-static gint
-gnome_vfs_mime_application_has_id (GnomeVFSMimeApplication *application, const char *id)
-{
-	return strcmp (application->id, id);
-}
+static gint gnome_vfs_mime_application_has_id (GnomeVFSMimeApplication *application, const char *id);
+static gint gnome_vfs_mime_id_matches_application (const char *id, GnomeVFSMimeApplication *application);
+static gint gnome_vfs_mime_id_matches_component (const char *iid, OAF_ServerInfo *component);
+static gboolean gnome_vfs_mime_application_has_id_not_in_list (GnomeVFSMimeApplication *application, GList *ids);
+static gboolean component_has_id_in_list (OAF_ServerInfo *server, GList *iids);
+static gboolean string_not_in_list (const char *str, GList *list);
+static OAF_ServerInfo *OAF_ServerInfo__copy (OAF_ServerInfo *orig);
+static char *extract_prefix_add_suffix (const char *string, const char *separator, const char *suffix);
+static char *mime_type_get_supertype (const char *mime_type);
+static char *uri_string_get_scheme (const char *uri_string);
+static GList *get_explicit_content_view_iids_from_metafile (NautilusDirectory *directory);
+static char *make_oaf_query_for_explicit_content_view_iids (GList *view_iids);
+static char *make_oaf_query_with_known_mime_type (const char *mime_type, const char *uri_scheme, GList *explicit_iids);
+static char *make_oaf_query_with_uri_scheme_only (const char *uri_scheme, GList *explicit_iids);
+static GHashTable *file_list_to_mime_type_hash_table (GList *files);
+static void free_key (gpointer key, gpointer value, gpointer user_data);
+static void mime_type_hash_table_destroy (GHashTable *table);
+static gboolean server_matches_content_requirements (OAF_ServerInfo *server, 
+						     GHashTable *type_table, 
+						     GList *explicit_iids);
+static GList *nautilus_do_component_query (const char *mime_type, 
+					   const char *uri_scheme, 
+					   GList *files,
+					   GList *explicit_iids,
+					   char **extra_sort_criteria, 
+					   CORBA_Environment *ev);
+static GList *str_list_difference   (GList *a, 
+				     GList *b);
+static char *get_mime_type_from_uri (const char 
+				     *text_uri);
+
+
+/* FIXME: free the mallocs everywhere */
 
-static gint
-gnome_vfs_mime_id_matches_application (const char *id, GnomeVFSMimeApplication *application)
-{
-	return gnome_vfs_mime_application_has_id (application, id);
-}
-
-static gint
-gnome_vfs_mime_id_matches_component (const char *iid, OAF_ServerInfo *component)
-{
-	return strcmp (component->iid, iid);
-}
-
-
-static gboolean
-gnome_vfs_mime_application_has_id_not_in_list (GnomeVFSMimeApplication *application, GList *ids)
-{
-	return g_list_find_custom (ids, application, (GCompareFunc) gnome_vfs_mime_id_matches_application) == NULL;
-}
-
-static gboolean
-component_has_id_in_list (OAF_ServerInfo *server, GList *iids)
-{
-	return g_list_find_custom (iids, server, (GCompareFunc) gnome_vfs_mime_id_matches_component) != NULL;
-}
-
-static gboolean
-string_not_in_list (const char *str, GList *list)
-{
-	return g_list_find_custom (list, (gpointer) str, (GCompareFunc) strcmp) == NULL;
-}
-
-
-static OAF_ServerInfo *
-OAF_ServerInfo__copy (OAF_ServerInfo *orig)
-{
-	OAF_ServerInfo *retval;
-	int i;
-
-	retval = OAF_ServerInfo__alloc ();
-	
-	retval->iid = CORBA_string_dup (orig->iid);
-	retval->server_type = CORBA_string_dup (orig->server_type);
-	retval->location_info = CORBA_string_dup (orig->location_info);
-	retval->username= CORBA_string_dup (orig->username);
-	retval->hostname= CORBA_string_dup (orig->hostname);
-	retval->domain= CORBA_string_dup (orig->domain);
-
-	retval->attrs._maximum = orig->attrs._maximum;
-	retval->attrs._length = orig->attrs._length;
-	
-	retval->attrs._buffer = CORBA_sequence_OAF_Attribute_allocbuf (retval->attrs._length);
-	memcpy (retval->attrs._buffer, orig->attrs._buffer, (sizeof (OAF_Attribute)) * retval->attrs._length);
-	
-	for (i = 0; i < retval->attrs._length; i++) {
-		retval->attrs._buffer[i].name = CORBA_string_dup (retval->attrs._buffer[i].name);
-		if (retval->attrs._buffer[i].v._d == OAF_A_STRING) {
-			retval->attrs._buffer[i].v._u.value_string = CORBA_string_dup (retval->attrs._buffer[i].v._u.value_string);
-		
-		}
-	}
-
-	return retval;
-}
-
-static char *
-extract_prefix_add_suffix (const char *string, const char *separator, const char *suffix)
-{
-        const char *separator_position;
-        int prefix_length;
-        char *result;
-
-        separator_position = strstr (string, separator);
-        prefix_length = separator_position == NULL
-                ? strlen (string)
-                : separator_position - string;
-
-        result = g_malloc (prefix_length + strlen(suffix) + 1);
-        
-        strncpy (result, string, prefix_length);
-        result[prefix_length] = '\0';
-
-        strcat (result, suffix);
-
-        return result;
-}
-
-static char *
-mime_type_get_supertype (const char *mime_type)
-{
-        return extract_prefix_add_suffix (mime_type, "/", "/*");
-}
-
-static char *
-uri_string_get_scheme (const char *uri_string)
-{
-        return extract_prefix_add_suffix (uri_string, ":", "");
-}
-
-
-
-/*
- * The following routine uses metadata associated with the current url
- * to add content view components specified in the metadata. The
- * content views are specified in the string as <EXPLICIT_CONTENT_VIEW
- * IID="iid"/> elements inside the appropriate <DIRECTORY> or <FILE> element.  
- */
-
-static GList *
-get_explicit_content_view_iids_from_metafile (NautilusDirectory *directory)
-{
-        if (directory != NULL) {
-                return nautilus_directory_get_metadata_list 
-                        (directory, "EXPLICIT_CONTENT_VIEW", "IID");
-        } else {
-		return NULL;
-	}
-}
-
-static char *
-make_oaf_query_for_explicit_content_view_iids (GList *view_iids)
-{
-        GList *p;
-        char  *iid;
-        char  *query;
-        char  *old_query;
-
-        query = NULL;
-
-        for (p = view_iids; p != NULL; p = p->next) {
-                iid = (char *) p->data;
-                if (query != NULL) {
-                        old_query = query;
-                        query = g_strconcat (query, " OR ", NULL);
-                        g_free (old_query);
-                } else {
-                        query = g_strdup ("(");
-                }
-
-                old_query = query;
-                query = g_strdup_printf ("%s iid=='%s'", old_query, iid);
-                g_free (old_query);
-        }
-
-
-        if (query != NULL) {
-                old_query = query;
-                query = g_strconcat (old_query, ")", NULL);
-                g_free (old_query);
-        } else {
-                query = g_strdup ("false");
-        }
-
-        return query;
-}
-
-static char *
-make_oaf_query_with_known_mime_type (const char *mime_type, const char *uri_scheme, GList *explicit_iids)
-{
-        char *mime_supertype;
-        char *result;
-        char *explicit_iid_query;
-
-        mime_supertype = mime_type_get_supertype (mime_type);
-
-        explicit_iid_query = make_oaf_query_for_explicit_content_view_iids (explicit_iids);
-
-        result = g_strdup_printf 
-                (
-                 /* Check if the component has the interfaces we need.
-                  * We can work with either a Nautilus View, or
-                  * with a Bonobo Control or Embeddable that supports
-                  * one of the three persistence interfaces:
-                  * PersistStream, ProgressiveDataSink, or
-                  * PersistFile.
-                  */
-                 "((repo_ids.has_all(['IDL:Bonobo/Control:1.0',"
-                                     "'IDL:Nautilus/View:1.0'])"
-                  "OR (repo_ids.has_one(['IDL:Bonobo/Control:1.0',"
-                                        "'IDL:Bonobo/Embeddable:1.0'])"
-                      "AND repo_ids.has_one(['IDL:Bonobo/PersistStream:1.0',"
-                                            "'IDL:Bonobo/ProgressiveDataSink:1.0',"
-                                            "'IDL:Bonobo/PersistFile:1.0'])))"
-                 
-                 /* Check that the component either has a specific
-                  * MIME type or URI scheme. If neither is specified,
-                  * then we don't trust that to mean "all MIME types
-                  * and all schemes". For that, you have to do a
-                  * wildcard for the MIME type or for the scheme.
-                  */
-                 "AND (bonobo:supported_mime_types.defined()"
-                      "OR bonobo:supported_uri_schemes.defined ())"
-
-                 /* Check that the supported MIME types include the
-                  * URI's MIME type or its supertype.
-                  */
-                 "AND (NOT bonobo:supported_mime_types.defined()"
-                      "OR bonobo:supported_mime_types.has('%s')"
-                      "OR bonobo:supported_mime_types.has('%s')"
-                      "OR bonobo:supported_mime_types.has('*/*'))"
-
-                 /* Check that the supported URI schemes include the
-                  * URI's scheme.
-                  */
-                 "AND (NOT bonobo:supported_uri_schemes.defined()"
-                      "OR bonobo:supported_uri_schemes.has('%s')"
-                      "OR bonobo:supported_uri_schemes.has('*'))"
-
-                  /* Check that the component makes it clear that it's
-                   * intended for Nautilus by providing a "view_as"
-                   * name. We could instead support a default, but
-                   * that would make components that are untested with
-                   * Nautilus appear.
-                   */
-                 "AND nautilus:view_as_name.defined())"
-
-                  /* Also select iids that were specifically requested
-                     for this location, even if they do not otherwise
-                     meet the requirements. */
-                  "OR %s"
-
-                 /* The MIME type, MIME supertype, and URI scheme for
-                  * the %s above.
-                  */
-                 , mime_type, mime_supertype, uri_scheme
-
-                 /* The explicit metafile iid query for the %s above. */
-                 , explicit_iid_query);
-
-        g_free (mime_supertype);
-        g_free (explicit_iid_query);
-        return result;
-}
-
-static char *
-make_oaf_query_with_uri_scheme_only (const char *uri_scheme, GList *explicit_iids)
-{
-        char *result;
-        char *explicit_iid_query;
-        
-        explicit_iid_query = make_oaf_query_for_explicit_content_view_iids (explicit_iids);
-
-        result = g_strdup_printf 
-                (
-                 /* Check if the component has the interfaces we need.
-                  * We can work with either a Nautilus tView, or
-                  * with a Bonobo Control or Embeddable that works on
-                  * a file, which is indicated by Bonobo PersistFile.
-                  */
-                  "((repo_ids.has_all(['IDL:Bonobo/Control:1.0',"
-                                      "'IDL:Nautilus/View:1.0'])"
-                   "OR (repo_ids.has_one(['IDL:Bonobo/Control:1.0',"
-                                         "'IDL:Bonobo/Embeddable:1.0'])"
-                       "AND repo_ids.has('IDL:Bonobo/PersistFile:1.0')))"
-
-                  /* Check if the component supports this particular
-                   * URI scheme.
-                   */
-                  "AND (bonobo:supported_uri_schemes.has('%s')"
-                       "OR bonobo:supported_uri_schemes.has('*'))"
-
-                  /* Check that the component doesn't require
-                   * particular MIME types. Note that even saying you support "all"
-                   */
-                  "AND (NOT bonobo:supported_mime_types.defined())"
-
-                  /* Check that the component makes it clear that it's
-                   * intended for Nautilus by providing a "view_as"
-                   * name. We could instead support a default, but
-                   * that would make components that are untested with
-                   * Nautilus appear.
-                   */
-                  "AND nautilus:view_as_name.defined())"
-
-                 /* Also select iids that were specifically requested
-                     for this location, even if they do not otherwise
-                     meet the requirements. */
-
-                  "OR %s"
-
-                  /* The URI scheme for the %s above. */
-                  , uri_scheme
-
-                  /* The explicit metafile iid query for the %s above. */
-                  , explicit_iid_query);
-           
-        return result;
-}
-
-
-
-static GHashTable *
-file_list_to_mime_type_hash_table (GList *files)
-{
-        GHashTable *result;
-        GList *p;
-        char *mime_type;
-
-        result = g_hash_table_new (g_str_hash, g_str_equal);
-
-        for (p = files; p != NULL; p = p->next) {
-                if (p->data != NULL) {
-                        mime_type = nautilus_file_get_mime_type ((NautilusFile *) p->data);
-                        
-                        if (NULL != mime_type) {
-                                if (g_hash_table_lookup (result, mime_type) == NULL) {
-#ifdef DEBUG_MJS
-                                        printf ("XXX content mime type: %s\n", mime_type);
-#endif
-                                        g_hash_table_insert (result, mime_type, mime_type);
-                                } else {
-                                        g_free (mime_type);
-                                }
-                        }
-                }
-        }
-
-        return result;
-}
-
-static void
-free_key (gpointer key, gpointer value, gpointer user_data)
-{
-        g_free (key);
-}
-
-static void
-mime_type_hash_table_destroy (GHashTable *table)
-{
-        g_hash_table_foreach (table, free_key, NULL);
-        g_hash_table_destroy (table);
-}
-
-static gboolean
-server_matches_content_requirements (OAF_ServerInfo *server, GHashTable *type_table, GList *explicit_iids)
-{
-        OAF_Attribute *attr;
-        GNOME_stringlist types;
-        int i;
-
-        /* Components explicitly requested in the metafile are not capability tested. */
-        if (g_list_find_custom (explicit_iids, (gpointer) server->iid, (GCompareFunc) strcmp) != NULL) {
-                return TRUE;
-        }
-
-        attr = oaf_server_info_attr_find (server, "nautilus:required_directory_content_mime_types");
-
-        if (attr == NULL || attr->v._d != OAF_A_STRINGV) {
-                return TRUE;
-        } else {
-                types = attr->v._u.value_stringv;
-
-                for (i = 0; i < types._length; i++) {
-                        if (g_hash_table_lookup (type_table, types._buffer[i]) != NULL) {
-                                return TRUE;
-                        }
-                }
-        }
-
-        return FALSE;
-}
-
-
-static char * const nautilus_sort_criteria[] = {
-        /* Prefer anything else over the loser view. */
-        "iid != 'OAFIID:nautilus_content_loser:95901458-c68b-43aa-aaca-870ced11062d'",
-        /* Prefer anything else over the sample view. */
-        "iid != 'OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae'",
-	/* Sort alphabetically */
-	"name",
-        NULL};
-
-#if 0
-        /* Prefer the industrial strengthe html viewer most */
-        "iid == 'OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1'",
-        /* Prefer the gtkhtml viewer next */
-        "iid == 'OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b'",
-        /* Prefer the icon view next */
-        "iid == 'OAFIID:ntl_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058'",
-#endif;
-
-
-static char *extra_nautilus_sort_criteria[] = {
-	NULL,
-        /* Prefer anything else over the loser view. */
-        "iid != 'OAFIID:nautilus_content_loser:95901458-c68b-43aa-aaca-870ced11062d'",
-        /* Prefer anything else over the sample view. */
-        "iid != 'OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae'",
-	/* Sort alphabetically */
-	"name",
-        NULL};
-
-
-
-static GList *
-nautilus_do_component_query (const char *mime_type, 
-			     const char *uri_scheme, 
-			     GList *files,
-			     GList *explicit_iids,
-			     char **extra_sort_criteria, 
-			     CORBA_Environment *ev)
-{ 
-	OAF_ServerInfoList *oaf_result;
-	char *query;
-	GList *retval;
-	
-        oaf_result = NULL;
-        query = NULL;
-
-        
-	if (mime_type != NULL) {
-                query = make_oaf_query_with_known_mime_type (mime_type, uri_scheme, explicit_iids);
-        } else {
-                query = make_oaf_query_with_uri_scheme_only (uri_scheme, explicit_iids);
-        }
-
-#ifdef DEBUG_MJS
-        printf ("query: \"%s\"\n", query);
-#endif
-
-	/* FIXME: add sort criteria properly */
-	if (extra_sort_criteria != NULL) {
-		extra_nautilus_sort_criteria[0] = extra_sort_criteria[0];
-		oaf_result = oaf_query (query, extra_nautilus_sort_criteria, ev);
-	} else {
-		oaf_result = oaf_query (query, nautilus_sort_criteria, ev);		
-	}
-
-	retval = NULL;
-
-        if (ev->_major == CORBA_NO_EXCEPTION && oaf_result != NULL && oaf_result->_length > 0) {
-                GHashTable *content_types;
-                int i;
-           
-                content_types = file_list_to_mime_type_hash_table (files);
-                
-                for (i = 0; i < oaf_result->_length; i++) {
-                        OAF_ServerInfo *server;
-
-                        server = &oaf_result->_buffer[i];
-
-                        if (server_matches_content_requirements (server, content_types, explicit_iids)) {
-                                retval = g_list_append
-                                        (retval, 
-                                         OAF_ServerInfo__copy (server));
-                        }
-                }
-
-                mime_type_hash_table_destroy (content_types);
-        } 
-
-	if (oaf_result != CORBA_OBJECT_NIL) {
-		CORBA_free (oaf_result);
-	}
-	
-	return retval;
-}
-
-
-static GList *str_list_difference (GList *a, GList *b)
-{
-	GList *p;
-	GList *retval;
-
-	retval = NULL;
-
-	for (p = a; p != NULL; p = p->next) {
-		if (g_list_find_custom (b, p->data, (GCompareFunc) strcmp) == NULL) {
-			retval = g_list_prepend (retval, p->data);
-		}
-	}
-
-	retval = g_list_reverse (retval);
-	return retval;
-}
-
-
-static char *
-get_mime_type_from_uri (const char *text_uri)
-{
-        GnomeVFSURI *vfs_uri;
-	GnomeVFSFileInfo *file_info;
-	GnomeVFSResult result;
-        const char *ctype;
-	char *type;
-
-	type = NULL;
-
-	/* FIXME: A better way would be to get this info using
-	   NautilusFile or NautilusDirectory or something, having
-	   previously ensured that the info has been computed
-	   async. */
-
-        vfs_uri = gnome_vfs_uri_new (text_uri);
-
-	if (vfs_uri != NULL) {
-		file_info = gnome_vfs_file_info_new ();
-		
-		result = gnome_vfs_get_file_info_uri (vfs_uri, file_info,
-						      GNOME_VFS_FILE_INFO_GETMIMETYPE
-						      | GNOME_VFS_FILE_INFO_FOLLOWLINKS, 
-						      NULL);
-		if (result == GNOME_VFS_OK) {
-			ctype = gnome_vfs_file_info_get_mime_type (file_info);
-			
-			if (ctype != NULL) {
-				type = g_strdup (ctype);
-			}
-			
-			gnome_vfs_file_info_unref (file_info);
-			gnome_vfs_uri_unref (vfs_uri);
-		} 
-	}
-
-	return type;
-}
 
 
 GnomeVFSMimeActionType
@@ -1161,3 +673,525 @@ nautilus_mime_remove_from_all_applications_for_uri (const char *uri,
 }
 
 
+
+static gint
+gnome_vfs_mime_application_has_id (GnomeVFSMimeApplication *application, const char *id)
+{
+	return strcmp (application->id, id);
+}
+
+static gint
+gnome_vfs_mime_id_matches_application (const char *id, GnomeVFSMimeApplication *application)
+{
+	return gnome_vfs_mime_application_has_id (application, id);
+}
+
+static gint
+gnome_vfs_mime_id_matches_component (const char *iid, OAF_ServerInfo *component)
+{
+	return strcmp (component->iid, iid);
+}
+
+
+static gboolean
+gnome_vfs_mime_application_has_id_not_in_list (GnomeVFSMimeApplication *application, GList *ids)
+{
+	return g_list_find_custom (ids, application, (GCompareFunc) gnome_vfs_mime_id_matches_application) == NULL;
+}
+
+static gboolean
+component_has_id_in_list (OAF_ServerInfo *server, GList *iids)
+{
+	return g_list_find_custom (iids, server, (GCompareFunc) gnome_vfs_mime_id_matches_component) != NULL;
+}
+
+static gboolean
+string_not_in_list (const char *str, GList *list)
+{
+	return g_list_find_custom (list, (gpointer) str, (GCompareFunc) strcmp) == NULL;
+}
+
+
+static OAF_ServerInfo *
+OAF_ServerInfo__copy (OAF_ServerInfo *orig)
+{
+	OAF_ServerInfo *retval;
+	int i;
+
+	retval = OAF_ServerInfo__alloc ();
+	
+	retval->iid = CORBA_string_dup (orig->iid);
+	retval->server_type = CORBA_string_dup (orig->server_type);
+	retval->location_info = CORBA_string_dup (orig->location_info);
+	retval->username= CORBA_string_dup (orig->username);
+	retval->hostname= CORBA_string_dup (orig->hostname);
+	retval->domain= CORBA_string_dup (orig->domain);
+
+	retval->attrs._maximum = orig->attrs._maximum;
+	retval->attrs._length = orig->attrs._length;
+	
+	retval->attrs._buffer = CORBA_sequence_OAF_Attribute_allocbuf (retval->attrs._length);
+	memcpy (retval->attrs._buffer, orig->attrs._buffer, (sizeof (OAF_Attribute)) * retval->attrs._length);
+	
+	for (i = 0; i < retval->attrs._length; i++) {
+		retval->attrs._buffer[i].name = CORBA_string_dup (retval->attrs._buffer[i].name);
+		if (retval->attrs._buffer[i].v._d == OAF_A_STRING) {
+			retval->attrs._buffer[i].v._u.value_string = CORBA_string_dup (retval->attrs._buffer[i].v._u.value_string);
+		
+		}
+	}
+
+	return retval;
+}
+
+static char *
+extract_prefix_add_suffix (const char *string, const char *separator, const char *suffix)
+{
+        const char *separator_position;
+        int prefix_length;
+        char *result;
+
+        separator_position = strstr (string, separator);
+        prefix_length = separator_position == NULL
+                ? strlen (string)
+                : separator_position - string;
+
+        result = g_malloc (prefix_length + strlen(suffix) + 1);
+        
+        strncpy (result, string, prefix_length);
+        result[prefix_length] = '\0';
+
+        strcat (result, suffix);
+
+        return result;
+}
+
+static char *
+mime_type_get_supertype (const char *mime_type)
+{
+        return extract_prefix_add_suffix (mime_type, "/", "/*");
+}
+
+static char *
+uri_string_get_scheme (const char *uri_string)
+{
+        return extract_prefix_add_suffix (uri_string, ":", "");
+}
+
+
+
+/*
+ * The following routine uses metadata associated with the current url
+ * to add content view components specified in the metadata. The
+ * content views are specified in the string as <EXPLICIT_CONTENT_VIEW
+ * IID="iid"/> elements inside the appropriate <DIRECTORY> or <FILE> element.  
+ */
+
+static GList *
+get_explicit_content_view_iids_from_metafile (NautilusDirectory *directory)
+{
+        if (directory != NULL) {
+                return nautilus_directory_get_metadata_list 
+                        (directory, "EXPLICIT_CONTENT_VIEW", "IID");
+        } else {
+		return NULL;
+	}
+}
+
+static char *
+make_oaf_query_for_explicit_content_view_iids (GList *view_iids)
+{
+        GList *p;
+        char  *iid;
+        char  *query;
+        char  *old_query;
+
+        query = NULL;
+
+        for (p = view_iids; p != NULL; p = p->next) {
+                iid = (char *) p->data;
+                if (query != NULL) {
+                        old_query = query;
+                        query = g_strconcat (query, " OR ", NULL);
+                        g_free (old_query);
+                } else {
+                        query = g_strdup ("(");
+                }
+
+                old_query = query;
+                query = g_strdup_printf ("%s iid=='%s'", old_query, iid);
+                g_free (old_query);
+        }
+
+
+        if (query != NULL) {
+                old_query = query;
+                query = g_strconcat (old_query, ")", NULL);
+                g_free (old_query);
+        } else {
+                query = g_strdup ("false");
+        }
+
+        return query;
+}
+
+static char *
+make_oaf_query_with_known_mime_type (const char *mime_type, const char *uri_scheme, GList *explicit_iids)
+{
+        char *mime_supertype;
+        char *result;
+        char *explicit_iid_query;
+
+        mime_supertype = mime_type_get_supertype (mime_type);
+
+        explicit_iid_query = make_oaf_query_for_explicit_content_view_iids (explicit_iids);
+
+        result = g_strdup_printf 
+                (
+                 /* Check if the component has the interfaces we need.
+                  * We can work with either a Nautilus View, or
+                  * with a Bonobo Control or Embeddable that supports
+                  * one of the three persistence interfaces:
+                  * PersistStream, ProgressiveDataSink, or
+                  * PersistFile.
+                  */
+                 "((repo_ids.has_all(['IDL:Bonobo/Control:1.0',"
+                                     "'IDL:Nautilus/View:1.0'])"
+                  "OR (repo_ids.has_one(['IDL:Bonobo/Control:1.0',"
+                                        "'IDL:Bonobo/Embeddable:1.0'])"
+                      "AND repo_ids.has_one(['IDL:Bonobo/PersistStream:1.0',"
+                                            "'IDL:Bonobo/ProgressiveDataSink:1.0',"
+                                            "'IDL:Bonobo/PersistFile:1.0'])))"
+                 
+                 /* Check that the component either has a specific
+                  * MIME type or URI scheme. If neither is specified,
+                  * then we don't trust that to mean "all MIME types
+                  * and all schemes". For that, you have to do a
+                  * wildcard for the MIME type or for the scheme.
+                  */
+                 "AND (bonobo:supported_mime_types.defined()"
+                      "OR bonobo:supported_uri_schemes.defined ())"
+
+                 /* Check that the supported MIME types include the
+                  * URI's MIME type or its supertype.
+                  */
+                 "AND (NOT bonobo:supported_mime_types.defined()"
+                      "OR bonobo:supported_mime_types.has('%s')"
+                      "OR bonobo:supported_mime_types.has('%s')"
+                      "OR bonobo:supported_mime_types.has('*/*'))"
+
+                 /* Check that the supported URI schemes include the
+                  * URI's scheme.
+                  */
+                 "AND (NOT bonobo:supported_uri_schemes.defined()"
+                      "OR bonobo:supported_uri_schemes.has('%s')"
+                      "OR bonobo:supported_uri_schemes.has('*'))"
+
+                  /* Check that the component makes it clear that it's
+                   * intended for Nautilus by providing a "view_as"
+                   * name. We could instead support a default, but
+                   * that would make components that are untested with
+                   * Nautilus appear.
+                   */
+                 "AND nautilus:view_as_name.defined())"
+
+                  /* Also select iids that were specifically requested
+                     for this location, even if they do not otherwise
+                     meet the requirements. */
+                  "OR %s"
+
+                 /* The MIME type, MIME supertype, and URI scheme for
+                  * the %s above.
+                  */
+                 , mime_type, mime_supertype, uri_scheme
+
+                 /* The explicit metafile iid query for the %s above. */
+                 , explicit_iid_query);
+
+        g_free (mime_supertype);
+        g_free (explicit_iid_query);
+        return result;
+}
+
+static char *
+make_oaf_query_with_uri_scheme_only (const char *uri_scheme, GList *explicit_iids)
+{
+        char *result;
+        char *explicit_iid_query;
+        
+        explicit_iid_query = make_oaf_query_for_explicit_content_view_iids (explicit_iids);
+
+        result = g_strdup_printf 
+                (
+                 /* Check if the component has the interfaces we need.
+                  * We can work with either a Nautilus tView, or
+                  * with a Bonobo Control or Embeddable that works on
+                  * a file, which is indicated by Bonobo PersistFile.
+                  */
+                  "((repo_ids.has_all(['IDL:Bonobo/Control:1.0',"
+                                      "'IDL:Nautilus/View:1.0'])"
+                   "OR (repo_ids.has_one(['IDL:Bonobo/Control:1.0',"
+                                         "'IDL:Bonobo/Embeddable:1.0'])"
+                       "AND repo_ids.has('IDL:Bonobo/PersistFile:1.0')))"
+
+                  /* Check if the component supports this particular
+                   * URI scheme.
+                   */
+                  "AND (bonobo:supported_uri_schemes.has('%s')"
+                       "OR bonobo:supported_uri_schemes.has('*'))"
+
+                  /* Check that the component doesn't require
+                   * particular MIME types. Note that even saying you support "all"
+                   */
+                  "AND (NOT bonobo:supported_mime_types.defined())"
+
+                  /* Check that the component makes it clear that it's
+                   * intended for Nautilus by providing a "view_as"
+                   * name. We could instead support a default, but
+                   * that would make components that are untested with
+                   * Nautilus appear.
+                   */
+                  "AND nautilus:view_as_name.defined())"
+
+                 /* Also select iids that were specifically requested
+                     for this location, even if they do not otherwise
+                     meet the requirements. */
+
+                  "OR %s"
+
+                  /* The URI scheme for the %s above. */
+                  , uri_scheme
+
+                  /* The explicit metafile iid query for the %s above. */
+                  , explicit_iid_query);
+           
+        return result;
+}
+
+
+
+static GHashTable *
+file_list_to_mime_type_hash_table (GList *files)
+{
+        GHashTable *result;
+        GList *p;
+        char *mime_type;
+
+        result = g_hash_table_new (g_str_hash, g_str_equal);
+
+        for (p = files; p != NULL; p = p->next) {
+                if (p->data != NULL) {
+                        mime_type = nautilus_file_get_mime_type ((NautilusFile *) p->data);
+                        
+                        if (NULL != mime_type) {
+                                if (g_hash_table_lookup (result, mime_type) == NULL) {
+#ifdef DEBUG_MJS
+                                        printf ("XXX content mime type: %s\n", mime_type);
+#endif
+                                        g_hash_table_insert (result, mime_type, mime_type);
+                                } else {
+                                        g_free (mime_type);
+                                }
+                        }
+                }
+        }
+
+        return result;
+}
+
+static void
+free_key (gpointer key, gpointer value, gpointer user_data)
+{
+        g_free (key);
+}
+
+static void
+mime_type_hash_table_destroy (GHashTable *table)
+{
+        g_hash_table_foreach (table, free_key, NULL);
+        g_hash_table_destroy (table);
+}
+
+static gboolean
+server_matches_content_requirements (OAF_ServerInfo *server, GHashTable *type_table, GList *explicit_iids)
+{
+        OAF_Attribute *attr;
+        GNOME_stringlist types;
+        int i;
+
+        /* Components explicitly requested in the metafile are not capability tested. */
+        if (g_list_find_custom (explicit_iids, (gpointer) server->iid, (GCompareFunc) strcmp) != NULL) {
+                return TRUE;
+        }
+
+        attr = oaf_server_info_attr_find (server, "nautilus:required_directory_content_mime_types");
+
+        if (attr == NULL || attr->v._d != OAF_A_STRINGV) {
+                return TRUE;
+        } else {
+                types = attr->v._u.value_stringv;
+
+                for (i = 0; i < types._length; i++) {
+                        if (g_hash_table_lookup (type_table, types._buffer[i]) != NULL) {
+                                return TRUE;
+                        }
+                }
+        }
+
+        return FALSE;
+}
+
+
+static char * const nautilus_sort_criteria[] = {
+        /* Prefer anything else over the loser view. */
+        "iid != 'OAFIID:nautilus_content_loser:95901458-c68b-43aa-aaca-870ced11062d'",
+        /* Prefer anything else over the sample view. */
+        "iid != 'OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae'",
+	/* Sort alphabetically */
+	"name",
+        NULL};
+
+#if 0
+        /* Prefer the industrial strengthe html viewer most */
+        "iid == 'OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1'",
+        /* Prefer the gtkhtml viewer next */
+        "iid == 'OAFIID:ntl_web_browser:0ce1a736-c939-4ac7-b12c-19d72bf1510b'",
+        /* Prefer the icon view next */
+        "iid == 'OAFIID:ntl_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058'",
+#endif;
+
+
+static char *extra_nautilus_sort_criteria[] = {
+	NULL,
+        /* Prefer anything else over the loser view. */
+        "iid != 'OAFIID:nautilus_content_loser:95901458-c68b-43aa-aaca-870ced11062d'",
+        /* Prefer anything else over the sample view. */
+        "iid != 'OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae'",
+	/* Sort alphabetically */
+	"name",
+        NULL};
+
+
+
+static GList *
+nautilus_do_component_query (const char *mime_type, 
+			     const char *uri_scheme, 
+			     GList *files,
+			     GList *explicit_iids,
+			     char **extra_sort_criteria, 
+			     CORBA_Environment *ev)
+{ 
+	OAF_ServerInfoList *oaf_result;
+	char *query;
+	GList *retval;
+	
+        oaf_result = NULL;
+        query = NULL;
+
+        
+	if (mime_type != NULL) {
+                query = make_oaf_query_with_known_mime_type (mime_type, uri_scheme, explicit_iids);
+        } else {
+                query = make_oaf_query_with_uri_scheme_only (uri_scheme, explicit_iids);
+        }
+
+#ifdef DEBUG_MJS
+        printf ("query: \"%s\"\n", query);
+#endif
+
+	/* FIXME: add sort criteria properly */
+	if (extra_sort_criteria != NULL) {
+		extra_nautilus_sort_criteria[0] = extra_sort_criteria[0];
+		oaf_result = oaf_query (query, extra_nautilus_sort_criteria, ev);
+	} else {
+		oaf_result = oaf_query (query, nautilus_sort_criteria, ev);		
+	}
+
+	retval = NULL;
+
+        if (ev->_major == CORBA_NO_EXCEPTION && oaf_result != NULL && oaf_result->_length > 0) {
+                GHashTable *content_types;
+                int i;
+           
+                content_types = file_list_to_mime_type_hash_table (files);
+                
+                for (i = 0; i < oaf_result->_length; i++) {
+                        OAF_ServerInfo *server;
+
+                        server = &oaf_result->_buffer[i];
+
+                        if (server_matches_content_requirements (server, content_types, explicit_iids)) {
+                                retval = g_list_append
+                                        (retval, 
+                                         OAF_ServerInfo__copy (server));
+                        }
+                }
+
+                mime_type_hash_table_destroy (content_types);
+        } 
+
+	if (oaf_result != CORBA_OBJECT_NIL) {
+		CORBA_free (oaf_result);
+	}
+	
+	return retval;
+}
+
+
+static GList *str_list_difference (GList *a, GList *b)
+{
+	GList *p;
+	GList *retval;
+
+	retval = NULL;
+
+	for (p = a; p != NULL; p = p->next) {
+		if (g_list_find_custom (b, p->data, (GCompareFunc) strcmp) == NULL) {
+			retval = g_list_prepend (retval, p->data);
+		}
+	}
+
+	retval = g_list_reverse (retval);
+	return retval;
+}
+
+
+static char *
+get_mime_type_from_uri (const char *text_uri)
+{
+        GnomeVFSURI *vfs_uri;
+	GnomeVFSFileInfo *file_info;
+	GnomeVFSResult result;
+        const char *ctype;
+	char *type;
+
+	type = NULL;
+
+	/* FIXME: A better way would be to get this info using
+	   NautilusFile or NautilusDirectory or something, having
+	   previously ensured that the info has been computed
+	   async. */
+
+        vfs_uri = gnome_vfs_uri_new (text_uri);
+
+	if (vfs_uri != NULL) {
+		file_info = gnome_vfs_file_info_new ();
+		
+		result = gnome_vfs_get_file_info_uri (vfs_uri, file_info,
+						      GNOME_VFS_FILE_INFO_GETMIMETYPE
+						      | GNOME_VFS_FILE_INFO_FOLLOWLINKS, 
+						      NULL);
+		if (result == GNOME_VFS_OK) {
+			ctype = gnome_vfs_file_info_get_mime_type (file_info);
+			
+			if (ctype != NULL) {
+				type = g_strdup (ctype);
+			}
+			
+			gnome_vfs_file_info_unref (file_info);
+			gnome_vfs_uri_unref (vfs_uri);
+		} 
+	}
+
+	return type;
+}
