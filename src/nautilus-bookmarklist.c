@@ -391,7 +391,6 @@ static void
 nautilus_bookmarklist_save_file (NautilusBookmarklist *bookmarks)
 {
 	xmlDocPtr	doc;
-	xmlNodePtr	tree, subtree;
 
 	doc = xmlNewDoc("1.0");
 	doc->root = xmlNewDocNode(doc, NULL, "bookmarks", NULL);
