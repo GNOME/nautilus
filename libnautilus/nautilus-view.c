@@ -312,7 +312,7 @@ view_frame_call_begin (NautilusView *view, CORBA_Environment *ev)
 		 "IDL:Nautilus/ViewFrame:1.0", ev);
 
 	if (ev->_major != CORBA_NO_EXCEPTION) {
-		view_frame = CORB_OBJECT_NIL;
+		view_frame = CORBA_OBJECT_NIL;
 	}
 
 	return view_frame;
@@ -321,7 +321,7 @@ view_frame_call_begin (NautilusView *view, CORBA_Environment *ev)
 static void
 view_frame_call_end (Nautilus_ViewFrame frame, CORBA_Environment *ev)
 {
-	if (frame != CROBA_OBJECT_NIL) {
+	if (frame != CORBA_OBJECT_NIL) {
 		bonobo_object_release_unref (frame, ev);
 	}
 
