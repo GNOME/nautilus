@@ -35,7 +35,10 @@ static void background_changed_callback (NautilusBackground *background,
                                          NautilusDirectory  *directory);
 static void directory_changed_callback  (NautilusDirectory  *directory,
                                          NautilusBackground *background);
+static void background_reset_callback   (NautilusBackground *background,
+                                         NautilusDirectory  *directory);
 
+/* handle the background changed signal */
 static void
 background_changed_callback (NautilusBackground *background,
                              NautilusDirectory *directory)
@@ -76,6 +79,7 @@ background_changed_callback (NautilusBackground *background,
                                             background);
 }
 
+/* handle the directory changed signal */
 static void
 directory_changed_callback (NautilusDirectory *directory,
                             NautilusBackground *background)
@@ -114,6 +118,17 @@ directory_changed_callback (NautilusDirectory *directory,
                                             directory);
 }
 
+/* handle the background reset signal.  Eventually, fetch the defaults from the theme,
+   but for now, just use NULL */
+static void
+background_reset_callback (NautilusBackground *background,
+                           NautilusDirectory  *directory)
+{
+	nautilus_background_set_color (background, NULL);
+	nautilus_background_set_tile_image_uri (background, NULL);
+}
+
+/* handle the background destroyed signal */
 static void
 background_destroyed_callback (NautilusBackground *background,
                                NautilusDirectory *directory)
@@ -149,6 +164,9 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
                 gtk_signal_disconnect_by_func (GTK_OBJECT (background),
                                                GTK_SIGNAL_FUNC (background_destroyed_callback),
                                                old_directory);
+                gtk_signal_disconnect_by_func (GTK_OBJECT (background),
+                                               GTK_SIGNAL_FUNC (background_reset_callback),
+                                               old_directory);
                 gtk_signal_disconnect_by_func (GTK_OBJECT (old_directory),
                                                GTK_SIGNAL_FUNC (directory_changed_callback),
                                                background);
@@ -171,7 +189,11 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
                                     "destroy",
                                     GTK_SIGNAL_FUNC (background_destroyed_callback),
                                     directory);
-                gtk_signal_connect (GTK_OBJECT (directory),
+                gtk_signal_connect (GTK_OBJECT (background),
+				    "reset",
+				    GTK_SIGNAL_FUNC (background_reset_callback),
+				    directory);
+		gtk_signal_connect (GTK_OBJECT (directory),
                                     "metadata_changed",
                                     GTK_SIGNAL_FUNC (directory_changed_callback),
                                     background);
