@@ -51,6 +51,7 @@
 #include <gdk/gdkx.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-dialog-util.h>
+#include <libgnomeui/gnome-icon-theme.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -175,18 +176,25 @@ nautilus_window_update_icon (NautilusWindow *window)
 {
 	char *path;
 	GdkPixbuf *pixbuf;
+        GnomeIconTheme *icon_theme;
 
 	pixbuf = NULL;
 	
 	/* Desktop window special icon */
 	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-		path = nautilus_pixmap_file ("nautilus-desktop.png");
+                icon_theme = nautilus_icon_factory_get_icon_theme();
+                path = gnome_icon_theme_lookup_icon (icon_theme,
+                                                     "gnome-fs-desktop", 48,
+                                                     NULL, NULL);
 
 		if (path != NULL) {
 			pixbuf = gdk_pixbuf_new_from_file (path, NULL);
 			
 			g_free (path);
 		}
+
+                g_object_unref(icon_theme);
+
 	} else {
 		pixbuf = nautilus_icon_factory_get_pixbuf_for_file (window->details->viewed_file,
 								    "open",
