@@ -43,6 +43,8 @@ enum {
 
 static char* trilobite_passwordquery_get_password (TrilobiteRootHelper *roothelper, 
 						   TrilobitePasswordQuery *trilobite);
+static gboolean trilobite_passwordquery_try_again (TrilobiteRootHelper *roothelper,
+						   TrilobitePasswordQuery *trilobite);
 
 /* static guint trilobite_passwordquery_signals[LAST_SIGNAL] = { 0 }; */
 
@@ -245,6 +247,10 @@ trilobite_passwordquery_initialize (TrilobitePasswordQuery *trilobite)
 			    "need_password", 
 			    (GFunc)trilobite_passwordquery_get_password, 
 			    trilobite);
+	gtk_signal_connect (GTK_OBJECT (trilobite->private->root_helper),
+			    "try_again",
+			    (GFunc)trilobite_passwordquery_try_again,
+			    trilobite);
 }
 
 GtkType
@@ -329,6 +335,29 @@ trilobite_passwordquery_get_password (TrilobiteRootHelper *roothelper,
 		CORBA_exception_free (&ev);
 		
 		return g_strdup (tmp);
+	}
+}
+
+static gboolean
+trilobite_passwordquery_try_again (TrilobiteRootHelper *roothelper,
+				   TrilobitePasswordQuery *trilobite)
+{
+	if (trilobite->private->client == CORBA_OBJECT_NIL) {
+		/* you lose. */
+		return FALSE;
+	} else {
+		CORBA_Environment ev;
+		CORBA_boolean result;
+
+		CORBA_exception_init (&ev);
+		result = Trilobite_PasswordQueryClient_try_again (trilobite->private->client, &ev);
+		if (ev._major != CORBA_NO_EXCEPTION) {
+			g_warning ("Error during query of try-again from client: %s",
+				   CORBA_exception_id (&ev));
+		}
+		CORBA_exception_free (&ev);
+
+		return (gboolean)result;
 	}
 }
 

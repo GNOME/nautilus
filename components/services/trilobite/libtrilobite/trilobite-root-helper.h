@@ -73,7 +73,14 @@ struct _TrilobiteRootHelperClass
 	GtkObjectClass parent_class;
 
 	gchar *(*need_password) (TrilobiteRootHelper *helper);
+	gboolean (*try_again) (TrilobiteRootHelper *helper);
 };
+
+/*
+ * the first time a password is needed, 'need_password' is emitted.  it should return the root password.
+ * if that password is wrong, 'try_again' will be emitted.  if it returns true, 'need_password' will be
+ * called again.  the loop continues until the password is correct, or 'try_again' returns false.
+ */
 
 struct _TrilobiteRootHelper
 {
@@ -81,6 +88,7 @@ struct _TrilobiteRootHelper
 	TrilobiteRootHelperState state;
 	int pipe_stdin;		/* pipe to/from the eazel-helper utility */
 	int pipe_stdout;
+	GList *old_fd_list;	/* part of hack to avoid userhelper bug: fd's to close later */
 };
 
 

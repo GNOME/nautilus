@@ -40,6 +40,7 @@ module Trilobite {
 	   the user for the password */
 	interface PasswordQueryClient : Bonobo::Unknown {
 		string get_password (in string prompt);
+		boolean try_again ();
 	};
 
 	/* The server implements this, and uses the "client" object

@@ -33,6 +33,8 @@
 #include <string.h>
 #include <fcntl.h>
 #include <sys/poll.h>
+#include <sys/types.h>
+#include <signal.h>
 #include <time.h>
 #include <gtk/gtk.h>
 #include "trilobite-core-utils.h"
@@ -48,6 +50,7 @@ static GtkObject *parent_class;
 /* LAST_SIGNAL is just a sentinel marking the end of the list */
 enum {
 	NEED_PASSWORD,
+	TRY_AGAIN,
 	LAST_SIGNAL
 };
 static guint root_helper_signals[LAST_SIGNAL] = { 0 };
@@ -72,6 +75,7 @@ void
 trilobite_root_helper_destroy (GtkObject *object)
 {
 	TrilobiteRootHelper *root_helper;
+	GList *iter;
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (TRILOBITE_IS_ROOT_HELPER (object));
@@ -80,6 +84,11 @@ trilobite_root_helper_destroy (GtkObject *object)
 	root_helper = TRILOBITE_ROOT_HELPER (object);
 
 	/* anything that needs to be freed? */
+	for (iter = g_list_first (root_helper->old_fd_list); iter; iter = g_list_next (iter)) {
+		trilobite_debug ("roothelper: tossing old fd %d", (int)(iter->data));
+		close ((int)(iter->data));
+	}
+	g_list_free (root_helper->old_fd_list);
 
 	/* call parent destructor */
 	if (GTK_OBJECT_CLASS (parent_class)->destroy) {
@@ -102,9 +111,14 @@ trilobite_root_helper_class_initialize (TrilobiteRootHelperClass *klass)
 		gtk_signal_new ("need_password", 0, object_class->type,
 				GTK_SIGNAL_OFFSET (TrilobiteRootHelperClass, need_password),
 				gtk_marshal_STRING__NONE, GTK_TYPE_STRING, 0);
+	root_helper_signals[TRY_AGAIN] =
+		gtk_signal_new ("try_again", 0, object_class->type,
+				GTK_SIGNAL_OFFSET (TrilobiteRootHelperClass, try_again),
+				gtk_marshal_BOOL__NONE, GTK_TYPE_BOOL, 0);
 	gtk_object_class_add_signals (object_class, root_helper_signals, LAST_SIGNAL);
 
 	klass->need_password = NULL;
+	klass->try_again = NULL;
 }
 
 /* object initializer */
@@ -206,7 +220,7 @@ eazel_helper_response (int pipe_stdout)
  * eazel-helper
  */
 static TrilobiteRootHelperStatus
-eazel_helper_start (int *pipe_stdin, int *pipe_stdout)
+eazel_helper_start (int *pipe_stdin, int *pipe_stdout, int *child_pid)
 {
 	char *pipe_argv[4];
 	int useless_stderr;
@@ -217,7 +231,8 @@ eazel_helper_start (int *pipe_stdin, int *pipe_stdout)
 	pipe_argv[1] = "-w";
 	pipe_argv[2] = EAZEL_HELPER;
 	pipe_argv[3] = NULL;
-	if (trilobite_pexec (USERHELPER_PATH, pipe_argv, pipe_stdin, pipe_stdout, &useless_stderr) != 0) {
+	*child_pid = trilobite_pexec (USERHELPER_PATH, pipe_argv, pipe_stdin, pipe_stdout, &useless_stderr);
+	if (*child_pid == 0) {
 		trilobite_debug ("roothelper: system userhelper utility not found");
 		return TRILOBITE_ROOT_HELPER_NO_USERHELPER;
 	}
@@ -228,7 +243,8 @@ eazel_helper_start (int *pipe_stdin, int *pipe_stdout)
 	/* if the first thing from the pipe is a "2", we need the root password */
 	buffer[0] = eazel_helper_response (*pipe_stdout);
 	if (buffer[0] == '\0') {
-		trilobite_debug ("roothelper: userhelper died");
+		trilobite_debug ("roothelper: userhelper died (stdin: %d, stdout: %d, pid: %d",
+				 *pipe_stdin, *pipe_stdout, *child_pid);
 		err = TRILOBITE_ROOT_HELPER_NO_USERHELPER;
 		goto give_up;
 	} else if (buffer[0] == '2') {
@@ -282,7 +298,9 @@ eazel_helper_password (int pipe_stdin, int pipe_stdout, const char *password)
 		} else if (buffer[0] == '2') {
 			trilobite_debug ("roothelper: bad password");
 			err = TRILOBITE_ROOT_HELPER_BAD_PASSWORD;
-			goto give_up;
+			/* don't close the pipe, let them try again if they want */
+			read (pipe_stdout, buffer, 256);
+			goto done;
 		} else if (buffer[0] == '5') {
 			/* sometimes a leftover status message from the last stage */
 			/* read 2 chars, then continue */
@@ -321,11 +339,11 @@ trilobite_root_helper_start (TrilobiteRootHelper *root_helper)
 {
 	TrilobiteRootHelperStatus err;
 	char *password;
+	gboolean try_again;
+	int child_pid;
 
 	g_return_val_if_fail (root_helper != NULL, FALSE);
 	g_return_val_if_fail (TRILOBITE_IS_ROOT_HELPER (root_helper), FALSE);
-
-	password = NULL;
 
 	if (root_helper->state == TRILOBITE_ROOT_HELPER_STATE_CONNECTED) {
 		/* already connected, dude. */
@@ -340,36 +358,60 @@ trilobite_root_helper_start (TrilobiteRootHelper *root_helper)
 		root_helper->state = TRILOBITE_ROOT_HELPER_STATE_NEW;
 	}
 
-	err = eazel_helper_start (&root_helper->pipe_stdin, &root_helper->pipe_stdout);
-	switch (err) {
-	case TRILOBITE_ROOT_HELPER_SUCCESS:
-		/* already done -- nice! */
-		goto connected;
-	case TRILOBITE_ROOT_HELPER_NEED_PASSWORD:
-		/* the expected case -- continue */
-		break;
-	default:
-		/* anything else is an error */
-		goto failed;
-	}
+	while (1) {
+		err = eazel_helper_start (&root_helper->pipe_stdin, &root_helper->pipe_stdout, &child_pid);
+		switch (err) {
+		case TRILOBITE_ROOT_HELPER_SUCCESS:
+			/* already done -- nice! */
+			goto connected;
+		case TRILOBITE_ROOT_HELPER_NEED_PASSWORD:
+			/* the expected case -- continue */
+			break;
+		default:
+			/* anything else is an error */
+			goto failed;
+		}
 
-	/* now emit a signal and get the password */
-	trilobite_debug ("roothelper: asking for password");
-	gtk_signal_emit (GTK_OBJECT (root_helper), root_helper_signals[NEED_PASSWORD], &password);
-	if (password == NULL) {
-		/* bummer.  nobody caught the signal. */
-		err = TRILOBITE_ROOT_HELPER_NEED_PASSWORD;
-		goto failed;
-	}
+		/* now emit a signal and get the password */
+		trilobite_debug ("roothelper: asking for password");
+		password = NULL;
+		gtk_signal_emit (GTK_OBJECT (root_helper), root_helper_signals[NEED_PASSWORD], &password);
+		if (password == NULL) {
+			/* bummer.  nobody caught the signal. */
+			err = TRILOBITE_ROOT_HELPER_NEED_PASSWORD;
+			goto failed;
+		}
 
-	err = eazel_helper_password (root_helper->pipe_stdin, root_helper->pipe_stdout, password);
-	switch (err) {
-	case TRILOBITE_ROOT_HELPER_SUCCESS:
-		/* yeah!  set! */
-		goto connected;
-	default:
-		/* all else is error */
-		goto failed;
+		err = eazel_helper_password (root_helper->pipe_stdin, root_helper->pipe_stdout, password);
+		switch (err) {
+		case TRILOBITE_ROOT_HELPER_SUCCESS:
+			/* yeah!  set! */
+			goto connected;
+		case TRILOBITE_ROOT_HELPER_BAD_PASSWORD:
+			try_again = FALSE;
+			gtk_signal_emit (GTK_OBJECT (root_helper), root_helper_signals[TRY_AGAIN], &try_again);
+			if (! try_again) {
+				trilobite_debug ("roothelper: not going to try again.");
+				/* then we fail. */
+				close (root_helper->pipe_stdout);
+				close (root_helper->pipe_stdin);
+				goto failed;
+			} else {
+				g_free (password);
+				/* for some reason, userhelper will spaz out if we close stdin. */
+				/* so we have this awful hack where we push stdin onto a stack to close in the
+				 * destructor.  pathetic! :( 
+				 */
+				close (root_helper->pipe_stdout);
+				root_helper->old_fd_list = g_list_append(root_helper->old_fd_list,
+									 (void *)root_helper->pipe_stdin);
+				root_helper->pipe_stdin = root_helper->pipe_stdout = -1;
+			}
+			break;
+		default:
+			/* all else is error */
+			goto failed;
+		}
 	}
 
 connected:

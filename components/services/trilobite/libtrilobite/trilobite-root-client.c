@@ -40,6 +40,7 @@ static GtkObject *parent_class;
 /* LAST_SIGNAL is just a sentinel marking the end of the list */
 enum {
 	NEED_PASSWORD,
+	TRY_AGAIN,
 	LAST_SIGNAL
 };
 static guint root_client_signals[LAST_SIGNAL] = { 0 };
@@ -78,6 +79,17 @@ impl_Trilobite_PasswordQueryClient_get_password (impl_POA_Trilobite_PasswordQuer
 	return result;
 };
 
+static CORBA_boolean
+impl_Trilobite_PasswordQueryClient_try_again (impl_POA_Trilobite_PasswordQueryClient *trilobite,
+					      CORBA_Environment *ev)
+{
+	gboolean result;
+
+	result = FALSE;
+	gtk_signal_emit (GTK_OBJECT (trilobite->bonobo_object), root_client_signals[TRY_AGAIN], &result);
+	return (CORBA_boolean)result;
+}
+
 POA_Trilobite_PasswordQueryClient__epv *
 trilobite_root_client_get_epv(void) 
 {
@@ -85,6 +97,7 @@ trilobite_root_client_get_epv(void)
 
 	epv = g_new0 (POA_Trilobite_PasswordQueryClient__epv, 1);
 	epv->get_password = (gpointer)&impl_Trilobite_PasswordQueryClient_get_password;
+	epv->try_again = (gpointer)&impl_Trilobite_PasswordQueryClient_try_again;
 
 	return epv;
 };
@@ -193,6 +206,9 @@ trilobite_root_client_class_initialize (TrilobiteRootClientClass *klass)
 	root_client_signals[NEED_PASSWORD] =
 		gtk_signal_new ("need_password", 0, object_class->type, 0,
 				gtk_marshal_STRING__STRING, GTK_TYPE_STRING, 1, GTK_TYPE_STRING);
+	root_client_signals[TRY_AGAIN] =
+		gtk_signal_new ("try_again", 0, object_class->type, 0,
+				gtk_marshal_BOOL__NONE, GTK_TYPE_BOOL, 0);
 	gtk_object_class_add_signals (object_class, root_client_signals, LAST_SIGNAL);
 }
 
