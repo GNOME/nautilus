@@ -119,7 +119,7 @@ http_fetch_remote_file (EazelInstall *service,
 	const char *report;
 
 	report = file_to_report ? file_to_report : g_basename (target_file);
-	g_message (_("Downloading %s..."), url);	
+	trilobite_debug (_("Downloading %s..."), url);	
 
         file = fopen (target_file, "wb");
         get_failed = 0;
@@ -220,8 +220,8 @@ ftp_fetch_remote_file (EazelInstall *service,
 		       const char *file_to_report,
 		       const char* target_file) 
 {
-	g_message (_("Downloading %s..."), url);
-	g_warning (_("FTP not supported yet"));
+	trilobite_debug (_("Downloading %s..."), url);
+	trilobite_debug (_("FTP not supported yet"));
 	return FALSE;
 }
 
@@ -379,9 +379,9 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 				     cbstruct);
 
 	if (result==GNOME_VFS_OK) {
-		g_message ("File download successfull");
+		trilobite_debug ("File download successfull");
 	} else {
-		g_message ("File download failed");
+		trilobite_debug ("File download failed");
 	}
  
 	/* Free the various stuff */
@@ -406,7 +406,7 @@ local_fetch_remote_file (EazelInstall *service,
 	const char *report;
 
 	report = file_to_report ? file_to_report : g_basename (target_file);
-	g_message (_("Checking local file %s..."), target_file);
+	trilobite_debug (_("Checking local file %s..."), target_file);
 	result = FALSE;
 	if (access (target_file, R_OK|W_OK) == 0) {
 		struct stat sbuf;
@@ -457,7 +457,7 @@ eazel_install_fetch_file (EazelInstall *service,
 	g_return_val_if_fail (target_file!=NULL, FALSE);
 
 	if (g_file_test (target_file, G_FILE_TEST_ISFILE)) {
-		g_message ("%s already present, not downloading", target_file);
+		trilobite_debug ("%s already present, not downloading", target_file);
 		result = TRUE;
 	} else {
 		result = (func_table [eazel_install_get_protocol (service)])((gpointer)service, 

@@ -134,7 +134,7 @@ install_new_packages (EazelInstall *service, GList *categories) {
 	problem_filters = 0;
 	
 	if (eazel_install_get_test (service)) {
-		g_message (_("Dry Run Mode Activated.  Packages will not actually be installed ..."));
+		trilobite_debug (_("Dry Run Mode Activated.  Packages will not actually be installed ..."));
 		install_flags |= RPMTRANS_FLAG_TEST;
 	}
 
@@ -171,7 +171,7 @@ install_new_packages (EazelInstall *service, GList *categories) {
 	}
 
 	if (categories == NULL) {
-		g_message (_("Reading the install package list %s"), eazel_install_get_package_list (service));
+		trilobite_debug (_("Reading the install package list %s"), eazel_install_get_package_list (service));
 		categories = parse_local_xml_package_list (eazel_install_get_package_list (service), NULL);
 	}
 
@@ -256,7 +256,7 @@ eazel_install_download_packages (EazelInstall *service,
 				/* Add it to the list of packages to nuke at the end
 				   of this function */
 				remove_list = g_list_prepend (remove_list, package);
-				g_message (_("%s already installed"), package->name);
+				trilobite_debug (_("%s already installed"), package->name);
 			}
 		} 
 
@@ -371,7 +371,7 @@ eazel_install_pre_install_packages (EazelInstall *service,
 		    (eazel_install_get_update (service) && inst_status == 1) ||
 		    inst_status == 2) {
 			if (eazel_install_check_for_file_conflicts (service, pack)) {
-				g_message (_("%s..."), pack->name);
+				trilobite_debug (_("%s..."), pack->name);
 			} else {
 				skip = TRUE;
 			}
@@ -380,7 +380,7 @@ eazel_install_pre_install_packages (EazelInstall *service,
 		}
 		
 		if (skip) {
-			g_message (_("Skipping %s..."), pack->name);
+			trilobite_debug (_("Skipping %s..."), pack->name);
 			/* Nuke the modifies list again, since we don't want to see them */
 			g_list_foreach (pack->modifies, 
 					(GFunc)packagedata_destroy, 
@@ -436,7 +436,7 @@ uninstall_all_packages (EazelInstall *service,
 		CategoryData* cat = categories->data;
 		GList *failed;
 
-		g_message (_("Category = %s"), cat->name);
+		trilobite_debug (_("Category = %s"), cat->name);
 
 		failed = NULL;
 		eazel_uninstall_globber (service, &cat->packages, &failed);
@@ -463,7 +463,7 @@ uninstall_packages (EazelInstall *service,
 	problem_filters = 0;
 	
 	if (eazel_install_get_test (service)) {
-		g_message (_("Dry Run Mode Activated.  Packages will not actually be installed ..."));
+		trilobite_debug (_("Dry Run Mode Activated.  Packages will not actually be installed ..."));
 		uninstall_flags |= RPMTRANS_FLAG_TEST;
 	}
 
@@ -776,7 +776,7 @@ eazel_install_do_transaction_save_report (EazelInstall *service)
 					(unsigned long) time (NULL));
 	}
 
-	g_message (_("Writing transaction to %s"), name);
+	trilobite_debug (_("Writing transaction to %s"), name);
 	
 	/* Open and save */
 	outfile = fopen (name, "w");
@@ -1049,7 +1049,7 @@ eazel_install_start_transaction (EazelInstall *service,
 								  packages);
 		args = eazel_install_start_transaction_make_argument_list (service, packages);
 		
-		g_message (_("Preflight (%ld bytes, %ld packages)"), 
+		trilobite_debug (_("Preflight (%ld bytes, %ld packages)"), 
 			   service->private->packsys.rpm.total_size,
 			   service->private->packsys.rpm.num_packages);
 		if (!eazel_install_emit_preflight_check (service, packages)) {
@@ -1086,7 +1086,7 @@ eazel_install_start_transaction (EazelInstall *service,
 			g_warning ("Could not start rpm");
 			res = service->private->packsys.rpm.num_packages;
 		} else {
-			g_message (_("rpm running..."));
+			trilobite_debug (_("rpm running..."));
 		}
 
 		for (i = 0; argv[i]; i++) {
@@ -1178,7 +1178,7 @@ eazel_install_prune_packages_helper (EazelInstall *service,
 	if (g_list_find (*pruned, pack) || pack->name==NULL) {
 		return;
 	}
-	g_message (_("Removing package %s %s"), pack->name, pack->toplevel ? "(emit fail)" :"()");
+	trilobite_debug (_("Removing package %s %s"), pack->name, pack->toplevel ? "(emit fail)" :"()");
 	if (pack->toplevel) {
 		/* We only emit signal for the toplevel packages, 
 		   and only delete them. They _destroy function destroys
@@ -1361,12 +1361,12 @@ static void
 eazel_install_free_rpm_system_close_db_foreach (char *key, rpmdb db, gpointer unused)
 {
 	if (db) {
-		g_message (_("Closing db for %s (open)"), key);
+		trilobite_debug (_("Closing db for %s (open)"), key);
 		rpmdbClose (db);
 		db = NULL;
 		g_free (key);
 	} else {
-		g_message (_("Closing db for %s (not open)"), key);
+		trilobite_debug (_("Closing db for %s (not open)"), key);
 	}
 
 		
@@ -1423,9 +1423,9 @@ eazel_install_prepare_rpm_system(EazelInstall *service)
 			g_warning (_("RPM package database query failed !"));
 		} else {			
 			if (db) {
-				g_message (_("Opened packages database in %s"), root_dir);
+				trilobite_debug (_("Opened packages database in %s"), root_dir);
 			} else {
-				g_message (_("Opening packages database in %s failed"), root_dir);
+				trilobite_debug (_("Opening packages database in %s failed"), root_dir);
 			}
 			g_hash_table_insert (service->private->packsys.rpm.dbs,
 					     g_strdup (root_dir),
@@ -1442,7 +1442,7 @@ eazel_install_prepare_package_system (EazelInstall *service)
 {
 	gboolean result;
 
-	g_message (_("Preparing package system"));
+	trilobite_debug (_("Preparing package system"));
 
 	switch (eazel_install_get_package_system (service)) {
 	case EAZEL_INSTALL_USE_RPM:
@@ -1700,21 +1700,21 @@ eazel_install_check_existing_packages (EazelInstall *service,
 		
 			if (result!=0) {
 				if (result>0) {
-					g_message (_("%s upgrades from version %s to %s"),
-						   pack->name, 
-						   existing_package->version, 
-						   pack->version);
+					trilobite_debug (_("%s upgrades from version %s to %s"),
+							 pack->name, 
+							 existing_package->version, 
+							 pack->version);
 				} else {
-					g_message (_("%s downgrades from version %s to %s"),
-						   pack->name, 
-						   existing_package->version, 
-						   pack->version);
+					trilobite_debug (_("%s downgrades from version %s to %s"),
+							 pack->name, 
+							 existing_package->version, 
+							 pack->version);
 				}
 			} else {
 				pack->status = PACKAGE_ALREADY_INSTALLED;
-				g_message (_("%s version %s already installed"), 
-					   pack->name, 
-					   existing_package->version);
+				trilobite_debug (_("%s version %s already installed"), 
+						 pack->name, 
+						 existing_package->version);
 			}
 		}
 	}
@@ -1835,9 +1835,7 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 		if (pack_entry == NULL) {
 			switch (conflict.sense) {
 			case RPMDEP_SENSE_REQUIRES: {				
-				g_message (_("%s requires %s"), 
-					   conflict.byName,
-					   conflict.needsName);
+				trilobite_debug (_("%s requires %s"), conflict.byName, conflict.needsName);
 				pack_entry = g_list_find_custom (*packages, 
 								 (gpointer)conflict.needsName,
 								 (GCompareFunc)eazel_install_package_name_compare);
@@ -1906,8 +1904,8 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 			pack = (PackageData*)pack_entry->data;
 			/* Does the conflict look like a file dependency ? */
 			if (*conflict.needsName=='/' || strstr (conflict.needsName, ".so")) {
-				g_message (_("Processing dep for %s, requires library %s"), 
-					   pack->name, conflict.needsName);		
+				trilobite_debug (_("Processing dep for %s, requires library %s"), 
+						 pack->name, conflict.needsName);		
 				dep = packagedata_new ();
 				dep->name = g_strdup (conflict.needsName);
 				fetch_from_file_dependency = TRUE;
@@ -1915,9 +1913,9 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 				dep = packagedata_new_from_rpm_conflict (conflict);
 				dep->archtype = g_strdup (pack->archtype);
 				fetch_from_file_dependency = FALSE;
-				g_message (_("Processing dep for %s, requires package %s"), 
-					   pack->name, 
-					   dep->name);
+				trilobite_debug (_("Processing dep for %s, requires package %s"), 
+						 pack->name, 
+						 dep->name);
 			}
 		}
 
@@ -2220,7 +2218,7 @@ eazel_install_ensure_deps (EazelInstall *service,
 				pack->status = PACKAGE_PARTLY_RESOLVED;
 			}
 
-			g_message (_("%d dependency failure(s)"), num_conflicts);
+			trilobite_debug (_("%d dependency failure(s)"), num_conflicts);
 			
 			/* Fetch the needed stuff. 
 			   "extrapackages" gets the new packages added,
@@ -2285,7 +2283,7 @@ dump_packages (*packages);
 				pack = (PackageData*)iterator->data;
 				pack->status = PACKAGE_RESOLVED;
 			}
-			g_message (_("Dependencies are ok"));
+			trilobite_debug (_("Dependencies are ok"));
 		}
 	}
 	break;

@@ -1,3 +1,24 @@
+2000-10-02  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-protocols.c:
+	(http_fetch_remote_file), (ftp_fetch_remote_file),
+	(gnome_vfs_fetch_remote_file), (local_fetch_remote_file),
+	(eazel_install_fetch_file):
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_new_packages), (eazel_install_download_packages),
+	(eazel_install_pre_install_packages), (uninstall_all_packages),
+	(uninstall_packages), (eazel_install_do_transaction_save_report),
+	(eazel_install_start_transaction),
+	(eazel_install_prune_packages_helper),
+	(eazel_install_free_rpm_system_close_db_foreach),
+	(eazel_install_prepare_rpm_system),
+	(eazel_install_prepare_package_system),
+	(eazel_install_check_existing_packages),
+	(eazel_install_fetch_rpm_dependencies),
+	(eazel_install_ensure_deps):
+
+	Convert a bunch of g_message calls to trilobite_debug.
+	
 2000-10-02  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/nautilus-music-view.c:
