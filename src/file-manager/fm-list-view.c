@@ -1049,7 +1049,7 @@ create_and_set_up_tree_view (FMListView *view)
 					     view->details->file_name_column);
 			
 			gtk_tree_view_column_set_sort_column_id (view->details->file_name_column, column_num);
-			gtk_tree_view_column_set_title (view->details->file_name_column, _("File name"));
+			gtk_tree_view_column_set_title (view->details->file_name_column, _("Name"));
 			gtk_tree_view_column_set_resizable (view->details->file_name_column, TRUE);
 			
 			gtk_tree_view_column_pack_start (view->details->file_name_column, cell, FALSE);

@@ -188,7 +188,7 @@ nautilus_connect_server_dialog_init (NautilusConnectServerDialog *dialog)
 	gtk_table_set_col_spacings (GTK_TABLE (table), 12);
 	gtk_widget_show (table);
 	
-	label = gtk_label_new_with_mnemonic (_("Link _Name:"));
+	label = gtk_label_new_with_mnemonic (_("Link _name:"));
 	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 	gtk_widget_show (label);
 	gtk_table_attach (GTK_TABLE (table), label,
