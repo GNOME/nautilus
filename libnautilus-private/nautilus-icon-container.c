@@ -5117,7 +5117,7 @@ update_label_color (EelBackground         *background,
 	container->details->label_color_highlight = eel_gdk_rgb_to_color (0xFFFFFF);
 	container->details->label_info_color_highlight = eel_gdk_rgb_to_color (0xCCCCCC);
 	
-	if (eel_background_is_dark (background) || container->details->use_drop_shadows) {
+	if (container->details->use_drop_shadows || eel_background_is_dark (background)) {
 		container->details->label_color = eel_gdk_rgb_to_color (0xEFEFEF);
 		container->details->label_info_color = eel_gdk_rgb_to_color (light_info_value);
 	} else { /* converse */

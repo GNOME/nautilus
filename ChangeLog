@@ -1,5 +1,12 @@
 2002-07-08  Michael Meeks  <michael@ximian.com>
 
+	* libnautilus-private/nautilus-icon-container.c
+	(update_label_color): short circuit via use_drop_shadows
+	doing a horribly expensive eel_background_is_dark on the
+	(potentially huge) desktop background.
+
+2002-07-08  Michael Meeks  <michael@ximian.com>
+
 	* src/nautilus-zoom-control.c
 	(nautilus_zoom_control_set_parameters): add pre-condition.
 
