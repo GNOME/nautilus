@@ -3594,26 +3594,32 @@ key_press_event (GtkWidget *widget,
 	} else {
 		switch (event->keyval) {
 		case GDK_Home:
+		case GDK_KP_Home:
 			keyboard_home (container, event);
 			handled = TRUE;
 			break;
 		case GDK_End:
+		case GDK_KP_End:
 			keyboard_end (container, event);
 			handled = TRUE;
 			break;
 		case GDK_Left:
+		case GDK_KP_Left:
 			keyboard_left (container, event);
 			handled = TRUE;
 			break;
 		case GDK_Up:
+		case GDK_KP_Up:
 			keyboard_up (container, event);
 			handled = TRUE;
 			break;
 		case GDK_Right:
+		case GDK_KP_Right:
 			keyboard_right (container, event);
 			handled = TRUE;
 			break;
 		case GDK_Down:
+		case GDK_KP_Down:
 			/* Don't eat Alt-Down, as that is used for Open */
 			if ((event->state & GDK_MOD1_MASK) == 0) {
 				keyboard_down (container, event);

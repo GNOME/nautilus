@@ -513,8 +513,12 @@ entry_would_have_inserted_characters (const GdkEventKey *event)
 	case GDK_Delete:
 	case GDK_Home:
 	case GDK_End:
+	case GDK_KP_Home:
+	case GDK_KP_End:
 	case GDK_Left:
 	case GDK_Right:
+	case GDK_KP_Left:
+	case GDK_KP_Right:
 	case GDK_Return:
 		return FALSE;
 	default:
