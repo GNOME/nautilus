@@ -113,7 +113,7 @@ struct NautilusProgramChooserDetails {
 #define NAME_COLUMN_INITIAL_WIDTH	 200
 
 /* Program name of the mime type capplet */
-#define FILE_TYPES_CAPPLET_NAME 	"gnome2-file-types-properties"
+#define FILE_TYPES_CAPPLET_NAME 	"gnome-file-types-properties"
 
 /* This number controls a maximum character count for a file name that is
  * displayed as part of a dialog (beyond this it will be truncated). 
