@@ -298,27 +298,26 @@ display_caveat (GtkWindow *parent_window)
 	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_IN);
   	gtk_box_pack_start (GTK_BOX (hbox), frame, FALSE, FALSE, 0);
 	
-				
 	file_name = gnome_pixmap_file ("nautilus/About_Image.png");
 	pixmap = gnome_pixmap_new_from_file (file_name);
 	g_free (file_name);
 	gtk_widget_show (pixmap);
 	gtk_container_add (GTK_CONTAINER (frame), pixmap);
 
-  	text = gtk_label_new (
-  		 _("The Nautilus shell is under development; it's not"
-  		   "\nready for daily use. Many features, including some"
-  		   "\nof the best ones, are not yet done, partly done, or"
-  		   "\nunstable. The program doesn't look or act the way"
-  		   "\nit will in version 1.0."
-		   "\n"
-		   "\nIf you do decide to test this version of Nautilus,"
-		   "\nbeware. The program could do something"
-		   "\nunpredictable and may even delete or overwrite"
-		   "\nfiles on your computer."
-		   "\n"
-		   "\nFor more information, visit http://nautilus.eazel.com."));
-   	gtk_label_set_justify (GTK_LABEL (text), GTK_JUSTIFY_LEFT);
+  	text = gtk_label_new
+		(_("The Nautilus shell is under development; it's not "
+  		   "ready for daily use. Many features, including some "
+  		   "of the best ones, are not yet done, partly done, or "
+  		   "unstable. The program doesn't look or act the way "
+  		   "it will in version 1.0."
+		   "\n\n"
+		   "If you do decide to test this version of Nautilus, "
+		   "beware. The program could do something "
+		   "unpredictable and may even delete or overwrite"
+		   "files on your computer."
+		   "\n\n"
+		   "For more information, visit http://nautilus.eazel.com."));
+    	gtk_label_set_line_wrap (GTK_LABEL (text), TRUE);
 	gtk_widget_show (text);
   	gtk_box_pack_start (GTK_BOX (hbox), text, FALSE, FALSE, 0);
 
@@ -327,6 +326,8 @@ display_caveat (GtkWindow *parent_window)
   	gnome_dialog_set_parent (GNOME_DIALOG (dialog), parent_window);
 
 	gtk_widget_show (GTK_WIDGET (dialog));
+
+	nautilus_warning_dialog ("This is a long test of the very long dialog which is longer than you can believe I say.");
 }
 
 void

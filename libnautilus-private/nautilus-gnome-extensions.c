@@ -265,7 +265,6 @@ turn_on_line_wrap_flag (GtkWidget *widget, const char *message)
 		if (strcmp (text, message) == 0) {
 			gtk_label_set_line_wrap (GTK_LABEL (widget), TRUE);
 		}
-		g_free (text);
 	}
 
 	/* Recurse for children. */

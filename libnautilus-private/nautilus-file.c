@@ -317,6 +317,9 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 				        GnomeVFSFilePermissions group_permission,
 				        GnomeVFSFilePermissions other_permission)
 {
+	uid_t user_id;
+	struct passwd *password_info;
+
 	g_assert (NAUTILUS_IS_FILE (file));
 
 	/* Once the file is gone, you can't do much of anything. */
@@ -324,40 +327,46 @@ nautilus_file_denies_access_permission (NautilusFile *file,
 		return TRUE;
 	}
 
+	/* File system does not provide permission bits.
+	 * Can't determine specific permissions, so return FALSE.
+	 */
 	if (!nautilus_file_can_get_permissions (file)) {
-		/* 
-		 * File's permissions field is not valid.
-		 * Can't access specific permissions, so return FALSE.
-		 */
 		return FALSE;
 	}
 
-	/* Check whether anyone at all has permission. */
-	if (file->details->info->permissions & other_permission) {
-		return FALSE;
+	/* Check the user. */
+	user_id = geteuid ();
+
+	/* Root can do anything. */
+	if (user_id == 0) {
+		return TRUE;
 	}
-	
-	/* Check whether user's ID matches file's. */
+
+	/* File owner's access is governed by the owner bits. */
 	/* FIXME bugzilla.eazel.com 644: 
 	 * Can we trust the uid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
-	if ((file->details->info->permissions & owner_permission)
-	    && getuid() == file->details->info->uid) {
-		return FALSE;
+	if (user_id == file->details->info->uid) {
+		return (file->details->info->permissions & owner_permission) != 0;
 	}
 
-	/* Check whether user's group ID matches file's. */
+	/* No need to free result of getpwuid. */
+	password_info = getpwuid (user_id);
+
+	/* Group member's access is governed by the group bits. */
 	/* FIXME bugzilla.eazel.com 644: 
 	 * Can we trust the gid in the file info? Might
 	 * there be garbage there? What will it do for non-local files?
 	 */
-	if ((file->details->info->permissions & group_permission)
-	    && getpwuid (getuid())->pw_gid == file->details->info->gid) {
+	if (password_info != NULL
+	    && password_info->pw_gid == file->details->info->gid) {
+		(file->details->info->permissions & group_permission)
 		return FALSE;
 	}
 
-	return TRUE;
+	/* Other users' access is governed by the other bits. */
+	return (file->details->info->permissions & other_permission) != 0;
 }
 
 /**
@@ -377,10 +386,11 @@ nautilus_file_can_read (NautilusFile *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	return !nautilus_file_denies_access_permission (file, 
-						        GNOME_VFS_PERM_USER_READ,
-						        GNOME_VFS_PERM_GROUP_READ,
-						        GNOME_VFS_PERM_OTHER_READ);
+	return !nautilus_file_denies_access_permission
+		(file, 
+		 GNOME_VFS_PERM_USER_READ,
+		 GNOME_VFS_PERM_GROUP_READ,
+		 GNOME_VFS_PERM_OTHER_READ);
 }
 
 /**
@@ -400,10 +410,11 @@ nautilus_file_can_write (NautilusFile *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	return !nautilus_file_denies_access_permission (file, 
-						        GNOME_VFS_PERM_USER_WRITE,
-						        GNOME_VFS_PERM_GROUP_WRITE,
-						        GNOME_VFS_PERM_OTHER_WRITE);
+	return !nautilus_file_denies_access_permission
+		(file, 
+		 GNOME_VFS_PERM_USER_WRITE,
+		 GNOME_VFS_PERM_GROUP_WRITE,
+		 GNOME_VFS_PERM_OTHER_WRITE);
 }
 
 /**
@@ -423,10 +434,11 @@ nautilus_file_can_execute (NautilusFile *file)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-	return !nautilus_file_denies_access_permission (file, 
-						        GNOME_VFS_PERM_USER_EXEC,
-						        GNOME_VFS_PERM_GROUP_EXEC,
-						        GNOME_VFS_PERM_OTHER_EXEC);
+	return !nautilus_file_denies_access_permission
+		(file, 
+		 GNOME_VFS_PERM_USER_EXEC,
+		 GNOME_VFS_PERM_GROUP_EXEC,
+		 GNOME_VFS_PERM_OTHER_EXEC);
 }
 
 /**
@@ -1342,11 +1354,14 @@ nautilus_file_can_get_permissions (NautilusFile *file)
  * @file: The file in question.
  * 
  * Return value: TRUE if the current user can change the
- * permissions of @file, FALSE otherwise.
+ * permissions of @file, FALSE otherwise. It's always possible
+ * that when you actually try to do it, you will fail.
  */
 gboolean
 nautilus_file_can_set_permissions (NautilusFile *file)
 {
+	uid_t user_id;
+
 	/* Not allowed to set the permissions if we can't
 	 * even read them. This can happen on non-UNIX file
 	 * systems.
@@ -1355,19 +1370,20 @@ nautilus_file_can_set_permissions (NautilusFile *file)
 		return FALSE;
 	}
 
+	user_id = geteuid();
+
 	/* Owner is allowed to set permissions. */
-	if (getuid() == file->details->info->uid) {
+	if (user_id == file->details->info->uid) {
 		return TRUE;
 	}
 
 	/* Root is also allowed to set permissions. */
-	if (getuid() == 0) {
+	if (user_id == 0) {
 		return TRUE;
 	}
 
 	/* Nobody else is allowed. */
 	return FALSE;
-	
 }
 
 GnomeVFSFilePermissions
