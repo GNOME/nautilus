@@ -281,6 +281,7 @@ set_up_bonobo_control (BonoboControl *control)
 			(control_frame, "IDL:Nautilus/Undo/Context:1.0", &ev);
 		if (!CORBA_Object_is_nil (undo_context, &ev)) {
 			manager = Nautilus_Undo_Context__get_undo_manager (undo_context, &ev);
+			Bonobo_Control_unref (undo_context, &ev);
 		}
 		CORBA_Object_release (undo_context, &ev);
 	}

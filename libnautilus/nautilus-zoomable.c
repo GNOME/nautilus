@@ -511,19 +511,22 @@ nautilus_zoomable_ensure_zoomable_frame (NautilusZoomable *view)
 			(bonobo_control_get_control_frame 
 			 (BONOBO_CONTROL (nautilus_zoomable_get_bonobo_control (view))),
 			 "IDL:Nautilus/ZoomableFrame:1.0", &ev);
+		if (ev._major != CORBA_NO_EXCEPTION) {
+			view->details->zoomable_frame = CORBA_OBJECT_NIL;
+		}
+		if (CORBA_Object_is_nil (view->details->zoomable_frame, &ev)) {
+			view->details->zoomable_frame = CORBA_OBJECT_NIL;
+		}
+
+		/* Don't keep a ref to the frame, because that would be circular. */
+		if (view->details->zoomable_frame != CORBA_OBJECT_NIL) {
+			Bonobo_Unknown_unref (view->details->zoomable_frame, &ev);
+		}
 	}
 	
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		view->details->zoomable_frame = CORBA_OBJECT_NIL;
-	}
-	
-	if (CORBA_Object_is_nil (view->details->zoomable_frame, &ev)) {
-		CORBA_exception_free (&ev);
-		return FALSE;
-	} else {
-		CORBA_exception_free (&ev);
-		return TRUE;
-	}
+	CORBA_exception_free (&ev);
+
+	return view->details->zoomable_frame != CORBA_OBJECT_NIL;
 }
 
 void

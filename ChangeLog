@@ -1,3 +1,19 @@
+2000-07-11  Darin Adler  <darin@eazel.com>
+
+	Fixed some leaks that cause problems with the new Bonobo.
+
+	* components/history/nautilus-history-view.c:
+	(history_view_frame_call_end):
+	* libnautilus/nautilus-undo.c: (set_up_bonobo_control):
+	* libnautilus/nautilus-view.c: (view_frame_call_end):
+	* libnautilus/nautilus-zoomable.c:
+	(nautilus_zoomable_ensure_zoomable_frame):
+	Fixed a ref. count leak by adding code to unref the result of
+	query_interface.
+	
+	* src/nautilus-view-frame.c: (nautilus_view_frame_is_zoomable):
+	Fixed logic that was backwards.
+
 2000-07-11  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-window.c: (nautilus_window_realize):

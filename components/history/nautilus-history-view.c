@@ -76,6 +76,7 @@ history_view_frame_call_begin (NautilusView *view, CORBA_Environment *ev)
 static void
 history_view_frame_call_end (Nautilus_HistoryFrame frame, CORBA_Environment *ev)
 {
+	Nautilus_HistoryFrame_unref (frame, ev);
 	CORBA_Object_release (frame, ev);
 	CORBA_exception_free (ev);
 }

@@ -458,7 +458,7 @@ nautilus_view_frame_is_zoomable (NautilusViewFrame *view)
 	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), FALSE);
 	
 	CORBA_exception_init (&ev);
-	is_zoomable = CORBA_Object_is_nil (view->zoomable, &ev);
+	is_zoomable = !CORBA_Object_is_nil (view->zoomable, &ev);
 	CORBA_exception_free (&ev);
 	
 	return is_zoomable;
