@@ -59,7 +59,7 @@ void sect_xref_start_element (Context *context, const gchar *name, const xmlChar
 void sect_footnote_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void sect_figure_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void sect_figure_end_element (Context *context, const gchar *name);
-void sect_graphic_start_element (Context *context, const gchar *name, const xmlChar **atrs);
+void sect_graphic_start_element (Context *context, const char *name, const xmlChar **atrs);
 void sect_em_start_element (Context *context, const gchar *name, const xmlChar **atrs);
 void sect_em_end_element (Context *context, const gchar *name);
 void sect_tt_start_element (Context *context, const gchar *name, const xmlChar **atrs);
@@ -122,4 +122,5 @@ void sect_sup_start_element (Context *context, const char *name, const xmlChar *
 void sect_sup_end_element (Context *context, const char *name);
 void sect_blockquote_start_element (Context *context, const char *name, const xmlChar **atrs);
 void sect_blockquote_end_element (Context *context, const char *name);
+void sect_inlinegraphic_start_element (Context *context, const char *name, const xmlChar **atrs);
 #endif

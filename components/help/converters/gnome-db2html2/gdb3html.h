@@ -108,8 +108,11 @@ typedef enum ElementIndex {
 	VARNAME,
 	BLOCKQUOTE,
 	QUOTE,
-	OPTION,	
-	UNDEFINED /* 100 */
+	OPTION,
+	ENVAR, /* 100 */
+	COMPUTEROUTPUT,
+	INLINEGRAPHIC,
+	UNDEFINED /* 103 */
 } ElementIndex;
 
 typedef struct _ElementInfo ElementInfo;

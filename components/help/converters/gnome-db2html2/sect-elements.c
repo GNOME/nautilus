@@ -104,6 +104,9 @@ ElementInfo sect_elements[] = {
 	{ BLOCKQUOTE, "blockquote", (startElementSAXFunc) sect_blockquote_start_element, (endElementSAXFunc) sect_blockquote_end_element, (charactersSAXFunc) sect_write_characters},
 	{ QUOTE, "quote", (startElementSAXFunc) sect_quote_start_element, (endElementSAXFunc) sect_quote_end_element, (charactersSAXFunc) sect_write_characters},
 	{ OPTION, "option", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
+	{ ENVAR, "envar", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
+	{ COMPUTEROUTPUT, "comptueroutput", (startElementSAXFunc) sect_tt_start_element, (endElementSAXFunc) sect_tt_end_element, (charactersSAXFunc) sect_write_characters},
+	{ INLINEGRAPHIC, "inlinegraphic", (startElementSAXFunc) sect_inlinegraphic_start_element, NULL, NULL},
 	{ UNDEFINED, NULL, NULL, NULL, NULL}
 };
 
@@ -931,20 +934,79 @@ sect_figure_end_element (Context *context,
 }
 
 void
+sect_inlinegraphic_start_element (Context *context,
+				  const char *name,
+                                  const xmlChar **atrs)
+{
+	char **atrs_ptr;
+	char *format;
+	char *fileref;
+	char *lowcaseformat;
+	
+	if (!IS_IN_SECT (context))
+		return;
+
+	format = NULL;
+	atrs_ptr = (char **) atrs;
+	while (atrs_ptr && *atrs_ptr) {
+		if (g_strcasecmp (*atrs_ptr, "format") == 0) {
+			atrs_ptr++;
+			format = *atrs_ptr;
+			atrs_ptr++;
+			continue;
+		} else if (g_strcasecmp (*atrs_ptr, "fileref") == 0) {
+			atrs_ptr++;
+			fileref = *atrs_ptr;
+			atrs_ptr++;
+			continue;
+		}
+		atrs_ptr += 2;
+	}
+
+	if (fileref == NULL) {
+		return;
+	}
+
+	/* FIXME: Should we put an 'ALT' tag here? */	
+	if (format == NULL) {
+		/* Default is PNG */
+		sect_print (context, "<IMG SRC=\"%s.png\">", fileref);
+	} else 	if (g_strcasecmp (format, "gif") == 0) {
+		sect_print (context, "<IMG SRC=\"%s.gif\">", fileref);
+	} else if ((g_strcasecmp (format, "jpg") == 0) ||
+		   (g_strcasecmp (format, "jpeg") == 0)) {
+		/* Some people decide to use .jpg, others use .jpeg */
+		lowcaseformat = g_strdup (format);
+		g_strdown (lowcaseformat);
+		sect_print (context, "<IMG SRC=\"%s.%s\">", fileref, lowcaseformat);
+		g_free (lowcaseformat);
+	} else {
+		/* Unknown file format */
+		sect_print (context, "<IMG SRC=\"%s.%s\">", fileref, format);
+	} 
+}
+
+
+void
 sect_graphic_start_element (Context *context,
-			    const gchar *name,
+			    const char *name,
 			    const xmlChar **atrs)
 {
-	gchar **atrs_ptr;
-	gchar *format = NULL;
-	gchar *fileref = NULL;
-	gchar *lowcaseformat = NULL;
-	SectContext *sect_context = (SectContext *)context->data;
+	char **atrs_ptr;
+	char *format;
+	char *fileref;
+	char *lowcaseformat;
+	SectContext *sect_context;
 
 	if (!IS_IN_SECT (context))
 		return;
 
 	atrs_ptr = (gchar **) atrs;
+	format = NULL;
+	fileref = NULL;
+	lowcaseformat = NULL;
+	sect_context = (SectContext *)context->data;
+	
 	while (atrs_ptr && *atrs_ptr) {
 		if (!g_strcasecmp (*atrs_ptr, "format")) {
 			atrs_ptr++;
@@ -968,7 +1030,10 @@ sect_graphic_start_element (Context *context,
 	if (fileref == NULL)
 		return;
 
-	if (g_strcasecmp (format, "gif") == 0) {
+	if (format == NULL) {
+		/* Default image type */
+		sect_context->figure->img = g_strdup_printf ("%s.png", fileref);
+	} else if (g_strcasecmp (format, "gif") == 0) {
 		sect_context->figure->img = g_strdup_printf ("%s.gif", fileref);
 	} else if ((g_strcasecmp (format, "jpg") == 0) ||
 		   (g_strcasecmp (format, "jpeg") == 0)) {
@@ -978,9 +1043,11 @@ sect_graphic_start_element (Context *context,
 		sect_context->figure->img = g_strdup_printf ("%s.%s", fileref, lowcaseformat);
 		g_free (lowcaseformat);
 	} else {
-		sect_context->figure->img = g_strdup_printf ("%s.png", fileref);
+		/* Unknown image type */
+		sect_context->figure->img = g_strdup_printf ("%s.%s", fileref, format);
 	} 
 }
+	
 
 void
 sect_em_start_element (Context *context,

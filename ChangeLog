@@ -1,3 +1,19 @@
+2000-09-08  Ali Abdin  <aliabdin@aucegypt.edu>
+
+        Should fix bug #2749, #2754, and #2755
+
+        * components/help/converters/gnome-db2html2/gdb3html.h:
+        Add in ENVAR, COMPUTEROUTPUT, and INLINEGRAPHIC tags.
+
+        * components/help/converters/gnome-db2html2/sect-elements.[ch]:
+        Add in the above tags to the sect_elements struct.
+        (sect_inlinegraphic_start_element): New function to handle inline
+        graphics.
+        (sect_graphic_start_element): If format was NULL the g_strcasecmp
+        would output warning messages screwing up the HTML, changed the code
+        around a bit to handle this. Also made this function to be more
+        compliant with Eazel style guidelines
+
 2000-09-08  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 2816, Home icon doesn't link to changed home directory.
