@@ -4,6 +4,7 @@
 #include "ntl-window.h"
 #include "ntl-content-view.h"
 #include <libnautilus/libnautilus.h>
+#include <libnautilus/nautilus-undo-manager.h>
 #include <gtk/gtk.h>
 
 typedef enum {
@@ -59,7 +60,6 @@ void nautilus_add_to_history_list (NautilusBookmark *bookmark);
 GSList *nautilus_get_history_list (void);
 
 void nautilus_window_add_bookmark_for_current_location (NautilusWindow *window);
-void nautilus_window_edit_bookmarks (GtkObject *object);
 void nautilus_window_initialize_menus (NautilusWindow *window);
 void nautilus_window_initialize_toolbars (NautilusWindow *window);
 
@@ -67,5 +67,7 @@ void nautilus_window_go_back (NautilusWindow *window);
 void nautilus_window_go_forward (NautilusWindow *window);
 void nautilus_window_go_up (NautilusWindow *window);
 void nautilus_window_go_home (NautilusWindow *window);
+
+NautilusUndoManager *nautilus_window_get_undo_manager (NautilusWindow *window);
 
 #endif

@@ -27,6 +27,8 @@
 #include <libnautilus/nautilus-undo-manager.h>
 #include <libnautilus-extensions/nautilus-entry.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <gnome.h>
+
 
 /* Static variables to keep track of window state. If there were
  * more than one bookmark-editing window, these would be struct or
@@ -107,8 +109,8 @@ static void	repopulate		      (void);
  *
  * Return value: A pointer to the new window.
  **/
-GtkWidget *
-create_bookmarks_window (NautilusBookmarkList *list, NautilusUndoManager *manager)
+GtkWindow *
+create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_source)
 {
 	GtkWidget *window;
 	GtkWidget *content_area;
@@ -123,6 +125,7 @@ create_bookmarks_window (NautilusBookmarkList *list, NautilusUndoManager *manage
 	bookmarks = list;
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	nautilus_share_undo_manager (GTK_OBJECT (window), undo_manager_source);
 	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
 	gtk_window_set_title (GTK_WINDOW (window), _("Nautilus: Bookmarks"));
 	gtk_widget_set_usize (window, 
@@ -190,12 +193,6 @@ create_bookmarks_window (NautilusBookmarkList *list, NautilusUndoManager *manage
 			      GNOME_PAD_SMALL);
 	gtk_widget_show (remove_button);
 	gtk_box_pack_start (GTK_BOX (hbox2), remove_button, TRUE, FALSE, 0);
-
-
-	/* Add undo manager to widgets */
-	g_assert (manager);
-	gtk_object_set_data ( GTK_OBJECT (name_field), NAUTILUS_UNDO_MANAGER_NAME, manager);
-	gtk_object_set_data ( GTK_OBJECT (uri_field), NAUTILUS_UNDO_MANAGER_NAME, manager);
 
 	/* Wire up all the signals. */
 	bookmark_list_changed_signalID =
@@ -267,7 +264,7 @@ create_bookmarks_window (NautilusBookmarkList *list, NautilusUndoManager *manage
 	/* Fill in list widget with bookmarks, must be after signals are wired up. */
 	repopulate();
 
-	return window;
+	return GTK_WINDOW (window);
 }
 
 static const NautilusBookmark *
@@ -372,17 +369,16 @@ nautilus_bookmarks_window_restore_geometry (GtkWidget *window)
  * @window: The bookmarks window whose geometry should be saved.
  **/
 void
-nautilus_bookmarks_window_save_geometry (GtkWidget *window)
+nautilus_bookmarks_window_save_geometry (GtkWindow *window)
 {
 	g_return_if_fail (GTK_IS_WINDOW (window));
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 
 	/* Don't bother if window is already closed */
-	if (GTK_WIDGET_VISIBLE (window))
-	{
+	if (GTK_WIDGET_VISIBLE (window)) {
 		char *geometry_string;
 		
-		geometry_string = gnome_geometry_string(window->window);	
+		geometry_string = gnome_geometry_string (GTK_WIDGET (window)->window);	
 		nautilus_bookmark_list_set_window_geometry (bookmarks, geometry_string);
 		g_free (geometry_string);
 	}
@@ -523,15 +519,11 @@ on_text_field_focus_in_event (GtkWidget *widget,
 			       GdkEventFocus *event,
 			       gpointer user_data)
 {
-	NautilusUndoManager *manager;
-	
 	g_assert (NAUTILUS_IS_ENTRY (widget));
 
-	manager = gtk_object_get_data ( GTK_OBJECT (widget), NAUTILUS_UNDO_MANAGER_NAME);
-	
 	nautilus_entry_select_all (NAUTILUS_ENTRY (widget));
 	nautilus_entry_enable_undo_key (NAUTILUS_ENTRY(widget), TRUE);
-	nautilus_entry_enable_undo(NAUTILUS_ENTRY(widget), manager, TRUE);	
+	nautilus_entry_enable_undo (NAUTILUS_ENTRY(widget), TRUE);	
 	return FALSE;
 }
 
@@ -573,18 +565,18 @@ on_window_delete_event (GtkWidget *widget,
 			GdkEvent *event,
 			gpointer user_data)
 {
-	nautilus_bookmarks_window_save_geometry (widget);
+	nautilus_bookmarks_window_save_geometry (GTK_WINDOW (widget));
 	
 	/* Hide but don't destroy */
 	gtk_widget_hide (widget);
 
 	/* Disable undo for entry widgets*/
-	nautilus_entry_enable_undo(NAUTILUS_ENTRY(name_field), NULL, FALSE);
-	nautilus_entry_enable_undo(NAUTILUS_ENTRY(uri_field), NULL, FALSE);
+	nautilus_entry_enable_undo (NAUTILUS_ENTRY (name_field), FALSE);
+	nautilus_entry_enable_undo (NAUTILUS_ENTRY (uri_field), FALSE);
 
 	/* Remove object transactions from undo manager */
-	nautilus_undo_manager_unregister_object(GTK_OBJECT(name_field));
-	nautilus_undo_manager_unregister_object(GTK_OBJECT(uri_field));
+	nautilus_undo_manager_unregister_object (GTK_OBJECT (name_field));
+	nautilus_undo_manager_unregister_object (GTK_OBJECT (uri_field));
 	
 	/* Seems odd to restore the geometry just after saving it,
 	 * and when the window is hidden, but this insures that

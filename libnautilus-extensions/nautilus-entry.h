@@ -29,7 +29,6 @@
 
 #include <libgnome/gnome-defs.h>
 #include <gtk/gtkentry.h>
-#include <libnautilus/nautilus-undo-manager.h>
 
 BEGIN_GNOME_DECLS
 
@@ -60,16 +59,14 @@ struct NautilusEntryClass {
 	GtkEntryClass parent_class;
 };
 
-GtkType    nautilus_entry_get_type           	(void);
-GtkWidget* nautilus_entry_new 		     	(void);
-
-void	   nautilus_entry_select_all	     	(NautilusEntry *entry);
-void	   nautilus_entry_select_all_at_idle 	(NautilusEntry *entry);
-void 	   nautilus_entry_enable_undo 	     	(NautilusEntry *entry, 
-						 NautilusUndoManager *manager,
-						 gboolean value);
-void 	   nautilus_entry_enable_undo_key    	(NautilusEntry *entry, gboolean value);
-
+GtkType    nautilus_entry_get_type           (void);
+GtkWidget* nautilus_entry_new                (void);
+void       nautilus_entry_select_all         (NautilusEntry *entry);
+void       nautilus_entry_select_all_at_idle (NautilusEntry *entry);
+void       nautilus_entry_enable_undo        (NautilusEntry *entry,
+					      gboolean       value);
+void       nautilus_entry_enable_undo_key    (NautilusEntry *entry,
+					      gboolean       value);
 
 END_GNOME_DECLS
 

@@ -63,8 +63,6 @@ struct NautilusUndoTransactionInProgress {
 
 };
 
-#define NAUTILUS_UNDO_MANAGER_NAME "NautilusUndoManager"
-
 /* GtkObject */
 GtkType			nautilus_undo_manager_get_type 				 (void);
 NautilusUndoManager 	*nautilus_undo_manager_new 				 (void);
@@ -87,9 +85,16 @@ const gchar 		*nautilus_undo_manager_get_current_redo_transaction_name (Nautilus
 
 void			nautilus_undo_manager_enable_redo 			 (NautilusUndoManager *manager, gboolean value);
 void			nautilus_undo_manager_set_queue_depth 			 (NautilusUndoManager *manager, gint depth);
-
-
 gboolean 		nautilus_undo_manager_unregister_object 		 (GtkObject *object);
 
-#endif
+void                    nautilus_attach_undo_manager                             (GtkObject *object,
+										  NautilusUndoManager *manager);
+void                    nautilus_share_undo_manager                              (GtkObject *destination_object,
+										  GtkObject *source_object);
 
+/* FIXME: This should return a Nautilus_Undo_Manager in the long run.
+ * And it should not be a public function. 
+ */
+NautilusUndoManager *   nautilus_get_undo_manager                                (GtkObject *start_object);
+
+#endif

@@ -25,12 +25,11 @@
 #ifndef NAUTILUS_BOOKMARKS_WINDOW_H
 #define NAUTILUS_BOOKMARKS_WINDOW_H
 
-#include <gnome.h>
-#include <libnautilus/nautilus-undo-manager.h>
+#include <gtk/gtkwindow.h>
 #include "nautilus-bookmark-list.h"
 
-GtkWidget *create_bookmarks_window                 (NautilusBookmarkList *bookmarks,
-						    NautilusUndoManager *manager);
-void       nautilus_bookmarks_window_save_geometry (GtkWidget            *window);
+GtkWindow *create_bookmarks_window                 (NautilusBookmarkList *bookmarks,
+						    GtkObject            *undo_manager_source);
+void       nautilus_bookmarks_window_save_geometry (GtkWindow            *window);
 
 #endif /* NAUTILUS_BOOKMARKS_WINDOW_H */

@@ -14,36 +14,37 @@ Specifically, you will need to:
 Nautilus currently requires the following modules from GNOME CVS
 (built in the given order):
 
-module             branch              configure options
-------             ------              -----------------
-glib:		   glib-1-2
-gtk+:		   gtk-1-2
-imlib:		   HEAD 
-gnome-xml:	   LIB_XML_1_X
-ORBit:		   orbit-stable-0-5
-gnome-libs:	   gnome-libs-1-0    --enable-prefer-db1
-gnet:              HEAD
-gnome-http:        HEAD
-oaf:               HEAD
-gconf:             HEAD
-gdk-pixbuf:	   HEAD               --enable-canvas-pixbuf
-gnome-print:	   HEAD
-bonobo:		   HEAD               --enable-oaf=yes
-gnome-vfs:	   HEAD               --enable-oaf=yes
-gtkhtml:	   HEAD
-eog:               HEAD               --enable-oaf=yes
-xpdf:              HEAD
+	module             branch              configure options
+	------             ------              -----------------
+	glib:		   glib-1-2
+	gtk+:		   gtk-1-2
+	imlib:		   HEAD 
+	gnome-xml:	   LIB_XML_1_X
+	ORBit:		   orbit-stable-0-5
+	gnome-libs:	   gnome-libs-1-0    --enable-prefer-db1
+	gnet:              HEAD
+	gnome-http:        HEAD
+	oaf:               HEAD
+	gconf:             HEAD
+	gdk-pixbuf:	   HEAD               --enable-canvas-pixbuf
+	gnome-print:	   HEAD
+	bonobo:		   HEAD               --enable-oaf=yes
+	gnome-vfs:	   HEAD               --enable-oaf=yes
+	gtkhtml:	   HEAD
+	eog:               HEAD               --enable-oaf=yes
+	xpdf:              HEAD
+	popt:              <need 1.5, but not from GNOME CVS, see below>
 
 Other modules for Red Hat users:
 
-- For other modules, the versions in Red Hat 6.1 will do.
-- ORBit requires popt-1.5, which can be fetched from:
+	- For other modules, the versions in Red Hat 6.1 will do.
+	- ORBit requires popt-1.5, which can be fetched from:
 
 	ftp://ftp.valinux.com/pub/mirrors/redhat/rawhide/i386/RedHat/RPMS/popt-1.5-0.45.i386.rpm
 
-Other modules for Debian users (we haven't tried this ourselves):
+Other modules for Debian users (Eazel hackers haven't tried this ourselves):
 
-- You'll need libwww, which can be found at:
+	- You'll need libwww, which can be found at:
 
 	ftp://ftp.internatif.org/pub/debian/UNOFFICIAL/libw3c-libwww5_5.2.8-1_i386.deb
 	ftp://ftp.internatif.org/pub/debian/UNOFFICIAL/libw3c-libwww-dev_5.2.8-1_i386.deb

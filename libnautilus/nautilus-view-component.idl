@@ -6,20 +6,6 @@
 #include <gnome-factory.idl>
 #include <Bonobo.idl>
 
-#if !defined(__BONOBO_COMPILATION) && defined(__ORBIT_IDL__)
-#pragma inhibit push
-#endif
-
-#include "nautilus-undo.idl"
-
-#if !defined(__BONOBO_COMPILATION) && defined(__ORBIT_IDL__)
-#pragma inhibit pop
-#endif
-
-%{
-#pragma include_defs "libnautilus/nautilus-undo.h"
-%}
-
 module Nautilus {
 	struct NavigationRequestInfo {
 		string requested_uri;
@@ -120,7 +106,6 @@ module Nautilus {
 	
 	interface Application : ::Bonobo::GenericFactory, ::Bonobo::Unknown {
 		readonly attribute ViewWindowList view_windows;
-		readonly attribute Undo::Manager undo_manager;
 		ViewWindow new_view_window ();
 	};
 };

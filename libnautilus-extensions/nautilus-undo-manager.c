@@ -52,7 +52,6 @@ typedef struct {
   NautilusUndoManager *gtk_object;
 } impl_POA_Nautilus_Undo_Manager;
 
-
 /* GtkObject */
 static void     nautilus_undo_manager_initialize_class  (NautilusUndoManagerClass  *class);
 static void     nautilus_undo_manager_initialize        (NautilusUndoManager       *item);
@@ -214,7 +213,6 @@ nautilus_undo_manager_initialize_class (NautilusUndoManagerClass *klass)
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);	
 }
 
-
 /* nautilus_undo_manager_begin_transaction */
 NautilusUndoTransactionInProgress * 
 nautilus_undo_manager_begin_transaction (GtkObject *object, const gchar *name)
@@ -222,9 +220,12 @@ nautilus_undo_manager_begin_transaction (GtkObject *object, const gchar *name)
 	NautilusUndoManager *manager;
 	NautilusUndoTransactionInProgress *tip;
 	
-	/* Locate undo manager */
-	manager = gtk_object_get_data (object, NAUTILUS_UNDO_MANAGER_NAME);
-	g_return_val_if_fail (manager != NULL, NULL);
+	/* Locate undo manager. */
+	/* FIXME: We can't get a pointer to the actual undo manager, so this
+	 * needs to work through the CORBA interface to the undo manager.
+	 */
+	manager = nautilus_get_undo_manager (object);
+	g_assert (manager != NULL);
 	
 	/* We aren't handling nested transactions currently */
 	if (manager->details->transaction_in_progress) {
@@ -375,11 +376,17 @@ nautilus_undo_manager_unregister_object (GtkObject *object)
 	GList *list;
 	int index, length;
 
-	success = FALSE;
+	/* FIXME: We can't get a pointer to the actual undo manager, so this
+	 * needs to work through the CORBA interface to the undo manager.
+	 * Also there's no reason to assume that this object will have the
+	 * right one.
+	 */
+	manager = nautilus_get_undo_manager (object);
+	if (manager == NULL) {
+		return FALSE;
+	}
 
-	/* Locate undo manager */
-	manager = gtk_object_get_data (object, NAUTILUS_UNDO_MANAGER_NAME);
-	g_return_val_if_fail (manager != NULL, success);
+	success = FALSE;
 
 	/* Check undo list */
 	length = g_list_length (manager->details->undo_list);
@@ -630,4 +637,90 @@ prune_undo_manager_list (GList *list, gint items)
 	}
 
 	return list;
+}
+
+/* FIXME: This should return a Nautilus_Undo_Manager in the long run.
+ * And it's more likely that we'll want this in the transaction code
+ * than in here so it will probably be moved.
+ */
+NautilusUndoManager *
+nautilus_get_undo_manager (GtkObject *start_object)
+{
+	NautilusUndoManager *manager;
+	GtkWidget *parent;
+	GtkWindow *transient_parent;
+
+	if (start_object == NULL) {
+		return NULL;
+	}
+
+	g_return_val_if_fail (GTK_IS_OBJECT (start_object), NULL);
+
+	/* Check for an undo manager right here. */
+	manager = gtk_object_get_data (start_object, "Nautilus undo");
+	if (manager != NULL) {
+		g_assert (NAUTILUS_IS_UNDO_MANAGER (manager));
+		return manager;
+	}
+
+	/* Check for undo manager up the parent chain. */
+	if (GTK_IS_WIDGET (start_object)) {
+		parent = GTK_WIDGET (start_object)->parent;
+		if (parent != NULL) {
+			manager = nautilus_get_undo_manager (GTK_OBJECT (parent));
+			if (manager != NULL) {
+				return manager;
+			}
+		}
+
+		/* Check for undo manager in our window's parent. */
+		if (GTK_IS_WINDOW (start_object)) {
+			transient_parent = GTK_WINDOW (start_object)->transient_parent;
+			manager = nautilus_get_undo_manager (GTK_OBJECT (transient_parent));
+			if (manager != NULL) {
+				return manager;
+			}
+		}
+	}
+
+	/* In the case of a canvas item, try the canvas. */
+	if (GNOME_IS_CANVAS_ITEM (start_object)) {
+		manager = nautilus_get_undo_manager (GTK_OBJECT (GNOME_CANVAS_ITEM (start_object)->canvas));
+		if (manager != NULL) {
+			return manager;
+		}
+	}
+		
+	/* Found nothing. I can live with that. */
+	return NULL;
+}
+
+void
+nautilus_attach_undo_manager (GtkObject *object,
+			      NautilusUndoManager *manager)
+{
+	g_return_if_fail (GTK_IS_OBJECT (object));
+
+	if (manager == NULL) {
+		gtk_object_remove_data (object, "Nautilus undo");
+	}
+
+	g_return_if_fail (NAUTILUS_IS_UNDO_MANAGER (manager));
+
+	bonobo_object_ref (BONOBO_OBJECT (manager));
+	gtk_object_set_data_full
+		(object, "Nautilus undo",
+		 manager, (GtkDestroyNotify) bonobo_object_unref);
+}
+
+/* This is useful because nautilus_get_undo_manager will be
+ * private one day.
+ */
+void
+nautilus_share_undo_manager (GtkObject *destination_object,
+			     GtkObject *source_object)
+{
+	nautilus_attach_undo_manager
+		(destination_object,
+		 nautilus_get_undo_manager (source_object));
 }

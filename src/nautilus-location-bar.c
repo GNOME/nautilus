@@ -282,12 +282,11 @@ nautilus_location_bar_set_location (NautilusLocationBar *bar,
  */
 void
 nautilus_location_bar_enable_undo (NautilusLocationBar *bar,
-				    NautilusUndoManager *manager,
-				    gboolean value)
+				   gboolean value)
 {
 	g_return_if_fail (NAUTILUS_IS_LOCATION_BAR (bar));
 
-	nautilus_entry_enable_undo ( NAUTILUS_ENTRY (bar->entry), manager, value);	
+	nautilus_entry_enable_undo (NAUTILUS_ENTRY (bar->entry), value);	
 }
 
 

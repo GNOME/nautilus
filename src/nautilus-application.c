@@ -44,9 +44,6 @@ typedef struct {
 static Nautilus_ViewWindowList *
 impl_Nautilus_Application__get_view_windows(impl_POA_Nautilus_Application* servant,
                                             CORBA_Environment * ev);
-static Nautilus_Undo_Manager
-impl_Nautilus_Application__get_undo_manager(impl_POA_Nautilus_Application* servant,
-                                            CORBA_Environment * ev);
 static Nautilus_ViewWindow
 impl_Nautilus_Application_new_view_window(impl_POA_Nautilus_Application *servant,
                                           CORBA_Environment * ev);
@@ -62,7 +59,6 @@ impl_Nautilus_Application_create_object(impl_POA_Nautilus_Application *servant,
 static POA_Nautilus_Application__epv impl_Nautilus_Application_epv = {
 	NULL,			/* _private */
 	(gpointer) &impl_Nautilus_Application__get_view_windows,
-	(gpointer) &impl_Nautilus_Application__get_undo_manager,
 	(gpointer) &impl_Nautilus_Application_new_view_window
 
 };
@@ -112,14 +108,6 @@ impl_Nautilus_Application__get_view_windows(impl_POA_Nautilus_Application *serva
 	CORBA_sequence_set_release(retval, CORBA_TRUE);
 
 	return retval;
-}
-
-
-static Nautilus_Undo_Manager
-impl_Nautilus_Application__get_undo_manager(impl_POA_Nautilus_Application *servant,
-                                            CORBA_Environment * ev)
-{
-	return CORBA_Object_duplicate(bonobo_object_corba_objref(servant->app->undo_manager), ev);
 }
 
 
@@ -261,10 +249,6 @@ nautilus_app_init (NautilusApp *app)
 	/* Init undo manager */
 	app->undo_manager = BONOBO_OBJECT (nautilus_undo_manager_new ());
 
-	/* Add undo manager to the app */	
-	g_assert (app->undo_manager);
-	gtk_object_set_data (GTK_OBJECT (app), "NautilusUndoManager", app->undo_manager);
-
 	CORBA_exception_free(&ev);
 }
 
@@ -275,7 +259,7 @@ nautilus_app_new (void)
 }
 
 static void
-nautilus_app_destroy(GtkObject *object)
+nautilus_app_destroy (GtkObject *object)
 {
 	/*
 	 * Shutdown preferences.  This is needed so that the global preferences
@@ -286,7 +270,7 @@ nautilus_app_destroy(GtkObject *object)
 	 */
 	nautilus_global_preferences_shutdown ();
 
-	nautilus_bookmarks_exiting (object);
+	nautilus_bookmarks_exiting ();
 	GTK_OBJECT_CLASS(app_parent_class)->destroy(object);
 }
 

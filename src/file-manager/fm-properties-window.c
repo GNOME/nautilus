@@ -577,7 +577,7 @@ create_basic_page (GtkNotebook *notebook, NautilusFile *file)
         gtk_widget_grab_focus (GTK_WIDGET (name_field));
 
         /* Enable undo in name field */
-        nautilus_entry_enable_undo (NAUTILUS_ENTRY(name_field), NULL, FALSE);
+        nautilus_entry_enable_undo (NAUTILUS_ENTRY(name_field), FALSE);
         nautilus_entry_enable_undo_key (NAUTILUS_ENTRY(name_field), FALSE);
                       			    
 	/* React to name changes from elsewhere. */

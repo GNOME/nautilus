@@ -60,7 +60,6 @@ GtkWidget* nautilus_location_bar_new          	(void);
 void       nautilus_location_bar_set_location 	(NautilusLocationBar *bar,
 					       	 const char          *location);
 void	   nautilus_location_bar_enable_undo  	(NautilusLocationBar *bar,
-				    		 NautilusUndoManager *manager,
 				    		 gboolean value);
 
 

@@ -1,3 +1,58 @@
+2000-05-18  Darin Adler  <darin@eazel.com>
+
+	* HACKING: Change format to make popt "pop" out more.
+	
+	* libnautilus-extensions/nautilus-entry.h:
+	* src/file-manager/fm-properties-window.c: (create_basic_page):
+	* src/nautilus-bookmarks-window.c: (on_text_field_focus_in_event),
+	(on_window_delete_event):
+	* src/nautilus-location-bar.c: (nautilus_location_bar_enable_undo):
+	* src/nautilus-location-bar.h:
+	* src/nautilus-window-menus.c: (edit_menu_undo_callback),
+	(bookmarks_menu_add_bookmark_callback),
+	(bookmarks_menu_edit_bookmarks_callback),
+	(get_or_create_bookmarks_window), (nautilus_bookmarks_exiting),
+	(edit_bookmarks), (nautilus_window_initialize_menus),
+	(update_undo_menu_item):
+	* src/ntl-app.c: (nautilus_app_init), (nautilus_app_destroy):
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_start_renaming_selected_item):
+	* libnautilus-extensions/nautilus-entry.c:
+	(nautilus_entry_key_press), (nautilus_entry_enable_undo):
+	* libnautilus/nautilus-undo-manager.c:
+	(nautilus_undo_manager_begin_transaction),
+	(nautilus_undo_manager_unregister_object),
+	(prune_undo_manager_list), (nautilus_get_undo_manager),
+	(nautilus_attach_undo_manager), (nautilus_share_undo_manager):
+	* libnautilus/nautilus-undo-manager.h:
+	* src/ntl-window-private.h:
+	* src/ntl-window.c: (nautilus_window_constructed),
+	(nautilus_window_real_set_content_view),
+	(nautilus_window_get_undo_manager):
+	* src/ntl-window.h:
+	Got rid of the undo manager parameter for the enable_undo
+	operation.
+	Eliminated code that sets up the undo manager except for the top
+	widgets. We only need it attached to windows and to the top widget
+	in each component.
+	Change callers to get the undo manager in a few simple ways
+	instead of calling gtk_object_get_data directly. Added some calls
+	to attach the undo manager to an arbitrary object.
+	
+	* libnautilus/nautilus-undo.idl: Added comments to the IDL and
+	also added the Undo::Context class.
+	
+	* libnautilus/nautilus-view-component.idl: Removed the dependency
+	on the undo IDL and the undo_manager attribute.
+	
+	* src/nautilus-bookmarks-window.h:
+	* src/nautilus-bookmarks-window.c: (create_bookmarks_window):
+	Changed interface to take object to inherit the undo manager from
+	instead of the undo manager itself. Got rid of unnecesary undo
+	manager setting.
+	(nautilus_bookmarks_window_save_geometry): Also changed interface
+	to use GtkWindow instead of GtkWidget.
+	
 2000-05-18  John Sullivan  <sullivan@eazel.com>
 
 	Added the ability to switch sort order in Icons view. Note

@@ -36,6 +36,8 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
+#include <libnautilus/nautilus-undo-manager.h>
+
 static void nautilus_entry_initialize 	    (NautilusEntry 	*entry);
 static void nautilus_entry_initialize_class (NautilusEntryClass *class);
 static void nautilus_entry_destroy	    (GtkObject 		*object);	
@@ -120,10 +122,7 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 		case 'z':
 			if (event->state & GDK_CONTROL_MASK && entry->use_undo == TRUE
 			    && entry->handle_undo_key == TRUE) {
-			    	NautilusUndoManager *undo_manager;
-			    	undo_manager = gtk_object_get_data ( GTK_OBJECT (entry), NAUTILUS_UNDO_MANAGER_NAME);
-				g_assert (undo_manager);
-				nautilus_undo_manager_undo (undo_manager);
+				nautilus_undo_manager_undo (nautilus_get_undo_manager (GTK_OBJECT (widget)));
 				return FALSE;
 			}
 			break;
@@ -273,7 +272,7 @@ restore_from_undo_snapshot_callback (NautilusUndoable *undoable)
  * Enable undo mechanism in entry item. 
  */
 void 
-nautilus_entry_enable_undo (NautilusEntry *entry, NautilusUndoManager *manager, gboolean value)
+nautilus_entry_enable_undo (NautilusEntry *entry, gboolean value)
 {
 	g_assert (entry);
 	g_assert (NAUTILUS_IS_ENTRY (entry));
@@ -282,12 +281,8 @@ nautilus_entry_enable_undo (NautilusEntry *entry, NautilusUndoManager *manager, 
 	entry->use_undo = value;
 
 	if (!entry->undo_registered) {		
-		gtk_object_set_data ( GTK_OBJECT(entry), NAUTILUS_UNDO_MANAGER_NAME, manager);
-		
 		/* Get copy of entry text */
-		if (entry->undo_text != NULL) {
-			g_free (entry->undo_text);
-		}
+		g_free (entry->undo_text);
 		entry->undo_text = g_strdup (gtk_entry_get_text (GTK_ENTRY(entry)));
 	}
 }

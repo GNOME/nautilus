@@ -369,16 +369,16 @@ nautilus_window_constructed (NautilusWindow *window)
   	app = GNOME_APP(window);
 
 	/* Set up undo manager */
-	undo_manager = gtk_object_get_data ( GTK_OBJECT(window->app), "NautilusUndoManager");
-	g_assert (undo_manager);
-	gtk_object_set_data ( GTK_OBJECT(window), "NautilusUndoManager", undo_manager);
+	undo_manager = nautilus_window_get_undo_manager (window);
+	g_assert (undo_manager != NULL);
+	nautilus_attach_undo_manager (GTK_OBJECT (window), undo_manager);
 
 	/* set up location bar */
 	location_bar_box = gtk_hbox_new(FALSE, GNOME_PAD);
 	gtk_container_set_border_width(GTK_CONTAINER(location_bar_box), GNOME_PAD_SMALL);
 
 	window->ent_uri = nautilus_location_bar_new();	
-	nautilus_location_bar_enable_undo ( NAUTILUS_LOCATION_BAR (window->ent_uri), undo_manager, TRUE);
+	nautilus_location_bar_enable_undo (NAUTILUS_LOCATION_BAR (window->ent_uri), TRUE);
 	
 	gtk_signal_connect(GTK_OBJECT(window->ent_uri), "location_changed",
                      nautilus_window_goto_uri_cb, window);
@@ -1069,4 +1069,10 @@ nautilus_window_real_set_content_view (NautilusWindow *window, NautilusView *new
       
   gtk_widget_queue_resize(window->content_hbox);
   window->content_view = new_view;
+}
+
+NautilusUndoManager *
+nautilus_window_get_undo_manager (NautilusWindow *window)
+{
+  return NAUTILUS_UNDO_MANAGER (NAUTILUS_APP (window->app)->undo_manager);
 }
