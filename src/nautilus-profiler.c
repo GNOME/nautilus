@@ -49,7 +49,7 @@
 extern void profile_on (void);
 extern void profile_off (void);
 extern void profile_reset (void);
-extern void profile_dump (const char *file_name);
+extern void profile_dump (const char *file_name, gboolean);
 
 void
 nautilus_profiler_bonobo_ui_reset_callback (BonoboUIComponent *component, 
@@ -188,6 +188,8 @@ dump_dialog_new (const char *title)
 	main_box = gtk_vbox_new (FALSE, 0);
 	dump_dialog->scrolled_text = scrolled_text_new ();
 	gtk_text_set_editable (GTK_TEXT (dump_dialog->scrolled_text->text), FALSE);
+	gtk_text_set_word_wrap (GTK_TEXT (dump_dialog->scrolled_text->text), FALSE);
+	gtk_text_set_line_wrap (GTK_TEXT (dump_dialog->scrolled_text->text), FALSE);
 
 	print_button = gtk_button_new_with_label ("Print");
 	save_button = gtk_button_new_with_label ("Save");
@@ -240,6 +242,11 @@ dump_dialog_show (const char *dump_data, const char *title)
 
 	gtk_text_freeze (GTK_TEXT (dump_dialog->scrolled_text->text));
 
+	/* delete existing text in buffer */
+	gtk_text_set_point (GTK_TEXT (dump_dialog->scrolled_text->text), 0);
+	gtk_text_forward_delete (GTK_TEXT (dump_dialog->scrolled_text->text), 
+		gtk_text_get_length(GTK_TEXT (dump_dialog->scrolled_text->text)));
+	
 	gtk_text_insert (GTK_TEXT (dump_dialog->scrolled_text->text),
 			 font,
 			 NULL,
@@ -285,7 +292,7 @@ nautilus_profiler_bonobo_ui_report_callback (BonoboUIComponent *component,
 
 	widget_set_busy_cursor (window);
 
-	profile_dump (dump_file_name);
+	profile_dump (dump_file_name, TRUE);
 
 	uri = g_strdup_printf ("file://%s", dump_file_name);
 	
