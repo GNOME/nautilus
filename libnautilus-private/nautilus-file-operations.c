@@ -1562,6 +1562,8 @@ handle_transfer_duplicate (GnomeVFSXferProgressInfo *progress_info,
 			(progress_info->duplicate_name,
 			 progress_info->duplicate_count);
 		break;
+	default:
+		break;
 		/* For all other cases we use the name as-is. */
 	}
 

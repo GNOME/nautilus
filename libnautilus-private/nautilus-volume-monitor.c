@@ -892,6 +892,8 @@ mount_volume_deactivate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 			pthread_create (&eject_thread, NULL, eject_device, g_strdup (volume->device_path));
 		}
 		break;
+	default:
+		break;
 	}
 
 	g_signal_emit (monitor,

@@ -8,7 +8,8 @@
 	(nautilus_icon_container_get_drop_action):
 	* libnautilus-private/nautilus-volume-monitor.c
 	(mount_volume_deactivate):
-	remove empty default: label to fix warning on gcc 3.
+	add break; statement to empty default: labels to fix warning
+	on gcc 3.
 	* libnautilus-private/nautilus-icon-container.c (clear_drag_state):
 	fix typo.
 
