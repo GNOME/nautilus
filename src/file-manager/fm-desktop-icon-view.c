@@ -1351,11 +1351,7 @@ real_update_menus (FMDirectoryView *view)
 		 DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL,
 		 !include_empty_trash);
 	if (include_empty_trash) {
-		if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH)) {
-			label = g_strdup (_("Empty Trash..."));
-		} else {
-			label = g_strdup (_("Empty Trash"));
-		}
+		label = g_strdup (_("Empty Trash"));
 		nautilus_bonobo_set_label
 			(desktop_view->details->ui, 
 			 DESKTOP_COMMAND_EMPTY_TRASH_CONDITIONAL,

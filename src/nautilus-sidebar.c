@@ -1487,9 +1487,7 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 	 * need a framework to allow protocols to add commands buttons */
 	if (eel_istr_has_prefix (sidebar->details->uri, "trash:")) {
 		/* FIXME: We don't use spaces to pad labels! */
-		temp_button = gtk_button_new_with_mnemonic (confirm_trash_auto_value 
-							 ? _("_Empty Trash...") 
-							 : _("_Empty Trash"));
+		temp_button = gtk_button_new_with_mnemonic (_("_Empty Trash"));
 
 		gtk_box_pack_start (GTK_BOX (sidebar->details->button_box), 
 					temp_button, FALSE, FALSE, 0);
