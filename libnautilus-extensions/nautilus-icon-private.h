@@ -197,7 +197,8 @@ void          nautilus_icon_container_move_icon                   (NautilusIconC
 								   int                    y,
 								   double                 scale_x,
 								   double                 scale_y,
-								   gboolean               raise);
+								   gboolean               raise,
+								   gboolean		  update_position);
 void          nautilus_icon_container_select_list_unselect_others (NautilusIconContainer *container,
 								   GList                 *icons);
 char *        nautilus_icon_container_get_icon_uri                (NautilusIconContainer *container,

@@ -242,7 +242,8 @@ icon_get_size (NautilusIconContainer *container,
 static void
 icon_set_size (NautilusIconContainer *container,
 	       NautilusIcon *icon,
-	       guint icon_size)
+	       guint icon_size,
+	       gboolean update_position)
 {
 	guint old_size_x, old_size_y;
 	double scale;
@@ -258,7 +259,7 @@ icon_set_size (NautilusIconContainer *container,
 	nautilus_icon_container_move_icon (container, icon,
 					   icon->x, icon->y,
 					   scale, scale,
-					   FALSE);
+					   FALSE, update_position);
 }
 
 static void
@@ -1055,7 +1056,8 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 				   NautilusIcon *icon,
 				   int x, int y,
 				   double scale_x, double scale_y,
-				   gboolean raise)
+				   gboolean raise,
+				   gboolean update_position)
 {
 	NautilusIconContainerDetails *details;
 	gboolean emit_signal;
@@ -1068,7 +1070,7 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 	if (!details->auto_layout) {
 		if (x != icon->x || y != icon->y) {
 			icon_set_position (icon, x, y);
-			emit_signal = TRUE;
+			emit_signal = update_position;
 		}
 	}
 	
@@ -1076,8 +1078,11 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 		icon->scale_x = scale_x;
 		icon->scale_y = scale_y;
 		nautilus_icon_container_update_icon (container, icon);
-		relayout (container);
-		emit_signal = TRUE;
+		if (update_position) {
+			relayout (container); 
+			emit_signal = TRUE;
+		}
+
 	}
 	
 	if (emit_signal) {
@@ -2269,7 +2274,8 @@ start_stretching (NautilusIconContainer *container)
 
 static void
 continue_stretching (NautilusIconContainer *container,
-		     int window_x, int window_y)
+		     int window_x, int window_y,
+		     gboolean update_position)
 {
 	NautilusIconContainerDetails *details;
 	NautilusIcon *icon;
@@ -2298,7 +2304,7 @@ continue_stretching (NautilusIconContainer *container,
 			  &world_x, &world_y);
 
 	icon_set_position (icon, world_x, world_y);
-	icon_set_size (container, icon, stretch_state.icon_size);
+	icon_set_size (container, icon, stretch_state.icon_size, update_position);
 }
 
 static void
@@ -2312,11 +2318,25 @@ static void
 end_stretching (NautilusIconContainer *container,
 		int window_x, int window_y)
 {
-	continue_stretching (container, window_x, window_y);
+	NautilusIconPosition position;
+	NautilusIcon *icon;
+	
+	continue_stretching (container, window_x, window_y, FALSE);
 	ungrab_stretch_icon (container);
 
+	/* now that we're done stretching, update the icon's position */
+	icon = container->details->drag_icon;	
+	position.x = icon->x;
+	position.y = icon->y;
+	position.scale_x = icon->scale_x;
+	position.scale_y = icon->scale_y;
+	gtk_signal_emit (GTK_OBJECT (container),
+			 signals[ICON_POSITION_CHANGED],
+			 icon->data, &position);
+	
 	/* We must do a relayout after indicating we are done stretching. */
 	container->details->drag_icon = NULL;
+	container->details->drag_state = DRAG_STATE_INITIAL;
 	relayout (container);
 }
 
@@ -2430,7 +2450,7 @@ motion_notify_event (GtkWidget *widget,
 			}
 			break;
 		case DRAG_STATE_STRETCH:
-			continue_stretching (container, motion->x, motion->y);
+			continue_stretching (container, motion->x, motion->y, FALSE);
 			break;
 		default:
 			break;
@@ -3954,7 +3974,7 @@ nautilus_icon_container_unstretch (NautilusIconContainer *container)
 			nautilus_icon_container_move_icon (container, icon,
 							   icon->x, icon->y,
 							   1.0, 1.0,
-							   FALSE);
+							   FALSE, TRUE);
 		}
 	}
 }

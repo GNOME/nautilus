@@ -47,6 +47,7 @@
 #include "nautilus-graphic-effects.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-icon-factory.h"
+#include "nautilus-theme.h"
 
 /* Comment this out if the new smooth fonts code give you problems
  * This isnt meant to be permanent.  Its just a precaution.
@@ -911,10 +912,10 @@ draw_stretch_handles_aa (NautilusIconCanvasItem *item, GnomeCanvasBuf *buf,
 
 	get_icon_canvas_rectangle (item, &icon_rect);
 
-	knob_filename = nautilus_pixmap_file ("knob.png");
+	knob_filename = nautilus_theme_get_image_path ("knob.png");
 	knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename);
-	knob_width = gdk_pixbuf_get_width (knob_pixbuf) - 6; /* offset to compensate for shadow */
-	knob_height = gdk_pixbuf_get_height (knob_pixbuf) - 6; /* offset to compensate for shadow */
+	knob_width = gdk_pixbuf_get_width (knob_pixbuf);
+	knob_height = gdk_pixbuf_get_height (knob_pixbuf);
 	
 	art_affine_identity(affine);
 	

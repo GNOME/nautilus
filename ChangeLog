@@ -1,3 +1,31 @@
+2000-09-21  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_stretch_handles_aa):
+	
+	fixed bugs 3084, 3119, 3134, icon stretch handles are not drawn
+	in the right place or hit-tested properly, by removing some
+	bogus offsets.
+		
+	fixed bugs 764 and 2626, icon stretching is way too slow, by only
+	doing the relayout and update position when the stretching is
+	finished, instead of doing it every time the mouse moves during
+	the stretch.  Also, made it relayout if necessary after stretching
+	is finished, like it was intending to do.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(icon_set_size), (nautilus_icon_container_move_icon),
+	(continue_stretching), (end_stretching), (motion_notify_event),
+	(nautilus_icon_container_unstretch):
+	passed an "update_position" parameter through the various levels
+	to control if it should issue the icon_position_changed signal and
+	attempt the relayout
+	
+	* libnautilus-extensions/nautilus-icon-dnd.c: (handle_local_move):
+	passed TRUE for the new update_position parameter to the move_icon call.
+	* libnautilus-extensions/nautilus-icon-private.h:
+	added an update position parameter to the move_icon call.
+	
 2000-09-21  Josh Barrow  <linuxfan@ionet.net>
 
 	* icons/gnome/gnome.xml:
