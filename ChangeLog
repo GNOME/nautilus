@@ -1,3 +1,14 @@
+2000-09-25  John Sullivan  <sullivan@eazel.com>
+
+	Band-aid for bug 2752 (intermittent failure trying to
+	use Help Contents)
+
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_load_client): Upped a hardcoded
+	timeout from 2 seconds to 10 seconds; also added an
+	assert that might help us fix the underlying problem
+	later.
+
 2000-09-25  Darin Adler  <darin@eazel.com>
 
 	Fixed bug bug 3264 (Tree view shows no branches for directories,

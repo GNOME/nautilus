@@ -440,6 +440,7 @@ check_if_view_is_gone (gpointer data)
 	CORBA_exception_init (&ev);
 	ok = TRUE;
 	if (CORBA_Object_non_existent (bonobo_object_corba_objref (BONOBO_OBJECT (view->client_object)), &ev)) {
+
 		/* FIXME bugzilla.eazel.com 1840: Is a destroy really sufficient here? Who does the unref? 
 		 * See bug 1840 for one bad case this destroy is involved in.
 		 */
@@ -490,8 +491,12 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 
 	nautilus_view_frame_destroy_client (view);
 
+	CORBA_exception_init (&ev);
+
 	/* Store the object away. */
 	view->client_object = bonobo_object_client_from_corba (adapted);
+	g_assert (!CORBA_Object_non_existent (adapted, &ev));
+
 
 	/* Get at our client's interfaces. */
 	control = bonobo_object_query_interface
@@ -502,8 +507,6 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 		(BONOBO_OBJECT (view->client_object), 
 		 "IDL:Nautilus/Zoomable:1.0");
 	
-	CORBA_exception_init (&ev);
-
 	/* Start with a view frame interface. */
 	view->view_frame = impl_Nautilus_ViewFrame__create (view, &ev);
 
@@ -549,11 +552,11 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 	CORBA_exception_free (&ev);
 
 	/* FIXME bugzilla.eazel.com 2456: 
-	 * Is a hard-coded 2-second timeout acceptable? 
+	 * Is a hard-coded timeout acceptable? 
 	 */
 	g_assert (view->details->check_if_view_is_gone_timeout_id == 0);
 	view->details->check_if_view_is_gone_timeout_id
-		= g_timeout_add (2000, check_if_view_is_gone, view);
+		= g_timeout_add (10000, check_if_view_is_gone, view);
 
 	view->details->state = VIEW_FRAME_NO_LOCATION;
 	return TRUE;
