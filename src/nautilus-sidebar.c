@@ -28,6 +28,7 @@
 #include "ntl-index-panel.h"
 
 #include <math.h>
+#include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -172,7 +173,7 @@ nautilus_index_panel_initialize (GtkObject *object)
 	gtk_widget_show (GTK_WIDGET (index_panel->details->title));
 	gtk_box_pack_start (GTK_BOX (index_panel->details->container),
 			    GTK_WIDGET (index_panel->details->title),
-			    FALSE, FALSE, 0);
+			    FALSE, FALSE, GNOME_PAD);
 	
 	/* first, allocate the index tabs */
 	index_panel->details->index_tabs = NAUTILUS_INDEX_TABS (nautilus_index_tabs_new ());
