@@ -801,6 +801,7 @@ nautilus_scalable_font_measure_text_lines (const NautilusScalableFont	*font,
 					   guint                        font_height,
 					   const char                  *text,
 					   guint			num_text_lines,
+					   double			empty_line_height,
 					   guint                        text_line_widths[],
 					   guint                        text_line_heights[],
 					   guint                       *max_width_out,
@@ -851,7 +852,7 @@ nautilus_scalable_font_measure_text_lines (const NautilusScalableFont	*font,
 		/* Deal with empty lines */
 		if (length == 0) {
 			text_line_widths[i] = 0;
-			text_line_heights[i] = font_height;
+			text_line_heights[i] = empty_line_height;
 		}
 		else {
 			nautilus_scalable_font_measure_text (font,
@@ -896,6 +897,7 @@ nautilus_scalable_font_draw_text_lines_with_dimensions (const NautilusScalableFo
 							const guint                 *text_line_heights,
 							GtkJustification             justification,
 							guint                        line_offset,
+							double			     empty_line_height,
 							guint32                      color,
 							guchar                       overall_alpha)
 {
@@ -948,7 +950,7 @@ nautilus_scalable_font_draw_text_lines_with_dimensions (const NautilusScalableFo
 		
 		/* Deal with empty lines */
 		if (length == 0) {
-			y += font_height;
+			y += (line_offset + text_line_heights[i]);
 		}
 		else {
 			int text_x;
@@ -1015,6 +1017,7 @@ nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
 					const char                  *text,
 					GtkJustification             justification,
 					guint                        line_offset,
+					double			     empty_line_height,
 					guint32                      color,
 					guchar                       overall_alpha)
 {
@@ -1049,6 +1052,7 @@ nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
 						   font_height,
 						   text,
 						   num_text_lines,
+						   empty_line_height,
 						   text_line_widths,
 						   text_line_heights,
 						   NULL,
@@ -1067,6 +1071,7 @@ nautilus_scalable_font_draw_text_lines (const NautilusScalableFont  *font,
 								text_line_heights,
 								justification,
 								line_offset,
+								empty_line_height,
 								color,
 								overall_alpha);
 	

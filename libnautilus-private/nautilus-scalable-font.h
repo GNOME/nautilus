@@ -105,6 +105,7 @@ void                   nautilus_scalable_font_measure_text_lines              (c
 									       guint                        font_height,
 									       const char                  *text,
 									       guint                        num_text_lines,
+									       double			    empty_line_height,
 									       guint                        text_line_widths[],
 									       guint                        text_line_heights[],
 									       guint                       *max_width_out,
@@ -122,6 +123,7 @@ void                   nautilus_scalable_font_draw_text_lines_with_dimensions (c
 									       const guint                 *text_line_heights,
 									       GtkJustification             justification,
 									       guint                        line_offset,
+									       double			    empty_line_height,
 									       guint32                      color,
 									       guchar                       overall_alpha);
 void                   nautilus_scalable_font_draw_text_lines                 (const NautilusScalableFont  *font,
@@ -134,6 +136,7 @@ void                   nautilus_scalable_font_draw_text_lines                 (c
 									       const char                  *text,
 									       GtkJustification             justification,
 									       guint                        line_offset,
+									       double			    empty_line_height,
 									       guint32                      color,
 									       guchar                       overall_alpha);
 guint                  nautilus_scalable_font_largest_fitting_font_size       (const NautilusScalableFont  *font,

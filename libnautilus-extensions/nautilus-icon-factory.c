@@ -2232,7 +2232,9 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 		GdkPixbuf		*pixbuf_with_text = NULL;
 		NautilusScalableFont	*font;
 		const guint		font_size = 9;
-		
+		const guint		line_offset = 1;
+		const guint		empty_line_height = font_size / 2;
+
 		/* Quick out for the case where there's no place to embed the
 		 * text or the place is too small or there's no text.
 		 */
@@ -2256,7 +2258,8 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 							font_size,
 							text,
 							GTK_JUSTIFY_LEFT,
-							1,
+							line_offset,
+							empty_line_height,
 							NAUTILUS_RGB_COLOR_BLACK,
 							255);
 		

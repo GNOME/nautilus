@@ -69,28 +69,29 @@ struct _NautilusLabelDetail
 };
 
 /* GtkObjectClass methods */
-static void nautilus_label_initialize_class (NautilusLabelClass     *label_class);
-static void nautilus_label_initialize       (NautilusLabel          *label);
-static void nautilus_label_destroy          (GtkObject              *object);
-static void nautilus_label_set_arg          (GtkObject              *object,
-					     GtkArg                 *arg,
-					     guint                   arg_id);
-static void nautilus_label_get_arg          (GtkObject              *object,
-					     GtkArg                 *arg,
-					     guint                   arg_id);
-
+static void  nautilus_label_initialize_class             (NautilusLabelClass     *label_class);
+static void  nautilus_label_initialize                   (NautilusLabel          *label);
+static void  nautilus_label_destroy                      (GtkObject              *object);
+static void  nautilus_label_set_arg                      (GtkObject              *object,
+							  GtkArg                 *arg,
+							  guint                   arg_id);
+static void  nautilus_label_get_arg                      (GtkObject              *object,
+							  GtkArg                 *arg,
+							  guint                   arg_id);
 /* GtkWidgetClass methods */
-static void nautilus_label_size_request     (GtkWidget              *widget,
-					     GtkRequisition         *requisition);
-
+static void  nautilus_label_size_request                 (GtkWidget              *widget,
+							  GtkRequisition         *requisition);
 /* NautilusBufferedWidgetClass methods */
-static void render_buffer_pixbuf            (NautilusBufferedWidget	*buffered_widget,
-					     GdkPixbuf			*buffer,
-					     int			horizontal_offset,
-					     int			vertical_offset);
+static void  render_buffer_pixbuf                        (NautilusBufferedWidget *buffered_widget,
+							  GdkPixbuf              *buffer,
+							  int                     horizontal_offset,
+							  int                     vertical_offset);
 
 /* Private NautilusLabel things */
-static void label_recompute_line_geometries (NautilusLabel          *label);
+static void  label_recompute_line_geometries             (NautilusLabel          *label);
+static guint label_get_empty_line_height                 (NautilusLabel          *label);
+static guint label_get_total_text_and_line_offset_height (NautilusLabel          *label);
+
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusLabel, nautilus_label, NAUTILUS_TYPE_BUFFERED_WIDGET)
@@ -283,9 +284,7 @@ nautilus_label_size_request (GtkWidget		*widget,
 
 	if (label->detail->num_text_lines > 0) {
 		text_width = label->detail->max_text_line_width;
-		text_height = label->detail->total_text_line_height;
-
-		text_height += ((label->detail->num_text_lines - 1) * label->detail->line_offset);
+		text_height = label_get_total_text_and_line_offset_height (label);
 
 		text_width += label->detail->drop_shadow_offset;
 		text_height += label->detail->drop_shadow_offset;
@@ -298,7 +297,7 @@ nautilus_label_size_request (GtkWidget		*widget,
    	requisition->height += misc->ypad * 2;
 }
 
-/* Private NautilusLabel things */
+/* NautilusBufferedWidgetClass methods */
 static void
 render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 		      GdkPixbuf			*buffer,
@@ -308,11 +307,8 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 	NautilusLabel	*label;
 	GtkWidget	*widget;
 	ArtIRect	clip_area;
-	guint		total_text_width;
-	guint		total_text_height;
 	int		text_x;
 	int		text_y;
-	
 
 	g_return_if_fail (NAUTILUS_IS_LABEL (buffered_widget));
 	g_return_if_fail (buffer != NULL);
@@ -325,23 +321,18 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 
 	widget = GTK_WIDGET (buffered_widget);
 	
-	total_text_width = label->detail->max_text_line_width;
-	total_text_height = label->detail->total_text_line_height;
-	total_text_height += ((label->detail->num_text_lines - 1) * label->detail->line_offset);
-
-
-	if (total_text_width <= widget->allocation.width) {
-		clip_area.x0 = ((int) widget->allocation.width - (int) total_text_width) / 2;
+	if (label->detail->max_text_line_width <= widget->allocation.width) {
+		clip_area.x0 = ((int) widget->allocation.width - (int) label->detail->max_text_line_width) / 2;
 	}
 	else {
-		clip_area.x0 = - ((int) total_text_width - (int) widget->allocation.width) / 2;
+		clip_area.x0 = - ((int) label->detail->max_text_line_width - (int) widget->allocation.width) / 2;
 	}
 	
-	if (total_text_height <= widget->allocation.height) {
-		clip_area.y0 = ((int) widget->allocation.height - (int) total_text_height) / 2;
+	if (label->detail->total_text_line_height <= widget->allocation.height) {
+		clip_area.y0 = ((int) widget->allocation.height - (int) label->detail->total_text_line_height) / 2;
 	}
 	else {
-		clip_area.y0 = - ((int) total_text_height - (int) widget->allocation.height) / 2;
+		clip_area.y0 = - ((int) label->detail->total_text_line_height - (int) widget->allocation.height) / 2;
 	}
 
 	clip_area.x0 = 0;
@@ -370,6 +361,7 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 										label->detail->text_line_heights,
 										label->detail->text_justification,
 										label->detail->line_offset,
+										label_get_empty_line_height (label),
 										label->detail->drop_shadow_color,
 										label->detail->text_alpha);
 
@@ -390,12 +382,39 @@ render_buffer_pixbuf (NautilusBufferedWidget	*buffered_widget,
 									label->detail->text_line_heights,
 									label->detail->text_justification,
 									label->detail->line_offset,
+									label_get_empty_line_height (label),
 									label->detail->text_color,
 									label->detail->text_alpha);
 	}
 }
 
 /* Private NautilusLabel things */
+static guint
+label_get_empty_line_height (NautilusLabel *label)
+{
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
+
+	/* If we wanted to crunch lines together, we could add a multiplier
+	 * here.  For now we just use the font size for empty lines. */
+	return label->detail->font_size;
+}
+
+static guint
+label_get_total_text_and_line_offset_height (NautilusLabel *label)
+{
+	guint total_height;
+
+	g_return_val_if_fail (NAUTILUS_IS_LABEL (label), 0);
+
+	total_height = label->detail->total_text_line_height;
+	
+	if (label->detail->num_text_lines > 1) {
+		total_height += ((label->detail->num_text_lines - 1) * label->detail->line_offset);
+	}
+
+	return total_height;
+}
+
 static void
 label_recompute_line_geometries (NautilusLabel *label)
 {
@@ -422,6 +441,7 @@ label_recompute_line_geometries (NautilusLabel *label)
 							   label->detail->font_size,
 							   label->detail->text,
 							   label->detail->num_text_lines,
+							   label_get_empty_line_height (label),
 							   label->detail->text_line_widths,
 							   label->detail->text_line_heights,
 							   &label->detail->max_text_line_width,

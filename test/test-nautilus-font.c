@@ -20,22 +20,143 @@
 #include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-string.h>
 
+#include <libart_lgpl/art_vpath.h>
+#include <libart_lgpl/art_svp.h>
+#include <libart_lgpl/art_svp_vpath_stroke.h>
+#include <libart_lgpl/art_rgb_svp.h>
+#include <libart_lgpl/art_svp_vpath.h>
+
+/* FIXME: Need to account for word endianess in these macros */
+#define ART_OPACITY_NONE 255
+#define ART_OPACITY_FULL 0
+
+/* Pack RGBA values */
+#define ART_RGBA_COLOR_PACK(_r, _g, _b, _a)	\
+( ((_a) << 0) |					\
+  ((_r) << 24) |				\
+  ((_g) << 16) |				\
+  ((_b) <<  8) )
+
+#define ART_RGB_COLOR_PACK(_r, _g, _b)			\
+( (ART_OPACITY_NONE << 0) |					\
+  ((_r) << 24) |				\
+  ((_g) << 16) |				\
+  ((_b) <<  8) )
+
+/* Access the individual RGBA components */
+#define ART_RGBA_GET_R(_color) (((_color) >> 24) & 0xff)
+#define ART_RGBA_GET_G(_color) (((_color) >> 16) & 0xff)
+#define ART_RGBA_GET_B(_color) (((_color) >>  8) & 0xff)
+#define ART_RGBA_GET_A(_color) (((_color) >>  0) & 0xff)
+
+#define RED		ART_RGB_COLOR_PACK (255, 0, 0)
+#define GREEN		ART_RGB_COLOR_PACK (0, 255, 0)
+#define BLUE		ART_RGB_COLOR_PACK (0, 0, 255)
+#define WHITE		ART_RGB_COLOR_PACK (255, 255, 255)
+#define BLACK		ART_RGB_COLOR_PACK (0, 0, 0)
+#define TRANSPARENT	ART_RGB_COLOR_PACK (255, 255, 255)
+
+static void
+gdk_pixbuf_draw_rectangle (GdkPixbuf		*pixbuf,
+			   const ArtIRect	*rectangle,
+			   guint32		color)
+{
+	ArtVpath vpath[6];
+	ArtSVP	 *svp;
+
+	g_return_if_fail (pixbuf != NULL);
+	g_return_if_fail (rectangle != NULL);
+	g_return_if_fail (rectangle->x1 >  rectangle->x0);
+	g_return_if_fail (rectangle->y1 >  rectangle->y0);
+
+	vpath[0].code = ART_MOVETO;
+	vpath[0].x = rectangle->x0;
+	vpath[0].y = rectangle->y0;
+
+	vpath[1].code = ART_LINETO;
+	vpath[1].x = rectangle->x1;
+	vpath[1].y = rectangle->y0;
+
+	vpath[2].code = ART_LINETO;
+	vpath[2].x = rectangle->x1;
+	vpath[2].y = rectangle->y1;
+
+	vpath[3].code = ART_LINETO;
+	vpath[3].x = rectangle->x0;
+	vpath[3].y = rectangle->y1;
+
+	vpath[4].code = ART_LINETO;
+	vpath[4].x = rectangle->x0;
+	vpath[4].y = rectangle->y0;
+
+	vpath[5].code = ART_END;
+
+	svp = art_svp_vpath_stroke (vpath,
+				    ART_PATH_STROKE_JOIN_BEVEL,
+				    ART_PATH_STROKE_CAP_SQUARE,
+				    1.0,
+				    1.0,
+				    1.0);
+
+	art_rgb_svp_alpha (svp,
+			   0,
+			   0,
+			   gdk_pixbuf_get_width (pixbuf),
+			   gdk_pixbuf_get_height (pixbuf),
+			   color,
+			   gdk_pixbuf_get_pixels (pixbuf),
+			   gdk_pixbuf_get_rowstride (pixbuf),
+			   NULL);
+	
+	art_svp_free (svp);
+}
+
+static void
+draw_rectangle_around (GdkPixbuf	*pixbuf,
+		       const ArtIRect	*rectangle,
+		       guint32		color)
+{
+	ArtIRect area;
+
+	g_return_if_fail (pixbuf != NULL);
+	g_return_if_fail (rectangle != NULL);
+	g_return_if_fail (rectangle->x1 >  rectangle->x0);
+	g_return_if_fail (rectangle->y1 >  rectangle->y0);
+
+	area = *rectangle;
+	
+	area.x0 -= 1;
+	area.y0 -= 1;
+	area.x1 += 1;
+	area.y1 += 1;
+	gdk_pixbuf_draw_rectangle (pixbuf, &area, color);
+	area.x0 += 1;
+	area.y0 += 1;
+	area.x1 -= 1;
+	area.y1 -= 1;
+}
+
 int 
 main (int argc, char* argv[])
 {
 	GdkPixbuf		*pixbuf;
 	NautilusScalableFont	*font;
+	GdkRectangle		blue_area;
+	ArtIRect		clip_area;
+	ArtIRect		whole_area;
+	ArtIRect		multi_lines_area;
 
-	const char		*text = "\nLine Two\n\nLine Four\n\n\nLine Seven\n";
-	const guint		font_width = 48;
-	const guint		font_height = 48;
+	const char   *text = "\nLine Two\n\nLine Four\n\n\nLine Seven";
+	const guint  font_width = 48;
+	const guint  font_height = 48;
+	const guint  pixbuf_width = 500;
+	const guint  pixbuf_height = 700;
+	const guint  line_offset = 2;
+	const guint  empty_line_height = font_height;
+	const int    multi_line_x = 10;
+	const int    multi_line_y = 10;
 
-	const guint pixbuf_width = 500;
-	const guint pixbuf_height = 700;
-
-	GdkRectangle blue_area;
-	ArtIRect     clip_area;
-	ArtIRect     whole_area;
+	g_print ("font_height = %d, empty_line_height = %d\n", font_height, empty_line_height);
 
 	gtk_init (&argc, &argv);
 	gdk_rgb_init ();
@@ -43,10 +164,13 @@ main (int argc, char* argv[])
 	font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("Nimbus Sans L", NULL, NULL, NULL));
 	g_assert (font != NULL);
 
-	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, pixbuf_width, pixbuf_height);
+	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, pixbuf_width, pixbuf_height);
 	g_assert (pixbuf != NULL);
 
-	nautilus_gdk_pixbuf_fill_rectangle_with_color (pixbuf, NULL, NAUTILUS_RGBA_COLOR_PACK (255, 255, 255, 0));
+	nautilus_gdk_pixbuf_fill_rectangle_with_color (pixbuf, NULL, TRANSPARENT);
+
+	multi_lines_area.x0 = multi_line_x;
+	multi_lines_area.y0 = multi_line_y;
 
 	/* Measure some text lines */
 	{
@@ -66,15 +190,20 @@ main (int argc, char* argv[])
 							   font_height,
 							   text,
 							   num_text_lines,
+							   empty_line_height,
 							   text_line_widths,
 							   text_line_heights,
 							   &max_width_out,
 							   &total_height_out);
 
+		multi_lines_area.x1 = multi_lines_area.x0 + max_width_out;
+		multi_lines_area.y1 = multi_lines_area.y0 + total_height_out + ((num_text_lines - 1) * line_offset);
+		
 		g_print ("num_text_lines = %d, max_width = %d, total_height = %d\n",
 			 num_text_lines,
 			 max_width_out,
 			 total_height_out);
+
 		
 		g_free (text_line_widths);
 		g_free (text_line_heights);
@@ -85,30 +214,33 @@ main (int argc, char* argv[])
 	blue_area.width = 100;
 	blue_area.height = 30;
 
-	nautilus_gdk_pixbuf_fill_rectangle_with_color (pixbuf, &blue_area, NAUTILUS_RGBA_COLOR_PACK (0, 0, 255, 255));
-	
 	clip_area.x0 = blue_area.x;
 	clip_area.y0 = blue_area.y;
 	clip_area.x1 = blue_area.x + blue_area.width;
 	clip_area.y1 = blue_area.y + blue_area.height;
+	
+	draw_rectangle_around (pixbuf, &clip_area, RED);
 
 	whole_area.x0 = 0;
 	whole_area.y0 = 0;
 	whole_area.x1 = whole_area.x0 + pixbuf_width;
 	whole_area.y1 = whole_area.y0 + pixbuf_height;
 
+	draw_rectangle_around (pixbuf, &multi_lines_area, RED);
+
 	/* Draw some green text clipped by the whole pixbuf area */
 	nautilus_scalable_font_draw_text_lines (font,
 						pixbuf,
-						0,
-						0,
+						multi_line_x,
+						multi_line_y,
 						&whole_area,
 						font_width,
 						font_height,
 						text,
 						GTK_JUSTIFY_LEFT,
-						2,
-						NAUTILUS_RGBA_COLOR_PACK (0, 255, 0, 255),
+						line_offset,
+						empty_line_height,
+						BLUE,
 						255);
 
 	/* Draw some red text clipped by the blue area */
@@ -121,7 +253,7 @@ main (int argc, char* argv[])
 					  font_height,
 					  "Something",
 					  strlen ("Something"),
-					  NAUTILUS_RGBA_COLOR_PACK (255, 0, 0, 255),
+					  GREEN,
 					  255);
 
 	nautilus_gdk_pixbuf_save_to_file (pixbuf, "font_test.png");
@@ -132,3 +264,11 @@ main (int argc, char* argv[])
 
 	return 0;
 }
+
+#if 0
+icon_text_info = nautilus_icon_layout_text (details->smooth_font,
+							    details->smooth_font_size,
+							    text_piece, _(" -_,;.?/&"), 
+							    max_text_width, 
+							    TRUE);
+#endif

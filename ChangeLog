@@ -1,3 +1,30 @@
+2000-09-07  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c: (embed_text):
+	Make the empty line height 1/2 of the font size to cram more stuff
+	into the embedded text.
+	
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_size_request), (render_buffer_pixbuf),
+	(label_get_empty_line_height),
+	(label_get_total_text_and_line_offset_height),
+	(label_recompute_line_geometries):
+	Update for scalable font changes.
+	
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(nautilus_scalable_font_measure_text_lines),
+	(nautilus_scalable_font_draw_text_lines_with_dimensions),
+	(nautilus_scalable_font_draw_text_lines):
+	* libnautilus-extensions/nautilus-scalable-font.h:
+	Add empty_line_height argument to text line measuring and drawing
+	functions.  Use this in both measure and drawing computations.
+		
+	* test/test-nautilus-font.c: (gdk_pixbuf_draw_rectangle),
+	(draw_rectangle_around), (main):
+	Update for scalable font changes.  Also draw a box around area
+	that is being clipped (or measured) to determine whether things
+	work precisely.
+	
 2000-09-07  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/eazel-alt-install-corba.
