@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"POT-Creation-Date: 2000-09-28 20:46+0200\n"
+"POT-Creation-Date: 2000-10-26 09:57+0300\n"
 "PO-Revision-Date: 2000-08-23 16:17+0200\n"
 "Last-Translator: Yuri Syrota <rasta@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -126,10 +126,100 @@ msgstr ""
 msgid " (see also \""
 msgstr ""
 
-#: components/image-viewer/nautilus-image-view.c:698
-#, fuzzy
-msgid "I could not initialize Bonobo"
-msgstr "Не вдалося ╕н╕ц╕ал╕зувати Bonobo"
+#: components/html/gnome-dialogs.c:87
+msgid "Transfer Progress"
+msgstr "Поступ перенесення"
+
+#: components/html/gnome-dialogs.c:141
+#, c-format
+msgid "Looking up %s"
+msgstr ""
+
+#: components/html/gnome-dialogs.c:147
+#, c-format
+msgid "Contacting %s"
+msgstr "З'╓днання..."
+
+#: components/html/gnome-dialogs.c:154
+msgid "Waiting for a connection..."
+msgstr "Оч╕кування на з'╓днання..."
+
+#: components/html/gnome-dialogs.c:158
+msgid "Logging in..."
+msgstr "Ре╓страц╕я..."
+
+#: components/html/gnome-dialogs.c:167
+msgid "Read %d%%%% of %ld"
+msgstr ""
+
+#: components/html/gnome-dialogs.c:177
+#, c-format
+msgid "Read %ld bytes"
+msgstr ""
+
+#: components/html/gnome-dialogs.c:179
+#, c-format
+msgid "Read %d bytes"
+msgstr ""
+
+#: components/html/gnome-dialogs.c:181
+msgid "Reading..."
+msgstr "Зчитування"
+
+#: components/html/gnome-dialogs.c:196
+msgid "Writing %d%%%% of %ld"
+msgstr ""
+
+#: components/html/gnome-dialogs.c:206
+#, c-format
+msgid "Writing %ld bytes"
+msgstr "Запис %ld байт╕в"
+
+#: components/html/gnome-dialogs.c:208
+#, c-format
+msgid "Writing %d bytes"
+msgstr "Запис %d байт╕в"
+
+#: components/html/gnome-dialogs.c:210
+msgid "Writing..."
+msgstr "Запис..."
+
+#: components/html/gnome-dialogs.c:218
+msgid "Done!"
+msgstr "Завершено!"
+
+#: components/html/gnome-dialogs.c:222
+msgid "Interrupted!"
+msgstr ""
+
+#: components/html/gnome-dialogs.c:226
+msgid "Please wait..."
+msgstr "Зачекайте, будь ласка..."
+
+#: components/html/gnome-dialogs.c:230
+msgid "Request timeout!"
+msgstr ""
+
+#: components/html/gnome-dialogs.c:234
+msgid "Unknown"
+msgstr ""
+
+#: components/html/gnome-dialogs.c:277
+msgid "Enter Text"
+msgstr "Введ╕ть текст"
+
+#: components/html/gnome-dialogs.c:318 components/html/gnome-dialogs.c:359
+msgid "Enter Password"
+msgstr "Введ╕ть пароль"
+
+#: components/html/ntl-web-browser.c:620
+#, c-format
+msgid ""
+"GConf init failed:\n"
+"  %s"
+msgstr ""
+"Не вдалося ╕н╕ц╕ал╕зувати GConf:\n"
+"  %s"
 
 #: components/loser/content/nautilus-content-loser.c:140
 #, c-format
@@ -431,20 +521,20 @@ msgstr "Перев╕рку завершено."
 msgid "%s would not work anymore\n"
 msgstr ""
 
-#: components/rpmview/nautilus-rpm-view-install.c:111
-#, fuzzy, c-format
+#: components/rpmview/nautilus-rpm-view-install.c:107
+#, c-format
 msgid "%s would break other installed packages\n"
-msgstr "П╕дготовка до встановлення %d пакет╕в"
+msgstr ""
 
 #: components/rpmview/nautilus-rpm-view-install.c:116
 #, c-format
 msgid "%s is needed, but could not be found\n"
 msgstr ""
 
-#: components/rpmview/nautilus-rpm-view-install.c:121
-#, fuzzy, c-format
+#: components/rpmview/nautilus-rpm-view-install.c:117
+#, c-format
 msgid "%s was already installed\n"
-msgstr "Цей пакет вже встановлено."
+msgstr "%s вже було встановлено\n"
 
 #: components/rpmview/nautilus-rpm-view-install.c:140
 #, c-format
@@ -458,22 +548,19 @@ msgstr ""
 
 #: components/rpmview/nautilus-rpm-view-install.c:219
 msgid "Uninstall failed..."
-msgstr ""
+msgstr "Не вдалося видалити..."
 
-#: components/rpmview/nautilus-rpm-view-install.c:220
-#, fuzzy
-msgid "Uninstall Failed"
-msgstr "Встановлення пакету %s..."
+#: components/rpmview/nautilus-rpm-view-install.c:216
+msgid "Nautilus: Uninstall failed"
+msgstr "Наут╕лус: Не вдалося видалити"
 
-#: components/rpmview/nautilus-rpm-view-install.c:222
-#, fuzzy
+#: components/rpmview/nautilus-rpm-view-install.c:218
 msgid "Install failed..."
-msgstr "Встановлення пакету %s..."
+msgstr "Не вдалося встановити..."
 
-#: components/rpmview/nautilus-rpm-view-install.c:223
-#, fuzzy
-msgid "Install Failed"
-msgstr "Встановлення пакету %s..."
+#: components/rpmview/nautilus-rpm-view-install.c:219
+msgid "Nautilus: Install failed"
+msgstr "Наут╕лус: Не вдалося встановити"
 
 #: components/rpmview/nautilus-rpm-view-install.c:267
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:899
@@ -754,15 +841,15 @@ msgstr ""
 msgid "Will download %s"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:258
-#, fuzzy, c-format
+#: components/services/install/lib/eazel-install-rpm-glue.c:261
+#, c-format
 msgid "%s already installed"
-msgstr "Цей пакет вже встановлено."
+msgstr "%s вже встановлено"
 
 #: components/services/install/lib/eazel-install-rpm-glue.c:373
 #, c-format
 msgid "%s..."
-msgstr ""
+msgstr "%s..."
 
 #: components/services/install/lib/eazel-install-rpm-glue.c:382
 #, c-format
@@ -800,17 +887,17 @@ msgstr ""
 
 #: components/services/install/lib/eazel-install-rpm-glue.c:1081
 msgid "rpm running..."
-msgstr ""
+msgstr "rpm запущено..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:1173
-#, fuzzy, c-format
+#: components/services/install/lib/eazel-install-rpm-glue.c:1125
+#, c-format
 msgid "Removing package %s %s"
-msgstr "Звантажування пакету %s"
+msgstr "Видалення пакету %s %s"
 
 #: components/services/install/lib/eazel-install-rpm-glue.c:1294
 #, c-format
 msgid "Cannot open %s"
-msgstr ""
+msgstr "Неможливо в╕дкрити %s"
 
 #: components/services/install/lib/eazel-install-rpm-glue.c:1356
 #, c-format
@@ -866,7 +953,7 @@ msgstr ""
 #: components/services/install/lib/eazel-install-rpm-glue.c:1885
 #, c-format
 msgid "%s conflicts %s-%s"
-msgstr ""
+msgstr "%s конфл╕кту╓ з %s-%s"
 
 #: components/services/install/lib/eazel-install-rpm-glue.c:1899
 #, c-format
@@ -895,30 +982,15 @@ msgstr ""
 msgid "*** End pkg dump ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:129
-#: components/services/install/lib/eazel-install-xml-package-list.c:136
-msgid "*** No package nodes! ***"
+#: components/services/install/lib/eazel-install-xml-package-list.c:126
+msgid "*** No package nodes! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:131
-#: components/services/install/lib/eazel-install-xml-package-list.c:138
-msgid "*** Bailing from package parse! ***"
+#: components/services/install/lib/eazel-install-xml-package-list.c:128
+msgid "*** Bailing from package parse! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:143
-msgid "*** Malformed package node!"
-msgstr ""
-
-#: components/services/install/lib/eazel-install-xml-package-list.c:153
-msgid "*** Malformed depends node!"
-msgstr ""
-
-#: components/services/install/lib/eazel-install-xml-package-list.c:163
-#, c-format
-msgid "*** Unknown node type '%s'"
-msgstr ""
-
-#: components/services/install/lib/eazel-install-xml-package-list.c:182
+#: components/services/install/lib/eazel-install-xml-package-list.c:152
 msgid "*** The pkg list file contains no data! ***\n"
 msgstr ""
 
@@ -932,7 +1004,7 @@ msgstr ""
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:195
 msgid "*** No Categories! ***\n"
-msgstr ""
+msgstr "*** Нема╓ категор╕й! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:197
 msgid "*** Bailing from category parse! ***\n"
@@ -949,7 +1021,7 @@ msgstr ""
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:256
 msgid "*** No packages! ***\n"
-msgstr ""
+msgstr "*** Нема╓ пакет╕в! ***\n"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:364
 msgid "*** Error generating xml package list! ***\n"
@@ -967,7 +1039,11 @@ msgstr ""
 msgid "*** Bailing from osd parse! ***\n"
 msgstr ""
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:648
+#: components/services/install/lib/eazel-install-xml-package-list.c:606
+msgid "Could not find <?xml tag in string"
+msgstr ""
+
+#: components/services/install/lib/eazel-install-xml-package-list.c:631
 #, c-format
 msgid "Could not parse the xml (length %d)"
 msgstr ""
@@ -1058,14 +1134,12 @@ msgid "Installation complete!"
 msgstr "Встановлення завершено!"
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:774
-#, fuzzy
 msgid "Installation aborted."
-msgstr "Встановлення завершено!"
+msgstr ""
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:776
-#, fuzzy
 msgid "Installation failed!"
-msgstr "Встановлення завершено!"
+msgstr "Не вдалось встановити!"
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:790
 #, c-format
@@ -1093,20 +1167,21 @@ msgid "%s %s: conflicts with installed files\n"
 msgstr ""
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:806
-#, fuzzy, c-format
+#, c-format
 msgid "%s %s: already installed\n"
-msgstr "Цей пакет вже встановлено."
+msgstr "%s %s: вже встановлено\n"
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:837
 msgid "This package has already been installed."
 msgstr "Цей пакет вже встановлено."
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:844
-#, fuzzy
 msgid ""
 "Installation Failed!\n"
 "\n"
-msgstr "Встановлення завершено!"
+msgstr ""
+"Не вдалось встановити!\n"
+"\n"
 
 #: components/services/install/nautilus-view/nautilus-service-install-view.c:863
 msgid "Should I delete the leftover RPM files?"
@@ -1229,14 +1304,16 @@ msgid ""
 "Error: Invalid syntax\n"
 "Syntax: %s\n"
 msgstr ""
+"Помилка: Нев╕рний синтаксис\n"
+"Синтаксис: %s\n"
 
 #: libnautilus-extensions/nautilus-druid-page-eazel.c:343
 msgid "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
-msgstr ""
+msgstr "-*-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
 
 #: libnautilus-extensions/nautilus-druid-page-eazel.c:352
 msgid "-adobe-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
-msgstr ""
+msgstr "-*-helvetica-bold-r-normal-*-*-120-*-*-p-*-*-*,*-r-*"
 
 #. Today, use special word.
 #. * Note to localizers: You can look at man strftime
@@ -1277,52 +1354,50 @@ msgstr ""
 
 #: libnautilus-extensions/nautilus-file.c:2783
 msgid "0 items"
-msgstr ""
+msgstr "0 елемент╕в"
 
-#: libnautilus-extensions/nautilus-file.c:2783
-#, fuzzy
+#: libnautilus-extensions/nautilus-file.c:2765
 msgid "0 folders"
-msgstr "Нова тека"
+msgstr "0 тек"
 
 #: libnautilus-extensions/nautilus-file.c:2784
 msgid "0 files"
-msgstr ""
+msgstr "0 файл╕в"
 
 #: libnautilus-extensions/nautilus-file.c:2788
 msgid "1 item"
-msgstr ""
+msgstr "1 елемент"
 
-#: libnautilus-extensions/nautilus-file.c:2788
-#, fuzzy
+#: libnautilus-extensions/nautilus-file.c:2770
 msgid "1 folder"
-msgstr "Нова тека"
+msgstr "1 тека"
 
 #: libnautilus-extensions/nautilus-file.c:2789
 msgid "1 file"
-msgstr ""
+msgstr "1 файл"
 
 #: libnautilus-extensions/nautilus-file.c:2792
 #, c-format
 msgid "%u items"
-msgstr ""
+msgstr "%u елемент╕в"
 
-#: libnautilus-extensions/nautilus-file.c:2792
-#, fuzzy, c-format
+#: libnautilus-extensions/nautilus-file.c:2774
+#, c-format
 msgid "%u folders"
-msgstr "Нова тека"
+msgstr "%u тек"
 
 #: libnautilus-extensions/nautilus-file.c:2793
 #, c-format
 msgid "%u files"
-msgstr ""
+msgstr "%u файл╕в"
 
 #: libnautilus-extensions/nautilus-file.c:3122
 msgid "unknown type"
-msgstr ""
+msgstr "нев╕домий тип"
 
 #: libnautilus-extensions/nautilus-file.c:3124
 msgid "unknown MIME type"
-msgstr ""
+msgstr "нев╕домий тип MIME"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
@@ -1351,11 +1426,11 @@ msgstr ""
 
 #: libnautilus-extensions/nautilus-file-operations.c:202
 msgid "From:"
-msgstr ""
+msgstr "В╕д:"
 
 #: libnautilus-extensions/nautilus-file-operations.c:216
 msgid "To:"
-msgstr ""
+msgstr "До:"
 
 #: libnautilus-extensions/nautilus-file-operations.c:366
 #: libnautilus-extensions/nautilus-file-operations.c:373
@@ -1365,18 +1440,17 @@ msgid ""
 "The destination is read-only. Would you like to continue?"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-file-operations.c:384
-#: libnautilus-extensions/nautilus-file-operations.c:411
-#, fuzzy
-msgid "Error while Copying"
-msgstr "Помилка коп╕ювання"
+#: libnautilus-extensions/nautilus-file-operations.c:378
+#: libnautilus-extensions/nautilus-file-operations.c:398
+msgid "File copy error"
+msgstr "Помилка коп╕ювання файлу"
 
-#: libnautilus-extensions/nautilus-file-operations.c:385
-#: libnautilus-extensions/nautilus-file-operations.c:412
-#: libnautilus-extensions/nautilus-file-operations.c:463
-#: libnautilus-extensions/nautilus-file-operations.c:477
+#: libnautilus-extensions/nautilus-file-operations.c:379
+#: libnautilus-extensions/nautilus-file-operations.c:399
+#: libnautilus-extensions/nautilus-file-operations.c:446
+#: libnautilus-extensions/nautilus-file-operations.c:457
 msgid "Skip"
-msgstr ""
+msgstr "Пропустити"
 
 #: libnautilus-extensions/nautilus-file-operations.c:401
 #, c-format
@@ -1387,7 +1461,7 @@ msgstr ""
 
 #: libnautilus-extensions/nautilus-file-operations.c:412
 msgid "Retry"
-msgstr ""
+msgstr "Повторити"
 
 #: libnautilus-extensions/nautilus-file-operations.c:451
 #, c-format
@@ -1410,7 +1484,12 @@ msgstr ""
 msgid "Replace All"
 msgstr "Зам╕нити все"
 
-#: libnautilus-extensions/nautilus-file-operations.c:522
+#: libnautilus-extensions/nautilus-file-operations.c:498
+#, c-format
+msgid "link to %s"
+msgstr ""
+
+#: libnautilus-extensions/nautilus-file-operations.c:501
 #, c-format
 msgid "another link to %s"
 msgstr ""
@@ -1439,19 +1518,39 @@ msgstr ""
 msgid "%dth link to %s"
 msgstr ""
 
-#. localizers: opening parentheses to match the "th copy)" string
-#: libnautilus-extensions/nautilus-file-operations.c:648
-msgid " ("
-msgstr ""
-
-#. localizers: opening parentheses of the "th copy)" string
-#: libnautilus-extensions/nautilus-file-operations.c:656
+#: libnautilus-extensions/nautilus-file-operations.c:558
 #, c-format
-msgid " (%d"
+msgid "%s (copy)"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-file-operations.c:806
-#: libnautilus-extensions/nautilus-file-operations.c:1249
+#: libnautilus-extensions/nautilus-file-operations.c:561
+#, c-format
+msgid "%s (another copy)"
+msgstr ""
+
+#: libnautilus-extensions/nautilus-file-operations.c:574
+#, c-format
+msgid "%s (%dst copy)"
+msgstr ""
+
+#: libnautilus-extensions/nautilus-file-operations.c:577
+#, c-format
+msgid "%s (%dnd copy)"
+msgstr ""
+
+#: libnautilus-extensions/nautilus-file-operations.c:580
+#, c-format
+msgid "%s (%drd copy)"
+msgstr ""
+
+#. The general case.
+#: libnautilus-extensions/nautilus-file-operations.c:584
+#, c-format
+msgid "%s (%dth copy)"
+msgstr ""
+
+#: libnautilus-extensions/nautilus-file-operations.c:638
+#: libnautilus-extensions/nautilus-file-operations.c:1017
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr ""
@@ -2525,8 +2624,71 @@ msgstr ""
 msgid "Redo the edit"
 msgstr ""
 
-#: libnautilus-extensions/nautilus-user-level-manager.c:59
-msgid "Beginner"
+#: libnautilus-extensions/nautilus-volume-monitor.c:970
+msgid "ISO 9660 Volume"
+msgstr ""
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:977
+msgid "Ext2 Volume"
+msgstr ""
+
+#: libnautilus-extensions/nautilus-volume-monitor.c:983
+msgid "Floppy"
+msgstr ""
+
+#: libnautilus/nautilus-clipboard.c:116
+msgid "_Cut"
+msgstr "Вир╕зати"
+
+#: libnautilus/nautilus-clipboard.c:117
+msgid "Remove selected text from selection"
+msgstr ""
+
+#: libnautilus/nautilus-clipboard.c:121
+msgid "_Copy"
+msgstr ""
+
+#: libnautilus/nautilus-clipboard.c:122
+msgid "Copy selected text to the clipboard"
+msgstr ""
+
+#: libnautilus/nautilus-clipboard.c:126
+msgid "_Paste"
+msgstr "Вставити"
+
+#: libnautilus/nautilus-clipboard.c:127
+msgid "Paste text from clipboard into text box"
+msgstr "Вставити текст з буферу обм╕ну в текстовий блок"
+
+#: libnautilus/nautilus-clipboard.c:131
+msgid "_Clear"
+msgstr "Очистити"
+
+#: libnautilus/nautilus-clipboard.c:132
+msgid "Clear the current selection"
+msgstr "Очистити поточний виб╕р"
+
+#: nautilus-installer/src/installer.c:147
+#, fuzzy
+msgid "Step two..."
+msgstr "Перший крок:"
+
+#: nautilus-installer/src/installer.c:148
+msgid ""
+"You have several choices for what you would like the installer to do.\n"
+"Please choose one and click on the \"Next\" button to begin install."
+msgstr ""
+
+#: nautilus-installer/src/installer.c:207
+msgid "Currently downloading packages required to install Nautilus\n"
+msgstr ""
+
+#: nautilus-installer/src/installer.c:212
+msgid "Step three..."
+msgstr ""
+
+#: nautilus-installer/src/installer.c:269
+msgid "En fjФsing hedder Bent"
 msgstr ""
 
 #: libnautilus-extensions/nautilus-user-level-manager.c:60
@@ -2553,9 +2715,15 @@ msgstr ""
 msgid "Floppy"
 msgstr ""
 
-#: libnautilus/nautilus-clipboard.c:135 src/nautilus-window-menus.c:1461
-msgid "_Cut Text"
-msgstr "Вир╕зати текст"
+#: nautilus-installer/src/installer.c:582
+#, fuzzy
+msgid "was already installed"
+msgstr "Цей пакет вже встановлено."
+
+#: nautilus-installer/src/installer.c:596
+#, c-format
+msgid "%s failed because of the following issue(s):"
+msgstr ""
 
 #: libnautilus/nautilus-clipboard.c:136 src/nautilus-window-menus.c:1462
 msgid "Cuts the selected text to the clipboard"
@@ -3372,8 +3540,15 @@ msgstr ""
 msgid "Error while trying to reindex: %s"
 msgstr ""
 
-#: src/file-manager/nautilus-indexing-info.c:163
-msgid "%I:%M %p, %x"
+#: src/file-manager/nautilus-indexing-info.c:130
+msgid "Search service not available"
+msgstr ""
+
+#: src/file-manager/nautilus-indexing-info.c:155
+msgid ""
+"Once a day your files and text content are indexed so your searches are "
+"fast.  If you need to update your index now, click on the \"Update Now\" "
+"button for the appropriate index."
 msgstr ""
 
 #: src/file-manager/nautilus-indexing-info.c:179
@@ -3527,7 +3702,11 @@ msgid ""
 "familiar with the working of GNOME and Linux."
 msgstr ""
 
-#: src/nautilus-first-time-druid.c:365
+#: src/nautilus-first-time-druid.c:362
+msgid "Intermediate"
+msgstr ""
+
+#: src/nautilus-first-time-druid.c:363
 msgid ""
 "For non-technical users that are comfortable with\n"
 "their GNOME and Linux environment."
@@ -3578,7 +3757,7 @@ msgstr ""
 
 #: src/nautilus-first-time-druid.c:452
 msgid "Updating Nautilus"
-msgstr ""
+msgstr "Оновлення Наут╕лус"
 
 #: src/nautilus-first-time-druid.c:460
 msgid "Yes, verify my web connection and update Nautilus now."
