@@ -173,9 +173,7 @@ nautilus_window_instance_init (NautilusWindow *window)
 	window->details = g_new0 (NautilusWindowDetails, 1);
 
 	/* CORBA and Bonobo setup, which must be done before the location bar setup */
-	window->details->ui_container = bonobo_ui_container_new ();
-	bonobo_ui_container_set_engine (window->details->ui_container,
-					bonobo_window_get_ui_engine (BONOBO_WINDOW (window)));
+	window->details->ui_container = bonobo_window_get_ui_container (BONOBO_WINDOW (window));
 
 	window->details->tooltips = gtk_tooltips_new ();
 	g_object_ref (G_OBJECT (window->details->tooltips));
