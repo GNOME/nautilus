@@ -1930,7 +1930,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		/* localizers: progress dialog title */
 		transfer_info->operation_title = _("Moving files to the Trash");
 		/* localizers: label prepended to the progress count */
-		transfer_info->action_label =_("Files thrown out:");
+		transfer_info->action_label =_("Throwing out file:");
 		/* localizers: label prepended to the name of the current file moved */
 		transfer_info->progress_verb =_("Moving");
 		transfer_info->preparation_name =_("Preparing to Move to Trash...");
@@ -1941,7 +1941,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		/* localizers: progress dialog title */
 		transfer_info->operation_title = _("Moving files");
 		/* localizers: label prepended to the progress count */
-		transfer_info->action_label =_("Files moved:");
+		transfer_info->action_label =_("Moving file:");
 		/* localizers: label prepended to the name of the current file moved */
 		transfer_info->progress_verb =_("Moving");
 		transfer_info->preparation_name =_("Preparing To Move...");
@@ -1955,7 +1955,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		/* localizers: progress dialog title */
 		transfer_info->operation_title = _("Creating links to files");
 		/* localizers: label prepended to the progress count */
-		transfer_info->action_label =_("Files linked:");
+		transfer_info->action_label =_("Linking file:");
 		/* localizers: label prepended to the name of the current file linked */
 		transfer_info->progress_verb =_("Linking");
 		transfer_info->preparation_name = _("Preparing to Create Links...");
@@ -1967,7 +1967,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		/* localizers: progress dialog title */
 		transfer_info->operation_title = _("Copying files");
 		/* localizers: label prepended to the progress count */
-		transfer_info->action_label =_("Files copied:");
+		transfer_info->action_label =_("Copying file:");
 		/* localizers: label prepended to the name of the current file copied */
 		transfer_info->progress_verb =_("Copying");
 		transfer_info->preparation_name =_("Preparing To Copy...");
