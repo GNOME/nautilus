@@ -70,6 +70,7 @@ typedef struct {
 	GList *auto_storage_list;
 	int gconf_connection_id;
 	NautilusEnumeration *enumeration;
+	GConfValue *cached_value;
 } PreferencesEntry;
 
 /*
@@ -129,6 +130,7 @@ static void         preferences_global_table_check_changes_function (gpointer   
 static GHashTable  *preferences_global_table_get_global             (void);
 static void         preferences_callback_entry_free                 (PreferencesCallbackEntry *callback_entry);
 static int          preferences_user_level_check_range              (int                       user_level);
+static void         preferences_entry_update_auto_storage           (PreferencesEntry         *entry);
 
 static int user_level_changed_connection_id = -1;
 static GHashTable *global_table = NULL;
@@ -747,15 +749,65 @@ nautilus_preferences_default_get_string_list (const char *name,
  **/
 static void
 preferences_callback_entry_invoke_function (gpointer data,
-				     gpointer callback_data)
+					    gpointer callback_data)
 {
 	PreferencesCallbackEntry *callback_entry;
-
+	
 	g_return_if_fail (data != NULL);
 	
 	callback_entry = data;
 
  	(* callback_entry->callback) (callback_entry->callback_data);
+}
+
+/**
+ * preferences_entry_invoke_callbacks_if_needed
+ *
+ * @entry: A PreferencesEntry
+ *
+ * This function checks the cached value in the entry with the current
+ * value of the preference.  If the value has changed, then callbacks
+ * are invoked and auto storage updated.
+ *
+ * We need this check because even though the GConf value of a preference
+ * could indeed have changed, its representation on the Nautilus side
+ * of things could still be the same.  The best example of this is 
+ * user level changes, where the value of the preference on the Nautilus
+ * end of things is determined by visibility.
+ **/
+static void
+preferences_entry_invoke_callbacks_if_needed (PreferencesEntry *entry)
+{
+	GConfValue *new_value;
+	char *getter_key;
+	
+	g_return_if_fail (entry != NULL);
+
+	getter_key = preferences_key_make_for_getter (entry->name);
+	new_value = nautilus_gconf_get_value (getter_key);
+	g_free (getter_key);
+
+	/* If the values are the same, then we dont need to invoke any callbacks */
+	if (nautilus_gconf_value_is_equal (entry->cached_value, new_value)) {
+		nautilus_gconf_value_free (new_value);
+		return;
+	}
+
+	/* Update the auto storage preferences */
+	if (entry->auto_storage_list != NULL) {
+		preferences_entry_update_auto_storage (entry);			
+	}
+
+	/* Store the new cached value */
+	nautilus_gconf_value_free (entry->cached_value);
+	entry->cached_value = new_value;
+	
+	/* Invoke callbacks for this entry if any */
+	if (entry->callback_list != NULL) {
+		g_list_foreach (entry->callback_list,
+				preferences_callback_entry_invoke_function,
+				NULL);
+	}
 }
 
 static void
@@ -820,26 +872,11 @@ preferences_something_changed_notice (GConfClient *client,
 				      GConfEntry *entry, 
 				      gpointer notice_data)
 {
-	PreferencesEntry *preferences_entry;
-
 	g_return_if_fail (entry != NULL);
 	g_return_if_fail (entry->key != NULL);
 	g_return_if_fail (notice_data != NULL);
-	
-	preferences_entry = notice_data;
 
-	if (preferences_entry->auto_storage_list != NULL) {
-		preferences_entry_update_auto_storage (preferences_entry);			
-	}
-	
-	/* FIXME bugzilla.eazel.com 5875: 
-	 * We need to make sure that the value has actually changed before 
-	 * invoking the callbacks.
-	 */
-	/* Invoke callbacks for this entry */
-	g_list_foreach (preferences_entry->callback_list,
-			preferences_callback_entry_invoke_function,
-			NULL);
+	preferences_entry_invoke_callbacks_if_needed (notice_data);
 }
 
 static void
@@ -861,22 +898,21 @@ preferences_global_table_check_changes_function (gpointer key,
 		return;
 	}
 
-	/* FIXME: We need to make sure that the value changed before 
-	 *        invoking the callbacks.
-	 */
-#if 0
- 	int user_level;
- 	int visible_user_level;
- 	user_level = nautilus_preferences_get_user_level ();
- 	visible_user_level = nautilus_preferences_get_visible_user_level (entry->name);
-#endif
+	preferences_entry_invoke_callbacks_if_needed (entry);
+}
 
-	/* Invoke callbacks for this entry */
-	if (entry->callback_list) {
-		g_list_foreach (entry->callback_list,
-				preferences_callback_entry_invoke_function,
-				NULL);
-	}
+static void
+preferences_entry_update_cached_value (PreferencesEntry *entry)
+{
+	char *getter_key;
+
+	g_return_if_fail (entry != NULL);
+
+	nautilus_gconf_value_free (entry->cached_value);
+
+	getter_key = preferences_key_make_for_getter (entry->name);
+	entry->cached_value = nautilus_gconf_get_value (getter_key);
+	g_free (getter_key);
 }
 
 static void
@@ -920,16 +956,25 @@ preferences_entry_ensure_gconf_connection (PreferencesEntry *entry)
 
 	error = NULL;
 	entry->gconf_connection_id = gconf_client_notify_add (client,
-							     key,
-							     preferences_something_changed_notice,
-							     entry,
-							     NULL,
-							     &error);
+							      key,
+							      preferences_something_changed_notice,
+							      entry,
+							      NULL,
+							      &error);
 	if (nautilus_gconf_handle_error (&error)) {
 		entry->gconf_connection_id = 0;
 	}
 
 	g_free (key);
+
+	/* Update the cached value.
+	 * From now onwards the cached value will be updated 
+	 * each time preferences_something_changed_notice() triggers
+	 * so that it can be later compared with new values to 
+	 * determine if the gconf value is different from the 
+	 * Nautilus value.
+	 */
+	preferences_entry_update_cached_value (entry);
 }
 
 /**
@@ -1129,7 +1174,7 @@ preferences_callback_entry_free (PreferencesCallbackEntry *callback_entry)
  **/
 static void
 preferences_callback_entry_free_func (gpointer	data,
-			       gpointer	callback_data)
+				      gpointer	callback_data)
 {
 	g_return_if_fail (data != NULL);
 	
@@ -1168,6 +1213,7 @@ preferences_entry_free (PreferencesEntry *entry)
 	g_free (entry->name);
 	g_free (entry->description);
 
+	nautilus_gconf_value_free (entry->cached_value);
 	nautilus_enumeration_free (entry->enumeration);
 
 	g_free (entry);
@@ -1239,6 +1285,18 @@ preferences_global_table_insert (const char *name)
 	g_hash_table_insert (preferences_global_table_get_global (), entry->name, entry);
 
 	g_return_val_if_fail (entry == preferences_global_table_lookup (name), NULL);
+
+	/* Update the cached value for the first time.
+	 * 
+	 * We need to do this because checks for value changes
+	 * happen not only as a result of callbacks triggering, but 
+	 * also as a result of user_level changes.  When a user level
+	 * changes, all the preferences entries are iterated to invoke
+	 * callbacks for those that changed as a result.
+	 *
+	 * See preferences_global_table_check_changes_function().
+	 */
+	preferences_entry_update_cached_value (entry);
 
 	return entry;
 }

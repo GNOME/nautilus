@@ -769,6 +769,11 @@ merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_d
                  * See nautilus-text-view-ui.xml.  Need to query system for
                  * available fonts instead of hard coding the font list
                  */
+
+                /* FIXME bugzilla.eazel.com 7907: 
+                 * The "GTK System Font" string is hard coded in many places.
+                 * Please see nautilus-text-view-ui.xml.
+                 */
 		nautilus_view_set_up_ui (NAUTILUS_VIEW (text_view),
 				         DATADIR,
 					 "nautilus-text-view-ui.xml",

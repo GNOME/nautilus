@@ -1062,16 +1062,6 @@ unref_fixed_font (void)
 	gdk_font_unref (fixed_font);
 }
 
-
-/* FIXME bugzilla.eazel.com 7204:
- * Instead of picking fixed, we could create a temporary GtkStyle
- * and fetch the default font from there.  That way we wash our
- * hands on the matter and let gtk be the one to pick the fallback
- * font.  One tricky aspect of this strategy is where to put such
- * a call since this file contains on gdk_font stuff.  Perhaps
- * nautilus-gtk-extensions.[ch] ?
- */
-
 /**
  * nautilus_gdk_font_get_fixed
  *

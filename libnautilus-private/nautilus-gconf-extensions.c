@@ -27,6 +27,8 @@
 
 #include "nautilus-glib-extensions.h"
 #include "nautilus-stock-dialogs.h"
+#include "nautilus-string.h"
+
 #include <gconf/gconf-client.h>
 #include <gconf/gconf.h>
 #include <libgnome/gnome-i18n.h>
@@ -317,4 +319,82 @@ nautilus_gconf_suggest_sync (void)
 	
 	gconf_client_suggest_sync (client, &error);
 	nautilus_gconf_handle_error (&error);
+}
+
+GConfValue*
+nautilus_gconf_get_value (const char *key)
+{
+	GConfValue *value = NULL;
+	GConfClient *client;
+	GError *error = NULL;
+
+	g_return_val_if_fail (key != NULL, NULL);
+
+	client = nautilus_gconf_client_get_global ();
+	g_return_val_if_fail (client != NULL, NULL);
+
+	value = gconf_client_get (client, key, &error);
+	
+	if (nautilus_gconf_handle_error (&error)) {
+		if (value != NULL) {
+			gconf_value_free (value);
+			value = NULL;
+		}
+	}
+
+	return value;
+}
+
+gboolean
+nautilus_gconf_value_is_equal (const GConfValue *a,
+			       const GConfValue *b)
+{
+	if (a == NULL && b == NULL) {
+		return TRUE;
+	}
+
+	if (a == NULL || b == NULL) {
+		return FALSE;
+	}
+
+	if (a->type != b->type) {
+		return FALSE;
+	}
+
+	switch (a->type) {
+	case GCONF_VALUE_STRING:
+		return nautilus_str_is_equal (a->d.string_data, b->d.string_data);
+		break;
+
+	case GCONF_VALUE_INT:
+		return a->d.int_data == b->d.int_data;
+		break;
+
+	case GCONF_VALUE_FLOAT:
+		return a->d.float_data == b->d.float_data;
+		break;
+
+	case GCONF_VALUE_BOOL:
+		return a->d.bool_data == b->d.bool_data;
+		break;
+		
+	case GCONF_VALUE_LIST:
+		/* FIXME */
+		g_assert (0);
+		return FALSE;
+	default:
+	}
+
+	g_assert_not_reached ();
+	return FALSE;
+}
+
+void
+nautilus_gconf_value_free (GConfValue *value)
+{
+	if (value == NULL) {
+		return;
+	}
+	
+	gconf_value_free (value);
 }

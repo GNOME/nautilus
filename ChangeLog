@@ -1,3 +1,40 @@
+2001-03-30  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: John Sullivan  <sullivan@eazel.com>
+
+	* components/text/nautilus-text-view.c: (merge_bonobo_menu_items):
+	Add a FIXME for a bug.
+	
+	* libnautilus-extensions/nautilus-gconf-extensions.h:
+	* libnautilus-extensions/nautilus-gconf-extensions.c:
+	(nautilus_gconf_get_value), (nautilus_gconf_value_is_equal),
+	(nautilus_gconf_value_free): New convenience functions for using
+	GConf values directly.
+
+	* libnautilus-extensions/nautilus-gdk-font-extensions.c:
+	Remove a FIXME for a bug i fixed recently.
+	
+	* libnautilus-extensions/nautilus-preferences.c:
+	(preferences_callback_entry_invoke_function),
+	(preferences_entry_invoke_callbacks_if_needed),
+	(preferences_something_changed_notice),
+	(preferences_global_table_check_changes_function),
+	(preferences_entry_update_cached_value),
+	(preferences_entry_ensure_gconf_connection),
+	(preferences_callback_entry_free_func), (preferences_entry_free),
+	(preferences_global_table_insert):
+	Fix bug 5875 - Preference callbacks should only trigger when
+	values change.
+	The problem was twofold.  First, when the user level changed, we
+	would invoke all callbacks regardless of whether the value had
+	changed or not.  Second, when a GConf value changed notice
+	triggered, we would invoke the corresponding Nautilus preference
+	callback regardless of whether the value according to Nautilus
+	changed or not.
+	The fact that Nautilus preferences have a visibility attribute
+	means that even if the GConf value changes, they may have a
+	different value (a default due to high visibility for example)
+	
 2001-03-30  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-preferences.c:
