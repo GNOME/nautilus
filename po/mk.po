@@ -15,7 +15,7 @@
 # Арангел Ангов, 2002
 # Арангел Ангов, 2002
 # Maratonec <kjdskjds@dksjd>, 2002.
-#  <maraton@petlica>, 2002.
+# <maraton@petlica>, 2002.
 # Igor Petreski <dierektor@pcinfo.com.mk>, 2002.
 # Ivan Stojmirov <stojmir@linux.net.mk>, 2002,2003.
 # Ime Prezime <email@adresa.com>, 2003.
@@ -25,18 +25,20 @@
 # Dushan Vasilevski-DUVIX <dule_boki@mt.net.mk>, 2003.
 # Васко Митанов <vasko@accent.com.mk>, 2003.
 # Tomislav Markovski <herrera@users.sourceforge.net>, 2004.
-#
+# Tomislav Markovski <herrera@users.sourceforge.net>, 2005.
+# 
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: mk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-01-09 12:27+0100\n"
-"PO-Revision-Date: 2005-01-09 17:27+0100\n"
-"Last-Translator: Tomislav Markovski <herrera@users.sourceforge.net>\n"
-"Language-Team: Macedonian <ossm-members@hedona.on.net.mk>\n"
+"PO-Revision-Date: 2005-01-09 17:51+0100\n"
+"Last-Translator:  <>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Type: text/plain; charset=\n"
+"Content-Transfer-Encoding: "
 
 #: data/applications.desktop.in.h:1
 msgid "Applications"
@@ -2454,17 +2456,17 @@ msgstr "%m/%d/%y"
 
 #: libnautilus-private/nautilus-file.c:4312
 #: src/file-manager/fm-directory-view.c:1858
-#, fuzzy, c-format
+#, c-format
 msgid "%u item"
 msgstr "%u предмет"
 
 #: libnautilus-private/nautilus-file.c:4313
-#, fuzzy, c-format
+#, c-format
 msgid "%u folder"
 msgstr "%u папка"
 
 #: libnautilus-private/nautilus-file.c:4314
-#, fuzzy, c-format
+#, c-format
 msgid "%u file"
 msgstr "%u датотека"
 
@@ -3298,12 +3300,11 @@ msgid "Desktop"
 msgstr "Работна површина"
 
 #: src/file-manager/fm-desktop-icon-view.c:768
-#, fuzzy
 msgid "_Desktop"
-msgstr "Работна површина"
+msgstr "_Работна површина"
 
 #: src/file-manager/fm-directory-view.c:509
-#, fuzzy, c-format
+#, c-format
 msgid "Open %d Window?"
 msgstr "Отвори %d прозорец?"
 
@@ -3312,7 +3313,7 @@ msgid "Are you sure you want to open all files?"
 msgstr "Сакате да ги отворите сите датотеки?"
 
 #: src/file-manager/fm-directory-view.c:511 src/nautilus-location-bar.c:158
-#, fuzzy, c-format
+#, c-format
 msgid "This will open %d separate window."
 msgstr "Ова ќе отвори %d посебен прозорец."
 
@@ -3322,10 +3323,11 @@ msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Дали си сигурен дека сакаш перманентно да го избришеш \"%s\"?"
 
 #: src/file-manager/fm-directory-view.c:816
-#, fuzzy, c-format
+#, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
 "Are you sure you want to permanently delete the %d selected items?"
-msgstr "Дали си сигурен дека сакаш перманентно да го избришеш \"%s\"?"
+msgstr "Дали сте сигурни дека сакате трајно да избришете %d избран предмет?"
+"Дали сте сигурни дека сакате трајно да избришете %d избрани предмети?"
 
 #: src/file-manager/fm-directory-view.c:824
 msgid "If you delete an item, it is permanently lost."
@@ -3349,18 +3351,18 @@ msgid "\"%s\" selected"
 msgstr "\"%s\" е означен"
 
 #: src/file-manager/fm-directory-view.c:1792
-#, fuzzy, c-format
+#, c-format
 msgid "%d folder selected"
 msgstr "%d означена папка"
 
 #: src/file-manager/fm-directory-view.c:1802
-#, fuzzy, c-format
+#, c-format
 msgid " (containing %d item)"
 msgstr " (содржи %d предмет)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
 #: src/file-manager/fm-directory-view.c:1813
-#, fuzzy, c-format
+#, c-format
 msgid " (containing a total of %d item)"
 msgstr " (содржи вкупно %d предмет)"
 
@@ -3370,13 +3372,13 @@ msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" избрани (%s)"
 
 #: src/file-manager/fm-directory-view.c:1833
-#, fuzzy, c-format
+#, c-format
 msgid "%d item selected (%s)"
 msgstr "%d предмет е означен (%s)"
 
 #. Folders selected also, use "other" terminology
 #: src/file-manager/fm-directory-view.c:1841
-#, fuzzy, c-format
+#, c-format
 msgid "%d other item selected (%s)"
 msgstr "%d останат предмет е означен (%s)"
 
@@ -3445,16 +3447,17 @@ msgstr "Избриши Веднаш?"
 #: src/file-manager/fm-directory-view.c:3170
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
-msgstr "Дали сакате трајно да ја отстраните \"%s\" од ѓубрето?"
+msgstr "Дали сакате трајно да ја отстранитe \"%s\" од ѓубрето?"
 
 #: src/file-manager/fm-directory-view.c:3174
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr "Дали сакате трајно да ја отстраните \"%s\" од ѓубрето?"
+msgstr "Дали сте сигурни дека сакате трајно да отстраните \"%s\" избран предмет од ѓубрето?"
+"Дали сте сигурни дека сакате трајно да отстраните \"%s\" избрани предмети од ѓубрето?"
 
 #: src/file-manager/fm-directory-view.c:3183
 msgid "If you delete an item, it will be permanently lost."
@@ -3598,27 +3601,31 @@ msgstr ""
 #: src/file-manager/fm-tree-view.c:895
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
-msgstr "\"%s\" ќе биде преместен ако ја изберете Вменти Датотека командатум"
+msgstr "\"%s\" ќе биде преместен ако ја изберете командата „Вменти датотека“"
 
 #: src/file-manager/fm-directory-view.c:5206
 #: src/file-manager/fm-tree-view.c:899
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
-msgstr "\"%s\" ќе биде ископиран ако ја изберете Вметни Датотека командатум"
+msgstr "\"%s\" ќе биде ископиран ако ја изберете командата „Вметни датотека“"
 
 #: src/file-manager/fm-directory-view.c:5213
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
 "The %d selected items will be moved if you select the Paste Files command"
-msgstr "\"%s\" ќе биде преместен ако ја изберете Вменти Датотека командатум"
+msgstr ""
+"%d избран предмет ќе биде преместен доколку ја изберете командата „Вметни датотеки“"
+"%d избрани предмети ќе бидат преместени доколку ја изберете командата „Вметни датотеки“"
 
 #: src/file-manager/fm-directory-view.c:5220
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr "\"%s\" ќе биде ископиран ако ја изберете Вметни Датотека командатум"
+msgstr ""
+"%d избран предмет ќе биде ископиран доколку ја изберете командата „Вметни датотека“"
+"%d избрани предмети ќе бидате ископирани доколку ја изберете командата „Вметни датотека“"
 
 #: src/file-manager/fm-directory-view.c:5301
 #: src/file-manager/fm-tree-view.c:975
@@ -3673,9 +3680,8 @@ msgstr "_Скрипти"
 
 #. name, stock id, label
 #: src/file-manager/fm-directory-view.c:5695
-#, fuzzy
 msgid "Run or manage scripts from ~/.gnome2/nautilus-scripts"
-msgstr "Изврши скрипти од /Наутилус/scripts"
+msgstr "Изврши скрипти од ~/.gnome2/nautilus-scripts"
 
 #. name, stock id
 #: src/file-manager/fm-directory-view.c:5697
@@ -3773,7 +3779,7 @@ msgstr "Отс_ечи"
 msgid "Prepare the selected files to be moved with a Paste Files command"
 msgstr ""
 "Припреми ги избраните датотеки да бидат ископирани со Вметни Датотека "
-"командатум"
+"командата"
 
 #. name, stock id
 #: src/file-manager/fm-directory-view.c:5750
@@ -3786,7 +3792,7 @@ msgstr "_Копирај"
 msgid "Prepare the selected files to be copied with a Paste Files command"
 msgstr ""
 "Припреми ги избраните датотеки да бидат ископирани со Вметни Датотека "
-"командатум"
+"командата"
 
 #. name, stock id
 #: src/file-manager/fm-directory-view.c:5754
@@ -3798,8 +3804,7 @@ msgstr "_Вметни"
 msgid ""
 "Move or copy files previously selected by a Cut Files or Copy Files command"
 msgstr ""
-"Исечи или копирај датотеки претходно избрани со командатум Исечи датотеки или "
-"Копирај датотеки"
+"Исечи или копирај датотеки претходно избрани со командата „Исечи датотеки“ или „Копирај датотеки“"
 
 #. We make accelerator "" instead of null here to not inherit the stock
 #. accelerator for paste
@@ -3814,8 +3819,7 @@ msgid ""
 "Move or copy files previously selected by a Cut Files or Copy Files command "
 "into the selected folder"
 msgstr ""
-"Помести или копирај претходно избрани датотеки со командатум Исечи датотеки "
-"или Копирај датотеки"
+"Помести или копирај претходно избрани датотеки со командата „Исечи датотеки“ или „Копирај датотеки“"
 
 #. name, stock id
 #: src/file-manager/fm-directory-view.c:5764
@@ -3950,9 +3954,8 @@ msgstr "Умаунтирај ја избраната јачина"
 
 #. name, stock id
 #: src/file-manager/fm-directory-view.c:5812
-#, fuzzy
 msgid "Open File and Close window"
-msgstr "Отвори во нов прозорец"
+msgstr "Отвори ја датотеката и затвори го прозорецот"
 
 #. name, stock id
 #: src/file-manager/fm-directory-view.c:5819
@@ -3978,7 +3981,7 @@ msgstr "_Отвори со \"%s\""
 #: src/file-manager/fm-directory-view.c:6196
 #: src/file-manager/fm-directory-view.c:6198
 #: src/file-manager/fm-tree-view.c:1110
-#, fuzzy, c-format
+#, c-format
 msgid "Open in New Window"
 msgstr "Отвори во нов прозорец"
 
@@ -4280,7 +4283,6 @@ msgstr "Исчис_ти по име"
 
 #. label, accelerator
 #: src/file-manager/fm-icon-view.c:1402
-#, fuzzy
 msgid "Reposition icons to better fit in the window and avoaction overlapping"
 msgstr ""
 "Распореди ги иконите подобро да одговараат на екранот за де се одбегне "
@@ -4370,9 +4372,8 @@ msgid "An invalid drag type was used."
 msgstr "An invalid drag type was used."
 
 #: src/file-manager/fm-icon-view.c:2842
-#, fuzzy
 msgid "_Icons"
-msgstr "Икони"
+msgstr "_Икони"
 
 #: src/file-manager/fm-list-view.c:1571
 #, c-format
@@ -4396,9 +4397,8 @@ msgid "Select the columns visible in this folder"
 msgstr "Одберете ги колоните видливи за оваа папка"
 
 #: src/file-manager/fm-list-view.c:2280
-#, fuzzy
 msgid "_List"
-msgstr "Листа"
+msgstr "_Листа"
 
 #: src/file-manager/fm-properties-window.c:478
 msgid "You can't assign more than one custom icon at a time!"
@@ -4475,7 +4475,7 @@ msgid "unreadable"
 msgstr "нечитливо"
 
 #: src/file-manager/fm-properties-window.c:1820
-#, fuzzy, c-format
+#, c-format
 msgid "%d item, with size %s"
 msgstr "%d предмет, со големина од %s"
 
@@ -4790,7 +4790,7 @@ msgid ""
 "console may fix the problem. If not, you can try rebooting the computer or "
 "installing Nautilus again."
 msgstr ""
-"Наутилус не може да се користи во моментов. Со извршување на командатум "
+"Наутилус не може да се користи во моментов. Со извршување на командата "
 "\"bonobo-slay\" од конзолата можеби ќе се поправи проблемот. Ако и тоа не "
 "успее, обидете се да го рестартирате компјутерот или повторно да го "
 "инсталирате Наутилус."
@@ -5434,21 +5434,13 @@ msgid "ISO Speed Rating"
 msgstr ""
 
 #: src/nautilus-image-properties-page.c:242
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
 msgstr ""
-"<b>Тип на слика:</b> %s (%s)\n"
-"<b>Резолуција:</b> %dx%d пиксел\n"
-"<b>Тип на слика:</b> %s (%s)\n"
-"<b>Резолуција:</b> %dx%d пиксели\n"
-"<b>Тип на слика:</b> %s (%s)\n"
-"<b>Резолуција:</b> %dx%d пиксели\n"
-"<b>Тип на слика:</b> %s (%s)\n"
-"<b>Резолуција:</b> %dx%d пиксел\n"
 "<b>Тип на слика:</b> %s (%s)\n"
 "<b>Резолуција:</b> %dx%d пиксели\n"
 "<b>Тип на слика:</b> %s (%s)\n"
@@ -5506,9 +5498,9 @@ msgid "Go To:"
 msgstr "Оди До:"
 
 #: src/nautilus-location-bar.c:154
-#, fuzzy, c-format
+#, c-format
 msgid "Do you want to view %d location?"
-msgstr "Дали сакате да прегледате %d локација?"
+msgstr "Дали сакате да ја видите локацијата %d?"
 
 #: src/nautilus-location-bar.c:170
 msgid "View in Multiple Windows?"
@@ -5641,15 +5633,13 @@ msgstr "_Обележувачи"
 
 #. name, stock id, label
 #: src/nautilus-navigation-window-menus.c:541
-#, fuzzy
 msgid "Open New _Window"
-msgstr "Отвори во нов прозорец"
+msgstr "Отвори во нов _прозорец"
 
 #. name, stock id, label
 #: src/nautilus-navigation-window-menus.c:542
-#, fuzzy
 msgid "Open another Nautilus window for the displayed location"
-msgstr "Искористи ја стандардната позадина за оваа локација"
+msgstr "Отвори уште еден прозорец за прикажаната локација"
 
 #: src/nautilus-navigation-window-menus.c:544
 msgid "Close _All Windows"
@@ -6020,19 +6010,16 @@ msgid "Content View"
 msgstr "Преглед на содржина"
 
 #: src/nautilus-window-manage-views.c:986
-#, fuzzy
 msgid "View of the current folder"
-msgstr "Поглед од тековната датотека или папка"
+msgstr "Поглед од тековната папка"
 
 #: src/nautilus-window-manage-views.c:1347
-#, fuzzy
 msgid "Nautilus has no installed viewer capable of displaying the folder."
-msgstr "Наутилус нема инсталиран прегледувач за прикажување на датотеката."
+msgstr "Наутилус нема инсталиран прегледувач за прикажување на папката."
 
 #: src/nautilus-window-manage-views.c:1353
-#, fuzzy
 msgid "The location is not a folder."
-msgstr "Локацијата \"%s\" не постои."
+msgstr "Локацијата не е папка"
 
 #: src/nautilus-window-manage-views.c:1380
 #, c-format
@@ -6234,9 +6221,8 @@ msgstr "Врзи се со серверот..."
 
 #. label, accelerator
 #: src/nautilus-window-menus.c:627
-#, fuzzy
 msgid "Set up a connection to a network server"
-msgstr "Направи постојана врска до овој сервер"
+msgstr "Постави врска до мрежен сервер"
 
 #. name, stock id
 #: src/nautilus-window-menus.c:630
@@ -6245,9 +6231,8 @@ msgstr "_Дома"
 
 #. label, accelerator
 #: src/nautilus-window-menus.c:631
-#, fuzzy
 msgid "Go to the home folder"
-msgstr "Оди до папката за ѓубре"
+msgstr "Оди до домашниот директориум"
 
 #. name, stock id
 #: src/nautilus-window-menus.c:634
@@ -6256,19 +6241,16 @@ msgstr "_Компјутер"
 
 #. label, accelerator
 #: src/nautilus-window-menus.c:635
-#, fuzzy
 msgid "Go to the computer location"
-msgstr "Оди на локацијата дома"
+msgstr "Оди до компјутерот"
 
 #. name, stock id
 #: src/nautilus-window-menus.c:638
-#, fuzzy
 msgid "T_emplates"
-msgstr "_Мостри"
+msgstr "М_остри"
 
 #. label, accelerator
 #: src/nautilus-window-menus.c:639
-#, fuzzy
 msgid "Go to the templates folder"
 msgstr "Оди до папката за мостри"
 
@@ -6318,13 +6300,12 @@ msgid "Zoom Out"
 msgstr "Одзумирај"
 
 #: src/nautilus-zoom-control.c:87
-#, fuzzy
 msgid "Zoom to Default"
-msgstr "Зумирај да собере"
+msgstr "Врати на стандардно"
 
 #: src/nautilus-zoom-control.c:99
 msgid "Show in the default detail level"
-msgstr ""
+msgstr "Покажи со стандардно ниво на детали"
 
 #: src/nautilus-zoom-control.c:802
 msgid "Zoom"
@@ -6624,9 +6605,9 @@ msgstr "Гледај ги твоите мрежни сервери во Наут
 #~ msgstr "Пробај да го собереш во прозорец"
 
 #~ msgid ""
-#~ "Are you sure you want to permanently delete the %d selected item?Are you "
-#~ "sure you want to permanently delete the %d selected items?"
-#~ msgstr "Дали сакате трајно да отстраните %d означен предмет?"
+#~ "Are you sure you want to permanently delete the %d selected item?Are you
+#~  sure you want to permanently delete the %d selected items?"
+#~ msgstr "Дали сакате трајно да отстраните %d означен предмет? Дали сте сигурни дека сакате трано да отстраните %d предмети?"
 
 #~ msgid ""
 #~ "Are you sure you want to permanently delete the %d selected item from the "
