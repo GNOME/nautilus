@@ -45,6 +45,7 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtkcheckmenuitem.h>
+#include <gtk/gtkclipboard.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkselection.h>
@@ -171,7 +172,6 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-static GdkAtom clipboard_atom;
 static GdkAtom copied_files_atom;
 
 static gboolean show_delete_command_auto_value;
@@ -236,9 +236,6 @@ struct FMDirectoryViewDetails
 	gboolean send_selection_change_to_shell;
 
 	NautilusFile *file_monitored_for_open_with;
-
-	GList *clipboard_contents;
-	gboolean clipboard_contents_were_cut;
 };
 
 typedef enum {
@@ -258,6 +255,14 @@ typedef struct {
 	NautilusFile *file;
 	WindowChoice choice;
 } ActivateParameters;
+
+enum {
+	GNOME_COPIED_FILES
+};
+
+static const GtkTargetEntry clipboard_targets[] = {
+	{ "x-special/gnome-copied-files", 0, GNOME_COPIED_FILES },
+};
 
 /* forward declarations */
 
@@ -1196,14 +1201,6 @@ fm_directory_view_init (FMDirectoryView *view)
 
 	view->details->non_ready_files = g_hash_table_new (NULL, NULL);
 
-	/* We need to have our own X window so that cut, copy, and
-	 * paste work. The window is created by our realize method,
-	 * but we also have to do this additional set-up here.
-	 */
-	GTK_WIDGET_UNSET_FLAGS (view, GTK_NO_WINDOW);
-	gtk_selection_add_target (GTK_WIDGET (view), clipboard_atom,
-				  copied_files_atom, 0);
-	
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (view),
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
@@ -1283,13 +1280,6 @@ fm_directory_view_init (FMDirectoryView *view)
 }
 
 static void
-forget_clipboard_contents (FMDirectoryView *view)
-{
-	nautilus_file_list_free (view->details->clipboard_contents);
-	view->details->clipboard_contents = NULL;
-}
-
-static void
 fm_directory_view_destroy (GtkObject *object)
 {
 	FMDirectoryView *view;
@@ -1356,8 +1346,6 @@ fm_directory_view_finalize (GObject *object)
 					 click_policy_changed_callback, view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
 					 sort_directories_first_changed_callback, view);
-
-	forget_clipboard_contents (view);
 
 	g_hash_table_destroy (view->details->non_ready_files);
 
@@ -3935,27 +3923,73 @@ create_popup_menu (FMDirectoryView *view, const char *popup_path)
 	return menu;
 }
 
+static char *
+convert_file_list_to_string (GList *files,
+			     gboolean cut)
+{
+	GString *uris;
+	GList *node;
+	char *uri, *result;
+
+	uris = g_string_new (cut ? "cut" : "copy");
+	
+	for (node = files; node != NULL; node = node->next) {
+		uri = nautilus_file_get_uri (node->data);
+		g_string_append_c (uris, '\n');
+		g_string_append (uris, uri);
+		g_free (uri);
+	}
+
+	result = uris->str;
+	g_string_free (uris, FALSE);
+
+	return result;
+}
+
+static void
+get_clipboard_callback (GtkClipboard     *clipboard,
+			GtkSelectionData *selection_data,
+			guint             info,
+			gpointer          user_data_or_owner)
+{
+	char *str = user_data_or_owner;
+
+	gtk_selection_data_set (selection_data,
+				copied_files_atom,
+				8,
+				str,
+				strlen (str));
+}
+
+static void
+clear_clipboard_callback (GtkClipboard *clipboard,
+			  gpointer      user_data_or_owner)
+{
+	g_free (user_data_or_owner);
+}
+
 static void
 copy_or_cut_files (FMDirectoryView *view,
 		   gboolean cut)
 {
 	int count;
 	char *status_string, *name;
+	GList *clipboard_contents;
+	char *clipboard_string;
+	
+	clipboard_contents = fm_directory_view_get_selection (view);
 
-	if (!gtk_selection_owner_set (GTK_WIDGET (view),
-				      clipboard_atom,
-				      gtk_get_current_event_time ())) {
-		return;
-	}
-
-	nautilus_file_list_free (view->details->clipboard_contents);
-	view->details->clipboard_contents
-		= fm_directory_view_get_selection (view);
-	view->details->clipboard_contents_were_cut = cut;
-
-	count = g_list_length (view->details->clipboard_contents);
+	clipboard_string = convert_file_list_to_string (clipboard_contents, cut);
+	
+	gtk_clipboard_set_with_data (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD),
+				     clipboard_targets, G_N_ELEMENTS (clipboard_targets),
+				     get_clipboard_callback, clear_clipboard_callback,
+				     clipboard_string);
+	
+	
+	count = g_list_length (clipboard_contents);
 	if (count == 1) {
-		name = nautilus_file_get_display_name (view->details->clipboard_contents->data);
+		name = nautilus_file_get_display_name (clipboard_contents->data);
 		if (cut) {
 			status_string = g_strdup_printf (_("\"%s\" will be moved "
 							   "if you select the Paste Files command"),
@@ -3977,6 +4011,8 @@ copy_or_cut_files (FMDirectoryView *view,
 							 count);
 		}
 	}
+	nautilus_file_list_free (clipboard_contents);
+	
 	nautilus_view_report_status (view->details->nautilus_view,
 				     status_string);
 	g_free (status_string);
@@ -3996,69 +4032,6 @@ cut_files_callback (BonoboUIComponent *component,
 		    const char *verb)
 {
 	copy_or_cut_files (callback_data, TRUE);
-}
-
-static void
-paste_files_callback (BonoboUIComponent *component,
-		      gpointer callback_data,
-		      const char *verb)
-{
-	gtk_selection_convert (GTK_WIDGET (callback_data), 
-			       clipboard_atom, 
-			       copied_files_atom,
-			       gtk_get_current_event_time ());
-}
-
-static gboolean
-real_selection_clear_event (GtkWidget *widget,
-			    GdkEventSelection *event)
-{
-	FMDirectoryView *view;
-
-	view = FM_DIRECTORY_VIEW (widget);
-
-	if (!gtk_selection_clear (widget, event)) {
-		return FALSE;
-	}
-
-	forget_clipboard_contents (view);
-
-	nautilus_view_report_status (view->details->nautilus_view, "");
-
-	return TRUE;
-}
-
-static void
-real_selection_get (GtkWidget *widget,
-		    GtkSelectionData *selection_data,
-		    guint info,
-		    guint time)
-{
-	FMDirectoryView *view;
-	GString *uris;
-	GList *node;
-	char *uri;
-
-	view = FM_DIRECTORY_VIEW (widget);
-
-	uris = g_string_new (view->details->clipboard_contents_were_cut
-			     ? "cut" : "copy");
-
-	for (node = view->details->clipboard_contents;
-	     node != NULL; node = node->next) {
-		uri = nautilus_file_get_uri (node->data);
-		g_string_append_c (uris, '\n');
-		g_string_append (uris, uri);
-		g_free (uri);
-	}
-
-	gtk_selection_data_set (selection_data,
-				copied_files_atom,
-				8,
-				uris->str,
-				uris->len);
-
-	g_string_free (uris, TRUE);
 }
 
 static GList *
@@ -4087,9 +4060,9 @@ convert_lines_to_str_list (char **lines, gboolean *cut)
 }
 
 static void
-real_selection_received (GtkWidget *widget,
-			 GtkSelectionData *selection_data,
-			 guint time)
+clipboard_received_callback (GtkClipboard     *clipboard,
+			     GtkSelectionData *selection_data,
+			     gpointer          data)
 {
 	FMDirectoryView *view;
 	char **lines;
@@ -4097,8 +4070,8 @@ real_selection_received (GtkWidget *widget,
 	GList *item_uris;
 	char *view_uri;
 
-	view = FM_DIRECTORY_VIEW (widget);
-
+	view = FM_DIRECTORY_VIEW (data);
+	
 	if (selection_data->type != copied_files_atom
 	    || selection_data->length <= 0) {
 		item_uris = NULL;
@@ -4125,9 +4098,17 @@ real_selection_received (GtkWidget *widget,
 						   0, 0,
 						   view);
 	}
+}
 
-	eel_g_list_free_deep (item_uris);
-	g_free (view_uri);
+static void
+paste_files_callback (BonoboUIComponent *component,
+		      gpointer callback_data,
+		      const char *verb)
+{
+	gtk_clipboard_request_contents (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD),
+					copied_files_atom,
+					clipboard_received_callback,
+					callback_data);
 }
 
 static void
@@ -5651,38 +5632,7 @@ monitor_file_for_open_with (FMDirectoryView *view, NautilusFile *file)
 	}
 }
 
-static void
-real_realize (GtkWidget *widget)
-{
-	GdkWindowAttr attributes;
-	
-	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
-	
-	attributes.x = widget->allocation.x;
-	attributes.y = widget->allocation.y;
-	attributes.width = widget->allocation.width;
-	attributes.height = widget->allocation.height;
-	attributes.window_type = GDK_WINDOW_CHILD;
-	attributes.wclass = GDK_INPUT_OUTPUT;
-	attributes.visual = gtk_widget_get_visual (widget);
-	attributes.colormap = gtk_widget_get_colormap (widget);
-	attributes.event_mask = gtk_widget_get_events (widget)
-		| GDK_BUTTON_MOTION_MASK
-		| GDK_BUTTON_PRESS_MASK
-		| GDK_BUTTON_RELEASE_MASK
-		| GDK_EXPOSURE_MASK
-		| GDK_ENTER_NOTIFY_MASK
-		| GDK_LEAVE_NOTIFY_MASK;
-	
-	widget->window = gdk_window_new (gtk_widget_get_parent_window (widget),
-					 &attributes,
-					 GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP);
-	gdk_window_set_user_data (widget->window, widget);
-	
-	widget->style = gtk_style_attach (widget->style, widget->window);
-	gtk_style_set_background (widget->style, widget->window, GTK_STATE_NORMAL);
-}
-
+#if 0
 static void
 real_size_allocate (GtkWidget *widget,
 		    GtkAllocation *allocation)
@@ -5705,7 +5655,7 @@ real_size_allocate (GtkWidget *widget,
 					allocation->width, allocation->height);
 	}
 }
-
+#endif
 static void
 real_sort_files (FMDirectoryView *view, GList **files)
 {
@@ -5730,11 +5680,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 	G_OBJECT_CLASS (klass)->finalize = fm_directory_view_finalize;
 	GTK_OBJECT_CLASS (klass)->destroy = fm_directory_view_destroy;
 
-	widget_class->realize = real_realize;
-	widget_class->selection_clear_event = real_selection_clear_event;
-	widget_class->selection_get = real_selection_get;
-	widget_class->selection_received = real_selection_received;
-	widget_class->size_allocate = real_size_allocate;
+//	widget_class->size_allocate = real_size_allocate;
 
 	/* Get rid of the strange 3-pixel gap that GtkScrolledWindow
 	 * uses by default. It does us no good.
@@ -5846,6 +5792,5 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, set_selection);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, zoom_to_level);
 
-	clipboard_atom = gdk_atom_intern ("CLIPBOARD", FALSE);
 	copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
 }

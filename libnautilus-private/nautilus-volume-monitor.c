@@ -1712,7 +1712,6 @@ nautilus_volume_free (NautilusVolume *volume)
 static void
 nautilus_file_system_type_free (NautilusFileSystemType *type)
 {
-	g_print ("freeing: %s\n", type->name);
 	g_free (type->name);
 	g_free (type->default_volume_name);
 	g_free (type);
