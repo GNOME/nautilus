@@ -36,6 +36,7 @@
 #include "ntl-miniicon.h"
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libnautilus/nautilus-gtk-extensions.h>
+#include "nautilus-zoom-control.h"
 
 static void nautilus_window_realize (GtkWidget *widget);
 static void nautilus_window_real_set_content_view (NautilusWindow *window, NautilusView *new_view);
@@ -415,7 +416,7 @@ nautilus_window_constructed(NautilusWindow *window)
 {
   GnomeApp *app;
   GtkWidget *location_bar_box, *statusbar;
-  GtkWidget *temp_frame;
+  GtkWidget *temp_frame, *zoom_control;
   
   app = GNOME_APP(window);
 
@@ -435,16 +436,22 @@ nautilus_window_constructed(NautilusWindow *window)
   window->ent_uri = explorer_location_bar_new();
   gtk_signal_connect(GTK_OBJECT(window->ent_uri), "location_changed",
                      nautilus_window_goto_uri_cb, window);
-  gtk_box_pack_start(GTK_BOX(location_bar_box), window->ent_uri, TRUE, TRUE, GNOME_PAD);
+  gtk_box_pack_start(GTK_BOX(location_bar_box), window->ent_uri, TRUE, TRUE, GNOME_PAD_SMALL);
   gnome_app_add_docked(app, location_bar_box, "uri-entry",
   					   GNOME_DOCK_ITEM_BEH_EXCLUSIVE|GNOME_DOCK_ITEM_BEH_NEVER_VERTICAL,
                        GNOME_DOCK_TOP, 2, 0, 0);
 
   /* Option menu for content view types; it's empty here, filled in when a uri is set. */
   window->option_cvtype = gtk_option_menu_new();
-  gtk_box_pack_end(GTK_BOX(location_bar_box), window->option_cvtype, FALSE, FALSE, GNOME_PAD_BIG);
+  gtk_box_pack_end(GTK_BOX(location_bar_box), window->option_cvtype, FALSE, FALSE, GNOME_PAD_SMALL);
   gtk_widget_show(window->option_cvtype);
 
+  /* allocate the zoom control and place on the right next to the menu */
+  
+  zoom_control = nautilus_zoom_control_new();
+  gtk_widget_show(zoom_control);
+  gtk_box_pack_end(GTK_BOX(location_bar_box), zoom_control, FALSE, FALSE, 0);
+  
   gtk_widget_show_all(location_bar_box);
 
   /* set up status bar */

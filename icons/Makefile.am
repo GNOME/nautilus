@@ -21,6 +21,7 @@ icon_DATA =					\
 	i-zipdisk2.png				\
 	multi-ok.png				\
 	not.png					\
-	nautilus3.jpg
+	nautilus3.jpg				\
+	zoom.png
 
 EXTRA_DIST = $(icon_DATA)

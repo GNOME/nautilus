@@ -32,6 +32,8 @@ nautilus_SOURCES=			\
 	nautilus-bookmarks-window.h	\
         nautilus-self-check-functions.c \
         nautilus-self-check-functions.h \
+	nautilus-zoom-control.c		\
+	nautilus-zoom-control.h		\
 	ntl-app.c			\
 	ntl-app.h			\
 	ntl-content-view.c		\
