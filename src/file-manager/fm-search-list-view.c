@@ -491,7 +491,7 @@ real_get_column_specification (FMListView *view,
 	case 1:
 		fm_list_view_column_set (specification,
 					 "name", _("Name"),
-					 NAUTILUS_FILE_SORT_BY_NAME,
+					 NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
 					 30, 150, 300, FALSE);
 		break;
 	case 2:

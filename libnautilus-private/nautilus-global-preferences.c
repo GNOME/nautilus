@@ -156,7 +156,7 @@ static EelEnumerationEntry default_folder_viewer_enum_entries[] = {
 static EelEnumerationEntry default_icon_view_sort_order_enum_entries[] = {
 	{ "manually",	       N_("Manually"),		    PREFERENCES_SORT_ORDER_MANUALLY },
 	{ "--------",             "--------" },
-	{ "name",	       N_("By Name"),		    NAUTILUS_FILE_SORT_BY_NAME },
+	{ "name",	       N_("By Name"),		    NAUTILUS_FILE_SORT_BY_DISPLAY_NAME },
 	{ "size",	       N_("By Size"),		    NAUTILUS_FILE_SORT_BY_SIZE },
 	{ "type",	       N_("By Type"),		    NAUTILUS_FILE_SORT_BY_TYPE },
 	{ "modification_date", N_("By Modification Date"),  NAUTILUS_FILE_SORT_BY_MTIME }, 
@@ -165,7 +165,7 @@ static EelEnumerationEntry default_icon_view_sort_order_enum_entries[] = {
 };
 
 static EelEnumerationEntry default_list_view_sort_order_enum_entries[] = {
-	{ "name",	       N_("By Name"),		    NAUTILUS_FILE_SORT_BY_NAME },
+	{ "name",	       N_("By Name"),		    NAUTILUS_FILE_SORT_BY_DISPLAY_NAME },
 	{ "size",	       N_("By Size"),		    NAUTILUS_FILE_SORT_BY_SIZE },
 	{ "type",	       N_("By Type"),		    NAUTILUS_FILE_SORT_BY_TYPE },
 	{ "modification_date", N_("By Modification Date"),  NAUTILUS_FILE_SORT_BY_MTIME }, 
@@ -596,14 +596,14 @@ static const PreferenceDefault preference_defaults[] = {
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,
 	  PREFERENCE_INTEGER,
 	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_NAME) },
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_DISPLAY_NAME) },
 	  { USER_LEVEL_NONE },
 	  "default_icon_view_sort_order"
 	},
 	{ NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER_OR_MANUAL_LAYOUT,
 	  PREFERENCE_INTEGER,
 	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_NAME) },
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_DISPLAY_NAME) },
 	  { USER_LEVEL_NONE },
 	  "default_icon_view_sort_order"
 	},
@@ -650,7 +650,7 @@ static const PreferenceDefault preference_defaults[] = {
 	{ NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER,
 	  PREFERENCE_INTEGER,
 	  EEL_USER_LEVEL_NOVICE,
-	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_NAME) },
+	  { EEL_USER_LEVEL_NOVICE, GINT_TO_POINTER (NAUTILUS_FILE_SORT_BY_DISPLAY_NAME) },
 	  { USER_LEVEL_NONE },
 	  "default_list_view_sort_order"
 	},
@@ -1063,7 +1063,7 @@ default_icon_view_sort_order_or_manual_layout_changed_callback (gpointer callbac
 	if (default_sort_order_or_manual_layout != PREFERENCES_SORT_ORDER_MANUALLY) {
 		default_sort_order = default_sort_order_or_manual_layout;
 
-		g_return_if_fail (default_sort_order >= NAUTILUS_FILE_SORT_BY_NAME);
+		g_return_if_fail (default_sort_order >= NAUTILUS_FILE_SORT_BY_DISPLAY_NAME);
 		g_return_if_fail (default_sort_order <= NAUTILUS_FILE_SORT_BY_EMBLEMS);
 
 		eel_preferences_set_integer (NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_SORT_ORDER,

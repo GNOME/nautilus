@@ -1512,7 +1512,7 @@ compare_by_size (NautilusFile *file_1, NautilusFile *file_2)
 }
 
 static int
-compare_by_name (NautilusFile *file_1, NautilusFile *file_2)
+compare_by_display_name (NautilusFile *file_1, NautilusFile *file_2)
 {
 	char *name_1, *name_2;
 	gboolean sort_last_1, sort_last_2;
@@ -1781,7 +1781,7 @@ compare_by_full_path (NautilusFile *file_1, NautilusFile *file_2)
 	if (compare != 0) {
 		return compare;
 	}
-	return compare_by_name (file_1, file_2);
+	return compare_by_display_name (file_1, file_2);
 }
 
 static int
@@ -1795,8 +1795,8 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file_2), 0);
 
 	switch (sort_type) {
-	case NAUTILUS_FILE_SORT_BY_NAME:
-		compare = compare_by_name (file_1, file_2);
+	case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
+		compare = compare_by_display_name (file_1, file_2);
 		if (compare != 0) {
 			return compare;
 		}
@@ -5053,21 +5053,21 @@ nautilus_file_list_copy (GList *list)
 }
 
 static int
-compare_by_name_cover (gconstpointer a, gconstpointer b)
+compare_by_display_name_cover (gconstpointer a, gconstpointer b)
 {
-	return compare_by_name (NAUTILUS_FILE (a), NAUTILUS_FILE (b));
+	return compare_by_display_name (NAUTILUS_FILE (a), NAUTILUS_FILE (b));
 }
 
 /**
- * nautilus_file_list_sort_by_name
+ * nautilus_file_list_sort_by_display_name
  * 
  * Sort the list of files by file name.
  * @list: GList of files.
  **/
 GList *
-nautilus_file_list_sort_by_name (GList *list)
+nautilus_file_list_sort_by_display_name (GList *list)
 {
-	return g_list_sort (list, compare_by_name_cover);
+	return g_list_sort (list, compare_by_display_name_cover);
 }
 
 /* Extract the top left part of the read-in text. */
@@ -5215,12 +5215,12 @@ nautilus_self_check_file (void)
 	EEL_CHECK_INTEGER_RESULT (GTK_OBJECT (file_1)->ref_count, 1);
 	EEL_CHECK_INTEGER_RESULT (GTK_OBJECT (file_2)->ref_count, 1);
 
-	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_2, NAUTILUS_FILE_SORT_BY_NAME, FALSE, FALSE) < 0, TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_2, NAUTILUS_FILE_SORT_BY_NAME, FALSE, TRUE) > 0, TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME, FALSE, FALSE) == 0, TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME, TRUE, FALSE) == 0, TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME, FALSE, TRUE) == 0, TRUE);
-	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_NAME, TRUE, TRUE) == 0, TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_2, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, FALSE, FALSE) < 0, TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_2, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, FALSE, TRUE) > 0, TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, FALSE, FALSE) == 0, TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, TRUE, FALSE) == 0, TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, FALSE, TRUE) == 0, TRUE);
+	EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, TRUE, TRUE) == 0, TRUE);
 
 	nautilus_file_unref (file_1);
 	nautilus_file_unref (file_2);

@@ -1038,7 +1038,7 @@ desktop_icons_compare_callback (NautilusIconContainer *container,
 
 	if (category_a == category_b) {
 		return nautilus_file_compare_for_sort 
-			(file_a, file_b, NAUTILUS_FILE_SORT_BY_NAME, 
+			(file_a, file_b, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, 
 			 fm_directory_view_should_sort_directories_first (FM_DIRECTORY_VIEW (icon_view)), 
 			 FALSE);
 	}

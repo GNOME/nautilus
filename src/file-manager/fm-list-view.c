@@ -418,7 +418,7 @@ compare_rows_by_name (gconstpointer a, gconstpointer b, void *callback_data)
 	return nautilus_file_compare_for_sort
 		(NAUTILUS_FILE (row1->data),
 		 NAUTILUS_FILE (row2->data),
-		 NAUTILUS_FILE_SORT_BY_NAME,
+		 NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
 		 FALSE, FALSE);
 }
 
@@ -2222,7 +2222,7 @@ static char *
 get_attribute_from_sort_type (NautilusFileSortType sort_type)
 {
 	switch (sort_type) {
-	case NAUTILUS_FILE_SORT_BY_NAME:
+	case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
 		return g_strdup ("name");
 	case NAUTILUS_FILE_SORT_BY_SIZE:
 		return g_strdup ("size");
@@ -2277,7 +2277,7 @@ real_get_column_specification (FMListView *view,
 	case 1:
 		fm_list_view_column_set (specification,
 					 "name", _("Name"),
-					 NAUTILUS_FILE_SORT_BY_NAME,
+					 NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
 					 30, 170, 300, FALSE);
 		break;
 	case 2:

@@ -900,7 +900,7 @@ ctree_compare_rows (EelCList *clist,
 		file2 = node2 ? nautilus_tree_node_get_file (node2) : NULL;
 
 		if (file1 != NULL && file2 != NULL) {
-			result = nautilus_file_compare_for_sort (file1, file2, NAUTILUS_FILE_SORT_BY_NAME, FALSE, FALSE);
+			result = nautilus_file_compare_for_sort (file1, file2, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, FALSE, FALSE);
 		}
 	}
 

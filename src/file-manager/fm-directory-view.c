@@ -3680,7 +3680,7 @@ update_directory_in_scripts_menu (FMDirectoryView *view, NautilusDirectory *dire
 				  NULL);
 	g_free (directory_uri);
 
-	file_list = nautilus_file_list_sort_by_name
+	file_list = nautilus_file_list_sort_by_display_name
 		(nautilus_directory_get_file_list (directory));
 
 	any_scripts = FALSE;

@@ -52,7 +52,7 @@ typedef struct NautilusFile NautilusFile;
 
 typedef enum {
 	NAUTILUS_FILE_SORT_NONE,
-	NAUTILUS_FILE_SORT_BY_NAME,
+	NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
 	NAUTILUS_FILE_SORT_BY_DIRECTORY,
 	NAUTILUS_FILE_SORT_BY_SIZE,
 	NAUTILUS_FILE_SORT_BY_TYPE,
@@ -301,7 +301,7 @@ GList *                 nautilus_file_list_ref                          (GList  
 void                    nautilus_file_list_unref                        (GList                          *file_list);
 void                    nautilus_file_list_free                         (GList                          *file_list);
 GList *                 nautilus_file_list_copy                         (GList                          *file_list);
-GList *			nautilus_file_list_sort_by_name			(GList				*file_list);
+GList *			nautilus_file_list_sort_by_display_name		(GList				*file_list);
 
 /* Debugging */
 void                    nautilus_file_dump                              (NautilusFile                   *file);

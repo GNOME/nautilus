@@ -1,3 +1,33 @@
+2001-10-04  Darin Adler  <darin@bentspoon.com>
+
+	A bit more renaming to be explicit about "display name".
+	This is slightly gratuitious, because we don't really need to be
+	explicit about which name in every case, but it does no harm and
+	a tiny bit of good.
+
+	* components/tree/nautilus-tree-view.c: (ctree_compare_rows):
+	* libnautilus-private/nautilus-file.c: (compare_by_display_name),
+	(compare_by_full_path), (nautilus_file_compare_for_sort_internal),
+	(compare_by_display_name_cover),
+	(nautilus_file_list_sort_by_display_name),
+	(nautilus_self_check_file):
+	* libnautilus-private/nautilus-file.h:
+	* libnautilus-private/nautilus-global-preferences.c:
+	(default_icon_view_sort_order_or_manual_layout_changed_callback):
+	* src/file-manager/fm-desktop-icon-view.c:
+	(desktop_icons_compare_callback):
+	* src/file-manager/fm-directory-view.c:
+	(update_directory_in_scripts_menu):
+	* src/file-manager/fm-icon-view.c: (get_default_sort_order),
+	(icon_container_compare_icons_by_name_callback):
+	* src/file-manager/fm-list-view.c: (compare_rows_by_name),
+	(get_attribute_from_sort_type), (real_get_column_specification):
+	* src/file-manager/fm-search-list-view.c:
+	(real_get_column_specification):
+	Change NAUTILUS_FILE_SORT_BY_NAME to NAUTILUS_FILE_SORT_BY_DISPLAY_NAME
+	and compare_by_name to compare_by_display_name and
+	nautilus_file_list_sort_by_name to nautilus_file_list_sort_by_display_name.
+
 2001-10-04  Maciej Stachowiak  <mjs@noisehavoc.org>
 
 	* libnautilus-private/nautilus-file-attributes.h,

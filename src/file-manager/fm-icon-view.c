@@ -181,7 +181,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (FMIconView,
  */
 static const SortCriterion sort_criteria[] = {
 	{
-		NAUTILUS_FILE_SORT_BY_NAME,
+		NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
 		"name",
 		"Sort by Name",
 		N_("by _Name"),
@@ -603,7 +603,7 @@ fm_icon_view_get_directory_sort_by (FMIconView *icon_view,
 		 get_directory_sort_by, (icon_view, file));
 }
 
-static NautilusFileSortType default_sort_order = NAUTILUS_FILE_SORT_BY_NAME;
+static NautilusFileSortType default_sort_order = NAUTILUS_FILE_SORT_BY_DISPLAY_NAME;
 
 static NautilusFileSortType
 get_default_sort_order (void)
@@ -616,7 +616,7 @@ get_default_sort_order (void)
 						       (int *) &default_sort_order);
 	}
 
-	return CLAMP (default_sort_order, NAUTILUS_FILE_SORT_BY_NAME, NAUTILUS_FILE_SORT_BY_EMBLEMS);
+	return CLAMP (default_sort_order, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, NAUTILUS_FILE_SORT_BY_EMBLEMS);
 }
 
 static char *
@@ -1765,7 +1765,7 @@ icon_container_compare_icons_by_name_callback (NautilusIconContainer *container,
 	g_assert (NAUTILUS_IS_FILE (file_a));
 	g_assert (NAUTILUS_IS_FILE (file_b));
 
-	result = nautilus_file_compare_for_sort (file_a, file_b, NAUTILUS_FILE_SORT_BY_NAME,
+	result = nautilus_file_compare_for_sort (file_a, file_b, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
 		 				 FALSE, FALSE);
 
 	return result;
