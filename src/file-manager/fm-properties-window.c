@@ -355,7 +355,8 @@ rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_da
 		new_name = window->details->pending_name;
 		fm_report_error_renaming_file (file, 
 					       window->details->pending_name, 
-					       result);
+					       result,
+					       GTK_WINDOW (window));
 		/* This can trigger after window destroy, before finalize. */
 		if (!GTK_OBJECT_DESTROYED (window)) {
 			name_field_restore_original_name (window->details->name_field);
@@ -667,7 +668,7 @@ group_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer callb
 	
 	/* Report the error if it's an error. */
 	nautilus_timed_wait_stop (cancel_group_change_callback, file);
-	fm_report_error_setting_group (file, result);
+	fm_report_error_setting_group (file, result, NULL);
 	nautilus_file_unref (file);
 }
 
@@ -826,7 +827,7 @@ owner_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer callb
 	
 	/* Report the error if it's an error. */
 	nautilus_timed_wait_stop (cancel_owner_change_callback, file);
-	fm_report_error_setting_owner (file, result);
+	fm_report_error_setting_owner (file, result, NULL);
 	nautilus_file_unref (file);
 }
 
@@ -1705,7 +1706,7 @@ permission_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer 
 	g_assert (callback_data == NULL);
 	
 	/* Report the error if it's an error. */
-	fm_report_error_setting_permissions (file, result);
+	fm_report_error_setting_permissions (file, result, NULL);
 }
 
 static void

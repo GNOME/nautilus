@@ -3,7 +3,7 @@
 /* fm-directory-view.c
  *
  * Copyright (C) 1999, 2000  Free Software Foundaton
- * Copyright (C) 2000  Eazel, Inc.
+ * Copyright (C) 2000, 2001  Eazel, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -30,6 +30,7 @@
 #include "fm-directory-view.h"
 
 #include "fm-desktop-icon-view.h"
+#include "fm-error-reporting.h"
 #include "fm-properties-window.h"
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-zoomable.h>
@@ -140,6 +141,7 @@ struct FMDirectoryViewDetails
 	gboolean loading;
 	gboolean menus_merged;
 	gboolean menu_states_untrustworthy;
+	gboolean reported_load_error;
 
 	gboolean show_hidden_files;
 	gboolean show_backup_files;
@@ -199,6 +201,8 @@ static void                load_directory                                       
 										   gboolean              force_reload);
 static void                fm_directory_view_merge_menus                          (FMDirectoryView      *view);
 static void                real_file_limit_reached                                (FMDirectoryView      *view);
+static void		   real_load_error					  (FMDirectoryView 	*view,
+										   GnomeVFSResult	 result);
 static void                real_merge_menus                                       (FMDirectoryView      *view);
 static void                real_update_menus                                      (FMDirectoryView      *view);
 static gboolean            real_is_read_only                                      (FMDirectoryView      *view);
@@ -346,6 +350,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	klass->supports_zooming = real_supports_zooming;
 	klass->supports_properties = real_supports_properties;
 	klass->file_limit_reached = real_file_limit_reached;
+	klass->load_error = real_load_error;
 	klass->reveal_selection = NULL;
 
 	/* Function pointers that subclasses must override */
@@ -1990,6 +1995,26 @@ load_error_callback (NautilusDirectory *directory,
 	gtk_signal_emit (GTK_OBJECT (view), signals[LOAD_ERROR], load_error_code);
 }
 
+static void
+real_load_error (FMDirectoryView *view, GnomeVFSResult result)
+{
+	g_assert (result != GNOME_VFS_OK);
+
+	/* Report only one error per failed directory load (from the UI
+	 * point of view, not from the NautilusDirectory point of view).
+	 * Otherwise you can get multiple identical errors caused by 
+	 * unrelated code that just happens to try to iterate this
+	 * directory.
+	 */
+	if (!view->details->reported_load_error) {
+		fm_report_error_loading_directory 
+			(fm_directory_view_get_directory_as_file (view), 
+			 result,
+			 fm_directory_view_get_containing_window (view));
+	}
+	view->details->reported_load_error = TRUE;
+}
+
 /**
  * fm_directory_queue_notice_file_change
  * 
@@ -3497,7 +3522,8 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		 * the security risk of executing arbitrary commands. */	
 		if (!nautilus_file_is_local (file)) {
 			nautilus_show_error_dialog (_("Sorry, but you can't execute commands from a remote site due to security considerations."), 
-						    _("Can't execute remote links"), NULL);
+						    _("Can't execute remote links"),
+						    fm_directory_view_get_containing_window (view));
 			action = ACTIVATION_ACTION_DO_NOTHING;
 		} else {
 			/* as an additional security precaution, we only execute commands without
@@ -3733,6 +3759,7 @@ load_directory (FMDirectoryView *view,
 	nautilus_file_unref (old_file);
 
 	view->details->force_reload = force_reload;
+	view->details->reported_load_error = FALSE;
 
 	/* FIXME bugzilla.eazel.com 5062: In theory, we also need to monitor metadata here (as
          * well as doing a call when ready), in case external forces

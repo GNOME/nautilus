@@ -614,44 +614,6 @@ location_has_really_changed (NautilusWindow *window)
         update_title (window);
 }
 
-static gboolean
-handle_unreadable_location (NautilusWindow *window, const char *location)
-{
-	NautilusFile *file;
-	gboolean unreadable;
-	char *file_name;
-        char *message;
-
-	/* An empty location doesn't jibe with our logic. It will
-	 * work if there are any characters (even just one space).
-         */
-	if (location[0] == '\0') {
-		return TRUE;
-	}
-	
-	/* FIXME bugzilla.eazel.com 866: Can't expect to read the
-	 * permissions instantly here. We might need to wait for
-	 * a stat first.
-	 */
-	file = nautilus_file_get (location);
-
-	/* If it's gone, it doesn't count as unreadable, and will be handled
-	 * by the normal missing-uri mechanism.
-	 */
-	unreadable = !nautilus_file_is_gone (file) && !nautilus_file_can_read (file);
-
-	if (unreadable) {
-		file_name = nautilus_file_get_name (file);
-        	message = g_strdup_printf (_("You do not have the permissions necessary to view \"%s\"."), file_name);
-                g_free (file_name);
-                nautilus_show_error_dialog (message, _("Inadequate Permissions"), GTK_WINDOW (window));
-                g_free (message);
-	}
-
-	nautilus_file_unref (file);
-
-	return unreadable;
-}
 
 static NautilusWindow *
 get_topmost_nautilus_window (void)
@@ -683,10 +645,6 @@ open_location (NautilusWindow *window,
         NautilusWindow *target_window;
         gboolean create_new_window;
         
-        if (handle_unreadable_location (window, location)) {
-		return;
-        }
-
         target_window = window;
         create_new_window = force_new_window;
 

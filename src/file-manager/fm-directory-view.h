@@ -2,7 +2,7 @@
 /* fm-directory-view.h
  *
  * Copyright (C) 1999, 2000  Free Software Foundaton
- * Copyright (C) 2000  Eazel, Inc.
+ * Copyright (C) 2000, 2001  Eazel, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -19,7 +19,10 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * Author: Ettore Perazzoli
+ * Authors: Ettore Perazzoli
+ * 	    Darin Adler <darin@eazel.com>
+ * 	    John Sullivan <sullivan@eazel.com>
+ *          Pavel Cisler <pavel@eazel.com>
  */
 
 #ifndef FM_DIRECTORY_VIEW_H
@@ -125,10 +128,12 @@ struct FMDirectoryViewClass {
 	void 	(* end_loading) 	 (FMDirectoryView *view);
 
 	/* The 'load_error' signal is emitted when the directory model
-	   reports an error in the process of monitoring the directory's
-	   contents.  The load error indicates that the process of 
-	   load the contents has ended, but the directory is still
-	   being monitored*/
+	 * reports an error in the process of monitoring the directory's
+	 * contents.  The load error indicates that the process of 
+	 * loading the contents has ended, but the directory is still
+	 * being monitored. The default implementation handles common
+	 * load failures like ACCESS_DENIED.
+	 */
 	void    (* load_error)           (FMDirectoryView *view,
 					  GnomeVFSResult result);
 
