@@ -24,15 +24,11 @@
  *
  */
 
-#include <dirent.h>
-#include <stdio.h>
-#include <sys/stat.h>
-#include <time.h>
-
-#include <gnome.h>
-#include "nautilus.h"
 #include "ntl-index-panel.h"
+
+#include "ntl-meta-view.h"
 #include <libgnomevfs/gnome-vfs-uri.h>
+#include <libnautilus/nautilus-background.h>
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/nautilus-string.h>
 
@@ -49,7 +45,6 @@ static void nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragC
 						     GtkSelectionData *selection_data,
 						     guint info, guint time);
 
-static void nautilus_index_panel_set_up_background (NautilusIndexPanel *index_panel, const gchar *background_data);
 static void nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const gchar* new_uri);
 static void nautilus_index_panel_set_up_label (NautilusIndexPanel *index_panel, const gchar *uri);
 static void nautilus_index_panel_set_up_logo (NautilusIndexPanel *index_panel, const gchar *logo_path);
@@ -132,8 +127,6 @@ nautilus_index_panel_initialize (gpointer object, gpointer klass)
 	gtk_drag_dest_set (GTK_WIDGET (index_panel),
 			   GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP, 
 			   index_dnd_target_table, ARRAY_LENGTH (index_dnd_target_table), GDK_ACTION_COPY);
-
-	index_panel->background = nautilus_background_new ();
 }
 
 static void
@@ -154,8 +147,6 @@ nautilus_index_panel_finalize (GtkObject *object)
 	index_panel = NAUTILUS_INDEX_PANEL (object);
 
 	g_free (index_panel->uri);
-	if (index_panel->background != NULL)
-		gtk_object_unref (GTK_OBJECT (index_panel->background));
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, finalize, (object));
 }
@@ -176,13 +167,14 @@ nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 {
 	char *color_spec;
 	guint16 *data;
+	NautilusBackground *background;
 
 	g_return_if_fail (NAUTILUS_IS_INDEX_PANEL (widget));
 
 	switch (info)
 		{
 		case TARGET_URI_LIST: 	
-			printf("dropped data on index panel: %s", selection_data->data);
+			g_message("dropped data on index panel: %s", selection_data->data);
       
 			/* handle background images and keywords soon */
   			
@@ -198,7 +190,8 @@ nautilus_index_panel_drag_data_received (GtkWidget *widget, GdkDragContext *cont
 		case TARGET_COLOR:
 			data = (guint16 *)selection_data->data;
 			color_spec = g_strdup_printf ("rgb:%04hX/%04hX/%04hX", data[0], data[1], data[2]);
-			nautilus_index_panel_set_up_background (NAUTILUS_INDEX_PANEL (widget), color_spec);
+			background = nautilus_get_widget_background (widget);
+			nautilus_background_set_color (background, color_spec);
 			g_free (color_spec);
 			break;
       
@@ -243,24 +236,6 @@ void nautilus_index_panel_remove_meta_view (NautilusIndexPanel *index_panel, Nau
 	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (index_panel->meta_tabs), GTK_WIDGET (meta_view));
 	g_return_if_fail (page_num >= 0);
 	gtk_notebook_remove_page (GTK_NOTEBOOK (index_panel->meta_tabs), page_num);
-}
-
-/* set up the index panel's background. Darin's background stuff will soon replace this,
-   but for now just set up the color */
-
-void nautilus_index_panel_set_up_background (NautilusIndexPanel *index_panel, const gchar *background_data)
-{
-	GdkColor temp_color;
-	GtkStyle *temp_style;
-
-	gdk_color_parse (background_data, &temp_color);          
-	gdk_color_alloc (gtk_widget_get_colormap (GTK_WIDGET (index_panel)), &temp_color);			
-	temp_style = gtk_style_new();
-	temp_style->bg[GTK_STATE_NORMAL] = temp_color;
-	gtk_widget_set_style (GTK_WIDGET (index_panel),
-			      gtk_style_attach (temp_style, GTK_WIDGET (index_panel)->window));
-
-	nautilus_background_set_color (index_panel->background, background_data);
 }
 
 /* set up the logo image */
@@ -373,8 +348,11 @@ nautilus_index_panel_set_up_label (NautilusIndexPanel *index_panel, const gchar 
 
 void nautilus_index_panel_set_up_info (NautilusIndexPanel *index_panel, const gchar* new_uri)
 {
+	NautilusBackground *background;
+	
 	/* set up the background from the metadata.  At first, just use hardwired backgrounds */
-	nautilus_index_panel_set_up_background (index_panel, "rgb:DDDD/DDDD/FFFF");
+	background = nautilus_get_widget_background (GTK_WIDGET (index_panel));
+	nautilus_background_set_color (background, "rgb:DDDD/DDDD/FFFF");
 	
 	/* next, install the logo image. */
 	/* For now, just use a fixed folder image */	

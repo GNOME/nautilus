@@ -84,8 +84,7 @@ nautilus_background_canvas_group_draw (GnomeCanvasItem *item, GdkDrawable *drawa
 	NautilusBackground *background;
 
 	/* Draw the background. */
-	background = nautilus_background_canvas_group_get_background
-		(NAUTILUS_BACKGROUND_CANVAS_GROUP (item));
+	background = nautilus_get_widget_background(GTK_WIDGET (item->canvas));
 	if (background != NULL) {
 		GdkGC *gc;
 		GdkColormap *colormap;
@@ -123,32 +122,4 @@ nautilus_background_canvas_group_draw (GnomeCanvasItem *item, GdkDrawable *drawa
 				    (item, drawable,
 				     drawable_corner_x, drawable_corner_y,
 				     drawable_width, drawable_height));
-}
-
-NautilusBackground *
-nautilus_background_canvas_group_get_background (NautilusBackgroundCanvasGroup *canvas_group)
-{
-	gpointer data;
-
-	data = gtk_object_get_data (GTK_OBJECT (canvas_group), "nautilus_background");
-	g_assert (data == NULL || NAUTILUS_IS_BACKGROUND (data));
-	return data;
-}
-
-void
-nautilus_background_canvas_group_set_background (NautilusBackgroundCanvasGroup *canvas_group,
-						 NautilusBackground *background)
-{
-	NautilusBackground *old_background;
-
-	g_return_if_fail (NAUTILUS_IS_BACKGROUND_CANVAS_GROUP (canvas_group));
-	g_return_if_fail (background == NULL || NAUTILUS_IS_BACKGROUND (background));
-
-	old_background = nautilus_background_canvas_group_get_background (canvas_group);
-	gtk_object_set_data (GTK_OBJECT (canvas_group), "nautilus_background", background);
-
-	if (background != NULL)
-		gtk_object_ref (GTK_OBJECT (background));
-	if (old_background != NULL)
-		gtk_object_unref (GTK_OBJECT (old_background));
 }

@@ -33,11 +33,25 @@
 #include "nautilus-background-canvas-group.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-gtk-macros.h"
+#include "nautilus-string.h"
 
-static void nautilus_background_initialize_class (gpointer klass);
-static void nautilus_background_initialize (gpointer object, gpointer klass);
-static void nautilus_background_destroy (GtkObject *object);
-static void nautilus_background_finalize (GtkObject *object);
+static void nautilus_background_initialize_class (gpointer       klass);
+static void nautilus_background_initialize       (gpointer       object,
+						  gpointer       klass);
+static void nautilus_background_destroy          (GtkObject     *object);
+static void nautilus_background_finalize         (GtkObject     *object);
+
+static void nautilus_background_draw_flat_box    (GtkStyle      *style,
+						  GdkWindow     *window,
+						  GtkStateType   state_type,
+						  GtkShadowType  shadow_type,
+						  GdkRectangle  *area,
+						  GtkWidget     *widget,
+						  gchar         *detail,
+						  gint           x,
+						  gint           y,
+						  gint           width,
+						  gint           height);
 
 NAUTILUS_DEFINE_GET_TYPE_FUNCTION (NautilusBackground, nautilus_background, GTK_TYPE_OBJECT)
 
@@ -155,11 +169,124 @@ nautilus_background_set_color (NautilusBackground *background,
 	gtk_signal_emit (GTK_OBJECT (background), signals[CHANGED]);
 }
 
-void
-nautilus_background_attach_to_canvas (NautilusBackground *background,
-				      GnomeCanvas *canvas)
+static GtkStyleClass *
+nautilus_gtk_style_get_default_class (void)
 {
-	/* Since there's no signal to override in GnomeCanvas to control
+	static GtkStyleClass *default_class;
+
+	if (default_class == NULL) {
+		GtkStyle *style;
+
+		style = gtk_style_new ();
+		default_class = style->klass;
+		gtk_style_unref (style);
+	}
+
+	return default_class;
+}
+
+static void nautilus_gdk_window_update_sizes (GdkWindow *window, int *width, int *height)
+{
+	g_return_if_fail (window != NULL);
+	g_return_if_fail (width != NULL);
+	g_return_if_fail (height != NULL);
+
+	if (*width == -1 && *height == -1)
+		gdk_window_get_size (window, width, height);
+	else if (*width == -1)
+		gdk_window_get_size (window, width, NULL);
+	else if (*height == -1)
+		gdk_window_get_size (window, NULL, height);
+}
+
+static void nautilus_background_draw_flat_box    (GtkStyle      *style,
+						  GdkWindow     *window,
+						  GtkStateType   state_type,
+						  GtkShadowType  shadow_type,
+						  GdkRectangle  *area,
+						  GtkWidget     *widget,
+						  gchar         *detail,
+						  gint           x,
+						  gint           y,
+						  gint           width,
+						  gint           height)
+{
+	gboolean call_parent;
+	NautilusBackground *background;
+
+	call_parent = TRUE;
+
+	background = nautilus_get_widget_background (widget);
+	if (background != NULL) {
+		if (nautilus_gradient_is_gradient (background->details->color))
+			call_parent = FALSE;
+	}
+
+	if (!call_parent)
+		g_warning ("gradient fills not yet hooked up in nautilus_background");
+
+	(* nautilus_gtk_style_get_default_class()->draw_flat_box)
+		(style, window, state_type, shadow_type, area, widget,
+		 detail, x, y, width, height);
+}
+
+static GtkStyleClass *
+nautilus_background_get_gtk_style_class (void)
+{
+	static GtkStyleClass *klass;
+
+	if (klass == NULL) {
+		static GtkStyleClass klass_storage;
+
+		klass = &klass_storage;
+		*klass = *nautilus_gtk_style_get_default_class ();
+
+		klass->draw_flat_box = nautilus_background_draw_flat_box;
+	}
+
+	return klass;
+}
+
+static void
+nautilus_background_set_widget_style (NautilusBackground *background,
+				      GtkWidget *widget)
+{
+	GtkStyle *style;
+	char *start_color_spec;
+	
+	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+	
+	style = gtk_widget_get_style (widget);
+	g_return_if_fail(style->klass == nautilus_gtk_style_get_default_class ()
+			 || style->klass == nautilus_background_get_gtk_style_class ());
+	
+	/* Make a copy of the style. */
+	style = gtk_style_copy (style);
+	
+	/* Give it the special class that allows it to draw gradients. */
+	style->klass = nautilus_background_get_gtk_style_class ();
+
+	/* Set up the colors in the style. */
+	start_color_spec = nautilus_gradient_get_start_color_spec (background->details->color);
+	nautilus_gdk_color_parse_with_white_default
+		(start_color_spec, &style->bg[GTK_STATE_NORMAL]);
+	g_free (start_color_spec);
+	
+	/* Put the style in the widget. */
+	gtk_widget_set_style (widget, style);
+	gtk_style_unref (style);
+}
+
+static void
+nautilus_background_set_up_canvas (GtkWidget *widget)
+{
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+
+	/* Attach ourselves to a canvas in a way that will work.
+	   Changing the style is not sufficient.
+
+	   Since there's no signal to override in GnomeCanvas to control
 	   drawing the background, we change the class of the canvas root.
 	   This gives us a chance to draw the background before any of the
 	   objects draw themselves, and has no effect on the bounds or
@@ -169,16 +296,57 @@ nautilus_background_attach_to_canvas (NautilusBackground *background,
 	   canvas item as the background. The canvas item contributed to
 	   the bounds of the canvas and had to constantly be resized.
 	*/
+	if (GNOME_IS_CANVAS (widget)) {
+		g_assert (GTK_OBJECT (GNOME_CANVAS (widget)->root)->klass
+			  == gtk_type_class (GNOME_TYPE_CANVAS_GROUP)
+			  || GTK_OBJECT (GNOME_CANVAS (widget)->root)->klass
+			  == gtk_type_class (NAUTILUS_TYPE_BACKGROUND_CANVAS_GROUP));
 
-	g_return_if_fail (NAUTILUS_IS_BACKGROUND (background));
-	g_return_if_fail (GNOME_IS_CANVAS (canvas));
+		GTK_OBJECT (GNOME_CANVAS (widget)->root)->klass =
+			gtk_type_class (NAUTILUS_TYPE_BACKGROUND_CANVAS_GROUP);
+	}
+}
 
-	g_assert (GTK_OBJECT (canvas->root)->klass == gtk_type_class (GNOME_TYPE_CANVAS_GROUP)
-		  || GTK_OBJECT (canvas->root)->klass == gtk_type_class (NAUTILUS_TYPE_BACKGROUND_CANVAS_GROUP));
+static void
+nautilus_widget_background_changed (GtkWidget *widget, NautilusBackground *background)
+{
+	nautilus_background_set_widget_style (background, widget);
+	nautilus_background_set_up_canvas (widget);
 
-	GTK_OBJECT (canvas->root)->klass = gtk_type_class (NAUTILUS_TYPE_BACKGROUND_CANVAS_GROUP);
+	gtk_widget_queue_clear (widget);
+}
 
-	nautilus_background_canvas_group_set_background (NAUTILUS_BACKGROUND_CANVAS_GROUP (canvas->root), background);
+NautilusBackground *
+nautilus_get_widget_background (GtkWidget *widget)
+{
+	gpointer data;
+	NautilusBackground *background;
+	GtkStyle *old_style;
+	GtkStyle *new_style;
+
+	g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
+
+	/* Check for an existing background. */
+	data = gtk_object_get_data (GTK_OBJECT (widget), "nautilus_background");
+	if (data != NULL) {
+		g_assert (NAUTILUS_IS_BACKGROUND (data));
+		return data;
+	}
+
+	/* Store the background in the widget's data. */
+	background = nautilus_background_new ();
+	gtk_object_set_data_full (GTK_OBJECT (widget), "nautilus_background",
+				  background, (GtkDestroyNotify) gtk_object_unref);
+	gtk_object_ref (GTK_OBJECT (background));
+	gtk_object_sink (GTK_OBJECT (background));
+
+	/* Arrange to get the signal whenever the background changes. */
+	gtk_signal_connect_object_while_alive (GTK_OBJECT (background), "changed",
+					       nautilus_widget_background_changed,
+					       GTK_OBJECT (widget));
+	nautilus_widget_background_changed (widget, background);
+
+	return background;
 }
 
 /* self check code */
@@ -197,6 +365,8 @@ nautilus_self_check_background (void)
 	nautilus_background_set_color (background, "red");
 	nautilus_background_set_color (background, "red-blue");
 	nautilus_background_set_color (background, "red-blue:h");
+
+	gtk_object_unref (GTK_OBJECT (background));
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

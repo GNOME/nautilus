@@ -26,10 +26,8 @@
 #ifndef NTL_INDEX_PANEL_H
 #define NTL_INDEX_PANEL_H
 
-#include <gdk/gdk.h>
-#include <gtk/gtkwidget.h>
-#include "nautilus.h"
-#include <libnautilus/nautilus-background.h>
+#include <gtk/gtkeventbox.h>
+#include "ntl-view.h"
 
 typedef struct _NautilusIndexPanel NautilusIndexPanel;
 typedef struct _NautilusIndexPanelClass  NautilusIndexPanelClass;
@@ -52,7 +50,6 @@ struct _NautilusIndexPanel
 	GtkWidget *per_uri_container;
 	GtkWidget *meta_tabs;
 	gchar *uri;
-	NautilusBackground *background;
 };
 
 struct _NautilusIndexPanelClass

@@ -33,10 +33,15 @@
    The color or gradient is always present, even if there's a tiled image
    on top of it. This is used when the tiled image can't be loaded for
    some reason (or just has not been loaded yet).
+
+   The NautilusBackground object is easier to modify than a GtkStyle.
+   You can just call nautilus_get_window_background and modify the
+   returned background directly, unlike a style, which must be copied,
+   modified and then set.
 */
 
 #include <gdk/gdktypes.h>
-#include <libgnomeui/gnome-canvas.h>
+#include <gtk/gtkwidget.h>
 
 typedef struct _NautilusBackground NautilusBackground;
 typedef struct _NautilusBackgroundClass NautilusBackgroundClass;
@@ -69,9 +74,17 @@ void                nautilus_background_draw               (NautilusBackground *
 							    GdkColormap        *colormap,
 							    const GdkRectangle *rectangle);
 
-void                nautilus_background_attach_to_canvas   (NautilusBackground *background,
-							    GnomeCanvas        *canvas);
+/* Gets the background attached to a widget.
 
+   If the widget doesn't already have a NautilusBackground object,
+   this will create one. To change the widget's background, you can
+   just call nautilus_background methods on the widget.
+
+   Later, we might want a call to find out if we already have a background,
+   or a way to share the same background among multiple widgets; both would
+   be straightforward.
+*/
+NautilusBackground *nautilus_get_widget_background         (GtkWidget          *widget);
 
 typedef struct _NautilusBackgroundDetails NautilusBackgroundDetails;
 

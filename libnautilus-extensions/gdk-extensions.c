@@ -391,7 +391,7 @@ void
 nautilus_gdk_color_parse_with_white_default (const char *color_spec,
 					     GdkColor *color)
 {
-	if (!gdk_color_parse (color_spec, color)) {
+	if (color_spec == NULL || !gdk_color_parse (color_spec, color)) {
 		color->red = 0xFFFF;
 		color->green = 0xFFFF;
 		color->blue = 0xFFFF;

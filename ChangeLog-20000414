@@ -1,3 +1,54 @@
+2000-01-11  Darin Adler  <darin@eazel.com>
+
+	NautilusBackground is now used for the index panel background.
+
+	* libnautilus/nautilus-background.c:
+	(nautilus_background_attach_to_canvas):
+	(nautilus_get_widget_background):
+	(nautilus_gtk_style_get_default_class):
+	(nautilus_gdk_window_update_sizes):
+	(nautilus_background_draw_flat_box):
+	(nautilus_background_get_gtk_style_class):
+	(nautilus_background_set_widget_style):
+	(nautilus_background_set_up_canvas):
+	(nautilus_widget_background_changed):
+	(nautilus_get_widget_background):
+	Added new code that changes the background of a widget by
+	modifying the GtkStyle. For solid colors and tiled images we
+	can just modify the GtkStyle. For gradients we need to make
+	a GtkStyle subclass.
+	
+	* libnautilus/nautilus-background.h:
+	(nautilus_background_attach_to_canvas):
+	(nautilus_get_widget_background):
+	Changed the old interface that was canvas-specific, to a new one
+	that allows attacking a background to any widget.
+
+	* src/ntl-index-panel.h:
+	Now that the background is attached to the widget, we don't need
+	a background field in NautilusIndexPanel.
+
+	* src/ntl-index-panel.c:
+	(nautilus_index_panel_set_up_background)
+	(nautilus_index_panel_finalize):
+	(nautilus_index_panel_drag_data_received):
+	(nautilus_index_panel_set_up_info):
+	Changed the index panel to use NautilusBackground.
+
+	* libnautilus/nautilus-background-canvas-group.h:
+	libnautilus/nautilus-background-canvas-group.c:
+	(nautilus_background_canvas_group_get_background):
+	(nautilus_background_canvas_group_set_background):
+	Moved the code that manages the background object out of the
+	canvas group code, since we can now attach a background to
+	any widget.
+
+	* libnautilus/gdk-extensions.c:
+	(nautilus_gdk_color_parse_with_white_default): Changed this helper
+	to accept NULLs and return the default instead of prohibiting
+	NULL. This is consistent with the gradient's use of NULL to
+	represent the default color.
+
 2000-01-11  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus/nautilus-gtk-extensions.h:

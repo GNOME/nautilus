@@ -27,6 +27,7 @@
 #define NAUTILUS_BACKGROUND_CANVAS_GROUP_H
 
 #include "nautilus-background.h"
+#include <libgnomeui/gnome-canvas.h>
 
 /* A NautilusBackgroundCanvasGroup is used internally by NautilusBackground to change
    the color of a canvas. The reason we have to change the class of a canvas group is
@@ -55,8 +56,5 @@ typedef GnomeCanvasGroupClass NautilusBackgroundCanvasGroupClass;
 	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_BACKGROUND_CANVAS_GROUP))
 
 GtkType             nautilus_background_canvas_group_get_type       (void);
-NautilusBackground *nautilus_background_canvas_group_get_background (NautilusBackgroundCanvasGroup *root);
-void                nautilus_background_canvas_group_set_background (NautilusBackgroundCanvasGroup *root,
-								     NautilusBackground            *background);
 
 #endif /* NAUTILUS_BACKGROUND_CANVAS_GROUP_H */
