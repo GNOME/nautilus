@@ -898,11 +898,6 @@ nautilus_window_unrealize (GtkWidget *widget)
 		window->details->throbber_property_bag = CORBA_OBJECT_NIL;
 	}
 
-	if (window->details->throbber_listener != CORBA_OBJECT_NIL) {
-		CORBA_Object_release (window->details->throbber_listener, NULL);
-		window->details->throbber_listener = CORBA_OBJECT_NIL;
-	}
-
 	GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
 }
 

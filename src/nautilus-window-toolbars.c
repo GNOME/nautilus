@@ -289,47 +289,6 @@ create_back_or_forward_toolbar_item (NautilusWindow *window,
 	return item;
 }
 
-static gboolean
-location_change_at_idle_callback (gpointer callback_data)
-{
-	NautilusWindow *window;
-	char *location;
-
-	window = NAUTILUS_WINDOW (callback_data);
-
-	location = window->details->location_to_change_to_at_idle;
-	window->details->location_to_change_to_at_idle = NULL;
-	window->details->location_change_at_idle_id = 0;
-
-	nautilus_window_go_to (window, location);
-	g_free (location);
-
-	return FALSE;
-}
-
-/* handle bonobo events from the throbber -- since they can come in at
-   any time right in the middle of things, defer until idle */
-static void 
-throbber_callback (BonoboListener *listener,
-		   const char *event_name, 
-		   const CORBA_any *arg,
-		   CORBA_Environment *ev,
-		   gpointer callback_data)
-{
-	NautilusWindow *window;
-
-	window = NAUTILUS_WINDOW (callback_data);
-
-	g_free (window->details->location_to_change_to_at_idle);
-	window->details->location_to_change_to_at_idle = g_strdup (
-		BONOBO_ARG_GET_STRING (arg));
-
-	if (window->details->location_change_at_idle_id == 0) {
-		window->details->location_change_at_idle_id =
-			gtk_idle_add (location_change_at_idle_callback, window);
-	}
-}
-
 static void
 throbber_set_throbbing (NautilusWindow *window,
 			gboolean        throbbing)
@@ -381,12 +340,6 @@ throbber_created_callback (Bonobo_Unknown     throbber,
 	} else {
 		throbber_set_throbbing (window, window->details->throbber_active);
 	}
-
-	window->details->throbber_listener =
-		bonobo_event_source_client_add_listener_full
-		(window->details->throbber_property_bag,
-		 g_cclosure_new (G_CALLBACK (throbber_callback), window, NULL), 
-		 "Bonobo/Property:change:location", ev);
 
 	bonobo_object_release_unref (throbber, ev);
 

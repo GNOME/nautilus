@@ -63,9 +63,6 @@ struct NautilusThrobberDetails {
 	
 	gboolean ready;
 	gboolean small_mode;
-
-	gboolean button_in;
-	gboolean button_down;
 };
 
 
@@ -109,18 +106,6 @@ get_bonobo_properties (BonoboPropertyBag *bag,
 	{
 		BONOBO_ARG_SET_BOOLEAN (arg, throbber->details->timer_task != 0);
 		break;
-	}
-
-	case LOCATION:
-	{
-		char *location = nautilus_theme_get_theme_data ("throbber", "url");
-		if (location != NULL) {
-			BONOBO_ARG_SET_STRING (arg, location);
-			g_free (location);
-		} else {
-			BONOBO_ARG_SET_STRING (arg, "");			
-		}
-		
 	}
 
 		default:
@@ -246,8 +231,6 @@ nautilus_throbber_instance_init (NautilusThrobber *throbber)
 
 	bonobo_property_bag_add (throbber->details->property_bag, "throbbing", THROBBING, BONOBO_ARG_BOOLEAN, NULL,
 				 "Throbber active", 0);
-	bonobo_property_bag_add (throbber->details->property_bag, "location", LOCATION, BONOBO_ARG_STRING, NULL,
-				 "associated URL", 0);
 	bonobo_property_bag_add (throbber->details->property_bag, "style", STYLE, BONOBO_ARG_INT, NULL, NULL,
 				 Bonobo_PROPERTY_WRITEABLE);
 	nautilus_throbber_load_images (throbber);
@@ -298,7 +281,7 @@ static int
 nautilus_throbber_expose (GtkWidget *widget, GdkEventExpose *event)
 {
 	NautilusThrobber *throbber;
-	GdkPixbuf *pixbuf, *massaged_pixbuf;
+	GdkPixbuf *pixbuf;
 	int x_offset, y_offset, width, height;
 	GdkRectangle pix_area, dest;
 
@@ -312,17 +295,6 @@ nautilus_throbber_expose (GtkWidget *widget, GdkEventExpose *event)
 	pixbuf = select_throbber_image (throbber);
 	if (pixbuf == NULL) {
 		return FALSE;
-	}
-
-	/* Get the right tint on the image */
-	if (throbber->details->button_in) {
-		if (throbber->details->button_down) {
-			massaged_pixbuf = eel_create_darkened_pixbuf (pixbuf, 0.8 * 255, 0.8 * 255);
-		} else {
-			massaged_pixbuf = eel_create_spotlight_pixbuf (pixbuf);
-		}
-		g_object_unref (pixbuf);
-		pixbuf = massaged_pixbuf;
 	}
 
 	width = gdk_pixbuf_get_width (pixbuf);
@@ -535,97 +507,6 @@ nautilus_throbber_load_images (NautilusThrobber *throbber)
 	g_free (image_theme);
 }
 
-static gboolean
-nautilus_throbber_enter_notify_event (GtkWidget *widget, GdkEventCrossing *event)
-{
-	NautilusThrobber *throbber;
-
-	throbber = NAUTILUS_THROBBER (widget);
-
-	if (!throbber->details->button_in) {
-		throbber->details->button_in = TRUE;
-		gtk_widget_queue_draw (widget);
-	}
-
-	return GNOME_CALL_PARENT_WITH_DEFAULT
-		(GTK_WIDGET_CLASS, enter_notify_event, (widget, event), FALSE);
-}
-
-static gboolean
-nautilus_throbber_leave_notify_event (GtkWidget *widget, GdkEventCrossing *event)
-{
-	NautilusThrobber *throbber;
-
-	throbber = NAUTILUS_THROBBER (widget);
-
-	if (throbber->details->button_in) {
-		throbber->details->button_in = FALSE;
-		gtk_widget_queue_draw (widget);
-	}
-
-	return GNOME_CALL_PARENT_WITH_DEFAULT
-		(GTK_WIDGET_CLASS, leave_notify_event, (widget, event), FALSE);
-}
-
-/* handle button presses by posting a change on the "location" property */
-
-static gboolean
-nautilus_throbber_button_press_event (GtkWidget *widget, GdkEventButton *event)
-{
-	NautilusThrobber *throbber;
-
-	throbber = NAUTILUS_THROBBER (widget);
-
-	if (event->button == 1) {
-		throbber->details->button_down = TRUE;
-		throbber->details->button_in = TRUE;
-		gtk_widget_queue_draw (widget);
-		return TRUE;
-	}
-
-	return GNOME_CALL_PARENT_WITH_DEFAULT
-		(GTK_WIDGET_CLASS, button_press_event, (widget, event), FALSE);
-}
-
-static void
-nautilus_throbber_set_location (NautilusThrobber *throbber)
-{
-	char *location;
-	BonoboArg *location_arg;
-
-	location = nautilus_theme_get_theme_data ("throbber", "url");
-	if (location != NULL) {
-		location_arg = bonobo_arg_new (BONOBO_ARG_STRING);
-		BONOBO_ARG_SET_STRING (location_arg, location);
-		bonobo_event_source_notify_listeners_full (
-			throbber->details->property_bag->es,
-			"Bonobo/Property", "change", "location",
-			location_arg, NULL);
-		bonobo_arg_release (location_arg);
-		g_free (location);
-	}
-}
-
-static gboolean
-nautilus_throbber_button_release_event (GtkWidget *widget, GdkEventButton *event)
-{	
-	NautilusThrobber *throbber;
-	
-	throbber = NAUTILUS_THROBBER (widget);
-
-	if (event->button == 1) {
-		if (throbber->details->button_in) {
-			nautilus_throbber_set_location (throbber);
-		}
-		throbber->details->button_down = FALSE;
-		gtk_widget_queue_draw (widget);
-		return TRUE;
-	}
-	
-	return GNOME_CALL_PARENT_WITH_DEFAULT
-		(GTK_WIDGET_CLASS, button_release_event, (widget, event), FALSE);
-}
-
 void
 nautilus_throbber_set_small_mode (NautilusThrobber *throbber, gboolean new_mode)
 {
@@ -684,10 +565,6 @@ nautilus_throbber_class_init (NautilusThrobberClass *class)
 	G_OBJECT_CLASS (class)->finalize = nautilus_throbber_finalize;
 
 	widget_class->expose_event = nautilus_throbber_expose;
-	widget_class->button_press_event = nautilus_throbber_button_press_event;
-	widget_class->button_release_event = nautilus_throbber_button_release_event;
-	widget_class->enter_notify_event = nautilus_throbber_enter_notify_event;
-	widget_class->leave_notify_event = nautilus_throbber_leave_notify_event;
 	widget_class->size_request = nautilus_throbber_size_request;	
 	widget_class->map = nautilus_throbber_map;
 	widget_class->get_accessible = nautilus_throbber_get_accessible;
@@ -735,94 +612,6 @@ nautilus_throbber_accessible_image_interface_init (AtkImageIface *iface)
 	iface->get_image_size = nautilus_throbber_accessible_image_get_size;
 }
 
-/* AtkAction interface */
-
-enum {
-	ACTION_ACTIVATE,
-	LAST_ACTION
-};
-
-static const char *nautilus_throbber_accessible_action_names[] = {
-	"activate",
-	NULL
-};
-
-static const char *nautilus_throbber_accessible_action_descriptions[] = {
-	"Activate selected items",
-	NULL
-};
-
-
-static gboolean
-nautilus_throbber_accessible_do_action (AtkAction *accessible, int i)
-{
-	GtkWidget *widget;
-
-	g_return_val_if_fail (i < LAST_ACTION, FALSE);
-
-	widget = GTK_ACCESSIBLE (accessible)->widget;
-	if (!widget) {
-		return FALSE;
-	}
-	
-	switch (i) {
-	case ACTION_ACTIVATE :
-		nautilus_throbber_set_location (NAUTILUS_THROBBER (widget));
-		return TRUE;
-	default:
-		return FALSE;
-	}
-}
-
-static int
-nautilus_throbber_accessible_get_n_actions (AtkAction *accessible)
-{
-	return LAST_ACTION;
-}
-
-static const char *
-nautilus_throbber_accessible_action_get_description (AtkAction *accessible, 
-							   int i)
-{
-	g_return_val_if_fail (i < LAST_ACTION, NULL);
-
-	return nautilus_throbber_accessible_action_descriptions[i];
-}
-
-static const char *
-nautilus_throbber_accessible_action_get_name (AtkAction *accessible, int i)
-{
-	g_return_val_if_fail (i < LAST_ACTION, NULL);
-
-	return nautilus_throbber_accessible_action_names [i];
-}
-
-static const char *
-nautilus_throbber_accessible_action_get_keybinding (AtkAction *accessible, 
-						    int        i)
-{
-	return NULL;
-}
-
-static gboolean
-nautilus_throbber_accessible_action_set_description (AtkAction  *accessible, 
-						     int         i, 
-						     const char *description)
-{
-	return FALSE;
-}
-
-static void
-nautilus_throbber_accessible_action_interface_init (AtkActionIface *iface)
-{
-	iface->do_action = nautilus_throbber_accessible_do_action;
-	iface->get_n_actions = nautilus_throbber_accessible_get_n_actions;
-	iface->get_description = nautilus_throbber_accessible_action_get_description;
-	iface->get_name = nautilus_throbber_accessible_action_get_name;
-	iface->get_keybinding = nautilus_throbber_accessible_action_get_keybinding;
-	iface->set_description = nautilus_throbber_accessible_action_set_description;
-}
-
 static GType
 nautilus_throbber_accessible_get_type (void)
 {
@@ -831,12 +620,6 @@ nautilus_throbber_accessible_get_type (void)
 	/* Action interface
 	   Name etc. ... */
         if (!type) {
-                static GInterfaceInfo atk_action_info = {
-                        (GInterfaceInitFunc) nautilus_throbber_accessible_action_interface_init,
-                        (GInterfaceFinalizeFunc) NULL,
-                        NULL
-                };              
-
 		static const GInterfaceInfo atk_image_info = {
 			(GInterfaceInitFunc) nautilus_throbber_accessible_image_interface_init,
 			(GInterfaceFinalizeFunc) NULL,
@@ -848,8 +631,6 @@ nautilus_throbber_accessible_get_type (void)
 			 GTK_TYPE_IMAGE,
 			 nautilus_throbber_accessible_class_init);
 		
-                g_type_add_interface_static (type, ATK_TYPE_ACTION,
-                                             &atk_action_info);
                 g_type_add_interface_static (type, ATK_TYPE_IMAGE,
                                              &atk_image_info);
         }

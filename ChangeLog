@@ -1,3 +1,15 @@
+2002-11-04  Alexander Larsson  <alexl@redhat.com>
+
+	* components/throbber/nautilus-throbber.c: (get_bonobo_properties),
+	(nautilus_throbber_instance_init), (nautilus_throbber_expose),
+	(nautilus_throbber_class_init),
+	(nautilus_throbber_accessible_get_type):
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-toolbars.c: (throbber_created_callback):
+	* src/nautilus-window.c: (nautilus_window_unrealize):
+
+	Remove click-on-throbber. Patch by Jan Arne Petersen <jpetersen@gnome-de.org>
+	
 === nautilus 2.1.2 ===
 
 2002-10-31  Dave Camp  <dave@ximian.com>
