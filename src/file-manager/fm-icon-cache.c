@@ -21,6 +21,8 @@
  */
 
 #ifdef HAVE_CONFIG_H
+#include <string.h>
+#include <stdio.h>
 #include <config.h>
 #endif
 
@@ -336,6 +338,7 @@ fm_icon_cache_get_icon_for_file (FMIconCache  *factory,
                                  guint	       size_in_pixels)
 {
         IconSet *set;
+        const gchar *file_type;
         gboolean is_symbolic_link;
         GdkPixbuf *image;
 
@@ -370,8 +373,18 @@ fm_icon_cache_get_icon_for_file (FMIconCache  *factory,
 
         is_symbolic_link = nautilus_file_is_symbolic_link (file);
 
-        set->last_use = use_counter++;
-        image = fm_icon_cache_load_icon (factory, set, is_symbolic_link);
+		file_type = nautilus_file_get_mime_type(file);
+		if (file_type && (strstr(file_type, "image/") == file_type) && (nautilus_file_get_size(file) < 10000))
+		  {
+		    gchar *path = nautilus_file_get_uri(file);
+		    image = gdk_pixbuf_new_from_file (path + 7);
+		    g_free(path);
+		  }
+		else
+		  {		
+            set->last_use = use_counter++;
+            image = fm_icon_cache_load_icon (factory, set, is_symbolic_link);
+		  }
 
         if (image == NULL) {
                 set = &factory->special_icon_sets[ICON_SET_FALLBACK];
