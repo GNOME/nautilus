@@ -30,6 +30,7 @@
 
 #include <pwd.h>
 #include <sys/types.h>
+#include <sys/vfs.h>
 #include <gnome.h>
 
 #include "installer.h"
@@ -53,13 +54,17 @@ extern char* installer_homedir;
 static int installer_show_build = 0;
 static char *installer_user = NULL;
 
+#define TMPFS_SPACE    	75	/* MB */
+#define ROOTFS_SPACE	75	/* MB */
+
+
 static const struct poptOption options[] = {
 	{"debug", 'd', POPT_ARG_NONE, &installer_debug, 0 , N_("Show debug output"), NULL},
 	{"test", 't', POPT_ARG_NONE, &installer_test, 0, N_("Test the installer without actually installing packages"), NULL},
 	{"force", 'f', POPT_ARG_NONE, &installer_force, 0, N_("Forced install"), NULL},
 	{"local", '\0', POPT_ARG_STRING, &installer_local, 0, N_("Use local RPMs instead of HTTP server"), "XML-file"},
 	{"server", '\0', POPT_ARG_STRING, &installer_server, 0, N_("Specify Eazel installation server"), NULL},
-	{"tmpdir", 'T', POPT_ARG_STRING, &installer_tmpdir, 0, N_("Temporary directory to use for downloaded files (default: /tmp)"), NULL},
+	{"tmpdir", 'T', POPT_ARG_STRING, &installer_tmpdir, 0, N_("Temporary directory to use for downloaded files (default: /tmp)"), "directory"},
 	{"homedir", '\0', POPT_ARG_STRING|POPT_ARGFLAG_DOC_HIDDEN, &installer_homedir, 0, "", NULL},
 	{"user", '\0', POPT_ARG_STRING|POPT_ARGFLAG_DOC_HIDDEN, &installer_user, 0, "", NULL},
 	{"package", '\0', POPT_ARG_STRING, &installer_package, 0 , N_("Install package"), NULL},
@@ -69,6 +74,36 @@ static const struct poptOption options[] = {
 	{"batch", '\0', POPT_ARG_NONE, &installer_dont_ask_questions, 0, N_("Solve installation issues without interaction"), NULL},
 	{NULL, '\0', 0, NULL, 0}
 };
+
+static void
+check_disk_space (void)
+{
+	struct statfs tmp_fs, root_fs;
+	unsigned long tmp_space, root_space;
+
+	if ((statfs (installer_tmpdir, &tmp_fs) != 0) || (statfs ("/", &root_fs) != 0)) {
+		g_warning ("Can't get free space on /tmp or / !");
+		return;
+	}
+
+	tmp_space = tmp_fs.f_bfree / ((1024*1024) / tmp_fs.f_bsize);
+	root_space = root_fs.f_bfree / ((1024*1024) / root_fs.f_bsize);
+
+	if (tmp_space < TMPFS_SPACE) {
+		printf ("\nThere isn't enough free space in %s to try this install.\n", installer_tmpdir);
+		printf ("It is recommended that you have at least %d MB free.\n", TMPFS_SPACE);
+		printf ("You can use the '-T <directory>' command-line option to specify an alternate\n");
+		printf ("temporary directory, if you wish.\n");
+		printf ("\n");
+		exit (1);
+	}
+	if (root_space < ROOTFS_SPACE) {
+		printf ("\nThere isn't enough free space in your root partition to try this install.\n");
+		printf ("It is recommended that you have at least %d MB free.\n", ROOTFS_SPACE);
+		printf ("\n");
+		exit (1);
+	}
+}
 
 int
 main (int argc, char *argv[])
@@ -119,6 +154,8 @@ main (int argc, char *argv[])
 		printf ("    You may need to specify a directory using -T\n");
 		exit (1);
 	}
+
+	check_disk_space ();
 
 	installer = eazel_installer_new ();
 
