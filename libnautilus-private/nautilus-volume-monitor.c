@@ -25,6 +25,8 @@
 /*#define MOUNT_AUDIO_CD 1*/
 
 #include <config.h>
+#include <sys/types.h>
+
 #include "nautilus-volume-monitor.h"
 
 #include "nautilus-cdrom-extensions.h"
@@ -62,7 +64,16 @@
 #include <fstab.h>
 #endif
 
+#ifdef HAVE_MNTENT_H
 #include <mntent.h>
+#endif
+
+#ifdef HAVE_SYS_MNTTAB_H
+#define SOLARIS_MNT 1
+#include <sys/mnttab.h>
+#endif
+
+
 
 #ifdef MOUNT_AUDIO_CD
 
@@ -78,10 +89,45 @@
 
 #define CHECK_STATUS_INTERVAL 2000
 
+#ifdef HAVE_ETC_MNTTAB
+#define PATH_PROC_MOUNTS "/etc/mnttab"
+#define PROC_MOUNTS_SEPARATOR "\t"
+#endif
+
+#ifdef HAVE_PROC_MOUNTS
 #define PATH_PROC_MOUNTS "/proc/mounts"
+#define PROC_MOUNTS_SEPARATOR " "
+#endif
 
 #define FLOPPY_MOUNT_PATH_PREFIX "/mnt/fd"
+
+#ifdef HAVE_VOL_DEV
+#define FLOPPY_DEVICE_PATH_PREFIX "/vol/dev/diskette"
+#else
 #define FLOPPY_DEVICE_PATH_PREFIX "/dev/fd"
+#endif
+
+#ifdef HAVE_SYS_MNTTAB_H
+#define PATH_MOUNT_TABLE "/etc/mnttab"
+#endif
+
+#ifdef HAVE_MNTENT_H
+#define PATH_MOUNT_TABLE _PATH_MNTTAB
+#endif
+
+#ifdef HAVE_VOL
+#  define MNTOPT_NOAUTO "/vol/"
+# else
+#  define MNTOPT_NOAUTO "noauto"
+#endif
+
+#ifndef MNTOPT_RO
+# define MNTOPT_RO "ro"
+#endif
+
+#ifndef HAVE_SETMNTENT
+#define setmntent(f,m) fopen(f,m)
+#endif
 
 struct NautilusVolumeMonitorDetails
 {
@@ -129,6 +175,10 @@ static GList 		*get_removable_volumes 				(void);
 #ifdef MOUNT_AUDIO_CD
 static cdrom_drive 	*open_cdda_device 				(GnomeVFSURI 			*uri);
 static gboolean 	locate_audio_cd 				(void);
+#endif
+
+#ifdef SOLARIS_MNT
+static int get_cdrom_type_solaris(char *vol_dev_path, int* fd) ;
 #endif
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusVolumeMonitor,
@@ -283,22 +333,39 @@ get_removable_volumes (void)
 {
 	FILE *file;
 	GList *volumes;
+#if HAVE_SYS_MNTTAB_H
+        struct mnttab dummy_ent;
+        struct mnttab *ent = &dummy_ent;
+#else
 	struct mntent *ent;
+#endif /* HAVE_SYS_MNTTAB_H */
 	NautilusVolume *volume;
 	
 	volumes = NULL;
 	
-	file = setmntent (_PATH_MNTTAB, "r");
+	file = setmntent (PATH_MOUNT_TABLE, "r");
 	if (file == NULL) {
 		return NULL;
 	}
 	
+#if HAVE_SYS_MNTTAB_H
+	while (! getmntent (file, ent)) {
+		/* On Solaris look for /vol/ for determining a removable volume */
+		if (strstr (ent->mnt_special, MNTOPT_NOAUTO) == ent->mnt_special) {
+			volume = g_new0 (NautilusVolume, 1);
+			volume->device_path = g_strdup (ent->mnt_special);
+			volume->mount_path = g_strdup (ent->mnt_mountp);
+			volume->filesystem = g_strdup (ent->mnt_fstype);
+#else
 	while ((ent = getmntent (file)) != NULL) {
 		if (has_removable_mntent_options (ent)) {
 			volume = g_new0 (NautilusVolume, 1);
 			volume->device_path = g_strdup (ent->mnt_fsname);
 			volume->mount_path = g_strdup (ent->mnt_dir);
 			volume->filesystem = g_strdup (ent->mnt_type);
+
+#endif /* HAVE_SYS_MNTTAB_H */
+
 			volumes = mount_volume_add_filesystem (volume, volumes);
 		}	
 	}
@@ -322,14 +389,32 @@ static gboolean
 volume_is_removable (const NautilusVolume *volume)
 {
 	FILE *file;
-	struct mntent *ent;
+#if HAVE_SYS_MNTTAB_H
+	struct mnttab dummy_ent;
+	struct mnttab *ent = &dummy_ent;
+#else
+     	struct mntent *ent;
+#endif /* HAVE_SYS_MNTTAB_H */
 	
-	file = setmntent (_PATH_MNTTAB, "r");
+	file = setmntent (PATH_MOUNT_TABLE, "r");
 	if (file == NULL) {
 		return FALSE;
 	}
 	
 	/* Search for our device in the fstab */
+#if HAVE_SYS_MNTTAB_H
+	while (!getmntent (file, ent)) {
+		if (strcmp (volume->device_path, ent->mnt_special) == 0) {
+  			/* On Solaris look for /vol/ for determining
+			a removable volume */
+   		 	if (strstr (ent->mnt_special, MNTOPT_NOAUTO) 
+				== ent->mnt_special) {
+				fclose (file);
+				return TRUE;
+			}
+		}	
+	}
+#else
 	while ((ent = getmntent (file)) != NULL) {
 		if (strcmp (volume->device_path, ent->mnt_fsname) == 0
 		    && has_removable_mntent_options (ent)) {
@@ -337,6 +422,8 @@ volume_is_removable (const NautilusVolume *volume)
 			return TRUE;
 		}	
 	}
+
+#endif /* HAVE_SYS_MNTTAB_H */
 	
 	fclose (file);
 	return FALSE;
@@ -346,6 +433,26 @@ static gboolean
 volume_is_read_only (const NautilusVolume *volume)
 {
 	FILE *file;
+
+#if HAVE_SYS_MNTTAB_H
+ 	struct mnttab dummy_ent;
+ 	struct mnttab *ent = &dummy_ent;
+ 	
+ 	file = setmntent (PATH_MOUNT_TABLE, "r");
+ 	if (file == NULL) {
+ 		return FALSE;
+ 	}
+ 
+ 	 /* Search for our device in the fstab */
+ 	 while (!getmntent (file, ent)) {
+ 		if (strcmp (volume->device_path, ent->mnt_special) == 0) {
+ 			if (strstr (ent->mnt_mntopts, MNTOPT_RO) != NULL) {
+ 				fclose (file);
+ 				return TRUE;
+ 			}
+ 		}
+ 	}
+#else
 	struct mntent *ent;
 	
 	file = setmntent (_PATH_MNTTAB, "r");
@@ -360,8 +467,9 @@ volume_is_read_only (const NautilusVolume *volume)
 				fclose (file);
 				return TRUE;
 			}
-		}	
+        	 }
 	}
+#endif
 				
 	fclose (file);
 	return FALSE;
@@ -467,10 +575,16 @@ static void
 mount_volume_get_cdrom_name (NautilusVolume *volume)
 {
 	int fd, disctype;
-	
-	fd = open (volume->device_path, O_RDONLY|O_NONBLOCK);
 
+	#ifdef SOLARIS_MNT
+	disctype = get_cdrom_type_solaris(volume->device_path, &fd);
+
+	#else	
+	fd = open (volume->device_path, O_RDONLY|O_NONBLOCK);
 	disctype = ioctl (fd, CDROM_DISC_STATUS, CDSL_CURRENT);
+
+	#endif
+
 	switch (disctype) {
 	case CDS_AUDIO:
 		volume->volume_name = g_strdup (_("Audio CD"));
@@ -504,17 +618,23 @@ mount_volume_activate_cdda (NautilusVolumeMonitor *monitor, NautilusVolume *volu
 {
 	int fd, disctype;
 
-	fd = open (volume->device_path, O_RDONLY | O_NONBLOCK);
+	#ifdef SOLARIS_MNT
+	disctype = get_cdrom_type_solaris(volume->device_path, &fd);
 
+	#else
+
+	fd = open (volume->device_path, O_RDONLY | O_NONBLOCK);
 	disctype = ioctl (fd, CDROM_DISC_STATUS, CDSL_CURRENT);
+
+	#endif
+
 	switch (disctype) {
 	case CDS_AUDIO:
 		break;
 	default:			
 		break;
   	}
-	
-	close (fd);
+	close(fd);	
 }
 
 
@@ -522,10 +642,15 @@ static void
 mount_volume_activate_cdrom (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 {
 	int fd, disctype;
+	#ifdef SOLARIS_MNT
+	disctype = get_cdrom_type_solaris(volume->device_path, &fd);
 
+	#else
 	fd = open (volume->device_path, O_RDONLY | O_NONBLOCK);
-
 	disctype = ioctl (fd, CDROM_DISC_STATUS, CDSL_CURRENT);
+
+	#endif
+
 	switch (disctype) {
 	case CDS_AUDIO:
 		break;
@@ -692,6 +817,10 @@ eject_device (void *arg)
 	}
 	
 	pthread_exit (NULL);
+
+	/* compilation on Solaris warns of no return 
+	   value on non-void function...so....*/
+	return (void *) 0;
 }
 
 static void
@@ -782,7 +911,7 @@ get_current_mount_list (void)
 
 	while (fgets (line, sizeof(line), fh)) {
 		if (sscanf (line, "%s", device_name) == 1) {
-			list = nautilus_string_list_new_from_tokens (line, " ", FALSE);			
+			list = nautilus_string_list_new_from_tokens (line, PROC_MOUNTS_SEPARATOR, FALSE);			
 			if (list != NULL) {
 				/* The string list needs to have at least 3 items per line.
 				 * We need to find at least device path, mount path and file system type.
@@ -984,6 +1113,45 @@ mount_volume_msdos_add (NautilusVolume *volume)
 	return TRUE;
 }
 
+#ifdef SOLARIS_MNT
+static int get_cdrom_type_solaris(char *vol_dev_path, int* fd) {
+
+	GString *new_dev_path;
+	struct cdrom_tocentry entry;
+	struct cdrom_tochdr	header;
+	gboolean audio;
+
+/* For ioctl call to work dev_path has to be /vol/dev/rdsk.... 
+	there has to be a nicer way to do this. */
+
+	new_dev_path = g_string_new(vol_dev_path);
+	new_dev_path = g_string_insert_c(new_dev_path, 9, 'r');
+
+	
+	*fd = open(new_dev_path, O_RDONLY | O_NONBLOCK);
+
+	ioctl (*fd, CDROMREADTOCHDR, &header);
+	entry.cdte_track = 1;
+	entry.cdte_format = CDROM_LBA;
+	audio = TRUE;
+	while(entry.cdte_track<=header.cdth_trk1 && audio) {
+
+		ioctl (*fd, CDROMREADTOCENTRY, &entry); 
+		if(entry.cdte_ctrl & CDROM_DATA_TRACK) 
+			audio = FALSE;
+		entry.cdte_track++; 
+	}
+
+	g_string_free(new_dev_path, TRUE);
+
+	if(audio)
+		return(CDS_AUDIO);
+
+	return(CDS_DATA_1);
+}
+#endif
+
+
 static void
 cdrom_ioctl_get_info (int fd)
 {
@@ -997,6 +1165,8 @@ mount_volume_iso9660_add (NautilusVolume *volume)
 {
 	int fd;
 
+#ifndef SOLARIS_MNT
+
 	fd = open (volume->device_path, O_RDONLY | O_NONBLOCK);
 	if (fd < 0) {
 		return FALSE;
@@ -1009,6 +1179,7 @@ mount_volume_iso9660_add (NautilusVolume *volume)
 
 	cdrom_ioctl_get_info (fd);
 	close (fd);
+#endif /* #ifndef SOLARIS_MNT */
 
 	volume->type = NAUTILUS_VOLUME_CDROM;
 
@@ -1550,6 +1721,8 @@ mount_volume_add_filesystem (NautilusVolume *volume, GList *volume_list)
 	} else if (strcmp (volume->filesystem, "affs") == 0) {		
 		mounted = mount_volume_affs_add (volume);
 	} else if (strcmp (volume->filesystem, "cdda") == 0) {		
+		mounted = mount_volume_iso9660_add (volume);
+	} else if (strcmp (volume->filesystem, "hsfs") == 0) {	
 		mounted = mount_volume_cdda_add (volume);
 	} else if (strcmp (volume->filesystem, "ext2") == 0) {		
 		mounted = mount_volume_ext2_add (volume);

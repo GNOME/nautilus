@@ -54,10 +54,22 @@ dnl Check for "RedHat-style" font setup
 AM_CONDITIONAL(TYPE1_FONT_DIR_EXISTS, test -d /usr/share/fonts/default/Type1)
 
 dnl Check for different mount systems
-AC_CHECK_FUNCS(setmntent endmntent setenv unsetenv putenv)
-AC_CHECK_HEADERS(sys/mnttab.h sys/vfstab.h)
+echo "
+Determining mount system properties:
+"
+AC_CHECK_FUNCS( setmntent endmntent )
+AC_CHECK_HEADERS( mntent.h sys/mnttab.h sys/vfstab.h sys/cdio.h )
+AC_CHECK_FILES( /dev, AC_DEFINE(HAVE_DEV))
+AC_CHECK_FILES( /vol/dev, AC_DEFINE(HAVE_VOL_DEV))
+AC_CHECK_FILES( /vol, AC_DEFINE(HAVE_VOL))
+AC_CHECK_FILES( /etc/mnttab, AC_DEFINE(HAVE_ETC_MNTTAB))
+AC_CHECK_FILES( /proc/mounts, AC_DEFINE(HAVE_PROC_MOUNTS))
+echo "
+"
 
+AC_CHECK_FUNCS( setenv unsetenv putenv )
 
+dnl ====================================
 
 dnl ====================================
 dnl = Optionally build the installer

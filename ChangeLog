@@ -32,7 +32,26 @@
 	* components/mozilla/nautilus-mozilla-encoding-tables.h:
 	* components/mozilla/nautilus-mozilla-encoding-tables.c:
 	Moved the encoding tables to their own place.
-	
+
+2001-02-22  Seth Nickell  <seth@eazel.com>
+ 
+ 	reviewed by: Gene Z. Ragan <gzr@eazel.com>
+ 
+ 	* acconfig.h:
+ 	* configure.in:
+ 
+ 	Add various mount system checks.
+ 	
+ 	* libnautilus-extensions/nautilus-cdrom-extensions.h:
+ 
+ 	Only do particular #defines for ioctl stuff if the system
+ 	doesn't already define them.
+ 	
+ 	* libnautilus-extensions/nautilus-volume-monitor.c:
+ 
+ 	Add Solaris compatible changes to the volume monitor, making
+ 	it build and function properly on Solaris.
+ 		
 2001-02-22  Gene Z. Ragan  <gzr@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

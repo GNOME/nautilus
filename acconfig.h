@@ -23,3 +23,8 @@
 #undef bzopen
 #undef bzread
 #undef bzwrite
+#undef HAVE_DEV
+#undef HAVE_VOL_DEV
+#undef HAVE_VOL
+#undef HAVE_ETC_MNTTAB
+#undef HAVE_PROC_MOUNTS

@@ -25,6 +25,13 @@
 #ifndef FM_CDROM_EXTENSIONS_H
 #define FM_CDROM_EXTENSIONS_H
 
+
+#ifdef HAVE_SYS_CDIO_H
+
+#include <sys/cdio.h>
+
+#else
+
 /*******************************************************
  * The CD-ROM IOCTL commands  -- these should be supported by 
  * all the various cdrom drivers.  For the CD-ROM ioctls, we 
@@ -80,6 +87,11 @@
  * These ioctls are only used in optcd.c
  */
 #define CDROMREADALL		0x5318	/* read all 2646 bytes */
+
+
+
+#endif /* HAVE_SYS_CDIO_H */
+
 
 /* 
  * These ioctls are (now) only in ide-cd.c for controlling 
