@@ -102,7 +102,8 @@ transfer_info_destroy (TransferInfo *transfer_info)
 	}
 	
 	if (transfer_info->debuting_uris != NULL) {
-		eel_g_hash_table_destroy_deep (transfer_info->debuting_uris);
+		eel_g_hash_table_destroy_deep_custom
+			(transfer_info->debuting_uris, (GFunc) g_free, NULL, NULL, NULL);
 	}
 	
 	g_free (transfer_info);

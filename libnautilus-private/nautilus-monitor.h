@@ -26,6 +26,8 @@
 #ifndef NAUTILUS_MONITOR_H
 #define NAUTILUS_MONITOR_H
 
+#include <glib.h>
+
 typedef struct NautilusMonitor NautilusMonitor;
 
 gboolean         nautilus_monitor_active    (void);

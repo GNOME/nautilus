@@ -1,5 +1,18 @@
 2001-04-19  Darin Adler  <darin@eazel.com>
 
+	Fix bug 8082 (Dragging a file to a treeview destination causes
+	nautilus to freeze):
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(transfer_info_destroy): Destroy the hash table in a way that
+	ignores the values. This is just a loose end from changes I made
+	to the copy machinery a few days back.
+
+	* libnautilus-extensions/nautilus-monitor.h:
+	Add missing include to fix build.
+
+2001-04-19  Darin Adler  <darin@eazel.com>
+
 	* libnautilus-extensions/nautilus-monitor.h:
 	* libnautilus-extensions/nautilus-monitor.c:
 	(nautilus_monitor_active): New function to check if
