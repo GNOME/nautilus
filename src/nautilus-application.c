@@ -760,6 +760,10 @@ save_session (GnomeClient *client, gint phase, GnomeSaveStyle save_style, gint s
 static void
 set_session_restart (GnomeClient *client, gboolean restart)
 {
+	static char *restart_argv[] = { "nautilus", "--no-default-window", 0 };
+
+	gnome_client_set_restart_command (client, 2, restart_argv);
+
 	gnome_client_set_priority (client, 40);
 	
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
