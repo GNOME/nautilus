@@ -1459,7 +1459,7 @@ real_merge_menus (FMDirectoryView *view)
 		BONOBO_UI_VERB ("Change Background", change_background_callback),
 		BONOBO_UI_VERB ("Empty Trash Conditional", empty_trash_callback),
 		BONOBO_UI_VERB ("New Terminal", new_terminal_callback),
-		BONOBO_UI_VERB ("New Launcher", new_launcher_callback),
+		BONOBO_UI_VERB ("New Launcher Desktop", new_launcher_callback),
 		BONOBO_UI_VERB ("Reset Background", reset_background_callback),
 		BONOBO_UI_VERB ("Unmount Volume Conditional", volume_ops_callback),
 		BONOBO_UI_VERB ("Protect Conditional", volume_ops_callback),
