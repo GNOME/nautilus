@@ -37,23 +37,17 @@ typedef struct _EazelSoftCat EazelSoftCat;
 typedef struct _EazelSoftCatClass EazelSoftCatClass;
 
 typedef enum {
-	        EAZEL_SOFTCAT_FILL_FLAG_EVERYTHING = 0x0,
-		EAZEL_SOFTCAT_FILL_FLAG_NO_TEXT = 0x1,
-		EAZEL_SOFTCAT_FILL_FLAG_NO_FILES = 0x2,
-		EAZEL_SOFTCAT_FILL_FLAG_NO_DEPENDENCIES = 0x4
-} EazelSoftCatFillFlags;
-
-typedef enum {
-	EAZEL_SOFTCAT_NO_ERROR = 0,
-	EAZEL_SOFTCAT_INCORRECT_PARAMETERS,
-	EAZEL_SOFTCAT_NO_SERVER_CONNECTION,
-	EAZEL_SOFTCAT_SERVER_MALFUNCTION
+	EAZEL_SOFTCAT_SUCCESS = 0,
+	EAZEL_SOFTCAT_ERROR_BAD_MOJO,
+	EAZEL_SOFTCAT_ERROR_SERVER_UNREACHABLE,
+	EAZEL_SOFTCAT_ERROR_NO_SUCH_PACKAGE
 } EazelSoftCatError;
 
 typedef enum {
 	EAZEL_SOFTCAT_SENSE_EQ = 0x1,
 	EAZEL_SOFTCAT_SENSE_GT = 0x2,
-	EAZEL_SOFTCAT_SENSE_LT = 0x4
+	EAZEL_SOFTCAT_SENSE_LT = 0x4,
+	EAZEL_SOFTCAT_SENSE_GE = (EAZEL_SOFTCAT_SENSE_GT | EAZEL_SOFTCAT_SENSE_EQ)
 } EazelSoftCatSense;
 
 struct _EazelSoftCatClass
@@ -72,6 +66,17 @@ struct _EazelSoftCat
 EazelSoftCat  *eazel_softcat_new (void);
 GtkType        eazel_softcat_get_type   (void);
 
+/* set and get fields */
+void eazel_softcat_set_server (EazelSoftCat *softcat, const char *server);
+const char *eazel_softcat_get_server (EazelSoftCat *softcat);
+void eazel_softcat_set_cgi_path (EazelSoftCat *softcat, const char *cgi_path);
+const char *eazel_softcat_get_cgi_path (const EazelSoftCat *softcat);
+void eazel_softcat_set_authn (EazelSoftCat *softcat, gboolean use_authn, const char *username);
+gboolean eazel_softcat_get_authn (const EazelSoftCat *softcat, const char **username);
+void eazel_softcat_set_retry (EazelSoftCat *softcat, unsigned int retries, unsigned int delay_us);
+
+const char *eazel_softcat_error_string (EazelSoftCatError err);
+
 /* Check if theres a newer version in SoftCat.
    Returns TRUE and fill in new if there is, returns
    FALSE otherwise. new is filled by calling get_info */
@@ -79,21 +84,13 @@ EazelSoftCatError  eazel_softcat_available_update (EazelSoftCat*,
 						   PackageData *old, 
 						   PackageData **new,
 						   int fill_flags);
+
 /* Given a partially filled packagedata object, 
    check softcat, and fill it with the desired info */
 EazelSoftCatError  eazel_softcat_get_info (EazelSoftCat*,
 					   PackageData *partial,
 					   int sense_flags,
 					   int fill_flags);
-
-/* Sets the SoftCat server, in <name>[:port] format */
-void eazel_softcat_set_server (EazelSoftCat *,
-			       const char *server);
-
-/* Set the retry parameters */
-void eazel_softcat_set_retry (EazelSoftCat*,
-			      unsigned int number_of_retries,
-			      unsigned int delay_between_attempts);
 
 #endif /* EAZEL_SOFTCAT_PUBLIC_H */
 

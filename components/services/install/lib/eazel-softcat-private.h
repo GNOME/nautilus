@@ -26,9 +26,19 @@
 
 #include "eazel-softcat.h"
 
+#define SOFTCAT_DEFAULT_SERVER		"services.eazel.com"
+#define SOFTCAT_DEFAULT_PORT		80
+#define SOFTCAT_DEFAULT_CGI_PATH	"/catalog/find"
+
 struct _EazelSoftCatPrivate {
 	char *server;
 	unsigned int port;
+	char *server_str;
+	char *cgi_path;
+	char *username;		/* username on the service (can be NULL for default user) */
+	gboolean use_authn;	/* use SSL proxy?  won't work for "slim" */
+
+	/* number of times to try connecting to softcat, and delay between attempts (in usec) */
 	unsigned int retries;
         unsigned int delay;
 };

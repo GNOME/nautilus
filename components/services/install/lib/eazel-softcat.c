@@ -22,12 +22,19 @@
  */
 
 #include <config.h>
+#include <libtrilobite/trilobite-core-utils.h>
 #include "eazel-softcat.h"
-
 #include "eazel-softcat-private.h"
+#include "eazel-install-xml-package-list.h"
+
+/* used for gnome_vfs_escape_string */
+#ifndef EAZEL_INSTALL_SLIM
+#include <libgnomevfs/gnome-vfs.h>
+#endif /* EAZEL_INSTALL_SLIM */
 
 /* This is the parent class pointer */
 static GtkObjectClass *eazel_softcat_parent_class;
+
 
 /*****************************************
   GTK+ object stuff
@@ -101,6 +108,8 @@ static void
 eazel_softcat_initialize (EazelSoftCat *softcat) {
 	g_assert (softcat != NULL);
 	g_assert (IS_EAZEL_SOFTCAT (softcat));
+
+	softcat->private = g_new0 (EazelSoftCatPrivate, 1);
 }
 
 GtkType
@@ -138,4 +147,339 @@ eazel_softcat_new (void)
 	gtk_object_sink (GTK_OBJECT (softcat));
 	
 	return softcat;
+}
+
+void
+eazel_softcat_set_server (EazelSoftCat *softcat, const char *server)
+{
+	char *p;
+
+	g_free (softcat->private->server);
+	softcat->private->server = g_strdup (server);
+
+	p = strchr (softcat->private->server, ':');
+	if (p != NULL) {
+		softcat->private->port = atoi (p+1);
+		*p = '\0';
+	} else {
+		softcat->private->port = SOFTCAT_DEFAULT_PORT;
+	}
+
+	g_free (softcat->private->server_str);
+	softcat->private->server_str = g_strdup_printf ("%s:%d", softcat->private->server, softcat->private->port);
+}
+
+const char *
+eazel_softcat_get_server (EazelSoftCat *softcat)
+{
+	if (softcat->private->server_str == NULL) {
+		softcat->private->server_str = g_strdup_printf ("%s:%d", SOFTCAT_DEFAULT_SERVER, SOFTCAT_DEFAULT_PORT);
+	}
+	return softcat->private->server_str;
+}
+
+void
+eazel_softcat_set_cgi_path (EazelSoftCat *softcat, const char *cgi_path)
+{
+	g_free (softcat->private->cgi_path);
+	if (cgi_path == NULL) {
+		softcat->private->cgi_path = NULL;
+	} else {
+		softcat->private->cgi_path = g_strdup (cgi_path);
+	}
+}
+
+const char *
+eazel_softcat_get_cgi_path (const EazelSoftCat *softcat)
+{
+	return (softcat->private->cgi_path != NULL) ? softcat->private->cgi_path : SOFTCAT_DEFAULT_CGI_PATH;
+}
+
+void
+eazel_softcat_set_authn (EazelSoftCat *softcat, gboolean use_authn, const char *username)
+{
+	g_free (softcat->private->username);
+	softcat->private->use_authn = use_authn;
+	if (username == NULL) {
+		softcat->private->username = NULL;
+	} else {
+		softcat->private->username = g_strdup (username);
+	}
+}
+
+gboolean
+eazel_softcat_get_authn (const EazelSoftCat *softcat, const char **username)
+{
+	if (username != NULL) {
+		*username = softcat->private->username;
+	}
+	return softcat->private->use_authn;
+}
+
+void
+eazel_softcat_set_retry (EazelSoftCat *softcat, unsigned int retries, unsigned int delay_us)
+{
+	softcat->private->retries = retries;
+	softcat->private->delay = delay_us;
+}
+
+const char *
+eazel_softcat_error_string (EazelSoftCatError err)
+{
+	switch (err) {
+	case EAZEL_SOFTCAT_SUCCESS:
+		return "(no error)";
+	case EAZEL_SOFTCAT_ERROR_BAD_MOJO:
+		return "internal error";
+	case EAZEL_SOFTCAT_ERROR_SERVER_UNREACHABLE:
+		return "softcat server is unreachable";
+	case EAZEL_SOFTCAT_ERROR_NO_SUCH_PACKAGE:
+		return "no such package";
+	}
+	return "???";
+}
+
+
+/*****************************************
+  actual real implementation stuff
+*****************************************/
+
+#define SOFTCAT_FLAG_LESS	2
+#define SOFTCAT_FLAG_GREATER	4
+#define SOFTCAT_FLAG_EQUAL	8
+
+static char *
+sense_flags_to_softcat_flags (int sense)
+{
+	int flags = 0;
+
+	if (sense & EAZEL_SOFTCAT_SENSE_EQ) {
+		flags |= SOFTCAT_FLAG_EQUAL;
+	}
+	if (sense & EAZEL_SOFTCAT_SENSE_GT) {
+		flags |= SOFTCAT_FLAG_GREATER;
+	}
+	if (sense & EAZEL_SOFTCAT_SENSE_LT) {
+		flags |= SOFTCAT_FLAG_LESS;
+	}
+
+	return g_strdup_printf ("%d", flags);
+}
+
+#ifdef EAZEL_INSTALL_SLIM
+/* wow, i had no idea all these chars were evil.  they must be stopped! */
+#define IS(x)		((c) == (x))
+#define EVILCHAR(c)	(IS('"') || IS('#') || IS('$') || IS('%') || IS('&') || IS('+') || IS(',') || IS('/') || \
+			 IS(':') || IS(';') || IS('<') || IS('=') || IS('>') || IS('?') || IS('@') || IS('[') || \
+			 IS('\\') || IS(']') || IS('^') || IS('`') || IS('{') || IS('|') || IS('}') || IS('\''))
+
+static char *
+gnome_vfs_escape_string (const char *in)
+{
+	int needs_quoting = 0;
+	const char *p;
+	char *quoted, *q;
+
+	for (p = in; p && *p; p++) {
+		if (EVILCHAR (*p)) {
+			needs_quoting++;
+		}
+	}
+	if (! needs_quoting) {
+		return g_strdup (in);
+	}
+
+	q = quoted = g_malloc (strlen (val) + (needs_quoting * 2) + 1);
+	for (p = val; p && *p; p++) {
+		if (EVILCHAR (*p)) {
+			*q++ = '%';
+			*q++ = "0123456789ABCDEF"[*p / 16];
+			*q++ = "0123456789ABCDEF"[*p % 16];
+		} else {
+			*q++ = *p;
+		}
+	}
+
+	return quoted;
+}
+#endif	/* EAZEL_INSTALL_SLIM */
+
+static void
+add_to_url (GString *url, const char *cgi_string, const char *val)
+{
+	char *quoted_val;
+
+	g_string_append (url, cgi_string);
+	if (val) {
+		quoted_val = gnome_vfs_escape_string (val);
+		g_string_append (url, quoted_val);
+		g_free (quoted_val);
+	}
+}
+
+/* make sure there are items filled in for the required fields.
+ * if anything is missing, fill it with a "default", which may or may not be what you want,
+ * but since you didn't bother to specify, tough cookies.
+ */
+static void
+verify_softcat_fields (EazelSoftCat *softcat)
+{
+	if (softcat->private->server == NULL) {
+		softcat->private->server = g_strdup (SOFTCAT_DEFAULT_SERVER);
+	}
+	if (softcat->private->port == 0) {
+		softcat->private->port = SOFTCAT_DEFAULT_PORT;
+	}
+	if (softcat->private->cgi_path == NULL) {
+		softcat->private->cgi_path = g_strdup (SOFTCAT_DEFAULT_CGI_PATH);
+	}
+}
+
+/* return a softcat query URL that would find this package: either by name, by eazel-id, or by what it provides */
+static char *
+get_search_url_for_package (EazelSoftCat *softcat, const PackageData *package, int sense_flags)
+{
+	GString *url;
+	DistributionInfo dist;
+	char *arch;
+	char *dist_name;
+	char *url_str;
+
+	verify_softcat_fields (softcat);
+	dist = trilobite_get_distribution ();
+
+	url = g_string_new ("");
+	if (softcat->private->use_authn) {
+		if (softcat->private->username != NULL) {
+			g_string_sprintfa (url, "eazel-services://%s%s", softcat->private->username,
+					   softcat->private->cgi_path);
+		} else {
+			g_string_sprintfa (url, "eazel-services:%s", softcat->private->cgi_path);
+		}
+	} else {
+		g_string_sprintfa (url, "http://%s:%d%s",
+				   softcat->private->server,
+				   softcat->private->port,
+				   softcat->private->cgi_path);
+	}
+
+	if (package->eazel_id != NULL) {
+		/* find by eazel-id! */
+		arch = trilobite_get_distribution_arch ();
+		add_to_url (url, "?rpm_id=", package->eazel_id);
+		add_to_url (url, "&arch=", arch);
+		g_free (arch);
+	} else if (package->name == NULL) {
+		/* find by provides list! */
+		g_assert ((package->provides != NULL) && (g_list_length (package->provides) > 0));
+		arch = trilobite_get_distribution_arch ();
+		add_to_url (url, "?provides=", (char *)(package->provides->data));
+		add_to_url (url, "&arch=", arch);
+		g_free (arch);
+	} else {
+		/* find by package name! */
+		g_assert (package->name != NULL);
+		add_to_url (url, "?name=", package->name);
+		if (package->archtype != NULL) {
+			add_to_url (url, "&arch=", package->archtype);
+		}
+		if (package->version != NULL) {
+			add_to_url (url, "&version=", package->version);
+			add_to_url (url, "&flags=", sense_flags_to_softcat_flags (sense_flags));
+		}
+		if (package->distribution.name != DISTRO_UNKNOWN) {
+			dist = package->distribution;
+		}
+	}
+
+	if (dist.name != DISTRO_UNKNOWN) {
+		dist_name = trilobite_get_distribution_name (dist, TRUE, TRUE);
+		add_to_url (url, "&distro=", dist_name);
+		g_free (dist_name);
+	}
+	/* FIXME: should let them specify a protocol other than http, someday */
+	add_to_url (url, "&protocol=", "http");
+
+	url_str = url->str;
+	g_string_free (url, FALSE);
+	return url_str;
+}
+
+
+/* Given a partially filled packagedata object, 
+   check softcat, and fill it with the desired info */
+EazelSoftCatError
+eazel_softcat_get_info (EazelSoftCat *softcat, PackageData *package, int sense_flags, int fill_flags)
+{
+	char *search_url;
+	char *body = NULL;
+	int length;
+	int tries_left;
+	gboolean got_happy;
+	GList *packages;
+	PackageData *full_package;
+
+	search_url = get_search_url_for_package (softcat, package, sense_flags);
+	if (search_url == NULL) {
+		trilobite_debug ("no search url :(");
+		return EAZEL_SOFTCAT_ERROR_BAD_MOJO;
+	}
+	trilobite_debug ("package search url: %s", search_url);
+
+	trilobite_setenv ("GNOME_VFS_HTTP_USER_AGENT", trilobite_get_useragent_string (FALSE, NULL), TRUE);
+
+	tries_left = softcat->private->retries;
+	got_happy = FALSE;
+	for (got_happy = FALSE, tries_left = softcat->private->retries;
+	     !got_happy && (tries_left > 0);
+	     tries_left--) {
+		got_happy = trilobite_fetch_uri (search_url, &body, &length);
+		if (got_happy) {
+			got_happy = eazel_install_packagelist_parse (&packages, body, length);
+			if (! got_happy) {
+				/* boo.  bogus xml.  long live softcat! */
+				g_free (body);
+			}
+		}
+
+		if (! got_happy && (tries_left > 1)) {
+			trilobite_debug ("retry...");
+			usleep (softcat->private->delay);
+		}
+	}
+
+	if (! got_happy) {
+		if (package->eazel_id != NULL) {
+			g_warning ("couldn't fetch info about package id %s", package->eazel_id);
+		} else if (package->name != NULL) {
+			g_warning ("couldn't fetch info about package '%s'", package->name);
+		} else if ((package->provides != NULL) && (package->provides->data != NULL)) {
+			g_warning ("couldn't fetch info about package that provides '%s'",
+				   (char *)package->provides->data);
+		} else {
+			g_warning ("couldn't fetch info about a MYSTERY PACKAGE!");
+		}
+		g_free (search_url);
+		return EAZEL_SOFTCAT_ERROR_SERVER_UNREACHABLE;
+	}
+
+	if (g_list_length (packages) == 0) {
+		trilobite_debug ("no matches for that package.");
+		g_free (body);
+		g_free (search_url);
+		return EAZEL_SOFTCAT_ERROR_NO_SUCH_PACKAGE;
+	}
+
+	if (g_list_length (packages) > 1) {
+		trilobite_debug ("more than one match!  using the first one.");
+	}
+
+	full_package = (PackageData *) packages->data;
+	packagedata_fill_in_missing (package, full_package, fill_flags);
+
+	g_list_foreach (packages, (GFunc)packagedata_destroy, GINT_TO_POINTER (TRUE));
+	g_list_free (packages);
+	g_free (body);
+	g_free (search_url);
+	return EAZEL_SOFTCAT_SUCCESS;
 }
