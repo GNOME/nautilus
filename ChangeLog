@@ -1,5 +1,10 @@
 2001-10-25  Darin Adler  <darin@bentspoon.com>
 
+	* src/file-manager/fm-directory-view.c: Oops! Left in the 5 second
+	hysteresis that I was using for testing. Back to 1 second.
+
+2001-10-25  Darin Adler  <darin@bentspoon.com>
+
 	* libnautilus-private/nautilus-directory.c:
 	(call_files_changed_common), (call_files_changed_free_list),
 	(call_files_changed_unref_free_list),
