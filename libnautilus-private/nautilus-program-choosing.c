@@ -488,7 +488,7 @@ application_cannot_open_location (GnomeVFSMimeApplication *application,
 	char *message;
 	char *file_name;
 
-	file_name = nautilus_file_get_name (file);
+	file_name = nautilus_file_get_display_name (file);
 
 	if (nautilus_mime_has_any_applications_for_file (file)) {
 		message = g_strdup_printf (_("\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "

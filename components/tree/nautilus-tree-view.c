@@ -231,7 +231,7 @@ nautilus_tree_view_insert_model_node (NautilusTreeView *view, NautilusTreeNode *
 	if (parent_view_node == NULL && !nautilus_tree_node_is_toplevel (node)) {
 		register_unparented_node (view, node);
 	} else {
-		text[0] = nautilus_file_get_name (file);
+		text[0] = nautilus_file_get_display_name (file);
 		text[1] = NULL;
 
 		if (nautilus_tree_view_model_node_to_view_node (view, node) == NULL) {
@@ -437,7 +437,7 @@ nautilus_tree_view_update_model_node (NautilusTreeView *view, NautilusTreeNode *
 			(file, "accept", NAUTILUS_ICON_SIZE_FOR_MENUS,
 			 is_anti_aliased (view));
 
-		name = nautilus_file_get_name (file);
+		name = nautilus_file_get_display_name (file);
 	
 		eel_ctree_set_node_info (EEL_CTREE (view->details->tree),
 					 view_node,

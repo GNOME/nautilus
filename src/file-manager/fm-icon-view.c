@@ -1702,7 +1702,7 @@ icon_container_preview_callback (NautilusIconContainer *container,
 	 */
 	if (fm_icon_view_get_zoom_level (icon_view) <= NAUTILUS_ZOOM_LEVEL_SMALLER) {
 		if (start_flag) {
-			file_name = nautilus_file_get_name (file);
+			file_name = nautilus_file_get_display_name (file);
 			message = g_strdup_printf (_("pointing at \"%s\""), file_name);
 			g_free (file_name);
 			nautilus_view_report_status
@@ -2002,7 +2002,7 @@ get_icon_text_callback (NautilusIconContainer *container,
 		*editable_text = NULL;
 	} else {
 		/* Strip the suffix for nautilus object xml files. */
-		*editable_text = nautilus_file_get_name (file);
+		*editable_text = nautilus_file_get_display_name (file);
 	}
 	
 	/* Handle link files specially. */

@@ -40,6 +40,6 @@
 #define NAUTILUS_FILE_ATTRIBUTE_METADATA                    "metadata"
 #define NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE                   "MIME type"
 #define NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT               "top left text"
-#define NAUTILUS_FILE_ATTRIBUTE_CUSTOM_NAME                 "custom name"
+#define NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME                "display name"
 
 #endif /* NAUTILUS_FILE_ATTRIBUTES_H */

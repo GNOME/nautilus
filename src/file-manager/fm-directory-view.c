@@ -1393,7 +1393,7 @@ fm_directory_view_display_selection_info (FMDirectoryView *view)
 		}
 
 		if (first_item_name == NULL) {
-			first_item_name = nautilus_file_get_name (file);
+			first_item_name = nautilus_file_get_display_name (file);
 		}
 	}
 	
@@ -1608,7 +1608,7 @@ real_file_limit_reached (FMDirectoryView *view)
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 
 	file = fm_directory_view_get_directory_as_file (view);
-	directory_name = nautilus_file_get_name (file);
+	directory_name = nautilus_file_get_display_name (file);
 	nautilus_file_unref (file);
 
 	/* Note that the number of items actually displayed varies somewhat due
@@ -2826,7 +2826,7 @@ file_name_from_uri (const char *uri)
 	char *file_name;
 	
 	file = nautilus_file_get (uri);
-	file_name = nautilus_file_get_name (file);
+	file_name = nautilus_file_get_display_name (file);
 	nautilus_file_unref (file);
 
 	return file_name;	
@@ -3561,7 +3561,7 @@ add_script_to_script_menus (FMDirectoryView *directory_view,
 	char *name;
 	GdkPixbuf *pixbuf;
 
-	name = nautilus_file_get_name (file);
+	name = nautilus_file_get_display_name (file);
 	tip = g_strdup_printf (_("Run \"%s\" on any selected items"), name);
 
 	launch_parameters = script_launch_parameters_new (file, directory_view);
@@ -3605,7 +3605,7 @@ add_submenu_to_script_menus (FMDirectoryView *directory_view,
 	char *name;
 	GdkPixbuf *pixbuf;
 
-	name = nautilus_file_get_name (file);
+	name = nautilus_file_get_display_name (file);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_file 
 		(file, NULL, NAUTILUS_ICON_SIZE_FOR_MENUS, TRUE);
 	add_submenu (directory_view->details->ui, menu_path, name, pixbuf);
@@ -3831,7 +3831,7 @@ copy_or_cut_files (FMDirectoryView *view,
 
 	count = g_list_length (view->details->clipboard_contents);
 	if (count == 1) {
-		name = nautilus_file_get_name (view->details->clipboard_contents->data);
+		name = nautilus_file_get_display_name (view->details->clipboard_contents->data);
 		if (cut) {
 			status_string = g_strdup_printf (_("\"%s\" will be moved "
 							   "if you select the Paste Files command"),
@@ -4468,7 +4468,7 @@ get_executable_text_file_action (FMDirectoryView *view, NautilusFile *file)
 	}
 
 
-	file_name = nautilus_file_get_name (file);
+	file_name = nautilus_file_get_display_name (file);
 	prompt = g_strdup_printf (_("\"%s\" is an executable text file. "
 				    "Do you want to run it, or display its contents?"),
 				  file_name);
@@ -4657,7 +4657,7 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	parameters->file = file;
 	parameters->choice = choice;
 
-	file_name = nautilus_file_get_name (file);
+	file_name = nautilus_file_get_display_name (file);
 	timed_wait_prompt = g_strdup_printf (_("Opening \"%s\""), file_name);
 	g_free (file_name);
 	
@@ -4837,7 +4837,7 @@ finish_loading (FMDirectoryView *view)
 	attributes = g_list_prepend (attributes, 
 				     NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
 	attributes = g_list_prepend (attributes, 
-				     NAUTILUS_FILE_ATTRIBUTE_CUSTOM_NAME);
+				     NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME);
 
 	nautilus_directory_file_monitor_add (view->details->model,
 					     &view->details->model,

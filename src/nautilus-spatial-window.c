@@ -2284,7 +2284,7 @@ nautilus_window_set_viewed_file (NautilusWindow *window,
 	}
 
 	if (file != NULL) {
-		attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_NAME);
+		attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME);
 		nautilus_file_monitor_add (file, window, attributes);
 		g_list_free (attributes);
 	}

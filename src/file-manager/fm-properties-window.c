@@ -315,7 +315,7 @@ name_field_update_to_match_file (NautilusEntry *name_field)
 	 * an edit in progress. If the name hasn't changed (but some other
 	 * aspect of the file might have), then don't clobber changes.
 	 */
-	current_name = nautilus_file_get_name (file);
+	current_name = nautilus_file_get_display_name (file);
 	if (eel_strcmp (original_name, current_name) != 0) {
 		gtk_object_set_data_full (GTK_OBJECT (name_field),
 					  "original_name",
@@ -518,7 +518,7 @@ update_properties_window_title (GtkWindow *window, NautilusFile *file)
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (GTK_IS_WINDOW (window));
 
-	name = nautilus_file_get_name (file);
+	name = nautilus_file_get_display_name (file);
 	title = g_strdup_printf (_("%s Properties"), name);
   	gtk_window_set_title (window, title);
 
@@ -2050,7 +2050,7 @@ create_permissions_page (FMPropertiesWindow *window)
 		append_title_value_pair (page_table, _("Last Changed:"), file, "date_permissions");
 		
 	} else {
-		file_name = nautilus_file_get_name (file);
+		file_name = nautilus_file_get_display_name (file);
 		prompt_text = g_strdup_printf (_("The permissions of \"%s\" could not be determined."), file_name);
 		g_free (file_name);
 		add_prompt (GTK_VBOX (vbox), prompt_text, TRUE);
@@ -2133,7 +2133,7 @@ create_properties_window (StartupData *startup_data)
 	 */
 	attributes = nautilus_icon_factory_get_required_file_attributes ();
 	attributes = g_list_prepend (attributes,
-				     NAUTILUS_FILE_ATTRIBUTE_CUSTOM_NAME);
+				     NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME);
 	nautilus_file_monitor_add (window->details->original_file, window, attributes);
 	g_list_free (attributes);
 

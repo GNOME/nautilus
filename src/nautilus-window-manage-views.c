@@ -157,7 +157,7 @@ compute_default_title (const char *text_uri)
 		title = g_strdup ("");
 	} else {
 		file = nautilus_file_get (text_uri);
-		title = nautilus_file_get_name (file);
+		title = nautilus_file_get_display_name (file);
 		nautilus_file_unref (file);
 	}
 

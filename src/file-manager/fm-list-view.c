@@ -431,7 +431,7 @@ match_row_name (gconstpointer a, void *callback_data)
 	row = (EelCListRow *) a;
 	pattern = (const char *) callback_data;
 
-	return nautilus_file_compare_name
+	return nautilus_file_compare_display_name
 		(NAUTILUS_FILE (row->data), pattern);
 }
 

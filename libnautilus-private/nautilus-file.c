@@ -448,7 +448,7 @@ destroy (GtkObject *object)
 		gnome_vfs_file_info_unref (file->details->info);
 	}
 	g_free (file->details->top_left_text);
-	g_free (file->details->custom_name);
+	g_free (file->details->display_name);
 	g_free (file->details->custom_icon_uri);
 	g_free (file->details->activation_uri);
 	g_free (file->details->compare_by_emblem_cache);
@@ -1518,8 +1518,8 @@ compare_by_name (NautilusFile *file_1, NautilusFile *file_2)
 	gboolean sort_last_1, sort_last_2;
 	int compare;
 
-	name_1 = nautilus_file_get_name (file_1);
-	name_2 = nautilus_file_get_name (file_2);
+	name_1 = nautilus_file_get_display_name (file_1);
+	name_2 = nautilus_file_get_display_name (file_2);
 
 	sort_last_1 = strchr (SORT_LAST_CHARACTERS, name_1[0]) != NULL;
 	sort_last_2 = strchr (SORT_LAST_CHARACTERS, name_2[0]) != NULL;
@@ -1898,19 +1898,20 @@ nautilus_file_compare_for_sort (NautilusFile *file_1,
  * using the same sorting order as sort by name.
  **/
 int
-nautilus_file_compare_name (NautilusFile *file,
-			    const char *pattern)
+nautilus_file_compare_display_name (NautilusFile *file,
+				    const char *pattern)
 {
 	char *name;
 	int result;
 
 	g_return_val_if_fail (pattern != NULL, -1);
 
-	name = nautilus_file_get_name (file);
+	name = nautilus_file_get_display_name (file);
 	result = eel_strcoll (name, pattern);
 	g_free (name);
 	return result;
 }
+
 
 gboolean
 nautilus_file_is_hidden_file (NautilusFile *file)
@@ -2253,18 +2254,26 @@ nautilus_file_set_integer_metadata (NautilusFile *file,
 }
 
 char *
-nautilus_file_get_name (NautilusFile *file)
+nautilus_file_get_display_name (NautilusFile *file)
 {
-	char *name;
-
 	if (file == NULL) {
 		return NULL;
 	}
+
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 	
- 	if (file->details->got_link_info && file->details->custom_name != NULL) {
- 		return g_strdup (file->details->custom_name);
+ 	if (file->details->got_link_info && file->details->display_name != NULL) {
+ 		return g_strdup (file->details->display_name);
+	} else {
+		return nautilus_file_get_name (file);
 	}
+}
+
+
+char *
+nautilus_file_get_name (NautilusFile *file)
+{
+	char *name;
 
 	name = gnome_vfs_unescape_string (file->details->relative_uri, "/");
 	if (name != NULL) {
@@ -2277,6 +2286,7 @@ nautilus_file_get_name (NautilusFile *file)
 	 */
 	return g_strdup (file->details->relative_uri);
 }
+
    
 void             
 nautilus_file_monitor_add (NautilusFile *file,
@@ -3978,7 +3988,7 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 	 */
 
 	if (strcmp (attribute_name, "name") == 0) {
-		return nautilus_file_get_name (file);
+		return nautilus_file_get_display_name (file);
 	}
 	if (strcmp (attribute_name, "type") == 0) {
 		return nautilus_file_get_type_as_string (file);
@@ -4916,7 +4926,7 @@ nautilus_file_get_all_attributes (void)
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_METADATA);
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
         attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
-        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_NAME);
+        attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME);
 
 	return attributes;
 }
@@ -5195,7 +5205,7 @@ nautilus_self_check_file (void)
 	nautilus_file_unref (file_1);
 
 	file_1 = nautilus_file_get (EEL_TRASH_URI);
-	EEL_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), _("Trash"));
+	EEL_CHECK_STRING_RESULT (nautilus_file_get_display_name (file_1), _("Trash"));
 	nautilus_file_unref (file_1);
 
 	/* sorting */

@@ -260,7 +260,7 @@ get_file_name_for_display (NautilusFile *file)
 
 	g_assert (NAUTILUS_IS_FILE (file));
 
-	full_name = nautilus_file_get_name (file);
+	full_name = nautilus_file_get_display_name (file);
 	truncated_name = eel_str_middle_truncate
 		(full_name, MAX_DISPLAYED_FILE_NAME_LENGTH);
 	g_free (full_name);

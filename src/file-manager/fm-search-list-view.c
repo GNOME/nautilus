@@ -643,7 +643,7 @@ real_adding_file (FMListView *view, NautilusFile *file)
 	attributes = g_list_prepend (attributes, 
 				     NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
 	attributes = g_list_prepend (attributes, 
-				     NAUTILUS_FILE_ATTRIBUTE_CUSTOM_NAME);
+				     NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME);
 	nautilus_file_monitor_add (file, view, attributes);
 	g_list_free (attributes);
 }

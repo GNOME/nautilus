@@ -328,7 +328,7 @@ file_read_callback (GnomeVFSAsyncHandle *vfs_handle,
                                               callback_data);
                         return;
 		} else {
-                        name = nautilus_file_get_name (text_view->details->file);
+                        name = nautilus_file_get_display_name (text_view->details->file);
                         message = g_strdup_printf (_("Sorry, but %s is too large for Nautilus to load all of it."),
                                                    name);
                         

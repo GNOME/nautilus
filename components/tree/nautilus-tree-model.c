@@ -331,7 +331,7 @@ nautilus_tree_model_monitor_add (NautilusTreeModel         *model,
 
 		monitor_attributes = nautilus_icon_factory_get_required_file_attributes ();
 		monitor_attributes = g_list_prepend (monitor_attributes, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
-		monitor_attributes = g_list_prepend (monitor_attributes, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_NAME);
+		monitor_attributes = g_list_prepend (monitor_attributes, NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME);
 		nautilus_file_monitor_add (nautilus_tree_node_get_file (model->details->root_node),
 					   model,
 					   monitor_attributes);
@@ -417,7 +417,7 @@ nautilus_tree_model_node_begin_monitoring_no_connect (NautilusTreeModel         
 	
 	monitor_attributes = nautilus_icon_factory_get_required_file_attributes ();
 	monitor_attributes = g_list_prepend (monitor_attributes, NAUTILUS_FILE_ATTRIBUTE_IS_DIRECTORY);
-	monitor_attributes = g_list_prepend (monitor_attributes, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_NAME);
+	monitor_attributes = g_list_prepend (monitor_attributes, NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME);
 	nautilus_directory_file_monitor_add (directory,
 					     model,
 					     TRUE, TRUE,

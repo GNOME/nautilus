@@ -122,6 +122,7 @@ void                    nautilus_file_invalidate_all_attributes         (Nautilu
 
 /* Basic attributes for file objects. */
 gboolean                nautilus_file_contains_text                     (NautilusFile                   *file);
+char *                  nautilus_file_get_display_name                  (NautilusFile                   *file);
 char *                  nautilus_file_get_name                          (NautilusFile                   *file);
 char *                  nautilus_file_get_uri                           (NautilusFile                   *file);
 char *                  nautilus_file_get_uri_scheme                    (NautilusFile                   *file);
@@ -270,7 +271,7 @@ int                     nautilus_file_compare_for_sort                  (Nautilu
 									 NautilusFileSortType            sort_type,
 									 gboolean			 directories_first,
 									 gboolean		  	 reversed);
-int                     nautilus_file_compare_name                      (NautilusFile                   *file_1,
+int                     nautilus_file_compare_display_name              (NautilusFile                   *file_1,
 									 const char                     *pattern);
 
 /* filtering functions for use by various directory views */

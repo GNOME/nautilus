@@ -555,7 +555,7 @@ nautilus_directory_set_up_request (Request *request,
 	}
 
 	if (g_list_find_custom (file_attributes,
-				NAUTILUS_FILE_ATTRIBUTE_CUSTOM_NAME,
+				NAUTILUS_FILE_ATTRIBUTE_DISPLAY_NAME,
 				eel_strcmp_compare_func) != NULL) {
 		request->file_info = TRUE;
 		request->link_info = TRUE;
@@ -2704,10 +2704,10 @@ link_info_done (NautilusDirectory *directory,
 
 	file->details->got_link_info = TRUE;
 	g_free (file->details->activation_uri);
-	g_free (file->details->custom_name);
+	g_free (file->details->display_name);
 	g_free (file->details->custom_icon_uri);
 	file->details->activation_uri = g_strdup (uri);
-	file->details->custom_name = g_strdup (name);
+	file->details->display_name = g_strdup (name);
 	file->details->custom_icon_uri = g_strdup (icon);
 
 	nautilus_directory_async_state_changed (directory);
@@ -2809,7 +2809,7 @@ link_info_gmc_link_read_callback (GnomeVFSResult result,
 		if (path != NULL) {
 		  /* FIXME: this gnome_metata_get call is synchronous, but better to
 		   * have it here where the results will at least be cached than in
-		   * nautilus_file_get_name. 
+		   * nautilus_file_get_display_name. 
 		   */
 		  res = gnome_metadata_get (path, "icon-name", &size, &name);
 		} else {

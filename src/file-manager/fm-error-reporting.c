@@ -51,7 +51,7 @@ fm_report_error_loading_directory (NautilusFile *file,
 		return;
 	}
 
-	file_name = nautilus_file_get_name (file);
+	file_name = nautilus_file_get_display_name (file);
 
 	switch (error) {
 	case GNOME_VFS_ERROR_ACCESS_DENIED:
@@ -92,7 +92,7 @@ fm_report_error_renaming_file (NautilusFile *file,
 	/* Truncate names for display since very long file names with no spaces
 	 * in them won't get wrapped, and can create insanely wide dialog boxes.
 	 */
-	original_name = nautilus_file_get_name (file);
+	original_name = nautilus_file_get_display_name (file);
 	original_name_truncated = eel_str_middle_truncate (original_name, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
 	g_free (original_name);
 	
@@ -157,7 +157,7 @@ fm_report_error_setting_group (NautilusFile *file,
 		return;
 	}
 
-	file_name = nautilus_file_get_name (file);
+	file_name = nautilus_file_get_display_name (file);
 
 	switch (error) {
 	case GNOME_VFS_ERROR_NOT_PERMITTED:
@@ -172,7 +172,7 @@ fm_report_error_setting_group (NautilusFile *file,
 		/* We should invent decent error messages for every case we actually experience. */
 		g_warning ("Hit unhandled case %d (%s) in fm_report_error_setting_group, tell sullivan@eazel.com", 
 			   error, gnome_vfs_result_to_string (error));
-		file_name = nautilus_file_get_name (file);
+		file_name = nautilus_file_get_display_name (file);
 		message = g_strdup_printf (_("Sorry, couldn't change the group of \"%s\"."), file_name);
 		g_free (file_name);
 	}
@@ -195,7 +195,7 @@ fm_report_error_setting_owner (NautilusFile *file,
 		return;
 	}
 
-	file_name = nautilus_file_get_name (file);
+	file_name = nautilus_file_get_display_name (file);
 
 	switch (error) {
 	case GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM:
@@ -227,7 +227,7 @@ fm_report_error_setting_permissions (NautilusFile *file,
 		return;
 	}
 
-	file_name = nautilus_file_get_name (file);
+	file_name = nautilus_file_get_display_name (file);
 
 	switch (error) {
 	case GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM:
@@ -306,7 +306,7 @@ fm_rename_file (NautilusFile *file,
 				  g_free);
 
 	/* Start the timed wait to cancel the rename. */
-	old_name = nautilus_file_get_name (file);
+	old_name = nautilus_file_get_display_name (file);
 	wait_message = g_strdup_printf (_("Renaming \"%s\" to \"%s\"."),
 					old_name,
 					new_name);

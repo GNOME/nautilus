@@ -69,7 +69,7 @@ struct NautilusFileDetails
 	char *top_left_text;
 
 	/* Info you might get from a link (.desktop, .directory or nautilus link) */
-	char *custom_name;
+	char *display_name;
 	char *custom_icon_uri;
 	char *activation_uri;
 

@@ -1,3 +1,66 @@
+2001-10-04  Maciej Stachowiak  <mjs@noisehavoc.org>
+
+	* libnautilus-private/nautilus-file-attributes.h,
+	libnautilus-private/nautilus-file-private.h: Rename CUSTOM_NAME
+	attribute to DISPLAY_NAME.
+
+	* libnautilus-private/nautilus-file.h,
+	libnautilus-private/nautilus-file.c:
+	(nautilus_file_get_name): Always return the real name of the file.
+	(nautilus_file_get_display_name): New function which returns the
+	display name of the file, taking into account special names that
+	may be set for .desktop files or gmc-style links, as
+	nautilus_file_get_name formerly did.
+	(nautilus_file_compare_display_name): Use display name and rename
+	for clarity.
+	
+	(destroy, compare_by_name, nautilus_file_get_string_attribute,
+	nautilus_file_get_all_attributes, nautilus_self_check_file):
+	Adjust for custom_name->display_name change, use
+	nautilus_file_get_display_name instead of natilus_file_get_name
+	where appropriate.
+	
+	* libnautilus-private/nautilus-directory-async.c:
+	(nautilus_directory_set_up_request), (link_info_done,
+	(link_info_gmc_link_read_callback): Adjust for custom_name->display_name change.
+
+	
+	In all the places below, use nautilus_file_get_display_name
+	instead of nautilus_file_get_name:
+	
+	* components/text/nautilus-text-view.c: (file_read_callback):
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_monitor_add),
+	(nautilus_tree_model_node_begin_monitoring_no_connect):
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_insert_model_node),
+	(nautilus_tree_view_update_model_node):
+	* libnautilus-private/nautilus-program-chooser.c:
+	(get_file_name_for_display):
+	* libnautilus-private/nautilus-program-choosing.c:
+	(application_cannot_open_location):
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_display_selection_info),
+	(real_file_limit_reached), (file_name_from_uri),
+	(add_script_to_script_menus), (add_submenu_to_script_menus),
+	(copy_or_cut_files), (get_executable_text_file_action),
+	(fm_directory_view_activate_file), (finish_loading):
+	* src/file-manager/fm-error-reporting.c:
+	(fm_report_error_loading_directory),
+	(fm_report_error_renaming_file), (fm_report_error_setting_group),
+	(fm_report_error_setting_owner),
+	(fm_report_error_setting_permissions), (fm_rename_file):
+	* src/file-manager/fm-icon-view.c:
+	(icon_container_preview_callback), (get_icon_text_callback):
+	* src/file-manager/fm-list-view.c: (match_row_name):
+	* src/file-manager/fm-properties-window.c:
+	(name_field_update_to_match_file),
+	(update_properties_window_title), (create_permissions_page),
+	(create_properties_window):
+	* src/file-manager/fm-search-list-view.c: (real_adding_file):
+	* src/nautilus-window-manage-views.c: (compute_default_title):
+	* src/nautilus-window.c: (nautilus_window_set_viewed_file):
+
 2001-10-02  Darin Adler  <darin@bentspoon.com>
 
 	Fix the longstanding problem where the Notes and History sidebar
