@@ -275,7 +275,7 @@ mozilla_content_view_one_time_happenings (NautilusMozillaContentView *view)
 	mozilla_preference_set_boolean ("security.checkloaduri", FALSE);
 
 	/* Change http protocol user agent to include the string 'Nautilus' */
-	mozilla_preference_set ("general.useragent.misc", "Nautilus");
+	mozilla_preference_set ("general.useragent.misc", "Nautilus/1.0");
 
 	/* Locate and set proxy preferences */
 	mozilla_content_view_set_proxy_preferences (view);
