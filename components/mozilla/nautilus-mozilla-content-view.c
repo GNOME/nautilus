@@ -47,53 +47,44 @@ struct NautilusMozillaContentViewDetails {
 	GdkCursor			 *busy_cursor;
 };
 
-static void  nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass *klass);
-static void  nautilus_mozilla_content_view_initialize       (NautilusMozillaContentView      *view);
-static void  nautilus_mozilla_content_view_destroy          (GtkObject                       *object);
-static void  mozilla_notify_location_change_callback        (NautilusView                    *nautilus_view,
-							     Nautilus_NavigationInfo         *navinfo,
-							     NautilusMozillaContentView      *view);
-static void  mozilla_merge_bonobo_items_callback            (BonoboObject                    *control,
-							     gboolean                         state,
-							     gpointer                         user_data);
-
-
-
-
-
-
+static void     nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass *klass);
+static void     nautilus_mozilla_content_view_initialize       (NautilusMozillaContentView      *view);
+static void     nautilus_mozilla_content_view_destroy          (GtkObject                       *object);
+static void     mozilla_notify_location_change_callback        (NautilusView                    *nautilus_view,
+								Nautilus_NavigationInfo         *navinfo,
+								NautilusMozillaContentView      *view);
+static void     mozilla_merge_bonobo_items_callback            (BonoboObject                    *control,
+								gboolean                         state,
+								gpointer                         user_data);
 
 /* Mozilla embed widget callbacks */
-static void  mozilla_title_changed_callback                 (GtkMozEmbed                     *mozilla,
-							     gpointer                         user_data);
-static void  mozilla_location_changed_callback              (GtkMozEmbed                     *mozilla,
-							     gpointer                         user_data);
-static void  mozilla_net_status_callback                    (GtkMozEmbed                     *mozilla,
-							     gint                             flags,
-							     gpointer                         user_data);
-static void  mozilla_link_message_callback                  (GtkMozEmbed                     *mozilla,
-							     gpointer                         user_data);
-static void  mozilla_progress_callback                      (GtkMozEmbed                     *mozilla,
-							     gint                             max_progress,
-							     gint                             current_progress,
-							     gpointer                         user_data);
-static  gint mozilla_open_uri_callback                      (GtkMozEmbed                     *mozilla,
-							     const char                      *uri,
-							     gpointer                         user_data);
-
-
-
-
-
+static void     mozilla_title_changed_callback                 (GtkMozEmbed                     *mozilla,
+								gpointer                         user_data);
+static void     mozilla_location_changed_callback              (GtkMozEmbed                     *mozilla,
+								gpointer                         user_data);
+static void     mozilla_net_status_callback                    (GtkMozEmbed                     *mozilla,
+								gint                             flags,
+								gpointer                         user_data);
+static void     mozilla_link_message_callback                  (GtkMozEmbed                     *mozilla,
+								gpointer                         user_data);
+static void     mozilla_progress_callback                      (GtkMozEmbed                     *mozilla,
+								gint                             max_progress,
+								gint                             current_progress,
+								gpointer                         user_data);
+static  gint    mozilla_open_uri_callback                      (GtkMozEmbed                     *mozilla,
+								const char                      *uri,
+								gpointer                         user_data);
 
 /* Other mozilla content view functions */
-static void  mozilla_content_view_set_busy_cursor           (NautilusMozillaContentView      *view);
-static void  mozilla_content_view_clear_busy_cursor         (NautilusMozillaContentView      *view);
-static void  mozilla_content_view_request_progress_change   (NautilusMozillaContentView      *view,
-							     Nautilus_ProgressType            progress_type,
-							     gdouble                          progress_amount);
-static void  mozilla_content_view_request_location_change   (NautilusMozillaContentView      *view,
-							     const char                      *new_location_uri);
+static void     mozilla_content_view_set_busy_cursor           (NautilusMozillaContentView      *view);
+static void     mozilla_content_view_clear_busy_cursor         (NautilusMozillaContentView      *view);
+static void     mozilla_content_view_request_progress_change   (NautilusMozillaContentView      *view,
+								Nautilus_ProgressType            progress_type,
+								gdouble                          progress_amount);
+static void     mozilla_content_view_request_location_change   (NautilusMozillaContentView      *view,
+								const char                      *new_location_uri);
+static gboolean mozilla_is_uri_handled_by_nautilus             (const char                      *uri);
+
 
 static GtkVBoxClass *parent_class = NULL;
 
@@ -647,7 +638,7 @@ mozilla_open_uri_callback (GtkMozEmbed *mozilla,
 			   const char	*uri,
 			   gpointer	user_data)
 {
-	gint abort_uri_open = FALSE;
+	gint abort_uri_open;
 
  	NautilusMozillaContentView	*view;
 
@@ -661,12 +652,8 @@ mozilla_open_uri_callback (GtkMozEmbed *mozilla,
 	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
 
 	/* Determine whether we want to abort this uri load */
-	if (uri) {
-		if (strncmp (uri, "ftp://", strlen ("ftp://")) == 0) {
-			abort_uri_open = TRUE;
-		}
-	}
-
+ 	abort_uri_open = mozilla_is_uri_handled_by_nautilus (uri);
+	
 #ifdef DEBUG_ramiro
 	g_print ("mozilla_open_uri_callback (uri = %s) abort = %s\n",
 		 uri,
@@ -679,6 +666,31 @@ mozilla_open_uri_callback (GtkMozEmbed *mozilla,
 	}
 
 	return abort_uri_open;
+}
+
+static char *handled_by_nautilus[] =
+{
+	"file",
+	"ftp"
+};
+
+#define num_handled_by_nautilus 2
+
+static gboolean
+mozilla_is_uri_handled_by_nautilus (const char *uri)
+{
+	guint i;
+
+	g_return_val_if_fail (uri != NULL, TRUE);
+	
+	for (i = 0; i < num_handled_by_nautilus; i++) {
+		if (strlen (uri) >= strlen (handled_by_nautilus[i]) 
+		    && (strncmp (uri, handled_by_nautilus[i], strlen (handled_by_nautilus[i])) == 0)) {
+			return TRUE;
+		}
+	}
+	
+	return FALSE;
 }
 
 GtkType
