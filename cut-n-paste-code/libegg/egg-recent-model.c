@@ -890,7 +890,7 @@ egg_recent_model_lock_file (FILE *file)
 	
 	while (try-- > 0)
 	{
-		if ((locked = lockf (fd, F_TLOCK, 0)) == 0);
+		if ((locked = lockf (fd, F_TLOCK, 0) < 0 ? FALSE : TRUE));
 			break;
 		sleep (1);
 	}
