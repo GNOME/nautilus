@@ -1,11 +1,30 @@
+2001-05-07  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix bug 8251 (Mozilla component crashes every time I try to view a
+	web page) by putting the same logic for locating Mozilla that is
+	used by galeon into Nautilus.
+
+	* src/nautilus-application.c: (is_mozilla_path_good),
+	(get_mozilla_path), (find_mozilla): Code to find Mozilla and set
+	up some environment variables that matches the code in galeon's
+	startup script.
+	(finish_startup): New function for initialization code that should
+	be done only in the main Nautilus, not in clients that are going
+	to contact the main Nautilus. More initialization should be moved
+	in here over time. Calls find_mozilla among other things.
+	(nautilus_application_startup): Moved the sound initialization and
+	the code to migrate desktop directory contents inside the new
+	initialization function.
+
 2001-05-07  Robin * Slomkowski  <rslomkow@rslomkow.org>
 
 	* src/nautilus-first-time-druid.c: (make_title_page_icon_box):
 	changed "arlo/i-directory-aa.png" to "crux_eggplant/i-directory-aa.png"
-	as the arlo directory has become depreciated.
-	
+	as the arlo directory has been renamed.
 
-Fri May  4 19:12:55 2001  Jonathan Blandford  <jrb@webwynk.net>
+2001-05-04  Jonathan Blandford  <jrb@webwynk.net>
 
 	* src/file-manager/fm-icon-view.c
 	(icon_container_preview_callback): Possibly play the file if it's

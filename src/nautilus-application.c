@@ -415,6 +415,90 @@ migrate_old_nautilus_files (void)
 	g_free (old_desktop_dir);
 }
 
+/* We do this work here instead of in the Mozilla component, because
+ * we want all these paths and such set before starting that
+ * component. This imitates the logic in the galeon startup script.
+ */
+
+static gboolean
+is_mozilla_path_good (const char *path)
+{
+	char *file_name;
+	gboolean good;
+
+	file_name = g_strconcat (path, "/chrome/embed.jar", NULL);
+	good = g_file_exists (file_name);
+	g_free (file_name);
+	return good;
+}
+
+static char *
+get_mozilla_path (void)
+{
+	const char *path;
+	guint i;
+	const char * const paths[] = {
+		"/usr/local/mozilla",
+		"/usr/lib/mozilla",
+		"/opt/mozilla",
+		"/usr/lib/mozilla-0.8.1" /* lame, but needed for Ximian package */
+	};
+
+	path = g_getenv ("MOZILLA_FIVE_HOME");
+	if (path != NULL) {
+		return g_strdup (path);
+	}
+
+	for (i = 0; i < EEL_N_ELEMENTS (paths); i++) {
+		if (is_mozilla_path_good (paths[i])) {
+			return g_strdup (paths[i]);
+		}
+	}
+
+	return NULL;
+}
+
+static void
+find_mozilla (void)
+{
+	char *mozilla_path;
+	const char *old_library_path;
+	char *new_library_path;
+
+	mozilla_path = get_mozilla_path ();
+	if (mozilla_path == NULL) {
+		g_warning ("Unable to find Mozilla with MOZILLA_FIVE_HOME or looking in standard places.");
+		return;
+	}
+
+	old_library_path = g_getenv ("LD_LIBRARY_PATH");
+	if (old_library_path == NULL) {
+		new_library_path = g_strdup (mozilla_path);
+	} else {
+		new_library_path = g_strconcat (mozilla_path, ":", old_library_path, NULL);
+	}
+	eel_setenv ("LD_LIBRARY_PATH", new_library_path, TRUE);
+	g_free (new_library_path);
+
+	eel_setenv ("MOZILLA_FIVE_HOME", mozilla_path, TRUE);
+
+	g_free (mozilla_path);
+}
+
+static void
+finish_startup (NautilusApplication *application)
+{
+	/* initialize the sound machinery */
+	nautilus_sound_initialize ();
+
+	/* find Mozilla */
+	find_mozilla ();
+	
+	/* Make the desktop work with gmc and old Nautilus. */
+	migrate_gmc_trash ();
+	migrate_old_nautilus_files ();
+}
+
 void
 nautilus_application_startup (NautilusApplication *application,
 			      gboolean kill_shell,
@@ -456,15 +540,6 @@ nautilus_application_startup (NautilusApplication *application,
 		return;
 	}
 
-	/* Make the desktop work with gmc and old Nautilus. */
-	if (!kill_shell) {
-		migrate_gmc_trash ();
-		migrate_old_nautilus_files ();
-	}
-	
-	/* initialize the sound machinery */
-	nautilus_sound_initialize ();
-	
 	CORBA_exception_init (&ev);
 
 	/* Start up the factory. */
@@ -476,6 +551,7 @@ nautilus_application_startup (NautilusApplication *application,
 		switch (result) {
 		case OAF_REG_SUCCESS:
 			/* We are registered with OAF and all is right with the world. */
+			finish_startup (application);
 		case OAF_REG_ALREADY_ACTIVE:
 			/* Another copy of nautilus already is running and registered. */
 			message = NULL;
