@@ -2907,32 +2907,9 @@ real_merge_menus (FMDirectoryView *view)
 	/* Do one-time state changes here; context-dependent ones go in update_menus */
 	if (!fm_directory_view_supports_zooming (view)) {
 		nautilus_bonobo_set_hidden 
-			(view->details->ui, NAUTILUS_COMMAND_ZOOM_IN_FROM_POPUP, TRUE);
-		nautilus_bonobo_set_hidden 
-			(view->details->ui, NAUTILUS_COMMAND_ZOOM_OUT_FROM_POPUP, TRUE);
-		nautilus_bonobo_set_hidden 
-			(view->details->ui, NAUTILUS_COMMAND_ZOOM_NORMAL_FROM_POPUP, TRUE);
+			(view->details->ui, NAUTILUS_POPUP_PATH_ZOOM_ITEMS_PLACEHOLDER, TRUE);
 	}
 }
-
-static void
-set_label_for_menu_and_command (FMDirectoryView *view,
-				const char *menu_path,
-				const char *command_path,
-				const char *label_with_underscore)
-{
-	char *label_no_underscore;
-
-	label_no_underscore = nautilus_str_strip_chr (label_with_underscore, '_');
-	nautilus_bonobo_set_label (view->details->ui,
-				   menu_path,
-				   label_with_underscore);
-	nautilus_bonobo_set_label (view->details->ui,
-				   command_path,
-				   label_no_underscore);
-	
-	g_free (label_no_underscore);
-}				
 
 static void
 real_update_menus (FMDirectoryView *view)
@@ -2969,10 +2946,11 @@ real_update_menus (FMDirectoryView *view)
 	} else {
 		label_with_underscore = g_strdup_printf (_("Open in %d _New Windows"), selection_count);
 	}
-	set_label_for_menu_and_command (view,
-					FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW,
-					FM_DIRECTORY_VIEW_COMMAND_OPEN_IN_NEW_WINDOW,
-					label_with_underscore);
+	nautilus_bonobo_set_label_for_menu_item_and_command 
+		(view->details->ui,
+		 FM_DIRECTORY_VIEW_MENU_PATH_OPEN_IN_NEW_WINDOW,
+		 FM_DIRECTORY_VIEW_COMMAND_OPEN_IN_NEW_WINDOW,
+		 label_with_underscore);
 	g_free (label_with_underscore);
 				   
 	/* If the only selected item is launchable, dim out "Open in New Window"
@@ -3008,10 +2986,11 @@ real_update_menus (FMDirectoryView *view)
 						 "*Control*t");
 		label_with_underscore = g_strdup (_("Move to _Trash"));
 	}
-	set_label_for_menu_and_command (view,
-					FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
-					FM_DIRECTORY_VIEW_COMMAND_TRASH,
-					label_with_underscore);
+	nautilus_bonobo_set_label_for_menu_item_and_command 
+		(view->details->ui,
+		 FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
+		 FM_DIRECTORY_VIEW_COMMAND_TRASH,
+		 label_with_underscore);
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_TRASH,
 				       !fm_directory_view_is_read_only (view)
@@ -3024,12 +3003,13 @@ real_update_menus (FMDirectoryView *view)
 			     	       	&& selection_count != 0
 			      		&& !selection_contains_special_link);
 
-	set_label_for_menu_and_command (view,
-					FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK,
-					FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK,
-					selection_count > 1
-						? _("Create _Links")
-						: _("Create _Link"));
+	nautilus_bonobo_set_label_for_menu_item_and_command 
+		(view->details->ui,
+		 FM_DIRECTORY_VIEW_MENU_PATH_CREATE_LINK,
+		 FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK,
+		 selection_count > 1
+			? _("Create _Links")
+			: _("Create _Link"));
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_CREATE_LINK,
 				       can_create_files
@@ -3042,23 +3022,25 @@ real_update_menus (FMDirectoryView *view)
 			      		&& fm_directory_view_supports_properties (view));
 
 
-	set_label_for_menu_and_command (view,
-					FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH,
-					FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH,
-					confirm_trash
-						? _("_Empty Trash...")
-						: _("_Empty Trash"));
+	nautilus_bonobo_set_label_for_menu_item_and_command 
+		(view->details->ui,
+		 FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH,
+		 FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH,
+		 confirm_trash
+			? _("_Empty Trash...")
+			: _("_Empty Trash"));
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_EMPTY_TRASH,
 				       !nautilus_trash_monitor_is_empty ());
 
 
-	set_label_for_menu_and_command (view,
-					FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS,
-					FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS,
-					selection_count > 1
-						? _("R_emove Custom Images")
-						: _("R_emove Custom Image"));
+	nautilus_bonobo_set_label_for_menu_item_and_command 
+		(view->details->ui,
+		 FM_DIRECTORY_VIEW_MENU_PATH_REMOVE_CUSTOM_ICONS,
+		 FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS,
+		 selection_count > 1
+			? _("R_emove Custom Images")
+			: _("R_emove Custom Image"));
 	nautilus_bonobo_set_sensitive (view->details->ui, 
 				       FM_DIRECTORY_VIEW_COMMAND_REMOVE_CUSTOM_ICONS,
 				       files_have_any_custom_images (selection));

@@ -80,7 +80,11 @@ void     nautilus_bonobo_add_menu_separator      (BonoboUIComponent *ui,
 void     nautilus_bonobo_remove_menu_items_and_commands
 						 (BonoboUIComponent *ui,
 						  const char        *container_path);
-char *   nautilus_bonobo_get_menu_item_verb_name (const char        *path);
+void	 nautilus_bonobo_set_label_for_menu_item_and_command
+						 (BonoboUIComponent *ui,
+						  const char	    *menu_item_path,
+						  const char	    *command_path,
+						  const char	    *label_with_underscore);
 void     nautilus_bonobo_set_icon                (BonoboUIComponent *ui,
 						  const char        *path,
 						  const char        *icon_relative_path);

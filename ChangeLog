@@ -1,3 +1,40 @@
+2000-11-16  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Final changes to kill off the legendary bug 3579
+	(Convert directory view context menus to use Bonobo)
+
+	* libnautilus/nautilus-bonobo-ui.h:
+	#define for zoom items placeholder in popup. Remove
+	#defines for popup-specific zooming commands, since now
+	we don't need distinct popup-specific ones.
+
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_set_label_for_menu_item_and_command):
+	Moved this here and commented; it had been a private 
+	function in fm-directory-view.c.
+	
+	* src/file-manager/fm-directory-view.c: 
+	(real_merge_menus): Just hide the placeholder for the zoom items,
+	which is now sufficient due to a Bonobo fix Darin made.
+	(real_update_menus): Update for API name change.
+	(set_label_for_menu_and_command): Moved this to another file
+	and renamed it.
+	* src/file-manager/fm-icon-view.c: 
+	(fm_icon_view_update_menus): Update the dynamic menu items
+	in-line here, as was done with fm-directory-view.c in an earlier
+	checkin.
+	(compute_menu_item_info), (update_one_menu_item): Removed these
+	obsolete functions.
+	* src/nautilus-shell-ui.xml: Eliminated special pop-up versions of
+	zoom commands. They existed only to allow hiding without affecting
+	the menu-bar versions, but now that placeholders can be hidden
+	these aren't necessary.
+	* src/nautilus-window-menus.c: (nautilus_window_initialize_menus):
+	Removed verb installation for pop-up versions of zoom commands.
+
 2000-11-16  Rebecca Schulman  <rebecka@eazel.com>
 
 	* check-FIXME.pl:

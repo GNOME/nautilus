@@ -452,93 +452,6 @@ special_link_in_selection (FMIconView *view)
 }
 
 static void
-compute_menu_item_info (FMIconView *view, 
-			GList *selection, 
-			const char *menu_path,
-			char **return_name_with_underscore,
-			char **return_name_no_underscore,
-			gboolean *sensitive_return,
-			MenuItemType *menu_item_type_return)
-{
-	NautilusIconContainer *icon_container;
-	char *name_with_underscore;
-	gboolean sensitive;
-	MenuItemType type;
-
-	g_assert (FM_IS_ICON_VIEW (view));
-	g_assert (menu_path != NULL);
-	g_assert (return_name_with_underscore != NULL || return_name_no_underscore != NULL);
-
-	icon_container = get_icon_container (view);
-	sensitive = TRUE;
-	type = MENU_ITEM_TYPE_STANDARD;
-	
-	if (strcmp (MENU_PATH_STRETCH_ICON, menu_path) == 0) {
-                name_with_underscore = g_strdup (_("_Stretch Icon"));
-		/* Current stretching UI only works on one item at a time, so we'll
-		 * desensitize the menu item if that's not the case.
-		 */
-        	sensitive = nautilus_g_list_exactly_one_item (selection)
-			&& (icon_container != NULL
-			    && !nautilus_icon_container_has_stretch_handles (icon_container));
-	} else if (strcmp (MENU_PATH_UNSTRETCH_ICONS, menu_path) == 0) {
-                if (nautilus_g_list_more_than_one_item (selection)) {
-                        name_with_underscore = g_strdup (_("_Restore Icons' Original Sizes"));
-                } else {
-                        name_with_underscore = g_strdup (_("_Restore Icon's Original Size"));
-                }
-        	sensitive = icon_container != NULL
-			&& nautilus_icon_container_is_stretched (icon_container);
-	} else if (strcmp (MENU_PATH_CUSTOMIZE_ICON_TEXT, menu_path) == 0) {
-                name_with_underscore = g_strdup (_("_Icon Captions..."));
-	} else if (strcmp (MENU_PATH_RENAME, menu_path) == 0) {
-		/* Modify file name. We only allow this on a single file selection. */
-		name_with_underscore = g_strdup (_("_Rename"));
-		sensitive = nautilus_g_list_exactly_one_item (selection)
-			&& nautilus_file_can_rename (selection->data)
-			&& !special_link_in_selection (view);
-	} else if (strcmp (MENU_PATH_CLEAN_UP, menu_path) == 0) {
-		name_with_underscore = g_strdup (_("_Clean Up by Name"));
-		sensitive = !fm_icon_view_using_auto_layout (view);
-	} else if (strcmp (MENU_PATH_TIGHTER_LAYOUT, menu_path) == 0) {
-		name_with_underscore = g_strdup (_("_Use Tighter Layout"));
-		sensitive = fm_icon_view_using_auto_layout (view);
-		type = MENU_ITEM_TYPE_CHECK;
-	} else if (strcmp (MENU_PATH_SORT_REVERSED, menu_path) == 0) {
-		name_with_underscore = g_strdup (_("Re_versed Order"));
-		sensitive = fm_icon_view_using_auto_layout (view);
-		type = MENU_ITEM_TYPE_CHECK;
-	} else if (strcmp (MENU_PATH_LAY_OUT, menu_path) == 0) {
-		name_with_underscore = g_strdup (_("_Lay out items"));
-		type = MENU_ITEM_TYPE_TREE;
-	} else if (strcmp (MENU_PATH_MANUAL_LAYOUT, menu_path) == 0) {
-		name_with_underscore = g_strdup (_("_manually"));
-		type = MENU_ITEM_TYPE_RADIO;
-	} else {
-		name_with_underscore = NULL;
-		g_message ("Unknown menu path\"%s\" in compute_menu_item_info", menu_path);
-	}
-
-        if (return_name_no_underscore != NULL) {
-        	*return_name_no_underscore = nautilus_str_strip_chr (name_with_underscore, '_');
-        }
-
-        if (return_name_with_underscore != NULL) {
-		*return_name_with_underscore = name_with_underscore;
-        } else {
-		g_free (name_with_underscore);
-        }
-
-        if (sensitive_return != NULL) {
-		*sensitive_return = sensitive;
-        }
-
-        if (menu_item_type_return != NULL) {
-		*menu_item_type_return = type;
-        }
-}           
-
-static void
 handle_radio_item (FMIconView *view,
 		   const char *id)
 {
@@ -1251,28 +1164,12 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 }
 
 static void
-update_one_menu_item (FMIconView *view, 
-		      GList *selection,
-		      const char *menu_path,
-		      const char *verb_path)
-{
-	char *label_with_underscore, *label_no_underscore;
-	gboolean sensitive;
-	
-	compute_menu_item_info (view, selection, menu_path, &label_with_underscore, &label_no_underscore, &sensitive, NULL);
-
-	nautilus_bonobo_set_sensitive (view->details->ui, verb_path, sensitive);
-	nautilus_bonobo_set_label (view->details->ui, menu_path, label_with_underscore);
-	nautilus_bonobo_set_label (view->details->ui, verb_path, label_no_underscore);
-	g_free (label_with_underscore);
-	g_free (label_no_underscore);
-}
-
-static void
 fm_icon_view_update_menus (FMDirectoryView *view)
 {
 	FMIconView *icon_view;
         GList *selection;
+        int selection_count;
+        NautilusIconContainer *icon_container;
 
         icon_view = FM_ICON_VIEW (view);
 
@@ -1284,18 +1181,34 @@ fm_icon_view_update_menus (FMDirectoryView *view)
 	NAUTILUS_CALL_PARENT_CLASS (FM_DIRECTORY_VIEW_CLASS, update_menus, (view));
 
         selection = fm_directory_view_get_selection (view);
+        selection_count = g_list_length (selection);
+        icon_container = get_icon_container (icon_view);
 
 	bonobo_ui_component_freeze (icon_view->details->ui, NULL);
 
-	update_one_menu_item (FM_ICON_VIEW (view), selection, 
-			      MENU_PATH_STRETCH_ICON,
-			      COMMAND_STRETCH_ICON);
-        update_one_menu_item (FM_ICON_VIEW (view), selection, 
-			      MENU_PATH_UNSTRETCH_ICONS,
-			      COMMAND_UNSTRETCH_ICONS);
-        update_one_menu_item (FM_ICON_VIEW (view), selection, 
-			      MENU_PATH_RENAME,
-			      COMMAND_RENAME);
+	nautilus_bonobo_set_sensitive (icon_view->details->ui, 
+				       COMMAND_STRETCH_ICON,
+				       selection_count == 1
+				       && icon_container != NULL
+			    	       && !nautilus_icon_container_has_stretch_handles (icon_container));
+
+	nautilus_bonobo_set_label_for_menu_item_and_command 
+		(icon_view->details->ui,
+		 MENU_PATH_UNSTRETCH_ICONS,
+		 COMMAND_UNSTRETCH_ICONS,
+		 nautilus_g_list_more_than_one_item (selection)
+		 	? _("_Restore Icons' Original Sizes")
+		 	: _("_Restore Icon's Original Size"));
+	nautilus_bonobo_set_sensitive (icon_view->details->ui, 
+				       COMMAND_UNSTRETCH_ICONS,
+				       icon_container != NULL
+			    	       && nautilus_icon_container_is_stretched (icon_container));
+
+	nautilus_bonobo_set_sensitive (icon_view->details->ui, 
+				       COMMAND_RENAME,
+				       selection_count == 1
+				       && nautilus_file_can_rename (selection->data)
+				       && !special_link_in_selection (icon_view));
 
 	bonobo_ui_component_thaw (icon_view->details->ui, NULL);
 	
