@@ -48,9 +48,15 @@
 
 2001-08-22  Ramiro Estrugo  <ramiro@fateware.com>
 
-	reviewed by: <delete if not using a buddy>
-
 	* src/nautilus-main.c: (main):
+	No longer need to check that we want to kill the nautilus shell
+	before initializing preferences.  I used to do this because of the
+	way visibilities and defaults were stored using gconf - which led
+	to problems about too early initialization for gconf.   It also
+	happens that some desktop prefernece checking code was just added
+	for a situation when the nautilus shell is about to be killed.
+	That was causing criticals, so thats the end of this now uneeded
+	check.
 
 2001-08-22  Christian Meyer  <chrisime@gnome.org>
 
