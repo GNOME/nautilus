@@ -77,6 +77,7 @@ static NautilusView *nautilus_window_load_content_view(NautilusWindow *window,
 static void nautilus_window_switch_to_new_views(NautilusWindow *window);
 static void nautilus_window_revert_to_old_views(NautilusWindow *window);
 static void nautilus_window_free_load_info(NautilusWindow *window);
+static void nautilus_window_refresh_title (NautilusWindow *window);
 
 static void
 Nautilus_SelectionInfo__copy(Nautilus_SelectionInfo *dest_si, Nautilus_SelectionInfo *src_si)
@@ -368,6 +369,8 @@ nautilus_window_change_location_internal(NautilusWindow *window, Nautilus_Naviga
 
   explorer_location_bar_set_uri_string(EXPLORER_LOCATION_BAR(window->ent_uri),
                                        loci->requested_uri);
+
+  nautilus_window_refresh_title (window);
 }
 
 static void
@@ -510,6 +513,37 @@ nautilus_window_load_meta_view(NautilusWindow *window,
 
       nautilus_window_update_view(window, meta_view, &(loci->navinfo), requesting_view, window->load_info->new_content_view);
     }
+}
+
+static void
+nautilus_window_refresh_title (NautilusWindow *window)
+{
+	GnomeVFSURI *vfs_uri;
+	
+	g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+	
+	vfs_uri = gnome_vfs_uri_new (nautilus_window_get_requested_uri (window));
+	if (vfs_uri == NULL)
+	{
+		gtk_window_set_title (GTK_WINDOW (window), _("Nautilus"));
+	}
+	else
+	{
+		gchar *short_name;
+		gchar *new_title;
+
+		short_name = gnome_vfs_uri_extract_short_name (vfs_uri);
+		gnome_vfs_uri_unref (vfs_uri);
+
+		g_assert (short_name != NULL);
+
+		new_title = g_strdup_printf (_("Nautilus: %s"), short_name);
+		gtk_window_set_title (GTK_WINDOW (window), new_title);
+		g_free (new_title);
+		
+		g_free (short_name);
+	}
+
 }
 
 /* This is called when we have decided we can actually change to the new location. */

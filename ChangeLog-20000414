@@ -1,5 +1,13 @@
 2000-01-18  John Sullivan <sullivan@eazel.com>
 
+	* src/ntl-window-msgs.c:
+	(nautilus_window_refresh_title): Sets the window title to
+	Nautilus: x, where x is short name of current location.
+	(nautilus_window_change_location_internal): Call
+	nautilus_window_refresh_title.
+
+2000-01-18  John Sullivan <sullivan@eazel.com>
+
 	* src/file-manager/fm-directory-view.c:
 	(display_selection_info): Call selection "items" rather than
 	"files" because users distinguish directories from files.
