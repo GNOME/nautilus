@@ -2,11 +2,13 @@
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # Fatih Demir <kabalak@gmx.net>, 2000.
 #
+#: nautilus-installer/src/interface.c:256
+#: nautilus-installer/src/interface.c:277
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 0.1.0\n"
-"POT-Creation-Date: 2000-08-05 00:10+0200\n"
-"PO-Revision-Date: 2000-08-05 00:21+0200\n"
+"POT-Creation-Date: 2000-08-05 10:47+0200\n"
+"PO-Revision-Date: 2000-08-05 10:48+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -251,6 +253,7 @@ msgstr "Bitir"
 #. This application can't deal with this uri, because it
 #. * can only handle local files. Tell user. Some day we could offer
 #. * to copy it locally for the user, if we knew where to put it.
+#.
 #: libnautilus-extensions/nautilus-program-choosing.c:247
 #, c-format
 msgid ""
@@ -725,38 +728,38 @@ msgid "Search For:"
 msgstr "Bul :"
 
 #. * From 'man(7)':
-#. 
+#.
 #. The manual sections are traditionally defined as follows:
-#. 
+#.
 #. 1 Commands
 #. Those  commands that can be executed by the
 #. user from within a shell.
-#. 
+#.
 #. 2 System calls
 #. Those functions which must be performed  by
 #. the kernel.
-#. 
+#.
 #. 3 Library calls
 #. Most   of   the  libc  functions,  such  as
 #. sort(3))
-#. 
+#.
 #. 4 Special files
 #. Files found in /dev)
-#. 
+#.
 #. 5 File formats and conventions
 #. The format for /etc/passwd and other human-
 #. readable files.
-#. 
+#.
 #. 6 Games
-#. 
+#.
 #. 7 Macro packages and conventions
 #. A  description  of the standard file system
 #. layout, this man page, and other things.
-#. 
+#.
 #. 8 System management commands
 #. Commands like mount(8), which only root can
 #. execute.
-#. 
+#.
 #. 9 Kernel routines
 #. This  is  a non-standard manual section and
 #. is included because the source code to  the
@@ -940,8 +943,7 @@ msgstr ""
 "Içerik bakýþýný öldür basmasýný bastýn ."
 
 #. BonoboUIHandler
-#. menu item path, must start with /some-existing-menu-path and be otherwise 
-#. unique
+#. menu item path, must start with /some-existing-menu-path and be otherwise unique
 #: components/loser/content/nautilus-content-loser.c:245
 msgid "_Kill Content View"
 msgstr "_Içerik bakýþýný öldür"
@@ -952,8 +954,7 @@ msgid "Kill the Loser content view"
 msgstr "Matrak içerik bakýþýný öldür"
 
 #. BonoboUIHandler
-#. button path, must start with /some-existing-toolbar-path and be otherwise 
-#. unique
+#. button path, must start with /some-existing-toolbar-path and be otherwise unique
 #: components/loser/content/nautilus-content-loser.c:265
 msgid "Kill Content View"
 msgstr "Içerik bakýþýný öldür"
@@ -986,8 +987,7 @@ msgstr ""
 "Araç çubuðunda Yan çubuðunu öldür basmasýný týkladýn."
 
 #. BonoboUIHandler
-#. menu item path, must start with /some-existing-menu-path and be otherwise 
-#. unique
+#. menu item path, must start with /some-existing-menu-path and be otherwise unique
 #: components/loser/sidebar/nautilus-sidebar-loser.c:248
 msgid "_Kill Sidebar View"
 msgstr "_Yan çubudu bakýþýný öldür"
@@ -998,8 +998,7 @@ msgid "Kill the Loser sidebar view"
 msgstr "Matrak yan çubuðu bakýþýný öldür"
 
 #. BonoboUIHandler
-#. button path, must start with /some-existing-toolbar-path and be otherwise 
-#. unique
+#. button path, must start with /some-existing-toolbar-path and be otherwise unique
 #: components/loser/sidebar/nautilus-sidebar-loser.c:268
 msgid "Loser"
 msgstr "Matrak"
@@ -1009,22 +1008,21 @@ msgstr "Matrak"
 msgid "Kill the Loser sidebar view."
 msgstr "Matrak yan çubuk bakýþýný öldür."
 
-#. 
+#.
 #. * Create our mozilla menu item.
 #. *
 #. * Note that it's sorta bogus that we know Nautilus has a menu whose
 #. * path is "/File", and also that we know a sensible position to use within
 #. * that menu. Nautilus should publish this information somehow.
-#. 
+#.
 #. BonoboUIHandler
-#. menu item path, must start with /some-existing-menu-path and be otherwise 
-#. unique
-#: components/mozilla/nautilus-mozilla-content-view.c:323
+#. menu item path, must start with /some-existing-menu-path and be otherwise unique
+#: components/mozilla/nautilus-mozilla-content-view.c:322
 msgid "_Mozilla"
 msgstr "_Mozilla"
 
 #. menu item user-displayed label
-#: components/mozilla/nautilus-mozilla-content-view.c:324
+#: components/mozilla/nautilus-mozilla-content-view.c:323
 msgid "This is a mozilla merged menu item"
 msgstr "Bu bir örnek mozilla birleþtirilmiþ mönü birimidir"
 
@@ -1032,25 +1030,24 @@ msgstr "Bu bir örnek mozilla birleþtirilmiþ mönü birimidir"
 #. position within menu; -1 means last
 #. pixmap type
 #. pixmap data
-#. accelerator key, couldn't bear the thought of using Control-S for anything 
-#. except Save
+#. accelerator key, couldn't bear the thought of using Control-S for anything except Save
 #. accelerator key modifiers
 #. callback function
 #. callback function data
-#. 
+#.
 #. * Create our mozilla toolbar button.
 #. *
 #. * Note that it's sorta bogus that we know Nautilus has a toolbar whose
 #. * path is "/Main". Nautilus should publish this information somehow.
-#. 
+#.
 #. BonoboUIHandler
 #. button path, must start with /Main/ and be otherwise unique
-#: components/mozilla/nautilus-mozilla-content-view.c:341
+#: components/mozilla/nautilus-mozilla-content-view.c:340
 msgid "Mozilla"
 msgstr "Mozilla"
 
 #. button user-displayed label
-#: components/mozilla/nautilus-mozilla-content-view.c:342
+#: components/mozilla/nautilus-mozilla-content-view.c:341
 msgid "This is a mozilla merged toolbar button"
 msgstr "Bu bir mozilla yönetim çubuðu örneðidir ."
 
@@ -1230,8 +1227,7 @@ msgstr ""
 "\n"
 "Örnek yönetim çubuðu örneðine týkladýn ."
 
-#. menu item path, must start with /some-existing-menu-path and be otherwise 
-#. unique
+#. menu item path, must start with /some-existing-menu-path and be otherwise unique
 #: components/sample/nautilus-sample-content-view.c:243
 #: components/services/time/nautilus-view/trilobite-eazel-time-view.c:573
 msgid "_Sample"
@@ -1243,8 +1239,7 @@ msgstr "Ö_rnek"
 msgid "This is a sample merged menu item"
 msgstr "Bu bir örnek birleþtirilmiþ mönü birimidir"
 
-#. button path, must start with /some-existing-toolbar-path and be otherwise 
-#. unique
+#. button path, must start with /some-existing-toolbar-path and be otherwise unique
 #: components/sample/nautilus-sample-content-view.c:259
 #: components/services/time/nautilus-view/trilobite-eazel-time-view.c:593
 msgid "Sample"
@@ -1640,6 +1635,7 @@ msgstr "bilinmeyen MIME türü"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
+#.
 #: libnautilus-extensions/nautilus-file.c:2941
 msgid "unknown"
 msgstr "bilinmiyor"
@@ -1959,7 +1955,7 @@ msgid "Prefs Box"
 msgstr "Ayarlar kutusu"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:188
-#: src/nautilus-window.c:604
+#: src/nautilus-window.c:606
 #, c-format
 msgid "View as %s"
 msgstr "%s olarak göster"
@@ -2129,35 +2125,35 @@ msgstr "Deðiþimi yenile"
 msgid "Redo the edit"
 msgstr "Deðiþimi yeniden yap"
 
-#: libnautilus/nautilus-clipboard.c:117
+#: libnautilus/nautilus-clipboard.c:121
 msgid "_Cut"
 msgstr "_Kes"
 
-#: libnautilus/nautilus-clipboard.c:118
+#: libnautilus/nautilus-clipboard.c:122
 msgid "Remove selected text from selection"
 msgstr "Seçili metni seçili bölgeden sil"
 
-#: libnautilus/nautilus-clipboard.c:122
+#: libnautilus/nautilus-clipboard.c:126
 msgid "_Copy"
 msgstr "K_opyala"
 
-#: libnautilus/nautilus-clipboard.c:123
+#: libnautilus/nautilus-clipboard.c:127
 msgid "Copy selected text to the clipboard"
 msgstr "Seçili metni arabelleðe kopyala"
 
-#: libnautilus/nautilus-clipboard.c:127
+#: libnautilus/nautilus-clipboard.c:131
 msgid "_Paste"
 msgstr "_Yapýþtýr"
 
-#: libnautilus/nautilus-clipboard.c:128
+#: libnautilus/nautilus-clipboard.c:132
 msgid "Paste text from clipboard into text box"
 msgstr "Arabelleklteki metni metin kutusunu yapýþtýr"
 
-#: libnautilus/nautilus-clipboard.c:132
+#: libnautilus/nautilus-clipboard.c:136
 msgid "_Clear"
 msgstr "_Sil"
 
-#: libnautilus/nautilus-clipboard.c:133
+#: libnautilus/nautilus-clipboard.c:137
 msgid "Clear the current selection"
 msgstr "Geçerli seçimi sil"
 
@@ -2389,148 +2385,148 @@ msgstr "Çöp kutusunu boþaltýyorum"
 msgid "Preparing to Empty the Trash..."
 msgstr "Çöp kutusunu boþaltmaya hazýrlanýyorum ..."
 
-#: src/file-manager/fm-directory-view.c:1013
+#: src/file-manager/fm-directory-view.c:1015
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" seçili"
 
-#: src/file-manager/fm-directory-view.c:1015
+#: src/file-manager/fm-directory-view.c:1017
 msgid "1 directory selected"
 msgstr "1 dizin seçili"
 
-#: src/file-manager/fm-directory-view.c:1018
+#: src/file-manager/fm-directory-view.c:1020
 #, c-format
 msgid "%d directories selected"
 msgstr "%d dizin seçili"
 
-#: src/file-manager/fm-directory-view.c:1024
+#: src/file-manager/fm-directory-view.c:1026
 msgid " (containing 0 items)"
 msgstr "( 0 birim içerir )"
 
-#: src/file-manager/fm-directory-view.c:1026
+#: src/file-manager/fm-directory-view.c:1028
 msgid " (containing 1 item)"
 msgstr "( 1 birim içerir )"
 
-#: src/file-manager/fm-directory-view.c:1028
+#: src/file-manager/fm-directory-view.c:1030
 #, c-format
 msgid " (containing %d items)"
 msgstr "( %d birim içerir )"
 
-#: src/file-manager/fm-directory-view.c:1039
+#: src/file-manager/fm-directory-view.c:1041
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" seçili (%s)"
 
-#: src/file-manager/fm-directory-view.c:1043
+#: src/file-manager/fm-directory-view.c:1045
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d birim seçili (%s)"
 
-#: src/file-manager/fm-directory-view.c:1050
+#: src/file-manager/fm-directory-view.c:1052
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 baþka birim seçili (%s)"
 
-#: src/file-manager/fm-directory-view.c:1053
+#: src/file-manager/fm-directory-view.c:1055
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d baþka birim seçili (%s)"
 
-#: src/file-manager/fm-directory-view.c:1067
+#: src/file-manager/fm-directory-view.c:1069
 #, c-format
 msgid "%s%s"
 msgstr "%s%s"
 
-#: src/file-manager/fm-directory-view.c:1071
+#: src/file-manager/fm-directory-view.c:1073
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
 
-#: src/file-manager/fm-directory-view.c:1853
+#: src/file-manager/fm-directory-view.c:1855
 #, c-format
 msgid "Are you sure you want to permanently remove item \"%s\"?"
 msgstr "\"%s\"'yi daimen silmekten emin misin ?"
 
-#: src/file-manager/fm-directory-view.c:1858
+#: src/file-manager/fm-directory-view.c:1860
 #, c-format
 msgid "Are you sure you want to permanently remove the %d selected items?"
 msgstr "%d seçili birimleri daimen silmekten emin misin ?"
 
-#: src/file-manager/fm-directory-view.c:1862
+#: src/file-manager/fm-directory-view.c:1864
 msgid "Deleting items"
 msgstr "Birimleri sil"
 
-#: src/file-manager/fm-directory-view.c:1863
+#: src/file-manager/fm-directory-view.c:1865
 msgid "Delete"
 msgstr "Sil"
 
-#: src/file-manager/fm-directory-view.c:1863
+#: src/file-manager/fm-directory-view.c:1865
 msgid "Cancel"
 msgstr "Iptal"
 
-#: src/file-manager/fm-directory-view.c:2112
+#: src/file-manager/fm-directory-view.c:2114
 msgid "_Open"
 msgstr "_Aç"
 
-#: src/file-manager/fm-directory-view.c:2115
+#: src/file-manager/fm-directory-view.c:2117
 msgid "Open With"
 msgstr "Farklý aç"
 
-#: src/file-manager/fm-directory-view.c:2118
+#: src/file-manager/fm-directory-view.c:2120
 msgid "Other Application..."
 msgstr "Baþka uygulamayla aç ..."
 
-#: src/file-manager/fm-directory-view.c:2120
+#: src/file-manager/fm-directory-view.c:2122
 msgid "Other Viewer..."
 msgstr "Baþka göstergeyle aç ..."
 
-#: src/file-manager/fm-directory-view.c:2124
+#: src/file-manager/fm-directory-view.c:2126
 msgid "Open in _New Window"
 msgstr "_Yeni pencerede aç"
 
-#: src/file-manager/fm-directory-view.c:2126
+#: src/file-manager/fm-directory-view.c:2128
 #, c-format
 msgid "Open in %d _New Windows"
 msgstr "%d yeni _pencerede aç"
 
-#: src/file-manager/fm-directory-view.c:2138
-#: src/file-manager/fm-directory-view.c:2255
+#: src/file-manager/fm-directory-view.c:2140
+#: src/file-manager/fm-directory-view.c:2257
 msgid "New Folder"
 msgstr "Yeni dizin"
 
-#: src/file-manager/fm-directory-view.c:2140
+#: src/file-manager/fm-directory-view.c:2142
 msgid "_Delete..."
 msgstr "_Sil ..."
 
-#: src/file-manager/fm-directory-view.c:2143
+#: src/file-manager/fm-directory-view.c:2145
 msgid "_Move to Trash"
 msgstr "Çö_pe taþý"
 
-#: src/file-manager/fm-directory-view.c:2146
+#: src/file-manager/fm-directory-view.c:2148
 msgid "_Duplicate"
 msgstr "_Kopyala"
 
-#: src/file-manager/fm-directory-view.c:2149
+#: src/file-manager/fm-directory-view.c:2151
 msgid "Show _Properties"
 msgstr "_Ayarlarý göster"
 
-#: src/file-manager/fm-directory-view.c:2152
+#: src/file-manager/fm-directory-view.c:2154
 msgid "_Empty Trash"
 msgstr "Çöp kutusunu _boþalt"
 
-#: src/file-manager/fm-directory-view.c:2155 src/nautilus-window-menus.c:1116
+#: src/file-manager/fm-directory-view.c:2157 src/nautilus-window-menus.c:1122
 msgid "_Select All"
 msgstr "Hepsini seç"
 
-#: src/file-manager/fm-directory-view.c:2159
+#: src/file-manager/fm-directory-view.c:2161
 msgid "R_emove Custom Images"
 msgstr "Özelleþtirilmiþ _resimleri sil"
 
-#: src/file-manager/fm-directory-view.c:2161
+#: src/file-manager/fm-directory-view.c:2163
 msgid "R_emove Custom Image"
 msgstr "Özelleþtirilmiþ _resmi sil"
 
-#: src/file-manager/fm-directory-view.c:2165
+#: src/file-manager/fm-directory-view.c:2167
 msgid "Reset _Background"
 msgstr "_Ardalaný gerit"
 
@@ -2540,73 +2536,74 @@ msgstr "_Ardalaný gerit"
 #. * Zoom In and Out don't really seem to belong. Maybe "Show Properties"
 #. * (for the current location, not selection -- but would have to not
 #. * include this item when there's a selection)? Add Bookmark? (same issue).
-#: src/file-manager/fm-directory-view.c:2266
+#.
+#: src/file-manager/fm-directory-view.c:2268
 msgid "Zoom In"
 msgstr "Yakýnlaþ"
 
-#: src/file-manager/fm-directory-view.c:2268
+#: src/file-manager/fm-directory-view.c:2270
 msgid "Zoom Out"
 msgstr "Uzaklaþ"
 
-#: src/file-manager/fm-directory-view.c:2270
+#: src/file-manager/fm-directory-view.c:2272
 msgid "Zoom to Default"
 msgstr "Önayarlý boyutu dön"
 
-#: src/file-manager/fm-directory-view.c:2401
-#: src/file-manager/fm-directory-view.c:2644
+#: src/file-manager/fm-directory-view.c:2403
+#: src/file-manager/fm-directory-view.c:2646
 #, c-format
 msgid "%s Viewer"
 msgstr "%s göstergesi"
 
-#: src/file-manager/fm-directory-view.c:2667
+#: src/file-manager/fm-directory-view.c:2669
 msgid "Move all selected items to the Trash"
 msgstr "Yekin seçili birimleri çöp kutusuna taþý"
 
-#: src/file-manager/fm-directory-view.c:2676
+#: src/file-manager/fm-directory-view.c:2678
 msgid "Delete all selected items"
 msgstr "Yekin seçili birimleri sil"
 
-#: src/file-manager/fm-directory-view.c:2698
+#: src/file-manager/fm-directory-view.c:2700
 msgid "Choose a program with which to open the selected item"
 msgstr "Seçili birimi açacak uygulamayý seç"
 
-#: src/file-manager/fm-directory-view.c:2718
+#: src/file-manager/fm-directory-view.c:2720
 msgid "Choose another application with which to open the selected item"
 msgstr "Seçili birimi açacak baþka bir uygulamayý seç"
 
-#: src/file-manager/fm-directory-view.c:2740
+#: src/file-manager/fm-directory-view.c:2742
 msgid "Choose another viewer with which to view the selected item"
 msgstr "Seçili birimi gösterecek baþka bir göstergeyi seç"
 
-#: src/file-manager/fm-directory-view.c:2762
+#: src/file-manager/fm-directory-view.c:2764
 msgid "Create a new folder in this window"
 msgstr "Bu pencerede yeni bir dizin yarat"
 
-#: src/file-manager/fm-directory-view.c:2770
+#: src/file-manager/fm-directory-view.c:2772
 msgid "Open the selected item in this window"
 msgstr "Seçili birimi bu pencerede aç"
 
-#: src/file-manager/fm-directory-view.c:2778
+#: src/file-manager/fm-directory-view.c:2780
 msgid "Open each selected item in a new window"
 msgstr "Herbir seçili birimi yeni bir pencerede aç"
 
-#: src/file-manager/fm-directory-view.c:2793
+#: src/file-manager/fm-directory-view.c:2795
 msgid "View or modify the properties of the selected items"
 msgstr "Seçili birimlerin özelliklerini deðiþtir"
 
-#: src/file-manager/fm-directory-view.c:2804
+#: src/file-manager/fm-directory-view.c:2806
 msgid "Duplicate all selected items"
 msgstr "Yekin seçili birimleri klonla"
 
-#: src/file-manager/fm-directory-view.c:2812
+#: src/file-manager/fm-directory-view.c:2814
 msgid "Delete all items in the trash"
 msgstr "Çöp kutusundaki yekin birimleri sil"
 
-#: src/file-manager/fm-directory-view.c:2820
+#: src/file-manager/fm-directory-view.c:2822
 msgid "Select all items in this window"
 msgstr "Bu penceredeki yekin birimleri seç"
 
-#: src/file-manager/fm-directory-view.c:2834
+#: src/file-manager/fm-directory-view.c:2836
 msgid "Remove the custom image from each selected icon"
 msgstr "Her seçili simgeden özelleþtirilmiþ resmi sil"
 
@@ -2875,6 +2872,7 @@ msgstr "( bazý içerikler okunamadý )"
 #. * if the value field has two lines. This is a hack to get the
 #. * "Contents:" title to line up with the first line of the 2-line value.
 #. * Maybe there's a better way to do this, but I couldn't think of one.
+#.
 #: src/file-manager/fm-properties-window.c:878
 msgid "Contents:"
 msgstr "Içerik :"
@@ -2993,6 +2991,7 @@ msgstr "\"%s\"'nin eriþim haklarý belirlenemedi."
 #. * reason. Sometimes killing oafd and gconfd fixes
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
+#.
 #: src/nautilus-application.c:349
 msgid ""
 "Nautilus can't be used now. Rebooting the computer or installing Nautilus "
@@ -3012,8 +3011,7 @@ msgid ""
 "Another possible cause would be bad install with a missing nautilus.oafinfo "
 "file.\n"
 "\n"
-"Sometimes killing oafd and gconfd fixes the problem, but we don't know "
-"why.\n"
+"Sometimes killing oafd and gconfd fixes the problem, but we don't know why.\n"
 "\n"
 "We need a much less confusing message here for Nautilus 1.0."
 msgstr ""
@@ -3024,19 +3022,19 @@ msgstr ""
 "LD_LIBRARY_PATH verisinde varolmamasý yada yüklemede oluþan bir hatadan "
 "dolayý eksik bir nautilus.oafinfo dosyasý sebep olabilir . \n"
 "\n"
-"Bazen oafd ve gconfd'yi öldürmek sorunu anlaþýlýnamaz bir nedenle çözüyor. "
-"\n"
+"Bazen oafd ve gconfd'yi öldürmek sorunu anlaþýlýnamaz bir nedenle çözüyor. \n"
 "\n"
 "Buraya 1.0 nesli için iþe yarar bir hata iletisi lazým ."
 
 #. Some misc. error (can never happen with current
 #. * version of OAF). Show dialog and terminate the
 #. * program.
-#. 
+#.
 #. FIXME: Looks like this does happen with the
 #. * current OAF. I guess I read the code
 #. * wrong. Need to figure out when and make a
 #. * good message.
+#.
 #: src/nautilus-application.c:378 src/nautilus-application.c:396
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus þimdi beklenmedik bir hatadan dolayý kullanýlýnamaz ."
@@ -3091,7 +3089,7 @@ msgstr "Nautilus : Niþanlar"
 msgid "Location"
 msgstr "Mekan"
 
-#: src/nautilus-bookmarks-window.c:198 src/nautilus-window-menus.c:548
+#: src/nautilus-bookmarks-window.c:198 src/nautilus-window-menus.c:555
 msgid "Remove"
 msgstr "Sil"
 
@@ -3158,7 +3156,7 @@ msgid "Nautilus Property Browser"
 msgstr "Nautilus Özellikler gezgini"
 
 #. add the title label
-#: src/nautilus-property-browser.c:263 src/nautilus-property-browser.c:1971
+#: src/nautilus-property-browser.c:263 src/nautilus-property-browser.c:1977
 msgid "Select A Category:"
 msgstr "Bir rumuz seç :"
 
@@ -3197,22 +3195,22 @@ msgstr "Ardalan olarak eklenecek bir resmi seç :"
 msgid "Select a color to add:"
 msgstr "Eklenecek bir rengi belirle :"
 
-#: src/nautilus-property-browser.c:1979
+#: src/nautilus-property-browser.c:1985
 msgid "Cancel Remove"
 msgstr "Silmeyi iptal et"
 
-#: src/nautilus-property-browser.c:1981
+#: src/nautilus-property-browser.c:1987
 #, c-format
 msgid "Add a new %s"
 msgstr "Yeni bir %s ekle"
 
 #. strip trailing s
-#: src/nautilus-property-browser.c:1996
+#: src/nautilus-property-browser.c:2002
 #, c-format
 msgid "Click on a %s to remove it"
 msgstr "Bir %s'ye týklayarak onu silebilirsin."
 
-#: src/nautilus-property-browser.c:2008
+#: src/nautilus-property-browser.c:2014
 #, c-format
 msgid "Remove a %s"
 msgstr "Bir %s'yi sil"
@@ -3232,16 +3230,16 @@ msgstr "%s ile aç"
 msgid "Open with..."
 msgstr "Farklý aç ..."
 
-#: src/nautilus-window.c:816
+#: src/nautilus-window.c:818
 #, c-format
 msgid "View as %s..."
 msgstr "%s olarak göster ...."
 
-#: src/nautilus-window.c:841
+#: src/nautilus-window.c:843
 msgid "View as Other..."
 msgstr "Farklý göster ..."
 
-#: src/nautilus-window.c:1259
+#: src/nautilus-window.c:1261
 msgid "Close"
 msgstr "Kapat"
 
@@ -3251,7 +3249,7 @@ msgstr "(isimsiz)"
 
 #: src/nautilus-window-manage-views.c:184
 #: src/nautilus-window-manage-views.c:217
-#: src/nautilus-window-manage-views.c:218 src/nautilus-window-menus.c:429
+#: src/nautilus-window-manage-views.c:218 src/nautilus-window-menus.c:434
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -3265,14 +3263,14 @@ msgstr "Nautilus: %s"
 msgid "You do not have the permissions necessary to view \"%s\"."
 msgstr "\"%s\"'ye bakmak için gerekli eriþim haklarýna sahip deðilsin."
 
-#: src/nautilus-window-manage-views.c:1228
+#: src/nautilus-window-manage-views.c:1234
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "\"%s\"'yi bulamadým. Lütfen yazmak istediðini doðru yazýp yazmadýðýný gözden "
 "geçir."
 
-#: src/nautilus-window-manage-views.c:1234
+#: src/nautilus-window-manage-views.c:1240
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
@@ -3280,45 +3278,49 @@ msgstr ""
 "\"%s\" geçerli bir mekan deðil. Lütfen, yazmak istediðini doðru yazýp "
 "yazmadýðýnýgözden geçir."
 
-#: src/nautilus-window-manage-views.c:1252
+#: src/nautilus-window-manage-views.c:1258
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot handle items of this type."
 msgstr ""
 "\"%s\"'i gösteremedim, zira Nautilus'un bu tip için bir yöneticisi yok."
 
-#: src/nautilus-window-manage-views.c:1256
+#: src/nautilus-window-manage-views.c:1262
 #, c-format
 msgid ""
-"Couldn't display \"%s\", because Nautilus cannot handle items of type "
-"\"%s\"."
+"Couldn't display \"%s\", because Nautilus cannot handle items of type \"%s\"."
 msgstr ""
 "\"%s\"'i gösteremedim, zira Nautilus'un \"%s\" tipi için bir yöneticisi yok."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1268
+#: src/nautilus-window-manage-views.c:1274
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "\"%s\"'i gösteremedim, zira Nautilus'un %s: mekanlarý için bir yöneticisi "
 "yok."
 
-#: src/nautilus-window-manage-views.c:1274
+#: src/nautilus-window-manage-views.c:1280
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr ""
 "\"%s\"'i gösteremedim, zira Nautilus'un kayýt etme deneyi baþarýsýz oldu."
 
-#: src/nautilus-window-manage-views.c:1280
+#: src/nautilus-window-manage-views.c:1286
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "\"%s\" Nautilus tarafýndan gösterilemiyor ."
 
-#: src/nautilus-window-menus.c:433
-msgid "The Gnome Shell"
-msgstr "Gnome komutasý"
+#: src/nautilus-window-menus.c:431
+#, c-format
+msgid ""
+"The Gnome Shell\n"
+"%s"
+msgstr ""
+"Gnome komutasý\n"
+"%s"
 
-#: src/nautilus-window-menus.c:544
+#: src/nautilus-window-menus.c:551
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -3327,11 +3329,11 @@ msgstr ""
 "\"%s\" mekan yoktur. Bu mekanla alakalý yekin niþanlarýný listeden "
 "silmekistermisin ?"
 
-#: src/nautilus-window-menus.c:559
+#: src/nautilus-window-menus.c:566
 msgid "Bookmark for Bad Location"
 msgstr "Kötü mekan için niþan"
 
-#: src/nautilus-window-menus.c:562
+#: src/nautilus-window-menus.c:569
 #, c-format
 msgid ""
 "The location \"%s\" no longer exists. It was probably moved, deleted, or "
@@ -3340,93 +3342,93 @@ msgstr ""
 "\"%s\" mekaný yok olmuþtur. Taþýnmýþ, silinmiþ yada yeniden adlandýrýlmýþ "
 "olabilir."
 
-#: src/nautilus-window-menus.c:565
+#: src/nautilus-window-menus.c:572
 msgid "Go To Bad Location"
 msgstr "Kötü mekana git"
 
-#: src/nautilus-window-menus.c:630
+#: src/nautilus-window-menus.c:637
 msgid "Go to the specified location"
 msgstr "Verilen mekana git"
 
 #. File menu
-#: src/nautilus-window-menus.c:1009
+#: src/nautilus-window-menus.c:1015
 msgid "_File"
 msgstr "_Dosya"
 
-#: src/nautilus-window-menus.c:1013
+#: src/nautilus-window-menus.c:1019
 msgid "_New Window"
 msgstr "_Yeni pencere"
 
-#: src/nautilus-window-menus.c:1014
+#: src/nautilus-window-menus.c:1020
 msgid "Create a new window"
 msgstr "Yeni bir pencere yarat"
 
-#: src/nautilus-window-menus.c:1025
+#: src/nautilus-window-menus.c:1031
 msgid "_Close Window"
 msgstr "Pencereyi _kapat"
 
-#: src/nautilus-window-menus.c:1026
+#: src/nautilus-window-menus.c:1032
 msgid "Close this window"
 msgstr "Bu pencereyi kapat"
 
-#: src/nautilus-window-menus.c:1037
+#: src/nautilus-window-menus.c:1043
 msgid "Close All Windows"
 msgstr "Yekin Pencereleri Kapat"
 
-#: src/nautilus-window-menus.c:1038
+#: src/nautilus-window-menus.c:1044
 msgid "Close all windows"
 msgstr "Yekin pencereleri kapat"
 
 #. Edit menu
-#: src/nautilus-window-menus.c:1048
+#: src/nautilus-window-menus.c:1054
 msgid "_Edit"
 msgstr "_Deðiþtir"
 
-#: src/nautilus-window-menus.c:1052 src/nautilus-window-menus.c:1398
+#: src/nautilus-window-menus.c:1058 src/nautilus-window-menus.c:1404
 msgid "_Undo"
 msgstr "_Gerit"
 
-#: src/nautilus-window-menus.c:1053 src/nautilus-window-menus.c:1398
+#: src/nautilus-window-menus.c:1059 src/nautilus-window-menus.c:1404
 msgid "Undo the last text change"
 msgstr "Son metin deðiþikliðini geri al"
 
-#: src/nautilus-window-menus.c:1066
+#: src/nautilus-window-menus.c:1072
 msgid "_Cut Text"
 msgstr "Metni _kes"
 
-#: src/nautilus-window-menus.c:1067
+#: src/nautilus-window-menus.c:1073
 msgid "Cuts the selected text to the clipboard"
 msgstr "Seçili metni arabelleðe keser"
 
-#: src/nautilus-window-menus.c:1078
+#: src/nautilus-window-menus.c:1084
 msgid "_Copy Text"
 msgstr "Metni k_opyala"
 
-#: src/nautilus-window-menus.c:1079
+#: src/nautilus-window-menus.c:1085
 msgid "Copies the selected text to the clipboard"
 msgstr "Seçili metni arabelleðe kopyalar"
 
-#: src/nautilus-window-menus.c:1090
+#: src/nautilus-window-menus.c:1096
 msgid "_Paste Text"
 msgstr "Metni y_apýþtýr"
 
-#: src/nautilus-window-menus.c:1091
+#: src/nautilus-window-menus.c:1097
 msgid "Pastes the text stored on the clipboard"
 msgstr "Seçili metni arabelleðe yapýþtýrýr"
 
-#: src/nautilus-window-menus.c:1102
+#: src/nautilus-window-menus.c:1108
 msgid "C_lear Text"
 msgstr "Metni _temizle"
 
-#: src/nautilus-window-menus.c:1103
+#: src/nautilus-window-menus.c:1109
 msgid "Removes the selected text without putting it on the clipboard"
 msgstr "Seçili metni arabelleðe koyamadan siler"
 
-#: src/nautilus-window-menus.c:1133
+#: src/nautilus-window-menus.c:1139
 msgid "_Customize..."
 msgstr "Ö_zelleþtir ..."
 
-#: src/nautilus-window-menus.c:1134
+#: src/nautilus-window-menus.c:1140
 msgid ""
 "Displays the Property Browser, to add properties to objects and customize "
 "appearance"
@@ -3435,132 +3437,132 @@ msgstr ""
 "deðiþtirmeye yarar "
 
 #. Go menu
-#: src/nautilus-window-menus.c:1144
+#: src/nautilus-window-menus.c:1150
 msgid "_Go"
 msgstr "G_it"
 
-#: src/nautilus-window-menus.c:1148
+#: src/nautilus-window-menus.c:1154
 msgid "_Back"
 msgstr "_Geri"
 
-#: src/nautilus-window-menus.c:1149
+#: src/nautilus-window-menus.c:1155
 msgid "Go to the previous visited location"
 msgstr "Önceki yere git"
 
-#: src/nautilus-window-menus.c:1160
+#: src/nautilus-window-menus.c:1166
 msgid "_Forward"
 msgstr "_Ileri"
 
-#: src/nautilus-window-menus.c:1161
+#: src/nautilus-window-menus.c:1167
 msgid "Go to the next visited location"
 msgstr "Ilerideki yere git"
 
-#: src/nautilus-window-menus.c:1172
+#: src/nautilus-window-menus.c:1178
 msgid "_Up"
 msgstr "_Yukarý"
 
-#: src/nautilus-window-menus.c:1173
+#: src/nautilus-window-menus.c:1179
 msgid "Go to the location that contains this one"
 msgstr "Bunu içeren yere git"
 
-#: src/nautilus-window-menus.c:1184
+#: src/nautilus-window-menus.c:1190
 msgid "_Home"
 msgstr "_Bark"
 
-#: src/nautilus-window-menus.c:1185
+#: src/nautilus-window-menus.c:1191
 msgid "Go to the home location"
 msgstr "Bark'ýma git"
 
 #. Bookmarks
-#: src/nautilus-window-menus.c:1198
+#: src/nautilus-window-menus.c:1204
 msgid "_Bookmarks"
 msgstr "_Niþanlar"
 
-#: src/nautilus-window-menus.c:1202
+#: src/nautilus-window-menus.c:1208
 msgid "_Add Bookmark"
 msgstr "_Niþan ekle"
 
-#: src/nautilus-window-menus.c:1203
+#: src/nautilus-window-menus.c:1209
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Burasý için bir niþan ekle"
 
-#: src/nautilus-window-menus.c:1214
+#: src/nautilus-window-menus.c:1220
 msgid "_Edit Bookmarks..."
 msgstr "Niþanlarý _deðiþtir ..."
 
-#: src/nautilus-window-menus.c:1215
+#: src/nautilus-window-menus.c:1221
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr ""
 "Bu mönünün içinde niþanlarý deðiþtirilmesine izin veren pencereyi göster"
 
-#: src/nautilus-window-menus.c:1232
+#: src/nautilus-window-menus.c:1238
 msgid "Toolbar"
 msgstr "Araç çubuðu"
 
-#: src/nautilus-window-menus.c:1233 src/nautilus-window-menus.c:1245
-#: src/nautilus-window-menus.c:1256 src/nautilus-window-menus.c:1267
-#: src/nautilus-window-menus.c:1278
+#: src/nautilus-window-menus.c:1239 src/nautilus-window-menus.c:1251
+#: src/nautilus-window-menus.c:1262 src/nautilus-window-menus.c:1273
+#: src/nautilus-window-menus.c:1284
 msgid "Show/Hide Stuff"
 msgstr "Zýmpýrtýyý gizle/göster"
 
-#: src/nautilus-window-menus.c:1244
+#: src/nautilus-window-menus.c:1250
 msgid "Locationbar"
 msgstr "Mekan çubuðu"
 
-#: src/nautilus-window-menus.c:1255
+#: src/nautilus-window-menus.c:1261
 msgid "Statusbar"
 msgstr "Durum çubuðu"
 
-#: src/nautilus-window-menus.c:1266
+#: src/nautilus-window-menus.c:1272
 msgid "Sidebar"
 msgstr "Taraf çubuðu"
 
-#: src/nautilus-window-menus.c:1277
+#: src/nautilus-window-menus.c:1283
 msgid "Normalize Menu"
 msgstr "Mönüyü normalleþtir"
 
 #. Help
-#: src/nautilus-window-menus.c:1288
+#: src/nautilus-window-menus.c:1294
 msgid "_Help"
 msgstr "_Yardým"
 
-#: src/nautilus-window-menus.c:1292
+#: src/nautilus-window-menus.c:1298
 msgid "_About Nautilus..."
 msgstr "_Nautilus hakkýnda ..."
 
-#: src/nautilus-window-menus.c:1293
+#: src/nautilus-window-menus.c:1299
 msgid "Displays information about the Nautilus program"
 msgstr "Nautilus uygulamasý hakkýnda bilgi gösterir"
 
-#: src/nautilus-window-menus.c:1336
+#: src/nautilus-window-menus.c:1342
 msgid " Novice"
 msgstr " Yeni kullanýcý"
 
-#: src/nautilus-window-menus.c:1337
+#: src/nautilus-window-menus.c:1343
 msgid "Set Novice User Level"
 msgstr "Yeni kullanýcý seviyesi"
 
-#: src/nautilus-window-menus.c:1350
+#: src/nautilus-window-menus.c:1356
 msgid " Intermediate"
 msgstr " Normal"
 
-#: src/nautilus-window-menus.c:1351
+#: src/nautilus-window-menus.c:1357
 msgid "Set Intermediate User Level"
 msgstr "Vasat kullanýcý seviyesi"
 
-#: src/nautilus-window-menus.c:1365
+#: src/nautilus-window-menus.c:1371
 msgid " Expert"
 msgstr " Bilgin"
 
-#: src/nautilus-window-menus.c:1366
+#: src/nautilus-window-menus.c:1372
 msgid "Set Expert User Level"
 msgstr "Bilgin kullanýcý seviyesi"
 
-#: src/nautilus-window-menus.c:1382
+#: src/nautilus-window-menus.c:1388
 msgid "Edit Settings..."
 msgstr "Ayarlarý deðiþtir ..."
 
-#: src/nautilus-window-menus.c:1383
+#: src/nautilus-window-menus.c:1389
 msgid "Edit Settings for the Current User Level"
 msgstr "Geçerli kullanýcý ayarlarýný deðiþtir"
 
@@ -3623,4 +3625,3 @@ msgstr "Hizmetler"
 #: src/nautilus-zoom-control.c:483
 msgid "%.0f%%"
 msgstr "%% %.f"
-
