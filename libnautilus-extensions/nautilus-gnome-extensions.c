@@ -53,7 +53,9 @@
 struct IconSelectionData {
         GtkWidget *icon_selection;
 	GtkWidget *file_entry;
+	GtkWidget *top_level_window;
 	GtkWindow *owning_window;
+	gboolean dismissed;
 	NautilusIconSelectionFunction selection_function;
 	gpointer callback_data;
 };
@@ -611,7 +613,9 @@ nautilus_gnome_open_terminal (const char *command)
 static gboolean
 widget_destroy_callback (gpointer callback_data)
 {
-	gtk_widget_destroy (GTK_WIDGET (callback_data));
+	IconSelectionData *selection_data = (IconSelectionData*) callback_data;
+	gtk_widget_destroy (selection_data->top_level_window);
+	g_free (selection_data);	
 	return FALSE;
 }
 
@@ -636,7 +640,6 @@ icon_selected_callback (GtkWidget *button, IconSelectionData *selection_data)
 		nautilus_show_error_dialog (_("No image was selected.  You must click on an image to select it."),
 					    _("No selection made"),
 					    selection_data->owning_window);
-
 	} else {	 
 		/* invoke the callback to inform it of the file path */
 		selection_data->selection_function (icon_path, selection_data->callback_data);
@@ -644,16 +647,23 @@ icon_selected_callback (GtkWidget *button, IconSelectionData *selection_data)
 		
 	/* we have to get rid of the icon selection dialog, but we can't do it now, since the
 	 * file entry might still need it.  Do it when the next idle rolls around
-	 */
-        g_idle_add (widget_destroy_callback, gtk_widget_get_toplevel (button));
-	g_free (selection_data);
+	 */ 
+	selection_data->dismissed = TRUE;
+	selection_data->top_level_window = gtk_widget_get_toplevel (button);
+	gtk_idle_add ((GtkFunction) widget_destroy_callback, selection_data);
 }
 
 /* handle the cancel button being pressed */
 static void
 icon_cancel_pressed (GtkWidget *button, IconSelectionData *selection_data)
 {
-	gnome_icon_selection_stop_loading(GNOME_ICON_SELECTION (selection_data->icon_selection));
+	/* nothing to do if it's already been dismissed */
+	if (selection_data->dismissed) {
+		return;
+	}
+	
+	gnome_icon_selection_stop_loading(GNOME_ICON_SELECTION (selection_data->icon_selection));	
+	/* remove pending idle routine, if necessary */
 	g_free (selection_data);
 	gtk_widget_destroy (gtk_widget_get_toplevel (button));
 }

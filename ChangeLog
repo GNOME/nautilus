@@ -1,4 +1,13 @@
 2001-02-08  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-gnome-extensions.c:
+	(widget_destroy_callback), (icon_selected_callback),
+	(icon_cancel_pressed):
+	fixed bug 6458, crash if you quickly press cancel after pressing
+	OK in the icon picker; fixed by setting a boolean once the
+	picker has been dismissed, and checking it so we don't do it twice.
+	
+2001-02-08  Andy Hertzfeld  <andy@eazel.com>
 	
 	* src/nautilus-location-bar.c,h: (get_file_info_list),
 	(try_to_expand_path), (editable_key_press_callback),
