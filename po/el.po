@@ -1,6 +1,6 @@
+# translation of el.po to Greek
 # Greek translation of Nautilus.
 # Copyright (C) 2000, 2001, 2002, 2003 Free Software Foundation, Inc.
-# Simos Xenitellis <simos74@gmx.net>, 2000, 2001, 2002, 2003.
 #
 # Clean messages should be ok.
 # TODO: There should be a full review and report here.
@@ -25,18 +25,21 @@
 # kostas: 13Feb2003, fixed some typos
 # kostas: 18Feb2003, minor typos
 # kostas: 05Mar2003,unfuzzy 2
+# kostas: 19Jun2003, 1447 messages, updated translation for Gnome 2.4
+# Simos Xenitellis <simos74@gmx.net>, 2000, 2001, 2002, 2003.
+# Kostas Papadimas <pkst@gmx.net>, 2003
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 2.0.7\n"
-"POT-Creation-Date: 2003-06-10 16:17-0400\n"
-"PO-Revision-Date: 2003-03-05 21:37+0200\n"
+"Project-Id-Version: el\n"
+"POT-Creation-Date: 2003-06-19 14:59+0300\n"
+"PO-Revision-Date: 2003-06-19 14:53+0300\n"
 "Last-Translator: Kostas Papadimas <pkst@gmx.net>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.6\n"
+"X-Generator: KBabel 1.0\n"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -418,11 +421,11 @@ msgstr "Όψη Δέντρου του Ναυτίλου"
 msgid "Tree"
 msgstr "Δέντρο"
 
-#: components/tree/nautilus-tree-model.c:1065
+#: components/tree/nautilus-tree-model.c:1067
 msgid "(Empty)"
 msgstr "(Κενό)"
 
-#: components/tree/nautilus-tree-model.c:1065
+#: components/tree/nautilus-tree-model.c:1067
 msgid "Loading..."
 msgstr "Γίνεται φόρτωση..."
 
@@ -1092,18 +1095,23 @@ msgid ""
 "are: size, type, date_modified, date_changed, date_accessed, owner, group, "
 "permissions, octal_permissions and mime_type"
 msgstr ""
+"Μια λίστα επεξηγήσεων κάτω από ένα εικονίδιο στην προβολή εικονιδιών και την "
+"επιφάνεια εργασίας. Ο πραγματικός αριθμός των επεξηγήσεων εξαρτάται από το "
+"επίπεδο μεγέθυνσης. Οι πιθανές τιμές είναι: μέγεθος, τύπος, ημερομηνία "
+"τροποποίησης, ημερονηνία αλλαγής,πρόσβασης, ιδιοκτήτης, ομάδα, δικαιώματα "
+"και τύπος mime."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
 msgid "Add nautilus to session"
-msgstr ""
+msgstr "Προσθήκη του ναυτίλου στην συνεδρία"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:3
 msgid "Bring up a new window for every opened file"
-msgstr ""
+msgstr "Εμφάνιση ενός νέου παραθύρου για κάθε ανοιγμένο αρχείο"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:4
 msgid "Criteria for search bar searching."
-msgstr ""
+msgstr "Κριτήρια για αναζήτηση στην γραμμή αναζήτησης."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:5
 msgid ""
@@ -1112,141 +1120,143 @@ msgid ""
 "set to search_by_text_and_properties\", then nautilus will search for files "
 "by file name and file properties."
 msgstr ""
+"Κτιτήρια κατά το ταίριασμα αρχείων μέσω της αναζήτησης στην γραμμή "
+"αναζήτησης. Αν ορισθεί στο αναζήτηση κατά κείμενο, τότε ο ναυτίλος θα "
+"αναζητά μόνο ονόματα αρχείου. Αν ορισθεί στο αναζήτηση κατά κείμενο και "
+"ιδιότητες\", τότε ο ναυτίλος θα θα αναζητά ονόματα αρχείου και ιδιότητες "
+"αρχείου."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
-#, fuzzy
 msgid "Current Nautilus theme (deprecated)"
-msgstr "Επιλογέας Θεμάτων Ναυτίλου"
+msgstr "Τρέχον θέμα του ναυτίλου (deprecated)"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:7
-#, fuzzy
 msgid "Custom Background Set"
-msgstr "Αρχικοποίηση Παρασκηνίου"
+msgstr "Ορισμός προσαρμοσμένου παρασκηνίου"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:8
-#, fuzzy
 msgid "Custom Side Pane Background Set"
-msgstr "Καθορισμός ως _Παρασκηνίου"
+msgstr "Ορισμός προσαρμοσμένου παρασκηνίου πλευρικού ταμπλώ"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:9
-#, fuzzy
 msgid "Default Background Color"
-msgstr "Χρήση Εξ ορισμού Παρασκηνίου"
+msgstr "Εξ ορισμού χρώμα παρασκηνίου"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:10
-#, fuzzy
 msgid "Default Background Filename"
-msgstr "Χρήση Εξ ορισμού Παρασκηνίου"
+msgstr "Εξ ορισμού όνομα αρχείου παρασκηνίου"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:11
-#, fuzzy
 msgid "Default Side Pane Background Color"
-msgstr "Χρήση Εξ ορισμού Παρασκηνίου"
+msgstr "Εξ ορισμού χρώμα παρασκηνίου πλευρικού ταμπλώ"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:12
 msgid "Default Side Pane Background Filename"
-msgstr ""
+msgstr "Εξ ορισμού όνομα αρχείου παρασκηνίου πλευρικού ταμπλώ"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:13
-#, fuzzy
 msgid "Default folder viewer"
-msgstr "Εξ΄ ορισμού Όψη"
+msgstr "Εξ ορισμού 'οψη φακέλου"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:14
-#, fuzzy
 msgid "Default sort order"
-msgstr "Εξ΄ ορισμού γραμματοσειρά:"
+msgstr "Εξ΄ ορισμού σειρά ταξινόμησης"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:15
-#, fuzzy
 msgid "Default zoom level used by the icon view"
-msgstr "Ορισμός του επιπέδου εστίασης της τρέχουσας όψης"
+msgstr ""
+"Εξ ορισμού επίπεδο εστίασης που χρησιμοποιείται από την προβολή εικονιδίων."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:16
-#, fuzzy
 msgid "Default zoom level used by the icon view."
-msgstr "Ορισμός του επιπέδου εστίασης της τρέχουσας όψης"
+msgstr ""
+"Εξ ορισμού επίπεδο εστίασης που χρησιμοποιείται από την προβολή εικονιδίων"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:17
-#, fuzzy
 msgid "Default zoom level used by the list view"
-msgstr "Ορισμός του επιπέδου εστίασης της τρέχουσας όψης"
+msgstr "Εξ ορισμού επίπεδο εστίασης που χρησιμοποιείται από την προβολή λίστας"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:18
-#, fuzzy
 msgid "Default zoom level used by the list view."
-msgstr "Ορισμός του επιπέδου εστίασης της τρέχουσας όψης"
+msgstr ""
+"Εξ ορισμού επίπεδο εστίασης που χρησιμοποιείται από την προβολή λίστας."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:19
-#, fuzzy
 msgid "Desktop font"
-msgstr "Επιφάνεια εργασίας"
+msgstr "Γραμματοσειρά επιφάνειας εργασίας"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:20
-#, fuzzy
 msgid "Desktop home icon name"
-msgstr "Επαναφορά παλαιού ονόματος"
+msgstr "Όνομα εικονιδίου αρχικού καταλόγου"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:21
-#, fuzzy
 msgid "Desktop trash icon name"
-msgstr "Επαναφορά παλαιού ονόματος"
+msgstr "Όνομα εικονιδίου απορριμάτων"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:22
-#, fuzzy
 msgid "Enable 'special' flags in file preferences dialog"
-msgstr "Ειδικές σημαίες στο παράθυρο Ιδιο_τήτων"
+msgstr "Ενεργοποίηση ειδικών σημαιών στο παράθυρο ιδιοτήτων αρχείου"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
 msgid ""
 "Filename for the default directory background. Only used if background_set "
 "is true."
 msgstr ""
+"Όνομα αρχείου για τον εξ ορισμού κατάλογο παρασκηνίου. Χρησιμοποιείται μόνο "
+"αν είναι true ο ορισμός παρασκηνίου."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
 msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
 msgstr ""
+"'Ονομα αρχείου για το εξ ορισμού παρασκηνίο πλευρικού ταμπλώ. "
+"Χρησιμοποιείται μόνο αν είναι true τοι side_pane_background_set"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
-#, fuzzy
 msgid "Hide default bookmarks in the bookmark menu."
-msgstr ""
-"Να μη συμπεριληφθούν οι σελιδοδείκτες _συστήματος στο μενού Σελιδοδεικτών"
+msgstr "Απόκρυψη εξ ορισμού σελιδοδεικτών από το μενού σελιδοδεικτών."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
 msgid "Home icon visible on desktop"
-msgstr ""
+msgstr "Εικονίδιο αρχικού καταλόγου ορατό στην επιφάνεια εργασίας"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:27
 msgid ""
 "If set to true, Nautilus will show only show directories in the tree "
 "sidebar. Otherwise it will show both directories and files."
 msgstr ""
+"Αν ορισθεί σε true, τότε ο Ναυτίλος θα προβάλλει μόνο καταλόγους στο δένδρο "
+"του πλευρικού ταμπλώ. Σε αντίθετη περίπτωση θα προβάλλει και καταλόγους και "
+"αρχεία."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr ""
+"Αν ορισθεί σε true, θα είναι ορατή στα νέα παράθυρα η γραμμή διευθύνσεων. "
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid "If set to true, newly opened windows will have the side bar visible."
 msgstr ""
+"Αν ορισθεί σε true, θα είναι ορατό στα νέα παράθυρα  το πλευρικό ταμπλώ."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
 msgid "If set to true, newly opened windows will have the status bar visible."
 msgstr ""
+"Αν ορισθεί σε true, θα είναι ορατή στα νέα παράθυρα η γραμμή κατάστασης."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
 msgid "If set to true, newly opened windows will have toolbars visible."
-msgstr ""
+msgstr "Αν ορισθεί σε true, θα είναι ορατές στα νέα παράθυρα οι εργαλειοθήκες."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "put files in the trash."
 msgstr ""
+"Αν ορισθεί σε true, ο Ναυτίλος θα ζητά επιβεβαίωση όταν προσπαθείτε να "
+"τοποθετήσετε αρχεία στα απορρίματα."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
 msgid ""
@@ -1254,6 +1264,9 @@ msgid ""
 "file immediately and in-place, instead of moving it to the trash. This "
 "feature can be dangerous, so use caution."
 msgstr ""
+"Αν ορισθεί σε true, τότε ο Ναυτίλος  θα επιτρέπει την άμεση διαγραφή ενός "
+"αρχείου αντί να το μετακινεί στα απορρίματα. Αυτή λειτουργία μπορεί να είναι "
+"επικίνδυνη για αυτό χρησιμοποιήστε την με προσοχή."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
 msgid ""
@@ -1261,63 +1274,87 @@ msgid ""
 "displayed. Currently, only files ending in a tilde (~) are considered backup "
 "files."
 msgstr ""
+"Αν ορισθεί σε true, τότε προβάλλονται τα αντίγραφα ασφαλείας, όπως εκείνα "
+"που δημιουργούνται από το Emacs. Προς το παρόν μόνο τα αρχεία που τελειώνουν "
+"με περισπωμένη (~), θεωρούνται αντίγραφα ασφαλείας."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
 msgid ""
 "If set to true, then hidden files (dotfiles) are shown in the file manager."
 msgstr ""
+"Αν ορισθεί σε true, τότε προβάλλονται τα κρυφά αρχεία (dotfiles) στον "
+"διαχειστή αρχείων."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
 msgid ""
 "If set to true, then nautilus lets you edit some of the more esoteric "
 "options of a file in the file preferences dialog."
 msgstr ""
+"Αν ορισθεί σε true, τότε ο Ναυτίλος επιτρέπει την επεξεργασία μερικών "
+"εσωτερικών επιλογών ενός αρχείου στον διάλογο προτιμήσεων αρχείου."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
 msgid ""
 "If set to true, then nautilus shows directories prior to showing files in "
 "the icon and list views."
 msgstr ""
+"Αν ορισθεί σε true, τότε ο Ναυτίλος προβάλλει τος καταλόγους πριν από τα "
+"αρχεία στην προβολές εικονιδίων και λίστας."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
 msgid ""
 "If set to true, then nautilus will bring up a new nautilus window by default "
 "whenever an item is opened."
 msgstr ""
+"Αν ορισθεί σε true, τότε ο Ναυτίλος θα ανοίγει ένα νέο παράθυρο κάθε φορά "
+"που ανοίγει ένα αρχείο."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
 msgid "If set to true, then nautilus will draw the icons on the desktop."
 msgstr ""
+"Αν ορισθεί σε true, τότε ο Ναυτίλος θα σχεδιάζει τα εικονίδια στην επιφάνεια "
+"εργασίας."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
 msgid ""
 "If set to true, then nautilus will just show the user's bookmarks in the "
 "bookmark menu."
 msgstr ""
+"Αν ορισθεί σε true, τότε ο Ναυτίλος θα εμφανίζει μόνο τους σελιδοδείκτες του "
+"χρήστη στο μενού σελιδοδεικτών."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
 "If set to true, then nautilus will use the user's home directory as the "
 "desktop. If it is false, then it will use ~/.gnome-desktop as the desktop."
 msgstr ""
+"Αν ορισθεί σε true, τότε ο Ναυτίλος θα χρησιμοποιεί το αρχικό κατάλογο του "
+"χρήστη ως την επιφάνεια εργασίας. Αν είναι false τότε θα χρησιμοποιεί τον "
+"καταλόγο ~/.gnome-desktop ως την επιφάνεια εργασίας."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
 msgid ""
 "If this is set to true, Nautilus adds itself to the session when it starts "
 "up. This means it will be started the next time you log in."
 msgstr ""
+"Αν ορισθεί σε true, τότε ο Ναυτίλος θα προσθέτει τον εαυτό του στην συνεδρία "
+"κάθε φορά που ξεκινά. Αυτό σημαίνει ότι θα ξεκινήσει στην επόμενη είσοδο σας."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid ""
 "If this is set to true, an icon linking to the home directory will be put on "
 "the desktop."
 msgstr ""
+"Αν ορισθεί σε true, τότε θα τοποθετηθεί  στην επιφάνεια εργασίας ένα "
+"εικονίδιο με δεσμό στον αρχικό κατάλογο."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
 msgstr ""
+"Αν ορισθεί σε true, τότε θα τοποθετηθεί  στην επιφάνεια εργασίας ένα "
+"εικονίδιο με δεσμό στα απορρίματα."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
 msgid ""
@@ -1325,6 +1362,9 @@ msgid ""
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
 "sorted from \"z\" to \"a\"."
 msgstr ""
+"Αν ορισθεί σε true, τότε τα αρχεία σε νέα παράθυρα θα ταξινομούνται σε "
+"αντίστροφη σειρά. π.χ αν υπάρχει ταξινόμηση κατά όνομα τότε αντί να γίνει η "
+"ταξινόμηση αρχείων από \"a\" σε \"z\", θα γίνει από \"z\" σε \"a\"."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
@@ -1333,20 +1373,31 @@ msgid ""
 "sorted from \"z\" to \"a\"; if sorted by size, instead of being "
 "incrementally they will be sorted decrementally."
 msgstr ""
+"Αν ορισθεί σε true, τότε τα αρχεία σε νέα παράθυρα θα ταξινομούνται σε "
+"αντίστροφη σειρά. π.χ αν υπάρχει ταξινόμηση κατά όνομα τότε αντί να γίνει η "
+"ταξινόμηση αρχείων από \"a\" σε \"z\", θα γίνει από \"z\" σε \"a\". Αν "
+"υπάρχει ταξινόμηση κατά μέγεθος θα υπάρχει φθίνουσα αντί για αύξουσα "
+"ταξινόμηση."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
 msgid "If true, icons will be layed out tighter by default in new windows."
 msgstr ""
+"Αν ορισθεί σε true, τότε η διάταξη των εικονιδίων θα είναι εφαρμοστή στα νέα "
+"παράθυρα."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid ""
 "If true, labels will be placed beside icons icons rather than underneath "
 "them."
 msgstr ""
+"Αν ορισθεί σε true, τότε οι ετικέτες θα τοποθετούνται δίπλα στα εικονίδια "
+"αντί για από κάτω τους."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid "If true, new windows will use manual layout by default."
 msgstr ""
+"Αν ορισθεί σε true, τότε τα νέα παράθυρα θα χρησιμοποιούν εξ ορισμού την "
+"χειρωνακτική διάταξη."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid ""
@@ -1354,88 +1405,87 @@ msgid ""
 "setting is to avoid thumbnailing large images that may take a long time to "
 "load or use lots of memory."
 msgstr ""
+"Δεν θα γίνεται προεπισκόπηση σε εικόνες πάνω από αυτό το μέγεθος (σε bytes). "
+"Ο σκοπός αυτής της ρύθμισης είναι να αποφευχθεί η προεπισκόπηση μεγάλων "
+"αρχείων που θα καθυστερούν να φορτώσουν και θα χρησιμοποιούν μεγάλο φορτο "
+"μνήμης. "
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid "List of possible captions on icons"
-msgstr ""
+msgstr "Λίστα των πιθανών επεξηγήσεων σε εικονίδια."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid "Maximum handled files in a directory"
-msgstr ""
+msgstr "Μέγιστος αριθμός διαχειριζόμενων αρχείων σε έναν κατάλογο"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 msgid "Maximum image size for thumbnailing"
-msgstr ""
+msgstr "Μέγιστο μέγεθος εικόνας για προεπισκόπηση"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
 msgstr ""
+"Όνομα θέματος του Ναυτιλου για χρήση. Αυτή η επιλογή δεν ισχύει μετά απο την "
+"έκδοση 2.2 του Ναυτίλου. Χρησιμοποιήστε στο θέμα εικονιδίου."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
-#, fuzzy
 msgid "Nautilus handles drawing the desktop"
-msgstr "Χρήση του Ναυτίλου στη _σχεδίαση της επιφάνειας εργασίας"
+msgstr "Χρήση του Ναυτίλου στη σχεδίαση της επιφάνειας εργασίας"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
-#, fuzzy
 msgid "Nautilus uses the users home directory as the desktop"
-msgstr "Χρήση του καταλόγου _χρήστη ως επιφάνεια εργασίας"
+msgstr "Χρήση του καταλόγου χρήστη ως επιφάνεια εργασίας"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 msgid "Only show directories in the tree sidebar"
-msgstr ""
+msgstr "Εμφάνιση μόνο των καταλόγων στο πλευρικό ταμπλώ"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
 msgstr ""
+"Οι πιθανές τιμές είναι  \"μονό\" για εκκίνηση αρχείων με μονό κλικ, ή \"διπλό"
+"\" για εκκίνηση αρχείων με διπλό κλικ."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid "Put labels beside icons"
-msgstr ""
+msgstr "Τοποθέτηση ετικετών δίπλα από τα εικονίδια"
 
 #
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
-#, fuzzy
 msgid "Reverse sort order in new windows"
-msgstr "Ά_νοιγμα κάθε αρχείου ή φάκελου σε νέο παράθυρο"
+msgstr "Αντίστροφη σειρά ταξινόμησης σε νέα παράθυρα"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
-#, fuzzy
 msgid "Show directories first in windows"
-msgstr "Προσπάθεια ταιριάσματος στο παράθυρο"
+msgstr "Προβολή πρώτα των καταλόγων σε παράθυρα"
 
 #
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
-#, fuzzy
 msgid "Show location bar in new windows"
-msgstr "Εμφάνιση πλάγιας μπάρας στα νέα παράθυρα"
+msgstr "Εμφάνιση γραμμής διευθύνσεων στα νέα παράθυρα"
 
 #
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
-#, fuzzy
 msgid "Show side bar in new windows"
-msgstr "Εμφάνιση πλάγιας μπάρας στα νέα παράθυρα"
+msgstr "Εμφάνιση πλευρικού ταμπλώ στα νέα παράθυρα"
 
 #
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
-#, fuzzy
 msgid "Show status bar in new windows"
-msgstr "Εμφάνιση μπάρας κατάστασης στα νέα παράθυρα"
+msgstr "Εμφάνιση γραμμής κατάστασης στα νέα παράθυρα"
 
 #
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
-#, fuzzy
 msgid "Show toolbar in new windows"
-msgstr "Εμφάνιση μπάρας κατάστασης στα νέα παράθυρα"
+msgstr "Εμφάνιση εργαλειοθήκης στα νέα παράθυρα"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
-#, fuzzy
 msgid "Side pane view"
-msgstr "Πλευρικό Ταμπλώ"
+msgstr "Όψη Πλευρικού Ταμπλώ"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
 msgid ""
@@ -1444,6 +1494,12 @@ msgid ""
 "on a remote server. If set to \"local_only\" then only plays previews on "
 "local filesystems. If set to \"never\" then it never previews sound."
 msgstr ""
+"Κατά την προεπισκόπηση αρχείων ήχου στο πέρασμα του ποντικιού θα υπάρχει μια "
+"καθυστέρηση του συστήματος. Αν ορισθεί στο \"πάντα\" τότε θα γίνεται πάντα "
+"αναπαραγωγή ήχου ακόμα και αν το αρχείο βρίσκεται σε απομακρυσμένο "
+"εξυπηρετητή. Αν ορισθεί σε \"τοπικά_μόνο\" τότε θα γίνεται αναπαραγωγή μόνο "
+"τοπικών αρχείων. Αν ορισθεί στο \"ποτέ\" δεν θα γίνεται προεπισκόπηση "
+"αρχείων ήχου."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid ""
@@ -1453,6 +1509,12 @@ msgid ""
 "filesystems. If set to \"never\" then never bother to thumbnail images, just "
 "use a generic icon."
 msgstr ""
+"Κατά την προεπισκόπηση αρχείων εικόνας στο πέρασμα του ποντικιού θα υπάρχει "
+"μια καθυστέρηση του συστήματος. Αν ορισθεί στο \"πάντα\" τότε θα γίνεται "
+"πάντα προεπισκόπηση αρχείων εικόνας ακόμα και αν το αρχείο βρίσκεται σε "
+"απομακρυσμένο εξυπηρετητή. Αν ορισθεί σε \"τοπικά_μόνο\" τότε θα γίνεται "
+"προεπισκόπηση μόνο τοπικών αρχείων. Αν ορισθεί στο \"ποτέ\" δεν θα γίνεται "
+"προεπισκόπηση εικόνων, απλώς θα χρησιμοποιείται ένα γενικό εικονίδιο."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid ""
@@ -1462,6 +1524,12 @@ msgid ""
 "previews for local filesystems. If set to \"never\" then never bother to "
 "read preview data."
 msgstr ""
+"Κατά την προεπισκόπηση περιεχομένων αρχείων κειμένου στο πέρασμα του "
+"ποντικιού θα υπάρχει μια καθυστέρηση του συστήματος. Αν ορισθεί στο \"πάντα"
+"\" τότε θα γίνεται πάντα προεπισκόπηση περιεχομένων ακόμα και αν το αρχείο "
+"βρίσκεται σε απομακρυσμένο εξυπηρετητή. Αν ορισθεί σε \"τοπικά_μόνο\" τότε "
+"θα γίνεται προεπισκόπηση μόνο τοπικών αρχείων. Αν ορισθεί στο \"ποτέ\" δεν "
+"θα γίνεται καθόλου προεπισκόπηση περιεχομένων κειμένου."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid ""
@@ -1470,66 +1538,76 @@ msgid ""
 "remote server. If set to \"local_only\" then only show counts for local "
 "filesystems. If set to \"never\" then never bother to compute item counts."
 msgstr ""
+"Κατά την προβολή του αριθμού των αντικειμένων στον κατάλογο θα υπάρχει μια "
+"καθυστέρηση του συστήματος. Αν ορισθεί στο \"πάντα\" τότε θα γίνεται πάντα "
+"καταμέτρηση αντικειμένων ακόμα και αν ο κατάλογος βρίσκεται σε απομακρυσμένο "
+"εξυπηρετητή. Αν ορισθεί σε \"τοπικά_μόνο\" τότε θα γίνεται καταμέτρηση μόνο "
+"τοπικών καταλόγων. Αν ορισθεί στο \"ποτέ\" δεν θα γίνεται καθόλου "
+"καταμέτρηση αντικειμένων."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid ""
 "The default sort-order for the item in the icon view. Possible values are "
 "name, size, type, modification_date, emblems."
 msgstr ""
+"Η εξ ορισμού σειρά ταξινόμησης για το αντικείμενο στην προβολή εικονιδίων. "
+"Οι πιθανές τιμές είναι, μέγεθος, τύπος, ημερομηνία τροποποίησης, εμβλήματα."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid ""
 "The default sort-order for the item in the list view. Possible values are "
 "name, size, type, and modification_date."
 msgstr ""
+"Η εξ ορισμού σειρά ταξινόμησης για το αντικείμενο στην προβολή λίστας. Οι "
+"πιθανές τιμές είναι, μέγεθος, τύπος, ημερομηνία τροποποίησης, εμβλήματα."
 
 #
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
-#, fuzzy
 msgid "The default width of the sidebar in new windows."
-msgstr "Εμφάνιση πλάγιας μπάρας στα νέα παράθυρα"
+msgstr "Το εξ ορισμού πλάτος του πλευρικού ταμπλώ στα νέα παράθυρα."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
-#, fuzzy
 msgid "The font description used for the icons on the desktop."
-msgstr "Τα Απορρίματα πρέπει να παραμείνουν στην επιφάνειας εργασίας."
+msgstr ""
+"Η περιγραφή γραμματοσειράς που χρησιμοποιείται για τα εικονίδια στην "
+"επιφάνεια εργασίας."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
 msgid "The side pane view to show in newly opened windows."
-msgstr ""
+msgstr "Η όψη πλευρικού ταμπλώ που θα εμφανίζεται σε νέα παράθυρα."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the home link icon on the "
 "desktop."
-msgstr "Τα Απορρίματα πρέπει να παραμείνουν στην επιφάνειας εργασίας."
+msgstr ""
+"Αυτό το όνομα μπορεί να ορισθεί, αν θέλετε ένα προσαρμοσμένο όνομα για τον "
+"δεσμό αρχικού καταλόγου στην επιφάνεα εργασίας."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
-msgstr "Τα Απορρίματα πρέπει να παραμείνουν στην επιφάνειας εργασίας."
+msgstr ""
+"Αυτό το όνομα μπορεί να ορισθεί, αν θέλετε ένα προσαρμοσμένο όνομα για τον "
+"δεσμό απορριμάτων στην επιφάνεα εργασίας."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
 msgid "Trash icon visible on desktop"
-msgstr ""
+msgstr "Το εικονίδιο απορριμάτων να είναι ορατό στην επιφάνεια εργασίας."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid "Type of click used to launch/open files"
-msgstr ""
+msgstr "Τύπος κλικ που χρησιμοποιείται για το άνοιγμα/εκκίνηση αρχείων"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
-#, fuzzy
 msgid "Use manual layout new windows"
-msgstr "Χρήση _χειρωνακτικής διάταξης"
+msgstr "Χρήση χειρωνακτικής διάταξης για νέα παράθυρα"
 
 #
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
-#, fuzzy
 msgid "Use tighter Layout in new windows"
-msgstr "Άν_οιγμα κάθε επιλεγμένου αντικειμένου σε νέο παράθυρο"
+msgstr "Χρήση εφαρμοστής διάταξης για νέα παράθυρα"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
 msgid ""
@@ -1538,11 +1616,14 @@ msgid ""
 "nautilus on massive directories. A negative value denotes no limit. The "
 "limit is approximate due to the reading of directories chunk-wise."
 msgstr ""
+"Τεράστιοι κατάλογοι πάνω από αυτό το μέγεθος θα συμπυκνώνονται γύρω από αυτό "
+"το μέγεθος. Ο σκοπός είναι να αποφευχθούν άσκοπες υπερφορτώσεις και ο "
+"τερματισμός του ναυτίλου σε υπερμεγέθεις καταλόγους. Μια αρνητική τιμή "
+"δηλώνει χωρίς όριο."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
-#, fuzzy
 msgid "What to do with executable text files when activated"
-msgstr "Προ_βολή αρχείων αρχείων κειμένου όταν πατηθούν"
+msgstr "Ενέργεια κατά την ενεργοποίηση εκτελέσιμων αρχείων κειμένου"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid ""
@@ -1551,6 +1632,10 @@ msgid ""
 "\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
 "text files."
 msgstr ""
+"Ενέργεια κατά την ενεργοποίηση εκτελέσιμων αρχείων κειμένου (μονό ή διπλό "
+"κλικ). Οι πιθανές τιμές είναι \"εκκίνηση\" για να εκκινηθούν ως προγράμματα,"
+"\"ερώτηση\" για να γίνει ερώτηση για την ενέργεια μέσω ενός διαλόγου και "
+"\"προβολή\" για να προβληθούν ως αρχεία κειμένου."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid ""
@@ -1558,55 +1643,57 @@ msgid ""
 "another view for that particular folder. Possible values are list_view and "
 "icon_view."
 msgstr ""
+"Όταν γίνεται ανάγνωση ενός καταλόγου, χρησιμοποιείται αυτό το πρόγραμμα "
+"προβολής, εκτός και αν έχετε επιλέξει μια διαφορετική προβολή για τον "
+"συγκεκριμένο φάκελο. Οι πιθανές τιμές είναι προβολή εικονιδίων και προβολή "
+"λίστας."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
-#, fuzzy
 msgid "When to show number of items in a directory"
-msgstr "Εμφάνιση Αριθμού Αντικειμένων στους Φακέλους"
+msgstr "Αν θα εμφανίζεται ο αριθμός αντικειμένων σε ένα κατάλογο"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
-#, fuzzy
 msgid "When to show preview text in icons"
-msgstr "Εμφάνιση Κειμέ_νου στα Εικονίδια:"
+msgstr "Αν θα εμφανίζεται κείμενο προεπισκόπησης στα εικονίδια"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
-#, fuzzy
 msgid "When to show thumbnails of image files"
-msgstr "Εμφάνιση Δειγμάτων για Αρχεία Εικόνων"
+msgstr "Αν θα γίνεται προεισκόπηση για αρχεία εικόνας"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
-#, fuzzy
 msgid "Whether a custom default directory background has been set."
-msgstr "Χρήση εξ ορισμού παρασκηνίου επιφάνειας εργασίας"
+msgstr "Αν έχει ορισθεί ένα  εξ ορισμού παρασκήνιο καταλόγου."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
 msgid "Whether a custom default side pane background has been set."
-msgstr ""
+msgstr "Αν έχει ορισθεί ένα προσαρμοσμένο παρασκήνιο πλευρικού ταμπλώ."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
 msgid "Whether to ask for confirmation when moving files to trash"
 msgstr ""
+"Αν θα γίνεται ερώτηση επιβεβαίωσης κατά την μετακίνηση αρχείων στα απορρίματα"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
 msgid "Whether to enable immediate deletion"
-msgstr ""
+msgstr "Αν θα ενεργοποιηθεί η άμεση διαγραφή"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
 msgid "Whether to preview sounds when mousing over an icon"
 msgstr ""
+"Αν θα γίνεται προεισκόπηση ήχων κατά το πέρασμα του ποντικιού πάνω από ένα "
+"εικονίδιο."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
 msgid "Whether to show backup files"
-msgstr ""
+msgstr "Αν θα προβάλλονται τα αρχεία αντιγράφων ασφαλείας"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
 msgid "Whether to show dotfiles"
-msgstr ""
+msgstr "Αν θα προβάλλονται  dotfiles"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
-#, fuzzy
 msgid "width of the sidebar"
-msgstr "Απόκρυψη _Πλευρικής Μπάρας"
+msgstr "πλάτος του πλευρικού ταμπλώ"
 
 #: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "AFFS Volume"
@@ -1739,11 +1826,12 @@ msgid ""
 "You cannot delete a volume icon. If you want to eject the volume, please use "
 "Eject in the right-click menu of the volume."
 msgstr ""
+"Δεν μπορείτε να διαγράψετε ένα εικονίδιο τόμου. Αν θέλετε να αποβάλλετε τον "
+"τόμο χρησιμοποιήστε το Αποβολή με δεξί κλικ στο μενού του τόμου."
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:107
-#, fuzzy
 msgid "Can't delete volume"
-msgstr "Δεν είναι δυνατή η διαγραφή του τρέχοντος θέματος"
+msgstr "Δεν είναι δυνατή η διαγραφή του τόμου"
 
 #
 #: libnautilus-private/nautilus-desktop-link.c:139
@@ -3311,47 +3399,47 @@ msgstr "κανένα"
 msgid "%s's Home"
 msgstr "Ο Αρχικός Κατάλογος του %s"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2092
+#: libnautilus-private/nautilus-icon-canvas-item.c:2108
 msgid "file icon"
 msgstr "εικονίδιο αρχείου"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2465
+#: libnautilus-private/nautilus-icon-canvas-item.c:2481
 msgid "editable text"
 msgstr "τροποποιήσιμο κείμενο"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2466
+#: libnautilus-private/nautilus-icon-canvas-item.c:2482
 msgid "the editable label"
 msgstr "επεξεργάσιμη ετικέτα"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2473
+#: libnautilus-private/nautilus-icon-canvas-item.c:2489
 msgid "additional text"
 msgstr "πρόσθετο κείμενο"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2474
+#: libnautilus-private/nautilus-icon-canvas-item.c:2490
 msgid "some more text"
 msgstr "λίγο περισσότερο κείμενο"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2481
+#: libnautilus-private/nautilus-icon-canvas-item.c:2497
 msgid "highlighted for selection"
 msgstr "φωτισμένο για επιλογή"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2482
+#: libnautilus-private/nautilus-icon-canvas-item.c:2498
 msgid "whether we are highlighted for a selection"
 msgstr "όταν είναι φωτισμένο για επιλογή"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2489
+#: libnautilus-private/nautilus-icon-canvas-item.c:2505
 msgid "highlighted as keyboard focus"
 msgstr "φωτισμένο ως εστίαση πληκτρολογίου"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2490
+#: libnautilus-private/nautilus-icon-canvas-item.c:2506
 msgid "whether we are highlighted to render keyboard focus"
 msgstr "αν είναι φωτισμένο για να υποδηλώσει την εστίαση πληκτρολογίου"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2498
+#: libnautilus-private/nautilus-icon-canvas-item.c:2514
 msgid "highlighted for drop"
 msgstr "φωτισμένο για ρίψη"
 
-#: libnautilus-private/nautilus-icon-canvas-item.c:2499
+#: libnautilus-private/nautilus-icon-canvas-item.c:2515
 msgid "whether we are highlighted for a D&D drop"
 msgstr "αν είναι φωτισμένο για ρίψη D&D"
 
@@ -3676,21 +3764,20 @@ msgid "No Application Associated"
 msgstr "Καμία Εφαρμογή Δεν Έχει Αντιστοιχιθεί"
 
 #: libnautilus-private/nautilus-program-chooser.c:1607
-#, fuzzy, c-format
+#, c-format
 msgid "There is no action associated with \"%s\"."
-msgstr "Δεν υπάρχει εφαρμογή για το άνοιγμα του \"%s\"."
+msgstr "Δεν υπάρχει εφαρμογή συνδεδεμένη με \"%s\"."
 
 #: libnautilus-private/nautilus-program-chooser.c:1608
-#, fuzzy
 msgid "No Action Associated"
-msgstr "Καμία Εφαρμογή Δεν Έχει Αντιστοιχιθεί"
+msgstr "Δεν υπάρχει ενέργεια συνδεδεμένη"
 
 #. Note: This might be misleading in the components case, since the
 #. * user can't add components to the complete list even from the capplet.
 #. * (They can add applications though.)
 #.
 #: libnautilus-private/nautilus-program-chooser.c:1615
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s\n"
 "\n"
@@ -3707,36 +3794,34 @@ msgid "Associate Application"
 msgstr "Αντιστοίχιση Εφαρμογής"
 
 #: libnautilus-private/nautilus-program-chooser.c:1648
-#, fuzzy, c-format
+#, c-format
 msgid "The viewer associated with \"%s\" is invalid."
-msgstr "Δεν υπάρχει εφαρμογή για το άνοιγμα του \"%s\"."
+msgstr "Η εφαρμογή που είναι συνδεδεμένη με το\"%s\" δεν είναι έγκυρη."
 
 #: libnautilus-private/nautilus-program-chooser.c:1649
 msgid "Invalid Viewer Associated"
-msgstr ""
+msgstr "Μή έγκυρη συνδεδεμένη εφαρμογή"
 
 #: libnautilus-private/nautilus-program-chooser.c:1651
-#, fuzzy, c-format
+#, c-format
 msgid "The application associated with \"%s\" is invalid."
-msgstr "Δεν υπάρχει εφαρμογή για το άνοιγμα του \"%s\"."
+msgstr "Η εφαρμογή που είναι συνδεδεμένη με το\"%s\" δεν είναι έγκυρη."
 
 #: libnautilus-private/nautilus-program-chooser.c:1652
-#, fuzzy
 msgid "Invalid Application Associated"
-msgstr "Καμία Εφαρμογή Δεν Έχει Αντιστοιχιθεί"
+msgstr "Μή έγκυρη συνδεδεμένη εφαρμογή"
 
 #: libnautilus-private/nautilus-program-chooser.c:1654
-#, fuzzy, c-format
+#, c-format
 msgid "The action associated with \"%s\" is invalid."
-msgstr "Δεν υπάρχει εφαρμογή για το άνοιγμα του \"%s\"."
+msgstr "Η ενέργεια που είναι συνδεδεμένη με το\"%s\" δεν είναι έγκυρη."
 
 #: libnautilus-private/nautilus-program-chooser.c:1655
-#, fuzzy
 msgid "Invalid Action Associated"
-msgstr "Καμία Εφαρμογή Δεν Έχει Αντιστοιχιθεί"
+msgstr "Μή έγκυρη συνδεδεμένη ενέγεια"
 
 #: libnautilus-private/nautilus-program-chooser.c:1658
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s\n"
 "\n"
@@ -3746,15 +3831,15 @@ msgid ""
 msgstr ""
 "%s\n"
 "\n"
-"Μπορείτε να ρυθμίσετε το GNOME να αντιστοιχεί εφαρμογές με είδη αρχείων. "
-"Θέλετε να αντιστοιχίσετε μια εφαρμογή με αυτό το είδος αρχείου τώρα;"
+"Μπορείτε να ρυθμίσετε το GNOME να αντιστοιχεί διαφορετικές εφαρμογές με "
+"διαφορετικά είδη αρχείων. Θέλετε να αντιστοιχίσετε μια εφαρμογή με αυτό το "
+"είδος αρχείου τώρα;"
 
 #: libnautilus-private/nautilus-program-chooser.c:1665
-#, fuzzy
 msgid "Associate Action"
 msgstr "Αντιστοίχιση Εφαρμογής"
 
-#: libnautilus-private/nautilus-program-choosing.c:495
+#: libnautilus-private/nautilus-program-choosing.c:504
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -3763,21 +3848,22 @@ msgstr ""
 "Το \"%s\" δε μπορεί να ανοίξει το \"%s\" διότι το \"%s\" δε μπορεί να "
 "προσπελάσει τις \"%s\" τοποθεσίες. Θέλετε να επιλέξετε άλλη εφαρμογή;"
 
-#: libnautilus-private/nautilus-program-choosing.c:500
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-program-choosing.c:509
+#, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations.  Would you like to choose another action?"
 msgstr ""
-"Το \"%s\" δε μπορεί να ανοίξει το \"%s\" διότι το \"%s\" δε μπορεί να "
-"προσπελάσει τις \"%s\" τοποθεσίες. Θέλετε να επιλέξετε άλλη εφαρμογή;"
+"Η εξ ορισμού ενέργεια δε μπορεί να ανοίξει το \"%s\" διότι το \"%s\" δε "
+"μπορεί να προσπελάσει αρχεία στις \"%s\" τοποθεσίες. Θέλετε να επιλέξετε "
+"άλλη ενέργεια?"
 
-#: libnautilus-private/nautilus-program-choosing.c:506
-#: libnautilus-private/nautilus-program-choosing.c:537
+#: libnautilus-private/nautilus-program-choosing.c:515
+#: libnautilus-private/nautilus-program-choosing.c:546
 msgid "Can't Open Location"
 msgstr "Αδύνατο το Άνοιγμα Τοποθεσίας"
 
-#: libnautilus-private/nautilus-program-choosing.c:525
+#: libnautilus-private/nautilus-program-choosing.c:534
 #, c-format
 msgid ""
 "\"%s\" can't open \"%s\" because \"%s\" can't access files at \"%s\" "
@@ -3789,19 +3875,25 @@ msgstr ""
 "την εμφάνιση αυτού του αρχείου.  Αν αντιγράψετε αυτό το αρχείο στον "
 "υπολογιστή σας, ίσως μπορέσετε να το ανοίξετε."
 
-#: libnautilus-private/nautilus-program-choosing.c:531
-#, fuzzy, c-format
+#: libnautilus-private/nautilus-program-choosing.c:540
+#, c-format
 msgid ""
 "The default action can't open \"%s\" because it can't access files at \"%s\" "
 "locations.  No other actions are available to view this file.  If you copy "
 "this file onto your computer, you may be able to open it."
 msgstr ""
-"Το \"%s\" δε μπορεί να ανοίξει το \"%s\" διότι το \"%s\" δε μπορεί να "
-"προσπελάσει αρχεία στις \"%s\" τοποθεσίες.  Δεν υπάρχουν άλλες εφαρμογές για "
-"την εμφάνιση αυτού του αρχείου.  Αν αντιγράψετε αυτό το αρχείο στον "
-"υπολογιστή σας, ίσως μπορέσετε να το ανοίξετε."
+"Η εξ ορισμού ενέργεια δε μπορεί να ανοίξει το \"%s\" διότι το \"%s\" δε "
+"μπορεί να προσπελάσει αρχεία στις \"%s\" τοποθεσίες.  Δεν υπάρχουν άλλες "
+"ενέργειες για την εμφάνιση αυτού του αρχείου.  Αν αντιγράψετε αυτό το αρχείο "
+"στον υπολογιστή σας, ίσως μπορέσετε να το ανοίξετε."
 
-#: libnautilus-private/nautilus-program-choosing.c:801
+#: libnautilus-private/nautilus-program-choosing.c:800
+#: libnautilus-private/nautilus-program-choosing.c:1017
+#, c-format
+msgid "Opening %s"
+msgstr "Άνοιγμα του %s"
+
+#: libnautilus-private/nautilus-program-choosing.c:1161
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -3809,12 +3901,12 @@ msgstr ""
 "Συγγνώμη, αλλά δε μπορείτε να εκτελέσετε εντολές από ένα απομακρυσμένο "
 "σύστημα λόγω των συνεπειών ασφάλειας."
 
-#: libnautilus-private/nautilus-program-choosing.c:803
+#: libnautilus-private/nautilus-program-choosing.c:1163
 msgid "Can't execute remote links"
 msgstr "Δεν είναι δυνατή η εκτέλεση απομακρυσμένων συνδέσμων"
 
-#: libnautilus-private/nautilus-program-choosing.c:813
-#: libnautilus-private/nautilus-program-choosing.c:879
+#: libnautilus-private/nautilus-program-choosing.c:1173
+#: libnautilus-private/nautilus-program-choosing.c:1239
 msgid ""
 "There was an error launching the application.\n"
 "\n"
@@ -3824,12 +3916,12 @@ msgstr ""
 "\n"
 "Λεπτομέρειες:"
 
-#: libnautilus-private/nautilus-program-choosing.c:817
-#: libnautilus-private/nautilus-program-choosing.c:883
+#: libnautilus-private/nautilus-program-choosing.c:1177
+#: libnautilus-private/nautilus-program-choosing.c:1243
 msgid "Error launching application"
 msgstr "Σφάλμα στην εκκίνηση εφαρμογής"
 
-#: libnautilus-private/nautilus-program-choosing.c:845
+#: libnautilus-private/nautilus-program-choosing.c:1205
 msgid ""
 "This drop target only supports local files.\n"
 "\n"
@@ -3840,12 +3932,12 @@ msgstr ""
 "Για να ανοίξετε μη τοπικά αρχεία, αντιγράψτε τα σε ένα τοπικό κατάλογο και "
 "ρίξτε τα ξανά."
 
-#: libnautilus-private/nautilus-program-choosing.c:848
-#: libnautilus-private/nautilus-program-choosing.c:860
+#: libnautilus-private/nautilus-program-choosing.c:1208
+#: libnautilus-private/nautilus-program-choosing.c:1220
 msgid "Drop target only supports local files"
 msgstr "Ο στόχος ρίψης υποστηρίζει μόνο τοπικά αρχεία"
 
-#: libnautilus-private/nautilus-program-choosing.c:857
+#: libnautilus-private/nautilus-program-choosing.c:1217
 msgid ""
 "This drop target only supports local files.\n"
 "\n"
@@ -5065,23 +5157,23 @@ msgstr "Σφάλμα Μεταφοράς και Ρίψης (drag και drop)"
 msgid "An invalid drag type was used."
 msgstr "Χρησιμοποιήθηκε μη έγκυρο είδος μεταφοράς."
 
-#: src/file-manager/fm-list-view.c:729
+#: src/file-manager/fm-list-view.c:731
 msgid "File name"
 msgstr "Όνομα αρχείου"
 
 #
-#: src/file-manager/fm-list-view.c:753
+#: src/file-manager/fm-list-view.c:755
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Μέγεθος"
 
 #
-#: src/file-manager/fm-list-view.c:764
+#: src/file-manager/fm-list-view.c:766
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Τύπος"
 
-#: src/file-manager/fm-list-view.c:775
+#: src/file-manager/fm-list-view.c:777
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Ημερομηνία Τροποποίησης"
@@ -5130,9 +5222,8 @@ msgid "Images Only"
 msgstr "Μόνο Εικόνες"
 
 #: src/file-manager/fm-properties-window.c:893
-#, fuzzy
 msgid "Properties"
-msgstr "Ιδιότητες %s"
+msgstr "Ιδιότητες"
 
 #: src/file-manager/fm-properties-window.c:896
 #, c-format
@@ -5192,9 +5283,8 @@ msgstr "Βασικό"
 
 #
 #: src/file-manager/fm-properties-window.c:2157
-#, fuzzy
 msgid "_Names:"
-msgstr "Ό_νομα:"
+msgstr "Ό_νοματα:"
 
 #
 #: src/file-manager/fm-properties-window.c:2159
@@ -5221,7 +5311,7 @@ msgstr "Τύπος:"
 #: src/file-manager/fm-properties-window.c:2929
 #: src/file-manager/fm-properties-window.c:2933
 msgid "--"
-msgstr ""
+msgstr "--"
 
 #
 #: src/file-manager/fm-properties-window.c:2222
@@ -5234,14 +5324,12 @@ msgid "Location:"
 msgstr "Τοποθεσία:"
 
 #: src/file-manager/fm-properties-window.c:2235
-#, fuzzy
 msgid "Volume:"
-msgstr "Τόμος DVD"
+msgstr "Τόμος:"
 
 #: src/file-manager/fm-properties-window.c:2239
-#, fuzzy
 msgid "Free space:"
-msgstr "Ελεύθερη μορφή"
+msgstr "Ελεύθερος χώρος:"
 
 #: src/file-manager/fm-properties-window.c:2247
 msgid "Link target:"
@@ -5347,9 +5435,8 @@ msgid "The permissions of \"%s\" could not be determined."
 msgstr "Τα δικαιώματα του \"%s\" δε μπόρεσαν να εξακριβωθούν."
 
 #: src/file-manager/fm-properties-window.c:2941
-#, fuzzy
 msgid "The permissions of the selected file could not be determined."
-msgstr "Τα δικαιώματα του \"%s\" δε μπόρεσαν να εξακριβωθούν."
+msgstr "Τα δικαιώματα του επιλεγμένου αρχείου δε μπόρεσαν να εξακριβωθούν."
 
 #: src/file-manager/fm-properties-window.c:3257
 #: src/nautilus-bookmarks-window.c:146
@@ -5376,10 +5463,9 @@ msgstr "Ακύρωση της Εμφάνισης του Παραθύρου Ιδ�
 msgid "Creating Properties window"
 msgstr "Δημιουργία παραθύρου Ιδιοτήτων"
 
-#: src/file-manager/fm-properties-window.c:3716
-#, fuzzy
+#: src/file-manager/fm-properties-window.c:3717
 msgid "Select an icon"
-msgstr "Επιλέξτε εικονίδιο:"
+msgstr "Επιλέξτε ένα εικονίδιο"
 
 #: src/file-manager/fm-search-list-view.c:124
 #, c-format
@@ -5883,9 +5969,8 @@ msgid "Display icons in the opposite order"
 msgstr "Εμφάνιση των εικονιδίων σε αντίστροφη σειρά"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:10
-#, fuzzy
 msgid "Keep icons lined up on a grid"
-msgstr "Διατήρηση της ταξινόμησης των εικονιδίων βάση ονόματος σε γραμμές"
+msgstr "Διατήρηση της ταξινόμησης των εικονιδίων"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:16
 msgid "Leave icons wherever they are dropped"
@@ -5919,7 +6004,7 @@ msgstr "Αλλαγή μεταξύ εφαρμοστού σχήματος διάτ
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:24
 msgid "_Keep Aligned"
-msgstr ""
+msgstr "_Διατήρηση στοίχισης"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:25
 msgid "_Manually"
@@ -6039,9 +6124,8 @@ msgstr ""
 "δημιουργήσει."
 
 #: src/nautilus-application.c:301
-#, fuzzy
 msgid "Link To Old Desktop"
-msgstr "Παράθυρα & Επιφάνεια Εργασίας"
+msgstr "Δεσμός στην παλαιά επιφάνεια εργασίας"
 
 #: src/nautilus-application.c:317
 msgid ""
@@ -6049,10 +6133,14 @@ msgid ""
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
 msgstr ""
+"Η τοποθεσία του καταλόγου επιφάνειας εργασίας έχει αλλάξει στο Gnome 2.4. "
+"Έχει δημιουργηθεί ένα δεσμός που ονομάζεται \"Δεσμός στην παλαιά επιφάνεια "
+"εργασίας\". Μπορείτε να το ανοίξετε, να μεταφέρετε τα αρχεία που επιθυμείτε "
+"και μετά να διαγράψετε τον δεσμό."
 
 #: src/nautilus-application.c:320
 msgid "Migrated old desktop"
-msgstr ""
+msgstr "Εισηγμένη παλαιά επιφάνεια εργασίας"
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.server file. This has happened when you
@@ -6166,18 +6254,16 @@ msgid "No bookmarks defined"
 msgstr "Δεν έχουν οριστεί σελιδοδείκτες"
 
 #: src/nautilus-bookmarks-window.glade.h:1
-#, fuzzy
 msgid "<b>_Bookmarks</b>"
-msgstr "_Σελιδοδείκτες"
+msgstr "<b>_Σελιδοδείκτες</b>"
 
 #: src/nautilus-bookmarks-window.glade.h:2
-#, fuzzy
 msgid "<b>_Location</b>"
-msgstr "Τοποθεσία"
+msgstr "<b>_Τοποθεσία</b>"
 
 #: src/nautilus-bookmarks-window.glade.h:3
 msgid "<b>_Name</b>"
-msgstr ""
+msgstr "<b>Ό_νομα</b>"
 
 #: src/nautilus-bookmarks-window.glade.h:4
 msgid "Edit Bookmarks"
@@ -6381,7 +6467,7 @@ msgstr "_Μονό κλικ για την ενεργοποίηση αντικει
 
 #: src/nautilus-file-management-properties.glade.h:74
 msgid "_Text beside icons"
-msgstr ""
+msgstr "_Κείμενο δίπλα από εικονίδια"
 
 #: src/nautilus-file-management-properties.glade.h:75
 msgid "_Use compact layout"
@@ -6420,10 +6506,12 @@ msgid ""
 "Unable to launch the cd burner application:\n"
 "%s"
 msgstr ""
+"Αδυναμία εκκίνησης της εφαρμογής αντιγραφής cd :\n"
+"%s"
 
 #: src/nautilus-information-panel.c:996 src/nautilus-window-menus.c:231
 msgid "Can't launch cd burner"
-msgstr ""
+msgstr "Αδυναμία εκκίνησης της εφαρμογής αντιγραφής cd"
 
 #. FIXME: We don't use spaces to pad labels!
 #: src/nautilus-information-panel.c:1042
@@ -6433,7 +6521,7 @@ msgstr "Άδειασμα Α_πορριμάτων"
 #. FIXME: We don't use spaces to pad labels!
 #: src/nautilus-information-panel.c:1058
 msgid "_Write contents to CD"
-msgstr ""
+msgstr "Ε_γγραφή περιεχομένων στο CD"
 
 #: src/nautilus-location-bar.c:62
 msgid "Go To:"
@@ -6482,9 +6570,8 @@ msgid "Restart Nautilus."
 msgstr "Επανεκκίνηση του Ναυτίλου."
 
 #: src/nautilus-main.c:191
-#, fuzzy
 msgid "File Manager"
-msgstr "Διαχείριση Αρχείου"
+msgstr "Διαχειριστής Αρχείων"
 
 #. Set initial window title
 #: src/nautilus-main.c:197 src/nautilus-window-manage-views.c:232
@@ -6640,9 +6727,8 @@ msgstr "Συγγνώμη, αλλά το '%s' δεν είναι ένα χρησι
 
 #
 #: src/nautilus-property-browser.c:2037
-#, fuzzy
 msgid "Select a Category:"
-msgstr "Επιλέξτε Μια Κατηγορία:"
+msgstr "Επιλέξτε μια κατηγορία:"
 
 #: src/nautilus-property-browser.c:2046
 msgid "C_ancel Remove"
@@ -6896,9 +6982,8 @@ msgid "*"
 msgstr "*"
 
 #: src/nautilus-server-connect.glade.h:3
-#, fuzzy
 msgid "_Connect"
-msgstr "Conectiva"
+msgstr "Σύν_δεση"
 
 #: src/nautilus-shell-ui.xml.h:1
 msgid "Add a bookmark for the current location to this menu"
@@ -6986,9 +7071,8 @@ msgid "Forward"
 msgstr "Μπροστά"
 
 #: src/nautilus-shell-ui.xml.h:22
-#, fuzzy
 msgid "Go to Empty CD folder"
-msgstr "Μετάβαση στο φάκελο απορριμμάτων"
+msgstr "Μετάβαση στο κενό φάκελο CD "
 
 #: src/nautilus-shell-ui.xml.h:23
 msgid "Go to the Start Here folder"
@@ -7106,11 +7190,11 @@ msgstr "Προβολή ως..."
 
 #: src/nautilus-shell-ui.xml.h:51
 msgid "Write contents to a CD"
-msgstr ""
+msgstr "Εγγραφή περιεχομένων στο CD"
 
 #: src/nautilus-shell-ui.xml.h:52
 msgid "Write to CD"
-msgstr ""
+msgstr "Εγγραφή στο CD"
 
 #: src/nautilus-shell-ui.xml.h:53
 msgid "Zoom _In"
@@ -7142,7 +7226,7 @@ msgstr "_Σελιδοδείκτες"
 
 #: src/nautilus-shell-ui.xml.h:60
 msgid "_CD Creator"
-msgstr ""
+msgstr "_CD Creator"
 
 #: src/nautilus-shell-ui.xml.h:61
 msgid "_Clear History"
@@ -7257,9 +7341,8 @@ msgid "_View as..."
 msgstr "Προβο_λή ως..."
 
 #: src/nautilus-shell-ui.xml.h:90
-#, fuzzy
 msgid "_Write to CD"
-msgstr "Εγγρα_φή"
+msgstr "Εγγρα_φή στο CD"
 
 #: src/nautilus-side-pane.c:395
 msgid "Close the side pane"
