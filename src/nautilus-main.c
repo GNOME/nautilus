@@ -54,6 +54,7 @@
 #include <libxml/parser.h>
 #include <popt.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 /* Keeps track of everyone who wants the main event loop kept active */
@@ -188,6 +189,59 @@ register_icons (void)
 	
 }
 
+/* Copied from libnautilus/nautilus-program-choosing.c; In this case,
+ * though, it's really needed because we have no real alternative when
+ * no DESKTOP_STARTUP_ID (with its accompanying timestamp) is
+ * provided...
+ */
+static Time
+slowly_and_stupidly_obtain_timestamp (Display *xdisplay)
+{
+	Window xwindow;
+	XEvent event;
+	
+	{
+		XSetWindowAttributes attrs;
+		Atom atom_name;
+		Atom atom_type;
+		char* name;
+		
+		attrs.override_redirect = True;
+		attrs.event_mask = PropertyChangeMask | StructureNotifyMask;
+		
+		xwindow =
+			XCreateWindow (xdisplay,
+				       RootWindow (xdisplay, 0),
+				       -100, -100, 1, 1,
+				       0,
+				       CopyFromParent,
+				       CopyFromParent,
+				       CopyFromParent,
+				       CWOverrideRedirect | CWEventMask,
+				       &attrs);
+		
+		atom_name = XInternAtom (xdisplay, "WM_NAME", TRUE);
+		g_assert (atom_name != None);
+		atom_type = XInternAtom (xdisplay, "STRING", TRUE);
+		g_assert (atom_type != None);
+		
+		name = "Fake Window";
+		XChangeProperty (xdisplay, 
+				 xwindow, atom_name,
+				 atom_type,
+				 8, PropModeReplace, name, strlen (name));
+	}
+	
+	XWindowEvent (xdisplay,
+		      xwindow,
+		      PropertyChangeMask,
+		      &event);
+	
+	XDestroyWindow(xdisplay, xwindow);
+	
+	return event.xproperty.time;
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -276,6 +330,15 @@ main (int argc, char *argv[])
 				      GNOME_PARAM_POPT_TABLE, options,
 				      GNOME_PARAM_HUMAN_READABLE_NAME, _("Nautilus"),
 				      NULL);
+
+	/* Do this here so that gdk_display is initialized */
+	if (startup_id_copy == NULL) {
+		/* Create a fake one containing a timestamp that we can use */
+		Time timestamp;
+		timestamp = slowly_and_stupidly_obtain_timestamp (gdk_display);
+		startup_id_copy = g_strdup_printf ("_TIME%lu",
+						   timestamp);
+	}
 
 	register_icons ();
 

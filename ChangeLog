@@ -1,3 +1,17 @@
+2005-03-03  Elijah Newren  <newren@gmail.com>
+
+	If launched without startup-notification, make an approximation to
+	when the launch occurred so that focus-stealing-prevention will
+	work better.
+
+	* src/nautilus-main.c: (slowly_and_stupidly_obtain_timestamp): new
+	function, (main): if no startup id provided, ping xserver for a
+	timestamp and make a dummy startup_id with it.
+
+	* src/nautilus-application.c: (end_startup_notification): don't
+	set _NET_STARTUP_ID if given a fake startup_id, remove commented
+	out warning that should now no longer be needed
+
 2005-03-01  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-file-management-properties.glade:

@@ -1034,8 +1034,14 @@ end_startup_notification (GtkWidget  *widget,
 					   gdk_screen_get_number (screen),
 					   startup_id);
 
-	sn_launchee_context_setup_window (context,
-					  GDK_WINDOW_XWINDOW (widget->window));
+	/* Handle the setup for the window if the startup_id is valid;
+	 * I don't think it can hurt to do this even if it was
+	 * invalid, but why do the extra work...
+	 */
+	if (strncmp (sn_launchee_context_get_startup_id (context), "_TIME", 5) != 0) {
+		sn_launchee_context_setup_window (context,
+						  GDK_WINDOW_XWINDOW (widget->window));
+	}
 
 	/* Now, set the _NET_WM_USER_TIME for the new window to the timestamp
 	 * that caused the window to be launched.
@@ -1044,14 +1050,6 @@ end_startup_notification (GtkWidget  *widget,
 		gulong startup_id_timestamp;
 		startup_id_timestamp = sn_launchee_context_get_timestamp (context);
 		gdk_x11_window_set_user_time (widget->window, startup_id_timestamp);
-	} else {
-		/* Comment this out for now, as it warns way to often.
-		 * like when launching nautilus from the terminal.
-		 
-		g_warning ("Launched by a non-compliant or obsolete startup "
-			   "notification launcher.  Focus-stealing-prevention "
-			   "may fail.\n");
-		*/
 	}
   
 	sn_launchee_context_complete (context);
