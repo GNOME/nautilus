@@ -1,3 +1,18 @@
+2000-07-28  Gene Z. Ragan  <gzr@eazel.com>
+
+	First pass at adding floppy mounting to desktop.
+	There are still access issues to be resolved.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(rescan_floppy_callback):
+	New callback to handle menu command
+	
+	(fm_desktop_icon_view_create_background_context_menu_items):
+	Add menu item to rescan floppy device
+	
+	(mount_device_activate_floppy):
+	Actually call mount on the floppy device
+	
 2000-07-28  John Sullivan  <sullivan@eazel.com>
 
 	Finished task 1793 (Display hierarchical pre-canned set of bookmarks)

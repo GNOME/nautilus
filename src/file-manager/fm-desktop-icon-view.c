@@ -131,6 +131,13 @@ static void		remove_mount_links 			 (DeviceInfo 		*device,
 static void		free_device_info 			 (DeviceInfo 		*device, 
 								  FMDesktopIconView 	*icon_view);
 static void		place_home_directory 			 (FMDesktopIconView 	*icon_view);
+static void		mount_device_mount 			 (FMDesktopIconView 	*view, 
+								  DeviceInfo 		*device);
+static gboolean		mount_device_is_mounted 		 (DeviceInfo 		*device);
+static gboolean		mount_device_deactivate 		 (FMDesktopIconView 	*icon_view, 
+								  DeviceInfo 		*device);
+static void		mount_device_activate_floppy 		 (FMDesktopIconView 	*view, 
+								  DeviceInfo 		*device);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView, fm_desktop_icon_view, FM_TYPE_ICON_VIEW);
 
@@ -217,6 +224,38 @@ new_terminal_menu_item_callback (GtkMenuItem *item, FMDirectoryView *view)
 	nautilus_gnome_open_terminal (NULL);
 }
 
+static void 
+rescan_floppy_callback (GtkMenuItem *item, FMDirectoryView *view)
+{
+	char *argv[3];
+	FMDesktopIconView *icon_view;
+	GList *element;
+	DeviceInfo *device;
+
+	icon_view = FM_DESKTOP_ICON_VIEW (view);
+	
+	/* Locate floppy in device */
+	for (element = icon_view->details->devices; element != NULL; element = element->next) {
+		device = element->data;
+		if (strncmp ("/dev/fd", device->fsname, strlen("/dev/fd")) == 0) {
+			g_message ("Mounting floppy: %s", device->fsname);
+			argv[1] = device->fsname;
+			argv[2] = NULL;
+
+			/* Unmount the device if needed */
+			if (mount_device_is_mounted (device)) {
+				argv[0] = "/bin/umount";
+				gnome_execute_async(g_get_home_dir(), 2, argv);
+
+				mount_device_deactivate (icon_view, device);
+			}
+			
+			/* Mount the device */
+			mount_device_activate_floppy (icon_view, device);
+		}
+	}    	
+}
+
 static void
 fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view, GtkMenu *menu)
 {
@@ -232,6 +271,24 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 		 create_background_context_menu_items, 
 		 (view, menu));
 
+	/* Add item to check floppy mount status */
+	menu_item = gtk_menu_item_new ();
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+
+	menu_item = gtk_menu_item_new_with_label (_("Rescan Floppy"));
+	gtk_signal_connect (GTK_OBJECT (menu_item),
+			    "activate",
+			    GTK_SIGNAL_FUNC (rescan_floppy_callback),
+			    view);
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+
+	menu_item = gtk_menu_item_new ();
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+	
+	/* Close desktop */
         menu_item = gtk_menu_item_new_with_label (_("Close Nautilus Desktop"));
 	gtk_signal_connect (GTK_OBJECT (menu_item),
 			    "activate",
@@ -497,6 +554,16 @@ mount_device_activate_cdrom (FMDesktopIconView *icon_view, DeviceInfo *device)
 static void
 mount_device_activate_floppy (FMDesktopIconView *view, DeviceInfo *device)
 {
+	char *argv[3];
+
+	g_message ("Mounting floppy: %s", device->fsname);
+	
+	argv[0] = "/bin/mount";
+	argv[1] = device->fsname;
+	argv[2] = NULL;
+
+	gnome_execute_async(g_get_home_dir(), 2, argv);
+
 	mount_device_mount (view, device);
 }
 
