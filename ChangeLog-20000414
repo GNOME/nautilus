@@ -1,3 +1,28 @@
+2000-03-17  Pavel Cisler  <pavel@eazel.com>
+
+	Fix some bugs that John kindly uncovered.
+
+	* libnautilus/gtkflist.c
+	(gtk_flist_resize_column):
+	Make it so that the column title updates when column width changes
+	by zooming in and out.
+
+	* libnautilus/gtkflist.c
+	(gtk_flist_column_resize_track_start), (gtk_flist_column_resize_track_end):
+	Fix a dumb segfault - clist was not being initialized properly.
+
+	* libnautilus/nautilus-list-column-title.c
+	(nautilus_list_column_title_paint):
+	Make the resize indicator draw on the other side of the column title
+	as it should.
+	Tweak an assert.
+
+	* libnautilus/nautilus-list-column-title.c
+	(nautilus_list_column_title_leave):
+	Fix a problem where the  column title would sometimes get stuck in a 
+	prelight state after the mouse has exited.
+
+
 2000-03-16  Pavel Cisler  <pavel@eazel.com>
 
 	* scr/file-manager/fm-directory-view-list.c

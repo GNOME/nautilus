@@ -171,7 +171,6 @@ nautilus_list_column_title_realize (GtkWidget *widget)
 	GdkWindowAttr attributes;
 	int attributes_mask;
 
-	g_assert (widget != NULL);
 	g_assert (NAUTILUS_IS_LIST_COLUMN_TITLE (widget));
 
 	GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
@@ -326,10 +325,12 @@ nautilus_list_column_title_paint (GtkWidget *widget, GdkRectangle *area)
 		GdkRectangle cell_rectangle;
 		GdkRectangle cell_redraw_area;
 		const char *cell_label;
-		int x_offset;
+		int text_x_offset;
+		int sort_indicator_x_offset;
 		GnomePixmap *sort_indicator;
 		gboolean right_justified;
 
+		sort_indicator_x_offset = 0;
 		sort_indicator = NULL;
 		right_justified = (parent_clist->column[index].justification == GTK_JUSTIFY_RIGHT);
 
@@ -354,9 +355,9 @@ nautilus_list_column_title_paint (GtkWidget *widget, GdkRectangle *area)
 		 */
 
 		if (right_justified) {
-			x_offset = cell_rectangle.x + cell_rectangle.width - CELL_TITLE_INSET;
+			text_x_offset = cell_rectangle.x + cell_rectangle.width - CELL_TITLE_INSET;
 		} else {
-			x_offset = cell_rectangle.x + CELL_TITLE_INSET;
+			text_x_offset = cell_rectangle.x + CELL_TITLE_INSET;
 		}
 
 		/* Paint the column title tiles as rectangles using "menu" style 
@@ -375,11 +376,16 @@ nautilus_list_column_title_paint (GtkWidget *widget, GdkRectangle *area)
 
 		/* Draw the sort indicator if needed */
 		if (sort_indicator != NULL) {
-			int y_offset = TITLE_BASELINE_OFFSET + 2;
+			int y_offset;
 
 			if (right_justified) {
-				x_offset -= SORT_ORDER_INDICATOR_WIDTH;
+				sort_indicator_x_offset = cell_rectangle.x + CELL_TITLE_INSET;		
+			} else {
+				sort_indicator_x_offset = cell_rectangle.x + cell_rectangle.width 
+					   - CELL_TITLE_INSET - SORT_ORDER_INDICATOR_WIDTH;		
 			}
+			y_offset = TITLE_BASELINE_OFFSET + 2;
+
 
 			/* allocate the sort indicator copy gc first time around */
 			if (column_title->details->copy_area_gc == NULL) {
@@ -389,16 +395,13 @@ nautilus_list_column_title_paint (GtkWidget *widget, GdkRectangle *area)
 			/* move the pixmap clip mask and origin to the right spot in the gc */
 			gdk_gc_set_clip_mask (column_title->details->copy_area_gc, 
 					      sort_indicator->mask);
-			gdk_gc_set_clip_origin (column_title->details->copy_area_gc, x_offset, y_offset);
+			gdk_gc_set_clip_origin (column_title->details->copy_area_gc, sort_indicator_x_offset, y_offset);
 
 
 			gdk_draw_pixmap (widget->window, column_title->details->copy_area_gc, 
-					 sort_indicator->pixmap, 0, 0, x_offset, y_offset, 
+					 sort_indicator->pixmap, 0, 0, sort_indicator_x_offset, y_offset, 
 					 -1, -1);
 
-			if (!right_justified) {
-				x_offset += SORT_ORDER_INDICATOR_WIDTH;
-			}
 		}
 			
 		if (cell_label) {
@@ -410,12 +413,12 @@ nautilus_list_column_title_paint (GtkWidget *widget, GdkRectangle *area)
 			 */
 			nautilus_rectangle_inset (&cell_redraw_area, 2, 2);
 			if (right_justified) {
-				x_offset -= gdk_string_width (widget->style->font, cell_label) + 4;
+				text_x_offset -= gdk_string_width (widget->style->font, cell_label) + 4;
 			}
 
 			gtk_paint_string (widget->style, widget->window, GTK_STATE_NORMAL,
 					  &cell_redraw_area, widget, "label", 
-					  x_offset,
+					  text_x_offset,
 					  cell_rectangle.y + cell_rectangle.height - TITLE_BASELINE_OFFSET,
 					  cell_label);
 		}
@@ -624,11 +627,16 @@ nautilus_list_column_title_motion (GtkWidget *widget, GdkEventMotion *event)
 static gboolean
 nautilus_list_column_title_leave (GtkWidget *widget, GdkEventCrossing *event)
 {
+	NautilusListColumnTitle *column_title;
+
 	g_assert (GTK_FLIST (widget->parent) != NULL);
 	g_assert (NAUTILUS_IS_LIST_COLUMN_TITLE (widget));
 
+	column_title = NAUTILUS_LIST_COLUMN_TITLE(widget);
+
 	/* see if we need to update the prelight state of a column */
-	if (track_prelight (widget, (int)event->x, (int)event->y)) {
+	if (column_title->details->tracking_column_prelight != -1) {
+		column_title->details->tracking_column_prelight = -1;
 		gtk_widget_set_state (widget, GTK_STATE_NORMAL);
 		nautilus_list_column_title_buffered_draw (widget);
 	}

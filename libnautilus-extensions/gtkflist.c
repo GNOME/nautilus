@@ -92,6 +92,8 @@ static void draw_row (GtkCList *flist, GdkRectangle *area, gint row, GtkCListRow
 static void gtk_flist_realize (GtkWidget *widget);
 static void gtk_flist_size_request (GtkWidget *widget, GtkRequisition *requisition);
 
+static void gtk_flist_resize_column (GtkCList *widget, int column, int width);
+
 static void gtk_flist_column_resize_track_start (GtkWidget *widget, int column);
 static void gtk_flist_column_resize_track (GtkWidget *widget, int column);
 static void gtk_flist_column_resize_track_end (GtkWidget *widget, int column);
@@ -161,6 +163,7 @@ gtk_flist_initialize_class (GtkFListClass *klass)
 
 	clist_class->clear = gtk_flist_clear;
 	clist_class->draw_row = draw_row;
+  	clist_class->resize_column = gtk_flist_resize_column;
 
 	widget_class->button_press_event = gtk_flist_button_press;
 	widget_class->button_release_event = gtk_flist_button_release;
@@ -1112,6 +1115,21 @@ draw_rows (GtkCList *clist, GdkRectangle *area)
 	}
 }
 
+static void 
+gtk_flist_resize_column (GtkCList *clist, int column, int width)
+{
+	/* override resize column to invalidate the title */
+	GtkFList *flist;
+
+	g_assert (GTK_IS_FLIST (clist));
+
+	flist = GTK_FLIST (clist);
+
+	gtk_widget_queue_draw (flist->details->title);
+		
+	NAUTILUS_CALL_PARENT_CLASS (GTK_CLIST_CLASS, resize_column, (clist, column, width));
+}
+
 static void
 gtk_flist_track_new_column_width (GtkCList *clist, int column, int new_width)
 {
@@ -1218,6 +1236,7 @@ gtk_flist_column_resize_track_start (GtkWidget *widget, int column)
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (GTK_IS_FLIST (widget));
 
+	clist = GTK_CLIST (widget);
 	clist->drag_pos = column;
 }
 
@@ -1246,6 +1265,7 @@ gtk_flist_column_resize_track_end (GtkWidget *widget, int column)
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (GTK_IS_FLIST (widget));
 
+	clist = GTK_CLIST (widget);
 	clist->drag_pos = -1;
 }
 
