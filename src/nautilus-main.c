@@ -263,6 +263,9 @@ main (int argc, char *argv[])
 				      NULL);
 
 	register_icons ();
+
+        /* Set default icon for all nautilus windows */
+	gtk_window_set_default_icon_name ("gnome-fs-directory");
 	
 	/* Need to set this to the canonical DISPLAY value, since
 	   thats where we're registering per-display components */

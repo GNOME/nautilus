@@ -124,37 +124,6 @@ G_DEFINE_TYPE_WITH_CODE (NautilusWindow, nautilus_window, GTK_TYPE_WINDOW,
 			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_WINDOW_INFO,
 						nautilus_window_info_iface_init));
 
-
-static void
-set_up_default_icon_list (void)
-{
-	GList *icon_list;
-	guint i;
-	GdkPixbuf *pixbuf;
-	char *path;
-	const char *icon_filenames[] = { "nautilus-mini-logo.png", "nautilus-launch-icon.png" };
-
-	icon_list = NULL;
-	for (i = 0; i < G_N_ELEMENTS (icon_filenames); i++) {
-		path = nautilus_pixmap_file (icon_filenames[i]);
-
-		if (path == NULL) {
-			continue;
-		}
-		
-		pixbuf = gdk_pixbuf_new_from_file (path, NULL);
-		g_free (path);
-		
-		if (pixbuf != NULL) {
-			icon_list = g_list_prepend (icon_list, pixbuf);
-		}
-	}
-
-	gtk_window_set_default_icon_list (icon_list);
-
-	eel_g_list_free_deep_custom (icon_list, (GFunc) g_object_unref, NULL);
-}
-
 static void
 icons_changed_callback (GObject *factory, NautilusWindow *window)
 {
@@ -1482,15 +1451,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
 							      _("The NautilusApplication associated with this window."),
 							      NAUTILUS_TYPE_APPLICATION,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-	
-	/* Set default for all windows. This probably should be done
-	 * in main or NautilusApplication rather than here in case
-	 * some other window is created before the first
-	 * NautilusWindow. Also, do we really want this icon for
-	 * dialogs?
-	 */
-	set_up_default_icon_list ();
-
 	
 	signals[GO_UP] =
 		g_signal_new ("go_up",
