@@ -1,5 +1,13 @@
 2003-03-18  Frederic Crozat  <fcrozat@mandrakesoft.com>
 
+	* libnautilus-private/nautilus-icon-factory.c:
+	(nautilus_icon_factory_instance_init),
+	(nautilus_icon_factory_finalize), (mimetype_limited_by_size):
+	Don't use eel_g_hash_table_new_free_at_exit, it only outputs
+	wrong warnings when exiting.
+
+2003-03-18  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
 	* src/file-manager/fm-directory-view.c:
 	(set_up_scripts_directory_global), (create_scripts_directory),
 	(open_scripts_folder_callback):

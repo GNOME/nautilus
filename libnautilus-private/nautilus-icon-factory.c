@@ -137,6 +137,8 @@ typedef struct {
         guint sweep_timer;
 
 	CacheIcon *fallback_icon;
+	GHashTable *image_mime_types;
+
 } NautilusIconFactory;
 
 #define NAUTILUS_ICON_FACTORY(obj) \
@@ -319,6 +321,14 @@ static void
 nautilus_icon_factory_instance_init (NautilusIconFactory *factory)
 {
 	GdkPixbuf *pixbuf;
+	guint i;
+	static const char *types [] = {
+		"image/x-bmp", "image/x-ico", "image/jpeg", "image/gif",
+		"image/png", "image/pnm", "image/ras", "image/tga",
+		"image/tiff", "image/wbmp", "image/x-xbitmap",
+		"image/x-xpixmap"
+        };
+
 	
         factory->icon_cache = g_hash_table_new_full (cache_key_hash,
 						     cache_key_equal,
@@ -351,6 +361,13 @@ nautilus_icon_factory_instance_init (NautilusIconFactory *factory)
 					   NULL);
 	
 	factory->fallback_icon = cache_icon_new (pixbuf, NULL);
+
+	factory->image_mime_types = g_hash_table_new (g_str_hash, g_str_equal);
+	for (i = 0; i < G_N_ELEMENTS (types); i++) {
+		g_hash_table_insert (factory->image_mime_types,
+				     (gpointer) types [i],
+				     GUINT_TO_POINTER (1));
+	}
 }
 
 static void
@@ -626,6 +643,11 @@ nautilus_icon_factory_finalize (GObject *object)
 		g_assert (factory->fallback_icon->ref_count == 1);
 		cache_icon_unref (factory->fallback_icon);
 	}
+
+	if (factory->image_mime_types) {
+		g_hash_table_destroy (factory->image_mime_types);
+		factory->image_mime_types = NULL;
+	}
 	
 	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
@@ -708,28 +730,11 @@ image_uri_to_name_or_uri (const char *image_uri)
 static gboolean
 mimetype_limited_by_size (const char *mime_type)
 {
-        guint i;
-        static GHashTable *formats = NULL;
-        static const char *types [] = {
-          "image/x-bmp", "image/x-ico", "image/jpeg", "image/gif",
-          "image/png", "image/pnm", "image/ras", "image/tga",
-          "image/tiff", "image/wbmp", "image/x-xbitmap",
-          "image/x-xpixmap"
-        };
+	NautilusIconFactory *factory;
 
-	if (formats == NULL) {
-		formats = eel_g_hash_table_new_free_at_exit
-			(g_str_hash, g_str_equal,
-			 "nautilus-icon-factory.c: mimetype_limited_by_size");
-		
-                for (i = 0; i < G_N_ELEMENTS (types); i++) {
-                        g_hash_table_insert (formats,
-                                             (gpointer) types [i],
-                                             GUINT_TO_POINTER (1));
-		}
-        }
+	factory = get_icon_factory();
 
-        if (g_hash_table_lookup (formats, mime_type)) {
+        if (g_hash_table_lookup (factory->image_mime_types, mime_type)) {
                 return TRUE;
 	}
 
