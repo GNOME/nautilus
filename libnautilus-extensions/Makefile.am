@@ -24,7 +24,6 @@ INCLUDES = 						\
 
 dependency_static_libs =								\
 	$(top_builddir)/cut-n-paste-code/widgets/e-paned/libe-paned.la 			\
-	$(top_builddir)/cut-n-paste-code/widgets/nautilus-druid/libnautilus-druid.la 	\
 	$(top_builddir)/librsvg/librsvg.la 						\
 	$(top_builddir)/cut-n-paste-code/freetype/libfreetype2.la 			\
 	$(NULL)
@@ -62,6 +61,8 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-directory-metafile.c		\
 	nautilus-directory.c			\
 	nautilus-drag.c				\
+	nautilus-druid.c			\
+	nautilus-druid-page-eazel.c		\
 	nautilus-entry.c			\
 	nautilus-file-changes-queue.c		\
 	nautilus-file-utilities.c		\

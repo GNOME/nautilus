@@ -33,10 +33,9 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnomevfs/gnome-vfs.h>
 
-#include <widgets/nautilus-druid/nautilus-druid.h>
-#include <widgets/nautilus-druid/nautilus-druid-page-eazel.h>
-
 #include <libnautilus-extensions/nautilus-background.h>
+#include <libnautilus-extensions/nautilus-druid.h>
+#include <libnautilus-extensions/nautilus-druid-page-eazel.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
@@ -58,7 +57,7 @@
 #define PROXY_CONFIGURATION_PAGE 4
 
 static void
-initiate_file_download (NautilusDruid *druid);
+initiate_file_download (GnomeDruid *druid);
 
 /* globals */
 static NautilusApplication *save_application;
@@ -526,8 +525,6 @@ set_up_proxy_config_page (NautilusDruidPageEazel *page)
 	gtk_widget_show (proxy_address_entry);
 	gtk_box_pack_start (GTK_BOX (hbox), proxy_address_entry, FALSE, FALSE, 2);
 	
-	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 2);
-
 	/* allocate the port number entry */
 	
 	alignment = gtk_alignment_new (1.0, 1.0, 1.0, 1.0);
@@ -582,7 +579,7 @@ set_up_update_feedback_page (NautilusDruidPageEazel *page)
 
 /* handle the "next" signal for the update page based on the user's choice */
 static gboolean
-next_update_page_callback (GtkWidget *button, NautilusDruid *druid)
+next_update_page_callback (GtkWidget *button, GnomeDruid *druid)
 {
 	if (last_update_choice == 0) {
 		/* initiate the file transfer and launch a timer task to track feedback */
@@ -593,22 +590,22 @@ next_update_page_callback (GtkWidget *button, NautilusDruid *druid)
 	}
 
 	/* the user declined to update, so skip the feedback page and go directly to finish */
-	nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (finish_page));
+	gnome_druid_set_page (druid, GNOME_DRUID_PAGE (finish_page));
 	return TRUE;
 }
 
 /* handle the "next" signal for the update feedback page to skip the error page */
 static gboolean
-next_update_feedback_page_callback (GtkWidget *button, NautilusDruid *druid)
+next_update_feedback_page_callback (GtkWidget *button, GnomeDruid *druid)
 {
 	/* skip the error page by going write to the finish line */
-	nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (finish_page));
+	gnome_druid_set_page (druid, GNOME_DRUID_PAGE (finish_page));
 	return TRUE;
 }
 
 /* handle the "next" signal for the update feedback page to skip the error page */
 static gboolean
-next_proxy_configuration_page_callback (GtkWidget *button, NautilusDruid *druid)
+next_proxy_configuration_page_callback (GtkWidget *button, GnomeDruid *druid)
 {
 	
 	/* FIXME bugzilla.eazel.com 1812: here's where we configuration the proxy server information - Mike Fleming will do that soon */
@@ -618,9 +615,9 @@ next_proxy_configuration_page_callback (GtkWidget *button, NautilusDruid *druid)
 	
 	/* now, go back to the offer update page or finish, depending on the user's selection */
 	if (last_proxy_choice == 1) {
-		nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (pages[OFFER_UPDATE_PAGE]));
+		gnome_druid_set_page (druid, GNOME_DRUID_PAGE (pages[OFFER_UPDATE_PAGE]));
 	} else {
-		nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (finish_page));
+		gnome_druid_set_page (druid, GNOME_DRUID_PAGE (finish_page));
 	}
 	
 	return TRUE;
@@ -628,9 +625,9 @@ next_proxy_configuration_page_callback (GtkWidget *button, NautilusDruid *druid)
 
 /* handle the "back" signal from the finish page to skip the feedback page */
 static gboolean
-finish_page_back_callback (GtkWidget *button, NautilusDruid *druid)
+finish_page_back_callback (GtkWidget *button, GnomeDruid *druid)
 {
-	nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (pages[OFFER_UPDATE_PAGE]));
+	gnome_druid_set_page (druid, GNOME_DRUID_PAGE (pages[OFFER_UPDATE_PAGE]));
 	return TRUE;
 }
 
@@ -678,18 +675,18 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 	druid = nautilus_druid_new ();
   	gtk_container_set_border_width (GTK_CONTAINER (druid), 0);
 
-	start_page = nautilus_druid_page_eazel_new (NAUTILUS_DRUID_START);
+	start_page = nautilus_druid_page_eazel_new (NAUTILUS_DRUID_PAGE_EAZEL_START);
 	set_page_sidebar (NAUTILUS_DRUID_PAGE_EAZEL (start_page));
-	finish_page = nautilus_druid_page_eazel_new (NAUTILUS_DRUID_FINISH);
+	finish_page = nautilus_druid_page_eazel_new (NAUTILUS_DRUID_PAGE_EAZEL_FINISH);
 	set_page_sidebar (NAUTILUS_DRUID_PAGE_EAZEL (finish_page));
 
 	for (i = 0; i < NUMBER_OF_STANDARD_PAGES; i++) {
-		pages[i] = nautilus_druid_page_eazel_new (NAUTILUS_DRUID_OTHER);
+		pages[i] = nautilus_druid_page_eazel_new (NAUTILUS_DRUID_PAGE_EAZEL_OTHER);
 		set_page_sidebar (NAUTILUS_DRUID_PAGE_EAZEL (pages[i]));
 	}
 		
 	/* set up the initial page */
-	file = nautilus_pixmap_file ("druid_welcome.png");
+	file = nautilus_pixmap_file (_("druid_welcome.png"));
 	if (file != NULL) {
 		pixbuf = gdk_pixbuf_new_from_file (file);
 	} else {
@@ -777,14 +774,14 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 			    druid);
 		
 	/* append all of the pages to the druid */
-	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (start_page));
-	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (pages[0]));
-	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (pages[1]));
-	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (pages[2]));
-	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (pages[3]));
-	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (pages[4]));
+	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (start_page));
+	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (pages[0]));
+	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (pages[1]));
+	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (pages[2]));
+	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (pages[3]));
+	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (pages[4]));
 	
-	nautilus_druid_append_page (NAUTILUS_DRUID (druid), NAUTILUS_DRUID_PAGE (finish_page));
+	gnome_druid_append_page (GNOME_DRUID (druid), GNOME_DRUID_PAGE (finish_page));
 
 	gtk_container_add (GTK_CONTAINER (dialog), druid);
 
@@ -807,16 +804,16 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 /* callback to handle the asynchronous reading of icons */
 static void
 download_callback (GnomeVFSResult result,
-			 GnomeVFSFileSize file_size,
-			 char *file_contents,
-			 gpointer callback_data)
+		   GnomeVFSFileSize file_size,
+		   char *file_contents,
+		   gpointer callback_data)
 {
 	char *command_str, *user_directory_path;
 	int size, write_result, expand_result;
 	FILE* outfile;
-	NautilusDruid *druid;
+	GnomeDruid *druid;
 	
-	druid = NAUTILUS_DRUID (callback_data);
+	druid = GNOME_DRUID (callback_data);
 	
 	/* check for errors */
 	if (result == GNOME_VFS_OK) {
@@ -847,7 +844,7 @@ download_callback (GnomeVFSResult result,
 		gtk_widget_set_sensitive (druid->back, TRUE);
 	} else {
 		/* there was an error, so go to the proxy configuration page */
-		nautilus_druid_set_page (druid, NAUTILUS_DRUID_PAGE (pages[PROXY_CONFIGURATION_PAGE]));	
+		gnome_druid_set_page (druid, GNOME_DRUID_PAGE (pages[PROXY_CONFIGURATION_PAGE]));	
 	}
 
 }
@@ -855,7 +852,7 @@ download_callback (GnomeVFSResult result,
 /* initiate downloading of the welcome package from the service */
 
 static void
-initiate_file_download (NautilusDruid *druid)
+initiate_file_download (GnomeDruid *druid)
 {
 	NautilusReadFileHandle *file_handle;
 

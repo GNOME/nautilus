@@ -1,5 +1,6 @@
 /* nautilus-druid.h
  * Copyright (C) 1999  Red Hat, Inc.
+ * Copyright (C) 2000  Eazel, Inc.
  * All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,13 +21,13 @@
 /*
   @NOTATION@
 */
-/* TODO: allow setting bgcolor for all pages globally */
-#ifndef __NAUTILUS_DRUID_H__
-#define __NAUTILUS_DRUID_H__
+#ifndef NAUTILUS_DRUID_H
+#define NAUTILUS_DRUID_H
 
 #include <gtk/gtk.h>
-#include <widgets/nautilus-druid/nautilus-druid-page.h>
 #include <libgnome/gnome-defs.h>
+#include <libgnomeui/gnome-druid.h>
+
 BEGIN_GNOME_DECLS
 
 #define NAUTILUS_TYPE_DRUID            (nautilus_druid_get_type ())
@@ -36,41 +37,22 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_IS_DRUID_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DRUID))
 
 
-typedef struct _NautilusDruid        NautilusDruid;
-typedef struct _NautilusDruidPrivate NautilusDruidPrivate;
-typedef struct _NautilusDruidClass   NautilusDruidClass;
+typedef struct NautilusDruid        NautilusDruid;
+typedef struct NautilusDruidClass   NautilusDruidClass;
 
-struct _NautilusDruid
+struct NautilusDruid
 {
-	GtkContainer parent;
-	GtkWidget *back;
-	GtkWidget *next;
-	GtkWidget *cancel;
-	GtkWidget *finish;
-
-	/*< private >*/
-	NautilusDruidPrivate *_priv;
+	GnomeDruid gnome_druid;
 };
-struct _NautilusDruidClass
+struct NautilusDruidClass
 {
-	GtkContainerClass parent_class;
-	
-	void     (*cancel)	(NautilusDruid *druid);
+	GnomeDruidClass parent_class;
 };
 
 
 GtkType    nautilus_druid_get_type              (void);
 GtkWidget *nautilus_druid_new                   (void);
-void	   nautilus_druid_set_buttons_sensitive (NautilusDruid *druid,
-					      gboolean back_sensitive,
-					      gboolean next_sensitive,
-					      gboolean cancel_sensitive);
-void	   nautilus_druid_set_show_finish       (NautilusDruid *druid, gboolean show_finish);
-void       nautilus_druid_prepend_page          (NautilusDruid *druid, NautilusDruidPage *page);
-void       nautilus_druid_insert_page           (NautilusDruid *druid, NautilusDruidPage *back_page, NautilusDruidPage *page);
-void       nautilus_druid_append_page           (NautilusDruid *druid, NautilusDruidPage *page);
-void	   nautilus_druid_set_page              (NautilusDruid *druid, NautilusDruidPage *page);
 
 END_GNOME_DECLS
 
-#endif /* __NAUTILUS_DRUID_H__ */
+#endif /* NAUTILUS_DRUID_H */

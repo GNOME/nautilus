@@ -1,3 +1,31 @@
+Tue Aug 29 22:43:15 2000  George Lebl <jirka@5z.com>
+
+	This should close bug #1361
+
+	* configure.in, cut-n-paste-code/widgets/Makefile.am,
+	  cut-n-paste-code/widgets/nautilus-druid/*,
+	  po/POTFILES.in:
+	  Remove the nautilus druid hack from here.  We can do all
+	  that we need from libnautilus extensions without need of
+	  cut and paste code.
+
+	* libnautilus-extensions/nautilus-druid.[ch],
+	  libnautilus-extensions/nautilus-druid-page-eazel.[ch],
+	  po/POTFILES.in:
+	  Make NautilusDruid be a derivation of GnomeDruid and
+	  the NautilusDruidPageEazel of GnomeDruidPage.  Also make
+	  use of more of the nautilus style of coding in both.  Federico
+	  will kill me for using remove/add to move a file, but it's more
+	  then just a move anyway.
+
+	* src/nautilus-first-time-druid.c (set_up_proxy_config_page)
+	  (next_update_page_callback) (next_update_feedback_page_callback)
+	  (next_proxy_configuration_page_callback)
+	  (finish_page_back_callback) (nautilus_first_time_druid_show)
+	  (download_callback) (initiate_file_download):
+	  Use the new nautilus druid and the new eazel druid page everywhere.
+	  Also fix one case of double adding things to a GtkBox.
+
 2000-08-29  Gene Z. Ragan  <gzr@eazel.com>
 
 	

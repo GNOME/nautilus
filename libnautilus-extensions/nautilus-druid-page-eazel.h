@@ -26,7 +26,7 @@
 
 #include <gtk/gtk.h>
 #include <libgnomeui/gnome-canvas.h>
-#include <widgets/nautilus-druid/nautilus-druid-page.h>
+#include <libgnomeui/gnome-druid-page.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 BEGIN_GNOME_DECLS
@@ -39,19 +39,19 @@ BEGIN_GNOME_DECLS
 
 typedef enum {
   /* update structure when adding enums */
-	NAUTILUS_DRUID_START,
-	NAUTILUS_DRUID_FINISH,
-	NAUTILUS_DRUID_OTHER
-} NautilusDruidPosition;
+	NAUTILUS_DRUID_PAGE_EAZEL_START,
+	NAUTILUS_DRUID_PAGE_EAZEL_FINISH,
+	NAUTILUS_DRUID_PAGE_EAZEL_OTHER
+} NautilusDruidPageEazelPosition;
 
 
-typedef struct _NautilusDruidPageEazel        NautilusDruidPageEazel;
-typedef struct _NautilusDruidPageEazelPrivate NautilusDruidPageEazelPrivate;
-typedef struct _NautilusDruidPageEazelClass   NautilusDruidPageEazelClass;
+typedef struct NautilusDruidPageEazel        NautilusDruidPageEazel;
+typedef struct NautilusDruidPageEazelDetails NautilusDruidPageEazelDetails;
+typedef struct NautilusDruidPageEazelClass   NautilusDruidPageEazelClass;
 
-struct _NautilusDruidPageEazel
+struct NautilusDruidPageEazel
 {
-	NautilusDruidPage parent;
+	GnomeDruidPage parent;
 
 	GtkWidget *canvas;
 	char *title;
@@ -62,20 +62,20 @@ struct _NautilusDruidPageEazel
 
 	GtkWidget *widget;
 
-	NautilusDruidPosition position : 2;
+	NautilusDruidPageEazelPosition position : 2;
 
 	/*< private >*/
-	NautilusDruidPageEazelPrivate *_priv;
+	NautilusDruidPageEazelDetails *details;
 };
 
-struct _NautilusDruidPageEazelClass
+struct NautilusDruidPageEazelClass
 {
-	NautilusDruidPageClass parent_class;
+	GnomeDruidPageClass parent_class;
 };
 
 GtkType    nautilus_druid_page_eazel_get_type          (void);
-GtkWidget *nautilus_druid_page_eazel_new               (NautilusDruidPosition   position);
-GtkWidget *nautilus_druid_page_eazel_new_with_vals     (NautilusDruidPosition   position,
+GtkWidget *nautilus_druid_page_eazel_new               (NautilusDruidPageEazelPosition   position);
+GtkWidget *nautilus_druid_page_eazel_new_with_vals     (NautilusDruidPageEazelPosition   position,
 							const gchar        *title,
 							const gchar        *text,
 							GdkPixbuf          *title_image,
