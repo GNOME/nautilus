@@ -9,13 +9,13 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-03-15 15:19+0100\n"
-"PO-Revision-Date: 2004-03-07 21:52-0500\n"
+"PO-Revision-Date: 2004-03-24 01:22-0500\n"
 "Last-Translator: Alexander Winston <alexander.winston@comcast.net>\n"
 "Language-Team: English/Canada <adamw@FreeBSD.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);"
 
 #: components/adapter/Nautilus_ComponentAdapterFactory_std.server.in.in.h:1
 msgid "Factory for Nautilus component adapter factories"
@@ -243,19 +243,13 @@ msgid "Software"
 msgstr "Software"
 
 #: components/image_properties/nautilus-image-properties-view.c:222
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
-msgid_plural ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
-msgstr[0] ""
-"<b>Image Type:</b> %s (%s)\n"
-"<b>Resolution:</b> %dx%d pixels\n"
-"<b>Image Type:</b> %s (%s)\n"
-"<b>Resolution:</b> %dx%d pixels\n"
-msgstr[1] ""
+msgstr ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
 "<b>Image Type:</b> %s (%s)\n"
@@ -3708,12 +3702,11 @@ msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Are you sure you want to permanently delete \"%s\"?"
 
 #: src/file-manager/fm-directory-view.c:897
-#, fuzzy, c-format
+#, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
-msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items?"
-msgstr[0] "Are you sure you want to permanently delete \"%s\"?"
-msgstr[1] "Are you sure you want to permanently delete \"%s\"?"
+msgstr "Are you sure you want to permanently delete the %d selected item?"
+"Are you sure you want to permanently delete the %d selected items?"
 
 #: src/file-manager/fm-directory-view.c:905
 msgid "If you delete an item, it is permanently lost."
@@ -3841,15 +3834,17 @@ msgid "Are you sure you want to permanently delete \"%s\" from the trash?"
 msgstr "Are you sure you want to permanently delete \"%s\" from the trash?"
 
 #: src/file-manager/fm-directory-view.c:3298
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
-msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr[0] "Are you sure you want to permanently delete \"%s\" from the trash?"
-msgstr[1] "Are you sure you want to permanently delete \"%s\" from the trash?"
+msgstr ""
+"Are you sure you want to permanently delete the %d selected item from the "
+"trash?"
+"Are you sure you want to permanently delete the %d selected items from the "
+"trash?"
 
 #: src/file-manager/fm-directory-view.c:3307
 msgid "If you delete an item, it will be permanently lost."
@@ -3978,22 +3973,22 @@ msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "\"%s\" will be copied if you select the Paste Files command"
 
 #: src/file-manager/fm-directory-view.c:4858
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
-msgid_plural ""
 "The %d selected items will be moved if you select the Paste Files command"
-msgstr[0] "\"%s\" will be moved if you select the Paste Files command"
-msgstr[1] "\"%s\" will be moved if you select the Paste Files command"
+msgstr ""
+"The %d selected item will be moved if you select the Paste Files command"
+"The %d selected items will be moved if you select the Paste Files command"
 
 #: src/file-manager/fm-directory-view.c:4865
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
-msgid_plural ""
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr[0] "\"%s\" will be copied if you select the Paste Files command"
-msgstr[1] "\"%s\" will be copied if you select the Paste Files command"
+msgstr ""
+"The %d selected item will be copied if you select the Paste Files command"
+"The %d selected items will be copied if you select the Paste Files command"
 
 #: src/file-manager/fm-directory-view.c:4947
 #: src/file-manager/fm-tree-view.c:868
@@ -6524,594 +6519,3 @@ msgstr "Network Servers"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "View your network servers in the Nautilus file manager"
-
-#~ msgid ""
-#~ "If you would like to enable fast searches, you can edit the file %s as "
-#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-#~ "To start indexing and search services right away, you should also run the "
-#~ "following commands as root:\n"
-#~ "\n"
-#~ "medusa-indexd\n"
-#~ "medusa-searchd\n"
-#~ "\n"
-#~ "Fast searches will not be available until an initial index of your files "
-#~ "has been created.  This may take a long time."
-#~ msgstr ""
-#~ "If you would like to enable fast searches, you can edit the file %s as "
-#~ "root. Setting the enabled flag to \"yes\" will turn medusa services on.\n"
-#~ "To start indexing and search services right away, you should also run the "
-#~ "following commands as root:\n"
-#~ "\n"
-#~ "medusa-indexd\n"
-#~ "medusa-searchd\n"
-#~ "\n"
-#~ "Fast searches will not be available until an initial index of your files "
-#~ "has been created.  This may take a long time."
-
-#~ msgid ""
-#~ "Medusa, the application that performs searches, cannot be found on your "
-#~ "system.  If you have compiled nautilus yourself, you will need to install "
-#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
-#~ "available at ftp://ftp.gnome.org)\n"
-#~ "If you are using a packaged version of Nautilus, fast searching is not "
-#~ "available.\n"
-#~ msgstr ""
-#~ "Medusa, the application that performs searches, cannot be found on your "
-#~ "system.  If you have compiled nautilus yourself, you will need to install "
-#~ "a copy of medusa and recompile nautilus.  (A copy of Medusa may be "
-#~ "available at ftp://ftp.gnome.org)\n"
-#~ "If you are using a packaged version of Nautilus, fast searching is not "
-#~ "available.\n"
-
-#~ msgid "[Items ]containing \"%s\" in their names"
-#~ msgstr "[Items ]containing \"%s\" in their names"
-
-#~ msgid "[Items ]starting with \"%s\""
-#~ msgstr "[Items ]starting with \"%s\""
-
-#~ msgid "[Items ]ending with %s"
-#~ msgstr "[Items ]ending with %s"
-
-#~ msgid "[Items ]not containing \"%s\" in their names"
-#~ msgstr "[Items ]not containing \"%s\" in their names"
-
-#~ msgid "[Items ]matching the regular expression \"%s\""
-#~ msgstr "[Items ]matching the regular expression \"%s\""
-
-#~ msgid "[Items ]matching the file pattern \"%s\""
-#~ msgstr "[Items ]matching the file pattern \"%s\""
-
-#~ msgid "[Items that are ]regular files"
-#~ msgstr "[Items that are ]regular files"
-
-#~ msgid "[Items that are ]text files"
-#~ msgstr "[Items that are ]text files"
-
-#~ msgid "[Items that are ]applications"
-#~ msgstr "[Items that are ]applications"
-
-#~ msgid "[Items that are ]folders"
-#~ msgstr "[Items that are ]folders"
-
-#~ msgid "[Items that are ]music"
-#~ msgstr "[Items that are ]music"
-
-#~ msgid "[Items ]that are not %s"
-#~ msgstr "[Items ]that are not %s"
-
-#~ msgid "[Items ]that are %s"
-#~ msgstr "[Items ]that are %s"
-
-#~ msgid "[Items ]not owned by \"%s\""
-#~ msgstr "[Items ]not owned by \"%s\""
-
-#~ msgid "[Items ]owned by \"%s\""
-#~ msgstr "[Items ]owned by \"%s\""
-
-#~ msgid "[Items ]with owner UID \"%s\""
-#~ msgstr "[Items ]with owner UID \"%s\""
-
-#~ msgid "[Items ]with owner UID other than \"%s\""
-#~ msgstr "[Items ]with owner UID other than \"%s\""
-
-#~ msgid "[Items ]larger than %s bytes"
-#~ msgstr "[Items ]larger than %s bytes"
-
-#~ msgid "[Items ]smaller than %s bytes"
-#~ msgstr "[Items ]smaller than %s bytes"
-
-#~ msgid "[Items ]of %s bytes"
-#~ msgstr "[Items ]of %s bytes"
-
-#~ msgid "[Items ]modified today"
-#~ msgstr "[Items ]modified today"
-
-#~ msgid "[Items ]modified yesterday"
-#~ msgstr "[Items ]modified yesterday"
-
-#~ msgid "[Items ]modified on %s"
-#~ msgstr "[Items ]modified on %s"
-
-#~ msgid "[Items ]not modified on %s"
-#~ msgstr "[Items ]not modified on %s"
-
-#~ msgid "[Items ]modified before %s"
-#~ msgstr "[Items ]modified before %s"
-
-#~ msgid "[Items ]modified after %s"
-#~ msgstr "[Items ]modified after %s"
-
-#~ msgid "[Items ]modified within a week of %s"
-#~ msgstr "[Items ]modified within a week of %s"
-
-#~ msgid "[Items ]modified within a month of %s"
-#~ msgstr "[Items ]modified within a month of %s"
-
-#~ msgid "[Items ]marked with \"%s\""
-#~ msgstr "[Items ]marked with \"%s\""
-
-#~ msgid "[Items ]not marked with \"%s\""
-#~ msgstr "[Items ]not marked with \"%s\""
-
-#~ msgid "[Items ]with all the words \"%s\""
-#~ msgstr "[Items ]with all the words \"%s\""
-
-#~ msgid "[Items ]containing one of the words \"%s\""
-#~ msgstr "[Items ]containing one of the words \"%s\""
-
-#~ msgid "[Items ]without all the words \"%s\""
-#~ msgstr "[Items ]without all the words \"%s\""
-
-#~ msgid "[Items ]without any of the words \"%s\""
-#~ msgstr "[Items ]without any of the words \"%s\""
-
-#~ msgid ""
-#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
-#~ msgstr ""
-#~ "[Items larger than 400K] and [without all the words \"apple orange\"]"
-
-#~ msgid ""
-#~ "[Items larger than 400K], [owned by root and without all the words "
-#~ "\"apple orange\"]"
-#~ msgstr ""
-#~ "[Items larger than 400K], [owned by root and without all the words "
-#~ "\"apple orange\"]"
-
-#~ msgid "Items %s"
-#~ msgstr "Items %s"
-
-#~ msgid "Items containing \"stuff\" in their names"
-#~ msgstr "Items containing \"stuff\" in their names"
-
-#~ msgid "Items that are regular files"
-#~ msgstr "Items that are regular files"
-
-#~ msgid "Items containing \"stuff\" in their names and that are regular files"
-#~ msgstr ""
-#~ "Items containing \"stuff\" in their names and that are regular files"
-
-#~ msgid ""
-#~ "Items containing \"stuff\" in their names, that are regular files and "
-#~ "smaller than 2000 bytes"
-#~ msgstr ""
-#~ "Items containing \"stuff\" in their names, that are regular files and "
-#~ "smaller than 2000 bytes"
-
-#~ msgid "Items containing \"medusa\" in their names and that are folders"
-#~ msgstr "Items containing \"medusa\" in their names and that are folders"
-
-#~ msgid ""
-#~ "Search results may not include items modified after %s, when your drive "
-#~ "was last indexed."
-#~ msgstr ""
-#~ "Search results may not include items modified after %s, when your drive "
-#~ "was last indexed."
-
-#~ msgid "Search Results"
-#~ msgstr "Search Results"
-
-#~ msgid "Sorry, but the Medusa search service is not available."
-#~ msgstr "Sorry, but the Medusa search service is not available."
-
-#~ msgid "Medusa is not installed."
-#~ msgstr "Medusa is not installed."
-
-#~ msgid "Search Service Not Available"
-#~ msgstr "Search Service Not Available"
-
-#~ msgid ""
-#~ "The search you have selected is newer than the index on your system.  The "
-#~ "search will return no results right now."
-#~ msgstr ""
-#~ "The search you have selected is newer than the index on your system.  The "
-#~ "search will return no results right now."
-
-#~ msgid ""
-#~ "You can create a new index by running \"medusa-indexd\" as root on the "
-#~ "command line."
-#~ msgstr ""
-#~ "You can create a new index by running \"medusa-indexd\" as root on the "
-#~ "command line."
-
-#~ msgid "Search For Items That Are Too New"
-#~ msgstr "Search For Items That Are Too New"
-
-#~ msgid ""
-#~ "Every indexed file on your computer matches the criteria you selected. "
-#~ msgstr ""
-#~ "Every indexed file on your computer matches the criteria you selected. "
-
-#~ msgid ""
-#~ "You can check the spelling on your selections or add more criteria to "
-#~ "narrow your results."
-#~ msgstr ""
-#~ "You can check the spelling on your selections or add more criteria to "
-#~ "narrow your results."
-
-#~ msgid "Error During Search"
-#~ msgstr "Error During Search"
-
-#~ msgid ""
-#~ "Find cannot open your file system index.  Your index may be missing or "
-#~ "corrupt."
-#~ msgstr ""
-#~ "Find cannot open your file system index.  Your index may be missing or "
-#~ "corrupt."
-
-#~ msgid "Error Reading File Index"
-#~ msgstr "Error Reading File Index"
-
-#~ msgid "An error occurred while loading this search's contents."
-#~ msgstr "An error occurred while loading this search's contents."
-
-#~ msgid ""
-#~ "To do a fast search, Find requires an index of the files on your system."
-#~ msgstr ""
-#~ "To do a fast search, Find requires an index of the files on your system."
-
-#~ msgid ""
-#~ "To do a content search, Find requires an index of the files on your "
-#~ "system."
-#~ msgstr ""
-#~ "To do a content search, Find requires an index of the files on your "
-#~ "system."
-
-#~ msgid ""
-#~ "Find can't access your index right now so a slower search will be "
-#~ "performed that doesn't use the index."
-#~ msgstr ""
-#~ "Find can't access your index right now so a slower search will be "
-#~ "performed that doesn't use the index."
-
-#~ msgid "Find can't access your index right now."
-#~ msgstr "Find can't access your index right now."
-
-#~ msgid "Fast Searches Are Not Available"
-#~ msgstr "Fast Searches Are Not Available"
-
-#~ msgid "Content Searches Are Not Available"
-#~ msgstr "Content Searches Are Not Available"
-
-#~ msgid ""
-#~ "Your index files are available but the Medusa search daemon, which "
-#~ "handles index requests, isn't running.  To start this program, log in as "
-#~ "root and enter this command at the command line:\n"
-#~ "\n"
-#~ "medusa-searchd"
-#~ msgstr ""
-#~ "Your index files are available but the Medusa search daemon, which "
-#~ "handles index requests, isn't running.  To start this program, log in as "
-#~ "root and enter this command at the command line:\n"
-#~ "\n"
-#~ "medusa-searchd"
-
-#~ msgid ""
-#~ "To do a fast search, Find requires an index of the files on your system.  "
-#~ "Your computer is currently creating that index."
-#~ msgstr ""
-#~ "To do a fast search, Find requires an index of the files on your system.  "
-#~ "Your computer is currently creating that index."
-
-#~ msgid ""
-#~ "To do a content search, Find requires an index of the content on your "
-#~ "system.  Your computer is currently creating that index."
-#~ msgstr ""
-#~ "To do a content search, Find requires an index of the content on your "
-#~ "system.  Your computer is currently creating that index."
-
-#~ msgid ""
-#~ "Because Find cannot use an index, this search may take several minutes."
-#~ msgstr ""
-#~ "Because Find cannot use an index, this search may take several minutes."
-
-#~ msgid "Content searches will be available when the index is complete."
-#~ msgstr "Content searches will be available when the index is complete."
-
-#~ msgid "Indexed Searches Are Not Available"
-#~ msgstr "Indexed Searches Are Not Available"
-
-#~ msgid ""
-#~ "To do a fast search, Find requires an index of the files on your system.  "
-#~ "No index is available right now."
-#~ msgstr ""
-#~ "To do a fast search, Find requires an index of the files on your system.  "
-#~ "No index is available right now."
-
-#~ msgid ""
-#~ "To do a content search, Find requires an index of the content on your "
-#~ "system.  No index is available right now."
-#~ msgstr ""
-#~ "To do a content search, Find requires an index of the content on your "
-#~ "system.  No index is available right now."
-
-#~ msgid ""
-#~ "You can create an index by running \"medusa-indexd\" as root on the "
-#~ "command line.  Until a complete index is available, searches will take "
-#~ "several minutes."
-#~ msgstr ""
-#~ "You can create an index by running \"medusa-indexd\" as root on the "
-#~ "command line.  Until a complete index is available, searches will take "
-#~ "several minutes."
-
-#~ msgid ""
-#~ "You can create an index by running \"medusa-indexd\" as root on the "
-#~ "command line.  Until a complete index is available, content searches "
-#~ "cannot be performed."
-#~ msgstr ""
-#~ "You can create an index by running \"medusa-indexd\" as root on the "
-#~ "command line.  Until a complete index is available, content searches "
-#~ "cannot be performed."
-
-#~ msgid "Fast searches are not enabled on your computer."
-#~ msgstr "Fast searches are not enabled on your computer."
-
-#~ msgid ""
-#~ "To do a fast search, Find requires an index of the files on your system. "
-#~ "Your system administrator has disabled fast search on your computer, so "
-#~ "no index is available."
-#~ msgstr ""
-#~ "To do a fast search, Find requires an index of the files on your system. "
-#~ "Your system administrator has disabled fast search on your computer, so "
-#~ "no index is available."
-
-#~ msgid "Fast Searches Not Enabled"
-#~ msgstr "Fast Searches Not Enabled"
-
-#~ msgid "Where"
-#~ msgstr "Where"
-
-#~ msgid "_Reveal in New Window"
-#~ msgid_plural "Reveal in %d _New Windows"
-#~ msgstr[0] "_Reveal in New Window"
-#~ msgstr[1] "Reveal in %d _New Windows"
-
-#~ msgid "Nautilus found more search results than it can display."
-#~ msgstr "Nautilus found more search results than it can display."
-
-#~ msgid "Some matching items will not be displayed. "
-#~ msgstr "Some matching items will not be displayed. "
-
-#~ msgid "Too Many Matches"
-#~ msgstr "Too Many Matches"
-
-#~ msgid "Indexing is %d%% complete."
-#~ msgstr "Indexing is %d%% complete."
-
-#~ msgid "Your files were last indexed at %s."
-#~ msgstr "Your files were last indexed at %s."
-
-#~ msgid ""
-#~ "Once a day your files and text content are indexed so your searches are "
-#~ "fast. "
-#~ msgstr ""
-#~ "Once a day your files and text content are indexed so your searches are "
-#~ "fast. "
-
-#~ msgid "Indexing Status"
-#~ msgstr "Indexing Status"
-
-#~ msgid "Your files are currently being indexed."
-#~ msgstr "Your files are currently being indexed."
-
-#~ msgid ""
-#~ "Once a day your files and text content are indexed so your searches are "
-#~ "fast."
-#~ msgstr ""
-#~ "Once a day your files and text content are indexed so your searches are "
-#~ "fast."
-
-#~ msgid "There is no index of your files right now."
-#~ msgstr "There is no index of your files right now."
-
-#~ msgid ""
-#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
-#~ "Fast searching is not enabled on your computer, so you do not have an "
-#~ "index right now."
-#~ msgstr ""
-#~ "When Fast Search is enabled, Find creates an index to speed up searches.  "
-#~ "Fast searching is not enabled on your computer, so you do not have an "
-#~ "index right now."
-
-#~ msgid "No Index of Files"
-#~ msgstr "No Index of Files"
-
-#~ msgid "Sorry, but the medusa search service is not available."
-#~ msgstr "Sorry, but the medusa search service is not available."
-
-#~ msgid "Please verify medusa has been setup correctly."
-#~ msgstr "Please verify medusa has been setup correctly."
-
-#~ msgid "%I:%M %p, %x"
-#~ msgstr "%I:%M %p, %x"
-
-#~ msgid "Reveal each selected item in its original folder"
-#~ msgstr "Reveal each selected item in its original folder"
-
-#~ msgid "Reveal in New Window"
-#~ msgstr "Reveal in New Window"
-
-#~ msgid "Show Indexing Status"
-#~ msgstr "Show Indexing Status"
-
-#~ msgid "Show _Indexing Status"
-#~ msgstr "Show _Indexing Status"
-
-#~ msgid "Show status of indexing used when searching"
-#~ msgstr "Show status of indexing used when searching"
-
-#~ msgid "More Options"
-#~ msgstr "More Options"
-
-#~ msgid "Fewer Options"
-#~ msgstr "Fewer Options"
-
-#~ msgid "Find Them!"
-#~ msgstr "Find Them!"
-
-#~ msgid "[Search for] Name [contains \"fish\"]"
-#~ msgstr "[Search for] Name [contains \"fish\"]"
-
-#~ msgid "[Search for] Content [includes all of \"fish tree\"]"
-#~ msgstr "[Search for] Content [includes all of \"fish tree\"]"
-
-#~ msgid "[Search for] Type [is regular file]"
-#~ msgstr "[Search for] Type [is regular file]"
-
-#~ msgid "[Search for] Size [larger than 400K]"
-#~ msgstr "[Search for] Size [larger than 400K]"
-
-#~ msgid "[Search for] With Emblem [includes \"Important\"]"
-#~ msgstr "[Search for] With Emblem [includes \"Important\"]"
-
-#~ msgid "[Search for] Last Modified [before yesterday]"
-#~ msgstr "[Search for] Last Modified [before yesterday]"
-
-#~ msgid "[Search for] Owner [is not root]"
-#~ msgstr "[Search for] Owner [is not root]"
-
-#~ msgid "[File name] contains [help]"
-#~ msgstr "[File name] contains [help]"
-
-#~ msgid "[File name] starts with [nautilus]"
-#~ msgstr "[File name] starts with [nautilus]"
-
-#~ msgid "[File name] ends with [.c]"
-#~ msgstr "[File name] ends with [.c]"
-
-#~ msgid "[File name] matches glob [*.c]"
-#~ msgstr "[File name] matches glob [*.c]"
-
-#~ msgid "[File name] matches regexp [\"e??l.$\"]"
-#~ msgstr "[File name] matches regexp [\"e??l.$\"]"
-
-#~ msgid "[File content] includes all of [apple orange]"
-#~ msgstr "[File content] includes all of [apple orange]"
-
-#~ msgid "[File content] includes any of [apply orange]"
-#~ msgstr "[File content] includes any of [apply orange]"
-
-#~ msgid "[File content] does not include all of [apple orange]"
-#~ msgstr "[File content] does not include all of [apple orange]"
-
-#~ msgid "[File content] includes none of [apple orange]"
-#~ msgstr "[File content] includes none of [apple orange]"
-
-#~ msgid "[File type] is [folder]"
-#~ msgstr "[File type] is [folder]"
-
-#~ msgid "[File type] is not [folder]"
-#~ msgstr "[File type] is not [folder]"
-
-#~ msgid "[File type is] regular file"
-#~ msgstr "[File type is] regular file"
-
-#~ msgid "[File type is] text file"
-#~ msgstr "[File type is] text file"
-
-#~ msgid "[File type is] application"
-#~ msgstr "[File type is] application"
-
-#~ msgid "[File type is] folder"
-#~ msgstr "[File type is] folder"
-
-#~ msgid "[File type is] music"
-#~ msgstr "[File type is] music"
-
-#~ msgid "[File size is] larger than [400K]"
-#~ msgstr "[File size is] larger than [400K]"
-
-#~ msgid "[File size is] smaller than [300K]"
-#~ msgstr "[File size is] smaller than [300K]"
-
-#~ msgid "[With emblem] marked with [Important]"
-#~ msgstr "[With emblem] marked with [Important]"
-
-#~ msgid "[With emblem] not marked with [Important]"
-#~ msgstr "[With emblem] not marked with [Important]"
-
-#~ msgid "[Last modified date] is [1/24/00]"
-#~ msgstr "[Last modified date] is [1/24/00]"
-
-#~ msgid "[Last modified date] is not [1/24/00]"
-#~ msgstr "[Last modified date] is not [1/24/00]"
-
-#~ msgid "[Last modified date] is after [1/24/00]"
-#~ msgstr "[Last modified date] is after [1/24/00]"
-
-#~ msgid "[Last modified date] is before [1/24/00]"
-#~ msgstr "[Last modified date] is before [1/24/00]"
-
-#~ msgid "[Last modified date] is today"
-#~ msgstr "[Last modified date] is today"
-
-#~ msgid "[Last modified date] is yesterday"
-#~ msgstr "[Last modified date] is yesterday"
-
-#~ msgid "[Last modified date] is within a week of [1/24/00]"
-#~ msgstr "[Last modified date] is within a week of [1/24/00]"
-
-#~ msgid "[Last modified date] is within a month of [1/24/00]"
-#~ msgstr "[Last modified date] is within a month of [1/24/00]"
-
-#~ msgid "[File owner] is [root]"
-#~ msgstr "[File owner] is [root]"
-
-#~ msgid "[File owner] is not [root]"
-#~ msgstr "[File owner] is not [root]"
-
-#~ msgid "Find:"
-#~ msgstr "Find:"
-
-#~ msgid ""
-#~ "Are you sure you want to permanently delete the %d selected item?Are you "
-#~ "sure you want to permanently delete the %d selected items?"
-#~ msgstr ""
-#~ "Are you sure you want to permanently delete the %d selected item?Are you "
-#~ "sure you want to permanently delete the %d selected items?"
-
-#~ msgid ""
-#~ "Are you sure you want to permanently delete the %d selected item from the "
-#~ "trash?Are you sure you want to permanently delete the %d selected items "
-#~ "from the trash?"
-#~ msgstr ""
-#~ "Are you sure you want to permanently delete the %d selected item from the "
-#~ "trash?Are you sure you want to permanently delete the %d selected items "
-#~ "from the trash?"
-
-#~ msgid ""
-#~ "The %d selected item will be moved if you select the Paste Files "
-#~ "commandThe %d selected items will be moved if you select the Paste Files "
-#~ "command"
-#~ msgstr ""
-#~ "The %d selected item will be moved if you select the Paste Files "
-#~ "commandThe %d selected items will be moved if you select the Paste Files "
-#~ "command"
-
-#~ msgid ""
-#~ "The %d selected item will be copied if you select the Paste Files "
-#~ "commandThe %d selected items will be copied if you select the Paste Files "
-#~ "command"
-#~ msgstr ""
-#~ "The %d selected item will be copied if you select the Paste Files "
-#~ "commandThe %d selected items will be copied if you select the Paste Files "
-#~ "command"
