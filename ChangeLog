@@ -1,3 +1,19 @@
+2002-11-19  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* components/text/Makefile.am:
+	* components/throbber/Makefile.am:
+	* components/tree/Makefile.am:
+	Add CLEANFILES so that make clean deletes $(server_DATA) and
+	$(server_DATA).in
+
+	This change should have been made on September 20th
+
+	* libnautilus-private/nautilus-icon-container.c (button_press_event):
+	Get double_click_time from GtkSettings property instead of using
+	hardcoded value.
+
+	This fixes bug #92372.
+
 2002-11-13  Diego Gonzalez  <diego@pemas.net>
 
 	* libnautilus-private/nautilus-theme.[c-h]:

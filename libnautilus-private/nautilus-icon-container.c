@@ -57,9 +57,6 @@
 /* Interval for updating the rubberband selection, in milliseconds.  */
 #define RUBBERBAND_TIMEOUT_INTERVAL 10
 
-/* Internal double click time constant */
-#define DOUBLE_CLICK_TIME 500000
-
 /* Initial unpositioned icon value */
 #define ICON_UNPOSITIONED_VALUE -1
 
@@ -2563,10 +2560,15 @@ button_press_event (GtkWidget *widget,
 	gint64 current_time;
 	static gint64 last_click_time = 0;
 	static gint click_count = 0;
-	
+	gint double_click_time;
+
+	g_object_get (G_OBJECT (gtk_widget_get_settings (widget)), 
+		      "gtk-double-click-time", &double_click_time,
+		      NULL);
+
 	/* Determine click count */
 	current_time = eel_get_system_time ();
-	if (current_time - last_click_time < DOUBLE_CLICK_TIME) {
+	if (current_time - last_click_time < double_click_time * 1000) {
 		click_count++;
 	} else {
 		click_count = 0;
