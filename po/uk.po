@@ -5196,11 +5196,11 @@ msgstr "П╕дготовка до спорожнення см╕тника..."
 #: libnautilus-extensions/nautilus-file-operations.c:2202
 msgid ""
 "Are you sure you want to permanently delete all of the items in the Trash?"
-msgstr "Ви переконан╕ в тому, що хочете пост╕йно стирати все з см╕тника?"
+msgstr "Ви переконан╕ в тому, що хочете безповоротно стерти все з см╕тника?"
 
 #: libnautilus-extensions/nautilus-file-operations.c:2204
 msgid "Delete Trash Contents?"
-msgstr "Стирти вм╕ст см╕тника?"
+msgstr "Стерти вм╕ст см╕тника?"
 
 #: libnautilus-extensions/nautilus-file-operations.c:2205
 msgid "Empty"
@@ -6744,7 +6744,7 @@ msgstr "Стерти"
 #: src/file-manager/fm-directory-view.c:2671
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
-msgstr "Ви впевнен╕, що хочете пост╕йно стирати \"%s\" з см╕тника?"
+msgstr "Ви впевнен╕, що хочете безповоротно стерти \"%s\" з см╕тника?"
 
 #: src/file-manager/fm-directory-view.c:2675
 #, c-format
@@ -6752,7 +6752,7 @@ msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "Trash?"
 msgstr ""
-"Ви впевнен╕, що хочете пост╕йно стирати ц╕ %d вибраних елемент╕в з см╕тника?"
+"Ви впевнен╕, що хочете безповоротно стерти ц╕ %d вибраних елемент╕в з см╕тника?"
 
 #: src/file-manager/fm-directory-view.c:2681
 msgid "Delete From Trash?"
@@ -6776,7 +6776,7 @@ msgstr "В╕дкрити в %d нових в╕кнах"
 
 #: src/file-manager/fm-directory-view.c:3248
 msgid "Delete all selected items permanently"
-msgstr "Стирати вс╕ вибран╕ елементи пост╕йно"
+msgstr "Стерти вс╕ вибран╕ елементи безповортно"
 
 #: src/file-manager/fm-directory-view.c:3253
 msgid "Delete from _Trash..."
@@ -7617,7 +7617,7 @@ msgstr "В╕дкрити нове терм╕нальне в╕кно GNOME"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:8
 msgid "Remove any custom pattern or color from the desktop background"
-msgstr ""
+msgstr "Видалити вс╕ нетипов╕ в╕зерунки чи кольори з тла робочго столу"
 
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:9
 msgid "Reset Desktop Background"
@@ -7627,6 +7627,8 @@ msgstr "Обнулити тло робочого столу"
 msgid ""
 "Show a window that lets you set your desktop background's pattern or color"
 msgstr ""
+"Показати в╕кно, що дозволить вам встановити ваш в╕зерунок чи кол╕р тла "
+"робочого столу"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:1
 msgid "Choose a program with which to open the selected item"
@@ -7722,7 +7724,7 @@ msgstr "Видалити вс╕ нетипов╕ зображення з вибраних п╕ктограм"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:30
 msgid "Remove any custom pattern or color from the background of this location"
-msgstr ""
+msgstr "Видалити вс╕ нетипов╕ в╕зерунки чи кольори з тла цього м╕сця"
 
 #. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-directory-view-ui.xml.h:31
@@ -7860,7 +7862,7 @@ msgstr "Перейменувати вибрану п╕ктограму"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:27
 msgid "Reposition icons to better fit in the window and avoid overlapping"
-msgstr ""
+msgstr "Перерозм╕щення п╕ктограм для кращого розм╕щення у в╕кн╕ та униклення перекриття"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:28
 msgid "Restore Icons' Original Sizes"
@@ -7981,6 +7983,8 @@ msgid ""
 "Once a day your files and text content are indexed so your searches are "
 "fast.  Your files are currently being indexed."
 msgstr ""
+"Раз на день ваш╕ файли ╕ текстовий вм╕ст ╕ндексу╓ться для пришвидшення пошук╕в. "
+"Ваш╕ файли зараз про╕ндексован╕."
 
 #: src/file-manager/nautilus-indexing-info.c:404
 msgid "Sorry, but the medusa search service is not available."
@@ -8031,6 +8035,9 @@ msgid ""
 "Nautilus, please create this folder, or set permissions such that Nautilus "
 "can create it."
 msgstr ""
+"Наут╕лус не зм╕г створити необх╕дну теку \"%s\". Перед запуском Наут╕луса, "
+"будь ласка, створ╕ть цю теку чи встанов╕ть так╕ права, щоб Наут╕лус м╕г "
+"створити ╖╖."
 
 #: src/nautilus-application.c:281
 msgid "Couldn't Create Required Folders"
@@ -8046,6 +8053,12 @@ msgid ""
 "Before running Nautilus, please create these folders, or set permissions "
 "such that Nautilus can create them."
 msgstr ""
+"Наут╕лус не зм╕г створити так╕ необх╕дн╕ теки:\n"
+"\n"
+"%s\n"
+"\n"
+"Перед запуском Наут╕луса, будь ласка, створ╕ть ц╕ теки, чи встанов╕ть так╕ "
+"права, щоб наут╕лус м╕г створити ╖х."
 
 #. Can't register myself due to trouble locating the
 #. * Nautilus_Shell.oaf file. This has happened when you
@@ -8063,6 +8076,9 @@ msgid ""
 "from the console may fix the problem. If not, you can try rebooting the "
 "computer or installing Nautilus again."
 msgstr ""
+"Наут╕лус не можна використовувати зараз. Запуск команди \"nautilus-clean.sh -x\" "
+"з консол╕ може вир╕шити цю проблему. Якщо н╕, ви можете спробувати перезавантажити "
+"комп'ютер чи встановити Наут╕лус заново."
 
 #. FIXME bugzilla.eazel.com 2536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:413
