@@ -1,6 +1,11 @@
 lib_LTLIBRARIES=libnautilus.la
 
-INCLUDES=-I$(top_srcdir) -I$(top_builddir) $(GNOME_CFLAGS) $(GNORBA_CFLAGS) $(WERROR)
+INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
+	$(GNOME_CFLAGS) \
+	$(GNORBA_CFLAGS) \
+	$(GDK_PIXBUF_CFLAGS) \
+	$(VFS_CFLAGS) \
+	$(WERROR)
 
 nautilus_idl_sources=nautilus-stubs.c nautilus-skels.c nautilus.h nautilus-common.c
 fsextension_idl_sources=fsextension-stubs.c fsextension-skels.c fsextension-common.c fsextension.h
@@ -19,6 +24,7 @@ libnautilusinclude_HEADERS=			\
 	gtkscrollframe.h			\
 	nautilus.h				\
 	nautilus-file-utilities.h		\
+	nautilus-uri-utilities.h		\
 	ntl-content-view-client.h		\
 	ntl-meta-view-client.h			\
 	ntl-view-client.h
@@ -31,12 +37,16 @@ libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	gtkflist.c				\
 	gtkscrollframe.c			\
 	nautilus-file-utilities.c		\
+	nautilus-uri-utilities.c		\
 	ntl-content-view-client.c		\
 	ntl-meta-view-client.c			\
 	ntl-view-client.c			\
 	$(fsextension_idl_sources)
 
-libnautilus_la_LDFLAGS=$(GNOME_LIBS) $(GNORBA_LIBS) $(GDK_PIXBUF_LIBS)
+libnautilus_la_LDFLAGS=$(GNOME_LIBS) \
+		       $(GNORBA_LIBS) \
+		       $(GDK_PIXBUF_LIBS) \
+		       $(VFS_LIBS)
 
 $(nautilus_idl_sources): nautilus_idl_stamp
 $(fsextension_idl_sources): fsextension_idl_stamp

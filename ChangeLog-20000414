@@ -1,3 +1,24 @@
+2000-01-04  John Sullivan  <sullivan@eazel.com>
+
+	Made location-entering field handle bogus URIs better
+	(next: bookmarks)
+
+	* libnautilus/nautilus-uri-utilities.c: new file
+	* libnautilus/nautilus-uri-utilities.h: new file
+	At this point there's just one uri utility function,
+	nautilus_path_known_not_to_exist(), which is a quick
+	check for a bogus URI. (It's not guaranteed to return
+	TRUE for all bad URIs, just the ones it can tell quickly
+	are bogus).
+	* libnautilus/Makefile.am: added these two new files
+	to the build, and linked with GnomeVFS (needed for new
+	function)
+	* src/ntl-window.c: (nautilus_window_goto_uri_cb):
+	If typed path can quickly be rejected, puts an error
+	message in the status bar and doesn't try to go there.
+
+	* components/websearch/.cvsignore: added Makefile
+
 2000-01-03  Maciej Stachowiak  <mjs@eazel.com>
 
 	* idl/nautilus.idl: Added stop_location_change method to NautilusView interface.

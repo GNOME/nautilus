@@ -26,6 +26,7 @@
 
 #include "config.h"
 #include <gnome.h>
+#include "libnautilus/nautilus-uri-utilities.h"
 #include "nautilus.h"
 #include "nautilus-bookmarks-menu.h"
 #include "explorer-location-bar.h"
@@ -402,7 +403,18 @@ nautilus_window_goto_uri_cb (GtkWidget *widget,
                           const char *uri,
                           GtkWidget *window)
 {
-  nautilus_window_goto_uri(NAUTILUS_WINDOW(window), uri);
+  if (nautilus_path_known_not_to_exist(uri))
+    {
+      gchar *message;
+
+      message = g_strdup_printf(_("no such location: %s"), uri);
+      nautilus_window_set_status(NAUTILUS_WINDOW(window), message);
+      g_free(message);
+    }
+  else
+    {
+      nautilus_window_goto_uri(NAUTILUS_WINDOW(window), uri);
+    }
 }
 
 static void
@@ -866,7 +878,6 @@ nautilus_window_up (GtkWidget *btn, NautilusWindow *window)
   gnome_vfs_uri_destroy (current_uri);
   gnome_vfs_uri_destroy (parent_uri);  
 }
-
 
 static void
 nautilus_window_reload (GtkWidget *btn, NautilusWindow *window)
