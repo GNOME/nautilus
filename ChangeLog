@@ -1,3 +1,40 @@
+2000-09-11  John Sullivan  <sullivan@eazel.com>
+
+	Some cleanups of directory view menu code to share more between
+	the context menus and menu-bar menus. These had gotten into a
+	really ugly mess; hopefully this will make them a little more
+	straightforward to deal with.
+
+	* src/file-manager/fm-directory-view.c: 
+	(bonobo_menu_open_callback),
+	(bonobo_menu_open_in_new_window_callback),
+	(bonobo_menu_other_program_callback),
+	(bonobo_menu_move_to_trash_callback),
+	(bonobo_menu_duplicate_callback),
+	(bonobo_menu_new_folder_callback),
+	(bonobo_menu_open_properties_window_callback):
+	Removed these callbacks, in favor of the use-one-callback-
+	for-both-gtk-and-bonobo-menus style.
+	(open_callback),
+	(open_in_new_window_callback), 
+	(other_application_callback), (other_viewer_callback),
+	(trash_callback),
+	(duplicate_callback), (create_link_callback),
+	(new_folder_callback), (open_properties_window_callback):
+	Changed these callbacks to work with either gtk or
+	bonobo menus.
+	(open_with_other_program): New helper function called
+	from other_application_callback and other_viewer_callback.
+	(check_selection_not_empty): New debugging helper function.
+	(append_gtk_menu_item): Renamed append_gtk_menu_item_with_view,
+	now it always passes the view as the callback data, and doesn't
+	store it with gtk_object_set_data anymore.
+	(fm_directory_view_real_create_background_context_menu_items),
+	(create_open_with_gtk_menu),
+	(fm_directory_view_real_create_selection_context_menu_items),
+	(reset_bonobo_trash_delete_menu), (reset_bonobo_open_with_menu),
+	(fm_directory_view_real_merge_menus): Updated for API changes.
+
 2000-09-11  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/install/nautilus-view/nautilus-service-instal
