@@ -59,7 +59,7 @@ void add_package_info(xmlDoc* configuration_metafile)
  	rpmReadConfigFiles(NULL, NULL);   
     	rpm_result = rpmdbOpen("", &rpm_db, O_RDONLY, 0644);
 	if (rpm_result != 0) {
-		g_message("couldnt open package database: %d\n", rpm_result);
+		g_message("couldn't open package database: %d", rpm_result);
 		return;
 	}   
  	

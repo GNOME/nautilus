@@ -1,3 +1,25 @@
+2000-04-05  Darin Adler  <darin@eazel.com>
+
+	* components/services/startup/eazel-register.c:
+	(add_package_info):
+	* libnautilus/nautilus-file-utilities.c:
+	(nautilus_user_top_directory):
+	* libnautilus/nautilus-global_preferences.c:
+	(global_preferences_get_dialog):
+	* libnautilus/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_thumbnail_uri):
+	Removed unnecessary \n characters from g_warning, g_error, and
+	g_message calls.
+
+	* components/html/ntl-web-browser.c (browser_url_load_done):
+	Ettore says we should stop calling gtk_html_private_calc_scrollbars
+	and if it causes any problems then it's just a bug in GtkHTML
+	that should be fixed,.
+
+	* src/ntl-window-msgs.c:
+	Reformatted the code as a first step for some changes
+	that will make the state machine easier to understand.
+
 2000-04-05  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Preferences work.  Make preference registration implicit.

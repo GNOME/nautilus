@@ -325,7 +325,7 @@ global_preferences_get_dialog (void)
 
 	if (!global_prefs)
 	{
-		g_warning ("something went terribly wrong with implicit prefs initialization\n");
+		g_warning ("something went terribly wrong with implicit prefs initialization");
 
 		return NULL;
 	}

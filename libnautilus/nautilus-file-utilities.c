@@ -148,7 +148,7 @@ nautilus_user_top_directory (void)
 
 			if (system (command->str) != 0)
 			{
-				g_warning ("could not execute '%s'.  Make sure you typed 'make install'\n", 
+				g_warning ("could not execute '%s'.  Make sure you typed 'make install'", 
 					   command->str);
 			}
 			

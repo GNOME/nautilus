@@ -864,7 +864,7 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file)
  
 	/* FIXME: need to handle error by making directory elsewhere */
 	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILEEXISTS) {
-		g_warning ("error when making thumbnail directory: %d\n", result);	
+		g_warning ("error when making thumbnail directory: %d", result);	
 	} else {
 		NautilusThumbnailInfo *info = g_new0 (NautilusThumbnailInfo, 1);
 		info->thumbnail_uri = file_uri;

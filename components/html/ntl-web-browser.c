@@ -183,9 +183,6 @@ browser_url_load_done(GtkWidget *htmlw, BrowserInfo *bi)
 {
   Nautilus_ProgressRequestInfo pri;
 
-  /* FIXME: If this is private, we should not be calling it. */
-  gtk_html_private_calc_scrollbars(GTK_HTML(bi->htmlw));
-
   memset(&pri, 0, sizeof(pri));
 
   pri.type = Nautilus_PROGRESS_DONE_OK;
