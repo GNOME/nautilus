@@ -47,6 +47,7 @@
 #ifdef HAVE_RPM
 
 #include <gnome.h>
+#include <locale.h>
 #include "eazel-package-system-rpm3-private.h"
 #include "eazel-package-system-private.h"
 #include <libtrilobite/trilobite-core-utils.h>
@@ -101,7 +102,7 @@ struct RpmMonitorPiggyBag {
 	GString *package_name;
 #endif
 	PackageData *pack;
-	int pct;
+	double pct;
 
 	GHashTable *name_to_package;
 
@@ -123,12 +124,13 @@ rpmmonitorpiggybag_new (EazelPackageSystemRpm3 *system,
 	trilobite_debug ("I am in in a %c country",  pig.separator);
 	pig.state = 1;
 	pig.bytes_read_in_line = 0;
+	pig.line[0] = '\0';
 	pig.package_name = NULL;
 #else
 	pig.pack = NULL;
 	pig.package_name = NULL;
 #endif
-	pig.pct = 0;
+	pig.pct = 0.0;
 	pig.system = system;
 	pig.op = op;
 
@@ -207,9 +209,6 @@ make_rpm_argument_list (EazelPackageSystemRpm3 *system,
 	if (op == EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL) {
 		(*args) = g_list_prepend (*args, g_strdup ("-e"));
 	} else  {
-#ifdef USE_PERCENT
-		(*args) = g_list_prepend (*args, g_strdup ("--percent"));
-#endif
 		if (flags & EAZEL_PACKAGE_SYSTEM_OPERATION_DOWNGRADE) {
 			(*args) = g_list_prepend (*args, g_strdup ("--oldpackage"));
 		}
@@ -296,11 +295,15 @@ monitor_rpm_process_pipe_percent_output (GIOChannel *source,
 {
 	char tmp;
 	ssize_t bytes_read;
-	gboolean result = TRUE;
 
 	bytes_read = 0;
 	g_io_channel_read (source, &tmp, 1, &bytes_read);
-	
+
+	if (! bytes_read) {
+		pig->subcommand_running = FALSE;
+		return FALSE;
+	}
+
 	if (bytes_read) {
 		if (isspace (tmp)) {
 			switch (pig->state) {
@@ -309,7 +312,7 @@ monitor_rpm_process_pipe_percent_output (GIOChannel *source,
 					g_free (pig->package_name);
 				}
 				/* Reset */
-				pig->pct = 0;
+				pig->pct = 0.0;
 				
 				pig->package_name = g_strdup (pig->line);
 				pig->pack = g_hash_table_lookup (pig->name_to_package, pig->package_name);
@@ -360,28 +363,24 @@ monitor_rpm_process_pipe_percent_output (GIOChannel *source,
 					pig->state = 2;
 				}
 
-
 				break;
 
 			case 2:
 				if (strncmp (pig->line, "%%", 2) == 0) {
 					pig->state = 3;
-				} 
+				}
 				break;
+
 			case 3: {
-				char *dot;
-				int pct;
+				double pct;
 
 				/* Assume we don't go to state 1 */
 				pig->state = 2;
 
-				/* Remove the decimal crap */
-				dot = strchr (pig->line, pig->separator);
-				if (dot) {
-					*dot = 0;
-				}
 				/* Grab the percentage */
-				pct = atol (pig->line);
+				pct = strtod (pig->line, NULL);
+				/* fix rounding errors */
+				pct = ((int)(pct*1000))/1000.0;
 
 				/* Higher ? */
 				if (pct > pig->pct) {
@@ -389,10 +388,10 @@ monitor_rpm_process_pipe_percent_output (GIOChannel *source,
 					int amount;
 
 					pig->pct = pct;
-					if (pig->pct == 100) {
+					if (pig->pct == 100.0) {
 						amount = pig->pack->bytesize;
 					} else {
-						amount = (pig->pack->bytesize/100) * pig->pct;
+						amount = (int)((pig->pack->bytesize * pig->pct) / 100.0);
 					}
 
 					longs[0] = amount;
@@ -406,8 +405,9 @@ monitor_rpm_process_pipe_percent_output (GIOChannel *source,
 									    pig->op,
 									    pig->pack, 
 									    longs);
+
 					/* Done with package ? */
-					if (pig->pct==100) {
+					if (pig->pct == 100.0) {
 						pig->state = 1;
 						pig->bytes_installed += pig->pack->bytesize;
 						pig->packages_seen = g_list_prepend (pig->packages_seen,
@@ -419,7 +419,7 @@ monitor_rpm_process_pipe_percent_output (GIOChannel *source,
 						g_free (pig->package_name);
 						pig->package_name = NULL;
 						pig->pack = NULL;
-						pig->pct = 0;
+						pig->pct = 0.0;
 					}
 					
 				}
@@ -439,12 +439,10 @@ monitor_rpm_process_pipe_percent_output (GIOChannel *source,
 				pig->line[pig->bytes_read_in_line] = '\0';
 			}
 		}
-	} else {
-		result = FALSE;
 	}
-	
-	pig->subcommand_running = result;
-	return result;
+
+	pig->subcommand_running = TRUE;
+	return TRUE;
 }
 #endif
 
@@ -470,10 +468,10 @@ monitor_rpm_process_pipe (GIOChannel *source,
 				return TRUE;
 			}
 			pig->pct += PERCENTS_PER_RPM_HASH;
-			if (pig->pct == 100) {
+			if (pig->pct == 100.0) {
 				amount = pig->pack->bytesize;
 			} else {
-				amount =  (pig->pack->bytesize / 100) * pig->pct;
+				amount = (int)((pig->pack->bytesize * pig->pct)/100.0);
 			}
 			if (pig->pack && amount) {
 				unsigned long longs[EAZEL_PACKAGE_SYSTEM_PROGRESS_LONGS];
@@ -493,7 +491,7 @@ monitor_rpm_process_pipe (GIOChannel *source,
 			/* By invalidating the pointer here, we
 			   only emit with amount==total once and
 			   also emit end here */
-			if (pig->pct==100) {
+			if (pig->pct == 100.0) {
 				pig->bytes_installed += pig->pack->bytesize;
 				pig->packages_seen = g_list_prepend (pig->packages_seen,
 								     pig->pack);
@@ -503,7 +501,7 @@ monitor_rpm_process_pipe (GIOChannel *source,
 							       pig->pack);
 				
 				pig->pack = NULL;
-				pig->pct = 0;
+				pig->pct = 0.0;
 				g_string_free (pig->package_name, TRUE);
 				pig->package_name = NULL;
 			}
@@ -556,7 +554,7 @@ monitor_rpm_process_pipe (GIOChannel *source,
 			} else {
 				unsigned long longs[EAZEL_PACKAGE_SYSTEM_PROGRESS_LONGS];
 				info (pig->system, "matched \"%s\"", pig->package_name->str);
-				pig->pct = 0;
+				pig->pct = 0.0;
 				pig->packages_installed ++;
 				
 				longs[0] = 0;
@@ -1257,14 +1255,62 @@ monitor_subcommand_pipe (EazelPackageSystemRpm3 *system,
 	channel = g_io_channel_unix_new (fd);
 
 	info (system, "beginning monitor on %d", fd);
-	g_io_add_watch (channel, G_IO_IN | G_IO_ERR | G_IO_NVAL | G_IO_HUP, 
-			monitor_func, 
-			pig);
+	g_io_add_watch_full (channel, 10, G_IO_IN | G_IO_ERR | G_IO_NVAL | G_IO_HUP, 
+			     monitor_func, 
+			     pig, NULL);
 
 	while (pig->subcommand_running) {
-		g_main_iteration (TRUE);
+#if 0
+		/* this is evil and it still doesn't work, so foo. */
+		while (gdk_events_pending ()) {
+			gtk_main_do_event (gdk_event_get ());
+		}
+#endif
+		gtk_main_iteration ();
 	}
 	info (system, "ending monitor on %d", fd);
+}
+
+/* returns TRUE on success */
+static gboolean
+manual_rpm_command (GList *args, int *fd)
+{
+	char **argv;
+	int i, errfd, child_pid;
+	GList *iterator;
+	gboolean result;
+
+	/* Create argv list */
+	argv = g_new0 (char*, g_list_length (args) + 2);
+	argv[0] = g_strdup ("rpm");
+	i = 1;
+	for (iterator = args; iterator; iterator = g_list_next (iterator)) {
+		argv[i] = g_strdup (iterator->data);
+		i++;
+	}
+	argv[i] = NULL;
+
+	if (access ("/bin/rpm", R_OK|X_OK)!=0) {
+		g_warning ("/bin/rpm missing or not executable for uid");
+		result = FALSE;
+		goto out;
+	} 
+	/* start /bin/rpm... */
+	if ((child_pid = trilobite_pexec ("/bin/rpm", argv, NULL, fd, &errfd)) == 0) {
+		g_warning ("Could not start rpm");
+		result = FALSE;
+	} else {
+		trilobite_debug ("/bin/rpm running (pid %d, stdout %d, stderr %d)", child_pid, *fd, errfd);
+		//close (errfd);
+		result = TRUE;
+	}
+
+out:	
+	for (i = 0; argv[i]; i++) {
+		g_free (argv[i]);
+	}
+	g_free (argv);
+	return result;
 }
 
 static void 
@@ -1294,10 +1340,8 @@ eazel_package_system_rpm3_execute (EazelPackageSystemRpm3 *system,
 			go = FALSE;
 		}
 	} else {
-		/* FIXME:
-		   ugh, start /bin/rpm manually, see code in eazel-install-logic.c rev 1.26 */
-		g_assert (root_helper);
-		go = FALSE;
+		/* start /bin/rpm manually -- we're in bootstrap installer mode */
+		go = manual_rpm_command (args, &fd);
 	}
 	if (go) {
 #ifdef USE_PERCENT

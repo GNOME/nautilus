@@ -6,6 +6,7 @@ FULL="yes"
 GNOME=/gnome
 BUILD_DATE=`date +%d%b%y-%H%M`
 XFREE=`rpm -q --queryformat="%{VERSION}" XFree86`
+RPM_VERSION=`rpm -q --queryformat="%{VERSION}" rpm`
 
 if test "x$1" = "x--help"; then
     echo
@@ -48,6 +49,25 @@ else
     OG_FLAG="-O"
     STRIP="yes"
 fi
+
+if test "x$RPM_VERSION" = "x"; then
+    echo "* No rpm installed?  Installer can only be built on RedHat for now...  Bye."
+    exit 0
+fi
+RPM_MAJOR=`echo $RPM_VERSION | sed -e 's/\([0-9]\).*/\1/'`;
+if test "x$RPM_MAJOR" = "x3"; then
+    echo "* RedHat 6.x build (RPM 3)"
+    export PACKAGE_SYSTEM_OBJECT=eazel-package-system-rpm3.o
+else
+    if test "x$RPM_MAJOR" = "x4"; then
+        echo "* RedHat 7.x build (RPM 4)"
+        export PACKAGE_SYSTEM_OBJECT=eazel-package-system-rpm4.o
+    else
+        echo "* RPM version $RPM_VERSION not supported (only 3 or 4)."
+        exit 0
+    fi
+fi
+
 
 XLIBS="-L/usr/X11R6/lib -ldl -lXext -lX11 -lm -lSM -lICE "
 GLOG="-DG_LOG_DOMAIN=\\\"Nautilus-Installer\\\""

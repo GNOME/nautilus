@@ -90,9 +90,6 @@ static const char untranslated_font_little[] = N_("-adobe-helvetica-medium-r-nor
 #define ERROR_SYMBOL_X	67
 #define ERROR_SYMBOL_Y  59
 
-#define ASSUMED_MAX_DOWNLOAD	(90*1024*1024)		/* 90MB assumed to be the max downloaded */
-			 	/* yes, virginia, people actually broke the 50MB limit! */
-				/* as of nov 2000, typical redhat 6.0 system seems to need about 75MB */
 
 static const char untranslated_error_need_to_set_proxy[] =
 	N_("I can't reach the Eazel servers.  This could be because the\n"
@@ -554,7 +551,7 @@ jump_to_error_page (EazelInstaller *installer, GList *bullets, char *text, char 
 
 static void
 insert_info_page (EazelInstaller *installer,
-		  char *title_text,
+	  char *title_text,
 		  char *info_text)
 {
 	GtkWidget *info_page;
@@ -782,26 +779,46 @@ eazel_install_progress (EazelInstall *service,
 	GtkProgressBar *progressbar, *progress_overall;
 	GtkWidget *label_overall;
 	GtkWidget *label_single;
-	char *temp;
+	GtkWidget *label_single_2;
+	char *temp, *name;
 	double percent;
 
 	label_single = gtk_object_get_data (GTK_OBJECT (installer->window), "download_label");
+	label_single_2 = gtk_object_get_data (GTK_OBJECT (installer->window), "download_label_2");
 	label_overall = gtk_object_get_data (GTK_OBJECT (installer->window), "label_overall");
 	progressbar = gtk_object_get_data (GTK_OBJECT (installer->window), "progressbar_single");
 	progress_overall = gtk_object_get_data (GTK_OBJECT (installer->window), "progressbar_overall");
 
+#if 0
+	if (1) {
+		struct timeval now;
+		char *timestamp;
+
+		gettimeofday (&now, NULL);
+		timestamp = g_malloc (40);
+		strftime (timestamp, 40, "%d-%b %H:%M:%S", localtime ((time_t *)&now.tv_sec));
+		sprintf (timestamp + strlen (timestamp), ".%02ld ", now.tv_usec/10000L);
+		log_debug ("%s: progress on %s (%d of %d): %d of %d (total %d of %d)", timestamp, package->name, package_num, num_packages,  amount, total, total_size_completed, total_size);
+		g_free (timestamp);
+	}
+#endif
 	if (amount == 0) {
-		temp = g_strdup_printf (_("Installing the %s package"), package->name);
+		name = packagedata_get_readable_name (package);
+		temp = g_strdup_printf (_("Installing %s"), name);
+		g_free (name);
 		gtk_label_set_text (GTK_LABEL (label_single), temp);
 		g_free (temp);
-		gtk_progress_configure (GTK_PROGRESS (progressbar), 0, 0, (float)(total/1024));		
+		gtk_label_set_text (GTK_LABEL (label_single_2), "");
+
+		gtk_progress_configure (GTK_PROGRESS (progressbar), 0.0, 0.0, 100.0);
+		gtk_progress_configure (GTK_PROGRESS (progress_overall), 0.0, 0.0, 100.0);
 
 		g_message ("Installing: %s", package->name);
 	}
 
-	gtk_progress_set_value (GTK_PROGRESS (progressbar), 
-				(float)(amount/1024 > total/1024 ? total/1024 : amount/1024));
-	percent = (double)(total_size_completed * 50.0) / (total_size ? total_size : 0.1);
+	percent = (double)((amount * 100.0) / (total ? total : 0.1));
+	gtk_progress_set_value (GTK_PROGRESS (progressbar), percent);
+	percent = (double)((total_size_completed * 50.0) / (total_size ? total_size : 0.1));
 	percent += 50.0;
 	gtk_progress_set_value (GTK_PROGRESS (progress_overall), percent);
 
@@ -809,9 +826,12 @@ eazel_install_progress (EazelInstall *service,
 	gtk_label_set_text (GTK_LABEL (label_overall), temp);
 	g_free (temp);
 
+#if 0
+	/* absolutely cannot do this anymore! */
 	while (gtk_events_pending ()) {
 		gtk_main_iteration ();
 	}
+#endif
 }
 
 
@@ -839,7 +859,7 @@ eazel_download_progress (EazelInstall *service,
 
 	if (amount == 0) {
 		gtk_progress_configure (GTK_PROGRESS (progress_single), 0, 0, (float)total);
-		gtk_progress_configure (GTK_PROGRESS (progress_overall), 0, 0, (float)ASSUMED_MAX_DOWNLOAD);
+		gtk_progress_configure (GTK_PROGRESS (progress_overall), 0, 0, (float)installer->total_size);
 		temp = g_strdup_printf ("Getting package \"%s\"  ", package->name);
 		gtk_label_set_text (GTK_LABEL (label_single), temp); 
 		g_free (temp);
@@ -893,18 +913,28 @@ add_force_remove (EazelInstaller *installer,
 }
 #endif
 
+static void get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data);
+
+static void
+get_detailed_errors_foreach_dep (PackageDependency *dep, GetErrorsForEachData *data)
+{
+	get_detailed_errors_foreach (dep->package, data);
+}
+
 static void
 get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 {
 	char *message, *distro;
 	EazelInstaller *installer = data->installer; 
 	PackageData *pack_in;
-	PackageData *previous_pack = NULL;
 	CategoryData *cat;
 	GList *iter, *iter2;
 
-	if (data->path) {
-		previous_pack = PACKAGEDATA (data->path->data);
+	if (data->path != NULL) {
+		if (g_list_find (data->path, pack) != NULL) {
+			/* recursing... */
+			return;
+		}
 	}
 
 	log_debug ("pack->name = %s, pack->status = %d", pack->name, pack->status);
@@ -949,7 +979,7 @@ get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 	/* Create the path list */
 	data->path = g_list_prepend (data->path, pack);
 
-	g_list_foreach (pack->soft_depends, (GFunc)get_detailed_errors_foreach, data);
+	g_list_foreach (pack->depends, (GFunc)get_detailed_errors_foreach_dep, data);
 	g_list_foreach (pack->modifies, (GFunc)get_detailed_errors_foreach, data);
 	g_list_foreach (pack->breaks, (GFunc)get_detailed_errors_foreach, data);
 
@@ -976,7 +1006,9 @@ get_detailed_errors (const PackageData *pack, EazelInstaller *installer)
 	data.installer = installer;
 	data.path = NULL;
 	log_debug ("copying package");
-	non_const_pack = packagedata_copy (pack, TRUE);
+	non_const_pack = PACKAGEDATA (pack);
+	gtk_object_ref (GTK_OBJECT (non_const_pack));
+	//	non_const_pack = packagedata_copy (pack, TRUE);
 	log_debug ("getting detailed errors");
 	get_detailed_errors_foreach (non_const_pack, &data);
 	log_debug ("destroying copy");
@@ -991,11 +1023,13 @@ collect_failure_info (EazelInstall *service,
 		      gboolean uninstall)
 {
 	GList *failure_info_addition;
+
 	eazel_install_problem_tree_to_case (installer->problem,
 					    pd,
 					    uninstall,
 					    &(installer->problems));
-	if (!installer->failure_info) {
+	if (!installer->failure_info || 1) {
+		/* could be multiple toplevel packages */
 		failure_info_addition = eazel_install_problem_tree_to_string (installer->problem,
 									      pd,
 									      uninstall);
@@ -1063,7 +1097,7 @@ eazel_install_preflight (EazelInstall *service,
 	char *temp;
 	int total_mb;
 
-	if (1) {
+	if (0) {
 		jump_to_package_tree_page (installer, (GList *)packages);
 		while (1) { while (gtk_events_pending ()) { gtk_main_iteration (); } }
 	}
@@ -1117,6 +1151,7 @@ eazel_install_preflight (EazelInstall *service,
 	g_free (temp);
 
 	installer->total_packages = num_packages;
+	installer->total_size = total_size;
 	installer->total_mb = total_mb;
 
 	while (gtk_events_pending ()) {

@@ -90,6 +90,7 @@ struct _EazelInstaller
 	GList *packages_possible_broken;
 
 	int total_packages;
+	int total_size;
 	int total_mb;
 };
 

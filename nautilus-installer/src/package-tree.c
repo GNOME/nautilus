@@ -284,13 +284,18 @@ package_customizer_find_package (PackageCustomizer *table, PackageData *package)
 }
 
 static GList *
-get_errant_children_int (GList *bad, PackageInfo *info, PackageData *subpack)
+get_errant_children_int (GList *bad, PackageInfo *info, PackageData *subpack, GList **path)
 {
 	PackageDependency *dep;
 	PackageInfo *sub_info;
 	GList *iter;
 
 	if (subpack != NULL) {
+		if (g_list_find (*path, subpack) != NULL) {
+			/* recursing... */
+			return bad;
+		}
+
 		sub_info = package_customizer_find_package (info->table, subpack);
 		if ((! gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (sub_info->checkbox))) &&
 		    (g_list_find (bad, sub_info) == NULL)) {
@@ -301,10 +306,13 @@ get_errant_children_int (GList *bad, PackageInfo *info, PackageData *subpack)
 		subpack = info->package;
 	}
 
+	*path = g_list_prepend (*path, subpack);
         for (iter = g_list_first (subpack->depends); iter != NULL; iter = g_list_next (iter)) {
 		dep = (PackageDependency *)(iter->data);
-		bad = get_errant_children_int (bad, info, dep->package);
+		bad = get_errant_children_int (bad, info, dep->package, path);
 	}
+	*path = g_list_remove (*path, subpack);
+
 	return bad;
 }
 
@@ -313,7 +321,10 @@ get_errant_children_int (GList *bad, PackageInfo *info, PackageData *subpack)
 static GList *
 get_errant_children (PackageInfo *info)
 {
-	return get_errant_children_int (NULL, info, NULL);
+	GList *path;
+
+	path = NULL;
+	return get_errant_children_int (NULL, info, NULL, &path);
 }
 
 /* display info about a package */
@@ -498,6 +509,7 @@ package_customizer_fill (PackageData *package, PackageCustomizer *table)
         private = table->private;
 
         if (package_customizer_find_package (table, package) != NULL) {
+		/* recursing */
                 return;
         }
         info = g_new0 (PackageInfo, 1);

@@ -1,3 +1,47 @@
+2001-02-07  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_start_signal):
+
+	Remove break that caused 0% signals to never get sent on install.
+
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(rpmmonitorpiggybag_new), (make_rpm_argument_list),
+	(monitor_rpm_process_pipe_percent_output),
+	(monitor_rpm_process_pipe), (monitor_subcommand_pipe),
+	(manual_rpm_command), (eazel_package_system_rpm3_execute):
+
+	Make percent a float for more accurate byte counts.  Give the IO
+	channel a lower priority than normal, so that it doesn't outrank X
+	refresh events (though this doesn't help much).  Reinsert the
+	manual RPM execute from the old logic.c code.
+	
+	* nautilus-installer/src/installer.c: (insert_info_page),
+	(eazel_install_progress), (eazel_download_progress),
+	(get_detailed_errors_foreach_dep), (get_detailed_errors_foreach),
+	(get_detailed_errors), (collect_failure_info),
+	(eazel_install_preflight):
+	* nautilus-installer/src/installer.h:
+
+	Remove fixed "max assumed download" size and try to set it to the
+	total bytes expected.  For some reason this still fails sometimes
+	but at least it's on the right track.  Stop calling
+	gtk_main_iteration from inside the install progress callback since
+	that interacts horribly with the IO channel crap.  Getting
+	detailed errors should avoid recursing, and should follow the
+	depends struct instead of the old soft_depends one.
+	
+	* nautilus-installer/src/link.sh:
+
+	Test for RPM4 build (should build now, but still not work due to
+	lingering code that refuses to try under RPM4).
+	
+	* nautilus-installer/src/package-tree.c: (get_errant_children_int),
+	(get_errant_children), (package_customizer_fill):
+
+	Fix up tree tracing routines to avoid recursing and to use the new
+	struct members instead of the old (now empty) ones.
+	
 2001-02-07  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>

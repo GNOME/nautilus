@@ -235,7 +235,6 @@ eazel_install_start_signal (EazelPackageSystem *system,
 	service->private->infoblock[2]++;
 	switch (op) {
 	case EAZEL_PACKAGE_SYSTEM_OPERATION_INSTALL:
-		break;
 	case EAZEL_PACKAGE_SYSTEM_OPERATION_UNINSTALL:
 		eazel_install_emit_install_progress (service, 
 						     pack,
