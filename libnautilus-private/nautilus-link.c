@@ -219,7 +219,7 @@ local_set_root_property (const char *path,
 {
 	xmlDocPtr document;
 	xmlNodePtr root;
-	const char *old_value;
+	xmlChar *old_value;
 	char *uri;
 	NautilusFile *file;
 
