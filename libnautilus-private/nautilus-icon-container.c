@@ -3404,12 +3404,14 @@ handle_icon_button_press (NautilusIconContainer *container,
 
 		if (event->button == CONTEXTUAL_MENU_BUTTON) {
 			/* after a timeout we will decide if this is a
-			 * context menu click or a drag start
+			 * context menu click or a drag start.
 			 */
-			details->context_menu_timeout_id = gtk_timeout_add (
-				CONTEXT_MENU_TIMEOUT_INTERVAL, 
-				show_context_menu_callback, 
-				context_menu_parameters_new (container, event));
+			if (details->context_menu_timeout_id == 0) {
+				details->context_menu_timeout_id = gtk_timeout_add (
+					CONTEXT_MENU_TIMEOUT_INTERVAL, 
+					show_context_menu_callback, 
+					context_menu_parameters_new (container, event));
+			}
 		}
 	}
 
@@ -3427,7 +3429,7 @@ handle_icon_button_press (NautilusIconContainer *container,
 				 signals[SELECTION_CHANGED]);
 	}
 
-	if (event->type == GDK_2BUTTON_PRESS) {
+	if (event->type == GDK_2BUTTON_PRESS && event->button == DRAG_BUTTON) {
 		/* Double clicking does not trigger a D&D action. */
 		details->drag_button = 0;
 		details->drag_icon = NULL;

@@ -1,3 +1,17 @@
+2001-02-07  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 6405 (seg fault right-double-clicking when context
+	menu is already showing)
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(handle_icon_button_press): Don't create context-menu callback
+	if one is already pending; don't let right-double-click activate.
+	
+	* src/file-manager/nautilus-directory-view-ui.xml: Added underscore
+	accelerator for Show Trash, which didn't have one.
+
 2001-02-07  Ian McKellar  <ian@eazel.com>
 
 	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>
