@@ -68,4 +68,3 @@ struct _SummaryData {
 SummaryData * parse_summary_xml_file (const char *url);
 
 #endif /* EAZEL_SUMMARY_SHARED_H */
-

@@ -417,8 +417,6 @@ nautilus_tree_view_drag_drop (GtkWidget *widget,
 			   GPOINTER_TO_INT (context->targets->data),
 			   time);
 
-
-
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
 				      "drag_drop");
 	return TRUE;
@@ -1290,7 +1288,7 @@ nautilus_tree_view_receive_dropped_icons (NautilusTreeView *view,
 		}
 #endif
 		nautilus_tree_view_move_copy_files (tree_view, drag_info->selection_list, 
-							    context, drop_target_uri);
+						    context, drop_target_uri);
 		/* collapse all expanded directories during drag except the one we 
 		   droped into */
 		dropped_node = nautilus_tree_view_tree_node_at (tree_view, x, y);

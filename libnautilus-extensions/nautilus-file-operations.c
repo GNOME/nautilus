@@ -1644,7 +1644,7 @@ void
 nautilus_file_operations_copy_move (const GList *item_uris,
 				    GArray *relative_item_points,
 				    const char *target_dir,
-				    int copy_action,
+				    GdkDragAction copy_action,
 				    GtkWidget *parent_view,
 				    void (*done_callback) (GHashTable *debuting_uris, gpointer data),
 				    gpointer done_callback_data)
@@ -1844,10 +1844,16 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 			    	/* Distinguish Trash file on desktop from other trash folders for
 			    	 * message purposes.
 			    	 */
+				/* FIXME: is_special_link finds more than just trash links,
+				 * so these messages are wrong. 
+				 */
 			    	is_desktop_trash_link = vfs_uri_is_special_link (uri);
+
 				nautilus_simple_dialog
 					(parent_view, 
 					 FALSE,
+
+
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
 						 ? (is_desktop_trash_link
 						    ? _("The Trash must remain on the desktop.")
@@ -1866,8 +1872,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 
 			/* Don't allow recursive move/copy into itself. 
 			 * (We would get a file system error if we proceeded but it is nicer to
-			 * detect and report it at this level)
-			 */
+			 * detect and report it at this level) */
 			if ((move_options & GNOME_VFS_XFER_LINK_ITEMS) == 0
 				&& (gnome_vfs_uri_equal (uri, target_dir_uri)
 					|| gnome_vfs_uri_is_parent (uri, target_dir_uri, TRUE))) {
@@ -1877,7 +1882,28 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
 					 ? _("You cannot move a folder into itself.")
 					 : _("You cannot copy a folder into itself."), 
-					 _("Can't Move Into Self"),
+					 ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
+					 ? _("Can't Move Into Self")
+					 : _("Can't Copy Into Self"),
+					 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
+
+				result = GNOME_VFS_ERROR_NOT_PERMITTED;
+				break;
+			}
+			if (gnome_vfs_uri_is_parent (target_dir_uri, uri, FALSE)) {
+				nautilus_simple_dialog
+					(parent_view, 
+					 FALSE,
+					 ((move_options & GNOME_VFS_XFER_LINK_ITEMS) != 0) 
+					 ? _("You cannot link a file to itself.")
+					 : ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
+					 ? _("You cannot move a file onto itself.")
+					 : _("You cannot copy a file over itself."), 
+					 ((move_options & GNOME_VFS_XFER_LINK_ITEMS) != 0) 
+					 ? _("Can't Link To Self")
+					 : ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) 
+					 ? _("Can't Move Onto Self")
+					 : _("Can't Copy Over Self"), 
 					 GNOME_STOCK_BUTTON_OK, NULL, NULL);			
 
 				result = GNOME_VFS_ERROR_NOT_PERMITTED;

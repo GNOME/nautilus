@@ -26,16 +26,19 @@
 #define NAUTILUS_FILE_OPERATIONS_H
 
 #include <gtk/gtkwidget.h>
+#include <libgnomevfs/gnome-vfs-types.h>
 
 typedef void (* NautilusCopyCallback)      (GHashTable *debuting_uris,
 					    gpointer    callback_data);
 typedef void (* NautilusNewFolderCallback) (const char *new_folder_uri,
 					    gpointer    callback_data);
 
+/* FIXME: int copy_action should be an enum */
+
 void  nautilus_file_operations_copy_move               (const GList               *item_uris,
 							GArray            	  *target_item_points,
 							const char                *target_dir_uri,
-							int                        copy_action,
+							GdkDragAction              copy_action,
 							GtkWidget                 *parent_view,
 							NautilusCopyCallback       done_callback,
 							gpointer                   done_callback_data);

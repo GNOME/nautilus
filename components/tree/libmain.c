@@ -40,9 +40,8 @@ static void
 tree_shlib_object_destroyed (GtkObject *object)
 {
 	/* FIXME bugzilla.eazel.com 2736: oaf_plugin_unuse can't possibly work! this sucks */
-#if 0
+
 	oaf_plugin_unuse (gtk_object_get_user_data (object));
-#endif
 }
 
 
@@ -66,7 +65,7 @@ tree_shlib_make_object (PortableServer_POA poa,
 
 	gtk_signal_connect (GTK_OBJECT (nautilus_view), "destroy", tree_shlib_object_destroyed, NULL);
 
-	gtk_object_set_user_data (GTK_OBJECT (view), impl_ptr);
+	gtk_object_set_user_data (GTK_OBJECT (nautilus_view), impl_ptr);
 
 	oaf_plugin_use (poa, impl_ptr);
 

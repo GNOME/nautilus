@@ -1,3 +1,9 @@
+2001-01-26  Maciej Stachowiak  <mjs@eazel.com>
+
+	* src/nautilus-window-manage-views.c
+	(disconnect_and_destroy_sidebar_panel): Hold a ref on the widget
+	to avoid it being finalized before we can destroy it.
+
 2001-01-26  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-dnd.c:
@@ -4035,11 +4041,12 @@ Wed Jan 24 21:21:52 2001  George Lebl <jirka@5z.com>
 	
 2001-01-12  Andy Hertzfeld  <andy@eazel.com>
 
-	fixed bug 5198, removing an active sidebar panel messes up the 
-	remaining ones . I had already fixed this but missed the case
-	when multiple windows were open. Fixed by adding a sidebar call to
-	close the active panel if it matches a passed-in id, and used that in
-	nautilus window to close the panel if necessary before destroying it.
+	fixed bug 5198, removing an active sidebar panel messes up the
+	remaining ones. I had already fixed this but missed the case when
+	multiple windows were open. Fixed by adding a sidebar call to
+	close the active panel if it matches a passed-in id, and used that
+	in nautilus window to close the panel if necessary before
+	destroying it.
 	
 	* src/nautilus-sidebar.c:
 	(nautilus_sidebar_hide_active_panel_if_matches),
