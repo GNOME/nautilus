@@ -1,3 +1,16 @@
+2000-12-14  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_download_packages),
+	Set toplevel to TRUE even if not downloading, fixes 5196.
+	(eazel_install_do_transaction_all_files_check):
+	Only do interpackage file check in packages.size() > 1
+	
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_initialize), (eazel_install_set_debug):
+	Set debug in packagesystem to FAIL, not VERBOSE. _set_debug raises
+	it to verbose.
+	
 2000-12-14  Maciej Stachowiak  <mjs@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>

@@ -620,7 +620,7 @@ eazel_install_initialize (EazelInstall *service) {
 
 		service->private->package_system = eazel_package_system_new (list);
 		eazel_package_system_set_debug (service->private->package_system, 
-						EAZEL_PACKAGE_SYSTEM_DEBUG_VERBOSE);
+						EAZEL_PACKAGE_SYSTEM_DEBUG_FAIL);
 		gtk_signal_connect (GTK_OBJECT (service->private->package_system),
 				    "start",
 				    (GtkSignalFunc)eazel_install_start_signal,
@@ -1545,12 +1545,20 @@ eazel_install_set_cgi_path (EazelInstall *service, const char *cgi_path)
 	eazel_softcat_set_cgi_path (service->private->softcat, cgi_path);
 }
 
-
-
+void eazel_install_set_debug (EazelInstall *service, gboolean debug) {
+	EAZEL_INSTALL_SANITY (service);
+	service->private->iopts->mode_debug = debug;
+	if (debug) {
+		eazel_package_system_set_debug (service->private->package_system, 
+						EAZEL_PACKAGE_SYSTEM_DEBUG_VERBOSE);
+	} else {
+		eazel_package_system_set_debug (service->private->package_system, 
+						EAZEL_PACKAGE_SYSTEM_DEBUG_FAIL);
+	}
+}
 
 ei_mutator_impl (verbose, gboolean, iopts->mode_verbose);
 ei_mutator_impl (silent, gboolean, iopts->mode_silent);
-ei_mutator_impl (debug, gboolean, iopts->mode_debug);
 ei_mutator_impl (test, gboolean, iopts->mode_test);
 ei_mutator_impl (force, gboolean, iopts->mode_force);
 ei_mutator_impl (depend, gboolean, iopts->mode_depend);

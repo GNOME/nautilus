@@ -57,31 +57,31 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-host_alias = i686-pc-linux-gnu
+host_alias = i686-pc-linux
 host_triplet = i686-pc-linux-gnu
 AMMONITE_CFLAGS = -I/gnome/include
 AMMONITE_LIBS = -L/gnome/lib -lammonite-gtk -lammonite
-APPLETS_CFLAGS = -I/gnome/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/include/glib-1.2 -I/gnome/lib/glib/include -I/gnome/include/gtk-1.2 -I/usr/X11R6/include
-APPLETS_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lpanel_applet -lgnorba -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lnsl -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb1 -lglib -ldl
+APPLETS_CFLAGS = 
+APPLETS_LIBS = 
 AS = @AS@
 BONOBOX_CFLAGS = -I/gnome/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/include/gtk-1.2 -I/gnome/include/glib-1.2 -I/gnome/lib/glib/include -I/usr/X11R6/include -I/gnome/include/gnome-xml
-BONOBOX_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lbonobo -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgnome -lgnomesupport -lesd -laudiofile -ldb1 -lgdk_pixbuf -lgtk -lgdk -lgmodule -ldl -lXext -lX11 -loaf -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm -lbonobox -lxml -lz
+BONOBOX_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -lbonobo -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgnome -lgnomesupport -lesd -laudiofile -ldb1 -lgdk_pixbuf -lgtk -lgdk -lgmodule -ldl -lXext -lX11 -loaf -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm -lbonobox -lxml -lz
 BONOBO_CFLAGS = -I/gnome/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/include/gtk-1.2 -I/gnome/include/glib-1.2 -I/gnome/lib/glib/include -I/usr/X11R6/include -I/gnome/include/gnome-xml
-BONOBO_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lbonobo -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgnome -lgnomesupport -lesd -laudiofile -ldb1 -lgdk_pixbuf -lgtk -lgdk -lgmodule -ldl -lXext -lX11 -loaf -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
+BONOBO_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -lbonobo -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgnome -lgnomesupport -lesd -laudiofile -ldb1 -lgdk_pixbuf -lgtk -lgdk -lgmodule -ldl -lXext -lX11 -loaf -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
 BONOBO_PRINT_CFLAGS = 
 BONOBO_PRINT_LIBS = 
-CATALOGS = 
+CATALOGS =  ca.gmo da.gmo de.gmo en_GB.gmo fi.gmo fr.gmo ga.gmo gl.gmo hu.gmo it.gmo ja.gmo ko.gmo nl.gmo no.gmo pl.gmo pt_BR.gmo ru.gmo sv.gmo ta.gmo tr.gmo uk.gmo zh_TW.Big5.gmo
 CATOBJEXT = .gmo
-CC = /usr/bin/gcc
-CPP = /usr/bin/gcc -E
-CXX = /usr/bin/g++
+CC = gcc
+CPP = gcc -E
+CXX = g++
 DATADIRNAME = share
 DLLTOOL = @DLLTOOL@
 EAZEL_SERVICES = 1
 ENABLE_PROFILER = 
-ESD_CFLAGS = 
-ESD_CONFIG = /usr/bin/esd-config
-ESD_LIBS = -L/usr/lib -lesd -laudiofile -lm
+ESD_CFLAGS = -I/gnome/include
+ESD_CONFIG = /gnome/bin/esd-config
+ESD_LIBS = -L/gnome/lib -lesd -laudiofile -lm
 FREETYPE2_CFLAGS = -I/usr/include/freetype2
 FREETYPE2_LIBS = -L/usr/lib -lfreetype
 GCONF_CFLAGS = -I/gnome/include/gconf/1 -I/gnome/include -I/gnome/include/glib-1.2 -I/gnome/lib/glib/include -I/gnome/include/gtk-1.2 -I/usr/X11R6/include
@@ -98,14 +98,14 @@ GLIB_CFLAGS = -I/gnome/include/glib-1.2 -I/gnome/lib/glib/include
 GLIB_CONFIG = /gnome/bin/glib-config
 GLIB_LIBS = -L/gnome/lib -lglib
 GMOFILES =  ca.gmo da.gmo de.gmo en_GB.gmo fi.gmo fr.gmo ga.gmo gl.gmo hu.gmo it.gmo ja.gmo ko.gmo nl.gmo no.gmo pl.gmo pt_BR.gmo ru.gmo sv.gmo ta.gmo tr.gmo uk.gmo zh_TW.Big5.gmo
-GMSGFMT = /usr/bin/msgfmt
+GMSGFMT = /gnome/bin/msgfmt
 GNOMECANVASPIXBUF_INCLUDEDIR = 
 GNOMECANVASPIXBUF_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -lgdk_pixbuf -lgtk -lgdk -lgmodule -lglib -ldl -lXext -lX11 -lm -lgnomecanvaspixbuf
 GNOMEUI_CFLAGS = -I/gnome/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/include/gtk-1.2 -I/gnome/include/glib-1.2 -I/gnome/lib/glib/include -I/usr/X11R6/include
-GNOMEUI_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb1 -lglib -ldl
+GNOMEUI_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb1 -lglib -ldl
 GNOME_CFLAGS = -I/gnome/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/include -I/gnome/include/gtk-1.2 -I/gnome/include/glib-1.2 -I/gnome/lib/glib/include -I/usr/X11R6/include
 GNOME_CONFIG = /gnome/bin/gnome-config
-GNOME_LIBS = -L/gnome/lib -L/usr/lib -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb1 -lglib -ldl
+GNOME_LIBS = -L/gnome/lib -lgnome -lgnomesupport -lesd -laudiofile -lm -ldb1 -lglib -ldl
 GNORBA_CFLAGS = 
 GNORBA_LIBS = 
 GTK_CFLAGS = -I/gnome/include/gtk-1.2 -I/gnome/include/glib-1.2 -I/gnome/lib/glib/include -I/usr/X11R6/include
@@ -113,14 +113,13 @@ GTK_CONFIG = /gnome/bin/gtk-config
 GTK_LIBS = -L/gnome/lib -L/usr/X11R6/lib -lgtk -lgdk -rdynamic -lgmodule -lglib -ldl -lXext -lX11 -lm
 GT_NO = 
 GT_YES = #YES#
-HAVE_APPLETS = yes
+HAVE_APPLETS = no
 IDL_CFLAGS = -I/gnome/share/idl -I$(top_srcdir) -I$(top_builddir)
 INCLUDE_LOCALE_H = #include <locale.h>
 INSTOBJEXT = .mo
 INTLDEPS = 
 INTLLIBS = 
 INTLOBJS = 
-LD = /usr/bin/ld
 LIBPNG = -lpng -lz
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LN_S = ln -s
@@ -134,7 +133,6 @@ MOZILLA_COMPONENT_DEBUG_FLAGS =
 MOZILLA_COMPONENT_LDFLAGS = -L/usr/lib/mozilla
 MOZILLA_COMPONENT_LIBS = -lgtkembedmoz 				-lgtksuperwin 				-lxpcom 				-lnspr4 				-lplc4 				-lplds4
 MOZILLA_MILESTONE = 18
-NM = /usr/bin/nm -B
 OAF_CFLAGS = -I/gnome/include -I/gnome/include/glib-1.2 -I/gnome/lib/glib/include
 OAF_CONFIG = /gnome/bin/oaf-config
 OAF_LIBS = -L/gnome/lib -loaf -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
@@ -144,11 +142,13 @@ ORBIT_CONFIG = /gnome/bin/orbit-config
 ORBIT_IDL = /gnome/bin/orbit-idl
 ORBIT_LIBS = -L/gnome/lib -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
 PACKAGE = nautilus
+PACKAGESYSTEM = libeazelpackagesystem-rpm3.la
 PAM_LIBS = -ldl -lpam -lpam_misc
 POFILES =  ca.po da.po de.po en_GB.po fi.po fr.po ga.po gl.po hu.po it.po ja.po ko.po nl.po no.po pl.po pt_BR.po ru.po sv.po ta.po tr.po uk.po zh_TW.Big5.po
 POSUB = po
 RANLIB = ranlib
 RPM_LIBS = -lrpm -lz -lbz2 -lpopt -ldb1
+RPM_VERSION = 3.0.5
 USE_INCLUDED_LIBINTL = no
 USE_NLS = yes
 VERSION = 0.5.0
@@ -169,7 +169,7 @@ INCLUDES =  	-I$(top_srcdir)/libnautilus-extensions		 		-I$(top_srcdir)/componen
 
 bin_PROGRAMS = eazel-installer
 
-eazel_installer_SOURCES =  	main.c 	callbacks.c callbacks.h 	proxy.c proxy.h 	installer.c installer.h 
+eazel_installer_SOURCES =  	main.c 	package-tree.c 	gtk-hackery.c 	callbacks.c callbacks.h 	proxy.c proxy.h 	installer.c installer.h 
 
 
 eazel_installer_LDFLAGS = -static
@@ -186,7 +186,8 @@ DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir) -I../..
 CPPFLAGS = 
 LDFLAGS = 
 LIBS = 
-eazel_installer_OBJECTS =  main.o callbacks.o proxy.o installer.o
+eazel_installer_OBJECTS =  main.o package-tree.o gtk-hackery.o \
+callbacks.o proxy.o installer.o
 eazel_installer_DEPENDENCIES =  \
 $(top_builddir)/components/services/trilobite/libtrilobite/helixcode-utils.o \
 $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o \
@@ -206,8 +207,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-DEP_FILES =  .deps/callbacks.P .deps/installer.P .deps/main.P \
-.deps/proxy.P
+DEP_FILES =  .deps/callbacks.P .deps/gtk-hackery.P .deps/installer.P \
+.deps/main.P .deps/package-tree.P .deps/proxy.P
 SOURCES = $(eazel_installer_SOURCES)
 OBJECTS = $(eazel_installer_OBJECTS)
 
@@ -325,7 +326,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \

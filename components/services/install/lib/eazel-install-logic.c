@@ -222,7 +222,8 @@ eazel_install_download_packages (EazelInstall *service,
 		
 		fetch_package = TRUE;
 
-		trilobite_debug ("init for %s (%s)", package->name, package->version ? package->version : "NO VERSION");
+		trilobite_debug ("init for %s (%s/%s)", package->name, package->version ? package->version : "NO VERSION",
+				toplevel?"TRUE":"FALSE");
 		/* if filename in the package is set, but the file
 		   does not exist, get it anyway */
 		if (package->filename) {
@@ -282,7 +283,6 @@ eazel_install_download_packages (EazelInstall *service,
 				package->status = PACKAGE_CANNOT_OPEN;
 				remove_list = g_list_prepend (remove_list, package);
 			} else {
-				package->toplevel = toplevel;
 				/* If downloaded package has soft_deps,
 				   fetch them by a recursive call */
 				if (package->soft_depends) {
@@ -295,6 +295,7 @@ eazel_install_download_packages (EazelInstall *service,
 		}
 
 		if (result) {
+			package->toplevel = toplevel;
 			if (package->source_package) {
 				package->status = PACKAGE_SOURCE_NOT_SUPPORTED;
 				remove_list = g_list_prepend (remove_list, package);
@@ -738,7 +739,8 @@ eazel_install_do_transaction_all_files_check (EazelInstall *service,
 	GHashTable *file_to_pack; /* maps from a filename to a packagedata struct */
 	
 	if (eazel_install_get_force (service) || 
-	    eazel_install_get_ignore_file_conflicts (service)) {		
+	    eazel_install_get_ignore_file_conflicts (service) ||
+		(g_list_length (*packages) == 1 )) {		
 		trilobite_debug ("not performing file conflict check");
 		return result;
 	}
