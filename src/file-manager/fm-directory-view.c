@@ -3260,6 +3260,7 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, BonoboUIHandler *ui_handler,
 static void
 fm_directory_view_real_merge_menus (FMDirectoryView *view)
 {
+
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("New Folder", (BonoboUIVerbFn)new_folder_callback),
 		BONOBO_UI_VERB ("Open", (BonoboUIVerbFn)open_callback),
@@ -3283,12 +3284,14 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
 						     NAUTILUS_DATADIR,
 						     "nautilus-directory-view-ui.xml",
 						     "nautilus");
+
 	bonobo_ui_component_add_verb_list_with_data (view->details->ui, verbs, view);
 
 	gtk_signal_connect_object (GTK_OBJECT (fm_directory_view_get_background (view)),
 			    	   "settings_changed",
 			    	   schedule_update_menus,
 			    	   GTK_OBJECT (view));
+
 }
 
 static void

@@ -204,20 +204,22 @@
 			  verb=""/>
 	</submenu>
 
-	<submenu name="Preferences" _label="User Level">
+
+	<submenu name="Preferences" _label="User Level" pixtype="filename">
+
 		<placeholder name="User Levels Placeholder">
 			<menuitem name="Switch to Beginner Level" 
-				  _label="Beginner" 
+				  _label=" Beginner"
 				  _descr="Use Beginner settings"
-				  type="radio" group="user levels group"/>
+                                  verb="" pixtype="filename"/>
 			<menuitem name="Switch to Intermediate Level" 
-				  _label="Intermediate" 
+				  _label=" Intermediate" 
 				  _descr="Use Intermediate settings"
-				  type="radio" group="user levels group"/>
+                                  verb="" pixtype="filename"/>
 			<menuitem name="Switch to Advanced Level" 
-				  _label="Advanced" 
+				  _label=" Advanced" 
 				  _descr="Use Advanced settings"
-				  type="radio" group="user levels group"/>
+                                  verb="" pixtype="filename"/>
 		</placeholder>
 		<separator/>
 		<menuitem name="User Level Customization" 

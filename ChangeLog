@@ -1,3 +1,39 @@
+2000-10-09  Mathieu Lacage  <mathieu@eazel.com>
+
+	Fix bugs 3498, 3523 and the nautilus part of 3497
+	3497 bug fix is disabled because there is a bug in bonobo.
+	bug you can try it if you set BONOBO_WORKAROUND to 1.
+	
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_set_accelerator),
+	(nautilus_bonobo_set_description), (nautilus_bonobo_set_label),
+	(nautilus_bonobo_set_sensitive), (nautilus_bonobo_set_hidden),
+	(nautilus_bonobo_get_hidden), (nautilus_bonobo_set_icon):
+	add g_asserts. add (nautilus_bonobo_set_icon)
+	* libnautilus-extensions/nautilus-bonobo-extensions.h:
+	add (nautilus_bonobo_set_icon) prototype
+	
+	* src/Makefile.am: beautification.
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize_class): a space...
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_real_merge_menus): a space too...
+	* src/nautilus-shell-ui.xml: mainly a few spaces.
+	* src/nautilus-window-manage-views.c: (load_content_view):
+	use bonobo_ui_component_freeze/thaw
+	* src/nautilus-window-menus.c: 
+	(nautilus_window_update_show_hide_menu_items),
+	(get_user_level_icon_name), (switch_to_user_level),
+	(add_user_level_menu_item), (nautilus_window_initialize_menus),
+	(nautilus_window_update_find_menu_item),
+	(update_user_level_menu_items), 
+	(convert_user_level_to_path):
+	use bonobo_ui_component_freeze/thaw and add the corect calls to
+	nautilus_bonobo_set_icon
+	* src/nautilus-window.c: (nautilus_window_constructed),
+	(show_dock_item): add calls to nautilus_bonobo_set_hidden to remove
+	the toolbars for the desktop case.
+
 2000-10-09  Rebecca Schulman  <rebecka@eazel.com>
 	Fixed bugzilla bug 3359, to create nautilus
 	file api call to get the error code for

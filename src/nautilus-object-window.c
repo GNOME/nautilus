@@ -86,6 +86,7 @@
 #define LOCATION_BAR_PATH	"/Location Bar"
 #define TOOL_BAR_PATH           "/Tool Bar"
 #define STATUS_BAR_PATH         "/status"
+#define MENU_BAR_PATH           "/menu"
 
 /* default web search uri - FIXME bugzilla.eazel.com 2465: this will be changed to point to the Eazel service */
 #define DEFAULT_SEARCH_WEB_URI "http://www.google.com"
@@ -441,15 +442,29 @@ nautilus_window_constructed (NautilusWindow *window)
 	bonobo_ui_container_set_win (window->details->ui_container,
 				     BONOBO_WIN (window));
 
+
 	/* Load the user interface from the XML file. */
 	window->details->shell_ui = bonobo_ui_component_new ("Nautilus Shell");
 	bonobo_ui_component_set_container
 		(window->details->shell_ui,
 		 bonobo_object_corba_objref (BONOBO_OBJECT (window->details->ui_container)));
+
+	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
+
 	bonobo_ui_util_set_ui (window->details->shell_ui,
 			       NAUTILUS_DATADIR,
 			       "nautilus-shell-ui.xml",
 			       "nautilus");
+	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+		nautilus_bonobo_set_hidden (window->details->shell_ui,
+					    LOCATION_BAR_PATH, TRUE);
+		nautilus_bonobo_set_hidden (window->details->shell_ui,
+					    TOOL_BAR_PATH, TRUE);
+		nautilus_bonobo_set_hidden (window->details->shell_ui,
+					    STATUS_BAR_PATH, TRUE);
+		nautilus_bonobo_set_hidden (window->details->shell_ui,
+					    MENU_BAR_PATH, TRUE);
+	}
 
 	/* Wrap the location bar in a control and set it up. */
 	location_bar_wrapper = bonobo_control_new (location_bar_box);
@@ -457,6 +472,7 @@ nautilus_window_constructed (NautilusWindow *window)
 					"/Location Bar/Wrapper",
 					bonobo_object_corba_objref (BONOBO_OBJECT (location_bar_wrapper)),
 					NULL);
+	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 	bonobo_object_unref (BONOBO_OBJECT (location_bar_wrapper));
 
 	/* initalize the menus and tool bars */
@@ -1608,7 +1624,9 @@ sidebar_panels_changed_callback (gpointer user_data)
 static void 
 show_dock_item (NautilusWindow *window, const char *dock_item_path)
 {
-
+	if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+		return;
+	}
 	nautilus_bonobo_set_hidden (window->details->shell_ui,
 				    dock_item_path,
 				    FALSE);

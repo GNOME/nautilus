@@ -53,6 +53,12 @@ void nautilus_bonobo_set_hidden (BonoboUIComponent *ui,
 gboolean nautilus_bonobo_get_hidden (BonoboUIComponent *ui,
 				     const char        *path);
 
+
+void nautilus_bonobo_set_icon (BonoboUIComponent *ui,
+			       const char        *path,
+			       const char        *icon_relative_path);
+
+
 #ifdef UIH
 void nautilus_bonobo_ui_handler_menu_set_toggle_appearance (BonoboUIHandler *uih,
 				      	   		    const char      *path,

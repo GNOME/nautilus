@@ -58,6 +58,9 @@
 #include <parser.h>
 #include <xmlmemory.h>
 
+/* FIXME: bugzilla.eazel.com 3497 set to 1 when the bug is fixed in bonobo */
+#define BONOBO_WORKAROUND 0
+
 #define STATIC_BOOKMARKS_FILE_NAME	"static_bookmarks.xml"
 
 /* Private menu paths that components don't know about */
@@ -97,10 +100,14 @@
 #define NAUTILUS_MENU_PATH_NAUTILUS_FEEDBACK		"/menu/Help/Nautilus Feedback"
 
 
-
 #define SWITCH_TO_BEGINNER_VERB				"Switch to Beginner Level"
 #define SWITCH_TO_INTERMEDIATE_VERB			"Switch to Intermediate Level"
 #define SWITCH_TO_ADVANCED_VERB				"Switch to Advanced Level"
+
+#define BEGINNER_ICON_NAME                              "nautilus/novice.png"
+#define INTERMEDIATE_ICON_NAME                          "nautilus/intermediate.png"
+#define ADVANCED_ICON_NAME                              "nautilus/expert.png"
+
 
 static GtkWindow *bookmarks_window = NULL;
 
@@ -129,7 +136,7 @@ static void                  edit_bookmarks                                 (Nau
 
 /* User level things */
 static guint                 convert_verb_to_user_level               	    (const char             *verb);
-static const char *          convert_user_level_to_verb	    		    (guint                   user_level);
+static const char *          convert_user_level_to_path                     (guint                   user_level);
 static char *                get_customize_user_level_settings_menu_string  (void);
 static void                  update_user_level_menu_items                   (NautilusWindow         *window);
 static char *                get_customize_user_level_string                (void);
@@ -185,17 +192,17 @@ bookmark_holder_free (BookmarkHolder *bookmark_holder)
  * don't want other code relying on their existence.
  */
 
-#define NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM			"/Edit/Customization"
-#define NAUTILUS_MENU_PATH_CHANGE_APPEARANCE_ITEM		"/Edit/Change_Appearance"
+#define NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM			"/menu/Edit/Customization"
+#define NAUTILUS_MENU_PATH_CHANGE_APPEARANCE_ITEM		"/menu/Edit/Change_Appearance"
 
-#define NAUTILUS_MENU_PATH_USER_LEVEL				"/UserLevel"
-#define NAUTILUS_MENU_PATH_NOVICE_ITEM				"/UserLevel/Novice"
-#define NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM			"/UserLevel/Intermediate"
-#define NAUTILUS_MENU_PATH_EXPERT_ITEM				"/UserLevel/Expert"
-#define NAUTILUS_MENU_PATH_AFTER_USER_LEVEL_SEPARATOR		"/UserLevel/After User Level Separator"
-#define NAUTILUS_MENU_PATH_USER_LEVEL_CUSTOMIZE			"/UserLevel/User Level Customization"
+#define NAUTILUS_MENU_PATH_USER_LEVEL				"/menu/Preferences"
+#define NAUTILUS_MENU_PATH_NOVICE_ITEM				"/menu/Preferences/User Levels Placeholder/Switch to Beginner Level"
+#define NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM			"/menu/Preferences/User Levels Placeholder/Switch to Intermediate Level"
+#define NAUTILUS_MENU_PATH_EXPERT_ITEM				"/menu/Preferences/User Levels Placeholder/Switch to Advanced Level"
+#define NAUTILUS_MENU_PATH_AFTER_USER_LEVEL_SEPARATOR		"/menu/Preferences/After User Level Separator"
+#define NAUTILUS_MENU_PATH_USER_LEVEL_CUSTOMIZE			"/menu/Preferences/User Level Customization"
 
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_CANNED_BOOKMARKS	"/Bookmarks/Before Canned Separator"
+#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_CANNED_BOOKMARKS	"/menu/Bookmarks/Before Canned Separator"
 
 static void
 file_menu_new_window_callback (BonoboUIComponent *component, 
@@ -479,13 +486,13 @@ nautilus_window_update_show_hide_menu_items (NautilusWindow *window)
 {
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
-
+	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 	nautilus_bonobo_set_label (window->details->shell_ui,
 				   NAUTILUS_MENU_PATH_SHOW_HIDE_STATUS_BAR,
 				   nautilus_window_status_bar_showing (window)
 				   ? _("Hide Status Bar")
 				   : _("Show Status Bar"));
-
+		
 	nautilus_bonobo_set_label (window->details->shell_ui,
 				   NAUTILUS_MENU_PATH_SHOW_HIDE_SIDEBAR,
 				   nautilus_window_sidebar_showing (window)
@@ -497,13 +504,13 @@ nautilus_window_update_show_hide_menu_items (NautilusWindow *window)
 				   nautilus_window_tool_bar_showing (window)
 				   ? _("Hide Tool Bar")
 				   : _("Show Tool Bar"));
-
+		
 	nautilus_bonobo_set_label (window->details->shell_ui,
 				   NAUTILUS_MENU_PATH_SHOW_HIDE_LOCATION_BAR,
 				   nautilus_window_location_bar_showing (window)
 				   ? _("Hide Location Bar")
 				   : _("Show Location Bar"));
-	
+	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 }
 
 static void
@@ -695,12 +702,11 @@ help_menu_nautilus_feedback_callback (BonoboUIComponent *component,
 
 /* utility routine to return an image corresponding to the passed-in user level */
 
-static GdkPixbuf *
-get_user_level_image (int user_level, gboolean is_selected)
+static char *
+get_user_level_icon_name (int user_level, gboolean is_selected)
 {
 	const char *image_name;
-	char *temp_str, *full_image_name;
-	GdkPixbuf *pixbuf;
+	char *full_image_name;
 	
 	switch (user_level) {
 	case NAUTILUS_USER_LEVEL_NOVICE:
@@ -716,29 +722,26 @@ get_user_level_image (int user_level, gboolean is_selected)
 	}
 	
 	if (is_selected) {
-		full_image_name = g_strdup_printf ("%s-selected.png", image_name);
+		full_image_name = g_strdup_printf ("nautilus/%s-selected.png", image_name);
 	} else {
-		full_image_name = g_strdup_printf ("%s.png", image_name);	
+		full_image_name = g_strdup_printf ("nautilus/%s.png", image_name);	
 	}
 	
-	temp_str = nautilus_pixmap_file (full_image_name);
-	g_free (full_image_name);
-	if (temp_str) {
-		pixbuf = gdk_pixbuf_new_from_file (temp_str);
-		g_free (temp_str);
-	} else {
-		pixbuf = NULL;
-	}
-	
-	return pixbuf;
+	return full_image_name;
 }
 
 /* handle user level changes */
 static void
 switch_to_user_level (NautilusWindow *window, int new_user_level)
 {
-	GdkPixbuf *pixbuf;
+	char *old_user_level_icon_name;
 	int old_user_level;
+	char *new_user_level_icon_name;
+	char *new_user_level_icon_name_selected;
+
+	if (window->details->shell_ui == NULL) {
+		return;
+	}
 
 	old_user_level = nautilus_user_level_manager_get_user_level ();
 	if (new_user_level == old_user_level) {
@@ -747,37 +750,31 @@ switch_to_user_level (NautilusWindow *window, int new_user_level)
 
 	nautilus_user_level_manager_set_user_level (new_user_level);
 	
-	/* change the item pixbufs to reflect the new user level */
-	pixbuf = get_user_level_image (old_user_level, FALSE);
-#ifdef UIH
-	bonobo_ui_handler_menu_set_pixmap 
-		(window->ui_handler, 
-		 convert_user_level_to_verb (old_user_level), 
-		 BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA, 
-		 pixbuf);
-#endif
-	gdk_pixbuf_unref (pixbuf);
+	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
+	/* change the item icons to reflect the new user level */
+	old_user_level_icon_name = get_user_level_icon_name (old_user_level, FALSE);
+	nautilus_bonobo_set_icon (window->details->shell_ui,
+				  convert_user_level_to_path (old_user_level),
+				  old_user_level_icon_name);
+	g_free (old_user_level_icon_name);
 	
-	pixbuf = get_user_level_image (new_user_level, TRUE);
-#ifdef UIH
-	bonobo_ui_handler_menu_set_pixmap 
-		(window->ui_handler, 
-		 convert_user_level_to_verb (new_user_level), 
-		 BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA, 
-		 pixbuf);
-#endif
-	gdk_pixbuf_unref (pixbuf);
+	new_user_level_icon_name_selected = get_user_level_icon_name (new_user_level, TRUE);
+	nautilus_bonobo_set_icon (window->details->shell_ui,
+				  convert_user_level_to_path (new_user_level),
+				  new_user_level_icon_name_selected);
+	g_free (new_user_level_icon_name_selected);
 	
+
 	/* set up the menu title image to reflect the new user level */
-	pixbuf = get_user_level_image (new_user_level, FALSE);
-#ifdef UIH
-	bonobo_ui_handler_menu_set_pixmap 
-		(window->ui_handler, 
-		 NAUTILUS_MENU_PATH_USER_LEVEL, 
-		 BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA, 
-		 pixbuf);
+	new_user_level_icon_name = get_user_level_icon_name (new_user_level, FALSE);
+#if BONOBO_WORKAROUND
+	/* the line below is disabled because of a bug in bonobo. */
+	nautilus_bonobo_set_icon (window->details->shell_ui,
+				  NAUTILUS_MENU_PATH_USER_LEVEL,
+				  new_user_level_icon_name);
 #endif
-	gdk_pixbuf_unref (pixbuf);
+	g_free (new_user_level_icon_name);
+	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 } 
  
 static void
@@ -1334,8 +1331,8 @@ new_top_level_menu (NautilusWindow *window,
 	g_free (title);
 }				    
 
-/*( handler to receive the user_level_changed signal, so we can update the menu and dialog
-    when the user level changes */
+/* handler to receive the user_level_changed signal, so we can update the menu and dialog
+   when the user level changes */
 static void
 user_level_changed_callback (GtkObject	*user_level_manager,
 			     gpointer	user_data)
@@ -1370,47 +1367,25 @@ add_user_level_menu_item (NautilusWindow *window,
 			  const char *menu_path, 
 			  guint user_level)
 {
-#ifdef UIH
-	BonoboUIHandler *ui_handler;
-#endif
-        GdkPixbuf *pixbuf;
-        guint current_user_level;
-        char *user_level_name;
-        char *menu_label;
-        char *menu_hint;
 
-#ifdef UIH
-	ui_handler = window->ui_handler;
-#endif
-        user_level_name = nautilus_user_level_manager_get_user_level_name_for_display (user_level);
+        guint current_user_level;
+        char *icon_name;
+
+	if (window->details->shell_ui == NULL) {
+		return;
+	}
+
 	current_user_level = nautilus_user_level_manager_get_user_level ();
 
+	icon_name = get_user_level_icon_name (user_level, current_user_level == user_level);
 
-	/* Hackily hardwire leading space so text doesn't butt up against pixmap. */
-        menu_label = g_strdup_printf (" %s", user_level_name);
-        /* Localizers: This is the menu hint for the user-level setting (%s is name of user
-         * level, "Beginner", "Intermediate", or "Advanced")
-         */
-	menu_hint = g_strdup_printf (_("Use %s settings"), user_level_name);
 
-	pixbuf = get_user_level_image (user_level, current_user_level == user_level);
-#ifdef UIH
-	bonobo_ui_handler_menu_new_item (ui_handler,
-        				 menu_path,
-        				 menu_label,
- 					 menu_hint,
-       				 	 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA,
-        				 pixbuf,
-        				 0,
-        				 0,
-        				 user_level_menu_item_callback,
-        				 window);
-#endif
-	g_free (user_level_name);
-	g_free (menu_label);
-	g_free (menu_hint);
-	gdk_pixbuf_unref (pixbuf);
+	nautilus_bonobo_set_icon (window->details->shell_ui,
+				  menu_path,
+				  icon_name);
+	
+
+	g_free (icon_name);
 }
 
 /**
@@ -1426,6 +1401,8 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         GdkPixbuf *pixbuf;
 	BonoboUIHandler *ui_handler;
 #endif
+	char *new_user_level_icon_name;
+	guint new_user_level;
 
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("New Window", file_menu_new_window_callback),
@@ -1457,16 +1434,16 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 		BONOBO_UI_VERB ("Edit Bookmarks", bookmarks_menu_edit_bookmarks_callback),
 		BONOBO_UI_VERB ("About Nautilus", help_menu_about_nautilus_callback),
 		BONOBO_UI_VERB ("Nautilus Feedback", help_menu_nautilus_feedback_callback),
+
+
+		BONOBO_UI_VERB ("Switch to Beginner Level", user_level_menu_item_callback),
+		BONOBO_UI_VERB ("Switch to Intermediate Level", user_level_menu_item_callback),
+		BONOBO_UI_VERB ("Switch to Advanced Level", user_level_menu_item_callback),
+		BONOBO_UI_VERB ("User Level Customization", user_level_customize_callback),
+
 		BONOBO_UI_VERB ("Stop", stop_button_callback),
 		BONOBO_UI_VERB ("Services", services_button_callback),
-#ifdef UIH	
-	/* The next set of verbs doesn't work. Need some different mechanism for radio items apparently */
-#endif
-		BONOBO_UI_VERB (SWITCH_TO_BEGINNER_VERB, user_level_menu_item_callback),
-		BONOBO_UI_VERB (SWITCH_TO_INTERMEDIATE_VERB, user_level_menu_item_callback),
-		BONOBO_UI_VERB (SWITCH_TO_ADVANCED_VERB, user_level_menu_item_callback),
 
-		BONOBO_UI_VERB ("User Level Customization", user_level_customize_callback),
 		BONOBO_UI_VERB_END
 	};
 
@@ -1477,7 +1454,23 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         nautilus_window_update_find_menu_item (window);
         nautilus_window_update_show_hide_menu_items (window);
 
-#ifdef UIH
+	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
+	add_user_level_menu_item (window, NAUTILUS_MENU_PATH_NOVICE_ITEM, 
+				  NAUTILUS_USER_LEVEL_NOVICE);
+	add_user_level_menu_item (window, NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM, 
+				  NAUTILUS_USER_LEVEL_INTERMEDIATE);
+	add_user_level_menu_item (window, NAUTILUS_MENU_PATH_EXPERT_ITEM, 
+				  NAUTILUS_USER_LEVEL_HACKER);
+	new_user_level = nautilus_user_level_manager_get_user_level ();
+	new_user_level_icon_name = get_user_level_icon_name (new_user_level, FALSE);
+#if BONOBO_WORKAROUND
+	/* the line below is disabled because of a bug in bonobo */
+	nautilus_bonobo_set_icon (window->details->shell_ui,
+				  NAUTILUS_MENU_PATH_USER_LEVEL,
+				  new_user_level_icon_name);
+#endif
+	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
+
 	/* connect to the user level changed signal, so we can update the menu when the
 	   user level changes */
 	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_user_level_manager_get ()),
@@ -1486,38 +1479,6 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 					window,
 					GTK_OBJECT (window));
 
-	/* create the user level menu.  First, the menu item itself */
-
-	pixbuf = get_user_level_image (nautilus_user_level_manager_get_user_level (), FALSE);	
-	bonobo_ui_handler_menu_new_subtree (ui_handler,
-					    NAUTILUS_MENU_PATH_USER_LEVEL,
-					    "",
-					    NULL,
-					    -1,
-					    BONOBO_UI_HANDLER_PIXMAP_PIXBUF_DATA,
-					    pixbuf,
-					    0,
-					    0);
-	gdk_pixbuf_unref (pixbuf);
-	
-	/* now add items for each of the three user levels */
-	add_user_level_menu_item (window, NAUTILUS_MENU_PATH_NOVICE_ITEM, 
-				  NAUTILUS_USER_LEVEL_NOVICE);
-	add_user_level_menu_item (window, NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM, 
-				  NAUTILUS_USER_LEVEL_INTERMEDIATE);
-	add_user_level_menu_item (window, NAUTILUS_MENU_PATH_EXPERT_ITEM, 
-				  NAUTILUS_USER_LEVEL_HACKER);
-
-
-        update_user_level_menu_items (window);
-	
-	/* Connect to undo manager so it will handle the menu item. */
-	nautilus_undo_manager_set_up_bonobo_ui_handler_undo_item
-		(window->application->undo_manager,
-		 ui_handler, NAUTILUS_MENU_PATH_UNDO_ITEM,
-		 _("_Undo"), _("Undo the last text change"));
-#endif /* UIH */
-	
         nautilus_window_initialize_bookmarks_menu (window);
         nautilus_window_initialize_go_menu (window);
 }
@@ -1579,9 +1540,7 @@ nautilus_window_update_find_menu_item (NautilusWindow *window)
 
 	add_user_level_menu_item (0, 0, 0);
 	bookmark_holder_free (0);
-	convert_user_level_to_verb (0);
 	show_bogus_bookmark_window (0);
-	user_level_changed_callback (0, 0);
 #endif
 }
 
@@ -1705,35 +1664,37 @@ schedule_refresh_go_menu (NautilusWindow *window)
 	}	
 }
 
-
 static void
 update_user_level_menu_items (NautilusWindow *window)
 {
 	char *customize_string;
 	int user_level;
+	char *user_level_icon_name;
 	
         g_assert (window != NULL);
         g_assert (NAUTILUS_IS_WINDOW (window));
 
+ 	/* Update the user radio group to reflect reality */
 	user_level = nautilus_user_level_manager_get_user_level ();
+	user_level_icon_name = get_user_level_icon_name (user_level, FALSE);
+#if BONOBO_WORKAROUND
+	/* the line below is disabled because of a bug in bonobo */
+	nautilus_bonobo_set_icon (window->details->shell_ui,
+				  NAUTILUS_MENU_PATH_USER_LEVEL,
+				  user_level_icon_name);
+#endif
+	g_free (user_level_icon_name);
+
 
 	customize_string = get_customize_user_level_settings_menu_string ();
 	g_assert (customize_string != NULL);
-
- 	/* Update the user radio group to reflect reality */
-#ifdef UIH
-	bonobo_ui_handler_menu_set_radio_state (window->ui_handler, 
-						convert_user_level_to_menu_path (user_level),
-						TRUE);
-
- 	/* Update the "Edit Settings..." item to reflect the user level to customize */
-	bonobo_ui_handler_menu_set_label (window->ui_handler,
-					  NAUTILUS_MENU_PATH_USER_LEVEL_CUSTOMIZE,
-					  customize_string);
-#endif
+	nautilus_bonobo_set_label (window->details->shell_ui,
+				   NAUTILUS_MENU_PATH_USER_LEVEL_CUSTOMIZE,
+				   customize_string);
 
 	g_free (customize_string);
 }
+
 
 static guint
 convert_verb_to_user_level (const char *verb)
@@ -1756,26 +1717,27 @@ convert_verb_to_user_level (const char *verb)
 }
 
 static const char *
-convert_user_level_to_verb (guint user_level)
+convert_user_level_to_path (guint user_level)
 {
 	switch (user_level) {
 	case NAUTILUS_USER_LEVEL_NOVICE:
-		return SWITCH_TO_BEGINNER_VERB;
+		return NAUTILUS_MENU_PATH_NOVICE_ITEM;
 		break;
 
 	case NAUTILUS_USER_LEVEL_INTERMEDIATE:
-		return SWITCH_TO_INTERMEDIATE_VERB;
+		return NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM;
 		break;
 
 	case NAUTILUS_USER_LEVEL_HACKER:
-		return SWITCH_TO_ADVANCED_VERB;
+		return NAUTILUS_MENU_PATH_EXPERT_ITEM; 
 		break;
 	}
 
 	g_assert_not_reached ();
 
-	return NAUTILUS_MENU_PATH_NOVICE_ITEM;
+	return "";
 }
+
 
 static char *
 get_customize_user_level_string (void)

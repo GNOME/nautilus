@@ -145,7 +145,9 @@ oafdir = $(datadir)/oaf
 oaf_DATA = nautilus.oafinfo
 
 uidir = $(datadir)/gnome/ui
-ui_DATA = nautilus-shell-ui.xml
+ui_DATA = 					\
+	nautilus-shell-ui.xml			\
+	$(NULL)
 
 CLEANFILES = \
 	$(nautilus_shell_interface_idl_sources)	\

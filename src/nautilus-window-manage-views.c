@@ -748,6 +748,8 @@ load_content_view (NautilusWindow *window,
          * the zoom_control will get shown.
          */
 	gtk_widget_hide (window->zoom_control);
+
+        bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 						NAUTILUS_MENU_PATH_ZOOM_IN_ITEM,
 						FALSE);
@@ -757,7 +759,8 @@ load_content_view (NautilusWindow *window,
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 						NAUTILUS_MENU_PATH_ZOOM_NORMAL_ITEM,
 						FALSE);
-        
+        bonobo_ui_component_thaw (window->details->shell_ui, NULL);
+
         content_view = window->content_view;
         if (!NAUTILUS_IS_VIEW_FRAME (content_view)
             || strcmp (nautilus_view_frame_get_iid (content_view), iid) != 0) {

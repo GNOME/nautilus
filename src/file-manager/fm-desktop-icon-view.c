@@ -50,6 +50,7 @@
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-volume-monitor.h>
+#include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <limits.h>
 
 #include <stddef.h>
@@ -153,7 +154,9 @@ fm_desktop_icon_view_initialize_class (FMDesktopIconViewClass *klass)
 	fm_directory_view_class->supports_zooming = real_supports_zooming;
 
 	fm_icon_view_class->supports_auto_layout = real_supports_auto_layout;
+
 }
+
 
 static void
 fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
