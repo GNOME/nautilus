@@ -7,6 +7,7 @@ back_DATA = \
 	blue_gray_rough.png \
 	blue_ridge.png \
 	blue_type.png \
+	brushed_metal.png \
 	burlap.jpg \
 	camouflage.png \
 	chalk.jpg \
