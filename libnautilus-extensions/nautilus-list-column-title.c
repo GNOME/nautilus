@@ -89,8 +89,8 @@ struct NautilusListColumnTitleDetails
  	GnomePixmap *down_indicator;
 
 	/* offscreen drawing support */
-	/* FIXME: consolidate this into it's own class once I figure out all the
-	 * details
+	/* FIXME bugzilla.eazel.com 614: 
+	 * consolidate this into it's own class once I figure out all the details.
 	 */
  	GtkWidget *offscreen_widget;
  	GdkPixmap *offscreen_pixmap;
@@ -324,7 +324,7 @@ get_sort_indicator (GtkWidget *widget, gboolean ascending)
 	}
 }
 
-/* FIXME:
+/* FIXME bugzilla.eazel.com 615:
  * Some of these magic numbers could be replaced with some more dynamic values
  */
 enum {
@@ -377,7 +377,7 @@ nautilus_list_column_title_paint (GtkWidget *widget, GtkWidget *draw_target,
 			
 		cell_label = get_column_label_at (widget, index);
 
-		/* FIXME:
+		/* FIXME bugzilla.eazel.com 616:
 		 * add support for center justification
 		 */
 
@@ -787,7 +787,7 @@ nautilus_list_column_title_button_press (GtkWidget *widget, GdkEventButton *even
 			column_title->details->tracking_column_resize = resized_column;
 			column_title->details->tracking_column_prelight = -1;
 
-			/* FIXME:
+			/* FIXME bugzilla.eazel.com 617:
 			 * use a "resized" state here ?
 			 */
 			gtk_widget_set_state (widget, GTK_STATE_NORMAL);
@@ -803,7 +803,7 @@ nautilus_list_column_title_button_press (GtkWidget *widget, GdkEventButton *even
 			column_title->details->tracking_column_prelight = -1;
 			column_title->details->tracking_column_press = clicked_column;
 			gtk_widget_set_state (widget, GTK_STATE_ACTIVE);
-			/* FIXME:
+			/* FIXME bugzilla.eazel.com 618:
 			 * buffered draw may be better here
 			 */
 			gtk_widget_queue_draw (widget);
@@ -853,7 +853,7 @@ nautilus_list_column_title_button_release (GtkWidget *widget, GdkEventButton *ev
 		column_title->details->tracking_column_prelight != -1 ? 
 		GTK_STATE_PRELIGHT : GTK_STATE_NORMAL);
 
-	/* FIXME:
+	/* FIXME bugzilla.eazel.com 618:
 	 * buffered draw may be better here
 	 */
 	gtk_widget_queue_draw (widget);

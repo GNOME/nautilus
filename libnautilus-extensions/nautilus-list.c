@@ -44,8 +44,9 @@
 #include "nautilus-gtk-macros.h"
 #include "nautilus-list-column-title.h"
 
-/* Timeout for making the row currently selected for keyboard operation
- * visible. FIXME: This *must* be higher than the double-click time in GDK,
+/* Timeout for making the row currently selected for keyboard operation visible. */
+/* FIXME bugzilla.eazel.com 611: 
+ * This *must* be higher than the double-click time in GDK,
  * but there is no way to access its value from outside.
  */
 #define KEYBOARD_ROW_REVEAL_TIMEOUT 300
@@ -865,7 +866,9 @@ keyboard_row_reveal_timeout_callback (gpointer data)
 	if (row >= 0 && row < GTK_CLIST (list)->rows) {	
 		/* Only reveal the row if it's still the keyboard focus
 		 * or if it's still selected.
-		 * FIXME: Need to unschedule this if the user scrolls explicitly.
+		 */
+		/* FIXME bugzilla.eazel.com 612: 
+		 * Need to unschedule this if the user scrolls explicitly.
 		 */
 		if (row == GTK_CLIST (list)->focus_row
 		    || nautilus_list_is_row_selected (list, row)) {
@@ -2343,7 +2346,8 @@ nautilus_list_set_selection (NautilusList *list, GList *selection)
 
 	g_return_if_fail (NAUTILUS_IS_LIST (list));
 
-	/* FIXME: Selecting n items in an m-element container is an
+	/* FIXME bugzilla.eazel.com 613: 
+	   Selecting n items in an m-element container is an
 	   O(m*n) task using this algorithm, making it quadratic if
 	   you select them all with this method, which actually
 	   happens if you select all in list view and switch to icon
