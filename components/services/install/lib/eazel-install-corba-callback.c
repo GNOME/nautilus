@@ -32,6 +32,8 @@
 #include "trilobite-eazel-install.h"
 */
 
+#define OAF_ID "OAFIID:trilobite_eazel_install_service:8ff6e815-1992-437c-9771-d932db3b4a17"
+
 enum {
 	DOWNLOAD_PROGRESS,
 	INSTALL_PROGRESS,
@@ -204,9 +206,15 @@ eazel_install_callback_destroy (GtkObject *object)
 
 	service = EAZEL_INSTALL_CALLBACK (object);
 
-	/* FIXME bugzilla.eazel.com 1282.
-	   implement this properly */
-	g_message ("in eazel_install_callback_destroy");
+	if (service->installservice_corba != CORBA_OBJECT_NIL) {
+		CORBA_Environment ev;
+		CORBA_exception_init (&ev);
+		Bonobo_Unknown_unref (service->installservice_corba, &ev); 
+		CORBA_Object_release (service->installservice_corba, &ev);
+		CORBA_Object_release (service->cb, &ev);
+		CORBA_exception_free (&ev);		
+	}
+	bonobo_object_unref (BONOBO_OBJECT (service->installservice_bonobo)); 
 }
 
 static void
@@ -286,16 +294,32 @@ eazel_install_callback_class_initialize (EazelInstallCallbackClass *klass)
 static void
 eazel_install_callback_initialize (EazelInstallCallback *service) {
 	/* g_message ("in eazel_install_callback_initialize"); */
+	CORBA_Environment ev;
 
 	g_assert (service != NULL);
 	g_assert (IS_EAZEL_INSTALL_CALLBACK (service));
 
+	CORBA_exception_init (&ev);
 	service->cb = eazel_install_callback_create_corba_object (BONOBO_OBJECT (service));
+
+	service->installservice_bonobo = bonobo_object_activate (OAF_ID, 0);
+	if ( !service->installservice_bonobo) {
+		g_error ("Cannot activate %s\n", OAF_ID);
+	}
+	if (! bonobo_object_client_has_interface (service->installservice_bonobo, "IDL:Trilobite/Service:1.0", &ev)) {
+		g_error ("Object does not support IDL:Trilobite/Service:1.0");
+	}
+	if (! bonobo_object_client_has_interface (service->installservice_bonobo, "IDL:Trilobite/Eazel/Install:1.0", &ev)) {
+		g_error ("Object does not support IDL:Trilobite/Eazel/Time:1.0");
+	}
+	service->installservice_corba = bonobo_object_query_interface (BONOBO_OBJECT (service->installservice_bonobo),
+								       "IDL:Trilobite/Eazel/Install:1.0");
 
 	/* This sets the bonobo structures in service using the corba object */
 	if (!bonobo_object_construct (BONOBO_OBJECT (service), service->cb)) {
 		g_warning ("bonobo_object_construct failed");
 	}	
+	CORBA_exception_free (&ev);		
 }
 
 GtkType
@@ -326,21 +350,19 @@ eazel_install_callback_get_type() {
 }
 
 EazelInstallCallback*
-eazel_install_callback_new(Trilobite_Eazel_Install installservice)
+eazel_install_callback_new()
 {
 	EazelInstallCallback *service;
 
 	service = EAZEL_INSTALL_CALLBACK (gtk_object_new (TYPE_EAZEL_INSTALL_CALLBACK, NULL));
 
-	service->installservice = installservice;
-
 	return service;
 }
 
-Trilobite_Eazel_InstallCallback 
-eazel_install_callback_corba (EazelInstallCallback *service)
+Trilobite_Eazel_Install 
+eazel_install_callback_corba_objref (EazelInstallCallback *service)
 {
-	return service->cb;
+	return service->installservice_corba;
 }
 
 void 
@@ -350,9 +372,10 @@ eazel_install_callback_install_packages (EazelInstallCallback *service,
 {
 	Trilobite_Eazel_CategoryStructList *corbacats;
 	corbacats = corba_category_list_from_categorydata_list (categories);
-	Trilobite_Eazel_Install_install_packages (service->installservice, 
+	Trilobite_Eazel_Install_install_packages (service->installservice_corba, 
 						  corbacats, 
-						  eazel_install_callback_corba (service), ev);
+						  service->cb, 
+						  ev);
 }
 
 GList*
@@ -365,7 +388,7 @@ eazel_install_callback_query (EazelInstallCallback *service,
 	
 	/* FIXME: bugzilla.eazel.com 1446 */
 
-	corbares = Trilobite_Eazel_Install_query (service->installservice,
+	corbares = Trilobite_Eazel_Install_query (service->installservice_corba,
 						  query,
 						  ev);
 	return result;

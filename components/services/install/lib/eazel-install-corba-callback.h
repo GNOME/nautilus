@@ -76,11 +76,13 @@ struct _EazelInstallCallback
 {
 	BonoboObject parent;
 	Trilobite_Eazel_InstallCallback cb;
-	Trilobite_Eazel_Install installservice;
+
+	BonoboObjectClient *installservice_bonobo;
+	Trilobite_Eazel_Install installservice_corba;
 };
 
 /* Create a new eazel-install-callback object */
-EazelInstallCallback          *eazel_install_callback_new (Trilobite_Eazel_Install installservice);
+EazelInstallCallback          *eazel_install_callback_new (void);
 /* Destroy the eazel-install-callback object */
 void                           eazel_install_callback_destroy    (GtkObject *object);
 
@@ -101,7 +103,7 @@ GList* eazel_install_callback_query (EazelInstallCallback *service,
 GtkType                                   eazel_install_callback_get_type   (void);
 POA_Trilobite_Eazel_InstallCallback__epv *eazel_install_callback_get_epv (void);
 Trilobite_Eazel_InstallCallback           eazel_install_callback_create_corba_object (BonoboObject *service);
-Trilobite_Eazel_InstallCallback           eazel_install_callback_corba (EazelInstallCallback *service);
+Trilobite_Eazel_Install                   eazel_install_callback_corba_objref (EazelInstallCallback *service);
 
 #ifdef __cplusplus
 }

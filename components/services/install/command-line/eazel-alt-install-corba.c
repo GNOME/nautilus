@@ -279,6 +279,7 @@ done (EazelInstallCallback *service,
       gpointer unused)
 {
 	fprintf (stderr, "\nDone\n");
+	eazel_install_callback_destroy (GTK_OBJECT (service));
 	gtk_main_quit ();
 }
 
@@ -287,8 +288,7 @@ int main(int argc, char *argv[]) {
 	GList *packages;
 	GList *categories;
 	char *str;
-	BonoboObjectClient *service;
-	Trilobite_Eazel_Install installservice;
+	EazelInstallCallback *cb;		
 
 	CORBA_exception_init (&ev);
 
@@ -334,52 +334,28 @@ int main(int argc, char *argv[]) {
 	}
 	bonobo_activate ();
 
-	service = bonobo_object_activate (OAF_ID, 0);
-	if (!service) {
-		g_error ("Cannot activate %s\n",OAF_ID);
-	}	
-
 	if (arg_delay) {
 		sleep (10);
 	}
 
-	if (! bonobo_object_client_has_interface (service, "IDL:Trilobite/Service:1.0", &ev)) {
-		g_error ("Object does not support IDL:Trilobite/Service:1.0");
-	}
-	if (! bonobo_object_client_has_interface (service, "IDL:Trilobite/Eazel/Install:1.0", &ev)) {
-		g_error ("Object does not support IDL:Trilobite/Eazel/Time:1.0");
-	}
-
-	installservice = bonobo_object_query_interface (BONOBO_OBJECT (service), "IDL:Trilobite/Eazel/Install:1.0");
-	if (installservice != CORBA_OBJECT_NIL) {
-		EazelInstallCallback *cb;		
-
-		set_parameters_from_command_line (installservice);
-		cb = eazel_install_callback_new (installservice);
-
-		gtk_signal_connect (GTK_OBJECT (cb), "download_progress", eazel_download_progress_signal, "Download progress");
-		gtk_signal_connect (GTK_OBJECT (cb), "install_progress", eazel_install_progress_signal, "Install progress");
-		gtk_signal_connect (GTK_OBJECT (cb), "install_failed", install_failed, "");
-		gtk_signal_connect (GTK_OBJECT (cb), "download_failed", download_failed, NULL);
-		gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", dep_check, NULL);
-		gtk_signal_connect (GTK_OBJECT (cb), "done", done, NULL);
-
-		eazel_install_callback_install_packages (cb, categories, &ev);
-
-		fprintf (stdout, "\nEntering main loop...\n");
-		bonobo_main ();
-		
-		/* Cleanup the stuff from query_interface */
-		Bonobo_Unknown_unref (installservice, &ev); 
-		CORBA_Object_release (installservice, &ev);
-	} else {
-		g_error ("The bonobo object does not contain a IDL:Trilobite/Eazel/Install object");
-	}
+	
+	cb = eazel_install_callback_new ();
+	set_parameters_from_command_line (eazel_install_callback_corba_objref (cb));
+	
+	gtk_signal_connect (GTK_OBJECT (cb), "download_progress", eazel_download_progress_signal, "Download progress");
+	gtk_signal_connect (GTK_OBJECT (cb), "install_progress", eazel_install_progress_signal, "Install progress");
+	gtk_signal_connect (GTK_OBJECT (cb), "install_failed", install_failed, "");
+	gtk_signal_connect (GTK_OBJECT (cb), "download_failed", download_failed, NULL);
+	gtk_signal_connect (GTK_OBJECT (cb), "dependency_check", dep_check, NULL);
+	gtk_signal_connect (GTK_OBJECT (cb), "done", done, NULL);
+	
+	eazel_install_callback_install_packages (cb, categories, &ev);
+	
+	fprintf (stdout, "\nEntering main loop...\n");
+	bonobo_main ();
 
 	/* Corba cleanup */
-	bonobo_object_unref (BONOBO_OBJECT (service));  /* for the object_activate */
 	CORBA_exception_free (&ev);
-	
-
+       
 	return 0;
 };

@@ -20,9 +20,12 @@ INCLUDES = \
 	$(WERROR)						\
 	$(NULL)
 
-noinst_LIBRARIES = libinstall_corba.a libinstall_base.a libinstall_gtk.a
+lib_LTLIBRARIES = libeazelinstall.la
+lib_LIBRARIES = libeazelinstall_minimal.a
+noinst_LIBRARIES = libinstall_base.a libinstall_gtk.a
 
 noinst_HEADERS = \
+	libeazelinstall.h			\
 	trilobite-eazel-install.h		\
 	eazel-install-types.h	 		\
 	eazel-install-corba-types.h	 	\
@@ -36,25 +39,15 @@ noinst_HEADERS = \
 	eazel-install-corba-callback.h		\
 	$(NULL)
 
-libinstall_corba_a_SOURCES = 		\
-	$(CORBA_GENERATED)		\
-	eazel-install-corba.c		\
-	eazel-install-object.c		\
-	eazel-install-corba-types.c	 	\
-	eazel-install-corba-callback.c	\
-	$(NULL)
-
 libinstall_base_a_SOURCES =		       	\
 	trilobite-eazel-install.h		\
 	eazel-install-types.c	 		\
 	eazel-install-metadata.c		\
 	eazel-install-protocols.c		\
 	eazel-install-rpm-glue.c		\
-	eazel-install-query-lex.c		\
 	eazel-install-query.c			\
 	eazel-install-tests.c			\
 	eazel-install-xml-package-list.c	\
-	eazel-install-object.c			\
 	eazel-install-public.h			\
 	$(NULL)
 
@@ -62,11 +55,33 @@ libinstall_gtk_a_SOURCES =			\
 	eazel-install-object.c			\
 	$(NULL)
 
-EXTRA_DIST = eazel-install-query.l hest
+libeazelinstall_minimal_a_CPPFLAGS = 	\
+	eraser				\
+	-DEAZEL_INSTALL_NO_CORBA 	\
+	$(CORBA)
+
+libeazelinstall_minimal_a_SOURCES = \
+	$(libinstall_base_a_SOURCES)	\
+	$(libinstall_gtk_a_SOURCES)	\
+	$(NULL)
+
+libeazelinstall_la_SOURCES = \
+	$(CORBA_GENERATED)		\
+	eazel-install-corba.c		\
+	eazel-install-corba-types.c	\
+	eazel-install-corba-callback.c	\
+	$(libinstall_base_a_SOURCES)	\
+	$(libinstall_gtk_a_SOURCES)	\
+	$(NULL)
+
+EXTRA_DIST = eazel-install-query-lex.l hest
 
 eazel-install-query-lex.c: $(srcdir)/eazel-install-query-lex.l eazel-install-query-parse.h
 	@rm -f $@
 	$(LEX) -t $(srcdir)/eazel-install-query-lex.l >$@
+
+eraser: 
+	rm -rf eazel-install-object.*o
 
 ## CORBA magic
 

@@ -49,9 +49,8 @@ trilobite_eazel_install_service_SOURCES =	\
 	$(NULL)
 
 trilobite_eazel_install_service_LDADD =							\
+	$(top_builddir)/components/services/install/lib/libeazelinstall.la 		\
 	$(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la 	\
-	$(top_builddir)/components/services/install/lib/libinstall_corba.a 		\
-	$(top_builddir)/components/services/install/lib/libinstall_base.a 		\
 	$(NULL)
 
 

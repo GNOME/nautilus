@@ -28,7 +28,7 @@
 
 #include <libtrilobite/libtrilobite.h>
 
-#include "trilobite-eazel-install.h"
+#include <trilobite-eazel-install.h>
 #include <eazel-install-public.h>
 
 #define OAF_ID_FACTORY "OAFIID:trilobite_eazel_install_service_factory:b423ff3f-1941-4b0d-bd45-6542f64abbfc"

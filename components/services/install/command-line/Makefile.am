@@ -21,8 +21,7 @@ INCLUDES = \
 	$(NULL)
 
 LDADD =                                           \
-        $(top_builddir)/components/services/install/lib/libinstall_corba.a\
-        $(top_builddir)/components/services/install/lib/libinstall_base.a \
+        $(top_builddir)/components/services/install/lib/libeazelinstall.la\
         $(top_builddir)/components/services/trilobite/libtrilobite/libtrilobite.la \
 	$(GNOME_LIBS)                                                     \
 	$(GCONF_LIBS)                                                     \

@@ -21,8 +21,8 @@
  * Authors: Eskil Heyn Olsen <eskil@eazel.com>
  */
 
-#ifndef __EAZEL_INSTALL_SERVICES_CORBA_TYPES_H__
-#define __EAZEL_INSTALL_SERVICES_CORBA_TYPES_H__
+#ifndef EAZEL_INSTALL_SERVICES_CORBA_TYPES_H
+#define EAZEL_INSTALL_SERVICES_CORBA_TYPES_H
 
 #include <eazel-install-types.h>
 #include <trilobite-eazel-install.h>
@@ -40,4 +40,4 @@ GList* packagedata_list_from_corba_packagedatastructlist (const Trilobite_Eazel_
 GList *packagedata_list_from_corba_packagestructlist (const Trilobite_Eazel_PackageStructList corbapack);
 PackageData *packagedata_from_corba_packagedatastruct (const Trilobite_Eazel_PackageDataStruct corbapack);
 PackageData *packagedata_from_corba_packagestruct (const Trilobite_Eazel_PackageStruct *corbapack);
-#endif /* __EAZEL_INSTALL_SERVICES_TYPES_H__ */
+#endif /* EAZEL_INSTALL_SERVICES_TYPES_H */

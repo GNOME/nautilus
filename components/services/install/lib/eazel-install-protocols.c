@@ -321,7 +321,13 @@ char* get_search_url_for_package (EazelInstall *service,
 	url = g_strdup_printf ("http://%s:%d/cgi-bin/rpmsearch.cgi",
 			       eazel_install_get_server (service),
 			       eazel_install_get_server_port (service));
-	add_to_url (&url, "?name=", pack->name);
+	if (pack->filename == NULL) {
+		g_message ("filename is null");
+		add_to_url (&url, "?name=", pack->name);
+	} else {
+		g_message ("filename is NOT null");
+		add_to_url (&url, "?filename=", pack->filename);
+	}
 	add_to_url (&url, "&arch=", pack->archtype);
 	/* add_to_url (&url, "&version>=", pack->version); */
 
