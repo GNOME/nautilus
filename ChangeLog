@@ -1,3 +1,38 @@
+2000-12-11  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	reviewed by: A donkey with a rather large shrubbery
+
+	* components/rpmview/Makefile.am:
+	* components/rpmview/nautilus-rpm-verify-window.c:
+	(nautilus_rpm_verify_window_update_message):
+	* components/services/install/command-line/Makefile.am:
+	* components/services/install/command-line/eazel-test-packsys.c:
+	(main):
+	* components/services/install/lib/Makefile.am:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	(rpm_create_db), (eazel_package_system_rpm3_query):
+	* components/services/install/lib/eazel-package-system-rpm4.c:
+	(eazel_package_system_rpm4_finalize),
+	(eazel_package_system_rpm4_new):
+	* components/services/install/lib/eazel-package-system-types.c:
+	(packagedata_list_prune):
+	* components/services/install/lib/eazel-package-system.c:
+	(eazel_package_system_load_implementation):
+	* components/services/install/nautilus-view/Makefile.am:
+	* components/services/install/server/Makefile.am:
+	Muy untested RedHat 7.0/RPM4 related stuff. Let's watcht the build
+	blow up.
+	
+	* acconfig.h:
+	HAVE_RPM_x0 for different rpm.s
+	
+	* configure.in:
+	More weird rpm checks
+	
+	* nautilus.spec.in
+	No more libeazelsoftcat
+
 2000-12-11  Darin Adler  <darin@eazel.com>
 
 	reviewed by: John Sullivan <sullivan@eazel.com>

@@ -380,9 +380,9 @@ int main(int argc, char *argv[]) {
 	}
 
 	gnome_init ("Eazel Test Packsys", "1.0", argc, argv);
-	home_dbpath = g_strdup_printf ("%s/.nautilus/packagedb", g_get_home_dir ());
+	home_dbpath = g_strdup_printf ("/tmp/packagedb");
 	packsys = init_package_system (home_dbpath, g_strdup (g_get_home_dir ()));
-	eazel_package_system_set_debug (packsys, EAZEL_PACKAGE_SYSTEM_DEBUG_FAIL); 
+	eazel_package_system_set_debug (packsys, EAZEL_PACKAGE_SYSTEM_DEBUG_VERBOSE);
 
 	test_package_load (packsys, argv[1]);
 	test_matches_query (packsys);

@@ -30,8 +30,6 @@
 #include "eazel-package-system-types.h"
 
 #include <rpm/rpmlib.h>
-#include <rpm/rpmmacro.h>
-#include <rpm/dbindex.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -259,12 +257,12 @@ packagedata_copy (const PackageData *pack, gboolean deep)
 	return result;
 }
 
-#define COPY_STRING(name) do { \
-	if (full_package->##name != NULL) { \
-		g_free (package->##name); \
-		package->##name = g_strdup (full_package->##name); \
-	} \
-} while (0)
+#define COPY_STRING(field) \
+	if (full_package->field != NULL) { \
+		g_free (package->field); \
+		package->field = g_strdup (full_package->field); \
+	}
+
 
 /* fill in a package struct with info from another one:
  * flags tells what fields to skip.
@@ -704,11 +702,11 @@ packagedata_list_prune (GList **input,
 			gboolean destroy, 
 			gboolean deep)
 {
-	GList *in_it, *rm_it;
+	GList *in_it=NULL, *rm_it=NULL;
 	
 	for (rm_it = remove_list; rm_it; rm_it = g_list_next (rm_it)) {
 		PackageData *rm = (PackageData*)rm_it->data;
-		PackageData *in = (PackageData*)in_it->data;
+		PackageData *in = NULL;
 
 		for (in_it = *input; in_it; in_it = g_list_next (in_it)) {
 			in = (PackageData*)in_it->data;
@@ -716,7 +714,7 @@ packagedata_list_prune (GList **input,
 				break;
 			}
 		}
-		if (in_it) {
+		if (in_it && in) {
 			(*input) = g_list_remove (*input, in);
 			if (destroy) {
 				packagedata_destroy (in, deep);

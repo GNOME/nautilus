@@ -19,11 +19,19 @@ INCLUDES = \
 	$(GHTTP_CFLAGS)						\
 	$(NULL)
 
+if HAVE_RPM_30
+RPM3=libeazelpackagesystem-rpm3.la
+endif
+
+if HAVE_RPM_40
+RPM4=libeazelpackagesystem-rpm4.la
+endif
+
 lib_LTLIBRARIES = \
 	libeazelinstall.la \
 	libeazelpackagesystem.la \
-	libeazelpackagesystem-rpm3.la \
-	libeazelpackagesystem-rpm4.la \
+	$(RPM3) \
+	$(RPM4) \
 	libeazelpackagesystem-skeleton.la \
 	$(NULL)
 
@@ -64,6 +72,7 @@ libeazelinstall_la_SOURCES = \
 	eazel-install-tests.c			\
 	eazel-install-object.c			\
 	eazel-install-problem.c			\
+	eazel-package-system-rpm3.c		\
 	$(NULL)
 
 libeazelinstall_la_LDFLAGS = \
@@ -100,8 +109,8 @@ libeazelpackagesystem_skeleton_la_SOURCES = 	\
 # libeazelpackagesystem-rpm3
 
 libeazelpackagesystem_rpm3_la_SOURCES = 	\
-	eazel-package-system-rpm3-private.h	\
 	eazel-package-system-rpm3.h		\
+	eazel-package-system-rpm3-private.h	\
 	eazel-package-system-rpm3.c		\
 	$(NULL)
 
@@ -109,6 +118,8 @@ libeazelpackagesystem_rpm3_la_SOURCES = 	\
 # libeazelpackagesystem-rpm4
 
 libeazelpackagesystem_rpm4_la_SOURCES = 	\
+	eazel-package-system-rpm3.h		\
+	eazel-package-system-rpm3.c		\
 	eazel-package-system-rpm4.h		\
 	eazel-package-system-rpm4.c		\
 	$(NULL)

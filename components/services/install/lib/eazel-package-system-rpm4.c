@@ -29,8 +29,6 @@
 #include <libtrilobite/trilobite-core-utils.h>
 
 #include <rpm/rpmlib.h>
-#include <rpm/rpmmacro.h>
-#include <rpm/dbindex.h>
 
 #include <ctype.h>
 #include <sys/types.h>
@@ -76,7 +74,6 @@ eazel_package_system_rpm4_finalize (GtkObject *object)
 
 	system = EAZEL_PACKAGE_SYSTEM_RPM4 (object);
 
-	eazel_package_system_rpm3_close_dbs (EAZEL_PACKAGE_SYSTEM_RPM3 (system));
 	eazel_package_system_rpm3_free_dbs (EAZEL_PACKAGE_SYSTEM_RPM3 (system));
 	g_hash_table_destroy (system->dbs);
 
@@ -152,7 +149,6 @@ eazel_package_system_rpm4_new (GList *dbpaths)
 		g_hash_table_insert (system->db_to_root, db, root);
 	}
 	eazel_package_system_rpm3_create_dbs (EAZEL_PACKAGE_SYSTEM_RPM3 (system));
-	eazel_package_system_rpm3_open_dbs (EAZEL_PACKAGE_SYSTEM_RPM3 (system));
 
 	return system;
 }

@@ -387,6 +387,7 @@ dnl ====================================
 if test "x$EAZEL_SERVICES_ENABLED" = "xyes" ;
 then
 	rpm_libs=
+	have_rpm=no
 	AC_CHECK_LIB(bz2, bzread, [rpm_libs=-lbz2])
 	dnl <= Check for bzip2 > 1.0.0
 		AC_CHECK_LIB(bz2, BZ2_bzread, [rpm_libs=-lbz2
@@ -406,40 +407,44 @@ then
 	dnl =>
 	AC_CHECK_LIB(popt, poptParseArgvString, [rpm_libs="$rpm_libs -lpopt"])
 	AC_CHECK_FUNC(dbopen, [],
-	  AC_CHECK_LIB(db1, dbopen, [rpm_libs="$rpm_libs -ldb1"],
-	    AC_CHECK_LIB(db, dbopen, [rpm_libs="$rpm_libs -ldb"],
-	       AC_MSG_ERROR([sorry rpm requires a db-1.85 API])))
-	           )
-	AC_CHECK_LIB(rpm, rpmRunTransactions,[build_rpmview=yes],
-	  [build_rpmview=false],-lz $rpm_libs)
-	if test "x$build_rpmview" = "xyes" ; then
-	dnl FIXME
-	dnl Ideally I should check for rpm and where it is
+	  AC_CHECK_LIB(db2, dbopen, [rpm_libs="$rpm_libs -ldb2"],
+	    AC_CHECK_LIB(db1, dbopen, [rpm_libs="$rpm_libs -ldb1"],
+	      AC_CHECK_LIB(db, dbopen, [rpm_libs="$rpm_libs -ldb"],
+	         AC_MSG_ERROR([sorry rpm requires a db-1.85 API]))))
+	             )
+	AC_CHECK_LIB(rpmio, rpmMessage, [rpm_libs="$rpm_libs -lrpmio"],[],$rpm_libs)
+	AC_CHECK_LIB(rpm, rpmRunTransactions,[have_rpm=yes],
+	  [have_rpm=no], $rpm_libs)
+	if test "x$have_rpm" = "xyes" ; then
+	  dnl FIXME
+	  dnl Ideally I should check for rpm and where it is
 
+	  AC_MSG_CHECKING([rpm version])
 	  RPM_VERSION=`rpm --version | awk '{ print $3; }'`
 
-	  _found_valid_rpm="no"
-	  rpm_needed=3.0.*
-
-	  AC_MSG_CHECKING(rpm version = $rpm_needed)
-
 	  case $RPM_VERSION in
-	    $rpm_needed)
-	      _found_valid_rpm="yes"
-	    ;;
-
-	    *)
+		3.0.[4-9])
+			AC_DEFINE(HAVE_RPM_30)
+			_found_valid_rpm="yes"
+			AM_CONDITIONAL(HAVE_RPM_30, test 1)
+		;;
+		4.[0-9])
+			AC_DEFINE(HAVE_RPM_40)
+			_found_valid_rpm="yes"
+			AM_CONDITIONAL(HAVE_RPM_40, test 1)
+		;;
 	  esac
 
-	  if test "$_found_valid_rpm" = "yes"
+	  if test "x$_found_valid_rpm"="xyes"
 	  then
 		AC_MSG_RESULT([found $RPM_VERSION, yes])
 		AC_DEFINE(HAVE_RPM)  	
 	  	RPM_LIBS="-lrpm -lz $rpm_libs"
 		build_rpmview=yes
+		rpmversion="$RPM_VERSION"
 	  else
-		AC_MSG_RESULT([hmf...])
-		AC_MSG_WARN([RPM $rpm_needed required, $RPM_VERSION found])
+		AC_MSG_RESULT([no])
+		AC_MSG_WARN([RPM 3.0.4 or higher required, $RPM_VERSION found])
 		build_rpmview=no
 	  fi
 	fi
@@ -839,7 +844,7 @@ dnl <= Rpm-view integrated? =>
 case x$build_rpmview in
 xyes)
 echo "
-RPMview component	: YES"
+RPMview component	: YES ($rpmversion)"
 ;;
 *)
 echo "

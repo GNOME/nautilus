@@ -210,7 +210,7 @@ nautilus_rpm_verify_window_update_message (NautilusRPMVerifyWindow *window)
 	} else {
 		/* TRANSLATORS: this is printed while verifying files from packages, 
 		   %s is the filename, %d/%d is filenumber of total-number-of-files */
-		message = g_strdup_printf (_("Checking \"%s\" (%d/%d)"), 
+		message = g_strdup_printf (_("Checking \"%s\" (%ld/%ld)"), 
 					   window->details->current_file, 
 					   window->details->amount, 
 					   window->details->total);

@@ -32,8 +32,6 @@
 #include <libtrilobite/trilobite-core-utils.h>
 
 #include <rpm/rpmlib.h>
-#include <rpm/rpmmacro.h>
-#include <rpm/dbindex.h>
 #include <string.h>
 #include <time.h>
 

@@ -17,6 +17,8 @@
 #undef HAVE_LC_MESSAGES
 #undef HAVE_PAM
 #undef HAVE_RPM
+#undef HAVE_RPM_30
+#undef HAVE_RPM_40
 #undef HAVE_STPCPY
 #undef USING_OAF
 #undef EAZEL_BUILD_TIMESTAMP

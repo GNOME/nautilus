@@ -38,8 +38,7 @@ eazel_install_SOURCES = 		\
 eazel_install_LDADD = \
 	$(LDADD) \
         $(top_builddir)/components/services/install/lib/libeazelinstall.la	\
-        $(top_builddir)/components/services/install/lib/libeazelpackagesystem.la	\
-        $(top_builddir)/components/services/install/lib/libeazelpackagesystem-rpm3.la	\
+        $(top_builddir)/components/services/install/lib/libeazelpackagesystem.la\
 	$(NULL)
 
 eazel_gen_xml_SOURCES = 	\
@@ -49,8 +48,7 @@ eazel_gen_xml_SOURCES = 	\
 eazel_gen_xml_LDADD = \
 	$(LDADD) \
         $(top_builddir)/components/services/install/lib/libeazelinstall.la	\
-        $(top_builddir)/components/services/install/lib/libeazelpackagesystem.la	\
-        $(top_builddir)/components/services/install/lib/libeazelpackagesystem-rpm3.la	\
+        $(top_builddir)/components/services/install/lib/libeazelpackagesystem.la\
 	$(NULL)
 
 eazel_test_packsys_SOURCES = 	\

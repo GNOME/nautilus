@@ -50,7 +50,6 @@
 
 #include <rpm/rpmlib.h>
 #include <rpm/rpmmacro.h>
-#include <rpm/dbindex.h>
 
 #include <ctype.h>
 #include <sys/types.h>
@@ -376,7 +375,7 @@ rpm_create_db (char *dbpath,
 	       EazelPackageSystemRpm3 *system)
 {
 	addMacro (NULL, "_dbpath", NULL, "/", 0);
-	
+
 	if (strcmp (root, "/")) {
 		info (system, "Creating %s", dbpath);
 		mkdir (dbpath, 0700);
@@ -655,6 +654,7 @@ eazel_package_system_rpm3_load_package (EazelPackageSystemRpm3 *system,
  Query implemementation
 *************************************************************/
 
+#ifdef HAVE_RPM_30
 static void
 eazel_package_system_rpm3_query_impl (EazelPackageSystemRpm3 *system,
 				      const char *dbpath,
@@ -828,6 +828,7 @@ eazel_package_system_rpm3_query_foreach (char *dbpath,
 		g_warning ("Unknown query");
 	}
 }
+#endif /* HAVE_RPM_30 */
 
 GList*               
 eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
@@ -836,6 +837,7 @@ eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
 				 EazelPackageSystemQueryEnum flag,
 				 unsigned long detail_level)
 {
+#ifdef HAVE_RPM_30
 	GList *result = NULL;
 	struct RpmQueryPiggyBag pig;
 	
@@ -856,6 +858,9 @@ eazel_package_system_rpm3_query (EazelPackageSystemRpm3 *system,
 	eazel_package_system_rpm3_close_dbs (system);
 
 	return result;
+#else
+	return NULL;
+#endif /* HAVE_RPM_30 */
 }
 
 /************************************************************
@@ -1279,6 +1284,7 @@ eazel_package_system_rpm3_new (GList *dbpaths)
 	return system;
 }
 
+#ifdef HAVE_RPM_30
 EazelPackageSystem*
 eazel_package_system_implementation (GList *dbpaths)
 {
@@ -1299,3 +1305,4 @@ eazel_package_system_implementation (GList *dbpaths)
 
 	return result;
 }
+#endif

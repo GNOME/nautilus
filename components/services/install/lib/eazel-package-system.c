@@ -81,7 +81,7 @@ eazel_package_system_suggest_id ()
 static EazelPackageSystem*
 eazel_package_system_load_implementation (EazelPackageSystemId id, GList *roots)
 {
-	EazelPackageSystem *result;
+	EazelPackageSystem *result = NULL;
 	EazelPackageSystemConstructorFunc const_func = NULL;
 	GModule *module = NULL;
 
@@ -96,10 +96,13 @@ eazel_package_system_load_implementation (EazelPackageSystemId id, GList *roots)
 		g_assert_not_reached ();
 	};
 
-	g_module_make_resident (module);
-	g_module_symbol (module, "eazel_package_system_implementation", (gpointer)&const_func);
-
-	result = (*const_func)(roots);
+	if (module==NULL) {
+		g_warning ("gmodule: %s", g_module_error ());
+	} else {
+		g_module_make_resident (module);
+		g_module_symbol (module, "eazel_package_system_implementation", (gpointer)&const_func);
+		result = (*const_func)(roots);
+	}
 
 	return result;
 }
