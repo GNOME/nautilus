@@ -1,3 +1,5 @@
+NULL=
+
 CPPFLAGS =					\
 	-DPREFIX=\"$(prefix)\"                  \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
@@ -6,9 +8,12 @@ CPPFLAGS =					\
 INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
-	$(VFS_CFLAGS) \
-	$(GCONF_CFLAGS) \
-	$(GNOMEUI_CFLAGS)
+	$(VFS_CFLAGS) 				\
+	$(GCONF_CFLAGS) 			\
+	$(GNOMEUI_CFLAGS)			\
+	$(OAF_CFLAGS)				\
+	$(BONOBO_CFLAGS)			\
+	$(NULL)
 
 oafdir = $(datadir)/oaf
 

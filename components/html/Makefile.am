@@ -12,6 +12,7 @@ INCLUDES =					\
 	$(GCONF_CFLAGS) \
 	$(GNOMEUI_CFLAGS)			\
 	$(GTKHTML_CFLAGS)			\
+	$(BONOBO_CFLAGS)			\
 	$(VFS_CFLAGS)				\
 	$(LIBWWW_CFLAGS)			\
 	-D_VERSION=\"$(VERSION)\"

@@ -2,33 +2,36 @@ NULL=
 
 lib_LTLIBRARIES=libnautilus-extensions.la
 
-INCLUDES = \
-	-I$(top_srcdir) \
-	-I$(top_builddir) \
-	-I$(top_builddir)/libnautilus \
-	-I$(top_srcdir)/cut-n-paste-code \
-	$(GNOME_CFLAGS) \
-	$(BONOBO_CFLAGS) \
-	$(OAF_CFLAGS) \
-	$(GHTTP_CFLAGS) \
-	$(VFS_CFLAGS) \
-	$(XML_CFLAGS) \
-	-D_REENTRANT \
-	-DDATADIR=\""$(datadir)"\" \
-	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
+INCLUDES = 						\
+	-I$(top_srcdir) 				\
+	-I$(top_builddir) 				\
+	-I$(top_builddir)/libnautilus 			\
+	-I$(top_srcdir)/cut-n-paste-code 		\
+	$(GNOME_CFLAGS) 				\
+	$(BONOBO_CFLAGS) 				\
+	$(OAF_CFLAGS) 					\
+	$(GHTTP_CFLAGS) 				\
+	$(VFS_CFLAGS) 					\
+	$(GCONF_CFLAGS) 				\
+	$(XML_CFLAGS) 					\
+	$(MEDUSA_CFLAGS) 				\
+	-D_REENTRANT 					\
+	-DDATADIR=\""$(datadir)"\" 			\
+	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
 	$(NULL)
 
-libnautilus_extensions_la_LDFLAGS=\
-	$(GNOME_LIBS) \
-	$(OAF_LIBS) \
-	$(BONOBO_LIBS) \
-	$(GHTTP_LIBS) \
-	$(VFS_LIBS) \
-	$(XML_LIBS) \
-	$(LIBPNG) \
+libnautilus_extensions_la_LDFLAGS=	\
+	$(GNOME_LIBS) 			\
+	$(OAF_LIBS) 			\
+	$(BONOBO_LIBS) 			\
+	$(GHTTP_LIBS) 			\
+	$(VFS_LIBS) 			\
+	$(XML_LIBS) 			\
+	$(MEDUSA_LIBS) 			\
+	$(LIBPNG) 			\
 	$(NULL)
 
-libnautilus_extensions_la_SOURCES = \
+libnautilus_extensions_la_SOURCES = 		\
 	bonobo-stream-vfs.c			\
 	nautilus-background-canvas-group.c	\
 	nautilus-background.c			\

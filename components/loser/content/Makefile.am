@@ -1,3 +1,5 @@
+NULL=
+
 CPPFLAGS =					\
 	-DPREFIX=\"$(prefix)\"
 	-DG_LOG_DOMAIN=\"Nautilus-Test\"
@@ -5,8 +7,11 @@ CPPFLAGS =					\
 INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
-	$(GCONF_CFLAGS) \
-	$(GNOMEUI_CFLAGS)
+	$(OAF_CFLAGS)				\
+	$(BONOBO_CFLAGS)			\
+	$(GCONF_CFLAGS) 			\
+	$(GNOMEUI_CFLAGS)			\
+	$(NULL)
 
 oafdir = $(datadir)/oaf
 

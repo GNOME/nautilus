@@ -308,6 +308,33 @@ fi
 AC_SUBST(GTKHTML_LIBS)
 AC_SUBST(GTKHTML_CFLAGS)
 
+dnl =======================
+dnl begin tests for medusa
+dnl =======================
+MEDUSA_CFLAGS=""
+MEDUSA_LIBS=""
+AC_MSG_CHECKING(for Medusa)
+
+if test -n `medusa-config --libs | cut -d ' ' -f1` ;
+then
+	MEDUSA_CFLAGS=`medusa-config --cflags`
+	MEDUSA_LIBS=`medusa-config --libs`
+	AC_MSG_RESULT(yes)
+else
+	MEDUSA_CFLAGS=""
+	MEDUSA_LIBS=""
+	AC_MSG_RESULT(no)
+	AC_MSG_ERROR(Could not find medusa library. Please, get it from GNOME's cvs.)
+fi
+
+AC_SUBST(MEDUSA_CFLAGS)
+AC_SUBST(MEDUSA_LIBS)
+
+dnl =======================
+dnl end tests for medusa
+dnl =======================
+
+
 dnl Test for libpng
   if test -z "$LIBPNG"; then
     AC_CHECK_LIB(png, png_read_info,

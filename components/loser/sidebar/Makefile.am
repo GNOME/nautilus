@@ -5,7 +5,9 @@ CPPFLAGS =					\
 INCLUDES =					\
 	-I$(top_srcdir)				\
 	-I$(top_builddir)			\
-	$(GCONF_CFLAGS) \
+	$(GCONF_CFLAGS) 			\
+	$(OAF_CFLAGS)				\
+	$(BONOBO_CFLAGS)			\
 	$(GNOMEUI_CFLAGS)
 
 oafdir = $(datadir)/oaf
