@@ -52,7 +52,7 @@ while (<FUNCTIONS>)
     push @no_translation_needed_functions, $_;
   }
 close FUNCTIONS;
-my $no_translation_needed_function_pattern = "^" . (join "|", @no_translation_needed_functions) . "\$";
+my $no_translation_needed_function_pattern = "^(" . (join "|", @no_translation_needed_functions) . ")\$";
 
 # read in file with patterns for which no translation is needed
 my @no_translation_needed_patterns;
@@ -143,11 +143,11 @@ FILE: foreach my $file (@ARGV)
               }
 	    elsif ($found eq ")")
 	      {
-                (print "$file:$.:mismatched paren 1\n"), next FILE if $paren_level == 0;
+                (print "$file:$.:mismatched paren (type 1)\n"), next FILE if $paren_level == 0;
                 $paren_level--;
                 if ($paren_level == 0)
                   {
-                    (print "$file:$.:mismatched paren 2\n"), next FILE if @stack == 0;
+                    (print "$file:$.:mismatched paren (type 2)\n"), next FILE if @stack == 0;
                     ($paren_level, $in_exception_function) = @{pop @stack};
                   }
 	      }
