@@ -226,7 +226,7 @@ display_indexed_search_problems_dialog (void)
 		switch (index_service_availability) {
 		case MEDUSA_INDEXER_READY_TO_INDEX:
 			index_problem_dialog = nautilus_yes_no_dialog (_("To do a fast search, Find requires an index "
-									 "of the files on your system.  ",
+									 "of the files on your system.  "
 									 "Your computer does not have an index "
 									 "right now.  Because Find cannot use an "
 									 "index, this search may take several "
@@ -247,7 +247,7 @@ display_indexed_search_problems_dialog (void)
 			break;
 		case MEDUSA_INDEXER_ALREADY_INDEXING:
 			nautilus_error_dialog (_("To do a fast search, Find requires an index "
-						 "of the files on your system.  ",
+						 "of the files on your system.  "
 						 "Your computer is currently creating that "
 						 "index.   Because Find cannot use an index, "
 						 "this search may take several "
@@ -257,7 +257,7 @@ display_indexed_search_problems_dialog (void)
 			break;
 		default:
 			nautilus_error_dialog_with_details (_("To do a fast search, Find requires an index "
-							      "of the files on your system.  ",
+							      "of the files on your system.  "
 							      "An index can't be created "
 							      "right now. When an index is not "
 							      "available, searches will "
