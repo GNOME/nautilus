@@ -1,3 +1,13 @@
+2001-02-22  Seth Nickell  <seth@eazel.com>
+
+	reviewed by: Ramiro Estrugo <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+
+	Fix performance issue on Solaris by not rescanning through the
+	mounttable to discover if a volume is removable, etc, but 
+	rather extracting all relevant attributes in a single pass.
+	
 2001-02-22  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
@@ -187,7 +197,6 @@
  	(add_one_path_list):
  	Return a path, not a URI.
  	
->>>>>>> 1.3873
 2001-02-22  Arlo Rose  <arlo@eazel.com>
 
 	* icons/hand.png:

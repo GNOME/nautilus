@@ -309,15 +309,33 @@ nautilus_volume_monitor_get_removable_volumes (NautilusVolumeMonitor *monitor)
 	return monitor->details->removable_volumes;
 }
 
+
+#ifdef HAVE_SYS_MNTTAB_H
+
+static gboolean
+has_removable_mntent_options (struct mnttab *ent)
+{
+
+#else
+
 static gboolean
 has_removable_mntent_options (struct mntent *ent)
 {
+
+#endif /* HAVE_SYS_MNTTAB_H */
+
 	/* Use "owner" or "user" or "users" as our way of determining a removable volume */
 	if (hasmntopt (ent, "user") != NULL
 	    || hasmntopt (ent, "users") != NULL
 	    || hasmntopt (ent, "owner") != NULL) {
 	    return TRUE;
 	}
+
+#if SOLARIS_MNT && HAVE_VOL
+       if (strstr (ent->mnt_special, "/vol/") == ent->mnt_special) {
+           return TRUE;
+       }
+#endif
 	
 	return FALSE;
 }
@@ -356,6 +374,8 @@ get_removable_volumes (void)
 			volume->device_path = g_strdup (ent->mnt_special);
 			volume->mount_path = g_strdup (ent->mnt_mountp);
 			volume->filesystem = g_strdup (ent->mnt_fstype);
+			volume->is_removable = TRUE;
+			volume->is_read_only = (hasmntopt (ent, MNTOPT_RO) !=NULL);
 #else
 	while ((ent = getmntent (file)) != NULL) {
 		if (has_removable_mntent_options (ent)) {
@@ -455,7 +475,7 @@ volume_is_read_only (const NautilusVolume *volume)
 #else
 	struct mntent *ent;
 	
-	file = setmntent (_PATH_MNTTAB, "r");
+	file = setmntent (PATH_MOUNT_TABLE, "r");
 	if (file == NULL) {
 		return FALSE;
 	}
@@ -901,6 +921,28 @@ get_current_mount_list (void)
 	GList *current_mounts = NULL;
 	NautilusVolume *volume = NULL;
 	FILE *fh;
+
+#ifdef SOLARIS_MNT
+
+       struct mnttab dummy_ent;
+       struct mnttab *ent = &dummy_ent;
+
+       fh = setmntent (PATH_MOUNT_TABLE, "r");
+       if (fh == NULL) {
+               return NULL;
+       }
+       while (! getmntent (fh, ent)) {
+               volume = g_new0 (NautilusVolume, 1);
+               volume->device_path = g_strdup(ent->mnt_special);
+               volume->mount_path = g_strdup(ent->mnt_mountp);
+               volume->filesystem = g_strdup(ent->mnt_fstype);
+               volume->is_removable = has_removable_mntent_options(ent);
+               volume->is_read_only = (hasmntopt (ent, MNTOPT_RO) != NULL);
+               current_mounts = mount_volume_add_filesystem (volume, current_mounts);
+       }
+        
+       
+#else
 	char line[PATH_MAX * 3];
 	char device_name[sizeof (line)];
 	NautilusStringList *list;
@@ -927,6 +969,8 @@ get_current_mount_list (void)
 			}			
 		}
   	}
+
+#endif /* SOLARIS_MNT */
 
 #ifdef MOUNT_AUDIO_CD
 	/* CD Audio tricks */
@@ -1128,7 +1172,7 @@ static int get_cdrom_type_solaris(char *vol_dev_path, int* fd) {
 	new_dev_path = g_string_insert_c(new_dev_path, 9, 'r');
 
 	
-	*fd = open(new_dev_path, O_RDONLY | O_NONBLOCK);
+	*fd = open((char *)new_dev_path, O_RDONLY | O_NONBLOCK);
 
 	ioctl (*fd, CDROMREADTOCHDR, &header);
 	entry.cdte_track = 1;
@@ -1163,9 +1207,9 @@ cdrom_ioctl_get_info (int fd)
 static gboolean
 mount_volume_iso9660_add (NautilusVolume *volume)
 {
-	int fd;
 
 #ifndef SOLARIS_MNT
+	int fd;
 
 	fd = open (volume->device_path, O_RDONLY | O_NONBLOCK);
 	if (fd < 0) {
@@ -1523,6 +1567,8 @@ mount_unmount_callback (void *arg)
 	}
 	
 	pthread_exit (NULL); 	
+	
+	return NULL;
 }
 
 
@@ -1757,8 +1803,10 @@ mount_volume_add_filesystem (NautilusVolume *volume, GList *volume_list)
 	}
 	
 	if (mounted) {
+#ifndef SOLARIS_MNT			
 		volume->is_removable = volume_is_removable (volume);
 		volume->is_read_only = volume_is_read_only (volume);
+#endif /* SOLARIS_MNT */
 		mount_volume_get_name (volume);
 		volume_list = g_list_append (volume_list, volume);
 	} else {
