@@ -1,3 +1,9 @@
+2002-05-09  Damon Chaplin  <damon@ximian.com>
+
+	* components/text/nautilus-text-view.c (read_file_callback): if the
+	file size is 0, just report loading is complete and return.
+	Fixes bug #79745.
+
 2002-05-09  Alex Larsson  <alexl@redhat.com>
 
 	* src/file-manager/fm-icon-view.c: (fm_icon_view_update_menus):

@@ -118,6 +118,13 @@ read_file_callback (GnomeVFSResult result,
                 return;
         }
 
+        /* If the file has zero size file_contents will be NULL, so we just
+           report loading is complete and return. */
+        if (file_size == 0) {
+                nautilus_view_report_load_complete (view);
+                return;
+        }
+
         /* Find first embedded zero, if any */
         length = my_strnlen (file_contents, file_size);
         
