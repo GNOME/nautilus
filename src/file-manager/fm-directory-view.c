@@ -624,9 +624,22 @@ open_location (FMDirectoryView *directory_view,
 	       Nautilus_ViewFrame_OpenMode mode,
 	       Nautilus_ViewFrame_OpenFlags flags)
 {
+	NautilusFile *file;
+
 	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
 	g_assert (new_uri != NULL);
 
+	/* We want to avoid reloading the mime list for the
+	 * file if its invalidated when force-reload opening.
+	 * eventually the open will cause the file to change, and we'll re-set
+	 * the monitor for the selected file then.
+	 */
+	file = nautilus_file_get (new_uri);
+	if (file == directory_view->details->file_monitored_for_open_with) {
+		monitor_file_for_open_with (directory_view, NULL);
+	}
+	nautilus_file_unref (file);
+	
 	nautilus_view_open_location (directory_view->details->nautilus_view,
 				     new_uri, mode, flags, NULL);
 }
@@ -2327,6 +2340,19 @@ remove_update_menus_timeout_callback (FMDirectoryView *view)
 static void
 update_menus_if_pending (FMDirectoryView *view)
 {
+	GList *selection;
+
+	/* We need to monitor the mime list for the open with file
+	 * so we can get the menu right, but we only do this
+	 * on actual menu popup since this can do I/O.
+	 */
+	selection = fm_directory_view_get_selection (view);
+	if (eel_g_list_exactly_one_item (selection)) {
+		monitor_file_for_open_with (view, NAUTILUS_FILE (selection->data));
+	}
+	nautilus_file_list_free (selection);
+
+	
 	if (!view->details->menu_states_untrustworthy) {
 		return;
 	}
@@ -3467,7 +3493,6 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 	/* This menu is only displayed when there's one selected item. */
 	if (!eel_g_list_exactly_one_item (selection)) {
 		sensitive = FALSE;
-		monitor_file_for_open_with (view, NULL);
 	} else {
 		sensitive = TRUE;
 		any_applications = FALSE;
@@ -3475,8 +3500,6 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 		
 		file = NAUTILUS_FILE (selection->data);
 		
-		monitor_file_for_open_with (view, file);
-
 		uri = nautilus_file_get_uri (file);
 		
 		applications = nautilus_mime_get_short_list_applications_for_file (NAUTILUS_FILE (selection->data));
@@ -4388,6 +4411,12 @@ get_bonobo_window (FMDirectoryView *view)
 	return BONOBO_WINDOW (window);
 }
 
+static void
+popup_menu_hidden (FMDirectoryView *view)
+{
+	monitor_file_for_open_with (view, NULL);
+}
+
 static GtkMenu *
 create_popup_menu (FMDirectoryView *view, const char *popup_path)
 {
@@ -4398,6 +4427,9 @@ create_popup_menu (FMDirectoryView *view, const char *popup_path)
 	gtk_widget_show (GTK_WIDGET (menu));
 
 	bonobo_window_add_popup (get_bonobo_window (view), menu, popup_path);
+
+	g_signal_connect_object (menu, "hide",
+				 G_CALLBACK (popup_menu_hidden), G_OBJECT (view), G_CONNECT_SWAPPED);
 
 	return menu;
 }

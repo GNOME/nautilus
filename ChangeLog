@@ -1,3 +1,11 @@
+2003-11-13  Alexander Larsson  <alexl@redhat.com>
+
+	* src/file-manager/fm-directory-view.c (open_location):
+	Only monitor then for_open_with file when the popup menu is visible.
+	Also, don't monitor it when opening the location, as this can cause
+	us to unnecessary re-read the mime list on force-reload	opens
+	(e.g. non-local opens).
+	
 === nautilus 2.5.1.1 ===
 
 2003-11-12  Dave Camp  <dave@ximian.com>
