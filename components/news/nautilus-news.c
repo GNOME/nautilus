@@ -1081,6 +1081,7 @@ rss_read_done_callback (GnomeVFSResult result,
 	GList *old_items;
 	int item_count, changed_count;
 	RSSChannelData *channel_data;
+        xmlSAXHandler   silent_handler;
 	
 	char *buffer;
 
@@ -1100,9 +1101,12 @@ rss_read_done_callback (GnomeVFSResult result,
 	/* Parse the rss file with libxml. The libxml parser requires a zero-terminated array. */
 	buffer = g_realloc (file_contents, file_size + 1);
 	buffer[file_size] = '\0';
-	rss_document = xmlParseMemory (buffer, file_size);
-	g_free (buffer);
 
+        initxmlDefaultSAXHandler (&silent_handler, FALSE);
+        silent_handler.error = NULL;
+        silent_handler.fatalError = NULL;
+	rss_document = xmlSAXParseMemory (&silent_handler, buffer, file_size, 0);
+	g_free (buffer);
 
 	/* make sure there wasn't in error parsing the document */
 	if (rss_document == NULL) {
@@ -2413,8 +2417,8 @@ set_up_main_widgets (News *news, GtkWidget *container)
 }
 
 
-static NautilusView *
-make_news_view (const char *iid, gpointer callback_data)
+static BonoboObject *
+make_news_view (const char *iid, void *callback_data)
 {
 	News *news;
 	
@@ -2499,7 +2503,7 @@ make_news_view (const char *iid, gpointer callback_data)
 	set_views_for_mode (news);
 
   	/* return the nautilus view */    
-        return news->view;
+        return BONOBO_OBJECT (news->view);
 }
 
 int

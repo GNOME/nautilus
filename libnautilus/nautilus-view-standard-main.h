@@ -37,36 +37,36 @@
 
 G_BEGIN_DECLS
 
-typedef NautilusView * (*NautilusViewCreateFunction) (const char *iid, void *user_data);
+typedef BonoboObject * (*NautilusViewCreateFunction) (const char *iid, void *user_data);
 
-int nautilus_view_standard_main        (const char                 *executable_name,
-					const char                 *version,
-					const char                 *gettext_package_name,
-					const char                 *gettext_locale_directory,
-					int                         argc,
-					char                      **argv,
-					const char                 *factory_iid,
-					const char                 *view_iid,
-					NautilusViewCreateFunction  create_function,
-					GVoidFunc                   post_initialize_callback,
-					void                       *user_data);
+int nautilus_view_standard_main        (const char                   *executable_name,
+					const char                   *version,
+					const char                   *gettext_package_name,
+					const char                   *gettext_locale_directory,
+					int                           argc,
+					char                        **argv,
+					const char                   *factory_iid,
+					const char                   *view_iid,
+					NautilusViewCreateFunction    create_function,
+					GVoidFunc                     post_initialize_callback,
+					void                         *user_data);
 
-int nautilus_view_standard_main_multi  (const char                 *executable_name,
-					const char                 *version,
-					const char                 *gettext_package_name,
-					const char                 *gettext_locale_directory,
-					int                         argc,
-					char                      **argv,
-					const char                 *factory_iid,
-					GList                      *view_iids,       /* GList<const char *> */
-					NautilusViewCreateFunction  create_function,
-					GVoidFunc                   post_initialize_callback,
-					void                       *user_data);
+int nautilus_view_standard_main_multi  (const char                   *executable_name,
+					const char                   *version,
+					const char                   *gettext_package_name,
+					const char                   *gettext_locale_directory,
+					int                           argc,
+					char                        **argv,
+					const char                   *factory_iid,
+					GList                        *view_iids,       /* GList<const char *> */
+					NautilusViewCreateFunction    create_function,
+					GVoidFunc                     post_initialize_callback,
+					void                         *user_data);
 
 /* standard handy create function (pass the _get_type function for the
  * class as the user_data)
  */
-NautilusView * nautilus_view_create_from_get_type_function (const char *iid, void *user_data);
+BonoboObject *nautilus_view_create_from_get_type_function (const char *iid, void *user_data);
 
 G_END_DECLS
 

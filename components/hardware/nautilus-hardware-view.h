@@ -53,7 +53,7 @@ struct _NautilusHardwareViewClass {
 GtkType       nautilus_hardware_view_get_type          (void);
 
 /* Component embedding support */
-NautilusView *nautilus_hardware_view_get_nautilus_view (NautilusHardwareView *view);
+BonoboObject *nautilus_hardware_view_get_nautilus_view (NautilusHardwareView *view);
 
 /* URI handling */
 void          nautilus_hardware_view_load_uri          (NautilusHardwareView *view,

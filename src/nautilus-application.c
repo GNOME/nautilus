@@ -60,6 +60,7 @@
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-metafile-factory.h>
 #include <libnautilus-private/nautilus-sound.h>
+#include <libnautilus-private/nautilus-bonobo-extensions.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-private/nautilus-volume-monitor.h>
 #include <libnautilus-private/nautilus-authn-manager.h>
@@ -413,7 +414,7 @@ nautilus_application_startup (NautilusApplication *application,
 	/* Start up the factory. */
 	while (TRUE) {
 		/* Try to register the file manager view factory. */
-		result = bonobo_activation_active_server_register
+		result = nautilus_bonobo_activation_register_for_display
 			(FACTORY_IID, BONOBO_OBJREF (application));
 
 		switch (result) {

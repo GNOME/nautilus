@@ -88,8 +88,8 @@ make_object (BonoboGenericFactory *factory,
 	     const char           *iid, 
 	     gpointer              data)
 {
+	BonoboObject *view;
 	CallbackData *callback_data;
-	NautilusView *view;
 
 	callback_data = (CallbackData *) data;
 
@@ -215,7 +215,8 @@ nautilus_view_standard_main_multi (const char *executable_name,
 	callback_data.delayed_quit_timeout_id = 0;
 
 	/* Create the factory. */
-        registration_id = bonobo_activation_make_registration_id (factory_iid, DisplayString (gdk_display));
+        registration_id = bonobo_activation_make_registration_id (
+		factory_iid, gdk_get_display ());
 	factory = bonobo_generic_factory_new (registration_id, 
 					      make_object,
 					      &callback_data);
@@ -313,8 +314,8 @@ nautilus_view_standard_main (const char *executable_name,
 
 typedef GtkType (* TypeFunc) (void);
 
-NautilusView *
+BonoboObject *
 nautilus_view_create_from_get_type_function (const char *iid, void *user_data)
 {
-	return NAUTILUS_VIEW (g_object_new (((TypeFunc) (user_data)) (), NULL));
+	return BONOBO_OBJECT (g_object_new (((TypeFunc) (user_data)) (), NULL));
 }

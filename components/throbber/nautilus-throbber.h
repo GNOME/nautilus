@@ -31,9 +31,7 @@
 #include <gtk/gtkeventbox.h>
 #include <bonobo.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_THROBBER		(nautilus_throbber_get_type ())
 #define NAUTILUS_THROBBER(obj)		(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_THROBBER, NautilusThrobber))
@@ -54,22 +52,19 @@ struct NautilusThrobberClass {
 	GtkEventBoxClass parent_class;
 	
 	/* signals */
-	void         (* location_changed) (NautilusThrobber *throbber,
-					   const char            *location);
+	void (* location_changed) (NautilusThrobber *throbber,
+				   const char       *location);
 };
 
-GtkType    	nautilus_throbber_get_type	(void);
-GtkWidget *	nautilus_throbber_new		(void);
+GtkType       nautilus_throbber_get_type       (void);
+GtkWidget    *nautilus_throbber_new            (void);
+BonoboObject *nautilus_throbber_get_control    (NautilusThrobber *throbber);
+void          nautilus_throbber_start          (NautilusThrobber *throbber);
+void          nautilus_throbber_stop           (NautilusThrobber *throbber);
+void          nautilus_throbber_set_small_mode (NautilusThrobber *throbber,
+						gboolean          new_mode);
 
-BonoboObject*	nautilus_throbber_get_control (NautilusThrobber *throbber);
-
-void		nautilus_throbber_start		(NautilusThrobber *throbber);
-void		nautilus_throbber_stop		(NautilusThrobber *throbber);
-void		nautilus_throbber_set_small_mode (NautilusThrobber *throbber, gboolean new_mode);
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif /* NAUTILUS_THROBBER_H */
 

@@ -104,4 +104,7 @@ NautilusBonoboActivationHandle *nautilus_bonobo_activate_from_id                
 										     gpointer                          callback_data);
 void                            nautilus_bonobo_activate_cancel                     (NautilusBonoboActivationHandle   *handle);
 
+Bonobo_RegistrationResult	nautilus_bonobo_activation_register_for_display     (const char                       *iid,
+										     Bonobo_Unknown                    ref);
+
 #endif /* NAUTILUS_BONOBO_EXTENSIONS_H */

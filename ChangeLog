@@ -1,3 +1,82 @@
+2002-03-07  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus-private/nautilus-horizontal-splitter.c
+	(nautilus_horizontal_splitter_size_allocate): impl. to
+	cope with having a paned with no child2, without doing
+	lots of bogus size re-allocation.
+	(nautilus_horizontal_splitter_class_init): upd.
+	(nautilus_horizontal_splitter_pack2): impl, since
+	gtkpaned relies on the re-size to generate an expose
+	to re-render it's splitter grabber thing.a
+
+	* src/nautilus-sidebar.c
+	(nautilus_sidebar_set_width): impl. moving all sidebar
+	preferences here, 
+	(nautilus_sidebar_init): move auto value setup
+	here from class_init to save possible re-enterancy
+	issue. Request the size we want for the sidebar,
+	the pane will under-allocate if neccessary.
+	Set the old_width to the correct size so we don't
+	re-render the paned lots as it swiches about.
+
+	* src/nautilus-window.c
+	(nautilus_window_constructed): reflow to simplify,
+	call sidebar_set_width.
+	(nautilus_window_set_content_view_widget): use
+	nautilus_..._pack2 instead of gtk_paned to fix rendering.
+
+2002-03-06  Michael Meeks  <michael@ximian.com>
+
+	* components/notes/nautilus-notes.c
+	(make_notes_view): upd.
+
+	* components/news/nautilus-news.c
+	(rss_read_done_callback): parse the RTF, but don't spew
+	warnings everywhere.
+	(make_news_view): upd.
+
+	* components/throbber/main.c
+	(cb_create_throbber): impl.
+	(throbber_object_destroyed, throbber_make_object):
+	axe cut & paste.
+
+	* libnautilus/nautilus-view-standard-main.c
+	(nautilus_view_create_from_get_type_function):
+	widen from NautilusView to BonoboObject, this
+	code has a much wider application.
+	(make_object): ditto.
+
+	* components/hardware/nautilus-hardware-view.c
+	(nautilus_hardware_view_get_nautilus_view): upd.
+
+	* components/throbber/nautilus-throbber.c
+	(nautilus_throbber_new): kill.
+
+	* libnautilus/nautilus-view-standard-main.c
+	(nautilus_view_standard_main_multi): use gdk_get_display.
+
+	* libnautilus-private/nautilus-bonobo-extensions.c
+	(nautilus_bonobo_activation_register_for_display): impl.
+
+	* src/nautilus-application.c
+	(nautilus_application_startup): use it.
+
+	* src/nautilus-window-toolbars.c
+	(location_change_at_idle_callback),
+	(throbber_callback): move from nautilus-window.c
+	(nautilus_window_allow_stop): move this here,
+	prune redundant sets, simplify property bag
+	extraction.
+
+	* src/nautilus-window.c
+	(nautilus_window_constructed): move throbber
+	location changed code out of here.
+	(nautilus_window_unrealize): no explicit removal
+	from remote property bag neccessary & upd.
+
+	* libnautilus-private/nautilus-metafile-factory.c
+	(corba_open): reduce complexity.
+
 2002-03-07  Anders Carlsson  <andersca@gnu.org>
 
 	* configure.in: Require eel 1.1.7

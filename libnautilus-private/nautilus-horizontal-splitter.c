@@ -225,6 +225,47 @@ nautilus_horizontal_splitter_button_release (GtkWidget *widget, GdkEventButton *
 }
 
 static void
+nautilus_horizontal_splitter_size_allocate (GtkWidget     *widget,
+					    GtkAllocation *allocation)
+{
+	gint border_width;
+	GtkPaned *paned;
+	GtkAllocation child_allocation;
+	GtkRequisition child_requisition;
+      
+	paned = GTK_PANED (widget);
+	border_width = GTK_CONTAINER (paned)->border_width;
+
+	widget->allocation = *allocation;
+
+	if (paned->child2 != NULL && GTK_WIDGET_VISIBLE (paned->child2)) { 
+		EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate,
+				 (widget, allocation));
+	} else if (paned->child1 && GTK_WIDGET_VISIBLE (paned->child1)) {
+
+		if (GTK_WIDGET_REALIZED (widget)) {
+			gdk_window_hide (paned->handle);
+		}
+
+		gtk_widget_get_child_requisition (paned->child1,
+						  &child_requisition);
+		
+		child_allocation.x = widget->allocation.x + border_width;
+		child_allocation.y = widget->allocation.y + border_width;
+		child_allocation.width = MIN (child_requisition.width,
+					      allocation->width - 2 * border_width);
+		child_allocation.height = MIN (child_requisition.height,
+					       allocation->height - 2 * border_width);
+		
+		gtk_widget_size_allocate (paned->child1, &child_allocation);
+	} else
+		if (GTK_WIDGET_REALIZED (widget)) {
+			gdk_window_hide (paned->handle);
+		}
+
+}
+
+static void
 nautilus_horizontal_splitter_class_init (NautilusHorizontalSplitterClass *class)
 {
 	GtkWidgetClass *widget_class;
@@ -233,6 +274,43 @@ nautilus_horizontal_splitter_class_init (NautilusHorizontalSplitterClass *class)
 
 	G_OBJECT_CLASS (class)->finalize = nautilus_horizontal_splitter_finalize;
 
+	widget_class->size_allocate = nautilus_horizontal_splitter_size_allocate;
 	widget_class->button_press_event = nautilus_horizontal_splitter_button_press;
 	widget_class->button_release_event = nautilus_horizontal_splitter_button_release;
+}
+
+void
+nautilus_horizontal_splitter_pack2 (NautilusHorizontalSplitter *splitter,
+				    GtkWidget                  *child2)
+{
+	gboolean re_expose;
+	GtkPaned *paned;
+	
+	g_return_if_fail (GTK_IS_WIDGET (child2));
+	g_return_if_fail (NAUTILUS_IS_HORIZONTAL_SPLITTER (splitter));
+
+	paned = GTK_PANED (splitter);
+
+	re_expose = (paned->child2 == NULL ||
+		     !GTK_WIDGET_VISIBLE (paned->child2));
+
+	gtk_paned_pack2 (paned, child2, TRUE, TRUE);
+
+
+	if (re_expose) {
+		/* We have to expose the divider, since the pane relies
+		 * on a resize when you add the 2nd item to get it's
+		 * rendering right */
+
+		/* this calculates the handle positon correctly */
+		gtk_widget_size_allocate (GTK_WIDGET (splitter),
+					  &GTK_WIDGET (splitter)->allocation);
+
+		/* and this renders it */
+		gtk_widget_queue_draw_area (GTK_WIDGET (splitter),
+					    paned->handle_pos.x,
+					    paned->handle_pos.y,
+					    paned->handle_pos.width,
+					    paned->handle_pos.height);
+	}
 }

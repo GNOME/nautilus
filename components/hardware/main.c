@@ -32,7 +32,7 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-debug.h>
 
-static NautilusView *
+static BonoboObject *
 cb_create_hardware_view (const char *ignore0, void *ignore1)
 {
 	NautilusHardwareView *hardware_view =

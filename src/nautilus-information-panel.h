@@ -72,5 +72,6 @@ void             nautilus_sidebar_set_uri      (NautilusSidebar   *sidebar,
 						const char        *initial_title);
 void             nautilus_sidebar_set_title    (NautilusSidebar   *sidebar,
 						const char        *new_title);
+void             nautilus_sidebar_setup_width  (NautilusSidebar   *sidebar);
 
 #endif /* NAUTILUS_SIDEBAR_H */

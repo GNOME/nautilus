@@ -28,6 +28,7 @@
 #include <config.h>
 #include "nautilus-throbber.h"
 
+#include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-gtk-extensions.h>
@@ -37,6 +38,7 @@
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-macros.h>
 #include <libgnome/gnome-util.h>
+#include <libnautilus/nautilus-view-standard-main.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
@@ -240,18 +242,11 @@ nautilus_throbber_instance_init (NautilusThrobber *throbber)
 	
 	nautilus_throbber_load_images (throbber);
 	gtk_widget_show (widget);
-	
+
 	/* add a callback for when the theme changes */
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
 				      nautilus_throbber_theme_changed,
 				      throbber);
-}
-
-/* allocate a new throbber */
-GtkWidget *
-nautilus_throbber_new (void)
-{
-	return gtk_widget_new (nautilus_throbber_get_type (), NULL);
 }
 
 /* handler for handling theme changes */

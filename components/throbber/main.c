@@ -26,87 +26,36 @@
 #include "nautilus-throbber.h"
 
 #include <eel/eel-debug.h>
-#include <libgnomeui/gnome-client.h>
-#include <libgnomeui/gnome-ui-init.h>
-#include <libgnomevfs/gnome-vfs-init.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
-#include <string.h>
+#include <libnautilus/nautilus-view-standard-main.h>
 
-static int object_count = 0;
-
-static void
-throbber_object_destroyed (GtkObject *obj)
-{
-	object_count--;
-	if (object_count <= 0) {
-		gtk_main_quit ();
-	}
-}
+#define FACTORY_IID "OAFIID:nautilus_throbber_factory"
+#define VIEW_IID    "OAFIID:nautilus_throbber"
 
 static BonoboObject *
-throbber_make_object (BonoboGenericFactory *factory, 
-		      const char *iid, 
-		      void *closure)
+cb_create_throbber (const char *ignore0, void *ignore1)
 {
-	NautilusThrobber *throbber;
-	BonoboObject *bonobo_control;
-
-	if (strcmp (iid, "OAFIID:nautilus_throbber")) {
-		return NULL;
-	}
-	
-	throbber = NAUTILUS_THROBBER (g_object_new (NAUTILUS_TYPE_THROBBER, NULL));
-	
-	object_count++;
-	
-	bonobo_control = nautilus_throbber_get_control (throbber);
-	
-	g_signal_connect (bonobo_control, "destroy", G_CALLBACK (throbber_object_destroyed), NULL);
-
-	return bonobo_control;
+	NautilusThrobber *throbber =
+		g_object_new (NAUTILUS_TYPE_THROBBER, NULL);
+	return nautilus_throbber_get_control (throbber);
 }
 
 int
 main (int argc, char *argv[])
 {
-	BonoboGenericFactory *factory;
-	char *registration_id;
-
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
 		eel_make_warnings_and_criticals_stop_in_debugger ();
 	}
 
-	/* Initialize libraries. */
-	gnome_program_init ("nautilus-throbber",
-			    VERSION,
-			    LIBGNOMEUI_MODULE,
-			    argc, argv,
-			    NULL);
-
-	bonobo_ui_init ("nautilus-throbber", VERSION, &argc, argv);
-
-	/* Disable session manager connection */
-	g_object_set (G_OBJECT (gnome_program_get()),
-	              GNOME_CLIENT_PARAM_SM_CONNECT, FALSE, NULL);
-
-	nautilus_global_preferences_init ();   
-
-	registration_id = bonobo_activation_make_registration_id ("OAFIID:nautilus_throbber_factory", g_getenv ("DISPLAY"));
-	factory = bonobo_generic_factory_new ("OAFIID:nautilus_throbber_factory", 
-					      throbber_make_object,
-					      NULL);
-	g_free (registration_id);
-
-	if (factory != NULL) {
-		bonobo_activate ();
-		do {
-			gtk_main ();
-		} while (object_count > 0);
-		
-		bonobo_object_unref (factory);
-	}
-
-	gnome_vfs_shutdown ();
-
-	return EXIT_SUCCESS;
+	return nautilus_view_standard_main ("nautilus-throbber",
+					    VERSION,
+					    GETTEXT_PACKAGE,
+					    GNOMELOCALEDIR,
+					    argc,
+					    argv,
+					    FACTORY_IID,
+					    VIEW_IID,
+					    cb_create_throbber,
+                                            nautilus_global_preferences_init,
+					    NULL);
 }

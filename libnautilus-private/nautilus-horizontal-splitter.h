@@ -56,6 +56,8 @@ void	   nautilus_horizontal_splitter_hide		(NautilusHorizontalSplitter *splitter
 void	   nautilus_horizontal_splitter_show		(NautilusHorizontalSplitter *splitter);
 void	   nautilus_horizontal_splitter_expand		(NautilusHorizontalSplitter *splitter);
 void	   nautilus_horizontal_splitter_toggle_position	(NautilusHorizontalSplitter *splitter);
+void	   nautilus_horizontal_splitter_pack2           (NautilusHorizontalSplitter *splitter,
+							 GtkWidget                  *child2);
 
 G_END_DECLS
 

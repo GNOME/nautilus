@@ -82,8 +82,9 @@ struct NautilusWindowDetails
         NautilusViewIdentifier *extra_viewer;
 
         /* Throbber. */
-	Bonobo_Control throbber;
-	Bonobo_Listener throbber_listener;
+        gboolean           throbber_active;
+	Bonobo_PropertyBag throbber_property_bag;
+	Bonobo_Listener    throbber_listener;
 
         /* Deferred location change. */
         char *location_to_change_to_at_idle;

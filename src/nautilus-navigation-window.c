@@ -40,7 +40,6 @@
 #include "nautilus-zoom-control.h"
 #include <X11/Xatom.h>
 #include <bonobo/bonobo-exception.h>
-#include <bonobo/bonobo-property-bag-client.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-gdk-extensions.h>
@@ -81,7 +80,6 @@
 #include <libnautilus/nautilus-undo.h>
 #include <math.h>
 #include <sys/time.h>
-#include <unistd.h>
 
 /* FIXME bugzilla.gnome.org 41243: 
  * We should use inheritance instead of these special cases
@@ -519,47 +517,6 @@ set_initial_window_geometry (NautilusWindow *window)
 				          max_height_for_screen));
 }
 
-static gboolean
-location_change_at_idle_callback (gpointer callback_data)
-{
-	NautilusWindow *window;
-	char *location;
-
-	window = NAUTILUS_WINDOW (callback_data);
-
-	location = window->details->location_to_change_to_at_idle;
-	window->details->location_to_change_to_at_idle = NULL;
-	window->details->location_change_at_idle_id = 0;
-
-	nautilus_window_go_to (window, location);
-	g_free (location);
-
-	return FALSE;
-}
-
-
-/* handle bonobo events from the throbber -- since they can come in at
-   any time right in the middle of things, defer until idle */
-static void 
-throbber_callback (BonoboListener *listener,
-		   const char *event_name, 
-		   const CORBA_any *arg,
-		   CORBA_Environment *ev,
-		   gpointer callback_data)
-{
-	NautilusWindow *window;
-
-	window = NAUTILUS_WINDOW (callback_data);
-
-	g_free (window->details->location_to_change_to_at_idle);
-	window->details->location_to_change_to_at_idle = g_strdup (BONOBO_ARG_GET_STRING (arg));
-
-	if (window->details->location_change_at_idle_id == 0) {
-		window->details->location_change_at_idle_id =
-			gtk_idle_add (location_change_at_idle_callback, window);
-	}
-}
-
 /* Add a dummy menu with a "View as ..." item when we first create the
  * view_as_option_menu -- without this the menu draws empty and shrunk,
  * once we populate it it grows and forces the toolbar and all the other
@@ -585,10 +542,7 @@ nautilus_window_constructed (NautilusWindow *window)
 {
 	GtkWidget *location_bar_box;
 	GtkWidget *view_as_menu_vbox;
-  	int sidebar_width;
 	BonoboControl *location_bar_wrapper;
-	CORBA_Environment ev;
-	Bonobo_PropertyBag property_bag;
 	
 	/* CORBA and Bonobo setup, which must be done before the location bar setup */
 	window->details->ui_container = bonobo_ui_container_new ();
@@ -668,29 +622,21 @@ nautilus_window_constructed (NautilusWindow *window)
 		set_initial_window_geometry (window);
 	
 		window->content_hbox = nautilus_horizontal_splitter_new ();
-		
-		/* FIXME bugzilla.gnome.org 41245: Saved in pixels instead of in %? */
-		/* FIXME bugzilla.gnome.org 41245: No reality check on the value? */
-		sidebar_width = eel_preferences_get_integer (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH);
-		gtk_paned_set_position (GTK_PANED (window->content_hbox), sidebar_width);
-	}
-	gtk_widget_show (window->content_hbox);
-	bonobo_window_set_contents (BONOBO_WINDOW (window), window->content_hbox);
-	
-	/* FIXME bugzilla.gnome.org 41243: 
-	 * We should use inheritance instead of these special cases
-	 * for the desktop window.
-	 */
-        if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+
 		/* set up the sidebar */
 		window->sidebar = nautilus_sidebar_new ();
 		gtk_widget_show (GTK_WIDGET (window->sidebar));
 		g_signal_connect (window->sidebar, "location_changed",
-				    G_CALLBACK (go_to_callback), window);
+				  G_CALLBACK (go_to_callback), window);
 		gtk_paned_pack1 (GTK_PANED (window->content_hbox),
 				 GTK_WIDGET (window->sidebar),
 				 FALSE, TRUE);
+
+		nautilus_sidebar_setup_width (window->sidebar);
 	}
+
+	gtk_widget_show (window->content_hbox);
+	bonobo_window_set_contents (BONOBO_WINDOW (window), window->content_hbox);
 	
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 
@@ -724,21 +670,6 @@ nautilus_window_constructed (NautilusWindow *window)
 
 	/* We'll do the second part later (bookmarks and go menus) */
 	window->details->ui_pending_initialize_menus_part_2 = TRUE;
-
-	/* watch for throbber location changes, too */
-	if (window->details->throbber != CORBA_OBJECT_NIL) {
-		CORBA_exception_init (&ev);
-		property_bag = Bonobo_Control_getProperties (window->details->throbber, &ev);
-		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
-			window->details->throbber_listener =
-				bonobo_event_source_client_add_listener_full
-				(property_bag,
-				 g_cclosure_new (G_CALLBACK (throbber_callback), window, NULL), 
-				 "Bonobo/Property:change:location", NULL); 
-			bonobo_object_release_unref (property_bag, NULL);	
-		}
-		CORBA_exception_free (&ev);
-	}
 	
 	/* Set initial sensitivity of some buttons & menu items 
 	 * now that they're all created.
@@ -826,33 +757,17 @@ static void
 nautilus_window_unrealize (GtkWidget *widget)
 {
 	NautilusWindow *window;
-	CORBA_Environment ev;
-	Bonobo_PropertyBag property_bag;
 	
 	window = NAUTILUS_WINDOW (widget);
 
-	/* Get rid of the throbber explicitly before it self-destructs
-	 * (which it will do when the control frame goes away.
-	 */
-	if (window->details->throbber != CORBA_OBJECT_NIL) {
-		if (window->details->throbber_listener != CORBA_OBJECT_NIL) {
-			CORBA_exception_init (&ev);
+	if (window->details->throbber_property_bag != CORBA_OBJECT_NIL) {
+		bonobo_object_release_unref (window->details->throbber_property_bag, NULL);
+		window->details->throbber_property_bag = CORBA_OBJECT_NIL;
+	}
 
-			property_bag = Bonobo_Control_getProperties (window->details->throbber, &ev);
-			if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {	
-				bonobo_event_source_client_remove_listener
-					(property_bag, window->details->throbber_listener, &ev);
-				bonobo_object_release_unref (property_bag, &ev);
-			}
-
-			CORBA_Object_release (window->details->throbber_listener, &ev);
-			window->details->throbber_listener = CORBA_OBJECT_NIL;
-
-			CORBA_exception_free (&ev);
-		}
-
-		bonobo_object_release_unref (window->details->throbber, NULL);
-		window->details->throbber = CORBA_OBJECT_NIL;
+	if (window->details->throbber_listener != CORBA_OBJECT_NIL) {
+		CORBA_Object_release (window->details->throbber_listener, NULL);
+		window->details->throbber_listener = CORBA_OBJECT_NIL;
 	}
 
 	GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
@@ -1679,35 +1594,6 @@ nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
 }
 
 void
-nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
-{
-	CORBA_Environment ev;
-	Bonobo_PropertyBag property_bag;
-	
-	nautilus_window_ui_freeze (window);
-
-	if (allow)
-		access ("nautilus-throbber: start", 0);
-	else
-		access ("nautilus-throbber: stop", 0);
-
-	nautilus_bonobo_set_sensitive (window->details->shell_ui,
-				       NAUTILUS_COMMAND_STOP, allow);
-
-	if (window->details->throbber != CORBA_OBJECT_NIL) {
-		CORBA_exception_init (&ev);
-		property_bag = Bonobo_Control_getProperties (window->details->throbber, &ev);
-		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
-			bonobo_pbclient_set_boolean (property_bag, "throbbing", allow, &ev);
-			bonobo_object_release_unref (property_bag, NULL);
-		}
-		CORBA_exception_free (&ev);
-	}
-
-	nautilus_window_ui_thaw (window);
-}
-
-void
 nautilus_send_history_list_changed (void)
 {
 	g_signal_emit_by_name (nautilus_signaller_get_current (),
@@ -1916,9 +1802,9 @@ nautilus_window_set_content_view_widget (NautilusWindow *window,
 			gtk_container_add (GTK_CONTAINER (window->content_hbox),
 					   GTK_WIDGET (new_view));
 		} else {
-			gtk_paned_pack2 (GTK_PANED (window->content_hbox),
-					 GTK_WIDGET (new_view),
-					 TRUE, TRUE);
+			nautilus_horizontal_splitter_pack2 (
+				NAUTILUS_HORIZONTAL_SPLITTER (window->content_hbox),
+				GTK_WIDGET (new_view));
 		}
 	}
 

@@ -352,8 +352,8 @@ notes_get_indicator_image (const char *notes_text)
 	return NULL;
 }
 
-static NautilusView *
-make_notes_view (const char *iid, gpointer callback_data)
+static BonoboObject *
+make_notes_view (const char *iid, void *callback_data)
 {
         GtkWidget *vbox;
         Notes *notes;
@@ -417,7 +417,7 @@ make_notes_view (const char *iid, gpointer callback_data)
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (notes->note_text_field), TRUE);
 #endif
 
-        return notes->view;
+        return BONOBO_OBJECT (notes->view);
 }
 
 int

@@ -49,6 +49,7 @@
 #include <gtk/gtkcheckmenuitem.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkhbox.h>
+#include <gtk/gtkpaned.h>
 #include <gtk/gtknotebook.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
@@ -131,6 +132,10 @@ static void     background_metadata_changed_callback   (NautilusSidebar  *sideba
 #define SIDEBAR_MINIMUM_WIDTH 1
 #define SIDEBAR_MINIMUM_HEIGHT 400
 
+/* Some auto-updated values */
+static int      sidebar_width_auto_value = SIDEBAR_MINIMUM_WIDTH;
+static gboolean confirm_trash_auto_value = TRUE;
+
 enum {
 	LOCATION_CHANGED,
 	LAST_SIGNAL
@@ -165,9 +170,6 @@ typedef enum {
 	TITLE_TAB_PART,
 	TABS_PART
 } SidebarPart;
-
-static gboolean confirm_trash_auto_value;
-
 
 EEL_CLASS_BOILERPLATE (NautilusSidebar, nautilus_sidebar, GTK_TYPE_EVENT_BOX)
 
@@ -205,9 +207,6 @@ nautilus_sidebar_class_init (GtkObjectClass *object_klass)
 		 NULL, NULL,
 		 g_cclosure_marshal_VOID__STRING,
 		 G_TYPE_NONE, 1, G_TYPE_STRING);
-
-	eel_preferences_add_auto_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-					       &confirm_trash_auto_value);
 }
 
 /* utility routine to allocate the box the holds the command buttons */
@@ -232,16 +231,30 @@ make_button_box (NautilusSidebar *sidebar)
 static void
 nautilus_sidebar_init (GtkObject *object)
 {
+	GtkWidget *widget;
+	static gboolean setup_autos = FALSE;
 	NautilusSidebar *sidebar;
-	GtkWidget* widget;
 	
 	sidebar = NAUTILUS_SIDEBAR (object);
 	widget = GTK_WIDGET (object);
 
 	sidebar->details = g_new0 (NautilusSidebarDetails, 1);
+
+	if (!setup_autos) {
+		setup_autos = TRUE;
+		eel_preferences_add_auto_integer (
+			NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
+			&sidebar_width_auto_value);
+
+		eel_preferences_add_auto_boolean (
+			NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+			&confirm_trash_auto_value);
+	}
 	
-	/* set the minimum size of the sidebar */
-	gtk_widget_set_size_request (widget, SIDEBAR_MINIMUM_WIDTH, SIDEBAR_MINIMUM_HEIGHT);
+	/* set the requested size of the sidebar */
+	gtk_widget_set_size_request (widget, sidebar_width_auto_value,
+				     SIDEBAR_MINIMUM_HEIGHT);
+	sidebar->details->old_width = sidebar_width_auto_value;
 
 	/* load the default background from the current theme */
 	nautilus_sidebar_read_theme(sidebar);
@@ -278,8 +291,6 @@ nautilus_sidebar_init (GtkObject *object)
 	gtk_box_pack_end (GTK_BOX (sidebar->details->container),
 			  GTK_WIDGET (sidebar->details->sidebar_tabs),
 			  FALSE, FALSE, 0);
-
-	sidebar->details->old_width = widget->allocation.width;
 	
 	/* allocate and install the panel tabs */
   	sidebar->details->notebook = GTK_NOTEBOOK (gtk_notebook_new ());
@@ -1687,10 +1698,25 @@ nautilus_sidebar_size_allocate (GtkWidget *widget,
 	EEL_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
 	
 	/* remember the size if it changed */
-	
 	if (widget->allocation.width != sidebar->details->old_width) {
 		sidebar->details->old_width = widget->allocation.width;
  		eel_preferences_set_integer (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
 					     widget->allocation.width);
 	}	
+}
+
+void
+nautilus_sidebar_setup_width (NautilusSidebar *sidebar)
+{
+	GtkPaned *paned;
+
+	g_return_if_fail (NAUTILUS_IS_SIDEBAR (sidebar));
+	g_return_if_fail (GTK_WIDGET (sidebar)->parent != NULL);
+
+	paned = GTK_PANED (GTK_WIDGET (sidebar)->parent);
+
+	/* FIXME bugzilla.gnome.org 41245: Saved in pixels instead of in %? */
+	/* FIXME bugzilla.gnome.org 41245: No reality check on the value? */
+	gtk_paned_set_position (paned, sidebar_width_auto_value);
+	sidebar->details->old_width = sidebar_width_auto_value;
 }

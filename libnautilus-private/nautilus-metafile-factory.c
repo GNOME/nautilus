@@ -51,12 +51,10 @@ corba_open (PortableServer_Servant servant,
 	    CORBA_Environment *ev)
 {
 	NautilusMetafile *metafile;
-	Nautilus_Metafile objref;
 
 	metafile = nautilus_metafile_get (directory);
-	objref = bonobo_object_dup_ref (BONOBO_OBJREF (metafile), NULL);
-	bonobo_object_unref (metafile);
-	return objref;
+
+	return CORBA_Object_duplicate (BONOBO_OBJREF (metafile), ev);
 }
 
 static void

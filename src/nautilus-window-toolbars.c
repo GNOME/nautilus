@@ -28,12 +28,14 @@
 
 #include <config.h>
 
+#include <unistd.h>
 #include "nautilus-application.h"
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window.h"
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-property-bag.h>
+#include <bonobo/bonobo-property-bag-client.h>
 #include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-moniker-util.h>
 #include <bonobo/bonobo-ui-util.h>
@@ -403,6 +405,128 @@ create_back_or_forward_toolbar_item (NautilusWindow *window,
 	return item;
 }
 
+static gboolean
+location_change_at_idle_callback (gpointer callback_data)
+{
+	NautilusWindow *window;
+	char *location;
+
+	window = NAUTILUS_WINDOW (callback_data);
+
+	location = window->details->location_to_change_to_at_idle;
+	window->details->location_to_change_to_at_idle = NULL;
+	window->details->location_change_at_idle_id = 0;
+
+	nautilus_window_go_to (window, location);
+	g_free (location);
+
+	return FALSE;
+}
+
+
+/* handle bonobo events from the throbber -- since they can come in at
+   any time right in the middle of things, defer until idle */
+static void 
+throbber_callback (BonoboListener *listener,
+		   const char *event_name, 
+		   const CORBA_any *arg,
+		   CORBA_Environment *ev,
+		   gpointer callback_data)
+{
+	NautilusWindow *window;
+
+	window = NAUTILUS_WINDOW (callback_data);
+
+	g_free (window->details->location_to_change_to_at_idle);
+	window->details->location_to_change_to_at_idle = g_strdup (
+		BONOBO_ARG_GET_STRING (arg));
+
+	if (window->details->location_change_at_idle_id == 0) {
+		window->details->location_change_at_idle_id =
+			gtk_idle_add (location_change_at_idle_callback, window);
+	}
+}
+
+static void
+throbber_created_callback (Bonobo_Unknown     throbber,
+			   CORBA_Environment *ev,
+			   gpointer           user_data)
+{
+	char *exception_as_text;
+	NautilusWindow *window;
+
+	if (BONOBO_EX (ev)) {
+		exception_as_text = bonobo_exception_get_text (ev);
+		g_warning ("Throbber activation exception '%s'", exception_as_text);
+		g_free (exception_as_text);
+		return;
+	}
+
+	g_return_if_fail (NAUTILUS_IS_WINDOW (user_data));
+
+	window = NAUTILUS_WINDOW (user_data);
+
+	bonobo_ui_component_object_set (window->details->shell_ui,
+					"/Toolbar/ThrobberWrapper",
+					throbber, ev);
+	CORBA_exception_free (ev);
+
+	window->details->throbber_property_bag =
+		Bonobo_Control_getProperties (throbber, ev);
+
+	if (BONOBO_EX (ev)) {
+		window->details->throbber_property_bag = CORBA_OBJECT_NIL;
+		CORBA_exception_free (ev);
+	} else {
+		bonobo_pbclient_set_boolean (window->details->throbber_property_bag,
+					     "throbbing",
+					     window->details->throbber_active,
+					     ev);
+	}
+
+	window->details->throbber_listener =
+		bonobo_event_source_client_add_listener_full
+		(window->details->throbber_property_bag,
+		 g_cclosure_new (G_CALLBACK (throbber_callback), window, NULL), 
+		 "Bonobo/Property:change:location", ev);
+
+	bonobo_object_release_unref (throbber, ev);
+
+	g_object_unref (window);
+}
+
+void
+nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
+{
+	CORBA_Environment ev;
+	
+	if (( window->details->throbber_active &&  allow) ||
+	    (!window->details->throbber_active && !allow)) {
+		return;
+	}
+
+	if (allow)
+		access ("nautilus-throbber: start", 0);
+	else
+		access ("nautilus-throbber: stop", 0);
+
+	window->details->throbber_active = allow;
+
+	nautilus_window_ui_freeze (window);
+
+	nautilus_bonobo_set_sensitive (window->details->shell_ui,
+				       NAUTILUS_COMMAND_STOP, allow);
+
+	if (window->details->throbber_property_bag != CORBA_OBJECT_NIL) {
+		CORBA_exception_init (&ev);
+		bonobo_pbclient_set_boolean (window->details->throbber_property_bag,
+					     "throbbing", allow, &ev);
+		CORBA_exception_free (&ev);
+	}
+
+	nautilus_window_ui_thaw (window);
+}
+
 void
 nautilus_window_initialize_toolbars (NautilusWindow *window)
 {
@@ -415,25 +539,20 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 	 * We should use inheritance instead of these special cases
 	 * for the desktop window.
 	 */
-	/* It's important not to create a throbber that will never get
-	 * an X window, because the code to make the throbber go away
-	 * when Nautilus crashes or is killed relies on the X
-	 * window. One way to do this would be to create the throbber
-	 * at realize time, but another way is to special-case the
-	 * desktop window.
-	 */
 	if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		CORBA_exception_init (&ev);
 
-		window->details->throbber = bonobo_get_object ("OAFIID:nautilus_throbber", "IDL:Bonobo/Control:1.0", &ev);
+		g_object_ref (window);
+		bonobo_get_object_async ("OAFIID:nautilus_throbber",
+					 "IDL:Bonobo/Control:1.0",
+					 &ev,
+					 throbber_created_callback,
+					 window);
+
 		if (BONOBO_EX (&ev)) {
 			exception_as_text = bonobo_exception_get_text (&ev);
 			g_warning ("Throbber activation exception '%s'", exception_as_text);
 			g_free (exception_as_text);
-			window->details->throbber = CORBA_OBJECT_NIL;
-		} else if (window->details->throbber != CORBA_OBJECT_NIL) {
-			bonobo_ui_component_object_set (window->details->shell_ui, "/Toolbar/ThrobberWrapper",
-							window->details->throbber, NULL);
 		}
 		CORBA_exception_free (&ev);
 	}

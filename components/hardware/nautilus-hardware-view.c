@@ -205,10 +205,10 @@ nautilus_hardware_view_destroy (GtkObject *object)
 }
 
 /* Component embedding support */
-NautilusView *
+BonoboObject *
 nautilus_hardware_view_get_nautilus_view (NautilusHardwareView *hardware_view)
 {
-	return hardware_view->details->nautilus_view;
+	return BONOBO_OBJECT (hardware_view->details->nautilus_view);
 }
 
 static char * 
