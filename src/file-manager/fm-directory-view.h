@@ -251,6 +251,12 @@ struct FMDirectoryViewClass {
 	 */
 	gboolean (* supports_creating_files)	(FMDirectoryView *view);
 
+	/* accepts_dragged_files is a function pointer that subclasses may
+	 * override to control whether or not files can be dropped in this
+	 * location. The default implementation returns TRUE.
+	 */
+	gboolean (* accepts_dragged_files)	(FMDirectoryView *view);
+
 	void	(* start_renaming_item)	 	(FMDirectoryView *view,
 					  	 const char *uri);
 
@@ -296,6 +302,7 @@ void               fm_directory_view_set_selection                  (FMDirectory
 void               fm_directory_view_reveal_selection               (FMDirectoryView       *view);
 gboolean	   fm_directory_view_is_read_only		    (FMDirectoryView	   *view);
 gboolean	   fm_directory_view_supports_creating_files	    (FMDirectoryView	   *view);
+gboolean	   fm_directory_view_accepts_dragged_files	    (FMDirectoryView	   *view);
 gboolean	   fm_directory_view_supports_properties	    (FMDirectoryView	   *view);
 gboolean	   fm_directory_view_supports_zooming	    	    (FMDirectoryView	   *view);
 void               fm_directory_view_move_copy_items                (const GList           *item_uris,

@@ -149,6 +149,7 @@ static void           fm_directory_view_real_merge_menus                        
 static void           fm_directory_view_real_update_menus                         (FMDirectoryView          *view);
 static gboolean	      fm_directory_view_real_is_read_only	 		  (FMDirectoryView 	    *view);
 static gboolean	      fm_directory_view_real_supports_creating_files		  (FMDirectoryView 	    *view);
+static gboolean	      fm_directory_view_real_accepts_dragged_files		  (FMDirectoryView 	    *view);
 static gboolean	      fm_directory_view_real_supports_zooming	 		  (FMDirectoryView 	    *view);
 static gboolean	      fm_directory_view_real_supports_properties 		  (FMDirectoryView 	    *view);
 static GtkMenu *      create_selection_context_menu                               (FMDirectoryView          *view);
@@ -286,6 +287,7 @@ fm_directory_view_initialize_class (FMDirectoryViewClass *klass)
 	klass->start_renaming_item = start_renaming_item;
 	klass->is_read_only = fm_directory_view_real_is_read_only;
 	klass->supports_creating_files = fm_directory_view_real_supports_creating_files;
+	klass->accepts_dragged_files = fm_directory_view_real_accepts_dragged_files;
 	klass->supports_zooming = fm_directory_view_real_supports_zooming;
 	klass->supports_properties = fm_directory_view_real_supports_properties;
 	klass->reveal_selection = NULL;
@@ -3973,6 +3975,16 @@ fm_directory_view_supports_creating_files (FMDirectoryView *view)
 		 supports_creating_files, (view));
 }
 
+gboolean
+fm_directory_view_accepts_dragged_files (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	return NAUTILUS_CALL_VIRTUAL
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 accepts_dragged_files, (view));
+}
+
 static gboolean
 showing_trash_directory (FMDirectoryView *view)
 {
@@ -3994,6 +4006,14 @@ fm_directory_view_real_supports_creating_files (FMDirectoryView *view)
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
 
 	return !fm_directory_view_is_read_only (view) && !showing_trash_directory (view);
+}
+
+static gboolean
+fm_directory_view_real_accepts_dragged_files (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), FALSE);
+
+	return TRUE;
 }
 
 gboolean

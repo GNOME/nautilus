@@ -151,5 +151,8 @@ int	     nautilus_list_get_first_selected_row (NautilusList		  *list);
 void         nautilus_list_each_selected_row     (NautilusList            *list,
 						  NautilusEachRowFunction  function,
 						  gpointer                 data);
+gboolean     nautilus_list_rejects_dropped_icons (NautilusList		  *list);
+void	     nautilus_list_set_rejects_dropped_icons (NautilusList	  *list,
+						      gboolean		   new_value);
 
 #endif /* NAUTILUS_LIST_H */

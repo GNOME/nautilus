@@ -96,6 +96,8 @@ struct NautilusListDetails
 	/* Drag state */
 	NautilusDragInfo *drag_info;
 	gboolean drag_started;
+	gboolean rejects_dropped_icons;
+	
 	guint context_menu_timeout_id;
 	
 	/* Delayed selection information */
@@ -2796,15 +2798,32 @@ nautilus_list_drag_leave (GtkWidget *widget, GdkDragContext *context, guint time
 
 }
 
-static char *
-nautilus_list_find_drop_target (NautilusList *list,
-				GdkDragContext *context,
-				int x, int y,
-				gboolean *icon_hit)
+gboolean
+nautilus_list_rejects_dropped_icons (NautilusList *list)
 {
+	return list->details->rejects_dropped_icons;
+}
+
+void
+nautilus_list_set_rejects_dropped_icons (NautilusList *list, gboolean new_value)
+{
+	list->details->rejects_dropped_icons = new_value;
+}
+
+static char *
+nautilus_list_find_icon_list_drop_target (NautilusList *list,
+					  GdkDragContext *context,
+					  int x, int y,
+					  gboolean *icon_hit)
+{
+	if (nautilus_list_rejects_dropped_icons (list)) {
+		return NULL;
+	}
+
 	/* FIXME bugzilla.eazel.com 2571: implement this function 
 	   It might need to be implemented in the fm-list-view.c
-	   actually.
+	   actually. If so, the rejects_dropped_icons logic should
+	   be moved there too.
 	 */
 
 	return g_strdup ("file:///");	
@@ -2840,8 +2859,8 @@ nautilus_list_get_drop_action (NautilusList *list,
 		}
 
 		/* FIXME bugzilla.eazel.com 2571: */ 
-		drop_target = nautilus_list_find_drop_target (list,
-							      context, x, y, &icon_hit);
+		drop_target = nautilus_list_find_icon_list_drop_target (list,
+							      		context, x, y, &icon_hit);
 		if (!drop_target) {
 			*default_action = 0;
 			*non_default_action = 0;

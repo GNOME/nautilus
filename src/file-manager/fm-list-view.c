@@ -848,6 +848,15 @@ set_up_list (FMListView *list_view)
 	fm_list_view_update_click_mode (FM_DIRECTORY_VIEW (list_view));
 	fm_list_view_font_family_changed (FM_DIRECTORY_VIEW (list_view));
 
+	/* Don't even try to accept dropped icons if the view says not to.
+	 * This is used only for views in which accepting file-drops is never
+	 * allowed, such as the search results view.
+	 */
+	nautilus_list_set_rejects_dropped_icons 
+		(list, 
+		 !fm_directory_view_accepts_dragged_files 
+		 	(FM_DIRECTORY_VIEW (list_view)));
+
 	gtk_widget_show (GTK_WIDGET (list));
 }
 

@@ -1,3 +1,42 @@
+2000-09-18  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2213 (Shouldn't be able to drop files into
+	search results view)
+
+	* libnautilus-extensions/nautilus-list.h:
+	Added prototypes for nautilus_list_rejects_dropped_icons
+	and nautilus_list_set_rejects_dropped_icons.
+	* libnautilus-extensions/nautilus-list.c:
+	New rejects_dropped_icons field in details.
+	(nautilus_list_rejects_dropped_icons): new function,
+	read from field.
+	(nautilus_list_set_rejects_dropped_icons): new function,
+	sets field.
+	(nautilus_list_find_icon_list_drop_target): check field
+	for early out. Also, renamed from find_drop_target for
+	clarity.
+	(nautilus_list_get_drop_action): Update for name change.
+
+	* src/file-manager/fm-directory-view.h: New overridable
+	function pointer accepts_dragged_files and function
+	fm_directory_view_accepts_dragged_files.
+	* src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize_class),
+	(fm_directory_view_accepts_dragged_files),
+	(fm_directory_view_real_accepts_dragged_files): Wire up
+	fm_directory_view_accepts_dragged_files as a virtual
+	function with default implementation that always returns
+	TRUE.
+
+	* src/file-manager/fm-list-view.c: (set_up_list):
+	Call nautilus_list_set_rejects_dropped_icons with (opposite
+	of) result of fm_directory_view_accepts_dragged_files.
+	
+	* src/file-manager/fm-search-list-view.c:
+	(fm_search_list_view_initialize_class),
+	(real_supports_creating_files), (real_accepts_dragged_files):
+	Wire up override of accepts_dragged_files that returns FALSE.
+
 2000-09-18  Pavel Cisler  <pavel@eazel.com>
 
 	* src/file-manager/fm-directory-view.c:
