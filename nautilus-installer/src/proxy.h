@@ -28,7 +28,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-gboolean attempt_http_proxy_autoconfigure (void);
+gboolean attempt_http_proxy_autoconfigure (const char *homedir);
 
 #ifdef __cplusplus
 }

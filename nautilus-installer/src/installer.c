@@ -137,8 +137,9 @@ char *installer_server =NULL;
 int installer_server_port = 0;
 char *installer_cgi_path = NULL;
 char *installer_tmpdir = NULL;
-static void check_if_next_okay (GnomeDruidPage *page, void *unused, EazelInstaller *installer);
+char *installer_homedir = NULL;
 
+static void check_if_next_okay (GnomeDruidPage *page, void *unused, EazelInstaller *installer);
 static GtkObjectClass *eazel_installer_parent_class;
 
 
@@ -1998,7 +1999,7 @@ eazel_install_get_depends (EazelInstaller *installer, const char *dest_dir)
 	if (! eazel_install_fetch_file (installer->service, url, "package list", destination)) {
 		/* try again with proxy config */
 		unlink (destination);
-		if (! attempt_http_proxy_autoconfigure () ||
+		if (! attempt_http_proxy_autoconfigure (installer_homedir) ||
 		    ! eazel_install_fetch_file (installer->service, url, "package list", destination)) {
 			jump_to_error_page (installer, NULL, ERROR_NEED_TO_SET_PROXY, "");
 			rmdir (installer->tmpdir);

@@ -356,6 +356,14 @@ gboolean trilobite_fetch_uri (const char *uri_text,
                 result = FALSE;
         } 
 
+	/* bootstrap installer does it this way */
+	if (result && (g_getenv ("http_proxy") != NULL)) {
+		if (ghttp_set_proxy (request, g_getenv ("http_proxy")) != 0) {
+			g_warning (_("Proxy: Invalid uri !"));
+			result = FALSE;
+		}
+	}
+
         if (result && (ghttp_set_uri (request, uri) != 0)) {
                 g_warning (_("Invalid uri !"));
                 result = FALSE;

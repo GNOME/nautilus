@@ -18,7 +18,7 @@ if [ -f /usr/bin/nautilus ]; then
    fi
 fi
 
-if test $UID -ne 0; then
+if test $UID -ne 0 -a "x$1" '!=' "x--version" -a "x$1" '!=' "x--build"; then
    
    # blurp 
    echo ""
@@ -35,7 +35,7 @@ if test $UID -ne 0; then
    # Start
    echo "Please enter root password at the prompt."
    xhost + localhost
-   su - -c "export $params && cd $PWD && echo Uncompressing... && sh $0 $* $USER"
+   su - -c "export $params && cd $PWD && echo Uncompressing... && sh $0 $* --user $USER"
    xhost - localhost
 
    # Move config

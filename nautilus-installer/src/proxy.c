@@ -100,7 +100,7 @@ getline_dup (FILE* stream)
  * user_pref("network.proxy.type", 1);
  */
 static char *
-load_nscp_proxy_settings (void)
+load_nscp_proxy_settings (const char *homedir)
 {
 	char * prefs_path = NULL;
 	char * ret = NULL;
@@ -112,9 +112,8 @@ load_nscp_proxy_settings (void)
 	char * current, *end;
 	FILE * prefs_file;
 
-	prefs_path = g_strdup_printf ("%s%s", g_get_home_dir (), NETSCAPE_PREFS_PATH);
+	prefs_path = g_strdup_printf ("%s%s", homedir, NETSCAPE_PREFS_PATH);
 	prefs_file = fopen (prefs_path, "r");
-
 	if ( NULL == prefs_file ) {
 		goto error;
 	}
@@ -163,7 +162,7 @@ load_nscp_proxy_settings (void)
 	}
 
 	if (has_proxy_type && NULL != proxy_host) {
-		ret = g_strdup_printf ("http://%s:%u", proxy_host, proxy_port);
+		ret = g_strdup_printf ("http://%s:%u/", proxy_host, proxy_port);
 	}
 	
 error:
@@ -182,7 +181,7 @@ error:
  */
 
 static char *
-load_galeon_proxy_settings (void)
+load_galeon_proxy_settings (const char *homedir)
 {
 	char * prefs_path = NULL;
 	char * line;
@@ -191,7 +190,7 @@ load_galeon_proxy_settings (void)
 	guint32 proxy_port = 8080;
 	char * ret = NULL;
 
-	prefs_path = g_strdup_printf ("%s%s", g_get_home_dir (), GALEON_PREFS_PATH);
+	prefs_path = g_strdup_printf ("%s%s", homedir, GALEON_PREFS_PATH);
 	prefs_file = fopen (prefs_path, "r");
 	if ( NULL == prefs_file ) {
 		goto error;
@@ -227,7 +226,7 @@ error:
  * and Netscape 4.x configuation files
  */
 gboolean
-attempt_http_proxy_autoconfigure (void)
+attempt_http_proxy_autoconfigure (const char *homedir)
 {
 	static gboolean autoconfigure_attempted = FALSE;
 	gboolean success = FALSE;
@@ -251,7 +250,7 @@ attempt_http_proxy_autoconfigure (void)
 	}
 
 	/* Check Netscape 4.x settings */
-	proxy_url = load_nscp_proxy_settings ();
+	proxy_url = load_nscp_proxy_settings (homedir);
 	if (NULL != proxy_url) {
 		success = TRUE;
 		set_http_proxy (proxy_url);
@@ -260,7 +259,7 @@ attempt_http_proxy_autoconfigure (void)
 		goto done;
 	}
 
-	proxy_url = load_galeon_proxy_settings ();
+	proxy_url = load_galeon_proxy_settings (homedir);
 	if (NULL != proxy_url) {
 		success = TRUE;
 		set_http_proxy (proxy_url);

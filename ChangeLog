@@ -1,3 +1,21 @@
+2000-11-05  Robey Pointer  <robey@eazel.com>
+
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c
+	: (trilobite_fetch_uri):
+
+	trilobite_fetch_uri() needs to check for & use the proxy setting.
+	
+	* nautilus-installer/src/installer.c: (eazel_install_get_depends):
+	* nautilus-installer/src/main.c: (main):
+	* nautilus-installer/src/prescript:
+	* nautilus-installer/src/proxy.c: (load_nscp_proxy_settings),
+	(load_galeon_proxy_settings), (attempt_http_proxy_autoconfigure):
+	* nautilus-installer/src/proxy.h:
+	
+	Find out the user's homedir by looking up the password entry from
+	the --user option (we're running as root, so the glib function
+	won't work).  Pass that homedir to the proxy autoconfigure stuff.
+
 2000-11-05  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* helper-scripts/nautilus-verify-rpm.sh:

@@ -28,6 +28,8 @@
 #define BUILD_DATE "unknown"
 #endif
 
+#include <pwd.h>
+#include <sys/types.h>
 #include <gnome.h>
 
 #include "installer.h"
@@ -46,8 +48,10 @@ extern int installer_server_port;
 extern char* installer_local;
 extern char* installer_cgi_path;
 extern char* installer_tmpdir;
+extern char* installer_homedir;
 
 static int installer_show_build = 0;
+static char *installer_user = NULL;
 
 static const struct poptOption options[] = {
 	{"debug", 'd', POPT_ARG_NONE, &installer_debug, 0 , N_("Show debug output"), NULL},
@@ -56,6 +60,8 @@ static const struct poptOption options[] = {
 	{"local", '\0', POPT_ARG_STRING, &installer_local, 0, N_("Use local RPMs instead of HTTP server"), "XML-file"},
 	{"server", '\0', POPT_ARG_STRING, &installer_server, 0, N_("Specify Eazel installation server"), NULL},
 	{"tmpdir", '\0', POPT_ARG_STRING, &installer_tmpdir, 0, N_("Specify download dir"), NULL},
+	{"homedir", '\0', POPT_ARG_STRING|POPT_ARGFLAG_DOC_HIDDEN, &installer_homedir, 0, "", NULL},
+	{"user", '\0', POPT_ARG_STRING|POPT_ARGFLAG_DOC_HIDDEN, &installer_user, 0, "", NULL},
 #if 0
 	{"nohelix", '\0', POPT_ARG_NONE, &installer_no_helix, 0, N_("Assume no-helix"), NULL},
 #endif
@@ -77,11 +83,36 @@ main (int argc, char *argv[])
 	textdomain ("eazel-installer");
 #endif
 	argv[0] = fake_argv0;
+
+	if (strcmp (argv[1], "--build") == 0) {
+		/* skip the crap. */
+		printf ("\nEazel Installer v%s (build %s)\n\n", VERSION, BUILD_DATE);
+		exit (0);
+	}
+
 	gnome_init_with_popt_table ("eazel-installer", VERSION, argc, argv, options, 0, NULL);
 
 	if (installer_show_build) {
 		printf ("\nEazel Installer v%s (build %s)\n\n", VERSION, BUILD_DATE);
 		exit (0);
+	}
+
+	if (installer_user == NULL) {
+		printf ("\nThe --user flag is mandatory.\n");
+		exit (0);
+	}
+
+	if (installer_homedir == NULL) {
+		struct passwd *passwd_entry;
+
+		passwd_entry = getpwnam (installer_user);
+		if (passwd_entry != NULL) {
+			installer_homedir = g_strdup (passwd_entry->pw_dir);
+		} else {
+			/* give up */
+			printf ("*** Unable to find user's homedir: using '/'\n");
+			installer_homedir = g_strdup ("/");
+		}
 	}
 
 	installer = eazel_installer_new ();
