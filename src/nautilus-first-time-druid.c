@@ -474,6 +474,8 @@ make_hbox_user_level_radio_button (int index, GtkWidget *radio_buttons[],
 static void
 set_up_user_level_page (NautilusDruidPageEazel *page)
 {
+	char *operating_system_name;
+	char *message;
 	GtkWidget *radio_buttons[3], *label;
 	GtkWidget *container, *main_box, *hbox;
 	int index;
@@ -488,32 +490,50 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
 
-	label = new_body_label (_("Your user level adjusts Nautilus to your degree of experience\n"
-				  "using GNOME and Linux. Choose a level that's comfortable for\n"
-				  "you - you can always change it later."));
+	operating_system_name = eel_get_operating_system_name ();
+
+	message = g_strdup_printf (_("Your user level adjusts Nautilus to your degree of experience\n"
+				     "using GNOME and %s. Choose a level that's comfortable for\n"
+				     "you - you can always change it later."),
+				   operating_system_name);
+	
+	
+	label = new_body_label (message);
+	g_free (message);
 
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
 	/* Make the user level radio buttons and fill the radio_buttons
 	 * array */
-	hbox = make_hbox_user_level_radio_button
-		(NAUTILUS_USER_LEVEL_NOVICE, radio_buttons, "novice.png",
-		 _("For users who have no previous experience with GNOME\n"
-		   "and Linux."),
-		 NULL);
+	message = g_strdup_printf (_("For users who have no previous experience with GNOME\n"
+				     "and %s."),
+				   operating_system_name);
+	hbox = make_hbox_user_level_radio_button (NAUTILUS_USER_LEVEL_NOVICE, radio_buttons, "novice.png",
+						  message,
+						  NULL);
+	g_free (message);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 2);
-	hbox = make_hbox_user_level_radio_button
-		(NAUTILUS_USER_LEVEL_INTERMEDIATE, radio_buttons, "intermediate.png",
-		 _("For users who are comfortable with GNOME and Linux,\n"
-		   "but don't describe themselves as ``technical.''"),
-		 NULL);
+	message = g_strdup_printf (_("For users who are comfortable with GNOME and %s,\n"
+				     "but don't describe themselves as ``technical.''"),
+				   operating_system_name);
+	hbox = make_hbox_user_level_radio_button (NAUTILUS_USER_LEVEL_INTERMEDIATE,
+						  radio_buttons,
+						  "intermediate.png",
+						  message,
+						  NULL);
+	g_free (message);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 2);
-	hbox = make_hbox_user_level_radio_button
-		(NAUTILUS_USER_LEVEL_ADVANCED, radio_buttons, "expert.png",
-		 _("For users who have GNOME and Linux experience, and\n"
-		   "like to see every detail of the operating system."),
-		 NULL);
+	message = g_strdup_printf (_("For users who have GNOME and %s experience, and\n"
+				     "like to see every detail of the operating system."),
+				   operating_system_name);
+	hbox = make_hbox_user_level_radio_button (NAUTILUS_USER_LEVEL_ADVANCED,
+						  radio_buttons,
+						  "expert.png",
+						  message,
+						  NULL);
+	g_free (message);
+	g_free (operating_system_name);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 2);
 
 	g_assert (current_user_level >= NAUTILUS_USER_LEVEL_NOVICE
@@ -992,19 +1012,28 @@ make_title_page_icon_box (void)
 static void
 update_finished_label (void)
 {
+	char *operating_system_name;
+	char *message;
+
+	operating_system_name = eel_get_operating_system_name ();
+
 	if (http_is_known_to_work) {
-		gtk_label_set_text (GTK_LABEL (finished_label),
-				    _("Click Finish to launch Nautilus. You'll start with two\n"
-				      "Nautilus windows: one shows your home folder, and the\n"
-				      "other tells you about Eazel's services that make the life\n"
-				      "of a Linux user easier.\n\n"
-				      "We hope you enjoy Nautilus!"));
+		message = g_strdup_printf (_("Click Finish to launch Nautilus. You'll start with two\n"
+					     "Nautilus windows: one shows your home folder, and the\n"
+					     "other tells you about Eazel's services that make the life\n"
+					     "of a %s user easier.\n\n"
+					     "We hope you enjoy Nautilus!"),
+					   operating_system_name);
 	} else {
-		gtk_label_set_text (GTK_LABEL (finished_label),
-				    _("Click Finish to launch Nautilus. You'll start with a\n"
+		message = g_strdup (_("Click Finish to launch Nautilus. You'll start with a\n"
 				      "window showing your home folder.\n\n"
 				      "We hope you enjoy Nautilus!"));
 	}
+
+	gtk_label_set_text (GTK_LABEL (finished_label), message);
+
+	g_free (message);
+	g_free (operating_system_name);
 }
 
 GtkWidget *

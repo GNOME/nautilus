@@ -1,3 +1,15 @@
+2001-04-20  Ramiro Estrugo  <ramiro@eazel.com>
+
+	Fix bug 7280 - First-time druid contains explicit reference to
+	"Linux"
+	
+	* src/nautilus-first-time-druid.c: (set_up_user_level_page),
+	(update_finished_label):
+	Use the new eel function eel_get_operating_system_name() to find
+	out the right name to use so we dont have to hard code it to
+	something offensive to someone somewhere on some galaxy far far
+	away (or close)
+	
 2001-04-20  Seth Nickell  <snickell@stanford.edu>
 
 	* libnautilus-extensions/nautilus-global-preferences.c:
