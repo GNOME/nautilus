@@ -31,14 +31,17 @@
 #include <ghttp.h>
 #include <unistd.h>
 #include <gnome-xml/tree.h>
+#include <gtk/gtkpixmap.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-background.h>
+#include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-icon-factory.h>
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <stdio.h>
 
@@ -79,11 +82,14 @@ static void	show_feedback					(NautilusServiceStartupView			*view,
 static void
 generate_startup_form (NautilusServiceStartupView	*view) {
 
-	GtkWidget	*temp_widget;
-	GtkWidget	*temp_box;
-	char		*file_name;
-	GtkWidget	*align;
-	int		counter;
+	GtkWidget		*temp_widget;
+	GtkWidget		*temp_box;
+	char			*icon_path;
+	GdkPixbuf		*pixbuf;
+	GdkPixmap		*pixmap;
+	GdkBitmap		*mask;
+	GtkWidget		*align;
+	int			counter;
 
 	/* allocate the parent box to hold everything */
 	view->details->form = gtk_vbox_new (FALSE, 0);
@@ -102,11 +108,15 @@ generate_startup_form (NautilusServiceStartupView	*view) {
 	temp_box = gtk_hbox_new (TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, 0, 0, 40);
 	gtk_widget_show (temp_box);
-	file_name = nautilus_pixmap_file ("service-watch.png");
-	temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
+	icon_path = nautilus_pixmap_file ("service-watch.png");
+	pixbuf = gdk_pixbuf_new_from_file (icon_path);
+	g_assert (pixbuf != NULL);
+	g_free (icon_path);
+	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, 128);
+	temp_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
 	gtk_box_pack_start (GTK_BOX (temp_box), temp_widget, 0, 0, 8);
 	gtk_widget_show (temp_widget);
-	g_free (file_name);
+	gdk_pixbuf_unref (pixbuf);
 
 	/* Add a label for error status messages */
 	view->details->feedback_text = gtk_label_new ("");
@@ -123,7 +133,7 @@ generate_startup_form (NautilusServiceStartupView	*view) {
 	gtk_widget_show (view->details->progress_bar);
 
 	/* bogus progress loop */
-	for (counter = 0; counter <= 20000; counter++) {
+	for (counter = 1; counter <= 20000; counter++) {
 		float value;
 
 		value = (float) counter / 20000;
@@ -143,10 +153,11 @@ generate_startup_form (NautilusServiceStartupView	*view) {
 		if (counter == 20000) {
 			go_to_uri (view, "eazel:summary");
 		}
-
-		gtk_progress_bar_update (GTK_PROGRESS_BAR (view->details->progress_bar), value);
-		while (gtk_events_pending ()) {
-			gtk_main_iteration ();
+		else {
+			gtk_progress_bar_update (GTK_PROGRESS_BAR (view->details->progress_bar), value);
+			while (gtk_events_pending ()) {
+				gtk_main_iteration ();
+			}
 		}
 	}
 
@@ -303,6 +314,9 @@ nautilus_service_startup_view_load_uri (NautilusServiceStartupView	*view,
 	}
 	else if (is_location(document_name, "vault")) {
 		go_to_uri (view, "eazel-vault:");
+	}
+	else if (is_location(document_name, "register")) {
+		go_to_uri (view, "www.eazel.com");
 	}
 	else {
 		generate_startup_form (view); /* eventually, this should be setup_bad_location_form */
