@@ -1,3 +1,12 @@
+2001-02-25  arik devens  <arik@eazel.com
+
+	reviewed by: John Harper  <jsh@eazel.com>
+
+	* src/nautilus-first-time-druid.c: (download_callback): Moving the
+	rest of the gtk_widget_set_sensitive calls to
+	gnome_druid_set_buttons_sensitive so our choices don't get
+	clobered.
+
 2001-02-25  Michael K. Fleming  <mfleming@eazel.com>
 
 	Bug 3887: Mozilla view only recognizes first change to proxy setting.

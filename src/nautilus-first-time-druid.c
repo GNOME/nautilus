@@ -1212,8 +1212,7 @@ download_callback (GnomeVFSResult result,
 		g_free (remove_command);
 
 		/* now that we're done, reenable the buttons */
-		gtk_widget_set_sensitive (druid->next, TRUE);
-		gtk_widget_set_sensitive (druid->back, TRUE);
+		gnome_druid_set_buttons_sensitive (druid, TRUE, TRUE, TRUE);
 	} else if (result == GNOME_VFS_ERROR_NOT_FOUND) {
 		/* The update file couldn't be loaded because it
 		 * doesn't exist. Arlo and I (jsh) and decided that the
@@ -1222,8 +1221,7 @@ download_callback (GnomeVFSResult result,
 		gtk_label_set_text (GTK_LABEL (download_label), _("No Update Available... Press Next to Continue."));
 
 		/* now that we're done, reenable the buttons */
-		gtk_widget_set_sensitive (druid->next, TRUE);
-		gtk_widget_set_sensitive (druid->back, TRUE);
+		gnome_druid_set_buttons_sensitive (druid, TRUE, TRUE, TRUE);
 	} else {
 		/* there was an error; see if we can't find some HTTP proxy config info */
 		/* note that attempt_http_proxy_autoconfigure returns FALSE if it's already been tried */ 
