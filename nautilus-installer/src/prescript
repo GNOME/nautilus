@@ -21,3 +21,15 @@ if test $UID -ne 0; then
     xhost - localhost
     exit
 fi
+
+# Start the nautilus launcher if needed
+ps ax | grep -w 'nautilus-launcher-applet' > /dev/null 2>&1
+
+rv=$?
+
+echo $rv
+
+if [ $rv -ne 0 ]
+then
+  nautilus-launcher-applet &
+fi
