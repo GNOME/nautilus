@@ -32,8 +32,6 @@
 #include <libnautilus/nautilus-gtk-macros.h>
 #include <libnautilus/gtkflist.h>
 
-static FMDirectoryViewClass *parent_class = NULL;
-
 struct _FMDirectoryViewListDetails
 {
 	FMDirectoryViewSortType sort_type;
@@ -66,12 +64,11 @@ static void fm_directory_view_list_done_adding_entries
 static GList * fm_directory_view_list_get_selection (FMDirectoryView *view);
 static GtkFList *get_flist 			    (FMDirectoryViewList *list_view);
 
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryViewList, fm_directory_view_list, FM_TYPE_DIRECTORY_VIEW);
 
 
 
 /* GtkObject methods.  */
-
-NAUTILUS_DEFINE_GET_TYPE_FUNCTION (FMDirectoryViewList, fm_directory_view_list, FM_TYPE_DIRECTORY_VIEW);
 
 static void
 fm_directory_view_list_initialize_class (gpointer klass)
@@ -82,8 +79,6 @@ fm_directory_view_list_initialize_class (gpointer klass)
 	object_class = GTK_OBJECT_CLASS (klass);
 	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (klass);
 
-	parent_class = gtk_type_class (gtk_type_parent(object_class->type));
-	
 	object_class->destroy = fm_directory_view_list_destroy;
 	
 	fm_directory_view_class->clear = fm_directory_view_list_clear;	

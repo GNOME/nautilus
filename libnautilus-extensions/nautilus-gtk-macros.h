@@ -2,7 +2,7 @@
 
    nautilus-gtk-macros.h: Macros to reduce boilerplate when using GTK.
  
-   Copyright (C) 1999 Eazel, Inc.
+   Copyright (C) 1999, 2000 Eazel, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -25,17 +25,19 @@
 #ifndef NAUTILUS_GTK_MACROS_H
 #define NAUTILUS_GTK_MACROS_H
 
-/* Define a get_type function for a GTK class.
+/* Define a parent_class global and a get_type function for a GTK class.
    Since this is boilerplate, it's better not to repeat it over and over again.
    Called like this:
 
-       NAUTILUS_DEFINE_GET_TYPE_FUNCTION(NautilusBookmark, nautilus_bookmark, GTK_TYPE_OBJECT)
+       NAUTILUS_DEFINE_CLASS_BOILERPLATE(NautilusBookmark, nautilus_bookmark, GTK_TYPE_OBJECT)
 
    The parent_class_type parameter is guaranteed to be evaluated only once
    so it can be an expression, even an expression that contains a function call.
 */
 
-#define NAUTILUS_DEFINE_GET_TYPE_FUNCTION(class_name, class_name_in_function_format, parent_class_type) \
+#define NAUTILUS_DEFINE_CLASS_BOILERPLATE(class_name, class_name_in_function_format, parent_class_type) \
+\
+static gpointer parent_class; \
 \
 GtkType \
 class_name_in_function_format##_get_type (void) \
@@ -55,6 +57,7 @@ class_name_in_function_format##_get_type (void) \
 		}; \
 		\
 		type = gtk_type_unique ((parent_class_type), &info); \
+		parent_class = gtk_type_class ((parent_class_type)); \
 	} \
         \
 	return type; \
@@ -82,13 +85,13 @@ G_STMT_START { \
  * must be used earlier in the file. Called like this:
  * 
  * NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL (FM_DIRECTORY_VIEW_CLASS,
- *					 class,
+ *					 klass,
  *					 fm_directory_view,
  *					 clear); 
  */
 #define NAUTILUS_ASSIGN_MUST_OVERRIDE_SIGNAL(class_cast_macro, class_pointer, class_name_in_function_format, signal) \
 \
-* (void (**)(void)) &class_cast_macro (class_pointer)->signal = class_name_in_function_format##_unimplemented_##signal;
+* (void (**)(void)) & class_cast_macro (class_pointer)->signal = class_name_in_function_format##_unimplemented_##signal
 
 /* Provide a debug-only implementation of a signal that must be implemented
  * by subclasses. The debug-only implementation fires a warning if it is called.

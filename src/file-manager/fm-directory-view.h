@@ -28,6 +28,7 @@
 #include <gtk/gtkscrolledwindow.h>
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libnautilus/ntl-content-view-frame.h>
+#include <libnautilus/nautilus-directory.h>
 
 
 
@@ -103,48 +104,48 @@ struct _FMDirectoryViewClass {
 
 
 /* GtkObject support */
-GtkType     fm_directory_view_get_type 			(void);
+GtkType                   fm_directory_view_get_type                 (void);
 
 /* Component embedding support */
-NautilusContentViewFrame 
-	    *fm_directory_view_get_view_frame 		(FMDirectoryView *view);
+NautilusContentViewFrame *fm_directory_view_get_view_frame           (FMDirectoryView         *view);
 
 /* URI handling */
-void         fm_directory_view_load_uri 		(FMDirectoryView *view,
-				       			 const char *uri);
-GnomeVFSURI *fm_directory_view_get_uri 			(FMDirectoryView *view);
+void                      fm_directory_view_load_uri                 (FMDirectoryView         *view,
+								      const char              *uri);
+GnomeVFSURI *             fm_directory_view_get_uri                  (FMDirectoryView         *view);
 
 /* Functions callable from the user interface and elsewhere. */
-GList *	     fm_directory_view_get_selection		(FMDirectoryView *view);
-void	     fm_directory_view_stop     		(FMDirectoryView *view);
-void	     fm_directory_view_sort     		(FMDirectoryView *view,
-				       			 FMDirectoryViewSortType sort_type,
-				       			 gboolean reverse_sort);
+GList *                   fm_directory_view_get_selection            (FMDirectoryView         *view);
+void                      fm_directory_view_stop                     (FMDirectoryView         *view);
+void                      fm_directory_view_sort                     (FMDirectoryView         *view,
+								      FMDirectoryViewSortType  sort_type,
+								      gboolean                 reverse_sort);
 
 /* Wrappers for signal emitters. These are normally called 
  * only by FMDirectoryView itself. They have corresponding signals
  * that observers might want to connect with.
  */
-void	     fm_directory_view_clear    		(FMDirectoryView *view);
-void	     fm_directory_view_begin_adding_entries 	(FMDirectoryView *view);
-void	     fm_directory_view_add_entry 		(FMDirectoryView *view, 
-							 GnomeVFSFileInfo *info);
-void	     fm_directory_view_done_adding_entries 	(FMDirectoryView *view);
-void	     fm_directory_view_begin_loading 		(FMDirectoryView *view);
+void                      fm_directory_view_clear                    (FMDirectoryView         *view);
+void                      fm_directory_view_begin_adding_entries     (FMDirectoryView         *view);
+void                      fm_directory_view_add_entry                (FMDirectoryView         *view,
+								      GnomeVFSFileInfo        *info);
+void                      fm_directory_view_done_adding_entries      (FMDirectoryView         *view);
+void                      fm_directory_view_begin_loading            (FMDirectoryView         *view);
 				       			 
 /* Hooks for subclasses to call. These are normally called only by 
  * FMDirectoryView and its subclasses 
  */
-void	     fm_directory_view_activate_entry 		(FMDirectoryView *view,
-				       			 GnomeVFSFileInfo *info);
-void	     fm_directory_view_notify_selection_changed (FMDirectoryView *view);
-void	     fm_directory_view_populate 		(FMDirectoryView *view);
+void                      fm_directory_view_activate_entry           (FMDirectoryView         *view,
+								      GnomeVFSFileInfo        *info);
+void                      fm_directory_view_notify_selection_changed (FMDirectoryView         *view);
+void                      fm_directory_view_populate                 (FMDirectoryView         *view);
+NautilusDirectory *       fm_directory_view_get_model                (FMDirectoryView         *view);
 
 /* Utility functions for formatting file-related information.
  * FIXME: Probably these should be moved to some appropriate place in libnautilus.
  */
-gchar 	    *nautilus_file_date_as_string 		(GnomeVFSFileInfo *file_info);
-gchar 	    *nautilus_file_size_as_string 		(GnomeVFSFileInfo *file_info);
-gchar 	    *nautilus_file_type_as_string 		(GnomeVFSFileInfo *file_info);
+gchar *                   nautilus_file_date_as_string               (GnomeVFSFileInfo        *file_info);
+gchar *                   nautilus_file_size_as_string               (GnomeVFSFileInfo        *file_info);
+gchar *                   nautilus_file_type_as_string               (GnomeVFSFileInfo        *file_info);
 
 #endif /* FM_DIRECTORY_VIEW_H */

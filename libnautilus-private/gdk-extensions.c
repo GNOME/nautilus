@@ -107,11 +107,11 @@ nautilus_fill_rectangle_with_gradient (GdkDrawable *drawable,
 	gdouble multiplier;
 	gint band;
 
-	g_return_if_fail (drawable);
-	g_return_if_fail (gc);
-	g_return_if_fail (rectangle);
-	g_return_if_fail (start_color);
-	g_return_if_fail (end_color);
+	g_return_if_fail (drawable != NULL);
+	g_return_if_fail (gc != NULL);
+	g_return_if_fail (rectangle != NULL);
+	g_return_if_fail (start_color != NULL);
+	g_return_if_fail (end_color != NULL);
 	g_return_if_fail (horizontal == FALSE || horizontal == TRUE);
 
 	/* Set up the band box so we can access it the same way for horizontal or vertical. */
@@ -193,18 +193,16 @@ nautilus_gradient_new (const char *start_color,
 		       const char *end_color,
 		       gboolean is_horizontal)
 {
-	g_return_val_if_fail (start_color != NULL, NULL);
-	g_return_val_if_fail (end_color != NULL, NULL);
 	g_return_val_if_fail (is_horizontal == FALSE || is_horizontal == TRUE, NULL);
 
 	/* Handle the special case where the start and end colors are identical.
 	   Handle the special case where the end color is an empty string.
 	*/
-	if (strcmp(start_color, end_color) == 0 || end_color[0] == '\0')
+	if (nautilus_strcmp(start_color, end_color) == 0 || end_color == NULL || end_color[0] == '\0')
 		return g_strdup (start_color);
 
 	/* Handle the special case where the start color is an empty string. */
-	if (start_color[0] == '\0')
+	if (start_color == NULL || start_color[0] == '\0')
 		return g_strdup (end_color);
 	
 	/* Handle the general case. */

@@ -3,6 +3,7 @@
    widget.
 
    Copyright (C) 1999, 2000 Free Software Foundation
+   Copyright (C) 2000 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -22,31 +23,37 @@
    Author: Ettore Perazzoli <ettore@gnu.org>
 */
 
-#ifndef _GNOME_ICON_CONTAINER_DND_H
-#define _GNOME_ICON_CONTAINER_DND_H
+#ifndef GNOME_ICON_CONTAINER_DND_H
+#define GNOME_ICON_CONTAINER_DND_H
+
+#include "gnome-icon-container.h"
 
 typedef struct _GnomeIconContainerDndInfo GnomeIconContainerDndInfo;
 typedef enum _GnomeIconContainerDndTargetType GnomeIconContainerDndTargetType;
-
-#include "gnome-icon-container.h"
 
 /* Standard DnD types.  */
 enum _GnomeIconContainerDndTargetType {
 	GNOME_ICON_CONTAINER_DND_GNOME_ICON_LIST,
 	GNOME_ICON_CONTAINER_DND_URI_LIST,
 	GNOME_ICON_CONTAINER_DND_URL,
-	GNOME_ICON_CONTAINER_DND_NTARGETS
+	GNOME_ICON_CONTAINER_DND_COLOR
 };
 
 /* DnD target names.  */
 #define GNOME_ICON_CONTAINER_DND_GNOME_ICON_LIST_TYPE "special/x-gnome-icon-list"
 #define GNOME_ICON_CONTAINER_DND_URI_LIST_TYPE 	      "text/uri-list"
 #define GNOME_ICON_CONTAINER_DND_URL_TYPE	      "_NETSCAPE_URL"
+#define GNOME_ICON_CONTAINER_DND_COLOR_TYPE           "application/x-color"
 
 
 /* DnD-related information.  */
 struct _GnomeIconContainerDndInfo {
 	GtkTargetList *target_list;
+
+	/* Stuff saved at "receive data" time needed later in the drag. */
+	gboolean got_data_type;
+	GnomeIconContainerDndTargetType data_type;
+	GtkSelectionData *selection_data;
 
 	/* Start of the drag, in world coordinates.  */
 	gdouble start_x, start_y;
@@ -72,4 +79,4 @@ void	gnome_icon_container_dnd_begin_drag	(GnomeIconContainer *container,
 						 GdkEventMotion *event);
 void	gnome_icon_container_dnd_end_drag	(GnomeIconContainer *container);
 
-#endif /* _GNOME_ICON_CONTAINER_DND_H */
+#endif /* GNOME_ICON_CONTAINER_DND_H */

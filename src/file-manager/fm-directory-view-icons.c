@@ -29,6 +29,9 @@
 #include "fm-directory-view-icons.h"
 #include "fm-icon-cache.h"
 #include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus/nautilus-background.h>
+
+#define DEFAULT_BACKGROUND_COLOR "rgb:FFFF/FFFF/FFFF"
 
 
 /* forward declarations */
@@ -41,13 +44,17 @@ static GnomeIconContainer *create_icon_container (FMDirectoryViewIcons *icon_vie
 static void display_icons_not_in_layout 	 (FMDirectoryViewIcons *icon_view);
 static void fm_directory_view_icons_add_entry    (FMDirectoryView *view, 
 					          GnomeVFSFileInfo *info);
-static void fm_directory_view_icons_done_adding_entries 
-				          	 (FMDirectoryView *view);
+static void fm_directory_view_icons_background_changed_cb (NautilusBackground *background,
+							   gpointer data);
 static void fm_directory_view_icons_begin_loading
 				          	 (FMDirectoryView *view);
 static void fm_directory_view_icons_clear 	 (FMDirectoryView *view);
+static void fm_directory_view_icons_done_adding_entries 
+				          	 (FMDirectoryView *view);
 static GList * fm_directory_view_icons_get_selection
 						 (FMDirectoryView *view);
+static void fm_directory_view_icons_initialize   (FMDirectoryViewIcons *icon_view);
+static void fm_directory_view_icons_initialize_class (FMDirectoryViewIconsClass *klass);
 static GnomeIconContainer *get_icon_container 	 (FMDirectoryViewIcons *icon_view);
 static void icon_container_activate_cb 		 (GnomeIconContainer *ignored,
 						  const gchar *name,
@@ -58,10 +65,9 @@ static void icon_container_selection_changed_cb  (GnomeIconContainer *container,
 
 static void set_up_base_uri			 (FMDirectoryViewIcons *icon_view);
 
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryViewIcons, fm_directory_view_icons, FM_TYPE_DIRECTORY_VIEW);
 
 
-static FMDirectoryViewClass *parent_class = NULL;
-
 struct _FMDirectoryViewIconsDetails
 {
 	const GnomeIconContainerLayout *icon_layout;
@@ -87,7 +93,7 @@ fm_directory_view_icons_destroy (GtkObject *object)
 
 
 static void
-fm_directory_view_icons_initialize_class (gpointer klass)
+fm_directory_view_icons_initialize_class (FMDirectoryViewIconsClass *klass)
 {
 	GtkObjectClass *object_class;
 	FMDirectoryViewClass *fm_directory_view_class;
@@ -95,8 +101,6 @@ fm_directory_view_icons_initialize_class (gpointer klass)
 	object_class = GTK_OBJECT_CLASS (klass);
 	fm_directory_view_class = FM_DIRECTORY_VIEW_CLASS (klass);
 
-	parent_class = gtk_type_class (gtk_type_parent(object_class->type));
-	
 	object_class->destroy = fm_directory_view_icons_destroy;
 	
 	fm_directory_view_class->clear 
@@ -112,33 +116,29 @@ fm_directory_view_icons_initialize_class (gpointer klass)
 }
 
 static void
-fm_directory_view_icons_initialize (gpointer object, gpointer klass)
+fm_directory_view_icons_initialize (FMDirectoryViewIcons *directory_view_icons)
 {
-	FMDirectoryViewIcons *directory_view_icons;
 	GnomeIconContainer *icon_container;
 	
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (object));
-	g_return_if_fail (GTK_BIN (object)->child == NULL);
+	g_return_if_fail (GTK_BIN (directory_view_icons)->child == NULL);
 
-	directory_view_icons = FM_DIRECTORY_VIEW_ICONS (object);
-	
+	directory_view_icons->details = g_new0 (FMDirectoryViewIconsDetails, 1);
+
 	icon_container = create_icon_container (directory_view_icons);
 	gnome_icon_container_set_icon_mode
 		(icon_container, GNOME_ICON_CONTAINER_NORMAL_ICONS);
-
-	directory_view_icons->details = g_new0 (FMDirectoryViewIconsDetails, 1);
 }
-
-NAUTILUS_DEFINE_GET_TYPE_FUNCTION (FMDirectoryViewIcons, fm_directory_view_icons, FM_TYPE_DIRECTORY_VIEW);
 
 
 static GnomeIconContainer *
 create_icon_container (FMDirectoryViewIcons *icon_view)
 {
 	GnomeIconContainer *icon_container;
-
+	
 	icon_container = GNOME_ICON_CONTAINER (gnome_icon_container_new ());
+	
 	GTK_WIDGET_SET_FLAGS (icon_container, GTK_CAN_FOCUS);
+	
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "activate",
 			    GTK_SIGNAL_FUNC (icon_container_activate_cb),
@@ -146,6 +146,11 @@ create_icon_container (FMDirectoryViewIcons *icon_view)
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "selection_changed",
 			    GTK_SIGNAL_FUNC (icon_container_selection_changed_cb),
+			    icon_view);
+
+	gtk_signal_connect (GTK_OBJECT (nautilus_get_widget_background (GTK_WIDGET (icon_container))),
+			    "changed",
+			    GTK_SIGNAL_FUNC (fm_directory_view_icons_background_changed_cb),
 			    icon_view);
 
 	gtk_container_add (GTK_CONTAINER (icon_view), GTK_WIDGET (icon_container));
@@ -246,9 +251,23 @@ set_up_base_uri (FMDirectoryViewIcons *icon_view)
 static void
 fm_directory_view_icons_clear (FMDirectoryView *view)
 {
+	char *background_color;
+	GnomeIconContainer *icon_container;
+	
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
 
-	gnome_icon_container_clear (get_icon_container (FM_DIRECTORY_VIEW_ICONS (view)));
+	icon_container = get_icon_container (FM_DIRECTORY_VIEW_ICONS (view));
+
+	/* Clear away the existing icons. */
+	gnome_icon_container_clear (icon_container);
+
+	/* Set up the background color from the metadata. */
+	background_color = nautilus_directory_get_metadata (fm_directory_view_get_model (view),
+							    "icon_view_background_color",
+							    DEFAULT_BACKGROUND_COLOR);
+	nautilus_background_set_color (nautilus_get_widget_background (GTK_WIDGET (icon_container)),
+				       background_color);
+	g_free (background_color);
 }
 
 static void
@@ -389,3 +408,20 @@ icon_container_selection_changed_cb (GnomeIconContainer *container,
 	fm_directory_view_notify_selection_changed (FM_DIRECTORY_VIEW (data));
 }
 
+static void
+fm_directory_view_icons_background_changed_cb (NautilusBackground *background,
+					       gpointer data)
+{
+	char *color_spec;
+
+	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (data));
+	g_return_if_fail (background == nautilus_get_widget_background
+			  (GTK_WIDGET (get_icon_container (FM_DIRECTORY_VIEW_ICONS (data)))));
+
+	color_spec = nautilus_background_get_color (background);
+	nautilus_directory_set_metadata (fm_directory_view_get_model (FM_DIRECTORY_VIEW (data)),
+					 "icon_view_background_color",
+					 DEFAULT_BACKGROUND_COLOR,
+					 color_spec);
+	g_free (color_spec);
+}

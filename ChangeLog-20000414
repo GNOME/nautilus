@@ -1,3 +1,70 @@
+2000-01-19  Darin Adler  <darin@eazel.com>
+
+	Allow changing the background of the icon view by dropping colors
+	on the icon view.
+
+	* libnautilus/gnome-icon-container-dnd.h:
+	libnautilus/gnome-icon-container-dnd.c:
+	(gnome_icon_container_position_shadow): (drag_data_received_cb):
+	(gnome_icon_container_ensure_drag_data): (drag_motion_cb):
+	(drag_drop_cb): (gnome_icon_container_receive_dropped_icons):
+	(gnome_icon_container_free_drag_data): (drag_leave_cb): Added
+	support for receiving dropped colors to change the background of a
+	GnomeIconContainer.
+
+	* src/file-manager/fm-directory-view-icons.c:
+	(fm_directory_view_icons_initialize_class):
+	(fm_directory_view_icons_clear):
+	(fm_directory_view_icons_background_changed_cb): Added code to
+	load and save the background color from metadata.
+
+	* libnautilus/gdk-extensions.c: (nautilus_gradient_new): Changed
+	nautilus_gradient_new to handle NULLs in the same way that the
+	rest of the gradient functions do instead of NULL being an illegal
+	input value.
+
+	* src/file-manager/fm-directory-view.h:
+	src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize): (fm_directory_view_destroy):
+	(fm_directory_view_get_model): (fm_directory_view_load_uri): Added
+	a NautilusDirectory object to each directory view, accessed by
+	subclasses with a call to fm_directory_view_get_model.
+
+	* libnautilus/nautilus-gtk-extensions.h:
+	libnautilus/nautilus-gtk-extensions.c:
+	(gnome_icon_container_dropped_icon_feedback):
+	(nautilus_gdk_selection_data_copy_deep): Added deep versions of
+	these GtkSelectionData functions.
+
+	* libnautilus/nautilus-gtk-macros.h:
+	(NAUTILUS_DEFINE_GET_TYPE_FUNCTION):
+	(NAUTILUS_DEFINE_CLASS_BOILERPLATE): Added definition and
+	initialization of the parent_class global to
+	NAUTILUS_DEFINE_GET_TYPE_FUNCTION and renamed it to
+	NAUTILUS_DEFINE_CLASS_BOILERPLATE.
+
+	* libnautilus/nautilus-background-canvas-group:
+	(nautilus_background_canvas_group_initialize_class):
+	libnautilus/nautilus-background.c:
+	(nautilus_background_initialize_class):
+	libnautilus/nautilus-directory.c:
+	(nautilus_directory_initialize_class): src/ntl-index-panel.c:
+	(nautilus_index_panel_initialize_class):
+	src/file-manager/fm-directory-view-icons.c:
+	(fm_directory_view_icons_initialize_class):
+	src/file-manager/fm-directory-view-list.c:
+	(fm_directory_view_list_initialize_class):
+	src/file-manager/fm-directory-view.c:
+	(fm_directory_view_initialize_class): Take advantage of the new
+	NAUTILUS_DEFINE_CLASS_BOILERPLATE and get rid of existing code to
+	set up parent_class.
+
+	* libnautilus/gnome-icon-container-dnd.h:
+	libnautilus/gnome-icon-container-dnd.c:
+	libnautilus/gnome-icon-container-layout.h:
+	libnautilus/gnome-icon-container-layout.c:
+	libnautilus/gnome-icon-container.c: Minimized includes.
+
 2000-01-18  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus/gnome-icon-container.c

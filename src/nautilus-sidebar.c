@@ -61,8 +61,6 @@ static void nautilus_index_panel_set_up_logo (NautilusIndexPanel *index_panel, c
 
 static GdkFont *select_font(const gchar *text_to_format, gint width, const gchar* font_template);
 
-static GtkObjectClass *parent_class;
-
 #define DEFAULT_BACKGROUND_COLOR "rgb:DDDD/DDDD/FFFF"
 
 /* drag and drop definitions */
@@ -80,7 +78,7 @@ static GtkTargetEntry index_dnd_target_table[] =
 	{ "text/uri-list",  0, TARGET_URI_LIST }
 };
 
-NAUTILUS_DEFINE_GET_TYPE_FUNCTION (NautilusIndexPanel, nautilus_index_panel, GTK_TYPE_EVENT_BOX);
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIndexPanel, nautilus_index_panel, GTK_TYPE_EVENT_BOX)
 
 /* initializing the class object by installing the operations we override */
 static void
@@ -89,12 +87,11 @@ nautilus_index_panel_initialize_class (GtkObjectClass *object_klass)
 	GtkWidgetClass *widget_class;
 	NautilusIndexPanelClass *klass;
 
-	widget_class = (GtkWidgetClass *)object_klass;
-	klass = (NautilusIndexPanelClass *)object_klass;
+	widget_class = GTK_WIDGET_CLASS (object_klass);
+	klass = NAUTILUS_INDEX_PANEL_CLASS (object_klass);
+
 	object_klass->destroy = nautilus_index_panel_destroy;
 	object_klass->finalize = nautilus_index_panel_finalize;
-
-	parent_class = gtk_type_class (gtk_type_parent(object_klass->type));
 
 	widget_class->drag_data_received = nautilus_index_panel_drag_data_received;
 }

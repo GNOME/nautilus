@@ -39,9 +39,7 @@ static void nautilus_background_canvas_group_finalize (GtkObject *object);
 static void nautilus_background_canvas_group_draw (GnomeCanvasItem *item, GdkDrawable *drawable,
 						   int x, int y, int width, int height);
 
-NAUTILUS_DEFINE_GET_TYPE_FUNCTION (NautilusBackgroundCanvasGroup, nautilus_background_canvas_group, GNOME_TYPE_CANVAS_GROUP)
-
-static GtkObjectClass *parent_class;
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBackgroundCanvasGroup, nautilus_background_canvas_group, GNOME_TYPE_CANVAS_GROUP)
 
 static void
 nautilus_background_canvas_group_initialize_class (gpointer klass)
@@ -51,7 +49,6 @@ nautilus_background_canvas_group_initialize_class (gpointer klass)
 
 	object_class = GTK_OBJECT_CLASS (klass);
 	canvas_item_class = GNOME_CANVAS_ITEM_CLASS (klass);
-	parent_class = gtk_type_class (GNOME_TYPE_CANVAS_GROUP);
 	
 	object_class->destroy = nautilus_background_canvas_group_destroy;
 	object_class->finalize = nautilus_background_canvas_group_finalize;

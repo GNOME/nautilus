@@ -51,7 +51,6 @@ enum
 };
 
 static guint fm_directory_view_signals[LAST_SIGNAL] = { 0 };
-static GtkScrolledWindowClass *parent_class = NULL;
 
 struct _FMDirectoryViewDetails
 {
@@ -65,6 +64,8 @@ struct _FMDirectoryViewDetails
 
 	GnomeVFSAsyncHandle *vfs_async_handle;
 	GnomeVFSURI *uri;
+
+	NautilusDirectory *model;
 };
 
 /* forward declarations */
@@ -79,7 +80,7 @@ static void notify_location_change_cb 		(NautilusViewFrame *view_frame,
 						 Nautilus_NavigationInfo *nav_context, 
 						 FMDirectoryView *directory_view);
 
-NAUTILUS_DEFINE_GET_TYPE_FUNCTION (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_entry)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, clear)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_selection)
@@ -91,7 +92,6 @@ fm_directory_view_initialize_class (gpointer klass)
 
 	object_class = GTK_OBJECT_CLASS (klass);
 
-	parent_class = gtk_type_class (gtk_type_parent(object_class->type));
 	object_class->destroy = fm_directory_view_destroy;
 
 	fm_directory_view_signals[CLEAR] =
@@ -169,10 +169,8 @@ fm_directory_view_initialize (gpointer object, gpointer klass)
 
 #endif
 
-	directory_view->details->view_frame = 
-		NAUTILUS_CONTENT_VIEW_FRAME (gtk_widget_new 
-					     (nautilus_content_view_frame_get_type(), 
-					      NULL));
+	directory_view->details->view_frame = NAUTILUS_CONTENT_VIEW_FRAME
+		(gtk_widget_new (nautilus_content_view_frame_get_type(), NULL));
 
 	gtk_signal_connect (GTK_OBJECT(directory_view->details->view_frame), 
 			    "stop_location_change",
@@ -184,10 +182,10 @@ fm_directory_view_initialize (gpointer object, gpointer klass)
 			    GTK_SIGNAL_FUNC (notify_location_change_cb), 
 			    directory_view);
 
-	gtk_widget_show(GTK_WIDGET(directory_view));
+	gtk_widget_show (GTK_WIDGET (directory_view));
 
-	gtk_container_add(GTK_CONTAINER(directory_view->details->view_frame),
-			  GTK_WIDGET(directory_view));
+	gtk_container_add (GTK_CONTAINER (directory_view->details->view_frame),
+			   GTK_WIDGET (directory_view));
 }
 
 static void
@@ -208,6 +206,9 @@ fm_directory_view_destroy (GtkObject *object)
 
 	if (view->details->display_timeout_id != 0)
 		gtk_timeout_remove (view->details->display_timeout_id);
+
+	if (view->details->model != NULL)
+		gtk_object_unref (GTK_OBJECT (view->details->model));
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -574,7 +575,24 @@ fm_directory_view_get_view_frame (FMDirectoryView *view)
 }
 
 /**
- * fm_directory_view_get_uri:
+ * fm_directory_view_get_model:
+ *
+ * Get the model for this FMDirectoryView.
+ * @view: FMDirectoryView of interest.
+ * 
+ * Return value: NautilusDirectory for this view.
+ * 
+ **/
+NautilusDirectory *
+fm_directory_view_get_model (FMDirectoryView *view)
+{
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
+
+	return view->details->model;
+}
+
+/**
+ * fm_directory_view_get_model:
  * 
  * Get the GnomeVFSURI representing this view's current location.
  * Callers must not modify the returned object.
@@ -666,7 +684,9 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 
 	fm_directory_view_stop (view);
 
-	fm_directory_view_clear (view);
+	if (view->details->model != NULL)
+		gtk_object_unref (GTK_OBJECT (view->details->model));
+	view->details->model = nautilus_directory_get (uri);
 
 	if (view->details->uri != NULL)
 		gnome_vfs_uri_unref (view->details->uri);
@@ -676,6 +696,7 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 	view->details->directory_list = NULL;
 	view->details->current_position = GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
 
+	fm_directory_view_clear (view);
 
 	memset(&pri, 0, sizeof(pri));
 	pri.type = Nautilus_PROGRESS_UNDERWAY;

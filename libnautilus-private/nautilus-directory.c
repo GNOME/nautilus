@@ -72,9 +72,7 @@ static void nautilus_directory_request_write_metafile (NautilusDirectory *direct
 static void nautilus_directory_remove_write_metafile_idle (NautilusDirectory *directory);
 static gboolean nautilus_directory_switch_to_alternate_metafile_uri (NautilusDirectory *directory);
 
-NAUTILUS_DEFINE_GET_TYPE_FUNCTION (NautilusDirectory, nautilus_directory, GTK_TYPE_OBJECT)
-
-static GtkObjectClass *parent_class;
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDirectory, nautilus_directory, GTK_TYPE_OBJECT)
 
 struct _NautilusDirectoryDetails
 {
@@ -101,7 +99,6 @@ nautilus_directory_initialize_class (gpointer klass)
 	GtkObjectClass *object_class;
 
 	object_class = GTK_OBJECT_CLASS (klass);
-	parent_class = gtk_type_class (GTK_TYPE_OBJECT);
 	
 	object_class->finalize = nautilus_directory_finalize;
 }

@@ -29,12 +29,14 @@
 
 #include <gtk/gtkwindow.h>
 
-guint nautilus_gtk_signal_connect_free_data (GtkObject *object,
-				  	     const gchar *name,
-				  	     GtkSignalFunc func,
-				  	     gpointer data);
-				  	    
-void nautilus_gtk_window_present (GtkWindow *window);
+guint             nautilus_gtk_signal_connect_free_data (GtkObject              *object,
+							 const gchar            *name,
+							 GtkSignalFunc           func,
+							 gpointer                data);
 
+void              nautilus_gtk_window_present           (GtkWindow              *window);
+
+GtkSelectionData *nautilus_gtk_selection_data_copy_deep (const GtkSelectionData *selection_data);
+void              nautilus_gtk_selection_data_free_deep (GtkSelectionData       *selection_data);
 
 #endif /* NAUTILUS_GTK_EXTENSIONS_H */

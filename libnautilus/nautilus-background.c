@@ -53,14 +53,13 @@ static void nautilus_background_draw_flat_box    (GtkStyle      *style,
 						  gint           width,
 						  gint           height);
 
-NAUTILUS_DEFINE_GET_TYPE_FUNCTION (NautilusBackground, nautilus_background, GTK_TYPE_OBJECT)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBackground, nautilus_background, GTK_TYPE_OBJECT)
 
 enum {
 	CHANGED,
 	LAST_SIGNAL
 };
 
-static GtkObjectClass *parent_class;
 static guint signals[LAST_SIGNAL];
 
 struct _NautilusBackgroundDetails
@@ -76,8 +75,6 @@ nautilus_background_initialize_class (gpointer klass)
 
 	object_class = GTK_OBJECT_CLASS (klass);
 
-	parent_class = gtk_type_class (GTK_TYPE_OBJECT);
-	
 	signals[CHANGED] =
 		gtk_signal_new ("changed",
 				GTK_RUN_FIRST | GTK_RUN_NO_RECURSE,

@@ -103,3 +103,33 @@ nautilus_gtk_window_present (GtkWindow *window) {
     
 	gtk_widget_show (GTK_WIDGET (window));
 }
+
+/**
+ * nautilus_gtk_selection_data_copy_deep:
+ * 
+ * Copies a GtkSelectionData, and copies the data too.
+ * @data: The GtkSelectionData to be copied.
+ **/
+GtkSelectionData *
+nautilus_gtk_selection_data_copy_deep (const GtkSelectionData *data)
+{
+	GtkSelectionData *copy;
+
+	copy = g_new0 (GtkSelectionData, 1);
+	gtk_selection_data_set (copy, data->type, data->format, data->data, data->length);
+
+	return copy;
+}
+
+/**
+ * nautilus_gtk_selection_data_free_deep:
+ * 
+ * Frees a GtkSelectionData, and frees the data too.
+ * @data: The GtkSelectionData to be freed.
+ **/
+void
+nautilus_gtk_selection_data_free_deep (GtkSelectionData *data)
+{
+	g_free (data->data);
+	gtk_selection_data_free (data);
+}

@@ -21,11 +21,6 @@
    Author: Ettore Perazzoli <ettore@gnu.org>
 */
 
-#include <glib.h>
-
-#include "gnome-icon-container.h"
-#include "gnome-icon-container-private.h"
-
 #include "gnome-icon-container-layout.h"
 
 

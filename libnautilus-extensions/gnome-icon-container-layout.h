@@ -34,10 +34,8 @@ typedef void (* GnomeIconContainerLayoutForeachFunc)
 				 gint x, gint y,
 				 gpointer callback_data);
 
-#include "gnome-icon-container.h"
-#include "gnome-icon-container-private.h"
-
 
+
 GnomeIconContainerLayout *
 	gnome_icon_container_layout_new		 (void);
 void	gnome_icon_container_layout_free 	 (GnomeIconContainerLayout *layout);

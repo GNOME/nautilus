@@ -26,12 +26,12 @@
 #include <config.h>
 #endif
 
-#include <gnome.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gdk-pixbuf/gnome-canvas-pixbuf.h>
+#include "gnome-icon-container.h"
 
 #include "gnome-icon-container-private.h"
 #include "gnome-icon-container-dnd.h"
+
+#include <gdk-pixbuf/gnome-canvas-pixbuf.h>
 
 
 static GnomeCanvasClass *parent_class;
