@@ -51,9 +51,6 @@ struct NautilusWindowDetails
         /* Current location. */
         char *title;
 	NautilusFile *viewed_file;
-
-        /* Error handling. */
-	char *dead_view_name;
 };
 
 #define NAUTILUS_MENU_PATH_BACK_ITEM			"/menu/Go/Back"

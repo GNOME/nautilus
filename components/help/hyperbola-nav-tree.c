@@ -12,9 +12,13 @@ typedef struct {
   GtkWidget *ctree;
   HyperbolaDocTree *doc_tree;
 
+  char *pending_location;
+
   gint notify_count;
 } HyperbolaNavigationTree;
 
+static void hyperbola_navigation_tree_destroy(GtkCTree *ctree,
+					      HyperbolaNavigationTree *view);
 static void hyperbola_navigation_tree_select_row(GtkCTree *ctree,
 						 GtkCTreeNode *node,
 						 gint column,
@@ -79,6 +83,7 @@ hyperbola_navigation_tree_new(void)
   gtk_clist_freeze (GTK_CLIST(view->ctree));
   gtk_clist_set_selection_mode (GTK_CLIST(view->ctree), GTK_SELECTION_BROWSE);
   gtk_signal_connect (GTK_OBJECT(view->ctree), "tree_select_row", hyperbola_navigation_tree_select_row, view);
+  gtk_signal_connect (GTK_OBJECT(view->ctree), "destroy", hyperbola_navigation_tree_destroy, view);
   view->doc_tree = hyperbola_doc_tree_new ();
   hyperbola_doc_tree_populate (view->doc_tree);
 
@@ -104,11 +109,20 @@ hyperbola_navigation_tree_new(void)
 }
 
 static void
+set_pending_location (HyperbolaNavigationTree *view, const char *location)
+{
+	g_free (view->pending_location);
+	view->pending_location = g_strdup (location);
+}
+
+static void
 hyperbola_navigation_tree_load_location (NautilusView *view_frame,
 					 const char *location_uri,
 					 HyperbolaNavigationTree *hview)
 {
   HyperbolaTreeNode *tnode;
+
+  set_pending_location (hview, NULL);
 
   if(hview->notify_count > 0)
     return;
@@ -136,9 +150,22 @@ static void hyperbola_navigation_tree_select_row(GtkCTree *ctree, GtkCTreeNode *
   if(!tnode || !tnode->uri)
     return;
 
+  /* Don't start another load of the location you just started a load on. This
+   * could happen on double-click and causes trouble in the Nautilus window/view 
+   * state machine. See bug 5197.
+   */
+  if (view->pending_location != NULL && strcmp (view->pending_location, tnode->uri) == 0)
+    return;
+
   view->notify_count++;
 
+  set_pending_location (view, tnode->uri);
   nautilus_view_open_location_in_this_window (view->view_frame, tnode->uri);
 
   view->notify_count--;
+}
+
+static void hyperbola_navigation_tree_destroy (GtkCTree *ctree, HyperbolaNavigationTree *view)
+{
+  set_pending_location (view, NULL);
 }

@@ -632,7 +632,6 @@ nautilus_window_destroy (GtkObject *object)
 	}
 
 	nautilus_file_unref (window->details->viewed_file);
-	g_free (window->details->dead_view_name);
 
 	g_list_free (window->sidebar_panels);
 

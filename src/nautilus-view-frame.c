@@ -88,6 +88,7 @@ struct NautilusViewFrameDetails {
 
 static void nautilus_view_frame_initialize       (NautilusViewFrame      *view);
 static void nautilus_view_frame_destroy          (GtkObject              *view);
+static void nautilus_view_frame_finalize         (GtkObject              *view);
 static void nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass);
 
 static guint signals[LAST_SIGNAL];
@@ -101,6 +102,7 @@ nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
 	
 	object_class = GTK_OBJECT_CLASS (klass);
 	object_class->destroy = nautilus_view_frame_destroy;
+	object_class->finalize = nautilus_view_frame_finalize;
 	
 	signals[CHANGE_SELECTION] = gtk_signal_new
 		("change_selection",
@@ -275,13 +277,23 @@ nautilus_view_frame_destroy (GtkObject *object)
 	frame = NAUTILUS_VIEW_FRAME (object);
 	
 	nautilus_view_frame_destroy_client (frame);
+	
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+}
+
+static void
+nautilus_view_frame_finalize (GtkObject *object)
+{
+	NautilusViewFrame *frame;
+
+	frame = NAUTILUS_VIEW_FRAME (object);
 
 	g_free (frame->details->title);
 	g_free (frame->details->label);
 	g_free (frame->details->activation_iid);
 	g_free (frame->details);
 	
-	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, finalize, (object));
 }
 
 /* stimulus: successful load_client call */

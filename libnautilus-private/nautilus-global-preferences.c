@@ -856,7 +856,7 @@ global_preferences_register (void)
 	
 	/* Window create new */
 	global_preferences_register_boolean_with_defaults (NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW,
-							   _("Open each item in a new window"),
+							   _("Open each item in a separate window"),
 							   FALSE,
 							   FALSE,
 							   FALSE);

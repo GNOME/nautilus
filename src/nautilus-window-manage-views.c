@@ -87,10 +87,17 @@ typedef enum {
         NEW_WINDOW
 } OpenLocationWindow;
 
+typedef struct {
+	gboolean is_sidebar_panel;
+	char *label;
+} ViewFrameInfo;
+
 static void connect_view           (NautilusWindow    *window, 
                                     NautilusViewFrame *view);
-static void disconnect_view        (NautilusWindow    *window,
+static void disconnect_view	   (NautilusWindow    *window,
                                     NautilusViewFrame *view);
+static void disconnect_view_and_destroy        (NautilusWindow    *window,
+                                                NautilusViewFrame *view);
 static void cancel_location_change (NautilusWindow    *window);
 
 static void
@@ -674,17 +681,103 @@ nautilus_window_open_location (NautilusWindow *window,
         open_location (window, location, FALSE, NULL);
 }
 
-static void
-report_content_view_failure_to_user (NautilusWindow *window,
-                                     const char     *name)
-{
-	char *message;
 
-	message = g_strdup_printf ("The %s view encountered an error and can't continue. "
-				   "You can choose another view or go to a different location.", 
-				   name);
+static ViewFrameInfo *
+view_frame_info_new (gboolean is_sidebar_panel, const char *label)
+{
+	ViewFrameInfo *new_info;
+
+	g_return_val_if_fail (label != NULL, NULL);
+
+	new_info = g_new0 (ViewFrameInfo, 1);
+	new_info->is_sidebar_panel = is_sidebar_panel;
+	new_info->label = g_strdup (label);
+
+	return new_info;
+}
+
+static void
+view_frame_info_free (ViewFrameInfo *info)
+{
+	if (info != NULL) {
+		g_free (info->label);
+		g_free (info);
+	}
+}
+
+static void
+set_view_frame_info (NautilusViewFrame *view_frame, 
+		     gboolean is_sidebar_panel, 
+		     const char *label)
+{
+	gtk_object_set_data_full (GTK_OBJECT (view_frame),
+				  "info",
+				  view_frame_info_new (is_sidebar_panel, label),
+				  (GtkDestroyNotify) view_frame_info_free);
+}
+
+static gboolean
+view_frame_is_sidebar_panel (NautilusViewFrame *view_frame)
+{
+	ViewFrameInfo *info;
+
+	info = (ViewFrameInfo *)gtk_object_get_data 
+		(GTK_OBJECT (view_frame), "info");
+	return info->is_sidebar_panel;
+}
+
+static char *
+view_frame_get_label (NautilusViewFrame *view_frame)
+{
+	ViewFrameInfo *info;
+
+	info = (ViewFrameInfo *)gtk_object_get_data 
+		(GTK_OBJECT (view_frame), "info");
+	return g_strdup (info->label);
+}
+
+static void
+report_content_view_failure_to_user_internal (NautilusWindow *window,
+                                     	      NautilusViewFrame *view_frame,
+                                     	      const char *message)
+{
+	char *label;
+
+	label = view_frame_get_label (view_frame);
+	message = g_strdup_printf (message, label);
 	nautilus_error_dialog (message, _("View Failed"), GTK_WINDOW (window));
-	g_free (message);
+	g_free (label);
+}
+
+static void
+report_current_content_view_failure_to_user (NautilusWindow *window,
+                                     	     NautilusViewFrame *view_frame)
+{
+	report_content_view_failure_to_user_internal 
+		(window,
+		 view_frame,
+		 _("The %s view encountered an error and can't continue. "
+		   "You can choose another view or go to a different location."));
+}
+
+static void
+report_nascent_content_view_failure_to_user (NautilusWindow *window,
+                                     	     NautilusViewFrame *view_frame)
+{
+	report_content_view_failure_to_user_internal 
+		(window,
+		 view_frame,
+		 _("The %s view encountered an error while starting up."));
+}
+
+static void
+disconnect_destroy_unref_view (NautilusWindow *window, NautilusViewFrame *view_frame)
+{
+	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (NAUTILUS_IS_VIEW_FRAME (view_frame));
+
+	disconnect_view_and_destroy (window, view_frame);
+	gtk_widget_unref (GTK_WIDGET (view_frame));
 }
 
 static NautilusViewFrame *
@@ -724,11 +817,14 @@ load_content_view (NautilusWindow *window,
         bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 
         content_view = window->content_view;
-        if (!NAUTILUS_IS_VIEW_FRAME (content_view)
+        if (content_view == NULL
             || strcmp (nautilus_view_frame_get_iid (content_view), iid) != 0) {
 
                 new_view = nautilus_view_frame_new (window->details->ui_container,
                                                     window->application->undo_manager);
+                gtk_object_ref (GTK_OBJECT (new_view));
+                gtk_object_sink (GTK_OBJECT (new_view));
+		set_view_frame_info (new_view, FALSE, id->name);
                 connect_view (window, new_view);
 
                 if (!nautilus_view_frame_load_client (new_view, iid)) {
@@ -736,9 +832,8 @@ load_content_view (NautilusWindow *window,
                            error that happens in this case - adapter
                            factory not found, component failed to
                            load, etc. */
-                        report_content_view_failure_to_user (window, id->name);
-
-                        gtk_widget_unref (GTK_WIDGET (new_view));
+                        report_nascent_content_view_failure_to_user (window, new_view);
+                        disconnect_destroy_unref_view (window, new_view);
 
                         new_view = NULL;
                 }
@@ -748,14 +843,11 @@ load_content_view (NautilusWindow *window,
                 window->cv_progress_done = FALSE;
                 window->cv_progress_error = FALSE;
         } else {
+        	gtk_object_ref (GTK_OBJECT (window->content_view));
                 new_view = window->content_view;
         }
         
-        if (!NAUTILUS_IS_VIEW_FRAME (new_view)) {
-                new_view = NULL;
-        } else {
-                gtk_object_ref (GTK_OBJECT (new_view));
-                
+        if (new_view != NULL) {
 		nautilus_view_identifier_free (window->content_view_id);
                 window->content_view_id = nautilus_view_identifier_copy (id);
         }
@@ -766,11 +858,14 @@ load_content_view (NautilusWindow *window,
 
 
 static void
-report_sidebar_panel_failure_to_user (NautilusWindow *window)
+report_sidebar_panel_failure_to_user (NautilusWindow *window, NautilusViewFrame *view_frame)
 {
 	char *message;
+	char *label;
 
-        if (window->details->dead_view_name == NULL) {
+	label = view_frame_get_label (view_frame);
+
+        if (label == NULL) {
                 message = g_strdup
                         (_("One of the sidebar panels encountered an error and can't continue. "
                            "Unfortunately I couldn't tell which one."));
@@ -778,11 +873,12 @@ report_sidebar_panel_failure_to_user (NautilusWindow *window)
                 message = g_strdup_printf
                         (_("The %s sidebar panel encountered an error and can't continue. "
                            "If this keeps happening, you might want to turn this panel off."),
-                         window->details->dead_view_name);
+                         label);
         }
 
 	nautilus_error_dialog (message, _("Sidebar Panel Failed"), GTK_WINDOW (window));
 
+	g_free (label);
 	g_free (message);
 }
 
@@ -790,22 +886,25 @@ static void
 handle_view_failure (NautilusWindow *window,
                      NautilusViewFrame *view)
 {
-        if (view == window->new_content_view) {
-                window->reset_to_idle = TRUE;
-                window->cv_progress_error = TRUE;
-        } else if (view == window->content_view) {
-                if (GTK_WIDGET (window->content_view)->parent) {
-                        gtk_container_remove (GTK_CONTAINER (GTK_WIDGET (window->content_view)->parent),
-                                              GTK_WIDGET (window->content_view));
-                }
-                report_content_view_failure_to_user (window, window->content_view_id->name);
-                window->content_view = NULL;
-                window->cv_progress_error = TRUE;
-        } else {
-                report_sidebar_panel_failure_to_user (window);
-        }
-        
-        nautilus_window_remove_sidebar_panel (window, view);
+	if (view_frame_is_sidebar_panel (view)) {
+                report_sidebar_panel_failure_to_user (window, view);
+                disconnect_view_and_destroy (window, view);
+        	nautilus_window_remove_sidebar_panel (window, view);
+	} else {
+	        if (view == window->content_view) {
+	                if (GTK_WIDGET (window->content_view)->parent) {
+	                        gtk_container_remove (GTK_CONTAINER (GTK_WIDGET (window->content_view)->parent),
+	                                              GTK_WIDGET (window->content_view));
+	                }
+	                report_current_content_view_failure_to_user (window, view);
+	                window->content_view = NULL;
+	                window->cv_progress_error = TRUE;
+	        } else {
+	                window->reset_to_idle = TRUE;
+	                window->cv_progress_error = TRUE;
+	                report_nascent_content_view_failure_to_user (window, view);
+	        }
+	}
 }
 
 static void
@@ -822,7 +921,10 @@ free_location_change (NautilusWindow *window)
         }
         
         if (window->new_content_view != NULL) {
-                gtk_widget_unref (GTK_WIDGET (window->new_content_view));
+        	if (window->new_content_view != window->content_view) {
+	                disconnect_view_and_destroy (window, window->new_content_view);
+        	}
+        	gtk_object_unref (GTK_OBJECT (window->new_content_view));
                 window->new_content_view = NULL;
         }
         
@@ -931,15 +1033,6 @@ update_state (gpointer data)
 
                 for (p = window->error_views; p != NULL; p = p->next) {
                         handle_view_failure (window, NAUTILUS_VIEW_FRAME (p->data));
-        
-                        /* The dead_view_name refers only to the first error_view, so
-                         * clear it out here after handling the first one. Subsequent
-                         * times through this loop, if that ever actually happens, nothing
-                         * will happen here.
-                         */
-                        g_free (window->details->dead_view_name);
-                        window->details->dead_view_name = NULL;
-        
                         gtk_widget_unref (GTK_WIDGET (p->data));
                 }
 
@@ -1026,17 +1119,6 @@ change_state (NautilusWindow *window,
         case VIEW_FAILED:
                 g_warning ("A view failed. The UI will handle this with a dialog but this should be debugged.");
                 window->view_bombed_out = TRUE;
-                /* Get label now, since view frame may be destroyed later. */
-                /* FIXME bugzilla.eazel.com 5040: We're only saving the name of the first error_view
-                 * here. The rest of this code is structured to handle multiple
-                 * error_views. I didn't go to the extra effort of saving a 
-                 * name with teach error_view since (A) we only see one at a
-                 * time in practice, and (B) all this code is likely to be
-                 * rewritten soon.
-                 */
-                if (window->details->dead_view_name == NULL) {
-                        window->details->dead_view_name = nautilus_view_frame_get_label (new_view);
-                }
                 gtk_object_ref (GTK_OBJECT (new_view));
                 window->error_views = g_list_prepend (window->error_views, new_view);
                 break;
@@ -1354,7 +1436,7 @@ nautilus_window_begin_location_change (NautilusWindow *window,
         g_assert (type == NAUTILUS_LOCATION_CHANGE_BACK
                   || type == NAUTILUS_LOCATION_CHANGE_FORWARD
                   || distance == 0);
-        
+
         change_state (window, STOP, NULL, NULL);
         
         window->location_change_type = type;
@@ -1462,12 +1544,15 @@ nautilus_window_set_sidebar_panels (NautilusWindow *window,
 						 (char *) nautilus_view_frame_get_iid (sidebar_panel),
 						 compare_view_identifier_with_iid);
 		if (found_node == NULL) {
-			disconnect_view (window, sidebar_panel);
+			disconnect_view_and_destroy (window, sidebar_panel);
 			nautilus_window_remove_sidebar_panel (window, sidebar_panel);
 		} else {
                         identifier = (NautilusViewIdentifier *) found_node->data;
 
                         /* Right panel, make sure it has the right name. */
+                        /* FIXME: Is this set_label necessary? Shouldn't it already
+                         * have the right label here?
+                         */
                         nautilus_view_frame_set_label (sidebar_panel, identifier->name);
 
                         /* Since this was found, there's no need to add it in the loop below. */
@@ -1485,21 +1570,17 @@ nautilus_window_set_sidebar_panels (NautilusWindow *window,
                 /* Create and load the panel. */
 		sidebar_panel = nautilus_view_frame_new (window->details->ui_container,
                                                          window->application->undo_manager);
+                gtk_object_ref (GTK_OBJECT (sidebar_panel));
+                gtk_object_sink (GTK_OBJECT (sidebar_panel));
 		nautilus_view_frame_set_label (sidebar_panel, identifier->name);
+		set_view_frame_info (sidebar_panel, TRUE, identifier->name);
 		connect_view (window, sidebar_panel);
 		load_succeeded = nautilus_view_frame_load_client (sidebar_panel, identifier->iid);
 		
 		/* If the load failed, tell the user. */
 		if (!load_succeeded) {
-			/* FIXME: This needs to report the error to the user. */
-                        
-                        window->details->dead_view_name = identifier->name;
-                        report_sidebar_panel_failure_to_user (window);
-                        window->details->dead_view_name = NULL;
-
-			g_warning ("sidebar_panels_changed_callback: Failed to load_client for '%s' meta view.", 
-				   identifier->iid);
-			gtk_object_sink (GTK_OBJECT (sidebar_panel));
+                        report_sidebar_panel_failure_to_user (window, sidebar_panel);
+                        disconnect_destroy_unref_view (window, sidebar_panel);
 			continue;
 		}
 
@@ -1510,6 +1591,7 @@ nautilus_window_set_sidebar_panels (NautilusWindow *window,
 
 		/* If the load succeeded, add the panel. */
 		nautilus_window_add_sidebar_panel (window, sidebar_panel);
+		gtk_object_unref (GTK_OBJECT (sidebar_panel));
 	}
 
 	g_list_free (identifier_list);
@@ -1816,6 +1898,13 @@ disconnect_view (NautilusWindow *window, NautilusViewFrame *view)
         	 GTK_SIGNAL_FUNC (signal##_callback), window);
         FOR_EACH_NAUTILUS_WINDOW_SIGNAL (DISCONNECT)
 	#undef DISCONNECT
+}
+
+static void
+disconnect_view_and_destroy (NautilusWindow *window, NautilusViewFrame *view)
+{
+	disconnect_view (window, view);
+	gtk_widget_destroy (GTK_WIDGET (view));
 }
 
 static void

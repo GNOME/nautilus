@@ -1,3 +1,82 @@
+2000-12-15  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+	
+	Fixed bug 2464 ("open each item in a new window" sometimes 
+	reuses an existing window)
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_register): Changed preferences text to
+	say "separate window" rather than "new window"
+
+
+	Fixed bug 2752 (double-clicking Help item causes "sidebar view
+	failed" message)
+	
+	Fixed bug 5040 (only one dead view name gets saved for a window)
+
+	This was a tangled mess of issues, including: (1) the dialog
+	code was incorrectly guessing "sidebar panel" when a content
+	view failed in some cases (fixed); (2) view frame lifetime
+	issues found while working on (1) (fixed); (3) the state machine
+	can fail if asked to load the same location twice very quickly
+	(written up as bug 5197); (4) the Help sidebar panel asks to
+	load the same location multiple times on a double-click (fixed);
+	(5) Mozilla sometimes fails to load just after it has quit
+	(written up as bug 5199).
+
+	* components/help/hyperbola-nav-tree.c:
+	(hyperbola_navigation_tree_new): Connect to destroy signal of 
+	ctree widget.
+	(set_pending_location): New helper function to remember the
+	location for which this component just initiated a load.
+	(hyperbola_navigation_tree_load_location): Set pending location
+	to NULL now that there's a new real location.
+	(hyperbola_navigation_tree_select_row): Don't try to start a
+	new load of the pending location; set the pending location when
+	we do start a new load.
+	(hyperbola_navigation_tree_destroy): free pending location.
+	
+	* src/nautilus-view-frame.c:
+	(nautilus_view_frame_initialize_class),
+	(nautilus_view_frame_destroy), (nautilus_view_frame_finalize):
+	Don't destroy details fields until finalize, so view_frame objects
+	with extra refs can survive between destroy & finalize.
+	
+	* src/nautilus-window-manage-views.c: 
+	(view_frame_info_new), (view_frame_info_free): New helper
+	functions for dealing with the label & sidebar-panel-ness
+	of a view frame.
+	(set_view_frame_info): New helper function for storing
+	the label & sidebar-panel-ness of a view frame in object
+	data in the view frame.
+	(view_frame_is_sidebar_panel), (view_frame_get_label):
+	New helper functions for retrieving info stored in object
+	data in the view frame.
+	(report_content_view_failure_to_user_internal),
+	(report_current_content_view_failure_to_user),
+	(report_nascent_content_view_failure_to_user),
+	(report_sidebar_panel_failure_to_user): Reworked the functions
+	that put up the "view failed" dialog to take a NautilusViewFrame
+	and to distinguish the existing-content-view from content-view-
+	that's-being-created cases.
+	(disconnect_view_and_destroy), (disconnect_destroy_unref_view): 
+	New helper functions for cleanly forgetting about a view.
+	(handle_view_failure): Use object data to distinguish content views
+	from sidebar panels so we'll always get the right failure dialog.
+	(update_state), (change_state): Get rid of dead_view_name mechanism;
+	the name is now stored in the view frame in all cases.
+	(load_content_view), (free_location_change), 
+	(nautilus_window_begin_location_change),
+	(nautilus_window_set_sidebar_panels): Jigger around the reffing &
+	sinking of NautilusViewFrames to fix leaks and uncancelled-callback
+	issues.
+	
+	* src/nautilus-window-private.h: remove obsolete dead_view_name
+	field.
+	* src/nautilus-window.c: (nautilus_window_destroy):
+	Don't free now-non-existent dead_view_name field.
+
 2000-12-15  Darin Adler  <darin@eazel.com>
 	
 	reviewed by: Gene Ragan <gzr@eazel.com>
