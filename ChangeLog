@@ -1,3 +1,12 @@
+2002-08-01  Dave Camp  <dave@ximian.com>
+
+	* libnautilus-private/nautilus-icon-container.c:
+	(start_rubberbanding): Get the selection color from the gtk theme
+	if none is specified in the nautilus theme. 
+	(realize): Use gtk_widget_modify_bg() to set the background color.
+	(style_set): Call nautilus_icon_container_theme_changed(), as
+	changes to the style can now affect the theme.
+
 2002-07-31  Frank Worsley  <fworsley@shaw.ca>
 
 	* libnautilus-private/nautilus-program-choosing.c:

@@ -1588,7 +1588,7 @@ start_rubberbanding (NautilusIconContainer *container,
 	 */
 	fill_color_str = nautilus_theme_get_theme_data ("directory", "selection_box_color_rgba");
 	if (fill_color_str == NULL) {
-		fill_color = 0x77BBDD40;
+		fill_color = eel_gdk_color_to_rgb (&GTK_WIDGET (container)->style->base[GTK_STATE_SELECTED]) << 8 | 0x40;
 	} else {
 		fill_color = strtoul (fill_color_str, NULL, 0);
 		/* FIXME: Need error handling here. */
@@ -2387,16 +2387,12 @@ size_allocate (GtkWidget *widget,
 static void
 realize (GtkWidget *widget)
 {
-	GtkStyle *style;
 	GtkWindow *window;
 
 	GTK_WIDGET_CLASS (parent_class)->realize (widget);
 
-	style = gtk_style_copy (gtk_widget_get_style (widget));
-	style->bg[GTK_STATE_NORMAL] = style->base[GTK_STATE_NORMAL];
-	gtk_widget_set_style (widget, style);
-	g_object_unref (style);
-
+	gtk_widget_modify_bg (widget, GTK_STATE_NORMAL,
+			      &widget->style->base[GTK_STATE_NORMAL]);
 	gdk_window_set_background
 		(GTK_LAYOUT (widget)->bin_window,
 		 &widget->style->bg[GTK_STATE_NORMAL]);
@@ -2437,6 +2433,8 @@ style_set (GtkWidget *widget,
 	   GtkStyle  *previous_style)
 {
 	NautilusIconContainer *container;
+
+	nautilus_icon_container_theme_changed (NAUTILUS_ICON_CONTAINER (widget));
 
 	if (GTK_WIDGET_REALIZED (widget)) {
 		container = NAUTILUS_ICON_CONTAINER (widget);
