@@ -1,3 +1,10 @@
+2000-09-11  Michael Engber  <engber@eazel.com>
+
+	Backout change made to fix bug 1899 - it caused problems
+	for the desktop.
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_set_image_uri_no_emit):
+
 2000-09-11  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-entry.c:

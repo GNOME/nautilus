@@ -757,12 +757,6 @@ nautilus_background_set_image_uri_no_emit (NautilusBackground *background,
 
 	nautilus_cancel_gdk_pixbuf_load (background->details->load_image_handle);
 	background->details->load_image_handle = NULL;
-
-	/* if we're setting the image, clear the color */
-	if (image_uri != NULL) {
-		g_free (background->details->color);
-		background->details->color = NULL;
-	}
 	
 	g_free (background->details->image_uri);
 
