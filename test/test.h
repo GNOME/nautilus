@@ -20,7 +20,6 @@
 #include <eel/eel-string.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 
-#include <eel/eel-text-caption.h>
 #include <eel/eel-string-picker.h>
 
 void       test_init                            (int                         *argc,
@@ -49,16 +48,5 @@ void       test_pixbuf_draw_rectangle_tiled     (GdkPixbuf                   *pi
 						 int                          opacity);
 void       test_window_set_title_with_pid       (GtkWindow                   *window,
 						 const char                  *title);
-int        test_text_caption_get_text_as_int    (const EelTextCaption   *text_caption);
-
-/* Preferences hacks */
-void test_text_caption_set_text_for_int_preferences            (EelTextCaption       *text_caption,
-								const char                *name);
-void test_text_caption_set_text_for_string_preferences         (EelTextCaption       *text_caption,
-								const char                *name);
-void test_text_caption_set_text_for_default_int_preferences    (EelTextCaption       *text_caption,
-								const char                *name);
-void test_text_caption_set_text_for_default_string_preferences (EelTextCaption       *text_caption,
-								const char                *name);
 
 #endif /* TEST_H */
