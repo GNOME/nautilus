@@ -104,10 +104,20 @@ generate_login_dialog (NautilusSummaryView	*view)
 		button_text = g_strdup (_("Help"));
 	}
 
+	/* if the dialog is still open, then close it and open a new one */
+	if (view->details->login_dialog != NULL) {
+		gnome_dialog_close (GNOME_DIALOG (view->details->login_dialog));
+		view->details->login_dialog = NULL;
+	}
+
 	dialog = GNOME_DIALOG (gnome_dialog_new (_("Services Login"), button_text, 
 			       GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL));
 
-	gtk_signal_connect (GTK_OBJECT (dialog), "destroy", GTK_SIGNAL_FUNC (gtk_widget_destroyed), &dialog);
+	/* TODO: replace all reference to dialog in this code with view->details->login_dialog */
+	view->details->login_dialog = dialog;
+
+	gtk_signal_connect (GTK_OBJECT (dialog), "destroy", GTK_SIGNAL_FUNC (gtk_widget_destroyed), 
+		&view->details->login_dialog);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);
 	gtk_window_set_policy (GTK_WINDOW (dialog), FALSE, FALSE, FALSE);
 

@@ -128,6 +128,7 @@ struct _NautilusSummaryViewDetails {
 	GtkWidget			*services_notebook;
 
 	/* Login Frame Widgets */
+	GnomeDialog			*login_dialog;
 	GtkWidget			*username_label;
 	GtkWidget			*password_label;
 	GtkWidget			*username_entry;

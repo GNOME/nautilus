@@ -1,3 +1,15 @@
+2001-01-17  Ian McKellar  <ian@eazel.com>
+
+	reviewed by: Mike Fleming  <mfleming@eazel.com>
+
+	* components/services/summary/nautilus-view/nautilus-summary-dialog
+	s.c: (generate_login_dialog):
+	* components/services/summary/nautilus-view/nautilus-summary-view-p
+	rivate.h:
+	Keep track of the currently displayed login dialog (for each view).
+	If a login dialog is open when a dialog open request is recieved,
+	close the old one.
+
 2001-01-17  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/throbber/main.c: (main):	
