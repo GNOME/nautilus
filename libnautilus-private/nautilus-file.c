@@ -712,17 +712,30 @@ nautilus_file_can_rename (NautilusFile *file)
 	return result;
 }
 
+static GnomeVFSURI *
+nautilus_file_get_gnome_vfs_uri (NautilusFile *file)
+{
+	GnomeVFSURI *vfs_uri;
+
+	vfs_uri = file->details->directory->details->vfs_uri;
+	if (vfs_uri == NULL) {
+		return NULL;
+	}
+
+	if (nautilus_file_is_self_owned (file)) {
+		gnome_vfs_uri_ref (vfs_uri);
+		return vfs_uri;
+	}
+
+	return gnome_vfs_uri_append_file_name
+		(vfs_uri, file->details->name);
+}
+
 typedef struct {
 	NautilusFile *file;
 	GnomeVFSAsyncHandle *handle;
 	NautilusFileOperationCallback callback;
 	gpointer callback_data;
-
-	/* Operation-specific data. */
-	char *new_name; /* rename */
-	uid_t new_gid; /* set_group */
-	uid_t new_uid; /* set_owner */
-	GnomeVFSFilePermissions new_permissions; /* set_permissions */
 } Operation;
 
 static Operation *
@@ -746,15 +759,18 @@ operation_new (NautilusFile *file,
 }
 
 static void
-operation_free (Operation *op)
+operation_remove (Operation *op)
 {
 	op->file->details->operations_in_progress = g_list_remove
 		(op->file->details->operations_in_progress, op);
 
+}
+
+static void
+operation_free (Operation *op)
+{
+	operation_remove (op);
 	nautilus_file_unref (op->file);
-
-	g_free (op->new_name);
-
 	g_free (op);
 }
 
@@ -766,6 +782,7 @@ operation_complete (Operation *op,
 	 * This makes it easier for some clients who see the "reverting"
 	 * as "changing back".
 	 */
+	operation_remove (op);
 	nautilus_file_changed (op->file);
 	(* op->callback) (op->file, result, op->callback_data);
 	operation_free (op);
@@ -787,69 +804,24 @@ operation_cancel (Operation *op)
 }
 
 static void
-rename_update_info_and_metafile (Operation *op)
-{
-	GList *node;
-
-	nautilus_directory_rename_file_metadata
-		(op->file->details->directory,
-		 op->file->details->name,
-		 op->new_name);
-	
-	node = nautilus_directory_begin_file_name_change (op->file->details->directory,
-							  op->file);
-	g_free (op->file->details->name);
-	op->file->details->name = g_strdup (op->new_name);
-	if (op->file->details->info != NULL) {
-		op->file->details->info->name = op->file->details->name;
-	}
-	nautilus_directory_end_file_name_change (op->file->details->directory,
-						 op->file, node);
-}
-
-static int
 rename_callback (GnomeVFSAsyncHandle *handle,
-		 GnomeVFSXferProgressInfo *info,
+		 GnomeVFSResult result,
+		 GnomeVFSFileInfo *new_info,
 		 gpointer callback_data)
 {
 	Operation *op;
 
 	op = callback_data;
 	g_assert (handle == op->handle);
-	g_assert (info != NULL);
 
-	/* We aren't really interested in progress, but we do need to see
-	 * when the transfer is done or fails.
-	 */
-	switch (info->status) {
-	case GNOME_VFS_XFER_PROGRESS_STATUS_OK:
-		if (info->phase == GNOME_VFS_XFER_PHASE_COMPLETED) {
-			/* Here's the case where we are done renaming. */
-			if (info->vfs_status == GNOME_VFS_OK) {
-				rename_update_info_and_metafile (op);
-			}
-			operation_complete (op, info->vfs_status);
-		}
-		break;
-	case GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR:
-		/* We have to handle this case because if you pass
-		 * GNOME_VFS_ERROR_MODE_ABORT, you never get the
-		 * error code for a failed rename.
-		 */
-		/* FIXME bugzilla.eazel.com 912: I believe this
-		 * represents a bug in GNOME VFS.
-		 */
-		return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
-	default:
-		break;
+	if (result == GNOME_VFS_OK && new_info != NULL) {
+		nautilus_directory_rename_file_metadata
+			(op->file->details->directory,
+			 op->file->details->name,
+			 new_info->name);
+		nautilus_file_update_info (op->file, new_info);
 	}
-
-	/* FIXME bugzilla.eazel.com 886: Pavel says we should return
-	 * this, but he promises he will fix the API so we don't have
-	 * to have special "occult knowledge" to understand this must
-	 * be a 1.
-	 */
-	return 1;
+	operation_complete (op, result);
 }
 
 void
@@ -858,11 +830,9 @@ nautilus_file_rename (NautilusFile *file,
 		      NautilusFileOperationCallback callback,
 		      gpointer callback_data)
 {
-	char *directory_uri;
-	GnomeVFSURI *directory_vfs_uri;
-	GList *source_uri_list, *target_uri_list;
-	GnomeVFSResult result;
 	Operation *op;
+	GnomeVFSFileInfo *partial_file_info;
+	GnomeVFSURI *vfs_uri;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (new_name != NULL);
@@ -909,41 +879,23 @@ nautilus_file_rename (NautilusFile *file,
 		nautilus_file_changed (file);
 		(* callback) (file, GNOME_VFS_ERROR_NOT_SUPPORTED, callback_data);
 		return;
-	}		
+	}
 
 	/* Set up a renaming operation. */
 	op = operation_new (file, callback, callback_data);
-	op->new_name = g_strdup (new_name);
 
-	/* FIXME bugzilla.eazel.com 2432: 
-	 * This call could use gnome_vfs_async_set_file_info
-	 * instead and it might be simpler.
-	 */
-	directory_uri = nautilus_directory_get_uri (file->details->directory);
-	directory_vfs_uri = gnome_vfs_uri_new (directory_uri);
-	g_free (directory_uri);
-	source_uri_list = g_list_prepend
-		(NULL, gnome_vfs_uri_append_file_name (directory_vfs_uri,
-						       file->details->name));
-	target_uri_list = g_list_prepend
-		(NULL, gnome_vfs_uri_append_file_name (directory_vfs_uri,
-						       new_name));
-	gnome_vfs_uri_unref (directory_vfs_uri);
-
-	result = gnome_vfs_async_xfer
-		(&op->handle, source_uri_list, target_uri_list,
-		 GNOME_VFS_XFER_SAMEFS | GNOME_VFS_XFER_REMOVESOURCE,
-		 GNOME_VFS_XFER_ERROR_MODE_QUERY,
-		 GNOME_VFS_XFER_OVERWRITE_MODE_ABORT,
-		 rename_callback, op,
-		 NULL, NULL);
-
-	gnome_vfs_uri_list_free (source_uri_list);
-	gnome_vfs_uri_list_free (target_uri_list);
-
-	if (result != GNOME_VFS_OK) {
-		operation_complete (op, result);
-	}
+	/* Do the renaming. */
+	partial_file_info = gnome_vfs_file_info_new ();
+	partial_file_info->name = g_strdup (new_name);
+	vfs_uri = nautilus_file_get_gnome_vfs_uri (file);
+	gnome_vfs_async_set_file_info (&op->handle,
+				       vfs_uri, partial_file_info, 
+				       GNOME_VFS_SET_FILE_INFO_NAME,
+				       (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+					| GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
+				       rename_callback, op);
+	gnome_vfs_file_info_unref (partial_file_info);
+	gnome_vfs_uri_unref (vfs_uri);
 }
 
 void
@@ -964,25 +916,6 @@ nautilus_file_cancel (NautilusFile *file,
 			operation_cancel (op);
 		}
 	}
-}
-
-static GnomeVFSURI *
-nautilus_file_get_gnome_vfs_uri (NautilusFile *file)
-{
-	GnomeVFSURI *vfs_uri;
-
-	vfs_uri = file->details->directory->details->vfs_uri;
-	if (vfs_uri == NULL) {
-		return NULL;
-	}
-
-	if (nautilus_file_is_self_owned (file)) {
-		gnome_vfs_uri_ref (vfs_uri);
-		return vfs_uri;
-	}
-
-	return gnome_vfs_uri_append_file_name
-		(vfs_uri, file->details->name);
 }
 
 gboolean         
@@ -1086,6 +1019,7 @@ gboolean
 nautilus_file_update_info (NautilusFile *file, GnomeVFSFileInfo *info)
 {
 	GList *node;
+	GnomeVFSFileInfo *info_copy;
 
 	if (file->details->is_gone) {
 		return FALSE;
@@ -1105,14 +1039,14 @@ nautilus_file_update_info (NautilusFile *file, GnomeVFSFileInfo *info)
 
 	node = nautilus_directory_begin_file_name_change
 		(file->details->directory, file);
-	gnome_vfs_file_info_ref (info);
+	info_copy = gnome_vfs_file_info_dup (info);
 	if (file->details->info == NULL) {
 		g_free (file->details->name);
 	} else {
 		gnome_vfs_file_info_unref (file->details->info);
 	}
-	file->details->info = info;
-	file->details->name = info->name;
+	file->details->info = info_copy;
+	file->details->name = info_copy->name;
 	nautilus_directory_end_file_name_change (file->details->directory,
 						 file, node);
 
@@ -2167,10 +2101,8 @@ set_permissions_callback (GnomeVFSAsyncHandle *handle,
 	op = callback_data;
 	g_assert (handle == op->handle);
 
-	if (result == GNOME_VFS_OK) {
-		op->file->details->info->permissions = op->new_permissions;
-		/* "changed time" updates when permissions change, so snarf new one. */
-		op->file->details->info->ctime = new_info->ctime;
+	if (result == GNOME_VFS_OK && new_info != NULL) {
+		nautilus_file_update_info (op->file, new_info);
 	}
 	operation_complete (op, result);
 }
@@ -2216,7 +2148,6 @@ nautilus_file_set_permissions (NautilusFile *file,
 
 	/* Set up a permission change operation. */
 	op = operation_new (file, callback, callback_data);
-	op->new_permissions = new_permissions;
 
 	/* Change the file-on-disk permissions. */
 	partial_file_info = gnome_vfs_file_info_new ();
@@ -2225,7 +2156,8 @@ nautilus_file_set_permissions (NautilusFile *file,
 	gnome_vfs_async_set_file_info (&op->handle,
 				       vfs_uri, partial_file_info, 
 				       GNOME_VFS_SET_FILE_INFO_PERMISSIONS,
-				       GNOME_VFS_FILE_INFO_DEFAULT,
+				       (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+					| GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
 				       set_permissions_callback, op);
 	gnome_vfs_file_info_unref (partial_file_info);
 	gnome_vfs_uri_unref (vfs_uri);
@@ -2422,11 +2354,8 @@ set_owner_and_group_callback (GnomeVFSAsyncHandle *handle,
 	op = callback_data;
 	g_assert (handle == op->handle);
 
-	if (result == GNOME_VFS_OK) {
-		op->file->details->info->uid = op->new_uid;
-		op->file->details->info->gid = op->new_gid;
-		/* Permissions (SUID/SGID) might change when owner/group change. */
-		op->file->details->info->permissions = new_info->permissions;
+	if (result == GNOME_VFS_OK && new_info != NULL) {
+		nautilus_file_update_info (op->file, new_info);
 	}
 	operation_complete (op, result);
 }
@@ -2444,8 +2373,6 @@ set_owner_and_group (NautilusFile *file,
 	
 	/* Set up a owner-change operation. */
 	op = operation_new (file, callback, callback_data);
-	op->new_uid = owner;
-	op->new_gid = group;
 
 	/* Change the file-on-disk owner. */
 	partial_file_info = gnome_vfs_file_info_new ();
@@ -2456,7 +2383,8 @@ set_owner_and_group (NautilusFile *file,
 	gnome_vfs_async_set_file_info (&op->handle,
 				       uri, partial_file_info, 
 				       GNOME_VFS_SET_FILE_INFO_OWNER,
-				       GNOME_VFS_FILE_INFO_DEFAULT,
+				       (GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+					| GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
 				       set_owner_and_group_callback, op);
 	gnome_vfs_file_info_unref (partial_file_info);
 	gnome_vfs_uri_unref (uri);

@@ -10,3 +10,7 @@ gchar *s = N_("Reveal each selected item in its original folder");
 gchar *s = N_("Show _Indexing Status");
 gchar *s = N_("Show status of indexing used by searching");
 gchar *s = N_("_Reveal in New Window");
+gchar *s = N_("Reveal each selected item in its original folder");
+gchar *s = N_("Show _Indexing Status");
+gchar *s = N_("Show status of indexing used by searching");
+gchar *s = N_("_Reveal in New Window");

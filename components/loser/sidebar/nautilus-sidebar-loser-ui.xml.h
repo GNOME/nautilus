@@ -10,3 +10,7 @@ gchar *s = N_("Kill Sidebar Loser");
 gchar *s = N_("Kill the Loser sidebar panel");
 gchar *s = N_("_File");
 gchar *s = N_("_Kill Sidebar Loser");
+gchar *s = N_("Kill Sidebar Loser");
+gchar *s = N_("Kill the Loser sidebar panel");
+gchar *s = N_("_File");
+gchar *s = N_("_Kill Sidebar Loser");

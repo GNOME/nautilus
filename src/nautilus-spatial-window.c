@@ -641,6 +641,7 @@ nautilus_window_close (NautilusWindow *window)
 	gtk_widget_destroy (GTK_WIDGET (window));
 }
 
+/* FIXME: Why is this filter turned off? */
 #if 0
 #include <gdk/gdkx.h>
 #include <gdk/gdkprivate.h>
@@ -690,11 +691,15 @@ nautilus_window_realize (GtkWidget *widget)
 	
 	/* FIXME: need to coordinate with sawfish or this line results in
 	   nautilus windows being unfocusable */
-
-	//nautilus_gdk_window_set_wm_hints_input (widget->window, FALSE);
+#if 0
+	nautilus_gdk_window_set_wm_hints_input (widget->window, FALSE);
+#endif
 
 	/* Add custom message filter to handle WM_TAKE_FOCUS */
-	//gdk_add_client_message_filter (gdk_wm_protocols, nautilus_window_filter, widget);
+	/* FIXME: Why is this filter turned off? */
+#if 0
+	gdk_add_client_message_filter (gdk_wm_protocols, nautilus_window_filter, widget);
+#endif
 
         /* Set the mini icon */
         filename = nautilus_pixmap_file ("nautilus-mini-logo.png");

@@ -28,12 +28,12 @@
 
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-
+#include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 
-#include <libnautilus-extensions/nautilus-file.h>
+#define NEW_NAME_TAG "Nautilus: new name"
 
-static void cancel_rename_callback (gpointer callback_data);
+static void cancel_rename (NautilusFile *file);
 
 void
 fm_report_error_renaming_file (NautilusFile *file,
@@ -142,92 +142,76 @@ fm_report_error_setting_permissions (NautilusFile *file,
 	g_free (message);
 }		
 
-typedef struct {
-	NautilusFile *file;
-	char *new_name;
-} RenameCallbackData;
-
-static void
-rename_callback_data_free (RenameCallbackData *data)
-{
-	g_assert (NAUTILUS_IS_FILE (data->file));
-	g_assert (data->new_name != NULL);
-
-	nautilus_file_unref (data->file);
-	g_free (data->new_name);
-	g_free (data);
-}
-
 static void
 rename_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
 {
-	RenameCallbackData *data;
+	char *name;
 
 	g_assert (NAUTILUS_IS_FILE (file));
-	g_assert (callback_data != NULL);
-
-	data = (RenameCallbackData *) callback_data;
-
-	g_assert (file == data->file);
-	g_assert (data->new_name != NULL);
-
-	/* We are done, no need to cancel any more. */
-	nautilus_timed_wait_stop (cancel_rename_callback, data);
+	g_assert (callback_data == NULL);
+	name = gtk_object_get_data (GTK_OBJECT (file), NEW_NAME_TAG);
+	g_assert (name != NULL);
 
 	/* If rename failed, notify the user. */
-	fm_report_error_renaming_file (file, data->new_name, result);
+	fm_report_error_renaming_file (file, name, result);
 
-	/* Done with the callback data. */
-	rename_callback_data_free (data);
+	cancel_rename (file);
 }
 
 static void
 cancel_rename_callback (gpointer callback_data)
 {
-	RenameCallbackData *data;
+	cancel_rename (NAUTILUS_FILE (callback_data));
+}
 
-	g_assert (callback_data != NULL);
+static void
+cancel_rename (NautilusFile *file)
+{
+	char *name;
 
-	data = (RenameCallbackData *) callback_data;
+	name = gtk_object_get_data (GTK_OBJECT (file), NEW_NAME_TAG);
+	if (name == NULL) {
+		return;
+	}
 
-	g_assert (NAUTILUS_IS_FILE (data->file));
-	g_assert (data->new_name != NULL);
+	/* Cancel both the rename and the timed wait. */
+	nautilus_file_cancel (file, rename_callback, NULL);
+	nautilus_timed_wait_stop (cancel_rename_callback, file);
 
-	/* Cancel the renaming. */
-	nautilus_file_cancel (data->file, rename_callback, callback_data);
-
-	/* Done with the callback data. */
-	rename_callback_data_free (data);
+	/* Let go of file name. */
+	gtk_object_remove_data (GTK_OBJECT (file), NEW_NAME_TAG);
 }
 
 void
 fm_rename_file (NautilusFile *file,
 		const char *new_name)
 {
-	RenameCallbackData *data;
 	char *old_name, *wait_message;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (new_name != NULL);
 
+	/* Stop any earlier rename that's already in progress. */
+	cancel_rename (file);
+
+	/* Attach the new name to the file. */
+	gtk_object_set_data_full (GTK_OBJECT (file),
+				  NEW_NAME_TAG,
+				  g_strdup (new_name),
+				  g_free);
+
+	/* Start the timed wait to cancel the rename. */
 	old_name = nautilus_file_get_name (file);
 	wait_message = g_strdup_printf (_("Renaming %s to %s."),
 					old_name,
 					new_name);
 	g_free (old_name);
-
-	/* Start the rename. */
-	data = g_new (RenameCallbackData, 1);
-	nautilus_file_ref (file);
-	data->file = file;
-	data->new_name = g_strdup (new_name);
-	nautilus_timed_wait_start (cancel_rename_callback,
-				   data,
-				   _("Cancel Rename?"),
-				   wait_message,
+	nautilus_timed_wait_start (cancel_rename_callback, file,
+				   _("Cancel Rename?"), wait_message,
 				   NULL); /* FIXME bugzilla.eazel.com 2395: Parent this? */
-	nautilus_file_rename (file, new_name,
-			      rename_callback, data);
 	g_free (wait_message);
 
+	/* Start the rename. */
+	nautilus_file_rename (file, new_name,
+			      rename_callback, NULL);
 }

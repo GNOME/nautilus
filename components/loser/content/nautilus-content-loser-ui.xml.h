@@ -10,3 +10,7 @@ gchar *s = N_("Kill Content Loser");
 gchar *s = N_("Kill the Loser content view");
 gchar *s = N_("_File");
 gchar *s = N_("_Kill Content Loser");
+gchar *s = N_("Kill Content Loser");
+gchar *s = N_("Kill the Loser content view");
+gchar *s = N_("_File");
+gchar *s = N_("_Kill Content Loser");

@@ -1,3 +1,66 @@
+2000-10-27  Darin Adler  <darin@eazel.com>
+
+	Fixed bugs in file renaming. These changes along with the
+	gnome-vfs ones take care of bug 3846 (cancel dialog persists after
+	renaming online storage folder).
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_gnome_vfs_uri): Moved higher so it could be
+	used by rename code.
+	(operation_remove): Separated out the remove operation so we can
+	remove the operation before the callback. This makes it safe to
+	do a nautlius_file_cancel from inside a callback.
+	(operation_free): Call the separate remove. Also cut down because
+	we don't need so much state in the operation object any more.
+	(operation_complete): Call remove before calling callback as
+	described above.
+	(rename_callback): A new callback that uses set_file_info results
+	instead of the old one that used xfer.
+	(nautilus_file_rename): Change to use set_file_info instead of
+	xfer. Also updates the MIME type now, which will fix a bug I
+	think.
+	(nautilus_file_update_info): Use gnome_vfs_file_info_dup instead
+	of gnome_vfs_file_info_ref so it works with any info, including
+	static ones on the stack.
+	(set_permissions_callback), (nautilus_file_set_permissions),
+	(set_owner_and_group_callback), (set_owner_and_group): Change to
+	use the info returned by the async. set_file_info. This simplifies
+	things a lot.
+	
+	* src/file-manager/fm-error-reporting.c: (rename_callback),
+	(cancel_rename_callback), (cancel_rename), (fm_rename_file):
+	Rewrote renaming code. Use object data to keep track of pending
+	renames so we can cancel a previous one if we try to re-rename the
+	same file again. This allowed the code to get a lot simpler too.
+	
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(directory_load_done): Fixed bug that prevented the directory from
+	ever noticing files that are no longer around. This code never
+	worked because we checked for the wrong error code (EOF means
+	success here).
+	
+	* po/Makefile.in.in: Re-removed this file. Seth checked it in by
+	accident. This is a generated file, not one that should be checked
+	in.
+	
+	* src/nautilus-window.c: (nautilus_window_realize): Got rid of
+	"//"-style comments and used #if 0 instead.
+
+	* components/loser/content/nautilus-content-loser-ui.xml.h:
+	* components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:
+	* components/mozilla/nautilus-mozilla-ui.xml.h:
+	* components/sample/nautilus-sample-content-view-ui.xml.h:
+	* components/services/summary/nautilus-view/nautilus-summary-view-ui.xml.h:
+	* libnautilus/nautilus-clipboard-ui.xml.h:
+	* src/file-manager/nautilus-directory-view-ui.xml.h:
+	* src/file-manager/nautilus-icon-view-ui.xml.h:
+	* src/file-manager/nautilus-search-list-view-ui.xml.h:
+	* src/nautilus-service-ui.xml.h:
+	* src/nautilus-shell-ui.xml.h:
+	Someone checked in some .xml.h files generated with an old
+	Bonobo. Soon, this nightmare will be over and we won't check these
+	files in any more.
+	
 2000-10-27  Arlo Rose  <arlo@eazel.com>
 
 	* src/nautilus-first-time-druid.c: (make_anti_aliased_label):
