@@ -71,6 +71,8 @@ CORBA_GENERATED =				\
 IDLDIR = $(top_srcdir)/components/services/install/idl
 IDL = $(IDLDIR)/trilobite-eazel-install.idl
 
+$(CORBA_GENERATED): trilobite-eazel-install.h
+
 trilobite-eazel-install.h: $(IDL)
 	$(ORBIT_IDL) $(IDL_CFLAGS) -I$(IDLDIR) $(IDL)
 
