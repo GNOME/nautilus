@@ -4652,23 +4652,16 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 			/* As desktop file loader only test gnome vfs result, we have
 			 * to also test for a valid desktop file by querying the hash
 			 */
-			if (df &&
-			    nautilus_desktop_file_load (name, &df) == GNOME_VFS_OK &&
+			if (nautilus_desktop_file_load (name, &df) == GNOME_VFS_OK &&
 			    nautilus_desktop_file_get_string (df, NULL, "Exec", &command)) 
 			{
-				g_free (name); 
 				g_free (command); 
 				nautilus_desktop_file_launch (df);
-				nautilus_desktop_file_free (df);
 			}
 			else 
 			{
-				/* desktop file alloc failed or not a desktop file */
-				if (df) 
-				{
-					nautilus_desktop_file_free (df);
-				}
-				
+				/* not a desktop file */
+
 				/* As an additional precaution, only execute
 				 * commands without any parameters, which is
 				 * enforced by using a call that uses
@@ -4680,8 +4673,9 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 									  command,
 									  NULL, /* param */
 									  FALSE);
-				g_free (name); 
 			}
+			g_free (name); 
+			nautilus_desktop_file_free (df);
 			action = ACTIVATION_ACTION_DO_NOTHING;
 		}
 	}
