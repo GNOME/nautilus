@@ -54,6 +54,15 @@
  */
 #define KEYBOARD_ROW_REVEAL_TIMEOUT 300
 
+/* FIXME: This constant and much of the code surrounding its use was copied from
+ * nautilus-icon-container; they should share code instead.
+ */
+#define CONTEXT_MENU_TIMEOUT_INTERVAL 500
+
+#define NO_BUTTON		0
+#define ACTION_BUTTON		1
+#define CONTEXTUAL_MENU_BUTTON	3
+
 struct NautilusListDetails
 {
 	/* Single click mode ? */
@@ -86,6 +95,7 @@ struct NautilusListDetails
 	/* Drag state */
 	NautilusDragInfo *drag_info;
 	gboolean drag_started;
+	guint context_menu_timeout_id;
 	
 	/* Delayed selection information */
 	gboolean dnd_select_pending;
@@ -761,6 +771,29 @@ nautilus_list_select_all (GtkCList *clist)
 	}
 }
 
+static gboolean
+show_context_menu_callback (void *cast_to_list)
+{
+	NautilusList *list;
+
+	list = NAUTILUS_LIST (cast_to_list);
+
+	/* FIXME: Need to handle case where button has already been released,
+	 * a la NautilusIconContainer code?
+	 */
+
+	gtk_timeout_remove (list->details->context_menu_timeout_id);
+
+	/* Context menu applies to all selected items. The only
+	 * odd case is if this click deselected the item under
+	 * the mouse, but at least the behavior is consistent.
+	 */
+	gtk_signal_emit (GTK_OBJECT (list),
+			 list_signals[CONTEXT_CLICK_SELECTION]);
+
+	return TRUE;
+}
+
 /* Our handler for button_press events.  We override all of GtkCList's broken
  * behavior.
  */
@@ -794,8 +827,23 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 		
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
-		if (event->button == 1 || event->button == 2) {
+	
+		if (event->button == CONTEXTUAL_MENU_BUTTON && !on_row) {
+			gtk_signal_emit (GTK_OBJECT (list),
+					 list_signals[CONTEXT_CLICK_BACKGROUND]);
+
+			retval = TRUE;
+		} else if (event->button == ACTION_BUTTON || event->button == CONTEXTUAL_MENU_BUTTON) {
 			if (on_row) {
+
+				if (event->button == CONTEXTUAL_MENU_BUTTON) {
+					/* after a timeout we will decide if this is a
+					 * context menu click or a drag start
+					 */
+					list->details->context_menu_timeout_id = gtk_timeout_add (
+						CONTEXT_MENU_TIMEOUT_INTERVAL, 
+						show_context_menu_callback, list);
+				}
 
 				/* Save the clicked row_index for DnD and single-click activate */
 				
@@ -828,28 +876,12 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 			}
 
 			retval = TRUE;
-		} else if (event->button == 3) {
-			if (on_row) {
-				/* Context menu applies to all selected items. First use click
-				 * to modify selection as appropriate, then emit signal that
-				 * will bring up menu.
-				 */
-				if (!nautilus_list_is_row_selected (list, row_index)) {
-					select_row_from_mouse (list, row_index, event->state);
-				}
-				gtk_signal_emit (GTK_OBJECT (list),
-						 list_signals[CONTEXT_CLICK_SELECTION]);
-			} else
-				gtk_signal_emit (GTK_OBJECT (list),
-						 list_signals[CONTEXT_CLICK_BACKGROUND]);
-
-			retval = TRUE;
 		}
 
 		break;
 
 	case GDK_2BUTTON_PRESS:
-		if (event->button == 1) {
+		if (event->button == ACTION_BUTTON) {
 			list->details->dnd_select_pending = FALSE;
 			list->details->dnd_select_pending_state = 0;
 
@@ -899,18 +931,8 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 
 	on_row = gtk_clist_get_selection_info (clist, event->x, event->y, &row_index, &column_index);
 
-	if (!(event->button == 1 || event->button == 2))
+	if (event->button != ACTION_BUTTON && event->button != CONTEXTUAL_MENU_BUTTON)
 		return FALSE;
-
-	list->details->dnd_press_button = 0;
-	list->details->dnd_press_x = 0;
-	list->details->dnd_press_y = 0;
-
-	/* FIXME: This sounds backwards -- how can drag_started be true
-	 * when the mouse button was just released? But maybe the name is confusing?
-	 * Maybe it's really "done_processing_pending_drags" or something?
-	 */
-	list->details->drag_started = TRUE;
 
 	if (on_row) {
 		/* Clean up after abortive drag-and-drop attempt (since user can't
@@ -932,11 +954,19 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 			list->details->dnd_select_pending_state = 0;
 		}
 
+		if (event->button == CONTEXTUAL_MENU_BUTTON && !list->details->drag_started) {
+			/* Right click, drag never happened, immediately show context menu */
+			gtk_timeout_remove (list->details->context_menu_timeout_id);
+			gtk_signal_emit (GTK_OBJECT (list),
+					 list_signals[CONTEXT_CLICK_SELECTION]);
+		}
+
 		/* 
 		 * Activate on single click if not extending selection, mouse hasn't moved to
 		 * a different row, not too much time has passed, and this is a link-type cell.
 		 */
-		if (list->details->single_click_mode && 
+		if (event->button == ACTION_BUTTON && 
+		    list->details->single_click_mode && 
 		    !event_state_modifies_selection (event->state))
 		{
 			int elapsed_time = event->time - list->details->button_down_time;
@@ -966,6 +996,11 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 	
 		retval = TRUE;
 	}
+
+	list->details->dnd_press_button = NO_BUTTON;
+	list->details->dnd_press_x = 0;
+	list->details->dnd_press_y = 0;
+	list->details->drag_started = FALSE;
 
 	return retval;
 }
@@ -1463,7 +1498,6 @@ static void
 nautilus_list_unrealize (GtkWidget *widget)
 {
 	GtkWindow *window;
-        g_assert (GTK_IS_WINDOW (gtk_widget_get_toplevel (widget)));
         window = GTK_WINDOW (gtk_widget_get_toplevel (widget));
 	gtk_window_set_focus (window, NULL);
 
@@ -2367,8 +2401,6 @@ nautilus_list_resize_column (GtkCList *clist, int column_index, int width)
 	/* override resize column to invalidate the title */
 	NautilusList *list;
 
-	g_assert (NAUTILUS_IS_LIST (clist));
-
 	list = NAUTILUS_LIST (clist);
 
 	gtk_widget_queue_draw (list->details->title);
@@ -2555,15 +2587,17 @@ nautilus_list_drag_start (GtkWidget *widget, GdkEventMotion *event)
 	GdkDragContext *context;
 	GdkPixmap *pixmap_for_dragged_file;
 	GdkBitmap *mask_for_dragged_file;
-	int x_offset, y_offset;
+	int x_offset, y_offset; 
 
 	g_return_if_fail (NAUTILUS_IS_LIST (widget));
 	list = NAUTILUS_LIST (widget);
-	
+
 	list->details->drag_started = TRUE;
 	list->details->dnd_select_pending = FALSE;
 	context = gtk_drag_begin (widget, list->details->drag_info->target_list,
-		GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK,
+		list->details->dnd_press_button == CONTEXTUAL_MENU_BUTTON
+			? GDK_ACTION_ASK
+			: GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK,
 		list->details->dnd_press_button,
 		(GdkEvent *) event);
 
@@ -2602,8 +2636,8 @@ nautilus_list_motion (GtkWidget *widget, GdkEventMotion *event)
 	if (event->window != clist->clist_window)
 		return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, motion_notify_event, (widget, event));
 
-	if (!((list->details->dnd_press_button == 1 && (event->state & GDK_BUTTON1_MASK))
-	      || (list->details->dnd_press_button == 2 && (event->state & GDK_BUTTON2_MASK))))
+	if (!((list->details->dnd_press_button == ACTION_BUTTON && (event->state & GDK_BUTTON1_MASK))
+	    || (list->details->dnd_press_button == CONTEXTUAL_MENU_BUTTON && (event->state & GDK_BUTTON3_MASK))))
 		return FALSE;
 
 	/* This is the same threshold value that is used in gtkdnd.c */
@@ -2614,6 +2648,9 @@ nautilus_list_motion (GtkWidget *widget, GdkEventMotion *event)
 	}
 
 	if (!list->details->drag_started) {
+		if (list->details->dnd_press_button == CONTEXTUAL_MENU_BUTTON) {
+			gtk_timeout_remove (list->details->context_menu_timeout_id);
+		}
 		nautilus_list_drag_start (widget, event);
 	}
 	
@@ -2662,7 +2699,6 @@ nautilus_list_drag_begin (GtkWidget *widget, GdkDragContext *context)
 {
 	NautilusList *list;
 
-	g_assert (NAUTILUS_IS_LIST (widget));
 	list = NAUTILUS_LIST (widget);
 }
 
@@ -2671,7 +2707,6 @@ nautilus_list_drag_end (GtkWidget *widget, GdkDragContext *context)
 {
 	NautilusList *list;
 
-	g_assert (NAUTILUS_IS_LIST (widget));
 	list = NAUTILUS_LIST (widget);
 
 	nautilus_drag_destroy_selection_list (list->details->selection_list);
@@ -2683,27 +2718,78 @@ nautilus_list_drag_leave (GtkWidget *widget, GdkDragContext *context, guint time
 {
 	NautilusList *list;
 
-	g_assert (NAUTILUS_IS_LIST (widget));
 	list = NAUTILUS_LIST (widget);
 
 	list->details->got_drop_data_type = FALSE;
 }
+
+static void
+nautilus_list_get_drop_action (NautilusList *list, 
+			       GdkDragContext *context,
+			       int x, int y,
+			       int *default_action,
+			       int *non_default_action)
+{
+	/* FIXME: Too much code copied from nautilus-icon-dnd.c. Need to share more. */
+
+	/* FIXME: These must be initialized or drag_data_received will never be called.
+	 * I don't understand why this is the case. */
+	if (list->details->dnd_press_button == CONTEXTUAL_MENU_BUTTON) {
+		*default_action = GDK_ACTION_ASK;
+		*non_default_action = GDK_ACTION_ASK;
+	} else {
+		*default_action = GDK_ACTION_MOVE;
+		*non_default_action = GDK_ACTION_COPY;
+	}
+
+	if (!list->details->drag_info->got_drop_data_type) {
+		/* drag_data_received didn't get called yet */
+		return;
+	}
+
+	switch (list->details->drag_info->data_type) {
+	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+		if (list->details->drag_info->selection_list == NULL) {
+			*default_action = 0;
+			*non_default_action = 0;
+			return;
+		}
+		/* FIXME:
+		 * compute the drop action default and non-default values here based on
+		 * the drag selection and drop target
+		 */
+		if (list->details->dnd_press_button == CONTEXTUAL_MENU_BUTTON) {
+			*default_action = GDK_ACTION_ASK;
+			*non_default_action = GDK_ACTION_ASK;
+		} else {
+			*default_action = GDK_ACTION_MOVE;
+			*non_default_action = GDK_ACTION_COPY;
+		}
+		break;
+
+	case NAUTILUS_ICON_DND_COLOR:
+	/* FIXME: Doesn't handle dropped keywords in list view? Do we need to support this? */
+		*default_action = context->suggested_action;
+		*non_default_action = context->suggested_action;
+		break;
+
+	default:
+	}
+
+}			       
 
 static gboolean
 nautilus_list_drag_motion (GtkWidget *widget, GdkDragContext *context,
 		       int x, int y, guint time)
 {
 	NautilusList *list;
+	int default_action, non_default_action;
 
-	/* FIXME:
-	 * pass in the drop action default and non-default values here based on
-	 * the drag selection and drop target
-	 */
-	gdk_drag_status (context, nautilus_drag_modifier_based_action (GDK_ACTION_MOVE,
-		GDK_ACTION_COPY), time);
-
-	g_assert (NAUTILUS_IS_LIST (widget));
 	list = NAUTILUS_LIST (widget);
+
+	nautilus_list_get_drop_action (list, context, x, y, &default_action, &non_default_action);
+	gdk_drag_status (context, nautilus_drag_modifier_based_action (default_action,
+		non_default_action), time);
 
 	return TRUE;
 }
@@ -2713,18 +2799,24 @@ nautilus_list_drag_drop (GtkWidget *widget, GdkDragContext *context,
 		     int x, int y, guint time)
 {
 	NautilusList *list;
+	GList *selected_items;
 	
-	g_assert (NAUTILUS_IS_LIST (widget));
 	list = NAUTILUS_LIST (widget);
 
 	g_assert (list->details->got_drop_data_type);
 
 	switch (list->details->data_type) {
 	case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-		gtk_signal_emit (GTK_OBJECT (list), list_signals[HANDLE_DROPPED_ICONS],
-			 list->details->selection_list, x, y, context->action);
-		nautilus_drag_destroy_selection_list (list->details->selection_list);
+		/** 
+		 * Put selection list in local variable and NULL the global one
+		 * so it doesn't get munged in a modal popup-menu event loop
+		 * in the handle_dropped_icons handler.
+		 */
+		selected_items = list->details->selection_list;
 		list->details->selection_list = NULL;
+		gtk_signal_emit (GTK_OBJECT (list), list_signals[HANDLE_DROPPED_ICONS],
+			 selected_items, x, y, context->action);			
+		nautilus_drag_destroy_selection_list (selected_items);
 		gtk_drag_finish (context, TRUE, FALSE, time);
 		break;
 	case NAUTILUS_ICON_DND_COLOR:
@@ -2745,7 +2837,6 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 {
 	NautilusList *list;
 
-	g_assert (NAUTILUS_IS_LIST (widget));
 	list = NAUTILUS_LIST (widget);
 
 	switch (info) {

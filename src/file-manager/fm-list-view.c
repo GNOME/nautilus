@@ -546,7 +546,7 @@ fm_list_handle_dropped_icons (NautilusList *list,
 			(GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
 	}
 
-	if (action >= 0) {
+	if (action > 0) {
 		/* find the item we hit and figure out if it will take the dropped items */
 		target_item = fm_list_nautilus_file_at (list, x, y);
 		if (target_item != NULL 
@@ -579,10 +579,10 @@ fm_list_handle_dropped_icons (NautilusList *list,
 				target_item_uri, action, x, y, directory_view);
 
 		}
+		g_free (list_view_uri);
 	}
 
 	g_free (target_item_uri);
-	g_free (list_view_uri);
 }
 
 /* iteration glue struct */

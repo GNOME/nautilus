@@ -1,3 +1,37 @@
+2000-08-15  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 2172 (Need to support right-button-dragging in
+	list view). This was a piece of list view dragging support
+	that got overlooked before, but is necessary for search
+	results.
+
+	Some of this code is copy/paste/modified from 
+	nautilus-icon-container.c and nautilus-icon-dnd.c. I added
+	FIXMEs about this (there were some already).
+
+	* libnautilus-extensions/nautilus-list.c:
+	Added #defines for mouse buttons
+	(show_context_menu_callback), (and get ready for a potential drag)
+	(nautilus_list_button_release), (nautilus_list_unrealize),
+	(nautilus_list_resize_column), (nautilus_list_drag_start),
+	(nautilus_list_motion), (nautilus_list_drag_begin),
+	(nautilus_list_drag_end), (nautilus_list_drag_leave),
+	(nautilus_list_get_drop_action), (nautilus_list_drag_motion),
+	(nautilus_list_drag_drop), (nautilus_list_drag_data_received):
+	Changes are too intertwined to list function-by-function. The
+	main ones are: replaced uses of mouse button constants with
+	#defines; Made middle button do nothing useful to match icon
+	view (was mimicking left button); made right button either
+	start a "choose the action on release" type drag or pop up
+	the contextual menu after a timeout if no drag begins; took
+	out some unnecessary asserts.
+	
+	* src/file-manager/fm-list-view.c: (fm_list_handle_dropped_icons):
+	Changed action >= 0 to action > 0 so it doesn't do a lot of
+	useless work when user chooses Cancel after a right-click drag;
+	moved g_free (list_view_uri) inside the block where list_view_uri
+	is allocated.
+
 2000-08-15  Michael Engber  <engber@eazel.com>
 
 	Third cut at syncing our desktop background with GNOME's (bug 1047)
