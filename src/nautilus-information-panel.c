@@ -50,6 +50,7 @@
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-drag.h>
 #include <libnautilus-extensions/nautilus-file.h>
+#include <libnautilus-extensions/nautilus-file-operations.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
@@ -63,6 +64,7 @@
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
+#include <libnautilus-extensions/nautilus-trash-monitor.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
 #include <liboaf/liboaf.h>
 #include <math.h>
@@ -614,6 +616,9 @@ uri_is_local_image (const char *uri)
 	return TRUE;
 }
 
+/* routine to handle a list of uris is dropped on the sidebar; case out based on the part
+ * of the sidebar it was dropped on
+ */
 static void
 receive_dropped_uri_list (NautilusSidebar *sidebar,
 			  int x, int y,
@@ -767,7 +772,6 @@ receive_dropped_color (NautilusSidebar *sidebar,
 }
 
 /* handle receiving a dropped keyword */
-
 static void
 receive_dropped_keyword (NautilusSidebar *sidebar,
 			 int x, int y,
@@ -779,6 +783,7 @@ receive_dropped_keyword (NautilusSidebar *sidebar,
 	nautilus_sidebar_update_appearance (sidebar);  	
 }
 
+/* general handler for dropped items - case out on the type of the dropped item */
 static void  
 nautilus_sidebar_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 					 int x, int y,
@@ -1226,7 +1231,7 @@ open_with_callback (GtkWidget *button, gpointer ignored)
 static void
 add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 {
-	char *id_string, *temp_str;
+	char *id_string, *temp_str, *file_path;
 	GList *p;
 	GtkWidget *temp_button;
 	GnomeVFSMimeApplication *application;
@@ -1251,14 +1256,14 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 		 * somehow. We can do a search and replace on the "%s"
 		 * part instead, which should work.
 		 */
-		/* FIXME: Doing a +7 does not turn a URI into a path
-		 * name.
-		 */
-		temp_str = g_strdup_printf
-			("'%s'", 
-			 nautilus_istr_has_prefix (sidebar->details->uri, "file://")
-			 ? sidebar->details->uri + 7 : sidebar->details->uri);
+		if (nautilus_is_remote_uri (sidebar->details->uri)) {
+			file_path = g_strdup (sidebar->details->uri);
+		} else {
+			file_path = gnome_vfs_get_local_path_from_uri (sidebar->details->uri);
+		}
+		temp_str = nautilus_shell_quote (file_path);		
 		id_string = g_strdup_printf (application->id, temp_str); 		
+		g_free (file_path);
 		g_free (temp_str);
 
 		nautilus_gtk_signal_connect_free_data 
@@ -1329,7 +1334,24 @@ add_buttons_from_metadata (NautilusSidebar *sidebar, const char *button_data)
 	g_strfreev (terms);
 }
 
-/**
+/* handle the hacked-in empty trash command */
+static void
+empty_trash_callback (GtkWidget *button, gpointer data)
+{
+	GtkWidget *window;
+	
+	window = gtk_widget_get_toplevel (button);
+	nautilus_file_operations_empty_trash (window);
+}
+
+static void
+nautilus_sidebar_trash_state_changed_callback (NautilusTrashMonitor *trash_monitor,
+						gboolean state, gpointer callback_data)
+{
+		gtk_widget_set_sensitive (GTK_WIDGET (callback_data), !nautilus_trash_monitor_is_empty ());
+}
+
+/*
  * nautilus_sidebar_update_buttons:
  * 
  * Update the list of program-launching buttons based on the current uri.
@@ -1338,6 +1360,7 @@ static void
 nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 {
 	char *button_data;
+	GtkWidget *temp_button;
 	GList *short_application_list;
 	
 	/* dispose of any existing buttons */
@@ -1348,7 +1371,6 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 	}
 
 	/* create buttons from file metadata if necessary */
-	
 	button_data = nautilus_file_get_metadata (sidebar->details->file,
 						  NAUTILUS_METADATA_KEY_SIDEBAR_BUTTONS,
 						  NULL);
@@ -1357,6 +1379,27 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 		g_free(button_data);
 	}
 
+	/* here is a hack to provide an "empty trash" button when displaying the trash.  Eventually, we
+	 * need a framework to allow protocols to add commands buttons */
+	if (nautilus_istr_has_prefix (sidebar->details->uri, "trash:")) {
+		temp_button = gtk_button_new_with_label (_("  Empty Trash  "));		    
+		gtk_box_pack_start (GTK_BOX (sidebar->details->button_box), 
+					temp_button, FALSE, FALSE, 0);
+		gtk_widget_set_sensitive (temp_button, !nautilus_trash_monitor_is_empty ());
+		gtk_widget_show (temp_button);
+		sidebar->details->has_buttons = TRUE;
+					
+		gtk_signal_connect (GTK_OBJECT (temp_button), "clicked",
+			GTK_SIGNAL_FUNC (empty_trash_callback), NULL);
+		
+		gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_trash_monitor_get ()),
+				        "trash_state_changed",
+				        nautilus_sidebar_trash_state_changed_callback,
+				        temp_button,
+				        GTK_OBJECT (temp_button));
+
+	}
+	
 	/* Make buttons for each item in short list + "Open with..." catchall,
 	 * unless there aren't any applications at all in complete list. 
 	 */
@@ -1366,15 +1409,16 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 			nautilus_mime_get_short_list_applications_for_file (sidebar->details->file);
 		add_command_buttons (sidebar, short_application_list);
 		gnome_vfs_mime_application_list_free (short_application_list);
-
-		/* Hide button box if a sidebar panel is showing. Otherwise, show it! */
-		if (sidebar->details->selected_index != -1) {
-			gtk_widget_hide (GTK_WIDGET (sidebar->details->button_box_centerer));
-			gtk_widget_hide (GTK_WIDGET (sidebar->details->title));
-		} else {
-			gtk_widget_show (GTK_WIDGET (sidebar->details->button_box_centerer));
-		}
 	}
+
+	/* Hide button box if a sidebar panel is showing. Otherwise, show it! */
+	if (sidebar->details->selected_index != -1) {
+		gtk_widget_hide (GTK_WIDGET (sidebar->details->button_box_centerer));
+		gtk_widget_hide (GTK_WIDGET (sidebar->details->title));
+	} else {
+		gtk_widget_show (GTK_WIDGET (sidebar->details->button_box_centerer));
+	}
+
 }
 
 static void

@@ -1,3 +1,30 @@
+2001-02-13  Andy Hertzfeld  <andy@eazel.com>
+	
+	first very rough cut at annotation stuff, not even building yet
+
+	* libnautilus-extensions/nautilus-annotation.c: (_byte_reverse),
+	(md5_init), (md5_update), (md5_final), (md5_transform),
+	(digest_file_close_callback), (read_file_succeeded),
+	(read_file_failed), (calculate_checksum_callback),
+	(read_file_open_callback), (calculate_file_digest),
+	(look_up_local_annotation), (has_local_annotation),
+	(get_annotation_from_server), (got_file_digest),
+	(nautilus_annotation_get_annotation),
+	(nautilus_annotation_has_annotation),
+	(nautilus_annotation_add_annotation),
+	(nautilus_annotation_remove_annotation):
+	* libnautilus-extensions/nautilus-annotation.h:
+	
+	* Makefile.am:
+	* applets/Makefile.am:
+	had to remove this because it wasn't building for me
+	
+	* src/nautilus-sidebar.c: (add_command_buttons),
+	(empty_trash_callback),
+	(nautilus_sidebar_trash_state_changed_callback),
+	(nautilus_sidebar_update_buttons):
+	empty trash button
+	
 2001-02-09  Andy Hertzfeld  <andy@eazel.com>
 
 	got rid of debug messages for demo
