@@ -56,6 +56,20 @@
 
 #define NUM_ELEMENTS_IN_ARRAY(_a) (sizeof (_a) / sizeof ((_a)[0]))
 
+/* Code-copied from nsGUIEvent.h */
+
+enum nsEventStatus {  
+	/// The event is ignored, do default processing
+ 	nsEventStatus_eIgnore,            
+ 	/// The event is consumed, don't do default processing
+ 	nsEventStatus_eConsumeNoDefault, 
+ 	/// The event is consumed, but do default processing
+	nsEventStatus_eConsumeDoDefault  
+};
+ 
+#define NS_DOM_EVENT_IGNORED ((enum nsEventStatus)nsEventStatus_eIgnore)
+#define NS_DOM_EVENT_CONSUMED ((enum nsEventStatus)nsEventStatus_eConsumeNoDefault)
+
 #ifdef EAZEL_SERVICES
 EazelProxy_UserControl nautilus_mozilla_content_view_user_control = CORBA_OBJECT_NIL;
 #endif
@@ -1078,7 +1092,7 @@ mozilla_dom_key_press_callback (GtkMozEmbed                     *mozilla,
 				gpointer                         dom_event,
 				gpointer                         user_data)
 {
-	g_return_val_if_fail (dom_event != NULL, 0);
+	g_return_val_if_fail (dom_event != NULL, NS_DOM_EVENT_IGNORED);
 
 #ifdef DEBUG_mfleming
 	g_print ("%s (%p)\n", __FUNCTION__, dom_event);
@@ -1091,7 +1105,7 @@ mozilla_dom_key_press_callback (GtkMozEmbed                     *mozilla,
 	if (mozilla_events_is_key_return (dom_event)) {
 		return mozilla_dom_mouse_click_callback (mozilla, dom_event, user_data);
 	} else {
-		return 0;
+		return NS_DOM_EVENT_IGNORED;
 	}
 }
 
@@ -1103,9 +1117,9 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
  	NautilusMozillaContentView	*view;
 	char				*href;
 
-	g_return_val_if_fail (GTK_IS_MOZ_EMBED (mozilla), TRUE);
-	g_return_val_if_fail (dom_event != NULL, TRUE);
-	g_return_val_if_fail (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (user_data), TRUE);
+	g_return_val_if_fail (GTK_IS_MOZ_EMBED (mozilla), NS_DOM_EVENT_IGNORED);
+	g_return_val_if_fail (dom_event != NULL, NS_DOM_EVENT_IGNORED);
+	g_return_val_if_fail (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (user_data), NS_DOM_EVENT_IGNORED);
 	
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
@@ -1125,20 +1139,12 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 		 * its context, we use a hack.  The hack is to lie Nautilus
 		 * that the POST event was instigated by Nautilus.  Nautilus
 		 * will the call our load_location() away without having 
-		 * gnome-vfs try and do the post and thus spoling it.
+		 * gnome-vfs try and do the post and thus spoiling it.
 		 */
 		view->details->got_called_by_nautilus = TRUE;
 	} else {
 		
 		href = mozilla_events_get_href_for_event (dom_event);
-
-		/* 
-		 * The return value over here needs to be psycho-analyzed some.
-		 * In theory, a return value of NS_OK, which is 0 (yes, zero)
-		 * in the Mozilla universe means that the dom event got handled
-		 *
-		 * Need to look at the gtkmozembed.cpp code more carefully.
-		 */
 
 		if (href) {
 			char * href_full = NULL;
@@ -1166,11 +1172,15 @@ mozilla_dom_mouse_click_callback (GtkMozEmbed *mozilla,
 			bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 			g_free (href);
 
-			return 0;
+			return NS_DOM_EVENT_CONSUMED;
+		} else {
+#ifdef DEBUG_ramiro
+			g_print ("%s() no href;ignoring\n", __FUNCTION__);
+#endif
 		}
 	}
 	
-	return TRUE;
+	return NS_DOM_EVENT_IGNORED;
 }
 
 #define STRING_LIST_NOT_FOUND -1
