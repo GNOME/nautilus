@@ -29,6 +29,7 @@
 
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-string.h>
 
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
@@ -805,6 +806,11 @@ nautilus_preferences_set_boolean (const char		  *name,
 	g_return_if_fail (nautilus_preferences_is_initialized ());
 	g_return_if_fail (name != NULL);
 
+	/* Make sure the preference value is indeed different */
+	if (gconf_client_get_bool (preference_gconf_client, name, NULL) == boolean_value) {
+		return;
+	}
+
 	gconf_result = gconf_client_set_bool (preference_gconf_client,
 					      name,
 					      boolean_value,
@@ -834,6 +840,11 @@ nautilus_preferences_set_enum (const char    *name,
 	g_return_if_fail (nautilus_preferences_is_initialized ());
 	g_return_if_fail (name != NULL);
 
+	/* Make sure the preference value is indeed different */
+	if (gconf_client_get_int (preference_gconf_client, name, NULL) == enum_value) {
+		return;
+	}
+
 	gconf_result = gconf_client_set_int (preference_gconf_client,
 					     name,
 					     enum_value,
@@ -862,6 +873,20 @@ nautilus_preferences_set (const char *name,
 
 	g_return_if_fail (nautilus_preferences_is_initialized ());
 	g_return_if_fail (name != NULL);
+
+	/* Make sure the preference value is indeed different */
+	if (value) {
+		char *current_value = gconf_client_get_string (preference_gconf_client, name, NULL);
+		int result = nautilus_strcmp (current_value, value);
+		
+		if (current_value) {
+			g_free (current_value);
+		}
+
+		if (result == 0) {
+			return;
+		}
+	}
 
 	gconf_result = gconf_client_set_string (preference_gconf_client,
 						name,

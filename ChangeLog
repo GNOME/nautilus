@@ -1,3 +1,16 @@
+2000-05-28  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_register_for_ui):
+	* nautilus-widgets/nautilus-preferences.c:
+	(nautilus_preferences_set_boolean),
+	(nautilus_preferences_set_enum), (nautilus_preferences_set):
+
+	Make sure the preference values are indeed different than the
+	currently stored ones.  Otherwise, bogus callbacks get emitted
+	causing innefecient (and unneeded!) things such as directories
+	reloading.
+	
 2000-05-28  Pavel Cisler  <pavel@eazel.com>
 
 	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):
