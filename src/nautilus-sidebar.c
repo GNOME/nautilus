@@ -718,7 +718,7 @@ receive_dropped_uri_list (NautilusSidebar *sidebar,
 	GtkWindow *window;
 	
 	uris = g_strsplit (selection_data->data, "\r\n", 0);
-	exactly_one = uris[0] != NULL && uris[1] == NULL;
+	exactly_one = uris[0] != NULL && (uris[1] == NULL || uris[1][0] == '\0');
 	window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (sidebar)));
 	
 	switch (hit_test (sidebar, x, y)) {

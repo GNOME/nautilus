@@ -1,3 +1,9 @@
+2002-04-05  David Emory Watson  <dwatson@cs.ucr.edu>
+
+	* src/nautilus-sidebar.c:
+	(receive_dropped_uri_list): now g_strsplit returns an additional empty
+	string when a delimiter is present at the end of the parameter string.
+
 2002-04-05  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-metafile.c:
@@ -187,12 +193,12 @@
 
 	* configure.in: Check for and include X libraries explicitly.
 
-2002-03-28  Dave Emory Watson  <dwatson@cs.ucr.edu>
+2002-03-28  David Emory Watson  <dwatson@cs.ucr.edu>
 
 	* libnautilus-private/nautilus-link.h: Changed the comment for
 	nautilus_link_local_is_special_link to be more clear.
 
-2002-03-27  Dave Emory Watson  <dwatson@cs.ucr.edu>
+2002-03-27  David Emory Watson  <dwatson@cs.ucr.edu>
 
         * libnautilus-private/nautilus-link.c,
         libnautilus-private/nautilus-link.h:
