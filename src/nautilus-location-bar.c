@@ -255,7 +255,7 @@ try_to_expand_path (GtkEditable *editable)
 {
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *current_file_info;
-	GnomeVFSDirectoryList *list;
+	GList *list, *element;
 	GnomeVFSURI *uri;
 	int base_length;
 	int current_path_length;
@@ -318,9 +318,9 @@ try_to_expand_path (GtkEditable *editable)
 	/* iterate through the directory, keeping the intersection of all the names that
 	   have the current basename as a prefix. */
 
-	current_file_info = gnome_vfs_directory_list_first(list);
 	expand_text = NULL;
-	while (current_file_info != NULL) {
+	for (element = list; element != NULL; element = element->next) {
+		current_file_info = element->data;
 		if (nautilus_str_has_prefix (current_file_info->name, base_name)) {
 			if (current_file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
 				expand_name = g_strconcat (current_file_info->name, "/", NULL);
@@ -330,7 +330,6 @@ try_to_expand_path (GtkEditable *editable)
 			expand_text = accumulate_name (expand_text, expand_name);
 			g_free (expand_name);
 		}
-		current_file_info = gnome_vfs_directory_list_next (list);
 	}
 	
 	/* if we've got something, add it to the entry */	
@@ -345,7 +344,7 @@ try_to_expand_path (GtkEditable *editable)
 	g_free (base_name);
 	g_free (current_path);
 	g_free (user_location);
-	gnome_vfs_directory_list_destroy (list);
+	gnome_vfs_file_info_list_free (list);	
 }
 
 /* Until we have a more elegant solution, this is how we figure out if

@@ -1,3 +1,37 @@
+2001-01-29  Pavel Cisler  <pavel@eazel.com>
+
+	reviewed by: Gene Z. Ragan <gzr@eazel.com>
+
+	Fixed 5781 (results of load_directory must be passed in chunks
+		instead of the entire list)
+	Fixed 1438 (use plain GList instead of GnomeVFSDirectoryList)
+
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_update):
+	* components/services/vault/command-line/vault-operations.c:
+	(vault_list):
+	* components/text/nautilus-text-view.c: (add_services_to_menu):
+	* libnautilus-extensions/nautilus-customization-data.c:
+	(nautilus_customization_data_new),
+	(nautilus_customization_data_get_next_element_for_display),
+	(nautilus_customization_data_destroy):
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(directory_load_callback), (directory_count_callback),
+	(start_monitoring_file_list), (directory_count_start),
+	(deep_count_callback), (deep_count_load), (mime_list_callback),
+	(mime_list_load):
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-preferences-item.c:
+	(add_icon_themes):
+	* src/file-manager/fm-directory-view.c:
+	* src/nautilus-link-set-window.c: (get_link_set_names):
+	* src/nautilus-location-bar.c: (try_to_expand_path):
+	* src/nautilus-theme-selector.c:
+	(populate_list_with_themes_from_directory):
+	Switch the uses of GnomeVFSDirectoryList to a simple GList.
+	Get rid of the sort and reverse arguments to the load_directory
+	calls.
+
 2001-01-29  Arik Devens  <arik@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>

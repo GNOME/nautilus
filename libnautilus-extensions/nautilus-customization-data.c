@@ -59,15 +59,14 @@ struct NautilusCustomizationData {
 	char *customization_name;
 	CustomizationReadingMode reading_mode;
 
-	GnomeVFSDirectoryList *public_file_list;	
-	GnomeVFSDirectoryList *private_file_list;
-	GnomeVFSDirectoryList *current_file_list;
+	GList *public_file_list;	
+	GList *private_file_list;
+	GList *current_file_list;
 
 	GHashTable *name_map_hash;
 	
 	GdkPixbuf *pattern_frame;
 
-	gboolean started_reading_current_file_list;
 	gboolean private_data_was_displayed;
 	gboolean data_is_for_a_menu;
 	int maximum_icon_height;
@@ -140,7 +139,6 @@ nautilus_customization_data_new (const char *customization_name,
 	}
 
 	
-	data->started_reading_current_file_list = FALSE;
 	data->private_data_was_displayed = FALSE;
 	data->data_is_for_a_menu = data_is_for_a_menu;
 	data->customization_name = g_strdup (customization_name);
@@ -166,21 +164,14 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 	GdkPixbuf *pixbuf;
 	GdkPixbuf *orig_pixbuf;
 
-	if (!data->started_reading_current_file_list) {
-		current_file_info = gnome_vfs_directory_list_first (data->current_file_list);
-		data->started_reading_current_file_list = TRUE;
-	}
-	else {
-		current_file_info = gnome_vfs_directory_list_next (data->current_file_list);
-	}
-	if (current_file_info == NULL) {
+	
+	if (data->current_file_list == NULL) {
 		if (data->reading_mode == READ_PUBLIC_CUSTOMIZATIONS) {
 			if (data->private_file_list == NULL) {
 				return GNOME_VFS_ERROR_EOF;
 			}
 			data->reading_mode = READ_PRIVATE_CUSTOMIZATIONS;
 			data->current_file_list = data->private_file_list;
-			data->started_reading_current_file_list = FALSE;
 			return nautilus_customization_data_get_next_element_for_display (data,
 											 emblem_name,
 											 pixmap_widget,
@@ -192,6 +183,11 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 	}
 
 	
+	current_file_info = data->current_file_list->data;
+	data->current_file_list = data->current_file_list->next;
+
+	g_assert (current_file_info != NULL);
+
 	if (!nautilus_istr_has_prefix (current_file_info->mime_type, "image/") ||
 	    nautilus_istr_has_prefix (current_file_info->name, ".")) {
 		
@@ -259,12 +255,9 @@ nautilus_customization_data_destroy (NautilusCustomizationData *data)
 		gdk_pixbuf_unref (data->pattern_frame);
 	}
 
-	if (data->public_file_list != NULL) {
-		gnome_vfs_directory_list_destroy (data->public_file_list);
-	}
-	if (data->private_file_list != NULL) {
-		gnome_vfs_directory_list_destroy (data->private_file_list);
-	}
+	gnome_vfs_file_info_list_free (data->public_file_list);
+	gnome_vfs_file_info_list_free (data->private_file_list);
+
 	if (data->name_map_hash != NULL) {
 		nautilus_g_hash_table_destroy_deep (data->name_map_hash);	
 	}

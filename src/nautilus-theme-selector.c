@@ -845,7 +845,7 @@ populate_list_with_themes_from_directory (NautilusThemeSelector *theme_selector,
 	char *theme_uri, *current_theme;
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *current_file_info;
-	GnomeVFSDirectoryList *list;
+	GList *list, *element;
 	
 	selected_index = -1;
 				
@@ -858,8 +858,8 @@ populate_list_with_themes_from_directory (NautilusThemeSelector *theme_selector,
 	current_theme = nautilus_theme_get_theme();
 
 	/* interate through the directory for each file */
-	current_file_info = gnome_vfs_directory_list_first(list);
-	while (current_file_info != NULL) {
+	for (element = list; element != NULL; element = element->next) {
+		current_file_info = element->data;
 		if ((current_file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) && (current_file_info->name[0] != '.')) {
 			if (has_image_file (directory_uri, current_file_info->name, "i-directory" )) {
 				if (!nautilus_strcmp (current_theme, current_file_info->name)) {
@@ -871,11 +871,9 @@ populate_list_with_themes_from_directory (NautilusThemeSelector *theme_selector,
 				*index += 1;
 			}
 		}
-			
-		current_file_info = gnome_vfs_directory_list_next (list);
 	}
 
-	gnome_vfs_directory_list_destroy (list);	
+	gnome_vfs_file_info_list_free (list);	
 	g_free (current_theme);
 	return selected_index;
 }

@@ -47,13 +47,14 @@ struct VaultOperation vault_operations[] = {
 };
 
 
-static GnomeVFSResult vault_list(GList *args, gchar *uri, gboolean debug, gchar **error_context) {
+static GnomeVFSResult
+vault_list(GList *args, gchar *uri, gboolean debug, gchar **error_context) {
 	GnomeVFSResult result;
-	GnomeVFSDirectoryList *list;
+	GList *list, *element;
 	GnomeVFSFileInfo *info;
 	gchar *text_uri;
 
-	if(args != NULL) {
+	if (args != NULL) {
 		text_uri = g_strconcat(uri, args->data, NULL);
 	} else {
 		text_uri = uri;
@@ -61,22 +62,20 @@ static GnomeVFSResult vault_list(GList *args, gchar *uri, gboolean debug, gchar 
 
 	result = gnome_vfs_directory_list_load (&list, text_uri, (GNOME_VFS_FILE_INFO_GET_MIME_TYPE | GNOME_VFS_FILE_INFO_FORCE_FAST_MIME_TYPE | GNOME_VFS_FILE_INFO_FOLLOW_LINKS), NULL);
 
-	if(result == GNOME_VFS_OK) {
-
-		info = gnome_vfs_directory_list_first(list);
-
-		while( info != NULL ) {
-			g_print("%s %10d %20s %s\n", 
-					info->type==GNOME_VFS_FILE_TYPE_DIRECTORY?"Folder":"File  ",
-					(gint)info->size,
-					info->mime_type,
-					info->name);
-
-			info = gnome_vfs_directory_list_next(list);
-		}
+	if (result != GNOME_VFS_OK) {
+		return result;
 	}
 
-	return result;
+	for (element = list; element != NULL; element = element->next) {
+		info = element->data;
+		g_print ("%s %10d %20s %s\n", 
+				info->type==GNOME_VFS_FILE_TYPE_DIRECTORY ? "Folder" : "File  ",
+				(gint) info->size,
+				info->mime_type,
+				info->name);
+	}
+
+	return GNOME_VFS_OK;
 }
 
 

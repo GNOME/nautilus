@@ -134,7 +134,7 @@ get_link_set_names (void)
 {
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *current_file_info;
-	GnomeVFSDirectoryList *list;
+	GList *list, *element;
 	char *link_set_uri, *link_set_name, *dot_pos;
 	GList *link_set_list;
 	
@@ -153,19 +153,17 @@ get_link_set_names (void)
 
 	/* FIXME bugzilla.eazel.com 5049: The names should really come from the names inside the files. */
 	/* build the list by iterating through the directory info */	
-	for (current_file_info = gnome_vfs_directory_list_first(list); current_file_info != NULL; 
-	     current_file_info = gnome_vfs_directory_list_next(list)) {
+	for (element = list; element != NULL; element = element->next) {
+		current_file_info = element->data;
 		link_set_name = g_strdup(current_file_info->name);
 			
 		/* strip file type suffix */
 		dot_pos = strrchr(link_set_name, '.');
 		if (dot_pos)
 			*dot_pos = '\0';
-			
-		link_set_list = g_list_prepend(link_set_list, link_set_name);
 	}
 
-	gnome_vfs_directory_list_destroy (list);	
+	gnome_vfs_file_info_list_free (list);	
 	g_free (link_set_uri);
 
 	return link_set_list;	

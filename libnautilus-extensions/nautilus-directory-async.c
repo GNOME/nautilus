@@ -1389,49 +1389,24 @@ directory_load_done (NautilusDirectory *directory,
 	dequeue_pending_idle_callback (directory);
 }
 
-static GnomeVFSDirectoryListPosition
-directory_list_get_next_position (GnomeVFSDirectoryList *list,
-				  GnomeVFSDirectoryListPosition position)
-{
-	if (position != GNOME_VFS_DIRECTORY_LIST_POSITION_NONE) {
-		return gnome_vfs_directory_list_position_next (position);
-	}
-	if (list == NULL) {
-		return GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
-	}
-	return gnome_vfs_directory_list_get_first_position (list);
-}
-
 static void
 directory_load_callback (GnomeVFSAsyncHandle *handle,
 			 GnomeVFSResult result,
-			 GnomeVFSDirectoryList *list,
+			 GList *list,
 			 guint entries_read,
 			 gpointer callback_data)
 {
 	NautilusDirectory *directory;
-	GnomeVFSDirectoryListPosition last_handled, p;
+	GList *element;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
 	g_assert (directory->details->directory_load_in_progress != NULL);
 	g_assert (directory->details->directory_load_in_progress == handle);
 
-	/* Move items from the list onto our pending queue.
-	 * We can't do this in the most straightforward way, becuse the position
-	 * for a gnome_vfs_directory_list does not have a way of representing one
-	 * past the end. So we must keep a position to the last item we handled
-	 * rather than keeping a position past the last item we handled.
-	 */
-	last_handled = directory->details->directory_load_list_last_handled;
-        p = last_handled;
-	while ((p = directory_list_get_next_position (list, p))
-	       != GNOME_VFS_DIRECTORY_LIST_POSITION_NONE) {
-		directory_load_one
-			(directory, gnome_vfs_directory_list_get (list, p));
-		last_handled = p;
+	for (element = list; element != NULL; element = element->next) {
+		directory_load_one (directory, element->data);
 	}
-	directory->details->directory_load_list_last_handled = last_handled;
 
 	if (nautilus_directory_file_list_length_reached (directory) ||
 	    result != GNOME_VFS_OK) {
@@ -1636,7 +1611,7 @@ nautilus_directory_cancel_callback_internal (NautilusDirectory *directory,
 static void
 directory_count_callback (GnomeVFSAsyncHandle *handle,
 			  GnomeVFSResult result,
-			  GnomeVFSDirectoryList *list,
+			  GList *list,
 			  guint entries_read,
 			  gpointer callback_data)
 {
@@ -2124,8 +2099,6 @@ start_monitoring_file_list (NautilusDirectory *directory)
 	mark_all_files_unconfirmed (directory);
 
 	g_assert (directory->details->uri != NULL);
-	directory->details->directory_load_list_last_handled
-		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
         directory->details->load_directory_file =
 		nautilus_directory_get_corresponding_file (directory);
 	directory->details->load_directory_file->details->loading_directory = TRUE;
@@ -2140,8 +2113,6 @@ start_monitoring_file_list (NautilusDirectory *directory)
 		 directory->details->uri,                         /* uri */
 		 (GNOME_VFS_FILE_INFO_GET_MIME_TYPE	          /* options */
 		  | GNOME_VFS_FILE_INFO_FOLLOW_LINKS),
-		 NULL, 					          /* sort_rules */
-		 FALSE, 				          /* reverse_order */
 		 GNOME_VFS_DIRECTORY_FILTER_NONE,                 /* filter_type */
 		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR            /* filter_options */
 		  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
@@ -2442,8 +2413,6 @@ directory_count_start (NautilusDirectory *directory)
 		(&directory->details->count_in_progress,
 		 uri,
 		 GNOME_VFS_FILE_INFO_DEFAULT,
-		 NULL,
-		 FALSE,
 		 GNOME_VFS_DIRECTORY_FILTER_NONE,
 		 get_filter_options_for_directory_count (),
 		 NULL,
@@ -2487,13 +2456,13 @@ deep_count_one (NautilusDirectory *directory,
 static void
 deep_count_callback (GnomeVFSAsyncHandle *handle,
 		     GnomeVFSResult result,
-		     GnomeVFSDirectoryList *list,
+		     GList *list,
 		     guint entries_read,
 		     gpointer callback_data)
 {
 	NautilusDirectory *directory;
 	NautilusFile *file;
-	GnomeVFSDirectoryListPosition last_handled, p;
+	GList *element;
 	char *uri;
 	gboolean done;
 
@@ -2502,19 +2471,9 @@ deep_count_callback (GnomeVFSAsyncHandle *handle,
 	file = directory->details->deep_count_file;
 	g_assert (NAUTILUS_IS_FILE (file));
 
-	/* We can't do this in the most straightforward way, becuse the position
-	 * for a gnome_vfs_directory_list does not have a way of representing one
-	 * past the end. So we must keep a position to the last item we handled
-	 * rather than keeping a position past the last item we handled.
-	 */
-	last_handled = directory->details->deep_count_last_handled;
-        p = last_handled;
-	while ((p = directory_list_get_next_position (list, p))
-	       != GNOME_VFS_DIRECTORY_LIST_POSITION_NONE) {
-		deep_count_one (directory, gnome_vfs_directory_list_get (list, p));
-		last_handled = p;
+	for (element = list; element != NULL; element = element->next) {
+		deep_count_one (directory, element->data);
 	}
-	directory->details->deep_count_last_handled = last_handled;
 
 	done = FALSE;
 	if (result != GNOME_VFS_OK) {
@@ -2554,8 +2513,6 @@ deep_count_load (NautilusDirectory *directory, const char *uri)
 {
 	g_assert (directory->details->deep_count_uri == NULL);
 	directory->details->deep_count_uri = g_strdup (uri);
-	directory->details->deep_count_last_handled
-		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
 #ifdef DEBUG_LOAD_DIRECTORY		
 	g_message ("load_directory called to get deep file count for %s", uri);
 #endif	
@@ -2563,8 +2520,6 @@ deep_count_load (NautilusDirectory *directory, const char *uri)
 		(&directory->details->deep_count_in_progress,
 		 uri,
 		 GNOME_VFS_FILE_INFO_DEFAULT,
-		 NULL,
-		 FALSE,
 		 GNOME_VFS_DIRECTORY_FILTER_NONE,
 		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR
 		  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
@@ -2633,32 +2588,22 @@ mime_list_one (NautilusDirectory *directory,
 static void
 mime_list_callback (GnomeVFSAsyncHandle *handle,
 		    GnomeVFSResult result,
-		    GnomeVFSDirectoryList *list,
+		    GList *list,
 		    guint entries_read,
 		    gpointer callback_data)
 {
 	NautilusDirectory *directory;
 	NautilusFile *file;
-	GnomeVFSDirectoryListPosition last_handled, p;
+	GList *element;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 	g_assert (directory->details->mime_list_in_progress == handle);
 	file = directory->details->mime_list_file;
 	g_assert (NAUTILUS_IS_FILE (file));
 
-	/* We can't do this in the most straightforward way, becuse the position
-	 * for a gnome_vfs_directory_list does not have a way of representing one
-	 * past the end. So we must keep a position to the last item we handled
-	 * rather than keeping a position past the last item we handled.
-	 */
-	last_handled = directory->details->mime_list_last_handled;
-        p = last_handled;
-	while ((p = directory_list_get_next_position (list, p))
-	       != GNOME_VFS_DIRECTORY_LIST_POSITION_NONE) {
-		mime_list_one (directory, gnome_vfs_directory_list_get (list, p));
-		last_handled = p;
+	for (element = list; element != NULL; element = element->next) {
+		mime_list_one (directory, element->data);
 	}
-	directory->details->mime_list_last_handled = last_handled;
 
 	if (result == GNOME_VFS_OK) {
 		return;
@@ -2696,8 +2641,6 @@ mime_list_callback (GnomeVFSAsyncHandle *handle,
 static void
 mime_list_load (NautilusDirectory *directory, const char *uri)
 {
-	directory->details->mime_list_last_handled
-		= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
 	directory->details->mime_list_hash = istr_set_new ();
 #ifdef DEBUG_LOAD_DIRECTORY		
 	g_message ("load_directory called to get MIME list of %s", uri);
@@ -2706,8 +2649,6 @@ mime_list_load (NautilusDirectory *directory, const char *uri)
 		(&directory->details->mime_list_in_progress,
 		 uri,
 		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE,
-		 NULL,
-		 FALSE,
 		 GNOME_VFS_DIRECTORY_FILTER_NONE,
 		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR
 		  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),

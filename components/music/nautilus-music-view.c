@@ -1684,7 +1684,7 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 {
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *current_file_info;
-	GnomeVFSDirectoryList *list;
+	GList *list, *element;
 	
         char *uri;
 	char *clist_entry[10];
@@ -1725,11 +1725,11 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 		return;
 	}
 	
-	current_file_info = gnome_vfs_directory_list_first (list);
-	while (current_file_info != NULL) {
+	for (element = list; element != NULL; element = element->next) {
+		current_file_info = element->data;
+
 		/* skip invisible files, for now */
 		if (current_file_info->name[0] == '.') {
-                        current_file_info = gnome_vfs_directory_list_next(list);
                         continue;
                 }
 		
@@ -1757,9 +1757,8 @@ nautilus_music_view_update (NautilusMusicView *music_view)
 		        g_free (path_uri);
 		}
 		
-		current_file_info = gnome_vfs_directory_list_next(list);
 	}
-	gnome_vfs_directory_list_destroy(list);
+	gnome_vfs_file_info_list_free (list);	
 	
 	/* populate the clist */	
 	gtk_clist_clear (GTK_CLIST (music_view->details->song_list));

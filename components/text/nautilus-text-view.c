@@ -621,7 +621,7 @@ static void
 add_services_to_menu (NautilusTextView *text_view, BonoboControl *control, const char *services_directory, int* index)
 {
 	GnomeVFSResult result;
-	GnomeVFSDirectoryList *file_list;	
+	GList *file_list, *element;	
 	GnomeVFSFileInfo *current_file_info;
 	char *services_uri, *service_xml_path;
 	
@@ -634,8 +634,9 @@ add_services_to_menu (NautilusTextView *text_view, BonoboControl *control, const
 	}
 
 	/* iterate through the directory */
-	current_file_info = gnome_vfs_directory_list_first (file_list);
-	while (current_file_info != NULL) {
+	for (element = file_list; element != NULL; element = element->next) {
+		current_file_info = element->data;
+
 		if (*index >= MAX_SERVICE_ITEMS) {
 			break;
 		}
@@ -645,12 +646,10 @@ add_services_to_menu (NautilusTextView *text_view, BonoboControl *control, const
 			add_one_service (text_view, control, service_xml_path, index);
 			g_free (service_xml_path);
 		}
-			
-		current_file_info = gnome_vfs_directory_list_next (file_list);
 	}
 	
 	g_free (services_uri);
-	gnome_vfs_directory_list_destroy (file_list);	
+	gnome_vfs_file_info_list_free (file_list);	
 
 }
 

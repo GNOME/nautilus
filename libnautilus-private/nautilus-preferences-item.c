@@ -578,7 +578,7 @@ add_icon_themes(NautilusStringList *theme_list, char *required_file)
 	char *directory_uri;
 	GnomeVFSResult result;
 	GnomeVFSFileInfo *current_file_info;
-	GnomeVFSDirectoryList *list;
+	GList *list, *element;
 	char *pixmap_directory;
 		
 	pixmap_directory = nautilus_get_pixmap_directory ();
@@ -595,17 +595,17 @@ add_icon_themes(NautilusStringList *theme_list, char *required_file)
 	}
 
 	/* interate through the directory for each file */
-	current_file_info = gnome_vfs_directory_list_first(list);
-	while (current_file_info != NULL) {
+	for (element = list; element != NULL; element = element->next) {
+		current_file_info = element->data;
 		if ((current_file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) &&
-			(current_file_info->name[0] != '.'))
+			(current_file_info->name[0] != '.')) {
 			if (has_image_file(directory_uri, current_file_info->name, required_file))
-				nautilus_string_list_insert (theme_list, current_file_info->name);	
-		current_file_info = gnome_vfs_directory_list_next(list);
+				nautilus_string_list_insert (theme_list, current_file_info->name);
+		}
 	}
 	
 	g_free(directory_uri);
-	gnome_vfs_directory_list_destroy(list);
+	gnome_vfs_file_info_list_free (list);	
 }
 
 static void

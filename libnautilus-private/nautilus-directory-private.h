@@ -72,7 +72,6 @@ struct NautilusDirectoryDetails
 	gboolean directory_loaded;
 	gboolean directory_loaded_sent_notification;
 	GnomeVFSAsyncHandle *directory_load_in_progress;
-	GnomeVFSDirectoryListPosition directory_load_list_last_handled;
 
 	GList *pending_file_info; /* list of GnomeVFSFileInfo's that are pending */
 	int confirmed_file_count;
@@ -91,12 +90,10 @@ struct NautilusDirectoryDetails
 	NautilusFile *deep_count_file;
 	GnomeVFSAsyncHandle *deep_count_in_progress;
 	char *deep_count_uri;
-	GnomeVFSDirectoryListPosition deep_count_last_handled;
 	GList *deep_count_subdirectories;
 
 	NautilusFile *mime_list_file;
 	GnomeVFSAsyncHandle *mime_list_in_progress;
-	GnomeVFSDirectoryListPosition mime_list_last_handled;
 	GHashTable *mime_list_hash;
 
 	NautilusFile *get_info_file;
