@@ -1,10 +1,12 @@
 #include <libnautilus/libnautilus.h>
+#include <gnome.h>
 #include "hyperbola-filefmt.h"
 #include <gtk/gtk.h>
 #include <string.h>
 #include <limits.h>
+#include <gnome-xml/parser.h>
+#include <dirent.h>
 
-#if 0
 typedef struct {
   NautilusViewFrame *view_frame;
 
@@ -24,79 +26,81 @@ typedef struct {
   gboolean shown : 1;
 } IndexItem;
 
+typedef struct {
+  HyperbolaNavigationIndex *hni;
+  char *words[50];
+  int nwords;
+} CListCreationInfo;
+
+static gint
+hyperbola_navigation_index_show_item(const char *key, IndexItem *ii, CListCreationInfo *cci)
+{
+  int rownum, indent;
+  char rowtext[512], *textptr;
+  HyperbolaNavigationIndex *hni = cci->hni;
+
+  if(ii->type != PRIMARY)
+    {
+      g_warning("Subitems not yet handled!");
+      return 0;
+    }
+
+  switch(ii->type)
+    {
+    case PRIMARY:
+      indent = 0;
+      break;
+    case SEEALSO:
+    case SEE:
+    case SECONDARY:
+      indent = 2;
+      break;
+    default:
+      g_assert_not_reached();
+      break;
+    }
+
+  g_snprintf(rowtext, sizeof(rowtext), "%*s%s", indent * 2, "", ii->text); /* Lame way of indenting entries */
+  textptr = rowtext;
+  rownum = gtk_clist_append(GTK_CLIST(hni->clist), &textptr);
+  gtk_clist_set_row_data(GTK_CLIST(hni->clist), rownum, ii);
+
+  if(cci->nwords) /* highlight this row as a match */
+    {
+      GdkColor c;
+
+      c.red = c.green = 65535;
+      c.blue = 20000;
+      gdk_color_alloc(gdk_rgb_get_cmap(), &c);
+      gtk_clist_set_background(GTK_CLIST(hni->clist), rownum, &c);
+    }
+
+  return 0;
+}
+
 static void
 hyperbola_navigation_index_update_clist(HyperbolaNavigationIndex *hni)
 {
+  CListCreationInfo cci;
   char *stxt, *tmp_stxt;
-  char *words[100];
-  int nwords;
   char *ctmp = NULL;
   int tmp_len;
-  int i;
 
   stxt = gtk_entry_get_text(GTK_ENTRY(hni->ent));
+
+  memset(&cci, 0, sizeof(cci));
+  cci.hni = hni;
 
   tmp_len = strlen(stxt)+1;
   tmp_stxt = alloca(tmp_len);
   memcpy(tmp_stxt, stxt, tmp_len);
-  for(nwords = 0; (ctmp = strtok(tmp_stxt, ", \t")) && nwords < sizeof(words)/sizeof(words[0]); nwords++)
-    words[nwords] = ctmp;
+  for(cci.nwords = 0; (ctmp = strtok(tmp_stxt, ", \t")) && cci.nwords < sizeof(cci.words)/sizeof(cci.words[0]); cci.nwords++)
+    cci.words[cci.nwords] = ctmp;
 
   gtk_clist_freeze(GTK_CLIST(hni->clist));
   gtk_clist_clear(GTK_CLIST(hni->clist));
 
-  for(i = 0; i < hni->items->len; i++)
-    {
-      int j, rownum, uplevel;
-      char rowtext[512];
-      IndexItem *ii = g_ptr_array_index(hni->items, i);
-
-      for(j = 0; j < nwords; j++)
-	{
-	  if(strstr(ii->text, words[i]))
-	    break;
-	}
-
-      ii->shown = !(nwords && j >= nwords);
-
-      if(!ii->shown)
-	continue;
-
-      j = i;
-      for(uplevel = ii->indent - 1; uplevel >= 0; uplevel--)
-	{
-	  IndexItem *previi;
-
-	  for(; j >= 0; j--)
-	    {
-	      previi = &g_array_index(hni->items, IndexItem, j);
-	      if(previi->indent == uplevel)
-		break;
-	    }
-
-	  if(j < 0)
-	    break;
-
-	  if(!previi->shown)
-	    {
-	      /* Figure out the right place to insert the row */
-	    }
-	}
-
-      g_snprintf(rowtext, sizeof(rowtext), "%*s%s", ii->indent * 2, "", ii->text); /* Lame way of indenting entries */
-      rownum = gtk_clist_append(GTK_CLIST(hni->clist), (char **)&rowtext);
-      gtk_clist_set_row_data(GTK_CLIST(hni->clist), rownum, ii);
-
-      if(nwords) /* highlight this row as a match */
-	{
-	  GdkColor c;
-
-	  c.red = c.green = 65535;
-	  c.blue = 20000;
-	  gdk_color_alloc(gdk_rgb_get_cmap(), &c);
-	  gtk_clist_set_background(GTK_CLIST(hni->clist), rownum, &c);
-	}
-    }
+  g_tree_traverse(hni->all_items, (GTraverseFunc)hyperbola_navigation_index_show_item, G_IN_ORDER, &cci);
 
   gtk_clist_thaw(GTK_CLIST(hni->clist));
 }
@@ -167,16 +171,19 @@ start_element(SAXParseInfo *spi,
   if(!strcasecmp(name, "indexterm"))
     {
       int i;
-      char *ctmp;
 
       for(i = 0; attrs[i]; i++)
 	{
-	  if(!strncasecmp(attrs[i], "id=", 3))
-	    break;
+	  if(!strcasecmp(attrs[i], "id"))
+	    {
+	      i++;
+	      break;
+	    }
 	}
 
       g_return_if_fail(attrs[i]);
 
+      spi->idx_ref = g_strdup(attrs[i]);
       spi->in_term++;
       g_string_assign(spi->sub_text, "");
       for(i = PRIMARY; i < NONE; i++)
@@ -215,15 +222,10 @@ characters (SAXParseInfo *spi,
 	    const gchar *chars,
 	    int len)
 {
-  g_return_if_fail(spi->sub_type != NONE);
+  if(spi->sub_type == NONE)
+    return;
 
   g_string_sprintfa(spi->sub_text, "%.*s", len, chars);
-}
-
-static gint
-index_item_compare(IndexItem *i1, IndexItem *i2)
-{
-  return strcasecmp(i1->text, i2->text);
 }
 
 static void
@@ -257,11 +259,11 @@ end_element (SAXParseInfo *spi,
 	      parent_ii = g_new0(IndexItem, 1);
 	      parent_ii->type = PRIMARY;
 	      parent_ii->text = g_strdup(spi->stinfo[PRIMARY]);
-	      g_tree_insert(spi->idx->items_by_text, parent_ii->text, parent_ii);
+	      g_tree_insert(spi->idx->all_items, parent_ii->text, parent_ii);
 	    }
 
 	  if(!parent_ii->subitems)
-	    parent_ii->subitems = g_tree_new(strcasecmp);
+	    parent_ii->subitems = g_tree_new((GCompareFunc)strcasecmp);
 	  parent_tree = parent_ii->subitems;
 
 	  it = SECONDARY;
@@ -281,7 +283,7 @@ end_element (SAXParseInfo *spi,
 		}
 
 	      if(!ii->subitems)
-		ii->subitems = g_tree_new(strcasecmp);
+		ii->subitems = g_tree_new((GCompareFunc)strcasecmp);
 	      parent_ii = ii;
 	      parent_tree = parent_ii->subitems;
 
@@ -311,6 +313,7 @@ end_element (SAXParseInfo *spi,
 	  /* Also insert a top-level node that gives info on this secondary node */
 	  
 	  char buf[512];
+	  char *txt;
 
 	  g_snprintf(buf, sizeof(buf), "%s, %s",
 		     spi->stinfo[SECONDARY],
@@ -338,7 +341,7 @@ end_element (SAXParseInfo *spi,
 	  if(!ii)
 	    {
 	      ii = g_new0(IndexItem, 1);
-	      ii->text = g_strdup(buf);
+	      ii->text = g_strdup(txt);
 	      g_tree_insert(parent_tree, ii->text, ii);
 	      ii->type = it;
 	    }
@@ -353,6 +356,7 @@ end_element (SAXParseInfo *spi,
 	  g_free(spi->stinfo[i]);
 	  spi->stinfo[i] = NULL;
 	}
+      g_free(spi->idx_ref); spi->idx_ref = NULL;
 
       return;
     }
@@ -447,7 +451,7 @@ hyperbola_navigation_index_read_app(HyperbolaNavigationIndex *idx, const char *t
 
   memset(&spi, 0, sizeof(spi));
   spi.idx = idx;
-  spi.appname = appname;
+  spi.appname = (char *)appname;
   spi.sub_text = g_string_new(NULL);
 
   dirh = opendir(topdir);
@@ -459,13 +463,15 @@ hyperbola_navigation_index_read_app(HyperbolaNavigationIndex *idx, const char *t
       char *ctmp;
       char buf[PATH_MAX];
       ctmp = strrchr(dent->d_name, '.');
-      if(!ctmp || strcmp(ctmp, '.sgml'))
+      if(!ctmp || strcmp(ctmp, ".sgml"))
 	continue;
 
       g_snprintf(buf, sizeof(buf), "%s/%s", topdir, dent->d_name);
+      g_message("Let's try %s", buf);
       *ctmp = '\0';
       spi.filename = dent->d_name;
-      xmlSAXUserParseFile(sax, &spi, buf);
+
+      xmlSAXUserParseFile(&sax, &spi, buf);
     }
   closedir(dirh);
 
@@ -495,7 +501,7 @@ hyperbola_navigation_index_read(HyperbolaNavigationIndex *idx, const char *topdi
 
       for(ltmp = langlist; ltmp; ltmp = ltmp->next)
 	{
-	  g_snprintf(buf, sizeof(buf), "%s/%s/%s", topdir, dent->d_name, ltmp->data);
+	  g_snprintf(buf, sizeof(buf), "%s/%s/%s", topdir, dent->d_name, (char *)ltmp->data);
 	  if(g_file_test(buf, G_FILE_TEST_ISDIR))
 	    break;
 	}
@@ -508,23 +514,23 @@ hyperbola_navigation_index_read(HyperbolaNavigationIndex *idx, const char *topdi
 
   closedir(dirh);
 }
-#endif
 
 BonoboObject *hyperbola_navigation_index_new(void)
 {
-#if 0
   HyperbolaNavigationIndex *hni;
-  GtkWidget *wtmp;
+  GtkWidget *wtmp, *vbox;
 
   hni = g_new0(HyperbolaNavigationIndex, 1);
-  hni->items = g_array_new(FALSE, FALSE, sizeof(IndexItem));
+  hni->all_items = g_tree_new((GCompareFunc)strcasecmp);
 
-  hyperbola_navigation_index_read();
+  hyperbola_navigation_index_read(hni, "/gnome/share/gnome/help");
+
+  vbox = gtk_vbox_new(FALSE, GNOME_PAD);
 
   hni->ent = gtk_entry_new();
   gtk_signal_connect(GTK_OBJECT(hni->ent), "changed", hyperbola_navigation_index_ent_changed, hni);
   gtk_signal_connect(GTK_OBJECT(hni->ent), "activate", hyperbola_navigation_index_ent_activate, hni);
-  gtk_widget_show(hni->ent);
+  gtk_container_add(GTK_CONTAINER(vbox), hni->ent);
 
   hni->clist = gtk_clist_new(1);
   gtk_clist_freeze(GTK_CLIST(hni->clist));
@@ -537,17 +543,16 @@ BonoboObject *hyperbola_navigation_index_new(void)
   gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wtmp), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
   gtk_container_add(GTK_CONTAINER(wtmp), hni->clist);
+  gtk_container_add(GTK_CONTAINER(vbox), wtmp);
+
   hyperbola_navigation_index_update_clist(hni);
+
   gtk_clist_columns_autosize(GTK_CLIST(hni->clist));
   gtk_clist_thaw(GTK_CLIST(hni->clist));
-  gtk_widget_show(hni->clist);
-  gtk_widget_show(wtmp);
+  gtk_widget_show_all(vbox);
 
-  hni->view_frame = NAUTILUS_VIEW_FRAME (nautilus_meta_view_frame_new (wtmp));
+  hni->view_frame = NAUTILUS_VIEW_FRAME (nautilus_meta_view_frame_new (vbox));
   nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(hni->view_frame), _("Help Index"));
 
   return BONOBO_OBJECT (hni->view_frame);
-#else
-  return NULL;
-#endif
 }
