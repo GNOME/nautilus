@@ -391,11 +391,11 @@ construct_alternate_metafile_uri (GnomeVFSURI *uri)
 	/* Ensure that the metafiles directory exists. */
 	user_directory = nautilus_get_user_directory ();
 	nautilus_directory_uri = gnome_vfs_uri_new (user_directory);
-	g_free (user_directory);
+//	g_free (user_directory);
 
 	metafiles_directory_uri = gnome_vfs_uri_append_file_name (nautilus_directory_uri,
 								  METAFILES_DIRECTORY_NAME);
-	gnome_vfs_uri_unref (nautilus_directory_uri);
+//	gnome_vfs_uri_unref (nautilus_directory_uri);
 	result = nautilus_make_directory_and_parents (metafiles_directory_uri,
 						      METAFILES_DIRECTORY_PERMISSIONS);
 	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILE_EXISTS) {

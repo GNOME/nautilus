@@ -929,7 +929,7 @@ nautilus_scalable_icon_equal (gconstpointer a,
 NautilusScalableIcon *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifier, gboolean anti_aliased)
 {
-	char *uri, *file_uri, *image_uri, *icon_name, *mime_type, *top_left_text, *mount_type;
+	char *uri, *file_uri, *image_uri, *icon_name, *mime_type, *top_left_text;
  	NautilusScalableIcon *scalable_icon;
 	
 	if (file == NULL) {
@@ -943,9 +943,11 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 	/* if the file is an image, either use the image itself as the icon if it's small enough,
 	   or use a thumbnail if one exists.  If a thumbnail is required, but does not yet exist,
 	   put an entry on the thumbnail queue so we eventually make one */
-	 
+
+	
+	
 	/* also, dont make thumbnails for images in the thumbnails directory */  
-	if (uri == NULL) {
+	if (uri == NULL) {		
 		mime_type = nautilus_file_get_mime_type (file);
 		if (nautilus_istr_has_prefix (mime_type, "image/")) {
 			if (nautilus_file_get_size (file) < SELF_THUMBNAIL_SIZE_THRESHOLD) {
@@ -954,12 +956,12 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 				uri = nautilus_icon_factory_get_thumbnail_uri (file);
 			}
 		}
-		g_free (mime_type);
+		g_free (mime_type);		
 	}
 	
 	/* handle nautilus link xml files, which may specify their own image */	
 	icon_name = NULL;
-	if (nautilus_link_is_link_file_name (file_uri)) {
+	if (nautilus_link_is_link_file (file)) {	
 		image_uri = nautilus_link_get_image_uri (file_uri);
 		if (image_uri != NULL) {
 			if (nautilus_istr_has_prefix (image_uri, "file://"))
@@ -969,19 +971,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 			}
 		}
 	}
-
-	/* Handle mount points */
-	mount_type = gtk_object_get_data ( GTK_OBJECT (file), "mount_type");
-	if (mount_type != NULL) {
-		if (strcmp (mount_type, "cdrom") == 0) {
-			icon_name = g_strdup ("i-cdrom.png");
-		} else if (strcmp (mount_type, "floppy") == 0) {
-			icon_name = g_strdup ("i-floppy.png");
-		} else {
-			icon_name = g_strdup ("i-blockdev.png");
-		}
-	}
-		
+			
 	/* handle SVG files */
 	if (uri == NULL && nautilus_file_is_mime_type (file, "image/svg")) {
 		uri = g_strdup (file_uri);

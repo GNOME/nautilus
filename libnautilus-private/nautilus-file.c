@@ -3183,7 +3183,7 @@ nautilus_file_is_directory (NautilusFile *file)
 gboolean
 nautilus_file_contains_text (NautilusFile *file)
 {
-	char *mime_type, *name;
+	char *mime_type;
 	gboolean contains_text;
 	
 	if (file == NULL) {
@@ -3193,16 +3193,14 @@ nautilus_file_contains_text (NautilusFile *file)
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 	
 	mime_type = nautilus_file_get_mime_type (file);
-	name = nautilus_file_get_name (file);
-	
+		
 	/* see if it's a nautilus link xml file - if so, see if we need to handle specially */
 	contains_text = (nautilus_istr_has_prefix (mime_type, "text/")
 			 || (mime_type == NULL && nautilus_file_get_file_type (file)
 			     == GNOME_VFS_FILE_TYPE_REGULAR))
-		&& !nautilus_link_is_link_file_name (name);
+		&& !nautilus_link_is_link_file (file);
 	
 	g_free (mime_type);
-	g_free (name);
 	
 	return contains_text;
 }
@@ -3479,7 +3477,7 @@ nautilus_file_activate_custom (NautilusFile *file, gboolean use_new_window)
 	
 	/* See if it's a nautilus link xml file - if so, see if we need to handle specially. */
 	uri = nautilus_file_get_uri (file);
-	if (nautilus_link_is_link_file_name (uri)) {
+	if (nautilus_link_is_link_file (file)) {
 		old_uri = uri;
 		uri = nautilus_link_get_link_uri (uri);
 		g_free (old_uri);

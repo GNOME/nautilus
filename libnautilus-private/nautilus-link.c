@@ -49,9 +49,17 @@ typedef struct {
 /* given a uri, returns TRUE if it's a link file */
 
 gboolean
-nautilus_link_is_link_file_name (const char *file_uri)
+nautilus_link_is_link_file (NautilusFile *file)
 {
-	return nautilus_str_has_suffix (file_uri, LINK_SUFFIX);
+	char *mime_type;
+	
+	mime_type = nautilus_file_get_mime_type (file);
+
+	if (strcasecmp (mime_type, "application/x-nautilus-link") == 0) {
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 static char *

@@ -24,39 +24,8 @@
 */
 
 #include <config.h>
+
 #include "fm-desktop-icon-view.h"
-
-
-#if 0
-/* The folowing is an ugly hack to get nautilus to compile 
-   with -Werror with recent 2.2.x kernels ( at least
-   kernel >= 2.2.16). Evil Kernel Hackers is my new moto: EKH.
-   If your kernel is more recent than 2.2.16 and this is not 
-   necessary, please, let me know.
-   -- mathieu@eazel.com
-*/
-
-#include <linux/version-up.h>
-#if LINUX_VERSION_CODE >= KERNEL_VERSION (2,2,16)
-#include <linux/types.h>
-#define _LINUX_BYTEORDER_SWAB_H
-#include <asm/byteorder.h>
-#undef _LINUX_BYTEORDER_SWAB_H
-extern __inline__ __const__ __u16 __fswab16(__u16 x);
-extern __inline__ __u16 __swab16p(__u16 *x);
-extern __inline__ void __swab16s(__u16 *addr);
-extern __inline__ __const__ __u32 __fswab32(__u32 x);
-extern __inline__ __u32 __swab32p(__u32 *x);
-extern __inline__ void __swab32s(__u32 *addr);
-#ifdef __BYTEORDER_HAS_U64__ 
-extern __inline__ __const__ __u64 __fswab64(__u64 x);
-extern __inline__ __u64 __swab64p(__u64 *x);
-extern __inline__ void __swab64s(__u64 *addr);
-#endif /* __BYTEORDER_HAS_U64__ */
-#endif /* LINUX_VERSION_CODE > KERNEL_VERSION (2,2,12) */
-#include <linux/iso_fs.h>
-#include <linux/cdrom.h>
-#endif
 
 #include "fm-cdrom-extensions.h"
 #include "fm-icon-view.h"
@@ -69,7 +38,9 @@ extern __inline__ void __swab64s(__u64 *addr);
 #include <gnome.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs.h>
+#include <libnautilus-extensions/nautilus-directory-private.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <mntent.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
@@ -149,7 +120,7 @@ static void     fm_desktop_icon_view_set_directory_auto_layout   (FMIconView *ic
 
 static void		find_mount_devices 			 (FMDesktopIconView 	*icon_view, 
 								  const char 		*fstab_path);
-static GnomeVFSResult	make_mount_link 			 (const char 		*uri, 
+static GnomeVFSResult	make_desktop_link 			 (const char 		*uri, 
 								  const char 		*target_uri);
 static void		remove_mount_link 			 (DeviceInfo 		*device);								  
 static void		get_iso9660_volume_name 		 (DeviceInfo 		*device);
@@ -158,6 +129,7 @@ static void		remove_mount_symlinks 			 (DeviceInfo 		*device,
 								  FMDesktopIconView 	*icon_view);
 static void		free_device_info 			 (DeviceInfo 		*device, 
 								  FMDesktopIconView 	*icon_view);
+static void		place_home_directory 			 (FMDesktopIconView 	*icon_view);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView, fm_desktop_icon_view, FM_TYPE_ICON_VIEW);
@@ -228,6 +200,9 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	desktop_icon_view->details->devices_by_fsname = g_hash_table_new (g_str_hash, g_str_equal);
 	desktop_icon_view->details->devices = NULL;
 
+	/* Setup home directory link */
+	place_home_directory (desktop_icon_view);
+	
 	/* Check for mountable devices */
 	find_mount_devices (desktop_icon_view, _PATH_MNTTAB);
 }
@@ -401,14 +376,16 @@ typedef gboolean (*ChangeFunc)(FMDesktopIconView *view, DeviceInfo *device);
 static void
 mount_device_mount (FMDesktopIconView *view, DeviceInfo *device)
 {
-	char *target_uri, *view_uri;
+	char *target_uri, *desktop_uri;
 	NautilusIconContainer *container;
 	GnomeVFSResult result;
 	int index;
+	GList *new_files_list;
 
+	new_files_list = NULL;
 	container = get_icon_container (view);
 
-	view_uri = fm_directory_view_get_uri (FM_DIRECTORY_VIEW (view));
+	desktop_uri = nautilus_get_desktop_directory ();
 	target_uri = g_strdup_printf ("file://%s/", device->mount_path);
 
 	/* Make volume name link "nice" */
@@ -439,20 +416,23 @@ mount_device_mount (FMDesktopIconView *view, DeviceInfo *device)
 	remove_mount_link (device);
 
 	/* Create link */
-	device->link_uri = g_strdup_printf ("%s/%s", view_uri, device->volume_name);
+	device->link_uri = g_strdup_printf ("%s/%s", desktop_uri, device->volume_name);
 
-	result = make_mount_link (device->link_uri, target_uri);
+	result = make_desktop_link (device->link_uri, target_uri);
 	if (result == GNOME_VFS_OK) {
-		device->file = nautilus_file_get (device->link_uri);
-		gtk_object_set_data (GTK_OBJECT (device->file), "mount_type", device->mount_type);	
-		nautilus_icon_container_add (container, NAUTILUS_ICON_CONTAINER_ICON_DATA (device->file));
+		new_files_list = g_list_prepend (new_files_list, device->link_uri);
+		nautilus_directory_notify_files_added (new_files_list);
+		g_list_free (new_files_list);
+		//device->file = nautilus_file_get (device->link_uri);
+		//gtk_object_set_data (GTK_OBJECT (device->file), "mount_type", device->mount_type);	
+		//nautilus_icon_container_add (container, NAUTILUS_ICON_CONTAINER_ICON_DATA (device->file));
 	} else {
 		g_message ("Unable to create mount link: %s", gnome_vfs_result_to_string (result));
 		g_free (device->link_uri);
 		device->link_uri = NULL;
 	}
 	
-	g_free (view_uri);
+	g_free (desktop_uri);
 	g_free (target_uri);
 	
 	device->did_mount = TRUE;
@@ -664,7 +644,7 @@ my_g_check_permissions (gchar *filename, int mode)
 }
 
 static gboolean
-mouunt_device_floppy_add (DeviceInfo *device)
+mount_device_floppy_add (DeviceInfo *device)
 {
 	if (my_g_check_permissions (device->fsname, R_OK)) {
 		return FALSE;
@@ -780,7 +760,7 @@ add_mount_device (FMDesktopIconView *icon_view, struct mntent *ent)
     		mounted = mount_device_iso9660_add (icon_view, newdev); 
 	} else if (strncmp (ent->mnt_fsname, "/dev/fd", strlen("/dev/fd")) == 0) {
 		newdev->mount_type = g_strdup ("floppy");
-		mounted = mouunt_device_floppy_add (newdev);
+		mounted = mount_device_floppy_add (newdev);
 	} else if (strcmp (ent->mnt_type, MOUNT_TYPE_EXT2) == 0) {
 		newdev->mount_type = g_strdup ("blockdevice");
 		mounted = mount_device_ext2_add (newdev);
@@ -881,7 +861,7 @@ find_mount_devices (FMDesktopIconView *icon_view, const char *fstab_path)
 
 
 static GnomeVFSResult
-make_mount_link (const char *uri, const char *target_uri)
+make_desktop_link (const char *uri, const char *target_uri)
 {
 	GnomeVFSURI *real_uri, *real_uri_target;
 	GnomeVFSResult result;
@@ -984,4 +964,33 @@ static void
 get_ext2_volume_name (DeviceInfo *device)
 {
 	device->volume_name = g_strdup ("Ext2 Volume");
+}
+
+/* place_home_directory
+ * 
+ * Add an icon representing the user's home directory on the desktop.
+ * Create if necessary
+ */
+static void
+place_home_directory (FMDesktopIconView *icon_view)
+{
+	char *user_path, *desktop_uri, *user_homelink_uri;
+	GnomeVFSResult result;
+	GnomeVFSFileInfo info;
+	
+	user_path = g_get_home_dir ();
+	desktop_uri = g_strdup ("/home/gzr/.desktop");
+	user_homelink_uri = g_strdup_printf ("%s/%s", desktop_uri, "Happy World");
+	
+	result = gnome_vfs_get_file_info (user_homelink_uri, &info, 0);
+	if (result != GNOME_VFS_OK) {
+		/* There was no link file.  Create it and add it to the desktop view */
+		result = make_desktop_link (user_homelink_uri, user_path);
+		if (result != GNOME_VFS_OK) {
+			g_message ("Unable to create user home link: %s", gnome_vfs_result_to_string (result));
+		}
+	}
+	
+	g_free (desktop_uri);
+	g_free (user_homelink_uri);
 }

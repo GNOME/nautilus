@@ -59,7 +59,7 @@ link_set_path_name (const char *directory_path, const char *name)
 		path_start = directory_path + 7;
 	else
 		path_start = directory_path;
-	return g_strdup_printf ("%s/%s.link", path_start, name);
+	return g_strdup_printf ("%s/%s", path_start, name);
 }
 
 /* routine to create a new .link file in the specified directory */
@@ -77,12 +77,17 @@ create_new_link (const char *directory_path, const char *name, const char *image
 	/* add the root node to the output document */
 	root_node = xmlNewDocNode (output_document, NULL, "NAUTILUS_OBJECT", NULL);
 	xmlDocSetRootElement (output_document, root_node);
-	
+
+	/* Add mime magic string so that the mime sniffer can recognize us.
+	 * Note: The value of the tag has no meaning.  */
+	xmlSetProp (root_node, "NAUTILUS_LINK", "Nautilus Link");
+
+	/* Add link and custom icon tags */
 	xmlSetProp (root_node, "CUSTOM_ICON", image);
 	xmlSetProp (root_node, "LINK", uri);
 	
 	/* all done, so save the xml document as a link file */
-	file_name = link_set_path_name(directory_path, name);
+	file_name = link_set_path_name (directory_path, name);
 	result = xmlSaveFile (file_name, output_document);
 	g_free (file_name);
 	
@@ -187,7 +192,7 @@ nautilus_link_set_is_installed (const char *directory_path, const char *link_set
 	     node != NULL; node = node->next) {
 		if (strcmp (node->name, "link") == 0) {
 			link_name = xmlGetProp (node, "name");
-			file_name = link_set_path_name(directory_path, link_name);
+			file_name = link_set_path_name (directory_path, link_name);
 			if (!g_file_exists(file_name)) {
 				g_free(file_name);
 				return FALSE;
@@ -222,7 +227,7 @@ nautilus_link_set_remove (const char *directory_path, const char *link_set_name)
 		if (strcmp (node->name, "link") == 0) {
 			link_name = xmlGetProp (node, "name");
 			/* formulate the link file path name */
-			file_name = link_set_path_name(directory_path, link_name); 
+			file_name = link_set_path_name (directory_path, link_name); 
 			/* delete the file */
 			unlink(file_name);
 			g_free(link_name);

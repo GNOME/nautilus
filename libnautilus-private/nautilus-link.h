@@ -27,9 +27,10 @@
 #define NAUTILUS_LINK_H
 
 #include <glib.h>
+#include "nautilus-file.h"
 
 /* given a uri, returns TRUE if it's a link file */
-gboolean nautilus_link_is_link_file_name                (const char *file_uri);
+gboolean nautilus_link_is_link_file                	(NautilusFile *file);
 
 /* returns additional text to display under the name, NULL if none */
 char *   nautilus_link_get_additional_text              (const char *link_file_uri);

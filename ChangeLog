@@ -1,3 +1,43 @@
+2000-07-26  Gene Z. Ragan  <gzr@eazel.com>
+
+	* libnautilus-extensions/nautilus-link.c:
+	* libnautilus-extensions/nautilus-link.h:
+	(nautilus_link_is_link_file):
+	Renamed function nautilus_link_is_link_file_name to
+	nautilus_link_is_link_fileand modified it to determine if
+	it is a link file using mime magic.  Function now takes
+	a NautilusFile * as the argument.
+	
+	* libnautilus-extensions/nautilus-link-set.c: (link_set_path_name),
+	(create_new_link), (nautilus_link_set_is_installed),
+	(nautilus_link_set_remove):
+	Modified to use the new mime magic within the link file.
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(activation_uri_gmc_link_read_callback):
+	Changed nautilus_link_is_link_file_name to nautilus_link_is_link_file.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(construct_alternate_metafile_uri):
+	Changed nautilus_link_is_link_file_name to nautilus_link_is_link_file.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_contains_text), (nautilus_file_activate_custom):
+	Changed nautilus_link_is_link_file_name to nautilus_link_is_link_file.
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file):
+	Removed old way of identifying mount volume links in anticipation
+	of using mime magic.
+		
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize), (mount_device_mount),
+	(mount_device_floppy_add), (add_mount_device), (make_desktop_link),
+	(get_ext2_volume_name), (place_home_directory):
+	Removed old way of indentifying mount link files in anticipation
+	of using mime magic.
+	Work in progress on placing a home directory on the desktop.	
+
 2000-07-26  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-first-time-druid.c: (druid_finished),

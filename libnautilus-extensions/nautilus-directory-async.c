@@ -2045,7 +2045,7 @@ activation_uri_gmc_link_read_callback (GnomeVFSResult result,
 				       gpointer callback_data)
 {
 	NautilusDirectory *directory;
-	char *end_of_line, *uri, *name;
+	char *end_of_line, *uri;
 
 	directory = NAUTILUS_DIRECTORY (callback_data);
 
@@ -2072,10 +2072,8 @@ activation_uri_gmc_link_read_callback (GnomeVFSResult result,
 	 * a Nautilus link before we even dealt with the GMC link
 	 * part.
 	 */
-	name = nautilus_file_get_name (directory->details->activation_uri_read_state->file);
-	if (!nautilus_link_is_link_file_name (name)) {
+	if (!nautilus_link_is_link_file (directory->details->activation_uri_read_state->file)) {
 		/* Tell it that the activation URI is just the real URI. */
-		g_free (name);
 		activation_uri_found (directory, NULL);
 		return;
 	}
