@@ -25,6 +25,7 @@
 
 #include <config.h>
 #include "nautilus-file-dnd.h"
+#include "nautilus-desktop-icon-file.h"
 
 #include "nautilus-dnd.h"
 #include <eel/eel-glib-extensions.h>
@@ -43,7 +44,11 @@ nautilus_drag_can_accept_item (NautilusFile *drop_target_item,
 		/* target is a directory, accept anything */
 		return TRUE;
 	}
-
+	
+	if (NAUTILUS_IS_DESKTOP_ICON_FILE (drop_target_item)) {
+		return TRUE;
+	}
+	
 	/* All Nautilus links are assumed to be links to directories.
 	 * Therefore, they all can accept drags, like all other
 	 * directories to. As with other directories, there can be
