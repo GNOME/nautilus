@@ -23,9 +23,9 @@ int main(int argc, char *argv[])
 					 GNORBA_INIT_SERVER_FUNC, &ev);
   bonobo_init(orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
 
-  factory = gnome_generic_factory_new("hyperbola_factory", make_obj, NULL);
+  factory = gnome_generic_factory_new_multi("hyperbola_factory", make_obj, NULL);
 
-  gtk_main();
+  bonobo_main();
 
   return 0;
 }

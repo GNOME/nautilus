@@ -763,9 +763,9 @@ directory_load_cb (GnomeVFSAsyncHandle *handle,
 
 	view->entries_to_display += entries_read;
 
-	display_pending_entries (view);
-	display_icons_not_in_layout (view);
 	if (result == GNOME_VFS_ERROR_EOF) {
+		display_pending_entries (view);
+		display_icons_not_in_layout (view);
 		stop_load (view);
 		/* gtk_signal_emit (GTK_OBJECT (view), signals[LOAD_DONE]); */
 	} else if (result != GNOME_VFS_OK) {

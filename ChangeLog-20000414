@@ -1,3 +1,14 @@
+1999-12-15  Elliot Lee  <sopwith@redhat.com>
+
+	* components/Makefile.am: Turn on compilation of hyperbola component.
+	* components/help/*: Compile and run.
+	* libnautilus/ntl-meta-view-client.c: Create & set the property bag if it doesn't exist.
+	* src/ntl-uri-map.c: Load the hyperbola nav tree component as a test meta view.
+	* src/ntl-view.c: Fill in NULL fields with empty strings, so that ORBit doesn't segfault.
+	* src/ntl-window-msgs.c: When creating new meta views, they should
+	be meta views and not content views (cut & paste error).
+	* src/file-manager/fm-directory-view.c: Don't redisplay every time a new entry comes in.
+
 1999-12-15  Darin Adler  <darin@eazel.com>
 
 	* configure.in: Turned "-Wshadow" and "-Wundef" off for now, since they

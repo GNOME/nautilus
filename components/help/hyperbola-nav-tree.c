@@ -2,8 +2,6 @@
 #include "hyperbola-filefmt.h"
 #include <gtk/gtk.h>
 
-static HyperbolaDocTree *hyperbola_doc_tree_new(void);
-
 typedef struct {
   NautilusViewClient *vc;
 
@@ -19,7 +17,7 @@ static void hyperbola_navigation_tree_select_row(GtkCTree *ctree,
 						 HyperbolaNavigationTree *view);
 static void hyperbola_navigation_tree_notify_location_change (NautilusViewClient *vc,
 							      Nautilus_NavigationInfo *navi,
-							      HyperbolaNavigationTree *view);
+							      HyperbolaNavigationTree *hview);
 
 typedef struct {
   HyperbolaNavigationTree *view;
@@ -70,7 +68,11 @@ hyperbola_navigation_tree_new(void)
   
   view = g_new0(HyperbolaNavigationTree, 1);
 
-  view->vc = gtk_widget_new(nautilus_meta_view_client_get_type(), NULL);
+  view->vc = NAUTILUS_VIEW_CLIENT(gtk_widget_new(nautilus_meta_view_client_get_type(), NULL));
+  gtk_signal_connect(GTK_OBJECT(view->vc), "notify_location_change", hyperbola_navigation_tree_notify_location_change,
+		     view);
+
+  nautilus_meta_view_set_label(NAUTILUS_META_VIEW_CLIENT(view->vc), "Help Contents");
 
   view->ctree = gtk_ctree_new_with_titles(1, 0, (gchar **)titles);
   gtk_clist_freeze(GTK_CLIST(view->ctree));
@@ -97,6 +99,7 @@ hyperbola_navigation_tree_new(void)
 
 static void
 hyperbola_navigation_tree_notify_location_change (NautilusViewClient *vc,
+						  Nautilus_NavigationInfo *navi,
 						  HyperbolaNavigationTree *hview)
 {
   HyperbolaTreeNode *tnode;
@@ -106,7 +109,7 @@ hyperbola_navigation_tree_notify_location_change (NautilusViewClient *vc,
 
   hview->notify_count++;
 
-  tnode = g_hash_table_lookup(hview->doc_tree->global_by_uri, loci->uri);
+  tnode = g_hash_table_lookup(hview->doc_tree->global_by_uri, navi->requested_uri);
 
   if(tnode)
     gtk_ctree_select(GTK_CTREE(hview->ctree), tnode->user_data);
@@ -118,6 +121,7 @@ static void hyperbola_navigation_tree_select_row(GtkCTree *ctree, GtkCTreeNode *
 						 gint column, HyperbolaNavigationTree *view)
 {
   HyperbolaTreeNode *tnode;
+  Nautilus_NavigationRequestInfo nri;
 
   if(view->notify_count > 0)
     return;
@@ -129,7 +133,10 @@ static void hyperbola_navigation_tree_select_row(GtkCTree *ctree, GtkCTreeNode *
 
   view->notify_count++;
 
-  hyperbola_view_request_location_change(HYPERBOLA_VIEW(view), tnode->uri, NULL);
+  memset(&nri, 0, sizeof(nri));
+  nri.requested_uri = tnode->uri;
+  nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_UNKNOWN;
+  nautilus_view_client_request_location_change(view->vc, &nri);
 
   view->notify_count--;
 }

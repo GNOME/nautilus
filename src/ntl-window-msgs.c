@@ -201,7 +201,7 @@ nautilus_window_load_meta_view(NautilusWindow *window,
 
   if(!curview)
     {
-      meta_view = NAUTILUS_VIEW(gtk_widget_new(nautilus_content_view_get_type(), "main_window", window, NULL));
+      meta_view = NAUTILUS_VIEW(gtk_widget_new(nautilus_meta_view_get_type(), "main_window", window, NULL));
       nautilus_view_load_client(meta_view, iid);
       nautilus_window_add_meta_view(window, meta_view);
     }

@@ -111,6 +111,12 @@ nautilus_meta_view_set_label(NautilusMetaViewClient *mvc, const char *label)
 
   ctl = nautilus_view_client_get_gnome_object(NAUTILUS_VIEW_CLIENT(mvc));
   bag = gnome_control_get_property_bag(GNOME_CONTROL(ctl));
+  if(!bag)
+    {
+      bag = gnome_property_bag_new();
+      gnome_control_set_property_bag(GNOME_CONTROL(ctl), bag);
+    }
+
   gnome_property_bag_add(bag, "label", "string",
 			 g_strdup(label), g_strdup(label),
 			 _("Label"), GNOME_PROPERTY_READ_ONLY);

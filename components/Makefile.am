@@ -1,1 +1,1 @@
-SUBDIRS=history
+SUBDIRS=history help

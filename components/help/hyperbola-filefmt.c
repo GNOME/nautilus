@@ -11,29 +11,21 @@
 
 typedef struct {
   const char *name;
-  FILE * (*get_html_stream) (HyperbolaLocationInfo *loci, const HyperbolaLocationReference uri);
-  void (*free_format_data) (gpointer data);
   void (*populate_tree)(HyperbolaDocTree *tree);
 } FormatHandler;
 
-static FILE *fmt_man_get_html_stream(Nautilus_NavigationInfo *loci, const HyperbolaLocationReference uri);
-static void fmt_man_free_format_data(gpointer data);
 static void fmt_man_populate_tree(HyperbolaDocTree *tree);
 
-static FILE *fmt_info_get_html_stream(Nautilus_NavigationInfo *loci, const HyperbolaLocationReference uri);
-static void fmt_info_free_format_data(gpointer data);
 static void fmt_info_populate_tree(HyperbolaDocTree *tree);
 
-static FILE *fmt_ghelp_get_html_stream(Nautilus_NavigationInfo *loci, const HyperbolaLocationReference uri);
-static void fmt_ghelp_free_format_data(gpointer data);
 static void fmt_ghelp_populate_tree(HyperbolaDocTree *tree);
 
 static void make_treesection(HyperbolaDocTree *tree, char **path);
 
 static FormatHandler format_handlers[] = {
-  {"ghelp", fmt_ghelp_get_html_stream, fmt_ghelp_free_format_data, fmt_ghelp_populate_tree},
-  {"man", fmt_man_get_html_stream, fmt_man_free_format_data, fmt_man_populate_tree},
-  {"info", fmt_info_get_html_stream, fmt_info_free_format_data, fmt_info_populate_tree},
+  {"ghelp", fmt_ghelp_populate_tree},
+  {"man", fmt_man_populate_tree},
+  {"info", fmt_info_populate_tree},
   {NULL}
 };
 
@@ -63,7 +55,7 @@ tree_key_compare(gconstpointer k1, gconstpointer k2)
 HyperbolaDocTree *
 hyperbola_doc_tree_new(void)
 {
-  HyperbolaDocTree *retval = g_new(HyperbolaDocTree, 1);
+  HyperbolaDocTree *retval = g_new0(HyperbolaDocTree, 1);
 
   retval->global_by_uri = g_hash_table_new(g_str_hash, g_str_equal);
   retval->children = g_tree_new(tree_key_compare);
@@ -209,7 +201,7 @@ fmt_read_mapping(TreeInfo *ti, const char *srcfile)
 	  continue;
 	}
 
-      new_mapent = g_new(ManpageMapping, 1);
+      new_mapent = g_new0(ManpageMapping, 1);
 
       g_snprintf(real_regbuf, sizeof(real_regbuf), "^%s$", line_pieces[1]);
 
@@ -334,7 +326,7 @@ fmt_man_populate_tree_for_subdir(HyperbolaDocTree *tree, const char *basedir, ch
       if(ctmp[1] != secnum)
 	continue; /* maybe the extension was '.gz' or something, which we most definitely don't handle right now */      
 
-      g_snprintf(namebuf, sizeof(namebuf), "%.*s", ctmp - dent->d_name, dent->d_name);
+      g_snprintf(namebuf, sizeof(namebuf), "%.*s", (int)(ctmp - dent->d_name), dent->d_name);
       strcpy(titlebuf, namebuf);
       strcat(titlebuf, " (man)");
 
@@ -507,15 +499,6 @@ fmt_man_populate_tree(HyperbolaDocTree *tree)
 }
 
 /***** info pages *****/
-static void
-fmt_info_free_format_data(gpointer data)
-{
-  InfoFormatData *mfd = data;
-
-  g_free(mfd->filename);
-  g_free(mfd);
-}
-
 static void
 fmt_info_populate_tree_for_subdir(HyperbolaDocTree *tree, const char *basedir, char **defpath)
 {

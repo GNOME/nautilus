@@ -469,7 +469,20 @@ nautilus_view_notify_location_change(NautilusView *view,
   CORBA_exception_init(&ev);
 
   if(!CORBA_Object_is_nil(view->view_client, &ev))
-    Nautilus_View_notify_location_change(view->view_client, nav_context, &ev);
+    {
+      Nautilus_NavigationInfo real_nav_ctx;
+
+      real_nav_ctx = *nav_context;
+      g_assert(real_nav_ctx.requested_uri);
+#define DEFAULT_STRING(x) if(!real_nav_ctx.x) real_nav_ctx.x = ""
+
+      DEFAULT_STRING(actual_uri);
+      DEFAULT_STRING(referring_uri);
+      DEFAULT_STRING(actual_referring_uri);
+      DEFAULT_STRING(referring_content_type);
+
+      Nautilus_View_notify_location_change(view->view_client, &real_nav_ctx, &ev);
+    }
 
   CORBA_exception_free(&ev);
 }

@@ -96,6 +96,8 @@ nautilus_navinfo_new(NautilusNavigationInfo *navinfo,
     }
 
 
+  navinfo->meta_iids = g_slist_append(navinfo->meta_iids, "hyperbola_navigation_tree");
+
   return navinfo;
 }
 
@@ -103,4 +105,6 @@ void
 nautilus_navinfo_free(NautilusNavigationInfo *navinfo)
 {
   gnome_vfs_file_info_destroy(navinfo->vfs_fileinfo);
+
+  g_slist_free(navinfo->meta_iids);
 }
