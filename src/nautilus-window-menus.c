@@ -1289,7 +1289,7 @@ refresh_go_menu (NautilusWindow *window)
 
 	/* Add in a new set of history items. */
 	for (node = nautilus_get_history_list (), index = 0;
-	     node != NULL;
+	     node != NULL && index < 10;
 	     node = node->next, index++) {
 		append_bookmark_to_menu (window,
 					 NAUTILUS_BOOKMARK (node->data),

@@ -69,7 +69,6 @@
 			  _label="Close _All Windows"
 			  _tip="Close all Nautilus windows"
 			  accel="*Control**Shift*w"
-			  pixtype="stock" pixname="gtk-close"
 			  verb="Close All Windows"/>
 
 		<menuitem name="Find"
@@ -342,13 +341,21 @@
 	<popup name="background" tearoff="0">
 		<placeholder name="Before Zoom Items" delimit="none">
 			<placeholder name="New Items" delimit="none">
-				<menuitem name="New Window" verb="New Window"/>
+				<menuitem name="New Window" 
+				 pixtype="stock" pixname="gtk-new"
+				 verb="New Window"/>
 			</placeholder>
 		</placeholder>
 		<placeholder name="Zoom Items" delimit="top">
-			<menuitem name="Zoom In" verb="Zoom In"/>
-			<menuitem name="Zoom Out" verb="Zoom Out"/>
-			<menuitem name="Zoom Normal" verb="Zoom Normal"/>
+			<menuitem name="Zoom In" 
+			 pixtype="stock" pixname="zoom-in"
+			 verb="Zoom In"/>
+			<menuitem name="Zoom Out" 
+			 pixtype="stock" pixname="zoom-out"
+			 verb="Zoom Out"/>
+			<menuitem name="Zoom Normal" 
+			 pixtype="stock" pixname="zoom-100"
+			 verb="Zoom Normal"/>
 		</placeholder>
 		<placeholder name="After Zoom Items" delimit="top"/>
 	</popup>

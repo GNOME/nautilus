@@ -84,6 +84,7 @@
 			<menuitem name="Open"
 				  _label="_Open"
 				  accel="*Control*o"
+				  pixtype="stock" pixname="gtk-open"
 				  verb="Open"/>
 			<menuitem name="OpenAlternate"
 				  _label="Open _in New Window"
@@ -183,7 +184,7 @@
 	<submenu name="View">
 		<placeholder name="View Preferences Placeholder">
 			<menuitem name="Reset to Defaults"
-				  _label="Reset View to Match _Preferences"
+				  _label="Reset View to _Defaults"
 				  verb="Reset to Defaults"/>
 		</placeholder>
 	</submenu>
@@ -192,7 +193,8 @@
 	<popup name="background">
 		<placeholder name="Before Zoom Items">
 			<placeholder name="New Items">
-				<menuitem name="New Folder" verb="New Folder"/>
+				<menuitem name="New Folder" 
+				 verb="New Folder"/>
 			</placeholder>
                         <submenu name="Scripts"
 				 _label="Scripts"
@@ -204,9 +206,15 @@
 			</submenu>
 			<placeholder name="View Items" delimit="top"/>
 			<placeholder name="File Clipboard Actions" delimit="top">
-				<menuitem name="Cut Files" verb="Cut Files"/>
-				<menuitem name="Copy Files" verb="Copy Files"/>
-				<menuitem name="Paste Files" verb="Paste Files"/>
+				<menuitem name="Cut Files" 
+				 pixtype="stock" pixname="gtk-cut"
+				 verb="Cut Files"/>
+				<menuitem name="Copy Files" 
+				 pixtype="stock" pixname="gtk-copy"
+				 verb="Copy Files"/>
+				<menuitem name="Paste Files" 
+				 pixtype="stock" pixname="gtk-paste"
+				 verb="Paste Files"/>
 			</placeholder>
 		</placeholder>
 		<placeholder name="After Zoom Items">
@@ -218,8 +226,11 @@
 	
 	<popup name="selection" tearoff="0">
 		<placeholder name="Open Placeholder" delimit="none">
-			<menuitem name="Open" verb="Open"/>
-			<menuitem name="OpenAlternate" verb="OpenAlternate"/>
+			<menuitem name="Open" 
+			 pixtype="stock" pixname="gtk-open"
+			 verb="Open"/>
+			<menuitem name="OpenAlternate" 
+			 verb="OpenAlternate"/>
 			<submenu name="Open With" 
 				 _label="Open With" 
 				 tearoff="0"
@@ -251,9 +262,15 @@
 			<menuitem name="Delete" verb="Delete"/>
 		</placeholder>
 		<placeholder name="File Clipboard Actions" delimit="top">
-			<menuitem name="Cut Files" verb="Cut Files"/>
-			<menuitem name="Copy Files" verb="Copy Files"/>
-			<menuitem name="Paste Files" verb="Paste Files"/>
+			<menuitem name="Cut Files" 
+			 pixtype="stock" pixname="gtk-cut"
+			 verb="Cut Files"/>
+			<menuitem name="Copy Files" 
+			 pixtype="stock" pixname="gtk-copy"
+			 verb="Copy Files"/>
+			<menuitem name="Paste Files" 
+			 pixtype="stock" pixname="gtk-paste"
+			 verb="Paste Files"/>
 		</placeholder>
 		<placeholder name="Icon Appearance Items" delimit="top">
 			<menuitem name="Remove Custom Icons" verb="Remove Custom Icons"/>

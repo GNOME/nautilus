@@ -1,3 +1,20 @@
+2002-04-26  Alex Larsson  <alexl@redhat.com>
+
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Stock icons for new window, and zooming. Don't use
+	stock icons for close all (duplicate use of stock).
+	
+	* src/nautilus-shell-ui.xml:
+	Stock icon for open.
+	"Reset View to Match _Preferences" -> "Reset View to _Defaults"
+	Stock icons for cut and paste.
+	Stock icons for open.
+	
+	* src/nautilus-window-menus.c: (refresh_go_menu):
+	Limit history to 10 entries.
+
+	Based on patches from Dave Bordoley <bordoley@msu.edu>
+
 2002-04-26  Damon Chaplin  <damon@ximian.com>
 
 	* components/notes/nautilus-notes.c (make_notes_view): turn on
