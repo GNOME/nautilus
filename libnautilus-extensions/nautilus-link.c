@@ -449,13 +449,13 @@ nautilus_link_is_volume_link (const char *path)
 }
 
 gboolean
-nautilus_link_is_home_link (const char *path)
+nautilus_link_is_home_link (const char *uri)
 {
 	gboolean retval;
 	char *link_type;
 	
 	retval = FALSE;
-	link_type = nautilus_link_get_link_type (path);
+	link_type = nautilus_link_get_link_type (uri);
 	if (link_type != NULL) {
 		if (strcmp (link_type, NAUTILUS_LINK_HOME_TAG) == 0) {
 			retval = TRUE;
@@ -469,13 +469,13 @@ nautilus_link_is_home_link (const char *path)
 }
 
 gboolean
-nautilus_link_is_trash_link (const char *path)
+nautilus_link_is_trash_link (const char *uri)
 {
 	gboolean retval;
 	char *link_type;
 	
 	retval = FALSE;
-	link_type = nautilus_link_get_link_type (path);
+	link_type = nautilus_link_get_link_type (uri);
 	if (link_type != NULL) {
 		if (strcmp (link_type, NAUTILUS_LINK_TRASH_TAG) == 0) {
 			retval = TRUE;
@@ -490,7 +490,7 @@ nautilus_link_is_trash_link (const char *path)
 
 /* All links can accept drags currently */
 gboolean
-nautilus_link_can_accept_drag (const char *path)
+nautilus_link_can_accept_drag (const char *uri)
 {
 	return TRUE;
 }

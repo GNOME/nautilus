@@ -1913,6 +1913,42 @@ fm_directory_all_selected_items_in_trash (FMDirectoryView *view)
 }
 
 static gboolean
+trash_link_is_in_files (GList *files)
+{
+	GList *node;
+	char *uri;
+	
+	/* Result is ambiguous if called on NULL, so disallow. */
+	g_return_val_if_fail (files != NULL, FALSE);
+
+	for (node = files; node != NULL; node = node->next) {
+		if (nautilus_file_is_nautilus_link (NAUTILUS_FILE (node->data))) {
+			uri = nautilus_file_get_uri (NAUTILUS_FILE (node->data));
+			if (nautilus_link_is_trash_link (uri)) {
+				g_free (uri);
+				return TRUE;
+			}
+			g_free (uri);
+		}
+	}
+
+	return FALSE;
+}
+
+static gboolean
+fm_directory_trash_link_in_selection (FMDirectoryView *view)
+{
+	GList *selection;
+	gboolean result;
+
+	selection = fm_directory_view_get_selection (view);
+	result = (selection == NULL) ? FALSE : trash_link_is_in_files (selection);
+	nautilus_file_list_free (selection);
+
+	return result;
+}
+
+static gboolean
 fm_directory_view_can_move_file_to_trash (FMDirectoryView *view, NautilusFile *file)
 {
 	/* Return TRUE if we can get a trash directory on the same volume as this file. */
@@ -2674,15 +2710,18 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
-	/* Trash menu item handled specially. See comment above reset_bonobo_trash_delete_menu. */
-	if (!fm_directory_all_selected_items_in_trash (view)) {
-		append_gtk_menu_item_with_view (view, menu, files,
-					    	FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
-					    	trash_callback, files);
-	} else {
-		append_gtk_menu_item_with_view (view, menu, files,
-					    	FM_DIRECTORY_VIEW_MENU_PATH_DELETE,
-					    	trash_callback, files);
+	/* Don't add item if Trash icon is in selection */
+	if (!fm_directory_trash_link_in_selection (view)) {
+		/* Trash menu item handled specially. See comment above reset_bonobo_trash_delete_menu. */
+		if (!fm_directory_all_selected_items_in_trash (view)) {
+			append_gtk_menu_item_with_view (view, menu, files,
+						    	FM_DIRECTORY_VIEW_MENU_PATH_TRASH,
+						    	trash_callback, files);
+		} else {
+			append_gtk_menu_item_with_view (view, menu, files,
+						    	FM_DIRECTORY_VIEW_MENU_PATH_DELETE,
+						    	trash_callback, files);
+		}
 	}
 	append_gtk_menu_item_with_view (view, menu, files,
 				    	FM_DIRECTORY_VIEW_MENU_PATH_DUPLICATE,

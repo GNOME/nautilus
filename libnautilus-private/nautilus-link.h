@@ -91,23 +91,23 @@ char *   nautilus_link_get_image_uri                    (const char *link_file_u
 /* Returns the link type of a link file.
  * Works only if the file is local and does sync. I/O
  */
-char * 	nautilus_link_get_link_type 			(const char *path);
+char * 	nautilus_link_get_link_type 			(const char *uri);
 
 
 /* Returns if a link is a mount link.
  * Works only if the file is local and does sync. I/O
  */
-gboolean nautilus_link_is_volume_link 			(const char *path);
+gboolean nautilus_link_is_volume_link 			(const char *uri);
 
 /* Returns if a link is a home link.
  * Works only if the file is local and does sync. I/O
  */
-gboolean nautilus_link_is_home_link 			(const char *path);
+gboolean nautilus_link_is_home_link 			(const char *uri);
 
 /* Returns if a link is a trash link.
  * Works only if the file is local and does sync. I/O
  */
-gboolean nautilus_link_is_trash_link 			(const char *path);
+gboolean nautilus_link_is_trash_link 			(const char *uri);
 
 
 /* Returns the link uri associated with a link file. The first version

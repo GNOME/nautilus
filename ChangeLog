@@ -1,3 +1,20 @@
+2000-08-28  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug #1942, Trash icon on desktop has "Move to Trash" in
+	right-click menu.
+	
+	* libnautilus-extensions/nautilus-link.c:
+	(nautilus_link_is_home_link), (nautilus_link_is_trash_link),
+	(nautilus_link_can_accept_drag):
+	Rename path argument to uri.  The funciton can accrept
+	a URI.
+	
+	* libnautilus-extensions/nautilus-link.h:
+	* src/file-manager/fm-directory-view.c: (trash_link_is_in_files),
+	(fm_directory_trash_link_in_selection),
+	(fm_directory_view_real_create_selection_context_menu_items):
+	New functions to identify if a Trash link is in the selection.
+
 2000-08-28  Pavel Cisler  <pavel@eazel.com>
 
 	* README:
