@@ -22,7 +22,6 @@
    Author: Andy Hertzfeld <andy@eazel.com>
 */
 
-
 #include <stdlib.h>
 
 #include <parser.h>
@@ -57,7 +56,7 @@ char* nautilus_link_get_additional_text(const char *link_file_uri)
 	if (doc) {
 		extra_text = xmlGetProp (doc->root, NAUTILUS_METADATA_KEY_EXTRA_TEXT);
 		xmlFreeDoc (doc);
-	}
+	}  
 	return extra_text;
 }
 
@@ -111,8 +110,8 @@ nautilus_link_get_link_uri(const char *link_file_uri)
 char*
 nautilus_link_get_display_name(char* link_file_name)
 {
-	if (link_file_name && nautilus_str_has_suffix(link_file_name, "-ntl.xml")) {
-		char *suffix_pos = strstr(link_file_name, "-ntl.xml");
+	if (link_file_name && nautilus_str_has_suffix(link_file_name, LINK_SUFFIX)) {
+		char *suffix_pos = strstr(link_file_name, LINK_SUFFIX);
 		if (suffix_pos)
 			*suffix_pos = '\0';
 	}

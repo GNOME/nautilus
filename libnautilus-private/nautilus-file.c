@@ -1156,7 +1156,7 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 	/* FIXME: Use hash table and switch statement or function pointers for speed? */
 
 	if (strcmp (attribute_name, "name") == 0) {
-		return nautilus_file_get_name (file);
+		return nautilus_link_get_display_name(nautilus_file_get_name (file));
 	}
 
 	if (strcmp (attribute_name, "type") == 0) {

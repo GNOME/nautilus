@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_LINK_H
 #define NAUTILUS_LINK_H
 
-#define LINK_SUFFIX "-ntl.xml"
+#define LINK_SUFFIX ".link"
 
 #include <glib.h>
 

@@ -1295,7 +1295,6 @@ get_icon_editable_text_callback (NautilusIconContainer *container,
 	}
 
 	/* strip the suffix for nautilus object xml files */
-	/* FIXME: need a preference to disable this to show real file names for experts */
 	
 	file_name = nautilus_link_get_display_name(nautilus_file_get_name (file));
 	

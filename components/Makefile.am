@@ -13,6 +13,7 @@ RPMVIEW_COMPONENT_SUBDIRS = rpmview
 endif
 
 SUBDIRS = \
+	hardware \
 	help \
 	history \
 	html \

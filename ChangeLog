@@ -1,3 +1,43 @@
+2000-04-24  Andy Hertzfeld <andy@eazel.com>
+
+	changed link file suffix to .link
+	
+	* data/top/Computer-ntl.xml: removed file
+	* data/top/Computer.link: new file
+	* data/top/Makefile.am: adjusted accordingly
+	* data/top/Services-ntl.xml: removed file
+	* data/top/Services.link: added file
+	* libnautilus-extensions/nautilus-link.c,h:
+	changed suffix from "ntl-link" to "link"
+	
+	made links more transparent in list view
+	
+	* libnautilus-extensions/nautilus-file.c:
+	make nautilus_file_get_string_attribute know about links
+	* src/file-manager/fm-directory-view.c:
+	map filename for links in status bar	
+	
+	added hardware view component for novice home directory.  Use /proc as source of info,
+	but will probably move to libgtop
+	
+	* configure.in: added hardware view component's directories
+	* nautilus-clean.sh: added component to list to be cleaned
+	* components/Makefile.am: added hardware view component
+	* components/hardware/.cvsignore: ignore generated files
+	* components/hardware/Makefile.am: makefile for new component
+	* components/hardware/main.c: standard component bonobo glue
+	* components/hardware/nautilus-hardware-view.c: the actual code
+	* components/hardware/nautilus-hardware-view.h: definitions for the component
+	* components/hardware/nautilus-hardware-view.oafinfo: activation file
+	* components/hardware/icons/.cvsignore: ignore generate files
+	* components/hardware/icons/Makefile.am: icons to use in the hardware view
+	* components/hardware/icons/cpu.png: cpu image
+	* components/hardware/icons/memory_chip.gif: memory image
+	* src/ntl-uri-map.c: we still have to kludge here to add new protocols
+	
+	* components/rpmview/nautilus-rpm-view.c:
+	changed default background color of package view
+		
 2000-04-23  J. Shane Culpepper  <pepper@eazel.com>
 	*components/services/install/eazel-install.c
 	*components/services/install/Makefile.am

@@ -215,6 +215,9 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                 } else if (nautilus_str_has_prefix (navinfo->navinfo.requested_uri, "eazel:")) {
                         navinfo->navinfo.content_type = g_strdup ("special/eazel-service");
                         result = GNOME_VFS_OK;
+                } else if (nautilus_str_has_prefix (navinfo->navinfo.requested_uri, "hardware:")) {
+                        navinfo->navinfo.content_type = g_strdup ("special/hardware");
+                        result = GNOME_VFS_OK;
                 /* FIXME: This mozilla-hack should be short lived until http issues are solved */
                 } else if (nautilus_str_has_prefix (navinfo->navinfo.requested_uri, "moz:")) {
                         navinfo->navinfo.content_type = g_strdup ("special/mozilla-hack");
@@ -326,6 +329,11 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
                 navinfo->content_identifiers = g_slist_append
                         (navinfo->content_identifiers, 
                          nautilus_view_identifier_new ("OAFIID:nautilus_service_startup_view:a8f1b0ef-a39f-4f92-84bc-1704f0321a82", "Service"));      
+        } else if (strcmp(navinfo->navinfo.content_type, "special/hardware") == 0) {
+                fallback_iid = "OAFIID:nautilus_hardware_view:20000422-2250";
+                navinfo->content_identifiers = g_slist_append
+                        (navinfo->content_identifiers, 
+                         nautilus_view_identifier_new ("OAFIID:nautilus_hardware_view:20000422-2250", "Hardware"));      
         /* FIXME: This mozilla-hack should be short lived until http issues are solved */
         } else if (strcmp(navinfo->navinfo.content_type, "special/mozilla-hack") == 0) {
                 fallback_iid = "OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1";
@@ -347,7 +355,7 @@ my_notify_when_ready (GnomeVFSAsyncHandle *ah,
         /* FIXME: Should do this only when in some special testing mode or something. */
         navinfo->content_identifiers = g_slist_append
                 (navinfo->content_identifiers, 
-                 nautilus_view_identifier_new ("OAFIID:nautilus_sample_content_view:45c746bc-7d64-4346-90d5-6410463b43ae", "Sample"));
+                 nautilus_view_identifier_new ("OAFIID:nautilus_sample_content_view:45c746bd-7d64-4346-90d5-6410463b43ae", "Sample"));
         
         add_meta_view_iids_from_preferences (navinfo);
         

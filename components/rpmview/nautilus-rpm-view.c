@@ -78,7 +78,7 @@ struct _NautilusRPMViewDetails {
 };
 
 
-#define RPM_VIEW_DEFAULT_BACKGROUND_COLOR  "rgb:BBBB/BBBB/FFFF"
+#define RPM_VIEW_DEFAULT_BACKGROUND_COLOR  "rgb:DDDD/DDDD/BBBB"
 
 enum {
 	TARGET_URI_LIST,

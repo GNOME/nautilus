@@ -51,6 +51,7 @@
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
 
@@ -564,7 +565,7 @@ display_selection_info (FMDirectoryView *view)
 		}
 
 		if (first_item_name == NULL) {
-			first_item_name = nautilus_file_get_name (file);
+			first_item_name = nautilus_link_get_display_name(nautilus_file_get_name (file));
 		}
 	}
 	
@@ -1035,7 +1036,7 @@ queue_pending_files (FMDirectoryView *view,
 			
 			g_assert (file != NULL);
 			
-			name = nautilus_file_get_name (file);
+			name = nautilus_link_get_display_name(nautilus_file_get_name (file));
 			
 			g_assert (name != NULL);
 			

@@ -3,8 +3,8 @@ NULL=
 topdir = $(datadir)/nautilus/top
 
 top_DATA = \
-	Computer-ntl.xml \
-	Services-ntl.xml \
+	Computer.link \
+	Services.link \
 	$(NULL)
 
 EXTRA_DIST = $(top_DATA)
