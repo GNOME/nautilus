@@ -1,5 +1,57 @@
 2000-04-28  Maciej Stachowiak  <mjs@eazel.com>
 
+	* components/music/nautilus-music-view.oafinfo: Add "audio/x-mp3"
+	as directory content type that satisfies the requirement so the
+	music view activates automatically (the point of the below
+	excercise). Netscape thinks the mime type for mp3's should be
+	"audio/x-mpeg" but I am not going to argue.
+
+	Achieved bugzilla tasks #701 and #108, plus did some refactoring
+	of the big hairy `got_file_info_callback' function.
+
+	* src/ntl-uri-map.h: add a `files' member to the
+	NautilusNavigationInfo struct, a GList of NautilusFiles it
+	contains in case it is a directory.
+	
+	* src/ntl-uri-map.c (got_file_info_callback): Factored out some
+	code into separate functions and simplified the control flow. For
+	each potential component, test if it matches the content
+	requirements before adding it to the list of available content
+	view components.
+
+	(make_oaf_query_with_known_mime_type,
+	make_oaf_query_with_uri_scheme_only): New function; breaks out the
+	logic of constructing an oaf query when the mime type is known and
+	unknown repsectively from `got_file_info_callback'.
+	(make_oaf_query_with_known_mime_type): Remove the hack to try to
+	explicitly exclude the music view.
+
+	(file_list_to_mime_type_hash_table): New utility function; takes a
+	GList of NautilusFiles and returns a hash table which has an entry
+	for each mime type that at least one of thse files has. This is so
+	that we can susequently test if any of the files on the list has a
+	particular mime type in constant time.
+	(server_matches_content_requirements): New fucntion. Returns true
+	if the server record does not require specific content mime types,
+	or if it does and the passed hash table contains at least one of
+	those.
+
+	(nautilus_view_identifier_new_from_oaf_server_info): New helper
+	function to create a NautilusViewIdentifier directly from an
+	OAF_ServerInfo record.
+
+	(got_metadata_callback): Initialize the `files' field of the
+	navinfo struct to a copy of the file list that
+	`nautilus_directory_call_when_ready' gave us; ref all the
+	NautilusFiles in this copy.
+	(nautilus_navigation_info_new): Ask for the mime types of files in
+	the directory as well as for the metadata keys we need.
+	(nautilus_navigation_info_cancel): Only try to cancel if the
+	navinfo actually has a directory, to avoid segfaulting.
+	(nautilus_navigation_info_free): Free the files list. Free both
+	this and the directory if and only if they are not NULL.
+
+	
 	* src/ntl-uri-map.c (nautilus_navigation_info_new): When
 	navinfo->directory is null, call got_metadata_callback directly
 	instead of calling `nautilus_directory_call_when_ready' to avoid
