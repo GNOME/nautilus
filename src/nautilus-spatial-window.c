@@ -65,6 +65,9 @@
 /* Milliseconds */
 #define STATUSBAR_CLEAR_TIMEOUT 5000
 
+/* GNOME Dock Items */
+#define URI_ENTRY_DOCK_ITEM	"uri_entry"
+
 enum {
 	ARG_0,
 	ARG_APP_ID,
@@ -259,7 +262,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	}
 
 	gnome_app_add_docked (app, location_bar_box,
-			      "uri-entry", behavior,
+			      URI_ENTRY_DOCK_ITEM, behavior,
 			      GNOME_DOCK_TOP, 2, 0, 0);
 
 	/* Option menu for content view types; it's empty here, filled in when a uri is set. */
@@ -1422,4 +1425,111 @@ static void
 sidebar_panels_changed_callback (gpointer user_data)
 {
 	window_update_sidebar_panels_from_preferences (NAUTILUS_WINDOW (user_data));
+}
+
+
+void 
+nautilus_window_hide_locationbar (NautilusWindow *window)
+{
+	GnomeApp *app;
+	GnomeDockItem *dock_item;
+
+	app = GNOME_APP (window);
+
+	dock_item = gnome_app_get_dock_item_by_name (app, URI_ENTRY_DOCK_ITEM);
+	if (dock_item != NULL) {
+		gtk_widget_hide (GTK_WIDGET (dock_item));
+		gtk_widget_queue_resize (GTK_WIDGET (dock_item)->parent);
+	}
+}
+
+
+void 
+nautilus_window_show_locationbar (NautilusWindow *window)
+{
+	GnomeApp *app;
+	GnomeDockItem *dock_item;
+
+	app = GNOME_APP (window);
+
+	dock_item = gnome_app_get_dock_item_by_name (app, URI_ENTRY_DOCK_ITEM);
+	if (dock_item != NULL) {
+		gtk_widget_show (GTK_WIDGET (dock_item));
+		gtk_widget_queue_resize (GTK_WIDGET (dock_item)->parent);
+	}
+}
+
+void 
+nautilus_window_hide_toolbar (NautilusWindow *window)
+{
+	GnomeApp *app;
+	GnomeDockItem *dock_item;
+
+	app = GNOME_APP (window);
+
+	dock_item = gnome_app_get_dock_item_by_name (app, GNOME_APP_TOOLBAR_NAME);
+	if (dock_item != NULL) {
+		gtk_widget_hide (GTK_WIDGET (dock_item));
+		gtk_widget_queue_resize (GTK_WIDGET (dock_item)->parent);
+	}
+}
+
+void 
+nautilus_window_show_toolbar (NautilusWindow *window)
+{
+	GnomeApp *app;
+	GnomeDockItem *dock_item;
+
+	app = GNOME_APP (window);
+
+	dock_item = gnome_app_get_dock_item_by_name (app, GNOME_APP_TOOLBAR_NAME);
+	if (dock_item != NULL) {
+		gtk_widget_show (GTK_WIDGET (dock_item));
+		gtk_widget_queue_resize (GTK_WIDGET (dock_item)->parent);
+	}
+}
+
+void 
+nautilus_window_hide_sidebar (NautilusWindow *window)
+{
+	gtk_widget_hide (GTK_WIDGET (window->sidebar));
+	if (window->content_hbox != NULL) {
+		e_paned_set_position (E_PANED (window->content_hbox), 0);
+	}
+}
+
+void 
+nautilus_window_show_sidebar (NautilusWindow *window)
+{
+	GtkWidget *widget;
+
+	widget = GTK_WIDGET (window->sidebar);
+	gtk_widget_show (widget);
+	if (window->content_hbox != NULL) {
+		e_paned_set_position (E_PANED (window->content_hbox), widget->allocation.width);
+	}
+}
+
+void 
+nautilus_window_hide_statusbar (NautilusWindow *window)
+{
+	GnomeApp *app;
+
+	app = GNOME_APP (window);
+
+	if (app->statusbar != NULL) {
+		gtk_widget_hide (GTK_WIDGET (app->statusbar)->parent);
+	}	
+}
+
+void 
+nautilus_window_show_statusbar (NautilusWindow *window)
+{
+	GnomeApp *app;
+
+	app = GNOME_APP (window);
+
+	if (app->statusbar != NULL) {
+		gtk_widget_show (GTK_WIDGET (app->statusbar)->parent);
+	}	
 }

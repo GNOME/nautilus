@@ -44,6 +44,8 @@
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 #include <libnautilus-extensions/nautilus-user-level-manager.h>
 
+#define WINDOW_ITEMS_TEST
+
 static GtkWindow *bookmarks_window = NULL;
 
 static void                  activate_bookmark_in_menu_item                 (BonoboUIHandler        *uih,
@@ -123,6 +125,15 @@ bookmark_holder_free (BookmarkHolder *bookmark_holder)
 
 #define NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM			"/Settings/Customize"
 
+#ifdef WINDOW_ITEMS_TEST
+#define NAUTILUS_MENU_PATH_AFTER_CURSTOMIZE_SEPARATOR		"/Settings/After Curstomize Separator"
+#define NAUTILUS_MENU_PATH_TOOLBAR_ITEM				"/Settings/Toolbar"
+#define NAUTILUS_MENU_PATH_LOCATIONBAR_ITEM			"/Settings/Locationbar"
+#define NAUTILUS_MENU_PATH_STATUSBAR_ITEM			"/Settings/Statusbar"
+#define NAUTILUS_MENU_PATH_SIDEBAR_ITEM				"/Settings/Sidebar"
+#define NAUTILUS_MENU_PATH_NORMALIZE_ITEM			"/Settings/Normalize"
+#endif
+
 static void
 file_menu_new_window_callback (BonoboUIHandler *ui_handler, 
 			       gpointer user_data, 
@@ -174,7 +185,6 @@ edit_menu_cut_callback (BonoboUIHandler *ui_handler,
 	if (GTK_IS_EDITABLE (window->focus_widget)) {
 		gtk_editable_cut_clipboard (GTK_EDITABLE (window->focus_widget));
 	}
-
 }
 
 static void
@@ -188,7 +198,6 @@ edit_menu_copy_callback (BonoboUIHandler *ui_handler,
 	if (GTK_IS_EDITABLE (window->focus_widget)) {
 		gtk_editable_copy_clipboard (GTK_EDITABLE (window->focus_widget));
 	}
-
 }
 
 
@@ -318,6 +327,97 @@ settings_menu_customize_callback (BonoboUIHandler *ui_handler,
 {
 	nautilus_property_browser_new ();
 }
+
+
+#ifdef WINDOW_ITEMS_TEST
+static void
+settings_menu_toolbar_callback (BonoboUIHandler *ui_handler, 
+				  gpointer user_data,
+				  const char *path)
+{
+	NautilusWindow *window;
+	window = NAUTILUS_WINDOW (user_data);
+
+	if (bonobo_ui_handler_menu_get_toggle_state (ui_handler, path) == TRUE) {
+		nautilus_window_show_toolbar (NAUTILUS_WINDOW (window));
+	} else {
+		nautilus_window_hide_toolbar (NAUTILUS_WINDOW (window));
+	}
+}
+
+static void
+settings_menu_locationbar_callback (BonoboUIHandler *ui_handler, 
+				  gpointer user_data,
+				  const char *path)
+{
+	NautilusWindow *window;
+	window = NAUTILUS_WINDOW (user_data);
+
+	if (bonobo_ui_handler_menu_get_toggle_state (ui_handler, path) == TRUE) {
+		nautilus_window_show_locationbar (NAUTILUS_WINDOW (window));
+	} else {
+		nautilus_window_hide_locationbar (NAUTILUS_WINDOW (window));
+	}
+}
+
+static void
+settings_menu_statusbar_callback (BonoboUIHandler *ui_handler, 
+				  gpointer user_data,
+				  const char *path)
+{
+	NautilusWindow *window;
+	window = NAUTILUS_WINDOW (user_data);
+	
+	if (bonobo_ui_handler_menu_get_toggle_state (ui_handler, path) == TRUE) {
+		nautilus_window_show_statusbar (NAUTILUS_WINDOW (window));
+	} else {
+		nautilus_window_hide_statusbar (NAUTILUS_WINDOW (window));
+	}
+}
+
+static void
+settings_menu_sidebar_callback (BonoboUIHandler *ui_handler, 
+				  gpointer user_data,
+				  const char *path)
+{
+	NautilusWindow *window;
+	window = NAUTILUS_WINDOW (user_data);
+
+	if (bonobo_ui_handler_menu_get_toggle_state (ui_handler, path) == TRUE) {
+		nautilus_window_show_sidebar (NAUTILUS_WINDOW (window));
+	} else {
+		nautilus_window_hide_sidebar (NAUTILUS_WINDOW (window));
+	}
+}
+
+static void
+settings_menu_normalize_menu_callback (BonoboUIHandler *ui_handler, 
+				  gpointer user_data,
+				  const char *path)
+{
+	NautilusWindow *window;
+	GnomeApp *app;
+	GnomeDockItem *dock_item;
+	
+	window = NAUTILUS_WINDOW (user_data);
+	app = GNOME_APP (window);
+
+	if (bonobo_ui_handler_menu_get_toggle_state (ui_handler, path) == TRUE) {
+		if (app->menubar != NULL) {
+			gtk_widget_set_usize(app->menubar, 0, app->menubar->allocation.height - 6);
+		}
+	} else {
+		if (app->menubar != NULL) {
+			gtk_widget_set_usize(app->menubar, 0, app->menubar->allocation.height + 6);
+		}
+	}
+
+	dock_item = gnome_app_get_dock_item_by_name (app, GNOME_APP_MENUBAR_NAME);
+	gtk_widget_queue_resize (GTK_WIDGET (dock_item)->parent);
+}
+
+#endif
+
 
 static void
 help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler, 
@@ -962,6 +1062,70 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 0,
         				 settings_menu_customize_callback,
         				 NULL);
+
+#ifdef WINDOW_ITEMS_TEST
+	/* Test window modification items */
+	bonobo_ui_handler_menu_new_separator (ui_handler,
+					      NAUTILUS_MENU_PATH_AFTER_CURSTOMIZE_SEPARATOR,
+					      -1);
+
+
+	bonobo_ui_handler_menu_new_toggleitem (ui_handler,
+        				 NAUTILUS_MENU_PATH_TOOLBAR_ITEM,
+        				 _("Toolbar"),
+        				 _("Show/Hide Stuff"),
+        				 -1,
+        				 0,
+        				 0,
+        				 settings_menu_toolbar_callback,
+        				 window);
+	bonobo_ui_handler_menu_set_toggle_state (ui_handler, NAUTILUS_MENU_PATH_TOOLBAR_ITEM, TRUE);
+        				 
+
+	bonobo_ui_handler_menu_new_toggleitem (ui_handler,
+        				 NAUTILUS_MENU_PATH_LOCATIONBAR_ITEM,
+        				 _("Locationbar"),
+        				 _("Show/Hide Stuff"),
+        				 -1,
+        				 0,
+        				 0,
+        				 settings_menu_locationbar_callback,
+        				 window);        				 
+	bonobo_ui_handler_menu_set_toggle_state (ui_handler, NAUTILUS_MENU_PATH_LOCATIONBAR_ITEM, TRUE);
+
+	bonobo_ui_handler_menu_new_toggleitem (ui_handler,
+        				 NAUTILUS_MENU_PATH_STATUSBAR_ITEM,
+        				 _("Statusbar"),
+        				 _("Show/Hide Stuff"),
+        				 -1,
+        				 0,
+        				 0,
+        				 settings_menu_statusbar_callback,
+        				 window);        				 
+	bonobo_ui_handler_menu_set_toggle_state (ui_handler, NAUTILUS_MENU_PATH_STATUSBAR_ITEM, TRUE);
+
+	bonobo_ui_handler_menu_new_toggleitem (ui_handler,
+        				 NAUTILUS_MENU_PATH_SIDEBAR_ITEM,
+        				 _("Sidebar"),
+        				 _("Show/Hide Stuff"),
+        				 -1,
+        				 0,
+        				 0,
+        				 settings_menu_sidebar_callback,
+        				 window);    
+	bonobo_ui_handler_menu_set_toggle_state (ui_handler, NAUTILUS_MENU_PATH_SIDEBAR_ITEM, TRUE);
+	
+	bonobo_ui_handler_menu_new_toggleitem (ui_handler,
+        				 NAUTILUS_MENU_PATH_NORMALIZE_ITEM,
+        				 _("Normalize Menu"),
+        				 _("Show/Hide Stuff"),
+        				 -1,
+        				 0,
+        				 0,
+        				 settings_menu_normalize_menu_callback,
+        				 window);            				     				 
+	bonobo_ui_handler_menu_set_toggle_state (ui_handler, NAUTILUS_MENU_PATH_NORMALIZE_ITEM, FALSE);        				 
+#endif
 
 	/* Help */
         new_top_level_menu (window, NAUTILUS_MENU_PATH_HELP_MENU, _("_Help"));

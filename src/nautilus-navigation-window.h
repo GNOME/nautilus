@@ -171,4 +171,14 @@ void             nautilus_window_allow_stop           (NautilusWindow    *window
                                                        gboolean           allow);
 void             nautilus_bookmarks_exiting           (void);
 void		 nautilus_window_reload		      (NautilusWindow	 *window);
+
+void 		nautilus_window_hide_locationbar      (NautilusWindow 	 *window);
+void 		nautilus_window_show_locationbar      (NautilusWindow 	 *window);
+void 		nautilus_window_hide_toolbar          (NautilusWindow 	 *window);
+void 		nautilus_window_show_toolbar          (NautilusWindow 	 *window);
+void 		nautilus_window_hide_sidebar          (NautilusWindow 	 *window);
+void 		nautilus_window_show_sidebar          (NautilusWindow 	 *window);
+void 		nautilus_window_hide_statusbar        (NautilusWindow 	 *window);
+void 		nautilus_window_show_statusbar        (NautilusWindow 	 *window);
+
 #endif

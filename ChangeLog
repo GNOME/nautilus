@@ -1,3 +1,29 @@
+2000-07-08  Gene Z. Ragan  <gzr@eazel.com>
+
+	Work on bug 1021, should ba bale to open smaller Nautilus windows.
+	
+
+	* src/nautilus-window.c: (nautilus_window_constructed),
+	* src/nautilus-window.h:
+	(sidebar_panels_changed_callback),
+	(nautilus_window_hide_locationbar),
+	(nautilus_window_show_locationbar), (nautilus_window_hide_toolbar),
+	(nautilus_window_show_toolbar), (nautilus_window_hide_sidebar),
+	(nautilus_window_show_sidebar), (nautilus_window_hide_statusbar),
+	(nautilus_window_show_statusbar):
+	Added several new functions that control the visibility
+	of NautilusWindow elements.
+	
+	* src/nautilus-window-menus.c: (edit_menu_cut_callback),
+	(edit_menu_copy_callback), (settings_menu_toolbar_callback),
+	(settings_menu_locationbar_callback),
+	(settings_menu_statusbar_callback),
+	(settings_menu_sidebar_callback),
+	(settings_menu_normalize_menu_callback),
+	(nautilus_window_initialize_menus):
+	Test menu items to exercise the new code above.  These can be
+	removed from the build by undefining WINDOW_ITEMS_TEST.
+
 2000-07-08  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/install/nautilus-view/Makefile.am:
