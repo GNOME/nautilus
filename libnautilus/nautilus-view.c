@@ -437,16 +437,32 @@ nautilus_view_construct (NautilusView   *view,
 		(view, bonobo_control_new (widget));
 }
 
+static void
+widget_destroyed_callback (GtkWidget *widget,
+			   gpointer callback_data)
+{
+	g_assert (NAUTILUS_IS_VIEW (callback_data));
+
+	nautilus_bonobo_object_force_destroy_at_idle (BONOBO_OBJECT (callback_data));
+}
+
 NautilusView *
 nautilus_view_construct_from_bonobo_control (NautilusView   *view,
 					     BonoboControl  *control)
 {
+	GtkWidget *widget;
+
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
 	g_return_val_if_fail (BONOBO_IS_CONTROL (control), NULL);
 
 	view->details->control = control;
 	bonobo_object_add_interface (BONOBO_OBJECT (view), BONOBO_OBJECT (control));
 	nautilus_undo_set_up_bonobo_control (control);
+
+	widget = bonobo_control_get_widget (control);
+	gtk_signal_connect_while_alive (GTK_OBJECT (widget), "destroy",
+					widget_destroyed_callback, view,
+					GTK_OBJECT (view));
 
 	return view;
 }

@@ -37,21 +37,15 @@
 #include "nautilus-window.h"
 #include <bonobo/bonobo-zoomable-frame.h>
 #include <bonobo/bonobo-zoomable.h>
-#include <gtk/gtksignal.h>
 #include <gtk/gtkmain.h>
+#include <gtk/gtksignal.h>
 #include <libnautilus-extensions/nautilus-bonobo-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-undo-manager.h>
+#include <libnautilus/nautilus-bonobo-workarounds.h>
 #include <libnautilus/nautilus-idle-queue.h>
 #include <libnautilus/nautilus-view.h>
-
-/* FIXME bugzilla.eazel.com 2456: Is a hard-coded 12 seconds wait to
- * detect that a view is gone acceptable? Can a component that is
- * working still take 12 seconds to respond?
- */
-/* Milliseconds */
-#define VIEW_RESPONSE_TIMEOUT 12000
 
 enum {
 	CHANGE_SELECTION,
@@ -101,13 +95,12 @@ struct NautilusViewFrameDetails {
 	BonoboUIContainer *ui_container;
         NautilusUndoManager *undo_manager;
 
-	guint check_if_view_is_gone_timeout_id;
-
 	NautilusBonoboActivationHandle *activation_handle;
 
 	NautilusIdleQueue *idle_queue;
 
-	guint view_frame_failed_id;
+	guint failed_idle_id;
+	guint socket_gone_idle_id;
 };
 
 static void nautilus_view_frame_initialize       (NautilusViewFrame      *view);
@@ -339,6 +332,8 @@ destroy_view (NautilusViewFrame *view)
 	bonobo_object_release_unref (view->details->view, NULL);
 	view->details->view = CORBA_OBJECT_NIL;
 
+	nautilus_bonobo_object_call_when_remote_object_disappears
+		(view->details->view_frame, CORBA_OBJECT_NIL, NULL, NULL);
 	bonobo_object_unref (view->details->view_frame);
 	view->details->view_frame = NULL;
 	view->details->control_frame = NULL;
@@ -349,11 +344,6 @@ destroy_view (NautilusViewFrame *view)
 	}
 	bonobo_object_unref (BONOBO_OBJECT (view->details->ui_container));
 	view->details->ui_container = NULL;
-
-	if (view->details->check_if_view_is_gone_timeout_id != 0) {
-		g_source_remove (view->details->check_if_view_is_gone_timeout_id);
-		view->details->check_if_view_is_gone_timeout_id = 0;
-	}
 }
 
 static void
@@ -368,9 +358,13 @@ nautilus_view_frame_destroy (GtkObject *object)
 
 	nautilus_idle_queue_destroy (view->details->idle_queue);
 
-	if (view->details->view_frame_failed_id != 0) {
-		gtk_idle_remove (view->details->view_frame_failed_id);
-		view->details->view_frame_failed_id = 0;
+	if (view->details->failed_idle_id != 0) {
+		gtk_idle_remove (view->details->failed_idle_id);
+		view->details->failed_idle_id = 0;
+	}
+	if (view->details->socket_gone_idle_id != 0) {
+		gtk_idle_remove (view->details->socket_gone_idle_id);
+		view->details->socket_gone_idle_id = 0;
 	}
 
 	/* It's good to be in "failed" state while shutting down
@@ -581,31 +575,6 @@ nautilus_view_frame_new (BonoboUIContainer *ui_container,
 	return view_frame;
 }
 
-static gboolean
-check_if_view_is_gone (gpointer callback_data)
-{
-	NautilusViewFrame *view;
-	CORBA_Environment ev;
-	gboolean view_is_gone;
-
-	view = NAUTILUS_VIEW_FRAME (callback_data);
-
-	CORBA_exception_init (&ev);
-	view_is_gone = CORBA_Object_non_existent (view->details->view, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION) {
-		view_is_gone = TRUE;
-	}
-	CORBA_exception_free (&ev);
-	
-	if (!view_is_gone) {
-		return TRUE;
-	}
-
-	view->details->check_if_view_is_gone_timeout_id = 0;
-	view_frame_failed (view);
-	return FALSE;
-}
-
 static void
 emit_zoom_parameters_changed_callback (gpointer data,
 				       gpointer callback_data)
@@ -701,16 +670,13 @@ create_corba_objects (NautilusViewFrame *view)
 
 
 static gboolean
-view_frame_failed_callback (gpointer data)
+view_frame_failed_callback (gpointer callback_data)
 {
-	NautilusViewFrame *view = data;
+	NautilusViewFrame *view;
 
-	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
-
-	view->details->view_frame_failed_id = 0;
-
+	view = NAUTILUS_VIEW_FRAME (callback_data);
+	view->details->failed_idle_id = 0;
 	view_frame_failed (view);
-
 	return FALSE;
 }
 
@@ -719,9 +685,71 @@ queue_view_frame_failed (NautilusViewFrame *view)
 {
 	g_assert (NAUTILUS_IS_VIEW_FRAME (view));
 
-	if (view->details->view_frame_failed_id == 0)
-		view->details->view_frame_failed_id =
+	if (view->details->failed_idle_id == 0)
+		view->details->failed_idle_id =
 			gtk_idle_add (view_frame_failed_callback, view);
+}
+
+static void
+view_frame_failed_cover (BonoboObject *object,
+			 gpointer callback_data)
+{
+	view_frame_failed (NAUTILUS_VIEW_FRAME (callback_data));
+}
+
+static gboolean
+check_socket_gone_idle_callback (gpointer callback_data)
+{
+	NautilusViewFrame *frame;
+	GtkWidget *widget;
+	GList *children;
+
+	frame = NAUTILUS_VIEW_FRAME (callback_data);
+	
+	frame->details->socket_gone_idle_id = 0;
+
+	widget = bonobo_control_frame_get_widget (frame->details->control_frame);
+
+	/* This relies on details of the BonoboControlFrame
+	 * implementation, specifically that's there's one level of
+	 * hierarchy between the widget returned by get_widget and the
+	 * actual plug.
+	 */
+	children = gtk_container_children (GTK_CONTAINER (widget));
+	g_list_free (children);
+
+	/* If there's nothing inside the widget at all, that means
+	 * that the socket went away because the remote plug went away.
+	 */
+	if (children == NULL) {
+		view_frame_failed (frame);
+	}
+
+	return FALSE;
+}
+
+static void
+check_socket_gone_callback (GtkContainer *container,
+			    GtkWidget *widget,
+			    gpointer callback_data)
+{
+	NautilusViewFrame *frame;
+
+	frame = NAUTILUS_VIEW_FRAME (callback_data);
+
+	/* There are two times the socket will be destroyed in Bonobo.
+	 * One is when a local control decides to not use the socket.
+	 * The other is when the remote plug goes away. The way to
+	 * tell these apart is to wait until idle time. At idle time,
+	 * if there's nothing in the container, then that means the
+	 * real socket went away. If it was just the local control
+	 * deciding not to use the socket, there will be another
+	 * widget in there.
+	 */
+	if (frame->details->socket_gone_idle_id == 0) {
+		frame->details->socket_gone_idle_id = gtk_idle_add
+			(check_socket_gone_idle_callback, callback_data);
+	}
 }
 
 static void
@@ -745,6 +773,8 @@ attach_view (NautilusViewFrame *view,
 
 	create_corba_objects (view);
 
+	widget = bonobo_control_frame_get_widget (view->details->control_frame);
+
 	gtk_signal_connect_object_while_alive
 		(GTK_OBJECT (view->details->view_frame),
 		 "destroy",
@@ -758,6 +788,12 @@ attach_view (NautilusViewFrame *view,
 		(GTK_OBJECT (view->details->control_frame),
 		 "system_exception",
 		 queue_view_frame_failed, GTK_OBJECT (view));
+
+	gtk_signal_connect_while_alive
+		(GTK_OBJECT (widget),
+		 "remove",
+		 check_socket_gone_callback, view,
+		 GTK_OBJECT (view));
 
 	if (view->details->zoomable_frame != NULL) {
 		gtk_signal_connect_object_while_alive
@@ -777,15 +813,16 @@ attach_view (NautilusViewFrame *view,
 			 GTK_OBJECT (view));
 	}
 
-	widget = bonobo_control_frame_get_widget (view->details->control_frame);
 	gtk_widget_show (widget);
 	gtk_container_add (GTK_CONTAINER (view), widget);
 	
 	view_frame_activated (view);
 
-	g_assert (view->details->check_if_view_is_gone_timeout_id == 0);
-	view->details->check_if_view_is_gone_timeout_id
-		= g_timeout_add (VIEW_RESPONSE_TIMEOUT, check_if_view_is_gone, view);
+	nautilus_bonobo_object_call_when_remote_object_disappears
+		(view->details->view_frame,
+		 view->details->view,
+		 view_frame_failed_cover,
+		 view);
 }
 
 static void

@@ -28,25 +28,22 @@
 #include <config.h>
 #include "nautilus-throbber.h"
 
-#include <libgnome/gnome-defs.h>
-#include <bonobo.h>
-
-#include <math.h>
-#include <gnome.h>
-#include <gdk/gdk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gtk/gtksignal.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
+#include <gtk/gtksignal.h>
+#include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-pixmap.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
-#include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-theme.h>
+#include <libnautilus/nautilus-bonobo-workarounds.h>
+#include <math.h>
 
 #define THROBBER_DEFAULT_TIMEOUT 100	/* Milliseconds Per Frame */
 
@@ -188,6 +185,8 @@ static void
 nautilus_throbber_destroy (GtkObject *object)
 {
 	NautilusThrobber *throbber = NAUTILUS_THROBBER (object);
+
+	nautilus_bonobo_object_force_destroy_at_idle (throbber->details->control);
 	
 	nautilus_throbber_remove_update_callback (throbber);
 	nautilus_throbber_unload_images (throbber);
@@ -247,6 +246,13 @@ get_throbber_dimensions (NautilusThrobber *throbber, int *throbber_width, int* t
 	*throbber_height = current_height;
 }
 
+static void
+null_pointer_callback (GtkObject *object,
+		       gpointer callback_data)
+{
+	* (gpointer *) callback_data = NULL;
+}
+
 /* initialize the throbber */
 static void
 nautilus_throbber_initialize (NautilusThrobber *throbber)
@@ -277,7 +283,12 @@ nautilus_throbber_initialize (NautilusThrobber *throbber)
 	}
 	
 	/* make the bonobo control */
-	throbber->details->control = (BonoboObject*) bonobo_control_new (widget);
+	throbber->details->control = BONOBO_OBJECT (bonobo_control_new (widget));
+	gtk_signal_connect_while_alive (GTK_OBJECT (throbber->details->control),
+					"destroy",
+					null_pointer_callback,
+					&throbber->details->control,
+					GTK_OBJECT (throbber));
 	
 	/* attach a property bag with the configure property */
 	throbber->details->property_bag = bonobo_property_bag_new (get_bonobo_properties, 

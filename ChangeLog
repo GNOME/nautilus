@@ -1,3 +1,56 @@
+2001-03-28  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	A change to reduce the number of orphaned processes when Nautilus
+	is not terminated cleanly. This is an architecture problem, and
+	this hack only partly addresses it.
+
+	Add code to NautilusViewFrame, NautilusView, and NautilusThrobber
+	to destroy components when the corresponding widgets are
+	destroyed.  Since X destroys windows when processes go away, this
+	tells us immediately when processes disappear. This does not help
+	in the case where Nautilus happens to die after creating a
+	component, but before attaching the widget to its parent.
+
+	This is not a complete solution to the orphaned processes problem
+	because of 2 other categories of orphaned processes:
+	
+	    1) the adapter factory
+	    2) non-NautilusView components, which won't get the advantage
+	       of this fix because it's in Nautilus (a fix could go into
+	       Bonobo, or into each component)
+
+	* libnautilus/nautilus-bonobo-workarounds.h:
+	* libnautilus/nautilus-bonobo-workarounds.c:
+	(set_gone_flag), (nautilus_bonobo_object_force_destroy),
+	(object_is_gone), (remote_check_data_free),
+	(remote_check_timed_callback), (remote_check_destroy_callback),
+	(nautilus_bonobo_object_call_when_remote_object_disappears),
+	(force_destroy_cover),
+	(nautilus_bonobo_object_force_destroy_when_owner_disappears):
+	New code, implementing the machinery to notice when remote objects
+	go away and to self-destruct when they do. Also code that does the
+	timeout that used to be in NautilusViewFrame.
+	
+	* libnautilus/nautilus-view.c: (widget_destroyed_callback),
+	(nautilus_view_construct_from_bonobo_control): Connect to the
+	widget's destroy signal, and self-destruct when it happens.
+	
+	* components/throbber/nautilus-throbber.c:
+	(nautilus_throbber_destroy), (null_pointer_callback),
+	(nautilus_throbber_initialize): Destroy the BonoboControl when the
+	throbber (a widget) is destroyed. Requires noticing when the
+	control goes away (the old code just had a stale pointer to it).
+	
+	* src/nautilus-view-frame.c: (destroy_view),
+	(nautilus_view_frame_destroy), (view_frame_failed_callback),
+	(queue_view_frame_failed), (view_frame_failed_cover),
+	(check_socket_gone_idle_callback), (check_socket_gone_callback),
+	(attach_view): Use the new machinery instead of doing it
+	ourselves, but sadly had to add some fairly complex code to catch
+	the case where the socket is destroyed because the plug is gone.
+
 2001-03-28  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/command-line/eazel-test-softcat.c:
