@@ -929,7 +929,7 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 	view->details->tree = nautilus_ctree_new (1, 0);
 
 	gtk_object_set_data (GTK_OBJECT(view->details->tree), "tree_view", (gpointer) view);
-	gtk_widget_add_events(GTK_WIDGET(view->details->tree), GDK_POINTER_MOTION_MASK);
+	gtk_widget_add_events (GTK_WIDGET(view->details->tree), GDK_POINTER_MOTION_MASK);
 	
 	/* override the default handlers */
 	gtk_signal_connect (GTK_OBJECT (view->details->tree),
@@ -1481,6 +1481,8 @@ nautilus_tree_view_drag_begin (GtkWidget *widget, GdkDragContext *context,
 
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
 				      "drag_begin");
+
+	dnd->drag_info->got_drop_data_type = FALSE;
 }
 
 static void
@@ -1492,6 +1494,16 @@ nautilus_tree_view_drag_end (GtkWidget *widget, GdkDragContext *context,
 
 }
 
+
+/* FIXME:
+   drag_leave is emitted when you leave the area _OR_ when you do a drop.
+   So, the thing is when you drop, since we are now in a in-process case, 
+   the _leave signal is emited before the final drag_data_received is 
+   actually called. This is _bad_.
+   I need to proofread the code to make sure nothing really strange 
+   happen here 
+   -- Mathieu
+*/
 
 static void
 nautilus_tree_view_drag_leave (GtkWidget *widget,
@@ -1518,9 +1530,6 @@ nautilus_tree_view_drag_leave (GtkWidget *widget,
 
 	gtk_signal_emit_stop_by_name (GTK_OBJECT (widget),
 				      "drag_leave");
-	/* reinit for next dnd */
-	dnd->drag_info->got_drop_data_type = FALSE;
-
 }
 
 static gboolean 
@@ -1625,7 +1634,6 @@ nautilus_tree_view_drag_data_received (GtkWidget *widget,
 	if (!drag_info->got_drop_data_type) {
 		drag_info->data_type = info;
 		drag_info->got_drop_data_type = TRUE;
-
 
 		/* save operation for drag motion events */
 		switch (info) {
@@ -2049,6 +2057,7 @@ nautilus_tree_view_is_tree_node_expanded (NautilusCTree *tree, NautilusCTreeNode
 
 	return is_expanded;
 }
+
 static void
 nautilus_tree_view_expand_or_collapse_row (NautilusCTree *tree, int row)
 {
@@ -2485,7 +2494,6 @@ nautilus_tree_view_free_drag_data (NautilusTreeView *tree_view)
 	NautilusDragInfo *drag_info;
 	
 	drag_info = tree_view->details->dnd->drag_info;
-	
 	drag_info->got_drop_data_type = FALSE;
 #if 0	
 	if (dnd_info->shadow != NULL) {
