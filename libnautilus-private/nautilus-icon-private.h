@@ -198,6 +198,9 @@ struct NautilusIconContainerDetails {
 	
 	/* Layout mode */
 	NautilusIconLayoutMode layout_mode;
+
+	/* Set to TRUE after first allocation has been done */
+	gboolean has_been_allocated;
 	
 	/* Is the container fixed or resizable */
 	gboolean is_fixed_size;

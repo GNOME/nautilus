@@ -126,8 +126,7 @@ nautilus_desktop_window_new (NautilusApplication *application)
 	/* Point window at the desktop folder.
 	 * Note that nautilus_desktop_window_initialize is too early to do this.
 	 */
-	desktop_directory_uri = gnome_vfs_get_uri_from_local_path
-		(desktop_directory_path);
+	desktop_directory_uri = gnome_vfs_get_uri_from_local_path (desktop_directory_path);
 	g_free (desktop_directory_path);
 	nautilus_window_goto_uri (NAUTILUS_WINDOW (window), desktop_directory_uri);
 	g_free (desktop_directory_uri);

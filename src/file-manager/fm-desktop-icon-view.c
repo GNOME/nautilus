@@ -880,7 +880,7 @@ find_and_update_home_link (void)
 			/* Ignore directories.  The home link is at the top level */
 			if (!S_ISDIR (status.st_mode)) {
 				/* Check and see if this is a home link */
-				link_path = nautilus_make_path (desktop_path, this_entry->d_name);				
+				link_path = nautilus_make_path (desktop_path, this_entry->d_name);
 				if (nautilus_link_local_is_home_link (link_path)) {
 
 					/* Create the home link */					

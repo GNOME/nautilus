@@ -700,10 +700,6 @@ special_link_in_selection (FMDirectoryView *view)
 		return TRUE;
 	}
 
-	if (fm_directory_link_type_in_selection (view, NAUTILUS_LINK_HOME)) {
-		return TRUE;
-	}
-
 	if (fm_directory_link_type_in_selection (view, NAUTILUS_LINK_MOUNT)) {
 		return TRUE;
 	}

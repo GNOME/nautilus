@@ -1,3 +1,43 @@
+2000-11-15  Gene Z. Ragan  <gzr@eazel.com>	
+
+	Fixed bug 4717, Nautilus draw desktop icons overlapping.
+
+	The problem was caused by the icon container responding to
+	an idle function that lays out icons that had been
+	newly added.  This is a problem if the callback is called
+	form an idle after th eicon container has been created, but
+	before a size has been allocated. A nely intialized GtkWidget
+	has a default allocation of 0, 0, 1, 1 which is too small
+	for the layout algorithm to work properly.  A flag was added
+	that is set to TRUE when the size_allocate function is called.
+	
+	* src/nautilus-desktop-window.c: (nautilus_desktop_window_new):
+	Set has_been_allocated to FALSE initially.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(size_allocate), (nautilus_icon_container_initialize),
+	(nautilus_icon_container_add):
+	Checj status of has_been_allocated flag before adding
+	and laying out new icons.
+	
+	* libnautilus-extensions/nautilus-icon-private.h:
+	Added has_been_allocated flag that is set to TRUE
+	when size_allocated is first called.
+
+	Work in progress on allowing desktop links to be renamed.
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(find_and_update_home_link):
+	Allow renaming of home links.
+	
+	* src/file-manager/fm-icon-view.c: 
+	(special_link_in_selection):
+	Removed home link from special link types.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_can_rename):
+	Allow renaming of home link types.
+
 2000-11-15  Rebecca Schulman  <rebecka@eazel.com>
 	This change is the first part of the fix for bug 3920.
 	The fix will allow nautilus to tell a user that the

@@ -701,6 +701,10 @@ nautilus_file_can_rename (NautilusFile *file)
 {
 	NautilusFile *parent;
 	gboolean result;
+	const char *path;
+	char *text_uri, *unescaped_path;
+	GnomeVFSURI *uri;
+	gboolean can_rename_link;
 	
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
@@ -716,7 +720,36 @@ nautilus_file_can_rename (NautilusFile *file)
 
 	/* Certain types of links can't be renamed */
 	if (nautilus_file_is_nautilus_link (file)) {
-		return FALSE;
+		text_uri = nautilus_file_get_uri (file);
+		uri = gnome_vfs_uri_new (text_uri);
+		path = gnome_vfs_uri_get_path (uri);
+		unescaped_path = gnome_vfs_unescape_string_for_display (path);
+		
+		switch (nautilus_link_local_get_link_type (unescaped_path)) {
+			case NAUTILUS_LINK_HOME:
+				can_rename_link = TRUE;
+				break;
+							
+			case NAUTILUS_LINK_TRASH:
+			case NAUTILUS_LINK_MOUNT:
+				can_rename_link = FALSE;
+				break;
+
+			case NAUTILUS_LINK_GENERIC:
+				can_rename_link = FALSE;
+				break;
+				
+			default:
+				can_rename_link = FALSE;
+				break;
+		}
+
+		g_free (text_uri);
+		gnome_vfs_uri_unref (uri);
+
+		if (!can_rename_link) {
+			return FALSE;
+		}
 	}
 	
 	/* User must have write permissions for the parent directory. */

@@ -2191,6 +2191,8 @@ static void
 size_allocate (GtkWidget *widget,
 	       GtkAllocation *allocation)
 {
+	NAUTILUS_ICON_CONTAINER (widget)->details->has_been_allocated = TRUE;
+
 	if (allocation->x != widget->allocation.x || 
 	    allocation->width != widget->allocation.width ||
 	    allocation->y != widget->allocation.y ||
@@ -3148,6 +3150,7 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 	container->details->rename_widget = NULL;
 	container->details->original_text = NULL;
 	container->details->type_select_state = NULL;
+	container->details->has_been_allocated = FALSE;
 }
 
 static gboolean
@@ -3694,11 +3697,11 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 	details->new_icons = g_list_prepend (details->new_icons, icon);
 
 	/* Run an idle function to add the icons. */
-	if (container->details->idle_id == 0) {
+	if (container->details->idle_id == 0 && container->details->has_been_allocated) {
 		container->details->idle_id = gtk_idle_add
 			(finish_adding_new_icons_callback, container);
 	}
-
+	
 	return TRUE;
 }
 
