@@ -35,6 +35,7 @@ nautilus_music_view_SOURCES =		        \
 	decode_i386.c  				\
 	decode_ntom.c  				\
 	dxhead.c  				\
+	dxhead.h  				\
 	mpg123.c				\
 	mpg123.h				\
 	common.c				\

@@ -412,7 +412,7 @@ music_view_set_selected_song_title (NautilusMusicView *music_view, int row)
 
 /* handle a row being selected in the list view by playing the corresponding song */
 static void 
-selection_callback (GtkCList * clist, int row, int column, GdkEventButton * event, NautilusMusicView* music_view)
+selection_callback (GtkCList *clist, int row, int column, GdkEventButton *event, NautilusMusicView *music_view)
 {
 	gboolean is_playing;
 	char *song_name;
@@ -434,10 +434,14 @@ selection_callback (GtkCList * clist, int row, int column, GdkEventButton * even
         }
 
         music_view_set_selected_song_title (music_view, row);
+
+        /* Play if playback was already happening or there was a double click */
+	//if ((is_playing) || (event->type == GDK_2BUTTON_PRESS)) {
 	if (is_playing) {
 		play_current_file (music_view, FALSE);
         }
 } 
+
 
 /* handle clicks in the songlist columns */
 static void
@@ -1108,6 +1112,10 @@ go_to_previous_track (NautilusMusicView *music_view)
 static void
 play_button_callback (GtkWidget *widget, NautilusMusicView *music_view)
 {
+	if (get_player_state (music_view) == PLAYER_PLAYING) {
+		return;
+	}
+	
 	play_current_file (music_view, FALSE);
 }
 

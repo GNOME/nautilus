@@ -298,8 +298,6 @@ esdout_write (gpointer ptr, gint length)
 void 
 esdout_close (void)
 {
-	g_message ("esdout_close");
-
 	if (!going) {
 		return;
 	}
