@@ -1,5 +1,18 @@
 1999-12-16  Havoc Pennington  <hp@redhat.com>
 
+	* src/file-manager/gnome-desktop.c (main): warning fixes
+
+	* src/file-manager/desktop-canvas.c
+	(desktop_canvas_update_background): start actually honoring
+	background settings.
+
+	* src/file-manager/fm-icon-cache.c: add copyright and Emacs magic.
+
+	* src/file-manager/fm-icon-cache.h (fm_icon_cache_get_icon): Run
+	egtk-format-protos on these prototypes, add copyright and Emacs magic
+
+1999-12-16  Havoc Pennington  <hp@redhat.com>
+
 	* src/file-manager/desktop-canvas.h: Added API for controlling the 
 	background, so we can connect that to the IDL interface.
 

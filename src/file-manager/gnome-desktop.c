@@ -31,7 +31,7 @@
 #include "desktop-window.h"
 #include "desktop-canvas.h"
 
-gint
+static gint
 delete_event_cb(GtkWidget* window, GdkEventAny* event, gpointer data)
 {
   gtk_main_quit();
@@ -42,10 +42,11 @@ main (int argc, char *argv[])
 {
         GtkWidget *window;
         GtkWidget *canvas;
-        
+
+#if 0
         bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
         textdomain (PACKAGE);
-        
+#endif   
         gnome_init ("gnome-desktop", VERSION, argc, argv);
         
         window = desktop_window_new();

@@ -84,7 +84,8 @@ typedef struct _DesktopCanvasClass DesktopCanvasClass;
 struct _DesktopCanvas {
         GnomeCanvas canvas;
 
-        DesktopBackgroundInfo *background_info;        
+        DesktopBackgroundInfo *background_info;
+        guint background_update_idle;
 };
 
 struct _DesktopCanvasClass {
