@@ -244,7 +244,7 @@ install_all_packages (EazelInstall *service,
 
 			pack = (PackageData*)iterator->data;
 			inst_status = eazel_install_check_existing_packages (service, pack);		      
-			g_message ("inst status = %d", inst_status);
+			g_message ("%s: install status = %d", pack->name, inst_status);
 			/* If in force mode, install it under all circumstances.
 			   if not, only install if not already installed in same
 			   version or up/downgrade is set */
@@ -561,7 +561,6 @@ eazel_install_start_transaction_make_argument_list (EazelInstall *service,
 	return args;
 }
 
-#ifndef EAZEL_INSTALL_SLIM
 static void
 eazel_install_do_transaction_save_report_helper (xmlNodePtr node,
 						     GList *packages)
@@ -645,8 +644,8 @@ eazel_install_do_transaction_save_report (EazelInstall *service)
 	xmlDocDump (outfile, doc);
 	
 	fclose (outfile);
-	g_free (name);}
-#endif /* EAZEL_INSTALL_SLIM */
+	g_free (name);
+}
 
 static gboolean
 eazel_install_monitor_rpm_propcess_pipe (GIOChannel *source,
@@ -734,9 +733,7 @@ eazel_install_monitor_rpm_propcess_pipe (GIOChannel *source,
 		}
 	} 
 	if (bytes_read == 0) {
-#ifndef EAZEL_INSTALL_SLIM
 		eazel_install_do_transaction_save_report (service);
-#endif /* EAZEL_INSTALL_SLIM     */
 		return FALSE;
 	} else {
 		return TRUE;
@@ -971,14 +968,15 @@ eazel_install_prune_packages (EazelInstall *service,
 			PackageData *pack;
 			pack = (PackageData*)iterator->data;
 			(*packages) = g_list_remove (*packages, pack);
-	};
+		};
 	} while ( (packages = va_arg (ap, GList **)) != NULL);
-
+	
 	for (iterator = pruned; iterator; iterator = iterator->next) {
 		PackageData *pack;
 		pack = (PackageData*)iterator->data;
 		packagedata_destroy (pack);
 	};
+
 	g_list_free (pruned);
 
 	va_end (ap);
@@ -1427,14 +1425,18 @@ eazel_install_fetch_rpm_dependencies (EazelInstall *service,
 				break;
 			}
 		} else {
-			/* Does the conflict look like a file dependency ? */
 			pack = (PackageData*)pack_entry->data;
+			/* Does the conflict look like a file dependency ? */
 			if (*conflict.needsName=='/' || strstr (conflict.needsName, ".so")) {
-				g_message (_("Processing dep for %s : requires %s"), 
+				g_message (_("Processing dep for %s : requires library %s"), 
 					   pack->name, conflict.needsName);		
+#ifndef EAZEL_INSTALL_SLIM
 				dep = packagedata_new ();
 				dep->name = g_strdup (conflict.needsName);
 				fetch_from_file_dependency = TRUE;
+#else
+				continue;
+#endif
 			} else {
 				dep = packagedata_new_from_rpm_conflict (conflict);
 				dep->archtype = g_strdup (pack->archtype);
@@ -1552,7 +1554,7 @@ print_package_list (char *str, GList *packages, gboolean show_deps)
 {
 	GList *iterator;
 	PackageData *pack;
-	char *tmp;
+	char *tmp = NULL;
 	char *dep = " depends on ";
 	char *breaks = " breaks ";
 
@@ -1572,6 +1574,7 @@ print_package_list (char *str, GList *packages, gboolean show_deps)
 				tmp = tmp2;
 				it2 = it2->next;
 			}
+/*
 			tmp = g_strdup (breaks);
 			it2 = pack->breaks;
 			while (it2) { 
@@ -1585,11 +1588,14 @@ print_package_list (char *str, GList *packages, gboolean show_deps)
 				tmp = tmp2;
 				it2 = it2->next;
 			}
+*/
 		}
 		g_message ("* %s (%s) %s", 
 			   rpmfilename_from_packagedata (pack), 
 			   pack->toplevel ? "true" : "", 
-			   (strlen (tmp) > strlen (dep)) ? tmp : "");
+			   (tmp && strlen (tmp) > strlen (dep)) ? tmp : "");
+		g_free (tmp);
+		tmp = NULL;
 	}
 }
 

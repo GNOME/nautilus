@@ -58,6 +58,7 @@ static char *package_list[LAST] = {
 static char *failure_info = NULL;
 int installer_debug = 0;
 int installer_test = 0;
+int installer_force = 0;
 int installer_local = 0;
 
 static void 
@@ -92,9 +93,9 @@ eazel_install_progress (EazelInstall *service,
 					  gtk_text_get_length (GTK_TEXT (summary)));
 		gtk_text_insert (GTK_TEXT (summary), 
 				 NULL, NULL, NULL,
-				 package->description, strlen (package->summary));
+				 package->description, strlen (package->description));
 #endif
-			
+		fprintf (stdout, "\n");
 	}
 
 	if (installer_debug) {
@@ -173,42 +174,48 @@ install_failed_helper (EazelInstall *service,
 
 	if (pd->toplevel) {
 		char *tmp;
-		tmp = g_strdup_printf ("%s\n***The package %s failed. Here's the dep tree\n", *str, pd->name);
+		tmp = g_strdup_printf ("%s\n***The package %s failed. Here's the dep tree\n", 
+				       (*str)?*str:"", pd->name);
 		g_free (*str);
 		(*str) = tmp;
 	}
 	switch (pd->status) {
 	case PACKAGE_DEPENDENCY_FAIL: {
 		char *tmp;
-		tmp = g_strdup_printf ("%s%s-%s failed\n", *str, indent, rpmfilename_from_packagedata (pd));
+		tmp = g_strdup_printf ("%s%s-%s failed\n", 
+				       (*str)?*str:"", indent, rpmfilename_from_packagedata (pd));
 		g_free (*str);
 		(*str) = tmp;
 		break;
 	}
 	case PACKAGE_CANNOT_OPEN: {
 		char *tmp;
-		tmp = g_strdup_printf ("%s%s-%s NOT FOUND\n", *str, indent, rpmfilename_from_packagedata (pd));
+		tmp = g_strdup_printf ("%s%s-%s NOT FOUND\n", 
+				       (*str)?*str:"", indent, rpmfilename_from_packagedata (pd));
 		g_free (*str);
 		(*str) = tmp;
 		break;		
 	}
 	case PACKAGE_SOURCE_NOT_SUPPORTED: {
 		char *tmp;
-		tmp = g_strdup_printf ("%s%s-%s is a source\n", *str, indent, rpmfilename_from_packagedata (pd));
+		tmp = g_strdup_printf ("%s%s-%s is a source\n", 
+				       (*str)?*str:"", indent, rpmfilename_from_packagedata (pd));
 		g_free (*str);
 		(*str) = tmp;
 		break;
 	}
 	case PACKAGE_BREAKS_DEPENDENCY: {
 		char *tmp;
-		tmp = g_strdup_printf ("%s%s-%s breaks\n", *str, indent, rpmfilename_from_packagedata (pd));
+		tmp = g_strdup_printf ("%s%s-%s breaks\n", 
+				       (*str)?*str:"", indent, rpmfilename_from_packagedata (pd));
 		g_free (*str);
 		(*str) = tmp;
 		break;
 	}
 	default: {
 		char *tmp;
-		tmp = g_strdup_printf ("%s%s-%s\n", *str, indent, rpmfilename_from_packagedata (pd));
+		tmp = g_strdup_printf ("%s%s-%s\n", 
+				       (*str)?*str:"", indent, rpmfilename_from_packagedata (pd));
 		g_free (*str);
 		(*str) = tmp;
 		break;
@@ -304,21 +311,33 @@ eazel_install_dep_check (EazelInstall *service,
 			 const PackageData *needs,
 			 GtkWidget *widget)
 {
-	GtkLabel *action_label;
 	GtkLabel *package_label;
+	GtkWidget *summary;
 	char *tmp;
 
-	action_label = gtk_object_get_data (GTK_OBJECT (widget), "action_label");
 	package_label = gtk_object_get_data (GTK_OBJECT (widget), "package_label");
+	summary = gtk_object_get_data (GTK_OBJECT (widget), "summary");
 
-	tmp = g_strdup_printf ("%s needs %d", pack->name, needs->name);
+	tmp = g_strdup_printf ("%s needs %s", pack->name, needs->name);
 
 	if (installer_debug) {
 		fprintf (stdout, "DEP CHECK : %s\n", tmp);
 	}
 
-	gtk_label_set_text (action_label, "Dep check :");
 	gtk_label_set_text (package_label, tmp);
+	g_free (tmp);
+	tmp = g_strdup_printf ("Fetching dependencies for %s", pack->name);
+		
+#ifdef NO_TEXT_BOX
+	gtk_label_set_text (GTK_LABEL (summary), tmp);
+#else
+	gtk_text_backward_delete (GTK_TEXT (summary), 
+				  gtk_text_get_length (GTK_TEXT (summary)));
+	gtk_text_insert (GTK_TEXT (summary), 
+			 NULL, NULL, NULL,
+			 tmp, strlen (tmp));
+#endif
+	g_free (tmp);
 
 	g_main_iteration (FALSE);
 }
@@ -376,7 +395,6 @@ check_system (GtkWidget *window)
 	} 
 #endif
 
-	g_message ("checking for rehat");
 	if (dist.name != DISTRO_REDHAT) {
 		GnomeDialog *d;
 		d = GNOME_DIALOG (gnome_warning_dialog_parented (_("This preview installer only works\n"
@@ -426,10 +444,6 @@ void installer (GtkWidget *window,
 	GtkLabel *package_label;
 	GtkLabel *action_label;
 */
-	if (method==UPGRADE) {
-		gnome_warning_dialog ("We don't do UPGRADE yet");
-		return;
-	}
 	
 	/* We set force, update and downgrade to true. */
 	service = EAZEL_INSTALL (gtk_object_new (TYPE_EAZEL_INSTALL,
@@ -437,7 +451,7 @@ void installer (GtkWidget *window,
 						 "silent", FALSE,
 						 "debug", TRUE,
 						 "test", installer_test ? TRUE : FALSE, 
-						 "force", FALSE,
+						 "force", installer_force ? TRUE : FALSE,
 						 "depend", FALSE,
 						 "update", TRUE,
 						 "uninstall", method==UNINSTALL ? TRUE : FALSE,
@@ -452,6 +466,9 @@ void installer (GtkWidget *window,
 						 "transaction_dir", EAZEL_SERVICES_DIR,
 						 NULL));
 	g_assert (service != NULL);
+
+	g_free (failure_info);
+	failure_info = NULL;
 
 	if (!installer_debug) {
 		eazel_install_open_log (service, "/tmp/nautilus-install.log");

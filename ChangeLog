@@ -1,3 +1,44 @@
+2000-08-22  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(install_all_packages), 
+	Print package name in front of install status
+	
+	(eazel_install_do_transaction_save_report),
+	(eazel_install_monitor_rpm_propcess_pipe),
+	Use transaction even when EAZEL_INSTALL_SLIM is defined. The lets
+	the bootstrap installer save a transaction for the install of
+	nautilus.
+	
+	(eazel_install_prune_packages),
+	indention fix
+	
+	(eazel_install_fetch_rpm_dependencies), 
+	When EAZEL_INSTALL_SLIM, ignore lib dep problems. This is a temp
+	fix while the installer does not use SoftCat
+	
+	(print_package_list)
+	Horrible mem mishandling
+	
+	* nautilus-installer/src/Makefile:
+	* nautilus-installer/src/Makefile.am:
+	Added -EAZEL_INSTALL_SLIM and -DNO_TEXT_BOX to the makefile
+	
+	* nautilus-installer/src/callbacks.c: (begin_install):
+	After install, jump to next page
+	
+	* nautilus-installer/src/installer.c: (eazel_install_progress),
+	, (eazel_install_dep_check), (check_system),
+	(installer),
+	Use the gtk_label instead of a gtk_text thingy.
+
+	(install_failed_helper):
+	Fixed output format
+		
+	* nautilus-installer/src/interface.c: (create_what_to_do_page):
+	* nautilus-installer/src/main.c:
+	Added the --force option, to force install.
+
 2000-08-22  J Shane Culpepper  <pepper@eazel.com>
 
 	 

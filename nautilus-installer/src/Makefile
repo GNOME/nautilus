@@ -66,7 +66,7 @@ BONOBO_CFLAGS = -I/gnome/include -DNEED_GNOMESUPPORT_H -I/gnome/lib/gnome-libs/i
 BONOBO_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -L/usr/lib -lbonobo -lgdk_pixbuf -ltiff -ljpeg -lpng -lgnomeprint -lgnomeui -lart_lgpl -lgdk_imlib -lSM -lICE -lgtk -lgdk -lgmodule -lXext -lX11 -lgnome -lgnomesupport -lesd -laudiofile -ldb1 -ldl -lxml -lz -loaf -lORBitCosNaming -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
 BONOBO_PRINT_CFLAGS = 
 BONOBO_PRINT_LIBS = 
-CATALOGS =  da.gmo de.gmo fr.gmo gl.gmo ja.gmo ko.gmo no.gmo ru.gmo sv.gmo tr.gmo zh_TW.Big5.gmo
+CATALOGS =  da.gmo de.gmo fr.gmo gl.gmo it.gmo ja.gmo ko.gmo no.gmo pt_BR.gmo ru.gmo sv.gmo tr.gmo zh_TW.Big5.gmo
 CATOBJEXT = .gmo
 CC = gcc
 CPP = gcc -E
@@ -87,7 +87,7 @@ GHTTP_LIBS = -L/gnome/lib -lghttp
 GLIB_CFLAGS = -I/gnome/lib/glib/include -I/gnome/include
 GLIB_CONFIG = /gnome/bin/glib-config
 GLIB_LIBS = -L/gnome/lib -lglib
-GMOFILES =  da.gmo de.gmo fr.gmo gl.gmo ja.gmo ko.gmo no.gmo ru.gmo sv.gmo tr.gmo zh_TW.Big5.gmo
+GMOFILES =  da.gmo de.gmo fr.gmo gl.gmo it.gmo ja.gmo ko.gmo no.gmo pt_BR.gmo ru.gmo sv.gmo tr.gmo zh_TW.Big5.gmo
 GMSGFMT = /usr/bin/msgfmt
 GNOMECANVASPIXBUF_INCLUDEDIR = 
 GNOMECANVASPIXBUF_LIBS = -rdynamic -L/gnome/lib -L/usr/X11R6/lib -lgdk_pixbuf -ltiff -ljpeg -lpng -lz -lgtk -lgdk -lgmodule -lglib -ldl -lXext -lX11 -lm -lgnomecanvaspixbuf
@@ -137,7 +137,7 @@ ORBIT_IDL = /gnome/bin/orbit-idl
 ORBIT_LIBS = -L/gnome/lib -lORBit -lIIOP -lORBitutil -lglib -lnsl -lm
 PACKAGE = nautilus
 PAM_LIBS = -ldl -lpam -lpam_misc
-POFILES =  da.po de.po fr.po gl.po ja.po ko.po no.po ru.po sv.po tr.po zh_TW.Big5.po
+POFILES =  da.po de.po fr.po gl.po it.po ja.po ko.po no.po pt_BR.po ru.po sv.po tr.po zh_TW.Big5.po
 POSUB = po
 RANLIB = ranlib
 RPM_LIBS = -lrpm -lz -lbz2 -lpopt -ldb
@@ -159,7 +159,7 @@ NULL =
 INCLUDES =  	-I$(top_srcdir)/components/services/install/lib 		-I$(top_srcdir)/components/services/trilobite			-I/usr/include/rpm						$(GNOMEUI_CFLAGS)						$(XML_CFLAGS)							$(GHTTP_CFLAGS)							$(GNOME_INCLUDEDIR)						-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 			-DG_LOG_DOMAIN=\"Nautilus-Installer\"				$(NULL)
 
 
-CPPFLAGS = -DEAZEL_INSTALL_NO_CORBA
+CPPFLAGS = -DEAZEL_INSTALL_NO_CORBA -DEAZEL_INSTALL_SLIM -DNO_TEXT_BOX
 
 CFLAGS = -g
 

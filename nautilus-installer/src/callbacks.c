@@ -49,8 +49,10 @@ gboolean
 begin_install                          (gpointer         window)
 {
 	GnomeDruid *druid;
+	GnomeDruidPage *nextpage;
 
 	druid = GNOME_DRUID (gtk_object_get_data (GTK_OBJECT (window), "druid"));
+	nextpage = GNOME_DRUID_PAGE (gtk_object_get_data (GTK_OBJECT (window), "finish_page"));
 	gnome_druid_set_buttons_sensitive(druid,TRUE,FALSE,TRUE);
 
 	if (GTK_TOGGLE_BUTTON (gtk_object_get_data (GTK_OBJECT (window), 
@@ -73,9 +75,10 @@ begin_install                          (gpointer         window)
 							   "uninstall_button"))->active) {
 		g_message ("uninstall");
 		installer (window, UNINSTALL);
-	} 
+	}       
 
 	gnome_druid_set_buttons_sensitive(druid,TRUE,TRUE,TRUE);
+	gnome_druid_set_page (druid, nextpage);
 	
 	return FALSE;
 }

@@ -128,19 +128,17 @@ create_what_to_do_page (GtkWidget *druid, GtkWidget *window)
 	gtk_widget_set_uposition (nautilus_only_button, 72, 56);
 	gtk_widget_set_usize (nautilus_only_button, 0, 0);
 
-/*
 	services_only_button = gtk_radio_button_new_with_label (fixed3_group, _("*"));
 	fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (services_only_button));
 	gtk_widget_set_name (services_only_button, "services_only_button");
 	gtk_widget_ref (services_only_button);
 	gtk_object_set_data_full (GTK_OBJECT (window), "services_only_button", services_only_button,
 				  (GtkDestroyNotify) gtk_widget_unref);
-	gtk_widget_show (services_only_button);
+	/* gtk_widget_show (services_only_button); */
 	gtk_fixed_put (GTK_FIXED (fixed3), services_only_button, 72, 88);
 	gtk_widget_set_uposition (services_only_button, 72, 88);
 	gtk_widget_set_usize (services_only_button, 0, 0);
 	gtk_widget_set_sensitive (GTK_WIDGET (services_only_button), FALSE);
-*/
 
 	upgrade_button = gtk_radio_button_new_with_label (fixed3_group, _("Latest RPM Build"));
 	fixed3_group = gtk_radio_button_group (GTK_RADIO_BUTTON (upgrade_button));
