@@ -64,6 +64,9 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
 #include <libnautilus/nautilus-undo.h>
+#include <libnautilus-extensions/nautilus-wrap-table.h>
+#include <libnautilus-extensions/nautilus-labeled-image.h>
+#include <libnautilus-extensions/nautilus-viewport.h>
 #include <string.h>
 
 static GHashTable *windows;
@@ -1542,44 +1545,33 @@ remove_default_viewport_shadow (GtkViewport *viewport)
 	gtk_viewport_set_shadow_type (viewport, GTK_SHADOW_NONE);
 }
 
-/* This is the callback for the focus_out signal, where we queue a redraw to erase
- * the remains of the focus rect which is being left on the screen for reasons that
- * I don't understand.
- */
-static gint
-property_button_focused_out (GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
-{
-	gtk_widget_queue_draw (GTK_WIDGET (widget->parent));
-	return TRUE;
-}
-
 static void
 create_emblems_page (FMPropertiesWindow *window)
 {
 	NautilusCustomizationData *customization_data;
 	GtkWidget *emblems_table, *button, *scroller;
-	GtkWidget *image_and_label_table;
 	char *emblem_name, *dot_pos;
-	GtkWidget *emblem_pixmap_widget;
-	GtkWidget *emblem_label;	
+	GdkPixbuf *pixbuf;
+	char *label;
 	int row, column;
 	NautilusFile *file;
 
 	file = window->details->file;
 
-	/* we use an estimate for the number of rows - the table will grow as we add more */
-	emblems_table = gtk_table_new (4, EMBLEM_COLUMN_COUNT, TRUE);
+	/* The emblems wrapped table */
+	emblems_table = nautilus_wrap_table_new (TRUE);
+
 	gtk_widget_show (emblems_table);
 	gtk_container_set_border_width (GTK_CONTAINER (emblems_table), GNOME_PAD);
-	gtk_table_set_row_spacings (GTK_TABLE (emblems_table), GNOME_PAD);
-	gtk_table_set_col_spacings (GTK_TABLE (emblems_table), 2*GNOME_PAD_BIG);
-
+	
 	scroller = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroller),
 					GTK_POLICY_NEVER,
 					GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (scroller), 
-					       emblems_table);
+
+	/* Viewport */
+ 	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (scroller), 
+ 					       emblems_table);
 	gtk_widget_show (scroller);
 
 	/* Get rid of default lowered shadow appearance. 
@@ -1604,8 +1596,8 @@ create_emblems_page (FMPropertiesWindow *window)
 	
 	while (nautilus_customization_data_get_next_element_for_display (customization_data,
 									 &emblem_name,
-									 &emblem_pixmap_widget,
-									 &emblem_label) == GNOME_VFS_OK) {	
+									 &pixbuf,
+									 &label) == GNOME_VFS_OK) {	
 
 		/* strip the suffix, if any */
 		dot_pos = strrchr(emblem_name, '.');
@@ -1614,25 +1606,15 @@ create_emblems_page (FMPropertiesWindow *window)
 		}
 		
 		if (strcmp (emblem_name, "erase") == 0) {
-			gtk_widget_destroy (emblem_pixmap_widget);
-			gtk_widget_destroy (emblem_label);
+			gdk_pixbuf_unref (pixbuf);
+			g_free (label);
 			g_free (emblem_name);
 			continue;
 		}
 		
-		button = gtk_check_button_new ();
-
-		image_and_label_table = gtk_table_new (2, 1, FALSE);
-		
-		gtk_table_attach_defaults (GTK_TABLE (image_and_label_table), emblem_pixmap_widget,
-					   0, 1,
-					   0, 1);
-					
-		gtk_table_attach_defaults (GTK_TABLE (image_and_label_table), emblem_label,
-				  0, 1,
-				  1, 2);
-
-		gtk_container_add (GTK_CONTAINER (button), image_and_label_table);
+		button = nautilus_labeled_image_check_button_new (label, pixbuf);
+		g_free (label);
+		gdk_pixbuf_unref (pixbuf);
 
 		/* Attach parameters and signal handler. */
 		gtk_object_set_data_full (GTK_OBJECT (button),
@@ -1651,12 +1633,6 @@ create_emblems_page (FMPropertiesWindow *window)
 				    property_button_toggled,
 				    NULL);
 
-		/* attach to focus out signal to fix focus rect drawing anomaly */
-		gtk_signal_connect (GTK_OBJECT (button),
-				    "focus_out_event",
-				    GTK_SIGNAL_FUNC (property_button_focused_out),
-				    NULL);
-
 		/* Set initial state of button. */
 		property_button_update (GTK_TOGGLE_BUTTON (button));
 
@@ -1666,10 +1642,8 @@ create_emblems_page (FMPropertiesWindow *window)
 						       property_button_update,
 						       GTK_OBJECT (button));
 
-		gtk_table_attach_defaults (GTK_TABLE (emblems_table), button,
-				  	   column, column + 1,
-				  	   row, row+1);
-
+		gtk_container_add (GTK_CONTAINER (emblems_table), button);
+		
 		if (++column == EMBLEM_COLUMN_COUNT) {
 			column = 0;
 			++row;

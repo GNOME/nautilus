@@ -88,29 +88,42 @@ static void              smooth_widget_paint_tile_and_content_transparent (GtkWi
  */
 static GList *smooth_widget_list = NULL;
 
-
-/* We dont want to have any knowledge of NautilusImage and NautilusLabel
- * in this file.  All the smooth widget operations herein should work on 
- * either one without special casing.  However, since NautilusImage and 
- * NautilusLabel are subclassed from different super types, we cant make
- * cast checks for a common superclass.  Thus the hack below of.  
- *
- * We dont include the headers for NautilusImage and NautilusLabel instead
- * because we dont want special cased turds for each one to appear
- * in this file.
- *
- * Another assumption we make is that smooth widgets are subclasses from 
- * GtkMisc.
+/* We maintain a global list of types that can be smooth widgets.
+ * We do this mostly for type safety - to make sure smooth operations only
+ * happen on smooth widgets.
  */
-extern GtkType nautilus_image_get_type (void);
-extern GtkType nautilus_label_get_type (void);
+static GList *smooth_widget_type_list = NULL;
+
+static void
+smooth_widget_type_list_free (void)
+{
+	g_list_free (smooth_widget_type_list);
+	smooth_widget_type_list = NULL;
+}
+
+static void
+smooth_widget_list_free (void)
+{
+	g_list_free (smooth_widget_list);
+	smooth_widget_list = NULL;
+}
 
 static gboolean
 widget_is_smooth (const GtkWidget *widget)
 {
-	return ((GTK_CHECK_TYPE ((widget), nautilus_image_get_type ())
-		 || GTK_CHECK_TYPE ((widget), nautilus_label_get_type ()))
-		&& GTK_IS_MISC (widget));
+	GList *node;
+
+	for (node = smooth_widget_type_list; node ; node = node->next) {
+		GtkType type;
+
+		type = GPOINTER_TO_INT (node->data);
+
+		if (GTK_CHECK_TYPE ((widget), type)) {
+			return TRUE;
+		}
+	}
+
+	return FALSE;
 }
 
 static void
@@ -165,6 +178,10 @@ nautilus_smooth_widget_register (GtkWidget *widget)
 	g_return_if_fail (widget_is_smooth (widget));
 
 	smooth_widget_set_is_smooth (widget, preferences_get_is_smooth ());
+
+	if (smooth_widget_list == NULL) {
+		g_atexit (smooth_widget_list_free);
+	}
 
 	smooth_widget_list = g_list_prepend (smooth_widget_list, widget);
 
@@ -976,3 +993,14 @@ nautilus_smooth_widget_get_preferred_frame (const GtkWidget *widget,
 
 	return preferred_frame;
 }
+
+void
+nautilus_smooth_widget_register_type (GtkType type)
+{
+	if (smooth_widget_type_list == NULL) {
+		g_atexit (smooth_widget_type_list_free);
+	}
+
+	smooth_widget_type_list = g_list_append (smooth_widget_type_list, GINT_TO_POINTER (type));
+}
+

@@ -145,8 +145,8 @@ static void     nautilus_label_get_arg                      (GtkObject          
 /* GtkWidgetClass methods */
 static void     nautilus_label_size_request                 (GtkWidget           *widget,
 							     GtkRequisition      *requisition);
-static void     nautilus_label_size_allocate    (GtkWidget                  *widget,
-							 GtkAllocation              *allocation);
+static void     nautilus_label_size_allocate                (GtkWidget           *widget,
+							     GtkAllocation       *allocation);
 static int      nautilus_label_expose_event                 (GtkWidget           *widget,
 							     GdkEventExpose      *event);
 
@@ -293,6 +293,9 @@ nautilus_label_initialize_class (NautilusLabelClass *label_class)
 
 	/* Make this class inherit the same kind of theme stuff as GtkLabel */
 	nautilus_gtk_class_name_make_like_existing_type ("NautilusLabel", GTK_TYPE_LABEL);
+
+	/* Let the smooth widget machinery know that our class can be smooth */
+	nautilus_smooth_widget_register_type (NAUTILUS_TYPE_LABEL);
 }
 
 void

@@ -635,9 +635,10 @@ wrap_table_get_content_frame (const NautilusWrapTable *wrap_table)
 						       wrap_table->details->x_spacing,
 						       max_child_frame.x1);
 		num_rows = num_children / num_cols;
+		num_rows = MAX (num_rows, 1);
 		
 		if ((num_children % num_rows) > 0) {
-				num_rows++;
+			num_rows++;
 		}
 		
 		content_frame.x1 = frame.x1;
@@ -681,11 +682,7 @@ wrap_table_get_scroll_offset (const NautilusWrapTable *wrap_table)
 	 * parent here.  Theres probably a better way to do this
 	 */
 	if (GTK_IS_VIEWPORT (parent)) {
-		GtkViewport *viewport;
-
-		viewport = GTK_VIEWPORT (parent);
-		
-		gdk_window_get_position (viewport->bin_window,
+		gdk_window_get_position (GTK_VIEWPORT (parent)->bin_window,
 					 &scroll_offset.x,
 					 &scroll_offset.y);
 	}
@@ -933,7 +930,57 @@ nautilus_wrap_table_set_homogeneous (NautilusWrapTable *wrap_table,
 gboolean
 nautilus_wrap_table_get_homogeneous (const NautilusWrapTable *wrap_table)
 {
-	g_return_val_if_fail (NAUTILUS_IS_WRAP_TABLE (wrap_table), 0);
+	g_return_val_if_fail (NAUTILUS_IS_WRAP_TABLE (wrap_table), FALSE);
 	
 	return wrap_table->details->homogeneous;
+}
+
+/**
+ * nautilus_wrap_table_reorder_child:
+ * @wrap_table: A NautilusWrapTable.
+ * @child: Child to reorder.
+ * @position: New position to put child at.
+ *
+ * Reorder the given chilren into the given position.
+ *
+ * Position is interpreted as follows:
+ *
+ *  0 - Place child at start of table.
+ * -1 - Place child at end of table.
+ *  n - Place child at nth position.  Count starts at 0.
+ */
+void
+nautilus_wrap_table_reorder_child (NautilusWrapTable *wrap_table,
+				   GtkWidget *child,
+				   int position)
+{
+	GList *node;
+	gboolean found_child = FALSE;
+
+	g_return_if_fail (NAUTILUS_IS_WRAP_TABLE (wrap_table));
+	g_return_if_fail (g_list_length (wrap_table->details->items) > 0);
+
+	if (position == -1) {
+		position = g_list_length (wrap_table->details->items) - 1;
+	}
+
+	g_return_if_fail (position >= 0);
+	g_return_if_fail ((guint) position < g_list_length (wrap_table->details->items));
+
+	for (node = wrap_table->details->items; node != NULL; node = node->next) {
+		GtkWidget *next_child;
+		next_child = node->data;
+		
+		if (next_child == child) {
+			g_assert (found_child == FALSE);
+			found_child = TRUE;
+		}
+	}
+
+	g_return_if_fail (found_child);
+
+	wrap_table->details->items = g_list_remove (wrap_table->details->items, child);
+	wrap_table->details->items = g_list_insert (wrap_table->details->items, child, position);
+
+	gtk_widget_queue_resize (GTK_WIDGET (wrap_table));
 }

@@ -27,6 +27,7 @@
 
 #include <gtk/gtkviewport.h>
 #include <libgnome/gnome-defs.h>
+#include <libnautilus-extensions/nautilus-smooth-widget.h>
 
 BEGIN_GNOME_DECLS
 
@@ -36,23 +37,31 @@ BEGIN_GNOME_DECLS
 #define NAUTILUS_IS_VIEWPORT(obj)         (GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_VIEWPORT))
 #define NAUTILUS_IS_VIEWPORT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_VIEWPORT))
 
-typedef struct _NautilusViewport	  NautilusViewport;
-typedef struct _NautilusViewportClass     NautilusViewportClass;
+typedef struct NautilusViewport	         NautilusViewport;
+typedef struct NautilusViewportClass     NautilusViewportClass;
+typedef struct NautilusViewportDetails   NautilusViewportDetails;
 
-struct _NautilusViewport
+struct NautilusViewport
 {
 	/* Superclass */
 	GtkViewport viewport;
+
+	/* Private things */
+	NautilusViewportDetails *details;
 };
 
-struct _NautilusViewportClass
+struct NautilusViewportClass
 {
 	GtkViewportClass parent_class;
+	NautilusSmoothWidgetSetIsSmooth set_is_smooth;
 };
 
-GtkType    nautilus_viewport_get_type (void);
-GtkWidget *nautilus_viewport_new      (GtkAdjustment *hadjustment,
-				       GtkAdjustment *vadjustment);
+GtkType           nautilus_viewport_get_type          (void);
+GtkWidget *       nautilus_viewport_new               (GtkAdjustment          *hadjustment,
+						       GtkAdjustment          *vadjustment);
+void              nautilus_viewport_set_is_smooth     (NautilusViewport       *nautilus_viewport,
+						       gboolean                is_smooth);
+NautilusArtIPoint nautilus_viewport_get_scroll_offset (const NautilusViewport *nautilus_viewport);
 
 END_GNOME_DECLS
 

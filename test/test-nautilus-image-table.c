@@ -5,6 +5,9 @@
 
 static const char pixbuf_name[] = "/usr/share/pixmaps/gnome-globe.png";
 
+#define BG_COLOR 0xFFFFFF
+#define BG_COLOR_SPEC "white"
+
 static const char *names[] =
 {
 	"Tomaso Albinoni",
@@ -71,7 +74,7 @@ labeled_image_new (const char *text,
 	nautilus_labeled_image_set_background_mode (NAUTILUS_LABELED_IMAGE (image),
 						    NAUTILUS_SMOOTH_BACKGROUND_SOLID_COLOR);
 	nautilus_labeled_image_set_solid_background_color (NAUTILUS_LABELED_IMAGE (image),
-							   0xFFFFFF);
+							   BG_COLOR);
 
 	nautilus_gdk_pixbuf_unref_if_not_null (pixbuf);
 
@@ -154,6 +157,47 @@ image_table_child_clicked_callback (GtkWidget *image_table,
 	g_print ("%s(%s)\n", __FUNCTION__, text);
 }
 
+static int
+foo_timeout (gpointer callback_data)
+{
+	static int recursion_count = 0;
+	g_return_val_if_fail (GTK_IS_WINDOW (callback_data), FALSE);
+
+	recursion_count++;
+
+	g_print ("%s(%d)\n", __FUNCTION__, recursion_count);
+	gtk_widget_queue_resize (GTK_WIDGET (callback_data));
+
+	recursion_count--;
+
+	return FALSE;
+}
+
+static void
+image_table_size_allocate (GtkWidget *image_table,
+			   GtkAllocation *allocation,
+			   gpointer callback_data)
+{
+	static int recursion_count = 0;
+
+	g_return_if_fail (NAUTILUS_IS_IMAGE_TABLE (image_table));
+	g_return_if_fail (allocation != NULL);
+	g_return_if_fail (GTK_IS_WINDOW (callback_data));
+
+	recursion_count++;
+
+	if (0) gtk_timeout_add (0, foo_timeout, callback_data);
+
+	//gtk_widget_queue_resize (GTK_WIDGET (callback_data));
+
+	if (0) gtk_widget_size_allocate (GTK_WIDGET (image_table),
+					 &GTK_WIDGET (image_table)->allocation);
+	
+	g_print ("%s(%d)\n", __FUNCTION__, recursion_count);
+
+	recursion_count--;
+}
+
 static GtkWidget *
 image_table_new_scrolled (void)
 {
@@ -180,6 +224,12 @@ image_table_new_scrolled (void)
 	gtk_container_add (GTK_CONTAINER (scrolled), viewport);
 
 	image_table = nautilus_image_table_new (FALSE);
+
+	if (0) gtk_signal_connect (GTK_OBJECT (image_table),
+			    "size_allocate",
+			    GTK_SIGNAL_FUNC (image_table_size_allocate),
+			    window);
+
 	nautilus_wrap_table_set_x_justification (NAUTILUS_WRAP_TABLE (image_table),
 						 NAUTILUS_JUSTIFICATION_MIDDLE);
 	nautilus_wrap_table_set_y_justification (NAUTILUS_WRAP_TABLE (image_table),
@@ -212,8 +262,7 @@ image_table_new_scrolled (void)
 			    GTK_SIGNAL_FUNC (image_table_child_clicked_callback),
 			    NULL);
 
-	//test_gtk_widget_set_background_color (viewport, "white");
-	nautilus_gtk_widget_set_background_color (viewport, "white:red");
+	nautilus_gtk_widget_set_background_color (viewport, BG_COLOR_SPEC);
 
 	for (i = 0; i < 100; i++) {
 		char *text;

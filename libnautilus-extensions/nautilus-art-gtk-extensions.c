@@ -262,3 +262,23 @@ nautilus_irect_gdk_window_clip_dirty_area_to_screen (const GdkWindow *gdk_window
 
 	return clipped;
 }
+
+GdkRectangle
+nautilus_gdk_rectangle_assign_irect (const ArtIRect *irect)
+{
+	GdkRectangle gdk_rect;
+
+	gdk_rect.x = 0;
+	gdk_rect.y = 0;
+	gdk_rect.width = 0;
+	gdk_rect.height = 0;
+
+	g_return_val_if_fail (irect != NULL, gdk_rect);
+
+	gdk_rect.x = irect->x0;
+	gdk_rect.y = irect->y0;
+	gdk_rect.width = nautilus_art_irect_get_width (irect);
+	gdk_rect.height = nautilus_art_irect_get_height (irect);
+
+	return gdk_rect;
+}

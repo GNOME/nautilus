@@ -50,6 +50,7 @@
 #include <libnautilus-extensions/nautilus-search-uri.h>
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-undo-signal-handlers.h>
+#include <libnautilus-extensions/nautilus-labeled-image.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -984,12 +985,11 @@ static void
 make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 {
 	NautilusCustomizationData *customization_data;
-	GtkWidget *temp_hbox;
 	GtkWidget *menu_item;
 	char *emblem_name, *dot_pos;
-	GtkWidget *emblem_pixmap_widget;
-	GtkWidget *emblem_label;
 	GtkWidget *value_menu; 
+	GdkPixbuf *pixbuf;
+	char *label;
 	
 	/* Add the items to the emblems menu here */
 	value_menu = gtk_menu_new ();
@@ -1000,9 +1000,10 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 							      NAUTILUS_ICON_SIZE_FOR_MENUS);
 	while (nautilus_customization_data_get_next_element_for_display (customization_data,
 									 &emblem_name,
-									 &emblem_pixmap_widget,
-									 &emblem_label) == GNOME_VFS_OK) {
-		
+									 &pixbuf,
+									 &label) == GNOME_VFS_OK) {
+		GtkWidget *image;
+
 		/* remove the suffix, if any, to make the emblem name */
 		dot_pos = strrchr (emblem_name, '.');
 		if (dot_pos) {
@@ -1010,21 +1011,29 @@ make_emblem_value_menu (NautilusSearchBarCriterion *criterion)
 		}
 		
 		if (strcmp (emblem_name, "erase") == 0) {
-			gtk_widget_destroy (emblem_pixmap_widget);
-			gtk_widget_destroy (emblem_label);
+			gdk_pixbuf_unref (pixbuf);
+			g_free (label);
 			g_free (emblem_name);
 			continue;
 		}
 		menu_item = gtk_menu_item_new ();
 		
 		gtk_object_set_data_full (GTK_OBJECT (menu_item), "emblem name",
-					  emblem_name, (GtkDestroyNotify) g_free);
-		temp_hbox = gtk_hbox_new (FALSE, GNOME_PAD_SMALL);
-		gtk_box_pack_start (GTK_BOX (temp_hbox), emblem_pixmap_widget, FALSE, FALSE, 0);
-		gtk_box_pack_start (GTK_BOX (temp_hbox), emblem_label, FALSE, FALSE, 0);
-		gtk_container_add (GTK_CONTAINER (menu_item), temp_hbox);
+					  g_strdup (emblem_name), (GtkDestroyNotify) g_free);
+
+		
+		image = nautilus_labeled_image_new (label, pixbuf);
+		nautilus_labeled_image_set_label_position (NAUTILUS_LABELED_IMAGE (image), GTK_POS_RIGHT);
+		nautilus_labeled_image_set_x_alignment (NAUTILUS_LABELED_IMAGE (image), 0.0);
+		nautilus_labeled_image_set_spacing (NAUTILUS_LABELED_IMAGE (image), 4);
+
+		gtk_container_add (GTK_CONTAINER (menu_item), image);
 		gtk_widget_show_all (menu_item);
 		gtk_menu_append (GTK_MENU (value_menu), menu_item);
+
+		gdk_pixbuf_unref (pixbuf);
+		g_free (label);
+		g_free (emblem_name);
 	}
 	
 	gtk_widget_show_all (GTK_WIDGET (criterion->details->value_menu));		

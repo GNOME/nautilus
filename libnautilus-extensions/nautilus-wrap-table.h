@@ -82,6 +82,9 @@ NautilusJustification nautilus_wrap_table_get_y_justification       (const Nauti
 void                  nautilus_wrap_table_set_homogeneous           (NautilusWrapTable       *wrap_table,
 								     gboolean                 homogeneous);
 gboolean              nautilus_wrap_table_get_homogeneous           (const NautilusWrapTable *wrap_table);
+void                  nautilus_wrap_table_reorder_child             (NautilusWrapTable       *wrap_table,
+								     GtkWidget               *child,
+								     int                      position);
 
 END_GNOME_DECLS
 

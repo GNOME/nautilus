@@ -30,6 +30,8 @@
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-art-extensions.h"
 #include "nautilus-art-gtk-extensions.h"
+#include "nautilus-region.h"
+#include "nautilus-debug-drawing.h"
 
 #include <gtk/gtkmain.h>
 
@@ -51,6 +53,9 @@ struct NautilusImageTableDetails
 	guint button_release_connection_id;
 	GtkWidget *child_under_pointer;
 	GtkWidget *child_being_pressed;
+	GdkGC *clear_gc;
+	guint32 smooth_background_color;
+	gboolean is_smooth;
 };
 
 /* Signals */
@@ -61,6 +66,7 @@ typedef enum
 	CHILD_PRESSED,
 	CHILD_RELEASED,
 	CHILD_CLICKED,
+	SET_IS_SMOOTH,
 	LAST_SIGNAL
 } ImageTableSignals;
 
@@ -68,39 +74,54 @@ typedef enum
 static guint image_table_signals[LAST_SIGNAL] = { 0 };
 
 /* GtkObjectClass methods */
-static void    nautilus_image_table_initialize_class (NautilusImageTableClass *image_table_class);
-static void    nautilus_image_table_initialize       (NautilusImageTable      *image);
-static void    nautilus_image_table_destroy          (GtkObject               *object);
+static void    nautilus_image_table_initialize_class     (NautilusImageTableClass *image_table_class);
+static void    nautilus_image_table_initialize           (NautilusImageTable      *image);
+static void    nautilus_image_table_destroy              (GtkObject               *object);
 
 /* GtkWidgetClass methods */
-static void    nautilus_image_table_realize          (GtkWidget               *widget);
-static void    nautilus_image_table_unrealize        (GtkWidget               *widget);
+static int     nautilus_image_table_expose_event         (GtkWidget               *widget,
+							  GdkEventExpose          *event);
+static void    nautilus_image_table_realize              (GtkWidget               *widget);
+static void    nautilus_image_table_unrealize            (GtkWidget               *widget);
 
 /* GtkContainerClass methods */
-static void    nautilus_image_table_add              (GtkContainer            *container,
-						      GtkWidget               *widget);
-static void    nautilus_image_table_remove           (GtkContainer            *container,
-						      GtkWidget               *widget);
-static GtkType nautilus_image_table_child_type       (GtkContainer            *container);
+static void    nautilus_image_table_add                  (GtkContainer            *container,
+							  GtkWidget               *widget);
+static void    nautilus_image_table_remove               (GtkContainer            *container,
+							  GtkWidget               *widget);
+static GtkType nautilus_image_table_child_type           (GtkContainer            *container);
 
 /* Private NautilusImageTable methods */
+static void    image_table_clear_dirty_areas             (NautilusImageTable      *image_table);
+static GdkGC * image_table_peek_clear_gc                 (NautilusImageTable      *image_table);
+static void    image_table_emit_signal                   (NautilusImageTable      *image_table,
+							  GtkWidget               *child,
+							  guint                    signal_index,
+							  int                      x,
+							  int                      y,
+							  int                      button,
+							  guint                    state);
 
 /* Ancestor callbacks */
-static int     ancestor_enter_notify_event           (GtkWidget               *widget,
-						      GdkEventCrossing        *event,
-						      gpointer                 event_data);
-static int     ancestor_leave_notify_event           (GtkWidget               *widget,
-						      GdkEventCrossing        *event,
-						      gpointer                 event_data);
-static int     ancestor_motion_notify_event          (GtkWidget               *widget,
-						      GdkEventMotion          *event,
-						      gpointer                 event_data);
-static int     ancestor_button_press_event           (GtkWidget               *widget,
-						      GdkEventButton          *event,
-						      gpointer                 event_data);
-static int     ancestor_button_release_event         (GtkWidget               *widget,
-						      GdkEventButton          *event,
-						      gpointer                 event_data);
+static int     ancestor_enter_notify_event               (GtkWidget               *widget,
+							  GdkEventCrossing        *event,
+							  gpointer                 event_data);
+static int     ancestor_leave_notify_event               (GtkWidget               *widget,
+							  GdkEventCrossing        *event,
+							  gpointer                 event_data);
+static int     ancestor_motion_notify_event              (GtkWidget               *widget,
+							  GdkEventMotion          *event,
+							  gpointer                 event_data);
+static int     ancestor_button_press_event               (GtkWidget               *widget,
+							  GdkEventButton          *event,
+							  gpointer                 event_data);
+static int     ancestor_button_release_event             (GtkWidget               *widget,
+							  GdkEventButton          *event,
+							  gpointer                 event_data);
+
+/* NautilusImageTable signals */
+static void    nautilus_image_table_set_is_smooth_signal (GtkWidget               *widget,
+							  gboolean                 is_smooth);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusImageTable, nautilus_image_table, NAUTILUS_TYPE_WRAP_TABLE)
 
@@ -116,6 +137,7 @@ nautilus_image_table_initialize_class (NautilusImageTableClass *image_table_clas
 	object_class->destroy = nautilus_image_table_destroy;
 	
  	/* GtkWidgetClass */
+ 	widget_class->expose_event = nautilus_image_table_expose_event;
  	widget_class->realize = nautilus_image_table_realize;
  	widget_class->unrealize = nautilus_image_table_unrealize;
 
@@ -123,7 +145,10 @@ nautilus_image_table_initialize_class (NautilusImageTableClass *image_table_clas
 	container_class->add = nautilus_image_table_add;
 	container_class->remove = nautilus_image_table_remove;
 	container_class->child_type = nautilus_image_table_child_type;
-  
+
+	/* NautilusImageTableClass */
+	image_table_class->set_is_smooth = nautilus_image_table_set_is_smooth_signal;
+	
 	/* Signals */
 	image_table_signals[CHILD_ENTER] = gtk_signal_new ("child_enter",
 							   GTK_RUN_LAST,
@@ -171,7 +196,19 @@ nautilus_image_table_initialize_class (NautilusImageTableClass *image_table_clas
 							     GTK_TYPE_POINTER,
 							     GTK_TYPE_POINTER);
 	
+	image_table_signals[SET_IS_SMOOTH] = gtk_signal_new ("set_is_smooth",
+							     GTK_RUN_LAST,
+							     object_class->type,
+							     GTK_SIGNAL_OFFSET (NautilusImageTableClass, set_is_smooth),
+							     gtk_marshal_NONE__BOOL,
+							     GTK_TYPE_NONE, 
+							     1,
+							     GTK_TYPE_BOOL);
+
 	gtk_object_class_add_signals (object_class, image_table_signals, LAST_SIGNAL);
+
+	/* Let the smooth widget machinery know that our class can be smooth */
+	nautilus_smooth_widget_register_type (NAUTILUS_TYPE_IMAGE_TABLE);
 }
 
 void
@@ -180,6 +217,9 @@ nautilus_image_table_initialize (NautilusImageTable *image_table)
 	GTK_WIDGET_SET_FLAGS (image_table, GTK_NO_WINDOW);
 
 	image_table->details = g_new0 (NautilusImageTableDetails, 1);
+	image_table->details->smooth_background_color = NAUTILUS_RGB_COLOR_WHITE;
+
+	nautilus_smooth_widget_register (GTK_WIDGET (image_table));
 }
 
 /* GtkObjectClass methods */
@@ -199,6 +239,28 @@ nautilus_image_table_destroy (GtkObject *object)
 }
 
 /* GtkWidgetClass methods */
+static int
+nautilus_image_table_expose_event (GtkWidget *widget,
+				   GdkEventExpose *event)
+{
+	NautilusImageTable *image_table;
+
+	g_return_val_if_fail (NAUTILUS_IS_WRAP_TABLE (widget), TRUE);
+	g_return_val_if_fail (GTK_WIDGET_REALIZED (widget), TRUE);
+	g_return_val_if_fail (event != NULL, TRUE);
+
+	image_table = NAUTILUS_IMAGE_TABLE (widget);
+
+	/* In smooth mode we clear dirty areas, since our background wont be
+	 * force clear and thus avoid flicker.
+	 */
+	if (image_table->details->is_smooth) {
+		image_table_clear_dirty_areas (image_table);
+	}
+	
+	return NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, expose_event, (widget, event));
+}
+
 static void
 nautilus_image_table_realize (GtkWidget *widget)
 {
@@ -217,6 +279,7 @@ nautilus_image_table_realize (GtkWidget *widget)
 	gtk_widget_add_events (image_table->details->windowed_ancestor,
 			       GDK_BUTTON_PRESS_MASK
 			       | GDK_BUTTON_RELEASE_MASK
+			       | GDK_BUTTON_MOTION_MASK
 			       | GDK_ENTER_NOTIFY_MASK
 			       | GDK_LEAVE_NOTIFY_MASK
 			       | GDK_POINTER_MOTION_MASK);
@@ -283,6 +346,11 @@ nautilus_image_table_unrealize (GtkWidget *widget)
 	image_table->details->button_press_connection_id = 0;
 	image_table->details->button_release_connection_id = 0;
 
+	if (image_table->details->clear_gc != NULL) {
+		gdk_gc_unref (image_table->details->clear_gc);
+		image_table->details->clear_gc = NULL;
+	}
+
 	/* Chain unrealize */
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, unrealize, (widget));
 }
@@ -331,7 +399,125 @@ nautilus_image_table_child_type (GtkContainer *container)
 	return NAUTILUS_TYPE_LABELED_IMAGE;
 }
 
+/* NautilusImageTable signals */
+static void
+nautilus_image_table_set_is_smooth_signal (GtkWidget *widget,
+					   gboolean is_smooth)
+{
+	g_return_if_fail (NAUTILUS_IS_IMAGE_TABLE (widget));
+	
+	nautilus_image_table_set_is_smooth (NAUTILUS_IMAGE_TABLE (widget), is_smooth);
+}
+
 /* Private NautilusImageTable methods */
+
+/* For each of the image table children, subtract their content from a region */
+static void
+image_table_foreach_child_subtract_content (GtkWidget *child,
+					    gpointer callback_data)
+{
+	NautilusRegion *region;
+	ArtIRect label_bounds;
+	ArtIRect image_bounds;
+
+	g_return_if_fail (NAUTILUS_IS_LABELED_IMAGE (child));
+	g_return_if_fail (callback_data != NULL);
+
+	if (!GTK_WIDGET_VISIBLE (child)) {
+		return;
+	}
+
+	region = callback_data;
+
+	image_bounds = nautilus_labeled_image_get_image_bounds (NAUTILUS_LABELED_IMAGE (child));
+	if (!art_irect_empty (&image_bounds)) {
+		nautilus_region_subtract_rectangle (region, &image_bounds);
+	}
+	
+	label_bounds = nautilus_labeled_image_get_label_bounds (NAUTILUS_LABELED_IMAGE (child));
+	if (!art_irect_empty (&label_bounds)) {
+					nautilus_region_subtract_rectangle (region, &label_bounds);
+	}
+}
+
+/* Clear the dirty areas around the children's content */
+static void
+image_table_clear_dirty_areas (NautilusImageTable *image_table)
+{
+	GtkWidget *widget;
+	NautilusRegion *region;
+	ArtIRect bounds;
+	GdkGC *gc;
+	
+	g_return_if_fail (NAUTILUS_IS_WRAP_TABLE (image_table));
+	g_return_if_fail (GTK_WIDGET_REALIZED (image_table));
+
+	widget = GTK_WIDGET (image_table);
+	
+	bounds = nautilus_irect_gtk_widget_get_frame (widget->parent);
+	region = nautilus_region_new ();
+	
+	nautilus_region_add_rectangle (region, &bounds);
+
+	gc = image_table_peek_clear_gc (image_table);
+	
+	gtk_container_foreach (GTK_CONTAINER (image_table), image_table_foreach_child_subtract_content, region);
+	
+	nautilus_region_set_gc_clip_region (region, gc);
+	
+	gdk_draw_rectangle (widget->window,
+			    gc,
+			    TRUE,
+			    bounds.x0,
+			    bounds.y0,
+			    bounds.x1 - bounds.x0,
+			    bounds.y1 - bounds.y0);
+	
+	nautilus_region_free (region);
+}
+
+static GdkGC *
+image_table_peek_clear_gc (NautilusImageTable *image_table)
+{
+	g_return_val_if_fail (NAUTILUS_IS_IMAGE_TABLE (image_table), NULL);
+
+	if (image_table->details->clear_gc == NULL) {
+		image_table->details->clear_gc = gdk_gc_new (GTK_WIDGET (image_table)->window);
+		gdk_gc_set_function (image_table->details->clear_gc, GDK_COPY);
+	}
+
+	gdk_rgb_gc_set_foreground (image_table->details->clear_gc, image_table->details->smooth_background_color);
+
+	return image_table->details->clear_gc;
+}
+
+static void
+image_table_emit_signal (NautilusImageTable *image_table,
+			 GtkWidget *child,
+			 guint signal_index,
+			 int x,
+			 int y,
+			 int button,
+			 guint state)
+{
+	NautilusImageTableEvent event;
+
+	g_return_if_fail (NAUTILUS_IS_IMAGE_TABLE (image_table));
+	g_return_if_fail (GTK_IS_WIDGET (child));
+	g_return_if_fail (signal_index >= 0);
+	g_return_if_fail (signal_index < LAST_SIGNAL);
+
+	event.x = x;
+	event.y = y;
+	event.button = button;
+	event.state = state;
+	
+	gtk_signal_emit (GTK_OBJECT (image_table), 
+			 image_table_signals[signal_index],
+			 child,
+			 &event);
+}
+
 static void
 image_table_handle_motion (NautilusImageTable *image_table,
 			   int x,
@@ -366,17 +552,23 @@ image_table_handle_motion (NautilusImageTable *image_table,
 	}
 
 	if (leave_emit_child != NULL) {
-		gtk_signal_emit (GTK_OBJECT (image_table), 
-				 image_table_signals[CHILD_LEAVE],
-				 leave_emit_child,
-				 event);
+		image_table_emit_signal (image_table,
+					 leave_emit_child,
+					 CHILD_LEAVE,
+					 x,
+					 y,
+					 0,
+					 0);
 	}
 
 	if (enter_emit_child != NULL) {
-		gtk_signal_emit (GTK_OBJECT (image_table), 
-				 image_table_signals[CHILD_ENTER],
-				 enter_emit_child,
-				 event);
+		image_table_emit_signal (image_table,
+					 enter_emit_child,
+					 CHILD_ENTER,
+					 x,
+					 y,
+					 0,
+					 0);
 	}
 }
 
@@ -447,17 +639,18 @@ ancestor_button_press_event (GtkWidget *widget,
 
  	image_table = NAUTILUS_IMAGE_TABLE (event_data);
 
-	gtk_grab_add (widget);
-
 	child = nautilus_wrap_table_find_child_at_event_point (NAUTILUS_WRAP_TABLE (image_table), event->x, event->y);
 
 	if (child != NULL) {
 		if (child == image_table->details->child_under_pointer) {
 			image_table->details->child_being_pressed = child;
-			gtk_signal_emit (GTK_OBJECT (image_table), 
-					 image_table_signals[CHILD_PRESSED],
-					 child,
-					 event);
+			image_table_emit_signal (image_table,
+						 child,
+						 CHILD_PRESSED,
+						 event->x,
+						 event->y,
+						 event->button,
+						 event->state);
 		}
 	}
 
@@ -480,8 +673,6 @@ ancestor_button_release_event (GtkWidget *widget,
 
  	image_table = NAUTILUS_IMAGE_TABLE (event_data);
 
-	gtk_grab_remove (widget);
-
 	child = nautilus_wrap_table_find_child_at_event_point (NAUTILUS_WRAP_TABLE (image_table), event->x, event->y);
 
 	if (image_table->details->child_being_pressed != NULL) {
@@ -497,17 +688,24 @@ ancestor_button_release_event (GtkWidget *widget,
 	image_table->details->child_being_pressed = NULL;
 
 	if (released_emit_child != NULL) {
-		gtk_signal_emit (GTK_OBJECT (image_table), 
-				 image_table_signals[CHILD_RELEASED],
-				 released_emit_child,
-				 event);
+		image_table_emit_signal (image_table,
+					 released_emit_child,
+					 CHILD_RELEASED,
+					 event->x,
+					 event->y,
+					 event->button,
+					 event->state);
 	}
 	
 	if (clicked_emit_child != NULL) {
-		gtk_signal_emit (GTK_OBJECT (image_table), 
-				 image_table_signals[CHILD_CLICKED],
-				 clicked_emit_child,
-				 event);
+
+		image_table_emit_signal (image_table,
+					 clicked_emit_child,
+					 CHILD_CLICKED,
+					 event->x,
+					 event->y,
+					 event->button,
+					 event->state);
 	}
 	
 	return FALSE;
@@ -526,4 +724,42 @@ nautilus_image_table_new (gboolean homogeneous)
 	nautilus_wrap_table_set_homogeneous (NAUTILUS_WRAP_TABLE (image_table), homogeneous);
 	
 	return GTK_WIDGET (image_table);
+}
+
+/**
+ * nautilus_image_table_set_is_smooth:
+ * @image_table: A NautilusImageTable.
+ * @is_smooth: Boolean value indicating whether the image table is smooth.
+ *
+ */
+void
+nautilus_image_table_set_is_smooth (NautilusImageTable *image_table,
+				    gboolean is_smooth)
+{
+	g_return_if_fail (NAUTILUS_IS_IMAGE_TABLE (image_table));
+	
+	if (image_table->details->is_smooth == is_smooth) {
+		return;
+	}
+	
+	image_table->details->is_smooth = is_smooth;
+}
+
+/**
+ * nautilus_image_table_set_smooth_background_color:
+ * @image_table: A NautilusImageTable.
+ * @smooth_background_color: The color to use for background in smooth mode.
+ *
+ */
+void
+nautilus_image_table_set_smooth_background_color (NautilusImageTable *image_table,
+						  guint32 smooth_background_color)
+{
+	g_return_if_fail (NAUTILUS_IS_IMAGE_TABLE (image_table));
+	
+	if (image_table->details->smooth_background_color == smooth_background_color) {
+		return;
+	}
+	
+	image_table->details->smooth_background_color = smooth_background_color;
 }

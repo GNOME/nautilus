@@ -110,6 +110,7 @@ ArtIRect nautilus_smooth_widget_get_preferred_frame (const GtkWidget            
 						     const ArtIRect                    *tile_frame,
 						     int                                tile_width,
 						     int                                tile_height);
+void     nautilus_smooth_widget_register_type       (GtkType                            type);
 
 END_GNOME_DECLS
 

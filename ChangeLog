@@ -1,3 +1,124 @@
+2001-02-09  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Robey Pointer  <robey@eazel.com>
+
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-region.c:
+	* libnautilus-extensions/nautilus-region.h:
+	New class for super easy region management using rectangle.
+
+	* libnautilus-extensions/nautilus-art-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-art-gtk-extensions.c:
+	(nautilus_gdk_rectangle_assign_irect):
+	New function to convert ArtIRect to GdkRectangles.
+
+	* libnautilus-extensions/nautilus-customization-data.h:
+	* libnautilus-extensions/nautilus-customization-data.c:
+	(nautilus_customization_data_get_next_element_for_display):
+	Return pixbufs and labels for the object instead of widgets.  This
+	is so that the caller can use the widget that best suits its
+	display needs.
+
+	* libnautilus-extensions/nautilus-image-table.h:
+	* libnautilus-extensions/nautilus-image-table.c:
+	(nautilus_image_table_initialize_class),
+	(nautilus_image_table_initialize),
+	(nautilus_image_table_expose_event),
+	(nautilus_image_table_realize), (nautilus_image_table_unrealize),
+	(nautilus_image_table_set_is_smooth_signal),
+	(image_table_foreach_child_subtract_content),
+	(image_table_clear_dirty_areas), (image_table_peek_clear_gc),
+	(image_table_emit_signal), (image_table_handle_motion),
+	(ancestor_button_press_event), (ancestor_button_release_event),
+	(nautilus_image_table_new), (nautilus_image_table_set_is_smooth),
+	(nautilus_image_table_set_smooth_background_color):
+	Add support for smoothnes.  Register widget as a possible smooth
+	widget.  When smoothness changes, we modify our background drawing
+	behavior such that in smooth mode we dont flicker at all.
+
+	Remove grab/ungrab pair that could screw up operations.  Turns out
+	these are not needed.
+
+	Change event signal emissions to include more data from the raw
+	gdk events without exposing these.
+
+	* libnautilus-extensions/nautilus-image.c:
+	(nautilus_image_initialize_class):
+	Update for new smooth widget class registration scheme.
+
+	* libnautilus-extensions/nautilus-label.c:
+	(nautilus_label_initialize_class):
+	Update for new smooth widget class registration scheme.
+
+	* libnautilus-extensions/nautilus-labeled-image.h:
+	* libnautilus-extensions/nautilus-labeled-image.c:
+	(nautilus_labeled_image_size_allocate),
+	(nautilus_labeled_image_get_image_bounds),
+	(nautilus_labeled_image_get_label_bounds):
+	Make these two functions public.
+	
+	* libnautilus-extensions/nautilus-smooth-widget.h:
+	* libnautilus-extensions/nautilus-smooth-widget.c:
+	(smooth_widget_type_list_free), (smooth_widget_list_free),
+	(widget_is_smooth), (nautilus_smooth_widget_register),
+	(nautilus_smooth_widget_register_type):
+	Add mechanism for registering types that are meant to be smooth.
+	That way we dont need to hardcode the list of smooth widget
+	classes.  Also made sure to free the static lists at exit time.
+	
+	* libnautilus-extensions/nautilus-viewport.h:
+	* libnautilus-extensions/nautilus-viewport.c:
+	(nautilus_viewport_initialize_class),
+	(nautilus_viewport_initialize), (nautilus_viewport_destroy),
+	(nautilus_viewport_draw), (nautilus_viewport_expose_event),
+	(nautilus_viewport_realize), (nautilus_viewport_paint),
+	(nautilus_viewport_set_is_smooth_signal), (nautilus_viewport_new),
+	(nautilus_viewport_set_is_smooth),
+	(nautilus_viewport_get_scroll_offset):
+	Add support for smoothness.  When the is_smooth attribute changes,
+	the viewport will not clear the background on resize - and so its
+	content will not flicker.
+
+	Add function for querying the scroll offset.
+	
+	* libnautilus-extensions/nautilus-wrap-table.h:
+	* libnautilus-extensions/nautilus-wrap-table.c:
+	(wrap_table_get_content_frame), (wrap_table_get_scroll_offset),
+	(nautilus_wrap_table_get_homogeneous),
+	(nautilus_wrap_table_reorder_child):
+	Fix a mod by zero error.
+	Add support for reordering children.
+	
+	* src/file-manager/fm-properties-window.c: (create_emblems_page):
+	Simplify a bit by using NautilusWrapTable instead of a GtkTable
+	with a hard coded number of columns.  The emblems now wrap to fit
+	the available space.  Also use NautilusLabeledImages instead of
+	boxes.  Update for changes in customization data api.
+	Remove check box painting workaround.  Its taken care of in
+	NautilusLabeledImage now.
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_initialize_class),
+	(nautilus_property_browser_initialize), (element_clicked_callback),
+	(nautilus_property_browser_preferences_changed),
+	(make_property_tile), (make_properties_from_directories),
+	(add_reset_property), (make_properties_from_xml_node),
+	(property_browser_category_button_new), (make_category_link),
+	(nautilus_property_browser_update_contents),
+	(emit_emblems_changed_signal):
+	Use a NautilusImageTable instead of a GtkTable to make things wrap
+	propertly and thus not have to recreate the whole property box
+	each time its resized.  Remove a lot of hard coded dimensions.
+	Simplified a bit by using NautilusLabeledImages.
+	
+	* src/nautilus-search-bar-criterion.c: (make_emblem_value_menu):
+	Update for changes in customization data api.
+	
+	* test/test-nautilus-image-table.c: (labeled_image_new),
+	(foo_timeout), (image_table_size_allocate),
+	(image_table_new_scrolled):
+	Update for new image table features.
+
 2001-02-09  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar.c:

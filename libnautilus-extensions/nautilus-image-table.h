@@ -27,6 +27,7 @@
 
 #include <libnautilus-extensions/nautilus-wrap-table.h>
 #include <libnautilus-extensions/nautilus-labeled-image.h>
+#include <libnautilus-extensions/nautilus-smooth-widget.h>
 
 BEGIN_GNOME_DECLS
 
@@ -52,6 +53,7 @@ struct NautilusImageTable
 struct NautilusImageTableClass
 {
 	NautilusWrapTableClass parent_class;
+	NautilusSmoothWidgetSetIsSmooth set_is_smooth;
 };
 
 typedef struct
@@ -63,8 +65,12 @@ typedef struct
 } NautilusImageTableEvent;
 
 /* Public GtkImageTable methods */
-GtkType    nautilus_image_table_get_type (void);
-GtkWidget *nautilus_image_table_new      (gboolean homogeneous);
+GtkType    nautilus_image_table_get_type                    (void);
+GtkWidget *nautilus_image_table_new                         (gboolean            homogeneous);
+void       nautilus_image_table_set_smooth_background_color (NautilusImageTable *image_table,
+							     guint32             smooth_background_color);
+void       nautilus_image_table_set_is_smooth               (NautilusImageTable *image_table,
+							     gboolean            is_smooth);
 
 END_GNOME_DECLS
 

@@ -110,8 +110,6 @@ static void     nautilus_labeled_image_forall           (GtkContainer           
 /* Private NautilusLabeledImage methods */
 static ArtIRect labeled_image_get_image_frame           (const NautilusLabeledImage *labeled_image);
 static ArtIRect labeled_image_get_label_frame           (const NautilusLabeledImage *labeled_image);
-static ArtIRect labeled_image_get_image_bounds          (const NautilusLabeledImage *labeled_image);
-static ArtIRect labeled_image_get_label_bounds          (const NautilusLabeledImage *labeled_image);
 static void     labeled_image_ensure_label              (NautilusLabeledImage       *labeled_image);
 static void     labeled_image_ensure_image              (NautilusLabeledImage       *labeled_image);
 static ArtIRect labeled_image_get_content_bounds        (const NautilusLabeledImage *labeled_image);
@@ -389,7 +387,7 @@ nautilus_labeled_image_size_allocate (GtkWidget *widget,
 
 	widget->allocation = *allocation;
 	
- 	label_bounds = labeled_image_get_label_bounds (labeled_image);
+ 	label_bounds = nautilus_labeled_image_get_label_bounds (labeled_image);
 	if (!art_irect_empty (&label_bounds)) {
 		GtkAllocation label_allocation;
 
@@ -401,7 +399,7 @@ nautilus_labeled_image_size_allocate (GtkWidget *widget,
 		gtk_widget_size_allocate (labeled_image->details->label, &label_allocation);
 	}
 
- 	image_bounds = labeled_image_get_image_bounds (labeled_image);
+ 	image_bounds = nautilus_labeled_image_get_image_bounds (labeled_image);
 	if (!art_irect_empty (&image_bounds)) {
 		GtkAllocation image_allocation;
 		
@@ -584,6 +582,7 @@ nautilus_labeled_image_forall (GtkContainer *container,
 	}
 }
 
+/* Private NautilusLabeledImage methods */
 static ArtIRect
 labeled_image_get_image_frame (const NautilusLabeledImage *labeled_image)
 {
@@ -684,8 +683,8 @@ labeled_image_get_image_bounds_fill (const NautilusLabeledImage *labeled_image)
 	return image_bounds;
 }
 
-static ArtIRect
-labeled_image_get_image_bounds (const NautilusLabeledImage *labeled_image)
+ArtIRect
+nautilus_labeled_image_get_image_bounds (const NautilusLabeledImage *labeled_image)
 {
 	ArtIRect image_frame;
 	ArtIRect image_bounds;
@@ -808,8 +807,8 @@ labeled_image_get_label_bounds_fill (const NautilusLabeledImage *labeled_image)
 	return label_bounds;
 }
 
-static ArtIRect
-labeled_image_get_label_bounds (const NautilusLabeledImage *labeled_image)
+ArtIRect
+nautilus_labeled_image_get_label_bounds (const NautilusLabeledImage *labeled_image)
 {
 	ArtIRect label_bounds;
 	ArtIRect label_frame;

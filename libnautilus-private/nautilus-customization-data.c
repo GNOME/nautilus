@@ -46,8 +46,6 @@
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-xml-extensions.h"
-#include "nautilus-image.h"
-#include "nautilus-label.h"
 #include "nautilus-string.h"
 
 typedef enum {
@@ -155,15 +153,19 @@ nautilus_customization_data_new (const char *customization_name,
 GnomeVFSResult
 nautilus_customization_data_get_next_element_for_display (NautilusCustomizationData *data,
 							  char **emblem_name,
-							  GtkWidget **pixmap_widget,
-							  GtkWidget **label)
+							  GdkPixbuf **pixbuf_out,
+							  char **label_out)
 {
 	GnomeVFSFileInfo *current_file_info;
 
-	char *image_file_name, *filtered_name, *truncated_name;
+	char *image_file_name, *filtered_name;
 	GdkPixbuf *pixbuf;
 	GdkPixbuf *orig_pixbuf;
-
+	
+	g_return_val_if_fail (data != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
+	g_return_val_if_fail (emblem_name != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
+	g_return_val_if_fail (pixbuf_out != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
+	g_return_val_if_fail (label_out != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
 	
 	if (data->current_file_list == NULL) {
 		if (data->reading_mode == READ_PUBLIC_CUSTOMIZATIONS) {
@@ -174,14 +176,14 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 			data->current_file_list = data->private_file_list;
 			return nautilus_customization_data_get_next_element_for_display (data,
 											 emblem_name,
-											 pixmap_widget,
-											 label);
+											 pixbuf_out,
+											 label_out);
 		}
 		else {
-				return GNOME_VFS_ERROR_EOF;
+			return GNOME_VFS_ERROR_EOF;
 		}
 	}
-
+	
 	
 	current_file_info = data->current_file_list->data;
 	data->current_file_list = data->current_file_list->next;
@@ -193,14 +195,14 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 		
 		return nautilus_customization_data_get_next_element_for_display (data,
 										 emblem_name,
-										 pixmap_widget,
-										 label);
+										 pixbuf_out,
+										 label_out);
 	}
 
 	image_file_name = get_file_path_for_mode (data,
 						  current_file_info->name);
-	orig_pixbuf = gdk_pixbuf_new_from_file(image_file_name);
-	g_free(image_file_name);
+	orig_pixbuf = gdk_pixbuf_new_from_file (image_file_name);
+	g_free (image_file_name);
 
 	*emblem_name = g_strdup (current_file_info->name);
 	
@@ -213,9 +215,7 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 		gdk_pixbuf_unref (orig_pixbuf);
 	}
 	
-	*pixmap_widget = nautilus_image_new (NULL);
-	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (*pixmap_widget), pixbuf);
-	gdk_pixbuf_unref (pixbuf);
+	*pixbuf_out = pixbuf;
 	
 	filtered_name = format_name_for_display (data, current_file_info->name);
 	/* If the data is for a menu,
@@ -223,12 +223,10 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 	   label because anti-aliased text doesn't look right
 	   in menus */
 	if (data->data_is_for_a_menu) {
-		truncated_name = nautilus_truncate_text_for_menu_item (filtered_name);
-		*label = gtk_label_new (truncated_name);
-		g_free (truncated_name);
+		*label_out = nautilus_truncate_text_for_menu_item (filtered_name);
 	}
 	else {
-		*label = nautilus_label_new (filtered_name);
+		*label_out = g_strdup (filtered_name);
 	}
 	
 	g_free (filtered_name);

@@ -41,14 +41,15 @@
 
 BEGIN_GNOME_DECLS
 
-ArtIRect nautilus_irect_assign_gdk_rectangle                  (const GdkRectangle *gdk_rectangle);
-ArtIRect nautilus_irect_screen_get_frame                      (void);
-ArtIRect nautilus_irect_gdk_window_get_bounds                 (const GdkWindow    *gdk_window);
-ArtIRect nautilus_irect_gdk_window_get_screen_relative_bounds (const GdkWindow    *gdk_window);
-ArtIRect nautilus_irect_gtk_widget_get_bounds                 (const GtkWidget    *gtk_widget);
-ArtIRect nautilus_irect_gtk_widget_get_frame                  (const GtkWidget    *gtk_widget);
-ArtIRect nautilus_irect_gdk_window_clip_dirty_area_to_screen  (const GdkWindow    *gdk_window,
-							       const ArtIRect     *dirty_area);
+GdkRectangle nautilus_gdk_rectangle_assign_irect                  (const ArtIRect     *irect);
+ArtIRect     nautilus_irect_assign_gdk_rectangle                  (const GdkRectangle *gdk_rectangle);
+ArtIRect     nautilus_irect_screen_get_frame                      (void);
+ArtIRect     nautilus_irect_gdk_window_get_bounds                 (const GdkWindow    *gdk_window);
+ArtIRect     nautilus_irect_gdk_window_get_screen_relative_bounds (const GdkWindow    *gdk_window);
+ArtIRect     nautilus_irect_gtk_widget_get_bounds                 (const GtkWidget    *gtk_widget);
+ArtIRect     nautilus_irect_gtk_widget_get_frame                  (const GtkWidget    *gtk_widget);
+ArtIRect     nautilus_irect_gdk_window_clip_dirty_area_to_screen  (const GdkWindow    *gdk_window,
+								   const ArtIRect     *dirty_area);
 
 END_GNOME_DECLS
 

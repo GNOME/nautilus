@@ -160,6 +160,8 @@ void            nautilus_labeled_image_set_text_color                   (Nautilu
 									 guint32                       text_color);
 void            nautilus_labeled_image_set_label_never_smooth           (NautilusLabeledImage         *labeled_image,
 									 gboolean                      never_smooth);
+ArtIRect        nautilus_labeled_image_get_image_bounds                 (const NautilusLabeledImage   *labeled_image);
+ArtIRect        nautilus_labeled_image_get_label_bounds                 (const NautilusLabeledImage   *labeled_image);
 
 END_GNOME_DECLS
 

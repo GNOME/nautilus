@@ -84,6 +84,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-ellipsizing-label.c		\
 	nautilus-entry.c			\
 	nautilus-enumeration.c			\
+	nautilus-region.c			\
 	nautilus-file-changes-queue.c		\
 	nautilus-file-operations-progress.c	\
 	nautilus-file-operations.c		\
@@ -192,6 +193,7 @@ noinst_HEADERS =				\
 	nautilus-ellipsizing-label.h		\
 	nautilus-entry.h			\
 	nautilus-enumeration.h			\
+	nautilus-region.h			\
 	nautilus-file-attributes.h		\
 	nautilus-file-changes-queue.h		\
 	nautilus-file-operations-progress.h 	\

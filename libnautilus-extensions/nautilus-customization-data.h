@@ -53,12 +53,8 @@ NautilusCustomizationData* nautilus_customization_data_new                      
  */
 GnomeVFSResult             nautilus_customization_data_get_next_element_for_display (NautilusCustomizationData *data,
 										     char **emblem_name,
-										     GtkWidget **pixmap_widget,
-
-
-										     GtkWidget **label_widget);
-
-
+										     GdkPixbuf **pixbuf_out,
+										     char **label);
 gboolean                   nautilus_customization_data_private_data_was_displayed   (NautilusCustomizationData *data);
 
 void                       nautilus_customization_data_destroy                      (NautilusCustomizationData *data);

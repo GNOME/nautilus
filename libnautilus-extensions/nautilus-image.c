@@ -198,6 +198,9 @@ nautilus_image_initialize_class (NautilusImageClass *image_class)
 
 	/* Make this class inherit the same kind of theme stuff as GtkPixmap */
 	nautilus_gtk_class_name_make_like_existing_type ("NautilusImage", GTK_TYPE_PIXMAP);
+
+	/* Let the smooth widget machinery know that our class can be smooth */
+	nautilus_smooth_widget_register_type (NAUTILUS_TYPE_IMAGE);
 }
 
 void
