@@ -122,18 +122,14 @@
 	    <xsl:text> is </xsl:text>
       </xsl:if>	  
 	  <xsl:value-of select="$maintainlabel"/>
-      <xsl:call-template name="person.name"/>
-      <xsl:value-of select="\<\/h3\>"/>
-      <xsl:apply-templates mode="titlepage.mode" select="./affiliation"/>
 	</xsl:when>
     <xsl:otherwise>
 	  <xsl:value-of select="$authorlabel"/>
-      <xsl:call-template name="person.name"/>
-	  </h3>
-	  <apply-templates mode="titlepage.mode select="./affiliation"/>
-      <xsl:text>,</xsl:text>
     </xsl:otherwise>
   </xsl:choose>
+      <xsl:call-template name="person.name"/>
+	  </h3>
+	  <xsl:apply-templates mode="titlepage.mode" select="./affiliation"/>
   
 </xsl:template>
 
