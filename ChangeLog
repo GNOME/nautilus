@@ -1,3 +1,9 @@
+2002-06-25  Damon Chaplin  <damon@ximian.com>
+
+	* libnautilus-private/nautilus-icon-factory.c (load_icon_from_path): 
+	Check for "/.nautilus/thumbnails/" rather than "/.thumbnails/".
+	Fixes bug #82780.
+
 2002-06-25  Dave Camp  <dave@ximian.com>
 
 	* src/file-manager/fm-icon-view.c (icon_view_handle_uri_list): 

@@ -1577,7 +1577,7 @@ load_icon_from_path (const char *path,
 	}
 	
 	/* if it's a thumbnail, frame it if necessary */
-	if (strstr (path, "/.thumbnails/") != NULL) {
+	if (strstr (path, "/.nautilus/thumbnails/") != NULL) {
 		return nautilus_thumbnail_load_framed_image (path);
 	}
 	
