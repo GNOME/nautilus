@@ -1,3 +1,28 @@
+2001-01-25  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: John Harper  <jsh@eazel.com>
+
+	Fix bug 5997 (Segmentation fault when enabling then disabling tree
+	panel) two different ways (one is useful for future robustness).
+	
+	* components/tree/nautilus-tree-expansion-state.c: Move expansion
+	state preference from "sidebar-panels/tree/expansion_state" to
+	"tree-sidebar-panel/expansion_state" to avoid making Nautilus
+	think the set of active sidebar panels is changing when this
+	setting gets set.
+	
+	* src/nautilus-window-manage-views.c: (handle_view_failure,
+	nautilus_window_set_sidebar_panels): Call
+	`disconnect_and_destroy_sidebar_panel' instead of
+	`disconnect_view_and_destroy' followed by
+	`nautilus_window_remove_sidebar_panel', which left the possibility
+	of an inconsistent state where a destroyed view is in the sidebar
+	panel list.
+	(disconnect_and_destroy_sidebar_panel): New function that
+	disconnects signal handlers, removes the sidebar panel from the
+	window, and then finally destroys it, to avoid the possibility of
+	the sidebar panel list being in an inconsistent state.
+
 2001-01-24  Maciej Stachowiak  <mjs@eazel.com>
 
 	Merging Mike Fleming's partial fix for 5968 from branch. This
