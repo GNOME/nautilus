@@ -1,3 +1,20 @@
+2001-02-16  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 6689, Segmentation fault from volume_in_black_list after
+	the death of the desktop.
+
+	* src/file-manager/fm-desktop-icon-view.c: (volume_in_black_list):
+	Add an assert to catch a NULL icon view being passed in.  We need to
+	find out why this happens if it ever does.
+	
+	* src/nautilus-application.c: (window_can_be_closed),
+	(is_last_closable_window), (volume_unmounted_callback):	
+	Handle single window case in the code where we close the windows
+	the are displaying the contents of the unmounted volume.  In the case
+	of a single window, direct it back to the default home directory.
+
 2001-02-16  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-sidebar-tabs.c: (draw_one_tab_themed),

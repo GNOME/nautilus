@@ -225,6 +225,8 @@ volume_in_black_list (FMDesktopIconView *icon_view,
 		      const NautilusVolume *volume)
 {
 	GList *p;
+	
+	g_return_val_if_fail (FM_IS_DESKTOP_ICON_VIEW (icon_view), TRUE);
 
 	for (p = icon_view->details->mount_black_list; p != NULL; p = p->next) {
 		if (strcmp ((char *) p->data, volume->mount_path) == 0) {

@@ -686,7 +686,7 @@ need_to_show_first_time_druid (void)
 	return result;
 }
 
-/* Called whenever a volume is mounted.s
+/* Called whenever a volume is mounted.
  * It would also be cool to restore open windows and
  * position info saved when the volume was unmounted.
  */
@@ -696,6 +696,33 @@ volume_mounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 {
 }
 
+static gboolean
+window_can_be_closed (NautilusWindow *window)
+{
+	if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+		return TRUE;
+	}
+	
+	return FALSE;
+}
+
+static gboolean
+is_last_closable_window (NautilusWindow *window)
+{
+	GList *node, *window_list;
+	
+	window_list = nautilus_application_get_window_list ();
+	
+	for (node = window_list; node != NULL; node = node->next) {
+		if (window != NAUTILUS_WINDOW (node->data) && window_can_be_closed (NAUTILUS_WINDOW (node->data))) {
+			return FALSE;
+		}
+	}
+	
+	return TRUE;
+}
+
+
 /* Called whenever a volume is unmounted. Check and see if there are any windows open
  * displaying contents on the volume. If there are, close them.
  * It would also be cool to save open window and position info.
@@ -704,7 +731,7 @@ static void
 volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 			   NautilusApplication *application)
 {
-	GList *windows, *node, *close_list;
+	GList *window_list, *node, *close_list;
 	NautilusWindow *window;
 	char *uri;
 	char *path;
@@ -712,12 +739,12 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volum
 	close_list = NULL;
 	
 	/* Check and see if any of the open windows are displaying contents from the unmounted volume */
-	windows = nautilus_application_get_window_list ();
+	window_list = nautilus_application_get_window_list ();
 	
-	/* Construct a list of windows to be closed */
-	for (node = windows; node != NULL; node = node->next) {
+	/* Construct a list of windows to be closed. Do not add the non-closable windows to the list. */
+	for (node = window_list; node != NULL; node = node->next) {
 		window = NAUTILUS_WINDOW (node->data);
-		if (window != NULL) {
+		if (window != NULL && window_can_be_closed (window)) {
 			uri = nautilus_window_get_location (window);
 			path = gnome_vfs_get_local_path_from_uri (uri);
 			if (nautilus_str_has_prefix (path, volume->mount_path)) {
@@ -727,12 +754,18 @@ volume_unmounted_callback (NautilusVolumeMonitor *monitor, NautilusVolume *volum
 			g_free (uri);
 		}
 	}
-	
-	/* Now close all windows in the close list */
+		
+	/* Handle the windows in the close list. */
 	for (node = close_list; node != NULL; node = node->next) {
-		nautilus_window_close (NAUTILUS_WINDOW (node->data));
+		window = NAUTILUS_WINDOW (node->data);
+		if (is_last_closable_window (window)) {
+			/* Don't close the last or only window. Try to redirect to the default home directory. */		 	
+			nautilus_window_go_home (window);
+		} else {
+			nautilus_window_close (window);
+		}
 	}
-	
+		
 	g_list_free (close_list);
 }
 
