@@ -183,7 +183,7 @@ fm_list_view_did_not_drag (FMListView *view,
 
 		if ((event->button == 1)
 		    && (click_policy_auto_value == NAUTILUS_CLICK_POLICY_SINGLE)
-		    && !(event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK))) {
+		    && !button_event_modifies_selection(event)) {
 			activate_selected_items (view);
 		}
 		gtk_tree_path_free (path);
@@ -494,11 +494,31 @@ static gboolean
 key_press_callback (GtkWidget *widget, GdkEventKey *event, gpointer callback_data)
 {
 	FMDirectoryView *view;
+	GdkEventButton button_event = { 0 };
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 	
 	switch (event->keyval) {
+	case GDK_F9:
+		if (event->state & GDK_SHIFT_MASK) {
+			fm_directory_view_pop_up_background_context_menu (view, &button_event);
+		}
+		break;
+	case GDK_F10:
+		if (event->state & GDK_SHIFT_MASK) {
+			if (tree_view_has_selection (GTK_TREE_VIEW (widget))) {
+				fm_directory_view_pop_up_selection_context_menu (view, &button_event);
+			} else {
+				fm_directory_view_pop_up_background_context_menu (view, &button_event);
+			}
+		}
+		break;
 	case GDK_space:
+		if ((event->state & GDK_CONTROL_MASK) == 0) {
+			activate_selected_items (FM_LIST_VIEW (view));
+			return TRUE;
+		}
+		break;
 	case GDK_Return:
 	case GDK_KP_Enter:
 		activate_selected_items (FM_LIST_VIEW (view));
