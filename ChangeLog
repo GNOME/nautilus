@@ -1,5 +1,18 @@
 2000-08-23  Ramiro Estrugo  <ramiro@eazel.com>
 
+	 
+	components/services/nautilus-dependent-shared/shared-service-widgets.c:
+	(create_image_widget), (create_label_widget),
+	(create_services_title_widget), (create_services_header_widget),
+	(set_widget_foreground_color), (show_feedback):
+	components/services/nautilus-dependent-shared/shared-service-widgets.h:
+
+	Update these for the last round of NautilusImage and NautilusLabel
+	changes.  They look better now, but the margins are still off.
+	Ill fix that soon.
+	
+2000-08-23  Ramiro Estrugo  <ramiro@eazel.com>
+
 	* libnautilus-extensions/nautilus-label.c: (render_buffer_pixbuf),
 	(label_recompute_line_geometries), (nautilus_label_new),
 	(nautilus_label_set_text), (nautilus_label_set_font),

@@ -29,18 +29,22 @@
 #include <gnome.h>
 #include <libnautilus/nautilus-view.h>
 #include <libnautilus-extensions/nautilus-image.h>
+#include <libnautilus-extensions/nautilus-label.h>
 
 #define SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR   "rgb:FFFF/FFFF/FFFF"
 
-GtkWidget*	 create_image_widget			(const char			*icon_name,
-							 const char			*background_color_spec);
-GtkWidget*	 create_services_title_widget		(const char			*title_text);
-GtkWidget*	 create_services_header_widget		(const char			*left_text,
-							 const char			*right_text);
-void		 set_widget_foreground_color		(GtkWidget			*widget,
-							 const char			*color_spec);
-void		 show_feedback				(GtkWidget			*widget,
-							 char				*error_text);
+GtkWidget* create_image_widget           (const char *icon_name,
+					  const char *tile_icon_name);
+GtkWidget* create_label_widget           (const char *text,
+					  guint	font_size,
+					  const char *tile_icon_name);
+GtkWidget* create_services_title_widget  (const char *title_text);
+GtkWidget* create_services_header_widget (const char *left_text,
+					  const char *right_text);
+void       show_feedback                 (GtkWidget  *widget,
+					  char       *error_text);
+void       set_widget_foreground_color   (GtkWidget  *widget,
+					  const char *color_spec);
 
 #endif /* SHARED_SERVICE_WIDGETS_H */
 

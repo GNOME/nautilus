@@ -38,87 +38,142 @@
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
 #include <stdio.h>
 
-/* Ramiro's very cool generic image widget */
 GtkWidget*
-create_image_widget (const char			*icon_name,
-		     const char			*background_color_spec)
+create_image_widget (const char *icon_name,
+		     const char *tile_icon_name)
 {
-	char		*path;
-	GtkWidget	*image;
-	GdkPixbuf	*pixbuf;
-/* 	guint32		background_rgb;*/
+	GtkWidget *image;
 
-	g_return_val_if_fail (icon_name != NULL, NULL);
-	g_return_val_if_fail (background_color_spec != NULL, NULL);
+	g_return_val_if_fail (icon_name || tile_icon_name, NULL);
 
 	image = nautilus_image_new ();
 
-	path = nautilus_pixmap_file (icon_name);
-
-	pixbuf = gdk_pixbuf_new_from_file (path);
-	g_free (path);
-
-	if (pixbuf != NULL) {
-		nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image), pixbuf);
-		gdk_pixbuf_unref (pixbuf);
+	if (icon_name != NULL) {
+		char *icon_path;
+		
+		icon_path = nautilus_pixmap_file (icon_name);
+		
+		if (icon_path != NULL) {
+			GdkPixbuf *icon_pixbuf;
+			icon_pixbuf = gdk_pixbuf_new_from_file (icon_path);
+			g_free (icon_path);
+			
+			if (icon_pixbuf != NULL) {
+				nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image), icon_pixbuf);
+				gdk_pixbuf_unref (icon_pixbuf);
+			}
+			else {
+				g_warning ("Could not find the requested icon: %s", icon_path);
+			}
+		}
 	}
-	else {
-		g_warning ("Could not find the requested icon.");
+
+	if (tile_icon_name != NULL) {
+		char *tile_icon_path;
+
+		tile_icon_path = nautilus_pixmap_file (tile_icon_name);
+		
+		if (tile_icon_path != NULL) {
+			GdkPixbuf *tile_icon_pixbuf;
+			tile_icon_pixbuf = gdk_pixbuf_new_from_file (tile_icon_path);
+			g_free (tile_icon_path);
+			
+			if (tile_icon_pixbuf != NULL) {
+				nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (image), tile_icon_pixbuf);
+				gdk_pixbuf_unref (tile_icon_pixbuf);
+			}
+			else {
+				g_warning ("Could not find the requested tile_icon: %s", tile_icon_path);
+			}
+		}
 	}
-
-/* 	nautilus_image_set_background_type (NAUTILUS_IMAGE (image),*/
-/* 					    NAUTILUS_IMAGE_BACKGROUND_SOLID);*/
-
-/* 	background_rgb = nautilus_parse_rgb_with_white_default (background_color_spec);*/
-
-/* 	nautilus_image_set_background_color (NAUTILUS_IMAGE (image),*/
-/* 					     background_rgb);*/
 
 	return image;
+}
 
+GtkWidget*
+create_label_widget (const char *text,
+		     guint	font_size,
+		     const char *tile_icon_name)
+{
+	GtkWidget		*label;
+	NautilusScalableFont	*font;
+
+	g_return_val_if_fail (text != NULL, NULL);
+	g_return_val_if_fail (font_size > 0, NULL);
+
+	label = nautilus_label_new ();
+
+	nautilus_label_set_text (NAUTILUS_LABEL (label), text);
+
+	font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", NULL, NULL, NULL));
+	g_assert (font != NULL);
+	nautilus_label_set_font (NAUTILUS_LABEL (label), font);
+	gtk_object_unref (GTK_OBJECT (font));
+
+	nautilus_label_set_font_size (NAUTILUS_LABEL (label), font_size);
+	nautilus_label_set_text_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_WHITE);
+
+	if (tile_icon_name != NULL) {
+		char *tile_icon_path;
+
+		tile_icon_path = nautilus_pixmap_file (tile_icon_name);
+		
+		if (tile_icon_path != NULL) {
+			GdkPixbuf *tile_icon_pixbuf;
+			tile_icon_pixbuf = gdk_pixbuf_new_from_file (tile_icon_path);
+			g_free (tile_icon_path);
+			
+			if (tile_icon_pixbuf != NULL) {
+				nautilus_buffered_widget_set_tile_pixbuf (NAUTILUS_BUFFERED_WIDGET (label), tile_icon_pixbuf);
+				gdk_pixbuf_unref (tile_icon_pixbuf);
+			}
+			else {
+				g_warning ("Could not find the requested tile_icon: %s", tile_icon_path);
+			}
+		}
+	}
+
+	return label;
 }
 
 /* utility routine to create the standard services title bar */
 
 GtkWidget*
-create_services_title_widget (const char	*title_text) {
+create_services_title_widget (const char *title_text)
+{
+	GtkWidget		*title_hbox;
+	GtkWidget		*logo_image;
+	GtkWidget		*filler_image;
+	GtkWidget		*label;
+	NautilusScalableFont	*font;
 
-	GtkWidget       *title_hbox;
-	GtkWidget       *logo_image;
-	GtkWidget       *filler_image;
-	GtkWidget       *text_image;
-/* 	GdkFont         *font;*/
-
-	g_assert (title_text != NULL);
+	g_return_val_if_fail (title_text != NULL, NULL);
 
 	title_hbox = gtk_hbox_new (FALSE, 0);
 
-	logo_image = create_image_widget ("eazel-services-logo.png",
-					  SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
+	logo_image = create_image_widget ("eazel-services-logo.png", NULL);
 
-	filler_image = create_image_widget ("eazel-services-logo-tile.png",
-					    SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
+	filler_image = create_image_widget (NULL, "eazel-services-logo-tile.png");
 
-	text_image = create_image_widget ("eazel-services-logo-tile.png",
-					  SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
+	label = create_label_widget (title_text, 20, "eazel-services-logo-tile.png");
 
-/* 	font = nautilus_font_factory_get_font_by_family ("helvetica", 20);*/
+	font = NAUTILUS_SCALABLE_FONT (nautilus_scalable_font_new ("helvetica", NULL, NULL, NULL));
+	g_assert (font != NULL);
 
-/* 	nautilus_image_set_label_text (NAUTILUS_IMAGE (text_image), title_text); */
-/* 	nautilus_image_set_label_font (NAUTILUS_IMAGE (text_image), font); */
-/* 	nautilus_image_set_extra_width (NAUTILUS_IMAGE (text_image), 8);*/
-/* 	nautilus_image_set_right_offset (NAUTILUS_IMAGE (text_image), 8);*/
-/* 	nautilus_image_set_top_offset (NAUTILUS_IMAGE (text_image), 3);*/
+	nautilus_label_set_font (NAUTILUS_LABEL (label), font);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 20);
+	nautilus_label_set_text_color (NAUTILUS_LABEL (label), NAUTILUS_RGB_COLOR_WHITE);
 
-/* 	gdk_font_unref (font);*/
+	gtk_object_unref (GTK_OBJECT (font));
 
 	gtk_widget_show (logo_image);
 	gtk_widget_show (filler_image);
-	gtk_widget_show (text_image);
+	gtk_widget_show (label);
 
 	gtk_box_pack_start (GTK_BOX (title_hbox), logo_image, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (title_hbox), filler_image, TRUE, TRUE, 0);
-	gtk_box_pack_end (GTK_BOX (title_hbox), text_image, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (title_hbox), label, FALSE, FALSE, 0);
 
 	return title_hbox;
 
@@ -127,54 +182,40 @@ create_services_title_widget (const char	*title_text) {
 /* utility routine to create a section header */
 
 GtkWidget*
-create_services_header_widget	(const char	*left_text,
-				 const char	*right_text) {
-
+create_services_header_widget (const char	*left_text,
+			       const char	*right_text) 
+{
 	GtkWidget	*title_hbox;
-	GtkWidget	*left_image;
-	GtkWidget	*right_image;
+	GtkWidget	*left_label;
+	GtkWidget	*right_label;
 	GtkWidget	*filler_image;
-/* 	GdkFont		*font;*/
 
 	g_assert (left_text != NULL);
 	g_assert (right_text != NULL);
 
 	title_hbox = gtk_hbox_new (FALSE, 0);
 
-	left_image = create_image_widget ("eazel-services-logo-tile.png",
-					  SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
+	left_label = create_label_widget (left_text, 16, "eazel-services-logo-tile.png");
 
-	filler_image = create_image_widget ("eazel-services-logo-tile.png",
-					    SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
+	filler_image = create_image_widget (NULL, "eazel-services-logo-tile.png");
 
-	right_image = create_image_widget ("eazel-services-logo-tile.png",
-					   SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
+	right_label = create_label_widget (right_text, 16, "eazel-services-logo-tile.png");
 
-/* 	font = nautilus_font_factory_get_font_by_family ("helvetica", 18);*/
+/* 	nautilus_image_set_extra_width (NAUTILUS_IMAGE (left_label), 8);*/
+/* 	nautilus_image_set_left_offset (NAUTILUS_IMAGE (left_label), 8);*/
+/* 	nautilus_image_set_top_offset (NAUTILUS_IMAGE (left_label), 1);*/
 
-/* 	nautilus_image_set_label_text (NAUTILUS_IMAGE (left_image), left_text); */
-/* 	nautilus_image_set_label_font (NAUTILUS_IMAGE (left_image), font); */
+/* 	nautilus_image_set_extra_width (NAUTILUS_IMAGE (right_label), 8);*/
+/* 	nautilus_image_set_right_offset (NAUTILUS_IMAGE (right_label), 8);*/
+/* 	nautilus_image_set_top_offset (NAUTILUS_IMAGE (right_label), 1);*/
 
-/* 	nautilus_image_set_extra_width (NAUTILUS_IMAGE (left_image), 8);*/
-/* 	nautilus_image_set_left_offset (NAUTILUS_IMAGE (left_image), 8);*/
-/* 	nautilus_image_set_top_offset (NAUTILUS_IMAGE (left_image), 1);*/
-
-/* 	nautilus_image_set_label_text (NAUTILUS_IMAGE (right_image), right_text); */
-/* 	nautilus_image_set_label_font (NAUTILUS_IMAGE (right_image), font); */
-
-/* 	nautilus_image_set_extra_width (NAUTILUS_IMAGE (right_image), 8);*/
-/* 	nautilus_image_set_right_offset (NAUTILUS_IMAGE (right_image), 8);*/
-/* 	nautilus_image_set_top_offset (NAUTILUS_IMAGE (right_image), 1);*/
-
-/* 	gdk_font_unref (font);*/
-
-	gtk_widget_show (left_image);
+	gtk_widget_show (left_label);
 	gtk_widget_show (filler_image);
-	gtk_widget_show (right_image);
+	gtk_widget_show (right_label);
 
-	gtk_box_pack_start (GTK_BOX (title_hbox), left_image, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (title_hbox), left_label, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (title_hbox), filler_image, TRUE, TRUE, 0);
-	gtk_box_pack_end (GTK_BOX (title_hbox), right_image, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (title_hbox), right_label, FALSE, FALSE, 0);
 
 	return title_hbox;
 
@@ -183,35 +224,19 @@ create_services_header_widget	(const char	*left_text,
 /* utility routine to set the text color */
 
 void
-set_widget_foreground_color (GtkWidget	*widget, const char	*color_spec) {
-
-	GtkStyle	*style;
-	GdkColor	color;
-
-	style = gtk_widget_get_style (widget);
-
-	/* Make a copy of the style. */
-	style = gtk_style_copy (style);
-
-	nautilus_gdk_color_parse_with_white_default (color_spec, &color);
-	style->fg[GTK_STATE_NORMAL] = color;
-	style->base[GTK_STATE_NORMAL] = color;
-	style->fg[GTK_STATE_ACTIVE] = color;
-	style->base[GTK_STATE_ACTIVE] = color;
-
-	/* Put the style in the widget. */
-	gtk_widget_set_style (widget, style);
-	gtk_style_unref (style);
-
+set_widget_foreground_color (GtkWidget	*widget, 
+			     const char *color_spec) 
+{
+	nautilus_gtk_widget_set_foreground_color (widget, color_spec);
 }
 
 /* utility routine to show an error message */
 
 void
-show_feedback (GtkWidget	*widget, char	*error_message) {
-
+show_feedback (GtkWidget	*widget, 
+	       char		*error_message) 
+{
 	gtk_label_set_text (GTK_LABEL (widget), error_message);
 	gtk_widget_show (widget);
-
 }
 
