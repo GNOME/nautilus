@@ -599,91 +599,94 @@ nautilus_leak_checker_init (const char *path)
 /* normally disabled */
 
 static void
-allocate_lots(int count)
+allocate_lots (int count)
 {
 	GList *list;
 	GList *p;
 
 	list = NULL;
 	for (; count > 0; count--) {
-		list = g_list_prepend (list, g_malloc (rand() % 256));
+//		list = g_list_prepend (list, g_malloc (rand() % 256));
+		list = g_list_prepend (list, NULL);
 	}
 	for (p = list; p != NULL; p = p->next) {
-		g_free (p->data);
+//		g_free (p->data);
+		p->data = NULL;
 	}
 	g_list_free (list);
 }
 
 
 static void
-leak_mem2(void)
+leak_mem2 (void)
 {
 	int i;
 	for (i = 0; i < 40; i++) {
-		g_strdup("bla");
+//		g_strdup("bla");
 	}
-	allocate_lots (128);
+//	allocate_lots (1280);
 }
 
 static void
-leak_mem(void)
+leak_mem (void)
 {
 	int i;
 	for (i = 0; i < 1010; i++) {
-		malloc(13);
+//		malloc(13);
 	}
 	leak_mem2();
-	allocate_lots (200);
+//	allocate_lots (200);
 }
 
 
 int
 main (int argc, char **argv)
 {
-	void *non_leak;
-	void *leak;
+//	void *non_leak;
+//	void *leak;
 	int i;
 
 	nautilus_leak_checker_init (*argv);
 
-	non_leak = g_malloc(100);
-	leak = g_malloc(200);
-	g_assert(non_leak != NULL);
-	non_leak = g_realloc(non_leak, 1000);
-	g_assert(non_leak != NULL);
-	non_leak = g_realloc(non_leak, 10000);
-	leak = g_malloc(200);
-	non_leak = g_realloc(non_leak, 100000);
-	leak = g_malloc(200);
-	g_assert(non_leak != NULL);
-	g_free(non_leak);
+//	non_leak = g_malloc(100);
+//	leak = g_malloc(200);
+//	g_assert(non_leak != NULL);
+//	non_leak = g_realloc(non_leak, 1000);
+//	g_assert(non_leak != NULL);
+//	non_leak = g_realloc(non_leak, 10000);
+//	leak = g_malloc(200);
+//	non_leak = g_realloc(non_leak, 100000);
+//	leak = g_malloc(200);
+//	g_assert(non_leak != NULL);
+//	g_free(non_leak);
+//
+//	non_leak = calloc(1, 100);
+//	g_assert(non_leak != NULL);
+//	g_free(non_leak);
+//	leak = g_malloc(200);
 
-	non_leak = calloc(1, 100);
-	g_assert(non_leak != NULL);
-	g_free(non_leak);
-	leak = g_malloc(200);
-
-	non_leak = memalign(16, 100);
-	g_assert(non_leak != NULL);
-	g_free(non_leak);
-	leak = g_malloc(200);
-	leak = memalign(16, 100);
-	leak = memalign(16, 100);
-	leak = memalign(16, 100);
-	leak = memalign(16, 100);
-	leak = memalign(16, 100);
-	leak = memalign(16, 100);
+//	non_leak = memalign(16, 100);
+//	g_assert(non_leak != NULL);
+//	g_free(non_leak);
+//	leak = g_malloc(200);
+//	leak = memalign(16, 100);
+//	leak = memalign(16, 100);
+//	leak = memalign(16, 100);
+//	leak = memalign(16, 100);
+//	leak = memalign(16, 100);
+//	leak = memalign(16, 100);
 
 	for (i = 0; i < 13; i++) {
-		leak = malloc(13);
+//		leak = malloc(13);
 	}
 
 	leak_mem();
 	leak_mem2();
 
-	for (i = 0; i < 100; i++) {
-		allocate_lots(rand() % 40);
-	}
+	allocate_lots (1);
+//	for (i = 0; i < 100; i++) {
+//		allocate_lots(rand() % 40);
+//	}
 	printf("done\n");
 	nautilus_leak_print_leaks (6, 12, 20, TRUE);
 

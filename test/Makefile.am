@@ -1,6 +1,6 @@
 NULL=
 
-lib_LTLIBRARIES = libleakcheck.la
+#lib_LTLIBRARIES = libleakcheck.la
 
 INCLUDES =\
 	-I$(top_srcdir) \
@@ -40,32 +40,37 @@ test_nautilus_mime_actions_SOURCES = test-nautilus-mime-actions.c
 
 test_nautilus_mime_actions_set_SOURCES = test-nautilus-mime-actions-set.c
 
-libleakcheck_la_SOURCES =    		\
-	nautilus-leak-checker.c		\
-	nautilus-leak-checker.h		\
-	nautilus-leak-checker-stubs.h	\
-	nautilus-leak-hash-table.c	\
-	nautilus-leak-hash-table.h	\
-	nautilus-leak-symbol-lookup.c	\
-	nautilus-leak-symbol-lookup.h	\
-	$(NULL)
-
-# we need to link libbfd and liberty statically
-# this is currently broken because of libtool dumbness
-
-# LIBLEAKCHECK_STATIC_LIBS = "-Wl,-Bstatic -lbfd -liberty -Wl,-Bdynamic"
-
-libleakcheck_la_LDFLAGS = -module -avoid-version $(LIBLEAKCHECK_STATIC_LIBS)
-libleakcheck_la_LIBADD = -ldl 
+#libleakcheck_la_SOURCES =    		\
+#	nautilus-leak-checker.c		\
+#	nautilus-leak-checker.h		\
+#	nautilus-leak-checker-stubs.h	\
+#	nautilus-leak-hash-table.c	\
+#	nautilus-leak-hash-table.h	\
+#	nautilus-leak-symbol-lookup.c	\
+#	nautilus-leak-symbol-lookup.h	\
+#	$(NULL)
 
 EXTRA_DIST =					\
 	test-nautilus-mime-actions.c		\
 	$(NULL)
 
-# the link rule is here so we can remove  -rpath $(libdir)
-# however - 
-# if we leave -rpath $(libdir) here, libtool refuses to link with -liberty
-# if we dont, .libs/libleakcheck.lai doesn't get generated and make install fails
+# the libtool way of building libleakcheck.so is totally broken, libtool cannot
+# build an .so with statically linked -liberty
 
-libleakcheck.la: $(libleakcheck_la_OBJECTS) $(libleakcheck_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libleakcheck_la_LDFLAGS) $(libleakcheck_la_OBJECTS) $(libleakcheck_la_LIBADD) $(LIBS)
+# LIBLEAKCHECK_STATIC_LIBS = "-Wl,-Bstatic -lbfd -liberty -Wl,-Bdynamic"
+#libleakcheck_la_LDFLAGS = -module -avoid-version $(LIBLEAKCHECK_STATIC_LIBS)
+#libleakcheck_la_LIBADD = -ldl 
+
+
+
+# libleakcheck.la: $(libleakcheck_la_OBJECTS) $(libleakcheck_la_DEPENDENCIES)
+#	$(LINK) -rpath $(libdir) $(libleakcheck_la_LDFLAGS) $(libleakcheck_la_OBJECTS) $(libleakcheck_la_LIBADD) $(LIBS)
+
+
+# for now just hardcode a plain old link line, someday someone can figure out what the 
+# magic password is to make libtool do this cleanly
+libleakcheck.so: nautilus-leak-checker.c nautilus-leak-hash-table.c nautilus-leak-symbol-lookup.c
+	gcc nautilus-leak-checker.c nautilus-leak-hash-table.c nautilus-leak-symbol-lookup.c -Wall -o $@ -shared -I/gnome/include -I/gnome/lib/glib/include -L/gnome/lib -lglib -lpthread -ldl -Wl,-Bstatic -lbfd -liberty -Wl,-Bdynamic
+
+install: libleakcheck.so
+	cp -f libleakcheck.so $(DESTDIR)$(libdir)

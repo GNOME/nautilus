@@ -22,7 +22,7 @@
    based on MemProf by Owen Taylor, <otaylor@redhat.com>
 */
 
-#define _GNU_SOURCE	
+#define _GNU_SOURCE
 	/* need this for dladdr */
 
 #include "nautilus-leak-symbol-lookup.h"
@@ -43,17 +43,19 @@ typedef struct {
 	bfd *abfd;
 	asymbol **symbol_table;
 	asection *text_section;
+	unsigned long start;
+	unsigned long end;
 } NautilusLeakSymbolLookupMap;
 
 static gboolean
 nautilus_leak_find_symbol_in_map (const NautilusLeakSymbolLookupMap *map, 
 	unsigned long address, char **function_name, char **source_file_name, 
-	unsigned int *line, unsigned long offset, const char *known_function_name)
+	unsigned int *line)
 {
 	const char *file;
 	const char *function;
 
-	address -= offset;
+	address -= map->start;
 	address -= map->text_section->vma;
 
 	if (address < 0 || address > map->text_section->_cooked_size) {
@@ -68,18 +70,61 @@ nautilus_leak_find_symbol_in_map (const NautilusLeakSymbolLookupMap *map,
 		return FALSE;
 	}
 
-	if (known_function_name != NULL &&
-		strcmp (function, known_function_name) != 0) {
-		return FALSE;
-	}
 	*function_name = g_strdup (function);
 	*source_file_name = g_strdup (file);
 
 	return TRUE;
 }
 
+static void
+nautilus_leak_symbol_map_get_offsets (NautilusLeakSymbolLookupMap *map)
+{
+	gchar buffer[1024];
+	FILE *in;
+	gchar perms[26];
+	gchar file[256];
+	guint64 start, end;
+	guint major, minor;
+	guint64 inode;
+	struct stat library_stat;
+	struct stat entry_stat;
+	int count;
+
+	/* find the library we are looking for in the proc directories
+	 * to find out at which addresses it is mapped
+	 */
+	snprintf (buffer, 1023, "/proc/%d/maps", getpid());
+	in = fopen (buffer, "r");
+
+	if (stat (map->path, &library_stat) != 0) {
+		/* we will use st_ino and st_dev to do a file match */
+		return;
+	}
+	
+	while (fgets(buffer, 1023, in)) {
+
+		count = sscanf (buffer, "%Lx-%Lx %15s %*x %u:%u %Lu %255s",
+				&start, &end, perms, &major, &minor, &inode, file);
+				
+		if (count >= 6 && strcmp (perms, "r-xp") == 0) {
+			if (stat (file, &entry_stat) != 0) {
+				break;
+			}
+			/* check if this is the library we are loading */
+			if (library_stat.st_ino == entry_stat.st_ino
+				&& library_stat.st_dev == entry_stat.st_dev) {
+				map->start = (unsigned long)start;
+				map->end = (unsigned long)end;
+
+				break;
+			}
+		}
+	}
+	fclose (in);
+}
+
 static NautilusLeakSymbolLookupMap *
-nautilus_leak_symbol_map_load (const char *binary_path)
+nautilus_leak_symbol_map_load (const char *binary_path, gboolean executable)
 {
 	NautilusLeakSymbolLookupMap *map;
 	char *target = NULL;
@@ -120,14 +165,17 @@ nautilus_leak_symbol_map_load (const char *binary_path)
 	}
 	number_of_symbols = bfd_canonicalize_symtab (map->abfd, map->symbol_table);
 	map->path = g_strdup (binary_path);
-	
+
+	if (!executable) {
+		nautilus_leak_symbol_map_get_offsets (map);
+	}
 	symbol_table_list = g_list_append (symbol_table_list, map);
 
 	return map;
 }
 
 static NautilusLeakSymbolLookupMap * 
-nautilus_leak_symbol_map_load_if_needed (const char *binary_path)
+nautilus_leak_symbol_map_load_if_needed (const char *binary_path, gboolean executable)
 {
 	GList *p;
 	NautilusLeakSymbolLookupMap *map;
@@ -138,7 +186,7 @@ nautilus_leak_symbol_map_load_if_needed (const char *binary_path)
 			/* no need to load the symbols, already got the map */
 			return map;
 	}
-	return nautilus_leak_symbol_map_load (binary_path);
+	return nautilus_leak_symbol_map_load (binary_path, executable);
 }
 
 void 
@@ -173,11 +221,10 @@ nautilus_leak_find_symbol_address (void *address, char **function_name, char **s
 		/* We know the function name and the binary it lives in, now try to find
 		 * the function and the offset.
 		 */
-		map = nautilus_leak_symbol_map_load_if_needed (info.dli_fname);
+		map = nautilus_leak_symbol_map_load_if_needed (info.dli_fname, false);
 		if (map != NULL
 			&& nautilus_leak_find_symbol_in_map (map, (long)address, 
-				function_name, source_file_name, line, 
-				(unsigned long)info.dli_fbase, info.dli_sname)) {
+				function_name, source_file_name, line)) {
 			return TRUE;
 		}
 		/* just return the function name and the library binary path */
@@ -192,7 +239,7 @@ nautilus_leak_find_symbol_address (void *address, char **function_name, char **s
 		for (p = symbol_table_list; p != NULL; p = p->next) {
 			map = p->data;
 			if (nautilus_leak_find_symbol_in_map (map, (long)address, function_name, 
-				source_file_name, (unsigned int *)line, 0, NULL))
+				source_file_name, (unsigned int *)line))
 				return TRUE;
 		}
 	}
@@ -207,7 +254,7 @@ nautilus_leak_print_symbol_address (const char *app_path, void *address)
 	char *source_file_name;
 	int line;
 
-	nautilus_leak_symbol_map_load_if_needed (app_path);
+	nautilus_leak_symbol_map_load_if_needed (app_path, true);
 
 	if (nautilus_leak_find_symbol_address (address, &function_name, &source_file_name, &line)) {
 		if (line >= 0) {

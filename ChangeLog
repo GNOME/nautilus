@@ -1,3 +1,23 @@
+2000-06-13  Pavel Cisler  <pavel@eazel.com>
+
+	* test/Makefile.am:
+	Couldn't figure out how to build the leakchecker shared library
+	with libtool, added a simple link rule instead.
+	
+	* test/nautilus-leak-symbol-lookup.c:
+	(nautilus_leak_find_symbol_in_map),
+	(nautilus_leak_symbol_map_get_offsets),
+	(nautilus_leak_symbol_map_load),
+	(nautilus_leak_symbol_map_load_if_needed),
+	(nautilus_leak_find_symbol_address),
+	(nautilus_leak_print_symbol_address):
+	Redid symbol lookup to work better in some cases where dladdr
+	would not give us the right function.
+
+	* test/nautilus-leak-checker.c: (allocate_lots), (leak_mem2),
+	(leak_mem), (main):
+	tweaks to testing code.
+
 2000-06-13  Rebecca Schulman  <rebecka@eazel.com>
 	Initial changes to implement search architecture.
 
