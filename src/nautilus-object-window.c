@@ -427,15 +427,6 @@ nautilus_window_constructed(NautilusWindow *window)
 
   /* set up location bar */
 
-  window->option_cvtype = gtk_option_menu_new();
-  window->menu_cvtype = gtk_menu_new();
-  /* FIXME: Add in placeholder item for now; rework this when we get the right views showing up.
-   * Since menu doesn't yet work, make it insensitive.
-   */
-  gtk_container_add(GTK_CONTAINER(window->menu_cvtype), 
-  	gtk_menu_item_new_with_label(_("View as (placeholder)")));
-  gtk_widget_set_sensitive(window->option_cvtype, FALSE);
-
   location_bar_box = gtk_hbox_new(FALSE, GNOME_PAD);
   gtk_container_set_border_width(GTK_CONTAINER(location_bar_box), GNOME_PAD_SMALL);
 
@@ -447,23 +438,12 @@ nautilus_window_constructed(NautilusWindow *window)
   					   GNOME_DOCK_ITEM_BEH_EXCLUSIVE|GNOME_DOCK_ITEM_BEH_NEVER_VERTICAL,
                        GNOME_DOCK_TOP, 2, 0, 0);
 
-  gtk_widget_show_all(window->menu_cvtype);
-  gtk_option_menu_set_menu(GTK_OPTION_MENU(window->option_cvtype), window->menu_cvtype);
-  gtk_option_menu_set_history(GTK_OPTION_MENU(window->option_cvtype), 0);
+  /* Option menu for content view types; it's empty here, filled in when a uri is set. */
+  window->option_cvtype = gtk_option_menu_new();
   gtk_box_pack_end(GTK_BOX(location_bar_box), window->option_cvtype, FALSE, FALSE, GNOME_PAD_BIG);
   gtk_widget_show(window->option_cvtype);
-  gtk_widget_show_all(location_bar_box);
 
-  /* For mysterious reasons, connecting these signals before laying out the menu
-   * and option menu ends up making the option menu not know how to size itself (i.e, 
-   * it is zero-width unless you turn on expand and fill). So we do it here afterwards.
-   */
-  gtk_signal_connect_while_alive(GTK_OBJECT(window->menu_cvtype), "add",
-                                 GTK_SIGNAL_FUNC(gtk_option_menu_do_resize), window->option_cvtype,
-                                 GTK_OBJECT(window->option_cvtype));
-  gtk_signal_connect_while_alive(GTK_OBJECT(window->menu_cvtype), "remove",
-                                 GTK_SIGNAL_FUNC(gtk_option_menu_do_resize), window->option_cvtype,
-                                 GTK_OBJECT(window->option_cvtype));
+  gtk_widget_show_all(location_bar_box);
 
   /* set up status bar */
 

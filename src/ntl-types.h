@@ -34,16 +34,23 @@
 typedef char *NautilusLocationReference;
 
 typedef struct _NautilusNavigationInfo NautilusNavigationInfo;
+typedef struct _NautilusViewIdentifier NautilusViewIdentifier;
 
 typedef void (*NautilusNavigationInfoFunc)(NautilusNavigationInfo *navinfo, gpointer data);
+
+struct _NautilusViewIdentifier {
+  char *iid;	/* magic key */
+  char *name;	/* human-readable name */
+};
 
 struct _NautilusNavigationInfo {
   Nautilus_NavigationInfo navinfo;
 
   gpointer requesting_view;
 
-  const char *content_iid;
-  GSList *meta_iids;
+  const char *default_content_iid;
+  GSList *content_identifiers;	/* list of NautilusViewIdentifiers */
+  GSList *meta_iids;	/* list of iid strings */
 
   guint notify_tag;
   NautilusNavigationInfoFunc notify_ready;

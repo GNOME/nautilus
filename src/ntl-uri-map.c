@@ -59,6 +59,32 @@ nautilus_navinfo_add_mapping(const char *scheme, int type, const char *data, con
   g_hash_table_insert(scheme_mappings, g_strdup(scheme), ent);
 }
 
+static NautilusViewIdentifier *
+nautilus_view_identifier_new (const char *iid, const char *name)
+{
+  NautilusViewIdentifier *new_identifier;
+
+  g_return_val_if_fail (iid != NULL, NULL);
+  g_return_val_if_fail (name != NULL, NULL);
+
+  new_identifier = g_new0 (NautilusViewIdentifier, 1);
+  new_identifier->iid = g_strdup (iid);
+  new_identifier->name = g_strdup (name);
+
+  return new_identifier;
+}
+
+static void
+nautilus_view_identifier_free (NautilusViewIdentifier *identifier)
+{
+  if (identifier != NULL)
+  {
+    g_free (identifier->iid);
+    g_free (identifier->name);
+    g_free (identifier);
+  }
+}
+
 static void
 navinfo_read_map_file(const char *fn)
 {
@@ -258,12 +284,12 @@ nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
 
      Check if the URI is in an abnormal scheme (e.g. one not supported by gnome-vfs)
        If so
-          Lookup a content view by scheme name, go.
+          Lookup content views by scheme name, go.
           Lookup meta views by scheme name, go.
 
        If not
           Figure out content type.
-          Lookup a content view by content type, go.
+          Lookup content views by content type, go.
           Lookup meta views by content type, go.
 
      The lookup-and-go process works like:
@@ -280,16 +306,29 @@ nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
     {
       if(!strcmp(navinfo->navinfo.content_type, "text/html"))
         {
-          navinfo->content_iid = "ntl_web_browser";
+          navinfo->default_content_iid = "ntl_web_browser";
+          navinfo->content_identifiers = g_slist_append (
+          	navinfo->content_identifiers, 
+          	nautilus_view_identifier_new (navinfo->default_content_iid, "Web Page"));
         }
       else if(!strcmp(navinfo->navinfo.content_type, "text/plain"))
         {
-          navinfo->content_iid = "embeddable:text-plain";
+          navinfo->default_content_iid = "embeddable:text-plain";
+          navinfo->content_identifiers = g_slist_append (
+          	navinfo->content_identifiers, 
+          	nautilus_view_identifier_new (navinfo->default_content_iid, "Text"));
         }
       else if(!strcmp(navinfo->navinfo.content_type, "special/directory")
               || !strcmp(navinfo->navinfo.content_type, "application/x-nautilus-vdir"))
         {
-          navinfo->content_iid = "ntl_file_manager";
+          navinfo->default_content_iid = "ntl_file_manager";
+          navinfo->content_identifiers = g_slist_append (
+          	navinfo->content_identifiers, 
+          	nautilus_view_identifier_new (navinfo->default_content_iid, "Icons"));
+	  /* FIXME: Test of multiple items, replace with working case */
+          navinfo->content_identifiers = g_slist_append (
+          	navinfo->content_identifiers, 
+          	nautilus_view_identifier_new ("bogus_test_iid", "List"));
         }
       else
         {
@@ -320,6 +359,8 @@ nautilus_navinfo_free(NautilusNavigationInfo *navinfo)
     /* XXX remove_notification */
     }
 
+  g_slist_foreach(navinfo->content_identifiers, (GFunc)nautilus_view_identifier_free, NULL);
+  g_slist_free(navinfo->content_identifiers);
   g_slist_foreach(navinfo->meta_iids, (GFunc)g_free, NULL);
   g_slist_free(navinfo->meta_iids);
   g_free(navinfo->navinfo.requested_uri);

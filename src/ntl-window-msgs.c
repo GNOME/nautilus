@@ -134,6 +134,54 @@ Nautilus_NavigationInfo__copy(Nautilus_NavigationInfo *dest_ni, Nautilus_Navigat
   dest_ni->self_originated = CORBA_FALSE;
 }
 
+static void
+nautilus_window_load_content_view_menu (NautilusWindow *window)
+{
+  GList *children; 
+  GList *iter_old;
+  GSList *iter_new;
+  GtkWidget *new_menu;
+  gint index, default_view_index;
+
+  g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+  g_return_if_fail (GTK_IS_OPTION_MENU (window->option_cvtype));
+  g_return_if_fail (window->load_info != NULL);
+  g_return_if_fail (window->load_info->ni != NULL);
+
+  new_menu = gtk_menu_new ();
+
+  /* Add a menu item for each available content view type */
+  iter_new = window->load_info->ni->content_identifiers;
+  index = 0;
+  default_view_index = -1;
+  while (iter_new != NULL)
+  {
+    GtkWidget *menu_item;
+    NautilusViewIdentifier *identifier;
+
+    identifier = (NautilusViewIdentifier *)iter_new->data;
+    menu_item = gtk_menu_item_new_with_label (identifier->name);
+    if (strcmp (identifier->iid, window->load_info->ni->default_content_iid) == 0)
+    {
+      default_view_index = index;
+    }
+    /* FIXME: Need to connect menu item to signal here */
+    gtk_menu_append (GTK_MENU (new_menu), menu_item);
+    gtk_widget_show (menu_item);
+    iter_new = g_slist_next (iter_new);
+    ++index;
+  }
+
+  /* We create and attach a new menu here because adding/removing items from
+   * existing menu screws up the size of the option menu.
+   */
+  gtk_option_menu_set_menu (GTK_OPTION_MENU (window->option_cvtype), new_menu);
+
+  g_assert (default_view_index >= 0);
+  gtk_option_menu_set_history (GTK_OPTION_MENU (window->option_cvtype), 
+  			       default_view_index);
+}
+
 /* Handle the changes for the NautilusWindow itself. */
 static void
 nautilus_window_change_location_internal(NautilusWindow *window, Nautilus_NavigationInfo *loci, gboolean is_back)
@@ -195,6 +243,8 @@ nautilus_window_change_location_internal(NautilusWindow *window, Nautilus_Naviga
       CORBA_free(window->si);
       window->si = NULL;
     }
+
+  nautilus_window_load_content_view_menu (window);
 
   explorer_location_bar_set_uri_string(EXPLORER_LOCATION_BAR(window->ent_uri),
                                        loci->requested_uri);
@@ -440,25 +490,25 @@ nautilus_window_change_location_2(NautilusNavigationInfo *ni, gpointer data)
     {
       nautilus_window_display_error
 	(window,
-	 _("The chosen hyperlink is invalid, or points to an inaccessable page."));
+	 _("The chosen hyperlink is invalid, or points to an inaccessible page."));
 
       nautilus_window_end_location_change(window);
 
       return;
     }
 
-  if(!ni->content_iid)
+  if(!ni->default_content_iid)
     {
       nautilus_window_display_error
 	(window,
-	 _("There is not any known method of displaying the selected page."));
+	 _("There is no known method of displaying the selected page."));
 
       nautilus_window_end_location_change(window);
 
       return;
     }
 
-  nautilus_window_load_content_view(window, ni->content_iid, ni, (NautilusView **)&ni->requesting_view);
+  nautilus_window_load_content_view(window, ni->default_content_iid, ni, (NautilusView **)&ni->requesting_view);
   if(!window->load_info->new_content_view)
     {
       nautilus_window_display_error

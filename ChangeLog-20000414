@@ -1,3 +1,38 @@
+2000-01-10  John Sullivan  <sullivan@eazel.com>
+
+	Added some of the framework for supporting multiple
+	content views for the same uri. More to come later.
+
+	* src/ntl-types.h: added NautilusViewIdentifier struct
+	to keep track of iid and human-readable name. Renamed
+	NautilusNavigationInfo.content_iid to default_content_iid,
+	and added content_identifiers GSList.
+	* src/ntl-uri-map.c: 
+	(nautilus_view_identifier_new): New function.
+	(nautilus_view_identifier_free): New function.
+	(nautilus_navinfo_new): Create a human-readable-name
+	for each content iid, and store them together in
+	content_identifiers list. I included a currently
+	unworking "List" choice for the directory case, to
+	test the framework.
+	(nautilus_navinfo_free): Free the content_identifiers list.
+	* src/ntl-window-msgs.c:
+	(nautilus_window_load_content_view_menu): New function,
+	iterates through the content_identifiers list to fill in
+	the menu of content view choices. The menu items don't do
+	anything yet.
+	(nautilus_window_change_location_internal): Added call to
+	nautilus_window_load_content_view_menu.
+	(nautilus_window_change_location_2): Fixed spelling and
+	grammar in a couple of error messages.
+	* src/ntl-window.c: (nautilus_window_constructed): Removed
+	"View as (placeholder)" text in menu; now it has no text
+	until the actual choices appear. Removed some option-menu-sizing
+	trickery that didn't work correctly when items were added later.
+	Now the entire menu is replaced when its contents change.
+	* src/ntl-window.h: Removed menu_cvtype field; code all uses
+	just option_cvtype now.
+
 2000-01-10  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/Makefile.am, libnautilus/nautilus-background.h,
