@@ -23,7 +23,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
-"POT-Creation-Date: 2001-10-07 22:40+0200\n"
+"POT-Creation-Date: 2001-10-19 09:33-0700\n"
 "PO-Revision-Date: 2001-08-28 09:54+0200\n"
 "Last-Translator: Ole Laursen <olau@hardworking.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
@@ -630,15 +630,15 @@ msgstr ""
 "  %s\n"
 "Alle yderligere fejl vises kun på terminalen."
 
-#: components/mozilla/nautilus-mozilla-content-view.c:424
+#: components/mozilla/nautilus-mozilla-content-view.c:402
 msgid "name of icon for the mozilla view"
 msgstr "navnet på ikonet til Mozilla-visningen"
 
-#: components/mozilla/nautilus-mozilla-content-view.c:426
+#: components/mozilla/nautilus-mozilla-content-view.c:404
 msgid "mozilla summary info"
 msgstr "sammendrag af Mozilla-oplysninger"
 
-#: components/mozilla/nautilus-mozilla-content-view.c:921
+#: components/mozilla/nautilus-mozilla-content-view.c:899
 msgid ""
 "A JavaScript function (small software program) on this page tried to open a "
 "new window, but Nautilus does not support the opening new windows by "
@@ -652,7 +652,7 @@ msgstr ""
 "\n"
 "Prøv at åbne siden i en anden browser som f.eks. Mozilla."
 
-#: components/mozilla/nautilus-mozilla-content-view.c:925
+#: components/mozilla/nautilus-mozilla-content-view.c:903
 msgid "Nautilus JavaScript Warning"
 msgstr "Nautilus Javascript-advarsel"
 
@@ -1807,7 +1807,7 @@ msgstr "Tilføj et sted:"
 
 #. add the button box at the bottom with a cancel button
 #: components/news/nautilus-news.c:2358
-#: src/file-manager/fm-directory-view.c:4483
+#: src/file-manager/fm-directory-view.c:4573
 msgid "Cancel"
 msgstr "Annullér"
 
@@ -2175,7 +2175,7 @@ msgstr "Træk et emblem til et objekt for at tilføje det til objektet"
 msgid "Eclipse"
 msgstr "Formørkelse"
 
-#: data/browser.xml.h:31 src/file-manager/fm-list-view.c:2285
+#: data/browser.xml.h:31 src/file-manager/fm-list-view.c:2251
 #: src/file-manager/fm-properties-window.c:1717
 #: src/file-manager/fm-search-list-view.c:499
 msgid "Emblems"
@@ -2406,7 +2406,7 @@ msgstr "Gimp'en"
 msgid "Desktop"
 msgstr "Skrivebord"
 
-#: data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:5208
+#: data/linksets/desktop.xml.h:2 libnautilus-private/nautilus-file.c:5212
 #: libnautilus-private/nautilus-trash-directory.c:388
 #: src/file-manager/fm-desktop-icon-view.c:71
 msgid "Trash"
@@ -2683,7 +2683,8 @@ msgstr "Dette er standardtemaet til Nautilus."
 
 #: icons/gnome/gnome.xml.h:1
 msgid "A theme designed to fit well with the classic GNOME environment."
-msgstr "Et tema designet til at passe godt sammen med det klassiske Gnome-miljø."
+msgstr ""
+"Et tema designet til at passe godt sammen med det klassiske Gnome-miljø."
 
 #: icons/sierra/sierra.xml.h:1
 msgid "Sierra"
@@ -3169,7 +3170,7 @@ msgstr "Erstat alt"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1172
-#: libnautilus-private/nautilus-file.c:4195
+#: libnautilus-private/nautilus-file.c:4199
 #, c-format
 msgid "link to %s"
 msgstr "henvisning til %s"
@@ -3796,65 +3797,65 @@ msgstr "fæ (124. kopi).txt"
 #. * off zero padding, and putting a "_" there will use
 #. * space padding instead of zero padding.
 #.
-#: libnautilus-private/nautilus-file.c:2449
+#: libnautilus-private/nautilus-file.c:2453
 msgid "today at 00:00:00 PM"
 msgstr "i dag kl. 00:00:00"
 
 # H i stedet for I for 24-timers ur
-#: libnautilus-private/nautilus-file.c:2450
+#: libnautilus-private/nautilus-file.c:2454
 msgid "today at %-I:%M:%S %p"
 msgstr "i dag kl. %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2452
+#: libnautilus-private/nautilus-file.c:2456
 msgid "today at 00:00 PM"
 msgstr "i dag kl. 00:00"
 
-#: libnautilus-private/nautilus-file.c:2453
+#: libnautilus-private/nautilus-file.c:2457
 msgid "today at %-I:%M %p"
 msgstr "i dag kl. %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2455
+#: libnautilus-private/nautilus-file.c:2459
 msgid "today, 00:00 PM"
 msgstr "i dag, kl. 00:00"
 
-#: libnautilus-private/nautilus-file.c:2456
+#: libnautilus-private/nautilus-file.c:2460
 msgid "today, %-I:%M %p"
 msgstr "i dag, kl. %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2458
-#: libnautilus-private/nautilus-file.c:2459
+#: libnautilus-private/nautilus-file.c:2462
+#: libnautilus-private/nautilus-file.c:2463
 msgid "today"
 msgstr "i dag"
 
 #. Yesterday, use special word.
 #. * Note to localizers: Same issues as "today" string.
 #.
-#: libnautilus-private/nautilus-file.c:2468
+#: libnautilus-private/nautilus-file.c:2472
 msgid "yesterday at 00:00:00 PM"
 msgstr "i går kl. 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2469
+#: libnautilus-private/nautilus-file.c:2473
 msgid "yesterday at %-I:%M:%S %p"
 msgstr "i går kl. %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2471
+#: libnautilus-private/nautilus-file.c:2475
 msgid "yesterday at 00:00 PM"
 msgstr "i går kl. 00:00"
 
-#: libnautilus-private/nautilus-file.c:2472
+#: libnautilus-private/nautilus-file.c:2476
 msgid "yesterday at %-I:%M %p"
 msgstr "i går kl. %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2474
+#: libnautilus-private/nautilus-file.c:2478
 msgid "yesterday, 00:00 PM"
 msgstr "i går, kl. 00:00"
 
-#: libnautilus-private/nautilus-file.c:2475
+#: libnautilus-private/nautilus-file.c:2479
 msgid "yesterday, %-I:%M %p"
 msgstr "i går, kl. %-H:%M"
 
-#: libnautilus-private/nautilus-file.c:2477
-#: libnautilus-private/nautilus-file.c:2478
+#: libnautilus-private/nautilus-file.c:2481
+#: libnautilus-private/nautilus-file.c:2482
 msgid "yesterday"
 msgstr "i går"
 
@@ -3863,133 +3864,133 @@ msgstr "i går"
 #. * The width measurement templates correspond to
 #. * the day/month name with the most letters.
 #.
-#: libnautilus-private/nautilus-file.c:2489
+#: libnautilus-private/nautilus-file.c:2493
 msgid "Wednesday, September 00 0000 at 00:00:00 PM"
 msgstr "onsdag d. 0. september 0000 kl. 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2490
+#: libnautilus-private/nautilus-file.c:2494
 msgid "%A, %B %-d %Y at %-I:%M:%S %p"
 msgstr "%A d. %-d. %B %Y kl. %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2492
+#: libnautilus-private/nautilus-file.c:2496
 msgid "Mon, Oct 00 0000 at 00:00:00 PM"
 msgstr "man. d. 0. sept. 0000 kl. 00:00:00"
 
-#: libnautilus-private/nautilus-file.c:2493
+#: libnautilus-private/nautilus-file.c:2497
 msgid "%a, %b %-d %Y at %-I:%M:%S %p"
 msgstr "%a d. %-d. %b. %Y kl. %-H:%M:%S"
 
-#: libnautilus-private/nautilus-file.c:2495
+#: libnautilus-private/nautilus-file.c:2499
 msgid "Mon, Oct 00 0000 at 00:00 PM"
 msgstr "ons. d. 0. sept. 0000 kl. 00:00"
 
-#: libnautilus-private/nautilus-file.c:2496
+#: libnautilus-private/nautilus-file.c:2500
 msgid "%a, %b %-d %Y at %-I:%M %p"
 msgstr "%a d. %-d. %b. %Y kl. %-H:%M"
 
 # afspejler teksten nedenfor
-#: libnautilus-private/nautilus-file.c:2498
+#: libnautilus-private/nautilus-file.c:2502
 msgid "Oct 00 0000 at 00:00 PM"
 msgstr "0/10-0000 kl. 00:00"
 
-#: libnautilus-private/nautilus-file.c:2499
+#: libnautilus-private/nautilus-file.c:2503
 msgid "%b %-d %Y at %-I:%M %p"
 msgstr "%-d/%-m-%Y kl. %H:%M"
 
-#: libnautilus-private/nautilus-file.c:2501
+#: libnautilus-private/nautilus-file.c:2505
 msgid "Oct 00 0000, 00:00 PM"
 msgstr "0/10-0000, 01:00"
 
-#: libnautilus-private/nautilus-file.c:2502
+#: libnautilus-private/nautilus-file.c:2506
 msgid "%b %-d %Y, %-I:%M %p"
 msgstr "%-d/%-m-%Y, %H:%M"
 
-#: libnautilus-private/nautilus-file.c:2504
+#: libnautilus-private/nautilus-file.c:2508
 msgid "00/00/00, 00:00 PM"
 msgstr "00/00-00, 01:00"
 
-#: libnautilus-private/nautilus-file.c:2505
+#: libnautilus-private/nautilus-file.c:2509
 msgid "%m/%-d/%y, %-I:%M %p"
 msgstr "%-d/%-m-%Y, %H:%M"
 
-#: libnautilus-private/nautilus-file.c:2507
+#: libnautilus-private/nautilus-file.c:2511
 msgid "00/00/00"
 msgstr "00/00-00"
 
-#: libnautilus-private/nautilus-file.c:2508
+#: libnautilus-private/nautilus-file.c:2512
 msgid "%m/%d/%y"
 msgstr "%-d/%-m-%y"
 
-#: libnautilus-private/nautilus-file.c:3780
+#: libnautilus-private/nautilus-file.c:3784
 msgid "0 items"
 msgstr "0 objekter"
 
-#: libnautilus-private/nautilus-file.c:3780
+#: libnautilus-private/nautilus-file.c:3784
 msgid "0 folders"
 msgstr "0 mapper"
 
-#: libnautilus-private/nautilus-file.c:3781
+#: libnautilus-private/nautilus-file.c:3785
 msgid "0 files"
 msgstr "0 filer"
 
-#: libnautilus-private/nautilus-file.c:3785
+#: libnautilus-private/nautilus-file.c:3789
 msgid "1 item"
 msgstr "1 objekt"
 
-#: libnautilus-private/nautilus-file.c:3785
+#: libnautilus-private/nautilus-file.c:3789
 msgid "1 folder"
 msgstr "1 mappe"
 
-#: libnautilus-private/nautilus-file.c:3786
+#: libnautilus-private/nautilus-file.c:3790
 msgid "1 file"
 msgstr "1 fil"
 
-#: libnautilus-private/nautilus-file.c:3789
+#: libnautilus-private/nautilus-file.c:3793
 #, c-format
 msgid "%u items"
 msgstr "%u objekter"
 
-#: libnautilus-private/nautilus-file.c:3789
+#: libnautilus-private/nautilus-file.c:3793
 #, c-format
 msgid "%u folders"
 msgstr "%u mapper"
 
-#: libnautilus-private/nautilus-file.c:3790
+#: libnautilus-private/nautilus-file.c:3794
 #, c-format
 msgid "%u files"
 msgstr "%u filer"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4097
-#: libnautilus-private/nautilus-file.c:4113
+#: libnautilus-private/nautilus-file.c:4101
+#: libnautilus-private/nautilus-file.c:4117
 msgid "? items"
 msgstr "? objekter"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4103
+#: libnautilus-private/nautilus-file.c:4107
 msgid "? bytes"
 msgstr "? byte"
 
-#: libnautilus-private/nautilus-file.c:4118
+#: libnautilus-private/nautilus-file.c:4122
 msgid "unknown type"
 msgstr "ukendt type"
 
-#: libnautilus-private/nautilus-file.c:4121
+#: libnautilus-private/nautilus-file.c:4125
 msgid "unknown MIME type"
 msgstr "ukendt MIME-type"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4127
+#: libnautilus-private/nautilus-file.c:4131
 msgid "unknown"
 msgstr "ukendt"
 
-#: libnautilus-private/nautilus-file.c:4159
+#: libnautilus-private/nautilus-file.c:4163
 msgid "program"
 msgstr "program"
 
-#: libnautilus-private/nautilus-file.c:4171
+#: libnautilus-private/nautilus-file.c:4175
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -3999,7 +4000,7 @@ msgstr ""
 "skyldes sandsynligvis at din gnome-vfs.keys-fil er det forkerte sted eller "
 "ikke bliver fundet af en eller anden grund."
 
-#: libnautilus-private/nautilus-file.c:4175
+#: libnautilus-private/nautilus-file.c:4179
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -4008,11 +4009,11 @@ msgstr ""
 "Ingen beskrivelse fundet for MIME-typen '%s' (filen er '%s'), fortæl det "
 "venligst til Gnome VFS-postlisten."
 
-#: libnautilus-private/nautilus-file.c:4189
+#: libnautilus-private/nautilus-file.c:4193
 msgid "link"
 msgstr "henvisning"
 
-#: libnautilus-private/nautilus-file.c:4209
+#: libnautilus-private/nautilus-file.c:4213
 msgid "link (broken)"
 msgstr "henvisning (ødelagt)"
 
@@ -4458,7 +4459,7 @@ msgid "Don't include in the menu for \"%s\" items"
 msgstr "Medtag ikke i menuen for \"%s\"-filer."
 
 #: libnautilus-private/nautilus-program-chooser.c:1214
-#: src/file-manager/fm-list-view.c:2279
+#: src/file-manager/fm-list-view.c:2245
 #: src/file-manager/fm-search-list-view.c:493
 #: src/nautilus-bookmarks-window.c:165
 msgid "Name"
@@ -4942,7 +4943,7 @@ msgstr "Nautilus kunne ikke montere det valgte arkiv."
 msgid "Nautilus was unable to unmount the selected volume."
 msgstr "Nautilus kunne ikke afmontere det valgte arkiv."
 
-#: libnautilus-private/nautilus-volume-monitor.c:1655
+#: libnautilus-private/nautilus-volume-monitor.c:1656
 msgid "ISO 9660 Volume"
 msgstr "ISO 9660-arkiv"
 
@@ -5160,95 +5161,95 @@ msgstr "Tøm papirkurv"
 msgid "Unmount Volume"
 msgstr "Afmontér arkiv"
 
-#: src/file-manager/fm-directory-view.c:457
+#: src/file-manager/fm-directory-view.c:463
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
 msgstr "Dette vil åbne %d separate vinduer. Er du sikker på at du vil dette?"
 
-#: src/file-manager/fm-directory-view.c:459
+#: src/file-manager/fm-directory-view.c:465
 #, c-format
 msgid "Open %d Windows?"
 msgstr "Åbn %d nye vinduer?"
 
-#: src/file-manager/fm-directory-view.c:766
+#: src/file-manager/fm-directory-view.c:772
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\"?"
 msgstr "Er du sikker på at du en gang for alle ønsker at slette '%s'?"
 
-#: src/file-manager/fm-directory-view.c:770
+#: src/file-manager/fm-directory-view.c:776
 #, c-format
 msgid "Are you sure you want to permanently delete the %d selected items?"
 msgstr ""
 "Er du sikker på at du en gang for alle ønsker at slette de %d markerede "
 "elementer?"
 
-#: src/file-manager/fm-directory-view.c:776
+#: src/file-manager/fm-directory-view.c:782
 msgid "Delete?"
 msgstr "Slet?"
 
-#: src/file-manager/fm-directory-view.c:777
-#: src/file-manager/fm-directory-view.c:2869
-#: src/file-manager/fm-directory-view.c:2909
+#: src/file-manager/fm-directory-view.c:783
+#: src/file-manager/fm-directory-view.c:2959
+#: src/file-manager/fm-directory-view.c:2999
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Delete"
 msgstr "Slet"
 
-#: src/file-manager/fm-directory-view.c:1409
+#: src/file-manager/fm-directory-view.c:1419
 #, c-format
 msgid "\"%s\" selected"
 msgstr "'%s' markeret"
 
-#: src/file-manager/fm-directory-view.c:1411
+#: src/file-manager/fm-directory-view.c:1421
 msgid "1 folder selected"
 msgstr "1 mappe markeret"
 
-#: src/file-manager/fm-directory-view.c:1414
+#: src/file-manager/fm-directory-view.c:1424
 #, c-format
 msgid "%d folders selected"
 msgstr "%d mapper markeret"
 
-#: src/file-manager/fm-directory-view.c:1421
+#: src/file-manager/fm-directory-view.c:1431
 msgid " (containing 0 items)"
 msgstr " (med 0 objekter)"
 
-#: src/file-manager/fm-directory-view.c:1423
+#: src/file-manager/fm-directory-view.c:1433
 msgid " (containing 1 item)"
 msgstr " (med 1 objekt)"
 
-#: src/file-manager/fm-directory-view.c:1425
+#: src/file-manager/fm-directory-view.c:1435
 #, c-format
 msgid " (containing %d items)"
 msgstr " (med %d objekter)"
 
-#: src/file-manager/fm-directory-view.c:1432
+#: src/file-manager/fm-directory-view.c:1442
 msgid " (containing a total of 0 items)"
 msgstr " (med et totalt antal af 0 objekter)"
 
-#: src/file-manager/fm-directory-view.c:1434
+#: src/file-manager/fm-directory-view.c:1444
 msgid " (containing a total of 1 item)"
 msgstr " (med et totalt antal af 1 objekt)"
 
-#: src/file-manager/fm-directory-view.c:1436
+#: src/file-manager/fm-directory-view.c:1446
 #, c-format
 msgid " (containing a total of %d items)"
 msgstr " (med et totalt antal af %d objekter)"
 
-#: src/file-manager/fm-directory-view.c:1449
+#: src/file-manager/fm-directory-view.c:1459
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "'%s' markeret (%s)"
 
-#: src/file-manager/fm-directory-view.c:1453
+#: src/file-manager/fm-directory-view.c:1463
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d objekter markeret (%s)"
 
-#: src/file-manager/fm-directory-view.c:1460
+#: src/file-manager/fm-directory-view.c:1470
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 andet objekt markeret (%s)"
 
-#: src/file-manager/fm-directory-view.c:1463
+#: src/file-manager/fm-directory-view.c:1473
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d andre objekter markeret (%s)"
@@ -5260,7 +5261,7 @@ msgstr "%d andre objekter markeret (%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1492
+#: src/file-manager/fm-directory-view.c:1502
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -5269,7 +5270,7 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1618
+#: src/file-manager/fm-directory-view.c:1628
 #, c-format
 msgid ""
 "The folder \"%s\" contains more files than Nautilus can handle. Some files "
@@ -5278,17 +5279,17 @@ msgstr ""
 "Mappen '%s' indeholder flere filer end Nautilus kan håndtere. Nogle filer "
 "vil ikke blive vist."
 
-#: src/file-manager/fm-directory-view.c:1625
+#: src/file-manager/fm-directory-view.c:1635
 msgid "Too Many Files"
 msgstr "For mange filer"
 
-#: src/file-manager/fm-directory-view.c:2851
+#: src/file-manager/fm-directory-view.c:2941
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr "'%s' kan ikke flyttes til papirkurven. Ønsker du at slette den helt? "
 
-#: src/file-manager/fm-directory-view.c:2856
+#: src/file-manager/fm-directory-view.c:2946
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
@@ -5297,7 +5298,7 @@ msgstr ""
 "De %d markerede objekter kan ikke flyttes til papirkurven. Ønsker du at "
 "slette dem helt?"
 
-#: src/file-manager/fm-directory-view.c:2860
+#: src/file-manager/fm-directory-view.c:2950
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
@@ -5306,16 +5307,16 @@ msgstr ""
 "%d af de markerede objekter kan ikke flyttes til papirkurven. Ønsker du at "
 "slette de %d ting helt?"
 
-#: src/file-manager/fm-directory-view.c:2868
+#: src/file-manager/fm-directory-view.c:2958
 msgid "Delete Immediately?"
 msgstr "Slet med det samme?"
 
-#: src/file-manager/fm-directory-view.c:2898
+#: src/file-manager/fm-directory-view.c:2988
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
 msgstr "er du sikker på at du vil slette '%s' permanent fra papirkurven?"
 
-#: src/file-manager/fm-directory-view.c:2902
+#: src/file-manager/fm-directory-view.c:2992
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
@@ -5323,40 +5324,40 @@ msgid ""
 msgstr ""
 "Er du sikker på at du vil slette de %d valgte ting fra papirkurven permanent?"
 
-#: src/file-manager/fm-directory-view.c:2908
+#: src/file-manager/fm-directory-view.c:2998
 msgid "Delete From Trash?"
 msgstr "Slet fra papirkurven?"
 
-#: src/file-manager/fm-directory-view.c:3218
-#: src/file-manager/fm-directory-view.c:3260
+#: src/file-manager/fm-directory-view.c:3308
+#: src/file-manager/fm-directory-view.c:3350
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Brug '%s' til at åbne det markerede objekt"
 
-#: src/file-manager/fm-directory-view.c:3342
+#: src/file-manager/fm-directory-view.c:3432
 #: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Other _Application..."
 msgstr "_Andre programmer..."
 
-#: src/file-manager/fm-directory-view.c:3342
+#: src/file-manager/fm-directory-view.c:3432
 msgid "An _Application..."
 msgstr "Et _program..."
 
-#: src/file-manager/fm-directory-view.c:3348
+#: src/file-manager/fm-directory-view.c:3438
 #: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Other _Viewer..."
 msgstr "Anden frem_viser..."
 
-#: src/file-manager/fm-directory-view.c:3348
+#: src/file-manager/fm-directory-view.c:3438
 msgid "A _Viewer..."
 msgstr "En frem_viser..."
 
-#: src/file-manager/fm-directory-view.c:3565
+#: src/file-manager/fm-directory-view.c:3655
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Benyt '%s' til de markerede filer"
 
-#: src/file-manager/fm-directory-view.c:3766
+#: src/file-manager/fm-directory-view.c:3856
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
@@ -5366,11 +5367,11 @@ msgstr ""
 "program fra menuen vil køre programmet med alle de markerede elementer som "
 "inddata."
 
-#: src/file-manager/fm-directory-view.c:3769
+#: src/file-manager/fm-directory-view.c:3859
 msgid "About Scripts"
 msgstr "Om programmer"
 
-#: src/file-manager/fm-directory-view.c:3770
+#: src/file-manager/fm-directory-view.c:3860
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -5411,24 +5412,24 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: position og størrelse af det aktive vindue"
 
-#: src/file-manager/fm-directory-view.c:3836
+#: src/file-manager/fm-directory-view.c:3926
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr "'%s' vil blive flyttet hvis du vælger kommandoen 'indsæt filer'"
 
-#: src/file-manager/fm-directory-view.c:3840
+#: src/file-manager/fm-directory-view.c:3930
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr "'%s' vil blive kopieret hvis du vælger kommandoen 'indsæt filer'"
 
-#: src/file-manager/fm-directory-view.c:3847
+#: src/file-manager/fm-directory-view.c:3937
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
 msgstr ""
 "De %d markerede filer blive flyttet hvis du vælger kommandoen 'indsæt filer'"
 
-#: src/file-manager/fm-directory-view.c:3851
+#: src/file-manager/fm-directory-view.c:3941
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
@@ -5436,100 +5437,100 @@ msgstr ""
 "De %d markerede filer vil blive kopieret hvis du vælger kommandoen 'indsæt "
 "filer'"
 
-#: src/file-manager/fm-directory-view.c:3997
+#: src/file-manager/fm-directory-view.c:4087
 msgid "There is nothing on the clipboard to paste."
 msgstr "Der er intet på klippebordet at indsætte."
 
-#: src/file-manager/fm-directory-view.c:4112
+#: src/file-manager/fm-directory-view.c:4202
 msgid "Open _in This Window"
 msgstr "Åbn _i dette vindue"
 
-#: src/file-manager/fm-directory-view.c:4115
+#: src/file-manager/fm-directory-view.c:4205
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Open _in New Window"
 msgstr "Åbn _i nyt vindue"
 
-#: src/file-manager/fm-directory-view.c:4117
+#: src/file-manager/fm-directory-view.c:4207
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "Åbn _i %d nye vinduer"
 
-#: src/file-manager/fm-directory-view.c:4135
+#: src/file-manager/fm-directory-view.c:4225
 msgid "Delete from _Trash..."
 msgstr "Sle_t fra papirkurven..."
 
-#: src/file-manager/fm-directory-view.c:4135
+#: src/file-manager/fm-directory-view.c:4225
 msgid "Delete from _Trash"
 msgstr "Sle_t fra papirkurven"
 
-#: src/file-manager/fm-directory-view.c:4137
+#: src/file-manager/fm-directory-view.c:4227
 msgid "Delete all selected items permanently"
 msgstr "Slet alle valgte ting permanent"
 
-#: src/file-manager/fm-directory-view.c:4140
+#: src/file-manager/fm-directory-view.c:4230
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Move to _Trash"
 msgstr "Sm_id i papirkurv"
 
-#: src/file-manager/fm-directory-view.c:4142
+#: src/file-manager/fm-directory-view.c:4232
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Move each selected item to the Trash"
 msgstr "Flyt alle de valgte elementer til papirkurven"
 
-#: src/file-manager/fm-directory-view.c:4169
+#: src/file-manager/fm-directory-view.c:4259
 msgid "De_lete..."
 msgstr "S_let..."
 
-#: src/file-manager/fm-directory-view.c:4169
+#: src/file-manager/fm-directory-view.c:4259
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "De_lete"
 msgstr "S_let"
 
-#: src/file-manager/fm-directory-view.c:4190
+#: src/file-manager/fm-directory-view.c:4280
 msgid "Make _Links"
 msgstr "Opret _henvisninger"
 
-#: src/file-manager/fm-directory-view.c:4191
+#: src/file-manager/fm-directory-view.c:4281
 msgid "Make _Link"
 msgstr "Opret _henvisning"
 
-#: src/file-manager/fm-directory-view.c:4206
+#: src/file-manager/fm-directory-view.c:4296
 msgid "_Empty Trash..."
 msgstr "_Tøm papirkurv..."
 
-#: src/file-manager/fm-directory-view.c:4207
+#: src/file-manager/fm-directory-view.c:4297
 #: src/file-manager/nautilus-directory-view-ui.xml.h:58
 msgid "_Empty Trash"
 msgstr "_Tøm papirkurv"
 
-#: src/file-manager/fm-directory-view.c:4218
+#: src/file-manager/fm-directory-view.c:4308
 #: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "R_emove Custom Images"
 msgstr "Fj_ern egne billeder"
 
-#: src/file-manager/fm-directory-view.c:4219
+#: src/file-manager/fm-directory-view.c:4309
 msgid "R_emove Custom Image"
 msgstr "Fj_ern eget billede"
 
-#: src/file-manager/fm-directory-view.c:4233
+#: src/file-manager/fm-directory-view.c:4323
 msgid "Cu_t File"
 msgstr "Klip _fil"
 
-#: src/file-manager/fm-directory-view.c:4234
+#: src/file-manager/fm-directory-view.c:4324
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "Klip _filer"
 
-#: src/file-manager/fm-directory-view.c:4244
+#: src/file-manager/fm-directory-view.c:4334
 msgid "_Copy File"
 msgstr "_Kopier fil"
 
-#: src/file-manager/fm-directory-view.c:4245
+#: src/file-manager/fm-directory-view.c:4335
 #: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "_Copy Files"
 msgstr "_Kopier filer"
 
-#: src/file-manager/fm-directory-view.c:4409
+#: src/file-manager/fm-directory-view.c:4499
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
@@ -5537,7 +5538,7 @@ msgstr ""
 "Denne henvisning kan ikke benyttes da den ikke har et mål i den anden ende. "
 "Ønsker du at smide henvisningen i papirkurven? "
 
-#: src/file-manager/fm-directory-view.c:4412
+#: src/file-manager/fm-directory-view.c:4502
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -5546,34 +5547,34 @@ msgstr ""
 "Denne henvisning kan ikke benyttes da dets mål '%s' ikke eksisterer. Ønsker "
 "du at smide henvisningen i papirkurven? "
 
-#: src/file-manager/fm-directory-view.c:4418
+#: src/file-manager/fm-directory-view.c:4508
 msgid "Broken Link"
 msgstr "Ødelagt henvisning"
 
-#: src/file-manager/fm-directory-view.c:4419
+#: src/file-manager/fm-directory-view.c:4509
 msgid "Throw Away"
 msgstr "Smid væk"
 
-#: src/file-manager/fm-directory-view.c:4472
+#: src/file-manager/fm-directory-view.c:4562
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
 "contents?"
 msgstr "'%s' er en udførbar tekstfil. Vil du køre den eller vise dens indhold?"
 
-#: src/file-manager/fm-directory-view.c:4478
+#: src/file-manager/fm-directory-view.c:4568
 msgid "Run or Display?"
 msgstr "Kør eller fremvis"
 
-#: src/file-manager/fm-directory-view.c:4479
+#: src/file-manager/fm-directory-view.c:4569
 msgid "Run"
 msgstr "Udfør"
 
-#: src/file-manager/fm-directory-view.c:4480
+#: src/file-manager/fm-directory-view.c:4570
 msgid "Display"
 msgstr "Fremvis"
 
-#: src/file-manager/fm-directory-view.c:4531
+#: src/file-manager/fm-directory-view.c:4621
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -5581,16 +5582,16 @@ msgstr ""
 "Desværre, men du kan ikke udføre kommandoer fra et ekstern nebsted pga. "
 "sikkerhedshensyn."
 
-#: src/file-manager/fm-directory-view.c:4533
+#: src/file-manager/fm-directory-view.c:4623
 msgid "Can't execute remote links"
 msgstr "Kan ikke køre eksterne henvisninger"
 
-#: src/file-manager/fm-directory-view.c:4661
+#: src/file-manager/fm-directory-view.c:4751
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Åbner '%s'"
 
-#: src/file-manager/fm-directory-view.c:4667
+#: src/file-manager/fm-directory-view.c:4757
 msgid "Cancel Open?"
 msgstr "Fortryd åbning?"
 
@@ -5724,90 +5725,90 @@ msgstr "Omdøber '%s' til '%s'"
 msgid "Cancel Rename?"
 msgstr "Fortryd omdøbning?"
 
-#: src/file-manager/fm-icon-view.c:187
+#: src/file-manager/fm-icon-view.c:186
 msgid "by _Name"
 msgstr "efter _navn"
 
-#: src/file-manager/fm-icon-view.c:188
+#: src/file-manager/fm-icon-view.c:187
 #: src/file-manager/nautilus-icon-view-ui.xml.h:15
 msgid "Keep icons sorted by name in rows"
 msgstr "Hold ikoner sorteret efter navn i rækker"
 
-#: src/file-manager/fm-icon-view.c:194
+#: src/file-manager/fm-icon-view.c:193
 msgid "by _Size"
 msgstr "efter _størrelse"
 
-#: src/file-manager/fm-icon-view.c:195
+#: src/file-manager/fm-icon-view.c:194
 #: src/file-manager/nautilus-icon-view-ui.xml.h:16
 msgid "Keep icons sorted by size in rows"
 msgstr "Hold ikoner sorteret efter størrelse i rækker"
 
-#: src/file-manager/fm-icon-view.c:201
+#: src/file-manager/fm-icon-view.c:200
 msgid "by _Type"
 msgstr "efter _type"
 
-#: src/file-manager/fm-icon-view.c:202
+#: src/file-manager/fm-icon-view.c:201
 #: src/file-manager/nautilus-icon-view-ui.xml.h:17
 msgid "Keep icons sorted by type in rows"
 msgstr "Hold ikoner sorteret efter type i rækker"
 
-#: src/file-manager/fm-icon-view.c:208
+#: src/file-manager/fm-icon-view.c:207
 msgid "by Modification _Date"
 msgstr "efter ændrings_dato"
 
-#: src/file-manager/fm-icon-view.c:209
+#: src/file-manager/fm-icon-view.c:208
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Hold ikoner sorteret efter ændringsdato i rækker"
 
-#: src/file-manager/fm-icon-view.c:215
+#: src/file-manager/fm-icon-view.c:214
 msgid "by _Emblems"
 msgstr "efter _emblemer"
 
-#: src/file-manager/fm-icon-view.c:216
+#: src/file-manager/fm-icon-view.c:215
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Hold ikoner sorteret efter emblemer i rækker"
 
 # kortere, passer bedre i en popop-menu
-#: src/file-manager/fm-icon-view.c:1412
+#: src/file-manager/fm-icon-view.c:1395
 #: src/file-manager/nautilus-icon-view-ui.xml.h:37
 msgid "_Restore Icons' Original Sizes"
 msgstr "Nulstil ikon_størrelser"
 
 # ditto
-#: src/file-manager/fm-icon-view.c:1413
+#: src/file-manager/fm-icon-view.c:1396
 msgid "_Restore Icon's Original Size"
 msgstr "Nulstil ikon_størrelse"
 
-#: src/file-manager/fm-icon-view.c:1706
+#: src/file-manager/fm-icon-view.c:1688
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "peger på '%s'"
 
-#: src/file-manager/fm-icon-view.c:2675
+#: src/file-manager/fm-icon-view.c:2569
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Træk og slip er kun understøttet til lokale filsystemer."
 
-#: src/file-manager/fm-icon-view.c:2676 src/file-manager/fm-icon-view.c:2695
+#: src/file-manager/fm-icon-view.c:2570 src/file-manager/fm-icon-view.c:2589
 msgid "Drag and Drop error"
 msgstr "Træk og slip-fejl"
 
-#: src/file-manager/fm-icon-view.c:2694
+#: src/file-manager/fm-icon-view.c:2588
 msgid "An invalid drag type was used."
 msgstr "En ugyldig trækketype blev brugt."
 
-#: src/file-manager/fm-list-view.c:2291
+#: src/file-manager/fm-list-view.c:2257
 #: src/file-manager/fm-search-list-view.c:511
 msgid "Size"
 msgstr "Størrelse"
 
-#: src/file-manager/fm-list-view.c:2297
+#: src/file-manager/fm-list-view.c:2263
 #: src/file-manager/fm-search-list-view.c:517
 msgid "Type"
 msgstr "Type"
 
-#: src/file-manager/fm-list-view.c:2303
+#: src/file-manager/fm-list-view.c:2269
 #: src/file-manager/fm-search-list-view.c:523
 msgid "Date Modified"
 msgstr "Dato for ændring"
@@ -6243,7 +6244,7 @@ msgstr "Åbn i %d _nye vinduer"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-search-list-view.c:681
+#: src/file-manager/fm-search-list-view.c:677
 msgid ""
 "Nautilus found more search results than it can display. Some matching items "
 "will not be displayed. "
@@ -6251,7 +6252,7 @@ msgstr ""
 "Nautilus fandt flere søgeresultater end der kan fremvises. Nogle bliver "
 "udeladt."
 
-#: src/file-manager/fm-search-list-view.c:683
+#: src/file-manager/fm-search-list-view.c:679
 msgid "Too Many Matches"
 msgstr "For mange fundet"
 
