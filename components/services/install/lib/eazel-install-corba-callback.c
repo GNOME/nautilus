@@ -179,7 +179,6 @@ impl_md5_check_failed (impl_POA_GNOME_Trilobite_Eazel_InstallCallback *servant,
 		       CORBA_Environment * ev)
 {
 	PackageData *pack;
-	g_message ("impl_md5_check_failed (..., %s)", actual_md5);
 	pack = packagedata_from_corba_packagedatastruct (*corbapack);
 	gtk_signal_emit (GTK_OBJECT (servant->object), signals[MD5_CHECK_FAILED], pack, actual_md5);
 	packagedata_destroy (pack, TRUE);

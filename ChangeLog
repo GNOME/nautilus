@@ -1,3 +1,33 @@
+2001-01-23  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c: (md5_check_failed), (delete_files):
+	Changed output in md5_failed to be readable.
+	Only ask about deleting files if any where downloaded (the check
+	was commented out for some reason)
+
+	* components/services/install/command-line/eazel-test-packsys.c:
+	(test_package_load), (test_query), (test_query_owns_mem),
+	(is_installed), (test_install), (test_uninstall), (test_verify),
+	(main):
+	s/packagedata_destroy/gtk_object_unref/ - eazel-test-packsys now
+	no longer leaks packagedata objects.
+
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_md5_check_failed):
+	Removed an debug output.
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(is_satisfied), (is_satisfied_features):
+	(check_dependencies_foreach), (check_dependencies):
+	Fixed nasty bug that caused the install service to loop on some
+	packages that have circular dependency (found by Ken).	
+
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_install_parse_uri),
+	(nautilus_service_install_view_update_from_uri):
+	Fixed the port thing again (should fix 5960)
+
 2001-01-23  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* applets/Makefile.am:
