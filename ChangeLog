@@ -1,3 +1,13 @@
+2000-10-16  Rebecca Schulman  <rebecka@eazel.com>
+
+	* libnautilus/nautilus-clipboard.c: (add_menu_items_callback),
+	(ui_component_remove_container_and_unref),
+	(finish_setting_up_editable),
+
+	Fixed a problem with the clipboard caused by having many components
+	in the same container with the same name, and fixed a potential
+	leak.
+
 2000-10-16  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3789 (Zoom In/Zoom Out/Back/Forward have lost

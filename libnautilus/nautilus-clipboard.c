@@ -212,7 +212,8 @@ ui_component_remove_container_and_unref (gpointer data)
 	
 	ui = BONOBO_UI_COMPONENT (data);
      
-	bonobo_ui_component_unset_container (ui);
+	bonobo_ui_component_unset_container (ui); 
+	bonobo_object_unref (BONOBO_OBJECT (ui));
 }
 
 static void
@@ -221,11 +222,16 @@ finish_setting_up_editable  (GtkEditable *target,
 {
 	BonoboUIComponent *ui;
 	Bonobo_UIContainer *ui_container;
+	char *component_name;
 
-	ui = bonobo_ui_component_new ("Clipboard");
+	/* Create a unique component name for each clipboard item,
+	   since they are registered and deregistered by name */
+	component_name = g_strdup_printf ("Clipboard %p", target);
+	ui = bonobo_ui_component_new (component_name);
+	g_free (component_name);
+	
 	ui_container = g_new0 (Bonobo_UIContainer, 1);
 	memcpy (ui_container, &container, sizeof (Bonobo_UIContainer));
-
 
 	/* Free the ui component when we get rid of the widget */
 	gtk_object_set_data_full (GTK_OBJECT (target), "clipboard_ui_component", 
@@ -297,7 +303,6 @@ nautilus_clipboard_set_up_editable_from_bonobo_ui_container (GtkEditable *target
 	
 
 	g_return_if_fail (GTK_IS_EDITABLE (target));
-
 	finish_setting_up_editable (target,
 				    ui_container);
 }
