@@ -1405,6 +1405,7 @@ nautilus_program_chooser_instance_init (NautilusProgramChooser *program_chooser)
 	/* Create and setup tree view */
 	create_and_set_up_tree_view (program_chooser);
 	gtk_container_add (GTK_CONTAINER (scrolled_window), program_chooser->details->tree_view);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (program_chooser->details->prompt_label), program_chooser->details->tree_view);
 
 	/* Framed area with selection-specific details */
 	program_chooser->details->frame = gtk_frame_new (NULL);
@@ -1426,6 +1427,7 @@ nautilus_program_chooser_instance_init (NautilusProgramChooser *program_chooser)
   	gtk_box_pack_end (GTK_BOX (framed_hbox), change_button_holder, FALSE, FALSE, 0);
 
   	change_button = gtk_button_new_with_mnemonic (_("_Modify..."));
+	gtk_label_set_mnemonic_widget (GTK_LABEL (program_chooser->details->status_label), change_button);
 
 	g_signal_connect_object (change_button, "clicked",
 				 G_CALLBACK (run_program_configurator_callback), program_chooser, 0);
@@ -1455,6 +1457,7 @@ nautilus_program_chooser_instance_init (NautilusProgramChooser *program_chooser)
 
 	caption = gtk_label_new (_("You can configure which programs are offered "
 				   "for which file types in the File Types and Programs dialog."));
+	gtk_label_set_mnemonic_widget (GTK_LABEL (caption), capplet_button);
 	gtk_widget_show (caption);
 	gtk_label_set_line_wrap (GTK_LABEL (caption), TRUE);
 	gtk_box_pack_start (GTK_BOX (capplet_hbox), caption, FALSE, FALSE, 0);				    

@@ -1,3 +1,11 @@
+2003-05-16  Padraig O'Briain  <padraig.obriain@sun.com>
+
+        * libnautilus-private/nautilus-program-chooser.c:
+        (nautilus_program_chooser_instance_init): Add calls to
+        gtk_label_set_mnemonic_widget so that ATK relation label-for and
+        labelled-by will exist when accessibiity is enabled.
+        This fixes bug #79059.
+
 2003-05-16  Anders Carlsson  <andersca@codefactory.se>
 
 	* src/nautilus-zoom-control.c: (draw_number), (draw_pixbuf):
