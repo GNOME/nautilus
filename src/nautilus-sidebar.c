@@ -545,7 +545,7 @@ nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar)
  	gtk_widget_show (menu_item);
 	gtk_menu_append (GTK_MENU(menu), menu_item);
         gtk_widget_set_sensitive (menu_item, has_background);
-	g_signal_connect (G_OBJECT (menu_item), "activate",
+	g_signal_connect (menu_item, "activate",
 			    G_CALLBACK (reset_background_callback), sidebar);
 
 	/* add a separator */
@@ -709,7 +709,7 @@ receive_dropped_uri_list (NautilusSidebar *sidebar,
 				(eel_get_widget_background (GTK_WIDGET (sidebar)),
 				 uris[0]);
 		} else if (exactly_one) {
-			g_signal_emit (G_OBJECT (sidebar),
+			g_signal_emit (sidebar,
 					 signals[LOCATION_CHANGED], 0,
 			 		 uris[0]);	
 		}
@@ -915,7 +915,7 @@ nautilus_sidebar_add_panel (NautilusSidebar *sidebar, NautilusViewFrame *panel)
 
 	gtk_widget_show (label);
 	
-	g_signal_connect (G_OBJECT (panel), "view_loaded",
+	g_signal_connect (panel, "view_loaded",
 			    G_CALLBACK (view_loaded_callback), sidebar);
 	
 	gtk_notebook_append_page (GTK_NOTEBOOK (sidebar->details->notebook),
@@ -1375,7 +1375,7 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 
 	/* Catch-all button after all the others. */
 	temp_button = gtk_button_new_with_label (_("Open with..."));
-	g_signal_connect (G_OBJECT (temp_button), "clicked",
+	g_signal_connect (temp_button, "clicked",
 			    G_CALLBACK (open_with_callback), NULL);
 	gtk_object_set_user_data (GTK_OBJECT (temp_button), sidebar);
 	gtk_widget_show (temp_button);
@@ -1491,7 +1491,7 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 		gtk_widget_show (temp_button);
 		sidebar->details->has_buttons = TRUE;
 					
-		g_signal_connect (G_OBJECT (temp_button), "clicked",
+		g_signal_connect (temp_button, "clicked",
 			G_CALLBACK (empty_trash_callback), NULL);
 		
 		gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_trash_monitor_get ()),
@@ -1536,11 +1536,11 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 	background = eel_get_widget_background (GTK_WIDGET (sidebar));
 	if (!sidebar->details->background_connected) {
 		sidebar->details->background_connected = TRUE;
-		g_signal_connect (G_OBJECT (background),
+		g_signal_connect (background,
 				    "settings_changed",
 				    G_CALLBACK (background_settings_changed_callback),
 				    sidebar);
-		g_signal_connect (G_OBJECT (background),
+		g_signal_connect (background,
 				    "reset",
 				    G_CALLBACK (background_reset_callback),
 				    sidebar);

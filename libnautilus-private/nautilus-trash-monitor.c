@@ -112,7 +112,7 @@ nautilus_trash_files_changed_callback (NautilusDirectory *directory, GList *file
 		nautilus_file_unref (file);
 
 		/* trash got empty or full, notify everyone who cares */
-		g_signal_emit (G_OBJECT (trash_monitor), 
+		g_signal_emit (trash_monitor, 
 				 signals[TRASH_STATE_CHANGED], 0,
 				 trash_monitor->details->empty);
 	}
@@ -273,7 +273,7 @@ add_one_trash_directory_if_needed (const NautilusVolume *volume,
 	NautilusTrashMonitor *trash_monitor;
 
 	trash_monitor = NAUTILUS_TRASH_MONITOR (callback_data);
-	g_signal_emit (G_OBJECT (trash_monitor),
+	g_signal_emit (trash_monitor,
 			 signals[CHECK_TRASH_DIRECTORY_ADDED], 0,
 			 volume);
 	

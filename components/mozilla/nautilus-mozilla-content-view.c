@@ -322,57 +322,57 @@ nautilus_mozilla_content_view_init (NautilusMozillaContentView *view)
 	post_widget_init ();
 
 	/* Add callbacks to the beast */
-	g_signal_connect (G_OBJECT (view->details->mozilla), 
+	g_signal_connect (view->details->mozilla, 
 				"realize",
 				G_CALLBACK (mozilla_realize_callback),
 				view);
 
-	g_signal_connect (G_OBJECT (view->details->mozilla), 
+	g_signal_connect (view->details->mozilla, 
 				"title",
 				G_CALLBACK (mozilla_title_changed_callback),
 				view);
 
-	g_signal_connect (G_OBJECT (view->details->mozilla), 
+	g_signal_connect (view->details->mozilla, 
 				"location",
 				G_CALLBACK (mozilla_location_callback),
 				view);
 
-	g_signal_connect (G_OBJECT (view->details->mozilla), 
+	g_signal_connect (view->details->mozilla, 
 				"net_state",
 				G_CALLBACK (mozilla_net_state_callback),
 				view);
 
-	g_signal_connect (G_OBJECT (view->details->mozilla), 
+	g_signal_connect (view->details->mozilla, 
 				"net_start",
 				G_CALLBACK (mozilla_net_start_callback),
 				view);
 
-	g_signal_connect (G_OBJECT (view->details->mozilla), 
+	g_signal_connect (view->details->mozilla, 
 				"net_stop",
 				G_CALLBACK (mozilla_net_stop_callback),
 				view);
 	
-	g_signal_connect (G_OBJECT (view->details->mozilla), 
+	g_signal_connect (view->details->mozilla, 
 				"link_message",
 				G_CALLBACK (mozilla_link_message_callback),
 				view);
 	
-	g_signal_connect (G_OBJECT (view->details->mozilla), 
+	g_signal_connect (view->details->mozilla, 
 				"progress",
 				G_CALLBACK (mozilla_progress_callback),
 				view);
 	
-	g_signal_connect (G_OBJECT (view->details->mozilla), 
+	g_signal_connect (view->details->mozilla, 
 				"dom_key_press",
 				G_CALLBACK (mozilla_dom_key_press_callback),
 				view);
 	
-	g_signal_connect (G_OBJECT (view->details->mozilla), 
+	g_signal_connect (view->details->mozilla, 
 				"dom_mouse_click",
 				G_CALLBACK (mozilla_dom_mouse_click_callback),
 				view);
 
-	g_signal_connect (G_OBJECT (view->details->mozilla), 
+	g_signal_connect (view->details->mozilla, 
 				"new_window",
 				G_CALLBACK (mozilla_new_window_callback),
 				view);
@@ -384,13 +384,13 @@ nautilus_mozilla_content_view_init (NautilusMozillaContentView *view)
 	
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 	
-	g_signal_connect (G_OBJECT (view->details->nautilus_view), 
+	g_signal_connect (view->details->nautilus_view, 
 				"load_location",
 				G_CALLBACK (view_load_location_callback), 
 				view);
 
 	/* Connect to the active signal of the view to merge our menus */
-        g_signal_connect (G_OBJECT (nautilus_view_get_bonobo_control (view->details->nautilus_view)),
+        g_signal_connect (nautilus_view_get_bonobo_control (view->details->nautilus_view),
                             "activate",
                             bonobo_control_activate_callback,
                             view);
@@ -873,16 +873,16 @@ mozilla_new_window_callback (GtkMozEmbed *mozilla, GtkMozEmbed **new_mozilla, gu
 		gtk_container_add (GTK_CONTAINER (chrome->toplevel_window), GTK_WIDGET (chrome->mozilla));
 
 		/* set up all the signals that we care about for chrome windows. */
-		g_signal_connect (G_OBJECT (chrome->mozilla), "visibility",
+		g_signal_connect (chrome->mozilla, "visibility",
 				    G_CALLBACK (mozilla_chrome_visibility_callback),
 				    chrome);
-		g_signal_connect (G_OBJECT (chrome->mozilla), "destroy_browser",
+		g_signal_connect (chrome->mozilla, "destroy_browser",
 				    G_CALLBACK (mozilla_chrome_destroy_brsr_callback),
 				    chrome);
-		g_signal_connect (G_OBJECT (chrome->mozilla), "size_to",
+		g_signal_connect (chrome->mozilla, "size_to",
 				    G_CALLBACK (mozilla_chrome_size_to_callback),
 				    chrome);
-		g_signal_connect (G_OBJECT (chrome->mozilla), "title",
+		g_signal_connect (chrome->mozilla, "title",
 				    G_CALLBACK (mozilla_chrome_title_callback),
 				    chrome);
 

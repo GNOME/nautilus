@@ -203,7 +203,7 @@ nautilus_adapter_embeddable_embed_strategy_new (Bonobo_Embeddable embeddable,
      	bonobo_wrapper_set_visibility (BONOBO_WRAPPER (strategy->details->client_widget), FALSE);
 	bonobo_view_frame_set_covered (strategy->details->view_frame, FALSE); 
 
-	g_signal_connect (G_OBJECT (strategy->details->view_frame),
+	g_signal_connect (strategy->details->view_frame,
 			    "activate_uri", G_CALLBACK (activate_uri_callback), strategy);
 
 	gtk_widget_show (strategy->details->client_widget);

@@ -4674,7 +4674,7 @@ nautilus_file_updated_deep_count_in_progress (NautilusFile *file) {
 	g_assert (nautilus_file_is_directory (file));
 
 	/* Send out a signal. */
-	g_signal_emit (G_OBJECT (file), signals[UPDATED_DEEP_COUNT_IN_PROGRESS], 0, file);
+	g_signal_emit (file, signals[UPDATED_DEEP_COUNT_IN_PROGRESS], 0, file);
 
 	/* Tell link files pointing to this object about the change. */
 	link_files = get_link_files (file);
@@ -4709,7 +4709,7 @@ nautilus_file_emit_changed (NautilusFile *file)
 	file->details->compare_by_emblem_cache = NULL;
 
 	/* Send out a signal. */
-	g_signal_emit (G_OBJECT (file), signals[CHANGED], 0, file);
+	g_signal_emit (file, signals[CHANGED], 0, file);
 
 	/* Tell link files pointing to this object about the change. */
 	link_files = get_link_files (file);

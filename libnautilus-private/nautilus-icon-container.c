@@ -313,7 +313,7 @@ icon_raise (NautilusIcon *icon)
 static void
 emit_stretch_started (NautilusIconContainer *container, NautilusIcon *icon)
 {
-	g_signal_emit (G_OBJECT (container),
+	g_signal_emit (container,
 			 signals[ICON_STRETCH_STARTED], 0,
 			 icon->data);
 }
@@ -321,7 +321,7 @@ emit_stretch_started (NautilusIconContainer *container, NautilusIcon *icon)
 static void
 emit_stretch_ended (NautilusIconContainer *container, NautilusIcon *icon)
 {
-	g_signal_emit (G_OBJECT (container),
+	g_signal_emit (container,
 			 signals[ICON_STRETCH_ENDED], 0,
 			 icon->data);
 }
@@ -449,7 +449,7 @@ set_pending_icon_to_reveal (NautilusIconContainer *container, NautilusIcon *icon
 	}
 	
 	if (icon != NULL) {
-		g_signal_connect (G_OBJECT (icon->item), "destroy",
+		g_signal_connect (icon->item, "destroy",
 				    G_CALLBACK (pending_icon_to_reveal_destroy_callback), container);
 	}
 	
@@ -707,7 +707,7 @@ compare_icons (gconstpointer a, gconstpointer b)
 	icon_b = b;
 
 	result = 0;
-	g_signal_emit (G_OBJECT (sort_hack_container),
+	g_signal_emit (sort_hack_container,
 			 signals[COMPARE_ICONS], 0,
 			 icon_a->data,
 			 icon_b->data,
@@ -733,7 +733,7 @@ compare_icons_by_name (gconstpointer a, gconstpointer b)
 	icon_b = b;
 
 	result = 0;
-	g_signal_emit (G_OBJECT (sort_hack_container),
+	g_signal_emit (sort_hack_container,
 			 signals[COMPARE_ICONS_BY_NAME], 0,
 			 icon_a->data,
 			 icon_b->data,
@@ -1246,7 +1246,7 @@ reload_icon_positions (NautilusIconContainer *container)
 		icon = p->data;
 
 		have_stored_position = FALSE;
-		g_signal_emit (G_OBJECT (container),
+		g_signal_emit (container,
 				 signals[GET_STORED_ICON_POSITION], 0,
 				 icon->data,
 				 &position,
@@ -1360,7 +1360,7 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 		position.y = icon->y;
 		position.scale_x = scale_x;
 		position.scale_y = scale_y;
-		g_signal_emit (G_OBJECT (container),
+		g_signal_emit (container,
 				 signals[ICON_POSITION_CHANGED], 0,
 				 icon->data, &position);
 	}
@@ -1414,7 +1414,7 @@ rubberband_select (NautilusIconContainer *container,
 	}
 
 	if (selection_changed) {
-		g_signal_emit (G_OBJECT (container),
+		g_signal_emit (container,
 				 signals[SELECTION_CHANGED], 0);
 	}
 }
@@ -1533,7 +1533,7 @@ start_rubberbanding (NautilusIconContainer *container,
 	details = container->details;
 	band_info = &details->rubberband_info;
 
-	g_signal_emit (G_OBJECT (container),
+	g_signal_emit (container,
 			 signals[BAND_SELECT_STARTED], 0);
 
 	for (p = details->icons; p != NULL; p = p->next) {
@@ -1637,7 +1637,7 @@ stop_rubberbanding (NautilusIconContainer *container,
 	band_info->selection_rectangle = NULL;
 
 
-	g_signal_emit (G_OBJECT (container),
+	g_signal_emit (container,
 			 signals[BAND_SELECT_ENDED], 0);
 }
 
@@ -1956,7 +1956,7 @@ keyboard_move_to (NautilusIconContainer *container,
 		/* Select icons and get rid of the special keyboard focus. */
 		clear_keyboard_focus (container);
 		if (select_one_unselect_others (container, icon)) {
-			g_signal_emit (G_OBJECT (container),
+			g_signal_emit (container,
 					 signals[SELECTION_CHANGED], 0);
 		}
 	}
@@ -2130,7 +2130,7 @@ keyboard_space (NautilusIconContainer *container,
 	if (container->details->keyboard_focus != NULL &&
 	    (event->state & GDK_CONTROL_MASK) != 0) {
 		icon_toggle_selected (container, container->details->keyboard_focus);
-		g_signal_emit (G_OBJECT (container), signals[SELECTION_CHANGED], 0);
+		g_signal_emit (container, signals[SELECTION_CHANGED], 0);
 	}
 }
 
@@ -2222,7 +2222,7 @@ select_matching_name (NautilusIconContainer *container,
 	/* Select icons and get rid of the special keyboard focus. */
 	clear_keyboard_focus (container);
 	if (select_one_unselect_others (container, icon)) {
-		g_signal_emit (G_OBJECT (container),
+		g_signal_emit (container,
 				 signals[SELECTION_CHANGED], 0);
 	}
 	schedule_keyboard_icon_reveal (container, icon);
@@ -2498,7 +2498,7 @@ button_press_event (GtkWidget *widget,
 		if (! button_event_modifies_selection (event)) {
 			selection_changed = unselect_all (container);
 			if (selection_changed) {
-				g_signal_emit (G_OBJECT (container),
+				g_signal_emit (container,
 						 signals[SELECTION_CHANGED], 0);
 			}
 		}
@@ -2514,19 +2514,19 @@ button_press_event (GtkWidget *widget,
 	
 	/* Button 2 may be passed to the window manager. */
 	if (event->button == MIDDLE_BUTTON) {
-		g_signal_emit (G_OBJECT (widget), signals[MIDDLE_CLICK], 0, event);
+		g_signal_emit (widget, signals[MIDDLE_CLICK], 0, event);
 		return TRUE;
 	}
 
 	/* Button 3 does a contextual menu. */
 	if (event->button == CONTEXTUAL_MENU_BUTTON) {
 		end_renaming_mode (container, TRUE);
-		g_signal_emit (G_OBJECT (widget), signals[CONTEXT_CLICK_BACKGROUND], 0, event);
+		g_signal_emit (widget, signals[CONTEXT_CLICK_BACKGROUND], 0, event);
 		return TRUE;
 	}
 	
 	/* Otherwise, we emit a button_press message. */
-	g_signal_emit (G_OBJECT (widget),
+	g_signal_emit (widget,
 			 signals[BUTTON_PRESS], 0, event,
 			 &return_value);
 	return return_value;
@@ -2546,7 +2546,7 @@ nautilus_icon_container_did_not_drag (NautilusIconContainer *container,
 			(container, details->drag_icon);
 		
 		if (selection_changed) {
-			g_signal_emit (G_OBJECT (container),
+			g_signal_emit (container,
 					 signals[SELECTION_CHANGED], 0);
 		}
 	}
@@ -2707,7 +2707,7 @@ end_stretching (NautilusIconContainer *container,
 	position.y = icon->y;
 	position.scale_x = icon->scale_x;
 	position.scale_y = icon->scale_y;
-	g_signal_emit (G_OBJECT (container),
+	g_signal_emit (container,
 			 signals[ICON_POSITION_CHANGED], 0,
 			 icon->data, &position);
 	
@@ -2771,7 +2771,7 @@ button_release_event (GtkWidget *widget,
 				 * show context menu.
 				 */
 				clear_drag_state (container);
-				g_signal_emit (G_OBJECT (container),
+				g_signal_emit (container,
 						 signals[CONTEXT_CLICK_SELECTION], 0,
 						 event);
 				break;
@@ -3413,7 +3413,7 @@ nautilus_icon_container_init (NautilusIconContainer *container)
 		 GTK_OBJECT (container));	
 
 
-	g_signal_connect (G_OBJECT (container), "focus-out-event",
+	g_signal_connect (container, "focus-out-event",
 			    G_CALLBACK (handle_focus_out_event), NULL);	
 
 	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
@@ -3465,7 +3465,7 @@ show_context_menu_callback (void *cast_to_parameters)
 		 * odd case is if this click deselected the icon under
 		 * the mouse, but at least the behavior is consistent.
 		 */
-		g_signal_emit (G_OBJECT (parameters->container),
+		g_signal_emit (parameters->container,
 				 signals[CONTEXT_CLICK_SELECTION], 0,
 				 parameters->event);
 	}
@@ -3537,12 +3537,12 @@ handle_icon_button_press (NautilusIconContainer *container,
 	 */
 	if (button_event_modifies_selection (event)) {
 		icon_toggle_selected (container, icon);
-		g_signal_emit (G_OBJECT (container),
+		g_signal_emit (container,
 				 signals[SELECTION_CHANGED], 0);
 	} else if (!icon->is_selected) {
 		unselect_all (container);
 		icon_set_selected (container, icon, TRUE);
-		g_signal_emit (G_OBJECT (container),
+		g_signal_emit (container,
 				 signals[SELECTION_CHANGED], 0);
 	}
 
@@ -3709,7 +3709,7 @@ icon_destroy (NautilusIconContainer *container,
 	icon_free (icon);
 
 	if (was_selected) {
-		g_signal_emit (G_OBJECT (container),
+		g_signal_emit (container,
 				 signals[SELECTION_CHANGED], 0);
 	}
 }
@@ -3724,7 +3724,7 @@ activate_selected_items (NautilusIconContainer *container)
 
 	selection = nautilus_icon_container_get_selection (container);
 	if (selection != NULL) {
-	  	g_signal_emit (G_OBJECT (container),
+	  	g_signal_emit (container,
 				 signals[ACTIVATE], 0,
 				 selection);
 	}
@@ -3772,7 +3772,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	details = container->details;
 
 	/* Get the icons. */
-	g_signal_emit (G_OBJECT (container),
+	g_signal_emit (container,
 			 signals[GET_ICON_IMAGES], 0,
 			 icon->data,
 			 (icon == details->drop_target) ? "accept" : "",
@@ -3839,7 +3839,7 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	nautilus_scalable_icon_list_free (emblem_scalable_icons);
 
 	/* Get both editable and non-editable icon text */
-	g_signal_emit (G_OBJECT (container),
+	g_signal_emit (container,
 			 signals[GET_ICON_TEXT], 0,
 			 icon->data,
 			 &editable_text,
@@ -3892,7 +3892,7 @@ assign_icon_position (NautilusIconContainer *container,
 	have_stored_position = FALSE;
 	position.scale_x = 1.0;
 	position.scale_y = 1.0;
-	g_signal_emit (G_OBJECT (container),
+	g_signal_emit (container,
 			 signals[GET_STORED_ICON_POSITION], 0,
 			 icon->data,
 			 &position,
@@ -3916,7 +3916,7 @@ finish_adding_icon (NautilusIconContainer *container,
 	nautilus_icon_container_update_icon (container, icon);
 	gnome_canvas_item_show (GNOME_CANVAS_ITEM (icon->item));
 
-	g_signal_connect (G_OBJECT (icon->item), "event",
+	g_signal_connect (icon->item, "event",
 			    G_CALLBACK (item_event_callback), container);
 }
 
@@ -4276,7 +4276,7 @@ nautilus_icon_container_select_all (NautilusIconContainer *container)
 	}
 
 	if (selection_changed) {
-		g_signal_emit (G_OBJECT (container),
+		g_signal_emit (container,
 				 signals[SELECTION_CHANGED], 0);
 	}
 }
@@ -4316,7 +4316,7 @@ nautilus_icon_container_set_selection (NautilusIconContainer *container,
 	g_hash_table_destroy (hash);
 
 	if (selection_changed) {
-		g_signal_emit (G_OBJECT (container),
+		g_signal_emit (container,
 				 signals[SELECTION_CHANGED], 0);
 	}
 }
@@ -4355,7 +4355,7 @@ nautilus_icon_container_select_list_unselect_others (NautilusIconContainer *cont
 	g_hash_table_destroy (hash);
 
 	if (selection_changed) {
-		g_signal_emit (G_OBJECT (container),
+		g_signal_emit (container,
 				 signals[SELECTION_CHANGED], 0);
 	}
 }
@@ -4370,7 +4370,7 @@ void
 nautilus_icon_container_unselect_all (NautilusIconContainer *container)
 {
 	if (unselect_all (container)) {
-		g_signal_emit (G_OBJECT (container),
+		g_signal_emit (container,
 				 signals[SELECTION_CHANGED], 0);
 	}
 }
@@ -4603,7 +4603,7 @@ nautilus_icon_container_get_icon_uri (NautilusIconContainer *container,
 	char *uri;
 
 	uri = NULL;
-	g_signal_emit (G_OBJECT (container),
+	g_signal_emit (container,
 			 signals[GET_ICON_URI], 0,
 			 icon->data,
 			 &uri);
@@ -4617,7 +4617,7 @@ nautilus_icon_container_get_icon_drop_target_uri (NautilusIconContainer *contain
 	char *uri;
 
 	uri = NULL;
-	g_signal_emit (G_OBJECT (container),
+	g_signal_emit (container,
 			 signals[GET_ICON_DROP_TARGET_URI], 0,
 			 icon->data,
 			 &uri);
@@ -4660,7 +4660,7 @@ nautilus_icon_container_set_auto_layout (NautilusIconContainer *container,
 
 	redo_layout (container);
 
-	g_signal_emit (G_OBJECT (container), signals[LAYOUT_CHANGED], 0);
+	g_signal_emit (container, signals[LAYOUT_CHANGED], 0);
 }
 
 
@@ -4682,7 +4682,7 @@ nautilus_icon_container_set_tighter_layout (NautilusIconContainer *container,
 		invalidate_label_sizes (container);
 		redo_layout (container);
 
-		g_signal_emit (G_OBJECT (container), signals[LAYOUT_CHANGED], 0);
+		g_signal_emit (container, signals[LAYOUT_CHANGED], 0);
 	} else {
 		/* in manual layout, label sizes still change, even though
 		 * the icons don't move.
@@ -4703,7 +4703,7 @@ nautilus_icon_container_set_layout_mode (NautilusIconContainer *container,
 
 	redo_layout (container);
 
-	g_signal_emit (G_OBJECT (container), signals[LAYOUT_CHANGED], 0);
+	g_signal_emit (container, signals[LAYOUT_CHANGED], 0);
 }
 
 
@@ -4729,12 +4729,12 @@ nautilus_icon_container_freeze_icon_positions (NautilusIconContainer *container)
 		position.y = icon->y;
 		position.scale_x = icon->scale_x;
 		position.scale_y = icon->scale_y;
-		g_signal_emit (G_OBJECT (container), signals[ICON_POSITION_CHANGED], 0,
+		g_signal_emit (container, signals[ICON_POSITION_CHANGED], 0,
 				 icon->data, &position);
 	}
 
 	if (changed) {
-		g_signal_emit (G_OBJECT (container), signals[LAYOUT_CHANGED], 0);
+		g_signal_emit (container, signals[LAYOUT_CHANGED], 0);
 	}
 }
 
@@ -4751,7 +4751,7 @@ nautilus_icon_container_sort (NautilusIconContainer *container)
 	redo_layout (container);
 
 	if (changed) {
-		g_signal_emit (G_OBJECT (container), signals[LAYOUT_CHANGED], 0);
+		g_signal_emit (container, signals[LAYOUT_CHANGED], 0);
 	}
 }
 
@@ -4803,7 +4803,7 @@ set_pending_icon_to_rename (NautilusIconContainer *container, NautilusIcon *icon
 	}
 	
 	if (icon != NULL) {
-		g_signal_connect (G_OBJECT (icon->item), "destroy",
+		g_signal_connect (icon->item, "destroy",
 				    G_CALLBACK (pending_icon_to_rename_destroy_callback), container);
 	}
 	
@@ -4915,7 +4915,7 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 
 	nautilus_icon_text_item_start_editing (details->rename_widget);
 	
-	g_signal_emit (G_OBJECT (container),
+	g_signal_emit (container,
 			 signals[RENAMING_ICON], 0,
 			 nautilus_icon_text_item_get_renaming_editable (details->rename_widget));
 #endif
@@ -4947,7 +4947,7 @@ end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 		/* Verify that text has been modified before signalling change. */			
 		changed_text = nautilus_icon_text_item_get_text (container->details->rename_widget);
 		if (strcmp (container->details->original_text, changed_text) != 0) {			
-			g_signal_emit (G_OBJECT (container),
+			g_signal_emit (container,
 					 signals[ICON_TEXT_CHANGED], 0,
 					 icon->data,
 					 changed_text);
@@ -4979,7 +4979,7 @@ nautilus_icon_container_emit_preview_signal (NautilusIconContainer *icon_contain
 	g_return_val_if_fail (start_flag == FALSE || start_flag == TRUE, FALSE);
 	
 	result = FALSE;
-	g_signal_emit (G_OBJECT (icon_container),
+	g_signal_emit (icon_container,
 			 signals[PREVIEW], 0,
 			 icon->data,
 			 start_flag,
@@ -5000,7 +5000,7 @@ nautilus_icon_container_has_stored_icon_positions (NautilusIconContainer *contai
 		icon = p->data;
 
 		have_stored_position = FALSE;
-		g_signal_emit (G_OBJECT (container),
+		g_signal_emit (container,
 				 signals[GET_STORED_ICON_POSITION], 0,
 				 icon->data,
 				 &position,

@@ -1591,11 +1591,11 @@ create_basic_page (FMPropertiesWindow *window)
 	nautilus_undo_editable_set_undo_key (GTK_EDITABLE (name_field), TRUE);
 #endif
 
-	g_signal_connect (G_OBJECT (name_field), "focus_out_event",
+	g_signal_connect (name_field, "focus_out_event",
       	              	    G_CALLBACK (name_field_focus_out),
                             window);
                       			    
-	g_signal_connect (G_OBJECT (name_field), "activate",
+	g_signal_connect (name_field, "activate",
       	              	    G_CALLBACK (name_field_activate),
                             window);
 
@@ -1652,7 +1652,7 @@ create_basic_page (FMPropertiesWindow *window)
 		gtk_widget_show (temp_button);
 		gtk_box_pack_start (GTK_BOX(button_box), temp_button, FALSE, FALSE, 4);  
 
-	 	g_signal_connect (G_OBJECT (temp_button), "clicked", G_CALLBACK (remove_image_button_callback), window);
+	 	g_signal_connect (temp_button, "clicked", G_CALLBACK (remove_image_button_callback), window);
 
 		window->details->remove_image_button = temp_button;
 		
@@ -1704,10 +1704,10 @@ create_emblems_page (FMPropertiesWindow *window)
 	 * This must be done after the widget is realized, due to
 	 * an apparent bug in gtk_viewport_set_shadow_type.
 	 */
-	g_signal_connect (G_OBJECT (GTK_BIN (scroller)->child), 
-			    "realize", 
-			    G_CALLBACK (remove_default_viewport_shadow),
-			    NULL);
+	g_signal_connect (GTK_BIN (scroller)->child, 
+			  "realize", 
+			  G_CALLBACK (remove_default_viewport_shadow),
+			  NULL);
 
 	gtk_notebook_append_page (window->details->notebook, 
 				  scroller, gtk_label_new (_("Emblems")));
@@ -1754,7 +1754,7 @@ create_emblems_page (FMPropertiesWindow *window)
 					file,
 					(GtkDestroyNotify) nautilus_file_unref);
 		
-		g_signal_connect (G_OBJECT (button),
+		g_signal_connect (button,
 				    "toggled",
 				    G_CALLBACK (property_button_toggled),
 				    NULL);
@@ -1877,7 +1877,7 @@ set_up_permissions_checkbox (GtkWidget *check_button,
 {
 	guint toggled_signal_id;
 
-	toggled_signal_id = g_signal_connect (G_OBJECT (check_button), "toggled",
+	toggled_signal_id = g_signal_connect (check_button, "toggled",
       	              	    			G_CALLBACK (permissions_check_button_toggled),
                             			file);
 
@@ -2417,7 +2417,7 @@ fm_properties_window_present (NautilusFile *original_file, FMDirectoryView *dire
 	 */
 	
 	g_hash_table_insert (pending_files, target_file, target_file);
-	g_signal_connect (G_OBJECT (directory_view),
+	g_signal_connect (directory_view,
 			    "destroy",
 			    G_CALLBACK (directory_view_destroyed_callback),
 			    startup_data);

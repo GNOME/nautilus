@@ -58,7 +58,7 @@ throbber_make_object (BonoboGenericFactory *factory,
 	
 	bonobo_control = nautilus_throbber_get_control (throbber);
 	
-	g_signal_connect (G_OBJECT (bonobo_control), "destroy", throbber_object_destroyed, NULL);
+	g_signal_connect (bonobo_control, "destroy", throbber_object_destroyed, NULL);
 
 	return bonobo_control;
 }

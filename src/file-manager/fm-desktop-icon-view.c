@@ -531,10 +531,9 @@ delayed_init (FMDesktopIconView *desktop_icon_view)
 {
 	/* Keep track of the load time. */
 	desktop_icon_view->details->done_loading_signal = 
-		g_signal_connect (G_OBJECT (fm_directory_view_get_model
-						(FM_DIRECTORY_VIEW (desktop_icon_view))),
-				    "done_loading",
-				    G_CALLBACK (done_loading), desktop_icon_view);
+		g_signal_connect (fm_directory_view_get_model (FM_DIRECTORY_VIEW (desktop_icon_view)),
+				  "done_loading",
+				  G_CALLBACK (done_loading), desktop_icon_view);
 
 	/* Monitor desktop directory. */
 	desktop_icon_view->details->reload_desktop_timeout =
@@ -610,17 +609,17 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 					     	     create_one_mount_link,
 						     desktop_icon_view);
 	
-	g_signal_connect (G_OBJECT (icon_container),
+	g_signal_connect (icon_container,
 			    "middle_click",
 			    G_CALLBACK (fm_desktop_icon_view_handle_middle_click),
 			    desktop_icon_view);
 			    
-	g_signal_connect (G_OBJECT (icon_container),
+	g_signal_connect (icon_container,
 			    "compare_icons",
 			    G_CALLBACK (desktop_icons_compare_callback),
 			    desktop_icon_view);
 
-	g_signal_connect (G_OBJECT (desktop_icon_view),
+	g_signal_connect (desktop_icon_view,
 			    "event",
 			    G_CALLBACK (event_callback),
 			    desktop_icon_view);

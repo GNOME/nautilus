@@ -440,7 +440,7 @@ preferences_dialog_create (void)
 
 	gtk_window_set_wmclass (GTK_WINDOW (dialog), "nautilus_preferences", "Nautilus");
 
-	g_signal_connect (G_OBJECT (dialog),
+	g_signal_connect (dialog,
 			  "response",
 			  G_CALLBACK (dialog_button_response_callback),
 			  dialog);
@@ -542,7 +542,7 @@ preferences_dialog_populate_themes_group (EelPreferencesGroup *group)
 						      "theme_changed",
 						      0);
 	/* Keep track of theme chooser changes */
-	g_signal_connect (G_OBJECT (child),
+	g_signal_connect (child,
 			    "theme_changed",
 			    G_CALLBACK (theme_changed_callback),
 			    NULL);
@@ -550,7 +550,7 @@ preferences_dialog_populate_themes_group (EelPreferencesGroup *group)
 	/* Have the custom preferences item tell us when its time to update the displayed
 	 * with with the one stored in preferences
 	 */
-	g_signal_connect (G_OBJECT (item),
+	g_signal_connect (item,
 			    "custom_update_displayed_value",
 			    G_CALLBACK (update_theme_selector_displayed_value_callback),
 			    child);

@@ -206,45 +206,45 @@ create_bookmarks_window (NautilusBookmarkList *list, GObject *undo_manager_sourc
 			    G_CALLBACK(on_select_row),
 			    NULL);
 
-	g_signal_connect (G_OBJECT (window), "delete_event",
+	g_signal_connect (window, "delete_event",
                     	    G_CALLBACK (on_window_delete_event),
                     	    NULL);
                     	    
-	g_signal_connect (G_OBJECT (window), "hide",
+	g_signal_connect (window, "hide",
                     	    G_CALLBACK (on_window_hide_event),
                     	    NULL);
                     	    
-	g_signal_connect (G_OBJECT (window), "destroy",
+	g_signal_connect (window, "destroy",
                     	    G_CALLBACK (on_window_destroy_event),
                     	    NULL);
                     	    
 	name_field_changed_signalID =
-		g_signal_connect (G_OBJECT (name_field), "changed",
+		g_signal_connect (name_field, "changed",
                 	            G_CALLBACK (on_name_field_changed),
                       		    NULL);
                       		    
-	g_signal_connect (G_OBJECT (name_field), "focus_out_event",
+	g_signal_connect (name_field, "focus_out_event",
       	              	    G_CALLBACK (on_text_field_focus_out_event),
                             NULL);
                             
-	g_signal_connect (G_OBJECT (name_field), "activate",
+	g_signal_connect (name_field, "activate",
       	              	    G_CALLBACK (name_or_uri_field_activate),
                             NULL);
 
 	uri_field_changed_signalID = 
-		g_signal_connect (G_OBJECT (uri_field), "changed",
+		g_signal_connect (uri_field, "changed",
                 	    	    G_CALLBACK (on_uri_field_changed),
                       		    NULL);
                       		    
-	g_signal_connect (G_OBJECT (uri_field), "focus_out_event",
+	g_signal_connect (uri_field, "focus_out_event",
         	            G_CALLBACK (on_text_field_focus_out_event),
               	    	    NULL);
               	    	    
-	g_signal_connect (G_OBJECT (uri_field), "activate",
+	g_signal_connect (uri_field, "activate",
       	              	    G_CALLBACK (name_or_uri_field_activate),
                             NULL);
 
-	g_signal_connect (G_OBJECT (remove_button), "clicked",
+	g_signal_connect (remove_button, "clicked",
         	            G_CALLBACK (on_remove_button_clicked),
                       	    NULL);
 
@@ -666,7 +666,7 @@ set_up_close_accelerator (GtkWidget *window)
 	 * here because we have to handle saving geometry before hiding the
 	 * window.
 	 */
-	g_signal_connect (G_OBJECT (window),
+	g_signal_connect (window,
 			    "key_press_event",
 			    G_CALLBACK (handle_close_accelerator),
 			    NULL);

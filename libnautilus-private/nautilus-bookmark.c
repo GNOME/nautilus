@@ -298,7 +298,7 @@ nautilus_bookmark_set_name (NautilusBookmark *bookmark, const char *new_name)
 	g_free (bookmark->details->name);
 	bookmark->details->name = g_strdup (new_name);
 
-	g_signal_emit (G_OBJECT (bookmark), signals[APPEARANCE_CHANGED], 0);
+	g_signal_emit (bookmark, signals[APPEARANCE_CHANGED], 0);
 }
 
 static gboolean
@@ -411,11 +411,11 @@ bookmark_file_changed_callback (NautilusFile *file, NautilusBookmark *bookmark)
 	}
 
 	if (should_emit_appearance_changed_signal) {
-		g_signal_emit (G_OBJECT (bookmark), signals[APPEARANCE_CHANGED], 0);
+		g_signal_emit (bookmark, signals[APPEARANCE_CHANGED], 0);
 	}
 
 	if (should_emit_contents_changed_signal) {
-		g_signal_emit (G_OBJECT (bookmark), signals[CONTENTS_CHANGED], 0);
+		g_signal_emit (bookmark, signals[CONTENTS_CHANGED], 0);
 	}
 }
 
@@ -495,7 +495,7 @@ nautilus_bookmark_connect_file (NautilusBookmark *bookmark)
 		bookmark->details->file = nautilus_file_get (bookmark->details->uri);
 		g_assert (!nautilus_file_is_gone (bookmark->details->file));
 
-		g_signal_connect (G_OBJECT (bookmark->details->file),
+		g_signal_connect (bookmark->details->file,
 				    "changed",
 				    G_CALLBACK (bookmark_file_changed_callback),
 				    bookmark);

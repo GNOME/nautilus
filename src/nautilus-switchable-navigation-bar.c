@@ -218,7 +218,7 @@ nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar    
 	}
 #endif
 
-	g_signal_emit (G_OBJECT (bar), signals[MODE_CHANGED], 0, mode);
+	g_signal_emit (bar, signals[MODE_CHANGED], 0, mode);
 }
 
 static char *

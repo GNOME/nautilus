@@ -114,7 +114,7 @@ mozilla_make_object (BonoboGenericFactory *factory,
 
 	bonobo_object = nautilus_mozilla_content_view_new ();
 
-	g_signal_connect (G_OBJECT (bonobo_object), "destroy", mozilla_object_destroyed, NULL);
+	g_signal_connect (bonobo_object, "destroy", mozilla_object_destroyed, NULL);
 
 	/* Remove any pending quit-timeout callback */
 	if (quit_timeout_id != 0) {

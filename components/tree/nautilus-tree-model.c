@@ -773,7 +773,7 @@ report_node_changed (NautilusTreeModel *model,
 				     nautilus_tree_node_get_file (node),
 				     node);
 
-		g_signal_emit (G_OBJECT (model),
+		g_signal_emit (model,
 				 signals[NODE_CHANGED], 0,
 				 node);
 
@@ -786,7 +786,7 @@ report_node_changed (NautilusTreeModel *model,
 
 		if (strcmp (file_uri, node_uri) == 0) {
 			/* A normal change */
-			g_signal_emit (G_OBJECT (model),
+			g_signal_emit (model,
 					 signals[NODE_CHANGED], 0,
 					 node);
 		} else {
@@ -799,7 +799,7 @@ report_node_changed (NautilusTreeModel *model,
 			 * it to propagate the expansion state from the old name to the
 			 * new name
 			 */
-			g_signal_emit (G_OBJECT (model),
+			g_signal_emit (model,
 					 signals[NODE_BEING_RENAMED], 0,
 					 node->details->uri, file_uri);
 
@@ -861,7 +861,7 @@ report_node_removed_internal (NautilusTreeModel *model,
 		forget_unparented_node (model, node);
 
 		if (signal) {
-			g_signal_emit (G_OBJECT (model),
+			g_signal_emit (model,
 					 signals[NODE_REMOVED], 0,
 					 node);
 		}
@@ -883,7 +883,7 @@ static void
 report_done_loading (NautilusTreeModel *model,
 		     NautilusTreeNode  *node)
 {
-	g_signal_emit (G_OBJECT (model),
+	g_signal_emit (model,
 			 signals[DONE_LOADING_CHILDREN], 0,
 			 node);
 }

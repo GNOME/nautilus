@@ -192,12 +192,12 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
 					 bookmark, 
 					 index);
 
-	g_signal_connect (G_OBJECT (bookmark),
+	g_signal_connect (bookmark,
 			    "appearance_changed",
 			    G_CALLBACK (bookmark_in_list_changed_callback),
 			    bookmarks);				 
 
-	g_signal_connect (G_OBJECT (bookmark),
+	g_signal_connect (bookmark,
 			    "contents_changed",
 			    G_CALLBACK (bookmark_in_list_changed_callback),
 			    bookmarks);				 
@@ -258,7 +258,7 @@ nautilus_bookmark_list_contents_changed (NautilusBookmarkList *bookmarks)
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 
 	nautilus_bookmark_list_save_file (bookmarks);
-	g_signal_emit (G_OBJECT (bookmarks), 
+	g_signal_emit (bookmarks, 
 			 signals[CONTENTS_CHANGED], 0);
 }
 

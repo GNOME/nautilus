@@ -146,13 +146,13 @@ nautilus_application_init (NautilusApplication *application)
 	application->undo_manager = nautilus_undo_manager_new ();
 
 	/* Watch for volume mounts so we can restore open windows */
-	g_signal_connect (G_OBJECT (nautilus_volume_monitor_get ()),
+	g_signal_connect (nautilus_volume_monitor_get (),
 			    "volume_mounted",
 			    G_CALLBACK (volume_mounted_callback),
 			    application);
 
 	/* Watch for volume unmounts so we can close open windows */
-	g_signal_connect (G_OBJECT (nautilus_volume_monitor_get ()),
+	g_signal_connect (nautilus_volume_monitor_get (),
 			    "volume_unmounted",
 			    G_CALLBACK (volume_unmounted_callback),
 			    application);
@@ -664,11 +664,11 @@ nautilus_application_create_window (NautilusApplication *application)
 						  "app", G_OBJECT (application),
 						  "app_id", "nautilus", NULL));
 	
-	g_signal_connect (G_OBJECT (window), 
+	g_signal_connect (window, 
 			    "delete_event", G_CALLBACK (nautilus_window_delete_event_callback),
                     	    NULL);
 
-	g_signal_connect (G_OBJECT (window),
+	g_signal_connect (window,
 			    "destroy", G_CALLBACK (nautilus_application_destroyed_window),
 			    application);
 
@@ -899,11 +899,11 @@ init_session (void)
 
 	client = gnome_master_client ();
 
-	g_signal_connect (G_OBJECT (client), "save_yourself",
+	g_signal_connect (client, "save_yourself",
 			    (GtkSignalFunc) save_session,
 			    NULL);
 	
-	g_signal_connect (G_OBJECT (client), "die",
+	g_signal_connect (client, "die",
 			    (GtkSignalFunc) removed_from_session,
 			    NULL);
 	

@@ -78,7 +78,7 @@ adapter_factory_make_object (BonoboGenericFactory *factory,
          * when there are no more objects outstanding.
 	 */
 	object_count++;
-	g_signal_connect (G_OBJECT (adapter), "destroy",
+	g_signal_connect (adapter, "destroy",
 			    adapter_factory_object_destroyed, NULL);
 
 	return BONOBO_OBJECT (adapter);

@@ -58,7 +58,7 @@ hardware_view_make_object (BonoboGenericFactory *factory,
 
 	object_count++;
 
-	g_signal_connect (G_OBJECT (view), "destroy", hardware_view_object_destroyed, NULL);
+	g_signal_connect (view, "destroy", hardware_view_object_destroyed, NULL);
 
 	return BONOBO_OBJECT (view);
 }

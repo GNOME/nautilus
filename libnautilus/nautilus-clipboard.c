@@ -237,7 +237,7 @@ merge_in_clipboard_menu_items (GObject *widget_as_object,
 			       "nautilus", NULL);
 	
 	if (add_selection_callback) {
-		g_signal_connect_after (GTK_OBJECT (widget_as_object), "selection_changed",
+		g_signal_connect_after (widget_as_object, "selection_changed",
 					G_CALLBACK (selection_changed_callback), target_data);
 		selection_changed_callback (GTK_WIDGET (widget_as_object),
 					    target_data);
@@ -395,7 +395,7 @@ nautilus_clipboard_set_up_editable (GtkEditable *target,
 	g_signal_connect_after (target, "focus_out_event",
 				G_CALLBACK (focus_changed_callback), target_data);
 
-	g_signal_connect (G_OBJECT (target), "destroy",
+	g_signal_connect (target, "destroy",
 			    G_CALLBACK (target_destroy_callback), target_data);
 	
 	/* Call the focus changed callback once to merge if the window is
@@ -465,11 +465,11 @@ nautilus_clipboard_set_up_editable_in_control (GtkEditable *target,
 	g_object_set_data (G_OBJECT (target),
 			   "Nautilus:shares_selection_changes",
 			   GINT_TO_POINTER (shares_selection_changes));
-	g_signal_connect (G_OBJECT (target),
+	g_signal_connect (target,
 			  "focus_in_event",
 			  G_CALLBACK (first_focus_callback),
 			  control);
-	g_signal_connect (G_OBJECT (target),
+	g_signal_connect (target,
 			  "destroy",
 			  G_CALLBACK (control_destroyed_callback),
 			  control);

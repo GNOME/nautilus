@@ -577,19 +577,19 @@ nautilus_icon_container_item_at (NautilusIconContainer *container,
 }
 
 static char *
-get_container_uri (const NautilusIconContainer *container)
+get_container_uri (NautilusIconContainer *container)
 {
 	char *uri;
 
 	/* get the URI associated with the container */
 	uri = NULL;
-	g_signal_emit_by_name (GTK_OBJECT (container), "get_container_uri", &uri);
+	g_signal_emit_by_name (container, "get_container_uri", &uri);
 	return uri;
 }
 
 static gboolean
-nautilus_icon_container_selection_items_local (const NautilusIconContainer *container,
-					       const GList *items)
+nautilus_icon_container_selection_items_local (NautilusIconContainer *container,
+					       GList *items)
 {
 	char *container_uri_string;
 	gboolean result;
@@ -668,7 +668,7 @@ receive_dropped_uri_list (NautilusIconContainer *container, char *uri_list, GdkD
 		return;
 	}
 	
-	g_signal_emit_by_name (GTK_OBJECT (container), "handle_uri_list",
+	g_signal_emit_by_name (container, "handle_uri_list",
 				 uri_list,
 				 action,
 				 x, y);
@@ -878,7 +878,7 @@ handle_nonlocal_move (NautilusIconContainer *container,
 	}
 		
 	/* start the copy */
-	g_signal_emit_by_name (GTK_OBJECT (container), "move_copy_items",
+	g_signal_emit_by_name (container, "move_copy_items",
 				 source_uris,
 				 source_item_locations,
 				 target_uri,
@@ -1232,19 +1232,19 @@ nautilus_icon_dnd_init (NautilusIconContainer *container,
 			    | GDK_ACTION_ASK);
 
 	/* Messages for outgoing drag. */
-	g_signal_connect (G_OBJECT (container), "drag_data_get",
+	g_signal_connect (container, "drag_data_get",
 			    G_CALLBACK (drag_data_get_callback), NULL);
-	g_signal_connect (G_OBJECT (container), "drag_end",
+	g_signal_connect (container, "drag_end",
 			    G_CALLBACK (drag_end_callback), NULL);
 
 	/* Messages for incoming drag. */
-	g_signal_connect (G_OBJECT (container), "drag_data_received",
+	g_signal_connect (container, "drag_data_received",
 			    G_CALLBACK (drag_data_received_callback), NULL);
-	g_signal_connect (G_OBJECT (container), "drag_motion",
+	g_signal_connect (container, "drag_motion",
 			    G_CALLBACK (drag_motion_callback), NULL);
-	g_signal_connect (G_OBJECT (container), "drag_drop",
+	g_signal_connect (container, "drag_drop",
 			    G_CALLBACK (drag_drop_callback), NULL);
-	g_signal_connect (G_OBJECT (container), "drag_leave",
+	g_signal_connect (container, "drag_leave",
 			    G_CALLBACK (drag_leave_callback), NULL);
 
 }

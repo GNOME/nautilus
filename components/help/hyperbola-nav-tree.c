@@ -261,9 +261,9 @@ make_contents_page(HyperbolaNavigationTree *contents)
 	gtk_clist_freeze (GTK_CLIST (contents->top_ctree));
 	gtk_clist_set_selection_mode (GTK_CLIST (contents->top_ctree),
 				      GTK_SELECTION_BROWSE);
-	g_signal_connect (G_OBJECT (contents->top_ctree), "tree_select_row",
+	g_signal_connect (contents->top_ctree, "tree_select_row",
 			    hyperbola_navigation_tree_select_row, contents);
-	g_signal_connect (G_OBJECT (contents->top_ctree), "destroy",
+	g_signal_connect (contents->top_ctree, "destroy",
 			    hyperbola_navigation_tree_destroy, contents);
 
 	contents->ctree = gtk_ctree_new (1, 0);
@@ -275,9 +275,9 @@ make_contents_page(HyperbolaNavigationTree *contents)
 	gtk_clist_freeze (GTK_CLIST (contents->ctree));
 	gtk_clist_set_selection_mode (GTK_CLIST (contents->ctree),
 				      GTK_SELECTION_BROWSE);
-	g_signal_connect (G_OBJECT (contents->ctree), "tree_select_row",
+	g_signal_connect (contents->ctree, "tree_select_row",
 			    hyperbola_navigation_tree_select_row, contents);
-	g_signal_connect (G_OBJECT (contents->ctree), "destroy",
+	g_signal_connect (contents->ctree, "destroy",
 			    hyperbola_navigation_tree_destroy, contents);
 
 	contents->selected_ctree = NULL;
@@ -501,7 +501,7 @@ hyperbola_navigation_tree_new (void)
 	gtk_signal_connect(GTK_OBJECT(notebook), "switch_page",
 				hyperbola_navigation_notebook_page_changed, index);
 	gtk_widget_show (notebook);
-	g_signal_connect (G_OBJECT (index->clist), "select_row",
+	g_signal_connect (index->clist, "select_row",
                             hyperbola_navigation_index_clist_select_row, index);
 
 	view_frame = nautilus_view_new (notebook);
@@ -512,7 +512,7 @@ hyperbola_navigation_tree_new (void)
 	gtk_signal_connect(GTK_OBJECT(nautilus_view_get_bonobo_control(
 									NAUTILUS_VIEW(view_frame))), "activate",
 				   					merge_items_callback, index);
-	g_signal_connect (G_OBJECT (contents->view_frame), "load_location",
+	g_signal_connect (contents->view_frame, "load_location",
 			    hyperbola_navigation_tree_load_location, contents);
 
 	return BONOBO_OBJECT (view_frame);
@@ -536,9 +536,9 @@ hyperbola_navigation_tree_new (void)
         gtk_clist_freeze (GTK_CLIST (view->ctree));
         gtk_clist_set_selection_mode (GTK_CLIST (view->ctree),
                                       GTK_SELECTION_BROWSE);
-        g_signal_connect (G_OBJECT (view->ctree), "tree_select_row",
+        g_signal_connect (view->ctree, "tree_select_row",
                             hyperbola_navigation_tree_select_row, view);
-        g_signal_connect (G_OBJECT (view->ctree), "destroy",
+        g_signal_connect (view->ctree, "destroy",
                             hyperbola_navigation_tree_destroy, view);
 
 
@@ -569,7 +569,7 @@ hyperbola_navigation_tree_new (void)
 
         view->view_frame = nautilus_view_new (wtmp);
 
-        g_signal_connect (G_OBJECT (view->view_frame), "load_location",
+        g_signal_connect (view->view_frame, "load_location",
                             hyperbola_navigation_tree_load_location, view);
 
         return BONOBO_OBJECT (view->view_frame);

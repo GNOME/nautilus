@@ -1749,9 +1749,9 @@ hyperbola_navigation_index_new (void)
         vbox = gtk_vbox_new (FALSE, GNOME_PAD);
 
         hni->ent = gtk_entry_new ();
-        g_signal_connect (G_OBJECT (hni->ent), "changed",
+        g_signal_connect (hni->ent, "changed",
                             hyperbola_navigation_index_ent_changed, hni);
-        g_signal_connect (G_OBJECT (hni->ent), "activate",
+        g_signal_connect (hni->ent, "activate",
                             hyperbola_navigation_index_ent_activate, hni);
         gtk_container_add (GTK_CONTAINER (vbox), hni->ent);
 
@@ -1760,7 +1760,7 @@ hyperbola_navigation_index_new (void)
         gtk_clist_set_selection_mode (GTK_CLIST (hni->clist),
                                       GTK_SELECTION_BROWSE);
 
-        g_signal_connect (G_OBJECT (hni->clist), "select_row",
+        g_signal_connect (hni->clist, "select_row",
                             hyperbola_navigation_index_select_row, hni);
 
         wtmp =
@@ -2234,12 +2234,12 @@ make_index_display_page(HyperbolaNavigationIndex *hni)
 	hni->specific_rbutton = gtk_radio_button_new(radio_group);
 	gtk_container_add(GTK_CONTAINER(hni->specific_rbutton),GTK_WIDGET(underlined_label));
 
-	g_signal_connect (G_OBJECT (hni->contents_rbutton), "toggled",
+	g_signal_connect (hni->contents_rbutton, "toggled",
 				G_CALLBACK(show_indexes_for_contents_selection_button),
 					hni);
-	g_signal_connect (G_OBJECT (hni->all_rbutton), "toggled",
+	g_signal_connect (hni->all_rbutton, "toggled",
 				G_CALLBACK(show_indexes_for_all_docs_button), hni);
-	g_signal_connect (G_OBJECT (hni->specific_rbutton), "toggled",					G_CALLBACK(show_indexes_for_specific_docs_button), hni);
+	g_signal_connect (hni->specific_rbutton, "toggled",					G_CALLBACK(show_indexes_for_specific_docs_button), hni);
 	gtk_box_pack_start(GTK_BOX(top_vbox), hni->contents_rbutton, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(top_vbox), hni->all_rbutton, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(top_hbox),hni->specific_rbutton,TRUE, TRUE, 0);
@@ -2263,7 +2263,7 @@ make_index_display_page(HyperbolaNavigationIndex *hni)
 	gtk_misc_set_alignment(GTK_MISC(underlined_label), 0.0, 0.5);
 	hni->all_terms_rbutton = gtk_radio_button_new(NULL);
 	gtk_container_add(GTK_CONTAINER(hni->all_terms_rbutton),GTK_WIDGET(underlined_label));
-	g_signal_connect (G_OBJECT (hni->all_terms_rbutton), "toggled",
+	g_signal_connect (hni->all_terms_rbutton, "toggled",
 					G_CALLBACK(show_index_for_all_terms), hni);
 	gtk_box_pack_start(GTK_BOX(mid_vbox), hni->all_terms_rbutton,FALSE,FALSE,0);
 	radio_group = gtk_radio_button_group(GTK_RADIO_BUTTON(hni->all_terms_rbutton));
@@ -2273,14 +2273,14 @@ make_index_display_page(HyperbolaNavigationIndex *hni)
 	gtk_misc_set_alignment(GTK_MISC(underlined_label), 0.0, 0.5);
 	hni->specific_terms_rbutton = gtk_radio_button_new( radio_group);
 	gtk_container_add(GTK_CONTAINER(hni->specific_terms_rbutton),GTK_WIDGET(underlined_label));
-	g_signal_connect (G_OBJECT (hni->specific_terms_rbutton), "toggled",
+	g_signal_connect (hni->specific_terms_rbutton, "toggled",
                         G_CALLBACK(show_index_for_selected_terms), hni);
 	gtk_box_pack_start(GTK_BOX(mid_vbox), hni->specific_terms_rbutton, FALSE, FALSE, 0);
 
 	hni->ent = gtk_entry_new();
-	g_signal_connect (G_OBJECT (hni->ent), "changed",
+	g_signal_connect (hni->ent, "changed",
 				hyperbola_navigation_index_ent_changed, hni);
-	g_signal_connect (G_OBJECT (hni->ent), "activate",
+	g_signal_connect (hni->ent, "activate",
 				hyperbola_navigation_index_ent_activate, hni);
 	gtk_container_add (GTK_CONTAINER (mid_hbox), hni->ent);
 
@@ -2716,13 +2716,11 @@ make_index_page (HyperbolaNavigationIndex *hni)
 	gtk_clist_set_selection_mode (GTK_CLIST (hni->index_contents->ctree),
                                       GTK_SELECTION_EXTENDED);
 	gtk_clist_thaw(GTK_CLIST (hni->index_contents->ctree));
-	select_handler_id = g_signal_connect (G_OBJECT (
-							hni->index_contents->ctree), "tree_select_row",
+	select_handler_id = g_signal_connect (hni->index_contents->ctree, "tree_select_row",
                             hyperbola_navigation_index_tree_select_row, hni);
-	g_signal_connect (G_OBJECT (
-							hni->index_contents->ctree), "tree_unselect_row",
+	g_signal_connect (hni->index_contents->ctree, "tree_unselect_row",
                             hyperbola_navigation_index_tree_unselect_row, hni);
-	g_signal_connect (G_OBJECT (hni->index_contents->ctree), "destroy",
+	g_signal_connect (hni->index_contents->ctree, "destroy",
                             hyperbola_navigation_tree_destroy, hni->index_contents);
 	
 	/* The default is for Selection on Contents tab to be selected */

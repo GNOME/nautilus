@@ -55,7 +55,7 @@ tree_shlib_make_object (PortableServer_POA poa,
 	view = NAUTILUS_TREE_VIEW (g_object_new (NAUTILUS_TYPE_TREE_VIEW, NULL));
 
 #if 0
-	g_signal_connect (G_OBJECT (view), "destroy", tree_shlib_object_destroyed, NULL);
+	g_signal_connect (view, "destroy", tree_shlib_object_destroyed, NULL);
 #endif
 
 	bonobo_activation_plugin_use (poa, impl_ptr);

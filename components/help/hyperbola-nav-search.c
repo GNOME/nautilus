@@ -160,9 +160,9 @@ hyperbola_navigation_search_new (void)
 	vbox = gtk_vbox_new (FALSE, GNOME_PAD);
 
 	hns->ent = gtk_entry_new ();
-	g_signal_connect (G_OBJECT (hns->ent), "changed",
+	g_signal_connect (hns->ent, "changed",
 			    hyperbola_navigation_search_ent_changed, hns);
-	g_signal_connect (G_OBJECT (hns->ent), "activate",
+	g_signal_connect (hns->ent, "activate",
 			    hyperbola_navigation_search_ent_activate, hns);
 	gtk_container_add (GTK_CONTAINER (vbox), hns->ent);
 
@@ -171,7 +171,7 @@ hyperbola_navigation_search_new (void)
 	gtk_clist_set_selection_mode (GTK_CLIST (hns->clist),
 				      GTK_SELECTION_BROWSE);
 
-	g_signal_connect (G_OBJECT (hns->clist), "select_row",
+	g_signal_connect (hns->clist, "select_row",
 			    hyperbola_navigation_search_select_row, hns);
 
 	wtmp =

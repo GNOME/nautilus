@@ -62,7 +62,7 @@ loser_make_object (BonoboGenericFactory *factory,
 
 	nautilus_view = nautilus_content_loser_get_nautilus_view (view);
 
-	g_signal_connect (G_OBJECT (nautilus_view), "destroy", loser_object_destroyed, NULL);
+	g_signal_connect (nautilus_view, "destroy", loser_object_destroyed, NULL);
 
 	nautilus_content_loser_maybe_fail ("post-make-object");
 

@@ -58,7 +58,7 @@ test_window_new (const char *title, guint border_width)
 		gtk_window_set_title (GTK_WINDOW (window), title);
 	}
 
-	g_signal_connect (G_OBJECT (window),
+	g_signal_connect (window,
 			    "delete_event",
 			    G_CALLBACK (test_delete_event),
 			    NULL);

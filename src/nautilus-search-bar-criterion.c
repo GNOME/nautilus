@@ -297,7 +297,7 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 	details->bar = bar;
 	details->box = gtk_hwrap_box_new (FALSE);
 
-	g_signal_connect (G_OBJECT (details->box),
+	g_signal_connect (details->box,
 			    "need_reallocation",
 			    G_CALLBACK (queue_bar_resize_callback),
 			    bar);
@@ -317,7 +317,7 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 		g_free (context_stripped_criteria_title);
 
 		g_object_set_data (G_OBJECT(item), "type", GINT_TO_POINTER(i));
-		g_signal_connect (G_OBJECT (item),
+		g_signal_connect (item,
 				    "activate",
 				    G_CALLBACK (criterion_type_changed_callback),
 				    criterion);
@@ -355,12 +355,12 @@ nautilus_search_bar_criterion_new_from_values (NautilusSearchBarCriterionType ty
 		   don't need a date, like "yesterday" */
 		if (details->type == NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION) {
 			if (modified_relation_should_show_value (i)) {
-				g_signal_connect (G_OBJECT (item), "activate",
+				g_signal_connect (item, "activate",
 						    G_CALLBACK (show_date_widget),
 						    criterion);
 			}
 			else {
-				g_signal_connect (G_OBJECT (item), "activate",
+				g_signal_connect (item, "activate",
 						    G_CALLBACK (hide_date_widget),
 						    criterion);
 			}
@@ -718,7 +718,7 @@ nautilus_search_bar_criterion_update_valid_criteria_choices (NautilusSearchBarCr
 		
 		g_object_set_data (G_OBJECT(item), "type", GINT_TO_POINTER(i));
 		
-		g_signal_connect (G_OBJECT (item),
+		g_signal_connect (item,
 				    "activate",
 				    G_CALLBACK (criterion_type_changed_callback),
 				    criterion);
@@ -1046,7 +1046,7 @@ criterion_type_changed_callback (GtkObject *object,
 	g_return_if_fail (NAUTILUS_IS_COMPLEX_SEARCH_BAR (criterion->details->bar));
 	g_object_set_data (G_OBJECT (criterion), "type", 
 			     g_object_get_data (G_OBJECT (menu_item), "type"));
-	g_signal_emit (G_OBJECT (criterion),
+	g_signal_emit (criterion,
 			 signals[CRITERION_TYPE_CHANGED], 0);
 	
 }

@@ -540,12 +540,12 @@ layout_rows (GtkWrapBox    *wbox,
     }
   GTK_HWRAP_BOX (wbox)->request_this_height_next_time = total_height;
   if (!(GTK_HWRAP_BOX (wbox)->request_stored_height )) {
-    g_signal_emit_by_name (GTK_OBJECT (wbox), "need_reallocation", NULL);
+    g_signal_emit_by_name (wbox, "need_reallocation", NULL);
     GTK_HWRAP_BOX (wbox)->request_stored_height = TRUE;
   }
   if (total_height > area->height) {
     shrink_height = total_height - area->height; 
-    g_signal_emit_by_name (GTK_OBJECT (wbox), "need_reallocation", NULL);
+    g_signal_emit_by_name (wbox, "need_reallocation", NULL);
   }
   else
     shrink_height = 0;

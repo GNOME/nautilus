@@ -643,7 +643,7 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	gtk_container_add   (GTK_CONTAINER (event_box), label);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
-	g_signal_connect (G_OBJECT (label), "style_set", 
+	g_signal_connect (label, "style_set", 
 			    G_CALLBACK (style_set_handler), NULL);
 
 	gtk_box_pack_start  (GTK_BOX (hbox), event_box, FALSE, TRUE,
@@ -686,7 +686,7 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 			    GTK_DEST_DEFAULT_ALL,
 			    drop_types, G_N_ELEMENTS (drop_types),
 			    GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK);
-	g_signal_connect (G_OBJECT (bar), "drag_data_received",
+	g_signal_connect (bar, "drag_data_received",
 			    G_CALLBACK (drag_data_received_callback),
 			    NULL);
 

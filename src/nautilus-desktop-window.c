@@ -134,8 +134,8 @@ nautilus_desktop_window_new (NautilusApplication *application)
 	/* Special sawmill setting*/
 	gtk_window_set_wmclass (GTK_WINDOW (window), "desktop_window", "Nautilus");
 
-	g_signal_connect (G_OBJECT (window), "realize", G_CALLBACK (nautilus_desktop_window_realized), NULL);
-	g_signal_connect (G_OBJECT (window), "delete_event", G_CALLBACK (nautilus_desktop_window_delete_event), NULL);
+	g_signal_connect (window, "realize", G_CALLBACK (nautilus_desktop_window_realized), NULL);
+	g_signal_connect (window, "delete_event", G_CALLBACK (nautilus_desktop_window_delete_event), NULL);
 
 	/* Point window at the desktop folder.
 	 * Note that nautilus_desktop_window_init is too early to do this.

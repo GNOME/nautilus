@@ -210,55 +210,55 @@ nautilus_tree_view_init_dnd (NautilusTreeView *view)
 			   | GDK_ACTION_ASK);
 
 
-	g_signal_connect (G_OBJECT (view->details->tree), 
+	g_signal_connect (view->details->tree, 
 			    "drag_begin", 
 			    G_CALLBACK(nautilus_tree_view_drag_begin), 
 			    view);
 	
-	g_signal_connect (G_OBJECT (view->details->tree), 
+	g_signal_connect (view->details->tree, 
 			    "drag_end", 
 			    G_CALLBACK(nautilus_tree_view_drag_end), 
 			    view);
 	
-	g_signal_connect (G_OBJECT (view->details->tree), 
+	g_signal_connect (view->details->tree, 
 			    "drag_leave", 
 			    G_CALLBACK(nautilus_tree_view_drag_leave), 
 			    view);
 
-	g_signal_connect (G_OBJECT (view->details->tree), 
+	g_signal_connect (view->details->tree, 
 			    "drag_motion", 
 			    G_CALLBACK(nautilus_tree_view_drag_motion), 
 			    view);
 
-	g_signal_connect (G_OBJECT (view->details->tree), 
+	g_signal_connect (view->details->tree, 
 			    "drag_drop", 
 			    G_CALLBACK(nautilus_tree_view_drag_drop), 
 			    view);
 
-	g_signal_connect (G_OBJECT (view->details->tree), 
+	g_signal_connect (view->details->tree, 
 			    "drag_data_received", 
 			    G_CALLBACK(nautilus_tree_view_drag_data_received), 
 			    view);
 
-	g_signal_connect (G_OBJECT (view->details->tree), 
+	g_signal_connect (view->details->tree, 
 			    "drag_data_get", 
 			    G_CALLBACK(nautilus_tree_view_drag_data_get), 
 			    view);
 
 	/* override the default handlers */
-	g_signal_connect (G_OBJECT (view->details->tree),
+	g_signal_connect (view->details->tree,
 			    "button-press-event", 
 			    G_CALLBACK (nautilus_tree_view_button_press), 
 			    NULL);
-	g_signal_connect (G_OBJECT (view->details->tree),
+	g_signal_connect (view->details->tree,
 			    "button-release-event", 
 			    G_CALLBACK (nautilus_tree_view_button_release), 
 			    NULL);
-	g_signal_connect (G_OBJECT (view->details->tree),
+	g_signal_connect (view->details->tree,
 			    "motion-notify-event", 
 			    G_CALLBACK (nautilus_tree_view_motion_notify), 
 			    NULL);
-	g_signal_connect (G_OBJECT (view->details->tree), "realize", 
+	g_signal_connect (view->details->tree, "realize", 
 			    tree_view_realize_callback, view);
 }
 

@@ -98,7 +98,7 @@ nautilus_navigation_bar_activate (NautilusNavigationBar *bar)
 {
 	g_return_if_fail (NAUTILUS_IS_NAVIGATION_BAR (bar));
 
-	g_signal_emit (G_OBJECT (bar), signals[ACTIVATE], 0);
+	g_signal_emit (bar, signals[ACTIVATE], 0);
 }
 
 /**
@@ -145,7 +145,7 @@ nautilus_navigation_bar_location_changed (NautilusNavigationBar *bar)
 	g_return_if_fail (NAUTILUS_IS_NAVIGATION_BAR (bar));
 
 	location = nautilus_navigation_bar_get_location (bar);
-	g_signal_emit (G_OBJECT (bar),
+	g_signal_emit (bar,
 			 signals[LOCATION_CHANGED], 0,
 			 location);
 	g_free (location);

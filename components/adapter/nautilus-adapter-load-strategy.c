@@ -200,7 +200,7 @@ nautilus_adapter_load_strategy_stop_loading  (NautilusAdapterLoadStrategy *strat
 void
 nautilus_adapter_load_strategy_report_load_underway  (NautilusAdapterLoadStrategy *strategy)
 {
-	g_signal_emit (G_OBJECT (strategy),
+	g_signal_emit (strategy,
 			 signals[REPORT_LOAD_UNDERWAY], 0);
 }
 
@@ -208,7 +208,7 @@ void
 nautilus_adapter_load_strategy_report_load_progress  (NautilusAdapterLoadStrategy *strategy,
 						      double                       fraction_done)
 {
-	g_signal_emit (G_OBJECT (strategy),
+	g_signal_emit (strategy,
 			 signals[REPORT_LOAD_PROGRESS], 0,
 			 fraction_done);
 }
@@ -216,13 +216,13 @@ nautilus_adapter_load_strategy_report_load_progress  (NautilusAdapterLoadStrateg
 void
 nautilus_adapter_load_strategy_report_load_complete  (NautilusAdapterLoadStrategy *strategy)
 {
-	g_signal_emit (G_OBJECT (strategy),
+	g_signal_emit (strategy,
 			 signals[REPORT_LOAD_COMPLETE], 0);
 }
 
 void
 nautilus_adapter_load_strategy_report_load_failed    (NautilusAdapterLoadStrategy *strategy)
 {
-	g_signal_emit (G_OBJECT (strategy),
+	g_signal_emit (strategy,
 			 signals[REPORT_LOAD_FAILED], 0);
 }

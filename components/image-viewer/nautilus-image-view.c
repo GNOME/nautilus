@@ -319,7 +319,7 @@ zoomable_zoom_in_callback (BonoboZoomable *zoomable, bonobo_object_data_t *bod)
 		new_zoom_level = zoom_level_from_index (index);
 	}
 	
-	g_signal_emit_by_name (GTK_OBJECT (zoomable), "set_zoom_level",
+	g_signal_emit_by_name (zoomable, "set_zoom_level",
 				 new_zoom_level);
 }
 
@@ -338,7 +338,7 @@ zoomable_zoom_out_callback (BonoboZoomable *zoomable, bonobo_object_data_t *bod)
 	index--;
 	new_zoom_level = zoom_level_from_index (index);
 
-	g_signal_emit_by_name (GTK_OBJECT (zoomable), "set_zoom_level",
+	g_signal_emit_by_name (zoomable, "set_zoom_level",
 				 new_zoom_level);
 }
 
@@ -361,7 +361,7 @@ zoomable_zoom_to_fit_callback (BonoboZoomable *zoomable, bonobo_object_data_t *b
 
 	new_zoom_level = (x_level < y_level) ? x_level : y_level;
 	if (new_zoom_level > 0) {
-		g_signal_emit_by_name (GTK_OBJECT (zoomable), "set_zoom_level",
+		g_signal_emit_by_name (zoomable, "set_zoom_level",
 				 new_zoom_level);
 	}
 }
@@ -369,7 +369,7 @@ zoomable_zoom_to_fit_callback (BonoboZoomable *zoomable, bonobo_object_data_t *b
 static void
 zoomable_zoom_to_default_callback (BonoboZoomable *zoomable, bonobo_object_data_t *bod)
 {
-	g_signal_emit_by_name (GTK_OBJECT (zoomable), "set_zoom_level",
+	g_signal_emit_by_name (zoomable, "set_zoom_level",
 				 1.0);
 }
 
@@ -665,7 +665,7 @@ control_factory_common (GtkWidget *scrolled_window)
 	bod->drawing_area = gtk_drawing_area_new ();
 	bod->scrolled_window = scrolled_window;
 
-	g_signal_connect (G_OBJECT (bod->drawing_area),
+	g_signal_connect (bod->drawing_area,
 			    "expose_event",
 			    G_CALLBACK (drawing_area_exposed), bod);
 
@@ -689,20 +689,20 @@ control_factory_common (GtkWidget *scrolled_window)
 	 */
 	gtk_widget_ref (bod->drawing_area);
 
-	g_signal_connect (G_OBJECT (bod->control), "destroy",
+	g_signal_connect (bod->control, "destroy",
 			    G_CALLBACK (control_destroy_callback), bod);
 
 	bod->zoomable = bonobo_zoomable_new ();
 
-	g_signal_connect (G_OBJECT (bod->zoomable), "set_zoom_level",
+	g_signal_connect (bod->zoomable, "set_zoom_level",
 			    G_CALLBACK (zoomable_set_zoom_level_callback), bod);
-	g_signal_connect (G_OBJECT (bod->zoomable), "zoom_in",
+	g_signal_connect (bod->zoomable, "zoom_in",
 			    G_CALLBACK (zoomable_zoom_in_callback), bod);
-	g_signal_connect (G_OBJECT (bod->zoomable), "zoom_out",
+	g_signal_connect (bod->zoomable, "zoom_out",
 			    G_CALLBACK (zoomable_zoom_out_callback), bod);
-	g_signal_connect (G_OBJECT (bod->zoomable), "zoom_to_fit",
+	g_signal_connect (bod->zoomable, "zoom_to_fit",
 			    G_CALLBACK (zoomable_zoom_to_fit_callback), bod);
-	g_signal_connect (G_OBJECT (bod->zoomable), "zoom_to_default",
+	g_signal_connect (bod->zoomable, "zoom_to_default",
 			    G_CALLBACK (zoomable_zoom_to_default_callback), bod);
 
 	bod->zoom_level = 1.0;
@@ -719,7 +719,7 @@ control_factory_common (GtkWidget *scrolled_window)
 	bonobo_object_add_interface (BONOBO_OBJECT (bod->control),
 				     BONOBO_OBJECT (bod->zoomable));
 
-	g_signal_connect (G_OBJECT (bod->control), "activate",
+	g_signal_connect (bod->control, "activate",
 			    G_CALLBACK (control_activate_callback), bod);
 
 	/*
@@ -743,7 +743,7 @@ scaled_control_factory (void)
 
 	bod = control_factory_common (NULL);
 
-	g_signal_connect (G_OBJECT (bod->drawing_area), "size_allocate",
+	g_signal_connect (bod->drawing_area, "size_allocate",
 			    G_CALLBACK (control_size_allocate_callback), bod);
 
         return bod;
@@ -763,11 +763,11 @@ scrollable_control_factory (void)
 
 	bod = control_factory_common (scroll);
 
-	g_signal_connect (G_OBJECT (bod->drawing_area), "size_allocate",
+	g_signal_connect (bod->drawing_area, "size_allocate",
 			    G_CALLBACK (scrolled_control_size_allocate_callback),
 			    bod);
 	
-	g_signal_connect (G_OBJECT (bod->scrolled_window), "size_allocate",
+	g_signal_connect (bod->scrolled_window, "size_allocate",
 			    G_CALLBACK (scrolled_window_size_allocate_callback),
 			    bod);
 

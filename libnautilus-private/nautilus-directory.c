@@ -683,7 +683,7 @@ nautilus_directory_emit_files_added (NautilusDirectory *directory,
 				     GList *added_files)
 {
 	if (added_files != NULL) {
-		g_signal_emit (G_OBJECT (directory),
+		g_signal_emit (directory,
 				 signals[FILES_ADDED], 0,
 				 added_files);
 	}
@@ -694,7 +694,7 @@ nautilus_directory_emit_files_changed (NautilusDirectory *directory,
 				       GList *changed_files)
 {
 	if (changed_files != NULL) {
-		g_signal_emit (G_OBJECT (directory),
+		g_signal_emit (directory,
 				 signals[FILES_CHANGED], 0,
 				 changed_files);
 	}
@@ -715,7 +715,7 @@ nautilus_directory_emit_change_signals (NautilusDirectory *directory,
 void
 nautilus_directory_emit_done_loading (NautilusDirectory *directory)
 {
-	g_signal_emit (G_OBJECT (directory),
+	g_signal_emit (directory,
 			 signals[DONE_LOADING], 0);
 }
 
@@ -723,7 +723,7 @@ void
 nautilus_directory_emit_load_error (NautilusDirectory *directory,
 				    GnomeVFSResult error_result)
 {
-	g_signal_emit (G_OBJECT (directory),
+	g_signal_emit (directory,
 			 signals[LOAD_ERROR], 0,
 			 error_result);
 }
@@ -802,7 +802,7 @@ call_files_added_free_list (gpointer key, gpointer value, gpointer user_data)
 	g_assert (value != NULL);
 	g_assert (user_data == NULL);
 
-	g_signal_emit (G_OBJECT (key),
+	g_signal_emit (key,
 			 signals[FILES_ADDED], 0,
 			 value);
 	g_list_free (value);

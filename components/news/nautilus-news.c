@@ -2009,14 +2009,14 @@ add_command_buttons (News *news_data, const char* label, gboolean from_configure
 		button = gtk_button_new_with_label (_("Edit"));
 		gtk_container_add (GTK_CONTAINER (button_box), button);
 
-		g_signal_connect (G_OBJECT (button), "clicked",
+		g_signal_connect (button, "clicked",
 		      (GtkSignalFunc) add_site_button_clicked, news_data);
 	}
 	
 	button = gtk_button_new_from_stock (label);
 	gtk_container_add (GTK_CONTAINER (button_box), button);
 
-	g_signal_connect (G_OBJECT (button), "clicked",
+	g_signal_connect (button, "clicked",
 		      (GtkSignalFunc) configure_button_clicked, news_data);
 		      	
 	return frame;
@@ -2111,7 +2111,7 @@ add_channel_entry (News *news_data, const char *channel_name, int index, gboolea
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (check_button), is_showing);
 	gtk_box_pack_start (GTK_BOX (news_data->checkbox_list), check_button, FALSE, FALSE, 0);
 
-	g_signal_connect (G_OBJECT (check_button), "toggled",
+	g_signal_connect (check_button, "toggled",
       	              	    			G_CALLBACK (check_button_toggled_callback),
                             			news_data);
 
@@ -2253,7 +2253,7 @@ make_remove_widgets (News *news, GtkWidget *container)
 	gtk_clist_set_selection_mode (GTK_CLIST (news->remove_site_list), GTK_SELECTION_BROWSE);		
 	gtk_clist_set_auto_sort (GTK_CLIST (news->remove_site_list), TRUE);
 	
-	g_signal_connect (G_OBJECT (news->remove_site_list), "select_row",
+	g_signal_connect (news->remove_site_list, "select_row",
 			    G_CALLBACK (select_row_in_remove_list), news);
 			    
 	scrolled_window = GTK_SCROLLED_WINDOW (gtk_scrolled_window_new (NULL, NULL));
@@ -2271,7 +2271,7 @@ make_remove_widgets (News *news, GtkWidget *container)
 	
 	news->remove_button = gtk_button_new_with_label (_("Remove Site"));
 	gtk_container_add (GTK_CONTAINER (button_box), news->remove_button);
-	g_signal_connect (G_OBJECT (news->remove_button), "clicked",
+	g_signal_connect (news->remove_button, "clicked",
                             (GtkSignalFunc) remove_selected_site, news);
 }
 
@@ -2316,7 +2316,7 @@ make_add_widgets (News *news, GtkWidget *container)
 	
 	button = gtk_button_new_with_label (_("Add New Site"));
 	gtk_container_add (GTK_CONTAINER (button_box), button);
-	g_signal_connect (G_OBJECT (button), "clicked",
+	g_signal_connect (button, "clicked",
 		(GtkSignalFunc) add_site_from_fields, news);
 }
 
@@ -2423,16 +2423,16 @@ set_up_main_widgets (News *news, GtkWidget *container)
 		TRUE, 0);
 	
  	/* connect the appropriate signals for drawing and event handling */
- 	g_signal_connect (G_OBJECT (news->news_display), "expose_event",
+ 	g_signal_connect (news->news_display, "expose_event",
 		      (GtkSignalFunc) nautilus_news_expose_event, news);
   	gtk_signal_connect (GTK_OBJECT(news->news_display),"configure_event",
 		      (GtkSignalFunc) nautilus_news_configure_event, news);
 
-  	g_signal_connect (G_OBJECT (news->news_display), "motion_notify_event",
+  	g_signal_connect (news->news_display, "motion_notify_event",
 		      (GtkSignalFunc) nautilus_news_motion_notify_event, news);
-  	g_signal_connect (G_OBJECT (news->news_display), "leave_notify_event",
+  	g_signal_connect (news->news_display, "leave_notify_event",
 		      (GtkSignalFunc) nautilus_news_leave_notify_event, news);
-  	g_signal_connect (G_OBJECT (news->news_display), "button_release_event",
+  	g_signal_connect (news->news_display, "button_release_event",
 		      (GtkSignalFunc) nautilus_news_button_release_event, news);
 
   	gtk_widget_set_events (news->news_display, GDK_EXPOSURE_MASK
@@ -2488,14 +2488,14 @@ make_news_view (const char *iid, gpointer callback_data)
 	news->timer_task = gtk_timeout_add (10000, check_for_updates, news);
 
 	/* arrange for notification when we're resized */
-	g_signal_connect (G_OBJECT (news->news_display), "size_allocate", news_display_size_allocate, news);
-	g_signal_connect (G_OBJECT (news->empty_message), "size_allocate", empty_message_size_allocate, news);
+	g_signal_connect (news->news_display, "size_allocate", news_display_size_allocate, news);
+	g_signal_connect (news->empty_message, "size_allocate", empty_message_size_allocate, news);
 		
 	/* Create the nautilus view CORBA object. */
         news->view = nautilus_view_new (main_container);
-        g_signal_connect (G_OBJECT (news->view), "destroy", do_destroy, news);
+        g_signal_connect (news->view, "destroy", do_destroy, news);
 
-	g_signal_connect (G_OBJECT (news->view), "load_location",
+	g_signal_connect (news->view, "load_location",
                             nautilus_news_load_location, news);
 
 	/* allocate a property bag to reflect the TAB_IMAGE property */

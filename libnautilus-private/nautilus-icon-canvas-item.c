@@ -584,7 +584,7 @@ nautilus_icon_canvas_item_update_bounds (NautilusIconCanvasItem *item)
 	/* Send out the bounds_changed signal and queue a redraw. */
 	eel_gnome_canvas_request_redraw_rectangle
 		(GNOME_CANVAS_ITEM (item)->canvas, before);
-	g_signal_emit (G_OBJECT (item),
+	g_signal_emit (item,
 			 signals[BOUNDS_CHANGED], 0);
 	eel_gnome_canvas_item_request_redraw
 		(GNOME_CANVAS_ITEM (item));

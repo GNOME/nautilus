@@ -1216,7 +1216,7 @@ create_program_clist ()
 	 */
 	gtk_clist_set_compare_func (clist, compare_program_file_pairs);
 
-	g_signal_connect (G_OBJECT (clist),
+	g_signal_connect (clist,
 			    "click_column",
 			    G_CALLBACK (switch_sort_column),
 			    NULL);
@@ -1332,7 +1332,7 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
   	gtk_widget_show (change_button);
   	gtk_box_pack_end (GTK_BOX (change_button_holder), change_button, TRUE, FALSE, 0);
 
-  	g_signal_connect (G_OBJECT (change_button),
+  	g_signal_connect (change_button,
 			  "clicked",
 			  G_CALLBACK (run_program_configurator_callback),
 			  window);
@@ -1352,7 +1352,7 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
 	gtk_box_pack_end (GTK_BOX (capplet_hbox), capplet_button_vbox, FALSE, FALSE, 0);
 	capplet_button = gtk_button_new_with_mnemonic (_("_Go There"));	 
 
-	g_signal_connect (G_OBJECT (capplet_button),
+	g_signal_connect (capplet_button,
 			  "clicked",
 			  G_CALLBACK (launch_mime_capplet_and_close_dialog),
 			  window);
@@ -1378,7 +1378,7 @@ nautilus_program_chooser_new (GnomeVFSMimeActionType action_type,
   	update_selected_item_details (GTK_DIALOG (window));
 
   	/* Update selected item info whenever selection changes. */
-  	g_signal_connect (G_OBJECT (clist),
+  	g_signal_connect (clist,
   			    "select_row",
   			    G_CALLBACK (program_list_selection_changed_callback),
   			    window);
@@ -1491,7 +1491,7 @@ nautilus_program_chooser_show_no_choices_message (GnomeVFSMimeActionType action_
 	dialog = eel_show_yes_no_dialog 
 		(prompt, dialog_title, GTK_STOCK_OK, GTK_STOCK_CANCEL, parent_window);
 
-	g_signal_connect (G_OBJECT (dialog), "response",
+	g_signal_connect (dialog, "response",
 			  G_CALLBACK (launch_mime_capplet_on_ok),
 			  nautilus_file_get_mime_type (file));
 

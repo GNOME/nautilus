@@ -136,7 +136,7 @@ iti_stop_editing (Iti *iti)
 
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 
-	g_signal_emit (G_OBJECT (iti), iti_signals[EDITING_STOPPED], 0);
+	g_signal_emit (iti, iti_signals[EDITING_STOPPED], 0);
 }
 
 /* Lays out the text in an icon item */
@@ -179,12 +179,12 @@ layout_text (Iti *iti)
 	height = iti->ti->height + 2 * MARGIN_Y;
 
 	if (width != old_width)
-		g_signal_emit (G_OBJECT (iti), iti_signals[WIDTH_CHANGED], 0);
+		g_signal_emit (iti, iti_signals[WIDTH_CHANGED], 0);
 
 	if (height != old_height)
-		g_signal_emit (G_OBJECT (iti), iti_signals[HEIGHT_CHANGED], 0);
+		g_signal_emit (iti, iti_signals[HEIGHT_CHANGED], 0);
 	
-	g_signal_emit (G_OBJECT (iti), iti_signals [TEXT_EDITED], 0);		
+	g_signal_emit (iti, iti_signals [TEXT_EDITED], 0);		
 }
 
 /* Accepts the text in the off-screen entry of an icon text item */
@@ -197,7 +197,7 @@ iti_edition_accept (Iti *iti)
 	priv = iti->priv;
 	accept = TRUE;
 
-	g_signal_emit (G_OBJECT (iti), iti_signals [TEXT_CHANGED], 0, &accept);
+	g_signal_emit (iti, iti_signals [TEXT_CHANGED], 0, &accept);
 
 	if (iti->editing){
 		if (accept) {
@@ -263,7 +263,7 @@ iti_start_editing (Iti *iti)
 
 	if (priv->entry_top == NULL) {
 		priv->entry = (NautilusEntry *) nautilus_entry_new ();
-		g_signal_connect (G_OBJECT (priv->entry), "activate",
+		g_signal_connect (priv->entry, "activate",
 				    G_CALLBACK (iti_entry_activate), iti);
 		/* Make clipboard functions cause an update the appearance of 
 		   the icon text item itself, since the clipboard functions 
@@ -287,7 +287,7 @@ iti_start_editing (Iti *iti)
 
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 
-	g_signal_emit (G_OBJECT (iti), iti_signals[EDITING_STARTED], 0);
+	g_signal_emit (iti, iti_signals[EDITING_STARTED], 0);
 }
 
 /* Destroy method handler for the icon text item */
@@ -854,7 +854,7 @@ iti_start_selecting (Iti *iti, int idx, guint32 event_time)
 
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 
-	g_signal_emit (G_OBJECT (iti), iti_signals[SELECTION_STARTED], 0);
+	g_signal_emit (iti, iti_signals[SELECTION_STARTED], 0);
 }
 
 /* Stops the selection state in the icon text item */
@@ -874,9 +874,9 @@ iti_stop_selecting (Iti *iti, guint32 event_time)
 	iti->selecting = FALSE;
 
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
-	g_signal_emit (G_OBJECT (iti), iti_signals[SELECTION_STOPPED], 0);
+	g_signal_emit (iti, iti_signals[SELECTION_STOPPED], 0);
 	/* Hack, since the real nautilus entry can't get this information */
-	g_signal_emit_by_name (GTK_OBJECT (priv->entry), "selection_changed");
+	g_signal_emit_by_name (priv->entry, "selection_changed");
 }
 
 /* Handles selection range changes on the icon text item */

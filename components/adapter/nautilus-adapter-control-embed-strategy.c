@@ -166,7 +166,7 @@ nautilus_adapter_control_embed_strategy_new (Bonobo_Control control,
 
 	strategy->details->widget = bonobo_control_frame_get_widget (strategy->details->control_frame);
   
-	g_signal_connect (G_OBJECT (strategy->details->control_frame),
+	g_signal_connect (strategy->details->control_frame,
 			    "activate_uri", G_CALLBACK (activate_uri_callback), strategy);
 
 	CORBA_exception_init (&ev);

@@ -45,7 +45,7 @@ main (int argc, char* argv[])
 	 * This must be done after the widget is realized, due to
 	 * an apparent bug in gtk_viewport_set_shadow_type.
 	 */
-// 	g_signal_connect (G_OBJECT (GTK_BIN (scroller)->child), 
+// 	g_signal_connect (GTK_BIN (scroller->child), 
 // 			    "realize", 
 // 			    remove_default_viewport_shadow, 
 // 			    NULL);

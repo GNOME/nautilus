@@ -387,7 +387,7 @@ fm_search_list_view_init (gpointer object,
 
 	nautilus_view = fm_directory_view_get_nautilus_view (directory_view);
 
-	g_signal_connect (G_OBJECT (nautilus_view),
+	g_signal_connect (nautilus_view,
 			    "load_location",
 			    G_CALLBACK (load_location_callback),
 			    NULL);

@@ -286,7 +286,7 @@ get_icon_factory (void)
 					      thumbnail_limit_changed_callback,
 					      NULL);
 
-		g_signal_connect (G_OBJECT (gnome_vfs_mime_monitor_get ()),
+		g_signal_connect (gnome_vfs_mime_monitor_get (),
 				  "data_changed",
 				  G_CALLBACK (mime_type_data_changed_callback),
 				  NULL);
@@ -857,7 +857,7 @@ icon_theme_changed_callback (gpointer user_data)
 		
 		nautilus_icon_factory_clear ();
 		load_thumbnail_frames (factory);
-		g_signal_emit (G_OBJECT (factory),
+		g_signal_emit (factory,
 				 signals[ICONS_CHANGED], 0);
 	}
 
@@ -874,7 +874,7 @@ thumbnail_limit_changed_callback (gpointer user_data)
 	 * signal to mean only "thumbnails might have changed" if this ends up being slow
 	 * for some reason.
 	 */
-	g_signal_emit (G_OBJECT (global_icon_factory),
+	g_signal_emit (global_icon_factory,
 			 signals[ICONS_CHANGED], 0);
 }
 
@@ -887,7 +887,7 @@ mime_type_data_changed_callback (GnomeVFSMIMEMonitor *monitor, gpointer user_dat
 	/* We don't know which data changed, so we have to assume that
 	 * any or all icons might have changed.
 	 */
-	g_signal_emit (G_OBJECT (get_icon_factory ()), 
+	g_signal_emit (get_icon_factory (), 
 			 signals[ICONS_CHANGED], 0);
 }				 
 

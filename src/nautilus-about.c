@@ -161,7 +161,7 @@ nautilus_about_init (NautilusAbout *about)
 			      area_width, area_height);
 	gtk_widget_set_events (about->details->drawing_area, GDK_EXPOSURE_MASK);
 
-	g_signal_connect (G_OBJECT (about->details->drawing_area), "expose_event",
+	g_signal_connect (about->details->drawing_area, "expose_event",
 			    G_CALLBACK (nautilus_about_repaint), about);
 
 	gtk_widget_show (about->details->drawing_area);

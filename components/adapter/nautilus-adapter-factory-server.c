@@ -123,7 +123,7 @@ impl_Nautilus_ComponentAdapterFactory_create_adapter (PortableServer_Servant  se
 
 		adapter_view = nautilus_adapter_get_nautilus_view (adapter);
 		
-		g_signal_connect (G_OBJECT (adapter_view), "destroy",
+		g_signal_connect (adapter_view, "destroy",
 				    adapter_object_destroyed, factory_servant->bonobo_object);
 
 		return CORBA_Object_duplicate
@@ -164,7 +164,7 @@ impl_Nautilus_ComponentAdapterFactory__create (NautilusAdapterFactoryServer *bon
 	servant->servant.vepv = &impl_Nautilus_ComponentAdapterFactory_vepv;
 	POA_Nautilus_ComponentAdapterFactory__init ((PortableServer_Servant) servant, ev);
 
-	g_signal_connect (G_OBJECT (bonobo_object), "destroy",
+	g_signal_connect (bonobo_object, "destroy",
 			    G_CALLBACK (impl_Nautilus_ComponentAdapterFactory__destroy), servant);
 	
 	servant->bonobo_object = bonobo_object;

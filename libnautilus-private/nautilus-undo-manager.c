@@ -119,7 +119,7 @@ corba_append (PortableServer_Servant servant,
 		manager->details->new_transaction_is_redo;
 	
 	/* Fire off signal indicating that the undo state has changed. */
-	g_signal_emit (G_OBJECT (manager), signals[CHANGED], 0);
+	g_signal_emit (manager, signals[CHANGED], 0);
 }
 
 static void
@@ -142,7 +142,7 @@ corba_forget (PortableServer_Servant servant,
 	release_transaction (manager);
 	
 	/* Fire off signal indicating that the undo state has changed. */
-	g_signal_emit (G_OBJECT (manager), signals[CHANGED], 0);
+	g_signal_emit (manager, signals[CHANGED], 0);
 }
 
 static void
@@ -198,7 +198,7 @@ nautilus_undo_manager_undo (NautilusUndoManager *manager)
 		bonobo_object_release_unref (transaction, &ev);
 
 		/* Fire off signal indicating the undo state has changed. */
-		g_signal_emit (G_OBJECT (manager), signals[CHANGED], 0);
+		g_signal_emit (manager, signals[CHANGED], 0);
 	}
 
 	CORBA_exception_free (&ev);

@@ -151,7 +151,7 @@ static void
 call_load_location (NautilusView *view,
 		    gpointer callback_data)
 {
-	g_signal_emit (G_OBJECT (view),
+	g_signal_emit (view,
 		       signals[LOAD_LOCATION], 0,
 		       callback_data);
 }
@@ -160,7 +160,7 @@ static void
 call_stop_loading (NautilusView *view,
 		   gpointer callback_data)
 {
-	g_signal_emit (G_OBJECT (view),
+	g_signal_emit (view,
 		       signals[STOP_LOADING], 0);
 }
 
@@ -168,7 +168,7 @@ static void
 call_selection_changed (NautilusView *view,
 			gpointer callback_data)
 {
-	g_signal_emit (G_OBJECT (view),
+	g_signal_emit (view,
 		       signals[SELECTION_CHANGED], 0,
 		       callback_data);
 }
@@ -177,7 +177,7 @@ static void
 call_title_changed (NautilusView *view,
 		    gpointer callback_data)
 {
-	g_signal_emit (G_OBJECT (view),
+	g_signal_emit (view,
 		       signals[TITLE_CHANGED], 0,
 		       callback_data);
 }
@@ -186,7 +186,7 @@ static void
 call_history_changed (NautilusView *view,
 		      gpointer callback_data)
 {
-	g_signal_emit (G_OBJECT (view),
+	g_signal_emit (view,
 		       signals[HISTORY_CHANGED], 0,
 		       callback_data);
 }

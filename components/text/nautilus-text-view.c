@@ -159,13 +159,13 @@ nautilus_text_view_init (NautilusTextView *text_view)
 	text_view->details->zoomable = bonobo_zoomable_new ();
 	text_view->details->zoom_index = 3;
 	
-	g_signal_connect (G_OBJECT (text_view->details->zoomable), "set_zoom_level",
+	g_signal_connect (text_view->details->zoomable, "set_zoom_level",
 			    G_CALLBACK (zoomable_set_zoom_level_callback), text_view);
-	g_signal_connect (G_OBJECT (text_view->details->zoomable), "zoom_in",
+	g_signal_connect (text_view->details->zoomable, "zoom_in",
 			    G_CALLBACK (zoomable_zoom_in_callback), text_view);
-	g_signal_connect (G_OBJECT (text_view->details->zoomable), "zoom_out",
+	g_signal_connect (text_view->details->zoomable, "zoom_out",
 			    G_CALLBACK (zoomable_zoom_out_callback), text_view);
-	g_signal_connect (G_OBJECT (text_view->details->zoomable), "zoom_to_fit",
+	g_signal_connect (text_view->details->zoomable, "zoom_to_fit",
 			    G_CALLBACK (zoomable_zoom_to_fit_callback), text_view);
 	
 	bonobo_zoomable_set_parameters_full (text_view->details->zoomable,
@@ -177,7 +177,7 @@ nautilus_text_view_init (NautilusTextView *text_view)
 				     BONOBO_OBJECT (text_view->details->zoomable));
  
     	
-	g_signal_connect (G_OBJECT (text_view), 
+	g_signal_connect (text_view, 
 			    "load_location",
 			    text_view_load_location_callback, 
 			    text_view);
@@ -223,11 +223,10 @@ nautilus_text_view_init (NautilusTextView *text_view)
 	gtk_container_add (GTK_CONTAINER (text_view->details->container), scrolled_window);
 
 	/* get notified when we are activated so we can merge in our menu items */
-        g_signal_connect (G_OBJECT (nautilus_view_get_bonobo_control
-					(NAUTILUS_VIEW (text_view))),
-                            "activate",
-                            merge_bonobo_menu_items,
-                            text_view);
+        g_signal_connect (nautilus_view_get_bonobo_control (NAUTILUS_VIEW (text_view))),
+                          "activate",
+                          merge_bonobo_menu_items,
+                          text_view);
 		 	
 	/* finally, we can show everything */	
 	gtk_widget_show_all (GTK_WIDGET (text_view->details->event_box));
@@ -779,7 +778,7 @@ merge_bonobo_menu_items (BonoboControl *control, gboolean state, gpointer user_d
 
 		nautilus_text_view_build_service_menu (text_view, control);
 
-                g_signal_connect (G_OBJECT (bonobo_control_get_ui_component (control)),
+                g_signal_connect (bonobo_control_get_ui_component (control),
                                     "ui_event", handle_ui_event, text_view);
                 
 		nautilus_clipboard_set_up_editable_in_control (GTK_EDITABLE (text_view->details->text_display),

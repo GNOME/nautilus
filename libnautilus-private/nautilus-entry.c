@@ -200,7 +200,7 @@ nautilus_entry_key_press (GtkWidget *widget, GdkEventKey *event)
 	if (result) {
 		new_has = gtk_editable_get_selection_bounds (editable, NULL, NULL);
 		if (old_has || new_has) {
-			g_signal_emit (G_OBJECT (widget), signals[SELECTION_CHANGED], 0);
+			g_signal_emit (widget, signals[SELECTION_CHANGED], 0);
 		}
 	}
 
@@ -238,7 +238,7 @@ nautilus_entry_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 	if (result) {
 		new_had = gtk_editable_get_selection_bounds (editable, &new_start, &new_end);
 		if (old_had != new_had || (old_had && (old_start != new_start || old_end != new_end))) {
-			g_signal_emit (G_OBJECT (widget), signals[SELECTION_CHANGED], 0);
+			g_signal_emit (widget, signals[SELECTION_CHANGED], 0);
 		}
 	}
 	
@@ -318,7 +318,7 @@ nautilus_entry_set_text (NautilusEntry *entry, const gchar *text)
 	gtk_entry_set_text (GTK_ENTRY (entry), text);
 	entry->details->user_edit = TRUE;
 	
-	g_signal_emit (G_OBJECT (entry), signals[SELECTION_CHANGED], 0);
+	g_signal_emit (entry, signals[SELECTION_CHANGED], 0);
 }
 
 #if GNOME2_CONVERSION_COMPLETE
@@ -331,7 +331,7 @@ nautilus_entry_set_selection_bounds (GtkEditable *editable,
 	EEL_CALL_PARENT (GTK_EDITABLE_CLASS, set_selection_bounds,
 			 (editable, start_pos, end_pos));
 
-	g_signal_emit (G_OBJECT (editable), signals[SELECTION_CHANGED], 0);
+	g_signal_emit (editable, signals[SELECTION_CHANGED], 0);
 }
 
 #endif
@@ -346,7 +346,7 @@ nautilus_entry_button_press (GtkWidget *widget,
 		(GTK_WIDGET_CLASS, button_press_event, (widget, event));
 
 	if (result) {
-		g_signal_emit (G_OBJECT (widget), signals[SELECTION_CHANGED], 0);
+		g_signal_emit (widget, signals[SELECTION_CHANGED], 0);
 	}
 
 	return result;
@@ -362,7 +362,7 @@ nautilus_entry_button_release (GtkWidget *widget,
 		(GTK_WIDGET_CLASS, button_release_event, (widget, event));
 
 	if (result) {
-		g_signal_emit (G_OBJECT (widget), signals[SELECTION_CHANGED], 0);
+		g_signal_emit (widget, signals[SELECTION_CHANGED], 0);
 	}
 
 	return result;
@@ -380,13 +380,13 @@ nautilus_entry_insert_text (GtkEditable *editable, const gchar *text,
 
 	/* Fire off user changed signals */
 	if (entry->details->user_edit) {
-		g_signal_emit (G_OBJECT (editable), signals[USER_CHANGED], 0);
+		g_signal_emit (editable, signals[USER_CHANGED], 0);
 	}
 
 	EEL_CALL_PARENT (GTK_EDITABLE_CLASS, insert_text, 
 			      (editable, text, length, position));
 
-	g_signal_emit (G_OBJECT (editable), signals[SELECTION_CHANGED], 0);
+	g_signal_emit (editable, signals[SELECTION_CHANGED], 0);
 }
 			 		     
 static void 
@@ -398,13 +398,13 @@ nautilus_entry_delete_text (GtkEditable *editable, int start_pos, int end_pos)
 
 	/* Fire off user changed signals */
 	if (entry->details->user_edit) {
-		g_signal_emit (G_OBJECT (editable), signals[USER_CHANGED], 0);
+		g_signal_emit (editable, signals[USER_CHANGED], 0);
 	}
 	
 	EEL_CALL_PARENT (GTK_EDITABLE_CLASS, delete_text, 
 			      (editable, start_pos, end_pos));
 
-	g_signal_emit (G_OBJECT (editable), signals[SELECTION_CHANGED], 0);
+	g_signal_emit (editable, signals[SELECTION_CHANGED], 0);
 }
 
 #endif

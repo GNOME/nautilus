@@ -109,7 +109,7 @@ make_object (BonoboGenericFactory *factory,
 		g_source_remove (callback_data->delayed_quit_timeout_id);
 		callback_data->delayed_quit_timeout_id = 0;
 	}
-	g_signal_connect (G_OBJECT (view), "destroy",
+	g_signal_connect (view, "destroy",
 			    G_CALLBACK (object_destroyed), callback_data);
 
 	return BONOBO_OBJECT (view);

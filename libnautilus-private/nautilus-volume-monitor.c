@@ -800,7 +800,7 @@ mount_volume_make_name (NautilusVolume *volume)
 static void
 mount_volume_activate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 {
-	g_signal_emit (G_OBJECT (monitor),
+	g_signal_emit (monitor,
 			 signals[VOLUME_MOUNTED], 0,
 			 volume);
 }
@@ -839,7 +839,7 @@ mount_volume_deactivate (NautilusVolumeMonitor *monitor, NautilusVolume *volume)
 	default:
 	}
 
-	g_signal_emit (G_OBJECT (monitor),
+	g_signal_emit (monitor,
 			 signals[VOLUME_UNMOUNTED], 0,
 			 volume);
 }
@@ -1387,7 +1387,7 @@ display_mount_error (gpointer callback_data)
 		for (p = monitor->details->mounts; p != NULL; p = p->next) {
 			volume = (NautilusVolume *)p->data;
 			if (strcmp (volume->mount_path, info->mount_point) == 0) {
-				g_signal_emit (G_OBJECT (monitor), signals[VOLUME_UNMOUNT_FAILED], 0, volume);
+				g_signal_emit (monitor, signals[VOLUME_UNMOUNT_FAILED], 0, volume);
 				break;
 			}
 		}
@@ -1568,7 +1568,7 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
                command = find_command (UMOUNT_COMMAND);
                command_string = g_strconcat (command, UMOUNT_SEPARATOR, name, NULL);
                if (volume != NULL) {
-			g_signal_emit (G_OBJECT (monitor), signals[VOLUME_UNMOUNT_STARTED], 0, volume);
+			g_signal_emit (monitor, signals[VOLUME_UNMOUNT_STARTED], 0, volume);
 		}
        }
 

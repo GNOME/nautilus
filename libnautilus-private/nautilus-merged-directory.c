@@ -500,7 +500,7 @@ merged_add_real_directory (NautilusMergedDirectory *merged,
 	merged->details->directories_not_done_loading = g_list_prepend
 		(merged->details->directories_not_done_loading, real_directory);
 
-	g_signal_connect (G_OBJECT (real_directory),
+	g_signal_connect (real_directory,
 			    "done_loading",
 			    G_CALLBACK (done_loading_callback),
 			    merged);
@@ -515,11 +515,11 @@ merged_add_real_directory (NautilusMergedDirectory *merged,
 			      real_directory);
 	/* FIXME bugzilla.gnome.org 42541: Do we need to add the directory to callbacks too? */
 
-	g_signal_connect (G_OBJECT (real_directory),
+	g_signal_connect (real_directory,
 			    "files_added",
 			    G_CALLBACK (forward_files_added_cover),
 			    merged);
-	g_signal_connect (G_OBJECT (real_directory),
+	g_signal_connect (real_directory,
 			    "files_changed",
 			    G_CALLBACK (forward_files_changed_cover),
 			    merged);
@@ -538,7 +538,7 @@ nautilus_merged_directory_add_real_directory (NautilusMergedDirectory *merged,
 		return;
 	}
 
-	g_signal_emit (G_OBJECT (merged),
+	g_signal_emit (merged,
 			 signals[ADD_REAL_DIRECTORY], 0,
 			 real_directory);
 }
@@ -607,7 +607,7 @@ nautilus_merged_directory_remove_real_directory (NautilusMergedDirectory *merged
 		return;
 	}
 
-	g_signal_emit (G_OBJECT (merged),
+	g_signal_emit (merged,
 			 signals[REMOVE_REAL_DIRECTORY], 0,
 			 real_directory);
 }

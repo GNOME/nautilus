@@ -300,16 +300,16 @@ nautilus_history_view_init (NautilusHistoryView *view)
 	g_object_ref (G_OBJECT (list));
 	view->list = list;
 
-	g_signal_connect (G_OBJECT (list),
+	g_signal_connect (list,
 			    "button-press-event",
 			    button_press_callback,
 			    view);
-	g_signal_connect (G_OBJECT (list),
+	g_signal_connect (list,
 			    "button-release-event",
 			    button_release_callback,
 			    view);
 
-	g_signal_connect (G_OBJECT (view),
+	g_signal_connect (view,
 			    "history_changed", 
 			    history_changed_callback,
 			    view);

@@ -78,7 +78,7 @@ make_obj (BonoboGenericFactory * Factory, const char *goad_id, void *closure)
 
 	if (retval) {
 		object_count++;
-		g_signal_connect (G_OBJECT (retval), "destroy",
+		g_signal_connect (retval, "destroy",
 				    do_destroy, NULL);
 	}
 

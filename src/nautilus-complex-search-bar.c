@@ -103,7 +103,7 @@ search_bar_criterion_type_changed_callback (GObject *old_criterion_object,
 	new_type = GPOINTER_TO_INT (g_object_get_data (old_criterion_object, "type"));
 	new_criterion = nautilus_search_bar_criterion_new_with_type (new_type, 
 								     bar);
-	g_signal_connect (G_OBJECT (new_criterion),
+	g_signal_connect (new_criterion,
 			    "criterion_type_changed",
 			    G_CALLBACK (search_bar_criterion_type_changed_callback),
 			    bar);
@@ -178,7 +178,7 @@ nautilus_complex_search_bar_init (NautilusComplexSearchBar *bar)
 
 	file_name_criterion = nautilus_search_bar_criterion_first_new (bar);
 
-	g_signal_connect (G_OBJECT (file_name_criterion),
+	g_signal_connect (file_name_criterion,
 			    "criterion_type_changed",
 			    G_CALLBACK (search_bar_criterion_type_changed_callback),
 			    bar);
@@ -197,13 +197,13 @@ nautilus_complex_search_bar_init (NautilusComplexSearchBar *bar)
 
 	hbox = gtk_hwrap_box_new (FALSE);
 
-	g_signal_connect (G_OBJECT (hbox),
+	g_signal_connect (hbox,
 			    "need_reallocation",
 			    G_CALLBACK (queue_search_bar_resize_callback),
 			    bar);
 
 	bar->details->more_options = gtk_button_new_with_label (_("More Options"));
-	g_signal_connect (G_OBJECT (bar->details->more_options), "clicked",
+	g_signal_connect (bar->details->more_options, "clicked",
 			    G_CALLBACK (more_options_callback), bar);
 				
 				
@@ -213,7 +213,7 @@ nautilus_complex_search_bar_init (NautilusComplexSearchBar *bar)
 	gtk_widget_show (bar->details->more_options);
 
 	bar->details->fewer_options = gtk_button_new_with_label (_("Fewer Options"));
-	g_signal_connect (G_OBJECT (bar->details->fewer_options), "clicked",
+	g_signal_connect (bar->details->fewer_options, "clicked",
 			    G_CALLBACK (fewer_options_callback), bar);
 
 	gtk_wrap_box_pack (GTK_WRAP_BOX (hbox),
@@ -502,7 +502,7 @@ more_options_callback (GtkObject *object,
 	last_criterion = (NautilusSearchBarCriterion *)((g_slist_last (list))->data);
 	criterion = nautilus_search_bar_criterion_next_new (last_criterion->details->type,
 							    bar);
-	g_signal_connect (G_OBJECT (criterion),
+	g_signal_connect (criterion,
 			    "criterion_type_changed",
 			    G_CALLBACK (search_bar_criterion_type_changed_callback),
 			    bar);

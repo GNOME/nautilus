@@ -158,7 +158,7 @@ nautilus_hardware_view_init (NautilusHardwareView *hardware_view)
 
 	hardware_view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (hardware_view));
 
-	g_signal_connect (G_OBJECT (hardware_view->details->nautilus_view), 
+	g_signal_connect (hardware_view->details->nautilus_view, 
 			    "load_location",
 			    G_CALLBACK (hardware_view_load_location_callback), 
 			    hardware_view);

@@ -155,7 +155,7 @@ void
 nautilus_adapter_embed_strategy_activate (NautilusAdapterEmbedStrategy *strategy,
 					  Bonobo_UIContainer            ui_container)
 {
-	g_signal_emit (G_OBJECT (strategy),
+	g_signal_emit (strategy,
 			 signals[ACTIVATE], 0,
 			 ui_container);
 }
@@ -163,7 +163,7 @@ nautilus_adapter_embed_strategy_activate (NautilusAdapterEmbedStrategy *strategy
 void 
 nautilus_adapter_embed_strategy_deactivate (NautilusAdapterEmbedStrategy *strategy)
 {
-	g_signal_emit (G_OBJECT (strategy),
+	g_signal_emit (strategy,
 			 signals[DEACTIVATE], 0);
 }
 
@@ -171,7 +171,7 @@ void
 nautilus_adapter_embed_strategy_emit_open_location (NautilusAdapterEmbedStrategy *strategy,
 						    const char                   *uri)
 {
-	g_signal_emit (G_OBJECT (strategy),
+	g_signal_emit (strategy,
 			 signals[OPEN_LOCATION], 0,
 			 uri);
 }

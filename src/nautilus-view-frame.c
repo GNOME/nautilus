@@ -258,7 +258,7 @@ static void
 emit_zoom_parameters_changed (NautilusViewFrame *view)
 {
 	if (view->details->zoomable_frame != NULL) {
-		g_signal_emit (G_OBJECT (view), signals[ZOOM_PARAMETERS_CHANGED], 0);
+		g_signal_emit (view, signals[ZOOM_PARAMETERS_CHANGED], 0);
 	}
 }
 
@@ -271,7 +271,7 @@ view_frame_activated (NautilusViewFrame *view)
 	switch (view->details->state) {
 	case VIEW_FRAME_EMPTY:
 		view->details->state = VIEW_FRAME_NO_LOCATION;
-		g_signal_emit (G_OBJECT (view), signals[VIEW_LOADED], 0);
+		g_signal_emit (view, signals[VIEW_LOADED], 0);
 		emit_zoom_parameters_changed (view);
 		send_history (view);
 		return;
@@ -328,7 +328,7 @@ view_frame_underway (NautilusViewFrame *view)
 	case VIEW_FRAME_WAITING:
 	case VIEW_FRAME_LOADED:
 		view->details->state = VIEW_FRAME_UNDERWAY;
-		g_signal_emit (G_OBJECT (view), signals[LOAD_UNDERWAY], 0);
+		g_signal_emit (view, signals[LOAD_UNDERWAY], 0);
 		return;
 	case VIEW_FRAME_UNDERWAY:
 	case VIEW_FRAME_FAILED:
@@ -387,7 +387,7 @@ view_frame_loaded (NautilusViewFrame *view)
 		/* fall through */
 	case VIEW_FRAME_UNDERWAY:
 		view->details->state = VIEW_FRAME_LOADED;
-		g_signal_emit (G_OBJECT (view), signals[LOAD_COMPLETE], 0);
+		g_signal_emit (view, signals[LOAD_COMPLETE], 0);
 		return;
 	case VIEW_FRAME_LOADED:
 	case VIEW_FRAME_FAILED:
@@ -412,7 +412,7 @@ view_frame_failed (NautilusViewFrame *view)
 		view->details->state = VIEW_FRAME_FAILED;
 		stop_activation (view);
 		destroy_view (view);
-		g_signal_emit (G_OBJECT (view), signals[FAILED], 0);
+		g_signal_emit (view, signals[FAILED], 0);
 		return;
 	case VIEW_FRAME_FAILED:
 		return;
@@ -460,7 +460,7 @@ static void
 emit_zoom_level_changed_callback (gpointer data,
 				  gpointer callback_data)
 {
-	g_signal_emit (G_OBJECT (data),
+	g_signal_emit (data,
 			 signals[ZOOM_LEVEL_CHANGED], 0,
 			 * (float *) callback_data);
 }
@@ -732,7 +732,7 @@ nautilus_view_frame_load_location (NautilusViewFrame *view,
 
 	g_free (view->details->title);
 	view->details->title = NULL;
-	g_signal_emit (G_OBJECT (view), signals[TITLE_CHANGED], 0);
+	g_signal_emit (view, signals[TITLE_CHANGED], 0);
 
 	view_frame_wait (view);
 	
@@ -974,7 +974,7 @@ nautilus_view_frame_open_location_in_this_window (NautilusViewFrame *view,
 	}
 
 	view_frame_wait_is_over (view);
-	g_signal_emit (G_OBJECT (view),
+	g_signal_emit (view,
 			 signals[OPEN_LOCATION_IN_THIS_WINDOW], 0, location);
 }
 
@@ -989,7 +989,7 @@ nautilus_view_frame_open_location_prefer_existing_window (NautilusViewFrame *vie
 	}
 
 	view_frame_wait_is_over (view);
-	g_signal_emit (G_OBJECT (view),
+	g_signal_emit (view,
 			 signals[OPEN_LOCATION_PREFER_EXISTING_WINDOW], 0, location);
 }
 
@@ -1005,7 +1005,7 @@ nautilus_view_frame_open_location_force_new_window (NautilusViewFrame *view,
 	}
 
 	view_frame_wait_is_over (view);
-	g_signal_emit (G_OBJECT (view),
+	g_signal_emit (view,
 			 signals[OPEN_LOCATION_FORCE_NEW_WINDOW], 0,
 			 location, selection);
 }
@@ -1026,7 +1026,7 @@ nautilus_view_frame_report_location_change (NautilusViewFrame *view,
 	view->details->title = g_strdup (title);
 
 	view_frame_wait_is_over (view);
-	g_signal_emit (G_OBJECT (view),
+	g_signal_emit (view,
 			 signals[REPORT_LOCATION_CHANGE], 0,
 			 location, selection, title);
 }
@@ -1048,7 +1048,7 @@ nautilus_view_frame_report_redirect (NautilusViewFrame *view,
 	view->details->title = g_strdup (title);
 
 	view_frame_wait_is_over (view);
-	g_signal_emit (G_OBJECT (view),
+	g_signal_emit (view,
 			 signals[REPORT_REDIRECT], 0,
 			 from_location, to_location, selection, title);
 }
@@ -1064,7 +1064,7 @@ nautilus_view_frame_report_selection_change (NautilusViewFrame *view,
 	}
 
 	view_frame_wait_is_over (view);
-	g_signal_emit (G_OBJECT (view),
+	g_signal_emit (view,
 			 signals[CHANGE_SELECTION], 0, selection);
 }
 
@@ -1079,7 +1079,7 @@ nautilus_view_frame_report_status (NautilusViewFrame *view,
 	}
 
 	view_frame_wait_is_over (view);
-	g_signal_emit (G_OBJECT (view),
+	g_signal_emit (view,
 			 signals[CHANGE_STATUS], 0, status);
 }
 
@@ -1102,7 +1102,7 @@ nautilus_view_frame_report_load_progress (NautilusViewFrame *view,
 	}
 
 	view_frame_underway (view);
-	g_signal_emit (G_OBJECT (view),
+	g_signal_emit (view,
 			 signals[LOAD_PROGRESS_CHANGED], 0);
 }
 
@@ -1137,7 +1137,7 @@ nautilus_view_frame_go_back (NautilusViewFrame *view)
 {
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (view));
 
-	g_signal_emit (G_OBJECT (view), signals[GO_BACK], 0);
+	g_signal_emit (view, signals[GO_BACK], 0);
 }
 
 void
@@ -1162,7 +1162,7 @@ nautilus_view_frame_set_title (NautilusViewFrame *view,
 
 	view_frame_wait_is_over (view);
 	if (changed) {
-		g_signal_emit (G_OBJECT (view), signals[TITLE_CHANGED], 0);
+		g_signal_emit (view, signals[TITLE_CHANGED], 0);
 	}
 }
 
@@ -1217,7 +1217,7 @@ get_history_list (NautilusViewFrame *view)
 	Nautilus_History *history_list;
 	
 	history_list = NULL;
-	g_signal_emit (G_OBJECT (view), 
+	g_signal_emit (view, 
   			 signals[GET_HISTORY_LIST], 0,
 			 &history_list);
   	return history_list;

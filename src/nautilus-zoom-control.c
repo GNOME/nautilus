@@ -474,7 +474,7 @@ zoom_menu_callback (GtkMenuItem *item, gpointer callback_data)
 
 	/* if we can zoom */
 	if (can_zoom) {	
-		g_signal_emit (G_OBJECT (zoom_control), signals[ZOOM_TO_LEVEL], 0, zoom_level);
+		g_signal_emit (zoom_control, signals[ZOOM_TO_LEVEL], 0, zoom_level);
 	}
 }
 
@@ -515,7 +515,7 @@ create_zoom_menu_item (GtkMenu *menu, GtkWidget *widget, float zoom_level,
 					zoom_level == zoom_control->details->zoom_level);
 	
 	g_object_set_data_full (G_OBJECT (menu_item), "zoom_level", zoom_level_ptr, g_free);
-	g_signal_connect (G_OBJECT (menu_item), "activate",
+	g_signal_connect (menu_item, "activate",
 			    G_CALLBACK (zoom_menu_callback),
 			    zoom_control);
 
@@ -566,11 +566,11 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget, GdkEventButton *eve
  	}
 	
 	if ((event->x < (width / 3)) && nautilus_zoom_control_can_zoom_out (zoom_control)) {
-		g_signal_emit (G_OBJECT (widget), signals[ZOOM_OUT], 0);			
+		g_signal_emit (widget, signals[ZOOM_OUT], 0);			
 	} else if ((event->x > ((2 * width) / 3)) && nautilus_zoom_control_can_zoom_in (zoom_control)) {
-		g_signal_emit (G_OBJECT (widget), signals[ZOOM_IN], 0);			
+		g_signal_emit (widget, signals[ZOOM_IN], 0);			
 	} else if ((event->x >= (center - (width >> 3))) && (event->x <= (center + (width >> 3)))) {
-		g_signal_emit (G_OBJECT (widget), signals[ZOOM_TO_FIT], 0);			
+		g_signal_emit (widget, signals[ZOOM_TO_FIT], 0);			
 	}
 
 	/*

@@ -223,7 +223,7 @@ notes_load_metainfo (Notes *notes)
 	
         g_list_free (attributes);
         
-	g_signal_connect (G_OBJECT (notes->file),
+	g_signal_connect (notes->file,
 			    "changed",
 			    G_CALLBACK (load_note_text_from_metadata),
 			    notes);
@@ -376,10 +376,10 @@ make_notes_view (const char *iid, gpointer callback_data)
         background = eel_get_widget_background (notes->note_text_field);
         eel_background_set_color (background, NOTES_DEFAULT_BACKGROUND_COLOR);
 
-	g_signal_connect (G_OBJECT (notes->note_text_field), "focus_out_event",
+	g_signal_connect (notes->note_text_field, "focus_out_event",
       	              	    G_CALLBACK (on_text_field_focus_out_event),
                             notes);
-	g_signal_connect (G_OBJECT (notes->note_text_field), "changed",
+	g_signal_connect (notes->note_text_field, "changed",
       	              	    G_CALLBACK (on_changed),
                             notes);
      
@@ -387,7 +387,7 @@ make_notes_view (const char *iid, gpointer callback_data)
         
 	/* Create CORBA object. */
         notes->view = nautilus_view_new (vbox);
-        g_signal_connect (G_OBJECT (notes->view), "destroy", do_destroy, notes);
+        g_signal_connect (notes->view, "destroy", do_destroy, notes);
 
 	/* allocate a property bag to reflect the TAB_IMAGE property */
 	notes->property_bag = bonobo_property_bag_new (get_bonobo_properties,  set_bonobo_properties, notes);
@@ -397,7 +397,7 @@ make_notes_view (const char *iid, gpointer callback_data)
 				 "image indicating that a note is present", 0);
         
         /* handle events */
-        g_signal_connect (G_OBJECT (notes->view), "load_location",
+        g_signal_connect (notes->view, "load_location",
                             notes_load_location, notes);
         
         /* handle selections */
