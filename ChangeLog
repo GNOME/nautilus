@@ -1,3 +1,23 @@
+2003-12-12  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-file-operations.[ch]:
+	New function nautilus_file_operations_new_file.
+	
+	* libnautilus-private/nautilus-file-utilities.[ch]:
+	New template directory functions
+	
+	* src/nautilus-navigation-window-ui.xml:
+	* src/nautilus-spatial-window-ui.xml:
+	* src/nautilus-window-menus.c:
+	Add Templates in location menu
+	
+	* src/file-manager/fm-directory-view.[ch]:
+	* src/file-manager/nautilus-directory-view-ui.xml:
+	Implement the templates menu.
+	Fix issue that affected create new folder too,
+	sometimes the file has already been added before
+	we get the done callback.
+
 2003-12-12  Christian Neumair  <chris@gnome-de.org>
 
 	* components/Makefile.am

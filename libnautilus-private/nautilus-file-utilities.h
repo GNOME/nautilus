@@ -43,6 +43,10 @@ gboolean nautilus_is_desktop_directory_escaped       (char *escaped_dir);
 char *   nautilus_get_gmc_desktop_directory          (void);
 char *   nautilus_get_pixmap_directory               (void);
 
+char *   nautilus_get_templates_directory            (void);
+char *   nautilus_get_templates_directory_uri        (void);
+void     nautilus_create_templates_directory         (void);
+
 /* This function returns something that needs to be freed with g_free,
  * is not NULL, but is not garaunteed to exist */
 char *   nautilus_get_desktop_directory_uri_no_create (void);

@@ -2089,7 +2089,7 @@ new_folder_transfer_callback (GnomeVFSAsyncHandle *handle,
 		case GNOME_VFS_XFER_PROGRESS_STATUS_OK:
 			nautilus_file_changes_consume_changes (TRUE);
 			(* state->done_callback) (progress_info->target_name, state->data);
-			return 0;
+			return 1;
 	
 		case GNOME_VFS_XFER_PROGRESS_STATUS_DUPLICATE:
 	
@@ -2162,6 +2162,208 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 	      		      sync_transfer_callback, NULL);
 
 	gnome_vfs_uri_list_free (target_uri_list);
+	gnome_vfs_uri_unref (parent_uri);
+}
+
+typedef struct {
+	GnomeVFSAsyncHandle *handle;
+	void (* done_callback)(const char *new_folder_uri, gpointer data);
+	gpointer data;
+	GtkWidget *parent_view;
+	char *empty_file;
+	GHashTable *debuting_uris;
+} NewFileTransferState;
+
+
+static int
+handle_new_file_vfs_error (const GnomeVFSXferProgressInfo *progress_info, NewFileTransferState *state)
+{
+	const char *error_string;
+	char *error_string_to_free;
+
+	error_string_to_free = NULL;
+
+	if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED) {
+		error_string = _("You do not have permissions to write to the destination.");
+	} else if (progress_info->vfs_status == GNOME_VFS_ERROR_NO_SPACE) {
+		error_string = _("There is no space on the destination.");
+	} else {
+		error_string = g_strdup_printf (_("Error \"%s\" creating new document."), 
+						gnome_vfs_result_to_string (progress_info->vfs_status));
+		error_string_to_free = (char *)error_string;
+	}
+	
+	eel_show_error_dialog (_("Error creating new document."), error_string, _("Error Creating New Document"),
+			       GTK_WINDOW (gtk_widget_get_toplevel (state->parent_view)));
+	
+	g_free (error_string_to_free);
+	
+	return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
+}
+
+static void
+get_new_file_uri (gpointer       key,
+		  gpointer       value,
+		  gpointer       user_data)
+{
+	char *uri;
+	char **uri_out;
+
+	uri = key;
+	uri_out = user_data;
+
+	*uri_out = uri;
+}
+
+
+static int
+new_file_transfer_callback (GnomeVFSAsyncHandle *handle,
+			      GnomeVFSXferProgressInfo *progress_info,
+			      gpointer data)
+{
+	NewFileTransferState *state;
+	char *temp_string;
+	char *uri;
+	
+	state = (NewFileTransferState *) data;
+
+	switch (progress_info->phase) {
+
+	case GNOME_VFS_XFER_PHASE_COMPLETED:
+		uri = NULL;
+		g_hash_table_foreach (state->debuting_uris,
+				      get_new_file_uri, &uri);
+
+		(* state->done_callback) (uri, state->data);
+		/* uri is owned by hashtable, don't free */
+
+		if (state->empty_file != NULL) {
+			unlink (state->empty_file);
+			g_free (state->empty_file);
+		}
+		eel_remove_weak_pointer (&state->parent_view);
+		g_hash_table_destroy (state->debuting_uris);
+		g_free (state);
+		return 0;
+
+	default:
+		switch (progress_info->status) {
+		case GNOME_VFS_XFER_PROGRESS_STATUS_OK:
+			nautilus_file_changes_consume_changes (TRUE);
+			return 1;
+	
+		case GNOME_VFS_XFER_PROGRESS_STATUS_DUPLICATE:
+	
+			temp_string = progress_info->duplicate_name;
+	
+			if (progress_info->vfs_status == GNOME_VFS_ERROR_NAME_TOO_LONG) {
+				/* special case an 8.3 file system */
+				progress_info->duplicate_name = g_strndup (temp_string, 8);
+				progress_info->duplicate_name[8] = '\0';
+				g_free (temp_string);
+				temp_string = progress_info->duplicate_name;
+				progress_info->duplicate_name = g_strdup_printf
+					("%s.%d", 
+					 progress_info->duplicate_name,
+					 progress_info->duplicate_count);
+			} else {
+				progress_info->duplicate_name = g_strdup_printf
+					("%s%%20%d", 
+					 progress_info->duplicate_name,
+					 progress_info->duplicate_count);
+			}
+			g_free (temp_string);
+			return GNOME_VFS_XFER_ERROR_ACTION_SKIP;
+	
+		case GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR:
+			return handle_new_file_vfs_error (progress_info, state);
+		
+	
+
+		default:
+			g_warning (_("Unknown GnomeVFSXferProgressStatus %d"),
+				   progress_info->status);
+			return 0;
+		}
+	}
+}
+
+void 
+nautilus_file_operations_new_file (GtkWidget *parent_view, 
+				   const char *parent_dir,
+				   const char *source_uri_text,
+				   void (*done_callback) (const char *, gpointer),
+				   gpointer data)
+{
+	GList *target_uri_list;
+	GList *source_uri_list;
+	GnomeVFSURI *target_uri, *parent_uri, *source_uri;
+	char *filename;
+	NewFileTransferState *state;
+	SyncTransferInfo *sync_transfer_info;
+
+	state = g_new (NewFileTransferState, 1);
+	state->done_callback = done_callback;
+	state->data = data;
+	state->parent_view = parent_view;
+	state->empty_file = NULL;
+
+	/* pass in the target directory and the new folder name as a destination URI */
+	parent_uri = gnome_vfs_uri_new (parent_dir);
+
+	if (source_uri_text != NULL) {
+		source_uri = gnome_vfs_uri_new (source_uri_text);
+		if (source_uri == NULL) {
+			(*done_callback) (NULL, data);
+			g_free (state);
+			return;
+		}
+		filename = gnome_vfs_uri_extract_short_path_name (source_uri);
+		target_uri = gnome_vfs_uri_append_string (parent_uri, filename);
+		g_free (filename);
+	} else {
+		char empty_file[] = "/tmp/emptyXXXXXX";
+		char *empty_uri;
+		int fd;
+
+		fd = mkstemp (empty_file);
+		if (fd == -1) {
+			(*done_callback) (NULL, data);
+			g_free (state);
+		}
+		close (fd);
+
+		empty_uri = gnome_vfs_get_uri_from_local_path (empty_file);
+		source_uri = gnome_vfs_uri_new (empty_uri);
+		g_free (empty_uri);
+		
+		state->empty_file = g_strdup (empty_file);
+		
+		filename = g_filename_from_utf8 (_("new file"), -1, NULL, NULL, NULL);
+		target_uri = gnome_vfs_uri_append_file_name (parent_uri, filename);
+		g_free (filename);
+	}
+	
+	state->debuting_uris = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	eel_add_weak_pointer (&state->parent_view);
+
+	target_uri_list = g_list_prepend (NULL, target_uri);
+	source_uri_list = g_list_prepend (NULL, source_uri);
+
+	sync_transfer_info = g_new (SyncTransferInfo, 1);
+	sync_transfer_info->iterator = NULL;
+	sync_transfer_info->debuting_uris = state->debuting_uris;
+	
+	gnome_vfs_async_xfer (&state->handle, source_uri_list, target_uri_list,
+	      		      GNOME_VFS_XFER_USE_UNIQUE_NAMES,
+	      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
+	      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
+			      GNOME_VFS_PRIORITY_DEFAULT,
+			      new_file_transfer_callback, state,
+	      		      sync_transfer_callback, sync_transfer_info);
+
+	gnome_vfs_uri_list_free (target_uri_list);
+	gnome_vfs_uri_list_free (source_uri_list);
 	gnome_vfs_uri_unref (parent_uri);
 }
 

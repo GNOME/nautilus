@@ -370,6 +370,8 @@ gboolean            fm_directory_view_should_show_file                 (FMDirect
 gboolean	    fm_directory_view_should_sort_directories_first    (FMDirectoryView  *view);
 void                fm_directory_view_update_menus                     (FMDirectoryView  *view);
 void                fm_directory_view_new_folder                       (FMDirectoryView  *view);
+void                fm_directory_view_new_file                         (FMDirectoryView  *view,
+									NautilusFile     *source);
 void                fm_directory_view_ignore_hidden_file_preferences   (FMDirectoryView  *view);
 
 #endif /* FM_DIRECTORY_VIEW_H */

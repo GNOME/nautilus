@@ -18,6 +18,9 @@
 	<cmd name="New Folder"
          _label="Create _Folder"
 	 _tip="Create a new empty folder inside this folder"/>
+	<cmd name="New Empty File"
+         _label="_Empty File"
+	 _tip="Create a new empty file inside this folder"/>
         <cmd name="New Launcher"
          _label="Create L_auncher"
          _tip="Create a new launcher"/>
@@ -101,6 +104,16 @@
 			<menuitem name="New Folder"
 			  	  accel="*Shift**Control*n"
 				  verb="New Folder"/>
+			<submenu name="New Documents"
+				 _label="Create _Document">
+			         <menuitem name="No Templates"
+                                       _label="No templates Installed"
+                                       sensitive="0"/>
+				 <placeholder name="New Documents Placeholder" delimit="none"/>
+				 <separator name="After New Documents"/>
+				 <menuitem name="New Empty File" 
+				 	   verb="New Empty File"/>
+			</submenu>
 			<menuitem name="New Launcher"
 				  pixtype="stock" pixname="gtk-new"
 				  verb="New Launcher"/>
@@ -209,6 +222,16 @@
 				 pixtype="stock" pixname="gtk-new"
 				 verb="New Launcher"/>
 			</placeholder>
+			<submenu name="New Documents"
+				 _label="Create _Document">
+			         <menuitem name="No Templates"
+                                       _label="No templates Installed"
+                                       sensitive="0"/>
+				 <placeholder name="New Documents Placeholder" delimit="none"/>
+				 <separator name="After New Documents"/>
+				 <menuitem name="New Empty File" 
+				 	   verb="New Empty File"/>
+			</submenu>
                         <submenu name="Scripts"
 				 _label="_Scripts"
 				 _tip="Run or manage scripts from ~/Nautilus/scripts"
