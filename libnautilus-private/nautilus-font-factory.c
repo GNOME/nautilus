@@ -31,6 +31,8 @@
 #include <pthread.h>
 #include <unistd.h>
 
+#include <libgnome/gnome-i18n.h>
+
 #define NAUTILUS_TYPE_FONT_FACTORY \
 	(nautilus_font_factory_get_type ())
 #define NAUTILUS_FONT_FACTORY(obj) \
@@ -189,7 +191,7 @@ font_hash_node_lookup_with_insertion (const char *name)
 	node = font_hash_node_lookup (name);
 
 	if (node == NULL) {
-		font = gdk_font_load (name);
+		font = gdk_fontset_load (name);
 		
 		if (font != NULL) {
 			node = font_hash_node_alloc (name);
@@ -316,7 +318,7 @@ GdkFont *
 nautilus_font_factory_get_fallback_font (void)
 {
 	if (fixed_font == NULL) {
-		fixed_font = gdk_font_load ("fixed");
+		fixed_font = gdk_fontset_load (_("fixed"));
 		g_assert (fixed_font != NULL);
 		g_atexit (unref_fixed_font);
 	}

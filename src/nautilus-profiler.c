@@ -35,6 +35,7 @@
 
 #include <glib.h>
 
+#include <libgnome/gnome-i18n.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtktext.h>
@@ -153,7 +154,8 @@ window_print_button_callback (GtkWidget *widget, gpointer callback_data)
 
 	g_return_if_fail (dump_dialog != NULL);
 
-	g_print ("print\n");
+	/* Implement me */
+	g_assert_not_reached ();
 }
 
 static void
@@ -163,7 +165,8 @@ window_save_button_callback (GtkWidget *widget, gpointer callback_data)
 
 	g_return_if_fail (dump_dialog != NULL);
 
-	g_print ("save\n");
+	/* Implement me */
+	g_assert_not_reached ();
 }
 
 static DumpDialog *
@@ -191,8 +194,8 @@ dump_dialog_new (const char *title)
 	gtk_text_set_word_wrap (GTK_TEXT (dump_dialog->scrolled_text->text), FALSE);
 	gtk_text_set_line_wrap (GTK_TEXT (dump_dialog->scrolled_text->text), FALSE);
 
-	print_button = gtk_button_new_with_label ("Print");
-	save_button = gtk_button_new_with_label ("Save");
+	print_button = gtk_button_new_with_label (_("Print"));
+	save_button = gtk_button_new_with_label (_("Save"));
 
 	gtk_widget_set_sensitive (print_button, FALSE);
 	gtk_widget_set_sensitive (save_button, FALSE);
@@ -232,13 +235,13 @@ dump_dialog_show (const char *dump_data, const char *title)
 	g_return_if_fail (dump_data != NULL);
 
 	if (dump_dialog == NULL) {
-		dump_dialog = dump_dialog_new ("Profile Dump");
+		dump_dialog = dump_dialog_new (_("Profile Dump"));
 	}
 
 	gtk_text_forward_delete (GTK_TEXT (dump_dialog->scrolled_text->text),
 				 gtk_text_get_length (GTK_TEXT (dump_dialog->scrolled_text->text)));
 	
-	font = gdk_font_load ("fixed");
+	font = gdk_fontset_load (_("fixed"));
 
 	gtk_text_freeze (GTK_TEXT (dump_dialog->scrolled_text->text));
 

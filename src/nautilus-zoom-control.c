@@ -325,7 +325,7 @@ void draw_number (GtkWidget *widget, GdkRectangle *box)
 			x += char_width;
 		}
 	} else {
-		label_font = gdk_font_load("-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*");
+              label_font = gdk_fontset_load (_("-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"));
 				
 		x = num_h_offset + ((widget->allocation.width - gdk_string_width(label_font, buffer)) >> 1);  
 		

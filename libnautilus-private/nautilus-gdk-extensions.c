@@ -585,7 +585,7 @@ nautilus_get_largest_fitting_font (const char *text_to_format, int width, const 
 		}
 		
 		font_name = g_strdup_printf (font_template, font_sizes[font_index]);
-		candidate_font = gdk_font_load (font_name);
+		candidate_font = gdk_fontset_load (font_name);
 		g_free (font_name);
 
 		if (candidate_font != NULL) {
@@ -737,7 +737,7 @@ nautilus_gdk_font_get_bold (const GdkFont *plain_font)
 		return NULL;
 	}
 	
-	result = gdk_font_load (bold_name);
+	result = gdk_fontset_load (bold_name);
 	g_free (bold_name);
 
 	return result;

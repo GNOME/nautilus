@@ -2239,7 +2239,7 @@ embed_text (GdkPixbuf *pixbuf_without_text,
 			/* FIXME bugzilla.eazel.com 1102: Embedded text should use preferences to determine
 			 * the font it uses
 			 */
-			font = gdk_font_load (_("-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*"));
+			font = gdk_fontset_load (_("-*-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*"));
 			g_return_val_if_fail (font != NULL, NULL);
 		}
 		

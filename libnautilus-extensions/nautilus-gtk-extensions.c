@@ -1041,7 +1041,7 @@ nautilus_gtk_widget_set_font_by_name (GtkWidget *widget, const char *font_name)
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 	g_return_if_fail (font_name != NULL);
 	
-	font = gdk_font_load (font_name);
+	font = gdk_fontset_load (font_name);
 	nautilus_gtk_widget_set_font (widget, font);
 	gdk_font_unref (font);
 }

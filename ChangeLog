@@ -1,3 +1,28 @@
+2000-10-18  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* libnautilus-extensions/nautilus-font-factory.c:
+	(font_hash_node_lookup_with_insertion),
+	(nautilus_font_factory_get_fallback_font):
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(nautilus_get_largest_fitting_font), (nautilus_gdk_font_get_bold):
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_gtk_widget_set_font_by_name):
+	* libnautilus-extensions/nautilus-icon-factory.c: (embed_text):
+	* src/nautilus-zoom-control.c: (draw_number):
+	Use gdk_fontset_load() instead of gdk_font_load() to make i18n
+	work better.  Also marked some hard-coded fonts fot localization.
+	There is still an open bug on writing useful comments about these
+	for the localizers.  Fixes bugs 3143 and 3144.
+
+	Thanks to Yukihiro Nakai <ynakai@redhat.com> for pointing these
+	problems out providing patches to fix them.
+	
+	* src/nautilus-profiler.c: (window_print_button_callback),
+	(window_save_button_callback), (dump_dialog_new),
+	(dump_dialog_show):
+	Same as above plus mark some strings for localization and add
+	assertions to currently unimplemented functions.
+	
 2000-10-18  Maciej Stachowiak  <mjs@eazel.com>
 
 	* ChangeLog: rolled over to ChangeLog-20001018.
