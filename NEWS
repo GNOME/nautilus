@@ -1,4 +1,11 @@
-This is nautilus 2.9.91, the file manager for the Gnome 2 desktop.
+Major changes in 2.9.92 are:
+* Avoid doing i/o to tree root nodes before they are used.
+  This means we don't get authentication callbacks.
+* Correct handling of startup notification
+* Fix crashers in desktop icon context menus when unmounting volumes
+* Make property page for home icon on desktop show the right size
+* Prevent the progress dialog from displaying strange ETAs
+* Make backspace key open parent folder in list view
 
 Major changes in 2.9.91 are:
 * Fix some crashes
