@@ -43,6 +43,7 @@
 
 struct _NautilusServicesContentViewDetails {
 	gchar                     *uri;
+	gchar			  *auth_token;
 	NautilusContentViewFrame  *view_frame;
 	GtkWidget		  *form;
 	
@@ -108,7 +109,7 @@ entry_changed_cb (GtkWidget *entry, NautilusServicesContentView *view)
    it will optionally work asynchronously.  Return NULL if we get an error */
 
 static ghttp_request *
-make_http_post_request(gchar *uri, gchar *post_body)
+make_http_post_request(gchar *uri, gchar *post_body, gchar *auth_token)
 {
     ghttp_request *request = NULL;
     gchar *proxy = g_getenv("http_proxy");
@@ -133,6 +134,10 @@ make_http_post_request(gchar *uri, gchar *post_body)
     ghttp_set_header(request, http_hdr_Host, SERVICE_DOMAIN_NAME);
     /* FIXME: user agent version and OS should be substituted on the fly */
     ghttp_set_header(request, http_hdr_User_Agent, "Nautilus/0.1 (Linux)");   
+    
+    if (auth_token)
+    	ghttp_set_header(request, "Cookie", auth_token);   
+   
     ghttp_set_header(request, http_hdr_Connection, "close");
  
     ghttp_set_body(request, post_body, strlen(post_body));
@@ -220,8 +225,7 @@ gather_config_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 	/* FIXME: need to url-encode the arguments here */
 	uri = g_strdup_printf("http://%s/set.pl", SERVICE_DOMAIN_NAME);
 	
-	/* FIXME:  we need to pass in the token and make make_http_post_request pass it in the cookie */
-	request = make_http_post_request(uri, config_string);
+	request = make_http_post_request(uri, config_string, view->details->auth_token);
 	response_str = ghttp_get_body(request);
 	g_free(uri);
 	ghttp_request_destroy(request);
@@ -279,11 +283,14 @@ register_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 	body = g_strdup_printf("email=%s&pwd=%s", email, password);
 	uri = g_strdup_printf("http://%s/member/new.pl", SERVICE_DOMAIN_NAME);
 	 
-	request = make_http_post_request(uri, body);
+	request = make_http_post_request(uri, body, view->details->auth_token);
 	response_str = ghttp_get_body(request);
 	
 	/* handle the error response */
-	if (response_str && (strstr(response_str, "<ERROR field=") == response_str)) {
+	if (request == NULL) {
+				show_feedback(view, "Sorry, but the service did not respond.  Please try again later.");
+	}
+	else if (response_str && (strstr(response_str, "<ERROR field=") == response_str)) {
 		if (strstr(response_str, "email")) {
 			if (strstr(response_str, "taken"))
 				show_feedback(view, "That email address is already registered!  Please change it and try again.");
@@ -313,6 +320,11 @@ register_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 	                        xmlSetProp(service_node, "domain", SERVICE_DOMAIN_NAME);
 	                        xmlSetProp(service_node, "token", temp_str);
   		
+  				/* save the token in the view object for subsequent accesses */
+  				if (view->details->auth_token)
+  					g_free(view->details->auth_token);
+  				view->details->auth_token = g_strdup(temp_str);
+  					
 				temp_filename = g_strdup_printf("%s/.nautilus/service.xml", g_get_home_dir());
 				xmlSaveFile(temp_filename, service_doc);
   				xmlFreeDoc(service_doc);
@@ -648,9 +660,7 @@ nautilus_service_startup_view_initialize (NautilusServicesContentView *view)
 			    "notify_location_change",
 			    GTK_SIGNAL_FUNC (service_main_notify_location_change_cb), 
 			    view);
-
-	view->details->form = NULL;
-
+	
   	background = nautilus_get_widget_background (GTK_WIDGET (view));
   	nautilus_background_set_color (background, SERVICE_VIEW_DEFAULT_BACKGROUND_COLOR);
   		
@@ -664,7 +674,11 @@ nautilus_service_startup_view_destroy (GtkObject *object)
 	
 	view = NAUTILUS_SERVICE_STARTUP_VIEW (object);
 	
-	g_free (view->details->uri);
+	if (view->details->uri)
+		g_free (view->details->uri);
+	if (view->details->auth_token)
+		g_free(view->details->auth_token);
+		
 	g_free (view->details);
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));

@@ -717,7 +717,7 @@ nautilus_scalable_icon_equal (gconstpointer a,
 NautilusScalableIcon *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 {
-	char *uri;
+	char *uri, *file_uri;
         const char *name;
 	NautilusScalableIcon *scalable_icon;
 	
@@ -727,20 +727,22 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 	
 	/* if there is a custom image in the metadata, use that. */
 	uri = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
+	file_uri = nautilus_file_get_uri(file);
 	
 	/* if the file is an image, either use the image itself as the icon if it's small enough,
 	   or use a thumbnail if one exists.  If a thumbnail is required, but does not yet exist,
 	   put an entry on the thumbnail queue so we eventually make one */
-	   
+	 
+	/* also, dont make thumbnails for images in the thumbnails directory */  
 	if (uri == NULL && nautilus_str_has_prefix (nautilus_file_get_mime_type (file), "image/")) {
 		if (nautilus_file_get_size (file) < SELF_THUMBNAIL_SIZE_THRESHOLD) {
 			uri = nautilus_file_get_uri (file);
-		} else {
+		} else if (strstr(file_uri, "/.thumbnails/") == NULL)
 			uri = nautilus_icon_factory_get_thumbnail_uri (file);
-		}
 	}
 	
 	/* Get the generic icon set for this file. */
+        g_free(file_uri);
         name = nautilus_icon_factory_get_icon_name_for_file (file);
 	
 	/* Create the icon or find it in the cache if it's already there. */
@@ -1542,6 +1544,41 @@ check_for_thumbnails (NautilusIconFactory *factory)
 	return FALSE;
 }
 
+/* utility to draw the thumbnail frame.  The frame is rectangular, so it doesn't need an alpha channel */
+
+static void
+draw_thumbnail_frame(GdkPixbuf *frame_pixbuf)
+{
+	gint index, width, height, depth, rowstride, fill_value;
+  	guchar *pixels, *temp_pixels;
+	
+	width = gdk_pixbuf_get_width (frame_pixbuf);
+	height = gdk_pixbuf_get_height (frame_pixbuf);
+	depth = gdk_pixbuf_get_bits_per_sample (frame_pixbuf);
+	pixels = gdk_pixbuf_get_pixels (frame_pixbuf);
+	rowstride = gdk_pixbuf_get_rowstride (frame_pixbuf);
+
+	/* loop through the pixbuf a scaleline at a time, drawing the frame */
+	for (index = 0; index < height; index++) {
+		/* special case the first and last line to make them dark */
+		fill_value = (index == 0 || index == height - 1) ? 0 : 239;
+		memset(pixels, fill_value, rowstride);
+		
+		/* draw the frame at the edge for each scanline */
+		temp_pixels = pixels;
+		*temp_pixels++ = 0;
+		*temp_pixels++ = 0;
+		*temp_pixels++ = 0;
+		
+		pixels += rowstride;
+		
+		temp_pixels = pixels - 3;
+		*temp_pixels++ = 0;
+		*temp_pixels++ = 0;
+		*temp_pixels++ = 0;		
+	}
+}
+
 /* make_thumbnails is invoked periodically as a timer task to launch a task to make thumbnails */
 
 static int
@@ -1582,7 +1619,7 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 
 			full_size_image = gdk_pixbuf_new_from_file (info->thumbnail_uri + 7);
 			if (full_size_image != NULL) {
-				GdkPixbuf *scaled_image;
+				GdkPixbuf *scaled_image, *framed_image;
 				int scaled_width, scaled_height;
 				int full_width = gdk_pixbuf_get_width (full_size_image);
 				int full_height = gdk_pixbuf_get_height (full_size_image);
@@ -1595,19 +1632,34 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 					scaled_width = full_width * 96 / full_height;
 				}
 
-				scaled_image = gdk_pixbuf_scale_simple (full_size_image,
-									scaled_width, scaled_height,
-									ART_FILTER_BILINEAR);
-					
+				/* scale the image, then release the large one */
+				
+				scaled_image = gdk_pixbuf_scale_simple (full_size_image,  scaled_width, scaled_height, ART_FILTER_BILINEAR);				
 				gdk_pixbuf_unref (full_size_image);
-				if (!save_pixbuf_to_file (scaled_image, factory->new_thumbnail_path + 7))
-					g_warning ("error saving thumbnail %s", factory->new_thumbnail_path + 7);	
+				
+				/* make the frame to mount it in - don't use an alpha channel, since it's rectangular */
+				framed_image = gdk_pixbuf_new(ART_PIX_RGB, FALSE, 8, scaled_width + 12, scaled_height + 12);
+				draw_thumbnail_frame(framed_image);
+				
+				/* copy the scaled image into it, then release it */
+				gdk_pixbuf_copy_area(scaled_image, 0, 0, scaled_width, scaled_height, framed_image, 6, 6);				
 				gdk_pixbuf_unref (scaled_image);
+				
+				if (!save_pixbuf_to_file (framed_image, factory->new_thumbnail_path + 7))
+					g_warning ("error saving thumbnail %s", factory->new_thumbnail_path + 7);	
+				gdk_pixbuf_unref (framed_image);
 			}
 			else {
 				/* gdk-pixbuf couldn't load the image, so trying using ImageMagick */
 				char *temp_str = g_strdup_printf ("png:%s", factory->new_thumbnail_path + 7);
+				char *temp_file = g_strdup_printf("%s.tmp", factory->new_thumbnail_path + 7);
+				
+				/* scale the image, then draw a border and frame */
 				execlp ("convert", "convert", "-geometry",  "96x96", info->thumbnail_uri + 7, temp_str, NULL);
+				execlp ("convert", "convert", "-bordercolor", "white", "-border", "8x8", info->thumbnail_uri + 7, temp_file, NULL);
+				execlp ("convert", "convert", "-mattecolor", "gray", "-frame", "2x2", temp_file, info->thumbnail_uri + 7);
+				unlink(temp_file);
+				g_free(temp_file);
 				g_free (temp_str);
 			}
 			

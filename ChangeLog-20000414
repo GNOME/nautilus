@@ -1,3 +1,13 @@
+2000-04-09	Andy Hertzfeld <andy@eazel.com>
+
+	* components/services/startup/nautilus-service-startup-view.c:
+	now it saves the account toke assigned by the service, and passes it back in the
+	header of subsequent requests
+	* libnautilus/nautilus-icon-factory.c:
+	fixed bug #293, thumbnails of thumbnails endlessly, by explicitly testing for thumbnails
+	of thumbnails as part of the criteria for making them
+	also, make a "snapshot" frame for thumbnails (task 295)
+	
 2000-04-09  John Sullivan <sullivan@eazel.com>
 
 	Finished task 307 (keyboard navigation in list view should
