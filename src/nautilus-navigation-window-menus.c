@@ -1269,12 +1269,13 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 		BONOBO_UI_VERB_END
 	};
 
+	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
+
 	bonobo_ui_component_add_verb_list_with_data (window->details->shell_ui, verbs, window);
 
         nautilus_window_update_find_menu_item (window);
         nautilus_window_update_show_hide_menu_items (window);
 
-	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
 	add_user_level_menu_item (window, NAUTILUS_MENU_PATH_NOVICE_ITEM, 
 				  NAUTILUS_USER_LEVEL_NOVICE);
 	add_user_level_menu_item (window, NAUTILUS_MENU_PATH_INTERMEDIATE_ITEM, 

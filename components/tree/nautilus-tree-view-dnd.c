@@ -1177,7 +1177,6 @@ nautilus_tree_view_get_drop_action (NautilusTreeView *tree_view,
 			return;
 		}
 
-		/* FIXME bugzilla.eazel.com 2571: */ 
 		drop_target = nautilus_tree_view_find_drop_target (tree_view, x, y);
 		if (!drop_target) {
 			*default_action = 0;

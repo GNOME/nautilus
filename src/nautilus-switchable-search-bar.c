@@ -210,11 +210,6 @@ nautilus_switchable_search_bar_set_mode (NautilusSwitchableSearchBar *bar,
 	}
 	g_free (location);
 
-	/* FIXME bugzilla.eazel.com 1860: 
-	 * Switching to the complex search bar, which is taller, leaves
-	 * the navigation bar forever at the taller height, even after switching
-	 * back to the simple search bar or the location bar.
-	 */
 	switch (mode) {
 	case NAUTILUS_SIMPLE_SEARCH_BAR:
 		gtk_widget_show (bar->simple_search_bar);

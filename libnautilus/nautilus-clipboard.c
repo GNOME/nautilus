@@ -187,6 +187,7 @@ merge_in_clipboard_menu_items (GtkObject *widget_object,
 	container = target_data->container;
 	add_selection_callback = target_data->editable_shares_selection_changes;
 
+
 	bonobo_ui_component_set_container (ui,
 					   container);
 	bonobo_ui_component_freeze (ui, NULL);
@@ -194,7 +195,7 @@ merge_in_clipboard_menu_items (GtkObject *widget_object,
 			       DATADIR,
 			       "nautilus-clipboard-ui.xml",
 			       "nautilus");
-	bonobo_ui_component_thaw (ui, NULL);
+
 	
 	if (add_selection_callback) {
 		gtk_signal_connect_after (GTK_OBJECT (widget_object), "selection_changed",
@@ -208,6 +209,7 @@ merge_in_clipboard_menu_items (GtkObject *widget_object,
 		set_clipboard_menu_items_sensitive (ui);
 	}
 	set_clipboard_items_are_merged_in (widget_object, TRUE);
+	bonobo_ui_component_thaw (ui, NULL);
 }
 
 static void
@@ -221,8 +223,8 @@ merge_out_clipboard_menu_items (GtkObject *widget_object,
 	g_assert (target_data != NULL);
 	ui = BONOBO_UI_COMPONENT (target_data->component);
 	selection_callback_was_added = target_data->editable_shares_selection_changes;
-
 	bonobo_ui_component_unset_container (ui);
+
 	if (selection_callback_was_added) {
 		gtk_signal_disconnect_by_func (GTK_OBJECT (widget_object),
 					       selection_changed_callback,

@@ -59,7 +59,6 @@ gboolean		     nautilus_user_level_manager_compare_preference_between_user_level
  * a lot of code elsewhere that assumes three levels. Publicizing the numbers
  * of these levels lets that other code be coherent and less error-prone.
  */
-/* FIXME bugzilla.eazel.com 2805: Maybe we should eliminate the get_num_user_levels call? */
 #define NAUTILUS_USER_LEVEL_NOVICE		0
 #define NAUTILUS_USER_LEVEL_INTERMEDIATE	1
 #define NAUTILUS_USER_LEVEL_HACKER		2

@@ -347,12 +347,6 @@ theme_changed_callback (gpointer callback_data)
 {
 	set_up_toolbar_images (NAUTILUS_WINDOW (callback_data));
 	set_up_throbber_frame_type (NAUTILUS_WINDOW (callback_data));
-
-	/* FIXME bugzilla.eazel.com 4982:
-	 * Need to get the toolbar to re-layout somehow here, to position the
-	 * throbber properly. Before big Bonobo changes we did this by hiding
-	 * and showing the tool bar, but that doesn't work anymore.
-	 */
 }
 
 static void

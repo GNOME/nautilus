@@ -217,8 +217,10 @@ create_mount_link (const NautilusVolume *volume)
 	gboolean result;
 	char *desktop_path, *target_uri, *icon_name, *volume_name;
 
-	/* FIXME bugzilla.eazel.com 2174: This hack was moved here
-	 * from the volume monitor code.
+	/* This hack was moved here
+	 * from the volume monitor code.  This was a FIXME for
+	 * bug 2174, but apparently the decision was made that
+	 * it should stay here 
 	 */
 	/* Make a link only for the root partition for now. */
 	if (volume->type == NAUTILUS_VOLUME_EXT2

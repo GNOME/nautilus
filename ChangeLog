@@ -1,3 +1,29 @@
+2000-12-07  Rebecca Schulman  <rebecka@eazel.com>
+	Hopefully will improve performance for
+	menu merging in a case where it is poor.
+	(bug 5020)  Completely fixing the bug will
+	involve some design changes in the way the
+	clipboard works, though.
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+	(the additional bonobo freezes and thaws)
+
+	* libnautilus/nautilus-clipboard.c:
+	(merge_in_clipboard_menu_items), (merge_out_clipboard_menu_items):
+	Add freezes and thaws in hopes of improving performance here
+	* src/nautilus-window-menus.c: (nautilus_window_initialize_menus):
+	Ditto
+
+	* components/tree/nautilus-tree-view-dnd.c:
+	(nautilus_tree_view_get_drop_action):
+	* libnautilus-extensions/nautilus-user-level-manager.h:
+	* src/file-manager/fm-desktop-icon-view.c: (create_mount_link):
+	* src/nautilus-switchable-search-bar.c:
+	(nautilus_switchable_search_bar_set_mode):
+	* src/nautilus-window-toolbars.c: (theme_changed_callback):
+	Removed fixme comments in cases where the fixme has been
+	fixed.
+
 2000-12-07  Gene Z. Ragan  <gzr@eazel.com>
 
 	Enabled the jump to next feature. This should be the last missing
