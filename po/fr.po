@@ -9,10 +9,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 2.5.8\n"
+"Project-Id-Version: nautilus 2.5.90\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-08 15:18+0100\n"
-"PO-Revision-Date: 2004-02-28 17:58+0100\n"
+"POT-Creation-Date: 2004-03-13 15:02+0100\n"
+"PO-Revision-Date: 2004-03-13 14:55+0100\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@redfoxcenter.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -2197,6 +2197,10 @@ msgid "Replace _All"
 msgstr "_Tout remplacer"
 
 #. appended to new link file
+#. Note to localizers: convert file type string for file
+#. * (e.g. "folder", "plain text") to file type for symbolic link
+#. * to that kind of file (e.g. "link to folder").
+#.
 #: libnautilus-private/nautilus-file-operations.c:1148
 #: libnautilus-private/nautilus-file.c:4724
 #, c-format
@@ -2251,6 +2255,9 @@ msgid " (another copy)"
 msgstr " (une autre copie)"
 
 #. localizers: tag used to detect the x11th copy of a file
+#. localizers: tag used to detect the x12th copy of a file
+#. localizers: tag used to detect the x13th copy of a file
+#. localizers: tag used to detect the xxth copy of a file
 #: libnautilus-private/nautilus-file-operations.c:1206
 #: libnautilus-private/nautilus-file-operations.c:1208
 #: libnautilus-private/nautilus-file-operations.c:1210
@@ -2286,6 +2293,9 @@ msgid "%s (another copy)%s"
 msgstr "%s (autre copie)%s"
 
 #. localizers: appended to x11th file copy
+#. localizers: appended to x12th file copy
+#. localizers: appended to x13th file copy
+#. localizers: appended to xxth file copy
 #: libnautilus-private/nautilus-file-operations.c:1239
 #: libnautilus-private/nautilus-file-operations.c:1241
 #: libnautilus-private/nautilus-file-operations.c:1243
@@ -3374,10 +3384,6 @@ msgstr "Il n'y a pas d'action associée avec « %s »."
 msgid "No Action Associated"
 msgstr "Aucune action associée"
 
-#. Note: This might be misleading in the components case, since the
-#. * user can't add components to the complete list even from the capplet.
-#. * (They can add applications though.)
-#.
 #: libnautilus-private/nautilus-program-chooser.c:1605
 msgid ""
 "You can configure GNOME to associate applications with file types. Do you "
@@ -4075,7 +4081,7 @@ msgstr[1] ""
 
 #: src/file-manager/fm-directory-view.c:905
 msgid "If you delete an item, it is permanently lost."
-msgstr "Si vous supprimez un élément il est définitivement perdu."
+msgstr "Si vous supprimez un élément, il sera définitivement perdu."
 
 #: src/file-manager/fm-directory-view.c:906
 msgid "Delete?"
@@ -4083,7 +4089,7 @@ msgstr "Supprimer ?"
 
 #: src/file-manager/fm-directory-view.c:1045
 msgid "Select Pattern"
-msgstr "Sélectionner une catégorie"
+msgstr "Motif de sélection"
 
 #: src/file-manager/fm-directory-view.c:1061
 msgid "_Pattern:"
@@ -4153,10 +4159,6 @@ msgstr "%s, espace libre : %s"
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
 
-#. Note that the number of items actually displayed varies somewhat due
-#. * to the way files are collected in batches. So you can't assume that
-#. * no more than the constant limit are displayed.
-#.
 #: src/file-manager/fm-directory-view.c:1972
 #, c-format
 msgid "The folder \"%s\" contains more files than Nautilus can handle."
@@ -5115,8 +5117,6 @@ msgstr ""
 msgid "Error During Search"
 msgstr "Erreur lors de la recherche"
 
-#. FIXME: This dialog does not get shown because a slow search
-#. will be performed and will not return an error.
 #: src/file-manager/fm-search-list-view.c:211
 msgid ""
 "Find cannot open your file system index.  Your index may be missing or "
@@ -5532,7 +5532,7 @@ msgstr "Sélectionner _tous les fichiers"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "Select _Pattern"
-msgstr "Selectionner un _motif"
+msgstr "Selectionner avec un _motif"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
 msgid "Select all items in this window"
@@ -5827,16 +5827,6 @@ msgstr ""
 msgid "Migrated Old Desktop"
 msgstr "Migration de l'ancien bureau"
 
-#. Can't register myself due to trouble locating the
-#. * Nautilus_Shell.server file. This has happened when you
-#. * launch Nautilus with an LD_LIBRARY_PATH that
-#. * doesn't include the directory containing the oaf
-#. * library. It could also happen if the
-#. * Nautilus_Shell.server file was not present for some
-#. * reason. Sometimes killing oafd and gconfd fixes
-#. * this problem but we don't exactly understand why,
-#. * since neither of the above causes explain it.
-#.
 #: src/nautilus-application.c:536
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -5847,7 +5837,6 @@ msgstr ""
 "slay » depuis la console peut régler le problème. Sinon, vous pouvez essayer "
 "de redémarrer l'ordinateur ou d'installer Nautilus de nouveau."
 
-#. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
 #: src/nautilus-application.c:542
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
@@ -5894,6 +5883,7 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
+#. FIXME bugzilla.gnome.org 42538: When can this happen?
 #: src/nautilus-application.c:572 src/nautilus-application.c:590
 #: src/nautilus-application.c:597
 msgid "Nautilus can't be used now, due to an unexpected error."
@@ -6388,23 +6378,28 @@ msgid "Nautilus"
 msgstr "Nautilus"
 
 #: src/nautilus-main.c:259
+#, c-format
 msgid "nautilus: --check cannot be used with URIs.\n"
 msgstr "nautilus : l'option --check ne peut être utilisée avec les URIs.\n"
 
 #: src/nautilus-main.c:263
+#, c-format
 msgid "nautilus: --check cannot be used with other options.\n"
 msgstr ""
 "nautilus : l'option --check ne peut être utilisée avec d'autres options.\n"
 
 #: src/nautilus-main.c:267
+#, c-format
 msgid "nautilus: --quit cannot be used with URIs.\n"
 msgstr "nautilus : l'option --quit ne peut être utilisée avec les URIs.\n"
 
 #: src/nautilus-main.c:271
+#, c-format
 msgid "nautilus: --restart cannot be used with URIs.\n"
 msgstr "nautilus : l'option --restart ne peut être utilisée avec les URIs.\n"
 
 #: src/nautilus-main.c:275
+#, c-format
 msgid "nautilus: --geometry cannot be used with more than one URI.\n"
 msgstr ""
 "nautilus : l'option --geometry ne peut être utilisée avec plus d'une URI.\n"
@@ -6438,8 +6433,8 @@ msgid ""
 "Do you want to remove any bookmarks with the non-existing location from your "
 "list?"
 msgstr ""
-"Voulez-vous supprimer tout les signets pointant sur cet emplacement de votre "
-"liste ?"
+"Voulez-vous supprimer de votre liste tous les signets pointant sur cet "
+"emplacement ?"
 
 #: src/nautilus-navigation-window-menus.c:428
 #, c-format
