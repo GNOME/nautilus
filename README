@@ -102,30 +102,31 @@ relevant packages), you want to folow the instructions below.
 
 The folowing lists the packages and the versions they should report.
 
-    module             version            configure options      dist.
-    ------             ------             -----------------      -----
-    popt:              <1.5, but not from GNOME CVS, see below>  RH6.2
-    glib:              1.2.8                                     HC1.2
-    gtk+:              1.2.8                                     HC1.2
-    imlib:             1.9.8.1                                   HC1.2
-    gnome-xml:         1.8.1                                     HC1.2
-    ORBit:             0.5.3					 HC1.2
-    gnome-libs:        1.2.4              --enable-prefer-db1    HC1.2
-    gnome-http:        1.0.6
-    oaf:               0.5.0
-    gconf:             0.8
-    gdk-pixbuf:        0.8.0              --enable-canvas-pixbuf
-    gnome-print:       0.20.0
-    control-center     1.2.0
-    gnome-vfs:         HEAD
-    bonobo:            0.17
-    gtkhtml:           0.6
-    eog:               0.3                --with-bonobo
-    medusa:            0.2
-    nautilus:          0.1
+GNOME Modules:
 
-RH6.2 == Version from Red Hat 6.2 OK
-HC1.2 == Version from Helix Code Gnome 1.2 OK
+    module             version            configure options
+    ------             ------             -----------------
+    glib:              1.2.8                                 
+    gtk+:              1.2.8                                 
+    imlib:             1.9.8.1                               
+    gnome-xml:         1.8.1                                 
+    ORBit:             0.5.3				
+    gnome-libs:        1.2.4              --enable-prefer-db1
+    gnome-http:        1.0.7
+    gdk-pixbuf:        0.8.0              --enable-canvas-pixbuf
+    control-center     1.2.0
+*   oaf:               0.5.0
+*   gconf:             0.8
+    gnome-print:       0.20.0
+*   gnome-vfs:         0.3.1
+*   bonobo:            0.17
+*   gtkhtml:           0.6
+*   medusa:            0.2
+*   nautilus:          0.1
+
+packages preceded with an * are not part of Helix GNOME 1.2, and can
+be downloaded from ftp.gnome.org/pub/GNOME or from a mirror at 
+http://download.eazel.com
 
 If you are running Helix Code's GNOME, you should not need recompile
 the packages marked "HC1.2" provided you have installed the
@@ -136,11 +137,11 @@ We assume you want to install these packages in another prefix than
 assume you are installing in /usr/local. ie: ${prefix}=/usr/local
 
 Redefine your PATH env variable: 
-	export PATH=$PATH:${prefix}/bin
+	export PATH=${prefix}/bin:$PATH
 Redefine your LD_LIBRARY_PATH env variable: 
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${prefix}/lib
+	export LD_LIBRARY_PATH=${prefix}/lib:$LD_LIBRARY_PATH
 Redefine your GNOME_PATH env variable: 
-	export GNOME_PATH=$GNOME_PATH:${prefix}
+	export GNOME_PATH=${prefix}:/usr
 
 In the order defined above and with the specific options detailed
 above, you should run the configure scripts with: "./configure
@@ -158,7 +159,6 @@ The folowing lists the packages and the versions that are required.
 
     module             branch             configure options      dist.
     ------             ------             -----------------      -----
-    popt:              <1.5, but not from GNOME CVS, see below>  RH6.2
     glib:              glib-1-2                                  HC1.2
     gtk+:              gtk-1-2                                   HC1.2
     imlib:             HEAD                                      HC1.2
@@ -168,9 +168,9 @@ The folowing lists the packages and the versions that are required.
     gnome-http:        HEAD
     oaf:               HEAD
     gconf:             HEAD
-    gdk-pixbuf:        HEAD               --enable-canvas-pixbuf
-    gnome-print:       GNOME_PRINT_0_20
-    control-center     control-center-1-0
+    gdk-pixbuf:        HEAD               --enable-canvas-pixbuf HC1.2
+    gnome-print:       GNOME_PRINT_0_20				 HC1.2
+    control-center     control-center-1-0			 HC1.2
     gnome-vfs:         HEAD
     bonobo:            HEAD
     gtkhtml:           HEAD
@@ -179,7 +179,6 @@ The folowing lists the packages and the versions that are required.
     medusa:            HEAD
     nautilus:          HEAD
 
-RH6.2 == Version from Red Hat 6.2 OK
 HC1.2 == Version from Helix Code Gnome 1.2 OK
 
 One difference between tarball and cvs compilation is that when you
@@ -218,3 +217,6 @@ script to get Nautilus to work properly. One way to invoke it is
 like this:
 
 	./nautilus-clean.sh -x
+
+the command to run nautilus is run-nautilus and it runs the cleanup script
+first.
