@@ -32,7 +32,7 @@
 
 static PackageData* parse_package (xmlNode* package);
 static CategoryData* parse_category (xmlNode* cat);
-gint parse_pkg_template (const char* pkg_template_file, char **result);
+static int parse_pkg_template (const char* pkg_template_file, char **result);
 
 
 static PackageData*
@@ -282,13 +282,13 @@ generate_xml_package_list (const char* pkg_template_file, const char* target_fil
    This just opens the specified file, read it and returns the number of lines
    and reads the contents into "result".
  */
-gint
+static int
 parse_pkg_template (const char* pkg_template_file, char **result) {
 
 	FILE* input_file;
 	char buffer[256];
 	GString* string_data;
-	gint lines_read;
+	int lines_read;
 	
 	g_assert (result!=NULL);
 
