@@ -53,6 +53,9 @@ modulesconf_DATA = help-methods.conf
 hyperboladir=$(datadir)/nautilus/components/hyperbola
 hyperbola_DATA=topleveldocs.xml
 
+uidir=$(datadir)/gnome/ui
+ui_DATA = nautilus-hyperbola-ui.xml
+
 oafdir = $(datadir)/oaf
 oaf_in_files =					\
 	Nautilus_View_help.oaf.in		\

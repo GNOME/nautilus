@@ -1,0 +1,32 @@
+<Root>
+<keybindings>
+        <accel name="*Alt*c" verb="Switch Contents"/>
+        <accel name="*Alt*i" verb="Switch Index"/>
+
+        <accel name="*Alt*t" verb="Contents Tab"/>
+        <accel name="*Alt*a" verb="All"/>
+        <accel name="*Alt*s" verb="Specific"/>
+
+        <accel name="*Alt*h" verb="Show All Terms"/>
+        <accel name="*Alt*o" verb="Show Specific Terms"/>
+
+        <accel name="*Alt*w" verb="Show"/>
+        <accel name="*Alt*x" verb="Index"/>
+        <accel name="*Alt*d" verb="Select"/>
+        <accel name="*Alt*l" verb="Select All"/>
+        <accel name="*Alt*n" verb="Select None"/>
+</keybindings>
+<menu>
+        <submenu name="File">
+                <placeholder name="Global">
+                        <menuitem name="Contents"
+                                  _label="Contents Selected"
+                                  accel="*Control*n"
+                                  verb="Contents"/>
+                        <menuitem name="All"
+                                  _label="All Selected"
+                                  verb="All"/>
+                </placeholder>
+        </submenu>
+</menu>
+</Root>
