@@ -136,6 +136,24 @@ do_destroy(GtkObject *obj)
     gtk_main_quit();
 }
 
+static void
+menu_setup(BonoboObject *ctl, HistoryView *hview)
+{
+  Bonobo_UIHandler remote_uih;
+  GnomeUIInfo history_menu[] = {
+    GNOMEUIINFO_MENU_NEW_ITEM("_Do nothing", "Testing", NULL, NULL),
+    GNOMEUIINFO_END
+  };
+
+  remote_uih = bonobo_control_get_remote_ui_handler(BONOBO_CONTROL(ctl));
+  bonobo_ui_handler_set_container(hview->uih, remote_uih);
+
+  bonobo_ui_handler_menu_new_subtree(hview->uih, "/History", _("H_istory"), NULL, -1, BONOBO_UI_HANDLER_PIXMAP_NONE,
+                                     NULL, 0, 0);
+  bonobo_ui_handler_menu_add_tree(hview->uih, "/History",
+                                  bonobo_ui_handler_menu_parse_uiinfo_tree(history_menu));
+}
+
 static BonoboObject * make_obj(BonoboGenericFactory *Factory, const char *goad_id, gpointer closure)
 {
   GtkWidget *frame, *clist, *wtmp;
@@ -152,6 +170,13 @@ static BonoboObject * make_obj(BonoboGenericFactory *Factory, const char *goad_i
   object_count++;
 
   ctl = nautilus_view_frame_get_bonobo_object(NAUTILUS_VIEW_FRAME(frame));
+  hview->uih = bonobo_ui_handler_new();
+  bonobo_control_set_ui_handler(BONOBO_CONTROL(ctl), hview->uih);
+  gtk_signal_connect(GTK_OBJECT(ctl), "set_frame", menu_setup, hview);
+
+  /* set description */
+  nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(frame),
+                                     _("History"));
 
   /* create interface */
   col_titles[0] = _("Path");
@@ -172,29 +197,8 @@ static BonoboObject * make_obj(BonoboGenericFactory *Factory, const char *goad_i
   gtk_signal_connect(GTK_OBJECT(frame), "notify_location_change", hyperbola_navigation_history_notify_location_change, hview);
   gtk_signal_connect(GTK_OBJECT(clist), "select_row", hyperbola_navigation_history_select_row, hview);
 
-  /* set description */
-  nautilus_meta_view_frame_set_label(NAUTILUS_META_VIEW_FRAME(frame),
-                                     _("History"));
-
   hview->view = (NautilusViewFrame *)frame;
   hview->clist = (GtkCList *)clist;
-
-#if 0
-  {
-    Bonobo_UIHandler remote_uih;
-    GnomeUIInfo history_menu[] = {
-      GNOMEUIINFO_MENU_NEW_ITEM("_New", "Testing", NULL, NULL),
-      GNOMEUIINFO_END
-    };
-
-    remote_uih = bonobo_control_get_remote_ui_handler(BONOBO_CONTROL(ctl));
-    hview->uih = bonobo_ui_handler_new();
-    bonobo_ui_handler_set_container(hview->uih, remote_uih);
-
-    bonobo_ui_handler_menu_add_tree(hview->uih, "/History",
-                                   bonobo_ui_handler_menu_parse_uiinfo_tree(history_menu));
-  }
-#endif
 
   return ctl;
 }

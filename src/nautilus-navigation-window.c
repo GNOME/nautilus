@@ -130,7 +130,7 @@ static void nautilus_window_goto_uri_cb (GtkWidget *widget,
 static void nautilus_window_about_cb (GtkWidget *widget,
                                       NautilusWindow *window);
 
-#define CONTENTS_AS_HBOX 1
+/* #define CONTENTS_AS_HBOX 1 */
 
 /* milliseconds */
 #define STATUSBAR_CLEAR_TIMEOUT 5000
@@ -417,11 +417,14 @@ nautilus_window_constructed(NautilusWindow *window)
   GnomeApp *app;
   GtkWidget *location_bar_box, *statusbar;
   GtkWidget *temp_frame, *zoom_control;
+  GtkWidget *toolbar;
   
   app = GNOME_APP(window);
 
   /* set up toolbar */
-  gnome_app_create_toolbar_with_data(app, toolbar_info, window);
+  toolbar = gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL, GTK_TOOLBAR_BOTH);
+  gnome_app_fill_toolbar_with_data(GTK_TOOLBAR(toolbar), toolbar_info, app->accel_group, app);
+  gnome_app_set_toolbar(app, GTK_TOOLBAR(toolbar));
   window->btn_back = toolbar_info[0].widget;
   window->btn_fwd = toolbar_info[1].widget;
   nautilus_window_allow_stop(window, FALSE);
@@ -486,7 +489,7 @@ nautilus_window_constructed(NautilusWindow *window)
 #ifdef CONTENTS_AS_HBOX
   gtk_box_pack_start(GTK_BOX(window->content_hbox), temp_frame, FALSE, FALSE, 0);
 #else
-  gtk_paned_pack1(GTK_PANED(window->content_hbox), window->index_panel, TRUE, TRUE);
+  gtk_paned_pack1(GTK_PANED(window->content_hbox), temp_frame, TRUE, TRUE);
 #endif
 
   gtk_widget_show_all(window->content_hbox);
@@ -494,8 +497,6 @@ nautilus_window_constructed(NautilusWindow *window)
   /* CORBA stuff */
   window->ntl_viewwindow = impl_Nautilus_ViewWindow__create(window);
   window->uih = bonobo_ui_handler_new();
-  bonobo_ui_handler_set_app(window->uih, app);
-  bonobo_ui_handler_set_statusbar(window->uih, statusbar);
 
   /* set up menu bar */
   gnome_app_create_menus_with_data(app, main_menu, window);
@@ -519,6 +520,11 @@ nautilus_window_constructed(NautilusWindow *window)
   gnome_app_install_menu_hints(app, main_menu); /* This has to go here
                                                    after the statusbar
                                                    creation */
+
+  bonobo_ui_handler_set_menubar(window->uih, app->menubar);
+  bonobo_ui_handler_set_app(window->uih, app);
+  bonobo_ui_handler_set_statusbar(window->uih, statusbar);
+  bonobo_ui_handler_set_toolbar(window->uih, "Main", toolbar);
 }
 
 static void

@@ -59,7 +59,7 @@ main(int argc, char *argv[])
 	 */
 	if (getenv("NAUTILUS_DEBUG") != NULL)
 		nautilus_make_warnings_and_criticals_stop_in_debugger
-			(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", NULL);
+			(G_LOG_DOMAIN, g_log_domain_glib, "Gdk", "Gtk", "GnomeVFS", "GnomeUI", "Bonobo", NULL);
 	
 	/* Initialize the services that we use. */
 	CORBA_exception_init(&ev);
