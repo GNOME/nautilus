@@ -46,8 +46,6 @@ GtkWidget* create_label_widget						(const char *text,
 									 guint	     ypad,
 									 gint	     horizontal_offset,
 									 gint	     vertical_offset);
-GtkWidget* create_services_header_widget				(const char *left_text,
-									 const char *right_text);
 void       show_feedback                 				(GtkWidget  *widget,
 					  				 char       *error_text);
 

@@ -142,7 +142,7 @@ generate_change_password_form (NautilusChangePasswordView	*view)
 	gtk_widget_show (view->details->form);
 
 	/* Setup the title */
-	title = eazel_services_header_new (_("Change your Eazel password..."));
+	title = eazel_services_header_new (_("Change your Eazel password..."), NULL, TRUE);
 
         gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
         gtk_widget_show (title);

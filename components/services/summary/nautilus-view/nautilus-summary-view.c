@@ -331,19 +331,19 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* setup the title */
 	g_print ("Start title load.\n");
-	title = eazel_services_header_new ("");
+	title = eazel_services_header_new ("", NULL, TRUE);
 
 	if (view->details->logged_in) {
 		char *text;
 		g_free (view->details->user_name);
 		view->details->user_name = ammonite_who_is_logged_in (view->details->user_control);
 		text = g_strdup_printf (_("Welcome Back %s!"), view->details->user_name);
-		eazel_services_header_set_text (EAZEL_SERVICES_HEADER (title), text);
+		eazel_services_header_set_left_text (EAZEL_SERVICES_HEADER (title), text);
 		g_free (text);
 	}
 	else {
-		eazel_services_header_set_text (EAZEL_SERVICES_HEADER (title),
-						_("You are not logged in!"));
+		eazel_services_header_set_left_text (EAZEL_SERVICES_HEADER (title),
+						     _("You are not logged in!"));
 	}
 	gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
 	gtk_widget_show (title);

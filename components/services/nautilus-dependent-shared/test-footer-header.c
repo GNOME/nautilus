@@ -57,6 +57,7 @@ main (int argc, char* argv[])
 	GtkWidget *header;
 	GtkWidget *footer;
 	GtkWidget *content;
+	GtkWidget *middle;
 	
 	gtk_init (&argc, &argv);
 	gdk_rgb_init ();
@@ -72,8 +73,11 @@ main (int argc, char* argv[])
 	vbox = gtk_vbox_new (FALSE, 0);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
-	header = eazel_services_header_new ("Welcome back, Arlo!");
+	header = eazel_services_header_new ("Welcome back, Arlo!", NULL, TRUE);
 	content = gtk_vbox_new (FALSE, 0);
+
+	middle = eazel_services_header_new ("Left", "Right", FALSE);
+	gtk_box_pack_start (GTK_BOX (content), middle, FALSE, FALSE, 0);
 
 	footer = eazel_services_footer_new ();
 	gtk_signal_connect (GTK_OBJECT (footer), "item_clicked", GTK_SIGNAL_FUNC (footer_item_clicked_callback), NULL);

@@ -195,40 +195,6 @@ create_label_widget (const char		*text,
 	return label;
 }
 
-/* utility routine to create a section header */
-
-GtkWidget*
-create_services_header_widget (const char	*left_text,
-			       const char	*right_text) 
-{
-	GtkWidget	*title_hbox;
-	GtkWidget	*left_label;
-	GtkWidget	*right_label;
-	GtkWidget	*filler_image;
-
-	g_assert (left_text != NULL);
-	g_assert (right_text != NULL);
-
-	title_hbox = gtk_hbox_new (FALSE, 0);
-
-	left_label = create_label_widget (left_text, 12, "eazel-services-logo-tile.png", 10, 0, 0, -6);
-
-	filler_image = create_image_widget (NULL, "eazel-services-logo-tile.png");
-
-	right_label = create_label_widget (right_text, 12, "eazel-services-logo-tile.png", 10, 0, 0, -6);
-
-	gtk_widget_show (left_label);
-	gtk_widget_show (filler_image);
-	gtk_widget_show (right_label);
-
-	gtk_box_pack_start (GTK_BOX (title_hbox), left_label, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (title_hbox), filler_image, TRUE, TRUE, 0);
-	gtk_box_pack_end (GTK_BOX (title_hbox), right_label, FALSE, FALSE, 0);
-
-	return title_hbox;
-
-}
-
 /* utility routine to show an error message */
 void
 show_feedback (GtkWidget	*widget, 

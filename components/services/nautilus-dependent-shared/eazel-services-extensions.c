@@ -129,5 +129,5 @@ eazel_services_get_current_date_string (void)
 
 	my_localtime = localtime (&my_time);
 
-        return nautilus_strdup_strftime (_("%A, %B %e"), my_localtime);
+        return nautilus_strdup_strftime (_("%A, %B %d"), my_localtime);
 }

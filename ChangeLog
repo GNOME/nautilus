@@ -1,3 +1,41 @@
+2000-10-26  Ramiro Estrugo  <ramiro@eazel.com>
+	
+	* components/services/nautilus-dependent-shared/eazel-services-header.h:
+	* components/services/nautilus-dependent-shared/eazel-services-header.c:
+	(eazel_services_header_new),
+	(eazel_services_header_set_left_text),
+	(eazel_services_header_set_right_text):
+	Change the 'constructor' to accept left/right strings a boolean
+	that determines whether the logo is visible.
+	* components/services/install/nautilus-view/nautilus-service-install-view.c:
+	(generate_install_form):
+	* components/services/login/nautilus-view/nautilus-change-password-view.c:
+	(generate_change_password_form):
+	* components/services/summary/nautilus-view/nautilus-summary-view.c:
+	(generate_summary_form):
+	Update for header changes.  Fixes bug 4099 (Secondary Header broke
+	with test changed to the nautilus widget)
+	
+	* components/services/nautilus-dependent-shared/eazel-services-extensions.c:
+	(eazel_services_get_current_date_string):
+	Change the date format string.  Using a format of "%e" worked on
+	one computer but spewed warnings on another.
+	
+	* components/services/nautilus-dependent-shared/eazel-services-extensions.h:
+	Tweak the header text offset a bit.
+	
+	* components/services/nautilus-dependent-shared/eazel-services-footer.c:
+	(footer_item_new):
+	Fix the last item's right boundary to make this beast be up to the
+	most stringent Arlo standards.
+
+	* components/services/nautilus-dependent-shared/test-footer-header.c: (main):
+	Add a middle header to test new header features.
+
+	* components/services/nautilus-dependent-shared/shared-service-widgets.c:
+	* components/services/nautilus-dependent-shared/shared-service-widgets.h:
+	Retire the old way to do middle headers.
+
 2000-10-26  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/lib/eazel-install-rpm-glue.c:

@@ -113,7 +113,7 @@ generate_install_form (NautilusServiceInstallView	*view)
 	gtk_container_add (GTK_CONTAINER (view), view->details->form);
 
 	/* Setup the title */
-	title = eazel_services_header_new (_("Easy Install"));
+	title = eazel_services_header_new (_("Easy Install"), NULL, TRUE);
         gtk_box_pack_start (GTK_BOX (view->details->form), title, FALSE, FALSE, 0);
         gtk_widget_show (title);
 
@@ -209,7 +209,7 @@ generate_install_form (NautilusServiceInstallView	*view)
 	}
 
 	/* Setup the progress header */
-	middle_title = create_services_header_widget (_("Messages"), _("Progress"));
+	middle_title = eazel_services_header_new (_("Messages"), _("Progress"), FALSE);
         gtk_box_pack_end (GTK_BOX (view->details->form), middle_title, FALSE, FALSE, 0);
 	gtk_widget_show (middle_title);
 

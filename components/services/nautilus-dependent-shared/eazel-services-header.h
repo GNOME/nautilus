@@ -55,10 +55,14 @@ struct _EazelServicesHeaderClass
 	GtkHBoxClass hbox_class;
 };
 
-GtkType    eazel_services_header_get_type (void);
-GtkWidget* eazel_services_header_new      (const char          *text);
-void       eazel_services_header_set_text (EazelServicesHeader *header,
-					   const char          *text);
+GtkType    eazel_services_header_get_type       (void);
+GtkWidget* eazel_services_header_new            (const char          *left_text,
+						 const char          *right_text,
+						 gboolean	     show_logo);
+void       eazel_services_header_set_left_text  (EazelServicesHeader *header,
+						 const char          *text);
+void       eazel_services_header_set_right_text (EazelServicesHeader *header,
+						 const char          *text);
 
 END_GNOME_DECLS
 

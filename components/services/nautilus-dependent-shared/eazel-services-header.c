@@ -37,7 +37,8 @@
 
 struct _EazelServicesHeaderDetails
 {
-	GtkWidget *text;
+	GtkWidget *left_text;
+	GtkWidget *right_text;
 };
 
 /* GtkObjectClass methods */
@@ -83,45 +84,77 @@ header_destroy (GtkObject *object)
 
 /* EazelServicesHeader public methods */
 GtkWidget *
-eazel_services_header_new (const char *text)
+eazel_services_header_new (const char *left_text,
+			   const char *right_text,
+			   gboolean show_logo)
 {
 	EazelServicesHeader *header;
- 	GtkWidget *middle;
+ 	GtkWidget *fill;
  	GtkWidget *logo;
 
 	header = EAZEL_SERVICES_HEADER (gtk_widget_new (eazel_services_header_get_type (), NULL));
+
+	if (left_text != NULL) {
+		header->details->left_text = eazel_services_label_new (left_text,
+								       EAZEL_SERVICES_HEADER_FONT_WEIGHT,
+								       EAZEL_SERVICES_HEADER_FONT_SIZE,
+								       EAZEL_SERVICES_HEADER_X_PADDING,
+								       EAZEL_SERVICES_HEADER_Y_PADDING,
+								       EAZEL_SERVICES_HEADER_VERTICAL_OFFSET,
+								       EAZEL_SERVICES_HEADER_HORIZONTAL_OFFSET,
+								       EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
+								       EAZEL_SERVICES_LOGO_LEFT_SIDE_REPEAT_ICON);
+		gtk_box_pack_start (GTK_BOX (header), header->details->left_text, FALSE, FALSE, 0);
+		gtk_widget_show (header->details->left_text);
+	}
 	
-	header->details->text = eazel_services_label_new (text,
-							  EAZEL_SERVICES_HEADER_FONT_WEIGHT,
-							  EAZEL_SERVICES_HEADER_FONT_SIZE,
-							  EAZEL_SERVICES_HEADER_X_PADDING,
-							  EAZEL_SERVICES_HEADER_Y_PADDING,
-							  EAZEL_SERVICES_HEADER_VERTICAL_OFFSET,
-							  EAZEL_SERVICES_HEADER_HORIZONTAL_OFFSET,
-							  EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
-							  EAZEL_SERVICES_LOGO_LEFT_SIDE_REPEAT_ICON);
+	fill = eazel_services_image_new (NULL,
+					   EAZEL_SERVICES_LOGO_LEFT_SIDE_REPEAT_ICON, 
+					   EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
+	gtk_box_pack_start (GTK_BOX (header), fill, TRUE, TRUE, 0);
+	gtk_widget_show (fill);
 
-	middle = eazel_services_image_new (NULL, EAZEL_SERVICES_LOGO_LEFT_SIDE_REPEAT_ICON, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
-
-	logo = eazel_services_image_new (EAZEL_SERVICES_LOGO_RIGHT_SIDE_ICON, NULL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
-
-	gtk_box_pack_start (GTK_BOX (header), header->details->text, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (header), middle, TRUE, TRUE, 0);
-	gtk_box_pack_end (GTK_BOX (header), logo, FALSE, FALSE, 0);
-
-	gtk_widget_show (header->details->text);
-	gtk_widget_show (middle);
-	gtk_widget_show (logo);
+	if (right_text != NULL) {
+		header->details->right_text = eazel_services_label_new (right_text,
+									EAZEL_SERVICES_HEADER_FONT_WEIGHT,
+									EAZEL_SERVICES_HEADER_FONT_SIZE,
+									EAZEL_SERVICES_HEADER_X_PADDING,
+									EAZEL_SERVICES_HEADER_Y_PADDING,
+									EAZEL_SERVICES_HEADER_VERTICAL_OFFSET,
+									EAZEL_SERVICES_HEADER_HORIZONTAL_OFFSET,
+									EAZEL_SERVICES_BACKGROUND_COLOR_RGBA,
+									EAZEL_SERVICES_LOGO_LEFT_SIDE_REPEAT_ICON);
+		gtk_box_pack_start (GTK_BOX (header), header->details->right_text, FALSE, FALSE, 0);
+		gtk_widget_show (header->details->right_text);
+	}
+	
+	if (show_logo) {
+		logo = eazel_services_image_new (EAZEL_SERVICES_LOGO_RIGHT_SIDE_ICON,
+						 NULL,
+						 EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
+		gtk_box_pack_end (GTK_BOX (header), logo, FALSE, FALSE, 0);
+		gtk_widget_show (logo);
+	}
 
 	return GTK_WIDGET (header);
 }
 
 void
-eazel_services_header_set_text (EazelServicesHeader *header,
-				const char *text)
+eazel_services_header_set_left_text (EazelServicesHeader *header,
+				     const char *text)
 {
 	g_return_if_fail (EAZEL_SERVICES_IS_HEADER (header));
 	g_return_if_fail (text != NULL);
+	
+	nautilus_label_set_text (NAUTILUS_LABEL (header->details->left_text), text);
+}
 
-	nautilus_label_set_text (NAUTILUS_LABEL (header->details->text), text);
+void
+eazel_services_header_set_right_text (EazelServicesHeader *header,
+				      const char *text)
+{
+	g_return_if_fail (EAZEL_SERVICES_IS_HEADER (header));
+	g_return_if_fail (text != NULL);
+	
+	nautilus_label_set_text (NAUTILUS_LABEL (header->details->right_text), text);
 }

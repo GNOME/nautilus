@@ -331,7 +331,7 @@ footer_item_new (EazelServicesFooter *footer,
 	GtkWidget *event_box;
 	GtkWidget *left;
 	GtkWidget *label;
-/* 	GtkWidget *right; */
+ 	GtkWidget *right;
 	ButtonPressData *data;
 
 	g_return_val_if_fail (EAZEL_SERVICES_IS_FOOTER (footer), NULL);
@@ -377,12 +377,16 @@ footer_item_new (EazelServicesFooter *footer,
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
 	if (has_right_bumper) {
-		GtkWidget *right;
 		right = eazel_services_image_new (EAZEL_SERVICES_NORMAL_RIGHT_BUMPER, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
-		image_add_prelighting (NAUTILUS_IMAGE (right), event_box, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_PRELIGHT_FILL);
-		gtk_box_pack_start (GTK_BOX (hbox), right, FALSE, FALSE, 0);
-		gtk_widget_show (right);
+		image_add_prelighting (NAUTILUS_IMAGE (right), event_box, EAZEL_SERVICES_NORMAL_RIGHT_BUMPER, EAZEL_SERVICES_PRELIGHT_RIGHT_BUMPER);
 	}
+	else {
+		right = eazel_services_image_new (EAZEL_SERVICES_NORMAL_FILL, NULL, EAZEL_SERVICES_BACKGROUND_COLOR_RGBA);
+		image_add_prelighting (NAUTILUS_IMAGE (right), event_box, EAZEL_SERVICES_NORMAL_FILL, EAZEL_SERVICES_PRELIGHT_FILL);
+	}
+
+	gtk_box_pack_start (GTK_BOX (hbox), right, FALSE, FALSE, 0);
+	gtk_widget_show (right);
 
 	gtk_widget_show (hbox);
 
