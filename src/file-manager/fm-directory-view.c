@@ -31,7 +31,6 @@
 
 #include "fm-desktop-icon-view.h"
 #include "fm-properties-window.h"
-#include "nautilus-trash-monitor.h"
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-zoomable.h>
 #include <bonobo/bonobo-win.h>
@@ -68,6 +67,7 @@
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-trash-monitor.h>
 #include <libnautilus-extensions/nautilus-view-identifier.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <math.h>

@@ -135,11 +135,7 @@ get_metadata_string_from_metafile (NautilusDirectory *directory,
 {
 	xmlNode *node;
 
-	if (file_name == NULL) {
-		node = xmlDocGetRootElement (directory->details->metafile);
-	} else {
-		node = get_file_node (directory, file_name, FALSE);
-	}
+	node = get_file_node (directory, file_name, FALSE);
 	return get_metadata_from_node (node, key, default_metadata);
 }
 
@@ -151,11 +147,7 @@ get_metadata_list_from_metafile (NautilusDirectory *directory,
 {
 	xmlNode *node;
 
-	if (file_name == NULL) {
-		node = xmlDocGetRootElement (directory->details->metafile);
-	} else {
-		node = get_file_node (directory, file_name, FALSE);
-	}
+	node = get_file_node (directory, file_name, FALSE);
 	return get_metadata_list_from_node (node, list_key, list_subkey);
 }
 
@@ -192,11 +184,7 @@ set_metadata_string_in_metafile (NautilusDirectory *directory,
 	}
 
 	/* Get or create the node. */
-	if (file_name == NULL) {
-		node = create_metafile_root (directory);
-	} else {
-		node = get_file_node (directory, file_name, value != NULL);
-	}
+	node = get_file_node (directory, file_name, value != NULL);
 
 	/* Add or remove a property node. */
 	if (node != NULL) {
@@ -224,11 +212,7 @@ set_metadata_list_in_metafile (NautilusDirectory *directory,
 	xmlChar *property;
 
 	/* Get or create the node. */
-	if (file_name == NULL) {
-		node = create_metafile_root (directory);
-	} else {
-		node = get_file_node (directory, file_name, list != NULL);
-	}
+	node = get_file_node (directory, file_name, list != NULL);
 
 	/* Work with the list. */
 	changed = FALSE;

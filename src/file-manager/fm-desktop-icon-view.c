@@ -26,7 +26,6 @@
 #include <config.h>
 #include "fm-desktop-icon-view.h"
 
-#include "nautilus-trash-monitor.h"
 #include <ctype.h>
 #include <dirent.h>
 #include <fcntl.h>
@@ -52,6 +51,7 @@
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-program-choosing.h>
 #include <libnautilus-extensions/nautilus-string.h>
+#include <libnautilus-extensions/nautilus-trash-monitor.h>
 #include <libnautilus-extensions/nautilus-volume-monitor.h>
 #include <src/nautilus-application.h>
 #include <limits.h>

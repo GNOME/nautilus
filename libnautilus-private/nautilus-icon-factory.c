@@ -44,6 +44,7 @@
 #include "nautilus-string.h"
 #include "nautilus-theme.h"
 #include "nautilus-thumbnails.h"
+#include "nautilus-trash-monitor.h"
 #include "nautilus-xml-extensions.h"
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
@@ -73,20 +74,21 @@ static const char *icon_file_name_suffixes[] =
 	".XPM"
 };
 
+#define ICON_NAME_BLOCK_DEVICE          "i-blockdev"
+#define ICON_NAME_BROKEN_SYMBOLIC_LINK  "i-symlink"
+#define ICON_NAME_CHARACTER_DEVICE      "i-chardev"
 #define ICON_NAME_DIRECTORY             "i-directory"
 #define ICON_NAME_DIRECTORY_CLOSED      "i-dirclosed"
 #define ICON_NAME_EXECUTABLE            "i-executable"
+#define ICON_NAME_FIFO                  "i-fifo"
+#define ICON_NAME_INSTALL		"services-rpm"
 #define ICON_NAME_REGULAR               "i-regular"
 #define ICON_NAME_SEARCH_RESULTS        "i-search"
-#define ICON_NAME_WEB			"i-web"
 #define ICON_NAME_SOCKET                "i-sock"
-#define ICON_NAME_FIFO                  "i-fifo"
-#define ICON_NAME_CHARACTER_DEVICE      "i-chardev"
-#define ICON_NAME_BLOCK_DEVICE          "i-blockdev"
-#define ICON_NAME_BROKEN_SYMBOLIC_LINK  "i-symlink"
-#define ICON_NAME_INSTALL		"services-rpm"
-
 #define ICON_NAME_THUMBNAIL_LOADING     "loading"
+#define ICON_NAME_TRASH_EMPTY           "trash-empty"
+#define ICON_NAME_TRASH_NOT_EMPTY       "trash-full"
+#define ICON_NAME_WEB			"i-web"
 
 #define EMBLEM_NAME_PREFIX              "emblem-"
 
@@ -730,15 +732,17 @@ set_theme (const char *theme_name)
 static const char *
 nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 {
-	char *mime_type, *uri;
 	const char *icon_name;
+	char *mime_type, *uri;
 	gboolean is_text_file;
 	
-	/* force plain text files to use the generic document icon so we can have the text-in-icons feature;
-		eventually, we want to force other types of text files as well */
+	/* force plain text files to use the generic document icon so
+	 *	we can have the text-in-icons feature; eventually, we
+	 * want to force other types of text files as well
+	 */
         
 	mime_type = nautilus_file_get_mime_type (file);
-	is_text_file = mime_type != NULL && !nautilus_strcasecmp (mime_type, "text/plain");
+	is_text_file = nautilus_strcasecmp (mime_type, "text/plain") == 0;
 	
 	if (mime_type != NULL && !is_text_file) {
 		icon_name = gnome_vfs_mime_get_icon (mime_type);
@@ -749,19 +753,24 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 	}
 
 	/* gnome_vfs_mime didn't give us an icon name, so we have to fall back on default icons. */
-	if (nautilus_file_is_executable (file) & !is_text_file) {
-		g_free (mime_type);		
-		return ICON_NAME_EXECUTABLE;
-	}
+
+	uri = nautilus_file_get_uri (file);
 
 	/* special-case icons based on the uri scheme.  eventually we should generalize this. */
-	uri = nautilus_file_get_uri (file);
-	if (nautilus_istr_has_prefix (uri, "http:") && !nautilus_strcmp (mime_type, "text/html")) {
+	if (nautilus_istr_has_prefix (uri, "http:")
+	    && nautilus_strcmp (mime_type, "text/html") == 0) {
 		icon_name = ICON_NAME_WEB;
 	} else if (nautilus_istr_has_prefix (uri, "eazel-install:")) {
 		icon_name = ICON_NAME_INSTALL;
+	} else if (strcmp (uri, NAUTILUS_TRASH_URI) == 0) {
+		icon_name = nautilus_trash_monitor_is_empty ()
+			? ICON_NAME_TRASH_EMPTY : ICON_NAME_TRASH_NOT_EMPTY;
 	} else {
-		icon_name = ICON_NAME_REGULAR;
+		if (nautilus_file_is_executable (file) & !is_text_file) {
+			icon_name = ICON_NAME_EXECUTABLE;
+		} else {
+			icon_name = ICON_NAME_REGULAR;
+		}
 	}
 
         g_free (uri);
@@ -774,18 +783,20 @@ nautilus_icon_factory_get_icon_name_for_regular_file (NautilusFile *file)
 static const char *
 nautilus_icon_factory_get_icon_name_for_directory (NautilusFile *file)
 {
+	const char *icon_name;
 	char *mime_type;
-	
+
 	mime_type = nautilus_file_get_mime_type (file);
 	
-	if (mime_type != NULL && !nautilus_strcasecmp (mime_type, "x-directory/search")) {
-		g_free (mime_type);
-		return ICON_NAME_SEARCH_RESULTS;
+	if (nautilus_strcasecmp (mime_type, "x-directory/search") == 0) {
+		icon_name = ICON_NAME_SEARCH_RESULTS;
+	} else {
+		icon_name = ICON_NAME_DIRECTORY;
 	}
-	else {
-		g_free (mime_type);
-		return ICON_NAME_DIRECTORY;
-	}
+
+	g_free (mime_type);
+
+	return icon_name;
 }
 
 
@@ -1346,7 +1357,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 			g_free (file_path);
 		}
 	}
-			
+	
 	/* handle SVG files */
 	if (uri == NULL && nautilus_file_is_mime_type (file, "image/svg")) {
 		uri = g_strdup (file_uri);
@@ -1427,19 +1438,35 @@ nautilus_icon_factory_get_emblem_icon_by_name (const char *emblem_name, gboolean
 }
 
 GList *
-nautilus_icon_factory_get_emblem_icons_for_file (NautilusFile *file, gboolean anti_aliased, NautilusStringList *exclude)
+nautilus_icon_factory_get_emblem_icons_for_file (NautilusFile *file,
+						 gboolean anti_aliased,
+						 NautilusStringList *exclude)
 {
-	GList *icons, *emblem_names, *p;
+	GList *icons, *emblem_names, *node;
+	char *uri, *name;
 	NautilusScalableIcon *icon;
+	gboolean file_is_trash;
+
+	/* Leave out the trash emblem for the trash itself, since
+	 * putting a trash emblem on a trash icon is gilding the
+	 * lily.
+	 */
+	uri = nautilus_file_get_uri (file);
+	file_is_trash = strcmp (uri, NAUTILUS_TRASH_URI) == 0;
+	g_free (uri);
 
 	icons = NULL;
 
 	emblem_names = nautilus_file_get_emblem_names (file);
-	for (p = emblem_names; p != NULL; p = p->next) {
-		if (nautilus_string_list_contains (exclude, p->data)) {
+	for (node = emblem_names; node != NULL; node = node->next) {
+		name = node->data;
+		if (file_is_trash && strcmp (name, NAUTILUS_FILE_EMBLEM_NAME_TRASH) == 0) {
 			continue;
 		}
-		icon = nautilus_icon_factory_get_emblem_icon_by_name (p->data, anti_aliased);
+		if (nautilus_string_list_contains (exclude, name)) {
+			continue;
+		}
+		icon = nautilus_icon_factory_get_emblem_icon_by_name (name, anti_aliased);
 		icons = g_list_prepend (icons, icon);
 	}
 	nautilus_g_list_free_deep (emblem_names);

@@ -1,3 +1,39 @@
+2000-12-08  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fixed bug 2244 (trash window sidebar should have trash icon).
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_name_for_directory): Added code to
+	give the trash its own icon.
+	(nautilus_icon_factory_get_icon_for_file): Rearranged to simplify
+	it a bit.
+	
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-trash-monitor.h:
+	* libnautilus-extensions/nautilus-trash-monitor.c:
+	Moved trash monitor to here.
+	(nautilus_trash_files_changed_callback): Do nautilus_file_changed
+	on the trash NautilusFile object when the state changes from full
+	to empty or from empty to full.
+	
+	* src/file-manager/Makefile.am:
+	* src/file-manager/nautilus-trash-monitor.h:
+	* src/file-manager/nautilus-trash-monitor.c:
+	Moved trash monitor from here.
+
+	* src/file-manager/fm-desktop-icon-view.c:
+	* src/file-manager/fm-directory-view.c:
+	Changed includes to include trash monitor from new location.
+
+	* libnautilus-extensions/nautilus-directory-metafile.c:
+	(get_metadata_string_from_metafile),
+	(get_metadata_list_from_metafile),
+	(set_metadata_string_in_metafile), (set_metadata_list_in_metafile):
+	Remove some dead code left over from handling of directory metadata.
+	We don't have directory metadata any more, only file metadata.
+
 2000-12-08  Michael Engber  <engber@eazel.com>
 
 	* libnautilus-extensions/nautilus-global-preferences.c:

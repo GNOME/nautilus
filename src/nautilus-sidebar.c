@@ -1484,6 +1484,8 @@ nautilus_sidebar_size_allocate(GtkWidget *widget, GtkAllocation *allocation)
 	
 	if (widget->allocation.width != sidebar->details->old_width) {
 		sidebar->details->old_width = widget->allocation.width;
- 		nautilus_preferences_set_enum(NAUTILUS_PREFERENCES_SIDEBAR_WIDTH, widget->allocation.width);
+		/* FIXME: This is not an "enum". */
+ 		nautilus_preferences_set_enum (NAUTILUS_PREFERENCES_SIDEBAR_WIDTH,
+					       widget->allocation.width);
 	}	
 }

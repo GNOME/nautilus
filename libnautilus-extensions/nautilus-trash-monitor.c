@@ -26,11 +26,12 @@
 #include <config.h>
 #include "nautilus-trash-monitor.h"
 
-#include "libnautilus-extensions/nautilus-directory.h"
-#include "libnautilus-extensions/nautilus-file-attributes.h"
-#include "libnautilus-extensions/nautilus-file-utilities.h"
-#include "libnautilus-extensions/nautilus-gtk-macros.h"
-#include "libnautilus-extensions/nautilus-volume-monitor.h"
+#include "nautilus-directory.h"
+#include "nautilus-directory-notify.h"
+#include "nautilus-file-attributes.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-gtk-macros.h"
+#include "nautilus-volume-monitor.h"
 #include <gtk/gtksignal.h>
 #include <libgnomevfs/gnome-vfs-find-directory.h>
 #include <libgnomevfs/gnome-vfs-types.h>
@@ -83,6 +84,7 @@ nautilus_trash_files_changed_callback (NautilusDirectory *directory, GList *file
 {
 	NautilusTrashMonitor *trash_monitor;
 	gboolean old_empty_state;
+	NautilusFile *file;
 	
 	trash_monitor = callback_data;
 	g_assert (NAUTILUS_IS_TRASH_MONITOR (trash_monitor));
@@ -95,6 +97,10 @@ nautilus_trash_files_changed_callback (NautilusDirectory *directory, GList *file
 	trash_monitor->details->empty = !nautilus_directory_is_not_empty (directory);
 
 	if (old_empty_state != trash_monitor->details->empty) {
+		file = nautilus_file_get (NAUTILUS_TRASH_URI);
+		nautilus_file_changed (file);
+		nautilus_file_unref (file);
+
 		/* trash got empty or full, notify everyone who cares */
 		gtk_signal_emit (GTK_OBJECT (trash_monitor), 
 				 signals[TRASH_STATE_CHANGED],

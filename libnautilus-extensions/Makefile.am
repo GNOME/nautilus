@@ -124,6 +124,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-theme.c			\
 	nautilus-thumbnails.c			\
 	nautilus-trash-directory.c		\
+	nautilus-trash-monitor.c		\
 	nautilus-undo-context.c			\
 	nautilus-undo-manager.c			\
 	nautilus-undo-signal-handlers.c		\
@@ -222,6 +223,7 @@ noinst_HEADERS =				\
 	nautilus-theme.h			\
 	nautilus-thumbnails.h			\
 	nautilus-trash-directory.h		\
+	nautilus-trash-monitor.h		\
 	nautilus-undo-context.h			\
 	nautilus-undo-manager.h			\
 	nautilus-undo-signal-handlers.h		\
