@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.2\n"
-"POT-Creation-Date: 2003-08-31 17:46+0200\n"
-"PO-Revision-Date: 2003-08-31 17:50+0200\n"
+"POT-Creation-Date: 2003-09-06 08:43+0200\n"
+"PO-Revision-Date: 2003-09-06 09:52+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1044,7 +1044,7 @@ msgid ""
 "are: \"size\", \"type\", \"date_modified\", \"date_changed\", \"date_accessed"
 "\", \"owner\", \"group\", \"permissions\", \"octal_permissions\" and "
 "\"mime_type\"."
-msgstr ""
+msgstr "En liste med bildetekst under ikoner i ikonvisning og på skrivebordet. Antall bildetekster som vises er avhengig av zoom-nivå. Mulige verdier er: «size», «type», «date_modified», «date_changed», «date_accessed», «owner», «group», «permissions», «octal_permissions» og «mime_type»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:2
 msgid "Add Nautilus to session"
@@ -1064,7 +1064,7 @@ msgid ""
 "\"search_by_text\", then Nautilus will Search for files by file name only. "
 "If set to \"search_by_text_and_properties\", then Nautilus will search for "
 "files by file name and file properties."
-msgstr ""
+msgstr "Kriterie ved treff på søk etter filer i søkelinjen. Nautilus vil søke etter filer kun på navn hvis satt til «search_by_text». Hvis satt til «search_by_text_and_properties» vil Nautilus søke etter filer basert på navn og filegenskaper."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:6
 msgid "Current Nautilus theme (deprecated)"
@@ -1136,24 +1136,23 @@ msgid ""
 "purpose of this is to avoid unintentionally blowing the heap and killing "
 "Nautilus on massive directories. A negative value denotes no limit. The "
 "limit is approximate due to the reading of directories chunk-wise."
-msgstr ""
+msgstr "Kataloger over denne størrelsen vil bli avkortet. Formålet med dette er å unngå å bruke for mye minne og dermed terminere Nautilus ved åpning av enorme kataloger. En negativ verdi betyr ingen grense. Grensen er tilnærmet da kataloger leses i biter av en viss størrelse."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:23
-#, fuzzy
 msgid "Enable 'special' flags in file preferences dialog"
-msgstr "Spesielle flagg i Egenska_per-dialogen"
+msgstr "Aktiver «spesielle» flagg i dialogen brukervalg"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
 msgid ""
 "Filename for the default directory background. Only used if background_set "
 "is true."
-msgstr ""
+msgstr "Filnavn for forvalgt bakgrunn for en mappe. Brukes kun hvis background_set er satt til «true»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid ""
 "Filename for the default side pane background. Only used if "
 "side_pane_background_set is true."
-msgstr ""
+msgstr "Filnavn for forvalgt bakgrunn for sidepanelet. Brukes kun hvis side_pane_background er satt til «true»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:26
 msgid "Hide default bookmarks in the bookmark menu"
@@ -1167,110 +1166,109 @@ msgstr "Vis Hjem-ikonet på skrivebordet"
 msgid ""
 "If set to true, Nautilus will only show directories in the tree side pane. "
 "Otherwise it will show both directories and files."
-msgstr ""
+msgstr "Nautilus viser kun kataloger i trevisningen i sidepanelet hvis satt til «true». Ellers vises både kataloger og filer."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
-msgstr ""
+msgstr "Nye vinduer har adressefeltet synlig hvis satt til «true»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:30
 msgid "If set to true, newly opened windows will have the side pane visible."
-msgstr ""
+msgstr "Nye vinduer har sidepanelet synlig hvis satt til «true»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:31
 msgid "If set to true, newly opened windows will have the status bar visible."
-msgstr ""
+msgstr "Nye vinduer ha statuslinjen synlig hvis satt til «true»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:32
 msgid "If set to true, newly opened windows will have toolbars visible."
-msgstr ""
+msgstr "Nye vinduer har verktøylinjen synlig hvis satt til «true»"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:33
 msgid ""
 "If set to true, then Nautilus lets you edit some of the more esoteric "
 "options of a file in the file preferences dialog."
-msgstr ""
+msgstr "Nautilus lar deg rediger noen av de mer esoteriske alternativen egenskapene ved en fil i brukervalg-dialogen hvis satt til «true»"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:34
 msgid ""
 "If set to true, then Nautilus shows directories prior to showing files in "
 "the icon and list views."
-msgstr ""
+msgstr "Nautilus viser kataloger foran filer i ikon- og listevisning hvis satt til «true»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:35
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "put files in the trash."
-msgstr ""
+msgstr "Nautilus spør om bekreftelse ved plassering av filer i papirkurven hvis satt til «true»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:36
 msgid ""
 "If set to true, then Nautilus will bring up a new Nautilus window by default "
 "whenever an item is opened."
-msgstr ""
+msgstr "Nautilus åpner et nytt vindu  når en oppføring åpnes hvis satt til «true»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:37
-#, fuzzy
 msgid "If set to true, then Nautilus will draw the icons on the desktop."
-msgstr "Søppelkurven må befinne seg på skrivebordet."
+msgstr "Nautilus tegner ikonene på skrivebordet hvis denne er satt til «true»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:38
 msgid ""
 "If set to true, then Nautilus will have a feature allowing you to delete a "
 "file immediately and in-place, instead of moving it to the trash. This "
 "feature can be dangerous, so use caution."
-msgstr ""
+msgstr "Nautilus lar deg slette en fil umiddelbart og uten å flytte den til papirkurven hvis satt til «true». Denne funksjonen kan være hasardiøs, så vær forsiktig."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:39
 msgid ""
 "If set to true, then Nautilus will just show the user's bookmarks in the "
 "bookmark menu."
-msgstr ""
+msgstr "Nautilus viser kun brukers bokmerker i bokmerkemenyen hvis satt til «true»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:40
 msgid ""
 "If set to true, then Nautilus will use the user's home directory as the "
 "desktop. If it is false, then it will use ~/Desktop as the desktop."
-msgstr ""
+msgstr "Nautilus bruker brukerens hjemmekatalog som skrivebord hvis satt til «true». Hvis den settes til «false» brukes ~/Desktop som skrivebord."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:41
 msgid ""
 "If set to true, then backup files such as those created by Emacs are "
 "displayed. Currently, only files ending in a tilde (~) are considered backup "
 "files."
-msgstr ""
+msgstr "Sikkerhetskopier laget av f.eks. Emacs vises hvis satt til «true». Foreløpig er det kun filer som slutter med tilde (~) som betraktes som sikkerhetskopier."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:42
 msgid ""
 "If set to true, then hidden files are shown in the file manager. Hidden "
 "files are either dotfiles or are listed in the directory's .hidden file."
-msgstr ""
+msgstr "Skjulte filer vises i filhåndtereren hvis satt til «true». Skjulte filer er enten filer som starter med punktum eller filer som listes i filen .hidden i aktiv katalog."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:43
 msgid ""
 "If this is set to true, Nautilus adds itself to the session when it starts "
 "up. This means it will be started the next time you log in."
-msgstr ""
+msgstr "Nautilus legger seg til i sesjonen når den starter hvis satt til «true». Dette betyr at Nautilus vil bli startet neste gang du logger inn."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:44
 msgid ""
 "If this is set to true, an icon linking to the home directory will be put on "
 "the desktop."
-msgstr ""
+msgstr "Et ikon med en lenke til hjemmekatalogen vil plasseres på skrivebordet hvis satt til «true»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:45
 msgid ""
 "If this is set to true, an icon linking to the trash will be put on the "
 "desktop."
-msgstr ""
+msgstr "Et ikon med en lenke til papirkurven plasseres på skrivebordet hvis denne settes til «true»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:46
 msgid ""
 "If true, files in new windows will be sorted in reverse order. ie, if sorted "
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
 "sorted from \"z\" to \"a\"."
-msgstr ""
+msgstr "Filer i nye vinduer vil sorteres i omvendt rekkefølge hvis satt til «true». For eksempel, hvis man sortere på navn vil det sorteres fra «å» til «a» i stedet for «a» til «å»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:47
 msgid ""
@@ -1278,103 +1276,95 @@ msgid ""
 "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
 "sorted from \"z\" to \"a\"; if sorted by size, instead of being "
 "incrementally they will be sorted decrementally."
-msgstr ""
+msgstr "Filer i nye vinduer vil sorteres i omvendt rekkefølge hvis satt til «true». For eksempel, hvis man sorterer på navn vil filene sorteres fra «å» til «a» i stedet for «a» til «å». Hvis man sorterer på størrelse vil de sorteres i synkende heller enn stigende rekkefølge."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid "If true, icons will be layed out tighter by default in new windows."
-msgstr ""
+msgstr "Hvis sann vil ikoner ha tettere plassering som forvalg i nye vinduer."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:49
 msgid ""
 "If true, labels will be placed beside icons rather than underneath them."
-msgstr ""
+msgstr "Hvis sann vil etiketter plaseres ved siden av ikoner i stedet for under dem."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:50
 msgid "If true, new windows will use manual layout by default."
-msgstr ""
+msgstr "Hvis sann vil nye vinduer bruke manuell plassering som forvalg."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:51
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
 "load or use lots of memory."
-msgstr ""
+msgstr "Bilder over denne størrelsen (i bytes) vil ikke få miniatyrer. Formålet med denne innstillingen er å unngå å lage miniatyrer av store bilder som kan ta lang tid å laste eller bruke mye minne."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:52
 msgid "List of possible captions on icons"
-msgstr ""
+msgstr "Liste med mulig bildetekst for ikoner"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:53
 msgid "Maximum handled files in a directory"
-msgstr ""
+msgstr "Maksimalt antall filer som håndteres i en katalog"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:54
 msgid "Maximum image size for thumbnailing"
-msgstr ""
+msgstr "Maksimal bildestørrelse for miniatyrer"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:55
 msgid ""
 "Name of the Nautilus theme to use. This has been deprecated as of Nautilus "
 "2.2. Please use the icon theme instead."
-msgstr ""
+msgstr "Navn på tema for bruk med Nautilus. Dette er utgått siden Nautilus 2.2. Vennligst bruk ikontema i stedet."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:56
-#, fuzzy
 msgid "Nautilus handles drawing the desktop"
-msgstr "Nautilus filhåndterer visning for skrivebordsikoner"
+msgstr "Nautilus tar seg av tegning av skrivebordet"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:57
 msgid "Nautilus uses the users home directory as the desktop"
-msgstr ""
+msgstr "Nautilus bruker brukerens hjemmekatalog som skrivebord"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:58
 msgid "Only show directories in the tree sidebar"
-msgstr ""
+msgstr "Vis kun kataloger i treet i sidelinjen"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:59
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
-msgstr ""
+msgstr "Mulige verdier er «single» for å starte filer ved enkeltklikk eller «double» for å starte dem med dobbeltklikk."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:60
 msgid "Put labels beside icons"
-msgstr ""
+msgstr "Plasser etiketter ved siden av ikoner"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:61
-#, fuzzy
 msgid "Reverse sort order in new windows"
-msgstr "Vis _sidelinje i nye vinduer"
+msgstr "Omvendt sorteringsrekkefølge i nye vinduer"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:62
-#, fuzzy
 msgid "Show directories first in windows"
-msgstr "Prøv å tilpass vinduet"
+msgstr "Vis kataloger først i vinduer"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:63
-#, fuzzy
 msgid "Show location bar in new windows"
-msgstr "Vis _sidelinje i nye vinduer"
+msgstr "Vis adressefelt i nye vinduer"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:64
-#, fuzzy
 msgid "Show side pane in new windows"
-msgstr "Vis _sidelinje i nye vinduer"
+msgstr "Vis sidelinje i nye vinduer"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:65
-#, fuzzy
 msgid "Show status bar in new windows"
-msgstr "Vis st_atuslinje i nye vinduer"
+msgstr "Vis statuslinje i nye vinduer"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:66
-#, fuzzy
 msgid "Show toolbar in new windows"
-msgstr "Vis st_atuslinje i nye vinduer"
+msgstr "Vis verktøylinje i nye vinduer"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:67
-#, fuzzy
 msgid "Side pane view"
-msgstr "Sidepanel"
+msgstr "Sidepanelvisning"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:68
 msgid ""
@@ -1382,7 +1372,7 @@ msgid ""
 "icon. If set to \"always\" then always plays the sound, even if the file is "
 "on a remote server. If set to \"local_only\" then only plays previews on "
 "local filesystems. If set to \"never\" then it never previews sound."
-msgstr ""
+msgstr "Optimisering ved forhåndsvisning av lydfiler når muspekeren holdes over filens ikon. Hvis satt til «always» vil lyden alltid spilles av, selv om filen er på en ekstern tjener. Hvis satt til «local_only» vil filen kun forhåndsvises på lokale filsystemer. Hvis satt til «never» vil lyder aldri forhåndsvises."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:69
 msgid ""
@@ -1391,7 +1381,7 @@ msgid ""
 "directory is on a remote server. If set to \"local_only\" then only show "
 "previews for local filesystems. If set to \"never\" then never bother to "
 "read preview data."
-msgstr ""
+msgstr "Optimisering ved forhåndsvisning av innhold i tekstfiler i filens ikon. Sett til «always» for å vise forhåndsvisninger alltid, selv om filen er på en ekstern tjener. Sett til «local_only» for kun å vise forhåndsvisninger på lokale filsystemer. Sett til «never» for å slå av forhåndsvisninger."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:70
 msgid ""
@@ -1400,7 +1390,7 @@ msgid ""
 "server. If set to \"local_only\" then only show thumbnails for local "
 "filesystems. If set to \"never\" then never bother to thumbnail images, just "
 "use a generic icon."
-msgstr ""
+msgstr "Optimisering ved visning av bilder som miniatyrer. Hvis satt til «always» vil miniatyrer alltid vises, selv om katalogen er på en ekstern tjener. Hvis satt til «local_only» vil miniatyrer kun vises for lokale filsystemer. Hvis satt til «never» vil miniatyrer aldri vises, kun et vanlig ikon."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:71
 msgid ""
@@ -1408,70 +1398,63 @@ msgid ""
 "to \"always\" then always show item counts, even if the directory is on a "
 "remote server. If set to \"local_only\" then only show counts for local "
 "filesystems. If set to \"never\" then never bother to compute item counts."
-msgstr ""
+msgstr "Optimisering ved visning av antall oppføringer i en katalog. Hvis satt til «always» vil antall oppføringer alltid vises, selv om katalogen er på en ekstern tjener. Hvis satt til «local_only» vil antall kun vises for lokale filsystemer. Hvis satt til «never» vil antall aldri beregnes."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:72
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\", \"modification_date\", \"emblems\"."
-msgstr ""
+msgstr "Forvalgt sorteringsrekkefølge for oppføringer i ikonvisning. Mulige verdier er «name», «size», «type», «modification_date» og «emblems»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:73
 msgid ""
 "The default sort-order for the item in the list view. Possible values are "
 "name, size, type, and modification_date."
-msgstr ""
+msgstr "Forvalgt sorteringsrekkefølge for oppføringer i listevisning. Mulige verdier er «name», «size», «type» og «modification_date»"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:74
-#, fuzzy
 msgid "The default width of the side pane in new windows."
-msgstr "Vis _sidelinje i nye vinduer"
+msgstr "Forvalgt bredde for sidepanelet i nye vinduer."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:75
-#, fuzzy
 msgid "The font description used for the icons on the desktop."
-msgstr "Søppelkurven må befinne seg på skrivebordet."
+msgstr "Beskrivelse av skrifter for ikonene på skrivebordet."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:76
 msgid "The side pane view to show in newly opened windows."
-msgstr ""
+msgstr "Sidepanelvisning som skal vises i nye vinduer."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:77
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
-msgstr "Søppelkurven må befinne seg på skrivebordet."
+msgstr "Tilpasset navn for hjemmeikonet på skrivebordet."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:78
-#, fuzzy
 msgid ""
 "This name can be set if you want a custom name for the trash icon on the "
 "desktop."
-msgstr "Søppelkurven må befinne seg på skrivebordet."
+msgstr "Tilpasset navn for papirkurvikonet på skrivebordet."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:79
 msgid "Trash icon visible on desktop"
-msgstr ""
+msgstr "Papirkurvikon synlig på skrivebordet"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:80
 msgid "Type of click used to launch/open files"
-msgstr ""
+msgstr "Type klikk som brukes for å starte/åpne filer"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:81
-#, fuzzy
 msgid "Use manual layout in new windows"
-msgstr "Bruk _manuell plassering"
+msgstr "Bruk manuell plassering i nye vinduer"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:82
-#, fuzzy
 msgid "Use tighter Layout in new windows"
-msgstr "_Åpne aktivert oppføring i et nytt vindu"
+msgstr "Bruk tettere plassering i nye vinduer"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:83
-#, fuzzy
 msgid "What to do with executable text files when activated"
-msgstr "_Vis kjørbare tekstfiler når de klikkes"
+msgstr "Bestem hva som skal gjøres med kjørbare tekstfiler når de aktiveres"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:84
 msgid ""
@@ -1479,64 +1462,58 @@ msgid ""
 "double clicked). Possible values are \"launch\" to launch them as programs, "
 "\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
 "text files."
-msgstr ""
+msgstr "Handling for kjørbare tekstfiler når de aktiveres (enkelt- eller dobbeltklikk). Mulige verdier er «launch» for å starte dem som programmer, «ask» for å spørre via en dialog og «display» for å vise dem som tekstfiler."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:85
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are \"list_view\" "
 "and \"icon_view\"."
-msgstr ""
+msgstr "Når en mappe besøkes brukes dette visningsprogrammet med mindre du har valgt en annen visning for denne spesifikke mappen. Mulige verdier er «list_view» og «icon_view»."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:86
-#, fuzzy
 msgid "When to show number of items in a directory"
-msgstr "Vis antall oppføringer i lokale mapper"
+msgstr "Når antall oppføringer i en katalog skal vises"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:87
-#, fuzzy
 msgid "When to show preview text in icons"
-msgstr "Aldri vis tekst i ikoner"
+msgstr "Når skal forhåndsvisningstekst vises i ikoner"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:88
-#, fuzzy
 msgid "When to show thumbnails of image files"
-msgstr "Vis miniatyrer for bildefiler"
+msgstr "Når skal miniatyrer vises for bildefiler"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:89
-#, fuzzy
 msgid "Whether a custom default directory background has been set."
-msgstr "Bruk forvalgt skrivebordsbakgrunn"
+msgstr "Om en tilpasset forvalgt skrivebordsbakgrunn er satt."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:90
 msgid "Whether a custom default side pane background has been set."
-msgstr ""
+msgstr "Om en tilpasset forvalgt bakgrunn er satt for sidepanelet."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:91
 msgid "Whether to ask for confirmation when moving files to trash"
-msgstr ""
+msgstr "Om det skal spørres om bekreftelse ved flytting av filer til papirkurven"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:92
 msgid "Whether to enable immediate deletion"
-msgstr ""
+msgstr "Om umiddelbar sletting skal aktiveres"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:93
 msgid "Whether to preview sounds when mousing over an icon"
-msgstr ""
+msgstr "Om lyder skal forhåndsvises når musen plasseres over et ikon"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:94
 msgid "Whether to show backup files"
-msgstr ""
+msgstr "Om sikkerhetskopier skal vises"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:95
-#, fuzzy
 msgid "Whether to show hidden files"
-msgstr "Vis miniatyrer for bildefiler"
+msgstr "Om skjulte filer skal vises"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:96
-#, fuzzy
 msgid "Width of the side pane"
-msgstr "Skjul _sidelinje"
+msgstr "Bredde på sidepanelet"
 
 #: libnautilus-private/filesystem-attributes.xml.h:1
 msgid "AFFS Volume"
@@ -1668,14 +1645,16 @@ msgstr "på skrivebordet"
 msgid ""
 "You cannot delete a volume icon. If you want to eject the volume, please use "
 "Eject in the right-click menu of the volume."
-msgstr "Du kan ikke slette et volum-ikon. Vennligst bruk menyvalget «Løs ut» hvis du ønsker å løse ut volumet"
+msgstr ""
+"Du kan ikke slette et volum-ikon. Vennligst bruk menyvalget «Løs ut» hvis du "
+"ønsker å løse ut volumet"
 
 #: libnautilus-private/nautilus-desktop-link-monitor.c:105
 msgid "Can't delete volume"
 msgstr "Kan ikke slette volum"
 
 #: libnautilus-private/nautilus-desktop-link.c:139
-#: libnautilus-private/nautilus-file.c:5592
+#: libnautilus-private/nautilus-file.c:5613
 #: libnautilus-private/nautilus-global-preferences.c:545
 #: libnautilus-private/nautilus-trash-directory.c:383
 msgid "Trash"
@@ -2119,7 +2098,7 @@ msgstr "Erstatt alle"
 
 #. appended to new link file
 #: libnautilus-private/nautilus-file-operations.c:1130
-#: libnautilus-private/nautilus-file.c:4420
+#: libnautilus-private/nautilus-file.c:4433
 #, c-format
 msgid "link to %s"
 msgstr "lenke til %s"
@@ -2445,7 +2424,7 @@ msgid "Preparing to Empty the Trash..."
 msgstr "Forbereder tømming av søppelkurven..."
 
 #: libnautilus-private/nautilus-file-operations.c:2263
-#: src/file-manager/fm-desktop-icon-view.c:999
+#: src/file-manager/fm-desktop-icon-view.c:1016
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:6
 msgid "Empty Trash"
 msgstr "Tøm søppelkurv"
@@ -2860,77 +2839,77 @@ msgstr "00.00.00"
 msgid "%m/%d/%y"
 msgstr "%d.%m.%y"
 
-#: libnautilus-private/nautilus-file.c:4000
+#: libnautilus-private/nautilus-file.c:4013
 msgid "0 items"
 msgstr "0 oppføringer"
 
-#: libnautilus-private/nautilus-file.c:4000
+#: libnautilus-private/nautilus-file.c:4013
 msgid "0 folders"
 msgstr "0 mapper"
 
-#: libnautilus-private/nautilus-file.c:4001
+#: libnautilus-private/nautilus-file.c:4014
 msgid "0 files"
 msgstr "0 filer"
 
-#: libnautilus-private/nautilus-file.c:4005
+#: libnautilus-private/nautilus-file.c:4018
 msgid "1 item"
 msgstr "1 oppføring"
 
-#: libnautilus-private/nautilus-file.c:4005
+#: libnautilus-private/nautilus-file.c:4018
 msgid "1 folder"
 msgstr "1 mappe"
 
-#: libnautilus-private/nautilus-file.c:4006
+#: libnautilus-private/nautilus-file.c:4019
 msgid "1 file"
 msgstr "1 fil"
 
-#: libnautilus-private/nautilus-file.c:4009
+#: libnautilus-private/nautilus-file.c:4022
 #, c-format
 msgid "%u items"
 msgstr "%u oppføringer"
 
-#: libnautilus-private/nautilus-file.c:4009
+#: libnautilus-private/nautilus-file.c:4022
 #, c-format
 msgid "%u folders"
 msgstr "%u mapper"
 
-#: libnautilus-private/nautilus-file.c:4010
+#: libnautilus-private/nautilus-file.c:4023
 #, c-format
 msgid "%u files"
 msgstr "%u filer"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4322
-#: libnautilus-private/nautilus-file.c:4338
+#: libnautilus-private/nautilus-file.c:4335
+#: libnautilus-private/nautilus-file.c:4351
 msgid "? items"
 msgstr "? oppføringer"
 
 #. This means no contents at all were readable
-#: libnautilus-private/nautilus-file.c:4328
+#: libnautilus-private/nautilus-file.c:4341
 msgid "? bytes"
 msgstr "? bytes"
 
-#: libnautilus-private/nautilus-file.c:4343
+#: libnautilus-private/nautilus-file.c:4356
 msgid "unknown type"
 msgstr "ukjent type"
 
-#: libnautilus-private/nautilus-file.c:4346
+#: libnautilus-private/nautilus-file.c:4359
 msgid "unknown MIME type"
 msgstr "ukjent MIME-type"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: libnautilus-private/nautilus-file.c:4352
+#: libnautilus-private/nautilus-file.c:4365
 #: src/file-manager/fm-properties-window.c:1128
 msgid "unknown"
 msgstr "ukjent"
 
-#: libnautilus-private/nautilus-file.c:4384
+#: libnautilus-private/nautilus-file.c:4397
 msgid "program"
 msgstr "program"
 
-#: libnautilus-private/nautilus-file.c:4396
+#: libnautilus-private/nautilus-file.c:4409
 msgid ""
 "Can't find description even for \"x-directory/normal\". This probably means "
 "that your gnome-vfs.keys file is in the wrong place or isn't being found for "
@@ -2940,7 +2919,7 @@ msgstr ""
 "sannsynligvis at din gnome-vfs.keys fil er på feilt sted eller ikke kan "
 "finnes av en eller annen grunn."
 
-#: libnautilus-private/nautilus-file.c:4400
+#: libnautilus-private/nautilus-file.c:4413
 #, c-format
 msgid ""
 "No description found for mime type \"%s\" (file is \"%s\"), please tell the "
@@ -2949,11 +2928,11 @@ msgstr ""
 "Ingen beskrivelse funnet for MIME-type «%s» (fil «%s»), si i fra til gnome-"
 "vfs e-post listen."
 
-#: libnautilus-private/nautilus-file.c:4414
+#: libnautilus-private/nautilus-file.c:4427
 msgid "link"
 msgstr "lenke"
 
-#: libnautilus-private/nautilus-file.c:4434
+#: libnautilus-private/nautilus-file.c:4447
 msgid "link (broken)"
 msgstr "lenke (ødelagt)"
 
@@ -4276,20 +4255,20 @@ msgstr "Vis som _ikoner"
 msgid "View as _List"
 msgstr "Vis som _liste"
 
-#: src/file-manager/fm-desktop-icon-view.c:579
+#: src/file-manager/fm-desktop-icon-view.c:596
 msgid "Background"
 msgstr "Bakgrunn"
 
-#: src/file-manager/fm-desktop-icon-view.c:749
+#: src/file-manager/fm-desktop-icon-view.c:766
 #, c-format
 msgid "Error executing utility program '%s': %s"
 msgstr "Feil under kjøring av verktøyprogram «%s»: %s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1017
+#: src/file-manager/fm-desktop-icon-view.c:1034
 msgid "E_ject"
 msgstr "Løs _ut"
 
-#: src/file-manager/fm-desktop-icon-view.c:1117
+#: src/file-manager/fm-desktop-icon-view.c:1134
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:20
 msgid "_Unmount Volume"
 msgstr "_Avmonter volum"
@@ -5832,18 +5811,22 @@ msgstr ""
 "Vennligst opprett disse mappene før du kjører Nautilus, eller sett "
 "rettigheter slik at Nautilus kan opprette dem."
 
-#: src/nautilus-application.c:299
+#: src/nautilus-application.c:300
 msgid "Link To Old Desktop"
 msgstr "Lenke til gammelt skrivebord"
 
-#: src/nautilus-application.c:315
+#: src/nautilus-application.c:316
 msgid ""
 "The location of the desktop directory has changed in GNOME 2.4. A link "
 "called \"Link To Old Desktop\" has been created on the desktop. You can open "
 "this to move over the files you want, then delete the link."
-msgstr "Plasseringen for skrivebordskatalogen er endret i GNOME 2.4. En lenke som har navnet «Lenke til gammelt skrivebord» er opprettet på skrivebordet. Du kan åpne denne for å flytte over filene du ønsker før du eventuelt sletter lenken."
+msgstr ""
+"Plasseringen for skrivebordskatalogen er endret i GNOME 2.4. En lenke som "
+"har navnet «Lenke til gammelt skrivebord» er opprettet på skrivebordet. Du "
+"kan åpne denne for å flytte over filene du ønsker før du eventuelt sletter "
+"lenken."
 
-#: src/nautilus-application.c:318
+#: src/nautilus-application.c:319
 msgid "Migrated old desktop"
 msgstr "Migrerte gammelt skrivebord"
 
@@ -5857,7 +5840,7 @@ msgstr "Migrerte gammelt skrivebord"
 #. * this problem but we don't exactly understand why,
 #. * since neither of the above causes explain it.
 #.
-#: src/nautilus-application.c:485
+#: src/nautilus-application.c:486
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5868,7 +5851,7 @@ msgstr ""
 "datamaskinen på nytt eller installere Nautilus på nytt."
 
 #. FIXME bugzilla.gnome.org 42536: The guesses and stuff here are lame.
-#: src/nautilus-application.c:491
+#: src/nautilus-application.c:492
 msgid ""
 "Nautilus can't be used now. Running the command \"bonobo-slay\" from the "
 "console may fix the problem. If not, you can try rebooting the computer or "
@@ -5914,12 +5897,12 @@ msgstr ""
 #. * current OAF. I guess I read the code wrong. Need to figure out when and make a
 #. * good message.
 #.
-#: src/nautilus-application.c:521 src/nautilus-application.c:539
-#: src/nautilus-application.c:546
+#: src/nautilus-application.c:522 src/nautilus-application.c:540
+#: src/nautilus-application.c:547
 msgid "Nautilus can't be used now, due to an unexpected error."
 msgstr "Nautilus kan ikke brukes nå, pga en uventet feil."
 
-#: src/nautilus-application.c:522
+#: src/nautilus-application.c:523
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to register the file manager view server."
@@ -5927,7 +5910,7 @@ msgstr ""
 "Nautilus kan ikke brukes nå pga en uventet feil fra Bonobo under forsøk på å "
 "registrere visningstjeneren i filbehandleren."
 
-#: src/nautilus-application.c:540
+#: src/nautilus-application.c:541
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the factory.Killing bonobo-activation-server and "
@@ -5937,7 +5920,7 @@ msgstr ""
 "å finne factory. Du kan fikse problemet ved å drepe bonobo-activation-server "
 "og starte Nautilus på nytt."
 
-#: src/nautilus-application.c:547
+#: src/nautilus-application.c:548
 msgid ""
 "Nautilus can't be used now, due to an unexpected error from Bonobo when "
 "attempting to locate the shell object. Killing bonobo-activation-server and "
@@ -7319,1259 +7302,3 @@ msgstr "Nettverkstjenere"
 #: src/network-scheme.desktop.in.h:2
 msgid "View your network servers in the Nautilus file manager"
 msgstr "Vis dine nettverkstjenere i Nautilus"
-
-#~ msgid "_New Folder"
-#~ msgstr "_Ny mappe"
-
-#~ msgid "Sort in _reverse"
-#~ msgstr "So_rter i omvendt rekkefølge"
-
-#~ msgid "Use _manual layout"
-#~ msgstr "Bruk _manuell plassering"
-
-#~ msgid "New _Window"
-#~ msgstr "Nytt _vindu"
-
-#~ msgid "Your HTTP Proxy requires you to log in.\n"
-#~ msgstr "Din HTTP-proxy krever at du logger inn.\n"
-
-#~ msgid ""
-#~ "You must log in to access \"%s\".\n"
-#~ "\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Du må logge inn for å aksessere «%s».\n"
-#~ "\n"
-#~ "%s"
-
-#~ msgid "Your password will be transmitted unencrypted."
-#~ msgstr "Ditt passord vil overføres i klartekst."
-
-#~ msgid "Your password will be transmitted encrypted."
-#~ msgstr "Ditt passord vil overføres kryptert."
-
-#~ msgid "Authentication Required"
-#~ msgstr "Autentisering forespurt"
-
-#~ msgid "_Location:"
-#~ msgstr "A_dresse:"
-
-#~ msgid "The Trash must remain on the desktop."
-#~ msgstr "Søppelkurven må befinne seg på skrivebordet."
-
-#~ msgid "You cannot copy the Trash."
-#~ msgstr "Du kan ikke kopiere søppelkurven."
-
-#~ msgid "F_onts"
-#~ msgstr "S_krifttyper"
-
-#~ msgid "Lucida"
-#~ msgstr "Lucida"
-
-#~ msgid "Services"
-#~ msgstr "Tjenester"
-
-#~ msgid "Use the Courier Font"
-#~ msgstr "Bruk Courier skrift"
-
-#~ msgid "Use the Fixed Font"
-#~ msgstr "Bruk Fixed skrift"
-
-#~ msgid "Use the GTK System Font"
-#~ msgstr "Bruk GTK system-skrift"
-
-#~ msgid "Use the Helvetica Font"
-#~ msgstr "Bruk Helvetica skrift"
-
-#~ msgid "Use the Lucida Font"
-#~ msgstr "Bruk Lucida skrift"
-
-#~ msgid "Use the Times Font"
-#~ msgstr "Bruk Times skrift"
-
-#~ msgid "_Courier"
-#~ msgstr "_Courier"
-
-#~ msgid "_Fixed"
-#~ msgstr "_Fast"
-
-#~ msgid "_GTK System Font"
-#~ msgstr "_GTK system-skrift"
-
-#~ msgid "_Helvetica"
-#~ msgstr "_Helvetica"
-
-#~ msgid "_Times"
-#~ msgstr "_Times"
-
-#~ msgid "Content Loser"
-#~ msgstr "Innholdstaper"
-
-#~ msgid "Content Loser Viewer"
-#~ msgstr "Innholdstaper-visning"
-
-#~ msgid "Nautilus Content Loser"
-#~ msgstr "Nautilus innholdstaper"
-
-#~ msgid "Nautilus content loser component's factory"
-#~ msgstr "Factory for Nautilus innholdstaperkomponent"
-
-#~ msgid "Nautilus content loser factory"
-#~ msgstr "Nautilus innholdstaper factory"
-
-#~ msgid "Nautilus content view that fails on command"
-#~ msgstr "Innholdsvisningskomponent for Nautilus som feiler på etterspørsel"
-
-#~ msgid "View as Content Loser"
-#~ msgstr "Vis som innholdstaper"
-
-#~ msgid "Kill Content Loser"
-#~ msgstr "Drep innholdsvisning"
-
-#~ msgid "Kill the Loser content view"
-#~ msgstr "Drep taperen innholdsvisning"
-
-#~ msgid "_Kill Content Loser"
-#~ msgstr "_Drep innholdsvisning"
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "This is a Nautilus content view that fails on demand."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Dette er en innholdsvisningskomponent for Nautilus som feiler på "
-#~ "etterspørsel."
-
-#~ msgid "You have tried to kill the Content Loser"
-#~ msgstr "Du har prøvd å drepe innholdstaperen"
-
-#~ msgid "Nautilus Sidebar Loser"
-#~ msgstr "Nautilus sidelinjetaper"
-
-#~ msgid "Nautilus sidebar loser component's factory"
-#~ msgstr "Factory for Nautilus sidelinjetaperkomponent"
-
-#~ msgid "Nautilus sidebar loser factory"
-#~ msgstr "Nautilus sidelinjetaper factory"
-
-#~ msgid "Nautilus sidebar view that fails on command"
-#~ msgstr "Sidelinjevisning for Nautilus som feiler på kommando"
-
-#~ msgid "Sidebar Loser"
-#~ msgstr "Sidelinjetaper"
-
-#~ msgid "Kill Sidebar Loser"
-#~ msgstr "_Drep sidelinje-taper"
-
-#~ msgid "Kill the Loser sidebar panel"
-#~ msgstr "Drep taper sidelinjepanel"
-
-#~ msgid "_Kill Sidebar Loser"
-#~ msgstr "_Drep sidelinjevisning"
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "Loser sidebar."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Taper sidelinje."
-
-#~ msgid "You have tried to kill the Sidebar Loser"
-#~ msgstr "Du har prøvd å drepe sidelinjetaperen"
-
-#~ msgid "Nautilus Sample view"
-#~ msgstr "Nautilus eksempelvisning"
-
-#~ msgid "Nautilus Sample view factory"
-#~ msgstr "Factory for Nautilus eksempelvisning"
-
-#~ msgid "Sample"
-#~ msgstr "Eksempel"
-
-#~ msgid "Sample Viewer"
-#~ msgstr "Eksempelvisning"
-
-#~ msgid "Sample content view component"
-#~ msgstr "Eksempel på innholdsvisningskomponent"
-
-#~ msgid "Sample content view component's factory"
-#~ msgstr "Factory for eksempelvisningskomponent"
-
-#~ msgid "View as Sample"
-#~ msgstr "Vis som eksempel"
-
-#~ msgid "This is a sample merged menu item"
-#~ msgstr "Dette er et eksempel på en flettet menyoppføring"
-
-#~ msgid "This is a sample merged toolbar button"
-#~ msgstr "Dette er et eksempel på en flettet verktøylinjeknapp"
-
-#~ msgid "_Sample"
-#~ msgstr "_Eksempel"
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "This is a sample Nautilus content view component."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Dette er et eksempel på en innholdsvisningskomponent for Nautilus."
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "You selected the Sample menu item."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Du klikket på eksempel-menyoppføringen."
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "You clicked the Sample toolbar button."
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Du klikket på eksempel-verktøylinjeknappen."
-
-#~ msgid "(none)"
-#~ msgstr "(ingen)"
-
-#~ msgid "No description available for the \"%s\" theme"
-#~ msgstr "Ingen beskrivelse tilgjengelig for tema «%s»"
-
-#~ msgid "Executable Text Files"
-#~ msgstr "Kjørbare tekstfiler"
-
-#~ msgid "Show Options"
-#~ msgstr "Vis alternativer"
-
-#~ msgid "_Hidden files (filenames starting with \".\")"
-#~ msgstr "S_kjulte filer (filnavn begynner med «.»)"
-
-#~ msgid "_Backup files (filenames ending with \"~\")"
-#~ msgstr "S_ikkerhetskopier (filnavn slutter med «~»)"
-
-#~ msgid "Sort"
-#~ msgstr "Sorter"
-
-#~ msgid "Fo_lders before files"
-#~ msgstr "Mapper før fi_ler"
-
-#~ msgid ""
-#~ "Choose the order for information to appear beneath icon names.\n"
-#~ "More information appears as you zoom in closer"
-#~ msgstr ""
-#~ "Velg rekkefølgen for informasjonen som skal vises under ikonnavnene.\n"
-#~ "Mer informasjon vises etter hvert som du zoomer inn."
-
-#~ msgid "_View new folders using:"
-#~ msgstr "_Vis nye mapper med:"
-
-#~ msgid "Icon View Defaults"
-#~ msgstr "Ikonvisning forvalg"
-
-#~ msgid "_Sort in reverse"
-#~ msgstr "_Sorter i omvendt rekkefølge"
-
-#~ msgid "Use co_mpact layout"
-#~ msgstr "Bruk _tettere plassering"
-
-#~ msgid "List View Defaults"
-#~ msgstr "Forvalg for Listevisning"
-
-#~ msgid "Arrange _items:"
-#~ msgstr "Pl_asser oppføringer:"
-
-#~ msgid "Search Complexity Options"
-#~ msgstr "Alternativer for kompleksitet i søk"
-
-#~ msgid "search type to do by default"
-#~ msgstr "standard søketype"
-
-#~ msgid "Built-in Bookmarks"
-#~ msgstr "Innebygde bokmerker"
-
-#~ msgid "Always show text in icons"
-#~ msgstr "Alltid vis tekst i ikoner"
-
-#~ msgid "Show text in icons for local files"
-#~ msgstr "Kun vis tekst i ikoner for lokale filer"
-
-#~ msgid "Always show the number of items in folders"
-#~ msgstr "Alltid vis antall oppføringer i mapper"
-
-#~ msgid "Never show the number of items in folders"
-#~ msgstr "Aldri vis antall oppføringer i mapper"
-
-#~ msgid "Always show thumbnails"
-#~ msgstr "Alltid vis miniatyrer"
-
-#~ msgid "Show thumbnails for local files"
-#~ msgstr "Vis miniatyrer for lokale filer"
-
-#~ msgid "Never show thumbnails"
-#~ msgstr "Aldri vis miniatyrer"
-
-#~ msgid "Always preview sound files"
-#~ msgstr "Alltid forhåndsvis lydfiler"
-
-#~ msgid "Preview local sound files"
-#~ msgstr "Forhåndsvis lokale lydfiler"
-
-#~ msgid "Never preview sound files"
-#~ msgstr "Aldri forhåndsvis lydfiler"
-
-#~ msgid "Show Number of Items in Folders"
-#~ msgstr "Vis antall oppføringer i mapper"
-
-#~ msgid "_Do not make thumbnails for files larger than:"
-#~ msgstr "Ikke lag _miniatyrer for filer som er større enn:"
-
-#~ msgid "Preview Sound Files"
-#~ msgstr "Forhåndsvisning av lydfiler"
-
-#~ msgid "Tabs"
-#~ msgstr "Faner"
-
-#~ msgid "_Show folders only"
-#~ msgstr "_Vis kun mapper"
-
-#~ msgid "Maximum items per site"
-#~ msgstr "Maksimalt antall oppføringer per sted"
-
-#~ msgid "_Maximum number of items displayed per site"
-#~ msgstr "_Maksimalt antall oppføringer som vises per sted"
-
-#~ msgid "Update Minutes"
-#~ msgstr "Oppdaterer minutter"
-
-#~ msgid "_Update frequency in minutes"
-#~ msgstr "_Oppdateringsfrekvens i minutter"
-
-#~ msgid "Appearance"
-#~ msgstr "Utseende"
-
-#~ msgid "Windows"
-#~ msgstr "Vinduer"
-
-#~ msgid "Icon & List Views"
-#~ msgstr "Ikon- og listevisning"
-
-#~ msgid "Side Panes"
-#~ msgstr "Sidepaneler"
-
-#~ msgid "Search"
-#~ msgstr "Søk"
-
-#~ msgid "Navigation"
-#~ msgstr "Navigasjon"
-
-#~ msgid "Performance"
-#~ msgstr "Effektivitet"
-
-#~ msgid "News Panel"
-#~ msgstr "Nyhetspanel"
-
-#~ msgid "Preferences"
-#~ msgstr "Brukervalg"
-
-#~ msgid "Click on a theme to remove it."
-#~ msgstr "Klikk på et tema for å fjerne det."
-
-#~ msgid "Click on a theme to change the appearance of Nautilus."
-#~ msgstr "Klikk på et tema for å endre utseende for Nautilus."
-
-#~ msgid "Sorry, but \"%s\" is not a valid theme folder."
-#~ msgstr "Beklager, men «%s» er ikke en gyldig temakatalog."
-
-#~ msgid "Couldn't add theme"
-#~ msgstr "Kunne ikke legge til tema"
-
-#~ msgid "Sorry, but the \"%s\" theme couldn't be installed."
-#~ msgstr "Beklager, men temaet «%s» kunne ikke installeres."
-
-#~ msgid "Couldn't install theme"
-#~ msgstr "Kunne ikke installere tema"
-
-#~ msgid "Sorry, but \"%s\" is not a valid theme file."
-#~ msgstr "Beklager, men «%s» er ikke en gyldig temafil."
-
-#~ msgid "Select a theme folder to add as a new theme:"
-#~ msgstr "Velg en temakatalog som skal legges til som nytt tema:"
-
-#~ msgid ""
-#~ "Sorry, but you can't remove the current theme. Please change to another "
-#~ "theme before removing this one."
-#~ msgstr ""
-#~ "Beklager, men du kan ikke fjerne aktivt tema. Vennligst bytt til et annet "
-#~ "tema før du fjerner dette."
-
-#~ msgid "Sorry, but that theme could not be removed!"
-#~ msgstr "Beklager, men det temaet kunne ikke fjernes!"
-
-#~ msgid "Couldn't remove theme"
-#~ msgstr "Kunne ikke fjerne tema"
-
-#~ msgid "_Add Theme..."
-#~ msgstr "_Legg til tema..."
-
-#~ msgid "_Remove Theme..."
-#~ msgstr "Fje_rn tema..."
-
-#~ msgid "Cancel _Remove"
-#~ msgstr "Avb_ryt sletting"
-
-#~ msgid "Factory for music view"
-#~ msgstr "Factory for musikkvisning"
-
-#~ msgid "Music"
-#~ msgstr "Musikk"
-
-#~ msgid "Music Viewer"
-#~ msgstr "Musikkvisning"
-
-#~ msgid "Music view"
-#~ msgstr "Musikkvisning"
-
-#~ msgid "Music view factory"
-#~ msgstr "Factory for musikkvisning"
-
-#~ msgid "View as Music"
-#~ msgstr "Vis som musikk"
-
-#~ msgid "Blues"
-#~ msgstr "Blues"
-
-#~ msgid "Classic Rock"
-#~ msgstr "Klassisk rock"
-
-#~ msgid "Country"
-#~ msgstr "Country"
-
-#~ msgid "Dance"
-#~ msgstr "Dance"
-
-#~ msgid "Disco"
-#~ msgstr "Disko"
-
-#~ msgid "Funk"
-#~ msgstr "Funk"
-
-#~ msgid "Grunge"
-#~ msgstr "Grunge"
-
-#~ msgid "Hip-Hop"
-#~ msgstr "Hip-Hop"
-
-#~ msgid "Jazz"
-#~ msgstr "Jazz"
-
-#~ msgid "Metal"
-#~ msgstr "Metal"
-
-#~ msgid "New Age"
-#~ msgstr "New Age"
-
-#~ msgid "Oldies"
-#~ msgstr "Oldies"
-
-#~ msgid "Other"
-#~ msgstr "Andre"
-
-#~ msgid "Pop"
-#~ msgstr "Pop"
-
-#~ msgid "R&B"
-#~ msgstr "R&B"
-
-#~ msgid "Rap"
-#~ msgstr "Rapp"
-
-#~ msgid "Reggae"
-#~ msgstr "Reggae"
-
-#~ msgid "Rock"
-#~ msgstr "Rock"
-
-#~ msgid "Techno"
-#~ msgstr "Tekno"
-
-#~ msgid "Industrial"
-#~ msgstr "Industriell"
-
-#~ msgid "Alternative"
-#~ msgstr "Alternativ"
-
-#~ msgid "Ska"
-#~ msgstr "Ska"
-
-#~ msgid "Death Metal"
-#~ msgstr "Death metal"
-
-#~ msgid "Pranks"
-#~ msgstr "Pranks"
-
-#~ msgid "Soundtrack"
-#~ msgstr "Filmmusikk"
-
-#~ msgid "Euro-Techno"
-#~ msgstr "Euro-tekno"
-
-#~ msgid "Ambient"
-#~ msgstr "Ambient"
-
-#~ msgid "Trip-Hop"
-#~ msgstr "Trip-Hop"
-
-#~ msgid "Vocal"
-#~ msgstr "Vokal"
-
-#~ msgid "Jazz+Funk"
-#~ msgstr "Jazz+funk"
-
-#~ msgid "Fusion"
-#~ msgstr "Fusion"
-
-#~ msgid "Trance"
-#~ msgstr "Trance"
-
-#~ msgid "Classical"
-#~ msgstr "Klassisk"
-
-#~ msgid "Instrumental"
-#~ msgstr "Intstrumental"
-
-#~ msgid "Acid"
-#~ msgstr "Acid"
-
-#~ msgid "House"
-#~ msgstr "House"
-
-#~ msgid "Game"
-#~ msgstr "Spill"
-
-#~ msgid "Sound Clip"
-#~ msgstr "Lydklipp"
-
-#~ msgid "Gospel"
-#~ msgstr "Gospel"
-
-#~ msgid "Noise"
-#~ msgstr "Støy"
-
-#~ msgid "Alt"
-#~ msgstr "Alt"
-
-#~ msgid "Bass"
-#~ msgstr "Bass"
-
-#~ msgid "Soul"
-#~ msgstr "Soul"
-
-#~ msgid "Punk"
-#~ msgstr "Pønk"
-
-#~ msgid "Space"
-#~ msgstr "Space"
-
-#~ msgid "Meditative"
-#~ msgstr "Meditativ"
-
-#~ msgid "Instrumental Pop"
-#~ msgstr "Instrumental pop"
-
-#~ msgid "Instrumental Rock"
-#~ msgstr "Instrumental rock"
-
-#~ msgid "Ethnic"
-#~ msgstr "Etnisk"
-
-#~ msgid "Gothic"
-#~ msgstr "Gotisk"
-
-#~ msgid "Darkwave"
-#~ msgstr "Darkwave"
-
-#~ msgid "Techno-Industrial"
-#~ msgstr "Tekno-industriell"
-
-#~ msgid "Electronic"
-#~ msgstr "Elektronisk"
-
-#~ msgid "Pop-Folk"
-#~ msgstr "Pop-folk"
-
-#~ msgid "Eurodance"
-#~ msgstr "Eurodance"
-
-#~ msgid "Dream"
-#~ msgstr "Dream"
-
-#~ msgid "Southern Rock"
-#~ msgstr "Southern rock"
-
-#~ msgid "Comedy"
-#~ msgstr "Komedie"
-
-#~ msgid "Cult"
-#~ msgstr "Cult"
-
-#~ msgid "Gangsta Rap"
-#~ msgstr "Gangsta rap"
-
-#~ msgid "Top 40"
-#~ msgstr "Topp 40"
-
-#~ msgid "Christian Rap"
-#~ msgstr "Kristen rapp"
-
-#~ msgid "Pop/Funk"
-#~ msgstr "Pop/funk"
-
-#~ msgid "Jungle"
-#~ msgstr "Jungle"
-
-#~ msgid "Native American"
-#~ msgstr "Native american"
-
-#~ msgid "Cabaret"
-#~ msgstr "Kabarét"
-
-#~ msgid "Psychedelic"
-#~ msgstr "Psykedelisk"
-
-#~ msgid "Rave"
-#~ msgstr "Rave"
-
-#~ msgid "Showtunes"
-#~ msgstr "Showtunes"
-
-#~ msgid "Trailer"
-#~ msgstr "Trailer"
-
-#~ msgid "Lo-Fi"
-#~ msgstr "Lo-fi"
-
-#~ msgid "Tribal"
-#~ msgstr "Tribal"
-
-#~ msgid "Acid Punk"
-#~ msgstr "Acid punk"
-
-#~ msgid "Acid Jazz"
-#~ msgstr "Acid jazz"
-
-#~ msgid "Polka"
-#~ msgstr "Polka"
-
-#~ msgid "Retro"
-#~ msgstr "Retro"
-
-#~ msgid "Musical"
-#~ msgstr "Musical"
-
-#~ msgid "Rock & Roll"
-#~ msgstr "Rock & roll"
-
-#~ msgid "Hard Rock"
-#~ msgstr "Hard rock"
-
-#~ msgid "Folk"
-#~ msgstr "Folk"
-
-#~ msgid "Folk/Rock"
-#~ msgstr "Folk/rock"
-
-#~ msgid "National Folk"
-#~ msgstr "National folk"
-
-#~ msgid "Swing"
-#~ msgstr "Swing"
-
-#~ msgid "Fast-Fusion"
-#~ msgstr "Fast-fusion"
-
-#~ msgid "Bebob"
-#~ msgstr "Bebop"
-
-#~ msgid "Latin"
-#~ msgstr "Latin"
-
-#~ msgid "Revival"
-#~ msgstr "Revival"
-
-#~ msgid "Celtic"
-#~ msgstr "Keltisk"
-
-#~ msgid "Bluegrass"
-#~ msgstr "Bluegrass"
-
-#~ msgid "Avantgarde"
-#~ msgstr "Avantgarde"
-
-#~ msgid "Gothic Rock"
-#~ msgstr "Gotisk rock"
-
-#~ msgid "Progressive Rock"
-#~ msgstr "Progressiv rock"
-
-#~ msgid "Psychedelic Rock"
-#~ msgstr "Psykedelisk rock"
-
-#~ msgid "Symphonic Rock"
-#~ msgstr "Symfonisk rock"
-
-#~ msgid "Slow Rock"
-#~ msgstr "Slow rock"
-
-#~ msgid "Big Band"
-#~ msgstr "Storband"
-
-#~ msgid "Chorus"
-#~ msgstr "Kor"
-
-#~ msgid "Easy Listening"
-#~ msgstr "Easy listening"
-
-#~ msgid "Acoustic"
-#~ msgstr "Akustisk"
-
-#~ msgid "Humour"
-#~ msgstr "Humor"
-
-#~ msgid "Speech"
-#~ msgstr "Tale"
-
-#~ msgid "Chanson"
-#~ msgstr "Chanson"
-
-#~ msgid "Opera"
-#~ msgstr "Opera"
-
-#~ msgid "Chamber Music"
-#~ msgstr "Kammermusikk"
-
-#~ msgid "Sonata"
-#~ msgstr "Sonate"
-
-#~ msgid "Symphony"
-#~ msgstr "Symfoni"
-
-#~ msgid "Booty Bass"
-#~ msgstr "Booty bass"
-
-#~ msgid "Primus"
-#~ msgstr "Primus"
-
-#~ msgid "Porn Groove"
-#~ msgstr "Porn groove"
-
-#~ msgid "Satire"
-#~ msgstr "Satire"
-
-#~ msgid "Slow Jam"
-#~ msgstr "Slow jam"
-
-#~ msgid "Club"
-#~ msgstr "Club"
-
-#~ msgid "Tango"
-#~ msgstr "Tango"
-
-#~ msgid "Samba"
-#~ msgstr "Samba"
-
-#~ msgid "Folklore"
-#~ msgstr "Folklore"
-
-#~ msgid "Ballad"
-#~ msgstr "Ballade"
-
-#~ msgid "Power Ballad"
-#~ msgstr "Power ballade"
-
-#~ msgid "Rhythmic Soul"
-#~ msgstr "Rytmisk soul"
-
-#~ msgid "Freestyle"
-#~ msgstr "Freestyle"
-
-#~ msgid "Duet"
-#~ msgstr "Duett"
-
-#~ msgid "Punk Rock"
-#~ msgstr "Pønkrock"
-
-#~ msgid "Drum Solo"
-#~ msgstr "Trommesolo"
-
-#~ msgid "A Cappella"
-#~ msgstr "A capella"
-
-#~ msgid "Euro-House"
-#~ msgstr "Euro-house"
-
-#~ msgid "Dance Hall"
-#~ msgstr "Dance hall"
-
-#~ msgid "Goa"
-#~ msgstr "Goa"
-
-#~ msgid "Drum & Bass"
-#~ msgstr "Drum & bass"
-
-#~ msgid "Club-House"
-#~ msgstr "Club-house"
-
-#~ msgid "Hardcore"
-#~ msgstr "Hardcore"
-
-#~ msgid "Terror"
-#~ msgstr "Terror"
-
-#~ msgid "Indie"
-#~ msgstr "Indie"
-
-#~ msgid "BritPop"
-#~ msgstr "Britpop"
-
-#~ msgid "Negerpunk"
-#~ msgstr "Negerpønk"
-
-#~ msgid "Polsk Punk"
-#~ msgstr "Polsk pønk"
-
-#~ msgid "Beat"
-#~ msgstr "Beat"
-
-#~ msgid "Christian Gangsta Rap"
-#~ msgstr "Kristen gangsta rapp"
-
-#~ msgid "Heavy Metal"
-#~ msgstr "Heavy metal"
-
-#~ msgid "Black Metal"
-#~ msgstr "Black metal"
-
-#~ msgid "Crossover"
-#~ msgstr "Crossover"
-
-#~ msgid "Contemporary Christian"
-#~ msgstr "Kristen samtidsmusikk"
-
-#~ msgid "Christian Rock"
-#~ msgstr "Kristenrock"
-
-#~ msgid "Merengue"
-#~ msgstr "Merengue"
-
-#~ msgid "Salsa"
-#~ msgstr "Salsa"
-
-#~ msgid "Thrash Metal"
-#~ msgstr "Trash metal"
-
-#~ msgid "Anime"
-#~ msgstr "Anime"
-
-#~ msgid "JPop"
-#~ msgstr "JPop"
-
-#~ msgid "Synthpop"
-#~ msgstr "Synthpop"
-
-#~ msgid "Track"
-#~ msgstr "Spor"
-
-#~ msgid "Title"
-#~ msgstr "Tittel"
-
-#~ msgid "Artist"
-#~ msgstr "Artist"
-
-#~ msgid "Bit Rate"
-#~ msgstr "Bitrate"
-
-#~ msgid "Time"
-#~ msgstr "Tid"
-
-#~ msgid "Set Cover Image"
-#~ msgstr "Sett bilde for omslag"
-
-#~ msgid "Sorry, but '%s' is not a usable image file."
-#~ msgstr "Beklager, men «%s» er ikke en brukbar bildefil."
-
-#~ msgid "Select an image file for the album cover:"
-#~ msgstr "Velg en bildefil for plateomslaget:"
-
-#~ msgid ""
-#~ "Sorry, but the music view is unable to play back sound right now. This is "
-#~ "because the Enable sound server startup setting in the Sound section of "
-#~ "the Control Center is turned off."
-#~ msgstr ""
-#~ "Beklager, men musikkvisning er ute av stand til å spille av lyd akkurat "
-#~ "nå. Årsaken er at oppstart av lydtjener er slått av under lyd i "
-#~ "kontrollsenteret."
-
-#~ msgid "Unable to Play File"
-#~ msgstr "Kan ikke spille fil"
-
-#~ msgid ""
-#~ "Sorry, but the music view is unable to play back sound right now. Either "
-#~ "another program is using or blocking the sound card, or your sound card "
-#~ "is not configured properly. Try quitting any applications that may be "
-#~ "blocking use of the sound card."
-#~ msgstr ""
-#~ "Beklager, men musikkvisning er ute av stand til å spille av lyd akkurat "
-#~ "nå. Enten har et annet program blokkert lydkortet eller så er ikke "
-#~ "lydkortet konfigurert riktig. Prøv å avslutte alle applikasjoner som kan "
-#~ "blokkere lydkortet."
-
-#~ msgid "Sorry, but the music view can't play non-local files yet."
-#~ msgstr "Beklager, men musikkvisning kan ikke spille av eksterne filer ennå."
-
-#~ msgid "Can't Play Remote Files"
-#~ msgstr "Kunne ikke spille eksterne filer"
-
-#~ msgid "Drag to seek within track"
-#~ msgstr "Dra for å søke i et spor"
-
-#~ msgid "Previous"
-#~ msgstr "Forrige"
-
-#~ msgid "Play"
-#~ msgstr "Spill"
-
-#~ msgid "Pause"
-#~ msgstr "Pause"
-
-#~ msgid "Next"
-#~ msgstr "Neste"
-
-#~ msgid "cover image"
-#~ msgstr "bilde for omslag"
-
-#~ msgid "Sorry, but there was an error reading %s."
-#~ msgstr "Beklager, en feil oppsto under lesing av %s."
-
-#~ msgid "<span size=\"xx-large\">%s - %s</span>"
-#~ msgstr "<span size=\"xx-large\">%s - %s</span>"
-
-#~ msgid "Sorry, but the image at %s couldn't be installed as an emblem."
-#~ msgstr "Beklager, men bildet på %s kunne ikke installeres som et emblem."
-
-#~ msgid "Delete"
-#~ msgstr "Slett"
-
-#~ msgid "Re_move Custom Icons"
-#~ msgstr "Fj_ern egendefinerte ikoner"
-
-#~ msgid "Re_move Custom Icon"
-#~ msgstr "Fj_ern egendefinert ikon"
-
-#~ msgid "Throw Away"
-#~ msgstr "Kast bort"
-
-#~ msgid "Remove any custom images from selected icons"
-#~ msgstr "Fjern egendefinerte bilder fra valgte ikoner"
-
-#~ msgid "Empty Trash..."
-#~ msgstr "Tøm søppelkurv..."
-
-#~ msgid "_Delete from Trash..."
-#~ msgstr "Sle_tt fra søppelkurven..."
-
-#~ msgid "_Delete..."
-#~ msgstr "Sle_tt..."
-
-#~ msgid "_Empty Trash..."
-#~ msgstr "_Tøm søppelkurv..."
-
-#~ msgid "_Backgrounds and Emblems..."
-#~ msgstr "_Bakgrunner og emblemer..."
-
-#~ msgid "Factory for news view"
-#~ msgstr "Factory for nyhetsvisning"
-
-#~ msgid "News"
-#~ msgstr "Nyheter"
-
-#~ msgid "News sidebar panel"
-#~ msgstr "Sidelinjepanel for nyheter"
-
-#~ msgid "News sidebar panel fetches and displays RSS feeds"
-#~ msgstr "Sidelinjepanel for nyheter henter og viser RSS-strømmer"
-
-#~ msgid "Wrap at"
-#~ msgstr "Bryt ved"
-
-#~ msgid "Width the cell should wrap to."
-#~ msgstr "Bredde før teksten i cellen brytes."
-
-#~ msgid "Markup"
-#~ msgstr "Merking"
-
-#~ msgid "Marked up text to display"
-#~ msgstr "Tagget tekst som skal vises"
-
-#~ msgid "Bullet"
-#~ msgstr "Kulepunkt"
-
-#~ msgid "Bullet to display"
-#~ msgstr "Kulepunkt som skal vises"
-
-#~ msgid "Prelight Bullet"
-#~ msgstr "Lys opp kulepunkt"
-
-#~ msgid "Bullet to display when prelit"
-#~ msgstr "Kulepunkt som skal vises ved opplysing"
-
-#~ msgid "Couldn't load %s"
-#~ msgstr "Kunne ikke laste %s"
-
-#~ msgid "Loading %s"
-#~ msgstr "Laster %s"
-
-#~ msgid "Sorry, but you have not specified a name for the site!"
-#~ msgstr "Beklager, men du har ikke spesifisert et navn for dette nettstedet!"
-
-#~ msgid "Missing Site Name Error"
-#~ msgstr "Feil vedrørende manglende navn på nettsted"
-
-#~ msgid "Sorry, but you have not specified a URL for the site!"
-#~ msgstr "Beklager, men du hari ikke spesifisert en URL for dette nettstedet!"
-
-#~ msgid "Missing URL Error"
-#~ msgstr "Feil vedrørende manglende URL"
-
-#~ msgid "Sorry, but the specified url doesn't seem to be a valid RSS file!"
-#~ msgstr ""
-#~ "Beklager, men spesifisert url ser ikke ut til å være en gyldig RSS-fil!"
-
-#~ msgid "Invalid RSS URL"
-#~ msgstr "Ugyldig RSS-URL"
-
-#~ msgid "Edi_t"
-#~ msgstr "Re_diger"
-
-#~ msgid "Site Name"
-#~ msgstr "Navn på nettsted"
-
-#~ msgid "_Remove Site"
-#~ msgstr "Fje_rn nettsted"
-
-#~ msgid "Site _Name:"
-#~ msgstr "_Navn på nettsted:"
-
-#~ msgid "Site _RSS URL:"
-#~ msgstr "_RSS-URL for nettsted:"
-
-#~ msgid "_Add New Site"
-#~ msgstr "_Legg til nytt nettsted"
-
-#~ msgid "Add a New Site:"
-#~ msgstr "Legg til et nytt nettsted:"
-
-#~ msgid "Remove a _Site:"
-#~ msgstr "Fjern et nett_sted:"
-
-#~ msgid "_Select Sites:"
-#~ msgstr "_Velg nettsteder:"
-
-#~ msgid "_Done"
-#~ msgstr "_Ferdig"
-
-#~ msgid ""
-#~ "The News panel displays current headlines from your favorite websites.  "
-#~ "Click the 'Select Sites' button to select the sites to display."
-#~ msgstr ""
-#~ "Nyhetspanelet viser oppdaterte overskrifter fra dine favorittnettsteder. "
-#~ "Klikk «Velg nettsteder» knappen for å velge nettsteder som skal vises."
-
-#~ msgid "_Select Sites"
-#~ msgstr "_Velg nettsteder"
-
-#~ msgid "image indicating that the news has changed"
-#~ msgstr "bilde som indikerer at nyhetene er endret"
-
-#~ msgid "Empty Trash?"
-#~ msgstr "Tøm søppelkurv?"
-
-#~ msgid "MIME Type:"
-#~ msgstr "MIME-type:"
-
-#~ msgid "Text View:"
-#~ msgstr "Tekstvisning:"
-
-#~ msgid "Include in the menu just for \"%s\""
-#~ msgstr "Ta med i menyen kun for \"%s\""
-
-#~ msgid "Use as default just for \"%s\""
-#~ msgstr "Bruk som forvalgt kun for \"%s\""
-
-#~ msgid "View as Other"
-#~ msgstr "Vis som annet"
-
-#~ msgid "No applications are available for \"%s\"."
-#~ msgstr "Ingen tilgjengelige applikasjoner for \"%s\"."
-
-#~ msgid ""
-#~ "%s\n"
-#~ "\n"
-#~ "You can configure which programs are offered for which file types with "
-#~ "the \"File Types and Programs\" part of the GNOME Control Center. Do you "
-#~ "want to go there now?"
-#~ msgstr ""
-#~ "%s\n"
-#~ "\n"
-#~ "Du kan konfigurere hvilke programmer som foreslås for hvilke filtyper med "
-#~ "\"Filtyper og programmer\" delen av GNOME kontrollsenter. Vil du gå dit "
-#~ "nå?"
-
-#~ msgid "Move to _Trash"
-#~ msgstr "Flyt_t til søppelkurv"
-
-#~ msgid "De_lete"
-#~ msgstr "S_lett"
-
-#~ msgid "Make _Link"
-#~ msgstr "Opprett _lenke"
-
-#~ msgid "R_emove Custom Icons"
-#~ msgstr "Fj_ern egendefinerte ikoner"
-
-#~ msgid "Restore Icons' _Original Sizes"
-#~ msgstr "Gjenopprett ikonenes _opprinnelige størrelser"
-
-#~ msgid "Format Conditionally"
-#~ msgstr "Betinget formatering"
-
-#~ msgid "Media Properties Conditionally"
-#~ msgstr "Betingete egenskaper for media"
-
-#~ msgid "Protect Conditionally"
-#~ msgstr "Betinget beskyttelse"
-
-#~ msgid "Unmount Volume Conditionally"
-#~ msgstr "Betinget avmontering av volum"
-
-#~ msgid "Copy Files"
-#~ msgstr "Kopier filer"
-
-#~ msgid "Cut Files"
-#~ msgstr "Klipp ut filer"
-
-#~ msgid "New Folder"
-#~ msgstr "Ny mappe"
-
-#~ msgid "New La_uncher"
-#~ msgstr "N_y oppstarter"
-
-#~ msgid "Open"
-#~ msgstr "Åpne"
-
-#~ msgid "Open Scripts Folder"
-#~ msgstr "Åpne skript-mappe"
-
-#~ msgid "Open With"
-#~ msgstr "Åpne med"
-
-#~ msgid "Other Viewer..."
-#~ msgstr "Annet visningsprogram..."
-
-#~ msgid "Paste Files"
-#~ msgstr "Lim inn filer"
-
-#~ msgid "Reset View to Default"
-#~ msgstr "Nullstill visning til forvalg"
-
-#~ msgid "Select All Files"
-#~ msgstr "Velg alle filer"
-
-#~ msgid "Show the contents of the Trash"
-#~ msgstr "Vis innholdet i søppelkurven"
-
-#~ msgid "_Duplicate"
-#~ msgstr "_Dupliser"
-
-#~ msgid "_Make Link"
-#~ msgstr "Opprett _lenke"
-
-#~ msgid "_Show Trash"
-#~ msgstr "_Vis søppelkurv"
-
-#~ msgid "Reversed Order"
-#~ msgstr "Omvendt rekkefølge"
-
-#~ msgid "Tighter Layout"
-#~ msgstr "Tettere plassering"
-
-#~ msgid "Tighter _Layout"
-#~ msgstr "Tettere p_lassering"
-
-#~ msgid "_Clean Up by Name"
-#~ msgstr "R_ydd opp etter navn"
-
-#~ msgid "_Stretch Icon"
-#~ msgstr "_Strekk ikon"
-
-#~ msgid "Bookmarks"
-#~ msgstr "Bokmerker"
-
-#~ msgid "_Remove"
-#~ msgstr "Fje_<rn"
-
-#~ msgid "Nautilus Themes"
-#~ msgstr "Nautilus tema"
-
-#~ msgid "Opening New Windows"
-#~ msgstr "Åpning av nye vinduer"
-
-#~ msgid "Sorting Order"
-#~ msgstr "Sorteringsrekkefølge"
-
-#~ msgid "_Show only folders (no files) in the tree"
-#~ msgstr "Vi_s kun mapper (ingen filer) i treet"
-
-#~ msgid "View Defaults"
-#~ msgstr "Forvalg for visning"
-
-#~ msgid "Speed Tradeoffs"
-#~ msgstr "Forsak hastighet"
-
-#~ msgid "P_references"
-#~ msgstr "B_rukervalg"
-
-#~ msgid "_About Nautilus"
-#~ msgstr "_Om Nautilus"
-
-#~ msgid "_Normal Size"
-#~ msgstr "_Normal størrelse"
-
-#~ msgid "_Up a Level"
-#~ msgstr "_Opp ett nivå"
-
-#~ msgid "Clear History?"
-#~ msgstr "Tøm historikk?"
-
-#~ msgid "Hide St_atus Bar"
-#~ msgstr "Skjul st_atuslinje"
-
-#~ msgid "Show St_atus Bar"
-#~ msgstr "Vis st_atuslinje"
-
-#~ msgid "Show _Sidebar"
-#~ msgstr "Vis _sidelinje"
-
-#~ msgid "Show _Toolbar"
-#~ msgstr "Vis verk_tøylinje"
-
-#~ msgid "Show Location _Bar"
-#~ msgstr "Vis a_dresselinje"
