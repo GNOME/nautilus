@@ -89,7 +89,7 @@ struct NautilusZoomControlDetails {
 
 static guint signals[LAST_SIGNAL];
 
-gpointer accessible_parent_class;
+static gpointer accessible_parent_class;
 
 static const char *nautilus_zoom_control_accessible_action_names[] = {
 	N_("Zoom In"),
