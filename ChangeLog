@@ -1,3 +1,13 @@
+2000-10-31  Darin Adler  <darin@eazel.com>
+
+	Fixed bug 4242 (Tree view crash trying to navigate to parent uri
+	(Up)) and bug 4297 (Opening a window twice causes Nautilus to
+	crash).
+	
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_destroy): Disconnect the root_node_changed
+	signal.
+
 2000-10-31  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/login/nautilus-view/nautilus-change-password-

@@ -152,12 +152,17 @@ nautilus_tree_model_initialize (gpointer object, gpointer klass)
 							     g_direct_equal);
 }
 
-static void       
+static void
 nautilus_tree_model_destroy (GtkObject *object)
 {
 	NautilusTreeModel *model;
 
-	model = (NautilusTreeModel *) object;
+	model = NAUTILUS_TREE_MODEL (object);
+
+	if (model->details->root_node_changed_signal_id != 0) {
+		gtk_signal_disconnect (GTK_OBJECT (nautilus_tree_node_get_file (model->details->root_node)),
+				       model->details->root_node_changed_signal_id);
+	}
 
 	remove_all_nodes (model);
 
@@ -272,8 +277,7 @@ remove_all_nodes (NautilusTreeModel *model)
 		model->details->root_node = NULL;
 	}
 	model->details->root_node_reported = FALSE;
-}				
-       
+}
 
 void
 nautilus_tree_model_monitor_add (NautilusTreeModel         *model,
@@ -353,9 +357,9 @@ nautilus_tree_model_monitor_remove (NautilusTreeModel         *model,
 
 	if (model->details->monitor_clients == NULL) {
 		if (model->details->root_node_reported) {
-			nautilus_file_monitor_remove (nautilus_tree_node_get_file 
-						      (model->details->root_node),
-						      model);
+			nautilus_file_monitor_remove
+				(nautilus_tree_node_get_file (model->details->root_node),
+				 model);
 		}
 	}
 }
