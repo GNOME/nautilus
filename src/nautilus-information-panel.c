@@ -33,6 +33,8 @@
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <liboaf/liboaf.h>
+
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file.h>
@@ -46,6 +48,8 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
+#include <libnautilus-extensions/nautilus-view-identifier.h>
+
 #include "nautilus-sidebar-tabs.h"
 #include "nautilus-sidebar-title.h"
 #include "nautilus-link-set-window.h"
@@ -265,6 +269,28 @@ nautilus_sidebar_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
+/* utility routines to test if sidebar panel is currently enabled */
+static char *
+nautilus_sidebar_get_sidebar_panel_key (const char *panel_iid)
+{
+	g_return_val_if_fail (panel_iid != NULL, NULL);
+
+	return g_strdup_printf ("%s/%s", NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE, panel_iid);
+}
+
+static gboolean
+nautilus_sidebar_sidebar_panel_enabled (const char *panel_iid)
+{
+	gboolean enabled;
+        gchar	 *key;
+
+	key = nautilus_sidebar_get_sidebar_panel_key (panel_iid);
+        enabled = nautilus_preferences_get_boolean (key, FALSE);
+
+        g_free (key);
+        return enabled;
+}
+
 /* callback to handle resetting the background */
 static void
 reset_background_callback(GtkWidget *menu_item, GtkWidget *sidebar)
@@ -274,6 +300,69 @@ reset_background_callback(GtkWidget *menu_item, GtkWidget *sidebar)
 	if (background) { 
 		nautilus_background_reset(background); 
 	}
+}
+
+/* callback for sidebar panel menu items to toggle their visibility */
+static void
+toggle_sidebar_panel(GtkWidget *widget, char *sidebar_id)
+{
+        gchar	 *key;
+
+	key = nautilus_sidebar_get_sidebar_panel_key (sidebar_id);
+	nautilus_preferences_set_boolean(key, !nautilus_preferences_get_boolean(key, FALSE));
+	g_free(key); 
+}
+
+/* utility routine to add a menu item for each potential sidebar panel */
+
+static void
+nautilus_sidebar_add_panel_items(NautilusSidebar *sidebar, GtkWidget *menu)
+{
+	CORBA_Environment ev;
+	const char *query;
+        OAF_ServerInfoList *oaf_result;
+	int i;
+	gboolean enabled;
+	GList *name_list;
+	GtkWidget *menu_item;
+	NautilusViewIdentifier *id;
+
+	CORBA_exception_init (&ev);
+
+	/* ask OAF for all of the sidebars panel */
+	query = "nautilus:sidebar_panel_name.defined() AND repo_ids.has ('IDL:Bonobo/Control:1.0')";
+	oaf_result = oaf_query (query, NULL, &ev);
+	
+	/* loop through the results, appending a new menu item for each unique sidebar panel */
+	name_list = NULL;
+        if (ev._major == CORBA_NO_EXCEPTION && oaf_result != NULL) {
+		for (i = 0; i < oaf_result->_length; i++) {
+			id = nautilus_view_identifier_new_from_sidebar_panel
+				(&oaf_result->_buffer[i]);
+			/* check to see if we've seen this one */
+			if (g_list_find_custom (name_list, id->name, (GCompareFunc) strcmp) == NULL) {
+				name_list = g_list_append (name_list, g_strdup (id->name));
+			
+				/* add a check menu item */
+				menu_item = gtk_check_menu_item_new_with_label(id->name);
+				enabled = nautilus_sidebar_sidebar_panel_enabled(id->iid);
+				gtk_check_menu_item_set_show_toggle(GTK_CHECK_MENU_ITEM(menu_item), enabled);
+				gtk_widget_show(menu_item);
+				gtk_menu_append (GTK_MENU(menu), menu_item);
+				gtk_signal_connect_full (GTK_OBJECT (menu_item), "activate", GTK_SIGNAL_FUNC(toggle_sidebar_panel),
+						 	NULL, g_strdup(id ->iid), (GtkDestroyNotify) g_free, FALSE, FALSE);
+			}
+			nautilus_view_identifier_free (id);
+		}
+	} 
+	if (name_list != NULL)
+		nautilus_g_list_free_deep(name_list);
+		
+	if (oaf_result != NULL) {
+		CORBA_free (oaf_result);
+	}
+	
+	CORBA_exception_free (&ev);
 }
 
 /* create the context menu */
@@ -296,6 +385,13 @@ nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar)
         gtk_widget_set_sensitive (menu_item, has_background);
 	gtk_signal_connect (GTK_OBJECT (menu_item), "activate", reset_background_callback, sidebar);
 
+	/* add a separator */
+	menu_item = gtk_menu_item_new ();
+	gtk_widget_show (menu_item);
+	gtk_menu_append (GTK_MENU(menu), menu_item);
+	
+	/* add the sidebar panels */
+	nautilus_sidebar_add_panel_items(sidebar, menu);
 	return menu;
 }
 
