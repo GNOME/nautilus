@@ -848,8 +848,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 		icon_name = g_strdup (nautilus_icon_factory_get_icon_name_for_file (file));
 	}
 
-	if (nautilus_file_is_local (file) ||
-									nautilus_preferences_get_boolean(NAUTILUS_PREFERENCES_REMOTE_VIEWS, FALSE)) {
+	if (nautilus_file_is_local (file) || nautilus_preferences_get_boolean (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS, FALSE)) {
 		top_left_text = nautilus_file_get_top_left_text (file);
 	}
 

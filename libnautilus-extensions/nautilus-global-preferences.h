@@ -66,7 +66,7 @@ enum
 	NAUTILUS_CLICK_POLICY_DOUBLE
 };
 
-#define NAUTILUS_PREFERENCES_REMOTE_VIEWS "/nautilus/preferences/remote_views"
+#define NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS "/nautilus/preferences/remote_icon_text"
 
 void                      nautilus_global_preferences_startup                            (void);
 void                      nautilus_global_preferences_shutdown                           (void);

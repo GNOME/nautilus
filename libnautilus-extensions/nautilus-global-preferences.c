@@ -124,7 +124,7 @@ global_preferences_create_dialog (void)
 	
 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (directory_views_pane),
 							 2,
-							 NAUTILUS_PREFERENCES_REMOTE_VIEWS,
+							 NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 
 	/*
@@ -358,8 +358,8 @@ global_preferences_register_for_ui (void)
 					     NAUTILUS_CLICK_POLICY_DOUBLE);
 
 	/* remote views */
-	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_REMOTE_VIEWS,
-			               "Fully Decorate Remote Views",
+	nautilus_preferences_set_info (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS,
+			               "Display text in icons even for remote text files",
 				       NAUTILUS_PREFERENCE_BOOLEAN,
 				       (gconstpointer) FALSE);
 

@@ -1,5 +1,26 @@
 2000-05-26  John Sullivan  <sullivan@eazel.com>
 
+	Fixed bug 992 ("Fully Decorate Remote Views" is not a 
+	sensible preference). Note that before making the
+	quick wording fix Darin, Ian, and I came up with a
+	longer-term plan for handling this general kind of
+	thing well (bug 995).
+
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(state_changed):
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_create_dialog),
+	(global_preferences_register_for_ui):
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file):
+	Changed "Fully Decorate Remote Views" to "Display text in
+	icons even for remote text files"
+	Changed NAUTILUS_PREFERENCES_REMOTE_VIEWS to
+	NAUTILUS_PREFERENCES_SHOW_TEXT_IN_REMOTE_ICONS
+
+2000-05-26  John Sullivan  <sullivan@eazel.com>
+
 	* src/ntl-view-bonobo-subdoc.c:
 	(bonobo_subdoc_notify_location_change):
 	Changed the NULL to a "", now text files work. I think
