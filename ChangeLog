@@ -1,3 +1,23 @@
+2001-04-12  Andy Hertzfeld  <andy@eazel.com>
+
+	keep showing an annotation as long as the mouse remains in
+	the emblem or in the annotation itself.
+	
+	Also, consider the arrow shape when hit-testing
+	
+	* libnautilus-extensions/nautilus-canvas-note-item.c:
+	(nautilus_canvas_note_item_class_init),
+	(nautilus_canvas_note_item_event), (get_arrow_half_width),
+	(nautilus_canvas_note_item_point),
+	(nautilus_canvas_note_item_set_owner),
+	(nautilus_canvas_note_item_update):
+	
+	* libnautilus-extensions/nautilus-canvas-note-item.h:
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(create_annotation), (nautilus_icon_canvas_item_set_note_state),
+	(nautilus_icon_canvas_item_event):
+	* libnautilus-extensions/nautilus-icon-canvas-item.h:
+
 2001-04-11  Andy Hertzfeld  <andy@eazel.com>
 
 	groundwork for supporting multiple annotations for file by

@@ -107,6 +107,8 @@ void	    nautilus_icon_canvas_item_invalidate_label_size    (NautilusIconCanvasI
 void        nautilus_icon_canvas_item_get_icon_rectangle       (NautilusIconCanvasItem     *item,
 								ArtDRect                   *world_rectangle);
 void        nautilus_icon_canvas_item_update_bounds            (NautilusIconCanvasItem     *item);
+void	    nautilus_icon_canvas_item_set_note_state	       (NautilusIconCanvasItem	   *icon_item, int new_state);
+
 void        nautilus_icon_canvas_item_set_smooth_font          (NautilusIconCanvasItem     *item,
 								EelScalableFont       *font);
 void        nautilus_icon_canvas_item_set_smooth_font_size     (NautilusIconCanvasItem     *item,

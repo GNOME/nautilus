@@ -42,6 +42,8 @@
 #include "nautilus-annotation.h"
 #include "nautilus-canvas-note-item.h"
 #include "nautilus-font-factory.h"
+#include "nautilus-icon-canvas-item.h"
+
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-gnome-extensions.h>
@@ -92,6 +94,8 @@ static void nautilus_canvas_note_item_translate   (GnomeCanvasItem *item, double
 static void nautilus_canvas_note_item_bounds      (GnomeCanvasItem *item, double *x1, double *y1, double *x2, double *y2);
 
 static void nautilus_canvas_note_item_draw	  (GnomeCanvasItem *item, GdkDrawable *drawable, int x, int y, int width, int height);
+static int  nautilus_canvas_note_item_event	  (GnomeCanvasItem *item, GdkEvent *event);
+
 static void nautilus_canvas_note_item_render      (GnomeCanvasItem *item, GnomeCanvasBuf *buf);
 static void nautilus_canvas_note_item_update      (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags);
 static double nautilus_canvas_note_item_point	  (GnomeCanvasItem *item, double x, double y, int cx, int cy, GnomeCanvasItem **actual_item);
@@ -162,6 +166,7 @@ nautilus_canvas_note_item_class_init (NautilusCanvasNoteItemClass *class)
 	item_class->point = nautilus_canvas_note_item_point;
 	item_class->update = nautilus_canvas_note_item_update;
 	item_class->render = nautilus_canvas_note_item_render;
+	item_class->event = nautilus_canvas_note_item_event;
 }
 
 static void
@@ -821,14 +826,55 @@ nautilus_canvas_note_item_draw (GnomeCanvasItem *item, GdkDrawable *drawable, in
 				y2 - y1);
 }
 
+/* handle events, to put away the annotation when necessary */
+static int
+nautilus_canvas_note_item_event (GnomeCanvasItem *item, GdkEvent *event)
+{
+	NautilusCanvasNoteItem *note_item;
+	GnomeCanvasItem *mouse_over_item;
+	int x, y;
+	double world_x, world_y;
+	
+	switch (event->type) {
+		
+	case GDK_LEAVE_NOTIFY:		
+		/* set the owner's note state to empty if we're leaving the note item
+		 * and not returning to the owner
+		 */
+		gdk_window_get_pointer (GTK_WIDGET (item->canvas)->window, &x, &y, NULL);
+		gnome_canvas_window_to_world (item->canvas, x, y, &world_x, &world_y);
+		mouse_over_item = gnome_canvas_get_item_at (item->canvas, world_x, world_y);
+		
+		note_item = NAUTILUS_CANVAS_NOTE_ITEM (item);	
+		if (mouse_over_item != note_item->owning_item) {
+			nautilus_icon_canvas_item_set_note_state (NAUTILUS_ICON_CANVAS_ITEM (note_item->owning_item), 0);		
+		}
+		return TRUE;
+			
+	default:
+		/* Don't eat up other events; icon container might use them. */
+		return FALSE;
+	}
+}
+
+static double
+get_arrow_half_width (double x0, double x1)
+{
+	double arrow_half_width;
+	arrow_half_width = (x1 - x0) / 16;
+	return CLAMP (arrow_half_width, MIN_ARROW_HALF_WIDTH, MAX_ARROW_HALF_WIDTH);
+
+}
+
 static double
 nautilus_canvas_note_item_point (GnomeCanvasItem *item, double x, double y, int cx, int cy, GnomeCanvasItem **actual_item)
 {
 	NautilusCanvasNoteItem *note_item;
 	double x1, y1, x2, y2;
-	double hwidth;
+	double hwidth, old_top;
 	double dx, dy;
-
+	double arrow_half_width, midpoint;
+	
 	note_item = NAUTILUS_CANVAS_NOTE_ITEM (item);
 
 	*actual_item = item;
@@ -850,7 +896,21 @@ nautilus_canvas_note_item_point (GnomeCanvasItem *item, double x, double y, int 
 	x2 += hwidth;
 	y2 += hwidth;
 
-	/* Is point inside rectangle (which can be hollow if it has no fill set)? */
+	/* handle the arrow if we're in aa mode */
+	if (item->canvas->aa) {
+		old_top = y1;
+		y1 += ARROW_HEIGHT;
+		
+		if (y >= old_top && y <= y1) {
+			arrow_half_width = get_arrow_half_width (x1, x2);
+			midpoint = (x1 + x2) / 2;
+			if (x >= (midpoint - arrow_half_width) && x <= (midpoint + arrow_half_width)) {
+				return 0.0;
+			}
+		}
+	}
+	
+	/* Is point inside rectangle? */
 
 	if ((x >= x1) && (y >= y1) && (x <= x2) && (y <= y2)) {
 		return 0.0;
@@ -874,6 +934,13 @@ nautilus_canvas_note_item_point (GnomeCanvasItem *item, double x, double y, int 
 
 	return sqrt (dx * dx + dy * dy);
 }
+void
+nautilus_canvas_note_item_set_owner (NautilusCanvasNoteItem *note_item,
+				     GnomeCanvasItem *owner)
+{
+	note_item->owning_item = owner;
+}
+
 
 static void
 nautilus_canvas_note_item_update (GnomeCanvasItem *item, double affine[6], ArtSVP *clip_path, gint flags)
@@ -900,9 +967,8 @@ nautilus_canvas_note_item_update (GnomeCanvasItem *item, double affine[6], ArtSV
 		round_off_amount = item->canvas->pixels_per_unit / 2;
 		
 		gnome_canvas_item_reset_bounds (item);
+		arrow_half_width = get_arrow_half_width (x0, x1);		
 		midpoint = (x1 + x0) / 2;
-		arrow_half_width = (x1 - x0) / 16;
-		arrow_half_width = CLAMP (arrow_half_width, MIN_ARROW_HALF_WIDTH, MAX_ARROW_HALF_WIDTH);
 				
 		vpath[0].code = ART_MOVETO;
 		vpath[0].x = x0 - round_off_amount;

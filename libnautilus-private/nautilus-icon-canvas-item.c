@@ -1899,6 +1899,8 @@ create_annotation (NautilusIconCanvasItem *icon_item, int emblem_index)
 
 	g_free (note_text);	
 
+	nautilus_canvas_note_item_set_owner (NAUTILUS_CANVAS_NOTE_ITEM (icon_item->details->annotation), item);
+	
 	/* reposition the item now that it's had a chance to be properly sized */
 	if (canvas->aa) {
 		get_emblem_rectangle (icon_item, emblem_index, &emblem_rect);
@@ -1944,10 +1946,10 @@ create_annotation_timeout_callback (gpointer callback_data)
 }
 
 /* manage showing and hiding annotations, based on mouse-over the passed-in emblem */
-static void
+void
 nautilus_icon_canvas_item_set_note_state (NautilusIconCanvasItem *icon_item, int new_state)
 {
-	/* nothing to do if nothing changed */
+	/* nothing more to do if nothing changed */
 	if (new_state == icon_item->details->note_state) {
 		return;
 	}
@@ -1982,11 +1984,14 @@ static int
 nautilus_icon_canvas_item_event (GnomeCanvasItem *item, GdkEvent *event)
 {
 	NautilusIconCanvasItem *icon_item;
+	GnomeCanvasItem *mouse_over_item;
 	GdkEventMotion *motion_event;
 	ArtIRect hit_rect;
 	ArtDRect world_rect;
 	HitType hit_type;
 	int hit_index, emblem_state;
+	int x, y;
+	double world_x, world_y;
 	
 	icon_item = NAUTILUS_ICON_CANVAS_ITEM (item);
 
@@ -2035,7 +2040,17 @@ nautilus_icon_canvas_item_event (GnomeCanvasItem *item, GdkEvent *event)
 			icon_item->details->is_active = 0;			
 			icon_item->details->is_highlighted_for_drop = FALSE;
 			
-			nautilus_icon_canvas_item_set_note_state (icon_item, 0);		
+			/* if the item has an annotation and the mouse is in it
+			 * don't reset the note_state
+			 */
+			gdk_window_get_pointer (GTK_WIDGET (item->canvas)->window, &x, &y, NULL);
+			gnome_canvas_window_to_world (item->canvas, x, y, &world_x, &world_y);
+			mouse_over_item = gnome_canvas_get_item_at (item->canvas, world_x, world_y);
+			
+			if (mouse_over_item == NULL || mouse_over_item != icon_item->details->annotation) {
+				nautilus_icon_canvas_item_set_note_state (icon_item, 0);		
+			}
+			
 			gnome_canvas_item_request_update (item);
 		}
 		return TRUE;

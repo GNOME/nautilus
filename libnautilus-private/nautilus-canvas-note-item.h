@@ -66,6 +66,8 @@ struct _NautilusCanvasNoteItem {
 	GdkGC *fill_gc;			/* GC for filling */
 	GdkGC *outline_gc;		/* GC for outline */
 
+	GnomeCanvasItem *owning_item;	/* canvas item owning this annotation */
+	
 	/* text message */
 	char *note_text;		/* text for annotation */
 	
@@ -82,8 +84,9 @@ struct _NautilusCanvasNoteItemClass {
 };
 
 /* Standard Gtk function */
-GtkType nautilus_canvas_note_item_get_type (void);
-
+GtkType nautilus_canvas_note_item_get_type	(void);
+void	nautilus_canvas_note_item_set_owner	(NautilusCanvasNoteItem *note_item,
+						 GnomeCanvasItem *owner);
 
 END_GNOME_DECLS
 
