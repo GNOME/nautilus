@@ -241,6 +241,10 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 	EazelInstall *service = cbstruct->service;
 	const char *file_to_report = cbstruct->file_to_report;
 
+#ifdef GTK_MAIN_ITERATION_ACTUALLY_CHECKED_FOR_CORBA_CALLS_WHICH_IT_APPARENTLY_DOESNT
+	gtk_main_iteration_do (FALSE);
+#endif
+	
 	switch (info->status) {
 	case GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR:
 		trilobite_debug ("GnomeVFS Error: %s\n",
@@ -253,6 +257,11 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 		return TRUE;
 		break;
 	case GNOME_VFS_XFER_PROGRESS_STATUS_OK:
+		if (service->private->cancel_download) {
+			/* tell gnome-vfs to STOP */
+			trilobite_debug ("telling gnome-vfs to cancel download");
+			return FALSE;
+		}
 		switch (info->phase) {
 		case GNOME_VFS_XFER_PHASE_INITIAL:
 			initial_emit = TRUE;
@@ -286,6 +295,7 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 								      info->file_size);
 
 			}
+
 			/*
 			g_message ("Transferring `%s' to `%s' (file %ld/%ld, byte %ld/%ld in file, "
 				   "%" GNOME_VFS_SIZE_FORMAT_STR "/%" GNOME_VFS_SIZE_FORMAT_STR " total)",
@@ -326,7 +336,7 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 		trilobite_debug ("Unknown status");
 		return FALSE;
 	}       
-	
+
 	return FALSE; 	
 }
 
@@ -370,6 +380,7 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 	cbstruct->file_to_report = file_to_report;
 
 	/* Execute the gnome_vfs copy */
+	service->private->cancel_download = FALSE;
 	result = gnome_vfs_xfer_uri (src_uri, dest_uri,
 				     xfer_options,
 				     GNOME_VFS_XFER_ERROR_MODE_QUERY,
@@ -383,6 +394,9 @@ gnome_vfs_fetch_remote_file (EazelInstall *service,
 		trilobite_debug ("File download failed");
 		if (result == GNOME_VFS_ERROR_BAD_PARAMETERS) {
 			trilobite_debug ("gnome_vfs_xfer_uri returned BAD_PARAMETERS");
+		}
+		if (service->private->cancel_download) {
+			trilobite_debug ("download was cancelled from afar");
 		}
 	}
  

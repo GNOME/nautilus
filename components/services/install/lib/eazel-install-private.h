@@ -84,6 +84,9 @@ struct _EazelInstallPrivate {
 	
         /* TRUE if the rpm subcommand is running */
 	volatile gboolean subcommand_running;
+
+	/* used to cancel a download before it finished */
+	gboolean cancel_download;
 };
 
 #endif /* EAZEL_INSTALL_PRIVATE_H */

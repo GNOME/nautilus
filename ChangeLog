@@ -1,3 +1,42 @@
+2000-10-19  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba.c:
+	(impl_Eazel_Install_stop), (eazel_install_get_epv):
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_install_packages),
+	(eazel_install_emit_install_progress_default),
+	(eazel_install_emit_download_progress_default),
+	(eazel_install_emit_preflight_check_default),
+	(eazel_install_emit_delete_files_default):
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-protocols.c:
+	(gnome_vfs_xfer_callback), (gnome_vfs_fetch_remote_file):
+
+	Make the install lib check for corba events while doing a download
+	(which might take a while) so that it can receive a "stop"
+	message.  Ref itself while doing the install to avoid a mess.  Try
+	to catch some corba exceptions and abort on them.  Set a flag on
+	the "stop" message and cancel the gnome-vfs operation.  Make the
+	download_progress callback be a two-way call to trick corba into
+	checking for potential incoming "stop" calls.  These sum up to a
+	rough hack which will be cleaned out when the installer is broken
+	up into more stateful components post-PR2.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_view_destroy),
+	(current_progress_bar_complete),
+	(nautilus_service_install_downloading),
+	(nautilus_service_install_installing),
+	(nautilus_service_need_password),
+	(nautilus_service_install_view_update_from_uri),
+	(service_install_stop_loading_callback):
+
+	Send "stop" message to the install view when the user hits the
+	"stop" button, and also when the view is about to be destroyed.
+	Cleanly handle the "stop" button by treating it like an abort.
+	Use better-named /tmp directory, for security reasons.
+	
 2000-10-20  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* configure.in:

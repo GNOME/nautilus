@@ -110,7 +110,8 @@ module Trilobite {
 
 		interface InstallCallback : Bonobo::Unknown {
 			/* Called during download of a file */
-			oneway void download_progress (in string file, in long amount, in long total);
+			/* make it 2-way so that it will process incoming corba calls */
+			void download_progress (in string file, in long amount, in long total);
 
 			/* Called when dependency check is being handled */
 			oneway void dependency_check (in PackageDataStruct package, in PackageDataStruct needs);
@@ -197,6 +198,9 @@ module Trilobite {
 			oneway void revert_transaction (in string xml, 
 							in string root,
 							in InstallCallback cb);
-		};
+
+			/* Cancel an ongoing download. */
+			void stop ();
+                };
 	};
 };

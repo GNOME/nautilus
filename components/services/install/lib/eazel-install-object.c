@@ -889,6 +889,9 @@ eazel_install_install_packages (EazelInstall *service,
 	EazelInstallStatus result;
 	SANITY (service);
 
+	/* we're about to call g_main_iteraton sometimes, so grab a ref on ourself to avoid vanishing. */
+	bonobo_object_ref (BONOBO_OBJECT (service));
+
 	if (create_temporary_directory (service)) {
 		if (categories == NULL && eazel_install_get_package_list (service) == NULL) {
 			char *tmp;
@@ -920,6 +923,7 @@ eazel_install_install_packages (EazelInstall *service,
 		result = EAZEL_INSTALL_NOTHING;
 	}
 
+	bonobo_object_unref (BONOBO_OBJECT (service));
 
 	eazel_install_emit_done (service, result & EAZEL_INSTALL_INSTALL_OK);
 }
@@ -1051,7 +1055,7 @@ eazel_install_emit_install_progress_default (EazelInstall *service,
 								  package_num, num_packages,
 								  package_size_completed, package_size_total,
 								  total_size_completed, total_size,
-								  &ev);			
+								  &ev);
 		CORBA_free (package);
 	} 
 	CORBA_exception_free (&ev);
@@ -1080,6 +1084,10 @@ eazel_install_emit_download_progress_default (EazelInstall *service,
 	SANITY(service);
 	if (service->callback != CORBA_OBJECT_NIL) {
 		Trilobite_Eazel_InstallCallback_download_progress (service->callback, name, amount, total, &ev);	
+		if (ev._major != CORBA_NO_EXCEPTION) {
+			/* user has aborted us and gone home -- tell VFS to STOP! */
+			service->private->cancel_download = TRUE;
+		}
 	} 
 	CORBA_exception_free (&ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
@@ -1140,6 +1148,10 @@ eazel_install_emit_preflight_check_default (EazelInstall *service,
 									  total_bytes,
 									  total_packages, 
 									  &ev);
+		if (ev._major != CORBA_NO_EXCEPTION) {
+			/* abort on corba failure */
+			result = FALSE;
+		}
 		CORBA_free (corbapackages);
 	} 
 	CORBA_exception_free (&ev);
@@ -1322,6 +1334,10 @@ eazel_install_emit_delete_files_default (EazelInstall *service)
 	CORBA_exception_init (&ev);
 	if (service->callback != CORBA_OBJECT_NIL) {
 		result = Trilobite_Eazel_InstallCallback_delete_files (service->callback, &ev);
+		if (ev._major != CORBA_NO_EXCEPTION) {
+			/* on corba failure, delete files */
+			result = TRUE;
+		}
 	}
 	CORBA_exception_free (&ev);
 	return (gboolean)result;

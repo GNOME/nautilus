@@ -121,6 +121,14 @@ impl_Eazel_Install_uninstall_packages(impl_POA_Trilobite_Eazel_Install *servant,
 }
 
 static void
+impl_Eazel_Install_stop (impl_POA_Trilobite_Eazel_Install *servant,
+			 CORBA_Environment * ev)
+{
+	trilobite_debug (">>> STOP <<<");
+	servant->object->private->cancel_download = TRUE;
+}
+
+static void
 impl_Eazel_Install_revert_transaction (impl_POA_Trilobite_Eazel_Install *servant,
 				       const CORBA_char *xml, 
 				       const CORBA_char *root,
@@ -397,6 +405,7 @@ eazel_install_get_epv ()
 	epv = g_new0 (POA_Trilobite_Eazel_Install__epv, 1);
 	epv->install            = (gpointer)&impl_Eazel_Install_install;
 	epv->uninstall          = (gpointer)&impl_Eazel_Install_uninstall;
+	epv->stop		= (gpointer)&impl_Eazel_Install_stop;
 	epv->install_packages   = (gpointer)&impl_Eazel_Install_install_packages;
 	epv->uninstall_packages = (gpointer)&impl_Eazel_Install_uninstall_packages;
 	epv->revert_transaction = (gpointer)&impl_Eazel_Install_revert_transaction;
