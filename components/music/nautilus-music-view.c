@@ -87,6 +87,7 @@ struct _NautilusMusicViewDetails {
 	gboolean slider_dragging;
 	
 	GtkVBox   *album_container;
+	GtkWidget *scroll_window;
 	GtkWidget *album_title;
 	GtkWidget *song_list;
 	GtkWidget *album_image;
@@ -216,8 +217,6 @@ nautilus_music_view_initialize_class (NautilusMusicViewClass *klass)
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
 	
-	g_message ("INIT");
-	
 	object_class = GTK_OBJECT_CLASS (klass);
 	widget_class = GTK_WIDGET_CLASS (klass);
 
@@ -230,7 +229,7 @@ nautilus_music_view_initialize_class (NautilusMusicViewClass *klass)
 static void
 nautilus_music_view_initialize (NautilusMusicView *music_view)
 {
-	GtkWidget *scrollwindow, *label;
+	GtkWidget *label;
 	GtkWidget *button;
 	GtkCList *clist;
         /* FIXME: I think this is not portable. It works in gcc, but not other C compilers. */
@@ -307,14 +306,14 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
  	gtk_signal_connect (GTK_OBJECT (music_view->details->song_list),
                             "select-row", selection_callback, music_view);
  
-	scrollwindow = gtk_scrolled_window_new (NULL, gtk_clist_get_vadjustment (GTK_CLIST (music_view->details->song_list)));
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_container_add (GTK_CONTAINER (scrollwindow), music_view->details->song_list);	
+	music_view->details->scroll_window = gtk_scrolled_window_new (NULL, gtk_clist_get_vadjustment (GTK_CLIST (music_view->details->song_list)));
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (music_view->details->scroll_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_container_add (GTK_CONTAINER (music_view->details->scroll_window), music_view->details->song_list);	
 	gtk_clist_set_selection_mode (GTK_CLIST (music_view->details->song_list), GTK_SELECTION_BROWSE);
 
-	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), scrollwindow, TRUE, TRUE, 0);	
+	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->scroll_window, TRUE, TRUE, 0);	
 	gtk_widget_show (music_view->details->song_list);
-	gtk_widget_show (scrollwindow);
+	gtk_widget_show (music_view->details->scroll_window);
 
 	/* Stash column sort modes for later retreival */
 	clist = GTK_CLIST (music_view->details->song_list);
@@ -371,8 +370,6 @@ static void
 nautilus_music_view_destroy (GtkObject *object)
 {
 	NautilusMusicView *music_view;
-
-	g_message ("DESTROY");
 
         music_view = NAUTILUS_MUSIC_VIEW (object);
 
@@ -1119,6 +1116,74 @@ play_status_display (NautilusMusicView *music_view)
 }
 
 
+/* The following are copied from gtkclist.c and nautilusclist.c */ 
+#define CELL_SPACING 1
+
+/* gives the top pixel of the given row in context of
+ * the clist's voffset */
+#define ROW_TOP_YPIXEL(clist, row) (((clist)->row_height * (row)) + \
+				    (((row) + 1) * CELL_SPACING) + \
+				    (clist)->voffset)
+				    
+static void
+list_move_vertical (GtkCList *clist, gint row, gfloat align)
+{
+	gfloat value;
+
+	g_return_if_fail (clist != NULL);
+
+	if (!clist->vadjustment) {
+		return;
+	}
+
+	value = (ROW_TOP_YPIXEL (clist, row) - clist->voffset -
+		 align * (clist->clist_window_height - clist->row_height) +
+		 (2 * align - 1) * CELL_SPACING);
+
+	if (value + clist->vadjustment->page_size > clist->vadjustment->upper) {
+		value = clist->vadjustment->upper - clist->vadjustment->page_size;
+	}
+
+	gtk_adjustment_set_value (clist->vadjustment, value);
+}
+
+
+static void
+list_moveto (GtkCList *clist, gint row, gint column, gfloat row_align, gfloat col_align)
+{
+	g_return_if_fail (clist != NULL);
+
+	if (row < -1 || row >= clist->rows) {
+		return;
+	}
+	
+	if (column < -1 || column >= clist->columns) {
+		return;
+	}
+
+	row_align = CLAMP (row_align, 0, 1);
+	col_align = CLAMP (col_align, 0, 1);
+
+	/* adjust vertical scrollbar */
+	if (clist->vadjustment && row >= 0) {
+		list_move_vertical (clist, row, row_align);
+	}
+}
+
+
+static void
+list_reveal_row (GtkCList *clist, int row_index)
+{
+	g_return_if_fail (row_index >= 0 && row_index < clist->rows);
+		
+	if (ROW_TOP_YPIXEL (clist, row_index) + clist->row_height > clist->clist_window_height) {
+		list_moveto (clist, row_index, -1, 1, 0);
+     	} else if (ROW_TOP_YPIXEL (clist, row_index) < 0) {
+		list_moveto (clist, row_index, -1, 0, 0);
+     	}
+}
+
+
 /* track incrementing routines */
 static void
 play_current_file (NautilusMusicView *music_view, gboolean from_start)
@@ -1138,8 +1203,11 @@ play_current_file (NautilusMusicView *music_view, gboolean from_start)
 		
 		return;	
 	}
-       
+       	
 	gtk_clist_select_row (GTK_CLIST(music_view->details->song_list), music_view->details->selected_index, 0);
+	
+	/* Scroll the list to display the current new selection */
+	list_reveal_row (GTK_CLIST(music_view->details->song_list), music_view->details->selected_index);
 	
 	song_info = gtk_clist_get_row_data (GTK_CLIST (music_view->details->song_list),
                                                 music_view->details->selected_index);

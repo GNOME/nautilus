@@ -1,3 +1,18 @@
+2000-12-20  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 5172, Music View doesn't always scroll when
+	active song off-screen
+
+	Borrowed code from NautilusCList to fix bug.
+	Selection now scrolls into view in a logical manner during
+	playback.
+	
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize_class),
+	(nautilus_music_view_initialize), (nautilus_music_view_destroy),
+	(list_move_vertical), (list_moveto), (list_reveal_row),
+	(play_current_file):
+
 2000-12-20  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Pavel Cisler <pavel@eazel.com>
