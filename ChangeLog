@@ -1,3 +1,15 @@
+2001-03-02  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fixed bug 558, Items don't show up in trash: when dropped.
+		
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	* libnautilus-extensions/nautilus-volume-monitor.h:
+	Added detection for ReiserFS.  ReiserFS is now a
+	supported type for the trash folder creation and
+	detection code.
+	
 2001-03-02  Frederic Crozat <fcrozat@mandrakesoft.com>
 
 	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
