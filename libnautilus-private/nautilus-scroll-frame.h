@@ -25,70 +25,62 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/.
  */
 
-#ifndef __GTK_SCROLL_FRAME_H__
-#define __GTK_SCROLL_FRAME_H__
+#ifndef GTK_SCROLL_FRAME_H
+#define GTK_SCROLL_FRAME_H
 
-
-#include <gdk/gdk.h>
 #include <gtk/gtkbin.h>
-
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
+#define NAUTILUS_TYPE_SCROLL_FRAME            (nautilus_scroll_frame_get_type ())
+#define NAUTILUS_SCROLL_FRAME(obj)            (GTK_CHECK_CAST ((obj),		\
+	NAUTILUS_TYPE_SCROLL_FRAME, NautilusScrollFrame))
+#define NAUTILUS_SCROLL_FRAME_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass),	\
+	NAUTILUS_TYPE_SCROLL_FRAME, NautilusScrollFrameClass))
+#define NAUTILUS_IS_SCROLL_FRAME(obj)         (GTK_CHECK_TYPE ((obj),		\
+	NAUTILUS_TYPE_SCROLL_FRAME))
+#define NAUTILUS_IS_SCROLL_FRAME_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass),	\
+	NAUTILUS_TYPE_SCROLL_FRAME))
 
-#define GTK_TYPE_SCROLL_FRAME            (gtk_scroll_frame_get_type ())
-#define GTK_SCROLL_FRAME(obj)            (GTK_CHECK_CAST ((obj),		\
-	GTK_TYPE_SCROLL_FRAME, GtkScrollFrame))
-#define GTK_SCROLL_FRAME_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass),	\
-	GTK_TYPE_SCROLL_FRAME, GtkScrollFrameClass))
-#define GTK_IS_SCROLL_FRAME(obj)         (GTK_CHECK_TYPE ((obj),		\
-	GTK_TYPE_SCROLL_FRAME))
-#define GTK_IS_SCROLL_FRAME_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass),	\
-	GTK_TYPE_SCROLL_FRAME))
+typedef struct NautilusScrollFrame NautilusScrollFrame;
+typedef struct NautilusScrollFrameClass NautilusScrollFrameClass;
+typedef struct NautilusScrollFrameDetails NautilusScrollFrameDetails;
 
-
-typedef struct _GtkScrollFrame       GtkScrollFrame;
-typedef struct _GtkScrollFrameClass  GtkScrollFrameClass;
-
-struct _GtkScrollFrame
+struct NautilusScrollFrame
 {
 	GtkBin bin;
-
-	/* Private data */
-	gpointer priv;
+	NautilusScrollFrameDetails *details;
 };
-
-struct _GtkScrollFrameClass
+struct NautilusScrollFrameClass
 {
 	GtkBinClass parent_class;
 };
 
-
-GtkType gtk_scroll_frame_get_type (void);
-GtkWidget *gtk_scroll_frame_new (GtkAdjustment *hadj, GtkAdjustment *vadj);
-
-void gtk_scroll_frame_set_hadjustment (GtkScrollFrame *sf, GtkAdjustment *adj);
-void gtk_scroll_frame_set_vadjustment (GtkScrollFrame *sf, GtkAdjustment *adj);
-
-GtkAdjustment *gtk_scroll_frame_get_hadjustment (GtkScrollFrame *sf);
-GtkAdjustment *gtk_scroll_frame_get_vadjustment (GtkScrollFrame *sf);
-
-void gtk_scroll_frame_set_policy (GtkScrollFrame *sf,
-				  GtkPolicyType hsb_policy,
-				  GtkPolicyType vsb_policy);
-
-void gtk_scroll_frame_set_placement (GtkScrollFrame *sf, GtkCornerType frame_placement);
-void gtk_scroll_frame_set_shadow_type (GtkScrollFrame *sf, GtkShadowType shadow_type);
-void gtk_scroll_frame_set_scrollbar_spacing (GtkScrollFrame *sf, guint spacing);
-
-void gtk_scroll_frame_add_with_viewport (GtkScrollFrame *sf, GtkWidget *child);
-
+GtkType        nautilus_scroll_frame_get_type              (void);
+GtkWidget *    nautilus_scroll_frame_new                   (GtkAdjustment       *h_adjustment,
+							    GtkAdjustment       *v_adjustment);
+void           nautilus_scroll_frame_set_hadjustment       (NautilusScrollFrame *frame,
+							    GtkAdjustment       *adj);
+void           nautilus_scroll_frame_set_vadjustment       (NautilusScrollFrame *frame,
+							    GtkAdjustment       *adj);
+GtkAdjustment *nautilus_scroll_frame_get_hadjustment       (NautilusScrollFrame *frame);
+GtkAdjustment *nautilus_scroll_frame_get_vadjustment       (NautilusScrollFrame *frame);
+void           nautilus_scroll_frame_set_policy            (NautilusScrollFrame *frame,
+							    GtkPolicyType        h_scroll_policy,
+							    GtkPolicyType        v_scroll_policy);
+void           nautilus_scroll_frame_set_placement         (NautilusScrollFrame *frame,
+							    GtkCornerType        frame_placement);
+void           nautilus_scroll_frame_set_shadow_type       (NautilusScrollFrame *frame,
+							    GtkShadowType        shadow_type);
+void           nautilus_scroll_frame_set_scrollbar_spacing (NautilusScrollFrame *frame,
+							    guint                spacing);
+void           nautilus_scroll_frame_add_with_viewport     (NautilusScrollFrame *frame,
+							    GtkWidget           *child);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-
-#endif /* __GTK_SCROLL_FRAME_H__ */
+#endif /* GTK_SCROLL_FRAME_H */

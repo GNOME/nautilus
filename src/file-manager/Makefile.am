@@ -36,30 +36,6 @@ libntl_file_manager_la_SOURCES=	\
 	fm-properties-window.c		\
 	fm-properties-window.h		
 
-# noinst_PROGRAMS=gnome-desktop
-
-# gnome_desktop_SOURCES=			\
-# 	desktop-canvas.c		\
-# 	desktop-canvas.h		\
-# 	desktop-item.c			\
-# 	desktop-item.h			\
-# 	desktop-layout.h		\
-# 	desktop-layout.c		\
-# 	desktop-menu.h			\
-# 	desktop-menu.c			\
-# 	desktop-window.c		\
-# 	desktop-window.h		\
-# 	fm-directory-list.h		\
-# 	fm-directory-list.c		\
-# 	gnome-desktop.c
-
-# gnome_desktop_LDADD=\
-# 		$(BONOBO_LIBS) \
-# 		$(OAF_LIBS) \
-# 		$(GNOMEUI_LIBS) \
-# 		$(GDK_PIXBUF_LIBS) \
-# 		$(VFS_LIBS)
-
 dfos-corba.h: GNOME_Desktop_FileOperationService.h
 
 $(dfos_corba_srcs): dfos_corba_stamp

@@ -195,12 +195,12 @@ static void nautilus_window_set_arg (GtkObject      *object,
 static void nautilus_window_get_arg (GtkObject      *object,
                                      GtkArg         *arg,
                                      guint	      arg_id);
-static void nautilus_window_goto_uri_cb (GtkWidget *widget,
+static void nautilus_window_goto_uri_callback (GtkWidget *widget,
                                          const char *uri,
                                          GtkWidget *window);
-static void zoom_in_cb  (NautilusZoomControl *zoom_control,
+static void zoom_in_callback  (NautilusZoomControl *zoom_control,
                          NautilusWindow      *window);
-static void zoom_out_cb (NautilusZoomControl *zoom_control,
+static void zoom_out_callback (NautilusZoomControl *zoom_control,
                          NautilusWindow      *window);
 
 /* milliseconds */
@@ -336,7 +336,7 @@ nautilus_window_goto_uri (NautilusWindow *window, const char *uri)
 }
 
 static void
-nautilus_window_goto_uri_cb (GtkWidget *widget,
+nautilus_window_goto_uri_callback (GtkWidget *widget,
                              const char *uri,
                              GtkWidget *window)
 {
@@ -344,7 +344,7 @@ nautilus_window_goto_uri_cb (GtkWidget *widget,
 }
 
 static void
-zoom_in_cb (NautilusZoomControl *zoom_control,
+zoom_in_callback (NautilusZoomControl *zoom_control,
             NautilusWindow      *window)
 {
   if (window->content_view != NULL) {
@@ -353,7 +353,7 @@ zoom_in_cb (NautilusZoomControl *zoom_control,
 }
 
 static void
-zoom_out_cb (NautilusZoomControl *zoom_control,
+zoom_out_callback (NautilusZoomControl *zoom_control,
                              NautilusWindow      *window)
 {
   if (window->content_view != NULL) {
@@ -394,7 +394,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	nautilus_location_bar_enable_undo (NAUTILUS_LOCATION_BAR (window->ent_uri), TRUE);
 	
 	gtk_signal_connect(GTK_OBJECT(window->ent_uri), "location_changed",
-                     nautilus_window_goto_uri_cb, window);
+                     nautilus_window_goto_uri_callback, window);
 	gtk_box_pack_start(GTK_BOX(location_bar_box), window->ent_uri, TRUE, TRUE, GNOME_PAD_SMALL);
   	behavior = GNOME_DOCK_ITEM_BEH_EXCLUSIVE | GNOME_DOCK_ITEM_BEH_NEVER_VERTICAL;
 	if(!gnome_preferences_get_toolbar_detachable())
@@ -409,8 +409,8 @@ nautilus_window_constructed (NautilusWindow *window)
 	/* allocate the zoom control and place on the right next to the menu */
 	window->zoom_control = nautilus_zoom_control_new ();
 	gtk_widget_show (window->zoom_control);
-	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_in", zoom_in_cb, window);
-	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_out", zoom_out_cb, window);
+	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_in", zoom_in_callback, window);
+	gtk_signal_connect (GTK_OBJECT (window->zoom_control), "zoom_out", zoom_out_callback, window);
 	gtk_box_pack_end (GTK_BOX (location_bar_box), window->zoom_control, FALSE, FALSE, 0);
   
 	gtk_widget_show_all(location_bar_box);
@@ -1055,7 +1055,7 @@ nautilus_get_history_list ()
 
 
 static void
-nautilus_window_request_location_change_cb (NautilusViewFrame *view, 
+nautilus_window_request_location_change_callback (NautilusViewFrame *view, 
                                             Nautilus_NavigationRequestInfo *info, 
                                             NautilusWindow *window)
 {
@@ -1064,7 +1064,7 @@ nautilus_window_request_location_change_cb (NautilusViewFrame *view,
 
 
 static void
-nautilus_window_request_selection_change_cb (NautilusViewFrame *view, 
+nautilus_window_request_selection_change_callback (NautilusViewFrame *view, 
                                              Nautilus_SelectionRequestInfo *info, 
                                              NautilusWindow *window)
 {
@@ -1072,7 +1072,7 @@ nautilus_window_request_selection_change_cb (NautilusViewFrame *view,
 }
 
 static void
-nautilus_window_request_status_change_cb (NautilusViewFrame *view,
+nautilus_window_request_status_change_callback (NautilusViewFrame *view,
                                           Nautilus_StatusRequestInfo *info,
                                           NautilusWindow *window)
 {
@@ -1080,7 +1080,7 @@ nautilus_window_request_status_change_cb (NautilusViewFrame *view,
 }
 
 static void
-nautilus_window_request_progress_change_cb (NautilusViewFrame *view,
+nautilus_window_request_progress_change_callback (NautilusViewFrame *view,
                                             Nautilus_ProgressRequestInfo *info,
                                             NautilusWindow *window)
 {
@@ -1103,19 +1103,19 @@ nautilus_window_connect_view(NautilusWindow *window, NautilusViewFrame *view)
   view_object = GTK_OBJECT(view);
   gtk_signal_connect(view_object,
                      "request_location_change", 
-                     nautilus_window_request_location_change_cb, 
+                     nautilus_window_request_location_change_callback, 
                      window);
   gtk_signal_connect(view_object, 
                      "request_selection_change", 
-                     nautilus_window_request_selection_change_cb, 
+                     nautilus_window_request_selection_change_callback, 
                      window);
   gtk_signal_connect(view_object, 
                      "request_status_change", 
-                     nautilus_window_request_status_change_cb, 
+                     nautilus_window_request_status_change_callback, 
                      window);
   gtk_signal_connect(view_object, 
                      "request_progress_change", 
-                     nautilus_window_request_progress_change_cb, 
+                     nautilus_window_request_progress_change_callback, 
                      window);
   gtk_signal_connect(view_object,
                      "destroy",

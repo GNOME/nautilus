@@ -637,7 +637,7 @@ sidebar_panel_preference_is_on (NautilusViewIdentifier *identifier,
         gchar *pref_name;
         gboolean enabled;
 
-        pref_name = g_strconcat ("/nautilus/metaviews/", identifier->iid, NULL);
+        pref_name = g_strconcat ("/nautilus/sidebar-views/", identifier->iid, NULL);
         enabled = nautilus_preferences_get_boolean (pref_name, FALSE);
         g_free (pref_name);
 

@@ -143,7 +143,6 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         GtkWidget *vbox;
         Notes *notes;
         NautilusBackground *background;
-        NautilusClipboardInfo *info;
          
         g_return_val_if_fail (strcmp (goad_id, "OAFIID:ntl_notes_view:7f04c3cb-df79-4b9a-a577-38b19ccd4185") == 0, NULL);
         notes = g_new0 (Notes, 1);
@@ -158,7 +157,7 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
         notes->note_text_field = gtk_text_new (NULL, NULL);
         gtk_text_set_editable (GTK_TEXT (notes->note_text_field), TRUE);
         gtk_box_pack_start (GTK_BOX (vbox), notes->note_text_field, TRUE, TRUE, 0);
-        background = nautilus_get_widget_background (GTK_WIDGET (notes->note_text_field));
+        background = nautilus_get_widget_background (notes->note_text_field);
         nautilus_background_set_color (background, NOTES_DEFAULT_BACKGROUND_COLOR);
 
         gtk_widget_show_all (vbox);
@@ -174,19 +173,11 @@ make_notes_view (BonoboGenericFactory *Factory, const char *goad_id, gpointer cl
                             notes_notify_location_change, notes);
         
         /* handle selections */
-        info = nautilus_clipboard_info_new ();
-	nautilus_clipboard_info_set_view (info, notes->view);
-	nautilus_clipboard_info_set_clipboard_owner (info, GTK_WIDGET (notes->note_text_field));
-	nautilus_clipboard_info_set_component_name (info, _("Notes"));
-        gtk_signal_connect (GTK_OBJECT (notes->note_text_field), "focus_in_event",
-                            GTK_SIGNAL_FUNC (nautilus_component_merge_bonobo_items_cb), info); 
-	gtk_signal_connect (GTK_OBJECT (notes->note_text_field), "focus_out_event",
-			    GTK_SIGNAL_FUNC (nautilus_component_unmerge_bonobo_items_cb), info); 
+        nautilus_clipboard_set_up_editable
+                (GTK_EDITABLE (notes->note_text_field),
+                 nautilus_view_get_bonobo_control (notes->view));
 
-        gtk_signal_connect (GTK_OBJECT (notes->view), "destroy", nautilus_clipboard_info_destroy, info);
-        /* set description */
-
-        return BONOBO_OBJECT (notes->view);        
+        return BONOBO_OBJECT (notes->view);
 }
 
 int
@@ -222,8 +213,9 @@ main(int argc, char *argv[])
         g_thread_init (NULL);
         gnome_vfs_init ();
         
-        factory = bonobo_generic_factory_new_multi ("OAFIID:ntl_notes_view_factory:4b39e388-3ca2-4d68-9f3d-c137ee62d5b0",
-                                                    make_notes_view, NULL);
+        factory = bonobo_generic_factory_new_multi
+                ("OAFIID:ntl_notes_view_factory:4b39e388-3ca2-4d68-9f3d-c137ee62d5b0",
+                 make_notes_view, NULL);
 
         do {
                 bonobo_main();

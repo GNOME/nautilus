@@ -78,10 +78,10 @@ static void preferences_item_create_enum               (NautilusPreferencesItem 
 							const NautilusPreference     *prefrence);
 static void preferences_item_create_boolean            (NautilusPreferencesItem      *item,
 							const NautilusPreference     *prefrence);
-static void enum_radio_group_changed_cb                (GtkWidget                    *button_group,
+static void enum_radio_group_changed_callback          (GtkWidget                    *button_group,
 							GtkWidget                    *button,
 							gpointer                      user_data);
-static void boolean_button_toggled_cb                  (GtkWidget                    *button_group,
+static void boolean_button_toggled_callback            (GtkWidget                    *button_group,
 							gpointer                      user_data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusPreferencesItem, nautilus_preferences_item, GTK_TYPE_VBOX)
@@ -309,7 +309,7 @@ preferences_item_create_enum (NautilusPreferencesItem	*item,
 	
 	gtk_signal_connect (GTK_OBJECT (item->details->child),
 			    "changed",
-			    GTK_SIGNAL_FUNC (enum_radio_group_changed_cb),
+			    GTK_SIGNAL_FUNC (enum_radio_group_changed_callback),
 			    (gpointer) item);
 }
 
@@ -338,7 +338,7 @@ preferences_item_create_boolean (NautilusPreferencesItem	*item,
 				      
 	gtk_signal_connect (GTK_OBJECT (item->details->child),
 			    "toggled",
-			    GTK_SIGNAL_FUNC (boolean_button_toggled_cb),
+			    GTK_SIGNAL_FUNC (boolean_button_toggled_callback),
 			    (gpointer) item);
 }
 
@@ -362,7 +362,7 @@ nautilus_preferences_item_new (const gchar			*preference_name,
 }
 
 static void
-enum_radio_group_changed_cb (GtkWidget *buttons, GtkWidget * button, gpointer user_data)
+enum_radio_group_changed_callback (GtkWidget *buttons, GtkWidget * button, gpointer user_data)
 {
 	NautilusPreferencesItem		*item = (NautilusPreferencesItem *) user_data;
 	const NautilusPreference	*preference;
@@ -380,7 +380,7 @@ enum_radio_group_changed_cb (GtkWidget *buttons, GtkWidget * button, gpointer us
 }
 
 static void
-boolean_button_toggled_cb (GtkWidget *button, gpointer user_data)
+boolean_button_toggled_callback (GtkWidget *button, gpointer user_data)
 {
 	NautilusPreferencesItem	*item = (NautilusPreferencesItem *) user_data;
 	gboolean		active_state;

@@ -7,10 +7,8 @@ file names
 ----------
 components/history/ntl-history-view.c -> components/history/nautilus-history-view.c
 components/notes/ntl-notes.c -> components/notes/nautilus-notes.c
-libnautilus/nautilus-content-view-frame.c -> libnautilus/nautilus-content-view.c
-libnautilus/nautilus-content-view-frame.h -> libnautilus/nautilus-content-view.h
-libnautilus/nautilus-meta-view-frame.c -> libnautilus/nautilus-meta-view.c
-libnautilus/nautilus-meta-view-frame.h -> libnautilus/nautilus-meta-view.h
+libnautilus-extensions/gtkscrollframe.c -> libnautilus-extensions/nautilus-scroll-frame.c
+libnautilus-extensions/gtkscrollframe.h -> libnautilus-extensions/nautilus-scroll-frame.h
 libnautilus/nautilus-view-frame.c -> libnautilus/nautilus-view.c
 libnautilus/nautilus-view-frame.h -> libnautilus/nautilus-view.h
 src/nautilus-index-tabs.c -> src/nautilus-sidebar-tabs.c
@@ -20,8 +18,6 @@ src/nautilus-index-title.h -> src/nautilus-sidebar-title.h
 src/nautilus-zoomable-frame-svr.c -> src/nautilus-zoomable-frame-corba.c
 src/ntl-app.c -> src/nautilus-application.c
 src/ntl-app.h -> src/nautilus-application.h
-src/ntl-content-view.c -> src/nautilus-content-view-frame.c
-src/ntl-content-view.h -> src/nautilus-content-view-frame.h
 src/ntl-index-panel.c -> src/nautilus-sidebar.c
 src/ntl-index-panel.h -> src/nautilus-sidebar.h
 src/ntl-main.c -> src/nautilus-main.c
@@ -62,4 +58,3 @@ StatusRequestInfo -> Status (or StatusRequest)
 --------------
 function names
 --------------
-*_cb -> *_callback

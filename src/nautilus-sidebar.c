@@ -472,8 +472,8 @@ nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, NautilusVie
 	g_return_if_fail (NAUTILUS_IS_VIEW_FRAME (meta_view));
 	
 	description = nautilus_view_frame_get_label (meta_view);
+
 	label = gtk_label_new (description);
-	g_free (description);
 
 	gtk_widget_show (label);
 	
@@ -486,6 +486,8 @@ nautilus_index_panel_add_meta_view (NautilusIndexPanel *index_panel, NautilusVie
 	nautilus_index_tabs_add_view (index_panel->details->index_tabs,
 				      description, GTK_WIDGET (meta_view), page_num);
 	
+	g_free (description);
+
 	gtk_widget_show (GTK_WIDGET (meta_view));
 }
 

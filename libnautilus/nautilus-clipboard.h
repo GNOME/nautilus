@@ -22,67 +22,13 @@
  * Author: Rebecca Schulman <rebecka@eazel.com>
  */
 
+#ifndef NAUTILUS_CLIPBOARD_H
+#define NAUTILUS_CLIPBOARD_H
 
-#ifndef NAUTILUS_CLIPBOARD_INFO_H
-#define NAUTILUS_CLIPBOARD_INFO_H
+#include <gtk/gtkeditable.h>
+#include <bonobo/bonobo-control.h>
 
-
-
-#include <gtk/gtkscrolledwindow.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock.h>
-#include <libnautilus-extensions/nautilus-gtk-macros.h>
-#include <libnautilus/nautilus-view-frame.h> 
-
-
-
-typedef struct NautilusClipboardInfo NautilusClipboardInfo;
-typedef struct NautilusClipboardInfoClass NautilusClipboardInfoClass;
-
-
-#define NAUTILUS_TYPE_CLIPBOARD_INFO	(nautilus_clipboard_info_get_type ())
-#define NAUTILUS_CLIPBOARD_INFO(obj)	(GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_CLIPBOARD_INFO, NautilusClipboardInfo))
-#define NAUTILUS_CLIPBOARD_INFO_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_CLIPBOARD_INFO, NautilusClipboardInfoClass))
-#define NAUTILUS_IS_CLIPBOARD_INFO(obj)	(GTK_CHECK_TYPE ((obj), NAUTILUS_TYPE_CLIPBOARD_INFO))
-#define NAUTILUS_IS_CLIPBOARD_INFO_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_CLIPBOARD_INFO))
-
-
-typedef struct NautilusClipboardDetails NautilusClipboardDetails;
-
-
-
-struct NautilusClipboardInfo {
-	GtkScrolledWindow parent;
-	NautilusClipboardDetails *details;
-};
-
-struct NautilusClipboardInfoClass {
-	GtkScrolledWindowClass parent_class;
-	void (* destroy) (NautilusClipboardInfo *info);
-};
-
-/* GtkObject support */
-GtkType                nautilus_clipboard_info_get_type            (void);
-void                   nautilus_clipboard_info_initialize          (NautilusClipboardInfo *info);
-void                   nautilus_clipboard_info_destroy             (NautilusClipboardInfo *info);		
-void                   nautilus_clipboard_info_destroy_cb          (GtkObject             *object,
-								    gpointer               user_data);
-NautilusClipboardInfo *nautilus_clipboard_info_new                 (void);
-void                   nautilus_clipboard_info_set_component_name  (NautilusClipboardInfo *info,
-								    char                  *component_name);
-char *                 nautilus_clipboard_info_get_component_name  (NautilusClipboardInfo *info);
-void                   nautilus_clipboard_info_set_clipboard_owner (NautilusClipboardInfo *info,
-								    GtkWidget             *clipboard_owner);
-GtkWidget *            nautilus_clipboard_info_get_clipboard_owner (NautilusClipboardInfo *info);
-void                   nautilus_clipboard_info_set_view            (NautilusClipboardInfo *info,
-								    NautilusView          *view);
-NautilusView *         nautilus_clipboard_info_get_view            (NautilusClipboardInfo *info);
-void                   nautilus_clipboard_info_free                (NautilusClipboardInfo *info);
-void                   nautilus_component_merge_bonobo_items_cb    (GtkWidget             *widget,
-								    GdkEventAny           *event,
-								    gpointer               user_data);
-void                   nautilus_component_unmerge_bonobo_items_cb  (GtkWidget             *widget,
-								    GdkEventAny           *event,
-								    gpointer               user_data);
+void nautilus_clipboard_set_up_editable (GtkEditable *target,
+					 BonoboControl *control);
 
 #endif

@@ -1,3 +1,59 @@
+2000-05-25  Darin Adler  <darin@eazel.com>
+
+	* RENAMING: Updated to reflect completed tasks.
+	
+	* components/notes/ntl-notes.c: (make_notes_view):
+	* components/websearch/ntl-web-search.c: (make_obj):
+	Changed to use simplified clipboard API.
+	
+	* components/services/trilobite/libtrilobite/.cvsignore:
+	Ignore generated files.
+	
+	* libnautilus-extensions/gtkscrollframe.c:
+	* libnautilus-extensions/gtkscrollframe.h:
+	Renamed GtkScrollFrame to NautilusScrollFrame so we won't conflict
+	if a GtkScrollFrame actually gets added to gtk some day. The file
+	still needs renaming (mentioned in RENAMING).
+	
+	* libnautilus/nautilus-clipboard.h:
+	* libnautilus/nautilus-clipboard.c: (cut_callback),
+	(copy_callback), (paste_callback), (clear_callback),
+	(add_menu_item), (add_menu_items_callback),
+	(remove_menu_items_callback), (nautilus_clipboard_set_up_editable):
+	Simplified clipboard implementation. Does the same thing the old
+	code did without needing a class and with a simpler API.
+	
+	* nautilus-widgets/nautilus-preferences-item.c:
+	* src/file-manager/fm-icon-text-window.c:
+	* src/nautilus-zoom-control.c:
+	* src/ntl-window.c:
+	Renamed _cb to _callback. Some other (minor) cleanup.
+
+	* src/file-manager/Makefile.am:
+	* src/file-manager/desktop-canvas.c: [removed]
+	* src/file-manager/desktop-canvas.h: [removed]
+	* src/file-manager/desktop-menu.c: [removed]
+	* src/file-manager/desktop-menu.h: [removed]
+	* src/file-manager/gnome-desktop.c: [removed]
+	Now that I'm doing the desktop work, I know we don't need these.
+	I'll be deleting the desktop source files that Havoc added as I
+	harvest the useful code from them.
+	
+	* src/file-manager/fm-directory-view.c:
+	(bonobo_control_activate_callback): Add comments.
+	
+	* src/nautilus-zoom-control.h: Fixed problem where the zoom
+	control didn't know if it was an event box or a pixmap.
+	
+	* src/ntl-index-panel.c: (nautilus_index_panel_add_meta_view):
+	Fixed bug that was trashing the sidebar panel names. I put
+	the g_free call in the wrong place.
+	
+	* src/ntl-uri-map.c: (sidebar_panel_preference_is_on):
+	Fixed bug where the sidebar preference wasn't saved. I found
+	another place with another copy of the preference path. This
+	sort of thing really needs to go in a header file, I think.
+	
 2000-05-25  J Shane Culpepper  <pepper@eazel.com>
 
 	* nautilus-installer/Makefile:

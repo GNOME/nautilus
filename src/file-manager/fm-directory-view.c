@@ -516,8 +516,11 @@ bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointe
         local_ui_handler = bonobo_control_get_ui_handler (BONOBO_CONTROL (control));
 
         if (state) {
-                bonobo_ui_handler_set_container (local_ui_handler, 
-                                                 bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (control)));
+		/* FIXME: Doesn't the remote UI handler leak here? */
+                bonobo_ui_handler_set_container
+			(local_ui_handler, 
+			 bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (control)));
+
                 /* Add new menu items and perhaps whole menus */
                 fm_directory_view_merge_menus (view);
 	        /* Set initial sensitivity, wording, toggle state, etc. */       

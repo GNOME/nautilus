@@ -42,12 +42,12 @@
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
 
-static void     ensure_unique_attributes            (int        menu_index);
-static gboolean fm_icon_text_window_delete_event_cb (GtkWidget *widget,
-						     GdkEvent  *event,
-						     gpointer   user_data);
-static void     fm_icon_text_window_destroy_cb      (GtkObject *object,
-						     gpointer   user_data);
+static void     ensure_unique_attributes                  (int        menu_index);
+static gboolean fm_icon_text_window_delete_event_callback (GtkWidget *widget,
+							   GdkEvent  *event,
+							   gpointer   user_data);
+static void     fm_icon_text_window_destroy_callback      (GtkObject *object,
+							   gpointer   user_data);
 
 #define DEFAULT_ATTRIBUTE_NAMES "size|date_modified|type"
 #define PIECES_COUNT            3
@@ -161,7 +161,7 @@ get_chosen_attribute_name (GtkOptionMenu *option_menu)
 }
 
 static void
-changed_attributes_option_menu_cb (GtkMenuItem *menu_item, gpointer user_data)
+changed_attributes_option_menu_callback (GtkMenuItem *menu_item, gpointer user_data)
 {
 	char ** attribute_names_array;
 	char * attribute_names_string;
@@ -225,7 +225,7 @@ create_attributes_option_menu (int menu_number)
 		 */
 	  	gtk_signal_connect (GTK_OBJECT (menu_item),
 				    "activate",
-				    changed_attributes_option_menu_cb,
+				    changed_attributes_option_menu_callback,
 				    GINT_TO_POINTER (menu_number));
 	}
   	  	
@@ -285,11 +285,11 @@ create_icon_text_window (void)
 					   NULL);
 
 	gtk_signal_connect (GTK_OBJECT (window), "delete_event",
-                    	    GTK_SIGNAL_FUNC (fm_icon_text_window_delete_event_cb),
+                    	    GTK_SIGNAL_FUNC (fm_icon_text_window_delete_event_callback),
                     	    NULL);
 
         gtk_signal_connect (GTK_OBJECT (window), "destroy",
-        		    GTK_SIGNAL_FUNC (fm_icon_text_window_destroy_cb),
+        		    GTK_SIGNAL_FUNC (fm_icon_text_window_destroy_callback),
         		    NULL);
 
   	return window;
@@ -335,9 +335,9 @@ ensure_unique_attributes (int chosen_menu)
 }
 
 static gboolean
-fm_icon_text_window_delete_event_cb (GtkWidget *widget,
-				     GdkEvent  *event,
-				     gpointer   user_data)
+fm_icon_text_window_delete_event_callback (GtkWidget *widget,
+					   GdkEvent  *event,
+					   gpointer   user_data)
 {
 	/* Hide but don't destroy */
 	gtk_widget_hide(widget);
@@ -345,8 +345,8 @@ fm_icon_text_window_delete_event_cb (GtkWidget *widget,
 }
 
 static void
-fm_icon_text_window_destroy_cb (GtkObject *object,
-				gpointer user_data)
+fm_icon_text_window_destroy_callback (GtkObject *object,
+				      gpointer user_data)
 {
 	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ATTRIBUTE_NAMES,
 					      synch_menus_with_preference,

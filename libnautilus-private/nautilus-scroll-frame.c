@@ -80,8 +80,8 @@ enum {
 	ARG_SCROLLBAR_SPACING
 };
 
-/* Private part of the GtkScrollFrame structure */
-typedef struct {
+/* Private part of the NautilusScrollFrame structure */
+struct NautilusScrollFrameDetails {
 	/* Horizontal and vertical scrollbars */
 	GtkWidget *hsb;
 	GtkWidget *vsb;
@@ -108,52 +108,52 @@ typedef struct {
 
 	/* Shadow type for frame */
 	guint shadow_type : 3;
-} ScrollFramePrivate;
+};
 
 
-static void gtk_scroll_frame_class_init (GtkScrollFrameClass *class);
-static void gtk_scroll_frame_init (GtkScrollFrame *sf);
-static void gtk_scroll_frame_set_arg (GtkObject *object, GtkArg *arg, guint arg_id);
-static void gtk_scroll_frame_get_arg (GtkObject *object, GtkArg *arg, guint arg_id);
-static void gtk_scroll_frame_destroy (GtkObject *object);
-static void gtk_scroll_frame_finalize (GtkObject *object);
+static void nautilus_scroll_frame_class_init (NautilusScrollFrameClass *class);
+static void nautilus_scroll_frame_init (NautilusScrollFrame *sf);
+static void nautilus_scroll_frame_set_arg (GtkObject *object, GtkArg *arg, guint arg_id);
+static void nautilus_scroll_frame_get_arg (GtkObject *object, GtkArg *arg, guint arg_id);
+static void nautilus_scroll_frame_destroy (GtkObject *object);
+static void nautilus_scroll_frame_finalize (GtkObject *object);
 
-static void gtk_scroll_frame_map (GtkWidget *widget);
-static void gtk_scroll_frame_unmap (GtkWidget *widget);
-static void gtk_scroll_frame_draw (GtkWidget *widget, GdkRectangle *area);
-static void gtk_scroll_frame_size_request (GtkWidget *widget, GtkRequisition *requisition);
-static void gtk_scroll_frame_size_allocate (GtkWidget *widget, GtkAllocation *allocation);
-static gint gtk_scroll_frame_expose (GtkWidget *widget, GdkEventExpose *event);
+static void nautilus_scroll_frame_map (GtkWidget *widget);
+static void nautilus_scroll_frame_unmap (GtkWidget *widget);
+static void nautilus_scroll_frame_draw (GtkWidget *widget, GdkRectangle *area);
+static void nautilus_scroll_frame_size_request (GtkWidget *widget, GtkRequisition *requisition);
+static void nautilus_scroll_frame_size_allocate (GtkWidget *widget, GtkAllocation *allocation);
+static gint nautilus_scroll_frame_expose (GtkWidget *widget, GdkEventExpose *event);
 
-static void gtk_scroll_frame_add (GtkContainer *container, GtkWidget *widget);
-static void gtk_scroll_frame_remove (GtkContainer *container, GtkWidget *widget);
-static void gtk_scroll_frame_forall (GtkContainer *container, gboolean include_internals,
+static void nautilus_scroll_frame_add (GtkContainer *container, GtkWidget *widget);
+static void nautilus_scroll_frame_remove (GtkContainer *container, GtkWidget *widget);
+static void nautilus_scroll_frame_forall (GtkContainer *container, gboolean include_internals,
 				     GtkCallback callback, gpointer callback_data);
 
 static GtkBinClass *parent_class;
 
 
 /**
- * gtk_scroll_frame_get_type:
+ * nautilus_scroll_frame_get_type:
  * @void:
  *
- * Registers the &GtkScrollFrame class if necessary, and returns the type ID
+ * Registers the &NautilusScrollFrame class if necessary, and returns the type ID
  * associated to it.
  *
- * Return value: The type ID of the &GtkScrollFrame class.
+ * Return value: The type ID of the &NautilusScrollFrame class.
  **/
 GtkType
-gtk_scroll_frame_get_type (void)
+nautilus_scroll_frame_get_type (void)
 {
 	static GtkType scroll_frame_type = 0;
 
 	if (!scroll_frame_type) {
 		static const GtkTypeInfo scroll_frame_info = {
-			"GtkScrollFrame",
-			sizeof (GtkScrollFrame),
-			sizeof (GtkScrollFrameClass),
-			(GtkClassInitFunc) gtk_scroll_frame_class_init,
-			(GtkObjectInitFunc) gtk_scroll_frame_init,
+			"NautilusScrollFrame",
+			sizeof (NautilusScrollFrame),
+			sizeof (NautilusScrollFrameClass),
+			(GtkClassInitFunc) nautilus_scroll_frame_class_init,
+			(GtkObjectInitFunc) nautilus_scroll_frame_init,
 			NULL, /* reserved_1 */
 			NULL, /* reserved_2 */
 			(GtkClassInitFunc) NULL
@@ -167,7 +167,7 @@ gtk_scroll_frame_get_type (void)
 
 /* Class initialization function for the scroll frame widget */
 static void
-gtk_scroll_frame_class_init (GtkScrollFrameClass *class)
+nautilus_scroll_frame_class_init (NautilusScrollFrameClass *class)
 {
 	GtkObjectClass *object_class;
 	GtkWidgetClass *widget_class;
@@ -179,109 +179,109 @@ gtk_scroll_frame_class_init (GtkScrollFrameClass *class)
 
 	parent_class = gtk_type_class (GTK_TYPE_BIN);
 
-	gtk_object_add_arg_type ("GtkScrollFrame::hadjustment",
+	gtk_object_add_arg_type ("NautilusScrollFrame::hadjustment",
 				 GTK_TYPE_ADJUSTMENT,
 				 GTK_ARG_READWRITE | GTK_ARG_CONSTRUCT,
 				 ARG_HADJUSTMENT);
-	gtk_object_add_arg_type ("GtkScrollFrame::vadjustment",
+	gtk_object_add_arg_type ("NautilusScrollFrame::vadjustment",
 				 GTK_TYPE_ADJUSTMENT,
 				 GTK_ARG_READWRITE | GTK_ARG_CONSTRUCT,
 				 ARG_VADJUSTMENT);
-	gtk_object_add_arg_type ("GtkScrollFrame::hscrollbar_policy",
+	gtk_object_add_arg_type ("NautilusScrollFrame::hscrollbar_policy",
 				 GTK_TYPE_POLICY_TYPE,
 				 GTK_ARG_READWRITE,
 				 ARG_HSCROLLBAR_POLICY);
-	gtk_object_add_arg_type ("GtkScrollFrame::vscrollbar_policy",
+	gtk_object_add_arg_type ("NautilusScrollFrame::vscrollbar_policy",
 				 GTK_TYPE_POLICY_TYPE,
 				 GTK_ARG_READWRITE,
 				 ARG_VSCROLLBAR_POLICY);
-	gtk_object_add_arg_type ("GtkScrollFrame::frame_placement",
+	gtk_object_add_arg_type ("NautilusScrollFrame::frame_placement",
 				 GTK_TYPE_CORNER_TYPE,
 				 GTK_ARG_READWRITE,
 				 ARG_FRAME_PLACEMENT);
-	gtk_object_add_arg_type ("GtkScrollFrame::shadow_type",
+	gtk_object_add_arg_type ("NautilusScrollFrame::shadow_type",
 				 GTK_TYPE_SHADOW_TYPE,
 				 GTK_ARG_READWRITE,
 				 ARG_SHADOW_TYPE);
-	gtk_object_add_arg_type ("GtkScrollFrame::scrollbar_spacing",
+	gtk_object_add_arg_type ("NautilusScrollFrame::scrollbar_spacing",
 				 GTK_TYPE_UINT,
 				 GTK_ARG_READWRITE,
 				 ARG_SCROLLBAR_SPACING);
 
-	object_class->set_arg = gtk_scroll_frame_set_arg;
-	object_class->get_arg = gtk_scroll_frame_get_arg;
-	object_class->destroy = gtk_scroll_frame_destroy;
-	object_class->finalize = gtk_scroll_frame_finalize;
+	object_class->set_arg = nautilus_scroll_frame_set_arg;
+	object_class->get_arg = nautilus_scroll_frame_get_arg;
+	object_class->destroy = nautilus_scroll_frame_destroy;
+	object_class->finalize = nautilus_scroll_frame_finalize;
 
-	widget_class->map = gtk_scroll_frame_map;
-	widget_class->unmap = gtk_scroll_frame_unmap;
-	widget_class->draw = gtk_scroll_frame_draw;
-	widget_class->size_request = gtk_scroll_frame_size_request;
-	widget_class->size_allocate = gtk_scroll_frame_size_allocate;
-	widget_class->expose_event = gtk_scroll_frame_expose;
+	widget_class->map = nautilus_scroll_frame_map;
+	widget_class->unmap = nautilus_scroll_frame_unmap;
+	widget_class->draw = nautilus_scroll_frame_draw;
+	widget_class->size_request = nautilus_scroll_frame_size_request;
+	widget_class->size_allocate = nautilus_scroll_frame_size_allocate;
+	widget_class->expose_event = nautilus_scroll_frame_expose;
 
-	container_class->add = gtk_scroll_frame_add;
-	container_class->remove = gtk_scroll_frame_remove;
-	container_class->forall = gtk_scroll_frame_forall;
+	container_class->add = nautilus_scroll_frame_add;
+	container_class->remove = nautilus_scroll_frame_remove;
+	container_class->forall = nautilus_scroll_frame_forall;
 }
 
 /* Object initialization function for the scroll frame widget */
 static void
-gtk_scroll_frame_init (GtkScrollFrame *sf)
+nautilus_scroll_frame_init (NautilusScrollFrame *sf)
 {
-	ScrollFramePrivate *priv;
+	NautilusScrollFrameDetails *details;
 
-	priv = g_new0 (ScrollFramePrivate, 1);
-	sf->priv = priv;
+	details = g_new0 (NautilusScrollFrameDetails, 1);
+	sf->details = details;
 
 	GTK_WIDGET_SET_FLAGS (sf, GTK_NO_WINDOW);
 
 	gtk_container_set_resize_mode (GTK_CONTAINER (sf), GTK_RESIZE_QUEUE);
 
-	priv->sb_spacing = 3;
-	priv->hsb_policy = GTK_POLICY_ALWAYS;
-	priv->vsb_policy = GTK_POLICY_ALWAYS;
-	priv->frame_placement = GTK_CORNER_TOP_LEFT;
-	priv->shadow_type = GTK_SHADOW_NONE;
+	details->sb_spacing = 3;
+	details->hsb_policy = GTK_POLICY_ALWAYS;
+	details->vsb_policy = GTK_POLICY_ALWAYS;
+	details->frame_placement = GTK_CORNER_TOP_LEFT;
+	details->shadow_type = GTK_SHADOW_NONE;
 }
 
 /* Set_arg handler for the scroll frame widget */
 static void
-gtk_scroll_frame_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
+nautilus_scroll_frame_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 {
-	GtkScrollFrame *sf;
-	ScrollFramePrivate *priv;
+	NautilusScrollFrame *sf;
+	NautilusScrollFrameDetails *details;
 
-	sf = GTK_SCROLL_FRAME (object);
-	priv = sf->priv;
+	sf = NAUTILUS_SCROLL_FRAME (object);
+	details = sf->details;
 
 	switch (arg_id) {
 	case ARG_HADJUSTMENT:
-		gtk_scroll_frame_set_hadjustment (sf, GTK_VALUE_POINTER (*arg));
+		nautilus_scroll_frame_set_hadjustment (sf, GTK_VALUE_POINTER (*arg));
 		break;
 
 	case ARG_VADJUSTMENT:
-		gtk_scroll_frame_set_vadjustment (sf, GTK_VALUE_POINTER (*arg));
+		nautilus_scroll_frame_set_vadjustment (sf, GTK_VALUE_POINTER (*arg));
 		break;
 
 	case ARG_HSCROLLBAR_POLICY:
-		gtk_scroll_frame_set_policy (sf, GTK_VALUE_ENUM (*arg), priv->vsb_policy);
+		nautilus_scroll_frame_set_policy (sf, GTK_VALUE_ENUM (*arg), details->vsb_policy);
 		break;
 
 	case ARG_VSCROLLBAR_POLICY:
-		gtk_scroll_frame_set_policy (sf, priv->hsb_policy, GTK_VALUE_ENUM (*arg));
+		nautilus_scroll_frame_set_policy (sf, details->hsb_policy, GTK_VALUE_ENUM (*arg));
 		break;
 
 	case ARG_FRAME_PLACEMENT:
-		gtk_scroll_frame_set_placement (sf, GTK_VALUE_ENUM (*arg));
+		nautilus_scroll_frame_set_placement (sf, GTK_VALUE_ENUM (*arg));
 		break;
 
 	case ARG_SHADOW_TYPE:
-		gtk_scroll_frame_set_shadow_type (sf, GTK_VALUE_ENUM (*arg));
+		nautilus_scroll_frame_set_shadow_type (sf, GTK_VALUE_ENUM (*arg));
 		break;
 
 	case ARG_SCROLLBAR_SPACING:
-		gtk_scroll_frame_set_scrollbar_spacing (sf, GTK_VALUE_UINT (*arg));
+		nautilus_scroll_frame_set_scrollbar_spacing (sf, GTK_VALUE_UINT (*arg));
 		break;
 
 	default:
@@ -291,41 +291,41 @@ gtk_scroll_frame_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 
 /* Get_arg handler for the scroll frame widget */
 static void
-gtk_scroll_frame_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
+nautilus_scroll_frame_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 {
-	GtkScrollFrame *sf;
-	ScrollFramePrivate *priv;
+	NautilusScrollFrame *sf;
+	NautilusScrollFrameDetails *details;
 
-	sf = GTK_SCROLL_FRAME (object);
-	priv = sf->priv;
+	sf = NAUTILUS_SCROLL_FRAME (object);
+	details = sf->details;
 
 	switch (arg_id) {
 	case ARG_HADJUSTMENT:
-		GTK_VALUE_POINTER (*arg) = gtk_scroll_frame_get_hadjustment (sf);
+		GTK_VALUE_POINTER (*arg) = nautilus_scroll_frame_get_hadjustment (sf);
 		break;
 
 	case ARG_VADJUSTMENT:
-		GTK_VALUE_POINTER (*arg) = gtk_scroll_frame_get_vadjustment (sf);
+		GTK_VALUE_POINTER (*arg) = nautilus_scroll_frame_get_vadjustment (sf);
 		break;
 
 	case ARG_HSCROLLBAR_POLICY:
-		GTK_VALUE_ENUM (*arg) = priv->hsb_policy;
+		GTK_VALUE_ENUM (*arg) = details->hsb_policy;
 		break;
 
 	case ARG_VSCROLLBAR_POLICY:
-		GTK_VALUE_ENUM (*arg) = priv->vsb_policy;
+		GTK_VALUE_ENUM (*arg) = details->vsb_policy;
 		break;
 
 	case ARG_FRAME_PLACEMENT:
-		GTK_VALUE_ENUM (*arg) = priv->frame_placement;
+		GTK_VALUE_ENUM (*arg) = details->frame_placement;
 		break;
 
 	case ARG_SHADOW_TYPE:
-		GTK_VALUE_ENUM (*arg) = priv->shadow_type;
+		GTK_VALUE_ENUM (*arg) = details->shadow_type;
 		break;
 
 	case ARG_SCROLLBAR_SPACING:
-		GTK_VALUE_UINT (*arg) = priv->sb_spacing;
+		GTK_VALUE_UINT (*arg) = details->sb_spacing;
 		break;
 
 	default:
@@ -336,21 +336,20 @@ gtk_scroll_frame_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 
 /* Destroy handler for the scroll frame widget */
 static void
-gtk_scroll_frame_destroy (GtkObject *object)
+nautilus_scroll_frame_destroy (GtkObject *object)
 {
-	GtkScrollFrame *sf;
-	ScrollFramePrivate *priv;
+	NautilusScrollFrame *sf;
+	NautilusScrollFrameDetails *details;
 
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (GTK_IS_SCROLL_FRAME (object));
+	g_return_if_fail (NAUTILUS_IS_SCROLL_FRAME (object));
 
-	sf = GTK_SCROLL_FRAME (object);
-	priv = sf->priv;
+	sf = NAUTILUS_SCROLL_FRAME (object);
+	details = sf->details;
 
-	gtk_widget_unparent (priv->hsb);
-	gtk_widget_unparent (priv->vsb);
-	gtk_widget_destroy (priv->hsb);
-	gtk_widget_destroy (priv->vsb);
+	gtk_widget_unparent (details->hsb);
+	gtk_widget_unparent (details->vsb);
+	gtk_widget_destroy (details->hsb);
+	gtk_widget_destroy (details->vsb);
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -358,18 +357,18 @@ gtk_scroll_frame_destroy (GtkObject *object)
 
 /* Finalize handler for the scroll frame widget */
 static void
-gtk_scroll_frame_finalize (GtkObject *object)
+nautilus_scroll_frame_finalize (GtkObject *object)
 {
-	GtkScrollFrame *sf;
-	ScrollFramePrivate *priv;
+	NautilusScrollFrame *sf;
+	NautilusScrollFrameDetails *details;
 
-	sf = GTK_SCROLL_FRAME (object);
-	priv = sf->priv;
+	sf = NAUTILUS_SCROLL_FRAME (object);
+	details = sf->details;
 
-	gtk_widget_unref (priv->hsb);
-	gtk_widget_unref (priv->vsb);
+	gtk_widget_unref (details->hsb);
+	gtk_widget_unref (details->vsb);
 
-	g_free (priv);
+	g_free (details);
 
 	if (GTK_OBJECT_CLASS (parent_class)->finalize)
 		(* GTK_OBJECT_CLASS (parent_class)->finalize) (object);
@@ -377,86 +376,83 @@ gtk_scroll_frame_finalize (GtkObject *object)
 
 /* Map handler for the scroll frame widget */
 static void
-gtk_scroll_frame_map (GtkWidget *widget)
+nautilus_scroll_frame_map (GtkWidget *widget)
 {
-	GtkScrollFrame *sf;
-	ScrollFramePrivate *priv;
+	NautilusScrollFrame *sf;
+	NautilusScrollFrameDetails *details;
 
-	g_return_if_fail (widget != NULL);
-	g_return_if_fail (GTK_IS_SCROLL_FRAME (widget));
+	g_return_if_fail (NAUTILUS_IS_SCROLL_FRAME (widget));
 
-	sf = GTK_SCROLL_FRAME (widget);
-	priv = sf->priv;
+	sf = NAUTILUS_SCROLL_FRAME (widget);
+	details = sf->details;
 
 	/* chain parent class handler to map self and child */
 	if (GTK_WIDGET_CLASS (parent_class)->map)
 		(* GTK_WIDGET_CLASS (parent_class)->map) (widget);
 
-	if (GTK_WIDGET_VISIBLE (priv->hsb) && !GTK_WIDGET_MAPPED (priv->hsb))
-		gtk_widget_map (priv->hsb);
+	if (GTK_WIDGET_VISIBLE (details->hsb) && !GTK_WIDGET_MAPPED (details->hsb))
+		gtk_widget_map (details->hsb);
 
-	if (GTK_WIDGET_VISIBLE (priv->vsb) && !GTK_WIDGET_MAPPED (priv->vsb))
-		gtk_widget_map (priv->vsb);
+	if (GTK_WIDGET_VISIBLE (details->vsb) && !GTK_WIDGET_MAPPED (details->vsb))
+		gtk_widget_map (details->vsb);
 }
 
 /* Unmap handler for the scroll frame widget */
 static void
-gtk_scroll_frame_unmap (GtkWidget *widget)
+nautilus_scroll_frame_unmap (GtkWidget *widget)
 {
-	GtkScrollFrame *sf;
-	ScrollFramePrivate *priv;
+	NautilusScrollFrame *sf;
+	NautilusScrollFrameDetails *details;
 
-	g_return_if_fail (widget != NULL);
-	g_return_if_fail (GTK_IS_SCROLL_FRAME (widget));
+	g_return_if_fail (NAUTILUS_IS_SCROLL_FRAME (widget));
 
-	sf = GTK_SCROLL_FRAME (widget);
-	priv = sf->priv;
+	sf = NAUTILUS_SCROLL_FRAME (widget);
+	details = sf->details;
 
 	/* chain parent class handler to unmap self and child */
 	if (GTK_WIDGET_CLASS (parent_class)->unmap)
 		(* GTK_WIDGET_CLASS (parent_class)->unmap) (widget);
 
-	if (GTK_WIDGET_MAPPED (priv->hsb))
-		gtk_widget_unmap (priv->hsb);
+	if (GTK_WIDGET_MAPPED (details->hsb))
+		gtk_widget_unmap (details->hsb);
 
-	if (GTK_WIDGET_MAPPED (priv->vsb))
-		gtk_widget_unmap (priv->vsb);
+	if (GTK_WIDGET_MAPPED (details->vsb))
+		gtk_widget_unmap (details->vsb);
 }
 
 /* Draws the shadow of a scroll frame widget */
 static void
-draw_shadow (GtkScrollFrame *sf, GdkRectangle *area)
+draw_shadow (NautilusScrollFrame *sf, GdkRectangle *area)
 {
-	ScrollFramePrivate *priv;
+	NautilusScrollFrameDetails *details;
 
 	g_assert (area != NULL);
 
-	priv = sf->priv;
+	details = sf->details;
 
 	gtk_paint_shadow (GTK_WIDGET (sf)->style,
 			  GTK_WIDGET (sf)->window,
-			  GTK_STATE_NORMAL, priv->shadow_type,
+			  GTK_STATE_NORMAL, details->shadow_type,
 			  area, GTK_WIDGET (sf),
 			  "scroll_frame",
-			  priv->frame_x, priv->frame_y,
-			  priv->frame_w, priv->frame_h);
+			  details->frame_x, details->frame_y,
+			  details->frame_w, details->frame_h);
 }
 
 /* Draw handler for the scroll frame widget */
 static void
-gtk_scroll_frame_draw (GtkWidget *widget, GdkRectangle *area)
+nautilus_scroll_frame_draw (GtkWidget *widget, GdkRectangle *area)
 {
-	GtkScrollFrame *sf;
-	ScrollFramePrivate *priv;
+	NautilusScrollFrame *sf;
+	NautilusScrollFrameDetails *details;
 	GtkBin *bin;
 	GdkRectangle child_area;
 
-	g_return_if_fail (widget != NULL);
-	g_return_if_fail (GTK_IS_SCROLL_FRAME (widget));
+	g_return_if_fail (NAUTILUS_IS_SCROLL_FRAME (widget));
 	g_return_if_fail (area != NULL);
 
-	sf = GTK_SCROLL_FRAME (widget);
-	priv = sf->priv;
+	sf = NAUTILUS_SCROLL_FRAME (widget);
+	details = sf->details;
 	bin = GTK_BIN (widget);
 
 	if (GTK_WIDGET_DRAWABLE (widget))
@@ -466,29 +462,28 @@ gtk_scroll_frame_draw (GtkWidget *widget, GdkRectangle *area)
 	    && gtk_widget_intersect (bin->child, area, &child_area))
 		gtk_widget_draw (bin->child, &child_area);
 
-	if (GTK_WIDGET_VISIBLE (priv->hsb)
-	    && gtk_widget_intersect (priv->hsb, area, &child_area))
-		gtk_widget_draw (priv->hsb, &child_area);
+	if (GTK_WIDGET_VISIBLE (details->hsb)
+	    && gtk_widget_intersect (details->hsb, area, &child_area))
+		gtk_widget_draw (details->hsb, &child_area);
 
-	if (GTK_WIDGET_VISIBLE (priv->vsb)
-	    && gtk_widget_intersect (priv->vsb, area, &child_area))
-		gtk_widget_draw (priv->vsb, &child_area);
+	if (GTK_WIDGET_VISIBLE (details->vsb)
+	    && gtk_widget_intersect (details->vsb, area, &child_area))
+		gtk_widget_draw (details->vsb, &child_area);
 }
 
 /* Forall handler for the scroll frame widget */
 static void
-gtk_scroll_frame_forall (GtkContainer *container, gboolean include_internals,
+nautilus_scroll_frame_forall (GtkContainer *container, gboolean include_internals,
 			 GtkCallback callback, gpointer callback_data)
 {
-	GtkScrollFrame *sf;
-	ScrollFramePrivate *priv;
+	NautilusScrollFrame *sf;
+	NautilusScrollFrameDetails *details;
 
-	g_return_if_fail (container != NULL);
-	g_return_if_fail (GTK_IS_SCROLL_FRAME (container));
+	g_return_if_fail (NAUTILUS_IS_SCROLL_FRAME (container));
 	g_return_if_fail (callback != NULL);
 
-	sf = GTK_SCROLL_FRAME (container);
-	priv = sf->priv;
+	sf = NAUTILUS_SCROLL_FRAME (container);
+	details = sf->details;
 
 	if (GTK_CONTAINER_CLASS (parent_class)->forall)
 		(* GTK_CONTAINER_CLASS (parent_class)->forall) (
@@ -496,20 +491,20 @@ gtk_scroll_frame_forall (GtkContainer *container, gboolean include_internals,
 			callback, callback_data);
 
 	if (include_internals) {
-		if (priv->vsb)
-			(* callback) (priv->vsb, callback_data);
+		if (details->vsb)
+			(* callback) (details->vsb, callback_data);
 
-		if (priv->hsb)
-			(* callback) (priv->hsb, callback_data);
+		if (details->hsb)
+			(* callback) (details->hsb, callback_data);
 	}
 }
 
 /* Size_request handler for the scroll frame widget */
 static void
-gtk_scroll_frame_size_request (GtkWidget *widget, GtkRequisition *requisition)
+nautilus_scroll_frame_size_request (GtkWidget *widget, GtkRequisition *requisition)
 {
-	GtkScrollFrame *sf;
-	ScrollFramePrivate *priv;
+	NautilusScrollFrame *sf;
+	NautilusScrollFrameDetails *details;
 	GtkBin *bin;
 	gint extra_width;
 	gint extra_height;
@@ -517,12 +512,11 @@ gtk_scroll_frame_size_request (GtkWidget *widget, GtkRequisition *requisition)
 	GtkRequisition vsb_requisition;
 	GtkRequisition child_requisition;
 
-	g_return_if_fail (widget != NULL);
-	g_return_if_fail (GTK_IS_SCROLL_FRAME (widget));
+	g_return_if_fail (NAUTILUS_IS_SCROLL_FRAME (widget));
 	g_return_if_fail (requisition != NULL);
 
-	sf = GTK_SCROLL_FRAME (widget);
-	priv = sf->priv;
+	sf = NAUTILUS_SCROLL_FRAME (widget);
+	details = sf->details;
 	bin = GTK_BIN (widget);
 
 	extra_width = 0;
@@ -531,13 +525,13 @@ gtk_scroll_frame_size_request (GtkWidget *widget, GtkRequisition *requisition)
 	requisition->width = GTK_CONTAINER (widget)->border_width * 2;
 	requisition->height = GTK_CONTAINER (widget)->border_width * 2;
 
-	if (priv->shadow_type != GTK_SHADOW_NONE) {
+	if (details->shadow_type != GTK_SHADOW_NONE) {
 		requisition->width += 2 * widget->style->klass->xthickness;
 		requisition->height += 2 * widget->style->klass->ythickness;
 	}
 
-	gtk_widget_size_request (priv->hsb, &hsb_requisition);
-	gtk_widget_size_request (priv->vsb, &vsb_requisition);
+	gtk_widget_size_request (details->hsb, &hsb_requisition);
+	gtk_widget_size_request (details->vsb, &vsb_requisition);
 
 	if (bin->child && GTK_WIDGET_VISIBLE (bin->child)) {
 		static guint quark_aux_info;
@@ -547,7 +541,7 @@ gtk_scroll_frame_size_request (GtkWidget *widget, GtkRequisition *requisition)
 
 		gtk_widget_size_request (bin->child, &child_requisition);
 
-		if (priv->hsb_policy == GTK_POLICY_NEVER)
+		if (details->hsb_policy == GTK_POLICY_NEVER)
 			requisition->width += child_requisition.width;
 		else {
 			GtkWidgetAuxInfo *aux_info;
@@ -561,7 +555,7 @@ gtk_scroll_frame_size_request (GtkWidget *widget, GtkRequisition *requisition)
 				requisition->width += vsb_requisition.width;
 		}
 
-		if (priv->vsb_policy == GTK_POLICY_NEVER)
+		if (details->vsb_policy == GTK_POLICY_NEVER)
 			requisition->height += child_requisition.height;
 		else {
 			GtkWidgetAuxInfo *aux_info;
@@ -576,16 +570,16 @@ gtk_scroll_frame_size_request (GtkWidget *widget, GtkRequisition *requisition)
 		}
 	}
 
-	if (priv->hsb_policy == GTK_POLICY_AUTOMATIC || GTK_WIDGET_VISIBLE (priv->hsb)) {
+	if (details->hsb_policy == GTK_POLICY_AUTOMATIC || GTK_WIDGET_VISIBLE (details->hsb)) {
 		requisition->width = MAX (requisition->width, hsb_requisition.width);
-		if (!extra_height || GTK_WIDGET_VISIBLE (priv->hsb))
-			extra_height = priv->sb_spacing + hsb_requisition.height;
+		if (!extra_height || GTK_WIDGET_VISIBLE (details->hsb))
+			extra_height = details->sb_spacing + hsb_requisition.height;
 	}
 
-	if (priv->vsb_policy == GTK_POLICY_AUTOMATIC || GTK_WIDGET_VISIBLE (priv->vsb)) {
+	if (details->vsb_policy == GTK_POLICY_AUTOMATIC || GTK_WIDGET_VISIBLE (details->vsb)) {
 		requisition->height = MAX (requisition->height, vsb_requisition.height);
-		if (!extra_width || GTK_WIDGET_VISIBLE (priv->vsb))
-			extra_width = priv->sb_spacing + vsb_requisition.width;
+		if (!extra_width || GTK_WIDGET_VISIBLE (details->vsb))
+			extra_width = details->sb_spacing + vsb_requisition.width;
 	}
 
 	requisition->width += MAX (0, extra_width);
@@ -596,85 +590,83 @@ gtk_scroll_frame_size_request (GtkWidget *widget, GtkRequisition *requisition)
 static void
 compute_relative_allocation (GtkWidget *widget, GtkAllocation *allocation)
 {
-	GtkScrollFrame *sf;
-	ScrollFramePrivate *priv;
+	NautilusScrollFrame *sf;
+	NautilusScrollFrameDetails *details;
 
-	g_assert (widget != NULL);
-	g_assert (GTK_IS_SCROLL_FRAME (widget));
+	g_assert (NAUTILUS_IS_SCROLL_FRAME (widget));
 	g_assert (allocation != NULL);
 
-	sf = GTK_SCROLL_FRAME (widget);
-	priv = sf->priv;
+	sf = NAUTILUS_SCROLL_FRAME (widget);
+	details = sf->details;
 
 	allocation->x = GTK_CONTAINER (widget)->border_width;
 	allocation->y = GTK_CONTAINER (widget)->border_width;
 	allocation->width = MAX (1, (gint) widget->allocation.width - allocation->x * 2);
 	allocation->height = MAX (1, (gint) widget->allocation.height - allocation->y * 2);
 
-	if (priv->vsb_visible) {
+	if (details->vsb_visible) {
 		GtkRequisition vsb_requisition;
 		gint possible_new_width;
 
-		gtk_widget_get_child_requisition (priv->vsb, &vsb_requisition);
+		gtk_widget_get_child_requisition (details->vsb, &vsb_requisition);
 
-		if (priv->frame_placement == GTK_CORNER_TOP_RIGHT
-		    || priv->frame_placement == GTK_CORNER_BOTTOM_RIGHT)
-			allocation->x += vsb_requisition.width + priv->sb_spacing;
+		if (details->frame_placement == GTK_CORNER_TOP_RIGHT
+		    || details->frame_placement == GTK_CORNER_BOTTOM_RIGHT)
+			allocation->x += vsb_requisition.width + details->sb_spacing;
 
 		possible_new_width = ((gint) allocation->width
-				      - ((gint) vsb_requisition.width + priv->sb_spacing));
+				      - ((gint) vsb_requisition.width + details->sb_spacing));
 		allocation->width = MAX (0, possible_new_width);
 	}
 
-	if (priv->hsb_visible) {
+	if (details->hsb_visible) {
 		GtkRequisition hsb_requisition;
 		gint possible_new_height;
 
-		gtk_widget_get_child_requisition (priv->hsb, &hsb_requisition);
+		gtk_widget_get_child_requisition (details->hsb, &hsb_requisition);
 
-		if (priv->frame_placement == GTK_CORNER_BOTTOM_LEFT
-		    || priv->frame_placement == GTK_CORNER_BOTTOM_RIGHT)
-			allocation->y += hsb_requisition.height + priv->sb_spacing;
+		if (details->frame_placement == GTK_CORNER_BOTTOM_LEFT
+		    || details->frame_placement == GTK_CORNER_BOTTOM_RIGHT)
+			allocation->y += hsb_requisition.height + details->sb_spacing;
 
 		possible_new_height = 
 			(   ((gint)allocation->height)
-			    - ((gint)hsb_requisition.height) + ((gint)priv->sb_spacing));
+			    - ((gint)hsb_requisition.height) + ((gint)details->sb_spacing));
 		allocation->height = MAX (0, possible_new_height);
 	}
 }
 
 /* Size_allocate handler for the scroll frame widget */
 static void
-gtk_scroll_frame_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
+nautilus_scroll_frame_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 {
-	GtkScrollFrame *sf;
-	ScrollFramePrivate *priv;
+	NautilusScrollFrame *sf;
+	NautilusScrollFrameDetails *details;
 	GtkBin *bin;
 	GtkAllocation relative_allocation;
 	GtkAllocation child_allocation;
 	gint xthickness, ythickness;
 
-	g_return_if_fail (widget != NULL);
-	g_return_if_fail (GTK_IS_SCROLL_FRAME (widget));
+	g_return_if_fail (NAUTILUS_IS_SCROLL_FRAME (widget));
 	g_return_if_fail (allocation != NULL);
 
-	sf = GTK_SCROLL_FRAME (widget);
-	priv = sf->priv;
+	sf = NAUTILUS_SCROLL_FRAME (widget);
+	details = sf->details;
 	bin = GTK_BIN (widget);
 
 	widget->allocation = *allocation;
 
-	if (priv->hsb_policy == GTK_POLICY_ALWAYS)
-		priv->hsb_visible = TRUE;
-	else if (priv->hsb_policy == GTK_POLICY_NEVER)
-		priv->hsb_visible = FALSE;
+	if (details->hsb_policy == GTK_POLICY_ALWAYS)
+		details->hsb_visible = TRUE;
+	else if (details->hsb_policy == GTK_POLICY_NEVER)
+		details->hsb_visible = FALSE;
 
-	if (priv->vsb_policy == GTK_POLICY_ALWAYS)
-		priv->vsb_visible = TRUE;
-	else if (priv->vsb_policy == GTK_POLICY_NEVER)
-		priv->vsb_visible = FALSE;
+	if (details->vsb_policy == GTK_POLICY_ALWAYS)
+		details->vsb_visible = TRUE;
+	else if (details->vsb_policy == GTK_POLICY_NEVER)
+		details->vsb_visible = FALSE;
 
-	if (priv->shadow_type == GTK_SHADOW_NONE) {
+	if (details->shadow_type == GTK_SHADOW_NONE) {
 		xthickness = 0;
 		ythickness = 0;
 	} else {
@@ -692,20 +684,20 @@ gtk_scroll_frame_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 
 			compute_relative_allocation (widget, &relative_allocation);
 
-			priv->frame_x = relative_allocation.x + allocation->x;
-			priv->frame_y = relative_allocation.y + allocation->y;
-			priv->frame_w = relative_allocation.width;
-			priv->frame_h = relative_allocation.height;
+			details->frame_x = relative_allocation.x + allocation->x;
+			details->frame_y = relative_allocation.y + allocation->y;
+			details->frame_w = relative_allocation.width;
+			details->frame_h = relative_allocation.height;
 
-			child_allocation.x = priv->frame_x + xthickness;
-			child_allocation.y = priv->frame_y + ythickness;
-			possible_new_size = priv->frame_w - 2 * xthickness;
+			child_allocation.x = details->frame_x + xthickness;
+			child_allocation.y = details->frame_y + ythickness;
+			possible_new_size = details->frame_w - 2 * xthickness;
 			child_allocation.width = MAX(1, possible_new_size);
-			possible_new_size = priv->frame_h - 2 * ythickness;
+			possible_new_size = details->frame_h - 2 * ythickness;
 			child_allocation.height = MAX(1, possible_new_size);
 
-			previous_hvis = priv->hsb_visible;
-			previous_vvis = priv->vsb_visible;
+			previous_hvis = details->hsb_visible;
+			previous_vvis = details->vsb_visible;
 
 			gtk_widget_size_allocate (bin->child, &child_allocation);
 
@@ -713,10 +705,10 @@ gtk_scroll_frame_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 			 * vscrollbar flip visiblity, then we need both.
 			 */
 			if (count
-			    && previous_hvis != priv->hsb_visible
-			    && previous_vvis != priv->vsb_visible) {
-				priv->hsb_visible = TRUE;
-				priv->vsb_visible = TRUE;
+			    && previous_hvis != details->hsb_visible
+			    && previous_vvis != details->vsb_visible) {
+				details->hsb_visible = TRUE;
+				details->vsb_visible = TRUE;
 
 				/* a new resize is already queued at this point,
 				 * so we will immediatedly get reinvoked
@@ -725,26 +717,26 @@ gtk_scroll_frame_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 			}
 
 			count++;
-		} while (previous_hvis != priv->hsb_visible
-			 || previous_vvis != priv->vsb_visible);
+		} while (previous_hvis != details->hsb_visible
+			 || previous_vvis != details->vsb_visible);
 	} else
 		compute_relative_allocation (widget, &relative_allocation);
 
-	if (priv->hsb_visible) {
+	if (details->hsb_visible) {
 		GtkRequisition hscrollbar_requisition;
 
-		gtk_widget_get_child_requisition (priv->hsb, &hscrollbar_requisition);
+		gtk_widget_get_child_requisition (details->hsb, &hscrollbar_requisition);
 
-		if (!GTK_WIDGET_VISIBLE (priv->hsb))
-			gtk_widget_show (priv->hsb);
+		if (!GTK_WIDGET_VISIBLE (details->hsb))
+			gtk_widget_show (details->hsb);
 
 		child_allocation.x = relative_allocation.x;
-		if (priv->frame_placement == GTK_CORNER_TOP_LEFT
-		    || priv->frame_placement == GTK_CORNER_TOP_RIGHT)
+		if (details->frame_placement == GTK_CORNER_TOP_LEFT
+		    || details->frame_placement == GTK_CORNER_TOP_RIGHT)
 			child_allocation.y = (relative_allocation.y
 #if 0
 					      + relative_allocation.height
-					      + priv->sb_spacing);
+					      + details->sb_spacing);
 #else
 		+ relative_allocation.height);
 #endif
@@ -756,23 +748,23 @@ gtk_scroll_frame_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 		child_allocation.x += allocation->x;
 		child_allocation.y += allocation->y;
 
-		gtk_widget_size_allocate (priv->hsb, &child_allocation);
-	} else if (GTK_WIDGET_VISIBLE (priv->hsb))
-		gtk_widget_hide (priv->hsb);
+		gtk_widget_size_allocate (details->hsb, &child_allocation);
+	} else if (GTK_WIDGET_VISIBLE (details->hsb))
+		gtk_widget_hide (details->hsb);
 
-	if (priv->vsb_visible) {
+	if (details->vsb_visible) {
 		GtkRequisition vscrollbar_requisition;
 
-		if (!GTK_WIDGET_VISIBLE (priv->vsb))
-			gtk_widget_show (priv->vsb);
+		if (!GTK_WIDGET_VISIBLE (details->vsb))
+			gtk_widget_show (details->vsb);
 
-		gtk_widget_get_child_requisition (priv->vsb, &vscrollbar_requisition);
+		gtk_widget_get_child_requisition (details->vsb, &vscrollbar_requisition);
 
-		if (priv->frame_placement == GTK_CORNER_TOP_LEFT
-		    || priv->frame_placement == GTK_CORNER_BOTTOM_LEFT)
+		if (details->frame_placement == GTK_CORNER_TOP_LEFT
+		    || details->frame_placement == GTK_CORNER_BOTTOM_LEFT)
 			child_allocation.x = (relative_allocation.x
 					      + relative_allocation.width
-					      + priv->sb_spacing);
+					      + details->sb_spacing);
 		else
 			child_allocation.x = GTK_CONTAINER (sf)->border_width;
 
@@ -782,22 +774,21 @@ gtk_scroll_frame_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 		child_allocation.x += allocation->x;
 		child_allocation.y += allocation->y;
 
-		gtk_widget_size_allocate (priv->vsb, &child_allocation);
-	} else if (GTK_WIDGET_VISIBLE (priv->vsb))
-		gtk_widget_hide (priv->vsb);
+		gtk_widget_size_allocate (details->vsb, &child_allocation);
+	} else if (GTK_WIDGET_VISIBLE (details->vsb))
+		gtk_widget_hide (details->vsb);
 }
 
 /* Expose handler for the scroll frame widget */
 static gint
-gtk_scroll_frame_expose (GtkWidget *widget, GdkEventExpose *event)
+nautilus_scroll_frame_expose (GtkWidget *widget, GdkEventExpose *event)
 {
-	GtkScrollFrame *sf;
+	NautilusScrollFrame *sf;
 
-	g_return_val_if_fail (widget != NULL, FALSE);
-	g_return_val_if_fail (GTK_IS_SCROLL_FRAME (widget), FALSE);
+	g_return_val_if_fail (NAUTILUS_IS_SCROLL_FRAME (widget), FALSE);
 	g_return_val_if_fail (event != NULL, FALSE);
 
-	sf = GTK_SCROLL_FRAME (widget);
+	sf = NAUTILUS_SCROLL_FRAME (widget);
 
 	if (GTK_WIDGET_DRAWABLE (widget))
 		draw_shadow (sf, &event->area);
@@ -810,14 +801,14 @@ gtk_scroll_frame_expose (GtkWidget *widget, GdkEventExpose *event)
 
 /* Add handler for the scroll frame widget */
 static void
-gtk_scroll_frame_add (GtkContainer *container, GtkWidget *child)
+nautilus_scroll_frame_add (GtkContainer *container, GtkWidget *child)
 {
-	GtkScrollFrame *sf;
-	ScrollFramePrivate *priv;
+	NautilusScrollFrame *sf;
+	NautilusScrollFrameDetails *details;
 	GtkBin *bin;
 
-	sf = GTK_SCROLL_FRAME (container);
-	priv = sf->priv;
+	sf = NAUTILUS_SCROLL_FRAME (container);
+	details = sf->details;
 	bin = GTK_BIN (container);
 	g_return_if_fail (bin->child == NULL);
 
@@ -826,10 +817,10 @@ gtk_scroll_frame_add (GtkContainer *container, GtkWidget *child)
 
 	/* this is a temporary message */
 	if (!gtk_widget_set_scroll_adjustments (child,
-						gtk_range_get_adjustment (GTK_RANGE (priv->hsb)),
-						gtk_range_get_adjustment (GTK_RANGE (priv->vsb))))
-		g_warning ("gtk_scroll_frame_add(): cannot add non scrollable widget "
-			   "use gtk_scroll_frame_add_with_viewport() instead");
+						gtk_range_get_adjustment (GTK_RANGE (details->hsb)),
+						gtk_range_get_adjustment (GTK_RANGE (details->vsb))))
+		g_warning ("nautilus_scroll_frame_add(): cannot add non scrollable widget "
+			   "use nautilus_scroll_frame_add_with_viewport() instead");
 
 	if (GTK_WIDGET_REALIZED (child->parent))
 		gtk_widget_realize (child);
@@ -844,10 +835,9 @@ gtk_scroll_frame_add (GtkContainer *container, GtkWidget *child)
 
 /* Remove method for the scroll frame widget */
 static void
-gtk_scroll_frame_remove (GtkContainer *container, GtkWidget *child)
+nautilus_scroll_frame_remove (GtkContainer *container, GtkWidget *child)
 {
-	g_return_if_fail (container != NULL);
-	g_return_if_fail (GTK_IS_SCROLL_FRAME (container));
+	g_return_if_fail (NAUTILUS_IS_SCROLL_FRAME (container));
 	g_return_if_fail (child != NULL);
 	g_return_if_fail (GTK_BIN (container)->child == child);
 
@@ -859,7 +849,7 @@ gtk_scroll_frame_remove (GtkContainer *container, GtkWidget *child)
 }
 
 /**
- * gtk_scroll_frame_new:
+ * nautilus_scroll_frame_new:
  * @hadj: If non-NULL, the adjustment to use for horizontal scrolling.
  * @vadj: If non-NULL, the adjustment to use for vertical scrolling.
  *
@@ -868,7 +858,7 @@ gtk_scroll_frame_remove (GtkContainer *container, GtkWidget *child)
  * Return value: The newly-created scroll frame widget.
  **/
 GtkWidget *
-gtk_scroll_frame_new (GtkAdjustment *hadj, GtkAdjustment *vadj)
+nautilus_scroll_frame_new (GtkAdjustment *hadj, GtkAdjustment *vadj)
 {
 	if (hadj)
 		g_return_val_if_fail (GTK_IS_ADJUSTMENT (hadj), NULL);
@@ -876,7 +866,7 @@ gtk_scroll_frame_new (GtkAdjustment *hadj, GtkAdjustment *vadj)
 	if (vadj)
 		g_return_val_if_fail (GTK_IS_ADJUSTMENT (vadj), NULL);
 
-	return gtk_widget_new (GTK_TYPE_SCROLL_FRAME,
+	return gtk_widget_new (NAUTILUS_TYPE_SCROLL_FRAME,
 			       "hadjustment", hadj,
 			       "vadjustment", vadj,
 			       NULL);
@@ -886,39 +876,38 @@ gtk_scroll_frame_new (GtkAdjustment *hadj, GtkAdjustment *vadj)
 static void
 adjustment_changed (GtkAdjustment *adj, gpointer data)
 {
-	GtkScrollFrame *sf;
-	ScrollFramePrivate *priv;
+	NautilusScrollFrame *sf;
+	NautilusScrollFrameDetails *details;
 
-	g_return_if_fail (adj != NULL);
 	g_return_if_fail (GTK_IS_ADJUSTMENT (adj));
 	g_return_if_fail (data != NULL);
 
-	sf = GTK_SCROLL_FRAME (data);
-	priv = sf->priv;
+	sf = NAUTILUS_SCROLL_FRAME (data);
+	details = sf->details;
 
-	if (adj == gtk_range_get_adjustment (GTK_RANGE (priv->hsb))) {
-		if (priv->hsb_policy == GTK_POLICY_AUTOMATIC) {
+	if (adj == gtk_range_get_adjustment (GTK_RANGE (details->hsb))) {
+		if (details->hsb_policy == GTK_POLICY_AUTOMATIC) {
 			gboolean visible;
 
-			visible = priv->hsb_visible;
-			priv->hsb_visible = (adj->upper - adj->lower > adj->page_size);
-			if (priv->hsb_visible != visible)
+			visible = details->hsb_visible;
+			details->hsb_visible = (adj->upper - adj->lower > adj->page_size);
+			if (details->hsb_visible != visible)
 				gtk_widget_queue_resize (GTK_WIDGET (sf));
 		}
-	} else if (adj == gtk_range_get_adjustment (GTK_RANGE (priv->vsb))) {
-		if (priv->vsb_policy == GTK_POLICY_AUTOMATIC) {
+	} else if (adj == gtk_range_get_adjustment (GTK_RANGE (details->vsb))) {
+		if (details->vsb_policy == GTK_POLICY_AUTOMATIC) {
 			gboolean visible;
 
-			visible = priv->vsb_visible;
-			priv->vsb_visible = (adj->upper - adj->lower > adj->page_size);
-			if (priv->vsb_visible != visible)
+			visible = details->vsb_visible;
+			details->vsb_visible = (adj->upper - adj->lower > adj->page_size);
+			if (details->vsb_visible != visible)
 				gtk_widget_queue_resize (GTK_WIDGET (sf));
 		}
 	}
 }
 
 /**
- * gtk_scroll_frame_set_hadjustment:
+ * nautilus_scroll_frame_set_hadjustment:
  * @sf: A scroll frame widget.
  * @adj: An adjustment.
  *
@@ -926,43 +915,42 @@ adjustment_changed (GtkAdjustment *adj, gpointer data)
  * widget.
  **/
 void
-gtk_scroll_frame_set_hadjustment (GtkScrollFrame *sf, GtkAdjustment *adj)
+nautilus_scroll_frame_set_hadjustment (NautilusScrollFrame *sf, GtkAdjustment *adj)
 {
-	ScrollFramePrivate *priv;
+	NautilusScrollFrameDetails *details;
 
-	g_return_if_fail (sf != NULL);
-	g_return_if_fail (GTK_IS_SCROLL_FRAME (sf));
+	g_return_if_fail (NAUTILUS_IS_SCROLL_FRAME (sf));
 
-	priv = sf->priv;
+	details = sf->details;
 
 	if (adj)
 		g_return_if_fail (GTK_IS_ADJUSTMENT (adj));
 	else
 		adj = GTK_ADJUSTMENT (gtk_object_new (GTK_TYPE_ADJUSTMENT, NULL));
 
-	if (!priv->hsb) {
+	if (!details->hsb) {
 		gtk_widget_push_composite_child ();
-		priv->hsb = gtk_hscrollbar_new (adj);
-		gtk_widget_set_composite_name (priv->hsb, "hscrollbar");
+		details->hsb = gtk_hscrollbar_new (adj);
+		gtk_widget_set_composite_name (details->hsb, "hscrollbar");
 		gtk_widget_pop_composite_child ();
 
-		gtk_widget_set_parent (priv->hsb, GTK_WIDGET (sf));
-		gtk_widget_ref (priv->hsb);
-		gtk_widget_show (priv->hsb);
+		gtk_widget_set_parent (details->hsb, GTK_WIDGET (sf));
+		gtk_widget_ref (details->hsb);
+		gtk_widget_show (details->hsb);
 	} else {
 		GtkAdjustment *old_adj;
 
-		old_adj = gtk_range_get_adjustment (GTK_RANGE (priv->hsb));
+		old_adj = gtk_range_get_adjustment (GTK_RANGE (details->hsb));
 		if (old_adj == adj)
 			return;
 
 		gtk_signal_disconnect_by_func (GTK_OBJECT (old_adj),
 					       GTK_SIGNAL_FUNC (adjustment_changed),
 					       sf);
-		gtk_range_set_adjustment (GTK_RANGE (priv->hsb), adj);
+		gtk_range_set_adjustment (GTK_RANGE (details->hsb), adj);
 	}
 
-	adj = gtk_range_get_adjustment (GTK_RANGE (priv->hsb));
+	adj = gtk_range_get_adjustment (GTK_RANGE (details->hsb));
 	gtk_signal_connect (GTK_OBJECT (adj),
 			    "changed",
 			    GTK_SIGNAL_FUNC (adjustment_changed),
@@ -972,12 +960,12 @@ gtk_scroll_frame_set_hadjustment (GtkScrollFrame *sf, GtkAdjustment *adj)
 	if (GTK_BIN (sf)->child)
 		gtk_widget_set_scroll_adjustments (
 			GTK_BIN (sf)->child,
-			gtk_range_get_adjustment (GTK_RANGE (priv->hsb)),
-			gtk_range_get_adjustment (GTK_RANGE (priv->vsb)));
+			gtk_range_get_adjustment (GTK_RANGE (details->hsb)),
+			gtk_range_get_adjustment (GTK_RANGE (details->vsb)));
 }
 
 /**
- * gtk_scroll_frame_set_vadjustment:
+ * nautilus_scroll_frame_set_vadjustment:
  * @sf: A scroll frame widget.
  * @adj: An adjustment.
  *
@@ -985,43 +973,42 @@ gtk_scroll_frame_set_hadjustment (GtkScrollFrame *sf, GtkAdjustment *adj)
  * widget.
  **/
 void
-gtk_scroll_frame_set_vadjustment (GtkScrollFrame *sf, GtkAdjustment *adj)
+nautilus_scroll_frame_set_vadjustment (NautilusScrollFrame *sf, GtkAdjustment *adj)
 {
-	ScrollFramePrivate *priv;
+	NautilusScrollFrameDetails *details;
 
-	g_return_if_fail (sf != NULL);
-	g_return_if_fail (GTK_IS_SCROLL_FRAME (sf));
+	g_return_if_fail (NAUTILUS_IS_SCROLL_FRAME (sf));
 
-	priv = sf->priv;
+	details = sf->details;
 
 	if (adj)
 		g_return_if_fail (GTK_IS_ADJUSTMENT (adj));
 	else
 		adj = GTK_ADJUSTMENT (gtk_object_new (GTK_TYPE_ADJUSTMENT, NULL));
 
-	if (!priv->vsb) {
+	if (!details->vsb) {
 		gtk_widget_push_composite_child ();
-		priv->vsb = gtk_vscrollbar_new (adj);
-		gtk_widget_set_composite_name (priv->vsb, "vscrollbar");
+		details->vsb = gtk_vscrollbar_new (adj);
+		gtk_widget_set_composite_name (details->vsb, "vscrollbar");
 		gtk_widget_pop_composite_child ();
 
-		gtk_widget_set_parent (priv->vsb, GTK_WIDGET (sf));
-		gtk_widget_ref (priv->vsb);
-		gtk_widget_show (priv->vsb);
+		gtk_widget_set_parent (details->vsb, GTK_WIDGET (sf));
+		gtk_widget_ref (details->vsb);
+		gtk_widget_show (details->vsb);
 	} else {
 		GtkAdjustment *old_adj;
 
-		old_adj = gtk_range_get_adjustment (GTK_RANGE (priv->vsb));
+		old_adj = gtk_range_get_adjustment (GTK_RANGE (details->vsb));
 		if (old_adj == adj)
 			return;
 
 		gtk_signal_disconnect_by_func (GTK_OBJECT (old_adj),
 					       GTK_SIGNAL_FUNC (adjustment_changed),
 					       sf);
-		gtk_range_set_adjustment (GTK_RANGE (priv->vsb), adj);
+		gtk_range_set_adjustment (GTK_RANGE (details->vsb), adj);
 	}
 
-	adj = gtk_range_get_adjustment (GTK_RANGE (priv->vsb));
+	adj = gtk_range_get_adjustment (GTK_RANGE (details->vsb));
 	gtk_signal_connect (GTK_OBJECT (adj),
 			    "changed",
 			    GTK_SIGNAL_FUNC (adjustment_changed),
@@ -1031,12 +1018,12 @@ gtk_scroll_frame_set_vadjustment (GtkScrollFrame *sf, GtkAdjustment *adj)
 	if (GTK_BIN (sf)->child)
 		gtk_widget_set_scroll_adjustments (
 			GTK_BIN (sf)->child,
-			gtk_range_get_adjustment (GTK_RANGE (priv->hsb)),
-			gtk_range_get_adjustment (GTK_RANGE (priv->vsb)));
+			gtk_range_get_adjustment (GTK_RANGE (details->hsb)),
+			gtk_range_get_adjustment (GTK_RANGE (details->vsb)));
 }
 
 /**
- * gtk_scroll_frame_get_hadjustment:
+ * nautilus_scroll_frame_get_hadjustment:
  * @sf: A scroll frame widget.
  *
  * Queries the horizontal adjustment of a scroll frame widget.
@@ -1044,20 +1031,19 @@ gtk_scroll_frame_set_vadjustment (GtkScrollFrame *sf, GtkAdjustment *adj)
  * Return value: The horizontal adjustment of the scroll frame, or NULL if none.
  **/
 GtkAdjustment *
-gtk_scroll_frame_get_hadjustment (GtkScrollFrame *sf)
+nautilus_scroll_frame_get_hadjustment (NautilusScrollFrame *sf)
 {
-	ScrollFramePrivate *priv;
+	NautilusScrollFrameDetails *details;
 
-	g_return_val_if_fail (sf != NULL, NULL);
-	g_return_val_if_fail (GTK_IS_SCROLL_FRAME (sf), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_SCROLL_FRAME (sf), NULL);
 
-	priv = sf->priv;
+	details = sf->details;
 
-	return priv->hsb ? gtk_range_get_adjustment (GTK_RANGE (priv->hsb)) : NULL;
+	return details->hsb ? gtk_range_get_adjustment (GTK_RANGE (details->hsb)) : NULL;
 }
 
 /**
- * gtk_scroll_frame_get_vadjustment:
+ * nautilus_scroll_frame_get_vadjustment:
  * @sf: A scroll frame widget.
  *
  * Queries the vertical adjustment of a scroll frame widget.
@@ -1065,20 +1051,19 @@ gtk_scroll_frame_get_hadjustment (GtkScrollFrame *sf)
  * Return value: The vertical adjustment of the scroll frame, or NULL if none.
  **/
 GtkAdjustment *
-gtk_scroll_frame_get_vadjustment (GtkScrollFrame *sf)
+nautilus_scroll_frame_get_vadjustment (NautilusScrollFrame *sf)
 {
-	ScrollFramePrivate *priv;
+	NautilusScrollFrameDetails *details;
 
-	g_return_val_if_fail (sf != NULL, NULL);
-	g_return_val_if_fail (GTK_IS_SCROLL_FRAME (sf), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_SCROLL_FRAME (sf), NULL);
 
-	priv = sf->priv;
+	details = sf->details;
 
-	return priv->vsb ? gtk_range_get_adjustment (GTK_RANGE (priv->vsb)) : NULL;
+	return details->vsb ? gtk_range_get_adjustment (GTK_RANGE (details->vsb)) : NULL;
 }
 
 /**
- * gtk_scroll_frame_set_policy:
+ * nautilus_scroll_frame_set_policy:
  * @sf: A scroll frame widget.
  * @hsb_policy: Policy for the horizontal scrollbar.
  * @vsb_policy: Policy for the vertical scrollbar.
@@ -1087,28 +1072,27 @@ gtk_scroll_frame_get_vadjustment (GtkScrollFrame *sf)
  * the scrollbars are to be shown or hidden.
  **/
 void
-gtk_scroll_frame_set_policy (GtkScrollFrame *sf,
+nautilus_scroll_frame_set_policy (NautilusScrollFrame *sf,
 			     GtkPolicyType hsb_policy,
 			     GtkPolicyType vsb_policy)
 {
-	ScrollFramePrivate *priv;
+	NautilusScrollFrameDetails *details;
 
-	g_return_if_fail (sf != NULL);
-	g_return_if_fail (GTK_IS_SCROLL_FRAME (sf));
+	g_return_if_fail (NAUTILUS_IS_SCROLL_FRAME (sf));
 
-	priv = sf->priv;
+	details = sf->details;
 
-	if (priv->hsb_policy == hsb_policy && priv->vsb_policy == vsb_policy)
+	if (details->hsb_policy == hsb_policy && details->vsb_policy == vsb_policy)
 		return;
 
-	priv->hsb_policy = hsb_policy;
-	priv->vsb_policy = vsb_policy;
+	details->hsb_policy = hsb_policy;
+	details->vsb_policy = vsb_policy;
 
 	gtk_widget_queue_resize (GTK_WIDGET (sf));
 }
 
 /**
- * gtk_scroll_frame_set_placement:
+ * nautilus_scroll_frame_set_placement:
  * @sf: A scroll frame widget.
  * @frame_placement: Placement for the frame.
  *
@@ -1116,24 +1100,23 @@ gtk_scroll_frame_set_policy (GtkScrollFrame *sf,
  * scrollbars.
  **/
 void
-gtk_scroll_frame_set_placement (GtkScrollFrame *sf, GtkCornerType frame_placement)
+nautilus_scroll_frame_set_placement (NautilusScrollFrame *sf, GtkCornerType frame_placement)
 {
-	ScrollFramePrivate *priv;
+	NautilusScrollFrameDetails *details;
 
-	g_return_if_fail (sf != NULL);
-	g_return_if_fail (GTK_IS_SCROLL_FRAME (sf));
+	g_return_if_fail (NAUTILUS_IS_SCROLL_FRAME (sf));
 
-	priv = sf->priv;
+	details = sf->details;
 
-	if (priv->frame_placement == frame_placement)
+	if (details->frame_placement == frame_placement)
 		return;
 
-	priv->frame_placement = frame_placement;
+	details->frame_placement = frame_placement;
 	gtk_widget_queue_resize (GTK_WIDGET (sf));
 }
 
 /**
- * gtk_scroll_frame_set_shadow_type:
+ * nautilus_scroll_frame_set_shadow_type:
  * @sf: A scroll frame widget.
  * @shadow_type: A shadow type.
  *
@@ -1141,25 +1124,24 @@ gtk_scroll_frame_set_placement (GtkScrollFrame *sf, GtkCornerType frame_placemen
  * insert a child that does not paint a frame on its own.
  **/
 void
-gtk_scroll_frame_set_shadow_type (GtkScrollFrame *sf, GtkShadowType shadow_type)
+nautilus_scroll_frame_set_shadow_type (NautilusScrollFrame *sf, GtkShadowType shadow_type)
 {
-	ScrollFramePrivate *priv;
+	NautilusScrollFrameDetails *details;
 
-	g_return_if_fail (sf != NULL);
-	g_return_if_fail (GTK_IS_SCROLL_FRAME (sf));
+	g_return_if_fail (NAUTILUS_IS_SCROLL_FRAME (sf));
 	g_return_if_fail (shadow_type <= GTK_SHADOW_ETCHED_OUT);
 
-	priv = sf->priv;
+	details = sf->details;
 
-	if (priv->shadow_type == shadow_type)
+	if (details->shadow_type == shadow_type)
 		return;
 
-	priv->shadow_type = shadow_type;
+	details->shadow_type = shadow_type;
 	gtk_widget_queue_resize (GTK_WIDGET (sf));
 }
 
 /**
- * gtk_scroll_frame_set_scrollbar_spacing:
+ * nautilus_scroll_frame_set_scrollbar_spacing:
  * @sf: A scroll frame widget.
  * @spacing: Desired spacing in pixels.
  *
@@ -1167,24 +1149,23 @@ gtk_scroll_frame_set_shadow_type (GtkScrollFrame *sf, GtkShadowType shadow_type)
  * widget.
  **/
 void
-gtk_scroll_frame_set_scrollbar_spacing (GtkScrollFrame *sf, guint spacing)
+nautilus_scroll_frame_set_scrollbar_spacing (NautilusScrollFrame *sf, guint spacing)
 {
-	ScrollFramePrivate *priv;
+	NautilusScrollFrameDetails *details;
 
-	g_return_if_fail (sf != NULL);
-	g_return_if_fail (GTK_IS_SCROLL_FRAME (sf));
+	g_return_if_fail (NAUTILUS_IS_SCROLL_FRAME (sf));
 
-	priv = sf->priv;
+	details = sf->details;
 
-	if (priv->sb_spacing == spacing)
+	if (details->sb_spacing == spacing)
 		return;
 
-	priv->sb_spacing = spacing;
+	details->sb_spacing = spacing;
 	gtk_widget_queue_resize (GTK_WIDGET (sf));
 }
 
 /**
- * gtk_scroll_frame_add_with_viewport:
+ * nautilus_scroll_frame_add_with_viewport:
  * @sf: A scroll frame widget.
  * @child: A widget.
  *
@@ -1193,19 +1174,17 @@ gtk_scroll_frame_set_scrollbar_spacing (GtkScrollFrame *sf, guint spacing)
  * used only when a child does not support the scrolling interface.
  **/
 void
-gtk_scroll_frame_add_with_viewport (GtkScrollFrame *sf, GtkWidget *child)
+nautilus_scroll_frame_add_with_viewport (NautilusScrollFrame *sf, GtkWidget *child)
 {
-	ScrollFramePrivate *priv;
+	NautilusScrollFrameDetails *details;
 	GtkBin *bin;
 	GtkWidget *viewport;
 
-	g_return_if_fail (sf != NULL);
-	g_return_if_fail (GTK_IS_SCROLL_FRAME (sf));
-	g_return_if_fail (child != NULL);
+	g_return_if_fail (NAUTILUS_IS_SCROLL_FRAME (sf));
 	g_return_if_fail (GTK_IS_WIDGET (child));
 	g_return_if_fail (child->parent == NULL);
 
-	priv = sf->priv;
+	details = sf->details;
 	bin = GTK_BIN (sf);
 
 	if (bin->child != NULL) {
@@ -1214,8 +1193,8 @@ gtk_scroll_frame_add_with_viewport (GtkScrollFrame *sf, GtkWidget *child)
 
 		viewport = bin->child;
 	} else {
-		viewport = gtk_viewport_new (gtk_scroll_frame_get_hadjustment (sf),
-					     gtk_scroll_frame_get_vadjustment (sf));
+		viewport = gtk_viewport_new (nautilus_scroll_frame_get_hadjustment (sf),
+					     nautilus_scroll_frame_get_vadjustment (sf));
 		gtk_container_add (GTK_CONTAINER (sf), viewport);
 	}
 
