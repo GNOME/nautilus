@@ -25,16 +25,13 @@
 */
 
 #include <config.h>
-#include <glib.h>
-
-#include <string.h>
-#include <sys/types.h>
-#include <stdio.h>
-#include <dirent.h>
+#include "nautilus-medusa-support.h"
 
 #include "nautilus-glib-extensions.h"
-#include "nautilus-medusa-support.h"
 #include "nautilus-string.h"
+#include <dirent.h>
+#include <stdio.h>
+#include <sys/types.h>
 
 #ifdef HAVE_MEDUSA
 #include <libmedusa/medusa-system-state.h>
@@ -85,7 +82,6 @@ nautilus_medusa_add_system_state_changed_callback (NautilusMedusaChangedCallback
 NautilusCronStatus
 nautilus_medusa_check_cron_is_enabled (void)
 {
-#ifdef HAVE_PROC_PROCESS_FILES
 	DIR *proc_directory;
 	struct dirent *file;
 	char *stat_file_name;
@@ -93,6 +89,7 @@ nautilus_medusa_check_cron_is_enabled (void)
 	char stat_file_data[128];
 	const char *stat_file_process_name;
 	int process_number, bytes_read;
+	NautilusCronStatus status;
 
 	/* We figure out whether cron is running by reading the proc
 	   directory, and checking for a process named or ending with
@@ -103,37 +100,39 @@ nautilus_medusa_check_cron_is_enabled (void)
 		return NAUTILUS_CRON_STATUS_UNKNOWN;
 	}
 
-	file = readdir (proc_directory);
-	while (file != NULL) {
+	status = NAUTILUS_CRON_STATUS_UNKNOWN;
+
+	while ((file = readdir (proc_directory)) != NULL) {
 		/* Process files have numbers */
-		if (nautilus_str_to_int (file->d_name,
-					 &process_number)) {
-			stat_file_name = g_strdup_printf ("/proc/%d/stat", process_number);
-			stat_file = fopen (stat_file_name, "r");
-			g_free (stat_file_name);
-
-			if (stat_file == NULL) {
-				file = readdir (proc_directory);
-				continue;
-			}
-
-			bytes_read = fread (stat_file_data, sizeof (char), NAUTILUS_N_ELEMENTS (stat_file_data) - 1, stat_file);
-			fclose (stat_file);
-			stat_file_data[bytes_read] = 0;
-			
-			stat_file_process_name = strchr (stat_file_data, ' ') + 1;
-			
-			if (nautilus_str_has_prefix (stat_file_process_name, "(crond)")) {
-				return NAUTILUS_CRON_STATUS_ON;
-			}
-
+		if (!nautilus_str_to_int (file->d_name, &process_number)) {
+			continue;
 		}
-		file = readdir (proc_directory);
+
+		/* Since we've seen at least one process file, we can change our state
+		 * from "unknown" to "presumed off until proved otherwise".
+		 */
+		status = NAUTILUS_CRON_STATUS_OFF;
+
+		stat_file_name = g_strdup_printf ("/proc/%d/stat", process_number);
+		stat_file = fopen (stat_file_name, "r");
+		g_free (stat_file_name);
+		
+		if (stat_file == NULL) {
+			continue;
+		}
+		
+		bytes_read = fread (stat_file_data, 1, sizeof (stat_file_data) - 1, stat_file);
+		fclose (stat_file);
+		stat_file_data[bytes_read] = '\0';
+		
+		stat_file_process_name = strchr (stat_file_data, ' ');
+		
+		if (nautilus_str_has_prefix (stat_file_process_name, " (crond)")) {
+			status = NAUTILUS_CRON_STATUS_ON;
+			break;
+		}
 	}
 
 	closedir (proc_directory);
-	return NAUTILUS_CRON_STATUS_OFF;
-#else
-	return NAUTILUS_CRON_STATUS_UNKNOWN;
-#endif
+	return status;
 }

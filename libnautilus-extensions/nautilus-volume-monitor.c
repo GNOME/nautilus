@@ -2,7 +2,7 @@
 
 /* nautilus-volume-monitor.c - Desktop volume mounting routines.
 
-   Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -23,8 +23,6 @@
 */
 
 #include <config.h>
-#include <sys/types.h>
-
 #include "nautilus-volume-monitor.h"
 
 #include "nautilus-cdrom-extensions.h"
@@ -64,11 +62,13 @@
 
 #ifdef HAVE_MNTENT_H
 #include <mntent.h>
+#define MOUNT_TABLE_PATH _PATH_MNTTAB
 #endif
 
 #ifdef HAVE_SYS_MNTTAB_H
 #define SOLARIS_MNT 1
 #include <sys/mnttab.h>
+#define MOUNT_TABLE_PATH "/etc/mnttab"
 #endif
 
 #ifdef SOLARIS_MNT
@@ -77,7 +77,16 @@
 #define USE_VOLRMMOUNT 0
 #endif
 
+#ifndef MNTOPT_RO
+#define MNTOPT_RO "ro"
+#endif
+
+#ifndef HAVE_SETMNTENT
+#define setmntent(f,m) fopen(f,m)
+#endif
+
 #ifdef HAVE_CDDA
+
 #define size16 short
 #define size32 int
 
@@ -94,48 +103,17 @@
  * due to our strict error checking.
  */
 char **broken_header_fix = strerror_tr;
+
 #endif
 
 #define CHECK_STATUS_INTERVAL 2000
 
-#ifdef HAVE_ETC_MNTTAB
-#define PATH_PROC_MOUNTS "/etc/mnttab"
-#define PROC_MOUNTS_SEPARATOR "\t"
-#endif
-
-#ifdef HAVE_PROC_MOUNTS
-#define PATH_PROC_MOUNTS "/proc/mounts"
-#define PROC_MOUNTS_SEPARATOR " "
-#endif
-
 #define FLOPPY_MOUNT_PATH_PREFIX "/mnt/fd"
 
-#ifdef HAVE_VOL_DEV
-#define FLOPPY_DEVICE_PATH_PREFIX "/vol/dev/diskette"
-#else
-#define FLOPPY_DEVICE_PATH_PREFIX "/dev/fd"
-#endif
-
 #ifdef HAVE_SYS_MNTTAB_H
-#define PATH_MOUNT_TABLE "/etc/mnttab"
-#endif
-
-#ifdef HAVE_MNTENT_H
-#define PATH_MOUNT_TABLE _PATH_MNTTAB
-#endif
-
-#ifdef HAVE_VOL
-#  define MNTOPT_NOAUTO "/vol/"
-# else
-#  define MNTOPT_NOAUTO "noauto"
-#endif
-
-#ifndef MNTOPT_RO
-# define MNTOPT_RO "ro"
-#endif
-
-#ifndef HAVE_SETMNTENT
-#define setmntent(f,m) fopen(f,m)
+typedef struct mnttab MountTableEntry;
+#else
+typedef struct mntent MountTableEntry;
 #endif
 
 struct NautilusVolumeMonitorDetails
@@ -147,6 +125,8 @@ struct NautilusVolumeMonitorDetails
 };
 
 static NautilusVolumeMonitor *global_volume_monitor = NULL;
+static const char *floppy_device_path_prefix;
+static const char *noauto_string;
 
 
 /* The NautilusVolumeMonitor signals.  */
@@ -182,7 +162,7 @@ static GList 		*mount_volume_add_filesystem 			(NautilusVolume 		*volume,
 static NautilusVolume 	*create_volume 					(const char 			*device_path,
 									 const char 			*mount_path,
 									 const char 			*filesystem);
-static NautilusVolume	*copy_volume					(NautilusVolume             	*volume);									 
+static NautilusVolume	*copy_volume					(NautilusVolume             	*volume);
 static void		find_volumes 					(NautilusVolumeMonitor 		*monitor);
 static void		free_mount_list 				(GList 				*mount_list);
 static GList 		*get_removable_volumes 				(void);
@@ -194,7 +174,8 @@ static gboolean 	locate_audio_cd 				(void);
 #endif
 
 #ifdef SOLARIS_MNT
-static int get_cdrom_type_solaris(char *vol_dev_path, int* fd) ;
+static int              get_cdrom_type_solaris                          (const char                     *vol_dev_path,
+									 int                            *fd);
 #endif
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusVolumeMonitor,
@@ -242,7 +223,19 @@ nautilus_volume_monitor_initialize_class (NautilusVolumeMonitorClass *klass)
 				  gtk_marshal_NONE__POINTER,
 				  GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
 
-	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);				  
+	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
+
+	/* Check environment a bit. */
+	if (g_file_exists ("/vol/dev")) {
+		floppy_device_path_prefix = "/vol/dev/diskette/";
+	} else {
+		floppy_device_path_prefix = "/dev/fd/";
+	}
+	if (g_file_exists ("/vol")) {
+		noauto_string = "/vol/";
+	} else {
+		noauto_string = "/dev/fd/";
+	}
 }
 
 static void
@@ -330,31 +323,20 @@ nautilus_volume_monitor_get_removable_volumes (NautilusVolumeMonitor *monitor)
 }
 
 
-#ifdef HAVE_SYS_MNTTAB_H
-
 static gboolean
-has_removable_mntent_options (struct mnttab *ent)
+has_removable_mntent_options (MountTableEntry *ent)
 {
-
-#else
-
-static gboolean
-has_removable_mntent_options (struct mntent *ent)
-{
-
-#endif /* HAVE_SYS_MNTTAB_H */
-
 	/* Use "owner" or "user" or "users" as our way of determining a removable volume */
 	if (hasmntopt (ent, "user") != NULL
 	    || hasmntopt (ent, "users") != NULL
 	    || hasmntopt (ent, "owner") != NULL) {
-	    return TRUE;
+		return TRUE;
 	}
 
-#if SOLARIS_MNT && HAVE_VOL
-       if (strstr (ent->mnt_special, "/vol/") == ent->mnt_special) {
-           return TRUE;
-       }
+#ifdef SOLARIS_MNT
+	if (nautilus_str_has_prefix (ent->mnt_special, "/vol/")) {
+		return TRUE;
+	}
 #endif
 	
 	return FALSE;
@@ -372,36 +354,38 @@ get_removable_volumes (void)
 {
 	FILE *file;
 	GList *volumes;
-#if HAVE_SYS_MNTTAB_H
-        struct mnttab dummy_ent;
-        struct mnttab *ent = &dummy_ent;
-#else
-	struct mntent *ent;
-#endif /* HAVE_SYS_MNTTAB_H */
+	MountTableEntry *ent;
 	NautilusVolume *volume;
+#if HAVE_SYS_MNTTAB_H
+        MountTableEntry ent_storage;
+#endif
 	
 	volumes = NULL;
 	
-	file = setmntent (PATH_MOUNT_TABLE, "r");
+	file = setmntent (MOUNT_TABLE_PATH, "r");
 	if (file == NULL) {
 		return NULL;
 	}
 	
 #if HAVE_SYS_MNTTAB_H
+        ent = &ent_storage;
 	while (! getmntent (file, ent)) {
 		/* On Solaris look for /vol/ for determining a removable volume */
-		if (strstr (ent->mnt_special, MNTOPT_NOAUTO) == ent->mnt_special) {
+		if (nautilus_str_has_prefix (ent->mnt_special, noauto_string)) {
 			volume = create_volume (ent->mnt_special, ent->mnt_mountp, ent->mnt_fstype);
 			volume->is_removable = TRUE;
-			volume->is_read_only = (hasmntopt (ent, MNTOPT_RO) !=NULL);
+			volume->is_read_only = hasmntopt (ent, MNTOPT_RO) != NULL;
+			volumes = mount_volume_add_filesystem (volume, volumes);
+		}
+	}
 #else
 	while ((ent = getmntent (file)) != NULL) {
 		if (has_removable_mntent_options (ent)) {
 			volume = create_volume (ent->mnt_fsname, ent->mnt_dir, ent->mnt_type);
-#endif /* HAVE_SYS_MNTTAB_H */
 			volumes = mount_volume_add_filesystem (volume, volumes);
-		}	
+		}
 	}
+#endif /* HAVE_SYS_MNTTAB_H */
 			
 	fclose (file);
 	
@@ -419,26 +403,24 @@ static gboolean
 volume_is_removable (const NautilusVolume *volume)
 {
 	FILE *file;
+     	MountTableEntry *ent;
 #if HAVE_SYS_MNTTAB_H
-	struct mnttab dummy_ent;
-	struct mnttab *ent = &dummy_ent;
-#else
-     	struct mntent *ent;
-#endif /* HAVE_SYS_MNTTAB_H */
+	MountTableEntry ent_storage;
+#endif
 	
-	file = setmntent (PATH_MOUNT_TABLE, "r");
+	file = setmntent (MOUNT_TABLE_PATH, "r");
 	if (file == NULL) {
 		return FALSE;
 	}
 	
 	/* Search for our device in the fstab */
 #if HAVE_SYS_MNTTAB_H
+	MountTableEntry *ent = &ent_storage;
 	while (!getmntent (file, ent)) {
 		if (strcmp (volume->device_path, ent->mnt_special) == 0) {
   			/* On Solaris look for /vol/ for determining
 			a removable volume */
-   		 	if (strstr (ent->mnt_special, MNTOPT_NOAUTO) 
-				== ent->mnt_special) {
+   		 	if (nautilus_str_has_prefix (ent->mnt_special, noauto_string)) {
 				fclose (file);
 				return TRUE;
 			}
@@ -452,7 +434,6 @@ volume_is_removable (const NautilusVolume *volume)
 			return TRUE;
 		}	
 	}
-
 #endif /* HAVE_SYS_MNTTAB_H */
 	
 	fclose (file);
@@ -463,18 +444,19 @@ static gboolean
 volume_is_read_only (const NautilusVolume *volume)
 {
 	FILE *file;
+	MountTableEntry *ent;
 
 #if HAVE_SYS_MNTTAB_H
- 	struct mnttab dummy_ent;
- 	struct mnttab *ent = &dummy_ent;
- 	
- 	file = setmntent (PATH_MOUNT_TABLE, "r");
+ 	MountTableEntry ent_storage;
+
+ 	file = setmntent (MOUNT_TABLE_PATH, "r");
  	if (file == NULL) {
  		return FALSE;
  	}
  
  	 /* Search for our device in the fstab */
- 	 while (!getmntent (file, ent)) {
+ 	ent = &ent_storage;
+	while (!getmntent (file, ent)) {
  		if (strcmp (volume->device_path, ent->mnt_special) == 0) {
  			if (strstr (ent->mnt_mntopts, MNTOPT_RO) != NULL) {
  				fclose (file);
@@ -483,9 +465,7 @@ volume_is_read_only (const NautilusVolume *volume)
  		}
  	}
 #else
-	struct mntent *ent;
-	
-	file = setmntent (PATH_MOUNT_TABLE, "r");
+	file = setmntent (MOUNT_TABLE_PATH, "r");
 	if (file == NULL) {
 		return FALSE;
 	}
@@ -629,14 +609,12 @@ mount_volume_get_cdrom_name (NautilusVolume *volume)
 {
 	int fd, disctype;
 
-	#ifdef SOLARIS_MNT
-	disctype = get_cdrom_type_solaris(volume->device_path, &fd);
-
-	#else	
+#if SOLARIS_MNT
+	disctype = get_cdrom_type_solaris (volume->device_path, &fd);
+#else	
 	fd = open (volume->device_path, O_RDONLY|O_NONBLOCK);
 	disctype = ioctl (fd, CDROM_DISC_STATUS, CDSL_CURRENT);
-
-	#endif
+#endif
 
 	switch (disctype) {
 	case CDS_AUDIO:
@@ -672,7 +650,7 @@ mount_volume_activate_cdda (NautilusVolumeMonitor *monitor, NautilusVolume *volu
 	int fd, disctype;
 
 #ifdef SOLARIS_MNT
-	disctype = get_cdrom_type_solaris(volume->device_path, &fd);
+	disctype = get_cdrom_type_solaris (volume->device_path, &fd);
 #else
 	fd = open (volume->device_path, O_RDONLY | O_NONBLOCK);
 	disctype = ioctl (fd, CDROM_DISC_STATUS, CDSL_CURRENT);
@@ -693,7 +671,7 @@ mount_volume_activate_cdrom (NautilusVolumeMonitor *monitor, NautilusVolume *vol
 {
 	int fd, disctype;
 #ifdef SOLARIS_MNT
-	disctype = get_cdrom_type_solaris(volume->device_path, &fd);
+	disctype = get_cdrom_type_solaris (volume->device_path, &fd);
 #else
 	fd = open (volume->device_path, O_RDONLY | O_NONBLOCK);
 	disctype = ioctl (fd, CDROM_DISC_STATUS, CDSL_CURRENT);
@@ -918,19 +896,18 @@ build_volume_list_delta (GList *list_one, GList *list_two)
 	GList *ptrOne, *ptrTwo;
 	GList *new_list;
 	NautilusVolume *volOne, *volTwo, *new_volume;
-	int index;
 	gboolean found_match;
 	
 	new_list = NULL;
 		
-	for (ptrOne = list_one, index = 0; ptrOne != NULL; ptrOne = ptrOne->next, index++) {
+	for (ptrOne = list_one; ptrOne != NULL; ptrOne = ptrOne->next) {
 	
 		found_match = FALSE;
-		volOne = (NautilusVolume *)ptrOne->data;
+		volOne = (NautilusVolume *) ptrOne->data;
 							
 		for (ptrTwo = list_two; ptrTwo != NULL; ptrTwo = ptrTwo->next) {
 			
-			volTwo = (NautilusVolume *)ptrTwo->data;			
+			volTwo = (NautilusVolume *) ptrTwo->data;
 
 			/* Check and see if mount point from list one is in list two */
 			if (strcmp (volOne->mount_path, volTwo->mount_path) == 0) {
@@ -958,32 +935,36 @@ get_current_mount_list (void)
 	FILE *fh;
 
 #ifdef SOLARIS_MNT
-       struct mnttab dummy_ent;
-       struct mnttab *ent = &dummy_ent;
-
-       fh = setmntent (PATH_MOUNT_TABLE, "r");
-       if (fh == NULL) {
-               return NULL;
-       }
-       while (! getmntent (fh, ent)) {
-		volume = create_volume (ent->mnt_special, ent->mnt_mountp, ent->mnt_fstype);				
-		volume->is_removable = has_removable_mntent_options(ent);
-		volume->is_read_only = (hasmntopt (ent, MNTOPT_RO) != NULL);
-		current_mounts = mount_volume_add_filesystem (volume, current_mounts);
-       }               
+	MountTableEntry ent_storage;
+	MountTableEntry *ent = &ent_storage;
+	
+	fh = setmntent (MOUNT_TABLE_PATH, "r");
+	if (fh != NULL) {
+		while (! getmntent (fh, ent)) {
+			volume = create_volume (ent->mnt_special, ent->mnt_mountp, ent->mnt_fstype);
+			volume->is_removable = has_removable_mntent_options(ent);
+			volume->is_read_only = hasmntopt (ent, MNTOPT_RO) != NULL;
+			current_mounts = mount_volume_add_filesystem (volume, current_mounts);
+		}
+	}
 #else
 	char line[PATH_MAX * 3];
 	char device_name[sizeof (line)];
 	NautilusStringList *list;
 	char *device_path, *mount_path, *filesystem;
+	const char *separator;
 
-	/* Open /proc/mounts */
-	fh = fopen (PATH_PROC_MOUNTS, "r");
+	fh = fopen ("/etc/mnttab", "r");
+	separator = "\t";
+	if (fh == NULL) {
+		fh = fopen ("/proc/mounts", "r");
+		separator = " ";
+	}
 	g_return_val_if_fail (fh != NULL, NULL);
 
 	while (fgets (line, sizeof(line), fh)) {
 		if (sscanf (line, "%s", device_name) == 1) {
-			list = nautilus_string_list_new_from_tokens (line, PROC_MOUNTS_SEPARATOR, FALSE);			
+			list = nautilus_string_list_new_from_tokens (line, separator, FALSE);
 			if (list != NULL) {
 				/* The string list needs to have at least 3 items per line.
 				 * We need to find at least device path, mount path and file system type.
@@ -1002,9 +983,12 @@ get_current_mount_list (void)
 			}			
 		}
   	}
-
 #endif /* SOLARIS_MNT */
 
+	if (fh != NULL) {
+		fclose (fh);
+	}
+	
 #ifdef HAVE_CDDA
 	/* CD Audio tricks */
 	if (locate_audio_cd ()) {
@@ -1014,8 +998,6 @@ get_current_mount_list (void)
 	}
 #endif
 
-	fclose (fh);
-	
 	return current_mounts;
 }
 
@@ -1035,7 +1017,6 @@ update_modifed_volume_name (GList *mount_list, NautilusVolume *volume)
 	}
 }
 
-
 static gboolean
 mount_lists_are_identical (GList *list_a, GList *list_b)
 {
@@ -1043,7 +1024,6 @@ mount_lists_are_identical (GList *list_a, GList *list_b)
 	NautilusVolume *volumeOne, *volumeTwo;
 
 	for (p = list_a, q = list_b; p != NULL && q != NULL; p = p->next, q = q->next) {
-		
 		volumeOne = p->data;
 		volumeTwo = q->data;
 		
@@ -1058,17 +1038,7 @@ static void
 verify_current_mount_state (NautilusVolumeMonitor *monitor)
 {
 	GList *new_mounts, *old_mounts, *current_mounts;
-	GList *saved_mount_list;
-	gboolean free_new_mounts;
-	
-	new_mounts = old_mounts = current_mounts = saved_mount_list = NULL;
-
-	/* Free the new mount list only if it is not a copy of the current mount list. */
-	if (monitor->details->mounts != NULL) {	
-		free_new_mounts = TRUE;
-	} else {
-		free_new_mounts = FALSE;
-	}
+	GList *saved_mount_list, *p;
 	
 	/* Get all current mounts */
 	current_mounts = get_current_mount_list ();
@@ -1082,17 +1052,9 @@ verify_current_mount_state (NautilusVolumeMonitor *monitor)
 		return;
 	}
 		
-  	/* If saved mounts is NULL, this is the first time we have been here. New mounts
-  	 * are the same as current mounts
-  	 */
-  	if (monitor->details->mounts == NULL) {
-		new_mounts = current_mounts;
-		old_mounts = NULL;
-  	} else {	
-		/* Create list of new and old mounts */
-  		new_mounts = build_volume_list_delta (current_mounts, monitor->details->mounts);
-  		old_mounts = build_volume_list_delta (monitor->details->mounts, current_mounts);  		
-	}
+	/* Create list of new and old mounts */
+	new_mounts = build_volume_list_delta (current_mounts, monitor->details->mounts);
+	old_mounts = build_volume_list_delta (monitor->details->mounts, current_mounts);  		
 		
 	/* Stash a copy of the current mount list for updating mount names later. */
 	saved_mount_list = monitor->details->mounts;
@@ -1101,36 +1063,24 @@ verify_current_mount_state (NautilusVolumeMonitor *monitor)
 	monitor->details->mounts = current_mounts;
 
 	/* Check and see if we have new mounts to add */
-	if (new_mounts != NULL) {
-		GList *p;
-		for (p = new_mounts; p != NULL; p = p->next) {
-			mount_volume_activate (monitor, (NautilusVolume *)p->data);
-		}				
-	}
+	for (p = new_mounts; p != NULL; p = p->next) {
+		mount_volume_activate (monitor, (NautilusVolume *)p->data);
+	}				
 	
 	/* Check and see if we have old mounts to remove */
-	if (old_mounts != NULL) {		
-		GList *p;
-				
-		for (p = old_mounts; p != NULL; p = p->next) {
-			/* First we need to update the volume names in this list with modified names in the old list. Names in
-			 * the old list may have been modifed due to icon name conflicts.  The list of old mounts is unable
-		 	 * take this into account when it is created
-		 	 */			
-			update_modifed_volume_name (saved_mount_list, (NautilusVolume *)p->data);
-			
-			/* Deactivate the volume. */
-			mount_volume_deactivate (monitor, (NautilusVolume *)p->data);
-		}
-		free_mount_list (old_mounts);		
+	for (p = old_mounts; p != NULL; p = p->next) {
+		/* First we need to update the volume names in this list with modified names in the old list. Names in
+		 * the old list may have been modifed due to icon name conflicts.  The list of old mounts is unable
+		 * take this into account when it is created
+		 */			
+		update_modifed_volume_name (saved_mount_list, (NautilusVolume *) p->data);
+		
+		/* Deactivate the volume. */
+		mount_volume_deactivate (monitor, (NautilusVolume *) p->data);
 	}
 
-	/* Free the new mount list only if it is not a copy of the current mount list.
-	 * It will be a copy if there are no previous mounts.
-	 */
-	if (free_new_mounts) {
-		free_mount_list (new_mounts);
-	}
+	free_mount_list (old_mounts);
+	free_mount_list (new_mounts);
 	
 	free_mount_list (saved_mount_list);
 }
@@ -1148,6 +1098,7 @@ static gboolean
 mount_volume_floppy_add (NautilusVolume *volume)
 {
 	volume->type = NAUTILUS_VOLUME_FLOPPY;
+
 	return TRUE;
 }
 
@@ -1184,43 +1135,49 @@ mount_volume_msdos_add (NautilusVolume *volume)
 }
 
 #ifdef SOLARIS_MNT
-static int get_cdrom_type_solaris(char *vol_dev_path, int* fd) {
 
+static int
+get_cdrom_type_solaris (const char *vol_dev_path, int* fd)
+{
 	GString *new_dev_path;
 	struct cdrom_tocentry entry;
-	struct cdrom_tochdr	header;
-	gboolean audio;
+	struct cdrom_tochdr header;
+	int type;
 
-/* For ioctl call to work dev_path has to be /vol/dev/rdsk.... 
-	there has to be a nicer way to do this. */
+	/* For ioctl call to work dev_path has to be /vol/dev/rdsk.
+	 * There has to be a nicer way to do this.
+	 */
+	new_dev_path = g_string_new (vol_dev_path);
+	new_dev_path = g_string_insert_c (new_dev_path, 9, 'r');
+	*fd = open (new_dev_path.str, O_RDONLY | O_NONBLOCK);
+	g_string_free (new_dev_path, TRUE);
 
-	new_dev_path = g_string_new(vol_dev_path);
-	new_dev_path = g_string_insert_c(new_dev_path, 9, 'r');
-
-	
-	*fd = open((char *)new_dev_path, O_RDONLY | O_NONBLOCK);
-
-	ioctl (*fd, CDROMREADTOCHDR, &header);
-	entry.cdte_track = 1;
-	entry.cdte_format = CDROM_LBA;
-	audio = TRUE;
-	while(entry.cdte_track<=header.cdth_trk1 && audio) {
-
-		ioctl (*fd, CDROMREADTOCENTRY, &entry); 
-		if(entry.cdte_ctrl & CDROM_DATA_TRACK) 
-			audio = FALSE;
-		entry.cdte_track++; 
+	if (*fd < 0) {
+		return CDS_DATA_1;
 	}
 
-	g_string_free(new_dev_path, TRUE);
+	if (ioctl (*fd, CDROMREADTOCHDR, &header) == 0) {
+		return CDS_DATA_1;
+	}
 
-	if(audio)
-		return(CDS_AUDIO);
+	type = CDS_DATA_1;
+	
+	for (entry.cdte_track = 1;
+	     entry.cdte_track <= header.cdth_trk1;
+	     entry.cdte_track++) {
+		entry.cdte_format = CDROM_LBA;
+		if (ioctl (*fd, CDROMREADTOCENTRY, &entry) == 0) {
+			if (entry.cdte_ctrl & CDROM_DATA_TRACK) {
+				type = CDS_AUDIO;
+				break;
+			}
+		}
+	}
 
-	return(CDS_DATA_1);
+	return type;
 }
-#endif
 
+#endif
 
 static void
 cdrom_ioctl_get_info (int fd)
@@ -1233,7 +1190,6 @@ cdrom_ioctl_get_info (int fd)
 static gboolean
 mount_volume_iso9660_add (NautilusVolume *volume)
 {
-
 #ifndef SOLARIS_MNT
 	int fd;
 
@@ -1249,7 +1205,7 @@ mount_volume_iso9660_add (NautilusVolume *volume)
 
 	cdrom_ioctl_get_info (fd);
 	close (fd);
-#endif /* #ifndef SOLARIS_MNT */
+#endif
 
 	volume->type = NAUTILUS_VOLUME_CDROM;
 
@@ -1376,22 +1332,6 @@ find_volumes (NautilusVolumeMonitor *monitor)
 				 monitor);
 }
 
-#if 0
-void
-nautilus_volume_monitor_each_volume (NautilusVolumeMonitor *monitor, 
-				     NautilusEachVolumeFunction function,
-				     gpointer context)
-{
-	GList *p;
-
-	for (p = monitor->details->mounts; p != NULL; p = p->next) {
-		if ((* function) ((NautilusVolume *) p->data, context)) {
-			break;
-		}
-	}
-}
-#endif
-
 void
 nautilus_volume_monitor_each_mounted_volume (NautilusVolumeMonitor *monitor, 
 					     NautilusEachVolumeFunction function,
@@ -1434,9 +1374,9 @@ static const char *volrmmount_locations [] = {
 };
 
 #define MOUNT_COMMAND volrmmount_locations
-#define MOUNT_SEPERATOR " -i "
+#define MOUNT_SEPARATOR " -i "
 #define UMOUNT_COMMAND volrmmount_locations
-#define UMOUNT_SEPERATOR " -e "
+#define UMOUNT_SEPARATOR " -e "
 
 #else
 
@@ -1453,9 +1393,9 @@ static const char *umount_known_locations [] = {
 };
 
 #define MOUNT_COMMAND mount_known_locations
-#define MOUNT_SEPERATOR " "
+#define MOUNT_SEPARATOR " "
 #define UMOUNT_COMMAND umount_known_locations
-#define UMOUNT_SEPERATOR " "
+#define UMOUNT_SEPARATOR " "
 
 #endif /* USE_VOLRMMOUNT */
 
@@ -1503,7 +1443,7 @@ typedef struct {
 typedef struct {
 	char *message;
 	char *detailed_message;
-	char *title;
+	const char *title;
 } MountStatusInfo;
 
 
@@ -1517,7 +1457,6 @@ display_mount_status (gpointer callback_data)
 
 	g_free (info->message);
 	g_free (info->detailed_message);
-	g_free (info->title);
 	g_free (info);
 	
 	return FALSE;
@@ -1527,33 +1466,32 @@ static void
 close_error_pipe (gboolean mount, const char *mount_path)
 {
 	char *message;
-	const char *title;
 	char detailed_msg[MAX_PIPE_SIZE];
-	int length = 0;
+	int length;
 	gboolean is_floppy;
 	MountStatusInfo *info;
+
+	if (old_error < 0) {
+		return;
+	}
 	
-	if (mount) {
-		title = _("Mount Error");
-	} else {
-		title = _("Unmount Error");
+	close (2);
+	dup (old_error);
+	close (old_error);
+	
+	/* FIXME: This keeps reading into the same buffer over and
+	 * over again and makes no attempt to save bytes from any
+	 * calls other than the last read call.
+	 */
+	do {
+		length = read (error_pipe[0], detailed_msg, MAX_PIPE_SIZE);							
+	} while (length < 0);
+	
+	if (length >= 0) {
+		detailed_msg[length] = 0;
 	}
-		
-	if (old_error >= 0) {
-		close (2);
-		dup (old_error);
-		close (old_error);
-		
-		do {
-			length = read (error_pipe[0], detailed_msg, MAX_PIPE_SIZE);							
-		} while (length < 0);
-		
-		if (length >= 0) {
-			detailed_msg[length] = 0;
-		}
-		
-		close (error_pipe[0]);
-	}
+	
+	close (error_pipe[0]);
 	
 	/* No output to show */
 	if (length == 0) {
@@ -1605,13 +1543,11 @@ close_error_pipe (gboolean mount, const char *mount_path)
 	/* Set up info and pass it to callback to display dialog.  We do this because this
 	   routine may be called from a thread */
 	info = g_new0 (MountStatusInfo, 1);
-	info->message = g_strdup (message);	
+	info->message = message;	
 	info->detailed_message = g_strdup (detailed_msg);
-	info->title = g_strdup (title);
+	info->title = mount ? _("Mount Error") :  _("Unmount Error");
 
 	gtk_idle_add (display_mount_status, info);
-	
-	g_free (message);	
 }
 
 
@@ -1667,19 +1603,19 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
        if (name != NULL) {
                name = name + 1;
        } else {
-                name = mount_point;
+	       name = mount_point;
        }
 #else
        name = mount_point;
 #endif /* USE_VOLRMMOUNT */
-
+       
        if (should_mount) {
 
                command = find_command (MOUNT_COMMAND);
-               command_string = g_strconcat (command, MOUNT_SEPERATOR, name, NULL);
+               command_string = g_strconcat (command, MOUNT_SEPARATOR, name, NULL);
        } else {
                command = find_command (UMOUNT_COMMAND);
-               command_string = g_strconcat (command, UMOUNT_SEPERATOR, name, NULL);
+               command_string = g_strconcat (command, UMOUNT_SEPARATOR, name, NULL);
        }
 
 	mount_info = g_new0 (MountThreadInfo, 1);
@@ -1883,7 +1819,7 @@ mount_volume_add_filesystem (NautilusVolume *volume, GList *volume_list)
 {
 	gboolean mounted = FALSE;
 			
-	if (nautilus_str_has_prefix (volume->device_path, FLOPPY_DEVICE_PATH_PREFIX)) {		
+	if (nautilus_str_has_prefix (volume->device_path, floppy_device_path_prefix)) {		
 		mounted = mount_volume_floppy_add (volume);
 	} else if (strcmp (volume->filesystem, "affs") == 0) {		
 		mounted = mount_volume_affs_add (volume);
@@ -1931,7 +1867,7 @@ mount_volume_add_filesystem (NautilusVolume *volume, GList *volume_list)
 #ifndef SOLARIS_MNT			
 		volume->is_removable = volume_is_removable (volume);
 		volume->is_read_only = volume_is_read_only (volume);
-#endif /* SOLARIS_MNT */
+#endif
 		mount_volume_get_name (volume);
 		volume_list = g_list_append (volume_list, volume);
 	} else {

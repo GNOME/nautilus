@@ -3,6 +3,9 @@
 	<cmd name="Create Link"
          _label="Create Link"
 	 _tip="Create a symbolic link for each selected item"/>
+	<cmd name="Delete"
+         _label="Delete"
+	 _tip="Delete each selected item, without moving to the Trash"/>
 	<cmd name="Duplicate"
          _label="Duplicate"
 	 _tip="Duplicate each selected item"/>
@@ -33,6 +36,15 @@
 	<cmd name="Reset Background"
          _label="Reset Background"
 	 _tip="Remove any custom pattern or color from the background of this location"/>
+	<cmd name="Cut Files"
+         _label="Cut Files"
+	 _tip="Prepare the selected files to be moved with a Paste Files command"/>
+	<cmd name="Copy Files"
+         _label="Copy Files"
+	 _tip="Prepare the selected files to be copied with a Paste Files command"/>
+	<cmd name="Paste Files"
+         _label="Paste Files"
+	 _tip="Move or copy files previously selected by a Cut Files or Copy Files command"/>
 	<cmd name="Select All"
          _label="Select All Files"
 	 _tip="Select all items in this window"/>
@@ -96,6 +108,9 @@
 				  _label="Move to _Trash"
 				  accel="*Control*t"
 				  verb="Trash"/>
+			<menuitem name="Delete"
+				  _label="Delete"
+				  verb="Delete"/>
 			<menuitem name="Duplicate"
 				  _label="_Duplicate"
 				  accel="*Control*d"
@@ -117,6 +132,18 @@
 	</submenu>
 
 	<submenu name="Edit">
+		<menuitem name="Cut"
+			  _label="Cu_t Files" 
+			  accel="*Control*x"
+			  verb="Cut Files"/>
+		<menuitem name="Copy"
+			  _label="_Copy Files" 
+			  accel="*Control*c"
+			  verb="Copy Files"/>
+		<menuitem name="Paste"
+			  _label="_Paste Files" 
+			  accel="*Control*v"
+			  verb="Paste Files"/>
 		<menuitem name="Select All"
 			  _label="Select _All Files" 
 			  accel="*Control*a"
@@ -172,6 +199,7 @@
 		<placeholder name="File Actions" delimit="top">
 			<menuitem name="Show Properties" verb="Show Properties"/>
 			<menuitem name="Trash" verb="Trash"/>
+			<menuitem name="Delete" verb="Delete"/>
 			<menuitem name="Duplicate" verb="Duplicate"/>
 			<menuitem name="Create Link" verb="Create Link"/>
 		</placeholder>

@@ -1,3 +1,146 @@
+2001-03-22  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix bug 6613 (no way to delete files without using trash) by
+	integrating Maciej's patch to add an optional Delete command (with
+	some fixes to the patch). There may still be some loose ends.
+	
+	Fix bug 2206 (No way to move or copy a file to a different
+	directory from keyboard) by implementing Cut, Copy, and Paste for
+	files, in a way that will be familiar to Windows users. The
+	positioning of the new files is not right yet (they inherit their
+	position from the old files), there is no feedback when you have
+	cut some files (Arlo's idea, which I might implement, is to make
+	them translucent to show they are "on the way out") or when you
+	have copied some files, and I think there are some other loose
+	ends.
+
+	Fixed cut, copy, and paste within the file names when you do a
+	rename. This wasn't working at all.
+
+	Got rid of configure-time checks that were looking at the
+	existence of some special system files.
+
+	Fixed a few minor bugs discovered by code inspection.
+	
+	* libnautilus-extensions/nautilus-global-preferences.h:
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(global_preferences_install_descriptions),
+	(global_preferences_install_defaults),
+	(global_preferences_install_visibility),
+	(global_preferences_create_dialog): Add expert preference to add a
+	Delete command that bypasses the Trash.
+	* src/file-manager/nautilus-directory-view-ui.xml: Add Delete, Cut
+	Files, Copy Files, and Paste Files.
+	* src/file-manager/fm-directory-view.c: (confirm_delete_directly),
+	(delete_callback): Add delete code.
+	(bonobo_menu_empty_trash_callback): Get rid of extraneous cast.
+	(fm_directory_view_initialize): Track the delete preference. Set
+	the flags properly to indicate we have our own X window. Add a
+	target so GTK knows that we accept pastes of copied files.
+	(forget_clipboard_contents): Helper for when we are no longer the
+	clipboard owner.
+	(fm_directory_view_destroy): Remove the delete preference
+	callback. Free the clipboard contents.
+	(offset_drop_points): Change so it handles NULL for the list of
+	points.
+	(trash_or_delete_files_common): Remove unneeded parameters.
+	(get_current_event_time): New function, placeholder that just
+	returned GDK_CURRENT_TIME. Perhaps we should get the real event
+	time here for use in clipboard manipulation calls.
+	(copy_or_cut_files): New function. Save the selection for later
+	use in a paste.
+	(copy_files_callback), (cut_files_callback): Call the new
+	copy_or_cut_files function.
+	(paste_files_callback): Do the clipboard convert that results in
+	the paste operation.
+	(real_selection_clear_event): Forget the clipboard contents.
+	(real_selection_get): Convert the selection into the appropriate
+	format and put it on the clipboard.
+	(convert_lines_to_str_list): Helper function for decoding incoming
+	pasted files.
+	(real_selection_received): Handle pasted files by parsing and then
+	triggering a file copy operation.
+	(real_merge_menus): Add verbs for cut, copy, and paste.
+	(enable_delete_changed_callback): Keep track of delete command
+	status in a boolean.
+	(real_update_menus): Show delete command if the preference is on
+	and we are not showing "Delete from Trash". Update names of the
+	Cut and Copy command depending on how many files are selected.
+	Also desensitize them when none are selected.
+	(fm_directory_view_select_file): Initialize an uninitialized field.
+	(fm_directory_view_move_copy_items): Allow relative_item_points to
+	be NULL.
+	(real_realize): Create our own X window.
+	(real_size_allocate): Trick GtkScrolledWindow into doing the right
+	thing despite the fact that we have our own X window.
+	(fm_directory_view_initialize_class): Moved down to the bottom so
+	we don't need so many forward declaractions. Added code to set up
+	some needed atoms and new default handlers.
+	
+	* libnautilus-extensions/nautilus-icon-text-item.c:
+	(send_focus_event), (iti_stop_editing), (iti_start_editing): Add
+	code to send the appropriate focus events to the fake off-screen
+	GtkEntry. This makes the clipboard code that tracks focus-related
+	signals work properly with this entry.
+	(iti_event): Tweak the sequence and simplify the code a bit.
+	* libnautilus/nautilus-clipboard.c:
+	(set_paste_sensitive_if_clipboard_contains_data): Add more
+	FIXMEs. This function is very far from useful, and it's not clear
+	that it can be implemented efficiently under X.
+	(nautilus_clipboard_set_up_editable): Get rid of silly
+	"grab_focus" hack that was an attempt to address the problems with
+	the NautilusIconTextItem. The real solution was to do focusing for
+	that item too.
+	(nautilus_clipboard_set_up_editable_in_control): Fix this so it
+	works when called on an editable that is already focused.
+	* src/file-manager/fm-icon-view.c: (renaming_icon_callback): Get
+	rid of "grab_focus" workaround, which wasn't working.
+
+	* acconfig.h:
+	* configure.in:
+	Remove all configure checks that were checking the existence of
+	files.
+	* libnautilus-extensions/nautilus-medusa-support.c:
+	(nautilus_medusa_check_cron_is_enabled): Simplify logic so there's
+	less room for confusion (I did this as a fix for the bug that was
+	reported on the mailing list, but Rebecka checked in the small
+	patch first). Also change it so we don't need a configure-time
+	check for the existence of the process directory and fix it so we
+	won't get a core dump if the file doesn't have a space character
+	in it. Also change the logic so we don't leave the directory open
+	when we do find the cron process.
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_initialize_class),
+	(has_removable_mntent_options),	(get_removable_volumes),
+	(volume_is_removable), (volume_is_read_only),
+	(mount_volume_get_cdrom_name), (mount_volume_activate_cdda),
+	(mount_volume_activate_cdrom), (build_volume_list_delta),
+	(get_current_mount_list), (mount_lists_are_identical),
+	(verify_current_mount_state), (mount_volume_floppy_add),
+	(get_cdrom_type_solaris), (mount_volume_iso9660_add),
+	(display_mount_status), (close_error_pipe),
+	(nautilus_volume_monitor_mount_unmount_removable),
+	(mount_volume_add_filesystem): Make changes throughout to get rid
+	of dependence on configure-time file checks and do things at
+	runtime instead. Also use typedefs to make less code conditional.
+	Also fix the Solaris CD-ROM code which was casting a GString to
+	a (char *) before, so it used absurd file names, and failed to open
+	and returned FALSE all the time.
+	
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_start_renaming_selected_item): Send the
+	renaming signal before setting up the rest of the icon. This
+	change is not really needed, but it's a better order to do things.
+		
+	* libnautilus/nautilus-clipboard-ui.xml: Move tips into the
+	commands instead of the menu items (for style mostly, no practical
+	implications at the moment).
+	* src/nautilus-shell-ui.xml: Remove tips from Cut, Copy, and Paste,
+	since tips from insensitive items aren't used, and if we had tips,
+	we'd put them on the command, not the menu item, anyway.
+	
 2001-03-22  John Harper  <jsh@eazel.com>
 
 	Fixed bug 7366 (Smooth text layout cache checks take too long):

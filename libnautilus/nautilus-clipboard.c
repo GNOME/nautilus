@@ -205,6 +205,12 @@ set_paste_sensitive_if_clipboard_contains_data (BonoboUIComponent *component)
 	 * process, which may not be the case, and we may still be
 	 * able to paste data.
 	 */
+	/* FIXME: PRIMARY is wrong here. We are interested in
+	 * CLIPBOARD, not PRIMARY.
+	 */
+	/* FIXME: This doesn't tell us what kind of data is on the
+	 * clipboard, and we only want to be sensitive if it's text.
+	 */
 	clipboard_contains_data = 
 		(gdk_selection_owner_get (GDK_SELECTION_PRIMARY) != NULL);
 
@@ -350,13 +356,6 @@ focus_changed_callback (GtkWidget *widget,
 }
 
 static void
-grab_focus_callback (GtkWidget *widget,
-		     gpointer data)
-{
-	focus_changed_callback (widget, NULL, data);
-}
-
-static void
 selection_changed_callback (GtkWidget *widget,
 			    gpointer callback_data)
 {
@@ -440,16 +439,13 @@ nautilus_clipboard_set_up_editable (GtkEditable *target,
 	g_return_if_fail (GTK_IS_EDITABLE (target));
 	g_return_if_fail (ui_container != CORBA_OBJECT_NIL);
 
+	target_data = initialize_clipboard_component_with_callback_data
+		(target, 
+		 ui_container,
+		 shares_selection_changes);
 
-	target_data = initialize_clipboard_component_with_callback_data (target, 
-									 ui_container,
-									 shares_selection_changes);
 	gtk_signal_connect_after (GTK_OBJECT (target), "focus_in_event",
 				  focus_changed_callback, target_data);
-	/* Allow widgets that are already focused when they set up tell the clipboard
-	   to manually consider them */
-	gtk_signal_connect (GTK_OBJECT (target), "grab_focus", 
-			    grab_focus_callback, target_data);
 	gtk_signal_connect_after (GTK_OBJECT (target), "focus_out_event",
 				  focus_changed_callback, target_data);
 
@@ -489,7 +485,6 @@ first_focus_callback (GtkWidget *widget,
 		 widget_was_set_up_with_selection_sensitivity (widget));
 }
 
-
 static void
 control_destroyed_callback (GtkObject *object,
 			    gpointer callback_data)
@@ -505,6 +500,14 @@ nautilus_clipboard_set_up_editable_in_control (GtkEditable *target,
 {
 	g_return_if_fail (GTK_IS_EDITABLE (target));
 	g_return_if_fail (BONOBO_IS_CONTROL (control));
+
+	if (GTK_WIDGET_HAS_FOCUS (target)) {
+		nautilus_clipboard_set_up_editable
+			(target,
+			 bonobo_control_get_remote_ui_container (control),
+			 shares_selection_changes);
+		return;
+	}
 
 	/* Use lazy initialization, so that we wait until after
 	 * embedding. At that point, the UI container will be set up,

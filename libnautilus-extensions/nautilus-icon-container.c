@@ -4862,21 +4862,22 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	gnome_canvas_item_w2i (GNOME_CANVAS_ITEM (details->rename_widget), &icon_rect.x0, &icon_rect.y0);
 	gnome_canvas_item_w2i (GNOME_CANVAS_ITEM (details->rename_widget), &icon_rect.x1, &icon_rect.y1);
 	
-	nautilus_icon_text_item_configure (
-		details->rename_widget,
-		(icon_rect.x0 + icon_rect.x1) / 2,				/* x_center */
-		icon_rect.y1,							/* y_top */		
-		nautilus_icon_canvas_item_get_max_text_width (icon->item),	/* max_text_width */
-		details->label_font[details->zoom_level],			/* font */
-		editable_text,							/* text */
-		FALSE);								/* allocate local copy */
+	nautilus_icon_text_item_configure
+		(details->rename_widget,
+		 (icon_rect.x0 + icon_rect.x1) / 2,				/* x_center */
+		 icon_rect.y1,							/* y_top */		
+		 nautilus_icon_canvas_item_get_max_text_width (icon->item),	/* max_text_width */
+		 details->label_font[details->zoom_level],			/* font */
+		 editable_text,							/* text */
+		 FALSE);							/* allocate local copy */
 
 	nautilus_icon_text_item_start_editing (details->rename_widget);
 	
-	nautilus_icon_container_update_icon (container, icon);
 	gtk_signal_emit (GTK_OBJECT (container),
 			 signals[RENAMING_ICON],
 			 nautilus_icon_text_item_get_renaming_editable (details->rename_widget));
+
+	nautilus_icon_container_update_icon (container, icon);
 	
 	/* We are in renaming mode */
 	details->renaming = TRUE;

@@ -1456,21 +1456,17 @@ icon_container_preview_callback (NautilusIconContainer *container,
 
 static void
 renaming_icon_callback (NautilusIconContainer *container,
-			gpointer editable_data,
+			GtkEditable *editable,
 			gpointer callback_data)
 {
 	FMDirectoryView *directory_view;
 
 	directory_view = FM_DIRECTORY_VIEW (callback_data);
-	nautilus_clipboard_set_up_editable_in_control (GTK_EDITABLE (editable_data),
-						       fm_directory_view_get_bonobo_control (directory_view),
-						       TRUE);
-	/* Focus the editable in so the clipboard items will get turned on
-	   while we're renaming;  the hack that the nautilus entry is a 
-	   virtual widget prevents this from happening normally */
-	gtk_signal_emit_by_name (GTK_OBJECT (editable_data), "grab_focus");
 
-	
+	nautilus_clipboard_set_up_editable_in_control
+		(editable,
+		 fm_directory_view_get_bonobo_control (directory_view),
+		 TRUE);
 }
 
 static int
@@ -1486,7 +1482,7 @@ icon_container_compare_icons_callback (NautilusIconContainer *container,
 
 	return nautilus_file_compare_for_sort
 		(file_a, file_b, icon_view->details->sort->sort_type,
-		 fm_directory_view_should_sort_directories_first (FM_DIRECTORY_VIEW (icon_view)), 
+		 fm_directory_view_should_sort_directories_first (FM_DIRECTORY_VIEW (icon_view)),
 		 icon_view->details->sort_reversed);
 }
 

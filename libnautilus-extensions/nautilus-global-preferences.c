@@ -2,7 +2,7 @@
 
 /* nautilus-prefs-dialog.c - Implementation for preferences dialog.
 
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -100,7 +100,10 @@ global_preferences_install_descriptions (void)
 					      _("Open each file or folder in a separate window"));
 	
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
-					      _("Ask before emptying the Trash"));
+					      _("Ask before emptying the Trash or deleting files"));
+
+	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_ENABLE_DELETE,
+					      _("Include a Delete command that bypasses Trash"));
 	
 	nautilus_preferences_set_description (NAUTILUS_PREFERENCES_CLICK_POLICY,
 					      _("Click Behavior"));
@@ -259,6 +262,10 @@ global_preferences_install_defaults (void)
 	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_CONFIRM_TRASH, 
 						  NAUTILUS_USER_LEVEL_NOVICE,
 						  TRUE);
+
+	nautilus_preferences_default_set_boolean (NAUTILUS_PREFERENCES_ENABLE_DELETE, 
+						  NAUTILUS_USER_LEVEL_NOVICE,
+						  FALSE);
 
 	nautilus_preferences_default_set_integer (NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
 						  NAUTILUS_USER_LEVEL_NOVICE,
@@ -424,6 +431,9 @@ global_preferences_install_visibility (void)
 						     NAUTILUS_USER_LEVEL_INTERMEDIATE);
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_CONFIRM_TRASH,
+						     NAUTILUS_USER_LEVEL_ADVANCED);
+
+	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_ENABLE_DELETE,
 						     NAUTILUS_USER_LEVEL_ADVANCED);
 
 	nautilus_preferences_set_visible_user_level (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
@@ -612,6 +622,11 @@ global_preferences_create_dialog (void)
 							 NAUTILUS_PREFERENCES_CONFIRM_TRASH,
 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
 	
+ 	nautilus_preferences_pane_add_item_to_nth_group (NAUTILUS_PREFERENCES_PANE (windows_and_desktop_pane),
+ 							 2,
+ 							 NAUTILUS_PREFERENCES_ENABLE_DELETE,
+ 							 NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
+
 	/* FIXME: This group clearly doesn't belong in Windows &
 	 * Desktop, but there's no obviously-better place for it and
 	 * it probably doesn't deserve a pane of its own.

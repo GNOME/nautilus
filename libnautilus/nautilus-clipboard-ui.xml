@@ -1,33 +1,43 @@
 <Root>
 
 <commands>
-        <cmd name="Cut" accel="*Control*x" sensitive="1"/>
-        <cmd name="Copy" accel="*Control*c" sensitive="1"/>
-        <cmd name="Paste" accel="*Control*v" sensitive="1"/>
-        <cmd name="Clear" sensitive="1"/>
-	<cmd name="Select All" accel="*Control*a" sensitive="1"/>
+        <cmd name="Cut"
+         _label="Cut Text"
+	 accel="*Control*x"
+	 _tip="Cut the selected text to the clipboard"/>
+        <cmd name="Copy"
+         _label="Copy Text"
+	 accel="*Control*c"
+	 _tip="Copy the selected text to the clipboard"/>
+        <cmd name="Paste"
+         _label="Paste Text"
+	 _tip="Paste the text stored on the clipboard"
+	 accel="*Control*v"/>
+        <cmd name="Clear"
+	 _tip="Remove the selected text without putting it on the clipboard"
+	 _label="Clear Text"/>
+	<cmd name="Select All"
+	 _label="Select All"
+	 _tip="Select all the text in a text field"
+	 accel="*Control*a"/>
 </commands>
 
 <menu>
 	<submenu name="Edit">
 			<menuitem name="Cut" 
 				  _label="Cut _Text" 
-				  _tip="Cut the selected text to the clipboard"
                			  pixtype="stock" pixname="Cut"
 				  verb="Cut"/>
 			<menuitem name="Copy" 
 				  _label="_Copy Text" 
-				  _tip="Copy the selected text to the clipboard"
         			  pixtype="stock" pixname="Copy"
 				  verb="Copy"/>
 			<menuitem name="Paste" 
 				  _label="_Paste Text" 
-				  _tip="Paste the text stored on the clipboard"
         			  pixtype="stock" pixname="Paste"
 				  verb="Paste"/>
 			<menuitem name="Clear" 
 				  _label="C_lear Text" 
-				  _tip="Remove the selected text without putting it on the clipboard"
         			  pixtype="stock" pixname="Clear"
 				  verb="Clear"/>
 			<menuitem name="Select All"
@@ -35,4 +45,5 @@
 				  verb="Select All"/>
 	</submenu>
 </menu>
+
 </Root>

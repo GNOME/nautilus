@@ -90,6 +90,36 @@ enum {
 };
 static guint iti_signals [LAST_SIGNAL] = { 0 };
 
+static void
+send_focus_event (Iti *iti, gboolean in)
+{
+	ItiPrivate *priv;
+	GtkWidget *widget;
+	gboolean has_focus;
+	GdkEvent fake_event;
+	
+	g_assert (in == FALSE || in == TRUE);
+
+	priv = iti->priv;
+	if (priv->entry == NULL) {
+		g_assert (!in);
+		return;
+	}
+
+	widget = GTK_WIDGET (priv->entry);
+	has_focus = GTK_WIDGET_HAS_FOCUS (widget);
+	if (has_focus == in) {
+		return;
+	}
+	
+	memset (&fake_event, 0, sizeof (fake_event));
+	fake_event.focus_change.type = GDK_FOCUS_CHANGE;
+	fake_event.focus_change.window = widget->window;
+	fake_event.focus_change.in = in;
+	gtk_widget_event (widget, &fake_event);
+	g_assert (GTK_WIDGET_HAS_FOCUS (widget) == in);
+}
+
 /* Stops the editing state of an icon text item */
 static void
 iti_stop_editing (Iti *iti)
@@ -99,6 +129,8 @@ iti_stop_editing (Iti *iti)
 	priv = iti->priv;
 
 	iti->editing = FALSE;
+
+	send_focus_event (iti, FALSE);
 
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 
@@ -232,7 +264,7 @@ iti_start_editing (Iti *iti)
 		gtk_signal_connect (GTK_OBJECT (priv->entry), "activate",
 				    GTK_SIGNAL_FUNC (iti_entry_activate), iti);
 		/* Make clipboard functions cause an update the appearance of 
-		   the icon text item iteself, since the clipboard functions 
+		   the icon text item itself, since the clipboard functions 
 		   will change the offscreen entry */
 		gtk_signal_connect_after (GTK_OBJECT (priv->entry), "changed",
 					  GTK_SIGNAL_FUNC (iti_entry_text_changed_by_clipboard), iti);
@@ -248,6 +280,8 @@ iti_start_editing (Iti *iti)
 	gtk_editable_select_region (GTK_EDITABLE (priv->entry), 0, -1);
 
 	iti->editing = TRUE;
+
+	send_focus_event (iti, TRUE);
 
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 
@@ -1067,13 +1101,13 @@ iti_event (GnomeCanvasItem *item, GdkEvent *event)
 		} else {
 			GTK_WIDGET_UNSET_FLAGS (item->canvas, GTK_HAS_FOCUS);
 		}
-		
-		if (iti->editing && !event->focus_change.in) {
-			iti_edition_accept (iti);
 
-		}
 		if (iti->editing) {
 			gtk_widget_event (GTK_WIDGET (priv->entry), event);
+
+			if (!event->focus_change.in) {
+				iti_edition_accept (iti);
+			}
 		}
 		return TRUE;
 

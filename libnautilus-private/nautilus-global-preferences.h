@@ -2,7 +2,7 @@
 
 /* nautilus-global-prefs.h - Nautilus main preferences api.
 
-   Copyright (C) 1999, 2000 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -49,6 +49,7 @@ BEGIN_GNOME_DECLS
 
 /* Trash options */
 #define NAUTILUS_PREFERENCES_CONFIRM_TRASH			"preferences/confirm_trash"
+#define NAUTILUS_PREFERENCES_ENABLE_DELETE			"preferences/enable_delete"
 
 /* Desktop options */
 #define NAUTILUS_PREFERENCES_SHOW_DESKTOP			"preferences/show_desktop"
