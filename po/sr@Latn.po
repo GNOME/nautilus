@@ -7,10 +7,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 2.3\n"
+"Project-Id-Version: nautilus 2.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-10-08 23:16+0200\n"
-"PO-Revision-Date: 2003-10-08 23:17+0200\n"
+"POT-Creation-Date: 2003-10-15 18:25+0200\n"
+"PO-Revision-Date: 2003-10-15 18:27+0200\n"
 "Last-Translator: Danilo Šegan <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
@@ -271,12 +271,55 @@ msgstr "Komponenta za pregled osobina slike"
 msgid "Nautilus Image Properties view"
 msgstr "Nautilusov pregled osobina slike"
 
-#: components/image_properties/nautilus-image-properties-view.c:93
-msgid "Failed to load image information"
-msgstr "Nije uspeo da učita podatke o slici"
+# foto-aparat?
+#: components/image_properties/nautilus-image-properties-view.c:198
+#: data/browser.xml.h:12
+msgid "Camera"
+msgstr "Foto-aparat"
+
+#: components/image_properties/nautilus-image-properties-view.c:202
+msgid "Date Taken"
+msgstr "Datum snimka"
+
+#: components/image_properties/nautilus-image-properties-view.c:203
+msgid "Exposure Time"
+msgstr "Dužina ekspozicije"
+
+#: components/image_properties/nautilus-image-properties-view.c:204
+msgid "Exposure Program"
+msgstr "Program ekspozicije"
+
+#: components/image_properties/nautilus-image-properties-view.c:205
+msgid "Aperture Value"
+msgstr "Vrednost aparature"
+
+#: components/image_properties/nautilus-image-properties-view.c:206
+msgid "Metering Mode"
+msgstr "Način merenja"
+
+#: components/image_properties/nautilus-image-properties-view.c:207
+msgid "Flash Fired"
+msgstr "Blic korišćen"
+
+#: components/image_properties/nautilus-image-properties-view.c:208
+msgid "Focal Lenght"
+msgstr "Žižna daljina"
+
+#: components/image_properties/nautilus-image-properties-view.c:209
+msgid "Shutter Speed"
+msgstr "Brzina zatvarača"
+
+#: components/image_properties/nautilus-image-properties-view.c:210
+msgid "ISO Speed Rating"
+msgstr "ISO rang brzine"
+
+#: components/image_properties/nautilus-image-properties-view.c:211
+#: data/static_bookmarks.xml.h:36
+msgid "Software"
+msgstr "Programi"
 
 # bug: plural-forms
-#: components/image_properties/nautilus-image-properties-view.c:145
+#: components/image_properties/nautilus-image-properties-view.c:230
 #, c-format
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
@@ -285,11 +328,15 @@ msgstr ""
 "<b>Vrsta slike:</b> %s (%s)\n"
 "<b>Veličina:</b> %dx%d tačaka\n"
 
-#: components/image_properties/nautilus-image-properties-view.c:255
+#: components/image_properties/nautilus-image-properties-view.c:242
+msgid "Failed to load image information"
+msgstr "Nije uspeo da učita podatke o slici"
+
+#: components/image_properties/nautilus-image-properties-view.c:430
 msgid "loading..."
 msgstr "učitava..."
 
-#: components/image_properties/nautilus-image-properties-view.c:268
+#: components/image_properties/nautilus-image-properties-view.c:443
 msgid "URI currently displayed"
 msgstr "Adresa je trenutno prikazana"
 
@@ -396,15 +443,15 @@ msgstr "(Prazno)"
 msgid "Loading..."
 msgstr "Učitava.."
 
-#: components/tree/nautilus-tree-view.c:529 nautilus.desktop.in.h:1
+#: components/tree/nautilus-tree-view.c:542 nautilus.desktop.in.h:1
 msgid "Home Folder"
 msgstr "Lični direktorijum"
 
-#: components/tree/nautilus-tree-view.c:531
+#: components/tree/nautilus-tree-view.c:544
 msgid "Filesystem"
 msgstr "Datotečni sistem"
 
-#: components/tree/nautilus-tree-view.c:533
+#: components/tree/nautilus-tree-view.c:546
 msgid "Network Neighbourhood"
 msgstr "Mreža"
 
@@ -460,11 +507,6 @@ msgstr "Šatorsko platno"
 #: data/browser.xml.h:11
 msgid "C_olors"
 msgstr "_Boje"
-
-# foto-aparat?
-#: data/browser.xml.h:12
-msgid "Camera"
-msgstr "Kamera"
 
 #: data/browser.xml.h:13
 msgid "Camouflage"
@@ -944,10 +986,6 @@ msgstr "Mreža Crvenkape"
 #: data/static_bookmarks.xml.h:35
 msgid "RedFlag Linux"
 msgstr "RedFlag Linux"
-
-#: data/static_bookmarks.xml.h:36
-msgid "Software"
-msgstr "Programi"
 
 #: data/static_bookmarks.xml.h:37
 msgid "SourceForge"
@@ -5016,29 +5054,29 @@ msgstr "pokazuje na „%s“"
 msgid "Drag and drop is only supported to local file systems."
 msgstr "Prevlačenje i puštanje je podržano samo za lokalne diskove."
 
-#: src/file-manager/fm-icon-view.c:2545 src/file-manager/fm-icon-view.c:2564
+#: src/file-manager/fm-icon-view.c:2545 src/file-manager/fm-icon-view.c:2568
 msgid "Drag and Drop error"
 msgstr "Greška prevlačenja i puštanja"
 
-#: src/file-manager/fm-icon-view.c:2563
+#: src/file-manager/fm-icon-view.c:2567
 msgid "An invalid drag type was used."
 msgstr "Upotrebljena je neispravna vrsta prevlačenja."
 
-#: src/file-manager/fm-list-view.c:752
+#: src/file-manager/fm-list-view.c:762
 msgid "File name"
 msgstr "Ime datoteke"
 
-#: src/file-manager/fm-list-view.c:776
+#: src/file-manager/fm-list-view.c:786
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Veličina"
 
-#: src/file-manager/fm-list-view.c:787
+#: src/file-manager/fm-list-view.c:797
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Vrsta"
 
-#: src/file-manager/fm-list-view.c:798
+#: src/file-manager/fm-list-view.c:808
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Datum izmene"
@@ -5182,6 +5220,7 @@ msgid "Size:"
 msgstr "Veličina:"
 
 #: src/file-manager/fm-properties-window.c:2256 src/nautilus-location-bar.c:61
+#: src/nautilus-location-dialog.c:145
 msgid "Location:"
 msgstr "Lokacija:"
 
@@ -6363,6 +6402,10 @@ msgstr "Želite li da vidite ovih %d lokacija u zasebnim prozorima?"
 msgid "View in Multiple Windows?"
 msgstr "Pregledaj u više prozora?"
 
+#: src/nautilus-location-dialog.c:138
+msgid "Open Location"
+msgstr "Otvori putanju"
+
 #: src/nautilus-main.c:149
 msgid "Perform a quick set of self-check tests."
 msgstr "Sprovedi skup brzih samoprovera."
@@ -6400,7 +6443,7 @@ msgid "File Manager"
 msgstr "Upravnik datoteka"
 
 #. Set initial window title
-#: src/nautilus-main.c:197 src/nautilus-spatial-window.c:254
+#: src/nautilus-main.c:197 src/nautilus-spatial-window.c:263
 #: src/nautilus-window-menus.c:567 src/nautilus-window.c:173
 msgid "Nautilus"
 msgstr "Nautilus"
