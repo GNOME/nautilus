@@ -1,3 +1,33 @@
+2000-03-15  Darin Adler  <darin@eazel.com>
+
+	* HACKING: Tell people about the gnome-xml branch.
+	
+	* libnautilus/Makefile.am:
+	* libnautilus/gnome-icon-container-grid.c:
+	* libnautilus/gnome-icon-container-grid.h:
+	* libnautilus/gnome-icon-container-private.h:
+	* libnautilus/gnome-icon-container.c:
+	Broke out the grid code from the main container code.
+	This is a first step toward improving the layout code.
+
+	* libnautilus/nautilus-directory-private.h:
+	* libnautilus/nautilus-directory.c:
+	* libnautilus/nautilus-directory.h:
+	* src/fm-directory-view.c:
+	Got started on making the directory I/O async.
+	There's still a long way to go, this was a baby step.
+	
+	* libnautilus/nautilus-bookmark.c:
+	* libnautilus/nautilus-bookmark.h:
+	* libnautilus/nautilus-self-checks.c:
+	General cleanup.
+
+	* libnautilus/nautilus-file.h:
+	Rearranged a little bit.
+
+	* libnautilus/nautilus-file-utilities.c:
+	Put FIXME in where there's code that needs to be changed.
+
 2000-03-15  John Sullivan  <sullivan@eazel.com>
 
 	Used preferences mechanism for icon views' text-under-icons

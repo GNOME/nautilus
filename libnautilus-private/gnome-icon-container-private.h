@@ -59,32 +59,6 @@ typedef struct {
 
 
 
-#define INITIAL_GRID_WIDTH 64
-#define INITIAL_GRID_HEIGHT 64
-
-typedef struct {
-	/* Size of the grid. */
-	guint width, height;
-
-	/* This is the width that we can actually use for finding an empty
-	 * position.
-	 */
-	guint visible_width;
-
-	/* Array of grid elements. */
-	GList **elems;
-
-	/* Size of the allocated array. */
-	guint alloc_width, alloc_height;
-
-	/* Position of the first free cell (used to speed up progressive
-	 * updates). If negative, there is no free cell.
-	 */
-	int first_free_x, first_free_y;
-} GnomeIconContainerIconGrid;
-
-
-
 /* Private GnomeIconContainer members. */
 
 typedef struct {
@@ -114,6 +88,8 @@ typedef struct {
 	guint icon_size;
 } StretchState;
 
+typedef struct GnomeIconContainerGrid GnomeIconContainerGrid;
+
 struct GnomeIconContainerDetails {
 	/* linger selection mode setting. */
 	gboolean linger_selection_mode;
@@ -126,7 +102,7 @@ struct GnomeIconContainerDetails {
 	guint num_icons;
 
 	/* The grid. */
-	GnomeIconContainerIconGrid *grid;
+	GnomeIconContainerGrid *grid;
 
 	/* FIXME: This is *ugly*, but more efficient (both memory- and
 	   speed-wise) than using gtk_object_{set,get}_data() for all the

@@ -74,6 +74,12 @@ GList *            nautilus_file_get_keywords              (NautilusFile        
 void               nautilus_file_set_keywords              (NautilusFile             *file,
 							    GList                    *keywords);
 
+/* Return true if this file has already been deleted.
+   This object will be unref'd after sending the files_removed signal,
+   but it could hang around longer if someone ref'd it.
+*/
+gboolean           nautilus_file_is_gone                   (NautilusFile             *file);
+
 /* Simple getting and setting top-level metadata. */
 char *             nautilus_file_get_metadata              (NautilusFile             *file,
 							    const char               *tag,
@@ -99,11 +105,5 @@ int                nautilus_file_compare_for_sort_reversed (NautilusFile        
 void               nautilus_file_list_ref                  (GList                    *file_list);
 void               nautilus_file_list_unref                (GList                    *file_list);
 void               nautilus_file_list_free                 (GList                    *file_list);
-
-/* Return true if this file has already been deleted.
-   This object will be unref'd after sending the files_removed signal,
-   but it could hang around longer if someone ref'd it.
-*/
-gboolean           nautilus_file_is_gone                   (NautilusFile             *file);
 
 #endif /* NAUTILUS_FILE_H */

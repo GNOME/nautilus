@@ -64,10 +64,10 @@ typedef void (*NautilusFileListCallback) (NautilusDirectory *directory,
 GtkType            nautilus_directory_get_type             (void);
 
 /* Get a directory given a uri.
-   Creates the appropriate subclass given the uri mappings.
-   Returns a referenced object, not a floating one. Unref when finished.
-   If two windows are viewing the same uri, the directory object is shared.
-*/
+ * Creates the appropriate subclass given the uri mappings.
+ * Returns a referenced object, not a floating one. Unref when finished.
+ * If two windows are viewing the same uri, the directory object is shared.
+ */
 NautilusDirectory *nautilus_directory_get                  (const char               *uri);
 char *             nautilus_directory_get_uri              (NautilusDirectory        *directory);
 
@@ -94,27 +94,28 @@ void               nautilus_directory_set_integer_metadata (NautilusDirectory   
 							    int                       default_metadata,
 							    int                       metadata);
 
-/* Monitor the files in a directory.
-   Since there's a monitoring ref. count, you must call nautilus_directory_stop_monitoring
-   if you called nautilus_directory_start_monitoring.
-*/
-void               nautilus_directory_start_monitoring     (NautilusDirectory        *directory,
+/* Monitor the files in a directory. */
+void               nautilus_directory_monitor_files_ref    (NautilusDirectory        *directory,
 							    NautilusFileListCallback  initial_files_callback,
 							    gpointer                  callback_data);
-void               nautilus_directory_stop_monitoring      (NautilusDirectory        *directory);
+void               nautilus_directory_monitor_files_unref  (NautilusDirectory        *directory);
 
 /* Return true if the directory has information about all the files.
-   This will be false until the directory has been read at least once.
-*/
+ * This will be false until the directory has been read at least once.
+ */
 gboolean           nautilus_directory_are_all_files_seen   (NautilusDirectory        *directory);
+
+/* Return true if the directory metadata has been loaded.
+ * Until this is true, get_metadata calls will return defaults.
+ * (We could have another way to indicate "don't know".)
+ */
+gboolean           nautilus_directory_metadata_loaded      (NautilusDirectory        *directory);
 
 typedef struct NautilusDirectoryDetails NautilusDirectoryDetails;
 
 struct NautilusDirectory
 {
 	GtkObject object;
-
-	/* Hidden details. */
 	NautilusDirectoryDetails *details;
 };
 
@@ -142,16 +143,6 @@ struct NautilusDirectoryClass
 	*/
 	void   (* files_changed)    (NautilusDirectory       *directory,
 				     GList                   *changed_files);
-
-	/* The ready_for_layout signal is emitted when the directory
-	   model judges that enough files are available for the layout
-	   process to begin. For normal directories this is after the
-	   metafile has been read. If there's no way to get the basic
-	   layout information before getting the actual files, then
-	   this signal need not be emitted as long as is_ready_for_layout
-	   is already true.
-	*/
-	void   (* ready_for_layout) (NautilusDirectory       *directory);
 };
 
 #endif /* NAUTILUS_DIRECTORY_H */

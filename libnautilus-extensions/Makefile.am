@@ -62,8 +62,9 @@ libnautilusinclude_HEADERS=			\
 libnautilus_la_SOURCES=$(nautilus_idl_sources)	\
 	bonobo-stream-vfs.c			\
 	gdk-extensions.c			\
-	gnome-icon-container-dnd.c		\
 	gnome-icon-container.c			\
+	gnome-icon-container-dnd.c		\
+	gnome-icon-container-grid.c		\
 	gtkflist.c				\
 	gtkscrollframe.c			\
 	nautilus-background-canvas-group.c	\

@@ -23,9 +23,10 @@
 */
 
 #ifndef NAUTILUS_BOOKMARK_H
-#define NAUTILUS_BOOKMARK_H 1
+#define NAUTILUS_BOOKMARK_H
 
-#include <gnome.h>
+#include <gtk/gtkwidget.h>
+#include <gdk/gdktypes.h>
 
 typedef struct _NautilusBookmark NautilusBookmark;
 
@@ -54,25 +55,23 @@ struct _NautilusBookmarkClass {
 typedef struct _NautilusBookmarkClass NautilusBookmarkClass;
 
 
-GtkType		    nautilus_bookmark_get_type	    (void);
-NautilusBookmark   *nautilus_bookmark_new_with_name (const gchar *uri,
-						     const gchar *name);
-NautilusBookmark   *nautilus_bookmark_new	    (const gchar *uri);
-NautilusBookmark   *nautilus_bookmark_copy	    (const NautilusBookmark *bookmark);
-const gchar	   *nautilus_bookmark_get_name	    (const NautilusBookmark *bookmark);
-const gchar	   *nautilus_bookmark_get_uri	    (const NautilusBookmark *bookmark);						    
 
-gint		    nautilus_bookmark_compare_with (gconstpointer a, gconstpointer b);
+GtkType           nautilus_bookmark_get_type            (void);
+NautilusBookmark *nautilus_bookmark_new_with_name       (const char              *uri,
+							 const char              *name);
+NautilusBookmark *nautilus_bookmark_new                 (const char              *uri);
+NautilusBookmark *nautilus_bookmark_copy                (const NautilusBookmark  *bookmark);
+const char *      nautilus_bookmark_get_name            (const NautilusBookmark  *bookmark);
+const char *      nautilus_bookmark_get_uri             (const NautilusBookmark  *bookmark);
+int               nautilus_bookmark_compare_with        (gconstpointer            a,
+							 gconstpointer            b);
 
 /* Helper functions for displaying bookmarks */
- 
-gboolean	    nautilus_bookmark_get_pixmap_and_mask
-						   (const NautilusBookmark *bookmark,
-						    guint icon_size,
-						    GdkPixmap **pixmap_return,
-						    GdkBitmap **mask_return);
-GtkWidget *	    nautilus_bookmark_menu_item_new 
-						   (const NautilusBookmark *bookmark);
+gboolean          nautilus_bookmark_get_pixmap_and_mask (const NautilusBookmark  *bookmark,
+							 guint                    icon_size,
+							 GdkPixmap              **pixmap_return,
+							 GdkBitmap              **mask_return);
+GtkWidget *       nautilus_bookmark_menu_item_new       (const NautilusBookmark  *bookmark);
 
 
 #endif /* NAUTILUS_BOOKMARK_H */

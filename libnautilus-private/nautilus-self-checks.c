@@ -39,8 +39,9 @@ static int current_line_number;
 
 void nautilus_exit_if_self_checks_failed (void)
 {
-	if (!failed)
+	if (!failed) {
 		return;
+	}
 
 	printf ("\n");
 
@@ -50,8 +51,9 @@ void nautilus_exit_if_self_checks_failed (void)
 static void
 nautilus_report_check_failure (char *result, char *expected)
 {
-	if (!failed)
+	if (!failed) {
 		printf ("\n");
+	}
 
 	printf ("FAIL: check failed in %s, line %d\n", current_file_name, current_line_number);
 	printf ("      evaluated: %s\n", current_expression);
@@ -67,10 +69,12 @@ nautilus_report_check_failure (char *result, char *expected)
 static char *
 nautilus_strdup_boolean (gboolean boolean)
 {
-	if (boolean == FALSE)
+	if (boolean == FALSE) {
 		return g_strdup ("FALSE");
-	if (boolean == TRUE)
+	}
+	if (boolean == TRUE) {
 		return g_strdup ("TRUE");
+	}
 	return g_strdup_printf ("gboolean(%d)", boolean);
 }
 
@@ -93,19 +97,20 @@ nautilus_after_check ()
 void
 nautilus_check_boolean_result (gboolean result, gboolean expected)
 {
-	if (result != expected)
+	if (result != expected) {
 		nautilus_report_check_failure (nautilus_strdup_boolean(result),
 					       nautilus_strdup_boolean(expected));
+	}
 	nautilus_after_check ();
 }
 
 void
 nautilus_check_integer_result (long result, long expected)
 {
-	if (result != expected)
+	if (result != expected) {
 		nautilus_report_check_failure (g_strdup_printf("%ld", result),
 					       g_strdup_printf("%ld", expected));
-
+	}
 	nautilus_after_check ();
 }
 
@@ -114,14 +119,18 @@ nautilus_check_string_result (char *result, const char *expected)
 {
 	gboolean match;
 	
-	if (expected == NULL)
+	/* Stricter than nautilus_strcmp.
+	 * NULL does not match "" in this test.
+	 */
+	if (expected == NULL) {
 		match = result == NULL;
-	else
+	} else {
 		match = result != NULL && strcmp (result, expected) == 0;
+	}
 
-	if (!match)
-		nautilus_report_check_failure (result, g_strdup(expected));
-
+	if (!match) {
+		nautilus_report_check_failure (result, g_strdup (expected));
+	}
 	nautilus_after_check ();
 }
 

@@ -660,7 +660,7 @@ stop_load (FMDirectoryView *view, gboolean error)
 		return;
 	}
 
-	nautilus_directory_stop_monitoring (view->details->model);
+	nautilus_directory_monitor_files_unref (view->details->model);
 	
 	memset (&progress, 0, sizeof (progress));
 	progress.amount = 100.0;
@@ -1738,8 +1738,9 @@ fm_directory_view_load_uri (FMDirectoryView *view,
 
 	schedule_timeout_display_of_pending_files (view);
 	view->details->loading = TRUE;
-	nautilus_directory_start_monitoring (view->details->model,
-					     files_added_cb, view);
+	nautilus_directory_monitor_files_ref (view->details->model,
+					      files_added_cb,
+					      view);
 
 	/* Attach a handler to get any further files that show up as we
 	 * load and sychronize. We won't miss any files because this
@@ -1790,7 +1791,7 @@ static void
 disconnect_model_handlers (FMDirectoryView *view)
 {
 	if (view->details->model != NULL) {
-		nautilus_directory_stop_monitoring (view->details->model);
+		nautilus_directory_monitor_files_unref (view->details->model);
 	}
 
 	disconnect_handler (view, &view->details->files_added_handler_id);

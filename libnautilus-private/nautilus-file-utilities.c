@@ -111,7 +111,7 @@ nautilus_user_directory()
  * Return value: the directory path.
  **/
 const char *
-nautilus_user_top_directory()
+nautilus_user_top_directory (void)
 {
 	static char *user_top_directory;
 
@@ -128,7 +128,7 @@ nautilus_user_top_directory()
 
 		if (!g_file_exists (user_top_directory))
 		{
-			/* Hack the prefix for now */
+			/* FIXME: Hack the prefix for now */
 			const char *gnome_prefix = "/gnome";
 
 			GString	   *src;

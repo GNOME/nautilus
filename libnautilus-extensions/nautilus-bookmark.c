@@ -22,24 +22,32 @@
    Authors: John Sullivan <sullivan@eazel.com>
 */
 
+#include <config.h>
 #include "nautilus-bookmark.h"
+
+#include <gtk/gtkaccellabel.h>
+#include <libgnomeui/gtkpixmapmenuitem.h>
+
 #include "nautilus-icon-factory.h"
 #include "nautilus-string.h"
+#include "nautilus-gtk-macros.h"
 
 #include <libgnomevfs/gnome-vfs-types.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 
 struct _NautilusBookmarkDetails
 {
-	gchar 	  *name;
-	gchar     *uri;
+	char *name;
+	char *uri;
 };
 
 
 
-static GtkWidget *create_pixmap_widget_for_bookmark 	(const NautilusBookmark *bookmark);
+static void       nautilus_bookmark_initialize_class (NautilusBookmarkClass  *class);
+static void       nautilus_bookmark_initialize       (NautilusBookmark       *bookmark);
+static GtkWidget *create_pixmap_widget_for_bookmark  (const NautilusBookmark *bookmark);
 
-static GtkObjectClass *parent_class = NULL;
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBookmark, nautilus_bookmark, GTK_TYPE_OBJECT)
 
 /* GtkObject methods.  */
 
@@ -48,7 +56,7 @@ nautilus_bookmark_destroy (GtkObject *object)
 {
 	NautilusBookmark *bookmark;
 
-	g_return_if_fail(NAUTILUS_IS_BOOKMARK (object));
+	g_assert (NAUTILUS_IS_BOOKMARK (object));
 
 	bookmark = NAUTILUS_BOOKMARK(object);
 
@@ -57,61 +65,26 @@ nautilus_bookmark_destroy (GtkObject *object)
 	g_free (bookmark->details);
 
 	/* Chain up */
-	if (GTK_OBJECT_CLASS (parent_class)->destroy != NULL)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
-}
-
-static void
-nautilus_bookmark_finalize (GtkObject *object)
-{
-	/* Chain up */
-	if (GTK_OBJECT_CLASS (parent_class)->finalize != NULL)
-		(* GTK_OBJECT_CLASS (parent_class)->finalize) (object);
+	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 
 /* Initialization.  */
 
 static void
-class_init (NautilusBookmarkClass *class)
+nautilus_bookmark_initialize_class (NautilusBookmarkClass *class)
 {
 	GtkObjectClass *object_class;
 
 	object_class = GTK_OBJECT_CLASS (class);
-	parent_class = gtk_type_class (GTK_TYPE_OBJECT);
 
 	object_class->destroy = nautilus_bookmark_destroy;
-	object_class->finalize = nautilus_bookmark_finalize;
 }
 
 static void
-init (NautilusBookmark *bookmark)
+nautilus_bookmark_initialize (NautilusBookmark *bookmark)
 {
 	bookmark->details = g_new0 (NautilusBookmarkDetails, 1);
-}
-
-
-GtkType
-nautilus_bookmark_get_type (void)
-{
-	static GtkType type = 0;
-
-	if (type == 0) {
-		static GtkTypeInfo info = {
-			"NautilusBookmark",
-			sizeof (NautilusBookmark),
-			sizeof (NautilusBookmarkClass),
-			(GtkClassInitFunc) class_init,
-			(GtkObjectInitFunc) init,
-			NULL,
-			NULL,
-			NULL
-		};
-
-		type = gtk_type_unique (GTK_TYPE_OBJECT, &info);
-	}
-
-	return type;
 }
 
 
@@ -125,27 +98,25 @@ nautilus_bookmark_get_type (void)
  * Return value: 0 if @a and @b have same name and uri, 1 otherwise 
  * (GCompareFunc style)
  **/
-gint		    
+int		    
 nautilus_bookmark_compare_with (gconstpointer a, gconstpointer b)
 {
 	NautilusBookmark *bookmark_a;
 	NautilusBookmark *bookmark_b;
 
-	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK(a), 1);
-	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK(b), 1);
+	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (a), 1);
+	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (b), 1);
 
-	bookmark_a = NAUTILUS_BOOKMARK(a);
-	bookmark_b = NAUTILUS_BOOKMARK(b);
+	bookmark_a = NAUTILUS_BOOKMARK (a);
+	bookmark_b = NAUTILUS_BOOKMARK (b);
 
-	if (strcmp(nautilus_bookmark_get_name(bookmark_a),
-		   nautilus_bookmark_get_name(bookmark_b)) != 0)
-	{
+	if (strcmp (nautilus_bookmark_get_name(bookmark_a),
+		    nautilus_bookmark_get_name(bookmark_b)) != 0) {
 		return 1;
 	}
 	
-	if (strcmp(nautilus_bookmark_get_uri(bookmark_a),
-		   nautilus_bookmark_get_uri(bookmark_b)) != 0)
-	{
+	if (strcmp (nautilus_bookmark_get_uri(bookmark_a),
+		    nautilus_bookmark_get_uri(bookmark_b)) != 0) {
 		return 1;
 	}
 	
@@ -155,14 +126,14 @@ nautilus_bookmark_compare_with (gconstpointer a, gconstpointer b)
 NautilusBookmark *
 nautilus_bookmark_copy (const NautilusBookmark *bookmark)
 {
-	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK (bookmark), NULL);
+	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
 	return nautilus_bookmark_new_with_name(
-			nautilus_bookmark_get_uri(bookmark),
-			nautilus_bookmark_get_name(bookmark));
+			nautilus_bookmark_get_uri (bookmark),
+			nautilus_bookmark_get_name (bookmark));
 }
 
-const gchar *
+const char *
 nautilus_bookmark_get_name (const NautilusBookmark *bookmark)
 {
 	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK (bookmark), NULL);
@@ -199,7 +170,7 @@ nautilus_bookmark_get_pixmap_and_mask (const NautilusBookmark *bookmark,
 	return TRUE;
 }
 
-const gchar *
+const char *
 nautilus_bookmark_get_uri (const NautilusBookmark *bookmark)
 {
 	g_return_val_if_fail(NAUTILUS_IS_BOOKMARK (bookmark), NULL);
@@ -218,14 +189,14 @@ nautilus_bookmark_get_uri (const NautilusBookmark *bookmark)
  * 
  **/
 NautilusBookmark *
-nautilus_bookmark_new_with_name (const gchar *uri, const gchar *name)
+nautilus_bookmark_new_with_name (const char *uri, const char *name)
 {
 	NautilusBookmark *new_bookmark;
 
 	new_bookmark = gtk_type_new (NAUTILUS_TYPE_BOOKMARK);
 
-	new_bookmark->details->name = g_strdup(name);
-	new_bookmark->details->uri = g_strdup(uri);
+	new_bookmark->details->name = g_strdup (name);
+	new_bookmark->details->uri = g_strdup (uri);
 
 	return new_bookmark;
 }
@@ -241,7 +212,7 @@ nautilus_bookmark_new_with_name (const gchar *uri, const gchar *name)
  * 
  **/
 NautilusBookmark *
-nautilus_bookmark_new (const gchar *uri)
+nautilus_bookmark_new (const char *uri)
 {
 	/* Use default rules to determine the displayed name */
 
@@ -257,11 +228,9 @@ nautilus_bookmark_new (const gchar *uri)
 	 */
 
 	vfs_uri = gnome_vfs_uri_new (uri);
-	if (vfs_uri != NULL)
-	{
-		if (strcmp (vfs_uri->method_string, "file") == 0)
-		{
-			gchar *short_name;
+	if (vfs_uri != NULL) {
+		if (strcmp (vfs_uri->method_string, "file") == 0) {
+			char *short_name;
 
 			short_name = gnome_vfs_uri_extract_short_name (vfs_uri);
 			result = nautilus_bookmark_new_with_name (uri, short_name);
@@ -271,8 +240,7 @@ nautilus_bookmark_new (const gchar *uri)
 		gnome_vfs_uri_unref (vfs_uri);
 	}
 
-	if (result == NULL)
-	{
+	if (result == NULL) {
 		result = nautilus_bookmark_new_with_name (uri, uri);
 	}
 
@@ -288,8 +256,7 @@ create_pixmap_widget_for_bookmark (const NautilusBookmark *bookmark)
 	if (!nautilus_bookmark_get_pixmap_and_mask (bookmark, 
 						    NAUTILUS_ICON_SIZE_SMALLER,
 					  	    &gdk_pixmap, 
-					  	    &mask))
-	{
+					  	    &mask)) {
 		return NULL;
 	}
 
@@ -318,8 +285,7 @@ nautilus_bookmark_menu_item_new (const NautilusBookmark *bookmark)
 	menu_item = gtk_pixmap_menu_item_new ();
 
 	pixmap_widget = create_pixmap_widget_for_bookmark (bookmark);
-	if (pixmap_widget != NULL)
-	{
+	if (pixmap_widget != NULL) {
 		gtk_widget_show (pixmap_widget);
 		gtk_pixmap_menu_item_set_pixmap (GTK_PIXMAP_MENU_ITEM (menu_item), pixmap_widget);
 	}
@@ -333,6 +299,3 @@ nautilus_bookmark_menu_item_new (const NautilusBookmark *bookmark)
 
 	return menu_item;
 }
-
-
-

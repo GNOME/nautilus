@@ -36,23 +36,23 @@ struct NautilusDirectoryDetails
 {
 	char *uri_text;
 	GnomeVFSURI *uri;
-
 	GnomeVFSURI *metafile_uri;
 	GnomeVFSURI *alternate_metafile_uri;
-	gboolean use_alternate_metafile;
 
-	xmlDoc *metafile_tree;
-	guint write_metafile_idle_id;
+	guint monitor_files_ref_count;
 
+	GList *files;
+	xmlDoc *metafile;
+
+	gboolean directory_loaded;
 	GnomeVFSAsyncHandle *directory_load_in_progress;
 	GnomeVFSDirectoryListPosition directory_load_list_last_handled;
-
 	GList *pending_file_info;
         guint dequeue_pending_idle_id;
 
-	gboolean directory_loaded;
-
-	GList *files;
+	gboolean metafile_read;
+	gboolean use_alternate_metafile;
+	guint write_metafile_idle_id;
 };
 
 NautilusFile *nautilus_directory_find_file              (NautilusDirectory *directory,
