@@ -32,7 +32,7 @@
 
 static PackageData* parse_package (xmlNode* package);
 static CategoryData* parse_category (xmlNode* cat);
-const char* parse_pkg_template (const char* pkg_template_file);
+gint parse_pkg_template (const char* pkg_template_file, char **result);
 
 
 static PackageData*
@@ -214,22 +214,22 @@ generate_xml_package_list (const char* pkg_template_file, const char* target_fil
 	xmlNodePtr packages;
 	xmlNodePtr package;
 	xmlNodePtr data;
-	const char* retbuf;
+	char* retbuf;
 	int index;
 	char** entry_array;
 	char** package_array;
+	gint lines;
 	
 	doc = xmlNewDoc ("1.0");
 	doc->root = xmlNewDocNode (doc, NULL, "CATEGORIES", NULL);
 	
-	retbuf = parse_pkg_template (pkg_template_file);
+	lines = parse_pkg_template (pkg_template_file, &retbuf);
 
-	/* FIXME Maximum entries should not be hardcoded.  Max is 500 right now.  This
-	 * should be set by counting the number of lines in the input file */
+	if (lines) {
+		entry_array = g_strsplit (retbuf, "\n", lines);
+	}
 
-	entry_array = g_strsplit (retbuf, "\n", 500);
-
-	for (index = 0; index < 500; index++) {
+	for (index = 0; index < lines; index++) {
 
 		if (entry_array[index] == NULL) {
 			break;
@@ -278,26 +278,40 @@ generate_xml_package_list (const char* pkg_template_file, const char* target_fil
 
 } /* end generate_xml_package_list */
 
-const char*
-parse_pkg_template (const char* pkg_template_file) {
+/**
+   This just opens the specified file, read it and returns the number of lines
+   and reads the contents into "result".
+ */
+gint
+parse_pkg_template (const char* pkg_template_file, char **result) {
 
 	FILE* input_file;
 	char buffer[256];
 	GString* string_data;
-	char* rv;
+	gint lines_read;
 	
+	g_assert (result!=NULL);
+
 	string_data = g_string_new("");
+	(*result) = NULL;
+	lines_read = 0;
 
 	input_file = fopen (pkg_template_file, "r");
 
+	if (input_file == NULL) {
+		fprintf (stderr, "***Error reading package list !***\n");
+		return 0;
+	}
+
 	while (fgets (buffer, 255, input_file) != NULL) {
+		lines_read++;
 		g_string_append (string_data, buffer);
 	}
 
 	fclose (input_file);
 
-	rv = g_strdup (string_data->str);
+	(*result) = g_strdup (string_data->str);
 	g_string_free (string_data, TRUE);
 
-	return rv;
+	return lines_read;
 }

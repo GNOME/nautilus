@@ -1,3 +1,10 @@
+2000-05-03  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/eazel-install-xml-package-list.c:
+	parse_pkg_template checks the fopen return val. Also changed the
+	arguments, so it returns the number of lines, thus loosing the
+	hardcoded 500 lines in generate_xml_package_list.
+
 2000-05-03  Gene Z. Ragan <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-entry.c
