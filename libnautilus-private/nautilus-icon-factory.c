@@ -1686,13 +1686,14 @@ load_image_for_scaling (NautilusScalableIcon *scalable_icon,
  * Note that this does an unref on the image and returns a new one.
  */
 static GdkPixbuf *
-scale_image_and_rectangle (GdkPixbuf *image,
-			   ArtIRect *rectangle,
+scale_image_and_info (GdkPixbuf *image,
+			   IconInfo *icon_info,
 			   double scale_x,
 			   double scale_y)
 {
 	int width, height;
 	int rect_width, rect_height;
+	int index;
 	GdkPixbuf *scaled_image;
 
 	width = gdk_pixbuf_get_width (image);
@@ -1713,18 +1714,25 @@ scale_image_and_rectangle (GdkPixbuf *image,
 		height = 1;
 	}
 
-	rect_width = (rectangle->x1 - rectangle->x0) * scale_x;
-	rect_height = (rectangle->y1 - rectangle->y0) * scale_y;
+	rect_width = (icon_info->text_rect.x1 - icon_info->text_rect.x0) * scale_x;
+	rect_height = (icon_info->text_rect.y1 - icon_info->text_rect.y0) * scale_y;
 	
 	scaled_image = gdk_pixbuf_scale_simple
 		(image, width, height, GDK_INTERP_BILINEAR);
 	gdk_pixbuf_unref (image);
 
-	rectangle->x0 *= scale_x;
-	rectangle->y0 *= scale_y;
-	rectangle->x1 = rectangle->x0 + rect_width;
-	rectangle->y1 = rectangle->y0 + rect_height;
+	icon_info->text_rect.x0 *= scale_x;
+	icon_info->text_rect.y0 *= scale_y;
+	icon_info->text_rect.x1 = icon_info->text_rect.x0 + rect_width;
+	icon_info->text_rect.y1 = icon_info->text_rect.y0 + rect_height;
 
+	if (icon_info->has_attach_points) {
+		for (index = 0; index < MAX_ATTACH_POINTS; index++) {
+			icon_info->attach_points[index].x *= scale_x;
+			icon_info->attach_points[index].y *= scale_y;
+		}
+	}
+	
 	return scaled_image;
 }
 
@@ -1765,7 +1773,7 @@ scale_image_down_if_too_big (GdkPixbuf *image,
 	scale_x = 1.0;
 	scale_y = 1.0;
 	revise_scale_factors_if_too_big (image, size, &scale_x, &scale_y);
-	return scale_image_and_rectangle (image, &icon_info->text_rect, scale_x, scale_y);
+	return scale_image_and_info (image, icon_info, scale_x, scale_y);
 }
 
 /* This load function is not allowed to return NULL. */
@@ -1794,7 +1802,7 @@ load_image_scale_if_necessary (NautilusScalableIcon *scalable_icon,
 	scale_x = (double) size->nominal_width / nominal_actual_size;
 	scale_y = (double) size->nominal_height / nominal_actual_size;
 	revise_scale_factors_if_too_big (image, size, &scale_x, &scale_y);
-	return scale_image_and_rectangle (image, &icon_info->text_rect, scale_x, scale_y);
+	return scale_image_and_info (image, icon_info, scale_x, scale_y);
 }
 
 /* Move this item to the head of the recently-used list,
