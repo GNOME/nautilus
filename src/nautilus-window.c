@@ -399,10 +399,12 @@ nautilus_window_constructed (NautilusWindow *window)
         if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		window->content_hbox = gtk_widget_new (NAUTILUS_TYPE_GENEROUS_BIN, NULL);
 	} else {
+		EPaned *panel;
 		set_initial_window_geometry (window);
 	
 		window->content_hbox = nautilus_horizontal_splitter_new ();
-
+		panel = E_PANED (window->content_hbox);
+		
 		/* FIXME bugzilla.eazel.com 1245: No constant for the default? */
 		/* FIXME bugzilla.eazel.com 1245: Saved in pixels instead of in %? */
 		/* FIXME bugzilla.eazel.com 1245: No reality check on the value? */
@@ -1549,7 +1551,7 @@ nautilus_window_set_content_view_widget (NautilusWindow *window,
 		} else {
 			e_paned_pack2 (E_PANED (window->content_hbox),
 				       GTK_WIDGET (new_view),
-				       TRUE, FALSE);
+				       TRUE, TRUE);
 		}
 	}
 

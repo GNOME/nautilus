@@ -1,3 +1,11 @@
+2000-10-17  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-window.c: (nautilus_window_constructed),
+	(nautilus_window_set_content_view_widget):
+	fixed bug 3411, the sidebar resizes itself when viewing the
+	summary page, by setting the "shrink" boolean to true
+	when adding the content view container to the splitter.
+	
 2000-10-17  John Sullivan  <sullivan@eazel.com>
 
 	Fixed bug 3824 (Files in search list have unknown type)
