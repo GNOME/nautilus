@@ -5,6 +5,13 @@
 
 2003-12-12  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-trash-directory.c:
+	Don't show the stupid looking for trash dialog.
+	We shouldn't be looking for trash for long these days.
+	Patch from William Lachance <wlach@nit.ca>
+	
+2003-12-12  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-file-operations.[ch]:
 	New function nautilus_file_operations_new_file.
 	
