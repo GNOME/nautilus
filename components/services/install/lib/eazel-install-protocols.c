@@ -616,6 +616,7 @@ add_to_url (char **url,
 	    const char *cgi_string,
 	    const char *val)
 {
+#ifndef EAZEL_INSTALL_SLIM
 	char *tmp;
 
 	if (val) {
@@ -626,7 +627,7 @@ add_to_url (char **url,
 		g_free (*url);
 		(*url) = tmp;
 	} 
-#if 0
+#else /*  EAZEL_INSTALL_SLIM */
 	char *tmp, *quoted, *q;
 	const char *p;
 	int needs_quoting;
@@ -668,7 +669,7 @@ add_to_url (char **url,
 	if (needs_quoting) {
 		g_free (quoted);
 	}
-#endif
+#endif /*  EAZEL_INSTALL_SLIM */
 }
 
 static char*
