@@ -1,3 +1,14 @@
+2001-02-05  Rebecca Schulman  <rebecka@eazel.com>
+
+	reviewed by: Maciej Stachowiak <mjs@eazel.com>
+
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_component_sort_conditions),
+	(nautilus_mime_get_default_component_for_file_internal),
+	(nautilus_mime_get_short_list_components_for_file):
+	Changes to make sure the short list is sorted 
+	correctly, so the correct default application is chosen.
+
 2001-02-05  Andy Hertzfeld  <andy@eazel.com>
 
 	* librsvg/rsvg.c: (rsvg_render_svp):

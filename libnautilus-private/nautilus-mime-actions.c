@@ -291,9 +291,8 @@ nautilus_mime_get_default_component_sort_conditions (NautilusFile *file, char *d
 	/* Prefer something from the short list */
 
 	short_list = nautilus_mime_get_short_list_components_for_file (file);
-
 	if (short_list != NULL) {
-		sort_conditions[1] = g_strdup ("has (['");
+		sort_conditions[1] = g_strdup ("prefer_by_list_order (iid, ['");
 
 		for (p = short_list; p != NULL; p = p->next) {
 			prev = sort_conditions[1];
@@ -303,7 +302,7 @@ nautilus_mime_get_default_component_sort_conditions (NautilusFile *file, char *d
 								  "','", NULL);
 			} else {
 				sort_conditions[1] = g_strconcat (prev, ((OAF_ServerInfo *) (p->data))->iid, 
-								  "'], iid)", NULL);
+								  "'])", NULL);
 			}
 			g_free (prev);
 		}
@@ -415,7 +414,7 @@ nautilus_mime_get_default_component_for_file_internal (NautilusFile *file,
 	if (info_list != NULL) {
 		server = OAF_ServerInfo_duplicate (info_list->data);
 		gnome_vfs_mime_component_list_free (info_list);
-		
+
 		if (default_component_string != NULL && strcmp (server->iid, default_component_string) == 0) {
 			used_user_chosen_info = TRUE;	/* Default component chosen based on user-stored . */
 		}
@@ -601,12 +600,15 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile      *file)
 			iids = g_list_prepend (iids, p->data);
 		}
 	}
-		
+
+	/* By copying the iids using g_list_prepend, we've reversed the short
+	   list order.  We need to use the order to determine the first available
+	   component, so reverse it now to maintain original ordering */
+	iids = g_list_reverse (iids);		
 	result = NULL;
 
 	if (iids != NULL) {
 		extra_requirements = g_strdup ("has (['");
-		
 		for (p = iids; p != NULL; p = p->next) {
 			prev = extra_requirements;
 
@@ -615,10 +617,8 @@ nautilus_mime_get_short_list_components_for_file (NautilusFile      *file)
 			} else {
 				extra_requirements = g_strconcat (prev, p->data, "'], iid)", NULL);
 			}
-
 			g_free (prev);
 		}
-
 
 		result = nautilus_do_component_query (mime_type, uri_scheme, item_mime_types, FALSE,
 						      explicit_iids, NULL, extra_requirements, &ev);
