@@ -1052,7 +1052,7 @@ volume_mounted_callback (NautilusVolumeMonitor *monitor,
 static void
 unlink_and_notify (const char *path)
 {
-	char *uri;
+	char *uri, *unescaped_uri;
 	GList one_item_list;
 
 	unlink (path);
@@ -1061,8 +1061,11 @@ unlink_and_notify (const char *path)
 	if (uri == NULL) {
 		return;
 	}
+ 
+	unescaped_uri = gnome_vfs_unescape_string (uri, NULL);
+	g_free (uri);
 
-	one_item_list.data = uri;
+	one_item_list.data = unescaped_uri;
 	one_item_list.next = NULL;
 	one_item_list.prev = NULL;
 	nautilus_directory_notify_files_removed (&one_item_list);

@@ -1,3 +1,13 @@
+2002-09-30  Narayana Pattipati  <narayana.pattipati@wipro.com>
+
+        * src/file-manager/fm-desktop-icon-view.c: Unescape the media path so
+        that nautilus link is removed properly when it has special characters
+        like #.
+
+        * libnautilus-private/nautilus-link-desktop-file.c: Escape the media
+        path so that media name is created properly when it has special
+        characters like #.
+
 2002-09-20  Padraig O'Briain  <padraig.obriain@sun.com>
 
 	* components/adapter/Makefile.am:
