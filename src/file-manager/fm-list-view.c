@@ -60,6 +60,7 @@ struct FMListViewDetails {
    in chunks, to improve responsiveness during loading.
    This is the number of files we add to the list, or change
    at once. */
+/* FIXME: Why doesn't the icon view need the same thing. */
 #define LIST_VIEW_DISPLAY_PENDING_FILES_GROUP_SIZE 100
 
 /* 

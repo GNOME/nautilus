@@ -62,7 +62,9 @@ execute_queued_functions (gpointer callback_data)
 		for (node = functions; node != NULL; node = node->next) {
 			function = node->data;
 
-			(* function->callback) (function->data, function->callback_data);
+			if (!queue->destroy) {
+				(* function->callback) (function->data, function->callback_data);
+			}
 			if (function->free_callback_data != NULL) {
 				(* function->free_callback_data) (function->callback_data);
 			}
