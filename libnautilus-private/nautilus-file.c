@@ -805,6 +805,26 @@ nautilus_file_can_execute (NautilusFile *file)
 		 GNOME_VFS_PERM_OTHER_EXEC);
 }
 
+static gboolean
+is_desktop_file (NautilusFile *file)
+{
+	return nautilus_file_is_mime_type (file, "application/x-gnome-app-info") ||
+		nautilus_file_is_mime_type (file, "application/x-desktop");
+}
+
+static gboolean
+can_rename_desktop_file (NautilusFile *file)
+{
+	char *uri;
+	gboolean res;
+
+	uri = nautilus_file_get_uri (file);
+	res = !eel_vfs_has_capability (uri, 
+				       EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW);
+	g_free (uri);
+	return res;
+}
+
 /**
  * nautilus_file_can_rename:
  * 
@@ -836,9 +856,7 @@ nautilus_file_can_rename (NautilusFile *file)
 		return FALSE;
 	}
 
-	if ((nautilus_file_is_mime_type (file, "application/x-gnome-app-info") ||
-	     nautilus_file_is_mime_type (file, "application/x-desktop"))
-	    && !nautilus_file_is_local (file)) {
+	if (is_desktop_file (file) && !can_rename_desktop_file (file)) {
 		return FALSE;
 	}
 	
@@ -1115,7 +1133,7 @@ rename_guts (NautilusFile *file,
 	GnomeVFSURI *vfs_uri;
 	char *uri, *old_name;
 	gboolean success;
-	gboolean is_local_desktop_file;
+	gboolean is_renameable_desktop_file;
 	GnomeVFSFileInfoOptions options;
 	
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
@@ -1123,15 +1141,12 @@ rename_guts (NautilusFile *file,
 	g_return_if_fail (callback != NULL);
 
 	uri = nautilus_file_get_uri (file);
-	is_local_desktop_file =
-		(nautilus_file_is_mime_type (file, "application/x-gnome-app-info") ||
-		 nautilus_file_is_mime_type (file, "application/x-desktop")) &&
-		!eel_vfs_has_capability (uri, 
-					 EEL_VFS_CAPABILITY_IS_REMOTE_AND_SLOW);
+	is_renameable_desktop_file =
+		is_desktop_file (file) && can_rename_desktop_file (file);
 	
 	/* Return an error for incoming names containing path separators.
 	 * But not for .desktop files as '/' are allowed for them */
-	if (strstr (new_name, "/") != NULL && !is_local_desktop_file) {
+	if (strstr (new_name, "/") != NULL && !is_renameable_desktop_file) {
 		(* callback) (file, GNOME_VFS_ERROR_NOT_PERMITTED, callback_data);
 		g_free (uri);
 		return;
@@ -1195,7 +1210,7 @@ rename_guts (NautilusFile *file,
 		return;
 	}
 	
-	if (is_local_desktop_file) {
+	if (is_renameable_desktop_file) {
 		/* Don't actually change the name if the new name is the same.
 		 * This helps for the vfolder method where this can happen and
 		 * we want to minimize actual changes
@@ -1271,19 +1286,21 @@ nautilus_file_rename (NautilusFile *file,
 {
 	char *locale_name;
 
-	if (!has_local_path (file) || !have_broken_filenames ()) {
-		rename_guts (file, new_name, callback, callback_data);
-		return;
+	/* Note: Desktop file renaming wants utf8, even with G_BROKEN_FILENAMES */
+	if (has_local_path (file) && have_broken_filenames () &&
+	    !is_desktop_file (file)) {
+		locale_name = g_filename_from_utf8 (new_name, -1, NULL, NULL, NULL);
+		if (locale_name == NULL) {
+			(* callback) (file, GNOME_VFS_ERROR_NOT_PERMITTED, callback_data);
+			return;
+		}
+		
+		rename_guts (file, locale_name, callback, callback_data);
+		g_free (locale_name);
 	}
-
-	locale_name = g_filename_from_utf8 (new_name, -1, NULL, NULL, NULL);
-	if (locale_name == NULL) {
-		(* callback) (file, GNOME_VFS_ERROR_NOT_PERMITTED, callback_data);
-		return;
-	}
-
-	rename_guts (file, locale_name, callback, callback_data);
-	g_free (locale_name);
+	
+	rename_guts (file, new_name, callback, callback_data);
+	return;
 }
 
 gboolean

@@ -1,5 +1,10 @@
 2004-02-11  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-file.c:
+	Correctly rename desktop files when G_BROKEN_FILENAMES is set
+
+2004-02-11  Alexander Larsson  <alexl@redhat.com>
+	
 	* src/nautilus-application.c (nautilus_application_get_existing_spatial_window):
 	Check that window_location != NULL. Probaby fixes #131048
 
