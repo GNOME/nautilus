@@ -605,6 +605,7 @@ char *write_body_text_html( FILE *f, char *p, char *q, char *nodefile )
   char *converted_nodename;
   char *escaped_refname;
   char *escaped_refnode;
+  char *escaped_seg;
   char *refname, *reffile, *refnode, *end;
   char *href;
 
@@ -655,9 +656,20 @@ char *write_body_text_html( FILE *f, char *p, char *q, char *nodefile )
       /* otherwise we had :nodename., and we set node to 'Top' */
       else if (reffile == NULL)
 	reffile = g_strdup(nodefile);
-
+      
+/* Here we need to escape everything up to Note.
+ * One caveat: The "*Note*" itself isn't escaped.  Currently we know this is
+ * okay ("*Note" has no characters needing escapes.) but....
+ */
+      curlen = note_ptr - p;
+      tmp = (char *) g_malloc (curlen + 1);
+      memcpy (tmp, p, curlen);
+      *(tmp + curlen) = '\000';
+      escaped_seg = escape_html_chars (tmp);
+      g_free (tmp);
+      
       /* write out stuff up to Note */
-      fwrite(p, 1, note_ptr - p, f);
+      fprintf(f, "%s", escaped_seg);
       fprintf(f, "<STRONG>");
       fwrite(note_ptr, 1, match1 - note_ptr, f);
       fprintf(f, " </STRONG>");
@@ -718,6 +730,7 @@ char *write_body_text_html( FILE *f, char *p, char *q, char *nodefile )
       if (converted_nodename)
 	g_free(converted_nodename);
 
+      g_free(escaped_seg);
       g_free(refname);
       g_free(reffile);
       g_free(refnode);
@@ -725,7 +738,18 @@ char *write_body_text_html( FILE *f, char *p, char *q, char *nodefile )
       /* write out stuff at end */
       if (end < q)
 	{
-	  fwrite(end+1, 1, q - end, f);
+
+/* Escape up to the end of line. */
+      curlen = q - (end+1);
+      tmp = (char *) g_malloc (curlen + 1);
+      memcpy (tmp, end+1, curlen);
+      *(tmp+curlen) = '\000';
+      escaped_seg = escape_html_chars (tmp);
+      g_free (tmp);
+      
+      fprintf (f, "%s", escaped_seg);
+      fprintf (f, "\n");
+      g_free (escaped_seg);
 	  return NULL;
 	}
       else
@@ -733,9 +757,14 @@ char *write_body_text_html( FILE *f, char *p, char *q, char *nodefile )
     }
   else
     {
-      fwrite(p, 1, q-p+1, f);
+
+/* Escape the whole thing. */
+      escaped_seg = escape_html_chars (tmp);
+      fprintf (f, "%s", escaped_seg);
+      fprintf (f, "\n");
       /* not needed any more */
       g_free(tmp);
+      g_free (escaped_seg);
       return NULL;
     }
 }
