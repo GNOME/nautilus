@@ -1,3 +1,16 @@
+2001-03-05  Robey Pointer  <robey@eazel.com>
+
+	reviewed by: Eskil Heyn Olsen  <eskil@eazel.com>
+	who said it was "most excellent"
+
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_get_info):
+
+	When parsing softcat responses, check if we were doing a suite
+	lookup even if only one package was returned.  (Suites consisting
+	of only one package were getting returned as if it was a toplevel
+	package with both suite_id and rpm_id set.)
+
 2001-03-05  Arik Devens  <arik@eazel.com>
 
 	reviewed by: Ramiro Estrugo  <ramiro@eazel.com>
