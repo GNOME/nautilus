@@ -1,3 +1,15 @@
+2000-05-25  Ali Abdin  <aliabdin@aucegypt.edu
+
+	* components/help/help-methods.c:
+	(transform_absolute_file): Fixed a bug to get it to really treat
+	URI's as 'absolute'. Also fixed another bug with trailing spaces.
+	Necessary because the URI holds the '\n' (when the user presses
+	enter.
+	
+	Also added debugging statements in the functions (#define ALI_DEBUG
+	to turn them on). I will take them out once help actually starts
+	working
+
 2000-05-25  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/install/command-line/eazel-install.c:

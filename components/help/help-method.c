@@ -41,6 +41,8 @@
 #include <libgnomevfs/gnome-vfs-module.h>
 #include <libgnomevfs/gnome-vfs-module-shared.h>
 
+/* #define ALI_DEBUG */
+
 /* FIXME bugzilla.eazel.com 696: temporary var, until we get i18n involved */
 #define TOPHELPDIR "/usr/share/gnome/help2/"
 
@@ -79,6 +81,9 @@ static gchar *
 help_uri_to_string (HelpURI *help_uri)
 {
 	gchar *retval = NULL;
+#ifdef ALI_DEBUG
+	g_print ("help_uri->file is %s, help_uri->section is %s\n", help_uri->file, help_uri->section);
+#endif
 	switch (help_uri->type) {
 	case SGML_FILE:
 		if (help_uri->section)
@@ -137,12 +142,23 @@ static gboolean
 convert_file_to_uri (HelpURI *help_uri, gchar *file)
 {
 	const gchar *mime_type;
-
-	if (!g_file_test (file, G_FILE_TEST_ISFILE | G_FILE_TEST_ISLINK))
+	
+#ifdef ALI_DEBUG
+        g_print ("file is: %s and does it exist ? %d\n",file,g_file_exists(file));
+#endif
+	if (!g_file_test (file, G_FILE_TEST_ISFILE | G_FILE_TEST_ISLINK)) { 
+#ifdef ALI_DEBUG
+		g_print ("*** g_file_test has failed\n");
+#endif
 		return FALSE;
+	}
 
 	help_uri->file = file;
 	mime_type = gnome_vfs_mime_type_of_file (file);
+#ifdef ALI_DEBUG
+	g_print ("*** the file's mime_type is: %s\n",mime_type);
+#endif
+		
 	if (!strcmp (mime_type, "text/sgml") ||
 	    !strcmp (mime_type, "exported SGML document text"))
 		help_uri->type = SGML_FILE;
@@ -174,18 +190,27 @@ transform_absolute_file (const gchar *file)
 
 	p = strrchr (file, '?');
 	if (p == NULL)
-		p = strrchr (file, '#');
+		p = strrchr (g_strchomp((gchar *)file), '#');
 
 	if (p) {
 		help_uri->section = g_strdup (p+1);
 		temp_file_base = g_strndup (file, p - file);
 	} else {
-		temp_file_base = g_strdup (file);
+		/* we do not want trailing spaces or it can screw things up */
+		temp_file_base = g_strdup (g_strchomp((gchar *)file));
 	}
+#ifdef ALI_DEBUG
+	g_print ("*** temp_file_base is: %s\n",temp_file_base);
+#endif
 
 	/* First we try the file directly */
 	/* FIXME bugzilla.eazel.com 696: we need to deal with locale, too */
-	temp_file = g_concat_dir_and_file (TOPHELPDIR, temp_file_base);
+
+	/* Concaentation to TOPHELPDIR commented out because this is and
+	 * ABSOLUTE uri                                                   */
+	/* temp_file = g_concat_dir_and_file (TOPHELPDIR, temp_file_base); */
+	temp_file = g_strdup (temp_file_base);
+	
 	if (convert_file_to_uri (help_uri, temp_file)) {
 		g_free (temp_file_base);
 		return help_uri;
@@ -222,14 +247,27 @@ help_do_transform (GnomeVFSTransform *transform,
 		   GnomeVFSContext *context)
 {
 	HelpURI *help_uri;
-
 	*new_uri = NULL;
+
+#ifdef ALI_DEBUG
+	                g_print ("*** in help_do_transform ***\nURI is: %s\n",old_uri);
+#endif
 
 	if (old_uri == NULL || *old_uri == '\000')
 		return GNOME_VFS_ERROR_NOTFOUND;
 
-	if (old_uri[0] == '/')
+	if (old_uri[0] == '/') {
 		help_uri = transform_absolute_file (old_uri);
+#ifdef ALI_DEBUG
+		g_print ("*** Doing transform_absolute_file\n");
+		if (help_uri != NULL) {
+			g_print ("*** The return help_uri->file is: %s\n",help_uri->file);
+			g_print ("*** the return help_uri->section is: %s\n",help_uri->section);
+		}
+		else
+			g_print ("*** help_uri is NULL\n");
+#endif
+	}
 	else
 		help_uri = transform_relative_file (old_uri);
 
@@ -238,6 +276,9 @@ help_do_transform (GnomeVFSTransform *transform,
 
 	*new_uri = help_uri_to_string (help_uri);
 	help_uri_free (help_uri);
+#ifdef ALI_DEBUG
+	g_print ("*** new_uri is %s\n", *new_uri);
+#endif
 	return GNOME_VFS_OK;
 }
 
@@ -249,5 +290,8 @@ GnomeVFSTransform *
 vfs_module_transform (const char *method_name, const char *args)
 {
 	init_help_module ();
+#ifdef ALI_DEBUG
+	g_print ("Loading libvfs-help.so...\n"); /* FIXME: Remove me */
+#endif
 	return &transform;
 }
