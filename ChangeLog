@@ -1,3 +1,28 @@
+2000-10-26  Rebecca Schulman  <rebecka@eazel.com>
+	Fixed the panel menu item to launch the desktop
+	and one nautilus window, starting at the user's 
+	home directory by default.  To do this, we created
+	a new script called launch-nautilus.  Ramiro 
+	recommended some changes to run-nautilus that
+	I also did.
+
+	* nautilus.desktop:
+	Changed run-nautilus to launch-nautilus
+	* nautilus.spec.in:
+	Changed run-nautilus to launch-nautilus,
+	since run-nautilus won't be needed in the
+	rpm
+	* src/Makefile.am:
+	added launch-nautilus to the build
+	* src/launch-nautilus:
+	* src/run-nautilus:
+	removed the mozilla environment 
+	LD_LIBRARY_PATH hacks.
+	
+	* user-guide/C/sgml/chapter-1.sgml:
+	Corrected an HTML error.
+
+
 2000-10-26  J Shane Culpepper  <pepper@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

@@ -1,8 +1,5 @@
 #!/bin/sh
 
-MOZILLA_FIVE_HOME=/usr/lib/mozilla ; export MOZILLA_FIVE_HOME
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/mozilla ; export LD_LIBRARY_PATH
-
 nautilus-clean.sh -q -x
 
 nautilus ${1+"$@"}

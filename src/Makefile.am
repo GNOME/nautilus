@@ -170,6 +170,7 @@ EXTRA_DIST = \
 	$(ui_msgs)				\
 	check-nautilus				\
 	nautilus-shell-interface.idl		\
+	launch-nautilus				\
 	run-nautilus				\
 	$(NULL)
 
