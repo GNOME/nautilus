@@ -733,7 +733,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	location_bar_wrapper = bonobo_control_new (location_bar_box);
 	bonobo_ui_component_object_set (window->details->shell_ui,
 					"/Location Bar/Wrapper",
-					bonobo_object_corba_objref (BONOBO_OBJECT (location_bar_wrapper)),
+					BONOBO_OBJREF (location_bar_wrapper),
 					NULL);
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);
 	bonobo_object_unref (BONOBO_OBJECT (location_bar_wrapper));
@@ -2198,7 +2198,7 @@ nautilus_window_get_ui_container (NautilusWindow *window)
 {
 	g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), CORBA_OBJECT_NIL);
 
-	return bonobo_object_corba_objref (BONOBO_OBJECT (window->details->ui_container));
+	return BONOBO_OBJREF (window->details->ui_container);
 }
 
 void

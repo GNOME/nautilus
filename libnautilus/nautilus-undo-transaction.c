@@ -229,10 +229,8 @@ nautilus_undo_transaction_add_to_undo_manager (NautilusUndoTransaction *transact
 	CORBA_exception_init (&ev);
 
 	if (!CORBA_Object_is_nil (manager, &ev)) {
-		Nautilus_Undo_Manager_append
-			(manager,
-			 bonobo_object_corba_objref (BONOBO_OBJECT (transaction)),
-			 &ev);
+		Nautilus_Undo_Manager_append (
+			manager, BONOBO_OBJREF (transaction), &ev);
 		transaction->owner = CORBA_Object_duplicate (manager, &ev);
 	}
 
@@ -268,10 +266,8 @@ remove_atoms (NautilusUndoTransaction *transaction,
 	 * This may end up freeing the transaction.
 	 */
 	if (transaction->atom_list == NULL) {
-		Nautilus_Undo_Manager_forget
-			(transaction->owner,
-			 bonobo_object_corba_objref (BONOBO_OBJECT (transaction)),
-			 &ev);
+		Nautilus_Undo_Manager_forget (
+			transaction->owner, BONOBO_OBJREF (transaction), &ev);
 	}
 
 	CORBA_exception_free (&ev);

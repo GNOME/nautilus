@@ -57,7 +57,10 @@ static NautilusMetafileFactory *
 nautilus_metafile_factory_new (void)
 {
 	NautilusMetafileFactory *metafile_factory;
-	metafile_factory = NAUTILUS_METAFILE_FACTORY (g_object_new (NAUTILUS_TYPE_METAFILE_FACTORY, NULL));
+
+	metafile_factory = NAUTILUS_METAFILE_FACTORY (
+		g_object_new (NAUTILUS_TYPE_METAFILE_FACTORY, NULL));
+
 	return metafile_factory;
 }
 
@@ -77,10 +80,8 @@ nautilus_metafile_factory_get_instance (void)
 		the_factory = nautilus_metafile_factory_new ();
 		eel_debug_call_at_shutdown (free_factory_instance);
 	}
-	
-	bonobo_object_ref (BONOBO_OBJECT (the_factory));
-	
-	return the_factory;
+
+	return bonobo_object_ref (BONOBO_OBJECT (the_factory));
 }
 
 static Nautilus_Metafile
@@ -88,10 +89,11 @@ corba_open (PortableServer_Servant  servant,
 	    const CORBA_char       *directory,
 	    CORBA_Environment      *ev)
 {
-	BonoboObject *object;
+	NautilusMetafile *metafile;
 
-	object = BONOBO_OBJECT (nautilus_metafile_get (directory));
-	return CORBA_Object_duplicate (bonobo_object_corba_objref (object), ev);
+	metafile = nautilus_metafile_get (directory);
+
+	return CORBA_Object_duplicate (BONOBO_OBJREF (metafile), ev);
 }
 
 static void

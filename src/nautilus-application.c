@@ -127,7 +127,7 @@ create_object (PortableServer_Servant servant,
 		return CORBA_OBJECT_NIL;
 	}
 
-	return CORBA_Object_duplicate (bonobo_object_corba_objref (object), ev);
+	return CORBA_Object_duplicate (BONOBO_OBJREF (object), ev);
 }
 
 GList *
@@ -445,9 +445,9 @@ nautilus_application_startup (NautilusApplication *application,
 	/* Start up the factory. */
 	while (TRUE) {
 		/* Try to register the file manager view factory. */
-		result = bonobo_activation_active_server_register
-			(FACTORY_IID,
-			 bonobo_object_corba_objref (BONOBO_OBJECT (application)));
+		result = bonobo_activation_active_server_register (
+			FACTORY_IID, BONOBO_OBJREF (application));
+
 		switch (result) {
 		case Bonobo_ACTIVATION_REG_SUCCESS:
 			/* We are registered and all is right with the world. */

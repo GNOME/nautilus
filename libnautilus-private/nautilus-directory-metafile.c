@@ -97,20 +97,22 @@ get_factory (void)
 	CORBA_Environment ev;
 	
 	if (factory == CORBA_OBJECT_NIL) {
+		CORBA_exception_init (&ev);
+
 		if (get_factory_from_oaf) {
-			CORBA_exception_init (&ev);
 
 			factory = bonobo_activation_activate_from_id (METAFILE_FACTORY_IID, 0, NULL, &ev);
 			if (ev._major != CORBA_NO_EXCEPTION || factory == CORBA_OBJECT_NIL) {
 				die_on_failed_activation ("Nautilus_MetafileFactory", &ev);
 			}
 
-			CORBA_exception_free (&ev);
 		} else {
 			instance = nautilus_metafile_factory_get_instance ();
-			factory = bonobo_object_dup_ref (bonobo_object_corba_objref (BONOBO_OBJECT (instance)), NULL);
-			bonobo_object_unref (BONOBO_OBJECT (instance));
+			factory = CORBA_Object_duplicate (BONOBO_OBJREF (instance), &ev);
 		}
+
+		CORBA_exception_free (&ev);
+
 		eel_debug_call_at_shutdown (free_factory);
 	}
 

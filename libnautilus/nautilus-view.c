@@ -59,6 +59,7 @@ static guint signals[LAST_SIGNAL];
 
 struct NautilusViewDetails {
 	BonoboControl           *control;
+	Nautilus_ViewFrame       view_frame;
 
 	NautilusViewListenerMask listen_mask;
 	BonoboListener          *listener;
@@ -300,13 +301,6 @@ append_mask (GString *str, const char *mask_element)
 	g_string_append (str, mask_element);
 }
 
-/*
- * FIXME: we should use this 'set_frame' method to keep
- * a cached CORBA_Object_duplicated reference to the
- * remote NautilusViewFrame, since this would save lots
- * of remote QI / unref traffic in all the methods that
- * use view_frame_call_begin.
- */
 static void
 nautilus_view_set_frame (NautilusView       *view,
 			 Bonobo_ControlFrame frame)
@@ -317,11 +311,17 @@ nautilus_view_set_frame (NautilusView       *view,
 	Bonobo_PropertyBag pbag;
 	GString           *mask;
 
+	CORBA_exception_init (&ev);
+
+	if (frame == CORBA_OBJECT_NIL &&
+	    view->details->view_frame != CORBA_OBJECT_NIL) {
+		CORBA_Object_release (view->details->view_frame, &ev);
+		view->details->view_frame = CORBA_OBJECT_NIL;
+	}
+
 	if (view->details->listen_mask == 0) { /* Defer until we need to */
 		return;
 	}
-
-	CORBA_exception_init (&ev);
 
 	if ((listener = view->details->listener) != NULL) {
 		view->details->listener = NULL;
@@ -475,39 +475,59 @@ nautilus_view_dispose (GObject *object)
 
 	view = NAUTILUS_VIEW (object);
 
+	if (view->details->view_frame == CORBA_OBJECT_NIL) {
+		CORBA_Object_release (view->details->view_frame, NULL);
+		view->details->view_frame = CORBA_OBJECT_NIL;
+	}
+
 	nautilus_view_set_frame (view, CORBA_OBJECT_NIL);
 
 	GNOME_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
 }
 
 static Nautilus_ViewFrame
-view_frame_call_begin (NautilusView *view, CORBA_Environment *ev)
+nautilus_view_get_view_frame (NautilusView *view, CORBA_Environment *ev)
 {
+	Nautilus_ViewFrame  view_frame;
 	Bonobo_ControlFrame control_frame;
-	Nautilus_ViewFrame view_frame;
 
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), CORBA_OBJECT_NIL);
-	
+
+	if (view->details->view_frame == CORBA_OBJECT_NIL) {
+
+		control_frame = bonobo_control_get_control_frame (
+			nautilus_view_get_bonobo_control (view), ev);
+
+		if (ev->_major != CORBA_NO_EXCEPTION ||
+		    control_frame == CORBA_OBJECT_NIL) {
+			view_frame = CORBA_OBJECT_NIL;
+		} else {
+			view_frame = Bonobo_Unknown_queryInterface (
+				control_frame, "IDL:Nautilus/ViewFrame:1.0", ev);
+			if (ev->_major != CORBA_NO_EXCEPTION) {
+				view_frame = CORBA_OBJECT_NIL;
+			}
+		}
+		view->details->view_frame = CORBA_Object_duplicate (view_frame, ev);
+		bonobo_object_release_unref (view_frame, ev);
+	}
+
+	return CORBA_Object_duplicate (view->details->view_frame, ev);
+}
+
+static Nautilus_ViewFrame
+view_frame_call_begin (NautilusView *view, CORBA_Environment *ev)
+{
 	CORBA_exception_init (ev);
 
-	control_frame = bonobo_control_get_control_frame (nautilus_view_get_bonobo_control (view), ev);
-	if (ev->_major != CORBA_NO_EXCEPTION || control_frame == CORBA_OBJECT_NIL) {
-		return CORBA_OBJECT_NIL;
-	}
-
-	view_frame = Bonobo_Unknown_queryInterface (control_frame, "IDL:Nautilus/ViewFrame:1.0", ev);
-	if (ev->_major != CORBA_NO_EXCEPTION) {
-		return CORBA_OBJECT_NIL;
-	}
-
-	return view_frame;
+	return nautilus_view_get_view_frame (view, ev);
 }
 
 static void
 view_frame_call_end (Nautilus_ViewFrame frame, CORBA_Environment *ev)
 {
 	if (frame != CORBA_OBJECT_NIL) {
-		bonobo_object_release_unref (frame, NULL);
+		CORBA_Object_release (frame, NULL);
 	}
 
 	CORBA_exception_free (ev);

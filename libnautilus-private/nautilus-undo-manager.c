@@ -217,9 +217,8 @@ nautilus_undo_manager_attach (NautilusUndoManager *manager, GObject *target)
 	g_return_if_fail (NAUTILUS_IS_UNDO_MANAGER (manager));
 	g_return_if_fail (G_IS_OBJECT (target));
 
-	nautilus_undo_attach_undo_manager
-		(G_OBJECT (target),
-		 bonobo_object_corba_objref (BONOBO_OBJECT (manager)));
+	nautilus_undo_attach_undo_manager (
+		G_OBJECT (target), BONOBO_OBJREF (manager));
 }
 
 void
@@ -230,7 +229,7 @@ nautilus_undo_manager_add_interface (NautilusUndoManager *manager, BonoboObject 
 	g_return_if_fail (NAUTILUS_IS_UNDO_MANAGER (manager));
 	g_return_if_fail (BONOBO_IS_OBJECT (object));
 
-	context = nautilus_undo_context_new (bonobo_object_corba_objref (BONOBO_OBJECT (manager)));
+	context = nautilus_undo_context_new (BONOBO_OBJREF (manager));
 	bonobo_object_add_interface (object, BONOBO_OBJECT (context));
 }
 

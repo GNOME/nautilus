@@ -251,7 +251,7 @@ add_numbered_menu_item_internal (BonoboUIComponent *ui,
 			 	  const char *radio_group_name)
 {
 	char *xml_item, *xml_command; 
-	char *encoded_label, *command_name;
+	char *command_name;
 	char *item_name, *pixbuf_data;
 
 	g_assert (BONOBO_IS_UI_COMPONENT (ui)); 
@@ -261,35 +261,29 @@ add_numbered_menu_item_internal (BonoboUIComponent *ui,
 	g_assert (type == NUMBERED_MENU_ITEM_RADIO || radio_group_name == NULL);
 	g_assert (type != NUMBERED_MENU_ITEM_RADIO || radio_group_name != NULL);
 
-	/* Because we are constructing the XML ourselves, we need to
-         * encode the label.
-	 */
-	encoded_label = bonobo_ui_util_encode_str (label);
-
 	item_name = get_numbered_menu_item_name 
 		(ui, container_path, index);
 	command_name = nautilus_bonobo_get_numbered_menu_item_command 
 		(ui, container_path, index);
 
-
 	switch (type) {
 	case NUMBERED_MENU_ITEM_TOGGLE:
 		xml_item = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" id=\"%s\" type=\"toggle\"/>\n", 
-					    item_name, encoded_label, command_name);
+					    item_name, label, command_name);
 		break;
 	case NUMBERED_MENU_ITEM_RADIO:
 		xml_item = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" id=\"%s\" type=\"radio\" group=\"%s\"/>\n", 
-					    item_name, encoded_label, command_name, radio_group_name);
+					    item_name, label, command_name, radio_group_name);
 		break;
 	case NUMBERED_MENU_ITEM_PLAIN:
 		if (pixbuf != NULL) {
 			pixbuf_data = bonobo_ui_util_pixbuf_to_xml (pixbuf);			
 			xml_item = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"%s\" pixtype=\"pixbuf\" pixname=\"%s\"/>\n", 
-						    item_name, encoded_label, command_name, pixbuf_data);	
+						    item_name, label, command_name, pixbuf_data);	
 			g_free (pixbuf_data);
 		} else {
 			xml_item = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"%s\"/>\n", 
-						    item_name, encoded_label, command_name);
+						    item_name, label, command_name);
 		}
 		break;
 	default:
@@ -297,7 +291,6 @@ add_numbered_menu_item_internal (BonoboUIComponent *ui,
 		xml_item = NULL;	/* keep compiler happy */
 	}
 
-	g_free (encoded_label);
 	g_free (item_name);
 	
 	bonobo_ui_component_set (ui, container_path, xml_item, NULL);
@@ -330,7 +323,8 @@ nautilus_bonobo_add_numbered_menu_item (BonoboUIComponent *ui,
 	g_return_if_fail (container_path != NULL);
 	g_return_if_fail (label != NULL);
 
-	add_numbered_menu_item_internal (ui, container_path, index, label, NUMBERED_MENU_ITEM_PLAIN, pixbuf, NULL);
+	add_numbered_menu_item_internal (ui, container_path, index, label,
+					 NUMBERED_MENU_ITEM_PLAIN, pixbuf, NULL);
 }
 
 /* Add a menu item specified by number into a given path. Used for
@@ -348,7 +342,8 @@ nautilus_bonobo_add_numbered_toggle_menu_item (BonoboUIComponent *ui,
 	g_return_if_fail (container_path != NULL);
 	g_return_if_fail (label != NULL);
 
-	add_numbered_menu_item_internal (ui, container_path, index, label, NUMBERED_MENU_ITEM_TOGGLE, NULL, NULL);
+	add_numbered_menu_item_internal (ui, container_path, index, label,
+					 NUMBERED_MENU_ITEM_TOGGLE, NULL, NULL);
 }
 
 /* Add a menu item specified by number into a given path. Used for
@@ -367,7 +362,8 @@ nautilus_bonobo_add_numbered_radio_menu_item (BonoboUIComponent *ui,
 	g_return_if_fail (container_path != NULL);
 	g_return_if_fail (label != NULL);
 
-	add_numbered_menu_item_internal (ui, container_path, index, label, NUMBERED_MENU_ITEM_RADIO, NULL, radio_group_name);
+	add_numbered_menu_item_internal (ui, container_path, index, label,
+					 NUMBERED_MENU_ITEM_RADIO, NULL, radio_group_name);
 }
 
 void
@@ -375,12 +371,7 @@ nautilus_bonobo_add_submenu (BonoboUIComponent *ui,
 			     const char *path,
 			     const char *label)
 {
-	char *xml_string, *encoded_label, *name;
-
-	/* Because we are constructing the XML ourselves, we need to
-         * encode the label.
-	 */
-	encoded_label = bonobo_ui_util_encode_str (label);
+	char *xml_string, *name;
 
 	/* Labels may contain characters that are illegal in names. So
 	 * we create the name by URI-encoding the label.
@@ -388,10 +379,9 @@ nautilus_bonobo_add_submenu (BonoboUIComponent *ui,
 	name = gnome_vfs_escape_string (label);
 	
 	xml_string = g_strdup_printf ("<submenu name=\"%s\" label=\"%s\"/>\n", 
-				      name, encoded_label);
+				      name, label);
 	bonobo_ui_component_set (ui, path, xml_string, NULL);
 
-	g_free (encoded_label);
 	g_free (name);
 	g_free (xml_string);
 }
@@ -493,27 +483,6 @@ nautilus_bonobo_set_label_for_menu_item_and_command (BonoboUIComponent *ui,
 	
 	g_free (label_no_underscore);
 }
-
-void
-nautilus_bonobo_set_icon (BonoboUIComponent *ui,
-			  const char *path,
-			  const char *icon_relative_path)
-{
-	g_return_if_fail (BONOBO_IS_UI_COMPONENT (ui));
-	g_return_if_fail (path != NULL);
-	g_return_if_fail (icon_relative_path != NULL);
-
-	/* We don't do a get_prop here before setting since it just
-	 * means more round-trip CORBA calls.
-	 */
-	bonobo_ui_component_set_prop (ui, path,
-				      "pixname",
-				      icon_relative_path, NULL);
-	bonobo_ui_component_set_prop (ui, path,
-				      "pixtype",
-				      "filename", NULL);
-}
-
 
 static void
 activation_handle_done (NautilusBonoboActivationHandle *handle)

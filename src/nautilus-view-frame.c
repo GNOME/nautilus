@@ -592,8 +592,8 @@ create_corba_objects (NautilusViewFrame *view)
 	control = Bonobo_Unknown_queryInterface
 		(view->details->view, "IDL:Bonobo/Control:1.0", &ev);
 	g_assert (ev._major == CORBA_NO_EXCEPTION);
-	view->details->control_frame = bonobo_control_frame_new
-		(bonobo_object_corba_objref (BONOBO_OBJECT (view->details->ui_container)));
+	view->details->control_frame = bonobo_control_frame_new (
+		BONOBO_OBJREF (view->details->ui_container));
 
 	bonobo_control_frame_set_propbag (
 		view->details->control_frame,

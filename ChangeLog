@@ -1,3 +1,56 @@
+2002-01-23  Michael Meeks  <michael@ximian.com>
+
+	* libnautilus/nautilus-view-standard-main.c
+	(nautilus_view_standard_main_multi): re-remove the
+	per display IID creation scheme - it's broken.
+
+	* components/throbber/nautilus-throbber.c
+	(nautilus_throbber_draw): kill, no draw methods
+	in gtk 2.0
+	(draw_throbber_image): remove bonobo bug
+	workaround, if it still exists it should be fixed
+	in bonobo and fold into
+	(nautilus_throbber_expose): here
+	(draw_pixbuf): fold into
+	(nautilus_throbber_expose): here, and fix
+	rendering bugs.
+	(nautilus_throbber_size_allocate): kill bogus
+	sizing logic.
+	(nautilus_throbber_button_release_event): do
+	conversion.
+	(nautilus_throbber_destroy): remove
+	force_destroy_later.
+
+2002-01-21  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-window.c,
+	* src/nautilus-application.c,
+	* src/nautilus-view-frame.c,
+	* libnautilus-private/nautilus-undo-manager.c,
+	* libnautilus-private/nautilus-metafile-factory.c,
+	* libnautilus/nautilus-undo-transaction.c,
+	s/bonobo_object_corba_objref/BONOBO_OBJREF/
+
+	* libnautilus-private/nautilus-directory-metafile.c
+	(get_factory): update referencing.
+
+	* libnautilus/nautilus-view.c
+	(nautilus_view_get_view_frame): impl. helper to
+	reduce sync CORBA traffic.
+	(view_frame_call_end, view_frame_call_begin): upd.
+	(nautilus_view_dispose): release the CORBA ref. if we
+	took it.
+	(nautilus_view_set_frame): unset the frame if we
+	loose it.
+
+	* libnautilus-private/nautilus-bonobo-extensions.c
+	(add_numbered_menu_item_internal): kill the label encoding.
+	(nautilus_bonobo_add_submenu): ditto.
+	(nautilus_bonobo_set_icon): kill unused.
+
+	* components/adaptor/bonobo-stream-vfs.[ch]: remove, now
+	inside gnome-vfs.
+
 2002-01-23  jacob berkman  <jacob@ximian.com>
 
 	* icons/default/Makefile.am (SUBDIRS): remove since automake

@@ -161,9 +161,7 @@ static void
 nautilus_throbber_destroy (GtkObject *object)
 {
 	NautilusThrobber *throbber = NAUTILUS_THROBBER (object);
-#ifdef GNOME2_CONVERSION_COMPLETE
-	nautilus_bonobo_object_force_destroy_later (throbber->details->control);
-#endif	
+
 	nautilus_throbber_remove_update_callback (throbber);
 	nautilus_throbber_unload_images (throbber);
 
@@ -304,18 +302,6 @@ nautilus_throbber_theme_changed (gpointer user_data)
 	gtk_widget_queue_resize ( GTK_WIDGET (throbber));
 }
 
-
-/* utility to simplify drawing */
-static void
-draw_pixbuf (GdkPixbuf *pixbuf, GdkDrawable *drawable, int x, int y)
-{
-	gdk_pixbuf_render_to_drawable_alpha (pixbuf, drawable, 0, 0, x, y,
-					     gdk_pixbuf_get_width (pixbuf),
-					     gdk_pixbuf_get_height (pixbuf),
-					     GDK_PIXBUF_ALPHA_BILEVEL, 128, GDK_RGB_DITHER_MAX,
-					     0, 0);
-}
-
 /* here's the routine that selects the image to draw, based on the throbber's state */
 
 static GdkPixbuf *
@@ -336,38 +322,29 @@ select_throbber_image (NautilusThrobber *throbber)
 	return g_object_ref (element->data);
 }
 
-/* draw the throbber into the passed-in rectangle */
+/* handle expose events */
 
-static void
-draw_throbber_image (GtkWidget *widget, GdkRectangle *box)
+static int
+nautilus_throbber_expose (GtkWidget *widget, GdkEventExpose *event)
 {
 	NautilusThrobber *throbber;
 	GdkPixbuf *pixbuf, *massaged_pixbuf;
-	int window_width, window_height;
-	int x_offset, y_offset;
-		
+	int x_offset, y_offset, width, height;
+	GdkRectangle pix_area, dest;
+
+	g_return_val_if_fail (NAUTILUS_IS_THROBBER (widget), FALSE);
+
 	throbber = NAUTILUS_THROBBER (widget);
 	if (!throbber->details->ready) {
-		return;
-	}
-		
-	/* clear the entire gdk window to avoid messing up gradient themes due to bonobo bug  */
-	/* only do this once per cycle to minimize flashing */
-	gdk_window_get_size (widget->window, &window_width, &window_height);
-	
-	if (throbber->details->current_frame == 0) {
-		gdk_window_clear_area (widget->window,
-			       0,
-			       0,
-			       window_width,
-			       window_height);
-	}
-	
-	pixbuf = select_throbber_image (throbber);
-	if (pixbuf == NULL) {
-		return;
+		return FALSE;
 	}
 
+	pixbuf = select_throbber_image (throbber);
+	if (pixbuf == NULL) {
+		return FALSE;
+	}
+
+	/* Get the right tint on the image */
 	if (throbber->details->button_in) {
 		if (throbber->details->button_down) {
 			massaged_pixbuf = eel_create_darkened_pixbuf (pixbuf, 0.8 * 255, 0.8 * 255);
@@ -377,42 +354,35 @@ draw_throbber_image (GtkWidget *widget, GdkRectangle *box)
 		g_object_unref (pixbuf);
 		pixbuf = massaged_pixbuf;
 	}
+
+	width = gdk_pixbuf_get_width (pixbuf);
+	height = gdk_pixbuf_get_height (pixbuf);
+
+	/* Compute the offsets for the image centered on our allocation */
+	x_offset = widget->allocation.x + (widget->allocation.width - width) / 2;
+	y_offset = widget->allocation.y + (widget->allocation.height - height) / 2;
+
+	pix_area.x = x_offset;
+	pix_area.y = y_offset;
+	pix_area.width = width;
+	pix_area.height = height;
+
+	if (!gdk_rectangle_intersect (&event->area, &pix_area, &dest)) {
+		g_object_unref (pixbuf);
+		return FALSE;
+	}
 	
-	/* center the throbber image in the gdk window */	
-	x_offset = (window_width - gdk_pixbuf_get_width (pixbuf)) / 2;
-	y_offset = (window_height - gdk_pixbuf_get_height (pixbuf)) / 2;
-	
-	draw_pixbuf (pixbuf, widget->window, box->x + x_offset, box->y + y_offset);
-	
+	gdk_pixbuf_render_to_drawable_alpha (
+		pixbuf, widget->window, 
+		dest.x - x_offset, dest.y - y_offset,
+		dest.x, dest.y,
+		dest.width, dest.height,
+		GDK_PIXBUF_ALPHA_BILEVEL, 128,
+		GDK_RGB_DITHER_MAX,
+		0, 0);
+
 	g_object_unref (pixbuf);
-}
 
-#ifdef GNOME2_CONVERSION_COMPLETE
-static void
-nautilus_throbber_draw (GtkWidget *widget, GdkRectangle *box)
-{ 
-	g_return_if_fail (widget != NULL);
-	g_return_if_fail (NAUTILUS_IS_THROBBER (widget));
-	
-	draw_throbber_image (widget, box);	
-}
-#endif 
-
-/* handle expose events */
-
-static int
-nautilus_throbber_expose (GtkWidget *widget, GdkEventExpose *event)
-{
-	GdkRectangle box;
-	g_return_val_if_fail (widget != NULL, FALSE);
-	g_return_val_if_fail (NAUTILUS_IS_THROBBER (widget), FALSE);
-
-	box.x = 0; box.y = 0;
-	box.width = widget->allocation.width;
-	box.height = widget->allocation.height;
-
-	draw_throbber_image (widget, &box);	
-	
 	return FALSE;
 }
 
@@ -660,11 +630,11 @@ nautilus_throbber_button_release_event (GtkWidget *widget, GdkEventButton *event
 			location = nautilus_theme_get_theme_data ("throbber", "url");
 			if (location != NULL) {
 				location_arg = bonobo_arg_new (BONOBO_ARG_STRING);
-				BONOBO_ARG_SET_STRING (location_arg, location);			
-#ifdef GNOME2_CONVERSION_COMPLETE
-				bonobo_property_bag_notify_listeners
-					(throbber->details->property_bag, "location", location_arg, NULL);
-#endif
+				BONOBO_ARG_SET_STRING (location_arg, location);
+				bonobo_event_source_notify_listeners_full (
+					throbber->details->property_bag->es,
+					"Bonobo/Property", "change", "location",
+					location_arg, NULL);
 				bonobo_arg_release (location_arg);
 				g_free (location);
 			}
@@ -694,22 +664,7 @@ nautilus_throbber_set_small_mode (NautilusThrobber *throbber, gboolean new_mode)
 }
 
 /* handle setting the size */
-static void
-nautilus_throbber_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
-{
-	int throbber_width, throbber_height;
-	NautilusThrobber *throbber = NAUTILUS_THROBBER (widget);
 
-	GNOME_CALL_PARENT (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
-
-	get_throbber_dimensions (throbber, &throbber_width, &throbber_height);
-	
-	/* allocate some extra margin so we don't butt up against toolbar edges */	
-	widget->allocation.width = throbber_width + 8;
-   	widget->allocation.height = throbber_height;	
-}
-
-/* handle setting the size */
 static void
 nautilus_throbber_size_request (GtkWidget *widget, GtkRequisition *requisition)
 {
@@ -720,7 +675,7 @@ nautilus_throbber_size_request (GtkWidget *widget, GtkRequisition *requisition)
 	
 	/* allocate some extra margin so we don't butt up against toolbar edges */
 	requisition->width = throbber_width + 8;
-   	requisition->height = throbber_height;	
+   	requisition->height = throbber_height;
 }
 
 static void
@@ -736,7 +691,6 @@ nautilus_throbber_class_init (NautilusThrobberClass *throbber_class)
 	widget_class->button_release_event = nautilus_throbber_button_release_event;
 	widget_class->enter_notify_event = nautilus_throbber_enter_notify_event;
 	widget_class->leave_notify_event = nautilus_throbber_leave_notify_event;
-	widget_class->size_allocate = nautilus_throbber_size_allocate;
 	widget_class->size_request = nautilus_throbber_size_request;	
 	widget_class->map = nautilus_throbber_map;
 }
