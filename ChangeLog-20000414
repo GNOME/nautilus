@@ -1,3 +1,10 @@
+1999-12-14  John Sullivan  <sullivan@eazel.com>
+
+	* src/ntl-window.c: (nautilus-window-constructed): Reordered option menu
+	creation code to fix bug where it wasn't sizing itself properly. Changed
+	label of placeholder item and desensitized it to make it more obvious that
+	it's a non-working placeholder.
+
 1999-12-14  Elliot Lee  <sopwith@redhat.com>
 
 	* configure.in, Makefile.am, icons/: Add icons

@@ -29,6 +29,7 @@
 #include "nautilus.h"
 #include "explorer-location-bar.h"
 
+
 typedef struct {
   POA_Nautilus_ViewWindow servant;
   gpointer gnome_object;
@@ -283,25 +284,34 @@ nautilus_window_constructed(NautilusWindow *window)
   menu_hbox = gtk_hbox_new(FALSE, GNOME_PAD);
 
   menubar = gtk_menu_bar_new();
-  gtk_box_pack_end(GTK_BOX(menu_hbox), menubar, TRUE, TRUE, GNOME_PAD_BIG);
+  gtk_box_pack_end(GTK_BOX(menu_hbox), menubar, FALSE, TRUE, GNOME_PAD_BIG);
   gnome_app_fill_menu_with_data(GTK_MENU_SHELL(menubar), main_menu, ag, TRUE, 0, window);
 
   window->option_cvtype = gtk_option_menu_new();
-  gtk_box_pack_end(GTK_BOX(menu_hbox), window->option_cvtype, TRUE, TRUE, GNOME_PAD_BIG);
-  gtk_widget_show(window->option_cvtype);
   window->menu_cvtype = gtk_menu_new();
+  // FIXME: Add in placeholder item for now; rework this when we get the right views showing up.
+  // Since menu doesn't yet work, make it insensitive.
+  gtk_container_add(GTK_CONTAINER(window->menu_cvtype), 
+  	gtk_menu_item_new_with_label(_("View as (placeholder)")));
+  gtk_widget_set_sensitive(window->option_cvtype, FALSE);
+  
+  gtk_widget_show_all(window->menu_cvtype);
   gtk_option_menu_set_menu(GTK_OPTION_MENU(window->option_cvtype), window->menu_cvtype);
+  gtk_option_menu_set_history(GTK_OPTION_MENU(window->option_cvtype), 0);
+  gtk_box_pack_end(GTK_BOX(menu_hbox), window->option_cvtype, FALSE, FALSE, GNOME_PAD_BIG);
+  gtk_widget_show(window->option_cvtype);
+
+  // For mysterious reasons, connecting these signals before laying out the menu
+  // and option menu ends up making the option menu not know how to size itself (i.e, 
+  // it is zero-width unless you turn on expand and fill). So we do it here afterwards.
   gtk_signal_connect_while_alive(GTK_OBJECT(window->menu_cvtype), "add",
                                  GTK_SIGNAL_FUNC(gtk_option_menu_do_resize), window->option_cvtype,
                                  GTK_OBJECT(window->option_cvtype));
   gtk_signal_connect_while_alive(GTK_OBJECT(window->menu_cvtype), "remove",
                                  GTK_SIGNAL_FUNC(gtk_option_menu_do_resize), window->option_cvtype,
                                  GTK_OBJECT(window->option_cvtype));
-  wtmp = gtk_menu_item_new_with_label(_("View as blank space"));
-  gtk_container_add(GTK_CONTAINER(window->menu_cvtype), wtmp);
-  gtk_widget_show(wtmp);
-  gtk_option_menu_set_history(GTK_OPTION_MENU(window->option_cvtype), 0);
-  gtk_widget_queue_resize(window->menu_cvtype);
+
+
 
   /* A hacked-up version of gnome_app_set_menu(). We need this to use our 'menubar' for the actual menubar stuff,
      but our menu_hbox for the widget being docked. */
