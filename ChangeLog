@@ -1,3 +1,18 @@
+2000-09-12  John Sullivan  <sullivan@eazel.com>
+
+	Fixed part of bug 1537 (double-clicking in single-click
+	mode and open-in-new-window mode opens 2 windows).
+
+	Modes suck. Anyway, this was two separate bugs, one in
+	list view and one in icon view. I fixed the list view
+	one. The icon view one is more complicated, because
+	there was already code to handle this case but it doesn't 
+	work right, and it isn't obvious how to fix it.
+	
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_button_press): Ignore 2nd click of
+	double-click if in single-click mode.
+
 2000-09-12  Michael Engber  <engber@eazel.com>
 
 	Dragging a image onto a background not clears the

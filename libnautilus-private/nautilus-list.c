@@ -931,11 +931,8 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 			list->details->dnd_select_pending = FALSE;
 			list->details->dnd_select_pending_state = 0;
 
-			if (on_row) {
-				/* Activate on double-click even if single_click_mode
-				 * is set, so second click doesn't get passed to child
-				 * directory.
-				 */
+			if (on_row && !list->details->single_click_mode) {
+				/* We'll just eat the 2nd click if in single-click mode. */
 				activate_selected_rows (list);
 			}
 
