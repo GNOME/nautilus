@@ -29,12 +29,12 @@
 
 #include <orb/orbit.h>
 #include <liboaf/liboaf.h>
-#include <libtrilobite/eazelproxy.h>
-#include <libtrilobite/libammonite.h>
-#include <libtrilobite/trilobite-redirect.h>
 #include <bonobo/bonobo-main.h>
 
 #include <libnautilus-extensions/nautilus-caption-table.h>
+#include <libtrilobite/eazelproxy.h>
+#include <libtrilobite/libammonite.h>
+#include <libtrilobite/trilobite-redirect.h>
 
 #include "nautilus-summary-view.h"
 #include "eazel-summary-shared.h"
@@ -319,26 +319,3 @@ register_button_cb (GtkWidget      *button, NautilusSummaryView    *view)
 	g_free (url);
 
 }
-
-/* here is the callback to handle service tab selection */
-void
-service_tab_selected_callback (GtkWidget		*widget,
-				int			which_tab,
-				NautilusSummaryView	*view)
-{
-
-	gtk_notebook_set_page (GTK_NOTEBOOK (view->details->services_notebook), which_tab);
-
-}
-
-/* here is the callback to handle updates tab selection */
-void
-updates_tab_selected_callback (GtkWidget		*widget,
-				int			which_tab,
-				NautilusSummaryView	*view)
-{
-
-	gtk_notebook_set_page (GTK_NOTEBOOK (view->details->updates_notebook), which_tab);
-
-}
-

@@ -35,13 +35,6 @@ void	forgot_password_button_cb		(GtkWidget			*button,
 						 NautilusSummaryView		*view);
 gint	logged_in_callback			(gpointer			raw);
 gint	logged_out_callback			(gpointer			raw);
-void	service_tab_selected_callback		(GtkWidget			*widget,
-						 int				which_tab,
-						 NautilusSummaryView		*view);
-void	updates_tab_selected_callback		(GtkWidget			*widget,
-						 int				which_tab,
-						 NautilusSummaryView		*view);
-
 
 #endif /* NAUTILUS_SUMMARY_CALLBACKS_H */
 

@@ -23,6 +23,7 @@
 #ifndef NAUTILUS_SUMMARY_VIEW_PRIVATE_H
 #define NAUTILUS_SUMMARY_VIEW_PRIVATE_H
 
+#include <libtrilobite/libammonite.h>
 
 #include <gnome.h>
 
@@ -44,9 +45,9 @@
 #define REGISTER_KEY				"eazel_service_register"
 #define PREFERENCES_KEY				"eazel_service_account_maintenance"
 
-#define GOTO_BUTTON_LABEL			_("Go There!")
-#define SOFTCAT_GOTO_BUTTON_LABEL		_("More Info!")
-#define INSTALL_GOTO_BUTTON_LABEL		_("Install Me!")
+#define GOTO_BUTTON_LABEL			_("Go There")
+#define SOFTCAT_GOTO_BUTTON_LABEL		_("More Info")
+#define INSTALL_GOTO_BUTTON_LABEL		_("Install")
 
 #define MAX_IMAGE_WIDTH				50
 #define MAX_IMAGE_HEIGHT			50
@@ -78,7 +79,8 @@ typedef enum {
 
 typedef enum {
 	initial,
-	retry
+	retry,
+	fail,
 } SummaryLoginAttemptType;
 
 
@@ -95,7 +97,14 @@ struct _NautilusSummaryViewDetails {
 
 	/* Parent form and title */
 	GtkWidget			*form;
-	GtkWidget			*form_title;
+	GtkWidget			*header;
+	GtkWidget			*news_pane;
+	GtkWidget                       *news_item_vbox;
+	GtkWidget			*services_list_pane;
+	GtkWidget                       *services_list_vbox;
+	GtkWidget			*featured_downloads_pane;
+	GtkWidget                       *featured_downloads_vbox;
+	GtkWidget			*footer;
 
 	/* Login State */
 	char				*user_name;
@@ -108,24 +117,6 @@ struct _NautilusSummaryViewDetails {
 	EazelProxy_UserControl		user_control;
 	SummaryPendingOperationType	pending_operation;
 	EazelProxy_AuthnCallback	authn_callback;
-
-	/* Services control panel */
-	int				current_service_row;
-	GtkWidget			*services_row;
-	GtkWidget			*services_icon_container;
-	GtkWidget			*services_icon_widget;
-	char				*services_icon_name;
-	GtkWidget			*services_description_header_widget;
-	char				*services_description_header;
-	GtkWidget			*services_description_body_widget;
-	char				*services_description_body;
-	GtkWidget			*services_button_container;
-	GtkWidget			*services_goto_button;
-	GtkWidget			*services_goto_label_widget;
-	char				*services_goto_label;
-	char				*services_redirects[500];
-	gboolean			services_button_enabled;
-	GtkWidget			*services_notebook;
 
 	/* Login Frame Widgets */
 	GnomeDialog			*login_dialog;
@@ -144,46 +135,10 @@ struct _NautilusSummaryViewDetails {
 	GtkWidget			*logout_button;
 	GtkWidget			*logout_label;
 
-	/* Eazel news panel */
-	int				current_news_row;
-	gboolean			news_has_data;
-	GtkWidget			*service_news_row;
-	GtkWidget			*news_icon_container;
-	GtkWidget			*news_icon_widget;
-	char				*news_icon_name;
-	GtkWidget			*news_date_widget;
-	char				*news_date;
-	GtkWidget			*news_description_header_widget;
-	char				*news_description_header;
-	GtkWidget			*news_description_body_widget;
-	char				*news_description_body;
-
-	/* Update control panel */
-	int				current_update_row;
-	gboolean			updates_has_data;
-	GtkWidget			*updates_row;
-	GtkWidget			*update_icon_container;
-	GtkWidget			*update_icon_widget;
-	char				*update_icon_name;
-	GtkWidget			*update_description_header_widget;
-	char				*update_description_header;
-	GtkWidget			*update_description_body_widget;
-	char				*update_description_body;
-	GtkWidget			*update_description_version_widget;
-	char				*update_description_version;
-	GtkWidget			*update_button_container;
-	GtkWidget			*update_goto_button;
-	GtkWidget			*update_goto_label_widget;
-	char				*update_goto_label;
-	char				*update_redirects[500];
-	GtkWidget			*update_softcat_goto_button;
-	GtkWidget			*update_softcat_goto_label_widget;
-	char				*update_softcat_goto_label;
-	char				*update_softcat_redirects[500];
-	GtkWidget			*updates_notebook;
-
 };
 
 
 #endif /* NAUTILUS_SUMMARY_VIEW_PRIVATE_H */
+
+
 

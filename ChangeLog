@@ -1,3 +1,42 @@
+2001-01-30  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Ramiro Estrugo  <ramiro@eazel.com>
+
+	Mass refactoring of summary view code to make needed summary view
+	fixes more managable. In the process, fixed bugs 4555 (Version
+	display for featured softcat downloads) and 5795 (Summary View
+	text doesn't wrap.) Also, cleaned up assorted pieces of text.
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c
+	: (update_header), (create_header), (update_footer),
+	(create_footer), (summary_view_button_callback),
+	(summary_view_button_new), (summary_view_item_label_new),
+	(summary_view_item_large_header_label_new),
+	(summary_view_item_header_label_new),
+	(summary_view_item_body_label_new), (append_hseparator_to_vbox),
+	(generate_eazel_news_entry_row), (summary_view_update_pane),
+	(summary_view_create_pane), (update_news_pane),
+	(create_news_pane),
+	(generate_service_entry_row), (update_services_list_pane),
+	(create_services_list_pane), (generate_update_news_entry_row),
+	(update_featured_downloads_pane),
+	(create_featured_downloads_pane),
+	(generate_summary_form), (nautilus_summary_view_initialize),
+	(nautilus_summary_view_destroy), (summary_load_location_callback),
+	(text_resize_callback): Factor the monolithic summary view code up
+	more. The next step is to create a widget class to manage each
+	pane, and to create the base layout once and only change the pane
+	contents on recipt of summary XML or login.
+
+	* components/services/summary/nautilus-view/nautilus-summary-callbacks.h,
+	components/services/summary/nautilus-view/nautilus-summary-callbacks.c:
+	Remove tab selected callbacks since they are no longer used.
+
+	* components/services/summary/nautilus-view/nautilus-summary-view-private.h:
+	Removed lots of unneeded fields in the details struct; changed
+	button labels, "Go There!" --> "Go There", "More Info!" --> "More
+	Info", "Install Me!" --> "Install"
+
 2001-01-30  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Gene Z. Ragan <gzr@eazel.com>
