@@ -1,7 +1,5 @@
 NULL = 
 
-SUBDIRS = services
-
 INCLUDES =					\
 	-DG_LOG_DOMAIN=\"Nautilus-Text\"	\
 	-DDATADIR=\""$(datadir)"\" 		\
