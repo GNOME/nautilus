@@ -38,10 +38,11 @@ print_application (GnomeVFSMimeApplication *application)
         if (application == NULL) {
 	        puts ("(none)");
 	} else {
-	        printf ("name: %s\ncommand: %s\ncan_open_multiple_files: %s\ncan_open_uris: %s\n", 
+	        printf ("name: %s\ncommand: %s\ncan_open_multiple_files: %s\ncan_open_uris: %s\nrequires_terminal: %s\n", 
 			application->name, application->command, 
 			(application->can_open_multiple_files ? "TRUE" : "FALSE"),
-			(application->can_open_uris ? "TRUE" : "FALSE"));
+			(application->can_open_uris ? "TRUE" : "FALSE"),
+			(application->requires_terminal ? "TRUE" : "FALSE"));
 	}
 }
 
