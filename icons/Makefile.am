@@ -30,12 +30,14 @@ icon_DATA =\
 	emblem-important.svg \
 	emblem-new.svg \
 	emblem-noread.svg \
-	emblem-nowrite.png \
+	emblem-nowrite.svg \
 	emblem-ohno.svg \
 	emblem-OK.svg \
 	emblem-personal.svg \
 	emblem-remote.gif \
 	emblem-trash.png \
+	emblem-shared.svg \
+	emblem-special.svg \
 	emblem-symbolic-link.png \
 	emblem-urgent.svg \
 	emblems.png \

@@ -39,10 +39,6 @@
 #include <libnautilus-extensions/nautilus-buffered-widget.h>
 #include <libnautilus-extensions/nautilus-scalable-font.h>
 
-/* NautilusImage is GtkWidget that draws a string using the high quality
- * anti aliased librsvg/freetype.
- */
-
 BEGIN_GNOME_DECLS
 
 #define NAUTILUS_TYPE_IMAGE            (nautilus_image_get_type ())

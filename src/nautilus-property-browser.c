@@ -558,8 +558,9 @@ ensure_uri_is_image(const char *uri)
 }
 
 /* create the appropriate pixbuf for the passed in file */
+
 static GdkPixbuf *
-make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name)
+make_drag_image (NautilusPropertyBrowser *property_browser, const char* file_name)
 {
 	GdkPixbuf *pixbuf, *orig_pixbuf;
 	char *image_file_name;
@@ -585,7 +586,6 @@ make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name
 	
 	orig_pixbuf = gdk_pixbuf_new_from_file (image_file_name);
 	
-	/* background properties are always a fixed size, while others are pinned to the max size */
 	if (!strcmp(property_browser->details->category, "backgrounds")) {
 		pixbuf = nautilus_customization_make_background_chit (orig_pixbuf, property_browser->details->property_chit, TRUE);
 	} else {
@@ -597,6 +597,7 @@ make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name
 
 	return pixbuf;
 }
+
 
 /* create a pixbuf and fill it with a color */
 
@@ -1274,11 +1275,9 @@ element_clicked_callback(GtkWidget *widget, GdkEventButton *event, char *element
 {
 	GtkTargetList *target_list;	
 	GdkDragContext *context;
-	GtkWidget *pixwidget;
 	GdkPixbuf *pixbuf;
 	GdkPixmap *pixmap_for_dragged_file;
 	GdkBitmap *mask_for_dragged_file;
-	int pixmap_width, pixmap_height;
 	int x_delta, y_delta;
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER(gtk_object_get_user_data(GTK_OBJECT(widget)));
 	
@@ -1309,20 +1308,15 @@ element_clicked_callback(GtkWidget *widget, GdkEventButton *event, char *element
 	
 	if (strcmp(property_browser->details->drag_type, "application/x-color")) {
 		/*it's not a color, so, for now, it must be an image */
+		pixbuf = make_drag_image (property_browser, element_name);
 		
-		pixwidget = GTK_BIN(widget)->child;
-		gtk_pixmap_get(GTK_PIXMAP(pixwidget), &pixmap_for_dragged_file, &mask_for_dragged_file);
-		gdk_window_get_size((GdkWindow*) pixmap_for_dragged_file, &pixmap_width, &pixmap_height);
+		x_delta -= (widget->allocation.width - gdk_pixbuf_get_width (pixbuf)) >> 1;
+		y_delta -= (widget->allocation.height - gdk_pixbuf_get_height (pixbuf)) >> 1;
 
-		x_delta -= (widget->allocation.width - pixmap_width) >> 1;
-		y_delta -= (widget->allocation.height - pixmap_height) >> 1;
-
-		pixbuf = make_drag_image(property_browser, element_name);
 	} else {
-		pixbuf = make_color_drag_image(property_browser, element_name, TRUE);
+		pixbuf = make_color_drag_image (property_browser, element_name, TRUE);
 	}
 
-	
         /* set the pixmap and mask for dragging */       
 	if (pixbuf != NULL) {
 		gdk_pixbuf_render_pixmap_and_mask
@@ -1484,10 +1478,8 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNod
 {
 	xmlNode *current_node;
 	GdkPixbuf *pixbuf;
-	GtkWidget *pixmap_widget, *label;
+	GtkWidget *image_widget, *label;
 	int index;
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
 	
 	gboolean local_only = property_browser->details->remove_mode;
 	
@@ -1512,16 +1504,16 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNod
 			/* make the image from the color spec */
 
 			pixbuf = make_color_drag_image (property_browser, color_str, FALSE);			
-			gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+			image_widget = nautilus_image_new ();
+			nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image_widget), pixbuf);
 			gdk_pixbuf_unref (pixbuf);
-			pixmap_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
 
 			/* make the label from the name */
 			label = nautilus_label_new (name_str);
 			nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
 
 			/* make the tile from the pixmap and name */
-			new_property = make_property_tile (property_browser, pixmap_widget, label, color_str);
+			new_property = make_property_tile (property_browser, image_widget, label, color_str);
 			add_to_content_table (property_browser, new_property, index++, 12);				
 		}
 	}

@@ -39,6 +39,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-gtk-extensions.h"
+#include "nautilus-image.h"
 #include "nautilus-label.h"
 #include "nautilus-string.h"
 
@@ -150,8 +151,6 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 	GnomeVFSFileInfo *current_file_info;
 
 	char *image_file_name, *filtered_name, *truncated_name;
-	GdkPixmap *pixmap;
-	GdkBitmap *mask;
 	GdkPixbuf *pixbuf;
 	GdkPixbuf *orig_pixbuf;
 
@@ -206,11 +205,10 @@ nautilus_customization_data_get_next_element_for_display (NautilusCustomizationD
 		gdk_pixbuf_unref (orig_pixbuf);
 	}
 	
-	/* make a pixmap and mask to pass to the widget */
-	gdk_pixbuf_render_pixmap_and_mask (pixbuf, &pixmap, &mask, NAUTILUS_STANDARD_ALPHA_THRESHHOLD);
+	*pixmap_widget = nautilus_image_new ();
+	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (*pixmap_widget), pixbuf);
 	gdk_pixbuf_unref (pixbuf);
 	
-	*pixmap_widget = GTK_WIDGET (gtk_pixmap_new (pixmap, mask));
 	filtered_name = format_name_for_display (current_file_info->name);
 	/* If the data is for a menu,
 	   we want to truncate it and not use the nautilus

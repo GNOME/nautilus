@@ -1,3 +1,35 @@
+2000-10-05  Andy Hertzfeld  <andy@eazel.com>
+	
+	* libnautilus-extensions/nautilus-customization-data.c:
+	(nautilus_customization_data_get_next_element_for_display):
+	made it use nautilus_image instead of gtk_pixmap so nice
+	anti-aliased emblems can be displayed
+	
+	* src/nautilus-property-browser.c: (make_drag_image),
+	(element_clicked_callback), (make_properties_from_xml_node):
+	made it deal with nautilus_image instead of pixwidgets
+	
+	* data/emblems/Makefile.am:
+	* icons/Makefile.am:
+	* icons/emblem-OK.svg:
+	* icons/emblem-distinguished.svg:
+	* icons/emblem-draft.svg:
+	* icons/emblem-favorite.svg:
+	* icons/emblem-generic.svg:
+	* icons/emblem-important.svg:
+	* icons/emblem-new.svg:
+	* icons/emblem-noread.svg:
+	* icons/emblem-nowrite.svg:
+	* icons/emblem-ohno.svg:
+	* icons/emblem-personal.svg:
+	* icons/emblem-shared.svg:
+	* icons/emblem-special.svg:
+	* icons/emblem-urgent.svg:
+	new or update emblems from Susan
+
+	* libnautilus-extensions/nautilus-image.h:
+	removed spurious comment
+
 2000-10-05  Mike Fleming  <mfleming@eazel.com>
 
 	* nautilus-clean.sh:
