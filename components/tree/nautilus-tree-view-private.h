@@ -60,6 +60,7 @@ struct NautilusTreeViewDetails {
         GList *in_progress_select_uris;
         gboolean root_seen;
 
+	gboolean got_first_size_allocate;
 
 	NautilusTreeViewDndDetails *dnd;
 };
@@ -73,4 +74,3 @@ NautilusCTreeNode *nautilus_tree_view_model_node_to_view_node (NautilusTreeView 
 
 
 #endif /* NAUTILUS_TREE_VIEW_PRIVATE_H */
-

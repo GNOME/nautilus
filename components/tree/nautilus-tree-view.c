@@ -98,6 +98,11 @@ static void tree_select_row_callback            (NautilusCTree         *tree,
 						 NautilusCTreeNode     *node,
 						 gint                   column,
 						 NautilusTreeView      *view);
+static void size_allocate_callback              (NautilusCTree         *tree,
+						 GtkAllocation         *allocation,
+						 gpointer               data);
+
+
 static void nautilus_tree_view_load_uri         (NautilusTreeView      *view,
 						 const char            *uri);
 static void nautilus_tree_view_update_all_icons (NautilusTreeView *view);
@@ -726,6 +731,10 @@ nautilus_tree_view_initialize (NautilusTreeView *view)
 			    GTK_SIGNAL_FUNC (tree_select_row_callback), 
 			    view);
 
+	gtk_signal_connect_after (GTK_OBJECT (view->details->tree),
+				  "size_allocate",
+				  GTK_SIGNAL_FUNC (size_allocate_callback), 
+				  view);
 
 	/* init dnd */
 	nautilus_tree_view_init_dnd (view);
@@ -1033,7 +1042,7 @@ expand_uri_sequence_and_select_end (NautilusTreeView *view)
 			g_free (view->details->selected_uri);
 			view->details->selected_uri = g_strdup (uri);
 			nautilus_ctree_select (NAUTILUS_CTREE (view->details->tree),
-					  view_node);
+					       view_node);
 		}
 	}
 		
@@ -1198,14 +1207,24 @@ tree_collapse_callback (NautilusCTree         *ctree,
 							    view);
 }
 
-
+static void
+ctree_show_node (NautilusCTree *tree,
+		 NautilusCTreeNode *node)
+{
+	if (nautilus_ctree_node_is_visible (tree, node) != GTK_VISIBILITY_FULL) {
+		nautilus_ctree_node_moveto (tree, node, 0, 0.5, 0);
+		if (nautilus_ctree_node_is_visible (tree, node) != GTK_VISIBILITY_FULL) {
+			nautilus_ctree_node_moveto (tree, node, 0, 0.5, 0.5);
+		}
+	}
+}
 
 
 static void
 tree_select_row_callback (NautilusCTree              *tree,
 			  NautilusCTreeNode          *node,
-			  gint                   column,
-			  NautilusTreeView      *view)
+			  gint                        column,
+			  NautilusTreeView           *view)
 {
 	char *uri;
 	
@@ -1219,9 +1238,40 @@ tree_select_row_callback (NautilusCTree              *tree,
 		view->details->selected_uri = g_strdup (uri);
 	}
 
-	g_free (uri);
+	ctree_show_node (tree, node);
 
+	g_free (uri);
 }
+
+static NautilusCTreeNode *
+ctree_get_first_selected_node (NautilusCTree *tree)
+{
+	if (GTK_CLIST (tree)->selection == NULL) {
+		return NULL;
+	}
+
+	return NAUTILUS_CTREE_NODE (GTK_CLIST (tree)->selection->data);
+}
+
+static void
+size_allocate_callback (NautilusCTree  *tree,
+			GtkAllocation  *allocation,
+			gpointer        data)
+{
+	NautilusTreeView *view;
+
+	view = NAUTILUS_TREE_VIEW (data);
+
+	if (!view->details->got_first_size_allocate) {
+		if (ctree_get_first_selected_node (tree)) {
+			ctree_show_node (tree, 
+					 ctree_get_first_selected_node (tree));
+		}
+
+		view->details->got_first_size_allocate = TRUE;
+	}
+}
+
 
 
 static void 

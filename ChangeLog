@@ -1,4 +1,24 @@
+2000-11-20  Maciej Stachowiak  <mjs@eazel.com>
+
+	Fixed bug 2893 (changing the selection in a view does not make the
+	tree view scroll to the correct selectin even while it does has
+	the correct selection.)
+
+	* components/tree/nautilus-tree-view-private.h: Added
+	got_first_size_allocate boolean to details struct.
+	* components/tree/nautilus-tree-view.c:
+	(nautilus_tree_view_initialize): Connect to the size_allocate
+	handler.
+	(ctree_show_node): Convenience function for scrolling a
+	NautilusCTree to show a particular node.
+	(ctree_get_first_selected_node): Convenience function to get the
+	selected node.
+	(tree_select_row_callback): Scroll to the selected node.
+	(size_allocate_callback): Scroll to the selected node, if any, on
+	the first size_allocate only.
+
 2000-11-18 John Fleck <jfleck@inkstain.net:
+
 	components/help/converters/gnome-db2html2/gdb3html.c:
 	changing output of &percnt; entity to &#37; so Mozilla will 
 	recognize it
