@@ -1,5 +1,16 @@
 2000-08-10  J Shane Culpepper  <pepper@eazel.com>
 
+	* src/nautilus-window-private.h:
+	* src/nautilus-window-toolbars.c: (set_up_button),
+	(set_up_toolbar_images), (set_up_toolbar_images_callback),
+	(nautilus_window_initialize_toolbars),
+	(nautilus_window_toolbar_remove_theme_callback):
+	* src/nautilus-window.c: (nautilus_window_destroy):
+
+	Merging fix for Bug #2081 into branch.
+
+2000-08-10  J Shane Culpepper  <pepper@eazel.com>
+
 	* libnautilus-extensions/nautilus-icon-dnd.c: (handle_local_move):
 	Rolling fix for Bug # 2108 to branch. Temporary fix for icon
 	layout.

@@ -283,7 +283,9 @@ find_toolbar_child(GtkToolbar *toolbar, GtkWidget *button)
 /* set up the toolbar info based on the current theme selection from preferences */
 
 static void
-setup_button(GtkWidget* button,  const char *theme_name, const char *icon_name)
+set_up_button (GtkWidget* button,
+	       const char *theme_name,
+	       const char *icon_name)
 {
 	GnomeStock *stock_widget;
 	char *full_name;
@@ -333,22 +335,28 @@ setup_button(GtkWidget* button,  const char *theme_name, const char *icon_name)
 
 
 static void
-setup_toolbar_images(NautilusWindow *window)
+set_up_toolbar_images (NautilusWindow *window)
 {
 	char *theme_name;
 	
 	theme_name = nautilus_theme_get_theme_data ("toolbar", "ICON_THEME");
 
-	setup_button (window->back_button, theme_name, GNOME_STOCK_PIXMAP_BACK);
-	setup_button (window->forward_button, theme_name, GNOME_STOCK_PIXMAP_FORWARD);
-	setup_button (window->up_button, theme_name, GNOME_STOCK_PIXMAP_UP);
-	setup_button (window->home_button, theme_name,  GNOME_STOCK_PIXMAP_HOME);
-	setup_button (window->reload_button, theme_name,  GNOME_STOCK_PIXMAP_REFRESH);
-	setup_button (window->search_local_button, theme_name, GNOME_STOCK_PIXMAP_SEARCH);
-	setup_button (window->search_web_button, theme_name, GNOME_STOCK_PIXMAP_SEARCH);
-	setup_button (window->stop_button, theme_name, GNOME_STOCK_PIXMAP_STOP);
+	set_up_button (window->back_button, theme_name, GNOME_STOCK_PIXMAP_BACK);
+	set_up_button (window->forward_button, theme_name, GNOME_STOCK_PIXMAP_FORWARD);
+	set_up_button (window->up_button, theme_name, GNOME_STOCK_PIXMAP_UP);
+	set_up_button (window->home_button, theme_name,  GNOME_STOCK_PIXMAP_HOME);
+	set_up_button (window->reload_button, theme_name,  GNOME_STOCK_PIXMAP_REFRESH);
+	set_up_button (window->search_local_button, theme_name, GNOME_STOCK_PIXMAP_SEARCH);
+	set_up_button (window->search_web_button, theme_name, GNOME_STOCK_PIXMAP_SEARCH);
+	set_up_button (window->stop_button, theme_name, GNOME_STOCK_PIXMAP_STOP);
 
 	g_free(theme_name);
+}
+
+static void
+set_up_toolbar_images_callback (gpointer callback_data)
+{
+	set_up_toolbar_images (NAUTILUS_WINDOW (callback_data));
 }
 
 /* allocate a new toolbar */
@@ -367,7 +375,7 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 	
 	gnome_app_fill_toolbar_with_data (GTK_TOOLBAR (toolbar), toolbar_info, app->accel_group, app);	
 	remember_buttons(window, toolbar_info);
-	setup_toolbar_images(window);
+	set_up_toolbar_images (window);
 
 	gnome_app_set_toolbar (app, GTK_TOOLBAR (toolbar));
 			
@@ -384,17 +392,19 @@ nautilus_window_initialize_toolbars (NautilusWindow *window)
 	      window);
 
 	/* add callback for preference changes */
-	nautilus_preferences_add_callback(NAUTILUS_PREFERENCES_THEME, 
-						(NautilusPreferencesCallback) setup_toolbar_images, 
-						window);
+	nautilus_preferences_add_callback
+		(NAUTILUS_PREFERENCES_THEME, 
+		 set_up_toolbar_images_callback,
+		 window);
 }
  
 void
-nautilus_window_toolbar_remove_theme_callback (void)
+nautilus_window_toolbar_remove_theme_callback (NautilusWindow *window)
 {
 	nautilus_preferences_remove_callback
 		(NAUTILUS_PREFERENCES_THEME,
-		 (NautilusPreferencesCallback) setup_toolbar_images, NULL);
+		 set_up_toolbar_images_callback,
+		 window);
 }
  
  

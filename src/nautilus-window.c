@@ -472,7 +472,7 @@ nautilus_window_destroy (GtkObject *object)
 	nautilus_window_remove_bookmarks_menu_items (window);
 	nautilus_window_remove_go_menu_callback (window);
 	nautilus_window_remove_go_menu_items (window);
-	nautilus_window_toolbar_remove_theme_callback();
+	nautilus_window_toolbar_remove_theme_callback(window);
 
 	/* Disconnect view signals here so they don't trigger when
 	 * views are destroyed normally.
