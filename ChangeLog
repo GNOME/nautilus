@@ -1,3 +1,27 @@
+2000-07-09  Ian McKellar  <yakk@yakk.net.au>
+
+	* components/services/vault/command-line/Makefile.am:
+	* components/services/vault/command-line/main.c: (valid_ops),
+	(main):
+	* components/services/vault/command-line/vault-operations.c:
+	(vault_list), (make_local_uri), (make_remote_uri), (vault_upload),
+	(vault_download), (vault_move), (vault_delete):
+	* components/services/vault/command-line/vault-operations.h:
+	Beginnings of a command line Vault manipulation tool. Likely to change
+	extensively.
+
+	* libnautilus-extensions/nautilus-mime-actions.h:
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_short_list_methods_for_uri):
+	Added nautilus_mime_get_short_list_methods_for_uri function which
+	returns a list of GnomeVFS methods that can be used to decode a given
+	URI. The current implementation has a hard-coded list because I'm
+	still trying to work out the right place to make this configurable.
+
+	* src/nautilus-window.c: (view_menu_vfs_method_callback),
+	(nautilus_window_load_content_view_menu):
+	Add gnome-vfs methods to the View as menu if appropriate.
+
 2000-07-08  Fatih Demir	<kabalak@gmx.net>
 	
 	* components/html/Makefile.am: Define _VERSION.

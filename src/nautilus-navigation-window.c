@@ -787,10 +787,31 @@ view_menu_choose_view_callback (GtkWidget *widget, gpointer data)
 	nautilus_file_unref (file);
 }
 
+static void
+view_menu_vfs_method_callback (GtkWidget *widget, gpointer data)
+{
+        NautilusWindow *window;
+        //NautilusFile *file;
+	gchar *new_location;
+	gchar *method;
+        
+        g_return_if_fail (GTK_IS_MENU_ITEM (widget));
+        g_return_if_fail (NAUTILUS_IS_WINDOW (gtk_object_get_data (GTK_OBJECT (widget), "window")));
+        
+        window = NAUTILUS_WINDOW (gtk_object_get_data (GTK_OBJECT (widget), "window"));
+        method = (gchar *)(gtk_object_get_data (GTK_OBJECT (widget), "method"));
+	g_return_if_fail (method);
+
+	new_location = g_strdup_printf("%s#%s:/",window->location,method);
+	nautilus_window_goto_uri(window, new_location);
+	g_free(new_location);
+
+}
+
 void
 nautilus_window_load_content_view_menu (NautilusWindow *window)
 {	
-	GList *components;
+	GList *components, *methods;
         GList *p;
         GtkWidget *new_menu;
         GtkWidget *menu_item;
@@ -809,10 +830,27 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
                 gtk_menu_append (GTK_MENU (new_menu), menu_item);
         }
 
+	/* Add a menu item for each GNOME-VFS method for this URI */
+	methods = nautilus_mime_get_short_list_methods_for_uri(window->location);
+	for (p = methods; p != NULL; p = p->next) {
+		gchar *label = g_strdup_printf(_("View as %s..."), (gchar *)p->data);
+		menu_item = gtk_menu_item_new_with_label (label);
+		g_free(label);
+
+        	gtk_object_set_data (GTK_OBJECT (menu_item), "window", window);
+        	gtk_object_set_data (GTK_OBJECT (menu_item), "method", (gchar *)p->data);
+        	gtk_signal_connect (GTK_OBJECT (menu_item),
+        		    	"activate",
+        		    	GTK_SIGNAL_FUNC (view_menu_vfs_method_callback),
+        		    	NULL);
+       		gtk_widget_show (menu_item);
+       		gtk_menu_append (GTK_MENU (new_menu), menu_item);
+	}
+
         /* Add "View as Other..." extra bonus choice, with separator before it.
          * Leave separator out if there are no viewers in menu by default. 
          */
-        if (components != NULL) {
+        if (components != NULL || methods != NULL) {
 	        menu_item = gtk_menu_item_new ();
 	        gtk_widget_show (menu_item);
 	        gtk_menu_append (GTK_MENU (new_menu), menu_item);
@@ -829,7 +867,7 @@ nautilus_window_load_content_view_menu (NautilusWindow *window)
         		    NULL);
        	gtk_widget_show (menu_item);
        	gtk_menu_append (GTK_MENU (new_menu), menu_item);
-        
+
         /* We create and attach a new menu here because adding/removing
          * items from existing menu screws up the size of the option menu.
          */

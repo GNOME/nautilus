@@ -35,6 +35,7 @@ OAF_ServerInfo *         nautilus_mime_get_default_component_for_uri            
 gboolean                 nautilus_mime_is_default_component_for_uri_user_chosen   (const char             *uri);
 GList *                  nautilus_mime_get_short_list_applications_for_uri        (const char             *uri);
 GList *                  nautilus_mime_get_short_list_components_for_uri          (const char             *uri);
+GList *                  nautilus_mime_get_short_list_methods_for_uri             (const char             *uri);
 GList *                  nautilus_mime_get_all_applications_for_uri               (const char             *uri);
 GList *                  nautilus_mime_get_all_components_for_uri                 (const char             *uri);
 gboolean                 nautilus_mime_has_any_components_for_uri                 (const char             *uri);

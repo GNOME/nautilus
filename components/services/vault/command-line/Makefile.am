@@ -19,6 +19,7 @@ bin_PROGRAMS =								\
 
 eazel_vault_SOURCES =							\
 	main.c								\
+	vault-operations.c						\
 	$(NULL)
 
 eazel_vault_LDFLAGS =							\

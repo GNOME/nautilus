@@ -545,6 +545,26 @@ nautilus_mime_get_short_list_components_for_uri (const char *uri)
 }
 
 GList *
+nautilus_mime_get_short_list_methods_for_uri (const char *uri)
+{
+	gchar *mime_type = get_mime_type_from_uri (uri);
+
+	/* FIXME - load these mappings from gnome-vfs and/or a config file */
+
+	if (!strcmp(mime_type, "application/x-gzip"))
+		return g_list_append(NULL, "gzip");
+
+	if (!strcmp(mime_type, "application/x-bzip"))
+		return g_list_append(NULL, "bzip2");
+
+	if (!strcmp(mime_type, "application/zip"))
+		return g_list_append(NULL, "zip");
+
+	return NULL;
+}
+
+
+GList *
 nautilus_mime_get_all_applications_for_uri (const char *uri)
 {
 	char *mime_type;
