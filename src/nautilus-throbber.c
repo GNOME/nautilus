@@ -53,10 +53,7 @@ struct NautilusThrobberDetails {
 	GdkPixbuf *quiescent_pixbuf;
 	
 	int	max_frame;
-	int	current_frame;
-	int	last_frame_time;
-	int	frame_time_increment;
-	
+	int	current_frame;	
 	int	timer_task;
 };
 
@@ -136,7 +133,6 @@ nautilus_throbber_initialize (NautilusThrobber *throbber)
 	throbber->details = g_new0 (NautilusThrobberDetails, 1);
 	
 	/* set up the instance variables to appropriate defaults */
-	throbber->details->frame_time_increment = 100;
 	throbber->details->timer_task = -1;
 	
 	/* allocate the pixmap that holds the image */
@@ -348,8 +344,6 @@ nautilus_throbber_load_images (NautilusThrobber *throbber)
 	while (TRUE) {
 		throbber_frame_name = make_throbber_frame_name (index);
 		pixbuf = load_themed_image (throbber_frame_name);
-		if (pixbuf != NULL)
-			g_message ("loaded %s!", throbber_frame_name);
 		g_free (throbber_frame_name);
 		if (pixbuf == NULL)
 			break;
@@ -369,7 +363,6 @@ nautilus_throbber_button_press_event (GtkWidget *widget, GdkEventButton *event)
 	/*	
 	NautilusThrobber *throbber = NAUTILUS_THROBBER (widget);  
 	*/
-	g_message ("clicked!");
 	return TRUE;
 }
 
