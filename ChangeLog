@@ -1,3 +1,11 @@
+2000-07-07  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(load_specific_image), (nautilus_icon_factory_make_thumbnails):
+	made it load custom icons for remote files, by using nautilus_gdk_pixbuf_load
+	instead of gdk_pixbuf_new_from_file in load_specific_image.  Also, made 
+	thumbnailing of svg files work by testing for the case and handling it in make_thumbnails.
+	
 2000-07-06  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-property-browser.c: (make_drag_image),
@@ -28,7 +36,7 @@
 	(impl_Nautilus_HistoryFrame__destroy),
 	(impl_Nautilus_HistoryFrame__create),
 	(impl_Nautilus_HistoryFrame_get_history_list):
-	New files that imliments the functionality of the 
+	New files that implements the functionality of the 
 	Nautilus::HistoryFrame.
 
 	* components/history/nautilus-history-view.c:

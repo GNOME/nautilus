@@ -1389,7 +1389,6 @@ load_specific_image_svg (const char *path, guint size_in_pixels)
 	if (f == NULL) {
 		return NULL;
 	}
-	/* nominal vector icon is twice the size of nominal bitmap, so scale it down here */
 	result = rsvg_render_file (f, size_in_pixels *
 				   (1.0 / NAUTILUS_ICON_SIZE_STANDARD));
 	fclose (f);
@@ -1427,6 +1426,8 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 		     ArtIRect *text_rect)
 {
 	char *image_path;
+	GdkPixbuf *pixbuf;
+	
 	g_assert (text_rect != NULL);
 
 	if (custom) {
@@ -1434,21 +1435,20 @@ load_specific_image (NautilusScalableIcon *scalable_icon,
 
 		memset (text_rect, 0, sizeof (*text_rect));
 
-		/* FIXME bugzilla.eazel.com 643: This works only with
-		 * file:// images, because there's no convenience
-		 * function for loading an image with gnome-vfs and
-		 * gdk-pixbuf. And there's the same problem with the
-		 * rsvg_render_file library.
+		/* FIXME bugzilla.eazel.com 643: we can't load svgs asynchronously, so this
+		 *  only works for local files
 		 */
-		image_path = nautilus_get_local_path_from_uri (scalable_icon->uri);
-		if (image_path != NULL) {
-			if (path_represents_svg_image (image_path)) {
-				return load_specific_image_svg (image_path, size_in_pixels);
-			}
-			if (size_in_pixels == NAUTILUS_ICON_SIZE_STANDARD) {
-				return gdk_pixbuf_new_from_file (image_path);
-			}
-			g_free(image_path);
+		
+		/* we use the suffix instead of mime-type here since it may be non-local */	
+		if (nautilus_str_has_suffix (scalable_icon->uri, ".svg")) {
+			image_path = nautilus_get_local_path_from_uri (scalable_icon->uri);		
+			pixbuf = load_specific_image_svg (image_path, size_in_pixels);
+			g_free (image_path);
+			return pixbuf;
+		}
+		
+		if (size_in_pixels == NAUTILUS_ICON_SIZE_STANDARD && scalable_icon->uri != NULL) {
+			return nautilus_gdk_pixbuf_load (scalable_icon->uri);
 		}
 		
 		return NULL;
@@ -2348,7 +2348,6 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 	GList *next_thumbnail = factory->thumbnails;
 	
 	/* if the queue is empty, there's nothing more to do */
-	
 	if (next_thumbnail == NULL) {
 		gtk_timeout_remove (factory->timeout_task_id);
 		factory->timeout_task_id = 0;
@@ -2374,11 +2373,26 @@ nautilus_icon_factory_make_thumbnails (gpointer data)
 		/* fork a task to make the thumbnail, using gdk-pixbuf to do the scaling */
 		if (!(thumbnail_pid = fork())) {
 			GdkPixbuf* full_size_image;
+			NautilusFile *file;
 			char *thumbnail_path;
 			
-			thumbnail_path = nautilus_get_local_path_from_uri (info->thumbnail_uri);
-			full_size_image = gdk_pixbuf_new_from_file (thumbnail_path);
-			g_free (thumbnail_path);
+			file = nautilus_file_get (info->thumbnail_uri);
+			full_size_image = NULL;
+
+			if (nautilus_file_is_mime_type (file, "image/svg")) {
+				thumbnail_path = nautilus_get_local_path_from_uri (info->thumbnail_uri);
+				if (thumbnail_path != NULL) {
+					FILE *f = fopen (thumbnail_path, "rb");
+					if (f != NULL) {
+						full_size_image = rsvg_render_file (f, 1.0);
+						fclose (f);
+					}
+				}
+			} else  {
+				if (info->thumbnail_uri != NULL)
+					full_size_image = nautilus_gdk_pixbuf_load (info->thumbnail_uri);						
+			}
+			nautilus_file_unref (file);
 			
 			if (full_size_image != NULL) {
 				GdkPixbuf *scaled_image, *framed_image;
