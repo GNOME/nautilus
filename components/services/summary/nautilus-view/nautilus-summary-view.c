@@ -109,6 +109,7 @@ generate_summary_form (NautilusSummaryView	*view)
 	GtkWidget	*frame;
 	GtkTable	*parent;
 	GtkWidget	*title;
+	GtkWidget	*small_title;
 	GtkWidget	*temp_box;
 	GtkWidget	*temp_hbox;
 	GtkWidget	*temp_icon;
@@ -202,8 +203,14 @@ generate_summary_form (NautilusSummaryView	*view)
 			  GTK_FILL | GTK_EXPAND,
 			  0, 0);
 
-	/* create the parent login box and a table to hold the labels and text entries */
+	/* create the parent login box  */
 	temp_box = gtk_vbox_new (FALSE, 0);
+
+	/* setup the title */
+	title = create_summary_service_large_grey_header_widget ("Options");
+	gtk_box_pack_start (GTK_BOX (temp_box), title, FALSE, FALSE, 0);
+	gtk_widget_show (title);
+
 	login_table = GTK_TABLE (gtk_table_new (4, 2, TRUE));
 
 	/* username label */
@@ -295,6 +302,16 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* create the parent service news box and a table to hold the data */
 	temp_box = gtk_vbox_new (FALSE, 0);
+	/* setup the large grey header */
+	title = create_summary_service_large_grey_header_widget ("Eazel News and Updates");
+	gtk_box_pack_start (GTK_BOX (temp_box), title, FALSE, FALSE, 0);
+	gtk_widget_show (title);
+
+	/* setup the small grey header */
+	small_title = create_summary_service_small_grey_header_widget ("Service News");
+	gtk_box_pack_start (GTK_BOX (temp_box), small_title, FALSE, FALSE, 0);
+	gtk_widget_show (small_title);
+
 	service_news_table = GTK_TABLE (gtk_table_new (4, 2, FALSE));
 
 	/* Generate first column with fake icon */
@@ -333,6 +350,12 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* create the parent login box and a table to hold the labels and text entries */
 	temp_box = gtk_vbox_new (FALSE, 0);
+
+	/* setup the small grey header */
+	small_title = create_summary_service_small_grey_header_widget ("Software Updates");
+	gtk_box_pack_start (GTK_BOX (temp_box), small_title, FALSE, FALSE, 0);
+	gtk_widget_show (small_title);
+
 	updates_table = GTK_TABLE (gtk_table_new (4, 3, FALSE));
 
 	/* Generate first column with fake icon */

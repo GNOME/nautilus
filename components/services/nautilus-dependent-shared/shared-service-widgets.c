@@ -193,7 +193,7 @@ create_summary_service_title_top_widget (const char *login_status_text)
 
 	filler_image = create_image_widget (NULL, "service-summary-large-teal-section.png");
 
-	label = create_label_widget (login_status_text, 20, "service-summary-large-teal-section.png", 10, 0, 0, -4);
+	label = create_label_widget (login_status_text, 20, "service-summary-large-teal-section.png", 10, 0, 0, -1);
 
         nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", "bold", NULL, NULL);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 18);
@@ -228,7 +228,7 @@ create_summary_service_title_bottom_widget (const char *section_title)
 
 	filler_image = create_image_widget (NULL, "service-summary-large-grey-section.png");
 
-	label = create_label_widget (section_title, 20, "service-summary-large-grey-section.png", 10, 0, 0, -4);
+	label = create_label_widget (section_title, 20, "service-summary-large-grey-section.png", 10, 0, 0, -1);
 
         nautilus_label_set_font_from_components (NAUTILUS_LABEL (label), "helvetica", "bold", NULL, NULL);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 18);
@@ -276,6 +276,60 @@ create_services_header_widget (const char	*left_text,
 	gtk_box_pack_start (GTK_BOX (title_hbox), left_label, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (title_hbox), filler_image, TRUE, TRUE, 0);
 	gtk_box_pack_end (GTK_BOX (title_hbox), right_label, FALSE, FALSE, 0);
+
+	return title_hbox;
+
+}
+
+/* utility routine to create a large grey section header */
+
+GtkWidget*
+create_summary_service_large_grey_header_widget (const char	*right_text)
+{
+	GtkWidget	*title_hbox;
+	GtkWidget	*right_label;
+	GtkWidget	*filler_image;
+
+	g_assert (right_text != NULL);
+
+	title_hbox = gtk_hbox_new (FALSE, 0);
+
+	filler_image = create_image_widget (NULL, "service-summary-large-grey-section.png");
+
+	right_label = create_label_widget (right_text, 18, "service-summary-large-grey-section.png", 10, 0, 0, -1);
+
+	gtk_widget_show (filler_image);
+	gtk_widget_show (right_label);
+
+	gtk_box_pack_start (GTK_BOX (title_hbox), filler_image, TRUE, TRUE, 0);
+	gtk_box_pack_end (GTK_BOX (title_hbox), right_label, FALSE, FALSE, 0);
+
+	return title_hbox;
+
+}
+
+/* utility routine to create a small grey section header */
+
+GtkWidget*
+create_summary_service_small_grey_header_widget (const char	*left_text)
+{
+	GtkWidget	*title_hbox;
+	GtkWidget	*left_label;
+	GtkWidget	*filler_image;
+
+	g_assert (left_text != NULL);
+
+	title_hbox = gtk_hbox_new (FALSE, 0);
+
+	left_label = create_label_widget (left_text, 12, "service-summary-short-grey-section.png", 10, 0, 0, -1);
+
+	filler_image = create_image_widget (NULL, "service-summary-short-grey-section.png");
+
+	gtk_widget_show (left_label);
+	gtk_widget_show (filler_image);
+
+	gtk_box_pack_start (GTK_BOX (title_hbox), left_label, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (title_hbox), filler_image, TRUE, TRUE, 0);
 
 	return title_hbox;
 
