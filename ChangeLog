@@ -1,3 +1,35 @@
+2000-12-08  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_initialize): Added FIXME about hard-coded
+	font and size.
+	(nautilus_icon_container_start_renaming_selected_item): Fix bug
+	5078 by removing useless empty signal handlers.
+	(end_renaming_mode): Fix bug 5079 by merging the remaining code
+	from the old hide_rename_widget in after deleting some of it.
+	This is more parallel with the start renaming function.
+	* libnautilus-extensions/nautilus-icon-private.h: Removed the
+	unused rename_editable field.
+	
+	* libnautilus-extensions/nautilus-icon-text-item.c:
+	(iti_stop_editing): Now that the strange "persistent" editable is
+	no longer used, restore the code used to destroy the editable when
+	not editing. This also fixes a storage leak.
+	(nautilus_icon_text_item_get_text): Change return type to const
+	char * to make it clear it's not free-able.
+	(nautilus_icon_text_item_get_renaming_editable): Change the
+	return type to GtkEditable *.
+	* libnautilus-extensions/nautilus-icon-text-item.h: Change
+	return types of get_text and get_renaming_editable.
+	
+	* src/file-manager/fm-directory-view.c: (queue_pending_files),
+	(filtering_changed_callback): Added FIXMEs about special cases
+	for the desktop.
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_begin_loading):
+	Improved wording of a comment.
+
 2000-12-08  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-property-browser.c:

@@ -148,8 +148,7 @@ struct NautilusIconContainerDetails {
 	/* Renaming Details */
 	gboolean renaming;
 	NautilusIconTextItem *rename_widget;	/* Editable text item */
-        GtkWidget *rename_editable;             /* Copy of the rename editable for clipboard pastes */
-	gchar *original_text;			/* Copy of editable text for later compare */
+	char *original_text;			/* Copy of editable text for later compare */
 
 	/* typeahead selection state */
 	TypeSelectState *type_select_state;

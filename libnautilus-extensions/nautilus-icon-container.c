@@ -123,8 +123,6 @@ static void          icon_destroy                             (NautilusIconConta
 static void          end_renaming_mode                        (NautilusIconContainer      *container,
 							       gboolean                    commit);
 static NautilusIcon *get_icon_being_renamed 		      (NautilusIconContainer 	  *container);
-static void          hide_rename_widget                       (NautilusIconContainer      *container,
-							       NautilusIcon               *icon);
 static void          finish_adding_new_icons                  (NautilusIconContainer      *container);
 static void          update_label_color                       (NautilusBackground         *background,
 							       NautilusIconContainer      *icon_container);
@@ -3123,33 +3121,6 @@ nautilus_icon_container_initialize_class (NautilusIconContainerClass *class)
 	stipple = gdk_bitmap_create_from_data (NULL, stipple_bits, 2, 2);
 }
 
-/* Handler for the editing_started signal of an icon text item.  We block the
- * event handler so that it will not be called while the text is being edited.
- */
- 
-static void
-editing_started (NautilusIconTextItem *text_item, gpointer data)
-{
-	NautilusIconContainer *container;
-	NautilusIconContainerDetails *details;
-
-	container = (NautilusIconContainer *)data;
-	details = container->details;
-}
-
-/* Handler for the editing_stopped signal of an icon text item.  We unblock the
- * event handler so that we can get events from it again.
- */
-static void
-editing_stopped (NautilusIconTextItem *text_item, gpointer data)
-{
-	NautilusIconContainer *container;
-	NautilusIconContainerDetails *details;
-
-	container = (NautilusIconContainer *)data;
-	details = container->details;
-}
-
 static void
 handle_focus_out_event (GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
 {
@@ -3168,6 +3139,8 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
  
  	/* font table - this isn't exactly proportional, but it looks better than computed */
+	/* FIXME bugzilla.eazel.com 5093: Font name is hard-coded here. */
+	/* FIXME bugzilla.eazel.com 5101: Font size is hard-coded here. */
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = nautilus_font_factory_get_font_by_family ("helvetica", 8);
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = nautilus_font_factory_get_font_by_family ("helvetica", 8);
         details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = nautilus_font_factory_get_font_by_family ("helvetica", 10);
@@ -3178,6 +3151,7 @@ nautilus_icon_container_initialize (NautilusIconContainer *container)
 
         details->smooth_label_font = nautilus_scalable_font_get_default_font ();
 
+	/* FIXME bugzilla.eazel.com 5101: Font size is hard-coded here. */
         details->smooth_font_size[NAUTILUS_ZOOM_LEVEL_SMALLEST] = 8;
         details->smooth_font_size[NAUTILUS_ZOOM_LEVEL_SMALLER] = 8;
         details->smooth_font_size[NAUTILUS_ZOOM_LEVEL_SMALL] = 10;
@@ -4636,7 +4610,7 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 
 	/* Create text renaming widget, if it hasn't been created already.
 	   We deal with the broken icon text item widget by keeping it around
-	   so its contents can still be cut and pasted as part of the clipboard */	
+	   so its contents can still be cut and pasted as part of the clipboard */
 	g_assert (details->rename_widget == NULL);
 	details->rename_widget = NAUTILUS_ICON_TEXT_ITEM
 		(gnome_canvas_item_new (gnome_canvas_root (GNOME_CANVAS (container)),
@@ -4662,22 +4636,11 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 		 editable_text,	        /* text */
 		 TRUE);		        /* allocate local copy */
 
-	/* FIXME bugzilla.eazel.com 5078:  These callbacks don't have any side effects.
-	   They should be removed */
-	/* Set up the signals */
-	gtk_signal_connect (GTK_OBJECT (details->rename_widget), "editing_started",
-			    GTK_SIGNAL_FUNC (editing_started), container);
-	gtk_signal_connect (GTK_OBJECT (details->rename_widget), "editing_stopped",
-			    GTK_SIGNAL_FUNC (editing_stopped), container);
-	
 	nautilus_icon_text_item_start_editing (details->rename_widget);
 	nautilus_icon_container_update_icon (container, icon);
 	gtk_signal_emit (GTK_OBJECT (container),
 			 signals[RENAMING_ICON],
 			 nautilus_icon_text_item_get_renaming_editable (details->rename_widget));
-
-
-
 	
 	/* We are in renaming mode */
 	details->renaming = TRUE;
@@ -4688,7 +4651,7 @@ static void
 end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 {
 	NautilusIcon *icon;
-	char *changed_text;
+	const char *changed_text;
 
 	set_pending_icon_to_rename (container, NULL);
 
@@ -4700,7 +4663,6 @@ end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 	if (commit) {						
 		/* Verify that text has been modified before signalling change. */			
 		changed_text = nautilus_icon_text_item_get_text (container->details->rename_widget);
-		
 		if (strcmp (container->details->original_text, changed_text) != 0) {			
 			gtk_signal_emit (GTK_OBJECT (container),
 					 signals[ICON_TEXT_CHANGED],
@@ -4709,31 +4671,13 @@ end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 		}
 	}
 	
-	hide_rename_widget (container, icon);
-}
-
-/* FIXME bugzilla.eazel.com 5079: We're not exactly hiding this widget, 
-   we're destroying it!
-   Perhaps hide_rename_widget isn't the right name */
-static void
-hide_rename_widget (NautilusIconContainer *container, NautilusIcon *icon)
-{
 	nautilus_icon_text_item_stop_editing (container->details->rename_widget, TRUE);
 
-
-	/* Destroy the old persistent rename editable */
-	if (container->details->rename_editable) {
-		gtk_object_destroy (GTK_OBJECT (container->details->rename_editable));
-	}
-	container->details->rename_editable = 
-		nautilus_icon_text_item_get_renaming_editable (container->details->rename_widget);
-	/* Destroy renaming widget */
 	gtk_object_destroy (GTK_OBJECT (container->details->rename_widget));
 	container->details->rename_widget = NULL;
 
-
 	g_free (container->details->original_text);
-	
+
 	/* We are not in renaming mode */
 	container->details->renaming = FALSE;
 	nautilus_icon_canvas_item_set_renaming (icon->item, FALSE);		

@@ -815,9 +815,9 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	/* kill any sound preview process that is ongoing */
 	preview_sound (NULL, FALSE);
 	
-	/* FIXME bugzilla.eazel.com 5060: this should be done with a virtual function, not
-           hardcoding knowledge about a subclass into the parent class. */
-
+	/* FIXME bugzilla.eazel.com 5060: Should use methods instead
+	 * of hardcoding desktop knowledge in here.
+	 */
 	if (FM_IS_DESKTOP_ICON_VIEW (view)) {
 		nautilus_connect_desktop_background_to_file_metadata (icon_container, file);
 	} else {

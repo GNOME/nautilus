@@ -10,6 +10,7 @@
 #ifndef NAUTILUS_ICON_TEXT_ITEM_H
 #define NAUTILUS_ICON_TEXT_ITEM_H
 
+#include <gtk/gtkeditable.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnomeui/gnome-canvas.h>
 #include <libgnomeui/gnome-icon-text.h>
@@ -69,26 +70,27 @@ typedef struct {
 	void (* selection_stopped)  (NautilusIconTextItem *item);
 } NautilusIconTextItemClass;
 
-GtkType         nautilus_icon_text_item_get_type              (void);
-void            nautilus_icon_text_item_configure             (NautilusIconTextItem *item,
-								int                   x,
-								int                   y,
-								int                   width,
-								GdkFont              *font,
-								const char           *text,
-								gboolean              is_static);
-void            nautilus_icon_text_item_setxy                 (NautilusIconTextItem *item,
-							       int                   x,
-							       int                   y);
-void            nautilus_icon_text_item_select                (NautilusIconTextItem *item,
-							       int                   sel);
-void            nautilus_icon_text_item_set_text              (NautilusIconTextItem *item,
-							       const char           *text);
-char    *       nautilus_icon_text_item_get_text              (NautilusIconTextItem *item);
-void            nautilus_icon_text_item_start_editing         (NautilusIconTextItem *item);
-void            nautilus_icon_text_item_stop_editing          (NautilusIconTextItem *item,
-							       gboolean              accept);
-void	        nautilus_icon_text_item_get_margins           (int *x, int *y);
-GtkWidget *     nautilus_icon_text_item_get_renaming_editable (NautilusIconTextItem *item);
+GtkType      nautilus_icon_text_item_get_type              (void);
+void         nautilus_icon_text_item_configure             (NautilusIconTextItem *item,
+							    int                   x,
+							    int                   y,
+							    int                   width,
+							    GdkFont              *font,
+							    const char           *text,
+							    gboolean              is_static);
+void         nautilus_icon_text_item_setxy                 (NautilusIconTextItem *item,
+							    int                   x,
+							    int                   y);
+void         nautilus_icon_text_item_select                (NautilusIconTextItem *item,
+							    int                   sel);
+void         nautilus_icon_text_item_set_text              (NautilusIconTextItem *item,
+							    const char           *text);
+const char * nautilus_icon_text_item_get_text              (NautilusIconTextItem *item);
+void         nautilus_icon_text_item_start_editing         (NautilusIconTextItem *item);
+void         nautilus_icon_text_item_stop_editing          (NautilusIconTextItem *item,
+							    gboolean              accept);
+void         nautilus_icon_text_item_get_margins           (int                  *x,
+							    int                  *y);
+GtkEditable *nautilus_icon_text_item_get_renaming_editable (NautilusIconTextItem *item);
 
 #endif /* NAUTILUS_ICON_TEXT_ITEM_H */

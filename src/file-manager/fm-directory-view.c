@@ -1831,6 +1831,9 @@ queue_pending_files (FMDirectoryView *view,
 	GList *filtered_files;
 
 	/* Desktop always filters out hidden files */
+	/* FIXME bugzilla.eazel.com 5060: Should use methods instead
+	 * of hardcoding desktop knowledge in here.
+	 */
 	if (FM_IS_DESKTOP_ICON_VIEW (view)) {
 		view->details->show_hidden_files = FALSE;
 		view->details->show_backup_files = FALSE;
@@ -3946,6 +3949,9 @@ filtering_changed_callback (gpointer callback_data)
 	directory_view = FM_DIRECTORY_VIEW (callback_data);
 
 	/* Hidden files are never shown on the desktop */
+	/* FIXME bugzilla.eazel.com 5060: Should use methods instead
+	 * of hardcoding desktop knowledge in here.
+	 */
 	if (FM_IS_DESKTOP_ICON_VIEW (directory_view)) {
 		directory_view->details->show_hidden_files = FALSE;
 		directory_view->details->show_backup_files = FALSE;

@@ -114,6 +114,10 @@ iti_stop_editing (Iti *iti)
 
 	iti->editing = FALSE;
 
+	gtk_widget_destroy (priv->entry_top);
+	priv->entry = NULL;
+	priv->entry_top = NULL;
+
 	priv->need_state_update = TRUE;
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (iti));
 
@@ -1390,7 +1394,7 @@ nautilus_icon_text_item_set_text (NautilusIconTextItem *iti, const char *text)
  * Returns the current text string in an icon text item.  The client should not
  * free this string, as it is internal to the icon text item.
  */
-char *
+const char *
 nautilus_icon_text_item_get_text (NautilusIconTextItem *iti)
 {
 	ItiPrivate *priv;
@@ -1444,7 +1448,7 @@ nautilus_icon_text_item_start_editing (NautilusIconTextItem *iti)
  **/
 void
 nautilus_icon_text_item_stop_editing (NautilusIconTextItem *iti,
-				   gboolean accept)
+				      gboolean accept)
 {		
 	ItiPrivate *priv;
 	
@@ -1516,14 +1520,13 @@ nautilus_icon_text_item_get_margins (int *x, int *y)
  * @GtkEditable *
  * Return the editable widget doing the renaming
  **/
-GtkWidget *
+GtkEditable *
 nautilus_icon_text_item_get_renaming_editable (NautilusIconTextItem *item)
 {
 	ItiPrivate *priv;
-	
-	priv = item->priv;
 
-	return GTK_WIDGET (priv->entry);
+	priv = item->priv;
+	return GTK_EDITABLE (priv->entry);
 }
 					      
 
