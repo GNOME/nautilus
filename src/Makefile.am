@@ -136,6 +136,7 @@ CLEANFILES = \
 	$(NULL)
 
 EXTRA_DIST = \
+	check-nautilus \
 	nautilus-shell-interface.idl		\
 	$(oaf_DATA)				\
 	run-nautilus				\
