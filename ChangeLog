@@ -1,3 +1,41 @@
+2001-02-15  Michael K. Fleming  <mfleming@eazel.com>
+
+	reviewed by: <darin@eazel.com>
+
+	Part of 2057: URI's with fragments behave oddly
+
+	* libnautilus-extensions/nautilus-file-utilities.c:
+	(nautilus_format_uri_for_display), (uris_match),
+	(nautilus_uris_match), (nautilus_uris_match_ignore_fragments),
+	(nautilus_self_check_file_utilities):
+	* libnautilus-extensions/nautilus-file-utilities.h:
+
+	nautilus_format_uri_for_display returns "file:" URI's if the URI
+	in question has a fragment, other file: URI's get translated into paths
+	Also no longer calls the evil gnome_vfs_unescape_string_for_display (see
+	bug 6694)
+
+	Also fixes bug 6722: re-entering search query results in location bar
+	results in error dialog
+
+	Added nautilus_uris_match_ignore_fragments function which strips
+	fragments before comparing.  Also added test cases.
+
+	* components/tree/nautilus-tree-view.c:
+	(got_activation_uri_callback):
+	* src/nautilus-window-manage-views.c:
+	(viewed_file_changed_callback):
+
+	Fixed two locations that made the implicit assumption that
+	nautilus_file_get_uri should return a URI that's directly comparable
+	to the current navigation location.  Other cases may still lurk.
+
+	* src/nautilus-window-menus.c:
+
+	A few calls to gnome_vfs_get_local_path_from_uri that should have
+	been gnome_vfs_get_uri_from_local_path.  Eliminating dumb behaviour
+	in gnome_vfs_get_local_path_from_uri exposed them.
+
 2001-02-20  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Gene Ragan <gzr@eazel.com>

@@ -463,8 +463,11 @@ viewed_file_changed_callback (NautilusFile *file,
 	} else {
                 new_location = nautilus_file_get_uri (file);
 
-                /* if the file was renamed, update location and/or title */
-                if (!nautilus_uris_match (new_location, window->details->location)) {
+                /* if the file was renamed, update location and/or title
+                 * ignore fragments in this comparison, because NautilusFile doesn't track the fragment
+                 * we're currently viewing
+                 */
+                if (!nautilus_uris_match_ignore_fragments (new_location, window->details->location)) {
                         g_free (window->details->location);
                         window->details->location = new_location;
                         

@@ -854,12 +854,12 @@ get_static_bookmarks_file_path (void)
 	}
 	
 	/* both files exist, so use the one with the most recent mod-date */
-	update_uri = gnome_vfs_get_local_path_from_uri (update_xml_file_path);
+	update_uri = gnome_vfs_get_uri_from_local_path (update_xml_file_path);
 	update_info = gnome_vfs_file_info_new ();
 	gnome_vfs_get_file_info (update_uri, update_info, GNOME_VFS_FILE_INFO_DEFAULT);
 	g_free (update_uri);
 	
-	built_in_uri = gnome_vfs_get_local_path_from_uri (built_in_xml_file_path);
+	built_in_uri = gnome_vfs_get_uri_from_local_path (built_in_xml_file_path);
 	built_in_info = gnome_vfs_file_info_new ();
 	gnome_vfs_get_file_info (built_in_uri, built_in_info, GNOME_VFS_FILE_INFO_DEFAULT);
 	g_free (built_in_uri);

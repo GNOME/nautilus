@@ -48,6 +48,8 @@ gboolean                nautilus_uri_is_in_trash              (const char       
 char *                  nautilus_make_uri_canonical           (const char                *uri);
 gboolean                nautilus_uris_match                   (const char                *uri_1,
 							       const char                *uri_2);
+gboolean                nautilus_uris_match_ignore_fragments  (const char                *uri_1,
+							       const char                *uri_2);
 char *                  nautilus_uri_get_basename             (const char                *uri);
 char *                  nautilus_uri_get_scheme               (const char                *uri);
 

@@ -1073,6 +1073,10 @@ nautilus_tree_view_load_uri (NautilusTreeView *view,
 	g_free (view->details->current_main_view_uri);
 	view->details->current_main_view_uri = g_strdup (canonical_uri);
 
+	/* FIXME 6801 it seems likely that either nautilus_uris_match 
+	 * or nautilus_uris_match_ignore_fragments
+	 * should be used here
+	 */
 	if (nautilus_strcmp (canonical_uri, view->details->selected_uri) == 0) {
 		g_free (canonical_uri);
 		return;
@@ -1235,7 +1239,7 @@ got_activation_uri_callback (NautilusFile *file,
 		uri = nautilus_file_get_activation_uri (file);
 		
 		if (uri != NULL &&
-		    nautilus_strcmp (view->details->current_main_view_uri, uri) != 0 &&
+		    !nautilus_uris_match_ignore_fragments (view->details->current_main_view_uri, uri) &&
 		    strncmp (uri, "command:", strlen ("command:")) != 0) {
 			nautilus_view_open_location_in_this_window 
 				(NAUTILUS_VIEW (view->details->nautilus_view), uri);
