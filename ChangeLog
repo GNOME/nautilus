@@ -1,5 +1,13 @@
 2003-02-08  Dave Camp  <dave@ximian.com>
 
+	* components/notes/Nautilus_View_notes.server.in.in: Removed
+	view_as_name so this isn't chosen as a content view.
+	* components/image_properties/Nautilus_View_image_properties.server
+	.in.in: Removed the Nautilus::View interface (it isn't implemented
+	any more), removed the view_as_name.  Fixes #102790.
+
+2003-02-08  Dave Camp  <dave@ximian.com>
+
 	* libnautilus-private/nautilus-dnd.c:
 	(nautilus_drag_drop_action_ask),
 	(nautilus_drag_drop_background_ask):
