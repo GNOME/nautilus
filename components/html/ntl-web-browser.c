@@ -381,13 +381,15 @@ static void
 browser_select_url(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
 {
   Nautilus_SelectionRequestInfo si;
+  Nautilus_StatusRequestInfo sri;
   char *real_url = NULL;
 
   memset(&si, 0, sizeof(si));
+  memset(&sri, 0, sizeof(sri));
   if(url && !bi->prevsel)
     {
       si.selected_uris._length = 1;
-      real_url = canonicalize_url(url, bi->base_target_url);
+      sri.status_string = real_url = canonicalize_url(url, bi->base_target_url);
       si.selected_uris._buffer = &real_url;
     }
   else if(!url && bi->prevsel)
@@ -396,6 +398,8 @@ browser_select_url(GtkWidget *htmlw, const char *url, BrowserInfo *bi)
     }
 
   nautilus_view_frame_request_selection_change(bi->view_frame, &si);
+  if(sri.status_string)
+    nautilus_view_frame_request_status_change(bi->view_frame, &sri);
   g_free(real_url);
   bi->prevsel = url?1:0;
 }
