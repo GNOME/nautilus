@@ -31,16 +31,16 @@ LDADD =\
 noinst_PROGRAMS =\
 	test-nautilus-async-activation \
 	test-nautilus-background \
+	test-nautilus-clickable-image \
 	test-nautilus-font \
 	test-nautilus-font-picker \
 	test-nautilus-font-simple \
 	test-nautilus-image \
 	test-nautilus-image-background \
-	test-nautilus-clickable-image \
 	test-nautilus-image-scrolled \
 	test-nautilus-image-simple \
-	test-nautilus-image-tile \
 	test-nautilus-image-table \
+	test-nautilus-image-tile \
 	test-nautilus-label \
 	test-nautilus-label-background \
 	test-nautilus-label-flavorful \
@@ -57,6 +57,7 @@ noinst_PROGRAMS =\
 	test-nautilus-preferences-display \
 	test-nautilus-smooth-graphics \
 	test-nautilus-widgets \
+	test-nautilus-wrap-table \
 	$(NULL)
 
 test_nautilus_async_activation_SOURCES = test-nautilus-async-activation.c
@@ -67,9 +68,9 @@ test_nautilus_font_picker_SOURCES = test-nautilus-font-picker.c
 test_nautilus_font_simple_SOURCES = test-nautilus-font-simple.c test.c
 test_nautilus_image_SOURCES = test-nautilus-image.c
 test_nautilus_image_background_SOURCES = test-nautilus-image-background.c test.c
-test_nautilus_image_table_SOURCES = test-nautilus-image-table.c test.c
 test_nautilus_image_scrolled_SOURCES = test-nautilus-image-scrolled.c test.c
 test_nautilus_image_simple_SOURCES = test-nautilus-image-simple.c
+test_nautilus_image_table_SOURCES = test-nautilus-image-table.c test.c
 test_nautilus_image_tile_SOURCES = test-nautilus-image-tile.c test.c
 test_nautilus_label_SOURCES = test-nautilus-label.c
 test_nautilus_label_background_SOURCES = test-nautilus-label-background.c test.c
@@ -87,6 +88,7 @@ test_nautilus_preferences_change_SOURCES = test-nautilus-preferences-change.c te
 test_nautilus_preferences_display_SOURCES = test-nautilus-preferences-display.c test.c
 test_nautilus_smooth_graphics_SOURCES = test-nautilus-smooth-graphics.c
 test_nautilus_widgets_SOURCES = test-nautilus-widgets.c
+test_nautilus_wrap_table_SOURCES = test-nautilus-wrap-table.c test.c
 
 EXTRA_DIST = \
 	test.h \

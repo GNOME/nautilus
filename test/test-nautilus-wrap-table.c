@@ -1,0 +1,97 @@
+#include "test.h"
+
+#include <libnautilus-extensions/nautilus-wrap-table.h>
+#include <libnautilus-extensions/nautilus-viewport.h>
+#include <libnautilus-extensions/nautilus-labeled-image.h>
+#include <libnautilus-extensions/nautilus-customization-data.h>
+#include <libnautilus-extensions/nautilus-icon-factory.h>
+
+int 
+main (int argc, char* argv[])
+{
+	NautilusCustomizationData *customization_data;
+	GtkWidget *window;
+	GtkWidget *emblems_table, *button, *scroller;
+	char *emblem_name, *dot_pos;
+	GdkPixbuf *pixbuf;
+	char *label;
+
+	test_init (&argc, &argv);
+
+	window = test_window_new ("Wrap Table Test", 10);
+
+	gtk_window_set_default_size (GTK_WINDOW (window), 400, 300);
+
+	/* The emblems wrapped table */
+	emblems_table = nautilus_wrap_table_new (TRUE);
+
+	gtk_widget_show (emblems_table);
+	gtk_container_set_border_width (GTK_CONTAINER (emblems_table), GNOME_PAD);
+	
+	scroller = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroller),
+					GTK_POLICY_NEVER,
+					GTK_POLICY_AUTOMATIC);
+
+	/* Viewport */
+ 	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (scroller), 
+ 					       emblems_table);
+
+	gtk_container_add (GTK_CONTAINER (window), scroller);
+
+	gtk_widget_show (scroller);
+
+	/* Get rid of default lowered shadow appearance. 
+	 * This must be done after the widget is realized, due to
+	 * an apparent bug in gtk_viewport_set_shadow_type.
+	 */
+// 	gtk_signal_connect (GTK_OBJECT (GTK_BIN (scroller)->child), 
+// 			    "realize", 
+// 			    remove_default_viewport_shadow, 
+// 			    NULL);
+
+
+	/* Use nautilus_customization to make the emblem widgets */
+	customization_data = nautilus_customization_data_new ("emblems", TRUE, TRUE,
+							      NAUTILUS_ICON_SIZE_SMALL, 
+							      NAUTILUS_ICON_SIZE_SMALL);
+	
+	while (nautilus_customization_data_get_next_element_for_display (customization_data,
+									 &emblem_name,
+									 &pixbuf,
+									 &label) == GNOME_VFS_OK) {	
+
+		/* strip the suffix, if any */
+		dot_pos = strrchr(emblem_name, '.');
+		if (dot_pos) {
+			*dot_pos = '\0';
+		}
+		
+		if (strcmp (emblem_name, "erase") == 0) {
+			gdk_pixbuf_unref (pixbuf);
+			g_free (label);
+			g_free (emblem_name);
+			continue;
+		}
+		
+		button = nautilus_labeled_image_check_button_new (label, pixbuf);
+		g_free (label);
+		gdk_pixbuf_unref (pixbuf);
+
+		/* Attach parameters and signal handler. */
+		gtk_object_set_data_full (GTK_OBJECT (button),
+					  "nautilus_property_name",
+					  emblem_name,
+					  g_free);
+				     
+		gtk_container_add (GTK_CONTAINER (emblems_table), button);
+	}
+
+	gtk_widget_show_all (emblems_table);
+
+	gtk_widget_show (window);
+	
+	gtk_main ();
+	
+	return 0;
+}
