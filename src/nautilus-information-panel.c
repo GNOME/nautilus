@@ -324,18 +324,6 @@ nautilus_sidebar_get_sidebar_panel_key (const char *panel_iid)
 	return g_strdup_printf ("%s/%s", NAUTILUS_PREFERENCES_SIDEBAR_PANELS_NAMESPACE, panel_iid);
 }
 
-static gboolean
-nautilus_sidebar_sidebar_panel_enabled (const char *panel_iid)
-{
-	gboolean enabled;
-        char *key;
-
-	key = nautilus_sidebar_get_sidebar_panel_key (panel_iid);
-        enabled = nautilus_preferences_get_boolean (key);
-        g_free (key);
-        return enabled;
-}
-
 /* callback to handle resetting the background */
 static void
 reset_background_callback (GtkWidget *menu_item, GtkWidget *sidebar)
@@ -348,26 +336,37 @@ reset_background_callback (GtkWidget *menu_item, GtkWidget *sidebar)
 	}
 }
 
+static const char *
+get_page_iid (NautilusSidebar *sidebar,
+	      int page_number)
+{
+	GtkWidget *page;
+	
+	page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (sidebar->details->notebook),
+					  page_number);
+	if (page == NULL) {
+		return NULL;
+	}
+	return nautilus_view_frame_get_view_iid (NAUTILUS_VIEW_FRAME (page));
+}
+
 /* utility routine that checks if the active panel matches the passed-in object id */
 static gboolean
-nautilus_sidebar_active_panel_matches_id (NautilusSidebar *sidebar, const char *id)
+nautilus_sidebar_active_panel_matches_id_or_is_damaged (NautilusSidebar *sidebar, const char *id)
 {
-	GtkWidget *current_view;
 	const char *current_iid;
 	
 	if (sidebar->details->selected_index < 0) {
 		return FALSE;
 	}
-	current_view = gtk_notebook_get_nth_page (GTK_NOTEBOOK (sidebar->details->notebook),
-						  sidebar->details->selected_index);	
+	
 	/* if we can't get the active one, say yes to removing it, to make sure to
 	 * remove the tab
 	 */
-	if (current_view == NULL) {
+	current_iid = get_page_iid (sidebar, sidebar->details->selected_index);
+	if (current_iid == NULL) {
 		return TRUE;
 	}
-	
-	current_iid = nautilus_view_frame_get_view_iid (NAUTILUS_VIEW_FRAME (current_view));
 	return nautilus_strcmp (current_iid, id) == 0;	
 }
 
@@ -375,9 +374,25 @@ nautilus_sidebar_active_panel_matches_id (NautilusSidebar *sidebar, const char *
 void
 nautilus_sidebar_hide_active_panel_if_matches (NautilusSidebar *sidebar, const char *sidebar_id)
 {
-	if (nautilus_sidebar_active_panel_matches_id (sidebar, sidebar_id)) {
+	if (nautilus_sidebar_active_panel_matches_id_or_is_damaged (sidebar, sidebar_id)) {
 		nautilus_sidebar_deactivate_panel (sidebar);
 	}
+}
+
+static gboolean
+any_panel_matches_id (NautilusSidebar *sidebar, const char *id)
+{
+	int i, count;
+	const char *page_iid;
+
+	count = g_list_length (GTK_NOTEBOOK (sidebar->details->notebook)->children);
+	for (i = 0; i < count; i++) {
+		page_iid = get_page_iid (sidebar, i);
+		if (page_iid != NULL && strcmp (page_iid, id) == 0) {
+			return TRUE;
+		}
+	}
+	return FALSE;
 }
 
 /* callback for sidebar panel menu items to toggle their visibility */
@@ -386,14 +401,22 @@ toggle_sidebar_panel (GtkWidget *widget, char *sidebar_id)
 {
  	NautilusSidebar *sidebar;
         char *key;
+	gboolean already_on;
 	
 	sidebar = NAUTILUS_SIDEBAR (gtk_object_get_user_data (GTK_OBJECT (widget)));
 
 	nautilus_sidebar_hide_active_panel_if_matches (sidebar, sidebar_id);
-		
+	
 	key = nautilus_sidebar_get_sidebar_panel_key (sidebar_id);
-	nautilus_preferences_set_boolean (key, !nautilus_preferences_get_boolean (key));
-	g_free (key); 
+	already_on = any_panel_matches_id (sidebar, sidebar_id);
+
+	/* This little dance gets the preferences code to send a
+	 * notification even though it thinks there's "no change".
+	 */
+	nautilus_preferences_set_boolean (key, already_on);
+	nautilus_preferences_set_boolean (key, !already_on);
+
+	g_free (key);
 }
 
 /* utility routine to add a menu item for each potential sidebar panel */
@@ -428,7 +451,7 @@ nautilus_sidebar_add_panel_items(NautilusSidebar *sidebar, GtkWidget *menu)
 				
 				/* add a check menu item */
 				menu_item = gtk_check_menu_item_new_with_label (id->name);
-				enabled = nautilus_sidebar_sidebar_panel_enabled (id->iid);
+				enabled = any_panel_matches_id (sidebar, id->iid);
 				gtk_check_menu_item_set_show_toggle (GTK_CHECK_MENU_ITEM(menu_item), TRUE);
 				gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), enabled);
 				gtk_widget_show (menu_item);
@@ -840,7 +863,7 @@ nautilus_sidebar_add_panel (NautilusSidebar *sidebar, NautilusViewFrame *panel)
 
 	/* tell the index tabs about it */
 	nautilus_sidebar_tabs_add_view (sidebar->details->sidebar_tabs,
-					_(description), GTK_WIDGET (panel), page_num);
+					description, GTK_WIDGET (panel), page_num);
 	
 	g_free (description);
 
@@ -867,7 +890,7 @@ nautilus_sidebar_remove_panel (NautilusSidebar *sidebar,
 	}
 	
 	/* Remove the tab associated with this panel */
-	nautilus_sidebar_tabs_remove_view (sidebar->details->sidebar_tabs, _(description));
+	nautilus_sidebar_tabs_remove_view (sidebar->details->sidebar_tabs, description);
 	if (page_num <= sidebar->details->selected_index) {
 		sidebar->details->selected_index -= 1;
 	}

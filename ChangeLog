@@ -1,3 +1,24 @@
+2001-03-29  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix bug where failed sidebar panel still shows up in the sidebar
+	menu.
+
+	* src/nautilus-sidebar.c: (get_page_iid): New function, shared by
+	old and new code.
+	(nautilus_sidebar_active_panel_matches_id_or_is_damaged): New name,
+	uses get_page_iid.
+	(nautilus_sidebar_hide_active_panel_if_matches): Call by new name.
+	(any_panel_matches_id): New function.
+	(toggle_sidebar_panel): Use presence in the sidebar to decide what
+	to do, rather than using the previous setting of the preference.
+	(nautilus_sidebar_add_panel_items): Use the presence of items in
+	the sidebar to decide which items get checked, rather than using
+	the preference settings.
+	(nautilus_sidebar_add_panel), (nautilus_sidebar_remove_panel): Get
+	rid of erroneous use of _().
+
 2001-03-29  John Sullivan  <sullivan@eazel.com>
 
 	reviewed by: Darin Adler <darin@eazel.com>
