@@ -156,6 +156,9 @@ struct FMDirectoryViewDetails
 	gboolean batching_selection_level;
 	gboolean selection_changed_while_batched;
 
+	gboolean metadata_for_directory_as_file_pending;
+	gboolean metadata_for_files_in_directory_pending;
+
 	NautilusFile *file_monitored_for_open_with;
 };
 
@@ -236,7 +239,10 @@ static void                filtering_changed_callback                           
 static NautilusStringList *real_get_emblem_names_to_exclude                       (FMDirectoryView      *view);
 static void                start_renaming_item                                    (FMDirectoryView      *view,
 										   const char           *uri);
-static void                metadata_ready_callback                                (NautilusFile         *file,
+static void                metadata_for_directory_as_file_ready_callback          (NautilusFile         *file,
+										   gpointer              callback_data);
+static void                metadata_for_files_in_directory_ready_callback         (NautilusDirectory    *directory,
+										   GList		*files,
 										   gpointer              callback_data);
 static void                fm_directory_view_trash_state_changed_callback         (NautilusTrashMonitor *trash,
 										   gboolean              state,
@@ -3686,10 +3692,16 @@ load_directory (FMDirectoryView *view,
          * change the directory's file metadata.
 	 */
 	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+	view->details->metadata_for_directory_as_file_pending = TRUE;
+	view->details->metadata_for_files_in_directory_pending = TRUE;
 	nautilus_file_call_when_ready
 		(view->details->directory_as_file,
 		 attributes,
-		 metadata_ready_callback, view);
+		 metadata_for_directory_as_file_ready_callback, view);
+	nautilus_directory_call_when_ready
+		(view->details->model,
+		 attributes,
+		 metadata_for_files_in_directory_ready_callback, view);
 	g_list_free (attributes);
 
 	/* If capabilities change, then we need to update the menus
@@ -3770,8 +3782,17 @@ finish_loading (FMDirectoryView *view)
 }
 
 static void
-metadata_ready_callback (NautilusFile *file,
-			 gpointer callback_data)
+finish_loading_if_all_metadata_loaded (FMDirectoryView *view)
+{
+	if (!view->details->metadata_for_directory_as_file_pending &&
+	    !view->details->metadata_for_files_in_directory_pending) {
+		finish_loading (view);
+	}
+}
+
+static void
+metadata_for_directory_as_file_ready_callback (NautilusFile *file,
+			      		       gpointer callback_data)
 {
 	FMDirectoryView *view;
 
@@ -3779,8 +3800,29 @@ metadata_ready_callback (NautilusFile *file,
 
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	g_assert (view->details->directory_as_file == file);
+	g_assert (view->details->metadata_for_directory_as_file_pending = TRUE);
 
-	finish_loading (view);
+	view->details->metadata_for_directory_as_file_pending = FALSE;
+	
+	finish_loading_if_all_metadata_loaded (view);
+}
+
+static void
+metadata_for_files_in_directory_ready_callback (NautilusDirectory *directory,
+				   		GList *files,
+			           		gpointer callback_data)
+{
+	FMDirectoryView *view;
+
+	view = callback_data;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_assert (view->details->model == directory);
+	g_assert (view->details->metadata_for_files_in_directory_pending = TRUE);
+
+	view->details->metadata_for_files_in_directory_pending = FALSE;
+	
+	finish_loading_if_all_metadata_loaded (view);
 }
 
 NautilusStringList *
@@ -3856,8 +3898,11 @@ disconnect_model_handlers (FMDirectoryView *view)
 	disconnect_directory_as_file_handler (view, &view->details->file_changed_handler_id);
 	nautilus_directory_file_monitor_remove (view->details->model, view);
 	nautilus_file_cancel_call_when_ready (view->details->directory_as_file,
-					      metadata_ready_callback,
+					      metadata_for_directory_as_file_ready_callback,
 					      view);
+	nautilus_directory_cancel_callback (view->details->model,
+					    metadata_for_files_in_directory_ready_callback,
+					    view);
 	nautilus_file_monitor_remove (view->details->directory_as_file,
 				      view);
 }

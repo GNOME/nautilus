@@ -1,3 +1,33 @@
+2001-01-19  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 5807 (view switches to manual layout only after
+	hitting Refresh), and other metadata-related problems.
+
+	This was a long-standing race condition exposed by recent 
+	timing changes. The directory view was waiting for its
+	metadata-as-file, but not for its metadata-as-directory, and
+	it needed both before trying to lay out the contained icons.
+
+	* src/file-manager/fm-directory-view.c: 
+	added metadata_for_directory_as_file_pending and 
+	metadata_for_files_in_directory_pending	to details struct.
+	(load_directory): set both pending flags to TRUE before
+	using call_when_ready to get metadata; use call_when_ready
+	for getting contained-files metadata as well as 
+	directory-as-file metadata.
+	(finish_loading_if_all_metadata_loaded): New function,
+	finishes loading (which lays out the icons) only if neither
+	metadata is still pending.
+	(metadata_for_directory_as_file_ready_callback): 
+	clear metadata_for_directory_as_file_pending flag before calling 
+	finish_loading_if...
+	(metadata_for_files_in_directory_ready_callback): 
+	clear metadata_for_files_in_directory_pending flag before calling 
+	finish_loading_if... 
+	(disconnect_model_handlers): cancel both metadata callbacks.
+
 2001-01-19  Andy Hertzfeld  <andy@eazel.com>
 
 	* nautilus.spec.in:
