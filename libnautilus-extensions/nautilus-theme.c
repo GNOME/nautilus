@@ -152,7 +152,7 @@ nautilus_theme_get_image_path (const char *image_name)
 		g_free (temp_str);
 	
 		/* see if a theme-specific image exists; if so, return it */
-		if (g_file_exists (image_path))
+		if (image_path && g_file_exists (image_path))
 			return image_path;
 		
 		g_free (image_path);
@@ -161,7 +161,7 @@ nautilus_theme_get_image_path (const char *image_name)
 	/* we couldn't find a theme specific one, so look for a general image */
 	image_path = nautilus_pixmap_file (image_name);
 	
-	if (g_file_exists (image_path))
+	if (image_path && g_file_exists (image_path))
 		return image_path;
 		
 	/* we couldn't find anything, so return NULL */

@@ -1,3 +1,10 @@
+2000-07-25  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-theme.c:
+	(nautilus_theme_get_image_path):
+	fixed problem in theme_get_image_path where it was calling
+	g_file_exists on null strings.
+	
 2000-07-25  Gene Z. Ragan  <gzr@eazel.com>
 
 	* src/file-manager/fm-desktop-icon-view.c:
