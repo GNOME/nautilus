@@ -429,11 +429,17 @@ create_mount_link (FMDesktopIconView *icon_view,
 	case NAUTILUS_DEVICE_NFS:
 		icon_name = "i-nfs";
 		break;
+
+	case NAUTILUS_DEVICE_SMB:
+		icon_name = "i-smb";
+		break;
 	
 	case NAUTILUS_DEVICE_ZIP_DRIVE:
 		icon_name = "i-zipdisk";
 		break;
 
+	case NAUTILUS_DEVICE_APPLE:
+	case NAUTILUS_DEVICE_WINDOWS:
 	case NAUTILUS_DEVICE_CAMERA:
 	case NAUTILUS_DEVICE_UNKNOWN:
 		break;

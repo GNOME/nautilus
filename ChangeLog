@@ -1,3 +1,23 @@
+2002-05-22  Bastien Nocera  <hadess@hadess.net>
+
+	reviewed by: Alex Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/filesystem-attributes.xml:
+	add some new filesystem types, fix smbfs' name
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(mount_unmount_callback),
+	(nautilus_volume_monitor_mount_unmount_removable),
+	(finish_creating_volume),
+	(nautilus_volume_monitor_get_mount_name_for_display):
+	* libnautilus-private/nautilus-volume-monitor.h:
+	fix display name for device with a trailing '/' in the mount
+	point (ie. /foo/), add some more matching prefixes, add smb, windows,
+	and apple types
+	* src/file-manager/fm-desktop-icon-view.c: (create_mount_link):
+	create the launcher with i-smb for smb mounts
+	* src/nautilus-application.c: (volume_mounted_callback):
+	update to use gconf like magicdev for gnome2
+
 2002-05-20  Jorn Baayen  <jorn@nl.linux.org>
 
 	* src/nautilus-shell-ui.xml:

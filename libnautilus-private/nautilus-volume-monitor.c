@@ -1567,7 +1567,7 @@ mount_unmount_callback (void *arg)
 	const char *old_locale;
 
 	info = arg;
-	
+
 	if (info != NULL) {	
 		old_locale = g_getenv ("LC_ALL");
 		eel_setenv ("LC_ALL", "C", TRUE);
@@ -1608,7 +1608,7 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 	const char *name;
 
 	volume = NULL;
-	
+
 	/* Check and see if volume exists in mounts already */
 	for (p = monitor->details->mounts; p != NULL; p = p->next) {
 		volume = (NautilusVolume *)p->data;
@@ -1770,18 +1770,34 @@ finish_creating_volume (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 	volume->file_system_type = g_hash_table_lookup
 		(monitor->details->file_system_table, file_system_type_name);
 
-	if (strcmp (file_system_type_name, "auto") == 0) {		
+	if (strcmp (file_system_type_name, "auto") == 0) {
 		ok = mount_volume_auto_add (volume);
-	} else if (strcmp (file_system_type_name, "cdda") == 0) {		
+	} else if (strcmp (file_system_type_name, "cdda") == 0) {
 		ok = mount_volume_cdda_add (volume);
-	} else if (strcmp (file_system_type_name, "iso9660") == 0) {		    		
+	} else if (strcmp (file_system_type_name, "iso9660") == 0) {
 		ok = mount_volume_iso9660_add (volume);
-	} else if (strcmp (file_system_type_name, "nfs") == 0) {		
+	} else if (strcmp (file_system_type_name, "nfs") == 0) {
 		ok = mount_volume_nfs_add (volume);
+		volume->is_removable = FALSE;
+		return ok;
+	} else if (strcmp (file_system_type_name, "smbfs") == 0) {
+		volume->device_type = NAUTILUS_DEVICE_SMB;
+		volume->is_removable = TRUE;
+		return TRUE;
+	} else if ((strcmp (file_system_type_name, "hfs") == 0)
+			|| (strcmp (file_system_type_name, "hfsplus") == 0)) {
+		volume->device_type = NAUTILUS_DEVICE_APPLE;
+		ok = TRUE;
+	} else if ((strcmp (file_system_type_name, "vfat") == 0)
+			|| (strcmp (file_system_type_name, "fat") == 0)
+			|| (strcmp (file_system_type_name, "ntfs") == 0)
+			|| (strcmp (file_system_type_name, "msdos") == 0)) {
+		volume->device_type = NAUTILUS_DEVICE_WINDOWS;
+		ok = TRUE;
 	} else {
 		ok = TRUE;
 	}
-	
+
 	if (!ok) {
 		return FALSE;
 	}
@@ -1794,7 +1810,8 @@ finish_creating_volume (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 	if (eel_str_has_prefix (volume->mount_path, "/mnt/")) {		
 		name = volume->mount_path + strlen ("/mnt/");
 		
-		if (eel_str_has_prefix (name, "cdrom")) {
+		if (eel_str_has_prefix (name, "cdrom")
+				|| eel_str_has_prefix (name, "burn")) {
 			volume->device_type = NAUTILUS_DEVICE_CDROM_DRIVE;
 			volume->is_removable = TRUE;
 		} else if (eel_str_has_prefix (name, "floppy")) {
@@ -1811,9 +1828,13 @@ finish_creating_volume (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 			volume->is_removable = TRUE;
 		} else if (eel_str_has_prefix (name, "camera")) {
 			volume->device_type = NAUTILUS_DEVICE_CAMERA;
-			volume->is_removable = TRUE;					
-		} else if (eel_str_has_prefix (name, "memstick")) {
+			volume->is_removable = TRUE;
+		} else if (eel_str_has_prefix (name, "memstick")
+				|| eel_str_has_prefix (name, "ram")) {
 			volume->device_type = NAUTILUS_DEVICE_MEMORY_STICK;
+			volume->is_removable = TRUE;
+		} else if (eel_str_has_prefix (name, "ipod")) {
+			volume->device_type = NAUTILUS_DEVICE_APPLE;
 			volume->is_removable = TRUE;
 		} else {
 			volume->is_removable = FALSE;
@@ -1847,7 +1868,6 @@ finish_creating_volume (NautilusVolumeMonitor *monitor, NautilusVolume *volume,
 			}
 		}
 
-	
 	return TRUE;
 }
 
@@ -1869,24 +1889,21 @@ char *
 nautilus_volume_monitor_get_mount_name_for_display (NautilusVolumeMonitor *monitor,
 						    const NautilusVolume *volume)
 {
-	const char *name, *found_name;
+	const char *found_name;
+	char *name;
 
 	g_return_val_if_fail (monitor != NULL, NULL);
 	g_return_val_if_fail (volume != NULL, NULL);
-	
-	name = strrchr (volume->mount_path, '/');
-	if (name != NULL) {
-		name = name + 1;
-	} else {
-		name = volume->mount_path;
-	}
-	
+
+	name = g_path_get_basename (volume->mount_path);
+
 	/* Look for a match in our localized mount name list */
 	found_name = g_hash_table_lookup (monitor->details->readable_mount_point_names, name);
 	if (found_name != NULL) {
+		g_free (name);
 		return g_strdup (found_name);
 	} else {
-		return g_strdup (name);
+		return name;
 	}
 }
 

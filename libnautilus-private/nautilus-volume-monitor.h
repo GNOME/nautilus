@@ -66,7 +66,10 @@ typedef enum {
 	NAUTILUS_DEVICE_JAZ_DRIVE,
 	NAUTILUS_DEVICE_MEMORY_STICK,
 	NAUTILUS_DEVICE_NFS,
-	NAUTILUS_DEVICE_ZIP_DRIVE
+	NAUTILUS_DEVICE_ZIP_DRIVE,
+	NAUTILUS_DEVICE_SMB,
+	NAUTILUS_DEVICE_APPLE,
+	NAUTILUS_DEVICE_WINDOWS,
 } NautilusDeviceType;
 
 typedef gboolean (* NautilusEachVolumeCallback) (const NautilusVolume *, gpointer callback_data);
