@@ -1179,13 +1179,12 @@ nautilus_first_time_druid_show (NautilusApplication *application, gboolean manag
 	set_page_title (NAUTILUS_DRUID_PAGE_EAZEL (start_page),
 			_("Welcome to Nautilus"));
 	
-	label = new_body_label ( _("Nautilus is part of your GNOME desktop environment. It\n"
-				   "helps you manage your files and folders (directories),\n"
-				   "view documents, connect to the Internet, and do many\n"
-				   "other tasks.\n\n"
-				   "The next four screens ask about your level of Linux\n"
-				   "experience, and check your Internet connection. Click Next\n"
-				   "to continue."));
+	label = new_body_label ( _("Nautilus...\n"
+				   "    Is a great file manager for the GNOME desktop.\n"
+				   "    Provides a simple intuitive way to access Internet services.\n"
+				   "    Is an extensible framework for GNOME developers.\n"
+				   "    Provides a powerful delivery platform for service providers.\n\n"
+				   "Click Next to begin customizing your Nautilus environment."));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 0);
 	gtk_box_pack_end (GTK_BOX (main_box), make_title_page_icon_box (), TRUE, TRUE, 32);
