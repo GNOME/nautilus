@@ -1,3 +1,15 @@
+2001-01-22  Michael Engber  <engber@eazel.com>
+
+	reviewed by: Ramiro Estrugo
+
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(desktop_background_realized),
+	(nautilus_connect_desktop_background_to_file_metadata),
+	(image_loading_done_callback),
+	(nautilus_connect_background_to_file_metadata):
+	Desktop backgrounds were being drawn before they were initialized.
+	Bugs 5853 & 5896.
+
 2001-01-22  Rebecca Schulman  <rebecka@eazel.com>
        Fix bug 5316, that search results code has
 	empty strings marked for translation.

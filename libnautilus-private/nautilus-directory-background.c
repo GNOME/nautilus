@@ -87,7 +87,8 @@ static const char *default_theme_source = "directory";
 static const char *desktop_theme_source = "desktop";
 
 void
-static nautilus_background_set_desktop (NautilusIconContainer *icon_container)
+nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *icon_container,
+                                                      NautilusFile *file)
 {
 	NautilusBackground *background;
 
@@ -95,11 +96,20 @@ static nautilus_background_set_desktop (NautilusIconContainer *icon_container)
 
 	gtk_object_set_data (GTK_OBJECT (background), "theme_source", (gpointer) desktop_theme_source);
 
+	/* Strictly speaking, we don't need to know about metadata changes, since
+	 * the desktop setting aren't stored there. But, hooking up to metadata
+	 * changes is actually a small part of what this fn does, and we do need
+	 * the other stuff (hooked up to background & theme changes, initialize
+	 * the background). Being notified of metadata changes on the file is a
+	 * waste, but won't hurt, so I don't think it's worth refactoring the fn
+	 * at this point.
+	 */
+	nautilus_connect_background_to_file_metadata (GTK_WIDGET (icon_container), file);
 
-	if (GTK_LAYOUT (icon_container)->bin_window == NULL) {
-		gtk_signal_connect (GTK_OBJECT (icon_container), "realize", GTK_SIGNAL_FUNC (desktop_background_realized), GINT_TO_POINTER (TRUE));
-	} else {
+	if (GTK_WIDGET_REALIZED (icon_container)) {
 		desktop_background_realized (icon_container, GINT_TO_POINTER (FALSE));
+	} else {
+		gtk_signal_connect (GTK_OBJECT (icon_container), "realize", GTK_SIGNAL_FUNC (desktop_background_realized), GINT_TO_POINTER (TRUE));
 	}
 
 	nautilus_file_background_receive_root_window_changes (background); 
@@ -679,6 +689,13 @@ image_loading_done_callback (NautilusBackground *background, gboolean successful
 
 	gdk_window_set_back_pixmap (nautilus_background_get_desktop_background_window (background), pixmap, FALSE);
 
+	/* We'd like to simply unref pixmap here, but due to a bug in gdk's handling of
+	 * foreign pixmaps, we can't - it would free the X resource.
+	 *
+	 * gdk_window_set_back_pixmap does not need the gdk pixmap object to stick around.
+	 * It simply uses X resource inside it. dispose_root_pixmap free's the gdk object
+	 * and not the X resource.
+	 */
 	dispose_root_pixmap (pixmap);
 }
 
@@ -1007,23 +1024,6 @@ nautilus_connect_background_to_file_metadata (GtkWidget    *widget,
 
         /* Update the background based on the file metadata. */
         saved_settings_changed_callback (file, background);
-}
-
-void
-nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *icon_container,
-                                                      NautilusFile *file)
-{
-	nautilus_background_set_desktop (icon_container);
-
-
-	/* Strictly speaking, we don't need to know about metadata changes, since
-	 * the desktop setting aren't stored there. But, hooking up to metadata
-	 * changes is actually a small part of what this fn does, and we do need
-	 * the other stuff (hooked up to background & theme changes). Being notified
-	 * of metadata changes on the file is a waste, but won't hurt, so I don't
-	 * think it's worth refactoring the fn at this point.
-	 */
-	nautilus_connect_background_to_file_metadata (GTK_WIDGET (icon_container), file);
 }
 
 void
