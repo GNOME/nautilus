@@ -1,3 +1,11 @@
+2000-09-08  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-dnd.c:
+	(drag_data_received_callback):
+	fixed bug 2919, erase emblem doesn't work anymore.  In fact, all the
+	emblems were broken by Mathieu's drag and drop changes; fixed by
+	replacing the GtkSelectionItem with the data it points to.
+	
 2000-09-08  Ali Abdin  <aliabdin@aucegypt.edu>
 
         Should fix bug #2749, #2754, and #2755
@@ -14,6 +22,7 @@
         around a bit to handle this. Also made this function to be more
         compliant with Eazel style guidelines
 
+>>>>>>> 1.1774
 2000-09-08  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 2816, Home icon doesn't link to changed home directory.

@@ -429,7 +429,7 @@ drag_data_received_callback (GtkWidget *widget,
 		case NAUTILUS_ICON_DND_KEYWORD:
 			receive_dropped_keyword
 				(NAUTILUS_ICON_CONTAINER (widget),
-				 (char *)data, x, y);
+				 (char*) data->data, x, y);
 			gtk_drag_finish (context, FALSE, FALSE, time);
 			break;
 		default:
