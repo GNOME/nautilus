@@ -283,9 +283,7 @@ customize_icon_text_cb (GtkMenuItem *menu_item, gpointer *view)
 	g_assert (GTK_IS_MENU_ITEM (menu_item));
 	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (view));
 
-	window = GTK_WINDOW (fm_icon_text_window_get_or_create ());
-	fm_icon_text_window_set_view (window, FM_DIRECTORY_VIEW_ICONS (view));
-	
+	window = GTK_WINDOW (fm_icon_text_window_get_or_create ());	
 	nautilus_gtk_window_present (window);
 }
 
@@ -451,12 +449,12 @@ fm_directory_view_icons_can_zoom_out (FMDirectoryView *view)
 }
 
 /**
- * fm_directory_view_icons_get_icon_text_attribute_names:
+ * fm_directory_view_icons_get_full_icon_text_attribute_names:
  *
  * Get a string representing which text attributes should be displayed
  * beneath an icon at the highest zoom level. 
  * Use g_free to free the result.
- * @view: Any FMDirectoryViewIcons object.
+ * @view: A FMDirectoryViewIcons object, or NULL to get the default.
  * 
  * Return value: A |-delimited string comprising attribute names, e.g. "name|size".
  * 
@@ -468,15 +466,23 @@ fm_directory_view_icons_get_full_icon_text_attribute_names (FMDirectoryViewIcons
 	 * So this routine doesn't need the first parameter, but it's in there
 	 * for consistency and possible future expansion.
 	 */
+
+	/* Don't let callers get away with using a non-NULL value here since
+	 * it probably means they're expecting something directory-specific.
+	 */
+	g_assert (view == NULL);
+	 
 	return g_strdup (default_icon_text_attribute_names);
 }
 
 /**
- * fm_directory_view_icons_set_icon_text_attribute_names:
+ * fm_directory_view_icons_set_full_icon_text_attribute_names:
  *
  * Sets the string representing which text attributes should be displayed
  * beneath an icon at the highest zoom level. 
- * @view: FMDirectoryViewIcons whose displayed text attributes should be changed.
+ * @view: FMDirectoryViewIcons whose displayed text attributes should be changed,
+ * or NULL to change the default. (Currently there is only one global setting, and
+ * this parameter is ignored.)
  * @new_names: The |-delimited set of names to display at the highest zoom level,
  * e.g. "name|size|date_modified".
  * 
@@ -490,6 +496,11 @@ fm_directory_view_icons_set_full_icon_text_attribute_names (FMDirectoryViewIcons
 	 * for consistency and possible future expansion.
 	 */
 
+	/* Don't let callers get away with using a non-NULL value here since
+	 * it probably means they're expecting something directory-specific.
+	 */
+	g_assert (view == NULL);
+	 
 	if (strcmp (new_names, default_icon_text_attribute_names) == 0)
 		return;
 

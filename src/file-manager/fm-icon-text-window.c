@@ -48,7 +48,6 @@ static gboolean fm_icon_text_window_delete_event_cb (GtkWidget *widget,
 #define PIECES_COUNT	4
 #define MENU_COUNT	(PIECES_COUNT - 1)
 
-static FMDirectoryViewIcons *icon_view = NULL;
 static GtkOptionMenu *option_menus[MENU_COUNT];
 
 static char * attribute_names[] = {
@@ -97,8 +96,6 @@ changed_attributes_option_menu_cb (GtkMenuItem *menu_item, gpointer user_data)
 	int which_menu;
 	int index;
 	
-	g_assert (FM_IS_DIRECTORY_VIEW_ICONS (icon_view));
-
 	which_menu = GPOINTER_TO_INT (user_data);
   	attribute_names_array = g_new0 (gchar*, PIECES_COUNT + 1);
 
@@ -118,8 +115,7 @@ changed_attributes_option_menu_cb (GtkMenuItem *menu_item, gpointer user_data)
 
 	attribute_names_string = g_strjoinv ("|", attribute_names_array);
 
-	fm_directory_view_icons_set_full_icon_text_attribute_names (icon_view, 
-								    attribute_names_string);
+	fm_directory_view_icons_set_full_icon_text_attribute_names (NULL, attribute_names_string);
 
 	g_free (attribute_names_string);
 	g_strfreev (attribute_names_array);
@@ -296,25 +292,4 @@ fm_icon_text_window_get_or_create (void)
 	
 	g_assert (GTK_IS_WINDOW (icon_text_window));
 	return icon_text_window;
-}
-
-/**
- * fm_icon_text_window_set_view:
- *
- * Specify which directory view the icon text window is controlling.
- * 
- **/
-void
-fm_icon_text_window_set_view (GtkWindow *window, FMDirectoryViewIcons *view)
-{
-	/* FIXME: Implement this or remove the API for it. Note that there
-	 * are tricky UI issues since the window is (at least currently)
-	 * non-modal but it affects a particular directory window. Must at
-	 * minimum make that obvious in the icon text window. User can
-	 * change this by choosing "Customize icon text..." in a different
-	 * directory, but that's pretty subtle.
-	 */
-
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW_ICONS (view));
-	icon_view = view;	 
 }
