@@ -1095,8 +1095,25 @@ draw_label_text_aa (NautilusIconCanvasItem *icon_item, GnomeCanvasBuf *buf, doub
 	GdkPixmap *pixmap;
 	GdkPixbuf *text_pixbuf, *text_pixbuf_with_alpha;
 	guchar *pixels;
-	gboolean needs_highlight;
+	gboolean needs_highlight, have_editable, have_additional ;
+
+	/* make sure this is really necessary */
 	
+	have_editable = icon_item->details->editable_text != NULL
+		&& icon_item->details->editable_text[0] != '\0';
+	have_additional = icon_item->details->additional_text != NULL
+		&& icon_item->details->additional_text[0] != '\0';
+
+	/* No font or no text, then do no work. */
+	if (icon_item->details->font == NULL || (!have_editable && !have_additional)) {
+		icon_item->details->text_height = 0;
+		icon_item->details->text_width = 0;			
+		return;
+	}
+	
+	if (icon_item->details->is_renaming)
+		return;
+		
 	visual = gdk_visual_get_system ();
 
 	/* allocate a pixmap to draw the text into, and clear it to white */
@@ -1211,6 +1228,7 @@ nautilus_icon_canvas_item_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 	draw_stretch_handles_aa (icon_item, buf, &icon_rect);
 		
 	/* draw the text */
+
 	i2c[5] += icon_rect.y1 - icon_rect.y0;
 	x_delta = (icon_item->details->text_width - (icon_rect.x1 - icon_rect.x0)) / 2;
 	draw_label_text_aa (icon_item, buf, i2c, x_delta);

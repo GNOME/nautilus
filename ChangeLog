@@ -1,3 +1,11 @@
+2000-05-30  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-icon-canvas-item.c:
+	(draw_label_text_aa), (nautilus_icon_canvas_item_render):
+	fixed bug where we would crash when going down to the lowest zoom
+	level on the anti-aliased canvas, by checking the drawing conditions
+	and exiting if they're not met.
+	
 2000-05-30  John Sullivan  <sullivan@eazel.com>
 
 	Adapted much of the open-with and view-as code to use
