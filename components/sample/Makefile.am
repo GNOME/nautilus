@@ -13,8 +13,7 @@ INCLUDES =						\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
 	$(COMPONENT_CFLAGS)
 
-bin_PROGRAMS =						\
-	nautilus-sample-content-view
+libexec_PROGRAMS=nautilus-sample-content-view
 
 nautilus_sample_content_view_SOURCES =			\
 	nautilus-sample-content-view.h          	\
@@ -28,10 +27,12 @@ nautilus_sample_content_view_LDADD =			\
 uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = nautilus-sample-content-view-ui.xml
 
-serverdir = $(libdir)/bonobo/servers
-server_in_files = Nautilus_View_sample.server.in
-server_DATA = $(server_in_files:.server.in=.server)
+server_in_files = Nautilus_View_sample.server.in.in
 
+serverdir = $(libdir)/bonobo/servers
+server_DATA = $(server_in_files:.server.in.in=.server)
+$(server_in_files:.server.in.in=.server.in): $(server_in_files)
+	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@
 @INTLTOOL_SERVER_RULE@
 
-EXTRA_DIST = $(server_in_files) $(server_DATA) $(ui_DATA) 
+EXTRA_DIST = $(server_in_files) $(ui_DATA) 

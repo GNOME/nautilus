@@ -1,3 +1,15 @@
+2002-07-11  Michael Meeks  <michael@ximian.com>
+
+	* components/*/.server.in -> *.server.in.in
+	* components/*/Makefile.am: move stuff into $(libexec)
+	and $(libdir)/bonobo - a very, very boring ( and likely to
+	be buggy ) patch, watch the tinderbox...
+
+	* libnautilus-private/nautilus-icon-container.c
+	(nautilus_icon_container_class_init): upd.
+	(expose_event): add for debugging, looks like most icons
+	areas get 3 expose events each on startup.
+
 2002-07-16  Dave Camp  <dave@ximian.com>
 
 	* src/nautilus-window-manage-views.c (load_content_view): Use

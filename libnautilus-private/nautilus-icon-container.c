@@ -3065,6 +3065,18 @@ key_press_event (GtkWidget *widget,
 	return handled;
 }
 
+static gboolean
+expose_event (GtkWidget      *widget,
+	      GdkEventExpose *event)
+{
+/*	g_warning ("Expose Icon Container %p '%d,%d: %d,%d'",
+		   widget,
+		   event->area.x, event->area.y,
+		   event->area.width, event->area.height); */
+	
+	return GTK_WIDGET_CLASS (parent_class)->expose_event (widget, event);
+}
+
 static AtkObject *
 get_accessible (GtkWidget *widget)
 {
@@ -3363,6 +3375,7 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 	widget_class->key_press_event = key_press_event;
 	widget_class->get_accessible = get_accessible;
 	widget_class->style_set = style_set;
+	widget_class->expose_event = expose_event;
 
 	/* Initialize the stipple bitmap.  */
 
