@@ -23,6 +23,7 @@
    Author: Rebecca Schulman <rebecka@eazel.com>
 */
 
+#include <string.h>
 
 #include "nautilus-search-uri.h"
 
@@ -34,6 +35,41 @@ nautilus_search_uri_to_simple_search_criteria (const char *uri)
 	return "";
 
 }
+
+char *
+nautilus_simple_search_criteria_to_search_uri (const char *search_criteria)
+{
+	char **words;
+	char *search_uri;
+	int length, i; 
+
+	g_return_val_if_fail (search_criteria != NULL, NULL);
+
+	words = g_new0 (char *, strlen (search_criteria));
+	words = g_strsplit (search_criteria, " ", strlen (search_criteria));
+	length = strlen ("gnome-search:[file:///]");
+	/* Count total length */
+	for (i = 0; words[i] != NULL; i++) {
+		length += strlen (words[i]) + strlen ("file_name contains & ");
+	}
+	search_uri = g_new0 (char, length);
+	sprintf (search_uri, "gnome-search:[file:///]");
+	if (words[0] != NULL) {
+		for (i = 0; words[i+1] != NULL; i++) {
+			strcat (search_uri, "file_name contains ");
+			strcat (search_uri, words[i]);
+			strcat (search_uri, " & ");
+		}
+	strcat (search_uri, "file_name contains ");
+		strcat (search_uri, words[i]);
+	}
+#ifdef SEARCH_URI_DEBUG
+	printf ("Made uri %s from simple search criteria %s\n",
+		search_uri, search_criteria);
+#endif
+	return search_uri;
+}
+
 
 NautilusSearchBarMode 
 nautilus_search_uri_to_search_bar_mode (const char *uri)

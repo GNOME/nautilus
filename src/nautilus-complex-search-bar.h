@@ -53,9 +53,7 @@ typedef struct NautilusComplexSearchBar {
 
 typedef struct {
   NautilusSearchBarClass parent_class;
-  void (*set_search_controls) (NautilusComplexSearchBar *search_bar,
-			       const char *location);
-  void (*get_search_uri)      (NautilusComplexSearchBar *search_bar);
+  char* (*get_location)      (NautilusComplexSearchBar *search_bar);
 } NautilusComplexSearchBarClass;
 
 GtkType    nautilus_complex_search_bar_get_type     	(void);

@@ -34,21 +34,38 @@
 
 
 struct NautilusComplexSearchBarDetails {
-  
-  NautilusSearchBarCriterionList *search_criteria;
+	GtkWidget *hbox;
+	NautilusSearchBarCriterionList *search_criteria;
+	GtkButton *more_options;
+	GtkOptionMenu *more_search_criteria_options;
 	
-  gchar *undo_text;
-  gboolean undo_registered;
+	gchar *undo_text;
+	gboolean undo_registered;
 };
 
-
-static void                       nautilus_complex_search_bar_set_search_controls     (NautilusSearchBar *bar,
-										       const char            *location);
+static char *                     nautilus_complex_search_bar_get_location            (NautilusComplexSearchBar *bar);
+static char *                     nautilus_complex_search_bar_get_location            (NautilusComplexSearchBar *bar);
 
 
 static void                       nautilus_complex_search_bar_initialize_class        (NautilusComplexSearchBarClass *class);
 static void                       nautilus_complex_search_bar_initialize              (NautilusComplexSearchBar      *bar);
 static void                       destroy                                             (GtkObject *object);
+static void                       more_options_callback                               (GtkObject *object,
+										       gpointer data);
+static void                       add_file_type_search_criterion_callback             (GtkObject *object,
+										       gpointer data);
+static void                       add_file_name_search_criterion_callback             (GtkObject *object,
+										       gpointer data);
+static void                       add_file_location_search_criterion_callback         (GtkObject *object,
+										       gpointer data);
+static void                       add_content_search_criterion_callback               (GtkObject *object,
+										       gpointer data);
+static void                       add_size_search_criterion_callback                  (GtkObject *object,
+										       gpointer data);
+static void                       add_date_modified_search_criterion_callback         (GtkObject *object,
+										       gpointer data);
+static void                       add_notes_search_criterion_callback                 (GtkObject *object,
+										       gpointer data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusComplexSearchBar, nautilus_complex_search_bar, NAUTILUS_TYPE_SEARCH_BAR)
 
@@ -64,7 +81,8 @@ nautilus_complex_search_bar_initialize_class (NautilusComplexSearchBarClass *kla
 	object_class->destroy = destroy;
 
 	search_bar_class = NAUTILUS_SEARCH_BAR_CLASS (klass);
-	search_bar_class->set_search_controls = nautilus_complex_search_bar_set_search_controls;
+
+	klass->get_location = nautilus_complex_search_bar_get_location;
 }
 
 static void
@@ -73,6 +91,8 @@ destroy (GtkObject *object)
   
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
+
+
 
 
 static void
@@ -90,25 +110,28 @@ nautilus_complex_search_bar_initialize (NautilusComplexSearchBar *bar)
 	file_type = nautilus_search_bar_criterion_file_type_new (bar);
 	nautilus_search_bar_criterion_add_to_search_bar (file_type,
 							 hbox);
+	nautilus_search_bar_criterion_show (file_type);
 	bar->details->search_criteria = g_list_append (bar->details->search_criteria,
 						       file_type);
 
-	
 
 	file_name = nautilus_search_bar_criterion_file_name_new (bar);
 	nautilus_search_bar_criterion_add_to_search_bar (file_name,
 							 hbox);
 	bar->details->search_criteria = g_list_append (bar->details->search_criteria,
 						       file_name);
+	nautilus_search_bar_criterion_show (file_name);
 
+	
 	more_options = gtk_button_new ();
 	more_options_label = gtk_label_new ("More Options");
+	gtk_signal_connect (GTK_OBJECT (more_options), "pressed",
+			    more_options_callback, bar);
 	gtk_container_add (GTK_CONTAINER (more_options), more_options_label);
-	
-	gtk_box_pack_start (GTK_BOX (hbox), more_options, TRUE, TRUE, 1);
-
+	bar->details->more_options = GTK_BUTTON (more_options);
+	gtk_box_pack_start (GTK_BOX (hbox), more_options, FALSE, TRUE, 1);
+	bar->details->hbox = hbox;
 	gtk_container_add (GTK_CONTAINER (bar), hbox); 
-	gtk_widget_show_all (hbox);
 
 }
 
@@ -120,8 +143,183 @@ nautilus_complex_search_bar_new (void)
 
 
 static void                       
-nautilus_complex_search_bar_set_search_controls  (NautilusSearchBar *bar,
-						  const char *location)
+more_options_callback (GtkObject *object,
+		       gpointer data)
+{
+	NautilusComplexSearchBar *bar;
+	GtkWidget *more_options_button;
+	GtkWidget *more_search_criteria_options, *more_search_criteria_values;
+	GtkWidget *file_type_item;
+	GtkWidget *named_item, *located_in_item, *containing_item;
+	GtkWidget *of_size_item, *modified_since_item, *notes_item;
+
+	
+	g_return_if_fail (GTK_IS_BUTTON (object));
+	g_return_if_fail (NAUTILUS_IS_COMPLEX_SEARCH_BAR (data));
+
+	bar = NAUTILUS_COMPLEX_SEARCH_BAR (data);
+	more_options_button = GTK_WIDGET (object);
+
+	gtk_widget_hide_all (more_options_button);
+
+	if (bar->details->more_search_criteria_options == NULL) {
+		more_search_criteria_options = gtk_option_menu_new ();
+		
+		more_search_criteria_values = gtk_menu_new ();
+		
+		file_type_item = gtk_menu_item_new_with_label ("File type");
+		gtk_menu_append (GTK_MENU (more_search_criteria_values),
+				 file_type_item);
+				gtk_signal_connect (GTK_OBJECT (file_type_item),
+			    "activate",
+				    add_file_type_search_criterion_callback,
+				    bar);
+		
+		named_item = gtk_menu_item_new_with_label ("Named");
+		gtk_menu_append (GTK_MENU (more_search_criteria_values),
+				 named_item);
+		
+		gtk_signal_connect (GTK_OBJECT (named_item),
+				    "activate",
+				    add_file_name_search_criterion_callback,
+				    bar);
+		
+		located_in_item = gtk_menu_item_new_with_label ("Located in");
+		gtk_menu_append (GTK_MENU (more_search_criteria_values),
+				 located_in_item);
+		
+		gtk_signal_connect (GTK_OBJECT (located_in_item),
+				    "activate",
+				    add_file_location_search_criterion_callback,
+			    bar); 
+		
+		containing_item = gtk_menu_item_new_with_label ("Containing");
+		gtk_menu_append (GTK_MENU (more_search_criteria_values),
+				 containing_item);
+		
+		gtk_signal_connect (GTK_OBJECT (containing_item),
+				    "activate",
+				    add_content_search_criterion_callback,
+				    bar);
+		
+		of_size_item = gtk_menu_item_new_with_label ("Of Size");
+		gtk_menu_append (GTK_MENU (more_search_criteria_values),
+				 of_size_item);
+		
+		gtk_signal_connect (GTK_OBJECT (of_size_item),
+				    "activate",
+				    add_size_search_criterion_callback,
+				    bar);
+		
+		modified_since_item = gtk_menu_item_new_with_label ("Modified Since");
+		gtk_menu_append (GTK_MENU (more_search_criteria_values),
+				 modified_since_item);
+		
+		gtk_signal_connect (GTK_OBJECT (modified_since_item),
+				    "activate",
+				    add_date_modified_search_criterion_callback,
+				    bar);
+		
+		notes_item = gtk_menu_item_new_with_label ("With Note Containing");
+		gtk_menu_append (GTK_MENU (more_search_criteria_values),
+				 notes_item);
+		
+		gtk_signal_connect (GTK_OBJECT (notes_item),
+				    "activate",
+				    add_notes_search_criterion_callback,
+				    bar);
+		
+		
+		gtk_option_menu_set_menu (GTK_OPTION_MENU (more_search_criteria_options),	
+					  more_search_criteria_values);
+		/* We can use the enum indexes, since the above menu items are
+		   in the same order as the enum struct.  */
+		gtk_menu_set_active (GTK_MENU (more_search_criteria_values),
+				     NAUTILUS_LOCATION_SEARCH_CRITERION);
+		
+		gtk_box_pack_start (GTK_BOX (bar->details->hbox), 
+				    more_search_criteria_options, 
+				    TRUE, TRUE, 1);
+		bar->details->more_search_criteria_options = GTK_OPTION_MENU (more_search_criteria_options);	
+	}
+
+	gtk_widget_show_all (GTK_WIDGET (bar->details->more_search_criteria_options));
+}
+	
+
+static void                       
+add_file_type_search_criterion_callback (GtkObject *object,
+					 gpointer data)
+{
+	NautilusComplexSearchBar *bar;
+	NautilusSearchBarCriterion *file_type;
+
+	
+	printf ("Entering filetype search callback\n");
+	g_return_if_fail (GTK_IS_MENU_ITEM (object));
+	g_return_if_fail (NAUTILUS_IS_COMPLEX_SEARCH_BAR (data));
+	
+	bar = NAUTILUS_COMPLEX_SEARCH_BAR (data);
+
+	gtk_widget_hide_all (GTK_WIDGET (bar->details->more_search_criteria_options));
+
+	file_type = nautilus_search_bar_criterion_file_type_new (bar);
+	nautilus_search_bar_criterion_add_to_search_bar (file_type,
+							 bar->details->hbox);
+	nautilus_search_bar_criterion_show (file_type);
+	bar->details->search_criteria = g_list_append (bar->details->search_criteria,
+						       file_type);
+	gtk_widget_show_all (GTK_WIDGET (bar->details->more_options));
+}
+
+
+static void                       
+add_file_name_search_criterion_callback (GtkObject *object,
+					 gpointer data)
+{
+	printf ("Entering file name search callback\n");
+}
+
+
+static void                       
+add_file_location_search_criterion_callback (GtkObject *object,
+					 gpointer data)
+{
+	printf ("Entering location callback\n");
+}
+
+static void                       
+add_content_search_criterion_callback (GtkObject *object,
+				       gpointer data)
+{
+	printf ("Entering search criterion search callback\n");
+}
+
+static void                       
+add_size_search_criterion_callback (GtkObject *object,
+				    gpointer data)
+{	printf ("Entering size criterion search callback\n");
+
+}
+
+static void                       
+add_date_modified_search_criterion_callback (GtkObject *object,
+					     gpointer data)
+{
+	printf ("Entering date modified search callback\n");
+}
+
+static void                       
+add_notes_search_criterion_callback (GtkObject *object,
+				   gpointer data)
 {
 	/* FIXME */
 }
+
+
+static char *                     
+nautilus_complex_search_bar_get_location (NautilusComplexSearchBar *bar)
+{
+	return "file:///tmp";
+}
+

@@ -70,6 +70,8 @@ nautilus_simple_search_bar_initialize_class (NautilusSimpleSearchBarClass *klass
 
   search_bar_class = NAUTILUS_SEARCH_BAR_CLASS (klass);
   search_bar_class->set_search_controls = nautilus_simple_search_bar_set_search_controls;
+
+  klass->get_location = nautilus_simple_search_bar_get_location;
 }
 
 
@@ -132,7 +134,9 @@ nautilus_simple_search_bar_set_search_controls (NautilusSearchBar *search_bar,
 static char *
 nautilus_simple_search_bar_get_location (NautilusSimpleSearchBar *bar)
 {
-  return g_strdup ("file:///tmp");
+	char *search_entry_text;
+	search_entry_text = gtk_entry_get_text (bar->entry);
+	return nautilus_simple_search_criteria_to_search_uri (search_entry_text);
 }
 
 static void
@@ -145,6 +149,7 @@ editable_activated_callback (GtkEditable *editable,
 	g_assert (NAUTILUS_IS_SIMPLE_SEARCH_BAR (bar));
 	
 	uri = nautilus_simple_search_bar_get_location (bar);
+	printf ("Changing location to %s\n", uri);
 	nautilus_navigation_bar_location_changed (NAUTILUS_NAVIGATION_BAR (bar),
 						  uri);
 	g_free (uri);

@@ -1,3 +1,51 @@
+2000-06-28  Rebecca Schulman  <rebecka@eazel.com>
+
+	* libnautilus-extensions/nautilus-search-uri.c:
+	(nautilus_simple_search_criteria_to_search_uri):
+	(add facility to make search uri's from simple
+	search queries )
+	* src/nautilus-complex-search-bar.c:
+	(nautilus_complex_search_bar_initialize_class),
+	(nautilus_complex_search_bar_initialize), (more_options_callback),
+	(add_file_type_search_criterion_callback),
+	(add_file_name_search_criterion_callback),
+	(add_file_location_search_criterion_callback),
+	(add_content_search_criterion_callback),
+	(add_size_search_criterion_callback),
+	(add_date_modified_search_criterion_callback),
+	(add_notes_search_criterion_callback),
+	(nautilus_complex_search_bar_get_location):
+	added ability to add more criterion (still incomplete)
+	* src/nautilus-complex-search-bar.h:
+	* src/nautilus-search-bar-criterion.c:
+	(nautilus_search_bar_criterion_file_type_new),
+	(nautilus_search_bar_criterion_file_name_new),
+	(nautilus_search_bar_criterion_location_new),
+	(nautilus_search_bar_criterion_content_new),
+	(nautilus_search_bar_criterion_size_new),
+	(nautilus_search_bar_criterion_add_to_search_bar),
+	(nautilus_search_bar_criterion_show):
+	added code to actually create various search
+	button criterion sets.
+	* src/nautilus-search-bar-criterion.h:
+	* src/nautilus-simple-search-bar.c:
+	(nautilus_simple_search_bar_initialize_class),
+	(nautilus_simple_search_bar_get_location),
+	(editable_activated_callback):
+	* src/nautilus-simple-search-bar.h:
+	Updated so that the search location 
+	is done correctly.  Adjustments to
+	the nautilus-directory should
+	be all that is needed to make all of
+	this stuff work.
+	* src/nautilus-switchable-search-bar.c:
+	(nautilus_switchable_search_bar_initialize),
+	(nautilus_switchable_search_bar_get_location),
+	(nautilus_switchable_search_bar_set_search_controls):
+	Some widget changes, and search get_location
+	calls respective simple or complex search bar 
+	get_location functions
+
 2000-06-28  Michael Engber  <engber@eazel.com>
 
 	* libnautilus/nautilus-zoomable.c:

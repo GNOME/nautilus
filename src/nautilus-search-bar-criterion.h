@@ -48,10 +48,10 @@
 
 typedef enum {
 	NAUTILUS_FILE_TYPE_SEARCH_CRITERION,
+	NAUTILUS_FILE_NAME_SEARCH_CRITERION,
 	NAUTILUS_LOCATION_SEARCH_CRITERION,
 	NAUTILUS_CONTENT_SEARCH_CRITERION,
 	NAUTILUS_SIZE_SEARCH_CRITERION,
-	NAUTILUS_FILE_NAME_SEARCH_CRITERION,
 	NAUTILUS_DATE_MODIFIED_SEARCH_CRITERION,
 	NAUTILUS_NOTES_SEARCH_CRITERION
 } NautilusSearchBarCriterionType;
@@ -81,8 +81,12 @@ void                           nautilus_search_bar_criterion_add_to_search_bar
                                                                               (NautilusSearchBarCriterion *criterion,
 									       GtkWidget *hbox);
 NautilusSearchBarCriterion *   nautilus_search_bar_criterion_file_name_new    (NautilusComplexSearchBar *bar);
-
-void                           nautilus_search_bar_criterion_add_to_container (GtkContainer *container, 
-									       NautilusSearchBarCriterion *criterion);
-
+NautilusSearchBarCriterion *   nautilus_search_bar_criterion_file_type_new    (NautilusComplexSearchBar *bar);
+NautilusSearchBarCriterion *   nautilus_search_bar_criterion_location_new     (NautilusComplexSearchBar *bar);
+NautilusSearchBarCriterion *   nautilus_search_bar_criterion_content_new      (NautilusComplexSearchBar *bar);
+NautilusSearchBarCriterion *   nautilus_search_bar_criterion_size_new         (NautilusComplexSearchBar *bar);
+NautilusSearchBarCriterion *   nautilus_search_bar_criterion_date_new         (NautilusComplexSearchBar *bar);
+/* Search for stuff in your nautilus notes */
+NautilusSearchBarCriterion *   nautilus_search_bar_criterion_notes_new         (NautilusComplexSearchBar *bar);
+void                           nautilus_search_bar_criterion_show             (NautilusSearchBarCriterion *criterion);
 #endif NAUTILUS_SEARCH_BAR_CRITERION_H

@@ -88,6 +88,7 @@ nautilus_switchable_search_bar_initialize (NautilusSwitchableSearchBar *bar)
 	
 	GtkWidget *label;
 	GtkWidget *event_box;
+	GtkWidget *vbox;
 	GtkWidget *hbox;
 	GtkWidget *find_them, *find_them_label;
 	
@@ -96,6 +97,7 @@ nautilus_switchable_search_bar_initialize (NautilusSwitchableSearchBar *bar)
 	gtk_container_set_border_width (GTK_CONTAINER (event_box),
 					GNOME_PAD_SMALL);
 	
+	vbox = gtk_vbox_new (0, FALSE);
 	label = gtk_label_new (_("Search For:"));
 	gtk_container_add (GTK_CONTAINER (event_box), label);
 	
@@ -114,7 +116,7 @@ nautilus_switchable_search_bar_initialize (NautilusSwitchableSearchBar *bar)
 	gtk_signal_connect (GTK_OBJECT (find_them), "pressed",
 			    search_activated_callback, bar);
 
-	gtk_box_pack_start (GTK_BOX (hbox), find_them, TRUE, TRUE, 1);
+	gtk_box_pack_start (GTK_BOX (hbox), find_them, FALSE, TRUE, 1);
 
 	
 	gtk_container_add (GTK_CONTAINER (bar), hbox);
@@ -134,15 +136,6 @@ nautilus_switchable_search_bar_new (void)
 	return gtk_widget_new (nautilus_switchable_search_bar_get_type (), NULL);
 }
 
-
-static char *                     
-nautilus_switchable_search_bar_get_location (NautilusSwitchableSearchBar *bar)
-{
-	/* FIXME */
-	return g_strdup ("file:///tmp");
-}
-
-				 
 
 void
 nautilus_switchable_search_bar_set_mode (NautilusSwitchableSearchBar *bar,
@@ -187,6 +180,25 @@ search_activated_callback (GtkButton *button,
 
 }
 
+static char *
+nautilus_switchable_search_bar_get_location (NautilusSwitchableSearchBar *bar)
+{
+
+	g_assert (NAUTILUS_IS_SWITCHABLE_SEARCH_BAR (bar));
+
+	
+	switch (bar->mode) {
+	case NAUTILUS_SIMPLE_SEARCH_BAR:
+		return (* NAUTILUS_SIMPLE_SEARCH_BAR_CLASS (GTK_OBJECT (bar->simple_search_bar)->klass)->get_location) (NAUTILUS_SIMPLE_SEARCH_BAR (bar->simple_search_bar));
+		break;
+	case NAUTILUS_COMPLEX_SEARCH_BAR:
+		return (* NAUTILUS_COMPLEX_SEARCH_BAR_CLASS (GTK_OBJECT (bar->complex_search_bar)->klass)->get_location) (NAUTILUS_COMPLEX_SEARCH_BAR (bar->complex_search_bar));
+		break;
+	}
+	return NULL;
+}
+
+
 static void
 nautilus_switchable_search_bar_set_search_controls (NautilusSearchBar *search_bar,
 						    const char *location)
@@ -197,7 +209,8 @@ nautilus_switchable_search_bar_set_search_controls (NautilusSearchBar *search_ba
 	bar = NAUTILUS_SWITCHABLE_SEARCH_BAR (search_bar);
 
 	/* Set the mode of the search bar,
-	   in case preferences have changed */
+	   in case preferences have changed 
+	FIXME:  This doesn't work right */
 	mode = nautilus_search_uri_to_search_bar_mode (location);
 	nautilus_switchable_search_bar_set_mode (bar, mode);
 						 
