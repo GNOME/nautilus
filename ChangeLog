@@ -1,3 +1,13 @@
+2001-11-14  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(volume_is_automounted), (mount_volume_deactivate):
+	Add detection of automounted volume, don't eject automounted CDROMs
+
+	* libnautilus-private/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_set_volume_name):
+	Fix search for volume to modify
+
 2001-11-10  Benedikt Roth  <Benedikt.Roth@gmx.net>
 
 	* components/help/hyperbola-nav-index.c:
