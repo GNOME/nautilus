@@ -119,6 +119,7 @@ struct NautilusListClass {
 	void (* select_next_name) (GtkWidget *widget);
 	void (* handle_dropped_icons) (GtkWidget *widget, GList *icons, int x, int y, int action);
 	void (* get_drag_pixmap) (GtkWidget *widget, int row_index, GdkPixmap **pixmap, GdkBitmap **mask);
+	int  (* get_sort_column_index) (void);
 };
 
 typedef gboolean (* NautilusEachRowFunction) (GtkCListRow *, gpointer);

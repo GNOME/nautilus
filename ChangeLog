@@ -1,3 +1,30 @@
+2000-07-18  Pavel Cisler <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_initialize_class),
+	(nautilus_gdk_set_shifted_foreground_gc_color),
+	(nautilus_list_setup_style_colors), (selected_column_index):
+	* libnautilus-extensions/nautilus-list.h:
+	* src/file-manager/fm-list-view.c: (fm_list_get_drag_pixmap),
+	(fm_list_get_sort_column_index), (create_list):
+	Made it so that the actual sort column is properly higlighted
+	rather than a hardcoded one. Added a signal that nautilus_list
+	can use to ask which column is sorted.
+
+	* libnautilus-extensions/nautilus-gdk-extensions.h:
+	* libnautilus-extensions/nautilus-gdk-extensions.c:
+	(nautilus_gdk_color_to_rgb), (nautilus_shift_color_component),
+	(nautilus_rgb_shift_color):
+	I added these couple checkins back, moved them to the right
+	place.
+	Tweaked nautilus_rgb_shift_color to not change the value of 
+	the alpha component.
+
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	(nautilus_gtk_marshal_INT__NONE):
+	More marshalling cruft.
+
 2000-07-18  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/tree/main.c: (main):

@@ -171,6 +171,7 @@ enum {
 	SELECT_NEXT_NAME,
 	HANDLE_DROPPED_ICONS,
 	GET_DRAG_PIXMAP,
+	GET_SORT_COLUMN_INDEX,
 	LAST_SIGNAL
 };
 
@@ -382,6 +383,14 @@ nautilus_list_initialize_class (NautilusListClass *klass)
 				GTK_TYPE_INT,
 				GTK_TYPE_POINTER,
 				GTK_TYPE_POINTER);
+	list_signals[GET_SORT_COLUMN_INDEX] =
+		gtk_signal_new ("get_sort_column_index",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusListClass, get_sort_column_index),
+				nautilus_gtk_marshal_INT__NONE,
+				GTK_TYPE_INT, 0);
+	
 
 	gtk_object_class_add_signals (object_class, list_signals, LAST_SIGNAL);
 
@@ -1341,55 +1350,10 @@ nautilus_list_key_press (GtkWidget *widget,
 	return TRUE;
 }
 
-static guint32
-nautilus_gdk_color_to_gdk_rgb (const GdkColor *color)
-{
-	guint32 result;
-	
-	result = (0xff0000 | (color->red & 0xff00));
-	result <<= 8;
-	result |= ((color->green & 0xff00) | (color->blue >> 8));
-
-	return result;
-}
-
-static guint32
-nautilus_shift_color_component (guchar component, float shift_by)
-{
-	guint32 result;
-	if (shift_by > 1.0) {
-		result = component * (2 - shift_by);
-	} else {
-		result = 0xff - shift_by * (0xff - component);
-	}
-
-	return result & 0xff;
-}
-
-static guint32
-nautilus_gdk_rgb_shift_color (guint32 color, float shift_by)
-{
-	guint32 result;
-
-	/* alpha doesn't change */
-	result = 0xff00;
-
-	/* shift red by shift_by */
-	result |=  nautilus_shift_color_component((color & 0x00ff0000) >> 16, shift_by);
-	result <<= 8;
-	/* shift green by shift_by */
-	result |=  nautilus_shift_color_component((color & 0x0000ff00) >> 8, shift_by);
-	result <<= 8;
-	/* shift blue by shift_by */
-	result |=  nautilus_shift_color_component((color & 0x000000ff), shift_by);
-
-	return result;
-}
-
 static void
 nautilus_gdk_set_shifted_foreground_gc_color (GdkGC *gc, guint32 color, float shift_by)
 {
-	gdk_rgb_gc_set_foreground (gc, nautilus_gdk_rgb_shift_color (color, shift_by));
+	gdk_rgb_gc_set_foreground (gc, nautilus_rgb_shift_color (color, shift_by));
 }
 
 static GdkGC *
@@ -1411,9 +1375,9 @@ nautilus_list_setup_style_colors (NautilusList *list)
 
 	gdk_rgb_init();
 
-	style_background_color = nautilus_gdk_color_to_gdk_rgb
+	style_background_color = nautilus_gdk_color_to_rgb
 		(&GTK_WIDGET (list)->style->bg [GTK_STATE_NORMAL]);
-	selection_background_color = nautilus_gdk_color_to_gdk_rgb
+	selection_background_color = nautilus_gdk_color_to_rgb
 		(&GTK_WIDGET (list)->style->bg [GTK_STATE_SELECTED]);
 
 	nautilus_gdk_set_shifted_foreground_gc_color (list->details->cell_lighter_background, 
@@ -1738,8 +1702,11 @@ nautilus_list_draw_focus (GtkWidget *widget)
 static int
 selected_column_index (NautilusList *list)
 {
-	/* FIXME - this has to be based on selected column, not hardcoded */
-	return 2;
+	int column;
+
+	column = 2;
+	gtk_signal_emit_by_name (GTK_OBJECT (list), "get_sort_column_index", &column);
+	return column;
 }
 
 static void

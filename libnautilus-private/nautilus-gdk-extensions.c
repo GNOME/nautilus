@@ -458,6 +458,68 @@ nautilus_parse_rgb_with_white_default (const char *color_spec)
 }
 
 /**
+ * nautilus_gdk_color_to_rgb
+ * @color: A GdkColor style color.
+ * Returns: An rgb value.
+ *
+ * Converts from a GdkColor stlye color to a gdk_rgb one.
+ * Alpha gets set to fully opaque
+ */
+guint32
+nautilus_gdk_color_to_rgb (const GdkColor *color)
+{
+	guint32 result;
+	
+	result = (0xff0000 | (color->red & 0xff00));
+	result <<= 8;
+	result |= ((color->green & 0xff00) | (color->blue >> 8));
+
+	return result;
+}
+
+static guint32
+nautilus_shift_color_component (guchar component, float shift_by)
+{
+	guint32 result;
+	if (shift_by > 1.0) {
+		result = component * (2 - shift_by);
+	} else {
+		result = 0xff - shift_by * (0xff - component);
+	}
+
+	return result & 0xff;
+}
+
+/**
+ * nautilus_rgb_shift_color
+ * @color: A color.
+ * @shift_by: darken or lighten factor.
+ * Returns: An darkened or lightened rgb value.
+ *
+ * Darkens (@shift_by > 1) or lightens (@shift_by < 1)
+ * @color.
+ */
+guint32
+nautilus_rgb_shift_color (guint32 color, float shift_by)
+{
+	guint32 result;
+
+	/* shift red by shift_by */
+	result = nautilus_shift_color_component((color & 0x00ff0000) >> 16, shift_by);
+	result <<= 8;
+	/* shift green by shift_by */
+	result |=  nautilus_shift_color_component((color & 0x0000ff00) >> 8, shift_by);
+	result <<= 8;
+	/* shift blue by shift_by */
+	result |=  nautilus_shift_color_component((color & 0x000000ff), shift_by);
+
+	/* alpha doesn't change */
+	result |= (0xff000000 & color);
+
+	return result;
+}
+
+/**
  * nautilus_gdk_font_equal
  * @font_a_null_allowed: A font or NULL.
  * @font_b_null_allowed: A font or NULL.

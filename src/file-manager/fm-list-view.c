@@ -632,7 +632,6 @@ fm_list_get_drag_pixmap (GtkWidget *widget, int row_index, GdkPixmap **pixmap,
 	GtkCList *clist;
 	GtkCListRow *row;
 
-	g_assert (widget != NULL);
 	g_assert (NAUTILUS_IS_LIST (widget));
 
 	clist = GTK_CLIST (widget);
@@ -643,6 +642,15 @@ fm_list_get_drag_pixmap (GtkWidget *widget, int row_index, GdkPixmap **pixmap,
 	*pixmap = gdk_pixmap_ref (GTK_CELL_PIXMAP (row->cell[LIST_VIEW_COLUMN_ICON])->pixmap);
 	*mask = gdk_bitmap_ref (GTK_CELL_PIXMAP (row->cell[LIST_VIEW_COLUMN_ICON])->mask);
 
+}
+
+static int
+fm_list_get_sort_column_index (GtkWidget *widget, FMListView *list_view)
+{
+	g_assert (NAUTILUS_IS_LIST (widget));
+	g_assert (FM_IS_LIST_VIEW (list_view));
+
+	return FM_LIST_VIEW (list_view)->details->sort_column;
 }
 
 static void
@@ -777,6 +785,10 @@ create_list (FMListView *list_view)
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "get_drag_pixmap",
 			    fm_list_get_drag_pixmap,
+			    list_view);
+	gtk_signal_connect (GTK_OBJECT (list),
+			    "get_sort_column_index",
+			    GTK_SIGNAL_FUNC (fm_list_get_sort_column_index),
 			    list_view);
 
 	gtk_container_add (GTK_CONTAINER (list_view), GTK_WIDGET (list));

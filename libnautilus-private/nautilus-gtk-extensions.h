@@ -127,6 +127,10 @@ void              nautilus_gtk_adjustment_clamp_value          (GtkAdjustment   
 #define nautilus_gtk_marshal_STRING__POINTER_POINTER_POINTER nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER
 #define nautilus_gtk_marshal_STRING__POINTER_POINTER_STRING nautilus_gtk_marshal_POINTER__POINTER_POINTER_POINTER
 
+void nautilus_gtk_marshal_INT__NONE                                             (GtkObject     *object,
+										 GtkSignalFunc  func,
+										 gpointer       func_data,
+										 GtkArg        *args);
 void nautilus_gtk_marshal_NONE__DOUBLE                                          (GtkObject     *object,
 										 GtkSignalFunc  func,
 										 gpointer       func_data,
