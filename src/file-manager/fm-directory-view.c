@@ -3445,13 +3445,17 @@ new_folder_done (const char *new_folder_uri, gpointer user_data)
 
 	data = (NewFolderData *)user_data;
 	
+	directory_view = data->directory_view;
+	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
+
+	g_signal_handlers_disconnect_by_func (directory_view,
+					      G_CALLBACK (track_newly_added_uris),
+					      (void *) data);
+
 	if (new_folder_uri == NULL) {
 		goto fail;
 	}
 	
-	directory_view = data->directory_view;
-	g_assert (FM_IS_DIRECTORY_VIEW (directory_view));
-
 	screen = gtk_widget_get_screen (GTK_WIDGET (directory_view));
 	screen_string = g_strdup_printf ("%d", gdk_screen_get_number (screen));
 
@@ -3461,10 +3465,6 @@ new_folder_done (const char *new_folder_uri, gpointer user_data)
 		 NULL,
 		 screen_string);
 	g_free (screen_string);
-
-	g_signal_handlers_disconnect_by_func (directory_view,
-					      G_CALLBACK (track_newly_added_uris),
-					      (void *) data);
 
 	if (g_hash_table_lookup_extended (data->added_uris, new_folder_uri, NULL, NULL)) {
 		/* The file was already added */
@@ -5366,7 +5366,13 @@ real_update_menus (FMDirectoryView *view)
 	if (view->details->scripts_invalid) {
 		update_scripts_menu (view);
 	}
-	if (view->details->templates_invalid) {
+	nautilus_bonobo_set_sensitive (view->details->ui, 
+				       FM_DIRECTORY_VIEW_MENU_PATH_NEW_DOCUMENTS,
+				       can_create_files);
+	nautilus_bonobo_set_sensitive (view->details->ui, 
+				       FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND_NEW_DOCUMENTS,
+				       can_create_files);
+	if (can_create_files && view->details->templates_invalid) {
 		update_templates_menu (view);
 	}
 }

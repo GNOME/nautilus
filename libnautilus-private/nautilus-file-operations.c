@@ -2038,7 +2038,7 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 
 typedef struct {
 	GnomeVFSAsyncHandle *handle;
-	void (* done_callback)(const char *new_folder_uri, gpointer data);
+	NautilusNewFolderCallback done_callback;
 	gpointer data;
 	GtkWidget *parent_view;
 } NewFolderTransferState;
@@ -2076,6 +2076,7 @@ new_folder_transfer_callback (GnomeVFSAsyncHandle *handle,
 {
 	NewFolderTransferState *state;
 	char *temp_string;
+	char *new_uri;
 	
 	state = (NewFolderTransferState *) data;
 
@@ -2090,7 +2091,12 @@ new_folder_transfer_callback (GnomeVFSAsyncHandle *handle,
 		switch (progress_info->status) {
 		case GNOME_VFS_XFER_PROGRESS_STATUS_OK:
 			nautilus_file_changes_consume_changes (TRUE);
-			(* state->done_callback) (progress_info->target_name, state->data);
+			new_uri = NULL;
+			if (progress_info->vfs_status == GNOME_VFS_OK) {
+				new_uri = progress_info->target_name;
+			}
+			(* state->done_callback) (new_uri,
+						  state->data);
 			return 1;
 	
 		case GNOME_VFS_XFER_PROGRESS_STATUS_DUPLICATE:
@@ -2132,7 +2138,7 @@ new_folder_transfer_callback (GnomeVFSAsyncHandle *handle,
 void 
 nautilus_file_operations_new_folder (GtkWidget *parent_view, 
 				     const char *parent_dir,
-				     void (*done_callback) (const char *, gpointer),
+				     NautilusNewFolderCallback done_callback,
 				     gpointer data)
 {
 	GList *target_uri_list;
@@ -2169,7 +2175,7 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 
 typedef struct {
 	GnomeVFSAsyncHandle *handle;
-	void (* done_callback)(const char *new_folder_uri, gpointer data);
+	NautilusNewFileCallback done_callback;
 	gpointer data;
 	GtkWidget *parent_view;
 	char *empty_file;
@@ -2233,6 +2239,7 @@ new_file_transfer_callback (GnomeVFSAsyncHandle *handle,
 
 	case GNOME_VFS_XFER_PHASE_COMPLETED:
 		uri = NULL;
+		
 		g_hash_table_foreach (state->debuting_uris,
 				      get_new_file_uri, &uri);
 
@@ -2294,7 +2301,7 @@ void
 nautilus_file_operations_new_file (GtkWidget *parent_view, 
 				   const char *parent_dir,
 				   const char *source_uri_text,
-				   void (*done_callback) (const char *, gpointer),
+				   NautilusNewFileCallback done_callback,
 				   gpointer data)
 {
 	GList *target_uri_list;
