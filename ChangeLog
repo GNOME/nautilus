@@ -1,3 +1,26 @@
+2000-09-19  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1244 (Nautilus window size is hardwired)
+	Fixed bug 2870 (Windows are too tall for 1024x480 screen of
+	Vaio C1XD picturebook)
+	Fixed bug 3025 (Can't shrink window smaller than large initial size)
+
+	* src/nautilus-window.c: 
+	Added #defines for window minimum and default width & height.
+
+	(get_max_forced_height), (get_max_forced_width): New helper
+	functions, broken out of nautilus_window_size_request, that
+	return the maximum dimensions a window should be programatically
+	forced to. They return 90% of the screen width/height.
+	
+	(set_initial_window_geometry): New function, broken out of
+	nautilus_window_constructed. Uses #defines and 
+	get_max_forced_width/height to determine initial and minimum
+	window sizes. Set policy so that user can stretch window smaller,
+	but only down to sensible minimum size.
+	(nautilus_window_constructed): call set_initial_window_geometry.
+	(nautilus_window_size_request): call get_max_forced_width/height.
+
 2000-09-19  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-lib-self-check-functions.h:

@@ -77,6 +77,14 @@
 /* default web search uri - FIXME bugzilla.eazel.com 2465: this will be changed to point to the Eazel service */
 #define DEFAULT_SEARCH_WEB_URI "http://www.google.com"
 
+/* window geometry */
+#define NAUTILUS_WINDOW_MIN_WIDTH	450
+#define NAUTILUS_WINDOW_MIN_HEIGHT	350
+
+#define NAUTILUS_WINDOW_DEFAULT_WIDTH	700
+#define NAUTILUS_WINDOW_DEFAULT_HEIGHT	550
+
+
 enum {
 	ARG_0,
 	ARG_APP_ID,
@@ -270,6 +278,63 @@ install_status_bar (GnomeApp *app,
 	gtk_box_pack_start (GTK_BOX (app->vbox), bin, FALSE, FALSE, 0);
 }
 
+/* Code should never force the window taller than this size.
+ * (The user can still stretch the window taller if desired).
+ */
+static guint
+get_max_forced_height (void)
+{
+	return (gdk_screen_height () * 90) / 100;
+}
+
+/* Code should never force the window wider than this size.
+ * (The user can still stretch the window wider if desired).
+ */
+static guint
+get_max_forced_width (void)
+{
+	return (gdk_screen_width () * 90) / 100;
+}
+
+static void
+set_initial_window_geometry (NautilusWindow *window)
+{
+	guint max_width_for_screen, max_height_for_screen;
+
+	/* Don't let GTK determine the minimum size
+	 * automatically. It will insist that the window be
+	 * really wide based on some misguided notion about
+	 * the content view area. Also, it might start the
+	 * window wider (or taller) than the screen, which
+	 * is evil. So we choose semi-arbitrary initial and
+	 * minimum widths instead of letting GTK decide.
+	 */
+
+	max_width_for_screen = get_max_forced_width ();
+	max_height_for_screen = get_max_forced_height ();
+
+	gtk_widget_set_usize (GTK_WIDGET (window), 
+			      MIN (NAUTILUS_WINDOW_MIN_WIDTH, 
+			           max_width_for_screen),
+			      MIN (NAUTILUS_WINDOW_MIN_HEIGHT, 
+			           max_height_for_screen));
+
+	gtk_window_set_default_size (GTK_WINDOW (window), 
+				     MIN (NAUTILUS_WINDOW_DEFAULT_WIDTH, 
+				          max_width_for_screen), 
+				     MIN (NAUTILUS_WINDOW_DEFAULT_HEIGHT, 
+				          max_height_for_screen));
+
+	gtk_window_set_policy (GTK_WINDOW (window), 
+			       FALSE,  /* don't let window be stretched 
+			                  smaller than usize */
+			       TRUE,   /* do let the window be stretched 
+			                  larger than default size */
+			       FALSE); /* don't shrink the window 
+			                  automatically to fit contents */
+
+}
+
 static void
 nautilus_window_constructed (NautilusWindow *window)
 {
@@ -345,12 +410,8 @@ nautilus_window_constructed (NautilusWindow *window)
         if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
 		window->content_hbox = gtk_widget_new (NAUTILUS_TYPE_GENEROUS_BIN, NULL);
 	} else {
-		/* set up window contents and policy */	
-		gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
-
-		/* FIXME bugzilla.eazel.com 1244: Hard-wired size here? */
-		gtk_window_set_default_size (GTK_WINDOW (window), 650, 400);
-
+		set_initial_window_geometry (window);
+	
 		window->content_hbox = nautilus_horizontal_splitter_new ();
 
 		/* FIXME bugzilla.eazel.com 1245: No constant for the default? */
@@ -576,8 +637,8 @@ nautilus_window_size_request (GtkWidget		*widget,
 	 * to be requested, should still be fixed.  This code is here only to 
 	 * prevent the extremely frustrating consequence of such bugs.
 	 */
-	max_width = (gdk_screen_width () * 90) / 100;
-	max_height = (gdk_screen_height () * 90) / 100;
+	max_width = get_max_forced_width ();
+	max_height = get_max_forced_height ();
 
 	if (requisition->width > max_width) {
 		requisition->width = max_width;
