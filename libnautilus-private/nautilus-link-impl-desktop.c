@@ -475,6 +475,7 @@ nautilus_link_impl_desktop_get_link_uri_from_desktop (DesktopFile *desktop_file)
 		}
 		g_free (launch_string);
 	} else if ((strcmp (type, NAUTILUS_LINK_GENERIC_TAG) == 0) ||
+		   (strcmp (type, NAUTILUS_LINK_MOUNT_TAG) == 0) ||
 		   (strcmp (type, NAUTILUS_LINK_TRASH_TAG) == 0) ||
 		   (strcmp (type, NAUTILUS_LINK_HOME_TAG) == 0)) {
 		desktop_file_get_string (desktop_file,
