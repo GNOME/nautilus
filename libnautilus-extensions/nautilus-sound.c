@@ -42,7 +42,6 @@ kill_sound_if_necessary (void)
 	
 	/* fetch the sound state */
 	sound_process = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE, 0);
-
 	/* if there was a sound playing, kill it */
 	if (sound_process > 0) {
 		kill (-sound_process, SIGTERM);
@@ -83,7 +82,13 @@ nautilus_sound_register_sound (pid_t sound_process)
 gboolean
 nautilus_sound_can_play_sound (void)
 {
-	int open_result;
+	int open_result, sound_process;
+
+	/* first see if there's already one in progress; if so, return true */
+	sound_process = nautilus_preferences_get_enum (NAUTILUS_PREFERENCES_CURRENT_SOUND_STATE, 0);
+	if (sound_process > 0) {
+		return TRUE;
+	}
 	
 	open_result = esd_audio_open();
 	if (open_result < 0) {

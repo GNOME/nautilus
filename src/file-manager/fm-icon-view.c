@@ -1825,18 +1825,7 @@ play_file (gpointer callback_data)
    
 static void
 preview_sound (NautilusFile *file, gboolean start_flag)
-{	
-	/*
-	pid_t child;
-	int status_result;
-
-	if (mp3_pid) {
-		kill (-mp3_pid, SIGTERM);
- 		child = waitpid (mp3_pid, &status_result, 0);       
-		mp3_pid = 0;
-	}
-	*/
-	
+{		
 	nautilus_sound_kill_sound ();
 	
 	if (timeout >= 0) {

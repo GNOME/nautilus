@@ -1,3 +1,13 @@
+2000-10-06  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-sound.c:
+	(kill_sound_if_necessary), (nautilus_sound_can_play_sound):
+	fixed bug 3493, sound previews don't stop playing, by amending
+	the logic in can_play_sound to return TRUE if a sound is
+	already playing.
+	* src/file-manager/fm-icon-view.c: (preview_sound):
+	removed some code that was commented out
+	
 2000-10-06  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-global-preferences.c:
