@@ -185,6 +185,7 @@ icon_DATA =\
 	search.png \
 	SearchWeb.png \
 	Services.png \
+	services-rpm-72.png \
 	temp-home.png \
 	text-selection-frame.png \
 	theme_preview.png \

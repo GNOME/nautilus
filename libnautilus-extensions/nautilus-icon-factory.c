@@ -83,7 +83,7 @@ static const char *icon_file_name_suffixes[] =
 #define ICON_NAME_CHARACTER_DEVICE      "i-chardev"
 #define ICON_NAME_BLOCK_DEVICE          "i-blockdev"
 #define ICON_NAME_BROKEN_SYMBOLIC_LINK  "i-symlink"
-#define ICON_NAME_INSTALL		"gnome-pack-rpm"
+#define ICON_NAME_INSTALL		"services-rpm"
 
 #define ICON_NAME_THUMBNAIL_LOADING     "loading"
 
