@@ -253,21 +253,69 @@ static EelPreferencesItemDescription navigation_items[] = {
 };
 #endif
 
+static const char *show_text_descriptions[] = {
+	N_("Always show text in icons"),
+	N_("Show text in icons for local files"),
+	N_("Never show text in icons")
+};
+
+static const char *show_count_descriptions[] = {
+	N_("Always show the number of items in folders"),
+	N_("Show the number of items in local folders"),
+	N_("Never show the number of items in folders")
+};
+
+static const char *show_thumbnail_descriptions[] = {
+	N_("Always show thumbnails"),
+	N_("Show thumbnails for local files"),
+	N_("Never show thumbnails")
+};
+
+static const char *preview_sound_descriptions[] = {
+	N_("Always preview sound files"),
+	N_("Preview local sound files"),
+	N_("Never preview sound files")
+};
+
 static EelPreferencesItemDescription tradeoffs_items[] = {
 	{ N_("Show Text in Icons"),
 	  NAUTILUS_PREFERENCES_SHOW_TEXT_IN_ICONS,
 	  NULL,
-	  EEL_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
+	  EEL_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO,
+	  NULL,
+	  0,
+	  0,
+	  NULL,
+	  NULL,
+	  NULL,
+	  G_N_ELEMENTS (show_text_descriptions),
+	  show_text_descriptions
 	},
 	{ N_("Show Number of Items in Folders"),
 	  NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
 	  NULL,
-	  EEL_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
+	  EEL_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO,
+	  NULL,
+	  0,
+	  0,
+	  NULL,
+	  NULL,
+	  NULL,
+	  G_N_ELEMENTS (show_count_descriptions),
+	  show_count_descriptions
 	},
 	{ N_("Show Thumbnails for Image Files"),
 	  NAUTILUS_PREFERENCES_SHOW_IMAGE_FILE_THUMBNAILS,
 	  NULL,
-	  EEL_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
+	  EEL_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO,
+	  NULL,
+	  0,
+	  0,
+	  NULL,
+	  NULL,
+	  NULL,
+	  G_N_ELEMENTS (show_thumbnail_descriptions),
+	  show_thumbnail_descriptions
 	},
 	{ N_("Show Thumbnails for Image Files"),
 	  NAUTILUS_PREFERENCES_IMAGE_FILE_THUMBNAIL_LIMIT,
@@ -277,7 +325,15 @@ static EelPreferencesItemDescription tradeoffs_items[] = {
 	{ N_("Preview Sound Files"),
 	  NAUTILUS_PREFERENCES_PREVIEW_SOUND,
 	  NULL,
-	  EEL_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO
+	  EEL_PREFERENCE_ITEM_ENUMERATION_HORIZONTAL_RADIO,
+	  NULL,
+	  0,
+	  0,
+	  NULL,
+	  NULL,
+	  NULL,
+	  G_N_ELEMENTS (preview_sound_descriptions),
+	  preview_sound_descriptions
 	},
 	{ NULL }
 };
