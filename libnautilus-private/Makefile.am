@@ -65,6 +65,7 @@ libnautilus_private_la_SOURCES = \
 	nautilus-file-operations.c \
 	nautilus-file-utilities.c \
 	nautilus-file.c \
+	nautilus-find-icon-image.c \
 	nautilus-font-factory.c \
 	nautilus-global-preferences.c \
 	nautilus-horizontal-splitter.c \
@@ -130,6 +131,7 @@ libnautilus_private_la_SOURCES = \
 	nautilus-file-utilities.h \
 	nautilus-file.h \
 	nautilus-file-queue.h \
+	nautilus-find-icon-image.h \
 	nautilus-font-factory.h \
 	nautilus-global-preferences.h \
 	nautilus-horizontal-splitter.h \

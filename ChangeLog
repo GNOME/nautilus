@@ -1,3 +1,30 @@
+2001-10-08  Darin Adler  <darin@bentspoon.com>
+
+	Separate out the part of the code that locates icons.
+
+	* libnautilus-private/Makefile.am: New source files.
+	
+	* libnautilus-private/nautilus-find-icon-image.h: New.
+	* libnautilus-private/nautilus-find-icon-image.c: New.
+
+	* libnautilus-private/nautilus-icon-factory.c:
+	(cache_icon_new): Use new theme structure.
+	(nautilus_icon_factory_destroy): Use new theme structure.
+	(get_mime_type_icon_without_suffix): Use suffix remove function
+	moved into new file by its new name.
+	(set_theme_name): Helper function to keep the theme change code
+	simpler.
+	(icon_theme_changed_callback): Rewrote to get rid of confused
+	juxtaposition of old and new theme concepts.
+	(image_uri_to_name_or_uri): Use suffix remove function moved into
+	new file by its new name.
+	(nautilus_icon_factory_get_emblem_icon_by_name): Use emblem prefix
+	by new name.
+	(load_named_icon): Use nautilus_get_icon_file_name function in new
+	source file.
+	(load_specific_icon), (scale_icon), (load_icon_with_embedded_text):
+	IconDetails is now NautilusIconDetails.
+
 2001-10-07  Darin Adler  <darin@bentspoon.com>
 
 	* Makefile.am:
