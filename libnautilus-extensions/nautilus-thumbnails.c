@@ -343,6 +343,7 @@ check_for_thumbnails (void)
 	GList *head;
 	NautilusFile *file;
 	int status;
+	char *current_thumbnail;
 	gboolean task_terminated;
 	
 	info = (NautilusThumbnailInfo*) thumbnails->data;
@@ -351,12 +352,18 @@ check_for_thumbnails (void)
 	if (task_terminated) {
 		/* the thumbnail task has completed, so update the current entry from the list */
 		file = nautilus_file_get (info->thumbnail_uri);
+
+		current_thumbnail = make_thumbnail_path (info->thumbnail_uri, FALSE, info->is_local, info->anti_aliased);
 					
-		if (file != NULL) {
+		if (file != NULL && vfs_file_exists (current_thumbnail)) {
 			nautilus_file_changed (file);
-			nautilus_file_unref (file);
 		}
 
+		if (file != NULL) {
+			nautilus_file_unref (file);
+		}
+		g_free (current_thumbnail);
+		
 		g_free (info->thumbnail_uri);
 		g_free (info);
 		head = thumbnails;

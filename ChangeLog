@@ -1,3 +1,14 @@
+2000-09-29  Andy Hertzfeld  <andy@eazel.com>
+
+	* libnautilus-extensions/nautilus-thumbnails.c:
+	(check_for_thumbnails):
+	partially fixed bug 3342, thumbnailing never gives up on bad images.
+	If thumbnailing failed, it would obsessively try over and over since
+	it was calling nautilus_file_changed even if it failed.  Fixed by
+	calling nautilus_file_changed only when it succeeds. It still will
+	try once each time you enter the containing directory, and it has
+	the wrong icon, both of which I'll fix soon.
+	
 2000-09-29  Rebecca Schulman  <rebecka@eazel.com>
 
 	* libnautilus/nautilus-clipboard.c: (add_menu_items_callback),
