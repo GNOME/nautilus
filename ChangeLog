@@ -1,5 +1,9 @@
 2000-04-28  Maciej Stachowiak  <mjs@eazel.com>
 
+	* src/ntl-content-view.c (nautilus_content_view_set_active): Fix a
+	refcounting problem; make sure to unref the interface we
+	query_local_interface for.
+
 	* components/music/nautilus-music-view.oafinfo: Add "audio/x-mp3"
 	as directory content type that satisfies the requirement so the
 	music view activates automatically (the point of the below

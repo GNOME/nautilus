@@ -128,9 +128,14 @@ nautilus_content_view_init (NautilusContentView *view)
 void 
 nautilus_content_view_set_active (NautilusContentView *view)
 {
-  bonobo_control_frame_control_activate 
-    (BONOBO_CONTROL_FRAME (bonobo_object_query_local_interface 
-                           (NAUTILUS_VIEW (view)->view_frame, "IDL:Bonobo/ControlFrame:1.0")));
+  BonoboControlFrame *control_frame;
+
+  control_frame = BONOBO_CONTROL_FRAME (bonobo_object_query_local_interface 
+                                        (NAUTILUS_VIEW (view)->view_frame, "IDL:Bonobo/ControlFrame:1.0"));
+
+  bonobo_control_frame_control_activate (control_frame);
+
+  bonobo_object_unref (BONOBO_OBJECT (control_frame));
 }
 
 static void
