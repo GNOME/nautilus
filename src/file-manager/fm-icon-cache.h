@@ -51,16 +51,18 @@ typedef enum {
 
 typedef struct _FMIconCache FMIconCache;
 
-FMIconCache *fm_icon_cache_new               (const char   *theme_name);
-void         fm_icon_cache_destroy           (FMIconCache  *factory);
-void         fm_icon_cache_set_theme         (FMIconCache  *factory,
-                                              const char   *theme_name);
-FMIconCache *fm_get_current_icon_cache       (void);
+FMIconCache *fm_icon_cache_new                 (const char   *theme_name);
+void         fm_icon_cache_destroy             (FMIconCache  *factory);
+void         fm_icon_cache_set_theme           (FMIconCache  *factory,
+                                                const char   *theme_name);
+FMIconCache *fm_get_current_icon_cache         (void);
+
+guint	     nautilus_icon_size_for_zoom_level (NautilusZoomLevel zoom_level);
 
 /* Ownership of a ref. count in this pixbuf comes with the deal */
-GdkPixbuf *  fm_icon_cache_get_icon_for_file (FMIconCache  *factory,
-                                              NautilusFile *file,
-                                              guint         size_in_pixels);
+GdkPixbuf *  fm_icon_cache_get_icon_for_file   (FMIconCache  *factory,
+                                                NautilusFile *file,
+                                                guint         size_in_pixels);
 
 #endif
 

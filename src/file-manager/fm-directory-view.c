@@ -84,6 +84,7 @@ static void display_selection_info 		(FMDirectoryView *view);
 static void fm_directory_view_initialize_class	(FMDirectoryViewClass *klass);
 static void fm_directory_view_initialize 	(FMDirectoryView *view);
 static void fm_directory_view_destroy 		(GtkObject *object);
+static void append_background_items 		(FMDirectoryView *view, GtkMenu *menu);
 static GtkMenu *create_item_context_menu        (FMDirectoryView *view,
 						 NautilusFile *file);
 static GtkMenu *create_background_context_menu  (FMDirectoryView *view);
@@ -647,8 +648,32 @@ popup_temporary_context_menu (GtkMenu *menu)
 	gtk_object_unref (GTK_OBJECT(menu));
 }
 
-/* FIXME - need better architecture for setting these. Also need to
-   merge per-view items. */
+static void
+append_background_items (FMDirectoryView *view, GtkMenu *menu)
+{
+	GtkWidget *menu_item;
+
+	menu_item = gtk_menu_item_new_with_label ("Select all");
+	gtk_widget_set_sensitive (menu_item, FALSE);
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+
+	menu_item = gtk_menu_item_new_with_label ("Zoom in");
+	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
+		           GTK_SIGNAL_FUNC (zoom_in_cb), view);
+
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+
+	menu_item = gtk_menu_item_new_with_label ("Zoom out");
+	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
+		           GTK_SIGNAL_FUNC (zoom_out_cb), view);
+	
+        gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+}
+
+/* FIXME - need better architecture for setting these. */
 
 static GtkMenu *
 create_item_context_menu (FMDirectoryView *view,
@@ -669,6 +694,17 @@ create_item_context_menu (FMDirectoryView *view,
 	gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 
+	/* separator between item-specific and view-general menu items */
+	menu_item = gtk_menu_item_new ();
+	gtk_widget_show (menu_item);
+	gtk_menu_append (menu, menu_item);
+
+	/* Show commands not specific to this item also, since it might
+	 * be hard (especially in list view) to find a place to click
+	 * that's not on an item.
+	 */
+	append_background_items (view, menu);
+
 	return menu;
 }
 
@@ -678,29 +714,11 @@ static GtkMenu *
 create_background_context_menu (FMDirectoryView *view)
 {
 	GtkMenu *menu;
-	GtkWidget *menu_item;
 
 	menu = GTK_MENU (gtk_menu_new ());
 
-	menu_item = gtk_menu_item_new_with_label ("Select all");
-	gtk_widget_set_sensitive (menu_item, FALSE);
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
-
-	menu_item = gtk_menu_item_new_with_label ("Zoom in");
-	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
-		           GTK_SIGNAL_FUNC (zoom_in_cb), view);
-
-	gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
-
-	menu_item = gtk_menu_item_new_with_label ("Zoom out");
-	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
-		           GTK_SIGNAL_FUNC (zoom_out_cb), view);
+	append_background_items (view, menu);
 	
-        gtk_widget_show (menu_item);
-	gtk_menu_append (menu, menu_item);
-
 	gtk_object_ref(GTK_OBJECT(menu));
 	gtk_object_sink(GTK_OBJECT(menu));
 	return menu;

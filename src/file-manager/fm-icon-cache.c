@@ -449,3 +449,36 @@ fm_icon_cache_scale (FMIconCache *factory,
 
 	return result;
 }
+
+
+/* 
+ * Return nominal icon size for given zoom level.
+ * @zoom_level: zoom level for which to find matching icon size.
+ * 
+ * Return value: icon size between NAUTILUS_ICON_SIZE_SMALLEST and
+ * NAUTILUS_ICON_SIZE_LARGEST, inclusive.
+ */
+guint
+nautilus_icon_size_for_zoom_level (NautilusZoomLevel zoom_level)
+{
+	switch (zoom_level)
+	{
+		case NAUTILUS_ZOOM_LEVEL_SMALLEST:
+			return NAUTILUS_ICON_SIZE_SMALLEST;
+		case NAUTILUS_ZOOM_LEVEL_SMALLER:
+			return NAUTILUS_ICON_SIZE_SMALLER;
+		case NAUTILUS_ZOOM_LEVEL_SMALL:
+			return NAUTILUS_ICON_SIZE_SMALL;
+		case NAUTILUS_ZOOM_LEVEL_STANDARD:
+			return NAUTILUS_ICON_SIZE_STANDARD;
+		case NAUTILUS_ZOOM_LEVEL_LARGE:
+			return NAUTILUS_ICON_SIZE_LARGE;
+		case NAUTILUS_ZOOM_LEVEL_LARGER:
+			return NAUTILUS_ICON_SIZE_LARGER;
+		case NAUTILUS_ZOOM_LEVEL_LARGEST:
+			return NAUTILUS_ICON_SIZE_LARGEST;
+		default:
+			g_assert_not_reached();
+			return NAUTILUS_ICON_SIZE_STANDARD;
+	}
+}

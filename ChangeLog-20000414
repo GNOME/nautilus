@@ -1,3 +1,43 @@
+2000-01-28  John Sullivan  <sullivan@eazel.com>
+
+	Made zooming work in directory list view. Also made
+	right-click menu on a directory view always include
+	the non-icon-specific items.
+
+	* src/file-manager/fm-icon-cache.h:
+	* src/file-manager/fm-icon-cache.c:
+	(nautilus_icon_size_for_zoom_level): New function, maps
+	between NautilusZoomLevel and nominal icon sizes.
+	
+	* src/file-manager/fm-directory-view.c:
+	(append_background_items): New utility function, adds the
+	non-file-specific context menu items to a menu.
+	(create_background_context_menu): Moved most of guts to
+	new append_background_items, which this now calls.
+	(create_item_context_menu): Now adds a separator and then
+	calls append_background_items. This means right-clicking on
+	an icon will show the icon-specific commands followed by the
+	non-icon-specific ones. This makes the non-icon-specific ones
+	easier to discover and access, especially in list view where
+	anywhere you click in a long list gives the item's context menu.
+	
+	* src/file-manager/fm-directory-view-list.c:
+	Now stores zoom level rather than icon size in details structure.
+	(fm_directory_view_list_bump_zoom_level),
+	(fm_directory_view_list_set_zoom_level): New functions for setting
+	the zoom level.
+	(fm_directory_view_list_initialize_class): Wire up bump_zoom_level to
+	slot in parent class structure.
+	(compare_rows), (add_to_flist): Changed mechanism that temporarily
+	stores pending row data to use object data rather than a static variable
+	so it will work with multiple list views at the same time.
+	(fm_directory_view_list_get_icon_size): New function, gets icon size
+	from zoom level stored in details structure.
+	(create_flist): Deploy fm_directory_view_list_get_icon_size where
+	details structure was examined before.
+	(install_icon): Removed NautilusFile and column parameters; made function
+	compute these internally.
+	
 2000-01-28  Elliot Lee  <sopwith@redhat.com>
 	* components/html/ntl-web-browser.c: Remove use of gtk_html_parse() - deprecated
 	in latest GtkHTML.
