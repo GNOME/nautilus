@@ -1,3 +1,26 @@
+2001-03-05  Darin Adler  <darin@eazel.com>
+
+	reviewed by: John Sullivan <sullivan@eazel.com>
+
+	Fix bug 7381 (warning every time I start Nautilus because my
+	/usr/share/fonts/default/Type1/fonts.dir has no fonts in it):
+	
+	* libnautilus-extensions/nautilus-font-manager.c:
+	(font_description_table_new): Tolerate files with 0 fonts in them,
+	but don't tolerate files where the count is > than the number of
+	lines in the file.
+
+	Fix bug 7362 (two font menus appear in preferences in non-smooth
+	mode):
+	
+	* libnautilus-extensions/nautilus-global-preferences.c:
+	(appearance_pane_update): Fix spelling error.
+	(global_preferences_create_font_group): Fix wrong variable name
+	and spelling error.
+	
+	* libnautilus-extensions/nautilus-string-list.c:
+	Fix spelling error ("supress" -> "suppress").
+
 2001-03-05  John Harper  <jsh@eazel.com>
 
 	reviewed by: Pavel Cisler  <pavel@eazel.com>

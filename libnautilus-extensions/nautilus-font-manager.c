@@ -510,6 +510,8 @@ font_description_table_new (const char *font_directory,
 	char *description_contents;
 	NautilusStringList *tokenized_contents;
 	int i;
+	int length;
+	gboolean got_count;
 	int count;
 	char *line;
 
@@ -519,6 +521,7 @@ font_description_table_new (const char *font_directory,
 	description_file = nautilus_make_path (font_directory, FONTS_DIR_FILE_NAME);
 	description_contents = file_as_string (description_file);
 	
+	/* Error reading file, report errors by returning NULL. */
 	if (description_contents == NULL) {
 		g_free (description_file);
 		return NULL;
@@ -526,16 +529,16 @@ font_description_table_new (const char *font_directory,
 
 	tokenized_contents = nautilus_string_list_new_from_tokens (description_contents, "\n", FALSE);
 
-	/* Make sure there is at least one description.  Item 0 is the count */
-	if (nautilus_string_list_get_length (tokenized_contents) <= 1) {
-		g_free (description_file);
-		g_free (description_contents);
-		nautilus_string_list_free (tokenized_contents);
-		return NULL;
+	/* Get the first line from the file. */
+	length = nautilus_string_list_get_length (tokenized_contents);
+	if (length == 0) {
+		got_count = FALSE;
+	} else {
+		got_count = nautilus_string_list_nth_as_integer (tokenized_contents, 0, &count);
 	}
 
 	/* Find out how many font entries are described in this file */
-	if (!nautilus_string_list_nth_as_integer (tokenized_contents, 0, &count)) {
+	if (!got_count || count + 1 > length) {
 		g_free (description_file);
 		g_free (description_contents);
 		nautilus_string_list_free (tokenized_contents);

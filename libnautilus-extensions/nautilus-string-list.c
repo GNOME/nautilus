@@ -31,7 +31,7 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-string.h"
 
-static gboolean supress_out_of_bounds_warning;
+static gboolean suppress_out_of_bounds_warning;
 
 struct _NautilusStringList
 {
@@ -204,7 +204,7 @@ nautilus_string_list_nth (const NautilusStringList *string_list, guint n)
 		g_assert (s != NULL);
 		
 		return g_strdup (s);
-	} else if (!supress_out_of_bounds_warning) {
+	} else if (!suppress_out_of_bounds_warning) {
 		g_warning ("nautilus_string_list_nth (n = %d) is out of bounds.", n);
 	}
 	
@@ -234,7 +234,7 @@ nautilus_string_list_nth_as_integer (const NautilusStringList *string_list,
 	g_return_val_if_fail (integer_result != NULL, FALSE);
 
 	if (n >= g_list_length (string_list->strings)) {
-		if (!supress_out_of_bounds_warning) {
+		if (!suppress_out_of_bounds_warning) {
 			g_warning ("(n = %d) is out of bounds.", n);
 		}
 		return FALSE;
@@ -264,7 +264,7 @@ nautilus_string_list_modify_nth (NautilusStringList *string_list,
 	g_return_if_fail (string != NULL);
 
 	if (n >= g_list_length (string_list->strings)) {
-		if (!supress_out_of_bounds_warning) {
+		if (!suppress_out_of_bounds_warning) {
 			g_warning ("nautilus_string_list_nth (n = %d) is out of bounds.", n);
 		}
 
@@ -295,7 +295,7 @@ nautilus_string_list_remove_nth (NautilusStringList *string_list,
 	g_return_if_fail (string_list != NULL);
 
 	if (n >= g_list_length (string_list->strings)) {
-		if (!supress_out_of_bounds_warning) {
+		if (!suppress_out_of_bounds_warning) {
 			g_warning ("nautilus_string_list_nth (n = %d) is out of bounds.", n);
 		}
 
@@ -757,9 +757,9 @@ nautilus_self_check_string_list (void)
  	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (fruits, 2), "strawberry");
  	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (fruits, 3), "cherry");
  	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (fruits, 5), "watermelon");
-	supress_out_of_bounds_warning = TRUE;
+	suppress_out_of_bounds_warning = TRUE;
  	NAUTILUS_CHECK_STRING_RESULT (nautilus_string_list_nth (fruits, 6), NULL);
-	supress_out_of_bounds_warning = FALSE;
+	suppress_out_of_bounds_warning = FALSE;
 
 	NAUTILUS_CHECK_INTEGER_RESULT (nautilus_string_list_get_length (fruits), 6);
 

@@ -826,7 +826,7 @@ global_preferences_create_search_pane (NautilusPreferencesBox *preference_box)
  * the value of the SMOOTH_GRAPHICS preference.
  */
 static void
-appearnace_pane_update (gpointer callback_data)
+appearance_pane_update (gpointer callback_data)
 {
 	g_return_if_fail (NAUTILUS_IS_PREFERENCES_PANE (callback_data));
 
@@ -848,6 +848,7 @@ global_preferences_create_font_group (NautilusPreferencesPane *appearance_pane)
 								 1,
 								 NAUTILUS_PREFERENCES_DIRECTORY_VIEW_FONT_FAMILY,
 								 NAUTILUS_PREFERENCE_ITEM_FONT_FAMILY);
+
 	nautilus_preferences_item_set_control_preference (NAUTILUS_PREFERENCES_ITEM (font_picker_gdk_item),
 							  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
 	nautilus_preferences_item_set_control_action (NAUTILUS_PREFERENCES_ITEM (font_picker_gdk_item),
@@ -859,13 +860,13 @@ global_preferences_create_font_group (NautilusPreferencesPane *appearance_pane)
 								 NAUTILUS_PREFERENCES_DIRECTORY_VIEW_SMOOTH_FONT,
 								 NAUTILUS_PREFERENCE_ITEM_SMOOTH_FONT);
 	
-	nautilus_preferences_item_set_control_preference (NAUTILUS_PREFERENCES_ITEM (font_picker_gdk_item),
+	nautilus_preferences_item_set_control_preference (NAUTILUS_PREFERENCES_ITEM (font_picker_smooth_item),
 							  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
 	nautilus_preferences_item_set_control_action (NAUTILUS_PREFERENCES_ITEM (font_picker_smooth_item),
 						      NAUTILUS_PREFERENCE_ITEM_SHOW);
 
  	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
- 					   appearnace_pane_update,
+ 					   appearance_pane_update,
  					   appearance_pane);
 	
 	return font_group;
