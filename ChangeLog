@@ -1,3 +1,10 @@
+Tue Jun 20 01:49:08 2000  George Lebl <jirka@5z.com>
+
+	* test/nautilus-leak-symbol-lookup.c
+	  (nautilus_leak_symbol_map_get_offsets):  Do the sscanf into a
+	  gulong and then assign to the inode which is of type ino_t to avoid
+	  #ifdefs or other hacks to make it work on alpha.
+
 2000-06-19  Maciej Stachowiak  <mjs@eazel.com>
 
 	FIXME 1262 believed fixed now:

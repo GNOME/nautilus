@@ -102,9 +102,11 @@ nautilus_leak_symbol_map_get_offsets (NautilusLeakSymbolLookupMap *map)
 	}
 	
 	while (fgets(buffer, 1023, in)) {
+		gulong tmp;
 
 		count = sscanf (buffer, "%lx-%lx %15s %*x %u:%u %lu %255s",
-				&start, &end, perms, &major, &minor, &inode, file);
+				&start, &end, perms, &major, &minor, &tmp, file);
+		inode = tmp;
 
 		if (count >= 6 && strcmp (perms, "r-xp") == 0) {
 			if (stat (file, &entry_stat) != 0) {
