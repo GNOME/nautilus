@@ -76,6 +76,7 @@ nautilus_SOURCES =\
 	nautilus-complex-search-bar.c		\
 	nautilus-desktop-window.c		\
 	nautilus-first-time-druid.c		\
+	nautilus-history-frame.c		\
 	nautilus-link-set-window.c		\
 	nautilus-location-bar.c         	\
 	nautilus-main.c 			\

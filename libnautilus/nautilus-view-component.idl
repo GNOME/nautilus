@@ -125,6 +125,33 @@ module Nautilus {
 	interface ZoomableFrame : ::Bonobo::Unknown {
 		oneway void report_zoom_level_changed (in double zoom_level);
 	};
+
+
+	/* The specifications for a history list item. The stucture
+	 * containes the name to be displayed and the position of
+	 *  the item withing the history stack.
+	 */
+	 
+	struct HistoryItem {
+		string name;
+		string location;
+		long position;
+	};
+
+	typedef sequence<HistoryItem> HistoryList;
+
+	/* The interface for something that manages and modifies history
+	 * transactions.
+	 */
+	 
+	interface HistoryFrame : ::Bonobo::Unknown {
+
+		/* Called by a view component to get the Nautilus
+		 * history list.
+		 */		 
+		HistoryList get_history_list ();
+	};
+
 };
 
 #endif /* NAUTILUS_VIEW_COMPONENT_IDL */

@@ -4,7 +4,7 @@
  *  Nautilus
  *
  *  Copyright (C) 1999, 2000 Red Hat, Inc.
- *  Copyright (C) 1999, 2000 Eazel, Inc.
+ *  Copyright (C) 1999, 2000 Eazel, Inc.a
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
@@ -31,6 +31,7 @@
 #include "nautilus-view-frame-private.h"
 
 #include "nautilus-application.h"
+#include "nautilus-history-frame.h"
 #include "nautilus-window.h"
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
@@ -53,6 +54,7 @@ enum {
   SET_TITLE,
   ZOOM_LEVEL_CHANGED,
   CLIENT_GONE,
+  GET_HISTORY_LIST,
   LAST_SIGNAL
 };
 
@@ -170,7 +172,16 @@ nautilus_view_frame_initialize_class (NautilusViewFrameClass *klass)
                                        client_gone),
                     gtk_marshal_NONE__NONE,
                     GTK_TYPE_NONE, 0);
-  
+
+  signals[GET_HISTORY_LIST] =
+    gtk_signal_new ("get_history_list",
+                    GTK_RUN_LAST,
+                    object_class->type,
+                    GTK_SIGNAL_OFFSET (NautilusViewFrameClass, 
+                                       get_history_list),
+                    gtk_marshal_NONE__POINTER,
+                    GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+                    
   gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 }
 
@@ -299,11 +310,14 @@ nautilus_view_frame_load_client (NautilusViewFrame *view, const char *iid)
 	view->zoomable_frame = impl_Nautilus_ZoomableFrame__create(view, &ev);
 	bonobo_object_add_interface (BONOBO_OBJECT (view->view_frame), 
 	                             BONOBO_OBJECT (view->zoomable_frame));
+	view->history_frame = impl_Nautilus_HistoryFrame__create(view, &ev);
+	bonobo_object_add_interface (BONOBO_OBJECT (view->view_frame), 
+	                             BONOBO_OBJECT (view->history_frame));
 
 	/* Add undo manager to component */
 	nautilus_undo_manager_add_interface
         	(view->undo_manager, BONOBO_OBJECT (view->view_frame));
-
+	
 	/* Now figure out which type of embedded object it is: */
 	for(i = 0; component_types[i] && !view->component_class; i++) {
 		obj = Bonobo_Unknown_query_interface(bonobo_object_corba_objref(BONOBO_OBJECT(view->client_object)),
@@ -765,3 +779,28 @@ nautilus_view_frame_activate (NautilusViewFrame *view)
   bonobo_control_frame_control_activate (control_frame);
   bonobo_object_unref (BONOBO_OBJECT (control_frame));
 }
+
+
+Nautilus_HistoryList *
+nautilus_view_frame_get_history_list (NautilusViewFrame *view)
+{
+	Nautilus_HistoryList *history_list = NULL;
+			
+	g_return_val_if_fail (NAUTILUS_IS_VIEW_FRAME (view), NULL);
+
+	/* Signal view for history list */
+	gtk_signal_emit (GTK_OBJECT (view), 
+  			 signals[GET_HISTORY_LIST],
+			 &history_list);
+
+	/* Set up empty list if we received NULL list */
+  	if (history_list == NULL) {
+    		history_list = Nautilus_HistoryList__alloc();
+    		history_list->_length = 0;
+    		history_list->_buffer = NULL;
+    		CORBA_sequence_set_release(history_list, CORBA_TRUE);
+  	}
+
+  	return history_list;
+}
+

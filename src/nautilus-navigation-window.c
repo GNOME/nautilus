@@ -1167,6 +1167,50 @@ nautilus_window_zoom_level_changed_callback (NautilusViewFrame *view,
 	}
 }
 
+static void
+nautilus_window_get_history_list_callback (NautilusViewFrame *view,
+                                    	     Nautilus_HistoryList **out_list,
+                                    	     NautilusWindow *window)
+{
+	Nautilus_HistoryList *local_list;
+	Nautilus_HistoryItem *history_item;
+	NautilusBookmark *bookmark;
+	int length, index;
+	GSList *element;
+	char *name, *location;
+
+	/* Get total number of history items */
+	length = g_slist_length (history_list);
+	if (length <= 0) {
+		*out_list = NULL;
+		return;
+	}
+
+	local_list = Nautilus_HistoryList__alloc ();
+	local_list->_length = length;
+	local_list->_maximum = length;
+	local_list->_buffer = CORBA_sequence_Nautilus_HistoryItem_allocbuf (length);
+	
+	/* Iterate through list and copy item data */
+	for (index = 0, element = history_list; index < length; index++, element = element->next) {
+		bookmark = element->data;
+		name = nautilus_bookmark_get_name (bookmark);
+		location = nautilus_bookmark_get_uri (bookmark);
+		
+		history_item = &local_list->_buffer[index];
+		history_item->name = CORBA_string_dup (name);
+		history_item->location = CORBA_string_dup (location);
+		
+		history_item->position = index;
+		
+		g_free (name);
+		g_free (location);
+	}
+	CORBA_sequence_set_release (local_list, CORBA_TRUE);
+
+	*out_list = local_list;
+}
+
 void
 nautilus_window_connect_view (NautilusWindow *window, NautilusViewFrame *view)
 {
@@ -1187,6 +1231,7 @@ nautilus_window_connect_view (NautilusWindow *window, NautilusViewFrame *view)
 	CONNECT (report_load_failed);
 	CONNECT (set_title);
 	CONNECT (zoom_level_changed);
+	CONNECT (get_history_list);
 
 	#undef CONNECT
 

@@ -1,3 +1,57 @@
+2000-07-06  Gene Z. Ragan  <gzr@eazel.com>
+	
+	Fixed bug 1571, Need titles in history list instead
+	of just URIs.
+
+	This was a result of sharing the NautilusWindow history list
+	information over CORBA.
+
+	* libnautilus/nautilus-view-component.idl:
+	Create new interface, Nautilus::HistoryFrame
+	Interface has method to get a sequence of 
+	history information.  This sequence contains
+	structs that contain uri and name history 
+	information.
+
+	* src/Makefile.am:
+	Added new file, NautilusHistoryFrame.c, to makefile.
+	 
+	* src/nautilus-history-frame.c:
+	* src/nautilus-history-frame.h:
+	(impl_Nautilus_HistoryFrame__destroy),
+	(impl_Nautilus_HistoryFrame__create),
+	(impl_Nautilus_HistoryFrame_get_history_list):
+	New files that imliments the functionality of the 
+	Nautilus::HistoryFrame.
+
+	* components/history/nautilus-history-view.c:
+	(get_bookmark_from_row), (get_uri_from_row),
+	(history_view_frame_call_begin), (history_view_frame_call_end),
+	(history_view_update_icons), (get_history_list),
+	(hyperbola_navigation_history_load_location),
+	(hyperbola_navigation_history_select_row), (do_destroy),
+	(make_obj), (main):
+	Changes in the way that the history list is maintained.
+	We now use the info that is received by asking the view frame
+	for history information.
+		
+	* src/nautilus-view-frame.c:
+	* src/nautilus-view-frame.h:
+	(nautilus_view_frame_initialize_class),
+	(nautilus_view_frame_load_client),
+	(nautilus_view_frame_get_history_list):
+	Added new signal GET_HISTORY_LIST and new
+	function that emits the signal when called.
+
+	* src/nautilus-window.c:
+	(nautilus_window_connect_view):
+	Create and add history interface to connected view.
+	
+	(nautilus_window_get_history_list_callback):
+	New signal handler that connects to the get_history_list
+	signal of NautilusViewFrame.  Returns a Nautilus_HistoryList
+	created from the history list data.
+	
 2000-07-06  Michael Engber  <engber@eazel.com>
 
 	* src/nautilus-window.c: (nautilus_window_class_init):
