@@ -2014,7 +2014,7 @@ process_new_files (FMDirectoryView *view)
 	 */
 	for (node = new_changed_files; node != NULL; node = node->next) {
 		file = NAUTILUS_FILE (node->data);
-		if (ready_to_load (file)) {
+		if (ready_to_load (file) || !still_should_show_file (view, file)) {
 			if (g_hash_table_lookup (non_ready_files, file) != NULL) {
 				g_hash_table_remove (non_ready_files, file);
 				nautilus_file_unref (file);
