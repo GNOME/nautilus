@@ -342,12 +342,12 @@ forget_history_if_confirmed (NautilusWindow *window)
 		prompt = g_strdup (_("Are you sure you want to forget history? "
 				     "If you do, you will be doomed to repeat it."));
 	} else {
-		prompt = g_strdup (_("Are you sure you want Nautilus to forget "
-				     "which locations you have visited?"));
+		prompt = g_strdup (_("Are you sure you want to clear the list "
+				     "of locations you have visited?"));
 	}
 					   
 	dialog = eel_create_question_dialog (prompt,
-					     _("Clear History?"), 
+					     _("Clear History"), 
 					     GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 					     GTK_STOCK_CLEAR, RESPONSE_FORGET,
 					     GTK_WINDOW (window));
@@ -1329,5 +1329,3 @@ schedule_refresh_go_menu (NautilusWindow *window)
                                         window);
 	}	
 }
-
-
