@@ -27,7 +27,7 @@ AC_SUBST(XML_REQUIRED)
 
 dnl ===========================================================================
 
-AM_INIT_AUTOMAKE(nautilus, 1.1.19)
+AM_INIT_AUTOMAKE(nautilus, 2.0.0)
 AM_CONFIG_HEADER(config.h)
 
 AM_SANITY_CHECK
@@ -82,10 +82,12 @@ AC_ARG_ENABLE(profiler,
 ENABLE_PROFILER=1
 AC_DEFINE(ENABLE_PROFILER))
 
+profiling_support=off
 if test "x$ENABLE_PROFILER" = "x1"
 then
 	CFLAGS="-g -O -gdwarf-2 -finstrument-functions -D__NO_STRING_INLINES $CFLAGS"
 	LDFLAGS="/gnome/GNOME2/lib/libprofiler.so -lpthread $LDFLAGS"
+	profiling_support=on
 fi
 
 AC_SUBST(ENABLE_PROFILER)
@@ -296,6 +298,19 @@ DISABLE_DEPRECATED_CFLAGS=" \
 	-DBONOBO_DISABLE_DEPRECATED"
 AC_SUBST(DISABLE_DEPRECATED_CFLAGS)
 
+dnl
+dnl disable (broken) hardware view
+dnl
+hw_view=disabled
+AC_ARG_ENABLE(hardware,
+[  --enable-hardware		Enable (broken, Linux only) hardware view],
+hw_view=enabled)
+if test "x`(uname -s) 2>/dev/null`" != "xLinux"; then
+	hw_view=disabled
+fi
+AM_CONDITIONAL(ENABLE_HARDWARE_VIEW, test "$hw_view" = "enabled")
+
+
 dnl libbackground
 PKG_CHECK_MODULES(CAPPLET, "gtk+-2.0 gconf-2.0 libgnomeui-2.0 libbonoboui-2.0")
 dnl ==========================================================================
@@ -366,3 +381,13 @@ test/Makefile
 ])
 
 dnl ==========================================================================
+echo "
+nautilus-$VERSION:
+
+	prefix:                 ${prefix}
+	source code location:	${srcdir}
+	compiler:		${CC}
+
+	hardware view:          ${hw_view}
+	profiling support:      ${profiling_support}
+"

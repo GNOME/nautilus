@@ -1,3 +1,12 @@
+2002-06-06  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: Only enable the hardware view on
+	Linux, if explicitely requested with --enable-hardware
+	add status printout at the end of configure.
+
+	* components/hardware/Makefile.am
+	(bin_PROGRAMS): only setup if ENABLE_HARDWARE_VIEW
+
 === nautilus 1.1.19 ===
  
 2002-06-03  Alex Larsson  <alexl@redhat.com>
