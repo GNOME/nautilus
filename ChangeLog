@@ -1,3 +1,11 @@
+2000-12-08  Andy Hertzfeld  <andy@eazel.com>
+
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_update_contents):
+	fixed bug 5045, browser assumes categories end in 's', by removing
+	the offending code, which wasn't used anyway.  fixed bug 5046,
+	shouldn't upper-case category names, by casing out instead.
+	
 2000-12-08  Darin Adler  <darin@eazel.com>
 
 	reviewed by: Maciej Stachowiak <mjs@eazel.com>

@@ -2107,13 +2107,6 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 		}
 			
 		if (property_browser->details->remove_mode) {
-			char *temp_category = g_strdup (property_browser->details->category);
-
-			/* FIXME bugzilla.eazel.com 5045: Not appropriate to assume the last
-			 * character is 's' for all languages. A potential
-			 * translation problem.
-			 */
-			temp_category[strlen(temp_category) - 1] = '\0'; /* strip trailing s */
 
 			switch (property_browser->details->category_type) {
 			case NAUTILUS_PROPERTY_BACKGROUND:
@@ -2129,16 +2122,21 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 				label_text = NULL;
 				break;
 			}
-			g_free (temp_category);
 		} else {	
-			label_text = g_strdup_printf ("%s:", property_browser->details->category);
-
-			/* FIXME bugzilla.eazel.com 5046: Not appropriate to upper-case the
-			 * first letter of the emblem names for all
-			 * languages. A potential translation
-			 * nightmare.
-			 */
-			label_text[0] = toupper ((guchar) label_text[0]);
+			switch (property_browser->details->category_type) {
+			case NAUTILUS_PROPERTY_BACKGROUND:
+				label_text = g_strdup (_("Backgrounds:"));
+				break;
+			case NAUTILUS_PROPERTY_COLOR:
+				label_text = g_strdup (_("Colors:"));
+				break;
+			case NAUTILUS_PROPERTY_EMBLEM:
+				label_text = g_strdup (_("Emblems:"));
+				break;
+			default:
+				label_text = NULL;
+				break;
+			}
 		}
 		
 		if (label_text) {
