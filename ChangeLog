@@ -1,5 +1,21 @@
 2003-04-16  Alexander Larsson  <alexl@redhat.com>
 
+	* src/nautilus-information-panel.c: (burn_cd_callback),
+	(nautilus_information_panel_update_buttons):
+	* src/nautilus-shell-ui.xml:
+	* src/nautilus-window-manage-views.c: (update_burn_cd_items),
+	(update_for_new_location):
+	* src/nautilus-window-menus.c: (file_menu_burn_cd_callback),
+	(go_menu_go_to_burn_cd_callback),
+	(nautilus_window_initialize_menus_part_1):
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.c: (nautilus_window_constructed),
+	(nautilus_window_allow_reload), (nautilus_window_allow_burn_cd):
+	* src/nautilus-window.h:
+	Add the nautilus-cd-burner integration patch from RH.
+
+2003-04-16  Alexander Larsson  <alexl@redhat.com>
+
 	* cut-n-paste-code/libegg/Makefile.am:
 	* cut-n-paste-code/libegg/egg-recent-vfs-util.c:
 	* cut-n-paste-code/libegg/egg-recent-vfs-util.h:

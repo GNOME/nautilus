@@ -976,6 +976,30 @@ empty_trash_callback (GtkWidget *button, gpointer data)
 	nautilus_file_operations_empty_trash (window);
 }
 
+
+static void
+burn_cd_callback (GtkWidget *button, gpointer data)
+{
+	GError *error;
+	char *argv[] = { "nautilus-cd-burner", NULL};
+	char *text;
+
+	error = NULL;
+	if (!g_spawn_async (NULL,
+			    argv, NULL,
+			    G_SPAWN_SEARCH_PATH,
+			    NULL, NULL,
+			    NULL,
+			    &error)) {
+		text = g_strdup_printf (_("Unable to launch the cd burner application:\n%s"), error->message);
+		eel_show_error_dialog (text,
+				       _("Can't launch cd burner"),
+				       GTK_WINDOW (gtk_widget_get_toplevel (button)));
+		g_free (text);
+		g_error_free (error);
+	}
+}
+
 static void
 nautilus_information_panel_trash_state_changed_callback (NautilusTrashMonitor *trash_monitor,
 						gboolean state, gpointer callback_data)
@@ -1028,6 +1052,18 @@ nautilus_information_panel_update_buttons (NautilusInformationPanel *information
 		
 		g_signal_connect_object (nautilus_trash_monitor_get (), "trash_state_changed",
 					 G_CALLBACK (nautilus_information_panel_trash_state_changed_callback), temp_button, 0);
+	}
+	if (eel_istr_has_prefix (information_panel->details->uri, "burn:")) {
+		/* FIXME: We don't use spaces to pad labels! */
+		temp_button = gtk_button_new_with_mnemonic (_("_Write contents to CD"));
+
+		gtk_box_pack_start (GTK_BOX (information_panel->details->button_box), 
+					temp_button, FALSE, FALSE, 0);
+		gtk_widget_show (temp_button);
+		information_panel->details->has_buttons = TRUE;
+					
+		g_signal_connect (temp_button, "clicked",
+				  G_CALLBACK (burn_cd_callback), NULL);
 	}
 	
 	/* Make buttons for each item in short list + "Open with..." catchall,

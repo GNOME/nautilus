@@ -33,6 +33,9 @@
         <cmd name="Clear" sensitive="0"/>
 	<cmd name="Reload"
 	 _tip="Display the latest contents of the current location"/>
+	<cmd name="Burn CD"
+         _label="_Write to CD"
+	 _tip="Write contents to a CD"/>
 	<cmd name="Zoom In" _label="Zoom _In"
 	 _tip="Show the contents in more detail"/>
 	<cmd name="Zoom Out" _label="Zoom _Out"
@@ -66,7 +69,10 @@
 		<placeholder name="General Status Placeholder" delimit="top"/>
 		<placeholder name="File Items Placeholder" delimit="top"/>
 
-		<placeholder name="Global File Items Placeholder" delimit="top"/>
+		<placeholder name="Global File Items Placeholder" delimit="top">
+			<menuitem name="Burn CD"
+				  verb="Burn CD"/>
+                </placeholder>
 		
 		<separator/>
 
@@ -231,6 +237,10 @@
 			  _label="_Trash"
 			  _tip="Go to the trash folder"
 			  verb="Go to Trash"/>
+		<menuitem name="Go to Burn CD"
+			  _label="_CD Creator"
+			  _tip="Go to Empty CD folder"
+			  verb="Go to Burn CD"/>
 		<menuitem name="Go to Location"
 			  _label="_Location..."
 			  accel="*Control*l"
@@ -327,7 +337,6 @@
 		  _label="Reload"
 	          pixtype="stock" pixname="gtk-refresh"
 		  verb="Reload"/>
-
 	<separator/>
 
 	<toolitem name="Home"
@@ -340,6 +349,11 @@
 	          type="toggle"
 	          pixtype="stock" pixname="Search"
 		  verb="Toggle Find Mode"/>
+	<toolitem name="Burn CD"
+		  _label="Write to CD"
+	          pixtype="stock" pixname="gtk-cdrom"
+		  verb="Burn CD"/>
+
 
 	<placeholder name="Extra Buttons Placeholder" delimit="top"/>
 		

@@ -821,6 +821,8 @@ nautilus_window_constructed (NautilusWindow *window)
 	nautilus_window_allow_forward (window, FALSE);
 	nautilus_window_allow_stop (window, FALSE);
 
+	nautilus_window_allow_burn_cd (window, FALSE);
+	
 	/* Set up undo manager */
 	nautilus_undo_manager_attach (window->application->undo_manager, G_OBJECT (window));	
 
@@ -1718,6 +1720,15 @@ nautilus_window_allow_reload (NautilusWindow *window, gboolean allow)
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 				       NAUTILUS_COMMAND_RELOAD, allow);
 
+	nautilus_window_ui_thaw (window);
+}
+
+void
+nautilus_window_allow_burn_cd (NautilusWindow *window, gboolean allow)
+{
+	nautilus_window_ui_freeze (window);
+	nautilus_bonobo_set_hidden (window->details->shell_ui,
+				    NAUTILUS_COMMAND_BURN_CD, !allow);
 	nautilus_window_ui_thaw (window);
 }
 

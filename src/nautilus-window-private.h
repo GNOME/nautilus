@@ -115,6 +115,7 @@ struct NautilusWindowDetails
 #define NAUTILUS_COMMAND_UP				"/commands/Up"
 
 #define NAUTILUS_COMMAND_RELOAD				"/commands/Reload"
+#define NAUTILUS_COMMAND_BURN_CD			"/commands/Burn CD"
 #define NAUTILUS_COMMAND_STOP				"/commands/Stop"
 #define NAUTILUS_COMMAND_ZOOM_IN			"/commands/Zoom In"
 #define NAUTILUS_COMMAND_ZOOM_OUT			"/commands/Zoom Out"

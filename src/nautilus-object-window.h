@@ -139,6 +139,8 @@ void             nautilus_window_allow_reload         (NautilusWindow    *window
                                                        gboolean           allow);
 void             nautilus_window_allow_stop           (NautilusWindow    *window,
                                                        gboolean           allow);
+void             nautilus_window_allow_burn_cd        (NautilusWindow    *window,
+                                                       gboolean           allow);
 void		 nautilus_window_clear_back_list      (NautilusWindow    *window);
 void		 nautilus_window_clear_forward_list   (NautilusWindow    *window);
 void		 nautilus_forget_history	      (void);

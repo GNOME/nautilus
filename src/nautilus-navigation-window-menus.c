@@ -102,6 +102,7 @@
 #define ID_SHOW_HIDE_STATUS_BAR                         "Show Hide Statusbar"
 
 #define START_HERE_URI          "start-here:"
+#define BURN_CD_URI          "burn:"
 
 #define RESPONSE_FORGET		1000
 
@@ -206,6 +207,32 @@ file_menu_close_all_windows_callback (BonoboUIComponent *component,
 			              const char *verb)
 {
 	nautilus_application_close_all_windows ();
+}
+
+static void
+file_menu_burn_cd_callback (BonoboUIComponent *component, 
+			    gpointer user_data, 
+			    const char *verb)
+{
+	GError *error;
+	char *argv[] = { "nautilus-cd-burner", NULL};
+	char *text;
+
+	error = NULL;
+	if (!g_spawn_async (NULL,
+			    argv, NULL,
+			    G_SPAWN_SEARCH_PATH,
+			    NULL, NULL,
+			    NULL,
+			    &error)) {
+		text = g_strdup_printf (_("Unable to launch the cd burner application:\n%s"), error->message);
+		eel_show_error_dialog (text,
+				       _("Can't launch cd burner"),
+				       GTK_WINDOW (user_data));
+		g_free (text);
+		g_error_free (error);
+	}
+
 }
 
 static void
@@ -334,6 +361,15 @@ go_menu_go_to_trash_callback (BonoboUIComponent *component,
 {
 	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
 			       EEL_TRASH_URI);
+}
+
+static void
+go_menu_go_to_burn_cd_callback (BonoboUIComponent *component, 
+				gpointer user_data, 
+				const char *verb) 
+{
+	nautilus_window_go_to (NAUTILUS_WINDOW (user_data),
+			       BURN_CD_URI);
 }
 
 static void
@@ -1169,6 +1205,7 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("New Window", file_menu_new_window_callback),
 		BONOBO_UI_VERB ("Close", file_menu_close_window_callback),
+		BONOBO_UI_VERB ("Burn CD", file_menu_burn_cd_callback),
 		BONOBO_UI_VERB ("Close All Windows", file_menu_close_all_windows_callback),
 #ifdef HAVE_MEDUSA
 		BONOBO_UI_VERB ("Find", file_menu_find_callback),
@@ -1182,6 +1219,7 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 		BONOBO_UI_VERB ("Home", go_menu_home_callback),
 		BONOBO_UI_VERB ("Start Here", go_menu_start_here_callback),
 		BONOBO_UI_VERB ("Go to Trash", go_menu_go_to_trash_callback),
+		BONOBO_UI_VERB ("Go to Burn CD", go_menu_go_to_burn_cd_callback),
 		BONOBO_UI_VERB ("Go to Location", go_menu_location_callback),
 		BONOBO_UI_VERB ("Clear History", go_menu_forget_history_callback),
 		BONOBO_UI_VERB ("Reload", view_menu_reload_callback),
