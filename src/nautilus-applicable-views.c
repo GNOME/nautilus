@@ -626,8 +626,6 @@ got_file_info_callback (GnomeVFSAsyncHandle *ah,
         (* notify_ready) (result_code, navinfo, notify_ready_data);
 }
 
-/* The following routine uses metadata associated with the current url to add content view components specified in the metadata */
-
 static void
 got_metadata_callback (NautilusDirectory *directory,
                        GList *files,

@@ -28,6 +28,7 @@
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 
 
+GnomeVFSMimeActionType   nautilus_mime_get_default_action_type_for_uri       (const char             *uri);
 GnomeVFSMimeAction      *nautilus_mime_get_default_action_for_uri            (const char             *uri);
 GnomeVFSMimeApplication *nautilus_mime_get_default_application_for_uri       (const char             *uri);
 OAF_ServerInfo          *nautilus_mime_get_default_component_for_uri         (const char             *uri);
@@ -40,7 +41,7 @@ GList                   *nautilus_mime_get_all_components_for_uri            (co
 void                     nautilus_mime_set_default_action_type_for_uri       (const char             *mime_type,
 									      GnomeVFSMimeActionType  action_type);
 void                     nautilus_mime_set_default_application_for_uri       (const char             *mime_type,
-									      GnomeVFSMimeApplication    *application);
+									      GnomeVFSMimeApplication *application);
 void                     nautilus_mime_set_default_component_for_uri         (const char             *mime_type,
 									      OAF_ServerInfo         *component_iid);
 /* Stored as delta to current user level */

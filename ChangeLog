@@ -1,3 +1,46 @@
+2000-06-01  Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory.h,
+	libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_wait_until_ready): Non-asynchronous equivalent
+	of `nautilus_directory_call_when_ready'. However, it doesn't block
+	the UI while waiting.
+	(nautilus_directory_wait_until_ready_callback): Helper function
+	for implementing the above.
+
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(nautilus_mime_get_default_action_type_for_uri,
+	nautilus_mime_get_default_action_for_uri,
+	nautilus_mime_get_default_application_for_uri,
+	nautilus_mime_get_default_component_for_uri): Implemented with
+	fully with proper metadata checking and interface querying, etc.
+
+	(nautilus_mime_get_short_list_applications_for_uri,
+	nautilus_mime_get_short_list_components_for_uri,
+	nautilus_mime_get_all_applications_for_uri,
+	nautilus_mime_get_all_components_for_uri): Adjusted to deal with
+	the mime type checking function changing names.
+
+	(OAF_ServerInfo__copy, extract_prefix_add_suffix,
+	mime_type_get_supertype, uri_string_get_scheme),
+	get_explicit_content_view_iids_from_metafile,
+	make_oaf_query_for_explicit_content_view_iids,
+	make_oaf_query_with_known_mime_type,
+	make_oaf_query_with_uri_scheme_only,
+	file_list_to_mime_type_hash_table, free_key,
+	mime_type_hash_table_destroy, server_matches_content_requirements,
+	nautilus_do_component_query): Oodles of helper functions, many cut
+	& pasted from elswhere and only slightly modified.
+	get_mime_type_from_uri: Removed `_hack' from the name.
+
+	* libnautilus-extensions/nautilus-mime-actions.h: Added prototype
+	for nautilus_mime_get_default_action_type_for_uri.
+	
+	* test/test-nautilus-mime-actions.c (main): Call gnome_init.
+
+	* src/nautilus-applicable-views.c: Removed a stray comment that no
+	longer applies.
+
 2000-05-31  Maciej Stachowiak  <mjs@eazel.com>
 
 	* test/test-nautilus-mime-actions.c: Simple test program to check

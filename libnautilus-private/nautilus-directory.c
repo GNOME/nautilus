@@ -850,6 +850,45 @@ nautilus_directory_call_when_ready (NautilusDirectory *directory,
 		 callback_data);
 }
 
+typedef struct {
+	volatile gboolean done;
+	GList *file_return;
+} wait_until_ready_callback_data;
+
+static void
+nautilus_directory_wait_until_ready_callback (NautilusDirectory *directory,
+					      GList             *files,
+					      wait_until_ready_callback_data *data)
+{
+	data->done = TRUE;
+	data->file_return = nautilus_file_list_copy (files);
+}
+
+
+GList *
+nautilus_directory_wait_until_ready (NautilusDirectory *directory,
+				     GList             *file_attributes,
+				     gboolean           wait_for_metadata)
+{
+	wait_until_ready_callback_data data;
+
+	data.done = FALSE;
+	data.file_return = NULL;
+
+	nautilus_directory_call_when_ready (directory,
+					    file_attributes,
+					    wait_for_metadata,
+					    (NautilusDirectoryCallback) nautilus_directory_wait_until_ready_callback,
+					    (gpointer) &data);
+	
+	while (!data.done) {
+		gtk_main_iteration ();
+	}
+
+	return data.file_return;
+}
+
+
 void
 nautilus_directory_cancel_callback (NautilusDirectory *directory,
 				    NautilusDirectoryCallback callback,
