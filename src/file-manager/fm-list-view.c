@@ -975,7 +975,52 @@ fm_list_view_is_empty (FMDirectoryView *view)
 static void
 fm_list_view_remove_file (FMDirectoryView *view, NautilusFile *file)
 {
-	fm_list_model_remove_file (FM_LIST_VIEW (view)->details->model, file);
+	GtkTreePath *path;
+	GtkTreeIter iter;
+	GtkTreeIter temp_iter;
+	GtkTreeRowReference* row_reference;
+	FMListView *list_view;
+	GtkTreeModel* tree_model; 
+	
+	path = NULL;
+	row_reference = NULL;
+	list_view = FM_LIST_VIEW (view);
+	tree_model = GTK_TREE_MODEL(list_view->details->model);
+	
+	if(fm_list_model_get_tree_iter_from_file (list_view->details->model, file, &iter)) {
+	   temp_iter = iter;
+	  
+	   /* get reference for next element in the list view. If the element to be deleted is the 
+	    * last one, get reference to previous element. If there is only one element in view
+            * no need to select anything. */		
+	   
+	   if(gtk_tree_model_iter_next (tree_model, &iter)) {
+              path = gtk_tree_model_get_path (tree_model, &iter);
+              row_reference = gtk_tree_row_reference_new (tree_model, path);
+           } else {
+              path = gtk_tree_model_get_path (tree_model, &temp_iter);
+              if(gtk_tree_path_prev (path)) {
+                 row_reference = gtk_tree_row_reference_new (tree_model, path);
+	       }
+	   }
+       
+	   gtk_tree_path_free (path);
+		
+	   fm_list_model_remove_file (list_view->details->model, file);
+	   
+	   if(gtk_tree_row_reference_valid(row_reference)) {
+	      path = gtk_tree_row_reference_get_path (row_reference);
+	      gtk_tree_view_set_cursor (list_view->details->tree_view, path, NULL, FALSE);
+              gtk_tree_path_free (path);
+	      
+	   }
+	  
+	   if(row_reference) {
+	      gtk_tree_row_reference_free (row_reference);
+	   }
+	}   
+	
+	
 }
 
 static void
