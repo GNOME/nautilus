@@ -77,11 +77,11 @@ dump_install_options (InstallOptions* iopts) {
 void 
 dump_package_list (PackageData* pkg) {
 	g_print ("***Begin pkg dump***\n");
-	g_print ("rpm_name = %s\n", pkg->rpm_name);
 	g_print ("name = %s\n", pkg->name);
-	g_print ("summary = %s\n", pkg->summary);
 	g_print ("version = %s\n", pkg->version);
-	g_print ("srcfile = %d\n", pkg->srcfile);
+	g_print ("minor = %s\n", pkg->minor);
+	g_print ("archtype = %s\n", pkg->archtype);
 	g_print ("bytesize = %d\n", pkg->bytesize);
+	g_print ("summary = %s\n", pkg->summary);
 	g_print ("***End pkg dump***\n");
 } /* end dump_package_list */

@@ -82,12 +82,12 @@ struct _CategoryData {
 };
 
 struct _PackageData {
-	char* rpm_name;
 	char* name;
-	char* summary;
 	char* version;
-	gboolean srcfile;
+	char* minor;
+	char* archtype;
 	int bytesize;
+	char* summary;
 	GList* SoftDepends;
 	GList* HardDepends;
 };

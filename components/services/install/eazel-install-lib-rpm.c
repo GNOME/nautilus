@@ -79,7 +79,11 @@ install_new_packages (InstallOptions* iopts) {
 
 			retval = 0;
 			
-			tmpbuf = g_strdup_printf ("%s/%s", iopts->rpm_storage_dir, pack->rpm_name);
+			tmpbuf = g_strdup_printf ("%s/%s-%s-%s.%s.rpm", iopts->rpm_storage_dir,
+															pack->name,
+															pack->version,
+															pack->minor,
+															pack->archtype);
             pkg[0] = tmpbuf;
 			pkg[1] = NULL;
 			g_print ("Installing %s\n", pack->summary);
@@ -144,7 +148,10 @@ uninstall_packages (InstallOptions* iopts) {
 
 			retval = 0;
 			
-			tmpbuf = g_strdup_printf ("%s/%s", iopts->rpm_storage_dir, pack->rpm_name);
+			tmpbuf = g_strdup_printf ("%s/%s-%s-%s", iopts->rpm_storage_dir,
+												     pack->name,
+												     pack->version,
+													 pack->minor);
             pkg[0] = tmpbuf;
 			pkg[1] = NULL;
 			g_print ("Uninstalling %s\n", pack->summary);

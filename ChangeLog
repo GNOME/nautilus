@@ -1,3 +1,14 @@
+2000-04-19  Shane Culpepper  <pepper@eazel.com>
+	
+	* components/services/install/eazel-install-lib-xml.c
+	* components/services/install/eazel-install-lib-debug.c
+	* components/services/install/eazel-install-lib-rpm.c
+	* components/services/install/eazel-install-lib.h
+	* components/services/install/eazel-install.c
+	Tweaked the packages struct so that rpm names are no longer
+	hardcoded.  Added a the option to do dry runs without actually
+	installing anything.  Good for testing.
+
 2000-04-19  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:

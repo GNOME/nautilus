@@ -180,22 +180,15 @@ parse_package (xmlNode* package) {
 
 	xmlNode* dep;
 	PackageData* rv;
-	char* tmp;
 
 	rv = g_new0 (PackageData, 1);
-	rv->rpm_name = g_strdup (xml_get_value (package, "RPM_NAME"));
+
 	rv->name = g_strdup (xml_get_value (package, "NAME"));
-	rv->summary = g_strdup (xml_get_value (package, "SUMMARY"));
 	rv->version = g_strdup (xml_get_value (package, "VERSION"));
-	tmp = xml_get_value (package, "SOURCE");
-	if (tmp[0] == 't' || tmp[0] == 'T') {
-		rv->srcfile = TRUE;
-	}
-	else if (tmp[0] == 'f' || tmp[0] == 'F') {
-		rv->srcfile = FALSE;
-	}
-	
+	rv->minor = g_strdup (xml_get_value (package, "MINOR"));
+	rv->archtype = g_strdup (xml_get_value (package, "ARCH"));
 	rv->bytesize = atoi (xml_get_value (package, "BYTESIZE"));
+	rv->summary = g_strdup (xml_get_value (package, "SUMMARY"));
 	
 	/* Dependency Lists */
 	rv->SoftDepends = NULL;
@@ -223,7 +216,6 @@ parse_package (xmlNode* package) {
 	/* For debugging only
 	dump_package_list (rv);
 	*/
-	g_free(tmp);
 	return rv;
 
 } /* end parse package */

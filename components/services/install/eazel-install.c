@@ -39,6 +39,7 @@ show_usage (int exitcode, char* error) {
 			"	-l --local      : use local file\n"
 			"	-w --http       : use http\n"
 			"	-f --ftp        : use ftp\n"
+			"	-t --test       : dry run - don't actually install\n"
 			"	-u --uninstall	: uninstall the package list\n");
 			
 	if (error) {
@@ -77,7 +78,7 @@ int
 main (int argc, char* argv[]) {
 	char opt;
 	gboolean retval;
-	gboolean USE_LOCAL, USE_HTTP, USE_FTP, UNINSTALL_MODE;
+	gboolean USE_LOCAL, USE_HTTP, USE_FTP, UNINSTALL_MODE, TEST_MODE;
 	InstallOptions *iopts;
 	poptContext pctx;
 	char* config_file;
@@ -88,6 +89,7 @@ main (int argc, char* argv[]) {
 		{ "local", 'l', 0, NULL, 'l'},
 		{ "http", 'w', 0, NULL, 'w' },
 		{ "ftp", 'f', 0, NULL, 'f' },
+		{ "test", 't', 0, NULL, 't' },
 		{ "uninstall", 'u', 0, NULL, 'u' },
 		{ NULL, '\0', 0, NULL, 0 }
 	};
@@ -96,6 +98,7 @@ main (int argc, char* argv[]) {
 	USE_LOCAL = FALSE;
 	USE_HTTP = FALSE;
 	USE_FTP = FALSE;
+	TEST_MODE = FALSE;
 	UNINSTALL_MODE = FALSE;
 
 	config_file = g_strdup ("/etc/eazel/services/eazel-services-config.xml");
@@ -122,6 +125,9 @@ main (int argc, char* argv[]) {
 				break;
 			case 'f':
 				USE_FTP = TRUE;
+				break;
+			case 't':
+				TEST_MODE = TRUE;
 				break;
 			case 'u':
 				UNINSTALL_MODE = TRUE;
@@ -175,6 +181,10 @@ main (int argc, char* argv[]) {
 		exit (1);
 	}
 
+	if (TEST_MODE == TRUE) {
+		iopts->mode_test = TRUE;
+	}
+	
 	if (UNINSTALL_MODE == TRUE) {
 		iopts->mode_uninstall = TRUE;
 
