@@ -124,6 +124,11 @@ main (int argc, char *argv[])
 #endif
 	argv[0] = fake_argv0;
 
+	if (argc < 2) {
+		printf ("%s: incorrect number of parameters\n", argv[0]);
+		exit (0);
+	}
+
 	if (strcmp (argv[1], "--build") == 0) {
 		/* skip the crap. */
 		printf ("\nEazel Installer v%s (build %s)\n\n", VERSION, BUILD_DATE);

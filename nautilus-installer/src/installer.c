@@ -113,6 +113,11 @@ typedef struct {
 			  "are items involved that might be important to you, we thought we'd\n" \
 			  "check first.")
 #define D_RETRY_TITLE	_("Just so you know...")
+#define D_EVIL_RETRY_LABEL	_("A serious problem has been encountered, but we think we can\n" \
+				  "fix it.  We would like to try the following actions, but since it might\n" \
+				  "have undesireable sideeffects, you might want to skip to a install\n" \
+				  "where file conflicts are ignored. If not, just press next...")
+#define D_EVIL_RETRY_TITLE	_("Serious problem encountered....")
 #define D_SPLASH_TITLE    _("Welcome to the Eazel Installer!")
 #define D_FINISHED_TITLE	_("Congratulations!")
 
@@ -132,15 +137,14 @@ typedef struct {
 #define D_ERROR_NON_RPM_BASED_SYSTEM _("Sorry, but this preview installer only works for RPM-based\n" \
 				       "systems.  You will have to download the source yourself.\n" \
 				       "In the future, we will support other packaging formats.")
-#define D_ERROR_UNTESTED_RPM_BASED_SYSTEM_TEXT _("You're running the installer on a\n" \
-						 "untested and unsupported RPM-based system\n" \
-						 "Linux distribution. I'll try anyways, but\n" \
+#define D_ERROR_UNTESTED_RPM_BASED_SYSTEM_TEXT _("You're running the installer on a untested and unsupported\n"\
+						 "RPM-based system Linux distribution. I'll try anyways, but\n"\
 						 "it will most likely not work.")
-#define D_ERROR_UNTESTED_RPM_BASED_SYSTEM_TITLE _("Untested and unsupported distribution")
+#define D_ERROR_UNTESTED_RPM_BASED_SYSTEM_TITLE _("Unsupported distribution")
 #define D_ERROR_RED_HAT_7_NOT_SUPPORTED _("Sorry, but this preview installer won't work for Red Hat\n" \
 					  "Linux 7.x systems.")
 
-/* #define NAUTILUS_INSTALLER_RELEASE */
+#define NAUTILUS_INSTALLER_RELEASE
 
 enum {
 	ERROR_RPM_4_NOT_SUPPORTED,
@@ -160,9 +164,11 @@ enum {
 	WHAT_TO_INSTALL_LABEL,
 	WHAT_TO_INSTALL_LABEL_SINGLE,
 	RETRY_LABEL,
+	EVIL_RETRY_LABEL,
 
 	ERROR_TITLE,
 	RETRY_TITLE,
+	EVIL_RETRY_TITLE,
 	SPLASH_TITLE,
 	FINISHED_TITLE,
 
@@ -185,7 +191,7 @@ char *installer_homedir = NULL;
 
 static void check_if_next_okay (GnomeDruidPage *page, void *unused, EazelInstaller *installer);
 static gboolean start_over_callback (GnomeDruidPage *druid_page, GnomeDruid *druid, EazelInstaller *installer);
-
+static void jump_to_retry_page (EazelInstaller *installer);
 static GtkObjectClass *eazel_installer_parent_class;
 
 
@@ -710,6 +716,35 @@ start_over_timer (EazelInstaller *installer)
 	return FALSE;
 }
 
+static void
+skip_over_remove_problems (GtkWidget *widget,
+			   EazelInstaller *installer) 
+{
+	GList *tmp;
+	gboolean foo = TRUE;
+	EazelInstallProblemEnum p;
+
+	while (foo) {
+		p = eazel_install_problem_find_dominant_problem_type (installer->problem,
+								      installer->problems);
+		switch (p) {
+		case EI_PROBLEM_REMOVE:
+		case EI_PROBLEM_FORCE_REMOVE:
+		case EI_PROBLEM_CASCADE_REMOVE:
+			tmp = eazel_install_problem_step_problem (installer->problem,
+								  p,
+								  installer->problems);
+			g_list_free (installer->problems);
+			installer->problems = tmp;
+			break;
+		default:
+			foo = FALSE;
+			break;
+		}
+	}
+	jump_to_retry_page (installer);
+}
+
 /* give the user an opportunity to retry the install, with new info */
 static void
 jump_to_retry_page (EazelInstaller *installer)
@@ -720,8 +755,10 @@ jump_to_retry_page (EazelInstaller *installer)
 	GtkWidget *pixmap;
 	GtkWidget *title;
 	GtkWidget *label;
+	GtkWidget *button;
 	GList *iter;
 	GList *problems_as_strings;
+	EazelInstallProblemEnum p;
 
 	g_message ("jump_to_retry_page");
 
@@ -729,6 +766,10 @@ jump_to_retry_page (EazelInstaller *installer)
 							      "", "", NULL, NULL,
 							      create_pixmap (GTK_WIDGET (installer->window),
 									     bootstrap_background));
+
+	p = eazel_install_problem_find_dominant_problem_type (installer->problem,
+							      installer->problems);
+	
 	gtk_widget_show (retry_page);
 	gnome_druid_append_page (GNOME_DRUID (installer->druid), GNOME_DRUID_PAGE (retry_page));
 
@@ -737,7 +778,19 @@ jump_to_retry_page (EazelInstaller *installer)
 	gtk_widget_show (vbox);
 	nautilus_druid_page_eazel_put_widget (NAUTILUS_DRUID_PAGE_EAZEL (retry_page), vbox);
 
-	title = gtk_label_new_with_font (text_labels [RETRY_TITLE], FONT_TITLE);
+	switch (p) {
+	case EI_PROBLEM_REMOVE:
+	case EI_PROBLEM_FORCE_REMOVE:
+	case EI_PROBLEM_CASCADE_REMOVE:
+		title = gtk_label_new_with_font (text_labels [EVIL_RETRY_TITLE], FONT_TITLE);
+		installer->uninstalling = TRUE;
+		break;
+	default:
+		title = gtk_label_new_with_font (text_labels [RETRY_TITLE], FONT_TITLE);
+		installer->uninstalling = FALSE;
+		break;
+	}
+
 	gtk_label_set_justify (GTK_LABEL (title), GTK_JUSTIFY_LEFT);
 	gtk_widget_show (title);
 	pixmap = create_pixmap_widget (retry_page, error_symbol);
@@ -750,7 +803,17 @@ jump_to_retry_page (EazelInstaller *installer)
 
 	add_padding_to_box (vbox, 0, 20);
 
-	label = gtk_label_new (text_labels [RETRY_LABEL]);
+	switch (p) {
+	case EI_PROBLEM_REMOVE:
+	case EI_PROBLEM_FORCE_REMOVE:
+	case EI_PROBLEM_CASCADE_REMOVE:
+		label = gtk_label_new (text_labels [EVIL_RETRY_LABEL]);
+		break;
+	default:
+		label = gtk_label_new (text_labels [RETRY_LABEL]);
+		break;
+	}
+
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 	gtk_label_set_line_wrap (GTK_LABEL (label), FALSE);
 	gtk_widget_show (label);
@@ -761,32 +824,6 @@ jump_to_retry_page (EazelInstaller *installer)
 
 	add_padding_to_box (vbox, 0, 15);
 
-	{
-		gboolean foo = TRUE;
-		while (foo) {
- 			EazelInstallProblemEnum p;
-			GList *tmp;
-			p = eazel_install_problem_find_dominant_problem_type (installer->problem,
-									      installer->problems);
-			g_message ("%s:%d: problem = %d", __FILE__, __LINE__, p);
-			switch (p) {
-			case EI_PROBLEM_REMOVE:
-			case EI_PROBLEM_FORCE_REMOVE:
-			case EI_PROBLEM_CASCADE_REMOVE:
-				g_message ("%s:%d: skipping a problem", __FILE__, __LINE__);
-				tmp = eazel_install_problem_step_problem (installer->problem,
-									  p,
-									  installer->problems);
-				g_list_free (installer->problems);
-				installer->problems = tmp;
-				break;
-			default:
-				foo = FALSE;
-				break;
-			} 
-		}
-	}
-
 	problems_as_strings = eazel_install_problem_cases_to_string (installer->problem,
 								     installer->problems);
 	for (iter = problems_as_strings; iter != NULL; iter = g_list_next (iter)) {
@@ -795,21 +832,22 @@ jump_to_retry_page (EazelInstaller *installer)
 	}
 	g_list_free (problems_as_strings);
 
+#ifndef NAUTILUS_INSTALLER_RELEASE
 	{
 		char *tmp = NULL;
 		switch (eazel_install_problem_find_dominant_problem_type (installer->problem, 
 									  installer->problems)) {
 		case EI_PROBLEM_UPDATE:
-			tmp = g_strdup ("Eskils says : updating is good!");
+			tmp = g_strdup ("Eskil says : updating is good!");
 			break;
 		case EI_PROBLEM_REMOVE:
-			tmp = g_strdup ("Eskils says : removing is non-optimal!");
+			tmp = g_strdup ("Eskil says : removing is non-optimal!");
 			break;
 		case EI_PROBLEM_FORCE_REMOVE:
-			tmp = g_strdup ("Eskils says : force removing evil!");
+			tmp = g_strdup ("Eskil says : force removing evil!");
 			break;
 		case EI_PROBLEM_FORCE_INSTALL_BOTH:
-			tmp = g_strdup ("Eskils says : force installing both is evil!");
+			tmp = g_strdup ("Eskil says : force installing both is evil!");
 			break;
 		default:
 			break;
@@ -819,8 +857,32 @@ jump_to_retry_page (EazelInstaller *installer)
 			add_bullet_point_to_vbox (vbox, tmp);
 		}
 	}
+#endif
 
 	add_padding_to_box (vbox, 0, 15);
+
+	switch (p) {
+	case EI_PROBLEM_REMOVE:
+	case EI_PROBLEM_FORCE_REMOVE:
+	case EI_PROBLEM_CASCADE_REMOVE:
+		g_message ("ranglebær");
+
+		hbox = gtk_hbox_new (FALSE, 0);
+		gtk_widget_show (hbox);
+
+		button = gtk_button_new_with_label ("Ignore file conflicts");
+		gtk_widget_set_name (button, "ignore_conflicts_button");
+		gtk_signal_connect (GTK_OBJECT (button), "clicked",
+				    GTK_SIGNAL_FUNC (skip_over_remove_problems),
+				    installer);
+		gtk_widget_show (button);
+		gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
+
+		gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+		break;
+	default:
+		break;
+	} 
 
 	gtk_signal_connect (GTK_OBJECT (retry_page), "prepare",
 			    GTK_SIGNAL_FUNC (prep_retry),
@@ -1039,6 +1101,7 @@ create_initial_force_remove_category (EazelInstaller *installer)
 	cat->name = g_strdup ("Stuff to remove");
 	cat->packages = NULL;
 	installer->force_remove_categories = g_list_prepend (NULL, cat);
+	installer->uninstalling = TRUE;
 }
 
 static void
@@ -1071,13 +1134,17 @@ get_detailed_errors_foreach (PackageData *pack, GetErrorsForEachData *data)
 
 	/* is this the right place for this check anymore? */
 	if (pack->status == PACKAGE_CANNOT_OPEN) {
-		/* check if the package we could not open was in install_categories, since
-		   then it's a distro issue */
-		for (iter = installer->install_categories; iter; iter = g_list_next (iter)) {
+		/* check if the package we could not open was in categories, since
+		   then it's a distro issue. Don't use install_categories, as if eg. 
+		   gnumeric is added because of need upgrade, but fails for some reason, 
+		   people get told that it could be a distro issue. */
+		for (iter = installer->categories; iter; iter = g_list_next (iter)) {
 			cat = (CategoryData *)iter->data;
 			for (iter2 = cat->packages; iter2 ; iter2 = g_list_next (iter2)) {
 				pack_in = (PackageData *)iter2->data;
+				g_message ("pack->name = %s, pack_in->name = %s", pack->name, pack_in->name);
 				if (strcmp (pack->name, pack_in->name) == 0) {
+					g_message ("yes");
 					distro = trilobite_get_distribution_name (trilobite_get_distribution (),
 										  TRUE, FALSE);
 					message = g_strdup_printf (_("Initial package download failed: Possibly your "
@@ -1129,8 +1196,11 @@ get_detailed_errors (const PackageData *pack, EazelInstaller *installer)
 
 	data.installer = installer;
 	data.path = NULL;
+	g_message ("copying package");
 	non_const_pack = packagedata_copy (pack, TRUE);
+	g_message ("getting detailed errors");
 	get_detailed_errors_foreach (non_const_pack, &data);
+	g_message ("destroying copy");
 	packagedata_destroy (non_const_pack, TRUE);
 }
 
@@ -1241,7 +1311,7 @@ eazel_install_preflight (EazelInstall *service,
 
 	total_mb = (total_size + (512*1024)) / (1024*1024);
 	if (num_packages == 1) {
-		if (installer->force_remove_categories) {
+		if (installer->uninstalling) {
 			temp = g_strdup_printf (_("Uninstalling 1 package"));
 		} else {
 			temp = g_strdup_printf (_("Installing 1 package (%d MB)"), total_mb);
@@ -1249,7 +1319,7 @@ eazel_install_preflight (EazelInstall *service,
 			gtk_progress_configure (GTK_PROGRESS (progress_overall), 50.0, 0.0, 100.0);
 		}
 	} else {
-		if (installer->force_remove_categories) {
+		if (installer->uninstalling) {
 			temp = g_strdup_printf (_("Uninstalling %d packages"), num_packages);
 			gtk_progress_configure (GTK_PROGRESS (progress_overall), 0.0, 0.0, 100.0);
 		} else {
@@ -1725,8 +1795,10 @@ eazel_installer_post_install (EazelInstaller *installer)
 		jump_to_error_page (installer, installer->failure_info, 
 				    text_labels [ERROR_LABEL], 
 				    text_labels [ERROR_LABEL_2]);
-	} else if (installer->force_remove_categories == NULL) {
+	} else if (installer->uninstalling == FALSE) {
 		gnome_druid_set_page (installer->druid, installer->finish_good); 
+	} else if (installer->uninstalling==TRUE && installer->install_categories) {
+		begin_install (installer);
 	}
 }
 
@@ -1839,11 +1911,13 @@ eazel_installer_set_default_texts (EazelInstaller *installer)
 	text_labels [ERROR_LABEL_2] = g_strdup (D_ERROR_LABEL_2);
 	text_labels [ERROR_TITLE] = g_strdup (D_ERROR_TITLE);
 	text_labels [RETRY_TITLE] = g_strdup (D_RETRY_TITLE);
+	text_labels [EVIL_RETRY_TITLE] = g_strdup (D_EVIL_RETRY_TITLE);
 	text_labels [SPLASH_TITLE] = g_strdup (D_SPLASH_TITLE);
 	text_labels [FINISHED_TITLE] = g_strdup (D_FINISHED_TITLE);
 	text_labels [WHAT_TO_INSTALL_LABEL] = g_strdup (D_WHAT_TO_INSTALL_LABEL);
 	text_labels [WHAT_TO_INSTALL_LABEL_SINGLE] = g_strdup (D_WHAT_TO_INSTALL_LABEL_SINGLE);
 	text_labels [RETRY_LABEL] = g_strdup (D_RETRY_LABEL);
+	text_labels [EVIL_RETRY_LABEL] = g_strdup (D_EVIL_RETRY_LABEL);
 	text_labels [INFO_EAZEL_HACKING_TEXT] = g_strdup (D_INFO_EAZEL_HACKING_TEXT); 
 	text_labels [INFO_EAZEL_HACKING_TITLE] = g_strdup (D_INFO_EAZEL_HACKING_TITLE); 
 }
@@ -1864,19 +1938,21 @@ eazel_installer_setup_texts (EazelInstaller *installer,
 	}
 	if (lang) {
 		url = g_strdup_printf ("http://%s:%d/%s-%s.xml", 
-				       eazel_install_get_server (installer->service),
-				       eazel_install_get_server_port (installer->service),
+				       installer_server ? installer_server : HOSTNAME,
+				       installer_server_port ? installer_server_port : PORT_NUMBER,
 				       TEXT_LIST,
 				       lang);
 	} else {
 		url = g_strdup_printf ("http://%s:%d/%s-%s.xml", 
-				       eazel_install_get_server (installer->service),
-				       eazel_install_get_server_port (installer->service),
+				       installer_server ? installer_server : HOSTNAME,
+				       installer_server_port ? installer_server_port : PORT_NUMBER,
 				       TEXT_LIST,
 				       lang);
 	}
 
 	destination = g_strdup_printf ("%s/%s", dest_dir, TEXT_LIST);
+
+	g_message ("Trying to contact Eazel services, ignore any 404 errors...");
 
 	if (! trilobite_fetch_uri_to_file (url, destination)) {
 		/* try again with proxy config */
@@ -1914,6 +1990,8 @@ eazel_install_get_depends (EazelInstaller *installer, const char *dest_dir)
 			       PACKAGE_LIST);
 
 	destination = g_strdup_printf ("%s/%s", dest_dir, PACKAGE_LIST);
+
+	g_message ("Trying to contact Eazel services...");
 
 	if (! trilobite_fetch_uri_to_file (url, destination)) {
 		/* try again with proxy config */
@@ -2095,6 +2173,7 @@ eazel_installer_initialize (EazelInstaller *object) {
 	installer->install_categories = NULL;
 	installer->force_remove_categories = NULL;
 	installer->successful = TRUE;
+	installer->uninstalling = FALSE;
 
 	package_destination = g_strdup_printf ("%s/%s", installer->tmpdir, PACKAGE_LIST);
 

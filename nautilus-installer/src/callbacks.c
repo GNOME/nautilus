@@ -89,7 +89,7 @@ begin_install (EazelInstaller  *installer)
 						    NULL);
 		eazel_installer_post_install (installer);
 		/* return TRUE; */
-	} else 
+	} else
 	if (installer->successful && installer->install_categories) { 
 		eazel_installer_do_install (installer, installer->install_categories, FALSE);
 		eazel_installer_post_install (installer);

@@ -1,3 +1,23 @@
+2000-11-20  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-logic.c:
+	(eazel_install_do_file_conflict_check):
+	Removed some debug spam
+	
+	* nautilus-installer/src/Makefile:
+	yes.
+	
+	* nautilus-installer/src/callbacks.c: (begin_install):
+	* nautilus-installer/src/installer.c: (skip_over_remove_problems),
+	(jump_to_retry_page), (create_initial_force_remove_category),
+	(get_detailed_errors_foreach), (get_detailed_errors),
+	(eazel_install_preflight), (eazel_installer_post_install),
+	(eazel_installer_set_default_texts), (eazel_installer_setup_texts),
+	(eazel_install_get_depends), (eazel_installer_initialize):
+	* nautilus-installer/src/installer.h:
+	* nautilus-installer/src/main.c: (main):
+	Added my fix for 4706.
+
 2000-11-20  Robey Pointer  <robey@eazel.com>
 
 	* components/rpmview/nautilus-rpm-view-install.c:

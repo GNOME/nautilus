@@ -2063,7 +2063,6 @@ eazel_install_do_file_conflict_check (EazelInstall *service,
 				}
 			} else {
 				/* No file conflicts */
-				trilobite_debug ("package %s had no file conflicts", pack->name);
 			}
 		}
 	}
