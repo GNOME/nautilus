@@ -23,7 +23,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.1.2\n"
-"POT-Creation-Date: 2002-04-19 19:56+0300\n"
+"POT-Creation-Date: 2002-04-21 20:29+0200\n"
 "PO-Revision-Date: 2002-04-19 20:29+0300\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -918,7 +918,7 @@ msgid "Sorry, but '%s' is not a usable image file."
 msgstr "'%s' ei ole kelvollinen kuvatiedosto."
 
 #: components/music/nautilus-music-view.c:746
-#: src/nautilus-property-browser.c:1058 src/nautilus-property-browser.c:1309
+#: src/nautilus-property-browser.c:1060 src/nautilus-property-browser.c:1313
 msgid "Not an Image"
 msgstr "Ei ole kuva"
 
@@ -981,7 +981,7 @@ msgstr "Keskeytä"
 #: libnautilus-private/nautilus-file-operations.c:904
 #: libnautilus-private/nautilus-file-operations.c:919
 #: libnautilus-private/nautilus-file-operations.c:939
-#: src/nautilus-shell-ui.xml.h:48
+#: src/nautilus-shell-ui.xml.h:47
 msgid "Stop"
 msgstr "Pysäytä"
 
@@ -1379,7 +1379,7 @@ msgid "Nautilus Tree view"
 msgstr "Nautiluksen puunäkymä"
 
 #: components/tree/Nautilus_View_tree.server.in.h:3
-#: src/nautilus-preferences-dialog.c:355
+#: src/nautilus-preferences-dialog.c:359
 msgid "Tree"
 msgstr "Puu"
 
@@ -1519,7 +1519,7 @@ msgstr "Vedä tunnusmerkki johonkin osaan asettaaksesi osan tunnusmerkin"
 msgid "Eclipse"
 msgstr "Pimennys"
 
-#: data/browser.xml.h:31 src/file-manager/fm-properties-window.c:1653
+#: data/browser.xml.h:31 src/file-manager/fm-properties-window.c:1676
 #: src/file-manager/fm-search-list-view.c:500
 msgid "Emblems"
 msgstr "Tunnusmerkit"
@@ -1737,7 +1737,7 @@ msgstr "Suosikit"
 msgid "Adjust your user environment"
 msgstr "Säädä käyttöympäristöä"
 
-#: data/preferences.desktop.in.h:2 src/nautilus-preferences-dialog.c:416
+#: data/preferences.desktop.in.h:2 src/nautilus-preferences-dialog.c:421
 msgid "Preferences"
 msgstr "Asetukset"
 
@@ -3474,31 +3474,31 @@ msgstr "Käsin"
 
 #: libnautilus-private/nautilus-global-preferences.c:184
 #: libnautilus-private/nautilus-global-preferences.c:193
-#: src/file-manager/nautilus-icon-view-ui.xml.h:4
+#: src/file-manager/nautilus-icon-view-ui.xml.h:5
 msgid "By Name"
 msgstr "Nimen mukaan"
 
 #: libnautilus-private/nautilus-global-preferences.c:185
 #: libnautilus-private/nautilus-global-preferences.c:194
-#: src/file-manager/nautilus-icon-view-ui.xml.h:5
+#: src/file-manager/nautilus-icon-view-ui.xml.h:6
 msgid "By Size"
 msgstr "Koon mukaan"
 
 #: libnautilus-private/nautilus-global-preferences.c:186
 #: libnautilus-private/nautilus-global-preferences.c:195
-#: src/file-manager/nautilus-icon-view-ui.xml.h:6
+#: src/file-manager/nautilus-icon-view-ui.xml.h:7
 msgid "By Type"
 msgstr "Tyypin mukaan"
 
 #: libnautilus-private/nautilus-global-preferences.c:187
 #: libnautilus-private/nautilus-global-preferences.c:196
-#: src/file-manager/nautilus-icon-view-ui.xml.h:2
+#: src/file-manager/nautilus-icon-view-ui.xml.h:3
 msgid "By Modification Date"
 msgstr "Muokkauspäivämäärän mukaan"
 
 #: libnautilus-private/nautilus-global-preferences.c:188
 #: libnautilus-private/nautilus-global-preferences.c:197
-#: src/file-manager/nautilus-icon-view-ui.xml.h:1
+#: src/file-manager/nautilus-icon-view-ui.xml.h:2
 msgid "By Emblems"
 msgstr "Tunnusmerkkien mukaan"
 
@@ -3626,7 +3626,7 @@ msgstr "korostettu pudotusta varten"
 msgid "whether we are highlighted for a D&D drop"
 msgstr "onko korostettu vetämistä ja pudotusta varten"
 
-#: libnautilus-private/nautilus-icon-container.c:1603
+#: libnautilus-private/nautilus-icon-container.c:1642
 msgid "The selection rectangle"
 msgstr "Valittu suorakulmio"
 
@@ -4341,7 +4341,7 @@ msgstr "Poista valittu teksti kopioimatta sitä leikepöydälle"
 msgid "Select All"
 msgstr "Valitse kaikki"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:43
+#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:42
 msgid "Select _All"
 msgstr "Valitse _kaikki"
 
@@ -4462,7 +4462,7 @@ msgstr "Näytä kuvakkeina"
 msgid "View as List"
 msgstr "Näytä luettelona"
 
-#: src/file-manager/fm-desktop-icon-view.c:642
+#: src/file-manager/fm-desktop-icon-view.c:683
 msgid "Background"
 msgstr "Tausta"
 
@@ -4475,22 +4475,22 @@ msgstr "Tausta"
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: src/file-manager/fm-desktop-icon-view.c:888
+#: src/file-manager/fm-desktop-icon-view.c:929
 #, c-format
 msgid "%s's Home"
 msgstr "Kotihakemisto %.0s"
 
-#: src/file-manager/fm-desktop-icon-view.c:1083
+#: src/file-manager/fm-desktop-icon-view.c:1124
 msgid "Empty Trash..."
 msgstr "Tyhjennä roskakori..."
 
-#: src/file-manager/fm-desktop-icon-view.c:1085
+#: src/file-manager/fm-desktop-icon-view.c:1126
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
 msgid "Empty Trash"
 msgstr "Tyhjennä roskakori"
 
-#: src/file-manager/fm-desktop-icon-view.c:1105
+#: src/file-manager/fm-desktop-icon-view.c:1146
 msgid "Unmount Volume"
 msgstr "Irrota osio"
 
@@ -4773,97 +4773,97 @@ msgstr ""
 msgid "There is nothing on the clipboard to paste."
 msgstr "Leikepöydällä ei ole mitään liitettävää."
 
-#: src/file-manager/fm-directory-view.c:4267
+#: src/file-manager/fm-directory-view.c:4269
 msgid "Open _in This Window"
 msgstr "Avaa _tässä ikkunassa"
 
-#: src/file-manager/fm-directory-view.c:4270
+#: src/file-manager/fm-directory-view.c:4272
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Open _in New Window"
 msgstr "Avaa _uudessa ikkunassa"
 
-#: src/file-manager/fm-directory-view.c:4272
+#: src/file-manager/fm-directory-view.c:4274
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "Avaa %d uutta _ikkunaa näyttämistä varten"
 
-#: src/file-manager/fm-directory-view.c:4290
+#: src/file-manager/fm-directory-view.c:4292
 msgid "Delete from _Trash..."
 msgstr "Poista _roskakorista..."
 
-#: src/file-manager/fm-directory-view.c:4290
+#: src/file-manager/fm-directory-view.c:4292
 msgid "Delete from _Trash"
 msgstr "Poista _roskakorista"
 
-#: src/file-manager/fm-directory-view.c:4292
+#: src/file-manager/fm-directory-view.c:4294
 msgid "Delete all selected items permanently"
 msgstr "Poista kaikki valitut kohteet pysyvästi"
 
-#: src/file-manager/fm-directory-view.c:4295
+#: src/file-manager/fm-directory-view.c:4297
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Move to _Trash"
 msgstr "Siirrä _roskakoriin"
 
-#: src/file-manager/fm-directory-view.c:4297
+#: src/file-manager/fm-directory-view.c:4299
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Move each selected item to the Trash"
 msgstr "Siirrä jokainen valittu kohde roskakoriin"
 
-#: src/file-manager/fm-directory-view.c:4324
+#: src/file-manager/fm-directory-view.c:4326
 msgid "De_lete..."
 msgstr "_Poista..."
 
-#: src/file-manager/fm-directory-view.c:4324
+#: src/file-manager/fm-directory-view.c:4326
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "De_lete"
 msgstr "_Poista"
 
-#: src/file-manager/fm-directory-view.c:4345
+#: src/file-manager/fm-directory-view.c:4347
 msgid "Make _Links"
 msgstr "_Tee linkkejä"
 
-#: src/file-manager/fm-directory-view.c:4346
+#: src/file-manager/fm-directory-view.c:4348
 msgid "Make _Link"
 msgstr "_Tee linkki"
 
-#: src/file-manager/fm-directory-view.c:4361 src/nautilus-sidebar.c:1501
+#: src/file-manager/fm-directory-view.c:4363 src/nautilus-sidebar.c:1501
 msgid "_Empty Trash..."
 msgstr "_Tyhjennä roskakori..."
 
-#: src/file-manager/fm-directory-view.c:4362
+#: src/file-manager/fm-directory-view.c:4364
 #: src/file-manager/nautilus-directory-view-ui.xml.h:60
 #: src/nautilus-sidebar.c:1502
 msgid "_Empty Trash"
 msgstr "_Tyhjennä roskakori"
 
-#: src/file-manager/fm-directory-view.c:4373
+#: src/file-manager/fm-directory-view.c:4375
 #: src/file-manager/nautilus-directory-view-ui.xml.h:37
 msgid "R_emove Custom Images"
 msgstr "Poista _mukautetut kuvat"
 
-#: src/file-manager/fm-directory-view.c:4374
+#: src/file-manager/fm-directory-view.c:4376
 msgid "R_emove Custom Image"
 msgstr "Poista _mukautettu kuva"
 
-#: src/file-manager/fm-directory-view.c:4388
+#: src/file-manager/fm-directory-view.c:4390
 msgid "Cu_t File"
 msgstr "_Leikkaa tiedosto"
 
-#: src/file-manager/fm-directory-view.c:4389
+#: src/file-manager/fm-directory-view.c:4391
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "_Leikkaa tiedostoja"
 
-#: src/file-manager/fm-directory-view.c:4399
+#: src/file-manager/fm-directory-view.c:4401
 msgid "_Copy File"
 msgstr "_Kopioi tiedosto"
 
-#: src/file-manager/fm-directory-view.c:4400
+#: src/file-manager/fm-directory-view.c:4402
 #: src/file-manager/nautilus-directory-view-ui.xml.h:58
 msgid "_Copy Files"
 msgstr "Kopioi tiedostoja"
 
-#: src/file-manager/fm-directory-view.c:4569
+#: src/file-manager/fm-directory-view.c:4571
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
@@ -4871,7 +4871,7 @@ msgstr ""
 "Tätä linkkiä ei voi käyttää, koska sillä ei ole kohdetta. Haluatko heittää "
 "tämän linkin roskakoriin?"
 
-#: src/file-manager/fm-directory-view.c:4572
+#: src/file-manager/fm-directory-view.c:4574
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -4880,15 +4880,15 @@ msgstr ""
 "Tätä linkkiä ei voi käyttää, koska sen kohdetta \"%s\" ei ole olemassa. "
 "Haluatko heittää tämän linkin roskakoriin?"
 
-#: src/file-manager/fm-directory-view.c:4578
+#: src/file-manager/fm-directory-view.c:4580
 msgid "Broken Link"
 msgstr "Rikkinäinen linkki"
 
-#: src/file-manager/fm-directory-view.c:4578
+#: src/file-manager/fm-directory-view.c:4580
 msgid "Throw Away"
 msgstr "Heitä pois"
 
-#: src/file-manager/fm-directory-view.c:4635
+#: src/file-manager/fm-directory-view.c:4637
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -4897,35 +4897,35 @@ msgstr ""
 "\"%s\" on suoritettava tekstitiedosto. Haluatko käynnistää sen vai nähdä sen "
 "sisällön?"
 
-#: src/file-manager/fm-directory-view.c:4641
+#: src/file-manager/fm-directory-view.c:4643
 msgid "Run or Display?"
 msgstr "Käynnistä vai näytä?"
 
-#: src/file-manager/fm-directory-view.c:4642
+#: src/file-manager/fm-directory-view.c:4644
 msgid "Run"
 msgstr "Käynnistä"
 
-#: src/file-manager/fm-directory-view.c:4643
+#: src/file-manager/fm-directory-view.c:4645
 msgid "Display"
 msgstr "Näyttö"
 
-#: src/file-manager/fm-directory-view.c:4698
+#: src/file-manager/fm-directory-view.c:4700
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
 msgstr ""
 "Valitettavasti et voi turvallisuussyistä suorittaa komentoja etäsivustolta."
 
-#: src/file-manager/fm-directory-view.c:4700
+#: src/file-manager/fm-directory-view.c:4702
 msgid "Can't execute remote links"
 msgstr "Etälinkkejä ei voi suorittaa"
 
-#: src/file-manager/fm-directory-view.c:4844
+#: src/file-manager/fm-directory-view.c:4846
 #, c-format
 msgid "Opening \"%s\""
 msgstr "Avaa tiedostoa \"%s\""
 
-#: src/file-manager/fm-directory-view.c:4850
+#: src/file-manager/fm-directory-view.c:4852
 msgid "Cancel Open?"
 msgstr "Perutaanko avaaminen?"
 
@@ -5068,7 +5068,7 @@ msgid "by _Name"
 msgstr "_Nimen mukaan"
 
 #: src/file-manager/fm-icon-view.c:148
-#: src/file-manager/nautilus-icon-view-ui.xml.h:15
+#: src/file-manager/nautilus-icon-view-ui.xml.h:16
 msgid "Keep icons sorted by name in rows"
 msgstr "Pidä kuvakkeet riveissä nimen mukaisessa järjestyksessä"
 
@@ -5077,7 +5077,7 @@ msgid "by _Size"
 msgstr "_Koon mukaan"
 
 #: src/file-manager/fm-icon-view.c:155
-#: src/file-manager/nautilus-icon-view-ui.xml.h:16
+#: src/file-manager/nautilus-icon-view-ui.xml.h:17
 msgid "Keep icons sorted by size in rows"
 msgstr "Pidä kuvakkeet riveissä koon mukaisessa järjestyksessä"
 
@@ -5086,7 +5086,7 @@ msgid "by _Type"
 msgstr "_Tyypin mukaan"
 
 #: src/file-manager/fm-icon-view.c:162
-#: src/file-manager/nautilus-icon-view-ui.xml.h:17
+#: src/file-manager/nautilus-icon-view-ui.xml.h:18
 msgid "Keep icons sorted by type in rows"
 msgstr "Pidä kuvakkeet riveissä tyypin mukaisessa järjestyksessä"
 
@@ -5095,7 +5095,7 @@ msgid "by Modification _Date"
 msgstr "Muokkaus_päivämäärän mukaan"
 
 #: src/file-manager/fm-icon-view.c:169
-#: src/file-manager/nautilus-icon-view-ui.xml.h:14
+#: src/file-manager/nautilus-icon-view-ui.xml.h:15
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Pidä kuvakkeet riveissä muokkauspäivämääärän mukaisessa järjestyksessä"
 
@@ -5104,7 +5104,7 @@ msgid "by _Emblems"
 msgstr "Tunnus_merkkien mukaan"
 
 #: src/file-manager/fm-icon-view.c:176
-#: src/file-manager/nautilus-icon-view-ui.xml.h:13
+#: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Pidä kuvakkeet riveissä tunnusmerkkien mukaisessa järjestyksessä"
 
@@ -5153,7 +5153,7 @@ msgstr "Tyyppi"
 msgid "Date Modified"
 msgstr "Muokattu"
 
-#: src/file-manager/fm-properties-window.c:292 src/nautilus-sidebar.c:748
+#: src/file-manager/fm-properties-window.c:315 src/nautilus-sidebar.c:748
 msgid ""
 "You can't assign more than one custom icon at a time! Please drag just one "
 "image to set a custom icon."
@@ -5161,11 +5161,11 @@ msgstr ""
 "Voit asettaa vain yhden oman kuvakkeen kerrallaan. Vedä yhtä kuvaa "
 "asettaaksesi sen kuvakkeeksi."
 
-#: src/file-manager/fm-properties-window.c:294 src/nautilus-sidebar.c:750
+#: src/file-manager/fm-properties-window.c:317 src/nautilus-sidebar.c:750
 msgid "More Than One Image"
 msgstr "Useampi kuin yksi kuva"
 
-#: src/file-manager/fm-properties-window.c:303 src/nautilus-sidebar.c:769
+#: src/file-manager/fm-properties-window.c:326 src/nautilus-sidebar.c:769
 msgid ""
 "The file that you dropped is not local.  You can only use local images as "
 "custom icons."
@@ -5173,11 +5173,11 @@ msgstr ""
 "Pudottamasi tiedosto ei ole paikallinen. Vain paikallisia tiedostoja voi "
 "käyttää omina kuvakkeina."
 
-#: src/file-manager/fm-properties-window.c:305 src/nautilus-sidebar.c:771
+#: src/file-manager/fm-properties-window.c:328 src/nautilus-sidebar.c:771
 msgid "Local Images Only"
 msgstr "Vain paikalliset kuvat"
 
-#: src/file-manager/fm-properties-window.c:310 src/nautilus-sidebar.c:776
+#: src/file-manager/fm-properties-window.c:333 src/nautilus-sidebar.c:776
 msgid ""
 "The file that you dropped is not an image.  You can only use local images as "
 "custom icons."
@@ -5185,50 +5185,50 @@ msgstr ""
 "Pudottamasi tiedosto ei ole kuva. Vain paikallisia kuvia voi käyttää omina "
 "kuvakkeina."
 
-#: src/file-manager/fm-properties-window.c:312 src/nautilus-sidebar.c:778
+#: src/file-manager/fm-properties-window.c:335 src/nautilus-sidebar.c:778
 msgid "Images Only"
 msgstr "Vain kuvat"
 
-#: src/file-manager/fm-properties-window.c:587
+#: src/file-manager/fm-properties-window.c:610
 #, c-format
 msgid "%s Properties"
 msgstr "Kohteen %s ominaisuudet"
 
-#: src/file-manager/fm-properties-window.c:783
+#: src/file-manager/fm-properties-window.c:806
 msgid "Cancel Group Change?"
 msgstr "Haluatko perua ryhmän vaihdon?"
 
-#: src/file-manager/fm-properties-window.c:784
+#: src/file-manager/fm-properties-window.c:807
 msgid "Changing group"
 msgstr "Ryhmän vaihto"
 
-#: src/file-manager/fm-properties-window.c:944
+#: src/file-manager/fm-properties-window.c:967
 msgid "Cancel Owner Change?"
 msgstr "Haluatko perua omistajan vaihdon?"
 
-#: src/file-manager/fm-properties-window.c:945
+#: src/file-manager/fm-properties-window.c:968
 msgid "Changing owner"
 msgstr "Omistajan vaihto"
 
-#: src/file-manager/fm-properties-window.c:1127
+#: src/file-manager/fm-properties-window.c:1150
 msgid "nothing"
 msgstr "ei mitään"
 
-#: src/file-manager/fm-properties-window.c:1129
+#: src/file-manager/fm-properties-window.c:1152
 msgid "unreadable"
 msgstr "ei luettavissa"
 
-#: src/file-manager/fm-properties-window.c:1138
+#: src/file-manager/fm-properties-window.c:1161
 #, c-format
 msgid "1 item, with size %s"
 msgstr "1 kohde, jonka koko on %s"
 
-#: src/file-manager/fm-properties-window.c:1140
+#: src/file-manager/fm-properties-window.c:1163
 #, c-format
 msgid "%d items, totalling %s"
 msgstr "%d kohdetta, yhteensä %s"
 
-#: src/file-manager/fm-properties-window.c:1146
+#: src/file-manager/fm-properties-window.c:1169
 msgid "(some contents unreadable)"
 msgstr "(sisältö ei kokonaan luettavissa) "
 
@@ -5237,133 +5237,133 @@ msgstr "(sisältö ei kokonaan luettavissa) "
 #. * "Contents:" title to line up with the first line of the 2-line value.
 #. * Maybe there's a better way to do this, but I couldn't think of one.
 #.
-#: src/file-manager/fm-properties-window.c:1160
+#: src/file-manager/fm-properties-window.c:1183
 msgid "Contents:"
 msgstr "Sisältö:"
 
-#: src/file-manager/fm-properties-window.c:1507
+#: src/file-manager/fm-properties-window.c:1530
 msgid "Basic"
 msgstr "Perustiedot"
 
-#: src/file-manager/fm-properties-window.c:1581
+#: src/file-manager/fm-properties-window.c:1604
 msgid "Type:"
 msgstr "Tyyppi:"
 
-#: src/file-manager/fm-properties-window.c:1586
+#: src/file-manager/fm-properties-window.c:1609
 msgid "Size:"
 msgstr "Koko:"
 
-#: src/file-manager/fm-properties-window.c:1588 src/nautilus-location-bar.c:60
-#: src/nautilus-preferences-dialog.c:262 src/nautilus-preferences-dialog.c:272
+#: src/file-manager/fm-properties-window.c:1611 src/nautilus-location-bar.c:60
+#: src/nautilus-preferences-dialog.c:266 src/nautilus-preferences-dialog.c:276
 msgid "Location:"
 msgstr "Sijainti:"
 
-#: src/file-manager/fm-properties-window.c:1590
+#: src/file-manager/fm-properties-window.c:1613
 msgid "Link Target:"
 msgstr "Linkin kohde:"
 
-#: src/file-manager/fm-properties-window.c:1593
+#: src/file-manager/fm-properties-window.c:1616
 msgid "MIME Type:"
 msgstr "MIME-tyyppi:"
 
-#: src/file-manager/fm-properties-window.c:1599
+#: src/file-manager/fm-properties-window.c:1622
 msgid "Modified:"
 msgstr "Muokattu:"
 
-#: src/file-manager/fm-properties-window.c:1602
+#: src/file-manager/fm-properties-window.c:1625
 msgid "Accessed:"
 msgstr "Käytetty:"
 
-#: src/file-manager/fm-properties-window.c:1611
+#: src/file-manager/fm-properties-window.c:1634
 msgid "_Select Custom Icon..."
 msgstr "_Valitse oma kuva..."
 
-#: src/file-manager/fm-properties-window.c:1617
+#: src/file-manager/fm-properties-window.c:1640
 msgid "_Remove Custom Icon"
 msgstr "_Poista oma kuva"
 
-#: src/file-manager/fm-properties-window.c:1907
+#: src/file-manager/fm-properties-window.c:1930
 msgid "Set User ID"
 msgstr "Asettaa käyttäjän (SUID)"
 
-#: src/file-manager/fm-properties-window.c:1912
+#: src/file-manager/fm-properties-window.c:1935
 msgid "Special Flags:"
 msgstr "Erikoisliput:"
 
-#: src/file-manager/fm-properties-window.c:1915
+#: src/file-manager/fm-properties-window.c:1938
 msgid "Set Group ID"
 msgstr "Asettaa ryhmän (SGID)"
 
-#: src/file-manager/fm-properties-window.c:1917
+#: src/file-manager/fm-properties-window.c:1940
 msgid "Sticky"
 msgstr "\"Sticky\""
 
-#: src/file-manager/fm-properties-window.c:1943
+#: src/file-manager/fm-properties-window.c:1966
 msgid "Permissions"
 msgstr "Oikeudet"
 
-#: src/file-manager/fm-properties-window.c:1949
+#: src/file-manager/fm-properties-window.c:1972
 msgid "You are not the owner, so you can't change these permissions."
 msgstr "Et ole tiedoston omistaja, joten et voi muuttaa sen oikeuksia."
 
-#: src/file-manager/fm-properties-window.c:1962
+#: src/file-manager/fm-properties-window.c:1985
 msgid "File Owner:"
 msgstr "Tiedoston omistaja:"
 
-#: src/file-manager/fm-properties-window.c:1971
+#: src/file-manager/fm-properties-window.c:1994
 msgid "File Group:"
 msgstr "Tiedoston ryhmä:"
 
-#: src/file-manager/fm-properties-window.c:1989
+#: src/file-manager/fm-properties-window.c:2012
 msgid "Owner:"
 msgstr "Omistaja:"
 
-#: src/file-manager/fm-properties-window.c:1990
+#: src/file-manager/fm-properties-window.c:2013
 msgid "Group:"
 msgstr "Ryhmä:"
 
-#: src/file-manager/fm-properties-window.c:1991
+#: src/file-manager/fm-properties-window.c:2014
 msgid "Others:"
 msgstr "Muut:"
 
-#: src/file-manager/fm-properties-window.c:2010
+#: src/file-manager/fm-properties-window.c:2033
 msgid "Read"
 msgstr "Luku"
 
-#: src/file-manager/fm-properties-window.c:2014
+#: src/file-manager/fm-properties-window.c:2037
 msgid "Write"
 msgstr "Kirjoitus"
 
-#: src/file-manager/fm-properties-window.c:2018
+#: src/file-manager/fm-properties-window.c:2041
 msgid "Execute"
 msgstr "Suoritus"
 
-#: src/file-manager/fm-properties-window.c:2069
+#: src/file-manager/fm-properties-window.c:2092
 msgid "Text View:"
 msgstr "Tekstinä:"
 
-#: src/file-manager/fm-properties-window.c:2070
+#: src/file-manager/fm-properties-window.c:2093
 msgid "Number View:"
 msgstr "Numeroina:"
 
-#: src/file-manager/fm-properties-window.c:2071
+#: src/file-manager/fm-properties-window.c:2094
 msgid "Last Changed:"
 msgstr "Viimeksi muuttuneet:"
 
-#: src/file-manager/fm-properties-window.c:2075
+#: src/file-manager/fm-properties-window.c:2098
 #, c-format
 msgid "The permissions of \"%s\" could not be determined."
 msgstr "Kohteen \"%s\" oikeuksia ei saatu selville."
 
-#: src/file-manager/fm-properties-window.c:2353
+#: src/file-manager/fm-properties-window.c:2402
 msgid "Cancel Showing Properties Window?"
 msgstr "Perutaanko ominaisuusikkunan näyttäminen?"
 
-#: src/file-manager/fm-properties-window.c:2354
+#: src/file-manager/fm-properties-window.c:2403
 msgid "Creating Properties window"
 msgstr "Luodaan ominaisuusikkuna"
 
-#: src/file-manager/fm-properties-window.c:2447
+#: src/file-manager/fm-properties-window.c:2497
 msgid "Select an icon:"
 msgstr "Valitse kuvake:"
 
@@ -5766,8 +5766,9 @@ msgid "Reset Background"
 msgstr "Palauta tausta"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:44
-msgid "Reset View to Match Preferences"
-msgstr "Palauta näkymä asetusten mukaiseksi"
+#, fuzzy
+msgid "Reset View to Default"
+msgstr "Luettelonäkymän oletukset"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:45
 msgid "Reset View to Match _Preferences"
@@ -5854,37 +5855,37 @@ msgstr "_Nimeä uudelleen"
 msgid "_Show Trash"
 msgstr "_Näytä roskakori"
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:3
+#: src/file-manager/nautilus-icon-view-ui.xml.h:1
+msgid "Arrange Items"
+msgstr ""
+
+#: src/file-manager/nautilus-icon-view-ui.xml.h:4
 msgid "By Modification _Date"
 msgstr "Muokkaus_päivämäärän mukaan"
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:7
+#: src/file-manager/nautilus-icon-view-ui.xml.h:8
 msgid "By _Emblems"
 msgstr "Tunnus_merkkien mukaan"
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:8
+#: src/file-manager/nautilus-icon-view-ui.xml.h:9
 msgid "By _Name"
 msgstr "_Nimen mukaan"
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:9
+#: src/file-manager/nautilus-icon-view-ui.xml.h:10
 msgid "By _Size"
 msgstr "_Koon mukaan"
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:10
+#: src/file-manager/nautilus-icon-view-ui.xml.h:11
 msgid "By _Type"
 msgstr "_Tyypin mukaan"
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:11
+#: src/file-manager/nautilus-icon-view-ui.xml.h:12
 msgid "Clean Up by Name"
 msgstr "Järjestele nimen mukaan"
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:12
+#: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Display icons in the opposite order"
 msgstr "Näytä kuvakkeet käänteisessä järjestyksessä"
-
-#: src/file-manager/nautilus-icon-view-ui.xml.h:18
-msgid "Lay Out Items"
-msgstr "Asettele kohteet"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:19
 msgid "Leave icons wherever they are dropped"
@@ -5933,12 +5934,12 @@ msgid "Toggle using a tighter layout scheme"
 msgstr "Valitse, käytetäänkö tiheämpää asettelutapaa"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:31
-msgid "_Clean Up by Name"
-msgstr "_Siisti nimen mukaan"
+msgid "_Arrange Items"
+msgstr ""
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:32
-msgid "_Lay Out Items"
-msgstr "_Asettele kohteet"
+msgid "_Clean Up by Name"
+msgstr "_Siisti nimen mukaan"
 
 #: src/file-manager/nautilus-icon-view-ui.xml.h:33
 msgid "_Manually"
@@ -6235,8 +6236,9 @@ msgstr "Lopeta nautilus."
 msgid "Restart Nautilus."
 msgstr "Käynnistä Nautilus uudelleen."
 
-#: src/nautilus-main.c:185 src/nautilus-window-manage-views.c:256
-#: src/nautilus-window-menus.c:616
+#. Set initial window title
+#: src/nautilus-main.c:185 src/nautilus-window-manage-views.c:221
+#: src/nautilus-window-menus.c:613 src/nautilus-window.c:185
 msgid "Nautilus"
 msgstr "Nautilus"
 
@@ -6275,93 +6277,93 @@ msgid "Nautilus Themes"
 msgstr "Nautiluksen teemat"
 
 #: src/nautilus-preferences-dialog.c:72 src/nautilus-preferences-dialog.c:77
-msgid "Desktop"
-msgstr "Työpöytä"
-
-#: src/nautilus-preferences-dialog.c:74
-msgid "Use Nautilus to draw the desktop"
-msgstr "Piirrä työpöytä Nautiluksella"
-
-#: src/nautilus-preferences-dialog.c:79
-msgid "Use your home folder as the desktop"
-msgstr "Käytä kotihakemistoa työpöytänä"
-
 #: src/nautilus-preferences-dialog.c:82 src/nautilus-preferences-dialog.c:87
-#: src/nautilus-preferences-dialog.c:92 src/nautilus-preferences-dialog.c:97
-#: src/nautilus-preferences-dialog.c:102
+#: src/nautilus-preferences-dialog.c:92
 msgid "Opening New Windows"
 msgstr "Uusien ikkunoiden avaaminen"
 
-#: src/nautilus-preferences-dialog.c:84
+#: src/nautilus-preferences-dialog.c:74
 msgid "Open each file or folder in a separate window"
 msgstr "Avaa jokainen tiedosto tai hakemisto omassa ikkunassaan"
 
-#: src/nautilus-preferences-dialog.c:89
+#: src/nautilus-preferences-dialog.c:79
 msgid "Display toolbar in new windows"
 msgstr "Näytä työkalupalkki uusissa ikkunoissa"
 
-#: src/nautilus-preferences-dialog.c:94
+#: src/nautilus-preferences-dialog.c:84
 msgid "Display location bar in new windows"
 msgstr "Näytä sijaintipalkki uusissa ikkunoissa"
 
-#: src/nautilus-preferences-dialog.c:99
+#: src/nautilus-preferences-dialog.c:89
 msgid "Display status bar in new windows"
 msgstr "Näytä tilarivi uusissa ikkunoissa"
 
-#: src/nautilus-preferences-dialog.c:104
+#: src/nautilus-preferences-dialog.c:94
 msgid "Display sidebar in new windows"
 msgstr "Näytä sivupaneeli uusissa ikkunoissa"
 
-#: src/nautilus-preferences-dialog.c:107 src/nautilus-preferences-dialog.c:112
+#: src/nautilus-preferences-dialog.c:101 src/nautilus-preferences-dialog.c:106
+msgid "Desktop"
+msgstr "Työpöytä"
+
+#: src/nautilus-preferences-dialog.c:103
+msgid "Use Nautilus to draw the desktop"
+msgstr "Piirrä työpöytä Nautiluksella"
+
+#: src/nautilus-preferences-dialog.c:108
+msgid "Use your home folder as the desktop"
+msgstr "Käytä kotihakemistoa työpöytänä"
+
+#: src/nautilus-preferences-dialog.c:111 src/nautilus-preferences-dialog.c:116
 msgid "Trash Behavior"
 msgstr "Roskakorin toiminta"
 
-#: src/nautilus-preferences-dialog.c:109
+#: src/nautilus-preferences-dialog.c:113
 msgid "Ask before emptying the Trash or deleting files"
 msgstr "Kysy ennen roskakorin tyhjennystä tai tiedostojen poistoa"
 
-#: src/nautilus-preferences-dialog.c:114
+#: src/nautilus-preferences-dialog.c:118
 msgid "Include a Delete command that bypasses Trash"
 msgstr "Näytä myös poistokomento, joka ei käytä roskakoria"
 
-#: src/nautilus-preferences-dialog.c:121 src/nautilus-preferences-dialog.c:123
+#: src/nautilus-preferences-dialog.c:125 src/nautilus-preferences-dialog.c:127
 msgid "Click Behavior"
 msgstr "Napsautusten toiminta"
 
-#: src/nautilus-preferences-dialog.c:126 src/nautilus-preferences-dialog.c:128
+#: src/nautilus-preferences-dialog.c:130 src/nautilus-preferences-dialog.c:132
 msgid "Executable Text Files"
 msgstr "Suoritettavat tekstitiedostot"
 
-#: src/nautilus-preferences-dialog.c:131 src/nautilus-preferences-dialog.c:136
-#: src/nautilus-preferences-dialog.c:141
+#: src/nautilus-preferences-dialog.c:135 src/nautilus-preferences-dialog.c:140
+#: src/nautilus-preferences-dialog.c:145
 msgid "Show/Hide Options"
 msgstr "Näytä/piilota valinnat"
 
-#: src/nautilus-preferences-dialog.c:133
+#: src/nautilus-preferences-dialog.c:137
 msgid "Show hidden files (file names start with \".\")"
 msgstr "Näytä piilotiedostot (alkavat merkillä \".\")"
 
-#: src/nautilus-preferences-dialog.c:138
+#: src/nautilus-preferences-dialog.c:142
 msgid "Show backup files (file names end with \"~\")"
 msgstr "Näytä varmuuskopiot (loppuvat merkkiin \"~\")"
 
-#: src/nautilus-preferences-dialog.c:143
+#: src/nautilus-preferences-dialog.c:147
 msgid "Show special flags in Properties window"
 msgstr "Näytä erityiset liput ominaisuusikkunassa"
 
-#: src/nautilus-preferences-dialog.c:146
+#: src/nautilus-preferences-dialog.c:150
 msgid "Sorting Order"
 msgstr "Järjestys"
 
-#: src/nautilus-preferences-dialog.c:148
+#: src/nautilus-preferences-dialog.c:152
 msgid "Always list folders before files"
 msgstr "Luettele hakemistot aina ennen tiedostoja"
 
-#: src/nautilus-preferences-dialog.c:155 src/nautilus-preferences-dialog.c:384
+#: src/nautilus-preferences-dialog.c:159 src/nautilus-preferences-dialog.c:389
 msgid "Icon Captions"
 msgstr "Kuvakkeiden tekstit"
 
-#: src/nautilus-preferences-dialog.c:157
+#: src/nautilus-preferences-dialog.c:161
 msgid ""
 "Choose the order for information to appear beneath icon names.\n"
 "More information appears as you zoom in closer"
@@ -6369,184 +6371,191 @@ msgstr ""
 "Valitse tietojen ilmestymisjärjestys. Niitä ilmestyy kuvakkeiden alle, kun "
 "kasvatat suurennosta."
 
-#: src/nautilus-preferences-dialog.c:170
+#: src/nautilus-preferences-dialog.c:174
 msgid "Default View"
 msgstr "Oletusnäkymä"
 
-#: src/nautilus-preferences-dialog.c:172
+#: src/nautilus-preferences-dialog.c:176
 msgid "View new folders using:"
 msgstr "Katsele uusia hakemistoja katselimella"
 
 #. Icon View Defaults
-#: src/nautilus-preferences-dialog.c:177 src/nautilus-preferences-dialog.c:182
-#: src/nautilus-preferences-dialog.c:187 src/nautilus-preferences-dialog.c:192
-#: src/nautilus-preferences-dialog.c:198 src/nautilus-preferences-dialog.c:204
+#: src/nautilus-preferences-dialog.c:181 src/nautilus-preferences-dialog.c:186
+#: src/nautilus-preferences-dialog.c:191 src/nautilus-preferences-dialog.c:196
+#: src/nautilus-preferences-dialog.c:202 src/nautilus-preferences-dialog.c:208
 msgid "Icon View Defaults"
 msgstr "Kuvakenäkymän oletukset"
 
-#: src/nautilus-preferences-dialog.c:179 src/nautilus-preferences-dialog.c:214
-msgid "Lay Out Items:"
-msgstr "Asettele kohteet:"
+#: src/nautilus-preferences-dialog.c:183 src/nautilus-preferences-dialog.c:218
+msgid "Arrange Items:"
+msgstr ""
 
-#: src/nautilus-preferences-dialog.c:184 src/nautilus-preferences-dialog.c:219
+#: src/nautilus-preferences-dialog.c:188 src/nautilus-preferences-dialog.c:223
 msgid "Sort in reversed order"
 msgstr "Käänteinen järjestys"
 
-#: src/nautilus-preferences-dialog.c:189 src/nautilus-preferences-dialog.c:224
+#: src/nautilus-preferences-dialog.c:193 src/nautilus-preferences-dialog.c:228
 msgid "Font:"
 msgstr "Kirjasin:"
 
-#: src/nautilus-preferences-dialog.c:194 src/nautilus-preferences-dialog.c:229
+#: src/nautilus-preferences-dialog.c:198 src/nautilus-preferences-dialog.c:233
 msgid "Default zoom level:"
 msgstr "Oletussuurennos:"
 
-#: src/nautilus-preferences-dialog.c:200
+#: src/nautilus-preferences-dialog.c:204
 msgid "Use tighter layout"
 msgstr "Tiheämpi asettelu"
 
-#: src/nautilus-preferences-dialog.c:206 src/nautilus-preferences-dialog.c:241
+#: src/nautilus-preferences-dialog.c:210 src/nautilus-preferences-dialog.c:245
 msgid "Font size at default zoom level:"
 msgstr "Kirjasinkoko oletussuurennoksella:"
 
 #. List View Defaults
-#: src/nautilus-preferences-dialog.c:212 src/nautilus-preferences-dialog.c:217
-#: src/nautilus-preferences-dialog.c:222 src/nautilus-preferences-dialog.c:227
-#: src/nautilus-preferences-dialog.c:233 src/nautilus-preferences-dialog.c:239
+#: src/nautilus-preferences-dialog.c:216 src/nautilus-preferences-dialog.c:221
+#: src/nautilus-preferences-dialog.c:226 src/nautilus-preferences-dialog.c:231
+#: src/nautilus-preferences-dialog.c:237 src/nautilus-preferences-dialog.c:243
 msgid "List View Defaults"
 msgstr "Luettelonäkymän oletukset"
 
-#: src/nautilus-preferences-dialog.c:250
+#: src/nautilus-preferences-dialog.c:254
 msgid "Search Complexity Options"
 msgstr "Etsinnän monimutkaisuuden asetukset"
 
-#: src/nautilus-preferences-dialog.c:252
+#: src/nautilus-preferences-dialog.c:256
 msgid "search type to do by default"
 msgstr "etsinnän oletustyyppi"
 
-#: src/nautilus-preferences-dialog.c:260 src/nautilus-shell-ui.xml.h:31
+#: src/nautilus-preferences-dialog.c:264 src/nautilus-shell-ui.xml.h:30
 msgid "Home"
 msgstr "Koti"
 
-#: src/nautilus-preferences-dialog.c:265 src/nautilus-preferences-dialog.c:270
-#: src/nautilus-preferences-dialog.c:275 src/nautilus-preferences-dialog.c:280
-#: src/nautilus-preferences-dialog.c:287 src/nautilus-preferences-dialog.c:294
+#: src/nautilus-preferences-dialog.c:269 src/nautilus-preferences-dialog.c:274
+#: src/nautilus-preferences-dialog.c:279 src/nautilus-preferences-dialog.c:284
+#: src/nautilus-preferences-dialog.c:291 src/nautilus-preferences-dialog.c:298
 msgid "HTTP Proxy Settings"
 msgstr "HTTP-välityspalvelinasetukset"
 
-#: src/nautilus-preferences-dialog.c:267
+#: src/nautilus-preferences-dialog.c:271
 msgid "Use HTTP Proxy"
 msgstr "Käytä HTTP-välityspalvelinta"
 
-#: src/nautilus-preferences-dialog.c:277
+#: src/nautilus-preferences-dialog.c:281
 msgid "Port:"
 msgstr "Portti:"
 
-#: src/nautilus-preferences-dialog.c:282
+#: src/nautilus-preferences-dialog.c:286
 msgid "Proxy requires a username and password:"
 msgstr "Välityspalvelin vaatii käyttäjänimen ja salasanan:"
 
-#: src/nautilus-preferences-dialog.c:289
+#: src/nautilus-preferences-dialog.c:293
 msgid "Username:"
 msgstr "Käyttäjätunnus:"
 
-#: src/nautilus-preferences-dialog.c:296
+#: src/nautilus-preferences-dialog.c:300
 msgid "Password:"
 msgstr "Salasana:"
 
-#: src/nautilus-preferences-dialog.c:301
+#: src/nautilus-preferences-dialog.c:305
 msgid "Built-in Bookmarks"
 msgstr "Sisäänrakennetut kirjanmerkit"
 
-#: src/nautilus-preferences-dialog.c:303
+#: src/nautilus-preferences-dialog.c:307
 msgid "Don't include the built-in bookmarks in the Bookmarks menu"
 msgstr "Älä näytä sisäänrakennettuja kirjanmerkkejä"
 
-#: src/nautilus-preferences-dialog.c:310
+#: src/nautilus-preferences-dialog.c:314
 msgid "Show Text in Icons"
 msgstr "Näytä tekstit kuvakkeissa"
 
-#: src/nautilus-preferences-dialog.c:315
+#: src/nautilus-preferences-dialog.c:319
 msgid "Show Count of Items in Folders"
 msgstr "Näytä hakemistojen sisältöjen lukumäärät"
 
-#: src/nautilus-preferences-dialog.c:320 src/nautilus-preferences-dialog.c:325
+#: src/nautilus-preferences-dialog.c:324 src/nautilus-preferences-dialog.c:329
 msgid "Show Thumbnails for Image Files"
 msgstr "Näytä pienoiskuvat kuvatiedostoista"
 
-#: src/nautilus-preferences-dialog.c:327
+#: src/nautilus-preferences-dialog.c:331
 msgid "Don't make thumbnails for files larger than:"
 msgstr "Älä luo pikkukuvia tiedostoista, jotka ovat suurempia kuin:"
 
-#: src/nautilus-preferences-dialog.c:330
+#: src/nautilus-preferences-dialog.c:334
 msgid "Preview Sound Files"
 msgstr "Kuuntele äänitiedostoja"
 
 #. FIXME bugzilla.gnome.org 42560: This title phrase needs improvement.
-#: src/nautilus-preferences-dialog.c:337
+#: src/nautilus-preferences-dialog.c:341
 msgid "Make Folder Appearance Details Public"
 msgstr "Tee hakemiston ulkonäön asetuksista julkisia"
 
-#: src/nautilus-preferences-dialog.c:346
+#: src/nautilus-preferences-dialog.c:350
 msgid "Tabs"
 msgstr "Välilehdet"
 
-#: src/nautilus-preferences-dialog.c:357
+#: src/nautilus-preferences-dialog.c:361
 msgid "Show only folders (no files) in the tree"
 msgstr "Näytä vain hakemistot (ei tiedostoja) puussa"
 
-#: src/nautilus-preferences-dialog.c:364
+#: src/nautilus-preferences-dialog.c:368
 msgid "Maximum items per site"
 msgstr "Suurin kohtien määrä sivustoa kohden"
 
-#: src/nautilus-preferences-dialog.c:366
+#: src/nautilus-preferences-dialog.c:370
 msgid "Maximum number of items displayed per site"
 msgstr "Suurin yhden sivuston kohtien määrä"
 
-#: src/nautilus-preferences-dialog.c:369
+#: src/nautilus-preferences-dialog.c:373
 msgid "Update Minutes"
 msgstr "Päivitystaajuus (min)"
 
-#: src/nautilus-preferences-dialog.c:371
+#: src/nautilus-preferences-dialog.c:375
 msgid "Update frequency in minutes"
 msgstr "Päivitystaajuus minuuteissa"
 
-#: src/nautilus-preferences-dialog.c:380
-msgid "View Preferences"
-msgstr "Näkymäasetukset"
+#: src/nautilus-preferences-dialog.c:384
+#, fuzzy
+msgid "View Defaults"
+msgstr "Kuvakenäkymän oletukset"
 
-#: src/nautilus-preferences-dialog.c:381
+#: src/nautilus-preferences-dialog.c:385
 msgid "Appearance"
 msgstr "Ulkonäkö"
 
-#: src/nautilus-preferences-dialog.c:382
-msgid "Windows & Desktop"
-msgstr "Ikkunat & työpöytä"
+#: src/nautilus-preferences-dialog.c:386
+#, fuzzy
+msgid "Windows"
+msgstr "Uusi ikkuna"
 
-#: src/nautilus-preferences-dialog.c:383
+#: src/nautilus-preferences-dialog.c:387
+#, fuzzy
+msgid "Desktop & Trash"
+msgstr "Siirrä roskakoriin"
+
+#: src/nautilus-preferences-dialog.c:388
 msgid "Icon & List Views"
 msgstr "Kuvake- ja luettelonäkymät"
 
-#: src/nautilus-preferences-dialog.c:385
+#: src/nautilus-preferences-dialog.c:390
 msgid "Sidebar Panels"
 msgstr "Sivupaneelit"
 
-#: src/nautilus-preferences-dialog.c:387
+#: src/nautilus-preferences-dialog.c:392
 msgid "Search"
 msgstr "Etsi"
 
-#: src/nautilus-preferences-dialog.c:389
+#: src/nautilus-preferences-dialog.c:394
 msgid "Navigation"
 msgstr "Ohjailu"
 
-#: src/nautilus-preferences-dialog.c:390
+#: src/nautilus-preferences-dialog.c:395
 msgid "Speed Tradeoffs"
 msgstr "Nopeuden lisääminen"
 
-#: src/nautilus-preferences-dialog.c:391
+#: src/nautilus-preferences-dialog.c:396
 msgid "News Panel"
 msgstr "Uutissivupaneeli"
 
-#: src/nautilus-preferences-dialog.c:442
+#: src/nautilus-preferences-dialog.c:447
 #, c-format
 msgid "Display %s tab in sidebar"
 msgstr "Näytä välilehti %s sivupaneelissa"
@@ -6595,156 +6604,158 @@ msgid "Create a New Emblem:"
 msgstr "Lisää uusi tunnusmerkki:"
 
 #. make the keyword label and field
-#: src/nautilus-property-browser.c:938
-msgid "Keyword:"
+#: src/nautilus-property-browser.c:944
+#, fuzzy
+msgid "_Keyword:"
 msgstr "Avainsana:"
 
 #. set up a gnome icon entry to pick the image file
-#: src/nautilus-property-browser.c:952
-msgid "Image:"
+#: src/nautilus-property-browser.c:960
+#, fuzzy
+msgid "_Image:"
 msgstr "Kuva:"
 
-#: src/nautilus-property-browser.c:956
+#: src/nautilus-property-browser.c:964
 msgid "Select an image file for the new emblem:"
 msgstr "Valitse uuden tunnusmerkin kuva:"
 
-#: src/nautilus-property-browser.c:986
+#: src/nautilus-property-browser.c:989
 msgid "Create a New Color:"
 msgstr "Luo uusi väri:"
 
 #. make the name label and field
-#: src/nautilus-property-browser.c:993
+#: src/nautilus-property-browser.c:996
 msgid "Color _name:"
 msgstr "Värin _nimi:"
 
-#: src/nautilus-property-browser.c:1007
+#: src/nautilus-property-browser.c:1009
 msgid "Color _value:"
 msgstr "_Väriarvo:"
 
-#: src/nautilus-property-browser.c:1043
+#: src/nautilus-property-browser.c:1045
 #, c-format
 msgid "Sorry, but \"%s\" is not a valid file name."
 msgstr "\"%s\" ei ole kelvollinen tiedoston nimi."
 
-#: src/nautilus-property-browser.c:1045
+#: src/nautilus-property-browser.c:1047
 msgid "Sorry, but you did not supply a valid file name."
 msgstr "Et antanut kelvollista tiedoston nimeä."
 
-#: src/nautilus-property-browser.c:1047 src/nautilus-property-browser.c:1090
+#: src/nautilus-property-browser.c:1049 src/nautilus-property-browser.c:1092
 msgid "Couldn't install pattern"
 msgstr "Kuviota ei voitu asentaa"
 
-#: src/nautilus-property-browser.c:1058
+#: src/nautilus-property-browser.c:1060
 msgid "Sorry, but you can't replace the reset image."
 msgstr "Et voi vaihtaa uudelleenasetuskuvaa."
 
-#: src/nautilus-property-browser.c:1089
+#: src/nautilus-property-browser.c:1091
 #, c-format
 msgid "Sorry, but the pattern %s couldn't be installed."
 msgstr "Valitettavasti kuviota %s ei voitu asentaa."
 
-#: src/nautilus-property-browser.c:1112
+#: src/nautilus-property-browser.c:1114
 msgid "Select an image file to add as a pattern:"
 msgstr "Valitse kuviona lisättävä kuva:"
 
-#: src/nautilus-property-browser.c:1172
+#: src/nautilus-property-browser.c:1174
 msgid "Sorry, but you must specify a non-blank name for the new color."
 msgstr "Uudelle värille pitää antaa nimi."
 
-#: src/nautilus-property-browser.c:1173
+#: src/nautilus-property-browser.c:1175
 msgid "Couldn't install color"
 msgstr "Väriä ei voitu asentaa"
 
-#: src/nautilus-property-browser.c:1228
+#: src/nautilus-property-browser.c:1230
 msgid "Select a color to add:"
 msgstr "Valitse lisättävä väri:"
 
-#: src/nautilus-property-browser.c:1308
+#: src/nautilus-property-browser.c:1312
 #, c-format
 msgid "Sorry, but '%s' is not a usable image file!"
 msgstr "Valitettavasti '%s' ei ole kelvollinen kuvatiedosto."
 
-#: src/nautilus-property-browser.c:1326
+#: src/nautilus-property-browser.c:1330
 msgid "Sorry, but you must specify a non-blank keyword for the new emblem."
 msgstr "Uudelle tunnusmerkille pitää antaa avainsana."
 
-#: src/nautilus-property-browser.c:1327 src/nautilus-property-browser.c:1330
-#: src/nautilus-property-browser.c:1334 src/nautilus-property-browser.c:1363
+#: src/nautilus-property-browser.c:1331 src/nautilus-property-browser.c:1334
+#: src/nautilus-property-browser.c:1338 src/nautilus-property-browser.c:1367
 msgid "Couldn't install emblem"
 msgstr "Tunnusmerkkiä ei voitu asentaa"
 
-#: src/nautilus-property-browser.c:1329
+#: src/nautilus-property-browser.c:1333
 msgid ""
 "Sorry, but emblem keywords can only contain letters, spaces and numbers."
 msgstr ""
 "Valitettavasti tunnusmerkkien avainsanat voivat sisältää vain kirjaimia, "
 "tyhjää sekä numeroita."
 
-#: src/nautilus-property-browser.c:1332
+#: src/nautilus-property-browser.c:1336
 #, c-format
 msgid ""
 "Sorry, but \"%s\" is an existing keyword.  Please choose a different name "
 "for it."
 msgstr "Avainsana \"%s\" on olemassa. Valitsepa jokin toinen."
 
-#: src/nautilus-property-browser.c:1362
+#: src/nautilus-property-browser.c:1366
 #, c-format
 msgid "Sorry, but the image at %s couldn't be installed as an emblem."
 msgstr "Valitettavasti kuvaa %s ei voitu asentaa tunnusmerkiksi."
 
-#: src/nautilus-property-browser.c:1994
+#: src/nautilus-property-browser.c:1998
 msgid "Select A Category:"
 msgstr "Valitse kategoria:"
 
-#: src/nautilus-property-browser.c:2002
+#: src/nautilus-property-browser.c:2006
 msgid "C_ancel Remove"
 msgstr "Pe_ru poisto"
 
-#: src/nautilus-property-browser.c:2007
+#: src/nautilus-property-browser.c:2011
 msgid "_Add a New Pattern..."
 msgstr "_Lisää uusi kuvio..."
 
-#: src/nautilus-property-browser.c:2010
+#: src/nautilus-property-browser.c:2014
 msgid "_Add a New Color..."
 msgstr "_Lisää uusi väri..."
 
-#: src/nautilus-property-browser.c:2013
+#: src/nautilus-property-browser.c:2017
 msgid "_Add a New Emblem..."
 msgstr "_Lisää uusi tunnusmerkki..."
 
-#: src/nautilus-property-browser.c:2033
+#: src/nautilus-property-browser.c:2037
 msgid "Click on a pattern to remove it"
 msgstr "Napsauta kuviota poistaaksesi sen."
 
-#: src/nautilus-property-browser.c:2036
+#: src/nautilus-property-browser.c:2040
 msgid "Click on a color to remove it"
 msgstr "Napsauta väriä poistaaksesi sen"
 
-#: src/nautilus-property-browser.c:2039
+#: src/nautilus-property-browser.c:2043
 msgid "Click on an emblem to remove it"
 msgstr "Napsauta tunnusmerkkiä poistaaksesi sen"
 
-#: src/nautilus-property-browser.c:2048
+#: src/nautilus-property-browser.c:2052
 msgid "Patterns:"
 msgstr "Kuviot:"
 
-#: src/nautilus-property-browser.c:2051
+#: src/nautilus-property-browser.c:2055
 msgid "Colors:"
 msgstr "Värit:"
 
-#: src/nautilus-property-browser.c:2054
+#: src/nautilus-property-browser.c:2058
 msgid "Emblems:"
 msgstr "Tunnusmerkit:"
 
-#: src/nautilus-property-browser.c:2073
+#: src/nautilus-property-browser.c:2077
 msgid "_Remove a Pattern..."
 msgstr "_Poista kuvio..."
 
-#: src/nautilus-property-browser.c:2076
+#: src/nautilus-property-browser.c:2080
 msgid "_Remove a Color..."
 msgstr "_Poista väri..."
 
-#: src/nautilus-property-browser.c:2079
+#: src/nautilus-property-browser.c:2083
 msgid "_Remove an Emblem..."
 msgstr "_Poista tunnusmerkki..."
 
@@ -6981,162 +6992,163 @@ msgid "Find"
 msgstr "Etsi"
 
 #: src/nautilus-shell-ui.xml.h:21
-msgid "For_get History"
-msgstr "Unohda _historia"
-
-#: src/nautilus-shell-ui.xml.h:22
 msgid "Go to the Start Here folder"
 msgstr "Siirry \"aloita tästä\"-kansioon"
 
-#: src/nautilus-shell-ui.xml.h:23
+#: src/nautilus-shell-ui.xml.h:22
 msgid "Go to the home location"
 msgstr "Siirry kotisijaintiin"
 
-#: src/nautilus-shell-ui.xml.h:24 src/nautilus-window-toolbars.c:568
+#: src/nautilus-shell-ui.xml.h:23 src/nautilus-window-toolbars.c:568
 msgid "Go to the next visited location"
 msgstr "Siirry seuraavaan sijaintiin"
 
-#: src/nautilus-shell-ui.xml.h:25 src/nautilus-window-toolbars.c:565
+#: src/nautilus-shell-ui.xml.h:24 src/nautilus-window-toolbars.c:565
 msgid "Go to the previous visited location"
 msgstr "Siirry edelliseen sijaintiin"
 
-#: src/nautilus-shell-ui.xml.h:26
+#: src/nautilus-shell-ui.xml.h:25
 msgid "Go up to the location that contains the displayed location"
 msgstr "Siirry ylös sijaintiin, joka sisältää näkyvän sijainnin"
 
-#: src/nautilus-shell-ui.xml.h:27 src/nautilus-window-menus.c:466
+#: src/nautilus-shell-ui.xml.h:26 src/nautilus-window-menus.c:473
 msgid "Hide Location _Bar"
 msgstr "Piilota _sijaintipalkki"
 
-#: src/nautilus-shell-ui.xml.h:28
+#: src/nautilus-shell-ui.xml.h:27
 msgid "Hide St_atusbar"
 msgstr "Piilota _tilarivi"
 
-#: src/nautilus-shell-ui.xml.h:29 src/nautilus-window-menus.c:454
+#: src/nautilus-shell-ui.xml.h:28 src/nautilus-window-menus.c:461
 msgid "Hide _Sidebar"
 msgstr "Piilota sivu_paneeli"
 
-#: src/nautilus-shell-ui.xml.h:30 src/nautilus-window-menus.c:460
+#: src/nautilus-shell-ui.xml.h:29 src/nautilus-window-menus.c:467
 msgid "Hide _Toolbar"
 msgstr "Piilota työ_kalupalkki"
 
-#: src/nautilus-shell-ui.xml.h:32
+#: src/nautilus-shell-ui.xml.h:31
 msgid "Nautilus Quick _Reference"
 msgstr "Nautiluksen _pikaohje"
 
-#: src/nautilus-shell-ui.xml.h:33
+#: src/nautilus-shell-ui.xml.h:32
 msgid "Nautilus User _Manual"
 msgstr "Nautiluksen _käyttöopas"
 
-#: src/nautilus-shell-ui.xml.h:34
+#: src/nautilus-shell-ui.xml.h:33
 msgid "New Window"
 msgstr "Uusi ikkuna"
 
-#: src/nautilus-shell-ui.xml.h:35
+#: src/nautilus-shell-ui.xml.h:34
 msgid "New _Window"
 msgstr "Uusi _ikkuna"
 
-#: src/nautilus-shell-ui.xml.h:36
+#: src/nautilus-shell-ui.xml.h:35
 msgid "Normal Size"
 msgstr "Tavallinen koko"
 
-#: src/nautilus-shell-ui.xml.h:37
+#: src/nautilus-shell-ui.xml.h:36
 msgid "Open another Nautilus window for the displayed location"
 msgstr "Avaa nykyinen sijainti toisessa Nautiluksen ikkunassa"
 
-#: src/nautilus-shell-ui.xml.h:38
+#: src/nautilus-shell-ui.xml.h:37
 msgid "P_references..."
 msgstr "_Asetukset..."
 
-#: src/nautilus-shell-ui.xml.h:39
+#: src/nautilus-shell-ui.xml.h:38
 msgid "Refresh"
 msgstr "Päivitä"
 
-#: src/nautilus-shell-ui.xml.h:40
+#: src/nautilus-shell-ui.xml.h:39
 msgid "Report Profiling"
 msgstr "Näytä profiloinnin tulokset"
 
-#: src/nautilus-shell-ui.xml.h:41
+#: src/nautilus-shell-ui.xml.h:40
 msgid "Reset Profiling"
 msgstr "Alusta profilointi"
 
-#: src/nautilus-shell-ui.xml.h:42
+#: src/nautilus-shell-ui.xml.h:41
 msgid "Search this computer for files"
 msgstr "Etsi tästä tietokoneesta tiedostoja"
 
-#: src/nautilus-shell-ui.xml.h:44
+#: src/nautilus-shell-ui.xml.h:43
 msgid "Show the contents at the normal size"
 msgstr "Näytä sisältö tavallisen kokoisena"
 
-#: src/nautilus-shell-ui.xml.h:45
+#: src/nautilus-shell-ui.xml.h:44
 msgid "Show the contents in less detail"
 msgstr "Näytä vähemmän tietoja sisällöstä"
 
-#: src/nautilus-shell-ui.xml.h:46
+#: src/nautilus-shell-ui.xml.h:45
 msgid "Show the contents in more detail"
 msgstr "Näytä lisää tietoja sisällöstä"
 
-#: src/nautilus-shell-ui.xml.h:47
+#: src/nautilus-shell-ui.xml.h:46
 msgid "Start Profiling"
 msgstr "Aloita profilointi"
 
-#: src/nautilus-shell-ui.xml.h:49
+#: src/nautilus-shell-ui.xml.h:48
 msgid "Stop Profiling"
 msgstr "Lopeta profilointi"
 
-#: src/nautilus-shell-ui.xml.h:50
+#: src/nautilus-shell-ui.xml.h:49
 msgid "Stop loading this location"
 msgstr "Lopeta tämän sijainnin lataaminen"
 
-#: src/nautilus-shell-ui.xml.h:51
+#: src/nautilus-shell-ui.xml.h:50
 msgid "Undo the last text change"
 msgstr "Kumoa viimeisin tekstin muutos"
 
-#: src/nautilus-shell-ui.xml.h:52
+#: src/nautilus-shell-ui.xml.h:51
 msgid "Up"
 msgstr "Ylös"
 
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-shell-ui.xml.h:53 src/nautilus-window.c:514
-#: src/nautilus-window.c:1352
+#: src/nautilus-shell-ui.xml.h:52 src/nautilus-window.c:517
+#: src/nautilus-window.c:1355
 msgid "View as..."
 msgstr "Näytä muodossa..."
 
-#: src/nautilus-shell-ui.xml.h:54
+#: src/nautilus-shell-ui.xml.h:53
 msgid "Zoom In"
 msgstr "Suurenna"
 
-#: src/nautilus-shell-ui.xml.h:55
+#: src/nautilus-shell-ui.xml.h:54
 msgid "Zoom Out"
 msgstr "Pienennä"
 
-#: src/nautilus-shell-ui.xml.h:56
+#: src/nautilus-shell-ui.xml.h:55
 msgid "Zoom _In"
 msgstr "_Suurenna"
 
-#: src/nautilus-shell-ui.xml.h:57
+#: src/nautilus-shell-ui.xml.h:56
 msgid "Zoom _Out"
 msgstr "_Pienennä"
 
-#: src/nautilus-shell-ui.xml.h:58
+#: src/nautilus-shell-ui.xml.h:57
 msgid "_About Nautilus..."
 msgstr "Tietoja Nautiluksesta..."
 
-#: src/nautilus-shell-ui.xml.h:59
+#: src/nautilus-shell-ui.xml.h:58
 msgid "_Add Bookmark"
 msgstr "_Lisää kirjanmerkki"
 
-#: src/nautilus-shell-ui.xml.h:60
+#: src/nautilus-shell-ui.xml.h:59
 msgid "_Back"
 msgstr "_Takaisin"
 
-#: src/nautilus-shell-ui.xml.h:61
+#: src/nautilus-shell-ui.xml.h:60
 msgid "_Backgrounds and Emblems..."
 msgstr "_Taustat ja tunnusmerkit..."
 
-#: src/nautilus-shell-ui.xml.h:62
+#: src/nautilus-shell-ui.xml.h:61
 msgid "_Bookmarks"
 msgstr "_Kirjanmerkit"
+
+#: src/nautilus-shell-ui.xml.h:62
+#, fuzzy
+msgid "_Clear History"
+msgstr "Unohda _historia"
 
 #: src/nautilus-shell-ui.xml.h:63
 msgid "_Close Window"
@@ -7310,21 +7322,11 @@ msgstr "selaushistoriikki"
 msgid "the current selection"
 msgstr "nykyinen valinta"
 
-#. FIXME bugzilla.gnome.org 45037: The text Preview
-#. * Release is hardcoded here. Are all builds with
-#. * time stamps really best described as "preview
-#. * release"?.
-#.
-#: src/nautilus-window-manage-views.c:218
-#, c-format
-msgid "Preview Release %s: %s"
-msgstr "Esiversio %s: %s"
-
-#: src/nautilus-window-manage-views.c:827
+#: src/nautilus-window-manage-views.c:801
 msgid "View Failed"
 msgstr "Katselu epäonnistui"
 
-#: src/nautilus-window-manage-views.c:838
+#: src/nautilus-window-manage-views.c:812
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -7333,12 +7335,12 @@ msgstr ""
 "Näkymä %s ei voi jatkaa toimintaansa, koska tapahtui virhe. Voit valita muun "
 "näkymän tai siirtyä toiseen sijaintiin."
 
-#: src/nautilus-window-manage-views.c:849
+#: src/nautilus-window-manage-views.c:823
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "Näkymässä %s tapahtui virhe sen käynnistyessä."
 
-#: src/nautilus-window-manage-views.c:1026
+#: src/nautilus-window-manage-views.c:1000
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -7346,7 +7348,7 @@ msgstr ""
 "Jossakin sivupaneelissa tapahtui virhe, joten se ei voi jatkaa. "
 "Valitettavasti ei saatu selville, mikä se niistä oli."
 
-#: src/nautilus-window-manage-views.c:1030
+#: src/nautilus-window-manage-views.c:1004
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -7355,17 +7357,17 @@ msgstr ""
 "Sivupaneeli %s ei voi jatkaa toimintaansa, koska tapahtui virhe. Jos tätä "
 "ilmenee jatkuvasti, voit poistaa kyseisen paneelin käytöstä."
 
-#: src/nautilus-window-manage-views.c:1035
+#: src/nautilus-window-manage-views.c:1009
 msgid "Sidebar Panel Failed"
 msgstr "Virhe sivupaneelissa"
 
-#: src/nautilus-window-manage-views.c:1244
+#: src/nautilus-window-manage-views.c:1223
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr ""
 "Sijaintia \"%s\" ei löytynyt. Tarkasta oikeinkirjoitus ja yritä uudelleen."
 
-#: src/nautilus-window-manage-views.c:1250
+#: src/nautilus-window-manage-views.c:1229
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
@@ -7373,7 +7375,7 @@ msgstr ""
 "\"%s\" ei ole kelvollinen sijainti. Tarkasta oikeinkirjoitus ja yritä "
 "uudelleen."
 
-#: src/nautilus-window-manage-views.c:1264
+#: src/nautilus-window-manage-views.c:1243
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -7381,32 +7383,32 @@ msgid ""
 msgstr ""
 "Sijaintia \"%s\" ei voitu näyttää, koska Nautilus ei tiedä sen tyyppiä."
 
-#: src/nautilus-window-manage-views.c:1272
+#: src/nautilus-window-manage-views.c:1251
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr ""
 "Nautilukseen ei ole asennettu katselinta, joka voisi näyttää kohteen \"%s\"."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1284
+#: src/nautilus-window-manage-views.c:1263
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Ei voitu näyttää kohdetta \"%s\", koska Nautilus ei voi käsitellä %s: -"
 "sijainteja."
 
-#: src/nautilus-window-manage-views.c:1290
+#: src/nautilus-window-manage-views.c:1269
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr ""
 "Ei voitu näyttää kohdetta \"%s\", koska sisään kirjautuminen epäonnistui."
 
-#: src/nautilus-window-manage-views.c:1295
+#: src/nautilus-window-manage-views.c:1274
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Ei voitu näyttää kohdetta \"%s\", koska oikeudet eivät riittäneet."
 
-#: src/nautilus-window-manage-views.c:1306
+#: src/nautilus-window-manage-views.c:1285
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -7416,7 +7418,7 @@ msgstr ""
 "löytynyt. Varmista että se on oikein kirjoitettu ja että "
 "välityspalvelinasetukset ovat kunnossa."
 
-#: src/nautilus-window-manage-views.c:1314
+#: src/nautilus-window-manage-views.c:1293
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -7425,7 +7427,7 @@ msgstr ""
 "Ei voitu näyttää kohdetta \"%s\", koska isäntäkoneen nimi oli tyhjä. "
 "Varmista, että välityspalvelinasetukset ovat kunnossa."
 
-#: src/nautilus-window-manage-views.c:1326
+#: src/nautilus-window-manage-views.c:1305
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -7436,11 +7438,11 @@ msgstr ""
 "ei ole käynnissä. Varmista, että olet käynnistänyt Medusa-etsintäpalvelun. "
 "Jos sinulla ei ole luetteloa vielä, niin käynnistä myös Medusa-luettelin."
 
-#: src/nautilus-window-manage-views.c:1330
+#: src/nautilus-window-manage-views.c:1309
 msgid "Searching Unavailable"
 msgstr "Etsintäpalvelu ei ole saatavilla"
 
-#: src/nautilus-window-manage-views.c:1337
+#: src/nautilus-window-manage-views.c:1316
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -7451,19 +7453,19 @@ msgstr ""
 "pääselaajaan.\n"
 "Tarkista, että lähiverkossasi toimii SMB-palvelin."
 
-#: src/nautilus-window-manage-views.c:1345
+#: src/nautilus-window-manage-views.c:1324
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus ei voi näyttää sijaintia \"%s\"."
 
-#: src/nautilus-window-manage-views.c:1350
+#: src/nautilus-window-manage-views.c:1329
 msgid "Can't Display Location"
 msgstr "Sijaintia ei voi näyttää"
 
 #. This is a little joke, shows up occasionally. I only
 #. * implemented this feature so I could use this joke.
 #.
-#: src/nautilus-window-menus.c:343
+#: src/nautilus-window-menus.c:345
 msgid ""
 "Are you sure you want to forget history? If you do, you will be doomed to "
 "repeat it."
@@ -7471,37 +7473,39 @@ msgstr ""
 "Oletko varma, että haluat historian unohtuvan? Jos haluat, niin joudut "
 "toistamaan sen itse."
 
-#: src/nautilus-window-menus.c:346
+#: src/nautilus-window-menus.c:348
 msgid ""
 "Are you sure you want Nautilus to forget which locations you have visited?"
 msgstr ""
 "Oletko varma, että haluat Nautiluksen unohtavan, missä paikoissa olet käynyt?"
 
-#: src/nautilus-window-menus.c:351
-msgid "Forget History?"
+#: src/nautilus-window-menus.c:353
+#, fuzzy
+msgid "Clear History?"
 msgstr "Haluatko, että historia unohtuu?"
 
-#: src/nautilus-window-menus.c:351
-msgid "Forget"
-msgstr "Unohda"
+#: src/nautilus-window-menus.c:354
+#, fuzzy
+msgid "Clear"
+msgstr "Tyhjennä teksti"
 
-#: src/nautilus-window-menus.c:448
+#: src/nautilus-window-menus.c:455
 msgid "Hide St_atus Bar"
 msgstr "Piilota _tilarivi"
 
-#: src/nautilus-window-menus.c:449
+#: src/nautilus-window-menus.c:456
 msgid "Show St_atus Bar"
 msgstr "Näytä _tilarivi"
 
-#: src/nautilus-window-menus.c:455
+#: src/nautilus-window-menus.c:462
 msgid "Show _Sidebar"
 msgstr "Näytä sivu_paneeli"
 
-#: src/nautilus-window-menus.c:461
+#: src/nautilus-window-menus.c:468
 msgid "Show _Toolbar"
 msgstr "Näytä työ_kalupalkki"
 
-#: src/nautilus-window-menus.c:467
+#: src/nautilus-window-menus.c:474
 msgid "Show Location _Bar"
 msgstr "Näytä si_jaintipalkki"
 
@@ -7509,7 +7513,7 @@ msgstr "Näytä si_jaintipalkki"
 #. * symbol characters -- do not translate the company
 #. * name, please.
 #.
-#: src/nautilus-window-menus.c:607
+#: src/nautilus-window-menus.c:603
 msgid "Copyright (C) 1999-2001 Eazel, Inc."
 msgstr "Copyright © 1999-2001 Eazel, Inc."
 
@@ -7517,14 +7521,14 @@ msgstr "Copyright © 1999-2001 Eazel, Inc."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window-menus.c:614
+#: src/nautilus-window-menus.c:610 src/nautilus-window-menus.c:611
 msgid "Translator Credits"
 msgstr ""
 "Suomennos:\n"
 "GNOME Finnish Translation Team\n"
 "http://gnome-fi.sourceforge.net/"
 
-#: src/nautilus-window-menus.c:619
+#: src/nautilus-window-menus.c:616
 msgid ""
 "Nautilus is a graphical shell for GNOME that makes it easy to manage your "
 "files and the rest of your system."
@@ -7532,7 +7536,7 @@ msgstr ""
 "Nautilus on Gnomen graafinen komento-ohjelma, joka tekee tiedostojen ja "
 "järjestelmän hallinnasta helppoa."
 
-#: src/nautilus-window-menus.c:690
+#: src/nautilus-window-menus.c:685
 #, c-format
 msgid ""
 "The location \"%s\" does not exist. Do you want to remove any bookmarks with "
@@ -7541,24 +7545,24 @@ msgstr ""
 "Sijainti \"%s\" ei ole olemassa. Haluatko, että kaikki siihen viittaavat "
 "kirjanmerkkisi poistetaan?"
 
-#: src/nautilus-window-menus.c:694
+#: src/nautilus-window-menus.c:689
 msgid "Bookmark for Nonexistent Location"
 msgstr "Olemattomaan sijaintiin viittaava kirjanmerkki"
 
-#: src/nautilus-window-menus.c:695
+#: src/nautilus-window-menus.c:690
 msgid "Remove"
 msgstr "Poista"
 
-#: src/nautilus-window-menus.c:706
+#: src/nautilus-window-menus.c:701
 #, c-format
 msgid "The location \"%s\" no longer exists."
 msgstr "Sijainti \"%s\" ei ole enää olemassa"
 
-#: src/nautilus-window-menus.c:707
+#: src/nautilus-window-menus.c:702
 msgid "Go to Nonexistent Location"
 msgstr "Siirry olemattomaan sijaintiin"
 
-#: src/nautilus-window-menus.c:776
+#: src/nautilus-window-menus.c:771
 msgid "Go to the location specified by this bookmark"
 msgstr "Siirry tämän kirjanmerkin osoittamaan sijaintiin"
 
@@ -7570,26 +7574,50 @@ msgstr "Takaisin"
 msgid "Forward"
 msgstr "Eteenpäin"
 
-#: src/nautilus-window.c:1058
+#: src/nautilus-window.c:1061
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Näytä tämä sijainti katselimella \"%s\""
 
-#: src/nautilus-window.c:2081
+#: src/nautilus-window.c:2084
 msgid "Application ID"
 msgstr "Sovellus-ID"
 
-#: src/nautilus-window.c:2082
+#: src/nautilus-window.c:2085
 msgid "The application ID of the window."
 msgstr "Ikkunan sovellus-ID."
 
-#: src/nautilus-window.c:2088
+#: src/nautilus-window.c:2091
 msgid "Application"
 msgstr "Sovellus"
 
-#: src/nautilus-window.c:2089
+#: src/nautilus-window.c:2092
 msgid "The NautilusApplication associated with this window."
 msgstr "Tähän ikkunaan kytketty NautilusApplication."
+
+#~ msgid "Reset View to Match Preferences"
+#~ msgstr "Palauta näkymä asetusten mukaiseksi"
+
+#~ msgid "Lay Out Items"
+#~ msgstr "Asettele kohteet"
+
+#~ msgid "_Lay Out Items"
+#~ msgstr "_Asettele kohteet"
+
+#~ msgid "Lay Out Items:"
+#~ msgstr "Asettele kohteet:"
+
+#~ msgid "View Preferences"
+#~ msgstr "Näkymäasetukset"
+
+#~ msgid "Windows & Desktop"
+#~ msgstr "Ikkunat & työpöytä"
+
+#~ msgid "Preview Release %s: %s"
+#~ msgstr "Esiversio %s: %s"
+
+#~ msgid "Forget"
+#~ msgstr "Unohda"
 
 #~ msgid "Sorry, but %s is too large for Nautilus to load all of it."
 #~ msgstr ""
