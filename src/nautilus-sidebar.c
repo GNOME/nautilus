@@ -546,7 +546,8 @@ nautilus_sidebar_create_context_menu (NautilusSidebar *sidebar)
  	gtk_widget_show (menu_item);
 	gtk_menu_append (GTK_MENU(menu), menu_item);
         gtk_widget_set_sensitive (menu_item, has_background);
-	gtk_signal_connect (GTK_OBJECT (menu_item), "activate", reset_background_callback, sidebar);
+	gtk_signal_connect (GTK_OBJECT (menu_item), "activate",
+			    G_CALLBACK (reset_background_callback), sidebar);
 
 	/* add a separator */
 	menu_item = gtk_menu_item_new ();
@@ -791,7 +792,7 @@ receive_dropped_color (NautilusSidebar *sidebar,
 		/* Block so we don't respond to our own metadata changes.
 		 */
 		gtk_signal_handler_block_by_func (GTK_OBJECT (sidebar->details->file),
-						  background_metadata_changed_callback,
+						  G_CALLBACK (background_metadata_changed_callback),
 						  sidebar);
 						  
 		nautilus_file_set_metadata
@@ -801,7 +802,7 @@ receive_dropped_color (NautilusSidebar *sidebar,
 			 color_spec);
 
 		gtk_signal_handler_unblock_by_func (GTK_OBJECT (sidebar->details->file),
-						    background_metadata_changed_callback,
+						    G_CALLBACK (background_metadata_changed_callback),
 						    sidebar);
 		break;
 	case TITLE_TAB_PART:
@@ -813,7 +814,7 @@ receive_dropped_color (NautilusSidebar *sidebar,
 		/* Block so we don't respond to our own metadata changes.
 		 */
 		gtk_signal_handler_block_by_func (GTK_OBJECT (sidebar->details->file),
-						  background_metadata_changed_callback,
+						  G_CALLBACK (background_metadata_changed_callback),
 						  sidebar);
 
 		nautilus_file_set_metadata
@@ -823,7 +824,7 @@ receive_dropped_color (NautilusSidebar *sidebar,
 			 color_spec);
 
 		gtk_signal_handler_unblock_by_func (GTK_OBJECT (sidebar->details->file),
-						    background_metadata_changed_callback,
+						    G_CALLBACK (background_metadata_changed_callback),
 						    sidebar);
 		break;
 	case ICON_PART:
@@ -915,7 +916,8 @@ nautilus_sidebar_add_panel (NautilusSidebar *sidebar, NautilusViewFrame *panel)
 
 	gtk_widget_show (label);
 	
-	gtk_signal_connect (GTK_OBJECT (panel), "view_loaded", view_loaded_callback, sidebar);
+	gtk_signal_connect (GTK_OBJECT (panel), "view_loaded",
+			    G_CALLBACK (view_loaded_callback), sidebar);
 	
 	gtk_notebook_append_page (GTK_NOTEBOOK (sidebar->details->notebook),
 				  GTK_WIDGET (panel), label);
@@ -1189,7 +1191,7 @@ background_settings_changed_callback (EelBackground *background, NautilusSidebar
 	/* Block so we don't respond to our own metadata changes.
 	 */
 	gtk_signal_handler_block_by_func (GTK_OBJECT (sidebar->details->file),
-					  background_metadata_changed_callback,
+					  G_CALLBACK (background_metadata_changed_callback),
 					  sidebar);
 
 	color = eel_background_get_color (background);
@@ -1209,7 +1211,7 @@ background_settings_changed_callback (EelBackground *background, NautilusSidebar
 	g_free (image);
 
 	gtk_signal_handler_unblock_by_func (GTK_OBJECT (sidebar->details->file),
-					    background_metadata_changed_callback,
+					    G_CALLBACK (background_metadata_changed_callback),
 					    sidebar);
 }
 
@@ -1228,7 +1230,7 @@ background_reset_callback (EelBackground *background, NautilusSidebar *sidebar)
 	/* Block so we don't respond to our own metadata changes.
 	 */
 	gtk_signal_handler_block_by_func (GTK_OBJECT (sidebar->details->file),
-					  background_metadata_changed_callback,
+					  G_CALLBACK (background_metadata_changed_callback),
 					  sidebar);
 
 	nautilus_file_set_metadata (sidebar->details->file,
@@ -1242,7 +1244,7 @@ background_reset_callback (EelBackground *background, NautilusSidebar *sidebar)
 				    NULL);
 
 	gtk_signal_handler_unblock_by_func (GTK_OBJECT (sidebar->details->file),
-					    background_metadata_changed_callback,
+					    G_CALLBACK (background_metadata_changed_callback),
 					    sidebar);
 
 	/* Force a read from the metadata to set the defaults
@@ -1368,7 +1370,7 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 			file_path = g_strdup (sidebar->details->uri);
 		} 
 
-		temp_str = eel_shell_quote (file_path);		
+		temp_str = g_shell_quote (file_path);		
 		id_string = g_strdup_printf (application->id, temp_str); 		
 		g_free (file_path);
 		g_free (temp_str);
@@ -1385,7 +1387,7 @@ add_command_buttons (NautilusSidebar *sidebar, GList *application_list)
 	/* Catch-all button after all the others. */
 	temp_button = gtk_button_new_with_label (_("Open with..."));
 	gtk_signal_connect (GTK_OBJECT (temp_button), "clicked",
-			    open_with_callback, NULL);
+			    G_CALLBACK (open_with_callback), NULL);
 	gtk_object_set_user_data (GTK_OBJECT (temp_button), sidebar);
 	gtk_widget_show (temp_button);
 	gtk_box_pack_start (GTK_BOX (sidebar->details->button_box),
@@ -1505,7 +1507,7 @@ nautilus_sidebar_update_buttons (NautilusSidebar *sidebar)
 		
 		gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_trash_monitor_get ()),
 				        "trash_state_changed",
-				        nautilus_sidebar_trash_state_changed_callback,
+				        G_CALLBACK (nautilus_sidebar_trash_state_changed_callback),
 				        temp_button,
 				        GTK_OBJECT (temp_button));
 
@@ -1547,11 +1549,11 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 		sidebar->details->background_connected = TRUE;
 		gtk_signal_connect (GTK_OBJECT (background),
 				    "settings_changed",
-				    background_settings_changed_callback,
+				    G_CALLBACK (background_settings_changed_callback),
 				    sidebar);
 		gtk_signal_connect (GTK_OBJECT (background),
 				    "reset",
-				    background_reset_callback,
+				    G_CALLBACK (background_reset_callback),
 				    sidebar);
 	}
 	
@@ -1571,7 +1573,7 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 		
 	/* Block so we don't write these settings out in response to our set calls below */
 	gtk_signal_handler_block_by_func (GTK_OBJECT (background),
-					  background_settings_changed_callback,
+					  G_CALLBACK (background_settings_changed_callback),
 					  sidebar);
 
 	eel_background_set_image_uri (background, background_image);
@@ -1593,7 +1595,7 @@ nautilus_sidebar_update_appearance (NautilusSidebar *sidebar)
 	g_free (color_spec);
 
 	gtk_signal_handler_unblock_by_func (GTK_OBJECT (background),
-					    background_settings_changed_callback,
+					    G_CALLBACK (background_settings_changed_callback),
 					    sidebar);
 }
 
@@ -1655,7 +1657,7 @@ nautilus_sidebar_set_uri (NautilusSidebar *sidebar,
 	sidebar->details->file_changed_connection =
 		gtk_signal_connect_object (GTK_OBJECT (sidebar->details->file),
 					   "changed",
-					   background_metadata_changed_callback,
+					   G_CALLBACK (background_metadata_changed_callback),
 					   GTK_OBJECT (sidebar));
 
 	attributes = nautilus_mime_actions_get_minimum_file_attributes ();

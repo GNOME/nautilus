@@ -84,10 +84,6 @@ nautilus_bookmark_list_class_init (NautilusBookmarkListClass *class)
 		              NULL, NULL,
 		              gtk_marshal_NONE__NONE,
 		              G_TYPE_NONE, 0);
-
-	gtk_object_class_add_signals (object_class,
-				      signals,
-				      LAST_SIGNAL);
 }
 
 static void
@@ -183,7 +179,7 @@ stop_monitoring_bookmark (NautilusBookmarkList *bookmarks,
 			  NautilusBookmark *bookmark)
 {
 	gtk_signal_disconnect_by_func (GTK_OBJECT (bookmark), 
-				       bookmark_in_list_changed_callback,
+				       G_CALLBACK (bookmark_in_list_changed_callback),
 				       bookmarks);
 }
 
@@ -198,12 +194,12 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
 
 	gtk_signal_connect (GTK_OBJECT (bookmark),
 			    "appearance_changed",
-			    bookmark_in_list_changed_callback,
+			    G_CALLBACK (bookmark_in_list_changed_callback),
 			    bookmarks);				 
 
 	gtk_signal_connect (GTK_OBJECT (bookmark),
 			    "contents_changed",
-			    bookmark_in_list_changed_callback,
+			    G_CALLBACK (bookmark_in_list_changed_callback),
 			    bookmarks);				 
 }
 

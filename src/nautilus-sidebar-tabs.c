@@ -27,22 +27,22 @@
 #include "nautilus-view-frame.h"
 
 #include <bonobo/bonobo-event-source.h>
+#include <bonobo/bonobo-exception.h>
 #include <bonobo/bonobo-listener.h>
 #include <bonobo/bonobo-property-bag-client.h>
 #include <bonobo/bonobo-ui-util.h>
-#include <bonobo/bonobo-exception.h>
-
-#include <gdk-pixbuf/gdk-pixbuf.h>
-#include <libgnome/gnome-util.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-glib-extensions.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-scalable-font.h>
 #include <eel/eel-string.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtkselection.h>
+#include <libgnome/gnome-util.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-theme.h>
 #include <math.h>
 #include <stdio.h>
@@ -181,7 +181,7 @@ nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 {
 	char *temp_str;
 	char *tab_pieces, *tab_piece_path, *tab_piece_theme;
-	GdkColor color;
+	guint32 color;
 	int intensity;
 	
 	/* set up the default values */
@@ -225,9 +225,11 @@ nautilus_sidebar_tabs_load_theme_data (NautilusSidebarTabs *sidebar_tabs)
 				sidebar_tabs->details->tab_height = gdk_pixbuf_get_height (sidebar_tabs->details->tab_piece_images[0]);
 				
 				/* set the text color according to the pixbuf */
-				eel_gdk_pixbuf_average_value (sidebar_tabs->details->tab_piece_images[TAB_NORMAL_FILL], &color);
-				intensity = (((color.red >> 8) * 77) + ((color.green >> 8) * 150) + ((color.blue >> 8) * 28)) >> 8;	
-
+				color = eel_gdk_pixbuf_average_value (sidebar_tabs->details->tab_piece_images[TAB_NORMAL_FILL]);
+				intensity = ((EEL_RGBA_COLOR_GET_R (color) >> 8) * 77
+					     + (EEL_RGBA_COLOR_GET_G (color) >> 8) * 150
+					     + (EEL_RGBA_COLOR_GET_B (color) >> 8) * 28) >> 8;
+				
 				if (intensity < 160) {
 					setup_light_text (sidebar_tabs);
 				} else {
@@ -357,8 +359,10 @@ tab_item_destroy (TabItem *item)
 	if (item->listener_id != 0) {
 		property_bag = get_property_bag (item);
 		if (property_bag != CORBA_OBJECT_NIL) {	
+#ifdef GNOME2_CONVERSION_COMPLETE
 			bonobo_event_source_client_remove_listener
 				(property_bag, item->listener_id, NULL);
+#endif
 			bonobo_object_release_unref (property_bag, NULL);
 		}
 	}
@@ -904,7 +908,9 @@ get_tab_width (NautilusSidebarTabs *sidebar_tabs, TabItem *this_tab, gboolean is
 	
 	} else {	
 		edge_width = 2 * TAB_MARGIN;
+#if GNOME2_CONVERSION_COMPLETE
 		name_dimensions.width = gdk_string_width (GTK_WIDGET (sidebar_tabs)->style->font, this_tab->tab_text);
+#endif
 	}		
 	return name_dimensions.width + edge_width + indicator_width;
 }
@@ -1382,6 +1388,8 @@ get_tab_item_from_view (NautilusSidebarTabs *sidebar_tabs, GtkWidget *view)
 	return NULL;
 }
 
+#ifdef GNOME2_CONVERSION_COMPLETE
+
 /* check all of the tabs to see if their indicator pixmaps are ready for updating */
 static void
 nautilus_sidebar_tabs_update_all_indicators (NautilusSidebarTabs *sidebar_tabs)
@@ -1394,6 +1402,8 @@ nautilus_sidebar_tabs_update_all_indicators (NautilusSidebarTabs *sidebar_tabs)
 		nautilus_sidebar_tabs_update_tab_item (sidebar_tabs, tab_item);				
 	}
 }
+
+#endif
 
 /* check all of the tabs to see if their indicator pixmaps are ready for updating */
 static void
@@ -1411,6 +1421,8 @@ nautilus_sidebar_tabs_update_indicator (NautilusSidebarTabs *sidebar_tabs, GtkWi
 	}
 }
 
+#if GNOME2_CONVERSION_COMPLETE
+
 static void
 tab_indicator_changed_callback (BonoboListener *listener,
 				char *event_name,
@@ -1423,6 +1435,8 @@ tab_indicator_changed_callback (BonoboListener *listener,
 	sidebar_tabs = NAUTILUS_SIDEBAR_TABS (callback_data);
 	nautilus_sidebar_tabs_update_all_indicators (sidebar_tabs);	
 }
+
+#endif
 
 /* listen for changes on the tab_image property */
 void
@@ -1438,9 +1452,11 @@ nautilus_sidebar_tabs_connect_view (NautilusSidebarTabs *sidebar_tabs, GtkWidget
 	
 	property_bag = get_property_bag (tab_item);
 	if (property_bag != CORBA_OBJECT_NIL) {
+#ifdef GNOME2_CONVERSION_COMPLETE
 		tab_item->listener_id = bonobo_event_source_client_add_listener
 			(property_bag, tab_indicator_changed_callback, 
 			 "Bonobo/Property:change:tab_image", NULL, sidebar_tabs); 
+#endif
 		bonobo_object_release_unref (property_bag, NULL);
 	}
 

@@ -30,6 +30,7 @@
 #include "nautilus-theme-selector.h"
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-preferences-box.h>
+#include <gtk/gtkdialog.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
@@ -422,11 +423,10 @@ static EelPreferencesPaneDescription panes[] = {
 };
 
 static void
-dialog_button_clicked_callback (GnomeDialog *dialog,
-				gint n,
-				gpointer callback_data)
+dialog_button_response_callback (GtkDialog *dialog,
+				 gint response_id,
+				 gpointer callback_data)
 {
-	g_return_if_fail (GNOME_IS_DIALOG (dialog));
 	gtk_widget_hide (GTK_WIDGET (dialog));
 }
 
@@ -434,7 +434,6 @@ static gboolean
 dialog_close_callback (GtkWidget *dialog,
 		       gpointer user_data)
 {
-	g_return_val_if_fail (GNOME_IS_DIALOG (dialog), TRUE);
 	gtk_widget_hide (dialog);
 	return TRUE;
 }
@@ -445,12 +444,13 @@ preferences_dialog_create (void)
 	GtkWidget *dialog;
 
 	dialog = eel_preferences_dialog_new (_("Preferences"), panes);
+	g_assert (GTK_IS_DIALOG (dialog));
 
 	gtk_window_set_wmclass (GTK_WINDOW (dialog), "nautilus_preferences", "Nautilus");
 
 	gtk_signal_connect (GTK_OBJECT (dialog),
-			    "clicked",
-			    GTK_SIGNAL_FUNC (dialog_button_clicked_callback),
+			    "response",
+			    GTK_SIGNAL_FUNC (dialog_button_response_callback),
 			    dialog);
 
 	gtk_signal_connect (GTK_OBJECT (dialog),
@@ -591,17 +591,12 @@ global_preferences_get_dialog (void)
 		g_atexit (preferences_dialog_destroy);
 	}
 
-	g_return_val_if_fail (GNOME_IS_DIALOG (preferences_dialog), NULL);
+	g_assert (GTK_IS_DIALOG (preferences_dialog));
 	return preferences_dialog;
 }
 
 void
 nautilus_preferences_dialog_show (void)
 {
-	GtkWidget *dialog;
-
-	dialog = global_preferences_get_dialog ();
-	g_return_if_fail (GNOME_IS_DIALOG (dialog));
-
-	eel_gtk_window_present (GTK_WINDOW (dialog));
+	eel_gtk_window_present (GTK_WINDOW (global_preferences_get_dialog ()));
 }

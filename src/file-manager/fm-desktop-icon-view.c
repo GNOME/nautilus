@@ -149,7 +149,7 @@ static void
 panel_desktop_area_changed (FMDesktopIconView *icon_view)
 {
 	long *borders = NULL;
-	GdkAtom type_returned;
+	Atom type_returned;
 	int format_returned;
 	unsigned long items_returned;
 	unsigned long bytes_after_return;
@@ -162,8 +162,7 @@ panel_desktop_area_changed (FMDesktopIconView *icon_view)
 	gdk_error_trap_push ();
 	if (XGetWindowProperty (GDK_DISPLAY (),
 				GDK_ROOT_WINDOW (),
-				gdk_atom_intern ("GNOME_PANEL_DESKTOP_AREA",
-						 FALSE),
+				gdk_x11_get_xatom_by_name ("GNOME_PANEL_DESKTOP_AREA"),
 				0 /* long_offset */, 
 				4 /* long_length */,
 				False /* delete */,
@@ -209,7 +208,7 @@ desktop_icon_view_property_filter (GdkXEvent *gdk_xevent,
   
 	switch (xevent->type) {
 	case PropertyNotify:
-		if (xevent->xproperty.atom == gdk_atom_intern ("GNOME_PANEL_DESKTOP_AREA", FALSE)) {
+		if (xevent->xproperty.atom == gdk_x11_get_xatom_by_name ("GNOME_PANEL_DESKTOP_AREA")) {
 			panel_desktop_area_changed (icon_view);
 		}
 		break;
@@ -257,7 +256,7 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 
 	/* Clean up details */	
 	if (icon_view->details->ui != NULL) {
-		bonobo_ui_component_unset_container (icon_view->details->ui);
+		bonobo_ui_component_unset_container (icon_view->details->ui, NULL);
 		bonobo_object_unref (BONOBO_OBJECT (icon_view->details->ui));
 	}
 	
@@ -628,25 +627,25 @@ fm_desktop_icon_view_init (FMDesktopIconView *desktop_icon_view)
 
 	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_trash_monitor_get ()),
 					"trash_state_changed",
-					fm_desktop_icon_view_trash_state_changed_callback,
+					G_CALLBACK (fm_desktop_icon_view_trash_state_changed_callback),
 					desktop_icon_view,
 					GTK_OBJECT (desktop_icon_view));
 	
 	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_volume_monitor_get ()),
 					"volume_mounted",
-					volume_mounted_callback,
+					G_CALLBACK (volume_mounted_callback),
 					desktop_icon_view,
 					GTK_OBJECT (desktop_icon_view));
 	
 	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_volume_monitor_get ()),
 					"volume_unmounted",
-					volume_unmounted_callback,
+					G_CALLBACK (volume_unmounted_callback),
 					desktop_icon_view,
 					GTK_OBJECT (desktop_icon_view));
 	
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_HOME_URI,
-					   home_uri_changed,
-				  	   desktop_icon_view);
+				      home_uri_changed,
+				      desktop_icon_view);
 
 	/* Read out the panel desktop area and update the icon container
 	 * accordingly */
@@ -1080,7 +1079,7 @@ mount_parameters_free (MountParameters *parameters)
 }
 
 static void
-mount_parameters_free_wrapper (gpointer user_data)
+mount_parameters_free_wrapper (gpointer user_data, GClosure *closure)
 {
 	mount_parameters_free ((MountParameters *)user_data);
 }
@@ -1157,13 +1156,11 @@ update_disks_menu (FMDesktopIconView *view)
 		g_free (command_path);
 
 		bonobo_ui_component_add_listener_full
-			(view->details->ui,
-			 command_name,
-			 mount_or_unmount_removable_volume,
-			 mount_parameters_new (view, nautilus_volume_get_mount_path (volume)),
-			 mount_parameters_free_wrapper);			 
+			(view->details->ui, command_name,
+			 g_cclosure_new (G_CALLBACK (mount_or_unmount_removable_volume),
+					 mount_parameters_new (view, nautilus_volume_get_mount_path (volume)),
+					 mount_parameters_free_wrapper));
 		g_free (command_name);
-		
 	}
 }
 
@@ -1255,7 +1252,8 @@ real_merge_menus (FMDirectoryView *view)
 
 	desktop_view->details->ui = bonobo_ui_component_new ("Desktop Icon View");
 	bonobo_ui_component_set_container (desktop_view->details->ui,
-					   fm_directory_view_get_bonobo_ui_container (view));
+					   fm_directory_view_get_bonobo_ui_container (view),
+					   NULL);
 	bonobo_ui_util_set_ui (desktop_view->details->ui,
 			       DATADIR,
 			       "nautilus-desktop-icon-view-ui.xml",

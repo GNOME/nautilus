@@ -245,7 +245,7 @@ fm_icon_view_destroy (GtkObject *object)
 	icon_view->details->menus_ready = FALSE;
 
 	if (icon_view->details->ui != NULL) {
-		bonobo_ui_component_unset_container (icon_view->details->ui);
+		bonobo_ui_component_unset_container (icon_view->details->ui, NULL);
 		bonobo_object_unref (BONOBO_OBJECT (icon_view->details->ui));
 	}
 
@@ -1328,9 +1328,10 @@ fm_icon_view_merge_menus (FMDirectoryView *view)
 
 	icon_view->details->ui = bonobo_ui_component_new ("Icon View");
 	gtk_signal_connect (GTK_OBJECT (icon_view->details->ui),
-			    "ui_event", handle_ui_event, icon_view);
+			    "ui_event", G_CALLBACK (handle_ui_event), icon_view);
 	bonobo_ui_component_set_container (icon_view->details->ui,
-					   fm_directory_view_get_bonobo_ui_container (view));
+					   fm_directory_view_get_bonobo_ui_container (view),
+					   NULL);
 	bonobo_ui_util_set_ui (icon_view->details->ui,
 			       DATADIR,
 			       "nautilus-icon-view-ui.xml",
@@ -1740,7 +1741,7 @@ fm_icon_view_sort_files (FMDirectoryView *view, GList **files)
 	if (!fm_icon_view_using_auto_layout (icon_view)) {
 		return;
 	}
-	*files = eel_g_list_sort_custom (*files, compare_files_cover, icon_view);
+	*files = g_list_sort_with_data (*files, compare_files_cover, icon_view);
 }
 
 static int
@@ -2435,95 +2436,95 @@ create_icon_container (FMIconView *icon_view)
 	
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "activate",
-			    GTK_SIGNAL_FUNC (icon_container_activate_callback),
+			    G_CALLBACK (icon_container_activate_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "band_select_started",
-			    GTK_SIGNAL_FUNC (band_select_started_callback),
+			    G_CALLBACK (band_select_started_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "band_select_ended",
-			    GTK_SIGNAL_FUNC (band_select_ended_callback),
+			    G_CALLBACK (band_select_ended_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "compare_icons",
-			    GTK_SIGNAL_FUNC (icon_container_compare_icons_callback),
+			    G_CALLBACK (icon_container_compare_icons_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "compare_icons_by_name",
-			    GTK_SIGNAL_FUNC (icon_container_compare_icons_by_name_callback),
+			    G_CALLBACK (icon_container_compare_icons_by_name_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "context_click_selection",
-			    GTK_SIGNAL_FUNC (icon_container_context_click_selection_callback),
+			    G_CALLBACK (icon_container_context_click_selection_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "context_click_background",
-			    GTK_SIGNAL_FUNC (icon_container_context_click_background_callback),
+			    G_CALLBACK (icon_container_context_click_background_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "icon_position_changed",
-			    GTK_SIGNAL_FUNC (icon_position_changed_callback),
+			    G_CALLBACK (icon_position_changed_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "icon_text_changed",
-			    GTK_SIGNAL_FUNC (fm_icon_view_icon_text_changed_callback),
+			    G_CALLBACK (fm_icon_view_icon_text_changed_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "selection_changed",
-			    GTK_SIGNAL_FUNC (selection_changed_callback),
+			    G_CALLBACK (selection_changed_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_icon_images",
-			    GTK_SIGNAL_FUNC (get_icon_images_callback),
+			    G_CALLBACK (get_icon_images_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_icon_uri",
-			    GTK_SIGNAL_FUNC (get_icon_uri_callback),
+			    G_CALLBACK (get_icon_uri_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_icon_drop_target_uri",
-			    GTK_SIGNAL_FUNC (get_icon_drop_target_uri_callback),
+			    G_CALLBACK (get_icon_drop_target_uri_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_icon_text",
-			    GTK_SIGNAL_FUNC (get_icon_text_callback),
+			    G_CALLBACK (get_icon_text_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "move_copy_items",
-			    GTK_SIGNAL_FUNC (icon_view_move_copy_items),
+			    G_CALLBACK (icon_view_move_copy_items),
 			    directory_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_container_uri",
-			    GTK_SIGNAL_FUNC (icon_view_get_container_uri),
+			    G_CALLBACK (icon_view_get_container_uri),
 			    directory_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "can_accept_item",
-			    GTK_SIGNAL_FUNC (icon_view_can_accept_item),
+			    G_CALLBACK (icon_view_can_accept_item),
 			    directory_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "get_stored_icon_position",
-			    GTK_SIGNAL_FUNC (get_stored_icon_position_callback),
+			    G_CALLBACK (get_stored_icon_position_callback),
 			    directory_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "layout_changed",
-			    GTK_SIGNAL_FUNC (layout_changed_callback),
+			    G_CALLBACK (layout_changed_callback),
 			    directory_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "preview",
-			    GTK_SIGNAL_FUNC (icon_container_preview_callback),
+			    G_CALLBACK (icon_container_preview_callback),
 			    icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "renaming_icon",
-			    renaming_icon_callback,
+			    G_CALLBACK (renaming_icon_callback),
 			    directory_view);
 	gtk_signal_connect_object (GTK_OBJECT (icon_container),
 			           "icon_stretch_started",
-			           fm_directory_view_update_menus,
+			           G_CALLBACK (fm_directory_view_update_menus),
 			           GTK_OBJECT (directory_view));
 	gtk_signal_connect_object (GTK_OBJECT (icon_container),
 			           "icon_stretch_ended",
-			           fm_directory_view_update_menus,
+			           G_CALLBACK (fm_directory_view_update_menus),
 			           GTK_OBJECT (directory_view));
 
 	gtk_container_add (GTK_CONTAINER (icon_view),
@@ -2543,9 +2544,14 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			   GdkDragAction action, int x, int y, FMIconView *view)
 {
 
-	GList *uri_list, *node, *real_uri_list = NULL;
+#if GNOME2_CONVERSION_COMPLETE
+	GList *uri_list;
+#endif
+	GList *node, *real_uri_list = NULL;
 	GnomeVFSURI *container_uri;
+#if GNOME2_CONVERSION_COMPLETE
 	GnomeDesktopEntry *entry;
+#endif
 	GdkPoint point;
 	char *local_path;
 	char *stripped_uri;
@@ -2602,7 +2608,8 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 	 */
 	all_local = TRUE;
 	n_uris = 0;
-	uri_list = gnome_uri_list_extract_uris (item_uris);
+#if GNOME2_CONVERSION_COMPLETE
+	uri_list = gnome_vfs_uri_list_extract_uris (item_uris);
 	for (node = uri_list; node != NULL; node = node->next) {
 		gchar *sanitized_uri;
 
@@ -2614,7 +2621,8 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			all_local = FALSE;
 		n_uris++;
 	}
-	gnome_uri_list_free_strings (uri_list);
+	gnome_vfs_uri_list_free_strings (uri_list);
+#endif
 
 	if (all_local == TRUE &&
 	    (action == GDK_ACTION_COPY ||
@@ -2641,6 +2649,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 			/* Make a link using the desktop file contents? */
 			local_path = gnome_vfs_get_local_path_from_uri (node->data);
 			if (local_path != NULL) {
+#if GNOME2_CONVERSION_COMPLETE
 				entry = gnome_desktop_entry_load (local_path);
 				if (entry != NULL) {
 					
@@ -2652,6 +2661,7 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 				if (entry != NULL) {
 					continue;
 				}
+#endif
 			}
 
 			/* Make a link from the URI alone. Generate the file
@@ -2679,7 +2689,9 @@ icon_view_handle_uri_list (NautilusIconContainer *container, const char *item_ur
 		g_free (container_path);
 	}
 	
-	gnome_uri_list_free_strings (real_uri_list);
+#if GNOME2_CONVERSION_COMPLETE
+	gnome_vfs_uri_list_free_strings (real_uri_list);
+#endif
 	gnome_vfs_uri_unref (container_uri);
 	g_free (container_uri_string);
 	
@@ -2789,7 +2801,7 @@ fm_icon_view_init (FMIconView *icon_view)
 	icon_container = get_icon_container (icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "handle_uri_list",
-			    GTK_SIGNAL_FUNC (icon_view_handle_uri_list),
+			    G_CALLBACK (icon_view_handle_uri_list),
 			    icon_view);
 
 }

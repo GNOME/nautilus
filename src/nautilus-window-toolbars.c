@@ -102,7 +102,9 @@ create_back_or_forward_menu (NautilusWindow *window, gboolean back)
   		gtk_signal_connect
 			(GTK_OBJECT(menu_item), 
 			 "activate",
-			 back ? activate_back_menu_item_callback : activate_forward_menu_item_callback, 
+			 back
+			 ? G_CALLBACK (activate_back_menu_item_callback)
+			 : G_CALLBACK (activate_forward_menu_item_callback),
 			 window);
 		
 		gtk_menu_append (menu, menu_item);
@@ -248,7 +250,11 @@ get_pixbuf_for_xml_node (NautilusWindow *window, const char *node_path)
 	GdkPixbuf *pixbuf;
 
 	node = bonobo_ui_component_get_tree (window->details->shell_ui, node_path, FALSE, NULL);
+#if GNOME2_CONVERSION_COMPLETE
 	pixbuf = bonobo_ui_util_xml_get_icon_pixbuf (node, FALSE);
+#else
+	pixbuf = NULL;
+#endif
 	bonobo_ui_node_free (node);
 
 	return pixbuf;
@@ -277,9 +283,10 @@ set_up_special_bonobo_button (NautilusWindow *window,
 	
 	nautilus_window_ui_freeze (window);
 
-	bonobo_ui_toolbar_button_item_set_icon (item, pixbuf);
+	bonobo_ui_toolbar_button_item_set_image (item, gtk_image_new_from_pixbuf (pixbuf));
 	gdk_pixbuf_unref (pixbuf);
 
+#if GNOME2_CONVERSION_COMPLETE
 	/* FIXME bugzilla.gnome.org 45005:
 	 * Setting the style here accounts for the preference, but does not
 	 * account for a hard-wired toolbar style or later changes in style
@@ -291,6 +298,7 @@ set_up_special_bonobo_button (NautilusWindow *window,
 		 gnome_preferences_get_toolbar_labels ()
 		 	? BONOBO_UI_TOOLBAR_ITEM_STYLE_ICON_AND_TEXT_VERTICAL
 		 	: BONOBO_UI_TOOLBAR_ITEM_STYLE_ICON_ONLY);
+#endif
 
 	nautilus_window_ui_thaw (window);
 }			      

@@ -111,7 +111,7 @@ make_link_set_check_box(const char *directory_path, GtkWidget *checkbox_table,
 		
 	gtk_signal_connect (GTK_OBJECT (checkbox),
 			    "toggled",
-			    link_set_check_box_toggled,
+			    G_CALLBACK (link_set_check_box_toggled),
 			    window);
 
 
@@ -142,8 +142,7 @@ get_link_set_names (void)
 	
 	/* get the directory info */
 	result = gnome_vfs_directory_list_load (&list, link_set_uri, 
-						GNOME_VFS_FILE_INFO_FOLLOW_LINKS,
-						NULL);
+						GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
 	if (result != GNOME_VFS_OK) {
 		g_free (link_set_uri);
 		return NULL;

@@ -58,7 +58,6 @@
 #include <gtk/gtkvbox.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomeui/gnome-geometry.h>
 #include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomeui/gnome-window-icon.h>
@@ -533,6 +532,8 @@ set_initial_window_geometry (NautilusWindow *window)
 
 }
 
+#if GNOME2_CONVERSION_COMPLETE
+
 static void
 menu_bar_no_resize_hack_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 {
@@ -631,6 +632,8 @@ throbber_location_change_request_callback (BonoboListener *listener,
 	}
 }
 
+#endif
+
 /* Add a dummy menu with a "View as ..." item when we first create the
  * view_as_option_menu -- without this the menu draws empty and shrunk,
  * once we populate it it grows and forces the toolbar and all the other
@@ -664,14 +667,15 @@ nautilus_window_constructed (NautilusWindow *window)
 	
 	/* CORBA and Bonobo setup, which must be done before the location bar setup */
 	window->details->ui_container = bonobo_ui_container_new ();
-	bonobo_ui_container_set_win (window->details->ui_container,
-				     BONOBO_WINDOW (window));
+	bonobo_ui_container_set_engine (window->details->ui_container,
+					bonobo_window_get_ui_engine (BONOBO_WINDOW (window)));
 
 	/* Load the user interface from the XML file. */
 	window->details->shell_ui = bonobo_ui_component_new ("Nautilus Shell");
 	bonobo_ui_component_set_container
 		(window->details->shell_ui,
-		 nautilus_window_get_ui_container (window));
+		 nautilus_window_get_ui_container (window),
+		 NULL);
 
 	nautilus_window_ui_freeze (window);
 
@@ -690,10 +694,10 @@ nautilus_window_constructed (NautilusWindow *window)
 	gtk_widget_show (GTK_WIDGET (window->navigation_bar));
 
 	gtk_signal_connect (GTK_OBJECT (window->navigation_bar), "location_changed",
-			    navigation_bar_location_changed_callback, window);
+			    G_CALLBACK (navigation_bar_location_changed_callback), window);
 
 	gtk_signal_connect (GTK_OBJECT (window->navigation_bar), "mode_changed",
-			    navigation_bar_mode_changed_callback, window);
+			    G_CALLBACK (navigation_bar_mode_changed_callback), window);
 
 	gtk_box_pack_start (GTK_BOX (location_bar_box), window->navigation_bar,
 			    TRUE, TRUE, GNOME_PAD_SMALL);
@@ -718,13 +722,13 @@ nautilus_window_constructed (NautilusWindow *window)
 	 */
 	window->zoom_control = nautilus_zoom_control_new ();
 	gtk_signal_connect_object (GTK_OBJECT (window->zoom_control), "zoom_in",
-				   nautilus_window_zoom_in, GTK_OBJECT (window));
+				   G_CALLBACK (nautilus_window_zoom_in), GTK_OBJECT (window));
 	gtk_signal_connect_object (GTK_OBJECT (window->zoom_control), "zoom_out",
-				   nautilus_window_zoom_out, GTK_OBJECT (window));
+				   G_CALLBACK (nautilus_window_zoom_out), GTK_OBJECT (window));
 	gtk_signal_connect_object (GTK_OBJECT (window->zoom_control), "zoom_to_level",
-				   nautilus_window_zoom_to_level, GTK_OBJECT (window));
+				   G_CALLBACK (nautilus_window_zoom_to_level), GTK_OBJECT (window));
 	gtk_signal_connect_object (GTK_OBJECT (window->zoom_control), "zoom_to_fit",
-				   nautilus_window_zoom_to_fit, GTK_OBJECT (window));
+				   G_CALLBACK (nautilus_window_zoom_to_fit), GTK_OBJECT (window));
 	gtk_box_pack_end (GTK_BOX (location_bar_box), window->zoom_control, FALSE, FALSE, 0);
 	
 	gtk_widget_show (location_bar_box);
@@ -758,7 +762,7 @@ nautilus_window_constructed (NautilusWindow *window)
 		window->sidebar = nautilus_sidebar_new ();
 		gtk_widget_show (GTK_WIDGET (window->sidebar));
 		gtk_signal_connect (GTK_OBJECT (window->sidebar), "location_changed",
-				    go_to_callback, window);
+				    G_CALLBACK (go_to_callback), window);
 		e_paned_pack1 (E_PANED (window->content_hbox),
 			       GTK_WIDGET (window->sidebar),
 			       FALSE, TRUE);
@@ -784,11 +788,13 @@ nautilus_window_constructed (NautilusWindow *window)
 		nautilus_bonobo_set_hidden (window->details->shell_ui,
 					    MENU_BAR_PATH, TRUE);
 
+#if GNOME2_CONVERSION_COMPLETE
 		/* FIXME bugzilla.gnome.org 44752:
 		 * If we ever get the unsigned math errors in
 		 * gtk_menu_item_size_allocate fixed this can be removed.
 		 */
 		menu_bar_no_resize_hack (window);
+#endif
 	}
 
 	/* Wrap the location bar in a control and set it up. */
@@ -812,10 +818,12 @@ nautilus_window_constructed (NautilusWindow *window)
 		CORBA_exception_init (&ev);
 		property_bag = Bonobo_Control_getProperties (window->throbber, &ev);
 		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {
+#if GNOME2_CONVERSION_COMPLETE
 			window->details->throbber_location_change_request_listener_id =
 				bonobo_event_source_client_add_listener
 				(property_bag, throbber_location_change_request_callback, 
 				 "Bonobo/Property:change:location", NULL, window); 
+#endif
 			bonobo_object_release_unref (property_bag, NULL);	
 		}
 		CORBA_exception_free (&ev);
@@ -829,7 +837,7 @@ nautilus_window_constructed (NautilusWindow *window)
 	nautilus_window_allow_stop (window, FALSE);
 
 	/* Set up undo manager */
-	nautilus_undo_manager_attach (window->application->undo_manager, GTK_OBJECT (window));	
+	nautilus_undo_manager_attach (window->application->undo_manager, G_OBJECT (window));	
 
 	/* Set up the sidebar panels. */
 	update_sidebar_panels_from_preferences (window);
@@ -915,10 +923,12 @@ nautilus_window_unrealize (GtkWidget *widget)
 		CORBA_exception_init (&ev);
 		property_bag = Bonobo_Control_getProperties (window->throbber, &ev);
 		if (!BONOBO_EX (&ev) && property_bag != CORBA_OBJECT_NIL) {	
+#if GNOME2_CONVERSION_COMPLETE
 			bonobo_event_source_client_remove_listener
 				(property_bag,
 				 window->details->throbber_location_change_request_listener_id,
 				 &ev);
+#endif
 			bonobo_object_release_unref (property_bag, NULL);	
 		}
 		CORBA_exception_free (&ev);
@@ -956,7 +966,7 @@ nautilus_window_destroy (GtkObject *object)
 	/* Get rid of all owned objects. */
 
 	if (window->details->shell_ui != NULL) {
-		bonobo_ui_component_unset_container (window->details->shell_ui);
+		bonobo_ui_component_unset_container (window->details->shell_ui, NULL);
 		bonobo_object_unref (BONOBO_OBJECT (window->details->shell_ui));
 	}
 
@@ -1002,6 +1012,7 @@ nautilus_window_destroy (GtkObject *object)
 static void
 nautilus_window_save_geometry (NautilusWindow *window)
 {
+#if GNOME2_CONVERSION_COMPLETE
 	char *geometry_string;
 
         g_return_if_fail (NAUTILUS_IS_WINDOW (window));
@@ -1013,6 +1024,7 @@ nautilus_window_save_geometry (NautilusWindow *window)
 				    NULL,
 				    geometry_string);
 	g_free (geometry_string);
+#endif
 }
 
 void
@@ -1043,7 +1055,7 @@ nautilus_window_update_launcher (GdkWindow *window)
 	 * to update its launching state */
 	gdk_property_change (GDK_ROOT_PARENT (),
 			     gdk_atom_intern ("_NAUTILUS_LAST_WINDOW_REALIZE_TIME", FALSE),
-			     XA_CARDINAL,
+			     gdk_x11_xatom_to_atom (XA_CARDINAL),
 			     32,
 			     PropModeReplace,
 			     (guchar *) &tmp.tv_sec,
@@ -1203,7 +1215,7 @@ create_view_as_menu_item (NautilusWindow *window,
 
 	gtk_signal_connect (GTK_OBJECT (menu_item),
 			    "activate",
-			    view_as_menu_switch_views_callback, 
+			    G_CALLBACK (view_as_menu_switch_views_callback),
 			    window);
 
 	gtk_object_set_data (GTK_OBJECT (menu_item),
@@ -1540,7 +1552,7 @@ load_view_as_menus_callback (NautilusFile *file,
        	menu_item = gtk_menu_item_new_with_label (_("View as..."));
         gtk_signal_connect (GTK_OBJECT (menu_item),
         		    "activate",
-        		    view_as_menu_choose_view_callback,
+        		    G_CALLBACK (view_as_menu_choose_view_callback),
         		    window);
        	gtk_widget_show (menu_item);
        	gtk_menu_append (GTK_MENU (new_menu), menu_item);

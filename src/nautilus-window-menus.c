@@ -158,8 +158,8 @@ bookmark_holder_new (NautilusBookmark *bookmark,
 	new_bookmark_holder->changed_handler_id = 
 		gtk_signal_connect_object (GTK_OBJECT (bookmark), "appearance_changed",
 				   	   is_bookmarks_menu
-				   	   ? schedule_refresh_bookmarks_menu
-				   	   : schedule_refresh_go_menu,
+				   	   ? G_CALLBACK (schedule_refresh_bookmarks_menu)
+				   	   : G_CALLBACK (schedule_refresh_go_menu),
 				   	   GTK_OBJECT (window));
 
 	return new_bookmark_holder;
@@ -183,7 +183,7 @@ bookmark_holder_free (BookmarkHolder *bookmark_holder)
 #define NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM			"/menu/Edit/Customization"
 
 static void
-bookmark_holder_free_cover (gpointer callback_data)
+bookmark_holder_free_cover (gpointer callback_data, GClosure *closure)
 {
 	bookmark_holder_free (callback_data);
 }
@@ -347,7 +347,7 @@ go_menu_start_here_callback (BonoboUIComponent *component,
 static void
 forget_history_if_confirmed (NautilusWindow *window)
 {
-	GnomeDialog *dialog;
+	GtkDialog *dialog;
 	char *prompt;
 
 	/* Confirm before forgetting history because it's a rare operation that
@@ -366,12 +366,13 @@ forget_history_if_confirmed (NautilusWindow *window)
 	}
 					   
 	dialog = eel_show_yes_no_dialog (prompt,
-					      _("Forget History?"),
-					      _("Forget"),
-					      GNOME_STOCK_BUTTON_CANCEL,
-					      GTK_WINDOW (window));
+					 _("Forget History?"),
+					 _("Forget"),
+					 _("Cancel"),
+					 GTK_WINDOW (window));
 	g_free (prompt);					 
 
+#if GNOME2_CONVERSION_COMPLETE
 	gtk_signal_connect
 		(GTK_OBJECT (eel_gnome_dialog_get_button_by_index
 			     (dialog, GNOME_OK)),
@@ -380,6 +381,7 @@ forget_history_if_confirmed (NautilusWindow *window)
 		 NULL);
 
 	gnome_dialog_set_default (dialog, GNOME_CANCEL);
+#endif
 }
 
 static void
@@ -775,6 +777,8 @@ user_level_menu_item_callback (BonoboUIComponent *component,
 	switch_to_user_level (window, convert_verb_to_user_level (verb));
 }
 
+#if GNOME2_CONVERSION_COMPLETE
+
 static void
 remove_bookmarks_for_uri (GtkWidget *button, gpointer callback_data)
 {
@@ -783,14 +787,16 @@ remove_bookmarks_for_uri (GtkWidget *button, gpointer callback_data)
 	g_assert (GTK_IS_WIDGET (button));
 	g_assert (callback_data != NULL);
 
-	uri = (const char *) callback_data;
+	uri = callback_data;
 	nautilus_bookmark_list_delete_items_with_uri (get_bookmark_list (), uri);
 }
+
+#endif
 
 static void
 show_bogus_bookmark_window (BookmarkHolder *holder)
 {
-	GnomeDialog *dialog;
+	GtkDialog *dialog;
 	char *uri;
 	char *uri_for_display;
 	char *prompt;
@@ -803,11 +809,12 @@ show_bogus_bookmark_window (BookmarkHolder *holder)
 					    "want to remove any bookmarks with this "
 					    "location from your list?"), uri_for_display);
 		dialog = eel_show_yes_no_dialog (prompt,
-						      _("Bookmark for Nonexistent Location"),
-						      _("Remove"),
-						      GNOME_STOCK_BUTTON_CANCEL,
-						      GTK_WINDOW (holder->window));
+						 _("Bookmark for Nonexistent Location"),
+						 _("Remove"),
+						 _("Cancel"),
+						 GTK_WINDOW (holder->window));
 
+#if GNOME2_CONVERSION_COMPLETE
 		eel_gtk_signal_connect_free_data
 			(GTK_OBJECT (eel_gnome_dialog_get_button_by_index
 				     (dialog, GNOME_OK)),
@@ -816,6 +823,7 @@ show_bogus_bookmark_window (BookmarkHolder *holder)
 			 g_strdup (uri));
 
 		gnome_dialog_set_default (dialog, GNOME_CANCEL);
+#endif
 	} else {
 		prompt = g_strdup_printf (_("The location \"%s\" no longer exists."), uri_for_display);
 		dialog = eel_show_info_dialog (prompt, _("Go to Nonexistent Location"), GTK_WINDOW (holder->window));
@@ -894,8 +902,9 @@ append_bookmark_to_menu (NautilusWindow *window,
 	verb_name = nautilus_bonobo_get_numbered_menu_item_command 
 		(window->details->shell_ui, parent_path, index_in_parent);
 	bonobo_ui_component_add_verb_full (window->details->shell_ui, verb_name, 
-					   activate_bookmark_in_menu_item, bookmark_holder, 
-					   bookmark_holder_free_cover);
+					   g_cclosure_new (G_CALLBACK (activate_bookmark_in_menu_item),
+							   bookmark_holder, 
+							   bookmark_holder_free_cover));
 	g_free (verb_name);
 
 	nautilus_window_ui_thaw (window);
@@ -1160,13 +1169,13 @@ nautilus_window_initialize_bookmarks_menu (NautilusWindow *window)
 	/* Recreate dynamic part of menu if bookmark list changes */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (get_bookmark_list ()),
 			                       "contents_changed",
-			                       schedule_refresh_bookmarks_menu,
+			                       G_CALLBACK (schedule_refresh_bookmarks_menu),
 			   	               GTK_OBJECT (window));
 
 	/* Recreate static & dynamic parts of menu if icon theme changes */
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
 					       "icons_changed",
-					       schedule_refresh_bookmarks_menu,
+					       G_CALLBACK (schedule_refresh_bookmarks_menu),
 					       GTK_OBJECT (window));
 }
 
@@ -1183,12 +1192,12 @@ nautilus_window_initialize_go_menu (NautilusWindow *window)
 	 */
 	gtk_signal_connect_object_while_alive (nautilus_signaller_get_current (),
 			                       "history_list_changed",
-			                       schedule_refresh_go_menu,
+			                       G_CALLBACK (schedule_refresh_go_menu),
 			   	               GTK_OBJECT (window));
 	 
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
 					       "icons_changed",
-					       schedule_refresh_go_menu,
+					       G_CALLBACK (schedule_refresh_go_menu),
 					       GTK_OBJECT (window));
 }
 
@@ -1312,16 +1321,16 @@ nautilus_window_initialize_menus_part_1 (NautilusWindow *window)
 
 	/* Keep track of user level changes to update the user level menu item icons */
 	eel_preferences_add_callback_while_alive ("user_level",
-						       user_level_changed_callback,
-						       window,
-						       GTK_OBJECT (window));
+						  user_level_changed_callback,
+						  window,
+						  GTK_OBJECT (window));
 	/* Update the user level menu items for the first time */
 	user_level_changed_callback (window);
 
 	/* Register to catch Bonobo UI events so we can notice View As changes */
 	gtk_signal_connect (GTK_OBJECT (window->details->shell_ui),
 			    "ui_event", 
-			    nautilus_window_handle_ui_event_callback, 
+			    G_CALLBACK (nautilus_window_handle_ui_event_callback), 
 			    window);
 
 	bonobo_ui_component_thaw (window->details->shell_ui, NULL);

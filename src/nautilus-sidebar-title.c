@@ -135,7 +135,7 @@ realize_callback (NautilusSidebarTitle *sidebar_title)
 
 	gtk_signal_connect_while_alive (GTK_OBJECT (background),
 					"appearance_changed",
-					appearance_changed_callback,
+					G_CALLBACK (appearance_changed_callback),
 					sidebar_title,
 					GTK_OBJECT (sidebar_title));
 }
@@ -176,7 +176,9 @@ static void
 non_smooth_font_changed_callback (gpointer callback_data)
 {
 	NautilusSidebarTitle *sidebar_title;
+#if GNOME2_CONVERSION_COMPLETE
 	GdkFont *new_font;
+#endif
 
 	g_return_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (callback_data));
 
@@ -186,10 +188,12 @@ non_smooth_font_changed_callback (gpointer callback_data)
 	update_title_font (sidebar_title);
 
 	/* Update the fixed-size "more info" font */
+#if GNOME2_CONVERSION_COMPLETE
 	new_font = get_non_smooth_font (MORE_INFO_FONT_SIZE);
 	eel_gtk_widget_set_font (sidebar_title->details->more_info_label,
 				 new_font);	
 	gdk_font_unref (new_font);
+#endif
 }
 
 static void
@@ -200,9 +204,10 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 	/* Register to find out about icon theme changes */
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
 					       "icons_changed",
-					       update_icon,
+					       G_CALLBACK (update_icon),
 					       GTK_OBJECT (sidebar_title));
-	gtk_signal_connect (GTK_OBJECT (sidebar_title), "realize", realize_callback, NULL);
+	gtk_signal_connect (GTK_OBJECT (sidebar_title), "realize",
+			    G_CALLBACK (realize_callback), NULL);
 
 	/* Create the icon */
 	sidebar_title->details->icon = eel_image_new_with_background (NULL);
@@ -574,8 +579,10 @@ update_title_font (NautilusSidebarTitle *sidebar_title)
 		largest_fitting_font = eel_gdk_font_get_fixed ();
 	}
 	
+#if GNOME2_CONVERSION_COMPLETE
 	eel_gtk_widget_set_font (sidebar_title->details->title_label,
-				      largest_fitting_font);
+				 largest_fitting_font);
+#endif
 	
 	gdk_font_unref (largest_fitting_font);
 	gdk_font_unref (bold_template_font);
@@ -805,7 +812,7 @@ nautilus_sidebar_title_set_file (NautilusSidebarTitle *sidebar_title,
 			sidebar_title->details->file_changed_connection =
 				gtk_signal_connect_object (GTK_OBJECT (sidebar_title->details->file),
 							   "changed",
-							   update_all,
+							   G_CALLBACK (update_all),
 							   GTK_OBJECT (sidebar_title));
 			
 			/* Monitor the things needed to get the right

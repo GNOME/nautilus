@@ -137,15 +137,15 @@ nautilus_simple_search_bar_new (NautilusWindow *window)
 		 TRUE);
 	
 	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "activate",
-				   eel_gtk_button_auto_click, 
+				   G_CALLBACK (eel_gtk_button_auto_click), 
 				   GTK_OBJECT (bar->details->find_button));
 	gtk_signal_connect_object (GTK_OBJECT (bar->details->entry), "changed",
-				   update_simple_find_button_state, GTK_OBJECT (bar));
+				   G_CALLBACK (update_simple_find_button_state), GTK_OBJECT (bar));
 
 	gtk_box_pack_start (GTK_BOX (hbox), GTK_WIDGET (bar->details->entry), TRUE, TRUE, 0);
 
 	gtk_signal_connect_object (GTK_OBJECT (bar->details->find_button), "clicked",
-				   nautilus_navigation_bar_location_changed,
+				   G_CALLBACK (nautilus_navigation_bar_location_changed),
 				   GTK_OBJECT (bar));
 	gtk_box_pack_start (GTK_BOX (hbox), bar->details->find_button, FALSE, TRUE, 1);
 	update_simple_find_button_state (bar);
@@ -190,7 +190,7 @@ static char *
 nautilus_simple_search_bar_get_location (NautilusNavigationBar *navigation_bar)
 {
 	NautilusSimpleSearchBar *bar;
-	char *search_entry_text;
+	const char *search_entry_text;
 
 	bar = NAUTILUS_SIMPLE_SEARCH_BAR (navigation_bar);
 	search_entry_text = gtk_entry_get_text (GTK_ENTRY (bar->details->entry));

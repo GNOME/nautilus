@@ -37,7 +37,6 @@
 #include <gtk/gtktable.h>
 #include <gtk/gtkvbox.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-dock.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus/nautilus-clipboard.h>
@@ -116,8 +115,8 @@ search_bar_criterion_type_changed_callback (GtkObject *old_criterion_object,
 								     bar);
 	gtk_signal_connect (GTK_OBJECT (new_criterion),
 			    "criterion_type_changed",
-			    search_bar_criterion_type_changed_callback,
-			    (gpointer) bar);
+			    G_CALLBACK (search_bar_criterion_type_changed_callback),
+			    bar);
 	old_criterion_location = g_slist_find (bar->details->search_criteria,
 					       criterion);
 	old_criterion_location->data = new_criterion;
@@ -207,8 +206,8 @@ nautilus_complex_search_bar_init (NautilusComplexSearchBar *bar)
 
 	gtk_signal_connect (GTK_OBJECT (file_name_criterion),
 			    "criterion_type_changed",
-			    search_bar_criterion_type_changed_callback,
-			    (gpointer) bar);
+			    G_CALLBACK (search_bar_criterion_type_changed_callback),
+			    bar);
 	bar->details->search_criteria = g_slist_prepend (NULL,
 							 file_name_criterion);
 
@@ -226,12 +225,12 @@ nautilus_complex_search_bar_init (NautilusComplexSearchBar *bar)
 
 	gtk_signal_connect (GTK_OBJECT (hbox),
 			    "need_reallocation",
-			    queue_search_bar_resize_callback,
+			    G_CALLBACK (queue_search_bar_resize_callback),
 			    bar);
 
 	bar->details->more_options = gtk_button_new_with_label (_("More Options"));
 	gtk_signal_connect (GTK_OBJECT (bar->details->more_options), "clicked",
-			    more_options_callback, bar);
+			    G_CALLBACK (more_options_callback), bar);
 				
 				
 	gtk_wrap_box_pack (GTK_WRAP_BOX (hbox),
@@ -241,10 +240,10 @@ nautilus_complex_search_bar_init (NautilusComplexSearchBar *bar)
 
 	bar->details->fewer_options = gtk_button_new_with_label (_("Fewer Options"));
 	gtk_signal_connect (GTK_OBJECT (bar->details->fewer_options), "clicked",
-			    fewer_options_callback, bar);
+			    G_CALLBACK (fewer_options_callback), bar);
 
 	gtk_wrap_box_pack (GTK_WRAP_BOX (hbox),
-			    bar->details->fewer_options,
+			   bar->details->fewer_options,
 			   FALSE, FALSE, FALSE, FALSE);
 
 	gtk_widget_show (bar->details->fewer_options);
@@ -266,7 +265,7 @@ nautilus_complex_search_bar_init (NautilusComplexSearchBar *bar)
 
 	gtk_container_add (GTK_CONTAINER (bar->details->find_them), find_them_box);
 	gtk_signal_connect_object (GTK_OBJECT (bar->details->find_them), "clicked",
-				   nautilus_navigation_bar_location_changed,
+				   G_CALLBACK (nautilus_navigation_bar_location_changed),
 				   GTK_OBJECT (bar));
 
 	gtk_wrap_box_pack (GTK_WRAP_BOX (hbox), 
@@ -376,7 +375,9 @@ nautilus_complex_search_bar_set_location (NautilusNavigationBar *navigation_bar,
 void  
 nautilus_complex_search_bar_queue_resize (NautilusComplexSearchBar      *bar)
 {
+#if GNOME2_CONVERSION_COMPLETE
 	GtkWidget *dock;
+#endif
 
 	gtk_widget_queue_resize (bar->details->criteria_container);
 	/* FIXME bugzilla.gnome.org 43171:
@@ -388,12 +389,12 @@ nautilus_complex_search_bar_queue_resize (NautilusComplexSearchBar      *bar)
 	 * shrink when pressing the fewer options button, but it will if the
 	 * window is fairly narrow.
 	 */
+#if GNOME2_CONVERSION_COMPLETE
 	dock = gtk_widget_get_ancestor (GTK_WIDGET (bar), GNOME_TYPE_DOCK);
 	if (dock != NULL) {
 		gtk_widget_queue_resize (dock);
 	}
-	
-
+#endif
 }
 
 static void
@@ -420,14 +421,14 @@ attach_criterion_to_search_bar (NautilusComplexSearchBar *bar,
 		/* We want to track whether the entry text is empty or not. */
 		gtk_signal_connect_object (GTK_OBJECT (criterion->details->value_entry),
 					   "changed", 
-					   update_find_button_state, 
+					   G_CALLBACK (update_find_button_state),
 					   GTK_OBJECT (bar));
 		
 		/* We want to activate the "Find" button when any entry text is not empty */
 		g_assert (GTK_IS_BUTTON (bar->details->find_them));
 		gtk_signal_connect_object (GTK_OBJECT (criterion->details->value_entry), 
 					   "activate",
-					   eel_gtk_button_auto_click, 
+					   G_CALLBACK (eel_gtk_button_auto_click),
 					   GTK_OBJECT (bar->details->find_them));
 	}
 	nautilus_complex_search_bar_queue_resize (bar);
@@ -529,8 +530,8 @@ more_options_callback (GtkObject *object,
 							    bar);
 	gtk_signal_connect (GTK_OBJECT (criterion),
 			    "criterion_type_changed",
-			    search_bar_criterion_type_changed_callback,
-			    (gpointer) bar);
+			    G_CALLBACK (search_bar_criterion_type_changed_callback),
+			    bar);
 	bar->details->search_criteria = g_slist_append (list, criterion);
 
 	nautilus_search_bar_criterion_show (criterion);

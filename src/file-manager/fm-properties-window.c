@@ -147,10 +147,10 @@ static GtkTargetEntry target_table[] = {
 #define EMBLEM_LABEL_SPACING			2
 
 static void real_destroy                          (GtkObject               *object);
-static void real_finalize                         (GtkObject               *object);
-static void real_shutdown                         (GtkObject               *object);
-static void fm_properties_window_class_init (FMPropertiesWindowClass *class);
-static void fm_properties_window_init       (FMPropertiesWindow      *window);
+static void real_finalize                         (GObject                 *object);
+static void real_dispose                          (GObject                 *object);
+static void fm_properties_window_class_init       (FMPropertiesWindowClass *class);
+static void fm_properties_window_init             (FMPropertiesWindow      *window);
 static void create_properties_window_callback     (NautilusFile		   *file,
 						   gpointer                 data);
 static void cancel_group_change_callback          (gpointer                 callback_data);
@@ -173,13 +173,10 @@ EEL_DEFINE_CLASS_BOILERPLATE (FMPropertiesWindow, fm_properties_window, GTK_TYPE
 static void
 fm_properties_window_class_init (FMPropertiesWindowClass *class)
 {
-	GtkObjectClass *object_class;
-
-	object_class = GTK_OBJECT_CLASS (class);
+	G_OBJECT_CLASS (class)->dispose = real_dispose;
+	G_OBJECT_CLASS (class)->finalize = real_finalize;
 	
-	object_class->destroy = real_destroy;
-	object_class->shutdown = real_shutdown;
-	object_class->finalize = real_finalize;
+	GTK_OBJECT_CLASS (class)->destroy = real_destroy;
 }
 
 static void
@@ -377,13 +374,13 @@ create_image_widget_for_file (NautilusFile *file)
 	/* React to icon theme changes. */
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
 					       "icons_changed",
-					       update_properties_window_icon,
+					       G_CALLBACK (update_properties_window_icon),
 					       GTK_OBJECT (image));
 
 	/* Name changes can also change icon (since name is determined by MIME type) */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
 					       "changed",
-					       update_properties_window_icon,
+					       G_CALLBACK (update_properties_window_icon),
 					       GTK_OBJECT (image));
 	return image;
 }
@@ -754,8 +751,8 @@ attach_value_field_internal (GtkTable *table,
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
 					       "changed",
 					       ellipsize_text
-					           ? ellipsizing_value_field_update
-					           : value_field_update,
+					       ? G_CALLBACK (ellipsizing_value_field_update)
+					       : G_CALLBACK (value_field_update),
 					       GTK_OBJECT (value_field));	
 }			     
 
@@ -830,10 +827,10 @@ create_group_menu_item (NautilusFile *file, const char *group_name)
 	gtk_widget_show (menu_item);
 
 	eel_gtk_signal_connect_free_data_custom (GTK_OBJECT (menu_item),
-			    		       	      "activate",
-			    		       	      activate_group_callback,
-			    		       	      file_name_pair_new (file, group_name),
-			    		       	      (GtkDestroyNotify)file_name_pair_free);
+						 "activate",
+						 G_CALLBACK (activate_group_callback),
+						 file_name_pair_new (file, group_name),
+						 (GtkDestroyNotify)file_name_pair_free);
 
 	return menu_item;
 }
@@ -934,7 +931,7 @@ attach_group_menu (GtkTable *table,
 	/* Connect to signal to update menu when file changes. */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
 					       "changed",
-					       synch_groups_menu,
+					       G_CALLBACK (synch_groups_menu),
 					       GTK_OBJECT (option_menu));	
 }	
 
@@ -1003,10 +1000,10 @@ create_owner_menu_item (NautilusFile *file, const char *user_name)
 	gtk_widget_show (menu_item);
 
 	eel_gtk_signal_connect_free_data_custom (GTK_OBJECT (menu_item),
-			    		       	      "activate",
-			    		       	      activate_owner_callback,
-			    		       	      file_name_pair_new (file, name_array[0]),
-			    		       	      (GtkDestroyNotify)file_name_pair_free);
+						 "activate",
+						 G_CALLBACK (activate_owner_callback),
+						 file_name_pair_new (file, name_array[0]),
+						 (GtkDestroyNotify)file_name_pair_free);
 	g_strfreev (name_array);
 	return menu_item;
 }
@@ -1081,7 +1078,7 @@ attach_owner_menu (GtkTable *table,
 	/* Connect to signal to update menu when file changes. */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
 					       "changed",
-					       synch_user_menu,
+					       G_CALLBACK (synch_user_menu),
 					       GTK_OBJECT (option_menu));	
 }
 
@@ -1252,7 +1249,7 @@ attach_directory_contents_value_field (FMPropertiesWindow *window,
 	/* Connect to signal to update value when file changes. */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (window->details->target_file),
 					       "updated_deep_count_in_progress",
-					       schedule_directory_contents_update,
+					       G_CALLBACK (schedule_directory_contents_update),
 					       GTK_OBJECT (window));
 
 	return value_field;	
@@ -1599,7 +1596,7 @@ create_basic_page (FMPropertiesWindow *window)
                             window);
                       			    
 	gtk_signal_connect (GTK_OBJECT (name_field), "activate",
-      	              	    name_field_activate,
+      	              	    G_CALLBACK (name_field_activate),
                             window);
 
         /* Start with name field selected, if it's sensitive. */
@@ -1611,7 +1608,7 @@ create_basic_page (FMPropertiesWindow *window)
 	/* React to name changes from elsewhere. */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (target_file),
 					       "changed",
-					       name_field_update_to_match_file,
+					       G_CALLBACK (name_field_update_to_match_file),
 					       GTK_OBJECT (name_field));
 
 	if (should_show_file_type (window)) {
@@ -1709,7 +1706,7 @@ create_emblems_page (FMPropertiesWindow *window)
 	 */
 	gtk_signal_connect (GTK_OBJECT (GTK_BIN (scroller)->child), 
 			    "realize", 
-			    remove_default_viewport_shadow, 
+			    G_CALLBACK (remove_default_viewport_shadow),
 			    NULL);
 
 	gtk_notebook_append_page (window->details->notebook, 
@@ -1759,7 +1756,7 @@ create_emblems_page (FMPropertiesWindow *window)
 		
 		gtk_signal_connect (GTK_OBJECT (button),
 				    "toggled",
-				    property_button_toggled,
+				    G_CALLBACK (property_button_toggled),
 				    NULL);
 
 		/* Set initial state of button. */
@@ -1768,7 +1765,7 @@ create_emblems_page (FMPropertiesWindow *window)
 		/* Update button when file changes in future. */
 		gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
 						       "changed",
-						       property_button_update,
+						       G_CALLBACK (property_button_update),
 						       GTK_OBJECT (button));
 
 		gtk_container_add (GTK_CONTAINER (emblems_table), button);
@@ -1898,7 +1895,7 @@ set_up_permissions_checkbox (GtkWidget *check_button,
         /* Update state later if file changes. */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
 					       "changed",
-					       update_permissions_check_button_state,
+					       G_CALLBACK (update_permissions_check_button_state),
 					       GTK_OBJECT (check_button));
 }
 
@@ -2247,7 +2244,7 @@ create_properties_window (StartupData *startup_data)
 	window->details->file_changed_handler_id =
 		gtk_signal_connect_object (GTK_OBJECT (window->details->target_file),
 					   "changed",
-					   properties_window_file_changed_callback,
+					   G_CALLBACK (properties_window_file_changed_callback),
 					   GTK_OBJECT (window));
 
 	/* Create the notebook tabs. */
@@ -2369,7 +2366,7 @@ remove_pending_file (StartupData *startup_data,
 	}
 	if (cancel_destroy_handler) {
 		gtk_signal_disconnect_by_func (GTK_OBJECT (startup_data->directory_view),
-					       directory_view_destroyed_callback,
+					       G_CALLBACK (directory_view_destroyed_callback),
 					       startup_data);
 	}
 	g_hash_table_remove (pending_files, startup_data->original_file);
@@ -2422,7 +2419,7 @@ fm_properties_window_present (NautilusFile *original_file, FMDirectoryView *dire
 	g_hash_table_insert (pending_files, target_file, target_file);
 	gtk_signal_connect (GTK_OBJECT (directory_view),
 			    "destroy",
-			    directory_view_destroyed_callback,
+			    G_CALLBACK (directory_view_destroyed_callback),
 			    startup_data);
 
 	parent_window = gtk_widget_get_ancestor (GTK_WIDGET (directory_view), GTK_TYPE_WINDOW);
@@ -2441,7 +2438,7 @@ fm_properties_window_present (NautilusFile *original_file, FMDirectoryView *dire
 }
 
 static void
-real_shutdown (GtkObject *object)
+real_dispose (GObject *object)
 {
 	FMPropertiesWindow *window;
 
@@ -2453,7 +2450,7 @@ real_shutdown (GtkObject *object)
 	gtk_signal_disconnect (GTK_OBJECT (window->details->target_file), 
 			       window->details->file_changed_handler_id);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, shutdown, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
 }
 
 static void
@@ -2478,25 +2475,24 @@ real_destroy (GtkObject *object)
 		gtk_timeout_remove (window->details->update_directory_contents_timeout_id);
 	}
 
-
-	/* Note that file_changed_handler_id is disconnected in shutdown,
+	/* Note that file_changed_handler_id is disconnected in dispose,
 	 * and details are freed in finalize 
 	 */
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
 
 static void
-real_finalize (GtkObject *object)
+real_finalize (GObject *object)
 {
 	FMPropertiesWindow *window;
 
 	window = FM_PROPERTIES_WINDOW (object);
 
-	/* Note that file_changed_handler_id is disconnected in shutdown */
+	/* Note that file_changed_handler_id is disconnected in dispose */
 	g_free (window->details->pending_name);
 	g_free (window->details);
 
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, finalize, (object));
+	EEL_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
 
 /* icon selection callback to set the image of the file object to the selected file */

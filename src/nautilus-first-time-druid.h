@@ -29,12 +29,6 @@
 #ifndef NAUTILUS_FIRST_TIME_DRUID_H
 #define NAUTILUS_FIRST_TIME_DRUID_H
 
-#include <gtk/gtkwidget.h>
-#include "nautilus-application.h"
-
-GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application,
-					   const char          *urls[]);
-
-void       nautilus_set_first_time_file_flag (void);
+void nautilus_set_first_time_file_flag (void);
 
 #endif /* NAUTILUS_FIRST_TIME_DRUID_H */

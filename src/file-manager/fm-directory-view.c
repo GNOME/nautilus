@@ -50,7 +50,6 @@
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
-#include <libgnomeui/gnome-geometry.h>
 #include <libgnomeui/gnome-uidefs.h>
 #include <libgnomevfs/gnome-vfs-async-ops.h>
 #include <libgnomevfs/gnome-vfs-mime.h>
@@ -77,6 +76,7 @@
 #include <libnautilus-private/nautilus-view-identifier.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 #include <math.h>
+#include <unistd.h>
 
 /* The list view receives files from the directory model in chunks, to
  * improve responsiveness during loading. This is the number of files
@@ -452,7 +452,7 @@ fm_directory_view_get_containing_window (FMDirectoryView *view)
 gboolean
 fm_directory_view_confirm_multiple_windows (FMDirectoryView *view, int count)
 {
-	GnomeDialog *dialog;
+	GtkDialog *dialog;
 	char *prompt;
 	char *title;
 
@@ -464,13 +464,12 @@ fm_directory_view_confirm_multiple_windows (FMDirectoryView *view, int count)
 				    "Are you sure you want to do this?"), count);
 	title = g_strdup_printf (_("Open %d Windows?"), count);
 	dialog = eel_show_yes_no_dialog (prompt, title, 
-					      GNOME_STOCK_BUTTON_OK, 
-					      GNOME_STOCK_BUTTON_CANCEL, 
-					      fm_directory_view_get_containing_window (view));
+					 _("OK"), _("Cancel"),
+					 fm_directory_view_get_containing_window (view));
 	g_free (prompt);
 	g_free (title);
 
-	return gnome_dialog_run (dialog) == GNOME_OK;
+	return gtk_dialog_run (dialog) == GTK_RESPONSE_OK;
 }
 
 static gboolean
@@ -752,7 +751,7 @@ static gboolean
 confirm_delete_directly (FMDirectoryView *view, 
 			 GList *uris)
 {
-	GnomeDialog *dialog;
+	GtkDialog *dialog;
 	char *prompt;
 	char *file_name;
 	int uri_count;
@@ -781,12 +780,12 @@ confirm_delete_directly (FMDirectoryView *view,
 		(prompt,
 		 _("Delete?"),
 		 _("Delete"),
-		 GNOME_STOCK_BUTTON_CANCEL,
+		 _("Cancel"),
 		 fm_directory_view_get_containing_window (view));
 
 	g_free (prompt);
 
-	return gnome_dialog_run (dialog) == GNOME_OK;
+	return gtk_dialog_run (dialog) == GTK_RESPONSE_OK;
 }
 
 static void
@@ -1142,12 +1141,12 @@ add_scripts_directory (FMDirectoryView *view,
 
 	gtk_signal_connect (GTK_OBJECT (directory),
 			    "files_added",
-			    scripts_added_or_changed_callback,
+			    G_CALLBACK (scripts_added_or_changed_callback),
 			    view);
 
 	gtk_signal_connect (GTK_OBJECT (directory), 
 			    "files_changed",
-			    scripts_added_or_changed_callback,
+			    G_CALLBACK (scripts_added_or_changed_callback),
 			    view);
 
 	view->details->scripts_directory_list = g_list_prepend
@@ -1198,41 +1197,41 @@ fm_directory_view_init (FMDirectoryView *view)
 
 	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
 			    "stop_loading",
-			    GTK_SIGNAL_FUNC (stop_loading_callback),
+			    G_CALLBACK (stop_loading_callback),
 			    view);
 	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
 			    "load_location",
-			    GTK_SIGNAL_FUNC (load_location_callback), 
+			    G_CALLBACK (load_location_callback), 
 			    view);
 	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
 			    "selection_changed",
-			    GTK_SIGNAL_FUNC (selection_changed_callback), 
+			    G_CALLBACK (selection_changed_callback), 
 			    view);
 
         gtk_signal_connect (GTK_OBJECT (fm_directory_view_get_bonobo_control (view)),
                             "activate",
-                            bonobo_control_activate_callback,
+                            G_CALLBACK (bonobo_control_activate_callback),
                             view);
 
 	gtk_signal_connect (GTK_OBJECT (view->details->zoomable), 
 			    "zoom_in",
-			    zoomable_zoom_in_callback,
+			    G_CALLBACK (zoomable_zoom_in_callback),
 			    view);
 	gtk_signal_connect (GTK_OBJECT (view->details->zoomable), 
 			    "zoom_out", 
-			    zoomable_zoom_out_callback,
+			    G_CALLBACK (zoomable_zoom_out_callback),
 			    view);
 	gtk_signal_connect (GTK_OBJECT (view->details->zoomable), 
 			    "set_zoom_level", 
-			    GTK_SIGNAL_FUNC (zoomable_set_zoom_level_callback),
+			    G_CALLBACK (zoomable_set_zoom_level_callback),
 			    view);
 	gtk_signal_connect (GTK_OBJECT (view->details->zoomable), 
 			    "zoom_to_fit", 
-			    zoomable_zoom_to_fit_callback,
+			    G_CALLBACK (zoomable_zoom_to_fit_callback),
 			    view);
 	gtk_signal_connect_while_alive (GTK_OBJECT (nautilus_trash_monitor_get ()),
 				        "trash_state_changed",
-				        fm_directory_view_trash_state_changed_callback,
+				        G_CALLBACK (fm_directory_view_trash_state_changed_callback),
 				        view,
 				        GTK_OBJECT (view));
 
@@ -1611,7 +1610,7 @@ static void
 real_file_limit_reached (FMDirectoryView *view)
 {
 	NautilusFile *file;
-	GnomeDialog *dialog;
+	GtkDialog *dialog;
 	char *directory_name;
 	char *message;
 
@@ -1751,19 +1750,11 @@ typedef struct {
 static void
 debuting_uri_data_free (DebutingUriData *data)
 {
-	eel_g_hash_table_destroy_deep_custom
-		(data->debuting_uris, (GFunc) g_free, NULL, NULL, NULL);
+	g_hash_table_destroy (data->debuting_uris);
 	nautilus_file_list_free (data->added_files);
 	g_free (data);
 }
  
-static gboolean
-remove_debuting_uri (GHashTable *hash_table, const char *key)
-{
-	return eel_g_hash_table_remove_deep_custom
-		(hash_table, key, (GFunc) g_free, NULL, NULL, NULL);
-}
-
 /* This signal handler watch for the arrival of the icons created
  * as the result of a file operation. Once the last one is detected
  * it selects and reveals them all.
@@ -1777,7 +1768,7 @@ debuting_uri_add_file_callback (FMDirectoryView *view,
 
 	uri = nautilus_file_get_uri (new_file);
 
-	if (remove_debuting_uri (data->debuting_uris, uri)) {
+	if (g_hash_table_remove (data->debuting_uris, uri)) {
 		gtk_object_ref (GTK_OBJECT (new_file));
 		data->added_files = g_list_prepend (data->added_files, new_file);
 
@@ -1785,7 +1776,7 @@ debuting_uri_add_file_callback (FMDirectoryView *view,
 			fm_directory_view_set_selection (view, data->added_files);
 			fm_directory_view_reveal_selection (view);
 			gtk_signal_disconnect_by_func (GTK_OBJECT (view),
-						       debuting_uri_add_file_callback,
+						       G_CALLBACK (debuting_uri_add_file_callback),
 						       data);
 		}
 	}
@@ -1836,7 +1827,7 @@ pre_copy_move (FMDirectoryView *directory_view)
 	 */
 	gtk_signal_connect (GTK_OBJECT (directory_view),
 			    "add_file",
-			    pre_copy_move_add_file_callback,
+			    G_CALLBACK (pre_copy_move_add_file_callback),
 			    copy_move_done_data);
 
 	return copy_move_done_data;
@@ -1852,7 +1843,7 @@ copy_move_done_partition_func (gpointer data, gpointer callback_data)
  	gboolean result;
  	
 	uri = nautilus_file_get_uri (NAUTILUS_FILE (data));
-	result = remove_debuting_uri ((GHashTable *) callback_data, uri);
+	result = g_hash_table_remove ((GHashTable *) callback_data, uri);
 	g_free (uri);
 
 	return result;
@@ -1909,7 +1900,7 @@ copy_move_done_callback (GHashTable *debuting_uris, gpointer data)
 		 * directory_view pointer.
 		 */
 		gtk_signal_disconnect_by_func (GTK_OBJECT (directory_view),
-					       pre_copy_move_add_file_callback,
+					       G_CALLBACK (pre_copy_move_add_file_callback),
 					       data);
 	
 		/* Any items in the debuting_uris hash table that have
@@ -1936,7 +1927,7 @@ copy_move_done_callback (GHashTable *debuting_uris, gpointer data)
 			 */
 			gtk_signal_connect_full (GTK_OBJECT (directory_view),
 						 "add_file",
-						 debuting_uri_add_file_callback,
+						 G_CALLBACK (debuting_uri_add_file_callback),
 						 NULL,
 						 debuting_uri_data,
 						 (GtkDestroyNotify) debuting_uri_data_free,
@@ -2625,7 +2616,7 @@ fm_directory_view_get_bonobo_ui_container (FMDirectoryView *view)
         g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NULL);
         
         return bonobo_control_get_remote_ui_container
-		(fm_directory_view_get_bonobo_control (view));
+		(fm_directory_view_get_bonobo_control (view), NULL);
 }
 
 /**
@@ -2925,7 +2916,7 @@ file_name_from_uri (const char *uri)
 static gboolean
 fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean all)
 {
-	GnomeDialog *dialog;
+	GtkDialog *dialog;
 	char *prompt;
 	int uri_count;
 	char *file_name;
@@ -2957,18 +2948,18 @@ fm_directory_view_confirm_deletion (FMDirectoryView *view, GList *uris, gboolean
 		(prompt,
 		 _("Delete Immediately?"),
 		 _("Delete"),
-		 GNOME_STOCK_BUTTON_CANCEL,
+		 _("Cancel"),
 		 fm_directory_view_get_containing_window (view));
 	
 	g_free (prompt);
 
-	return gnome_dialog_run (dialog) == GNOME_OK;
+	return gtk_dialog_run (dialog) == GTK_RESPONSE_OK;
 }
 
 static gboolean
 confirm_delete_from_trash (FMDirectoryView *view, GList *uris)
 {
-	GnomeDialog *dialog;
+	GtkDialog *dialog;
 	char *prompt;
 	char *file_name;
 	int uri_count;
@@ -2997,12 +2988,12 @@ confirm_delete_from_trash (FMDirectoryView *view, GList *uris)
 		prompt,
 		_("Delete From Trash?"),
 		_("Delete"),
-		GNOME_STOCK_BUTTON_CANCEL,
+		_("Cancel"),
 		fm_directory_view_get_containing_window (view));
 
 	g_free (prompt);
 
-	return gnome_dialog_run (dialog) == GNOME_OK;
+	return gtk_dialog_run (dialog) == GTK_RESPONSE_OK;
 }
 
 static void
@@ -3098,10 +3089,12 @@ start_renaming_item (FMDirectoryView *view, const char *uri)
 }
 
 static void
-reveal_newly_added_folder (FMDirectoryView *view, NautilusFile *new_file, char* target_uri)
+reveal_newly_added_folder (FMDirectoryView *view, NautilusFile *new_file, const char *target_uri)
 {
 	if (nautilus_file_matches_uri (new_file, target_uri)) {
-		gtk_signal_disconnect_by_func (GTK_OBJECT (view), &reveal_newly_added_folder, target_uri);
+		gtk_signal_disconnect_by_func (GTK_OBJECT (view),
+					       G_CALLBACK (reveal_newly_added_folder),
+					       (void *) target_uri);
 		/* no need to select because start_renaming_item selects
 		 * fm_directory_view_select_file (view, new_file);
 		 */
@@ -3124,7 +3117,7 @@ new_folder_done (const char *new_folder_uri, gpointer data)
 	 */
 	gtk_signal_connect_full (GTK_OBJECT (directory_view),
 				 "add_file",
-				 reveal_newly_added_folder,
+				 G_CALLBACK (reveal_newly_added_folder),
 				 NULL,
 				 g_strdup (new_folder_uri),
 				 g_free,
@@ -3276,7 +3269,9 @@ add_numbered_menu_item (BonoboUIComponent *ui,
 
 	verb_name = nautilus_bonobo_get_numbered_menu_item_command 
 		(ui, parent_path, index);	
-	bonobo_ui_component_add_verb_full (ui, verb_name, callback, callback_data, destroy_notify);	   
+	bonobo_ui_component_add_verb_full (ui, verb_name,
+					   g_cclosure_new (callback, callback_data,
+							   (GClosureNotify) destroy_notify));	   
 	g_free (verb_name);
 }
 
@@ -3485,7 +3480,7 @@ get_file_names_as_parameter_string (GList *selection)
 	parameter_string = g_string_new ("");
 	for (node = selection; node != NULL; node = node->next) {
 		name = nautilus_file_get_name (NAUTILUS_FILE (node->data));
-		quoted_name = eel_shell_quote (name);
+		quoted_name = g_shell_quote (name);
 		g_string_append (parameter_string, quoted_name);
 		g_string_append (parameter_string, " ");
 		g_free (name);
@@ -3550,7 +3545,9 @@ set_script_environment_variables (FMDirectoryView *view, GList *selected_files)
 	char *file_paths;
 	char *uris;
 	char *uri;
+#if GNOME2_CONVERSION_COMPLETE
 	char *geometry_string;
+#endif
 
 	if (nautilus_directory_is_local (view->details->model)) {
 		file_paths = get_file_paths_as_newline_delimited_string (selected_files);
@@ -3568,10 +3565,12 @@ set_script_environment_variables (FMDirectoryView *view, GList *selected_files)
 	eel_setenv ("NAUTILUS_SCRIPT_CURRENT_URI", uri, TRUE);
 	g_free (uri);
 
+#if GNOME2_CONVERSION_COMPLETE
 	geometry_string = gnome_geometry_string 
 		(GTK_WIDGET (fm_directory_view_get_containing_window (view))->window);
 	eel_setenv ("NAUTILUS_SCRIPT_WINDOW_GEOMETRY", geometry_string, TRUE);
 	g_free (geometry_string);
+#endif
 }
 
 /* Unset all the special script environment variables. */
@@ -3602,7 +3601,7 @@ run_script_callback (BonoboUIComponent *component, gpointer callback_data, const
 	g_assert (local_file_path != NULL);
 	g_free (file_uri);
 
-	quoted_path = eel_shell_quote (local_file_path);
+	quoted_path = g_shell_quote (local_file_path);
 	g_free (local_file_path);
 
 	old_working_dir = change_to_view_directory (launch_parameters->directory_view);
@@ -4135,7 +4134,7 @@ real_merge_menus (FMDirectoryView *view)
 
 	gtk_signal_connect_object (GTK_OBJECT (fm_directory_view_get_background (view)),
 			    	   "settings_changed",
-			    	   schedule_update_menus,
+			    	   G_CALLBACK (schedule_update_menus),
 			    	   GTK_OBJECT (view));
 
 	/* Do one-time state changes here; context-dependent ones go in update_menus */
@@ -4489,7 +4488,7 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 {
 	char *target_path;
 	char *prompt;
-	GnomeDialog *dialog;
+	GtkDialog *dialog;
 	GList file_as_list;
 	
 	g_assert (nautilus_file_is_broken_symbolic_link (file));
@@ -4505,12 +4504,12 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 	}
 
 	dialog = eel_show_yes_no_dialog (prompt,
-				  	      _("Broken Link"),
-					      _("Throw Away"),
-					      GNOME_STOCK_BUTTON_CANCEL,
-					      fm_directory_view_get_containing_window (view));
+					 _("Broken Link"),
+					 _("Throw Away"),
+					 _("Cancel"),
+					 fm_directory_view_get_containing_window (view));
 
-	gnome_dialog_set_default (dialog, GNOME_CANCEL);
+	gtk_dialog_set_default_response (dialog, GTK_RESPONSE_OK);
 
 	/* Make this modal to avoid problems with reffing the view & file
 	 * to keep them around in case the view changes, which would then
@@ -4520,7 +4519,7 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 	 * unmerge in Destroy. But since BonoboUIHandler is probably going
 	 * to change wildly, I don't want to mess with this now.
 	 */
-	if (gnome_dialog_run (dialog) == GNOME_OK) {
+	if (gtk_dialog_run (dialog) == GTK_RESPONSE_OK) {
 		file_as_list.data = file;
 		file_as_list.next = NULL;
 		file_as_list.prev = NULL;
@@ -4534,7 +4533,7 @@ report_broken_symbolic_link (FMDirectoryView *view, NautilusFile *file)
 static ActivationAction
 get_executable_text_file_action (FMDirectoryView *view, NautilusFile *file)
 {
-	GnomeDialog *dialog;
+	GtkDialog *dialog;
 	char *file_name;
 	char *prompt;
 	int preferences_value;
@@ -4565,17 +4564,19 @@ get_executable_text_file_action (FMDirectoryView *view, NautilusFile *file)
 	g_free (file_name);
 
 	dialog = eel_create_question_dialog (prompt,
-					 	  _("Run or Display?"),
-					 	  _("Run"),
-					 	  _("Display"),
-					 	  fm_directory_view_get_containing_window (view));
+					     _("Run or Display?"),
+					     _("Run"),
+					     _("Display"),
+					     fm_directory_view_get_containing_window (view));
 
-	gnome_dialog_append_button (dialog, _("Cancel"));
+#if GNOME2_CONVERSION_COMPLETE
+	gtk_dialog_append_button (dialog, _("Cancel"));
+#endif
 	gtk_widget_show (GTK_WIDGET (dialog));
 	
 	g_free (prompt);
 	
-	switch (gnome_dialog_run (dialog)) {
+	switch (gtk_dialog_run (dialog)) {
 	case 0:
 		return ACTIVATION_ACTION_LAUNCH;
 	case 1:
@@ -4659,7 +4660,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 		}
 
 		if (action == ACTIVATION_ACTION_LAUNCH) {
-			quoted_path = eel_shell_quote (executable_path);
+			quoted_path = g_shell_quote (executable_path);
 			name = nautilus_file_get_name (file);
 			/* FIXME bugzilla.gnome.org 41773: This is a
 			 * lame way to run command-line tools, since
@@ -4883,7 +4884,7 @@ load_directory (FMDirectoryView *view,
 	view->details->file_changed_handler_id = gtk_signal_connect
 		(GTK_OBJECT (view->details->directory_as_file), 
 		 "changed",
-		 file_changed_callback,
+		 G_CALLBACK (file_changed_callback),
 		 view);
 }
 
@@ -4908,11 +4909,11 @@ finish_loading (FMDirectoryView *view)
 	view->details->done_loading_handler_id = gtk_signal_connect
 		(GTK_OBJECT (view->details->model),
 		 "done_loading",
-		 done_loading_callback, view);
+		 G_CALLBACK (done_loading_callback), view);
 	view->details->load_error_handler_id = gtk_signal_connect
 		(GTK_OBJECT (view->details->model),
 		 "load_error",
-		 load_error_callback, view);
+		 G_CALLBACK (load_error_callback), view);
 
 	/* Monitor the things needed to get the right icon. Also
 	 * monitor a directory's item count because the "size"
@@ -4941,11 +4942,11 @@ finish_loading (FMDirectoryView *view)
     	view->details->files_added_handler_id = gtk_signal_connect
 		(GTK_OBJECT (view->details->model),
 		 "files_added",
-		 files_added_callback, view);
+		 G_CALLBACK (files_added_callback), view);
 	view->details->files_changed_handler_id = gtk_signal_connect
 		(GTK_OBJECT (view->details->model), 
 		 "files_changed",
-		 files_changed_callback, view);
+		 G_CALLBACK (files_changed_callback), view);
 }
 
 static void
@@ -5053,7 +5054,7 @@ remove_scripts_directory (FMDirectoryView *view, NautilusDirectory *directory)
 		(view->details->scripts_directory_list, directory);
 
 	gtk_signal_disconnect_by_func (GTK_OBJECT (directory),
-				       scripts_added_or_changed_callback,
+				       G_CALLBACK (scripts_added_or_changed_callback),
 				       view);
 
 	nautilus_directory_file_monitor_remove (directory, &view->details->scripts_directory_list);
@@ -5655,7 +5656,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, add_file),
 		              NULL, NULL,
-		              gtk_marshal_NONE__OBJECT,
+		              gtk_marshal_VOID__OBJECT,
 		              G_TYPE_NONE, 1, NAUTILUS_TYPE_FILE);
 	signals[BEGIN_FILE_CHANGES] =
 		g_signal_new ("begin_file_changes",
@@ -5663,7 +5664,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, begin_file_changes),
 		              NULL, NULL,
-		              gtk_marshal_NONE__NONE,
+		              gtk_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 	signals[BEGIN_LOADING] =
 		g_signal_new ("begin_loading",
@@ -5671,7 +5672,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, begin_loading),
 		              NULL, NULL,
-		              gtk_marshal_NONE__NONE,
+		              gtk_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 	signals[CLEAR] =
 		g_signal_new ("clear",
@@ -5679,7 +5680,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, clear),
 		              NULL, NULL,
-		              gtk_marshal_NONE__NONE,
+		              gtk_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 	signals[END_FILE_CHANGES] =
 		g_signal_new ("end_file_changes",
@@ -5687,7 +5688,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, end_file_changes),
 		              NULL, NULL,
-		              gtk_marshal_NONE__NONE,
+		              gtk_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 	signals[END_LOADING] =
 		g_signal_new ("end_loading",
@@ -5695,7 +5696,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, end_loading),
 		              NULL, NULL,
-		              gtk_marshal_NONE__NONE,
+		              gtk_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
 	signals[FILE_CHANGED] =
 		g_signal_new ("file_changed",
@@ -5703,7 +5704,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, file_changed),
 		              NULL, NULL,
-		              gtk_marshal_NONE__OBJECT,
+		              gtk_marshal_VOID__OBJECT,
 		              G_TYPE_NONE, 1, NAUTILUS_TYPE_FILE);
 	signals[LOAD_ERROR] =
 		g_signal_new ("load_error",
@@ -5719,7 +5720,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 		              G_SIGNAL_RUN_LAST,
 		              G_STRUCT_OFFSET (FMDirectoryViewClass, remove_file),
 		              NULL, NULL,
-		              gtk_marshal_NONE__OBJECT,
+		              gtk_marshal_VOID__OBJECT,
 		              G_TYPE_NONE, 1, NAUTILUS_TYPE_FILE);
 
 	klass->accepts_dragged_files = real_accepts_dragged_files;

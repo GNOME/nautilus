@@ -8,7 +8,7 @@ INCLUDES =\
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/cut-n-paste-code/widgets/e-paned \
 	-I$(top_srcdir)/cut-n-paste-code/widgets/gimphwrapbox \
-	$(NAUTILUS_PRIVATE_CFLAGS) \
+	$(NAUTILUS_SRC_CFLAGS) \
 	-DVERSION="\"$(VERSION)\"" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
@@ -21,7 +21,7 @@ LDADD =\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
-	$(NAUTILUS_PRIVATE_LIBS) \
+	$(NAUTILUS_SRC_LIBS) \
 	$(NULL)
 
 nautilus_shell_interface_idl_sources =		\
@@ -113,8 +113,8 @@ nautilus_SOURCES = \
 	$(NULL)
 
 $(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp
-nautilus_shell_interface_idl_stamp: $(ORBIT_IDL) nautilus-shell-interface.idl $(top_srcdir)/libnautilus/nautilus-view-component.idl
-	$(ORBIT_IDL) $(IDL_CFLAGS) -I$(top_srcdir) $(srcdir)/nautilus-shell-interface.idl
+nautilus_shell_interface_idl_stamp: nautilus-shell-interface.idl $(ORBIT_IDL) $(top_srcdir)/libnautilus/nautilus-view-component.idl
+	$(ORBIT_IDL) $(NAUTILUS_SRC_IDL_INCLUDES) -I$(top_srcdir) $<
 	touch $@
 
 $(nautilus_OBJECTS): nautilus_shell_interface_idl_stamp

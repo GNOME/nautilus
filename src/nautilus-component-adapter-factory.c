@@ -30,6 +30,7 @@
 #include "nautilus-component-adapter-factory.h"
 
 #include <bonobo/bonobo-exception.h>
+#include <bonobo/bonobo-object.h>
 #include <eel/eel-gtk-macros.h>
 #include <libnautilus-adapter/nautilus-adapter-factory.h>
 
@@ -51,6 +52,7 @@ EEL_DEFINE_CLASS_BOILERPLATE (NautilusComponentAdapterFactory,
 static void
 activate_factory (NautilusComponentAdapterFactory *factory)
 {
+#if GNOME2_CONVERSION_COMPLETE
 	BonoboObjectClient *object_client;
 
 	object_client = bonobo_object_activate (NAUTILUS_COMPONENT_ADAPTER_FACTORY_IID, 0);
@@ -61,6 +63,7 @@ activate_factory (NautilusComponentAdapterFactory *factory)
 	factory->details->corba_factory = bonobo_object_query_interface 
 		(BONOBO_OBJECT (object_client), "IDL:Nautilus/ComponentAdapterFactory:1.0");
 	bonobo_object_unref (BONOBO_OBJECT (object_client));
+#endif
 }
 
 static void
@@ -169,24 +172,24 @@ nautilus_component_adapter_factory_get (void)
 
 Nautilus_View
 nautilus_component_adapter_factory_create_adapter (NautilusComponentAdapterFactory *factory,
-						   BonoboObjectClient *component)
+						   Bonobo_Unknown component)
 {
 	Nautilus_View nautilus_view;
 	Bonobo_Control bonobo_control;
 	Nautilus_ComponentAdapterFactory corba_factory;
 	CORBA_Environment ev;
 
-	nautilus_view = bonobo_object_client_query_interface 
-		(component, "IDL:Nautilus/View:1.0", NULL);
-
 	CORBA_exception_init (&ev);
+
+	nautilus_view = Bonobo_Unknown_queryInterface
+		(component, "IDL:Nautilus/View:1.0", &ev);
 
 	if (!CORBA_Object_is_nil (nautilus_view, &ev)) {
 		/* Object has the View interface, great! We might not
 		 * need to adapt it.
 		 */
-		bonobo_control = bonobo_object_client_query_interface 
-			(component, "IDL:Bonobo/Control:1.0", NULL); 
+		bonobo_control = Bonobo_Unknown_queryInterface
+			(component, "IDL:Bonobo/Control:1.0", &ev);
 		if (!CORBA_Object_is_nil (bonobo_control, &ev)) {
 			/* It has the control interface too, so all is peachy. */
 			bonobo_object_release_unref (bonobo_control, NULL);
@@ -203,9 +206,7 @@ nautilus_component_adapter_factory_create_adapter (NautilusComponentAdapterFacto
 
 		corba_factory = get_corba_factory (factory);
 		nautilus_view = Nautilus_ComponentAdapterFactory_create_adapter 
-			(corba_factory,
-			 bonobo_object_corba_objref (BONOBO_OBJECT (component)),
-			 &ev);
+			(corba_factory, component, &ev);
 		if (BONOBO_EX (&ev)) {
 			nautilus_view = CORBA_OBJECT_NIL;
 		}

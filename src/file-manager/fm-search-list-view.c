@@ -177,7 +177,7 @@ static void
 real_load_error (FMDirectoryView *nautilus_view, 
 		 GnomeVFSResult result)
 {
-	GnomeDialog *load_error_dialog;
+	GtkDialog *load_error_dialog;
 	char *error_string;
 
 	/* Do not call parent's function; we handle all search errors
@@ -399,7 +399,7 @@ real_destroy (GtkObject *object)
 	search_view = FM_SEARCH_LIST_VIEW (object);
 
 	if (search_view->details->ui != NULL) {
-		bonobo_ui_component_unset_container (search_view->details->ui);
+		bonobo_ui_component_unset_container (search_view->details->ui, NULL);
 		bonobo_object_unref (BONOBO_OBJECT (search_view->details->ui));
 	}
 	g_free (search_view->details);
@@ -627,8 +627,9 @@ real_adding_file (FMListView *view, NautilusFile *file)
 
 	gtk_signal_connect_object (GTK_OBJECT (file),
 				   "changed",
-				   fm_directory_view_queue_file_change,
+				   G_CALLBACK (fm_directory_view_queue_file_change),
 				   GTK_OBJECT (view));
+
 	/* Monitor the things needed to get the right
 	 * icon. Also monitor a directory's item count because
 	 * the "size" attribute is based on that, and the file's metadata, and
@@ -655,7 +656,7 @@ real_removing_file (FMListView *view, NautilusFile *file)
 
 	nautilus_file_monitor_remove (file, view);
 	gtk_signal_disconnect_by_func 
-		(GTK_OBJECT (file), fm_directory_view_queue_file_change, view);
+		(GTK_OBJECT (file), G_CALLBACK (fm_directory_view_queue_file_change), view);
 	EEL_CALL_PARENT (FM_LIST_VIEW_CLASS, removing_file, (view, file));
 }
 
@@ -722,7 +723,8 @@ real_merge_menus (FMDirectoryView *view)
 
 	search_view->details->ui = bonobo_ui_component_new ("Search List View");
 	bonobo_ui_component_set_container (search_view->details->ui,
-					   fm_directory_view_get_bonobo_ui_container (view));
+					   fm_directory_view_get_bonobo_ui_container (view),
+					   NULL);
 	bonobo_ui_util_set_ui (search_view->details->ui,
 			       DATADIR,
 			       "nautilus-search-list-view-ui.xml",

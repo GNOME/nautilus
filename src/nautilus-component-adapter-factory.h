@@ -59,15 +59,9 @@ struct NautilusComponentAdapterFactoryClass
 	GtkObjectClass parent_class;
 };
 
-
-GtkType                          nautilus_component_adapter_factory_get_type  (void);
-
-NautilusComponentAdapterFactory *nautilus_component_adapter_factory_get       (void);
-
-Nautilus_View nautilus_component_adapter_factory_create_adapter               (NautilusComponentAdapterFactory *factory,
-									       BonoboObjectClient              *component);
-
+GtkType                          nautilus_component_adapter_factory_get_type       (void);
+NautilusComponentAdapterFactory *nautilus_component_adapter_factory_get            (void);
+Nautilus_View                    nautilus_component_adapter_factory_create_adapter (NautilusComponentAdapterFactory *factory,
+										    Bonobo_Unknown                   component);
 
 #endif /* NAUTILUS_COMPONENT_ADAPTER_FACTORY_H */
-
-

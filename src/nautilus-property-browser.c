@@ -51,7 +51,7 @@
 #include <eel/eel-xml-extensions.h>
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
-#include <gtk/gtkcolorsel.h>
+#include <gtk/gtkcolorseldialog.h>
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkeventbox.h>
@@ -358,7 +358,7 @@ nautilus_property_browser_init (GtkObject *object)
 	eel_gtk_button_set_padding (GTK_BUTTON (temp_button), GNOME_PAD_SMALL);
 	gtk_widget_show(temp_button);
 	gtk_box_pack_end (GTK_BOX(property_browser->details->bottom_box), temp_button, FALSE, FALSE, GNOME_PAD_SMALL);  
- 	gtk_signal_connect(GTK_OBJECT (temp_button), "clicked", GTK_SIGNAL_FUNC (done_button_callback), property_browser);
+ 	gtk_signal_connect(GTK_OBJECT (temp_button), "clicked", G_CALLBACK (done_button_callback), property_browser);
   	
   	/* create the "add new" button */
   	property_browser->details->add_button = gtk_button_new ();
@@ -372,8 +372,8 @@ nautilus_property_browser_init (GtkObject *object)
 	gtk_box_pack_end (GTK_BOX(property_browser->details->bottom_box),
 			  property_browser->details->add_button, FALSE, FALSE, GNOME_PAD_SMALL);
  	  
- 	gtk_signal_connect(GTK_OBJECT (property_browser->details->add_button), "clicked",
-			   add_new_button_callback, property_browser);
+ 	gtk_signal_connect (GTK_OBJECT (property_browser->details->add_button), "clicked",
+			    G_CALLBACK (add_new_button_callback), property_browser);
 	
 	/* now create the "remove" button */
   	property_browser->details->remove_button = gtk_button_new();
@@ -393,7 +393,7 @@ nautilus_property_browser_init (GtkObject *object)
 	
  	gtk_signal_connect (GTK_OBJECT (property_browser->details->remove_button),
 			    "clicked",
-			    GTK_SIGNAL_FUNC (remove_button_callback),
+			    G_CALLBACK (remove_button_callback),
 			    property_browser);
 
 	/* now create the actual content, with the category pane and the content frame */	
@@ -412,11 +412,11 @@ nautilus_property_browser_init (GtkObject *object)
 				      property_browser);	
 	
 	gtk_signal_connect (GTK_OBJECT (property_browser), "delete_event",
-                    	    GTK_SIGNAL_FUNC (nautilus_property_browser_delete_event_callback),
+                    	    G_CALLBACK (nautilus_property_browser_delete_event_callback),
                     	    NULL);
 
 	gtk_signal_connect (GTK_OBJECT (property_browser), "hide",
-                    	    nautilus_property_browser_hide_callback,
+                    	    G_CALLBACK (nautilus_property_browser_hide_callback),
                     	    NULL);
 
 	/* initially, display the top level */
@@ -910,8 +910,14 @@ static GtkWidget*
 nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 {
 	GtkWidget *widget, *entry;
-	GtkWidget *dialog = gnome_dialog_new(_("Create a New Emblem:"), GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL);
+	GtkWidget *dialog;
 	GtkWidget *table = gtk_table_new(2, 2, FALSE);
+
+#if GNOME2_CONVERSION_COMPLETE
+	dialog = gtk_dialog_new(_("Create a New Emblem:"), _("OK"), _("Cancel"), NULL);
+#else
+	dialog = NULL;
+#endif
 
 	/* make the keyword label and field */	
 	
@@ -946,8 +952,10 @@ nautilus_emblem_dialog_new (NautilusPropertyBrowser *property_browser)
 	
 	/* install the table in the dialog */	
 	gtk_widget_show(table);	
-	gtk_box_pack_start(GTK_BOX(GNOME_DIALOG(dialog)->vbox), table, TRUE, TRUE, GNOME_PAD);
-	gnome_dialog_set_default(GNOME_DIALOG(dialog), GNOME_OK);
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, TRUE, TRUE, GNOME_PAD);
+#if GNOME2_CONVERSION_COMPLETE
+	gtk_dialog_set_default(GTK_DIALOG(dialog), GNOME_OK);
+#endif
 	gtk_window_set_wmclass(GTK_WINDOW(dialog), "emblem_dialog", "Nautilus");
 	
 	return dialog;
@@ -959,8 +967,14 @@ static GtkWidget*
 nautilus_color_selection_dialog_new (NautilusPropertyBrowser *property_browser)
 {
 	GtkWidget *widget;
-	GtkWidget *dialog = gnome_dialog_new(_("Create a New Color:"), GNOME_STOCK_BUTTON_OK, GNOME_STOCK_BUTTON_CANCEL, NULL);
+	GtkWidget *dialog;
 	GtkWidget *table = gtk_table_new(2, 2, FALSE);
+
+#ifdef GNOME2_CONVERSION_COMPLETE
+	dialog = gtk_dialog_new(_("Create a New Color:"), _("OK"), _("Cancel"), NULL);
+#else
+	dialog = NULL;
+#endif
 
 	/* make the name label and field */	
 	
@@ -989,8 +1003,10 @@ nautilus_color_selection_dialog_new (NautilusPropertyBrowser *property_browser)
 	/* install the table in the dialog */
 	
 	gtk_widget_show(table);	
-	gtk_box_pack_start(GTK_BOX(GNOME_DIALOG(dialog)->vbox), table, TRUE, TRUE, GNOME_PAD);
-	gnome_dialog_set_default(GNOME_DIALOG(dialog), GNOME_OK);
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), table, TRUE, TRUE, GNOME_PAD);
+#if GNOME2_CONVERSION_COMPLETE
+	gtk_dialog_set_default(GTK_DIALOG(dialog), GNOME_OK);
+#endif
 	
 	return dialog;
 }
@@ -1123,7 +1139,8 @@ static void
 add_color_to_browser (GtkWidget *widget, int which_button, gpointer *data)
 {
 	char *color_spec;
-	char *color_name, *stripped_color_name;
+	const char *color_name;
+	char *stripped_color_name;
 	
 	gdouble color[4];
 	NautilusPropertyBrowser *property_browser = NAUTILUS_PROPERTY_BROWSER (data);
@@ -1263,7 +1280,8 @@ emblem_dialog_clicked (GtkWidget *dialog, int which_button, NautilusPropertyBrow
 	
 	if (which_button == GNOME_OK) {
 		char *destination_name, *extension;
-		char *new_keyword, *stripped_keyword;
+		const char *new_keyword;
+		char *stripped_keyword;
 		char *emblem_path, *emblem_uri;
 		char *user_directory;	
 		char *directory_path;
@@ -1873,7 +1891,7 @@ make_category_link (NautilusPropertyBrowser *property_browser,
 	gtk_signal_connect_full
 		(GTK_OBJECT (button),
 		 "clicked",
-		 GTK_SIGNAL_FUNC (category_clicked_callback),
+		 G_CALLBACK (category_clicked_callback),
 		 NULL,
 		 g_strdup (name),
 		 g_free,
@@ -1926,7 +1944,7 @@ nautilus_property_browser_update_contents (NautilusPropertyBrowser *property_bro
 	
 	gtk_signal_connect (GTK_OBJECT (property_browser->details->content_table),
 			    "child_pressed", 
-			    GTK_SIGNAL_FUNC (element_clicked_callback),
+			    G_CALLBACK (element_clicked_callback),
 			    property_browser);
 
 	gtk_container_add(GTK_CONTAINER(viewport), property_browser->details->content_table); 

@@ -160,7 +160,7 @@ nautilus_about_init (NautilusAbout *about)
 	gtk_widget_set_events (about->details->drawing_area, GDK_EXPOSURE_MASK);
 
 	gtk_signal_connect (GTK_OBJECT (about->details->drawing_area), "expose_event",
-			    nautilus_about_repaint, about);
+			    G_CALLBACK (nautilus_about_repaint), about);
 
 	gtk_widget_show (about->details->drawing_area);
  	gtk_container_add (GTK_CONTAINER (frame), about->details->drawing_area);

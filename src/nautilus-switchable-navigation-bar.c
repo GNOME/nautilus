@@ -35,7 +35,6 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkvbox.h>
 #include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-dock.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <eel/eel-gtk-macros.h>
 #include <libnautilus-private/nautilus-search-uri.h>
@@ -128,11 +127,11 @@ nautilus_switchable_navigation_bar_new (NautilusWindow *window)
 
 	gtk_signal_connect_object (GTK_OBJECT (switchable_navigation_bar->details->location_bar),
 				   "location_changed",
-				   nautilus_navigation_bar_location_changed,
+				   G_CALLBACK (nautilus_navigation_bar_location_changed),
 				   GTK_OBJECT (bar));
 	gtk_signal_connect_object (GTK_OBJECT (switchable_navigation_bar->details->search_bar),
 				   "location_changed",
-				   nautilus_navigation_bar_location_changed,
+				   G_CALLBACK (nautilus_navigation_bar_location_changed),
 				   GTK_OBJECT (bar));
 	
 	gtk_box_pack_start  (GTK_BOX (hbox), GTK_WIDGET (switchable_navigation_bar->details->location_bar), TRUE, TRUE,
@@ -178,7 +177,9 @@ nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar    
 					     NautilusSwitchableNavigationBarMode  mode)
 {
 	GtkWidget *widget_to_hide, *widget_to_show;
+#if GNOME2_CONVERSION_COMPLETE
 	GtkWidget *dock;
+#endif
 
 	if (bar->details->mode == mode) {
 		return;
@@ -204,6 +205,7 @@ nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar    
 
 	nautilus_switchable_navigation_bar_activate (bar);
 
+#if GNOME2_CONVERSION_COMPLETE
 	/* FIXME bugzilla.gnome.org 43171:
 	 * We don't know why this line is needed here, but if it's removed
 	 * then the bar won't shrink when we switch from the complex search
@@ -214,6 +216,7 @@ nautilus_switchable_navigation_bar_set_mode (NautilusSwitchableNavigationBar    
 	if (dock != NULL) {
 		gtk_widget_queue_resize (dock);
 	}
+#endif
 
 	gtk_signal_emit (GTK_OBJECT (bar), signals[MODE_CHANGED], mode);
 }

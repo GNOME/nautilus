@@ -30,7 +30,6 @@
 
 #include "nautilus-desktop-window.h"
 #include "nautilus-main.h"
-#include "nautilus-shell-interface.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
@@ -93,62 +92,19 @@ static void
 nautilus_shell_class_init (NautilusShellClass *klass)
 {
 	GTK_OBJECT_CLASS (klass)->destroy = destroy;
-}
 
-static POA_Nautilus_Shell__epv *
-nautilus_shell_get_epv (void)
-{
-	static POA_Nautilus_Shell__epv epv;
-
-	epv.open_windows = corba_open_windows;
-	epv.open_default_window = corba_open_default_window;
-	epv.start_desktop = corba_start_desktop;
-	epv.stop_desktop = corba_stop_desktop;
-	epv.quit = corba_quit;
-	epv.restart = corba_restart;
-
-	return &epv;
-}
-
-static POA_Nautilus_Shell__vepv *
-nautilus_shell_get_vepv (void)
-{
-	static POA_Nautilus_Shell__vepv vepv;
-
-	vepv.Bonobo_Unknown_epv = nautilus_bonobo_object_get_epv ();
-	vepv.Nautilus_Shell_epv = nautilus_shell_get_epv ();
-
-	return &vepv;
-}
-
-static POA_Nautilus_Shell *
-nautilus_shell_create_servant (void)
-{
-	POA_Nautilus_Shell *servant;
-	CORBA_Environment ev;
-
-	servant = (POA_Nautilus_Shell *) g_new0 (BonoboObjectServant, 1);
-	servant->vepv = nautilus_shell_get_vepv ();
-	CORBA_exception_init (&ev);
-	POA_Nautilus_Shell__init ((PortableServer_Servant) servant, &ev);
-	if (ev._major != CORBA_NO_EXCEPTION){
-		g_error ("can't initialize Nautilus shell");
-	}
-	CORBA_exception_free (&ev);
-
-	return servant;
+	klass->epv.open_windows = corba_open_windows;
+	klass->epv.open_default_window = corba_open_default_window;
+	klass->epv.start_desktop = corba_start_desktop;
+	klass->epv.stop_desktop = corba_stop_desktop;
+	klass->epv.quit = corba_quit;
+	klass->epv.restart = corba_restart;
 }
 
 static void
 nautilus_shell_init (NautilusShell *shell)
 {
-	Nautilus_Shell corba_shell;
-
 	shell->details = g_new0 (NautilusShellDetails, 1);
-
-	corba_shell = bonobo_object_activate_servant
-		(BONOBO_OBJECT (shell), nautilus_shell_create_servant ());
-	bonobo_object_construct (BONOBO_OBJECT (shell), corba_shell);
 }
 
 static void
@@ -297,7 +253,7 @@ corba_open_windows (PortableServer_Servant servant,
 	NautilusShell *shell;
 	guint i;
 
-	shell = NAUTILUS_SHELL (((BonoboObjectServant *) servant)->bonobo_object);
+	shell = NAUTILUS_SHELL (bonobo_object_from_servant (servant));
 
 	/* Open windows at each requested location. */
 	for (i = 0; i < list->_length; i++) {
@@ -313,7 +269,7 @@ corba_open_default_window (PortableServer_Servant servant,
 {
 	NautilusShell *shell;
 
-	shell = NAUTILUS_SHELL (((BonoboObjectServant *) servant)->bonobo_object);
+	shell = NAUTILUS_SHELL (bonobo_object_from_servant (servant));
 
 	if (!restore_window_states (shell)) {
 		/* Open a window pointing at the default location. */
@@ -328,7 +284,7 @@ corba_start_desktop (PortableServer_Servant servant,
 	NautilusShell	      *shell;
 	NautilusApplication   *application;
 
-	shell	    = NAUTILUS_SHELL (((BonoboObjectServant *) servant)->bonobo_object);
+	shell	    = NAUTILUS_SHELL (bonobo_object_from_servant (servant));
 	application = NAUTILUS_APPLICATION (shell->details->application);
 	
 	nautilus_application_open_desktop (application);

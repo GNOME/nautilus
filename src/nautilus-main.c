@@ -52,6 +52,7 @@
 #include <bonobo-activation/bonobo-activation.h>
 #include <popt.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <X11/Xlib.h>
 
 /* Keeps track of everyone who wants the main event loop kept active */
@@ -94,7 +95,7 @@ eel_gtk_main_quit_all (void)
 }
 
 static void
-event_loop_unregister (GtkObject* object)
+event_loop_unregister (GtkObject *object)
 {
 	g_assert (g_slist_find (event_loop_registrants, object) != NULL);
 	event_loop_registrants = g_slist_remove (event_loop_registrants, object);
@@ -104,14 +105,14 @@ event_loop_unregister (GtkObject* object)
 }
 
 void
-nautilus_main_event_loop_register (GtkObject* object)
+nautilus_main_event_loop_register (GtkObject *object)
 {
-	gtk_signal_connect (object, "destroy", event_loop_unregister, NULL);
+	gtk_signal_connect (object, "destroy", G_CALLBACK (event_loop_unregister), NULL);
 	event_loop_registrants = g_slist_prepend (event_loop_registrants, object);
 }
 
 gboolean
-nautilus_main_is_event_loop_mainstay (GtkObject* object)
+nautilus_main_is_event_loop_mainstay (GtkObject *object)
 {
 	return g_slist_length (event_loop_registrants) == 1
 		&& event_loop_registrants->data == object;
@@ -136,10 +137,10 @@ main (int argc, char *argv[])
 	gboolean perform_self_check;
 	poptContext popt_context;
 	const char **args;
-	CORBA_ORB orb;
 	NautilusApplication *application;
 	char **argv_copy;
 
+#if GNOME2_CONVERSION_COMPLETE
 	struct poptOption options[] = {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
 		{ "check", 'c', POPT_ARG_NONE, &perform_self_check, 0,
@@ -157,6 +158,7 @@ main (int argc, char *argv[])
 		  N_("Restart Nautilus."), NULL },
 		{ NULL, '\0', 0, NULL, 0, NULL, NULL }
 	};
+#endif
 
 	/* Make criticals and warnings stop in the debugger if
 	 * NAUTILUS_DEBUG is set. Unfortunately, this has to be done
@@ -198,20 +200,17 @@ main (int argc, char *argv[])
 	perform_self_check = FALSE;
 	restart_shell = FALSE;
 
+#if GNOME2_CONVERSION_COMPLETE
 	gnomelib_register_popt_table (bonobo_activation_popt_options, 
 				      bonobo_activation_get_popt_table_name ());
 	gnome_init_with_popt_table ("nautilus", VERSION,
 				    argc, argv, options, 0,
 				    &popt_context);
+#else
+	popt_context = NULL;
+#endif
 	eel_setenv ("DISPLAY", DisplayString (GDK_DISPLAY ()), TRUE);
-	orb = bonobo_activation_init (argc, argv);
         gdk_rgb_init ();
-
-	/* Workaround for gnome-libs bug.
-	 * If the first call is gnome_metadata_get, it doesn't initialize properly.
-	 */
-	gnome_metadata_lock ();
-	gnome_metadata_unlock ();
 
 	/* Check for argument consistency. */
 	args = poptGetArgs (popt_context);
@@ -245,7 +244,7 @@ main (int argc, char *argv[])
 		bonobo_activation_set_test_components_enabled (TRUE);
 	}
 	gnome_vfs_init ();
-	bonobo_init (orb, CORBA_OBJECT_NIL, CORBA_OBJECT_NIL);
+	bonobo_init (&argc, argv);
 	bonobo_activate (); /* do now since we need it before main loop */
 
 	/* Initialize preferences. This is needed so that proper 

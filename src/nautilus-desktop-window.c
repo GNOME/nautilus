@@ -30,7 +30,6 @@
 
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-find-directory.h>
-#include <libgnomeui/gnome-winhints.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <eel/eel-gtk-macros.h>
@@ -106,7 +105,8 @@ nautilus_desktop_window_realized (NautilusDesktopWindow *window)
 	Window window_xid;
 	window_xid = GDK_WINDOW_XWINDOW (GTK_WIDGET (window)->window);
 	gdk_property_change (NULL, gdk_atom_intern ("NAUTILUS_DESKTOP_WINDOW_ID", FALSE),
-			     XA_WINDOW, 32, PropModeReplace, (guchar *) &window_xid, 1);
+			     gdk_x11_xatom_to_atom (XA_WINDOW), 32,
+			     PropModeReplace, (guchar *) &window_xid, 1);
 }
 
 static gint
@@ -204,7 +204,7 @@ set_window_background (GtkWidget *widget,
 		       Pixmap     pixmap,
 		       gulong     pixel)
 {
-	GdkAtom type;
+	Atom type;
 	gulong nitems, bytes_after;
 	gint format;
 	guchar *data;
@@ -226,7 +226,7 @@ set_window_background (GtkWidget *widget,
 		 */
 		
 		XGetWindowProperty (GDK_DISPLAY (), GDK_ROOT_WINDOW (),
-				    gdk_atom_intern ("_XROOTPMAP_ID", FALSE),
+				    gdk_x11_get_xatom_by_name ("_XROOTPMAP_ID"),
 				    0L, 1L, False, XA_PIXMAP,
 				    &type, &format, &nitems, &bytes_after,
 				    &data);
@@ -241,7 +241,7 @@ set_window_background (GtkWidget *widget,
 
 		if (pixmap == None) {
 			XGetWindowProperty (GDK_DISPLAY (), GDK_ROOT_WINDOW (),
-					    gdk_atom_intern ("_XROOTCOLOR_PIXEL", FALSE),
+					    gdk_x11_get_xatom_by_name ("_XROOTCOLOR_PIXEL"),
 					    0L, 1L, False, AnyPropertyType,
 					    &type, &format, &nitems, &bytes_after,
 					    &data);
@@ -296,6 +296,7 @@ realize (GtkWidget *widget)
 	/* This is the new way to set up the desktop window */
 	set_wmspec_desktop_hint (widget->window);
 	
+#if GNOME2_CONVERSION_COMPLETE
 	/* FIXME all this gnome_win_hints stuff is legacy cruft */
 	
 	/* Put this window behind all the others. */
@@ -323,6 +324,7 @@ realize (GtkWidget *widget)
 				   WIN_HINTS_SKIP_WINLIST
 				   | WIN_HINTS_SKIP_TASKBAR
 				   | WIN_HINTS_SKIP_FOCUS);
+#endif
 
 	/* FIXME bugzilla.gnome.org 41255: 
 	 * Should we do a gdk_window_move_resize here, in addition to

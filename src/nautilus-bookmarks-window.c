@@ -195,57 +195,57 @@ create_bookmarks_window (NautilusBookmarkList *list, GtkObject *undo_manager_sou
 
 	bookmark_list_changed_signalID =
 		gtk_signal_connect (GTK_OBJECT(bookmarks), "contents_changed",
-				    GTK_SIGNAL_FUNC(on_bookmark_list_changed),
+				    G_CALLBACK(on_bookmark_list_changed),
 				    NULL);
 				    
 	gtk_signal_connect (GTK_OBJECT(bookmark_list_widget), "row_move",
-			    GTK_SIGNAL_FUNC(on_row_move),
+			    G_CALLBACK(on_row_move),
 			    NULL);
 			    
 	gtk_signal_connect (GTK_OBJECT(bookmark_list_widget), "select_row",
-			    GTK_SIGNAL_FUNC(on_select_row),
+			    G_CALLBACK(on_select_row),
 			    NULL);
 
 	gtk_signal_connect (GTK_OBJECT (window), "delete_event",
-                    	    GTK_SIGNAL_FUNC (on_window_delete_event),
+                    	    G_CALLBACK (on_window_delete_event),
                     	    NULL);
                     	    
 	gtk_signal_connect (GTK_OBJECT (window), "hide",
-                    	    on_window_hide_event,
+                    	    G_CALLBACK (on_window_hide_event),
                     	    NULL);
                     	    
 	gtk_signal_connect (GTK_OBJECT (window), "destroy",
-                    	    on_window_destroy_event,
+                    	    G_CALLBACK (on_window_destroy_event),
                     	    NULL);
                     	    
 	name_field_changed_signalID =
 		gtk_signal_connect (GTK_OBJECT (name_field), "changed",
-                	            GTK_SIGNAL_FUNC (on_name_field_changed),
+                	            G_CALLBACK (on_name_field_changed),
                       		    NULL);
                       		    
 	gtk_signal_connect (GTK_OBJECT (name_field), "focus_out_event",
-      	              	    GTK_SIGNAL_FUNC (on_text_field_focus_out_event),
+      	              	    G_CALLBACK (on_text_field_focus_out_event),
                             NULL);
                             
 	gtk_signal_connect (GTK_OBJECT (name_field), "activate",
-      	              	    GTK_SIGNAL_FUNC (name_or_uri_field_activate),
+      	              	    G_CALLBACK (name_or_uri_field_activate),
                             NULL);
 
 	uri_field_changed_signalID = 
 		gtk_signal_connect (GTK_OBJECT (uri_field), "changed",
-                	    	    GTK_SIGNAL_FUNC (on_uri_field_changed),
+                	    	    G_CALLBACK (on_uri_field_changed),
                       		    NULL);
                       		    
 	gtk_signal_connect (GTK_OBJECT (uri_field), "focus_out_event",
-        	            GTK_SIGNAL_FUNC (on_text_field_focus_out_event),
+        	            G_CALLBACK (on_text_field_focus_out_event),
               	    	    NULL);
               	    	    
 	gtk_signal_connect (GTK_OBJECT (uri_field), "activate",
-      	              	    GTK_SIGNAL_FUNC (name_or_uri_field_activate),
+      	              	    G_CALLBACK (name_or_uri_field_activate),
                             NULL);
 
 	gtk_signal_connect (GTK_OBJECT (remove_button), "clicked",
-        	            GTK_SIGNAL_FUNC (on_remove_button_clicked),
+        	            G_CALLBACK (on_remove_button_clicked),
                       	    NULL);
 
 	/* Register to find out about icon theme changes */
@@ -350,11 +350,13 @@ nautilus_bookmarks_window_save_geometry (GtkWindow *window)
 
 	/* Don't bother if window is already closed */
 	if (GTK_WIDGET_VISIBLE (window)) {
+#if GNOME2_CONVERSION_COMPLETE
 		char *geometry_string;
 		
 		geometry_string = gnome_geometry_string (GTK_WIDGET (window)->window);	
 		nautilus_bookmark_list_set_window_geometry (bookmarks, geometry_string);
 		g_free (geometry_string);
+#endif
 	}
 }
 
@@ -667,6 +669,6 @@ set_up_close_accelerator (GtkWidget *window)
 	 */
 	gtk_signal_connect (GTK_OBJECT (window),
 			    "key_press_event",
-			    GTK_SIGNAL_FUNC (handle_close_accelerator),
+			    G_CALLBACK (handle_close_accelerator),
 			    NULL);
 }

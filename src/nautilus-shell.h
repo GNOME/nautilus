@@ -29,11 +29,7 @@
 #define NAUTILUS_SHELL_H
 
 #include "nautilus-application.h"
-
-#ifdef __cplusplus
-extern "C" {
-#pragma }
-#endif /* __cplusplus */
+#include "nautilus-shell-interface.h"
 
 #define NAUTILUS_TYPE_SHELL	       (nautilus_shell_get_type ())
 #define NAUTILUS_SHELL(obj)	       (GTK_CHECK_CAST ((obj), NAUTILUS_TYPE_SHELL, NautilusShell))
@@ -50,9 +46,10 @@ typedef struct {
 
 typedef struct {
 	BonoboObjectClass parent_slot;
+	POA_Nautilus_Shell__epv epv;
 } NautilusShellClass;
 
-GtkType        nautilus_shell_get_type (void);
+GType          nautilus_shell_get_type (void);
 NautilusShell *nautilus_shell_new      (NautilusApplication *application);
 
 #endif /* NAUTILUS_SHELL_H */

@@ -264,7 +264,7 @@ fm_list_view_init (gpointer object, gpointer klass)
 	/* Register to find out about icon theme changes */
 	gtk_signal_connect_object_while_alive (nautilus_icon_factory_get (),
 					       "icons_changed",
-					       update_icons,
+					       G_CALLBACK (update_icons),
 					       GTK_OBJECT (list_view));	
 
 	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_LIST_VIEW_FONT,
@@ -403,12 +403,10 @@ fm_list_view_compare_rows (EelCList *clist,
  * folders-first and reversed-sort settings.
  */
 static int
-compare_rows_by_name (gconstpointer a, gconstpointer b, void *callback_data)
+compare_rows_by_name (gconstpointer a, gconstpointer b)
 {
 	EelCListRow *row1;
 	EelCListRow *row2;
-
-	g_assert (callback_data == NULL);
 
 	row1 = (EelCListRow *) a;
 	row2 = (EelCListRow *) b;
@@ -469,7 +467,7 @@ make_sorted_row_array (GtkWidget *widget)
 	array = eel_g_ptr_array_new_from_list (EEL_CLIST (widget)->row_list);
 
 	/* sort the array by the names of the NautilusFile objects */
-	eel_g_ptr_array_sort (array, compare_rows_by_name, NULL);
+	g_ptr_array_sort (array, compare_rows_by_name);
 
 	return array;
 }
@@ -541,7 +539,7 @@ select_previous_next_common (GtkWidget *widget, FMListView *list_view, gboolean 
 		return;
 
 	/* sort the array by the names of the NautilusFile objects */
-	eel_g_ptr_array_sort (array, compare_rows_by_name, NULL);
+	g_ptr_array_sort (array, compare_rows_by_name);
 
 	/* find the index of the first and the last selected row */
 	first_selected_row = -1;
@@ -1054,8 +1052,9 @@ fm_list_view_update_font (FMListView *list_view)
 	char *font_name;
 	int standard_font_size;
 	int font_size;
-
+#if GNOME2_CONVERSION_COMPLETE
 	GdkFont *font;
+#endif
 
 	g_return_if_fail (FM_IS_LIST_VIEW (list_view));
 
@@ -1064,10 +1063,12 @@ fm_list_view_update_font (FMListView *list_view)
 	
 	font_size = standard_font_size + font_size_delta_table[list_view->details->zoom_level];
 
+#if GNOME2_CONVERSION_COMPLETE
 	font = nautilus_font_factory_get_font_by_family (font_name, font_size);
 	g_assert (font != NULL);
 	eel_gtk_widget_set_font (GTK_WIDGET (get_list (list_view)), font);
 	gdk_font_unref (font);
+#endif
 	g_free (font_name);
 }
 
@@ -1143,63 +1144,63 @@ set_up_list (FMListView *list_view)
 
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "activate",
-			    GTK_SIGNAL_FUNC (list_activate_callback),
+			    G_CALLBACK (list_activate_callback),
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "selection_changed",
-			    GTK_SIGNAL_FUNC (list_selection_changed_callback),
+			    G_CALLBACK (list_selection_changed_callback),
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "click_column",
-			    column_clicked_callback,
+			    G_CALLBACK (column_clicked_callback),
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "context_click_selection",
-			    context_click_selection_callback,
+			    G_CALLBACK (context_click_selection_callback),
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "context_click_background",
-			    context_click_background_callback,
+			    G_CALLBACK (context_click_background_callback),
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "select_matching_name",
-			    select_matching_name_callback,
+			    G_CALLBACK (select_matching_name_callback),
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "select_previous_name",
-			    select_previous_name_callback,
+			    G_CALLBACK (select_previous_name_callback),
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "select_next_name",
-			    select_next_name_callback,
+			    G_CALLBACK (select_next_name_callback),
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "handle_dragged_items",
-			    GTK_SIGNAL_FUNC(fm_list_handle_dragged_items),
+			    G_CALLBACK (fm_list_handle_dragged_items),
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "handle_dropped_items",
-			    fm_list_handle_dropped_items,
+			    G_CALLBACK (fm_list_handle_dropped_items),
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "get_default_action",
-			    fm_list_get_default_action,
+			    G_CALLBACK (fm_list_get_default_action),
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "drag_data_get",
-			    fm_list_drag_data_get,
+			    G_CALLBACK (fm_list_drag_data_get),
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "get_drag_pixbuf",
-			    GTK_SIGNAL_FUNC (fm_list_get_drag_pixbuf),
+			    G_CALLBACK (fm_list_get_drag_pixbuf),
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "get_sort_column_index",
-			    GTK_SIGNAL_FUNC (fm_list_get_sort_column_index),
+			    G_CALLBACK (fm_list_get_sort_column_index),
 			    list_view);
 	gtk_signal_connect (GTK_OBJECT (list),
 			    "get_cell_text",
-			    GTK_SIGNAL_FUNC (get_cell_text),
+			    G_CALLBACK (get_cell_text),
 			    list_view);	
 
 	/* Make height tall enough for icons to look good.
@@ -1210,7 +1211,7 @@ set_up_list (FMListView *list_view)
 	 */
 	gtk_signal_connect (GTK_OBJECT (list_view),
 			    "map",
-			    fm_list_view_reset_row_height,
+			    G_CALLBACK (fm_list_view_reset_row_height),
 			    NULL);
 
 	fm_list_view_update_click_mode (FM_DIRECTORY_VIEW (list_view));
@@ -1829,7 +1830,7 @@ fm_list_view_sort_files (FMDirectoryView *view,
 	/* Sort the added items before displaying them, so that
 	 * they'll be added in order, and items won't move around.
 	 */
-	*files = eel_g_list_sort_custom (*files, list_view_compare_files_for_sort, view);
+	*files = g_list_sort_with_data (*files, list_view_compare_files_for_sort, view);
 }
 
 static GArray *

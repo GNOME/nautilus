@@ -133,7 +133,11 @@ drag_data_received_callback (GtkWidget *widget,
 	g_assert (data != NULL);
 	g_assert (callback_data == NULL);
 
+#if GNOME2_CONVERSION_COMPLETE
 	names = gnome_uri_list_extract_uris (data->data);
+#else
+	names = NULL;
+#endif
 
 	if (names == NULL) {
 		g_warning ("No D&D URI's");
@@ -156,8 +160,8 @@ drag_data_received_callback (GtkWidget *widget,
 			 TRUE,
 			 prompt,
 			 _("View in Multiple Windows?"),
-			 GNOME_STOCK_BUTTON_OK,
-			 GNOME_STOCK_BUTTON_CANCEL,
+			 _("OK"),
+			 _("Cancel"),
 			 NULL) == GNOME_OK;
 
 		g_free (prompt);
@@ -180,7 +184,9 @@ drag_data_received_callback (GtkWidget *widget,
 		}
 	}
 						  
+#if GNOME2_CONVERSION_COMPLETE
 	gnome_uri_list_free_strings (names);
+#endif
 
 	gtk_drag_finish (context, TRUE, FALSE, time);
 }
@@ -225,6 +231,7 @@ drag_data_get_callback (GtkWidget *widget,
 static void
 style_set_handler (GtkWidget *widget, GtkStyle *previous_style)
 {
+#if GNOME2_CONVERSION_COMPLETE
 	int width;
 
 	width = gdk_string_width (widget->style->font, GO_TO_LABEL);
@@ -233,6 +240,7 @@ style_set_handler (GtkWidget *widget, GtkStyle *previous_style)
 	width += 2 * GTK_MISC (widget)->xpad;
 	
 	gtk_widget_set_usize (widget, width, -1);
+#endif
 }
 
 /* utility routine to determine the string to expand to.  If we don't have anything yet, accept
@@ -272,7 +280,7 @@ get_file_info_list (NautilusLocationBar *bar, const char* dir_name)
 		
 		bar->details->current_directory = g_strdup (dir_name);
 		result = gnome_vfs_directory_list_load (&bar->details->file_info_list, dir_name,
-							GNOME_VFS_FILE_INFO_DEFAULT, NULL);
+							GNOME_VFS_FILE_INFO_DEFAULT);
 		if (result != GNOME_VFS_OK) {
 			if (bar->details->file_info_list) {
 				gnome_vfs_file_info_list_free (bar->details->file_info_list);	
@@ -467,11 +475,11 @@ static gboolean
 position_and_selection_are_at_end (GtkEditable *editable)
 {
 	int end;
+	int start_sel, end_sel;
 	
 	end = get_editable_length (editable);
-	if (editable->has_selection) {
-		if ((int) editable->selection_start_pos != end
-		    || (int) editable->selection_end_pos == end) {
+	if (gtk_editable_get_selection_bounds (editable, &start_sel, &end_sel)) {
+		if (start_sel != end || end_sel != end) {
 			return FALSE;
 		}
 	}
@@ -512,7 +520,8 @@ editable_key_press_callback (GtkObject *object,
 	 * you can't move through the text a character at a
 	 * time. Seems like a bad idea.
 	 */
-	if (event->keyval == GDK_Right && editable->has_selection) {
+	if (event->keyval == GDK_Right
+	    && gtk_editable_get_selection_bounds (editable, NULL, NULL)) {
 		set_position_and_selection_to_end (editable);
 	}
 
@@ -632,7 +641,7 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
 	gtk_signal_connect (GTK_OBJECT (label), "style_set", 
-			    style_set_handler, NULL);
+			    G_CALLBACK (style_set_handler), NULL);
 
 	gtk_box_pack_start  (GTK_BOX (hbox), event_box, FALSE, TRUE,
 			     GNOME_PAD_SMALL);
@@ -642,7 +651,8 @@ nautilus_location_bar_init (NautilusLocationBar *bar)
 	nautilus_entry_set_special_tab_handling (NAUTILUS_ENTRY (entry), TRUE);
 	
 	gtk_signal_connect_object (GTK_OBJECT (entry), "activate",
-				   nautilus_navigation_bar_location_changed, GTK_OBJECT (bar));
+				   G_CALLBACK (nautilus_navigation_bar_location_changed),
+				   GTK_OBJECT (bar));
 
 	/* The callback uses the marshal interface directly
 	 * so it can both read and write the return value.
@@ -768,7 +778,8 @@ nautilus_location_bar_get_location (NautilusNavigationBar *navigation_bar)
 static void
 nautilus_location_bar_update_label (NautilusLocationBar *bar)
 {
-	char *current_text, *current_location;
+	const char *current_text;
+	char *current_location;
 	
 	current_text = gtk_entry_get_text (GTK_ENTRY (bar->details->entry));
 	current_location = eel_make_uri_from_input (current_text);

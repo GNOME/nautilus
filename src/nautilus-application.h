@@ -27,7 +27,7 @@
 #ifndef NAUTILUS_APPLICATION_H
 #define NAUTILUS_APPLICATION_H
 
-#include <bonobo/bonobo-object.h>
+#include <bonobo/bonobo-generic-factory.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 
 #define NAUTILUS_DESKTOP_ICON_VIEW_IID	"OAFIID:nautilus_file_manager_desktop_icon_view:8d8121b1-0f1e-400b-bf0d-5b0f4555f5e1"
@@ -44,15 +44,15 @@ typedef struct NautilusWindow NautilusWindow;
 #endif
 
 typedef struct {
-	BonoboObject parent;
+	BonoboGenericFactory parent;
 	NautilusUndoManager *undo_manager;
 } NautilusApplication;
 
 typedef struct {
-	BonoboObjectClass parent_class;
+	BonoboGenericFactoryClass parent_class;
 } NautilusApplicationClass;
 
-GtkType              nautilus_application_get_type          (void);
+GType                nautilus_application_get_type          (void);
 NautilusApplication *nautilus_application_new               (void);
 void                 nautilus_application_startup           (NautilusApplication *application,
 							     gboolean             kill_shell,

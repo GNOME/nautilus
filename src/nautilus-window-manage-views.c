@@ -536,7 +536,7 @@ cancel_viewed_file_changed_callback (NautilusWindow *window)
 {
         if (window->details->viewed_file != NULL) {
                 gtk_signal_disconnect_by_func (GTK_OBJECT (window->details->viewed_file),
-                                               viewed_file_changed_callback,
+                                               G_CALLBACK (viewed_file_changed_callback),
                                                window);
         }
 }
@@ -594,7 +594,7 @@ update_for_new_location (NautilusWindow *window)
         window->details->viewed_file_seen = !nautilus_file_is_not_yet_confirmed (file);
         gtk_signal_connect (GTK_OBJECT (file),
                             "changed",
-                            viewed_file_changed_callback,
+                            G_CALLBACK (viewed_file_changed_callback),
                             window);
         nautilus_file_unref (file);
         
@@ -1164,7 +1164,7 @@ determined_initial_view_callback (NautilusDetermineViewHandle *handle,
         char *dialog_title;
         char *home_uri;
         const char *location;
-	GnomeDialog *dialog;
+	GtkDialog *dialog;
         GList *attributes;
         GnomeVFSURI *vfs_uri;
        
