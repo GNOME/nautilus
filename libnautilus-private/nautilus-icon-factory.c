@@ -45,6 +45,7 @@
 #include <librsvg/rsvg.h>
 
 #include "nautilus-default-file-icon.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-gdk-extensions.h"
 #include "nautilus-glib-extensions.h"
 #include "nautilus-global-preferences.h"
@@ -584,6 +585,24 @@ get_themed_icon_file_path (const char *theme_name,
 		xmlFreeDoc (doc);
 	}
 
+	/* if we still haven't found anything, and we're looking for an emblem,
+	   check out the user's home directory, since it might be an emblem
+	   that they've added there */
+	   
+	if (path == NULL && nautilus_str_has_prefix(icon_name, "emblem-")) {
+		for (i = 0; i < NAUTILUS_N_ELEMENTS (icon_file_name_suffixes); i++) {
+			path = g_strdup_printf("%s/emblems/%s%s", 
+			                  nautilus_user_directory(), icon_name + 7, 
+					  icon_file_name_suffixes[i]);
+			
+			if (g_file_exists(path))
+				break;
+			
+			g_free(path);
+			path = NULL;
+		}		
+	}
+	
 	return path;
 }
 
