@@ -38,6 +38,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 
 enum {
 	CHANGED,
@@ -522,7 +523,8 @@ nautilus_bookmark_menu_item_new (NautilusBookmark *bookmark)
 {
 	GtkWidget *menu_item;
 	GtkWidget *pixmap_widget;
-	GtkWidget *accel_label;
+	GtkWidget *label;
+	char *display_name;
 
 	/* Could check gnome_preferences_get_menus_have_icons here, but these
 	 * are more important than stock menu icons, since they're connected to
@@ -536,12 +538,13 @@ nautilus_bookmark_menu_item_new (NautilusBookmark *bookmark)
 		gtk_widget_show (pixmap_widget);
 		gtk_pixmap_menu_item_set_pixmap (GTK_PIXMAP_MENU_ITEM (menu_item), pixmap_widget);
 	}
-	accel_label = gtk_accel_label_new (bookmark->details->name);
-	gtk_misc_set_alignment (GTK_MISC (accel_label), 0.0, 0.5);
+	display_name = nautilus_truncate_text_for_menu_item (bookmark->details->name);
+	label = gtk_label_new (display_name);
+	g_free (display_name);
+	gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
 
-	gtk_container_add (GTK_CONTAINER (menu_item), accel_label);
-	gtk_accel_label_set_accel_widget (GTK_ACCEL_LABEL (accel_label), menu_item);
-	gtk_widget_show (accel_label);
+	gtk_container_add (GTK_CONTAINER (menu_item), label);
+	gtk_widget_show (label);
 
 	return menu_item;
 }

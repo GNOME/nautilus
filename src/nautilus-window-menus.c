@@ -842,7 +842,7 @@ append_bookmark_to_menu (NautilusWindow *window,
 	BookmarkHolder *bookmark_holder;	
 	GdkPixbuf *pixbuf;
 	BonoboUIHandlerPixmapType pixmap_type;
-	char *raw_name, *name;
+	char *raw_name, *display_name, *truncated_name;
 
 	pixbuf = nautilus_bookmark_get_pixbuf (bookmark, NAUTILUS_ICON_SIZE_FOR_MENUS);
 
@@ -861,11 +861,13 @@ append_bookmark_to_menu (NautilusWindow *window,
 	 * instead of a string utility. (Like maybe escaping control characters.)
 	 */
 	raw_name = nautilus_bookmark_get_name (bookmark);
-	name = nautilus_str_double_underscores (raw_name);
+	truncated_name = nautilus_truncate_text_for_menu_item (raw_name);
+	display_name = nautilus_str_double_underscores (truncated_name);
 	g_free (raw_name);
+	g_free (truncated_name);
  	bonobo_ui_handler_menu_new_item (window->ui_handler,
 					 menu_item_path,
-					 name,
+					 display_name,
 					 _("Go to the specified location"),
 					 -1,
 					 pixmap_type,
@@ -874,7 +876,7 @@ append_bookmark_to_menu (NautilusWindow *window,
 					 0,
 					 NULL,
 					 NULL);
-	g_free (name);
+	g_free (display_name);
 
 	/* We must use "set_callback" since we have a destroy-notify function. */
 	bonobo_ui_handler_menu_set_callback

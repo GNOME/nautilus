@@ -1,3 +1,22 @@
+2000-09-12  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 884 (Long URI in Go menu doesn't get cut off)
+	Fixed bug 2667 (Really long bookmark titles stretch bookmarks menu)
+
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c:
+	(nautilus_truncate_text_for_menu_item): New function,
+	uses nautilus_str_middle_truncate to create a string
+	that isn't ridiculously long.
+
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_menu_item_new): Use new function to
+	keep the menu items in the Back/Forward context menus
+	from getting too wide.
+	* src/nautilus-window-menus.c: (append_bookmark_to_menu):
+	Use new function to keep the menu items in the Go and
+	Bookmarks menus from getting too wide.
+
 2000-09-12  Gene Z. Ragan  <gzr@eazel.com>
 
 	Work in progress on making the expander UI in the tree view

@@ -32,11 +32,17 @@
 #include <gtk/gtksignal.h>
 #include <libgnomeui/gnome-geometry.h>
 #include "nautilus-glib-extensions.h"
+#include "nautilus-string.h"
 
 /* This number should be large enough to be visually noticeable,
  * but small enough to not allow the user to perform other actions.
  */
 #define BUTTON_AUTO_HIGHLIGHT_MILLISECONDS	100
+
+/* This number is fairly arbitrary. Long enough to show a pretty long
+ * menu title, but not so long to make a menu grotesquely wide.
+ */
+#define MAXIMUM_MENU_TITLE_LENGTH	48
 
 static gboolean
 finish_button_activation (gpointer data)
@@ -366,6 +372,19 @@ nautilus_popup_menu_position_func (GtkMenu   *menu,
 	  
 	*x = CLAMP (*x + (int) offset->x, 0, MAX (0, gdk_screen_width () - requisition.width));
 	*y = CLAMP (*y + (int) offset->y, 0, MAX (0, gdk_screen_height () - requisition.height));
+}
+
+/**
+ * nautilus_truncate_text_for_menu_item:
+ * 
+ * Given an arbitrary string, returns a newly-allocated string
+ * suitable for use as a menu item label. Truncates long strings 
+ * in the middle.
+ */
+char *
+nautilus_truncate_text_for_menu_item (const char *text)
+{
+	return nautilus_str_middle_truncate (text, MAXIMUM_MENU_TITLE_LENGTH);
 }
 
 /**
