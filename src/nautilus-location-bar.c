@@ -527,20 +527,6 @@ get_editable_number_of_chars (GtkEditable *editable)
 	return length;
 }
 
-static gboolean
-has_exactly_one_slash (GtkEditable *editable)
-{
-	char *text, *slash;
-	gboolean exactly_one;
-
-	text = gtk_editable_get_chars (editable, 0, -1);
-	slash = g_utf8_strchr (text, -1, '/');
-	exactly_one = slash != NULL && g_utf8_strchr (g_utf8_next_char (slash), -1, '/') == NULL;
-	g_free (text);
-
-	return exactly_one;
-}
-
 static void
 set_position_and_selection_to_end (GtkEditable *editable)
 {
@@ -574,8 +560,6 @@ editable_event_after_callback (GtkEntry *entry,
 	GtkEditable *editable;
 	GdkEventKey *keyevent;
 	NautilusLocationBar *bar;
-	const char *unexpanded_text;
-	char *expanded_text;
 
 	if (event->type != GDK_KEY_PRESS) {
 		return;
@@ -606,16 +590,6 @@ editable_event_after_callback (GtkEntry *entry,
 	 */
 	if (position_and_selection_are_at_end (editable)) {
 		if (entry_would_have_inserted_characters (keyevent)) {
-			if (keyevent->keyval == GDK_slash
-				&& has_exactly_one_slash (editable)) {
-				unexpanded_text = gtk_entry_get_text (GTK_ENTRY (editable));
-				expanded_text = gnome_vfs_expand_initial_tilde (unexpanded_text);
-				if (strcmp (unexpanded_text, expanded_text) != 0) {
-					gtk_entry_set_text (GTK_ENTRY (editable), expanded_text);
-					set_position_and_selection_to_end (editable);
-				}
-				g_free (expanded_text);
-			}
 			if (bar->details->idle_id == 0) {
 				bar->details->idle_id = gtk_idle_add (try_to_expand_path, bar);
 			}

@@ -1,5 +1,12 @@
 2002-05-05  David Emory Watson  <dwatson@cs.ucr.edu>
 
+	* src/nautilus-location-bar.c:
+	(editable_event_after_callback): Don't expand ~ or ~/ until the user
+	presses enter, bug 47239.
+	(has_exactly_one_slash): Removed.
+
+2002-05-05  David Emory Watson  <dwatson@cs.ucr.edu>
+
 	* libnautilus-private/nautilus-global-preferences.c: Make list view
 	default to 75% zoom to get "nice" looking font size while maintaining
 	range of different font sizes.
