@@ -948,6 +948,11 @@ real_set_content_view_widget (NautilusWindow *nautilus_window,
 			 set_content_view_widget, 
 			 (nautilus_window, new_view));
 
+
+	if (new_view == NULL) {
+		return;	       
+	}
+
 	connect_view (window, new_view);
 
 	nautilus_horizontal_splitter_pack2 (
