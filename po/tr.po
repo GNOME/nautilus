@@ -2,12 +2,11 @@
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # Fatih Demir <kabalak@gmx.net>, 2000.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 0.1\n"
-"POT-Creation-Date: 2000-04-13 12:33+0200\n"
-"PO-Revision-Date: 2000-04-13 12:04+0100\n"
+"POT-Creation-Date: 2000-04-15 23:30+0200\n"
+"PO-Revision-Date: 2000-04-15 23:31+0100\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -44,8 +43,8 @@ msgstr "Yeni pencere"
 msgid "Create a new window"
 msgstr "Yeni bir pencere yarat"
 
-#: src/file-manager/fm-directory-view.c:1512
-#: src/file-manager/fm-directory-view.c:1683 src/nautilus-window-menus.c:140
+#: src/file-manager/fm-directory-view.c:1517
+#: src/file-manager/fm-directory-view.c:1688 src/nautilus-window-menus.c:140
 msgid "Select All"
 msgstr "Hepsini seç"
 
@@ -99,7 +98,8 @@ msgstr "Niþanlarý deðiþtir ..."
 
 #: src/nautilus-window-menus.c:226
 msgid "Display a window that allows editing the bookmarks in this menu."
-msgstr "Bu mönünün içinde niþanlarý deðiþtirilmesine izin veren pencereyi göster"
+msgstr ""
+"Bu mönünün içinde niþanlarý deðiþtirilmesine izin veren pencereyi göster"
 
 #: src/nautilus-window-menus.c:255
 msgid "_General Settings..."
@@ -145,16 +145,16 @@ msgstr "_Niþanlar"
 msgid "_Debug"
 msgstr "_Bitleme"
 
-#: src/nautilus-window-menus.c:341
+#: src/nautilus-window-menus.c:348
 msgid "Go to the specified location"
 msgstr "Verilen mekana git"
 
-#: src/nautilus-window-menus.c:476 src/ntl-window-msgs.c:211
+#: src/nautilus-window-menus.c:484 src/ntl-window-msgs.c:211
 #: src/ntl-window-msgs.c:246 src/ntl-window-msgs.c:247
 msgid "Nautilus"
 msgstr "Nautilus"
 
-#: src/nautilus-window-menus.c:480
+#: src/nautilus-window-menus.c:488
 msgid "The Cool Shell Program"
 msgstr "Günlük masaüstü uygulaman"
 
@@ -362,64 +362,66 @@ msgstr "Kopyalanýyor"
 msgid "Preparing To Copy..."
 msgstr "Kopyalamayý hazýrlýyorum ..."
 
-#: src/file-manager/fm-directory-view.c:606
+#: src/file-manager/fm-directory-view.c:613
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" seçili"
 
-#: src/file-manager/fm-directory-view.c:608
+#: src/file-manager/fm-directory-view.c:615
 msgid "1 directory selected"
 msgstr "1 dizin seçili"
 
-#: src/file-manager/fm-directory-view.c:611
+#: src/file-manager/fm-directory-view.c:618
 #, c-format
 msgid "%d directories selected"
 msgstr "%d dizin seçili"
 
-#: src/file-manager/fm-directory-view.c:615
-msgid "(containing 0 items)"
+#: src/file-manager/fm-directory-view.c:624
+#, fuzzy
+msgid " (containing 0 items)"
 msgstr "( 0 birim içerir )"
 
-#: src/file-manager/fm-directory-view.c:618
-msgid "(containing 1 item)"
+#: src/file-manager/fm-directory-view.c:626
+#, fuzzy
+msgid " (containing 1 item)"
 msgstr "( 1 birim içerir )"
 
-#: src/file-manager/fm-directory-view.c:620
-#, c-format
-msgid "(containing %d items)"
+#: src/file-manager/fm-directory-view.c:628
+#, fuzzy, c-format
+msgid " (containing %d items)"
 msgstr "( %d birim içerir )"
 
-#: src/file-manager/fm-directory-view.c:631
+#: src/file-manager/fm-directory-view.c:639
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" seçili (%s)"
 
-#: src/file-manager/fm-directory-view.c:635
+#: src/file-manager/fm-directory-view.c:643
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d birim seçili (%s)"
 
-#: src/file-manager/fm-directory-view.c:642
+#: src/file-manager/fm-directory-view.c:650
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "1 baþka birim seçili (%s)"
 
-#: src/file-manager/fm-directory-view.c:645
+#: src/file-manager/fm-directory-view.c:653
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "%d baþka birim seçili (%s)"
 
-#: src/file-manager/fm-directory-view.c:659
-#, c-format
-msgid "%s %s"
+#: src/file-manager/fm-directory-view.c:667
+#, fuzzy, c-format
+msgid "%s%s"
 msgstr "%s %s"
 
-#: src/file-manager/fm-directory-view.c:663
-#, c-format
-msgid "%s %s, %s"
+#: src/file-manager/fm-directory-view.c:671
+#, fuzzy, c-format
+msgid "%s%s, %s"
 msgstr "%s %s, %s"
 
-#: src/file-manager/fm-directory-view.c:1308
+#: src/file-manager/fm-directory-view.c:1313
 #, c-format
 msgid "Sorry, but %s could not be deleted"
 msgstr "Maalessef %s silinemedi"
@@ -427,99 +429,99 @@ msgstr "Maalessef %s silinemedi"
 #. Don't use GNOME_STOCK_BUTTON_CANCEL because the
 #. * red X is confusing in this context.
 #.
-#: src/file-manager/fm-directory-view.c:1335
+#: src/file-manager/fm-directory-view.c:1340
 msgid "Delete Selection"
 msgstr "Seçili olaný sil"
 
-#: src/file-manager/fm-directory-view.c:1336
+#: src/file-manager/fm-directory-view.c:1341
 msgid "Delete"
 msgstr "Sil"
 
-#: src/file-manager/fm-directory-view.c:1337
+#: src/file-manager/fm-directory-view.c:1342
 msgid "Cancel"
 msgstr "Iptal"
 
-#: src/file-manager/fm-directory-view.c:1356
+#: src/file-manager/fm-directory-view.c:1361
 #, c-format
 msgid "Are you sure you want to delete \"%s\"?"
 msgstr "\"%s\"'yi silmekten emin misin ?"
 
-#: src/file-manager/fm-directory-view.c:1359
+#: src/file-manager/fm-directory-view.c:1364
 #, c-format
 msgid "Are you sure you want to delete the %d selected items?"
 msgstr "%d seçili birimleri silmekten emin misin ?"
 
-#: src/file-manager/fm-directory-view.c:1513
+#: src/file-manager/fm-directory-view.c:1518
 msgid "Zoom In"
 msgstr "Yakýnlaþ"
 
-#: src/file-manager/fm-directory-view.c:1515
+#: src/file-manager/fm-directory-view.c:1520
 msgid "Zoom Out"
 msgstr "Uzaklaþ"
 
-#: src/file-manager/fm-directory-view.c:1529
-#: src/file-manager/fm-directory-view.c:1625
+#: src/file-manager/fm-directory-view.c:1534
+#: src/file-manager/fm-directory-view.c:1630
 msgid "_Open"
 msgstr "_Aç"
 
-#: src/file-manager/fm-directory-view.c:1533
+#: src/file-manager/fm-directory-view.c:1538
 msgid "Open in _New Window"
 msgstr "_Yeni pencerede aç"
 
-#: src/file-manager/fm-directory-view.c:1535
+#: src/file-manager/fm-directory-view.c:1540
 #, c-format
 msgid "Open in %d _New Windows"
 msgstr "%d yeni _pencerede aç"
 
-#: src/file-manager/fm-directory-view.c:1539
+#: src/file-manager/fm-directory-view.c:1544
 msgid "_Delete..."
 msgstr "_Sil ..."
 
-#: src/file-manager/fm-directory-view.c:1542
+#: src/file-manager/fm-directory-view.c:1547
 msgid "_Duplicate"
 msgstr "_Kopyala"
 
-#: src/file-manager/fm-directory-view.c:1545
+#: src/file-manager/fm-directory-view.c:1550
 msgid "Set _Properties..."
 msgstr "_Ayarlarý belirle ..."
 
-#: src/file-manager/fm-directory-view.c:1626
+#: src/file-manager/fm-directory-view.c:1631
 msgid "Open the selected item in this window"
 msgstr "Seçili birimi bu pencerede aç"
 
-#: src/file-manager/fm-directory-view.c:1636
+#: src/file-manager/fm-directory-view.c:1641
 msgid "Open in New Window"
 msgstr "Yeni bir pencerede aç"
 
-#: src/file-manager/fm-directory-view.c:1637
+#: src/file-manager/fm-directory-view.c:1642
 msgid "Open each selected item in a new window"
 msgstr "Herbir seçili birimi yeni bir pencerede aç"
 
-#: src/file-manager/fm-directory-view.c:1650
+#: src/file-manager/fm-directory-view.c:1655
 msgid "Set Properties..."
 msgstr "Özellikleri belirle ..."
 
-#: src/file-manager/fm-directory-view.c:1651
+#: src/file-manager/fm-directory-view.c:1656
 msgid "View or modify the properties of the selected items"
 msgstr "Seçili birimlerin özelliklerini deðiþtir"
 
-#: src/file-manager/fm-directory-view.c:1661
+#: src/file-manager/fm-directory-view.c:1666
 msgid "Delete..."
 msgstr "Sil ..."
 
-#: src/file-manager/fm-directory-view.c:1662
+#: src/file-manager/fm-directory-view.c:1667
 msgid "Delete all selected items"
 msgstr "Yekin seçili birimleri sil"
 
-#: src/file-manager/fm-directory-view.c:1672
+#: src/file-manager/fm-directory-view.c:1677
 msgid "Duplicate"
 msgstr "Klonla"
 
-#: src/file-manager/fm-directory-view.c:1673
+#: src/file-manager/fm-directory-view.c:1678
 msgid "Duplicate all selected items"
 msgstr "Yekin seçili birimleri klonla"
 
-#: src/file-manager/fm-directory-view.c:1684
+#: src/file-manager/fm-directory-view.c:1689
 msgid "Select all items in this window"
 msgstr "Bu penceredeki yekin birimleri seç"
 
@@ -568,8 +570,8 @@ msgid ""
 "Choose the order for information to appear beneath icon names. More "
 "information appears as you zoom in closer."
 msgstr ""
-"Bilgilerin gösterim sýrasýný belirle . Ikonalarý giderek büyültüðün an , "
-"bu bilgilerden daha fazlasýný göreceksin ."
+"Bilgilerin gösterim sýrasýný belirle . Ikonalarý giderek büyültüðün an , bu "
+"bilgilerden daha fazlasýný göreceksin ."
 
 #: src/file-manager/fm-icon-view.c:411
 msgid "_Stretch Icon"
@@ -630,62 +632,66 @@ msgid ""
 "This is a placeholder for the final emblems design. For now, you can turn "
 "some hard-wired properties with corresponding emblems on and off."
 msgstr ""
-"Emeli rozetler tasarýsý yerine geçici bir imkandýr . Þimdiye kadar"
-"( bazý belirli rozetlerle baðlý ) bazý belirli özellikleri açýp kapatabilirsin ."
+"Emeli rozetler tasarýsý yerine geçici bir imkandýr . Þimdiye kadar( bazý "
+"belirli rozetlerle baðlý ) bazý belirli özellikleri açýp kapatabilirsin ."
 
 #: nautilus-widgets/nautilus-preferences-dialog.c:200
 msgid "Prefs Box"
 msgstr "Ayarlar kutusu"
 
 #. today, use special word
-#: libnautilus/nautilus-file.c:781
+#: libnautilus-extensions/nautilus-file.c:786
 msgid "today %-I:%M %p"
 msgstr "bugün %-I:%M %p"
 
 #. yesterday, use special word
-#: libnautilus/nautilus-file.c:784
+#: libnautilus-extensions/nautilus-file.c:789
 msgid "yesterday %-I:%M %p"
 msgstr "dün %-I:%M %p"
 
 #. current week, include day of week
-#: libnautilus/nautilus-file.c:787
+#: libnautilus-extensions/nautilus-file.c:792
 msgid "%A %-m/%-d/%y %-I:%M %p"
 msgstr "787 () %A %-m/%-d/%y %-I:%M %p"
 
-#: libnautilus/nautilus-file.c:789
+#: libnautilus-extensions/nautilus-file.c:794
 msgid "%-m/%-d/%y %-I:%M %p"
 msgstr "789 () %-m/%-d/%y %-I:%M %p"
 
-#: libnautilus/nautilus-file.c:894
+#: libnautilus-extensions/nautilus-file.c:906
 msgid "unknown owner"
 msgstr "bilinmeyen iye"
 
-#: libnautilus/nautilus-file.c:924
+#: libnautilus-extensions/nautilus-file.c:936
 msgid "unknown group"
 msgstr "bilinmeyen kitle"
 
-#: libnautilus/nautilus-file.c:1031
+#: libnautilus-extensions/nautilus-file.c:987
+msgid "--"
+msgstr "--"
+
+#: libnautilus-extensions/nautilus-file.c:990
 msgid "0 items"
 msgstr "0 birim "
 
-#: libnautilus/nautilus-file.c:1033
+#: libnautilus-extensions/nautilus-file.c:993
 msgid "1 item"
 msgstr "1 birim"
 
-#: libnautilus/nautilus-file.c:1035
-#, c-format
-msgid "%d items"
+#: libnautilus-extensions/nautilus-file.c:995
+#, fuzzy, c-format
+msgid "%u items"
 msgstr "%d birim"
 
-#: libnautilus/nautilus-file.c:1135
+#: libnautilus-extensions/nautilus-file.c:1094
 msgid "program"
 msgstr "uygulama"
 
-#: libnautilus/nautilus-file.c:1138
+#: libnautilus-extensions/nautilus-file.c:1097
 msgid "unknown type"
 msgstr "bilinmeyen tip"
 
-#: libnautilus/ntl-meta-view-frame.c:144
+#: libnautilus/nautilus-meta-view-frame.c:144
 msgid "Label"
 msgstr "Yafta"
 
