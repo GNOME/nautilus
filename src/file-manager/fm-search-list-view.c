@@ -54,7 +54,7 @@
 #define MENU_PATH_INDEXING_INFO			"/menu/File/General Status Placeholder/Indexing Info"
 #define MENU_PATH_REVEAL_IN_NEW_WINDOW 		"/menu/File/Open Placeholder/Reveal"
 
-#define COMMAND_REVEAL_IN_NEW_WINDOW 		"/command/Reveal"
+#define COMMAND_REVEAL_IN_NEW_WINDOW 		"/commands/Reveal"
 
 struct FMSearchListViewDetails {
 	BonoboUIComponent *ui;

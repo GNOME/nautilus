@@ -1,3 +1,19 @@
+2000-10-17  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3825 (Bonobo error messages viewing search results)
+	Fixed bug 3826 ("Reveal in New Window" misplaced in context menu)
+
+	* src/file-manager/fm-directory-view.c:
+	(append_selection_menu_subtree): take an identifier, store
+	it in menu item for later identification, just like other menu
+	items. This will all change when we switch to using Bonobo for
+	context menus.
+	(fm_directory_view_real_create_selection_context_menu_items):
+	Pass the identifier that list view code was expecting to find.
+	* src/file-manager/fm-search-list-view.c:
+	fixed typo in COMMAND_REVEAL_IN_NEW_WINDOW #define. Those darn
+	typos are deadly with new Bonobo.
+
 2000-10-17  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-file-operations.c:

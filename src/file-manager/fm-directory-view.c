@@ -2686,7 +2686,8 @@ append_selection_menu_subtree (FMDirectoryView *view,
 			       GtkMenu *parent_menu,
 			       GtkMenu *child_menu,
 			       GList *files,
-			       const char *path)
+			       const char *path,
+			       const char *identifier)
 {
         GtkWidget *menu_item;
         char *label_string;
@@ -2697,6 +2698,9 @@ append_selection_menu_subtree (FMDirectoryView *view,
         g_free (label_string);
 
         finish_appending_menu_item (parent_menu, menu_item, sensitive);
+
+	/* Store identifier in item, so we can find this item later */
+	set_menu_item_path (GTK_MENU_ITEM (menu_item), identifier);
 
         gtk_menu_item_set_submenu (GTK_MENU_ITEM (menu_item), 
         			   GTK_WIDGET (child_menu));
@@ -2979,7 +2983,8 @@ fm_directory_view_real_create_selection_context_menu_items (FMDirectoryView *vie
 			      open_in_new_window_callback);
 	append_selection_menu_subtree (view, menu, 
 				       create_open_with_gtk_menu (view, files), files,
-				       FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH);
+				       FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH,
+				       FM_DIRECTORY_VIEW_COMMAND_OPEN_WITH);
 
 	nautilus_gtk_menu_append_separator (menu);
 
