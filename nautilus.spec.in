@@ -103,6 +103,15 @@ fi
 %defattr(0555, bin, bin)
 %doc AUTHORS COPYING COPYING.LIB ChangeLog NEWS README
 %{prefix}/bin/*.sh
+%{prefix}/bin/eazel-gen-xml
+%{prefix}/bin/eazel-helper
+%{prefix}/bin/eazel-install
+%{prefix}/bin/eazel-package-query
+%{prefix}/bin/eazel-revert
+%{prefix}/bin/eazel-sample-client
+%{prefix}/bin/eazel-time
+%{prefix}/bin/eazel-uninstall
+%{prefix}/bin/eazel-vault
 %{prefix}/bin/gnome-db2html2
 %{prefix}/bin/gnome-info2html2
 %{prefix}/bin/gnome-man2html2
@@ -112,26 +121,37 @@ fi
 %{prefix}/bin/nautilus-content-loser
 %{prefix}/bin/nautilus-hardware-view
 %{prefix}/bin/nautilus-history-view
+%{prefix}/bin/nautilus-inventory-view
+%{prefix}/bin/nautilus-login-view
 %{prefix}/bin/nautilus-mozilla-content-view
 %{prefix}/bin/nautilus-music-view
 %{prefix}/bin/nautilus-notes
 %{prefix}/bin/nautilus-rpm-view
 %{prefix}/bin/nautilus-sample-content-view
+%{prefix}/bin/nautilus-sample-service-view
+%{prefix}/bin/nautilus-service-install-view
+%{prefix}/bin/nautilus-service-startup-view
 %{prefix}/bin/nautilus-sidebar-loser
+%{prefix}/bin/nautilus-summary-view
 %{prefix}/bin/nautilus-tree-view
 %{prefix}/bin/ntl-web-browser
 %{prefix}/bin/ntl-web-search
 %{prefix}/bin/run-nautilus
 %{prefix}/bin/test-ft
 %{prefix}/bin/test-rsvg
+%{prefix}/bin/trilobite-eazel-install-service
+%{prefix}/bin/trilobite-eazel-sample-service
+%{prefix}/bin/trilobite-eazel-time-service
+%{prefix}/bin/trilobite-eazel-time-view
+%{prefix}/idl/*.idl
 %{prefix}/lib/*.0
 %{prefix}/lib/*.so
 %{prefix}/lib/vfs/modules/*.so
-%{prefix}/share/gnome/apps/Applications/*.desktop
-%{prefix}/share/hyperbola/maps/*.map
 
 %defattr (0444, bin, bin)
 %config %{sysconfdir}/vfs/modules/*.conf
+%{prefix}/share/gnome/apps/Applications/*.desktop
+%{prefix}/share/hyperbola/maps/*.map
 %{prefix}/share/locale/*/LC_MESSAGES/*.mo
 %{prefix}/share/nautilus/*.xml
 %{prefix}/share/nautilus/backgrounds/*.jpg
@@ -140,6 +160,7 @@ fi
 %{prefix}/share/nautilus/emblems/*.png
 %{prefix}/share/nautilus/linksets/*.xml
 %{prefix}/share/nautilus/top/*.html
+%{prefix}/share/nautilus/top/*.xml
 %{prefix}/share/nautilus/top/Computer
 %{prefix}/share/nautilus/top/Services
 %{prefix}/share/oaf/*.oafinfo
@@ -166,4 +187,6 @@ fi
 %{prefix}/lib/vfs/modules/*.la
 
 %defattr(0444, bin, bin)
+%{prefix}/include/eazel-install/*.h
 %{prefix}/include/libnautilus/*.h
+%{prefix}/include/libtrilobite/*.h
