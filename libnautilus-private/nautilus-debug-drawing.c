@@ -355,3 +355,161 @@ nautilus_debug_show_pixbuf (const GdkPixbuf *pixbuf)
 
 	gdk_window_clear_area_e (debug_window->window, 0, 0, -1, -1);
 }
+
+void
+nautilus_debug_pixbuf_draw_point (GdkPixbuf *pixbuf,
+				  int x,
+				  int y,
+				  guint32 color,
+				  int opacity)
+{
+	ArtIRect frame;
+	guchar *pixels;
+	gboolean has_alpha;
+	guint pixel_offset;
+	guint rowstride;
+	guchar red;
+	guchar green;
+	guchar blue;
+	guchar alpha;
+	guchar *offset;
+
+	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (pixbuf));
+	g_return_if_fail (opacity >= NAUTILUS_OPACITY_FULLY_TRANSPARENT);
+	g_return_if_fail (opacity <= NAUTILUS_OPACITY_FULLY_OPAQUE);
+
+	frame = nautilus_gdk_pixbuf_get_frame (pixbuf);
+
+	g_return_if_fail (x >= 0 && x < frame.x1);
+	g_return_if_fail (y >= 0 && y < frame.y1);
+
+	pixels = gdk_pixbuf_get_pixels (pixbuf);
+	rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+	has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
+	pixel_offset = has_alpha ? 4 : 3;
+
+	red = NAUTILUS_RGBA_COLOR_GET_R (color);
+	green = NAUTILUS_RGBA_COLOR_GET_G (color);
+	blue = NAUTILUS_RGBA_COLOR_GET_B (color);
+	alpha = (guchar) opacity;
+
+	offset = pixels + y * rowstride + x * pixel_offset;
+
+	*(offset + 0) = red;
+	*(offset + 1) = green;
+	*(offset + 2) = blue;
+	
+	if (has_alpha) {
+		*(offset + 3) = alpha;
+	}
+}
+
+void
+nautilus_debug_pixbuf_draw_rectangle (GdkPixbuf *pixbuf,
+				      gboolean filled,
+				      int x0,
+				      int y0,
+				      int x1,
+				      int y1,
+				      guint32 color,
+				      int opacity)
+{
+	ArtIRect frame;
+	int x;
+	int y;
+
+	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (pixbuf));
+	g_return_if_fail (opacity >= NAUTILUS_OPACITY_FULLY_TRANSPARENT);
+	g_return_if_fail (opacity <= NAUTILUS_OPACITY_FULLY_OPAQUE);
+
+	frame = nautilus_gdk_pixbuf_get_frame (pixbuf);
+
+	if (x0 == -1) {
+		x0 = 0;
+	}
+
+	if (y0 == -1) {
+		y0 = 0;
+	}
+
+	if (x1 == -1) {
+		x1 = frame.x1 - 1;
+	}
+
+	if (y1 == -1) {
+		y1 = frame.y1 - 1;
+	}
+
+	g_return_if_fail (x1 > x0);
+	g_return_if_fail (y1 > y0);
+	g_return_if_fail (x0 >= 0 && x0 < frame.x1);
+	g_return_if_fail (y0 >= 0 && y0 < frame.y1);
+	g_return_if_fail (x1 >= 0 && x1 < frame.x1);
+	g_return_if_fail (y1 >= 0 && y1 < frame.y1);
+
+	if (filled) {
+		for (y = y0; y <= y1; y++) {
+			for (x = x0; x <= x1; x++) {
+				nautilus_debug_pixbuf_draw_point (pixbuf, x, y, color, opacity);
+			}
+		}
+	} else {
+		/* Top / Bottom */
+		for (x = x0; x <= x1; x++) {
+			nautilus_debug_pixbuf_draw_point (pixbuf, x, y0, color, opacity);
+			nautilus_debug_pixbuf_draw_point (pixbuf, x, y1, color, opacity);
+		}
+		
+		/* Left / Right */
+		for (y = y0; y <= y1; y++) {
+			nautilus_debug_pixbuf_draw_point (pixbuf, x0, y, color, opacity);
+			nautilus_debug_pixbuf_draw_point (pixbuf, x1, y, color, opacity);
+		}
+	}
+}
+
+void
+nautilus_debug_pixbuf_draw_rectangle_inset (GdkPixbuf *pixbuf,
+					    gboolean filled,
+					    int x0,
+					    int y0,
+					    int x1,
+					    int y1,
+					    guint32 color,
+					    int opacity,
+					    int inset)
+{
+	ArtIRect frame;
+	
+	g_return_if_fail (nautilus_gdk_pixbuf_is_valid (pixbuf));
+	g_return_if_fail (opacity >= NAUTILUS_OPACITY_FULLY_TRANSPARENT);
+	g_return_if_fail (opacity <= NAUTILUS_OPACITY_FULLY_OPAQUE);
+
+	frame = nautilus_gdk_pixbuf_get_frame (pixbuf);
+
+	if (x0 == -1) {
+		x0 = 0;
+	}
+
+	if (y0 == -1) {
+		y0 = 0;
+	}
+
+	if (x1 == -1) {
+		x1 = frame.x1 - 1;
+	}
+
+	if (y1 == -1) {
+		y1 = frame.y1 - 1;
+	}
+
+	x0 += inset;
+	y0 += inset;
+	x1 -= inset;
+	y1 -= inset;
+
+	g_return_if_fail (x1 > x0);
+	g_return_if_fail (y1 > y0);
+
+	nautilus_debug_pixbuf_draw_rectangle (pixbuf, filled, x0, y0, x1, y1, color, opacity);
+}

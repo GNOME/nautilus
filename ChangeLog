@@ -1,3 +1,43 @@
+2001-02-13  Ramiro Estrugo  <ramiro@eazel.com>
+
+	reviewed by: Maciej Stachowiak  <mjs@eazel.com>
+
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-glyph.h:
+	* libnautilus-extensions/nautilus-glyph.c:
+	New class.  A wrapper on RsvgGlyph that makes it simple and fast
+	to draw smooth text on pixbufs
+	
+	* libnautilus-extensions/nautilus-clickable-image.c:
+	(nautilus_clickable_image_initialize_class),
+	(nautilus_clickable_image_realize):
+	Remove unrealize() method that was a noop.
+	
+	* libnautilus-extensions/nautilus-debug-drawing.c:
+	(nautilus_debug_pixbuf_draw_point),
+	(nautilus_debug_pixbuf_draw_rectangle),
+	(nautilus_debug_pixbuf_draw_rectangle_inset):
+	* libnautilus-extensions/nautilus-debug-drawing.h:
+	Add some pixbuf drawing functions to debug clip areas in pixbufs.
+
+	* libnautilus-extensions/nautilus-image-table.c:
+	(nautilus_image_table_initialize_class),
+	(nautilus_image_table_remove):
+	Remove add() method that was a noop. 
+
+	* test/.cvsignore:
+	* test/Makefile.am:
+	* test/test-nautilus-font-simple.c: (main):
+	* test/test-nautilus-font.c: (main):
+	* test/test-nautilus-glyph-simple.c: (glyph_new), (main):
+	* test/test-nautilus-glyph.c: (glyph_new), (main):
+	* test/test.c: (test_window_set_title_with_pid),
+	(test_pixbuf_draw_rectangle_tiled):
+	* test/test.h:
+	New NautilusGlyph tests.  Also remove the broken pixbuf drawing
+	debug code.  Use the debugging code in nautilus-debug-drawing.[ch]
+	instead.
+	
 2001-02-13  Arik Devens  <arik@eazel.com>
 
 	reviewed by: Maciej Stachowiak  <mjs@eazel.com>

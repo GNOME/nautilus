@@ -12,19 +12,18 @@ main (int argc, char* argv[])
 	NautilusScalableFont *font;
 
 	test_init (&argc, &argv);
-
+	
 	font = nautilus_scalable_font_get_default_font ();
 	g_assert (font != NULL);
 
 	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, 800, 400);
 	g_assert (pixbuf != NULL);
 	
-	test_pixbuf_draw_rectangle (pixbuf,
-				    -1, -1, -1, -1,
-				    0,
-				    TRUE,
-				    NAUTILUS_RGB_COLOR_WHITE,
-				    NAUTILUS_OPACITY_FULLY_OPAQUE);
+	nautilus_debug_pixbuf_draw_rectangle (pixbuf,
+					      TRUE,
+					      -1, -1, -1, -1,
+					      NAUTILUS_RGB_COLOR_WHITE,
+					      NAUTILUS_OPACITY_FULLY_OPAQUE);
 
 	nautilus_scalable_font_draw_text (font,
 					  pixbuf,

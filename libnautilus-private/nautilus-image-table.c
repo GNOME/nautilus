@@ -79,8 +79,6 @@ static void    nautilus_image_table_realize              (GtkWidget             
 static void    nautilus_image_table_unrealize            (GtkWidget               *widget);
 
 /* GtkContainerClass methods */
-static void    nautilus_image_table_add                  (GtkContainer            *container,
-							  GtkWidget               *widget);
 static void    nautilus_image_table_remove               (GtkContainer            *container,
 							  GtkWidget               *widget);
 static GtkType nautilus_image_table_child_type           (GtkContainer            *container);
@@ -136,7 +134,6 @@ nautilus_image_table_initialize_class (NautilusImageTableClass *image_table_clas
  	widget_class->unrealize = nautilus_image_table_unrealize;
 
  	/* GtkContainerClass */
-	container_class->add = nautilus_image_table_add;
 	container_class->remove = nautilus_image_table_remove;
 	container_class->child_type = nautilus_image_table_child_type;
 
@@ -330,21 +327,6 @@ nautilus_image_table_unrealize (GtkWidget *widget)
 
 /* GtkContainerClass methods */
 static void
-nautilus_image_table_add (GtkContainer *container,
-			  GtkWidget *child)
-{
-	NautilusImageTable *image_table;
-	
-	g_return_if_fail (container != NULL);
-	g_return_if_fail (NAUTILUS_IS_IMAGE_TABLE (container));
-	g_return_if_fail (NAUTILUS_IS_LABELED_IMAGE (child));
-
-	image_table = NAUTILUS_IMAGE_TABLE (container);
-
-	NAUTILUS_CALL_PARENT_CLASS (GTK_CONTAINER_CLASS, add, (container, child));
-}
-
-static void
 nautilus_image_table_remove (GtkContainer *container,
 			     GtkWidget *child)
 {
@@ -353,7 +335,7 @@ nautilus_image_table_remove (GtkContainer *container,
 	g_return_if_fail (NAUTILUS_IS_IMAGE_TABLE (container));
 	g_return_if_fail (NAUTILUS_IS_LABELED_IMAGE (child));
 	
-	image_table = NAUTILUS_IMAGE_TABLE (container);;
+	image_table = NAUTILUS_IMAGE_TABLE (container);
 
 	if (child == image_table->details->child_under_pointer) {
 		image_table->details->child_under_pointer = NULL;

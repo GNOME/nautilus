@@ -28,15 +28,44 @@
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 
 /* Draw a rectangle and cross on the given window */
-void nautilus_debug_draw_rectangle_and_cross (GdkDrawable     *drawable,
-					      const ArtIRect  *rectangle,
-					      guint32          color,
-					      gboolean draw_cross);
+void nautilus_debug_draw_rectangle_and_cross    (GdkDrawable     *drawable,
+						 const ArtIRect  *rectangle,
+						 guint32          color,
+						 gboolean         draw_cross);
 
 /* Show the given pixbuf in eog */
-void nautilus_debug_show_pixbuf_in_eog       (const GdkPixbuf *pixbuf);
+void nautilus_debug_show_pixbuf_in_eog          (const GdkPixbuf *pixbuf);
 
 /* Show the given pixbuf in an in process window */
-void nautilus_debug_show_pixbuf              (const GdkPixbuf *pixbuf);
+void nautilus_debug_show_pixbuf                 (const GdkPixbuf *pixbuf);
+
+/* Draw a point in a pixbuf */
+void nautilus_debug_pixbuf_draw_point           (GdkPixbuf       *pixbuf,
+						 int              x,
+						 int              y,
+						 guint32          color,
+						 int              opacity);
+/* Draw a rectangle in a pixbuf.  The coordinates (-1,-1( (-1,-1) will use
+ * the whole pixbuf. */
+void nautilus_debug_pixbuf_draw_rectangle       (GdkPixbuf       *pixbuf,
+						 gboolean         filled,
+						 int              x0,
+						 int              y0,
+						 int              x1,
+						 int              y1,
+						 guint32          color,
+						 int              opacity);
+/* Draw an inset rectangle in a pixbuf.  Positive inset make the rectangle
+ * smaller.  Negative inset makes it larger.
+ */
+void nautilus_debug_pixbuf_draw_rectangle_inset (GdkPixbuf       *pixbuf,
+						 gboolean         filled,
+						 int              x0,
+						 int              y0,
+						 int              x1,
+						 int              y1,
+						 guint32          color,
+						 int              opacity,
+						 int              inset);
 
 #endif /* NAUTILUS_DEBUG_DRAWING_H */

@@ -50,15 +50,6 @@ GtkWidget *test_label_new                       (const char                  *te
 						 const char                  *tile_name,
 						 gboolean                     with_background,
 						 int                          num_sizes_larger);
-void       test_pixbuf_draw_rectangle           (GdkPixbuf                   *pixbuf,
-						 int                          x0,
-						 int                          y0,
-						 int                          x1,
-						 int                          y1,
-						 int                          inset,
-						 gboolean                     filled,
-						 guint32                      color,
-						 int                          opacity);
 void       test_pixbuf_draw_rectangle_tiled     (GdkPixbuf                   *pixbuf,
 						 const char                  *tile_name,
 						 int                          x0,

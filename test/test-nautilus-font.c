@@ -36,12 +36,11 @@ main (int argc, char* argv[])
 	pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, FALSE, 8, pixbuf_width, pixbuf_height);
 	g_assert (pixbuf != NULL);
 
-	test_pixbuf_draw_rectangle (pixbuf,
-				    -1, -1, -1, -1,
-				    0,
-				    TRUE,
-				    NAUTILUS_RGB_COLOR_WHITE,
-				    NAUTILUS_OPACITY_FULLY_OPAQUE);
+	nautilus_debug_pixbuf_draw_rectangle (pixbuf,
+					      TRUE,
+					      -1, -1, -1, -1,
+					      NAUTILUS_RGB_COLOR_WHITE,
+					      NAUTILUS_OPACITY_FULLY_OPAQUE);
 
 	multi_lines_area.x0 = multi_line_x;
 	multi_lines_area.y0 = multi_line_y;
@@ -88,30 +87,30 @@ main (int argc, char* argv[])
 	clip_area.x1 = clip_area.x0 + 100;
 	clip_area.y1 = clip_area.y0 + 30;
 	
-	test_pixbuf_draw_rectangle (pixbuf,
-				    clip_area.x0,
-				    clip_area.y0,
-				    clip_area.x1,
-				    clip_area.y1,
-				    -1,
-				    FALSE,
-				    NAUTILUS_RGBA_COLOR_OPAQUE_RED,
-				    NAUTILUS_OPACITY_FULLY_OPAQUE);
-
+	nautilus_debug_pixbuf_draw_rectangle_inset (pixbuf,
+						    FALSE,
+						    clip_area.x0,
+						    clip_area.y0,
+						    clip_area.x1,
+						    clip_area.y1,
+						    NAUTILUS_RGBA_COLOR_OPAQUE_RED,
+						    NAUTILUS_OPACITY_FULLY_OPAQUE,
+						    1);
+	
 	whole_area.x0 = 0;
 	whole_area.y0 = 0;
 	whole_area.x1 = whole_area.x0 + pixbuf_width;
 	whole_area.y1 = whole_area.y0 + pixbuf_height;
 
-	test_pixbuf_draw_rectangle (pixbuf,
-				    multi_lines_area.x0,
-				    multi_lines_area.y0,
-				    multi_lines_area.x1,
-				    multi_lines_area.y1,
-				    -1,
-				    FALSE,
-				    NAUTILUS_RGBA_COLOR_OPAQUE_RED,
-				    NAUTILUS_OPACITY_FULLY_OPAQUE);
+	nautilus_debug_pixbuf_draw_rectangle_inset (pixbuf,
+						    FALSE,
+						    multi_lines_area.x0,
+						    multi_lines_area.y0,
+						    multi_lines_area.x1,
+						    multi_lines_area.y1,
+						    NAUTILUS_RGBA_COLOR_OPAQUE_RED,
+						    NAUTILUS_OPACITY_FULLY_OPAQUE,
+						    -1);
 
 	/*
 	 * Multiple text lines test.
@@ -156,22 +155,22 @@ main (int argc, char* argv[])
 		ArtIRect composited_area;
 		GdkPixbuf *tile_pixbuf;
 		
-		tile_pixbuf = test_pixbuf_new_named ("patterns/pale_coins.png", 1.0);
+		tile_pixbuf = test_pixbuf_new_named ("patterns/purple_marble.png", 1.0);
 		
 		composited_area.x0 = 270;
 		composited_area.y0 = 80;
 		composited_area.x1 = composited_area.x0 + 200;
 		composited_area.y1 = composited_area.y0 + 200;
 		
-		test_pixbuf_draw_rectangle (pixbuf,
-					    composited_area.x0,
-					    composited_area.y0,
-					    composited_area.x1,
-					    composited_area.y1,
-					    -1,
-					    FALSE,
-					    NAUTILUS_RGBA_COLOR_OPAQUE_RED,
-					    NAUTILUS_OPACITY_FULLY_OPAQUE);
+		nautilus_debug_pixbuf_draw_rectangle_inset (pixbuf,
+							    FALSE,
+							    composited_area.x0,
+							    composited_area.y0,
+							    composited_area.x1,
+							    composited_area.y1,
+							    NAUTILUS_RGBA_COLOR_OPAQUE_RED,
+							    NAUTILUS_OPACITY_FULLY_OPAQUE,
+							    -1);
 		
 		nautilus_gdk_pixbuf_draw_to_pixbuf_tiled (tile_pixbuf,
 							  pixbuf,
@@ -210,15 +209,15 @@ main (int argc, char* argv[])
 		layout_area.x1 = layout_area.x0 + max_text_width;
 		layout_area.y1 = layout_area.y0 + 130;
 
-		test_pixbuf_draw_rectangle (pixbuf,
-					    layout_area.x0,
-					    layout_area.y0,
-					    layout_area.x1,
-					    layout_area.y1,
-					    -1,
-					    FALSE,
-					    NAUTILUS_RGBA_COLOR_OPAQUE_RED,
-					    NAUTILUS_OPACITY_FULLY_OPAQUE);
+		nautilus_debug_pixbuf_draw_rectangle_inset (pixbuf,
+							    FALSE,
+							    layout_area.x0,
+							    layout_area.y0,
+							    layout_area.x1,
+							    layout_area.y1,
+							    NAUTILUS_RGBA_COLOR_OPAQUE_RED,
+							    NAUTILUS_OPACITY_FULLY_OPAQUE,
+							    -1);
 		
 		nautilus_text_layout_paint (text_layout,
 					    pixbuf,
@@ -231,15 +230,15 @@ main (int argc, char* argv[])
 		layout_area.x0 += (max_text_width + 20);
 		layout_area.x1 += (max_text_width + 20);
 
-		test_pixbuf_draw_rectangle (pixbuf,
-					    layout_area.x0,
-					    layout_area.y0,
-					    layout_area.x1,
-					    layout_area.y1,
-					    -1,
-					    FALSE,
-					    NAUTILUS_RGBA_COLOR_OPAQUE_RED,
-					    NAUTILUS_OPACITY_FULLY_OPAQUE);
+		nautilus_debug_pixbuf_draw_rectangle_inset (pixbuf,
+							    FALSE,
+							    layout_area.x0,
+							    layout_area.y0,
+							    layout_area.x1,
+							    layout_area.y1,
+							    NAUTILUS_RGBA_COLOR_OPAQUE_RED,
+							    NAUTILUS_OPACITY_FULLY_OPAQUE,
+							    -1);
 		
 		nautilus_text_layout_paint (text_layout,
 					    pixbuf,
@@ -252,15 +251,15 @@ main (int argc, char* argv[])
 		layout_area.x0 += (max_text_width + 20);
 		layout_area.x1 += (max_text_width + 20);
 		
-		test_pixbuf_draw_rectangle (pixbuf,
-					    layout_area.x0,
-					    layout_area.y0,
-					    layout_area.x1,
-					    layout_area.y1,
-					    -1,
-					    FALSE,
-					    NAUTILUS_RGBA_COLOR_OPAQUE_RED,
-					    NAUTILUS_OPACITY_FULLY_OPAQUE);
+		nautilus_debug_pixbuf_draw_rectangle_inset (pixbuf,
+							    FALSE,
+							    layout_area.x0,
+							    layout_area.y0,
+							    layout_area.x1,
+							    layout_area.y1,
+							    NAUTILUS_RGBA_COLOR_OPAQUE_RED,
+							    NAUTILUS_OPACITY_FULLY_OPAQUE,
+							    -1);
 		
 		nautilus_text_layout_paint (text_layout,
 					    pixbuf,
@@ -297,15 +296,15 @@ main (int argc, char* argv[])
 		layout_area.x1 = layout_area.x0 + text_layout->width;
 		layout_area.y1 = layout_area.y0 + text_layout->height;
 
-		test_pixbuf_draw_rectangle (pixbuf,
-					    layout_area.x0,
-					    layout_area.y0,
-					    layout_area.x1,
-					    layout_area.y1,
-					    -1,
-					    FALSE,
-					    NAUTILUS_RGBA_COLOR_OPAQUE_RED,
-					    NAUTILUS_OPACITY_FULLY_OPAQUE);
+		nautilus_debug_pixbuf_draw_rectangle_inset (pixbuf,
+							    FALSE,
+							    layout_area.x0,
+							    layout_area.y0,
+							    layout_area.x1,
+							    layout_area.y1,
+							    NAUTILUS_RGBA_COLOR_OPAQUE_RED,
+							    NAUTILUS_OPACITY_FULLY_OPAQUE,
+							    -1);
 		
 		nautilus_text_layout_paint (text_layout,
 					    pixbuf,

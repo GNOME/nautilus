@@ -68,8 +68,6 @@ static void nautilus_clickable_image_get_arg          (GtkObject                
 static int  nautilus_clickable_image_expose_event     (GtkWidget                   *widget,
 						       GdkEventExpose              *event);
 static void nautilus_clickable_image_realize          (GtkWidget                   *widget);
-static void nautilus_clickable_image_unrealize        (GtkWidget                   *widget);
-
 
 /* Ancestor callbacks */
 static int  ancestor_enter_notify_event               (GtkWidget                   *widget,
@@ -104,7 +102,6 @@ nautilus_clickable_image_initialize_class (NautilusClickableImageClass *image_cl
  	/* GtkWidgetClass */
  	widget_class->expose_event = nautilus_clickable_image_expose_event;
  	widget_class->realize = nautilus_clickable_image_realize;
- 	widget_class->unrealize = nautilus_clickable_image_unrealize;
 
 	/* Signals */
 	clickable_image_signals[CLICKED] = gtk_signal_new ("clicked",
@@ -237,19 +234,6 @@ nautilus_clickable_image_realize (GtkWidget *widget)
 						    GTK_SIGNAL_FUNC (ancestor_button_release_event),
 						    widget,
 						    widget);
-}
-
-static void
-nautilus_clickable_image_unrealize (GtkWidget *widget)
-{
-	NautilusClickableImage *clickable_image;
-
-	g_return_if_fail (NAUTILUS_IS_CLICKABLE_IMAGE (widget));
-
-	clickable_image = NAUTILUS_CLICKABLE_IMAGE (widget);
-
-	/* Chain unrealize */
-	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, unrealize, (widget));
 }
 
 static void

@@ -84,7 +84,6 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-ellipsizing-label.c		\
 	nautilus-entry.c			\
 	nautilus-enumeration.c			\
-	nautilus-region.c			\
 	nautilus-file-changes-queue.c		\
 	nautilus-file-operations-progress.c	\
 	nautilus-file-operations.c		\
@@ -99,6 +98,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-generous-bin.c			\
 	nautilus-glib-extensions.c		\
 	nautilus-global-preferences.c		\
+	nautilus-glyph.c			\
 	nautilus-gnome-extensions.c		\
 	nautilus-graphic-effects.c		\
 	nautilus-gtk-extensions.c		\
@@ -134,6 +134,7 @@ libnautilus_extensions_la_SOURCES = 		\
 	nautilus-program-chooser.c		\
 	nautilus-program-choosing.c		\
 	nautilus-radio-button-group.c		\
+	nautilus-region.c			\
 	nautilus-scalable-font.c		\
 	nautilus-search-uri.c			\
 	nautilus-self-checks.c			\
@@ -193,7 +194,6 @@ noinst_HEADERS =				\
 	nautilus-ellipsizing-label.h		\
 	nautilus-entry.h			\
 	nautilus-enumeration.h			\
-	nautilus-region.h			\
 	nautilus-file-attributes.h		\
 	nautilus-file-changes-queue.h		\
 	nautilus-file-operations-progress.h 	\
@@ -210,6 +210,7 @@ noinst_HEADERS =				\
 	nautilus-generous-bin.h			\
 	nautilus-glib-extensions.h		\
 	nautilus-global-preferences.h		\
+	nautilus-glyph.h			\
 	nautilus-gnome-extensions.h		\
 	nautilus-graphic-effects.h		\
 	nautilus-gtk-extensions.h		\
@@ -251,6 +252,7 @@ noinst_HEADERS =				\
 	nautilus-program-chooser.h		\
 	nautilus-program-choosing.h		\
 	nautilus-radio-button-group.h		\
+	nautilus-region.h			\
 	nautilus-scalable-font-private.h	\
 	nautilus-scalable-font-private.h	\
 	nautilus-scalable-font.h		\
