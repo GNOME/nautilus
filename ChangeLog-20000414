@@ -1,3 +1,40 @@
+2000-02-15  John Sullivan <sullivan@eazel.com>
+
+	Right-click menus from Back and Forward buttons now include
+	small icons. To support this, window back/forward lists now
+	store NautilusBookmarks.
+
+	* src/nautilus-bookmarks-menu.c:
+	(bookmark_menu_item_new): Removed (moved to nautilus-bookmark.c/h,
+	and renamed nautilus_bookmark_menu_item_new).
+	(create_pixmap_widget_for_bookmark): Removed (moved to nautilus-bookmark.c/h)
+	(nautilus_bookmarks_menu_repopulate): updated caller to match name change.
+
+	* src/nautilus-bookmark.h:
+	(nautilus_bookmark_menu_item_new): New function.
+	* src/nautilus-bookmark.c:
+	(nautilus_bookmark_menu_item_new): New function, moved over from
+	nautilus-bookmarks-menu.c
+	(create_pixmap_widget_for_bookmark): New function, moved over from
+	nautilus-bookmarks-menu.c
+
+	* src/ntl-window.h:
+	Replaced uris_prev and uris_next with back_list and forward_list.
+	Added comment explaining that the data is now NautilusBookmark * and
+	not just char *.
+	* src/ntl-window-msgs.c:
+	(nautilus_window_update_internals): updated to use back_list and 
+	forward_list.
+	* src/ntl-window.c:
+	(activate_back_or_forward_menu_item), (nautilus_window_destroy): 
+	updated to use back_list and forward_list
+	(create_back_or_forward_menu): updated to use back_list and
+	forward_list; use nautilus_bookmark_menu_item_new to get icons.
+	(nautilus_window_back_or_forward): New function, consolidates
+	repeated code from nautilus_window_back and nautilus_window_forward.
+	(nautilus_window_back), (nautilus_window_fwd): Now call
+	nautilus_window_back_or_forward.
+
 2000-02-15  Andy Hertzfeld <andy@eazel.com>
 
 	* src/nautilus-index-tabs/c:

@@ -59,15 +59,19 @@ NautilusBookmark   *nautilus_bookmark_new	   (const gchar *name,
 						    const gchar *uri);
 NautilusBookmark   *nautilus_bookmark_copy	   (const NautilusBookmark *bookmark);
 const gchar	   *nautilus_bookmark_get_name	   (const NautilusBookmark *bookmark);
-const gchar	   *nautilus_bookmark_get_uri	   (const NautilusBookmark *bookmark);
+const gchar	   *nautilus_bookmark_get_uri	   (const NautilusBookmark *bookmark);						    
 
+gint		    nautilus_bookmark_compare_with (gconstpointer a, gconstpointer b);
+
+/* Helper functions for displaying bookmarks */
+ 
 gboolean	    nautilus_bookmark_get_pixmap_and_mask
 						   (const NautilusBookmark *bookmark,
 						    guint icon_size,
 						    GdkPixmap **pixmap_return,
 						    GdkBitmap **mask_return);
-						    
+GtkWidget *	    nautilus_bookmark_menu_item_new 
+						   (const NautilusBookmark *bookmark);
 
-gint		    nautilus_bookmark_compare_with (gconstpointer a, gconstpointer b);
 
 #endif /* NAUTILUS_BOOKMARK_H */

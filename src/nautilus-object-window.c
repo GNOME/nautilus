@@ -465,19 +465,21 @@ activate_back_or_forward_menu_item (GtkMenuItem *menu_item,
 				    gboolean back)
 {
 	int index;
-	const char *uri;
+	NautilusBookmark *bookmark;
 	
 	g_assert (GTK_IS_MENU_ITEM (menu_item));
 	g_assert (NAUTILUS_IS_WINDOW (window));
 
 	index = GPOINTER_TO_INT (gtk_object_get_user_data (GTK_OBJECT (menu_item)));
-	uri = g_slist_nth_data (back ? window->uris_prev : window->uris_next, index);
+	bookmark = NAUTILUS_BOOKMARK (g_slist_nth_data (back ? window->back_list 
+							     : window->forward_list, 
+							index));
 
 	/* FIXME: This should do the equivalent of going back or forward n times,
 	 * rather than just going to the right uri. This is needed to
 	 * keep the back/forward chain intact.
-	 */	
-	nautilus_window_goto_uri (window, uri);
+	 */
+	nautilus_window_goto_uri (window, nautilus_bookmark_get_uri (bookmark));
 }
 
 static void
@@ -497,18 +499,18 @@ create_back_or_forward_menu (NautilusWindow *window, gboolean back)
 {
 	GtkMenu *menu;
 	GtkWidget *menu_item;
-	GSList *uri_in_list;
+	GSList *list_link;
 	int index;
 
 	g_assert (NAUTILUS_IS_WINDOW (window));
 	
 	menu = GTK_MENU (gtk_menu_new ());
 
-	uri_in_list = back ? window->uris_prev : window->uris_next;
+	list_link = back ? window->back_list : window->forward_list;
 	index = 0;
-	while (uri_in_list != NULL)
+	while (list_link != NULL)
 	{
-		menu_item = gtk_menu_item_new_with_label (uri_in_list->data);
+		menu_item = nautilus_bookmark_menu_item_new (NAUTILUS_BOOKMARK (list_link->data));		
 		gtk_object_set_user_data (GTK_OBJECT (menu_item), GINT_TO_POINTER (index));
 		gtk_widget_show (GTK_WIDGET (menu_item));
   		gtk_signal_connect(GTK_OBJECT(menu_item), 
@@ -517,7 +519,7 @@ create_back_or_forward_menu (NautilusWindow *window, gboolean back)
                      	window);
 		
 		gtk_menu_append (menu, menu_item);
-		uri_in_list = g_slist_next (uri_in_list);
+		list_link = g_slist_next (list_link);
 		++index;
 	}
 
@@ -751,10 +753,10 @@ static void nautilus_window_destroy (NautilusWindow *window)
   g_slist_free(window->meta_views);
   CORBA_free(window->ni);
   CORBA_free(window->si);
-  g_slist_foreach(window->uris_prev, (GFunc)g_free, NULL);
-  g_slist_foreach(window->uris_next, (GFunc)g_free, NULL);
-  g_slist_free(window->uris_prev);
-  g_slist_free(window->uris_next);
+  g_slist_foreach(window->back_list, (GFunc)gtk_object_unref, NULL);
+  g_slist_foreach(window->forward_list, (GFunc)gtk_object_unref, NULL);
+  g_slist_free(window->back_list);
+  g_slist_free(window->forward_list);
 
   if(window->statusbar_clear_id)
     g_source_remove(window->statusbar_clear_id);
@@ -917,30 +919,33 @@ nautilus_window_remove_meta_view(NautilusWindow *window, NautilusView *meta_view
 /* FIXME: Factor toolbar stuff out into ntl-window-toolbar.c */
 
 static void
-nautilus_window_back (GtkWidget *btn, NautilusWindow *window)
+nautilus_window_back_or_forward (NautilusWindow *window, gboolean back)
 {
   Nautilus_NavigationRequestInfo nri;
 
-  g_assert(window->uris_prev);
+  g_assert(back ? window->back_list : window->forward_list);
 
   memset(&nri, 0, sizeof(nri));
-  nri.requested_uri = window->uris_prev->data;
+  /* FIXME: Have to cast away the const for nri.requested_uri. This field should be
+   * declared const. */
+  nri.requested_uri = (char *)nautilus_bookmark_get_uri (back ?
+  						         window->back_list->data :
+  						         window->forward_list->data);
   nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_FALSE;
 
-  nautilus_window_change_location(window, &nri, NULL, TRUE, FALSE);
+  nautilus_window_change_location(window, &nri, NULL, back, FALSE);
+}
+
+static void
+nautilus_window_back (GtkWidget *btn, NautilusWindow *window)
+{
+  nautilus_window_back_or_forward (window, TRUE);
 }
 
 static void
 nautilus_window_fwd (GtkWidget *btn, NautilusWindow *window)
 {
-  Nautilus_NavigationRequestInfo nri;
-
-  g_assert(window->uris_next);
-
-  memset(&nri, 0, sizeof(nri));
-  nri.requested_uri = window->uris_next->data;
-  nri.new_window_default = nri.new_window_suggested = nri.new_window_enforced = Nautilus_V_FALSE;
-  nautilus_window_change_location(window, &nri, NULL, FALSE, FALSE);
+  nautilus_window_back_or_forward (window, FALSE);
 }
 
 const char *

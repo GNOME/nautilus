@@ -70,8 +70,9 @@ struct _NautilusWindow {
   /* Information about current location/selection */
   Nautilus_NavigationInfo *ni;
   Nautilus_SelectionInfo *si;
-  /* History stuff */
-  GSList *uris_prev, *uris_next;
+  
+  /* Back/Forward chain stuff. The data in these lists are NautilusBookmark pointers. */
+  GSList *back_list, *forward_list;
 
   /* Current views stuff */
   NautilusView *content_view;

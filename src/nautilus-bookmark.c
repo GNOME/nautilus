@@ -34,6 +34,8 @@ struct _NautilusBookmarkDetails
 
 
 
+static GtkWidget *create_pixmap_widget_for_bookmark 	(const NautilusBookmark *bookmark);
+
 static GtkObjectClass *parent_class = NULL;
 
 /* GtkObject methods.  */
@@ -218,4 +220,61 @@ nautilus_bookmark_new (const gchar *name, const gchar *uri)
 
 	return new_bookmark;
 }
+
+static GtkWidget *
+create_pixmap_widget_for_bookmark (const NautilusBookmark *bookmark)
+{
+	GdkPixmap *gdk_pixmap;
+	GdkBitmap *mask;
+
+	if (!nautilus_bookmark_get_pixmap_and_mask (bookmark, 
+						    NAUTILUS_ICON_SIZE_SMALLER,
+					  	    &gdk_pixmap, 
+					  	    &mask))
+	{
+		return NULL;
+	}
+
+	return gtk_pixmap_new (gdk_pixmap, mask);
+}
+
+/**
+ * nautilus_bookmark_menu_item_new:
+ * 
+ * Return a menu item representing a bookmark.
+ * @bookmark: The bookmark the menu item represents.
+ * Return value: A newly-created bookmark.
+ **/ 
+GtkWidget *
+nautilus_bookmark_menu_item_new (const NautilusBookmark *bookmark)
+{
+	GtkWidget *menu_item;
+	GtkWidget *pixmap_widget;
+	GtkWidget *accel_label;
+
+	/* Could check gnome_preferences_get_menus_have_icons here, but these
+	 * are more important than stock menu icons, since they're connected to
+	 * user data. For now let's not let them be turn-offable and see if
+	 * anyone objects strenuously.
+	 */
+	menu_item = gtk_pixmap_menu_item_new ();
+
+	pixmap_widget = create_pixmap_widget_for_bookmark (bookmark);
+	if (pixmap_widget != NULL)
+	{
+		gtk_widget_show (pixmap_widget);
+		gtk_pixmap_menu_item_set_pixmap (GTK_PIXMAP_MENU_ITEM (menu_item), pixmap_widget);
+	}
+	
+	accel_label = gtk_accel_label_new (nautilus_bookmark_get_name (bookmark));
+	gtk_misc_set_alignment (GTK_MISC (accel_label), 0.0, 0.5);
+
+	gtk_container_add (GTK_CONTAINER (menu_item), accel_label);
+	gtk_accel_label_set_accel_widget (GTK_ACCEL_LABEL (accel_label), menu_item);
+	gtk_widget_show (accel_label);
+
+	return menu_item;
+}
+
+
 

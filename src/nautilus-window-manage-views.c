@@ -191,32 +191,46 @@ nautilus_window_update_internals(NautilusWindow *window, NautilusNavigationInfo 
             {
               /* Going back. Remove one item from the prev list and add the current item to the next list. */
 
-              g_assert(window->uris_prev);
-              g_assert(!strcmp((const char*)window->uris_prev->data, loci->navinfo.requested_uri));
+              g_assert(window->back_list);
+              g_assert(!strcmp(nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (window->back_list->data)), loci->navinfo.requested_uri));
               g_assert(window->ni);
 
-              window->uris_next = g_slist_prepend(window->uris_next, g_strdup(window->ni->requested_uri));
-              g_free(window->uris_prev->data);
-              window->uris_prev = g_slist_remove_link(window->uris_prev, window->uris_prev);
+	      /* FIXME: should get the title for the document a better way, so it is web page title, e.g. */		
+              window->forward_list = g_slist_prepend(window->forward_list, 
+						     nautilus_bookmark_new (window->ni->requested_uri,
+									    window->ni->requested_uri));
+              gtk_object_unref(window->back_list->data);
+              window->back_list = g_slist_remove_link(window->back_list, window->back_list);
             }
           else
             {
-              /* Going forward. Remove one item from the next if it's the same as the the request.
-                 Otherwise, clobber the entire next list.
-          */
+              /* Not going back. Could be an arbitrary new uri, or could be going forward in the forward list. 
+               * Remove one item from the next if it's the same as the the request.
+               * Otherwise, clobber the entire next list. FIXME: This is not quite correct behavior (doesn't
+               * match web browsers) because it doesn't distinguish between using the Forward button or list
+               * to move in the Forward chain and coincidentally visiting a site that happens to be in the
+               * Forward chain.
+               */
+              if (window->forward_list)
+                {
+                  if (strcmp (loci->navinfo.requested_uri, 
+                  	      nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (window->forward_list->data))) == 0)
+                    {
+                      gtk_object_unref(window->forward_list->data);
+                      window->forward_list = g_slist_remove_link(window->forward_list, window->forward_list);
+                    }
+                  else
+                    {
+                      g_slist_foreach(window->forward_list, (GFunc)gtk_object_unref, NULL);
+                      g_slist_free(window->forward_list); window->forward_list = NULL;
+                    }
+                }
 
-              if (window->uris_next && !strcmp(loci->navinfo.requested_uri, (const char*)window->uris_next->data))
-                {
-                  g_free(window->uris_next->data);
-                  window->uris_next = g_slist_remove_link(window->uris_next, window->uris_next);
-                }
-              else
-                {
-                  g_slist_foreach(window->uris_next, (GFunc)g_free, NULL);
-                  g_slist_free(window->uris_next); window->uris_next = NULL;
-                }
+	      /* FIXME: should get the title for the document a better way, so it is web page title, e.g. */		
               if (window->ni)
-                window->uris_prev = g_slist_prepend(window->uris_prev, g_strdup(window->ni->requested_uri));
+                  window->back_list = g_slist_prepend(window->back_list, 
+						       nautilus_bookmark_new (window->ni->requested_uri,
+						       			      window->ni->requested_uri));
             }
         }
 
@@ -248,8 +262,8 @@ nautilus_window_update_internals(NautilusWindow *window, NautilusNavigationInfo 
       nautilus_index_panel_set_uri(window->index_panel, loci->navinfo.requested_uri);
     }
 
-  nautilus_window_allow_back(window, window->uris_prev?TRUE:FALSE);
-  nautilus_window_allow_forward(window, window->uris_next?TRUE:FALSE);
+  nautilus_window_allow_back(window, window->back_list != NULL);
+  nautilus_window_allow_forward(window, window->forward_list != NULL);
   
   explorer_location_bar_set_uri_string(EXPLORER_LOCATION_BAR(window->ent_uri),
 				       window->ni->requested_uri);
