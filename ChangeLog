@@ -1,3 +1,20 @@
+2001-02-23  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: Eskil Olsen  <eskil@eazel.com>
+
+	Fix bug 6856 (if you click on the services button and then on the
+	stop button nautilus crashes)
+	
+	* components/services/trilobite/libtrilobite/trilobite-file-utilities.c:
+	(read_file_open_callback): If we get a callback on a cancelled
+	open, ignore it rather than dieing on a failed assertion.
+
+	* src/nautilus-window-manage-views.c (cancel_location_change):
+	Instead of avoiding telling the old view of the location change
+	back if it is the same as the new view, avoid telling the new view
+	ever. Either it will be told through the old view pointer or it
+	the very change we want to cancel.
+
 2001-02-24  Dan Mueth  <dan@eazel.com>
 
 	reviewed by: Ian McKellar  <ian@eazel.com>

@@ -1078,21 +1078,16 @@ cancel_location_change (NautilusWindow *window)
             && window->content_view != NULL
             && nautilus_view_frame_get_is_view_loaded (window->content_view)) {
 
-                /* No need to talk to the content view unless it was
-                 * being reused for the new location.
+                /* No need to tell the new view - either it is the
+                 * same as the old view, in which case it will already
+                 * be told, or it is the very pending change we wish
+                 * to cancel.
                  */
-                if (window->new_content_view == NULL
-                    || window->new_content_view != window->content_view) {
-                        skip_view = window->content_view;
-                } else {
-                        skip_view = NULL;
-                }
 
-                /* Tell previously-notified views to go back to the old page */
                 load_new_location_in_all_views (window,
                                                 window->details->location,
                                                 window->details->selection,
-                                                skip_view);
+                                                window->new_content_view);
         }
 
         end_location_change (window);

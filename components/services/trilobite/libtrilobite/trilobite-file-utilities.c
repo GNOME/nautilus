@@ -234,6 +234,14 @@ read_file_open_callback (GnomeVFSAsyncHandle *handle,
 {
 	TrilobiteReadFileHandle *read_handle;
 	
+	/* FIXME: This should not be necessary, but sometimes you get
+	 * the callback from a cancelled open.  
+	 */
+
+	if (result == GNOME_VFS_ERROR_CANCELLED) {
+		return;
+	}
+
 	read_handle = callback_data;
 	g_assert (read_handle->handle == handle);
 
