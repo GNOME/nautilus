@@ -51,4 +51,4 @@ nautilus_rpm_view_LDADD =			\
 	$(RPM_LIBS) 				\
 	$(NULL)
 
-EXTRA_DIST = $(oaf_DATA)
+EXTRA_DIST = $(oaf_DATA) $(extra_sources)
