@@ -1538,6 +1538,26 @@ fmt_toplevel_add_doc (HyperbolaDocTree * tree, char * omf_name)
     	}
 }
 
+
+static int
+get_locale_score (GList *li, const xmlChar *locale) 
+{
+	int score = 0;
+
+	for (li; li != NULL; li = li->next) {
+
+		if (strcmp (locale, (char *) li->data) == 0) {
+                        return score;
+		}
+		
+		score++;
+	}
+
+	return -1;
+}
+
+
+
 /* returns -1 on invalid locale (not found), or the position
  * in the locale list.  the lower the position the better, that
  * is, the lower number should get precedence */
@@ -1545,7 +1565,7 @@ static int
 locale_score (GList *locales, xmlNode *doc_node)
 {
 	GList *li;
-	char *locale;
+	xmlChar *locale;
 	int score;
 
 	if (doc_node == NULL)
@@ -1553,19 +1573,13 @@ locale_score (GList *locales, xmlNode *doc_node)
 
 	locale = xmlGetProp (doc_node, "locale");
 	if (locale == NULL) {
-		locale = "C";
-	}
+		score = get_locale_score (locales, "C");
+	} else {
+                score = get_locale_score (locales, locale);
+                xmlFree (locale);
+        }
 
-	score = 0;
-	for (li = locales; li != NULL; li = li->next) {
-		if (strcmp (locale, (char *) li->data) == 0) {
-			return score;
-		}
-
-		score++;
-	}
-
-	return -1;
+        return score;
 }
 
 /* do we want to use new_doc rather then current_doc.  That is, is new_doc

@@ -1,3 +1,15 @@
+2001-08-27  Yoann Vandoorselaere  <yoann@mandrakesoft.com>
+
+	* libnautilus-private/nautilus-link.c (nautilus_link_local_get_image_uri): 
+	avoid un-needed string copy.
+
+	* components/help/hyperbola-filefmt.c (locale_score): 
+	free return of xmlGetProp on return. Do not use a char pointer 
+	to point on the returned value, use an xmlChar pointer.
+
+	* libnautilus-private/nautilus-link.c (nautilus_link_local_get_link_type): 
+	Free the value returned by local_get_root_property.
+
 2001-08-27  Seth Nickell  <snickell@stanford.edu>
 
 	reviewed by: Maciej

@@ -437,11 +437,10 @@ nautilus_link_local_get_image_uri (const char *path)
 		/* load it asynchronously through gnome-vfs */
 	        info = g_new0 (NautilusLinkIconNotificationInfo, 1);
 		info->link_uri = gnome_vfs_get_uri_from_local_path (path);
-		info->file_path = g_strdup (local_path);
+		info->file_path = local_path;
 		eel_read_entire_file_async (icon_uri, icon_read_done_callback, info);
 		
 		g_free (icon_uri);
-  		g_free (local_path);
 		return NULL; /* return NULL since the icon is still loading - it will get correctly set by the callback */
 	}
 	
@@ -459,7 +458,14 @@ nautilus_link_local_get_link_uri (const char *path)
 NautilusLinkType
 nautilus_link_local_get_link_type (const char *path)
 {
-	return get_link_type (local_get_root_property (path, "nautilus_link"));
+	char *property;
+	NautilusLinkType type;
+	
+	property = local_get_root_property (path, "nautilus_link");
+	type = get_link_type (property);
+	g_free (property);
+
+	return type;
 }
 
 /* FIXME bugzilla.eazel.com 2495: 
