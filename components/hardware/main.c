@@ -73,9 +73,9 @@ int main(int argc, char *argv[])
 	
 	/* Initialize gettext support */
 #ifdef ENABLE_NLS /* sadly we need this ifdef because otherwise the following get empty statement warnings */
-	bindtextdomain (PACKAGE, GNOMELOCALEDIR);
-	bind_textdomain_codeset (PACKAGE, "UTF-8");
-	textdomain (PACKAGE);
+	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+	textdomain (GETTEXT_PACKAGE);
 #endif
 
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {

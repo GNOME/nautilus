@@ -44,7 +44,7 @@ main (int argc, char *argv[])
 
 	return nautilus_view_standard_main ("nautilus-text-view",
 					    VERSION,
-					    PACKAGE,
+					    GETTEXT_PACKAGE,
 					    GNOMELOCALEDIR,
 					    argc,
 					    argv,
