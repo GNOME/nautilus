@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.1\n"
-"POT-Creation-Date: 2000-04-27 22:13+0200\n"
-"PO-Revision-Date: 2000-04-27 22:29+02:00\n"
+"POT-Creation-Date: 2000-04-29 20:02+0200\n"
+"PO-Revision-Date: 2000-04-29 20:06+02:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr "Nautilus: Bokmerker"
 
 #. Icon
 #. Emblems
-#: src/file-manager/fm-list-view.c:307 src/nautilus-bookmarks-window.c:161
+#: src/file-manager/fm-list-view.c:339 src/nautilus-bookmarks-window.c:161
 msgid "Name"
 msgstr "Navn"
 
@@ -35,161 +35,256 @@ msgstr "Fjern"
 msgid "Location:"
 msgstr "Plassering:"
 
-#: src/nautilus-window-menus.c:124
-msgid "New Window"
-msgstr "Nytt vindu"
-
-#: src/nautilus-window-menus.c:124
-msgid "Create a new window"
-msgstr "Åpne et nytt vindu"
-
-#: src/file-manager/fm-directory-view.c:1502
-#: src/file-manager/fm-directory-view.c:1715 src/nautilus-window-menus.c:149
-msgid "Select All"
-msgstr "Velg alt"
-
-#: src/nautilus-window-menus.c:222 src/nautilus-window-toolbars.c:51
-msgid "Back"
-msgstr "Tilbake"
-
-#: src/nautilus-window-menus.c:222
-msgid "Go to the previous visited location"
-msgstr "Gå til forrige plassering"
-
-#: src/nautilus-window-menus.c:229 src/nautilus-window-toolbars.c:54
-msgid "Forward"
-msgstr "Fremover"
-
-#: src/nautilus-window-menus.c:229
-msgid "Go to the next visited location"
-msgstr "Gå til neste plassering"
-
-#: src/nautilus-window-menus.c:236 src/nautilus-window-toolbars.c:57
-msgid "Up"
-msgstr "Opp"
-
-#: src/nautilus-window-menus.c:236
-msgid "Go to the location that contains this one"
-msgstr "Gå opp et nivå"
-
-#: src/nautilus-window-menus.c:243 src/nautilus-window-toolbars.c:64
-msgid "Home"
-msgstr "Hjem"
-
-#: src/nautilus-window-menus.c:243
-msgid "Go to the home location"
-msgstr "Gå hjem"
-
-#: src/nautilus-window-menus.c:272
-msgid "Color selector"
-msgstr "Fargevelger"
-
-#: src/nautilus-window-menus.c:291
-msgid "_Add Bookmark"
-msgstr "_Legg til bokmerke"
-
-#: src/nautilus-window-menus.c:292
-msgid "Add a bookmark for the current location to this menu."
-msgstr "Legg til et bokmerke for nåværende plassering i denne menyen."
-
-#: src/nautilus-window-menus.c:296
-msgid "_Edit Bookmarks..."
-msgstr "R_ediger bokmerker..."
-
-#: src/nautilus-window-menus.c:297
-msgid "Display a window that allows editing the bookmarks in this menu."
-msgstr "Vis et vindu som tillater redigering av bokmerkene i denne menyen."
-
-#: src/nautilus-window-menus.c:323
-msgid "_General Settings..."
-msgstr "_Generelle innstillinger..."
-
-#: src/nautilus-window-menus.c:323
-msgid "Customize various aspects of Nautilus's appearance and behavior"
-msgstr "Tilpass forskjellige aspekter ved Nautilus' utseende og oppførsel"
-
-#: src/nautilus-window-menus.c:331
-msgid "Use _Eazel Theme Icons"
-msgstr "Bruk _Eazel temaikoner"
-
-#: src/nautilus-window-menus.c:332
-msgid "Select whether to use standard or Eazel icons"
-msgstr "Velg om standard eller Eazel ikoner skal brukes"
-
-#: src/nautilus-window-menus.c:343
-msgid "About Nautilus..."
-msgstr "Om Nautilus..."
-
-#: src/nautilus-window-menus.c:343
-msgid "Info about the Nautilus program"
-msgstr "Info om Nautilus programmet"
-
-#: src/nautilus-window-menus.c:352
-msgid "Show Color selector..."
-msgstr "Vis fargevelger..."
-
-#: src/nautilus-window-menus.c:352
-msgid "Show the color picker window"
-msgstr "Vis fargevelger vinduet"
-
-#: src/nautilus-window-menus.c:360
-msgid "_Go"
-msgstr "_Gå"
-
-#: src/nautilus-window-menus.c:361
-msgid "_Bookmarks"
-msgstr "_Bokmerker"
-
-#: src/nautilus-window-menus.c:364
-msgid "_Debug"
-msgstr "_Feilsøk"
-
-#: src/nautilus-window-menus.c:412
-msgid "Go to the specified location"
-msgstr "Gå til spesifisert lokasjon"
-
-#: src/nautilus-window-menus.c:546 src/ntl-window-msgs.c:209
+#: src/nautilus-window-menus.c:288 src/ntl-window-msgs.c:209
 #: src/ntl-window-msgs.c:244 src/ntl-window-msgs.c:245
 msgid "Nautilus"
 msgstr "Nautilus"
 
-#: src/nautilus-window-menus.c:550
+#: src/nautilus-window-menus.c:292
 msgid "The Cool Shell Program"
 msgstr "Det kule skallprogrammet"
 
-#: src/nautilus-window-toolbars.c:51
+#: src/nautilus-window-menus.c:316
+msgid "Color selector"
+msgstr "Fargevelger"
+
+#: src/nautilus-window-menus.c:367
+msgid "Go to the specified location"
+msgstr "Gå til spesifisert lokasjon"
+
+#. File menu
+#: src/nautilus-window-menus.c:586
+msgid "_File"
+msgstr "_Fil"
+
+#: src/nautilus-window-menus.c:590
+msgid "_New Window"
+msgstr "_Nytt vindu"
+
+#: src/nautilus-window-menus.c:591
+msgid "Create a new window"
+msgstr "Åpne et nytt vindu"
+
+#: src/nautilus-window-menus.c:602
+msgid "_Close Window"
+msgstr "_Lukk vindu"
+
+#: src/nautilus-window-menus.c:603
+msgid "Close this window"
+msgstr "Lukk dette vinduet"
+
+#: src/nautilus-window-menus.c:616
+msgid "_Exit"
+msgstr "_Avslutt"
+
+#: src/nautilus-window-menus.c:617
+msgid "Exit from Nautilus"
+msgstr "Gå ut av Nautilus"
+
+#. Edit menu
+#: src/nautilus-window-menus.c:628
+msgid "_Edit"
+msgstr "_Rediger"
+
+#. Allow undo if text has been edited
+#: src/file-manager/fm-list-view.c:1063 src/nautilus-window-menus.c:632
+msgid "_Undo"
+msgstr "An_gre"
+
+#: src/nautilus-window-menus.c:633
+msgid "Undo the last text change"
+msgstr "Angre forrige tekstendring"
+
+#: src/nautilus-window-menus.c:646
+msgid "_Cut Text"
+msgstr "_Klipp ut tekst"
+
+#: src/nautilus-window-menus.c:647
+msgid "Cuts the selected text to the clipboard"
+msgstr "Klipper ut valgt tekst til utklippstavlen"
+
+#: src/nautilus-window-menus.c:658
+msgid "_Copy Text"
+msgstr "_Kopier tekst"
+
+#: src/nautilus-window-menus.c:659
+msgid "Copies the selected text to the clipboard"
+msgstr "Kopierer valgt tekst til utklippstavlen"
+
+#: src/nautilus-window-menus.c:670
+msgid "_Paste Text"
+msgstr "_Lim inn tekst"
+
+#: src/nautilus-window-menus.c:671
+msgid "Pastes the text stored on the clipboard"
+msgstr "Limer inn teksten som er lagret på utklippstavlen"
+
+#: src/nautilus-window-menus.c:682
+msgid "C_lear Text"
+msgstr "F_jern tekst"
+
+#: src/nautilus-window-menus.c:683
+msgid "Removes the selected text without putting it on the clipboard"
+msgstr "Fjerner den valgte teksten uten å plassere den på utklippstavlen"
+
+#: src/file-manager/fm-directory-view.c:1709 src/nautilus-window-menus.c:696
+msgid "_Select All"
+msgstr "_Velg alt"
+
+#. Go menu
+#: src/nautilus-window-menus.c:707
+msgid "_Go"
+msgstr "_Gå"
+
+#: src/nautilus-window-menus.c:711
+msgid "_Back"
+msgstr "_Tilbake"
+
+#: src/nautilus-window-menus.c:712
+msgid "Go to the previous visited location"
+msgstr "Gå til forrige plassering"
+
+#: src/nautilus-window-menus.c:723
+msgid "_Forward"
+msgstr "_Fremover"
+
+#: src/nautilus-window-menus.c:724
+msgid "Go to the next visited location"
+msgstr "Gå til neste plassering"
+
+#: src/nautilus-window-menus.c:735
+msgid "_Up"
+msgstr "_Opp"
+
+#: src/nautilus-window-menus.c:736
+msgid "Go to the location that contains this one"
+msgstr "Gå opp et nivå"
+
+#: src/nautilus-window-menus.c:747
+msgid "_Home"
+msgstr "_Hjem"
+
+#: src/nautilus-window-menus.c:748
+msgid "Go to the home location"
+msgstr "Gå hjem"
+
+#. Bookmarks
+#: src/nautilus-window-menus.c:761
+msgid "_Bookmarks"
+msgstr "_Bokmerker"
+
+#: src/nautilus-window-menus.c:765
+msgid "_Add Bookmark"
+msgstr "_Legg til bokmerke"
+
+#: src/nautilus-window-menus.c:766
+msgid "Add a bookmark for the current location to this menu"
+msgstr "Legg til et bokmerke for nåværende plassering i denne menyen"
+
+#: src/nautilus-window-menus.c:777
+msgid "_Edit Bookmarks..."
+msgstr "R_ediger bokmerker..."
+
+#: src/nautilus-window-menus.c:778
+msgid "Display a window that allows editing the bookmarks in this menu"
+msgstr "Vis et vindu som tillater redigering av bokmerkene i denne menyen"
+
+#. Settings
+#: src/nautilus-window-menus.c:787
+msgid "_Settings"
+msgstr "_Innstillinger"
+
+#: src/nautilus-window-menus.c:791
+msgid "_General Settings..."
+msgstr "_Generelle innstillinger..."
+
+#: src/nautilus-window-menus.c:792
+msgid "Customize various aspects of Nautilus's appearance and behavior"
+msgstr "Tilpass forskjellige aspekter ved Nautilus' utseende og oppførsel"
+
+#: src/nautilus-window-menus.c:809
+msgid "Use _Eazel Theme Icons"
+msgstr "Bruk _Eazel temaikoner"
+
+#: src/nautilus-window-menus.c:810
+msgid "Select whether to use standard or Eazel icons"
+msgstr "Velg om standard eller Eazel ikoner skal brukes"
+
+#. Help
+#: src/nautilus-window-menus.c:818
+msgid "_Help"
+msgstr "_Hjelp"
+
+#: src/nautilus-window-menus.c:822
+msgid "_About Nautilus..."
+msgstr "_Om Nautilus..."
+
+#: src/nautilus-window-menus.c:823
+msgid "Displays information about the Nautilus program"
+msgstr "Viser informasjon om Nautilus programmet"
+
+#. Debug
+#: src/nautilus-window-menus.c:833
+msgid "_Debug"
+msgstr "_Feilsøk"
+
+#: src/nautilus-window-menus.c:837
+msgid "Show _Color selector..."
+msgstr "Vis _fargevelger..."
+
+#: src/nautilus-window-menus.c:838
+msgid "Show the color picker window"
+msgstr "Vis fargevelger vinduet"
+
+#: src/nautilus-window-toolbars.c:77
+msgid "Back"
+msgstr "Tilbake"
+
+#: src/nautilus-window-toolbars.c:77
 msgid "Go to the previously visited directory"
 msgstr "Gå til forrige besøkte katalog"
 
-#: src/nautilus-window-toolbars.c:54
+#: src/nautilus-window-toolbars.c:80
+msgid "Forward"
+msgstr "Fremover"
+
+#: src/nautilus-window-toolbars.c:80
 msgid "Go to the next directory"
 msgstr "Gå til neste katalog"
 
-#: src/nautilus-window-toolbars.c:57
+#: src/nautilus-window-toolbars.c:83
+msgid "Up"
+msgstr "Opp"
+
+#: src/nautilus-window-toolbars.c:83
 msgid "Go up a level in the directory heirarchy"
 msgstr "Gå opp et nivå i kataloghierarkiet"
 
-#: src/nautilus-window-toolbars.c:60
+#: src/nautilus-window-toolbars.c:86
 msgid "Reload"
 msgstr "Gjenles"
 
-#: src/nautilus-window-toolbars.c:60
+#: src/nautilus-window-toolbars.c:86
 msgid "Reload this view"
 msgstr "Gjenles denne visningen"
 
-#: src/nautilus-window-toolbars.c:64
+#: src/nautilus-window-toolbars.c:90
+msgid "Home"
+msgstr "Hjem"
+
+#: src/nautilus-window-toolbars.c:90
 msgid "Go to your home directory"
 msgstr "Gå til din hjemmekatalog"
 
-#: src/file-manager/dfos-xfer.c:192 src/nautilus-window-toolbars.c:68
+#: src/file-manager/dfos-xfer.c:192 src/nautilus-window-toolbars.c:94
 msgid "Stop"
 msgstr "Stopp"
 
-#: src/nautilus-window-toolbars.c:68
+#: src/nautilus-window-toolbars.c:94
 msgid "Interrupt loading"
 msgstr "Avbryt lastingen"
 
-#: src/ntl-main.c:55
+#: src/ntl-main.c:57
 msgid "Perform high-speed self-check tests."
 msgstr "Utfør hurtige selvsjekk-tester."
 
@@ -203,12 +298,12 @@ msgstr "Kontroll %p"
 msgid "Nautilus: %s"
 msgstr "Nautilus: %s"
 
-#: src/ntl-window-msgs.c:619
+#: src/ntl-window-msgs.c:622
 #, c-format
 msgid "You do not have the right permissions to view \"%s.\""
 msgstr "Du har ikke rettigheter til å vise \"%s.\""
 
-#: src/ntl-window-msgs.c:1082
+#: src/ntl-window-msgs.c:1085
 #, c-format
 msgid ""
 "Couldn't find \"%s\".\n"
@@ -217,7 +312,7 @@ msgstr ""
 "Kunne ikke finne \"%s\".\n"
 "Vennligst sjekk stavingen og forsøk igjen."
 
-#: src/ntl-window-msgs.c:1086
+#: src/ntl-window-msgs.c:1089
 #, c-format
 msgid ""
 "\"%s\" is not a valid location.\n"
@@ -226,7 +321,7 @@ msgstr ""
 "\"%s\" er ikke en gyldig lokasjon.\n"
 "Vennligst sjekk stavingen og forsøk igjen."
 
-#: src/ntl-window-msgs.c:1093
+#: src/ntl-window-msgs.c:1096
 #, c-format
 msgid ""
 "Couldn't display \"%s\",\n"
@@ -235,7 +330,7 @@ msgstr ""
 "Kunne ikke vise \"%s\",\n"
 "fordi Nautilus ikke kan håndtere oppføringer av type \"%s\"."
 
-#: src/ntl-window-msgs.c:1097
+#: src/ntl-window-msgs.c:1100
 #, c-format
 msgid ""
 "Couldn't display \"%s\",\n"
@@ -245,7 +340,7 @@ msgstr ""
 "fordi Nautilus ikke kan håndtere oppføringer av denne typen."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/ntl-window-msgs.c:1107
+#: src/ntl-window-msgs.c:1110
 #, c-format
 msgid ""
 "Couldn't display \"%s\",\n"
@@ -258,21 +353,21 @@ msgstr ""
 #. * When this comes up, we should figure out what's really happening
 #. * and add another specific case.
 #.
-#: src/ntl-window-msgs.c:1117
+#: src/ntl-window-msgs.c:1120
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus kan ikke vise \"%s\"."
 
-#: src/ntl-window-msgs.c:1174
+#: src/ntl-window-msgs.c:1177
 msgid "Gathering information"
 msgstr "Samler informasjon"
 
-#: src/ntl-window.c:717
+#: src/ntl-window.c:721
 #, c-format
 msgid "View as %s"
 msgstr "Vis som %s"
 
-#: src/ntl-window.c:1028
+#: src/ntl-window.c:1032
 msgid "Close"
 msgstr "Lukk"
 
@@ -474,6 +569,10 @@ msgstr "Er du sikker på at du vil slette \"%s\"?"
 msgid "Are you sure you want to delete the %d selected items?"
 msgstr "Er du sikker på at du vil slette de %d valgte oppføringene?"
 
+#: src/file-manager/fm-directory-view.c:1502
+msgid "Select All"
+msgstr "Velg alt"
+
 #: src/file-manager/fm-directory-view.c:1503
 msgid "Zoom In"
 msgstr "Zoom inn"
@@ -483,7 +582,7 @@ msgid "Zoom Out"
 msgstr "Zoom ut"
 
 #: src/file-manager/fm-directory-view.c:1519
-#: src/file-manager/fm-directory-view.c:1630
+#: src/file-manager/fm-directory-view.c:1624
 msgid "_Open"
 msgstr "_Åpne"
 
@@ -512,59 +611,59 @@ msgstr "_Dupliser"
 msgid "Set _Properties..."
 msgstr "Sett egenska_per..."
 
-#: src/file-manager/fm-directory-view.c:1631
+#: src/file-manager/fm-directory-view.c:1625
 msgid "Open the selected item in this window"
 msgstr "Åpne valgt oppføring i dette vinduet"
 
-#: src/file-manager/fm-directory-view.c:1641
+#: src/file-manager/fm-directory-view.c:1635
 msgid "Open in New Window"
 msgstr "Åpne i nytt vindu"
 
-#: src/file-manager/fm-directory-view.c:1642
+#: src/file-manager/fm-directory-view.c:1636
 msgid "Open each selected item in a new window"
 msgstr "Åpne hver valgt oppføring i et nytt vindu"
 
-#: src/file-manager/fm-directory-view.c:1655
+#: src/file-manager/fm-directory-view.c:1649
 msgid "Set Properties..."
 msgstr "Sett egenskaper..."
 
-#: src/file-manager/fm-directory-view.c:1656
+#: src/file-manager/fm-directory-view.c:1650
 msgid "View or modify the properties of the selected items"
 msgstr "Vis eller modifiser egenskapene for de valgte oppføringene"
 
-#: src/file-manager/fm-directory-view.c:1670
+#: src/file-manager/fm-directory-view.c:1664
 msgid "Delete..."
 msgstr "Slett..."
 
-#: src/file-manager/fm-directory-view.c:1671
+#: src/file-manager/fm-directory-view.c:1665
 msgid "Delete all selected items"
 msgstr "Slett alle valgte oppføringer"
 
-#: src/file-manager/fm-directory-view.c:1682
+#: src/file-manager/fm-directory-view.c:1676
 msgid "Move to Trash"
 msgstr "Flytt til søppelkurv"
 
-#: src/file-manager/fm-directory-view.c:1683
+#: src/file-manager/fm-directory-view.c:1677
 msgid "Move all selected items to Trash"
 msgstr "Flytt alle valgte oppføringer til søppelkurven"
 
-#: src/file-manager/fm-directory-view.c:1693
+#: src/file-manager/fm-directory-view.c:1687
 msgid "Duplicate"
 msgstr "Dupliser"
 
-#: src/file-manager/fm-directory-view.c:1694
+#: src/file-manager/fm-directory-view.c:1688
 msgid "Duplicate all selected items"
 msgstr "Dupliser alle valgte oppføringer"
 
-#: src/file-manager/fm-directory-view.c:1704
-msgid "Empty Trash"
-msgstr "Tøm søppelkurv"
+#: src/file-manager/fm-directory-view.c:1698
+msgid "_Empty Trash"
+msgstr "_Tøm søppelkurv"
 
-#: src/file-manager/fm-directory-view.c:1705
-msgid "Empty the Trash folder"
-msgstr "Tøm søppelkurven"
+#: src/file-manager/fm-directory-view.c:1699
+msgid "Delete all items in the trash"
+msgstr "Slett alle oppføringer i søppelkurven"
 
-#: src/file-manager/fm-directory-view.c:1716
+#: src/file-manager/fm-directory-view.c:1710
 msgid "Select all items in this window"
 msgstr "Velg alle oppføringer i dette vinduet"
 
@@ -612,87 +711,76 @@ msgstr "Nautilus: Ikontekst"
 msgid ""
 "Choose the order for information to appear beneath icon names. More "
 "information appears as you zoom in closer."
-msgstr "Velg rekkefølgen for informasjonen som skal vises under ikonnavnene. Mer informasjon vises etter hvert som du zoomer inn."
+msgstr ""
+"Velg rekkefølgen for informasjonen som skal vises under ikonnavnene. Mer "
+"informasjon vises etter hvert som du zoomer inn."
 
-#: src/file-manager/fm-icon-view.c:455
+#: src/file-manager/fm-icon-view.c:441
 msgid "_Stretch Icon"
 msgstr "_Strekk ikon"
 
-#: src/file-manager/fm-icon-view.c:463
+#: src/file-manager/fm-icon-view.c:449
 msgid "_Restore Icons to Unstretched Size"
 msgstr "_Gjenopprett ikoner til ikke-strukket størrelse"
 
-#: src/file-manager/fm-icon-view.c:465
+#: src/file-manager/fm-icon-view.c:451
 msgid "_Restore Icon to Unstretched Size"
 msgstr "_Gjenopprett ikon til ikke-strukket størrelse"
 
-#: src/file-manager/fm-icon-view.c:470
+#: src/file-manager/fm-icon-view.c:456
 msgid "Customize _Icon Text..."
 msgstr "Egendefinert _ikontekst..."
 
 #. Modify file name. We only allow this on a single file selection.
-#: src/file-manager/fm-icon-view.c:474
+#: src/file-manager/fm-icon-view.c:460 src/file-manager/fm-list-view.c:1058
 msgid "_Rename"
 msgstr "End_re"
 
-#. Allow undo if text has been edited
-#: src/file-manager/fm-icon-view.c:479
-msgid "_Undo"
-msgstr "An_gre"
-
-#: src/file-manager/fm-icon-view.c:926
+#: src/file-manager/fm-icon-view.c:908
 msgid "Make the selected icon stretchable"
 msgstr "Gjør valgt ikon strekkbart"
 
-#: src/file-manager/fm-icon-view.c:930
+#: src/file-manager/fm-icon-view.c:912
 msgid "Restore each selected icon to its original size"
 msgstr "Gjenopprett original størrelse for alle valgte ikoner"
 
-#: src/file-manager/fm-icon-view.c:939
+#: src/file-manager/fm-icon-view.c:921
 msgid "Choose which information appears beneath each icon's name"
 msgstr "Velg hvilken informasjon som skal vises under hvert ikons navn"
 
-#: src/file-manager/fm-icon-view.c:950
+#: src/file-manager/fm-icon-view.c:932
 msgid "Auto Layout"
 msgstr "Auto-plassering"
 
-#: src/file-manager/fm-icon-view.c:951
+#: src/file-manager/fm-icon-view.c:933
 msgid "Keep icons sorted in rows and columns"
 msgstr "Hold ikoner sortert i rader og kolonner"
 
-#: src/file-manager/fm-icon-view.c:957
+#: src/file-manager/fm-icon-view.c:939
 msgid "Manual Layout"
 msgstr "Manuell plassering"
 
-#: src/file-manager/fm-icon-view.c:958
+#: src/file-manager/fm-icon-view.c:940
 msgid "Leave icons wherever they are dropped"
 msgstr "La ikoner bli hvor de slippes"
 
-#: src/file-manager/fm-icon-view.c:966
+#: src/file-manager/fm-icon-view.c:948 src/file-manager/fm-list-view.c:917
 msgid "Rename"
 msgstr "Gi nytt navn"
 
-#: src/file-manager/fm-icon-view.c:967
+#: src/file-manager/fm-icon-view.c:949 src/file-manager/fm-list-view.c:918
 msgid "Rename selected item"
 msgstr "Gi nytt navn til valgt oppføring"
 
-#: src/file-manager/fm-icon-view.c:979
-msgid "Undo"
-msgstr "Angre"
-
-#: src/file-manager/fm-icon-view.c:980
-msgid "Undo Rename"
-msgstr "Angre nytt navn"
-
-#: src/file-manager/fm-list-view.c:308
+#: src/file-manager/fm-list-view.c:340
 msgid "Size"
 msgstr "Størrelse"
 
-#: src/file-manager/fm-list-view.c:309
+#: src/file-manager/fm-list-view.c:341
 msgid "Type"
 msgstr "Type"
 
-#: src/file-manager/fm-list-view.c:310
+#: src/file-manager/fm-list-view.c:342
 msgid "Date Modified"
 msgstr "Dato endret"
 
@@ -714,65 +802,67 @@ msgstr "Emblemer"
 msgid ""
 "This is a placeholder for the final emblems design. For now, you can turn "
 "some hard-wired properties with corresponding emblems on and off."
-msgstr "Dette er en plassholder for den endelige emblem-utformingen. Inntil videre kan du slå av og på noen fastsatte egenskaper med korresponderende emblemer."
+msgstr ""
+"Dette er en plassholder for den endelige emblem-utformingen. Inntil videre "
+"kan du slå av og på noen fastsatte egenskaper med korresponderende emblemer."
 
 #: nautilus-widgets/nautilus-preferences-dialog.c:200
 msgid "Prefs Box"
 msgstr "Brukervalg-boks"
 
 #. today, use special word
-#: libnautilus-extensions/nautilus-file.c:1045
+#: libnautilus-extensions/nautilus-file.c:1038
 msgid "today %-I:%M %p"
 msgstr "i dag %-I:%M %p"
 
 #. yesterday, use special word
-#: libnautilus-extensions/nautilus-file.c:1048
+#: libnautilus-extensions/nautilus-file.c:1041
 msgid "yesterday %-I:%M %p"
 msgstr "i går %-I:%M %p"
 
 #. current week, include day of week
-#: libnautilus-extensions/nautilus-file.c:1051
+#: libnautilus-extensions/nautilus-file.c:1044
 msgid "%A %-m/%-d/%y %-I:%M %p"
 msgstr "%A %-m/%-d/%y %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:1053
+#: libnautilus-extensions/nautilus-file.c:1046
 msgid "%-m/%-d/%y %-I:%M %p"
 msgstr "%-m/%-d/%y %-I:%M %p"
 
-#: libnautilus-extensions/nautilus-file.c:1171
+#: libnautilus-extensions/nautilus-file.c:1164
 msgid "unknown owner"
 msgstr "ukjent eier"
 
-#: libnautilus-extensions/nautilus-file.c:1202
+#: libnautilus-extensions/nautilus-file.c:1195
 msgid "unknown group"
 msgstr "ukjent gruppe"
 
-#: libnautilus-extensions/nautilus-file.c:1254
+#: libnautilus-extensions/nautilus-file.c:1247
 msgid "xxx"
 msgstr "xxx"
 
-#: libnautilus-extensions/nautilus-file.c:1254
+#: libnautilus-extensions/nautilus-file.c:1247
 msgid "--"
 msgstr "--"
 
-#: libnautilus-extensions/nautilus-file.c:1257
+#: libnautilus-extensions/nautilus-file.c:1250
 msgid "0 items"
 msgstr "0 oppføringer"
 
-#: libnautilus-extensions/nautilus-file.c:1260
+#: libnautilus-extensions/nautilus-file.c:1253
 msgid "1 item"
 msgstr "1 oppføring"
 
-#: libnautilus-extensions/nautilus-file.c:1262
+#: libnautilus-extensions/nautilus-file.c:1255
 #, c-format
 msgid "%u items"
 msgstr "%u oppføringer"
 
-#: libnautilus-extensions/nautilus-file.c:1363
+#: libnautilus-extensions/nautilus-file.c:1356
 msgid "program"
 msgstr "program"
 
-#: libnautilus-extensions/nautilus-file.c:1366
+#: libnautilus-extensions/nautilus-file.c:1359
 msgid "unknown type"
 msgstr "ukjent type"
 
