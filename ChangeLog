@@ -1,3 +1,18 @@
+2001-03-05  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler <darin@eazel.com>
+
+	Fixed bug 7348 (duplicate styles in some fonts)
+
+	* libnautilus-extensions/nautilus-font-picker.c:
+	(font_style_entry_free): New function (extracted from
+	global_font_list_free).
+	(global_font_list_free): Use extracted function.
+	(list_contains_style): New function, looks for matching
+	font_file_name.
+	(global_font_list_populate_callback): free style rather
+	than appending to list if an equivalent is already in list.
+
 2001-03-05  Ramiro Estrugo  <ramiro@eazel.com>
 
 	reviewed by: Darin Adler  <darin@eazel.com>

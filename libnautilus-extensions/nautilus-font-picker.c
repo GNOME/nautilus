@@ -482,6 +482,18 @@ font_make_style (const char *weight,
 	return g_strdup (_(unknown_style));
 }
 
+static void
+font_style_entry_free (FontStyleEntry *entry)
+{
+	if (entry == NULL) {
+		return;
+	}
+
+	g_free (entry->name);
+	g_free (entry->font_file_name);
+	g_free (entry);
+}
+
 /* Global font list */
 static void
 global_font_list_free (void)
@@ -506,9 +518,7 @@ global_font_list_free (void)
 		for (style_node = font_entry->style_list; style_node != NULL; style_node = style_node->next) {
 			g_assert (style_node->data != NULL);
 			style_entry = style_node->data;
-			g_free (style_entry->name);
-			g_free (style_entry->font_file_name);
-			g_free (style_entry);
+			font_style_entry_free (style_entry);
 		}
 		g_list_free (font_entry->style_list);
 
@@ -573,6 +583,23 @@ global_font_list_get (void)
 }
 
 static gboolean
+list_contains_style (GList *styles, FontStyleEntry *style)
+{
+	GList *node;
+	FontStyleEntry *existing_style;
+
+	for (node = styles; node != NULL; node = node->next) {
+		existing_style = node->data;
+		/* If the files are the same, the fonts are the same font */
+		if (strcmp (existing_style->font_file_name, style->font_file_name) == 0) {
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+static gboolean
 global_font_list_populate_callback (const char *font_file_name,
 				    NautilusFontType font_type,
 				    const char *foundry,
@@ -622,7 +649,11 @@ global_font_list_populate_callback (const char *font_file_name,
 	style->name = font_make_style (weight, slant, set_width, char_set_registry, char_set_encoding);
 	style->font_file_name = g_strdup (font_file_name);
 
-	entry->style_list = g_list_append (entry->style_list, style);
+	if (list_contains_style (entry->style_list, style)) {
+		font_style_entry_free (style);
+	} else {
+		entry->style_list = g_list_append (entry->style_list, style);
+	}
 
 	return TRUE;
 }
