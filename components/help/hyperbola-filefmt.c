@@ -1540,16 +1540,16 @@ fmt_toplevel_add_doc (HyperbolaDocTree * tree, char * omf_name)
 
 
 static int
-get_locale_score (GList *li, const xmlChar *locale) 
+get_locale_score (GList *locales, const xmlChar *locale) 
 {
-	int score = 0;
+	GList *node;
+	int score;
 
-	for (li; li != NULL; li = li->next) {
-
-		if (strcmp (locale, (char *) li->data) == 0) {
+	score = 0;
+	for (node = locales; node != NULL; node = node->next) {
+		if (strcmp (locale, (char *) node->data) == 0) {
                         return score;
 		}
-		
 		score++;
 	}
 
@@ -1564,12 +1564,12 @@ get_locale_score (GList *li, const xmlChar *locale)
 static int
 locale_score (GList *locales, xmlNode *doc_node)
 {
-	GList *li;
 	xmlChar *locale;
 	int score;
 
-	if (doc_node == NULL)
+	if (doc_node == NULL) {
 		return -1;
+	}
 
 	locale = xmlGetProp (doc_node, "locale");
 	if (locale == NULL) {
