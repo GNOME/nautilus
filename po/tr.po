@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 0.1.0\n"
-"POT-Creation-Date: 2000-06-09 21:28+0200\n"
-"PO-Revision-Date: 2000-06-09 21:28+0200\n"
+"POT-Creation-Date: 2000-06-10 12:25+0200\n"
+"PO-Revision-Date: 2000-06-10 12:26+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -665,6 +665,7 @@ msgid "Could not set URLType from config file!"
 msgstr "Ayar dosyasýndan URL tipini belirleyemedim !"
 
 #: components/services/install/lib/eazel-install-protocols.c:72
+#: components/services/install/lib/eazel-install-protocols.c:262
 msgid "Could not create an http request !"
 msgstr "Bir http isteðini yaratamadým !"
 
@@ -673,6 +674,7 @@ msgid "Invalid uri !"
 msgstr "Geçersiz URI !"
 
 #: components/services/install/lib/eazel-install-protocols.c:84
+#: components/services/install/lib/eazel-install-protocols.c:272
 msgid "Could not prepare http request !"
 msgstr "Http isteðini hazýrlayamadým !"
 
@@ -684,9 +686,23 @@ msgstr "Eþit olmayan türünü alamadým "
 msgid "Could not get request body!"
 msgstr "Istek içeriðini alamadým !"
 
-#: components/services/install/lib/eazel-install-protocols.c:133
+#: components/services/install/lib/eazel-install-protocols.c:136
 msgid "FTP not supported yet"
 msgstr "FTP þimdilik mevcut deðildir"
+
+#: components/services/install/lib/eazel-install-protocols.c:218
+#, c-format
+msgid "Could not get a URL for %s"
+msgstr "%s için bir adres alamadým"
+
+#: components/services/install/lib/eazel-install-protocols.c:266
+msgid "Invalid uri"
+msgstr "Geçersiz URI"
+
+#: components/services/install/lib/eazel-install-protocols.c:280
+#, c-format
+msgid "Could not retrieve a URL for %s"
+msgstr "%s için bir adres alamadým"
 
 #: components/services/install/lib/eazel-install-rpm-glue.c:111
 msgid "Dry Run Mode Activated.  Packages will not actually be installed ..."
@@ -696,46 +712,46 @@ msgstr "Kuru yükleme yapýlacak. Pakajlar essah yüklenmeyecektir ..."
 msgid "Reading the install package list ..."
 msgstr "YÜklenecek pakajlar listesini okuyorum ..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:230
+#: components/services/install/lib/eazel-install-rpm-glue.c:241
 msgid "Package install successful !"
 msgstr "Pakaj baþarýlý yüklendi !"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:232
+#: components/services/install/lib/eazel-install-rpm-glue.c:243
 msgid "Package install failed !"
 msgstr "Pakaj yüklemesi baþarýsýz oldu !"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:271
+#: components/services/install/lib/eazel-install-rpm-glue.c:282
 msgid "Reading the uninstall package list ..."
 msgstr "Silinecek pakajlar listesini okuyorum ..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:334
+#: components/services/install/lib/eazel-install-rpm-glue.c:345
 msgid "Package uninstall failed !"
 msgstr "Pakaj silinmesi baþarýsýz oldu !"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:626
+#: components/services/install/lib/eazel-install-rpm-glue.c:637
 msgid "Upgrading..."
 msgstr "Yeniliyorum ..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:629
+#: components/services/install/lib/eazel-install-rpm-glue.c:640
 msgid "Installing..."
 msgstr "Yükliyorum ..."
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:703
-#: components/services/install/lib/eazel-install-rpm-glue.c:1031
+#: components/services/install/lib/eazel-install-rpm-glue.c:714
+#: components/services/install/lib/eazel-install-rpm-glue.c:1042
 msgid "Packages database query failed !"
 msgstr "Pakaj bilgi tabanýný sorgulayamadým !"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:714
+#: components/services/install/lib/eazel-install-rpm-glue.c:725
 #, c-format
 msgid "Package %s is not installed"
 msgstr "Pakaj %s yüklü deðil"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:718
+#: components/services/install/lib/eazel-install-rpm-glue.c:729
 #, c-format
 msgid "Error finding index to %s"
 msgstr "%s'nin içeriðini bulamadým"
 
-#: components/services/install/lib/eazel-install-rpm-glue.c:748
+#: components/services/install/lib/eazel-install-rpm-glue.c:759
 msgid "Dependancy check failed."
 msgstr "Gereksenimler denetlemesi baþarýsýz oldu."
 
@@ -747,39 +763,39 @@ msgstr "*** pakaj dökümüne baþlaýyorum ***\n"
 msgid "*** End pkg dump ***\n"
 msgstr "*** pakaj dökümü sonu ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:92
+#: components/services/install/lib/eazel-install-xml-package-list.c:93
 msgid "*** No package nodes! ***\n"
 msgstr "*** Pakaj içerikleri yok ! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:94
+#: components/services/install/lib/eazel-install-xml-package-list.c:95
 msgid "*** Bailing from package parse! ***\n"
 msgstr "*** Pakaj taramasýný hatalardan dolayý býrakýyorum ! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:128
+#: components/services/install/lib/eazel-install-xml-package-list.c:129
 msgid "*** The pkg list file contains no data! ***\n"
 msgstr "*** PAkaj liste dosyasý bilgi içermiyor ! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:133
+#: components/services/install/lib/eazel-install-xml-package-list.c:134
 msgid "*** Cannot find the CATEGORIES xmlnode! ***\n"
 msgstr "*** CATEGORIES xml içeriðini bulamadým ! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:135
+#: components/services/install/lib/eazel-install-xml-package-list.c:136
 msgid "*** Bailing from categories parse! ***\n"
 msgstr "*** Türler taramasýný hatalardan dolayý býrakýyorum ! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:141
+#: components/services/install/lib/eazel-install-xml-package-list.c:142
 msgid "*** No Categories! ***\n"
 msgstr "*** Türler yok ! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:143
+#: components/services/install/lib/eazel-install-xml-package-list.c:144
 msgid "*** Bailing from category parse! ***\n"
 msgstr "*** Tür taramasýný hatalardan dolayý býrakýyorum ! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:223
+#: components/services/install/lib/eazel-install-xml-package-list.c:224
 msgid "*** Error generating xml package list! ***\n"
 msgstr "*** Xml pakaj listesini yaratýrken hata oldu ! ***\n"
 
-#: components/services/install/lib/eazel-install-xml-package-list.c:259
+#: components/services/install/lib/eazel-install-xml-package-list.c:260
 msgid "*** Error reading package list! ***\n"
 msgstr "*** Pakaj listesi okurken hata oldu ! ***\n"
 
@@ -945,24 +961,24 @@ msgstr "Elle düzenlemeye geçeyim mi?"
 msgid "Switch"
 msgstr "Geç"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1352
+#: libnautilus-extensions/nautilus-icon-text-item.c:1442
 #: src/file-manager/fm-icon-view.c:1013
 msgid "Rename"
 msgstr "Yeniden adlandýr"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1353
+#: libnautilus-extensions/nautilus-icon-text-item.c:1443
 msgid "Undo Rename"
 msgstr "Yeniden adlandýrmayý gerit"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1354
+#: libnautilus-extensions/nautilus-icon-text-item.c:1444
 msgid "Restore the old name"
 msgstr "Eski adýna geri dön"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1355
+#: libnautilus-extensions/nautilus-icon-text-item.c:1445
 msgid "Redo Rename"
 msgstr "Yeniden adlandýrmayý yeniden yap"
 
-#: libnautilus-extensions/nautilus-icon-text-item.c:1356
+#: libnautilus-extensions/nautilus-icon-text-item.c:1446
 msgid "Restore the changed name"
 msgstr "Deðiþtirilmiþ adý yeniden yap"
 
@@ -1156,7 +1172,7 @@ msgstr "Resim dosyasýný bulamadým : %s"
 msgid "Couldn't create pixmap from file: %s"
 msgstr "Dosyadan resmi yaratamadým : %s"
 
-#: nautilus-widgets/nautilus-preferences-dialog.c:201
+#: libnautilus-extensions/nautilus-preferences-dialog.c:201
 msgid "Prefs Box"
 msgstr "Ayarlar kutusu"
 
@@ -1942,11 +1958,11 @@ msgstr "Mekan"
 msgid "Remove"
 msgstr "Sil"
 
-#: src/nautilus-main.c:56
+#: src/nautilus-main.c:55
 msgid "Perform high-speed self-check tests."
 msgstr "Çok hýzlý doðrulama deneylerini yap."
 
-#: src/nautilus-main.c:58
+#: src/nautilus-main.c:57
 msgid "Draw background and icons on desktop."
 msgstr "Masaüstünde ardalan ve ikonalarý göster."
 
@@ -1974,17 +1990,17 @@ msgstr "Nautilus"
 msgid "Nautilus: %s"
 msgstr "Nautilus : %s"
 
-#: src/nautilus-window-manage-views.c:641
+#: src/nautilus-window-manage-views.c:644
 #, c-format
 msgid "You do not have the permissions necessary to view \"%s\"."
 msgstr "\"%s\"'ye bakmak için gerekli eriþim haklarýna sahip deðilsin."
 
-#: src/nautilus-window-manage-views.c:1132
+#: src/nautilus-window-manage-views.c:1135
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr "\"%s\"'yi bulamadým .Yazýlmýný bi' gözden geçir ve yeniden dene."
 
-#: src/nautilus-window-manage-views.c:1136
+#: src/nautilus-window-manage-views.c:1139
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
@@ -1992,14 +2008,14 @@ msgstr ""
 "\"%s\" geçerli bir mekan deðildir .Lütfen , yazýlmýný bi' gözden geçir ve "
 "yeniden dene."
 
-#: src/nautilus-window-manage-views.c:1143
+#: src/nautilus-window-manage-views.c:1146
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot handle items of type \"%s\"."
 msgstr ""
 "\"%s\"'i gösteremedim ,zira , Nautilus'un \"%s\" için bir yöneticisi yok."
 
-#: src/nautilus-window-manage-views.c:1147
+#: src/nautilus-window-manage-views.c:1150
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot handle items of this type."
@@ -2007,19 +2023,19 @@ msgstr ""
 "\"%s\"'i gösteremedim ,zira , Nautilus'un bu tip için bir yöneticisi yok."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1157
+#: src/nautilus-window-manage-views.c:1160
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "\"%s\"'i gösteremedim ,zira , Nautilus'un bu tip %s: mekanlarý için bir "
 "yöneticisi yok."
 
-#: src/nautilus-window-manage-views.c:1168
+#: src/nautilus-window-manage-views.c:1171
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "\"%s\" Nautilus tarafýndan gösterilemiyor ."
 
-#: src/nautilus-window-manage-views.c:1230
+#: src/nautilus-window-manage-views.c:1233
 msgid "Gathering information"
 msgstr "Geçici bilgiler"
 
