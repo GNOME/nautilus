@@ -397,6 +397,7 @@ rpm_show_progress (const Header h,
 		name = "";
 		size = 0;
 		fd = fdOpen (filename, O_RDONLY, 0);
+		/*
 		headerGetEntry (h,
 				RPMTAG_SIZE,
 				NULL,
@@ -407,11 +408,15 @@ rpm_show_progress (const Header h,
 				NULL,
 				(void **)&name,
 				NULL);
+		*/
+		service->private->packsys.rpm.packages_installed ++;
+
 		size = *sizep;
 
 		return fd;
 
 	case RPMCALLBACK_INST_CLOSE_FILE:
+		service->private->packsys.rpm.current_installed_size += total;
 		fdClose (fd);
 		break;
 			
@@ -422,7 +427,14 @@ rpm_show_progress (const Header h,
 		PackageData *pack;
 		pack = packagedata_new ();
 		pack->name = g_strdup (filename);		
-		eazel_install_emit_install_progress (service, pack, amount, total);
+		eazel_install_emit_install_progress (service, 
+						     pack, 
+						     service->private->packsys.rpm.packages_installed, 
+						     service->private->packsys.rpm.num_packages,
+						     amount, 
+						     total,
+						     service->private->packsys.rpm.current_installed_size + amount,
+						     service->private->packsys.rpm.total_size);
 		packagedata_destroy (pack);
 	}
 	break;
@@ -532,6 +544,7 @@ do_rpm_install (EazelInstall *service,
 			num_binary_packages++;
 		}
 	}
+	g_message ("TOTALS: bytes = %d, packages = %d", total_size, num_packages);
 	if (num_binary_packages) {
 		/* Open the rpm db */
 		if (rpmdbOpen (root_dir, &db, mode, 0644)) {
@@ -610,6 +623,13 @@ do_rpm_install (EazelInstall *service,
 		else {
 			g_message (_("Installing..."));
 		}
+
+		service->private->packsys.rpm.packages_installed = 0;
+		service->private->packsys.rpm.num_packages = num_packages;
+		service->private->packsys.rpm.current_installed_size = 0;
+		service->private->packsys.rpm.total_size = total_size;
+
+		g_message ("Warming up RPM");
 
 		rc = rpmRunTransactions (rpmdep,
                                          rpm_show_progress,

@@ -1,5 +1,36 @@
 2000-07-07  Eskil Heyn Olsen  <eskil@eazel.com>
 
+	* components/services/install/server/.cvsignore:
+	* nautilus-installer/src/.cvsignore:
+	* .cvsignore:
+	* components/services/install/command-line/.cvsignore:
+	Less noise on cvs update.
+	
+	* components/rpmview/nautilus-rpm-view-install.c:
+	(nautilus_rpm_view_install_progress_signal):
+	*
+	components/services/install/command-line/eazel-alt-install-corba.c:
+	(eazel_install_progress_signal):
+	* components/services/install/idl/trilobite-eazel-install.idl:
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(impl_install_progress),
+	(gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT),
+	(eazel_install_callback_class_initialize):
+	* components/services/install/lib/eazel-install-corba-callback.h:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_class_initialize),
+	(eazel_install_emit_install_progress),
+	(eazel_install_emit_install_progress_default):
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-rpm-glue.c:
+	(rpm_show_progress), (do_rpm_install):
+	Fixed bug 1603, install_progress now reports package
+	numnber/total, package size completed/total, total install size
+	completed/total.
+	
+2000-07-07  Eskil Heyn Olsen  <eskil@eazel.com>
+
 	* components/services/install/command-line/genpkg_list.example:
 	Represents the july 5th milestone.
 	

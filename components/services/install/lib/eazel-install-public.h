@@ -64,7 +64,11 @@ struct _EazelInstallClass
 #endif /* EAZEL_INSTALL_NO_CORBA */
 	/* signal prototypes */
 	void (*download_progress) (EazelInstall *service, const char *file, int amount, int total);
-	void (*install_progress)  (EazelInstall *service, const PackageData *pack, int amount, int total);
+	void (*install_progress)  (EazelInstall *service, 
+				   const PackageData *pack, 
+				   int package_num, int num_packages, 
+				   int package_size_completed, int package_size_total,
+				   int total_size_completed, int total_size);
 	void (*dependency_check) (EazelInstall *service, const PackageData *pack, const PackageData *needed);
 	/* 
 	   if the set URLType is PROTOCOL_HTTP, info is a HTTPError struc 
@@ -112,8 +116,9 @@ void eazel_install_open_log                       (EazelInstall *service,
 
 void eazel_install_emit_install_progress          (EazelInstall *service, 
 						   const PackageData *pack,
-						   int amount, 
-						   int total);
+						   int package_num, int num_packages, 
+						   int package_size_completed, int package_size_total,
+						   int total_size_completed, int total_size);
 void eazel_install_emit_download_progress         (EazelInstall *service, 
 						   const char *name,
 						   int amount, 
@@ -137,7 +142,6 @@ void eazel_install_uninstall_packages (EazelInstall *service, GList *categories)
 GList* eazel_install_query_package_system (EazelInstall *service,
 					   const char *query, 
 					   int flags) ;
-
 
 /******************************************************************************/
 /* Beware, from hereonafter, it's #def madness, to make the get/set functions */

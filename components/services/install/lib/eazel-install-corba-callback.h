@@ -50,7 +50,11 @@ struct _EazelInstallCallbackClass
 	/* Called during the download of a file */
 	void (*download_progress) (EazelInstallCallback *service, const char *name, int amount, int total);
 	/* Called during install of a package */
-	void (*install_progress)  (EazelInstallCallback *service, const PackageData *pack, int amount, int total);
+	void (*install_progress)  (EazelInstallCallback *service, 
+				   const PackageData *pack, 
+				   int package_num, int num_packages, 
+				   int package_size_completed, int package_size_total,
+				   int total_size_completed, int total_size);
 	/* Called during uninstall of a package */
 	void (*uninstall_progress)  (EazelInstallCallback *service, const PackageData *pack, int amount, int total);
 

@@ -156,11 +156,17 @@ eazel_download_progress_signal (EazelInstallCallback *service,
 static void 
 eazel_install_progress_signal (EazelInstallCallback *service, 
 				const PackageData *pack,
-				int amount, 
-				int total,
-				char *title) 
+			       int package_num, int num_packages, 
+			       int amount, int total,
+			       int total_size_completed, int total_size, 
+			       char *title)
 {
-	fprintf (stdout, "%s - %s %% %f\r", title, pack->name,
+	fprintf (stdout, "%s - %s (%d/%d), (%d/%d)b - (%d/%d) %% %f\r", 
+		 title, 
+		 pack->name, 
+		 package_num, num_packages,
+		 total_size_completed, total_size,
+		 amount, total,
 		 (total ? ((float)
 			   ((((float) amount) / total) * 100))
 		  : 100.0));

@@ -45,11 +45,20 @@ struct _EazelInstallPrivate {
 			rpmTransactionSet set;
 			struct rpmDependencyConflict *conflicts;
 			int num_conflicts;
+			int total_size, 
+				current_installed_size, 
+				num_packages, 
+				packages_installed;
 		} rpm;
 	} packsys;
 
 	FILE *logfile;
 	char *logfilename;
 };
+
+void gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT (GtkObject * object,
+							GtkSignalFunc func,
+							gpointer func_data, GtkArg * args);
+
 
 #endif /* EAZEL_INSTALL_PRIVATE_H */

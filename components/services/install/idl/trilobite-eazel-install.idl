@@ -93,8 +93,12 @@ module Trilobite {
 			oneway void dependency_check (in PackageDataStruct package, in PackageDataStruct needs);
 			
 			/* Called during (un)installation of a package */
-			oneway void install_progress (in PackageDataStruct package, in long amount, in long total);
-			oneway void uninstall_progress (in PackageDataStruct package, in long amount, in long total);
+			oneway void install_progress (in PackageDataStruct package, 
+							in long package_num, in long num_packages, 
+							in long package_size_completed, in long package_size_total,
+							in long total_size_completed, in long total_size);
+			oneway void uninstall_progress (in PackageDataStruct package, 
+							in long amount, in long total);
 
 			/* Called whenever a package (un)install fails
 			*/

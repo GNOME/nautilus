@@ -46,11 +46,16 @@ nautilus_rpm_view_download_progress_signal (EazelInstallCallback *service,
 static void 
 nautilus_rpm_view_install_progress_signal (EazelInstallCallback *service, 
 					   const PackageData *pack,
-					   int amount, 
-					   int total,
+					   int package_num, int num_packages, 
+					   int amount, int total,
+					   int total_size_completed, int total_size, 
 					   NautilusRPMView *rpm_view) 
 {
-	fprintf (stdout, "Install progress - %s %% %f\r", pack->name,
+	fprintf (stdout, "Install progress - %s (%d/%d), (%d/%d)b - (%d/%d) %% %f\r", 
+		 pack->name, 
+		 package_num, num_packages,
+		 total_size_completed, total_size,
+		 amount, total,
 		 (total ? ((float)
 			   ((((float) amount) / total) * 100))
 		  : 100.0));

@@ -91,12 +91,11 @@ static BonoboObjectClass *eazel_install_parent_class;
 
 void eazel_install_emit_install_progress_default (EazelInstall *service,
 						  const PackageData *pack,
-						  int amount,
-						  int total);
+						  int, int, int, int, int, int);
 void  eazel_install_emit_download_progress_default (EazelInstall *service, 
 						    const char *name,
-						    int amount, 
-						    int total);
+						  int amount,
+						  int total);
 void  eazel_install_emit_download_failed_default (EazelInstall *service, 
 						  const char *name);
 void eazel_install_emit_install_failed_default (EazelInstall *service,
@@ -232,14 +231,15 @@ eazel_install_class_initialize (EazelInstallClass *klass)
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallClass, download_progress),
 				gtk_marshal_NONE__POINTER_INT_INT,
-				GTK_TYPE_NONE, 3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
+				GTK_TYPE_NONE, 3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);	
 	signals[INSTALL_PROGRESS] = 
 		gtk_signal_new ("install_progress",
 				GTK_RUN_LAST,
 				object_class->type,
 				GTK_SIGNAL_OFFSET (EazelInstallClass, install_progress),
-				gtk_marshal_NONE__POINTER_INT_INT,
-				GTK_TYPE_NONE, 3, GTK_TYPE_POINTER, GTK_TYPE_INT, GTK_TYPE_INT);
+				gtk_marshal_NONE__POINTER_INT_INT_INT_INT_INT_INT,
+				GTK_TYPE_NONE, 7, GTK_TYPE_POINTER, 
+				GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT, GTK_TYPE_INT);
 	signals[DOWNLOAD_FAILED] = 
 		gtk_signal_new ("download_failed",
 				GTK_RUN_LAST,
@@ -613,18 +613,25 @@ eazel_install_uninstall_packages (EazelInstall *service, GList *categories)
 void 
 eazel_install_emit_install_progress (EazelInstall *service, 
 				     const PackageData *pack,
-				     int amount, 
-				     int total)
+				     int package_num, int num_packages, 
+				     int package_size_completed, int package_size_total,
+				     int total_size_completed, int total_size)
 {
 	SANITY(service);
-	gtk_signal_emit (GTK_OBJECT (service), signals[INSTALL_PROGRESS], pack, amount, total);
+	gtk_signal_emit (GTK_OBJECT (service), signals[INSTALL_PROGRESS], 
+			 pack,
+			 package_num, num_packages,
+			 package_size_completed, package_size_total,
+			 total_size_completed, total_size);
+
 }
 
 void 
 eazel_install_emit_install_progress_default (EazelInstall *service, 
 					     const PackageData *pack,
-					     int amount, 
-					     int total)
+					     int package_num, int num_packages, 
+					     int package_size_completed, int package_size_total,
+					     int total_size_completed, int total_size)
 {
 #ifndef EAZEL_INSTALL_NO_CORBA
 	CORBA_Environment ev;
@@ -633,7 +640,12 @@ eazel_install_emit_install_progress_default (EazelInstall *service,
 	if (service->callback != CORBA_OBJECT_NIL) {
 		Trilobite_Eazel_PackageDataStruct package;
 		package = corba_packagedatastruct_from_packagedata (pack);
-		Trilobite_Eazel_InstallCallback_install_progress (service->callback, &package, amount, total, &ev);	
+		Trilobite_Eazel_InstallCallback_install_progress (service->callback, 
+								  &package, 
+								  package_num, num_packages,
+								  package_size_completed, package_size_total,
+								  total_size_completed, total_size,
+								  &ev);	
 	} 
 	CORBA_exception_free (&ev);
 #endif /* EAZEL_INSTALL_NO_CORBA */
