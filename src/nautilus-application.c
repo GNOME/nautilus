@@ -401,7 +401,9 @@ nautilus_application_startup (NautilusApplication *application,
 
 	/* We're done with the shell now, so let it go. */
 	Nautilus_Shell_unref (shell, &ev);
+#if 0
 	CORBA_Object_release (shell, &ev);
+#endif
 
 	CORBA_exception_free (&ev);
 }
