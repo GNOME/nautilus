@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus 0.2\n"
-"POT-Creation-Date: 2001-04-29 23:11-0400\n"
-"PO-Revision-Date: 2001-04-29 23:16-04:00\n"
+"POT-Creation-Date: 2001-05-02 09:48-0400\n"
+"PO-Revision-Date: 2001-05-02 10:28-04:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -274,63 +274,63 @@ msgstr "APPENDIKS"
 #. GNU Public  License  and  many  people  are
 #. working on changes to the kernel)
 #. **
+#: components/help/hyperbola-filefmt.c:528
 #: components/help/hyperbola-filefmt.c:530
 #: components/help/hyperbola-filefmt.c:532
 #: components/help/hyperbola-filefmt.c:534
+#: components/help/hyperbola-filefmt.c:535
 #: components/help/hyperbola-filefmt.c:536
 #: components/help/hyperbola-filefmt.c:537
-#: components/help/hyperbola-filefmt.c:538
 #: components/help/hyperbola-filefmt.c:539
 #: components/help/hyperbola-filefmt.c:541
-#: components/help/hyperbola-filefmt.c:543
 msgid "Manual"
 msgstr "Manual"
 
-#: components/help/hyperbola-filefmt.c:530
-#: components/help/hyperbola-filefmt.c:861 data/linksets/apps.xml.h:1
+#: components/help/hyperbola-filefmt.c:528
+#: components/help/hyperbola-filefmt.c:859 data/linksets/apps.xml.h:1
 msgid "Applications"
 msgstr "Applikasjoner"
 
+#: components/help/hyperbola-filefmt.c:530
 #: components/help/hyperbola-filefmt.c:532
 #: components/help/hyperbola-filefmt.c:534
-#: components/help/hyperbola-filefmt.c:536
-#: components/help/hyperbola-filefmt.c:543
+#: components/help/hyperbola-filefmt.c:541
 msgid "Development"
 msgstr "Utvikling"
 
-#: components/help/hyperbola-filefmt.c:532
+#: components/help/hyperbola-filefmt.c:530
 msgid "System Calls"
 msgstr "Systemkall"
 
-#: components/help/hyperbola-filefmt.c:534
+#: components/help/hyperbola-filefmt.c:532
 msgid "Library Functions"
 msgstr "Bibliotekfunksjoner"
 
-#: components/help/hyperbola-filefmt.c:536
+#: components/help/hyperbola-filefmt.c:534
 msgid "Devices"
 msgstr "Enheter"
 
-#: components/help/hyperbola-filefmt.c:537
+#: components/help/hyperbola-filefmt.c:535
 msgid "Configuration Files"
 msgstr "Konfigurasjonsfiler"
 
-#: components/help/hyperbola-filefmt.c:538
+#: components/help/hyperbola-filefmt.c:536
 msgid "Games"
 msgstr "Spill"
 
-#: components/help/hyperbola-filefmt.c:539
+#: components/help/hyperbola-filefmt.c:537
 msgid "Conventions"
 msgstr "Konvensjoner"
 
-#: components/help/hyperbola-filefmt.c:541
+#: components/help/hyperbola-filefmt.c:539
 msgid "System Administration"
 msgstr "Systemadministrasjon"
 
-#: components/help/hyperbola-filefmt.c:543
+#: components/help/hyperbola-filefmt.c:541
 msgid "Kernel Routines"
 msgstr "Kjernerutiner"
 
-#: components/help/hyperbola-filefmt.c:703
+#: components/help/hyperbola-filefmt.c:701
 msgid "Info"
 msgstr "Info"
 
@@ -910,7 +910,7 @@ msgstr "x-imap4-modified-utf7"
 msgid "x-u-escaped"
 msgstr "x-u-escaped"
 
-#: components/mozilla/nautilus-mozilla-content-view.c:808
+#: components/mozilla/nautilus-mozilla-content-view.c:782
 msgid ""
 "A JavaScript function (small software program) on this page tried to open a "
 "new window, but nautilus does not support the opening of new windows by "
@@ -923,7 +923,7 @@ msgstr ""
 "\n"
 "Prøv å vise siden i en annen nettleser, slik som Mozilla eller Netscape."
 
-#: components/mozilla/nautilus-mozilla-content-view.c:809
+#: components/mozilla/nautilus-mozilla-content-view.c:783
 msgid "Nautilus Mozilla View Warning"
 msgstr "Nautilus Mozilla-visning advarsel"
 
@@ -1709,6 +1709,118 @@ msgstr "Factory for musikkvisning"
 msgid "View as Music"
 msgstr "Vis som musikk"
 
+#: components/news/nautilus-news.c:1253
+#, c-format
+msgid "Couldn't load %s"
+msgstr "Kunne ikke laste %s"
+
+#. put up a title that's displayed while we wait
+#: components/news/nautilus-news.c:1493
+#, c-format
+msgid "Loading %s"
+msgstr "Laster %s"
+
+#: components/news/nautilus-news.c:1830
+msgid "Sorry, but you have not specified a name for the site!"
+msgstr "Beklager, men du har ikke spesifisert et navn for dette nettstedet!"
+
+#: components/news/nautilus-news.c:1830
+msgid "Missing Site Name Error"
+msgstr "Feil vedrørende manglende navn på nettsted"
+
+#: components/news/nautilus-news.c:1834
+msgid "Sorry, but you have not specified a URL for the site!"
+msgstr "Beklager, men du hari ikke spesifisert en URL for dette nettstedet!"
+
+#: components/news/nautilus-news.c:1834
+msgid "Missing URL Error"
+msgstr "Feil vedrørende manglende URL"
+
+#: components/news/nautilus-news.c:1850
+msgid "Sorry, but the specified url doesn't seem to be a valid RSS file!"
+msgstr "Beklager, men spesifisert url ser ikke ut til å være en gyldig RSS-fil!"
+
+#: components/news/nautilus-news.c:1850
+msgid "Invalid RSS URL"
+msgstr "Ugyldig RSS-URL"
+
+#: components/news/nautilus-news.c:1930
+#: libnautilus-extensions/nautilus-undo-signal-handlers.c:175
+msgid "Edit"
+msgstr "Rediger"
+
+#: components/news/nautilus-news.c:2189
+msgid "Remove Site"
+msgstr "Fjern nettsted"
+
+#. allocate the name field
+#: components/news/nautilus-news.c:2209
+msgid "Site Name:"
+msgstr "Navn på nettsted:"
+
+#: components/news/nautilus-news.c:2220
+msgid "Site RSS URL:"
+msgstr "RSS URL for nettsted:"
+
+#: components/news/nautilus-news.c:2235
+msgid "Add New Site"
+msgstr "Legg til nytt nettsted"
+
+#. make the add new site label
+#: components/news/nautilus-news.c:2258
+msgid "Add a New Site:"
+msgstr "Legg til et nytt nettsted:"
+
+#: components/news/nautilus-news.c:2267
+msgid "Remove a Site:"
+msgstr "Fjern et nettsted:"
+
+#. add the button box at the bottom with a cancel button
+#: components/news/nautilus-news.c:2275
+#: src/file-manager/fm-directory-view.c:4375
+msgid "Cancel"
+msgstr "Avbryt"
+
+#. add a descriptive label
+#: components/news/nautilus-news.c:2292
+msgid "Select Sites:"
+msgstr "Velg nettsteder:"
+
+#. allocate the button box for the done button
+#: components/news/nautilus-news.c:2307
+#: libnautilus-extensions/nautilus-program-chooser.c:1280
+#: src/nautilus-bookmarks-window.c:123 src/nautilus-property-browser.c:358
+msgid "Done"
+msgstr "Ferdig"
+
+#. add the empty message
+#: components/news/nautilus-news.c:2335
+msgid ""
+"The News panel displays current headlines from your favorite websites.  "
+"Click the 'Select Sites' button to select the sites to display."
+msgstr "Nyhetspanelet viser oppdaterte overskrifter fra dine favorittnettsteder. Klikk 'Velg nettsteder' knappen for å velge nettsteder som skal vises."
+
+#. create a button box to hold the command buttons
+#: components/news/nautilus-news.c:2363
+msgid "Select Sites"
+msgstr "Velg nettsteder"
+
+#: components/news/Nautilus_View_news.oaf.in.h:1
+msgid "Factory for news view"
+msgstr "Factory for nyhetsvisning"
+
+#: components/news/Nautilus_View_news.oaf.in.h:2
+msgid "News"
+msgstr "Nyheter"
+
+#: components/news/Nautilus_View_news.oaf.in.h:3
+msgid "News sidebar panel"
+msgstr "Sidelinjepanel for nyheter"
+
+#: components/news/Nautilus_View_news.oaf.in.h:4
+msgid "News sidebar panel fetches and displays RSS feeds"
+msgstr "Sidelinjepanel for nyheter henter og viser RSS-strømmer"
+
 #: components/notes/Nautilus_View_notes.oaf.in.h:1
 msgid "Factory for annotation view"
 msgstr "Factory for annotasjonsvisning"
@@ -2263,7 +2375,7 @@ msgid "Desktop"
 msgstr "Skrivebord"
 
 #: data/linksets/desktop.xml.h:2 libnautilus-extensions/nautilus-file.c:5171
-#: libnautilus-extensions/nautilus-trash-directory.c:301
+#: libnautilus-extensions/nautilus-trash-directory.c:383
 #: src/file-manager/fm-desktop-icon-view.c:71
 msgid "Trash"
 msgstr "Søppelkurv"
@@ -2476,22 +2588,6 @@ msgstr "ZDNET Linux ressurssenter"
 msgid "Zero-Knowledge"
 msgstr "Zero-Knowledge"
 
-#: icons/ardmore/ardmore.xml.h:1
-msgid "Tahoe"
-msgstr "Tahoe"
-
-#: icons/ardmore/ardmore.xml.h:2
-msgid "This theme uses photo-realistic folders."
-msgstr "Dette temaet bruker fotorealistiske mapper."
-
-#: icons/arlo/arlo.xml.h:1
-msgid "A Teal variation of the Crux theme."
-msgstr "En \"Teal\"-variasjon av Crux-temaet."
-
-#: icons/arlo/arlo.xml.h:2
-msgid "Crux-Teal"
-msgstr "Crux-\"Teal\""
-
 #: icons/crux_eggplant/crux_eggplant.xml.h:1
 msgid "An Eggplant variation of the Crux theme."
 msgstr "En eggplante-variasjon av Crux-temaet."
@@ -2499,6 +2595,14 @@ msgstr "En eggplante-variasjon av Crux-temaet."
 #: icons/crux_eggplant/crux_eggplant.xml.h:2
 msgid "Crux-Eggplant"
 msgstr "Crux-eggplant"
+
+#: icons/crux_teal/crux_teal.xml.h:1
+msgid "A Teal variation of the Crux theme."
+msgstr "En \"Teal\"-variasjon av Crux-temaet."
+
+#: icons/crux_teal/crux_teal.xml.h:2
+msgid "Crux-Teal"
+msgstr "Crux-\"Teal\""
 
 #: icons/default.xml.h:1
 msgid "Default"
@@ -2512,13 +2616,21 @@ msgstr "Dette er standardtemaet for Nautilus."
 msgid "This theme uses the classic GNOME icons."
 msgstr "Dette temaet bruker de klassiske GNOME-ikonene."
 
-#: icons/villanova/villanova.xml.h:1
+#: icons/sierra/sierra.xml.h:1
 msgid "Sierra"
 msgstr "Sierra"
 
-#: icons/villanova/villanova.xml.h:2
+#: icons/sierra/sierra.xml.h:2
 msgid "Uses manila folders and gray-green backgrounds."
 msgstr "Bruker mapper i manila og grågrønne bakgrunner."
+
+#: icons/tahoe/tahoe.xml.h:1
+msgid "Tahoe"
+msgstr "Tahoe"
+
+#: icons/tahoe/tahoe.xml.h:2
+msgid "This theme uses photo-realistic folders."
+msgstr "Dette temaet bruker fotorealistiske mapper."
 
 #. Note to localizers: this font is used for text items in Druid pages
 #: libnautilus-extensions/nautilus-druid-page-eazel.c:381
@@ -3163,13 +3275,13 @@ msgstr "%dde lenke til %s"
 #.
 #. localizers: tag used to detect the first copy of a file
 #: libnautilus-extensions/nautilus-file-operations.c:1226
-#: libnautilus-extensions/nautilus-file-operations.c:2259
+#: libnautilus-extensions/nautilus-file-operations.c:2264
 msgid " (copy)"
 msgstr " (kopi)"
 
 #. localizers: tag used to detect the second copy of a file
 #: libnautilus-extensions/nautilus-file-operations.c:1228
-#: libnautilus-extensions/nautilus-file-operations.c:2259
+#: libnautilus-extensions/nautilus-file-operations.c:2264
 msgid " (another copy)"
 msgstr " (ny kopi)"
 
@@ -3241,148 +3353,148 @@ msgid " (%d"
 msgstr " (%d"
 
 #: libnautilus-extensions/nautilus-file-operations.c:1505
-#: libnautilus-extensions/nautilus-file-operations.c:2089
+#: libnautilus-extensions/nautilus-file-operations.c:2094
 #, c-format
 msgid "Unknown GnomeVFSXferProgressStatus %d"
 msgstr "Ukjent GnomeVFSXferProgressStatus %d"
 
 #. localizers: progress dialog title
-#: libnautilus-extensions/nautilus-file-operations.c:1821
+#: libnautilus-extensions/nautilus-file-operations.c:1826
 msgid "Moving files to the Trash"
 msgstr "Flytter filer til søppelkurv"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-extensions/nautilus-file-operations.c:1823
+#: libnautilus-extensions/nautilus-file-operations.c:1828
 msgid "Files thrown out:"
 msgstr "Filer kastet ut:"
 
 #. localizers: label prepended to the name of the current file moved
-#: libnautilus-extensions/nautilus-file-operations.c:1825
-#: libnautilus-extensions/nautilus-file-operations.c:1841
+#: libnautilus-extensions/nautilus-file-operations.c:1830
+#: libnautilus-extensions/nautilus-file-operations.c:1846
 msgid "Moving"
 msgstr "Flytter"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1826
+#: libnautilus-extensions/nautilus-file-operations.c:1831
 msgid "Preparing to Move to Trash..."
 msgstr "Forbereder flytting til søppel..."
 
 #. localizers: progress dialog title
-#: libnautilus-extensions/nautilus-file-operations.c:1837
+#: libnautilus-extensions/nautilus-file-operations.c:1842
 msgid "Moving files"
 msgstr "Flytter filer"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-extensions/nautilus-file-operations.c:1839
+#: libnautilus-extensions/nautilus-file-operations.c:1844
 msgid "Files moved:"
 msgstr "Filer flyttet:"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1842
+#: libnautilus-extensions/nautilus-file-operations.c:1847
 msgid "Preparing To Move..."
 msgstr "Forbereder flytting..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1843
+#: libnautilus-extensions/nautilus-file-operations.c:1848
 msgid "Finishing Move..."
 msgstr "Fullfører flytting..."
 
 #. localizers: progress dialog title
-#: libnautilus-extensions/nautilus-file-operations.c:1856
+#: libnautilus-extensions/nautilus-file-operations.c:1861
 msgid "Creating links to files"
 msgstr "Oppretter lenker til filer"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-extensions/nautilus-file-operations.c:1858
+#: libnautilus-extensions/nautilus-file-operations.c:1863
 msgid "Files linked:"
 msgstr "Filer lenket:"
 
 #. localizers: label prepended to the name of the current file linked
-#: libnautilus-extensions/nautilus-file-operations.c:1860
+#: libnautilus-extensions/nautilus-file-operations.c:1865
 msgid "Linking"
 msgstr "Lenker"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1861
+#: libnautilus-extensions/nautilus-file-operations.c:1866
 msgid "Preparing to Create Links..."
 msgstr "Forbereder oppretting av lenker..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1862
+#: libnautilus-extensions/nautilus-file-operations.c:1867
 msgid "Finishing Creating Links..."
 msgstr "Fullfører oppretting av lenker..."
 
 #. localizers: progress dialog title
-#: libnautilus-extensions/nautilus-file-operations.c:1869
+#: libnautilus-extensions/nautilus-file-operations.c:1874
 msgid "Copying files"
 msgstr "Kopierer filer"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-extensions/nautilus-file-operations.c:1871
+#: libnautilus-extensions/nautilus-file-operations.c:1876
 msgid "Files copied:"
 msgstr "Filer kopiert:"
 
 #. localizers: label prepended to the name of the current file copied
-#: libnautilus-extensions/nautilus-file-operations.c:1873
+#: libnautilus-extensions/nautilus-file-operations.c:1878
 msgid "Copying"
 msgstr "Kopierer"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1874
+#: libnautilus-extensions/nautilus-file-operations.c:1879
 msgid "Preparing To Copy..."
 msgstr "Forbereder kopiering..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1892
+#: libnautilus-extensions/nautilus-file-operations.c:1897
 msgid "You cannot copy items into the Trash."
 msgstr "Du kan ikke kopiere oppføringer til søppelkurven."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1893
+#: libnautilus-extensions/nautilus-file-operations.c:1898
 msgid "Can't Copy to Trash"
 msgstr "Kan ikke kopiere til søppelkurv"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1920
+#: libnautilus-extensions/nautilus-file-operations.c:1925
 msgid "The Trash must remain on the desktop."
 msgstr "Søppelkurven må befinne seg på skrivebordet."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1921
+#: libnautilus-extensions/nautilus-file-operations.c:1926
 msgid "You cannot move this trash folder."
 msgstr "Du kan ikke flytte denne søppelmappen."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1923
+#: libnautilus-extensions/nautilus-file-operations.c:1928
 msgid "You cannot copy the Trash."
 msgstr "Du kan ikke kopiere søppelkurven."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1924
+#: libnautilus-extensions/nautilus-file-operations.c:1929
 msgid "You cannot copy this trash folder."
 msgstr "Du kan ikke kopiere søppelkurven."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1926
+#: libnautilus-extensions/nautilus-file-operations.c:1931
 msgid "Can't Change Trash Location"
 msgstr "Kan ikke endre plassering av Søppelkurven"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1927
+#: libnautilus-extensions/nautilus-file-operations.c:1932
 msgid "Can't Copy Trash"
 msgstr "Kan ikke kopiere søppelkurven"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1950
+#: libnautilus-extensions/nautilus-file-operations.c:1955
 msgid "You cannot move a folder into itself."
 msgstr "Du kan ikke flytte en mappe til seg selv."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1951
+#: libnautilus-extensions/nautilus-file-operations.c:1956
 msgid "You cannot copy a folder into itself."
 msgstr "Du kan ikke kopiere en mappe over seg selv."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1953
+#: libnautilus-extensions/nautilus-file-operations.c:1958
 msgid "Can't Move Into Self"
 msgstr "Kan ikke flytte til seg selv"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1954
+#: libnautilus-extensions/nautilus-file-operations.c:1959
 msgid "Can't Copy Into Self"
 msgstr "Kan ikke kopiere til seg selv"
 
-#: libnautilus-extensions/nautilus-file-operations.c:1966
+#: libnautilus-extensions/nautilus-file-operations.c:1971
 msgid "You cannot copy a file over itself."
 msgstr "Du kan ikke kopiere en fil over seg selv."
 
-#: libnautilus-extensions/nautilus-file-operations.c:1967
+#: libnautilus-extensions/nautilus-file-operations.c:1972
 msgid "Can't Copy Over Self"
 msgstr "Kan ikke kopiere over seg selv"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2018
+#: libnautilus-extensions/nautilus-file-operations.c:2023
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -3392,7 +3504,7 @@ msgstr ""
 "\n"
 "Du har ikke skriverettigheter til målet."
 
-#: libnautilus-extensions/nautilus-file-operations.c:2021
+#: libnautilus-extensions/nautilus-file-operations.c:2026
 msgid ""
 "Error creating new folder.\n"
 "\n"
@@ -3402,301 +3514,301 @@ msgstr ""
 "\n"
 "Ingen plass på målet."
 
-#: libnautilus-extensions/nautilus-file-operations.c:2024
+#: libnautilus-extensions/nautilus-file-operations.c:2029
 #, c-format
 msgid "Error \"%s\" creating new folder."
 msgstr "Feil \"%s\" under oppretting av ny mappe."
 
-#: libnautilus-extensions/nautilus-file-operations.c:2028
+#: libnautilus-extensions/nautilus-file-operations.c:2033
 msgid "Error creating new folder"
 msgstr "Feil under oppretting av ny mappe"
 
 #. localizers: the initial name of a new folder
-#: libnautilus-extensions/nautilus-file-operations.c:2115
+#: libnautilus-extensions/nautilus-file-operations.c:2120
 msgid "untitled folder"
 msgstr "mappe uten navn"
 
 #. localizers: progress dialog title
-#: libnautilus-extensions/nautilus-file-operations.c:2148
+#: libnautilus-extensions/nautilus-file-operations.c:2153
 msgid "Deleting files"
 msgstr "Sletter filer"
 
 #. localizers: label prepended to the progress count
-#: libnautilus-extensions/nautilus-file-operations.c:2150
-#: libnautilus-extensions/nautilus-file-operations.c:2185
+#: libnautilus-extensions/nautilus-file-operations.c:2155
+#: libnautilus-extensions/nautilus-file-operations.c:2190
 msgid "Files deleted:"
 msgstr "Filer slettet:"
 
 #. localizers: label prepended to the name of the current file deleted
-#: libnautilus-extensions/nautilus-file-operations.c:2152
-#: libnautilus-extensions/nautilus-file-operations.c:2187
+#: libnautilus-extensions/nautilus-file-operations.c:2157
+#: libnautilus-extensions/nautilus-file-operations.c:2192
 msgid "Deleting"
 msgstr "Sletter"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2153
+#: libnautilus-extensions/nautilus-file-operations.c:2158
 msgid "Preparing to Delete files..."
 msgstr "Forbereder sletting av filer..."
 
 #. localizers: progress dialog title
-#: libnautilus-extensions/nautilus-file-operations.c:2183
+#: libnautilus-extensions/nautilus-file-operations.c:2188
 msgid "Emptying the Trash"
 msgstr "Tømmer søppelkurven"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2188
+#: libnautilus-extensions/nautilus-file-operations.c:2193
 msgid "Preparing to Empty the Trash..."
 msgstr "Forbereder tømming av søppelkurven..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:2219
+#: libnautilus-extensions/nautilus-file-operations.c:2224
 msgid ""
 "Are you sure you want to permanently delete all of the items in the Trash?"
 msgstr ""
 "Er du sikker på at du vil slette alle oppføringer i søppelkurven permanent?"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2221
+#: libnautilus-extensions/nautilus-file-operations.c:2226
 msgid "Delete Trash Contents?"
 msgstr "Slett innhold i søppelkurv?"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2222
+#: libnautilus-extensions/nautilus-file-operations.c:2227
 msgid "Empty"
 msgstr "Tøm"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2260
+#: libnautilus-extensions/nautilus-file-operations.c:2265
 msgid "foo"
 msgstr "foo"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2260
-#: libnautilus-extensions/nautilus-file-operations.c:2270
+#: libnautilus-extensions/nautilus-file-operations.c:2265
+#: libnautilus-extensions/nautilus-file-operations.c:2275
 msgid "foo (copy)"
 msgstr "foo (kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2261
+#: libnautilus-extensions/nautilus-file-operations.c:2266
 msgid ".bashrc"
 msgstr ".bashrc"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2261
+#: libnautilus-extensions/nautilus-file-operations.c:2266
 msgid ".bashrc (copy)"
 msgstr ".bashrc (kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2262
+#: libnautilus-extensions/nautilus-file-operations.c:2267
 msgid ".foo.txt"
 msgstr ".foo.txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2262
+#: libnautilus-extensions/nautilus-file-operations.c:2267
 msgid ".foo (copy).txt"
 msgstr ".foo (kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2263
+#: libnautilus-extensions/nautilus-file-operations.c:2268
 msgid "foo foo"
 msgstr "foo foo"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2263
+#: libnautilus-extensions/nautilus-file-operations.c:2268
 msgid "foo foo (copy)"
 msgstr "foo foo (kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2264
+#: libnautilus-extensions/nautilus-file-operations.c:2269
 msgid "foo.txt"
 msgstr "foo.txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2264
-#: libnautilus-extensions/nautilus-file-operations.c:2271
+#: libnautilus-extensions/nautilus-file-operations.c:2269
+#: libnautilus-extensions/nautilus-file-operations.c:2276
 msgid "foo (copy).txt"
 msgstr "foo (kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2265
+#: libnautilus-extensions/nautilus-file-operations.c:2270
 msgid "foo foo.txt"
 msgstr "foo foo.txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2265
-#: libnautilus-extensions/nautilus-file-operations.c:2287
+#: libnautilus-extensions/nautilus-file-operations.c:2270
+#: libnautilus-extensions/nautilus-file-operations.c:2292
 msgid "foo foo (copy).txt"
 msgstr "foo foo (kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2266
+#: libnautilus-extensions/nautilus-file-operations.c:2271
 msgid "foo foo.txt txt"
 msgstr "foo foo.txt txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2266
+#: libnautilus-extensions/nautilus-file-operations.c:2271
 msgid "foo foo (copy).txt txt"
 msgstr "foo foo (kopi).txt txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2267
+#: libnautilus-extensions/nautilus-file-operations.c:2272
 msgid "foo...txt"
 msgstr "foo...txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2267
+#: libnautilus-extensions/nautilus-file-operations.c:2272
 msgid "foo.. (copy).txt"
 msgstr "foo.. (kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2268
+#: libnautilus-extensions/nautilus-file-operations.c:2273
 msgid "foo..."
 msgstr "foo..."
 
-#: libnautilus-extensions/nautilus-file-operations.c:2268
+#: libnautilus-extensions/nautilus-file-operations.c:2273
 msgid "foo... (copy)"
 msgstr "foo... (kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2269
+#: libnautilus-extensions/nautilus-file-operations.c:2274
 msgid "foo. (copy)"
 msgstr "foo. (kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2269
+#: libnautilus-extensions/nautilus-file-operations.c:2274
 msgid "foo. (another copy)"
 msgstr "foo. (ny kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2270
-#: libnautilus-extensions/nautilus-file-operations.c:2272
+#: libnautilus-extensions/nautilus-file-operations.c:2275
+#: libnautilus-extensions/nautilus-file-operations.c:2277
 msgid "foo (another copy)"
 msgstr "foo (ny kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2271
-#: libnautilus-extensions/nautilus-file-operations.c:2273
+#: libnautilus-extensions/nautilus-file-operations.c:2276
+#: libnautilus-extensions/nautilus-file-operations.c:2278
 msgid "foo (another copy).txt"
 msgstr "foo (ny kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2272
+#: libnautilus-extensions/nautilus-file-operations.c:2277
 msgid "foo (3rd copy)"
 msgstr "foo (3dje kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2273
+#: libnautilus-extensions/nautilus-file-operations.c:2278
 msgid "foo (3rd copy).txt"
 msgstr "foo (3dje kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2274
+#: libnautilus-extensions/nautilus-file-operations.c:2279
 msgid "foo foo (another copy).txt"
 msgstr "foo foo (ny kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2274
+#: libnautilus-extensions/nautilus-file-operations.c:2279
 msgid "foo foo (3rd copy).txt"
 msgstr "foo foo (3dje kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2275
+#: libnautilus-extensions/nautilus-file-operations.c:2280
 msgid "foo (13th copy)"
 msgstr "foo (13de kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2275
+#: libnautilus-extensions/nautilus-file-operations.c:2280
 msgid "foo (14th copy)"
 msgstr "foo (14de kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2276
+#: libnautilus-extensions/nautilus-file-operations.c:2281
 msgid "foo (13th copy).txt"
 msgstr "foo (13de kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2276
+#: libnautilus-extensions/nautilus-file-operations.c:2281
 msgid "foo (14th copy).txt"
 msgstr "foo (14de kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2277
+#: libnautilus-extensions/nautilus-file-operations.c:2282
 msgid "foo (21st copy)"
 msgstr "foo (21ste kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2277
-#: libnautilus-extensions/nautilus-file-operations.c:2279
+#: libnautilus-extensions/nautilus-file-operations.c:2282
+#: libnautilus-extensions/nautilus-file-operations.c:2284
 msgid "foo (22nd copy)"
 msgstr "foo (22ndre kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2278
+#: libnautilus-extensions/nautilus-file-operations.c:2283
 msgid "foo (21st copy).txt"
 msgstr "foo (21ste kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2278
-#: libnautilus-extensions/nautilus-file-operations.c:2280
+#: libnautilus-extensions/nautilus-file-operations.c:2283
+#: libnautilus-extensions/nautilus-file-operations.c:2285
 msgid "foo (22nd copy).txt"
 msgstr "foo (22ndre kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2279
-#: libnautilus-extensions/nautilus-file-operations.c:2281
+#: libnautilus-extensions/nautilus-file-operations.c:2284
+#: libnautilus-extensions/nautilus-file-operations.c:2286
 msgid "foo (23rd copy)"
 msgstr "foo (23dje kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2280
-#: libnautilus-extensions/nautilus-file-operations.c:2282
+#: libnautilus-extensions/nautilus-file-operations.c:2285
+#: libnautilus-extensions/nautilus-file-operations.c:2287
 msgid "foo (23rd copy).txt"
 msgstr "foo (23dje kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2281
-#: libnautilus-extensions/nautilus-file-operations.c:2283
+#: libnautilus-extensions/nautilus-file-operations.c:2286
+#: libnautilus-extensions/nautilus-file-operations.c:2288
 msgid "foo (24th copy)"
 msgstr "foo (24de kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2282
-#: libnautilus-extensions/nautilus-file-operations.c:2284
+#: libnautilus-extensions/nautilus-file-operations.c:2287
+#: libnautilus-extensions/nautilus-file-operations.c:2289
 msgid "foo (24th copy).txt"
 msgstr "foo (24de kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2283
+#: libnautilus-extensions/nautilus-file-operations.c:2288
 msgid "foo (25th copy)"
 msgstr "foo (25te kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2284
+#: libnautilus-extensions/nautilus-file-operations.c:2289
 msgid "foo (25th copy).txt"
 msgstr "foo (25te kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2285
+#: libnautilus-extensions/nautilus-file-operations.c:2290
 msgid "foo foo (24th copy)"
 msgstr "foo foo (24de kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2285
+#: libnautilus-extensions/nautilus-file-operations.c:2290
 msgid "foo foo (25th copy)"
 msgstr "foo foo (25te kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2286
+#: libnautilus-extensions/nautilus-file-operations.c:2291
 msgid "foo foo (24th copy).txt"
 msgstr "foo foo (24de kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2286
+#: libnautilus-extensions/nautilus-file-operations.c:2291
 msgid "foo foo (25th copy).txt"
 msgstr "foo foo (25te kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2287
+#: libnautilus-extensions/nautilus-file-operations.c:2292
 msgid "foo foo (100000000000000th copy).txt"
 msgstr "foo foo (100000000000000te kopi).txt"
 
 #. FIXME bugzilla.eazel.com 7701: These are wrong.
-#: libnautilus-extensions/nautilus-file-operations.c:2290
+#: libnautilus-extensions/nautilus-file-operations.c:2295
 msgid "foo (10th copy)"
 msgstr "foo (10de kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2290
+#: libnautilus-extensions/nautilus-file-operations.c:2295
 msgid "foo (11st copy)"
 msgstr "foo (11te kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2291
+#: libnautilus-extensions/nautilus-file-operations.c:2296
 msgid "foo (10th copy).txt"
 msgstr "foo (10de kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2291
+#: libnautilus-extensions/nautilus-file-operations.c:2296
 msgid "foo (11st copy).txt"
 msgstr "foo (11te kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2292
+#: libnautilus-extensions/nautilus-file-operations.c:2297
 msgid "foo (11th copy)"
 msgstr "foo (11te kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2292
+#: libnautilus-extensions/nautilus-file-operations.c:2297
 msgid "foo (12nd copy)"
 msgstr "foo (12te kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2293
+#: libnautilus-extensions/nautilus-file-operations.c:2298
 msgid "foo (11th copy).txt"
 msgstr "foo (12te kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2293
+#: libnautilus-extensions/nautilus-file-operations.c:2298
 msgid "foo (12nd copy).txt"
 msgstr "foo (12te kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2294
+#: libnautilus-extensions/nautilus-file-operations.c:2299
 msgid "foo (12th copy)"
 msgstr "foo (12te kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2294
+#: libnautilus-extensions/nautilus-file-operations.c:2299
 msgid "foo (13rd copy)"
 msgstr "foo (13de kopi)"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2295
+#: libnautilus-extensions/nautilus-file-operations.c:2300
 msgid "foo (12th copy).txt"
 msgstr "foo (12te kopi).txt"
 
-#: libnautilus-extensions/nautilus-file-operations.c:2295
+#: libnautilus-extensions/nautilus-file-operations.c:2300
 msgid "foo (13rd copy).txt"
 msgstr "foo (13de kopi).txt"
 
@@ -3709,227 +3821,237 @@ msgstr "%ld av %ld"
 msgid "GConf Error"
 msgstr "GConf-feil"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:73
+#: libnautilus-extensions/nautilus-global-preferences.c:74
 msgid "Always"
 msgstr "Alltid"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:74
+#: libnautilus-extensions/nautilus-global-preferences.c:75
 msgid "Local Files Only"
 msgstr "Kun lokale filer"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:75
+#: libnautilus-extensions/nautilus-global-preferences.c:76
 msgid "Never"
 msgstr "Aldri"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:80
+#: libnautilus-extensions/nautilus-global-preferences.c:81
 #, c-format
 msgid "25%"
 msgstr "25%"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:81
+#: libnautilus-extensions/nautilus-global-preferences.c:82
 #, c-format
 msgid "50%"
 msgstr "50%"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:82
+#: libnautilus-extensions/nautilus-global-preferences.c:83
 #, c-format
 msgid "75%"
 msgstr "75%"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:83
+#: libnautilus-extensions/nautilus-global-preferences.c:84
 #, c-format
 msgid "100%"
 msgstr "100%"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:84
+#: libnautilus-extensions/nautilus-global-preferences.c:85
 #, c-format
 msgid "150%"
 msgstr "150%"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:85
+#: libnautilus-extensions/nautilus-global-preferences.c:86
 #, c-format
 msgid "200%"
 msgstr "200%"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:86
+#: libnautilus-extensions/nautilus-global-preferences.c:87
 #, c-format
 msgid "400%"
 msgstr "400%"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:91
+#: libnautilus-extensions/nautilus-global-preferences.c:92
 msgid "100 K"
 msgstr "100 K"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:92
+#: libnautilus-extensions/nautilus-global-preferences.c:93
 msgid "500 K"
 msgstr "500 K"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:93
+#: libnautilus-extensions/nautilus-global-preferences.c:94
 msgid "1 MB"
 msgstr "1 MB"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:94
+#: libnautilus-extensions/nautilus-global-preferences.c:95
 msgid "3 MB"
 msgstr "3 MB"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:95
+#: libnautilus-extensions/nautilus-global-preferences.c:96
 msgid "5 MB"
 msgstr "5 MB"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:96
+#: libnautilus-extensions/nautilus-global-preferences.c:97
 msgid "10 MB"
 msgstr "10 MB"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:97
+#: libnautilus-extensions/nautilus-global-preferences.c:98
 msgid "100 MB"
 msgstr "100 MB"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:103
+#: libnautilus-extensions/nautilus-global-preferences.c:104
 msgid "Activate items with a single click"
 msgstr "Aktiver oppføringer med enkeltklikk"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:107
+#: libnautilus-extensions/nautilus-global-preferences.c:108
 msgid "Activate items with a double click"
 msgstr "Aktiver oppføringer med dobbeltklikk"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:115
+#: libnautilus-extensions/nautilus-global-preferences.c:116
 msgid "Execute files when they are clicked"
 msgstr "Kjør filer når de klikkes"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:119
+#: libnautilus-extensions/nautilus-global-preferences.c:120
 msgid "Display files when they are clicked"
 msgstr "Vis filer når de klikkes"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:123
+#: libnautilus-extensions/nautilus-global-preferences.c:124
 msgid "Ask each time"
 msgstr "Spør hver gang"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:130
+#: libnautilus-extensions/nautilus-global-preferences.c:131
 msgid "search by text"
 msgstr "søk etter tekst"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:131
+#: libnautilus-extensions/nautilus-global-preferences.c:132
 msgid "Search for files by file name only"
 msgstr "Kun søk etter filer på navn"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:134
+#: libnautilus-extensions/nautilus-global-preferences.c:135
 msgid "search by text and properties"
 msgstr "søk etter tekst og egenskaper"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:135
+#: libnautilus-extensions/nautilus-global-preferences.c:136
 msgid "Search for files by file name and file properties"
 msgstr "Søk etter filer på tekstinnhold og egenskaper"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:142
+#: libnautilus-extensions/nautilus-global-preferences.c:143
 msgid "Icon View"
 msgstr "Ikonvisning"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:143
+#: libnautilus-extensions/nautilus-global-preferences.c:144
 msgid "List View"
 msgstr "Listevisning"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:148
+#: libnautilus-extensions/nautilus-global-preferences.c:149
+#: src/file-manager/nautilus-icon-view-ui.xml.h:21
+msgid "Manually"
+msgstr "Manuelt"
+
+#: libnautilus-extensions/nautilus-global-preferences.c:151
+#: libnautilus-extensions/nautilus-global-preferences.c:160
 #: src/file-manager/nautilus-icon-view-ui.xml.h:4
 msgid "By Name"
 msgstr "Etter navn"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:149
+#: libnautilus-extensions/nautilus-global-preferences.c:152
+#: libnautilus-extensions/nautilus-global-preferences.c:161
 #: src/file-manager/nautilus-icon-view-ui.xml.h:5
 msgid "By Size"
 msgstr "Etter størrelse"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:150
+#: libnautilus-extensions/nautilus-global-preferences.c:153
+#: libnautilus-extensions/nautilus-global-preferences.c:162
 #: src/file-manager/nautilus-icon-view-ui.xml.h:6
 msgid "By Type"
 msgstr "Etter type"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:151
+#: libnautilus-extensions/nautilus-global-preferences.c:154
+#: libnautilus-extensions/nautilus-global-preferences.c:163
 #: src/file-manager/nautilus-icon-view-ui.xml.h:2
 msgid "By Modification Date"
 msgstr "Etter modifikasjonsdato"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:152
+#: libnautilus-extensions/nautilus-global-preferences.c:155
+#: libnautilus-extensions/nautilus-global-preferences.c:164
 #: src/file-manager/nautilus-icon-view-ui.xml.h:1
 msgid "By Emblems"
 msgstr "Etter emblemer"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:157
+#: libnautilus-extensions/nautilus-global-preferences.c:169
 msgid "8"
 msgstr "8"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:158
+#: libnautilus-extensions/nautilus-global-preferences.c:170
 msgid "10"
 msgstr "10"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:159
+#: libnautilus-extensions/nautilus-global-preferences.c:171
 msgid "12"
 msgstr "12"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:160
+#: libnautilus-extensions/nautilus-global-preferences.c:172
 msgid "14"
 msgstr "14"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:161
+#: libnautilus-extensions/nautilus-global-preferences.c:173
 msgid "16"
 msgstr "16"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:162
+#: libnautilus-extensions/nautilus-global-preferences.c:174
 msgid "18"
 msgstr "18"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:163
+#: libnautilus-extensions/nautilus-global-preferences.c:175
 msgid "20"
 msgstr "20"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:164
+#: libnautilus-extensions/nautilus-global-preferences.c:176
 msgid "22"
 msgstr "22"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:165
+#: libnautilus-extensions/nautilus-global-preferences.c:177
 msgid "24"
 msgstr "24"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:170
+#: libnautilus-extensions/nautilus-global-preferences.c:182
 msgid "size"
 msgstr "størrelse"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:171
+#: libnautilus-extensions/nautilus-global-preferences.c:183
 msgid "type"
 msgstr "type"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:172
+#: libnautilus-extensions/nautilus-global-preferences.c:184
 msgid "date modified"
 msgstr "dato modifisert"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:173
+#: libnautilus-extensions/nautilus-global-preferences.c:185
 msgid "date changed"
 msgstr "dato endret"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:174
+#: libnautilus-extensions/nautilus-global-preferences.c:186
 msgid "date accessed"
 msgstr "dato aksessert"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:175
+#: libnautilus-extensions/nautilus-global-preferences.c:187
 msgid "owner"
 msgstr "eier"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:176
+#: libnautilus-extensions/nautilus-global-preferences.c:188
 msgid "group"
 msgstr "gruppe"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:177
+#: libnautilus-extensions/nautilus-global-preferences.c:189
 msgid "permissions"
 msgstr "rettigheter"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:178
+#: libnautilus-extensions/nautilus-global-preferences.c:190
 msgid "octal permissions"
 msgstr "oktale rettigheter"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:179
+#: libnautilus-extensions/nautilus-global-preferences.c:191
 msgid "MIME type"
 msgstr "MIME-type"
 
-#: libnautilus-extensions/nautilus-global-preferences.c:180
+#: libnautilus-extensions/nautilus-global-preferences.c:192
 msgid "none"
 msgstr "ingen"
 
@@ -3938,7 +4060,7 @@ msgstr "ingen"
 msgid " -_,;.?/&"
 msgstr "-_,;.?/&"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:756
+#: libnautilus-extensions/nautilus-icon-dnd.c:755
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it? This will clobber the stored "
@@ -3948,7 +4070,7 @@ msgstr ""
 "plassering og la oppføringen bli hvor du slapp den? Dette vil ødelegge den "
 "lagrede manuelle plasseringen."
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:760
+#: libnautilus-extensions/nautilus-icon-dnd.c:759
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them? This will clobber the stored "
@@ -3958,7 +4080,7 @@ msgstr ""
 "plassering og la disse oppføringene bli hvor du slapp dem? Dette vil "
 "ødelegge den lagrede manuelle plasseringen."
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:766
+#: libnautilus-extensions/nautilus-icon-dnd.c:765
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave this item where you dropped it?"
@@ -3966,7 +4088,7 @@ msgstr ""
 "Denne katalogen bruker automatisk plassering. Ønsker du å bytte til manuell "
 "plassering og la denne oppføringen bli hvor du slapp den?"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:769
+#: libnautilus-extensions/nautilus-icon-dnd.c:768
 msgid ""
 "This folder uses automatic layout. Do you want to switch to manual layout "
 "and leave these items where you dropped them?"
@@ -3974,11 +4096,11 @@ msgstr ""
 "Denne katalogen bruker automatisk plassering. Ønsker du å bytte til manuell "
 "plassering og la disse oppføringene bli hvor du slapp dem?"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:774
+#: libnautilus-extensions/nautilus-icon-dnd.c:773
 msgid "Switch to Manual Layout?"
 msgstr "Bytt til manuell plassering?"
 
-#: libnautilus-extensions/nautilus-icon-dnd.c:775
+#: libnautilus-extensions/nautilus-icon-dnd.c:774
 msgid "Switch"
 msgstr "Bytt"
 
@@ -4141,12 +4263,6 @@ msgstr "Velg en visning for \"%s\"."
 #: libnautilus-extensions/nautilus-program-chooser.c:1278
 msgid "Choose"
 msgstr "Velg"
-
-#. create the "done" button
-#: libnautilus-extensions/nautilus-program-chooser.c:1280
-#: src/nautilus-bookmarks-window.c:123 src/nautilus-property-browser.c:358
-msgid "Done"
-msgstr "Ferdig"
 
 #: libnautilus-extensions/nautilus-program-chooser.c:1343
 msgid "Modify..."
@@ -4476,21 +4592,17 @@ msgstr ""
 msgid "Items containing \"medusa\" in their names and that are folders"
 msgstr "Oppføringer som har \"medusa\" i navnet og er mapper"
 
-#: libnautilus-extensions/nautilus-trash-directory.c:73
+#: libnautilus-extensions/nautilus-trash-directory.c:74
 msgid "Searching Disks"
 msgstr "Søker på diskene"
 
-#: libnautilus-extensions/nautilus-trash-directory.c:74
+#: libnautilus-extensions/nautilus-trash-directory.c:75
 msgid "Nautilus is searching your disks for trash folders."
 msgstr "Nautilus søker etter søppelmapper på dine disker."
 
 #: libnautilus-extensions/nautilus-trash-file.c:725
 msgid "on the desktop"
 msgstr "på skrivebordet"
-
-#: libnautilus-extensions/nautilus-undo-signal-handlers.c:175
-msgid "Edit"
-msgstr "Rediger"
 
 #: libnautilus-extensions/nautilus-undo-signal-handlers.c:176
 msgid "Undo Edit"
@@ -5257,10 +5369,6 @@ msgstr "Kjør"
 msgid "Display"
 msgstr "Vis"
 
-#: src/file-manager/fm-directory-view.c:4375
-msgid "Cancel"
-msgstr "Avbryt"
-
 #: src/file-manager/fm-directory-view.c:4427
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
@@ -5414,61 +5522,61 @@ msgstr "Endrer navn fra \"%s\" til \"%s\"."
 msgid "Cancel Rename?"
 msgstr "Avbryt endring av navn?"
 
-#: src/file-manager/fm-icon-view.c:175
+#: src/file-manager/fm-icon-view.c:176
 msgid "by _Name"
 msgstr "etter _navn"
 
-#: src/file-manager/fm-icon-view.c:176
+#: src/file-manager/fm-icon-view.c:177
 #: src/file-manager/nautilus-icon-view-ui.xml.h:15
 msgid "Keep icons sorted by name in rows"
 msgstr "Behold ikoner sortert etter navn i rader"
 
-#: src/file-manager/fm-icon-view.c:182
+#: src/file-manager/fm-icon-view.c:183
 msgid "by _Size"
 msgstr "etter _størrelse"
 
-#: src/file-manager/fm-icon-view.c:183
+#: src/file-manager/fm-icon-view.c:184
 #: src/file-manager/nautilus-icon-view-ui.xml.h:16
 msgid "Keep icons sorted by size in rows"
 msgstr "Behold ikoner sortert etter størrelse i rader"
 
-#: src/file-manager/fm-icon-view.c:189
+#: src/file-manager/fm-icon-view.c:190
 msgid "by _Type"
 msgstr "etter _type"
 
-#: src/file-manager/fm-icon-view.c:190
+#: src/file-manager/fm-icon-view.c:191
 #: src/file-manager/nautilus-icon-view-ui.xml.h:17
 msgid "Keep icons sorted by type in rows"
 msgstr "Behold ikoner sortert etter type i rader"
 
-#: src/file-manager/fm-icon-view.c:196
+#: src/file-manager/fm-icon-view.c:197
 msgid "by Modification _Date"
 msgstr "etter modifikasjons_dato"
 
-#: src/file-manager/fm-icon-view.c:197
+#: src/file-manager/fm-icon-view.c:198
 #: src/file-manager/nautilus-icon-view-ui.xml.h:14
 msgid "Keep icons sorted by modification date in rows"
 msgstr "Behold ikoner sortert etter modifikasjonsdato i rader"
 
-#: src/file-manager/fm-icon-view.c:203
+#: src/file-manager/fm-icon-view.c:204
 msgid "by _Emblems"
 msgstr "etter _emblemer"
 
-#: src/file-manager/fm-icon-view.c:204
+#: src/file-manager/fm-icon-view.c:205
 #: src/file-manager/nautilus-icon-view-ui.xml.h:13
 msgid "Keep icons sorted by emblems in rows"
 msgstr "Behold ikoner sortert etter emblemer i rader"
 
-#: src/file-manager/fm-icon-view.c:1397
+#: src/file-manager/fm-icon-view.c:1415
 #: src/file-manager/nautilus-icon-view-ui.xml.h:37
 msgid "_Restore Icons' Original Sizes"
 msgstr "_Gjenopprett ikonets opprinnelige størrelse"
 
-#: src/file-manager/fm-icon-view.c:1398
+#: src/file-manager/fm-icon-view.c:1416
 msgid "_Restore Icon's Original Size"
 msgstr "_Gjenopprett ikonets opprinnelige størrelse"
 
-#: src/file-manager/fm-icon-view.c:1678
+#: src/file-manager/fm-icon-view.c:1700
 #, c-format
 msgid "pointing at \"%s\""
 msgstr "peker til \"%s\""
@@ -5697,7 +5805,10 @@ msgid ""
 "The search you have selected is newer than the index on your system.  The "
 "search will return no results right now.  You can create a new  index by "
 "running \"medusa-indexd\" as root on the command line."
-msgstr "Søket du har valgt er nyere enn indeksen på ditt system. Søket vil ikke returnere noe resultat nå. Du kan opprette en ny indeks ved å kjøre \"medusa-indexd\" som root fra kommandolinjen."
+msgstr ""
+"Søket du har valgt er nyere enn indeksen på ditt system. Søket vil ikke "
+"returnere noe resultat nå. Du kan opprette en ny indeks ved å kjøre "
+"\"medusa-indexd\" som root fra kommandolinjen."
 
 #: src/file-manager/fm-search-list-view.c:195
 msgid "Search for items that are too new"
@@ -5725,7 +5836,10 @@ msgid ""
 "Find cannot open your file system index.  Your index may be missing or "
 "corrupt.  You can create a new index by running \"medusa-indexd\" as root on "
 "the command line."
-msgstr "\"Find\" kan ikke åpne din filsystemindeks. Indeksen mangler eller er korrupt. Du kan opprette en ny indeks ved å kjøre \"medusa-indexd\" som root på kommandolinjen."
+msgstr ""
+"\"Find\" kan ikke åpne din filsystemindeks. Indeksen mangler eller er "
+"korrupt. Du kan opprette en ny indeks ved å kjøre \"medusa-indexd\" som root "
+"på kommandolinjen."
 
 #: src/file-manager/fm-search-list-view.c:213
 msgid "Error reading file index"
@@ -5772,7 +5886,9 @@ msgid ""
 "\n"
 "medusa-searchd"
 msgstr ""
-"Dine indeksfiler er tilgjengelige men Medusa søkedaemonen, som håndterer indeksforespørsler, kjører ikke. For å starte dette programmet logger du inn som root og skriver denne kommandoen på kommandolinjen:\n"
+"Dine indeksfiler er tilgjengelige men Medusa søkedaemonen, som håndterer "
+"indeksforespørsler, kjører ikke. For å starte dette programmet logger du inn "
+"som root og skriver denne kommandoen på kommandolinjen:\n"
 "\n"
 "medusa-searchd"
 
@@ -6177,10 +6293,6 @@ msgstr "La ikoner bli hvor de slippes"
 msgid "Make the selected icon stretchable"
 msgstr "Gjør valgt ikon strekkbart"
 
-#: src/file-manager/nautilus-icon-view-ui.xml.h:21
-msgid "Manually"
-msgstr "Manuelt"
-
 #: src/file-manager/nautilus-icon-view-ui.xml.h:22
 msgid "Re_versed Order"
 msgstr "Om_vendt rekkefølge"
@@ -6321,7 +6433,7 @@ msgid "About Nautilus"
 msgstr "Om Nautilus"
 
 #. draw the authors title
-#: src/nautilus-about.c:361
+#: src/nautilus-about.c:362
 msgid "Authors"
 msgstr "Forfattere"
 
@@ -8839,9 +8951,6 @@ msgstr "%d%%"
 #~ msgid "Proxy: Invalid uri !"
 #~ msgstr "Proxy: Ugyldig uri!"
 
-#~ msgid "Invalid uri !"
-#~ msgstr "Ugyldig uri!"
-
 #~ msgid "Could not prepare http request !"
 #~ msgstr "Kunne ikke forberede http forespørsel!"
 
@@ -8979,9 +9088,6 @@ msgstr "%d%%"
 
 #~ msgid "Downloading %d packages (%s)"
 #~ msgstr "Laster ned %d pakker (%s)"
-
-#~ msgid "Downloading \"%s\""
-#~ msgstr "Laster ned \"%s\""
 
 #~ msgid "0K of %dK"
 #~ msgstr "0K av %dK"
@@ -9256,9 +9362,6 @@ msgstr "%d%%"
 
 #~ msgid "Please Change Your Eazel Password"
 #~ msgstr "Vennligst endre ditt passord for Eazel"
-
-#~ msgid "User Name:"
-#~ msgstr "Brukernavn:"
 
 #~ msgid "Current Password:"
 #~ msgstr "Nåværende passord:"
@@ -10911,9 +11014,6 @@ msgstr "%d%%"
 
 #~ msgid "Desktop Directory"
 #~ msgstr "Skrivebordskatalog"
-
-#~ msgid "Missing Directories"
-#~ msgstr "Mangler kataloger"
 
 #~ msgid "No, I don't wish to connect and update Nautilus now."
 #~ msgstr "Nei, jeg vil ikke koble til og oppdatere Nautilus nå."
