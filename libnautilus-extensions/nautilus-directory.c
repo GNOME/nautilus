@@ -30,6 +30,7 @@
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-glib-extensions.h"
+#include "nautilus-global-preferences.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-metadata.h"
@@ -199,6 +200,53 @@ nautilus_directory_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
+static void
+invalidate_one_count (gpointer key, gpointer value, gpointer user_data)
+{
+	NautilusDirectory *directory;
+
+	g_assert (key != NULL);
+	g_assert (NAUTILUS_IS_DIRECTORY (value));
+	g_assert (user_data == NULL);
+
+	directory = NAUTILUS_DIRECTORY (value);
+	
+	nautilus_directory_invalidate_counts (directory);
+}
+
+static void
+filtering_changed_callback (gpointer callback_data)
+{
+	g_assert (callback_data == NULL);
+
+	/* Preference about which items to show has changed, so we
+	 * can't trust any of our precomputed directory counts.
+	 */
+	g_hash_table_foreach (directories, invalidate_one_count, NULL);
+}
+
+static void
+add_filtering_callbacks (void)
+{
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+					   filtering_changed_callback,
+					   NULL);
+	nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+					   filtering_changed_callback,
+					   NULL);
+}
+
+static void
+remove_filtering_callbacks (void)
+{
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+					      filtering_changed_callback,
+					      NULL);
+	nautilus_preferences_remove_callback (NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES,
+					      filtering_changed_callback,
+					      NULL);
+}
+
 
 /**
  * nautilus_directory_get:
@@ -225,6 +273,10 @@ nautilus_directory_get_internal (const char *uri, gboolean create)
 	if (directories == NULL) {
 		directories = nautilus_g_hash_table_new_free_at_exit
 			(g_str_hash, g_str_equal, "nautilus-directory.c: directories");
+
+		add_filtering_callbacks ();
+		g_atexit (remove_filtering_callbacks);
+		
 	}
 
 	/* If the object is already in the hash table, look it up. */

@@ -1,3 +1,20 @@
+2000-09-26  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3244 (already-computed folder counts don't update
+	when filtering preferences change)
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(invalidate_one_count): hash table foreach function that
+	invalidates the count of a NautilusDirectory.
+	(filtering_changed_callback): preference callback function
+	that calls invalidate_one_count on all extant directories.
+	(add_filtering_callbacks): add preference callbacks for each
+	file-filtering preference.
+	(remove_filtering_callbacks): remove those preference callbacks.
+	(nautilus_directory_get_internal): When directories hash table
+	is created, call add_filtering_callbacks and schedule
+	remove_filtering_callbacks for exit time.
+
 2000-09-26  Arlo Rose  <arlo@eazel.com>
 
 	* data/browser.xml:
