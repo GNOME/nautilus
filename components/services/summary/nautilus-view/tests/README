@@ -1,0 +1,7 @@
+To use these tests do the following:
+su - root
+cp *.xml /home/httpd/html or wherever the root of your webserver lives.
+set #define DEBUG_TEST 1
+rebuild the summary view and install.
+It will probably fail right now if you don't have access to services.eazel.com
+since several of the remote images live there.

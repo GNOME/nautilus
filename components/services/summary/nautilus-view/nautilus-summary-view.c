@@ -53,6 +53,8 @@
 #include <libtrilobite/libammonite.h>
 #include <bonobo/bonobo-main.h>
 
+#define notDEBUG_TEST	1
+
 #define DEFAULT_SUMMARY_BACKGROUND_COLOR	"rgb:FFFF/FFFF/FFFF"
 
 #define	URL_REDIRECT_TABLE_HOME			"eazel-services://anonymous/services/urls"
@@ -71,6 +73,11 @@
 
 #define MAX_IMAGE_WIDTH				50
 #define MAX_IMAGE_HEIGHT			50
+
+#ifdef DEBUG_TEST
+	#undef URL_REDIRECT_TABLE_HOME
+	#define URL_REDIRECT_TABLE_HOME		"http://localhost/redirects.xml"
+#endif
 
 typedef struct _ServicesButtonCallbackData ServicesButtonCallbackData;
 
