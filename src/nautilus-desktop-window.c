@@ -25,6 +25,7 @@
 #include <config.h>
 #include "nautilus-desktop-window.h"
 #include "nautilus-window-private.h"
+#include "nautilus-actions.h"
 
 #include <X11/Xatom.h>
 #include <gdk/gdkx.h>
@@ -47,6 +48,8 @@ GNOME_CLASS_BOILERPLATE (NautilusDesktopWindow, nautilus_desktop_window,
 static void
 nautilus_desktop_window_instance_init (NautilusDesktopWindow *window)
 {
+	GtkAction *action;
+	
 	window->details = g_new0 (NautilusDesktopWindowDetails, 1);
 
 	gtk_window_move (GTK_WINDOW (window), 0, 0);
@@ -62,6 +65,11 @@ nautilus_desktop_window_instance_init (NautilusDesktopWindow *window)
 
 	gtk_widget_hide (NAUTILUS_WINDOW (window)->details->statusbar);
 	gtk_widget_hide (NAUTILUS_WINDOW (window)->details->menubar);
+
+	/* Don't allow close action on desktop */
+	action = gtk_action_group_get_action (NAUTILUS_WINDOW (window)->details->main_action_group,
+					      NAUTILUS_ACTION_CLOSE);
+	gtk_action_set_sensitive (action, FALSE);
 }
 
 static gint
