@@ -696,16 +696,31 @@ make_thumbnail_path (const char *image_uri, gboolean directory_only)
 	return thumbnail_uri;
 }
 
-/* routine that takes a uri of a large image file and returns the uri of its corresponding thumbnail.
-   If no thumbnail is available, put the image on the thumbnail queue so one is eventually made. */
-/* FIXME: Most of this thumbnail machinery belongs in NautilusFile, not here.
- */
-
 /* structure used for making thumbnails, associating a uri with the requesting controller */
 
 typedef struct {
 	char *thumbnail_uri;
 } NautilusThumbnailInfo;
+
+/* GCompareFunc-style function for comparing NautilusThumbnailInfos.
+ * Returns 0 if they refer to the same uri.
+ */
+static int
+compare_thumbnail_info (gconstpointer a, gconstpointer b)
+{
+	NautilusThumbnailInfo *info_a;
+	NautilusThumbnailInfo *info_b;
+
+	info_a = (NautilusThumbnailInfo *)a;
+	info_b = (NautilusThumbnailInfo *)b;
+
+	return strcmp (info_a->thumbnail_uri, info_b->thumbnail_uri) != 0;
+}
+
+/* routine that takes a uri of a large image file and returns the uri of its corresponding thumbnail.
+   If no thumbnail is available, put the image on the thumbnail queue so one is eventually made. */
+/* FIXME: Most of this thumbnail machinery belongs in NautilusFile, not here.
+ */
 
 static char *
 nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file)
@@ -742,7 +757,9 @@ nautilus_icon_factory_get_thumbnail_uri (NautilusFile *file)
 		
 		factory = nautilus_get_current_icon_factory ();		
 		if (factory->thumbnails) {
-			factory->thumbnails = g_list_prepend (factory->thumbnails, info);
+			if (g_list_find_custom (factory->thumbnails, info, compare_thumbnail_info) == NULL) {
+				factory->thumbnails = g_list_prepend (factory->thumbnails, info);
+			}
 		} else {
 			factory->thumbnails = g_list_alloc ();
 			factory->thumbnails->data = info;

@@ -1,3 +1,13 @@
+2000-03-08  John Sullivan <sullivan@eazel.com>
+
+	* libnautilus/nautilus-icon-factory.c:
+	(compare_thumbnail_info): New function, compares uris of two
+	NautilusThumbnailInfos.
+	(nautilus_icon_factory_get_thumbnail_uri): Use compare_thumbnail_info
+	to avoid putting the same uri in the thumbnail-making queue multiple
+	times. This may or may not have been the cause of an intermittend
+	thumbnail-creating problem I was seeing.
+
 2000-03-08  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus/nautilus-icons-view-icon-item.c:
