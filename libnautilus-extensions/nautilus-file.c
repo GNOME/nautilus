@@ -1551,8 +1551,7 @@ nautilus_file_monitor_add (NautilusFile *file,
 	nautilus_directory_monitor_add_internal
 		(file->details->directory, file,
 		 client,
-		 attributes, monitor_metadata,
-		 NULL, NULL);
+		 attributes, monitor_metadata);
 }   
 			   
 void

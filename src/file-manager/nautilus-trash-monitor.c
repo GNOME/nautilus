@@ -111,17 +111,15 @@ nautilus_trash_metadata_ready_callback (NautilusDirectory *directory, GList *fil
 	g_assert (trash_monitor->details->trash_directory == directory);
 
 	nautilus_directory_file_monitor_add (directory, trash_monitor,
-					     NULL, FALSE, TRUE,
-					     nautilus_trash_files_changed_callback, 
-					     trash_monitor);
+					     NULL, FALSE, TRUE);
 
 	/* Make sure we get notified about changes */
     	gtk_signal_connect (GTK_OBJECT (trash_monitor->details->trash_directory),
-		 "files_added", GTK_SIGNAL_FUNC (nautilus_trash_files_changed_callback),
-		 trash_monitor);
+			    "files_added", GTK_SIGNAL_FUNC (nautilus_trash_files_changed_callback),
+			    trash_monitor);
     	gtk_signal_connect (GTK_OBJECT (trash_monitor->details->trash_directory),
-		 "files_changed", GTK_SIGNAL_FUNC (nautilus_trash_files_changed_callback),
-		 trash_monitor);
+			    "files_changed", GTK_SIGNAL_FUNC (nautilus_trash_files_changed_callback),
+			    trash_monitor);
 }
 
 static void

@@ -3405,8 +3405,7 @@ finish_loading_uri (FMDirectoryView *view)
 	attributes = g_list_prepend (attributes,
 				     NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
 	nautilus_directory_file_monitor_add (view->details->model, view,
-					     attributes, FALSE, TRUE,
-					     files_added_callback, view);
+					     attributes, FALSE, TRUE);
 	g_list_free (attributes);
 
 	/* Attach a handler to get any further files that show up as we
@@ -3417,12 +3416,12 @@ finish_loading_uri (FMDirectoryView *view)
     	view->details->files_added_handler_id = gtk_signal_connect
 		(GTK_OBJECT (view->details->model),
 		 "files_added",
-		 GTK_SIGNAL_FUNC (files_added_callback),
+		 files_added_callback,
 		 view);
 	view->details->files_changed_handler_id = gtk_signal_connect
 		(GTK_OBJECT (view->details->model), 
 		 "files_changed",
-		 GTK_SIGNAL_FUNC (files_changed_callback),
+		 files_changed_callback,
 		 view);
 }
 

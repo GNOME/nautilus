@@ -768,9 +768,7 @@ nautilus_directory_monitor_add_internal (NautilusDirectory *directory,
 					 NautilusFile *file,
 					 gconstpointer client,
 					 GList *file_attributes,
-					 gboolean monitor_metadata,
-					 NautilusDirectoryCallback callback,
-					 gpointer callback_data)
+					 gboolean monitor_metadata)
 {
 	Monitor *monitor;
 

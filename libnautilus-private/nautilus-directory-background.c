@@ -709,13 +709,20 @@ nautilus_connect_background_to_directory_metadata (GtkWidget *widget,
                                     background);
         	
 		/* arrange to receive directory metadata */
+                /* FIXME: This says we want to monitor the file
+                 * metadata, and it has the side effect of monitoring
+                 * the file list. We want to monitor the directory
+                 * metadata, which would not mean monitoring the file
+                 * list.  This may require a change to the
+                 * NautilusDirectory API.
+                 */
 		nautilus_directory_file_monitor_add (directory,
 						     background,
-						     NULL, TRUE, FALSE,
-						     NULL, NULL);					     
+						     NULL, TRUE, FALSE);					     
 		
 		/* arrange for notification when the theme changes */
-		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME, nautilus_directory_background_theme_changed, background);	
+		nautilus_preferences_add_callback (NAUTILUS_PREFERENCES_THEME,
+                                                   nautilus_directory_background_theme_changed, background);	
 
 	}
 

@@ -26,20 +26,7 @@
 #include <config.h>
 #include "nautilus-icon-container.h"
 
-#include <ctype.h>
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-
-#include <libgnomevfs/gnome-vfs-uri.h>
-#include <gdk/gdkkeysyms.h>
-#include <gdk-pixbuf/gnome-canvas-pixbuf.h>
-#include <gtk/gtksignal.h>
-#include <gtk/gtkmain.h>
-#include <libgnomeui/gnome-canvas-rect-ellipse.h>
-
 #include "nautilus-background.h"
-#include "nautilus-file.h"
 #include "nautilus-font-factory.h"
 #include "nautilus-gdk-pixbuf-extensions.h"
 #include "nautilus-glib-extensions.h"
@@ -47,11 +34,19 @@
 #include "nautilus-gnome-extensions.h"
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-gtk-macros.h"
+#include "nautilus-icon-private.h"
 #include "nautilus-icon-text-item.h"
 #include "nautilus-lib-self-check-functions.h"
-#include "nautilus-link.h"
 #include "nautilus-theme.h"
-#include "nautilus-icon-private.h"
+#include <ctype.h>
+#include <gdk-pixbuf/gnome-canvas-pixbuf.h>
+#include <gdk/gdkkeysyms.h>
+#include <gtk/gtkmain.h>
+#include <gtk/gtksignal.h>
+#include <libgnomeui/gnome-canvas-rect-ellipse.h>
+#include <math.h>
+#include <stdio.h>
+#include <string.h>
 
 /* Interval for updating the rubberband selection, in milliseconds.  */
 #define RUBBERBAND_TIMEOUT_INTERVAL 10
@@ -129,7 +124,9 @@ static void	     icon_get_bounding_box 		      (NautilusIcon 		  *icon,
 		       					       int 			  *x2_return, 
 		       					       int 			  *y2_return);
 
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer, nautilus_icon_container, GNOME_TYPE_CANVAS)
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconContainer,
+				   nautilus_icon_container,
+				   GNOME_TYPE_CANVAS)
 
 /* The NautilusIconContainer signals.  */
 enum {
@@ -542,11 +539,18 @@ compare_icons (gconstpointer a, gconstpointer b)
 }
 
 static void
-resort (NautilusIconContainer *container)
+sort_icons (NautilusIconContainer *container,
+	    GList **icons)
 {
 	sort_hack_container = container;
-	container->details->icons = g_list_sort
-		(container->details->icons, compare_icons);
+	*icons = g_list_sort
+		(*icons, compare_icons);
+}
+
+static void
+resort (NautilusIconContainer *container)
+{
+	sort_icons (container, &container->details->icons);
 }
 
 /* Given an icon's bounds, compute the width of the space it should be
@@ -667,95 +671,6 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 	if (line_start != NULL) {
 		lay_down_one_line (container, line_start, NULL, &y);
 	}
-}
-
-static int
-desktop_icons_sort (gconstpointer a, gconstpointer b)
-{
-	const NautilusIcon *icon_a, *icon_b;
-	char *uri_a, *uri_b;
-	const char *path_a, *path_b;
-	GnomeVFSURI *vfs_uri_a, *vfs_uri_b;
-	NautilusFile *file_a, *file_b;
-	char *link_type;
-	
-	icon_a = a;
-	icon_b = b;
-
-	uri_a = nautilus_icon_container_get_icon_uri (sort_hack_container, (NautilusIcon *)icon_a);
-	uri_b = nautilus_icon_container_get_icon_uri (sort_hack_container, (NautilusIcon *)icon_b);
-	if (uri_a == NULL || uri_b == NULL) {
-		return 0;
-	}
-
-	file_a = nautilus_file_get (uri_a);
-	g_assert (file_a);
-	file_b = nautilus_file_get (uri_b);
-	g_assert (file_b);
-
-	/* Non link files go in the middle */
-	if (!nautilus_file_is_nautilus_link (file_a)) {
-		nautilus_file_unref (file_a);
-		nautilus_file_unref (file_b);
-		g_free (uri_a);
-		g_free (uri_b);
-		return 0;
-	}
-
-	if (!nautilus_file_is_nautilus_link (file_b)) {
-		nautilus_file_unref (file_a);
-		nautilus_file_unref (file_b);
-		g_free (uri_a);
-		g_free (uri_b);
-		return 0;
-	}
-	
-	/* Get uris */
-	vfs_uri_a = gnome_vfs_uri_new (uri_a);	
-	g_assert (vfs_uri_a);
-	vfs_uri_b = gnome_vfs_uri_new (uri_b);
-	g_assert (vfs_uri_b);
-	
-	/* Get paths */
-	path_a = gnome_vfs_uri_get_path (vfs_uri_a);
-	g_assert (path_a);
-	path_b = gnome_vfs_uri_get_path (vfs_uri_b);
-	g_assert (path_b);
-
-	/* Done with NautilusFiles and uris */
-	nautilus_file_unref (file_a);
-	nautilus_file_unref (file_b);
-	g_free (uri_a);
-	g_free (uri_b);
-	
-	/* Home directory goes first */
-	link_type = nautilus_link_get_link_type (path_a);
-	if (link_type) {
-		if (strcmp (link_type, NAUTILUS_LINK_HOME) == 0) {
-			gnome_vfs_uri_unref (vfs_uri_a);
-			gnome_vfs_uri_unref (vfs_uri_b);
-			g_free (link_type);
-			return -1;
-		}
-		g_free (link_type);
-	}	
-
-	link_type = nautilus_link_get_link_type (path_b);
-	if (link_type) {
-		if (strcmp (link_type, NAUTILUS_LINK_HOME) == 0) {
-			gnome_vfs_uri_unref (vfs_uri_a);
-			gnome_vfs_uri_unref (vfs_uri_b);
-			g_free (link_type);
-			return 1;
-		}
-		g_free (link_type);
-	}	
-
-	/* If we get here, we don't care */
-	gnome_vfs_uri_unref (vfs_uri_a);
-	gnome_vfs_uri_unref (vfs_uri_b);
-
-	return 0;
 }
 
 /* Search for available space at location */
@@ -905,10 +820,6 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 	int num_rows, num_columns;
 	int row, column;
 
-	/* Sort the icons according to our desktop rules */
-	sort_hack_container = container;
-	icons = g_list_sort (icons, desktop_icons_sort);
-
 	/* Get container dimensions */
 	width  = GTK_WIDGET (container)->allocation.width;
 	height = GTK_WIDGET (container)->allocation.height;
@@ -920,7 +831,7 @@ lay_down_icons_tblr (NautilusIconContainer *container, GList *icons)
 	total = g_list_length (container->details->icons);
 	new_length = g_list_length (icons);
 	placed = total - new_length;
-	if (placed > 0) {		
+	if (placed > 0) {
 		/* Add only placed icons in list */
 		for (p = container->details->icons; p != NULL; p = p->next) {
 			icon = p->data;
@@ -3373,7 +3284,7 @@ finish_adding_new_icons (NautilusIconContainer *container)
 	if (no_position_icons != NULL) {
 		g_assert (!container->details->auto_layout);
 		
-		no_position_icons = g_list_reverse (no_position_icons);
+		sort_icons (container, &no_position_icons);
 		get_all_icon_bounds (container, NULL, NULL, NULL, &bottom);		
 		lay_down_icons (container, no_position_icons, bottom + ICON_PAD_BOTTOM);
 		g_list_free (no_position_icons);

@@ -72,17 +72,21 @@ static gboolean fm_desktop_icon_view_get_directory_auto_layout            (FMIco
 static void     fm_desktop_icon_view_set_directory_auto_layout            (FMIconView             *icon_view,
 									   NautilusDirectory      *directory,
 									   gboolean                auto_layout);
-static void	fm_desktop_icon_view_trash_state_changed_callback 	  (NautilusTrashMonitor   *trash,
-									   gboolean 		   state,
-									   gpointer		   callback_data);
-
-static void	mount_unmount_removable 				  (GtkCheckMenuItem 	   *item, 
-									   FMDesktopIconView 	   *icon_view);
-static void	place_home_directory 					  (FMDesktopIconView 	   *icon_view);
-static void	remove_old_mount_links 					  (void);
-
+static void     fm_desktop_icon_view_trash_state_changed_callback         (NautilusTrashMonitor   *trash,
+									   gboolean                state,
+									   gpointer                callback_data);
+static void     mount_unmount_removable                                   (GtkCheckMenuItem       *item,
+									   FMDesktopIconView      *icon_view);
+static void     place_home_directory                                      (FMDesktopIconView      *icon_view);
+static void     remove_old_mount_links                                    (void);
+static int      desktop_icons_compare_callback                            (NautilusIconContainer  *container,
+									   NautilusFile           *file_a,
+									   NautilusFile           *file_b,
+									   FMDesktopIconView      *icon_view);
 								   
-NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView, fm_desktop_icon_view, FM_TYPE_ICON_VIEW);
+NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDesktopIconView,
+				   fm_desktop_icon_view,
+				   FM_TYPE_ICON_VIEW)
 
 static NautilusIconContainer *
 get_icon_container (FMDesktopIconView *icon_view)
@@ -109,7 +113,6 @@ fm_desktop_icon_view_destroy (GtkObject *object)
 	
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
-
 
 static void
 fm_desktop_icon_view_initialize_class (FMDesktopIconViewClass *klass)
@@ -175,7 +178,8 @@ fm_desktop_icon_view_handle_middle_click (NautilusIconContainer *icon_container,
 
 static void
 fm_desktop_icon_view_discover_trash_callback (GnomeVFSAsyncHandle *handle,
-	GList *results, gpointer data)
+					      GList *results,
+					      gpointer callback_data)
 {
 #if 0
 	/* Debug code only for now.
@@ -229,7 +233,8 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 	nautilus_gtk_adjustment_set_value (vadj, 0);
 
 	/* Set our default layout mode */
-	nautilus_icon_container_set_layout_mode (icon_container, NAUTILUS_ICON_LAYOUT_T_B_L_R);
+	nautilus_icon_container_set_layout_mode (icon_container,
+						 NAUTILUS_ICON_LAYOUT_T_B_L_R);
 
 	/* Check for and clean up any old mount links that may have been left behind */		
 	remove_old_mount_links ();
@@ -241,8 +246,12 @@ fm_desktop_icon_view_initialize (FMDesktopIconView *desktop_icon_view)
 			    "middle_click",
 			    GTK_SIGNAL_FUNC (fm_desktop_icon_view_handle_middle_click),
 			    desktop_icon_view);
+	gtk_signal_connect (GTK_OBJECT (icon_container),
+			    "compare_icons",
+			    GTK_SIGNAL_FUNC (desktop_icons_compare_callback),
+			    desktop_icon_view);
 
-	gtk_signal_connect (GTK_OBJECT(nautilus_trash_monitor_get ()),
+	gtk_signal_connect (GTK_OBJECT (nautilus_trash_monitor_get ()),
 			    "trash_state_changed",
 			    fm_desktop_icon_view_trash_state_changed_callback,
 			    desktop_icon_view);
@@ -335,37 +344,46 @@ fm_desktop_icon_view_create_background_context_menu_items (FMDirectoryView *view
 }
 
 static char *
-fm_desktop_icon_view_get_directory_sort_by (FMIconView *icon_view, NautilusDirectory *directory)
+fm_desktop_icon_view_get_directory_sort_by (FMIconView *icon_view,
+					    NautilusDirectory *directory)
 {
-	return g_strdup("name");
+	return g_strdup ("name");
 }
 
 static void
-fm_desktop_icon_view_set_directory_sort_by (FMIconView *icon_view, NautilusDirectory *directory, const char* sort_by)
+fm_desktop_icon_view_set_directory_sort_by (FMIconView *icon_view,
+					    NautilusDirectory *directory,
+					    const char *sort_by)
 {
 	/* do nothing - the desktop always uses the same sort_by */
 }
 
 static gboolean
-fm_desktop_icon_view_get_directory_sort_reversed (FMIconView *icon_view, NautilusDirectory *directory)
+fm_desktop_icon_view_get_directory_sort_reversed (FMIconView *icon_view,
+						  NautilusDirectory *directory)
 {
 	return FALSE;
 }
 
 static void
-fm_desktop_icon_view_set_directory_sort_reversed (FMIconView *icon_view, NautilusDirectory *directory, gboolean sort_reversed)
+fm_desktop_icon_view_set_directory_sort_reversed (FMIconView *icon_view,
+						  NautilusDirectory *directory,
+						  gboolean sort_reversed)
 {
 	/* do nothing - the desktop always uses sort_reversed == FALSE */
 }
 
 static gboolean
-fm_desktop_icon_view_get_directory_auto_layout (FMIconView *icon_view, NautilusDirectory *directory)
+fm_desktop_icon_view_get_directory_auto_layout (FMIconView *icon_view,
+						NautilusDirectory *directory)
 {
 	return FALSE;
 }
 
 static void
-fm_desktop_icon_view_set_directory_auto_layout (FMIconView *icon_view, NautilusDirectory *directory, gboolean auto_layout)
+fm_desktop_icon_view_set_directory_auto_layout (FMIconView *icon_view,
+						NautilusDirectory *directory,
+						gboolean auto_layout)
 {
 	/* do nothing - the desktop always uses auto_layout == FALSE */
 }
@@ -373,7 +391,7 @@ fm_desktop_icon_view_set_directory_auto_layout (FMIconView *icon_view, NautilusD
 
 static void
 fm_desktop_icon_view_trash_state_changed_callback (NautilusTrashMonitor *trash_monitor,
-	gboolean state, gpointer callback_data)
+						   gboolean state, gpointer callback_data)
 {
 	char *desktop_directory_path, *path;
 
@@ -490,4 +508,87 @@ remove_old_mount_links (void)
 	closedir (current_dir);
 }
 
+static char *
+get_local_path (NautilusFile *file)
+{
+	char *uri, *local_path;
 
+	uri = nautilus_file_get_uri (file);
+	local_path = nautilus_get_local_path_from_uri (uri);
+	g_free (uri);
+	return local_path;
+}
+
+/* Sort as follows:
+ *   1) home link
+ *   2) mount links
+ *   3) other
+ *   4) trash link
+ */
+
+typedef enum {
+	SORT_HOME_LINK,
+	SORT_MOUNT_LINK,
+	SORT_OTHER,
+	SORT_TRASH_LINK
+} SortCategory;
+
+static SortCategory
+get_sort_category (NautilusFile *file)
+{
+	char *path, *link_type;
+	SortCategory category;
+
+	if (!nautilus_file_is_nautilus_link (file)) {
+		category = SORT_OTHER;
+	} else {
+		path = get_local_path (file);
+		g_return_val_if_fail (path != NULL, SORT_OTHER);
+		
+		link_type = nautilus_link_get_link_type (path);
+		if (link_type == NULL) {
+			category = SORT_OTHER;
+		} else if (strcmp (link_type, NAUTILUS_LINK_HOME) == 0) {
+			category = SORT_HOME_LINK;
+		} else if (strcmp (link_type, NAUTILUS_LINK_MOUNT) == 0) {
+			category = SORT_MOUNT_LINK;
+		} else if (strcmp (link_type, NAUTILUS_LINK_TRASH) == 0) {
+			category = SORT_TRASH_LINK;
+		} else {
+			category = SORT_OTHER;
+		}
+		
+		g_free (path);
+		g_free (link_type);
+	}
+	
+	return category;
+}
+
+static int
+desktop_icons_compare_callback (NautilusIconContainer *container,
+				NautilusFile *file_a,
+				NautilusFile *file_b,
+				FMDesktopIconView *icon_view)
+{
+	SortCategory category_a, category_b;
+
+	category_a = get_sort_category (file_a);
+	category_b = get_sort_category (file_b);
+
+	/* Let the previous handler do the compare. */
+	if (category_a == category_b) {
+		return 0;
+	}
+
+	/* We know the answer, so prevent the other handlers
+	 * from overwriting our result.
+	 */
+	gtk_signal_emit_stop_by_name (GTK_OBJECT (container),
+				      "compare_icons");
+	if (category_a < category_b) {
+		return -1;
+	} else {
+		return +1;
+	}
+}

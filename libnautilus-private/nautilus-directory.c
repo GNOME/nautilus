@@ -944,9 +944,7 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 				     gconstpointer client,
 				     GList *file_attributes,
 				     gboolean monitor_metadata,
-				     gboolean force_reload,
-				     NautilusDirectoryCallback callback,
-				     gpointer callback_data)
+				     gboolean force_reload)
 {
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (client != NULL);
@@ -955,8 +953,7 @@ nautilus_directory_file_monitor_add (NautilusDirectory *directory,
 		(NAUTILUS_DIRECTORY_CLASS, directory,
 		 file_monitor_add, (directory, client,
 				    file_attributes, monitor_metadata,
-				    force_reload,
-				    callback, callback_data));
+				    force_reload));
 }
 
 void
@@ -988,19 +985,8 @@ nautilus_directory_is_not_empty (NautilusDirectory *directory)
 #include "nautilus-file-attributes.h"
 
 static int data_dummy;
-static guint file_count;
 static gboolean got_metadata_flag;
 static gboolean got_files_flag;
-
-static void
-get_files_callback (NautilusDirectory *directory, GList *files, gpointer callback_data)
-{
-	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-	g_assert (files != NULL);
-	g_assert (callback_data == &data_dummy);
-
-	file_count += g_list_length (files);
-}
 
 static void
 got_metadata_callback (NautilusDirectory *directory, GList *files, gpointer callback_data)
@@ -1039,11 +1025,9 @@ nautilus_self_check_directory (void)
 
 	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 1);
 
-	file_count = 0;
 	nautilus_directory_file_monitor_add
-		(directory, &file_count,
-		 NULL, FALSE, FALSE,
-		 get_files_callback, &data_dummy);
+		(directory, &data_dummy,
+		 NULL, FALSE, FALSE);
 
 	got_metadata_flag = FALSE;
 	nautilus_directory_call_when_ready (directory, NULL, TRUE,
@@ -1080,7 +1064,7 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_BOOLEAN_RESULT (nautilus_directory_get ("file:///etc////") == directory, TRUE);
 	nautilus_directory_unref (directory);
 
-	nautilus_directory_file_monitor_remove (directory, &file_count);
+	nautilus_directory_file_monitor_remove (directory, &data_dummy);
 
 	nautilus_directory_unref (directory);
 

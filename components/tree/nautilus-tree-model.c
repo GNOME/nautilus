@@ -331,9 +331,7 @@ nautilus_tree_model_monitor_node (NautilusTreeModel         *model,
 					     model,
 					     monitor_attributes,
 					     FALSE,
-					     TRUE,
-					     (NautilusDirectoryCallback) nautilus_tree_model_directory_files_added_callback,
-					     model);
+					     TRUE);
 	
 	g_list_free (monitor_attributes);
 

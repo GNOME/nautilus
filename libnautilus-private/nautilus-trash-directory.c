@@ -289,35 +289,17 @@ trash_cancel_callback (NautilusDirectory *directory,
 	trash_callback_destroy (trash_callback);
 }
 
-/* Add the files that are passed to make one large list. */
-static void
-trash_files_callback (NautilusDirectory *directory,
-		      GList *files,
-		      gpointer callback_data)
-{
-	GList **merged_file_list;
-
-	g_assert (NAUTILUS_IS_DIRECTORY (directory));
-	g_assert (callback_data != NULL);
-
-	merged_file_list = callback_data;
-	*merged_file_list = g_list_concat
-		(*merged_file_list, nautilus_file_list_copy (files));
-}
-
 /* Create a monitor on each of the directories in the list. */
 static void
 trash_file_monitor_add (NautilusDirectory *directory,
 			gconstpointer client,
 			GList *file_attributes,
 			gboolean monitor_metadata,
-			gboolean force_reload,
-			NautilusDirectoryCallback callback,
-			gpointer callback_data)
+			gboolean force_reload)
 {
 	NautilusTrashDirectory *trash;
 	gpointer unique_client;
-	GList *p, *merged_file_list;
+	GList *p;
 
 	trash = NAUTILUS_TRASH_DIRECTORY (directory);
 
@@ -333,20 +315,11 @@ trash_file_monitor_add (NautilusDirectory *directory,
 	}
 	
 	/* Call through to the real directory add calls. */
-	merged_file_list = NULL;
 	for (p = trash->details->directories; p != NULL; p = p->next) {
 		nautilus_directory_file_monitor_add
 			(p->data, unique_client,
-			 file_attributes, monitor_metadata, force_reload,
-			 callback == NULL ? NULL : trash_files_callback,
-			 &merged_file_list);
+			 file_attributes, monitor_metadata, force_reload);
 	}
-
-	/* Now do the callback, with the total list. */
-	if (callback != NULL) {
-		(* callback) (directory, merged_file_list, callback_data);
-	}
-	nautilus_file_list_free (merged_file_list);
 }
 
 /* Remove the monitor from each of the directories in the list. */

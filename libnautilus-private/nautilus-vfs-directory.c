@@ -106,9 +106,7 @@ vfs_file_monitor_add (NautilusDirectory *directory,
 		      gconstpointer client,
 		      GList *file_attributes,
 		      gboolean monitor_metadata,
-		      gboolean force_reload,
-		      NautilusDirectoryCallback callback,
-		      gpointer callback_data)
+		      gboolean force_reload)
 {
 	g_assert (NAUTILUS_IS_VFS_DIRECTORY (directory));
 	g_assert (client != NULL);
@@ -120,9 +118,7 @@ vfs_file_monitor_add (NautilusDirectory *directory,
 	nautilus_directory_monitor_add_internal
 		(directory, NULL,
 		 client,
-		 file_attributes, monitor_metadata,
-		 force_reload ? NULL : callback,
-		 callback_data);
+		 file_attributes, monitor_metadata);
 }
 
 static void

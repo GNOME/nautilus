@@ -29,7 +29,6 @@
 #include "nautilus-file.h"
 
 /* Link types */
-#define NAUTILUS_LINK 		"NAUTILUS_LINK"
 #define NAUTILUS_LINK_GENERIC 	"Generic Link"
 #define NAUTILUS_LINK_TRASH 	"Trash Link"
 #define NAUTILUS_LINK_MOUNT 	"Mount Link"

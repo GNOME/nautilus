@@ -1,3 +1,51 @@
+2000-08-17  Darin Adler  <darin@eazel.com>
+
+	* components/tree/nautilus-tree-model.c:
+	(nautilus_tree_model_monitor_node):
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(nautilus_directory_monitor_add_internal):
+	* libnautilus-extensions/nautilus-directory-background.c:
+	(nautilus_connect_background_to_directory_metadata):
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_file_monitor_add),
+	(nautilus_self_check_directory):
+	* libnautilus-extensions/nautilus-directory.h:
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_monitor_add):
+	* libnautilus-extensions/nautilus-trash-directory.c:
+	(trash_file_monitor_add):
+	* libnautilus-extensions/nautilus-vfs-directory.c:
+	(vfs_file_monitor_add):
+	* src/file-manager/fm-directory-view.c: (finish_loading_uri):
+	* src/file-manager/nautilus-trash-monitor.c:
+	(nautilus_trash_metadata_ready_callback):
+	Remove extra parameters now that the initial files callback is
+	gone. It turns out emitting another files_added signal works just
+	fine. If it wasn't for the search list view, I could also merge
+	the "file_added" and "files_changed" signals easily. Both of these
+	changes would simplify the work on the virtual trash directory.
+	
+	* libnautilus-extensions/nautilus-link.h:
+	* libnautilus-extensions/nautilus-link.c:
+	Get rid of NAUTILUS_LINK constant, which looked like a link type,
+	but was really an unrelated implementation detail.
+	
+	* libnautilus-extensions/nautilus-icon-container.c: (sort_icons),
+	(resort), (lay_down_icons_tblr), (finish_adding_new_icons):
+	Removed the file-manager-specific stuff Gene added for the desktop.
+	I fight the continuing battle to keep NautilusIconContainer a
+	general icon container, and not just for the Nautilus icon view.
+	The drag code is still an exception to this that needs to be fixed
+	some day (for NautilusList too).
+	
+	* src/file-manager/fm-desktop-icon-view.c:
+	(fm_desktop_icon_view_initialize),
+	(get_local_path), (get_sort_category),
+	(desktop_icons_compare_callback):
+	Rewrote sorting code from NautilusIconContainer and moved it
+	here where it belongs.
+	
 2000-08-17  John Sullivan  <sullivan@eazel.com>
 
 	Work on bug 1750 ("Reveal in New Window" feature for search results)

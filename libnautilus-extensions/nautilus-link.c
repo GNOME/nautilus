@@ -70,7 +70,7 @@ nautilus_link_create (const char *directory_path,
 
 	/* Add mime magic string so that the mime sniffer can recognize us.
 	 * Note: The value of the tag identfies what type of link this.  */
-	xmlSetProp (root_node, NAUTILUS_LINK, NAUTILUS_LINK_GENERIC);
+	xmlSetProp (root_node, "NAUTILUS_LINK", NAUTILUS_LINK_GENERIC);
 
 	/* Add link and custom icon tags */
 	xmlSetProp (root_node, "CUSTOM_ICON", image);
@@ -146,7 +146,7 @@ nautilus_link_set_type (const char *path, const char *type)
 	}
 
 	xmlSetProp (xmlDocGetRootElement (document),
-		    NAUTILUS_LINK,
+		    "NAUTILUS_LINK",
 		    type);
 	xmlSaveFile (path, document);
 	xmlFreeDoc (document);
@@ -350,7 +350,7 @@ nautilus_link_get_link_type (const char *path)
 {
 	/* FIXME: This interface requires sync. I/O. */
 	return nautilus_link_get_root_property
-		(path, NAUTILUS_LINK);
+		(path, "NAUTILUS_LINK");
 }
 
 /* FIXME: Caller has to know to pass in a file with a NUL character at
