@@ -1,3 +1,15 @@
+2001-02-14  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Mike Engber <engber@eazel.com>
+
+	Fixed bug 6606, only show user-mountable volumes in Disks menu.
+	
+	Look for options "user" or "owner" instead of "noauto"
+	to determine if volume if removable.
+
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(volume_is_removable), (close_error_pipe):
+		
 2001-02-14  Eric Fischer <eric@eazel.com>
 
 	* nautilus-installer/install-lib/Makefile.am:

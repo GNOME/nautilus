@@ -324,8 +324,8 @@ volume_is_removable (const NautilusVolume *volume)
 	/* Search for our device in the fstab */
 	while ((ent = getmntent (file)) != NULL) {
 		if (strcmp (volume->device_path, ent->mnt_fsname) == 0) {
-			/* Use noauto as our way of determining a removable volume */
-			if (strstr (ent->mnt_opts, MNTOPT_NOAUTO) != NULL) {
+			/* Use "owner" or "user" as our way of determining a removable volume */
+			if (hasmntopt (ent, "user") != NULL || hasmntopt (ent, "owner") != NULL) {
 				fclose (file);
 				return TRUE;
 			}
@@ -1366,6 +1366,7 @@ close_error_pipe (gboolean mount, const char *mount_path)
 			}
 		}
 	} else {
+		/* FIXME: Should we parse this message and report something more meaningful? */
 		message = g_strdup (_("Nautilus was unable to unmount the selected volume."));
 	}
 	

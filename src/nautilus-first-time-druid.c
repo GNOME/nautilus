@@ -135,12 +135,11 @@ static gboolean draw_desktop = TRUE;
 static gboolean add_to_session = TRUE;
 static gboolean transfer_gmc_icons = TRUE;
 
-static void     initiate_file_download           (GnomeDruid *druid);
-static gboolean set_http_proxy                   (const char *proxy_url);
+static void     initiate_file_download           (GnomeDruid 	*druid);
+static gboolean set_http_proxy                   (const char 	*proxy_url);
 static gboolean attempt_http_proxy_autoconfigure (void);
 static gboolean check_network_connectivity	 (void);
 static void	convert_gmc_desktop_icons 	 (void);
-
 
 static void
 druid_cancel (GtkWidget *druid)
@@ -237,8 +236,8 @@ druid_finished (GtkWidget *druid_page)
 	
 	
 	/* Do the GMC to Nautilus Transition */
-	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP, draw_desktop);
-	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_ADD_TO_SESSION, add_to_session);
+	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_SHOW_DESKTOP, draw_desktop);	
+	nautilus_preferences_set_boolean (NAUTILUS_PREFERENCES_ADD_TO_SESSION, add_to_session);	
 	if (transfer_gmc_icons) {
 		convert_gmc_desktop_icons ();
 	}
@@ -798,6 +797,7 @@ next_proxy_configuration_page_callback (GtkWidget *button, GnomeDruid *druid)
 	
 	return TRUE;
 }
+
 
 static void
 convert_gmc_desktop_icons (void)
