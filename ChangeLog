@@ -1,3 +1,28 @@
+2001-01-24  Darin Adler  <darin@eazel.com>
+
+	reviewed by: Pavel Cisler <pavel@eazel.com>
+
+	Fix bug 5797 (Critical received when double-clicking on throbber):
+
+	* src/nautilus-window-private.h:
+	* src/nautilus-window.c: (location_change_at_idle_callback):
+	Callback to do actual location change at idle time instead of
+	right inside the property bag callback from the throbber.
+	(throbber_location_change_request_callback): Use the new idle
+	approach instead of changing the location right away.
+	(nautilus_window_destroy): Cancel the idle if it's still
+	outstanding.
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_string_attribute_with_default): Mark a string
+	for translation.
+	(get_description): Mark some warning strings for translation since
+	they are warnings we think real users might see.
+
+	* applets/launcher/.cvsignore:
+	* applets/preferences-applet/.cvsignore:
+	Ignore some files.
+	
 2001-01-24  Robin * Slomkowski  <rslomkow@eazel.com>
 
 	* nautilus.spec.in: nautilus-suggested now requires

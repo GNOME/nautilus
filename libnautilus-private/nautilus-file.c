@@ -3114,7 +3114,7 @@ nautilus_file_get_settable_group_names (NautilusFile *file)
 		result = nautilus_get_group_names_including (user_name_string);
 		g_free (user_name_string);
 	} else {
-		g_warning ("Unhandled case in nautilus_get_settable_group_names");
+		g_warning ("unhandled case in nautilus_get_settable_group_names");
 		result = NULL;
 	}
 
@@ -3628,7 +3628,7 @@ nautilus_file_get_string_attribute_with_default (NautilusFile *file, const char 
 			status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL);
 			if (status == NAUTILUS_REQUEST_DONE) {
 				/* This means no contents at all were readable */
-				return g_strdup ("? bytes");
+				return g_strdup (_("? bytes"));
 			}
 			return g_strdup ("...");
 		} else if (strcmp (attribute_name, "deep_file_count") == 0
@@ -3696,11 +3696,12 @@ get_description (NautilusFile *file)
 	 * English (& localizable) versions of every mime type anyone ever sees.
 	 */
 	if (g_strcasecmp (mime_type, "x-directory/normal") == 0) {
-		g_warning ("Can't find description even for \"x-directory/normal\". This "
-			   "probably means that your gnome-vfs.keys file is in the wrong place "
-			   "or isn't being found for some other reason.");
+		g_warning (_("Can't find description even for \"x-directory/normal\". This "
+			     "probably means that your gnome-vfs.keys file is in the wrong place "
+			     "or isn't being found for some other reason."));
 	} else {
-		g_warning ("No description found for mime type \"%s\" (file is \"%s\"), tell sullivan@eazel.com", 
+		g_warning (_("No description found for mime type \"%s\" (file is \"%s\"), "
+			     "tell sullivan@eazel.com"),
 			   mime_type,
 			   file->details->relative_uri);
 	}
@@ -4456,43 +4457,43 @@ nautilus_file_dump (NautilusFile *file)
 	const char *file_kind;
 
 	uri = nautilus_file_get_uri (file);
-	g_print("uri: %s \n", uri);
+	g_print ("uri: %s \n", uri);
 	if (file->details->info == NULL) {
-		g_print("no file info \n");
+		g_print ("no file info \n");
 	} else if (file->details->get_info_failed) {
-		g_print("failed to get file info \n");
+		g_print ("failed to get file info \n");
 	} else {
-		g_print("size: %ld \n", size);
+		g_print ("size: %ld \n", size);
 		switch (file->details->info->type) {
-			case GNOME_VFS_FILE_TYPE_REGULAR:
-				file_kind = "regular file";
-				break;
-			case GNOME_VFS_FILE_TYPE_DIRECTORY:
-				file_kind = "folder";
-				break;
-			case GNOME_VFS_FILE_TYPE_FIFO:
-				file_kind = "fifo";
-				break;
-			case GNOME_VFS_FILE_TYPE_SOCKET:
-				file_kind = "socket";
-				break;
-			case GNOME_VFS_FILE_TYPE_CHARACTER_DEVICE:
-				file_kind = "character device";
-				break;
-			case GNOME_VFS_FILE_TYPE_BLOCK_DEVICE:
-				file_kind = "block device";
-				break;
-			case GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK:
-				file_kind = "symbolic link";
-				break;
-			case GNOME_VFS_FILE_TYPE_UNKNOWN:
-			default:
-				file_kind = "unknown";
-				break;
+		case GNOME_VFS_FILE_TYPE_REGULAR:
+			file_kind = "regular file";
+			break;
+		case GNOME_VFS_FILE_TYPE_DIRECTORY:
+			file_kind = "folder";
+			break;
+		case GNOME_VFS_FILE_TYPE_FIFO:
+			file_kind = "fifo";
+			break;
+		case GNOME_VFS_FILE_TYPE_SOCKET:
+			file_kind = "socket";
+			break;
+		case GNOME_VFS_FILE_TYPE_CHARACTER_DEVICE:
+			file_kind = "character device";
+			break;
+		case GNOME_VFS_FILE_TYPE_BLOCK_DEVICE:
+			file_kind = "block device";
+			break;
+		case GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK:
+			file_kind = "symbolic link";
+			break;
+		case GNOME_VFS_FILE_TYPE_UNKNOWN:
+		default:
+			file_kind = "unknown";
+			break;
 		}
-		g_print("kind: %s \n", file_kind);
+		g_print ("kind: %s \n", file_kind);
 		if (file->details->info->type == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK) {
-			g_print("link to %s \n", file->details->info->symlink_name);
+			g_print ("link to %s \n", file->details->info->symlink_name);
 			/* FIXME bugzilla.eazel.com 2430: add following of symlinks here */
 		}
 		/* FIXME bugzilla.eazel.com 2431: add permissions and other useful stuff here */
