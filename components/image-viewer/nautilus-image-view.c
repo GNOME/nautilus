@@ -94,15 +94,22 @@ release_pixbuf (bonobo_object_data_t *bod)
 static void
 control_destroy_callback (BonoboControl *control, bonobo_object_data_t *bod)
 {
+	/* FIXME bugzilla.eazel.com 5966:
+	 * This fn never gets called. This means we are leaking.
+	 */
+
         if (bod == NULL) {
 		return;
 	}
 
 	release_pixbuf (bod);
 
-	if (bod->scrolled_window != NULL) {
-		gtk_widget_destroy (bod->scrolled_window);
+	if (bod->drawing_area != NULL) {
+		gtk_widget_unref (bod->drawing_area);
+		bod->drawing_area = NULL;
 	}
+
+	bod->root = NULL;
 	bod->scrolled_window = NULL;
 
 	g_free (bod);
@@ -687,6 +694,14 @@ control_factory_common (GtkWidget *scrolled_window)
 
 	gtk_widget_show_all (bod->root);
 	bod->control = bonobo_control_new (bod->root);
+
+	/* We ref the drawing area to keep its memory from being freed when it
+	 * is destroyed. The control may live on after the widget is destroyed
+	 * and if it has been freed, tests like:
+	 *  (bod->drawing_area != NULL) && (bod->drawing_area->window != NULL)
+	 * won't work.
+	 */
+	gtk_widget_ref (bod->drawing_area);
 
 	gtk_signal_connect (GTK_OBJECT (bod->control), "destroy",
 			    GTK_SIGNAL_FUNC (control_destroy_callback), bod);
