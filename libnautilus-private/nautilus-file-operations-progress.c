@@ -124,7 +124,7 @@ set_text_unescaped_trimmed (EelEllipsizingLabel *label, const char *text)
 static gboolean
 close_callback (GnomeDialog *dialog)
 {
-	return FALSE;
+	return TRUE;
 }
 
 /* GtkObject methods.  */

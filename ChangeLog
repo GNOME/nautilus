@@ -1,3 +1,14 @@
+2001-12-06  Darin Adler  <darin@bentspoon.com>
+
+	Apply patch by Martin Wehner to fix crashes when hitting escape
+	when the copy progress dialog is up.
+
+	* libnautilus-private/nautilus-file-operations-progress.c:
+	(close_callback):
+	* libnautilus-private/nautilus-file-operations.c:
+	(handle_close_callback):
+	Return TRUE so it knows not to close the dialog.
+
 2001-11-29  Darin Adler  <darin@bentspoon.com>
 
 	* libnautilus-private/nautilus-directory-async.c:

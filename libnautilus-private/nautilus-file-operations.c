@@ -337,7 +337,7 @@ static gboolean
 handle_close_callback (GnomeDialog *dialog, TransferInfo *tranfer_info)
 {
 	tranfer_info->cancelled = TRUE;
-	return FALSE;
+	return TRUE;
 }
 
 static void
