@@ -67,6 +67,15 @@ typedef enum {
 #define NAUTILUS_ICON_SIZE_LARGER	96
 #define NAUTILUS_ICON_SIZE_LARGEST     192
 
+/* structure used for making thumbnails, associating a uri with the requesting controller */
+
+typedef struct _NautilusThumbnailInfo NautilusThumbnailInfo;
+
+struct _NautilusThumbnailInfo {
+	gchar *thumbnail_uri;
+	void *controller;
+	};
+
 typedef struct _NautilusScalableIcon NautilusScalableIcon;
 
 /* Instead of a class declaration here, I will just document
@@ -88,7 +97,9 @@ char *                nautilus_icon_factory_get_theme                    (void);
 void                  nautilus_icon_factory_set_theme                    (const char            *theme_name);
 
 /* Choose the appropriate icon, but don't render it yet. */
-NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file            (NautilusFile          *file);
+NautilusScalableIcon *nautilus_icon_factory_get_icon_for_file            (NautilusFile *file,
+									  void *controller);
+									  
 NautilusScalableIcon *nautilus_icon_factory_get_icon_by_name             (const char            *icon_name);
 GList *               nautilus_icon_factory_get_emblem_icons_for_file    (NautilusFile          *file);
 
@@ -117,7 +128,7 @@ void                  nautilus_icon_factory_get_pixmap_and_mask_by_name  (Nautil
 									  guint                  size_in_pixels,
 									  GdkPixmap            **pixmap,
 									  GdkBitmap            **mask);
-
+									  
 /* Manage a scalable icon.
  * Since the factory always passes out references to the same scalable
  * icon, you can compare two scalable icons to see if they are the same

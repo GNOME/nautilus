@@ -26,16 +26,20 @@
 #include <config.h>
 #include "nautilus-icon-factory.h"
 
+#include <unistd.h>
 #include <string.h>
 #include <stdio.h>
 
+#include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-mime-info.h>
-#include <libgnome/gnome-util.h>
+#include <gnome.h>
+
+#include <libgnomevfs/gnome-vfs-types.h>
+#include <libgnomevfs/gnome-vfs-file-info.h>
 
 #include "nautilus-string.h"
 #include "nautilus-default-file-icon.h"
+#include "nautilus-icons-controller.h"
 #include "nautilus-metadata.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-gtk-macros.h"
@@ -80,6 +84,10 @@ struct NautilusCircularList {
 	NautilusCircularList *prev;
 };
 
+/* permissions for thumbnail directory */
+
+#define THUMBNAIL_DIR_PERMISSIONS (GNOME_VFS_PERM_USER_ALL | GNOME_VFS_PERM_GROUP_ALL | GNOME_VFS_PERM_OTHER_ALL)
+
 /* The icon factory.
  * These are just globals, but they're in an object so we can
  * connect signals and have multiple icon factories some day
@@ -104,6 +112,15 @@ typedef struct {
 	NautilusCircularList recently_used_dummy_head;
 	guint recently_used_count;
         guint sweep_timer;
+
+	/* thumbnail task state */
+	GList *thumbnails;
+	gchar *new_thumbnail_path;
+	gboolean thumbnail_in_progress;
+	
+	/* id of timeout task for making thumbnails */
+	gint timeout_task_id;
+	
 } NautilusIconFactory;
 
 typedef struct {
@@ -146,6 +163,7 @@ static GtkType               nautilus_icon_factory_get_type         (void);
 static void                  nautilus_icon_factory_initialize_class (NautilusIconFactoryClass *class);
 static void                  nautilus_icon_factory_initialize       (NautilusIconFactory      *factory);
 static NautilusIconFactory * nautilus_get_current_icon_factory      (void);
+static gchar *		     nautilus_icon_factory_get_thumbnail_uri(NautilusFile *file, NautilusIconsController *controller);
 static NautilusIconFactory * nautilus_icon_factory_new              (const char               *theme_name);
 static NautilusScalableIcon *nautilus_scalable_icon_get             (const char               *uri,
 								     const char               *name);
@@ -156,10 +174,13 @@ static void                  nautilus_icon_cache_key_destroy        (NautilusIco
 static guint                 nautilus_icon_cache_key_hash           (gconstpointer             p);
 static gboolean              nautilus_icon_cache_key_equal          (gconstpointer             a,
 								     gconstpointer             b);
+static gboolean		     vfs_file_exists			    (const char		      *file_name);
 static GdkPixbuf *           get_image_from_cache                   (NautilusScalableIcon     *scalable_icon,
 								     guint                     size_in_pixels,
 								     gboolean                  picky,
 								     gboolean                  custom);
+
+gint nautilus_icon_factory_make_thumbnails(gpointer data);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusIconFactory, nautilus_icon_factory, GTK_TYPE_OBJECT)
 
@@ -200,6 +221,11 @@ nautilus_icon_factory_initialize (NautilusIconFactory *factory)
         factory->icon_cache = g_hash_table_new (nautilus_icon_cache_key_hash,
 						nautilus_icon_cache_key_equal);
 
+	factory->thumbnails = NULL;
+	factory->timeout_task_id = -1;
+	factory->thumbnail_in_progress = FALSE;
+	factory->new_thumbnail_path = NULL;
+	
 	/* Empty out the recently-used list. */
 	factory->recently_used_dummy_head.next = &factory->recently_used_dummy_head;
 	factory->recently_used_dummy_head.prev = &factory->recently_used_dummy_head;
@@ -565,7 +591,7 @@ nautilus_scalable_icon_equal (gconstpointer a,
 }
 
 NautilusScalableIcon *
-nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
+nautilus_icon_factory_get_icon_for_file (NautilusFile *file, void *controller)
 {
 	char *uri;
         const char *name;
@@ -574,16 +600,19 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 	if (file == NULL)
 		return NULL;
 	
-	/* If there is a custom image in the metadata, use that.
-	 * Otherwise, consider using the image itself as a custom icon.
-	 * The check for using the image is currently based on the file
-	 * size, but that will change to a more sophisticated scheme later.
-	 */
+	/* if there is a custom image in the metadata, use that. */
 	uri = nautilus_file_get_metadata (file, NAUTILUS_CUSTOM_ICON_METADATA_KEY, NULL);
-	if (uri == NULL
-	    && nautilus_has_prefix (nautilus_file_get_mime_type (file), "image/")
-	    && nautilus_file_get_size (file) < SELF_THUMBNAIL_SIZE_THRESHOLD)
-		uri = nautilus_file_get_uri (file);
+	
+	/* if the file is an image, either use the image itself as the icon if it's small enough,
+	   or use a thumbnail if one exists.  If a thumbnail is required, but does not yet exist,
+	   put an entry on the thumbnail queue so we eventually make one */
+	   
+	if (uri == NULL && nautilus_has_prefix (nautilus_file_get_mime_type (file), "image/")) {
+		if (nautilus_file_get_size (file) < SELF_THUMBNAIL_SIZE_THRESHOLD)
+			uri = nautilus_file_get_uri (file);
+		else
+			uri = nautilus_icon_factory_get_thumbnail_uri(file, NAUTILUS_ICONS_CONTROLLER(controller));	
+	}
 	
 	/* Get the generic icon set for this file. */
         name = nautilus_icon_factory_get_icon_name_for_file (file);
@@ -609,6 +638,93 @@ nautilus_icon_factory_get_emblem_icons_for_file (NautilusFile *file)
 	}
 
 	return list;
+}
+
+/* utility to test whether a file exists using vfs */
+static gboolean
+vfs_file_exists(const gchar *file_uri)
+{
+	GnomeVFSResult result;
+	GnomeVFSFileInfo *file_info;
+
+	file_info = gnome_vfs_file_info_new ();
+	result = gnome_vfs_get_file_info (file_uri, file_info, 0, NULL);
+	gnome_vfs_file_info_unref(file_info);
+	return result == GNOME_VFS_OK;
+}
+
+/* utility routine that, given the uri of an image, constructs the uri to the corresponding thumbnail */
+
+static gchar *
+make_thumbnail_path(const gchar *image_uri, gboolean directory_only)
+{
+	gchar *thumbnail_uri;
+	gchar *temp_str = strdup(image_uri);
+	gchar *last_slash = strrchr(temp_str, '/');
+	*last_slash = '\0';
+	
+	if (directory_only)
+		thumbnail_uri = g_strdup_printf("%s/.thumbnails", temp_str);
+	else
+		thumbnail_uri = g_strdup_printf("%s/.thumbnails/%s", temp_str, last_slash + 1);
+	
+	g_free(temp_str);
+	return thumbnail_uri;
+}
+
+/* routine that takes a uri of a large image file and returns the uri of its corresponding thumbnail.
+   If no thumbnail is available, put the image on the thumbnail queue so one is eventually made */
+   
+static gchar *
+nautilus_icon_factory_get_thumbnail_uri(NautilusFile *file, NautilusIconsController *controller)
+{
+	NautilusIconFactory *factory;
+	GnomeVFSResult result;
+	gchar *thumbnail_uri = NULL;
+	gchar *file_uri = nautilus_file_get_uri(file);
+	
+	/* compose the uri for the thumbnail */
+	
+	thumbnail_uri = make_thumbnail_path(file_uri, FALSE);
+		
+	/* if the thumbnail file already exists, simply return the uri */
+	if (vfs_file_exists(thumbnail_uri)) {
+		g_free(file_uri);
+		return thumbnail_uri;
+	}
+	
+        /* make the thumbnail directory if necessary */
+       
+	g_free(thumbnail_uri);
+	thumbnail_uri = make_thumbnail_path(file_uri, TRUE);
+	result = gnome_vfs_make_directory(thumbnail_uri, THUMBNAIL_DIR_PERMISSIONS);
+
+	/* the thumbnail needs to be created, so add an entry to the thumbnail list */
+ 
+	/* FIXME: need to handle error by making directory elsewhere */
+	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_FILEEXISTS) {
+		g_warning("error when making thumbnail directory: %d\n", result);	
+	}
+	else {
+		NautilusThumbnailInfo *info = g_new0 (NautilusThumbnailInfo, 1);
+		info->thumbnail_uri = file_uri;
+		info->controller = controller;
+		
+		factory = nautilus_get_current_icon_factory ();		
+		if (factory->thumbnails)
+			factory->thumbnails = g_list_prepend(factory->thumbnails, info);
+		else {
+			factory->thumbnails = g_list_alloc();
+			factory->thumbnails->data = info;
+		}
+	
+		if (factory->timeout_task_id == -1)
+			factory->timeout_task_id = gtk_timeout_add(400, (GtkFunction) nautilus_icon_factory_make_thumbnails, NULL);
+	}
+	g_free(thumbnail_uri);
+	
+	/* return the uri to the "loading image" icon */
+	return get_icon_file_path("loading.png", NAUTILUS_ICON_SIZE_STANDARD);
 }
 
 static guint
@@ -1009,7 +1125,7 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
 
 	g_return_val_if_fail (file != NULL, NULL);
 
-	icon = nautilus_icon_factory_get_icon_for_file (file);
+	icon = nautilus_icon_factory_get_icon_for_file (file, NULL);
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon, size_in_pixels);
 	nautilus_scalable_icon_unref (icon);
 	return pixbuf;
@@ -1047,6 +1163,63 @@ nautilus_scalable_icon_list_free (GList *icon_list)
 	g_list_foreach (icon_list, (GFunc) nautilus_scalable_icon_unref, NULL);
 	g_list_free (icon_list);
 }
+
+/* make_thumbnails is invoked periodically as a timer task to launch a task to make thumbnails */
+
+gint
+nautilus_icon_factory_make_thumbnails(gpointer data)
+{
+	pid_t thumbnail_pid;
+	NautilusThumbnailInfo *info;
+	NautilusIconFactory *factory = nautilus_get_current_icon_factory();
+	GList *next_thumbnail = factory->thumbnails;
+
+	/* if the queue is empty, there's nothing more to do */
+
+	if (next_thumbnail == NULL) {
+		gtk_timeout_remove(factory->timeout_task_id);
+		factory->timeout_task_id = -1;
+		return 0;
+	}	
+	
+	info = (NautilusThumbnailInfo*) next_thumbnail->data;
+	
+	/* see which state we're in.  If a thumbnail isn't in progress, start one up.  Otherwise,
+	   check if the pending one is completed.  */	
+	if (factory->thumbnail_in_progress) {
+		if (vfs_file_exists(factory->new_thumbnail_path)) {
+			/* update the icon */
+			nautilus_icons_controller_update_icon(NAUTILUS_ICONS_CONTROLLER(info->controller), info->thumbnail_uri);
+			
+			/* done making the thumbnail, so dispose of the list element */
+			g_free(info->thumbnail_uri);
+			g_free(info);
+			factory->thumbnails = g_list_remove_link(factory->thumbnails, factory->thumbnails);
+			factory->thumbnail_in_progress = FALSE;
+		}
+	} 
+	else {
+			/* start up a task to make the thumbnail corresponding to the queue element. */
+			
+			/* First, compute the path name of the target thumbnail */
+			if (factory->new_thumbnail_path != NULL)
+				g_free(factory->new_thumbnail_path);
+			factory->new_thumbnail_path = make_thumbnail_path(info->thumbnail_uri, FALSE);
+			
+			/* fork a task to make the thumbnail. */
+			if (!(thumbnail_pid = fork())) {
+				gchar *temp_str = g_strdup_printf("convert -geometry 96x96 %s png:%s",
+				(gchar*) 				info->thumbnail_uri + 7, factory->new_thumbnail_path + 7);
+				system(temp_str);
+				g_free(temp_str);
+				_exit(0);
+			}
+			factory->thumbnail_in_progress = TRUE;
+	}
+	
+	return 1;  /* we're not done yet */
+}
+
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
 

@@ -42,6 +42,8 @@ static char *                fm_icons_controller_get_icon_text     (NautilusIcon
 								    NautilusControllerIcon   *icon);
 static char *                fm_icons_controller_get_icon_uri      (NautilusIconsController  *controller,
 								    NautilusControllerIcon   *icon);
+static void                  fm_icons_controller_update_icon       (NautilusIconsController  *controller,
+								    gchar		     *icon_uri);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMIconsController, fm_icons_controller, NAUTILUS_TYPE_ICONS_CONTROLLER)
 
@@ -56,6 +58,7 @@ fm_icons_controller_initialize_class (FMIconsControllerClass *klass)
 	abstract_class->get_icon_property = fm_icons_controller_get_icon_property;
 	abstract_class->get_icon_text = fm_icons_controller_get_icon_text;
 	abstract_class->get_icon_uri = fm_icons_controller_get_icon_uri;
+	abstract_class->update_icon = fm_icons_controller_update_icon;
 }
 
 static void
@@ -85,7 +88,7 @@ fm_icons_controller_get_icon_image (NautilusIconsController *controller,
 	if (emblems != NULL) {
 		*emblems = nautilus_icon_factory_get_emblem_icons_for_file (NAUTILUS_FILE (icon));
 	}
-	return nautilus_icon_factory_get_icon_for_file (NAUTILUS_FILE (icon));
+	return nautilus_icon_factory_get_icon_for_file (NAUTILUS_FILE (icon), controller);
 }
 
 /* return properties about the icon, keyed by the passed_in string.  If the property doesn't apply,
@@ -168,4 +171,14 @@ fm_icons_controller_get_icon_uri (NautilusIconsController *controller,
 				  NautilusControllerIcon *icon)
 {
 	return nautilus_file_get_uri (NAUTILUS_FILE (icon));
+}
+
+/* update_icon is called when a property of a file has changed to update the icon to reflect the change */
+static void
+fm_icons_controller_update_icon(NautilusIconsController *controller,
+				gchar *icon_uri)
+{
+	FMIconsController *icons_controller = FM_ICONS_CONTROLLER(controller);
+	GnomeIconContainer *container = GNOME_ICON_CONTAINER(GTK_BIN(icons_controller->icons)->child);
+	gnome_icon_container_update_icon(container, icon_uri);
 }

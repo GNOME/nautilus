@@ -1,3 +1,39 @@
+2000-03-01  Andy Hertzfeld <andy@eazel.com>
+
+	implemented automatic thumbnail creation for large images.
+	
+	* libnautilus/nautilus_icon_factory.c,h:
+	the bulk of the work is in here. If the relevant file is a large image,
+	look for a corresponding thumbnail in the .thumbnails directory; if
+	found, use it, otherwise put it on a queue for later thumbnail creation.
+	A timeout task is called periodically to fork a task to use ImageMagick
+	to actually create the thumbnail, and then call the icon controller to
+	actually update the icon.  Eventually, we'll replace ImageMagick
+	with our own inline code for better performance.
+	
+	*libnautilus/gnome-icon-container.c,h:
+	added a gnome_icon_container_update_icon method to update the icon
+	corresponding with the passed in uri.  This is used by the icon
+	controller to update the icons with the newly created thumbnails.
+	
+	*libnautilus/nautilus-icons-controller.c,h:
+	added a nautilus_icons_controller_update_icon method to the abstract
+	class to update the icon associated with the passed-in uri.
+	
+	*src/file-manager/fm-icons-controller.c:
+	concrete implementation that calls the icon canvas to update the icon.
+	
+	*libnautilus/nautilus_bookmark.c:
+	since I added a controller parameter to get_icon_for_file, I had to add
+	the parameter here, since nautilus_bookmark was using get_icon_for_file
+	
+	*icons/loading.png:
+	added a placeholder icon to express that a thumbnail is loading; Susan
+	will replace this soon.  Also, it's not being used properly yet.
+	
+	* icons/Makefile.am
+	added the loading icon.
+	
 2000-02-29  John Sullivan <sullivan@eazel.com>
 
         * src/ntl-window-msgs.c: (nautilus_window_set_state_info):

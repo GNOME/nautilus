@@ -33,6 +33,7 @@ icon_DATA =					\
 	i-symlink.png				\
 	i-zipdisk.png				\
 	i-zipdisk2.png				\
+	loading.png				\
 	multi-ok.png				\
 	not.png					\
 	nautilus3.jpg				\

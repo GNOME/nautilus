@@ -3193,6 +3193,13 @@ compute_stretch (StretchState *start,
 	}
 }
 
+void
+gnome_icon_container_update_icon(GnomeIconContainer *container, gchar *icon_uri)
+{
+	GnomeIconContainerIcon *icon = gnome_icon_container_get_icon_by_uri (container, icon_uri);
+	if (icon != NULL)
+		update_icon(container, icon);
+}
 
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
 

@@ -94,6 +94,8 @@ void       gnome_icon_container_set_zoom_level          (GnomeIconContainer     
 
 void       gnome_icon_container_unselect_all            (GnomeIconContainer      *view);
 void       gnome_icon_container_select_all              (GnomeIconContainer      *view);
+void	   gnome_icon_container_update_icon		(GnomeIconContainer *container,
+							 gchar *icon_uri);
 
 /* The following all work on the selected icon. */
 gboolean   gnome_icon_container_has_stretch_handles     (GnomeIconContainer      *container);

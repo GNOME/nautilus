@@ -190,7 +190,7 @@ nautilus_bookmark_get_pixmap_and_mask (const NautilusBookmark *bookmark,
 	if (file == NULL)
 		return FALSE;
 
-	scalable_icon = nautilus_icon_factory_get_icon_for_file	(file);
+	scalable_icon = nautilus_icon_factory_get_icon_for_file	(file, NULL);
 	nautilus_file_unref (file);
 
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
