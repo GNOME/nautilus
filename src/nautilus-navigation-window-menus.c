@@ -844,7 +844,7 @@ append_bookmark_to_menu (NautilusWindow *window,
 
 	/* Add verb to new bookmark menu item */
 	ui_path = g_strdup_printf ("%s/%s", menu_item_path, unique_id);	
-	verb_name = nautilus_bonobo_get_menu_item_verb_name (ui_path);	
+	verb_name = nautilus_bonobo_get_menu_item_verb_name (ui_path);
 	bonobo_ui_component_add_verb_full (window->details->shell_ui, verb_name, 
 					   activate_bookmark_in_menu_item, bookmark_holder, 
 					   bookmark_holder_free_cover);

@@ -165,7 +165,7 @@ nautilus_bonobo_add_menu_item (BonoboUIComponent *ui, const char *id, const char
 	 */
 	full_id = g_strdup_printf ("%s/%s", path, id);
 	name = gnome_vfs_escape_string (id);
-	verb_name = gnome_vfs_escape_string (id);
+	verb_name = gnome_vfs_escape_string (full_id);
 
 	xml_string = g_strdup_printf ("<menuitem name=\"%s\" label=\"%s\" verb=\"verb:%s\"/>\n", 
 				      name, encoded_label, verb_name);

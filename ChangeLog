@@ -1,3 +1,13 @@
+2000-10-16  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed an error where I was escaping the wrong item
+	to create a unique verb name.
+	
+	* libnautilus-extensions/nautilus-bonobo-extensions.c:
+	(nautilus_bonobo_add_menu_item):
+	
+	* src/nautilus-window-menus.c: (append_bookmark_to_menu):
+
 2000-10-15  Andy Hertzfeld  <andy@eazel.com>
 
 	* components/music/nautilus-music-view.c:
