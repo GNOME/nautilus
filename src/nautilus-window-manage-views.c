@@ -99,6 +99,11 @@ nautilus_window_request_selection_change(NautilusWindow *window,
   GSList *cur;
   Nautilus_SelectionInfo selinfo;
 
+  if(loc->selected_uris._length == 1)
+    nautilus_window_set_status(window, loc->selected_uris._buffer[0]);
+  else
+    nautilus_window_set_status(window, NULL);
+
   selinfo.selected_uris = loc->selected_uris;
   selinfo.content_view = nautilus_view_get_objref(NAUTILUS_VIEW(window->content_view));
 

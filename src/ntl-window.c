@@ -28,6 +28,7 @@
 
 #include "config.h"
 #include <gnome.h>
+#include <math.h>
 #include "nautilus.h"
 #include "nautilus-bookmarks-menu.h"
 #include "explorer-location-bar.h"
@@ -37,6 +38,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libnautilus/nautilus-gtk-extensions.h>
 #include "nautilus-zoom-control.h"
+#include <ctype.h>
 
 static void nautilus_window_realize (GtkWidget *widget);
 static void nautilus_window_real_set_content_view (NautilusWindow *window, NautilusView *new_view);
@@ -426,7 +428,7 @@ nautilus_window_set_status(NautilusWindow *window, const char *txt)
     g_source_remove(window->statusbar_clear_id);
 
   gtk_statusbar_pop(GTK_STATUSBAR(GNOME_APP(window)->statusbar), window->statusbar_ctx);
-  if(txt)
+  if(txt && *txt)
     {
       window->statusbar_clear_id = g_timeout_add(STATUSBAR_CLEAR_TIMEOUT, (GSourceFunc)nautilus_window_clear_status, window);
       gtk_statusbar_push(GTK_STATUSBAR(GNOME_APP(window)->statusbar), window->statusbar_ctx, txt);
@@ -514,7 +516,16 @@ nautilus_window_constructed(NautilusWindow *window)
   window->content_hbox = gtk_hbox_new(FALSE, 0);
 #else
   window->content_hbox = gtk_hpaned_new();
-  gtk_paned_set_position(GTK_PANED(window->content_hbox), 136);
+  {
+/* Extrapolate width based on username. 'andy' will get 136, 'sopwith' will get 275, others will
+   watch funky things happen. Go ahead and laugh - this is serious UI research here! */
+	char *un = getenv("USER");
+	double pos = 136;
+
+	if(un)
+		pos += ((double)(275-136))/((double)('s'-'a')) * ((double)(tolower(*un) - 'a'));
+	gtk_paned_set_position(GTK_PANED(window->content_hbox), floor(pos));
+  }
 #endif
   gnome_app_set_contents(app, window->content_hbox);
 

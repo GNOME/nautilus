@@ -1,3 +1,8 @@
+2000-02-11  Elliot Lee  <sopwith@redhat.com>
+	* src/ntl-window.c: If an empty string is passed for a status string, just unset it all.
+	* src/ntl-window-msgs.c: If we get a selection of size 1, indicate it on the status bar.
+	  (Triggers a nautilus_window_set_status bug, will fix later.)
+
 2000-02-11  John Sullivan <sullivan@eazel.com>
 
 	* src/ntl-window.h:
