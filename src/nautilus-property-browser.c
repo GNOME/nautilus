@@ -1712,29 +1712,31 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 	/*
 	 * We place ERASE objects (for emblems) at the end with a blank in between.
 	 */
-
-	blank = eel_image_table_add_empty_image (image_table);
-	labeled_image_configure (EEL_LABELED_IMAGE (blank));
-		
-	num_images = eel_wrap_table_get_num_children (EEL_WRAP_TABLE (image_table));
-	g_assert (num_images > 0);
-	eel_wrap_table_reorder_child (EEL_WRAP_TABLE (image_table),
-				      blank,
-				      num_images - 1);
-		
-	gtk_widget_show (blank);
+	if (property_browser->details->category_type == NAUTILUS_PROPERTY_EMBLEM) {
+		blank = eel_image_table_add_empty_image (image_table);
+		labeled_image_configure (EEL_LABELED_IMAGE (blank));
 	
-	path = nautilus_pixmap_file (ERASE_OBJECT_NAME);
-	object_pixbuf = gdk_pixbuf_new_from_file (path, NULL);
-	g_free (path);
-	property_image = labeled_image_new (_("Erase"), object_pixbuf, "erase", PANGO_SCALE_LARGE);
-	eel_labeled_image_set_fixed_image_height (EEL_LABELED_IMAGE (property_image), MAX_EMBLEM_HEIGHT);
+		
+		num_images = eel_wrap_table_get_num_children (EEL_WRAP_TABLE (image_table));
+		g_assert (num_images > 0);
+		eel_wrap_table_reorder_child (EEL_WRAP_TABLE (image_table),
+					      blank,
+					      num_images - 1);
+		
+		gtk_widget_show (blank);
+		
+		path = nautilus_pixmap_file (ERASE_OBJECT_NAME);
+		object_pixbuf = gdk_pixbuf_new_from_file (path, NULL);
+		g_free (path);
+		property_image = labeled_image_new (_("Erase"), object_pixbuf, "erase", PANGO_SCALE_LARGE);
+		eel_labeled_image_set_fixed_image_height (EEL_LABELED_IMAGE (property_image), MAX_EMBLEM_HEIGHT);
 
-	gtk_container_add (GTK_CONTAINER (image_table), property_image);
-	gtk_widget_show (property_image);
+		gtk_container_add (GTK_CONTAINER (image_table), property_image);
+		gtk_widget_show (property_image);
 	
-	eel_wrap_table_reorder_child (EEL_WRAP_TABLE (image_table),
-				      property_image, -1);
+		eel_wrap_table_reorder_child (EEL_WRAP_TABLE (image_table),
+					      property_image, -1);
+	}
 
 	/*
 	 * We place RESET objects (for colors and patterns) at the beginning.

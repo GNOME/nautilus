@@ -2436,7 +2436,10 @@ create_emblems_page (FMPropertiesWindow *window)
 static void
 permission_change_callback (NautilusFile *file, GnomeVFSResult result, gpointer callback_data)
 {
-	g_assert (callback_data == NULL);
+	FMPropertiesWindow *window;
+	g_assert (callback_data != NULL);
+
+	window = FM_PROPERTIES_WINDOW (callback_data);
 	
 	/* Report the error if it's an error. */
 	fm_report_error_setting_permissions (file, result, NULL);

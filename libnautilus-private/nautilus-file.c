@@ -357,8 +357,6 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 				relative_uri_tmp++;
 			}
 			relative_uri = strdup (relative_uri_tmp);
-		} else {
-			g_assert_not_reached ();
 		}
 	}
 

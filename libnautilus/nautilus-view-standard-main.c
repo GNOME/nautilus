@@ -175,8 +175,8 @@ nautilus_view_instrument_for_failure (BonoboObject *control,
 	g_signal_connect_closure (
 		control, "destroy",
 		g_cclosure_new_swap (
-			G_CALLBACK (g_source_remove_by_user_data),
-			control, NULL),
+			G_CALLBACK (g_source_remove),
+			GUINT_TO_POINTER (no_frame_timeout_id), NULL),
 		0);
 	g_signal_connect (
 		control, "set_frame",

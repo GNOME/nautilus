@@ -1,3 +1,32 @@
+2003-09-19  Alexander Larsson  <alexl@redhat.com>
+
+	* Merge from HEAD:
+
+	* src/file-manager/fm-properties-window.c (permission_change_callback):
+	Fix compilation error (bug #122537).
+	Patch by david.hawthorne@sun.com
+	Updated fix for bug #122537.
+	
+	* add-include-prefix:
+	Fix to work correctly on MacOS X and NetBSD.
+	Fixes bug #87835.
+	
+	* libnautilus-private/nautilus-file.c (nautilus_file_get_internal):
+	Don't assert_not_reached for unsupported URIs when create == FALSE.
+	Fixes bug #122265.
+
+	* libnautilus/nautilus-view-standard-main.c (nautilus_view_instrument_for_failure):
+	Correctly remove nautilus_view_never_got_frame_timeout timeout on destroy.
+	Fixes #120904, thanks to Narayana Pattipati for diagnosing this.
+
+	* src/nautilus-property-browser.c (make_properties_from_directories):
+	Only add eraser for emblems browser.
+	
+	* src/nautilus-window-manage-views.c (begin_location_change):
+	Check for content_view != NULL before saving current location
+	the old view might have failed. Fixes bug #119407.
+	Thanks to Narayana Pattipati for discovering this.
+	
 2003-09-18  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-main.c (main):

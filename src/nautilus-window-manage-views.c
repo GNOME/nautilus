@@ -1545,7 +1545,8 @@ begin_location_change (NautilusWindow *window,
         nautilus_directory_unref (directory);
 
         /* Set current_bookmark scroll pos */
-        if (window->current_location_bookmark != NULL) {
+        if (window->current_location_bookmark != NULL &&
+            window->content_view != NULL) {
                 current_pos = nautilus_view_frame_get_first_visible_file (window->content_view);
                 nautilus_bookmark_set_scroll_pos (window->current_location_bookmark, current_pos);
                 g_free (current_pos);
