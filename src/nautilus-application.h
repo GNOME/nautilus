@@ -78,7 +78,7 @@ NautilusWindow *     nautilus_application_present_spatial_window     (NautilusAp
 NautilusWindow *     nautilus_application_create_navigation_window     (NautilusApplication *application,
 									GdkScreen           *screen);
 void                 nautilus_application_close_all_navigation_windows (void);
-void                 nautilus_application_close_with_parent_windows (NautilusSpatialWindow *window);
+void                 nautilus_application_close_parent_windows     (NautilusSpatialWindow *window);
 void                 nautilus_application_open_desktop      (NautilusApplication *application);
 void                 nautilus_application_close_desktop     (void);
 

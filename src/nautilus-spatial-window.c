@@ -239,11 +239,11 @@ nautilus_spatial_window_show (GtkWidget *widget)
 }
 
 static void
-file_menu_close_with_parent_windows_callback (BonoboUIComponent *component, 
+file_menu_close_parent_windows_callback (BonoboUIComponent *component, 
 					      gpointer user_data, 
 					      const char *verb)
 {
-	nautilus_application_close_with_parent_windows (NAUTILUS_SPATIAL_WINDOW (user_data));
+	nautilus_application_close_parent_windows (NAUTILUS_SPATIAL_WINDOW (user_data));
 }
 
 static void
@@ -275,7 +275,7 @@ real_merge_menus (NautilusWindow *nautilus_window)
 {
 	NautilusSpatialWindow *window;
 	BonoboUIVerb verbs [] = {
-		BONOBO_UI_VERB ("Close With Parents", file_menu_close_with_parent_windows_callback),
+		BONOBO_UI_VERB ("Close Parent Folders", file_menu_close_parent_windows_callback),
 		BONOBO_UI_VERB_END
 	};
 	

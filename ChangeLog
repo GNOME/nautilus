@@ -1,3 +1,13 @@
+2003-12-01  David Bordoley  <bordoley@msu.edu>
+
+	* src/nautilus-application.c: (nautilus_application_close_parent_windows):
+	* src/nautilus-application.h:
+	* src/nautilus-spatial-window-ui.xml:
+	* src/nautilus-spatial-window.c: (file_menu_close_parent_windows_callback),
+	(real_merge_menus):
+	Change "close all parents" to be "close parent folders"
+	and change the behavior to match the label.
+
 2003-12-01 Sivaiah Nallagatla <snallagatla@novell.com>
 	
 	* src/nautilus-navigation-window.c (real_get_default_size) (nautilus_navigation_window_class_init)
