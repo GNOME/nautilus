@@ -1,3 +1,13 @@
+2000-11-27  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize):
+	fixed bug 4420, non-portable use of string macro, by using the N_
+	macro as Darin suggested.
+	
+	Also, fixed up some glitches in the ChangeLog from previous
+	check-ins.
+	
 2000-11-27  Mathieu Lacage  <mathieu@eazel.com>
 
 	Might fix tinderbox.
@@ -15,7 +25,7 @@
 	(files with the "text" MIME supertype).
 	
 
-2000-11-27  Andy Hertzfeld  <set EMAIL_ADDRESS environment variable>
+2000-11-27  Andy Hertzfeld  <andy@eazel.com>
 
 	added a new text view component with zooming, settable fonts and
 	text-oriented services. The services are currently hardwired but there
@@ -129,7 +139,7 @@
 	of gtk_object_unref. It turns out that for widgets, destroy is the
 	right way to let go.
 
-2000-11-27  Andy Hertzfeld  andy@eazel.com>
+2000-11-27  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/file-manager/fm-directory-view.c: (real_update_menus):
 	fixed bug where the "Reset Background" command in the icon view

@@ -217,7 +217,7 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	GtkWidget *scrollwindow, *label;
 	GtkWidget *button;
         /* FIXME: I think this is not portable. It works in gcc, but not other C compilers. */
-	char *titles[] = {_("Track "), _("Title"), _("Artist"), _("Year"), _("Bitrate "), _("Time "), _("Album"),  _("Comment"), _("Channels"),  _("Sample Rate"),};
+	char *titles[] = {N_("Track "), N_("Title"), N_("Artist"), N_("Year"), N_("Bitrate "), N_("Time "), N_("Album"),  N_("Comment"), N_("Channels"),  N_("Sample Rate"),};
 	
 	music_view->details = g_new0 (NautilusMusicViewDetails, 1);
 
