@@ -33,6 +33,18 @@
 
 #include "nautilus-graphic-effects.h"
 
+/* shared utility to create a new pixbuf from the passed-in one */
+
+static GdkPixbuf *
+create_new_pixbuf (GdkPixbuf *src)
+{
+	return gdk_pixbuf_new (gdk_pixbuf_get_format (src),
+				gdk_pixbuf_get_has_alpha (src),
+				gdk_pixbuf_get_bits_per_sample (src),
+				gdk_pixbuf_get_width (src),
+				gdk_pixbuf_get_height (src));
+}
+
 /* utility routine to bump the level of a color component with pinning */
 
 static guchar
@@ -56,11 +68,7 @@ create_spotlight_pixbuf (GdkPixbuf* src)
 	guchar *pixdest;
 	GdkPixbuf *dest;
 	
-	dest = gdk_pixbuf_new (gdk_pixbuf_get_format (src),
-					 gdk_pixbuf_get_has_alpha (src),
-					 gdk_pixbuf_get_bits_per_sample (src),
-					 gdk_pixbuf_get_width (src),
-					 gdk_pixbuf_get_height (src));
+	dest = create_new_pixbuf (src);
 	
 	has_alpha = gdk_pixbuf_get_has_alpha (src);
 	width = gdk_pixbuf_get_width (src);
@@ -96,7 +104,7 @@ GdkPixbuf *
 create_darkened_pixbuf (GdkPixbuf *src, int saturation, int darken)
 {
 	gint i, j;
-	gint width, height, has_alpha, rowstride;
+	gint width, height, has_alpha, src_rowstride, dst_rowstride;
 	guchar *target_pixels;
 	guchar *original_pixels;
 	guchar *pixsrc;
@@ -107,22 +115,19 @@ create_darkened_pixbuf (GdkPixbuf *src, int saturation, int darken)
 	guchar r,g,b;
 	GdkPixbuf *dest;
 
-	dest = gdk_pixbuf_new (gdk_pixbuf_get_format (src),
-					 gdk_pixbuf_get_has_alpha (src),
-					 gdk_pixbuf_get_bits_per_sample (src),
-					 gdk_pixbuf_get_width (src),
-					 gdk_pixbuf_get_height (src));
+	dest = create_new_pixbuf (src);
 
 	has_alpha = gdk_pixbuf_get_has_alpha (src);
 	width = gdk_pixbuf_get_width (src);
 	height = gdk_pixbuf_get_height (src);
-	rowstride = gdk_pixbuf_get_rowstride (src);
+	src_rowstride = gdk_pixbuf_get_rowstride (src);
+	dst_rowstride = gdk_pixbuf_get_rowstride (dest);
 	target_pixels = gdk_pixbuf_get_pixels (dest);
 	original_pixels = gdk_pixbuf_get_pixels (src);
 
 	for (i = 0; i < height; i++) {
-		pixdest = target_pixels + i*rowstride;
-		pixsrc = original_pixels + i*rowstride;
+		pixdest = target_pixels + i*dst_rowstride;
+		pixsrc = original_pixels + i*src_rowstride;
 		for (j = 0; j < width; j++) {
 			r = *(pixsrc++);
 			g = *(pixsrc++);
@@ -140,6 +145,45 @@ create_darkened_pixbuf (GdkPixbuf *src, int saturation, int darken)
 	return dest;
 }
 #undef INTENSITY
+
+/* this routine colorizes the passed-in pixbuf by multiplying each pixel with the passed in color */
+
+GdkPixbuf *
+create_colorized_pixbuf(GdkPixbuf *src, int red_value, int green_value, int blue_value)
+{
+	int i, j;
+	int width, height, has_alpha, src_rowstride, dst_rowstride;
+	guchar *target_pixels;
+	guchar *original_pixels;
+	guchar *pixsrc;
+	guchar *pixdest;
+	GdkPixbuf *dest;
+	
+	dest = create_new_pixbuf (src);
+	
+	has_alpha = gdk_pixbuf_get_has_alpha (src);
+	width = gdk_pixbuf_get_width (src);
+	height = gdk_pixbuf_get_height (src);
+	src_rowstride = gdk_pixbuf_get_rowstride (src);
+	dst_rowstride = gdk_pixbuf_get_rowstride (dest);
+	target_pixels = gdk_pixbuf_get_pixels (dest);
+	original_pixels = gdk_pixbuf_get_pixels (src);
+
+	for (i = 0; i < height; i++) {
+		pixdest = target_pixels + i*dst_rowstride;
+		pixsrc = original_pixels + i*src_rowstride;
+		for (j = 0; j < width; j++) {		
+			*(pixdest++) = (*(pixsrc++) * red_value) >> 8;
+			*(pixdest++) = (*(pixsrc++) * green_value) >> 8;
+			*(pixdest++) = (*(pixsrc++) * blue_value) >> 8;
+			if (has_alpha) {
+				*(pixdest++) = *(pixsrc++);
+			}
+		}
+	}
+	return dest;
+}
+
 
 /* this routine takes the source pixbuf and returns a new one that's semi-transparent, by
    clearing every other pixel's alpha value in a checkerboard grip.  We have to do the

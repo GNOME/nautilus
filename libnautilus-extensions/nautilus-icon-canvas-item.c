@@ -52,7 +52,6 @@ struct NautilusIconCanvasItemDetails {
 	GList *emblem_pixbufs;
 	char *text;
 	GdkFont *font;
-	GdkFont *highlight_font;
 	ArtIRect embedded_text_rect;
 	char *embedded_text_file_URI;
 	
@@ -73,7 +72,6 @@ enum {
 	ARG_0,
 	ARG_TEXT,
 	ARG_FONT,
-    	ARG_HIGHLIGHT_FONT,
     	ARG_HIGHLIGHTED_FOR_SELECTION,
     	ARG_HIGHLIGHTED_AS_KEYBOARD_FOCUS,
     	ARG_HIGHLIGHTED_FOR_DROP,
@@ -183,10 +181,7 @@ nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass *class)
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::text",
 				 GTK_TYPE_STRING, GTK_ARG_READWRITE, ARG_TEXT);
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::font",
-				 GTK_TYPE_BOXED, GTK_ARG_READWRITE, ARG_FONT);
-	gtk_object_add_arg_type	("NautilusIconCanvasItem::highlight_font",
-				 GTK_TYPE_BOXED, GTK_ARG_READWRITE, ARG_HIGHLIGHT_FONT);
-	
+				 GTK_TYPE_BOXED, GTK_ARG_READWRITE, ARG_FONT);	
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::highlighted_for_selection",
 				 GTK_TYPE_BOOL, GTK_ARG_READWRITE, ARG_HIGHLIGHTED_FOR_SELECTION);
 	gtk_object_add_arg_type	("NautilusIconCanvasItem::highlighted_as_keyboard_focus",
@@ -257,10 +252,7 @@ nautilus_icon_canvas_item_destroy (GtkObject *object)
 	nautilus_gdk_pixbuf_list_free (details->emblem_pixbufs);
 	g_free (details->text);
 	if (details->font != NULL)
-		gdk_font_unref (details->font);
-	if (details->highlight_font != NULL)
-		gdk_font_unref (details->highlight_font);
-			
+		gdk_font_unref (details->font);			
 	g_free (details);
 
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
@@ -312,21 +304,6 @@ nautilus_icon_canvas_item_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 			gdk_font_unref (details->font);
 		}
 		details->font = font;
-		break;
-
-	case ARG_HIGHLIGHT_FONT:
-		font = GTK_VALUE_BOXED (*arg);
-		if (nautilus_gdk_font_equal (font, details->highlight_font)) {
-			return;
-		}
-
-		if (font != NULL) {
-			gdk_font_ref (font);
-		}
-		if (details->highlight_font != NULL) {
-			gdk_font_unref (details->highlight_font);
-		}
-		details->highlight_font = font;
 		break;
 
 	case ARG_HIGHLIGHTED_FOR_SELECTION:
@@ -384,11 +361,7 @@ nautilus_icon_canvas_item_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 	case ARG_FONT:
 		GTK_VALUE_BOXED (*arg) = details->font;
 		break;
-		
-	case ARG_HIGHLIGHT_FONT:
-		GTK_VALUE_BOXED (*arg) = details->highlight_font;
-		break;
-		
+				
         case ARG_HIGHLIGHTED_FOR_SELECTION:
                 GTK_VALUE_BOOL (*arg) = details->is_highlighted_for_selection;
                 break;
@@ -577,7 +550,6 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	NautilusIconCanvasItemDetails *details;
         int width_so_far, height_so_far;
         GdkGC* gc;
-	GdkFont *font;
 	int max_text_width;
 	int icon_width, text_left, box_left;
 	GnomeIconTextInfo *icon_text_info;
@@ -587,12 +559,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 
 	details = item->details;
 
-	if (details->is_highlighted_for_selection)
-		font = details->highlight_font;
-	else
-		font = details->font;
-
-	if (font == NULL || details->text == NULL || details->text[0] == '\0') {
+	if (details->font == NULL || details->text == NULL || details->text[0] == '\0') {
 		details->text_height = 0;
 		details->text_width = 0;
 		return;
@@ -607,7 +574,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	}
 	
 	max_text_width = floor (MAX_TEXT_WIDTH * GNOME_CANVAS_ITEM (item)->canvas->pixels_per_unit);
-	
+		
 	pieces = g_strsplit (details->text, "\n", 0);
 	for (i = 0; (text_piece = pieces[i]) != NULL; i++) {
 		/* Replace empty string with space for measurement and drawing.
@@ -618,12 +585,18 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		}
 		
 		icon_text_info = gnome_icon_layout_text
-			(font, text_piece, " -_,;.?/&", max_text_width, TRUE);
+			(details->font, text_piece, " -_,;.?/&", max_text_width, TRUE);
 		
 		if (drawable != NULL) {			
 			text_left = icon_left + (icon_width - icon_text_info->width) / 2;
 			gnome_icon_paint_text (icon_text_info, drawable, gc,
 					       text_left, icon_bottom + height_so_far, GTK_JUSTIFY_CENTER);
+			
+			/* if it's selected, embolden the text by drawing again offset by one pixel */
+			if (details->is_highlighted_for_selection)
+				gnome_icon_paint_text (icon_text_info, drawable, gc,
+					       text_left + 1, icon_bottom + height_so_far, GTK_JUSTIFY_CENTER);			
+
 		}
 		
 		width_so_far = MAX (width_so_far, icon_text_info->width);

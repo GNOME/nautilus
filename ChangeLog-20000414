@@ -1,3 +1,23 @@
+2000-03-27  Andy Hertzfeld <andy@eazel.com>
+
+	Changed how selection emboldening works.  The problem was that using
+	a bold font changed the text layout, making words jump from line to
+	line when an icon was selected.  The new approach doesn't use a bold
+	font; instead it just draws it an extra time, offset by a pixel
+	
+	* libnautilus/nautilus-icon-canvas-item.c:
+	embolden by drawing twice instead of using a bold font; also, removed
+	the "hilight_font" stuff
+	* libnautilus/nautilus-icon-private.h:
+	removed the hilite_font field
+	* libnautilus/nautilus-icon-container.h:
+	removed the highlight font stuff
+	* libnautilus/nautilus-graphic-effects.c,h:
+	cleaned up by using a common routine to make the destination pixbuf;
+	fixed bug in create_darkened_pixbuf by using separate counts for source
+	and destination rowstride;
+	added a "create_colorized_pixbuf" routine
+	
 2000-03-26  Ramiro Estrugo  <ramiro@eazel.com>
 
 	Removed the ETTORE user level easter egg and bullet proofed the 
