@@ -21,32 +21,30 @@
 
    Author: Maciej Stachowiak <mjs@eazel.com>
 */
-#ifdef HAVE_CONFIG_H
+
 #include <config.h>
-#endif
 
-
-#include <libgnomevfs/gnome-vfs.h>
-#include <libgnomevfs/gnome-vfs-mime-handlers.h>
-#include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <gnome.h>
-
+#include <libgnomevfs/gnome-vfs-mime-handlers.h>
+#include <libgnomevfs/gnome-vfs.h>
+#include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <stdio.h>
 
+static gboolean ready = FALSE;
 
 static void
 usage (const char *name)
 {
-		fprintf (stderr, "Usage: %s uri field value\n", name);
-		fprintf (stderr, "Valid field values are: \n");
-		fprintf (stderr, "\tdefault_action_type\n");
-		fprintf (stderr, "\tdefault_application\n");
-		fprintf (stderr, "\tdefault_component\n");
-		fprintf (stderr, "\tshort_list_applicationss\n");
-		fprintf (stderr, "\tshort_list_components\n");
-		fprintf (stderr, "\tadd_to_all_applicationss\n");
-		fprintf (stderr, "\tremove_from_all_applications\n");
-		exit (1);
+	fprintf (stderr, "Usage: %s uri field value\n", name);
+	fprintf (stderr, "Valid field values are: \n");
+	fprintf (stderr, "\tdefault_action_type\n");
+	fprintf (stderr, "\tdefault_application\n");
+	fprintf (stderr, "\tdefault_component\n");
+	fprintf (stderr, "\tshort_list_applicationss\n");
+	fprintf (stderr, "\tshort_list_components\n");
+	fprintf (stderr, "\tadd_to_all_applicationss\n");
+	fprintf (stderr, "\tremove_from_all_applications\n");
+	exit (1);
 }
 
 static GnomeVFSMimeActionType
@@ -68,7 +66,8 @@ strsplit_handle_null (const char *str, const char *delim, int max)
 }
 
 
-static GList *gnome_vfs_strsplit_to_list (const char *str, const char *delim, int max)
+static GList *
+strsplit_to_list (const char *str, const char *delim, int max)
 {
 	char **strv;
 	GList *retval;
@@ -89,11 +88,18 @@ static GList *gnome_vfs_strsplit_to_list (const char *str, const char *delim, in
 	return retval;
 }
 
-static GList *comma_separated_str_to_str_list (const char *str)
+static GList *
+comma_separated_str_to_str_list (const char *str)
 {
-	return gnome_vfs_strsplit_to_list (str, ",", 0);
+	return strsplit_to_list (str, ",", 0);
 }
 
+static void
+ready_callback (NautilusFile *file,
+		gpointer callback_data)
+{
+	ready = TRUE;
+}
 
 int
 main (int argc, char **argv)
@@ -102,12 +108,13 @@ main (int argc, char **argv)
 	const char *field;
 	const char *value;
 	NautilusFile *file;
+	GList *attributes;
 
 	g_thread_init (NULL);
 	oaf_init (argc, argv);
 	gnome_vfs_init ();
-	gnome_init("test-nautilus-mime-actions-set", "0.0",
-		       argc, argv);
+	gnome_init ("test-nautilus-mime-actions-set", "0.0",
+		    argc, argv);
 
 	if (argc < 3) {
 		usage (argv[0]);
@@ -119,7 +126,13 @@ main (int argc, char **argv)
 
 	file = nautilus_file_get (uri);
 
-	nautilus_mime_actions_wait_for_full_file_attributes (file);
+	attributes = nautilus_mime_actions_get_full_file_attributes ();
+	nautilus_file_call_when_ready (file, attributes, ready_callback, NULL);
+	g_list_free (attributes);
+
+	while (!ready) {
+		gtk_main_iteration ();
+	}
 
 	if (strcmp (field, "default_action_type") == 0) {
 		puts ("default_action_type");
@@ -153,9 +166,3 @@ main (int argc, char **argv)
 
 	return 0;
 }
-
-
-
-
-
-

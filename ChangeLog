@@ -1,3 +1,66 @@
+2000-11-07  Darin Adler  <darin@eazel.com>
+
+	Worked on getting rid of wait_until_ready.
+	
+	* libnautilus-extensions/nautilus-directory.c: Got rid of include
+	of nautilus-wait-until-ready.h.
+	
+	* libnautilus-extensions/nautilus-file.c: Got rid of
+	nautilus_file_wait_until_ready.
+	
+	* libnautilus-extensions/nautilus-mime-actions.c:
+	(wait_until_ready_callback),
+	(nautilus_mime_actions_wait_for_full_file_attributes):
+	Reimplemented so the wait is in here so we can get rid of
+	nautilus_file_wait_until_ready.
+	
+	* libnautilus-extensions/nautilus-mime-actions.h: Moved
+	nautilus_mime_actions_wait_for_full_file_attributes into
+	nautilus-wait-until-ready.h.
+	
+	* libnautilus-extensions/nautilus-program-chooser.c: Added include
+	of nautilus-wait-until-ready.h since this is one of the two files
+	that still uses the thing.
+	* libnautilus-extensions/nautilus-program-choosing.c: Added include
+	of nautilus-wait-until-ready.h since this is one of the two files
+	that still uses the thing.
+	
+	* libnautilus-extensions/nautilus-wait-until-ready.h: Removed
+	nautilsu_file_wait_until_ready and added
+	nautilus_mime_actions_wait_for_full_file_attributes.
+	
+	* src/file-manager/fm-directory-view.c:
+	(switch_location_and_view): Get rid of code that waits for
+	attributes, because the code guarantees they will already be read
+	at this point.
+	(fm_directory_view_destroy): Stop monitoring the file for the open
+	with menu.
+	(files_changed_callback): Update the menus whenever a file changes
+	or our knowledge about it changes.
+	(create_open_with_gtk_menu): Use the new monitor call to arrange
+	to get the information about the single selected file that we
+	need.
+	(reset_bonobo_open_with_menu): Use the new monitor call to arrange
+	to get the information about the single selected file that we
+	need.
+	(activate_callback): Remove the hack to work around the
+	wait_until_ready calls. Also remove the wait_until_ready in here
+	because we now request all the attributes we will be needing in
+	the call_when_ready call (that already existed).
+	(fm_directory_view_activate_file): Request all the attributes
+	needed for determining MIME actions.
+	(monitor_file_for_open_with): New function to monitor the stuff we
+	need to know for the Open with menu.
+	
+	* test/test-nautilus-mime-actions-set.c: (ready_callback), (main):
+	Use call_when_ready instead of wait_until_ready.
+	
+	* test/test-nautilus-mime-actions.c: (ready_callback), (main): Use
+	call_when_ready instead of wait_until_ready.
+
+	* po/ui-extract.pl: Checked in new version from Kenneth.
+	* po/update.pl: Kenneth wanted me to update the license.
+	
 2000-11-07  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/nautilus-property-browser.c: (emblem_keyword_valid),

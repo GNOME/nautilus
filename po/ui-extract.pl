@@ -30,7 +30,7 @@ use Getopt::Long;
 
 #---------------------------
 
-my $VERSION     = "0.7";
+my $VERSION     = "0.8.1";
 
 #---------------------------
 
@@ -47,7 +47,8 @@ my $OUTFILE;
 #---------------------------
 
 my %string 	=  ();
-my $n		= "0";
+my @elements;
+my $n;
 
 #---------------------------
 
@@ -206,7 +207,14 @@ sub Convert($) {
         my $translate = "label|title|text|format|copyright|comments|preview_text|tooltip";
 
         while ($input =~ /<($translate)>(..[^<]*)<\/($translate)>/sg) {
+
+	    # Glade has some bugs, especially it uses translations tags to contain little
+	    # non-translatable content. We work around this, by not including these
+            # strings that only includes something like: label4, and window1
+            if ($2 =~ /^(window|label)[0-9]$/g) {
+            } else {
                 $string{$2} = [];
+            }
         }}
     }
 
@@ -215,16 +223,33 @@ sub addMessages{
     foreach my $theMessage (sort keys %string) {
 	my ($lineNo,$fileName) = @{ $string{$theMessage} };
 
-    if ($theMessage =~ /\n/) {
-	print OUT "gchar *s = N_("; 
+    # Replace XML codes for special chars to
+    # geniune gettext syntax
+    #---------------------------------------
+    $theMessage =~ s/&quot;/\\"/mg;
+    $theMessage =~ s/&lt;/</mg;
+    $theMessage =~ s/&gt;/>/mg;
 
-	$n = 1;
-        for (split /\n/, $theMessage) {
-	    $_ =~ s/^\s+//mg;
-	    if ($n > 1) { print OUT "              ";}
-            $n++;
-	    print OUT "\"$_\");\n";
-	}
+    if ($theMessage =~ /\n/) {
+
+        @elements =  split (/\n/, $theMessage);
+        for ($n = 0; $n < @elements; $n++) {
+
+           if ($n == 0) { 
+	       print OUT "gchar *s = N_"; 
+               print OUT "(\"$elements[$n]\\n\");\n";
+           }
+
+           elsif ($n == @elements - 1) { 
+	       print OUT "             ";
+               print OUT "(\"$elements[$n]\");\n";
+           }
+
+           elsif ($n > 0)  { 	
+	       print OUT "             ";
+               print OUT "(\"$elements[$n]\\n\");\n";
+           }
+        }
 
 	} else {
 		

@@ -35,11 +35,9 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-link.h"
 #include "nautilus-string.h"
-#include "nautilus-wait-until-ready.h"
 #include <ctype.h>
 #include <gnome-xml/parser.h>
 #include <grp.h>
-#include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
@@ -4191,41 +4189,6 @@ nautilus_extract_top_left_text (const char *text,
 	return g_strdup (buffer);
 }
 
-
-
-
-
-
-
-
-static void
-file_wait_until_ready_callback (NautilusFile *file,
-				gpointer callback_data)
-{
-	gboolean *data;
-	
-	data = callback_data; 
-	*data = TRUE;
-}
-
-void
-nautilus_file_wait_until_ready (NautilusFile *file,
-				GList *file_attributes)
-{
-	gboolean callback_done;
-
-	callback_done = FALSE;
-
-	nautilus_file_call_when_ready
-		(file, file_attributes,
-		 file_wait_until_ready_callback, &callback_done);
-	while (!callback_done) {
-		gtk_main_iteration ();
-	}
-}
-
-
-
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 void
@@ -4304,4 +4267,3 @@ nautilus_self_check_file (void)
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */
-

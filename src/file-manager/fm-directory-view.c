@@ -141,11 +141,7 @@ struct FMDirectoryViewDetails
 	gboolean batching_selection_level;
 	gboolean selection_changed_while_batched;
 
-	/* FIXME bugzilla.eazel.com 4539: 
-	 * get rid of this when all nautilus_mime_actions_wait_for_full_file_attributes
-	 * calls are gone.
-	 */
-	int waiting_for_activation_count_hack;
+	NautilusFile *file_monitored_for_open_with;
 };
 
 /* forward declarations */
@@ -224,6 +220,8 @@ static void                fm_directory_view_trash_state_changed_callback       
 										   gboolean              state,
 										   gpointer              callback_data);
 static void                fm_directory_view_select_file                          (FMDirectoryView      *view,
+										   NautilusFile         *file);
+static void                monitor_file_for_open_with                             (FMDirectoryView      *view,
 										   NautilusFile         *file);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
@@ -582,8 +580,6 @@ switch_location_and_view (NautilusViewIdentifier *identifier,
 	g_assert (new_uri != NULL);
 
 	file = nautilus_file_get (new_uri);
-
-	nautilus_mime_actions_wait_for_full_file_attributes (file);
 
 	/* User has explicitly chosen a viewer other than the default, so
 	 * make it the default and then switch locations.
@@ -1075,6 +1071,8 @@ fm_directory_view_destroy (GtkObject *object)
 	view->details->pending_files_changed = NULL;
 	nautilus_g_list_free_deep (view->details->pending_uris_selected);
 	view->details->pending_uris_selected = NULL;
+
+	monitor_file_for_open_with (view, NULL);
 
 	fm_directory_view_stop (view);
 	fm_directory_view_clear (view);
@@ -1936,6 +1934,11 @@ files_changed_callback (NautilusDirectory *directory,
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 	queue_pending_files (view, files, &view->details->pending_files_changed);
+	
+	/* A change in MIME type could affect the Open with menu, for
+	 * one thing, so we need to update menus when files change.
+	 */
+	schedule_update_menus (view);
 }
 
 /**
@@ -3105,23 +3108,22 @@ create_open_with_gtk_menu (FMDirectoryView *view, GList *files)
  	GtkMenu *open_with_menu;
  	GList *applications, *components;
  	GList *node;
+	NautilusFile *file;
  	char *uri;
 
 	open_with_menu = GTK_MENU (gtk_menu_new ());
 	gtk_widget_show (GTK_WIDGET (open_with_menu));
 
 	/* This menu is only displayed when there's one selected item. */
-	if (nautilus_g_list_exactly_one_item (files)) {
-		uri = nautilus_file_get_uri (NAUTILUS_FILE (files->data));
+	if (!nautilus_g_list_exactly_one_item (files)) {
+		monitor_file_for_open_with (view, NULL);
+	} else {
+		file = NAUTILUS_FILE (files->data);
+		
+		monitor_file_for_open_with (view, file);
 
-		/* FIXME bugzilla.eazel.com 4539: 
-		 * need to remove the wait here, as it can iterate the main idle
-		 * loop and cause all sorts of havoc (see bug 4480) 
-		 */
-		if (view->details->waiting_for_activation_count_hack > 0) {
-			nautilus_mime_actions_wait_for_full_file_attributes (NAUTILUS_FILE (files->data));
-		}
-
+		uri = nautilus_file_get_uri (file);
+		
 		applications = nautilus_mime_get_short_list_applications_for_file (NAUTILUS_FILE (files->data));
 		for (node = applications; node != NULL; node = node->next) {
 			add_application_to_gtk_menu (view, open_with_menu, node->data, uri);
@@ -3404,8 +3406,8 @@ reset_bonobo_trash_delete_menu (FMDirectoryView *view, GList *selection)
 static void
 reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 {
-	GList *applications, *components;
-	GList *node;
+	GList *applications, *components, *node;
+	NautilusFile *file;
 	char *uri;
 	int index;
 	
@@ -3416,16 +3418,14 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 		(view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER);
 	
 	/* This menu is only displayed when there's one selected item. */
-	if (nautilus_g_list_exactly_one_item (selection)) {
-		uri = nautilus_file_get_uri (NAUTILUS_FILE (selection->data));
+	if (!nautilus_g_list_exactly_one_item (selection)) {
+		monitor_file_for_open_with (view, NULL);
+	} else {
+		file = NAUTILUS_FILE (selection->data);
 		
-		/* FIXME bugzilla.eazel.com 4539: 
-		 * need to remove the wait here, as it can iterate the main idle
-		 * loop and cause all sorts of havoc (see bug 4480) 
-		 */
-		if (view->details->waiting_for_activation_count_hack > 0) {
-			nautilus_mime_actions_wait_for_full_file_attributes (NAUTILUS_FILE (selection->data));
-		}
+		monitor_file_for_open_with (view, file);
+
+		uri = nautilus_file_get_uri (file);
 		
 		applications = nautilus_mime_get_short_list_applications_for_file (NAUTILUS_FILE (selection->data));
 		for (node = applications, index = 0; node != NULL; node = node->next, index++) {
@@ -3760,11 +3760,6 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	view = FM_DIRECTORY_VIEW (parameters->view);
 
-	/* FIXME bugzilla.eazel.com 4539: 
-	 * remove this hack when all wait_until_ready calls are gone */
-	g_assert (view->details->waiting_for_activation_count_hack > 0);
-	--view->details->waiting_for_activation_count_hack;
-
 	uri = nautilus_file_get_activation_uri (file);
 
 	performed_special_handling = FALSE;
@@ -3817,8 +3812,6 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	}
 
 	if (!performed_special_handling) {
-		nautilus_mime_actions_wait_for_full_file_attributes (file);
-
 		action_type = nautilus_mime_get_default_action_type_for_file (file);
 		application = nautilus_mime_get_default_application_for_file (file);
 
@@ -3877,19 +3870,14 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
 	/* Might have to read some of the file to activate it. */
-	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
+	attributes = nautilus_mime_actions_get_full_file_attributes ();
+	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
 	attributes = g_list_prepend (attributes, NAUTILUS_FILE_ATTRIBUTE_FILE_TYPE);
 	parameters = g_new (ActivateParameters, 1);
 	parameters->view = view;
 	parameters->file = file;
 	parameters->use_new_window = use_new_window;
 
-	/* FIXME bugzilla.eazel.com 4539: 
-	 * This is a workaround for the real fix of getting rid of all
-	 * wait_until_ready calls.
-	 */
-	g_assert (view->details->waiting_for_activation_count_hack >= 0);
-	++view->details->waiting_for_activation_count_hack;
 	nautilus_file_call_when_ready
 		(file, attributes, activate_callback, parameters);
 
@@ -3985,7 +3973,7 @@ load_directory (FMDirectoryView *view,
          * doing a call when ready), in case external forces change
          * the directory's file metadata.
 	 */
-	attributes = g_list_append (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
+	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_METADATA);
 	nautilus_file_call_when_ready
 		(view->details->directory_as_file,
 		 attributes,
@@ -4477,5 +4465,35 @@ fm_directory_view_stop_batching_selection_changes (FMDirectoryView *view)
 		if (view->details->selection_changed_while_batched) {
 			fm_directory_view_notify_selection_changed (view);
 		}
+	}
+}
+
+static void
+monitor_file_for_open_with (FMDirectoryView *view, NautilusFile *file)
+{
+	NautilusFile *old_file;
+	GList *attributes;
+
+	/* Quick out when not changing. */
+	old_file = view->details->file_monitored_for_open_with;
+	if (old_file == file) {
+		return;
+	}
+
+	/* Point at the new file. */
+	nautilus_file_ref (file);
+	view->details->file_monitored_for_open_with = file;
+
+	/* Stop monitoring the old file. */
+	if (old_file != NULL) {
+		nautilus_file_monitor_remove (old_file, view);
+		nautilus_file_unref (old_file);
+	}
+
+	/* Start monitoring the new file. */
+	if (file != NULL) {
+		attributes = nautilus_mime_actions_get_full_file_attributes ();
+		nautilus_file_monitor_add (file, view, attributes);
+		g_list_free (attributes);
 	}
 }

@@ -37,11 +37,9 @@
 #include "nautilus-string.h"
 #include "nautilus-trash-directory.h"
 #include "nautilus-vfs-directory.h"
-#include "nautilus-wait-until-ready.h"
 #include <ctype.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
-
 
 enum {
 	FILES_ADDED,

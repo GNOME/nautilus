@@ -27,25 +27,26 @@
 #include "nautilus-program-chooser.h"
 
 #include "nautilus-gnome-extensions.h"
-#include "nautilus-stock-dialogs.h"
 #include "nautilus-gtk-extensions.h"
-#include "nautilus-program-choosing.h"
-#include "nautilus-view-identifier.h"
 #include "nautilus-mime-actions.h"
-
-#include <gtk/gtkradiobutton.h>
+#include "nautilus-program-choosing.h"
+#include "nautilus-stock-dialogs.h"
+#include "nautilus-view-identifier.h"
 #include <gtk/gtkclist.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkmain.h>
+#include <gtk/gtkradiobutton.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkvbox.h>
-
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-uidefs.h>
+
+/* FIXME bugzilla.eazel.com 4539: Eliminate this soon. */
+#include "nautilus-wait-until-ready.h"
 
 enum {
 	PROGRAM_LIST_NAME_COLUMN,

@@ -21,16 +21,16 @@
 
    Author: Maciej Stachowiak <mjs@eazel.com>
 */
-#ifdef HAVE_CONFIG_H
+
 #include <config.h>
-#endif
 
-#include <libgnomevfs/gnome-vfs.h>
-#include <libgnomevfs/gnome-vfs-mime-handlers.h>
-#include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <gnome.h>
-
+#include <libgnomevfs/gnome-vfs-mime-handlers.h>
+#include <libgnomevfs/gnome-vfs.h>
+#include <libnautilus-extensions/nautilus-mime-actions.h>
 #include <stdio.h>
+
+static gboolean ready = FALSE;
 
 static void
 print_application (GnomeVFSMimeApplication *application)
@@ -62,13 +62,13 @@ print_action (GnomeVFSMimeAction *action)
         if (action == NULL) {
 	        puts ("(none)");
 	} else {
-	  if (action->action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
-  	        puts ("type: application");
-		print_application (action->action.application);
-	  } else {
-  	        puts ("type: component");
-		print_component (action->action.component);
-	  }
+		if (action->action_type == GNOME_VFS_MIME_ACTION_TYPE_APPLICATION) {
+			puts ("type: application");
+			print_application (action->action.application);
+		} else {
+			puts ("type: component");
+			print_component (action->action.component);
+		}
 	}
 }
 
@@ -76,33 +76,39 @@ print_action (GnomeVFSMimeAction *action)
 static void 
 print_component_list (GList *components)
 {
-       GList *p;
-       if (components == NULL) {
-	 puts ("(none)");
-       } else {
-	 for (p = components; p != NULL; p = p->next) {
-	   print_component (p->data);
-	   puts ("------");
-	 }
-	 
-       }
+	GList *p;
+	
+	if (components == NULL) {
+		puts ("(none)");
+	} else {
+		for (p = components; p != NULL; p = p->next) {
+			print_component (p->data);
+			puts ("------");
+		}
+	}
 }
 
 static void 
 print_application_list (GList *applications)
 {
-       GList *p;
-       if (applications == NULL) {
-	 puts ("(none)");
-       } else {
-	 for (p = applications; p != NULL; p = p->next) {
-	   print_application (p->data);
-	   puts ("------");
-	 }
-	 
-       }
+	GList *p;
+
+	if (applications == NULL) {
+		puts ("(none)");
+	} else {
+		for (p = applications; p != NULL; p = p->next) {
+			print_application (p->data);
+			puts ("------");
+		}
+	}
 }
 
+static void
+ready_callback (NautilusFile *file,
+		gpointer callback_data)
+{
+	ready = TRUE;
+}
 
 int
 main (int argc, char **argv)
@@ -116,6 +122,7 @@ main (int argc, char **argv)
 	GList *short_list_components;
 	GList *short_list_applications;
 	NautilusFile *file;
+	GList *attributes;
 
 	g_thread_init (NULL);
 	oaf_init (argc, argv);
@@ -131,8 +138,14 @@ main (int argc, char **argv)
 	uri = argv[1];
 	file = nautilus_file_get (uri);
 
-	nautilus_mime_actions_wait_for_full_file_attributes (file);
-	
+	attributes = nautilus_mime_actions_get_full_file_attributes ();
+	nautilus_file_call_when_ready (file, attributes, ready_callback, NULL);
+	g_list_free (attributes);
+
+	while (!ready) {
+		gtk_main_iteration ();
+	}
+
 	default_action = nautilus_mime_get_default_action_for_file (file);
 	puts ("Default Action");
 	print_action (default_action);

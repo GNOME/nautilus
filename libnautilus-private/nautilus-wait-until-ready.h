@@ -23,15 +23,12 @@
  * Authors: Maciej Stachowiak
  */
 
-#include <glib.h>
-#include <libnautilus-extensions/nautilus-file.h>
-#include <libnautilus-extensions/nautilus-directory.h>
-
-
+/* FIXME bugzilla.eazel.com 4539: Eliminate this soon. */
 /* nautilus-wait-until-ready.h: I'm adding this file as a temporary
  * measure in the process of eliminating the wait_until_ready calls. It
  * is deprecated! Do not use these calls in new code! 
  */
 
-void               nautilus_file_wait_until_ready          (NautilusFile                  *file,
-							    GList                         *attributes);
+#include <libnautilus-extensions/nautilus-file.h>
+
+void nautilus_mime_actions_wait_for_full_file_attributes (NautilusFile *file);

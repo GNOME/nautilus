@@ -36,6 +36,9 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <stdlib.h>
 
+/* FIXME bugzilla.eazel.com 4539: Eliminate this soon. */
+#include "nautilus-wait-until-ready.h"
+
 static gboolean
 any_programs_available_for_file (GnomeVFSMimeActionType action_type, NautilusFile *file)
 {
@@ -126,8 +129,7 @@ nautilus_choose_component_for_file (NautilusFile *file,
 	dialog = NULL;
 
 	if (any_choices) {
-		dialog = set_up_program_chooser 
-			(file, action_type, parent_window);
+		dialog = set_up_program_chooser (file, action_type, parent_window);
 
 		if (gnome_dialog_run (dialog) == GNOME_OK) {
 			identifier = nautilus_program_chooser_get_component (dialog);

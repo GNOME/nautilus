@@ -25,63 +25,40 @@
 #include <config.h>
 #include "nautilus-mime-actions.h"
 
-#include <libgnomevfs/gnome-vfs.h>
-#include <libgnomevfs/gnome-vfs-mime.h>
-#include <libgnomevfs/gnome-vfs-mime-info.h>
-#include <libgnomevfs/gnome-vfs-application-registry.h>
-#include "nautilus-lib-self-check-functions.h"
-#include "nautilus-file.h"
 #include "nautilus-file-attributes.h"
+#include "nautilus-file.h"
 #include "nautilus-glib-extensions.h"
+#include "nautilus-lib-self-check-functions.h"
 #include "nautilus-metadata.h"
-#include "nautilus-wait-until-ready.h"
-
+#include <libgnomevfs/gnome-vfs-application-registry.h>
+#include <libgnomevfs/gnome-vfs-mime-info.h>
+#include <libgnomevfs/gnome-vfs-mime.h>
+#include <libgnomevfs/gnome-vfs.h>
 #include <stdio.h>
-
-
-static gint        gnome_vfs_mime_application_has_id             (GnomeVFSMimeApplication *application, 
-								  const char              *id);
-static gint        gnome_vfs_mime_id_matches_application         (const char              *id, 
-								  GnomeVFSMimeApplication *application);
-static gboolean    gnome_vfs_mime_application_has_id_not_in_list (GnomeVFSMimeApplication *application, 
-								  GList                   *ids);
-static gboolean    string_not_in_list                            (const char              *str, 
-								  GList                   *list);
-static char       *extract_prefix_add_suffix                     (const char              *string, 
-								  const char              *separator, 
-								  const char              *suffix);
-static char       *mime_type_get_supertype                       (const char              *mime_type);
-static GList      *get_explicit_content_view_iids_from_metafile  (NautilusFile            *file);
-static char       *make_oaf_query_for_explicit_content_view_iids (GList                   *view_iids);
-static char       *make_oaf_query_with_known_mime_type           (const char              *mime_type, 
-								  const char              *uri_scheme, 
-								  GList                   *explicit_iids, 
-								  const char              *extra_requirements);
-static char       *make_oaf_query_with_uri_scheme_only           (const char              *uri_scheme, 
-								  GList                   *explicit_iids, 
-								  const char              *extra_requirements);
-static GHashTable *mime_type_list_to_hash_table                  (GList                   *files);
-static void        free_key                                      (gpointer                 key, 
-								  gpointer                 value, 
-								  gpointer                 user_data);
-static void        mime_type_hash_table_destroy                  (GHashTable              *table);
-static gboolean    server_has_content_requirements               (OAF_ServerInfo          *server);
-static gboolean    server_matches_content_requirements           (OAF_ServerInfo          *server, 
-								  GHashTable              *type_table, 
-								  GList                   *explicit_iids);
-static GList      *nautilus_do_component_query                   (const char              *mime_type, 
-								  const char              *uri_scheme, 
-								  GList                   *content_mime_types,
-								  gboolean                 ignore_content_mime_types,
-								  GList                   *explicit_iids,
-								  char                   **extra_sort_criteria,
-								  char                    *extra_requirements,
-								  CORBA_Environment       *ev);
-static GList      *str_list_difference                           (GList                   *a, 
-								  GList                   *b);
-static int         strv_length                                   (char                   **a);
-static char      **strv_concat                                   (char                   **a, 
-								  char                   **b);
+ 
+static int         gnome_vfs_mime_application_has_id             (GnomeVFSMimeApplication  *application,
+								  const char               *id);
+static int         gnome_vfs_mime_id_matches_application         (const char               *id,
+								  GnomeVFSMimeApplication  *application);
+static gboolean    gnome_vfs_mime_application_has_id_not_in_list (GnomeVFSMimeApplication  *application,
+								  GList                    *ids);
+static gboolean    string_not_in_list                            (const char               *str,
+								  GList                    *list);
+static char       *mime_type_get_supertype                       (const char               *mime_type);
+static GList      *get_explicit_content_view_iids_from_metafile  (NautilusFile             *file);
+static gboolean    server_has_content_requirements               (OAF_ServerInfo           *server);
+static GList      *nautilus_do_component_query                   (const char               *mime_type,
+								  const char               *uri_scheme,
+								  GList                    *content_mime_types,
+								  gboolean                  ignore_content_mime_types,
+								  GList                    *explicit_iids,
+								  char                    **extra_sort_criteria,
+								  char                     *extra_requirements,
+								  CORBA_Environment        *ev);
+static GList      *str_list_difference                           (GList                    *a,
+								  GList                    *b);
+static char      **strv_concat                                   (char                    **a,
+								  char                    **b);
 
 static gboolean
 is_known_mime_type (const char *mime_type)
@@ -96,8 +73,6 @@ is_known_mime_type (const char *mime_type)
 	
 	return TRUE;
 }
-
-
 
 static gboolean
 nautilus_mime_actions_check_if_minimum_attributes_ready (NautilusFile *file)
@@ -127,7 +102,7 @@ nautilus_mime_actions_check_if_full_attributes_ready (NautilusFile *file)
 
 
 GList *
-nautilus_mime_actions_get_minimum_file_attributes ()
+nautilus_mime_actions_get_minimum_file_attributes (void)
 {
 	GList *attributes;
 
@@ -140,7 +115,7 @@ nautilus_mime_actions_get_minimum_file_attributes ()
 
 
 GList *
-nautilus_mime_actions_get_full_file_attributes ()
+nautilus_mime_actions_get_full_file_attributes (void)
 {
 	GList *attributes;
 
@@ -150,19 +125,6 @@ nautilus_mime_actions_get_full_file_attributes ()
 	return attributes;
 }
 
-
-
-void
-nautilus_mime_actions_wait_for_full_file_attributes (NautilusFile *file)
-{
-	GList *attributes;
-	
-	attributes = nautilus_mime_actions_get_full_file_attributes ();
-	
-	nautilus_file_wait_until_ready (file, attributes);
-	
-	g_list_free (attributes);
-}
 
 
 GnomeVFSMimeActionType
@@ -195,7 +157,7 @@ nautilus_mime_get_default_action_type_for_file (NautilusFile *file)
 }
 
 GnomeVFSMimeAction *
-nautilus_mime_get_default_action_for_file (NautilusFile      *file)
+nautilus_mime_get_default_action_for_file (NautilusFile *file)
 {
 	GnomeVFSMimeAction *action;
 
@@ -1144,15 +1106,15 @@ nautilus_mime_remove_from_all_applications_for_file (NautilusFile *file,
 	return GNOME_VFS_OK;
 }
 
-static gint
+static int
 gnome_vfs_mime_application_has_id (GnomeVFSMimeApplication *application, 
-				   const char              *id)
+				   const char *id)
 {
 	return strcmp (application->id, id);
 }
 
-static gint
-gnome_vfs_mime_id_matches_application (const char              *id, 
+static int
+gnome_vfs_mime_id_matches_application (const char *id, 
 				       GnomeVFSMimeApplication *application)
 {
 	return gnome_vfs_mime_application_has_id (application, id);
@@ -1663,4 +1625,37 @@ strv_concat (char **a,
 	result[j] = NULL;
 
 	return result;
+}
+
+/* FIXME bugzilla.eazel.com 4539: Eliminate this soon. */
+#include "nautilus-wait-until-ready.h"
+#include <gtk/gtkmain.h>
+
+static void
+wait_until_ready_callback (NautilusFile *file,
+			   gpointer callback_data)
+{
+	gboolean *data;
+	
+	data = callback_data; 
+	*data = TRUE;
+}
+
+void
+nautilus_mime_actions_wait_for_full_file_attributes (NautilusFile *file)
+{
+	GList *attributes;
+	gboolean callback_done;
+
+	callback_done = FALSE;
+
+	
+	attributes = nautilus_mime_actions_get_full_file_attributes ();
+	nautilus_file_call_when_ready
+		(file, attributes,
+		 wait_until_ready_callback, &callback_done);
+	g_list_free (attributes);
+	while (!callback_done) {
+		gtk_main_iteration ();
+	}
 }
