@@ -886,7 +886,7 @@ msgstr "*** パッケージノードがありません! ***"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:153
 msgid "*** Malformed depends node!"
-msgstr ""
+msgstr "*** おかしなノード依存!"
 
 #: components/services/install/lib/eazel-install-xml-package-list.c:167
 #, c-format
@@ -1200,7 +1200,7 @@ msgstr "デバッグを有効にする"
 
 #: components/services/vault/command-line/main.c:38
 msgid "Vault location"
-msgstr ""
+msgstr "跳躍場所"
 
 #: components/services/vault/command-line/main.c:46
 msgid "Valid operations:"
@@ -1355,6 +1355,8 @@ msgid ""
 "Error while %s%s.\n"
 "The destination is read-only."
 msgstr ""
+"%s%s 中のエラー.\n"
+"移動先が読み込み専用です."
 
 #: libnautilus-extensions/nautilus-file-operations.c:385
 #: libnautilus-extensions/nautilus-file-operations.c:404
@@ -1368,6 +1370,8 @@ msgid ""
 "Error while %s%s.\n"
 "There is no space on the destination."
 msgstr ""
+"%s%s 中のエラー.\n"
+"移動先に十分な空きがありません."
 
 #: libnautilus-extensions/nautilus-file-operations.c:411
 #, c-format
@@ -1375,6 +1379,8 @@ msgid ""
 "Error \"%s\" while %s%s.\n"
 "Would you like to continue?"
 msgstr ""
+"エラー %s, %s%s の最中.\n"
+"続けますか?"
 
 #: libnautilus-extensions/nautilus-file-operations.c:422
 #: libnautilus-extensions/nautilus-file-operations.c:473
@@ -1398,7 +1404,7 @@ msgstr ""
 #: libnautilus-extensions/nautilus-file-operations.c:472
 #: libnautilus-extensions/nautilus-file-operations.c:486
 msgid "Conflict while Copying"
-msgstr ""
+msgstr "コピーの衝突"
 
 #: libnautilus-extensions/nautilus-file-operations.c:473
 #: libnautilus-extensions/nautilus-file-operations.c:487
@@ -1844,11 +1850,11 @@ msgstr "表示"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:244
 msgid "Speed Tradeoffs"
-msgstr ""
+msgstr "速度トレードオフ"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:245
 msgid "Speed Tradeoffs Settings"
-msgstr ""
+msgstr "速度トレードオフの設定"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:247
 msgid "Show Text in Icons"
@@ -1877,7 +1883,7 @@ msgstr "検索の複雑なオプション"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:283
 msgid "Search Tradeoffs"
-msgstr ""
+msgstr "トレードオフの検索"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:291
 msgid "Search Locations"
@@ -1917,11 +1923,11 @@ msgstr "ローカルファイルのみ"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:662
 msgid "never"
-msgstr ""
+msgstr "しない"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:663
 msgid "Never"
-msgstr ""
+msgstr "しない"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:758
 msgid "Use HTTP Proxy"
@@ -1981,11 +1987,11 @@ msgstr "各フォルダにメタデータを読み書きする"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:889
 msgid "Use smoother (but slower) graphics"
-msgstr ""
+msgstr "画像を滑らかにする(遅い)"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:895
 msgid "Font family used to display file names"
-msgstr ""
+msgstr "ファイル名の表示にフォントファミリを使う"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:902
 msgid "Display tool bar in new windows"
@@ -2005,11 +2011,11 @@ msgstr "新規ウィンドウにサイドバーを表示"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:928
 msgid "Always do slow, complete search"
-msgstr ""
+msgstr "いつも遅いが、完全な検索"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:935
 msgid "search type to do by default"
-msgstr ""
+msgstr "デフォルトの検索タイプ"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:941
 msgid "search by text"
@@ -2017,15 +2023,15 @@ msgstr "テキストで検索"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:942
 msgid "Search for files by text only"
-msgstr ""
+msgstr "テキストのみでファイルを検索"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:946
 msgid "search by text and properties"
-msgstr ""
+msgstr "テキストと属性で検索"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:947
 msgid "Search for files by text and by their properties"
-msgstr ""
+msgstr "テキストと属性でファイルを検索"
 
 #: libnautilus-extensions/nautilus-global-preferences.c:952
 msgid "Search Web Location"
@@ -2325,7 +2331,7 @@ msgstr "リモートファイルを開くことが出来ません"
 #: libnautilus-extensions/nautilus-search-uri.c:207
 #, c-format
 msgid "that have \"%s\" in the name"
-msgstr ""
+msgstr "それは \"%s\" を名前に含んでいます"
 
 #: libnautilus-extensions/nautilus-search-uri.c:210
 #, c-format
@@ -2345,12 +2351,12 @@ msgstr "\"%s\" を含まない"
 #: libnautilus-extensions/nautilus-search-uri.c:219
 #, c-format
 msgid "that match the regular expression \"%s\""
-msgstr ""
+msgstr "それは正規表現 \"%s\" に一致します"
 
 #: libnautilus-extensions/nautilus-search-uri.c:222
 #, c-format
 msgid "that match the file pattern \"%s\""
-msgstr ""
+msgstr "それは ファイルパターン \"%s\" に一致します"
 
 #: libnautilus-extensions/nautilus-search-uri.c:235
 msgid "regular files"
@@ -2401,7 +2407,7 @@ msgstr "所有者 UID \"%s\" を持っている"
 #: libnautilus-extensions/nautilus-search-uri.c:279
 #, c-format
 msgid "have owner UID other than \"%s\""
-msgstr ""
+msgstr "\"%s\" ではなく所有者の UID を持っている"
 
 #: libnautilus-extensions/nautilus-search-uri.c:290
 #, c-format
@@ -2460,7 +2466,7 @@ msgstr "単語 %s のいくつかなしで"
 
 #: libnautilus-extensions/nautilus-search-uri.c:365
 msgid "that"
-msgstr ""
+msgstr "それ"
 
 #: libnautilus-extensions/nautilus-search-uri.c:485
 msgid "are directories"
@@ -2478,7 +2484,7 @@ msgstr "アイテム %s%s"
 #: libnautilus-extensions/nautilus-search-uri.c:597
 #, c-format
 msgid "Items %s %s%s"
-msgstr ""
+msgstr "アイテム %s %s%s"
 
 #: libnautilus-extensions/nautilus-search-uri.c:706
 msgid "Items that have \"stuff\" in the name."
@@ -2622,7 +2628,7 @@ msgstr "デスクトップ背景を変更"
 #: src/file-manager/fm-directory-view.c:398
 #, c-format
 msgid "This will open %d separate windows. Are you sure you want to do this?"
-msgstr ""
+msgstr "これは %d 個のウィンドウに分割されます。 このまま実行してもよろしいですか?"
 
 #: src/file-manager/fm-directory-view.c:400
 #, c-format
@@ -2878,11 +2884,11 @@ msgstr ""
 
 #: src/file-manager/fm-directory-view.c:3511
 msgid "Broken Link"
-msgstr ""
+msgstr "壊れたリンク"
 
 #: src/file-manager/fm-directory-view.c:3512
 msgid "Throw Away"
-msgstr ""
+msgstr "捨てる"
 
 #: src/file-manager/fm-directory-view.c:3575
 msgid ""
@@ -3079,15 +3085,15 @@ msgstr "名前変更(_R)"
 
 #: src/file-manager/fm-icon-view.c:463
 msgid "_Clean Up by Name"
-msgstr ""
+msgstr "名前で整理する(_C)"
 
 #: src/file-manager/fm-icon-view.c:466
 msgid "_Use Tighter Layout"
-msgstr ""
+msgstr "よりきついレイアウトを使う(_U)"
 
 #: src/file-manager/fm-icon-view.c:470
 msgid "Re_versed Order"
-msgstr ""
+msgstr "順逆 (_v)"
 
 #: src/file-manager/fm-icon-view.c:474
 msgid "_Lay out items"
@@ -3107,11 +3113,11 @@ msgstr "どこへドロップされてもアイコンを残す"
 
 #: src/file-manager/fm-icon-view.c:1590
 msgid "Toggle using a tighter layout scheme"
-msgstr ""
+msgstr "きついレイアウトの使用を切り替える"
 
 #: src/file-manager/fm-icon-view.c:1597
 msgid "Display icons in the opposite order"
-msgstr ""
+msgstr "対立している順序でアイコンを表示"
 
 #: src/file-manager/fm-icon-view.c:1811
 #, c-format
@@ -3295,7 +3301,7 @@ msgstr "\"%s\" のアクセス権は確定出来ませんでした"
 
 #: src/file-manager/fm-search-list-view.c:275
 msgid "Where"
-msgstr ""
+msgstr "どこ"
 
 #. "Reveal in New Window" means open the parent folder for the
 #. * selected item in a new window, select the item in that window,
@@ -3327,12 +3333,12 @@ msgstr "応答なし"
 
 #: src/file-manager/nautilus-indexing-info.c:112
 msgid "No indexer present"
-msgstr ""
+msgstr "親のインデクサなし"
 
 #: src/file-manager/nautilus-indexing-info.c:120
 #, c-format
 msgid "Error while trying to reindex: %s"
-msgstr ""
+msgstr "再インデックス中のエラー: %s"
 
 #: src/file-manager/nautilus-indexing-info.c:163
 msgid "%I:%M %p, %x"
@@ -3341,7 +3347,7 @@ msgstr "%p %I:%M, %x"
 #: src/file-manager/nautilus-indexing-info.c:179
 #, c-format
 msgid "Your files were last indexed at %s"
-msgstr ""
+msgstr "あなたのファイルは %s に最終インデックスされた"
 
 #: src/file-manager/nautilus-indexing-info.c:190
 msgid "Update Now"
@@ -3349,7 +3355,7 @@ msgstr "現在更新しています"
 
 #: src/file-manager/nautilus-indexing-info.c:210
 msgid "Your files are currently being indexed:"
-msgstr ""
+msgstr "あなたのファイルは現在インデックス中:"
 
 #: src/file-manager/nautilus-indexing-info.c:270
 msgid "Search service not available"
@@ -3704,7 +3710,7 @@ msgstr "Web Proxy 構成"
 #. change the message to expanding file
 #: src/nautilus-first-time-druid.c:833
 msgid "Decoding Update..."
-msgstr ""
+msgstr "デコードアップデート..."
 
 #: src/nautilus-first-time-druid.c:842
 msgid "Update Completed... Press Next to Continue."
@@ -3943,11 +3949,11 @@ msgstr "終了"
 
 #: src/nautilus-search-bar-criterion.c:81
 msgid "matches glob"
-msgstr ""
+msgstr "グロブに一致"
 
 #: src/nautilus-search-bar-criterion.c:82
 msgid "matches regexp"
-msgstr "正規表現にマッチ"
+msgstr "正規表現に一致"
 
 #: src/nautilus-search-bar-criterion.c:87
 msgid "includes all of"
@@ -4077,7 +4083,7 @@ msgstr ""
 
 #: src/nautilus-sidebar.c:612
 msgid "More Than One Image"
-msgstr ""
+msgstr "もう一つの画像"
 
 #: src/nautilus-sidebar.c:634
 msgid ""
@@ -4112,7 +4118,7 @@ msgstr "他のアプリケーションから開く..."
 #. Create button first so we can use it for auto_click
 #: src/nautilus-simple-search-bar.c:103
 msgid "Find Them!"
-msgstr ""
+msgstr "見つかった!"
 
 #: src/nautilus-switchable-search-bar.c:107
 msgid "Search For:"
@@ -4338,7 +4344,7 @@ msgstr "履歴を削除しますか?"
 
 #: src/nautilus-window-menus.c:369
 msgid "Forget"
-msgstr ""
+msgstr "忘れる"
 
 #: src/nautilus-window-menus.c:469
 msgid "Hide Status Bar"
