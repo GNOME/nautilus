@@ -89,13 +89,13 @@ create_default_configuration_metafile (const char* target_file) {
 	tree = xmlNewChild (doc->root, NULL, "VERBOSE", "TRUE");
 	tree = xmlNewChild (doc->root, NULL, "SILENT", "FALSE");
 	tree = xmlNewChild (doc->root, NULL, "DEBUG", "TRUE");
-	tree = xmlNewChild (doc->root, NULL, "DRY_RUN", "TRUE");
+	tree = xmlNewChild (doc->root, NULL, "DRY_RUN", "FALSE");
 	tree = xmlNewChild (doc->root, NULL, "FORCE", "FALSE");
 	tree = xmlNewChild (doc->root, NULL, "DEPEND", "FALSE");
 	tree = xmlNewChild (doc->root, NULL, "UPDATE", "TRUE");
 	tree = xmlNewChild (doc->root, NULL, "UNINSTALL", "FALSE");
 	tree = xmlNewChild (doc->root, NULL, "DOWNGRADE", "FALSE");
-	tree = xmlNewChild (doc->root, NULL, "PORT", "8888");
+	tree = xmlNewChild (doc->root, NULL, "PORT", "8888");	
 	tree = xmlNewChild (doc->root, NULL, "HOSTNAME", "ham.eazel.com");
 	tree = xmlNewChild (doc->root, NULL, "PKG_LIST_STORAGE_PATH", "/package-list.xml");
 	tree = xmlNewChild (doc->root, NULL, "TMP_DIR", "/tmp/eazel-install");
@@ -204,6 +204,9 @@ init_default_install_configuration (const char* config_file) {
 
 	rv->pkg_list = g_strdup (xml_get_value (base, "PKG_LIST"));
 	rv->transaction_dir = g_strdup (xml_get_value (base, "TRANSACTION_DIR"));	
+	if (rv->transaction_dir == NULL) {
+		rv->transaction_dir = g_strdup_printf ("%s/.nautilus/transactions", g_get_home_dir ());
+	}
 
 	tmpbuf = xml_get_value (base, "VERBOSE");
 	rv->mode_verbose = get_boolean_value_from_string (tmpbuf);

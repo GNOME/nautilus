@@ -217,9 +217,9 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 
 	switch (info->status) {
 	case GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR:
-		g_message ("VFS Error: %s\n",
+		g_message ("GnomeVFS Error: %s\n",
 			   gnome_vfs_result_to_string (info->vfs_status));
-		return TRUE;
+		return FALSE;
 		break;
 	case GNOME_VFS_XFER_PROGRESS_STATUS_OVERWRITE:
 		g_message ("Overwriting `%s' with `%s'",
@@ -301,17 +301,18 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 			return TRUE;
 		default:
 			g_message ("Unexpected phase %d", info->phase);
-			return TRUE; /* keep going anyway */
+			return FALSE; /* keep going anyway */
 		}
-	case GNOME_VFS_XFER_PROGRESS_STATUS_DUPLICATE:
-	default:
-		g_message ("ugly status");
 		break;
+	case GNOME_VFS_XFER_PROGRESS_STATUS_DUPLICATE:
+		g_message ("Duplicate");
+		return FALSE;
+	default:
+		g_message ("Unknown status");
+		return FALSE;
 	}       
 	
-	g_message ("Boh!");
-	return FALSE;
-	
+	return FALSE; 	
 }
 
 gboolean 
@@ -504,20 +505,7 @@ eazel_install_fetch_package (EazelInstall *service,
 					      filename_from_url (url));
 		g_message ("%s resolved", package->name);
 #ifndef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
-		if (g_file_test (targetname, G_FILE_TEST_ISFILE)) {
-			/* Uh, file already exists, check the size to see if we can reuse it */
-			struct stat sbuf;
-			stat (targetname, &sbuf);
-			g_message ("File already exists, checking %d vs %d", package->bytesize, sbuf.st_size);
-			if (sbuf.st_size == package->bytesize) {
-				g_message ("Size checks out");
-				result = TRUE;
-			} else {
-				result = eazel_install_fetch_file (service, url, package->name, targetname);
-			}
-		} else {
-				result = eazel_install_fetch_file (service, url, package->name, targetname);
-		}
+		result = eazel_install_fetch_file (service, url, package->name, targetname);
 #else /*  EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 		if (filename_from_url (url) && strlen (filename_from_url (url))>1) {
 			result = eazel_install_fetch_file (service, url, package->name, targetname);
@@ -668,14 +656,6 @@ get_url_for_package  (EazelInstall *service,
 							g_assert (packages->data != NULL);
 							pack = (PackageData*)packages->data;
 							url = g_strdup (pack->filename);
-							
-							/* Update the given package */
-							if (entry==RPMSEARCH_ENTRY_NAME) {
-								PackageData *pack2;
-								pack2 = (PackageData*)data;
-								g_message ("setting bytesize to %d", pack->bytesize);
-								pack2->bytesize = pack->bytesize;
-							}
 							
 							g_list_foreach (packages, 
 									(GFunc)packagedata_destroy_foreach, 

@@ -1,3 +1,20 @@
+2000-08-22  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	* components/services/install/lib/eazel-install-metadata.c:
+	(create_default_configuration_metafile),
+	Default DRY_RUN to FALSE instead of TRUE... beware.
+	
+	(init_default_install_configuration):
+	Default transaction_dir to g_get_home_dir()/.nautilus/transactions/
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(gnome_vfs_xfer_callback), (eazel_install_fetch_package),
+	Trying to make the gnomevfs fetching work properly.
+	
+	(get_url_for_package):
+	Removed the check, since I need to do it in the gnome-vfs callback
+	loop.
+
 2000-08-22  Gene Z. Ragan  <gzr@eazel.com>
 
 	Work in progress to support dragging onto 
