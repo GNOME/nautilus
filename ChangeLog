@@ -1,3 +1,16 @@
+2000-06-02  Pavel Cisler  <pavel@eazel.com>
+
+	* libnautilus-extensions/nautilus-list.c:
+	(nautilus_list_button_press), (nautilus_list_button_release),
+	(nautilus_list_motion):
+	Fixed a problem where gtk_drag_begin was being called repetitively.
+	Made it so that more than one item can be grabbed and dragged in 
+	list view.
+
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_notify_files_moved):
+	Removed a forgotten g_message.
+
 2000-06-02  Pavel Cisler <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-drag.c:

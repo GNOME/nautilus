@@ -85,6 +85,7 @@ struct NautilusListDetails
 
 	/* Drag state */
 	NautilusDragInfo *drag_info;
+	gboolean drag_started;
 	
 	/* Delayed selection information */
 	int dnd_select_pending;
@@ -745,6 +746,7 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 
 	on_row = gtk_clist_get_selection_info (clist, event->x, event->y, &row, &col);
 	list->details->button_down_time = event->time;
+	list->details->drag_started = FALSE;
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
@@ -767,11 +769,16 @@ nautilus_list_button_press (GtkWidget *widget, GdkEventButton *event)
 				     && !(event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)))
 				    || ((event->state & GDK_CONTROL_MASK)
 					&& !(event->state & GDK_SHIFT_MASK))) {
+					/* don't change selection just yet, wait for 
+					 * possible drag
+					 */
 					list->details->dnd_select_pending = TRUE;
 					list->details->dnd_select_pending_state = event->state;
 				}
 
-				select_row_from_mouse (list, row, event->state);
+				if (!list->details->dnd_select_pending) {
+					select_row_from_mouse (list, row, event->state);
+				}
 			} else {
 				gtk_clist_unselect_all (clist);
 			}
@@ -852,6 +859,7 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 	list->details->dnd_press_button = 0;
 	list->details->dnd_press_x = 0;
 	list->details->dnd_press_y = 0;
+	list->details->drag_started = TRUE;
 
 	if (on_row) {
 		/* Clean up after abortive drag-and-drop attempt (since user can't
@@ -859,6 +867,10 @@ nautilus_list_button_release (GtkWidget *widget, GdkEventButton *event)
 		 * drag-and-drop possibility). 
 		 */
 		if (list->details->dnd_select_pending) {
+			select_row_from_mouse (list,
+				    	       list->details->button_down_row,
+				    	       list->details->dnd_select_pending_state);
+
 			list->details->dnd_select_pending = FALSE;
 			list->details->dnd_select_pending_state = 0;
 		}
@@ -2288,22 +2300,15 @@ nautilus_list_motion (GtkWidget *widget, GdkEventMotion *event)
 		return FALSE;
 	}
 
-	/* Handle any pending selections */
-
-	if (list->details->dnd_select_pending) {
-		select_row_from_mouse (list,
-			    	       list->details->button_down_row,
-			    	       list->details->dnd_select_pending_state);
-
+	if (!list->details->drag_started) {
+		list->details->drag_started = TRUE;
 		list->details->dnd_select_pending = FALSE;
-		list->details->dnd_select_pending_state = 0;
+		gtk_drag_begin (widget, list->details->drag_info->target_list,
+			GDK_ACTION_MOVE,
+			list->details->dnd_press_button,
+			(GdkEvent *) event);
 	}
-
-	gtk_drag_begin (widget, list->details->drag_info->target_list,
-		GDK_ACTION_MOVE,
-		list->details->dnd_press_button,
-		(GdkEvent *) event);
-
+	
 	return TRUE;
 }
 

@@ -765,7 +765,6 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 			 */
 			if (new_directory != old_directory) {
 				/* Remove from old directory. */
-				g_message ("moved: editing files list");
 				files = &old_directory->details->files;
 				g_assert (g_list_find (*files, file) != NULL);
 				*files = g_list_remove (*files, file);
