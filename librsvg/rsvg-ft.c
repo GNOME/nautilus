@@ -199,43 +199,48 @@ rsvg_ft_glyph_bytes (RsvgFTGlyph *glyph)
 /**
  * rsvg_gt_glyph_evict: Evict lru glyph from glyph cache.
  * @ctx: The RsvgFT context.
+ * @amount_to_evict: The amount above the high water mark for the cache
+ * that we are.
  *
- * Chooses the least recently used glyph that without a refcount, and
- * evicts it.
- *
- * Return value: true if a glyph was successfully evicted.
+ * Evicts any glyphs with a reference count of 1 until it is either
+ * below the high water mark or out of glyphs.
  **/
-static gboolean
-rsvg_ft_glyph_evict (RsvgFTCtx *ctx)
+static void
+rsvg_ft_glyph_evict (RsvgFTCtx *ctx, int amount_to_evict)
 {
 	RsvgFTGlyphCacheEntry *victim;
 	RsvgFTGlyph *glyph;
+	int evicted_so_far = 0;
 
-	for (victim = ctx->glyph_last; victim != NULL; victim = victim->prev)
-		if (victim->glyph->refcnt == 1)
-			break;
+	for (victim = ctx->glyph_last; victim != NULL; victim = victim->prev) {
+		if (victim->glyph->refcnt == 1) {
+			evicted_so_far += rsvg_ft_glyph_bytes (victim->glyph);
+			
+			if (victim->prev != NULL) {
+				victim->prev->next = victim->next;
+			}
+			else {
+				ctx->glyph_first = victim->next;
+			}
+			if (victim->next != NULL) {
+				victim->next->prev = victim->prev;
+			} else {
+				ctx->glyph_last = victim->prev;
+			}
+			
+			glyph = victim->glyph;
+			ctx->glyph_bytes -= rsvg_ft_glyph_bytes (glyph);
+			rsvg_ft_glyph_unref (glyph);
+			
+			g_hash_table_remove (ctx->glyph_hash_table, victim->desc);
+			g_free (victim->desc);
+			g_free (victim);
 
-	if (victim == NULL)
-		return FALSE;
-
-	if (victim->prev != NULL)
-		victim->prev->next = victim->next;
-	else
-		ctx->glyph_first = victim->next;
-	if (victim->next != NULL)
-		victim->next->prev = victim->prev;
-	else
-		ctx->glyph_last = victim->prev;
-
-	glyph = victim->glyph;
-	ctx->glyph_bytes -= rsvg_ft_glyph_bytes (glyph);
-	rsvg_ft_glyph_unref (glyph);
-
-	g_hash_table_remove (ctx->glyph_hash_table, victim->desc);
-	g_free (victim->desc);
-	g_free (victim);
-
-	return TRUE;
+			if (evicted_so_far >= amount_to_evict) {
+				break;
+			}
+		}
+	}
 }
 
 /**
@@ -248,7 +253,7 @@ rsvg_ft_glyph_evict (RsvgFTCtx *ctx)
  *
  * Inserts @glyph into the glyph cache under the glyph descriptor @desc.
  * This routine also takes care of evicting glyphs when the cache
- * becomes full.
+ * reaches its high water limit.
  **/
 static void
 rsvg_ft_glyph_insert (RsvgFTCtx *ctx, const RsvgFTGlyphDesc *desc,
@@ -259,14 +264,11 @@ rsvg_ft_glyph_insert (RsvgFTCtx *ctx, const RsvgFTGlyphDesc *desc,
 
 	ctx->glyph_bytes += rsvg_ft_glyph_bytes (glyph);
 
-	/* check for full cache and evict if so */
-	while (ctx->glyph_bytes > ctx->glyph_bytes_max) {
-		if (!rsvg_ft_glyph_evict (ctx)) {
-			g_warning ("rsvg_ft_glyph_insert: unable to free any glyph cache entry, suggesting resource leak.");
-			break;
-		}
+	if ((ctx->glyph_bytes < ctx->glyph_bytes_max) && 
+	    (ctx->glyph_bytes + rsvg_ft_glyph_bytes (glyph) >= ctx->glyph_bytes_max)) {
+		rsvg_ft_glyph_evict (ctx, ctx->glyph_bytes + rsvg_ft_glyph_bytes (glyph) - ctx->glyph_bytes_max);
 	}
-
+	
 	new_desc = g_new (RsvgFTGlyphDesc, 1);
 	memcpy (new_desc, desc, sizeof (RsvgFTGlyphDesc));
 	entry = g_new (RsvgFTGlyphCacheEntry, 1);
@@ -864,7 +866,7 @@ rsvg_ft_measure_or_render_string (RsvgFTCtx *ctx,
 		}
 		if (glyph_index != 0)
 			last_glyph = glyph_index;
-
+		
 		glyph = rsvg_ft_get_glyph_cached (ctx, fh, glyph_index,
 						  sx, sy, glyph_affine,
 						  glyph_xy + n_glyphs * 2);
