@@ -29,6 +29,7 @@
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <eel/eel-string.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-file-attributes.h>
 
 #include "fm-icon-container.h"
 
@@ -50,7 +51,8 @@ static char *
 fm_icon_container_get_icon_images (NautilusIconContainer *container,
 				   NautilusIconData      *data,
 				   GList                **emblem_icons,
-				   char                 **embedded_text)
+				   char                 **embedded_text,
+				   gboolean              *embedded_text_needs_loading)
 {
 	FMIconView *icon_view;
 	EelStringList *emblems_to_ignore;
@@ -63,7 +65,7 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 	g_return_val_if_fail (icon_view != NULL, NULL);
 
 	if (embedded_text) {
-		*embedded_text = nautilus_file_peek_top_left_text (file);
+		*embedded_text = nautilus_file_peek_top_left_text (file, embedded_text_needs_loading);
 	}
 	
 	if (emblem_icons != NULL) {
@@ -74,8 +76,44 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 		eel_string_list_free (emblems_to_ignore);
 	}
 
-	return nautilus_icon_factory_get_icon_for_file (file);
+	return nautilus_icon_factory_get_icon_for_file (file, TRUE);
 }
+
+static void
+fm_icon_container_start_monitor_top_left (NautilusIconContainer *container,
+					  NautilusIconData      *data,
+					  gconstpointer          client)
+{
+	NautilusFile *file;
+	GList *attributes;
+
+	file = (NautilusFile *) data;
+
+	g_assert (NAUTILUS_IS_FILE (file));
+
+
+	attributes = NULL;
+	attributes = g_list_prepend (attributes,
+				     NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
+
+	nautilus_file_monitor_add (file, client, attributes);
+        g_list_free (attributes);
+}
+
+static void
+fm_icon_container_stop_monitor_top_left (NautilusIconContainer *container,
+					 NautilusIconData      *data,
+					 gconstpointer          client)
+{
+	NautilusFile *file;
+
+	file = (NautilusFile *) data;
+
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	nautilus_file_monitor_remove (file, client);
+}
+
 
 /*
  * Get the preference for which caption text should appear
@@ -387,6 +425,8 @@ fm_icon_container_class_init (FMIconContainerClass *klass)
 
 	ic_class->get_icon_text = fm_icon_container_get_icon_text;
 	ic_class->get_icon_images = fm_icon_container_get_icon_images;
+	ic_class->start_monitor_top_left = fm_icon_container_start_monitor_top_left;
+	ic_class->stop_monitor_top_left = fm_icon_container_stop_monitor_top_left;
 
 	ic_class->compare_icons = fm_icon_container_compare_icons;
 	ic_class->compare_icons_by_name = fm_icon_container_compare_icons_by_name;

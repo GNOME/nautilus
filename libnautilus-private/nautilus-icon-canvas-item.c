@@ -99,6 +99,9 @@ struct NautilusIconCanvasItemDetails {
 	PangoLayout *editable_text_layout;
 	PangoLayout *additional_text_layout;
 	
+	GdkRectangle embedded_text_rect;
+	PangoLayout *embedded_text_layout;
+
 	/* Cached rectangle in canvas coordinates */
 	ArtIRect canvas_rect;
 	ArtIRect text_rect;
@@ -181,6 +184,10 @@ static gboolean hit_test_stretch_handle              (NautilusIconCanvasItem    
 static void     clear_rounded_corners                (GdkPixbuf                     *destination_pixbuf,
 						      GdkPixbuf                     *corner_pixbuf,
 						      int                            corner_size);
+static void      draw_embedded_text                  (NautilusIconCanvasItem        *icon_item,
+						      GdkDrawable                   *drawable,
+						      int                            x,
+						      int                            y);
 
 
 static NautilusIconCanvasItemClass *parent_class = NULL;
@@ -238,6 +245,11 @@ nautilus_icon_canvas_item_finalize (GObject *object)
 	if (details->additional_text_layout != NULL) {
 		g_object_unref (details->additional_text_layout);
 	}
+
+	if (details->embedded_text_layout != NULL) {
+		g_object_unref (details->embedded_text_layout);
+	}
+
 	
 	g_free (details);
 
@@ -391,16 +403,25 @@ nautilus_icon_canvas_item_get_property (GObject        *object,
 	}
 }
 
-GdkPixbuf *
-nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item)
+GdkPixmap *
+nautilus_icon_canvas_item_get_image (NautilusIconCanvasItem *item,
+				     GdkBitmap **mask)
 {
-	NautilusIconCanvasItemDetails *details;
-
+	GdkPixmap *pixmap;
+	EelCanvas *canvas;
+	
 	g_return_val_if_fail (NAUTILUS_IS_ICON_CANVAS_ITEM (item), NULL);
 
-	details = item->details;
+	canvas = EEL_CANVAS_ITEM (item)->canvas;
+	gdk_pixbuf_render_pixmap_and_mask_for_colormap (item->details->pixbuf,
+							gtk_widget_get_colormap (GTK_WIDGET (canvas)),
+							&pixmap,
+							mask,
+							128);
+	
+	draw_embedded_text (item, GDK_DRAWABLE (pixmap), 0,0);
 
-	return details->pixbuf;
+	return pixmap;
 }
 
 void
@@ -474,6 +495,43 @@ nautilus_icon_canvas_item_set_attach_points (NautilusIconCanvasItem *item,
 		*item->details->attach_points = *attach_points;
 	}
 }
+
+void
+nautilus_icon_canvas_item_set_embedded_text_rect (NautilusIconCanvasItem       *item,
+						  const GdkRectangle           *text_rect)
+{
+	item->details->embedded_text_rect = *text_rect;
+
+	eel_canvas_item_request_update (EEL_CANVAS_ITEM (item));
+}
+
+void
+nautilus_icon_canvas_item_set_embedded_text (NautilusIconCanvasItem       *item,
+					     const char                   *text)
+{
+	PangoContext *context;
+	PangoFontDescription *desc;
+	
+	if (item->details->embedded_text_layout == NULL && text != NULL) {
+		context = gtk_widget_get_pango_context (GTK_WIDGET (EEL_CANVAS_ITEM(item)->canvas));
+		item->details->embedded_text_layout = pango_layout_new (context);
+		
+		desc = pango_font_description_from_string ("monospace 6");
+		pango_layout_set_font_description (item->details->embedded_text_layout, desc);
+		pango_font_description_free (desc);
+	}
+	
+	if (item->details->embedded_text_layout != NULL) {
+		if (text != NULL) {
+			pango_layout_set_text (item->details->embedded_text_layout, text, -1);
+		} else {
+			pango_layout_set_text (item->details->embedded_text_layout, "", -1);
+		}
+			
+		eel_canvas_item_request_update (EEL_CANVAS_ITEM (item));
+	}
+}
+
 
 /* Recomputes the bounding box of a icon canvas item.
  * This is a generic implementation that could be used for any canvas item
@@ -1202,6 +1260,37 @@ map_pixbuf (NautilusIconCanvasItem *icon_item)
 	return icon_item->details->rendered_pixbuf;
 }
 
+static void
+draw_embedded_text (NautilusIconCanvasItem *icon_item,
+		    GdkDrawable *drawable,
+		    int x, int y)
+{
+	GdkGC *gc;
+	GdkRectangle clip_rect;
+	
+	if (icon_item->details->embedded_text_layout == NULL ||
+	    icon_item->details->embedded_text_rect.width == 0 ||
+	    icon_item->details->embedded_text_rect.height == 0) {
+		return;
+	}
+
+	gc = gdk_gc_new (drawable);
+
+	clip_rect.x = x + icon_item->details->embedded_text_rect.x;
+	clip_rect.y = y + icon_item->details->embedded_text_rect.y;
+	clip_rect.width = icon_item->details->embedded_text_rect.width;
+	clip_rect.height = icon_item->details->embedded_text_rect.height;
+	
+	gdk_gc_set_clip_rectangle  (gc, &clip_rect);
+
+	gdk_draw_layout (drawable, gc,
+			 x + icon_item->details->embedded_text_rect.x,
+			 y + icon_item->details->embedded_text_rect.y,
+			 icon_item->details->embedded_text_layout);
+	
+	g_object_unref (gc);
+}
+
 /* Draw the icon item for non-anti-aliased mode. */
 static void
 nautilus_icon_canvas_item_draw (EelCanvasItem *item, GdkDrawable *drawable,
@@ -1229,6 +1318,8 @@ nautilus_icon_canvas_item_draw (EelCanvasItem *item, GdkDrawable *drawable,
 	draw_pixbuf (temp_pixbuf, drawable, icon_rect.x0, icon_rect.y0);
 	g_object_unref (temp_pixbuf);
 
+	draw_embedded_text (icon_item, drawable,  icon_rect.x0, icon_rect.y0);
+	
 	/* Draw the emblem pixbufs. */
 	emblem_layout_reset (&emblem_layout, icon_item, icon_rect);
 	while (emblem_layout_next (&emblem_layout, &emblem_pixbuf, &emblem_rect)) {

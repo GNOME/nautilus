@@ -384,7 +384,7 @@ nautilus_emblem_rename_emblem (const char *keyword, const char *name)
 	fclose (file);
 
 	icon_name = nautilus_emblem_get_icon_name_from_keyword (keyword);
-	nautilus_icon_factory_remove_from_cache (icon_name, NULL, NULL,
+	nautilus_icon_factory_remove_from_cache (icon_name, NULL, 
 						 NAUTILUS_ICON_SIZE_STANDARD);
 	
 	g_free (icon_name);

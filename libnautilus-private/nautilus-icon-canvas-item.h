@@ -63,13 +63,18 @@ GType       nautilus_icon_canvas_item_get_type                 (void);
 /* attributes */
 void        nautilus_icon_canvas_item_set_image                (NautilusIconCanvasItem       *item,
 								GdkPixbuf                    *image);
-GdkPixbuf * nautilus_icon_canvas_item_get_image                (NautilusIconCanvasItem       *item);
+GdkPixmap * nautilus_icon_canvas_item_get_image                (NautilusIconCanvasItem       *item,
+								GdkBitmap                   **mask);
 void        nautilus_icon_canvas_item_set_emblems              (NautilusIconCanvasItem       *item,
 								GList                        *emblem_pixbufs);
 void        nautilus_icon_canvas_item_set_show_stretch_handles (NautilusIconCanvasItem       *item,
 								gboolean                      show_stretch_handles);
 void        nautilus_icon_canvas_item_set_attach_points        (NautilusIconCanvasItem       *item,
 								NautilusEmblemAttachPoints   *attach_points);
+void        nautilus_icon_canvas_item_set_embedded_text_rect   (NautilusIconCanvasItem       *item,
+								const GdkRectangle           *text_rect);
+void        nautilus_icon_canvas_item_set_embedded_text        (NautilusIconCanvasItem       *item,
+								const char                   *text);
 double      nautilus_icon_canvas_item_get_max_text_width       (NautilusIconCanvasItem       *item);
 const char *nautilus_icon_canvas_item_get_editable_text        (NautilusIconCanvasItem       *icon_item);
 void        nautilus_icon_canvas_item_set_renaming             (NautilusIconCanvasItem       *icon_item,

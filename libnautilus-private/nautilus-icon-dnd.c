@@ -1201,7 +1201,8 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	NautilusIconDndInfo *dnd_info;
 	EelCanvas *canvas;
 	GdkDragContext *context;
-	GdkPixbuf *pixbuf;
+	GdkPixmap *pixmap;
+	GdkBitmap *mask;
 	int x_offset, y_offset;
 	ArtDRect world_rect;
 	ArtIRect widget_rect;
@@ -1220,7 +1221,7 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 	dnd_info->drag_info.start_y = event->y - gtk_adjustment_get_value (gtk_layout_get_vadjustment (GTK_LAYOUT (canvas)));	
 
         /* create a pixmap and mask to drag with */
-        pixbuf = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item);
+        pixmap = nautilus_icon_canvas_item_get_image (container->details->drag_icon->item, &mask);
     
     	/* we want to drag semi-transparent pixbufs, but X is too slow dealing with
 	   stippled masks, so we had to remove the code; this comment is left as a memorial
@@ -1245,7 +1246,10 @@ nautilus_icon_dnd_begin_drag (NautilusIconContainer *container,
 
 	if (context) {
 		/* set the icon for dragging */
-		gtk_drag_set_icon_pixbuf (context, pixbuf, x_offset, y_offset);
+		gtk_drag_set_icon_pixmap (context,
+					  gtk_widget_get_colormap (GTK_WIDGET (container)),
+					  pixmap, mask,
+					  x_offset, y_offset);
 	}
 }
 

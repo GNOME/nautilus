@@ -159,7 +159,8 @@ void                    nautilus_file_set_keywords                      (Nautilu
 									 GList                          *keywords);
 GList *                 nautilus_file_get_emblem_names                  (NautilusFile                   *file);
 char *                  nautilus_file_get_top_left_text                 (NautilusFile                   *file);
-char *                  nautilus_file_peek_top_left_text                (NautilusFile                   *file);
+char *                  nautilus_file_peek_top_left_text                (NautilusFile                   *file,
+									 gboolean                       *got_top_left_text);
 gboolean                nautilus_file_get_directory_item_mime_types     (NautilusFile                   *file,
 									 GList                         **mime_list);
 

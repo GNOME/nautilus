@@ -2046,7 +2046,7 @@ still_should_show_file (FMDirectoryView *view, NautilusFile *file)
 static gboolean
 ready_to_load (NautilusFile *file)
 {
-	return nautilus_icon_factory_is_basic_icon_ready_for_file (file);
+	return nautilus_icon_factory_is_icon_ready_for_file (file);
 }
 
 /* Go through all the new added and changed files.

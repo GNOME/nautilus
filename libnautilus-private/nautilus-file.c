@@ -4720,22 +4720,30 @@ nautilus_file_is_executable (NautilusFile *file)
  * 
  **/
 char *
-nautilus_file_peek_top_left_text (NautilusFile *file)
+nautilus_file_peek_top_left_text (NautilusFile *file, gboolean *needs_loading)
 {
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
 	if (!nautilus_file_should_get_top_left_text (file)) {
+		if (needs_loading) {
+			*needs_loading = FALSE;
+		}
 		return NULL;
+	}
+	
+	if (needs_loading) {
+		*needs_loading = !file->details->top_left_text_is_up_to_date;
 	}
 
 	/* Show " ..." in the file until we read the contents in. */
 	if (!file->details->got_top_left_text) {
+		
 		if (nautilus_file_contains_text (file)) {
 			return " ...";
 		}
 		return NULL;
 	}
-
+	
 	/* Show what we read in. */
 	return file->details->top_left_text;
 }
@@ -4752,7 +4760,7 @@ nautilus_file_peek_top_left_text (NautilusFile *file)
 char *
 nautilus_file_get_top_left_text (NautilusFile *file)
 {
-	return g_strdup (nautilus_file_peek_top_left_text (file));
+	return g_strdup (nautilus_file_peek_top_left_text (file, NULL));
 }
 
 

@@ -1,3 +1,73 @@
+2003-03-06  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-bookmark.c:
+	(nautilus_bookmark_get_pixbuf), (nautilus_bookmark_update_icon):
+	* libnautilus-private/nautilus-emblem-utils.c:
+	(nautilus_emblem_rename_emblem):
+	* src/nautilus-sidebar-title.c: (update_emblems):
+	* src/file-manager/fm-directory-view.c: (ready_to_load):
+	Update according to NautilusIconFactory API changes.
+	
+	* libnautilus-private/nautilus-file.h:
+	* libnautilus-private/nautilus-file.c:
+	(nautilus_file_peek_top_left_text),
+	(nautilus_file_get_top_left_text):
+	Add needs_loading out parameter to nautilus_file_peek_top_left_text.
+	
+	* libnautilus-private/nautilus-icon-canvas-item.h:
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(nautilus_icon_canvas_item_finalize),
+	(nautilus_icon_canvas_item_set_embedded_text_rect),
+	(nautilus_icon_canvas_item_set_embedded_text),
+	(draw_embedded_text), (nautilus_icon_canvas_item_draw):
+	Render embedded text on exposes.
+	(nautilus_icon_canvas_item_get_image):
+	Return a GdkPixmap + mask instead of pixbuf, so that
+	we can do the text rendering on it.
+	
+	* libnautilus-private/nautilus-icon-private.h:
+	* libnautilus-private/nautilus-icon-container.h:
+	* libnautilus-private/nautilus-icon-container.c:
+	(nautilus_icon_container_clear), (icon_destroy),
+	(nautilus_icon_container_get_icon_images),
+	(nautilus_icon_container_start_monitor_top_left),
+	(nautilus_icon_container_stop_monitor_top_left),
+	(nautilus_icon_container_update_icon):
+	For icons that have an embedded text rect, request the
+	top-left text, and set the text on the canvas item.
+	
+	* libnautilus-private/nautilus-icon-dnd.c:
+	(nautilus_icon_dnd_begin_drag):
+	nautilus_icon_canvas_item_get_image now returns a pixmap, handle this
+	change.
+	
+	* libnautilus-private/nautilus-icon-factory.h:
+	* libnautilus-private/nautilus-icon-factory.c: (cache_key_destroy),
+	(nautilus_icon_factory_get_required_file_attributes),
+	(get_icon_from_cache), (nautilus_icon_factory_get_pixbuf_for_icon),
+	(cache_key_hash), (cache_key_equal),
+	(nautilus_icon_factory_get_pixbuf_for_file),
+	(nautilus_icon_factory_get_pixbuf_from_name),
+	(nautilus_icon_factory_remove_from_cache):
+	Remove all embedded text handling.
+	(nautilus_icon_factory_get_basic_file_attributes):
+	Remove, not needed anymore.
+	(nautilus_icon_factory_get_icon_for_file):
+	Pass in whether you want icons for text embedding or not.
+	
+	* src/file-manager/fm-icon-container.c:
+	(fm_icon_container_get_icon_images),
+	(fm_icon_container_start_monitor_top_left),
+	(fm_icon_container_stop_monitor_top_left),
+	(fm_icon_container_class_init):
+	Update to new APIs. pass TRUE for embedd_text in get_icon_for_file.
+	Implement start/stop top left monitoring.
+	
+	* src/file-manager/fm-icon-view.c:
+	(list_covers),(fm_icon_view_clear):
+	Clear the icon container before unreferencing the NautilusFiles.
+	Otherwise the stop_monitor call uses the unref:ed file.
+
 2003-03-05  Alexander Larsson  <alexl@redhat.com>
 
 	* src/nautilus-zoom-control.[ch]:

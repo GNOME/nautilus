@@ -84,16 +84,6 @@
  */
 #define ICON_CACHE_SWEEP_TIMEOUT        (10 * 1000)
 
-/* Embedded text font size and text line settings */
-
-/* FIXME; Hard coded font size */
-#define EMBEDDED_TEXT_FONT_SIZE 9
-#define EMBEDDED_TEXT_LINE_SPACING      1
-#define EMBEDDED_TEXT_EMPTY_LINE_HEIGHT 4
-
-#define MINIMUM_EMBEDDED_TEXT_RECT_WIDTH	20
-#define MINIMUM_EMBEDDED_TEXT_RECT_HEIGHT	20
-
 /* This circular doubly-linked list structure is used to keep a list
  * of the most recently used items in the cache.
  */
@@ -107,7 +97,6 @@ struct CircularList {
 typedef struct {
 	char *name; /* Icon name or absolute filename */
 	char *modifier;
-	char *embedded_text;
 	guint nominal_size;
 } CacheKey;
 
@@ -186,11 +175,7 @@ static CacheIcon *cache_icon_new                         (GdkPixbuf             
 							  GnomeIconData            *icon_data);
 static CacheIcon *get_icon_from_cache                    (const char               *icon,
 							  const char               *modifier,
-							  const char               *embedded_text,
 							  guint                     nominal_size);
-static GdkPixbuf *embed_text                             (GdkPixbuf                *pixbuf_without_text,
-							  GnomeIconData            *icon_data,
-							  const char               *text);
 static void nautilus_icon_factory_clear                  (void);
 
 GNOME_CLASS_BOILERPLATE (NautilusIconFactory,
@@ -391,7 +376,6 @@ static void
 cache_key_destroy (CacheKey *key)
 {
 	g_free (key->name);
-	g_free (key->embedded_text);
 	g_free (key);
 }
 
@@ -739,7 +723,7 @@ should_show_thumbnail (NautilusFile *file)
 
 /* key routine to get the icon for a file */
 char *
-nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
+nautilus_icon_factory_get_icon_for_file (NautilusFile *file, gboolean embedd_text)
 {
  	char *custom_uri, *file_uri, *icon_name, *mime_type, *custom_icon;
 	NautilusIconFactory *factory;
@@ -786,7 +770,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 	}
 
 	lookup_flags = GNOME_ICON_LOOKUP_FLAGS_SHOW_SMALL_IMAGES_AS_THEMSELVES;
-	if (nautilus_file_peek_top_left_text (file) != NULL) {
+	if (embedd_text) {
 		lookup_flags |= GNOME_ICON_LOOKUP_FLAGS_EMBEDDING_TEXT;
 	}
 	icon_name = gnome_icon_lookup (factory->icon_theme,
@@ -821,25 +805,6 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file)
 }
 
 /**
- * nautilus_icon_factory_get_basic_file_attributes
- * 
- * Get the list of file attributes required to obtain a file's basic icon.
- * This includes attributes needed to get a custom icon, but not those needed
- * for text preview.
- * Callers must free this list.
- */
-GList *
-nautilus_icon_factory_get_basic_file_attributes (void)
-{
-	GList *attributes;
-
-	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
-	attributes = g_list_prepend (attributes,
-				     NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
-	return attributes;
-}
-
-/**
  * nautilus_icon_factory_get_required_file_attributes
  * 
  * Get the list of file attributes required to obtain a file's icon.
@@ -850,9 +815,9 @@ nautilus_icon_factory_get_required_file_attributes (void)
 {
 	GList *attributes;
 
-	attributes = nautilus_icon_factory_get_basic_file_attributes ();
+	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_CUSTOM_ICON);
 	attributes = g_list_prepend (attributes,
-				     NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
+				     NAUTILUS_FILE_ATTRIBUTE_MIME_TYPE);
 
 	return attributes;
 }
@@ -873,28 +838,6 @@ nautilus_icon_factory_is_icon_ready_for_file (NautilusFile *file)
 	gboolean result;
 
 	attributes = nautilus_icon_factory_get_required_file_attributes ();
-	result = nautilus_file_check_if_ready (file, attributes);
-	g_list_free (attributes);
-
-	return result;
-}
-
-/**
- * nautilus_icon_factory_is_basic_icon_ready_for_file
- * 
- * Check whether a NautilusFile has enough information to report
- * what its basic icon should be. This will account for custom icons
- * but not text preview.
- * 
- * @file: The NautilusFile in question.
- */
-gboolean
-nautilus_icon_factory_is_basic_icon_ready_for_file (NautilusFile *file)
-{
-	GList *attributes;
-	gboolean result;
-
-	attributes = nautilus_icon_factory_get_basic_file_attributes ();
 	result = nautilus_file_check_if_ready (file, attributes);
 	g_list_free (attributes);
 
@@ -1153,31 +1096,6 @@ load_icon_file (char          *filename,
 }
 
 static CacheIcon *
-create_embedded_text_cache_icon (CacheIcon  *base_icon,
-				 const char *embedded_text)
-{
-	GdkPixbuf *pixbuf;
-	GnomeIconData *icon_data;
-
-	pixbuf = embed_text (base_icon->pixbuf,
-			     base_icon->icon_data,
-			     embedded_text);
-
-	if (pixbuf) {
-		icon_data = NULL;
-		if (base_icon->icon_data) {
-			icon_data = g_new (GnomeIconData, 1);
-			*icon_data = *base_icon->icon_data;
-		}
-		return cache_icon_new (pixbuf, icon_data);
-	} else {
-		cache_icon_ref (base_icon);
-		return base_icon;
-	}
-}
-
-
-static CacheIcon *
 create_normal_cache_icon (const char *icon,
 			  const char *modifier,
 			  guint       nominal_size)
@@ -1260,14 +1178,13 @@ create_normal_cache_icon (const char *icon,
 static CacheIcon *
 get_icon_from_cache (const char *icon,
 		     const char *modifier,
-		     const char *embedded_text,
 		     guint       nominal_size)
 {
 	NautilusIconFactory *factory;
 	GHashTable *hash_table;
 	CacheKey lookup_key;
 	CacheKey *key;
-	CacheIcon *cached_icon, *base_cached_icon;
+	CacheIcon *cached_icon;
 	gpointer key_in_table, value;
 	struct stat statbuf;
 	
@@ -1282,7 +1199,6 @@ get_icon_from_cache (const char *icon,
 	/* Check to see if it's already in the table. */
 	lookup_key.name = (char *)icon;
 	lookup_key.modifier = (char *)modifier;
-	lookup_key.embedded_text = (char *)embedded_text;
 	lookup_key.nominal_size = nominal_size;
 
 	if (g_hash_table_lookup_extended (hash_table, &lookup_key,
@@ -1312,39 +1228,25 @@ get_icon_from_cache (const char *icon,
 			 icon, modifier?modifier:"", embedded_text?"<tl>":"", nominal_size);
 		*/
 		
-		if (embedded_text) {
-			base_cached_icon = get_icon_from_cache (icon,
-								modifier,
+		cached_icon = create_normal_cache_icon (icon,
+							modifier,
+							nominal_size);
+		/* Try to fallback without modifier */
+		if (cached_icon == NULL && modifier != NULL) {
+			cached_icon = create_normal_cache_icon (icon,
 								NULL,
 								nominal_size);
-			cached_icon = create_embedded_text_cache_icon (base_cached_icon,
-								       embedded_text);
-			cache_icon_unref (base_cached_icon);
-			
-		} else {
-			cached_icon = create_normal_cache_icon (icon,
-								modifier,
-								nominal_size);
-			/* Try to fallback without modifier */
-			if (cached_icon == NULL && modifier != NULL) {
-				cached_icon = create_normal_cache_icon (icon,
-									NULL,
-									nominal_size);
-			}
-		
-			if (cached_icon == NULL) {
-				cached_icon = factory->fallback_icon;
-				cache_icon_ref (cached_icon);
-			}
 		}
 		
-	
+		if (cached_icon == NULL) {
+			cached_icon = factory->fallback_icon;
+			cache_icon_ref (cached_icon);
+		}
 		
 		/* Create the key and icon for the hash table. */
 		key = g_new (CacheKey, 1);
 		key->name = g_strdup (icon);
 		key->modifier = g_strdup (modifier);
-		key->embedded_text = g_strdup (embedded_text);
 		key->nominal_size = nominal_size;
 
 		g_hash_table_insert (hash_table, key, cached_icon);
@@ -1365,9 +1267,9 @@ get_icon_from_cache (const char *icon,
 GdkPixbuf *
 nautilus_icon_factory_get_pixbuf_for_icon (const char                  *icon,
 					   const char                  *modifier,
-					   const char                  *embedded_text,
 					   guint                        nominal_size,
 					   NautilusEmblemAttachPoints  *attach_points,
+					   GdkRectangle                *embedded_text_rect,
 					   gboolean                     wants_default,
 					   char                       **display_name)
 {
@@ -1380,7 +1282,6 @@ nautilus_icon_factory_get_pixbuf_for_icon (const char                  *icon,
 	factory = get_icon_factory ();
 	cached_icon = get_icon_from_cache (icon,
 					   modifier,
-					   embedded_text,
 					   nominal_size);
 
 	if (attach_points != NULL) {
@@ -1394,6 +1295,20 @@ nautilus_icon_factory_get_pixbuf_for_icon (const char                  *icon,
 			}
 		} else {
 			attach_points->num_points = 0;
+		}
+	}
+	if (embedded_text_rect) {
+		if (cached_icon->icon_data != NULL &&
+		    cached_icon->icon_data->has_embedded_rect) {
+			embedded_text_rect->x = cached_icon->icon_data->x0;
+			embedded_text_rect->y = cached_icon->icon_data->y0;
+			embedded_text_rect->width = cached_icon->icon_data->x1 - cached_icon->icon_data->x0;
+			embedded_text_rect->height = cached_icon->icon_data->y1 - cached_icon->icon_data->y0;
+		} else {
+			embedded_text_rect->x = 0;
+			embedded_text_rect->y = 0;
+			embedded_text_rect->width = 0;
+			embedded_text_rect->height = 0;
 		}
 	}
 
@@ -1434,10 +1349,6 @@ cache_key_hash (gconstpointer p)
 		hash ^= g_str_hash (key->modifier);
 	}
 		
-	if (key->embedded_text) {
-		hash ^= g_str_hash (key->embedded_text);
-	}
-	
 	return hash;
 }
 
@@ -1451,8 +1362,7 @@ cache_key_equal (gconstpointer a, gconstpointer b)
 
 	return eel_strcmp (key_a->name, key_b->name) == 0 &&
 		key_a->nominal_size ==  key_b->nominal_size &&
-		eel_strcmp (key_a->modifier, key_b->modifier) == 0 &&
-		eel_strcmp (key_a->embedded_text, key_b->embedded_text) == 0;
+		eel_strcmp (key_a->modifier, key_b->modifier) == 0;
 }
 
 /* Return nominal icon size for given zoom level.
@@ -1493,20 +1403,18 @@ nautilus_icon_factory_get_pixbuf_for_file (NautilusFile *file,
 {
 	char *icon;
 	GdkPixbuf *pixbuf;
-	char *embedded_text;
 
 
 	/* Get the pixbuf for this file. */
-	icon = nautilus_icon_factory_get_icon_for_file (file);
+	icon = nautilus_icon_factory_get_icon_for_file (file, FALSE);
 	if (icon == NULL) {
 		return NULL;
 	}
-	embedded_text = nautilus_file_peek_top_left_text (file);
 
 	pixbuf = nautilus_icon_factory_get_pixbuf_for_icon (icon, modifier,
-							    embedded_text,
 							    size_in_pixels,
-							    NULL, TRUE, NULL);
+							    NULL, NULL,
+							    TRUE, NULL);
 	
 	g_free (icon);
 
@@ -1521,9 +1429,9 @@ nautilus_icon_factory_get_pixbuf_from_name (const char *icon_name,
 					    char **display_name)
 {
 	return nautilus_icon_factory_get_pixbuf_for_icon (icon_name, modifier,
-							  NULL,
 							  size_in_pixels,
-							  NULL, TRUE, display_name);
+							  NULL, NULL,
+							  TRUE, display_name);
 }
 									  
 GdkPixbuf *
@@ -1535,7 +1443,6 @@ nautilus_icon_factory_get_thumbnail_frame (void)
 gboolean
 nautilus_icon_factory_remove_from_cache (const char *icon_name,
 					 const char *modifier,
-					 const char *embedded_text,
 					 guint size)
 {
 	GHashTable *hash_table;
@@ -1548,118 +1455,11 @@ nautilus_icon_factory_remove_from_cache (const char *icon_name,
 	/* Check to see if it's already in the table. */
 	lookup_key.name = (char *)icon_name;
 	lookup_key.modifier = (char *)modifier;
-	lookup_key.embedded_text = (char *)embedded_text;
 	lookup_key.nominal_size = size;
 	
 	return g_hash_table_remove (hash_table, &lookup_key);
 }
 					 
-
-static gboolean
-embedded_text_rect_usable (GnomeIconData *icon_data)
-{
-	if (icon_data == NULL || !icon_data->has_embedded_rect) {
-		return FALSE;
-	}
-
-	if (icon_data->x1 - icon_data->x0 < MINIMUM_EMBEDDED_TEXT_RECT_WIDTH ||
-	    icon_data->y1 - icon_data->y0 < MINIMUM_EMBEDDED_TEXT_RECT_HEIGHT) {
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-static gboolean embedded_text_preferences_callbacks_added = FALSE;
-static PangoFontDescription *embedded_text_font = NULL;
-
-static void
-embedded_text_font_changed_callback (GtkSettings *settings,
-				     GParamSpec  *pspec,
-				     gpointer     callback_data)
-{
-	gboolean clear_cache;
-	char *font_name;
-	
-	clear_cache = GPOINTER_TO_INT (callback_data);
-
-	if (embedded_text_font != NULL) {
-		pango_font_description_free (embedded_text_font);
-	}
-
-	font_name = NULL;
-	g_object_get (settings,
-		      "gtk-font-name", &font_name,
-		      NULL);
-
-	if (font_name == NULL) {
-		font_name = g_strdup ("Sans");
-	}
-	
-	embedded_text_font = pango_font_description_from_string (font_name);
-	g_free (font_name);
-
-	pango_font_description_set_size (embedded_text_font,
-					 EMBEDDED_TEXT_FONT_SIZE * PANGO_SCALE);
-
-	if (clear_cache) {
-		nautilus_icon_factory_clear ();
-	}
-}
-
-static GdkPixbuf *
-embed_text (GdkPixbuf *pixbuf_without_text,
-	    GnomeIconData *icon_data,
-	    const char *text)
-{
-	GdkPixbuf *pixbuf_with_text;
-	PangoLayout *layout;
-	static PangoContext *context;
-	GtkSettings *settings;
-	ArtIRect clip_rect;
-	
-	g_return_val_if_fail (pixbuf_without_text != NULL, NULL);
-	
-	/* Quick out for the case where there's no place to embed the
-	 * text or the place is too small or there's no text.
-	 */
-	if (!embedded_text_rect_usable (icon_data) || eel_strlen (text) == 0) {
-		return NULL;
-	}
-
-	/* Listen for changes in embedded text (icon text preview) font preferences */
-	if (!embedded_text_preferences_callbacks_added) {
-		embedded_text_preferences_callbacks_added = TRUE;
-
-		settings = gtk_settings_get_default ();	
-		g_signal_connect (settings, "notify::gtk-font-name",
-				  G_CALLBACK (embedded_text_font_changed_callback), GINT_TO_POINTER (TRUE));
-		embedded_text_font_changed_callback (settings, NULL, GINT_TO_POINTER (FALSE));
-	}
-	
-	if (context == NULL) {
-		context = eel_pango_ft2_get_context ();
-		eel_debug_call_at_shutdown_with_data (g_object_unref, context);
-	}
-	
-	layout = pango_layout_new (context);
-	pango_layout_set_font_description (layout, embedded_text_font);
-	pango_layout_set_text (layout, text, -1);
-	
-	pixbuf_with_text = gdk_pixbuf_copy (pixbuf_without_text);
-	clip_rect.x0 = icon_data->x0;
-	clip_rect.y0 = icon_data->y0;
-	clip_rect.x1 = icon_data->x1;
-	clip_rect.y1 = icon_data->y1;
-	
-	eel_gdk_pixbuf_draw_layout_clipped (pixbuf_with_text,
-					    clip_rect,
-					    EEL_RGB_COLOR_BLACK, layout);
-	g_object_unref (layout);
-
-	return pixbuf_with_text;
-}
-
 #if ! defined (NAUTILUS_OMIT_SELF_CHECK)
 
 void

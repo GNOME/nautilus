@@ -575,9 +575,10 @@ update_emblems (NautilusSidebarTitle *sidebar_title)
 	/* loop through the list of emblems, installing them in the box */
 	for (p = icons; p != NULL; p = p->next) {
 		pixbuf = nautilus_icon_factory_get_pixbuf_for_icon
-			(p->data, NULL, NULL,
+			(p->data, NULL,
 			 NAUTILUS_ICON_SIZE_STANDARD,
-			 NULL, FALSE, NULL);
+			 NULL, NULL,
+			 FALSE, NULL);
 		if (pixbuf != NULL) {
 			add_emblem (sidebar_title, pixbuf);
 			g_object_unref (pixbuf);

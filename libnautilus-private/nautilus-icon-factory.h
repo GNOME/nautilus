@@ -107,13 +107,10 @@ GObject *             nautilus_icon_factory_get                          (void);
 guint                 nautilus_get_icon_size_for_zoom_level              (NautilusZoomLevel            zoom_level);
 
 /* Choose the appropriate icon, but don't render it yet. */
-char *                nautilus_icon_factory_get_icon_for_file            (NautilusFile                *file);
+char *                nautilus_icon_factory_get_icon_for_file            (NautilusFile                *file,
+									  gboolean                     embedd_text);
 gboolean              nautilus_icon_factory_is_icon_ready_for_file       (NautilusFile                *file);
 GList *               nautilus_icon_factory_get_required_file_attributes (void);
-
-/* The calls below do not account for top-left text, allowing it to be loaded progressively. */
-gboolean              nautilus_icon_factory_is_basic_icon_ready_for_file (NautilusFile                *file);
-GList *               nautilus_icon_factory_get_basic_file_attributes    (void);
 
 GList *               nautilus_icon_factory_get_emblem_icons_for_file    (NautilusFile                *file,
 									  EelStringList               *exclude);
@@ -129,9 +126,9 @@ char *                nautilus_icon_factory_get_emblem_icon_by_name      (const 
  */
 GdkPixbuf *           nautilus_icon_factory_get_pixbuf_for_icon          (const char                  *icon,
 									  const char                  *modifier,
-									  const char                  *embedded_text,
 									  guint                        nominal_size,
 									  NautilusEmblemAttachPoints  *attach_points,
+									  GdkRectangle                *embedded_text_rect,
 									  gboolean                     wants_default,
 									  char                       **display_name);
 									  
@@ -153,7 +150,6 @@ GnomeIconTheme *       nautilus_icon_factory_get_icon_theme               (void)
 GnomeThumbnailFactory *nautilus_icon_factory_get_thumbnail_factory        (void);
 gboolean               nautilus_icon_factory_remove_from_cache (const char *icon_name,
 								const char *modifier,
-								const char *embedded_text,
 								guint size);
 
 #endif /* NAUTILUS_ICON_FACTORY_H */

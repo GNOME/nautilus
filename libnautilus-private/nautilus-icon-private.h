@@ -53,6 +53,10 @@ typedef struct {
 
 	/* Whether this item was selected before rubberbanding. */
 	eel_boolean_bit was_selected_before_rubberband : 1;
+
+	/* Whether a monitor was set on this icon. */
+	eel_boolean_bit is_monitored : 1;
+
 } NautilusIcon;
 
 

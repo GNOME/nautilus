@@ -448,6 +448,16 @@ handle_radio_item (FMIconView *view,
 }
 
 static void
+list_covers (NautilusIconData *data, gpointer callback_data)
+{
+	GSList **file_list;
+
+	file_list = callback_data;
+
+	*file_list = g_slist_prepend (*file_list, data);
+}
+
+static void
 unref_cover (NautilusIconData *data, gpointer callback_data)
 {
 	nautilus_file_unref (NAUTILUS_FILE (data));
@@ -457,6 +467,7 @@ static void
 fm_icon_view_clear (FMDirectoryView *view)
 {
 	NautilusIconContainer *icon_container;
+	GSList *file_list;
 	
 	g_return_if_fail (FM_IS_ICON_VIEW (view));
 
@@ -465,8 +476,11 @@ fm_icon_view_clear (FMDirectoryView *view)
 		return;
 
 	/* Clear away the existing icons. */
-	nautilus_icon_container_for_each (icon_container, unref_cover, NULL);
+	file_list = NULL;
+	nautilus_icon_container_for_each (icon_container, list_covers, &file_list);
 	nautilus_icon_container_clear (icon_container);
+	g_slist_foreach (file_list, (GFunc)unref_cover, NULL);
+	g_slist_free (file_list);
 }
 
 
