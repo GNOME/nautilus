@@ -351,15 +351,15 @@ set_up_user_level_page (NautilusDruidPageEazel *page)
 	hbox = make_hbox_user_level_radio_button
 		(1, radio_buttons, "intermediate.png",
 		 _("Intermediate"),
-		 _("For non-techincal users that are comfortable with\n"
+		 _("For non-technical users that are comfortable with\n"
 		   "their GNOME and Linux environment."),
 				       NULL);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
 	hbox = make_hbox_user_level_radio_button
 		(2, radio_buttons, "expert.png",
 		 _("Advanced"),
-		 _("For techincal users that have the need to be exposed\n"
-		   "to every detail of their operating system"),
+		 _("For technical users that have the need to be exposed\n"
+		   "to every detail of their operating system."),
 		 NULL);
 	gtk_box_pack_start (GTK_BOX (main_box), hbox, FALSE, FALSE, 0);
 

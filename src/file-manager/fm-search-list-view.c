@@ -277,8 +277,19 @@ compute_reveal_item_name_and_sensitivity (GList *selected_files,
 
 	count = g_list_length (selected_files);
 	if (count <= 1) {
+		/* "Reveal in New Window" means open the parent folder for the
+		 * selected item in a new window, select the item in that window,
+		 * and scroll as necessary to make that item visible (this comment
+		 * is to inform translators of this tricky concept).
+		 */
 		name = g_strdup (_("_Reveal in New Window"));
 	} else {
+		/* "Reveal in n New Windows" means open the parent folder for each
+		 * selected item in a separate new window, select each selected
+		 * item in its new window, and scroll as necessary to make those 
+		 * items visible (this comment is to inform translators of this 
+		 * tricky concept).
+		 */
 		name = g_strdup_printf (_("Reveal in %d _New Windows"), count);
 	}
 

@@ -1,3 +1,40 @@
+2000-09-01  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 1476 (Using bogus local bookmark should update
+	its icon). The specific bug led me to changing some of
+	the internals of NautilusBookmark in a way that has nice
+	UI consequences. Now if you use Nautilus to move a bookmarked
+	file, the bookmark will continue to find the moved file, and
+	if you delete a file, the bookmark's icon will change to the
+	"missing location" icon.
+
+	* libnautilus-extensions/nautilus-bookmark.c:
+	(nautilus_bookmark_disconnect_file),
+	(nautilus_bookmark_connect_file): New helper functions that
+	handle wiring or unwiring the connection between a bookmark
+	and its NautilusFile.
+	(nautilus_bookmark_destroy): Use nautilus_bookmark_disconnect_file.
+	(nautilus_bookmark_new_with_icon): Use nautilus_bookmark_connect_file.
+	(bookmark_file_changed_callback): Notice changes in the file's URI
+	and update the bookmark to use the new URI; notice when the file
+	is gone and disconnect/reconnect to file.
+
+	Miscellaneous tweaks:
+	
+	* src/file-manager/fm-search-list-view.c:
+	(compute_reveal_item_name_and_sensitivity): At the suggestion of
+	a localizer (menthos), added explanatory comments before the use
+	of "Reveal in New Window" and "Reveal in <n> New Windows". It turns
+	out that a comment just before a translatable text string will
+	appear in the .pot files that localizers use.
+	* src/nautilus-first-time-druid.c: (set_up_user_level_page):
+	Fixed two misspellings of "technical" and one missing period. Thanks
+	to menthos for pointing these out.
+	* src/nautilus-window-menus.c: 
+	(show_bogus_bookmark_window): Use nautilus_format_uri_for_display
+	for bookmark uris shown in user messages. Simplify the message you
+	get if you choose a known-bogus URI from the Go menu.
+
 2000-09-01  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 2491, remove GtkHtml web browser from build.

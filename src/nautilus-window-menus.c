@@ -692,14 +692,16 @@ show_bogus_bookmark_window (BookmarkHolder *holder)
 {
 	GnomeDialog *dialog;
 	char *uri;
+	char *uri_for_display;
 	char *prompt;
 
 	uri = nautilus_bookmark_get_uri (holder->bookmark);
+	uri_for_display = nautilus_format_uri_for_display (uri);
 
 	if (holder->prompt_for_removal) {
 		prompt = g_strdup_printf (_("The location \"%s\" does not exist. Do you "
 					    "want to remove any bookmarks with this "
-					    "location from your list?"), uri);
+					    "location from your list?"), uri_for_display);
 		dialog = nautilus_yes_no_dialog (prompt,
 						 _("Remove"),
 						 GNOME_STOCK_BUTTON_CANCEL,
@@ -715,13 +717,13 @@ show_bogus_bookmark_window (BookmarkHolder *holder)
 		gtk_window_set_title (GTK_WINDOW (dialog), _("Bookmark for Bad Location"));			 
 		gnome_dialog_set_default (dialog, GNOME_CANCEL);
 	} else {
-		prompt = g_strdup_printf (_("The location \"%s\" no longer exists. "
-					    "It was probably moved, deleted, or renamed."), uri);
+		prompt = g_strdup_printf (_("The location \"%s\" no longer exists."), uri_for_display);
 		dialog = nautilus_info_dialog (prompt, GTK_WINDOW (holder->window));
 		gtk_window_set_title (GTK_WINDOW (dialog), _("Go To Bad Location"));
 	}
 
 	g_free (uri);
+	g_free (uri_for_display);
 	g_free (prompt);
 }
 

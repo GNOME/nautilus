@@ -58,9 +58,11 @@ struct NautilusBookmarkDetails
 
 
 
-static void       nautilus_bookmark_initialize_class      (NautilusBookmarkClass  *class);
-static void       nautilus_bookmark_initialize            (NautilusBookmark       *bookmark);
-static GtkWidget *create_pixmap_widget_for_bookmark       (NautilusBookmark *bookmark);
+static void	  nautilus_bookmark_connect_file	  (NautilusBookmark	 *file);
+static void	  nautilus_bookmark_disconnect_file	  (NautilusBookmark	 *file);
+static void       nautilus_bookmark_initialize_class      (NautilusBookmarkClass *class);
+static void       nautilus_bookmark_initialize            (NautilusBookmark      *bookmark);
+static GtkWidget *create_pixmap_widget_for_bookmark       (NautilusBookmark 	 *bookmark);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusBookmark, nautilus_bookmark, GTK_TYPE_OBJECT)
 
@@ -75,13 +77,10 @@ nautilus_bookmark_destroy (GtkObject *object)
 
 	bookmark = NAUTILUS_BOOKMARK(object);
 
+	nautilus_bookmark_disconnect_file (bookmark);	
+
 	g_free (bookmark->details->name);
 	g_free (bookmark->details->uri);
-	if (bookmark->details->icon != NULL) {
-		nautilus_scalable_icon_unref (bookmark->details->icon);
-	}
-	nautilus_file_unref (bookmark->details->file);
-	
 	g_free (bookmark->details);
 
 	/* Chain up */
@@ -319,16 +318,52 @@ nautilus_bookmark_update_icon (NautilusBookmark *bookmark)
 static void
 bookmark_file_changed_callback (NautilusFile *file, NautilusBookmark *bookmark)
 {
+	char *file_uri;
+	gboolean should_emit_changed_signal;
+
 	g_assert (NAUTILUS_IS_FILE (file));
 	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
 	g_assert (file == bookmark->details->file);
 
-	/* Check whether the file knows about a better icon. */
-	if (nautilus_bookmark_update_icon (bookmark)) {
+	should_emit_changed_signal = FALSE;
+	file_uri = nautilus_file_get_uri (file);
+
+	if (strcmp (bookmark->details->uri, file_uri) != 0) {
+		g_free (bookmark->details->uri);
+		bookmark->details->uri = file_uri;
+		should_emit_changed_signal = TRUE;
+	} else {
+		g_free (file_uri);
+	}
+
+	if (nautilus_file_is_gone (file)) {
+		/* The file we were monitoring has been deleted,
+		 * or moved in a way that we didn't notice. Make 
+		 * a spanking new NautilusFile object for this 
+		 * location so if a new file appears in this place 
+		 * we will notice.
+		 */
+		nautilus_bookmark_disconnect_file (bookmark);
+		nautilus_bookmark_connect_file (bookmark);
+		should_emit_changed_signal = TRUE;		
+	} else if (nautilus_bookmark_update_icon (bookmark)) {
+		/* File hasn't gone away, but it has changed
+		 * in a way that affected its icon.
+		 */
+		should_emit_changed_signal = TRUE;
+	}
+
+	if (should_emit_changed_signal) {
 		gtk_signal_emit (GTK_OBJECT (bookmark), signals[CHANGED]);
 	}
 }
 
+/**
+ * nautilus_bookmark_set_icon_to_default:
+ * 
+ * Reset the icon to either the missing bookmark icon or the generic
+ * bookmark icon, depending on whether the file still exists.
+ */
 static void
 nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
 {
@@ -367,6 +402,50 @@ nautilus_bookmark_new (const char *uri, const char *name)
 	return nautilus_bookmark_new_with_icon (uri, name, NULL);
 }
 
+static void
+nautilus_bookmark_disconnect_file (NautilusBookmark *bookmark)
+{
+	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
+	
+	if (bookmark->details->file != NULL) {
+		gtk_signal_disconnect_by_func (GTK_OBJECT (bookmark->details->file),
+					       bookmark_file_changed_callback,
+					       bookmark);
+		nautilus_file_unref (bookmark->details->file);
+		bookmark->details->file = NULL;
+	}
+
+	if (bookmark->details->icon != NULL) {
+		nautilus_scalable_icon_unref (bookmark->details->icon);
+		bookmark->details->icon = NULL;
+	}
+}
+
+static void
+nautilus_bookmark_connect_file (NautilusBookmark *bookmark)
+{
+	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
+	g_assert (bookmark->details->file == NULL);
+	
+	bookmark->details->file = nautilus_file_get (bookmark->details->uri);
+	g_assert (!nautilus_file_is_gone (bookmark->details->file));
+
+	/* Set icon based on available information; don't force network i/o
+	 * to get any currently unknown information. 
+	 */
+	if (!nautilus_bookmark_update_icon (bookmark)) {
+		if (bookmark->details->icon == NULL) {
+			nautilus_bookmark_set_icon_to_default (bookmark);
+		}
+	}
+
+	g_assert (bookmark->details->file != NULL);
+	gtk_signal_connect (GTK_OBJECT (bookmark->details->file),
+			    "changed",
+			    bookmark_file_changed_callback,
+			    bookmark);
+}
+
 NautilusBookmark *
 nautilus_bookmark_new_with_icon (const char *uri, const char *name, 
 				 NautilusScalableIcon *icon)
@@ -383,22 +462,7 @@ nautilus_bookmark_new_with_icon (const char *uri, const char *name,
 	}
 	new_bookmark->details->icon = icon;
 
-	new_bookmark->details->file = nautilus_file_get (uri);
-
-	/* Set initial icon based on available information. */
-	if (!nautilus_bookmark_update_icon (new_bookmark)) {
-		if (new_bookmark->details->icon == NULL) {
-			nautilus_bookmark_set_icon_to_default (new_bookmark);
-		}
-	}
-
-	if (new_bookmark->details->file != NULL) {
-		gtk_signal_connect_while_alive (GTK_OBJECT (new_bookmark->details->file),
-						"changed",
-						bookmark_file_changed_callback,
-						new_bookmark,
-						GTK_OBJECT (new_bookmark));
-	}
+	nautilus_bookmark_connect_file (new_bookmark);
 
 	return new_bookmark;
 }				 
