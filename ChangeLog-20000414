@@ -1,5 +1,15 @@
 2000-01-14  Darin Adler  <darin@eazel.com>
 
+	Fixed our handling of warnings and criticals.
+
+	* src/ntl-main.c: Added new functions that stop in the debugger
+	when you hit a g_warning or a critical error, only if the
+	environment variable NAUTILUS_DEBUG is set. This is better than
+	the way the old code made everything fatal, since it doesn't do
+	anything if the debugger isn't running.
+
+2000-01-14  Darin Adler  <darin@eazel.com>
+
 	Turned on gradients for backgrounds.
 	
 	* src/ntl-index-panel.c:
