@@ -93,8 +93,8 @@ get_link_set_document(const char *link_set_name)
 	char *link_set_path;
 	xmlDocPtr document;
 	
-	link_set_path = g_strdup_printf ("%s/share/nautilus/linksets/%s.xml",
-					 NAUTILUS_PREFIX,
+	link_set_path = g_strdup_printf ("%s/linksets/%s.xml",
+					 NAUTILUS_DATADIR,
 					 link_set_name);
 	document = xmlParseFile (link_set_path);
 	g_free (link_set_path);

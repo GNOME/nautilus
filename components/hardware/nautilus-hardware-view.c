@@ -330,8 +330,8 @@ static void setup_overview_form(NautilusHardwareView *view)
 		gtk_box_pack_start (GTK_BOX (container_box), temp_box, 0, 0, 24);	
 		gtk_widget_show (temp_box);
 
-		file_name = gnome_pixmap_file ("nautilus/cpu.png");
-			temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
+		file_name = nautilus_pixmap_file ("cpu.png");
+                temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
 		gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);		
 			gtk_widget_show(temp_widget);
 			g_free (file_name);
@@ -351,7 +351,7 @@ static void setup_overview_form(NautilusHardwareView *view)
   	gtk_box_pack_start (GTK_BOX (container_box), temp_box, 0, 0, 24);	
 	gtk_widget_show (temp_box);
 
- 	file_name = gnome_pixmap_file ("nautilus/memory_chip.gif");
+ 	file_name = nautilus_pixmap_file ("memory_chip.gif");
   	temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
 	gtk_box_pack_start(GTK_BOX(temp_box), temp_widget, 0, 0, 0);		
   	gtk_widget_show(temp_widget);

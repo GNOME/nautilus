@@ -107,7 +107,7 @@ web_search_populate_engines(WebSearchView *hview)
   FILE *fh;
   char aline[LINE_MAX];
 
-  fh = fopen(NAUTILUS_PREFIX "/share/ntl-web-search/standard.eng", "r");
+  fh = fopen(WEB_SEARCH_DATADIR "/ntl-web-search/standard.eng", "r");
   g_return_if_fail(fh);
 
   while(fgets(aline, sizeof(aline), fh))

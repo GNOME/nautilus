@@ -43,7 +43,7 @@ IDLDIR = $(top_srcdir)/components/services/trilobite/idl
 IDL = $(IDLDIR)/sample-service.idl
 
 sample-service.h: $(IDL)
-	$(ORBIT_IDL) -I $(IDLDIR)  -I${datadir}/idl $(IDL)
+	$(ORBIT_IDL) $(IDL_CFLAGS) -I$(IDLDIR) $(IDL)
 
 sample-service-impl.c: sample-service.h
 

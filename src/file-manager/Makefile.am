@@ -1,11 +1,19 @@
+NULL = 
+
 noinst_LTLIBRARIES=libntl-file-manager.la
 
-INCLUDES=-I$(top_srcdir) -I$(top_builddir) \
-	$(BONOBO_CFLAGS) $(OAF_CFLAGS) \
-	$(GNOMEUI_CFLAGS) -DVERSION="\"$(VERSION)\"" \
-	$(GNOMECANVASPIXBUF_INCLUDEDIR)			\
-	$(WERROR)					\
-	-D_REENTRANT
+INCLUDES = \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
+	$(BONOBO_CFLAGS) \
+	$(OAF_CFLAGS) \
+	$(GNOMEUI_CFLAGS) \
+	-DVERSION="\"$(VERSION)\"" \
+	$(GNOMECANVASPIXBUF_INCLUDEDIR) \
+	$(WERROR) \
+	-D_REENTRANT \
+	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
+	$(NULL)	
 
 dfos_corba_srcs=					\
 	GNOME_Desktop_FileOperationService.h		\
@@ -40,7 +48,7 @@ dfos-corba.h: GNOME_Desktop_FileOperationService.h
 
 $(dfos_corba_srcs): dfos_corba_stamp
 dfos_corba_stamp: $(top_srcdir)/idl/GNOME_Desktop_FileOperationService.idl
-	$(ORBIT_IDL) -I${datadir}/idl $(top_srcdir)/idl/GNOME_Desktop_FileOperationService.idl
+	$(ORBIT_IDL) $(IDL_CFLAGS) $(top_srcdir)/idl/GNOME_Desktop_FileOperationService.idl
 	touch dfos_corba_stamp
 
 BUILT_SOURCES=$(dfos_corba_srcs)

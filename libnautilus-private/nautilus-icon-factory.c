@@ -504,8 +504,8 @@ make_full_icon_path (const char *path, const char *suffix)
 	}
 
 	/* Build a path for this icon. */
-	partial_path = g_strconcat ("nautilus/", path, suffix, NULL);
-	full_path = gnome_pixmap_file (partial_path);
+	partial_path = g_strconcat (path, suffix, NULL);
+	full_path = nautilus_pixmap_file (partial_path);
 	g_free (partial_path);
 	return full_path;
 }

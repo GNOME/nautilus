@@ -117,8 +117,8 @@ char *
 nautilus_make_path(const char *path, const char* name)
 {
     	gboolean insert_separator;
-    	gint     path_length;
-	char	*result;
+    	int path_length;
+	char *result;
 
 	path_length = strlen (path);
     	insert_separator = path_length > 0 && 
@@ -126,20 +126,20 @@ nautilus_make_path(const char *path, const char* name)
     			   path[path_length - 1] != G_DIR_SEPARATOR;
 
     	if (insert_separator) {
-    		result = g_strconcat(path, G_DIR_SEPARATOR_S, name, NULL);
+    		result = g_strconcat (path, G_DIR_SEPARATOR_S, name, NULL);
     	} else {
-    		result = g_strconcat(path, name, NULL);
+    		result = g_strconcat (path, name, NULL);
     	}
 
 	return result;
 }
 
 /* FIXME bugzilla.eazel.com 1117: Change file-utilities.c to always create user
- * directorie if needed.  See bug for detail
+ * directories if needed. See bug for details.
  */
 
 /**
- * nautilus_user_directory:
+ * nautilus_get_user_directory:
  * 
  * Get the path for the directory containing nautilus settings.
  *
@@ -164,7 +164,7 @@ nautilus_get_user_directory (void)
 }
 
 /**
- * nautilus_desktop_directory:
+ * nautilus_get_desktop_directory:
  * 
  * Get the path for the directory containing files on the desktop.
  *
@@ -188,7 +188,7 @@ nautilus_get_desktop_directory (void)
 }
 
 /**
- * nautilus_user_main_directory:
+ * nautilus_get_user_main_directory:
  * 
  * Get the path for the user's main Nautilus directory.  
  * Usually ~/Nautilus
@@ -214,7 +214,7 @@ nautilus_get_user_main_directory (void)
 			 * Is it OK to use cp like this? What about quoting the parameters? 
 			 */
 			command = g_strdup_printf ("cp -R %s %s",
-						   NAUTILUS_PREFIX "/share/nautilus/top",
+						   NAUTILUS_DATADIR "/top",
 						   user_main_directory);
 
 			/* FIXME bugzilla.eazel.com 1286: 
@@ -229,7 +229,7 @@ nautilus_get_user_main_directory (void)
 		
 			/* assign a custom image for the directory icon */
 			file_uri = g_strdup_printf("file://%s", user_main_directory);
-			temp_str = gnome_pixmap_file ("nautilus/nautilus-logo.png");
+			temp_str = nautilus_pixmap_file ("nautilus-logo.png");
 			image_uri = g_strdup_printf("file://%s", temp_str);
 			g_free(temp_str);
 			
@@ -269,6 +269,19 @@ nautilus_get_user_main_directory (void)
 }
 
 /**
+ * nautilus_get_pixmap_directory
+ * 
+ * Get the path for the directory containing Nautilus pixmaps.
+ *
+ * Return value: the directory path.
+ **/
+const char *
+nautilus_get_pixmap_directory (void)
+{
+	return DATADIR "/pixmaps/nautilus";
+}
+
+/**
  * nautilus_get_local_path_from_uri:
  * 
  * Return a local path for a file:// URI.
@@ -301,4 +314,42 @@ nautilus_get_local_path_from_uri (const char *uri)
 	g_free (unescaped_uri);
 
 	return result;
+}
+
+/**
+ * nautilus_get_uri_from_local_path:
+ * 
+ * Return a file:// URI for a local path.
+ *
+ * Return value: the URI (NULL for some bad errors).
+ **/
+char *
+nautilus_get_uri_from_local_path (const char *local_path)
+{
+	char *escaped_path, *result;
+
+	g_return_val_if_fail (local_path != NULL, NULL);
+	g_return_val_if_fail (local_path[0] == '/', NULL);
+
+	escaped_path = gnome_vfs_escape_string (local_path, GNOME_VFS_URI_UNSAFE_PATH);
+	result = g_strconcat ("file://", escaped_path, NULL);
+	g_free (escaped_path);
+	return result;
+}
+
+/* FIXME: Callers just use this and dereference so we core dump if
+ * pixmaps are missing. That is lame.
+ */
+char *
+nautilus_pixmap_file (const char *partial_path)
+{
+	char *path;
+
+	path = nautilus_make_path (DATADIR "/pixmaps/nautilus", partial_path);
+	if (g_file_exists (path)) {
+		return path;
+	} else {
+		g_free (path);
+		return NULL;
+	}
 }

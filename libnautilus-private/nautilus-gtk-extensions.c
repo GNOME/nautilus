@@ -857,3 +857,41 @@ nautilus_gtk_signal_connect_full_while_alive (GtkObject *object,
 				    GTK_SIGNAL_FUNC (alive_disconnecter),
 				    info);
 }
+
+/**
+ * nautilus_gtk_container_get_first_child.
+ *
+ * Returns the first child of a container.
+ * @container: The container.
+ **/
+
+static void
+get_first_callback (GtkWidget *widget, gpointer callback_data)
+{
+	GtkWidget **first_child_slot;
+
+	g_assert (GTK_IS_WIDGET (widget));
+	g_assert (callback_data != NULL);
+	
+	first_child_slot = callback_data;
+
+	if (*first_child_slot == NULL) {
+		*first_child_slot = widget;
+		/* We'd stop the iterating now if we could. */
+	} else {
+		g_assert (GTK_IS_WIDGET (*first_child_slot));
+	}
+}
+
+GtkWidget *
+nautilus_gtk_container_get_first_child (GtkContainer *container)
+{
+	GtkWidget *first_child;
+
+	g_return_val_if_fail (GTK_IS_CONTAINER (container), NULL);
+	
+	first_child = NULL;
+	gtk_container_foreach (container, get_first_callback, &first_child);
+	g_assert (first_child == NULL || GTK_IS_WIDGET (first_child));
+	return first_child;
+}

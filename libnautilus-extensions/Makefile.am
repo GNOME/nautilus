@@ -2,7 +2,9 @@ NULL=
 
 lib_LTLIBRARIES=libnautilus-extensions.la
 
-INCLUDES= -I$(top_srcdir) -I$(top_builddir) -I$(top_builddir)/libnautilus -I. \
+INCLUDES = \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
 	$(GNOME_CFLAGS) \
 	$(BONOBO_CFLAGS) \
 	$(OAF_CFLAGS) \
@@ -11,7 +13,10 @@ INCLUDES= -I$(top_srcdir) -I$(top_builddir) -I$(top_builddir)/libnautilus -I. \
 	$(VFS_CFLAGS) \
 	$(XML_CFLAGS) \
 	$(WERROR) \
-	-D_REENTRANT
+	-D_REENTRANT \
+	-DDATADIR=\""$(datadir)"\" \
+	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
+	$(NULL)
 
 libnautilus_extensions_la_LDFLAGS=\
 	$(GNOME_LIBS) \
@@ -167,4 +172,3 @@ noinst_HEADERS =				\
 	nautilus-view-identifier.h		\
 	nautilus-xml-extensions.h		\
 	$(NULL)
-

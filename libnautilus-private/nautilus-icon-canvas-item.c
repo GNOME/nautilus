@@ -45,6 +45,7 @@
 #include "nautilus-gtk-macros.h"
 #include "nautilus-gnome-extensions.h"
 #include "nautilus-graphic-effects.h"
+#include "nautilus-file-utilities.h"
 
 #define STRETCH_HANDLE_THICKNESS 5
 #define EMBLEM_SPACING 2
@@ -1034,7 +1035,7 @@ map_pixbuf(NautilusIconCanvasItem *icon_item)
 		/* audio is the only kind of previewing right now, so this code isn't as general as it could be */
 		if (icon_item->details->is_active == 1) {
 			/* load the audio symbol */
-			audio_filename = gnome_pixmap_file ("nautilus/audio.png");
+			audio_filename = nautilus_pixmap_file ("audio.png");
 			audio_pixbuf = gdk_pixbuf_new_from_file(audio_filename);
 			
 			/* composite it onto the icon */

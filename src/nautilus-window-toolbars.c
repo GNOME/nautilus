@@ -203,19 +203,16 @@ remember_buttons(NautilusWindow *window, GnomeUIInfo current_toolbar_info[])
 static void
 setup_button(GtkWidget* button,  const char *theme_name, const char *icon_name)
 {
-	GList *list;
 	GtkWidget *widget;
 	char *full_name;
 	
-	if (strcmp(theme_name, "standard") == 0)
+	if (strcmp(theme_name, "standard") == 0) {
 		full_name = g_strdup (icon_name);
-	else
+	} else {
 		full_name = g_strdup_printf ("nautilus/%s/%s.png", theme_name, icon_name);
+	}
 	
-	list = gtk_container_children (GTK_CONTAINER (GTK_BIN (button)->child));
-	widget = GTK_WIDGET (list->data);
-	g_list_free (list);
-	
+	widget = nautilus_gtk_container_get_first_child (GTK_CONTAINER (GTK_BIN (button)->child));
 	gnome_stock_set_icon (GNOME_STOCK (widget), full_name);
 	g_free (full_name);
 	gtk_widget_queue_resize (button); 

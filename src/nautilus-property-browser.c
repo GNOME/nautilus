@@ -219,7 +219,7 @@ nautilus_property_browser_initialize (GtkObject *object)
  
  	/* add an up arrow image for an affordance for "go back" */
 	
-	image_file_name = gnome_pixmap_file ("nautilus/uparrow.png"); 
+	image_file_name = nautilus_pixmap_file ("uparrow.png"); 
 	property_browser->details->up_arrow = GTK_WIDGET (gnome_pixmap_new_from_file (image_file_name));
 	gtk_box_pack_start (GTK_BOX(temp_hbox), property_browser->details->up_arrow, FALSE, FALSE, 2);
  	g_free(image_file_name);
@@ -371,8 +371,8 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 			return;	
 		}
 		
-		image_file_name = g_strdup_printf ("%s/share/nautilus/%s/%s",
-						   NAUTILUS_PREFIX,
+		image_file_name = g_strdup_printf ("%s/%s/%s",
+						   NAUTILUS_DATADIR,
 						   property_browser->details->category,
 						   property_browser->details->dragged_file);
 		
@@ -432,8 +432,8 @@ make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name
 	GdkPixbuf *pixbuf;
 	char *image_file_name;
 
-	image_file_name = g_strdup_printf ("%s/share/nautilus/%s/%s",
-					   NAUTILUS_PREFIX,
+	image_file_name = g_strdup_printf ("%s/%s/%s",
+					   NAUTILUS_DATADIR,
 					   property_browser->details->category,
 					   file_name);
 	
@@ -641,8 +641,8 @@ get_xml_path(NautilusPropertyBrowser *property_browser)
 	g_free (xml_path);
 	
 	/* next try the shared directory */
-	xml_path = g_strdup_printf ("%s/share/nautilus/%s",
-				    NAUTILUS_PREFIX,
+	xml_path = g_strdup_printf ("%s/%s",
+				    NAUTILUS_DATADIR,
 				    property_browser->details->path);
 	if (g_file_exists (xml_path)) {
 		return xml_path;
@@ -725,7 +725,7 @@ nautilus_emblem_dialog_new(NautilusPropertyBrowser *property_browser)
 	/* default image is the generic emblem */
 	g_free(property_browser->details->image_path);
 		
-	property_browser->details->image_path = gnome_pixmap_file ("nautilus/emblem-generic.png"); 
+	property_browser->details->image_path = nautilus_pixmap_file ("emblem-generic.png"); 
 	property_browser->details->emblem_image = NULL; /* created lazily by set_emblem_image */
 	set_emblem_image_from_file(property_browser);
 	gtk_table_attach(GTK_TABLE(table), property_browser->details->emblem_image, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
@@ -1258,8 +1258,8 @@ make_properties_from_directory(NautilusPropertyBrowser *property_browser, const 
 	
 	/* first, make properties from the shared space */
 	if (!property_browser->details->remove_mode) {
-		directory_uri = g_strdup_printf ("file://%s/share/nautilus/%s",
-						 NAUTILUS_PREFIX,
+		directory_uri = g_strdup_printf ("file://%s/%s",
+						 NAUTILUS_DATADIR,
 						 property_browser->details->category);
 		index = make_properties_from_directory_path (property_browser, directory_uri, index);
 		g_free(directory_uri);
@@ -1346,6 +1346,9 @@ static void
 make_category_link(NautilusPropertyBrowser *property_browser, char* name, char* image, int index)
 {
 	GtkWidget *label, *pix_widget, *button, *temp_vbox;
+	/* FIXME: Need to look at data files and see if there's a "nautilus/" in there.
+	 * If so, we need to strip the "nautilus/" and change this to call nautilus_pixmap_file.
+	 */
 	char *file_name = gnome_pixmap_file (image); 
 	GtkWidget* temp_box = gtk_vbox_new(FALSE, 0);
 

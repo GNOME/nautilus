@@ -37,6 +37,7 @@
 #include <libgnomeui/gnome-pixmap.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-icon-factory.h>
+#include <libnautilus-extensions/nautilus-file-utilities.h>
 
 enum {
 	ZOOM_IN,
@@ -148,7 +149,7 @@ nautilus_zoom_control_initialize (NautilusZoomControl *zoom_control)
 	
 	/* allocate the pixmap that holds the image */
 	
-	file_name = gnome_pixmap_file ("nautilus/zoom.png");
+	file_name = nautilus_pixmap_file ("zoom.png");
 	pix_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
 	gtk_widget_show (pix_widget);
 	gtk_container_add (GTK_CONTAINER(zoom_control), pix_widget);

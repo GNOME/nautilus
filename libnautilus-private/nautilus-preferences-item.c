@@ -508,7 +508,7 @@ add_icon_themes(NautilusStringList *theme_list, char *required_file)
 	GnomeVFSDirectoryList *list;
 		
 	/* get the uri for the images directory */
-	directory_uri = gnome_pixmap_file("nautilus");
+	directory_uri = nautilus_get_uri_from_local_path (nautilus_get_pixmap_directory ());
 			
 	result = gnome_vfs_directory_list_load (&list, directory_uri,
 					       GNOME_VFS_FILE_INFO_DEFAULT, NULL, NULL);

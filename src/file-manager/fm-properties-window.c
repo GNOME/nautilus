@@ -669,7 +669,7 @@ get_property_names (void)
 	GList *property_list;
 	
 	property_list = get_property_names_from_uri
-		("file://" NAUTILUS_PREFIX "/share/nautilus/emblems", NULL);
+		("file://" NAUTILUS_DATADIR "/emblems", NULL);
 
 	directory_uri = g_strdup_printf ("file://%s/emblems", nautilus_get_user_directory ());
 	property_list = get_property_names_from_uri (directory_uri, property_list);

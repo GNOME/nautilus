@@ -271,14 +271,14 @@ fmt_map_entry(HyperbolaDocTree *tree, const char *name, char section)
 
       /* Because mapping entries are prepended, we have to read the items in reverse order of preference */
 
-      tmapfile = NAUTILUS_PREFIX "/share/hyperbola/maps/pages.map";
+      tmapfile = HYPERBOLA_DATADIR "/maps/pages.map";
       fmt_read_mapping(tinfo, g_file_exists(tmapfile)?tmapfile:"pages.map");
 
       for(cur = langlist = g_list_reverse(g_list_copy(gnome_i18n_get_language_list(NULL)));
 	  cur; cur = cur->next)
 	{
 	  g_snprintf(mapfile, sizeof(mapfile),
-		     NAUTILUS_PREFIX "/share/hyperbola/maps/pages.map.%s",
+		     HYPERBOLA_DATADIR "/maps/pages.map.%s",
 		     (char *)cur->data);
 	  fmt_read_mapping(tinfo, g_file_exists(mapfile)?mapfile:g_basename(mapfile));
 	}

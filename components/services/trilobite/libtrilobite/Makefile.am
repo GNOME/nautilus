@@ -74,7 +74,7 @@ $(TRILOBITE_CORBA_GENERATED): trilobite-service.h
 IDL = $(top_srcdir)/components/services/trilobite/idl/trilobite-service.idl
 
 trilobite-service.h: $(IDL)
-	$(ORBIT_IDL) -I${datadir}/idl $(IDL)
+	$(ORBIT_IDL) $(IDL_CFLAGS) $(IDL)
 
 CLEANFILES= $(TRILOBITE_CORBA_GENERATED) trilobite-service.h
 

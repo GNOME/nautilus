@@ -50,8 +50,8 @@ struct NautilusMozillaContentViewDetails {
 static void     nautilus_mozilla_content_view_initialize_class (NautilusMozillaContentViewClass *klass);
 static void     nautilus_mozilla_content_view_initialize       (NautilusMozillaContentView      *view);
 static void     nautilus_mozilla_content_view_destroy          (GtkObject                       *object);
-static void     mozilla_notify_location_change_callback        (NautilusView                    *nautilus_view,
-								Nautilus_NavigationInfo         *navinfo,
+static void     mozilla_load_location_callback                 (NautilusView                    *nautilus_view,
+								const char                      *location,
 								NautilusMozillaContentView      *view);
 static void     mozilla_merge_bonobo_items_callback            (BonoboObject                    *control,
 								gboolean                         state,
@@ -78,13 +78,7 @@ static  gint    mozilla_open_uri_callback                      (GtkMozEmbed     
 /* Other mozilla content view functions */
 static void     mozilla_content_view_set_busy_cursor           (NautilusMozillaContentView      *view);
 static void     mozilla_content_view_clear_busy_cursor         (NautilusMozillaContentView      *view);
-static void     mozilla_content_view_request_progress_change   (NautilusMozillaContentView      *view,
-								Nautilus_ProgressType            progress_type,
-								gdouble                          progress_amount);
-static void     mozilla_content_view_request_location_change   (NautilusMozillaContentView      *view,
-								const char                      *new_location_uri);
 static gboolean mozilla_is_uri_handled_by_nautilus             (const char                      *uri);
-
 
 static GtkVBoxClass *parent_class = NULL;
 
@@ -148,8 +142,8 @@ nautilus_mozilla_content_view_initialize (NautilusMozillaContentView *view)
 	view->details->nautilus_view = nautilus_view_new (GTK_WIDGET (view));
 	
 	gtk_signal_connect (GTK_OBJECT (view->details->nautilus_view), 
-			    "notify_location_change",
-			    GTK_SIGNAL_FUNC (mozilla_notify_location_change_callback), 
+			    "load_location",
+			    GTK_SIGNAL_FUNC (mozilla_load_location_callback), 
 			    view);
 
 	/* 
@@ -231,7 +225,6 @@ nautilus_mozilla_content_view_load_uri (NautilusMozillaContentView	*view,
 static void
 mozilla_content_view_set_busy_cursor (NautilusMozillaContentView *view)
 {
-        g_return_if_fail (view != NULL);
         g_return_if_fail (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (view));
 
 	if (!view->details->busy_cursor) {
@@ -249,12 +242,11 @@ mozilla_content_view_set_busy_cursor (NautilusMozillaContentView *view)
 
 static void
 mozilla_content_view_request_progress_change (NautilusMozillaContentView	*view,
-					    Nautilus_ProgressType	progress_type,
-					    gdouble			progress_amount)
+					      Nautilus_ProgressType	progress_type,
+					      gdouble			progress_amount)
 {
 	Nautilus_ProgressRequestInfo progress_request;
 
-        g_return_if_fail (view != NULL);
         g_return_if_fail (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (view));
 
 	memset (&progress_request, 0, sizeof (progress_request));
@@ -267,27 +259,8 @@ mozilla_content_view_request_progress_change (NautilusMozillaContentView	*view,
 }
 
 static void
-mozilla_content_view_request_location_change (NautilusMozillaContentView	*view,
-					      const char			*new_uri)
-{
-	Nautilus_NavigationRequestInfo	navigation_request;
-	
-        g_assert (view != NULL);
-        g_assert (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (view));
-        g_assert (new_uri != NULL);
-
-	memset (&navigation_request, 0, sizeof (navigation_request));
-	navigation_request.requested_uri = (char *) new_uri;
-	
-	nautilus_view_request_location_change (view->details->nautilus_view, 
-					       &navigation_request);
-
-}
-
-static void
 mozilla_content_view_clear_busy_cursor (NautilusMozillaContentView *view)
 {
-        g_return_if_fail (view != NULL);
         g_return_if_fail (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (view));
 
 	g_assert (GTK_WIDGET_REALIZED (GTK_WIDGET (view->details->mozilla)));
@@ -296,43 +269,15 @@ mozilla_content_view_clear_busy_cursor (NautilusMozillaContentView *view)
 }
 
 static void
-mozilla_notify_location_change_callback (NautilusView     	        *nautilus_view, 
-					 Nautilus_NavigationInfo	*navinfo, 
-					 NautilusMozillaContentView	*view)
+mozilla_load_location_callback (NautilusView *nautilus_view, 
+				const char *location,
+				NautilusMozillaContentView *view)
 {
 	g_assert (nautilus_view == view->details->nautilus_view);
 	
-	g_assert (navinfo != NULL);
-	if (navinfo->self_originated) {
-#ifdef DEBUG_ramiro
-		g_print ("ignoring self_originating location change for '%s'\n", navinfo->actual_uri);
-#endif
-		return;
-	}
-	
-	/* 
-	 * It's mandatory to send a PROGRESS_UNDERWAY message once the
-	 * component starts loading, otherwise nautilus will assume it
-	 * failed. In a real component, this will probably happen in
-	 * some sort of callback from whatever loading mechanism it is
-	 * using to load the data; this component loads no data, so it
-	 * gives the progrss update here.  
-	 */
-	mozilla_content_view_request_progress_change (view, Nautilus_PROGRESS_UNDERWAY, 0.0);
-
-	/* Do the actual load. */
+	mozilla_content_view_report_load_underway (view);
 	nautilus_mozilla_content_view_load_uri (view, navinfo->actual_uri);
-	
-	/*
-	 * It's mandatory to send a PROGRESS_DONE_OK message once the
-	 * component is done loading successfully, or
-	 * PROGRESS_DONE_ERROR if it completes unsuccessfully. In a
-	 * real component, this will probably happen in some sort of
-	 * callback from whatever loading mechanism it is using to
-	 * load the data; this component loads no data, so it gives
-	 * the progrss upodate here. 
-	 */
-	mozilla_content_view_request_progress_change (view, Nautilus_PROGRESS_DONE_OK, 100.0);
+	mozilla_content_view_report_load_complete (view);
 }
 
 static void
@@ -340,8 +285,6 @@ bonobo_mozilla_callback (BonoboUIHandler *ui_handler, gpointer user_data, const 
 {
  	NautilusMozillaContentView *view;
 	char *label_text;
-
-        g_assert (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (user_data));
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
@@ -363,8 +306,6 @@ mozilla_merge_bonobo_items_callback (BonoboObject *control, gboolean state, gpoi
 {
  	NautilusMozillaContentView *view;
         BonoboUIHandler *local_ui_handler;
-
-        g_assert (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (user_data));
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
         local_ui_handler = bonobo_control_get_ui_handler (BONOBO_CONTROL (control));
@@ -429,19 +370,14 @@ mozilla_title_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
  	NautilusMozillaContentView	*view;
 	char				*new_title;
 
-	g_assert (mozilla != NULL);
-	g_assert (GTK_IS_MOZ_EMBED (mozilla));
-        g_assert (user_data != NULL);
-        g_assert (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (user_data));
-
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
 	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
 
 	new_title = gtk_moz_embed_get_title (GTK_MOZ_EMBED (view->details->mozilla));
 
-	nautilus_view_request_title_change (view->details->nautilus_view,
-					    new_title);
+	nautilus_view_set_title (view->details->nautilus_view,
+				 new_title);
 	
 	g_free (new_title);
 }
@@ -451,11 +387,6 @@ mozilla_location_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 {
  	NautilusMozillaContentView	*view;
 	char				*new_location;
-
-	g_assert (mozilla != NULL);
-	g_assert (GTK_IS_MOZ_EMBED (mozilla));
-        g_assert (user_data != NULL);
-        g_assert (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (user_data));
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
@@ -467,7 +398,8 @@ mozilla_location_changed_callback (GtkMozEmbed *mozilla, gpointer user_data)
 	g_print ("mozilla_location_changed_callback (%s)\n", new_location);
 #endif
 
-	mozilla_content_view_request_location_change (view, new_location);
+	nautilus_view_report_location_change
+		(view->details->nautilus_view, new_location);
 
 	g_free (new_location);
 }
@@ -477,11 +409,6 @@ mozilla_net_status_callback (GtkMozEmbed *mozilla, gint flags, gpointer user_dat
 {
  	NautilusMozillaContentView	*view;
 
-	g_assert (mozilla != NULL);
-	g_assert (GTK_IS_MOZ_EMBED (mozilla));
-        g_assert (user_data != NULL);
-        g_assert (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (user_data));
-	
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
 	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
@@ -577,26 +504,15 @@ static void
 mozilla_link_message_callback (GtkMozEmbed *mozilla, gpointer user_data)
 {
  	NautilusMozillaContentView	*view;
-	Nautilus_StatusRequestInfo	status_request;
 	char				*link_message;
-
-	g_assert (mozilla != NULL);
-	g_assert (GTK_IS_MOZ_EMBED (mozilla));
-        g_assert (user_data != NULL);
-        g_assert (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (user_data));
 
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
 	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
 
 	link_message = gtk_moz_embed_get_link_message (GTK_MOZ_EMBED (view->details->mozilla));
-
-	memset (&status_request, 0, sizeof (status_request));
-
-	status_request.status_string = link_message;
-	
-	nautilus_view_request_status_change (view->details->nautilus_view,
-					     &status_request);
+	nautilus_view_report_status (view->details->nautilus_view,
+				     link_message);
 	g_free (link_message);
 }
 
@@ -607,15 +523,9 @@ mozilla_progress_callback (GtkMozEmbed *mozilla,
 			   gpointer     user_data)
 {
  	NautilusMozillaContentView	*view;
-	gdouble				percent;
+	gdouble				fraction;
 
-	g_assert (mozilla != NULL);
-	g_assert (GTK_IS_MOZ_EMBED (mozilla));
-	g_assert (user_data != NULL);
-	g_assert (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (user_data));
-	
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
-
 	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
 
 #ifdef DEBUG_ramiro
@@ -624,13 +534,12 @@ mozilla_progress_callback (GtkMozEmbed *mozilla,
 
 	/* The check for 0.0 is just anal paranoia on my part */
 	if (max_progress == 0.0) {
-		percent = 100.0;
-	}
-	else {
-		percent = current_progress / max_progress;
+		fraction = 1.0;
+	} else {
+		fraction = current_progress / max_progress;
 	}
 	
-	mozilla_content_view_request_progress_change (view, Nautilus_PROGRESS_UNDERWAY, percent);
+	nautilus_view_report_load_progress (view->details->nautilus_view, fraction);
 }
 
 static gint
@@ -642,11 +551,6 @@ mozilla_open_uri_callback (GtkMozEmbed *mozilla,
 
  	NautilusMozillaContentView	*view;
 
-	g_assert (mozilla != NULL);
-	g_assert (GTK_IS_MOZ_EMBED (mozilla));
-	g_assert (user_data != NULL);
-	g_assert (NAUTILUS_IS_MOZILLA_CONTENT_VIEW (user_data));
-	
 	view = NAUTILUS_MOZILLA_CONTENT_VIEW (user_data);
 
 	g_assert (GTK_MOZ_EMBED (mozilla) == GTK_MOZ_EMBED (view->details->mozilla));
@@ -661,8 +565,8 @@ mozilla_open_uri_callback (GtkMozEmbed *mozilla,
 #endif
 
 	/* Let nautilus grok the uri instead */
-	if (abort_uri_open == TRUE) {
-		mozilla_content_view_request_location_change (view, uri);
+	if (abort_uri_open) {
+		nautilus_view_open_location (view->details->nautilus_view, uri);
 	}
 
 	return abort_uri_open;

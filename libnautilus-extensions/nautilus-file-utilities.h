@@ -29,9 +29,28 @@ char *     nautilus_format_uri_for_display (const char *uri);
 char *     nautilus_make_uri_from_input(const char *location);
 char *      nautilus_make_path               (const char *path,
 					      const char *name);
+
+/* Return paths that don't need to be destroyed. We will probably
+ * change these to return ones that do need to be destroyed for
+ * consistency soon.
+ */
 const char *nautilus_get_user_directory      (void);
 const char *nautilus_get_user_main_directory (void);
 const char *nautilus_get_desktop_directory   (void);
+const char *nautilus_get_pixmap_directory    (void);
+
+/* Turn a "file://" URI into a local path.
+ * Returns NULL if it's not a URI that can be converted.
+ */
 char *      nautilus_get_local_path_from_uri (const char *uri);
+
+/* Turn a path into a "file://" URI. */
+char *      nautilus_get_uri_from_local_path (const char *local_full_path);
+
+/* A version of gnome's gnome_pixmap_file that works for the nautilus prefix.
+ * Otherwise similar to gnome_pixmap_file in that it checks to see if the file
+ * exists and returns NULL if it doesn't.
+ */
+char *      nautilus_pixmap_file             (const char *partial_path);
 
 #endif /* NAUTILUS_FILE_UTILITIES_H */

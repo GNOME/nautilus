@@ -6,4 +6,3 @@
 #undef HAVE_PAM
 #undef HAVE_RPM
 #undef HAVE_STPCPY
-#undef NAUTILUS_PREFIX

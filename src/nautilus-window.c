@@ -639,7 +639,6 @@ create_content_view_menu_item (NautilusWindow *window, NautilusViewIdentifier *i
 static void
 replace_special_current_view_in_content_view_menu (NautilusWindow *window)
 {
-	GList *menu_item_list;
 	GtkWidget *menu;
 	GtkWidget *first_menu_item;
 	GtkWidget *new_menu_item;
@@ -652,12 +651,10 @@ replace_special_current_view_in_content_view_menu (NautilusWindow *window)
 	gtk_widget_ref (menu);
 	gtk_option_menu_remove_menu (GTK_OPTION_MENU (window->view_as_option_menu));
 
-	menu_item_list = gtk_container_children (GTK_CONTAINER (menu));
-	first_menu_item = GTK_WIDGET (menu_item_list->data);
-	g_list_free (menu_item_list);
+	first_menu_item = nautilus_gtk_container_get_first_child (GTK_CONTAINER (menu));
+	g_assert (first_menu_item != NULL);
 
-	if (GPOINTER_TO_INT (gtk_object_get_data 
-		(GTK_OBJECT (first_menu_item), "current content view")) == TRUE) {
+	if (GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (first_menu_item), "current content view"))) {
 		gtk_container_remove (GTK_CONTAINER (menu), first_menu_item);
 	} else {
 		/* Prepend separator. */

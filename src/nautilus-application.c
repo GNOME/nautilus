@@ -192,7 +192,7 @@ display_caveat (GtkWindow *parent_window)
 	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_IN);
   	gtk_box_pack_start (GTK_BOX (hbox), frame, FALSE, FALSE, 0);
 	
-	file_name = gnome_pixmap_file ("nautilus/About_Image.png");
+	file_name = nautilus_pixmap_file ("About_Image.png");
 	pixmap = gnome_pixmap_new_from_file (file_name);
 	g_free (file_name);
 	gtk_widget_show (pixmap);

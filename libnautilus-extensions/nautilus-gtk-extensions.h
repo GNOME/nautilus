@@ -83,7 +83,7 @@ gboolean          nautilus_point_in_widget                     (GtkWidget       
 								int                     y);
 
 /* GtkContainer */
-GtkWidget        *nautilus_gtk_container_first_child           (GtkContainer           *container);
+GtkWidget        *nautilus_gtk_container_get_first_child       (GtkContainer           *container);
 
 /* GtkWindow */
 void              nautilus_gtk_window_present                  (GtkWindow              *window);

@@ -473,7 +473,7 @@ setup_form_title (NautilusServicesContentView* view,
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_container, 0, 0, 4);	
 	gtk_widget_show (temp_container);
 	
- 	file_name = gnome_pixmap_file ("nautilus/eazel-logo.gif");
+ 	file_name = nautilus_pixmap_file ("eazel-logo.gif");
   	temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
 	gtk_box_pack_start (GTK_BOX(temp_container), temp_widget, 0, 0, 8);		
   	gtk_widget_show (temp_widget);
@@ -515,7 +515,7 @@ setup_signup_form(NautilusServicesContentView* view) {
 	temp_box = gtk_hbox_new (FALSE, 4);
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, 0, 0, 12);
  	gtk_widget_show (temp_box);
- 	file_name = gnome_pixmap_file ("nautilus/register.png");
+ 	file_name = nautilus_pixmap_file ("register.png");
   	temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
 	gtk_box_pack_start (GTK_BOX (temp_box), temp_widget, 0, 0, 8);		
   	gtk_widget_show (temp_widget);
@@ -643,7 +643,7 @@ setup_config_form (NautilusServicesContentView* view) {
 	gtk_box_pack_start (GTK_BOX (view->details->form), temp_box, 0, 0, 12);
  	gtk_widget_show (temp_box);
 
- 	file_name = gnome_pixmap_file ("nautilus/config-gather.png");
+ 	file_name = nautilus_pixmap_file ("config-gather.png");
   	temp_widget = GTK_WIDGET (gnome_pixmap_new_from_file (file_name));
 	gtk_box_pack_start (GTK_BOX (temp_box), temp_widget, 0, 0, 8);
   	gtk_widget_show (temp_widget);

@@ -135,8 +135,8 @@ get_link_set_names()
 	link_set_list = NULL;
 	
 	/* get a uri to the link set directory */
-	link_set_uri = g_strdup_printf ("file://%s/share/nautilus/linksets",
-					 NAUTILUS_PREFIX);
+	link_set_uri = g_strdup_printf ("file://%s/linksets",
+					 NAUTILUS_DATADIR);
 	
 	/* get the directory info */
 
