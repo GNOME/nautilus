@@ -152,6 +152,14 @@ eazel_softcat_new (void)
 }
 
 void
+eazel_softcat_unref (GtkObject *object)
+{
+        g_return_if_fail (object != NULL);
+        g_return_if_fail (EAZEL_SOFTCAT (object));
+        gtk_object_unref (object);
+}
+
+void
 eazel_softcat_set_server (EazelSoftCat *softcat, const char *server)
 {
 	char *p;
@@ -169,6 +177,22 @@ eazel_softcat_set_server (EazelSoftCat *softcat, const char *server)
 
 	g_free (softcat->private->server_str);
 	softcat->private->server_str = g_strdup_printf ("%s:%d", softcat->private->server, softcat->private->port);
+        trilobite_debug ("SOFTCAT host/port: %s", server);
+}
+
+void
+eazel_softcat_set_server_host (EazelSoftCat *softcat, const char *server)
+{
+        g_free (softcat->private->server);
+        softcat->private->server = g_strdup (server);
+        trilobite_debug ("SOFTCAT host: %s", server);
+}
+
+void
+eazel_softcat_set_server_port (EazelSoftCat *softcat, int port)
+{
+        softcat->private->port = port;
+        trilobite_debug ("SOFTCAT port: %d", port);
 }
 
 const char *
@@ -178,6 +202,18 @@ eazel_softcat_get_server (EazelSoftCat *softcat)
 		softcat->private->server_str = g_strdup_printf ("%s:%d", SOFTCAT_DEFAULT_SERVER, SOFTCAT_DEFAULT_PORT);
 	}
 	return softcat->private->server_str;
+}
+
+const char *
+eazel_softcat_get_server_host (EazelSoftCat *softcat)
+{
+        return softcat->private->server;
+}
+
+int
+eazel_softcat_get_server_port (EazelSoftCat *softcat)
+{
+        return softcat->private->port;
 }
 
 void
@@ -207,6 +243,18 @@ eazel_softcat_set_authn (EazelSoftCat *softcat, gboolean use_authn, const char *
 	} else {
 		softcat->private->username = g_strdup (username);
 	}
+}
+
+void
+eazel_softcat_set_authn_flag (EazelSoftCat *softcat, gboolean use_authn)
+{
+        softcat->private->use_authn = use_authn;
+}
+
+void
+eazel_softcat_set_username (EazelSoftCat *softcat, const char *username)
+{
+        eazel_softcat_set_authn (softcat, softcat->private->use_authn, username);
 }
 
 gboolean

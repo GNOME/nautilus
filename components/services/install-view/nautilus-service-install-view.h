@@ -77,6 +77,7 @@ struct _NautilusServiceInstallViewDetails {
 	int		using_local_file;
 	gboolean	failure;
 	gboolean	cancelled;
+	gboolean	already_installed;
 
 	EazelInstallCallback *installer;
 	EazelInstallProblem *problem;

@@ -29,10 +29,12 @@
 #define EAZEL_INSTALL_METADATA_H
 
 #include "eazel-install-types.h"
+#include "eazel-softcat.h"
 
 InstallOptions *init_default_install_configuration (void);
 TransferOptions *init_default_transfer_configuration (void);
 void transferoptions_destroy (TransferOptions *topts);
 void installoptions_destroy (InstallOptions *iopts);
+void eazel_install_configure_softcat (EazelSoftCat *softcat);
 
 #endif /* EAZEL_INSTALL_METADATA_H */

@@ -25,6 +25,7 @@
 #define EAZEL_INSTALL_PRIVATE_H
 
 #include "eazel-install-public.h"
+#include "eazel-softcat.h"
 
 /* Funky define to step a GList iterator one ahead */
 #define glist_step(iterator) iterator = g_list_next (iterator)
@@ -100,6 +101,9 @@ struct _EazelInstallPrivate {
 
 	/* hacky way to notice if the disk is full */
 	gboolean disk_full;
+
+	/* context to use for softcat queries */
+	EazelSoftCat *softcat;
 };
 
 #endif /* EAZEL_INSTALL_PRIVATE_H */

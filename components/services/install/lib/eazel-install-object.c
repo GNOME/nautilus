@@ -256,6 +256,7 @@ eazel_install_finalize (GtkObject *object)
 
 	transferoptions_destroy (service->private->topts);
 	installoptions_destroy (service->private->iopts);
+	eazel_softcat_unref (GTK_OBJECT (service->private->softcat));
 
 	switch (service->private->package_system) {
 	case EAZEL_INSTALL_USE_RPM:
@@ -618,6 +619,8 @@ eazel_install_initialize (EazelInstall *service) {
 			   service);
 #endif
 
+	service->private->softcat = eazel_softcat_new ();
+
 	trilobite_debug (_("Transactions are stored in %s"), service->private->transaction_dir);
 	trilobite_debug ("packsys.rpm.dbs = 0x%p", service->private->packsys.rpm.dbs);
 
@@ -718,14 +721,12 @@ eazel_install_new_with_config (void)
 						 "tmp_dir", topts->tmp_dir,
 						 "transaction_dir", iopts->transaction_dir,
 						 "rpmrc_file", topts->rpmrc_file,
-						 "server", topts->hostname,
 						 "package_list_storage_path", topts->pkg_list_storage_path,
-						 "server_port", topts->port_number,
-						 "cgi_path", topts->cgi_path,
-						 "eazel_auth", topts->eazel_auth,
 						 NULL));
 	gtk_object_ref (GTK_OBJECT (service));
 	gtk_object_sink (GTK_OBJECT (service));
+
+	eazel_install_configure_softcat (service->private->softcat);
 
 	transferoptions_destroy (topts);
 	installoptions_destroy (iopts);
@@ -1467,6 +1468,77 @@ string_list_copy (GList **in,
 	}
 }
 
+/* wrapper functions for softcat */
+char *
+eazel_install_get_server (EazelInstall *service) {
+	EAZEL_INSTALL_SANITY_VAL (service, NULL);
+	return g_strdup (eazel_softcat_get_server_host (service->private->softcat));
+}
+
+guint
+eazel_install_get_server_port (EazelInstall *service) {
+	EAZEL_INSTALL_SANITY_VAL (service, 0);
+	return (guint)eazel_softcat_get_server_port (service->private->softcat);
+}
+
+char *
+eazel_install_get_username (EazelInstall *service) {
+	const char *username;
+	EAZEL_INSTALL_SANITY_VAL (service, NULL);
+	eazel_softcat_get_authn (service->private->softcat, &username);
+	return g_strdup (username);
+}
+
+gboolean
+eazel_install_get_eazel_auth (EazelInstall *service) {
+	EAZEL_INSTALL_SANITY_VAL (service, FALSE);
+	return eazel_softcat_get_authn (service->private->softcat, NULL);
+}
+
+char *
+eazel_install_get_cgi_path (EazelInstall *service) {
+	EAZEL_INSTALL_SANITY_VAL (service, NULL);
+	return g_strdup (eazel_softcat_get_cgi_path (service->private->softcat));
+}
+
+void
+eazel_install_set_server (EazelInstall *service, const char *server)
+{
+	EAZEL_INSTALL_SANITY (service);
+	eazel_softcat_set_server_host (service->private->softcat, server);
+}
+
+void
+eazel_install_set_server_port (EazelInstall *service, guint port)
+{
+	EAZEL_INSTALL_SANITY (service);
+	eazel_softcat_set_server_port (service->private->softcat, (int)port);
+}
+
+void
+eazel_install_set_username (EazelInstall *service, const char *username)
+{
+	EAZEL_INSTALL_SANITY (service);
+	eazel_softcat_set_username (service->private->softcat, username);
+}
+
+void
+eazel_install_set_eazel_auth (EazelInstall *service, gboolean auth)
+{
+	EAZEL_INSTALL_SANITY (service);
+	eazel_softcat_set_authn_flag (service->private->softcat, auth);
+}
+
+void
+eazel_install_set_cgi_path (EazelInstall *service, const char *cgi_path)
+{
+	EAZEL_INSTALL_SANITY (service);
+	eazel_softcat_set_cgi_path (service->private->softcat, cgi_path);
+}
+
+
+
+
 ei_mutator_impl (verbose, gboolean, iopts->mode_verbose);
 ei_mutator_impl (silent, gboolean, iopts->mode_silent);
 ei_mutator_impl (debug, gboolean, iopts->mode_debug);
@@ -1479,14 +1551,9 @@ ei_mutator_impl (downgrade, gboolean, iopts->mode_downgrade);
 ei_mutator_impl (protocol, URLType, iopts->protocol);
 ei_mutator_impl_copy (tmp_dir, char*, topts->tmp_dir, g_strdup);
 ei_mutator_impl_copy (rpmrc_file, char*, topts->rpmrc_file, g_strdup);
-ei_mutator_impl_copy (server, char*, topts->hostname, g_strdup);
-ei_mutator_impl_copy (username, char*, topts->username, g_strdup);
 ei_mutator_impl_copy (package_list_storage_path, char*, topts->pkg_list_storage_path, g_strdup);
 ei_mutator_impl_copy (package_list, char*, iopts->pkg_list, g_strdup);
 ei_mutator_impl_copy (transaction_dir, char*, transaction_dir, g_strdup);
-ei_mutator_impl (server_port, guint, topts->port_number);
-ei_mutator_impl_copy (cgi_path, char*, topts->cgi_path, g_strdup);
-ei_mutator_impl (eazel_auth, gboolean, topts->eazel_auth);
 ei_mutator_impl (package_system, int, package_system);
 ei_mutator_impl (ssl_rename, gboolean, ssl_rename);
 ei_mutator_impl (ignore_file_conflicts, gboolean, ignore_file_conflicts);
@@ -1503,15 +1570,10 @@ ei_access_impl (downgrade, gboolean, iopts->mode_downgrade, FALSE);
 ei_access_impl (protocol, URLType , iopts->protocol, PROTOCOL_LOCAL);
 ei_access_impl (tmp_dir, char*, topts->tmp_dir, NULL);
 ei_access_impl (rpmrc_file, char*, topts->rpmrc_file, NULL);
-ei_access_impl (server, char*, topts->hostname, NULL);
-ei_access_impl (username, char*, topts->username, NULL);
 ei_access_impl (package_list_storage_path, char*, topts->pkg_list_storage_path, NULL);
 ei_access_impl (package_list, char*, iopts->pkg_list, NULL);
 ei_access_impl (transaction_dir, char*, transaction_dir, NULL);
 ei_access_impl (root_dirs, GList*, root_dirs, NULL);
-ei_access_impl (server_port, guint, topts->port_number, 0);
-ei_access_impl (cgi_path, char*, topts->cgi_path, NULL);
-ei_access_impl (eazel_auth, gboolean, topts->eazel_auth, FALSE);
 ei_access_impl (package_system, int, package_system, 0);
 ei_access_impl (ssl_rename, gboolean, ssl_rename, FALSE);
 ei_access_impl (ignore_file_conflicts, gboolean, ignore_file_conflicts, FALSE);

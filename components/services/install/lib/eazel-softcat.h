@@ -63,15 +63,22 @@ struct _EazelSoftCat
 	EazelSoftCatPrivate *private;
 };
 
-EazelSoftCat  *eazel_softcat_new (void);
-GtkType        eazel_softcat_get_type   (void);
+EazelSoftCat   *eazel_softcat_new (void);
+GtkType         eazel_softcat_get_type (void);
+void		eazel_softcat_unref (GtkObject *object);
 
 /* set and get fields */
 void eazel_softcat_set_server (EazelSoftCat *softcat, const char *server);
+void eazel_softcat_set_server_host (EazelSoftCat *softcat, const char *server);
+void eazel_softcat_set_server_port (EazelSoftCat *softcat, int port);
 const char *eazel_softcat_get_server (EazelSoftCat *softcat);
+const char *eazel_softcat_get_server_host (EazelSoftCat *softcat);
+int eazel_softcat_get_server_port (EazelSoftCat *softcat);
 void eazel_softcat_set_cgi_path (EazelSoftCat *softcat, const char *cgi_path);
 const char *eazel_softcat_get_cgi_path (const EazelSoftCat *softcat);
 void eazel_softcat_set_authn (EazelSoftCat *softcat, gboolean use_authn, const char *username);
+void eazel_softcat_set_authn_flag (EazelSoftCat *softcat, gboolean use_authn);
+void eazel_softcat_set_username (EazelSoftCat *softcat, const char *username);
 gboolean eazel_softcat_get_authn (const EazelSoftCat *softcat, const char **username);
 void eazel_softcat_set_retry (EazelSoftCat *softcat, unsigned int retries, unsigned int delay_us);
 
@@ -79,7 +86,7 @@ const char *eazel_softcat_error_string (EazelSoftCatError err);
 
 /* Given a partially filled packagedata object, 
    check softcat, and fill it with the desired info */
-EazelSoftCatError  eazel_softcat_get_info (EazelSoftCat*,
+EazelSoftCatError  eazel_softcat_get_info (EazelSoftCat *softcat,
 					   PackageData *partial,
 					   int sense_flags,
 					   int fill_flags);

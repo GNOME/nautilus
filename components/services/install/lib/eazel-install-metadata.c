@@ -209,25 +209,40 @@ TransferOptions *
 init_default_transfer_configuration (void)
 {
 	TransferOptions *rv;
-	char *p;
 
 	check_gconf_init ();
 	rv = g_new0 (TransferOptions, 1);
 
-	rv->port_number = get_conf_int ("server/port", DEFAULT_PORT);
-	rv->hostname = get_conf_string ("server/hostname", DEFAULT_SERVER);
-	rv->username = NULL;
-	if ((p = strchr (rv->hostname, ':')) != NULL) {
-		/* make "server/port" optional -- could just be in "server/hostname" */
-		*p = 0;
-		rv->port_number = atoi (p+1);
-	}
 	rv->tmp_dir = get_conf_string ("server/temp-dir", NULL);
 	rv->rpmrc_file = get_conf_string ("server/rpmrc", "/usr/lib/rpm/rpmrc");
-	rv->cgi_path = get_conf_string ("server/cgi-path", DEFAULT_CGI_PATH);
-	rv->eazel_auth = get_conf_boolean ("server/eazel-auth", TRUE);
 
 	return rv;
+}
+
+void
+eazel_install_configure_softcat (EazelSoftCat *softcat)
+{
+	char *p;
+	char *hostname, *cgi_path;
+	int port;
+
+	check_gconf_init ();
+	port = get_conf_int ("server/port", DEFAULT_PORT);
+	hostname = get_conf_string ("server/hostname", DEFAULT_SERVER);
+	if ((p = strchr (hostname, ':')) != NULL) {
+		/* make "server/port" optional -- could just be in "server/hostname" */
+		*p = 0;
+		port = atoi (p+1);
+	}
+	eazel_softcat_set_server_host (softcat, hostname);
+	eazel_softcat_set_server_port (softcat, port);
+	g_free (hostname);
+
+	cgi_path = get_conf_string ("server/cgi-path", DEFAULT_CGI_PATH);
+	eazel_softcat_set_cgi_path (softcat, cgi_path);
+	g_free (cgi_path);
+
+	eazel_softcat_set_authn (softcat, get_conf_boolean ("server/eazel-auth", TRUE), NULL);
 }
 
 void 
@@ -235,10 +250,6 @@ transferoptions_destroy (TransferOptions *topts)
 {
 	g_return_if_fail (topts!=NULL);
 
-	g_free (topts->hostname);
-	topts->hostname = NULL;
-	g_free (topts->username);
-	topts->username = NULL;
 	g_free (topts->pkg_list_storage_path);
 	topts->pkg_list_storage_path = NULL;
 	g_free (topts->tmp_dir);

@@ -195,6 +195,8 @@ void eazel_install_delete_downloads (EazelInstall *service);
 #define EAZEL_INSTALL_SANITY_VAL(name, ret)\
 	g_return_val_if_fail (name != NULL, ret); \
 	g_return_val_if_fail (IS_EAZEL_INSTALL (name), ret); \
+	g_return_val_if_fail (name->private->softcat != NULL, ret); \
+	g_return_val_if_fail (IS_EAZEL_SOFTCAT (name->private->softcat), ret); \
 	g_assert (name->private != NULL); \
 	g_assert (name->private->iopts != NULL); \
 	g_assert (name->private->topts != NULL) 
@@ -202,6 +204,8 @@ void eazel_install_delete_downloads (EazelInstall *service);
 #define EAZEL_INSTALL_SANITY(name)\
 	g_return_if_fail (name != NULL); \
 	g_return_if_fail (IS_EAZEL_INSTALL (name)); \
+	g_return_if_fail (name->private->softcat != NULL); \
+	g_return_if_fail (IS_EAZEL_SOFTCAT (name->private->softcat)); \
 	g_assert (name->private != NULL); \
 	g_assert (name->private->iopts != NULL); \
 	g_assert (name->private->topts != NULL) 

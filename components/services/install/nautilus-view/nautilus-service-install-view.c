@@ -813,6 +813,7 @@ nautilus_service_install_installing (EazelInstallCallback *cb, const PackageData
 	}
 }
 
+#if 0
 static void
 show_dialog_and_run_away (NautilusServiceInstallView *view, const char *message)
 {
@@ -833,6 +834,7 @@ show_dialog_and_run_away (NautilusServiceInstallView *view, const char *message)
 	gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 	nautilus_view_open_location (view->details->nautilus_view, NEXT_SERVICE_VIEW);
 }
+#endif
 
 /* Get the toplevel menu name for the desktop file installed */
 static char*
@@ -919,7 +921,7 @@ nautilus_service_install_solve_cases (NautilusServiceInstallView *view)
 								 &answer, GTK_WINDOW (toplevel));
 		} else {
 			dialog = gnome_question_dialog (messages->str, (GnomeReplyCallback)reply_callback, &answer);
-	}
+		}
 		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 		g_string_free (messages, TRUE);
@@ -955,6 +957,8 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 		message = _("Installation complete!");
 	} else if (view->details->cancelled) {
 		message = _("Installation aborted.");
+	} else if (view->details->already_installed) {
+		message = _("This package has already been installed.");
 	} else {
 		message = _("Installation failed!");
 		answer = nautilus_service_install_solve_cases (view);
@@ -987,14 +991,14 @@ nautilus_service_install_done (EazelInstallCallback *cb, gboolean success, Nauti
 		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 		gnome_dialog_run_and_close (GNOME_DIALOG (dialog));
 		g_free (real_message);
-		
+
 		if (answer) {
 			CORBA_exception_init (&ev);
 			eazel_install_callback_delete_files (cb, &ev);
 			CORBA_exception_free (&ev);
 		}
 		
-		if (view->details->core_package) {
+		if (view->details->core_package && success) {
 			message = _("A core package of Nautilus has been\n"
 				    "updated.  You should restart Nautilus.\n\n"
 				    "Do you wish to do that now?");
@@ -1058,37 +1062,39 @@ dig_up_errors (NautilusServiceInstallView *view,
 static void
 nautilus_service_install_failed (EazelInstallCallback *cb, const PackageData *package, NautilusServiceInstallView *view)
 {
-	CORBA_Environment ev;
-	GString *message;
-	char *tmp;
+	char *tmp, *message;
 
 	g_assert (NAUTILUS_IS_SERVICE_INSTALL_VIEW (view));
 
 	turn_cylon_off (view, 0.0);
-	message = g_string_new ("");
 
 	/* override the "success" result for install_done signal */
 	view->details->failure = TRUE;
 
 	if (package->status == PACKAGE_ALREADY_INSTALLED) {
+#if 0
+		CORBA_Environment ev;
+
 		message = g_string_append (message, _("This package has already been installed."));
 		show_overall_feedback (view, message->str);
-		show_dialog_and_run_away (view, message->str);
+		/* show_dialog_and_run_away (view, message->str); */
 		g_string_free (message, TRUE);
 
 		/* always delete the RPM files in this case */
 		CORBA_exception_init (&ev);
 		eazel_install_callback_delete_files (cb, &ev);
 		CORBA_exception_free (&ev);
+#endif
+		view->details->already_installed = TRUE;
 
 		return;
 	}
 
 	tmp = packagedata_get_readable_name (package);
-	g_string_sprintfa (message, _("Installation failed on %s\n\n"), tmp);
+	message = g_strdup_printf (_("Installation failed on %s"), tmp);
+	show_overall_feedback (view, message);
 	g_free (tmp);
-
-	show_overall_feedback (view, message->str);
+	g_free (message);
 
 	/* Get the new set of problem cases */
 	eazel_install_problem_tree_to_case (view->details->problem,

@@ -1,3 +1,58 @@
+2000-12-04  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/lib/eazel-install-metadata.c:
+	(init_default_transfer_configuration),
+	(eazel_install_configure_softcat), (transferoptions_destroy):
+	* components/services/install/lib/eazel-install-metadata.h:
+	
+	Remove softcat fields from the TransferOptions struct and move
+	them into EazelSoftCat's config.  Read ESC's config from the
+	install/server/ gconf items.
+
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_finalize), (eazel_install_initialize),
+	(eazel_install_new_with_config), (eazel_install_get_server),
+	(eazel_install_get_server_port), (eazel_install_get_username),
+	(eazel_install_get_eazel_auth), (eazel_install_get_cgi_path),
+	(eazel_install_set_server), (eazel_install_set_server_port),
+	(eazel_install_set_username), (eazel_install_set_eazel_auth),
+	(eazel_install_set_cgi_path):
+	* components/services/install/lib/eazel-install-private.h:
+	* components/services/install/lib/eazel-install-public.h:
+	* components/services/install/lib/eazel-install-types.h:
+
+	Put a SoftCat into the Install object, and map the set/get
+	functions for old TransferOptions fields to SoftCat fields.
+	
+	* components/services/install/lib/eazel-install-protocols.c:
+	(gnome_vfs_xfer_callback), (eazel_install_fetch_package):
+
+	Remove some sarcasm (I'm over it).  Remove traces of the "old"
+	(fake) CGI code.  Remove the evil softcat hack and make it use the
+	softcat object now.
+	
+	* components/services/install/lib/eazel-softcat.c:
+	(eazel_softcat_unref), (eazel_softcat_set_server),
+	(eazel_softcat_set_server_host), (eazel_softcat_set_server_port),
+	(eazel_softcat_get_server_host), (eazel_softcat_get_server_port),
+	(eazel_softcat_set_authn), (eazel_softcat_set_authn_flag),
+	(eazel_softcat_set_username):
+	* components/services/install/lib/eazel-softcat.h:
+
+	Let a SoftCat be unref'd (cough cough).  Add some more field
+	set/get functions for the Install object.
+	
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (nautilus_service_install_solve_cases),
+	(nautilus_service_install_done),
+	(nautilus_service_install_failed):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.h:
+
+	Remove some cruft and fix the "already installed" case so that it
+	doesn't drop windows everywhere and vanish abruptly, leaving a
+	dangling eazel-install service running in the background.
+	
 2000-12-04  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/tree/nautilus-tree-view.c

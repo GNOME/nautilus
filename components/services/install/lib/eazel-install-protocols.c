@@ -42,8 +42,6 @@
 #include <libgnomevfs/gnome-vfs.h>
 #endif /* EAZEL_INSTALL_SLIM */
 
-/* #define EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
-
 /* evil evil hack because RPM doesn't understand that a package for i386 is still okay to run on i686! */
 #define ASSUME_ix86_IS_i386
 
@@ -234,10 +232,6 @@ gnome_vfs_xfer_callback (GnomeVFSXferProgressInfo *info,
 	EazelInstall *service = cbstruct->service;
 	const char *file_to_report = cbstruct->file_to_report;
 
-#ifdef GTK_MAIN_ITERATION_ACTUALLY_CHECKED_FOR_CORBA_CALLS_WHICH_IT_APPARENTLY_DOESNT
-	gtk_main_iteration_do (FALSE);
-#endif
-	
 	switch (info->status) {
 	case GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR:
 		trilobite_debug ("GnomeVFS Error: %s\n",
@@ -523,10 +517,7 @@ eazel_install_fetch_package (EazelInstall *service,
 	case PROTOCOL_FTP:
 	case PROTOCOL_HTTP: 
 	{
-		/* HACK HACK HACK HACK */
-		EazelSoftCat *softcat = eazel_softcat_new ();
-
-		if (eazel_softcat_get_info (softcat, package, EAZEL_SOFTCAT_SENSE_GE,
+		if (eazel_softcat_get_info (service->private->softcat, package, EAZEL_SOFTCAT_SENSE_GE,
 					    PACKAGE_FILL_NO_PROVIDES | PACKAGE_FILL_NO_DEPENDENCIES)
 		    == EAZEL_SOFTCAT_SUCCESS) {
 			url = g_strdup (package->remote_url);
@@ -548,15 +539,7 @@ eazel_install_fetch_package (EazelInstall *service,
 		targetname = g_strdup_printf ("%s/%s",
 					      eazel_install_get_tmp_dir (service),
 					      filename_from_url (url));
-#ifndef EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI
 		result = eazel_install_fetch_file (service, url, package->name, targetname);
-#else /*  EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
-		if (filename_from_url (url) && strlen (filename_from_url (url))>1) {
-			result = eazel_install_fetch_file (service, url, package->name, targetname);
-		} else {
-			trilobite_debug ("cannot handle %s", url);
-		}
-#endif /* EAZEL_INSTALL_PROTOCOL_USE_OLD_CGI */
 		if (result) {
 			packagedata_fill_from_file (package, targetname); 
 			if (name) {
