@@ -1,5 +1,30 @@
 2000-09-28  Darin Adler  <darin@eazel.com>
 
+	* src/nautilus-theme-selector.c: (populate_list_with_themes):
+	Fix uninitialized variable.
+
+2000-09-28  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-undo-context.c:
+	(nautilus_undo_context_new): Bonobo objects own themselves, so we
+	should not do a ref/sink on them.
+	* libnautilus-extensions/nautilus-undo-manager.c:
+	(nautilus_undo_manager_new): Bonobo objects own themselves, so we
+	should not do a ref/sink on them.
+	* src/nautilus-application.c: (nautilus_application_initialize):
+	Move global preferences initialization to main with other
+	initialize calls.
+	(nautilus_application_new): Bonobo objects own themselves, so we
+	should not do a ref/sink on them.
+	(nautilus_application_destroy): Unref the undo manager to fix a
+	leak.
+	* src/nautilus-main.c: (main): Move global preferences
+	initialization to main with other initialize calls.
+	
+	* nautilus.spec.in: Added "-k" to build commands so we get more
+	information about what failed when failing to build via
+	RPM. Failures are still failures, we just see more of what's
+	failing.
 	
 	* components/help/converters/gnome-db2html2/sect-elements.c:
 	(sect_entry_end_element):
@@ -80,27 +105,6 @@
 	Got rid of all uses of == FALSE and != FALSE, since they lead to use
 	of == TRUE and != TRUE.
 
-	* nautilus.spec.in: Added "-k" to build commands so we get more
-	information about what failed when failing to build via
-	RPM. Failures are still failures, we just see more of what's
-	failing.
-	
-	* libnautilus-extensions/nautilus-undo-context.c:
-	(nautilus_undo_context_new): Bonobo objects own themselves, so we
-	should not do a ref/sink on them.
-	* libnautilus-extensions/nautilus-undo-manager.c:
-	(nautilus_undo_manager_new): Bonobo objects own themselves, so we
-	should not do a ref/sink on them.
-	* src/nautilus-application.c: (nautilus_application_initialize):
-	Move global preferences initialization to main with other
-	initialize calls.
-	(nautilus_application_new): Bonobo objects own themselves, so we
-	should not do a ref/sink on them.
-	(nautilus_application_destroy): Unref the undo manager to fix a
-	leak.
-	* src/nautilus-main.c: (main): Move global preferences
-	initialization to main with other initialize calls.
-	
 2000-09-28  John Sullivan  <sullivan@eazel.com>
 
 	* components/services/summary/nautilus-view/nautilus-summary-view.c

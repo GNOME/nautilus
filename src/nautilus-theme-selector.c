@@ -28,19 +28,12 @@
  */
 
 #include <config.h>
-#include <math.h>
-#include <ctype.h>
-
 #include "nautilus-theme-selector.h"
 
-#include <parser.h>
-#include <xmlmemory.h>
-
-#include <libgnomevfs/gnome-vfs.h>
-
+#include <ctype.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gnome.h>
-
+#include <libgnomevfs/gnome-vfs.h>
 #include <libnautilus-extensions/nautilus-background.h>
 #include <libnautilus-extensions/nautilus-directory.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
@@ -58,6 +51,9 @@
 #include <libnautilus-extensions/nautilus-string.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 #include <libnautilus-extensions/nautilus-xml-extensions.h>
+#include <math.h>
+#include <parser.h>
+#include <xmlmemory.h>
 
 struct NautilusThemeSelectorDetails {
 	GtkWidget *container;
@@ -845,6 +841,7 @@ populate_list_with_themes (NautilusThemeSelector *theme_selector)
 	
 	/* iterate the pixmap directory to find other installed themes */	
 	index = 0;
+	selected_index = -1;
 	if (!theme_selector->details->remove_mode) {
 
 		pixmap_directory = nautilus_get_pixmap_directory ();
