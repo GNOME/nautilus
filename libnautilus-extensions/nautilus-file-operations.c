@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* xfer.c - Bonobo::Desktop::FileOperationService transfer service.
+/* nautilus-file-operations.c - Nautilus file operations.
 
    Copyright (C) 1999, 2000 Free Software Foundation
 
@@ -47,14 +47,14 @@
 #include <libnautilus-extensions/nautilus-trash-monitor.h>
 
 typedef enum {
-	XFER_MOVE,
-	XFER_COPY,
-	XFER_DUPLICATE,
-	XFER_MOVE_TO_TRASH,
-	XFER_EMPTY_TRASH,
-	XFER_DELETE,
-	XFER_LINK
-} XferKind;
+	TRANSFER_MOVE,
+	TRANSFER_COPY,
+	TRANSFER_DUPLICATE,
+	TRANSFER_MOVE_TO_TRASH,
+	TRANSFER_EMPTY_TRASH,
+	TRANSFER_DELETE,
+	TRANSFER_LINK
+} TransferKind;
 
 /* Copy engine callback state */
 typedef struct {
@@ -68,12 +68,12 @@ typedef struct {
 	GnomeVFSXferErrorMode error_mode;
 	GnomeVFSXferOverwriteMode overwrite_mode;
 	GtkWidget *parent_view;
-	XferKind kind;
+	TransferKind kind;
 	gboolean show_progress_dialog;
 	void (*done_callback) (GHashTable *debuting_uris, gpointer data);
 	gpointer done_callback_data;
 	GHashTable *debuting_uris;	
-} XferInfo;
+} TransferInfo;
 
 /* Struct used to control applying icon positions to 
  * top level items during a copy, drag, new folder creation and
@@ -184,23 +184,23 @@ nautilus_convert_to_formatted_name_for_display (char *escaped_uri)
 }
 
 static GtkWidget *
-parent_for_error_dialog (XferInfo *xfer_info)
+parent_for_error_dialog (TransferInfo *transfer_info)
 {
-	if (xfer_info->progress_dialog != NULL) {
-		return xfer_info->progress_dialog;
+	if (transfer_info->progress_dialog != NULL) {
+		return transfer_info->progress_dialog;
 	}
 
-	return xfer_info->parent_view;
+	return transfer_info->parent_view;
 }
 
 static void
-xfer_dialog_clicked_callback (NautilusFileOperationsProgress *dialog,
+transfer_dialog_clicked_callback (NautilusFileOperationsProgress *dialog,
 			      int button_number,
 			      gpointer data)
 {
-	XferInfo *info;
+	TransferInfo *info;
 
-	info = (XferInfo *) data;
+	info = (TransferInfo *) data;
 	gnome_vfs_async_cancel (info->handle);
 
 	gtk_widget_destroy (GTK_WIDGET (dialog));
@@ -261,29 +261,29 @@ center_dialog_over_window (GtkWindow *window, GtkWindow *over)
 
 
 static void
-create_xfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
-		    XferInfo *xfer_info)
+create_transfer_dialog (const GnomeVFSXferProgressInfo *progress_info,
+		    TransferInfo *transfer_info)
 {
-	if (!xfer_info->show_progress_dialog) {
+	if (!transfer_info->show_progress_dialog) {
 		return;
 	}
 
-	g_return_if_fail (xfer_info->progress_dialog == NULL);
+	g_return_if_fail (transfer_info->progress_dialog == NULL);
 
-	xfer_info->progress_dialog = nautilus_file_operations_progress_new 
-		(xfer_info->operation_title, "", "", "", 1, 1);
+	transfer_info->progress_dialog = nautilus_file_operations_progress_new 
+		(transfer_info->operation_title, "", "", "", 1, 1);
 
-	gtk_signal_connect (GTK_OBJECT (xfer_info->progress_dialog),
+	gtk_signal_connect (GTK_OBJECT (transfer_info->progress_dialog),
 			    "clicked",
-			    GTK_SIGNAL_FUNC (xfer_dialog_clicked_callback),
-			    xfer_info);
+			    GTK_SIGNAL_FUNC (transfer_dialog_clicked_callback),
+			    transfer_info);
 
-	gtk_widget_show (xfer_info->progress_dialog);
+	gtk_widget_show (transfer_info->progress_dialog);
 
 	/* Make the progress dialog show up over the window we are copying into */
-	if (xfer_info->parent_view != NULL) {
-		center_dialog_over_window (GTK_WINDOW (xfer_info->progress_dialog), 
-			GTK_WINDOW (gtk_widget_get_toplevel (xfer_info->parent_view)));
+	if (transfer_info->parent_view != NULL) {
+		center_dialog_over_window (GTK_WINDOW (transfer_info->progress_dialog), 
+			GTK_WINDOW (gtk_widget_get_toplevel (transfer_info->parent_view)));
 	}
 }
 
@@ -355,31 +355,31 @@ progress_dialog_set_to_from_item_text (NautilusFileOperationsProgress *dialog,
 }
 
 static int
-handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
-		XferInfo *xfer_info)
+handle_transfer_ok (const GnomeVFSXferProgressInfo *progress_info,
+		TransferInfo *transfer_info)
 {
 	switch (progress_info->phase) {
 	case GNOME_VFS_XFER_PHASE_INITIAL:
-		create_xfer_dialog (progress_info, xfer_info);
+		create_transfer_dialog (progress_info, transfer_info);
 		return TRUE;
 
 	case GNOME_VFS_XFER_PHASE_COLLECTING:
-		if (xfer_info->progress_dialog != NULL) {
+		if (transfer_info->progress_dialog != NULL) {
 			nautilus_file_operations_progress_set_operation_string
 				(NAUTILUS_FILE_OPERATIONS_PROGRESS
-					 (xfer_info->progress_dialog),
-					 xfer_info->preparation_name);
+					 (transfer_info->progress_dialog),
+					 transfer_info->preparation_name);
 		}
 		return TRUE;
 
 	case GNOME_VFS_XFER_PHASE_READYTOGO:
-		if (xfer_info->progress_dialog != NULL) {
+		if (transfer_info->progress_dialog != NULL) {
 			nautilus_file_operations_progress_set_operation_string (
-				NAUTILUS_FILE_OPERATIONS_PROGRESS (xfer_info->progress_dialog),
-					 xfer_info->action_label);
+				NAUTILUS_FILE_OPERATIONS_PROGRESS (transfer_info->progress_dialog),
+					 transfer_info->action_label);
 			nautilus_file_operations_progress_set_total
 				(NAUTILUS_FILE_OPERATIONS_PROGRESS
-					 (xfer_info->progress_dialog),
+					 (transfer_info->progress_dialog),
 					 progress_info->files_total,
 					 progress_info->bytes_total);
 		}
@@ -387,10 +387,10 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 				 
 	case GNOME_VFS_XFER_PHASE_DELETESOURCE:
 		nautilus_file_changes_consume_changes (FALSE);
-		if (xfer_info->progress_dialog != NULL) {
+		if (transfer_info->progress_dialog != NULL) {
 			progress_dialog_set_to_from_item_text (
-				NAUTILUS_FILE_OPERATIONS_PROGRESS (xfer_info->progress_dialog),
-				xfer_info->progress_verb,
+				NAUTILUS_FILE_OPERATIONS_PROGRESS (transfer_info->progress_dialog),
+				transfer_info->progress_verb,
 				progress_info->source_name,
 				NULL,
 				progress_info->file_index,
@@ -398,7 +398,7 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 
 			nautilus_file_operations_progress_update_sizes
 				(NAUTILUS_FILE_OPERATIONS_PROGRESS
-				 (xfer_info->progress_dialog),
+				 (transfer_info->progress_dialog),
 				 MIN (progress_info->bytes_copied, 
 				 	progress_info->bytes_total),
 				 MIN (progress_info->total_bytes_copied,
@@ -412,12 +412,12 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 		/* fall through */
 
 	case GNOME_VFS_XFER_PHASE_COPYING:
-		if (xfer_info->progress_dialog != NULL) {
+		if (transfer_info->progress_dialog != NULL) {
 				
 			if (progress_info->bytes_copied == 0) {
 				progress_dialog_set_to_from_item_text (
-					NAUTILUS_FILE_OPERATIONS_PROGRESS (xfer_info->progress_dialog),
-					xfer_info->progress_verb,
+					NAUTILUS_FILE_OPERATIONS_PROGRESS (transfer_info->progress_dialog),
+					transfer_info->progress_verb,
 					progress_info->source_name,
 					progress_info->target_name,
 					progress_info->file_index,
@@ -425,7 +425,7 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 			} else {
 				nautilus_file_operations_progress_update_sizes
 					(NAUTILUS_FILE_OPERATIONS_PROGRESS
-					 (xfer_info->progress_dialog),
+					 (transfer_info->progress_dialog),
 					 MIN (progress_info->bytes_copied, 
 					 	progress_info->bytes_total),
 					 MIN (progress_info->total_bytes_copied,
@@ -435,32 +435,32 @@ handle_xfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 		return TRUE;
 
 	case GNOME_VFS_XFER_PHASE_CLEANUP:
-		if (xfer_info->progress_dialog != NULL) {
+		if (transfer_info->progress_dialog != NULL) {
 			nautilus_file_operations_progress_clear(
 				NAUTILUS_FILE_OPERATIONS_PROGRESS
-					 (xfer_info->progress_dialog));
+					 (transfer_info->progress_dialog));
 			nautilus_file_operations_progress_set_operation_string
 				(NAUTILUS_FILE_OPERATIONS_PROGRESS
-					 (xfer_info->progress_dialog),
-					 xfer_info->cleanup_name);
+					 (transfer_info->progress_dialog),
+					 transfer_info->cleanup_name);
 		}
 		return TRUE;
 
 	case GNOME_VFS_XFER_PHASE_COMPLETED:
 		nautilus_file_changes_consume_changes (TRUE);
-		if (xfer_info->progress_dialog != NULL) {
-			gtk_widget_destroy (xfer_info->progress_dialog);
+		if (transfer_info->progress_dialog != NULL) {
+			gtk_widget_destroy (transfer_info->progress_dialog);
 		}
-		if (xfer_info->done_callback != NULL) {
-			xfer_info->done_callback (xfer_info->debuting_uris, xfer_info->done_callback_data);
+		if (transfer_info->done_callback != NULL) {
+			transfer_info->done_callback (transfer_info->debuting_uris, transfer_info->done_callback_data);
 			/* done_callback now owns (will free) debuting_uris
 			 */
 		} else {
-			if (xfer_info->debuting_uris != NULL) {
-				nautilus_g_hash_table_destroy_deep (xfer_info->debuting_uris);
+			if (transfer_info->debuting_uris != NULL) {
+				nautilus_g_hash_table_destroy_deep (transfer_info->debuting_uris);
 			}
 		}
-		g_free (xfer_info);
+		g_free (transfer_info);
 		return TRUE;
 
 	default:
@@ -488,7 +488,7 @@ typedef enum {
 
 static char *
 build_error_string (const char *source_name, const char *target_name,
-		    XferKind operation_kind, NautilusFileOperationsErrorKind error_kind,
+		    TransferKind operation_kind, NautilusFileOperationsErrorKind error_kind,
 		    NautilusFileOperationsErrorLocation error_location, GnomeVFSResult error)
 {
 	/* Avoid clever message composing here, just use brute force and
@@ -507,8 +507,8 @@ build_error_string (const char *source_name, const char *target_name,
 	if (error_location == ERROR_LOCATION_SOURCE_PARENT) {
 
 		switch (operation_kind) {
-		case XFER_MOVE:
-		case XFER_MOVE_TO_TRASH:
+		case TRANSFER_MOVE:
+		case TRANSFER_MOVE_TO_TRASH:
 			if (error_kind == ERROR_READ_ONLY) {
 				error_string = _("Error while moving.\n\n"
 						 "\"%s\" cannot be moved because it is on "
@@ -516,8 +516,8 @@ build_error_string (const char *source_name, const char *target_name,
 			}
 			break;
 
-		case XFER_DELETE:
-		case XFER_EMPTY_TRASH:
+		case TRANSFER_DELETE:
+		case TRANSFER_EMPTY_TRASH:
 			switch (error_kind) {
 			case ERROR_NOT_ENOUGH_PERMISSIONS:
 			case ERROR_NOT_WRITABLE:
@@ -556,14 +556,14 @@ build_error_string (const char *source_name, const char *target_name,
 		 * after the failure in this case.
 		 */
 		switch (operation_kind) {
-		case XFER_MOVE:
+		case TRANSFER_MOVE:
 			if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
 				error_string = _("Error while moving.\n\n"
 						 "\"%s\" cannot be moved because you do not have "
 						 "permissions to change it or its parent folder.");
 			}
 			break;
-		case XFER_MOVE_TO_TRASH:
+		case TRANSFER_MOVE_TO_TRASH:
 			if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
 				error_string = _("Error while moving.\n\n"
 						 "\"%s\" cannot be moved to the trash because you do not have "
@@ -586,8 +586,8 @@ build_error_string (const char *source_name, const char *target_name,
 		g_assert (source_name != NULL);
 
 		switch (operation_kind) {
-		case XFER_COPY:
-		case XFER_DUPLICATE:
+		case TRANSFER_COPY:
+		case TRANSFER_DUPLICATE:
 			if (error_kind == ERROR_NOT_READABLE) {
 				error_string = _("Error while copying.\n\n"
 						 "\"%s\" cannot be copied because you do not have "
@@ -609,17 +609,17 @@ build_error_string (const char *source_name, const char *target_name,
 
 		if (error_kind == ERROR_NO_SPACE) {
 			switch (operation_kind) {
-			case XFER_COPY:
-			case XFER_DUPLICATE:
+			case TRANSFER_COPY:
+			case TRANSFER_DUPLICATE:
 				error_string = _("Error while copying to \"%s\".\n\n"
 				   		 "There is not enough space on the destination.");
 				break;
-			case XFER_MOVE_TO_TRASH:
-			case XFER_MOVE:
+			case TRANSFER_MOVE_TO_TRASH:
+			case TRANSFER_MOVE:
 				error_string = _("Error while moving to \"%s\".\n\n"
 				   		 "There is not enough space on the destination.");
 				break;
-			case XFER_LINK:
+			case TRANSFER_LINK:
 				error_string = _("Error while creating link in \"%s\".\n\n"
 				   		 "There is not enough space on the destination.");
 				break;
@@ -629,8 +629,8 @@ build_error_string (const char *source_name, const char *target_name,
 			}
 		} else {
 			switch (operation_kind) {
-			case XFER_COPY:
-			case XFER_DUPLICATE:
+			case TRANSFER_COPY:
+			case TRANSFER_DUPLICATE:
 				if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
 					error_string = _("Error while copying to \"%s\".\n\n"
 					   		 "You do not have permissions to write to "
@@ -640,8 +640,8 @@ build_error_string (const char *source_name, const char *target_name,
 					   		 "The destination disk is read-only.");
 				} 
 				break;
-			case XFER_MOVE:
-			case XFER_MOVE_TO_TRASH:
+			case TRANSFER_MOVE:
+			case TRANSFER_MOVE_TO_TRASH:
 				if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
 					error_string = _("Error while moving items to \"%s\".\n\n"
 					   		 "You do not have permissions to write to "
@@ -652,7 +652,7 @@ build_error_string (const char *source_name, const char *target_name,
 				} 
 
 				break;
-			case XFER_LINK:
+			case TRANSFER_LINK:
 				if (error_kind == ERROR_NOT_ENOUGH_PERMISSIONS) {
 					error_string = _("Error while creating links in \"%s\".\n\n"
 					   		 "You do not have permissions to write to "
@@ -685,22 +685,22 @@ build_error_string (const char *source_name, const char *target_name,
 		 */
 		if (source_name != NULL) {
 			switch (operation_kind) {
-			case XFER_COPY:
-			case XFER_DUPLICATE:
+			case TRANSFER_COPY:
+			case TRANSFER_DUPLICATE:
 				error_string = _("Error \"%s\" while copying \"%s\".\n\n"
 						 "Would you like to continue?");
 				break;
-			case XFER_MOVE:
+			case TRANSFER_MOVE:
 				error_string = _("Error \"%s\" while moving \"%s\".\n\n"
 						 "Would you like to continue?");
 				break;
-			case XFER_LINK:
+			case TRANSFER_LINK:
 				error_string = _("Error \"%s\" while creating a link to \"%s\".\n\n"
 						 "Would you like to continue?");
 				break;
-			case XFER_DELETE:
-			case XFER_EMPTY_TRASH:
-			case XFER_MOVE_TO_TRASH:
+			case TRANSFER_DELETE:
+			case TRANSFER_EMPTY_TRASH:
+			case TRANSFER_MOVE_TO_TRASH:
 				error_string = _("Error \"%s\" while deleting \"%s\".\n\n"
 						 "Would you like to continue?");
 				break;
@@ -714,22 +714,22 @@ build_error_string (const char *source_name, const char *target_name,
 				 source_name);
 		} else {
 			switch (operation_kind) {
-			case XFER_COPY:
-			case XFER_DUPLICATE:
+			case TRANSFER_COPY:
+			case TRANSFER_DUPLICATE:
 				error_string = _("Error \"%s\" while copying.\n\n"
 						 "Would you like to continue?");
 				break;
-			case XFER_MOVE:
+			case TRANSFER_MOVE:
 				error_string = _("Error \"%s\" while moving.\n\n"
 						 "Would you like to continue?");
 				break;
-			case XFER_LINK:
+			case TRANSFER_LINK:
 				error_string = _("Error \"%s\" while linking.\n\n"
 						 "Would you like to continue?");
 				break;
-			case XFER_DELETE:
-			case XFER_EMPTY_TRASH:
-			case XFER_MOVE_TO_TRASH:
+			case TRANSFER_DELETE:
+			case TRANSFER_EMPTY_TRASH:
+			case TRANSFER_MOVE_TO_TRASH:
 				error_string = _("Error \"%s\" while deleting.\n\n"
 						 "Would you like to continue?");
 				break;
@@ -746,10 +746,10 @@ build_error_string (const char *source_name, const char *target_name,
 }
 
 static int
-handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
-		       XferInfo *xfer_info)
+handle_transfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
+		       TransferInfo *transfer_info)
 {
-	/* Notice that the error mode in `xfer_info' is the one we have been
+	/* Notice that the error mode in `transfer_info' is the one we have been
          * requested, but the transfer is always performed in mode
          * `GNOME_VFS_XFER_ERROR_MODE_QUERY'.
          */
@@ -763,7 +763,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 	NautilusFileOperationsErrorKind error_kind;
 	NautilusFileOperationsErrorLocation error_location;
 	
-	switch (xfer_info->error_mode) {
+	switch (transfer_info->error_mode) {
 	case GNOME_VFS_XFER_ERROR_MODE_QUERY:
 
 		/* transfer error, prompt the user to continue or stop */
@@ -789,31 +789,31 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 		 */
 		if ((progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
 				|| progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY)
-			&& (xfer_info->kind == XFER_DELETE
-				|| xfer_info->kind == XFER_EMPTY_TRASH)) {
+			&& (transfer_info->kind == TRANSFER_DELETE
+				|| transfer_info->kind == TRANSFER_EMPTY_TRASH)) {
 			error_location = ERROR_LOCATION_SOURCE_PARENT;
 			error_kind = ERROR_READ_ONLY;
 		} else if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED
-			&& (xfer_info->kind == XFER_DELETE
-				|| xfer_info->kind == XFER_EMPTY_TRASH)) {
+			&& (transfer_info->kind == TRANSFER_DELETE
+				|| transfer_info->kind == TRANSFER_EMPTY_TRASH)) {
 			error_location = ERROR_LOCATION_SOURCE_PARENT;
 			error_kind = ERROR_NOT_ENOUGH_PERMISSIONS;
 		} else if ((progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM
 				|| progress_info->vfs_status == GNOME_VFS_ERROR_READ_ONLY)
-			&& (xfer_info->kind == XFER_MOVE
-				|| xfer_info->kind == XFER_MOVE_TO_TRASH)
+			&& (transfer_info->kind == TRANSFER_MOVE
+				|| transfer_info->kind == TRANSFER_MOVE_TO_TRASH)
 			&& progress_info->phase != GNOME_VFS_XFER_CHECKING_DESTINATION) {
 			error_location = ERROR_LOCATION_SOURCE_PARENT;
 			error_kind = ERROR_READ_ONLY;
 		} else if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED
-			&& (xfer_info->kind == XFER_MOVE
-				|| xfer_info->kind == XFER_MOVE_TO_TRASH)
+			&& (transfer_info->kind == TRANSFER_MOVE
+				|| transfer_info->kind == TRANSFER_MOVE_TO_TRASH)
 			&& progress_info->phase != GNOME_VFS_XFER_CHECKING_DESTINATION) {
 			error_location = ERROR_LOCATION_SOURCE_OR_PARENT;
 			error_kind = ERROR_NOT_ENOUGH_PERMISSIONS;
 		} else if (progress_info->vfs_status == GNOME_VFS_ERROR_ACCESS_DENIED
-			&& (xfer_info->kind == XFER_COPY
-				|| xfer_info->kind == XFER_DUPLICATE)
+			&& (transfer_info->kind == TRANSFER_COPY
+				|| transfer_info->kind == TRANSFER_DUPLICATE)
 			&& (progress_info->phase == GNOME_VFS_XFER_PHASE_OPENSOURCE
 				|| progress_info->phase == GNOME_VFS_XFER_PHASE_COLLECTING
 				|| progress_info->phase == GNOME_VFS_XFER_PHASE_INITIAL)) {
@@ -834,22 +834,22 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 		}
 
 		text = build_error_string (unescaped_source_name, unescaped_target_name,
-			xfer_info->kind, error_kind, error_location, progress_info->vfs_status);
+			transfer_info->kind, error_kind, error_location, progress_info->vfs_status);
 
-		switch (xfer_info->kind) {
-		case XFER_COPY:
-		case XFER_DUPLICATE:
+		switch (transfer_info->kind) {
+		case TRANSFER_COPY:
+		case TRANSFER_DUPLICATE:
 			dialog_title = _("Error while copying.");
 			break;
-		case XFER_MOVE:
+		case TRANSFER_MOVE:
 			dialog_title = _("Error while moving.");
 			break;
-		case XFER_LINK:
+		case TRANSFER_LINK:
 			dialog_title = _("Error while linking.");
 			break;
-		case XFER_DELETE:
-		case XFER_EMPTY_TRASH:
-		case XFER_MOVE_TO_TRASH:
+		case TRANSFER_DELETE:
+		case TRANSFER_EMPTY_TRASH:
+		case TRANSFER_MOVE_TO_TRASH:
 			dialog_title = _("Error while deleting.");
 			break;
 		default:
@@ -859,7 +859,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 
 		if (error_location == ERROR_LOCATION_TARGET) {
 			/* We can't continue, just tell the user. */
-			nautilus_simple_dialog (parent_for_error_dialog (xfer_info),
+			nautilus_simple_dialog (parent_for_error_dialog (transfer_info),
 				TRUE, text, dialog_title, _("Stop"), NULL);
 			error_dialog_result = GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 
@@ -873,7 +873,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 			 * continue. Allow the user to skip.
 			 */
 			error_dialog_button_pressed = nautilus_simple_dialog
-				(parent_for_error_dialog (xfer_info), TRUE, text, 
+				(parent_for_error_dialog (transfer_info), TRUE, text, 
 				dialog_title,
 				 _("Skip"), _("Stop"), NULL);
 				 
@@ -892,7 +892,7 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 		} else {
 			/* Generic error, offer to retry and skip. */
 			error_dialog_button_pressed = nautilus_simple_dialog
-				(parent_for_error_dialog (xfer_info), TRUE, text, 
+				(parent_for_error_dialog (transfer_info), TRUE, text, 
 				dialog_title,
 				 _("Skip"), _("Retry"), _("Stop"), NULL);
 
@@ -917,20 +917,20 @@ handle_xfer_vfs_error (const GnomeVFSXferProgressInfo *progress_info,
 
 	case GNOME_VFS_XFER_ERROR_MODE_ABORT:
 	default:
-		if (xfer_info->progress_dialog != NULL) {
+		if (transfer_info->progress_dialog != NULL) {
 			nautilus_file_operations_progress_freeze
-				(NAUTILUS_FILE_OPERATIONS_PROGRESS (xfer_info->progress_dialog));
+				(NAUTILUS_FILE_OPERATIONS_PROGRESS (transfer_info->progress_dialog));
 			nautilus_file_operations_progress_thaw
-				(NAUTILUS_FILE_OPERATIONS_PROGRESS (xfer_info->progress_dialog));
-			gtk_widget_destroy (xfer_info->progress_dialog);
+				(NAUTILUS_FILE_OPERATIONS_PROGRESS (transfer_info->progress_dialog));
+			gtk_widget_destroy (transfer_info->progress_dialog);
 		}
 		return GNOME_VFS_XFER_ERROR_ACTION_ABORT;
 	}
 }
 
 static int
-handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
-		       XferInfo *xfer_info)
+handle_transfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
+		       TransferInfo *transfer_info)
 {
 	/* transfer conflict, prompt the user to replace or skip */
 	int result;
@@ -948,7 +948,7 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		 * Replace All
 		 */
 		result = nautilus_simple_dialog
-			(parent_for_error_dialog (xfer_info), TRUE, text, 
+			(parent_for_error_dialog (transfer_info), TRUE, text, 
 			 _("Conflict while copying"),
 			 _("Replace"), _("Skip"), NULL);
 		switch (result) {
@@ -962,7 +962,7 @@ handle_xfer_overwrite (const GnomeVFSXferProgressInfo *progress_info,
 		}
 	} else {
 		result = nautilus_simple_dialog
-			(parent_for_error_dialog (xfer_info), TRUE, text, 
+			(parent_for_error_dialog (transfer_info), TRUE, text, 
 			 _("Conflict while copying"),
 			 _("Replace All"), _("Replace"), _("Skip"), NULL);
 
@@ -1301,18 +1301,18 @@ get_next_duplicate_name (char *name, int count_increment)
 }
 
 static int
-handle_xfer_duplicate (GnomeVFSXferProgressInfo *progress_info,
-		       XferInfo *xfer_info)
+handle_transfer_duplicate (GnomeVFSXferProgressInfo *progress_info,
+		       TransferInfo *transfer_info)
 {
-	switch (xfer_info->kind) {
-	case XFER_LINK:
+	switch (transfer_info->kind) {
+	case TRANSFER_LINK:
 		progress_info->duplicate_name = get_link_name
 			(progress_info->duplicate_name,
 			 progress_info->duplicate_count);
 		break;
 
-	case XFER_COPY:
-	case XFER_MOVE_TO_TRASH:
+	case TRANSFER_COPY:
+	case TRANSFER_MOVE_TO_TRASH:
 		progress_info->duplicate_name = get_next_duplicate_name
 			(progress_info->duplicate_name,
 			 progress_info->duplicate_count);
@@ -1326,23 +1326,23 @@ handle_xfer_duplicate (GnomeVFSXferProgressInfo *progress_info,
 }
 
 static int
-update_xfer_callback (GnomeVFSAsyncHandle *handle,
+update_transfer_callback (GnomeVFSAsyncHandle *handle,
 	       GnomeVFSXferProgressInfo *progress_info,
 	       gpointer data)
 {
-	XferInfo *xfer_info;
+	TransferInfo *transfer_info;
 
-	xfer_info = (XferInfo *) data;
+	transfer_info = (TransferInfo *) data;
 
 	switch (progress_info->status) {
 	case GNOME_VFS_XFER_PROGRESS_STATUS_OK:
-		return handle_xfer_ok (progress_info, xfer_info);
+		return handle_transfer_ok (progress_info, transfer_info);
 	case GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR:
-		return handle_xfer_vfs_error (progress_info, xfer_info);
+		return handle_transfer_vfs_error (progress_info, transfer_info);
 	case GNOME_VFS_XFER_PROGRESS_STATUS_OVERWRITE:
-		return handle_xfer_overwrite (progress_info, xfer_info);
+		return handle_transfer_overwrite (progress_info, transfer_info);
 	case GNOME_VFS_XFER_PROGRESS_STATUS_DUPLICATE:
-		return handle_xfer_duplicate (progress_info, xfer_info);
+		return handle_transfer_duplicate (progress_info, transfer_info);
 	default:
 		g_warning (_("Unknown GnomeVFSXferProgressStatus %d"),
 			   progress_info->status);
@@ -1396,20 +1396,20 @@ apply_one_position (IconPositionIterator *position_iterator,
 typedef struct {
 	GHashTable		*debuting_uris;
 	IconPositionIterator	*iterator;
-} SyncXferInfo;
+} SyncTransferInfo;
 
 /* Low-level callback, called for every copy engine operation.
  * Generates notifications about new, deleted and moved files.
  */
 static int
-sync_xfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
+sync_transfer_callback (GnomeVFSXferProgressInfo *progress_info, gpointer data)
 {
 	GHashTable	     *debuting_uris;
 	IconPositionIterator *position_iterator;
 
 	if (data != NULL) {
-		debuting_uris	  = ((SyncXferInfo *) data)->debuting_uris;
-		position_iterator = ((SyncXferInfo *) data)->iterator;
+		debuting_uris	  = ((SyncTransferInfo *) data)->debuting_uris;
+		position_iterator = ((SyncTransferInfo *) data)->iterator;
 	} else {
 		debuting_uris     = NULL;
 		position_iterator = NULL;
@@ -1571,8 +1571,8 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	GnomeVFSURI *trash_dir_uri;
 	GnomeVFSURI *uri;
 
-	XferInfo *xfer_info;
-	SyncXferInfo *sync_xfer_info;
+	TransferInfo *transfer_info;
+	SyncTransferInfo *sync_transfer_info;
 	GnomeVFSResult result;
 	gboolean same_fs;
 	gboolean is_trash_move;
@@ -1672,9 +1672,9 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	}
 	
 	/* set up the copy/move parameters */
-	xfer_info = g_new0 (XferInfo, 1);
-	xfer_info->parent_view = view;
-	xfer_info->progress_dialog = NULL;
+	transfer_info = g_new0 (TransferInfo, 1);
+	transfer_info->parent_view = view;
+	transfer_info->progress_dialog = NULL;
 
 	if (relative_item_points->len > 0) {
 		icon_position_iterator = icon_position_iterator_new (relative_item_points, item_uris);
@@ -1682,46 +1682,46 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 	
 	if ((move_options & GNOME_VFS_XFER_REMOVESOURCE) != 0) {
 		/* localizers: progress dialog title */
-		xfer_info->operation_title = _("Moving files");
+		transfer_info->operation_title = _("Moving files");
 		/* localizers: label prepended to the progress count */
-		xfer_info->action_label =_("Files moved:");
+		transfer_info->action_label =_("Files moved:");
 		/* localizers: label prepended to the name of the current file moved */
-		xfer_info->progress_verb =_("Moving");
-		xfer_info->preparation_name =_("Preparing To Move...");
-		xfer_info->cleanup_name = _("Finishing Move...");
+		transfer_info->progress_verb =_("Moving");
+		transfer_info->preparation_name =_("Preparing To Move...");
+		transfer_info->cleanup_name = _("Finishing Move...");
 
-		xfer_info->kind = XFER_MOVE;
+		transfer_info->kind = TRANSFER_MOVE;
 		/* Do an arbitrary guess that an operation will take very little
 		 * time and the progress shouldn't be shown.
 		 */
-		xfer_info->show_progress_dialog = 
+		transfer_info->show_progress_dialog = 
 			!same_fs || g_list_length ((GList *)item_uris) > 20;
 	} else if ((move_options & GNOME_VFS_XFER_LINK_ITEMS) != 0) {
 		/* localizers: progress dialog title */
-		xfer_info->operation_title = _("Creating links to files");
+		transfer_info->operation_title = _("Creating links to files");
 		/* localizers: label prepended to the progress count */
-		xfer_info->action_label =_("Files linked:");
+		transfer_info->action_label =_("Files linked:");
 		/* localizers: label prepended to the name of the current file linked */
-		xfer_info->progress_verb =_("Linking");
-		xfer_info->preparation_name = _("Preparing to Create Links...");
-		xfer_info->cleanup_name = _("Finishing Creating Links...");
+		transfer_info->progress_verb =_("Linking");
+		transfer_info->preparation_name = _("Preparing to Create Links...");
+		transfer_info->cleanup_name = _("Finishing Creating Links...");
 
-		xfer_info->kind = XFER_LINK;
-		xfer_info->show_progress_dialog =
+		transfer_info->kind = TRANSFER_LINK;
+		transfer_info->show_progress_dialog =
 			g_list_length ((GList *)item_uris) > 20;
 	} else {
 		/* localizers: progress dialog title */
-		xfer_info->operation_title = _("Copying files");
+		transfer_info->operation_title = _("Copying files");
 		/* localizers: label prepended to the progress count */
-		xfer_info->action_label =_("Files copied:");
+		transfer_info->action_label =_("Files copied:");
 		/* localizers: label prepended to the name of the current file copied */
-		xfer_info->progress_verb =_("Copying");
-		xfer_info->preparation_name =_("Preparing To Copy...");
-		xfer_info->cleanup_name = "";
+		transfer_info->progress_verb =_("Copying");
+		transfer_info->preparation_name =_("Preparing To Copy...");
+		transfer_info->cleanup_name = "";
 
-		xfer_info->kind = XFER_COPY;
+		transfer_info->kind = TRANSFER_COPY;
 		/* always show progress during copy */
-		xfer_info->show_progress_dialog = TRUE;
+		transfer_info->show_progress_dialog = TRUE;
 	}
 
 
@@ -1791,22 +1791,22 @@ nautilus_file_operations_copy_move (const GList *item_uris,
 		}
 	}
 
-	xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
-	xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_QUERY;
-	xfer_info->done_callback = done_callback;
-	xfer_info->done_callback_data = done_callback_data;
-	xfer_info->debuting_uris = g_hash_table_new (g_str_hash, g_str_equal);
+	transfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
+	transfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_QUERY;
+	transfer_info->done_callback = done_callback;
+	transfer_info->done_callback_data = done_callback_data;
+	transfer_info->debuting_uris = g_hash_table_new (g_str_hash, g_str_equal);
 
-	sync_xfer_info = g_new (SyncXferInfo, 1);
-	sync_xfer_info->iterator = icon_position_iterator;
-	sync_xfer_info->debuting_uris = xfer_info->debuting_uris;
+	sync_transfer_info = g_new (SyncTransferInfo, 1);
+	sync_transfer_info->iterator = icon_position_iterator;
+	sync_transfer_info->debuting_uris = transfer_info->debuting_uris;
 
 	if (result == GNOME_VFS_OK) {
-		gnome_vfs_async_xfer (&xfer_info->handle, source_uri_list, target_uri_list,
+		gnome_vfs_async_xfer (&transfer_info->handle, source_uri_list, target_uri_list,
 		      		      move_options, GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
-		      		      update_xfer_callback, xfer_info,
-		      		      sync_xfer_callback, sync_xfer_info);
+		      		      update_transfer_callback, transfer_info,
+		      		      sync_transfer_callback, sync_transfer_info);
 	}
 
 	gnome_vfs_uri_list_free (source_uri_list);
@@ -1822,10 +1822,10 @@ typedef struct {
 	void (* done_callback)(const char *new_folder_uri, gpointer data);
 	gpointer data;
 	GtkWidget *parent_view;
-} NewFolderXferState;
+} NewFolderTransferState;
 
 static int
-handle_new_folder_vfs_error (const GnomeVFSXferProgressInfo *progress_info, NewFolderXferState *state)
+handle_new_folder_vfs_error (const GnomeVFSXferProgressInfo *progress_info, NewFolderTransferState *state)
 {
 	const char *error_string;
 	char *error_string_to_free;
@@ -1852,14 +1852,14 @@ handle_new_folder_vfs_error (const GnomeVFSXferProgressInfo *progress_info, NewF
 }
 
 static int
-new_folder_xfer_callback (GnomeVFSAsyncHandle *handle,
+new_folder_transfer_callback (GnomeVFSAsyncHandle *handle,
 			  GnomeVFSXferProgressInfo *progress_info,
 			  gpointer data)
 {
-	NewFolderXferState *state;
+	NewFolderTransferState *state;
 	char *temp_string;
 	
-	state = (NewFolderXferState *) data;
+	state = (NewFolderTransferState *) data;
 
 	switch (progress_info->status) {
 	case GNOME_VFS_XFER_PROGRESS_STATUS_OK:
@@ -1908,11 +1908,11 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 				     void (*done_callback) (const char *, gpointer),
 				     gpointer data)
 {
-	NewFolderXferState *state;
+	NewFolderTransferState *state;
 	GList *target_uri_list;
 	GnomeVFSURI *uri, *parent_uri;
 
-	state = g_new (NewFolderXferState, 1);
+	state = g_new (NewFolderTransferState, 1);
 	state->done_callback = done_callback;
 	state->data = data;
 	state->parent_view = parent_view;
@@ -1927,8 +1927,8 @@ nautilus_file_operations_new_folder (GtkWidget *parent_view,
 	      		      GNOME_VFS_XFER_NEW_UNIQUE_DIRECTORY,
 	      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 	      		      GNOME_VFS_XFER_OVERWRITE_MODE_QUERY,
-	      		      new_folder_xfer_callback, state,
-	      		      sync_xfer_callback, NULL);
+	      		      new_folder_transfer_callback, state,
+	      		      sync_transfer_callback, NULL);
 
 	gnome_vfs_uri_list_free (target_uri_list);
 	gnome_vfs_uri_unref (parent_uri);
@@ -1943,7 +1943,7 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 	GnomeVFSURI *source_uri;
 	GList *source_uri_list, *target_uri_list;
 	GnomeVFSResult result;
-	XferInfo *xfer_info;
+	TransferInfo *transfer_info;
 	gboolean bail;
 	char *text;
 	char *item_name;
@@ -2013,34 +2013,34 @@ nautilus_file_operations_move_to_trash (const GList *item_uris,
 		g_assert (trash_dir_uri != NULL);
 
 		/* set up the move parameters */
-		xfer_info = g_new0 (XferInfo, 1);
-		xfer_info->parent_view = parent_view;
-		xfer_info->progress_dialog = NULL;
+		transfer_info = g_new0 (TransferInfo, 1);
+		transfer_info->parent_view = parent_view;
+		transfer_info->progress_dialog = NULL;
 
 		/* Do an arbitrary guess that an operation will take very little
 		 * time and the progress shouldn't be shown.
 		 */
-		xfer_info->show_progress_dialog = g_list_length ((GList *)item_uris) > 20;
+		transfer_info->show_progress_dialog = g_list_length ((GList *)item_uris) > 20;
 
 		/* localizers: progress dialog title */
-		xfer_info->operation_title = _("Moving files to the Trash");
+		transfer_info->operation_title = _("Moving files to the Trash");
 		/* localizers: label prepended to the progress count */
-		xfer_info->action_label =_("Files thrown out:");
+		transfer_info->action_label =_("Files thrown out:");
 		/* localizers: label prepended to the name of the current file moved */
-		xfer_info->progress_verb =_("Moving");
-		xfer_info->preparation_name =_("Preparing to Move to Trash...");
-		xfer_info->cleanup_name ="";
+		transfer_info->progress_verb =_("Moving");
+		transfer_info->preparation_name =_("Preparing to Move to Trash...");
+		transfer_info->cleanup_name ="";
 
-		xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
-		xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
-		xfer_info->kind = XFER_MOVE_TO_TRASH;
+		transfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
+		transfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
+		transfer_info->kind = TRANSFER_MOVE_TO_TRASH;
 		
-		gnome_vfs_async_xfer (&xfer_info->handle, source_uri_list, target_uri_list,
+		gnome_vfs_async_xfer (&transfer_info->handle, source_uri_list, target_uri_list,
 		      		      GNOME_VFS_XFER_REMOVESOURCE | GNOME_VFS_XFER_USE_UNIQUE_NAMES,
 		      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
-		      		      update_xfer_callback, xfer_info,
-		      		      sync_xfer_callback, NULL);
+		      		      update_transfer_callback, transfer_info,
+		      		      sync_transfer_callback, NULL);
 
 	}
 
@@ -2055,7 +2055,7 @@ nautilus_file_operations_delete (const GList *item_uris,
 {
 	GList *uri_list;
 	const GList *p;
-	XferInfo *xfer_info;
+	TransferInfo *transfer_info;
 
 	uri_list = NULL;
 	for (p = item_uris; p != NULL; p = p->next) {
@@ -2064,30 +2064,30 @@ nautilus_file_operations_delete (const GList *item_uris,
 	}
 	uri_list = g_list_reverse (uri_list);
 
-	xfer_info = g_new0 (XferInfo, 1);
-	xfer_info->parent_view = parent_view;
-	xfer_info->progress_dialog = NULL;
-	xfer_info->show_progress_dialog = TRUE;
+	transfer_info = g_new0 (TransferInfo, 1);
+	transfer_info->parent_view = parent_view;
+	transfer_info->progress_dialog = NULL;
+	transfer_info->show_progress_dialog = TRUE;
 
 	/* localizers: progress dialog title */
-	xfer_info->operation_title = _("Deleting files");
+	transfer_info->operation_title = _("Deleting files");
 	/* localizers: label prepended to the progress count */
-	xfer_info->action_label =_("Files deleted:");
+	transfer_info->action_label =_("Files deleted:");
 	/* localizers: label prepended to the name of the current file deleted */
-	xfer_info->progress_verb =_("Deleting");
-	xfer_info->preparation_name =_("Preparing to Delete files...");
-	xfer_info->cleanup_name ="";
+	transfer_info->progress_verb =_("Deleting");
+	transfer_info->preparation_name =_("Preparing to Delete files...");
+	transfer_info->cleanup_name ="";
 
-	xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
-	xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
-	xfer_info->kind = XFER_DELETE;
+	transfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
+	transfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
+	transfer_info->kind = TRANSFER_DELETE;
 	
-	gnome_vfs_async_xfer (&xfer_info->handle, uri_list,  NULL,
+	gnome_vfs_async_xfer (&transfer_info->handle, uri_list,  NULL,
 	      		      GNOME_VFS_XFER_DELETE_ITEMS | GNOME_VFS_XFER_RECURSIVE,
 	      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 	      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
-	      		      update_xfer_callback, xfer_info,
-	      		      sync_xfer_callback, NULL);
+	      		      update_transfer_callback, transfer_info,
+	      		      sync_transfer_callback, NULL);
 
 	gnome_vfs_uri_list_free (uri_list);
 }
@@ -2095,35 +2095,35 @@ nautilus_file_operations_delete (const GList *item_uris,
 static void
 do_empty_trash (GtkWidget *parent_view)
 {
-	XferInfo *xfer_info;
+	TransferInfo *transfer_info;
 	GList *trash_dir_list;
 
 	trash_dir_list = nautilus_trash_monitor_get_trash_directories ();
 	if (trash_dir_list != NULL) {
 		/* set up the move parameters */
-		xfer_info = g_new0 (XferInfo, 1);
-		xfer_info->parent_view = parent_view;
-		xfer_info->progress_dialog = NULL;
-		xfer_info->show_progress_dialog = TRUE;
+		transfer_info = g_new0 (TransferInfo, 1);
+		transfer_info->parent_view = parent_view;
+		transfer_info->progress_dialog = NULL;
+		transfer_info->show_progress_dialog = TRUE;
 
 		/* localizers: progress dialog title */
-		xfer_info->operation_title = _("Emptying the Trash");
+		transfer_info->operation_title = _("Emptying the Trash");
 		/* localizers: label prepended to the progress count */
-		xfer_info->action_label =_("Files deleted:");
+		transfer_info->action_label =_("Files deleted:");
 		/* localizers: label prepended to the name of the current file deleted */
-		xfer_info->progress_verb =_("Deleting");
-		xfer_info->preparation_name =_("Preparing to Empty the Trash...");
-		xfer_info->cleanup_name ="";
-		xfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
-		xfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
-		xfer_info->kind = XFER_EMPTY_TRASH;
+		transfer_info->progress_verb =_("Deleting");
+		transfer_info->preparation_name =_("Preparing to Empty the Trash...");
+		transfer_info->cleanup_name ="";
+		transfer_info->error_mode = GNOME_VFS_XFER_ERROR_MODE_QUERY;
+		transfer_info->overwrite_mode = GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE;
+		transfer_info->kind = TRANSFER_EMPTY_TRASH;
 
-		gnome_vfs_async_xfer (&xfer_info->handle, trash_dir_list, NULL,
+		gnome_vfs_async_xfer (&transfer_info->handle, trash_dir_list, NULL,
 		      		      GNOME_VFS_XFER_EMPTY_DIRECTORIES,
 		      		      GNOME_VFS_XFER_ERROR_MODE_QUERY, 
 		      		      GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE,
-		      		      update_xfer_callback, xfer_info,
-		      		      sync_xfer_callback, NULL);
+		      		      update_transfer_callback, transfer_info,
+		      		      sync_transfer_callback, NULL);
 	}
 
 	gnome_vfs_uri_list_free (trash_dir_list);

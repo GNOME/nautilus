@@ -1,3 +1,36 @@
+2000-12-22  Gene Z. Ragan  <gzr@eazel.com>
+
+	reviewed by: Pavel Cisler<pavel@eazel.com>
+	
+	Fixed bug 4951, No error given selecting unmountable "Disks" volume.
+	
+	I added a pipe to monitor the result of the mount/umount command.
+	If an error is in the pipe, a details error dialog is displayed.
+	A generic mount failed error is first and the details button reveals
+	the error message returned in the pipe.
+		
+	* libnautilus-extensions/nautilus-volume-monitor.c: (find_command),
+	(open_error_pipe), (close_error_pipe),	
+	(nautilus_volume_monitor_mount_unmount_removable):
+
+	Renamed xfer to transfer.
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(parent_for_error_dialog), (transfer_dialog_clicked_callback),
+	(create_transfer_dialog), (handle_transfer_ok),
+	(build_error_string), (handle_transfer_vfs_error),
+	(handle_transfer_overwrite), (handle_transfer_duplicate),
+	(update_transfer_callback), (sync_transfer_callback),
+	(nautilus_file_operations_copy_move),
+	(handle_new_folder_vfs_error), (new_folder_transfer_callback),
+	(nautilus_file_operations_new_folder),
+	(nautilus_file_operations_move_to_trash),
+	(nautilus_file_operations_delete), (do_empty_trash):
+
+	Added compatibility call.
+	* libnautilus-extensions/nautilus-entry.c:
+	* libnautilus-extensions/nautilus-entry.h:
+	(nautilus_entry_new_with_max_length):
+			
 2000-12-22  Darin Adler  <darin@eazel.com>
 
 	* libnautilus-extensions/nautilus-global-preferences.c:

@@ -31,6 +31,7 @@
 #include "nautilus-gtk-extensions.h"
 #include "nautilus-gtk-macros.h"
 #include "nautilus-iso9660.h"
+#include "nautilus-stock-dialogs.h"
 #include "nautilus-string.h"
 #include "nautilus-string-list.h"
 #include "nautilus-volume-monitor.h"
@@ -42,6 +43,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-exec.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -935,15 +937,141 @@ nautilus_volume_monitor_volume_is_mounted (NautilusVolumeMonitor *monitor,
 	return FALSE;					   
 }						 
 
+static const char *mount_known_locations [] = {
+	"/sbin/mount", "/bin/mount",
+	"/usr/sbin/mount", "/usr/bin/mount",
+	NULL
+};
+
+static const char *umount_known_locations [] = {
+	"/sbin/umount", "/bin/umount",
+	"/usr/sbin/umount", "/usr/bin/umount",
+	NULL
+};
+
+
+/* Returns the full path to the queried command */
+static const char *
+find_command (const char **known_locations)
+{
+	int i;
+
+	for (i = 0; known_locations [i]; i++){
+		if (g_file_exists (known_locations [i]))
+			return known_locations [i];
+	}
+	return NULL;
+}
+
+/* Pipes are guaranteed to be able to hold at least 4096 bytes */
+/* More than that would be unportable */
+#define MAX_PIPE_SIZE 4096
+
+static int error_pipe[2];	/* File descriptors of error pipe */
+static int old_error;		/* File descriptor of old standard error */
+
+/* Creates a pipe to hold standard error for a later analysis. */
+static void
+open_error_pipe (void)
+{
+	pipe (error_pipe);
+    
+	old_error = dup (2);
+	if (old_error < 0 || close(2) || dup (error_pipe[1]) != 2) {
+		close (error_pipe[0]);
+		close (error_pipe[1]);
+	}
+    
+	close (error_pipe[1]);
+}
+
+static void
+close_error_pipe (gboolean mount, const char *mount_path)
+{
+	char *title, *message;
+	char detailed_msg[MAX_PIPE_SIZE];
+	int len = 0;
+	gboolean is_floppy;
+
+	if (mount) {
+		title = _("Mount Error");
+	} else {
+		title = _("Unmount Error");
+	}
+		
+	if (old_error >= 0) {
+		close (2);
+		dup (old_error);
+		close (old_error);
+		len = read (error_pipe[0], detailed_msg, MAX_PIPE_SIZE);
+
+		if (len >= 0) {
+			detailed_msg[len] = 0;
+		}
+		
+		close (error_pipe[0]);
+	}
+	
+	/* No output to show */
+	if (len == 0) {
+		return;
+	}
+	
+	is_floppy = strstr (mount_path, "floppy") != NULL;
+		
+	/* Determine a user readable message from the obscure pipe error */
+	/* Attention localizers: The strings being examined by strstr need to be identical
+	   to the errors returned to the terminal by mount */
+	if (mount) {
+		if (strstr (detailed_msg, _("is not a valid block device")) != NULL) {
+			/* No media in drive */
+			if (is_floppy) {
+				/* Handle floppy case */
+				message = g_strdup_printf (_("Nautilus was unable to mount the floppy drive. "
+				     			     "There is probably no floppy in the drive."));
+			} else {
+				/* All others */
+				message = g_strdup_printf (_("Nautilus was unable to mount the volume. "
+							     "There is probably no media in the device."));
+			}
+		} else if (strstr (detailed_msg, _("wrong fs type, bad option, bad superblock on")) != NULL) {
+			/* Unknown filesystem */
+			if (is_floppy) {
+				message = g_strdup_printf (_("Nautilus was unable to mount the floppy drive. "
+				     			     "The floppy is probably in a format that cannot be mounted."));
+			} else {
+				message = g_strdup_printf (_("Nautilus was unable to mount the selected volume. "
+				     			     "The volume is probably in a format that cannot be mounted."));
+			}
+		} else {
+			if (is_floppy) {
+				message = g_strdup (_("Nautilus was unable to mount the selected floppy drive."));
+			} else {
+				message = g_strdup (_("Nautilus was unable to mount the selected volume."));
+			}
+		}
+	} else {
+		message = _("Nautilus was unable to unmount the selected volume.");
+	}
+	
+	nautilus_error_dialog_with_details (message, title, detailed_msg, NULL);
+	
+	g_free (message);	
+}
+
 
 void
 nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 						 const char *mount_point,
 						 gboolean should_mount)
 {
-	char *argv[3];
+	const char *command;
 	GList *p;
 	NautilusVolume *volume;
+	char *command_string;
+	FILE *file;
+
+	volume = NULL;
 	
 	/* Check and see if volume exists in mounts already */
 	for (p = monitor->details->mounts; p != NULL; p = p->next) {
@@ -952,14 +1080,22 @@ nautilus_volume_monitor_mount_unmount_removable (NautilusVolumeMonitor *monitor,
 			return;
 		}		
 	}
-	
-	/* Decide to mount/unmount the volume */
-	argv[0] = should_mount ? "/bin/mount" : "/bin/umount";
-	argv[1] = (char *) mount_point;
-	argv[2] = NULL;
+		
+	if (should_mount) {
+		command = find_command (mount_known_locations);
+	} else {
+		command = find_command (umount_known_locations);
+	}
 
-	gnome_execute_async (g_get_home_dir(), 2, argv);
+	if (command != NULL) {
+		command_string = g_strconcat (command, " ", mount_point, NULL);
+		open_error_pipe ();
+		file = popen (command_string, "r");
+		close_error_pipe (should_mount, mount_point);
+		pclose (file);		
+	}
 }
+
 
 static NautilusVolume *
 copy_volume (NautilusVolume *volume)

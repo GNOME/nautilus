@@ -63,12 +63,13 @@ struct NautilusEntryClass {
 
 };
 
-GtkType    nautilus_entry_get_type           (void);
-GtkWidget* nautilus_entry_new                (void);
-void 	   nautilus_entry_set_text 	     (NautilusEntry *entry, 
-					      const gchar   *text);
-void       nautilus_entry_select_all         (NautilusEntry *entry);
-void       nautilus_entry_select_all_at_idle (NautilusEntry *entry);
+GtkType	   nautilus_entry_get_type           	(void);
+GtkWidget  *nautilus_entry_new                	(void);
+GtkWidget  *nautilus_entry_new_with_max_length 	(guint16 max);
+void 	   nautilus_entry_set_text 	     	(NautilusEntry *entry, 
+					      	 const gchar   *text);
+void       nautilus_entry_select_all         	(NautilusEntry *entry);
+void       nautilus_entry_select_all_at_idle 	(NautilusEntry *entry);
 
 END_GNOME_DECLS
 

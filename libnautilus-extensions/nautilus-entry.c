@@ -134,6 +134,18 @@ nautilus_entry_new (void)
 	return gtk_widget_new (NAUTILUS_TYPE_ENTRY, NULL);
 }
 
+GtkWidget *
+nautilus_entry_new_with_max_length (guint16 max)
+{
+	GtkWidget *widget;
+
+	widget = gtk_widget_new (NAUTILUS_TYPE_ENTRY, NULL);
+	GTK_ENTRY (widget)->text_max_length = max;
+
+	return widget;
+}
+
+
 static void 
 nautilus_entry_destroy (GtkObject *object)
 {
