@@ -19,10 +19,10 @@ CONTROL_CENTER_REQUIRED=1.2.3
 IMLIB_REQUIRED=1.9.8
 LIBXML_REQUIRED=1.8.10
 ORBIT_REQUIRED=0.5.7
-GNOME_VFS_REQUIRED=1.0
+GNOME_VFS_REQUIRED=0.9
 POPT_REQUIRED=1.5
 FREETYPE_REQUIRED=2.0
-MEDUSA_REQUIRED=0.5.0
+MEDUSA_REQUIRED=0.4.0
 ESOUND_REQUIRED=0.2.22
 LIBGHTTP_REQUIRED=1.0.9
 SCROLLKEEPER_REQUIRED=0.1.4
@@ -104,7 +104,7 @@ if test -n "$GNOME2_PATH"; then
 	export PATH
 fi
 
-AM_INIT_AUTOMAKE(nautilus, 1.0)
+AM_INIT_AUTOMAKE(nautilus, 0.9.1)
 AM_CONFIG_HEADER(config.h)
 
 AM_MAINTAINER_MODE
@@ -847,7 +847,7 @@ dnl = Begin tests for ammonite (--enable-eazel-services only)
 dnl ====================================
 if test "x$EAZEL_SERVICES_ENABLED" = "xyes" ;
 then
-	AC_MSG_CHECKING(for Ammonite >= 1.0.0)
+	AC_MSG_CHECKING(for Ammonite >= 0.9.0)
 	if test -n `gnome-config --libs ammonite | cut -d ' ' -f1`;
 	then
 		vers=`gnome-config --modversion ammonite | sed -e "s/[^-]*-//" | \
@@ -867,7 +867,7 @@ then
 		AC_SUBST(AMMONITE_LIBS)
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_ERROR(Ammonite 1.0.0 or newer is required for Eazel Services. Please obtain it from Eazel's FTP site)
+		AC_MSG_ERROR(Ammonite 0.9.0 or newer is required for Eazel Services. Please obtain it from Eazel's FTP site)
 	fi
 fi
 dnl =======================
