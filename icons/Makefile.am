@@ -5,6 +5,7 @@ SUBDIRS = arlo eazel vector throbber
 icondir = $(datadir)/pixmaps/nautilus
 
 icon_DATA =\
+	about_background.png \
 	audio.png \
 	About_Image.png \
 	backgrounds.png \

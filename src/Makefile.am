@@ -44,6 +44,7 @@ nautilus_shell_interface_idl_sources =		\
 BUILT_SOURCES = $(nautilus_shell_interface_idl_sources)
 
 noinst_HEADERS = \
+	nautilus-about.h			\
 	nautilus-applicable-views.h		\
 	nautilus-application.h			\
 	nautilus-bookmark-list.h		\
@@ -81,6 +82,7 @@ noinst_HEADERS = \
 
 nautilus_SOURCES = \
 	$(nautilus_shell_interface_idl_sources)	\
+	nautilus-about.c			\
 	nautilus-applicable-views.c		\
 	nautilus-application.c			\
 	nautilus-bookmark-list.c		\

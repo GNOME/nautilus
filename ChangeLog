@@ -1,3 +1,22 @@
+2000-08-31  Andy Hertzfeld  <andy@eazel.com>
+
+	added a new about box that uses anti-aliased text.
+	
+	* icons/Makefile.am:
+	* icons/about_background.png:
+	added image for about background
+	
+	* src/Makefile.am:
+	* src/nautilus-about.c,h: (nautilus_about_initialize_class),
+	(nautilus_about_destroy), (nautilus_about_initialize),
+	(nautilus_about_new), (draw_pixbuf), (nautilus_about_repaint),
+	(draw_aa_string), (nautilus_about_draw_info):
+	added a new class for our about box
+	
+	* src/nautilus-window-menus.c: (help_menu_about_nautilus_callback):
+	invoked nautilus_about instead of gnome_about
+	update the list of authors and other info
+	
 2000-08-31  Mathieu Lacage  <mathieu@eazel.com>
 
 	* components/tree/nautilus-tree-view.c: fix bug 2468.

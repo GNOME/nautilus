@@ -27,6 +27,7 @@
  */
 #include <config.h>
 
+#include "nautilus-about.h"
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
 #include "nautilus-bookmark-parsing.h"
@@ -547,37 +548,38 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
 	static GtkWidget *aboot = NULL;
 
 	if (aboot == NULL) {
-		char *about_string;
 
 		const char *authors[] = {
 			"Darin Adler",
 			"Pavel Císler",
+			"J Shane Culpepper",
+			"Michael Engber",
 			"Ramiro Estrugo",
+			"Mike Fleming",
 			"Andy Hertzfeld",
 			"Susan Kare",
+			"Mathieu Lacage",
+			"George Lebl",
 			"Elliot Lee",
+			"Raph Levien",
+			"Eskil Heyn Olsen",
 			"Ettore Perazzoli",
+			"Robey Pointer",
 			"Gene Ragan",
 			"Arlo Rose",
 			"Rebecca Schulman",
 			"Maciej Stachowiak",
 			"John Sullivan",
+			"Bud Tribble",
 			NULL
 		};
 
-		about_string = g_strdup_printf (_("The GNOME Shell\n%s"),
-				       		NAUTILUS_TIMESTAMP);
-
-		aboot = gnome_about_new(_("Nautilus"),
+		aboot = nautilus_about_new(_("Nautilus"),
 					VERSION,
-					"Copyright (C) 1999, 2000",
+					"(C) 1999-2000 Eazel, Inc.",
 					authors,
-					about_string,
-					"nautilus/About_Image.png");
-
-		g_free (about_string);
-
-		gnome_dialog_close_hides (GNOME_DIALOG (aboot), TRUE);
+					_("Nautilus is a graphical shell for GNOME \nthat makes it easy to manage your files\nand the rest of your system."),
+					NAUTILUS_TIMESTAMP);
 	}
 
 	nautilus_gtk_window_present (GTK_WINDOW (aboot));
