@@ -119,8 +119,10 @@ static char *get_xml_path                               (NautilusPropertyBrowser
 #define BROWSER_TITLE_COLOR "rgb:FFFF/FFFF/FFFF"
 #define BROWSER_CATEGORIES_FILE_NAME "browser.xml"
 
-#define PROPERTY_BROWSER_WIDTH 480
+#define PROPERTY_BROWSER_WIDTH 528
 #define PROPERTY_BROWSER_HEIGHT 360
+
+#define RESET_IMAGE_NAME "reset.png"
 
 #define MAX_ICON_WIDTH 64
 #define MAX_ICON_HEIGHT 64
@@ -1164,7 +1166,7 @@ add_to_content_table(NautilusPropertyBrowser *property_browser, GtkWidget* widge
 			  GTK_FILL, GTK_FILL, padding, padding);
 }
 
-/* make_properties_from_directory generates widgets corresponding all of the objects in the passed in directory */
+/* make_properties_from_directory_path generates widgets corresponding all of the objects in the passed in directory */
 
 static int
 make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, const char* directory_uri, int index)
@@ -1229,7 +1231,7 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 			gtk_box_pack_start (GTK_BOX(temp_vbox), label, FALSE, FALSE, 0);
 			gtk_widget_show(label);
 			
-                        gtk_object_set_user_data (GTK_OBJECT(event_box), property_browser);
+			gtk_object_set_user_data (GTK_OBJECT(event_box), property_browser);
 			gtk_signal_connect_full
 				(GTK_OBJECT (event_box),
 				 "button_press_event", 
@@ -1240,8 +1242,10 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 				 FALSE,
 				 FALSE);
 
-			add_to_content_table(property_browser, temp_vbox, index++, 2);				
-		}
+			/* put the reset item in the pole position */
+			add_to_content_table(property_browser, temp_vbox, 
+				strcmp(current_file_info->name, RESET_IMAGE_NAME) ? index++ : 0, 2);				
+	}
 		
 		current_file_info = gnome_vfs_directory_list_next(list);
 	}
@@ -1258,6 +1262,11 @@ make_properties_from_directory (NautilusPropertyBrowser *property_browser, const
 	char *directory_uri;
 	int new_index;
 	int index = 0;
+	
+	/* make room for the reset property if necessary */
+	if (!strcmp(property_browser->details->category, "backgrounds")) {
+		index = 1;
+	}
 	
 	/* first, make properties from the shared space */
 	if (!property_browser->details->remove_mode) {

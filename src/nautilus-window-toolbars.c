@@ -49,6 +49,17 @@ static void toolbar_stop_callback (GtkWidget *widget, NautilusWindow *window);
 /* separator */
 #define TOOLBAR_STOP_BUTTON_INDEX	8
 
+static void
+toolbar_clear_search_mode(NautilusWindow *window)
+{
+  GtkToggleButton *button;
+  
+  button = GTK_TOGGLE_BUTTON(window->search_button);
+  if (button->active) {
+  	nautilus_window_set_search_mode (window, FALSE);
+  	gtk_toggle_button_set_active(button, FALSE);
+  }
+}
 
 static void
 toolbar_back_callback (GtkWidget *widget, NautilusWindow *window)
@@ -71,6 +82,7 @@ toolbar_up_callback (GtkWidget *widget, NautilusWindow *window)
 static void
 toolbar_home_callback (GtkWidget *widget, NautilusWindow *window)
 {
+  toolbar_clear_search_mode (window);  
   nautilus_window_go_home (window);
 }
 
