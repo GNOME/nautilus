@@ -92,7 +92,6 @@ static void     forget_unparented_node               (NautilusTreeView      *vie
 static void     insert_unparented_nodes              (NautilusTreeView      *view,
 						      NautilusTreeNode      *node);
 static void     expand_uri_sequence_and_select_end   (NautilusTreeView      *view);
-static gboolean is_anti_aliased			     (NautilusTreeView	    *view);
 
 EEL_CLASS_BOILERPLATE (NautilusTreeView,
 				   nautilus_tree_view,
@@ -823,39 +822,6 @@ filtering_changed_callback (gpointer callback_data)
 	}
 }
 
-static void
-update_smooth_graphics_mode (NautilusTreeView *view)
-{
-	gboolean aa_mode, old_aa_mode;
-
-	if (view->details->tree != NULL) {
-		aa_mode = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
-		old_aa_mode = is_anti_aliased (view);
-
-		if (old_aa_mode != aa_mode) {
-			eel_list_set_anti_aliased_mode (EEL_LIST (view->details->tree), aa_mode);
-
-			/* FIXME: refetch icons using correct aa mode... */
-		}
-	}
-}
-
-static void
-smooth_graphics_mode_changed_callback (gpointer callback_data)
-{
-	NautilusTreeView *view;
-
-	view = NAUTILUS_TREE_VIEW (callback_data);
-
-	update_smooth_graphics_mode (view);
-}
-
-static gboolean
-is_anti_aliased (NautilusTreeView *view)
-{
-	return eel_list_is_anti_aliased (EEL_LIST (view->details->tree));
-}
-
 static gpointer compare_cached_key, compare_cached_value;
 
 static gint
@@ -922,8 +888,6 @@ create_tree (NautilusTreeView *view)
 	eel_clist_set_auto_sort (EEL_CLIST (view->details->tree), TRUE);
 	eel_clist_set_sort_type (EEL_CLIST (view->details->tree), GTK_SORT_ASCENDING);
 
-	update_smooth_graphics_mode (view);
-
 	/* FIXME bugzilla.gnome.org 46820:
 	 * Using the NautilusFile comparison function to sort by
 	 * is way too slow when opening large directories (those with
@@ -974,10 +938,6 @@ create_tree (NautilusTreeView *view)
 				      view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 				      filtering_changed_callback,
-				      view);
-
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
-				      smooth_graphics_mode_changed_callback, 
 				      view);
 
 	view->details->file_to_node_map = g_hash_table_new (NULL, NULL);
@@ -1115,10 +1075,6 @@ nautilus_tree_view_destroy (BonoboObject *object)
 						 filtering_changed_callback,
 						 view);
 
-		eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-						 smooth_graphics_mode_changed_callback,
-						 view);
-		
 		g_hash_table_foreach (view->details->file_to_node_map,
 				      free_file_to_node_map_entry,
 				      NULL);

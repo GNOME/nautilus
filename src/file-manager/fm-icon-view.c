@@ -130,7 +130,6 @@ gboolean                    fm_icon_view_supports_auto_layout                  (
 static void                 fm_icon_view_update_icon_container_fonts           (FMIconView            *icon_view);
 static void                 fm_icon_view_update_icon_container_font_size_table (FMIconView            *icon_view);
 static void                 fm_icon_view_update_click_mode                     (FMIconView            *icon_view);
-static void                 fm_icon_view_update_smooth_graphics_mode           (FMIconView            *icon_view);
 static gboolean             fm_icon_view_using_tighter_layout                  (FMIconView            *icon_view);
 static gboolean             fm_icon_view_get_directory_tighter_layout          (FMIconView            *icon_view,
 										NautilusFile          *file);
@@ -2161,14 +2160,6 @@ fm_icon_view_click_policy_changed (FMDirectoryView *directory_view)
 }
 
 static void
-fm_icon_view_smooth_graphics_mode_changed (FMDirectoryView *directory_view)
-{
-	g_assert (FM_IS_ICON_VIEW (directory_view));
-
-	fm_icon_view_update_smooth_graphics_mode (FM_ICON_VIEW (directory_view));
-}
-
-static void
 default_sort_order_changed_callback (gpointer callback_data)
 {
 	FMIconView *icon_view;
@@ -2408,12 +2399,6 @@ fm_icon_view_update_icon_container_font_size_table (FMIconView *icon_view)
 
 	}
 
-	for (i = 0; i <= NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
-		g_assert (font_size_table[i] >= min_font_size);
-		g_assert (font_size_table[i] <= max_font_size);
-	}
-
-	nautilus_icon_container_set_font_size_table (icon_container, font_size_table);
 	nautilus_icon_container_request_update_all (icon_container);
 }
 
@@ -2431,20 +2416,6 @@ fm_icon_view_update_click_mode (FMIconView *icon_view)
 
 	nautilus_icon_container_set_single_click_mode (icon_container,
 						       click_mode == NAUTILUS_CLICK_POLICY_SINGLE);
-}
-
-static void
-fm_icon_view_update_smooth_graphics_mode (FMIconView *icon_view)
-{
-	NautilusIconContainer	*icon_container;
-	gboolean		smooth_graphics_mode;
-
-	icon_container = get_icon_container (icon_view);
-	g_assert (icon_container != NULL);
-
-	smooth_graphics_mode = eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE);
-	
-	nautilus_icon_container_set_anti_aliased_mode (icon_container, smooth_graphics_mode);
 }
 
 static void
@@ -2557,7 +2528,6 @@ create_icon_container (FMIconView *icon_view)
 	fm_icon_view_update_icon_container_fonts (icon_view);
 	fm_icon_view_update_icon_container_font_size_table (icon_view);
 	fm_icon_view_update_click_mode (icon_view);
-	fm_icon_view_update_smooth_graphics_mode (icon_view);
 
 	gtk_widget_show (GTK_WIDGET (icon_container));
 }
@@ -2753,7 +2723,6 @@ fm_icon_view_class_init (FMIconViewClass *klass)
         fm_directory_view_class->embedded_text_policy_changed = fm_icon_view_embedded_text_policy_changed;
         fm_directory_view_class->image_display_policy_changed = fm_icon_view_image_display_policy_changed;
         fm_directory_view_class->merge_menus = fm_icon_view_merge_menus;
-        fm_directory_view_class->smooth_graphics_mode_changed = fm_icon_view_smooth_graphics_mode_changed;
         fm_directory_view_class->sort_directories_first_changed = fm_icon_view_sort_directories_first_changed;
         fm_directory_view_class->start_renaming_item = fm_icon_view_start_renaming_item;
         fm_directory_view_class->text_attribute_names_changed = fm_icon_view_text_attribute_names_changed;

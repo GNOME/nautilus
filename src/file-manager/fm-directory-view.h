@@ -275,7 +275,6 @@ struct FMDirectoryViewClass {
 	void	(* embedded_text_policy_changed)   (FMDirectoryView *view);
 	void	(* image_display_policy_changed)   (FMDirectoryView *view);
 	void	(* click_policy_changed)	   (FMDirectoryView *view);
-	void	(* smooth_graphics_mode_changed)   (FMDirectoryView *view);
 	void	(* sort_directories_first_changed) (FMDirectoryView *view);
 };
 

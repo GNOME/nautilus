@@ -51,19 +51,9 @@ static void preferences_dialog_populate_themes_group       (EelPreferencesGroup 
 static GtkWidget *preferences_dialog;
 
 static EelPreferencesItemDescription appearance_items[] = {
-	{ N_("Smoother Graphics"),
-	  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-	  N_("Use smoother (but slower) graphics"),
-	  EEL_PREFERENCE_ITEM_BOOLEAN
-	},
-	{ N_("Fonts"),
-	  NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
-	  N_("Default smooth font:"),
-	  EEL_PREFERENCE_ITEM_SMOOTH_FONT,
-	},
 	{ N_("Fonts"),
 	  NAUTILUS_PREFERENCES_DEFAULT_FONT,
-	  N_("Default non-smooth font:"),
+	  N_("Default font:"),
 	  EEL_PREFERENCE_ITEM_FONT,
 	},
 	{ N_("Nautilus Themes"),
@@ -206,16 +196,7 @@ static EelPreferencesItemDescription view_preferences_items[] = {
 	{ N_("Icon View Defaults"),
 	  NAUTILUS_PREFERENCES_ICON_VIEW_FONT,
 	  N_("Font:"),
-	  EEL_PREFERENCE_ITEM_FONT,
-	  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-	  EEL_PREFERENCE_ITEM_HIDE
-	},
-	{ N_("Icon View Defaults"),
-	  NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT,
-	  N_("Font:"),
-	  EEL_PREFERENCE_ITEM_SMOOTH_FONT,
-	  NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-	  EEL_PREFERENCE_ITEM_SHOW
+	  EEL_PREFERENCE_ITEM_FONT
 	},
 	{ N_("Icon View Defaults"),
 	  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
@@ -424,8 +405,16 @@ static EelPreferencesPaneDescription panes[] = {
 };
 
 static void
+dialog_delete_event_callback (GtkWidget   *widget,
+			      GdkEventAny *event,
+			      gpointer     user_data)
+{
+	gtk_widget_hide (widget);
+}
+
+static void
 dialog_button_response_callback (GtkDialog *dialog,
-				 gint response_id,
+				 int response_id,
 				 gpointer callback_data)
 {
 	gtk_widget_hide (GTK_WIDGET (dialog));
@@ -441,6 +430,10 @@ preferences_dialog_create (void)
 
 	gtk_window_set_wmclass (GTK_WINDOW (dialog), "nautilus_preferences", "Nautilus");
 
+	g_signal_connect (dialog,
+			  "delete_event",
+			  G_CALLBACK (dialog_delete_event_callback),
+			  dialog);
 	g_signal_connect (dialog,
 			  "response",
 			  G_CALLBACK (dialog_button_response_callback),

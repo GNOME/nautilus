@@ -208,18 +208,10 @@ void              nautilus_icon_container_set_single_click_mode         (Nautilu
 									 gboolean                single_click_mode);
 void              nautilus_icon_container_enable_linger_selection       (NautilusIconContainer  *view,
 									 gboolean                enable);
-gboolean          nautilus_icon_container_get_anti_aliased_mode         (NautilusIconContainer  *view);
-void              nautilus_icon_container_set_anti_aliased_mode         (NautilusIconContainer  *view,
-									 gboolean                anti_aliased_mode);
-void              nautilus_icon_container_set_label_font_for_zoom_level (NautilusIconContainer  *container,
-									 int                     zoom_level,
-									 GdkFont                *font);
 gboolean          nautilus_icon_container_get_is_fixed_size             (NautilusIconContainer  *container);
 void              nautilus_icon_container_set_is_fixed_size             (NautilusIconContainer  *container,
 									 gboolean                is_fixed_size);
 void              nautilus_icon_container_reset_scroll_region           (NautilusIconContainer  *container);
-void              nautilus_icon_container_set_font_size_table           (NautilusIconContainer  *container,
-									 const int               font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1]);
 void              nautilus_icon_container_set_margins                   (NautilusIconContainer  *container,
 									 int                     left_margin,
 									 int                     right_margin,

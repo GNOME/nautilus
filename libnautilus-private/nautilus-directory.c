@@ -294,9 +294,6 @@ add_preferences_callbacks (void)
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
 				      async_data_preference_changed_callback,
 				      NULL);
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT,
-				      async_data_preference_changed_callback,
-				      NULL);
 }
 
 char *

@@ -1,3 +1,37 @@
+2002-01-29  Darin Adler  <darin@bentspoon.com>
+
+	* components/tree/nautilus-tree-view.c: (create_tree),
+	(nautilus_tree_view_destroy):
+	* libnautilus-private/nautilus-directory.c:
+	(add_preferences_callbacks):
+	* libnautilus-private/nautilus-global-preferences.c:
+	* libnautilus-private/nautilus-global-preferences.h:
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	(measure_label_text), (nautilus_icon_canvas_item_render),
+	(nautilus_icon_canvas_item_set_show_stretch_handles):
+	* libnautilus-private/nautilus-icon-container.c:
+	(start_rubberbanding), (finalize), (nautilus_icon_container_init),
+	(nautilus_icon_container_update_icon),
+	(nautilus_icon_container_theme_changed):
+	* libnautilus-private/nautilus-icon-container.h:
+	* libnautilus-private/nautilus-icon-private.h:
+	* src/file-manager/fm-directory-view.c: (fm_directory_view_init),
+	(fm_directory_view_finalize):
+	* src/file-manager/fm-directory-view.h:
+	* src/file-manager/fm-icon-view.c:
+	(fm_icon_view_update_icon_container_font_size_table),
+	(create_icon_container), (fm_icon_view_class_init):
+	Remove smooth mode and unused font and font size machinery.
+
+	* test/.cvsignore: Remove test-nautilus-smooth-graphics.
+	* test/Makefile.am: Remove test-nautilus-smooth-graphics.
+	* test/test-nautilus-smooth-graphics.c: Remove.
+
+	* src/nautilus-preferences-dialog.c:
+	(dialog_delete_event_callback), (dialog_button_response_callback),
+	(preferences_dialog_create): Fix bug where we'd lose the
+	preferences dialog if you closed it with a delete_event.
+	
 === nautilus 1.1.3 ===
 
 2002-01-29  Darin Adler  <darin@bentspoon.com>

@@ -1526,7 +1526,6 @@ start_rubberbanding (NautilusIconContainer *container,
 	NautilusIconRubberbandInfo *band_info;
 	uint fill_color, outline_color;
 	char *fill_color_str;
-	char *endp;
 	GList *p;
 
 	details = container->details;
@@ -1550,59 +1549,29 @@ start_rubberbanding (NautilusIconContainer *container,
 	/* FIXME: The code to extract colors from the theme should be in FMDirectoryView, not here.
 	 * The NautilusIconContainer class should simply provide calls to set the colors.
 	 */
-	if (GNOME_CANVAS(container)->aa) {
-		/* FIXME: Should use some standard format, not just a 32-bit integer. */
-		fill_color_str = nautilus_theme_get_theme_data ("directory", "selection_box_color_rgba");
-		if (fill_color_str == NULL) {
-			fill_color = 0x77BBDD40;
-		} else {
-			fill_color = strtoul (fill_color_str, &endp, 0);
-			if (endp == fill_color_str) {
-				fill_color = 0x77BBDD40;
-			}
-			g_free (fill_color_str);
-		}
-		
-		outline_color = fill_color | 255;
-
-		band_info->selection_rectangle = gnome_canvas_item_new
-			(gnome_canvas_root
-			 (GNOME_CANVAS (container)),
-			 GNOME_TYPE_CANVAS_RECT,
-			 "x1", band_info->start_x,
-			 "y1", band_info->start_y,
-			 "x2", band_info->start_x,
-			 "y2", band_info->start_y,
-			 "fill_color_rgba", fill_color,
-			 "outline_color_rgba", outline_color,
-			 "width_pixels", 1,
-			 NULL);
-	
+	fill_color_str = nautilus_theme_get_theme_data ("directory", "selection_box_color_rgba");
+	if (fill_color_str == NULL) {
+		fill_color = 0x77BBDD40;
 	} else {
-		fill_color_str = nautilus_theme_get_theme_data ("directory", "selection_box_color_rgba");
-		if (fill_color_str == NULL) {
-			fill_color = 0x77BBDD40;
-		} else {
-			fill_color = strtoul (fill_color_str, NULL, 0);
-			/* FIXME: Need error handling here. */
-			g_free (fill_color_str);
-		}
-		
-		outline_color = fill_color | 255;
-
-		band_info->selection_rectangle = gnome_canvas_item_new
-			(gnome_canvas_root
-			 (GNOME_CANVAS (container)),
-			 EEL_TYPE_CANVAS_RECT,
-			 "x1", band_info->start_x,
-			 "y1", band_info->start_y,
-			 "x2", band_info->start_x,
-			 "y2", band_info->start_y,
-			 "fill_color_rgba", fill_color,
-			 "outline_color_rgba", outline_color,
-			 "width_pixels", 1,
-			 NULL);
+		fill_color = strtoul (fill_color_str, NULL, 0);
+		/* FIXME: Need error handling here. */
+		g_free (fill_color_str);
 	}
+	
+	outline_color = fill_color | 255;
+	
+	band_info->selection_rectangle = gnome_canvas_item_new
+		(gnome_canvas_root
+		 (GNOME_CANVAS (container)),
+		 EEL_TYPE_CANVAS_RECT,
+		 "x1", band_info->start_x,
+		 "y1", band_info->start_y,
+		 "x2", band_info->start_x,
+		 "y2", band_info->start_y,
+		 "fill_color_rgba", fill_color,
+		 "outline_color_rgba", outline_color,
+		 "width_pixels", 1,
+		 NULL);
 
 	band_info->prev_x = event->x;
 	band_info->prev_y = event->y;
@@ -2328,7 +2297,6 @@ static void
 finalize (GObject *object)
 {
 	NautilusIconContainerDetails *details;
-	guint i;
 
 	details = NAUTILUS_ICON_CONTAINER (object)->details;
 
@@ -2340,11 +2308,6 @@ finalize (GObject *object)
 					 nautilus_icon_container_theme_changed,
 					 object);
 	
-        for (i = 0; i < G_N_ELEMENTS (details->label_font); i++) {
-       		if (details->label_font[i] != NULL)
-        		gdk_font_unref (details->label_font[i]);
-	}
-
 	if (details->highlight_frame != NULL) {
 		g_object_unref (details->highlight_frame);
 	}
@@ -3364,31 +3327,6 @@ nautilus_icon_container_init (NautilusIconContainer *container)
 
         details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
  
- 	/* font table - this isn't exactly proportional, but it looks better than computed */
-	/* FIXME bugzilla.gnome.org 45093: Font name is hard-coded here. */
-	/* FIXME bugzilla.gnome.org 45101: Font size is hard-coded here. */
-
-#if GNOME2_CONVERSION_COMPLETE
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLEST] = nautilus_font_factory_get_font_by_family ("helvetica", 8);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALLER] = nautilus_font_factory_get_font_by_family ("helvetica", 8);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_SMALL] = nautilus_font_factory_get_font_by_family ("helvetica", 10);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_STANDARD] = nautilus_font_factory_get_font_by_family ("helvetica", 12);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGE] = nautilus_font_factory_get_font_by_family ("helvetica", 14);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGER] = nautilus_font_factory_get_font_by_family ("helvetica", 18);
-        details->label_font[NAUTILUS_ZOOM_LEVEL_LARGEST] = nautilus_font_factory_get_font_by_family ("helvetica", 18);
-#endif
-
-	/* These are the default font sizes.  The font sizes are configurable via
-	 * nautilus_icon_container_set_font_size_table() 
-	 */
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = 8;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER] = 8;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL] = 10;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] = 12;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE] = 14;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER] = 18;
-        details->font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST] = 18;
-
 	container->details = details;
 
 	/* Set up DnD.  */
@@ -3859,9 +3797,6 @@ nautilus_icon_container_update_icon (NautilusIconContainer *container,
 	gnome_canvas_item_set (GNOME_CANVAS_ITEM (icon->item),
 			       "editable_text", editable_text,
 			       "additional_text", additional_text,
-#if GNOME2_CONVERSION_COMPLETE
-			       "font", details->label_font[details->zoom_level],
-#endif
 			       "highlighted_for_drop", icon == details->drop_target,
 			       NULL);
 	
@@ -4131,41 +4066,6 @@ nautilus_icon_container_reveal (NautilusIconContainer *container, NautilusIconDa
 
 	if (icon != NULL) {
 		reveal_icon (container, icon);
-	}
-}
-
-/**
- * nautilus_icon_container_get_anti_aliased_mode:
- * get the state of the anti_aliased boolean
- *
- **/
-
-gboolean
-nautilus_icon_container_get_anti_aliased_mode (NautilusIconContainer *container)
-{
-	GnomeCanvas *canvas;
-
-	canvas = GNOME_CANVAS (container);
-	return canvas->aa;
-}
-
-/**
- * nautilus_icon_container_set_anti_aliased_mode:
- * Change the anti-aliased mode and redraw everything
- *
- **/
-
-void
-nautilus_icon_container_set_anti_aliased_mode (NautilusIconContainer *container, gboolean anti_aliased_mode)
-{
-	GnomeCanvas *canvas;
-
-	canvas = GNOME_CANVAS (container);
-	if (canvas->aa != anti_aliased_mode) {
-		canvas->aa = anti_aliased_mode;
-		
-		invalidate_label_sizes (container);	
-		nautilus_icon_container_request_update_all (container);	
 	}
 }
 
@@ -5012,25 +4912,6 @@ nautilus_icon_container_has_stored_icon_positions (NautilusIconContainer *contai
 }
 
 void
-nautilus_icon_container_set_label_font_for_zoom_level (NautilusIconContainer *container,
-						       int                    zoom_level,
-						       GdkFont               *font)
-{
-	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_return_if_fail (font != NULL);
-	g_return_if_fail (zoom_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST);
-	g_return_if_fail (zoom_level <= NAUTILUS_ZOOM_LEVEL_LARGEST);
-
-	gdk_font_ref (font);
-	
-	if (container->details->label_font[zoom_level] != NULL) {
-		gdk_font_unref (container->details->label_font[zoom_level]);
-	}
-
-	container->details->label_font[zoom_level] = font;
-}
-
-void
 nautilus_icon_container_set_single_click_mode (NautilusIconContainer *container,
 					       gboolean single_click_mode)
 {
@@ -5163,20 +5044,6 @@ nautilus_icon_container_theme_changed (gpointer user_data)
 	} else {
 		container->details->highlight_color = strtoul (highlight_color_str, NULL, 0);
 		g_free (highlight_color_str);
-	}
-}
-
-void
-nautilus_icon_container_set_font_size_table (NautilusIconContainer *container,
-					     const int font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1])
-{
-	int i;
-	
-	g_return_if_fail (NAUTILUS_IS_ICON_CONTAINER (container));
-	g_return_if_fail (font_size_table != NULL);
-	
-	for (i = 0; i <= NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
-		container->details->font_size_table[i] = font_size_table[i];
 	}
 }
 

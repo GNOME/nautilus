@@ -1041,18 +1041,6 @@ click_policy_changed_callback (gpointer callback_data)
 		 click_policy_changed, (view));
 }
 
-static void
-smooth_graphics_mode_changed_callback (gpointer callback_data)
-{
-	FMDirectoryView *view;
-
-	view = FM_DIRECTORY_VIEW (callback_data);
-
-	EEL_CALL_METHOD
-		(FM_DIRECTORY_VIEW_CLASS, view,
-		 smooth_graphics_mode_changed, (view));
-}
-
 gboolean
 fm_directory_view_should_sort_directories_first (FMDirectoryView *view)
 {
@@ -1277,9 +1265,6 @@ fm_directory_view_init (FMDirectoryView *view)
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
 				      click_policy_changed_callback,
 				      view);
-	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE, 
-				      smooth_graphics_mode_changed_callback, 
-				      view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST, 
 				      sort_directories_first_changed_callback, 
 				      view);
@@ -1357,9 +1342,6 @@ fm_directory_view_finalize (GObject *object)
 					 view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_CLICK_POLICY,
 					 click_policy_changed_callback,
-					 view);
-	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE,
-					 smooth_graphics_mode_changed_callback,
 					 view);
 	eel_preferences_remove_callback (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
 					 sort_directories_first_changed_callback,

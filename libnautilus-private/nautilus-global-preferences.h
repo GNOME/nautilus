@@ -77,7 +77,6 @@ G_BEGIN_DECLS
 
 /* Content fonts */
 #define NAUTILUS_PREFERENCES_DEFAULT_FONT			"preferences/default_font"
-#define NAUTILUS_PREFERENCES_DEFAULT_SMOOTH_FONT		"preferences/default_smooth_font"
 #define NAUTILUS_PREFERENCES_DEFAULT_FONT_SIZE			"preferences/default_font_size"
 
 /* Single/Double click preference  */
@@ -85,9 +84,6 @@ G_BEGIN_DECLS
 
 /* Activating executable text files */
 #define NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION		"preferences/executable_text_activation"
-
-/* Smooth graphics mode (smoother but slower) */
-#define NAUTILUS_PREFERENCES_SMOOTH_GRAPHICS_MODE		"preferences/smooth_graphics_mode"
 
 /* Which views should be displayed for new windows */
 #define NAUTILUS_PREFERENCES_START_WITH_TOOLBAR			"preferences/start_with_toolbar"
@@ -121,7 +117,6 @@ enum
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL_FONT_SIZE	"icon-view/default_zoom_level_font_size"
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT	"icon-view/default_use_manual_layout"
 #define NAUTILUS_PREFERENCES_ICON_VIEW_FONT				"icon-view/font"
-#define NAUTILUS_PREFERENCES_ICON_VIEW_SMOOTH_FONT			"icon-view/smooth_font"
 
 /* The icon view uses 2 variables to store the sort order and
  * whether to use manual layout.  However, the UI for these
