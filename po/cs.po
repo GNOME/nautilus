@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gdm2 2.0.98\n"
-"POT-Creation-Date: 2001-06-03 14:36-0700\n"
+"POT-Creation-Date: 2001-06-05 04:50-0700\n"
 "PO-Revision-Date: 2001-02-02 23:19-0800\n"
 "Last-Translator: George Lebl <jirka@5z.com>\n"
 "Language-Team: czech <cs@li.org>\n"
@@ -2176,7 +2176,7 @@ msgstr "Kvìty"
 msgid "Fossil"
 msgstr "Fosílie"
 
-#: data/browser.xml.h:40 icons/gnome/gnome.xml.h:1
+#: data/browser.xml.h:40 icons/gnome/gnome.xml.h:2
 msgid "GNOME"
 msgstr "GNOME"
 
@@ -2599,8 +2599,9 @@ msgstr "Implicitní"
 msgid "This is the default theme for Nautilus."
 msgstr "Toto je implicitní téma pro Nautilus."
 
-#: icons/gnome/gnome.xml.h:2
-msgid "This theme uses the classic GNOME icons."
+#: icons/gnome/gnome.xml.h:1
+#, fuzzy
+msgid "A theme designed to fit well with the classic GNOME environment"
 msgstr "Toto téma pou¾ívá klasické ikony GNOME."
 
 #: icons/sierra/sierra.xml.h:1
@@ -2845,8 +2846,8 @@ msgstr ""
 #: libnautilus-private/nautilus-file.c:4137
 #, c-format
 msgid ""
-"No description found for mime type \"%s\" (file is \"%s\"), tell "
-"aaron@eazel.com"
+"No description found for mime type \"%s\" (file is \"%s\"), tell aaron@eazel."
+"com"
 msgstr ""
 
 #: libnautilus-private/nautilus-file.c:4151
@@ -5787,9 +5788,9 @@ msgstr "Hledání v indexu není k dispozici"
 #: src/file-manager/fm-search-list-view.c:290
 msgid ""
 "To do a fast search, Find requires an index of the files on your system.  No "
-"index is available right now. You can create an index by running "
-"\"medusa-indexd\" as root on the command line.  Until a complete index is "
-"available, searches will take several minutes."
+"index is available right now. You can create an index by running \"medusa-"
+"indexd\" as root on the command line.  Until a complete index is available, "
+"searches will take several minutes."
 msgstr ""
 
 #: src/file-manager/fm-search-list-view.c:297
@@ -5992,22 +5993,24 @@ msgstr "Vlo¾it soubory"
 #: src/file-manager/nautilus-directory-view-ui.xml.h:35
 msgid "Prepare the selected files to be copied with a Paste Files command"
 msgstr ""
+"Pøipravit vybrané soubory ke kopírování pou¾itím pøíkazu 'Vlo¾it soubory'"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:36
 msgid "Prepare the selected files to be moved with a Paste Files command"
 msgstr ""
+"Pøipravit vybrané soubory ke pøesunutí pou¾itím pøíkazu 'Vlo¾it soubory'"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:38
 msgid "Remove Custom Images"
-msgstr ""
+msgstr "Odstranit vlastní obrázky"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:39
 msgid "Remove any custom images from selected icons"
-msgstr ""
+msgstr "Odstranit vlastní obrázky z vybraných ikon"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:40
 msgid "Remove any custom pattern or color from the background of this location"
-msgstr ""
+msgstr "Odstranit jakýkoli vlastní vzorek èi barvu z pozadí této polohy"
 
 #. add the reset background item, possibly disabled
 #: src/file-manager/nautilus-directory-view-ui.xml.h:41
@@ -6017,11 +6020,11 @@ msgstr "Nastavit standartní pozadí"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:42
 msgid "Reset View to Match Preferences"
-msgstr ""
+msgstr "Návrat k nastavení pohledu"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:43
 msgid "Reset View to Match _Preferences"
-msgstr ""
+msgstr "Návrat k nastavení _pohledu"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:44
 msgid "Reset sorting order and zoom level to match preferences for this view"
@@ -6029,7 +6032,7 @@ msgstr ""
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:45
 msgid "Run or manage scripts from ~/Nautilus/scripts"
-msgstr ""
+msgstr "Spustí èi upravuje skripty z ~/Nautilus/skripty"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:46
 msgid "Scripts"
@@ -6200,6 +6203,7 @@ msgid "_Stretch Icon"
 msgstr "_Roztáhnout ikonu"
 
 #: src/file-manager/nautilus-indexing-info.c:88
+#, c-format
 msgid "Indexing is %d%% complete."
 msgstr "Indexování je z %d%% hotové."
 
@@ -6226,6 +6230,8 @@ msgid ""
 "Once a day your files and text content are indexed so your searches are "
 "fast.  Your files are currently being indexed."
 msgstr ""
+"Jednou za den jsou va¹e soubory a textový obsah indexovány, aby bylo va¹e "
+"hledání rychlé.  Va¹e soubory jsou zrovna indexovány."
 
 #: src/file-manager/nautilus-indexing-info.c:259
 msgid ""
@@ -6236,11 +6242,11 @@ msgstr ""
 
 #: src/file-manager/nautilus-indexing-info.c:263
 msgid "There is no index of your files right now."
-msgstr ""
+msgstr "Index va¹ich souborù neexistuje."
 
 #: src/file-manager/nautilus-indexing-info.c:301
 msgid "Sorry, but the medusa search service is not available."
-msgstr ""
+msgstr "Lituji, ale vyhledávací slu¾ba medusa není k dispozici."
 
 #: src/file-manager/nautilus-indexing-info.c:316
 msgid "%I:%M %p, %x"
@@ -6329,8 +6335,8 @@ msgid ""
 "\n"
 "OAF couldn't locate the Nautilus_shell.oaf file. One cause of this seems to "
 "be an LD_LIBRARY_PATH that does not include the oaf library's directory. "
-"Another possible cause would be bad install with a missing "
-"Nautilus_Shell.oaf file.\n"
+"Another possible cause would be bad install with a missing Nautilus_Shell."
+"oaf file.\n"
 "\n"
 "Running \"nautilus-clean.sh -x\" will kill all OAF and GConf processes, "
 "which may be needed by other applications.\n"
@@ -6513,16 +6519,16 @@ msgstr ""
 
 #: src/nautilus-first-time-druid.c:919
 msgid "Use Nautilus to draw the desktop."
-msgstr ""
+msgstr "Pou¾ít nautilus na kreslení plochy."
 
 #: src/nautilus-first-time-druid.c:925
 msgid "Move existing desktop icons to the Nautilus desktop."
-msgstr ""
+msgstr "Pøesunout existující ikony na plochu nautilusu."
 
 #. This option is currently disabled, per bugzilla.eazel.com 7557
 #: src/nautilus-first-time-druid.c:933
 msgid "Launch Nautilus when GNOME starts up."
-msgstr ""
+msgstr "Spustit Nautilus pøi spu¹tení GNOME."
 
 #: src/nautilus-first-time-druid.c:1019
 #, c-format
@@ -6549,7 +6555,7 @@ msgstr ""
 
 #: src/nautilus-first-time-druid.c:1082
 msgid "Welcome to Nautilus"
-msgstr ""
+msgstr "Vítejte v Nautilusu"
 
 #: src/nautilus-first-time-druid.c:1084
 msgid ""
@@ -6565,7 +6571,7 @@ msgstr ""
 #. set up the final page
 #: src/nautilus-first-time-druid.c:1095
 msgid "Finished"
-msgstr ""
+msgstr "Hotovo"
 
 #. set up the user level page
 #: src/nautilus-first-time-druid.c:1108
@@ -8037,10 +8043,10 @@ msgid ""
 "and the rest of your system."
 msgstr ""
 "Nautilus je grafické\n"
-"prostøedí pro GNOME ktere\n"
-"zjednodu¹uje správu Va¹ich\n"
-"souborù a celého Va¹eho\n"
-"systému."
+"prostøedí pro GNOME které\n"
+"zjednodu¹uje správu\n"
+"Va¹ich souborù a celého\n"
+"Va¹eho systému."
 
 #: src/nautilus-window-menus.c:813
 #, c-format
@@ -8093,6 +8099,7 @@ msgid "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 msgstr "-bitstream-courier-medium-r-normal-*-9-*-*-*-*-*-*-*"
 
 #: src/nautilus-zoom-control.c:592
+#, c-format
 msgid "%d%%"
 msgstr "%d%%"
 
