@@ -110,6 +110,7 @@ noinst_HEADERS = \
 	$(NULL)
 
 EXTRA_DIST = \
+	cidafm.c \
 	cidgload.c \
 	cidload.c \
 	cidobjs.c \

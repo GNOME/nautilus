@@ -1,5 +1,12 @@
 2000-09-20  Darin Adler  <darin@eazel.com>
 
+	* components/adapter/Makefile.am:
+	* cut-n-paste-code/freetype/Makefile.am: Make the tinderbox a bit
+	happier by mentioning some files that were missing from these
+	makefiles.
+
+2000-09-20  Darin Adler  <darin@eazel.com>
+
 	* cut-n-paste-code/freetype/ftdebug.h: Fixed compiling with newer
 	gcc. Freetype was trying to use token pasting to attach the name
 	of a function (FTMessage) onto the parameters to that
