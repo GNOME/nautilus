@@ -1,3 +1,12 @@
+2002-02-20  jacob berkman  <jacob@ximian.com>
+
+	* src/file-manager/nautilus-indexing-info.c:
+	(show_index_progress_dialog), (show_last_index_time_dialog),
+	(show_indexing_info_dialog):
+	s/g_signal_connect_object/g_signal_connect_swapped/, as this was
+	gtk_signal_connect_object which is not the same as
+	g_signal_connect_object
+
 2002-02-20  Michael Meeks  <michael@ximian.com>
 
 	* components/throbber/nautilus-throbber.c

@@ -130,10 +130,10 @@ show_index_progress_dialog (void)
         gtk_widget_show_all (GTK_WIDGET (dialogs->index_in_progress_dialog));
         callback_id = medusa_execute_once_when_system_state_changes (dialog_close_cover,
                                                                      dialogs->index_in_progress_dialog);
-        g_signal_connect_object (G_OBJECT (dialogs->index_in_progress_dialog),
-				 "destroy",
-				 G_CALLBACK (medusa_remove_state_changed_function),
-				 GINT_TO_POINTER (callback_id), 0);
+        g_signal_connect_swapped (dialogs->index_in_progress_dialog,
+                                  "destroy",
+                                  G_CALLBACK (medusa_remove_state_changed_function),
+                                  GINT_TO_POINTER (callback_id));
 }
 
 
@@ -148,10 +148,10 @@ show_last_index_time_dialog (void)
         gtk_widget_show_all (GTK_WIDGET (dialogs->last_index_time_dialog));
         callback_id = medusa_execute_once_when_system_state_changes (dialog_close_cover,
                                                                      dialogs->last_index_time_dialog);
-        g_signal_connect_object (G_OBJECT (dialogs->last_index_time_dialog),
-				 "destroy",
-				 G_CALLBACK (medusa_remove_state_changed_function),
-				 GINT_TO_POINTER (callback_id), 0);
+        g_signal_connect_swapped (dialogs->last_index_time_dialog,
+                                  "destroy",
+                                  G_CALLBACK (medusa_remove_state_changed_function),
+                                  GINT_TO_POINTER (callback_id));
 }
 
 static GtkDialog *
@@ -272,10 +272,10 @@ show_indexing_info_dialog (void)
                 
                 callback_id = medusa_execute_once_when_system_state_changes (dialog_close_cover,
                                                                              dialog_shown);
-                g_signal_connect_object (G_OBJECT (dialog_shown),
-					 "destroy",
-					 G_CALLBACK (medusa_remove_state_changed_function),
-					 GINT_TO_POINTER (callback_id), 0);
+                g_signal_connect_swapped (G_OBJECT (dialog_shown),
+                                          "destroy",
+                                          G_CALLBACK (medusa_remove_state_changed_function),
+                                          GINT_TO_POINTER (callback_id));
                 return;
         }
 	if (dialogs == NULL) {
