@@ -1,3 +1,11 @@
+2002-02-08  Michael Meeks  <michael@ximian.com>
+
+	* src/nautilus-window.c
+	(nautilus_window_constructed): remove registering own
+	'synchronizer' #ifdef bits.
+	(nautilus_window_allow_stop): add 'access' sys
+	calls to allow easier strace profiling.
+
 2002-02-11  Jody Goldberg <jody@gnome.org>
 
 	* src/nautilus-bookmark-parsing.c : Include libxml/globals.h to get

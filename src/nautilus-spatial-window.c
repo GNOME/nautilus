@@ -28,6 +28,7 @@
 /* nautilus-window.c: Implementation of the main window object */
 
 #include <config.h>
+#include <unistd.h>
 #include "nautilus-window-private.h"
 
 #include "nautilus-application.h"
@@ -702,10 +703,6 @@ nautilus_window_constructed (NautilusWindow *window)
 		gtk_paned_pack1 (GTK_PANED (window->content_hbox),
 				 GTK_WIDGET (window->sidebar),
 				 FALSE, TRUE);
-#if 0
-		bonobo_ui_engine_add_sync (bonobo_window_get_ui_engine (BONOBO_WINDOW (window)),
-					   sidebar_sync);
-#endif
 	}
 	
 	bonobo_ui_component_freeze (window->details->shell_ui, NULL);
@@ -1713,6 +1710,11 @@ nautilus_window_allow_stop (NautilusWindow *window, gboolean allow)
 	Bonobo_PropertyBag property_bag;
 	
 	nautilus_window_ui_freeze (window);
+
+	if (allow)
+		access ("nautilus-throbber: start", 0);
+	else
+		access ("nautilus-throbber: stop", 0);
 
 	nautilus_bonobo_set_sensitive (window->details->shell_ui,
 				       NAUTILUS_COMMAND_STOP, allow);
