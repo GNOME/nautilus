@@ -2473,10 +2473,10 @@ nautilus_icon_canvas_item_accessible_create (GObject *for_object)
 	g_string_free (item_text, TRUE);
 
 	accessible = g_object_new (type, NULL);
-	atk_object_set_role (accessible, ATK_ROLE_LABEL);
-
-	return eel_accessibility_set_atk_object_return
+	accessible = eel_accessibility_set_atk_object_return
 		(for_object, accessible);
+	atk_object_set_role (accessible, ATK_ROLE_ICON);
+	return accessible;
 }
 
 EEL_ACCESSIBLE_FACTORY (nautilus_icon_canvas_item_accessible_get_type (),
