@@ -27,6 +27,7 @@ icon_DATA =					\
 	gnome-pack-deb.png			\
 	gnome-pack-rpm.png			\
 	hand.svg				\
+	home.png				\
 	i-blockdev.png				\
 	i-cdrom.png				\
 	i-chardev.png				\
@@ -56,11 +57,13 @@ icon_DATA =					\
 	i-stalled.png				\
 	i-zipdisk.png				\
 	i-zipdisk2.png				\
+	leftarrow.png				\
 	loading.png				\
 	multi-ok.png				\
 	nautilus-logo.png			\
 	nautilus3.jpg				\
 	not.png					\
+	rightarrow.png				\
 	tableft.png				\
 	tabright.png				\
 	uparrow.png				\

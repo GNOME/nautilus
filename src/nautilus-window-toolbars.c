@@ -76,20 +76,20 @@ toolbar_home_callback (GtkWidget *widget, NautilusWindow *window)
 static GnomeUIInfo toolbar_info[] = {
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Back"), N_("Go to the previously visited directory"),
-	 toolbar_back_callback, GNOME_STOCK_PIXMAP_BACK),
+	 toolbar_back_callback, "nautilus/leftarrow.png"),
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Forward"), N_("Go to the next directory"),
-	 toolbar_forward_callback, GNOME_STOCK_PIXMAP_FORWARD),
+	 toolbar_forward_callback, "nautilus/rightarrow.png"),
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Up"), N_("Go up a level in the directory heirarchy"),
-	 toolbar_up_callback, GNOME_STOCK_PIXMAP_UP),
+	 toolbar_up_callback, "nautilus/uparrow.png"),
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Reload"), N_("Reload this view"),
 	 toolbar_reload_callback, GNOME_STOCK_PIXMAP_REFRESH),
 	GNOMEUIINFO_SEPARATOR,
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Home"), N_("Go to your home directory"),
-	 toolbar_home_callback, GNOME_STOCK_PIXMAP_HOME),
+	 toolbar_home_callback, "nautilus/home.png"),
 	GNOMEUIINFO_SEPARATOR,
 	GNOMEUIINFO_ITEM_STOCK
 	(N_("Stop"), N_("Interrupt loading"),
