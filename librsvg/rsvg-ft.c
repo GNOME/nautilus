@@ -292,6 +292,8 @@ rsvg_ft_intern (RsvgFTCtx *ctx, const char *font_file_name)
 		}
 		ctx->font_list[n_font_list] = entry;
 	}
+
+/* 	fprintf (stderr, "handle = %d\n", entry->handle); */
 	return entry->handle;
 }
 
@@ -339,8 +341,8 @@ rsvg_ft_font_attach (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 static RsvgFTFont *
 rsvg_ft_font_resolve (RsvgFTCtx *ctx, RsvgFTFontHandle fh)
 {
-	RsvgFTFontCacheEntry *entry;
-	RsvgFTFont *font;
+	RsvgFTFontCacheEntry *entry = NULL;
+	RsvgFTFont *font = NULL;
 
 	if (fh < 0 || fh >= ctx->n_font_list)
 		return NULL;
@@ -359,6 +361,9 @@ rsvg_ft_font_resolve (RsvgFTCtx *ctx, RsvgFTFontHandle fh)
 						entry->fn_attached);
 		}
 		entry->font = font;
+	}
+	else {
+		font = entry->font;
 	}
 	return font;
 }
@@ -560,7 +565,7 @@ rsvg_ft_render_string (RsvgFTCtx *ctx, RsvgFTFontHandle fh,
 			FT_Get_Kerning (font->face, last_glyph, glyph_index,
 					ft_kerning_unscaled,
 					&kern);
-			fprintf (stderr, "kern = (%ld, %ld)\n", kern.x, kern.y);
+/* 			fprintf (stderr, "kern = (%ld, %ld)\n", kern.x, kern.y); */
 			kx = FT_TOFLOAT (kern.x);
 			ky = FT_TOFLOAT (kern.y);
 			glyph_affine[4] += glyph_affine[0] * kx +

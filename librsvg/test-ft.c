@@ -35,6 +35,8 @@
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_rect.h>
 #include <libart_lgpl/art_alphagamma.h>
+#include <libart_lgpl/art_affine.h>
+#include <libart_lgpl/art_affine.h>
 #include "art_render.h"
 #include "art_render_mask.h"
 
@@ -284,11 +286,17 @@ static GdkPixbuf *
 glyph_render_test (RsvgFTGlyph *glyph, int glyph_xy[2]) {
 	GdkPixbuf *pixbuf;
 	art_u8 *pixels;
-	int width = 200;
-	int height = 200;
+	int width;
+	int height;
 	int rowstride;
 	ArtRender *render;
 	ArtPixMaxDepth color[3] = {ART_PIX_MAX_FROM_8(0x80), 0, 0 };
+
+	width = glyph->width;
+	height = glyph->height;
+
+	width = 200;
+	height = 200;
 
 	rowstride = width << 2;
 	pixels = g_new (art_u8, rowstride * height);
@@ -318,20 +326,30 @@ int main(int argc, char **argv)
 	GdkPixbuf *pixbuf;
 	char *zoom_str = "1.0";
 	int n_iter = 1;
-	poptContext optCtx;
-	struct poptOption optionsTable[] = {
-		
-		    {"zoom", 'z', POPT_ARG_STRING, &zoom_str, 0, NULL,
-		 "zoom factor"},
+	
+ 	gint	font_width = 36;
+ 	gint	font_height = 36;
+	char	*font_file_name = "/usr/share/fonts/default/Type1/n021003l.pfb";
 
-		{"num-iter", 'n', POPT_ARG_INT, &n_iter, 0, NULL,
-		 "number of iterations"},
+	poptContext optCtx;
+	struct poptOption optionsTable[] = 
+	{
+		{"zoom", 'z', POPT_ARG_STRING, &zoom_str, 0, NULL, "zoom factor"},
+		{"num-iter", 'n', POPT_ARG_INT, &n_iter, 0, NULL, "number of iterations"},
+		{"font-width", 'w', POPT_ARG_INT, &font_width, 0, NULL, "Font Width"},
+		{"font-height", 'h', POPT_ARG_INT, &font_height, 0, NULL, "Font Height"},
+		{"font-file-name", 'f', POPT_ARG_STRING, &font_file_name, 0, NULL, "Font File Name"},
 		POPT_AUTOHELP {NULL, 0, 0, NULL, 0}
 	};
 	char c;
 	const char *const *args;
 	int i;
+
+#if 0
 	const double affine[6] = { .707, -.707, .707, .707, 10, 150 };
+#else
+ 	double affine[6];
+#endif
 	RsvgFTCtx *ctx;
 	RsvgFTFontHandle fh;
 
@@ -348,15 +366,23 @@ int main(int argc, char **argv)
 		out_fn = (char *) args[0];
 
 	ctx = rsvg_ft_ctx_new ();
-	fh = rsvg_ft_intern (ctx,
-			     "/usr/share/fonts/default/Type1/n021003l.pfb");
+	fh = rsvg_ft_intern (ctx, font_file_name);
 
 	for (i = 0; i < n_iter; i++) {
 		RsvgFTGlyph *glyph;
 		int glyph_xy[2];
 
-		glyph = rsvg_ft_render_string (ctx, fh, "graphic(s)", 36, 36,
-					       affine, glyph_xy);
+		art_affine_identity (affine);
+
+		glyph = rsvg_ft_render_string (ctx, fh, 
+					       "graphic(s)", 
+					       font_width, 
+					       font_height,
+					       affine, 
+					       glyph_xy);
+
+
+ 		glyph_xy[1] += glyph->ypen;
 
 		pixbuf = glyph_render_test (glyph, glyph_xy);
 

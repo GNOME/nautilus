@@ -1,3 +1,18 @@
+2000-08-02  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* librsvg/rsvg-ft.c: (rsvg_ft_intern), (rsvg_ft_font_resolve),
+	(rsvg_ft_render_string):
+
+	Fix a small bug where a font entry was found in the table, but it
+	wasnt returned.
+
+	Quiet down debug noise.
+	
+	* librsvg/test-ft.c: (glyph_render_test), (main):
+
+	Add some options and make affine transformation a simple identity
+	to help debug the coordinates of the rendered text.
+	
 2000-08-02  Darin Adler  <darin@eazel.com>
 
 	* check-FIXME.pl: Added HACKING to the files to skip.
