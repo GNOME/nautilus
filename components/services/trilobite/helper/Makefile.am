@@ -6,9 +6,9 @@ bin_PROGRAMS = eazel-helper
 
 
 # do mv on a separate step in case the sed fails
-eazel-helper.security: eazel-helper.security.in Makefile
-	sed -e 's^\@bindir\@^$(bindir)^g' < eazel-helper.security.in > eazel-helper.security.tmp \
-		&& mv eazel-helper.security.tmp eazel-helper.security
+eazel-helper.security: $(srcdir)/eazel-helper.security.in Makefile
+	sed -e 's^\@bindir\@^$(bindir)^g' < $(srcdir)/eazel-helper.security.in > $(srcdir)/eazel-helper.security.tmp \
+		&& mv $(srcdir)/eazel-helper.security.tmp $(srcdir)/eazel-helper.security
 
 install-data-local: $(PAM_FILES)
 	mkdir -p $(sysconfdir)/security/console.apps
@@ -29,3 +29,6 @@ INCLUDES = \
 	$(WERROR)		\
 	$(NULL)
 
+EXTRA_DIST = \
+	eazel-helper.security.in \
+	$(NULL)
