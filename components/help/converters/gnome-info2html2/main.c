@@ -45,14 +45,18 @@ main(int argc, char **argv)
 				t--;
 
 			*(t+1) = '\0';
-				
+
+#ifdef DEBUG			
 			fprintf(stderr, "outputting node %s\n",
 				requested_nodename);
+#endif			
 			aptr -= 2;
 		} else if (!strcmp(argv[argc-aptr+1], "-b")) {
 			BaseFilename = strdup(argv[argc-aptr+2]);
+#ifdef DEBUG			
 			fprintf(stderr, "outputting basefile %s\n",
 			        BaseFilename);
+#endif			
 			aptr -= 2;
 		}
 	}
@@ -114,8 +118,10 @@ main(int argc, char **argv)
 			/* see if this is the requested node name */
 			if (requested_nodename && 
 			    strcmp(requested_nodename, node->nodename)) {
+#ifdef DEBUG			    
 				fprintf(stderr, "skipping ->%s<-\n",
 					node->nodename);
+#endif				
 
 				continue;
 			}
@@ -146,9 +152,11 @@ main(int argc, char **argv)
 			continue;
 	}
 
-	if (!foundit && requested_nodename)
-		fprintf(stdout, "Requested node <b>%s</b> not found\n",
+	if (!foundit && requested_nodename) {
+		fprintf(stderr, "Requested node <b>%s</b> not found\n",
 			requested_nodename);
+		exit(1);
+	}
 
 	fprintf(stdout, "</BODY></HTML>\n");
 	return 0;
