@@ -1,3 +1,12 @@
+2002-05-30  Dave Camp  <dave@ximian.com>
+
+	* src/nautilus-application.c (set_session_restart): Don't set the
+	restart command here.
+	(save_session): Implemented.
+
+	* src/nautilus-window-manage-views.c (update_title): Set the role
+	to the displayed uri.
+
 2002-05-25  David Bordoley <bordoley@msu.edu>
 
 	*src/nautilus-window-menus.c

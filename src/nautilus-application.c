@@ -842,15 +842,43 @@ static gint
 save_session (GnomeClient *client, gint phase, GnomeSaveStyle save_style, gint shutdown,
 	      GnomeInteractStyle interact_style, gint fast, gpointer data)
 {
+	NautilusWindow *window;
+	GList *l;
+	static char *clone_argv[] = { "nautilus", "--no-default-window" };
+	char **restart_argv;
+	int argc;
+	int i;
+	int num_windows;
+
+	num_windows = g_list_length (nautilus_application_window_list);
+	if (num_windows > 0) {
+		argc = 1 + num_windows;
+		i = 0;
+		restart_argv = g_new (char *, argc);
+		restart_argv[i++] = g_strdup ("nautilus");
+		for (l = nautilus_application_window_list; l != NULL; l = l->next) {
+			window = NAUTILUS_WINDOW (l->data);
+			restart_argv[i++] = nautilus_window_get_location (window);
+		}
+		
+		gnome_client_set_restart_command (client, argc, restart_argv);
+
+		for (i = 0; i < argc; i++) {
+			g_free (restart_argv[i]);
+		}
+		g_free (restart_argv);
+	} else {
+		gnome_client_set_restart_command (client, 
+						  G_N_ELEMENTS (clone_argv), 
+						  clone_argv);
+	}
+	
 	return TRUE;
 }
 
 static void
 set_session_restart (GnomeClient *client, gboolean restart)
 {
-	static char *restart_argv[] = { "nautilus", "--no-default-window", 0 };
-
-	gnome_client_set_restart_command (client, 2, restart_argv);
 	gnome_client_set_priority (client, 40);
 
 	if (restart && g_getenv ("NAUTILUS_DEBUG") == NULL) {

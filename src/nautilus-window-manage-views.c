@@ -250,6 +250,9 @@ update_title (NautilusWindow *window)
 	g_list_free (sidebar_panels);
 
         g_free (title);
+
+        /* Set the role used by the window manager for session management */
+        gtk_window_set_role (GTK_WINDOW (window), window->details->location);
 }
 
 /* set_displayed_location:
