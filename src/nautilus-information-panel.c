@@ -144,7 +144,7 @@ static GtkTargetEntry target_table[] = {
 typedef enum {
 	NO_PART,
 	BACKGROUND_PART,
-	ICON_PART,
+	ICON_PART
 } InformationPanelPart;
 
 EEL_CLASS_BOILERPLATE (NautilusInformationPanel, nautilus_information_panel, EEL_TYPE_BACKGROUND_BOX)

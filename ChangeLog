@@ -1,3 +1,10 @@
+2004-03-09  Alexander Larsson  <alexl@redhat.com>
+
+	* components/image_properties/nautilus-image-properties-view.c:
+	* libnautilus-private/nautilus-file-attributes.h:
+	* src/nautilus-information-panel.c:
+	No commas at end of enum. Fixes builds for non-C99/gcc compilers.
+
 2004-03-08  Danilo Šegan  <dsegan@gmx.net>
 
 	* configure.in: Added "sr@ije" to ALL_LINGUAS.

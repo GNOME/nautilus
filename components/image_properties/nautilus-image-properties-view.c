@@ -71,7 +71,7 @@ struct ExifAttribute {
 #endif /*HAVE_EXIF*/
 
 enum {
-	PROP_URI,
+	PROP_URI
 };
 
 static GObjectClass *parent_class = NULL;
