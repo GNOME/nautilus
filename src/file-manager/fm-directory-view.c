@@ -33,6 +33,7 @@
 #include "fm-properties-window.h"
 #include "nautilus-trash-monitor.h"
 #include <bonobo/bonobo-control.h>
+#include <bonobo/bonobo-win.h>
 #include <gtk/gtkcheckmenuitem.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenu.h>
@@ -93,6 +94,8 @@
 #define FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER    		"/menu/File/Open Placeholder/Open With/Viewers Placeholder"
 #define FM_DIRECTORY_VIEW_MENU_PATH_OTHER_VIEWER	   		"/menu/File/Open Placeholder/Open With/OtherViewer"
 
+#define FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND				"/popups/background"
+
 enum {
 	ADD_FILE,
 	CREATE_BACKGROUND_CONTEXT_MENU_ITEMS,
@@ -116,7 +119,7 @@ struct FMDirectoryViewDetails
 	NautilusDirectory *model;
 	NautilusFile *directory_as_file;
 	BonoboUIComponent *ui;
-	
+
 	guint display_selection_idle_id;
 	guint update_menus_idle_id;
 	
@@ -3447,10 +3450,37 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 			      FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH);
 }
 
+static BonoboWindow *
+get_bonobo_window (FMDirectoryView *view)
+{
+	GtkWidget *window;
+	
+	/* Note: This works only because we are in the same process
+	 * as the Nautilus shell. Bonobo components in their own
+	 * processes can't do this.
+	 */
+	window = gtk_widget_get_ancestor (GTK_WIDGET (view), BONOBO_TYPE_WINDOW);
+	g_assert (window != NULL);
+
+	return BONOBO_WINDOW (window);
+}
+
+static GtkMenu *
+create_popup_menu (FMDirectoryView *view, const char *popup_path)
+{
+	GtkMenu *menu;
+	
+	menu = GTK_MENU (gtk_menu_new ());
+	gtk_widget_show (GTK_WIDGET (menu));
+
+	bonobo_window_add_popup (get_bonobo_window (view), menu, popup_path);
+
+	return menu;
+}
+
 static void
 real_merge_menus (FMDirectoryView *view)
 {
-
 	BonoboUIVerb verbs [] = {
 		BONOBO_UI_VERB ("New Folder", (BonoboUIVerbFn)new_folder_callback),
 		BONOBO_UI_VERB ("Open", (BonoboUIVerbFn)open_callback),
@@ -3627,11 +3657,20 @@ void
 fm_directory_view_pop_up_background_context_menu  (FMDirectoryView *view)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	
-	nautilus_pop_up_context_menu (create_background_context_menu (view),
-				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
-				      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
-				      0);
+
+	/* work in progress */
+	if (TRUE) {
+		nautilus_pop_up_context_menu (create_background_context_menu (view),
+					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
+					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
+					      0);
+	} else {
+		nautilus_pop_up_context_menu (create_popup_menu 
+						(view, FM_DIRECTORY_VIEW_POPUP_PATH_BACKGROUND),
+					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
+					      NAUTILUS_DEFAULT_POPUP_MENU_DISPLACEMENT,
+					      0);
+	}
 }
 
 static void

@@ -1,3 +1,15 @@
+2000-11-09  John Sullivan  <sullivan@eazel.com>
+
+	The beginnings of converting directory view context menus
+	to Bonobo. This doesn't work right yet; I'm checking in
+	so Darin can help me debug (the new code is iffed out for
+	now)
+
+	* src/file-manager/fm-directory-view.c: (get_bonobo_window),
+	(create_popup_menu), (real_merge_menus),
+	(fm_directory_view_pop_up_background_context_menu):
+	* src/file-manager/nautilus-directory-view-ui.xml:
+
 2000-11-08  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-dnd.c:
