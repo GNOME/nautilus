@@ -1252,7 +1252,7 @@ rss_read_error (RSSChannelData *channel_data)
 	char *error_message;
 
 	channel_data->update_in_progress = FALSE;
-	error_message = g_strdup_printf ("Couldn't load %s", channel_data->name);
+	error_message = g_strdup_printf (_("Couldn't load %s"), channel_data->name);
 	nautilus_news_set_title (channel_data, error_message);
 	g_free (error_message);
 }
@@ -1491,7 +1491,7 @@ nautilus_news_load_channel (News *news_data, RSSChannelData *channel_data)
 	channel_data->load_file_handle = eel_read_entire_file_async (channel_data->uri, rss_read_done_callback, channel_data);
 	
 	/* put up a title that's displayed while we wait */
-	title = g_strdup_printf ("Loading %s", channel_data->name);
+	title = g_strdup_printf (_("Loading %s"), channel_data->name);
 	nautilus_news_set_title (channel_data, title);
 	g_free (title);
 }
