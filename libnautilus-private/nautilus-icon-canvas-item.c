@@ -580,7 +580,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	NautilusIconContainer *container;
 	guint width_so_far, height_so_far;
 	GnomeCanvasItem *canvas_item;
-	GdkPixbuf *text_pixbuf;
+	GdkPixbuf *selection_pixbuf;
 	PangoLayout *layout;
 	guint32 label_color;
 	int layout_width, layout_height;
@@ -642,20 +642,20 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 	if (needs_highlight && drawable != NULL && !details->is_renaming &&
 	    details->text_width > 0 && details->text_height > 0) {
 		if (antialias_selection_rectangle) {
-			text_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
-						      TRUE,
-						      8,
-						      details->text_width,
-						      details->text_height);
+			selection_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB,
+							   TRUE,
+							   8,
+							   details->text_width,
+							   details->text_height);
 			container = NAUTILUS_ICON_CONTAINER (GNOME_CANVAS_ITEM (item)->canvas);	
-			eel_gdk_pixbuf_fill_rectangle_with_color (text_pixbuf,
+			eel_gdk_pixbuf_fill_rectangle_with_color (selection_pixbuf,
 								  eel_gdk_pixbuf_whole_pixbuf,
 								  container->details->highlight_color);
-			clear_rounded_corners (text_pixbuf, container->details->highlight_frame, 5);
-			draw_pixbuf (text_pixbuf, drawable, 
+			clear_rounded_corners (selection_pixbuf, container->details->highlight_frame, 5);
+			draw_pixbuf (selection_pixbuf, drawable, 
 				     icon_left + (icon_width - details->text_width) / 2,
 				     icon_bottom);
-			g_object_unref (text_pixbuf);
+			g_object_unref (selection_pixbuf);
 		} else {
 			gdk_rgb_gc_set_foreground (gc, highlight_background_color);
 			
@@ -821,7 +821,7 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 	/* draw the stretch handles themselves */
 	
 	draw_pixbuf (knob_pixbuf, drawable, rect->x0, rect->y0);
-	draw_pixbuf (knob_pixbuf, drawable, rect->x0,  rect->y1 - knob_height);
+	draw_pixbuf (knob_pixbuf, drawable, rect->x0, rect->y1 - knob_height);
 	draw_pixbuf (knob_pixbuf, drawable, rect->x1 - knob_width, rect->y0);
 	draw_pixbuf (knob_pixbuf, drawable, rect->x1 - knob_width, rect->y1 - knob_height);
 	

@@ -305,35 +305,12 @@ icon_set_size (NautilusIconContainer *container,
 static void
 icon_raise (NautilusIcon *icon)
 {
-	NautilusIconContainer *container;
-	NautilusIconRubberbandInfo *band_info;
-	GnomeCanvasItem *item;
-	GnomeCanvasGroup *parent;
-	GList *link;
-	int len;
+	GnomeCanvasItem *item, *band;
 	
 	item = GNOME_CANVAS_ITEM (icon->item);
-	container = NAUTILUS_ICON_CONTAINER (item->canvas);
-	band_info = &container->details->rubberband_info;
+	band = NAUTILUS_ICON_CONTAINER (item->canvas)->details->rubberband_info.selection_rectangle;
 	
-	if (band_info->selection_rectangle) {
-		/* Don't raise items past the selection_rectangle */
-		if (!item->parent)
-			return;
-
-		parent = GNOME_CANVAS_GROUP (item->parent);
-		link = g_list_find (parent->item_list, item);
-		g_assert (link != NULL);
-
-		len = g_list_length (link);
-		if (len > 2) {
-			gnome_canvas_item_raise (item, len - 2);
-		} else if (len == 1) {
-			gnome_canvas_item_lower (item, 1);
-		}
-	} else {
-		gnome_canvas_item_raise_to_top (item);
-	}
+	eel_gnome_canvas_item_send_behind (item, band);
 }
 
 static void
