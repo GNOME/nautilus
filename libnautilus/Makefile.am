@@ -50,7 +50,7 @@ libnautilus_la_SOURCES=				\
 $(nautilus_view_component_idl_sources): nautilus_view_component_idl_stamp
 
 nautilus_view_component_idl_stamp: nautilus-view-component.idl
-	orbit-idl `gnome-config --cflags idl` $(srcdir)/nautilus-view-component.idl
+	orbit-idl -I${datadir}/idl `gnome-config --cflags idl` $(srcdir)/nautilus-view-component.idl
 	touch nautilus_view_component_idl_stamp
 
 CLEANFILES=nautilus_view_component_idl_stamp

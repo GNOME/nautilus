@@ -106,7 +106,7 @@ libnautilus_extensions_la_SOURCES = \
 $(fsextension_idl_sources): fsextension_idl_stamp
 
 fsextension_idl_stamp: $(top_srcdir)/idl/fsextension.idl
-	orbit-idl `gnome-config --cflags idl` $(top_srcdir)/idl/fsextension.idl
+	orbit-idl -I${datadir}/idl `gnome-config --cflags idl` $(top_srcdir)/idl/fsextension.idl
 	touch fsextension_idl_stamp
 
 CLEANFILES = fsextension_idl_stamp

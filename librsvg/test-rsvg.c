@@ -151,7 +151,7 @@ save_pixbuf_to_file (GdkPixbuf *pixbuf, char *filename)
 }
 
 int
-main (int argc, const char **argv)
+main (int argc, char **argv)
 {
 	FILE *f;
 	char *out_fn;
