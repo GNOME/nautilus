@@ -4,6 +4,7 @@
  * Nautilus
  *
  * Copyright (C) 2000 Eazel, Inc.
+ * Copyright (C) 2004 Red Hat, Inc.
  *
  * Nautilus is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Author: Andy Hertzfeld <andy@eazel.com>
+ *         Alexander Larsson <alexl@redhat.com>
  *
  * This is the zoom control for the location bar
  *
@@ -53,7 +55,7 @@ enum {
 	ZOOM_IN,
 	ZOOM_OUT,
 	ZOOM_TO_LEVEL,
-	ZOOM_TO_FIT,
+	ZOOM_TO_DEFAULT,
 	CHANGE_VALUE,
 	LAST_SIGNAL
 };
@@ -64,9 +66,9 @@ struct NautilusZoomControlDetails {
 	GtkWidget *zoom_event;
 	GtkWidget *zoom_label;
 	
-	float zoom_level;
-	float min_zoom_level;	 
-	float max_zoom_level;
+	NautilusZoomLevel zoom_level;
+	NautilusZoomLevel min_zoom_level;	 
+	NautilusZoomLevel max_zoom_level;
 	gboolean has_min_zoom_level;
 	gboolean has_max_zoom_level;
 	GList *preferred_zoom_levels;
@@ -82,19 +84,19 @@ static gpointer accessible_parent_class;
 static const char *nautilus_zoom_control_accessible_action_names[] = {
 	N_("Zoom In"),
 	N_("Zoom Out"),
-	N_("Zoom to Fit"),
+	N_("Zoom to Default"),
 };
 
 static int nautilus_zoom_control_accessible_action_signals[] = {
 	ZOOM_IN,
 	ZOOM_OUT,
-	ZOOM_TO_FIT,
+	ZOOM_TO_DEFAULT,
 };
 
 static const char *nautilus_zoom_control_accessible_action_descriptions[] = {
 	N_("Show the contents in more detail"),
 	N_("Show the contents in less detail"),
-	N_("Try to fit in window"),
+	N_("Show in the default detail level"),
 };
 
 static GtkMenu *create_zoom_menu (NautilusZoomControl *zoom_control);
@@ -112,7 +114,7 @@ GNOME_CLASS_BOILERPLATE (NautilusZoomControl, nautilus_zoom_control,
 static void
 nautilus_zoom_control_finalize (GObject *object)
 {
-	eel_g_list_free_deep (NAUTILUS_ZOOM_CONTROL (object)->details->preferred_zoom_levels);
+	g_list_free (NAUTILUS_ZOOM_CONTROL (object)->details->preferred_zoom_levels);
 	g_free (NAUTILUS_ZOOM_CONTROL (object)->details);
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -138,7 +140,7 @@ nautilus_zoom_control_button_press_event (GtkWidget *widget,
 					 event);
 		return TRUE;
 	} else if (event->button == 1) {
-		g_signal_emit (zoom_control, signals[ZOOM_TO_FIT], 0);
+		g_signal_emit (zoom_control, signals[ZOOM_TO_DEFAULT], 0);
 	}
 
 	/* We don't change our state (to reflect the new zoom) here.
@@ -199,14 +201,21 @@ static void
 nautilus_zoom_control_instance_init (NautilusZoomControl *zoom_control)
 {
 	GtkWidget *image;
+	int i;
 	
 	zoom_control->details = g_new0 (NautilusZoomControlDetails, 1);
 
-	zoom_control->details->zoom_level = 1.0;
-	zoom_control->details->min_zoom_level = 0.0;
-	zoom_control->details->max_zoom_level = 2.0;
+	zoom_control->details->zoom_level = NAUTILUS_ZOOM_LEVEL_STANDARD;
+	zoom_control->details->min_zoom_level = NAUTILUS_ZOOM_LEVEL_SMALLEST;
+	zoom_control->details->max_zoom_level = NAUTILUS_ZOOM_LEVEL_LARGEST;
 	zoom_control->details->has_min_zoom_level = TRUE;
 	zoom_control->details->has_max_zoom_level = TRUE;
+
+	for (i = NAUTILUS_ZOOM_LEVEL_SMALLEST; i <= NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
+		zoom_control->details->preferred_zoom_levels = g_list_append (
+		          zoom_control->details->preferred_zoom_levels,
+			  GINT_TO_POINTER (i));
+	}
 
 	image = gtk_image_new_from_stock (GTK_STOCK_ZOOM_OUT, GTK_ICON_SIZE_MENU);
 	zoom_control->details->zoom_out = gtk_button_new ();
@@ -279,7 +288,7 @@ nautilus_zoom_control_redraw (NautilusZoomControl *zoom_control)
 	gtk_widget_set_sensitive (zoom_control->details->zoom_out,
 				  nautilus_zoom_control_can_zoom_out (zoom_control));
 
-	percent = floor ((100.0 * zoom_control->details->zoom_level) + .5);
+	percent = floor ((100.0 * nautilus_get_relative_icon_size_for_zoom_level (zoom_control->details->zoom_level)) + .5);
 	num_str = g_strdup_printf ("%d%%", percent);
 	gtk_label_set_text (GTK_LABEL (zoom_control->details->zoom_label), num_str);
 	g_free (num_str);
@@ -290,7 +299,7 @@ nautilus_zoom_control_redraw (NautilusZoomControl *zoom_control)
 static void
 zoom_menu_callback (GtkMenuItem *item, gpointer callback_data)
 {
-	float zoom_level;
+	NautilusZoomLevel zoom_level;
 	NautilusZoomControl *zoom_control;
 	gboolean can_zoom;
 		
@@ -306,7 +315,7 @@ zoom_menu_callback (GtkMenuItem *item, gpointer callback_data)
 		return;
 	}
 
-	zoom_level = * (float *) g_object_get_data (G_OBJECT (item), "zoom_level");
+	zoom_level = (NautilusZoomLevel) GPOINTER_TO_INT (g_object_get_data (G_OBJECT (item), "zoom_level"));
 
 	/* Assume we can zoom and then check whether we're right. */
 	can_zoom = TRUE;
@@ -325,12 +334,11 @@ zoom_menu_callback (GtkMenuItem *item, gpointer callback_data)
 
 static GtkRadioMenuItem *
 create_zoom_menu_item (NautilusZoomControl *zoom_control, GtkMenu *menu,
-		       float zoom_level,
+		       NautilusZoomLevel zoom_level,
 		       GtkRadioMenuItem *previous_radio_item)
 {
 	GtkWidget *menu_item;
 	char *item_text;
-	float *zoom_level_ptr;
 	GSList *radio_item_group;
 	int percent;
 	
@@ -342,7 +350,7 @@ create_zoom_menu_item (NautilusZoomControl *zoom_control, GtkMenu *menu,
 	/* This is marked for localization in case the % sign is not
 	 * appropriate in some locale. I guess that's unlikely.
 	 */
-	percent = floor ((100.0 * zoom_level) + .5);
+	percent = floor ((100.0 * nautilus_get_relative_icon_size_for_zoom_level (zoom_level)) + .5);
 	item_text = g_strdup_printf ("%d%%", percent);
 
 	radio_item_group = previous_radio_item == NULL
@@ -350,13 +358,10 @@ create_zoom_menu_item (NautilusZoomControl *zoom_control, GtkMenu *menu,
 		: gtk_radio_menu_item_get_group (previous_radio_item);
 	menu_item = gtk_radio_menu_item_new_with_label (radio_item_group, item_text);
 
-	zoom_level_ptr = g_new (float, 1);
-	*zoom_level_ptr = zoom_level;
-
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item), 
 					zoom_level == zoom_control->details->zoom_level);
 	
-	g_object_set_data_full (G_OBJECT (menu_item), "zoom_level", zoom_level_ptr, g_free);
+	g_object_set_data (G_OBJECT (menu_item), "zoom_level", GINT_TO_POINTER (zoom_level));
 	g_signal_connect_object (menu_item, "activate",
 				 G_CALLBACK (zoom_menu_callback), zoom_control, 0);
 
@@ -380,7 +385,7 @@ create_zoom_menu (NautilusZoomControl *zoom_control)
 	previous_item = NULL;
 	for (node = zoom_control->details->preferred_zoom_levels; node != NULL; node = node->next) {
 		previous_item = create_zoom_menu_item
-			(zoom_control, menu, * (float *) node->data, previous_item);
+			(zoom_control, menu, GPOINTER_TO_INT (node->data), previous_item);
 	}
 	
 	return menu;  
@@ -424,7 +429,8 @@ nautilus_zoom_control_change_value (NautilusZoomControl *zoom_control,
 }
 
 void
-nautilus_zoom_control_set_zoom_level (NautilusZoomControl *zoom_control, float zoom_level)
+nautilus_zoom_control_set_zoom_level (NautilusZoomControl *zoom_control,
+				      NautilusZoomLevel zoom_level)
 {
 	zoom_control->details->zoom_level = zoom_level;
 	nautilus_zoom_control_redraw (zoom_control);
@@ -432,8 +438,8 @@ nautilus_zoom_control_set_zoom_level (NautilusZoomControl *zoom_control, float z
 
 void
 nautilus_zoom_control_set_parameters (NautilusZoomControl *zoom_control,
-				      float min_zoom_level,
-				      float max_zoom_level,
+				      NautilusZoomLevel min_zoom_level,
+				      NautilusZoomLevel max_zoom_level,
 				      gboolean has_min_zoom_level,
 				      gboolean has_max_zoom_level,
 				      GList *zoom_levels)
@@ -445,25 +451,25 @@ nautilus_zoom_control_set_parameters (NautilusZoomControl *zoom_control,
 	zoom_control->details->has_min_zoom_level = has_min_zoom_level;
 	zoom_control->details->has_max_zoom_level = has_max_zoom_level;
 
-	eel_g_list_free_deep (zoom_control->details->preferred_zoom_levels);
+	g_list_free (zoom_control->details->preferred_zoom_levels);
 	zoom_control->details->preferred_zoom_levels = zoom_levels;
 
 	nautilus_zoom_control_redraw (zoom_control);
 }
 
-float
+NautilusZoomLevel
 nautilus_zoom_control_get_zoom_level (NautilusZoomControl *zoom_control)
 {
 	return zoom_control->details->zoom_level;
 }
 
-float
+NautilusZoomLevel
 nautilus_zoom_control_get_min_zoom_level (NautilusZoomControl *zoom_control)
 {
 	return zoom_control->details->min_zoom_level;
 }
 
-float
+NautilusZoomLevel
 nautilus_zoom_control_get_max_zoom_level (NautilusZoomControl *zoom_control)
 {
 	return zoom_control->details->max_zoom_level;
@@ -569,17 +575,17 @@ nautilus_zoom_control_class_init (NautilusZoomControlClass *class)
 		              G_STRUCT_OFFSET (NautilusZoomControlClass,
 					       zoom_to_level),
 		              NULL, NULL,
-		              g_cclosure_marshal_VOID__FLOAT,
+		              g_cclosure_marshal_VOID__INT,
 		              G_TYPE_NONE,
 			      1,
-			      G_TYPE_FLOAT);
+			      G_TYPE_INT);
 
-	signals[ZOOM_TO_FIT] =
-		g_signal_new ("zoom_to_fit",
+	signals[ZOOM_TO_DEFAULT] =
+		g_signal_new ("zoom_to_default",
 		              G_TYPE_FROM_CLASS (class),
 		              G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
 		              G_STRUCT_OFFSET (NautilusZoomControlClass,
-					       zoom_to_fit),
+					       zoom_to_default),
 		              NULL, NULL,
 		              g_cclosure_marshal_VOID__VOID,
 		              G_TYPE_NONE, 0);
@@ -609,11 +615,11 @@ nautilus_zoom_control_class_init (NautilusZoomControlClass *class)
 
 	gtk_binding_entry_add_signal (binding_set, 
 				      GDK_KP_Equal, 0, 
-				      "zoom_to_fit",
+				      "zoom_to_default",
 				      0);
 	gtk_binding_entry_add_signal (binding_set, 
 				      GDK_KP_Equal, 0, 
-				      "zoom_to_fit",
+				      "zoom_to_default",
 				      0);
 
 	gtk_binding_entry_add_signal (binding_set, 
@@ -687,15 +693,15 @@ nautilus_zoom_control_accessible_get_current_value (AtkValue *accessible,
 {
 	NautilusZoomControl *control;
 
-	g_value_init (value, G_TYPE_FLOAT);
+	g_value_init (value, G_TYPE_INT);
 	
 	control = NAUTILUS_ZOOM_CONTROL (GTK_ACCESSIBLE (accessible)->widget);
 	if (!control) {
-		g_value_set_float (value, 0.0);
+		g_value_set_int (value, NAUTILUS_ZOOM_LEVEL_STANDARD);
 		return;
 	}
 
-	g_value_set_float (value, control->details->zoom_level);
+	g_value_set_int (value, control->details->zoom_level);
 }
 
 static void
@@ -704,15 +710,15 @@ nautilus_zoom_control_accessible_get_maximum_value (AtkValue *accessible,
 {
 	NautilusZoomControl *control;
 
-	g_value_init (value, G_TYPE_FLOAT);
+	g_value_init (value, G_TYPE_INT);
 	
 	control = NAUTILUS_ZOOM_CONTROL (GTK_ACCESSIBLE (accessible)->widget);
 	if (!control) {
-		g_value_set_float (value, 0.0);
+		g_value_set_int (value, NAUTILUS_ZOOM_LEVEL_STANDARD);
 		return;
 	}
 
-	g_value_set_float (value, control->details->max_zoom_level);
+	g_value_set_int (value, control->details->max_zoom_level);
 }
 
 static void
@@ -721,33 +727,33 @@ nautilus_zoom_control_accessible_get_minimum_value (AtkValue *accessible,
 {
 	NautilusZoomControl *control;
 	
-	g_value_init (value, G_TYPE_FLOAT);
+	g_value_init (value, G_TYPE_INT);
 
 	control = NAUTILUS_ZOOM_CONTROL (GTK_ACCESSIBLE (accessible)->widget);
 	if (!control) {
-		g_value_set_float (value, 0.0);
+		g_value_set_int (value, NAUTILUS_ZOOM_LEVEL_STANDARD);
 		return;
 	}
 
-	g_value_set_float (value, control->details->min_zoom_level);
+	g_value_set_int (value, control->details->min_zoom_level);
 }
 
-static float
-nearest_preferred (NautilusZoomControl *zoom_control, float value)
+static NautilusZoomLevel
+nearest_preferred (NautilusZoomControl *zoom_control, NautilusZoomLevel value)
 {
-	float last_value;
-	float current_value;
+	NautilusZoomLevel last_value;
+	NautilusZoomLevel current_value;
 	GList *l;
 
 	if (!zoom_control->details->preferred_zoom_levels) {
 		return value;
 	}
 
-	last_value = * (float *)zoom_control->details->preferred_zoom_levels->data;
+	last_value = GPOINTER_TO_INT (zoom_control->details->preferred_zoom_levels->data);
 	current_value = last_value;
 	
 	for (l = zoom_control->details->preferred_zoom_levels; l != NULL; l = l->next) {
-		current_value = * (float*)l->data;
+		current_value = GPOINTER_TO_INT (l->data);
 		
 		if (current_value > value) {
 			float center = (last_value + current_value) / 2;
@@ -767,14 +773,14 @@ nautilus_zoom_control_accessible_set_current_value (AtkValue *accessible,
 						    const GValue *value)
 {
 	NautilusZoomControl *control;
-	float zoom;
+	NautilusZoomLevel zoom;
 
 	control = NAUTILUS_ZOOM_CONTROL (GTK_ACCESSIBLE (accessible)->widget);
 	if (!control) {
 		return FALSE;
 	}
 
-	zoom = nearest_preferred (control, g_value_get_float (value));
+	zoom = nearest_preferred (control, g_value_get_int (value));
 
 	g_signal_emit (control, signals[ZOOM_TO_LEVEL], 0, zoom);
 

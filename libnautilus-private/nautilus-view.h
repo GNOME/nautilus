@@ -29,6 +29,9 @@
 #include <gtk/gtkwidget.h>
 #include <bonobo/bonobo-ui-util.h>
 
+/* For NautilusZoomLevel */
+#include <libnautilus-private/nautilus-icon-factory.h>
+
 G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_VIEW           (nautilus_view_get_type ())
@@ -92,23 +95,16 @@ struct _NautilusViewIface
 	char *         (* get_title)              (NautilusView          *view); 
 
 
-	/* BONOBOTODO: re-think this interface later */
-	gboolean       (*get_is_zoomable)         (NautilusView   *view);
-	float          (*get_zoom_level)          (NautilusView   *view);
-        void           (*set_zoom_level)          (NautilusView   *view,
-						   float           zoom_level);
-	float          (*get_min_zoom_level)      (NautilusView   *view);
-	float          (*get_max_zoom_level)      (NautilusView   *view);
-	gboolean       (*get_has_min_zoom_level)  (NautilusView   *view);
-	gboolean       (*get_has_max_zoom_level)  (NautilusView   *view);
-	gboolean       (*get_is_continuous)       (NautilusView   *view);
-	gboolean       (*get_can_zoom_in)         (NautilusView   *view);
-	gboolean       (*get_can_zoom_out)        (NautilusView   *view);
-
-	GList *        (*get_preferred_zoom_levels)(NautilusView   *view);
-	void           (*zoom_in)                 (NautilusView   *view);
-	void           (*zoom_out)                (NautilusView   *view);
-	void           (*zoom_to_fit)             (NautilusView   *view);
+	/* Zoom support */
+	gboolean       (* supports_zooming)       (NautilusView          *view);
+        void           (* bump_zoom_level)     	  (NautilusView          *view,
+						   int                    zoom_increment);
+        void           (* zoom_to_level) 	  (NautilusView          *view, 
+						   NautilusZoomLevel     level);
+        NautilusZoomLevel (* get_zoom_level) 	  (NautilusView          *view);
+        void           (* restore_default_zoom_level) (NautilusView          *view);
+        gboolean       (* can_zoom_in)	 	  (NautilusView          *view);
+        gboolean       (* can_zoom_out)	 	  (NautilusView          *view);
 	
 	/* Padding for future expansion */
 	void (*_reserved1) (void);
@@ -123,34 +119,28 @@ struct _NautilusViewIface
 
 GType             nautilus_view_get_type             (void);
 
-const char *nautilus_view_get_view_id               (NautilusView *view);
-GtkWidget * nautilus_view_get_widget                (NautilusView *view);
-void        nautilus_view_load_location             (NautilusView *view,
-						     const char   *location_uri);
-void        nautilus_view_stop_loading              (NautilusView *view);
-int         nautilus_view_get_selection_count       (NautilusView *view);
-GList *     nautilus_view_get_selection             (NautilusView *view);
-void        nautilus_view_set_selection             (NautilusView *view,
-						     GList        *list);
-char *      nautilus_view_get_first_visible_file    (NautilusView *view);
-void        nautilus_view_scroll_to_file            (NautilusView *view,
-						     const char   *uri);
-char *      nautilus_view_get_title                 (NautilusView *view);
-gboolean    nautilus_view_get_is_zoomable           (NautilusView *view);
-float       nautilus_view_get_zoom_level            (NautilusView *view);
-void        nautilus_view_set_zoom_level            (NautilusView *view,
-						     float         zoom_level);
-float       nautilus_view_get_min_zoom_level        (NautilusView *view);
-float       nautilus_view_get_max_zoom_level        (NautilusView *view);
-gboolean    nautilus_view_get_has_min_zoom_level    (NautilusView *view);
-gboolean    nautilus_view_get_has_max_zoom_level    (NautilusView *view);
-gboolean    nautilus_view_get_is_continuous         (NautilusView *view);
-gboolean    nautilus_view_get_can_zoom_in           (NautilusView *view);
-gboolean    nautilus_view_get_can_zoom_out          (NautilusView *view);
-GList *     nautilus_view_get_preferred_zoom_levels (NautilusView *view);
-void        nautilus_view_zoom_in                   (NautilusView *view);
-void        nautilus_view_zoom_out                  (NautilusView *view);
-void        nautilus_view_zoom_to_fit               (NautilusView *view);
+const char *      nautilus_view_get_view_id                (NautilusView      *view);
+GtkWidget *       nautilus_view_get_widget                 (NautilusView      *view);
+void              nautilus_view_load_location              (NautilusView      *view,
+							    const char        *location_uri);
+void              nautilus_view_stop_loading               (NautilusView      *view);
+int               nautilus_view_get_selection_count        (NautilusView      *view);
+GList *           nautilus_view_get_selection              (NautilusView      *view);
+void              nautilus_view_set_selection              (NautilusView      *view,
+							    GList             *list);
+char *            nautilus_view_get_first_visible_file     (NautilusView      *view);
+void              nautilus_view_scroll_to_file             (NautilusView      *view,
+							    const char        *uri);
+char *            nautilus_view_get_title                  (NautilusView      *view);
+gboolean          nautilus_view_supports_zooming           (NautilusView      *view);
+void              nautilus_view_bump_zoom_level            (NautilusView      *view,
+							    int                zoom_increment);
+void              nautilus_view_zoom_to_level              (NautilusView      *view,
+							    NautilusZoomLevel  level);
+void              nautilus_view_restore_default_zoom_level (NautilusView      *view);
+gboolean          nautilus_view_can_zoom_in                (NautilusView      *view);
+gboolean          nautilus_view_can_zoom_out               (NautilusView      *view);
+NautilusZoomLevel nautilus_view_get_zoom_level             (NautilusView      *view);
 
 /* Temporary bonoboui stuff: */
 BonoboUIComponent * nautilus_view_set_up_ui (NautilusView *view,

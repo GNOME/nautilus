@@ -37,7 +37,6 @@
 #include <libgnome/gnome-url.h>
 #include <bonobo/bonobo-control.h>
 #include <bonobo/bonobo-window.h>
-#include <bonobo/bonobo-zoomable.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <bonobo/bonobo-exception.h>
 #include <eel/eel-alert-dialog.h>
@@ -398,6 +397,7 @@ EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, restore_default_zoom_leve
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, select_all)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, set_selection)
 EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, zoom_to_level)
+EEL_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, get_zoom_level)
 
 typedef struct {
 	GnomeVFSMimeApplication *application;
@@ -1501,125 +1501,6 @@ fm_directory_view_get_widget (NautilusView *view)
 	return GTK_WIDGET (view);
 }
 
-
-static float
-fm_directory_view_get_zoom_level (NautilusView *view)
-{
-	/* BONOBOTODO: implement this*/
-	return 1.0;
-}
-static float
-fm_directory_view_get_min_zoom_level (NautilusView *view)
-{
-	/* BONOBOTODO: implement this*/
-	return 0.0;
-}
-
-static float
-fm_directory_view_get_max_zoom_level (NautilusView *view)
-{
-	/* BONOBOTODO: implement this*/
-	return 4.0;
-}
-
-static gboolean
-fm_directory_view_get_has_max_zoom_level (NautilusView *view)
-{
-	/* BONOBOTODO: implement this*/
-	return TRUE;
-}
-
-static gboolean
-fm_directory_view_get_has_min_zoom_level (NautilusView *view)
-{
-	/* BONOBOTODO: implement this*/
-	return TRUE;
-}
-
-static gboolean
-fm_directory_view_get_is_continuous (NautilusView *view)
-{
-	/* BONOBOTODO: implement this*/
-	return FALSE;
-}
-
-static NautilusZoomLevel
-nautilus_zoom_level_from_float(float zoom_level)
-{
-	int icon_size = floor(zoom_level * NAUTILUS_ICON_SIZE_STANDARD + 0.5);
-	
-	if (icon_size <= NAUTILUS_ICON_SIZE_SMALLEST) {
-		return NAUTILUS_ZOOM_LEVEL_SMALLEST;
-	} else if (icon_size <= NAUTILUS_ICON_SIZE_SMALLER) {
-		return NAUTILUS_ZOOM_LEVEL_SMALLER;
-	} else if (icon_size <= NAUTILUS_ICON_SIZE_SMALL) {
-		return NAUTILUS_ZOOM_LEVEL_SMALL;
-	} else if (icon_size <= NAUTILUS_ICON_SIZE_STANDARD) {
-		return NAUTILUS_ZOOM_LEVEL_STANDARD;
-	} else if (icon_size <= NAUTILUS_ICON_SIZE_LARGE) {
-		return NAUTILUS_ZOOM_LEVEL_LARGE;
-	} else if (icon_size <= NAUTILUS_ICON_SIZE_LARGER) {
-		return NAUTILUS_ZOOM_LEVEL_LARGER;
-	} else {
-		return NAUTILUS_ZOOM_LEVEL_LARGEST;
-	}
-}
-
-static void
-fm_directory_view_set_zoom_level_float (NautilusView *view, float level)
-{
-	fm_directory_view_set_zoom_level (FM_DIRECTORY_VIEW (view),
-					  nautilus_zoom_level_from_float (level));
-}
-
-static float fm_directory_view_preferred_zoom_levels[] = {
-	(float) NAUTILUS_ICON_SIZE_SMALLEST	/ NAUTILUS_ICON_SIZE_STANDARD,
-	(float) NAUTILUS_ICON_SIZE_SMALLER	/ NAUTILUS_ICON_SIZE_STANDARD,
-	(float) NAUTILUS_ICON_SIZE_SMALL	/ NAUTILUS_ICON_SIZE_STANDARD,
-	(float) NAUTILUS_ICON_SIZE_STANDARD	/ NAUTILUS_ICON_SIZE_STANDARD,
-	(float) NAUTILUS_ICON_SIZE_LARGE	/ NAUTILUS_ICON_SIZE_STANDARD,
-	(float) NAUTILUS_ICON_SIZE_LARGER	/ NAUTILUS_ICON_SIZE_STANDARD,
-	(float) NAUTILUS_ICON_SIZE_LARGEST	/ NAUTILUS_ICON_SIZE_STANDARD
-};
-
-static GList *
-fm_directory_view_get_preferred_zoom_levels (NautilusView   *view)
-{
-	int i;
-	float *p;
-	GList *l;
-	
-	l = NULL;
-	for (i = 0; i < G_N_ELEMENTS (fm_directory_view_preferred_zoom_levels); i++) {
-		p = g_new (float, 1);
-		*p = fm_directory_view_preferred_zoom_levels[i];
-		l = g_list_prepend (l, p);
-	}
-	return g_list_reverse (l);
-}
-
-static void
-fm_directory_view_zoom_in (NautilusView *view)
-{
-	fm_directory_view_bump_zoom_level (FM_DIRECTORY_VIEW (view), 1);
-}
-
-static void
-fm_directory_view_zoom_out (NautilusView *view)
-{
-	fm_directory_view_bump_zoom_level (FM_DIRECTORY_VIEW (view), -1);
-}
-
-
-static void
-fm_directory_view_zoom_to_fit (NautilusView *view)
-{
-	/* FIXME bugzilla.gnome.org 42388:
-	 * Need to really implement "zoom to fit"
-	 */
-	fm_directory_view_restore_default_zoom_level (FM_DIRECTORY_VIEW (view));
-}
-
 static int
 fm_directory_view_get_selection_count (NautilusView *view)
 {
@@ -1711,22 +1592,13 @@ fm_directory_view_init_view_iface (NautilusViewIface *iface)
 	iface->get_selection = fm_directory_view_get_selection_uris;
 	iface->set_selection = fm_directory_view_set_selection_uris;
 	
-	
-	/* BONOBOTODO: fix up the zoom crap */
-	iface->get_is_zoomable = (gpointer)fm_directory_view_supports_zooming;
-	iface->get_zoom_level = fm_directory_view_get_zoom_level;
-        iface->set_zoom_level = fm_directory_view_set_zoom_level_float;
-	iface->get_min_zoom_level = fm_directory_view_get_min_zoom_level;
-	iface->get_max_zoom_level = fm_directory_view_get_max_zoom_level;
-	iface->get_has_min_zoom_level = fm_directory_view_get_has_min_zoom_level;
-	iface->get_has_max_zoom_level = fm_directory_view_get_has_max_zoom_level;
-	iface->get_is_continuous = fm_directory_view_get_is_continuous;
-	iface->get_can_zoom_in = (gpointer)fm_directory_view_can_zoom_in;
-	iface->get_can_zoom_out = (gpointer)fm_directory_view_can_zoom_out;
-	iface->get_preferred_zoom_levels = fm_directory_view_get_preferred_zoom_levels;
-	iface->zoom_in = fm_directory_view_zoom_in;
-	iface->zoom_out = fm_directory_view_zoom_out;
-	iface->zoom_to_fit = fm_directory_view_zoom_to_fit;
+	iface->supports_zooming = (gpointer)fm_directory_view_supports_zooming;
+	iface->bump_zoom_level = (gpointer)fm_directory_view_bump_zoom_level;
+        iface->zoom_to_level = (gpointer)fm_directory_view_zoom_to_level;
+        iface->restore_default_zoom_level = (gpointer)fm_directory_view_restore_default_zoom_level;
+        iface->can_zoom_in = (gpointer)fm_directory_view_can_zoom_in;
+        iface->can_zoom_out = (gpointer)fm_directory_view_can_zoom_out;
+	iface->get_zoom_level = (gpointer)fm_directory_view_get_zoom_level;
 }
 
 static void
@@ -1763,13 +1635,6 @@ fm_directory_view_init (FMDirectoryView *view)
 	templates_directory = nautilus_directory_get (templates_directory_uri);
 	add_directory_to_templates_directory_list (view, templates_directory);
 	nautilus_directory_unref (templates_directory);
-
-#ifdef BONOBO_DONE
-	bonobo_zoomable_set_parameters_full (view->details->zoomable,
-					     0.0, .25, 4.0, TRUE, TRUE, FALSE,
-					     fm_directory_view_preferred_zoom_levels, NULL,
-					     G_N_ELEMENTS (fm_directory_view_preferred_zoom_levels));
-#endif
 
 	view->details->sort_directories_first = 
 		eel_preferences_get_boolean (NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
@@ -2887,7 +2752,8 @@ fm_directory_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
  * 
  **/
 void
-fm_directory_view_zoom_to_level (FMDirectoryView *view, int zoom_level)
+fm_directory_view_zoom_to_level (FMDirectoryView *view,
+				 NautilusZoomLevel zoom_level)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
@@ -2901,24 +2767,18 @@ fm_directory_view_zoom_to_level (FMDirectoryView *view, int zoom_level)
 }
 
 
-void
-fm_directory_view_set_zoom_level (FMDirectoryView *view, int zoom_level)
+NautilusZoomLevel
+fm_directory_view_get_zoom_level (FMDirectoryView *view)
 {
-	float new_zoom_level;
-
-	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (view), NAUTILUS_ZOOM_LEVEL_STANDARD);
 
 	if (!fm_directory_view_supports_zooming (view)) {
-		return;
+		return NAUTILUS_ZOOM_LEVEL_STANDARD;
 	}
 
-	new_zoom_level = (float) nautilus_get_icon_size_for_zoom_level (zoom_level)
-		/ NAUTILUS_ICON_SIZE_STANDARD;
-
-#ifdef BONOBO_DONE
-	bonobo_zoomable_report_zoom_level_changed (
-		view->details->zoomable, new_zoom_level, NULL);
-#endif
+	return EEL_CALL_METHOD_WITH_RETURN_VALUE
+		(FM_DIRECTORY_VIEW_CLASS, view,
+		 get_zoom_level, (view));
 }
 
 /**
@@ -7834,6 +7694,7 @@ fm_directory_view_class_init (FMDirectoryViewClass *klass)
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, select_all);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, set_selection);
 	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, zoom_to_level);
+	EEL_ASSIGN_MUST_OVERRIDE_SIGNAL (klass, fm_directory_view, get_zoom_level);
 
 	copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
 	utf8_string_atom = gdk_atom_intern ("UTF8_STRING", FALSE);

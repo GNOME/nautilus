@@ -196,7 +196,7 @@ static void                 fm_icon_view_set_directory_sort_by                 (
 										const char           *sort_by);
 static void                 fm_icon_view_set_zoom_level                        (FMIconView           *view,
 										NautilusZoomLevel     new_level,
-										gboolean              always_set_level);
+										gboolean              always_emit);
 static void                 fm_icon_view_update_click_mode                     (FMIconView           *icon_view);
 static void                 fm_icon_view_set_directory_tighter_layout          (FMIconView           *icon_view,
 										NautilusFile         *file,
@@ -1168,106 +1168,18 @@ fm_icon_view_end_loading (FMDirectoryView *view)
 	icon_view = FM_ICON_VIEW (view);
 }
 
-static void
-fm_icon_view_update_font_size_table (FMIconView *view)
-{
-	NautilusIconContainer *container;
-	int font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST + 1];
-
-	container = get_icon_container (view);
-	g_assert (container != NULL);
-
-	switch (get_default_zoom_level ())
-	{
-	case NAUTILUS_ZOOM_LEVEL_LARGEST:
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -5 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  = -4 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    = -4 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] = -3 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    = -3 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   = -2 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  0 * PANGO_SCALE;
-		break;
-	case NAUTILUS_ZOOM_LEVEL_LARGER:
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -4 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  = -4 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    = -3 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] = -3 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    = -2 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  0 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  2 * PANGO_SCALE;
-		break;
-	case NAUTILUS_ZOOM_LEVEL_LARGE:
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -4 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  = -3 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    = -3 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] = -2 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    =  0 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  2 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  4 * PANGO_SCALE;
-		break;
-	case NAUTILUS_ZOOM_LEVEL_STANDARD:
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -3 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  = -3 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    = -2 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] =  0 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    =  2 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  4 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  4 * PANGO_SCALE;
-		break;
-	case NAUTILUS_ZOOM_LEVEL_SMALL:
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -3 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  = -2 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    =  0 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] =  2 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    =  4 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  4 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  5 * PANGO_SCALE;
-		break;
-	case NAUTILUS_ZOOM_LEVEL_SMALLER:
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -2 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  =  0 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    =  2 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] =  4 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    =  4 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  5 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  5 * PANGO_SCALE;
-		break;
-	case NAUTILUS_ZOOM_LEVEL_SMALLEST:
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] =  0 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  =  2 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    =  4 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] =  4 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    =  5 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  5 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  6 * PANGO_SCALE;
-		break;
-	default:
-		g_warning ("invalid default list-view zoom level");
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLEST] = -3 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALLER]  = -3 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_SMALL]    = -2 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_STANDARD] =  0 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGE]    =  2 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGER]   =  4 * PANGO_SCALE;
-		font_size_table[NAUTILUS_ZOOM_LEVEL_LARGEST]  =  4 * PANGO_SCALE;
-		break;
-	}
-
-	nautilus_icon_container_set_font_size_table (container, font_size_table);
-}
-
 static NautilusZoomLevel
-fm_icon_view_get_zoom_level (FMIconView *view)
+fm_icon_view_get_zoom_level (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_ICON_VIEW (view), NAUTILUS_ZOOM_LEVEL_STANDARD);
-	return nautilus_icon_container_get_zoom_level (get_icon_container (view));
+	
+	return nautilus_icon_container_get_zoom_level (get_icon_container (FM_ICON_VIEW (view)));
 }
 
 static void
 fm_icon_view_set_zoom_level (FMIconView *view,
 			     NautilusZoomLevel new_level,
-			     gboolean always_set_level)
+			     gboolean always_emit)
 {
 	NautilusIconContainer *icon_container;
 
@@ -1277,8 +1189,8 @@ fm_icon_view_set_zoom_level (FMIconView *view,
 
 	icon_container = get_icon_container (view);
 	if (nautilus_icon_container_get_zoom_level (icon_container) == new_level) {
-		if (always_set_level) {
-			fm_directory_view_set_zoom_level (&view->parent, new_level);
+		if (always_emit) {
+			g_signal_emit_by_name (view, "zoom_level_changed");
 		}
 		return;
 	}
@@ -1290,8 +1202,9 @@ fm_icon_view_set_zoom_level (FMIconView *view,
 		 new_level);
 
 	nautilus_icon_container_set_zoom_level (icon_container, new_level);
-	fm_directory_view_set_zoom_level (&view->parent, new_level);
 
+	g_signal_emit_by_name (view, "zoom_level_changed");
+	
 	fm_directory_view_update_menus (FM_DIRECTORY_VIEW (view));
 }
 
@@ -1304,16 +1217,17 @@ fm_icon_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
 	g_return_if_fail (FM_IS_ICON_VIEW (view));
 
 	icon_view = FM_ICON_VIEW (view);
-	new_level = fm_icon_view_get_zoom_level (icon_view) + zoom_increment;
+	new_level = fm_icon_view_get_zoom_level (view) + zoom_increment;
 
 	if (new_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
 	    new_level <= NAUTILUS_ZOOM_LEVEL_LARGEST) {
-		fm_icon_view_set_zoom_level(icon_view, new_level, FALSE);
+		fm_directory_view_zoom_to_level (view, new_level);
 	}
 }
 
 static void
-fm_icon_view_zoom_to_level (FMDirectoryView *view, int zoom_level)
+fm_icon_view_zoom_to_level (FMDirectoryView *view,
+			    NautilusZoomLevel zoom_level)
 {
 	FMIconView *icon_view;
 
@@ -1326,13 +1240,8 @@ fm_icon_view_zoom_to_level (FMDirectoryView *view, int zoom_level)
 static void
 fm_icon_view_restore_default_zoom_level (FMDirectoryView *view)
 {
-	FMIconView *icon_view;
-
-	g_return_if_fail (FM_IS_ICON_VIEW (view));
-
-	icon_view = FM_ICON_VIEW (view);
-	fm_icon_view_set_zoom_level
-		(icon_view, get_default_zoom_level (), FALSE);
+	fm_directory_view_zoom_to_level
+		(view, get_default_zoom_level ());
 }
 
 static gboolean 
@@ -1340,7 +1249,7 @@ fm_icon_view_can_zoom_in (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
 
-	return fm_icon_view_get_zoom_level (FM_ICON_VIEW (view)) 
+	return fm_icon_view_get_zoom_level (view) 
 		< NAUTILUS_ZOOM_LEVEL_LARGEST;
 }
 
@@ -1349,7 +1258,7 @@ fm_icon_view_can_zoom_out (FMDirectoryView *view)
 {
 	g_return_val_if_fail (FM_IS_ICON_VIEW (view), FALSE);
 
-	return fm_icon_view_get_zoom_level (FM_ICON_VIEW (view)) 
+	return fm_icon_view_get_zoom_level (view) 
 		> NAUTILUS_ZOOM_LEVEL_SMALLEST;
 }
 
@@ -1525,7 +1434,7 @@ layout_changed_callback (NautilusIconContainer *container,
 static gboolean
 fm_icon_view_can_rename_file (FMDirectoryView *view, NautilusFile *file)
 {
-	if (!(fm_icon_view_get_zoom_level (FM_ICON_VIEW (view)) > NAUTILUS_ZOOM_LEVEL_SMALLEST)) {
+	if (!(fm_icon_view_get_zoom_level (view) > NAUTILUS_ZOOM_LEVEL_SMALLEST)) {
 		return FALSE;
 	}
 
@@ -2026,7 +1935,7 @@ icon_container_preview_callback (NautilusIconContainer *container,
 	/* Display file name in status area at low zoom levels, since
 	 * the name is not displayed or hard to read in the icon view.
 	 */
-	if (fm_icon_view_get_zoom_level (icon_view) <= NAUTILUS_ZOOM_LEVEL_SMALLER) {
+	if (fm_icon_view_get_zoom_level (FM_DIRECTORY_VIEW (icon_view)) <= NAUTILUS_ZOOM_LEVEL_SMALLER) {
 		if (start_flag) {
 			file_name = nautilus_file_get_display_name (file);
 			message = g_strdup_printf (_("pointing at \"%s\""), file_name);
@@ -2446,8 +2355,7 @@ default_zoom_level_changed_callback (gpointer callback_data)
 		level = nautilus_file_get_integer_metadata (file, 
 							    NAUTILUS_METADATA_KEY_ICON_VIEW_ZOOM_LEVEL, 
 							    get_default_zoom_level ());
-		fm_icon_view_update_font_size_table (icon_view);
-		fm_icon_view_set_zoom_level (icon_view, level, TRUE);
+		fm_directory_view_zoom_to_level (FM_DIRECTORY_VIEW (icon_view), level);
 	}
 }
 
@@ -2579,7 +2487,6 @@ create_icon_container (FMIconView *icon_view)
 			   GTK_WIDGET (icon_container));
 
 	fm_icon_view_update_click_mode (icon_view);
-	fm_icon_view_update_font_size_table (icon_view);
 
 	gtk_widget_show (GTK_WIDGET (icon_container));
 }
@@ -2844,6 +2751,7 @@ fm_icon_view_class_init (FMIconViewClass *klass)
 	fm_directory_view_class->set_selection = fm_icon_view_set_selection;
 	fm_directory_view_class->sort_files = fm_icon_view_sort_files;
 	fm_directory_view_class->zoom_to_level = fm_icon_view_zoom_to_level;
+	fm_directory_view_class->get_zoom_level = fm_icon_view_get_zoom_level;
         fm_directory_view_class->click_policy_changed = fm_icon_view_click_policy_changed;
         fm_directory_view_class->embedded_text_policy_changed = fm_icon_view_embedded_text_policy_changed;
         fm_directory_view_class->emblems_changed = fm_icon_view_emblems_changed;

@@ -752,8 +752,8 @@ real_merge_menus (NautilusWindow *nautilus_window)
 	g_signal_connect_object (window->zoom_control, "zoom_to_level",
 				 G_CALLBACK (nautilus_window_zoom_to_level),
 				 window, G_CONNECT_SWAPPED);
-	g_signal_connect_object (window->zoom_control, "zoom_to_fit",
-				 G_CALLBACK (nautilus_window_zoom_to_fit),
+	g_signal_connect_object (window->zoom_control, "zoom_to_default",
+				 G_CALLBACK (nautilus_window_zoom_to_default),
 				 window, G_CONNECT_SWAPPED);
 	gtk_box_pack_end (GTK_BOX (location_bar_box), window->zoom_control, FALSE, FALSE, 0);
 
@@ -818,52 +818,8 @@ zoom_level_changed_callback (NautilusView *view,
 }
 
 static void
-zoom_parameters_changed_callback (NautilusView *view,
-                                  NautilusNavigationWindow *window)
-{
-        g_assert (NAUTILUS_IS_NAVIGATION_WINDOW (window));
-	
-        /* This callback is invoked via the "zoom_parameters_changed"
-         * signal of the BonoboZoomableFrame.
-         * 
-         * You can rely upon this callback being called in the following
-         * situations:
-         *
-         * - a zoomable component has been set in the NautilusViewFrame;
-         *   in this case nautilus_view_frame_set_to_component() emits the
-         *   "zoom_parameters_changed" signal after creating the
-         *   BonoboZoomableFrame and binding it to the Bonobo::Zoomable.
-         *
-         *   This means that we can use the following call to
-         *   nautilus_zoom_control_set_parameters() to display the zoom
-         *   control when a new zoomable component has been loaded.
-         *
-         * - a new file has been loaded by the zoomable component; this is
-         *   not 100% guaranteed since it's up to the component to emit this
-         *   signal, but I consider it "good behaviour" of a component to
-         *   emit this signal after loading a new file.
-         */
-
-	nautilus_zoom_control_set_parameters
-		(NAUTILUS_ZOOM_CONTROL (window->zoom_control),
-		 nautilus_view_get_min_zoom_level (view),
-		 nautilus_view_get_max_zoom_level (view),
-		 nautilus_view_get_has_min_zoom_level (view),
-		 nautilus_view_get_has_max_zoom_level (view),
-		 nautilus_view_get_preferred_zoom_levels (view));
-
-        /* "zoom_parameters_changed" always implies "zoom_level_changed",
-         * but you won't get both signals, so we need to pass it down.
-         */
-        zoom_level_changed_callback (view, window);
-}
-
-static void
 connect_view (NautilusNavigationWindow *window, NautilusView *view)
 {
-	g_signal_connect (view, "zoom_parameters_changed",
-			  G_CALLBACK (zoom_parameters_changed_callback),
-			  window);
 	g_signal_connect (view, "zoom_level_changed",
 			  G_CALLBACK (zoom_level_changed_callback),
 			  window);
@@ -876,10 +832,6 @@ disconnect_view (NautilusNavigationWindow *window, NautilusView *view)
 		return;
 	}
 	
-	g_signal_handlers_disconnect_by_func 
-		(G_OBJECT (view), 
-		 G_CALLBACK (zoom_parameters_changed_callback), 
-		 window);
 	g_signal_handlers_disconnect_by_func
 		(view, 
 		 G_CALLBACK (zoom_level_changed_callback), 
@@ -911,7 +863,7 @@ real_set_content_view_widget (NautilusWindow *nautilus_window,
 		NAUTILUS_HORIZONTAL_SPLITTER (window->details->content_paned),
 		GTK_WIDGET (new_view));
 
-	if (new_view != NULL && nautilus_view_get_is_zoomable (new_view)) {
+	if (new_view != NULL && nautilus_view_supports_zooming (new_view)) {
 		gtk_widget_show (window->zoom_control);
 	} else {
 		gtk_widget_hide (window->zoom_control);

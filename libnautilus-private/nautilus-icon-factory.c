@@ -1501,6 +1501,14 @@ nautilus_get_icon_size_for_zoom_level (NautilusZoomLevel zoom_level)
 	g_return_val_if_reached (NAUTILUS_ICON_SIZE_STANDARD);
 }
 
+float
+nautilus_get_relative_icon_size_for_zoom_level (NautilusZoomLevel zoom_level)
+{
+	return (float)nautilus_get_icon_size_for_zoom_level (zoom_level) / NAUTILUS_ICON_SIZE_STANDARD;
+}
+
+
+
 /* Convenience cover for nautilus_icon_factory_get_icon_for_file
  * and nautilus_icon_factory_get_pixbuf_for_icon.
  */

@@ -164,9 +164,11 @@ struct FMDirectoryViewClass {
         /* zoom_to_level is a function pointer that subclasses must override
          * to set the zoom level of an object to the specified level. */
         void    (* zoom_to_level) 		(FMDirectoryView *view, 
-        				         gint 		 level);
+        				         NautilusZoomLevel level);
 
-        /* restore_default_zoom_level is a function pointer that subclasses must override
+        NautilusZoomLevel (* get_zoom_level)    (FMDirectoryView *view);
+
+	/* restore_default_zoom_level is a function pointer that subclasses must override
          * to restore the zoom level of an object to a default setting. */
         void    (* restore_default_zoom_level) (FMDirectoryView *view);
 
@@ -308,9 +310,8 @@ GtkWidget *         fm_directory_view_get_background_widget            (FMDirect
 void                fm_directory_view_bump_zoom_level                  (FMDirectoryView  *view,
 									int               zoom_increment);
 void                fm_directory_view_zoom_to_level                    (FMDirectoryView  *view,
-									int               zoom_level);
-void                fm_directory_view_set_zoom_level                   (FMDirectoryView  *view,
-									int               zoom_level);
+									NautilusZoomLevel zoom_level);
+NautilusZoomLevel   fm_directory_view_get_zoom_level                   (FMDirectoryView  *view);
 void                fm_directory_view_restore_default_zoom_level       (FMDirectoryView  *view);
 void                fm_directory_view_reset_to_defaults                (FMDirectoryView  *view);
 void                fm_directory_view_select_all                       (FMDirectoryView  *view);

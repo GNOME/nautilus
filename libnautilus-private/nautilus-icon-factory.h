@@ -105,6 +105,7 @@ GObject *             nautilus_icon_factory_get                          (void);
 
 /* Relationship between zoom levels and icons sizes. */
 guint                 nautilus_get_icon_size_for_zoom_level              (NautilusZoomLevel            zoom_level);
+float                 nautilus_get_relative_icon_size_for_zoom_level     (NautilusZoomLevel            zoom_level);
 
 /* Choose the appropriate icon, but don't render it yet. */
 char *                nautilus_icon_factory_get_icon_for_file            (NautilusFile                *file,

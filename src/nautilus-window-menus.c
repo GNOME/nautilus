@@ -471,7 +471,7 @@ view_menu_zoom_normal_callback (BonoboUIComponent *component,
 			        gpointer user_data, 
 			        const char *verb) 
 {
-	nautilus_window_zoom_to_level (NAUTILUS_WINDOW (user_data), 1.0);
+	nautilus_window_zoom_to_default (NAUTILUS_WINDOW (user_data));
 }
 
 static void

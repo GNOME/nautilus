@@ -131,8 +131,7 @@ static void   fm_list_view_set_zoom_level  (FMListView        *view,
 					    NautilusZoomLevel  new_level,
 					    gboolean           always_set_level);
 static void   fm_list_view_scale_font_size (FMListView        *view,
-					    NautilusZoomLevel  new_level,
-					    gboolean           update_size_table);
+					    NautilusZoomLevel  new_level);
 static void   fm_list_view_scroll_to_file  (FMListView        *view,
 					    NautilusFile      *file);
 static void   fm_list_view_iface_init      (NautilusViewIface *iface);
@@ -1260,9 +1259,6 @@ set_zoom_level_from_metadata_and_preferences (FMListView *list_view)
 							    get_default_zoom_level ());
 		fm_list_view_set_zoom_level (list_view, level, TRUE);
 		
-		/* reset the font size table for the new default zoom level */
-		fm_list_view_scale_font_size (list_view, level, TRUE);
-		
 		/* updated the rows after updating the font size */
 		gtk_tree_model_foreach (GTK_TREE_MODEL (list_view->details->model),
 					list_view_changed_foreach, NULL);
@@ -1693,27 +1689,25 @@ fm_list_view_reset_to_defaults (FMDirectoryView *view)
 
 static void
 fm_list_view_scale_font_size (FMListView *view, 
-			      NautilusZoomLevel new_level,
-			      gboolean update_size_table)
+			      NautilusZoomLevel new_level)
 {
 	GList *l;
 	static gboolean first_time = TRUE;
 	static double pango_scale[7];
-	int default_zoom_level, i;
+	int medium;
+	int i;
 
 	g_return_if_fail (new_level >= NAUTILUS_ZOOM_LEVEL_SMALLEST &&
 			  new_level <= NAUTILUS_ZOOM_LEVEL_LARGEST);
 
-	if (update_size_table || first_time) {
+	if (first_time) {
 		first_time = FALSE;
-
-		default_zoom_level = get_default_zoom_level ();
-
-		pango_scale[default_zoom_level] = PANGO_SCALE_MEDIUM;
-		for (i = default_zoom_level; i > NAUTILUS_ZOOM_LEVEL_SMALLEST; i--) {
+		medium = NAUTILUS_ZOOM_LEVEL_SMALLER;
+		pango_scale[medium] = PANGO_SCALE_MEDIUM;
+		for (i = medium; i > NAUTILUS_ZOOM_LEVEL_SMALLEST; i--) {
 			pango_scale[i - 1] = (1 / 1.2) * pango_scale[i];
 		}
-		for (i = default_zoom_level; i < NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
+		for (i = medium; i < NAUTILUS_ZOOM_LEVEL_LARGEST; i++) {
 			pango_scale[i + 1] = 1.2 * pango_scale[i];
 		}
 	}
@@ -1731,7 +1725,7 @@ fm_list_view_scale_font_size (FMListView *view,
 static void
 fm_list_view_set_zoom_level (FMListView *view,
 			     NautilusZoomLevel new_level,
-			     gboolean always_set_level)
+			     gboolean always_emit)
 {
 	int icon_size;
 	int column, emblem_column;
@@ -1741,14 +1735,14 @@ fm_list_view_set_zoom_level (FMListView *view,
 			  new_level <= NAUTILUS_ZOOM_LEVEL_LARGEST);
 
 	if (view->details->zoom_level == new_level) {
-		if (always_set_level) {
-			fm_directory_view_set_zoom_level (FM_DIRECTORY_VIEW(view), new_level);
+		if (always_emit) {
+			g_signal_emit_by_name (FM_DIRECTORY_VIEW(view), "zoom_level_changed");
 		}
 		return;
 	}
 
 	view->details->zoom_level = new_level;
-	fm_directory_view_set_zoom_level (FM_DIRECTORY_VIEW(view), new_level);
+	g_signal_emit_by_name (FM_DIRECTORY_VIEW(view), "zoom_level_changed");
 
 	nautilus_file_set_integer_metadata
 		(fm_directory_view_get_directory_as_file (FM_DIRECTORY_VIEW (view)), 
@@ -1766,7 +1760,7 @@ fm_list_view_set_zoom_level (FMListView *view,
 					     NULL);
 
 	/* Scale text. */
-	fm_list_view_scale_font_size (view, new_level, FALSE);
+	fm_list_view_scale_font_size (view, new_level);
 
 	/* Make all rows the same size. */
 	icon_size = nautilus_get_icon_size_for_zoom_level (new_level);
@@ -1793,8 +1787,21 @@ fm_list_view_bump_zoom_level (FMDirectoryView *view, int zoom_increment)
 	}
 }
 
+static NautilusZoomLevel
+fm_list_view_get_zoom_level (FMDirectoryView *view)
+{
+	FMListView *list_view;
+
+	g_return_val_if_fail (FM_IS_LIST_VIEW (view), NAUTILUS_ZOOM_LEVEL_STANDARD);
+
+	list_view = FM_LIST_VIEW (view);
+
+	return list_view->details->zoom_level;
+}
+
 static void
-fm_list_view_zoom_to_level (FMDirectoryView *view, int zoom_level)
+fm_list_view_zoom_to_level (FMDirectoryView *view,
+			    NautilusZoomLevel zoom_level)
 {
 	FMListView *list_view;
 
@@ -2148,6 +2155,7 @@ fm_list_view_class_init (FMListViewClass *class)
 	fm_directory_view_class->sort_files = fm_list_view_sort_files;
 	fm_directory_view_class->sort_directories_first_changed = fm_list_view_sort_directories_first_changed;
 	fm_directory_view_class->start_renaming_file = fm_list_view_start_renaming_file;
+	fm_directory_view_class->get_zoom_level = fm_list_view_get_zoom_level;
 	fm_directory_view_class->zoom_to_level = fm_list_view_zoom_to_level;
         fm_directory_view_class->emblems_changed = fm_list_view_emblems_changed;
 

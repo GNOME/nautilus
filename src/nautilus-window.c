@@ -478,15 +478,16 @@ void
 nautilus_window_zoom_in (NautilusWindow *window)
 {
 	if (window->content_view != NULL) {
-		nautilus_view_zoom_in (window->content_view);
+		nautilus_view_bump_zoom_level (window->content_view, 1);
 	}
 }
 
 void
-nautilus_window_zoom_to_level (NautilusWindow *window, float level)
+nautilus_window_zoom_to_level (NautilusWindow *window,
+			       NautilusZoomLevel level)
 {
 	if (window->content_view != NULL) {
-		nautilus_view_set_zoom_level (window->content_view, level);
+		nautilus_view_zoom_to_level (window->content_view, level);
 	}
 }
 
@@ -494,15 +495,15 @@ void
 nautilus_window_zoom_out (NautilusWindow *window)
 {
 	if (window->content_view != NULL) {
-		nautilus_view_zoom_out (window->content_view);
+		nautilus_view_bump_zoom_level (window->content_view, -1);
 	}
 }
 
 void
-nautilus_window_zoom_to_fit (NautilusWindow *window)
+nautilus_window_zoom_to_default (NautilusWindow *window)
 {
 	if (window->content_view != NULL) {
-		nautilus_view_zoom_to_fit (window->content_view);
+		nautilus_view_restore_default_zoom_level (window->content_view);
 	}
 }
 

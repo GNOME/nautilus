@@ -1522,10 +1522,10 @@ zoom_level_changed_callback (NautilusView *view,
 
         nautilus_bonobo_set_sensitive (window->details->shell_ui,
                                        NAUTILUS_COMMAND_ZOOM_IN,
-                                       nautilus_view_get_can_zoom_in (view));
+                                       nautilus_view_can_zoom_in (view));
         nautilus_bonobo_set_sensitive (window->details->shell_ui,
                                        NAUTILUS_COMMAND_ZOOM_OUT,
-                                       nautilus_view_get_can_zoom_out (view));
+                                       nautilus_view_can_zoom_out (view));
         nautilus_bonobo_set_sensitive (window->details->shell_ui,
                                        NAUTILUS_COMMAND_ZOOM_NORMAL,
                                        TRUE);

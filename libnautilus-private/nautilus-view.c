@@ -189,119 +189,67 @@ nautilus_view_get_title (NautilusView *view)
 	}
 }
 
+
 gboolean
-nautilus_view_get_is_zoomable (NautilusView *view)
+nautilus_view_supports_zooming (NautilusView *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), FALSE);
 	
-	return (* NAUTILUS_VIEW_GET_IFACE (view)->get_is_zoomable) (view);
+	return (* NAUTILUS_VIEW_GET_IFACE (view)->supports_zooming) (view);
 }
 
-float
+void
+nautilus_view_bump_zoom_level (NautilusView *view,
+			       int zoom_increment)
+{
+	g_return_if_fail (NAUTILUS_IS_VIEW (view));
+	
+	(* NAUTILUS_VIEW_GET_IFACE (view)->bump_zoom_level) (view,
+							     zoom_increment);
+}
+
+void
+nautilus_view_zoom_to_level (NautilusView      *view,
+			     NautilusZoomLevel  level)
+{
+	g_return_if_fail (NAUTILUS_IS_VIEW (view));
+	
+	(* NAUTILUS_VIEW_GET_IFACE (view)->zoom_to_level) (view,
+							   level);
+}
+
+void
+nautilus_view_restore_default_zoom_level (NautilusView *view)
+{
+	g_return_if_fail (NAUTILUS_IS_VIEW (view));
+	
+	(* NAUTILUS_VIEW_GET_IFACE (view)->restore_default_zoom_level) (view);
+}
+
+gboolean
+nautilus_view_can_zoom_in (NautilusView *view)
+{
+	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), FALSE);
+	
+	return (* NAUTILUS_VIEW_GET_IFACE (view)->can_zoom_in) (view);
+}
+
+gboolean
+nautilus_view_can_zoom_out (NautilusView *view)
+{
+	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), FALSE);
+	
+	return (* NAUTILUS_VIEW_GET_IFACE (view)->can_zoom_out) (view);
+}
+
+NautilusZoomLevel
 nautilus_view_get_zoom_level (NautilusView *view)
 {
-	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), 1.0);
+	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NAUTILUS_ZOOM_LEVEL_STANDARD);
 	
 	return (* NAUTILUS_VIEW_GET_IFACE (view)->get_zoom_level) (view);
 }
 
-void
-nautilus_view_set_zoom_level (NautilusView *view,
-			      float         zoom_level)
-{
-	g_return_if_fail (NAUTILUS_IS_VIEW (view));
-	
-	(* NAUTILUS_VIEW_GET_IFACE (view)->set_zoom_level) (view,
-							    zoom_level);
-}
-
-float
-nautilus_view_get_min_zoom_level (NautilusView *view)
-{
-	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), 1.0);
-	
-	return (* NAUTILUS_VIEW_GET_IFACE (view)->get_min_zoom_level) (view);
-}
-
-float
-nautilus_view_get_max_zoom_level (NautilusView *view)
-{
-	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), 1.0);
-	
-	return (* NAUTILUS_VIEW_GET_IFACE (view)->get_max_zoom_level) (view);
-}
-
-gboolean
-nautilus_view_get_has_min_zoom_level (NautilusView *view)
-{
-	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), FALSE);
-	
-	return (* NAUTILUS_VIEW_GET_IFACE (view)->get_has_min_zoom_level) (view);
-}
-
-gboolean
-nautilus_view_get_has_max_zoom_level (NautilusView *view)
-{
-	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), FALSE);
-	
-	return (* NAUTILUS_VIEW_GET_IFACE (view)->get_has_max_zoom_level) (view);
-}
-
-gboolean
-nautilus_view_get_is_continuous (NautilusView *view)
-{
-	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), FALSE);
-	
-	return (* NAUTILUS_VIEW_GET_IFACE (view)->get_is_continuous) (view);
-}
-
-gboolean
-nautilus_view_get_can_zoom_in (NautilusView *view)
-{
-	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), FALSE);
-	
-	return (* NAUTILUS_VIEW_GET_IFACE (view)->get_can_zoom_in) (view);
-}
-
-gboolean
-nautilus_view_get_can_zoom_out (NautilusView *view)
-{
-	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), FALSE);
-	
-	return (* NAUTILUS_VIEW_GET_IFACE (view)->get_can_zoom_out) (view);
-}
-
-GList *
-nautilus_view_get_preferred_zoom_levels (NautilusView *view)
-{
-	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
-	
-	return (* NAUTILUS_VIEW_GET_IFACE (view)->get_preferred_zoom_levels) (view);
-}
-
-void
-nautilus_view_zoom_in (NautilusView *view)
-{
-	g_return_if_fail (NAUTILUS_IS_VIEW (view));
-	
-	(* NAUTILUS_VIEW_GET_IFACE (view)->zoom_in) (view);
-}
-
-void
-nautilus_view_zoom_out (NautilusView *view)
-{
-	g_return_if_fail (NAUTILUS_IS_VIEW (view));
-	
-	(* NAUTILUS_VIEW_GET_IFACE (view)->zoom_out) (view);
-}
-
-void
-nautilus_view_zoom_to_fit (NautilusView *view)
-{
-	g_return_if_fail (NAUTILUS_IS_VIEW (view));
-	
-	(* NAUTILUS_VIEW_GET_IFACE (view)->zoom_to_fit) (view);
-}
 
 static void
 nautilus_ui_component_free (BonoboUIComponent *ui_component)

@@ -1,5 +1,24 @@
 2004-11-09  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-factory.[ch]:
+	(nautilus_get_relative_icon_size_for_zoom_level):
+	New function.
+	
+	* libnautilus-private/nautilus-view.[ch]:
+	Redo the zooming interface
+	
+	* src/file-manager/fm-directory-view.[ch]:
+	* src/file-manager/fm-icon-view.c:
+	* src/file-manager/fm-list-view.c:
+	Implement the new interface for zooming and clean up.
+	Remove the "default zoom affects fonts" behaviour.
+	
+	* src/nautilus-navigation-window.c: 
+	* src/nautilus-zoom-control.[ch]:
+	Use the new simplified zoom interfaces
+
+2004-11-09  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-directory-async.c:
 	(nautilus_async_destroying_file), (extension_info_cancel),
 	(info_provider_idle_callback), (info_provider_callback):
