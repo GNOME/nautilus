@@ -58,8 +58,6 @@ struct NautilusDragWindowDetails {
  */
 #define NAUTILUS_DRAG_WINDOW_DETAILS_KEY "nautilus-drag-window-details"
 
-static Atom sawfish_wm_raise_window = 0;
-
 /* Return the nearest ancestor of WIDGET that has type WIDGET_TYPE. But only
  * if there's no widget between the two with type BLOCKING_TYPE.
  */
@@ -115,8 +113,6 @@ execute_pending_requests (GtkWindow *window,
 	}
 }
 
-#if GNOME2_CONVERSION_COMPLETE
-
 /* Called when no button-press event arrived occurred shortly after
  * receiving a TAKE_FOCUS or RAISE_WINDOW request. So just commit
  * the pending requests.
@@ -140,7 +136,6 @@ focus_timeout_callback (gpointer data)
 	return FALSE;
 }
 
-#endif
 
 static void
 remove_focus_timeout (GtkWindow *window)
@@ -154,8 +149,6 @@ remove_focus_timeout (GtkWindow *window)
 		details->focus_timeout_tag = 0;
 	}
 }
-
-#if GNOME2_CONVERSION_COMPLETE
 
 static void
 set_focus_timeout (GtkWindow *window)
@@ -171,8 +164,6 @@ set_focus_timeout (GtkWindow *window)
 				       focus_timeout_callback, window);
 	}
 }
-
-#endif
 
 /* Called for all button-press events; sets the `in_button_press' flag */
 static gboolean
@@ -259,8 +250,6 @@ drag_begin_emission_callback (GSignalInvocationHint *ihint,
 	return TRUE;
 }
 
-#if GNOME2_CONVERSION_COMPLETE
-
 /* The process-wide filter for WM_PROTOCOLS client messages */
 static GdkFilterReturn
 wm_protocols_filter (GdkXEvent *xev, GdkEvent *event, gpointer data)
@@ -278,7 +267,7 @@ wm_protocols_filter (GdkXEvent *xev, GdkEvent *event, gpointer data)
 		details = NULL;
 	}
 
-	if ((Atom) xevent->xclient.data.l[0] == gdk_wm_delete_window) {
+	if ((Atom) xevent->xclient.data.l[0] == gdk_x11_get_xatom_by_name ("WM_DELETE_WINDOW")) {
 
 		/* (copied from gdkevents.c) */
 
@@ -294,7 +283,7 @@ wm_protocols_filter (GdkXEvent *xev, GdkEvent *event, gpointer data)
 		event->any.type = GDK_DELETE;
 		return GDK_FILTER_TRANSLATE;
 
-	} else if ((Atom) xevent->xclient.data.l[0] == gdk_wm_take_focus) {
+	} else if ((Atom) xevent->xclient.data.l[0] == gdk_x11_get_xatom_by_name ("WM_TAKE_FOCUS")) {
 
 		if (details != NULL) {
 			details->pending_focus = TRUE;
@@ -307,7 +296,7 @@ wm_protocols_filter (GdkXEvent *xev, GdkEvent *event, gpointer data)
 		}
 		return GDK_FILTER_REMOVE;
 
-	} else if ((Atom) xevent->xclient.data.l[0] == sawfish_wm_raise_window) {
+	} else if ((Atom) xevent->xclient.data.l[0] == gdk_x11_get_xatom_by_name ("_SAWFISH_WM_RAISE_WINDOW")) {
 
 		if (details != NULL) {
 			details->pending_raise = TRUE;
@@ -324,8 +313,6 @@ wm_protocols_filter (GdkXEvent *xev, GdkEvent *event, gpointer data)
 	}
 }
 
-#endif
-
 static void
 nautilus_drag_window_destroy (GtkObject *object, gpointer data)
 {
@@ -341,7 +328,6 @@ nautilus_drag_window_destroy (GtkObject *object, gpointer data)
 static void
 nautilus_drag_window_realize (GtkWidget *widget, gpointer data)
 {
-#if GNOME2_CONVERSION_COMPLETE
 	GdkAtom protocols[3];
 
 	/* Tell the window manager _not_ to focus this window by itself */
@@ -352,11 +338,10 @@ nautilus_drag_window_realize (GtkWidget *widget, gpointer data)
 	 * the window. (This won't work with other wm's, but it won't
 	 * break anything either.)
 	 */
-	protocols[0] = gdk_wm_delete_window;
-	protocols[1] = gdk_wm_take_focus;
-	protocols[2] = sawfish_wm_raise_window;
+        protocols[0] = gdk_atom_intern ("WM_DELETE_WINDOW", FALSE);
+        protocols[1] = gdk_atom_intern ("WM_TAKE_FOCUS", FALSE);
+        protocols[2] = gdk_atom_intern ("_NET_WM_PING", FALSE);
 	eel_gdk_window_set_wm_protocols (widget->window, protocols, 3);
-#endif
 }
 
 /* Public entry point */
@@ -386,19 +371,11 @@ nautilus_drag_window_register (GtkWindow *window)
 		g_signal_add_emission_hook (signal_id, 0,
                                             drag_begin_emission_callback, NULL, NULL);
 
-		/* Intern the necessary X atoms
-		 */
-		sawfish_wm_raise_window = XInternAtom (GDK_DISPLAY (),
-						       "_SAWFISH_WM_RAISE_WINDOW",
-						       False);
-
-#if GNOME2_CONVERSION_COMPLETE
 		/* Override the standard GTK filter for handling WM_PROTOCOLS
 		 * client messages
 		 */
-		gdk_add_client_message_filter (gdk_wm_protocols,
+		gdk_add_client_message_filter (gdk_atom_intern ("WM_PROTOCOLS", FALSE), 
 					       wm_protocols_filter, NULL);
-#endif
 
 		initialized = TRUE;
 	}
