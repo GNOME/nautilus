@@ -2569,10 +2569,10 @@ gnome_icon_container_add_imlib_with_layout (GnomeIconContainer *container,
  * gnome_icon_container_relayout:
  * @container: An icon container.
  * 
- * Relayout the icons in @container according to the allocation we are given.  This
- * is done by just collecting icons from top to bottom, from left to right, and
- * tiling them in the same direction.  The tiling is done in such a way that no
- * horizontal scrolling is needed to see all the icons.
+ * Relayout the icons in @container according to the allocation we are given.
+ * This is done by just collecting icons from top to bottom, from left to
+ * right, and tiling them in the same direction.  The tiling is done in such a
+ * way that no horizontal scrolling is needed to see all the icons.
  **/
 void
 gnome_icon_container_relayout (GnomeIconContainer *container)
