@@ -1,3 +1,20 @@
+2001-01-02  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 5375 (reword the 4000-file limit so it doesn't
+	mention the Nautilus Preview Release)
+
+	* libnautilus-extensions/nautilus-directory.c:
+	* libnautilus-extensions/nautilus-directory.h:
+	Move the #define for the limit to a public place.
+	
+	* src/file-manager/fm-directory-view.c:
+	(check_for_directory_hard_limit):
+	Reword the dialog so it doesn't promise to go away
+	soon. Also, use #define for the limit in case it
+	changes, which is likely.
+
 2001-01-02  Ali Abdin  <aliabdin@aucegypt.edu>
 
         A minor attempt at deallocating things correctly before we exit (so

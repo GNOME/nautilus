@@ -62,9 +62,6 @@ static guint signals[LAST_SIGNAL];
          | GNOME_VFS_PERM_GROUP_ALL \
 	 | GNOME_VFS_PERM_OTHER_ALL)
 
-/* Hack for PR2 to prevent use of too many resources */
-#define NAUTILUS_DIRECTORY_FILE_LIST_HARD_LIMIT     4000
-
 static GHashTable *directories;
 
 static void               nautilus_directory_destroy          (GtkObject              *object);

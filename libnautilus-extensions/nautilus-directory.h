@@ -60,6 +60,11 @@
 typedef struct NautilusFile NautilusFile;
 #endif
 
+/* FIXME bugzilla.eazel.com 5382:
+ * Increase or remove this limit? 
+ */
+#define NAUTILUS_DIRECTORY_FILE_LIST_HARD_LIMIT     4000
+
 typedef struct NautilusDirectoryDetails NautilusDirectoryDetails;
 
 typedef struct

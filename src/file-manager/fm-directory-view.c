@@ -1386,19 +1386,27 @@ static void
 check_for_directory_hard_limit (FMDirectoryView *view)
 {
 	NautilusDirectory *directory;
+	NautilusFile *file;
 	GnomeDialog *dialog;
+	char *directory_name;
+	char *message;
 
 	directory = view->details->model;
 	if (nautilus_directory_file_list_length_reached (directory)) {
-		/* FIXME bugzilla.eazel.com 5037: This says Preview Release explicitly. Must remove for real thing. */
-		dialog = nautilus_warning_dialog (_("We're sorry, but the folder you're viewing has more files than "
-						    "we're able to display. As a result, we are only able to show you the "
-						    "first 4000 files it contains."
-						    "\n"
-						    "This is a temporary limitation in this Preview Release of Nautilus, "
-						    "and will not be present in the final version."),
-						  _("Too many Files"),
+		file = nautilus_directory_get_corresponding_file (directory);
+		directory_name = nautilus_file_get_name (file);
+		nautilus_file_unref (file);
+		message = g_strdup_printf (_("The folder \"%s\" contains more files than "
+				             "Nautilus can handle. Only the first %d files "
+				             "will be displayed."), 
+				           directory_name, 
+				           NAUTILUS_DIRECTORY_FILE_LIST_HARD_LIMIT);
+		g_free (directory_name);
+
+		dialog = nautilus_warning_dialog (message,
+						  _("Too Many Files"),
 						  get_containing_window (view));
+		g_free (message);
 	}
 
 }
