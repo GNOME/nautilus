@@ -279,7 +279,7 @@ toc_sect_end_element (Context *context,
 
 	switch (name[4]) {
 	case 'a':
-		/* FIXME bugzilla.eazel.com 4410: should chapter be set to zero? */
+		/* FIXME bugzilla.gnome.org 44410: should chapter be set to zero? */
 	        context->preface = 0;
 		context->sect1 = 0;
 		break;
@@ -299,7 +299,7 @@ toc_sect_end_element (Context *context,
 		context->sect5 = 0;
 		break;
 	case 'n':
-		/* FIXME bugzilla.eazel.com 4410: should chapter be set to zero? */
+		/* FIXME bugzilla.gnome.org 44410: should chapter be set to zero? */
 		context->appendix = 0;
 		context->sect1 = 0;
 		break;

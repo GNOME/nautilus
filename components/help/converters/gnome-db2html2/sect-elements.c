@@ -267,7 +267,7 @@ sect_article_end_element (Context *context, const gchar *name)
 		}
 		g_print ("</TABLE>");
 	}
-	/* FIXME bugzilla.eazel.com 4408: Is the below needed now that we have the footer printed out */
+	/* FIXME bugzilla.gnome.org 44408: Is the below needed now that we have the footer printed out */
 /*	sect_print (context, "</BODY>\n</HEAD>\n"); */
 }
 
@@ -1145,7 +1145,7 @@ sect_inlinegraphic_start_element (Context *context,
 		return;
 	}
 
-	/* FIXME bugzilla.eazel.com 4407: Should we put an 'ALT' tag here? */	
+	/* FIXME bugzilla.gnome.org 44407: Should we put an 'ALT' tag here? */	
 	if (format == NULL) {
 		/* Default is PNG */
 		sect_print (context, "<IMG SRC=\"file://%s%s.png\">", context->base_path, fileref);
