@@ -1,6 +1,14 @@
 2001-04-12  Seth Nickell  <snickell@stanford.edu>
 
 	* libnautilus-extensions/nautilus-monitor.c:
+	(nautilus_monitor_add_file), (nautilus_monitor_add_directory),
+	(nautilus_monitor_remove):
+
+	Fix stupid build breakage.
+	
+2001-04-12  Seth Nickell  <snickell@stanford.edu>
+
+	* libnautilus-extensions/nautilus-monitor.c:
 	(nautilus_monitor_process_fam_notifications):
 
 	Add comments to unhandled FAM signals.

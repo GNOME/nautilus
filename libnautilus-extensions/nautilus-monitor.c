@@ -24,7 +24,7 @@
 
 #include <glib.h>
 
-#if !HAVE_FAM_H
+#if HAVE_FAM_H
 #include <fam.h>
 #endif
 
@@ -37,7 +37,7 @@
 #include "nautilus-file.h"
 #include "nautilus-monitor.h"
 
-#if !HAVE_FAM_H
+#if HAVE_FAM_H
 
 static FAMConnection  *fam_connection;
 
@@ -282,7 +282,7 @@ void
 nautilus_monitor_add_file (const char *uri_string)
 {
 
-#if !HAVE_FAM_H
+#if HAVE_FAM_H
 
         const char *uri_scheme;
         char *path_name;
@@ -320,7 +320,7 @@ nautilus_monitor_add_file (const char *uri_string)
 
         gnome_vfs_uri_unref (uri);
 
-#endif /* !HAVE_FAM_H */
+#endif /* HAVE_FAM_H */
 
 }
 
@@ -330,7 +330,7 @@ void
 nautilus_monitor_add_directory (const char *uri_string)
 {
 
-#if !HAVE_FAM_H
+#if HAVE_FAM_H
 
         const char *uri_scheme;
         char *path_name;
@@ -367,7 +367,7 @@ nautilus_monitor_add_directory (const char *uri_string)
 
         gnome_vfs_uri_unref (uri);
 
-#endif /* !HAVE_FAM_H */
+#endif /* HAVE_FAM_H */
 
 }
 
@@ -375,7 +375,7 @@ void
 nautilus_monitor_remove (const char *uri)
 {       
 
-#if !HAVE_FAM_H
+#if HAVE_FAM_H
 
         FAMConnection *fam;
         FAMRequest request, request2;
@@ -404,5 +404,5 @@ nautilus_monitor_remove (const char *uri)
                 }
         }
 
-#endif /* !HAVE_FAM_H */
+#endif /* HAVE_FAM_H */
 }
