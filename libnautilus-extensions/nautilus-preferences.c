@@ -37,7 +37,7 @@
 
 #include <gtk/gtksignal.h>
 
-static const char PREFERENCES_GCONF_PATH[] = "/nautilus";
+static const char PREFERENCES_GCONF_PATH[] = "/apps/nautilus";
 
 /*
  * PreferencesHashNode:

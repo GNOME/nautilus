@@ -1,3 +1,13 @@
+2000-06-06  Ramiro Estrugo  <ramiro@eazel.com>
+
+	* nautilus-widgets/nautilus-preferences.c:
+	* nautilus-widgets/nautilus-user-level-manager.c:
+	(user_level_manager_new):
+	Use "/apps/nautilus" instead of "/nautilus" to conform to the
+	gconf "standard"
+
+	Thanks to andersca@gnu.org for pointing this out.
+	
 2000-06-06  Maciej Stachowiak  <mjs@eazel.com>
 
 	* libnautilus-extensions/nautilus-glib-extensions.c: Removed FIXME

@@ -52,8 +52,8 @@ static const char *DEFAULT_USER_LEVEL_NAMES[] =
 static const guint   DEFAULT_NUM_USER_LEVELS = NAUTILUS_N_ELEMENTS (DEFAULT_USER_LEVEL_NAMES);
 static const guint   DEFAULT_USER_LEVEL = USER_LEVEL_HACKER;
 
-static const char    USER_LEVEL_KEY[] = "/nautilus/user_level";
-static const char    USER_LEVEL_PATH[] = "/nautilus";
+static const char    USER_LEVEL_KEY[] = "/apps/nautilus/user_level";
+static const char    USER_LEVEL_PATH[] = "/apps/nautilus";
 
 static NautilusUserLevelManager *global_manager = NULL;
 
@@ -112,7 +112,7 @@ user_level_manager_new (void)
 
 	manager->gconf_client = gconf_client_new ();
 
-	/* Let gconf know about ~/.gconf/nautilus */
+	/* Let gconf know about ~/.gconf/apps/nautilus */
 	gconf_client_add_dir (manager->gconf_client,
 			      USER_LEVEL_PATH,
 			      GCONF_CLIENT_PRELOAD_RECURSIVE,
