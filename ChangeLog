@@ -1,3 +1,22 @@
+2000-09-02  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/rpmview/Makefile.am:
+	* components/rpmview/nautilus-rpm-verify-window.c,h:
+	(nautilus_rpm_verify_window_initialize_class),
+	(nautilus_rpm_verify_window_destroy),
+	(nautilus_rpm_verify_window_initialize),
+	(nautilus_rpm_verify_window_new),
+	(nautilus_rpm_verify_window_set_message):
+	added verify window class to give feedback during the verify operation
+	* components/rpmview/nautilus-rpm-view.c:
+	(nautilus_rpm_view_destroy), (nautilus_rpm_view_update_from_uri),
+	(nautilus_rpm_view_verify_package_callback):
+	made the verify command work, but it's still needs to handle verification errors
+	made it list files with rpm version 3.0 or greater
+	
+	* src/nautilus-about.c: (nautilus_about_draw_info):
+	at Arlo's request, made the comment text in the about window have a white shadow
+	
 2000-09-02  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/hardware/nautilus-hardware-view.c:

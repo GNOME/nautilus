@@ -273,7 +273,7 @@ nautilus_about_draw_info (
 	index = 0;
 	xpos = 6; ypos = 118;
 	while (comment_array[index] != NULL) {
-		draw_aa_string (plain_font, pixbuf, 14, xpos, ypos, black, black, comment_array[index], 0);
+		draw_aa_string (plain_font, pixbuf, 14, xpos, ypos, black, white, comment_array[index], 1);
 		ypos += 18;
 		index++;	
 	}

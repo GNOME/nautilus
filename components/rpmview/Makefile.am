@@ -35,6 +35,8 @@ endif
 
 nautilus_rpm_view_SOURCES =		        \
 	$(extra_sources)			\
+	nautilus-rpm-verify-window.h		\
+	nautilus-rpm-verify-window.c		\
 	nautilus-rpm-view.h			\
 	nautilus-rpm-view.c			\
 	main.c
