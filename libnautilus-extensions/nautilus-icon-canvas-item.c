@@ -132,7 +132,7 @@ static guint signals[LAST_SIGNAL];
 
 static	guint32 highlight_background_color = NAUTILUS_RGBA_COLOR_PACK (0x00, 0x00, 0x00, 0xFF);
 static	guint32 highlight_text_color	   = NAUTILUS_RGBA_COLOR_PACK (0xFF, 0xFF, 0xFF, 0xFF);
-static  guint32 highlight_text_info_color  = NAUTILUS_RGBA_COLOR_PACK (0xAA, 0xAA, 0xAA, 0xFF);
+static  guint32 highlight_text_info_color  = NAUTILUS_RGBA_COLOR_PACK (0xCC, 0xCC, 0xCC, 0xFF);
 
 /* GtkObject */
 static void     nautilus_icon_canvas_item_initialize_class (NautilusIconCanvasItemClass   *class);
@@ -1504,6 +1504,7 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 			
 			/* draw the shadow in black */
 			if (needs_highlight) {
+				icon_bottom += 2; /* leave some space for selection frame */
 				nautilus_text_layout_paint (icon_text_layout, 
 							    destination_pixbuf, 
 							    text_left + 2, 
@@ -1545,9 +1546,10 @@ draw_or_measure_label_text_aa (NautilusIconCanvasItem *item,
 	}
 	g_strfreev (pieces);
 	
+	/* add some extra space for highlighting */
 	if (needs_highlight) {
-		height_so_far += 2; /* extra slop for nicer highlighting */	
-		width_so_far += 4; /* account for emboldening, plus extra to make it look nicer */
+		height_so_far += 6; /* extra slop for nicer highlighting */	
+		width_so_far += 8; /* account for emboldening, plus extra to make it look nicer */
 	}	
 	
 	if (destination_pixbuf != NULL) {
