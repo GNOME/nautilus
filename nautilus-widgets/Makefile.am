@@ -1,6 +1,6 @@
 NULL=
 
-bin_PROGRAMS = test-nautilus-widgets
+bin_PROGRAMS = test-nautilus-widgets test-nautilus-preferences
 
 lib_LTLIBRARIES=libnautilus-widgets.la
 
@@ -30,10 +30,10 @@ libnautilus_widgetsinclude_HEADERS =\
 	nautilus-preferences-pane.h \
 	nautilus-preferences.h \
 	nautilus-radio-button-group.h \
+	nautilus-string-picker.h \
 	$(NULL)
 
 libnautilus_widgets_la_SOURCES =\
-	nautilus-widgets-self-check-functions.h \
 	nautilus-caption-table.c \
 	nautilus-password-dialog.c \
 	nautilus-preference.c \
@@ -44,14 +44,12 @@ libnautilus_widgets_la_SOURCES =\
 	nautilus-preferences-pane.c \
 	nautilus-preferences.c \
 	nautilus-radio-button-group.c \
+	nautilus-string-picker.c \
 	nautilus-widgets-self-check-functions.c \
+	nautilus-widgets-self-check-functions.h \
 	$(NULL)
 
-test_nautilus_widgets_SOURCES =\
-	test-nautilus-widgets.c \
-	$(NULL)
-
-test_nautilus_widgets_LDADD =\
+test_ldd =\
 	$(GCONF_LIBS) \
 	$(GNOMEUI_LIBS) \
 	../nautilus-widgets/libnautilus-widgets.la \
@@ -60,7 +58,14 @@ test_nautilus_widgets_LDADD =\
 	../librsvg/librsvg.la \
 	$(NULL)
 
-#test_preferences_SOURCES =\
-#	test-preferences.c \
-#	$(NULL)
+test_nautilus_widgets_SOURCES =\
+	test-nautilus-widgets.c \
+	$(NULL)
 
+test_nautilus_widgets_LDADD = $(test_ldd)
+
+test_nautilus_preferences_SOURCES =\
+	test-nautilus-preferences.c \
+	$(NULL)
+
+test_nautilus_preferences_LDADD = $(test_ldd)

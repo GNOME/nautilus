@@ -1,54 +1,36 @@
 
 #include <config.h>
 #include <nautilus-widgets/nautilus-radio-button-group.h>
+#include <nautilus-widgets/nautilus-string-picker.h>
 #include <nautilus-widgets/nautilus-caption-table.h>
 #include <nautilus-widgets/nautilus-password-dialog.h>
-#include <nautilus-widgets/nautilus-preferences-group.h>
-#include <nautilus-widgets/nautilus-preferences-item.h>
-#include <nautilus-widgets/nautilus-preferences.h>
 
 #include <gtk/gtk.h>
 
 static void test_radio_group                     (void);
 static void test_caption_table                   (void);
 static void test_password_dialog                 (void);
-static void test_preferences_group               (void);
-static void test_preferences_item                (void);
-static void test_radio_changed_callback          (GtkWidget  *button_group,
-						  gpointer    user_data);
-static void test_authenticate_boink_callback     (GtkWidget  *button,
-						  gpointer    user_data);
-static void test_caption_table_activate_callback (GtkWidget  *button_group,
-						  gint        active_index,
-						  gpointer    user_data);
-static void register_global_preferences          (void);
-GtkWidget * create_enum_item                     (const char *preference_name);
-GtkWidget * create_bool_item                     (const char *preference_name);
-
-enum
-{
-	FRUIT_APPLE,
-	FRUIT_ORANGE,
-	FRUIT_BANNANA
-};
-
-static const char FRUIT_PREFERENCE[] = "/a/very/fruity/path";
+static void test_string_picker                   (void);
+static void test_radio_changed_callback          (GtkWidget *button_group,
+						  gpointer   user_data);
+static void test_authenticate_boink_callback     (GtkWidget *button,
+						  gpointer   user_data);
+static void string_picker_changed_callback     (GtkWidget *string_picker,
+						  gpointer   user_data);
+static void test_caption_table_activate_callback (GtkWidget *button_group,
+						  gint       active_index,
+						  gpointer   user_data);
 
 int
 main (int argc, char * argv[])
 {
 	gnome_init ("foo", "bar", argc, argv);
 
-	nautilus_preferences_initialize (argc, argv);
-
-	register_global_preferences ();
-
 	test_radio_group ();
 	test_caption_table ();
 	test_password_dialog ();
-	test_preferences_group ();
-	test_preferences_item ();
-		
+	test_string_picker ();
+
 	gtk_main ();
 
 	return 0;
@@ -132,6 +114,41 @@ test_caption_table (void)
 }
 
 static void
+test_string_picker (void)
+{
+	GtkWidget		*window;
+	GtkWidget		*picker;
+	NautilusStringList	*font_list;
+	
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+
+	picker = nautilus_string_picker_new ();
+	
+	nautilus_string_picker_set_title_label (NAUTILUS_STRING_PICKER (picker), "Icon Font Family:");
+
+	font_list = nautilus_string_list_new ();
+
+	nautilus_string_list_insert (font_list, "Helvetica");
+	nautilus_string_list_insert (font_list, "Times");
+	nautilus_string_list_insert (font_list, "Courier");
+	nautilus_string_list_insert (font_list, "Lucida");
+	nautilus_string_list_insert (font_list, "Fixed");
+
+	nautilus_string_picker_set_string_list (NAUTILUS_STRING_PICKER (picker), font_list);
+
+	nautilus_string_list_free (font_list);
+
+	gtk_container_add (GTK_CONTAINER (window), picker);
+
+	gtk_signal_connect (GTK_OBJECT (picker),
+			    "changed",
+			    GTK_SIGNAL_FUNC (string_picker_changed_callback),
+			    (gpointer) NULL);
+
+	gtk_widget_show_all (window);
+}
+
+static void
 test_authenticate_boink_callback (GtkWidget *button, gpointer user_data)
 {
 	GtkWidget *dialog;
@@ -162,6 +179,21 @@ test_authenticate_boink_callback (GtkWidget *button, gpointer user_data)
 }
 
 static void
+string_picker_changed_callback (GtkWidget *string_picker, gpointer user_data)
+{
+	char	  *text;
+
+	g_assert (string_picker != NULL);
+	g_assert (NAUTILUS_IS_STRING_PICKER (string_picker));
+
+	text = nautilus_string_picker_get_text (NAUTILUS_STRING_PICKER (string_picker));
+
+	g_print ("string_picker_changed_callback(%s)\n", text);
+	
+	g_free (text);
+}
+
+static void
 test_password_dialog (void)
 {
 	GtkWidget * window;
@@ -184,44 +216,6 @@ test_password_dialog (void)
 }
 
 static void
-test_preferences_item (void)
-{
-	GtkWidget * window;
-	GtkWidget * item;
-
-	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-
-	item = create_enum_item (FRUIT_PREFERENCE);
-
-	gtk_container_add (GTK_CONTAINER (window), item);
-
-	gtk_widget_show (item);
-
-	gtk_widget_show (window);
-}
-
-static void
-test_preferences_group (void)
-{
-	GtkWidget * window;
-	GtkWidget * group;
-
-	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	
-	group = nautilus_preferences_group_new ("A group");
-	
-	nautilus_preferences_group_add_item (NAUTILUS_PREFERENCES_GROUP (group),
-					     FRUIT_PREFERENCE,
-					     NAUTILUS_PREFERENCE_ITEM_ENUM);
-	
-	gtk_container_add (GTK_CONTAINER (window), group);
-
-	gtk_widget_show (group);
-
-	gtk_widget_show (window);
-}
-
-static void
 test_radio_changed_callback (GtkWidget *buttons, gpointer user_data)
 {
 	gint i;
@@ -237,47 +231,4 @@ test_caption_table_activate_callback (GtkWidget  *button_group,
 				      gpointer    user_data)
 {
 	g_print ("test_caption_table_activate_callback (active_index=%d)\n", active_index);
-}
-
-GtkWidget *
-create_enum_item (const char *preference_name)
-{
- 	return nautilus_preferences_item_new (preference_name, NAUTILUS_PREFERENCE_ITEM_ENUM);
-}
-
-// GtkWidget *
-// create_bool_item (const char *preference_name)
-// {
-// 	return nautilus_preferences_item_new (global_preferences,
-// 					      preference_name,
-// 					      NAUTILUS_PREFERENCE_ITEM_BOOLEAN);
-// }
-
-static void
-register_global_preferences (void)
-{
-	g_assert (nautilus_preferences_is_initialized ());
-
-	nautilus_preferences_set_info (FRUIT_PREFERENCE,
-				       "Fruits",
-				       NAUTILUS_PREFERENCE_ENUM,
-				       (gconstpointer) FRUIT_ORANGE);
-
-	nautilus_preferences_enum_add_entry (FRUIT_PREFERENCE,
-					     "apple",
-					     "Apple",
-					     FRUIT_APPLE);
-
-	nautilus_preferences_enum_add_entry (FRUIT_PREFERENCE,
-					     "orange",
-					     "Orange",
-					     FRUIT_ORANGE);
-
-	nautilus_preferences_enum_add_entry (FRUIT_PREFERENCE,
-					     "bannana",
-					     "Bannana",
-					     FRUIT_BANNANA);
-
-	nautilus_preferences_set_enum (FRUIT_PREFERENCE,
-				       FRUIT_BANNANA);
 }
