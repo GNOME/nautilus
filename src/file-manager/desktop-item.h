@@ -48,14 +48,6 @@ void                     desktop_item_size_request    (DesktopItem      *item,
 void                     desktop_item_size_allocate   (DesktopItem      *item,
                                                        gint x, gint y, gint width, gint height);
 
-
-/* User data is used by the specific DesktopItem types */
-void                     desktop_item_set_user_data   (DesktopItem      *item,
-                                                       gpointer          user_data,
-                                                       GDestroyNotify    destroy_notify_func);
-gpointer                 desktop_item_get_user_data   (DesktopItem      *item);
-
-
 /* This is a specific DesktopItem type */
 DesktopItem*             desktop_icon_new             (void);
 void                     desktop_icon_set_icon        (DesktopItem      *item,

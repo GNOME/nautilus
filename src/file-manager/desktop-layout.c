@@ -243,6 +243,11 @@ desktop_layout_unref (DesktopLayout *layout)
 }
 
 /* FIXME changing any of this stuff requires a layout recomputation */
+static void
+queue_arrange(DesktopLayout *layout)
+{
+        /* FIXME do something */
+}
 
 void
 desktop_layout_set_size (DesktopLayout *layout,
@@ -256,7 +261,7 @@ desktop_layout_set_size (DesktopLayout *layout,
         layout->width = width;
         layout->height = height;
 
-        desktop_layout_arrange(layout, FALSE);
+        queue_arrange(layout);
 }
 
 void
@@ -269,7 +274,7 @@ desktop_layout_set_mode (DesktopLayout *layout,
         layout->hmode = hmode;
         layout->vmode = vmode;
 
-        desktop_layout_arrange(layout, FALSE);
+        queue_arrange(layout);
 }
 
 void
@@ -279,7 +284,7 @@ desktop_layout_add_item (DesktopLayout *layout,
         desktop_layout_item_ref(item);
         layout->items = g_list_prepend(layout->items, item);
 
-        desktop_layout_arrange(layout, FALSE);
+        queue_arrange(layout);
 }
 
 void
@@ -289,7 +294,7 @@ desktop_layout_remove_item (DesktopLayout *layout,
         layout->items = g_list_remove(layout->items, item);
         desktop_layout_item_unref(item);
 
-        desktop_layout_arrange(layout, FALSE);
+        queue_arrange(layout);
 }
 
 

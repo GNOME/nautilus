@@ -24,6 +24,15 @@
 
 #include <gdk-pixbuf/gnome-canvas-pixbuf.h>
 
+
+/* User data is used by the specific DesktopItem types */
+static void     desktop_item_set_user_data (DesktopItem    *item,
+                                            gpointer        user_data,
+                                            GDestroyNotify  destroy_notify_func);
+static gpointer desktop_item_get_user_data (DesktopItem    *item);
+
+
+
 typedef enum {
         DESKTOP_ITEM_NONE,
         DESKTOP_ITEM_ICON
@@ -229,7 +238,12 @@ icon_realize (DesktopItem *item, GnomeCanvasGroup *group)
                                             gnome_canvas_pixbuf_get_type(),
                                             "x", 0.0, "y", 0.0,
                                             "pixbuf", icon->pixbuf,
+                                            "width", icon->pixbuf ?
+                                            (double)gdk_pixbuf_get_width(icon->pixbuf) : 10.0,
+                                            "height", icon->pixbuf ? 
+                                            (double)gdk_pixbuf_get_height(icon->pixbuf) : 10.0,
                                             "x_set", TRUE, "y_set", TRUE,
+                                            "width_set", TRUE, "height_set", TRUE,
                                             NULL);
 
 }
@@ -284,11 +298,10 @@ icon_size_allocate   (DesktopItem      *item,
 
         if (item->canvas_item) {
                 gnome_canvas_item_set (item->canvas_item,
-                                       "x", x,
-                                       "y", y,
-                                       "width", width,
-                                       "height", height,
-                                       "width_set", TRUE, "height_set", TRUE,
+                                       "x", (double)x,
+                                       "y", (double)y,
+                                       "width", (double)width,
+                                       "height", (double)height,
                                        NULL);
         }
 }

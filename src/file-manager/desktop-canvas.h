@@ -95,6 +95,7 @@ struct _DesktopCanvas {
 
         FMDirectoryList *desktop_dir_list;
         guint entries_loaded_id;
+        guint finished_load_id;
 };
 
 struct _DesktopCanvasClass {

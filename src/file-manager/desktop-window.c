@@ -87,8 +87,10 @@ desktop_window_init (DesktopWindow *dwindow)
 
         /* Match the screen size */
         gtk_widget_set_usize(GTK_WIDGET(dwindow),
-                             gdk_screen_width(),
-                             gdk_screen_height());
+                             350, 350
+                             /* FIXME hard to debug :-)
+                                gdk_screen_width(),
+                                gdk_screen_height() */);
 }
 
 GtkWidget*

@@ -26,6 +26,7 @@
 #include <gtk/gtk.h>
 #include "desktop-menu.h"
 #include "fm-icon-cache.h"
+#include "desktop-item.h"
 
 static void desktop_canvas_class_init (DesktopCanvasClass *class);
 static void desktop_canvas_init       (DesktopCanvas      *dcanvas);
@@ -101,6 +102,7 @@ desktop_canvas_init (DesktopCanvas *dcanvas)
 
         dcanvas->desktop_dir_list = NULL;
         dcanvas->entries_loaded_id = 0;
+        dcanvas->finished_load_id = 0;
 }
 
 static void
@@ -122,8 +124,11 @@ desktop_canvas_destroy (GtkObject *object)
                 gtk_object_unref(GTK_OBJECT(canvas->desktop_dir_list));
                 gtk_signal_disconnect(GTK_OBJECT(canvas->desktop_dir_list),
                                       canvas->entries_loaded_id);
+                gtk_signal_disconnect(GTK_OBJECT(canvas->desktop_dir_list),
+                                      canvas->finished_load_id);
                 canvas->desktop_dir_list = NULL;
                 canvas->entries_loaded_id = 0;
+                canvas->finished_load_id = 0;
         }
         
         (*  GTK_OBJECT_CLASS(parent_class)->destroy) (object);
@@ -187,10 +192,42 @@ desktop_canvas_size_allocate(GtkWidget        *widget,
                                 0, 0,
                                 allocation->width,
                                 allocation->height);
-        
+
         if (GTK_WIDGET_CLASS (parent_class)->size_allocate)
 		(* GTK_WIDGET_CLASS (parent_class)->size_allocate) (widget,
                                                                     allocation);
+}
+
+static void
+dicon_size_request(DesktopLayoutItem *layout_item,
+                   gint *x, gint *y, gint *width, gint *height,
+                   gpointer user_data)
+{
+        DesktopItem *icon = user_data;
+
+        desktop_item_size_request(icon, x, y, width, height);
+
+        printf("size req: %d,%d %dx%d\n", *x, *y, *width, *height);
+}
+
+static void
+dicon_size_allocate(DesktopLayoutItem *layout_item,
+                    gint x, gint y, gint width, gint height,
+                    gpointer user_data)
+{
+        DesktopItem *icon = user_data;
+
+        desktop_item_size_allocate(icon, x, y, width, height);
+
+        printf("size alloc: %d,%d %dx%d\n", x, y, width, height);
+}
+
+static void
+dicon_destroy_notify(gpointer data)
+{
+        DesktopItem *icon = data;
+
+        desktop_item_unref(icon);
 }
 
 static void
@@ -199,10 +236,47 @@ entries_loaded_cb(FMDirectoryList *dlist,
                   gpointer data)
 {
         DesktopCanvas *canvas = data;
-
+        GSList *iter;
+        
         g_assert(canvas != NULL);
 
-        printf("loaded some entries\n");
+        iter = entries;
+        while (iter != NULL) {
+                FMDirectoryListEntry *entry = iter->data;
+                DesktopItem *icon;
+                DesktopLayoutItem *layout_item;
+
+                printf("entry: %s\n",
+                       fm_directory_list_entry_get_name(entry));
+                
+                icon = desktop_icon_new();
+
+                desktop_icon_set_icon(icon, fm_directory_list_entry_get_icon(entry));
+                desktop_icon_set_name(icon, fm_directory_list_entry_get_name(entry));
+
+                layout_item = desktop_layout_item_new(dicon_size_request,
+                                                      dicon_size_allocate,
+                                                      dicon_destroy_notify,
+                                                      icon);
+
+                desktop_layout_add_item(canvas->layout,
+                                        layout_item);
+
+                desktop_layout_item_unref(layout_item);
+
+                /* sort of a hack to have this here */
+                desktop_item_realize(icon, GNOME_CANVAS_GROUP(GNOME_CANVAS(canvas)->root));
+                
+                iter = g_slist_next(iter);
+        }
+}
+
+static void
+finished_load_cb(FMDirectoryList *dlist, gpointer data)
+{
+        DesktopCanvas *canvas = data;
+
+        desktop_layout_arrange(canvas->layout, FALSE);
 }
 
 void
@@ -215,8 +289,11 @@ desktop_canvas_load_desktop_icons(DesktopCanvas *canvas, const gchar *uri)
                 gtk_object_unref(GTK_OBJECT(canvas->desktop_dir_list));
                 gtk_signal_disconnect(GTK_OBJECT(canvas->desktop_dir_list),
                                       canvas->entries_loaded_id);
+                gtk_signal_disconnect(GTK_OBJECT(canvas->desktop_dir_list),
+                                      canvas->finished_load_id);
                 canvas->desktop_dir_list = NULL;
                 canvas->entries_loaded_id = 0;
+                canvas->finished_load_id = 0;
         }
 
         if (uri != NULL) {
@@ -229,6 +306,12 @@ desktop_canvas_load_desktop_icons(DesktopCanvas *canvas, const gchar *uri)
                         gtk_signal_connect(GTK_OBJECT(canvas->desktop_dir_list),
                                            "entries_loaded",
                                            (GtkSignalFunc)entries_loaded_cb,
+                                           canvas);
+
+                canvas->finished_load_id =
+                        gtk_signal_connect(GTK_OBJECT(canvas->desktop_dir_list),
+                                           "finished_load",
+                                           (GtkSignalFunc)finished_load_cb,
                                            canvas);
                 
                 fm_directory_list_load_uri(canvas->desktop_dir_list,

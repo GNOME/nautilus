@@ -55,16 +55,22 @@ main (int argc, char *argv[])
         gnome_CORBA_init ("gnome-desktop", VERSION, &argc, argv,
                           GNORBA_INIT_SERVER_FUNC, &ev);
         gnome_vfs_init();
-        
+        gdk_rgb_init();
+
         window = desktop_window_new();
+
+        gtk_widget_push_visual(gdk_rgb_get_visual());
+        gtk_widget_push_colormap(gdk_rgb_get_cmap());
         canvas = desktop_canvas_new();
+        gtk_widget_pop_visual();
+        gtk_widget_pop_colormap();
 
         gtk_container_add(GTK_CONTAINER(window), canvas);
 
         desktop_canvas_set_solid_background_color(DESKTOP_CANVAS(canvas), 0xFF0000);
 
         desktop_canvas_load_desktop_icons(DESKTOP_CANVAS (canvas),
-                                          "file:/home/hp");
+                                          "file:/home/");
         
         gtk_signal_connect(GTK_OBJECT(window), "delete_event",
                            GTK_SIGNAL_FUNC(delete_event_cb), NULL);
