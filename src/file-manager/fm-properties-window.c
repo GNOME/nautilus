@@ -41,6 +41,7 @@
 #include <gtk/gtknotebook.h>
 #include <gtk/gtkpixmap.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtktable.h>
 #include <gtk/gtkvbox.h>
 
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
@@ -61,6 +62,21 @@ static const char * const property_names[] =
 	"new",
 	"personal",
 	"remote"
+};
+
+enum {
+	BASIC_PAGE_ICON_AND_NAME_ROW,
+	BASIC_PAGE_LOCATION_ROW,
+	BASIC_PAGE_TYPE_ROW,
+	BASIC_PAGE_SIZE_ROW,
+	BASIC_PAGE_DATE_ROW,
+	BASIC_PAGE_ROW_COUNT
+};
+
+enum {
+	BASIC_PAGE_TITLE_COLUMN,
+	BASIC_PAGE_VALUE_COLUMN,
+	BASIC_PAGE_COLUMN_COUNT
 };
 
 static void
@@ -115,7 +131,7 @@ create_pixmap_widget_for_file (NautilusFile *file)
 					       update_properties_window_icon,
 					       GTK_OBJECT (widget));
 
-	/* Name changes can also change icon (e.g. "core") */
+	/* Name changes can also change icon (since name is determined by MIME type) */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
 					       "changed",
 					       update_properties_window_icon,
@@ -332,57 +348,105 @@ properties_window_file_changed_callback (GtkWindow *window, NautilusFile *file)
 	}
 }
 
-static GtkWindow *
-create_properties_window (NautilusFile *file)
+static void
+value_field_update (GtkLabel *label, NautilusFile *file)
 {
-	GtkWindow *window;
-	GtkWidget *notebook;
-	GtkWidget *basic_page_vbox, *icon_and_name_hbox, *icon_pixmap_widget, *name_field;
-	GtkWidget *emblems_page_vbox, *prompt, *separator_line, *button;
-	GtkWidget *check_buttons_box, *left_buttons_box, *right_buttons_box;
-	int i;
+	const char *attribute_name;
+	char *attribute_value;
 
-	/* Create the window. */
-	window = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
-  	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
-  	gtk_window_set_policy (window, FALSE, FALSE, FALSE);
+	g_assert (GTK_IS_LABEL (label));
+	g_assert (NAUTILUS_IS_FILE (file));
 
-	/* Set initial window title */
-	update_properties_window_title (window, file);
+	attribute_name = gtk_object_get_data (GTK_OBJECT (label), "file_attribute");
+	attribute_value = nautilus_file_get_string_attribute (file, attribute_name);
+	gtk_label_set_text (label, attribute_value);
+	g_free (attribute_value);
+}
 
-	/* React to future name changes */
+static void
+install_title_value_pair (GtkTable *table, 
+			  int row, 
+			  const char *title, 
+			  NautilusFile *file, 
+			  const char *file_attribute_name)
+{
+	GtkWidget *title_field, *value_field;
+
+	title_field = gtk_label_new (title);
+	/* Move widget to right edge (justifying text not the right thing here). */
+	gtk_misc_set_alignment (GTK_MISC (title_field), 1, 0.5);
+	gtk_widget_show (title_field);
+	gtk_table_attach_defaults (GTK_TABLE (table),
+				   title_field,
+				   BASIC_PAGE_TITLE_COLUMN, 
+				   BASIC_PAGE_TITLE_COLUMN + 1,
+				   row, 
+				   row + 1);
+
+	value_field = gtk_label_new ("");
+	/* Move widget to left edge (justifying text not the right thing here). */
+	gtk_misc_set_alignment (GTK_MISC (value_field), 0, 0.5);
+	gtk_widget_show (value_field);
+	gtk_table_attach_defaults (GTK_TABLE (table),
+				   value_field,
+				   BASIC_PAGE_VALUE_COLUMN, 
+				   BASIC_PAGE_VALUE_COLUMN + 1,
+				   row, 
+				   row + 1);
+
+	/* Stash a copy of the file attribute name in this field for the callback's sake. */
+	gtk_object_set_data_full (GTK_OBJECT (value_field),
+				  "file_attribute",
+				  g_strdup (file_attribute_name),
+				  (GtkDestroyNotify) g_free);
+
+	/* Fill in the value. */
+	value_field_update (GTK_LABEL (value_field), file);
+
+	/* Connect to signal to update value when file changes. */
 	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
 					       "changed",
-					       properties_window_file_changed_callback,
-					       GTK_OBJECT (window));
+					       value_field_update,
+					       GTK_OBJECT (value_field));
+			  
+}
 
-	/* Create the notebook tabs. */
-	notebook = gtk_notebook_new ();
-	gtk_widget_show (notebook);
-	gtk_container_add (GTK_CONTAINER (window), notebook);
+static void
+create_basic_page (GtkNotebook *notebook, NautilusFile *file)
+{
+	GtkWidget *icon_pixmap_widget, *name_field;
+	GtkWidget *basic_page_table;
 
-	/* Create the Basic page. */
-	basic_page_vbox = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (basic_page_vbox);
-	gtk_container_add (GTK_CONTAINER (notebook), basic_page_vbox);
-	gtk_container_set_border_width (GTK_CONTAINER (basic_page_vbox), GNOME_PAD);
+	basic_page_table = gtk_table_new (BASIC_PAGE_ROW_COUNT, BASIC_PAGE_COLUMN_COUNT, FALSE);
+	gtk_table_set_row_spacings (GTK_TABLE (basic_page_table), GNOME_PAD);
+	gtk_table_set_col_spacings (GTK_TABLE (basic_page_table), GNOME_PAD);
+	gtk_widget_show (basic_page_table);
+	gtk_container_add (GTK_CONTAINER (notebook), basic_page_table);
+	gtk_container_set_border_width (GTK_CONTAINER (basic_page_table), GNOME_PAD);
 	gtk_notebook_set_tab_label (GTK_NOTEBOOK (notebook),
 				    gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), 0),
 				    gtk_label_new (_("Basic")));
 
-	icon_and_name_hbox = gtk_hbox_new (FALSE, GNOME_PAD);
-	gtk_widget_show (icon_and_name_hbox);
-	gtk_box_pack_start (GTK_BOX (basic_page_vbox), icon_and_name_hbox, FALSE, FALSE, 0);
 
-	/* Create the icon pixmap */
+	/* Icon pixmap */
 	icon_pixmap_widget = create_pixmap_widget_for_file (file);
 	gtk_widget_show (icon_pixmap_widget);
-	gtk_box_pack_start (GTK_BOX (icon_and_name_hbox), icon_pixmap_widget, FALSE, FALSE, 0);
+	gtk_table_attach_defaults (GTK_TABLE (basic_page_table),
+				   icon_pixmap_widget,
+				   BASIC_PAGE_TITLE_COLUMN, 
+				   BASIC_PAGE_TITLE_COLUMN + 1,
+				   BASIC_PAGE_ICON_AND_NAME_ROW, 
+				   BASIC_PAGE_ICON_AND_NAME_ROW + 1);
 
-	/* Create the name field */
+	/* Name field */
 	name_field = nautilus_entry_new ();
 	gtk_widget_show (name_field);
-	gtk_box_pack_start (GTK_BOX (icon_and_name_hbox), name_field, TRUE, TRUE, 0);
+	gtk_table_attach_defaults (GTK_TABLE (basic_page_table),
+				   name_field,
+				   BASIC_PAGE_VALUE_COLUMN, 
+				   BASIC_PAGE_VALUE_COLUMN + 1,
+				   BASIC_PAGE_ICON_AND_NAME_ROW, 
+				   BASIC_PAGE_ICON_AND_NAME_ROW + 1);
 
 	/* Attach parameters and signal handler. */
 	nautilus_file_ref (file);
@@ -419,7 +483,30 @@ create_properties_window (NautilusFile *file)
 					       name_field_update_to_match_file,
 					       GTK_OBJECT (name_field));
 
-	/* Create the Emblems Page. */
+	/* File uri */
+	install_title_value_pair (GTK_TABLE (basic_page_table), BASIC_PAGE_LOCATION_ROW,
+				  _("Location:"), file, "parent_uri");
+	
+	/* File type */
+	install_title_value_pair (GTK_TABLE (basic_page_table), BASIC_PAGE_TYPE_ROW,
+				  _("Type:"), file, "type");
+	
+	/* File size */
+	install_title_value_pair (GTK_TABLE (basic_page_table), BASIC_PAGE_SIZE_ROW,
+				  _("Size:"), file, "size");
+	
+	/* File date */
+	install_title_value_pair (GTK_TABLE (basic_page_table), BASIC_PAGE_DATE_ROW,
+				  _("Date Modified:"), file, "date_modified");
+}
+
+static void
+create_emblems_page (GtkNotebook *notebook, NautilusFile *file)
+{
+	GtkWidget *emblems_page_vbox, *prompt, *separator_line, *button;
+	GtkWidget *check_buttons_box, *left_buttons_box, *right_buttons_box;
+	int i;
+
 	emblems_page_vbox = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (emblems_page_vbox);
 	gtk_container_add (GTK_CONTAINER (notebook), emblems_page_vbox);
@@ -483,6 +570,36 @@ create_properties_window (NautilusFile *file)
 			gtk_box_pack_start (GTK_BOX (right_buttons_box), button, FALSE, FALSE, 0);
 		}
 	}
+}
+
+static GtkWindow *
+create_properties_window (NautilusFile *file)
+{
+	GtkWindow *window;
+	GtkWidget *notebook;
+
+	/* Create the window. */
+	window = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
+  	gtk_container_set_border_width (GTK_CONTAINER (window), GNOME_PAD);
+  	gtk_window_set_policy (window, FALSE, FALSE, FALSE);
+
+	/* Set initial window title */
+	update_properties_window_title (window, file);
+
+	/* React to future name changes and file deletions. */
+	gtk_signal_connect_object_while_alive (GTK_OBJECT (file),
+					       "changed",
+					       properties_window_file_changed_callback,
+					       GTK_OBJECT (window));
+
+	/* Create the notebook tabs. */
+	notebook = gtk_notebook_new ();
+	gtk_widget_show (notebook);
+	gtk_container_add (GTK_CONTAINER (window), notebook);
+
+	/* Create the pages. */
+	create_basic_page (GTK_NOTEBOOK (notebook), file);
+	create_emblems_page (GTK_NOTEBOOK (notebook), file);
 
 	return window;
 }

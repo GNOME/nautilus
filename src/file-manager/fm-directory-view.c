@@ -1590,7 +1590,7 @@ compute_menu_item_info (const char *path,
 		name = g_strdup (_("_Duplicate"));
 		*return_sensitivity = selection != NULL;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES) == 0) {
-		name = g_strdup (_("Set _Properties..."));
+		name = g_strdup (_("Show _Properties"));
 		*return_sensitivity = selection != NULL;
 	} else if (strcmp (path, FM_DIRECTORY_VIEW_MENU_PATH_EMPTY_TRASH) == 0) {
 		name = g_strdup (_("_Empty Trash"));
@@ -1712,7 +1712,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
         bonobo_ui_handler_menu_new_item
 		(ui_handler,
 		 FM_DIRECTORY_VIEW_MENU_PATH_SET_PROPERTIES,
-		 _("Set Properties..."),
+		 _("Show Properties"),
 		 _("View or modify the properties of the selected items"),
 		 bonobo_ui_handler_menu_get_pos (ui_handler, NAUTILUS_MENU_PATH_CLOSE_ITEM) + 2,
 		 BONOBO_UI_HANDLER_PIXMAP_NONE,

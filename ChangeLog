@@ -1,3 +1,24 @@
+2000-05-04  John Sullivan  <sullivan@eazel.com>
+
+	Some work on the Properties window. It now shows some
+	more properties (location, type, size, date).
+
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_parent_uri_as_string): New function, returns
+	the URI of the enclosing directory.
+	(nautilus_file_get_string_attribute): Now supports attributes
+	"uri" and "parent_uri".
+	* src/file-manager/fm-directory-view.c: (compute_menu_item_info),
+	(fm_directory_view_real_merge_menus): Changed menu name from
+	"Set Properties..." to "Show Properties" since the read-only ones
+	now outnumber the changeable ones.
+	* src/file-manager/fm-properties-window.c:
+	(create_pixmap_widget_for_file), (value_field_update),
+	(install_title_value_pair), (create_basic_page),
+	(create_emblems_page), (create_properties_window): Broke up
+	huge create_properties_window into smaller functions, and
+	added location, type, size, and date to Basic page.
+
 2000-05-04  J Shane Culpepper <pepper@eazel.com>
 	* components/services/install/Makefile.am
 	* components/services/startup/main.c
@@ -36,7 +57,7 @@
 	Now MIME types are just like other text -- potentially
 	dynamically computed and all.
 
-	Special thank-you fix for Carbamide. All his testing he deserves
+	Special thank-you fix for Carbamide. With all his testing he deserves
 	some special treatment.
 
 2000-05-04  Ramiro Estrugo  <ramiro@eazel.com>

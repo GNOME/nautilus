@@ -250,6 +250,29 @@ nautilus_file_unref (NautilusFile *file)
 	gtk_object_unref (GTK_OBJECT (file));
 }
 
+/**
+ * nautilus_file_get_parent_uri_as_string:
+ * 
+ * Get the uri for the parent directory.
+ * 
+ * @file: The file in question.
+ * 
+ * Return value: A string representing the parent's location.
+ * If the parent is NULL, returns the empty string.
+ */
+static char *
+nautilus_file_get_parent_uri_as_string (NautilusFile *file) 
+{
+	g_assert (NAUTILUS_IS_FILE (file));
+	
+	if (file->details->directory == NULL) {
+		/* Callers expect an empty string, not a NULL. */
+		return "";
+	}
+
+	return nautilus_directory_get_uri (file->details->directory);
+}
+
 static NautilusFile *
 get_file_for_parent_directory (NautilusFile *file)
 {
@@ -1268,7 +1291,7 @@ nautilus_file_get_size_as_string (NautilusFile *file)
  * @file: NautilusFile representing the file in question.
  * @attribute_name: The name of the desired attribute. The currently supported
  * set includes "name", "type", "mime_type", "size", "date_modified", "date_changed",
- * "date_accessed", "owner", "group", "permissions".
+ * "date_accessed", "owner", "group", "permissions", "uri", "parent_uri".
  * 
  * Returns: Newly allocated string ready to display to the user, or NULL
  * if @attribute_name is not supported.
@@ -1324,6 +1347,14 @@ nautilus_file_get_string_attribute (NautilusFile *file, const char *attribute_na
 
 	if (strcmp (attribute_name, "group") == 0) {
 		return nautilus_file_get_group_as_string (file);
+	}
+
+	if (strcmp (attribute_name, "uri") == 0) {
+		return nautilus_file_get_uri (file);
+	}
+
+	if (strcmp (attribute_name, "parent_uri") == 0) {
+		return nautilus_file_get_parent_uri_as_string (file);
 	}
 
 	return NULL;
