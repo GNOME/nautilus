@@ -27,7 +27,6 @@
 #include "eazel-summary-shared.h"
 #include "shared-service-widgets.h"
 #include "shared-service-utilities.h"
-#include <libtrilobite/trilobite-redirect.h>
 
 #include <gnome-xml/tree.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -45,6 +44,7 @@
 
 #include <orb/orbit.h>
 #include <liboaf/liboaf.h>
+#include <libtrilobite/trilobite-redirect.h>
 #include <libtrilobite/eazelproxy.h>
 #include <libtrilobite/libammonite.h>
 #include <bonobo/bonobo-main.h>

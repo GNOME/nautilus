@@ -8,7 +8,7 @@ CPPFLAGS =							\
 INCLUDES =								\
 	-I$(top_srcdir)							\
 	-I$(top_srcdir)/components/services/nautilus-dependent-shared	\
-	-I$(top_srcdir)/components/services/trilobite/libtrilobite	\
+	-I$(top_srcdir)/components/services/trilobite			\
 	-I$(top_srcdir)/components/services/summary/lib			\
 	-I$(top_builddir)						\
 	$(GNOMEUI_CFLAGS)                       			\
