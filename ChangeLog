@@ -1,3 +1,74 @@
+2000-09-11  Seth Nickell  <seth@eazel.com>
+
+	* configure.in:
+	Add checks to fix things on Solaris regarding mounting,
+	environment variables, and fonts.
+
+	Added tests for compiler warning flags that are not supported 
+	with all versions of GCC.
+	
+	* helper-utilities/authenticate/nautilus-authenticate-pam.c:
+	(pam_conversion_func):
+	Remove "const" from system call for compatibility with Solaris.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(get_id_from_digit_string):
+	uid_t != int, so change functions converting from string to
+	uid_t to deal with greater bit uids properly.
+
+	* libnautilus-extensions/nautilus-glib-extensions.h:
+	* libnautilus-extensions/nautilus-glib-extensions.c:
+	(nautilus_g_setenv), (nautilus_g_unsetenv):
+	Add system gnostic functions for setting and removing variables
+	from the environment.
+	
+	* libnautilus-extensions/nautilus-scalable-font.c:
+	(initialize_global_stuff_if_needed):
+	Temporary fix to deal with the absence of "RedHat-style" font
+	paths on Solaris and Debian whilst font paths are still
+	hard-coded.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(nautilus_volume_monitor_get_volume_name),
+	(nautilus_volume_monitor_volume_is_mounted),
+	(mount_volumes_update_is_mounted), (mnttab_add_mount_volume),
+	(mntent_add_mount_volume), (find_volumes):
+
+	Rewrite sections to use the appropriate Solaris mounting 
+	functions if Linux-style mount/umount/mount-table manipulation
+	functions are not available.
+	
+	* libnautilus/nautilus-view-component.idl:
+	* src/nautilus-view-frame-corba.c:
+	* src/nautilus-zoomable-frame-corba.c:
+	(impl_Nautilus_ZoomableFrame_report_zoom_level_changed):
+
+	Change doubles to floats to work around an ORBit problem on
+	Solaris wherein doubles are not correctly aligned.
+
+	* src/file-manager/fm-desktop-icon-view.c:
+
+	remove gratuitous linux specific header inclusion
+	
+	* src/nautilus-first-time-druid.c: (set_http_proxy):
+	* src/nautilus-main.c: (main):
+	* src/nautilus-shell.c: (corba_restart):
+	(impl_Nautilus_ViewFrame_report_load_progress):
+
+	Changed "setenv" and "unsetenv" calls to use nautilus_g_setenv
+	and nautilus_g_unsetenv.
+	
+	* src/nautilus-window-manage-views.c:
+	(report_sidebar_panel_failure_to_user):
+
+	Add better error message to sidebar failures where it can't
+	figure out which sidebar failed. Done in order to fix null
+	string being passed to dialogue function which segfaulted
+	Nautilus on Solaris.
+
+	Yes children, your Nautilus will now run and frollick in the green,
+	green pasture of the multi-cpu UltraSparc.
+	
 2000-09-11  Robey Pointer  <robey@eazel.com>
 
 	* components/services/trilobite/libtrilobite/trilobite-root-helper.

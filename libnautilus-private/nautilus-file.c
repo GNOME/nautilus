@@ -2135,12 +2135,18 @@ get_group_id_from_user_name (const char *user_name, uid_t *id)
 static gboolean
 get_id_from_digit_string (const char *digit_string, uid_t *id)
 {
+	long *hold_sscanf;
+	gboolean result;
+
 	g_assert (id != NULL);
 
 	/* Only accept string if it has one integer with nothing
 	 * afterwards.
 	 */
-	return sscanf (digit_string, "%d%*s", id) == 1;
+	hold_sscanf = g_new (long, 1);
+	result =  sscanf (digit_string, "%ld%*s", hold_sscanf) == 1;
+	*id = *hold_sscanf;
+	return result;
 }
 
 /**

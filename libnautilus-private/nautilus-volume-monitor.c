@@ -35,12 +35,20 @@
 #include "nautilus-volume-monitor.h"
 #include <errno.h>
 #include <fcntl.h>
+
+#include <stdio.h>
+
+#if HAVE_SYS_VFSTAB_H
+#include <sys/vfstab.h>
+#else
 #include <fstab.h>
+#endif
+
 #include <glib.h>
 #include <gnome.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs.h>
-#include <mntent.h>
+
 #include <parser.h>
 #include <stdlib.h>
 #include <sys/ioctl.h>
@@ -48,7 +56,17 @@
 #include <sys/types.h>
 #include <xmlmemory.h>
 
+#if HAVE_SYS_MNTTAB_H
+#include <sys/mnttab.h>
+#else
+#include <mntent.h>
+#endif
+
 #define CHECK_STATUS_INTERVAL 2000
+
+#ifndef _PATH_MOUNTED
+#define _PATH_MOUNTED "/etc/mnttab"
+#endif
 
 #define MOUNT_OPTIONS_USER "user"
 #define MOUNT_OPTIONS_OWNER "owner"
@@ -204,7 +222,6 @@ floppy_sort (NautilusVolume *volume1, NautilusVolume *volume2)
 	return 0;
 }
 
-
 gboolean		
 nautilus_volume_monitor_volume_is_removable (NautilusVolume *volume)
 {
@@ -282,7 +299,6 @@ nautilus_volume_monitor_get_volume_name (const NautilusVolume *volume)
 			name [index] = '-';
 		}
 	}
-
 	return name;
 }
 
@@ -295,6 +311,7 @@ nautilus_volume_monitor_volume_is_mounted (const NautilusVolume *volume)
 	
 	/* Open mtab */
 	fh = fopen (_PATH_MOUNTED, "r");
+
 	g_return_val_if_fail (fh != NULL, FALSE);
     	
 	while (fgets (line, sizeof (line), fh)) {
@@ -559,6 +576,7 @@ mount_volumes_update_is_mounted (NautilusVolumeMonitor *monitor)
 
 	/* Open mtab */
 	fh = fopen (_PATH_MOUNTED, "r");
+
 	g_return_if_fail (fh != NULL);
 
 	/* Toggle mount state to off and then recheck in mtab. */
@@ -713,8 +731,44 @@ mount_volume_add_aliases (NautilusVolumeMonitor *monitor, const char *alias, Nau
 	mount_volume_add_aliases (monitor, path, volume);
 }
 
+#if HAVE_SYS_MNTTAB_H
+
+static
+void
+mnttab_add_mount_volume (NautilusVolumeMonitor *monitor, struct mnttab *tab) 
+{
+	NautilusVolume *volume;
+	gboolean mounted;
+
+	volume = g_new0 (NautilusVolume, 1);
+	volume->fsname = g_strdup(tab->fstype);
+	volume->mount_path = g_strdup (tab->mnt_mountp);
+
+	mounted = FALSE;
+
+	if (strcmp (tab->mnt_fstype, "iso9660") == 0) {
+		mounted = mount_volume_iso9660_add (monitor, volume);
+	} else if (nautilus_str_has_prefix (volume->fsname, FLOPPY_DEVICE_PATH_PREFIX)) {
+		mounted = mount_volume_floppy_add (monitor, volume);
+	} else if (strcmp (tab->mnt_fstype, "ufs") == 0) {
+		mounted = mount_volume_ext2_add (volume);
+	}
+
+	if (mounted) {
+		volume->is_read_only = strstr (tab->mnt_mntopts, "r") != NULL;
+		monitor->details->volumes = g_list_append (monitor->details->volumes, volume);
+		mount_volume_add_aliases (monitor, volume->fsname, volume);
+	} else {
+		g_free (volume->fsname);
+		g_free (volume->mount_path);
+		g_free (volume);
+	}
+}
+
+#else /* !HAVE_SYS_MNTTAB_H */
+
 static void
-add_mount_volume (NautilusVolumeMonitor *monitor, struct mntent *ent)
+mntent_add_mount_volume (NautilusVolumeMonitor *monitor, struct mntent *ent)
 {
 	NautilusVolume *volume;
 	gboolean mounted;
@@ -743,6 +797,7 @@ add_mount_volume (NautilusVolumeMonitor *monitor, struct mntent *ent)
 		g_free (volume);		
 	}
 }
+#endif /* HAVE_SYS_MNTTAB_H */
 
 #if 0
 static gboolean
@@ -771,18 +826,39 @@ static void
 find_volumes (NautilusVolumeMonitor *monitor)
 {
 	FILE *mef;
+#if HAVE_SYS_MNTTAB_H
+	struct mnttab *tab;
+#else
 	struct mntent *ent;
+#endif
 
+#if HAVE_SETMNTENT
 	mef = setmntent (_PATH_MNTTAB, "r");
+#else
+	mef = fopen ("/etc/mtab", "r");
+#endif
+
 	g_return_if_fail (mef != NULL);
+
+#if HAVE_SYS_MNTTAB_H
+	while (getmntent (mef, tab) != 0) {
+		/* Add it to our list of mount points */
+		mnttab_add_mount_volume (monitor, tab);
+	}
+
+#else /* !HAVE_SYS_MNTTAB_H */
 
 	while ((ent = getmntent (mef)) != NULL) {
 		/* Add it to our list of mount points */
-		add_mount_volume (monitor, ent);
+		mntent_add_mount_volume (monitor, ent);
 	}
+#endif /* HAVE_SYS_MNTTAB_H */
 
-
+#if HAVE_ENDMNTENT
   	endmntent (mef);
+#else
+	fclose (mef);
+#endif
 
 	g_list_foreach (monitor->details->volumes, (GFunc) mount_volume_set_state, monitor);
 

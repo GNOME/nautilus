@@ -24,6 +24,14 @@ AC_ISC_POSIX
 dnl ORBit
 AM_PATH_ORBIT
 
+dnl Check for "RedHat-style" font setup
+AM_CONDITIONAL(TYPE1_FONT_DIR_EXISTS, test -d /usr/share/fonts/default/Type1)
+
+dnl Check for different mount systems
+AC_CHECK_FUNCS(setmntent endmntent setenv unsetenv putenv)
+AC_CHECK_HEADERS(sys/mnttab.h sys/vfstab.h)
+
+
 dnl Tree view build as executable
 
 TREE_VIEW_EXE_SERVER=0
@@ -480,8 +488,24 @@ if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	-Wall \
 	-Wchar-subscripts -Wmissing-declarations -Wmissing-prototypes \
 	-Wnested-externs -Wpointer-arith \
-	-Wno-sign-compare -Wsign-promo \
 	-Werror"
+
+	for option in -Wsign-promo -Wno-sign-compare; do
+		SAVE_CFLAGS="$CFLAGS"
+		CFLAGS="$CFLAGS $VFS_CFLAGS $option"
+		AC_MSG_CHECKING([whether gcc understands $option])
+		AC_TRY_COMPILE([], [int test;],
+			has_option=yes,
+			has_option=no,)
+		CFLAGS="$SAVE_CFLAGS"
+		if test $has_option = yes; then
+		  VFS_CFLAGS="$VFS_CFLAGS $option"
+		fi
+		AC_MSG_RESULT($has_option)
+		unset has_option
+		unset SAVE_CFLAGS
+	done
+	unset option
 else
 	AC_MSG_RESULT(no)
 fi

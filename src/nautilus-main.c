@@ -42,6 +42,7 @@
 #include <libnautilus-extensions/nautilus-debug.h>
 #include <libnautilus-extensions/nautilus-lib-self-check-functions.h>
 #include <libnautilus-extensions/nautilus-self-checks.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <liboaf/liboaf.h>
 #include <gtk/gtkmain.h>
 #include <popt.h>
@@ -209,8 +210,10 @@ main (int argc, char *argv[])
 	 * the program is told to restart with CORBA, for example when
 	 * an update takes place.
 	 */
+
 	if (getenv ("_NAUTILUS_RESTART") != NULL) {
-		unsetenv ("_NAUTILUS_RESTART");
+		
+		nautilus_g_unsetenv ("_NAUTILUS_RESTART");
 
 		/* Might eventually want to copy all the parameters
 		 * from argv into the new exec. For now, though, that

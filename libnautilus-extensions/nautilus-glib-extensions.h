@@ -56,6 +56,12 @@ GDate *     nautilus_g_date_new_tm                    (struct tm                
 char *      nautilus_strdup_strftime                  (const char                 *format,
 						       struct tm                  *time_pieces);
 
+/* environment manipulation functions */
+gint        nautilus_g_setenv                         (const gchar                *name, 
+						       const gchar                *value, 
+						       gboolean overwrite);
+void        nautilus_g_unsetenv                       (const                      gchar *name);
+
 /* GList functions. */
 gboolean    nautilus_g_list_exactly_one_item          (GList                      *list);
 gboolean    nautilus_g_list_more_than_one_item        (GList                      *list);

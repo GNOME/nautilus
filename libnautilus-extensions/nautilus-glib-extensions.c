@@ -31,6 +31,7 @@
 #include "nautilus-string.h"
 #include <ctype.h>
 #include <sys/time.h>
+#include <stdlib.h>
 
 /* Legal conversion specifiers, as specified in the C standard. */
 #define C_STANDARD_STRFTIME_CHARACTERS "aAbBcdHIjmMpSUwWxXyYZ"
@@ -43,6 +44,74 @@ typedef struct {
 } HashTableToFree;
 
 GList *hash_tables_to_free_at_exit;
+
+/**
+ * nautilus_g_setenv:
+ * 
+ * Adds "*name=*value" to the environment
+ *
+ * Returns: see "putenv" - 
+ * 
+ **/
+gint
+nautilus_g_setenv (const gchar *name, const gchar *value, gboolean overwrite)
+{
+#if defined(HAVE_SETENV)
+	return setenv (name, value, overwrite);
+#else
+	gchar *string;
+	
+	if ( ! overwrite && g_getenv (name) != NULL)
+		return 0;
+	
+	/* A leak.  But there is absolutely no apparent
+	 * way to get around this other then an incredible
+	 * mess with the environ variable */
+	string = g_strconcat (name, '=', value, NULL);
+	return putenv (string);
+#endif
+}
+
+/* We will need this for unsetenv if there
+ * is no unsetenv */
+#if !defined(HAVE_SETENV)
+extern gchar **environ;
+#endif
+
+
+/**
+ * nautilus_g_unsetenv:
+ * 
+ * Removes *name from the environment
+ * 
+ **/
+void
+nautilus_g_unsetenv (const gchar *name)
+{
+#if defined(HAVE_SETENV)
+	unsetenv (name);
+#else
+	gint i;
+	gint len;
+
+	len = strlen (name);
+	
+	/* Mess directly with the environ array, apparently
+	 * this seems to be the only portable way to do this */
+	for (i = 0; environ[i] != NULL; i++)
+	{
+		if (strncmp (environ[i], name, len) == 0 &&
+		    environ[i][len + 1] == '=')
+			break;
+	}
+	
+	while (environ[i] != NULL)
+	{
+		environ[i] = environ[i + 1];
+		i++;
+	}
+#endif
+}
 
 /**
  * nautilus_g_date_new_tm:

@@ -41,6 +41,7 @@
 #include <libgnomeui/gnome-uidefs.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-label.h>
 #include <libnautilus-extensions/nautilus-stock-dialogs.h>
 #include <libnautilus-extensions/nautilus-preferences.h>
@@ -406,6 +407,8 @@ corba_restart (PortableServer_Servant servant,
 	       CORBA_Environment *ev)
 {
 	save_window_states ();
+
 	nautilus_main_event_loop_quit ();
-	setenv ("_NAUTILUS_RESTART", "yes", 1);
+	nautilus_g_setenv ("_NAUTILUS_RESTART", "yes", 1);
+
 }

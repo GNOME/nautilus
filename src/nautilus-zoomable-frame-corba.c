@@ -40,7 +40,7 @@ typedef struct {
 } impl_POA_Nautilus_ZoomableFrame;
 
 static void impl_Nautilus_ZoomableFrame_report_zoom_level_changed (PortableServer_Servant  servant,
-							    CORBA_double            level,
+							    CORBA_float            level,
 							    CORBA_Environment      *ev);
 
 POA_Nautilus_ZoomableFrame__epv impl_Nautilus_ZoomableFrame_epv =
@@ -103,7 +103,7 @@ impl_Nautilus_ZoomableFrame__create (NautilusViewFrame *view,
 
 static void
 impl_Nautilus_ZoomableFrame_report_zoom_level_changed (PortableServer_Servant servant,
-						       CORBA_double level,
+						       CORBA_float level,
 						       CORBA_Environment *ev)
 {
 	nautilus_view_frame_zoom_level_changed

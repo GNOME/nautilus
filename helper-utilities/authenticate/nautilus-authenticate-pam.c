@@ -37,7 +37,7 @@ typedef struct _PamConvData
 } PamConvData;
 
 static int pam_conversion_func (int				num_msg, 
-				const struct pam_message	**msg, 
+				struct pam_message	**msg, 
 				struct pam_response		**response, 
 				void				*appdata_ptr)
 {

@@ -56,7 +56,7 @@ static void impl_Nautilus_ViewFrame_report_status               (PortableServer_
 static void impl_Nautilus_ViewFrame_report_load_underway        (PortableServer_Servant  servant,
 								 CORBA_Environment      *ev);
 static void impl_Nautilus_ViewFrame_report_load_progress        (PortableServer_Servant  servant,
-								 CORBA_double            fraction_done,
+								 CORBA_float            fraction_done,
 								 CORBA_Environment      *ev);
 static void impl_Nautilus_ViewFrame_report_load_complete        (PortableServer_Servant  servant,
 								 CORBA_Environment      *ev);
@@ -204,7 +204,7 @@ impl_Nautilus_ViewFrame_report_load_underway (PortableServer_Servant servant,
 
 static void
 impl_Nautilus_ViewFrame_report_load_progress (PortableServer_Servant servant,
-					      CORBA_double fraction_done,
+					      CORBA_float fraction_done,
 					      CORBA_Environment *ev)
 {
 	nautilus_view_frame_report_load_progress

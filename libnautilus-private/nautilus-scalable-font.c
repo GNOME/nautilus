@@ -1394,7 +1394,11 @@ initialize_global_stuff_if_needed (void)
 		fonts_initialized = TRUE;
 		global_font_family_table = g_hash_table_new (g_str_hash, g_str_equal);
 
+#if TYPE1_FONT_DIR_EXISTS
 		font_family_table_add_fonts (global_font_family_table, "/usr/share/fonts/default/Type1");
+#else
+		font_family_table_add_fonts (global_font_family_table, NAUTILUS_DATADIR "/fonts/urw");
+#endif
 
 		g_atexit (font_family_table_at_exit_destructor);
 	}

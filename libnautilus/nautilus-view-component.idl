@@ -90,15 +90,16 @@ module Nautilus {
 		 * indicates that.
 		 */
 		oneway void report_load_underway ();
-		oneway void report_load_progress (in double fraction_done);
+		/* FIXME: bug 2974 this was a double, but ORBit/Solaris is broken  */
+		oneway void report_load_progress (in float fraction_done);
 		oneway void report_load_complete ();
 		oneway void report_load_failed ();
 
 		/* Called by a view component to change the title. */
 		oneway void set_title (in string new_title);
 	};
-	
-	typedef double ZoomLevel;
+	/* FIXME: bug 2974 this was a double, but ORBit/Solaris is broken */
+	typedef float ZoomLevel;
 	typedef sequence<ZoomLevel> ZoomLevelList;
 	
 	/* The interface for something zoomable. Nautilus looks for
@@ -109,11 +110,13 @@ module Nautilus {
 	 */
 	interface Zoomable : ::Bonobo::Unknown {
 		/* Set this attribute to make the thing zoom. */
-		attribute double zoom_level;
+		/* FIXME: bug 2974 this was a double, but ORBit/Solaris is broken */
+		attribute float zoom_level;
 
 		/* Information about the type of zooming that's supported. */
-		readonly attribute double min_zoom_level;
-		readonly attribute double max_zoom_level;
+		/* FIXME: bug 2974 these were doubles, but ORBit/Solaris is broken */
+		readonly attribute float min_zoom_level;
+		readonly attribute float max_zoom_level;
 		readonly attribute boolean is_continuous;
 		readonly attribute ZoomLevelList preferred_zoom_levels;
 		
@@ -133,7 +136,8 @@ module Nautilus {
 	 * its own or due to calls from the zoomable interface).
 	 */
 	interface ZoomableFrame : ::Bonobo::Unknown {
-		oneway void report_zoom_level_changed (in double zoom_level);
+		/* FIXME: bug 2974 this was a double, but ORBit/Solaris is broken */
+		oneway void report_zoom_level_changed (in float zoom_level);
 	};
 
 	/* The specifications for a history list item. The structure

@@ -49,7 +49,7 @@
 #include <libnautilus-extensions/nautilus-link.h>
 #include <libnautilus-extensions/nautilus-volume-monitor.h>
 #include <limits.h>
-#include <mntent.h>
+
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>

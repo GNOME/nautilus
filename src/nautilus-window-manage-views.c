@@ -925,9 +925,14 @@ report_sidebar_panel_failure_to_user (NautilusWindow *window, NautilusViewFrame 
 	char *message;
 
 	name = nautilus_view_frame_get_label (panel);
+        if (name == NULL) {
+                message = g_strdup ("One of the sidebar panels encountered an error and can't continue. Unfortunately I couldn't tell which one. ");
+        } else {
 	message = g_strdup_printf ("The %s sidebar panel encountered an error and can't continue. "
 			           "If this keeps happening, you might want to turn this panel off.",
 			           name);
+        }
+
 	g_free (name);
 
 	nautilus_error_dialog (message, _("Nautilus: Sidebar panel failed"), GTK_WINDOW (window));

@@ -41,6 +41,7 @@
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-extensions.h>
+#include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-gdk-pixbuf-extensions.h>
 #include <libnautilus-extensions/nautilus-image.h>
 #include <libnautilus-extensions/nautilus-label.h>
@@ -898,7 +899,7 @@ set_http_proxy (char *proxy_url)
 
 	/* set the "http_proxy" environment variable */
 
-	setenv ("http_proxy", proxy_url, TRUE);
+	nautilus_g_setenv ("http_proxy", proxy_url, TRUE);
 
 	/* The variable is expected to be in the form host:port */
 	if ( 0 != strncmp (proxy_url, "http://", strlen ("http://"))) {
