@@ -84,7 +84,6 @@
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-metadata.h>
-#include <libnautilus-private/nautilus-theme.h>
 #include <atk/atkrelationset.h>
 
 /* property types */

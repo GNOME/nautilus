@@ -1,3 +1,40 @@
+2005-03-16  Diego Gonzalez  <diego@pemas.net>
+
+	* libnautilus-private/Makefile.am: remove nautilus-theme.[c-h]
+	  from the build process.
+	* libnautilus-private/nautilus-icon-factory.c:
+	  (load_thumbnail_frame) remove the need to use the deprecated
+	  nautilus themes.
+	* libnautilus-private/nautilus-icon-canvas-item.c:
+	  (draw_strech_handles), (it_test_stretch_handle):
+	  remove the need to use the deprecated nautilus themes.
+	* libnautilus-private/nautilus-thumbnails.c:
+	* libnautilus-private/nautilus-icon-factory.c:
+	  remove nautilus-theme.h include
+
+	* src/nautilus-navigation-window.c:
+	* src/nautilus-property-browser.c:
+	* src/nautilus-notes-viewer.c:
+	* src/nautilus-sidebar-title.c:
+	* src/nautilus-window-manage-views.c:
+	* src/nautilus-window-toolbars.c:
+	* src/nautilus-zoom-control.c:
+	  remove nautilus-theme.h include
+
+	* src/nautilus-sidebar-title:
+	 (nautilus_sidebar_title_select_text_color): remove use of
+	 old theme stuff and adapt the shadow offset, made it equal to 1,
+	 which is the default.
+	 (nautilus_sidebar_title_theme_changed): remove, as there will be
+	 no sidebar theme changes.
+	    (nautilus_sidebar_title_init): remove the theme_changed callback, as
+	 there will not be sidebar theme changes anymore.
+
+	 * src/nautilus-notes-viewer.c:
+	 (nautilus_notes_viewer_init): remove use of old theme stuff.
+
+	* icons/Makefile.am: don't install old theme stuff.
+
 2005-03-31  Steve Murphy  <murf@e-tools.com>
 
         * configure.in: Added "rw" to ALL_LINGUAS.

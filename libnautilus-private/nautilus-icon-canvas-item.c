@@ -32,7 +32,6 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-factory.h"
 #include "nautilus-icon-private.h"
-#include "nautilus-theme.h"
 #include <eel/eel-art-extensions.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
@@ -1140,7 +1139,7 @@ draw_stretch_handles (NautilusIconCanvasItem *item, GdkDrawable *drawable,
 
 	gc = gdk_gc_new (drawable);
 
-	knob_filename = nautilus_theme_get_image_path ("knob.png");
+	knob_filename = nautilus_pixmap_file ("knob.png");
 	knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename, NULL);
 	knob_width = gdk_pixbuf_get_width (knob_pixbuf);
 	knob_height = gdk_pixbuf_get_height (knob_pixbuf);
@@ -2047,7 +2046,7 @@ hit_test_stretch_handle (NautilusIconCanvasItem *item,
 		return FALSE;
 	}
 
-	knob_filename = nautilus_theme_get_image_path ("knob.png");
+	knob_filename = nautilus_pixmap_file ("knob.png");
 	knob_pixbuf = gdk_pixbuf_new_from_file (knob_filename, NULL);
 	knob_width = gdk_pixbuf_get_width (knob_pixbuf);
 	knob_height = gdk_pixbuf_get_height (knob_pixbuf);

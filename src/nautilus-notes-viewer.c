@@ -44,7 +44,6 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-clipboard.h>
-#include <libnautilus-private/nautilus-theme.h>
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-sidebar-provider.h>
 #include <libnautilus-extension/nautilus-property-page-provider.h>
@@ -320,7 +319,7 @@ nautilus_notes_viewer_init (NautilusNotesViewer *sidebar)
         
         details->uri = g_strdup ("");
 
-        image_path = nautilus_theme_get_image_path ("note-indicator.png");
+        image_path = nautilus_pixmap_file ("note-indicator.png");
         if (image_path) {
                 details->icon = gdk_pixbuf_new_from_file (image_path, NULL);
                 g_free (image_path);

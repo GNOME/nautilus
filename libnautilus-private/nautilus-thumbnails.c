@@ -30,7 +30,6 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-factory-private.h"
 #include "nautilus-icon-factory.h"
-#include "nautilus-theme.h"
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-string.h>
@@ -229,10 +228,7 @@ void
 nautilus_thumbnail_frame_image (GdkPixbuf **pixbuf)
 {
 	GdkPixbuf *pixbuf_with_frame, *frame;
-	gboolean got_frame_offsets;
-	char *frame_offset_str;
 	int left_offset, top_offset, right_offset, bottom_offset;
-	char c;
 		
 	/* The pixbuf isn't already framed (i.e., it was not made by
 	 * an old Nautilus), so we must embed it in a frame.
@@ -243,22 +239,10 @@ nautilus_thumbnail_frame_image (GdkPixbuf **pixbuf)
 		return;
 	}
 	
-	got_frame_offsets = FALSE;
-	frame_offset_str = nautilus_theme_get_theme_data ("thumbnails", "FRAME_OFFSETS");
-	if (frame_offset_str != NULL) {
-		if (sscanf (frame_offset_str, " %d , %d , %d , %d %c",
-			    &left_offset, &top_offset, &right_offset, &bottom_offset, &c) == 4) {
-			got_frame_offsets = TRUE;
-		}
-		g_free (frame_offset_str);
-	}
-	if (!got_frame_offsets) {
-		/* use nominal values since the info in the theme couldn't be found */
-		left_offset = 3;
-		top_offset = 3;
-		right_offset = 6;
-		bottom_offset = 6;
-	}
+	left_offset = 3;
+	top_offset = 3;
+	right_offset = 6;
+	bottom_offset = 6;
 	
 	pixbuf_with_frame = eel_embed_image_in_frame
 		(*pixbuf, frame,

@@ -1,14 +1,5 @@
 NULL=
 
-SUBDIRS =\
-	crux_eggplant \
-	crux_teal \
-	default \
-	gnome \
-	sierra \
-	tahoe \
-	$(NULL)
-
 icondir = $(datadir)/pixmaps/nautilus
 
 icon_DATA =\

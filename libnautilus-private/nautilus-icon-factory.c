@@ -36,7 +36,6 @@
 #include "nautilus-icon-factory-private.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-link.h"
-#include "nautilus-theme.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-trash-monitor.h"
 #include <eel/eel-debug.h>
@@ -321,7 +320,7 @@ load_thumbnail_frame (NautilusIconFactory *factory)
 {
 	char *image_path;
 	
-	image_path = nautilus_theme_get_image_path ("thumbnail_frame.png");
+	image_path = nautilus_pixmap_file ("thumbnail_frame.png");
 	if (factory->thumbnail_frame != NULL) {
 		g_object_unref (factory->thumbnail_frame);
 	}

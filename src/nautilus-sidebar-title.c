@@ -50,7 +50,6 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-metadata.h>
-#include <libnautilus-private/nautilus-theme.h>
 #include <libnautilus-private/nautilus-sidebar.h>
 #include <string.h>
 #include <stdlib.h>
@@ -59,6 +58,7 @@
 #define MAX_TITLE_SIZE 		256
 #define MINIMUM_INFO_WIDTH	32
 #define SIDEBAR_INFO_MARGIN	4
+#define SHADOW_OFFSET		1
 
 #define MORE_INFO_FONT_SIZE 	 12
 #define MIN_TITLE_FONT_SIZE 	 12
@@ -69,7 +69,6 @@ static void                nautilus_sidebar_title_destroy          (GtkObject   
 static void                nautilus_sidebar_title_init       (NautilusSidebarTitle      *pixmap);
 static void                nautilus_sidebar_title_size_allocate    (GtkWidget                 *widget,
 								    GtkAllocation             *allocation);
-static void                nautilus_sidebar_title_theme_changed    (gpointer                   user_data);
 static void                update_icon                             (NautilusSidebarTitle      *sidebar_title);
 static GtkWidget *         sidebar_title_create_title_label        (void);
 static GtkWidget *         sidebar_title_create_more_info_label    (void);
@@ -90,7 +89,6 @@ struct NautilusSidebarTitleDetails {
 	GtkWidget		*emblem_box;
 	GtkWidget		*notes;
 
-	int			 shadow_offset;
 	gboolean		 determined_icon;
 };
 
@@ -174,13 +172,7 @@ nautilus_sidebar_title_init (NautilusSidebarTitle *sidebar_title)
 	/* Keep track of changes in graphics trade offs */
 	update_all (sidebar_title);
 
-	eel_preferences_add_callback_while_alive (NAUTILUS_PREFERENCES_THEME,
-						  nautilus_sidebar_title_theme_changed,
-						  sidebar_title,
-						  G_OBJECT (sidebar_title));
-
 	/* initialize the label colors & fonts */
-	nautilus_sidebar_title_theme_changed (sidebar_title);
 	style_set (GTK_WIDGET (sidebar_title), NULL);
 }
 
@@ -245,32 +237,16 @@ nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title,
 	sidebar_info_title_color = NULL;
 	sidebar_title_shadow_color = NULL;
 	
-	if (is_default) {
-		sidebar_title_color = nautilus_theme_get_theme_data ("sidebar", "title_color");
-		sidebar_info_title_color = nautilus_theme_get_theme_data ("sidebar", "title_info_color");
-		sidebar_title_shadow_color = nautilus_theme_get_theme_data ("sidebar", "title_shadow_color"); 
-	}
-		
-	if (sidebar_title_color == NULL) {
-		/* FIXME bugzilla.gnome.org 42496: for now, both the title and info
-		 * colors are the same - and hard coded */
-		if (eel_background_is_dark (background)) {
-			sidebar_title_color = g_strdup ("#FFFFFF");
-			sidebar_info_title_color = g_strdup ("#FFFFFF");
-			sidebar_title_shadow_color = g_strdup ("#000000");
-				
-		} else {
-			sidebar_title_color = g_strdup ("#000000");
-			sidebar_info_title_color = g_strdup ("#000000");
-			sidebar_title_shadow_color = g_strdup ("#FFFFFF");
-		}
+	/* FIXME bugzilla.gnome.org 42496: for now, both the title and info
+	 * colors are the same - and hard coded */
+	if (eel_background_is_dark (background)) {
+		sidebar_title_color = g_strdup ("#FFFFFF");
+		sidebar_info_title_color = g_strdup ("#FFFFFF");
+		sidebar_title_shadow_color = g_strdup ("#000000");
 	} else {
-		if (sidebar_info_title_color == NULL) {
-			sidebar_info_title_color = g_strdup (sidebar_title_color);
-		}
-		if (sidebar_title_shadow_color == NULL) {
-			sidebar_title_shadow_color = g_strdup ("#FFFFFF");
-		}
+		sidebar_title_color = g_strdup ("#000000");
+		sidebar_info_title_color = g_strdup ("#000000");
+		sidebar_title_shadow_color = g_strdup ("#FFFFFF");
 	}
 
 	eel_gtk_widget_set_foreground_color (sidebar_title->details->title_label,
@@ -283,32 +259,14 @@ nautilus_sidebar_title_select_text_color (NautilusSidebarTitle *sidebar_title,
 	eel_gtk_label_set_drop_shadow_color (GTK_LABEL (sidebar_title->details->more_info_label),
 					     eel_parse_rgb_with_white_default (sidebar_title_shadow_color));
 
-	eel_gtk_label_set_drop_shadow_offset (GTK_LABEL (sidebar_title->details->title_label),
-					      sidebar_title->details->shadow_offset);
+	eel_gtk_label_set_drop_shadow_offset (GTK_LABEL (sidebar_title->details->title_label), 
+					      SHADOW_OFFSET);
 	eel_gtk_label_set_drop_shadow_offset (GTK_LABEL (sidebar_title->details->more_info_label),
-					      sidebar_title->details->shadow_offset);
+					      SHADOW_OFFSET);
 		
 	g_free (sidebar_title_color);	
 	g_free (sidebar_info_title_color);	
 	g_free (sidebar_title_shadow_color);
-}
-
-/* handle theme changes by setting up the color of the labels */
-static void
-nautilus_sidebar_title_theme_changed (gpointer user_data)
-{
-	char *shadow_offset_str;
-	NautilusSidebarTitle *sidebar_title;	
-
-	sidebar_title = NAUTILUS_SIDEBAR_TITLE (user_data);		
-	
-	shadow_offset_str = nautilus_theme_get_theme_data ("sidebar", "shadow_offset");
-	if (shadow_offset_str) {
-		sidebar_title->details->shadow_offset = atoi (shadow_offset_str);	
-		g_free (shadow_offset_str);
-	} else {
-		sidebar_title->details->shadow_offset = 1;	
-	}
 }
 
 static char*

@@ -157,8 +157,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-sidebar.h \
 	nautilus-sound.c \
 	nautilus-sound.h \
-	nautilus-theme.c \
-	nautilus-theme.h \
 	nautilus-thumbnails.c \
 	nautilus-thumbnails.h \
 	nautilus-trash-directory.c \
