@@ -24,6 +24,7 @@
 #include <config.h>
 
 #include <libgnome/gnome-macros.h>
+#include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -463,9 +464,13 @@ fm_icon_container_instance_init (FMIconContainer *icon_container)
 NautilusIconContainer *
 fm_icon_container_construct (FMIconContainer *icon_container, FMIconView *view)
 {
+	AtkObject *atk_obj;
+
 	g_return_val_if_fail (FM_IS_ICON_VIEW (view), NULL);
 
 	icon_container->view = view;
+	atk_obj = gtk_widget_get_accessible (GTK_WIDGET (icon_container));
+	atk_object_set_name (atk_obj, _("Icon View"));
 
 	return NAUTILUS_ICON_CONTAINER (icon_container);
 }
