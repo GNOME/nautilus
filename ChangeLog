@@ -1,3 +1,14 @@
+2000-08-17  John Sullivan  <sullivan@eazel.com>
+
+	Work on bug 1750 ("Reveal in New Window" feature for search results)
+
+	* src/file-manager/fm-search-list-view.c:
+	(reveal_selected_items_callback): New function, opens a new window
+	showing the parent directory for each selected item. What it
+	still doesn't do is select and scroll-to-expose the item.
+	(real_create_selection_context_menu_items), (real_merge_menus):
+	Wire the callback to the context & menu-bar menu items.
+
 2000-08-17  Gene Z. Ragan  <gzr@eazel.com>
 
 	* libnautilus-extensions/nautilus-icon-container.c:

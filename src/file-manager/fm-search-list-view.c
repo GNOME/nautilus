@@ -72,6 +72,8 @@ static gboolean real_supports_properties 	     	 (FMDirectoryView  *view);
 static void 	load_location_callback               	 (NautilusView 	   *nautilus_view, 
 						      	  char 		   *location);
 static void	real_update_menus 		     	 (FMDirectoryView  *view);
+static void	reveal_selected_items_callback 		 (gpointer 	    ignored, 
+							  gpointer 	    user_data);
 
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMSearchListView,
@@ -352,8 +354,7 @@ real_create_selection_context_menu_items (FMDirectoryView *view,
         gtk_widget_set_sensitive (menu_item, sensitive);
 	gtk_widget_show (menu_item);
 
-	/* FIXME bugzilla.eazel.com 1750: need to connect callback */
-	/* gtk_signal_connect (GTK_OBJECT (menu_item), "activate", callback, view); */
+	gtk_signal_connect (GTK_OBJECT (menu_item), "activate", reveal_selected_items_callback, view);
 	gtk_menu_insert (menu, menu_item, position);
 }
 
@@ -430,7 +431,7 @@ real_merge_menus (FMDirectoryView *view)
 			 FM_DIRECTORY_VIEW_MENU_PATH_OPEN_WITH) + 1, 
 		BONOBO_UI_HANDLER_PIXMAP_NONE, NULL,
 		0, 0,
-		NULL, NULL);
+		(BonoboUIHandlerCallback) reveal_selected_items_callback, view);
 	g_free (name);
 	bonobo_ui_handler_menu_set_sensitivity 
 		(ui_handler, MENU_PATH_REVEAL_IN_NEW_WINDOW, sensitive);
@@ -476,4 +477,42 @@ real_update_menus (FMDirectoryView *view)
 	g_free (name);
 
         nautilus_file_list_free (selected_files);
+}
+
+/**
+ * Note that this is used both as a Bonobo menu callback and a signal callback.
+ * The first parameter is different in these cases, but we just ignore it anyway.
+ */
+static void
+reveal_selected_items_callback (gpointer ignored, gpointer user_data)
+{
+	FMDirectoryView *directory_view;
+	char *uri;
+	NautilusFile *file;
+	GList *selection;
+	GList *node;
+
+	g_assert (FM_IS_SEARCH_LIST_VIEW (user_data));
+
+	directory_view = FM_DIRECTORY_VIEW (user_data);
+
+	selection = fm_directory_view_get_selection (directory_view);
+
+	for (node = selection; node != NULL; node = node->next) {
+		file = NAUTILUS_FILE (node->data);
+		uri = nautilus_file_get_parent_uri (file);
+		if (uri != NULL) {
+			/* FIXME: bugzilla.eazel.com 1750 
+			 * Needs to reveal the item by selecting and scrolling 
+			 */
+			nautilus_view_open_location_in_new_window
+				(fm_directory_view_get_nautilus_view (directory_view), 
+				 uri);
+		}
+		g_free (uri);
+	}
+	
+
+	nautilus_file_list_free (selection);
+
 }
