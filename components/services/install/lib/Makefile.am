@@ -23,6 +23,7 @@ INCLUDES = \
 noinst_LIBRARIES = libinstall_gtk.a libinstall_base.a libinstall_corba.a
 
 noinst_HEADERS = \
+	trilobite-eazel-install.h		\
 	eazel-install-types.h	 		\
 	eazel-install-corba-types.h	 	\
 	eazel-install-metadata.h		\
@@ -55,6 +56,14 @@ libinstall_base_a_SOURCES =		       	\
 	eazel-install-public.h			\
 	$(NULL)
 
+libinstall_corba_a_SOURCES = 		\
+	eazel-install-corba.c		\
+	eazel-install-object.c		\
+	eazel-install-corba-types.c	 	\
+	eazel-install-corba-callback.c	\
+	$(CORBA_GENERATED)		\
+	$(NULL)
+
 ## CORBA magic
 
 CORBA_GENERATED =				\
@@ -71,16 +80,7 @@ IDL = $(IDLDIR)/trilobite-eazel-install.idl
 trilobite-eazel-install.h: $(IDL)
 	$(ORBIT_IDL) $(IDL_CFLAGS) -I$(IDLDIR) $(IDL)
 
-eazel-install-types.c : trilobite-eazel-install.h
-
 CLEANFILES+=$(CORBA_GENERATED) trilobite-eazel-install.h
 
-libinstall_corba_a_SOURCES = 		\
-	eazel-install-corba.c		\
-	eazel-install-object.c		\
-	eazel-install-corba-types.c	 	\
-	eazel-install-corba-callback.c	\
-	$(CORBA_GENERATED)		\
-	$(NULL)
-
+##
 
