@@ -2268,6 +2268,7 @@ nautilus_file_compare_for_sort (NautilusFile *file_1,
 			if (result == 0) {
 				result = compare_by_full_path (file_1, file_2);
 			}
+			break;
 		default:
 			g_return_val_if_reached (0);
 		}
