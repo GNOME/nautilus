@@ -62,8 +62,7 @@
 struct NautilusThemeSelectorDetails {
 	GtkWidget *container;
 	GtkWidget *content_frame;
-	GtkWidget *content_list;
-		
+
 	GtkWidget *title_box;
 	GtkWidget *title_label;
 	GtkWidget *help_label;
@@ -88,7 +87,7 @@ static void  nautilus_theme_selector_initialize_class (GtkObjectClass          *
 static void  nautilus_theme_selector_initialize       (GtkObject               *object);
 static void  nautilus_theme_selector_destroy          (GtkObject               *object);
 
-static void  add_new_button_callback                  (GtkWidget               *widget,
+static void  add_new_theme_button_callback                  (GtkWidget               *widget,
 						       NautilusThemeSelector *theme_selector);
 static void  remove_button_callback                   (GtkWidget               *widget,
 						       NautilusThemeSelector *theme_selector);
@@ -243,7 +242,7 @@ nautilus_theme_selector_initialize (GtkObject *object)
 	gtk_container_add (GTK_CONTAINER(theme_selector->details->add_button), theme_selector->details->add_button_label);
 	gtk_box_pack_end (GTK_BOX(theme_selector->details->bottom_box), theme_selector->details->add_button, FALSE, FALSE, 4);
  	  
- 	gtk_signal_connect(GTK_OBJECT (theme_selector->details->add_button), "clicked", GTK_SIGNAL_FUNC (add_new_button_callback), theme_selector);
+ 	gtk_signal_connect(GTK_OBJECT (theme_selector->details->add_button), "clicked", GTK_SIGNAL_FUNC (add_new_theme_button_callback), theme_selector);
 	
 	/* now create the "remove" button */
   	theme_selector->details->remove_button = gtk_button_new();
@@ -335,11 +334,69 @@ nautilus_theme_selector_delete_event_callback (GtkWidget *widget,
 }
 
 
-/* handle the add_new button */
-
+/* callback to add a newly selected theme to the user's theme collection */
 static void
-add_new_button_callback(GtkWidget *widget, NautilusThemeSelector *theme_selector)
+add_theme_to_icons (GtkWidget *widget, gpointer *data)
 {
+	char *theme_path;
+	NautilusThemeSelector *theme_selector;
+	
+	theme_selector = NAUTILUS_THEME_SELECTOR (data);
+	theme_path = g_strdup (gtk_file_selection_get_filename (GTK_FILE_SELECTION (theme_selector->details->dialog)));
+
+	/* get rid of the file selection dialog */
+	gtk_widget_destroy (theme_selector->details->dialog);
+	theme_selector->details->dialog = NULL;
+		
+	/* make sure it's a valid theme directory */
+	/* copy the theme directory into ~/.nautilus/themes */
+	g_message ("adding theme from %s", theme_path);
+	
+	g_free (theme_path);
+}
+
+/* Callback used when the theme selection dialog is destroyed */
+static gboolean
+dialog_destroy (GtkWidget *widget, gpointer data)
+{
+	NautilusThemeSelector *theme_selector = NAUTILUS_THEME_SELECTOR (data);
+	theme_selector->details->dialog = NULL;
+	return FALSE;
+}
+
+/* handle the add_new button */
+static void
+add_new_theme_button_callback(GtkWidget *widget, NautilusThemeSelector *theme_selector)
+{
+	if (theme_selector->details->dialog) {
+		gtk_widget_show(theme_selector->details->dialog);
+		if (theme_selector->details->dialog->window)
+			gdk_window_raise(theme_selector->details->dialog->window);
+
+	} else {
+		GtkFileSelection *file_dialog;
+
+		theme_selector->details->dialog = gtk_file_selection_new
+			(_("Select a theme directory to add as a new theme:"));
+		file_dialog = GTK_FILE_SELECTION (theme_selector->details->dialog);
+		
+		gtk_signal_connect (GTK_OBJECT (theme_selector->details->dialog),
+				    "destroy",
+				    (GtkSignalFunc) dialog_destroy,
+				    theme_selector);
+		gtk_signal_connect (GTK_OBJECT (file_dialog->ok_button),
+				    "clicked",
+				    (GtkSignalFunc) add_theme_to_icons,
+				    theme_selector);
+		
+		gtk_signal_connect_object (GTK_OBJECT (file_dialog->cancel_button),
+					   "clicked",
+					   (GtkSignalFunc) gtk_widget_destroy,
+					   GTK_OBJECT(file_dialog));
+
+		gtk_window_set_position (GTK_WINDOW (file_dialog), GTK_WIN_POS_MOUSE);
+		gtk_widget_show (GTK_WIDGET(file_dialog));
+	}
 }
 
 /* handle the "remove" button */
