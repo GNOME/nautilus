@@ -634,6 +634,7 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 	char **text;
 	int new_row;
 	int column;
+	int focus_row;
 
 	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (list_view), -1);
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), -1);
@@ -660,7 +661,15 @@ add_to_list (FMListView *list_view, NautilusFile *file)
 	 */
 	gtk_object_set_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY, file);
 	/* Note that since list is auto-sorted new_row isn't necessarily last row. */
+
+	/* Do a workaround for a problem whith GtkClist where it would drag the
+	 * current focus point to a pretty much random location while inserting
+	 * new items to a list.
+	 */
+	focus_row = clist->focus_row;
 	new_row = gtk_clist_append (clist, text);
+	if (focus_row == -1)
+		clist->focus_row = focus_row;
 	gtk_clist_set_row_data (clist, new_row, file);
 	nautilus_list_mark_cell_as_link (list, new_row, LIST_VIEW_COLUMN_NAME);
 	gtk_object_set_data (GTK_OBJECT (clist), PENDING_USER_DATA_KEY, NULL);

@@ -1,5 +1,12 @@
 2000-05-16  Pavel Cisler  <pavel@eazel.com>
 
+	* src/file-manager/fm-list-view.c: (add_to_list):
+	Fix 834 - bad keyboard focus behavior. Added a workaround for 
+	GtkCList broken behavior that moved the focused item to a pretty much
+	random point when populating the list.
+
+2000-05-16  Pavel Cisler  <pavel@eazel.com>
+
 	* libnautilus-extensions/nautilus-icon-container.c:
 	(select_previous_or_next_name):
 	Fixed a crash when using Tab and Shift-Tab in an empty folder,
