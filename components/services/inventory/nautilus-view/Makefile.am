@@ -48,6 +48,7 @@ nautilus_inventory_view_LDADD =							\
 	$(GHTTP_LIBS)								\
 	$(OAF_LIBS)								\
 	$(top_builddir)/components/services/inventory/lib/libinventory.a	\
+	$(RPM_LIBS)								\
 	$(NULL)
 
 EXTRA_DIST = $(oaf_DATA)
