@@ -1,3 +1,17 @@
+2003-01-13  Alexander Larsson  <alexl@redhat.com>
+
+	* libnautilus-private/nautilus-directory-background.c:
+	Rename nautilus_file_update_desktop_pixmaps to 
+	nautilus_file_update_root_pixmaps for clarity.
+	Call eel_background_set_is_constant_size on the desktop
+	background earlier.
+	Set the color on the correct window (root window, not desktop window).
+
+	* libnautilus-private/nautilus-icon-container.c:
+	Override the draw_background signal to not clear/redraw the background
+	on every expose. That's not needed since EelBackground correctly sets
+	the background of the XWindow.
+
 2003-01-13  Dave Camp  <dave@ximian.com>
 
 	* components/image_properties/nautilus-image-properties-view.c

@@ -3171,6 +3171,14 @@ key_press_event (GtkWidget *widget,
 	return handled;
 }
 
+static void
+draw_canvas_background (EelCanvas *canvas,
+			int x, int y, int width, int height)
+{
+	/* Don't chain up to the parent to avoid clearing and redrawing */
+}
+
+
 static gboolean
 expose_event (GtkWidget      *widget,
 	      GdkEventExpose *event)
@@ -3204,7 +3212,8 @@ static void
 nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 {
 	GtkWidgetClass *widget_class;
-
+	EelCanvasClass *canvas_class;
+	
 	G_OBJECT_CLASS (class)->finalize = finalize;
 	GTK_OBJECT_CLASS (class)->destroy = destroy;
 
@@ -3483,6 +3492,9 @@ nautilus_icon_container_class_init (NautilusIconContainerClass *class)
 	widget_class->style_set = style_set;
 	widget_class->expose_event = expose_event;
 
+	canvas_class = EEL_CANVAS_CLASS (class);
+	canvas_class->draw_background = draw_canvas_background;
+	
 	eel_preferences_add_auto_enum (NAUTILUS_PREFERENCES_CLICK_POLICY,
 				       &click_policy_auto_value);
 

@@ -55,7 +55,7 @@ static void saved_settings_changed_callback (NautilusFile       *file,
                                          
 static void nautilus_file_background_receive_gconf_changes (EelBackground *background);
 
-static void nautilus_file_update_desktop_pixmaps (EelBackground *background);
+static void nautilus_file_update_root_pixmaps (EelBackground *background);
 
 static void nautilus_file_background_write_desktop_settings (char *color,
 							     char *image,
@@ -69,7 +69,7 @@ screen_size_changed (GdkScreen *screen, NautilusIconContainer *icon_container)
         
         background = eel_get_widget_background (GTK_WIDGET (icon_container));
 
-	nautilus_file_update_desktop_pixmaps (background);        
+	nautilus_file_update_root_pixmaps (background);        
 }
 
 static void
@@ -94,14 +94,13 @@ desktop_background_realized (NautilusIconContainer *icon_container, void *discon
 	}
 
 	background = eel_get_widget_background (GTK_WIDGET (icon_container));
-        eel_background_set_is_constant_size (background, TRUE);
                                           
 	g_object_set_data (G_OBJECT (background), "icon_container", (gpointer) icon_container);
 
 	g_object_set_data (G_OBJECT (background), "screen",
 			   gtk_widget_get_screen (GTK_WIDGET (icon_container)));
 
-	nautilus_file_update_desktop_pixmaps (background);
+	nautilus_file_update_root_pixmaps (background);
 
         g_signal_connect (gtk_widget_get_screen (GTK_WIDGET (icon_container)), "size_changed",
                           G_CALLBACK (screen_size_changed), icon_container);
@@ -116,6 +115,7 @@ nautilus_connect_desktop_background_to_file_metadata (NautilusIconContainer *ico
 	EelBackground *background;
 
 	background = eel_get_widget_background (GTK_WIDGET (icon_container));
+        eel_background_set_is_constant_size (background, TRUE);
 
 	g_object_set_data (G_OBJECT (background), "is_desktop", (gpointer)1);
 
@@ -143,15 +143,6 @@ static gboolean
 background_is_desktop (EelBackground *background)
 {
 	return g_object_get_data (G_OBJECT (background), "is_desktop") != 0;
-}
-
-static GdkWindow *
-background_get_desktop_background_window (EelBackground *background)
-{
-	gpointer layout;
-
-	layout = g_object_get_data (G_OBJECT (background), "icon_container");
-	return layout != NULL ? GTK_LAYOUT (layout)->bin_window : NULL;
 }
 
 static void
@@ -593,11 +584,12 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
                 
 	} else {
 		free_root_pixmap (screen);
-		background_window = background_get_desktop_background_window (background);
+		background_window = gdk_screen_get_root_window (screen);
 		color_string = eel_background_get_color (background);
 
 		if (background_window != NULL && color_string != NULL) {
 			if (eel_gdk_color_parse (color_string, &parsed_color)) {
+                                gdk_rgb_find_color (gdk_drawable_get_colormap (background_window), &parsed_color);
 				gdk_window_set_background (background_window, &parsed_color);
 			}
 		}
@@ -605,7 +597,7 @@ image_loading_done_callback (EelBackground *background, gboolean successful_load
 }
 
 static void
-nautilus_file_update_desktop_pixmaps (EelBackground *background)
+nautilus_file_update_root_pixmaps (EelBackground *background)
 {	
 	if (eel_background_is_loaded (background)) {
 		image_loading_done_callback (background, TRUE, GINT_TO_POINTER (FALSE));
@@ -700,7 +692,7 @@ background_changed_callback (EelBackground *background,
 	g_free (image);
 	
 	if (background_is_desktop (background)) {
-		nautilus_file_update_desktop_pixmaps (background);
+		nautilus_file_update_root_pixmaps (background);
 	}
 }
 
@@ -770,7 +762,7 @@ saved_settings_changed_callback (NautilusFile *file,
 	initialize_background_from_settings (file, background);
 	
 	if (background_is_desktop (background)) {
-		nautilus_file_update_desktop_pixmaps (background);
+		nautilus_file_update_root_pixmaps (background);
 	}
 }
 
