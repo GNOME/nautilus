@@ -1,5 +1,11 @@
 2002-02-22  Kjartan Maraas  <kmaraas@gnome.org>
 
+	* components/hardware/main.c: Remove #ifdef ENABLE_NLS since it's not
+	supported in GNOME 2.
+	* components/music/fileinfo.c: Same here.
+	* libnautilus/nautilus-view-standard-main. Here too.
+	* src/nautilus-main.c: Same here.
+	
 	* components/hardware/main.c: Use GETTEXT_PACKAGE.
 	* components/history/nautilus-history-view.c: Same here.
 	* components/music/main.c: Same here.

@@ -199,17 +199,15 @@ void mpg123_file_info_box(char *filename)
 				   "", N_("CCIT J.17")};
 	const gchar *bool_label[] = {N_("No"), N_("Yes")};
 
-#ifdef ENABLE_NLS
 	{
 		int i;
 
 		for (i=0; i < 4; i++)
 			if (*emphasis[i])
-				emphasis[i] = gettext(emphasis[i]);
+				emphasis[i] = _(emphasis[i]);
 		for (i=0; i < 2; i++)
-			bool_label[i] = gettext(bool_label[i]);
+			bool_label[i] = _(bool_label[i]);
 	}
-#endif
 	if (!window)
 	{
 		GtkWidget *vbox, *hbox, *left_vbox, *table;
