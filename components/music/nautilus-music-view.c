@@ -85,6 +85,8 @@ struct _NautilusMusicViewDetails {
 	GtkWidget *album_title;
 	GtkWidget *song_list;
 	GtkWidget *album_image;
+        GtkWidget *set_image_button;
+        GtkWidget *dialog;
         
 	GtkWidget *control_box;
 	GtkWidget *play_control_box;
@@ -179,10 +181,16 @@ static void selection_callback                     (GtkCList               *clis
                                                     NautilusMusicView      *music_view);
 static void music_view_set_selected_song_title     (NautilusMusicView      *music_view,
                                                     int                     row);
+static void  nautilus_music_view_set_album_image   (NautilusMusicView *music_view,
+						    const char *image_path_uri);
+
 static void add_play_controls                      (NautilusMusicView      *music_view);
 static void click_column_callback                  (GtkCList               *clist,
                                                     gint                    column,
                                                     NautilusMusicView      *music_view);
+static void set_image_button_callback	           (GtkWidget               *widget,
+                                                    NautilusMusicView      *music_view);
+
 static void go_to_next_track                       (NautilusMusicView      *music_view);
 static void play_current_file                      (NautilusMusicView      *music_view,
                                                     gboolean                from_start);
@@ -208,7 +216,7 @@ nautilus_music_view_initialize_class (NautilusMusicViewClass *klass)
 static void
 nautilus_music_view_initialize (NautilusMusicView *music_view)
 {
-	GtkWidget *scrollwindow;
+	GtkWidget *scrollwindow, *label;
 	char *titles[] = {_("Track "), _("Title"), _("Artist"), _("Year"), _("Bitrate "), _("Time "), _("Album"),  _("Comment"), _("Channels"),  _("Sample Rate"),};
 	
 	music_view->details = g_new0 (NautilusMusicViewDetails, 1);
@@ -298,10 +306,20 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 				GTK_SIGNAL_FUNC(click_column_callback), music_view);
 
 	/* make an hbox to hold the optional cover and other controls */
-	
 	music_view->details->control_box = gtk_hbox_new (FALSE, 4);
 	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->control_box, FALSE, FALSE, 2);	
 	gtk_widget_show (music_view->details->control_box);
+	
+	/* make the "set album button"  and show it */
+  	music_view->details->set_image_button = gtk_button_new ();
+	gtk_widget_show (music_view->details->set_image_button);
+	
+	/* embed the button in a box to stop it from growing vertically */
+	label = gtk_label_new (_("Set Cover Image"));
+	gtk_widget_show (label);
+	gtk_container_add (GTK_CONTAINER(music_view->details->set_image_button), label);
+	gtk_box_pack_end (GTK_BOX(music_view->details->control_box), music_view->details->set_image_button, FALSE, FALSE, 4);  
+ 	gtk_signal_connect (GTK_OBJECT (music_view->details->set_image_button), "clicked", GTK_SIGNAL_FUNC (set_image_button_callback), music_view);
 	
 	/* prepare ourselves to receive dropped objects */
 	gtk_drag_dest_set (GTK_WIDGET (music_view),
@@ -413,6 +431,110 @@ click_column_callback (GtkCList * clist, gint column, NautilusMusicView *music_v
 		return;
 	music_view->details->sort_mode = column;
 	nautilus_music_view_update_from_uri (music_view, music_view->details->uri);
+}
+
+/* utility routine to check if the passed-in uri is an image file */
+static gboolean
+ensure_uri_is_image(const char *uri)
+{	
+	gboolean is_image;
+	GnomeVFSResult result;
+	GnomeVFSFileInfo *file_info;
+
+	file_info = gnome_vfs_file_info_new ();
+	result = gnome_vfs_get_file_info
+		(uri, file_info,
+		 GNOME_VFS_FILE_INFO_GET_MIME_TYPE
+		 | GNOME_VFS_FILE_INFO_FOLLOW_LINKS);
+        is_image = nautilus_istr_has_prefix (file_info->mime_type, "image/") && (nautilus_strcmp (file_info->mime_type, "image/svg") != 0);
+	gnome_vfs_file_info_unref (file_info);
+	return is_image;
+}
+
+/* callback to handle setting the album cover image */
+static void
+set_album_cover (GtkWidget *widget, gpointer *data)
+{
+	char *path_name, *path_uri;
+	NautilusMusicView *music_view;
+	NautilusFile *file;
+	
+	music_view = NAUTILUS_MUSIC_VIEW (data);
+	
+	/* get the file path from the file selection widget */
+	path_name = g_strdup (gtk_file_selection_get_filename (GTK_FILE_SELECTION (music_view->details->dialog)));
+	path_uri = gnome_vfs_get_uri_from_local_path (path_name);
+
+	/* make sure that it's an image */
+	if (!ensure_uri_is_image (path_uri)) {
+		char *message = g_strdup_printf
+			(_("Sorry, but '%s' is not a usable image file!"),
+			 path_name);
+		nautilus_error_dialog (message, _("Not an Image"), NULL);
+		g_free (message);
+		
+		g_free (path_uri);
+		g_free (path_name);
+		return;
+	}
+	
+	/* set the meta-data */
+	file = nautilus_file_get (music_view->details->uri);
+	nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, path_uri);
+	nautilus_file_unref (file);
+	
+	/* set the album image */
+	nautilus_music_view_set_album_image (music_view, path_uri);
+	g_free (path_uri);
+	
+	/* destroy the file dialog */
+	gtk_widget_destroy (music_view->details->dialog);
+	music_view->details->dialog = NULL;
+
+	g_free (path_name);
+}
+
+/* Callback used when the color selection dialog is destroyed */
+static gboolean
+dialog_destroy (GtkWidget *widget, gpointer data)
+{
+	NautilusMusicView *music_view = NAUTILUS_MUSIC_VIEW (data);
+	music_view->details->dialog = NULL;
+	return FALSE;
+}
+
+/* handle the set image button by displaying a file selection dialog */
+static void
+set_image_button_callback (GtkWidget * widget, NautilusMusicView *music_view)
+{
+	if (music_view->details->dialog) {
+		gtk_widget_show(music_view->details->dialog);
+		if (music_view->details->dialog->window)
+			gdk_window_raise(music_view->details->dialog->window);
+
+	} else {
+		GtkFileSelection *file_dialog;
+
+		music_view->details->dialog = gtk_file_selection_new
+			(_("Select an image file for the album cover:"));
+		file_dialog = GTK_FILE_SELECTION (music_view->details->dialog);
+		
+		gtk_signal_connect (GTK_OBJECT (music_view->details->dialog),
+				    "destroy",
+				    (GtkSignalFunc) dialog_destroy,
+				    music_view);
+		gtk_signal_connect (GTK_OBJECT (file_dialog->ok_button),
+				    "clicked",
+				    (GtkSignalFunc) set_album_cover,
+				    music_view);
+		gtk_signal_connect_object (GTK_OBJECT (file_dialog->cancel_button),
+					   "clicked",
+					   (GtkSignalFunc) gtk_widget_destroy,
+					   GTK_OBJECT(file_dialog));
+
+		gtk_window_set_position (GTK_WINDOW (file_dialog), GTK_WIN_POS_MOUSE);
+		gtk_widget_show (GTK_WIDGET(file_dialog));
+	}
 }
 
 /* Component embedding support */
@@ -1274,15 +1396,20 @@ nautilus_music_view_set_album_image (NautilusMusicView *music_view, const char *
 				music_view->details->album_image = gtk_pixmap_new(pixmap, mask);
 				gtk_box_pack_end (GTK_BOX(music_view->details->control_box), 
 					   	   music_view->details->album_image, FALSE, FALSE, 2);	
+			
 			} else { 
 				gtk_pixmap_set (GTK_PIXMAP (music_view->details->album_image), pixmap, mask);
 			}
 		
 			gtk_widget_show (music_view->details->album_image);
+ 			gtk_widget_hide (music_view->details->set_image_button);
+
  			g_free(image_path);
 		}
 	} else if (music_view->details->album_image != NULL) {
 		gtk_widget_hide (music_view->details->album_image);
+		gtk_widget_show (music_view->details->set_image_button);
+	
 	}
 
 }

@@ -1,3 +1,18 @@
+2000-10-17  Andy Hertzfeld  <andy@eazel.com>
+
+	* components/music/nautilus-music-view.c:
+	(nautilus_music_view_initialize), (ensure_uri_is_image),
+	(set_album_cover), (dialog_destroy), (set_image_button_callback),
+	(nautilus_music_view_set_album_image):
+	for bug 2261, added a "set cover image" button to the music view,
+	which is visible when there's no cover, which displays a file
+	selector, and set the metadata when the user selects a valid image.
+	This is almost complete, but it's not quite working yet.
+	
+	* src/nautilus-shell.c: (display_caveat):
+	increased the font size of the caveat to 14pt, since it was
+	a little too hard to read and there was plenty of space.
+	
 2000-10-16  Andy Hertzfeld  <andy@eazel.com>
 
 	* src/file-manager/fm-icon-view.c: (fm_icon_view_update_menus):

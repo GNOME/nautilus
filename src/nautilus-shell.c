@@ -211,7 +211,7 @@ display_caveat (GtkWindow *parent_window)
 		   "files on your computer.\n"
 		   "\n"
 		   "For more information, visit http://nautilus.eazel.com."));
-	nautilus_label_set_font_size (NAUTILUS_LABEL (text), 12);
+	nautilus_label_set_font_size (NAUTILUS_LABEL (text), 14);
 	nautilus_label_set_text_justification (NAUTILUS_LABEL (text), GTK_JUSTIFY_LEFT);
 	nautilus_label_set_line_wrap (NAUTILUS_LABEL (text), TRUE);
 	nautilus_label_set_line_wrap_width (NAUTILUS_LABEL (text), 300);
