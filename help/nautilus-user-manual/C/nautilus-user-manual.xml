@@ -2,9 +2,12 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
     "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
   <!ENTITY gnomeversion "2">
-  <!ENTITY manrevision "1.0">
+  <!ENTITY manrevision "2.0">
   <!ENTITY date "March 2002">
-  <!ENTITY LEGAL SYSTEM "legal.xml">
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY app "<application>Nautilus</application>">
+  <!ENTITY appname "Nautilus">
+  <!ENTITY appversion "2.0">
 ]>
 
 
@@ -13,7 +16,8 @@
   Version: 1.0.4
   Last modified: June 9, 2001
   Maintainers: 
-               Dan Mueth <d-mueth@uchicago.edu>
+               Dan Mueth <muet@alumni.uchicago.edu>
+               John Fleck <jfleck@inkstain.net>
   Originally written by Vera Horiuchi for Eazel Inc.
   Translators:
                (translators put your name and email here)
@@ -22,47 +26,77 @@
 
 
 <!-- ============= Document Header =================================== -->
-<book id="index">
+<book id="index" lang="en">
 
  <bookinfo>
   <title>Nautilus User Manual</title>
-  <edition>v1.0.4</edition>
+
+    <copyright>
+      <year>2001</year>
+      <holder>Eazel Inc. and Dan Mueth</holder>
+    </copyright>
+    
+    <copyright>
+      <year>2002</year>
+      <holder>John Fleck</holder>
+    </copyright>
+    <publisher> 
+      <publishername> GNOME Documentation Project </publishername> 
+    </publisher> 
+
+   &legal;
+  
   <authorgroup>
 
-   <!-- Vera belongs first here, but gnome-db2html2 reverses the
-         order, so I'm reversing them here for now. -->
-
-   <author>
-    <firstname>Dan</firstname>
-    <surname>Mueth</surname>
-    <authorblurb>
-     <para>
-      <email>
-       d-mueth@uchicago.edu
-      </email>
-     </para>
-    </authorblurb>
-   </author>
-
-   <author>
-    <firstname>Vera</firstname>
+      <author>
+    <firstname>Vera </firstname>
     <surname>Horiuchi</surname>
-    <authorblurb>
-     <para>
-      <email>
-       vera@eazel.com
-      </email>
-     </para>
-    </authorblurb>
-   </author>
-
+	<affiliation>
+	  <orgname>Eazel Inc.</orgname>
+	</affiliation>
+      </author>   
+      <author>
+	<firstname>Dan</firstname>
+	<surname>Mueth</surname>
+	<affiliation>
+	  <orgname>GNOME Documentation Project</orgname>
+	  <address><email>muet@alumni.uchicago.edu</email></address>
+	</affiliation>
+      </author>
+      <author>
+	<firstname>John</firstname>
+	<surname>Fleck</surname>
+	<affiliation>
+	  <orgname>GNOME Documentation Project</orgname>
+	  <address><email>jfleck@inkstain.net</email></address>
+	</affiliation>
+      </author>
   </authorgroup>
 
-  <copyright>
-   <year>2001</year>
-   <holder>Eazel Inc. and Dan Mueth</holder>
-  </copyright>
+  <revhistory>
+      <revision> 
+	<revnumber>&appname; Manual V&manrevision;</revnumber> 
+	<date>&date;</date> 
+	<revdescription> 
+	  <para role="author">John Fleck
+	    <email>jfleck@inkstain.net</email>
+	  </para>
+	  <para role="publisher">GNOME Documentation Project</para>
+	</revdescription> 
+      </revision> 
+      <revision> 
+	<revnumber>Nautilus Manual</revnumber> 
+	<date>March 2001</date> 
+	<revdescription> 
+	  <para role="author">Vera Horiuchi 
+	  </para>
+	  <para role="publisher">Eazel Inc.</para>
+	</revdescription> 
+      </revision> 
+    </revhistory> 
 
+    <releaseinfo>This manual describes version &appversion; of &appname;.
+    </releaseinfo>
   <!-- translators: uncomment this:
 
   <copyright>
@@ -72,35 +106,18 @@
 
    -->
 
-  <legalnotice id="legalnotice">
-   <para>
-    Permission is granted to copy, distribute and/or modify this document
-    under the terms of the <ulink type="help"
-    url="gnome-help:fdl"><citetitle>GNU Free Documentation
-    License</citetitle></ulink>, Version 1.1 or any later version
-    published by the Free Software Foundation with no Invariant Sections,
-    no Front-Cover Texts, and no Back-Cover Texts.
-    A copy of this license was provided with this software in
-    the file <filename>COPYING-DOCS</filename>.
-   </para>
-   <para>
-    Many of the names used by companies to distinguish their products and
-    services are claimed as trademarks. Where those names appear in any
-    GNOME documentation, and those trademarks are made aware to the members
-    of the GNOME Documentation Project, the names have been printed in caps
-    or initial caps.
-   </para>
-  </legalnotice>
-
-
-  <!-- this is the version of manual, not application --> 
-  <releaseinfo>
-   This is version 1.0.4 of the Nautilus User's Manual.
-  </releaseinfo>
-
+  <legalnotice> 
+      <title>Feedback</title> 
+      <para>To report a bug or make a suggestion regarding the &app; application or
+	this manual, follow the directions in the 
+	<ulink url="ghelp:gnome-feedback"
+	  type="help">GNOME Feedback Page</ulink>. 
+      </para>
+<!-- Translators may also add here feedback address for translations -->
+    </legalnotice> 
  </bookinfo>
 
-
+ 
 <!-- DOCUMENT BODY ====================================================== -->
 
 
@@ -109,15 +126,8 @@
   <title>Introducing Nautilus</title>
 
   <para>
-   Nautilus is a core component of the GNOME desktop
-   environment. Nautilus provides an easy way to view, manage, and
-   customize your files and folders, as well as browse the Web.
-  </para>
-
-  <para>
-   Nautilus integrates your access to files, applications, media,
-   Internet-based resources, and the Web, making it easy and fast for
-   you to locate and use all the resources available to you.
+   Nautilus is a core component of the GNOME desktop. Nautilus provides a way to
+   view, manage, and customize your files and folders.
   </para>
 
   <sect1 id="intro1">
@@ -133,15 +143,13 @@
 
    <para>
     <inlinegraphic fileref="figures/full-1" />
-    <guimenu>Menu Bar</guimenu>
+    <guimenu>Menubar</guimenu>
    </para> 
 
    <para>
-    The eight menus contain options for most file- and folder-
+    The menus contain options for most file- and folder-
     management tasks and let you personalize your view of all the
-    applications, folders, and files on your hard disk. The
-    Preferences menu lets you specify your level of Linux and GNOME
-    experience.
+    applications, folders, and files on your hard disk.
    </para>
 
    <para>
@@ -150,8 +158,8 @@
    </para>
 
    <para>
-    The toolbar lets you use a single click for browsing and searching
-    your computer's directories as well as locations on the Web. Click
+    The toolbar lets you use a single click for browsing
+    your computer's directories. Click
     the Home button to move to your home folder.
    </para>
 
@@ -161,11 +169,11 @@
    </para>
 
    <para>
-    Use the location bar to enter path names, Web addresses (URLs), or
-    other types of addresses. The pop-up menu on the right end of the
+    Use the location bar to enter path names, or
+    other types of addresses. The popup menu on the right end of the
     bar lets you choose various views - for instance, View as Icons
     or View as List.  Click the + and - signs to enlarge or reduce
-    icon or list view. Click the magnifying glass to return to original
+    icon view. Click the magnifying glass to return to original
     size. (If you've changed your theme, the magnifying glass may be
     replaced by another symbol.)
    </para>
@@ -186,7 +194,7 @@
     <listitem>
      <para>
       The Tree tab displays the tree, a hierarchical view of your
-      computer's organization of folders and files.
+      computer's folders and files.
      </para>
     </listitem>
 
@@ -194,13 +202,6 @@
      <para>
       The History tab lists the path names or addresses of locations
       you've previously visited.
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      The Help tab gives you quick access to information resources -
-      manuals, GNOME info pages, Linux man pages, and more.
      </para>
     </listitem>
 
@@ -219,20 +220,22 @@
     </listitem>
 
    </itemizedlist>
-
-   <para>
-    Note: Depending on your user level and Preferences settings, you
-    may not see all of the sidebar tabs.
-   </para>
+      <note>
+	<para>
+	  Depending on your Preferences settings, you
+	  may not see all of the sidebar tabs.
+	</para>
+      </note>
+   
 
    <para>
     <inlinegraphic fileref="figures/full-5.png" format="PNG" />
-    <guimenu>Status Bar</guimenu>
+    <guimenu>Statusbar</guimenu>
    </para>
 
    <para>
-    The status bar contains information about menu items. To see an
-    description of a menu item, point to it and read the status bar
+    The statusbar contains information about menu items. To see a
+    description of a menu item, point to it and read the statusbar
     text.
    </para>
 
@@ -249,19 +252,19 @@
    </para>
   </sect1>
   <sect1 id="introdesktop">
-   <title>The Nautilus Desktop</title>
+   <title>The Nautilus Desktop Background</title>
 
    <para>
-    The desktop is the background area of your screen. If Nautilus was
+    The desktop background is the background area of your screen. If Nautilus was
     pre-installed on your GNOME system, Nautilus draws the
-    desktop. The desktop on your computer can look like your physical
+    desktop. The desktop background on your computer can look like your physical
     desktop - it can be full of folders, icons, and works in progress,
     or it can be clear. Nautilus lets you organize it the way
     you want.
    </para>
 
    <para>
-    If Nautilus doesn't already draw the desktop on your system, do
+    If Nautilus doesn't already draw the desktop background on your system, do
     this:
    </para>
 
@@ -269,8 +272,8 @@
 
       <listitem>
        <para>
-        Open the Preferences menu (shown below) and choose
-        Edit Preferences.
+	    Open the <guimenu>Edit</guimenu> menu and choose
+	    <guimenuitem>Preferences</guimenuitem>.
        </para>
       </listitem>
 
@@ -281,11 +284,7 @@
        </para>
       </listitem>
 
-      <listitem>
-       <para>Click OK.
-       </para>
-      </listitem>
-
+      
      </orderedlist>
 
    <figure id="prefmenu11">
@@ -297,9 +296,8 @@
    </figure>
 
    <para>
-    Initially, the desktop contains three items: a house icon that
-    represents your home location, an Eazel Services icon that takes
-    you to Eazel's Web site, and a Trash icon.
+    Initially, the desktop contains two items: a house icon that
+    represents your home location and a Trash icon.
    </para>
 
    <para>
@@ -312,7 +310,7 @@
 
    <para>
     To see the options for using your desktop space, right-click
-    anywhere on the desktop (outside a window).
+    on the desktop background anywhere outside a window.
    </para>
 
   </sect1>
