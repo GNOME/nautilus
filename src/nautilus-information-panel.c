@@ -406,7 +406,10 @@ nautilus_index_panel_remove_meta_view (NautilusIndexPanel *index_panel,
 	
 	page_num = gtk_notebook_page_num (GTK_NOTEBOOK (index_panel->details->notebook),
 					  GTK_WIDGET (meta_view));
-	g_return_if_fail (page_num >= 0);
+	if (page_num < 0) {
+		return;
+	}
+
 	gtk_notebook_remove_page (GTK_NOTEBOOK (index_panel->details->notebook),
 				  page_num);
 }

@@ -50,8 +50,6 @@ static gboolean nautilus_index_title_button_press_event (GtkWidget              
 static GdkFont *select_font                             (const char              *text_to_format,
 							 int                      width,
 							 const char              *font_template);
-static void     update_font                             (GtkWidget               *widget,
-							 GdkFont                 *font);
 static void     nautilus_index_title_update_icon        (NautilusIndexTitle      *index_title);
 static void     nautilus_index_title_update_label       (NautilusIndexTitle      *index_title);
 static void     nautilus_index_title_update_info        (NautilusIndexTitle      *index_title);
@@ -210,59 +208,42 @@ select_font (const char *text_to_format, int width, const char* font_template)
 {
 	int font_index, this_width;
 	char *font_name;
-	int font_sizes[5] = { 28, 24, 18, 14, 12 };
+	const int font_sizes[5] = { 28, 24, 18, 14, 12 };
 	GdkFont *candidate_font = NULL;
 	char *alt_text_to_format = NULL;
 	char *temp_str = strdup(text_to_format);
 	char *cr_pos = strchr(temp_str, '\n');
 
-	if (cr_pos)
-	  {
-	  *cr_pos = '\0';
-	  alt_text_to_format = cr_pos + 1;
-	  }
+	if (cr_pos) {
+		*cr_pos = '\0';
+		alt_text_to_format = cr_pos + 1;
+	}
 	  
 	for (font_index = 0; font_index < NAUTILUS_N_ELEMENTS (font_sizes); font_index++) {
-		if (candidate_font != NULL)
+		if (candidate_font != NULL) {
 			gdk_font_unref (candidate_font);
+		}
 		
 		font_name = g_strdup_printf (font_template, font_sizes[font_index]);
 		candidate_font = gdk_font_load (font_name);
 		g_free (font_name);
 		
 		this_width = gdk_string_width (candidate_font, temp_str);
-		if (alt_text_to_format)
-		   {
-		     int alt_width = gdk_string_width (candidate_font, alt_text_to_format);
-		     if ((this_width <= width) && (alt_width <= width))
-		     	{
-		     	  g_free(temp_str);
-		     	  return candidate_font;
-		   	}
-		   }
-		else
-		  if (this_width <= width)
-			{
-			  g_free(temp_str);
-			  return candidate_font;
+		if (alt_text_to_format != NULL) {
+			int alt_width = gdk_string_width (candidate_font, alt_text_to_format);
+			if (this_width <= width && alt_width <= width) {
+				break;
 			}
+		} else {
+			if (this_width <= width) {
+				break;
+			}
+		}
 	}
 	
-	g_free(temp_str);
+	g_free (temp_str);
 	return candidate_font;
 }
-
-/* utility to apply font */
-static void
-update_font (GtkWidget *widget, GdkFont *font)
-{
-	GtkStyle *temp_style;
-	gtk_widget_realize (widget);	
-	temp_style = gtk_style_new ();	  	
-	temp_style->font = font;
-	gtk_widget_set_style (widget, gtk_style_attach (temp_style, widget->window));
-}
-
 
 /* set up the filename label */
 static void
@@ -323,7 +304,7 @@ nautilus_index_title_update_label (NautilusIndexTitle *index_title)
 	label_font = select_font (displayed_text, GTK_WIDGET (index_title)->allocation.width - 4,
 				  "-bitstream-courier-medium-r-normal-*-%d-*-*-*-*-*-*-*");
 	
-	update_font(index_title->details->title, label_font);
+	nautilus_gtk_widget_set_font (index_title->details->title, label_font);
 	g_free (displayed_text);
 }
 
@@ -333,7 +314,6 @@ void
 nautilus_index_title_update_info (NautilusIndexTitle *index_title)
 {
 	NautilusFile *file;
-	GdkFont *label_font;
 	char *notes_text;
 	char *temp_string;
 	char *info_string;
@@ -377,8 +357,8 @@ nautilus_index_title_update_info (NautilusIndexTitle *index_title)
 	}   
 	
 	/* FIXME: shouldn't use hardwired font */     	
-	label_font = gdk_font_load("-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");
-	update_font(index_title->details->more_info, label_font);
+	nautilus_gtk_widget_set_font_by_name (index_title->details->more_info,
+					      "-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");
 	
 	g_free(info_string);
 	
@@ -396,8 +376,8 @@ nautilus_index_title_update_info (NautilusIndexTitle *index_title)
 		}
 		
 		/* FIXME: don't use hardwired font like this */
-		label_font = gdk_font_load("-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");
-		update_font(index_title->details->notes, label_font);
+		nautilus_gtk_widget_set_font_by_name (index_title->details->notes,
+						      "-*-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*");
 		
 		g_free (notes_text);
 	} else if (index_title->details->notes != NULL) {

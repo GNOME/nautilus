@@ -421,20 +421,38 @@ nautilus_gtk_object_list_free (GList *list)
 	g_list_free (list);
 }
 
-/* utilities for setting the font associated with a widget */
-
-static void
+/**
+ * nautilus_gtk_style_set_font
+ *
+ * Sets the font in a style object, managing the ref. counts.
+ * @style: The style to change.
+ * @font: The new font.
+ **/
+void
 nautilus_gtk_style_set_font (GtkStyle *style, GdkFont *font)
 {
+	g_return_if_fail (style != NULL);
+	g_return_if_fail (font != NULL);
+	
 	gdk_font_ref (font);
 	gdk_font_unref (style->font);
 	style->font = font;
 }
 
+/**
+ * nautilus_gtk_widget_set_font
+ *
+ * Sets the font for a widget's style, managing the style objects.
+ * @widget: The widget.
+ * @font: The font.
+ **/
 void
 nautilus_gtk_widget_set_font (GtkWidget *widget, GdkFont *font)
 {
 	GtkStyle *new_style;
+	
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+	g_return_if_fail (font != NULL);
 	
 	new_style = gtk_style_copy (gtk_widget_get_style (widget));
 
@@ -444,11 +462,19 @@ nautilus_gtk_widget_set_font (GtkWidget *widget, GdkFont *font)
 	gtk_style_unref (new_style);
 }
 
-
+/**
+ * nautilus_gtk_widget_set_font_by_name
+ *
+ * Sets the font for a widget, managing the font and style objects.
+ * @widget: The widget
+ **/
 void
 nautilus_gtk_widget_set_font_by_name (GtkWidget *widget, const char *font_name)
 {
 	GdkFont *font;
+
+	g_return_if_fail (GTK_IS_WIDGET (widget));
+	g_return_if_fail (font_name != NULL);
 	
 	font = gdk_font_load (font_name);
 	nautilus_gtk_widget_set_font (widget, font);

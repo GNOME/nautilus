@@ -1,4 +1,5 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+
 /* 
  * Copyright (C) 2000 Eazel, Inc
  *
@@ -35,6 +36,7 @@
 #include <gnome-xml/tree.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus-extensions/nautilus-background.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
 #include <libnautilus-extensions/nautilus-global-preferences.h>
@@ -44,8 +46,8 @@
 #include <stdio.h>
 
 struct _NautilusServicesContentViewDetails {
-	gchar                     *uri;
-	gchar			  *auth_token;
+	char                     *uri;
+	char			  *auth_token;
 	NautilusContentViewFrame  *view_frame;
 	GtkWidget		  *form;
 	
@@ -65,7 +67,6 @@ struct _NautilusServicesContentViewDetails {
 static void nautilus_service_startup_view_initialize_class (NautilusServicesContentViewClass *klass);
 static void nautilus_service_startup_view_initialize       (NautilusServicesContentView *view);
 static void nautilus_service_startup_view_destroy          (GtkObject *object);
-static void nautilus_service_startup_view_realize          (GtkWidget *widget);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusServicesContentView, nautilus_service_startup_view, 
 				   GTK_TYPE_EVENT_BOX)
@@ -78,7 +79,7 @@ static gboolean is_location(char *document_str, const char *place_str);
 /* utility routine to go to another uri */
 
 static void
-go_to_uri(NautilusServicesContentView* view, gchar *uri)
+go_to_uri(NautilusServicesContentView* view, char *uri)
 {
 	Nautilus_NavigationRequestInfo nri;	
 	memset(&nri, 0, sizeof(nri));
@@ -92,7 +93,7 @@ config_button_cb (GtkWidget *button, char *data)
 {
 	xmlDocPtr packages_file = create_configuration_metafile();
 	if (packages_file != NULL) {
-  		gchar *temp_str = g_strdup_printf("%s/configuration.xml", g_get_home_dir());
+  		char *temp_str = g_strdup_printf("%s/configuration.xml", g_get_home_dir());
 		xmlSaveFile(temp_str, packages_file);
   		xmlFreeDoc(packages_file);
   		g_free(temp_str);
@@ -103,9 +104,9 @@ config_button_cb (GtkWidget *button, char *data)
 static void
 entry_changed_cb (GtkWidget *entry, NautilusServicesContentView *view)
 {
-	gchar *email = gtk_entry_get_text(GTK_ENTRY(view->details->account_name));
-	gchar *password = gtk_entry_get_text(GTK_ENTRY(view->details->account_password));
-	gchar *confirm  = gtk_entry_get_text(GTK_ENTRY(view->details->confirm_password));
+	char *email = gtk_entry_get_text(GTK_ENTRY(view->details->account_name));
+	char *password = gtk_entry_get_text(GTK_ENTRY(view->details->account_password));
+	char *confirm  = gtk_entry_get_text(GTK_ENTRY(view->details->confirm_password));
 
 	gboolean button_enabled = email && strlen(email) && password && strlen(password) && confirm && strlen(confirm);
 	gtk_widget_set_sensitive(view->details->register_button, button_enabled);
@@ -115,10 +116,10 @@ entry_changed_cb (GtkWidget *entry, NautilusServicesContentView *view)
    it will optionally work asynchronously.  Return NULL if we get an error */
 
 static ghttp_request *
-make_http_post_request(gchar *uri, gchar *post_body, gchar *auth_token)
+make_http_post_request(char *uri, char *post_body, char *auth_token)
 {
     ghttp_request *request = NULL;
-    gchar *proxy = g_getenv("http_proxy");
+    char *proxy = g_getenv("http_proxy");
         
     request = ghttp_request_new();
    
@@ -165,7 +166,7 @@ make_http_post_request(gchar *uri, gchar *post_body, gchar *auth_token)
 
 /* utility to force updating to happen */
 static void
-update_now()
+update_now (void)
 {
 	while (gtk_events_pending())
 		gtk_main_iteration();
@@ -173,7 +174,7 @@ update_now()
 
 /* utility routine to show an error message */
 static void
-show_feedback(NautilusServicesContentView *view, gchar* error_message)
+show_feedback(NautilusServicesContentView *view, char* error_message)
 {
 	gtk_label_set_text(GTK_LABEL(view->details->feedback_text), error_message);
 	gtk_widget_show(view->details->feedback_text);
@@ -189,9 +190,9 @@ static void
 gather_config_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 {
 	FILE* config_file;
-	gchar buffer[256], host_name[512];
-	gchar *config_file_name, *config_string, *uri, *response_str, *cookie_str;
-	gchar *encoded_token, *encoded_host_name;
+	char buffer[256], host_name[512];
+	char *config_file_name, *config_string, *uri, *response_str, *cookie_str;
+	char *encoded_token, *encoded_host_name;
 	GString* config_data;
 	xmlDocPtr config_doc;
 	ghttp_request *request;	
@@ -271,11 +272,11 @@ static void
 register_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 {
 	ghttp_request *request;	
-	gchar *response_str, *body, *uri;
-	gchar *encoded_email, *encoded_password;
-	gchar *email = gtk_entry_get_text(GTK_ENTRY(view->details->account_name));
-	gchar *password = gtk_entry_get_text(GTK_ENTRY(view->details->account_password));
-	gchar *confirm  = gtk_entry_get_text(GTK_ENTRY(view->details->confirm_password));
+	char *response_str, *body, *uri;
+	char *encoded_email, *encoded_password;
+	char *email = gtk_entry_get_text(GTK_ENTRY(view->details->account_name));
+	char *password = gtk_entry_get_text(GTK_ENTRY(view->details->account_password));
+	char *confirm  = gtk_entry_get_text(GTK_ENTRY(view->details->confirm_password));
 	gboolean registered_ok = FALSE;
 		
 	/* see if the email address is valid; if not, display an error */
@@ -325,17 +326,17 @@ register_button_cb (GtkWidget *button, NautilusServicesContentView *view)
 	}
 	else {
 	/* check for a cookie that indicates success */
-		const gchar* cookie = ghttp_get_header(request, "Set-Cookie");
+		const char* cookie = ghttp_get_header(request, "Set-Cookie");
 		
 	/* we found the cookie, so save it in the services file */
-		gchar* token_start = strstr(cookie, "token=");
+		char* token_start = strstr(cookie, "token=");
 		if (token_start) {
-			gchar *temp_str = strdup(token_start + strlen("token="));
-			gchar *token_end = strchr(temp_str, ';');
+			char *temp_str = strdup(token_start + strlen("token="));
+			char *token_end = strchr(temp_str, ';');
 			if (token_end) {
 				xmlDoc *service_doc;
 				xmlNode *service_node;
-				gchar *temp_filename;
+				char *temp_filename;
 			
 				*token_end = '\0';
 	
@@ -371,9 +372,9 @@ register_button_cb (GtkWidget *button, NautilusServicesContentView *view)
   		go_to_uri(view, "eazel:config?signup");
 }
 
-/* FIXME: this routine should be someone else, and should take user preferences into account */
-static gchar*
-get_home_uri()
+/* FIXME: this routine should be somewhere else, and should take user preferences into account */
+static char*
+get_home_uri (void)
 {
 	return g_strdup_printf("file://%s", g_get_home_dir ());
 }
@@ -382,7 +383,7 @@ get_home_uri()
 static void
 register_later_cb (GtkWidget *button, NautilusServicesContentView *view)
 {	
-	gchar* home_path = get_home_uri(); 
+	char* home_path = get_home_uri(); 
 	go_to_uri(view, home_path);
 	g_free(home_path);
 }
@@ -424,27 +425,12 @@ static void setup_test_form(NautilusServicesContentView *view)
 	gtk_widget_show (config_button);
 }
 
-/* utility routine to set up the font for the title, called after we're realized */
-static void
-setup_title_font(NautilusServicesContentView *view)
-{
-	GtkStyle *temp_style;
-	
-	if (view->details->form_title->window == NULL)
-		return;
-        temp_style = gtk_style_new();
-
-	temp_style->font = gdk_font_load ("-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); ;
-	gtk_widget_set_style (view->details->form_title,
-                              gtk_style_attach (temp_style, view->details->form_title->window));
-}
-
 /* shared utility to allocate a title for a form */
 
-static void setup_form_title(NautilusServicesContentView *view, const gchar* title_text)
+static void setup_form_title(NautilusServicesContentView *view, const char* title_text)
 {
 	GtkWidget *temp_widget;
-	gchar *file_name;	
+	char *file_name;	
 	GtkWidget *temp_container = gtk_hbox_new(FALSE, 0);
 	
 	gtk_box_pack_start (GTK_BOX(view->details->form), temp_container, 0, 0, 4);	
@@ -457,7 +443,10 @@ static void setup_form_title(NautilusServicesContentView *view, const gchar* tit
   	g_free (file_name);
 
  	view->details->form_title = gtk_label_new (title_text);
-	gtk_box_pack_start(GTK_BOX(temp_container), view->details->form_title, 0, 0, 8);			 	
+	/* FIXME: don't use hardwired font like this */
+	nautilus_gtk_widget_set_font_by_name (view->details->form_title,
+					      "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); ;
+	gtk_box_pack_start (GTK_BOX (temp_container), view->details->form_title, 0, 0, 8);			 	
 	gtk_widget_show (view->details->form_title);
 }
 
@@ -465,7 +454,7 @@ static void setup_form_title(NautilusServicesContentView *view, const gchar* tit
 
 static void setup_signup_form(NautilusServicesContentView *view)
 {
-	gchar *message, *file_name;
+	char *message, *file_name;
 	GtkTable *table;
 	GtkWidget *temp_widget;
 	GtkWidget *temp_box, *config_button, *config_label;
@@ -579,7 +568,7 @@ static void setup_signup_form(NautilusServicesContentView *view)
 
 static void setup_config_form(NautilusServicesContentView *view)
 {
-	gchar *message, *file_name;
+	char *message, *file_name;
 	GtkWidget *temp_widget;
 	GtkWidget *temp_box, *config_button, *config_label;
 	
@@ -661,7 +650,7 @@ static void setup_config_form(NautilusServicesContentView *view)
 
 static void setup_overview_form(NautilusServicesContentView *view)
 {
-	gchar *message;
+	char *message;
 	GtkWidget *temp_widget;
 	
 	/* allocate a vbox as the container */	
@@ -723,7 +712,6 @@ nautilus_service_startup_view_initialize_class (NautilusServicesContentViewClass
  	parent_class = gtk_type_class (gtk_event_box_get_type ());
 	
 	object_class->destroy = nautilus_service_startup_view_destroy;
-	widget_class->realize = nautilus_service_startup_view_realize;	
 }
 
 static void
@@ -763,19 +751,6 @@ nautilus_service_startup_view_destroy (GtkObject *object)
 	NAUTILUS_CALL_PARENT_CLASS (GTK_OBJECT_CLASS, destroy, (object));
 }
 
-/* set up fonts, colors, etc after we're realized */
-void
-nautilus_service_startup_view_realize(GtkWidget *widget)
-{
-	NautilusServicesContentView *view;
- 
- 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
-	
- 	view = NAUTILUS_SERVICE_STARTUP_VIEW (widget);
-	setup_title_font (view);
-}
-
-
 /* Component embedding support */
 NautilusContentViewFrame *
 nautilus_service_startup_view_get_view_frame (NautilusServicesContentView *view)
@@ -792,9 +767,9 @@ static gboolean is_location(char *document_str, const char *place_str)
 /* URI handling */
 void
 nautilus_service_startup_view_load_uri (NautilusServicesContentView *view,
-				       const gchar               *uri)
+				       const char               *uri)
 {
-	gchar *document_name;
+	char *document_name;
 	
 	/* dispose of the old uri and copy the new one */
 	g_free (view->details->uri);
@@ -820,8 +795,6 @@ nautilus_service_startup_view_load_uri (NautilusServicesContentView *view,
 		setup_summary_form(view);
 	else
 		setup_test_form(view); /* eventually, this should be setup_bad_location_form */
-	
-	setup_title_font(view);
 }
 
 static void

@@ -37,6 +37,7 @@
 #include <libnautilus-extensions/nautilus-file.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-glib-extensions.h>
+#include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>
 #include <libnautilus-extensions/nautilus-metadata.h>
 #include <libnautilus-extensions/nautilus-string.h>
@@ -91,8 +92,6 @@ static void nautilus_music_view_drag_data_received     (GtkWidget               
 static void nautilus_music_view_initialize_class       (NautilusMusicViewClass   *klass);
 static void nautilus_music_view_initialize             (NautilusMusicView        *view);
 static void nautilus_music_view_destroy                (GtkObject                *object);
-static void nautilus_music_view_realize                (GtkWidget                *widget);
-static void setup_title_font                           (NautilusMusicView        *music_view);
 static void music_view_notify_location_change_callback (NautilusContentViewFrame *view,
                                                         Nautilus_NavigationInfo  *navinfo,
                                                         NautilusMusicView        *music_view);
@@ -113,7 +112,6 @@ nautilus_music_view_initialize_class (NautilusMusicViewClass *klass)
 	widget_class = GTK_WIDGET_CLASS (klass);
 
 	object_class->destroy = nautilus_music_view_destroy;
-	widget_class->realize = nautilus_music_view_realize;	
 	widget_class->drag_data_received  = nautilus_music_view_drag_data_received;
 }
 
@@ -144,6 +142,9 @@ nautilus_music_view_initialize (NautilusMusicView *music_view)
 	/* allocate a widget for the album title */
 	
 	music_view->details->album_title = gtk_label_new ("Album Title");
+        /* FIXME: don't use hardwired font like this */
+	nautilus_gtk_widget_set_font_by_name (music_view->details->album_title,
+                                              "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); ;
 	gtk_box_pack_start (GTK_BOX (music_view->details->album_container), music_view->details->album_title, 0, 0, 0);	
 	gtk_widget_show (music_view->details->album_title);
 	
@@ -229,32 +230,6 @@ NautilusContentViewFrame *
 nautilus_music_view_get_view_frame (NautilusMusicView *music_view)
 {
 	return music_view->details->view_frame;
-}
-
-/* utility routine to set up the font for the album title, called after we're realized */
-static void
-setup_title_font(NautilusMusicView *music_view)
-{
-	GtkStyle *temp_style;
-
-        temp_style = gtk_style_new();
-
-	gtk_widget_realize (music_view->details->album_title);	
-	temp_style->font = gdk_font_load ("-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*"); ;
-	gtk_widget_set_style (music_view->details->album_title,
-                              gtk_style_attach (temp_style, music_view->details->album_title->window));
-}
-
-/* set up fonts, colors, etc after we're realized */
-void
-nautilus_music_view_realize (GtkWidget *widget)
-{
-	NautilusMusicView *music_view;
- 
- 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
-	
-  	music_view = NAUTILUS_MUSIC_VIEW (widget);
-	setup_title_font (music_view);
 }
 
 /* here are some utility routines for reading ID3 tags from mp3 files */

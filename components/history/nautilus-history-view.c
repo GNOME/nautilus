@@ -119,7 +119,7 @@ hyperbola_navigation_history_notify_location_change (NautilusViewFrame *view,
    * keeping a parallel mechanism here. That will get us the right
    * short name for different locations.
    */
-  gnome_vfs_uri_new (loci->requested_uri);
+  vfs_uri = gnome_vfs_uri_new (loci->requested_uri);
   if (vfs_uri == NULL) {
     short_name = g_strdup (loci->requested_uri);
   } else {

@@ -176,6 +176,7 @@ nautilus_rpm_view_initialize (NautilusRPMView *rpm_view)
 	/* allocate the name field */
 	
 	rpm_view->details->package_title = gtk_label_new ("Package Title");
+        /* FIXME: don't use hardwired font like this */
 	nautilus_gtk_widget_set_font_by_name (rpm_view->details->package_title,
 					      "-*-helvetica-medium-r-normal-*-18-*-*-*-*-*-*-*");
 	gtk_box_pack_start (GTK_BOX (temp_title_box), rpm_view->details->package_title, 0, 0, 0);	

@@ -1506,7 +1506,7 @@ compute_menu_item_info (const char *path,
 		}
 		*return_sensitivity = selection_length > 0;
 	} else if (strcmp (path, MENU_PATH_DELETE) == 0) {
-		name = g_strdup (_("_Delete..."));
+		name = g_strdup (_("_Delete"));
 		*return_sensitivity = selection_length > 0;
 	} else if (strcmp (path, MENU_PATH_DUPLICATE) == 0) {
 		name = g_strdup (_("_Duplicate"));
@@ -1600,7 +1600,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          'O',
                                          GDK_CONTROL_MASK,
                                          bonobo_menu_open_cb,
-                                         view);                
+                                         view);
         bonobo_ui_handler_menu_new_item (ui_handler,
                                          MENU_PATH_OPEN_IN_NEW_WINDOW,
                                          _("Open in New Window"),
@@ -1611,7 +1611,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          0,
                                          0,
                                          bonobo_menu_open_in_new_window_cb,
-                                         view);                
+                                         view);
         bonobo_ui_handler_menu_new_separator (ui_handler,
                                          MENU_PATH_SEPARATOR_AFTER_CLOSE,
                                          bonobo_ui_handler_menu_get_pos (ui_handler, MENU_PATH_CLOSE) + 1);
@@ -1625,10 +1625,10 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          0,
                                          0,
                                          bonobo_menu_open_properties_window_cb,
-                                         view);                
+                                         view);
         bonobo_ui_handler_menu_new_item (ui_handler,
                                          MENU_PATH_DELETE,
-                                         _("Delete..."),
+                                         _("Delete"),
                                          _("Delete all selected items"),
                                          bonobo_ui_handler_menu_get_pos (ui_handler, MENU_PATH_CLOSE) + 3,
                                          BONOBO_UI_HANDLER_PIXMAP_NONE,
@@ -1636,7 +1636,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          0,
                                          0,
                                          bonobo_menu_delete_cb,
-                                         view);                
+                                         view);
         bonobo_ui_handler_menu_new_item (ui_handler,
                                          MENU_PATH_DUPLICATE,
                                          _("Duplicate"),
@@ -1647,7 +1647,7 @@ fm_directory_view_real_merge_menus (FMDirectoryView *view)
                                          'D',
                                          GDK_CONTROL_MASK,
                                          bonobo_menu_duplicate_cb,
-                                         view);                
+                                         view);
         bonobo_ui_handler_menu_new_item (ui_handler,
                                          MENU_PATH_SELECT_ALL,
                                          _("Select All"),

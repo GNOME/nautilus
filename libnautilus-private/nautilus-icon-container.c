@@ -576,19 +576,38 @@ relayout (NautilusIconContainer *container)
 	NautilusIcon *icon;
 	ArtPoint position;
 
+	if (!container->details->auto_layout) {
+		return;
+	}
+
 	sort_hack_container = container;
 	container->details->icons = g_list_sort
 		(container->details->icons, compare_icons);
 
 	nautilus_icon_grid_clear (container->details->grid);
 
+	/* An icon currently being stretched must be left in place.
+	 * That's "drag_icon". This doesn't come up for cases where
+	 * we are doing other kinds of drags, but if it did, the
+	 * same logic would probably apply.
+	 */
+
+	/* Place the icon that must stay put first. */
+	if (container->details->drag_icon != NULL) {
+		nautilus_icon_grid_add (container->details->grid,
+					container->details->drag_icon);
+	}
+
+	/* Place all hte other icons. */
 	for (p = container->details->icons; p != NULL; p = p->next) {
 		icon = p->data;
 
-		nautilus_icon_grid_get_position (container->details->grid,
-						 icon, &position);
-		icon_set_position (icon, position.x, position.y);
-		nautilus_icon_grid_add (container->details->grid, icon);
+		if (icon != container->details->drag_icon) {
+			nautilus_icon_grid_get_position (container->details->grid,
+							 icon, &position);
+			icon_set_position (icon, position.x, position.y);
+			nautilus_icon_grid_add (container->details->grid, icon);
+		}
 	}
 }
 
@@ -603,10 +622,7 @@ idle_handler (gpointer data)
 	container = NAUTILUS_ICON_CONTAINER (data);
 	details = container->details;
 
-	if (details->auto_layout) {
-		relayout (container);
-	}
-
+	relayout (container);
 	set_scroll_region (container);
 
 	details->idle_id = 0;
@@ -688,9 +704,7 @@ nautilus_icon_container_move_icon (NautilusIconContainer *container,
 		icon->scale_x = scale_x;
 		icon->scale_y = scale_y;
 		nautilus_icon_container_update_icon (container, icon);
-		if (details->auto_layout) {
-			relayout (container);
-		}
+		relayout (container);
 		emit_signal = TRUE;
 	}
 	
@@ -1457,9 +1471,7 @@ world_width_changed (NautilusIconContainer *container, int new_width)
 
 	nautilus_icon_grid_set_visible_width (grid, world_width);
 
-	if (container->details->auto_layout) {
-		relayout (container);
-	}
+	relayout (container);
 	set_scroll_region (container);
 }
 
@@ -1672,6 +1684,10 @@ end_stretching (NautilusIconContainer *container,
 {
 	continue_stretching (container, window_x, window_y);
 	ungrab_stretch_icon (container);
+
+	/* We must do the relayout after indicating we are done stretching. */
+	container->details->drag_icon = NULL;
+	relayout (container);
 }
 
 static gboolean
@@ -1691,19 +1707,21 @@ button_release_event (GtkWidget *widget,
 
 	if (event->button == details->drag_button) {
 		details->drag_button = 0;
-		
+
 		switch (details->drag_action) {
 		case DRAG_ACTION_MOVE_OR_COPY:
-			if (!details->drag_started)
+			if (!details->drag_started) {
 				nautilus_icon_container_almost_drag (container, event);
-			else
+			} else {
 				nautilus_icon_dnd_end_drag (container);
+			}
 			break;
 		case DRAG_ACTION_STRETCH:
 			end_stretching (container, event->x, event->y);
 			break;
 		}
 
+		details->drag_icon = NULL;
 		return TRUE;
 	}
 
@@ -2171,6 +2189,7 @@ handle_icon_button_press (NautilusIconContainer *container,
 		 */
 
 		details->drag_button = 0;
+		details->drag_icon = NULL;
 
 		/* Context menu applies to all selected items. The only
 		 * odd case is if this click deselected the icon under
@@ -2183,6 +2202,7 @@ handle_icon_button_press (NautilusIconContainer *container,
 	} else if (event->type == GDK_2BUTTON_PRESS) {
 		/* Double clicking does not trigger a D&D action. */
 		details->drag_button = 0;
+		details->drag_icon = NULL;
 
 		/* FIXME: This should activate all selected icons, not just one */
 		gtk_signal_emit (GTK_OBJECT (container),
@@ -2522,7 +2542,7 @@ nautilus_icon_container_add_auto (NautilusIconContainer *container,
  **/
 gboolean
 nautilus_icon_container_remove (NautilusIconContainer *container,
-			     NautilusIconData *data)
+				NautilusIconData *data)
 {
 	NautilusIcon *icon;
 	GList *p;
@@ -2534,9 +2554,11 @@ nautilus_icon_container_remove (NautilusIconContainer *container,
 		icon = p->data;
 		if (icon->data == data) {
 			icon_destroy (container, icon);
+			relayout (container);
 			return TRUE;
 		}
 	}
+
 	return FALSE;
 }
 
@@ -3013,9 +3035,7 @@ nautilus_icon_container_set_auto_layout (NautilusIconContainer *container,
 
 	container->details->auto_layout = auto_layout;
 
-	if (auto_layout) {
-		relayout (container);
-	}
+	relayout (container);
 }
 
 gboolean
@@ -3158,7 +3178,7 @@ end_renaming_mode (NautilusIconContainer *container, gboolean commit)
 	}
 	
 	hide_rename_widget(container, icon);
-}							
+}
 
 static void
 hide_rename_widget (NautilusIconContainer *container, NautilusIcon *icon)

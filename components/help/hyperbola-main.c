@@ -44,11 +44,11 @@ make_obj(BonoboGenericFactory *Factory, const char *goad_id, void *closure)
   return retval;
 }
 
-int main(int argc, char *argv[])
+int
+main(int argc, char *argv[])
 {
   BonoboGenericFactory *factory;
   CORBA_ORB orb;
-  CORBA_Environment ev;
 
   gnome_init_with_popt_table("hyperbola", VERSION, 
 			     argc, argv,

@@ -1,3 +1,64 @@
+2000-04-20  Darin Adler  <darin@eazel.com>
+
+	* components/history/ntl-history-view.c
+	(hyperbola_navigation_history_notify_location_change):
+	Fixed a typo that was causing the history view to fail.
+	
+	* components/music/nautilus-music-view.c
+	(nautilus_music_view_initialize_class),
+	(nautilus_music_view_initialize), (setup_title_font),
+	(nautilus_music_view_realize):
+	Changed to use new nautilus_gtk_widget_set_font_by_name
+	and got rid of the old realize hack.
+	
+	* components/rpmview/nautilus-rpm-view.c
+	(nautilus_rpm_view_initialize):
+	Added a FIXME about how it's bad to hard-wire a font.
+	
+	* components/services/startup/nautilus-service-startup-view.c
+	(setup_title_font), (setup_form_title),
+	(nautilus_service_startup_view_initialize),
+	(nautilus_service_startup_view_realize),
+	(nautilus_service_startup_view_load_uri):
+	Changed to use new nautilus_gtk_widget_set_font_by_name
+	and got rid of the old realize hack.
+	
+	* libnautilus-extensions/nautilus-gtk-extensions.h:
+	* libnautilus-extensions/nautilus-gtk-extensions.c
+	(nautilus_gtk_style_set_font): Made public.
+	(nautilus_gtk_widget_set_font): Added comments and checks on
+	the parameters.
+	
+	* libnautilus-extensions/nautilus-icon-container.c (relayout),
+	(idle_handler), (nautilus_icon_container_move_icon),
+	(world_width_changed), (end_stretching), (button_release_event),
+	(handle_icon_button_press), (nautilus_icon_container_add_auto),
+	(nautilus_icon_container_remove),
+	(nautilus_icon_container_set_auto_layout):
+	Some tweaks for auto-layout mode. Made it work better with
+	stretching by not laying out the currently-stretched icon,
+	simplified the code a bit, and made it relayout when an icon
+	is removed.
+	
+	* src/file-manager/fm-directory-view.c (compute_menu_item_info),
+	(fm_directory_view_real_merge_menus):
+	Got rid of the "..." from "Delete...". On Macintosh, at least,
+	the "..." is only used when the dialog is something that adds
+	parameters to the command, not when it's just a confirmation.
+	
+	* src/nautilus-index-title.c (update_font),
+	(nautilus_index_title_update_label),
+	(nautilus_index_title_update_info):
+	Changed to use new nautilus_gtk_widget_set_font and
+	nautilus_gtk_widget_set_font_by_name.
+
+	* src/ntl-index-panel.c (nautilus_index_panel_remove_meta_view):
+	Made the index panel do *slightly* better when a meta view
+	fails to load.
+
+	* components/help/hyperbola-main.c (main):
+	Fixed a warning.
+	
 2000-04-20  Maciej Stachowiak  <mjs@eazel.com>
 
 	* configure.in: Add back tests erroneously removed in the last
@@ -7,9 +68,12 @@
 
 	* libnautilus-extensions/nautilus-directory.c:
 	(nautilus_directory_notify_files_moved):
-	Darin helped me finish implementing the missing parts of the call, including
-	updating the reference to the new directory object, updating the
-	file info structure to match the file's new location.
+
+	a b c d e f a b c d e f a b c d e f a b c d e f a b c d e f a b cd
+	d d e f a b c d e f a b c d e f
+	Darin helped me finish implementing the missing parts of the call,
+	including updating the reference to the new directory object,
+	updating the file info structure to match the file's new location.
 	Fixed a silly bug in an if statement.
 	
 	* libnautilus-extensions/nautilus-file-changes-queue.c:
@@ -39,23 +103,23 @@
 
 	* libnautilus-extensions/nautilus-directory.c:
 	(nautilus_directory_notify_files_added):
-	Work on making new files show up during copy. This is a simple version 
-	using sync gnome_vfs_get_file_info calls, we'll need a version that
-	uses a new async get_file_info call that takes a list of URIs and
-	produces a list of file info structs.
+	Work on making new files show up during copy. This is a simple
+	version using sync gnome_vfs_get_file_info calls, we'll need a
+	version that uses a new async get_file_info call that takes a list
+	of URIs and produces a list of file info structs.
 	
 	* libnautilus-extensions/nautilus-directory.c:
 	* libnautilus-extensions/nautilus-file.c:
 	* libnautilus-extensions/nautilus-file.h:
 	(update_file_info_in_list_if_needed), (dequeue_pending_idle_callback),
 	(nautilus_file_update):
-	Made dequeue_pending_idle_callback deal with getting duplicate 
+	Made dequeue_pending_idle_callback deal with getting duplicate
 	file info structures or file info structures for files we already
 	know about. This also fixes 395.
 
 	* libnautilus-extensions/nautilus-file-changes-queue.c
-	Added some better comments and removed a fixme that didn't really need 
-	fixing.
+	Added some better comments and removed a fixme that didn't really
+	need fixing.
 
 2000-04-19  John Sullivan  <sullivan@eazel.com>
 
