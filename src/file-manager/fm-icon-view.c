@@ -834,17 +834,17 @@ fm_icon_view_begin_loading (FMDirectoryView *view)
 	/* Set the sort direction from the metadata. */
 	set_sort_reversed (icon_view, fm_icon_view_get_directory_sort_reversed (icon_view, file));
 
-	/* Set the layout modes.
-	 * We must do this after getting the sort mode,
-	 * because otherwise the layout_changed callback
-	 * might overwrite the sort mode.
+	nautilus_icon_container_set_tighter_layout
+		(get_icon_container (icon_view), 
+		 fm_icon_view_get_directory_tighter_layout (icon_view, file));
+
+	/* We must set auto-layout last, because it invokes the layout_changed 
+	 * callback, which works incorrectly if the other layout criteria are
+	 * not already set up properly (see bug 6500, e.g.)
 	 */
 	nautilus_icon_container_set_auto_layout
 		(get_icon_container (icon_view), 
 		 fm_icon_view_get_directory_auto_layout (icon_view, file));
-	nautilus_icon_container_set_tighter_layout
-		(get_icon_container (icon_view), 
-		 fm_icon_view_get_directory_tighter_layout (icon_view, file));
 }
 
 static void

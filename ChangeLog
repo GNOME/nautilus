@@ -1,3 +1,16 @@
+2001-02-12  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 6500 (tighter layout option not saved).
+
+	It actually was being saved, it was just being clobbered back to
+	off every time a directory was loaded.
+
+	* src/file-manager/fm-icon-view.c: (fm_icon_view_begin_loading):
+	Moved the tighter-layout setting code up one line and refined
+	comments to explain why.
+
 2001-02-12  Robey Pointer  <robey@eazel.com>
 
 	* components/services/install/lib/eazel-install-logic2.c:
@@ -467,7 +480,6 @@
 	except with extremely long titles, for which the title-writer
 	should be flogged.
 
->>>>>>> 1.3705
 2001-02-09  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 6453, Gnome VFS_CRITICAL received when dragging
