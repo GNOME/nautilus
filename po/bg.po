@@ -2,19 +2,19 @@
 # Bulgarian translation of Nautilus for GNOME 2.8
 # Copyright (C) 2002, 2004 Free Software Foundation, Inc.
 # Borislav Aleksandrov <B.Aleksandrov@cnsys.bg>, 2002.
-# Vladimir "Kaladan" Petkov <vpetkov@i-space.org>, 2004.
+# Vladimir Petkov <vpetkov@i-space.org>, 2004.
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 2.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-08-30 16:44+0200\n"
-"PO-Revision-Date: 2004-08-11 04:05+0300\n"
-"Last-Translator: Vladimir \"Kaladan\" Petkov <vpetkov@i-space.org>\n"
+"POT-Creation-Date: 2004-09-04 20:16+0200\n"
+"PO-Revision-Date: 2004-09-04 23:25+0300\n"
+"Last-Translator: Vladimir Petkov <vpetkov@i-space.org>\n"
 "Language-Team: Bulgarian <dict@linux.zonebg.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: 8bit"
 
 #: components/adapter/main.c:101
 msgid "bonobo_ui_init() failed."
@@ -227,19 +227,13 @@ msgid "Software"
 msgstr "Софтуер"
 
 #: components/image_properties/nautilus-image-properties-view.c:222
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
-msgid_plural ""
 "<b>Image Type:</b> %s (%s)\n"
 "<b>Resolution:</b> %dx%d pixels\n"
-msgstr[0] ""
-"<b>Тип изображение:</b> %s (%s)\n"
-"<b>Разд. способност:</b> %dx%d пиксела\n"
-"<b>Тип изображение:</b> %s (%s)\n"
-"<b>Разд. способност:</b> %dx%d пиксела\n"
-msgstr[1] ""
+msgstr ""
 "<b>Тип изображение:</b> %s (%s)\n"
 "<b>Разд. способност:</b> %dx%d пиксела\n"
 "<b>Тип изображение:</b> %s (%s)\n"
@@ -1178,9 +1172,8 @@ msgid "Default zoom level used by the list view."
 msgstr "Задаване на нивото на мащабиране за текущият преглед"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:24
-#, fuzzy
 msgid "Desktop computer icon name"
-msgstr "Име на иконата за домашната папка"
+msgstr "Име на иконата за периферните устройства"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:25
 msgid "Desktop font"
@@ -2040,23 +2033,17 @@ msgstr "%m/%d/%y"
 #: src/file-manager/fm-directory-view.c:1817
 #, fuzzy, c-format
 msgid "%u item"
-msgid_plural "%u items"
-msgstr[0] "%u обект"
-msgstr[1] "%u обект"
+msgstr "%u обект"
 
 #: libnautilus-private/nautilus-file.c:4299
 #, fuzzy, c-format
 msgid "%u folder"
-msgid_plural "%u folders"
-msgstr[0] "%u папка"
-msgstr[1] "%u папка"
+msgstr "%u папка"
 
 #: libnautilus-private/nautilus-file.c:4300
 #, fuzzy, c-format
 msgid "%u file"
-msgid_plural "%u files"
-msgstr[0] "%u файл"
-msgstr[1] "%u файл"
+msgstr "%u файл"
 
 #. This means no contents at all were readable
 #: libnautilus-private/nautilus-file.c:4625
@@ -3394,9 +3381,8 @@ msgid "Browse the filesystem with the file manager"
 msgstr "Разглежда файловата система с файловия мениджър"
 
 #: nautilus.desktop.in.h:2
-#, fuzzy
 msgid "File Browser"
-msgstr "Файлов браузър: %s"
+msgstr "Файлов браузър"
 
 #: nautilus-file-management-properties.desktop.in.h:1
 msgid "Change how files are managed"
@@ -3435,9 +3421,7 @@ msgstr "Изпразване на кошчето"
 #: src/file-manager/fm-directory-view.c:528
 #, fuzzy, c-format
 msgid "Open %d Window?"
-msgid_plural "Open %d Windows?"
-msgstr[0] "Да се отвори прозорецът %d?"
-msgstr[1] "Да се отвори прозорецът %d?"
+msgstr "Да се отвори прозорецът %d?"
 
 #: src/file-manager/fm-directory-view.c:529
 msgid "Are you sure you want to open all files?"
@@ -3446,9 +3430,7 @@ msgstr "Сигурни ли сте, че искате да отворите вс
 #: src/file-manager/fm-directory-view.c:530 src/nautilus-location-bar.c:158
 #, fuzzy, c-format
 msgid "This will open %d separate window."
-msgid_plural "This will open %d separate windows."
-msgstr[0] "Това ще отвори %d отделен прозорец."
-msgstr[1] "Това ще отвори %d отделен прозорец."
+msgstr "Това ще отвори %d отделен прозорец."
 
 #: src/file-manager/fm-directory-view.c:854
 #, c-format
@@ -3458,10 +3440,8 @@ msgstr "Сигурен ли сте, че искате да изтриете за
 #: src/file-manager/fm-directory-view.c:858
 #, fuzzy, c-format
 msgid "Are you sure you want to permanently delete the %d selected item?"
-msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items?"
-msgstr[0] "Сигурен ли сте, че искате да изтриете за постоянно \"%s\"?"
-msgstr[1] "Сигурен ли сте, че искате да изтриете за постоянно \"%s\"?"
+msgstr "Сигурен ли сте, че искате да изтриете за постоянно \"%s\"?"
 
 #: src/file-manager/fm-directory-view.c:866
 msgid "If you delete an item, it is permanently lost."
@@ -3487,24 +3467,18 @@ msgstr "\"%s\" избрани"
 #: src/file-manager/fm-directory-view.c:1751
 #, fuzzy, c-format
 msgid "%d folder selected"
-msgid_plural "%d folders selected"
-msgstr[0] "%d избрана папка"
-msgstr[1] "%d избрана папка"
+msgstr "%d избрана папка"
 
 #: src/file-manager/fm-directory-view.c:1761
 #, fuzzy, c-format
 msgid " (containing %d item)"
-msgid_plural " (containing %d items)"
-msgstr[0] " (съдържаща %d обект)"
-msgstr[1] " (съдържаща %d обект)"
+msgstr " (съдържаща %d обект)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
 #: src/file-manager/fm-directory-view.c:1772
 #, fuzzy, c-format
 msgid " (containing a total of %d item)"
-msgid_plural " (containing a total of %d items)"
-msgstr[0] " (съдържа общо %d обект)"
-msgstr[1] " (съдържа общо %d обект)"
+msgstr " (съдържа общо %d обект)"
 
 #: src/file-manager/fm-directory-view.c:1788
 #, c-format
@@ -3514,17 +3488,13 @@ msgstr "\"%s\" избрани (%s)"
 #: src/file-manager/fm-directory-view.c:1792
 #, fuzzy, c-format
 msgid "%d item selected (%s)"
-msgid_plural "%d items selected (%s)"
-msgstr[0] "%d обект избран (%s)"
-msgstr[1] "%d обект избран (%s)"
+msgstr "%d обект избран (%s)"
 
 #. Folders selected also, use "other" terminology
 #: src/file-manager/fm-directory-view.c:1800
 #, fuzzy, c-format
 msgid "%d other item selected (%s)"
-msgid_plural "%d other items selected (%s)"
-msgstr[0] "%d друг избран обект (%s)"
-msgstr[1] "%d друг избран обект (%s)"
+msgstr "%d друг избран обект (%s)"
 
 #: src/file-manager/fm-directory-view.c:1821
 #, c-format
@@ -3598,12 +3568,10 @@ msgstr "Сигурен ли сте, че искате да изтриете за
 msgid ""
 "Are you sure you want to permanently delete the %d selected item from the "
 "trash?"
-msgid_plural ""
 "Are you sure you want to permanently delete the %d selected items from the "
 "trash?"
-msgstr[0] ""
+msgstr ""
 "Сигурен ли сте, че искате да изтриете за постоянно \"%s\" от кошчето?"
-msgstr[1] ""
 "Сигурен ли сте, че искате да изтриете за постоянно \"%s\" от кошчето?"
 
 #: src/file-manager/fm-directory-view.c:3316
@@ -3759,21 +3727,17 @@ msgstr "\"%s\" ще бъде копиран ако изберете команд
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be moved if you select the Paste Files command"
-msgid_plural ""
 "The %d selected items will be moved if you select the Paste Files command"
-msgstr[0] ""
+msgstr ""
 "\"%s\" ще бъде преместен ако изберете командата поставяне на файлове"
-msgstr[1] ""
 "\"%s\" ще бъде преместен ако изберете командата поставяне на файлове"
 
 #: src/file-manager/fm-directory-view.c:5087
 #, fuzzy, c-format
 msgid ""
 "The %d selected item will be copied if you select the Paste Files command"
-msgid_plural ""
 "The %d selected items will be copied if you select the Paste Files command"
-msgstr[0] "\"%s\" ще бъде копиран ако изберете командата поставяне на файлове"
-msgstr[1] "\"%s\" ще бъде копиран ако изберете командата поставяне на файлове"
+msgstr "\"%s\" ще бъде копиран ако изберете командата поставяне на файлове"
 
 #: src/file-manager/fm-directory-view.c:5169
 #: src/file-manager/fm-tree-view.c:868
@@ -3828,11 +3792,9 @@ msgstr "_Отваряне"
 #. add the "open in new window" menu item
 #: src/file-manager/fm-directory-view.c:5957
 #: src/file-manager/fm-tree-view.c:960
-#, fuzzy, c-format
+#, c-format
 msgid "Open in New Window"
-msgid_plural "Open in %d New Windows"
-msgstr[0] "Отваряне в нов прозорец"
-msgstr[1] "Отваряне в нов прозорец"
+msgstr "Отваряне в нов прозорец"
 
 #: src/file-manager/fm-directory-view.c:5964
 msgid "Browse Folder"
@@ -4249,9 +4211,7 @@ msgstr "нечетимо"
 #: src/file-manager/fm-properties-window.c:1816
 #, fuzzy, c-format
 msgid "%d item, with size %s"
-msgid_plural "%d items, totalling %s"
-msgstr[0] "%d обект, с големина %s"
-msgstr[1] "%d обект, с големина %s"
+msgstr "%d обект, с големина %s"
 
 #: src/file-manager/fm-properties-window.c:1825
 msgid "(some contents unreadable)"
@@ -4635,9 +4595,8 @@ msgid "Open the selected item in this window"
 msgstr "Отваряне на избраните обекти в нов прозорец"
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:32
-#, fuzzy
 msgid "Open with Other _Application..."
-msgstr "Отваряне с друга програма"
+msgstr "Отваряне с друга _програма..."
 
 #: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Prepare the selected files to be copied with a Paste Files command"
@@ -5048,87 +5007,76 @@ msgid "%s on %s"
 msgstr "%s на %s"
 
 #: src/nautilus-connect-server-dialog.c:380
-#, fuzzy
 msgid "_Location (URI):"
 msgstr "_Местоположение (URL):"
 
 #: src/nautilus-connect-server-dialog.c:424
-#, fuzzy
 msgid "_Server:"
-msgstr "_Никога"
+msgstr "_Сървър:"
 
 #: src/nautilus-connect-server-dialog.c:443
-#, fuzzy
 msgid "Optional information:"
-msgstr "Информация"
+msgstr "Опционална информация:"
 
 #: src/nautilus-connect-server-dialog.c:455
-#, fuzzy
 msgid "_Share:"
-msgstr "Глинест"
+msgstr "_Споделено:"
 
 #: src/nautilus-connect-server-dialog.c:476
-#, fuzzy
 msgid "_Port:"
-msgstr "_Формат:"
+msgstr "_Порт:"
 
 #: src/nautilus-connect-server-dialog.c:496
-#, fuzzy
 msgid "_Folder:"
-msgstr "Изрязване на папка"
+msgstr "_Папка:"
 
 #: src/nautilus-connect-server-dialog.c:516
-#, fuzzy
 msgid "_User Name:"
-msgstr "_Име:"
+msgstr "_Потребителско име:"
 
 #: src/nautilus-connect-server-dialog.c:539
 msgid "_Name to use for connection:"
-msgstr ""
+msgstr "_Име на връзката:"
 
 #: src/nautilus-connect-server-dialog.c:597
 msgid "Connect to Server"
 msgstr "Свързване със сървър"
 
 #: src/nautilus-connect-server-dialog.c:614
-#, fuzzy
 msgid "Service _type:"
-msgstr "Услуги в"
+msgstr "_Тип услуга:"
 
 #: src/nautilus-connect-server-dialog.c:623
 msgid "SSH"
-msgstr ""
+msgstr "SSH"
 
 #: src/nautilus-connect-server-dialog.c:625
 msgid "Public FTP"
-msgstr ""
+msgstr "Публично FTP"
 
 #: src/nautilus-connect-server-dialog.c:627
 msgid "FTP (with login)"
-msgstr ""
+msgstr "FTP (с идентификация)"
 
 #: src/nautilus-connect-server-dialog.c:629
-#, fuzzy
 msgid "Windows share"
-msgstr "Windows Поделена файлова Система"
+msgstr "Споделено Windows устройство"
 
 #: src/nautilus-connect-server-dialog.c:631
 msgid "WebDAV (HTTP)"
-msgstr ""
+msgstr "WebDAV (HTTP)"
 
 #: src/nautilus-connect-server-dialog.c:633
 msgid "Secure WebDAV (HTTPS)"
-msgstr ""
+msgstr "Сигурно WebDAV (HTTPS)"
 
 #: src/nautilus-connect-server-dialog.c:635
-#, fuzzy
 msgid "Custom Location"
-msgstr "Адрес:"
+msgstr "Ръчен адрес"
 
 #: src/nautilus-connect-server-dialog.c:685
-#, fuzzy
 msgid "Browse _Network"
-msgstr "Windows мрежа"
+msgstr "Разглеждане на _мрежата"
 
 #: src/nautilus-connect-server-dialog.c:691
 msgid "C_onnect"
@@ -5457,9 +5405,7 @@ msgstr "Отиване:"
 #: src/nautilus-location-bar.c:154
 #, fuzzy, c-format
 msgid "Do you want to view %d location?"
-msgid_plural "Do you want to view %d locations?"
-msgstr[0] "Искате ли да видите местонахождението %d?"
-msgstr[1] "Искате ли да видите местонахождението %d?"
+msgstr "Искате ли да видите местонахождението %d?"
 
 #: src/nautilus-location-bar.c:170
 msgid "View in Multiple Windows?"
@@ -6676,24 +6622,6 @@ msgstr "Преглед на вашите мрежови сървъри във ф
 
 #~ msgid "Open _With..."
 #~ msgstr "Отваряне _с..."
-
-#~ msgid ""
-#~ "The %d selected item will be moved if you select the Paste Files "
-#~ "commandThe %d selected items will be moved if you select the Paste Files "
-#~ "command"
-#~ msgstr ""
-#~ "%d избран обект ще бъде преместен, ако изберете командата Поставяне на "
-#~ "файлове%d избрани обекта ще бъде преместени, ако изберете командата "
-#~ "Поставяне на файлове"
-
-#~ msgid ""
-#~ "The %d selected item will be copied if you select the Paste Files "
-#~ "commandThe %d selected items will be copied if you select the Paste Files "
-#~ "command"
-#~ msgstr ""
-#~ "%d избран обект ще бъде копиран, ако изберете командата Поставяне на "
-#~ "файлове%d избрани обекта ще бъдат копирани, ако изберете командата "
-#~ "Поставяне на файлове"
 
 #~ msgid "Open _With"
 #~ msgstr "Отваряне _с"
