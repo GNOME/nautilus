@@ -9,7 +9,7 @@ INCLUDES =						\
 	$(NAUTILUS_PRIVATE_CFLAGS) \
 	$(NULL)
 
-serverdir = $(datadir)/server
+serverdir = $(libdir)/bonobo/servers
 
 server_in_files =					\
 	Nautilus_View_hardware.server.in		\

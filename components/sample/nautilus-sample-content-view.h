@@ -35,7 +35,6 @@
 #ifndef NAUTILUS_SAMPLE_CONTENT_VIEW_H
 #define NAUTILUS_SAMPLE_CONTENT_VIEW_H
 
-#include <gtk/gtklabel.h>
 #include <libnautilus/nautilus-view.h>
 
 #define NAUTILUS_TYPE_SAMPLE_CONTENT_VIEW	     (nautilus_sample_content_view_get_type ())
@@ -55,7 +54,6 @@ typedef struct {
 	NautilusViewClass parent;
 } NautilusSampleContentViewClass;
 
-/* GtkObject support */
-GtkType       nautilus_sample_content_view_get_type          (void);
+GType nautilus_sample_content_view_get_type (void);
 
 #endif /* NAUTILUS_SAMPLE_CONTENT_VIEW_H */

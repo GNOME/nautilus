@@ -62,7 +62,7 @@ nautilus_music_view_LDADD =			\
 	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)
 
-serverdir = $(datadir)/server
+serverdir = $(libdir)/bonobo/servers
 
 server_in_files =					\
 	Nautilus_View_music.server.in		\

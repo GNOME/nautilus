@@ -5,6 +5,10 @@ MOZILLA_COMPONENT_SUBDIRS = mozilla
 endif
 
 SUBDIRS = 					\
+	sample 					\
+	$(NULL)
+
+XXX=
 	adapter 				\
 	hardware 				\
 	help 					\
@@ -14,11 +18,8 @@ SUBDIRS = 					\
 	music 					\
 	news					\
 	notes 					\
-	sample 					\
 	text 					\
 	throbber 				\
 	tree 					\
 	$(MOZILLA_COMPONENT_SUBDIRS) 		\
 	$(NULL)
-
-

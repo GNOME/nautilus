@@ -7,7 +7,7 @@ bin_PROGRAMS=nautilus
 INCLUDES =\
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/cut-n-paste-code/widgets/gimphwrapbox \
-	$(NAUTILUS_SRC_CFLAGS) \
+	$(CORE_CFLAGS) \
 	-DDATADIR=\""$(datadir)"\" \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DLIBDIR=\""$(libdir)"\" \
@@ -23,7 +23,7 @@ LDADD =\
 	$(top_builddir)/libnautilus/libnautilus.la \
 	$(top_builddir)/libnautilus-adapter/libnautilus-adapter.la \
 	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
-	$(NAUTILUS_SRC_LIBS) \
+	$(CORE_LIBS) \
 	$(NULL)
 
 nautilus_shell_interface_idl_sources =		\
@@ -114,7 +114,7 @@ nautilus_SOURCES = \
 
 $(nautilus_shell_interface_idl_sources): nautilus_shell_interface_idl_stamp
 nautilus_shell_interface_idl_stamp: nautilus-shell-interface.idl $(ORBIT_IDL) $(top_srcdir)/libnautilus/nautilus-view-component.idl
-	$(ORBIT_IDL) $(NAUTILUS_SRC_IDL_INCLUDES) -I$(top_srcdir) $<
+	$(ORBIT_IDL) $(CORE_IDL_INCLUDES) -I$(top_srcdir) $<
 	touch $@
 
 $(nautilus_OBJECTS): nautilus_shell_interface_idl_stamp
@@ -138,7 +138,7 @@ CLEANFILES = \
 	$(NULL)
 
 EXTRA_DIST =					\
-	$(server_in_files)				\
+	$(server_in_files)			\
 	$(server_DATA)				\
 	$(ui_DATA)				\
 	check-nautilus				\

@@ -34,7 +34,7 @@ libnautilus_tree_view_la_SOURCES =         \
 	libmain.c                          \
 	$(NULL)
 
-serverdir = $(datadir)/server
+serverdir = $(libdir)/bonobo/servers
 server_in_files = Nautilus_View_tree.server.in
 server_DATA = $(server_in_files:.server.in=.server)
 

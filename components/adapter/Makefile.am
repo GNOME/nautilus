@@ -7,7 +7,7 @@ INCLUDES =					\
 	$(NAUTILUS_PRIVATE_CFLAGS) \
 	$(NULL)
 
-serverdir = $(datadir)/server
+serverdir = $(libdir)/bonobo/servers
 server_in_files =						\
 	Nautilus_ComponentAdapterFactory_std.server.in	\
 	$(NULL)

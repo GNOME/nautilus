@@ -11,6 +11,7 @@ SUBDIRS =			\
 	libnautilus-private 	\
 	libnautilus-adapter	\
 	src 			\
+	components		\
 	po 			\
 	data 			\
 	icons 			\
@@ -20,7 +21,6 @@ SUBDIRS =			\
 	$(NULL)
 
 XXX = \
-	components		\
 	test 			\
 	$(NULL)
 

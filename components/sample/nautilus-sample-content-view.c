@@ -35,127 +35,25 @@
 #include <config.h>
 #include "nautilus-sample-content-view.h"
 
-/* CHANGE: #ifdef this back in if this component comes as part of
- * Nautilus. If not, you can't rely on the nautilus-gtk-macros.h header.
- */
-#if 0
-#include <eel/eel-gtk-macros.h>
-#endif
-
-#include <libnautilus/nautilus-bonobo-ui.h>
-#include <bonobo/bonobo-control.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnomeui/gnome-stock-icons.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <bonobo/bonobo-i18n.h>
+#include <gobject/gsignal.h>
 #include <gtk/gtklabel.h>
-#include <gtk/gtksignal.h>
+#include <libgnome/gnome-macros.h>
+#include <string.h>
 
 /* CHANGE: You probably want some different widget than a label to be
  * your main view contents.  
  */
 struct NautilusSampleContentViewDetails {
-	char      *location;
+	char *location;
 	GtkWidget *label;
 };
 
-static void nautilus_sample_content_view_class_init (NautilusSampleContentViewClass *klass);
-static void nautilus_sample_content_view_init       (NautilusSampleContentView      *view);
-static void nautilus_sample_content_view_destroy          (GtkObject                      *object);
-static void sample_load_location_callback                 (NautilusView                   *nautilus_view,
-							   const char                     *location,
-							   gpointer                        user_data);
-static void sample_merge_bonobo_items_callback            (BonoboControl                  *control,
-							   gboolean                        state,
-							   gpointer                        user_data);
-
-
-/* CHANGE: #ifdef this back in and remove the else clause if this
- * component comes as part of Nautilus. If not, you can't rely on the
- * nautilus-gtk-macros.h header, so remove the #if 0 part, and use the
- * #else portion.
- */
-
-#if 0
-
-EEL_CLASS_BOILERPLATE (NautilusSampleContentView,
-				   nautilus_sample_content_view,
-				   NAUTILUS_TYPE_VIEW)
-#else
-
-static gpointer parent_class;
-                                                                                                        
-GtkType
-nautilus_sample_content_view_get_type (void)                                                         
-{                                                                                                       
-	GtkType parent_type;                                                                            
-	static GtkType type;                                                                            
-                                                                                                        
-	if (type == 0) {                                                                                
-		static GtkTypeInfo info = {
-		        "NautilusSampleContentView",
-			sizeof (NautilusSampleContentView),
-			sizeof (NautilusSampleContentViewClass),
-			(GtkClassInitFunc)nautilus_sample_content_view_class_init,
-			(GtkObjectInitFunc)nautilus_sample_content_view_init,
-			NULL,
-			NULL,
-			NULL
-		};
-
-		parent_type = (NAUTILUS_TYPE_VIEW);
-		type = gtk_type_unique (parent_type, &info);
-		parent_class = gtk_type_class (parent_type);
-	}
-
-	return type;
-}
-
-#endif
-
-
-     
-static void
-nautilus_sample_content_view_class_init (NautilusSampleContentViewClass *klass)
-{
-	GtkObjectClass *object_class;
-	
-	g_assert (NAUTILUS_IS_SAMPLE_CONTENT_VIEW_CLASS (klass));
-
-	object_class = GTK_OBJECT_CLASS (klass);
-	
-	object_class->destroy = nautilus_sample_content_view_destroy;
-}
+GNOME_CLASS_BOILERPLATE (NautilusSampleContentView, nautilus_sample_content_view,
+			 NautilusView, nautilus_view, NAUTILUS_TYPE_VIEW)
 
 static void
-nautilus_sample_content_view_init (NautilusSampleContentView *view)
-{
-	g_assert (NAUTILUS_IS_SAMPLE_CONTENT_VIEW (view));
-
-	view->details = g_new0 (NautilusSampleContentViewDetails, 1);
-	
-	view->details->label = gtk_label_new (_("(none)"));
-	gtk_widget_show (view->details->label);
-	
-	nautilus_view_construct (NAUTILUS_VIEW (view), 
-				 view->details->label);
-	
-	g_signal_connect (G_OBJECT (view), 
-			    "load_location",
-			    sample_load_location_callback, 
-			    NULL);
-
-	/* Get notified when our bonobo control is activated so we can
-	 * merge menu & toolbar items into the shell's UI.
-	 */
-        g_signal_connect (G_OBJECT (nautilus_view_get_bonobo_control (NAUTILUS_VIEW (view))),
-                            "activate",
-                            sample_merge_bonobo_items_callback,
-                            view);
-	
-}
-
-static void
-nautilus_sample_content_view_destroy (GtkObject *object)
+nautilus_sample_content_view_finalize (GObject *object)
 {
 	NautilusSampleContentView *view;
 	
@@ -164,15 +62,8 @@ nautilus_sample_content_view_destroy (GtkObject *object)
 	g_free (view->details->location);
 	g_free (view->details);
 
-	/* CHANGE: Pick one. */
-#if 0 /* nautilus-specific */	
-	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
-#else /* non-nautilus-specific */
-	(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
-#endif
+	GNOME_CALL_PARENT_HANDLER (G_OBJECT_CLASS, finalize, (object));
 }
-
-
 
 static void
 load_location (NautilusSampleContentView *view,
@@ -245,7 +136,7 @@ bonobo_sample_callback (BonoboUIComponent *ui,
 	view = NAUTILUS_SAMPLE_CONTENT_VIEW (user_data);
 
 	if (strcmp (verb, "Sample Menu Item") == 0) {
-		label_text = g_strdup_printf ("%s\n\nYou selected the Sample menu item.",
+		label_text = g_strdup_printf (_("%s\n\nYou selected the Sample menu item."),
 					      view->details->location);
 	} else {
 		g_assert (strcmp (verb, "Sample Dock Item") == 0);
@@ -291,4 +182,36 @@ sample_merge_bonobo_items_callback (BonoboControl *control,
          * bonobo_ui_handler_unset_container, which removes its merged
          * menu & toolbar items.
 	 */
+}
+
+static void
+nautilus_sample_content_view_class_init (NautilusSampleContentViewClass *class)
+{
+	G_OBJECT_CLASS (class)->finalize = nautilus_sample_content_view_finalize;
+}
+
+static void
+nautilus_sample_content_view_instance_init (NautilusSampleContentView *view)
+{
+	g_assert (NAUTILUS_IS_SAMPLE_CONTENT_VIEW (view));
+
+	view->details = g_new0 (NautilusSampleContentViewDetails, 1);
+	
+	view->details->label = gtk_label_new (_("(none)"));
+	gtk_widget_show (view->details->label);
+	
+	nautilus_view_construct (NAUTILUS_VIEW (view), view->details->label);
+	
+	g_signal_connect (G_OBJECT (view), 
+			  "load_location",
+			  G_CALLBACK (sample_load_location_callback),
+			  NULL);
+
+	/* Get notified when our bonobo control is activated so we can
+	 * merge menu & toolbar items into the shell's UI.
+	 */
+        g_signal_connect (G_OBJECT (nautilus_view_get_bonobo_control (NAUTILUS_VIEW (view))),
+			  "activate",
+			  G_CALLBACK (sample_merge_bonobo_items_callback),
+			  view);
 }

@@ -18,7 +18,7 @@ nautilus_image_view_LDADD = 			\
 	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)
 
-serverdir = $(datadir)/server
+serverdir = $(libdir)/bonobo/servers
 
 server_in_files =					\
 	Nautilus_View_image.server.in		\

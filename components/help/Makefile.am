@@ -56,7 +56,7 @@ hyperbola_DATA=topleveldocs.xml
 uidir=$(datadir)/gnome-2.0/ui
 ui_DATA = nautilus-hyperbola-ui.xml
 
-serverdir = $(datadir)/server
+serverdir = $(libdir)/bonobo/servers
 server_in_files =					\
 	Nautilus_View_help.server.in		\
 	$(NULL)

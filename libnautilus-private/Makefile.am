@@ -5,7 +5,7 @@ lib_LTLIBRARIES=libnautilus-private.la
 INCLUDES = 						\
 	-I$(top_srcdir) 				\
 	-I$(top_builddir) 				\
-	$(LIBNAUTILUS_PRIVATE_CFLAGS)			\
+	$(CORE_CFLAGS)					\
 	-DDATADIR=\""$(datadir)"\" 			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
 	$(NULL)
@@ -173,7 +173,7 @@ $(lib_LTLIBRARIES): $(dependency_static_libs)
 
 $(nautilus_metafile_server_idl_sources): nautilus_metafile_server_idl_stamp
 nautilus_metafile_server_idl_stamp: nautilus-metafile-server.idl $(ORBIT_IDL)
-	$(ORBIT_IDL) -I$(top_srcdir) $(LIBNAUTILUS_PRIVATE_IDL_INCLUDES) $<
+	$(ORBIT_IDL) -I$(top_srcdir) $(CORE_IDL_INCLUDES) $<
 	touch $@
 
 nautilus-marshal-guts.h: nautilus-marshal.list $(GLIB_GENMARSHAL)

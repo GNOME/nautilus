@@ -1,5 +1,35 @@
 2001-11-08  Darin Adler  <darin@bentspoon.com>
 
+	* MAINTAINERS: Just me, not the mailing list.
+	
+	* Makefile.am: Enable the components directory.
+	* components/Makefile.am: Disable all but sample.
+	
+	* components/*/.cvsignore:
+	* components/*/*.oaf.in: Removed.
+	* components/*/*.server.in: Added.
+	server -> oaf
+	
+	* components/*/Makefile.am:
+	Install the servers in the right place.
+	
+	* configure.in:
+	* libnautilus-adapter/Makefile.am:
+	* libnautilus-private/Makefile.am:
+	* src/Makefile.am:
+	* src/file-manager/Makefile.am:
+	Simplified CFLAGS, LIBS, and IDL_INCLUDES.
+
+	* components/sample/Makefile.am:
+	Switch to the new COMPONENT_CFLAGS.
+	
+	* components/sample/nautilus-sample-content-view.h:
+	* components/sample/nautilus-sample-content-view.c:
+	(nautilus_sample_content_view_finalize): Use instead of destroy.
+	(bonobo_sample_callback): Mark string for localization.
+	
+2001-11-08  Darin Adler  <darin@bentspoon.com>
+
 	* src/file-manager/fm-error-reporting.c:
 	(fm_report_error_loading_directory),
 	(fm_report_error_renaming_file), (fm_report_error_setting_group),

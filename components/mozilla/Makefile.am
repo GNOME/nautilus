@@ -47,7 +47,7 @@ nautilus_mozilla_content_view_LDFLAGS = \
 	$(MOZILLA_COMPONENT_RPATH_FLAGS) \
 	$(NULL)
 
-serverdir = $(datadir)/server
+serverdir = $(libdir)/bonobo/servers
 
 server_in_files =					\
 	Nautilus_View_mozilla.server.in		\

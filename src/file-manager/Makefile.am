@@ -4,8 +4,8 @@ noinst_LTLIBRARIES=libnautilus-file-manager.la
 
 INCLUDES = 					\
 	-I$(top_srcdir) 			\
-	$(NAUTILUS_SRC_CFLAGS)			\
-	-DVERSION="\"$(VERSION)\"" 		\
+	$(CORE_CFLAGS)				\
+	-DVERSION="\"$(VERSION)\""		\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	-DDATADIR=\""$(datadir)"\"		\
 	$(NULL)	

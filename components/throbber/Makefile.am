@@ -22,7 +22,7 @@ nautilus_throbber_LDADD =			\
 	$(NAUTILUS_PRIVATE_LIBS) \
 	$(NULL)
 
-serverdir = $(datadir)/server
+serverdir = $(libdir)/bonobo/servers
 server_in_files =					\
 	Nautilus_Control_throbber.server.in	\
 	$(NULL)

@@ -10,7 +10,7 @@ INCLUDES =						\
 	-DICON_DIR=\"$(datadir)/pixmaps/nautilus\"	\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
-	$(MODULE_CFLAGS)
+	$(COMPONENT_CFLAGS)
 
 bin_PROGRAMS =						\
 	nautilus-sample-content-view
@@ -22,13 +22,13 @@ nautilus_sample_content_view_SOURCES =			\
 
 nautilus_sample_content_view_LDADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
-	$(MODULE_LIBS)
+	$(COMPONENT_LIBS)
 
 uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = nautilus-sample-content-view-ui.xml
 
-serverdir = $(datadir)/server
-server_in_files =						\
+serverdir = $(libdir)/bonobo/servers
+server_in_files =					\
 	Nautilus_View_sample.server.in			\
 	$(NULL)
 server_DATA = $(server_in_files:.server.in=.server)

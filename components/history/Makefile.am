@@ -16,7 +16,7 @@ LDADD=\
 
 nautilus_history_view_SOURCES=nautilus-history-view.c
 
-serverdir = $(datadir)/server
+serverdir = $(libdir)/bonobo/servers
 
 server_in_files =					\
 	Nautilus_View_history.server.in		\

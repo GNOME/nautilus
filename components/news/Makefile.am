@@ -26,7 +26,7 @@ nautiluspixmapdir = $(datadir)/pixmaps/nautilus
 nautiluspixmap_DATA = news_bullet.png		\
 		      changed_bullet.png
 
-serverdir = $(datadir)/server
+serverdir = $(libdir)/bonobo/servers
 server_in_files =					\
 	Nautilus_View_news.server.in		\
 	$(NULL)

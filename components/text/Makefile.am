@@ -27,7 +27,7 @@ nautilus_text_view_LDADD =			\
 uidir = $(datadir)/gnome-2.0/ui
 ui_DATA = nautilus-text-view-ui.xml
 
-serverdir = $(datadir)/server
+serverdir = $(libdir)/bonobo/servers
 server_in_files =					\
 	Nautilus_View_text.server.in		\
 	$(NULL)
