@@ -1,3 +1,17 @@
+2001-01-18  Pavel Cisler <pavel@eazel.com>
+
+	Fix 4221 (Pressing Cancel button does not cancel)
+
+	* libnautilus-extensions/nautilus-file-operations.c:
+	(transfer_dialog_clicked_callback), (handle_transfer_ok):
+	Redo cancellation to use a flag in the Transfer state and
+	return a request to cancel during the next callback instead
+	of issuing a gnome_vfs_async_cancel and destroying the
+	dialog. The latter approach would now work too with my
+	latest change to gnome_vfs_xfer, this new way of cancelling
+	is cleaner and causes all the item that actually do get
+	copied to show up in their new locations.
+
 2001-01-18  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* libnautilus-extensions/nautilus-global-preferences.c:

@@ -73,7 +73,8 @@ typedef struct {
 	gboolean show_progress_dialog;
 	void (*done_callback) (GHashTable *debuting_uris, gpointer data);
 	gpointer done_callback_data;
-	GHashTable *debuting_uris;	
+	GHashTable *debuting_uris;
+	gboolean cancelled;	
 } TransferInfo;
 
 /* Struct used to control applying icon positions to 
@@ -217,9 +218,7 @@ transfer_dialog_clicked_callback (NautilusFileOperationsProgress *dialog,
 	TransferInfo *info;
 
 	info = (TransferInfo *) data;
-	gnome_vfs_async_cancel (info->handle);
-
-	gtk_widget_destroy (GTK_WIDGET (dialog));
+	info->cancelled = TRUE;
 }
 
 static void
@@ -376,10 +375,18 @@ static int
 handle_transfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 		TransferInfo *transfer_info)
 {
+	if (transfer_info->cancelled
+		&& progress_info->phase != GNOME_VFS_XFER_PHASE_COMPLETED) {
+		/* If cancelled, return right away, unless we are calling
+		 * to shut down the progress dialog.
+		 */
+		return 0;
+	}
+	
 	switch (progress_info->phase) {
 	case GNOME_VFS_XFER_PHASE_INITIAL:
 		create_transfer_dialog (progress_info, transfer_info);
-		return TRUE;
+		return 1;
 
 	case GNOME_VFS_XFER_PHASE_COLLECTING:
 		if (transfer_info->progress_dialog != NULL) {
@@ -388,7 +395,7 @@ handle_transfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 					 (transfer_info->progress_dialog),
 					 transfer_info->preparation_name);
 		}
-		return TRUE;
+		return 1;
 
 	case GNOME_VFS_XFER_PHASE_READYTOGO:
 		if (transfer_info->progress_dialog != NULL) {
@@ -401,7 +408,7 @@ handle_transfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 					 progress_info->files_total,
 					 progress_info->bytes_total);
 		}
-		return TRUE;
+		return 1;
 				 
 	case GNOME_VFS_XFER_PHASE_DELETESOURCE:
 		nautilus_file_changes_consume_changes (FALSE);
@@ -422,7 +429,7 @@ handle_transfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 				 MIN (progress_info->total_bytes_copied,
 				 	progress_info->bytes_total));
 		}
-		return TRUE;
+		return 1;
 
 	case GNOME_VFS_XFER_PHASE_MOVING:
 	case GNOME_VFS_XFER_PHASE_OPENSOURCE:
@@ -450,7 +457,7 @@ handle_transfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 					 	progress_info->bytes_total));
 			}
 		}
-		return TRUE;
+		return 1;
 
 	case GNOME_VFS_XFER_PHASE_CLEANUP:
 		if (transfer_info->progress_dialog != NULL) {
@@ -462,7 +469,7 @@ handle_transfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 					 (transfer_info->progress_dialog),
 					 transfer_info->cleanup_name);
 		}
-		return TRUE;
+		return 1;
 
 	case GNOME_VFS_XFER_PHASE_COMPLETED:
 		nautilus_file_changes_consume_changes (TRUE);
@@ -473,16 +480,14 @@ handle_transfer_ok (const GnomeVFSXferProgressInfo *progress_info,
 			transfer_info->done_callback (transfer_info->debuting_uris, transfer_info->done_callback_data);
 			/* done_callback now owns (will free) debuting_uris
 			 */
-		} else {
-			if (transfer_info->debuting_uris != NULL) {
-				nautilus_g_hash_table_destroy_deep (transfer_info->debuting_uris);
-			}
+		} else if (transfer_info->debuting_uris != NULL) {
+			nautilus_g_hash_table_destroy_deep (transfer_info->debuting_uris);
 		}
 		g_free (transfer_info);
-		return TRUE;
+		return 1;
 
 	default:
-		return TRUE;
+		return 1;
 	}
 }
 
