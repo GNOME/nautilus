@@ -1,3 +1,13 @@
+2000-07-02  Pavel Cisler <pavel@eazel.com>
+
+	* components/help/help-method.c: (convert_file_to_uri):
+	Make the help component build properly -- convert the call
+	gnome_vfs_mime_type_of_file to the new 
+	gnome_vfs_get_file_mime_type.
+	
+	* components/help/Makefile.am:
+	Turn on -Werror that would have caught the problem earlier.
+
 
 2000-07-02  Andy Hertzfeld  <andy@eazel.com>
 

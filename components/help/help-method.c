@@ -162,7 +162,7 @@ convert_file_to_uri (HelpURI *help_uri, gchar *file)
 	}
 
 	help_uri->file = file;
-	mime_type = gnome_vfs_mime_type_of_file (file);
+	mime_type = gnome_vfs_get_file_mime_type (file, NULL, FALSE);
 #ifdef ALI_DEBUG
 	g_print ("*** the file's mime_type is: %s\n",mime_type);
 #endif
