@@ -50,6 +50,7 @@
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <gdk/gdkx.h>
+#include <gtk/gtkinvisible.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-config.h>
 #include <libgnome/gnome-i18n.h>
@@ -570,12 +571,81 @@ nautilus_application_startup (NautilusApplication *application,
 	CORBA_exception_free (&ev);
 }
 
+
+static void 
+selection_get_cb (GtkWidget          *widget,
+		  GtkSelectionData   *selection_data,
+		  guint               info,
+		  guint               time)
+{
+	/* No extra targets atm */
+}
+
+static GtkWidget *
+get_desktop_manager_selection (GdkDisplay *display, int screen)
+{
+	char *selection_name;
+	GdkAtom selection_atom;
+	Window selection_owner;
+	GtkWidget *selection_widget;
+
+	selection_name = g_strdup_printf ("_NET_DESKTOP_MANAGER_S%d", screen);
+	selection_atom = gdk_atom_intern (selection_name, FALSE);
+	g_free (selection_name);
+
+	selection_owner = XGetSelectionOwner (GDK_DISPLAY_XDISPLAY (display),
+					      gdk_x11_atom_to_xatom_for_display (display, 
+										 selection_atom));
+	if (selection_owner != None) {
+		return NULL;
+	}
+	
+	selection_widget = gtk_invisible_new_for_screen (gdk_display_get_screen (display, screen));
+	/* We need this for gdk_x11_get_server_time() */
+	gtk_widget_add_events (selection_widget, GDK_PROPERTY_CHANGE_MASK);
+
+	if (gtk_selection_owner_set_for_display (display,
+						 selection_widget,
+						 selection_atom,
+						 gdk_x11_get_server_time (selection_widget->window))) {
+		
+		g_signal_connect (selection_widget, "selection_get",
+				  G_CALLBACK (selection_get_cb), NULL);
+		return selection_widget;
+	}
+
+	gtk_widget_destroy (selection_widget);
+	
+	return NULL;
+}
+
+static void
+desktop_unrealize_cb (GtkWidget        *widget,
+		      GtkWidget        *selection_widget)
+{
+	gtk_widget_destroy (selection_widget);
+}
+
+static gboolean
+selection_clear_event_cb (GtkWidget	        *widget,
+			  GdkEventSelection     *event,
+			  NautilusDesktopWindow *window)
+{
+	gtk_widget_destroy (GTK_WIDGET (window));
+	
+	nautilus_application_desktop_windows =
+		g_list_remove (nautilus_application_desktop_windows, window);
+
+	return TRUE;
+}
+
 static void
 nautilus_application_create_desktop_windows (NautilusApplication *application)
 {
 	static gboolean create_in_progress = FALSE;
 	GdkDisplay *display;
 	NautilusDesktopWindow *window;
+	GtkWidget *selection_widget;
 	int screens, i;
 
 	g_return_if_fail (nautilus_application_desktop_windows == NULL);
@@ -591,16 +661,27 @@ nautilus_application_create_desktop_windows (NautilusApplication *application)
 	screens = gdk_display_get_n_screens (display);
 
 	for (i = 0; i < screens; i++) {
-		window = nautilus_desktop_window_new (application,
-						      gdk_display_get_screen (display, i));
-		/* We realize it immediately so that the NAUTILUS_DESKTOP_WINDOW_ID
-		   property is set so gnome-settings-daemon doesn't try to set the
-		   background. And we do a gdk_flush() to be sure X gets it. */
-		gtk_widget_realize (GTK_WIDGET (window));
-		gdk_flush ();
+		selection_widget = get_desktop_manager_selection (display, i);
+		if (selection_widget != NULL) {
+			window = nautilus_desktop_window_new (application,
+							      gdk_display_get_screen (display, i));
+			
+			g_signal_connect (selection_widget, "selection_clear_event",
+					  G_CALLBACK (selection_clear_event_cb), window);
+			
+			g_signal_connect (window, "unrealize",
+					  G_CALLBACK (desktop_unrealize_cb), selection_widget);
+			
+			/* We realize it immediately so that the NAUTILUS_DESKTOP_WINDOW_ID
+			   property is set so gnome-settings-daemon doesn't try to set the
+			   background. And we do a gdk_flush() to be sure X gets it. */
+			gtk_widget_realize (GTK_WIDGET (window));
+			gdk_flush ();
 
-		nautilus_application_desktop_windows =
-			g_list_prepend (nautilus_application_desktop_windows, window);
+			
+			nautilus_application_desktop_windows =
+				g_list_prepend (nautilus_application_desktop_windows, window);
+		}
 	}
 
 	create_in_progress = FALSE;
