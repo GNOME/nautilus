@@ -234,7 +234,8 @@ prune_failed_packages_helper (EazelInstall *service,
 	
 	if (pack->status != PACKAGE_PARTLY_RESOLVED) {
 #if EI2_DEBUG & 0x4
-		trilobite_debug ("subpruner kill root %s because of %s", root->name, pack->name);
+		trilobite_debug ("subpruner kill root %p %s because of %p %s", 
+				 root, root->name, pack, pack->name);
 #endif
 		if (g_list_find (*result, root)==NULL) {
 			(*result) = g_list_prepend (*result, root);
@@ -601,6 +602,84 @@ fail_modified_packages (EazelInstall *service,
 	}
 }
 
+static GetSoftCatResult
+post_get_softcat_info (EazelInstall *service, 
+		       PackageData **package,
+		       GetSoftCatResult result)
+{
+	PackageData *p1 = NULL;
+	
+#if EI2_DEBUG & 0x4
+	trilobite_debug ("-> post_get_softcat_info %p %s", 
+			 (*package), (*package)->name);
+#endif
+
+	g_assert ((*package)->md5);
+	p1 = g_hash_table_lookup (service->private->dedupe_hash, (*package)->md5);
+	
+	if (p1) {
+#if EI2_DEBUG & 0x4
+		trilobite_debug ("\tdeduping %p %s to %p", *package, (*package)->name, p1);
+#endif		
+		
+		gtk_object_ref (GTK_OBJECT (p1));
+		gtk_object_unref (GTK_OBJECT (*package)); 
+		(*package) = p1;
+	} else {
+		EazelInstallStatus status;
+		
+		status = eazel_install_check_existing_packages (service, *package);
+		
+#if 0
+		/* HACK to always fail gnome-libs for fun... */
+		if (strcmp ((*package)->name, "gnome-libs")==0) {
+			trilobite_debug ("\t%s:%d MATCHED gnome-libs", __FILE__, __LINE__);
+			status = EAZEL_INSTALL_STATUS_DOWNGRADES;
+		}
+#endif
+		
+		switch (status) {
+		case EAZEL_INSTALL_STATUS_NEW_PACKAGE:
+			add_to_dedupe_hash (service, *package);
+			break;
+		case EAZEL_INSTALL_STATUS_UPGRADES:
+			if (eazel_install_get_upgrade (service)) {
+				add_to_dedupe_hash (service, *package);
+			} else {
+				fail_modified_packages (service, *package);
+				gtk_object_set_data (GTK_OBJECT (*package), 
+						     "cancelled", 
+						     GINT_TO_POINTER (1));
+			}
+			break;
+		case EAZEL_INSTALL_STATUS_DOWNGRADES:
+			if (eazel_install_get_downgrade (service)) {
+				add_to_dedupe_hash (service, *package);
+			} else {
+				fail_modified_packages (service, *package);
+				gtk_object_set_data (GTK_OBJECT (*package), 
+						     "cancelled", 
+						     GINT_TO_POINTER (1));
+			}
+			break;
+		case EAZEL_INSTALL_STATUS_QUO:
+			fail_modified_packages (service, *package);
+			gtk_object_set_data (GTK_OBJECT (*package), 
+					     "cancelled", 
+					     GINT_TO_POINTER (1));
+			result = PACKAGE_SKIPPED;
+			break;
+		}
+	}
+
+#if EI2_DEBUG & 0x4
+	trilobite_debug ("<- post_get_softcat_info %p %s", 
+			 (*package), (*package)->name);
+#endif
+
+	return result;
+}
+
 GetSoftCatResult
 get_softcat_info (EazelInstall *service, 
 		  PackageData **package)
@@ -660,65 +739,7 @@ get_softcat_info (EazelInstall *service,
 		}
 	}
 	if ((result != NO_SOFTCAT_HIT) && ((*package)->suite_id == NULL)) {
-		PackageData *p1 = NULL;
-
-		g_assert ((*package)->md5);
-		p1 = g_hash_table_lookup (service->private->dedupe_hash, (*package)->md5);
-
-		if (p1) {
-#if EI2_DEBUG & 0x4
-			trilobite_debug ("deduping %p %s to %p", *package, (*package)->name, p1);
-#endif		
-			
-			gtk_object_ref (GTK_OBJECT (p1));
-			gtk_object_unref (GTK_OBJECT (*package)); 
-			(*package) = p1;
-		} else {
-			EazelInstallStatus status;
-
-			status = eazel_install_check_existing_packages (service, *package);
-
-#if 0
-			/* HACK to always fail gnome-libs for fun... */
-			if (strcmp ((*package)->name, "gnome-libs")==0) {
-				trilobite_debug ("%s:%d MATCHED gnome-libs", __FILE__, __LINE__);
-				status = EAZEL_INSTALL_STATUS_DOWNGRADES;
-			}
-#endif
-
-			switch (status) {
-			case EAZEL_INSTALL_STATUS_NEW_PACKAGE:
-				add_to_dedupe_hash (service, *package);
-				break;
-			case EAZEL_INSTALL_STATUS_UPGRADES:
-				if (eazel_install_get_upgrade (service)) {
-					add_to_dedupe_hash (service, *package);
-				} else {
-					fail_modified_packages (service, *package);
-					gtk_object_set_data (GTK_OBJECT (*package), 
-							     "cancelled", 
-							     GINT_TO_POINTER (1));
-				}
-				break;
-			case EAZEL_INSTALL_STATUS_DOWNGRADES:
-				if (eazel_install_get_downgrade (service)) {
-					add_to_dedupe_hash (service, *package);
-				} else {
-					fail_modified_packages (service, *package);
-					gtk_object_set_data (GTK_OBJECT (*package), 
-							     "cancelled", 
-							     GINT_TO_POINTER (1));
-				}
-				break;
-			case EAZEL_INSTALL_STATUS_QUO:
-				fail_modified_packages (service, *package);
-				gtk_object_set_data (GTK_OBJECT (*package), 
-						     "cancelled", 
-						     GINT_TO_POINTER (1));
-				result = PACKAGE_SKIPPED;
-				break;
-			}
-		}
+		post_get_softcat_info (service, package, result);
 	}
 	return result;
 }
@@ -1699,6 +1720,8 @@ check_tree_helper (EazelInstall *service,
 		}
 #if EI2_DEBUG & 0x4
 		trilobite_debug ("trying to revive %s", pack->name);
+#else
+		g_message ("trying to revive %s", pack->name);
 #endif
 		for (iterator = pack->breaks; iterator; iterator = g_list_next (iterator)) {
 			PackageBreaks *breakage = PACKAGEBREAKS (iterator->data);
@@ -1750,8 +1773,14 @@ check_tree_helper (EazelInstall *service,
 			}
 			
 			if (update_available) {
-				gboolean proceed = TRUE;
+				if (post_get_softcat_info (service, &pack_update, SOFTCAT_HIT_OK) !=
+				    SOFTCAT_HIT_OK) {
+					update_available = FALSE;
+				}								
+			} 
 
+			if (update_available) {
+				gboolean proceed = TRUE;
 				if (IS_PACKAGEFILECONFLICT (breakage)) {
 					PackageFileConflict *conflict = PACKAGEFILECONFLICT (breakage); 
 					

@@ -1,3 +1,39 @@
+2001-02-28  Eskil Heyn Olsen  <eskil@eazel.com>
+
+	reviewed by: Robey Pointer  <robey@eazel.com>
+
+	This patch fixes bug 7122 and reduces flicker in the install-view.
+	
+	* components/services/docs/installer-rpm-cases:
+	Corrected the description of a case.
+	
+	* components/services/install-view/forms.c: (install_message_new):
+	Reduced flicker by no longer forcing a redraw.
+	
+	* components/services/install/command-line/eazel-alt-install-corba.
+	c:
+	Disabled force since it doesn't work (and really shouldn't).
+	
+	* components/services/install/lib/eazel-install-corba-callback.c:
+	(eazel_install_callback_initialize),
+	(eazel_install_callback_get_type):
+	Removed commented out debug stuff.
+	
+	* components/services/install/lib/eazel-install-logic2.c:
+	(prune_failed_packages_helper), 
+	Added more spam to the debug output.
+	(post_get_softcat_info),
+	Moved code from get_softcat_info here
+	(get_softcat_info), (check_tree_helper):
+	Call post_get_softcat_info, this fixes bug 7122.
+	
+	* components/services/install/lib/eazel-softcat.c:
+	(get_search_url_for_package), (eazel_softcat_query):
+	s/provides/features/
+	
+	* components/services/install/server/main.c: (main):
+	Spellfix.
+
 2001-02-28  Brian Frank  <bfrank@eazel.com>
 
 	Added MandrakeSoft to bookmarks, and fixed Sun Wah link to default to "non-flash" page.

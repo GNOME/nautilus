@@ -554,7 +554,7 @@ get_search_url_for_package (EazelSoftCat *softcat, const PackageData *package, i
 		add_to_url (url, "&arch=", arch);
 		g_free (arch);
 	} else if (package->name == NULL) {
-		/* find by provides list! */
+		/* find by features list! */
 		g_assert ((package->features != NULL) && (g_list_length (package->features) > 0));
 		arch = trilobite_get_distribution_arch ();
 		add_to_url (url, "?provides=", (char *)(package->features->data));
@@ -675,9 +675,9 @@ eazel_softcat_query (EazelSoftCat *softcat, PackageData *package, int sense_flag
 			g_warning ("couldn't fetch info about suite id %s", package->suite_id);
 		} else if (package->name != NULL) {
 			g_warning ("couldn't fetch info about package '%s'", package->name);
-		} else if ((package->provides != NULL) && (package->provides->data != NULL)) {
+		} else if ((package->features != NULL) && (package->features->data != NULL)) {
 			g_warning ("couldn't fetch info about package that provides '%s'",
-				   (char *)package->provides->data);
+				   (char *)package->features->data);
 		} else {
 			g_warning ("couldn't fetch info about a MYSTERY PACKAGE!");
 		}

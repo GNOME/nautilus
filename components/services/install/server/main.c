@@ -140,7 +140,7 @@ int main(int argc, char *argv[]) {
 
 	if (!trilobite_init ("trilobite-eazel-install-service", "0.1", "~/.nautilus/trilobite-install.log",
 			     NULL, argc, argv)) {
-		g_error ("Could not initialize trilobite. :(");
+		g_error ("Could not initialise trilobite. :(");
 		exit (1);
 	}
 	trilobite_set_debug_mode (TRUE);

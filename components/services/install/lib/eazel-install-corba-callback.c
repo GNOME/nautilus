@@ -497,7 +497,6 @@ eazel_install_callback_class_initialize (EazelInstallCallbackClass *klass)
 
 static void
 eazel_install_callback_initialize (EazelInstallCallback *service) {
-	/* g_message ("in eazel_install_callback_initialize"); */
 	CORBA_Environment ev;
 
 	g_assert (service != NULL);
@@ -532,8 +531,6 @@ GtkType
 eazel_install_callback_get_type (void)
 {
 	static GtkType service_type = 0;
-
-	/* g_message ("into eazel_install_callback_get_type");  */
 
 	/* First time it's called ? */
 	if (!service_type)

@@ -181,10 +181,6 @@ install_message_new (NautilusServiceInstallView *view, const char *package_name)
 	im->package_name = g_strdup (package_name);
 	view->details->message = g_list_prepend (view->details->message, im);
 
-	/* unbelievable!  gtk won't redraw correctly unless we poke it in the ass */
-	gtk_widget_queue_resize (view->details->form);
-	gtk_widget_queue_draw (view->details->form);
-
 	return im;
 }
 
