@@ -49,7 +49,8 @@
 #include "nautilus-window-private.h"
 #include "nautilus-location-bar.h"
 
-/* FIXME: We should use inheritance instead of these special cases
+/* FIXME bugzilla.eazel.com 1243: 
+ * We should use inheritance instead of these special cases
  * for the desktop window.
  */
 #include "nautilus-desktop-window.h"
@@ -662,7 +663,8 @@ nautilus_window_request_location_change (NautilusWindow *window,
         
         create_new_window = loc->new_window_requested;
 
-	/* FIXME: We should use inheritance instead of these special cases
+	/* FIXME bugzilla.eazel.com 1243: 
+	 * We should use inheritance instead of these special cases
 	 * for the desktop window.
 	 */
         if (NAUTILUS_IS_DESKTOP_WINDOW (window) && window->content_view != NULL) {

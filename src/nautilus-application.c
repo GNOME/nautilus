@@ -422,7 +422,7 @@ nautilus_app_startup (NautilusApp *app,
 	/* Show the "not ready for prime time" dialog after the first
 	 * window appears, so it's on top.
 	 */
-	/* FIXME: It's not on top of the other windows. */
+	/* FIXME bugzilla.eazel.com 1256: It's not on top of the other windows. */
 	if (g_getenv ("NAUTILUS_NO_CAVEAT_DIALOG") == NULL) {
 	  	if (first_window == NULL) {
 			display_caveat (NULL);

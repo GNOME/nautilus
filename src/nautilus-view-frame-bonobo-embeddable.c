@@ -64,7 +64,8 @@ bonobo_subdoc_notify_location_change (NautilusViewFrame *view,
       nautilus_view_frame_request_progress_change(view, &pri);
       if (stream != NULL)
         {
-          /* FIXME: Dan Winship points out that we should pass the
+          /* FIXME bugzilla.eazel.com 1248: 
+           * Dan Winship points out that we should pass the
            * MIME type here to work with new implementers of
            * PersistStream that pay attention to the MIME type. It
            * doesn't matter right now, but we should fix it

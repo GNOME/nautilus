@@ -488,7 +488,7 @@ static void
 fm_list_handle_dropped_icons (NautilusList *list, GList *drop_data, int x, int y, 
 	int action, FMListView *list_view)
 {
-	/* FIXME:
+	/* FIXME bugzilla.eazel.com 1257:
 	 * Merge this with nautilus_icon_container_receive_dropped_icons
 	 */ 
 	FMDirectoryView *directory_view;

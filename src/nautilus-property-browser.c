@@ -569,7 +569,9 @@ remove_background(NautilusPropertyBrowser *property_browser, const char* backgro
 	
 	/* delete the background from the background directory */
 	if (gnome_vfs_unlink (background_uri) != GNOME_VFS_OK) {
-		/* FIXME: Is a g_warning a reasonable way to report this to the user? */
+		/* FIXME bugzilla.eazel.com 1249: 
+		 * Is a g_warning a reasonable way to report this to the user? 
+		 */
 		g_warning ("couldnt delete background %s", background_uri);
 	}
 	
@@ -590,7 +592,9 @@ remove_emblem(NautilusPropertyBrowser *property_browser, const char* emblem_name
 		
 	/* delete the emblem from the emblem directory */
 	if (gnome_vfs_unlink (emblem_uri) != GNOME_VFS_OK) {
-		/* FIXME: Is a g_warning a reasonable way to report this to the user? */
+		/* FIXME bugzilla.eazel.com 1249: 
+		 * Is a g_warning a reasonable way to report this to the user? 
+		 */
 		g_warning ("couldnt delete emblem %s", emblem_uri);
 	}
 	
@@ -779,7 +783,9 @@ add_background_to_browser (GtkWidget *widget, gpointer *data)
 	}
 
 	/* copy the image file to the backgrounds directory */
-	/* FIXME: do we need to do this with gnome-vfs? */
+	/* FIXME bugzilla.eazel.com 1250: 
+	 * do we need to do this with gnome-vfs? 
+	 */
 	directory_path = nautilus_make_path (nautilus_get_user_directory (),
 					     property_browser->details->category);
 	source_file_name = strrchr (path_name, '/');

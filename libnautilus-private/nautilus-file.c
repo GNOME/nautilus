@@ -1731,9 +1731,16 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 	/* We want to update nautilus/data/nautilus.keys to include 
 	 * English (& localizable) versions of every mime type anyone ever sees.
 	 */
-	g_warning ("No description found for mime type \"%s\" (file is \"%s\"), tell sullivan@eazel.com", 
-		    mime_type,
-		    file->details->info->name);
+	if (strcmp (mime_type, "special/directory") == 0) {
+		g_warning ("Can't find description even for \"special/directory\". This "
+			   "probably means that your gnome-vfs.keys file is in the wrong place "
+			   "or isn't being found for some other reason.");
+			
+	} else {
+		g_warning ("No description found for mime type \"%s\" (file is \"%s\"), tell sullivan@eazel.com", 
+			    mime_type,
+			    file->details->info->name);
+	}
 	return g_strdup (mime_type);
 }
 

@@ -629,7 +629,9 @@ bonobo_control_activate_callback (BonoboObject *control, gboolean state, gpointe
         local_ui_handler = bonobo_control_get_ui_handler (BONOBO_CONTROL (control));
 
         if (state) {
-		/* FIXME: Doesn't the remote UI handler leak here? */
+		/* FIXME bugzilla.eazel.com 1259: 
+		 * Doesn't the remote UI handler leak here? 
+		 */
                 bonobo_ui_handler_set_container
 			(local_ui_handler, 
 			 bonobo_control_get_remote_ui_handler (BONOBO_CONTROL (control)));
@@ -1648,7 +1650,7 @@ new_folder_done (const char *new_folder_uri, gpointer data)
 	parameters->uri = g_strdup (new_folder_uri);
 	parameters->view = directory_view;
 
-	/* FIXME:
+	/* FIXME bugzilla.eazel.com 1260:
 	 * runing the start_renaming_item with a delay because at this point
 	 * it's not in the icon container's icon list. 
 	 * There are two problems with this besides clunkiness - by the time the 
@@ -1931,7 +1933,8 @@ fm_directory_view_real_create_background_context_menu_items (FMDirectoryView *vi
 	                                NULL, 
 	                                NAUTILUS_MENU_PATH_SELECT_ALL_ITEM, 
 			      		select_all_callback);
-	/* FIXME: Need to think clearly about what items to include here.
+	/* FIXME bugzilla.eazel.com 1261: 
+	 * Need to think clearly about what items to include here.
 	 * We want the list to be pretty short, but not degenerately short.
 	 * Zoom In and Out don't really seem to belong. Maybe "Show Properties"
 	 * (for the current location, not selection -- but would have to not

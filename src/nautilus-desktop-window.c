@@ -55,7 +55,8 @@ nautilus_desktop_window_initialize (NautilusDesktopWindow *window)
 {
 	window->details = g_new0 (NautilusDesktopWindowDetails, 1);
 
-	/* FIXME: Although Havoc had this call to set_default_size in
+	/* FIXME bugzilla.eazel.com 1251: 
+	 * Although Havoc had this call to set_default_size in
 	 * his code, it seems to have no effect for me. But the
 	 * gdk_window_move_resize below does seem to work. Not sure if
 	 * this should stay or not.
@@ -103,7 +104,8 @@ nautilus_desktop_window_new (NautilusApp *application)
 	 */
 	nautilus_link_set_install (desktop_directory_path, "desktop");
 
-	/* FIXME: This little ditty is just the way you convert a
+	/* FIXME bugzilla.eazel.com 1252: 
+	 * This little ditty is just the way you convert a
 	 * local path to a file: URI. Should be a utility somewhere
 	 * to do the two steps at once.
 	 */
@@ -170,7 +172,8 @@ realize (GtkWidget *widget)
 	/* Do the work of realizing. */
 	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, realize, (widget));
 
-	/* FIXME: Looking at the gnome_win_hints implementation,
+	/* FIXME bugzilla.eazel.com 1253: 
+	 * Looking at the gnome_win_hints implementation,
 	 * it looks like you can call these with an unmapped window,
 	 * but when I tried doing it in initialize it didn't work.
 	 * We'd like to set these earlier so the window doesn't show
@@ -194,7 +197,8 @@ realize (GtkWidget *widget)
 	/* Make sure that focus, and any window lists or task bars also
 	 * skip the window.
 	 */
-	/* FIXME: Is having no ability to focus on the window going to
+	/* FIXME bugzilla.eazel.com 1254: 
+	 * Is having no ability to focus on the window going to
 	 * be a problem for renaming icons?
 	 */
 	gnome_win_hints_set_hints (widget,
@@ -202,7 +206,8 @@ realize (GtkWidget *widget)
 				   | WIN_HINTS_SKIP_WINLIST
 				   | WIN_HINTS_SKIP_TASKBAR);
 
-	/* FIXME: Should we do a gdk_window_set_hints or a
+	/* FIXME bugzilla.eazel.com 1255: 
+	 * Should we do a gdk_window_set_hints or a
 	 * gdk_window_move_resize here too?
 	 */
 #if 0

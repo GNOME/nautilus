@@ -93,7 +93,7 @@ static void     add_command_buttons                 (NautilusSidebar  *sidebar,
 #define DEFAULT_BACKGROUND_COLOR "rgb:DDDD/DDDD/FFFF"
 #define DEFAULT_TAB_COLOR "rgb:9999/9999/9999"
 
-/* FIXME: Hardcoded sizes? */
+/* FIXME bugzilla.eazel.com 1245: Hardcoded sizes? */
 #define SIDEBAR_WIDTH 136
 #define SIDEBAR_HEIGHT 400
 

@@ -1103,7 +1103,7 @@ icon_container_activate_callback (NautilusIconContainer *container,
 /* handle the preview signal by inspecting the mime type.  For now, we only preview sound files. */
 
 /* here's the timer task that actually plays the file using mpg123. */
-/* FIXME: we should get the application from our mime-type stuff */
+/* FIXME bugzilla.eazel.com 1258: we should get the application from our mime-type stuff */
 
 static gint play_file(NautilusFile *file)
 {
