@@ -181,13 +181,13 @@ set_up_service_signup_page (NautilusDruidPageStandard *page)
 	gtk_container_add (GTK_CONTAINER (container), main_box);
 	
 	/* allocate a descriptive label */
-	label = gtk_label_new (_("Eazel offers a growing number services to help you install and manage your files across the network.  Click the sign-up button below to find out more about signing up for them. "));
+	label = gtk_label_new (_("Eazel offers a growing number of services to help you install and maintain new software and manage your files across the network.  If you want to find out more about Eazel services, just press the 'Next' button. "));
 	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (main_box), label, FALSE, FALSE, 8);
 	
-	frame = gtk_frame_new (_("Eazel Service Sign-up"));
+	frame = gtk_frame_new (_("Eazel Services"));
 	gtk_widget_show (frame);
 	gtk_container_set_border_width (GTK_CONTAINER (frame), 8);
 
@@ -195,8 +195,8 @@ set_up_service_signup_page (NautilusDruidPageStandard *page)
 	gtk_container_add (GTK_CONTAINER (frame),
 					radio_buttons);
 
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("I want to sign up for Eazel services"));
-	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("I don't want to sign up at this time"));
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("I want to learn more about Eazel services."));
+	nautilus_radio_button_group_insert (NAUTILUS_RADIO_BUTTON_GROUP (radio_buttons), _("I don't want learn about Eazel services at this time."));
 
 	gtk_signal_connect (GTK_OBJECT (radio_buttons),
 			    "changed",
@@ -243,7 +243,7 @@ GtkWidget *nautilus_first_time_druid_show (NautilusApplication *application, gbo
 
 	/* set up the initial page */
 	nautilus_druid_page_start_set_title (NAUTILUS_DRUID_PAGE_START (start_page), _("Welcome to Nautilus!"));
-	nautilus_druid_page_start_set_text (NAUTILUS_DRUID_PAGE_START(start_page), _("Welcome to Nautilus!\n\nSince this is the first time that you've launched\nNautilus, we'd like to ask you a few questions\nto help personalize itfor your use.\n\nPress the next button to continue."));
+	nautilus_druid_page_start_set_text (NAUTILUS_DRUID_PAGE_START(start_page), _("Welcome to Nautilus!\n\nSince this is the first time that you've launched\nNautilus, we'd like to ask you a few questions\nto help personalize it for your use.\n\nPress the next button to continue."));
 	
 	/* set up the final page */
 	nautilus_druid_page_finish_set_title (NAUTILUS_DRUID_PAGE_FINISH (finish_page), _("Finished"));

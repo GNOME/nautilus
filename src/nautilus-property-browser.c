@@ -116,7 +116,8 @@ static void  nautilus_property_browser_drag_data_get    (GtkWidget              
 							 guint32                  time);
 static void  nautilus_property_browser_theme_changed	(gpointer user_data);
 static GdkPixbuf* make_background_chit			(GdkPixbuf *background_tile,
-							 GdkPixbuf *frame);
+							 GdkPixbuf *frame,
+							 gboolean  dragging);
 
 /* misc utilities */
 static char *strip_extension                            (const char              *string_to_strip);
@@ -483,7 +484,7 @@ make_drag_image(NautilusPropertyBrowser *property_browser, const char* file_name
 		temp_str = nautilus_pixmap_file ("chit_frame.png");
 		frame = gdk_pixbuf_new_from_file (temp_str);
 		g_free (temp_str);
-		pixbuf = make_background_chit (pixbuf, frame);
+		pixbuf = make_background_chit (pixbuf, frame, TRUE);
 		gdk_pixbuf_unref (frame);
 	} else {
 		pixbuf = nautilus_gdk_pixbuf_scale_to_fit (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
@@ -1259,9 +1260,9 @@ add_to_content_table(NautilusPropertyBrowser *property_browser, GtkWidget* widge
 
 /* utility to make an attractive background image by compositing with a frame */
 static GdkPixbuf*
-make_background_chit (GdkPixbuf *background_tile, GdkPixbuf *frame)
+make_background_chit (GdkPixbuf *background_tile, GdkPixbuf *frame, gboolean dragging)
 {
-	GdkPixbuf *pixbuf;
+	GdkPixbuf *pixbuf, *temp_pixbuf;
 	int frame_width, frame_height;
 	
 	
@@ -1274,6 +1275,14 @@ make_background_chit (GdkPixbuf *background_tile, GdkPixbuf *frame)
 	/* composite the mask on top of it */
 	gdk_pixbuf_composite (frame, pixbuf, 0, 0, frame_width, frame_height,
 			      0.0, 0.0, 1.0, 1.0, GDK_INTERP_BILINEAR, 255);
+	
+	/* if we're dragging, get rid of the light-colored halo */
+	if (dragging) {
+		temp_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, frame_width - 6, frame_height - 6);
+		gdk_pixbuf_copy_area (pixbuf, 2, 2, frame_width - 6, frame_height - 6, temp_pixbuf, 0, 0);
+		gdk_pixbuf_unref (pixbuf);
+		pixbuf = temp_pixbuf;
+	}
 			      
 	gdk_pixbuf_unref (background_tile);
 	return pixbuf;
@@ -1326,7 +1335,7 @@ make_properties_from_directory_path(NautilusPropertyBrowser *property_browser, c
 				g_free(image_file_name);
 			
 				if (!strcmp(property_browser->details->category, "backgrounds")) {
-					pixbuf = make_background_chit (pixbuf, background_frame);
+					pixbuf = make_background_chit (pixbuf, background_frame, FALSE);
 				} else {
 					pixbuf = nautilus_gdk_pixbuf_scale_to_fit (pixbuf, MAX_ICON_WIDTH, MAX_ICON_HEIGHT);
 				}
