@@ -81,11 +81,6 @@
 
 #define NAUTILUS_MENU_PATH_BUILT_IN_BOOKMARKS_PLACEHOLDER	"/menu/Bookmarks/Built-in Bookmarks Placeholder"
 #define NAUTILUS_MENU_PATH_BOOKMARKS_PLACEHOLDER		"/menu/Bookmarks/Bookmarks Placeholder"
-#define NAUTILUS_MENU_PATH_SEPARATOR_BEFORE_BOOKMARKS   	"/menu/Bookmarks/Separator before Bookmarks"
-
-#define NAUTILUS_MENU_PATH_ABOUT_ITEM				"/menu/Help/About Nautilus"
-#define NAUTILUS_MENU_PATH_NAUTILUS_FEEDBACK			"/menu/Help/Nautilus Feedback"
-
 
 #define SWITCH_TO_BEGINNER_VERB					"Switch to Beginner Level"
 #define SWITCH_TO_INTERMEDIATE_VERB				"Switch to Intermediate Level"
@@ -643,6 +638,14 @@ help_menu_about_nautilus_callback (BonoboUIComponent *component,
 	}
 	
 	nautilus_gtk_window_present (GTK_WINDOW (about));
+}
+
+static void
+help_menu_nautilus_manual_callback (BonoboUIComponent *component, 
+			              gpointer user_data, 
+			              const char *verb)
+{
+	nautilus_window_goto_uri (NAUTILUS_WINDOW (user_data), "help:nautilus");
 }
 
 static void
@@ -1238,6 +1241,7 @@ nautilus_window_initialize_menus (NautilusWindow *window)
 #endif
 
 		BONOBO_UI_VERB ("About Nautilus", help_menu_about_nautilus_callback),
+		BONOBO_UI_VERB ("Nautilus Manual", help_menu_nautilus_manual_callback),
 		BONOBO_UI_VERB ("Nautilus Feedback", help_menu_nautilus_feedback_callback),
 
 		BONOBO_UI_VERB ("Switch to Beginner Level", user_level_menu_item_callback),

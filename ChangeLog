@@ -1,3 +1,16 @@
+2000-10-18  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3839 (want Nautilus User Manual menu item)
+	Note that this menu item does not actually work, due
+	to bug 3876.
+
+	* src/nautilus-shell-ui.xml:
+	Add menu item for bringing up Nautilus User Manual.
+	* src/nautilus-window-menus.c:
+	(help_menu_nautilus_manual_callback),
+	(nautilus_window_initialize_menus): Add verb
+	and callback for Nautilus User Manual menu item.
+
 2000-10-18  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* configure.in:
