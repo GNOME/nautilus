@@ -1,5 +1,10 @@
 2004-01-27  Padraig O'Briain  <padraig.obriain@sun.com>
 
+	* libnautilus-private/nautilus-icon-container.c: Implement AtkAction
+	called "menu" for NautilusIconContainerAccessible. Fixes bug #132156.
+
+2004-01-27  Padraig O'Briain  <padraig.obriain@sun.com>
+
 	* libnautilus-private/nautilus-icon-canvas-item.c: Implement
 	AtkAction in an idle handler to avoid causing the AT to hang if the
 	action does not return until completed, e.g. displays a dialog.

@@ -132,6 +132,7 @@
 
 enum {
 	ACTION_ACTIVATE,
+	ACTION_MENU,
 	LAST_ACTION
 };
 
@@ -187,11 +188,13 @@ static GQuark accessible_private_data_quark = 0;
 
 static const char *nautilus_icon_container_accessible_action_names[] = {
 	"activate",
+	"menu",
 	NULL
 };
 
 static const char *nautilus_icon_container_accessible_action_descriptions[] = {
 	"Activate selected items",
+	"Popup context menu",
 	NULL
 };
 
@@ -6586,21 +6589,24 @@ nautilus_icon_container_accessible_do_action (AtkAction *accessible, int i)
 		return FALSE;
 	}
 	
+	container = NAUTILUS_ICON_CONTAINER (widget);
 	switch (i) {
 	case ACTION_ACTIVATE :
-		container = NAUTILUS_ICON_CONTAINER (widget);
 		selection = nautilus_icon_container_get_selection (container);
 
 		if (selection) {
 			g_signal_emit_by_name (container, "activate", selection);
 			g_list_free (selection);
 		}
-
-		return TRUE;
+		break;
+	case ACTION_MENU :
+		handle_popups (container, NULL,"context_click_background");
+		break;
 	default :
 		g_warning ("Invalid action passed to NautilusIconContainerAccessible::do_action");
 		return FALSE;
 	}
+	return TRUE;
 }
 
 static int
