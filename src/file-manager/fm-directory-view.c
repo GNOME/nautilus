@@ -3043,18 +3043,22 @@ bonobo_open_location_with_viewer_callback (BonoboUIComponent *component, gpointe
 static void
 add_open_with_app_bonobo_menu_item (BonoboUIComponent *ui,
 				const char *label,
+				int index,
 				gpointer callback,
 				gpointer callback_data,
 				GDestroyNotify destroy_notify)
 {
 	char *escaped_label, *verb_name;
-
+	char *item_id;
+	
 	escaped_label = nautilus_str_double_underscores (label);
 
-	nautilus_bonobo_add_menu_item (ui, "app",
+	item_id = g_strdup_printf ("app%d", index);
+	nautilus_bonobo_add_menu_item (ui, item_id,
 				       FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER,
 				       escaped_label);
-
+	g_free (item_id);
+	
 	verb_name = nautilus_bonobo_get_menu_item_verb_name (label);
 	bonobo_ui_component_add_verb_full (ui, verb_name, callback, callback_data, destroy_notify);
 				   	   
@@ -3065,18 +3069,21 @@ add_open_with_app_bonobo_menu_item (BonoboUIComponent *ui,
 static void
 add_open_with_viewer_bonobo_menu_item (BonoboUIComponent *ui,
 				const char *label,
+				int index,
 				gpointer callback,
 				gpointer callback_data,
 				GDestroyNotify destroy_notify)
 {
-	char *escaped_label, *verb_name;
-
+	char *escaped_label, *verb_name, *item_id;
+	
 	escaped_label = nautilus_str_double_underscores (label);
 
-	nautilus_bonobo_add_menu_item (ui,"viewer",
+	item_id = g_strdup_printf ("viewer%d", index);
+	nautilus_bonobo_add_menu_item (ui,item_id,
 				       FM_DIRECTORY_VIEW_MENU_PATH_VIEWERS_PLACEHOLDER,
 				       escaped_label);
-
+	g_free (item_id);
+	
 	verb_name = g_strdup_printf ("verb:%s", label);
 	bonobo_ui_component_add_verb_full (ui, verb_name, callback, callback_data, destroy_notify);
 
@@ -3087,7 +3094,8 @@ add_open_with_viewer_bonobo_menu_item (BonoboUIComponent *ui,
 static void
 add_application_to_bonobo_menu (FMDirectoryView *directory_view,
 				GnomeVFSMimeApplication *application, 
-				const char *uri)
+				const char *uri,
+				int index)
 {
 	ApplicationLaunchParameters *launch_parameters;
 
@@ -3096,6 +3104,7 @@ add_application_to_bonobo_menu (FMDirectoryView *directory_view,
 
 	add_open_with_app_bonobo_menu_item (directory_view->details->ui, 
 					application->name,
+					index,
 					bonobo_launch_application_callback,
 					launch_parameters,
 					(GDestroyNotify) application_launch_parameters_free);
@@ -3104,12 +3113,13 @@ add_application_to_bonobo_menu (FMDirectoryView *directory_view,
 static void
 add_component_to_bonobo_menu (FMDirectoryView *directory_view,
 			      OAF_ServerInfo *content_view, 
-			      const char *uri)
+			      const char *uri,
+			      int index)
 {
 	NautilusViewIdentifier *identifier;
 	ViewerLaunchParameters *launch_parameters;
 	char *label;
-
+	
 	identifier = nautilus_view_identifier_new_from_content_view (content_view);
 	launch_parameters = viewer_launch_parameters_new (identifier, uri, directory_view);
 	nautilus_view_identifier_free (identifier);
@@ -3118,7 +3128,8 @@ add_component_to_bonobo_menu (FMDirectoryView *directory_view,
 				 launch_parameters->identifier->name);
 
 	add_open_with_viewer_bonobo_menu_item (directory_view->details->ui, 
-					label, 
+					label,
+					index, 
 					bonobo_open_location_with_viewer_callback, 
 					launch_parameters,
 					(GDestroyNotify) viewer_launch_parameters_free);
@@ -3173,7 +3184,8 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 	GList *node;
 	char *uri;
 	NautilusDirectory *directory;
-
+	int index;
+	
 	/* Clear any previous inserted items in the applications and viewers placeholders */
 	/* FIXME bugzilla.eazel.com 3568: We are leaking here. We need to remove the verbs also */
 	nautilus_bonobo_remove_menu_items (view->details->ui, FM_DIRECTORY_VIEW_MENU_PATH_APPLICATIONS_PLACEHOLDER);
@@ -3186,16 +3198,16 @@ reset_bonobo_open_with_menu (FMDirectoryView *view, GList *selection)
 
 		applications = nautilus_mime_get_short_list_applications_for_uri (directory, NAUTILUS_FILE (selection->data));
 
-		for (node = applications; node != NULL; node = node->next) {
-			add_application_to_bonobo_menu (view, node->data, uri);
+		for (node = applications, index = 0; node != NULL; node = node->next, index++) {
+			add_application_to_bonobo_menu (view, node->data, uri, index);
 		}
 
 		gnome_vfs_mime_application_list_free (applications); 
 
 		components = nautilus_mime_get_short_list_components_for_uri (directory, NAUTILUS_FILE (selection->data));
 
-		for (node = components; node != NULL; node = node->next) {
-			add_component_to_bonobo_menu (view, node->data, uri);
+		for (node = components, index = 0; node != NULL; node = node->next, index++) {
+			add_component_to_bonobo_menu (view, node->data, uri, index);
 		}
 
 		gnome_vfs_mime_component_list_free (components); 

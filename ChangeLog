@@ -1,3 +1,16 @@
+2000-10-17  Gene Z. Ragan  <gzr@eazel.com>
+
+	Fixed bug 3716, Bonobo paths for applications and
+	viewers must be unique.
+
+	Added unique index to bonobo path name.
+	
+	* src/file-manager/fm-directory-view.c:
+	(add_open_with_app_bonobo_menu_item),
+	(add_open_with_viewer_bonobo_menu_item),
+	(add_application_to_bonobo_menu), (add_component_to_bonobo_menu),
+	(reset_bonobo_open_with_menu):
+
 2000-10-17  John Sullivan  <sullivan@eazel.com>
 
 	Made "this application can only handle local files"
