@@ -68,14 +68,12 @@ typedef struct {
 
 /* Private menu definitions; others are in <libnautilus/nautilus-bonobo-ui.h>.
  * These are not part of the published set, either because they are
- * development-only (e.g. Debug) or because we expect to change them and
+ * development-only or because we expect to change them and
  * don't want other code relying on their existence.
  */
 #define NAUTILUS_MENU_PATH_GENERAL_SETTINGS_ITEM	"/Settings/General Settings"
 #define NAUTILUS_MENU_PATH_CUSTOMIZE_ITEM		"/Settings/Customize"
 #define NAUTILUS_MENU_PATH_USE_EAZEL_THEME_ICONS_ITEM	"/Settings/Use Eazel Theme Icons"
-#define NAUTILUS_MENU_PATH_DEBUG_MENU			"/Debug"
-#define NAUTILUS_MENU_PATH_SHOW_COLOR_SELECTOR_ITEM	"/Debug/Show Color Selector"
 
 
 static void
@@ -309,29 +307,6 @@ help_menu_about_nautilus_callback (BonoboUIHandler *ui_handler,
   }
 
   nautilus_gtk_window_present (GTK_WINDOW (aboot));
-}
-
-/* handle the OK button being pushed on the color selector */
-/* for now, just vanquish it, since it's only for testing */
-static void
-debug_color_confirm (GtkWidget *widget)
-{
-	gtk_widget_destroy (gtk_widget_get_toplevel (widget));
-}
-
-static void 
-debug_menu_show_color_picker_callback (BonoboUIHandler *ui_handler, 
-		       		       gpointer user_data,
-		      		       const char *path)
-{
-	GtkWidget *c;
-
-	c = gtk_color_selection_dialog_new (_("Color selector"));
-	gtk_signal_connect (GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (c)->ok_button),
-			    "clicked", GTK_SIGNAL_FUNC (debug_color_confirm), c);
-	gtk_widget_hide (GTK_COLOR_SELECTION_DIALOG (c)->cancel_button);
-	gtk_widget_hide (GTK_COLOR_SELECTION_DIALOG (c)->help_button);
-	gtk_widget_show (c);
 }
 
 static void
@@ -853,22 +828,6 @@ nautilus_window_initialize_menus (NautilusWindow *window)
         				 0,
         				 help_menu_about_nautilus_callback,
         				 NULL);
-
-	/* Debug */
-        new_top_level_menu (window, NAUTILUS_MENU_PATH_DEBUG_MENU, _("_Debug"));
-
-        bonobo_ui_handler_menu_new_item (ui_handler,
-        				 NAUTILUS_MENU_PATH_SHOW_COLOR_SELECTOR_ITEM,
-        				 _("Show _Color selector..."),
-        				 _("Show the color picker window"),
-        				 -1,
-        				 BONOBO_UI_HANDLER_PIXMAP_NONE,
-        				 NULL,
-        				 0,
-        				 0,
-        				 debug_menu_show_color_picker_callback,
-        				 NULL);
-
 
         /* Desensitize the items that aren't implemented at this level.
          * Some (hopefully all) will be overridden by implementations by the
