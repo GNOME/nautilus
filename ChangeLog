@@ -1,3 +1,10 @@
+2002-02-12  Darin Adler  <darin@bentspoon.com>
+
+	* src/file-manager/fm-directory-view.c:
+	(metadata_for_directory_as_file_ready_callback),
+	(metadata_for_files_in_directory_ready_callback):
+	A few places where we said "=" but meant "==".
+
 2002-02-11  Darin Adler  <darin@bentspoon.com>
 
 	* configure.in: Require at least libxml 2.4.7, since that's
