@@ -44,6 +44,7 @@ char *   nautilus_make_path                          (const char *path,
 char *   nautilus_get_user_directory                 (void);
 char *   nautilus_get_user_main_directory            (void);
 char *   nautilus_get_desktop_directory              (void);
+char *   nautilus_get_gmc_desktop_directory          (void);
 char *   nautilus_get_pixmap_directory               (void);
 
 

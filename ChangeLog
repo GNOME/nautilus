@@ -1,3 +1,22 @@
+2001-05-08  Darin Adler  <darin@eazel.com>
+
+	Integrated patch by Yoann Vandoorselaere <yoann@mandrakesoft.com>
+	to fix a problem where we would try to get metadata for all files
+	in the home directory if it was set to be used as the desktop
+	directory.
+
+	* libnautilus-private/nautilus-file-utilities.h:
+	* libnautilus-private/nautilus-file-utilities.c:
+	(nautilus_get_desktop_directory): Changed this to not bother with
+	the call to create the directory when the home directory is used
+	as the desktop.
+	(nautilus_get_gmc_desktop_directory): New function.
+	
+	* libnautilus-private/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file): Use
+	nautilus_get_gmc_desktop_directory for the check when deciding to
+	look for old-fashioned gmc metadata.
+
 2001-05-08  Ramiro Estrugo  <ramiro@eazel.com>
 
 	* components/mozilla/Makefile.am:

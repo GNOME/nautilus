@@ -142,21 +142,33 @@ nautilus_get_desktop_directory (void)
 	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
 		desktop_directory = g_strdup (g_get_home_dir());
 	} else {
-		desktop_directory = nautilus_make_path (g_get_home_dir (), DESKTOP_DIRECTORY_NAME);
-	}
-
-	if (!g_file_exists (desktop_directory)) {
-		mkdir (desktop_directory, DEFAULT_DESKTOP_DIRECTORY_MODE);
-		/* FIXME bugzilla.eazel.com 1286: 
-		 * How should we handle the case where this mkdir fails? 
-		 * Note that nautilus_application_startup will refuse to launch if this 
-		 * directory doesn't get created, so that case is OK. But the directory 
-		 * could be deleted after Nautilus was launched, and perhaps
-		 * there is some bad side-effect of not handling that case.
-		 */
+		desktop_directory = nautilus_get_gmc_desktop_directory ();
+		if (!g_file_exists (desktop_directory)) {
+			mkdir (desktop_directory, DEFAULT_DESKTOP_DIRECTORY_MODE);
+			/* FIXME bugzilla.eazel.com 1286: 
+			 * How should we handle the case where this mkdir fails? 
+			 * Note that nautilus_application_startup will refuse to launch if this 
+			 * directory doesn't get created, so that case is OK. But the directory 
+			 * could be deleted after Nautilus was launched, and perhaps
+			 * there is some bad side-effect of not handling that case.
+			 */
+		}
 	}
 
 	return desktop_directory;
+}
+
+/**
+ * nautilus_get_gmc_desktop_directory:
+ * 
+ * Get the path for the directory containing the legacy gmc desktop.
+ *
+ * Return value: the directory path.
+ **/
+char *
+nautilus_get_gmc_desktop_directory (void)
+{
+	return nautilus_make_path (g_get_home_dir (), DESKTOP_DIRECTORY_NAME);
 }
 
 /**

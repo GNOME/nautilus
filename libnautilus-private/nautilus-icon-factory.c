@@ -1468,7 +1468,7 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char *modifie
 		 * the only place where GMC used it (since everywhere else we could
 		 * not do it because of the imlib leaks).
 		 */
-		desktop_directory = nautilus_get_desktop_directory ();
+		desktop_directory = nautilus_get_gmc_desktop_directory ();
 		directory_uri = nautilus_file_get_parent_uri (file);
 		directory = gnome_vfs_get_local_path_from_uri (directory_uri);
 		if (directory != NULL && strcmp (directory, desktop_directory) == 0) {
