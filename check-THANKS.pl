@@ -61,7 +61,8 @@ my %email_map = ('at@ue-spacy.com' => 'tagoh@gnome.gr.jp',
                  'baulig@suse.de' => 'martin@home-of-linux.org',
                  'carlos@gnome-db.org' => 'carlos@hispalinux.es',
                  'mawa@iname.com' => 'mawarkus@gnome.org',
-                 'linuxfan@ionet.net' => 'josh@eazel.com');
+                 'linuxfan@ionet.net' => 'josh@eazel.com',
+                 'arik@gnome.org' => 'arik@eazel.com');
 
 
 # Some ChangeLog lines that carry no credit (incorrect changes that
@@ -154,33 +155,32 @@ while (<THANKS>) {
 
 close THANKS;
 
-open ABOUT, "src/nautilus-window-menus.c" or die;
-
 my $found_about_authors = 0;
-
-while (<ABOUT>)
-  {
-    if (/const char \*authors/)
-      {
-        $found_about_authors = 1;
-        last;
-      }
-  }
-
 my @about_authors;
 
-if ($found_about_authors)
-  {
-    my $i = 0;
+if (open ABOUT, "src/nautilus-window-menus.c") {
+
     while (<ABOUT>)
-      {
-        last unless /^\s+\"(.*)\",\s*\n/;
-        push @about_authors, $1;
-      }
-  }
+    {
+        if (/const char \*authors/)
+        {
+            $found_about_authors = 1;
+            last;
+        }
+    }
 
-close ABOUT;
-
+    if ($found_about_authors)
+    {
+        my $i = 0;
+        while (<ABOUT>)
+        {
+            last unless /^\s+\"(.*)\",\s*\n/;
+            push @about_authors, $1;
+        }
+    }
+    
+    close ABOUT;
+}
 
 my @uncredited;
 foreach my $person (@changelog_people)
@@ -244,36 +244,39 @@ if (@double_credited)
       }
     
     $printed = 1;
-  }
+  } else {
 
-if (!$found_about_authors)
-  {
-    print "\nDidn't find authors section in nautilus-window-menus.c\n";
-    $printed = 1;
-  }
-
-if (@not_in_about)
-  {
-    print "\nThe following people are in AUTHORS but not the about screen:\n\n";
-    
-    foreach my $person (@not_in_about)
+    if (!$found_about_authors)
       {
-        print "${person}\n";
+        print "\nDidn't find authors section in nautilus-window-menus.c\n";
+        $printed = 1;
       }
+      
+    if (@not_in_about)
+      {
+        print "\nThe following people are in AUTHORS but not the about screen:\n\n";
+        
+        foreach my $person (@not_in_about)
+          {
+            print "${person}\n";
+          }
+  
+        $printed = 1;
+      }
+
+    if (@only_in_about)
+      {
+        print "\nThe following people are in the about screen but not AUTHORS:\n\n";
     
-    $printed = 1;
+        foreach my $person (@only_in_about)
+          {
+            print "${person}\n";
+          }
+    
+        $printed = 1;
+      }
   }
 
-if (@only_in_about)
-  {
-    print "\nThe following people are in the about screen but not AUTHORS:\n\n";
-    
-    foreach my $person (@only_in_about)
-      {
-        print "${person}\n";
-      }
-    
-    $printed = 1;
-  }
 
 print "\n" if $printed;
+
