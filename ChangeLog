@@ -1,3 +1,12 @@
+2000-11-03  Mathieu Lacage  <mathieu@eazel.com>
+
+	Fix list view dnd on branch. (patch from HEAD)
+	* libnautilus-extensions/nautilus-list.c: (nautilus_list_drag_end),
+	(nautilus_list_drag_data_received): make it reinitialize variables
+	when drop finished
+	* src/file-manager/fm-list-view.c: (fm_list_receive_dropped_icons):
+	make it handle drops on enpty spaces in list view.
+
 2000-11-03  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	Patched in from HEAD

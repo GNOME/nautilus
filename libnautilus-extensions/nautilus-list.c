@@ -2871,6 +2871,7 @@ nautilus_list_drag_end (GtkWidget *widget, GdkDragContext *context)
 	list = NAUTILUS_LIST (widget);
 	drag_info = list->details->drag_info;
 
+	drag_info->got_drop_data_type = FALSE;
 	nautilus_drag_destroy_selection_list (drag_info->selection_list);
 	drag_info->selection_list = NULL;
 
@@ -3135,6 +3136,7 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 	list = NAUTILUS_LIST (widget);
 	drag_info = list->details->drag_info;
 
+
 	drag_info->data_type = info;
 	drag_info->got_drop_data_type = TRUE;
 	drag_info->selection_data = data;
@@ -3198,6 +3200,7 @@ nautilus_list_drag_data_received (GtkWidget *widget, GdkDragContext *context,
 
 
 		drag_info->drop_occured = FALSE;
+		drag_info->got_drop_data_type = FALSE;
 	}
 
 }
