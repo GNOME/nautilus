@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 1.0.6\n"
-"POT-Creation-Date: 2002-05-20 09:29-0400\n"
+"POT-Creation-Date: 2002-05-27 13:08+0200\n"
 "PO-Revision-Date: 2001-05-25 13:35+0200\n"
 "Last-Translator: Unmantained\n"
 "Language-Team: Euskara\n"
@@ -175,7 +175,7 @@ msgstr "Hil Eduki-galtzailearen ikuspegia"
 #: components/loser/content/nautilus-content-loser-ui.xml.h:3
 #: components/loser/sidebar/nautilus-sidebar-loser-ui.xml.h:3
 #: components/sample/nautilus-sample-content-view-ui.xml.h:4
-#: src/nautilus-shell-ui.xml.h:65
+#: src/nautilus-shell-ui.xml.h:67
 msgid "_File"
 msgstr "_Fitxategia"
 
@@ -960,7 +960,7 @@ msgstr "Pausarazi"
 #: libnautilus-private/nautilus-file-operations.c:904
 #: libnautilus-private/nautilus-file-operations.c:919
 #: libnautilus-private/nautilus-file-operations.c:939
-#: src/nautilus-shell-ui.xml.h:44
+#: src/nautilus-shell-ui.xml.h:46
 msgid "Stop"
 msgstr "Gelditu"
 
@@ -2082,46 +2082,51 @@ msgid "MSDOS Volume"
 msgstr "MSDOS bolumena"
 
 #: libnautilus-private/filesystem-attributes.xml.h:14
+#, fuzzy
+msgid "MacOS Volume"
+msgstr "MSDOS bolumena"
+
+#: libnautilus-private/filesystem-attributes.xml.h:15
 msgid "Minix Volume"
 msgstr "Minix bolumena"
 
-#: libnautilus-private/filesystem-attributes.xml.h:15
+#: libnautilus-private/filesystem-attributes.xml.h:16
 msgid "NFS Network Volume"
 msgstr "NFS sareko bolumena"
 
-#: libnautilus-private/filesystem-attributes.xml.h:16
+#: libnautilus-private/filesystem-attributes.xml.h:17
 msgid "ReiserFS Linux Volume"
 msgstr "ReiserFS Linux bolumena"
 
-#: libnautilus-private/filesystem-attributes.xml.h:17
+#: libnautilus-private/filesystem-attributes.xml.h:18
 msgid "Solaris/BSD Volume"
 msgstr "Solaris/BSD bolumena"
 
-#: libnautilus-private/filesystem-attributes.xml.h:18
+#: libnautilus-private/filesystem-attributes.xml.h:19
 msgid "System Volume"
 msgstr "Sistema-bolumena"
 
-#: libnautilus-private/filesystem-attributes.xml.h:19
+#: libnautilus-private/filesystem-attributes.xml.h:20
 msgid "Windows NT Volume"
 msgstr "Windows NT bolumena"
 
-#: libnautilus-private/filesystem-attributes.xml.h:20
+#: libnautilus-private/filesystem-attributes.xml.h:21
 msgid "Windows Shared Volume"
 msgstr "Windows Shared bolumena"
 
-#: libnautilus-private/filesystem-attributes.xml.h:21
+#: libnautilus-private/filesystem-attributes.xml.h:22
 msgid "Windows VFAT Volume"
 msgstr "Windows VFAT bolumena"
 
-#: libnautilus-private/filesystem-attributes.xml.h:22
+#: libnautilus-private/filesystem-attributes.xml.h:23
 msgid "XFS Linux Volume"
 msgstr "XFS Linux bolumena"
 
-#: libnautilus-private/filesystem-attributes.xml.h:23
+#: libnautilus-private/filesystem-attributes.xml.h:24
 msgid "XIAFS Volume"
 msgstr "XIAFS bolumena"
 
-#: libnautilus-private/filesystem-attributes.xml.h:24
+#: libnautilus-private/filesystem-attributes.xml.h:25
 msgid "Xenix Volume"
 msgstr "Xenix bolumena"
 
@@ -2156,27 +2161,27 @@ msgstr "Autentifikazioa behar da"
 msgid "reset"
 msgstr "berrezarri"
 
-#: libnautilus-private/nautilus-dnd.c:548
+#: libnautilus-private/nautilus-dnd.c:564
 #, fuzzy
 msgid "_Move here"
 msgstr "Joan"
 
-#: libnautilus-private/nautilus-dnd.c:553
+#: libnautilus-private/nautilus-dnd.c:569
 #, fuzzy
 msgid "_Copy here"
 msgstr "_Kopiatu fitxategia"
 
-#: libnautilus-private/nautilus-dnd.c:558
+#: libnautilus-private/nautilus-dnd.c:574
 #, fuzzy
 msgid "_Link here"
 msgstr "Estekaren helburua:"
 
-#: libnautilus-private/nautilus-dnd.c:563
+#: libnautilus-private/nautilus-dnd.c:579
 #, fuzzy
 msgid "Set as _Background"
 msgstr "Berrezarri atzeko planoa"
 
-#: libnautilus-private/nautilus-dnd.c:572
+#: libnautilus-private/nautilus-dnd.c:588
 msgid "Cancel"
 msgstr "Utzi"
 
@@ -4353,7 +4358,7 @@ msgstr "Nautilus-ek ezin izan du hautatutako bolumena desmuntatu."
 msgid "ISO 9660 Volume"
 msgstr "ISO 9660 bolumena"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:1 src/nautilus-shell-ui.xml.h:2
+#: libnautilus/nautilus-clipboard-ui.xml.h:1 src/nautilus-shell-ui.xml.h:3
 msgid "C_lear Text"
 msgstr "_Garbitu testua"
 
@@ -4373,7 +4378,7 @@ msgstr "Hautatutako testua arbelean kopiatzen du"
 msgid "Cut Text"
 msgstr "Ebaki testua"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:12
+#: libnautilus/nautilus-clipboard-ui.xml.h:6 src/nautilus-shell-ui.xml.h:13
 msgid "Cut _Text"
 msgstr "Ebaki _testua"
 
@@ -4397,7 +4402,7 @@ msgstr "Hautatutako testua kentzen du arbelean ipini gabe"
 msgid "Select All"
 msgstr "Hautatu dena"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:39
+#: libnautilus/nautilus-clipboard-ui.xml.h:12 src/nautilus-shell-ui.xml.h:41
 msgid "Select _All"
 msgstr "Hautatu _dena"
 
@@ -4405,11 +4410,11 @@ msgstr "Hautatu _dena"
 msgid "Select all the text in a text field"
 msgstr "Testu-eremuko testu osoa hautatzen du"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:14 src/nautilus-shell-ui.xml.h:62
+#: libnautilus/nautilus-clipboard-ui.xml.h:14 src/nautilus-shell-ui.xml.h:64
 msgid "_Copy Text"
 msgstr "_Kopiatu testua"
 
-#: libnautilus/nautilus-clipboard-ui.xml.h:15 src/nautilus-shell-ui.xml.h:73
+#: libnautilus/nautilus-clipboard-ui.xml.h:15 src/nautilus-shell-ui.xml.h:75
 msgid "_Paste Text"
 msgstr "_Itsatsi testua"
 
@@ -4522,11 +4527,11 @@ msgstr "Ikusi ikono gisa"
 msgid "View as List"
 msgstr "Ikusi zerrenda gisa"
 
-#: src/file-manager/fm-desktop-icon-view.c:717
+#: src/file-manager/fm-desktop-icon-view.c:723
 msgid "Background"
 msgstr "Atzeko planoa"
 
-#: src/file-manager/fm-desktop-icon-view.c:883
+#: src/file-manager/fm-desktop-icon-view.c:890
 #, c-format
 msgid "Error executing utility program '%s': %s"
 msgstr ""
@@ -4539,16 +4544,16 @@ msgstr ""
 #. * match the user name string passed by the C code, but not
 #. * put the user name in the final string.
 #.
-#: src/file-manager/fm-desktop-icon-view.c:1117
+#: src/file-manager/fm-desktop-icon-view.c:1124
 #, c-format
 msgid "%s's Home"
 msgstr "%s - etxea"
 
-#: src/file-manager/fm-desktop-icon-view.c:1310
+#: src/file-manager/fm-desktop-icon-view.c:1317
 msgid "Empty Trash..."
 msgstr "Hustu zakarrontzia..."
 
-#: src/file-manager/fm-desktop-icon-view.c:1312
+#: src/file-manager/fm-desktop-icon-view.c:1319
 #: src/file-manager/nautilus-desktop-icon-view-ui.xml.h:5
 #: src/file-manager/nautilus-directory-view-ui.xml.h:15
 msgid "Empty Trash"
@@ -4579,68 +4584,68 @@ msgid "Delete?"
 msgstr "Ezabatu?"
 
 #: src/file-manager/fm-directory-view.c:797
-#: src/file-manager/fm-directory-view.c:2957
-#: src/file-manager/fm-directory-view.c:2999
+#: src/file-manager/fm-directory-view.c:2978
+#: src/file-manager/fm-directory-view.c:3020
 #: src/file-manager/nautilus-directory-view-ui.xml.h:10
 msgid "Delete"
 msgstr "Ezabatu"
 
-#: src/file-manager/fm-directory-view.c:1424
+#: src/file-manager/fm-directory-view.c:1425
 #, c-format
 msgid "\"%s\" selected"
 msgstr "\"%s\" hautatuta"
 
-#: src/file-manager/fm-directory-view.c:1426
+#: src/file-manager/fm-directory-view.c:1427
 msgid "1 folder selected"
 msgstr "1 karpeta hautatuta"
 
-#: src/file-manager/fm-directory-view.c:1429
+#: src/file-manager/fm-directory-view.c:1430
 #, c-format
 msgid "%d folders selected"
 msgstr "%d karpeta hautatuta"
 
-#: src/file-manager/fm-directory-view.c:1436
+#: src/file-manager/fm-directory-view.c:1437
 msgid " (containing 0 items)"
 msgstr " (0 elementu ditu)"
 
-#: src/file-manager/fm-directory-view.c:1438
+#: src/file-manager/fm-directory-view.c:1439
 msgid " (containing 1 item)"
 msgstr " (elementu bat du)"
 
-#: src/file-manager/fm-directory-view.c:1440
+#: src/file-manager/fm-directory-view.c:1441
 #, c-format
 msgid " (containing %d items)"
 msgstr " (%d elementu ditu)"
 
-#: src/file-manager/fm-directory-view.c:1447
+#: src/file-manager/fm-directory-view.c:1448
 msgid " (containing a total of 0 items)"
 msgstr " (guztira 0 elementu ditu)"
 
-#: src/file-manager/fm-directory-view.c:1449
+#: src/file-manager/fm-directory-view.c:1450
 msgid " (containing a total of 1 item)"
 msgstr " (guztira elementu bat du)"
 
-#: src/file-manager/fm-directory-view.c:1451
+#: src/file-manager/fm-directory-view.c:1452
 #, c-format
 msgid " (containing a total of %d items)"
 msgstr " (guztira %d elementu ditu)"
 
-#: src/file-manager/fm-directory-view.c:1464
+#: src/file-manager/fm-directory-view.c:1465
 #, c-format
 msgid "\"%s\" selected (%s)"
 msgstr "\"%s\" hautatuta (%s)"
 
-#: src/file-manager/fm-directory-view.c:1468
+#: src/file-manager/fm-directory-view.c:1469
 #, c-format
 msgid "%d items selected (%s)"
 msgstr "%d elementu hautatuta (%s)"
 
-#: src/file-manager/fm-directory-view.c:1475
+#: src/file-manager/fm-directory-view.c:1476
 #, c-format
 msgid "1 other item selected (%s)"
 msgstr "beste elementu bat hautatuta (%s)"
 
-#: src/file-manager/fm-directory-view.c:1478
+#: src/file-manager/fm-directory-view.c:1479
 #, c-format
 msgid "%d other items selected (%s)"
 msgstr "beste %d elementu hautatuta (%s)"
@@ -4652,7 +4657,7 @@ msgstr "beste %d elementu hautatuta (%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/file-manager/fm-directory-view.c:1507
+#: src/file-manager/fm-directory-view.c:1508
 #, c-format
 msgid "%s%s, %s"
 msgstr "%s%s, %s"
@@ -4661,7 +4666,7 @@ msgstr "%s%s, %s"
 #. * to the way files are collected in batches. So you can't assume that
 #. * no more than the constant limit are displayed.
 #.
-#: src/file-manager/fm-directory-view.c:1632
+#: src/file-manager/fm-directory-view.c:1633
 #, c-format
 msgid ""
 "The folder \"%s\" contains more files than Nautilus can handle. Some files "
@@ -4670,17 +4675,17 @@ msgstr ""
 "\"%s\" karpetak Nautilus-ek maneiatzeko baino fitxategi gehiago ditu.  "
 "Fitxategietako batzuk ez dira bistaratuko. "
 
-#: src/file-manager/fm-directory-view.c:1639
+#: src/file-manager/fm-directory-view.c:1640
 msgid "Too Many Files"
 msgstr "Fitxategi gehiegi"
 
-#: src/file-manager/fm-directory-view.c:2940
+#: src/file-manager/fm-directory-view.c:2961
 #, c-format
 msgid ""
 "\"%s\" cannot be moved to the Trash. Do you want to delete it immediately?"
 msgstr "Ezin da \"%s\" Zakarrontzira eraman.Berehala ezabatu nahi duzu?"
 
-#: src/file-manager/fm-directory-view.c:2945
+#: src/file-manager/fm-directory-view.c:2966
 #, c-format
 msgid ""
 "The %d selected items cannot be moved to the Trash. Do you want to delete "
@@ -4689,7 +4694,7 @@ msgstr ""
 "Hautatutako %d elementuak ezin dira Zakarrontzira eraman.  Berehala ezabatu "
 "nahi dituzu?"
 
-#: src/file-manager/fm-directory-view.c:2949
+#: src/file-manager/fm-directory-view.c:2970
 #, c-format
 msgid ""
 "%d of the selected items cannot be moved to the Trash. Do you want to delete "
@@ -4698,16 +4703,16 @@ msgstr ""
 "Hautatutako elementuetako %d ezin da Zakarrontzira eraman.  %d elementu "
 "horiek berehala ezabatu nahi dituzu?"
 
-#: src/file-manager/fm-directory-view.c:2957
+#: src/file-manager/fm-directory-view.c:2978
 msgid "Delete Immediately?"
 msgstr "Berehala ezabatu?"
 
-#: src/file-manager/fm-directory-view.c:2989
+#: src/file-manager/fm-directory-view.c:3010
 #, c-format
 msgid "Are you sure you want to permanently delete \"%s\" from the Trash?"
 msgstr "Ziur zaude \"%s\" Zakarrontzitik behin betiko ezabatu nahi duzula?"
 
-#: src/file-manager/fm-directory-view.c:2993
+#: src/file-manager/fm-directory-view.c:3014
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %d selected items from the "
@@ -4716,40 +4721,40 @@ msgstr ""
 "Ziur zaude hautatutako %d elementuak Zakarrontzitik betiko ezabatu nahi "
 "dituzula?"
 
-#: src/file-manager/fm-directory-view.c:2999
+#: src/file-manager/fm-directory-view.c:3020
 msgid "Delete From Trash?"
 msgstr "Zakarrontzitik ezabatu?"
 
-#: src/file-manager/fm-directory-view.c:3319
-#: src/file-manager/fm-directory-view.c:3361
+#: src/file-manager/fm-directory-view.c:3340
+#: src/file-manager/fm-directory-view.c:3382
 #, c-format
 msgid "Use \"%s\" to open the selected item"
 msgstr "Erabili \"%s\" hautatutako elementua irekitzeko"
 
-#: src/file-manager/fm-directory-view.c:3443
+#: src/file-manager/fm-directory-view.c:3464
 #: src/file-manager/nautilus-directory-view-ui.xml.h:32
 msgid "Other _Application..."
 msgstr "Beste _Aplikazio bat..."
 
-#: src/file-manager/fm-directory-view.c:3443
+#: src/file-manager/fm-directory-view.c:3464
 msgid "An _Application..."
 msgstr "_Aplikazio bat..."
 
-#: src/file-manager/fm-directory-view.c:3449
+#: src/file-manager/fm-directory-view.c:3470
 #: src/file-manager/nautilus-directory-view-ui.xml.h:33
 msgid "Other _Viewer..."
 msgstr "Beste _Ikustaile bat..."
 
-#: src/file-manager/fm-directory-view.c:3449
+#: src/file-manager/fm-directory-view.c:3470
 msgid "A _Viewer..."
 msgstr "_Ikustaile bat..."
 
-#: src/file-manager/fm-directory-view.c:3667
+#: src/file-manager/fm-directory-view.c:3688
 #, c-format
 msgid "Run \"%s\" on any selected items"
 msgstr "Exekutatu \"%s\" hautatutako elementuetan"
 
-#: src/file-manager/fm-directory-view.c:3875
+#: src/file-manager/fm-directory-view.c:3896
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script with any selected items "
@@ -4759,11 +4764,11 @@ msgstr ""
 "menuan.  Menuko script bat aukeratzen baduzu, script hori exekutatuko da "
 "hautatutako edozein elementu sarrera moduan erabilita. "
 
-#: src/file-manager/fm-directory-view.c:3878
+#: src/file-manager/fm-directory-view.c:3899
 msgid "About Scripts"
 msgstr "Script-ei buruz"
 
-#: src/file-manager/fm-directory-view.c:3879
+#: src/file-manager/fm-directory-view.c:3900
 msgid ""
 "All executable files in this folder will appear in the Scripts menu. "
 "Choosing a script from the menu will run that script.\n"
@@ -4805,19 +4810,19 @@ msgstr ""
 "\n"
 "NAUTILUS_SCRIPT_WINDOW_GEOMETRY: uneko leihoaren kokalekua eta tamaina"
 
-#: src/file-manager/fm-directory-view.c:3991
+#: src/file-manager/fm-directory-view.c:4012
 #, c-format
 msgid "\"%s\" will be moved if you select the Paste Files command"
 msgstr ""
 "'Itsatsi fitxategiak' komandoa hautatzen baduzu, \"%s\" lekuz aldatuko da"
 
-#: src/file-manager/fm-directory-view.c:3995
+#: src/file-manager/fm-directory-view.c:4016
 #, c-format
 msgid "\"%s\" will be copied if you select the Paste Files command"
 msgstr ""
 "'Itsatsi fitxategiak' komandoa hautatzen baduzu, \"%s\" kopiatu egingo da"
 
-#: src/file-manager/fm-directory-view.c:4002
+#: src/file-manager/fm-directory-view.c:4023
 #, c-format
 msgid ""
 "The %d selected items will be moved if you select the Paste Files command"
@@ -4825,7 +4830,7 @@ msgstr ""
 "'Itsatsi fitxategiak' komandoa hautatzen baduzu, hautatutako %d elementuak "
 "lekuz aldatuko dira"
 
-#: src/file-manager/fm-directory-view.c:4006
+#: src/file-manager/fm-directory-view.c:4027
 #, c-format
 msgid ""
 "The %d selected items will be copied if you select the Paste Files command"
@@ -4833,102 +4838,102 @@ msgstr ""
 "'Itsatsi fitxategiak' komandoa hautatzen baduzu, hautatutako %d  elementuak "
 "kopiatu egingo dira"
 
-#: src/file-manager/fm-directory-view.c:4091
+#: src/file-manager/fm-directory-view.c:4112
 msgid "There is nothing on the clipboard to paste."
 msgstr "Arbelean ez dago itsasteko ezer."
 
-#: src/file-manager/fm-directory-view.c:4268
+#: src/file-manager/fm-directory-view.c:4289
 msgid "Open _in This Window"
 msgstr "Ireki _leiho honetan"
 
-#: src/file-manager/fm-directory-view.c:4271
+#: src/file-manager/fm-directory-view.c:4292
 #: src/file-manager/nautilus-directory-view-ui.xml.h:26
 msgid "Open _in New Window"
 msgstr "Ireki _leiho berrian"
 
-#: src/file-manager/fm-directory-view.c:4273
+#: src/file-manager/fm-directory-view.c:4294
 #, c-format
 msgid "Open _in %d New Windows"
 msgstr "Ireki %d _leiho berritan"
 
-#: src/file-manager/fm-directory-view.c:4291
+#: src/file-manager/fm-directory-view.c:4312
 msgid "Delete from _Trash..."
 msgstr "Ezabatu _Zakarrontzitik..."
 
-#: src/file-manager/fm-directory-view.c:4291
+#: src/file-manager/fm-directory-view.c:4312
 msgid "Delete from _Trash"
 msgstr "Ezabatu _Zakarrontzitik"
 
-#: src/file-manager/fm-directory-view.c:4293
+#: src/file-manager/fm-directory-view.c:4314
 msgid "Delete all selected items permanently"
 msgstr "Hautatutako elementu guztiak behin betiko ezabatzen ditu"
 
-#: src/file-manager/fm-directory-view.c:4296
+#: src/file-manager/fm-directory-view.c:4317
 #: src/file-manager/nautilus-directory-view-ui.xml.h:20
 msgid "Move to _Trash"
 msgstr "Eraman _Zakarrontzira"
 
-#: src/file-manager/fm-directory-view.c:4298
+#: src/file-manager/fm-directory-view.c:4319
 #: src/file-manager/nautilus-directory-view-ui.xml.h:17
 msgid "Move each selected item to the Trash"
 msgstr "Hautatutako elementu guztiak Zakarrontzira eramaten ditu"
 
-#: src/file-manager/fm-directory-view.c:4325
+#: src/file-manager/fm-directory-view.c:4346
 msgid "De_lete..."
 msgstr "E_zabatu..."
 
-#: src/file-manager/fm-directory-view.c:4325
+#: src/file-manager/fm-directory-view.c:4346
 #: src/file-manager/nautilus-directory-view-ui.xml.h:9
 msgid "De_lete"
 msgstr "Eza_batu"
 
-#: src/file-manager/fm-directory-view.c:4346
+#: src/file-manager/fm-directory-view.c:4367
 msgid "Make _Links"
 msgstr "Sortu _Estekak"
 
-#: src/file-manager/fm-directory-view.c:4347
+#: src/file-manager/fm-directory-view.c:4368
 msgid "Make _Link"
 msgstr "Sortu _Esteka"
 
-#: src/file-manager/fm-directory-view.c:4362 src/nautilus-sidebar.c:1501
+#: src/file-manager/fm-directory-view.c:4383 src/nautilus-sidebar.c:1501
 msgid "_Empty Trash..."
 msgstr "_Hustu zakarrontzia..."
 
-#: src/file-manager/fm-directory-view.c:4363
+#: src/file-manager/fm-directory-view.c:4384
 #: src/file-manager/nautilus-directory-view-ui.xml.h:58
 #: src/nautilus-sidebar.c:1502
 msgid "_Empty Trash"
 msgstr "_Hustu zakarrontzia"
 
-#: src/file-manager/fm-directory-view.c:4374
+#: src/file-manager/fm-directory-view.c:4395
 #, fuzzy
 msgid "R_emove Custom Icons"
 msgstr "Kendu ikono pertsonalizatua"
 
-#: src/file-manager/fm-directory-view.c:4375
+#: src/file-manager/fm-directory-view.c:4396
 #, fuzzy
 msgid "R_emove Custom Icon"
 msgstr "Kendu ikono pertsonalizatua"
 
-#: src/file-manager/fm-directory-view.c:4389
+#: src/file-manager/fm-directory-view.c:4410
 msgid "Cu_t File"
 msgstr "Eb_aki fitxategia"
 
-#: src/file-manager/fm-directory-view.c:4390
+#: src/file-manager/fm-directory-view.c:4411
 #: src/file-manager/nautilus-directory-view-ui.xml.h:7
 msgid "Cu_t Files"
 msgstr "Eb_aki fitxategiak"
 
-#: src/file-manager/fm-directory-view.c:4400
+#: src/file-manager/fm-directory-view.c:4421
 msgid "_Copy File"
 msgstr "_Kopiatu fitxategia"
 
-#: src/file-manager/fm-directory-view.c:4401
+#: src/file-manager/fm-directory-view.c:4422
 #: src/file-manager/nautilus-directory-view-ui.xml.h:56
 msgid "_Copy Files"
 msgstr "_Kopiatu fitxategiak"
 
-#: src/file-manager/fm-directory-view.c:4571
+#: src/file-manager/fm-directory-view.c:4592
 msgid ""
 "This link can't be used, because it has no target. Do you want to put this "
 "link in the Trash?"
@@ -4936,7 +4941,7 @@ msgstr ""
 "Esteka hori ezin da erabili, helbururik ez duelako.  Zakarrontzira eraman "
 "nahi duzu?"
 
-#: src/file-manager/fm-directory-view.c:4574
+#: src/file-manager/fm-directory-view.c:4595
 #, c-format
 msgid ""
 "This link can't be used, because its target \"%s\" doesn't exist. Do you "
@@ -4945,15 +4950,15 @@ msgstr ""
 "Esteka hori ezin da erabili, bere helburua (\"%s\") ez dagoelako. "
 "Zakarrontzira eraman nahi duzu?"
 
-#: src/file-manager/fm-directory-view.c:4580
+#: src/file-manager/fm-directory-view.c:4601
 msgid "Broken Link"
 msgstr "Esteka hautsita"
 
-#: src/file-manager/fm-directory-view.c:4580
+#: src/file-manager/fm-directory-view.c:4601
 msgid "Throw Away"
 msgstr "Bota"
 
-#: src/file-manager/fm-directory-view.c:4637
+#: src/file-manager/fm-directory-view.c:4658
 #, c-format
 msgid ""
 "\"%s\" is an executable text file. Do you want to run it, or display its "
@@ -4962,19 +4967,19 @@ msgstr ""
 "\"%s\" testu-fitxategi exekutagarria da.  Exekutatu nahi duzu edo bere "
 "edukia bistaratu?"
 
-#: src/file-manager/fm-directory-view.c:4643
+#: src/file-manager/fm-directory-view.c:4664
 msgid "Run or Display?"
 msgstr "Exekutatu edo Bistaratu?"
 
-#: src/file-manager/fm-directory-view.c:4644
+#: src/file-manager/fm-directory-view.c:4665
 msgid "Run"
 msgstr "Exekutatu"
 
-#: src/file-manager/fm-directory-view.c:4645
+#: src/file-manager/fm-directory-view.c:4666
 msgid "Display"
 msgstr "Bistaratu"
 
-#: src/file-manager/fm-directory-view.c:4700
+#: src/file-manager/fm-directory-view.c:4725
 msgid ""
 "Sorry, but you can't execute commands from a remote site due to security "
 "considerations."
@@ -4982,16 +4987,16 @@ msgstr ""
 "Ezin duzu urruneko gune batetik komandorik exekutatu segurtasun-neurriak "
 "direla eta. "
 
-#: src/file-manager/fm-directory-view.c:4702
+#: src/file-manager/fm-directory-view.c:4727
 msgid "Can't execute remote links"
 msgstr "Ezin da urruneko estekarik exekutatu"
 
-#: src/file-manager/fm-directory-view.c:4846
+#: src/file-manager/fm-directory-view.c:4873
 #, c-format
 msgid "Opening \"%s\""
 msgstr "\"%s\" irekitzen"
 
-#: src/file-manager/fm-directory-view.c:4852
+#: src/file-manager/fm-directory-view.c:4879
 msgid "Cancel Open?"
 msgstr "Irekitzea bertan behera utzi?"
 
@@ -5190,35 +5195,35 @@ msgstr "Berrezarri iko_noaren jatorrizko tamaina"
 msgid "pointing at \"%s\""
 msgstr "\"%s\" seinalatzen"
 
-#: src/file-manager/fm-icon-view.c:2164
+#: src/file-manager/fm-icon-view.c:2165
 msgid "Drag and drop is only supported to local file systems."
 msgstr ""
 "Arrastatu eta jaregitea fitxategi-sistema lokalekin bakarrik egin daiteke."
 
-#: src/file-manager/fm-icon-view.c:2165 src/file-manager/fm-icon-view.c:2184
+#: src/file-manager/fm-icon-view.c:2166 src/file-manager/fm-icon-view.c:2185
 msgid "Drag and Drop error"
 msgstr "Errorea arrastatu eta jaregitean"
 
-#: src/file-manager/fm-icon-view.c:2183
+#: src/file-manager/fm-icon-view.c:2184
 msgid "An invalid drag type was used."
 msgstr "Arrastatze-mota baliogabea erabili da."
 
-#: src/file-manager/fm-list-view.c:333
+#: src/file-manager/fm-list-view.c:324
 #, fuzzy
 msgid "File name"
 msgstr "Fitxategi-jabea:"
 
-#: src/file-manager/fm-list-view.c:355
+#: src/file-manager/fm-list-view.c:346
 #: src/file-manager/fm-search-list-view.c:512
 msgid "Size"
 msgstr "Tamaina"
 
-#: src/file-manager/fm-list-view.c:366
+#: src/file-manager/fm-list-view.c:357
 #: src/file-manager/fm-search-list-view.c:518
 msgid "Type"
 msgstr "Mota"
 
-#: src/file-manager/fm-list-view.c:377
+#: src/file-manager/fm-list-view.c:368
 #: src/file-manager/fm-search-list-view.c:524
 msgid "Date Modified"
 msgstr "Aldatze-data"
@@ -6573,7 +6578,7 @@ msgstr "Bilaketa-aukerak"
 msgid "search type to do by default"
 msgstr "bilaketa-mota lehenetsia"
 
-#: src/nautilus-preferences-dialog.c:237 src/nautilus-shell-ui.xml.h:29
+#: src/nautilus-preferences-dialog.c:237 src/nautilus-shell-ui.xml.h:31
 msgid "Home"
 msgstr "Etxera"
 
@@ -7061,57 +7066,61 @@ msgstr "[Fitxategi-jabea:] ez da [root-a]"
 msgid "Add a bookmark for the current location to this menu"
 msgstr "Menu honetan uneko helbidearen laster-marka gehitzen du"
 
-#: src/nautilus-shell-ui.xml.h:3
+#: src/nautilus-shell-ui.xml.h:2
+msgid "Back"
+msgstr "Atzera"
+
+#: src/nautilus-shell-ui.xml.h:4
 msgid "Change the visibility of this window's location bar"
 msgstr "Leiho honetako helbide-barra erakusten/ezkutatzen du"
 
-#: src/nautilus-shell-ui.xml.h:4
+#: src/nautilus-shell-ui.xml.h:5
 msgid "Change the visibility of this window's sidebar"
 msgstr "Leiho honetako alboko barra erakusten/ezkutatzen du"
 
-#: src/nautilus-shell-ui.xml.h:5
+#: src/nautilus-shell-ui.xml.h:6
 #, fuzzy
 msgid "Change the visibility of this window's statusbar"
 msgstr "Leiho honetako egoera-barra erakusten/ezkutatzen du"
 
-#: src/nautilus-shell-ui.xml.h:6
+#: src/nautilus-shell-ui.xml.h:7
 msgid "Change the visibility of this window's toolbar"
 msgstr "Leiho honetako tresna-barra erakusten/ezkutatzen du"
 
-#: src/nautilus-shell-ui.xml.h:7
+#: src/nautilus-shell-ui.xml.h:8
 msgid "Choose a view for the current location, or modify the set of views"
 msgstr "Aukeratu uneko helbidearen ikuspegia, edo aldatu ikuspegi-multzoa"
 
-#: src/nautilus-shell-ui.xml.h:8
+#: src/nautilus-shell-ui.xml.h:9
 msgid "Clear contents of Go menu and Back/Forward lists"
 msgstr "Joan menuaren eta Atzera/Aurrera zerrenden edukia garbitzen du"
 
-#: src/nautilus-shell-ui.xml.h:9
+#: src/nautilus-shell-ui.xml.h:10
 msgid "Close _All Windows"
 msgstr "Itxi _leiho guztiak"
 
-#: src/nautilus-shell-ui.xml.h:10
+#: src/nautilus-shell-ui.xml.h:11
 msgid "Close all Nautilus windows"
 msgstr "Nautilus-en leiho guztiak ixten ditu"
 
-#: src/nautilus-shell-ui.xml.h:11
+#: src/nautilus-shell-ui.xml.h:12
 msgid "Close this window"
 msgstr "Leiho hau ixten du"
 
-#: src/nautilus-shell-ui.xml.h:13
+#: src/nautilus-shell-ui.xml.h:14
 #, fuzzy
 msgid "Display Nautilus help"
 msgstr "Nautilus shell"
 
-#: src/nautilus-shell-ui.xml.h:14
+#: src/nautilus-shell-ui.xml.h:15
 msgid "Display a window that allows editing the bookmarks in this menu"
 msgstr "Menu honetako laster-markak editatzeko leihoa bistaratzen du"
 
-#: src/nautilus-shell-ui.xml.h:15
+#: src/nautilus-shell-ui.xml.h:16
 msgid "Display credits for the creators of Nautilus"
 msgstr "Nautilus-en sortzaileen kredituak bistaratzen ditu"
 
-#: src/nautilus-shell-ui.xml.h:16
+#: src/nautilus-shell-ui.xml.h:17
 msgid ""
 "Display patterns, colors, and emblems that can be used to customize "
 "appearance"
@@ -7119,261 +7128,265 @@ msgstr ""
 "Itxura pertsonalizatzeko erabil daitezkeen ereduak, koloreak eta ikurrak "
 "bistaratzen ditu"
 
-#: src/nautilus-shell-ui.xml.h:17
+#: src/nautilus-shell-ui.xml.h:18
 msgid "Display the latest contents of the current location"
 msgstr "Uneko helbidearen azken edukia bistaratzen du"
 
-#: src/nautilus-shell-ui.xml.h:18
+#: src/nautilus-shell-ui.xml.h:19
 #, fuzzy
 msgid "Edit Nautilus preferences"
 msgstr "Nautilus-en hainbat hobespen editatzen ditu"
 
-#: src/nautilus-shell-ui.xml.h:19
+#: src/nautilus-shell-ui.xml.h:20
 msgid "Find"
 msgstr "Bilatu"
 
-#: src/nautilus-shell-ui.xml.h:20
+#: src/nautilus-shell-ui.xml.h:21
+msgid "Forward"
+msgstr "Aurrera"
+
+#: src/nautilus-shell-ui.xml.h:22
 msgid "Go to the Start Here folder"
 msgstr "'Hasi hemen' karpetara joaten da"
 
-#: src/nautilus-shell-ui.xml.h:21
+#: src/nautilus-shell-ui.xml.h:23
 msgid "Go to the home location"
 msgstr "Etxeko helbidera joaten da"
 
-#: src/nautilus-shell-ui.xml.h:22 src/nautilus-window-toolbars.c:585
+#: src/nautilus-shell-ui.xml.h:24
 msgid "Go to the next visited location"
 msgstr "Bisitatutako hurrengo helbidera joaten da"
 
-#: src/nautilus-shell-ui.xml.h:23 src/nautilus-window-toolbars.c:582
+#: src/nautilus-shell-ui.xml.h:25
 msgid "Go to the previous visited location"
 msgstr "Bisitatutako aurreko helbidera joaten da"
 
-#: src/nautilus-shell-ui.xml.h:24
+#: src/nautilus-shell-ui.xml.h:26
 msgid "Go up one level"
 msgstr ""
 
-#: src/nautilus-shell-ui.xml.h:25 src/nautilus-window-menus.c:472
+#: src/nautilus-shell-ui.xml.h:27 src/nautilus-window-menus.c:472
 msgid "Hide Location _Bar"
 msgstr "Ezkutatu helbide-_barra"
 
-#: src/nautilus-shell-ui.xml.h:26
+#: src/nautilus-shell-ui.xml.h:28
 #, fuzzy
 msgid "Hide St_atusbar"
 msgstr "Ezkutatu _egoera-barra"
 
-#: src/nautilus-shell-ui.xml.h:27 src/nautilus-window-menus.c:460
+#: src/nautilus-shell-ui.xml.h:29 src/nautilus-window-menus.c:460
 msgid "Hide _Sidebar"
 msgstr "Ezkutatu _alboko barra"
 
-#: src/nautilus-shell-ui.xml.h:28 src/nautilus-window-menus.c:466
+#: src/nautilus-shell-ui.xml.h:30 src/nautilus-window-menus.c:466
 msgid "Hide _Toolbar"
 msgstr "Ezkutatu t_resna-barra"
 
-#: src/nautilus-shell-ui.xml.h:30
+#: src/nautilus-shell-ui.xml.h:32
 msgid "New Window"
 msgstr "Leiho berria"
 
-#: src/nautilus-shell-ui.xml.h:31
+#: src/nautilus-shell-ui.xml.h:33
 msgid "New _Window"
 msgstr "Leiho _berria"
 
-#: src/nautilus-shell-ui.xml.h:32
+#: src/nautilus-shell-ui.xml.h:34
 msgid "Normal Size"
 msgstr "Tamaina normala"
 
-#: src/nautilus-shell-ui.xml.h:33
+#: src/nautilus-shell-ui.xml.h:35
 msgid "Open another Nautilus window for the displayed location"
 msgstr "Bistaratutako helbidearentzat beste Nautilus leiho bat irekitzen du"
 
-#: src/nautilus-shell-ui.xml.h:34
+#: src/nautilus-shell-ui.xml.h:36
 #, fuzzy
 msgid "P_references"
 msgstr "Hobespenak"
 
-#: src/nautilus-shell-ui.xml.h:35
+#: src/nautilus-shell-ui.xml.h:37
 #, fuzzy
 msgid "Reload"
 msgstr "Irakurri"
 
-#: src/nautilus-shell-ui.xml.h:36
+#: src/nautilus-shell-ui.xml.h:38
 msgid "Report Profiling"
 msgstr "Profilen txostena"
 
-#: src/nautilus-shell-ui.xml.h:37
+#: src/nautilus-shell-ui.xml.h:39
 msgid "Reset Profiling"
 msgstr "Berrezarri profilak"
 
-#: src/nautilus-shell-ui.xml.h:38
+#: src/nautilus-shell-ui.xml.h:40
 msgid "Search this computer for files"
 msgstr "Bilatu fitxategiak ordenagailu honetan"
 
-#: src/nautilus-shell-ui.xml.h:40
+#: src/nautilus-shell-ui.xml.h:42
 msgid "Show the contents at the normal size"
 msgstr "Edukia tamaina normalean erakusten du"
 
-#: src/nautilus-shell-ui.xml.h:41 src/nautilus-zoom-control.c:108
+#: src/nautilus-shell-ui.xml.h:43 src/nautilus-zoom-control.c:108
 msgid "Show the contents in less detail"
 msgstr "Edukia xehetasun gutxiagorekin erakusten du"
 
-#: src/nautilus-shell-ui.xml.h:42 src/nautilus-zoom-control.c:107
+#: src/nautilus-shell-ui.xml.h:44 src/nautilus-zoom-control.c:107
 msgid "Show the contents in more detail"
 msgstr "Edukiak xehetasun handiagoarekin erakusten du"
 
-#: src/nautilus-shell-ui.xml.h:43
+#: src/nautilus-shell-ui.xml.h:45
 msgid "Start Profiling"
 msgstr "Abiarazi profilak"
 
-#: src/nautilus-shell-ui.xml.h:45
+#: src/nautilus-shell-ui.xml.h:47
 msgid "Stop Profiling"
 msgstr "Geldiarazi profilak"
 
-#: src/nautilus-shell-ui.xml.h:46
+#: src/nautilus-shell-ui.xml.h:48
 msgid "Stop loading this location"
 msgstr "Utzi helbide hau kargatzeari"
 
-#: src/nautilus-shell-ui.xml.h:47
+#: src/nautilus-shell-ui.xml.h:49
 msgid "Undo the last text change"
 msgstr "Desegin azken testu-aldaketa"
 
-#: src/nautilus-shell-ui.xml.h:48
+#: src/nautilus-shell-ui.xml.h:50
 msgid "Up"
 msgstr "Gora"
 
 #. Add "View as..." extra bonus choice.
-#: src/nautilus-shell-ui.xml.h:49 src/nautilus-window.c:516
-#: src/nautilus-window.c:1354
+#: src/nautilus-shell-ui.xml.h:51 src/nautilus-window.c:522
+#: src/nautilus-window.c:1359
 msgid "View as..."
 msgstr "Ikusi honela..."
 
-#: src/nautilus-shell-ui.xml.h:50 src/nautilus-zoom-control.c:95
+#: src/nautilus-shell-ui.xml.h:52 src/nautilus-zoom-control.c:95
 msgid "Zoom In"
 msgstr "Zooma handiagotu"
 
-#: src/nautilus-shell-ui.xml.h:51 src/nautilus-zoom-control.c:96
+#: src/nautilus-shell-ui.xml.h:53 src/nautilus-zoom-control.c:96
 msgid "Zoom Out"
 msgstr "Zooma txikiagotu"
 
-#: src/nautilus-shell-ui.xml.h:52
+#: src/nautilus-shell-ui.xml.h:54
 msgid "Zoom _In"
 msgstr "Zooma ha_ndiagotu"
 
-#: src/nautilus-shell-ui.xml.h:53
+#: src/nautilus-shell-ui.xml.h:55
 msgid "Zoom _Out"
 msgstr "Zooma t_xikiagotu"
 
-#: src/nautilus-shell-ui.xml.h:54
+#: src/nautilus-shell-ui.xml.h:56
 #, fuzzy
 msgid "_About Nautilus"
 msgstr "Nautilus-i buruz"
 
-#: src/nautilus-shell-ui.xml.h:55
+#: src/nautilus-shell-ui.xml.h:57
 msgid "_Add Bookmark"
 msgstr "_Gehitu laster-marka"
 
-#: src/nautilus-shell-ui.xml.h:56
+#: src/nautilus-shell-ui.xml.h:58
 msgid "_Back"
 msgstr "_Atzera"
 
-#: src/nautilus-shell-ui.xml.h:57
+#: src/nautilus-shell-ui.xml.h:59
 msgid "_Backgrounds and Emblems..."
 msgstr "_Atzeko planoak eta ikurrak..."
 
-#: src/nautilus-shell-ui.xml.h:58
+#: src/nautilus-shell-ui.xml.h:60
 msgid "_Bookmarks"
 msgstr "Laster-_markak"
 
-#: src/nautilus-shell-ui.xml.h:59
+#: src/nautilus-shell-ui.xml.h:61
 #, fuzzy
 msgid "_Clear History"
 msgstr "Aha_ztu historia"
 
-#: src/nautilus-shell-ui.xml.h:60
+#: src/nautilus-shell-ui.xml.h:62
 msgid "_Close Window"
 msgstr "_Itxi leihoa"
 
-#: src/nautilus-shell-ui.xml.h:61
+#: src/nautilus-shell-ui.xml.h:63
 msgid "_Contents"
 msgstr "_Edukia"
 
-#: src/nautilus-shell-ui.xml.h:63
+#: src/nautilus-shell-ui.xml.h:65
 msgid "_Edit"
 msgstr "_Edizioa"
 
-#: src/nautilus-shell-ui.xml.h:64
+#: src/nautilus-shell-ui.xml.h:66
 #, fuzzy
 msgid "_Edit Bookmarks"
 msgstr "_Editatu laster-markak..."
 
-#: src/nautilus-shell-ui.xml.h:66
+#: src/nautilus-shell-ui.xml.h:68
 msgid "_Find"
 msgstr "Bila_tu"
 
-#: src/nautilus-shell-ui.xml.h:67
+#: src/nautilus-shell-ui.xml.h:69
 msgid "_Forward"
 msgstr "A_urrera"
 
-#: src/nautilus-shell-ui.xml.h:68
+#: src/nautilus-shell-ui.xml.h:70
 msgid "_Go"
 msgstr "_Joan"
 
-#: src/nautilus-shell-ui.xml.h:69
+#: src/nautilus-shell-ui.xml.h:71
 msgid "_Help"
 msgstr "L_aguntza"
 
-#: src/nautilus-shell-ui.xml.h:70
+#: src/nautilus-shell-ui.xml.h:72
 msgid "_Home"
 msgstr "_Etxera"
 
-#: src/nautilus-shell-ui.xml.h:71
+#: src/nautilus-shell-ui.xml.h:73
 msgid "_Location..."
 msgstr "_Helbidea..."
 
-#: src/nautilus-shell-ui.xml.h:72
+#: src/nautilus-shell-ui.xml.h:74
 msgid "_Normal Size"
 msgstr "_Tamaina normala"
 
-#: src/nautilus-shell-ui.xml.h:74
+#: src/nautilus-shell-ui.xml.h:76
 msgid "_Profiler"
 msgstr "_Profilgilea"
 
-#: src/nautilus-shell-ui.xml.h:75
+#: src/nautilus-shell-ui.xml.h:77
 #, fuzzy
 msgid "_Reload"
 msgstr "Irakurri"
 
-#: src/nautilus-shell-ui.xml.h:76
+#: src/nautilus-shell-ui.xml.h:78
 msgid "_Report Profiling"
 msgstr "_Profilen txostena"
 
-#: src/nautilus-shell-ui.xml.h:77
+#: src/nautilus-shell-ui.xml.h:79
 msgid "_Reset Profiling"
 msgstr "_Berrezarri profilak"
 
-#: src/nautilus-shell-ui.xml.h:78
+#: src/nautilus-shell-ui.xml.h:80
 msgid "_Start Here"
 msgstr "Hasi he_men"
 
-#: src/nautilus-shell-ui.xml.h:79
+#: src/nautilus-shell-ui.xml.h:81
 msgid "_Start Profiling"
 msgstr "_Abiarazi profilak"
 
-#: src/nautilus-shell-ui.xml.h:80
+#: src/nautilus-shell-ui.xml.h:82
 msgid "_Stop Profiling"
 msgstr "_Geldiarazi profilak"
 
-#: src/nautilus-shell-ui.xml.h:81
+#: src/nautilus-shell-ui.xml.h:83
 msgid "_Undo"
 msgstr "_Desegin"
 
-#: src/nautilus-shell-ui.xml.h:82
+#: src/nautilus-shell-ui.xml.h:84
 msgid "_Up a Level"
 msgstr "_Igo maila bat"
 
-#: src/nautilus-shell-ui.xml.h:83
+#: src/nautilus-shell-ui.xml.h:85
 msgid "_View"
 msgstr "_Ikusi"
 
-#: src/nautilus-shell-ui.xml.h:84
+#: src/nautilus-shell-ui.xml.h:86
 msgid "_View as..."
 msgstr "_Ikusi honela..."
 
@@ -7477,11 +7490,11 @@ msgstr ""
 msgid "the current selection"
 msgstr "sekzio hau"
 
-#: src/nautilus-window-manage-views.c:801
+#: src/nautilus-window-manage-views.c:805
 msgid "View Failed"
 msgstr "Ikuspegiak huts egin du"
 
-#: src/nautilus-window-manage-views.c:812
+#: src/nautilus-window-manage-views.c:816
 #, c-format
 msgid ""
 "The %s view encountered an error and can't continue. You can choose another "
@@ -7490,12 +7503,12 @@ msgstr ""
 "%s ikuspegiak errorea aurkitu du eta ezin izan du jarraitu. Aukeratu beste "
 "ikuspegi bat edo joan beste helbide batera."
 
-#: src/nautilus-window-manage-views.c:823
+#: src/nautilus-window-manage-views.c:827
 #, c-format
 msgid "The %s view encountered an error while starting up."
 msgstr "%s ikuspegiak errorea aurkitu du abiaraztean."
 
-#: src/nautilus-window-manage-views.c:1000
+#: src/nautilus-window-manage-views.c:1004
 msgid ""
 "One of the sidebar panels encountered an error and can't continue. "
 "Unfortunately I couldn't tell which one."
@@ -7503,7 +7516,7 @@ msgstr ""
 "Alboko barraren paneletako batek errorea aurkitu du eta ezin izan du "
 "jarraitu. Tamalez, ezin dut esan zein errore den."
 
-#: src/nautilus-window-manage-views.c:1004
+#: src/nautilus-window-manage-views.c:1008
 #, c-format
 msgid ""
 "The %s sidebar panel encountered an error and can't continue. If this keeps "
@@ -7512,23 +7525,23 @@ msgstr ""
 "Alboko barraren %s panelak errorea aurkitu du eta ezin izan du jarraitu. "
 "Gehiagotan gertatzen bada, hobe izango duzu panel hori desaktibatzea."
 
-#: src/nautilus-window-manage-views.c:1009
+#: src/nautilus-window-manage-views.c:1013
 msgid "Sidebar Panel Failed"
 msgstr "Alboko barraren panelak huts egin du"
 
-#: src/nautilus-window-manage-views.c:1223
+#: src/nautilus-window-manage-views.c:1227
 #, c-format
 msgid "Couldn't find \"%s\". Please check the spelling and try again."
 msgstr "Ezin izan da \"%s\" aurkitu. Egiaztatu ortografia eta saiatu berriro."
 
-#: src/nautilus-window-manage-views.c:1229
+#: src/nautilus-window-manage-views.c:1233
 #, c-format
 msgid ""
 "\"%s\" is not a valid location. Please check the spelling and try again."
 msgstr ""
 "\"%s\" ez da baliozko helbidea. Egiaztatu ortografia eta saiatu berriro."
 
-#: src/nautilus-window-manage-views.c:1243
+#: src/nautilus-window-manage-views.c:1247
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot determine what type of file "
@@ -7537,30 +7550,30 @@ msgstr ""
 "Ezin izan da \"%s\" bistaratu, Nautilus-ek ezin du zein motatako fitxategia "
 "den zehaztu."
 
-#: src/nautilus-window-manage-views.c:1251
+#: src/nautilus-window-manage-views.c:1255
 #, c-format
 msgid "Nautilus has no installed viewer capable of displaying \"%s\"."
 msgstr ""
 "Nautilus-ek ez du \"%s\" bistaratzeko gauza den ikustailerik instalatuta."
 
 #. Shouldn't have gotten this error unless there's a : separator.
-#: src/nautilus-window-manage-views.c:1263
+#: src/nautilus-window-manage-views.c:1267
 #, c-format
 msgid "Couldn't display \"%s\", because Nautilus cannot handle %s: locations."
 msgstr ""
 "Ezin izan da \"%s\" bistaratu, Nautilus-ek ezin du %s: helbiderik maneiatu."
 
-#: src/nautilus-window-manage-views.c:1269
+#: src/nautilus-window-manage-views.c:1273
 #, c-format
 msgid "Couldn't display \"%s\", because the attempt to log in failed."
 msgstr "Ezin izan da \"%s\" bistaratu, saio-hasierak huts egin duelako."
 
-#: src/nautilus-window-manage-views.c:1274
+#: src/nautilus-window-manage-views.c:1278
 #, c-format
 msgid "Couldn't display \"%s\", because access was denied."
 msgstr "Ezin izan da \"%s\" bistaratu, atzipena ukatu egin zaiolako."
 
-#: src/nautilus-window-manage-views.c:1285
+#: src/nautilus-window-manage-views.c:1289
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because no host \"%s\" could be found. Check that "
@@ -7569,7 +7582,7 @@ msgstr ""
 "Ezin izan da \"%s\" bistaratu, ezin izan delako \"%s\" ostalaria aurkitu. "
 "Egiaztatu ortografia eta zure proxy-ezarpenak zuzenak direla."
 
-#: src/nautilus-window-manage-views.c:1293
+#: src/nautilus-window-manage-views.c:1297
 #, c-format
 msgid ""
 "Couldn't display \"%s\", because the host name was empty. Check that your "
@@ -7578,7 +7591,7 @@ msgstr ""
 "Ezin izan da \"%s\" bistaratu, ostalari-izena hutsik dagoelako.  Egiaztatu "
 "zure proxy-ezarpenak zuzenak direla."
 
-#: src/nautilus-window-manage-views.c:1305
+#: src/nautilus-window-manage-views.c:1309
 msgid ""
 "Searching is unavailable right now, because you either have no index, or the "
 "search service isn't running. Be sure that you have started the Medusa "
@@ -7589,11 +7602,11 @@ msgstr ""
 "dago martxan.  Egiaztatu Medusa bilaketa-zerbitzua abiarazita duzula, eta "
 "indizerik ez baduzu, Medusa indexatzailea exekutatzen ari dela."
 
-#: src/nautilus-window-manage-views.c:1309
+#: src/nautilus-window-manage-views.c:1313
 msgid "Searching Unavailable"
 msgstr "Bilaketa ez dago erabilgarri"
 
-#: src/nautilus-window-manage-views.c:1316
+#: src/nautilus-window-manage-views.c:1320
 #, fuzzy, c-format
 msgid ""
 "Couldn't display \"%s\", because Nautilus cannot contact the SMB master "
@@ -7603,12 +7616,12 @@ msgstr ""
 "Ezin izan da \"%s\" bistaratu, Nautilus-ek ezin du zein motatako fitxategia "
 "den zehaztu."
 
-#: src/nautilus-window-manage-views.c:1324
+#: src/nautilus-window-manage-views.c:1328
 #, c-format
 msgid "Nautilus cannot display \"%s\"."
 msgstr "Nautilus-ek ezin du \"%s\" bistaratu."
 
-#: src/nautilus-window-manage-views.c:1329
+#: src/nautilus-window-manage-views.c:1333
 msgid "Can't Display Location"
 msgstr "Ezin da Helbidea bistaratu"
 
@@ -7720,34 +7733,34 @@ msgstr "Joan Ez dagoen helbidera"
 msgid "Go to the location specified by this bookmark"
 msgstr "Laster-marka honek zehaztutako helbidera joaten da"
 
-#: src/nautilus-window-toolbars.c:582
-msgid "Back"
-msgstr "Atzera"
+#: src/nautilus-window-toolbars.c:469
+msgid "Go back a few pages"
+msgstr ""
 
-#: src/nautilus-window-toolbars.c:585
-msgid "Forward"
-msgstr "Aurrera"
+#: src/nautilus-window-toolbars.c:472
+msgid "Go forward a number of pages"
+msgstr ""
 
-#: src/nautilus-window.c:1060
+#: src/nautilus-window.c:1065
 #, c-format
 msgid "Display this location with \"%s\""
 msgstr "Bistaratu helbidea honekin: \"%s\""
 
-#: src/nautilus-window.c:2084
+#: src/nautilus-window.c:2089
 #, fuzzy
 msgid "Application ID"
 msgstr "Aplikazioak"
 
-#: src/nautilus-window.c:2085
+#: src/nautilus-window.c:2090
 msgid "The application ID of the window."
 msgstr ""
 
-#: src/nautilus-window.c:2091
+#: src/nautilus-window.c:2096
 #, fuzzy
 msgid "Application"
 msgstr "Aplikazioak"
 
-#: src/nautilus-window.c:2092
+#: src/nautilus-window.c:2097
 msgid "The NautilusApplication associated with this window."
 msgstr ""
 
