@@ -20,6 +20,7 @@ INCLUDES =								\
 	$(GCONF_CFLAGS) 						\
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"			\
 	$(VFS_CFLAGS) 							\
+	$(XML_CFLAGS) 							\
 	$(NULL)
 
 uidir = $(datadir)/gnome/ui

@@ -28,14 +28,17 @@
  */
 
 #include <config.h>
-#include <libtrilobite/libtrilobite.h>
 #include "eazel-install-metadata.h"
+
+#include "trilobite-i18n.h"
 
 #ifndef EAZEL_INSTALL_SLIM
 #include <gconf/gconf.h>
 #include <gconf/gconf-engine.h>
 static GConfEngine *conf_engine = NULL;
 #endif /* EAZEL_INSTALL_SLIM */
+
+#include <string.h>
 
 #define INSTALL_GCONF_PATH	"/apps/eazel-trilobite/install"
 

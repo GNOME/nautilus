@@ -22,32 +22,53 @@ endif
 
 EXTRA_DIST = create-eazel-installer.sh prescript
 
-INCLUDES = \
-	-I$(top_srcdir)/libnautilus-extensions		 	\
-	-I$(top_srcdir)/components/services/install/lib 	\
-	-I$(top_srcdir)/components/services/trilobite		\
-	-I/usr/include/rpm					\
-	$(GNOMEUI_CFLAGS)					\
-	$(XML_CFLAGS)						\
-	$(GHTTP_CFLAGS)						\
-	$(GNOME_INCLUDEDIR)					\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 		\
-	-DG_LOG_DOMAIN=\"Nautilus-Installer\"			\
-	-DEAZEL_INSTALL_NO_CORBA				\
-	-DEAZEL_INSTALL_SLIM					\
-	-DNO_TEXT_BOX						\
+INCLUDES =						\
+	-I$(top_srcdir)/libnautilus-extensions		\
+	-I$(top_srcdir)/components/services/install/lib	\
+	-I$(top_srcdir)/components/services/trilobite	\
+	-I/usr/include/rpm				\
+	$(GTK_CFLAGS)					\
+	$(XML_CFLAGS)					\
+	$(GHTTP_CFLAGS)					\
+	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"	\
+	-DG_LOG_DOMAIN=\"Nautilus-Installer\"		\
+	-DEAZEL_INSTALL_NO_CORBA			\
+	-DEAZEL_INSTALL_SLIM				\
+	-DTRILOBITE_SLIM				\
+	-DNO_TEXT_BOX					\
 	$(NULL)
 
 bin_SCRIPTS = $(INSTALLER_BINSCRIPTS)
 bin_PROGRAMS = $(INSTALLER_BINPROGRAMS)
 
-eazel_installer_SOURCES = 			\
-	main.c 					\
-	package-tree.c 				\
-	gtk-hackery.c 				\
-	callbacks.c callbacks.h 		\
-	proxy.c proxy.h 			\
-	installer.c installer.h 
+eazel_installer_SOURCES =			\
+	main.c					\
+	package-tree.c				\
+	gtk-hackery.c				\
+	callbacks.c				\
+	callbacks.h				\
+	proxy.c proxy.h				\
+	installer.c				\
+	installer.h				\
+	nautilus-druid.c			\
+	nautilus-druid.h			\
+	gnome-druid.c				\
+	gnome-druid.h				\
+	gnome-dialog-util.c			\
+	gnome-dialog-util.h			\
+	gnome-dialog.c				\
+	gnome-dialog.h				\
+	gnome-druid-page.c			\
+	gnome-druid-page.h			\
+	gnome-messagebox.c			\
+	gnome-messagebox.h			\
+	fake-stock.c				\
+	fake-stock.h				\
+	nautilus-druid-page-eazel.c		\
+	nautilus-druid-page-eazel.h		\
+	gnome-types.h
+
+
 
 CFLAGS = 					\
 	$(OG_FLAG)				\
@@ -57,16 +78,16 @@ CFLAGS = 					\
 
 eazel_installer_LDFLAGS = -all-static
 
-eazel_installer_LDADD = 	\
-	../install-lib/libeazelinstall_minimal.a			\
+eazel_installer_LDADD =					\
+	../install-lib/libeazelinstall_minimal.a	\
 	../libtrilobite/libtrilobite_minimal.a		\
-	$(top_builddir)/libnautilus-extensions/nautilus-druid.o						\
-	$(top_builddir)/libnautilus-extensions/nautilus-druid-page-eazel.o				\
-	$(RPM_LIBS) \
-	$(GNOMECANVASPIXBUF_LIBS) \
-	$(GNOMEUI_LIBS) \
-	$(GDK_PIXBUF_LIBS) \
-	$(GHTTP_LIBS) \
+	$(RPM_LIBS)					\
+	-ldb1						\
+	$(GTK_LIBS)					\
+	$(GDK_PIXBUF_LIBS)				\
+	-lart_lgpl					\
+	-lm						\
+	$(GHTTP_LIBS)					\
 	$(XML_LIBS)
 
 #       $(top_builddir)/components/services/trilobite/libtrilobite/trilobite-core-distribution.o 	\

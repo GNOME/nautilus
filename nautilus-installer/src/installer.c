@@ -25,13 +25,12 @@
 #  include <config.h>
 #endif
 
-#include <gnome.h>
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
 #include <libtrilobite/trilobite-core-network.h>
+#include <libtrilobite/trilobite-i18n.h>
 #include <eazel-install-xml-package-list.h>
 #include <eazel-install-protocols.h>
 #include <eazel-install-query.h>
@@ -40,6 +39,7 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <sys/utsname.h>
+#include <time.h>
 
 #include <nautilus-druid.h>
 #include <nautilus-druid-page-eazel.h>
@@ -47,7 +47,6 @@
 #include "installer.h"
 #include "package-tree.h"
 #include "callbacks.h"
-#include "support.h"
 #include "proxy.h"
 
 /* Include the pixmaps */
@@ -1583,7 +1582,6 @@ draw_splash_text (EazelInstaller *installer, const char *splash_text)
 	GtkWidget *button;
 
 	start_page = gtk_object_get_data (GTK_OBJECT (installer->window), "start_page");
-	nautilus_druid_page_eazel_set_text (NAUTILUS_DRUID_PAGE_EAZEL (start_page), "");
 
 	/* put it in an hbox so it won't be indirectly centered */
 	title = gtk_label_new_with_font (text_labels [SPLASH_TITLE], FONT_TITLE);

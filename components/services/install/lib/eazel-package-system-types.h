@@ -30,7 +30,7 @@
 #ifndef EAZEL_PACKAGE_SYSTEM_TYPES_H
 #define EAZEL_PACKAGE_SYSTEM_TYPES_H
 
-#include <gnome.h>
+#include <gtk/gtkobject.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

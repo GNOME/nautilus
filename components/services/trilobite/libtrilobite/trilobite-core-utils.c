@@ -34,12 +34,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <gnome.h>
+
 
 #include "trilobite-core-utils.h"
 #include "trilobite-core-messaging.h"
 
 #ifndef TRILOBITE_SLIM 
+#include <gnome.h>
 #include <liboaf/liboaf.h>
 #include <bonobo.h>
 #endif /* TRILOBITE_SLIM */
@@ -155,6 +156,7 @@ trilobite_get_popt_context (void)
 	return trilobite_popt;
 }
 
+#ifndef TRILOBITE_SLIM
 /* trilobite_init
  *
  * This does all of the initialization needed for command-line utilities or
@@ -222,6 +224,7 @@ trilobite_init (const char *service_name, const char *version_name, const char *
 fail:
 	return FALSE;
 }
+#endif
 
 static GList *loop_list = NULL;
 

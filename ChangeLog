@@ -1,3 +1,87 @@
+2001-03-09  Maciej Stachowiak  <mjs@eazel.com>
+
+	reviewed by: John Harper  <jsh@eazel.com>
+	             Eskil Heyn Olsen  <eskil@eazel.com>
+		     Robey Pointer  <robey@eazel.com>
+	
+	Fixed bugs 7411 (installer crashes, but successfully installs),
+	7510 (tinderbox installer crashes 3 lines into gnome init) and
+	7123 (Installer uses a question mark on black background in
+	dialogs). These were all caused by the fact that Imlib is
+	completely unusable linked statically. So to fix them I removed
+	all dependency on imlib and gnome-libs from the bootstrap
+	installer (since so many parts of gnome-libs, including
+	gnome_init, make imlib calls).
+
+	* components/services/install/lib/eazel-install-logic2.c:
+	(get_softcat_info),
+	(check_conflicts_against_already_installed_packages):
+	* components/services/install/lib/eazel-install-metadata.c:
+	* components/services/install/lib/eazel-install-object.c:
+	(eazel_install_is_dir), (eazel_install_save_transaction_report):
+	* components/services/install/lib/eazel-install-problem.c:
+	* components/services/install/lib/eazel-install-protocols.c:
+	(eazel_install_fetch_file):
+	* components/services/install/lib/eazel-install-tests.c:
+	* components/services/install/lib/eazel-install-xml-package-list.c:
+	(generate_xml_package_list):
+	* components/services/install/lib/eazel-package-system-rpm3.c:
+	* components/services/install/lib/eazel-package-system-rpm4.c:
+	* components/services/install/lib/eazel-package-system-types.c:
+	* components/services/install/lib/eazel-package-system-types.h:
+	* components/services/install/lib/eazel-package-system.c:
+	* components/services/install/lib/eazel-softcat.c:
+	* components/services/trilobite/libtrilobite/Makefile.am:
+	* components/services/trilobite/libtrilobite/trilobite-core-distribution.c: 
+	(trilobite_get_distribution):
+	* components/services/trilobite/libtrilobite/trilobite-core-distribution.h:
+	* components/services/trilobite/libtrilobite/trilobite-core-network-slim.c:
+	* components/services/trilobite/libtrilobite/trilobite-core-network.h:
+	* components/services/trilobite/libtrilobite/trilobite-core-utils.c:
+	* components/services/trilobite/libtrilobite/trilobite-i18n.h:
+	* nautilus-installer/install-lib/Makefile.am:
+	* nautilus-installer/libtrilobite/Makefile.am:
+	Avoid depending on libgnome or libgnomeui in libeazelinstall or
+	libtrilobite when building in static minimal mode.
+
+	* nautilus-installer/src/Makefile.am: Don't link against gnome
+	libraries or imlib.
+
+	* nautilus-installer/src/callbacks.c,
+	nautilus-installer/src/callbacks.h,
+	nautilus-installer/src/installer.c,
+	nautilus-installer/src/installer.h, nautilus-installer/src/main.c
+	nautilus-installer/src/gtk-hackery.c: Minor tweaks to avoid GNOME
+	and Imlib dependencies.
+
+	* nautilus-installer/src/fake-stock.h,
+	nautilus-installer/src/fake-stock.c:
+	(fake_stock_pixmap_new_from_xpm_data, fake_stock_pixmap_button,
+	fake_stock_or_ordinary_button): Some hacky code to allow replacing
+	the real stock code.
+
+	* nautilus-installer/src/gnome-dialog-util.c,
+	nautilus-installer/src/gnome-dialog-util.h,
+	nautilus-installer/src/gnome-dialog.c,
+	nautilus-installer/src/gnome-dialog.h,
+	nautilus-installer/src/gnome-druid-page.c,
+	nautilus-installer/src/gnome-druid-page.h,
+	nautilus-installer/src/gnome-druid.c,
+	nautilus-installer/src/gnome-druid.h,
+	nautilus-installer/src/gnome-messagebox.c,
+	nautilus-installer/src/gnome-messagebox.h,
+	nautilus-installer/src/gnome-types.h: Replace reliance on
+	gnome-stock (and therefore imlib) with fake-stock calls.
+
+	* nautilus-installer/src/nautilus-druid-page-eazel.h,
+	nautilus-installer/src/nautilus-druid-page-eazel.c: Pruned and
+	massively hacked to avoid depending on the canvas, etc.
+
+	* nautilus-installer/src/package-tree.c, 
+	nautilus-installer/src/nautilus-druid.c,
+	nautilus-installer/src/nautilus-druid.h: Avoid GNOME and imlib
+	dependencies.
+
 2001-03-10  Mike Fleming  <mfleming@eazel.com>
 
 	reviewed by: <rslomkow@eazel.com>

@@ -23,9 +23,7 @@
 #ifndef EAZEL_SERVICES_DISTRIBUTION_H
 #define EAZEL_SERVICES_DISTRIBUTION_H
 
-#include <gnome.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <glib.h>
 
 typedef struct _DistributionInfo DistributionInfo; 
 typedef enum _DistributionName DistributionName;

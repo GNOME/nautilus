@@ -56,12 +56,16 @@
 #error Unknown DB system
 #endif
 
-#include <gnome.h>
 #include <locale.h>
 #include "eazel-package-system-rpm3-private.h"
 #include "eazel-package-system-private.h"
 #include <libtrilobite/trilobite-core-utils.h>
+#include <libtrilobite/trilobite-root-helper.h>
+#include <libtrilobite/trilobite-i18n.h>
 
+#include <gtk/gtkmain.h>
+
+#include <string.h>
 #include <rpm/rpmlib.h>
 #include <rpm/rpmmacro.h>
 #include <rpm/misc.h>
@@ -71,9 +75,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include <locale.h>
-
-#include <libtrilobite/trilobite-root-helper.h>
 
 #define DEFAULT_DB_PATH "/var/lib/rpm"
 #define DEFAULT_ROOT "/"

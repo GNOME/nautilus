@@ -23,8 +23,9 @@
 
 #include <config.h>
 #include <errno.h>
-#include <gnome.h>
 #include <gnome-xml/parser.h>
+
+#include <gtk/gtksignal.h>
 
 #include "eazel-install-public.h"
 #include "eazel-install-private.h"
@@ -43,6 +44,7 @@
 #include "eazel-install-corba-types.h"
 #else
 #include <libtrilobite/trilobite-core-utils.h>
+#include <libtrilobite/trilobite-i18n.h>
 #endif /* EAZEL_INSTALL_NO_CORBA */
 
 #include "eazel-install-metadata.h"
@@ -54,6 +56,8 @@
 #include <unistd.h>
 #include <pwd.h>
 #include <dirent.h>
+#include <string.h>
+#include <time.h>
 
 enum {
 	FILE_CONFLICT_CHECK,
@@ -1366,6 +1370,18 @@ eazel_install_do_transaction_save_report_helper (xmlNodePtr node,
 	}
 }
 
+static gboolean 
+eazel_install_is_dir (const char *path)
+{
+	struct stat statbuf;
+
+	stat (path, &statbuf);
+
+	return S_ISDIR (statbuf.st_mode);
+}
+		      
+
+
 void
 eazel_install_save_transaction_report (EazelInstall *service) 
 {
@@ -1379,7 +1395,7 @@ eazel_install_save_transaction_report (EazelInstall *service)
 	}
 
 	/* Ensure the transaction dir is present */
-	if (! g_file_test (eazel_install_get_transaction_dir (service), G_FILE_TEST_ISDIR)) {
+	if (! eazel_install_is_dir (eazel_install_get_transaction_dir (service))) {
 		int retval;
 		retval = mkdir (eazel_install_get_transaction_dir (service), 0755);		       
 		if (retval < 0) {
@@ -1399,7 +1415,7 @@ eazel_install_save_transaction_report (EazelInstall *service)
 	/* Make a unique name */
 	name = g_strdup_printf ("%s/transaction.%lu", eazel_install_get_transaction_dir (service),
 				(unsigned long) time (NULL));
-	while (g_file_test (name, G_FILE_TEST_ISFILE)) {
+	while (!access (name, F_OK)) {
 		g_free (name);
 		sleep (1);
 		name = g_strdup_printf ("%s/transaction.%lu", 

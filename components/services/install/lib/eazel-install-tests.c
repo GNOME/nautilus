@@ -25,8 +25,9 @@
  * file and install a services generated package-list.xml.
  */
 
-#include "eazel-install-tests.h"
 #include <config.h>
+#include "eazel-install-tests.h"
+#include <gnome.h>
 
 void 
 dump_package_list (PackageData* pkg) {

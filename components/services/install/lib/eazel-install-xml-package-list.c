@@ -35,8 +35,11 @@
 
 #include <libtrilobite/trilobite-core-utils.h>
 #include <libtrilobite/trilobite-core-network.h>
+#include <libtrilobite/trilobite-i18n.h>
 #include <gnome-xml/parser.h>
 #include <gnome-xml/xmlmemory.h>
+#include <glib.h>
+#include <string.h>
 
 static PackageData* parse_package (xmlNode* package, gboolean set_toplevel);
 static CategoryData* parse_category (xmlNode* cat);
@@ -471,7 +474,7 @@ generate_xml_package_list (const char* pkg_template_file,
 
 	/* Check for existing file and if, rename, trying to find a .x
 	   extension (x being a number) that isn't taken */
-	if (g_file_exists (target_file)) {
+	if (!access (target_file, F_OK)) {
 		char *new_name;
 		int c;
 		c = 0;
@@ -480,7 +483,7 @@ generate_xml_package_list (const char* pkg_template_file,
 			g_free (new_name);
 			c++;
 			new_name = g_strdup_printf ("%s.%d", target_file, c);
-		} while (g_file_exists (new_name));		
+		} while (!access (new_name, F_OK));		
 		rename (target_file, new_name);
 		g_free (new_name);
 	}

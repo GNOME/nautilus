@@ -244,37 +244,37 @@ trilobite_get_distribution ()
 	distinfo.version_major = -1;
 	distinfo.version_minor = -1;
 	/* Check for TurboLinux */
-	if (g_file_exists ("/etc/turbolinux-release")) {
+	if (!access ("/etc/turbolinux-release", F_OK)) {
 		distinfo.name = DISTRO_TURBOLINUX;
 		determine_turbolinux_version (&distinfo);
 	} 
 	/* Check for Mandrake */
-	else if (g_file_exists ("/etc/mandrake-release")) {
+	else if (!access ("/etc/mandrake-release", F_OK)) {
 		distinfo.name = DISTRO_MANDRAKE;
 		determine_mandrake_version (&distinfo);
 	} 
 	/* Check for SuSE */
-	else if (g_file_exists ("/etc/SuSE-release")) {
+	else if (!access ("/etc/SuSE-release", F_OK)) {
 		distinfo.name = DISTRO_SUSE;
 		determine_suse_version (&distinfo);
 	} 
 	/* Check for Corel */
-	else if (g_file_exists ("/etc/environment.corel")) {
+	else if (!access ("/etc/environment.corel", F_OK)) {
 	        distinfo.name = DISTRO_COREL;
 	} 
 	/* Check for Debian */
-	else if (g_file_exists ("/etc/debian_version")) {
+	else if (!access ("/etc/debian_version", F_OK)) {
 		distinfo.name = DISTRO_DEBIAN;
 		determine_debian_version (&distinfo);
 	} 
 	/* Check for Caldera */
-	else if (g_file_exists ("/etc/coas")) {
+	else if (!access ("/etc/coas", F_OK)) {
 		distinfo.name = DISTRO_CALDERA;
 	} 
 	/* Check for Red Hat/LinuxPPC */
 	/* This has to be checked last because many of the Red Hat knockoff
 	   distros keep /etc/redhat-release around. */
-	else if (g_file_exists ("/etc/redhat-release")) {
+	else if (!access ("/etc/redhat-release", F_OK)) {
 		distinfo.name = DISTRO_REDHAT;
 		determine_redhat_version (&distinfo);
 	}

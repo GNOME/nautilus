@@ -25,7 +25,10 @@
 #define EAZEL_INSTALLER_PUBLIC_H
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gnome.h>
+#include <gnome-dialog.h>
+#include <gnome-messagebox.h>
+#include <gnome-dialog-util.h>
+#include <gnome-druid.h>
 #include <eazel-install-public.h>
 #include <eazel-install-problem.h>
 

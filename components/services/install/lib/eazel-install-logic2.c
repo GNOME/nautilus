@@ -33,9 +33,12 @@
 #ifndef EAZEL_INSTALL_NO_CORBA
 #include <libtrilobite/libtrilobite.h>
 #else
-#include <libtrilobite/libtrilobite-service.h>
 #include <libtrilobite/trilobite-root-helper.h>
+#include <libtrilobite/trilobite-i18n.h>
 #endif
+
+#include <glib.h>
+#include <string.h>
 
 /*
   0x1 enables post check_dependencies treedumps
@@ -678,8 +681,8 @@ get_softcat_info (EazelInstall *service,
 	} else {
 		if ((*package)->filename) {
 			/* Package already has a filename, load info from disk */
-			if (g_file_test ((*package)->filename, G_FILE_TEST_ISFILE) &&
-			    access ((*package)->filename, R_OK)==0) {
+			if (access ((*package)->filename, F_OK) == 0&&
+			    access ((*package)->filename, R_OK) == 0) {
 				PackageData *loaded_package;
 #if EI2_DEBUG & 0x4
 				trilobite_debug ("%p %s load from disk", *package, (*package)->name);
@@ -2145,7 +2148,7 @@ check_conflicts_against_already_installed_packages (EazelInstall *service,
 			filename = (char *)(iter_file->data);
 
 			/* If the file isn't on the system, no need to check for conflicts */
-			if (g_file_test (filename, G_FILE_TEST_ISFILE) == 0) {
+			if (access (filename, F_OK) != 0) {
 				continue;
 			}
 

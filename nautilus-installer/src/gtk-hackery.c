@@ -30,12 +30,16 @@
 #include <config.h>
 #endif
 
+#include "installer.h"
+
+#include <gtk/gtklabel.h>
+#include <gtk/gtkhbox.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <unistd.h>
-#include <gnome.h>
-#include "installer.h"
+#include <string.h>
 
 
 extern int installer_debug;

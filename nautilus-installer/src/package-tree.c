@@ -29,11 +29,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <gnome.h>
 #include <nautilus-druid.h>
 #include <nautilus-druid-page-eazel.h>
 #include "installer.h"
 #include "package-tree.h"
+
+#include <libtrilobite/trilobite-i18n.h>
+
+#include <string.h>
 
 /* pixmaps */
 #include "bootstrap-background.xpm"
@@ -345,7 +348,7 @@ popup_package_dialog (PackageInfo *info)
         GList *errant_children;
 
         title = g_strdup_printf (_("Package info: %s"), info->package->name);
-        dialog = gnome_dialog_new (title, GNOME_STOCK_BUTTON_OK, NULL);
+        dialog = gnome_dialog_new (title, "Button_Ok", NULL);
         toplevel = gtk_widget_get_toplevel (info->table->private->vbox);
         if (GTK_IS_WINDOW (toplevel)) {
                 gnome_dialog_set_parent (GNOME_DIALOG (dialog), GTK_WINDOW (toplevel));

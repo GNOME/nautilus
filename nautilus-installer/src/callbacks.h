@@ -24,11 +24,7 @@
 #ifndef EAZEL_INSTALLER_CALLBACKS_H
 #define EAZEL_INSTALLER_CALLBACKS_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
-#include <gnome.h>
+#include "gnome-druid.h"
 #include "installer.h"
 
 void

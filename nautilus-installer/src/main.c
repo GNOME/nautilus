@@ -35,12 +35,14 @@
 #include <sys/types.h>
 #include <sys/vfs.h>
 #include <signal.h>
-#include <gnome.h>
 
 #include "installer.h"
-#include "support.h"
 #include "callbacks.h"
 #include <libtrilobite/trilobite-core-network.h>
+#include <libtrilobite/trilobite-i18n.h>
+
+#include <popt.h>
+#include <string.h>
 
 extern int installer_debug;
 extern int installer_spam;
@@ -134,6 +136,9 @@ main (int argc, char *argv[])
 	EazelInstaller *installer;
 	char *fake_argv0 = "eazel-installer.sh";
 	struct stat statbuf;
+	int fake_argc;
+	char *fake_argv[2];
+	poptContext ctx;
 
 	/* there is no point in binding to a locale here, since this is statically linked,
 	 * and does NOT ship with translation files.  there is a separate mechanism for
@@ -156,10 +161,11 @@ main (int argc, char *argv[])
 		exit (0);
 	}
 
-	/* Disable session manager connection */
-	gnome_client_disable_master_connection ();
+	fake_argc = 1;
+	fake_argv[0] = g_strdup (fake_argv0);
+	fake_argv[1] = NULL;
 
-	gnome_init_with_popt_table ("eazel-installer", VERSION, argc, argv, options, 0, NULL);
+	gtk_init (&argc, &argv);
 
 #ifdef DEBUG
 	signal (SIGSEGV, segv_handler);
@@ -169,6 +175,11 @@ main (int argc, char *argv[])
 	signal (SIGFPE, segv_handler);
 #endif
 	gdk_rgb_init ();
+
+	ctx = poptGetContext ("eazel-installer", argc, (const char **)argv, options, 0);
+	while (poptGetNextOpt (ctx) >= 0) {
+        }
+	poptFreeContext (ctx);
 
 	if (installer_show_build) {
 		printf ("\nEazel Installer v%s (build %s)\n\n", VERSION, BUILD_DATE);

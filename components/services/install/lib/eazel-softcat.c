@@ -33,6 +33,8 @@
 #include <libgnomevfs/gnome-vfs.h>
 #endif /* EAZEL_INSTALL_SLIM */
 
+#include <string.h>
+
 /* This is the parent class pointer */
 static GtkObjectClass *eazel_softcat_parent_class;
 

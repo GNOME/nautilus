@@ -29,14 +29,15 @@
 #include <config.h>
 #include "eazel-package-system-types.h"
 #include "eazel-softcat.h"		/* for softcat sense flags */
+#include <libtrilobite/trilobite-core-utils.h>
 
 #include <rpm/rpmlib.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <string.h>
 
-#include <libtrilobite/trilobite-core-utils.h>
 
 #undef DEBUG_PACKAGE_ALLOCS 
 

@@ -24,11 +24,11 @@
 #  include <config.h>
 #endif
 
-#include <gnome.h>
 #include "callbacks.h"
-#include "support.h"
 #include "installer.h"
 
+#include <libtrilobite/trilobite-i18n.h>
+#include <glib.h>
 
 
 static void

@@ -28,21 +28,27 @@
  * file and install a services generated package-list.xml.
  */
 
+#include <config.h>
 #include "eazel-install-protocols.h"
 #include "eazel-install-private.h"
 #include "eazel-softcat.h"
+#include "eazel-package-system.h"
+
+#include <libtrilobite/trilobite-core-utils.h>
+#include <libtrilobite/trilobite-i18n.h>
+
 #include <ghttp.h>
-#include <config.h>
+#include <glib.h>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <string.h>
 
-#include "eazel-package-system.h"
 
 #undef EIP_FAIL_ALL_DOWNLOADS
 
-#include <libtrilobite/trilobite-core-utils.h>
 
 #ifndef EAZEL_INSTALL_SLIM
 #include <libgnomevfs/gnome-vfs.h>
@@ -549,7 +555,7 @@ eazel_install_fetch_file (EazelInstall *service,
 
 	for (iter = g_list_first (service->private->local_repositories); iter != NULL; iter = g_list_next (iter)) {
 		filename = g_strdup_printf ("%s/%s", (char *)(iter->data), g_basename (target_file));
-		if (g_file_test (filename, G_FILE_TEST_ISFILE)) {
+		if (!access (filename, F_OK)) {
 			/* copy this file to target_file */
 			trilobite_debug ("%s found at %s, copying", file_to_report, filename);
 			my_copy_file (filename, target_file);
@@ -557,7 +563,7 @@ eazel_install_fetch_file (EazelInstall *service,
 		g_free (filename);
 	}
 
-	if (g_file_test (target_file, G_FILE_TEST_ISFILE)) {
+	if (!access (target_file, F_OK)) {
 		/* File is already present, so just emit to progress callbacks and get on with
 		   your life */
 		struct stat buf;

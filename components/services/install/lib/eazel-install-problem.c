@@ -24,6 +24,10 @@
 
 #include <eazel-install-problem.h>
 
+#include <libtrilobite/trilobite-i18n.h>
+
+#include <string.h>
+
 static GtkObjectClass *eazel_install_problem_parent_class;
 
 #define ASSERT_SANITY(s) g_assert (s!=NULL); \

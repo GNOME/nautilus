@@ -17,35 +17,32 @@ libtrilobite_minimal_a_SOURCES =	\
 	trilobite-md5-tools.c		\
 	$(NULL)
 
-INCLUDES=							\
-	-DTRILOBITE_VERSION=\"0.1.0\"				\
-	-I.							\
-	-I@top_srcdir@						\
-        -I@top_srcdir@/components/services/trilobite		\
+INCLUDES=								\
+	-DTRILOBITE_VERSION=\"0.1.0\"					\
+	-I.								\
+	-I@top_srcdir@							\
+        -I@top_srcdir@/components/services/trilobite			\
         -I@top_srcdir@/components/services/trilobite/libtrilobite	\
-	-DTRILOBITE_SLIM 					\
-	-DG_LOG_DOMAIN=\"Nautilus-Installer\"			\
-	@GNOME_CFLAGS@						\
-	@XML_CFLAGS@						\
+	-DTRILOBITE_SLIM						\
+	-DG_LOG_DOMAIN=\"Nautilus-Installer\"				\
+	@GLIB_CFLAGS@							\
+	@GTK_CFLAGS@							\
+	@XML_CFLAGS@							\
 	$(NULL)
 
 TRILOBITE_HDRS =  \
 	libtrilobite.h \
-	libtrilobite-service.h \
 	trilobite-core-distribution.h \
 	trilobite-core-messaging.h \
 	trilobite-core-network.h \
 	trilobite-core-utils.h \
 	trilobite-file-utilities.h \
+	trilobite-i18n-utils.h \
 	trilobite-md5-tools.h \
 	trilobite-redirect.h \
 	trilobite-root-client-private.h \
 	trilobite-root-client-public.h \
 	trilobite-root-helper.h \
-	trilobite-service-passwordquery-private.h \
-	trilobite-service-passwordquery-public.h \
-	trilobite-service-private.h \
-	trilobite-service-public.h \
 	$(NULL)
 
 $(TRILOBITE_HDRS):

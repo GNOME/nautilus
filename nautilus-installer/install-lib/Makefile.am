@@ -26,6 +26,7 @@ libeazelinstall_minimal_a_DEPENDENCIES = $(PACKAGE_SYSTEM_OBJECT)
 INCLUDES=\
 	-DEAZEL_INSTALL_NO_CORBA				\
 	-DEAZEL_INSTALL_SLIM 					\
+	-DTRILOBITE_SLIM 					\
 	-DG_LOG_DOMAIN=\"Nautilus-Installer\"			\
 	-I.							\
 	-I@top_srcdir@						\
@@ -33,7 +34,8 @@ INCLUDES=\
         -I@top_srcdir@/components/services/trilobite		\
         -I@top_srcdir@/components/services/trilobite/libtrilobite	\
         -I@top_srcdir@/components/services/install/lib		\
-	@GNOME_CFLAGS@						\
+	@GLIB_CFLAGS@						\
+	@GTK_CFLAGS@						\
 	@GCONF_CFLAGS@						\
 	@XML_CFLAGS@						\
 	@GHTTP_CFLAGS@						\
@@ -47,15 +49,12 @@ TRILOBITE_HDRS =  \
 	trilobite-core-network.h \
 	trilobite-core-utils.h \
 	trilobite-file-utilities.h \
+	trilobite-i18n.h \
 	trilobite-md5-tools.h \
 	trilobite-redirect.h \
 	trilobite-root-client-private.h \
 	trilobite-root-client-public.h \
 	trilobite-root-helper.h \
-	trilobite-service-passwordquery-private.h \
-	trilobite-service-passwordquery-public.h \
-	trilobite-service-private.h \
-	trilobite-service-public.h \
 	$(NULL)
 
 $(TRILOBITE_HDRS):

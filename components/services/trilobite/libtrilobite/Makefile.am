@@ -2,21 +2,21 @@ NULL =
 
 lib_LTLIBRARIES = libtrilobite.la libtrilobite-service.la
 
-INCLUDES = \
-	-DPREFIX=\"$(prefix)\" 	\
-	-DG_LOG_DOMAIN=\"libtrilobite\"	\
-	-DSTANDALONE		\
-	-DTRILOBITE_VERSION=\"0.3.0\" \
-	-I$(srcdir)		\
-	-I.			\
-	-I$(top_srcdir)		\
-	-I$(top_builddir)	\
-	-I$(top_srcdir)/components/services/trilobite/libtrilobite \
-	$(GNOME_CFLAGS)		\
-	$(GCONF_CFLAGS)		\
-	$(OAF_CFLAGS)		\
-	$(XML_CFLAGS)		\
-	$(VFS_CFLAGS)		\
+INCLUDES =								\
+	-DPREFIX=\"$(prefix)\"						\
+	-DG_LOG_DOMAIN=\"libtrilobite\"					\
+	-DSTANDALONE							\
+	-DTRILOBITE_VERSION=\"0.3.0\"					\
+	-I$(srcdir)							\
+	-I.								\
+	-I$(top_srcdir)							\
+	-I$(top_builddir)						\
+	-I$(top_srcdir)/components/services/trilobite/libtrilobite	\
+	$(GNOME_CFLAGS)							\
+	$(GCONF_CFLAGS)							\
+	$(OAF_CFLAGS)							\
+	$(XML_CFLAGS)							\
+	$(VFS_CFLAGS)							\
 	$(NULL)
 
 libtrilobite_la_LDFLAGS =	\
@@ -54,6 +54,7 @@ libtrilobiteinclude_HEADERS =			\
 	trilobite-core-network.h		\
 	trilobite-core-utils.h			\
 	trilobite-file-utilities.h		\
+	trilobite-i18n.h			\
 	trilobite-root-helper.h			\
 	trilobite-root-client-public.h		\
 	trilobite-redirect.h			\

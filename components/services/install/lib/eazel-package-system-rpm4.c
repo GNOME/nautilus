@@ -26,20 +26,19 @@
 #ifdef HAVE_RPM
 #ifdef HAVE_RPM_40
 
-#include <gnome.h>
 #include "eazel-package-system-rpm3-private.h"
 #include "eazel-package-system-rpm4.h"
 #include "eazel-package-system-private.h"
 #include <libtrilobite/trilobite-core-utils.h>
 
+#include <libtrilobite/trilobite-root-helper.h>
 #include <rpm/rpmlib.h>
 
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-
-#include <libtrilobite/trilobite-root-helper.h>
+#include <string.h>
 
 #define DEFAULT_DB_PATH "/var/lib/rpm"
 #define DEFAULT_ROOT "/"

@@ -22,12 +22,13 @@
  */
 
 #include <config.h>
-#include <gnome.h>
-#include <gmodule.h>
 #include "eazel-package-system-private.h"
+
 #include <libtrilobite/trilobite-core-distribution.h>
 #include <libtrilobite/trilobite-core-utils.h>
 #include <libtrilobite/trilobite-md5-tools.h>
+#include <gtk/gtksignal.h>
+#include <gmodule.h>
 
 #undef EPS_DEBUG
 

@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* 
- * Copyright (C) 2000 Eazel, Inc
+ * Copyright (C) 2001 Eazel, Inc
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -18,21 +18,27 @@
  *  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- * libtrilobite - Useful functions shared between all services.  This
- * includes things like xml parsing, logging, error control, and others.
- */
+#ifndef TRILOBITE_I18N_H
+#define TRILOBITE_I18N_H
 
-#ifndef TRILOBITE_CORE_NETWORK_H
-#define TRILOBITE_CORE_NETWORK_H
+#ifdef ENABLE_NLS
+#    include <libintl.h>
+#    undef _
+#    define _(String) dgettext (PACKAGE, String)
+#    ifdef gettext_noop
+#        define N_(String) gettext_noop (String)
+#    else
+#        define N_(String) (String)
+#    endif
+#else
+/* Stubs that do something close enough.  */
+#    define textdomain(String) (String)
+#    define gettext(String) (String)
+#    define dgettext(Domain,Message) (Message)
+#    define dcgettext(Domain,Message,Type) (Message)
+#    define bindtextdomain(Domain,Directory) (Domain)
+#    define _(String) (String)
+#    define N_(String) (String)
+#endif
 
-#include <parser.h>
-#include <xmlmemory.h>
-#include <glib.h>
-
-char *trilobite_xml_get_string (xmlNode *node, const char *name);
-gboolean trilobite_fetch_uri (const char *uri_text, char **body, int *length);
-gboolean trilobite_fetch_uri_to_file (const char *uri_text, const char *filename);
-
-
-#endif /* TRILOBITE_CORE_NETWORK_H */
+#endif /* TRILOBITE_I18N_H */

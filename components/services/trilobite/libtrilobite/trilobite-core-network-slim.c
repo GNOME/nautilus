@@ -29,14 +29,17 @@
 #include <config.h>
 #endif
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <ghttp.h>
-#include <gnome.h>
-#include "trilobite-core-utils.h"
 #include "trilobite-core-network.h"
 
+#include "trilobite-core-utils.h"
+#include <ghttp.h>
+#include <glib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+#include "trilobite-i18n.h"
 
 /* function for lazy bastards who can't be bothered to figure out the format of the xml they're parsing:
  * it checks for a property with the name, and then if there isn't one, then it tries to find a child
