@@ -644,12 +644,12 @@ append_bookmark_to_menu (NautilusWindow *window,
 		 bookmark_holder, (GDestroyNotify) bookmark_holder_free);
 
 	/* Let's get notified whenever a bookmark changes. */
-	gtk_signal_connect_object (GTK_OBJECT (bookmark),
-			    	   "changed",
-			    	   is_bookmarks_menu 
-			    		? schedule_refresh_dynamic_bookmarks
-			    		: schedule_refresh_go_menu,
-			    	   GTK_OBJECT (window));
+	gtk_signal_connect_object_while_alive
+		(GTK_OBJECT (bookmark), "changed",
+		 is_bookmarks_menu
+		 ? schedule_refresh_dynamic_bookmarks
+		 : schedule_refresh_go_menu,
+		 GTK_OBJECT (window));
 }
 
 static char *

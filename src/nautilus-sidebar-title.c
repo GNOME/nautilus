@@ -48,13 +48,13 @@
 #include <libnautilus-extensions/nautilus-font-factory.h>
 #include <libnautilus-extensions/nautilus-theme.h>
 
-static void     nautilus_sidebar_title_initialize_class   (NautilusSidebarTitleClass *klass);
-static void     nautilus_sidebar_title_destroy            (GtkObject                 *object);
-static void     nautilus_sidebar_title_initialize         (NautilusSidebarTitle      *pixmap);
-static gboolean nautilus_sidebar_title_button_press_event (GtkWidget                 *widget,
-							   GdkEventButton            *event);
-static void	nautilus_sidebar_title_theme_changed	  (gpointer		     user_data);
-static void     update_icon                               (NautilusSidebarTitle      *sidebar_title);
+static void nautilus_sidebar_title_initialize_class (NautilusSidebarTitleClass *klass);
+static void nautilus_sidebar_title_destroy          (GtkObject                 *object);
+static void nautilus_sidebar_title_initialize       (NautilusSidebarTitle      *pixmap);
+static void nautilus_sidebar_title_size_allocate    (GtkWidget                 *widget,
+						     GtkAllocation             *allocation);
+static void nautilus_sidebar_title_theme_changed    (gpointer                   user_data);
+static void update_icon                             (NautilusSidebarTitle      *sidebar_title);
 
 struct NautilusSidebarTitleDetails {
 	NautilusFile *file;
@@ -79,7 +79,7 @@ nautilus_sidebar_title_initialize_class (NautilusSidebarTitleClass *class)
 	widget_class = (GtkWidgetClass*) class;
 	
 	object_class->destroy = nautilus_sidebar_title_destroy;
-	widget_class->button_press_event = nautilus_sidebar_title_button_press_event;
+	widget_class->size_allocate = nautilus_sidebar_title_size_allocate;
 }
 
 static void
@@ -259,29 +259,31 @@ update_icon (NautilusSidebarTitle *sidebar_title)
 	}
 }
 
-/* set up the filename label */
 static void
-update_title (NautilusSidebarTitle *sidebar_title)
+update_font (NautilusSidebarTitle *sidebar_title)
 {
 	GdkFont *label_font;
-	const char *title_text;
-
-	/* FIXME: We could defer showing the title until the icon is ready. */
-	title_text = sidebar_title->details->title_text;
-
-	gtk_label_set_text (GTK_LABEL (sidebar_title->details->title),
-			    title_text);
 
 	/* FIXME bugzilla.eazel.com 1103: Make this use the font
 	 * factory.
 	 */
 	/* FIXME: Where does the "4" come from? */
 	label_font = nautilus_get_largest_fitting_font
-		(title_text,
+		(sidebar_title->details->title_text,
 		 GTK_WIDGET (sidebar_title)->allocation.width - 4,
 		 "-*-helvetica-medium-r-normal-*-%d-*-*-*-*-*-*-*");
 	nautilus_gtk_widget_set_font (sidebar_title->details->title, label_font);
 	/* FIXME: Is there a font leak here? */
+}
+
+/* set up the filename label */
+static void
+update_title (NautilusSidebarTitle *sidebar_title)
+{
+	/* FIXME: We could defer showing the title until the icon is ready. */
+	gtk_label_set_text (GTK_LABEL (sidebar_title->details->title),
+			    sidebar_title->details->title_text);
+	update_font (sidebar_title);
 }
 
 static void
@@ -466,18 +468,20 @@ nautilus_sidebar_title_set_uri (NautilusSidebarTitle *sidebar_title,
 	update_all (sidebar_title);
 }
 
-static gboolean
-nautilus_sidebar_title_button_press_event (GtkWidget *widget, GdkEventButton *event)
+static void
+nautilus_sidebar_title_size_allocate (GtkWidget *widget,
+				      GtkAllocation *allocation)
 {
-	/* FIXME: Do we want to do something when clicked? If not,
-	 * remove this.
-	 */
-	g_message ("button press");
-	return TRUE;
+	NAUTILUS_CALL_PARENT_CLASS (GTK_WIDGET_CLASS, size_allocate, (widget, allocation));
+	
+	/* Need to update the font if the width changes. */
+	update_font (NAUTILUS_SIDEBAR_TITLE (widget));
 }
 
 gboolean
 nautilus_sidebar_title_hit_test_icon (NautilusSidebarTitle *title, int x, int y)
 {
+	g_return_val_if_fail (NAUTILUS_IS_SIDEBAR_TITLE (title), FALSE);
+
 	return nautilus_point_in_widget (title->details->icon, x, y);
 }

@@ -1,3 +1,24 @@
+2000-08-03  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/nautilus-directory-async.c:
+	(cancel_metafile_read), (metafile_read_try_public_metafile),
+	(metafile_read_check_for_directory_callback),
+	(metafile_read_check_for_directory), (metafile_read_failed):
+	Added code to check if a URI is a directory before reading
+	the public metafile from it. Completes task 223.
+	
+	* src/nautilus-sidebar-title.c:
+	(nautilus_sidebar_title_initialize_class), (update_font),
+	(update_title), (nautilus_sidebar_title_size_allocate):
+	Added code to update the font when the sidebar's size changes
+	since the font is based on the available space. Fixes bugs
+	1922 and 1901, I think.
+	(nautilus_sidebar_title_hit_test_icon): Added a return_if_fail.
+	
+	* src/nautilus-window-menus.c: (append_bookmark_to_menu):
+	Fixed a problem I ran into where the signal was still connected
+	after the window was destroyed.
+
 2000-08-03  John Sullivan  <sullivan@eazel.com>
 
 	Reinstated the bug fix to 1781 from two days ago,

@@ -46,6 +46,7 @@
 struct MetafileReadState {
 	gboolean use_public_metafile;
 	NautilusReadFileHandle *handle;
+	GnomeVFSAsyncHandle *get_file_info_handle;
 };
 
 struct MetafileWriteState {
@@ -181,6 +182,9 @@ cancel_metafile_read (NautilusDirectory *directory)
 		if (directory->details->metafile_read_state->handle != NULL) {
 			nautilus_read_file_cancel (directory->details->metafile_read_state->handle);
 		}
+		if (directory->details->metafile_read_state->get_file_info_handle != NULL) {
+			gnome_vfs_async_cancel (directory->details->metafile_read_state->get_file_info_handle);
+		}
 		g_free (directory->details->metafile_read_state);
 		directory->details->metafile_read_state = NULL;
 	}
@@ -239,10 +243,62 @@ metafile_read_done (NautilusDirectory *directory)
 }
 
 static void
+metafile_read_try_public_metafile (NautilusDirectory *directory)
+{
+	directory->details->metafile_read_state->use_public_metafile = TRUE;
+	metafile_read_start (directory);
+}
+
+static void
+metafile_read_check_for_directory_callback (GnomeVFSAsyncHandle *handle,
+					    GList *results,
+					    gpointer callback_data)
+{
+	NautilusDirectory *directory;
+	GnomeVFSGetFileInfoResult *result;
+
+	directory = NAUTILUS_DIRECTORY (callback_data);
+
+	g_assert (directory->details->metafile_read_state->get_file_info_handle == handle);
+	g_assert (nautilus_g_list_exactly_one_item (results));
+
+	directory->details->metafile_read_state->get_file_info_handle = NULL;
+
+	result = results->data;
+
+	if (result->result == GNOME_VFS_OK
+	    && ((result->file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_TYPE) != 0)
+	    && result->file_info->type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
+		/* Is a directory. */
+		metafile_read_try_public_metafile (directory);
+	} else {
+		/* Not a directory. */
+		metafile_read_done (directory);
+	}
+}
+
+static void
+metafile_read_check_for_directory (NautilusDirectory *directory)
+{
+	GList fake_list;
+
+	/* We have to do a get_info call to check if this a directory. */
+	fake_list.data = directory->details->uri;
+	fake_list.next = NULL;
+	fake_list.prev = NULL;
+	gnome_vfs_async_get_file_info
+		(&directory->details->metafile_read_state->get_file_info_handle,
+		 &fake_list,
+		 GNOME_VFS_FILE_INFO_DEFAULT,
+		 metafile_read_check_for_directory_callback,
+		 directory);
+}
+
+static void
 metafile_read_failed (NautilusDirectory *directory)
 {
-	NautilusFile *as_file;
-	gboolean try_public_metafile;
+	NautilusFile *file;
+	gboolean need_directory_check, is_directory;
 
 	g_assert (NAUTILUS_IS_DIRECTORY (directory));
 	g_assert (directory->details->metafile == NULL);
@@ -254,21 +310,30 @@ metafile_read_failed (NautilusDirectory *directory)
 		/* The goal here is to read the real metafile, but
 		 * only if the directory is actually a directory.
 		 */
-		/* FIXME bugzilla.eazel.com 223: This code tries to
-		 * do the right thing, but it only works if there is
-		 * a NautilusFile with info already. Otherwise it
-		 * just returns FALSE.
-		 */
-		as_file = nautilus_file_get (directory->details->uri_text);
-		if (as_file == NULL) {
-			try_public_metafile = FALSE;
+
+		/* First, check if we already know if it a directory. */
+		file = nautilus_file_get (directory->details->uri_text);
+		if (file == NULL || file->details->is_gone) {
+			need_directory_check = FALSE;
+			is_directory = FALSE;
+		} else if (file->details->info == NULL) {
+			need_directory_check = TRUE;
+			is_directory = TRUE;
 		} else {
-			try_public_metafile = nautilus_file_is_directory (as_file);
-			nautilus_file_unref (as_file);
+			need_directory_check = FALSE;
+			is_directory = nautilus_file_is_directory (file);
 		}
-		if (try_public_metafile) {
-			directory->details->metafile_read_state->use_public_metafile = TRUE;
-			metafile_read_start (directory);
+		nautilus_file_unref (file);
+
+		/* Do the directory check if we don't know. */
+		if (need_directory_check) {
+			metafile_read_check_for_directory (directory);
+			return;
+		}
+
+		/* Try for the public metafile if it is a directory. */
+		if (is_directory) {
+			metafile_read_try_public_metafile (directory);
 			return;
 		}
 	}
