@@ -30,6 +30,7 @@
 
 #include <config.h>
 
+#include <string.h>
 #include "nautilus-adapter-file-load-strategy.h"
 
 #include <gtk/gtkobject.h>
@@ -114,43 +115,58 @@ nautilus_adapter_file_load_strategy_new (Bonobo_PersistFile  persist_file)
 	return NAUTILUS_ADAPTER_LOAD_STRATEGY (strategy);
 }
 
+static ORBit_IMethod *
+get_file_load_method (void)
+{
+	guint i;
+	ORBit_IInterface *iface;
+	static ORBit_IMethod *method = NULL;
+	
+	iface = &Bonobo_PersistFile__iinterface;
+	if (!method) {
+		for (i = 0; i < iface->methods._length; i++) {
+			if (!strcmp ("load", iface->methods._buffer [i].name)) {
+				method = &iface->methods._buffer [i];
+			}
+		}
+	}
+	g_assert (method);
+
+	return method;
+}
 
 static void
 nautilus_adapter_file_load_strategy_load_location (NautilusAdapterLoadStrategy *abstract_strategy,
 						   const char                  *uri)
 
 {
-	CORBA_Environment ev;
-	NautilusAdapterFileLoadStrategy *strategy;
 	char *local_path;
+	gpointer args[1];
+	NautilusAdapterFileLoadStrategy *strategy;
 
 	strategy = NAUTILUS_ADAPTER_FILE_LOAD_STRATEGY (abstract_strategy);
 
 	g_object_ref (strategy);
 
-	CORBA_exception_init (&ev);
-
 	local_path = gnome_vfs_get_local_path_from_uri (uri);
 
 	if (local_path == NULL) {
 		nautilus_adapter_load_strategy_report_load_failed (abstract_strategy);
-		CORBA_exception_free (&ev);
 		return;
 	}
 
 	nautilus_adapter_load_strategy_report_load_underway (abstract_strategy);
 
-	Bonobo_PersistFile_load (strategy->details->persist_file, local_path, &ev);
-
-	if (ev._major == CORBA_NO_EXCEPTION) {
-		nautilus_adapter_load_strategy_report_load_complete (abstract_strategy);
-	} else {
-		nautilus_adapter_load_strategy_report_load_failed (abstract_strategy);
-	}
+	args [0] = &local_path;
+	
+	nautilus_adapter_load_strategy_load_async (
+		abstract_strategy,
+		strategy->details->persist_file,
+		get_file_load_method (),
+		args,
+		NULL, NULL);
 
 	g_object_unref (strategy);
-
-	CORBA_exception_free (&ev);
 
 	g_free (local_path);
 }
@@ -162,3 +178,4 @@ nautilus_adapter_file_load_strategy_stop_loading  (NautilusAdapterLoadStrategy *
 	g_return_if_fail (NAUTILUS_IS_ADAPTER_FILE_LOAD_STRATEGY (abstract_strategy));
 
 }
+

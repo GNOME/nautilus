@@ -79,6 +79,12 @@ void                         nautilus_adapter_load_strategy_report_load_progress
 void                         nautilus_adapter_load_strategy_report_load_complete  (NautilusAdapterLoadStrategy *strategy);
 void                         nautilus_adapter_load_strategy_report_load_failed    (NautilusAdapterLoadStrategy *strategy);
 
+void                         nautilus_adapter_load_strategy_load_async            (NautilusAdapterLoadStrategy *strategy,
+										   CORBA_Object                 object,
+										   ORBit_IMethod               *m_data,
+										   gpointer                    *args,
+										   GDestroyNotify               done_cb,
+										   gpointer                     user_data);
 
 #endif /* NAUTILUS_ADAPTER_LOAD_STRATEGY_H */
 

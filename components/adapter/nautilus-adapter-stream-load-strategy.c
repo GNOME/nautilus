@@ -30,6 +30,7 @@
 
 #include <config.h>
 
+#include <string.h>
 #include "nautilus-adapter-stream-load-strategy.h"
 
 #include <bonobo/bonobo-stream.h>
@@ -114,6 +115,31 @@ nautilus_adapter_stream_load_strategy_new (Bonobo_PersistStream  persist_stream)
 	return NAUTILUS_ADAPTER_LOAD_STRATEGY (strategy);
 }
 
+static ORBit_IMethod *
+get_stream_load_method (void)
+{
+	guint i;
+	ORBit_IInterface *iface;
+	static ORBit_IMethod *method = NULL;
+	
+	iface = &Bonobo_PersistStream__iinterface;
+	if (!method) {
+		for (i = 0; i < iface->methods._length; i++) {
+			if (!strcmp ("load", iface->methods._buffer [i].name)) {
+				method = &iface->methods._buffer [i];
+			}
+		}
+	}
+	g_assert (method);
+
+	return method;
+}
+
+static void
+unref_stream_cb (gpointer user_data)
+{
+	bonobo_object_release_unref (user_data, NULL);
+}
 
 static void
 nautilus_adapter_stream_load_strategy_load_location (NautilusAdapterLoadStrategy *abstract_strategy,
@@ -124,6 +150,8 @@ nautilus_adapter_stream_load_strategy_load_location (NautilusAdapterLoadStrategy
 	CORBA_Environment ev;
 	char *moniker_str;
 	char *escaped_uri;
+	char *mime_type;
+	gpointer args[2];
 
 	strategy = NAUTILUS_ADAPTER_STREAM_LOAD_STRATEGY (abstract_strategy);
 	g_object_ref (strategy);
@@ -153,21 +181,18 @@ nautilus_adapter_stream_load_strategy_load_location (NautilusAdapterLoadStrategy
 		 * it should be easy to keep it around and pass it in here.
 		 */
 
-		Bonobo_PersistStream_load
-			(strategy->details->persist_stream,
-			 stream,
-			 "", /* MIME type of stream */
-			 &ev);
+		mime_type = "";
+		args [0] = &stream;
+		args [1] = &mime_type;
 
-		bonobo_object_release_unref (stream, &ev);
-
-		if (ev._major == CORBA_NO_EXCEPTION) {
-			nautilus_adapter_load_strategy_report_load_complete (abstract_strategy);
-		} else {
-			nautilus_adapter_load_strategy_report_load_failed (abstract_strategy);
-		}
+		nautilus_adapter_load_strategy_load_async (
+			abstract_strategy,
+			strategy->details->persist_stream,
+			get_stream_load_method (),
+			args,
+			unref_stream_cb,
+			stream);
         }
-
 
 	g_object_unref (strategy);
 

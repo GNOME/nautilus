@@ -37,8 +37,7 @@
 #include <gtk/gtkobject.h>
 #include <eel/eel-gtk-macros.h>
 #include <eel/eel-gtk-extensions.h>
-
-
+#include <bonobo/bonobo-exception.h>
 
 enum {
 	REPORT_LOAD_UNDERWAY,
@@ -201,15 +200,79 @@ nautilus_adapter_load_strategy_report_load_progress  (NautilusAdapterLoadStrateg
 }
 
 void
-nautilus_adapter_load_strategy_report_load_complete  (NautilusAdapterLoadStrategy *strategy)
+nautilus_adapter_load_strategy_report_load_complete (NautilusAdapterLoadStrategy *strategy)
 {
-	g_signal_emit (strategy,
-			 signals[REPORT_LOAD_COMPLETE], 0);
+	g_signal_emit (strategy, signals[REPORT_LOAD_COMPLETE], 0);
 }
 
 void
-nautilus_adapter_load_strategy_report_load_failed    (NautilusAdapterLoadStrategy *strategy)
+nautilus_adapter_load_strategy_report_load_failed (NautilusAdapterLoadStrategy *strategy)
 {
-	g_signal_emit (strategy,
-			 signals[REPORT_LOAD_FAILED], 0);
+	g_signal_emit (strategy, signals[REPORT_LOAD_FAILED], 0);
+}
+
+typedef struct {
+	gpointer user_data;
+	GDestroyNotify done_cb;
+	NautilusAdapterLoadStrategy *strategy;
+} AsyncClosure;
+
+static void
+nautilus_adapter_load_strategy_report_async_status (CORBA_Object          object,
+						    ORBit_IMethod        *m_data,
+						    ORBitAsyncQueueEntry *aqe,
+						    gpointer              user_data, 
+						    CORBA_Environment    *ev)
+{
+	AsyncClosure *c;
+
+	c = user_data;
+	g_return_if_fail (NAUTILUS_IS_ADAPTER_LOAD_STRATEGY (c->strategy));
+	
+	if (BONOBO_EX (ev)) {
+		nautilus_adapter_load_strategy_report_load_failed (c->strategy);
+	} else {
+		nautilus_adapter_load_strategy_report_load_complete (c->strategy);
+	}
+
+	g_object_unref (c->strategy);
+
+	if (c->done_cb) {
+		c->done_cb (c->user_data);
+	}
+
+	g_free (c);
+}
+
+void
+nautilus_adapter_load_strategy_load_async (NautilusAdapterLoadStrategy *strategy,
+					   CORBA_Object                 object,
+					   ORBit_IMethod               *m_data,
+					   gpointer                    *args,
+					   GDestroyNotify               done_cb,
+					   gpointer                     user_data)
+{
+	AsyncClosure *c;
+	CORBA_Environment ev;
+
+	CORBA_exception_init (&ev);
+
+	c = g_new (AsyncClosure, 1);
+	c->done_cb = done_cb;
+	c->strategy = strategy;
+	c->user_data = user_data;
+
+	g_object_ref (G_OBJECT (strategy));
+
+	ORBit_small_invoke_async
+		(object, m_data,
+		 nautilus_adapter_load_strategy_report_async_status,
+		 c, args, NULL, &ev);
+
+	if (BONOBO_EX (&ev)) {
+		nautilus_adapter_load_strategy_report_async_status (
+			object, m_data, NULL, c, &ev);
+	}
+
+	CORBA_exception_free (&ev);
 }

@@ -1,5 +1,21 @@
 2002-05-31  Michael Meeks  <michael@ximian.com>
 
+	* components/adapter/nautilus-adapter-file-load-strategy.c
+	(nautilus_adapter_file_load_strategy_load_location): upd.
+	(get_file_load_method): impl.
+
+	* components/adapter/nautilus-adapter-stream-load-strategy.c
+	(nautilus_adapter_stream_load_strategy_load_location): upd.
+	(unref_stream_cb, get_stream_load_method): impl.
+
+	* components/adapter/nautilus-adapter-load-strategy.c
+	(nautilus_adapter_load_strategy_load_async): impl.
+	(nautilus_adapter_load_strategy_report_async_status): impl.
+	(nautilus_adapter_load_strategy_report_load_failed),
+	(nautilus_adapter_load_strategy_report_load_complete): prune.
+
+2002-05-31  Michael Meeks  <michael@ximian.com>
+
 	* src/file-manager/fm-directory-view.c
 	(display_pending_idle_callback): only NIL the idle_id
 	if we are going to return FALSE and disconnect
