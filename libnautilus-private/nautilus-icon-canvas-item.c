@@ -48,6 +48,8 @@
 #include <libart_lgpl/art_svp_vpath.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomecanvas/gnome-canvas-util.h>
+#include <atk/atkimage.h>
+#include <atk/atkcomponent.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -1716,16 +1718,86 @@ nautilus_icon_canvas_item_accessible_class_init (AtkObjectClass *klass)
 	klass->get_description = nautilus_icon_canvas_item_accessible_get_description;
 }
 
+
+static G_CONST_RETURN gchar * 
+nautilus_icon_canvas_item_accessible_get_image_description
+	(AtkImage *image)
+{
+	return _("file icon");
+}
+
+
+static void
+nautilus_icon_canvas_item_accessible_get_image_size
+	(AtkImage *image, 
+	 gint     *width,
+	 gint     *height)
+{
+	NautilusIconCanvasItem *item;
+
+	item = eel_accessibility_get_gobject (ATK_OBJECT (image));
+
+	if (!item || !item->details->pixbuf) {
+		*width = *height = 0;
+	} else {
+		*width = gdk_pixbuf_get_width (item->details->pixbuf);
+		*height = gdk_pixbuf_get_height (item->details->pixbuf);
+	}
+}
+
+static void
+nautilus_icon_canvas_item_accessible_get_image_position
+	(AtkImage		 *image,
+	 gint                    *x,
+	 gint	                 *y,
+	 AtkCoordType	         coord_type)
+{
+	AtkComponentIface *component_if;
+
+	component_if = g_type_interface_peek (image, ATK_TYPE_COMPONENT);
+
+	component_if->get_position
+		(ATK_COMPONENT (image), x, y, coord_type);
+}
+
+static gboolean
+nautilus_icon_canvas_item_accessible_set_image_description
+	(AtkImage    *image,
+	 const gchar *description)
+{
+	g_warning (G_STRLOC "this api seems broken");
+	return FALSE;
+}
+
+static void
+nautilus_icon_canvas_item_accessible_image_interface_init (AtkImageIface *iface)
+{
+	iface->get_image_description = nautilus_icon_canvas_item_accessible_get_image_description;
+	iface->set_image_description = nautilus_icon_canvas_item_accessible_set_image_description;
+	iface->get_image_size        = nautilus_icon_canvas_item_accessible_get_image_size;
+	iface->get_image_position    = nautilus_icon_canvas_item_accessible_get_image_position;
+}
+
 static GType
 nautilus_icon_canvas_item_accessible_get_type (void)
 {
 	static GType type = 0;
 
 	if (!type) {
+		static const GInterfaceInfo atk_image_info = {
+			(GInterfaceInitFunc)
+			nautilus_icon_canvas_item_accessible_image_interface_init,
+			(GInterfaceFinalizeFunc) NULL,
+			NULL
+		};
+
 		type = eel_accessibility_create_derived_type (
 			"NautilusIconCanvasItemAccessibility",
 			GNOME_TYPE_CANVAS_ITEM,
 			nautilus_icon_canvas_item_accessible_class_init);
+
+		g_type_add_interface_static (
+			type, ATK_TYPE_IMAGE, &atk_image_info);
 	}
 
 	return type;
