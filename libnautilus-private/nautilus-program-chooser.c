@@ -33,6 +33,7 @@
 #include "nautilus-program-choosing.h"
 #include "nautilus-view-identifier.h"
 #include "nautilus-multihead-hacks.h"
+#include "egg-screen-help.h"
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-gtk-macros.h>
@@ -181,15 +182,13 @@ help_cb (GtkWidget *button, NautilusProgramChooser *program_chooser)
 		break;
 	}
 
-	gnome_help_display_desktop (NULL,
-				    "user-guide",
-				    "wgosnautilus.xml",
-				    section,
-				    &error);
+	egg_screen_help_display_desktop (
+			gtk_window_get_screen (GTK_WINDOW (program_chooser)),
+			NULL, "user-guide", "wgosnautilus.xml", section, &error);
 
 	if (error) {
 		GtkWidget *err_dialog;
-		err_dialog = gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (button)),
+		err_dialog = gtk_message_dialog_new (GTK_WINDOW (program_chooser),
 						     GTK_DIALOG_MODAL,
 						     GTK_MESSAGE_ERROR,
 						     GTK_BUTTONS_CLOSE,

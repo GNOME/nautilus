@@ -63,6 +63,7 @@
 #include <libnautilus-private/nautilus-icon-factory.h>
 #include <libnautilus-private/nautilus-undo-manager.h>
 #include <libnautilus-private/nautilus-multihead-hacks.h>
+#include <libnautilus-private/egg-screen-help.h>
 #include <libnautilus/nautilus-bonobo-ui.h>
 
 
@@ -683,16 +684,19 @@ help_menu_nautilus_manual_callback (BonoboUIComponent *component,
 			              gpointer user_data, 
 			              const char *verb)
 {
+	NautilusWindow *window;
 	GError *error;
 	GtkWidget *dialog;
 
 	error = NULL;
-	gnome_help_display_desktop (NULL,
-				    "user-guide",
-				    "wgosnautilus.xml",
-				    "gosnautilus-21", &error);
+	window = NAUTILUS_WINDOW (user_data);
+
+	egg_screen_help_display_desktop (
+		gtk_window_get_screen (GTK_WINDOW (window)),
+		NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-21", &error);
+
 	if (error) {
-		dialog = gtk_message_dialog_new (NULL,
+		dialog = gtk_message_dialog_new (GTK_WINDOW (window),
 						 GTK_DIALOG_MODAL,
 						 GTK_MESSAGE_ERROR,
 						 GTK_BUTTONS_CLOSE,

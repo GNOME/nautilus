@@ -37,6 +37,10 @@ marshal_sources = \
 EGGFILES =			\
 	egg-screen-exec.h	\
 	egg-screen-exec.c	\
+	egg-screen-url.h	\
+	egg-screen-url.c	\
+	egg-screen-help.h	\
+	egg-screen-help.c	\
 	$(NULL)
 
 libnautilus_private_la_SOURCES = \

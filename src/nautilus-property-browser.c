@@ -83,6 +83,7 @@
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-theme.h>
 #include <libnautilus-private/nautilus-multihead-hacks.h>
+#include <libnautilus-private/egg-screen-help.h>
 #include <math.h>
 #include <atk/atkrelationset.h>
 
@@ -1490,12 +1491,12 @@ help_button_callback (GtkWidget *widget, GtkWidget *property_browser)
 	GError *error = NULL;
 	GtkWidget *dialog;
 
-	gnome_help_display_desktop (NULL,
-				    "user-guide",
-				    "wgosnautilus.xml", "gosnautilus-50",
-				    &error);
+	egg_screen_help_display_desktop (
+		gtk_window_get_screen (GTK_WINDOW (property_browser)),
+		NULL, "user-guide", "wgosnautilus.xml", "gosnautilus-50", &error);
+
 	if (error) {
-		dialog = gtk_message_dialog_new (GTK_WINDOW (widget),
+		dialog = gtk_message_dialog_new (GTK_WINDOW (property_browser),
 						 GTK_DIALOG_DESTROY_WITH_PARENT,
 						 GTK_MESSAGE_ERROR,
 						 GTK_BUTTONS_CLOSE,

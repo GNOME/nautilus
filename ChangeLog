@@ -1,3 +1,35 @@
+2002-09-17  Mark McLoughlin  <mark@skynet.ie>
+
+	* libnautilus-private/Makefile.am:
+	* libnautilus-private/egg-screen-help.[ch]:
+	* libnautilus-private/egg-screen-url.[ch]:
+	add the multiscreen variants of gnome-help from libegg.
+
+	* libnautilus-private/nautilus-multihead-hacks.h: add
+	gtk_window_get_screen.
+
+	* libnautilus-private/nautilus-program-chooser.c:
+	(help_cb): use egg_screen_help_display_desktop and use
+	the chooser window as the transient parent for the error
+	dialog.
+
+	* src/nautilus-bookmarks-window.c:
+	(nautilus_bookmarks_window_response_callback): use
+	egg_screen_help_display_desktop.
+
+	* src/nautilus-preferences-dialog.c: (preferences_show_help):
+	use egg_screen_help_display_desktop and use the prefs dialog
+	as the transient parent for the error dialog rather than
+	the help button.
+
+	* src/nautilus-property-browser.c: (help_button_callback):
+	use egg_screen_help_display_desktop.
+
+	* src/nautilus-window-menus.c:
+	(help_menu_nautilus_manual_callback): use
+	egg_screen_help_display_desktop and use the NautilusWindow as
+	the transient parent for the error dialog.
+
 2002-09-13  Dave Camp  <dave@ximian.com>
 
 	* NEWS:

@@ -52,6 +52,7 @@ typedef struct _GdkDisplay GdkDisplay;
 #define gdk_screen_get_number(a)	DefaultScreen (GDK_DISPLAY ())
 #define gdk_screen_get_root_window(a)	gdk_get_default_root_window ()
 
+#define gtk_window_get_screen(a)	NULL
 #define gtk_window_set_screen(a,b)
 #define gtk_menu_set_screen(a, b)
 
