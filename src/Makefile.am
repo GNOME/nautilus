@@ -142,21 +142,11 @@ EXTRA_DIST =					\
 	$(ui_DATA)				\
 	check-nautilus				\
 	nautilus-shell-interface.idl		\
-	run-nautilus				\
 	$(NULL)
 
 BUILT_SOURCES = \
 	$(nautilus_shell_interface_idl_sources) \
 	$(NULL)
-
-install-data-hook: run-nautilus
-	$(mkinstalldirs) $(DESTDIR)/$(prefix)/bin
-	@list='run-nautilus'; for p in $$list; do\
-	  if test -f $$p; then \
-	    echo "  $(INSTALL_PROGRAM) $(srcdir)/$$p $(DESTDIR)/$(prefix)/bin/$$p"; \
-	    $(INSTALL_PROGRAM) $$p $(DESTDIR)/$(prefix)/bin/$$p; \
-	  else :; fi; \
-	done
 
 dist-hook:
 	cd $(distdir); rm -f $(CLEANFILES)

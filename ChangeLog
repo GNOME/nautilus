@@ -1,3 +1,26 @@
+2002-03-08  Darin Adler  <darin@bentspoon.com>
+
+	* components/tree/nautilus-tree-model.c:
+	(tree_node_has_dummy_child): Add new "inserted_first_child"
+	boolean so we can insert new children and get rid of the "empty"
+	node.
+	(insert_node): Handle the case where we insert the first child,
+	and the empty node goes away.
+	(start_monitoring_directory): Set the "done loading" state a bit
+	earlier.
+	(nautilus_tree_model_ref_node): Make the "done loading" state be
+	false if there are no children, so we see "Loading" rather than
+	"Empty" until we are sure it's empty.
+
+	* icons/default/default.xml:
+	* icons/gnome/gnome.xml:
+	* icons/sierra/sierra.xml:
+	* icons/tahoe/tahoe.xml:
+	Vertical offset of "-1" looks right.
+
+	* src/Makefile.am: Remove run-nautilus.
+	* src/run-nautilus: Remove.
+
 2002-03-08  Michael Meeks  <michael@ximian.com>
 
 	* src/nautilus-window.c

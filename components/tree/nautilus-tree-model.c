@@ -73,6 +73,7 @@ struct TreeNode {
 
 	TreeNode *first_child;
 	gboolean done_loading;
+	gboolean inserting_first_child;
 };
 
 struct NautilusTreeModelDetails {
@@ -282,7 +283,9 @@ static gboolean
 tree_node_has_dummy_child (TreeNode *node)
 {
 	return node->directory != NULL
-		&& (!node->done_loading || node->first_child == NULL);
+		&& (!node->done_loading
+		    || node->first_child == NULL
+		    || node->inserting_first_child);
 }
 
 static int
@@ -683,9 +686,24 @@ update_node_without_reporting (NautilusTreeModel *model, TreeNode *node)
 static void
 insert_node (NautilusTreeModel *model, TreeNode *parent, TreeNode *node)
 {
+	gboolean parent_empty;
+
+	parent_empty = parent->first_child == NULL;
+	if (parent_empty) {
+		parent->inserting_first_child = TRUE;
+	}
+
 	tree_node_parent (node, parent);
+
 	update_node_without_reporting (model, node);
 	report_node_inserted (model, node);
+
+	if (parent_empty) {
+		parent->inserting_first_child = FALSE;
+		if (!tree_node_has_dummy_child (parent)) {
+			report_dummy_row_deleted (model, parent);
+		}
+	}
 }
 
 static void
@@ -893,6 +911,8 @@ start_monitoring_directory (NautilusTreeModel *model, TreeNode *node)
 	node->files_changed_id = g_signal_connect 
 		(directory, "files_changed",
 		 G_CALLBACK (files_changed_callback), model);	
+
+	set_done_loading (model, node, nautilus_directory_are_all_files_seen (directory));
 	
 	attrs = get_tree_monitor_attributes ();
 	nautilus_directory_file_monitor_add (directory, model,
@@ -900,8 +920,6 @@ start_monitoring_directory (NautilusTreeModel *model, TreeNode *node)
 					     model->details->show_backup_files,
 					     attrs, files_changed_callback, model);
 	g_list_free (attrs);
-
-	set_done_loading (model, node, nautilus_directory_are_all_files_seen (directory));
 }
 
 static int
@@ -1289,6 +1307,9 @@ nautilus_tree_model_ref_node (GtkTreeModel *model, GtkTreeIter *iter)
 	} else {
 		g_assert (parent->all_children_ref_count >= 0);
 		if (++parent->all_children_ref_count == 1) {
+			if (parent->first_child == NULL) {
+				parent->done_loading = FALSE;
+			}
 			schedule_monitoring_update (NAUTILUS_TREE_MODEL (model));
 		}
 #if LOG_REF_COUNTS
