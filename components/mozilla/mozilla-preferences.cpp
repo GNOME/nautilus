@@ -32,6 +32,12 @@
 #include "nsIServiceManager.h"
 #include "nsIPref.h"
 
+#if (MOZILLA_MILESTONE >= 18)
+#define PREF_ID NS_PREF_CONTRACTID
+#else
+#define PREF_ID NS_PREF_PROGID
+#endif
+
 extern "C" gboolean
 mozilla_preference_set (const char	*preference_name,
 			const char	*new_value)
@@ -39,7 +45,7 @@ mozilla_preference_set (const char	*preference_name,
 	g_return_val_if_fail (preference_name != NULL, FALSE);
 	g_return_val_if_fail (new_value != NULL, FALSE);
 
-	nsCOMPtr<nsIPref> pref = do_CreateInstance(NS_PREF_CONTRACTID);
+	nsCOMPtr<nsIPref> pref = do_CreateInstance(PREF_ID);
 	
 	if (pref)
 	{
@@ -57,7 +63,7 @@ mozilla_preference_set_boolean (const char	*preference_name,
 {
 	g_return_val_if_fail (preference_name != NULL, FALSE);
 
-	nsCOMPtr<nsIPref> pref = do_CreateInstance(NS_PREF_CONTRACTID);
+	nsCOMPtr<nsIPref> pref = do_CreateInstance(PREF_ID);
 	
 	if (pref)
 	{
@@ -76,7 +82,7 @@ mozilla_preference_set_int (const char	*preference_name,
 {
 	g_return_val_if_fail (preference_name != NULL, FALSE);
 
-	nsCOMPtr<nsIPref> pref = do_CreateInstance(NS_PREF_CONTRACTID);
+	nsCOMPtr<nsIPref> pref = do_CreateInstance(PREF_ID);
 	
 	if (pref)
 	{

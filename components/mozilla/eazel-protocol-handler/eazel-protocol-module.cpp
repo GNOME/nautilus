@@ -34,10 +34,16 @@
 #include "nsIGenericFactory.h"
 #include "eazel-protocol-handler.h"
 
+#if (MOZILLA_MILESTONE >= 18)
+#define NETWORK_PROTOCOL_ID_PREFIX NS_NETWORK_PROTOCOL_CONTRACTID_PREFIX
+#else
+#define NETWORK_PROTOCOL_ID_PREFIX NS_NETWORK_PROTOCOL_PROGID_PREFIX
+#endif
+
 static nsModuleComponentInfo gResComponents[] = {
     { "The Eazel Protocol Handler", 
       NS_EAZELHANDLER_CID,
-      NS_NETWORK_PROTOCOL_CONTRACTID_PREFIX "eazel",
+      NETWORK_PROTOCOL_ID_PREFIX "eazel",
       eazelProtocolHandler::Create
     },
 };

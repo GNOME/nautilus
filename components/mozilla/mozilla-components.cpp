@@ -35,6 +35,12 @@
 #include "nsComponentManagerUtils.h"
 #include "nsILocalFile.h"
 
+#if (MOZILLA_MILESTONE >= 18)
+#define LOCAL_FILE_ID NS_LOCAL_FILE_CONTRACTID
+#else
+#define LOCAL_FILE_ID NS_LOCAL_FILE_PROGID
+#endif
+
 extern "C" gboolean
 mozilla_components_register_library (const char *class_uuid,
 				     const char *library_file_name,
@@ -48,7 +54,7 @@ mozilla_components_register_library (const char *class_uuid,
 	
 	nsCOMPtr<nsILocalFile> spec;
 
-	nsresult rv = nsComponentManager::CreateInstance (NS_LOCAL_FILE_CONTRACTID, 
+	nsresult rv = nsComponentManager::CreateInstance (LOCAL_FILE_ID, 
 							  nsnull, 
 							  NS_GET_IID (nsILocalFile), 
 							  getter_AddRefs (spec));
