@@ -1,4 +1,14 @@
-2000-04-23  J. Shane Culpepper  <pepper@eazel.com>
+2000-04-24  Darin Adler  <darin@eazel.com>
+
+	* components/rpmview/Makefile.am:
+	* components/services/install/Makefile.am:
+	Fixed a few things in these make files. There's still a lot to be fixed.
+	The most important fix was to add OAF_CFLAGS and OAF_LIBS. Without that
+	the build was failing. But these files still have a hard-coded
+	/usr/include path for librpm.
+
+2000-04-24  J. Shane Culpepper  <pepper@eazel.com>
+
 	* HACKING
 	Updating hacking to reflect the new gnet dependancy.
 
@@ -43,26 +53,28 @@
 	changed default background color of package view
 		
 2000-04-23  J. Shane Culpepper  <pepper@eazel.com>
-	*components/services/install/eazel-install.c
-	*components/services/install/Makefile.am
-	*components/services/install/eazel-install-lib-rpm.c
-	*components/services/install/eazel-install-lib-xml.c
-	*components/services/install/eazel-install-lib-xml.h
+	
+	* components/services/install/eazel-install.c
+	* components/services/install/Makefile.am
+	* components/services/install/eazel-install-lib-rpm.c
+	* components/services/install/eazel-install-lib-xml.c
+	* components/services/install/eazel-install-lib-xml.h
 
 	Added the http fetch of a package list from a remote server. Still 
 	need to add http fetch of the rpm files.
 
 2000-04-23  J. Shane Culpepper  <pepper@eazel.com>
-	*components/services/install/eazel-install.c
-	*components/services/install/eazel-install-lib.h
-	*components/services/install/eazel-install-lib-xml.h
-	*components/services/install/eazel-install-lib-xml.c
-	*components/services/install/eazel-install-lib-debug.h
-	*components/services/install/eazel-install-lib-debug.c
-	*components/services/install/eazel-install-lib-rpm.h
-	*components/services/install/eazel-install-lib-rpm.c
-	*components/services/install/eazel-install-lib-util.h
-	*components/services/install/eazel-install-lib-util.c
+	
+	* components/services/install/eazel-install.c
+	* components/services/install/eazel-install-lib.h
+	* components/services/install/eazel-install-lib-xml.h
+	* components/services/install/eazel-install-lib-xml.c
+	* components/services/install/eazel-install-lib-debug.h
+	* components/services/install/eazel-install-lib-debug.c
+	* components/services/install/eazel-install-lib-rpm.h
+	* components/services/install/eazel-install-lib-rpm.c
+	* components/services/install/eazel-install-lib-util.h
+	* components/services/install/eazel-install-lib-util.c
 
 	Broke up eazel-install-lib.h to appropriate headers for each source
 	file.  Did a little cleaning so that functions are more modular. 
@@ -82,11 +94,13 @@
 	-lrpm so we get the correct dependency libs such as -lgz2.
 
 2000-04-22  J. Shane Culpepper  <pepper@eazel.com>
-	*libnautilus-extensions/libnautilus-extensions.h
+	
+	* libnautilus-extensions/libnautilus-extensions.h
 	Fixing build bustage in components/help.  The header was pointing to
 	files in libnautilus instead of libnautilus-extensions.
 
 2000-04-21  Gene Z. Ragan  <gzr@eazel.com>
+	
 	* libnautilus-extensions/nautilus-icon-canvas-item.c
 	* libnautilus-extensions/nautilus-icon-canvas-item.h
 	(nautilus_icon_canvas_item_get_max_text_width):
