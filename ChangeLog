@@ -1,3 +1,13 @@
+2001-02-03  Gene Z. Ragan  <gzr@eazel.com>
+
+	Do a simple check for NULL instead of using
+	g_return_if_fail.  We don't need the error
+	reported to the terminal.
+	
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	(get_removable_volumes), (volume_is_removable),
+	(volume_is_read_only):
+
 2001-02-02  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	* components/services/install/command-line/eazel-alt-install-corba.

@@ -276,7 +276,9 @@ get_removable_volumes (void)
 	volumes = NULL;
 	
 	file = setmntent (_PATH_MNTTAB, "r");
-	g_return_val_if_fail (file != NULL, NULL);
+	if (file == NULL) {
+		return NULL;
+	}
 	
 	while ((ent = getmntent (file)) != NULL) {
 		/* Use noauto as our way of determining a removable volume */
@@ -316,7 +318,9 @@ volume_is_removable (const NautilusVolume *volume)
 	struct mntent *ent;
 	
 	file = setmntent (_PATH_MNTTAB, "r");
-	g_return_val_if_fail (file != NULL, FALSE);
+	if (file == NULL) {
+		return FALSE;
+	}
 	
 	/* Search for our device in the fstab */
 	while ((ent = getmntent (file)) != NULL) {
@@ -340,8 +344,10 @@ volume_is_read_only (const NautilusVolume *volume)
 	struct mntent *ent;
 	
 	file = setmntent (_PATH_MNTTAB, "r");
-	g_return_val_if_fail (file != NULL, FALSE);
-	
+	if (file == NULL) {
+		return FALSE;
+	}
+		
 	/* Search for our device in the fstab */
 	while ((ent = getmntent (file)) != NULL) {
 		if (strcmp (volume->device_path, ent->mnt_fsname) == 0) {
