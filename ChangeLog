@@ -1,3 +1,47 @@
+2001-03-05  Dan Mueth  <dan@eazel.com>
+
+	reviewed by: Ramiro Estrugo  <ramiro@eazel.com>
+
+	Updating contents of "Introductory Documents" at top of
+	help sidebar to include the GNOME User Guide.
+	Bug#: 7267
+
+	* components/help/topleveldocs.xml:
+
+	Adding version 1.0 of Vera's Nautilus Quick Reference.
+	Bug#: 7210
+
+	* help/nautilus-quick-reference/C/Makefile.am:
+	* help/nautilus-quick-reference/C/figures/colors_small.png:
+	* help/nautilus-quick-reference/C/figures/emblems.png:
+	* help/nautilus-quick-reference/C/figures/emblems_small.png:
+	* help/nautilus-quick-reference/C/figures/ff_small.png:
+	* help/nautilus-quick-reference/C/figures/find.png:
+	* help/nautilus-quick-reference/C/figures/find_small.png:
+	* help/nautilus-quick-reference/C/figures/full.png:
+	* help/nautilus-quick-reference/C/figures/full_small.png:
+	* help/nautilus-quick-reference/C/figures/locbar.png:
+	* help/nautilus-quick-reference/C/figures/locbar_small.png:
+	* help/nautilus-quick-reference/C/figures/menubar.png:
+	* help/nautilus-quick-reference/C/figures/menubar_small.png:
+	* help/nautilus-quick-reference/C/figures/music.png:
+	* help/nautilus-quick-reference/C/figures/music_small.png:
+	* help/nautilus-quick-reference/C/figures/navbar.png:
+	* help/nautilus-quick-reference/C/figures/navbar_small.png:
+	* help/nautilus-quick-reference/C/figures/patterns.png:
+	* help/nautilus-quick-reference/C/figures/sidebar.png:
+	* help/nautilus-quick-reference/C/figures/sidebar_small.png:
+	* help/nautilus-quick-reference/C/figures/themes.png:
+	* help/nautilus-quick-reference/C/figures/themes_small.png:
+	* help/nautilus-quick-reference/C/figures/viewmenu.png:
+	* help/nautilus-quick-reference/C/index.html:
+
+	Changing so that ownership of $(prefix)/share/omf/nautilus
+	is Nautilus - ie. it doesn't hang around after Nautilus
+	is removed.
+
+	* nautilus.spec.in:
+
 2001-03-04  Eskil Heyn Olsen  <eskil@eazel.com>
 
 	reviewed by: Robey Pointer <robey@eazel.com>
