@@ -1265,23 +1265,20 @@ canvas_position_to_grid_position (PlacementGrid *grid,
 				  ArtIRect canvas_position,
 				  ArtIRect *grid_position)
 {
-	/* The first bit of this block will identify all intersections
-	 * that the icon actually crosses.  The second bit will mark
-	 * any intersections that the icon is adjacent to.
-	 * The first causes minimal moving around during a snap, but
+	/* The first causes minimal moving around during a snap, but
 	 * can end up with partially overlapping icons.  The second one won't
 	 * allow any overlapping, but can cause more movement to happen 
 	 * during a snap. */
 	if (grid->tight) {
 		grid_position->x0 = ceil ((double)(canvas_position.x0 - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE_X);
 		grid_position->y0 = ceil ((double)(canvas_position.y0 - DESKTOP_PAD_VERTICAL) / SNAP_SIZE_Y);
-		grid_position->x1 = floor ((double)(canvas_position.x1 - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE_X);		
+		grid_position->x1 = floor ((double)(canvas_position.x1 - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE_X);
 		grid_position->y1 = floor ((double)(canvas_position.y1 - DESKTOP_PAD_VERTICAL) / SNAP_SIZE_Y);
 	} else {
 		grid_position->x0 = floor ((double)(canvas_position.x0 - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE_X);
 		grid_position->y0 = floor ((double)(canvas_position.y0 - DESKTOP_PAD_VERTICAL) / SNAP_SIZE_Y);
-		grid_position->x1 = ceil ((double)(canvas_position.x1 - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE_X);
-		grid_position->y1 = ceil ((double)(canvas_position.y1 - DESKTOP_PAD_VERTICAL) / SNAP_SIZE_Y);
+		grid_position->x1 = floor ((double)(canvas_position.x1 - DESKTOP_PAD_HORIZONTAL) / SNAP_SIZE_X);
+		grid_position->y1 = floor ((double)(canvas_position.y1 - DESKTOP_PAD_VERTICAL) / SNAP_SIZE_Y);
 	}
 
 	grid_position->x0 = CLAMP (grid_position->x0, 0, grid->num_columns - 1);

@@ -1,5 +1,12 @@
 2004-11-29  Alexander Larsson  <alexl@redhat.com>
 
+	* libnautilus-private/nautilus-icon-container.c:
+	(canvas_position_to_grid_position):
+	Fix positioning. Makes find_new_empty_spot tighter.
+	Patch from Jimmy Do <crispyleaves@gmail.com>
+
+2004-11-29  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-container.c: (snap_position),
 	(find_empty_location):
 	Fix a few typos in icon placement.
