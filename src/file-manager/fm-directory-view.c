@@ -3560,6 +3560,7 @@ bonobo_mime_action_activate_callback (CORBA_Object obj,
 	Bonobo_Listener listener;
 	CORBA_Environment ev;
 	BonoboMimeActionData *data;
+	CORBA_any any;
 
 	data = user_data;
 
@@ -3583,8 +3584,9 @@ bonobo_mime_action_activate_callback (CORBA_Object obj,
 						  &ev);
 
 	if (!BONOBO_EX (&ev)) {
-		Bonobo_Listener_event (listener, data->verb,
-				       (CORBA_any *)data->uri_list, &ev);
+		any._type = TC_CORBA_sequence_CORBA_string;
+		any._value = data->uri_list;
+		Bonobo_Listener_event (listener, data->verb, &any, &ev);
 		bonobo_object_release_unref (listener, &ev);
 	} else {
 		GtkWidget *dialog;

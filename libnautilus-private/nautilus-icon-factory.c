@@ -117,6 +117,7 @@ typedef struct {
 	
 	GdkPixbuf *pixbuf;
 	GnomeIconData *icon_data;
+	time_t mtime; /* Only used for absolute filenames */
 
 	CircularList recently_used_node;
 } CacheIcon;
@@ -408,7 +409,8 @@ cache_icon_new (GdkPixbuf     *pixbuf,
 	icon->ref_count = 1;
 	icon->pixbuf = pixbuf;
 	icon->icon_data = icon_data;
-
+	icon->mtime = 0;
+	
 	return icon;
 }
 
@@ -1184,18 +1186,24 @@ create_normal_cache_icon (const char *icon,
 	CacheIcon *cache_icon;
 	GdkPixbuf *pixbuf;
 	int base_size;
+	struct stat statbuf;
+	time_t mtime;
 		
 	factory = get_icon_factory ();
 
 	icon_data = NULL;
 	filename = NULL;
 
+	mtime = 0;
+	
 	base_size = 0;
 	if (icon[0] == '/') {
 		/* FIXME: maybe we should add modifier to the filename
 		 *        before the extension */
-		if (g_file_test (icon, G_FILE_TEST_IS_REGULAR)) {
+		if (stat (icon, &statbuf) == 0 &&
+		    S_ISREG (statbuf.st_mode)) {
 			filename = g_strdup (icon);
+			mtime = statbuf.st_mtime;
 		}
 	} else {
 		if (modifier) {
@@ -1234,7 +1242,8 @@ create_normal_cache_icon (const char *icon,
 	}
 	
 	cache_icon = cache_icon_new (pixbuf, icon_data);
-
+	cache_icon->mtime = mtime;
+	
 	return cache_icon;
 }
 
@@ -1256,6 +1265,7 @@ get_icon_from_cache (const char *icon,
 	CacheKey *key;
 	CacheIcon *cached_icon, *base_cached_icon;
 	gpointer key_in_table, value;
+	struct stat statbuf;
 	
 	g_return_val_if_fail (icon != NULL, NULL);
 
@@ -1278,6 +1288,16 @@ get_icon_from_cache (const char *icon,
 		g_assert (value != NULL);
 		key = key_in_table;
 		cached_icon = value;
+	}
+
+	/* Make sure that thumbnails and image-as-itself icons gets
+	   reloaded when they change: */
+	if (cached_icon && icon[0] == '/') {
+		if (stat (icon, &statbuf) != 0 ||
+		    !S_ISREG (statbuf.st_mode) ||
+		    statbuf.st_mtime != cached_icon->mtime) {
+			cached_icon = NULL;
+		}
 	}
 
 	if (cached_icon == NULL) {

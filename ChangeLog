@@ -1,5 +1,13 @@
 2003-01-20  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-directory-view.c (bonobo_mime_action_activate_callback):
+	Correct the CORBA_Any usage with context menus.
+
+	* libnautilus-private/nautilus-icon-factory.c:
+	Look at mtime for absolute filename icons so we reload thumbnails etc.
+
+2003-01-20  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-container.c:
 	When deleting an icon with the keyboard focus, set focus on
 	an adjacent icon.
