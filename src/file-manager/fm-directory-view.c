@@ -5983,6 +5983,23 @@ can_use_component_for_file (FMDirectoryView *view,
 }
 
 static void
+activate_weak_notify (gpointer user_data, 
+		      GObject *object)
+{
+	eel_timed_wait_stop (cancel_activate_callback, user_data);
+	cancel_activate_callback (user_data);
+}	      
+
+static void
+stop_activate (ActivateParameters *parameters)
+{
+	eel_timed_wait_stop (cancel_activate_callback, parameters);
+	g_object_weak_unref (G_OBJECT (parameters->view), 
+			     activate_weak_notify, 
+			     parameters);
+}
+
+static void
 activate_callback (NautilusFile *file, gpointer callback_data)
 {
 	ActivateParameters *parameters;
@@ -5995,7 +6012,7 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 
 	parameters = callback_data;
 
-	eel_timed_wait_stop (cancel_activate_callback, parameters);
+	stop_activate (parameters);
 
 	view = FM_DIRECTORY_VIEW (parameters->view);
 
@@ -6100,7 +6117,8 @@ activation_drive_mounted_callback (gboolean succeeded,
 							parameters);
 	} else {
 		if (!parameters->cancelled) {
-			eel_timed_wait_stop (cancel_activate_callback, parameters);
+			stop_activate (parameters);
+
 			eel_show_error_dialog_with_details (error, NULL,
 							    _("Mount Error"),
 			                                    detailed_error, 
@@ -6126,7 +6144,7 @@ activate_activation_uri_ready_callback (NautilusFile *file, gpointer callback_da
 	parameters = callback_data;
 
 	if (nautilus_file_is_broken_symbolic_link (file)) {
-		eel_timed_wait_stop (cancel_activate_callback, parameters);
+		stop_activate (parameters);
 		report_broken_symbolic_link (parameters->view, file);
 		nautilus_file_unref (parameters->file);
 		g_free (parameters);
@@ -6249,6 +6267,8 @@ fm_directory_view_activate_file (FMDirectoryView *view,
 		 timed_wait_prompt,
 		 fm_directory_view_get_containing_window (view));
 	g_free (timed_wait_prompt);
+
+	g_object_weak_ref (G_OBJECT (view), activate_weak_notify, parameters);
 
 	nautilus_file_call_when_ready
 		(file, attributes, activate_activation_uri_ready_callback, parameters);

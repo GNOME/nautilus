@@ -1,5 +1,14 @@
 2004-03-30  Dave Camp  <dave@ximian.com>
 
+	* src/file-manager/fm-directory-view.c: (activate_weak_notify),
+	(stop_activate), (activate_callback),
+	(activation_drive_mounted_callback),
+	(activate_activation_uri_ready_callback),
+	(fm_directory_view_activate_file): Cancel an activation if the
+	window/view goes away.
+
+2004-03-30  Dave Camp  <dave@ximian.com>
+
 	* src/file-manager/fm-directory-view.c: (activate_callback),
 	(activate_activation_uri_ready_callback): Fix a couple
 	of file/memory leaks.
