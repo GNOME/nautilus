@@ -1,20 +1,23 @@
 NULL=
 
-SUBDIRS = ardmore arlo eazel gnome vector villanova throbber
+SUBDIRS = ardmore arlo eazel gnome sidebar_tab_pieces vector villanova throbber
 
 icondir = $(datadir)/pixmaps/nautilus
 
 icon_DATA =\
 	About_Image.png \
+	Back.png \
+	Forward.png \
+	Home.png \
+	Refresh.png \
+	Search.png \
+	Stop.png \
+	Up.png \
 	SearchWeb.png \
 	Services.png \
 	about_background.png \
 	audio.png \
 	backgrounds.png \
-	bubble-LL.png \
-	bubble-LR.png \
-	bubble-UL.png \
-	bubble-UR.png \
 	chit_frame.png \
 	colors.png \
 	computer.png \
@@ -137,12 +140,31 @@ icon_DATA =\
 	i-device.png \
 	i-dirclosed.png \
 	i-directory-12.png \
-	i-directory-192.png \
+	i-directory-12-aa.png \
 	i-directory-24.png \
+	i-directory-24-aa.png \
 	i-directory-36.png \
+	i-directory-36-aa.png \
 	i-directory-72.png \
+	i-directory-72-aa.png \
 	i-directory-96.png \
+	i-directory-96-aa.png \
 	i-directory.png \
+	i-directory-aa.png \
+	i-directory-accept-12.png \
+	i-directory-accept-12-aa.png \
+	i-directory-accept-24.png \
+	i-directory-accept-24-aa.png \
+	i-directory-accept-36.png \
+	i-directory-accept-36-aa.png \
+	i-directory-accept-72.png \
+	i-directory-accept-72-aa.png \
+	i-directory-accept-96.png \
+	i-directory-accept-96-aa.png \
+	i-directory-accept.png \
+	i-directory-accept-aa.png \
+	i-directory.xml \
+	i-directory-accept.xml \
 	i-executable-aa.png \
 	i-executable.png \
 	i-fifo.png \
@@ -199,12 +221,12 @@ icon_DATA =\
 	rightarrow.png \
 	search.png \
 	services-rpm-72.png \
+	side_bar_image.png \
 	temp-home.png \
 	text-selection-frame.png \
 	theme_preview.png \
 	thumbnail_frame.aa.png \
 	thumbnail_frame.png \
-	tiny-alert.png \
 	trash-empty.png \
 	trash-full.png \
 	uparrow.png \

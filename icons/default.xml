@@ -1,11 +1,21 @@
 <?xml version="1.0"?>
-<theme name="default" _description="This simple theme uses the standard GNOME icons.">
-  <sidebar SIDEBAR_BACKGROUND_COLOR="rgb:DDDD/DDDD/FFFF"/>
-  <desktop BACKGROUND_TILE_IMAGE="patterns/gnome.jpg"/>
-  <directory BACKGROUND_COLOR="rgb:FFFF/FFFF/FFFF" HIGHLIGHT_COLOR_RGBA="0x66000000"/>
-  <icon HIGHLIGHT_BACKGROUND_COLOR="rgb:0000/0000/0000" HIGHLIGHT_TEXT_COLOR="rgb:FFFF/FFFF/FFFF" TEXT_FILL_COLOR="rgb:FFFF/FFFF/FFFF"/>
-  <toolbar FRAME_TYPE="in"/>
-  <thumbnails FRAME_OFFSETS="3,3,6,6"/>
-  <throbber FRAME_COUNT="15" URL="http://www.eazel.com" DELAY="75"/>
-  <zoom_control NUMBER_V_OFFSET="-6" NUMBER_H_OFFSET="-2" DIGIT_WIDTH="6"/>
+<theme name="Default" _description="This is the default theme for Nautilus.">
+  <sidebar SIDEBAR_BACKGROUND_TILE_IMAGE="./side_bar_image.png"
+  SIDEBAR_BACKGROUND_COLOR="rgb:4747/4A4A/7C7C-rgb:2222/2323/3A3A:h"
+  TITLE_COLOR="rgb:FFFF/FFFF/FFFF" TITLE_INFO_COLOR="rgb:FFFF/FFFF/FFFF" TITLE_SHADOW_COLOR="rgb:0000/0000/0000"
+  TAB_PIECE_IMAGES="sidebar_tab_pieces" COMBINE="TRUE" LEFT_OFFSET="0" SHADOW_OFFSET="1" TEXT_H_OFFSET="-4" LABEL_COLOR="rgb:FFFF/FFFF/FFFF" TAB_FONT="-*-helvetica-bold-r-normal-*-24-*-*-*-*-*-*-*" />
+
+ <desktop BACKGROUND_TILE_IMAGE="patterns/gnome.jpg" BACKGROUND_COLOR="rgb:FFFF/FFFF/FFFF"/>
+ 
+ <directory BACKGROUND_COLOR="rgb:CFFF/D333/D999"
+  SELECTION_BOX_COLOR_RGBA="0x727D974C" SELECTION_BOX_COLOR="rgb:7222/7DDD/9777" />
+
+ <icon HIGHLIGHT_BACKGROUND_COLOR="rgb:0000/0000/0000" HIGHLIGHT_TEXT_COLOR="rgb:FFFF/FFFF/FFFF" TEXT_FILL_COLOR="rgb:FFFF/FFFF/FFFF"/>
+  
+ <thumbnails FRAME_OFFSETS="3,3,6,6"/>
+  
+ <throbber FRAME_COUNT="15" URL="http://www.eazel.com" DELAY="75"/>
+  
+ <zoom_control NUMBER_V_OFFSET="-6" NUMBER_H_OFFSET="-2" DIGIT_WIDTH="6"/>
+ 
  </theme>
