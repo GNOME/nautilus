@@ -6,6 +6,7 @@
 #include <limits.h>
 #include <gnome-xml/parser.h>
 #include <dirent.h>
+#include <ctype.h>
 
 typedef struct {
   NautilusViewFrame *view_frame;
@@ -20,52 +21,118 @@ typedef struct {
 typedef enum { PRIMARY, SECONDARY, SEE, SEEALSO, NONE, T_LAST=NONE } ItemType;
 
 typedef struct {
-  char *text, *motext, *uri;
+  char *text, *uri;
   GTree *subitems;
-  ItemType type : 7;
+  ItemType type : 6;
   gboolean shown : 1;
+  gboolean xref : 1;
 } IndexItem;
 
 typedef struct {
   HyperbolaNavigationIndex *hni;
   char *words[50];
   int nwords;
+  gboolean did_select;
 } CListCreationInfo;
 
-static gint
-hyperbola_navigation_index_show_item(const char *key, IndexItem *ii, CListCreationInfo *cci)
-{
-  int rownum, indent;
-  char rowtext[512], *textptr;
-  HyperbolaNavigationIndex *hni = cci->hni;
+typedef struct {
+  CListCreationInfo *cci;
+  int indent, matches;
+  int super_matches[50];
+} MoreCListInfo;
 
-  if(ii->type != PRIMARY)
+static gboolean
+text_matches(const char *text, const char *check_for)
+{
+  const char *ctmp;
+  int check_len;
+
+  if(!check_for || !*check_for)
+    return FALSE;
+
+  ctmp = text;
+  check_len = strlen(check_for);
+
+  while(*ctmp)
     {
-      g_warning("Subitems not yet handled!");
-      return 0;
+      if(tolower(*ctmp) == tolower(*check_for))
+	{
+	  if(!strncasecmp(ctmp, check_for, check_len))
+	    return TRUE;
+	}
+
+      ctmp++;
+    }
+
+  if(strstr(text, check_for))
+    {
+      static volatile int barrier;
+      while(barrier);
+    }
+
+  return FALSE;
+}
+
+static gint
+hyperbola_navigation_index_show_item(const char *key, IndexItem *ii, MoreCListInfo *mci)
+{
+  int rownum, i;
+  char rowtext[512], *textptr, *see_start, *see_end;
+  CListCreationInfo *cci = mci->cci;
+  HyperbolaNavigationIndex *hni = cci->hni;
+  MoreCListInfo sub_mci = *mci;
+  int my_matches; /* Whether this item is part of a match */
+  int add_matches; /* Whether this item itself contributed to a match */
+
+  /* Three types of display:
+     shown - when it is part of a match, or is a parent of a matched item
+     shown + colored - when it has all the stuff needed for a match, but no more
+     hidden - when it is totally irrelevant
+  */
+  sub_mci.indent++;
+  sub_mci.matches = 0;
+
+  /* We ignore secondary terms that were displayed on the toplevel
+     using the "secondary, primary" form - looks nicer when searching */
+  if(ii->xref && cci->nwords > 0)
+    return 0;
+
+  for(i = my_matches = add_matches = 0; i < cci->nwords; i++)
+    {
+      gboolean this_matches;
+
+      this_matches = text_matches(ii->text, cci->words[i]);
+      if(this_matches)
+	{
+	  add_matches++;
+	  sub_mci.super_matches[i] = 1;
+
+	}
+      if(mci->super_matches[i] || this_matches)
+	my_matches++;
     }
 
   switch(ii->type)
     {
-    case PRIMARY:
-      indent = 0;
+    default:
+      see_start = see_end = "";
+      break;
+    case SEE:
+      see_start = _("see ");
+      see_end = ")";
       break;
     case SEEALSO:
-    case SEE:
-    case SECONDARY:
-      indent = 2;
-      break;
-    default:
-      g_assert_not_reached();
+      see_start = _("see also ");
+      see_end = ")";
       break;
     }
 
-  g_snprintf(rowtext, sizeof(rowtext), "%*s%s", indent * 2, "", ii->text); /* Lame way of indenting entries */
+  g_snprintf(rowtext, sizeof(rowtext), "%*s%s%s%s", mci->indent * 3, "", see_start, ii->text, see_end);
   textptr = rowtext;
   rownum = gtk_clist_append(GTK_CLIST(hni->clist), &textptr);
   gtk_clist_set_row_data(GTK_CLIST(hni->clist), rownum, ii);
 
-  if(cci->nwords) /* highlight this row as a match */
+  if(cci->nwords && my_matches >= cci->nwords && add_matches) /* highlight this row as a match */
     {
       GdkColor c;
 
@@ -73,7 +140,24 @@ hyperbola_navigation_index_show_item(const char *key, IndexItem *ii, CListCreati
       c.blue = 20000;
       gdk_color_alloc(gdk_rgb_get_cmap(), &c);
       gtk_clist_set_background(GTK_CLIST(hni->clist), rownum, &c);
+
+      if(!cci->did_select)
+	{
+	  cci->did_select = TRUE;
+	  gtk_clist_select_row(GTK_CLIST(hni->clist), rownum, 0);
+	}
     }
+
+  if(ii->subitems)
+    g_tree_traverse(ii->subitems, (GTraverseFunc)hyperbola_navigation_index_show_item, G_IN_ORDER, &sub_mci);
+
+  /* Easiest way of showing the parents of matching items */
+  if(!sub_mci.matches && my_matches < cci->nwords)
+    gtk_clist_remove(GTK_CLIST(hni->clist), rownum);
+
+  if(sub_mci.matches
+     || my_matches >= cci->nwords)
+    mci->matches++;
 
   return 0;
 }
@@ -82,6 +166,7 @@ static void
 hyperbola_navigation_index_update_clist(HyperbolaNavigationIndex *hni)
 {
   CListCreationInfo cci;
+  MoreCListInfo mci;
   char *stxt, *tmp_stxt;
   char *ctmp = NULL;
   int tmp_len;
@@ -89,18 +174,43 @@ hyperbola_navigation_index_update_clist(HyperbolaNavigationIndex *hni)
   stxt = gtk_entry_get_text(GTK_ENTRY(hni->ent));
 
   memset(&cci, 0, sizeof(cci));
+  memset(&mci, 0, sizeof(mci));
+
   cci.hni = hni;
 
   tmp_len = strlen(stxt)+1;
   tmp_stxt = alloca(tmp_len);
   memcpy(tmp_stxt, stxt, tmp_len);
-  for(cci.nwords = 0; (ctmp = strtok(tmp_stxt, ", \t")) && cci.nwords < sizeof(cci.words)/sizeof(cci.words[0]); cci.nwords++)
-    cci.words[cci.nwords] = ctmp;
+  ctmp = strtok(tmp_stxt, ", \t");
+  cci.nwords = 0;
+  if(ctmp)
+    {
+      do
+	{
+	  cci.words[cci.nwords] = ctmp;
+	  g_print("Word %d is %s\n", cci.nwords, ctmp);
+	  cci.nwords++;
+	}
+      while((ctmp = strtok(NULL, ", \t")) && cci.nwords < sizeof(cci.words)/sizeof(cci.words[0]));
+    }
+
+  cci.did_select = FALSE;
+  mci.cci = &cci;
+  mci.indent = 0;
 
   gtk_clist_freeze(GTK_CLIST(hni->clist));
   gtk_clist_clear(GTK_CLIST(hni->clist));
 
-  g_tree_traverse(hni->all_items, (GTraverseFunc)hyperbola_navigation_index_show_item, G_IN_ORDER, &cci);
+  g_tree_traverse(hni->all_items, (GTraverseFunc)hyperbola_navigation_index_show_item, G_IN_ORDER, &mci);
+
+  if(!mci.matches && cci.nwords)
+    {
+      int rownum;
+      const char *nomatches[] = {_("No matches.")};
+
+      rownum = gtk_clist_append(GTK_CLIST(hni->clist), (char **)nomatches);
+      gtk_clist_set_selectable(GTK_CLIST(hni->clist), rownum, FALSE);
+    }
 
   gtk_clist_thaw(GTK_CLIST(hni->clist));
 }
@@ -126,6 +236,9 @@ hyperbola_navigation_index_select_row(GtkWidget *clist, gint row, gint column, G
     return;
 
   ii = gtk_clist_get_row_data(GTK_CLIST(clist), row);
+  if(!ii->uri)
+    return;
+
   memset(&loc, 0, sizeof(loc));
   loc.requested_uri = ii->uri;
   loc.new_window_default = loc.new_window_suggested = loc.new_window_enforced = Nautilus_V_UNKNOWN;
@@ -228,6 +341,39 @@ characters (SAXParseInfo *spi,
   g_string_sprintfa(spi->sub_text, "%.*s", len, chars);
 }
 
+/* Removes all duplicate spaces */
+static void
+despace(GString *s)
+{
+  char *ctmp, *ctmp_s = NULL;
+  int i;
+
+  g_assert(s->len == strlen(s->str));
+  for(ctmp = s->str, i = s->len; *ctmp; ctmp++, i--)
+    {
+      if(isspace(*ctmp))
+	{
+	  if(*ctmp != ' ')
+	    *ctmp = ' ';
+	  if(!ctmp_s)
+	    ctmp_s = ctmp;
+	}
+      else if(ctmp_s)
+	{
+	  if((ctmp - ctmp_s) > 1)
+	    {
+	      memmove(ctmp_s + 1, ctmp, i + 1);
+	      ctmp = ctmp_s + 2;
+	      i--;
+	      if(i != strlen(ctmp))
+		g_error("i (%d) != strlen(ctmp) (%ld)", i, strlen(ctmp));
+	    }
+	  ctmp_s = NULL;
+	}
+    }
+  s->len = strlen(s->str);
+}
+
 static void
 end_element (SAXParseInfo *spi,
 	     const gchar *name)
@@ -266,9 +412,14 @@ end_element (SAXParseInfo *spi,
 	    parent_ii->subitems = g_tree_new((GCompareFunc)strcasecmp);
 	  parent_tree = parent_ii->subitems;
 
-	  it = SECONDARY;
+	  if(spi->stinfo[SECONDARY])
+	    it = SECONDARY;
+	  else if(spi->stinfo[SEE])
+	    it = SEE;
+	  else if(spi->stinfo[SEEALSO])
+	    it = SEEALSO;
 
-	  if(spi->stinfo[SECONDARY] && (spi->stinfo[SEE] || spi->stinfo[SEEALSO]))
+	  if((it == SECONDARY) && (spi->stinfo[SEE] || spi->stinfo[SEEALSO]))
 	    {
 	      /* Make a second layer */
 
@@ -295,6 +446,8 @@ end_element (SAXParseInfo *spi,
 	  it = PRIMARY;
 	  parent_tree = spi->idx->all_items;
 	}
+
+      g_assert(parent_tree != spi->idx->all_items || it == PRIMARY);
 
       ii = g_tree_lookup(parent_tree, spi->stinfo[it]);
       if(!ii)
@@ -332,7 +485,7 @@ end_element (SAXParseInfo *spi,
 		  strcat(buf, _(" (see also \""));
 		}
 
-	      strcat(buf, spi->stinfo[it]);
+	      strcat(buf, txt);
 	      strcat(buf, ")");
 	    }
 	  parent_tree = spi->idx->all_items;
@@ -341,14 +494,14 @@ end_element (SAXParseInfo *spi,
 	  if(!ii)
 	    {
 	      ii = g_new0(IndexItem, 1);
-	      ii->text = g_strdup(txt);
+	      ii->text = g_strdup(buf);
 	      g_tree_insert(parent_tree, ii->text, ii);
-	      ii->type = it;
+	      ii->type = PRIMARY;
+	      ii->xref = TRUE;
 	    }
 
 	  if(!ii->uri)
 	    ii->uri = g_strdup_printf("help:%s/%s/%s", spi->appname, spi->filename, spi->idx_ref);
-	  g_assert(ii->type == it);
 	}
 
       for(i = PRIMARY; i < NONE; i++)
@@ -385,7 +538,14 @@ end_element (SAXParseInfo *spi,
 
   g_return_if_fail(this_type != NONE && !spi->stinfo[this_type] && this_type == spi->sub_type);
 
-  spi->stinfo[this_type] = g_strdup(spi->sub_text->str);
+  if(spi->sub_text->len)
+    {
+      despace(spi->sub_text);
+      spi->stinfo[this_type] = g_strdup(spi->sub_text->str);
+      g_assert(spi->stinfo[this_type]);
+    }
+  g_message("Set \"%s\" for %s (%d)", spi->stinfo[this_type], name, this_type);
+  g_string_assign(spi->sub_text, "");
   spi->sub_type = NONE;
 }
 
@@ -519,11 +679,16 @@ BonoboObject *hyperbola_navigation_index_new(void)
 {
   HyperbolaNavigationIndex *hni;
   GtkWidget *wtmp, *vbox;
+  char *dir;
 
   hni = g_new0(HyperbolaNavigationIndex, 1);
   hni->all_items = g_tree_new((GCompareFunc)strcasecmp);
 
-  hyperbola_navigation_index_read(hni, "/gnome/share/gnome/help");
+  dir = gnome_datadir_file("gnome/help");
+  if(!dir)
+    return NULL;
+  hyperbola_navigation_index_read(hni, dir);
+  g_free(dir);
 
   vbox = gtk_vbox_new(FALSE, GNOME_PAD);
 
