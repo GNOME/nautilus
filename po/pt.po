@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 2.6\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-24 14:56+0100\n"
-"PO-Revision-Date: 2004-02-18 01:20+0000\n"
+"Report-Msgid-Bugs-To: Duarte Loreto <happyguy_pt@hotmail.com>\n"
+"POT-Creation-Date: 2004-02-28 14:42+0000\n"
+"PO-Revision-Date: 2004-02-28 14:45+0000\n"
 "Last-Translator: Duarte Loreto <happyguy_pt@hotmail.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -967,7 +967,7 @@ msgstr "Este tema utiliza pastas foto-realistas."
 #: libnautilus-extension/nautilus-property-page.c:176
 #: libnautilus-private/nautilus-column-utilities.c:43
 #: libnautilus-private/nautilus-program-chooser.c:1241
-#: src/file-manager/fm-list-view.c:1052
+#: src/file-manager/fm-list-view.c:1054
 #: src/file-manager/fm-search-list-view.c:501
 msgid "Name"
 msgstr "Nome"
@@ -1195,6 +1195,7 @@ msgstr "Activar parâmetros 'especiais' no diálogo de preferências de ficheiro
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:28
 msgid "Enables the classic Nautilus behavior, where all windows are browsers"
 msgstr ""
+"Activa o comportamento clássico do Nautilus, em que todas as janelas são de navegação"
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:29
 msgid ""
@@ -1333,6 +1334,9 @@ msgid ""
 "how Nautilus used to behave before version 2.6, and some people prefer this "
 "behavior."
 msgstr ""
+"Se definido como verdadeiro, todas as janelas Nautilus serão janelas de "
+"navegação. Esta é a forma como o Nautilus se comportava antes da versão 2.6 "
+"e algumas pessoas preferem este comportamento."
 
 #: libnautilus-private/apps_nautilus_preferences.schemas.in.h:48
 msgid ""
@@ -1694,26 +1698,23 @@ msgstr "Largura do painel lateral"
 
 #: libnautilus-private/nautilus-column-chooser.c:365
 msgid "Move _Up"
-msgstr ""
+msgstr "Mover A_cima"
 
 #: libnautilus-private/nautilus-column-chooser.c:374
 msgid "Move _Down"
-msgstr ""
+msgstr "Mover A_baixo"
 
 #: libnautilus-private/nautilus-column-chooser.c:383
-#, fuzzy
 msgid "_Show"
-msgstr "Apresentar %s"
+msgstr "_Apresentar"
 
 #: libnautilus-private/nautilus-column-chooser.c:393
-#, fuzzy
 msgid "_Hide"
-msgstr "_Ajuda"
+msgstr "_Esconder"
 
 #: libnautilus-private/nautilus-column-chooser.c:406
-#, fuzzy
 msgid "_Use Default"
-msgstr "Utilizar Fundo por _Omissão"
+msgstr "_Utilizar Omissão"
 
 #: libnautilus-private/nautilus-column-utilities.c:44
 msgid "The name and icon of the file."
@@ -2901,7 +2902,7 @@ msgid "Icon View"
 msgstr "Vista de Ícones"
 
 #: libnautilus-private/nautilus-global-preferences.c:179
-#: src/file-manager/fm-list-view.c:1105
+#: src/file-manager/fm-list-view.c:1107
 #: src/nautilus-file-management-properties.glade.h:54
 msgid "List View"
 msgstr "Vista em Lista"
@@ -4186,9 +4187,9 @@ msgid "An _Application..."
 msgstr "Uma _Aplicação..."
 
 #: src/file-manager/fm-directory-view.c:3915
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot open %s"
-msgstr "Não Pode Copiar o Lixo"
+msgstr "Incapaz de abrir %s"
 
 #: src/file-manager/fm-directory-view.c:3918
 #, c-format
@@ -4202,6 +4203,14 @@ msgid ""
 "extension for \"%s\", then open the file normally. Alternatively, use the "
 "Open With menu to choose a specific application for the file. "
 msgstr ""
+"O nome de ficheiro \"%s\" indica que este ficheiro é do tipo \"%s\". O conteúdo "
+"do ficheiro indica que este é do tipo \"%s\". Se abrir este ficheiro, ele poderá "
+"representar um risco de segurança para o seu sistema.\n"
+"\n"
+"Não abra o ficheiro excepto se o tiver criado ou se o tiver recebido de uma "
+"fonte segura. Para abrir o ficheiro, renomeie-o para a extensão correcta para "
+"\"%s\" e de seguida abra o ficheiro normalmente. Alternativamente, utilize o "
+"menu Abrir Com para seleccionar uma aplicação específica para o ficheiro. "
 
 #: src/file-manager/fm-directory-view.c:4289
 #, c-format
@@ -4691,12 +4700,12 @@ msgstr "Erro de Arrastar e Largar"
 msgid "An invalid drag type was used."
 msgstr "Foi utilizado um tipo de arrasto inválido."
 
-#: src/file-manager/fm-list-view.c:1512
+#: src/file-manager/fm-list-view.c:1514
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s Colunas Visíveis"
 
-#: src/file-manager/fm-list-view.c:1531
+#: src/file-manager/fm-list-view.c:1533
 msgid "Choose the order of information to appear in this folder."
 msgstr "Seleccione a forma de ordenação da informação contida nesta pasta."
 
