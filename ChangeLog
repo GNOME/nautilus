@@ -1,5 +1,11 @@
 2000-06-26  Eskil Heyn Olsen  <eskil@eazel.com>
 
+	* helper-utilities/authenticate/Makefile.am:
+	Seems that libnautilus-extensions dep on libnautilus that dep on
+	bonobo, thus this needed BONOBO_LIBS as well.
+
+2000-06-26  Eskil Heyn Olsen  <eskil@eazel.com>
+
 	* components/services/time/service/Makefile.am:
 	* components/services/install/command-line/Makefile.am:
 	* components/services/install/server/Makefile.am:

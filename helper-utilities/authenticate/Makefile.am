@@ -27,4 +27,5 @@ nautilus_authenticate_LDFLAGS =	\
 	$(GCONF_LIBS) \
 	$(PAM_LIBS) \
 	$(top_builddir)/libnautilus/libnautilus.la \
+	$(BONOBO_LIBS) \
 	$(NULL)
