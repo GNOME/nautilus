@@ -290,7 +290,7 @@ nautilus_file_get_internal (const char *uri, gboolean create)
 	}
 
 	/* Get object that represents the directory. */
-	directory = nautilus_directory_get (directory_uri);
+	directory = nautilus_directory_get_internal (directory_uri, create);
 	g_free (directory_uri);
 	if (directory == NULL) {
 		gnome_vfs_uri_unref (vfs_uri);
@@ -1013,6 +1013,42 @@ nautilus_file_should_get_top_left_text (NautilusFile *file)
 	return nautilus_file_is_local (file);
 }
 
+static void
+update_link (NautilusFile *link_file, NautilusFile *target_file)
+{
+	g_assert (NAUTILUS_IS_FILE (link_file));
+	g_assert (NAUTILUS_IS_FILE (target_file));
+	g_assert (!info_missing (link_file, GNOME_VFS_FILE_INFO_FIELDS_SYMLINK_NAME));
+}
+
+static GList *
+get_link_files (NautilusFile *target_file)
+{
+	char *uri;
+	GList *link_files;
+	
+	if (symbolic_links == NULL) {
+		link_files = NULL;
+	} else {
+		uri = nautilus_file_get_uri (target_file);
+		link_files = g_hash_table_lookup (symbolic_links, uri);
+		g_free (uri);
+	}
+	return nautilus_file_list_copy (link_files);
+}
+
+static void
+update_links_if_target (NautilusFile *target_file)
+{
+	GList *link_files, *p;
+	
+	link_files = get_link_files (target_file);
+	for (p = link_files; p != NULL; p = p->next) {
+		update_link (NAUTILUS_FILE (p->data), target_file);
+	}
+	nautilus_file_list_free (link_files);
+}
+
 gboolean
 nautilus_file_update_info (NautilusFile *file, GnomeVFSFileInfo *info)
 {
@@ -1042,6 +1078,8 @@ nautilus_file_update_info (NautilusFile *file, GnomeVFSFileInfo *info)
 	file->details->name = info->name;
 
 	add_to_link_hash_table (file);
+
+	update_links_if_target (file);
 
 	return TRUE;
 }
@@ -3593,6 +3631,8 @@ nautilus_file_mark_gone (NautilusFile *file)
 	GList **files;
 
 	file->details->is_gone = TRUE;
+
+	update_links_if_target (file);
 	
 	/* Drop away all the old file information, but keep the name. */
 	/* FIXME: Maybe we can get rid of the name too eventually, but
@@ -3657,10 +3697,19 @@ nautilus_file_changed (NautilusFile *file)
 void
 nautilus_file_emit_changed (NautilusFile *file)
 {
+	GList *link_files, *p;
+
 	g_assert (NAUTILUS_IS_FILE (file));
 
 	/* Send out a signal. */
 	gtk_signal_emit (GTK_OBJECT (file), signals[CHANGED], file);
+
+	/* Tell link files pointing to this object about the change. */
+	link_files = get_link_files (file);
+	for (p = link_files; p != NULL; p = p->next) {
+		nautilus_file_changed (NAUTILUS_FILE (p->data));
+	}
+	nautilus_file_list_free (link_files);
 }
 
 /**

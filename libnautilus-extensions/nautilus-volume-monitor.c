@@ -33,7 +33,7 @@
 #include <libgnomevfs/gnome-vfs.h>
 #include <mntent.h>
 #include <libnautilus-extensions/nautilus-cdrom-extensions.h>
-#include <libnautilus-extensions/nautilus-directory-private.h>
+#include <libnautilus-extensions/nautilus-directory-notify.h>
 #include <libnautilus-extensions/nautilus-file-utilities.h>
 #include <libnautilus-extensions/nautilus-gtk-extensions.h>
 #include <libnautilus-extensions/nautilus-gtk-macros.h>

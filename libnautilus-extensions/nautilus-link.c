@@ -25,8 +25,7 @@
 #include <config.h>
 #include "nautilus-link.h"
 
-/* FIXME: Bad to include the private file here, but necessary for now. */
-#include "nautilus-directory-private.h"
+#include "nautilus-directory-notify.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
 #include "nautilus-global-preferences.h"

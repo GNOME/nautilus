@@ -26,6 +26,7 @@
 #include "nautilus-directory-private.h"
 
 #include "nautilus-directory-metafile.h"
+#include "nautilus-directory-notify.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-glib-extensions.h"
@@ -285,7 +286,7 @@ is_canonical_uri (const char *uri)
  * If two windows are viewing the same uri, the directory object is shared.
  */
 NautilusDirectory *
-nautilus_directory_get (const char *uri)
+nautilus_directory_get_internal (const char *uri, gboolean create)
 {
 	char *canonical_uri;
 	NautilusDirectory *directory;
@@ -309,7 +310,7 @@ nautilus_directory_get (const char *uri)
 					 canonical_uri);
 	if (directory != NULL) {
 		nautilus_directory_ref (directory);
-	} else {
+	} else if (create) {
 		/* Create a new directory object instead. */
 		directory = nautilus_directory_new (canonical_uri);
 		if (directory == NULL) {
@@ -327,6 +328,18 @@ nautilus_directory_get (const char *uri)
 	g_free (canonical_uri);
 
 	return directory;
+}
+
+NautilusDirectory *
+nautilus_directory_get (const char *uri)
+{
+	return nautilus_directory_get_internal (uri, TRUE);
+}
+
+static NautilusDirectory *
+nautilus_directory_get_existing (const char *uri)
+{
+	return nautilus_directory_get_internal (uri, FALSE);
 }
 
 char *
@@ -631,45 +644,14 @@ get_parent_directory (const char *uri)
 static NautilusDirectory *
 get_parent_directory_if_exists (const char *uri)
 {
-	char *directory_uri, *canonical_uri;
+	char *directory_uri;
 	NautilusDirectory *directory;
 
 	/* Make text version of directory URI. */
 	directory_uri = uri_get_directory_part (uri);
-	canonical_uri = make_uri_canonical (directory_uri);
+	directory = nautilus_directory_get_existing (directory_uri);
 	g_free (directory_uri);
-
-	/* Get directory from hash table. */
-	if (directories == NULL) {
-		directory = NULL;
-	} else {
-		g_assert (is_canonical_uri (canonical_uri));
-		directory = g_hash_table_lookup (directories,
-						 canonical_uri);
-	}
-	g_free (canonical_uri);
 	return directory;
-}
-
-static NautilusFile *
-get_file_if_exists (const char *uri)
-{
-	NautilusDirectory *directory;
-	char *name;
-	NautilusFile *file;
-
-	/* Get parent directory. */
-	directory = get_parent_directory_if_exists (uri);
-	if (directory == NULL) {
-		return NULL;
-	}
-
-	/* Find the file. */
-	name = uri_get_basename (uri);
-	file = nautilus_directory_find_file (directory, name);
-	g_free (name);
-
-	return file;
 }
 
 static void
@@ -785,13 +767,12 @@ nautilus_directory_notify_files_removed (GList *uris)
 		uri = (const char *) p->data;
 
 		/* Find the file. */
-		file = get_file_if_exists (uri);
+		file = nautilus_file_get (uri);
 		if (file == NULL) {
 			continue;
 		}
 
 		/* Mark it gone and prepare to send the changed signal. */
-		nautilus_file_ref (file);
 		nautilus_file_mark_gone (file);
 		hash_table_list_prepend (changed_lists,
 					 file->details->directory,
@@ -825,7 +806,7 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 		pair = p->data;
 
 		/* Move an existing file. */
-		file = get_file_if_exists (pair->from_uri);
+		file = nautilus_file_get (pair->from_uri);
 		if (file == NULL) {
 			/* Handle this as it it was a new file. */
 			new_files_list = g_list_prepend (new_files_list,
@@ -883,6 +864,9 @@ nautilus_directory_notify_files_moved (GList *uri_pairs)
 			
 			/* Done with the old directory. */
 			nautilus_directory_unref (old_directory);
+
+			/* Unref each file once to balance out nautilus_file_get. */
+			unref_list = g_list_prepend (unref_list, file);
 		}
 	}
 

@@ -25,7 +25,7 @@
 #include "nautilus-file-changes-queue.h"
 
 #include "nautilus-glib-extensions.h"
-#include "nautilus-directory-private.h"
+#include "nautilus-directory-notify.h"
 
 #ifdef G_THREADS_ENABLED
 #define MUTEX_LOCK(a)	if ((a) != NULL) g_mutex_lock (a)

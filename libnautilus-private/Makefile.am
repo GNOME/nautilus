@@ -121,6 +121,7 @@ noinst_HEADERS =				\
 	nautilus-default-file-icon.h		\
 	nautilus-directory-background.h		\
 	nautilus-directory-metafile.h		\
+	nautilus-directory-notify.h		\
 	nautilus-directory-private.h		\
 	nautilus-directory.h			\
 	nautilus-drag.h				\

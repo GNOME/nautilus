@@ -1,3 +1,36 @@
+2000-08-10  Darin Adler  <darin@eazel.com>
+
+	* libnautilus-extensions/Makefile.am:
+	* libnautilus-extensions/nautilus-directory-notify.h:
+	* libnautilus-extensions/nautilus-directory-private.h:
+	* libnautilus-extensions/nautilus-file-changes-queue.c:
+	* libnautilus-extensions/nautilus-link.c:
+	* libnautilus-extensions/nautilus-volume-monitor.c:
+	Moved the notify calls to a separate header, since people were
+	using them as an excuse to peek at NautilusDirectory's privates.
+	
+	* libnautilus-extensions/nautilus-directory.c:
+	(nautilus_directory_get_internal), (nautilus_directory_get),
+	(nautilus_directory_get_existing): Cleaned up API so that
+	internal code can get a directory without creating one.
+	(get_parent_directory_if_exists): Used new API to cut down
+	code a bit.
+	(nautilus_directory_notify_files_removed),
+	(nautilus_directory_notify_files_moved): Always create a
+	NautilusFile object. This results in a bit more work, but is
+	more compatible with the 1/2 done symbolic link change notify
+	work.
+	
+	* libnautilus-extensions/nautilus-file.c:
+	(nautilus_file_get_internal): Don't create a new directory if
+	being called in the mode where we don't create a new file.
+	(update_link), (get_link_files),
+	(update_links_if_target), (nautilus_file_update_info),
+	(nautilus_file_mark_gone), (nautilus_file_emit_changed):
+	More work on notifying links about changes to the target file.
+	This isn't quite working and isn't required so I'll get back to it
+	later. At the moment it is not doing any harm.
+
 2000-08-10  Maciej Stachowiak  <mjs@eazel.com>
 
 	* docs/state-machines.txt: a start on some design work for sane
