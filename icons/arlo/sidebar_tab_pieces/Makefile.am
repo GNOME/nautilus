@@ -4,11 +4,13 @@ arlotabdir = $(datadir)/pixmaps/nautilus/arlo/sidebar_tab_pieces
 
 arlotab_DATA = \
 	fill-active.png				\
+	fill-active-prelight.png		\
 	fill-empty-space.png			\
 	fill-prelight.png			\
 	fill.png				\
 	left-bumper.png				\
 	left-bumper-active.png			\
+	left-bumper-active-prelight.png			\
 	left-bumper-prelight.png		\
 	middle-normal-normal.png		\
 	middle-normal-prelight.png		\
@@ -17,6 +19,7 @@ arlotab_DATA = \
 	right-bumper.png			\
 	right-empty-space.png			\
 	right-top-active.png			\
+	right-top-active-prelight.png			\
 	right-top-prelight.png			\
 	right-top.png				\
 	$(NULL)

@@ -1,3 +1,18 @@
+2000-09-05  Andy Hertzfeld  <andy@eazel.com>
+
+	* icons/arlo/sidebar_tab_pieces/Makefile.am:
+	* icons/arlo/sidebar_tab_pieces/fill-active-prelight.png:
+	* icons/arlo/sidebar_tab_pieces/left-bumper-active-prelight.png:
+	* icons/arlo/sidebar_tab_pieces/right-top-active-prelight.png:
+	added new tab pieces for active prelight state
+	
+	* src/nautilus-sidebar-tabs.c:
+	(nautilus_sidebar_tabs_load_tab_pieces), (draw_one_tab_themed),
+	(nautilus_sidebar_tabs_expose):
+	fixed bug 2504, active tabs don't prelight, by adding, loading
+	and drawing the appropriate tab pieces.  Also, moved the text
+	down one pixel at Arlo's request.
+	
 2000-09-05  Arlo Rose  <arlo@eazel.com>
 	
 	* icons/arlo/sidebar_tab_pieces/left-bumper.png        

@@ -45,24 +45,27 @@
 
 /* constants for the tab piece pixbuf array */
 
-#define	TAB_NORMAL_LEFT		0
-#define	TAB_NORMAL_FILL		1
-#define TAB_NORMAL_NEXT		2
-#define TAB_NORMAL_RIGHT	3
-#define TAB_NORMAL_EDGE		4
-#define	TAB_PRELIGHT_LEFT	5
-#define	TAB_PRELIGHT_FILL	6
-#define TAB_PRELIGHT_NEXT	7
-#define TAB_PRELIGHT_NEXT_ALT	8
+#define	TAB_NORMAL_LEFT			0
+#define	TAB_NORMAL_FILL			1
+#define TAB_NORMAL_NEXT			2
+#define TAB_NORMAL_RIGHT		3
+#define TAB_NORMAL_EDGE			4
+#define	TAB_PRELIGHT_LEFT		5
+#define	TAB_PRELIGHT_FILL		6
+#define TAB_PRELIGHT_NEXT		7
+#define TAB_PRELIGHT_NEXT_ALT		8
 
-#define TAB_PRELIGHT_RIGHT	9
-#define TAB_PRELIGHT_EDGE	10
-#define	TAB_ACTIVE_LEFT		11
-#define	TAB_ACTIVE_FILL		12
-#define TAB_ACTIVE_RIGHT	13
-#define TAB_BACKGROUND		14
-#define TAB_BACKGROUND_RIGHT	15
-#define LAST_TAB_OFFSET		16
+#define TAB_PRELIGHT_RIGHT		9
+#define TAB_PRELIGHT_EDGE		10
+#define	TAB_ACTIVE_LEFT			11
+#define	TAB_ACTIVE_FILL			12
+#define TAB_ACTIVE_RIGHT		13
+#define TAB_BACKGROUND			14
+#define TAB_BACKGROUND_RIGHT		15
+#define TAB_ACTIVE_PRELIGHT_LEFT 	16
+#define TAB_ACTIVE_PRELIGHT_FILL 	17
+#define TAB_ACTIVE_PRELIGHT_RIGHT 	18
+#define LAST_TAB_OFFSET			19
 
 /* data structures */
 
@@ -106,6 +109,7 @@ struct NautilusSidebarTabsDetails {
 #define TAB_TOP_GAP 3
 #define TAB_ROW_V_OFFSET 3
 #define TAB_DEFAULT_LEFT_OFFSET 4
+#define THEMED_TAB_TEXT_V_OFFSET 7
 
 /* headers */
 
@@ -352,6 +356,11 @@ nautilus_sidebar_tabs_load_tab_pieces (NautilusSidebarTabs *sidebar_tabs, const 
 	
 	sidebar_tabs->details->tab_piece_images[TAB_BACKGROUND]   = load_tab_piece (tab_piece_directory, "fill-empty-space");
 	sidebar_tabs->details->tab_piece_images[TAB_BACKGROUND_RIGHT]  = load_tab_piece (tab_piece_directory, "right-empty-space");
+
+	sidebar_tabs->details->tab_piece_images[TAB_ACTIVE_PRELIGHT_LEFT]  = load_tab_piece (tab_piece_directory, "left-bumper-active-prelight");
+	sidebar_tabs->details->tab_piece_images[TAB_ACTIVE_PRELIGHT_FILL]  = load_tab_piece (tab_piece_directory, "fill-active-prelight");
+	sidebar_tabs->details->tab_piece_images[TAB_ACTIVE_PRELIGHT_RIGHT] = load_tab_piece (tab_piece_directory, "right-top-active-prelight");
+
 }
 
 /* determine the tab associated with the passed-in coordinates, and pass back the notebook
@@ -641,10 +650,12 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 	left_width = 0;
 	
 	widget = GTK_WIDGET (sidebar_tabs);
-	/* FIXME bugzilla.eazel.com 2504: can't prelight active state yet */
 	highlight_offset = prelight_flag && !sidebar_tabs->details->title_mode ? TAB_PRELIGHT_LEFT : 0; 
 	if (sidebar_tabs->details->title_mode) {
 		highlight_offset += TAB_ACTIVE_LEFT - TAB_NORMAL_LEFT;
+		if (prelight_flag) {
+			highlight_offset += TAB_ACTIVE_PRELIGHT_LEFT - TAB_ACTIVE_LEFT;
+		}
 	}
 	
 	/* measure the size of the name */
@@ -678,7 +689,7 @@ draw_one_tab_themed (NautilusSidebarTabs *sidebar_tabs, GdkPixbuf *tab_pixbuf,
 	}
 
 	text_x = text_x_pos + 1;
-	text_y = y - widget->allocation.y + (name_height >> 1);
+	text_y = y - widget->allocation.y + THEMED_TAB_TEXT_V_OFFSET;
 		
 	nautilus_scalable_font_draw_text (sidebar_tabs->details->tab_font, tab_pixbuf, 
 					  text_x, text_y,
@@ -1112,7 +1123,8 @@ nautilus_sidebar_tabs_expose (GtkWidget *widget, GdkEventExpose *event)
 			tab_width = draw_one_tab_themed (sidebar_tabs, pixbuf, sidebar_tabs->details->title, 0, 0, 
 							 sidebar_tabs->details->title_prelit, TRUE, FALSE, text_offset, &sidebar_tabs->details->title_rect);
 			/* draw the right edge */
-			draw_tab_piece_aa (sidebar_tabs, pixbuf,  tab_width, 0, -1, TAB_ACTIVE_RIGHT);
+			draw_tab_piece_aa (sidebar_tabs, pixbuf,  tab_width, 0, -1,
+					   sidebar_tabs->details->title_prelit ? TAB_ACTIVE_PRELIGHT_RIGHT : TAB_ACTIVE_RIGHT);
 			
 			/* transfer the pixmap to the screen */
 			gdk_pixbuf_render_to_drawable_alpha (pixbuf,
