@@ -929,7 +929,7 @@ nautilus_scalable_icon_equal (gconstpointer a,
 NautilusScalableIcon *
 nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifier, gboolean anti_aliased)
 {
-	char *uri, *file_uri, *image_uri, *icon_name, *mime_type, *top_left_text;
+	char *uri, *file_uri, *image_uri, *icon_name, *mime_type, *top_left_text, *mount_type;
  	NautilusScalableIcon *scalable_icon;
 	
 	if (file == NULL) {
@@ -969,7 +969,19 @@ nautilus_icon_factory_get_icon_for_file (NautilusFile *file, const char* modifie
 			}
 		}
 	}
-	
+
+	/* Handle mount points */
+	mount_type = gtk_object_get_data ( GTK_OBJECT (file), "mount_type");
+	if (mount_type != NULL) {
+		if (strcmp (mount_type, "cdrom") == 0) {
+			icon_name = g_strdup ("i-cdrom.png");
+		} else if (strcmp (mount_type, "floppy") == 0) {
+			icon_name = g_strdup ("i-floppy.png");
+		} else {
+			icon_name = g_strdup ("i-blockdev.png");
+		}
+	}
+		
 	/* handle SVG files */
 	if (uri == NULL && nautilus_file_is_mime_type (file, "image/svg")) {
 		uri = g_strdup (file_uri);

@@ -1,3 +1,32 @@
+2000-07-25  Gene Z. Ragan  <gzr@eazel.com>
+	
+	* libnautilus-extensions/nautilus-icon-factory.c:
+	(nautilus_icon_factory_get_icon_for_file):
+	Added some code to check if file is a mountable item.  If so,
+	the proper icon is selected.
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(nautilus_icon_container_add):
+
+	* src/file-manager/fm-desktop-icon-view.c: (get_icon_container),
+	(fm_desktop_icon_view_initialize), (mount_device_is_mounted),
+	(mount_device_cdrom_set_state), (mount_device_floppy_set_state),
+	(mount_device_ext2_set_state), (mount_device_set_state),
+	(local_device_set_state_empty), (mount_device_mount),
+	(mount_device_activate_cdrom), (mount_device_activate_floppy),
+	(mount_device_activate_ext2), (mount_device_activate),
+	(mount_device_deactivate), (mount_device_check_change),
+	(mount_devices_update_is_mounted), (mount_devices_check_status),
+	(my_g_check_permissions), (mouunt_device_floppy_add),
+	(mount_device_ext2_add), (cdrom_ioctl_frenzy),
+	(mount_device_iso9660_add), (mount_device_add_aliases),
+	(add_mount_device), (mntent_is_removable_fs), (mntent_has_option),
+	(find_mount_devices), (make_mount_link), (get_iso9660_volume_name),
+	(get_ext2_volume_name):
+	New functions to add mounted volumes to the desktop.  This is work in 
+	progress and is being checked in just to keep me sane.  Don't expect it
+	to work yet.
+	
 2000-07-24  Pavel Cisler  <pavel@eazel.com>
 
 	* libnautilus-extensions/nautilus-gdk-extensions.c:

@@ -654,11 +654,11 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		
 		gdk_draw_rectangle
 			(drawable, gc, TRUE,
-			 icon_left + (icon_width - details->text_width) / 2,
+			icon_left + (icon_width - details->text_width) / 2,
 			 icon_bottom,
 			 details->text_width, details->text_height);
 
-		gdk_gc_set_foreground (gc, &highlight_text_color);	
+		gdk_gc_set_foreground (gc, &highlight_text_color);
 	}
 	
 	pieces = g_strsplit (combined_text, "\n", 0);
@@ -677,7 +677,7 @@ draw_or_measure_label_text (NautilusIconCanvasItem *item,
 		/* Draw text if we are not in user rename mode */
 		if (drawable != NULL && !details->is_renaming) {
 			text_left = icon_left + (icon_width - icon_text_info->width) / 2;
-			
+						
 			gnome_icon_paint_text
 				(icon_text_info, drawable, gc,
 				 text_left, icon_bottom + height_so_far,

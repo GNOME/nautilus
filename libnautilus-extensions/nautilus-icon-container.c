@@ -2920,7 +2920,7 @@ nautilus_icon_container_add (NautilusIconContainer *container,
 		}
 	}
 
-	/* Creat the new icon, including the canvas item. */
+	/* Create the new icon, including the canvas item. */
 	icon = g_new0 (NautilusIcon, 1);
 	icon->data = data;
 	icon->scale_x = 1.0;

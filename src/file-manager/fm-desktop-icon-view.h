@@ -27,6 +27,7 @@
 
 #include "fm-icon-view.h"
 
+typedef struct FMDesktopIconViewDetails FMDesktopIconViewDetails;
 typedef struct FMDesktopIconView FMDesktopIconView;
 typedef struct FMDesktopIconViewClass FMDesktopIconViewClass;
 
@@ -38,6 +39,7 @@ typedef struct FMDesktopIconViewClass FMDesktopIconViewClass;
 
 struct FMDesktopIconView {
 	FMIconView parent;
+	FMDesktopIconViewDetails *details;
 };
 
 struct FMDesktopIconViewClass {
