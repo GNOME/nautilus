@@ -100,6 +100,8 @@ static GObjectClass *parent_class;
 static void schedule_monitoring_update     (NautilusTreeModel *model);
 static void destroy_node_without_reporting (NautilusTreeModel *model,
 					    TreeNode          *node);
+static void report_node_contents_changed   (NautilusTreeModel *model,
+					    TreeNode          *node);
 
 static void
 object_unref_if_not_NULL (gpointer object)
@@ -1413,6 +1415,30 @@ nautilus_tree_model_new (const char *opt_root_uri)
 	
 	return model;
 }
+
+static void
+set_theme (TreeNode *node, NautilusTreeModel *model)
+{
+	TreeNode *child;
+
+	tree_node_update_closed_pixbuf (node);
+	tree_node_update_open_pixbuf (node);
+	
+	report_node_contents_changed (model, node);
+	
+	for (child = node->first_child; child != NULL; child = child->next) {
+		set_theme (child, model);
+	}
+} 
+
+void
+nautilus_tree_model_set_theme (NautilusTreeModel *model)
+{
+	g_return_if_fail (NAUTILUS_IS_TREE_MODEL (model));
+
+	set_theme (model->details->root_node, model);
+}
+
 
 void
 nautilus_tree_model_set_show_hidden_files (NautilusTreeModel *model,

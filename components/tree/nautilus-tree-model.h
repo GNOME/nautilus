@@ -69,4 +69,6 @@ NautilusFile *     nautilus_tree_model_iter_get_file             (NautilusTreeMo
 void               nautilus_tree_model_set_root_uri              (NautilusTreeModel *model,
 								  const char        *root_uri);
 
+void               nautilus_tree_model_set_theme                 (NautilusTreeModel *model);
+
 #endif /* NAUTILUS_TREE_MODEL_H */

@@ -1,5 +1,16 @@
 2003-06-12  Alexander Larsson  <alexl@redhat.com>
 
+	* components/tree/nautilus-tree-model.c: (set_theme),
+	(nautilus_tree_model_set_theme):
+	* components/tree/nautilus-tree-model.h:
+	* components/tree/nautilus-tree-view.c: (theme_changed_callback),
+	(nautilus_tree_view_instance_init):
+	Correctly handle icon theme changes.
+	Based on patch by muktha.narayan@wipro.com
+	Fixes #99000
+
+2003-06-12  Alexander Larsson  <alexl@redhat.com>
+
 	* libnautilus-private/nautilus-icon-canvas-item.c (nautilus_icon_canvas_item_draw):
 	Only draw exposed area.
 	Patch from sandmann@daimi.au.dk

@@ -48,6 +48,7 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-tree-view-drag-dest.h>
+#include <libnautilus-private/nautilus-icon-factory.h>
 
 #define NAUTILUS_PREFERENCES_TREE_VIEW_EXPANSION_STATE "tree-sidebar-panel/expansion_state"
 
@@ -395,6 +396,15 @@ move_copy_items_callback (NautilusTreeViewDragDest *dest,
 }
 
 static void
+theme_changed_callback (GObject *icon_factory, gpointer callback_data)
+{
+        NautilusTreeView *view; 
+
+        view = NAUTILUS_TREE_VIEW (callback_data); 
+        nautilus_tree_model_set_theme (NAUTILUS_TREE_MODEL (view->details->child_model));  
+}
+
+static void
 create_tree (NautilusTreeView *view)
 {
 	GtkCellRenderer *cell;
@@ -532,6 +542,10 @@ nautilus_tree_view_instance_init (NautilusTreeView *view)
 				      filtering_changed_callback, view);
 	eel_preferences_add_callback (NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES,
 				      filtering_changed_callback, view);
+
+	g_signal_connect_object (nautilus_icon_factory_get(), "icons_changed",
+				 G_CALLBACK (theme_changed_callback), view, 0);  
+	
 }
 
 static void
