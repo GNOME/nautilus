@@ -1,3 +1,64 @@
+2000-02-09  Darin Adler  <darin@eazel.com>
+
+	Reworked the canvas item class used by the icon
+	container. Straightened out the use of various coordinate systems
+	and bounds calculations and removed much unused code inherited
+	from the GdkPixbuf canvas item class that Andy cloned our code
+	from. Changed the class so it doesn't scale icons any more -- we
+	leave that to the icon factory so the scaled icons can be cached.
+
+	* libnautilus/gnome-icon-container-dnd.c:
+	* libnautilus/gnome-icon-container-private.h:
+	* libnautilus/gnome-icon-container.c:
+	* libnautilus/nautilus-icons-view-icon-item.c:
+	* libnautilus/nautilus-icons-view-icon-item.h:
+	Made extensive changes to the icon item class, including getting
+	rid of the "x", "y", "width", and "height" attributes, adding a
+	new "font" attribute, changing the "label" attribute name to "text"
+	to be more consistent with other canvas items, simplifying the
+	update logic for now (we can recomplicate it later if need be),
+	changing the pixbuf to have a fixed size in pixels instead of being
+	scaled with the pixels_per_unit and changing the pixbuf when we change
+	zoom levels, and other misc. cleanup.
+	(nautilus_icons_view_icon_item_get_arg):
+	Fixed bug for "label" which would return a non-strdup'd	piece of text.
+	(draw_or_measure_text_box):
+	Fixed bug where width of the selection box would be based on the
+	length of the last line of text, not the widest, and extra GCs would
+	be created for each line of text.
+
+	* libnautilus/nautilus-icons-controller.h:
+	* libnautilus/nautilus-icons-controller.c:
+	(nautilus_icons_controller_get_icon_image):
+	* src/file-manager/fm-icons-controller.c:
+	(fm_icons_controller_get_icon_image):
+	Changed the interface so that the icons controller specifies the icon
+	as a NautilusScalableIcon instead of a GdkPixbuf. This lets the icon
+	container get the appropriate icon for size as it zooms.
+
+	* libnautilus/gdk-extensions.h:
+	* libnautilus/gdk-extensions.c:
+	(nautilus_gdk_font_equal):
+	Added a version of gdk_font_equal that works with NULL for the font.
+	Maybe we need a naming scheme for these NULL-tolerant variations on
+	basic calls.
+
+	* src/ntl-uri-map.c: (nautilus_navinfo_free):
+	* src/ntl-window-msgs.c: (nautilus_window_change_location_2):
+	Fixed a NULL dereference that would happen when @navi was NULL.
+	
+	* libnautilus/nautilus-directory.c:
+	(nautilus_directory_try_to_read_metafile):
+	Fixed error handling for case when gnome_vfs_read fails.  Fixed
+	error handling for case where metafile_info.size won't fit into a
+	size_t.  Switched back to g_malloc instead of g_alloca, since the
+	size of a file might be too big for the stack. In the long run, we
+	will feed the file data directly to the XML code, so this is a bit
+	temporary.  Removed the assert that Elliot added to help track
+	down the giant files sizes coming from gnome-vfs; the failure in
+	g_malloc will be easy to debug, unlike the failure in
+	g_alloca. (The assert was added without a ChangeLog entry.)
+
 2000-02-09  John Sullivan <sullivan@eazel.com>
 
 	Fixed bug Andy found with icon-text window.
@@ -81,8 +142,8 @@
 
 2000-02-08  Andy Hertzfeld <andy@eazel.com>
 
-	more work on the index tabs; they're drawing properly now but they're
-	still not ready to be left hooked up
+	More work on the index tabs; they're drawing properly now but they're
+	still not ready to be left hooked up.
 	
 	* src/nautilus-index-tabs.c:
 	made the index tabs draw properly
@@ -289,16 +350,16 @@
 2000-02-04  Darin Adler  <darin@eazel.com>
 
 	Make optimized builds succeed.
-        
-        * configure.in: Turn off uninitialized variable warnings.
-        At some point, we should turn these off only for the ORBit-
-        generated stub files, since they are meaningful and useful
-        in other files. For now, though, since we use -Werror, we
-	need be sure these warnings don't cause trouble for people
-        who do optimized builds.
-        
-        * src/ntl-main.c (main): Added GnomeUI to the list of domains
-        to "stop on warning/critical".
+	
+	* configure.in: Turn off uninitialized variable warnings.
+	At some point, we should turn these off only for the ORBit-
+	generated stub files, since they are meaningful and useful in
+	other files. For now, though, since we use -Werror, we need be
+	sure these warnings don't cause trouble for people who do
+	optimized builds.
+	
+	* src/ntl-main.c (main): Added GnomeUI to the list of domains
+	to "stop on warning/critical".
 
 2000-02-04  John Sullivan <sullivan@eazel.com>
 
@@ -545,21 +606,21 @@
 
 2000-01-31  Andy Hertzfeld <andy@eazel.com>
 
-        made the keyboard selection rectangle work again.  It's no longer a
-        separate canvas object, but rather a state reflected by the icon_item
-        like regular selection
-        
+	made the keyboard selection rectangle work again.  It's no longer a
+	separate canvas object, but rather a state reflected by the icon_item
+	like regular selection
+	
 	* libnautilus/gnome-icon-container-private.h:
-        removed the kdb_navigation_item field
-        
+	removed the kdb_navigation_item field
+	
 	* libnautilus/gnome-icon-container.c:
-        removed code that manipulated the kbd_navigation_item, replaced
-        with setting and clearing the "alt_selection" item attribute
-        
+	removed code that manipulated the kbd_navigation_item, replaced
+	with setting and clearing the "alt_selection" item attribute
+	
 	* libnautilus/nautilus-icons-view-icon-item.c:
-        if the alt_selected attribute is set, frame the item's text with
-        a gray-stippled rectangle
-        
+	if the alt_selected attribute is set, frame the item's text with
+	a gray-stippled rectangle
+	
 2000-01-31  John Sullivan <sullivan@eazel.com>
 
 	Now saves/restores zoom level in icon & list views, and
@@ -601,21 +662,21 @@
 
 2000-01-31  Andy Hertzfeld <andy@eazel.com>
 
-        implemented the "select all" command in the context menus
-        
+	implemented the "select all" command in the context menus
+	
 	* src/file-manager/directory_view.c,h:
-        added a directory_view_select_all slot for subclasses to override,
-        enabled "select all" item and attached a signal to the item, whose
-        callback calls fm_directory_view_select_all
+	added a directory_view_select_all slot for subclasses to override,
+	enabled "select all" item and attached a signal to the item, whose
+	callback calls fm_directory_view_select_all
 	
 	* src/file-manager/directory_view_icons.c:
-        implemented directory_view_icons_select_all by invoking the "select all"
-        operation of GnomeIconContainer.
+	implemented directory_view_icons_select_all by invoking the "select all"
+	operation of GnomeIconContainer.
 	
 	* src/file-manager/directory_view_list.c:
-        implemented directory_view_list_select_all by invoking the "select all"
-        operation of the clist widget
-        
+	implemented directory_view_list_select_all by invoking the "select all"
+	operation of the clist widget
+	
 2000-01-31  Elliot Lee  <sopwith@redhat.com>
 
 	* src/ntl-window-msgs.c, src/ntl-window-private.h: Update debugging messages. Allow
@@ -687,10 +748,10 @@
 
 2000-01-31  Andy Hertzfeld <andy@eazel.com>
 
-        * libnautilus/gnome-icon-container-dnd.c:
-        fixed bug where icons were horizontally mis-positioned after dragging;
-        fixed by taking the center offset into account
-        
+	* libnautilus/gnome-icon-container-dnd.c:
+	fixed bug where icons were horizontally mis-positioned after dragging;
+	fixed by taking the center offset into account
+	
 2000-01-31  John Sullivan  <sullivan@eazel.com>
 
 	* libnautilus/nautilus-directory.h:
@@ -837,7 +898,7 @@
 	made bump_zoom_level return a boolean indicating if it can zoom further
 	* src/file-manager/fm-directory-view-list.c:
 	enable/disable items in zoom level according to the passed-back booleans
-    
+	
 2000-01-28  Andy Hertzfeld <andy@eazel.com>
 
 	* libnautilus/gnome-icon-container-dnd.c:
@@ -1048,25 +1109,25 @@
 	compute_viewport_affine that was defeating it. There's still a
 	bunch more to do to make it right for non-unity scale factors, but
 	at least we can start that now.
-        
+	
 2000-01-27  Andy Hertzfeld <andy@eazel.com>
 
 	hooked zooming up to the background context menu; right now the canvas item
 	doesn't work at different zoom levels properly, which we'll fix soon.
-        
+	
 	* libnautilus/fm-directory-view.c,h:
 	enable zoom in and zoom out items and hooked them up to callback
 	added a bump_zoom_level slot, to be overriden by subclasses, which the zoom callback use
-        
+	
 	* libnautilus/fm-directory-view-icons.c:
 	added method for bump_zoom_index that calls the icon container to do the work
-        
+	
 	* libnautilus/gnome-icon-container-private.h:
 	added a private instance variable for zoom level
-        
+	
 	* libnautilus/gnome-icon-container.c,.h:
 	added methods for get_zoom_level and set_zoom_level
-        
+	
 2000-01-27  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/gnome-icon-container.c:
@@ -1194,7 +1255,7 @@
 	made the drag shadow have the same dimensions as the icon being dragged;
 	fixed bug where it was confusing the width and height order in the
 	custom uri it built for dragging within Nautilus
-        
+	
 2000-01-26  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/nautilus-directory.c:
@@ -1229,7 +1290,7 @@
 	first cut at making images with small file sizes display as themselves
 	* libnautilus/nautilus-icons-view-icon-item.c:
 	clean-ups, plus added alternate selection boolean for keyboard selection
-    
+
 2000-01-25  John Sullivan <sullivan@eazel.com>
 
 	* libnautilus/nautilus-directory.c:
@@ -1240,7 +1301,7 @@
 
 	* libnautilus/nautilus-icons-view-icon-item.c
 	disabled icon centering code that was causing glitchey updates
-        
+	
 2000-01-25  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/gnome-icon-container-dnd.c:
@@ -1337,19 +1398,19 @@
 	special icons for text, etc.  This is the first cut, I'm pretty
 	sure it doesn't work when pixels_per_item isn't 1.0 and there
 	are other small problems.
-          
+	  
 	* libnautilus/gnome-icon-container-private.h:
 	removed old fields for sub-items
-        
+	
 	* libnautilus/Makefile.am:
 	added new item class to makefile
-          
+	  
 	* libnautilus/gnome-icon-container-dnd.c:
 	drag asks main item for pixbuf instead of image item
-          
+	  
 	* libnautilus/gnome-icon-container.c:
 	use new icon item instead of making group with two sub-items
-        
+	
 2000-01-24  Maciej Stachowiak  <mjs@eazel.com>
 
 	* src/file-manager/fm-directory-view.c,
@@ -2066,11 +2127,11 @@
 
 2000-01-18  Andy Hertzfeld <andy@eazel.com>
 
-        * libnautilus/gnome-icon-container-private.h:
-        added "button_down_time" field to private data structure
-        * libnautilus/gnome-icon-container.c
-        made it not activate objects if the button was held down too long
-        by remember the mouse down time and comparing it with the up time
+	* libnautilus/gnome-icon-container-private.h:
+	added "button_down_time" field to private data structure
+	* libnautilus/gnome-icon-container.c
+	made it not activate objects if the button was held down too long
+	by remember the mouse down time and comparing it with the up time
 
 2000-01-18  John Sullivan <sullivan@eazel.com>
 
@@ -2139,16 +2200,16 @@
 
 2000-01-18  Andy Hertzfeld <andy@eazel.com>
 
-        * libnautilus/nautilus-directory:
-        * made reading metafile from directory where we don't have write
-        permissions work by changing error-check to look in common place on
-        any error instead of just access_denied.
-        
+	* libnautilus/nautilus-directory:
+	* made reading metafile from directory where we don't have write
+	permissions work by changing error-check to look in common place on
+	any error instead of just access_denied.
+	
 2000-01-18  Andy Hertzfeld <andy@eazel.com>
 
-        * libnautilus/nautilus-directory.c:
-        fixed bug caused by Elliot where he used alloca but forgot to remove g_free
-        
+	* libnautilus/nautilus-directory.c:
+	fixed bug caused by Elliot where he used alloca but forgot to remove g_free
+	
 2000-01-18  Elliot Lee  <sopwith@redhat.com>
 
 	* libnautilus/nautilus-gtk-macros.h: Since the prototypes for
@@ -2255,32 +2316,32 @@
 	(add_to_flist): Fills columns for size & mod date. Icon column
 	is empty for the moment. Columns do not yet sort.
 
-2000-01-17      Andy Hertzfeld <andy@eazel.com>
+2000-01-17  Andy Hertzfeld <andy@eazel.com>
 
-        *libnautilus/gnome-icon-container-dnd.c:
-        made dragging work right by using gdk_pixbuf_render_pixmap_and_mask
-        to make a pixmap and mask to pass to the gtk dragging machinery
-        *libnautilus/gnome-icon-container.c:
-        changed xoffset constant for the icon mode positioning to make the
-        feedback box line up with the icon.
-                     
-2000-01-16	Andy Hertzfeld <andy@eazel.com>
+	* libnautilus/gnome-icon-container-dnd.c:
+	made dragging work right by using gdk_pixbuf_render_pixmap_and_mask
+	to make a pixmap and mask to pass to the gtk dragging machinery
+	* libnautilus/gnome-icon-container.c:
+	changed xoffset constant for the icon mode positioning to make the
+	feedback box line up with the icon.
+	
+2000-01-16  Andy Hertzfeld <andy@eazel.com>
 
-	*libnautilus/gnome-icon-container-dnd.c:
-        made dragging use an image of the canvas item dragged
-        still disabled, though, because it's not handling the mask yet
-    
-2000-01-16	Andy Hertzfeld <andy@eazel.com>
+	* libnautilus/gnome-icon-container-dnd.c:
+	made dragging use an image of the canvas item dragged
+	still disabled, though, because it's not handling the mask yet
+	
+2000-01-16  Andy Hertzfeld <andy@eazel.com>
 
-	*libnautilus/gnome-icon-container-private.h:
+	* libnautilus/gnome-icon-container-private.h:
 	added "single_click_mode" boolean
 	
-	*libnautilus/gnome-icon-container.h
+	* libnautilus/gnome-icon-container.h
 	made single-click open optionally work by adding code in
 	button_release_event to activate the icon if appropriate
 	enabled single-click mode by default
 	
-	*libnautilus/gnome-icon-container-dnd.c
+	* libnautilus/gnome-icon-container-dnd.c
 	made dragging to desktop and else work by cleaning up code in set_uri_list_selection
 	did work toward better dragging feedback using an image but didn't finish that yet
 	
@@ -2539,7 +2600,7 @@
 	(class_init): NAUTILUS_MUST_OVERRIDE_SIGNAL is in here.
 	(fm_directory_view_real_clear): Eliminated this in favor
 	of the above macros.
-	* src/file-manager/fm-directory-view-icons.c:   
+	* src/file-manager/fm-directory-view-icons.c:
 	(fm_directory_view_icons_get_type): Replaced function with
 	NAUTILUS_DEFINE_GET_TYPE_FUNCTION macro.
 	(fm_directory_view_icons_init): Renamed to 
@@ -2550,7 +2611,7 @@
 	parameters to work with NAUTILUS_DEFINE_GET_TYPE_FUNCTION macro.
 	(fm_directory_view_icons_destroy): Deployed
 	NAUTILUS_CALL_PARENT_CLASS macro.
-	* src/file-manager/fm-directory-view-list.c:   
+	* src/file-manager/fm-directory-view-list.c:
 	(fm_directory_view_list_get_type): Replaced function with
 	NAUTILUS_DEFINE_GET_TYPE_FUNCTION macro.
 	(fm_directory_view_list_init): Renamed to 
@@ -2614,8 +2675,8 @@
 2000-01-11  Andy Hertzfeld <andy@eazel.com>
 
 	* src/ntl-window:
-    added a debug menu, and it's first item to show a color picker to test dropping colors
-    
+	added a debug menu, and it's first item to show a color picker to test dropping colors
+	
 2000-01-11  John Sullivan  <sullivan@eazel.com>
 
 	Started moving icon-specific and list-specific code
@@ -3007,7 +3068,7 @@
 	* src/ntl-index-panel.c: made dropping a color from the color
 	picker set the background accordingly.  It doesn't save the
 	meta-data yet, thought
-	    
+	
 2000-01-09  Maciej Stachowiak  <mjs@eazel.com>
 
 	* components/websearch/.cvsignore: Added .deps, .libs,
@@ -3015,19 +3076,19 @@
 
 2000-01-07  Andy Hertzfeld <andy@eazel.com>
 
-        changed the way the index panel gets notified of location changes
-        removed the index_panel_connect stuff
-        instead, calls index_panel_set_uri directly from nautilus_window_change_location
-        
-        * src/ntl-index-panel.c, src/ntl-index-panel.h:
-        restructured the code that populates the view with the info,
-        added logic to use as large a font as possible for the title
-        fixed bug involving the path ending with a slash.
-        * src/ntl-window-msgs.c:
-          added explicit call to index_panel_set_uri as mentioned above 
-        * src/ntl-window.c
-          removed call to index_panel_connect as mentioned above
-        
+	changed the way the index panel gets notified of location changes
+	removed the index_panel_connect stuff
+	instead, calls index_panel_set_uri directly from nautilus_window_change_location
+	
+	* src/ntl-index-panel.c, src/ntl-index-panel.h:
+	restructured the code that populates the view with the info,
+	added logic to use as large a font as possible for the title
+	fixed bug involving the path ending with a slash.
+	* src/ntl-window-msgs.c:
+	  added explicit call to index_panel_set_uri as mentioned above 
+	* src/ntl-window.c
+	  removed call to index_panel_connect as mentioned above
+	
 2000-01-07  John Sullivan  <sullivan@eazel.com>
 
 	Added and deployed utility routine for presenting a
@@ -3110,18 +3171,17 @@
 2000-01-07  Andy Hertzfeld <andy@eazel.com>
 
 	* src/ntl-index-panel.h, src/ntl-index-panel.c: new files for index panel class
-      Initial bare-bones implementation of index panel still using notebook object instead of custom tabs
-      
-    * src/ntl-window.h, src/ntl-window.c
-      just use box instead of pane for nautilus window content,
-      index_panel now responsible for the meta-views
-      allocate and install index_panel instead of meta_notebook
-      connect_signals calls index_panel so it can connect, too
-      added myself as an author
-    
-    * src/Makefile.am
-       added index_panel class
-        
+	Initial bare-bones implementation of index panel still using notebook object instead of custom tabs
+
+	* src/ntl-window.h, src/ntl-window.c:
+	just use box instead of pane for nautilus window content,
+	index_panel now responsible for the meta-views allocate and
+	install index_panel instead of meta_notebook connect_signals calls
+	index_panel so it can connect, too added myself as an author
+	
+	* src/Makefile.am:
+	added index_panel class
+	
 2000-01-06  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/Makefile.am,
@@ -3165,9 +3225,9 @@
 
 2000-01-06  Andy Hertzfeld  <andy@eazel.com>
 
-        * ntl-window.c: made location bar draggable to be consistent with the others by removing DOCK_LOCKED
-        flag
-        
+	* ntl-window.c: made location bar draggable to be consistent with the others by removing DOCK_LOCKED
+	flag
+	
 2000-01-06  Elliot Lee  <sopwith@redhat.com>
 
 	* libnautilus/gnome-icon-container.c: Eliminate gratuitous scroll bars.
@@ -3196,7 +3256,7 @@
 
 	* src/ntl-types.h, src/ntl-uri-map.[ch], src/ntl-window-msgs.c, src/ntl-window.[ch]:
 	  Add support for the location change state machine and related notifications,
-          to allow much better error handling.
+	  to allow much better error handling.
 	* src/ntl-view.[ch]: Catch client failures, also allow for active sensing of client death.
 	* src/file-manager/fm-directory-view.c: Send progress notifications.
 	* components/html/ntl-web-browser.c: Send progress
@@ -3440,12 +3500,12 @@
 
 2000-01-03  Darin Adler  <darin@eazel.com>
 
-        * configure.in: Added "-Wall -Wno-unused" to list of warnings.
+	* configure.in: Added "-Wall -Wno-unused" to list of warnings.
 	It seems to me that at one point we got these from the gnome
 	default warnings, but this seems to have stopped. There's no
 	harm in repeating them in here and it fixes the problem for
 	now, but I'd like to know what happened.
-        * components/html/.cvsignore: Added some generated files.
+	* components/html/.cvsignore: Added some generated files.
 	* components/html/gnome-dialogs.c: (glibwww_progress):
 	Replaced an incorrect "%l" in a printf format string with
 	the correct "%ld".
@@ -3725,7 +3785,7 @@
 
 1999-12-17  Havoc Pennington  <hp@redhat.com>
 
-        * src/file-manager/desktop-item.h: New module, for items 
+	* src/file-manager/desktop-item.h: New module, for items 
 	on the desktop
 	
 	* src/file-manager/fm-directory-view.c: Change to use
@@ -3997,26 +4057,26 @@
 1999-12-15  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/gtkscrollframe.c (gtk_scroll_frame_size_allocate):
-        Rolled out my change. I was confused. Elliot had this fixed
-        already but I forgot to "make install".
+	Rolled out my change. I was confused. Elliot had this fixed
+	already but I forgot to "make install".
 
 1999-12-15  Darin Adler  <darin@eazel.com>
 
 	* libnautilus/gtkscrollframe.c (gtk_scroll_frame_size_allocate):
-        Fixed overflow problem caused by gint16 local variable.
+	Fixed overflow problem caused by gint16 local variable.
 
 1999-12-15  Darin Adler  <darin@eazel.com>
 
 	* src/ntl-window.c (nautilus_window_constructed):
-        Fixed signal handler to point to nautilus_window_goto_url_cb
-        instead of nautilus_window_goto_url. This was causing a bad
-        cast when a new URL was typed.
+	Fixed signal handler to point to nautilus_window_goto_url_cb
+	instead of nautilus_window_goto_url. This was causing a bad
+	cast when a new URL was typed.
 
 1999-12-15  Darin Adler  <darin@eazel.com>
 
 	* src/ntl-uri-map.c (nautilus_navinfo_new): Changed back to
-        const gchar*. To compile, you need to install the latest
-        gnome-vfs.
+	const gchar*. To compile, you need to install the latest
+	gnome-vfs.
 
 1999-12-15  Elliot Lee  <sopwith@redhat.com>
 

@@ -198,6 +198,8 @@ nautilus_navinfo_new(Nautilus_NavigationRequestInfo *nri,
 void
 nautilus_navinfo_free(NautilusNavigationInfo *navinfo)
 {
+  g_return_if_fail(navinfo != NULL);
+
   if(navinfo->ah)
     gnome_vfs_async_cancel(navinfo->ah);
 
