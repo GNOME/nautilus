@@ -1,5 +1,16 @@
 2001-04-03  John Sullivan  <sullivan@eazel.com>
 
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	* src/nautilus-window.c: (add_to_history_list):
+	Imposed a 50-item limit on the length of the
+	history list. Perhaps someday we'll save it to
+	disk and organize old items by date, but this
+	fixes the immediate problem of the list getting
+	unboundedly long.
+
+2001-04-03  John Sullivan  <sullivan@eazel.com>
+
 	* libnautilus-extensions/nautilus-ellipsizing-label.c:
 	(recompute_ellipsized_text): Made ellipsizing labels
 	use middle-truncation, now that it's available (added

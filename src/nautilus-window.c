@@ -87,8 +87,8 @@
  */
 #include "nautilus-desktop-window.h"
 
-/* Milliseconds */
-#define STATUS_BAR_CLEAR_TIMEOUT 10000
+#define STATUS_BAR_CLEAR_TIMEOUT 10000	/* milliseconds */
+#define MAX_HISTORY_ITEMS 50
 
 /* dock items */
 #define LOCATION_BAR_PATH	"/Location Bar"
@@ -1611,6 +1611,7 @@ add_to_history_list (NautilusBookmark *bookmark)
 	 * in its own file.
 	 */
 	static gboolean free_history_list_is_set_up;
+	int extra_count, index;
 
 	g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
 
@@ -1623,9 +1624,16 @@ add_to_history_list (NautilusBookmark *bookmark)
 	remove_from_history_list (bookmark);
 	history_list = g_list_prepend (history_list, bookmark);
 
-	/* Tell world that history list has changed. At least all the
-	 * NautilusWindows (not just this one) are listening.
-	 */
+	extra_count = g_list_length (history_list) - MAX_HISTORY_ITEMS;
+	if (extra_count > 0) {
+		history_list = g_list_reverse (history_list);
+		for (index = 0; index < extra_count; ++index) {
+			gtk_object_unref (history_list->data);
+			history_list = g_list_remove (history_list, history_list->data);
+		}
+		history_list = g_list_reverse (history_list);
+	}
+
 	nautilus_send_history_list_changed ();
 }
 
