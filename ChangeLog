@@ -1,7 +1,14 @@
+2002-05-16  Jacob Berkman  <jacob@ximian.com>
+
+	* components/history/Makefile.am
+	(libnautilus_history_view_la_SOURCES): include
+	nautilus-history-view.h
+	
+
 2002-05-15  Sean Atkinson  <sean@cantab.net>
 
 	* src/nautilus-window-manage-views.c
-	(get_history_list_callback): 
+	(get_history_list_callback):
 	* libnautilus/nautilus-view.c (history_dup):
 	* libnautilus/nautilus-view-component.idl:
 	Remove icon XML string from HistoryItem.

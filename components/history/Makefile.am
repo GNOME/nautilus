@@ -8,7 +8,11 @@ INCLUDES=\
 
 lib_LTLIBRARIES = libnautilus-history-view.la
 
-libnautilus_history_view_la_SOURCES = libmain.c nautilus-history-view.c
+libnautilus_history_view_la_SOURCES = \
+	libmain.c		\
+	nautilus-history-view.c	\
+	nautilus-history-view.h	\
+	$(NULL)
 
 libnautilus_history_view_la_LDFLAGS = -module -avoid-version
 
