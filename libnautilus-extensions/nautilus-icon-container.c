@@ -835,7 +835,7 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 	GList *p, *line_start;
 	NautilusIcon *icon;
 	ArtDRect bounds;
-	double canvas_width, line_width, space_width, border_space_width, y;
+	double canvas_width, line_width, space_width, y;
 
 	/* Lay out icons a line at a time. */
 	canvas_width = GTK_WIDGET (container)->allocation.width / GNOME_CANVAS (container)->pixels_per_unit;
@@ -850,12 +850,13 @@ lay_down_icons_horizontal (NautilusIconContainer *container,
 			(GNOME_CANVAS_ITEM (icon->item), &bounds);
 		space_width = get_icon_space_width (container, &bounds);
 		
-		/* we don't need the right-hand border space for the rightmost icon, so reduce
-		   the space width to compare with */
-		border_space_width = space_width * .75;
+		/* If this icon doesn't fit, it's time to lay out the line that's queued up. */
 		
-		/* If this icon doesn't fit, lay out the line that's queued up. */
-		if (line_start != p && line_width + border_space_width > canvas_width) {
+		/* FIXME: why don't we want to guarantee a small white space to the right of
+		 * the last column just like we guarantee a small white space to the left of
+		 * the first column?
+		 */
+		if (line_start != p && line_width + space_width - ICON_PAD_RIGHT > canvas_width) {
 			lay_down_one_line (container, line_start, p, &y);
 			line_width = 0;
 			line_start = p;
@@ -2343,6 +2344,14 @@ size_allocate (GtkWidget *widget,
 	container = NAUTILUS_ICON_CONTAINER (widget);
 
 	need_layout_redone = !container->details->has_been_allocated;
+
+	/* FIXME bugzilla.eazel.com 7219: 
+	 * We shouldn't have to redo the layout when x, y, or height
+	 * changes, only when width changes. However, just removing these
+	 * tests causes a problem when you're vertically stretching a window
+	 * taller than the size needed to display all contents (the whole
+	 * batch of contents start moving down, centered in the extra space).
+	 */
 	if (allocation->x != widget->allocation.x
 	    || allocation->width != widget->allocation.width
 	    || allocation->y != widget->allocation.y

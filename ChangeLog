@@ -1,3 +1,15 @@
+2001-03-01  John Sullivan  <sullivan@eazel.com>
+
+	reviewed by: Darin Adler  <darin@eazel.com>
+
+	Fixed bug 7164 (infinite redrawing in particular layout case)
+
+	* libnautilus-extensions/nautilus-icon-container.c:
+	(lay_down_icons_horizontal): Fixed the math for determining
+	whether the current icon fits on the current row; added a
+	FIXME about a questionable design choice.
+	(size_allocate): Added a FIXME.
+
 2001-03-01  Arik Devens  <arik@eazel.com>
 
 	reviewed by: Mike Fleming  <mfleming@eazel.com>
@@ -42,6 +54,7 @@
 	where NAUTILUS_DEBUG is set, because this could confuse real users
 	(the message doesn't really represent a bug).
 
+>>>>>>> 1.4084
 2001-03-01  Eric Fischer  <eric@eazel.com>
 
 	reviewed by: Robin * Slomkowski <rslomkow@eazel.com>
