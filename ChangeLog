@@ -1,3 +1,42 @@
+2000-10-20  John Sullivan  <sullivan@eazel.com>
+
+	Fixed bug 3548 (modal error dialog is flakey in summary view)
+
+	I made a bunch of small improvements to this file. Most of
+	these had been checked in earlier but accidentally clobbered,
+	but there are some new ones too.
+
+	* components/services/summary/nautilus-view/nautilus-summary-view.c:
+	Removed feedback_text field from details struct. This was used in
+	an unnecessary and leak-inducing way before.
+	(generate_summary_form): Remove period following exclamation point
+	in on-screen text.
+	(error_dialog_retry_cb): Removed this function.
+	(set_dialog_parent): New helper function to parent a dialog on
+	the NautilusSummaryView's window.
+	(generate_error_dialog): Removed "Retry" button since it is 
+	extremely unlikely to work, thus resulting in constant frustration;
+	Removed initialized but unused "reply" variable; removed extra 
+	initialization of "dialog" variable; use OK button instead of
+	Cancel since there's only one button now; set up error message
+	with parameter instead of details field; set text justification
+	and line wrap to accommodate longer messages; parent the dialog
+	so it doesn't appear in some random place.
+	(authn_cb_failed): pass message to generate_error_dialog directly;
+	removed unnecessary capital letter in message.
+	(generate_login_dialog): remove initialized but unused "reply" variable;
+	change "Please Login" to "Please log in"; parent the dialog.
+	(nautilus_summary_view_load_uri): collapse a lot of identical code;
+	improve error messages; display error message when xml file couldn't
+	be parsed (was supposed to before, but wasn't); only generate the
+	summary form if xml file was parsed.
+	* libnautilus/nautilus-clipboard-ui.xml.h:
+	* src/file-manager/nautilus-directory-view-ui.xml.h:
+	* src/file-manager/nautilus-icon-view-ui.xml.h:
+	* src/file-manager/nautilus-search-list-view-ui.xml.h:
+	* src/nautilus-service-ui.xml.h:
+	* src/nautilus-shell-ui.xml.h:
+
 2000-10-21  Mathieu Lacage  <mathieu@eazel.com>
 
 	* user-guide/C/sgml/chapter-1.sgml:

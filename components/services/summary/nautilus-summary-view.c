@@ -99,7 +99,6 @@ struct _NautilusSummaryViewDetails {
 	BonoboUIComponent *ui_component;
 	
 	SummaryData	*xml_data;
-	char		*feedback_text;
 
 	/* Parent form and title */
 	GtkWidget	*form;
@@ -216,7 +215,8 @@ static gboolean	am_i_logged_in				(NautilusSummaryView		*view);
 static char*	who_is_logged_in			(NautilusSummaryView		*view);
 static gint	logged_in_callback			(gpointer			raw);
 static gint	logged_out_callback			(gpointer			raw);
-static void	generate_error_dialog			(NautilusSummaryView		*view);
+static void	generate_error_dialog			(NautilusSummaryView		*view,
+							 const char			*message);
 static void	generate_login_dialog			(NautilusSummaryView		*view);
 static void	widget_set_nautilus_background_color	(GtkWidget			*widget,
 							 const char			*color);
@@ -265,7 +265,7 @@ generate_summary_form (NautilusSummaryView	*view)
 
 	/* setup the title */
 	if (!view->details->logged_in) {
-		title = create_services_title_widget ("You are not logged in!.");
+		title = create_services_title_widget ("You are not logged in!");
 		widget_set_nautilus_background_color (title, DEFAULT_SUMMARY_BACKGROUND_COLOR);
 	}
 	else {
@@ -800,11 +800,10 @@ authn_cb_failed (const EazelProxy_User *user, const EazelProxy_AuthnFailInfo *in
 
 	g_message ("Login FAILED");
 	view->details->logged_in = FALSE;
-	view->details->feedback_text = g_strdup_printf ("Login Failed! Please try again.");
 	
 	update_menu_items (view, FALSE);
 	
-	generate_error_dialog (view);
+	generate_error_dialog (view, _("Login failed! Please try again."));
 	
 	bonobo_object_unref (BONOBO_OBJECT (view->details->nautilus_view));
 }
@@ -1060,15 +1059,6 @@ goto_update_cb (GtkWidget      *button, ServicesButtonCallbackData	*cbdata)
 
 }
 
-/* callback to handle retry error_dialog button. */
-static void
-error_dialog_retry_cb (GtkWidget      *button, NautilusSummaryView	*view)
-{
-	
-	go_to_uri (view->details->nautilus_view, "eazel:");
-
-}
-
 /* callback to handle cancel error_dialog button. */
 static void
 error_dialog_cancel_cb (GtkWidget      *button, NautilusSummaryView	*view)
@@ -1081,18 +1071,29 @@ error_dialog_cancel_cb (GtkWidget      *button, NautilusSummaryView	*view)
 }
 
 static void
-generate_error_dialog (NautilusSummaryView *view)
+set_dialog_parent (NautilusSummaryView *view, GnomeDialog *dialog)
+{
+	GtkWidget *parent_window;
+
+	g_assert (NAUTILUS_IS_SUMMARY_VIEW (view));
+	g_assert (GNOME_IS_DIALOG (dialog));
+
+	parent_window = gtk_widget_get_ancestor (GTK_WIDGET (view), GTK_TYPE_WINDOW);
+	g_assert (parent_window != NULL);
+
+	gnome_dialog_set_parent (dialog, GTK_WINDOW (parent_window));
+}
+
+static void
+generate_error_dialog (NautilusSummaryView *view, const char *message)
 {
 	GtkWidget	*dialog;
 	GtkWidget	*icon_container;
 	GtkWidget	*icon_widget;
 	GtkWidget	*hbox;
 	GtkWidget	*error_text;
-	int		reply;
 
-	dialog = NULL;
-
-	dialog = gnome_dialog_new (_("Service Error"), _("Retry"), GNOME_STOCK_BUTTON_CANCEL, NULL);
+	dialog = gnome_dialog_new (_("Service Error"), GNOME_STOCK_BUTTON_OK, NULL);
 
 	gtk_signal_connect (GTK_OBJECT (dialog), "destroy", GTK_SIGNAL_FUNC (gtk_widget_destroyed), &dialog);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), GNOME_PAD);
@@ -1110,21 +1111,23 @@ generate_error_dialog (NautilusSummaryView *view)
 	gtk_widget_show (icon_widget);
 	gtk_widget_show (icon_container);
 
-	error_text = nautilus_label_new (view->details->feedback_text);
+	error_text = nautilus_label_new (message);
 	nautilus_label_set_font_size (NAUTILUS_LABEL (error_text), 12);
+	nautilus_label_set_text_justification (NAUTILUS_LABEL (error_text), GTK_JUSTIFY_LEFT);
+	nautilus_label_set_line_wrap (NAUTILUS_LABEL (error_text), TRUE);
+	/* FIXME: setting a fixed size here seems so hackish, but the results are so ugly otherwise. */
+	nautilus_label_set_line_wrap_width (NAUTILUS_LABEL (error_text), 300);
 	gtk_widget_show (error_text);
 	gtk_box_pack_start (GTK_BOX (hbox), error_text, FALSE, FALSE, 0);
 
 
 	gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
-/*	gnome_dialog_set_parent (GNOME_DIALOG (dialog), view->details->nautilus_view); */
+	set_dialog_parent (view, GNOME_DIALOG (dialog));
 
 	gtk_widget_show (hbox);
 	gtk_widget_show (GTK_WIDGET (dialog));
-	gnome_dialog_button_connect (GNOME_DIALOG (dialog), 0, GTK_SIGNAL_FUNC (error_dialog_retry_cb), view);
-	gnome_dialog_button_connect (GNOME_DIALOG (dialog), 1, GTK_SIGNAL_FUNC (error_dialog_cancel_cb), view);
-	reply = gnome_dialog_run (GNOME_DIALOG (dialog));
-
+	gnome_dialog_button_connect (GNOME_DIALOG (dialog), 0, GTK_SIGNAL_FUNC (error_dialog_cancel_cb), view);
+	gnome_dialog_run (GNOME_DIALOG (dialog));
 }
 
 static void
@@ -1134,7 +1137,6 @@ generate_login_dialog (NautilusSummaryView	*view)
 	GtkWidget	*hbox;
 	GtkWidget	*pixmap;
 	GtkWidget	*message;
-	int		reply;
 
 	dialog = NULL;
 	pixmap = NULL;
@@ -1174,7 +1176,7 @@ generate_login_dialog (NautilusSummaryView	*view)
 
 	gtk_box_set_spacing (GTK_BOX (GNOME_DIALOG (dialog)->vbox), 10);
 
-	message = nautilus_label_new ("Please Login to services");
+	message = nautilus_label_new (_("Please log in to Eazel services"));
 	gtk_widget_show (message);
 
 	gtk_box_pack_start (GTK_BOX (GNOME_DIALOG (dialog)->vbox),
@@ -1194,10 +1196,12 @@ generate_login_dialog (NautilusSummaryView	*view)
 	gtk_widget_show (GNOME_DIALOG (dialog)->vbox);
 
 	gnome_dialog_set_close (GNOME_DIALOG (dialog), TRUE);
+	set_dialog_parent (view, GNOME_DIALOG (dialog));
+
 	gnome_dialog_button_connect (GNOME_DIALOG (dialog), 0, GTK_SIGNAL_FUNC (register_button_cb), view);
 	gnome_dialog_button_connect (GNOME_DIALOG (dialog), 1, GTK_SIGNAL_FUNC (login_button_cb), view);
 
-	reply = gnome_dialog_run (GNOME_DIALOG (dialog));
+	gnome_dialog_run (GNOME_DIALOG (dialog));
 
 }
 
@@ -1308,11 +1312,9 @@ void
 nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 			        const char		*uri)
 {
-
 	char		*url;
 	gboolean	got_url_table;
 
-	got_url_table = FALSE;
 	url = NULL;
 
 	/* dispose of any old uri and copy in the new one */	
@@ -1322,58 +1324,41 @@ nautilus_summary_view_load_uri (NautilusSummaryView	*view,
 	/* get xml data and verify network connections */
 	view->details->logged_in = am_i_logged_in (view);
 
-	if (view->details->logged_in) {
-		/* fetch urls */
-		got_url_table = trilobite_redirect_fetch_table (URL_REDIRECT_TABLE_HOME_2);
-		if (!got_url_table) {
-			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
-		}
-		else {
-			/* fetch and parse the xml file */
-			url = trilobite_redirect_lookup (SUMMARY_XML_KEY);
-			if (!url) {
-				g_assert ("Failed to get summary xml home !\n");
-			}
-			view->details->xml_data = parse_summary_xml_file (url);
-			g_free (url);
-			if (view->details->xml_data == NULL) {
-				view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
-			}
-		}
+	got_url_table = trilobite_redirect_fetch_table 
+		(view->details->logged_in
+		 ? URL_REDIRECT_TABLE_HOME_2
+		 : URL_REDIRECT_TABLE_HOME);
 
-	}
-	else {
-
-		/* fetch urls */
-		got_url_table = trilobite_redirect_fetch_table (URL_REDIRECT_TABLE_HOME);
-		if (!got_url_table) {
-			view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
+	if (!got_url_table) {
+		/* FIXME bugzilla.eazel.com 3743:
+		 * We should do more to figure out why this failed so we can
+		 * present a much more helpful message. There are several different
+		 * reasons why it might have failed.
+		 */
+		generate_error_dialog 
+			(view, _("Unable to connect to Eazel's server. "
+				 "The server might be unavailable right now, "
+				 "or your computer might be configured incorrectly."
+				 "You could try again later."));
+	} else {
+		/* fetch and parse the xml file */
+		url = trilobite_redirect_lookup (SUMMARY_XML_KEY);
+		if (!url) {
+			g_assert ("Failed to get summary xml home !\n");
 		}
-		else {
-			/* fetch and parse the xml file */
-			url = trilobite_redirect_lookup (SUMMARY_XML_KEY);
-			if (!url) {
-				g_assert ("Failed to get summary xml home !\n");
-			}
-			view->details->xml_data = parse_summary_xml_file (url);
-			g_free (url);
-			if (view->details->xml_data == NULL) {
-				view->details->feedback_text = g_strdup_printf ("Unable to connect to Eazel servers!");
+		view->details->xml_data = parse_summary_xml_file (url);
+		g_free (url);
+		if (view->details->xml_data == NULL) {
+			generate_error_dialog 
+				(view, _("Found problem with data on Eazel servers. "
+					 "Please contact support@eazel.com."));
+		} else {
+			generate_summary_form (view);
+			if (!view->details->logged_in) {
+				generate_login_dialog (view);
 			}
 		}
 	}
-
-	if (got_url_table) {
-		generate_summary_form (view);
-		if (!view->details->logged_in) {
-			generate_login_dialog (view);
-		}
-	}
-
-	else {
-		generate_error_dialog (view);
-	}
-
 }
 
 static void
