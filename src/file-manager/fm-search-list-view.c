@@ -509,13 +509,13 @@ real_get_emblem_names_to_exclude (FMDirectoryView *view)
 static int
 real_get_emblems_column (FMListView *view)
 {
-	return 1;
+	return 2;
 }
 
 static int
 real_get_link_column (FMListView *view)
 {
-	return 2;
+	return 1;
 }
 
 static void
@@ -532,15 +532,15 @@ real_get_column_specification (FMListView *view,
 		break;
 	case 1:
 		fm_list_view_column_set (specification,
-					 "emblems", NULL,
-					 NAUTILUS_FILE_SORT_BY_EMBLEMS,
-					 20, 20, 300, FALSE);
-		break;
-	case 2:
-		fm_list_view_column_set (specification,
 					 "name", _("Name"),
 					 NAUTILUS_FILE_SORT_BY_NAME,
 					 30, 150, 300, FALSE);
+		break;
+	case 2:
+		fm_list_view_column_set (specification,
+					 "emblems", _("Emblems"),
+					 NAUTILUS_FILE_SORT_BY_EMBLEMS,
+					 20, 52, 300, FALSE);
 		break;
 	case 3:
 		fm_list_view_column_set (specification,

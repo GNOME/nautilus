@@ -2368,7 +2368,7 @@ real_get_column_specification (FMListView *view,
 		fm_list_view_column_set (specification,
 					 "emblems", _("Emblems"),
 					 NAUTILUS_FILE_SORT_BY_EMBLEMS,
-					 20, 40, 300, FALSE);
+					 20, 52, 300, FALSE);
 		break;
 	case 3:
 		fm_list_view_column_set (specification,

@@ -1,5 +1,22 @@
 2001-04-26  John Sullivan  <sullivan@eazel.com>
 
+	Made the emblems column wider to fit the title "Emblems" (in
+	English, in the default font). Made the emblems column in the
+	search results view match the one in the standard list view.
+
+	Pavel wants to implement images as column titles, but this is
+	passable if that doesn't get done.
+
+	* src/file-manager/fm-list-view.c: (real_get_column_specification):
+	Widen the emblems column.
+	
+	* src/file-manager/fm-search-list-view.c:
+	(real_get_emblems_column), 
+	(real_get_link_column): Swap positions of name/emblems columns.
+	(real_get_column_specification): Widen the emblems column.
+
+2001-04-26  John Sullivan  <sullivan@eazel.com>
+
 	Search results view has been broken for awhile without anyone
 	noticing. Between these changes and a NULL-handling fix I
 	checked into eel-list.c, it works again. (Soon I will move the
