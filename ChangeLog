@@ -1,3 +1,15 @@
+2000-11-09  Andy Hertzfeld  <andy@eazel.com>
+
+	fixed bug 4449, reset property in colors section of
+	property browser.
+	
+	* src/nautilus-property-browser.c:
+	(nautilus_property_browser_drag_data_get),
+	(element_clicked_callback), (add_reset_property),
+	(make_properties_from_xml_node):
+	add a reset property in the top left position, and add some
+	checks to make it work, even though it's not a color.
+	
 2000-11-09  Gene Z. Ragan  <gzr@eazel.com>
 
 	Fixed bug 3776, Crash when trying to drag URL .desktop

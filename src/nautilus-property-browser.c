@@ -520,15 +520,18 @@ nautilus_property_browser_drag_data_get (GtkWidget *widget,
 		        GdkColor color;
 			guint16 colorArray[4];
 			
-			gdk_color_parse(property_browser->details->dragged_file, &color);
-			colorArray[0] = color.red;
-			colorArray[1] = color.green;
-			colorArray[2] = color.blue;
-			colorArray[3] = 0xffff;
+			/* handle the "reset" case as an image */
+			if (nautilus_strcmp (property_browser->details->dragged_file, "reset.png") != 0) {
+				gdk_color_parse(property_browser->details->dragged_file, &color);
+				colorArray[0] = color.red;
+				colorArray[1] = color.green;
+				colorArray[2] = color.blue;
+				colorArray[3] = 0xffff;
 						
-			gtk_selection_data_set(selection_data,
-			selection_data->target, 16, (const char *) &colorArray[0], 8);
-			return;	
+				gtk_selection_data_set(selection_data,
+				selection_data->target, 16, (const char *) &colorArray[0], 8);
+				return;	
+			}
 		}
 		
 		image_file_name = g_strdup_printf ("%s/%s/%s",
@@ -667,7 +670,7 @@ make_color_drag_image (NautilusPropertyBrowser *property_browser, const char *co
 							    trim_edges);	
 }
 
-/* this callback handles button presses on the category widget. It maintains the select color */
+/* this callback handles button presses on the category widget. It maintains the active state */
 
 static void
 category_clicked_callback (GtkWidget *widget, char *category_name)
@@ -1340,7 +1343,7 @@ remove_button_callback(GtkWidget *widget, NautilusPropertyBrowser *property_brow
 /* this callback handles clicks on the image or color based content content elements */
 
 static void
-element_clicked_callback(GtkWidget *widget, GdkEventButton *event, char *element_name)
+element_clicked_callback (GtkWidget *widget, GdkEventButton *event, char *element_name)
 {
 	GtkTargetList *target_list;	
 	GdkDragContext *context;
@@ -1361,6 +1364,13 @@ element_clicked_callback(GtkWidget *widget, GdkEventButton *event, char *element
 	
 	/* set up the drag and drop type corresponding to the category */
 	drag_types[0].target = property_browser->details->drag_type;
+	
+	/* treat the reset property in the colors section specially */	
+	if (strcmp (property_browser->details->drag_type, "application/x-color") == 0 &&
+		nautilus_strcmp (element_name, "reset.png") == 0) {
+		drag_types[0].target = "property/bgimage";	
+	}
+	
 	target_list = gtk_target_list_new (drag_types, NAUTILUS_N_ELEMENTS (drag_types));	
 	nautilus_property_browser_set_dragged_file(property_browser, element_name);
 	
@@ -1375,9 +1385,13 @@ element_clicked_callback(GtkWidget *widget, GdkEventButton *event, char *element
 	x_delta = floor(event->x + .5);
 	y_delta = floor(event->y + .5) ;
 	
-	if (strcmp(property_browser->details->drag_type, "application/x-color")) {
+	if (strcmp(drag_types[0].target, "application/x-color")) {
 		/*it's not a color, so, for now, it must be an image */
+		/* fiddle with the category to handle the "reset" case properly */
+		char * save_category = property_browser->details->category;
+		property_browser->details->category = "backgrounds";
 		pixbuf = make_drag_image (property_browser, element_name);
+		property_browser->details->category = save_category;
 		
 		x_delta -= (widget->allocation.width - gdk_pixbuf_get_width (pixbuf)) >> 1;
 		y_delta -= (widget->allocation.height - gdk_pixbuf_get_height (pixbuf)) >> 1;
@@ -1563,6 +1577,32 @@ make_properties_from_directories (NautilusPropertyBrowser *property_browser)
 	return index;
 }
 
+/* utility routine to add a reset property in the first position */
+static void
+add_reset_property (NautilusPropertyBrowser *property_browser)
+{
+	char *reset_path;
+	GtkWidget *new_property;
+	GdkPixbuf *pixbuf, *reset_pixbuf;
+	GtkWidget *image_widget, *label;
+	
+	reset_path = g_strdup_printf ("%s/%s/%s", NAUTILUS_DATADIR, "backgrounds", RESET_IMAGE_NAME);
+	pixbuf = gdk_pixbuf_new_from_file (reset_path);			
+	reset_pixbuf = nautilus_customization_make_background_chit (pixbuf, property_browser->details->property_chit, FALSE);
+	g_free (reset_path);
+	
+	image_widget = nautilus_image_new ();
+	nautilus_image_set_pixbuf (NAUTILUS_IMAGE (image_widget), reset_pixbuf);	
+	gdk_pixbuf_unref (reset_pixbuf);
+
+	/* make the label from the name */
+	label = nautilus_label_new ("");
+	nautilus_label_set_font_size (NAUTILUS_LABEL (label), 12);
+
+	new_property = make_property_tile (property_browser, image_widget, label, "reset.png");
+	add_to_content_table (property_browser, new_property, 0, 2);
+}
+	
 /* generate properties from the children of the passed in node */
 /* for now, we just handle color nodes */
 
@@ -1576,7 +1616,10 @@ make_properties_from_xml_node (NautilusPropertyBrowser *property_browser, xmlNod
 	
 	gboolean local_only = property_browser->details->remove_mode;
 	
-	index = 0;
+	/* add a reset property in the first slot */
+	add_reset_property (property_browser);
+	
+	index = 1;
 	property_browser->details->has_local = FALSE;
 	
 	for (current_node = nautilus_xml_get_children (node);
