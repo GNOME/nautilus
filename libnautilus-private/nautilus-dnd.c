@@ -371,7 +371,7 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 			*action = context->suggested_action;
 		}
 	} else {
-		if (actions & GDK_ACTION_MOVE) {
+		if (actions & GDK_ACTION_COPY) {
 			*action = GDK_ACTION_COPY;
 		} else {
 			*action = context->suggested_action;
