@@ -1,3 +1,33 @@
+2001-02-20  Robey Pointer  <robey@eazel.com>
+
+	* components/services/install/nautilus-view/Makefile.am:
+	* components/services/install/nautilus-view/callbacks.c:
+	* components/services/install/nautilus-view/callbacks.h:
+	* components/services/install/nautilus-view/forms.c:
+	* components/services/install/nautilus-view/forms.h:
+
+	Added callbacks.[ch] and forms.[ch] to split the ridiculously huge
+	install view into smaller, more managable chunks.
+	
+	* components/services/install/nautilus-view/main.c: (quit_timer),
+	(service_install_object_destroyed):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.c: (deps_destroy_foreach),
+	(nautilus_service_install_view_destroy),
+	(nautilus_service_install_view_finalize),
+	(nautilus_service_install_view_initialize_class),
+	(nautilus_service_install_view_initialize),
+	(nautilus_service_install_view_update_from_uri_finish),
+	(service_install_stop_loading_callback):
+	* components/services/install/nautilus-view/nautilus-service-instal
+	l-view.h:
+
+	Turn the preflight dialog into a question asked inline.  Do some
+	wacky hoop-jumping so that we do the right thing if the user
+	leaves our view while we're waiting for a button press.  Turn off
+	some of the distractions (progress bar, etc) while waiting for
+	info and feedback.
+
 2001-02-20  Andy Hertzfeld  <andy@eazel.com>
 
 	* libnautilus-extensions/nautilus-tabs.c: (draw_tab_label):

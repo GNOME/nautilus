@@ -25,11 +25,15 @@ noinst_HEADERS =					\
 	nautilus-service-install.c			\
 	nautilus-service-install.h			\
 	nautilus-service-install-view.h			\
+	callbacks.h					\
+	forms.h						\
 	$(NULL)
 
 nautilus_service_install_view_SOURCES =		        \
 	nautilus-service-install-view.c			\
 	main.c						\
+	callbacks.c					\
+	forms.c						\
 	$(NULL)
 
 nautilus_service_install_view_LDADD =			\

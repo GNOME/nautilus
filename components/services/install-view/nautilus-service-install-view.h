@@ -48,7 +48,7 @@ struct _NautilusServiceInstallView {
 };
 
 struct _NautilusServiceInstallViewClass {
-        GtkVBoxClass				parent_class;
+        GtkEventBoxClass			parent_class;
 };
 
 typedef struct {
@@ -60,6 +60,13 @@ typedef struct {
 	GtkWidget *hbox;	/* [ label, padding, vbox ] */
 	GtkWidget *line;
 } InstallMessage;
+
+typedef enum {
+	PREFLIGHT_UNKNOWN = 0,
+	PREFLIGHT_CANCEL,
+	PREFLIGHT_OK,
+	PREFLIGHT_PANIC_BUTTON		/* view is being destroyed */
+} InstallViewPreflightStatus;
 
 /* A NautilusContentView's private information. */
 struct _NautilusServiceInstallViewDetails {
@@ -78,6 +85,7 @@ struct _NautilusServiceInstallViewDetails {
 	InstallMessage	*current_im;
 	GtkWidget	*pane;
 	GtkWidget	*middle_title;
+	GtkWidget	*query_box;
 
 	char		*current_rpm;
 	int		current_package;
@@ -107,7 +115,24 @@ struct _NautilusServiceInstallViewDetails {
 
 	GList *message;		/* GList<InstallMessage *> */
 	GHashTable *deps;	/* package(char *) => package that needs it(char *) */
+
+	InstallViewPreflightStatus preflight_status;
 };
+
+
+/* number of rows of (label, progressbar) to scroll at the bottom */
+#define STATUS_ROWS		2
+
+#define PROGRESS_BAR_HEIGHT	15
+#define MESSAGE_BOX_HEIGHT	110
+
+/* This ensures that if the arch is detected as i[3-9]86, the
+   requested archtype will be set to i386 */
+#define ASSUME_ix86_IS_i386 
+
+/* send the user here after a completed (success or failure) install */
+#define NEXT_URL_ANONYMOUS     "eazel:"
+#define NEXT_URL               "eazel-services:/catalog"
 
 
 /* GtkObject support */
@@ -120,5 +145,12 @@ NautilusView 	*nautilus_service_install_view_get_nautilus_view	(NautilusServiceI
 void		nautilus_service_install_view_load_uri			(NautilusServiceInstallView	*view,
 									 const char			*uri);
 
-#endif /* NAUTILUS_SERVICE_INSTALL_VIEW_H */
+/* called during preflight to build up a list of .desktop files to scan later */
+void nautilus_service_install_check_for_desktop_files (NautilusServiceInstallView *view,
+						       EazelInstallCallback *cb,
+						       PackageData *package);
 
+/* probe for what menu the installed package can be found in */
+char *nautilus_install_service_locate_menu_entries (NautilusServiceInstallView *view);
+
+#endif /* NAUTILUS_SERVICE_INSTALL_VIEW_H */

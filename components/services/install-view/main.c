@@ -34,12 +34,22 @@
 
 static int object_count = 0;
 
+static gboolean
+quit_timer (void *unused)
+{
+	gtk_main_quit ();
+	return FALSE;
+}
+
 static void
 service_install_object_destroyed (GtkObject *obj)
 {
 	object_count--;
 	if (object_count <= 0) {
-		gtk_main_quit ();
+		/* timing issues: let the install view handle its own shutdown before
+		 * pulling the plug...
+		 */
+		gtk_timeout_add (5, quit_timer, NULL);
 	}
 }
 
