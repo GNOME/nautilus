@@ -35,6 +35,7 @@
 #include <atk/atkaction.h>
 #include <eel/eel-accessibility.h>
 #include <eel/eel-background.h>
+#include <eel/eel-vfs-extensions.h>
 #include <eel/eel-gdk-pixbuf-extensions.h>
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-gtk-extensions.h>
@@ -5393,32 +5394,6 @@ is_renaming (NautilusIconContainer *container)
 	return container->details->renaming;
 }
 
-static int 
-rename_filename_selection_end (const char *filename)
-{
-	const char *end, *end2;
-
-	end = strrchr (filename, '.');
-
-	if (end && end != filename) {
-		if (strcmp (end, ".gz") == 0 ||
-		    strcmp (end, ".bz2") == 0 ||
-		    strcmp (end, ".sit") == 0 ||
-		    strcmp (end, ".Z") == 0) {
-			end2 = end - 1;
-			while (end2 > filename &&
-			       *end2 != '.') {
-				end2--;
-			}
-			if (end2 != filename) {
-				end = end2;
-			}
-		}
-		return g_utf8_pointer_to_offset (filename, end);
-	}
-	return g_utf8_strlen (filename, -1);
-}
-
 /**
  * nautilus_icon_container_start_renaming_selected_item
  * @container: An icon container widget.
@@ -5435,6 +5410,7 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 	PangoFontDescription *desc;
 	const char *editable_text;
 	int x, y, width;
+	int start_offset, end_offset;
 
 	/* Check if it already in renaming mode. */
 	details = container->details;
@@ -5514,9 +5490,10 @@ nautilus_icon_container_start_renaming_selected_item (NautilusIconContainer *con
 				     width, -1);
 	eel_editable_label_set_text (EEL_EDITABLE_LABEL (details->rename_widget),
 				     editable_text);
+	eel_filename_get_rename_region (editable_text, &start_offset, &end_offset);
 	eel_editable_label_select_region (EEL_EDITABLE_LABEL (details->rename_widget),
-					  rename_filename_selection_end (editable_text),
-					  0);
+					  end_offset,
+					  start_offset);
 	gtk_widget_show (details->rename_widget);
 	
 	gtk_widget_grab_focus (details->rename_widget);

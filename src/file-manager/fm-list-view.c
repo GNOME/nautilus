@@ -31,10 +31,12 @@
 #include "fm-error-reporting.h"
 #include "fm-list-model.h"
 #include <eel/eel-cell-renderer-pixbuf-list.h>
+#include <eel/eel-vfs-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkcellrendererpixbuf.h>
 #include <gtk/gtkcellrenderertext.h>
+#include <gtk/gtkentry.h>
 #include <gtk/gtktreeselection.h>
 #include <gtk/gtktreeview.h>
 #include <libegg/eggtreemultidnd.h>
@@ -1121,6 +1123,8 @@ fm_list_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 	FMListView *list_view;
 	GtkTreeIter iter;
 	GtkTreePath *path;
+	GtkEntry *entry;
+	int start_offset, end_offset;
 	
 	list_view = FM_LIST_VIEW (view);
 	
@@ -1140,12 +1144,18 @@ fm_list_view_start_renaming_file (FMDirectoryView *view, NautilusFile *file)
 	g_object_set (G_OBJECT (list_view->details->file_name_cell),
 		      "editable", TRUE,
 		      NULL);
+
 	
 	gtk_tree_view_set_cursor (list_view->details->tree_view,
 				  path,
 				  list_view->details->file_name_column,
 				  TRUE);
 
+	entry = GTK_ENTRY (list_view->details->file_name_column->editable_widget);
+	eel_filename_get_rename_region (gtk_entry_get_text (entry),
+					&start_offset, &end_offset);
+	gtk_editable_select_region (GTK_EDITABLE (entry), start_offset, end_offset);
+	
 	gtk_tree_path_free (path);
 }
 

@@ -1,5 +1,12 @@
 2003-03-27  Alexander Larsson  <alexl@redhat.com>
 
+	* src/file-manager/fm-list-view.c (fm_list_view_start_renaming_file): 
+	* libnautilus-private/nautilus-icon-container.c (nautilus_icon_container_start_renaming_selected_item):
+	Use eel_filename_get_rename_region for both list and icon view to
+	get the initial region to select on rename.
+	
+2003-03-27  Alexander Larsson  <alexl@redhat.com>
+
 	* src/nautilus-window.h: 
 	* src/nautilus-window.c: 
 	* src/nautilus-window-menus.c:
