@@ -39,6 +39,7 @@
 #include <bonobo/bonobo-zoomable.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <bonobo/bonobo-exception.h>
+#include <eel/eel-alert-dialog.h>
 #include <eel/eel-background.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gnome-extensions.h>
@@ -3880,6 +3881,105 @@ add_extension_command_for_files (FMDirectoryView *view,
 }
 
 static void
+warn_mismatched_mime_types_response_cb (GtkWidget *dialog,
+					int response,
+					gpointer user_data)
+{
+	gtk_widget_destroy (dialog);
+}
+
+static void
+warn_mismatched_mime_types (FMDirectoryView *view,
+			    NautilusFile *file)
+{
+	GtkWidget *dialog;
+	char *guessed_mime_type;
+	char *mime_type;
+	const char *guessed_description;
+	const char *real_description;
+	char *primary;
+	char *secondary;
+	char *name;
+	
+	guessed_mime_type = nautilus_file_get_guessed_mime_type (file);
+	mime_type = nautilus_file_get_mime_type (file);
+
+	guessed_description = gnome_vfs_mime_get_description (guessed_mime_type);
+	real_description = gnome_vfs_mime_get_description (mime_type);
+
+	g_free (guessed_mime_type);
+	g_free (mime_type);
+	
+	name = nautilus_file_get_name (file);
+
+	primary = g_strdup_printf (_("Cannot open %s"), name);
+
+	secondary = g_strdup_printf 
+		(_("The filename \"%s\" indicates that this file is of type \"%s\". " 
+		   "The contents of the file indicate that the file is of type \"%s\". If "
+		   "you open this file, the file might present a security risk to your system.\n\n"
+		   "Do not open the file unless you created the file yourself, or received "
+		   "the file from a trusted source. To open the file, rename the file to the "
+		   "correct extension for \"%s\", then open the file normally. "
+		   "Alternatively, use the Open With menu to choose a specific application "
+		   "for the file. "),
+		 name, 
+		 guessed_description, 
+		 real_description,
+		 real_description);
+	
+	dialog = eel_alert_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))),
+				       0,
+				       GTK_MESSAGE_ERROR,
+				       GTK_BUTTONS_NONE,
+				       primary,
+				       secondary,
+				       primary);
+
+	g_free (primary);
+	g_free (secondary);
+	g_free (name);
+
+	gtk_dialog_add_button (GTK_DIALOG (dialog),
+			       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+	gtk_dialog_set_default_response (GTK_DIALOG (dialog), 
+					 GTK_RESPONSE_CANCEL);
+
+	g_signal_connect (dialog, 
+			  "response",
+			  G_CALLBACK (warn_mismatched_mime_types_response_cb),
+			  file);
+
+	gtk_widget_show (dialog);
+}
+
+static gboolean
+activate_check_mime_types (FMDirectoryView *view,
+			   NautilusFile *file)
+{
+	char *guessed_mime_type;
+	char *mime_type;
+	gboolean ret;
+	
+	g_return_val_if_fail (nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_SLOW_MIME_TYPE), FALSE);
+
+	guessed_mime_type = nautilus_file_get_guessed_mime_type (file);
+	mime_type = nautilus_file_get_mime_type (file);
+
+	if (strcmp (guessed_mime_type, mime_type) != 0) {
+		warn_mismatched_mime_types (view, file);
+		ret = FALSE;
+	} else {
+		ret = TRUE;
+	}
+
+	g_free (guessed_mime_type);
+	g_free (mime_type);
+	
+	return ret;
+}
+
+static void
 add_extension_menu_items (FMDirectoryView *view,
 			  GList *files,
 			  GList *menu_items)
@@ -5893,6 +5993,10 @@ activate_callback (NautilusFile *file, gpointer callback_data)
 	eel_timed_wait_stop (cancel_activate_callback, parameters);
 
 	view = FM_DIRECTORY_VIEW (parameters->view);
+
+	if (!activate_check_mime_types (view, file)) {
+		return;
+	}
 
 	orig_uri = uri = nautilus_file_get_activation_uri (file);
 
