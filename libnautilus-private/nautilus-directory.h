@@ -57,6 +57,9 @@ typedef struct _NautilusDirectoryClass NautilusDirectoryClass;
 #define NAUTILUS_IS_DIRECTORY_CLASS(klass) \
 	(GTK_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_DIRECTORY))
 
+#define NAUTILUS_IS_FILE(object) \
+	((object) != NULL)
+
 enum _NautilusFileSortType {
 	NAUTILUS_FILE_SORT_NONE,
 	NAUTILUS_FILE_SORT_BY_NAME,
@@ -73,7 +76,7 @@ typedef GList NautilusFileList;
 
 typedef void (*NautilusFileListCallback) (NautilusDirectory *directory,
 					  NautilusFileList  *files,
-					  gpointer           data);
+					  gpointer           callback_data);
 
 /* Basic GtkObject requirements. */
 GtkType            nautilus_directory_get_type            (void);
@@ -84,6 +87,7 @@ GtkType            nautilus_directory_get_type            (void);
    If two windows are viewing the same uri, the directory object is shared.
 */
 NautilusDirectory *nautilus_directory_get                 (const char               *uri);
+
 char *             nautilus_directory_get_uri             (NautilusDirectory        *directory);
 
 /* Simple preliminary interface for getting and setting metadata. */
@@ -95,24 +99,19 @@ void               nautilus_directory_set_metadata        (NautilusDirectory    
 							   const char               *default_metadata,
 							   const char               *metadata);
 
-/* Get the current files.
-   Instead of returning the list of files, this function uses a callback.
-   The directory guarantees that signals won't be emitted while in the
-   callback function.
+/* Monitor the files in a directory.
+   Since there's a monitoring ref. count, you must call nautilus_directory_stop_monitoring
+   if you called nautilus_directory_start_monitoring.
 */
-void               nautilus_directory_get_files           (NautilusDirectory        *directory,
-							   NautilusFileListCallback  callback,
+void               nautilus_directory_start_monitoring    (NautilusDirectory        *directory,
+							   NautilusFileListCallback  initial_files_callback,
 							   gpointer                  callback_data);
+void               nautilus_directory_stop_monitoring     (NautilusDirectory        *directory);
 
-/* Return true if the directory has enough information for layout.
-   This will be false until the metafile is read to prevent a partial layout
-   from being done.
+/* Return true if the directory has information about all the files.
+   This will be false until the directory has been read at least once.
 */
-gboolean           nautilus_directory_is_ready_for_layout (NautilusDirectory        *directory);
-
-/* Temporary interface for NautilusFile while we are phasing it in. */
-NautilusFile *     nautilus_directory_new_file            (NautilusDirectory        *directory,
-							   GnomeVFSFileInfo         *info);
+gboolean           nautilus_directory_are_all_files_seen  (NautilusDirectory        *directory);
 
 /* Getting at a single file. */
 NautilusFile *     nautilus_file_get                      (const char               *uri);

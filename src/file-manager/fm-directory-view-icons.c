@@ -176,15 +176,10 @@ create_icon_container (FMDirectoryViewIcons *icon_view)
 			    GTK_SIGNAL_FUNC (icon_container_activate_cb),
 			    icon_view);
 
-	puts ("A");
-	icon_view = FM_DIRECTORY_VIEW_ICONS(icon_view);
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "context_click_icon",
 			    GTK_SIGNAL_FUNC (icon_container_context_click_icon_cb),
 			    icon_view);
-	puts ("B");
-	icon_view = FM_DIRECTORY_VIEW_ICONS(icon_view);
-	puts ("C");	
 
 	gtk_signal_connect (GTK_OBJECT (icon_container),
 			    "context_click_background",

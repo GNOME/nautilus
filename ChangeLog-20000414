@@ -1,3 +1,64 @@
+2000-01-31  Darin Adler  <darin@eazel.com>
+
+	NautilusDirectory is now in charge of loading directories.
+	FMDirectoryView has been relieved of that responsibility.
+
+	* nautilus-directory.h:
+	nautilus-directory.c:
+	(nautilus_directory_start_monitoring):
+	(nautilus_directory_stop_monitoring):
+	(nautilus_directory_is_ready_for_layout):
+	(nautilus_directory_new_file):
+	(nautilus_directory_are_all_files_seen):
+	Added monitoring API that's used to read the contents of
+	a directory. Made nautilus_directory_new_file private since
+	we now use the monitoring API instead.
+
+	* fm-directory-view.c:
+	(fm_directory_view_initialize):
+	(stop_load):
+	(display_pending_entries):
+	(display_pending_files):
+	(display_pending_idle_cb):
+	(display_timeout_cb):
+	(display_pending_timeout_cb):
+	(directory_load_cb):
+	(schedule_idle_display_of_pending_files):
+	(schedule_timeout_display_of_pending_files):
+	(unschedule_idle_display_of_pending_files):
+	(unschedule_timeout_display_of_pending_files):
+	(unschedule_display_of_pending_files):
+	(add_files_cb):
+	(fm_directory_view_activate_entry):
+	(fm_directory_view_load_uri):
+	(disconnect_model_handlers):
+	(fm_directory_view_stop):
+	Changed to use monitoring instead of directly calling
+	gnome_vfs_async_load_directory directly.
+
+	* fm-directory-view.c:
+	(update_zoom_menu_items):
+	(zoom_in_cb):
+	(zoom_out_cb):
+	(pop_up_context_menu):
+	(pop_up_temporary_context_menu):
+	(append_background_items):
+	(create_background_context_menu):
+	(fm_directory_view_popup_item_context_menu):
+	(fm_directory_view_popup_background_context_menu):
+	Changed to re-created background menu each time instead of
+	keeping a single global menu up to date. This is simpler, and
+	the imperceptible additional delay from recreating the menu
+	each time should not be a problem.
+	
+	* ntl-window.c:	(nautilus_window_up):
+	ntl-map.c: (nautilus_navinfo_new):
+	Handle the case where the current URI is NULL.
+
+	* fm-directory-view-icons.c: (create_icon_container):
+	Removed the leftover puts calls in here.
+	This gets rid of "A", "B", "C" on each start of nautilus.
+
 2000-01-31  John Sullivan <sullivan@eazel.com>
 
 	Put all metadata keys in a central place so we can keep
@@ -224,7 +285,7 @@
 2000-01-27  John Sullivan  <sullivan@eazel.com>
 
 	Finished this round of sorting architecture improvements.
-
+	
 	* libnautilus/nautilus-directory.c:
 	(nautilus_file_compare_for_sort_internal): Made sorting NautilusFiles
 	by name be case-insensitive.
@@ -252,7 +313,6 @@
 	now uses GtkCList-style sorting instead of asking FMDirectoryView to sort.
 	(install_icon): Added a couple more g_return_if_fails.
 	
-
 2000-01-27  Darin Adler  <darin@eazel.com>
 
 	* src/ntl-app.c: Added missing includes to get it to compile.

@@ -774,11 +774,16 @@ nautilus_window_get_uih(NautilusWindow *window)
 static void
 nautilus_window_up (GtkWidget *btn, NautilusWindow *window)
 {
+  const char *requested_uri;
   GnomeVFSURI *current_uri;
   GnomeVFSURI *parent_uri;
   char *parent_uri_string;
 
-  current_uri = gnome_vfs_uri_new (nautilus_window_get_requested_uri(window));
+  requested_uri = nautilus_window_get_requested_uri(window);
+  if (requested_uri == NULL)
+    return;
+
+  current_uri = gnome_vfs_uri_new (requested_uri);
   parent_uri = gnome_vfs_uri_get_parent (current_uri);
   gnome_vfs_uri_unref (current_uri);
   parent_uri_string = gnome_vfs_uri_to_string (parent_uri, GNOME_VFS_URI_HIDE_NONE);

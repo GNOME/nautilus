@@ -30,6 +30,7 @@
 
 #include <stdlib.h>
 
+#include <gtk/gtksignal.h>
 #include <gtk/gtkmain.h>
 
 #include <libgnome/gnome-defs.h>
@@ -65,6 +66,16 @@
 
 #define METAFILE_XML_VERSION "1.0"
 
+#define DIRECTORY_LOAD_ITEMS_PER_CB 1
+
+enum 
+{
+	FILES_ADDED,
+	LAST_SIGNAL
+};
+
+static guint nautilus_directory_signals[LAST_SIGNAL];
+
 static void nautilus_directory_initialize_class (gpointer klass);
 static void nautilus_directory_initialize (gpointer object, gpointer klass);
 static void nautilus_directory_finalize (GtkObject *object);
@@ -82,6 +93,13 @@ static int  nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
 					 	     NautilusFileSortType sort_type,
 					 	     gboolean reversed);
 
+static void nautilus_directory_load_cb (GnomeVFSAsyncHandle *handle,
+					GnomeVFSResult result,
+					GnomeVFSDirectoryList *list,
+					guint entries_read,
+					gpointer callback_data);
+static NautilusFile *nautilus_directory_new_file (NautilusDirectory *directory,
+						  GnomeVFSFileInfo *info);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (NautilusDirectory, nautilus_directory, GTK_TYPE_OBJECT)
 
@@ -95,7 +113,15 @@ struct _NautilusDirectoryDetails
 	gboolean use_alternate_metafile;
 
 	xmlDoc *metafile_tree;
-	int write_metafile_idle_id;
+	guint write_metafile_idle_id;
+
+	GnomeVFSAsyncHandle *directory_load_in_progress;
+	GnomeVFSDirectoryListPosition directory_load_list_last_handled;
+
+	GList *pending_file_info;
+        guint dequeue_pending_idle_id;
+
+	gboolean directory_loaded;
 
 	NautilusFileList *files;
 };
@@ -118,6 +144,16 @@ nautilus_directory_initialize_class (gpointer klass)
 	object_class = GTK_OBJECT_CLASS (klass);
 	
 	object_class->finalize = nautilus_directory_finalize;
+
+	nautilus_directory_signals[FILES_ADDED] =
+		gtk_signal_new ("files_added",
+				GTK_RUN_LAST,
+				object_class->type,
+				GTK_SIGNAL_OFFSET (NautilusDirectoryClass, files_added),
+				gtk_marshal_NONE__POINTER,
+				GTK_TYPE_NONE, 1, GTK_TYPE_POINTER);
+
+	gtk_object_class_add_signals (object_class, nautilus_directory_signals, LAST_SIGNAL);
 }
 
 static void
@@ -369,10 +405,15 @@ nautilus_directory_write_metafile (NautilusDirectory *directory)
 }
 
 static gboolean
-nautilus_directory_write_metafile_on_idle (gpointer data)
+nautilus_directory_write_metafile_idle_cb (gpointer callback_data)
 {
-	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (data), FALSE);
-	nautilus_directory_write_metafile (data);
+	NautilusDirectory *directory;
+
+	directory = NAUTILUS_DIRECTORY (callback_data);
+
+	directory->details->write_metafile_idle_id = 0;
+	nautilus_directory_write_metafile (directory);
+
 	return FALSE;
 }
 
@@ -382,7 +423,7 @@ nautilus_directory_request_write_metafile (NautilusDirectory *directory)
 	/* Set up an idle task that will write the metafile. */
 	if (directory->details->write_metafile_idle_id == 0)
 		directory->details->write_metafile_idle_id =
-			gtk_idle_add (nautilus_directory_write_metafile_on_idle,
+			gtk_idle_add (nautilus_directory_write_metafile_idle_cb,
 				      directory);
 }
 
@@ -547,9 +588,9 @@ nautilus_directory_new (const char* uri)
 }
 
 void
-nautilus_directory_get_files (NautilusDirectory *directory,
-			      NautilusFileListCallback callback,
-			      gpointer callback_data)
+nautilus_directory_start_monitoring (NautilusDirectory *directory,
+				     NautilusFileListCallback callback,
+				     gpointer callback_data)
 {
 	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 	g_return_if_fail (callback != NULL);
@@ -558,6 +599,160 @@ nautilus_directory_get_files (NautilusDirectory *directory,
 		(* callback) (directory,
 			      directory->details->files,
 			      callback_data);
+
+	if (directory->details->directory_load_in_progress == NULL) {
+		GnomeVFSResult result;
+
+		directory->details->directory_load_list_last_handled
+			= GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
+		result = gnome_vfs_async_load_directory_uri
+			(&directory->details->directory_load_in_progress, /* handle */
+			 directory->details->uri,                         /* uri */
+			 (GNOME_VFS_FILE_INFO_GETMIMETYPE	          /* options */
+			  | GNOME_VFS_FILE_INFO_FASTMIMETYPE
+			  | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
+			 NULL, 					          /* meta_keys */
+			 NULL, 					          /* sort_rules */
+			 FALSE, 				          /* reverse_order */
+			 GNOME_VFS_DIRECTORY_FILTER_NONE,                 /* filter_type */
+			 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR            /* filter_options */
+			  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
+			 NULL,                                            /* filter_pattern */
+			 DIRECTORY_LOAD_ITEMS_PER_CB,                     /* items_per_notification */
+			 nautilus_directory_load_cb,                      /* callback */
+			 directory);
+	}
+}
+
+static gboolean
+dequeue_pending_idle_cb (gpointer callback_data)
+{
+	NautilusDirectory *directory;
+	GList *pending_file_info;
+	GList *p;
+	NautilusFile *file;
+	NautilusFileList *pending_files;
+
+	directory = NAUTILUS_DIRECTORY (callback_data);
+
+	directory->details->dequeue_pending_idle_id = 0;
+
+	pending_files = NULL;
+
+	/* Build a list of NautilusFile objects. */
+	pending_file_info = directory->details->pending_file_info;
+	directory->details->pending_file_info = NULL;
+	for (p = pending_file_info; p != NULL; p = p->next) {
+		file = nautilus_directory_new_file (directory, p->data);
+		pending_files = g_list_prepend (pending_files, file);
+		gnome_vfs_file_info_unref (p->data);
+	}
+	g_list_free (pending_file_info);
+
+	if (pending_files == NULL)
+		return FALSE;
+
+	/* Tell the people who are monitoring about these new files. */
+	gtk_signal_emit (GTK_OBJECT (directory),
+			 nautilus_directory_signals[FILES_ADDED],
+			 pending_files);
+
+	/* Remember them for later. */
+	directory->details->files = g_list_concat
+		(directory->details->files, pending_files);
+
+	return FALSE;
+}
+
+static void
+schedule_dequeue_pending (NautilusDirectory *directory)
+{
+	if (directory->details->dequeue_pending_idle_id == 0)
+		directory->details->dequeue_pending_idle_id
+			= gtk_idle_add (dequeue_pending_idle_cb, directory);
+}
+
+static void
+nautilus_directory_load_one (NautilusDirectory *directory,
+			     GnomeVFSFileInfo *info)
+{
+	gnome_vfs_file_info_ref (info);
+        directory->details->pending_file_info
+		= g_list_prepend (directory->details->pending_file_info, info);
+	schedule_dequeue_pending (directory);
+}
+
+static void
+nautilus_directory_load_done (NautilusDirectory *directory,
+			      GnomeVFSResult result)
+{
+	directory->details->directory_load_in_progress = NULL;
+	directory->details->directory_loaded = TRUE;
+	schedule_dequeue_pending (directory);
+}
+
+static GnomeVFSDirectoryListPosition
+nautilus_gnome_vfs_directory_list_get_next_position (GnomeVFSDirectoryList *list,
+						     GnomeVFSDirectoryListPosition position)
+{
+	if (position != GNOME_VFS_DIRECTORY_LIST_POSITION_NONE)
+		return gnome_vfs_directory_list_position_next (position);
+	if (list == NULL)
+		return GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
+	return gnome_vfs_directory_list_get_first_position (list);
+}
+
+static void
+nautilus_directory_load_cb (GnomeVFSAsyncHandle *handle,
+			    GnomeVFSResult result,
+			    GnomeVFSDirectoryList *list,
+			    guint entries_read,
+			    gpointer callback_data)
+{
+	NautilusDirectory *directory;
+	GnomeVFSDirectoryListPosition last_handled, p;
+
+	directory = NAUTILUS_DIRECTORY (callback_data);
+
+	g_assert (directory->details->directory_load_in_progress == handle);
+
+	/* Move items from the list onto our pending queue.
+	 * We can't do this in the most straightforward way, becuse the position
+	 * for a gnome_vfs_directory_list does not have a way of representing one
+	 * past the end. So we must keep a position to the last item we handled
+	 * rather than keeping a position past the last item we handled.
+	 */
+	last_handled = directory->details->directory_load_list_last_handled;
+        p = last_handled;
+	while ((p = nautilus_gnome_vfs_directory_list_get_next_position (list, p))
+	       != GNOME_VFS_DIRECTORY_LIST_POSITION_NONE) {
+		nautilus_directory_load_one
+			(directory, gnome_vfs_directory_list_get (list, p));
+		last_handled = p;
+	}
+	directory->details->directory_load_list_last_handled = last_handled;
+
+	if (result != GNOME_VFS_OK)
+		nautilus_directory_load_done (directory, result);
+}
+
+void
+nautilus_directory_stop_monitoring (NautilusDirectory *directory)
+{
+	g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+
+	if (directory->details->directory_load_in_progress != NULL) {
+		gnome_vfs_async_cancel (directory->details->directory_load_in_progress);
+		directory->details->directory_load_in_progress = NULL;
+	}
+}
+
+gboolean
+nautilus_directory_are_all_files_seen (NautilusDirectory *directory)
+{
+	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
+	
+	return directory->details->directory_loaded;
 }
 
 static char *
@@ -754,7 +949,7 @@ nautilus_directory_set_file_metadata (NautilusDirectory *directory,
 	nautilus_directory_request_write_metafile (directory);
 }
 
-NautilusFile *
+static NautilusFile *
 nautilus_directory_new_file (NautilusDirectory *directory, GnomeVFSFileInfo *info)
 {
 	NautilusFile *file;
@@ -764,12 +959,9 @@ nautilus_directory_new_file (NautilusDirectory *directory, GnomeVFSFileInfo *inf
 
 	gnome_vfs_file_info_ref (info);
 
-	file = g_new (NautilusFile, 1);
-	file->ref_count = 0;
+	file = g_new0 (NautilusFile, 1);
 	file->directory = directory;
 	file->info = info;
-
-	directory->details->files = g_list_prepend (directory->details->files, file);
 
 	return file;
 }
@@ -1256,7 +1448,7 @@ nautilus_self_check_directory (void)
 	NAUTILUS_CHECK_INTEGER_RESULT (g_hash_table_size (directory_objects), 1);
 
 	file_count = 0;
-	nautilus_directory_get_files (directory, get_files_cb, &data_dummy);
+	nautilus_directory_start_monitoring (directory, get_files_cb, &data_dummy);
 
 	nautilus_directory_set_metadata (directory, "TEST", "default", "value");
 	NAUTILUS_CHECK_STRING_RESULT (nautilus_directory_get_metadata (directory, "TEST", "default"), "value");

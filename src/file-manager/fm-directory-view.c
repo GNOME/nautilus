@@ -39,14 +39,9 @@
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <libnautilus/nautilus-gtk-macros.h>
+#include <libnautilus/nautilus-alloc.h>
 
-#ifndef g_alloca
-#include <alloca.h>
-#define g_alloca alloca
-#endif
-
-#define DISPLAY_TIMEOUT_INTERVAL 500
-#define ENTRIES_PER_CB 1
+#define DISPLAY_TIMEOUT_INTERVAL_MSECS 500
 
 enum 
 {
@@ -58,27 +53,21 @@ enum
 	LAST_SIGNAL
 };
 
-static guint fm_directory_view_signals[LAST_SIGNAL] = { 0 };
+static guint fm_directory_view_signals[LAST_SIGNAL];
 
 struct _FMDirectoryViewDetails
 {
 	NautilusContentViewFrame *view_frame;
-
-	GnomeVFSDirectoryList *directory_list;
-	GnomeVFSDirectoryListPosition current_position;
-
-	guint display_selection_idle_id;
-	guint display_timeout_id;
-
-	GnomeVFSAsyncHandle *vfs_async_handle;
-	GnomeVFSURI *uri;
-
 	NautilusDirectory *model;
-
-	GtkMenu *background_context_menu;
-        
-        GtkWidget *zoom_in_item;
-        GtkWidget *zoom_out_item;
+	
+	guint display_selection_idle_id;
+	
+	guint display_pending_timeout_id;
+	guint display_pending_idle_id;
+	
+	guint add_files_handler_id;
+	
+	NautilusFileList *pending_list;
 };
 
 /* forward declarations */
@@ -98,6 +87,14 @@ static void notify_location_change_cb 		(NautilusViewFrame *view_frame,
 						 FMDirectoryView *directory_view);
 static void zoom_in_cb                          (GtkMenuItem *item, FMDirectoryView *directory_view);
 static void zoom_out_cb                         (GtkMenuItem *item, FMDirectoryView *directory_view);
+
+static void schedule_idle_display_of_pending_files      (FMDirectoryView *view);
+static void unschedule_idle_display_of_pending_files    (FMDirectoryView *view);
+static void schedule_timeout_display_of_pending_files   (FMDirectoryView *view);
+static void unschedule_timeout_display_of_pending_files (FMDirectoryView *view);
+static void unschedule_display_of_pending_files         (FMDirectoryView *view);
+
+static void disconnect_model_handlers                   (FMDirectoryView *view);
 
 NAUTILUS_DEFINE_CLASS_BOILERPLATE (FMDirectoryView, fm_directory_view, GTK_TYPE_SCROLLED_WINDOW)
 NAUTILUS_IMPLEMENT_MUST_OVERRIDE_SIGNAL (fm_directory_view, add_entry)
@@ -167,35 +164,23 @@ fm_directory_view_initialize (FMDirectoryView *directory_view)
 {
 	directory_view->details = g_new0 (FMDirectoryViewDetails, 1);
 	
-#if 0
-	gtk_scroll_frame_set_policy (GTK_SCROLL_FRAME (directory_view),
-				     GTK_POLICY_AUTOMATIC,
-				     GTK_POLICY_AUTOMATIC);
-	gtk_scroll_frame_set_shadow_type (GTK_SCROLL_FRAME (directory_view), GTK_SHADOW_IN);
-#else
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (directory_view),
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_hadjustment (GTK_SCROLLED_WINDOW (directory_view), NULL);
 	gtk_scrolled_window_set_vadjustment (GTK_SCROLLED_WINDOW (directory_view), NULL);
 
-#endif
-
-	directory_view->details->background_context_menu = create_background_context_menu(directory_view);
-
 	directory_view->details->view_frame = NAUTILUS_CONTENT_VIEW_FRAME
-		(gtk_widget_new (nautilus_content_view_frame_get_type(), NULL));
+		(gtk_widget_new (nautilus_content_view_frame_get_type (), NULL));
 
 	gtk_signal_connect (GTK_OBJECT (directory_view->details->view_frame), 
 			    "stop_location_change",
 			    GTK_SIGNAL_FUNC (stop_location_change_cb),
 			    directory_view);
-
 	gtk_signal_connect (GTK_OBJECT (directory_view->details->view_frame), 
 			    "notify_location_change",
 			    GTK_SIGNAL_FUNC (notify_location_change_cb), 
 			    directory_view);
-
 
 	gtk_widget_show (GTK_WIDGET (directory_view));
 
@@ -210,23 +195,15 @@ fm_directory_view_destroy (GtkObject *object)
 
 	view = FM_DIRECTORY_VIEW (object);
 
-	if (view->details->directory_list != NULL)
-		gnome_vfs_directory_list_destroy (view->details->directory_list);
-
-	if (view->details->uri != NULL)
-		gnome_vfs_uri_unref (view->details->uri);
-
-	if (view->details->vfs_async_handle != NULL)
-		gnome_vfs_async_cancel (view->details->vfs_async_handle);
-
-	if (view->details->display_timeout_id != 0)
-		gtk_timeout_remove (view->details->display_timeout_id);
-
-	if (view->details->model != NULL)
+	if (view->details->model != NULL) {
+		disconnect_model_handlers (view);
 		gtk_object_unref (GTK_OBJECT (view->details->model));
+	}
 
-	if (view->details->background_context_menu != NULL)
-		gtk_object_unref(GTK_OBJECT(view->details->background_context_menu));
+	if (view->details->display_selection_idle_id != 0)
+		gtk_idle_remove (view->details->display_selection_idle_id);
+
+	unschedule_display_of_pending_files (view);
 
 	g_free (view->details);
 
@@ -335,15 +312,18 @@ fm_directory_view_send_selection_change (FMDirectoryView *view)
 
 
 static void
-notify_location_change_cb (NautilusViewFrame *view_frame, Nautilus_NavigationInfo *nav_context, FMDirectoryView *directory_view)
+notify_location_change_cb (NautilusViewFrame *view_frame,
+			   Nautilus_NavigationInfo *navigation_context,
+			   FMDirectoryView *directory_view)
 {
-	fm_directory_view_load_uri(directory_view, nav_context->requested_uri);
+	fm_directory_view_load_uri (directory_view, navigation_context->requested_uri);
 }
 
 static void
-stop_location_change_cb (NautilusViewFrame *view_frame, FMDirectoryView *directory_view)
+stop_location_change_cb (NautilusViewFrame *view_frame,
+			 FMDirectoryView *directory_view)
 {
-	fm_directory_view_stop(directory_view);
+	fm_directory_view_stop (directory_view);
 }
 
 
@@ -351,24 +331,16 @@ stop_location_change_cb (NautilusViewFrame *view_frame, FMDirectoryView *directo
 static void
 stop_load (FMDirectoryView *view, gboolean error)
 {
-	Nautilus_ProgressRequestInfo pri;
-
-	if (view->details->vfs_async_handle != NULL) {
-		gnome_vfs_async_cancel (view->details->vfs_async_handle);
-		view->details->vfs_async_handle = NULL;
-	}
-
-	if (view->details->display_timeout_id != 0) {
-		gtk_timeout_remove (view->details->display_timeout_id);
-		view->details->display_timeout_id = 0;
-	}
-
-	memset(&pri, 0, sizeof(pri));
-	pri.amount = 100.0;
-	pri.type = error ? Nautilus_PROGRESS_DONE_ERROR : Nautilus_PROGRESS_DONE_OK;
+	Nautilus_ProgressRequestInfo progress;
 	
+	if (view->details->model != NULL)
+		nautilus_directory_stop_monitoring (view->details->model);
+	
+	memset(&progress, 0, sizeof(progress));
+	progress.amount = 100.0;
+	progress.type = error ? Nautilus_PROGRESS_DONE_ERROR : Nautilus_PROGRESS_DONE_OK;
 	nautilus_view_frame_request_progress_change
-		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &pri);
+		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &progress);
 }
 
 
@@ -376,131 +348,188 @@ stop_load (FMDirectoryView *view, gboolean error)
 /* handle the zoom in/out menu items */
 
 static void
-update_zoom_menu_items (FMDirectoryView *directory_view)
-{
-   /* Note that this updates only the unchanging background menu;
-    * we also have to make sure we set the sensitivity of these
-    * items on the item-specific menu when it's created. This function
-    * can go away entirely when the background menu is created on
-    * the fly, a change Darin is in the process of making.
-    */
-   gtk_widget_set_sensitive(directory_view->details->zoom_in_item, 
-   	fm_directory_view_can_zoom_in (directory_view));
-   gtk_widget_set_sensitive(directory_view->details->zoom_out_item, 
-   	fm_directory_view_can_zoom_out (directory_view));
-}
-
-
-static void
 zoom_in_cb(GtkMenuItem *item, FMDirectoryView *directory_view)
 {
 	fm_directory_view_bump_zoom_level (directory_view, 1);
-	update_zoom_menu_items (directory_view);
 }
 
 static void
 zoom_out_cb(GtkMenuItem *item, FMDirectoryView *directory_view)
 {
 	fm_directory_view_bump_zoom_level (directory_view, -1);
-	update_zoom_menu_items (directory_view);
 }
 
-static void
-display_pending_entries (FMDirectoryView *view)
+static gboolean
+display_pending_files (FMDirectoryView *view)
 {
+	NautilusFileList *pending_list;
+	NautilusFileList *p;
+
+	if (view->details->model != NULL
+	    && nautilus_directory_are_all_files_seen (view->details->model))
+		stop_load (view, FALSE);
+
+	pending_list = view->details->pending_list;
+	if (pending_list == NULL)
+		return FALSE;
+	view->details->pending_list = NULL;
+
 	fm_directory_view_begin_adding_entries (view);
 
-	while (view->details->current_position != GNOME_VFS_DIRECTORY_LIST_POSITION_NONE)
-	{
-		GnomeVFSFileInfo *info;
-
-		info = gnome_vfs_directory_list_get (view->details->directory_list,
-						     view->details->current_position);
-
-		fm_directory_view_add_entry (view, nautilus_directory_new_file (view->details->model, info));
-
-		view->details->current_position = gnome_vfs_directory_list_position_next
-						       (view->details->current_position);
+	for (p = pending_list; p != NULL; p = p->next) {
+		fm_directory_view_add_entry (view, p->data);
+		nautilus_file_unref (p->data);
 	}
 
 	fm_directory_view_done_adding_entries (view);
+
+	g_list_free (pending_list);
+
+	return TRUE;
 }
 
-static gint
+static gboolean
 display_selection_info_idle_cb (gpointer data)
 {
 	FMDirectoryView *view;
 	
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (data), FALSE);
-
 	view = FM_DIRECTORY_VIEW (data);
+
+	view->details->display_selection_idle_id = 0;
 
 	display_selection_info (view);
 	fm_directory_view_send_selection_change (view);
-
-	view->details->display_selection_idle_id = 0;
 
 	return FALSE;
 }
 
 static gboolean
-display_timeout_cb (gpointer data)
+display_pending_idle_cb (gpointer data)
 {
-	g_return_val_if_fail (FM_IS_DIRECTORY_VIEW (data), TRUE);
-	
-	display_pending_entries (FM_DIRECTORY_VIEW (data));
+	/* Don't do another idle until we receive more files. */
 
-	return TRUE;
+	FMDirectoryView *view;
+
+	view = FM_DIRECTORY_VIEW (data);
+
+	view->details->display_pending_idle_id = 0;
+
+	display_pending_files (view);
+
+	return FALSE;
+}
+
+static gboolean
+display_pending_timeout_cb (gpointer data)
+{
+	/* Do another timeout if we displayed some files.
+	 * Once we get all the files, we'll start using
+	 * idle instead.
+	 */
+
+	FMDirectoryView *view;
+	gboolean displayed_some;
+
+	view = FM_DIRECTORY_VIEW (data);
+
+	displayed_some = display_pending_files (view);
+	if (displayed_some)
+		return TRUE;
+
+	view->details->display_pending_timeout_id = 0;
+	return FALSE;
 }
 
 
+
 static void
-directory_load_cb (GnomeVFSAsyncHandle *handle,
-		   GnomeVFSResult result,
-		   GnomeVFSDirectoryList *list,
-		   guint entries_read,
-		   gpointer callback_data)
+schedule_idle_display_of_pending_files (FMDirectoryView *view)
+{
+	/* No need to schedule an idle if there's already one pending. */
+	if (view->details->display_pending_idle_id != 0)
+		return;
+
+	/* An idle takes precedence over a timeout. */
+	unschedule_timeout_display_of_pending_files (view);
+
+	view->details->display_pending_idle_id =
+		gtk_idle_add (display_pending_idle_cb, view);
+}
+
+static void
+schedule_timeout_display_of_pending_files (FMDirectoryView *view)
+{
+	/* No need to schedule a timeout if there's already one pending. */
+	if (view->details->display_pending_timeout_id != 0)
+		return;
+
+	/* An idle takes precedence over a timeout. */
+	if (view->details->display_pending_idle_id != 0)
+		return;
+
+	view->details->display_pending_timeout_id =
+		gtk_timeout_add (DISPLAY_TIMEOUT_INTERVAL_MSECS,
+				 display_pending_timeout_cb, view);
+}
+
+static void
+unschedule_idle_display_of_pending_files (FMDirectoryView *view)
+{
+	/* Get rid of idle if it's active. */
+	if (view->details->display_pending_idle_id != 0) {
+		g_assert (view->details->display_pending_timeout_id == 0);
+		gtk_idle_remove (view->details->display_pending_idle_id);
+		view->details->display_pending_idle_id = 0;
+	}
+}
+
+static void
+unschedule_timeout_display_of_pending_files (FMDirectoryView *view)
+{
+	/* Get rid of timeout if it's active. */
+	if (view->details->display_pending_timeout_id != 0) {
+		g_assert (view->details->display_pending_idle_id == 0);
+		gtk_timeout_remove (view->details->display_pending_timeout_id);
+		view->details->display_pending_timeout_id = 0;
+	}
+}
+
+static void
+unschedule_display_of_pending_files (FMDirectoryView *view)
+{
+	unschedule_idle_display_of_pending_files (view);
+	unschedule_timeout_display_of_pending_files (view);
+}
+
+static void
+add_files_cb (NautilusDirectory *directory,
+	      NautilusFileList *files,
+	      gpointer callback_data)
 {
 	FMDirectoryView *view;
+	NautilusFileList *p;
 
-	g_assert(entries_read <= ENTRIES_PER_CB);
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	g_assert (files != NULL);
 
 	view = FM_DIRECTORY_VIEW (callback_data);
 
-	if (view->details->directory_list == NULL) {
-		if (result == GNOME_VFS_OK || result == GNOME_VFS_ERROR_EOF) {
+	g_assert (directory == view->details->model);
 
-			fm_directory_view_begin_loading (view);
-
-			view->details->directory_list = list;
-
-			g_assert (view->details->current_position
-				== GNOME_VFS_DIRECTORY_LIST_POSITION_NONE);
-
-			if (result != GNOME_VFS_ERROR_EOF)
-				view->details->display_timeout_id
-					= gtk_timeout_add
-						(DISPLAY_TIMEOUT_INTERVAL,
-						 display_timeout_cb,
-						 view);
-		} else if (entries_read == 0) {
-			/*
-			gtk_signal_emit (GTK_OBJECT (view),
-					 signals[OPEN_FAILED]);
-			*/
-		}
-	}
-
-	if(view->details->current_position == GNOME_VFS_DIRECTORY_LIST_POSITION_NONE && list)
-		view->details->current_position
-			= gnome_vfs_directory_list_get_position (list);
-
-	if (result == GNOME_VFS_ERROR_EOF) {
-		display_pending_entries (view);
-		stop_load (view, FALSE);
-	} else if (result != GNOME_VFS_OK) {
-		stop_load (view, TRUE);
-	}
+	/* Put the files on the pending list. */
+	for (p = files; p != NULL; p = p->next)
+		nautilus_file_ref (p->data);
+	view->details->pending_list = g_list_concat
+		(view->details->pending_list, g_list_copy (files));
+	
+	/* If we haven't see all the files yet, then we'll wait for the
+	   timeout to fire. If we have seen all the files, then we'll use
+	   an idle instead.
+	*/
+	if (nautilus_directory_are_all_files_seen (view->details->model))
+		schedule_idle_display_of_pending_files (view);
+	else
+		schedule_timeout_display_of_pending_files (view);
 }
 
 
@@ -552,6 +581,7 @@ void
 fm_directory_view_add_entry (FMDirectoryView *view, NautilusFile *file)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
 	gtk_signal_emit (GTK_OBJECT (view), fm_directory_view_signals[ADD_ENTRY], file);
 }
@@ -696,17 +726,11 @@ fm_directory_view_get_model (FMDirectoryView *view)
 static void
 popup_context_menu (GtkMenu *menu)
 {
-	gtk_menu_popup (menu, NULL, NULL, NULL,
-			NULL, 3, GDK_CURRENT_TIME);
-}
-
-static void
-popup_temporary_context_menu (GtkMenu *menu)
-{
 	gtk_object_ref (GTK_OBJECT(menu));
 	gtk_object_sink (GTK_OBJECT(menu));
 
-	popup_context_menu (menu);
+	gtk_menu_popup (menu, NULL, NULL, NULL,
+			NULL, 3, GDK_CURRENT_TIME);
 
 	gtk_object_unref (GTK_OBJECT(menu));
 }
@@ -730,15 +754,6 @@ append_background_items (FMDirectoryView *view, GtkMenu *menu)
 	gtk_menu_append (menu, menu_item);
 	gtk_widget_set_sensitive (menu_item, fm_directory_view_can_zoom_in (view));
 
-	/* FIXME: This code assumes that the function won't be called again after
-	 * the background menu is set up, but that's not true if the user clicks
-	 * on an item. This code and the corresponding details field can go away
-	 * entirely when the background menu is always created dynamically (a change
-	 * Darin is in the process of making).
-	 */
-        view->details->zoom_in_item = menu_item;
-
-       
 	menu_item = gtk_menu_item_new_with_label ("Zoom out");
 	
 	gtk_signal_connect(GTK_OBJECT (menu_item), "activate",
@@ -747,14 +762,6 @@ append_background_items (FMDirectoryView *view, GtkMenu *menu)
         gtk_widget_show (menu_item);
 	gtk_menu_append (menu, menu_item);
 	gtk_widget_set_sensitive (menu_item, fm_directory_view_can_zoom_out (view));
-
-	/* FIXME: This code assumes that the function won't be called again after
-	 * the background menu is set up, but that's not true if the user clicks
-	 * on an item. This code and the corresponding details field can go away
-	 * entirely when the background menu is always created dynamically (a change
-	 * Darin is in the process of making).
-	 */
-	view->details->zoom_out_item = menu_item;
 }
 
 /* FIXME - need better architecture for setting these. */
@@ -765,6 +772,9 @@ create_item_context_menu (FMDirectoryView *view,
 {
 	GtkMenu *menu;
 	GtkWidget *menu_item;
+
+	g_assert (FM_IS_DIRECTORY_VIEW (view));
+	g_assert (NAUTILUS_IS_FILE (file));
 	
 	menu = GTK_MENU (gtk_menu_new ());
 
@@ -800,14 +810,10 @@ create_background_context_menu (FMDirectoryView *view)
 	GtkMenu *menu;
 
 	menu = GTK_MENU (gtk_menu_new ());
-
 	append_background_items (view, menu);
 	
-	gtk_object_ref(GTK_OBJECT(menu));
-	gtk_object_sink(GTK_OBJECT(menu));
 	return menu;
 }
-
 
 /**
  * fm_directory_view_popup_item_context_menu
@@ -819,18 +825,14 @@ create_background_context_menu (FMDirectoryView *view)
  * Return value: NautilusDirectory for this view.
  * 
  **/
-
 void 
 fm_directory_view_popup_item_context_menu  (FMDirectoryView *view,
 					    NautilusFile *file)
 {
-	GtkMenu *menu;
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
-	/* g_assert (NAUTILUS_IS_FILE (file)); */
+	g_assert (NAUTILUS_IS_FILE (file));
 	
-	menu = create_item_context_menu (view, file);
-
-	popup_temporary_context_menu (menu);
+	popup_context_menu (create_item_context_menu (view, file));
 }
 
 /**
@@ -842,13 +844,12 @@ fm_directory_view_popup_item_context_menu  (FMDirectoryView *view,
  * Return value: NautilusDirectory for this view.
  * 
  **/
-
 void 
 fm_directory_view_popup_background_context_menu  (FMDirectoryView *view)
 {
 	g_assert (FM_IS_DIRECTORY_VIEW (view));
 	
-	popup_context_menu (view->details->background_context_menu);
+	popup_context_menu (create_background_context_menu (view));
 }
 
 
@@ -865,6 +866,7 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 {
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
+	/* Schedule a display of the new selection. */
 	if (view->details->display_selection_idle_id == 0)
 		view->details->display_selection_idle_id
 			= gtk_idle_add (display_selection_info_idle_cb,
@@ -884,28 +886,19 @@ fm_directory_view_notify_selection_changed (FMDirectoryView *view)
 void
 fm_directory_view_activate_entry (FMDirectoryView *view, NautilusFile *file)
 {
-	GnomeVFSURI *new_uri;
-	char *name;
-	char *new_uri_text;
-	Nautilus_NavigationRequestInfo nri;
+	Nautilus_NavigationRequestInfo request;
 
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
-	g_return_if_fail (file != NULL);
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-	name = nautilus_file_get_name (file);
-	new_uri = gnome_vfs_uri_append_path(view->details->uri, name);
-	g_free (name);
-
-	new_uri_text = gnome_vfs_uri_to_string (new_uri, GNOME_VFS_URI_HIDE_NONE);
-	gnome_vfs_uri_unref (new_uri);
-
-	nri.requested_uri = new_uri_text;
-	nri.new_window_default = nri.new_window_suggested = Nautilus_V_FALSE;
-	nri.new_window_enforced = Nautilus_V_UNKNOWN;
+	request.requested_uri = nautilus_file_get_uri (file);
+	request.new_window_default = Nautilus_V_FALSE;
+	request.new_window_suggested = Nautilus_V_FALSE;
+	request.new_window_enforced = Nautilus_V_UNKNOWN;
 	nautilus_view_frame_request_location_change
-		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &nri);
+		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &request);
 
-	g_free (new_uri_text);
+	g_free (request.requested_uri);
 }
 
 /**
@@ -921,57 +914,46 @@ void
 fm_directory_view_load_uri (FMDirectoryView *view,
 			    const char *uri)
 {
-	GnomeVFSResult result;
-	Nautilus_ProgressRequestInfo pri;
+	Nautilus_ProgressRequestInfo progress;
 	NautilusDirectory *old_model;
 
-	g_return_if_fail (view != NULL);
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 	g_return_if_fail (uri != NULL);
 
 	fm_directory_view_stop (view);
+	fm_directory_view_clear (view);
+
+	disconnect_model_handlers (view);
 
 	old_model = view->details->model;
 	view->details->model = nautilus_directory_get (uri);
-
-	if (view->details->uri != NULL)
-		gnome_vfs_uri_unref (view->details->uri);
-	view->details->uri = gnome_vfs_uri_new (uri);
-
-	if (view->details->directory_list != NULL)
-		gnome_vfs_directory_list_destroy (view->details->directory_list);
-	view->details->directory_list = NULL;
-	view->details->current_position = GNOME_VFS_DIRECTORY_LIST_POSITION_NONE;
-
-	fm_directory_view_clear (view);
-
 	if (old_model != NULL)
 		gtk_object_unref (GTK_OBJECT (old_model));
 
-	memset(&pri, 0, sizeof(pri));
-	pri.type = Nautilus_PROGRESS_UNDERWAY;
-	pri.amount = 0;
+	memset(&progress, 0, sizeof(progress));
+	progress.type = Nautilus_PROGRESS_UNDERWAY;
 	nautilus_view_frame_request_progress_change
-		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &pri);
+		(NAUTILUS_VIEW_FRAME (view->details->view_frame), &progress);
 
-	result = gnome_vfs_async_load_directory_uri
-		(&view->details->vfs_async_handle, 	/* handle */
-		 view->details->uri,			/* uri */
-		 (GNOME_VFS_FILE_INFO_GETMIMETYPE	/* options */
-		  | GNOME_VFS_FILE_INFO_FASTMIMETYPE
-		  | GNOME_VFS_FILE_INFO_FOLLOWLINKS),
-		 NULL, 					/* meta_keys */
-		 NULL, 					/* sort_rules */
-		 FALSE, 				/* reverse_order */
-		 GNOME_VFS_DIRECTORY_FILTER_NONE, 	/* filter_type */
-		 (GNOME_VFS_DIRECTORY_FILTER_NOSELFDIR  /* filter_options */
-		  | GNOME_VFS_DIRECTORY_FILTER_NOPARENTDIR),
-		 NULL, 					/* filter_pattern */
-		 ENTRIES_PER_CB,			 /* items_per_notification */
-		 directory_load_cb,	 		/* callback */
-		 view);		 			/* callback_data */
+	schedule_timeout_display_of_pending_files (view);
+	nautilus_directory_start_monitoring (view->details->model,
+					     add_files_cb, view);
 
-	g_return_if_fail(result == GNOME_VFS_OK);
+	view->details->add_files_handler_id = gtk_signal_connect
+		(GTK_OBJECT (view->details->model), 
+		 "files_added",
+		 GTK_SIGNAL_FUNC (add_files_cb),
+		 view);
+}
+
+static void
+disconnect_model_handlers (FMDirectoryView *view)
+{
+	if (view->details->add_files_handler_id != 0) {
+		gtk_signal_disconnect (GTK_OBJECT (view->details->model),
+				       view->details->add_files_handler_id);
+		view->details->add_files_handler_id = 0;
+	}
 }
 
 /**
@@ -987,9 +969,7 @@ fm_directory_view_stop (FMDirectoryView *view)
 	g_return_if_fail (view != NULL);
 	g_return_if_fail (FM_IS_DIRECTORY_VIEW (view));
 
-	if (view->details->vfs_async_handle == NULL)
-		return;
-
-	display_pending_entries (view);
+	unschedule_display_of_pending_files (view);
+	display_pending_files (view);
 	stop_load (view, FALSE);
 }
