@@ -32,21 +32,22 @@ module Nautilus {
   };
 
   enum ProgressType { PROGRESS_DONE_OK, PROGRESS_DONE_ERROR, PROGRESS_UNDERWAY };
+
   struct ProgressRequestInfo {
     ProgressType type;
     double amount;
   };
 
   interface View : ::Bonobo::Unknown {
-    void save_state(in string config_path);
-    void load_state(in string config_path);
-    oneway void notify_location_change(in NavigationInfo navinfo);
+    void save_state (in string config_path);
+    void load_state (in string config_path);
+    oneway void notify_location_change (in NavigationInfo navinfo);
 
     oneway void show_properties(); // Requests that the client show its properties
 
-    oneway void notify_selection_change(in SelectionInfo selinfo);
+    oneway void notify_selection_change (in SelectionInfo selinfo);
 
-    oneway void stop_location_change();
+    oneway void stop_location_change ();
   };
 
   interface MetaView : View {
@@ -59,10 +60,10 @@ module Nautilus {
 
   interface ViewFrame : ::Bonobo::Unknown {
     readonly attribute ViewWindow main_window;
-    oneway void request_status_change(in StatusRequestInfo statinfo);
-    oneway void request_location_change(in NavigationRequestInfo navinfo);
-    oneway void request_selection_change(in SelectionRequestInfo selinfo);
-    oneway void request_progress_change(in ProgressRequestInfo proginfo);
+    oneway void request_status_change (in StatusRequestInfo statinfo);
+    oneway void request_location_change (in NavigationRequestInfo navinfo);
+    oneway void request_selection_change (in SelectionRequestInfo selinfo);
+    oneway void request_progress_change (in ProgressRequestInfo proginfo);
   };
 
   interface MetaViewFrame : ViewFrame {
@@ -89,17 +90,19 @@ module Nautilus {
     oneway void notify_zoom_level (in double zoom_level);
   };
 
+  interface Application;
 
   interface ViewWindow : ::Bonobo::Unknown {
-	readonly attribute string current_uri;
-	void open_uri(in string uri);
-	void close();
+        readonly attribute string current_uri;
+        readonly attribute Application application;
+        void open_uri (in string uri);
+        void close ();
   };
 
-  typedef sequence<Object> ObjectList;
+  typedef sequence<ViewWindow> ViewWindowList;
 
-  interface Application : ::GNOME::GenericFactory {
-	readonly attribute ObjectList windows;
-	ViewWindow new_window();
+  interface Application : ::GNOME::GenericFactory, ::Bonobo::Unknown {
+	readonly attribute ViewWindowList view_windows;
+	ViewWindow new_view_window ();
   };
 };

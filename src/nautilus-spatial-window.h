@@ -113,13 +113,19 @@ struct _NautilusWindow {
   gboolean reset_to_idle : 1;
 };
 
-GtkType nautilus_window_get_type(void);
-GtkWidget *nautilus_window_new(const char *app_id);
-void nautilus_window_set_content_view(NautilusWindow *window, NautilusView *content_view);
-void nautilus_window_add_meta_view(NautilusWindow *window, NautilusView *meta_view);
-void nautilus_window_remove_meta_view(NautilusWindow *window, NautilusView *meta_view);
-void nautilus_window_goto_uri(NautilusWindow *window, const char *uri);
-void nautilus_window_display_error(NautilusWindow *window, const char *error_msg);
+GtkType     nautilus_window_get_type          (void);
+GtkWidget  *nautilus_window_new               (const char *app_id);
+void        nautilus_window_close             (NautilusWindow *window);
+void        nautilus_window_set_content_view  (NautilusWindow *window, 
+                                               NautilusView *content_view);
+void        nautilus_window_add_meta_view     (NautilusWindow *window, 
+                                               NautilusView *meta_view);
+void        nautilus_window_remove_meta_view  (NautilusWindow *window, 
+                                               NautilusView *meta_view);
+void        nautilus_window_goto_uri          (NautilusWindow *window, 
+                                               const char *uri);
+void        nautilus_window_display_error     (NautilusWindow *window, 
+                                               const char *error_msg);
 
 const char *nautilus_window_get_requested_uri(NautilusWindow *window);
 BonoboUIHandler *nautilus_window_get_uih(NautilusWindow *window);

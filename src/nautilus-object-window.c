@@ -67,9 +67,27 @@ typedef struct {
   NautilusWindow *window;
 } impl_POA_Nautilus_ViewWindow;
 
+static const CORBA_char *impl_Nautilus_ViewWindow__get_current_uri (impl_POA_Nautilus_ViewWindow *servant,
+                                                                    CORBA_Environment            *ev);
+
+static Nautilus_Application impl_Nautilus_ViewWindow__get_application (impl_POA_Nautilus_ViewWindow *servant,
+                                                                       CORBA_Environment            *ev);
+
+static void impl_Nautilus_ViewWindow_open_uri                         (impl_POA_Nautilus_ViewWindow *servant,
+                                                                       CORBA_char                   *uri,
+                                                                       CORBA_Environment            *ev);
+
+static void impl_Nautilus_ViewWindow_close                            (impl_POA_Nautilus_ViewWindow *servant,
+                                                                       CORBA_Environment            *ev);
+
+
 static POA_Nautilus_ViewWindow__epv impl_Nautilus_ViewWindow_epv =
 {
-  NULL
+  NULL,
+  (gpointer) &impl_Nautilus_ViewWindow__get_current_uri,
+  (gpointer) &impl_Nautilus_ViewWindow__get_application,
+  (gpointer) &impl_Nautilus_ViewWindow_open_uri,
+  (gpointer) &impl_Nautilus_ViewWindow_close
 };
 
 static PortableServer_ServantBase__epv base_epv = { NULL, NULL, NULL };
@@ -80,6 +98,36 @@ static POA_Nautilus_ViewWindow__vepv impl_Nautilus_ViewWindow_vepv =
    NULL,
    &impl_Nautilus_ViewWindow_epv
 };
+
+static const CORBA_char *
+impl_Nautilus_ViewWindow__get_current_uri (impl_POA_Nautilus_ViewWindow *servant,
+                                           CORBA_Environment            *ev)
+{
+  return nautilus_window_get_requested_uri (servant->window);
+}
+
+
+static Nautilus_Application
+impl_Nautilus_ViewWindow__get_application (impl_POA_Nautilus_ViewWindow *servant,
+                                           CORBA_Environment            *ev)
+{
+  return CORBA_OBJECT_NIL;
+}
+
+static void
+impl_Nautilus_ViewWindow_open_uri (impl_POA_Nautilus_ViewWindow *servant,
+                                   CORBA_char                   *uri,
+                                   CORBA_Environment            *ev)
+{
+  nautilus_window_goto_uri (servant->window, uri);
+}
+
+static void
+impl_Nautilus_ViewWindow_close (impl_POA_Nautilus_ViewWindow *servant,
+                                CORBA_Environment            *ev)
+{
+  nautilus_window_close (servant->window);
+}
 
 
 static void
@@ -155,12 +203,10 @@ static void nautilus_window_about_cb (GtkWidget *widget,
 
 static void
 file_menu_close_cb (GtkWidget *widget,
-	       gpointer data)
+                    gpointer data)
 {
-	GtkWidget *window;
-
-	window = GTK_WIDGET (data);
-	gtk_widget_destroy(window);
+        g_assert (NAUTILUS_IS_WINDOW (data));
+	nautilus_window_close (NAUTILUS_WINDOW (data));
 }
 
 static void
@@ -883,6 +929,21 @@ nautilus_window_new(const char *app_id)
 {
   return GTK_WIDGET (gtk_object_new (nautilus_window_get_type(), "app_id", app_id, NULL));
 }
+
+void
+nautilus_window_close (NautilusWindow *window)
+{
+        g_return_if_fail (NAUTILUS_IS_WINDOW (window));
+	gtk_widget_destroy (GTK_WIDGET (window));
+}
+
+
+/* The reason for this function is that
+   `gdk_pixbuf_render_pixmap_and_mask', as currently implemented, will
+   fail on a pixbuf with no alpha channel. This function will instead
+   return with NULL in *mask_retval in such a case. If that ever gets
+   fixed, this function should be removed.
+*/
 
 static void
 would_be_in_gdk_pixbuf_if_federico_wasnt_stubborn_pixbuf_render(GdkPixbuf  *pixbuf,
