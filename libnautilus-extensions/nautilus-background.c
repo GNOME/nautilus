@@ -337,7 +337,7 @@ nautilus_background_ensure_gradient_buffered (NautilusBackground *background, in
 		db = new_color.blue  - cur_color.blue;
 
 		fill_pos   = 1;
-		fill_limit = MIN (buff_ptr + 3 * ((num_pixels * percent) / 100), buff_limit);
+		fill_limit = MIN (background->details->gradient_buffer + 3 * ((num_pixels * percent) / 100), buff_limit);
 		fill_width = (fill_limit - buff_ptr) / 3;
 		
 		while (buff_ptr < fill_limit) {

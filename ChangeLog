@@ -1,3 +1,11 @@
+2000-12-04  Michael Engber  <engber@eazel.com>
+
+	* libnautilus-extensions/nautilus-background.c:
+	(nautilus_background_ensure_gradient_buffered):
+	Changed the semantics of multi-point gradients
+	so that percentages are postions (rather than
+	widths) - bug 4759
+
 2000-12-04  Pavel Cisler  <pavel@eazel.com>
 
 	reviewed by: Gene Z. Ragan <gzr@eazel.com>
